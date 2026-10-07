@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-339–341 shared host repair. Actual
+**Latest bounded work (2026-10-07):** test-only shared-effect consumers under
+fb2a9488. Fiscal/Meters/Reputation arm-loss/Desk focus/later Settings selection
+24 native passes; five real faults fail and source restores exactly. Final
+Garage350 /performance two, client9,814 /499 skips/types/unchanged build/copy/
+boundaries/static topology pass. Complete82614848-exclusive span requires
+Claude separately from0fe2f57c..82614848/all earlier ranges. Next RP-342
+failed-first-read truth audit (source candidate, not confirmed); no invented
+retry UI. Full Linux/SQL capacity hold remains, cleanup unanswered/no deletion.
+All full-nine-tier1.0/privacy/platform/body/Firefox/AT/review holds stay live.
+No product change in this proof batch; no lifecycle/push/preview promotion.
+
+**Preceding bounded work (2026-10-07):** RP-339–341 shared host repair. Actual
 red test-only checkpoint6d36a9d3 precedes separate accepted product scope
 88153822. Held Desk read has heading/loading status; Trophy stale values
 stay visible and disclosed; forced Desk focus cancels after a newer choice.

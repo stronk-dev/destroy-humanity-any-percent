@@ -7,7 +7,21 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-339–341 accepted GS0.5/0.6 host repair after actual
+Latest bounded work: test-only remaining shared-effect focus consumers,
+predeclaredfb2a9488. Fiscal/Meters/Reputation ×320/1280 ×retained/removed
+feature facts:24 native passes. Each omitted predicate fails its eight cases;
+no-op focus/removed Desk tabindex each fail24. Exact host restored, no
+production byte changes. Final full Garage350 /performance two, client9,814
+/499 explicit skips/types/unchanged build/copy/boundaries/static topology pass.
+Whole82614848-exclusive span through records needs Claude independently of
+0fe2f57c..82614848 and earlier ranges. No checkbox/lifecycle/archive/push.
+Next: RP-342 failed-first-read truth audit. Source candidate only: refresh
+catches offline but credentialled no-snapshot Desk still renders loading.
+Test actual failure/malformed/healthy recovery before choosing any new retry
+UI; do not infer a missing recovery contract. Linux/SQL capacity hold and all
+full-nine-tier1.0/review/body/privacy/platform/Firefox/AT holds remain.
+
+Preceding bounded work: RP-339–341 accepted GS0.5/0.6 host repair after actual
 red test checkpoint6d36a9d3 and separate product predeclaration88153822.
 Held Desk read now has heading/status, Trophy stale values are disclosed,
 forced arm-loss Desk focus is cancellable by newer selection/snapshot.

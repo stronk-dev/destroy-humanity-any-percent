@@ -3,6 +3,19 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage remaining shared-effect consumers checkpoint — 2026-10-07
+
+Test-onlyfb2a9488: Fiscal/Meters/Reputation ×width320/1280 ×retained/removed
+facts,24 native passes. Five real faults independently discriminate and
+restore exactly. Final Garage350 /performance two, client9,814 /499 explicit
+skips/types/unchanged build/copy/boundaries/static topology pass.
+**READY FOR CLAUDE:**82614848-exclusive through containing proof/record commit,
+independent of0fe2f57c..82614848 and all earlier spans. No archival eligibility.
+**NEXT:** RP-342 first-read failure/malformed/healthy-recovery truth audit;
+source candidate only, not authority for an invented retry UI. Full Linux/SQL
+capacity hold and all owner/body/privacy/platform/Firefox/AT/full-nine-tier
+1.0/review gates remain. Cleanup permission unanswered; no deletion/push.
+
 ## Garage shared host states checkpoint — 2026-10-07
 
 RP-339–341 actual red baseline6d36a9d3, separate product scope88153822:

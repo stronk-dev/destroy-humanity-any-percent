@@ -82,6 +82,16 @@ evidence merely because its text exists.
 | GS6-A2 no fake purchase | production Go predicate/decoder → real component AST → existing root boundary | RP-335: a valid registered-copy fake legacy-shelf button passed the old boundary; new verification-only guard rejects it, a replaced/dynamic real callback kind, a missing production decoder case and a checker bypass; exact sources restored | **Locally witnessed source guard; designated review pending.** Ten Go/eleven Svelte negatives, legitimate acquire/equip/unequip and current source pass. Explicit envelopes/current wrappers only, not whole-program analysis, eligibility, persistence or complete Shop acceptance. Later accepted Shop commands are not banned; any stale Garage body reconciliation remains author-owned. |
 | GS6-A3 no wider Desk | paired public v4 fixture → current full 1995 Desk/chrome → native 320 px measurements | Test-only supplement predeclared 757f1ca2: provisioned=0/owned=false vs provisioned=cap=3/owned=true, identical other content and cap. Chromium/WebKit document/main 320/320, Desk/chrome 284/284, extents 0–320; 90→93 measured nodes. Six real faults fail both engines; sources restored. | **Locally witnessed fixture comparison; designated review pending.** Absence/presence in current source, NOT historical executable, full later Desk, actual 400% zoom, Firefox, AT or real service. Accessibility retains ownership of its old 647 px record; no acceptance/lifecycle promotion. Complete range after 54c8c8da needs Claude separately from source guard d3ce0f76..54c8c8da and every preceding span. |
 
+Shared-context supplement underfb2a9488: Fiscal/Meters/Reputation each mounts
+an exact-decoder admitted arm; null with retained/removed feature fact at
+320/1280 returns/focuses Desk; subsequent native Settings choice survives
+repeat null. Twenty-four native Chromium/WebKit passes and five valid source
+faults discriminate (three individual branch omissions, no-op focus, heading
+tabindex removal). Host restored byte-identically. Full Garage350/performance
+two and client/types/build/copy/boundaries/topology pass. Local first filter,
+not lifecycle/all-context/first-read rejection/retry/Firefox/AT/live SQL proof.
+Separate entire82614848-exclusive range requires Claude.
+
 ## Overall criteria (8)
 
 | Criterion | Current evidence / remaining gate |

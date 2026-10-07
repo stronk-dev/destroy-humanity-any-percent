@@ -51,7 +51,10 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   snapshot cancels that pending focus; normal tab choices retain nav focus.
   Forty native Chromium/WebKit executions cover held Desk read and Trophy
   reconnect/null-arm/cancellation fixtures at 320/1280 px. Nine actual faults
-  discriminate. This does not prove the other forced contexts, first-read
+  discriminate. A separate test-only population checks Fiscal/Meters/Reputation
+  arm loss with retained/removed facts, native Desk-heading focus and later
+  Settings selection at both widths (24 native executions, five real faults).
+  This does not prove lifecycle preemption/all forced contexts, first-read
   failure/retry, real-service recovery, Firefox, manual AT or the full shared
   accessibility floor. Independent review remains pending.
 - **Achievement/meter announcements:** exact event decoders drive the single polite chrome

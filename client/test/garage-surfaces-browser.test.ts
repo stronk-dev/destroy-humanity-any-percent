@@ -370,6 +370,54 @@ for (const width of [320, 1280] as const) {
   }
 }
 
+// GS0.5/0.6: the other existing shared-effect consumers. Public snapshot
+// delivery, not lifecycle preemption, real service or manual AT evidence.
+for (const context of [
+  { surface: "fiscal", arm: "fiscal", fact: "feature.fiscal", title: "surface.fiscal.title", panel: ".fiscal" },
+  { surface: "meters", arm: "meters", fact: "feature.meters", title: "surface.meters.title", panel: ".meters" },
+  { surface: "reputation_tree", arm: "reputation", fact: "feature.reputation_tree", title: "reputation_tree.title", panel: ".reputation" },
+] as const) {
+  for (const width of [320, 1280] as const) {
+    for (const retainFact of [true, false]) {
+      it.skipIf(!browser)(`GS0 forced-context ${context.surface}/${width}/${retainFact ? "retained-fact" : "removed-fact"}`, async () => {
+        const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+        const initial: GameUISnapshot = structuredClone(v4);
+        initial.facts.push({ fact_id: "feature.reputation_tree", value: true });
+        initial.features.reputation = {
+          available: 4, bonus_factor_next_run: "1e0", bonus_factor_this_run: null,
+          level: 4, per_level_ppm: 10_000, spent: 0, unlock_ppm: 0,
+          nodes: [{ node_id: "reputation.unlock.p05", body_key: "reputation_tree.node.unlock_p05.body",
+            title_key: "reputation_tree.node.unlock_p05.title", cost: 1, kind: "bonus_unlock", requires: [], state: "available" }],
+        };
+        const runtime = new Runtime(); runtime.current = parseGameUISnapshot(initial);
+        let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+        try {
+          fixture = await mounted(runtime); const { target } = fixture;
+          const nav = button(target, t(context.title, {}, "era_1995")); nav.focus();
+          await userEvent.keyboard("{Enter}"); await settle();
+          expect(target.querySelector("main")?.dataset.surface).toBe(context.surface);
+          expect(target.querySelector(context.panel)).not.toBeNull(); expect(document.activeElement).toBe(nav);
+          const wire = structuredClone(initial); wire.revision = 2;
+          wire.features[context.arm] = null;
+          wire.facts = wire.facts.map((fact) => fact.fact_id === context.fact ? { ...fact, value: retainFact } : fact);
+          const lost = parseGameUISnapshot(wire); runtime.current = lost;
+          runtime.listener?.({ kind: "snapshot", value: lost }); await settle();
+          expect(target.querySelector(context.panel)).toBeNull();
+          expect(target.querySelector("main")?.dataset.surface).toBe("desk");
+          const heading = sharedStateVisibleText(target, "h1", t("surface.desk.title", {}, "era_1995"));
+          expect(document.activeElement).toBe(heading); expect(heading.getAttribute("tabindex")).toBe("-1");
+          const settings = button(target, t("surface.settings.title", {}, "era_1995")); settings.focus();
+          await userEvent.keyboard("{Enter}"); await settle();
+          runtime.listener?.({ kind: "snapshot", value: { ...lost, revision: 3 } }); await settle();
+          expect(target.querySelector("main")?.dataset.surface).toBe("settings");
+          expect(document.activeElement).toBe(settings); expect(runtime.requests).toEqual([]);
+          await assertAxe(target, `${context.surface} forced-context return`);
+        } finally { try { if (fixture) await fixture.dispose(); } finally { await page.viewport(1280, 720); } }
+      });
+    }
+  }
+}
+
 // RP-330: real semantic layout over decoder-admitted public fixtures, not
 // production/persisted values or assistive-technology evidence.
 const semanticMeterRows = v4.features.meters!.meters.map((row, index) => meterRow(row.meter_id, index * 7));

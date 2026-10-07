@@ -3636,3 +3636,64 @@ compile errors credited. Final full Garage/types/client/build/boundaries/
 copy/topology and records. Complete82614848-exclusive span needs Claude
 independently of0fe2f57c..82614848 and all earlier exact spans; no box/archive/
 push/cleanup permission inferred. Real Linux/SQL capacity hold stays live.
+
+## 2026-10-07 — remaining shared-effect consumers / test-only first filter
+
+Review by: Codex (implementer first filter, not designated reviewer).
+Recorded by: Codex. Entire82614848-exclusive through this containing proof/
+record commit needs Claude, includingfb2a9488 predeclaration. Separate earlier
+0fe2f57c..82614848 and all earlier exact spans remain owed; no archival gate.
+
+Healthy987eab→1e8ca2 terminal0:24 selected native cases/326 unselected;
+isolated performance two/22 unselected pass. df4cdf→645bd5 types zero errors/
+warnings. Fiscal/Meters/Reputation each uses a populated decoder-admitted
+public arm (Reputation existing R9 node grammar), native Enter selection,
+arm-null at320/1280 with fact retained/removed, actual Desk selection and
+heading focus/negative tabindex. Later native Settings choice survives repeated
+null delivery, no intents/serious-critical axe. Twelve declarations, two
+engines; not live service/physical race/all-context/lifecycle/manual AT.
+
+Five independent compiling actual host faults, all terminate2:
+
+| Fault | Output | Fail/pass selected | Assertion |
+|---|---|---|---|
+| Fiscal arm-loss predicate omitted |728260|8/16|surface remains Fiscal, not Desk|
+| Meters predicate omitted |5ce14c|8/16|surface remains Meters|
+| Reputation predicate omitted |401927|8/16|surface remains Reputation|
+| Heading focus no-op |c688fb|24/0|actual nav/body, not Desk heading|
+| Desk tabindex removed |f7f5ec|24/0|native focus fails|
+
+Exact restoration66e771/bc50be: no host diff against82614848;
+SHA2563ccce9406c83d57be75f4d89a9cea7cd32ea3665eeb5df947c313ec910f24217.
+Driver4372677b22026fdd853b4a784d0e9dd9845e65d4f6dffece4b38b767d2f5705d.
+No product/API/copy/clock/balance/kernel/CI/Make/RFC-body change in range.
+
+Final immutable-source checks4b09cf→6809b1 terminal0: full native Garage
+350/350,83.94s, real60s idle retained; chained isolated performance two pass/
+22 unselected.3bf328→a6d53c terminal0: types zero errors/warnings, client
+9,814 passes/499 explicit browser skips (105 files pass22skip),214-module
+build unchanged UI/worker/CSS. Source boundary7component/4copy negatives,
+shell/UI10Go/11Svelte cosmetic negatives and topology13 negatives pass.
+412eb0→1795f8 terminal0:658 copy keys unchanged
+a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings, content manifest pass. No source/HEAD edits
+during live checks/history scan. Docs/ledger/inventory/plan/board/queue/
+checkpoint log reconciled; no checkbox/lifecycle/archive promotion.
+
+Next source candidate RP-342 recorded immediately, not a confirmed runtime
+defect: refresh catches first failure as offline while no-snapshot Desk
+renders loading; ShellRuntime start requests once and visibility lifecycle
+can request another read, not periodic startup polling. Initial path occurs
+before transport subscription/worker exists. Existing archived bootstrap
+retry contract is NOT authority for a new snapshot retry interface. Next
+TEST-ONLY truth audit must predeclare actual rejected/malformed/healthy reads,
+visible status/control/request census and existing lifecycle recovery before
+correction or new policy. Wrong guessed archived path game-ui.md search
+returned absent; corrected actual game-ui-screens.md inspected, no authority
+invented. No new empirical/owner decision resolved by source inspection.
+
+Full Linux/SQL/GS2-A4 remain capacity-held, cleanup question unanswered/no
+deletion/full-disk retry. All Firefox/actual zoom/manual AT/body/GS4/AC7/
+default-player/privacy/platform/numeric/full-nine-tier1.0/review holds remain.
+Goal active/progress, not complete/blocked; no push/deploy/mint/release/
+shortened-preview substitution.
