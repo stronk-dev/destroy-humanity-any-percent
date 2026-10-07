@@ -1,12 +1,14 @@
 # Repository alignment program
 
-This program is the repository-wide control plane for turning design ambition into proven user
-outcomes. It does not replace RFC-0000 or per-RFC planning. It exists because those records can be
-individually plausible while disagreeing with each other and with `HEAD`.
+This directory retains repository-wide audit evidence and cross-system routing. It does not
+replace RFC-0000 or per-RFC planning. **Marco's 2026-10-07 procedure direction supersedes the
+old per-change control-plane routine:** use RFC-0000's risk-based delivery procedure. Existing
+findings and review debt remain; historical inventories are not live completion gates.
 
 ## Authority chain
 
-Every material claim must travel through this chain without skipping a gate:
+The following describes the original audit's escalation route for unknowns, not mandatory
+steps for every fix, test or documentation change:
 
 ```
 observation / complaint
@@ -37,19 +39,15 @@ evidence prove outcomes. None substitutes for another.
 An archived RFC proves only the bounded behavior it specified. It does not automatically promote a
 larger product capability to proven integration.
 
-## Program gates
+## Current use
 
-1. Audit claims against the exact commit and, for hosted behavior, the exact remote run.
-2. Put every discovered defect, contradiction, unknown, and owner choice in the internal
-   `design/BACKLOG.md` and mirror repository/release findings in tracked `backlog.md` until D-002
-   establishes a durable shared store.
-3. Trace intent -> producer -> consumer -> real data/content -> executable witness.
-4. Predeclare measurements and negative controls before running them.
-5. Treat a fired criterion or negative result as completed evidence.
-6. Do not draft an RFC that silently decides a research or owner question.
-7. Mark only currently authorized, dependency-satisfied work `READY`.
-8. Close code, canonical docs, RFC/index state, plan, and ledgers transactionally.
-9. Preserve the cross-party review and full-range-union archival gates in `AGENTS.md`.
+1. Use real tests/runtime evidence for a capability claim, with its revision and limits.
+2. Keep defects/questions in `design/BACKLOG.md`; don't mirror them into the old interim ledger.
+3. Use the owning RFC's plan/log for detailed progress; route only cross-system dependencies here.
+4. Reserve research predeclarations for empirical decisions, not ordinary debugging or fixes.
+5. Record negative results honestly; do not decide unresolved owner questions by implementation.
+6. Update canonical docs for behavior, and the RFC/index only for real lifecycle changes.
+7. Keep independent cross-party review before archival; no tracker can substitute for it.
 
 ## Current audit coordinate
 

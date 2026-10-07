@@ -1,7 +1,9 @@
 # Record reviews — Claude-side review of Codex record commits
 
-The cross-party record-review flow: designated verdicts consume implementation ranges; Codex's
-docs-tier record commits (archival moves, blocker filings, plan-box flips) are consumed here.
+Historical record-review verdicts follow. Under Marco's 2026-10-07 procedure direction in
+RFC-0000, ordinary record/editorial commits need no separate designated pass. Behavior, normative
+specification and archival batches retain independent review of their complete range; include
+their records in that review instead of creating a parallel paperwork-review queue.
 
 ## 2026-08-07 — batch: both archival moves + six record filings — APPROVE (all eight)
 

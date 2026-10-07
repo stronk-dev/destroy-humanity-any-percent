@@ -4952,3 +4952,15 @@ owed. No checkbox/acceptance/archival/mint/push/owner/ruling/budget/CI promotion
 Full Docker-image/tmp/Linux/Firefox/AT/400%/release-image/clean-host and all
 author/privacy/numeric/endings/platform/full-nine-tier1.0 obligations remain.
 Goal active: measured findings are progress, not grounds to weaken release floor.
+
+## 2026-10-07 — Owner-directed delivery procedure simplification
+
+- Scope: RFC-0000 now owns risk-based verification; AGENTS/CLAUDE and planning entry points
+  reconcile to it. No new tracker, validator, product change or research protocol.
+- Checks: diff/authority/link review; no software suite warranted for this Markdown-only change.
+- Removes routine predeclaration commits, per-assertion mutations, mirrored narratives and
+  separate editorial-record reviews. Existing acceptance criteria, failures and review debt stay.
+- Review by: Codex (implementer first filter); Recorded by: Codex. Normative amendment follows
+  Marco's explicit direction; designated cross-party review of this batch remains pending.
+- Next: diagnose RP-364 in the Cosmetic driver and run the actual journey; one concise batch
+  record, without a separate research-predeclaration commit. No product completion claimed.

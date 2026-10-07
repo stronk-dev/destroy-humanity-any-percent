@@ -19,16 +19,20 @@ active work.
 ## Your workflow
 
 1. You are assigned an **active RFC** (check `rfc/README.md` for status).
-2. Create/resume `planning/<rfc-slug>/`: write `plan.md` (task breakdown + acceptance gates from the RFC), append to `log.md` every session.
+2. Resume the owning `planning/<rfc-slug>/plan.md`. Choose a coherent change and the smallest
+   meaningful verification for its risk under RFC-0000's delivery procedure. A routine fix does
+   not need a new RFC, research program or separately committed predeclaration.
 3. Implement. Missing spec = `DESIGN-GAP` in the log + propose a draft RFC; never improvise mechanics.
-4. Done = acceptance criteria green + `docs/` updated + RFC status set to `implemented` +
-   RFC and planning directories moved to their archives — all in the final change. After that,
-   `docs/` is canonical; archived RFCs are history.
+4. Record one concise batch outcome in the owning log. Update canonical docs when behavior
+   changes; update other tracking only when its status or next action actually changes.
+   Feature completion requires its acceptance criteria and designated review before archival.
+   Passing a focused check or updating a tracker does not complete a feature.
 
 ## Reading order (minimum to be productive)
 
 1. `rfc/0000-rfc-process.md` — the process (5 min).
-2. Your assigned RFC, fully, including its design refs.
+2. Your assigned RFC, fully when taking up a new feature; the relevant contract sections when
+   resuming a bounded fix. Read its relevant design references, not every research dossier.
 3. `design/00-vision.md` — pitch, pillars, anti-goals.
 4. `design/06-tech.md` — stack and architecture decisions. **Binding.**
 5. Skim `design/08-satire-flavor.md` §1 (voice rules) before writing ANY player-facing text.
@@ -59,14 +63,11 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 
 ## Working conventions
 
-- **Per-change review is mandatory, both directions.** Every implementation batch gets a recorded
-  diff review in its planning log *before* the next RFC acceptance — Claude reviews Codex's
-  batches, Codex reviews Claude's RFC/design commits (it already does). Milestone agent-audits
-  complement this; they do not replace it. A batch whose review found nothing still gets a
-  recorded "approved" line — the absence of a review entry means the review didn't happen, not
-  that it passed. (Instituted 2026-07-29 after the R1 batch initially received only a
-  spot-check; the review it then got found a latent cap-lowering policy gap the spot-check
-  missed.)
+- **Review coherent batches, not paperwork commits.** Behavior-changing batches and normative
+  specification amendments require designated cross-party review before acceptance or archival.
+  Claude reviews Codex implementations; Codex reviews Claude implementations/specifications.
+  Related fixes, tests and records may share one exact review range. Editorial docs and routine
+  log updates do not each require a separate review. See RFC-0000 for risk-based verification.
 
 - **Rulings reconcile the body, not just append.** When an RFC's rulings block resolves a blocker
   that contradicts the specification body, the SAME edit must fix the body text — a normative
@@ -81,30 +82,11 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
   commit range it consumed. Those cited ranges must union to the full implementation span being
   archived; uncovered edge commits remain unreviewed even when later dependent commits passed.
 
-- **Two review gates, both mandatory before archival (resolved 2026-08-05, owner ruling — option
-  c).** These are independent and BOTH required; neither substitutes for the other:
-  (a) **Range-union binds every review, delegated ones included.** A delegated or self review's
-  cited commit ranges must union to the full implementation span it claims to approve. An approval
-  that does not cover the span does not count *for the uncovered commits* — a green checkmark over a
-  range it never inspected is not coverage.
-  (b) **A designated independent adversarial pass is a mandatory archival gate.** No batch is
-  archival-eligible until a designated reviewer (not the implementer, not a delegated first-filter)
-  has adversarially reviewed it and its verdict cites the exact reviewed range. This holds
-  regardless of any delegated approval. The delegated/self review is a first filter that catches
-  cheap defects early; the designated pass is the gate that makes "approved" mean something.
-  Instituted after 8 consecutive batches in which the designated pass was the only review actually
-  covering the implemented range.
-  (c) **The designated pass is CROSS-PARTY: it is run by the OTHER agent (Claude reviews Codex's
-  implementations; Codex reviews Claude's RFC/design commits) — resolved 2026-08-06, owner ruling.**
-  A reviewer the IMPLEMENTER runs on its own side — however adversarial, and whatever it is named
-  (e.g. an in-house `Darwin`/independent-review tool) — is a self/delegated first-filter, NOT the
-  designated pass, and MUST NOT be recorded as it. **The implementer NEVER archives on its own
-  review.** It hands off "ready for designated review + archival" and waits for the cross-party
-  reviewer's verdict; only then does the archival move (status→implemented, move to `archive/`, docs
-  canonical) happen. Instituted after the Relevance Harness was archived on a `Review by: Darwin,
-  Recorded by: Codex` verdict — a recorder-relabeled delegated review — bypassing the cross-party
-  gate; a retroactive Claude-side pass validated the code, but the archival was procedurally
-  premature.
+- **Independent review remains an archival gate.** The implementer checks its own diff and runs
+  relevant tests, but cannot call that designated approval or archive on it. The other party's
+  verdict must cover the complete implementation range, including tests and closeout records;
+  multiple verdicts may cover that range together. No uncovered commits or recorder-relabeled
+  self-reviews. Existing outstanding reviews may be consolidated, never silently marked approved.
 
 - **Language/tooling:** Go code passes `gofmt` + `go vet`; TS is strict-mode; tests accompany every non-trivial change. The golden-vector suite and (once it exists) the balance-harness pacing targets are acceptance gates.
 - **Small, reviewable changes.** One system per PR/commit. Reference the design doc section your change implements in the commit message (e.g. `economy: implement generator cost curve (design/02 §2.1)`).
@@ -115,11 +97,10 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 
 ### Evidence discipline (ruled in-session after real failures — binding on both agents)
 
-1. **A check that cannot fail is not a check.** Every gate, oracle, floor, and assertion ships with
-   a demonstrated failing case. Defects have repeatedly survived because an assertion passed on
-   broken code (a `toContain` prefix satisfied by the defect; a golden vector that discriminated
-   nothing; a browser test exiting 0 while throwing uncaught errors; an oracle structurally unable
-   to falsify its own subject).
+1. **Test the changed behavior.** A bug fix needs a regression that reproduces the bug on the
+   old behavior and passes on the correction. New behavior needs representative success and
+   failure cases. Use deliberate severing for a new critical acceptance oracle when ordinary
+   regression/negative cases do not establish discrimination, not for every assertion or edit.
 2. **Run it, don't read it.** Reviews that bypassed a check and executed the thing caught an
    architecture-dependent numeric divergence, a cache-masked red baseline, and a vacuous
    acceptance oracle. Use `-count=1` for any gate claim; warm caches have hidden a red tree.
@@ -147,14 +128,10 @@ useful batches instead of asking for permission one invocation at a time:
 - non-destructive Git bookkeeping (`git status`, `git diff`, `git add`, and intentional
   intermediate `git commit`s).
 
-A plan checkbox (`[x]` in planning/*/plan.md) may flip only in a commit that carries the test
-exercising the claimed behavior — a flipped box with no test is a review finding of the same
-severity as an unreviewed archive. **Refinement (2026-08-05): the impl+record two-commit pattern is
-permitted** — the box may flip in a same-range planning/record commit PROVIDED the exercising test
-already landed in an earlier commit of the SAME designated-review range. The intent of the rule is
-to forbid a "done" claim with no proof anywhere in the reviewed span; it is not violated when the
-proof demonstrably exists one commit earlier in the same range. A flip whose exercising test is
-absent from the entire reviewed range remains a high-severity finding.
+A behavior-completion checkbox needs a named executable test and an actual passing result for
+the reviewed revision. Existing tests may be reused; do not add a duplicate test merely to put
+test bytes in the checkbox commit. New or corrected tests belong in the reviewed batch. Task
+completion is not independent review, release approval or proof of a larger workflow.
 
 History rewriting (rebase/amend of committed work) is permitted for exactly one purpose: correcting
 a protocol-violating commit — a wrong subject (`BALANCE-CHANGE:`/`CONSTANTS-IDENTITY:`
@@ -196,3 +173,10 @@ accept missing Phase-0 contracts before starting from the roadmap.
 For the long-term 1.0 objective, read `planning/roadmap-1.0.md` and its append-only checkpoint log.
 That board tracks the whole product through Transcendence; it never substitutes for an accepted
 RFC or the current per-RFC implementation plan.
+
+## Procedure authority
+
+Marco's 2026-10-07 direction replaces the old per-edit audit/predeclaration/severing and mirrored
+record routine with RFC-0000's risk-based delivery procedure. It applies to both agents
+(`CLAUDE.md` links here). Keep historical evidence intact; do not waive a feature's explicit
+acceptance criteria, author/owner decisions, existing review debt or the full nine-tier 1.0 floor.
