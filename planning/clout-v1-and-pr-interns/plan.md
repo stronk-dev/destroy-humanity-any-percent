@@ -448,3 +448,42 @@ separate scheduler's exact-v18 guard(RP-310); paired outputs remain unproved.
 No expansion into scheduler/terminal code was made. Next separately predeclare
 that correction/terminal population. Cold gates/limits in log and dossier; no
 checkbox or full-RFC promotion. Entire new span after974c1a45 needs Claude.
+
+## RP-310 — actual v19 scheduler admission correction
+
+Predeclared at clean685debe7. Accepted Clout CV4 is authority: v19 extends
+the active-play Company state and actual replay must execute. Correct ONLY
+applyActiveSchedule's `wireVersion!==18` admission to `<18`, matching Go.
+Keep catalog, before/after cursor/sequence, attended clock, expiry, draw and
+compound-schedule validations unchanged. Real behavior correction requires
+kernel0.3.163→0.3.164 and both mirrors in the same runtime commit. Terminal
+exact-v18 guard remains a separate source finding, NOT fixed in this range.
+
+Keep all24 actual logged producer cases and39existing TS declarations intact.
+Add exactly9scheduler refusals: quiet/online3114, boosted/offline59999,
+combined/online90000000, each with before_sequence+1,
+before_next_opportunity_attended_ms+1, or after_sequence+1. First two faults
+must fail `active schedule state mismatch`; third must fail
+`active scheduler result mismatch`. Require unchanged complete encoded initial
+state after every refusal, including the25h catchup/rollback arm. Missing
+selected cases invalidates the census; no private scheduler export/copied code.
+
+Run all48TS declarations and complete Go observer. Any newly exposed payout,
+receipt/event/poststate mismatch remains red and is ledgered before another
+scope; do not restamp outputs or loosen assertions. Go report re-observation
+may change only selected runtime/observer source pins: independently compare
+ALL prior outputs/bundle/profile/payload/evidence/negative count with685debe7.
+Historical source/artifact retained there; earlier research corpora unchanged.
+
+Demonstrate original scheduler guard and an after-sequence-validation severing
+mutant in actual runtime. Read exact failures, do not equate an already-red
+suite exit with a working oracle. Restore byte-exactly, all handles terminal
+before any edits. Cold relevant Go including kernel, full client/types/vet,
+native research and topology; existing history/AMD64/hosted failures stay open.
+Kernel source/mirror changes are honest, not a repair of RP-131 history.
+
+Synchronize docs/ledger/queues/roadmap/log, self first-filter exact new span,
+then Claude designated review INCLUDING all record edges. No numeric policy,
+save/migration/balance/copy/RFC body/CI change, checkbox/status promotion,
+whole-Clout acceptance, archival/mint/push/deploy or release call. Full1.0
+goal active; RP-308 meaning/owner delegation still unanswered.

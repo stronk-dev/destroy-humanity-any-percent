@@ -1284,3 +1284,13 @@ agree across docs/ledger/queues/roadmap. No checkbox or archival/status promotio
 Claude must review ENTIRE new span after974c1a45 INCLUDING this following edge;
 all older independent spans remain. Next accepted-CV4 scheduler/terminal work
 must be separately scoped; proper full1.0 goal remains active.
+
+### RP-310 scheduler start — accepted CV4, new independent range
+
+At clean685debe7, previous goal turn progress: ordinary presence repair is
+committed and discriminator-tested, and actual calls expose scheduler rejection.
+Predeclare ONLY scheduler admission predicate, honest kernel163→164, nine
+before/after-evidence refusals, two actual mutations and unchanged24outputs
+in plan.md. Terminal exact-v18 remains separately unexecuted source finding;
+this scope does not guess a full-terminal fix or waive accumulated-state red.
+No measurement for the corrected scheduler population has yet run.
