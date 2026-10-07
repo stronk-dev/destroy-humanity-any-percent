@@ -33,3 +33,12 @@ designated finding B (`ba8ca65`).
   and sequential Account/Gameserver Postgres populations.
 - [x] Record an exact-range Codex first-filter and hand this API Foundation range plus Q-002's
   test-only remainder to Claude. Do not claim public endpoints, surface completion, or archival.
+
+## 2026-10-07 — existing public board read failure
+
+RP-367 locally repaired within A3/A6/C13; row-iteration regression and affected package tests/vet
+pass. The normal composed lane now requires the existing real-Postgres board ranking/page case
+to execute, not skip. It passes, but the whole lane is RED at the separate Pitch account-limiter
+failure RP-368. Next: diagnose actual request cadence without changing limits/retry semantics;
+obtain designated review of this repair. Catalog descriptors, verification readers, generated
+client, privacy/acceptance and archival remain incomplete.

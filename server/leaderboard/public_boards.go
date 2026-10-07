@@ -77,6 +77,10 @@ func (repository *Repository) PublicBoardRankingKind(ctx context.Context, catego
 		}
 		hashes = append(hashes, hash)
 	}
+	if err := rows.Err(); err != nil {
+		_ = rows.Close()
+		return "", err
+	}
 	if err := rows.Close(); err != nil {
 		return "", err
 	}

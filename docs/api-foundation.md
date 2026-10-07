@@ -101,6 +101,8 @@ while each surface still mounts from its own registry.
   accepted into the epoch. Timed categories (`rta`/`attended`) are `time_ms` and the untimed
   valuation category is `magnitude`. `count` is declared for the union, but no category produces
   it yet. Catalogs that disagree, or a stored catalog that cannot load, are internal invariants.
+  The accepted-hash result must complete successfully: a row-iteration failure is propagated
+  as a server failure, never resolved as an unknown category from an incomplete result.
 - **Items:** `{founder_id, key, rank, run_id, verified_at, world_first}`, where `key` is the closed
   union `{kind:"time_ms"|"count",value}` / `{kind:"magnitude",exponent,quantized_mantissa}`.
   `rank` is the competition rank over the whole board.

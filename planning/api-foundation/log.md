@@ -719,3 +719,29 @@ terminal, clean checkpoint sought, no Docker deletion or push. Review by: Codex
 (first-filter only). Recorded by: Codex. Claude independently pending, prior
 Account observer 3121a376..29e1ff02 and all earlier ranges remain separate.
 - Gaps 6 to 10 are in the entries above.
+
+## 2026-10-07 — preserve interrupted public-board reads; composed gate stays red
+
+Accepted A3/A6/C13. RP-367: PublicBoardRankingKind checked QueryContext and Close, not Rows.Err.
+Driver-level regression (78849) reproduces two errors falsely returned as unknown category:
+Rows.Next failure and injected context.Canceled. A completed-empty control passes. These are
+injected database/sql row errors, not an actual network outage or real cancellation study.
+Four-line correction preserves the original error before loading/resolving any catalogs, so
+the existing BoardHandler error branch returns server failure instead of category-not-found.
+No schema/metadata/pin, balance, kernel or auth policy change.
+
+Cold leaderboard/publicread/publicapi (9787) and selected vet PASS. Added the existing
+TestPublicBoardRankingAndPagesIntegration to the composed preflight with mandatory PASS marker.
+Actual Postgres case passes (0.16 s): pinned ranking kinds, unknown controls, filtered/tied pages,
+magnitude ordering, exactly-full page and unloadable-catalog refusal. Other database cases and
+eight refresh populations pass too. The whole make test-game-ui-composed (37452) then FAILS at
+Pitch command HTTP429 rate_limited/account. No cosmetic population executes in this run and no
+whole-green claim is made; RP-368 retains the observed separate failure. Prior source's full
+passes are not substituted. No retries, delays, limit increases or assertions were changed.
+
+Node syntax and diff checks PASS; all handles terminal before records. Review by: Codex
+(first-filter only). Recorded by: Codex. New repair/test/binding/docs/records range starts after
+`a4bae5af`; designated Claude review remains, independently of older ranges. No archive or push.
+Next: measure the actual authenticated request pattern behind RP-368; keep its root gate red
+until explained and corrected under accepted authority. Catalog owner descriptors, raw-evidence
+privacy/reader work, draft browser policy and full CI/nine-tier 1.0 remain separate obligations.

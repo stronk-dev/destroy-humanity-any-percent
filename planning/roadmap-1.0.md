@@ -5,7 +5,14 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint (2026-10-07):** eight refresh API cases now execute against
+**Current checkpoint (2026-10-07):** fixed RP-367's public-board read error masking; focused
+regressions/package checks and real-Postgres ranking/pages pass. The full composed lane is
+**RED** at a separate Pitch `429 rate_limited/account` (RP-368), before the cosmetic child.
+[API Foundation plan/log](api-foundation/plan.md) owns the repair, review and next diagnosis.
+Do not increase the limiter or retry to conceal the failure. Full CI and nine-tier release
+obligations remain open; browser renewal has not been accepted.
+
+**Preceding checkpoint (2026-10-07):** eight refresh API cases now execute against
 real Postgres in the normal composed lane, including committed rotation with a lost reply;
 retrying the consumed token revokes the family. The actual missing-DB control is rejected. The
 whole player journey also passes. [Account plan/log](account-and-session-bootstrap/plan.md)

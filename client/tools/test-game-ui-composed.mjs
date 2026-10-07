@@ -60,8 +60,9 @@ resetTestDatabase();
 const persistedTests = [
   "TestFiscalProjectionMatchesPersistedHarvestIntegration",
   "TestFirstContentEpochPersistedBoundaryIntegration",
+  "TestPublicBoardRankingAndPagesIntegration",
 ];
-const persistedChecks = spawnSync("make", ["test-go", "GO_PACKAGES=./gameui ./production", `GO_TEST_FLAGS=-count=1 -v -run '^(${persistedTests.join("|")})$$'`], {
+const persistedChecks = spawnSync("make", ["test-go", "GO_PACKAGES=./gameui ./production ./leaderboard", `GO_TEST_FLAGS=-count=1 -v -run '^(${persistedTests.join("|")})$$'`], {
   cwd: repositoryRoot,
   env: { ...process.env, TEST_DATABASE_URL: testDatabaseURL },
   encoding: "utf8",
