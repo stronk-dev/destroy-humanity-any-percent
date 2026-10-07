@@ -14,7 +14,7 @@ formatting is unchanged by RP-387's axis-only display correction. One combined c
 RP-388; a diagnostic pass does not close that failure. Full CV9, adopted content and designated
 review remain. Expanded70861 is RED at the existing locked-Pitch notice (RP-389), before either
 Cosmetic variant; later56007 executes all three populations successfully. Garage's log owns a
-controlled offer-preemption route and pending oracle correction, not unique cause or reliability
+controlled offer-preemption route and local oracle correction, not unique cause or reliability
 closure. RP-382's activation/SQL/action-sequence regression checks now
 separate historical provenance from current outcomes. Full non-provenance bytes remain exact;
 recorded artifacts are unchanged. Real-DB research population, TS companions and vet pass;

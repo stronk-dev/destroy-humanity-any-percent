@@ -237,8 +237,12 @@ remain; no timeout grows. Recorded local expanded-run failure RP-389 stops in th
 after a correct locked-Pitch409 but before its visible notice, so that run does not execute
 the later variants. A subsequent expanded run executes all three populations successfully;
 it does not close RP-389 or establish reliability/hosted latency/green. Controlled native host
-evidence demonstrates offer preemption removing Pitch's notice; the oracle's lifecycle handling
-remains open. Failure diagnostics now expose the mounted public surface/status context.
+evidence demonstrates offer preemption removing Pitch's notice. The driver now handles that
+interruption through visible Decline/navigation and fresh Start consent, bounded to three
+submissions. Each must return the exact409 pair; an offer alone cannot pass the required visible
+mounted-launcher notice. Individual30s waits remain. The corrected target passes locally with
+no declines, so its post-response re-consent branch is not real-service proof yet. Failure
+diagnostics retain mounted public context; original-run attribution/reliability remain open.
 On local ARM64 hosts, use
 `make test-game-ui-composed GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f compose.game-ui-arm64.yml'`;
 hosted x86 CI uses the default Compose file. RP-172's test-only actionability correction

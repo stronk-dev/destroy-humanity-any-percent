@@ -87,7 +87,10 @@ queue and current verification, not a claim to have rerun every acceptance crite
   locked-Pitch409, missing visible notice (RP-389); later variants do not run in that attempt.
   A controlled native host test demonstrates a valid preemption route: an Exit offer unmounts
   Pitch before or after its notice renders. It is not unique attribution of70861. Public failure
-  diagnostics retain lifecycle context; oracle handling remains to repair. No reliability,
+  diagnostics retain lifecycle context. The driver now handles that interruption without
+  skipping its visible-notice gate; root23009 exits0 through all three journeys, with no
+  declines in that actual run. Post-response re-consent remains controlled-boundary evidence.
+  No unique original-run attribution, reliability,
   hosted-green or adopted PR content claim. One selected run passed PR but failed care equality
   (RP-388); its cause remains untraced, with precise public failure metadata now retained.
   The Garage/Clout/Cosmetic logs own evidence and pending review.

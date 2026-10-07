@@ -7,7 +7,15 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-08): all three expanded composed populations execute and pass
+Current checkpoint (2026-10-08): the locked-Pitch witness now handles post-response offer
+preemption through visible Decline/navigation and fresh DOM Start, but still requires an exact
+409 and a visible mounted-launcher notice to pass. Native observer/host controls24 and full
+three-journey root23009 pass with exit0. That real run has no offer decline, so post-response
+re-consent remains controlled-boundary evidence, not a uniquely traced70861 fix. RP-389 remains
+open on attribution/reliability; designated review remains. Next: consolidated review and
+accepted integration work, preserving recurrence diagnostics rather than rerunning for a seed.
+
+Preceding checkpoint: all three expanded composed populations execute and pass
 locally56007, including the unminted Clout purchase/SQL variant. Earlier locked-Pitch notice
 failure RP-389 remains open: a controlled native host test proves that an Exit offer correctly
 unmounts the launcher before or after the refusal, while an unconditional notice wait assumes

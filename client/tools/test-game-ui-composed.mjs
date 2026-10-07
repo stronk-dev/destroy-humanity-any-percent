@@ -10,6 +10,7 @@ import { productionClientFiles, productionClientProof } from "./production-clien
 import { assertOpportunityClaimEffect, assertOpportunityReadStatus } from "./opportunity-claim-proof.mjs";
 import { parents as refreshTests, refreshPopulationObserver } from "./observe-refresh-population.mjs";
 import { composedMode, observeManualBudget } from "./observe-manual-budget.mjs";
+import { observeLockedPitchView } from "./pitch-locked-view.mjs";
 
 const mode = composedMode(process.argv.slice(2));
 
@@ -674,46 +675,57 @@ async function playPitchThroughUI(page, accessToken) {
   await nav.click();
   await page.locator('main[data-surface="minigame_session"]').waitFor({ state: "visible", timeout: 30_000 });
 
-  // Locked first: the real server answers 409 not_eligible/fiscal_unlock_required
-  // and the surface stays on the launcher with the typed reason.
-  const lockedCreate = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 }).catch((error) => error);
-  try {
-    let clicked = false;
-    for (let offers = 0; offers < 3 && !clicked; offers += 1) {
-      const action = await clickReadyPitchControl(page, "start");
-      if (action === "offer") await declinePitchOffer(page, "The Pitch", "minigame_session");
-      else clicked = true;
+  // Locked first: every submitted Start must get the exact typed refusal.
+  // Lifecycle offers may unmount the launcher (GS0.4). Decline visibly and
+  // submit fresh player consent; an offer alone never passes the notice gate.
+  let lockedNoticeObserved = false;
+  let lockedStarts = 0;
+  for (let attempts = 0; attempts < 3 && !lockedNoticeObserved; attempts++) {
+    const lockedCreate = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 }).catch((error) => error);
+    try {
+      let clicked = false;
+      for (let offers = 0; offers < 3 && !clicked; offers += 1) {
+        const action = await clickReadyPitchControl(page, "start");
+        if (action === "offer") await declinePitchOffer(page, "The Pitch", "minigame_session");
+        else { clicked = true; lockedStarts++; }
+      }
+      if (!clicked) throw new Error("locked Pitch Start was repeatedly preempted by Exit offers");
     }
-    if (!clicked) throw new Error("locked Pitch Start was repeatedly preempted by Exit offers");
+    catch (error) {
+      throw new Error(`locked Pitch control could not be clicked; surface=${await page.locator("main").getAttribute("data-surface")} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))} trace=${JSON.stringify(await page.evaluate(() => globalThis.__composedPitchActionTrace))}`, { cause: error });
+    }
+    const locked = await lockedCreate;
+    if (locked instanceof Error) {
+      throw new Error(`locked Pitch create emitted no response; surface=${await page.locator("main").getAttribute("data-surface")} minigame_responses=${JSON.stringify(minigameResponses)} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))} trace=${JSON.stringify(await page.evaluate(() => globalThis.__composedPitchActionTrace))}`, { cause: locked });
+    }
+    const lockedBody = await locked.json();
+    if (locked.status() !== 409 || lockedBody.category !== "not_eligible" || lockedBody.detail !== "fiscal_unlock_required") {
+      throw new Error(`locked Pitch create was not the typed fiscal rejection (${locked.status()}): ${JSON.stringify(lockedBody)}`);
+    }
+    try {
+      const view = await page.evaluate(observeLockedPitchView, { budgetMs: 30_000 });
+      if (view === "offer") {
+        await declinePitchOffer(page, "The Pitch", "minigame_session");
+      } else if (view === "notice") lockedNoticeObserved = true;
+      else throw new Error("unknown locked Pitch observation");
+    } catch (error) {
+      // Capture the mounted lifecycle boundary, not credentials, full responses
+      // or private state. A valid HTTP rejection alone does not prove its notice.
+      const dom = await page.evaluate(() => {
+        const main = document.querySelector("main");
+        return { surface: main?.getAttribute("data-surface"), busy: main?.getAttribute("aria-busy"),
+          headings: [...(main?.querySelectorAll("h1") ?? [])].map((item) => item.textContent?.trim()),
+          statuses: [...(main?.querySelectorAll('[role="status"], [role="alert"]') ?? [])].map((item) => item.textContent?.trim()),
+          pitchMounted: Boolean(main?.querySelector(".minigame-session")),
+          offerMounted: Boolean(main?.querySelector("#offer-heading")),
+          trace: globalThis.__composedPitchActionTrace };
+      });
+      throw new Error(`locked Pitch rejection notice missing: ${JSON.stringify({ dom,
+        response: { status: locked.status(), category: lockedBody.category, detail: lockedBody.detail }, snapshotRevisions })}`, { cause: error });
+    }
   }
-  catch (error) {
-    throw new Error(`locked Pitch control could not be clicked; surface=${await page.locator("main").getAttribute("data-surface")} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))} trace=${JSON.stringify(await page.evaluate(() => globalThis.__composedPitchActionTrace))}`, { cause: error });
-  }
-  const locked = await lockedCreate;
-  if (locked instanceof Error) {
-    throw new Error(`locked Pitch create emitted no response; surface=${await page.locator("main").getAttribute("data-surface")} minigame_responses=${JSON.stringify(minigameResponses)} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))} trace=${JSON.stringify(await page.evaluate(() => globalThis.__composedPitchActionTrace))}`, { cause: locked });
-  }
-  const lockedBody = await locked.json();
-  if (locked.status() !== 409 || lockedBody.category !== "not_eligible" || lockedBody.detail !== "fiscal_unlock_required") {
-    throw new Error(`locked Pitch create was not the typed fiscal rejection (${locked.status()}): ${JSON.stringify(lockedBody)}`);
-  }
-  try {
-    await page.getByText("Locked. Unlock it with Fiscal credit first.", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
-  } catch (error) {
-    // Capture the mounted lifecycle boundary, not credentials, full responses
-    // or private state. A valid HTTP rejection alone does not prove its notice.
-    const dom = await page.evaluate(() => {
-      const main = document.querySelector("main");
-      return { surface: main?.getAttribute("data-surface"), busy: main?.getAttribute("aria-busy"),
-        headings: [...(main?.querySelectorAll("h1") ?? [])].map((item) => item.textContent?.trim()),
-        statuses: [...(main?.querySelectorAll('[role="status"], [role="alert"]') ?? [])].map((item) => item.textContent?.trim()),
-        pitchMounted: Boolean(main?.querySelector(".minigame-session")),
-        offerMounted: Boolean(main?.querySelector("#offer-heading")),
-        trace: globalThis.__composedPitchActionTrace };
-    });
-    throw new Error(`locked Pitch rejection notice missing: ${JSON.stringify({ dom,
-      response: { status: locked.status(), category: lockedBody.category, detail: lockedBody.detail }, snapshotRevisions })}`, { cause: error });
-  }
+  if (!lockedNoticeObserved) throw new Error("locked Pitch notice never observed after bounded offer preemption handling");
+  console.log(`composed locked Pitch: ${lockedStarts} DOM Start consent(s), exact HTTP409 pair and visible mounted-launcher rejection: PASS`);
 
   await unlockPitchThroughFiscalUI(page);
   const beforeSession = await founderState(accessToken);

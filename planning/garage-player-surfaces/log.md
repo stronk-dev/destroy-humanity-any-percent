@@ -6284,3 +6284,31 @@ Review by: Codex (implementer first filter); Recorded by: Codex. Exact range aft
 through this test/diagnostic/records batch needs designated review. No acceptance/archive/push.
 Next: repair the composed oracle's lifecycle handling while retaining exact typed refusal and
 a visible mounted-launcher notice requirement; collect public failure metadata on recurrence.
+
+## 2026-10-08 — preemption-aware locked Pitch witness
+
+The driver now waits for either the exact visible notice in the mounted Pitch status region
+or a visible Offer heading. An offer is an interruption, never success: visible Decline and
+Pitch navigation precede fresh DOM Start consent, and every submitted Start must receive the
+same exact409 pair. At most three submitted attempts; all individual30s waits remain bounded.
+Missing/wrong responses, missing notices while mounted, or repeated preemption still fail.
+This extends the existing pre-Start offer handling to post-response preemption under GS0.4;
+no product retry, copy, schema, fixture, Actions timeout or production source change.
+
+The exact page.evaluate observer runs in native browser controls: visible notice/offer pass;
+missing/prefix/hidden/transparent-parent/wrong-region/wrong-surface/hidden-or-missing-offer,
+duplicate notice and invalid/expanded-budget controls reject. Final75638 passes24 executions
+(observer22 plus actual host's two-order test2);178 unrelated cases deselected. Initial50238
+passes20 before the transparent-parent case, not substituted for the final population.
+Actual root23009 exits0: assets5, refresh8, required DB parents7 and all three service/browser
+journeys pass. Main101requests/12.769s, default Cosmetic74/9.244s, axis variant91/7.955s.
+The real main path observes one locked Start and zero offer declines: it does not exercise
+the new post-response decline/re-consent branch. Controlled DOM/host evidence proves the
+interruption boundary, not unique attribution of70861 or general reliability. RP-389 stays
+open on those limits; RP-388 remains untraced. Syntax/diff pass; DB103.2MiB used/7.7GiB free.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after `fa985870`
+through this driver/helper/tests/docs/records batch needs designated review. No archival,
+hosted-green or release claim. Next: retain recurrence diagnostics and consolidate this
+related review range; continue accepted API catalog HTTP integration, not reruns for a lucky
+preemption seed. Full numerical/rights/access/clean-host/later-tier obligations remain.
