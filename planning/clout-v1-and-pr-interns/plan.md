@@ -584,3 +584,39 @@ changes onlylogged1/terminal2sourcepins. Client9568/340skip andbuild/types/vet/
 topology/native8research pass; original27GoAC6/history/AMD64/hosted held. Next
 separately scope pre-v19→v19 activation andaction/buff/mode seams. Whole new
 span after0c4d6481 including records needs Claude; no fullCV4/Clout promotion.
+
+## CV4/AC7 — pinned v18→v19 activation observation
+
+Predeclared at clean65c3a34c. Test-only range under accepted CV4/AC7, not a
+new release-floor ruling. Use actual served epoch8 bytes/hash as current and
+the existing rehashed, UNMINTED axisContentBundle as next; no cap override.
+Six admitted synthetic Tier1/run2 cases: fresh/veteran Founder × online Exit
+gaps0/3114/90000000ms. One purchased beige generator, no old PR/attainment.
+Actual old manual count1/window1000 at +1000ms, actual terminal builders and
+ApplyLoggedExit, then next-run manual count10/window1000 at +1000ms and buy
+exact1 beige at +1001ms. No cash injection between commands. Observe complete
+receipts/events/states; old Company stays18, next19/run3 starts empty/score0,
+purchase re-attains first-purchase grant2 without lifetime duplicate. Compare
+complete Go/TS transitions including TS-created continuity and real restores.
+No admission/output repair by demotion, tolerance or rewritten catalogs.
+
+One veteran/gap3114 Postgres control uses actual two epochs, old genesis/pin
+created BEFORE next epoch is seeded; Service.Handle old/manual/Exit/new actions.
+Before normal Exit, all14 existing Store write-stage faults call the LIVE
+service Exit resolver through the test-owned callback; each must reach its
+exact injected sentinel and leave all12 written tables/full heads unchanged.
+No synthetic revision padding: this proves rollback, NOT retention pruning.
+Normal Handle must commit once, exact retry changes no row; old/new Company
+and independent Founder history replay verified with their actual pinned hash.
+The declared disposable Compose database only; missing URL is visible skip.
+
+New observers/corpus/dossier only. Explicit corpus writer and selected source
+SHA pins. Test census omission and forged next poststate must fail; then actual
+Go next floor-reset and TS next floor-reset severing must be caught (compile
+real mutants, restore exact source after handles terminate). If these mutations
+reach a different refusal, report that evidence rather than pretend a particular
+assertion fired. Any admission/deeper failure stops publication and is recorded.
+No production repair in this range. Cold selected Go/full client/types/vet/native
+Postgres checks. Original27AC6, RP-308, historical kernel/AMD64/hosted holds stay.
+Synchronize records/self first-filter; Claude designated range including edges
+still mandatory. No checkbox/status/archival/mint/push/deploy/release decision.

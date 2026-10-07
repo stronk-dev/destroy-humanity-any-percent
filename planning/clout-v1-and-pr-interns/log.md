@@ -1504,3 +1504,14 @@ preceding independent spans remain separate. No checkbox/status/archival claim.
 Initial uncommitted review-record placement matched an earlier repeated line;
 diff inspection caught it and the record moved to EOF before commit. Existing
 log bytes must remain an exact prefix; no prior entry is edited/reordered.
+
+### CV4/AC7 activation population predeclaration
+
+Resumed clean65c3a34c. Read-only grounding confirmed actual next-bundle
+resolution, foundation reset, existing Store fault seam and replay readers.
+Next accepted test-only population is recorded in plan.md: six actual pinned
+epoch8 v18→unminted v19 sequences with fresh/veteran lifetime state; one actual
+two-epoch Service/Store/Postgres sequence with fourteen full-row rollback
+faults, retry and old/new/Founder replay. No experiment or mutation has run.
+Observer failure is a finding, not permission to change runtime/balance/body.
+Old source/corpora unchanged. All previous cross-party and release holds stay.
