@@ -2189,3 +2189,29 @@ Complete new span starts5fbf4cff exclusive through final records and requires
 Claude separately from RP-332cc62cea8..5fbf4cff, auditfc911784..cc62cea8 and
 all earlier ranges. No checkbox/status/archive/mint/owner-copy/push. Whole
 nine-tier1.0/engine/AT/author/body/default-player/platform gates stay intact.
+
+## 2026-10-07 — RP-329 typed-clean admission baseline reproduced
+
+Predeclaredbff97b20, no production edits. 56 new TS declarations derived
+from balance/meters/first-content.json, no copied ID list. Existing positive
+v4 fixture now has the complete set; its original out-of-range/undeclared-band
+negative assertions retain their expected domain error and all unaffected
+rows. No assertion relaxed or existing check removed.
+
+Root typecheck23579 terminal0, zero errors/warnings. Root full client94222
+terminal2:27 failing admission assertions,9,787 passing tests/446 explicit
+browser skips (one failing file/104 passing/22 skipped). All11 missing IDs,
+all11 count-preserving unknown replacements, extra row, three subsets and
+non-mutating incomplete-input refusal fail because current decoder admits
+them. The other29 new controls pass, including complete/null data, each22
+value bounds, three unsorted cuts and exact-field failures. Failure text is
+actual “expected function to throw”; not malformed fixtures/import/compiler
+or unrelated assertion failures. Population6.07s.
+
+Cold root Go17490 -count=1 -v scoped TestMetersProjectionUsesCompleteCatalogIDs
+terminal0: actual pinned projectMeters produces exactly catalog IDs and rejects
+each11 missing saved values,12 parent/subtest PASS reports,0.237s. No SQL
+selected or DB proof claimed. RP-329 ledger updated. Test-first checkpoint
+only tests/records; production completeness repair follows. Complete new
+range after5fbf4cff through following records needs Claude independently of
+RP-332cc62cea8..5fbf4cff/auditfc911784..cc62cea8/all prior spans.

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import meterSource from "../../balance/meters/first-content.json";
 
 import { eraForSnapshot, parseGameUISnapshot, toShellSnapshot } from "../src/game-ui/contracts";
 import { decodeGameUIEvent, decodeGameUISystemEvent } from "../src/game-ui/events";
@@ -9,6 +10,7 @@ import { requirePresentationConstant } from "../src/game-ui/presentation";
 import { renderPrestigeTermRows } from "../src/game-ui/prestige-terms";
 import { parseLocalTiming, priorPersonalBest, RTATimer, timingStorageKey, writeLocalRunTiming } from "../src/game-ui/timing";
 import { decodeTransportEnvelope } from "../src/transport";
+import { REQUIRED_METER_IDS } from "../src/meters/catalog";
 
 const snapshot = {
   constants_hash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -201,6 +203,12 @@ describe("Game UI decoded event boundary", () => {
 });
 
 describe("Game UI snapshot v4 features (GS0.1)", () => {
+  // Complete rows come from the existing artifact, not a second ID list.
+  const meterRows = meterSource.meters.map((row) => ({
+    band_id: row.bands.filter((band) => band.floor_value <= row.initial_value).at(-1)!.id,
+    bands: row.bands.map((band) => ({ band_id: band.id, floor_value: band.floor_value })),
+    max: row.max_value, meter_id: row.id, min: row.min_value, value: row.initial_value,
+  }));
   const features = {
     achievements: { rows: [{ achievement_id: "achievement.a", condition_scope: "run", copy_key: "achievement.a", earned: "run", proof_kind: "provenance", score_grant: 2 }], score: { lifetime: 0, run: 2 } },
     active_play: null,
@@ -209,7 +217,7 @@ describe("Game UI snapshot v4 features (GS0.1)", () => {
       hoard: { cap_credits: 100, preview_ppm: 0, reason_note: "next_run" },
       period: { auto_ms: 300, early_ms: 100, early_success_ppm: 500_000, guaranteed_ms: 200, opened_wall_ms: 1_800_000_000_000, seq: 0 },
       sweep_preview: { credit_after: 3, credited: 0, periods: 0, saturated: false }, unlocks: [{ cost: 3, owned: false, unlock_id: "minigame.pitch" }] },
-    meters: { meters: [{ band_id: "low", bands: [{ band_id: "low", floor_value: 0 }, { band_id: "high", floor_value: 70 }], max: 100, meter_id: "doom.probability", min: 0, value: 50 }] },
+    meters: { meters: meterRows },
     minigames: { rows: [{ active_session: false, human_content_locked: false, minigame_id: "pitch", unlocked: false }] },
     pets: null,
   };
@@ -224,12 +232,92 @@ describe("Game UI snapshot v4 features (GS0.1)", () => {
   it("fails closed on malformed arms", () => {
     const bad = (patch: Record<string, unknown>) => ({ ...v4, features: { ...features, ...patch } });
     expect(() => parseGameUISnapshot(bad({ active_play: {} }))).toThrow(/null/);
-    expect(() => parseGameUISnapshot(bad({ meters: { meters: [{ ...features.meters.meters[0], value: 101 }] } }))).toThrow(/safe integer/);
-    expect(() => parseGameUISnapshot(bad({ meters: { meters: [{ ...features.meters.meters[0], band_id: "mid" }] } }))).toThrow(/not declared/);
+    expect(() => parseGameUISnapshot(bad({ meters: { meters: meterRows.map((row, index) => index === 0 ? { ...row, value: 101 } : row) } }))).toThrow(/safe integer/);
+    expect(() => parseGameUISnapshot(bad({ meters: { meters: meterRows.map((row, index) => index === 0 ? { ...row, band_id: "mid" } : row) } }))).toThrow(/not declared/);
     expect(() => parseGameUISnapshot(bad({ fiscal: { ...features.fiscal, credit: 1001 } }))).toThrow(/safe integer/);
     expect(() => parseGameUISnapshot(bad({ fiscal: { ...features.fiscal, generator_levels: [{ ...features.fiscal.generator_levels[0], level: 10 }] } }))).toThrow(/cost disagrees/);
     expect(() => parseGameUISnapshot(bad({ achievements: { ...features.achievements, rows: [{ ...features.achievements.rows[0], earned: "maybe" }] } }))).toThrow(/earned/);
     expect(() => parseGameUISnapshot(bad({ minigames: { rows: [{ ...features.minigames.rows[0], extra: 1 }] } }))).toThrow(/exact/);
     expect(() => parseGameUISnapshot({ ...v4, generators: [{ ...v4.generators[0], provisioned: 3, provision_cap: { amount: 2, reason_key: "cap.x" } }] })).toThrow(/visible cap/);
+  });
+
+  describe("GS3-A1 complete meter ID contract", () => {
+    const decode = (rows: readonly unknown[]) => parseGameUISnapshot({ ...v4, features: { ...features, meters: { meters: rows } } });
+    const byteSorted = <T extends { meter_id: string }>(rows: T[]) => rows.sort((left, right) => left.meter_id < right.meter_id ? -1 : left.meter_id > right.meter_id ? 1 : 0);
+
+    it("admits the complete existing artifact ID set", () => {
+      expect(meterRows.map((row) => row.meter_id)).toEqual([...REQUIRED_METER_IDS]);
+      const parsed = decode(meterRows);
+      if (!("features" in parsed)) throw new Error("GS3-A1 fixture must decode as v4");
+      expect(parsed.features.meters?.meters).toEqual(meterRows);
+    });
+
+    it("keeps the unavailable meters arm nullable", () => {
+      const parsed = parseGameUISnapshot({ ...v4, features: { ...features, meters: null } });
+      expect(parsed).toHaveProperty("features.meters", null);
+    });
+
+    it("never fills in or mutates authoritative input", () => {
+      const rows = structuredClone(meterRows), before = structuredClone(rows);
+      decode(rows);
+      expect(rows).toEqual(before);
+      const partial = rows.slice(0, -1), partialBefore = structuredClone(partial);
+      expect(() => decode(partial)).toThrow(/required meter ID/);
+      expect(partial).toEqual(partialBefore);
+    });
+
+    for (const [index, row] of meterRows.entries()) {
+      it(`rejects a missing ${row.meter_id}`, () => {
+        expect(() => decode(meterRows)).not.toThrow();
+        expect(() => decode(meterRows.filter((_, candidate) => candidate !== index))).toThrow(/required meter ID/);
+      });
+      it(`rejects a count-preserving replacement of ${row.meter_id}`, () => {
+        const replacement = byteSorted(meterRows.map((value, candidate) => candidate === index ? { ...value, meter_id: `unknown.${row.meter_id}` } : value));
+        expect(replacement).toHaveLength(meterRows.length);
+        expect(() => decode(meterRows)).not.toThrow();
+        expect(() => decode(replacement)).toThrow(/required meter ID/);
+      });
+      for (const value of [row.min - 1, row.max + 1]) {
+        it(`rejects value ${value} for ${row.meter_id}`, () => {
+          expect(() => decode(meterRows)).not.toThrow();
+          expect(() => decode(meterRows.map((candidate, at) => at === index ? { ...candidate, value } : candidate))).toThrow(/safe integer/);
+        });
+      }
+    }
+
+    it("rejects an additional well-formed unknown meter", () => {
+      const extra = byteSorted([...meterRows, { ...meterRows[0], meter_id: "unknown.meter" }]);
+      expect(() => decode(meterRows)).not.toThrow();
+      expect(() => decode(extra)).toThrow(/required meter ID/);
+    });
+
+    for (const [label, rows] of [
+      ["empty", []],
+      ["doom-only", meterRows.filter((row) => row.meter_id === "doom.probability")],
+      ["trust-only", meterRows.filter((row) => row.meter_id !== "doom.probability")],
+    ] as const) {
+      it(`rejects the ${label} subset`, () => {
+        expect(() => decode(meterRows)).not.toThrow();
+        expect(() => decode(rows)).toThrow(/required meter ID/);
+      });
+    }
+
+    for (const index of [0, Math.floor(meterRows.length / 2), meterRows.length - 2]) {
+      it(`rejects unsorted rows at ${index}`, () => {
+        const rows = [...meterRows]; [rows[index], rows[index + 1]] = [rows[index + 1], rows[index]];
+        expect(() => decode(meterRows)).not.toThrow();
+        expect(() => decode(rows)).toThrow(/byte-sorted/);
+      });
+    }
+
+    it("rejects an extra field without confusing it with a missing meter", () => {
+      expect(() => decode(meterRows.map((row, index) => index === 0 ? { ...row, decorative: true } : row))).toThrow(/exact/);
+    });
+
+    it("rejects a missing row field without confusing it with a missing meter", () => {
+      const rows: Record<string, unknown>[] = structuredClone(meterRows);
+      delete rows[0].value;
+      expect(() => decode(rows)).toThrow(/exact/);
+    });
   });
 });
