@@ -24,6 +24,8 @@ active work.
    not need a new RFC, research program or separately committed predeclaration.
    Use its “Choosing the actual checks” table for existing commands; test the changed outcome,
    not the tracker. Iterate focused, then verify the finished batch's affected boundaries.
+   For native input fixes, use `make test-browser-focused`; performance and full journeys run
+   when their boundary is affected, not automatically for every edit.
 3. Implement. Missing spec = `DESIGN-GAP` in the log + propose a draft RFC; never improvise mechanics.
 4. Record one concise batch outcome in the owning log. Update canonical docs when behavior
    changes; update other tracking only when its status or next action actually changes.

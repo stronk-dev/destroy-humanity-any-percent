@@ -74,6 +74,19 @@ integration checks on the finished batch. A further change invalidates evidence 
 touches, not automatically every unrelated suite. Reuse existing test helpers and journeys;
 do not build a new measurement framework for a routine regression.
 
+For routine work, the work update and final log need only answer these four questions:
+
+- **Outcome:** what should the player or caller be able to do, and under which existing contract?
+- **Regression:** what concrete wrong result must the test catch? For a fix, retain the old
+  failure and the corrected pass; do not modify the assertion merely to get green.
+- **Coverage:** which affected checks actually ran, and which boundaries did they not exercise?
+- **Handoff:** what changed, what remains open, and what exact range needs designated review?
+
+This is a short explanation, not a new template, tracker or predeclaration commit. An existing
+test that exercises the requirement is preferable to a duplicate test. A routine fix is locally
+verified when its regression and affected checks pass; that is not acceptance of the whole
+feature or a 1.0 release. Research is needed for a genuine unknown, not to rename ordinary debugging.
+
 Pending designated review prevents acceptance/archival, not all further work on already
 accepted contracts. Continue safe work, keep its range explicit, and bring related changes
 back as one review batch. Do not cite an unreviewed new contract as accepted authority.
@@ -108,7 +121,7 @@ changed owner, include affected consumers, and name the requirement the test che
 |---|---|
 | Go logic, no DB boundary | `make test-go GO_PACKAGES='./publicapi ./publicread' GO_TEST_FLAGS='-count=1'` and `make vet GO_PACKAGES='./publicapi ./publicread'`. A narrower `-run` is useful while debugging; finish with the affected packages. |
 | TypeScript logic | `client/node_modules/.bin/vitest run --root client test/game-ui-runtime.test.ts`, plus `make typecheck`; `make build-client` when shipped client/bundling changes. A runtime double is not a server integration. |
-| DOM/input/focus/layout | `make test-browser BROWSER_TEST_FLAGS='test/game-ui-screens-browser.test.ts'` and `make typecheck`. Assert actual input, focus, state and rendered outcome, not only component existence. This target also runs the existing screen-performance check. |
+| DOM/input/focus/layout | `make test-browser-focused BROWSER_TEST_FLAGS='test/game-ui-screens-browser.test.ts'` and `make typecheck`. Use `-t` while iterating; finish with affected test files and consumers. Assert actual input, focus, state and rendered outcome, not only component existence. Add `make build-client` for shipped component changes. Run `make test-game-ui-performance` when rendering cost, worker cadence or a performance claim is affected; `make test-browser` retains both lanes for full verification/CI. |
 | Persistence, migrations, DB-backed authorization | `make test-save-integration SAVE_TEST_PACKAGES='./save' SAVE_TEST_FLAGS='-run Integration -v'`; migration changes use `make validate-migrations`. Check that the named DB tests actually execute, including a rejected/rollback case relevant to the change. |
 | Browser → server gameplay/receipts/recovery | `make test-game-ui-composed`. Verify the changed path is exercised, including its authoritative result. If not, extend that journey or add a focused real-boundary test; an unrelated green journey is insufficient. |
 | Generated API, shared math, deployment, balance | Use the owning feature's existing contract/vector/restore/harness targets for the affected requirement. API changes include `make api-check`; shared numeric changes require both Go and client vectors. A schema drift check alone does not prove a handler or UI works. |
@@ -199,3 +212,14 @@ On completion:
   change. Verification: command selectors checked against Makefile, Vitest configuration and
   Actions/Compose definitions; diff checked. No software suite for this documentation change;
   this normative clarification remains pending designated review, not self-approved.
+- 2026-10-07: clarify the four-question routine handoff and add `test-browser-focused`, reusing
+  the existing functional browser command without forcing the performance population on each
+  input fix. Full `test-browser` and Actions still run both lanes. Verification results for this
+  runner change: selected mounted transition test passed in Chromium/WebKit (2 executions;
+  144 other cases deselected), checking intent fields, authoritative refresh and eligibility.
+  A missing-file selection returned Vitest exit 1 / Make exit 2. Initial sandbox listen denial
+  ran no tests; the permitted local-server execution passed. `make -n test-browser` confirms
+  both functional and performance commands remain; diff checked. No Firefox, performance,
+  whole journey or hosted CI rerun required/claimed for this extraction. Review by: Codex
+  (implementer first filter); Recorded by: Codex. Designated review remains pending for the
+  range after `9b0c0a75` through this change; no feature acceptance inferred.

@@ -1,7 +1,7 @@
 .PHONY: t2-candidates-check setup install-browsers install-browsers-ci mod-tidy test test-go test-go-core test-harness test-go-ci test-save-integration test-deployment-backup validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver build-gameserver-linux-amd64 build-deployment-backup-linux-amd64 build-deployment-release-linux-amd64 create-release-builder build-gameserver-image deployment-config-check stage-release-content render-release-compose generate-release-metadata assemble-release-bundle release-secret-scan vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check typer-corpus typer-corpus-check arcade-corpus arcade-corpus-check garden-corpus garden-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify-push verify
 .PHONY: test-deployment-release test-deployment-operations test-deployment-rehearsal deployment-rehearsal-probe deployment-rehearsal-observe-host deployment-rehearsal-install-candidate deployment-rehearsal-run-browser deployment-rehearsal-recover-empty deployment-rehearsal-recover-populated deployment-rehearsal-lifecycle-release deployment-rehearsal-lifecycle-rollback deployment-rehearsal-supply-chain deployment-rehearsal-forge-proof build-deployment-rehearsal build-deployment-browser-linux-amd64 build-deployment-operations-linux-amd64 build-deployment-rehearsal-linux-amd64 generate-image-sbom
 .PHONY: reputation-activation-corpus reputation-input-shape-corpus reputation-offer-corpus reputation-boundary-corpus
-.PHONY: test-operations-alertmanager-native test-operations-native
+.PHONY: test-operations-alertmanager-native test-operations-native test-browser-focused
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -216,8 +216,12 @@ validate-migrations:
 test-client:
 	cd client && $(CLIENT_BIN)/vitest run
 
-test-browser:
+# Focused input/DOM regressions do not need the separate performance population.
+# The CI/full-browser target retains both lanes below.
+test-browser-focused:
 	cd client && VITE_GAME_UI_PERFORMANCE=0 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts $(BROWSER_TEST_FLAGS)
+
+test-browser: test-browser-focused
 	$(MAKE) test-game-ui-performance
 
 test-browser-ci:
