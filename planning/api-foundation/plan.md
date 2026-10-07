@@ -4,7 +4,9 @@ RFC: `rfc/api-foundation.md`
 
 Current checkpoint (2026-10-07): the historical catalog database source is implemented and
 locally verified against real Postgres; accepted identities return exact stored artifacts,
-not newer files, and corrupt/unaccepted evidence refuses. This does not mount the catalog
+not newer files, and corrupt/unaccepted evidence refuses. The future formula artifact now has
+a shared version-14 model and owner schema, checked against actual byte-identical generation
+and malformed-input controls. This does not mount the catalog
 HTTP reader or mint product formulas. RP-383/RP-384 compatibility guard corrections also pass
 locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Catalog owner descriptors,
 remaining route/client registration, third-party verification, 304 metadata and designated
@@ -17,6 +19,10 @@ reviews stay open; not full API acceptance or green hosted CI. Latest log owns e
   - [x] Resolve C20's limiter/proxy/key-ID/request-ID literals.
 - [ ] Register public DTOs/readers and raw verification evidence endpoints.
   - [ ] Export and compose C18's ruled owner artifact descriptors.
+    - [x] Extract the future formula artifact's shared model and closed version-14 owner
+      descriptor; actual generator preserves bytes and validates before writing
+      (`TestPublishedFormulaModelAndDescriptorPreserveExistingBytes`, populated/refusal
+      controls and `make formulas-check`). No formula mint/loader/HTTP registration.
   - [x] C3/C11/C12 database source: accepted-hash authorization, exact bytes/digests/order,
     bundle identity validation and real-Postgres historical/refusal cases
     (`TestPublicCatalogIntegration`; no HTTP/formula mint or replay-verification claim).

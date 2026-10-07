@@ -973,3 +973,35 @@ Review by: Codex (implementer diff/first filter); Recorded by: Codex. Entire ran
 debt remains separate. All handles terminal before records/commit; no archival/push. Next:
 artifact-owner descriptors and the catalog HTTP binding, then the real public third-party
 verification loop; C9/304 and full API/1.0 acceptance stay open.
+
+## 2026-10-07 — shared formula model and closed owner descriptor
+
+Outcome: C5/C11/C17/C18 needs an importable owner for the generated formula artifact, rather
+than a second schema built by the API beside an executable-only model. Extract the existing
+version-14 model into `server/formulas`; the generator's aliases bind to those same types.
+Export closed named descriptors and a stored-byte validator, and have the actual generator
+validate its output before writing. Required exact objects, arrays, nullable pinning, existing
+owner enums, signed int64 parameters and existing canonical string formats are preserved.
+No reflection, open-JSON descriptor, formula-content rewrite, catalog fallback or product mint.
+
+Coverage: cold54302 `make test-go GO_PACKAGES='./formulas ./cmd/gen-formulas ./publicapi'
+GO_TEST_FLAGS='-count=1 -v'` PASS; selected vet PASS. `make formulas-check`47472 executes the
+real generator and proves published bytes unchanged; `make api-check`52548 also PASSes with
+OpenAPI/TS/pin bytes unchanged. The extracted typed model round-trips the published bytes and
+field order exactly. Tests exercise the current null pin, all three declared populated inputs,
+populated source weights, fresh exports, 28 malformed structured controls and three malformed
+byte populations without rewriting input. Existing source-fingerprint authority mutations and
+catalog-composition tests still execute. This proves grammar/generation, not formula truth,
+historical versions, an epoch mint, public HTTP or a third-party replay journey. No DB/browser/
+numeric simulation changes require their unrelated suites; no hosted CI claim.
+
+Review by: Codex (implementer diff/first filter); Recorded by: Codex. Entire range after
+`9578aba3` through this model/descriptor/generator/tests/docs/record commit needs designated
+review; preceding ranges stay separate. All handles terminal before records/commit. No archive,
+push or kernel version signal: no watched simulation path or simulation output changed.
+The nineteen current artifact owners still need their C18 exports; API-only edits under their
+watched prefixes must not cause a false replay bump. Sequence those exports with the genuine
+accepted formula-loader/artifact-set extension, or obtain an explicit path-scope resolution;
+do not cite the draft Kernel History Guard Integrity RFC as authority. Next: complete the
+catalog owner/loader binding, closed union and real public verification loop, not a partial
+schema claim over the whole API.

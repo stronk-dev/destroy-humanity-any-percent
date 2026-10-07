@@ -283,7 +283,22 @@ It also checks unaccepted sets, corrupt/missing accepted evidence and cancellati
 mint does not modify the product manifest or authorize a release mint; it does not establish
 that the replay loader supports the formula-bearing set.
 
+`server/formulas` owns the extracted version-14 production-formula model and exports its
+closed `ProductionFormulasV14` descriptor through `Schemas()`. The actual generator consumes
+that model and validates its output before writing; the published artifact remains byte-identical.
+`Validate` checks stored bytes without rewriting or regenerating them, rejecting unsupported
+versions, undeclared/missing fields, wrong nested shapes/enums, malformed UTF-8/JSON, invalid
+digests/Decimal strings and integers outside signed int64. The integer domain mirrors the
+existing model, not newly chosen operating limits. This is a grammar check, not proof that
+arbitrary prose is mathematically true or belongs to a particular epoch.
+
+The descriptor covers the current formula version only, including a null axis pin and all
+three declared populated input variants. Historical version support must be explicit; no
+open-JSON arm or current regeneration fallback is introduced. This owner export is not yet
+registered in the catalog union, replay loader or product epoch manifest.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. The C18 catalog union still requires each artifact
-owner's exact descriptor; the formula artifact needs a protocol-compliant product mint and
-replay-loader integration. No open JSON wire arm or current-formula fallback is introduced.
+TypeScript verification loop remain open. The C18 catalog union still requires exact descriptors
+from the nineteen currently pinned artifact owners. The formula artifact needs a
+protocol-compliant product mint and replay-loader integration. No open JSON wire arm or
+current-formula fallback is introduced.
