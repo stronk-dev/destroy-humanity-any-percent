@@ -4807,3 +4807,31 @@ connection-state proof before readiness/stale-reason repair. RP-313 author
 wire-body, Docker capacity, real composed/auth/SQL/Firefox/AT/400%/full populated
 performance/platform/privacy/numeric/full endings/full-nine-tier1.0/owner release
 holds remain. No cleanup/startup Retry/mint/push/preview substitution. Goal active.
+
+## 2026-10-07 — Claim connection-state correction and final proof
+
+Separate52becf28/8e834bd5 test-first range exposes40 genuine failures after
+discarding/correcting RP-357's unknown copy key. Eight availability cases send
+unready initial/restart Claims,12 reenable after snapshot while transport remains
+unready;20 disclosure cases lack regional stale reason. Accepted GS0.5/GS5
+repair40934e15 changes only existing ready expression/ordinary stale p/docs.
+Forty native cases pass, with committed4→3 times only on next projection and
+fresh Company2/native request after explicit recovered signal. Nine real source
+faults fail40/20/20/20/20/40/40/40/40; all restore exact four-file hashes.
+
+Final at40934e15 clean: full native774/four explicit isolated-performance skips,
+129.92s, real60s idle unchanged; separate performance2pass. Client9816/689
+browser-only skips/types0/build214/copy658/sameSHA/611 old orphan warnings/
+current manifest/boundaries/topology/no-payment pass. All matching handles
+terminal before record edits. No server/runtime/wire/schema/clock/scheduler/
+payout/owner text/kernel/balance/deps/budgets/CI change. Local first filter only;
+whole85b8e826-exclusive new span through records needs Claude, every prior span
+independent. No acceptance/status/archival/push/release promotion.
+
+Next safe accepted work: predeclare GS5/GS0.3 on/off-Desk spawn/buff announcement
+and replay population. Source guards present, existing narrow prefix/single-event
+tests not broad evidence; no production defect inferred before execution.
+RP-313 body/capacity/actual services/composed/SQL/auth/Firefox/AT/400%/whole-state/
+era/performance/platform/privacy/numeric/full endings/full-nine-tier1.0/owner
+review/release holds remain. No cleanup/startup-ruling/Retry/preview substitution.
+Goal remains active; meaningful accepted work available.

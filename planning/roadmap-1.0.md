@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-352/353 Claim pending/removal correction
+**Latest bounded work (2026-10-07):** RP-356 Claim connection-state correction
+40934e15 after separate test-first52becf28/8e834bd5 typed red40. Projected
+opportunity/buff values remain committed, stale reason visible and Claim disabled
+through unready snapshot reception; explicit recovered signal reenables.40
+native Chromium/WebKit executions across five paths/widths/independent properties
+pass, nine actual faults discriminate/restored. RP-357 test-instrument error
+corrected/excluded. Full native774/four isolated-performance skips plus two,
+client9816/689 browser-only skips/types0/build214/copy/boundaries/topology pass.
+Whole85b8e826-exclusive new span through records needs Claude; prior spans
+independent. Next safe accepted work: predeclare GS5/GS0.3 on/off-Desk
+spawn/buff announcements and replay evidence, not invent a defect. No real
+service/payout/expiry/auth/SQL/Firefox/AT/400%/whole state/era or full1.0 claim.
+RP-313 body/Docker capacity/all platform/privacy/numeric/full-ending/review/
+owner holds remain; no cleanup/CI/copy/kernel/status/archive/mint/push/preview.
+
+**Preceding bounded work (2026-10-07):** RP-352/353 Claim pending/removal correction
 after typed-clean native red; separate RP-354 provisional 1995 two-color tuning.
 Forty native Chromium/WebKit cases at320/1280 with Enter/Space pass, including
 delayed refusal/applied/read, exact Company/receipt bindings, duplicate guards,

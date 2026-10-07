@@ -5241,3 +5241,65 @@ changed; no new props/keys/copy/retry/wire/runtime/payout/clock/policy. This
 targeted pass is not full final-client/browser/copy acceptance or a designated
 review. Nine declared real-source fault controls and the full restored root
 gates still required before local closeout; no boxes/status/archive promotion.
+
+### RP-356 — restored source faults and full verification
+
+Baseline40934e15 clean. Nine serial controls complete with Make2/child1, each
+on the same40 native population/690unselected. Full four-file hashes checked
+before mutation and after terminal restoration; no source edit/reversal while
+its matching gate handle ran. No incomplete, syntax-invalid or surviving arm.
+Raw diagnostics sometimes truncated; actual complete totals/exit codes and
+reported failures retained, not inventing omitted output.
+
+| Actual fault | Fail / positive controls | Launch → terminal | Restore |
+|---|---|---|---|
+| Omit transportReady gate |40 /0|6e65d9→ad7564|21541f|
+| Enable unavailable native Claim |20 /20|18cfd2→fe970e|98bcc5|
+| Omit stale text |20 /20|7a1218→be0e19|c508b6|
+| Wrong stale text |20 /20|e04e77→13b70d|ba703a|
+| Hidden stale text |20 /20|a51dfa→4da448|67f1d6|
+| Wrong committed seconds |40 /0|4f5d77→f00b16|cef083|
+| Ignore updated attended time |40 /0|a072d9→77e375|9c98c6|
+| Omit snapshot binding |40 /0|c598c7→b736dd|1dcda5|
+| Company scope bound to Founder |40 /0|a48c3d→cebbdb|c2aa23|
+
+Unavailable-button fault's callback guard still blocks requests; availability
+cases detect false native disabled state while20 disclosure controls pass.
+Stale text omissions/wrong/hidden each fail20 exact/visible disclosure cases,
+with20 availability cases passing. Constant-old attended time and omitted
+binding fail the committed4→3 update, not an unrelated first-stage assertion.
+Company→Founder fails actual next intent revision8 versus required2 after native
+recovery activation. Wrong initial seconds control validates committed-value
+arithmetic, not a separately timed local-extrapolation mutant. The actual350ms
+retention observation remains bounded, not a no-decay proof for all durations.
+
+Final source restorationd245e9: host432a2799, Opportunity6b229ec6,
+driverf86ae8c2, themee5874677 exactly match the healthy checkpoint. Final root
+gates run at40934e15 clean; no source/HEAD/record changes until ALL terminal:
+
+- types/client/build/boundaries/topology/no-payment3f1f80→39e307 exit0:
+  zero errors/warnings;105 files/9816pass,22 files/689 explicit browser-only
+  skips;214 build modules. WorkerMqspU_iu/CSSDaRqgLww unchanged, UID7RYyJ6Z.
+- full Garage/Game UI347407→8b8d2b exit0:774pass/four explicit isolated-
+  performance skips,129.92s, real60s idle unchanged. Separate performance2pass/
+ 22unselected,2.77s. No raised budget, test bypass or population exclusion.
+- copyc560af→250555 exit0:658 keys, same a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+ 611 existing orphan warnings; current content manifest verifies unchanged.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Inspected full
+85b8e826-exclusive through40934e15 (52becf28,8e834bd5,40934e15), exact new
+76-line driver, two scoped product lines/docs and corresponding records; actual
+failing/healthy populations and restoration agree with declared bounds. This
+is NOT a designated pass. Entire85b8e826-exclusive through containing final
+record commit needs Claude, including all record/predeclaration edges. Prior
+f5be35f6..85b8e826 and every preceding implementation/research span independently
+owed. No archival/acceptance/status/mint/push/cleanup/startup ruling promotion.
+
+Next safe accepted work: separately predeclare GS5/GS0.3 on-Desk/off-surface
+spawn/buff announcements, once-per-opportunity/cursor and replay evidence.
+Existing spawn test checks only a prefix; existing buff test checks one on-Desk
+event. Source guards are present, not a proven defect. No implementation
+follows until an actual bounded population discriminates. RP-313 author body,
+capacity/real acquisition/payout/expiry/composed/auth/SQL/Firefox/AT/400%/whole-
+state/era/populated performance/platform/numeric/all-nine-tier/owner/review
+holds remain. The goal is full1.0, never preview substitution.

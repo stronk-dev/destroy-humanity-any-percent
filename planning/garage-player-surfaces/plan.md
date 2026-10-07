@@ -7,7 +7,21 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-352/353 Claim pending/removal repair5064245f after
+Latest bounded work: RP-356 connection-state correction40934e15 after separately
+predeclared52becf28/8e834bd5 typed red40. Five paths ×320/1280 ×independent
+availability/disclosure ×two engines =40 native cases. Present projected values
+remain committed, stale explanation visible and Claim disabled through unready
+snapshot reception; recovered signal clears reason/enables, native next Company2
+Claim uses new opportunity ID, not Founder8. Nine complete faults discriminate/
+restore; full native774/four isolated-performance skips plus performance2,
+client9816/689 browser-only skips/types0/build214/copy/boundaries/topology pass.
+RP-357 initial bad test copy key corrected/excluded. Whole85b8e826-exclusive
+new span through records requires Claude independently of prior spans. Next
+accepted work: predeclare GS5/GS0.3 on/off-Desk spawn/buff announcement and replay
+proof; source guards present, no defect inferred yet. Real service/SQL/Firefox/
+AT/400%/all-state/era/body/platform/numeric/full1.0/review/owner holds remain.
+
+Preceding bounded work: RP-352/353 Claim pending/removal repair5064245f after
 typed-clean test-first red09b665; separate RP-354 C9 provisional two-token
 tuning under48f6d63e. Twenty declarations/40 Chromium-WebKit executions at
 320/1280 with native Enter/Space: held refusal/applied/read, exact Company
@@ -18,8 +32,8 @@ Full native734/four isolated-performance skips plus performance two; client9816/
 669 browser-only skips/types0/build214/copy/boundaries/topology/no-payment pass.
 Whole f5be35f6-exclusive new span through final records needs Claude; all prior
 spans independently owed. No boxes/lifecycle/whole-GS5/full1.0 promotion.
-Next accepted work: separately predeclare GS5-inherited GS0.5 native connection
-state proof (RP-356 source finding), before any readiness/stale-reason repair.
+Its next GS5-inherited GS0.5 native connection-state proof and RP-356 correction
+now execute above; no original red coordinate is retroactively made green.
 RP-313 author wire-body, Docker capacity, real service/SQL/Firefox/AT/400%/
 populated performance/full-nine-tier/owner release holds remain.
 

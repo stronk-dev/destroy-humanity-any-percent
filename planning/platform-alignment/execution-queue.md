@@ -3,6 +3,28 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Claim connection-state checkpoint — 2026-10-07
+
+RP-356 test-first52becf28/8e834bd5 typed red40 → separate40934e15 existing
+host-ready gate/ordinary regional stale line.40 native two-engine cases across
+five paths/two widths/independent properties now pass. A decoded next snapshot
+alone keeps Claim unready and latest committed values stale; recovered signal
+reenables, native fresh Company2 request proven. Nine complete faults fail
+40/20/20/20/20/40/40/40/40 and restore exactly. RP-357 bad test copy key corrected
+before final red, not product evidence. Full native774/four explicit isolated-
+performance skips plus performance2/client9816/689 browser skips/types0/build214/
+copy/boundaries/topology/no-payment pass. No budgets/copy/schema/CI changes.
+
+**READY FOR CLAUDE:** entire85b8e826-exclusive through containing final records,
+including52becf28/8e834bd5/40934e15 and record edges. Priorf5be35f6..85b8e826
+and all older spans independently owed; no self-approved archival.
+**NEXT safe accepted work:** separately predeclare GS5/GS0.3 on/off-Desk
+spawn/buff announcement, once-per-ID/cursor and replay proof. Existing source
+guards are present; no new defect inferred from missing population alone.
+RP-313 author wire-body/capacity/real composed/auth/SQL/Firefox/AT/400%/all-era/
+platform/numeric/endings/all-nine-tier1.0/owner release holds remain. No cleanup/
+startup Retry/archive/mint/push/preview substitution.
+
 ## Claim pending/removal and contrast checkpoint — 2026-10-07
 
 RP-352/353 typed red7093e40a/bc11fbe3 → separate6b0ba460/5064245f component
