@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from "svelte";
   import type { GameUIFiscalArm } from "../api/generated/types";
   import { t, type CopyEra, type CopyKey } from "../copy";
   import { FEATURES_PRESENTATION } from "./features-presentation";
@@ -24,6 +25,35 @@
   const spendable = $derived(arm.sweep_preview.credit_after);
   const unlocks = $derived(arm.unlocks.filter((row) => FEATURES_PRESENTATION.fiscalUnlocks.has(row.unlock_id)));
 
+  let root: HTMLElement | undefined;
+  let heading: HTMLHeadingElement | undefined;
+  $effect.pre(() => {
+    const next = arm, enabled = controlsEnabled, nextPhase = phase, credit = spendable;
+    const action = document.activeElement;
+    if (!(action instanceof HTMLButtonElement) || !root?.contains(action)) return;
+    const kind = action.dataset.fiscalAction, target = action.dataset.fiscalTarget;
+    const level = next.generator_levels.find((row) => row.generator_id === target);
+    const unlock = next.unlocks.find((row) => row.unlock_id === target);
+    const eligible = kind === "harvest" ? nextPhase !== "ripening" :
+      kind === "level" ? level?.next_level_cost != null && level.next_level_cost <= credit :
+      kind === "unlock" && unlock !== undefined && !unlock.owned && unlock.cost <= credit;
+    if (enabled && eligible) return;
+    const region = action.closest("[data-fiscal-region]");
+    const previous = [...region?.querySelectorAll<HTMLButtonElement>("button") ?? []];
+    const position = previous.indexOf(action);
+    void tick().then(() => {
+      if (!root?.isConnected || action.isConnected && !action.disabled ||
+          document.activeElement !== action && document.activeElement !== document.body) return;
+      // On removal prefer the nearest surviving control in the same region.
+      // A disabled trigger falls back to the heading. Never steal newly chosen focus.
+      const surviving = !action.isConnected ? previous
+        .map((control, index) => ({ control, distance: Math.abs(index - position) }))
+        .filter(({ control }) => control !== action && control.isConnected && !control.disabled)
+        .sort((left, right) => left.distance - right.distance)[0]?.control : undefined;
+      (surviving ?? heading)?.focus();
+    });
+  });
+
   function remaining(ms: number): string {
     const seconds = Math.max(0, Math.ceil(ms / 1000));
     const hours = Math.floor(seconds / 3600), minutes = Math.floor(seconds % 3600 / 60);
@@ -36,8 +66,10 @@
   function generatorTitle(id: string): string { return t(requirePresentation(GAME_UI_PRESENTATION.generators, id).title_key, {}, era); }
 </script>
 
-<section class="surface fiscal" aria-labelledby="fiscal-heading" data-phase={phase}>
-  <h1 id="fiscal-heading" tabindex="-1">{t("surface.fiscal.title", {}, era)}</h1>
+<section bind:this={root} class="surface fiscal" aria-labelledby="fiscal-heading" data-phase={phase}>
+  <h1 bind:this={heading} id="fiscal-heading" tabindex="-1">{t("surface.fiscal.title", {}, era)}</h1>
+  {#if !controlsEnabled}<p class="fiscal-state" role="status">{t("common.stale_note", {}, era)}</p>{/if}
+  {#if pending}<p class="fiscal-state" role="status">{t("common.pending", {}, era)}</p>{/if}
 
   <section class="card" aria-labelledby="fiscal-credit-heading">
     <h2 id="fiscal-credit-heading">{t("fiscal.credit_label", {}, era)}</h2>
@@ -48,7 +80,7 @@
     <p>{t("fiscal.next_run_note", {}, era)}</p>
   </section>
 
-  <section class="card" aria-labelledby="fiscal-harvest-heading">
+  <section class="card" aria-labelledby="fiscal-harvest-heading" data-fiscal-region="harvest">
     <h2 id="fiscal-harvest-heading">{t("fiscal.harvest", {}, era)}</h2>
     {#if phase === "ripening"}
       <p class="phase">{t("fiscal.period.ripening_frame", { remaining: remaining(arm.period.early_ms - elapsed) }, era)}</p>
@@ -58,11 +90,13 @@
       <p class="phase">{t("fiscal.period.guaranteed", {}, era)}</p>
     {/if}
     <p>{t("fiscal.period.auto_note", { remaining: remaining(arm.period.auto_ms - elapsed) }, era)}</p>
-    <button type="button" aria-describedby="fiscal-harvest-curtain" disabled={pending || !controlsEnabled || phase === "ripening"} onclick={onHarvest}>{t("fiscal.harvest", {}, era)}</button>
+    <button type="button" tabindex="0" data-fiscal-action="harvest" aria-describedby="fiscal-harvest-curtain"
+      disabled={!controlsEnabled || phase === "ripening"} aria-disabled={pending || undefined}
+      onclick={() => { if (!pending) onHarvest(); }}>{t("fiscal.harvest", {}, era)}</button>
     <small id="fiscal-harvest-curtain">{t("fiscal.harvest_tooltip", {}, era)}</small>
   </section>
 
-  <section class="card" aria-labelledby="fiscal-levels-heading">
+  <section class="card" aria-labelledby="fiscal-levels-heading" data-fiscal-region="levels">
     <h2 id="fiscal-levels-heading">{t("fiscal.levels_label", {}, era)}</h2>
     <ul>
       {#each arm.generator_levels as row (row.generator_id)}
@@ -72,7 +106,9 @@
           {#if row.next_level_cost === null}
             <span>{t(row.level_cap.reason_key as CopyKey, {}, era)}</span>
           {:else}
-            <button type="button" disabled={pending || !controlsEnabled || row.next_level_cost > spendable} onclick={() => onSpendLevel(row.generator_id)}>{t("fiscal.level_buy", { cost: row.next_level_cost }, era)}</button>
+            <button type="button" tabindex="0" data-fiscal-action="level" data-fiscal-target={row.generator_id}
+              disabled={!controlsEnabled || row.next_level_cost > spendable} aria-disabled={pending || undefined}
+              onclick={() => { if (!pending) onSpendLevel(row.generator_id); }}>{t("fiscal.level_buy", { cost: row.next_level_cost }, era)}</button>
           {/if}
         </li>
       {/each}
@@ -80,7 +116,7 @@
   </section>
 
   {#if unlocks.length}
-    <section class="card" aria-labelledby="fiscal-unlocks-heading">
+    <section class="card" aria-labelledby="fiscal-unlocks-heading" data-fiscal-region="unlocks">
       <h2 id="fiscal-unlocks-heading">{t("fiscal.unlocks_label", {}, era)}</h2>
       <ul>
         {#each unlocks as row (row.unlock_id)}
@@ -91,7 +127,9 @@
             {#if row.owned}
               <strong>{t("fiscal.unlock_owned", {}, era)}</strong>
             {:else}
-              <button type="button" disabled={pending || !controlsEnabled || row.cost > spendable} onclick={() => onSpendUnlock(row.unlock_id)}>{t("fiscal.unlock_buy", { cost: row.cost }, era)}</button>
+              <button type="button" tabindex="0" data-fiscal-action="unlock" data-fiscal-target={row.unlock_id}
+                disabled={!controlsEnabled || row.cost > spendable} aria-disabled={pending || undefined}
+                onclick={() => { if (!pending) onSpendUnlock(row.unlock_id); }}>{t("fiscal.unlock_buy", { cost: row.cost }, era)}</button>
             {/if}
           </li>
         {/each}
@@ -102,7 +140,7 @@
 
 <style>
   .fiscal { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); gap: var(--cc-space-md); }
-  .fiscal > h1 { grid-column: 1 / -1; }
+  .fiscal > h1, .fiscal > .fiscal-state { grid-column: 1 / -1; }
   .card { display: grid; gap: var(--cc-space-sm); align-content: start; }
   ul { display: grid; gap: var(--cc-space-sm); margin: 0; padding: 0; list-style: none; }
   li { display: grid; gap: var(--cc-space-xs); }

@@ -373,6 +373,11 @@
     ["unaffordable/fiscal_credit", "fiscal.rejection.unaffordable"],
     ["not_eligible/already_unlocked", "fiscal.rejection.already_unlocked"],
   ]);
+  const fiscalRejections: SurfaceRejections = $derived(new Map([
+    ...FISCAL_REJECTIONS,
+    ...(liveFeatures?.fiscal?.generator_levels ?? []).map((row): [string, CopyKey] =>
+      [`cap_exceeded/${row.generator_id}`, row.level_cap.reason_key as CopyKey]),
+  ]));
   const REPUTATION_REJECTIONS: SurfaceRejections = new Map([
     ["not_eligible/*", "reputation_tree.error.not_eligible"],
     ["unknown_id/*", "reputation_tree.error.unknown_id"],
@@ -687,10 +692,10 @@
       offline={offline || !transportReady}
       feedback={reputationFeedback} onPurchase={purchaseReputation} />
   {:else if surface === "fiscal" && liveFeatures?.fiscal}
-    <FiscalSurface arm={liveFeatures.fiscal} {era} serverNowMs={estimatedServerNowMS()} {pending} controlsEnabled={founderControls}
-      onHarvest={() => act({ kind: "harvest_fiscal_period" }, { scope: "founder", rejections: FISCAL_REJECTIONS, applied: harvestNotice })}
-      onSpendLevel={(generatorID) => act({ kind: "spend_fiscal_credit", target: { kind: "generator_level", generator_id: generatorID, levels: 1 } }, { scope: "founder", rejections: FISCAL_REJECTIONS })}
-      onSpendUnlock={(unlockID) => act({ kind: "spend_fiscal_credit", target: { kind: "unlock", unlock_id: unlockID } }, { scope: "founder", rejections: FISCAL_REJECTIONS })} />
+    <FiscalSurface arm={liveFeatures.fiscal} {era} serverNowMs={estimatedServerNowMS()} {pending} controlsEnabled={founderControls && transportReady}
+      onHarvest={() => act({ kind: "harvest_fiscal_period" }, { scope: "founder", rejections: fiscalRejections, applied: harvestNotice })}
+      onSpendLevel={(generatorID) => act({ kind: "spend_fiscal_credit", target: { kind: "generator_level", generator_id: generatorID, levels: 1 } }, { scope: "founder", rejections: fiscalRejections })}
+      onSpendUnlock={(unlockID) => act({ kind: "spend_fiscal_credit", target: { kind: "unlock", unlock_id: unlockID } }, { scope: "founder", rejections: fiscalRejections })} />
   {:else if snapshot && surface === "minigame_session" && runtime.minigame}
     {#if pitchAvailability && !pitchAvailability.unlocked}<p class="intent-notice" role="note">{t("minigame.availability.fiscal_locked", {}, era)}</p>{/if}
     {#if pitchAvailability?.human_content_locked}<p class="intent-notice" role="note">{t("minigame.availability.soul_locked", {}, era)}</p>{/if}

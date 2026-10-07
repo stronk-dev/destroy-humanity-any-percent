@@ -4,7 +4,7 @@ import { expect, it, vi } from "vitest";
 
 import type { GameUISnapshot } from "../src/api/generated/types";
 import { t, type CopyKey } from "../src/copy";
-import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
+import { parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import FiscalSurface from "../src/game-ui/FiscalSurface.svelte";
 import PetCareSurface from "../src/game-ui/pet/PetCareSurface.svelte";
@@ -291,6 +291,22 @@ for (const [category, detail, key, index, invariant] of [
   });
 }
 
+it.skipIf(!browser)("Fiscal supplement cap notice follows the parsed snapshot reason instead of a fixed default key", async () => {
+  const runtime = new Runtime(), value = withRipeFiscal(), fiscal = value.features.fiscal!;
+  runtime.current = parseGameUISnapshot({ ...value, features: { ...value.features, fiscal: { ...fiscal,
+    generator_levels: fiscal.generator_levels.map((row) => ({ ...row, level_cap: { ...row.level_cap, reason_key: "cap.fiscal_credit" } })),
+  } } });
+  runtime.outcome = { outcome: "rejected", category: "cap_exceeded", detail: "generator.beige_tower", currentRevision: 7, sessionExpired: false };
+  const { target, dispose } = await mounted(runtime);
+  try {
+    button(target, fiscalText("surface.fiscal.title")).click(); await settle();
+    fiscalControls(target)[1].click(); await settle();
+    expect(runtime.requests).toHaveLength(1);
+    expect(target.querySelector(".intent-notice")?.textContent).toBe(fiscalText("cap.fiscal_credit"));
+    expect(target.querySelector(".intent-notice")?.textContent).not.toBe(fiscalText("cap.fiscal_level.beige_tower"));
+  } finally { await dispose(); }
+});
+
 for (const outcome of ["early_succeeded", "early_failed", "guaranteed", "consumed_by_auto"] as const) {
   it.skipIf(!browser)(`Fiscal supplement renders the applied ${outcome} harvest outcome without predicting it`, async () => {
     const runtime = new Runtime(); runtime.current = withRipeFiscal();
@@ -361,27 +377,32 @@ for (const [label, index, navigate] of [["owned unlock", 2, false], ["capped lev
   });
 }
 
-it.skipIf(!browser)("Fiscal supplement prefers a surviving control in the same region when the level button is removed", async () => {
+it.skipIf(!browser)("Fiscal supplement prefers the nearest of multiple surviving controls in the same region", async () => {
   const runtime = new Runtime(), value = withRipeFiscal(), fiscal = value.features.fiscal!;
-  // Public runtime fixture with an existing presentation row; this does not
-  // assert that the current production catalog sells this second Fiscal level.
-  const levels = [...fiscal.generator_levels, { ...fiscal.generator_levels[0], generator_id: "generator.answering_machine", next_level_cost: 2 }];
-  runtime.current = { ...value, features: { ...value.features, fiscal: { ...fiscal, generator_levels: levels } } };
+  // Parsed public fixture with existing presentation rows, byte-sorted IDs;
+  // not a claim that the production catalog sells these additional levels.
+  const levels = [
+    { ...fiscal.generator_levels[0], generator_id: "generator.answering_machine", next_level_cost: 2 },
+    { ...fiscal.generator_levels[0], next_level_cost: 3 },
+    { ...fiscal.generator_levels[0], generator_id: "generator.first_hire", next_level_cost: 1 },
+  ];
+  runtime.current = parseGameUISnapshot({ ...value, features: { ...value.features, fiscal: { ...fiscal, generator_levels: levels } } });
   const { target, dispose } = await mounted(runtime);
   const intent = vi.spyOn(runtime, "intent").mockImplementation(async (body) => {
     runtime.requests.push(body);
-    runtime.current = { ...value, founder_revision: 8, features: { ...value.features, fiscal: { ...fiscal,
-      generator_levels: levels.map((row) => row.generator_id === "generator.beige_tower" ? { ...row, level: row.level_cap.amount, next_level_cost: null } : row),
-    } } };
+    runtime.current = parseGameUISnapshot({ ...value, founder_revision: 8, features: { ...value.features, fiscal: { ...fiscal,
+      generator_levels: levels.map((row) => row.generator_id === "generator.first_hire" ? { ...row, level: row.level_cap.amount, next_level_cost: null } : row),
+    } } });
     return { outcome: "applied", receipt: {} };
   });
   try {
     button(target, fiscalText("surface.fiscal.title")).click(); await settle();
     const level = button(target, t("fiscal.level_buy", { cost: 1 }, "era_1995"));
-    const surviving = button(target, t("fiscal.level_buy", { cost: 2 }, "era_1995"));
+    const surviving = button(target, t("fiscal.level_buy", { cost: 3 }, "era_1995"));
     level.focus(); level.click(); await settle();
     expect(level.isConnected).toBe(false); expect(document.activeElement).toBe(surviving);
     expect(runtime.requests).toHaveLength(1);
+    expect(runtime.requests[0]).toMatchObject({ target: { kind: "generator_level", generator_id: "generator.first_hire", levels: 1 } });
   } finally { intent.mockRestore(); await dispose(); }
 });
 

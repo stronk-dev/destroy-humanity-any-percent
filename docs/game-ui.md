@@ -42,6 +42,21 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   - Unlock rows without a `features-presentation.json` row are withheld; `unlock.arcade` is
     withheld (F12).
   - Intents are Founder-scoped. Harvest outcomes and Fiscal rejections render in the status line.
+    A generator-level cap rejection uses that snapshot row's reason key, not
+    the shared generic cap sentence. Unknown target refusals report one invariant.
+  - Harvest, level and unlock controls keep native keyboard focus and visible
+    pending text/`aria-disabled` while the intent and authoritative refresh are
+    in flight; each component callback refuses pending activation. Native Tab,
+    Enter and Space follow harvest → levels → unlocks. Actual ineligibility or
+    unavailable transport still disables controls; stale values have the shared
+    explanation. A removed focused control hands off to the nearest surviving
+    enabled control in the same region, otherwise the heading, without taking
+    focus from a different control the player selected. These native checks
+    use runtime doubles; the separate composed lane exercises actual harvest
+    and unlock against Postgres and a real WebSocket. Neither replaces Firefox,
+    manual accessibility, all-Garage or release-manifest proof.
+    Outcome notices still live in the shared chrome status line; surface-local
+    ownership and cross-tab notice isolation are a separate open GS0.6 boundary.
 - **Reputation Board (`meters`):** read-only, unlocked by `feature.meters`. It is a 5 × 2 table of
   constituency Standing/Grievance plus p(doom). Each cell has a native `<meter>`, numeric text and
   band text. Below 30rem it collapses to labelled rows. It carries the curtain and the "as of last
