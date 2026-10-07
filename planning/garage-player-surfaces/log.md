@@ -4151,3 +4151,21 @@ needs Claude separately from 9f485993..fbea2158 and earlier spans. Capacity/
 Firefox/AT/body/privacy/platform/numeric/full-nine-tier1.0/review holds remain;
 cleanup/startup questions unanswered, no deletion/Retry/archive/push/mint/
 release authority inferred. Goal active/progress.
+
+## 2026-10-07 — RP-082 current native red checkpoint
+
+3451fdb0 predeclared.735986→59011c types terminal 0, zero errors/warnings.
+66150f→06b9e3 native terminal 2: 52 failures / 8 passes / 414 explicitly
+unselected. All 48 source-surface populations fail actual focus AFTER exact
+decoded event destination/visible heading/source-heading removal controls
+pass. Persistent nav remains BUTTON; removed focused heading leaves BODY.
+Four ordered Offer→Run-End controls also fail with BUTTON. Eight controlled
+newer-Settings selection/replay controls pass. No timeout/import/type error.
+Public envelopes and lifecycle payloads decode before delivery; synthetic
+runtime is not real service/AT/physical OS event timing.
+
+RP-082 updated immediately, not duplicated. No product/catalog/copy/clock/
+auth/payload/precedence/CI/Make/RFC body changed. This test-only checkpoint
+records a genuine red population, not a green gate or new accepted draft.
+Separate accepted-product scope follows before any repair. Complete range
+after fbea2158 needs Claude, all earlier spans independently owed.

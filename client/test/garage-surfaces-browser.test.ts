@@ -5,7 +5,7 @@ import { expect, it, vi } from "vitest";
 import type { GameUISnapshot } from "../src/api/generated/types";
 import { t, type CopyKey } from "../src/copy";
 import { parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
-import { decodeGameUIAnnouncement } from "../src/game-ui/events";
+import { decodeGameUIAnnouncement, decodeGameUIEvent } from "../src/game-ui/events";
 import { FEATURES_PRESENTATION } from "../src/game-ui/features-presentation";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import FiscalSurface from "../src/game-ui/FiscalSurface.svelte";
@@ -1249,6 +1249,106 @@ for (const meterID of ["doom.probability", "trust.users.standing"] as const) {
       });
     }
   }
+}
+
+// GS0.4/0.6: decoded lifecycle publication and actual forced native focus.
+// Runtime-double delivery is not server issuance or a physical AT session.
+function forcedLifecycleMessage(destination: "offer_sheet" | "run_end", cursor: number): Extract<GameUIRuntimeMessage, { kind: "event" }> {
+  const kind = destination === "offer_sheet" ? "exit_offer_spawned" : "run_ended";
+  const payout = { clout_reach_note: "clout.reach.preserved", network_slot_unlocks: [], reputation_delta: 2, route_knowledge: 25 };
+  const payload = destination === "offer_sheet"
+    ? { exit_type: "scripted_first", expires_at_ms: NOW + 60_000, offer_id: "01985555-3333-7333-8333-333333333333", payout_preview: payout }
+    : { assisted: { advisor: false, commons: false }, attended_ms: 500, ended_at_ms: NOW + 1_000,
+      executed_routes: [], exit_type: "scripted_first", faction: null, founder_id: v4.run.founder_id,
+      gates_crossed: ["gate.t0_to_t1"], generators_purchased_total: 1, ledger_fact_kinds: [], lifetime_value: "1e3",
+      payout, pre_timer: false, rta_ms: 2_000,
+      run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 },
+      started_at_ms: v4.run.run_started_at_ms, terminal_seq: 2, tier: 0 };
+  const envelope = decodeTransportEnvelope({ v: 2, ch: `player:${v4.run.founder_id}`, kind: "event", rev: cursor,
+    constants_hash: v4.constants_hash, ts: new Date(NOW + 1_000).toISOString(),
+    payload: { event_id: `lifecycle-${cursor}`, kind, scope: "company", rev: cursor, cursor_effect: "advance", payload } });
+  if (!envelope) throw new Error("lifecycle fixture envelope not admitted");
+  const value = decodeGameUIEvent(envelope);
+  if (!value || value.kind !== kind) throw new Error("lifecycle fixture event not admitted");
+  return { kind: "event", revision: cursor, scope: "company", value };
+}
+
+async function assertForcedLifecycle(target: HTMLElement, runtime: Runtime, destination: "offer_sheet" | "run_end", width: number) {
+  const id = destination === "offer_sheet" ? "offer-heading" : "run-end-heading";
+  const key = destination === "offer_sheet" ? "screen.offer_sheet.heading" : "curriculum.scripted_first_failure.title";
+  expect(target.querySelector("main")?.dataset.surface).toBe(destination);
+  const heading = sharedStateVisibleText(target, "h1", t(key, {}, "era_1995"));
+  expect(heading.id).toBe(id);
+  expect({ tag: document.activeElement?.tagName, id: document.activeElement?.id }, "forced lifecycle exposes new context").toEqual({ tag: "H1", id });
+  expect(document.activeElement).toBe(heading); expect(heading.getAttribute("tabindex")).toBe("-1");
+  expect(runtime.requests).toEqual([]);
+  expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width + 1);
+  await assertAxe(target, `forced ${destination}/${width}`);
+}
+
+for (const source of ["achievements", "fiscal", "meters"] as const) {
+  for (const origin of ["nav", "removed-heading"] as const) {
+    for (const destination of ["offer_sheet", "run_end"] as const) {
+      for (const width of [320, 1280] as const) {
+        it.skipIf(!browser)(`GS0 lifecycle focus ${source}/${origin}/${destination}/${width}`, async () => {
+          const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+          const runtime = new Runtime(); runtime.current = parseGameUISnapshot(structuredClone(v4));
+          const { target, dispose } = await mounted(runtime);
+          try {
+            const nav = button(target, t(`surface.${source}.title`, {}, "era_1995"));
+            nav.focus(); await userEvent.keyboard("{Enter}"); await settle();
+            expect(target.querySelector("main")?.dataset.surface).toBe(source); expect(document.activeElement).toBe(nav);
+            const priorHeading = target.querySelector<HTMLElement>("h1")!;
+            if (origin === "removed-heading") { priorHeading.focus(); expect(document.activeElement).toBe(priorHeading); }
+            expect(runtime.requests).toEqual([]); await assertAxe(target, `lifecycle source ${source}/${width}`);
+            runtime.listener?.(forcedLifecycleMessage(destination, 10)); await settle();
+            expect(priorHeading.isConnected).toBe(false);
+            await assertForcedLifecycle(target, runtime, destination, width);
+          } finally { try { await dispose(); } finally { await page.viewport(1280, 720); } }
+        });
+      }
+    }
+  }
+}
+
+for (const width of [320, 1280] as const) {
+  for (const destination of ["offer_sheet", "run_end"] as const) {
+    it.skipIf(!browser)(`GS0 lifecycle focus newer Settings cancels ${destination}/${width}`, async () => {
+      const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+      const runtime = new Runtime(); runtime.current = parseGameUISnapshot(structuredClone(v4));
+      const { target, dispose } = await mounted(runtime);
+      try {
+        const nav = button(target, t("surface.meters.title", {}, "era_1995")); nav.focus();
+        await userEvent.keyboard("{Enter}"); await settle(); expect(document.activeElement).toBe(nav);
+        const settings = button(target, t("surface.settings.title", {}, "era_1995"));
+        runtime.listener?.(forcedLifecycleMessage(destination, 10));
+        // Controlled same-callback newer choice, before rendering/queued focus.
+        settings.focus(); settings.click(); await settle();
+        expect(target.querySelector("main")?.dataset.surface).toBe("settings"); expect(document.activeElement).toBe(settings);
+        runtime.listener?.(forcedLifecycleMessage(destination, 10)); await settle();
+        expect(target.querySelector("main")?.dataset.surface).toBe("settings"); expect(document.activeElement).toBe(settings);
+        expect(runtime.requests).toEqual([]); await assertAxe(target, `lifecycle cancellation ${destination}/${width}`);
+      } finally { try { await dispose(); } finally { await page.viewport(1280, 720); } }
+    });
+  }
+  it.skipIf(!browser)(`GS0 lifecycle focus newest Run-End supersedes Offer then ignores replay ${width}`, async () => {
+    const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+    const runtime = new Runtime(); runtime.current = parseGameUISnapshot(structuredClone(v4));
+    const { target, dispose } = await mounted(runtime);
+    try {
+      const nav = button(target, t("surface.meters.title", {}, "era_1995")); nav.focus();
+      await userEvent.keyboard("{Enter}"); await settle();
+      runtime.listener?.(forcedLifecycleMessage("offer_sheet", 10));
+      runtime.listener?.(forcedLifecycleMessage("run_end", 11)); await settle();
+      await assertForcedLifecycle(target, runtime, "run_end", width);
+      const settings = button(target, t("surface.settings.title", {}, "era_1995")); settings.focus();
+      await userEvent.keyboard("{Enter}"); await settle(); expect(document.activeElement).toBe(settings);
+      runtime.listener?.(forcedLifecycleMessage("offer_sheet", 10));
+      runtime.listener?.(forcedLifecycleMessage("run_end", 11)); await settle();
+      expect(target.querySelector("main")?.dataset.surface).toBe("settings"); expect(document.activeElement).toBe(settings);
+      expect(runtime.requests).toEqual([]); await assertAxe(target, `ordered lifecycle replay ${width}`);
+    } finally { try { await dispose(); } finally { await page.viewport(1280, 720); } }
+  });
 }
 
 const opportunityArm = (pending: boolean, buffs = true, saturated = false) => ({
