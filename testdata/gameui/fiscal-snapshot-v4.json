@@ -1,0 +1,121 @@
+{
+  "constants_hash": "sha256:3625eddb73da494574a2031fd483e93af236aa9b1f14482e5b51ad6ea3d0f7b0",
+  "evaluated_through_ms": 1800000000000,
+  "facts": [
+    {"fact_id":"bootstrap.needed","value":false},
+    {"fact_id":"feature.achievements","value":true},
+    {"fact_id":"feature.active_play","value":true},
+    {"fact_id":"feature.axis_stack","value":false},
+    {"fact_id":"feature.cosmetics","value":false},
+    {"fact_id":"feature.fiscal","value":true},
+    {"fact_id":"feature.meters","value":true},
+    {"fact_id":"feature.minigame.pitch","value":true},
+    {"fact_id":"feature.pet_adoption","value":false},
+    {"fact_id":"feature.pets","value":false},
+    {"fact_id":"feature.reputation_tree","value":true},
+    {"fact_id":"gate.t0_to_t1","value":true},
+    {"fact_id":"gate.t2_to_t3","value":false},
+    {"fact_id":"gate.t3_to_t4","value":false},
+    {"fact_id":"gate.t4_to_t5","value":false},
+    {"fact_id":"gate.t7_to_t8","value":false},
+    {"fact_id":"run.pre_timer","value":false}
+  ],
+  "features": {
+    "active_play": null,
+    "achievements": {
+      "rows": [
+        {"achievement_id":"achievement.career_attended_day","condition_scope":"career","copy_key":"achievement.career_attended_day","earned":null,"proof_kind":"provenance","score_grant":4},
+        {"achievement_id":"achievement.career_attended_hour","condition_scope":"career","copy_key":"achievement.career_attended_hour","earned":null,"proof_kind":"provenance","score_grant":2},
+        {"achievement_id":"achievement.exit_count_5","condition_scope":"career","copy_key":"achievement.exit_count_5","earned":null,"proof_kind":"provenance","score_grant":8},
+        {"achievement_id":"achievement.first_gate","condition_scope":"run","copy_key":"achievement.first_gate","earned":null,"proof_kind":"provenance","score_grant":2},
+        {"achievement_id":"achievement.gate_burn_t3","condition_scope":"run","copy_key":"achievement.gate_burn_t3","earned":null,"proof_kind":"burn","score_grant":8},
+        {"achievement_id":"achievement.generators_owned_100","condition_scope":"run","copy_key":"achievement.generators_owned_100","earned":null,"proof_kind":"possession","score_grant":4},
+        {"achievement_id":"achievement.generators_owned_300","condition_scope":"run","copy_key":"achievement.generators_owned_300","earned":null,"proof_kind":"possession","score_grant":8},
+        {"achievement_id":"achievement.generators_purchased_1","condition_scope":"run","copy_key":"achievement.generators_purchased_1","earned":null,"proof_kind":"provenance","score_grant":2},
+        {"achievement_id":"achievement.generators_purchased_25","condition_scope":"run","copy_key":"achievement.generators_purchased_25","earned":null,"proof_kind":"provenance","score_grant":4},
+        {"achievement_id":"achievement.generators_purchased_25_tier_3","condition_scope":"run","copy_key":"achievement.generators_purchased_25_tier_3","earned":null,"proof_kind":"provenance","score_grant":8},
+        {"achievement_id":"achievement.old_hand","condition_scope":"career","copy_key":"achievement.old_hand","earned":null,"proof_kind":"provenance","score_grant":4},
+        {"achievement_id":"achievement.tier_5","condition_scope":"run","copy_key":"achievement.tier_5","earned":null,"proof_kind":"provenance","score_grant":8}
+      ],
+      "score": {"lifetime":0,"run":0}
+    },
+    "fiscal": {
+      "credit": 4,
+      "credit_cap": {"amount":1000,"reason_key":"cap.fiscal_credit"},
+      "credit_per_period": 3,
+      "generator_levels": [{"generator_id":"generator.beige_tower","level":0,"level_cap":{"amount":100,"reason_key":"cap.fiscal_level.beige_tower"},"next_level_cost":1,"ppm_per_level":10000}],
+      "hoard": {"cap_credits":100,"preview_ppm":100000,"reason_note":"next_run"},
+      "period": {"auto_ms":300,"early_ms":100,"early_success_ppm":500000,"guaranteed_ms":200,"opened_wall_ms":1800000000000,"seq":17},
+      "sweep_preview": {"credit_after":10,"credited":6,"periods":2,"saturated":false},
+      "unlocks": [{"cost":3,"owned":false,"unlock_id":"minigame.pitch"},{"cost":5,"owned":false,"unlock_id":"unlock.arcade"}]
+    },
+    "meters": {
+      "meters": [
+        {"band_id":"low","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"doom.probability","min":0,"value":50},
+        {"band_id":"low","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"trust.employees.grievance","min":0,"value":0},
+        {"band_id":"high","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"trust.employees.standing","min":0,"value":90},
+        {"band_id":"low","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"trust.investors.grievance","min":0,"value":0},
+        {"band_id":"high","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"trust.investors.standing","min":0,"value":90},
+        {"band_id":"low","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"trust.press.grievance","min":0,"value":0},
+        {"band_id":"high","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"trust.press.standing","min":0,"value":90},
+        {"band_id":"low","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"trust.regulators.grievance","min":0,"value":0},
+        {"band_id":"high","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"trust.regulators.standing","min":0,"value":90},
+        {"band_id":"low","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"trust.users.grievance","min":0,"value":0},
+        {"band_id":"high","bands":[{"band_id":"low","floor_value":0},{"band_id":"high","floor_value":70}],"max":100,"meter_id":"trust.users.standing","min":0,"value":90}
+      ]
+    },
+    "minigames": {"rows":[{"active_session":false,"human_content_locked":false,"minigame_id":"pitch","unlocked":false}]},
+    "pets": null,
+    "reputation": {
+      "available":2,"bonus_factor_next_run":"1.0015e0","bonus_factor_this_run":"1.0015e0","level":3,
+      "nodes": [
+        {"body_key":"reputation_tree.node.unlock_p05.body","cost":1,"kind":"bonus_unlock","node_id":"reputation.unlock.p05","requires":[],"state":"owned","title_key":"reputation_tree.node.unlock_p05.title"},
+        {"body_key":"reputation_tree.node.starter_cash_small.body","cost":2,"kind":"starter","node_id":"reputation.starter.cash_small","requires":[],"state":"available","title_key":"reputation_tree.node.starter_cash_small.title"},
+        {"body_key":"reputation_tree.node.starter_generated_beige_tower.body","cost":3,"kind":"starter","node_id":"reputation.starter.generated_beige_tower","requires":["reputation.starter.cash_small"],"state":"locked","title_key":"reputation_tree.node.starter_generated_beige_tower.title"},
+        {"body_key":"reputation_tree.node.unlock_p25.body","cost":5,"kind":"bonus_unlock","node_id":"reputation.unlock.p25","requires":["reputation.unlock.p05"],"state":"unaffordable","title_key":"reputation_tree.node.unlock_p25.title"},
+        {"body_key":"reputation_tree.node.starter_upgrade_continuous_feed_paper.body","cost":4,"kind":"starter","node_id":"reputation.starter.upgrade_continuous_feed_paper","requires":["reputation.starter.generated_beige_tower"],"state":"locked","title_key":"reputation_tree.node.starter_upgrade_continuous_feed_paper.title"},
+        {"body_key":"reputation_tree.node.starter_cash_large.body","cost":12,"kind":"starter","node_id":"reputation.starter.cash_large","requires":["reputation.starter.cash_small","reputation.unlock.p25"],"state":"locked","title_key":"reputation_tree.node.starter_cash_large.title"},
+        {"body_key":"reputation_tree.node.unlock_p50.body","cost":25,"kind":"bonus_unlock","node_id":"reputation.unlock.p50","requires":["reputation.unlock.p25"],"state":"locked","title_key":"reputation_tree.node.unlock_p50.title"},
+        {"body_key":"reputation_tree.node.unlock_p75.body","cost":100,"kind":"bonus_unlock","node_id":"reputation.unlock.p75","requires":["reputation.unlock.p50"],"state":"locked","title_key":"reputation_tree.node.unlock_p75.title"},
+        {"body_key":"reputation_tree.node.unlock_p100.body","cost":400,"kind":"bonus_unlock","node_id":"reputation.unlock.p100","requires":["reputation.unlock.p75"],"state":"locked","title_key":"reputation_tree.node.unlock_p100.title"}
+      ],
+      "per_level_ppm":10000,"spent":1,"unlock_ppm":50000
+    },
+    "opportunity": {"attended_now_ms":800,"buffs":[],"combo":{"cap":"1e4","reason_key":"cap.active_combo","saturated":false},"pending":null}
+  },
+  "founder_revision": 7,
+  "generators": [
+    {"generator_id":"generator.answering_machine","max_affordable":0,"next_cost":"1.44e3","next_cost_resource_id":"company.cash","owned":0,"provisioned":0,"provision_cap":null,"rate_contribution":"0"},
+    {"generator_id":"generator.beige_tower","max_affordable":0,"next_cost":"1e1","next_cost_resource_id":"company.cash","owned":0,"provisioned":0,"provision_cap":{"amount":9007199254740991,"reason_key":"generator.beige_tower.provisioned_cap"},"rate_contribution":"0"},
+    {"generator_id":"generator.beige_tower_v2","max_affordable":0,"next_cost":"3.5831808e8","next_cost_resource_id":"company.cash","owned":0,"provisioned":0,"provision_cap":null,"rate_contribution":"0"},
+    {"generator_id":"generator.crt_wall","max_affordable":0,"next_cost":"2.48832e6","next_cost_resource_id":"company.cash","owned":0,"provisioned":0,"provision_cap":null,"rate_contribution":"0"},
+    {"generator_id":"generator.dot_matrix_queue","max_affordable":0,"next_cost":"1.2e2","next_cost_resource_id":"company.cash","owned":0,"provisioned":0,"provision_cap":null,"rate_contribution":"0"},
+    {"generator_id":"generator.first_hire","max_affordable":0,"next_cost":"2.985984e7","next_cost_resource_id":"company.cash","owned":0,"provisioned":0,"provision_cap":null,"rate_contribution":"0"},
+    {"generator_id":"generator.garage_rack","max_affordable":0,"next_cost":"2.0736e5","next_cost_resource_id":"company.cash","owned":0,"provisioned":0,"provision_cap":null,"rate_contribution":"0"},
+    {"generator_id":"generator.legal_dept","max_affordable":0,"next_cost":"1e8","next_cost_resource_id":"company.cash","owned":0,"provisioned":0,"provision_cap":null,"rate_contribution":"0"},
+    {"generator_id":"generator.nephew_intern","max_affordable":0,"next_cost":"1.728e4","next_cost_resource_id":"company.cash","owned":0,"provisioned":0,"provision_cap":null,"rate_contribution":"0"}
+  ],
+  "manual_action": {"action_id":"manual.click","bucket_cap_milli":50000,"refilled_at_ms":1800000000000,"refill_milli_per_ms":25,"tokens_milli":50000},
+  "progress": [{"current":"0","stage_id":"progress.tier","target":"1e0"}],
+  "resources": [
+    {"amount":"0","cap":{"amount":"1e1000","reason_key":"resource.company_cash.cap.phase0"},"rate_per_second":"0","resource_id":"company.cash"},
+    {"amount":"0","cap":{"amount":"2.4e1","reason_key":"resource.company_permits.cap.phase0"},"rate_per_second":"0","resource_id":"company.permits"}
+  ],
+  "revision": 3,
+  "run": {"category":"any_percent","exit_count":0,"founder_id":"01986666-f200-4000-8000-000000000001","run_seq":2,"run_started_at_ms":1800000000000,"tier":1},
+  "schema_version": 4,
+  "server_now_ms": 1800000000800,
+  "transitions": {"cross_gate":null,"wind_down":{"eligible":true}},
+  "upgrades": [
+    {"cost_amount":"1e3","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.beige_tower_cache"},
+    {"cost_amount":"1.2e4","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.continuous_feed_paper"},
+    {"cost_amount":"2.48832e8","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.crt_degauss_button"},
+    {"cost_amount":"7.5e7","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.employee_handbook_v0"},
+    {"cost_amount":"2e4","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.hold_music_license"},
+    {"cost_amount":"1e8","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.institutional_memory"},
+    {"cost_amount":"2e4","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.nephew_business_cards"},
+    {"cost_amount":"2.0736e7","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.rack_rail_standardization"},
+    {"cost_amount":"2e8","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.refurbished_sticker"},
+    {"cost_amount":"4e1","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.reply_all_macro"}
+  ]
+}

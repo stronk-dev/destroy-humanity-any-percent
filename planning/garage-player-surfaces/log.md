@@ -5896,3 +5896,24 @@ GS2-A4 exact purchase→earned-event→rendered-row proof; GS3-A4 author-blocked
   2ce9e31c to the Garage cross-party range. No acceptance/archival or full 1.0 claim.
 - Next: diagnose RP-365's underlying service error; GS1-A1's shared v4 decode/failure evidence
   still needs exact reconciliation, GS3-A4/RP-363 still requires author body reconciliation.
+
+## 2026-10-07 — GS1-A1 shared projection and AC2 parity
+
+- Test-only: one small `testdata/gameui/fiscal-snapshot-v4.json`, verified against the complete
+  actual Go projector by `TestFiscalSharedSnapshot` and decoded by TS. Nonempty Fiscal credit4 /
+  swept10, Company3/Founder7; diagnostic run2, not fresh-bootstrap or release-artifact proof.
+  TS rejects extra fields at eight Fiscal boundaries and the four other AC2 invalid classes.
+- `make test-go vet GO_PACKAGES=./gameui GO_TEST_FLAGS=-count=1` PASS; existing DB tests skip
+  without a URL. Persisted proof is the preceding real-Postgres batch, not this unit invocation.
+  `client/node_modules/.bin/vitest run --root client test/game-ui.test.ts test/garage-surfaces.test.ts`
+  PASS (89); `make typecheck` PASS (zero errors/warnings). First pnpm launcher failed fetching
+  its own dependency before tests; the installed Vitest runner executed the actual population.
+- Required extra-field fault: remove only Fiscal arm's exact-key guard, run the focused shared
+  snapshot describe; exit1 with the arm-extra-key assertion failing and eight controls passing.
+  Restore original `contracts.ts` SHA43bfd6140dc7479eb800871fbc9225b914fe2a36a4a6364a813cfa4a3eabcb2b;
+  final complete focused pair passes. No production bytes retained or assertion weakened.
+- Review by: Codex (implementer first filter); Recorded by: Codex. This batch afterbe9927e1
+  joins the Garage designated review range. GS1-A1/AC2 locally proven, not feature acceptance.
+  No browser journey rerun for fixture/decoder tests, no full CI green claimed: full composed
+  target remains RED at RP-365/D-024; GS3-A4/RP-363 remains author-blocked. Next: remaining
+  accepted per-surface gaps, with clock repair held for its explicit shared-contract decision.

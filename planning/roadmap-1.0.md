@@ -8,7 +8,7 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 **Current checkpoint (2026-10-07):** RP-365 care conflict now has a proved backwards-clock route:
 real adoption/pause/feed and deterministic cutoff regressions. Sources restored, reproduction
 retained; D-024/draft Monotonic Founder Attendance must resolve the shared boundary before repair.
-GS1 persisted Fiscal and GS2 acquisition proof remain; shared-decode reconciliation can continue.
+GS1 persisted/shared Go→TS Fiscal, AC2 parity and GS2 acquisition are locally proven (Garage log).
 Full target/care acceptance and designated reviews remain open. Evidence: latest Cosmetic log.
 RP-363, RP-364 and the complete nine-tier product/platform/release obligations remain unchanged.
 

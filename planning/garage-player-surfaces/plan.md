@@ -7,11 +7,11 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint: GS1-A1 now has real Postgres preview→harvest/receipt→persisted credit
-proof, with normal live-clock and cap controls; required unswept fault fails and restored
-main composed journey passes. GS2-A4 acquisition proof remains. Evidence: latest `log.md`.
-Full target is RED at care.feed conflict RP-365; diagnose in the Cosmetic lane next.
-GS1 shared-decode evidence and designated review remain; GS3-A4/RP-363 is author-blocked.
+Current checkpoint: GS1-A1 persisted boundary and shared Go→TS v4 projection are locally
+proven; AC2's five invalid-fixture classes execute against that same snapshot. GS2-A4
+acquisition proof remains. Commands, fault/restoration and limits: latest `log.md`.
+Full target is RED at care.feed conflict RP-365; repair requires D-024's shared-clock choice.
+Designated review remains; GS3-A4/RP-363 is author-blocked.
 RP-364 Buy diagnostics do not establish the original intermittent timeout's cause.
 
 Historical checkpoint before the GS2 supplement: RP-362/363 fired a real initial-meter authority conflict;

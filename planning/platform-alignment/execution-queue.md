@@ -6,9 +6,9 @@ their independent review obligations remain live.
 ## Current action — 2026-10-07
 
 RP-365's backwards-clock failure route is diagnosed; D-024/draft Monotonic Founder Attendance
-must settle the shared boundary before repair (Cosmetic log/reproducer). Next safe accepted
-work: GS1 shared-decode evidence reconciliation. Persisted Fiscal and GS2 acquisition witnesses
-are locally proven with required faults; designated review remains.
+must settle the shared boundary before repair (Cosmetic log/reproducer). GS1 shared-decode
+and AC2 parity now locally pass; see the latest Garage log for evidence. Continue the remaining
+accepted per-surface gates; persisted Fiscal and GS2 acquisition require designated review.
 Use the owning plans/logs for results and next work; checkpoints below are historical, not new
 predeclaration requirements. Full target is RED; author RP-363 and all 1.0 obligations remain.
 

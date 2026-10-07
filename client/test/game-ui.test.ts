@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import meterSource from "../../balance/meters/first-content.json";
+import fiscalSnapshot from "../../testdata/gameui/fiscal-snapshot-v4.json";
 
 import { eraForSnapshot, parseGameUISnapshot, toShellSnapshot } from "../src/game-ui/contracts";
 import { decodeGameUIEvent, decodeGameUISystemEvent } from "../src/game-ui/events";
@@ -199,6 +200,46 @@ describe("Game UI decoded event boundary", () => {
     const resync = decodeTransportEnvelope({ v: 2, ch: "world", kind: "system", rev: 0, constants_hash: snapshot.constants_hash, ts: "2026-08-10T12:00:00Z", payload: { code: "resync_required" } })!;
     expect(decodeGameUISystemEvent(restart)).toEqual({ kind: "server_restarting", resume_after_ms: 5000 });
     expect(decodeGameUISystemEvent(resync)).toEqual({ kind: "resync_required" });
+  });
+});
+
+describe("GS1-A1 shared Go Fiscal snapshot", () => {
+  it("decodes the same complete v4 projection checked by Go", () => {
+    const parsed = parseGameUISnapshot(fiscalSnapshot);
+    expect(parsed).toEqual(fiscalSnapshot);
+    if (!("features" in parsed) || parsed.features.fiscal === null) throw new Error("shared fixture must have live Fiscal data");
+    expect(parsed.features.fiscal.credit).toBe(4);
+    expect(parsed.features.fiscal.sweep_preview).toEqual({ credit_after: 10, credited: 6, periods: 2, saturated: false });
+    expect(parsed.founder_revision).toBe(7);
+    expect(parsed.revision).toBe(3);
+  });
+
+  const targets = {
+    arm: (value: typeof fiscalSnapshot) => value.features.fiscal,
+    credit_cap: (value: typeof fiscalSnapshot) => value.features.fiscal.credit_cap,
+    period: (value: typeof fiscalSnapshot) => value.features.fiscal.period,
+    sweep_preview: (value: typeof fiscalSnapshot) => value.features.fiscal.sweep_preview,
+    hoard: (value: typeof fiscalSnapshot) => value.features.fiscal.hoard,
+    generator_level: (value: typeof fiscalSnapshot) => value.features.fiscal.generator_levels[0],
+    level_cap: (value: typeof fiscalSnapshot) => value.features.fiscal.generator_levels[0].level_cap,
+    unlock: (value: typeof fiscalSnapshot) => value.features.fiscal.unlocks[0],
+  };
+  it.each(Object.entries(targets))("rejects an extra key in %s", (_name, target) => {
+    const invalid = structuredClone(fiscalSnapshot);
+    (target(invalid) as Record<string, unknown>).unexpected = true;
+    expect(() => parseGameUISnapshot(invalid)).toThrow(/exact/);
+  });
+
+  const invalidSnapshots: Record<string, (value: typeof fiscalSnapshot) => void> = {
+    "missing arm key": (value) => { delete (value.features as Record<string, unknown>).fiscal; },
+    "unsorted rows": (value) => { value.generators.reverse(); },
+    "out-of-domain integer": (value) => { value.features.fiscal.credit = value.features.fiscal.credit_cap.amount + 1; },
+    "non-canonical Decimal": (value) => { value.resources[0].amount = "01"; },
+  };
+  it.each(Object.entries(invalidSnapshots))("rejects %s in the shared v4 projection", (_name, invalidate) => {
+    const invalid = structuredClone(fiscalSnapshot);
+    invalidate(invalid);
+    expect(() => parseGameUISnapshot(invalid)).toThrow();
   });
 });
 
