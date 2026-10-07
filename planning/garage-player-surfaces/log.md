@@ -653,3 +653,33 @@ planning paths), with the designated verdict covering the original five-path
 box, product byte or archival authority. This follow-up record edge remains
 explicit; it is not silently relabelled as reviewed implementation. Next safe
 work is still the original 12-path GS5 producer review.
+
+## 2026-10-07 — GS5 producer designated review, predeclared
+
+**Review by:** Codex (other party). **Recorded by:** Codex. Original Claude
+range: `cdb8fe61^..cdb8fe61`, all twelve paths: Go feature projection/tests,
+kernel wrapper, registered schema, generated OpenAPI/TS, client parser/tests,
+and all three kernel-version mirrors. Product baseline `87fd23d4`, clean.
+The separate Desk consumer `f32f6175`, later records and full Garage acceptance
+are not in this verdict's scope.
+
+RP-313 records a confirmed accepted-body conflict before execution. GS0.1
+still requires the active-play arm under `active_play`; the implementation
+and its log instead use optional `opportunity` because API C2 rejects the
+null-to-union type change. API C2 and the v4 re-baseline description do not
+silently adopt that sibling shape. Author reconciliation is required; no
+accepted body, wire, pin, version, balance or player copy changes here.
+
+Run the existing Go producer and TS parser populations cold plus registered
+schema generation/compatibility tests. Supplement only test coverage for
+read-only repeated projection, output-pointer isolation, ordered multiple
+live buffs, missing artifact and negative clock refusal; these are primitive
+proofs, not admitted full saves or an integrated player workflow. Counterexamples:
+pending expiry changed to `>=`; actual saturation discarded; expired-buff
+filter omitted; client expiry refusal omitted; projected target alias exposed.
+Each probe must compile and fail its named assertion; surviving controls and
+invalid instruments are recorded. One probe at a time, exact source hash
+restoration before the next; no tolerance, timeout, browser, CI or copy changes.
+Current cold evidence does not approve historical kernel protocol, later
+dependent code, all-engine/manual accessibility, real-server acquisition,+content adoption, archival or release readiness. New Codex tests and records
+require their own Claude review, never this designated verdict.
