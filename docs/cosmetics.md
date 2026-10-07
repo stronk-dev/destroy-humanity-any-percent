@@ -127,10 +127,15 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   `cosmetics` and runs the built browser client through real Postgres, gameserver, and WebSocket
   transport. It observes T0 locked → visible T1 Buy → applied intent → server-owned state after
   reload under the request/payment trap; severing the server Cosmetics projector fails the run.
-  Buy and the owned item's equip/unequip controls use one guarded DOM activation after checking
-  visibility, hit-testing, exact label, item state and the actual enabled/non-pending state.
-  Ambiguous labels refuse activation. This is DOM-consumer proof, not native pointer/keyboard
-  AC11 proof. A controlled mounted-host browser test reproduces a refresh suppressing the
+  Buy uses native Enter in the standard fixture and native Space in the Clout fixture, after
+  focusing the visible enabled control. Passive trusted input observations require exactly one
+  keyboard activation, one matching request/receipt and the next Founder revision. Ownership
+  must render authoritatively, receive focus, and survive reload at that revision. Focus setup
+  is explicit; this is not a keyboard-only navigation or assistive-technology study.
+  The owned item's equip/unequip controls retain one guarded DOM activation after checking
+  visibility, hit-testing, exact label, item state and enabled/non-pending state; ambiguous
+  labels refuse activation. Those steps do not prove native pointer/keyboard input.
+  A controlled mounted-host browser test reproduces a refresh suppressing the
   native click after pointer-down; a completed pointer command alone cannot prove submission.
   Adoption/equip/care/unequip check exact applied receipts, then wait for the mounted host's
   authoritative refresh to finish within the same 30-second action deadline before inspecting

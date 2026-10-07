@@ -10,13 +10,14 @@ import { fileURLToPath } from "node:url";
 
 import { chromium } from "playwright";
 import { build } from "vite";
-import { activateCosmeticBuy } from "./activate-cosmetic-buy.mjs";
+import { activateCosmeticBuy, assertNativeCosmeticBuyTrace } from "./activate-cosmetic-buy.mjs";
 
 const args = process.argv.slice(2);
 if (args.length !== 0 && (args.length !== 1 || args[0] !== "--axis-stack")) {
   throw new Error("supported composed fixture option: --axis-stack");
 }
 const axisFixture = args.length === 1;
+const buyKey = axisFixture ? " " : "Enter";
 const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = path.resolve(clientRoot, "..");
 const gameserverURL = "http://127.0.0.1:18082";
@@ -344,7 +345,7 @@ async function founderDOMIntent(page, requests, control, kind, expectedFields) {
     if (kind === "equip_cosmetic" || kind === "unequip_cosmetic") {
       phase = "guarded-dom-activation";
       // G10 proves the real DOM consumer/persisted result, not physical pointer
-      // timing. As for AC14 Buy, wait for ready state and activate once in that
+      // timing. Wait for ready state and activate once in that
       // same browser task; a completed pointer sequence need not emit a click.
       await page.evaluate(activateCosmeticBuy, { label: await control.innerText(), state: "owned", budgetMs: remaining() });
     } else {
@@ -537,18 +538,19 @@ try {
   await page.addInitScript(() => {
     const failures = [];
     globalThis.__cosmeticN5Failures = failures;
-    // Passive input trace includes the single guarded DOM activation below;
+    // Passive input trace includes the native keyboard Buy activation below;
     // no retries, network bodies/tokens or gameplay API shortcuts.
     globalThis.__cosmeticBuyTrace = [];
     globalThis.__cosmeticActionTrace = null;
-    for (const type of ["pointerdown", "pointerup", "click"]) document.addEventListener(type, (event) => {
+    for (const type of ["pointerdown", "pointerup", "click", "keydown", "keyup"]) document.addEventListener(type, (event) => {
       const traces = [globalThis.__cosmeticBuyTrace, globalThis.__cosmeticActionTrace].filter(Array.isArray);
       if (traces.length === 0) return;
       const target = event.target instanceof Element ? event.target : null;
       const button = target?.closest("button");
       const main = document.querySelector("main");
       const item = button?.closest("[data-cosmetic]");
-      const row = { type, time: performance.now(), trusted: event.isTrusted,
+      const row = { type, time: performance.now(), trusted: event.isTrusted, key: event.key ?? null,
+        focused: button ? document.activeElement === button : false,
         target: target?.tagName ?? null, button: button?.textContent ?? null,
         disabled: button?.disabled ?? null, connected: button?.isConnected ?? null,
         cosmetic: item?.getAttribute("data-cosmetic") ?? null, state: item?.getAttribute("data-state") ?? null,
@@ -618,7 +620,7 @@ try {
   // by a frame. Require the actual control to become actionable, without
   // dispatching a second purchase or treating a disabled button as success.
   const beforeIntents = requests.filter(isAcquire).length;
-  let phase = "actionability", response;
+  let phase = "actionability", response, boundary, buyLabel;
   async function buyBoundary() {
     const dom = await page.evaluate(() => {
       const events = globalThis.__cosmeticBuyTrace;
@@ -636,19 +638,18 @@ try {
   }
   try {
     await buy.click({ trial: true, timeout: 30_000 });
-    const buyLabel = await buy.innerText();
-    phase = "guarded-dom-activation";
+    buyLabel = await buy.innerText();
+    await buy.focus();
+    assert.equal(await buy.evaluate((control) => document.activeElement === control), true, "Buy must receive focus before native input");
+    await page.evaluate(() => { globalThis.__cosmeticBuyTrace = []; });
+    phase = "native-keyboard-activation";
     // Handle rejection immediately even if click itself fails first. This
     // keeps the original response timeout without an unhandled second error.
     const appliedResponse = page.waitForResponse((value) => isAcquire(value.request()), { timeout: 30_000 })
       .then((value) => ({ value }), (error) => ({ error }));
-    // Playwright actionability and pointer dispatch are separate tasks. A
-    // trailing stream refresh can disable Buy in between, correctly preventing
-    // any click/request. AC14 needs the visible DOM consumer, not proof of a
-    // physical pointer sequence (native input has its separate AC11 gate).
-    // Check readiness and click exactly once in the same browser task. Do not
-    // force a disabled control, invoke the runtime or retry an emitted intent.
-    await page.evaluate(activateCosmeticBuy, buyLabel);
+    // Focus is setup; the browser's native Enter/Space default action must
+    // activate the real button. No DOM click fallback or intent retry.
+    await page.keyboard.press(axisFixture ? "Space" : "Enter");
     phase = "response";
     const result = await appliedResponse;
     if (result.error) throw result.error;
@@ -656,17 +657,27 @@ try {
   } catch (error) {
     throw new Error(`cosmetic AC14 Buy boundary failed: ${JSON.stringify(await buyBoundary())}`, { cause: error });
   }
-  console.log(`cosmetic AC14 Buy boundary: ${JSON.stringify(await buyBoundary())}`);
+  boundary = await buyBoundary();
+  console.log(`cosmetic AC14 Buy boundary: ${JSON.stringify(boundary)}`);
+  assertNativeCosmeticBuyTrace(boundary.dom, buyKey, buyLabel);
   const receipt = await response.json();
   if (response.status() !== 200 || receipt.outcome !== "applied" || receipt.event?.kind !== "cosmetic_acquired.v1" || receipt.event?.payload?.cosmetic_id !== "horse_armor" || receipt.event.payload.order_number !== 1) {
     throw new Error(`cosmetic AC14 Buy returned no applied zero-price receipt: ${JSON.stringify(receipt)}`);
   }
   const acquired = requests.filter((request) => request.method() === "POST" && new URL(request.url()).pathname === "/api/v1/intents" && request.postDataJSON()?.kind === "acquire_cosmetic");
-  if (acquired.length !== beforeIntents + 1 || acquired.at(-1).postDataJSON()?.cosmetic_id !== "horse_armor") {
+  const acquireBody = acquired.at(-1)?.postDataJSON();
+  if (acquired.length !== beforeIntents + 1 || acquireBody?.cosmetic_id !== "horse_armor") {
     throw new Error(`cosmetic AC14 Buy issued ${acquired.length - beforeIntents} acquire requests`);
   }
+  assert.deepEqual(Object.keys(acquireBody).sort(), ["cosmetic_id", "expected_revision", "intent_id", "kind"]);
+  assert.equal(acquireBody.expected_revision, beforeBuy.founder_revision);
+  assert.equal(receipt.intent_id, acquireBody.intent_id, "receipt must belong to this native activation");
+  assert.equal(receipt.founder_revision, beforeBuy.founder_revision + 1);
   await shelf.locator('[data-cosmetic="horse_armor"][data-state="owned"]').waitFor({ state: "visible", timeout: 30_000 });
   await shelf.locator("p.receipt[role=status]").waitFor({ state: "visible", timeout: 30_000 });
+  await shelf.locator(".owned").evaluate((owned) => {
+    if (document.activeElement !== owned) throw new Error("native Buy lost focus instead of transferring it to the owned state");
+  });
   directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
   await page.reload({ waitUntil: "networkidle" });
   await shelf.locator('[data-cosmetic="horse_armor"][data-state="owned"]').waitFor({ state: "visible", timeout: 30_000 });
@@ -674,6 +685,8 @@ try {
   if (afterReload.features?.cosmetics?.items?.[0]?.owned !== true || await shelf.locator("p.receipt[role=status]").count() !== 0) {
     throw new Error(`cosmetic AC14 reload did not recover server-owned state: ${JSON.stringify(afterReload.features?.cosmetics)}`);
   }
+  assert.equal(afterReload.founder_revision, receipt.founder_revision);
+  console.log(`composed Cosmetic native ${JSON.stringify(buyKey)}: trusted input → one bound applied receipt → owned focus → persisted reload: PASS`);
 
   // G10: real adoption and wearing, not an injected pet or a literal equipped
   // snapshot. All gameplay writes originate from the built client's DOM.

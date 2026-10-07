@@ -1798,3 +1798,31 @@ revision/band/eligibility/missing-pet mismatches with those exact details, never
 private sentinel. Diagnostic91893 and ordinary whole99343 pass, without explaining63825.
 No care assertion, policy, input, retry or deadline change. The owning Clout log records the
 shared-driver implementation and exact review range; prior Cosmetic review debt remains.
+
+## 2026-10-08 — native Buy activation reaches the actual service
+
+Outcome under §7.3 / AC11 / AC14: the existing composed populations now activate Buy with
+native Enter (standard fixture) and Space (Clout fixture), rather than programmatic click.
+Explicit focus is setup, not a keyboard-only navigation study. Passive observations require
+trusted key-down/click/key-up in the browser's respective ordering, no dropped events, one
+ready focused control and exactly one emitted intent. The applied receipt must bind to that
+intent and next Founder revision; owned focus and the same persisted revision survive reload.
+Equip/unequip retain their existing DOM-consumer boundary. No product, copy, catalog, timeout,
+retry, payment, CI job or gameplay policy changed.
+
+Executed actual root target37641 exits0: five production-asset observer controls, eight real
+Postgres refresh cases, named persisted integration tests, built-client main gameplay/socket
+journey and both Cosmetic populations. Native Enter and Space each report one HTTP200 request,
+trusted input, bound receipt, owned focus and reload; both retain adoption/equip/care/unequip
+and N5 checks. This is fixture proof, not minted product content or long-session reliability.
+
+Affected Chromium/WebKit63338:68 PASS, including the exact trace helper's positive orderings
+and fourteen invalid controls (untrusted click, wrong key, lost focus, duplicate activation,
+missing key-up, truncated trace and pending click). Initial sandbox listen denial ran no tests.
+All-engine44579 executed68 passes but Firefox failed its browser-session connection deadline;
+the stuck aggregate was interrupted (exit130). The explicit two-engine selector is not a
+replacement Firefox pass. Syntax/diff checks pass; no full CI/AT/release acceptance claimed.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. New range `ce626440` exclusive
+through this test/helper/docs/record commit awaits designated review; earlier debt remains.
+No feature archival or push. Next: consolidated Cosmetic review and remaining accepted gates.

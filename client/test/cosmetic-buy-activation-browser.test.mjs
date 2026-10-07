@@ -1,5 +1,33 @@
 import { expect, it } from "vitest";
-import { activateCosmeticBuy } from "../tools/activate-cosmetic-buy.mjs";
+import { activateCosmeticBuy, assertNativeCosmeticBuyTrace } from "../tools/activate-cosmetic-buy.mjs";
+
+for (const key of ["Enter", " "]) {
+  const label = "Buy for $0.00";
+  const event = { trusted: true, focused: true, button: label, cosmetic: "horse_armor", state: "unowned",
+    connected: true, disabled: false, surface: "desk", busy: "false" };
+  const trace = () => ({ dropped_events: 0, events: key === "Enter"
+    ? [{ ...event, type: "keydown", key }, { ...event, type: "click" }, { type: "keyup", key, trusted: true }]
+    : [{ ...event, type: "keydown", key }, { type: "keyup", key, trusted: true }, { ...event, type: "click" }] });
+  it(`native Cosmetic ${JSON.stringify(key)} trace admits the browser's single activation ordering`, () => {
+    expect(() => assertNativeCosmeticBuyTrace(trace(), key, label)).not.toThrow();
+  });
+  for (const wrong of ["untrusted-click", "wrong-key", "unfocused", "duplicate-click", "missing-keyup", "truncated", "pending"]) {
+    it(`native Cosmetic ${JSON.stringify(key)} trace rejects ${wrong} instead of accepting purchase alone`, () => {
+      const value = trace();
+      const click = value.events.find((row) => row.type === "click");
+      switch (wrong) {
+        case "untrusted-click": click.trusted = false; break;
+        case "wrong-key": value.events[0].key = "Escape"; break;
+        case "unfocused": value.events[0].focused = false; break;
+        case "duplicate-click": value.events.push({ ...click }); break;
+        case "missing-keyup": value.events = value.events.filter((row) => row.type !== "keyup"); break;
+        case "truncated": value.dropped_events = 1; break;
+        case "pending": click.busy = "true"; break;
+      }
+      expect(() => assertNativeCosmeticBuyTrace(value, key, label)).toThrow("lacks one native");
+    });
+  }
+}
 
 // Test the exact function sent to Chromium, not a copy of its readiness logic.
 // DOM fixtures prove its guard/one-activation boundary, not server acquisition
