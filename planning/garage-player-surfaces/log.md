@@ -5439,3 +5439,51 @@ wire pins/author-owned RP-313 body, all real service/payout/expiry/composed/auth
 SQL/Firefox/AT/400%/whole-state/era/performance/platform/privacy/numeric/full-
 ending/capacity/review/owner release holds. Full-nine-tier1.0 goal stays active;
 no preview substitution or permission for Docker cleanup/startup Retry.
+
+### RP-359 — four-effect presentation/refusal predeclaration
+
+Baseline69c4f972 clean, preceding goal turn PROGRESS (RP-358 tests/evidence/
+tracking committed); no native handle carried live. Authority accepted GS5
+presentation family, unknown-effect withholding/invariant, Company intent,
+GS0.2/0.6 and unchanged GS5-A5 accessibility floor. Source guards exist; no
+production bug inferred from an absent native population. Read actual registry,
+public parser, host, region and canonical docs. No new copy or design decision.
+
+Ten declarations/20 native executions: active.building,active.click,active.lucky,
+active.production,active.unregistered pending rows ×320/1280 ×Chromium/WebKit.
+Initial public-parser-admitted snapshot has no pending offer but three distinct
+sorted live buff UUIDs (Building/Click/Production) and committed remaining4/5/6s.
+Building target is the fixture's real generator ID; other targets null. Actual
+subscription snapshot inserts a parser-valid offer at Company2 versus Founder7.
+Focus starts on native manual control. Known offer must show whole registered
+title/description/remaining+attended note, correct spawn announcement and
+Lucky-only curtain, with all three buff titles/times and combo cap unchanged.
+Tab then native Enter at320/Space at1280 sends exactly Company2/opportunity ID
+plus normal intent identity, no client-selected effect/target/results. Existing
+typed ordinary expired refusal displays its registered status, not an applied
+receipt or a fabricated gain. No actual acquisition/payout/expiry claim.
+
+Unknown pending row: no Claim/title/description/spawn, exactly the existing
+invariant, no command, focus/region/buffs/cap remain. This is an unknown pending
+effect, not a new policy for unknown buff rows or same-ID content mutation.
+All cases actual native reflow/axe/no focus stealing; finally unmount/restore
+viewport/spies. Never assume fixture admission or silently drop a case.
+
+Required complete real-source controls: wrong pending title; wrong pending
+description; wrong displayed buff title; wrong committed remaining seconds;
+wrong Claim opportunity ID; Company→Founder Claim scope; render unknown offer
+using a valid known fallback while KEEPING its diagnostic; omit unknown-row
+diagnostic; omit Lucky curtain. No ill-typed undefined-row crash counts as a
+withholding probe. Each must finish the unchanged20 population with actual
+assertion failures and restore full host/region/driver/theme hashes before next
+probe. No matching source/HEAD/record edit while its gate is live. Invalid/
+incomplete arms explicitly retained/excluded; no budget/population relaxation.
+
+If a genuine red fires, log it and separately predeclare accepted repair before
+product edits. Final restored full browser (real60s idle/separate performance),
+types/client/build/copy/boundary/topology/no-payment. Test-only until actual
+defect; no wire/schema/API/runtime/math/balance/kernel/payout/copy/CI/dependency/
+budget/owner text/status/archival/mint/push change. Whole69c4f972-exclusive
+through final records needs designated Claude review, all prior spans independent.
+RP-313 author body, capacity/real composed/auth/SQL/Firefox/AT/400%/all-era/
+whole-state/platform/privacy/numeric/endings/full-nine-tier/owner holds remain.
