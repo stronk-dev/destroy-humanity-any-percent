@@ -926,3 +926,21 @@ receipt snapshots, but BOTH actual wireSnapshot producers/committed activation
 receipts omit it. GameUISnapshot.features.axis_stack is a different surface.
 Record now; separately scope accepted-CV5 repair after migration work. DG-B's
 identical-receipt author contradiction does not waive CV5 or authorize body edits.
+
+### Migration reader correction before rerun
+
+97094/a32f81: all3Go negatives and existing11legacy/4Founder pass; both positive
+Exit cases fail because replayed Founder is intentionally an output projection,
+not a complete save (`generators are required`). No production defect: internal
+source reader projects actual Founder public fields, not EncodeState on a partial
+replay object. Predeclare replacing ONLY the external test's Founder adapter
+with a mechanical projection of actual PUBLIC State fields, sorted true sets,
+all11v21 extensions and identity metadata from real frozen inputs. Compare its
+COMPLETE existing founder_output_json unchanged; no echo of expected values,
+new production export or weakened/deleted field assertion. Full Company saves
+continue through actual EncodeState/restore. No full Founder save claim here.
+77033/657ed0: TS9645pass/1new early-field assertion fails on an invented error
+phrase; actual exactObject message is 'save v18 fields are not exact'. Bind
+that exact real admission message before rerun. All5 cases/3negative stages,
+expected outputs/pinned source and other oracles remain unchanged. Both handles
+terminal before editing; no artifact/byte restamp or case filtering.

@@ -1823,3 +1823,14 @@ keys526059/4865fb confirm absent CV5-derived axis_stack. GameUI feature arm
 does not discharge applied receipt contract. Separate accepted-CV5 lane after
 TEST-ONLY corpus work. DG-B/owner-author body holds remain independent.
 Goalactive/progress; no checkbox/status/archive/mint/push/deploy/release call.
+
+### Migration instrument failures — exact stage/partial Founder distinction
+
+97094/a32f81 exits2:3Go negatives/11legacy/4Founder pass,2positive cases fail
+because adapter tried full save encoding on partial replayed Founder. Direct
+public projection, not new production save/export, is predeclared before rerun;
+COMPLETE existing Founder output comparison remains mandatory.77033/657ed0
+exits2:9645clientpass/1new early-field diagnostic mismatch, actual message
+'save v18 fields are not exact', not invented phrase. Plan fixes exact stage
+text, retaining5cases/population/source/expected outputs/other oracles. Both
+terminal; no product finding or green migration claim from these failed runs.
