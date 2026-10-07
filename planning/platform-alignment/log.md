@@ -2987,3 +2987,52 @@ Record the result and exact new evidence-only review range independently of
 the Fiscal implementation and all preceding review obligations. Goal remains
 full nine-tier1.0, active/progress; source outcome ownership RP-326 is next
 accepted diagnostic work after this concrete verification handle terminates.
+
+## 2026-10-07 — Full Linux browser lane RED; observation predeclared
+
+Review by: Codex (executed verification / first filter, not designated).
+Recorded by: Codex. Source `36c28692`, handle94542, root
+`make test-browser-ci`: frozen cold install succeeds; functional collector
+terminates normally after156.01s, Make exit2. Files373 pass/5 fail of378;
+tests30,366 pass/4 fail/6 declared skips of30,376 collected. Two additional
+Firefox suites never collect, so this denominator does not include their
+missing assertions. Existing isolated performance command is NOT reached.
+
+Two Firefox suite failures: `axis-stack-browser.test.ts` and
+`garden-activation-witnesses.test.ts`, failed import; displayed cause names
+`/testdata/axis-stack/game-ui-arm-v1.json?import`. This shared error display
+does not prove each suite had that same request failure. Firefox Garage75
+contains74 passes and one Fiscal Enter failure: `prediction worker failed`
+from `worker-client.ts:12`. Chromium/WebKit Garage75 each pass. Firefox
+Reputation-plan18 has two failures, era_1995 native Enter/Space paths timing
+out at unchanged15s. WebKit Game UI conflicting-return native-worker case
+fails original five-second prediction assertion at line496. These are
+distinct outcomes, not evidence of a common cause; RP-327/328 record them.
+
+HTTP observer summaries:0/0 and548 starts/548 finishes, zero early-close/
+pending, valid. Observation only covers Route JSON and worker modules;
+complete replies do not establish worker execution or all fixture imports.
+Initial tool retrieval truncates66,005 tokens; a later retrieval truncates
+32,220. Thus this is NOT a complete retained per-request trace, while the
+terminal failure diagnostics/denominators above are directly retrieved.
+Git status stays clean: no tracked install/test write. Docker inventory
+read-only:344 images80.06GB,143 volumes40.44GB,3.185GB build cache; this is
+not a filesystem free-space measurement. No cleanup or capacity assumption.
+
+Next **one diagnostic run**, not retry-to-green: same full cold Compose
+service command, all3 engines and existing separate performance lane, with
+only `VITEST_PW_DEBUG=1`. Rechecked pinned provider source: passive
+`requestfailed` listener, no interception/retry. Capture exact request URLs,
+native errors/final counts. Any green result means not reproduced in this
+population, never fixed. Red result retains the original assertion, bounds
+and missing population. Drain output frequently and disclose any remaining
+retrieval truncation. No source edit while live. Inspect only owned test
+container filesystem capacity if needed; never clean other resources. No
+selector, assertion, dependency, worker, CI workflow or security change.
+
+New evidence-only boundary begins `4dcd9969` exclusive and includes36c28692,
+this record/ledger and subsequent result/tracking edges; Claude still owes
+the exact union. Fiscal remains separately `b64a91af..4dcd9969`. Native-Mac
+RP-256, AMD64/hosted CI/manual AT/all-Garage/mint/release holds remain.
+RP-326 is queued after concrete browser diagnosis; full1.0 goal active/
+progress, no lifecycle/status/archival/publication or narrowed scope.
