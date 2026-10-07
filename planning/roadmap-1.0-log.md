@@ -3903,3 +3903,24 @@ unanswered; prior author/content/environment/review/release holds unchanged.
 Whole new span after0c4d6481 INCLUDING record edges needs Claude independently.
 Goalactive/progress; no checkbox/status/archive/mint/push/deploy/release call.
 [Evidence/limits](clout-v1-and-pr-interns/terminal-research.md).
+
+## 2026-10-07 — Pinned v18→v19 activation / real transactional rollback
+
+Predeclaredea43ef5b at65c3a34c, acceptedCV4/AC7 test-only. Six actual oldepoch8
+→unmintedv19 four-transition Go/TS sequences match complete outputs/restores;
+browser-created newrun starts empty and independently re-attains grant2.
+One two-epoch Service/Store/Postgres sequence fires all14 writefaults with
+fullrows/heads rollback, commits/retries once, verifies actual old completed/
+Founder histories and new OPEN-run fullreplayhead. Initial fixture/clock/reader
+mistakes disclosed, no false completed-run promotion. Compiling floor mutations,
+census omission andforgedpoststate fail, all exact sources restored.
+
+Client9575pass/340skip/types/vet/build/topology/native10pass. Original27GoAC6
+failures remain38.883s; historicalRP-131/AMD64/hosted holds unchanged. Existing
+CI lanes discover the newtests but no hostedexecution/fullCIgreen claim. No
+production/version/save/balance/CI/copy/RFC bytes or oldcorpora changed.
+Next separately predeclare action/buff/mode seams. RP-308/representation/natural
+journey/defaultmint/allplatform/review/owner obligations remain. Whole newspan
+after65c3a34c including records needs Claude; older scopes independent. Full1.0
+goalactive/progress, no checkbox/status/archive/mint/push/deploy/release call.
+[Evidence/limits](clout-v1-and-pr-interns/activation-research.md).

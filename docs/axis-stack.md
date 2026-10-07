@@ -111,8 +111,14 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   checks pass, including unchanged-state refusals and genuine v16/v18 legacy
   companions. Both real guard mutants fail and restore exactly. See the
   [terminal observation and correction](../planning/clout-v1-and-pr-interns/terminal-research.md).
-  This is not yet pre-v19→v19 activation coverage, natural progression, all
-  mode/buff seams, an independent Founder-log or SQL transaction witness.
+  Subsequent [pinned activation observation](../planning/clout-v1-and-pr-interns/activation-research.md)
+  covers six actual epoch8v18→unmintedv19 four-transition Go/TS sequences and
+  one two-epoch Service/Store/Postgres path. All14 existing write faults roll
+  back complete rows/heads; normal Exit/retry, old terminal and independent
+  Founder histories, plus the new OPEN run's full logged head match. Actual
+  floor-reset/census/false-state probes discriminate. This is bounded fixture
+  activation evidence, not natural progression, all mode/buff seams, a minted
+  default player journey or full CV4/AC7 acceptance. Claude review remains.
 - Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
   passes and rejects a retroactive-factor fault, but the unchanged production
   engine fails 27 of128 seeded millisecond partitions under full encoded-state

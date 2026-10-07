@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest terminal repair (2026-10-07):** separate72c9983b at0c4d6481,
+**Latest activation checkpoint (2026-10-07):** test-only ea43ef5b at65c3a34c.
+Six actual pinned epoch8v18→unmintedv19 four-transition Go/TS sequences pass.
+One two-epoch live Service/Store/Postgres path fires all14 rollback faults,
+commits/retries once and verifies old completed/Founder histories plus full
+new OPEN-run replay head. Actual floor-reset/census/false-state probes fail
+and restore exactly. Client9575/340skip, types/vet/build/topology/native10
+populations pass; original27AC6/history/AMD64/hosted holds remain. No natural
+progression/default mint/fullCV4 or release claim. Next action/buff/mode seams
+need separate predeclaration; entire newspan after65c3a34c including records
+needs Claude, older spans independent. Proper full1.0 goal remains active.
+[Evidence/limits](clout-v1-and-pr-interns/activation-research.md).
+
+**Previous terminal repair (2026-10-07):** separate72c9983b at0c4d6481,
 kernel165. Six complete same-bundle v19 exits and first next-run actions now
 match Go exactly. All21terminal checks pass, including unchanged-state refusals
 and actual legacy companions; both runtime guard mutants fail and restore.

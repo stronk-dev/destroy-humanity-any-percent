@@ -334,8 +334,14 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   unchanged-state refusals, directnext6/census/five real legacy companions.
   Original/permissive runtime guards fail8/6 and restore exactly. Both reports'
   full re-observation changes ONLY source identities, not any observed outputs.
-  Next separately predeclare pinned pre-v19→v19 activation and relevant action/
-  buff/mode seams; representation/episode meaning/SQL transactions remain open.
+  Subsequent ea43ef5b test-only activation observation executes six actual
+  epoch8v18→unmintedv19 four-transition Go/TS sequences andone live two-epoch
+  Service/Store/SQL path: all14 write faults/full rollback, normal commit/retry,
+  completed old/independent Founder histories and full new OPEN-run replay head.
+  Floor-reset/census/false-state probes fire and restore; initial instrument
+  errors disclosed. [Evidence/limits](../clout-v1-and-pr-interns/activation-research.md).
+  Next separately predeclare relevant action/buff/mode seams; representation/
+  episode meaning/all-mode/natural-mint/persistence breadth remain open.
   This is bounded ordinary parity, not partition,
   new representation, mode/buff, Service/Store or natural-player proof.
   Later predeclare actual paired action/buff/mode/multi-resource seams;

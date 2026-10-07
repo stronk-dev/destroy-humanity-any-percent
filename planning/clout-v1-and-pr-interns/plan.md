@@ -620,3 +620,13 @@ No production repair in this range. Cold selected Go/full client/types/vet/nativ
 Postgres checks. Original27AC6, RP-308, historical kernel/AMD64/hosted holds stay.
 Synchronize records/self first-filter; Claude designated range including edges
 still mandatory. No checkbox/status/archival/mint/push/deploy/release decision.
+
+Activation observation result: six four-transition Go/TS sequences pass; actual
+SQL14faults/fullrollback and normal Handle/retry verified, old completed and
+Founder histories verified, new open-run full logged receipts/events/head match
+(completed-run verdict is honestly log_gap). Initial fixture/reader mistakes
+recorded. Compiling floor mutations/census/forgedstate caught and restored.
+Client9575/340skip/types/vet/build/topology/native10 pass; original27AC6 red.
+No runtime or old artifact bytes changed. Action/buff/mode seams next separate
+scope; fullspan after65c3a34c including records needs Claude. Details/limits in
+activation-research.md. No checkbox/acceptance/archive/mint/push/deploy claim.

@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## CV4/AC7 pinned activation observation — 2026-10-07
+
+Test-only ea43ef5b at65c3a34c, actual old epoch8→unminted axis fixture.
+Six complete four-transition Go/TS sequences match; one real two-epoch live
+Service/Store/Postgres sequence proves14 full-row rollback stages, normal
+commit/retry and independent old completed/Founder plus new open-run replay.
+Initial instrument failures and compiling floor/census/false-state probes are
+recorded, not smoothed over. No production byte changed or fixture demotion.
+
+**READY next:** separately predeclare actual action/buff/mode seams underCV4;
+R-012 representation/partition and RP-308 episode-authority holds remain.
+Client9575/340skip/native10/types/vet/build/topology pass; original27AC6 red,
+historical kernel/AMD64/hosted/prior review/content/owner holds unchanged.
+Whole newspan after65c3a34c including every record edge needs Claude. No
+checkbox/status/archive/mint/push/deploy or full1.0 acceptance.
+[Evidence/limits](../clout-v1-and-pr-interns/activation-research.md).
+
 ## RP-310 terminal corrected / exact next-run continuity — 2026-10-07
 
 Predeclared72c9983b at0c4d6481:ONLY two terminal presence/version predicates

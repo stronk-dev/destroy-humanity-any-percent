@@ -1515,3 +1515,60 @@ two-epoch Service/Store/Postgres sequence with fourteen full-row rollback
 faults, retry and old/new/Founder replay. No experiment or mutation has run.
 Observer failure is a finding, not permission to change runtime/balance/body.
 Old source/corpora unchanged. All previous cross-party and release holds stay.
+
+### Activation instrument corrections before final observation
+
+Go6/TS7 pass, full client9575/340 visible skips. SQL first attempt28911→815e8a
+failed BEFORE gameplay on two current epochs (test seed helper is single-epoch).
+Explicit fixture old-epoch closure preserves pin before next seed. Second
+10813→d6286f hit live Founder parity: fixed noon fixture was in the database
+clock's FUTURE and Fiscal refuses sweeping before its period opened. Use actual
+database clock minus1h for SQL-only initial fixture; deterministic corpus stays
+unchanged. Third53793→d25cc9 reaches/fires ALL14 rollback faults and completes
+normal Exit/retry/new actions, then fails the provisional replay oracle.
+
+Read actual replay ownership: generic old test reader includes automatic Fiscal
+prefixes, but Company replay does not own those; existing reputationCareerReplay
+does the correct separation, independently checked by full Founder history.
+Also VerifyReplayRun requires a TERMINAL run; newrun3 is deliberately open.
+Clarify the predeclared "old/new history replay" means completed old verifier
+PLUS full actual new ApplyLogged receipt/event/head equality, with explicit
+ReplayLogGap for the unfinished run. No gameplay gate weakened, no runtime
+edited; this fixes two instrument assumptions rather than hiding failures.
+These corrections are provisional until the actual corrected SQL run executes.
+
+### Pinned activation result — actual producers and transactional evidence
+
+Predeclaredea43ef5b at65c3a34c. Corrected86481/82638f SQL path passes0.300s.
+Six complete Go/TS four-transition sequences preserve oldfloor18/newfloor19,
+empty initial attainment then independently re-attain grant2 without lifetime
+duplication. Full outputs/restores exact; next browser state actually comes
+from browser Exit, not a supplied Go shortcut. No production byte changed.
+
+All14faults reach exact sentinels/full12table/head rollback; normal Handle
+commits/retries once; actual old completed/Founder histories verify, new OPEN
+run logged receipts/events andfull saved head match. Retention pruning is NOT
+claimed. Initial single-current/futureclock/wrongreader assumptions remain
+disclosed in preceding entry and activation-research.md; none is a product bug.
+
+Go literalfloor mutant29441b BUILDfailure not counted; real floor-minus1
+86111/2bb4a6 fails pinnedartifact/saveversion at firstactualExit. TSfloor
+35774/977e0b fails six newcomplete receipt oracles +previousterminal6 (12).
+Census14609/bda9cd fails despite missingcase enumeration; forgednextpurchase
+20793/f4735b fails fullpoststate. All exact original sources restored before
+writer/finalchecks; no handle edits/restarts/mutantleft.
+
+Final newwriter83135/c9eeb2 .362s; native10227/85d1213.247s ALL10research/
+integration populations execute/noSkip, SQL1215/16oldreportsexact. Client
+13077/b89da3 9575pass/340skip. Types/vet/topology/build72913/141726 zero
+diagnostics/13negativecontrols/213modules399ms. Cold45068/4d3ef1 production
+38.883s fails ONLYoriginal27AC6;economy6.211/decimal.234/kernel.174pass.
+HistoricalRP-131/AMD64/hosted remain, no wholeCIgreen claim. Existing Actions
+server PG/core andclientVitest discover the newtests; source routing not hosted
+execution. Kernel165/oldcorpora unchanged; selected sourceSHA pinned newreport.
+
+Docs/ledger/queues/roadmap synchronized; next separately predeclare actual
+action/buff/mode seams. RP-308 delegation unanswered, no accumulationwaiver.
+Whole newspan after65c3a34c INCLUDING allrecords needs Claude independently;
+older spans remain. Goalactive/progress; no checkbox/status/archive/mint/push/
+deploy/release call. No fullCV4/Clout/natural-player/1.0 acceptance.
