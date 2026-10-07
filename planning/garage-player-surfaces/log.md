@@ -2752,3 +2752,37 @@ runtime behavior, all acceptance criteria, full browser/SQL/AT/default-player
 populations or release readiness. GS6-A2 cosmetic source authority is separate:
 the later accepted Shop's legitimate commands must not be incorrectly banned.
 No checkbox/lifecycle/archive/push/release change; no review relay authorized.
+
+## 2026-10-07 — AC4 current-source results; GS6-A2 baseline predeclared
+
+Healthy boundary 2a5deeee baseline passes 14 shell/8 UI/22 Game UI files.
+Four independent valid-Svelte seeds fail root make verify-client-boundary,
+each exit 2: 767166 text -> Copy pipeline policy; d42dda raw fetch -> raw
+network policy; d76e00 real shell/runtime type import -> authoritative/runtime
+import policy; cbe6c1 literal color -> governed token policy. Every seed
+first passed the actual Svelte parser. Source SHA verified after each
+restoration; scanner never changed. Final root 35939 boundary/typecheck exits
+0 with zero errors/warnings. These are source-policy witnesses, not runtime
+or cross-party acceptance. No production diff or transient seed remains.
+
+Next accepted GS6-A2 baseline, before any guard repair: inspect current
+mounted component source against the actual production cosmetic intent
+constants/isCosmeticIntent dispatch. Current legitimate host calls are
+acquire_cosmetic/equip_cosmetic/unequip_cosmetic; the public registry's generic
+intent envelope is not itself an authority for their kind strings. Existing
+boundary scanner has no intent-kind check. Insert one syntactically valid
+registered-copy button in the legacy free shelf invoking existing act with
+kind buy_horse_armor and cosmetic_id horse_armor; no gameplay/browser run,
+no real command submitted. Existing boundary should not reject it merely on
+copy/style/import/network grounds. Record an actual survivor as missing
+source-guard coverage, not a real unregistered button present at healthy HEAD.
+Restore GameUIApp exactly and record its initial SHA before the seed.
+
+If confirmed, predeclare a bounded verification-tool/source-test correction
+under GS6-A2 before implementing. It must derive kinds from the production
+authority, not a new manually maintained list, parse actual component AST,
+retain registered free-shop commands, reject unknown/dynamic cosmetic kind
+evidence loudly and demonstrate its own seeded failures. No product, schema,
+balance/copy/kernel or CI topology/Make change follows from this probe.
+All designated review, author/body, Docker, full performance/accessibility/
+default-player/full-nine-tier release holds remain; no status promotion.
