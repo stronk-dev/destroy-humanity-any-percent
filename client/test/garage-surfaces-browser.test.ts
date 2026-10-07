@@ -309,6 +309,24 @@ for (const width of [320, 1280] as const) {
     });
   }
 
+  it.skipIf(!browser)(`GS2 shared-state transport not ready alone ${width}`, async () => {
+    const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+    const runtime = new Runtime(); runtime.current = parseGameUISnapshot(structuredClone(v4));
+    const subscribe = vi.spyOn(runtime, "subscribe").mockImplementation((_founder, listener) => { runtime.listener = listener; return () => {}; });
+    let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+    try {
+      fixture = await mounted(runtime); const { target } = fixture;
+      const nav = button(target, t("surface.achievements.title", {}, "era_1995")); nav.focus();
+      await userEvent.keyboard("{Enter}"); await settle();
+      sharedStateVisibleText(target, "p", t("common.stale_note", {}, "era_1995"));
+      sharedStateVisibleText(target, ".achievements p", t("achievements.score_frame", { run: 2, lifetime: 5 }, "era_1995"));
+      expect(document.activeElement).toBe(nav); expect(runtime.requests).toEqual([]);
+      runtime.listener?.({ kind: "transport_recovered" }); await settle();
+      expect(target.textContent).not.toContain(t("common.stale_note", {}, "era_1995"));
+      expect(document.activeElement).toBe(nav); expect(runtime.requests).toEqual([]);
+    } finally { try { if (fixture) await fixture.dispose(); } finally { subscribe.mockRestore(); await page.viewport(1280, 720); } }
+  });
+
   for (const retainFact of [true, false]) {
     it.skipIf(!browser)(`GS2 shared-state null arm focuses Desk ${width}/${retainFact ? "retained-fact" : "removed-fact"}`, async () => {
       const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
@@ -333,7 +351,8 @@ for (const width of [320, 1280] as const) {
     });
   }
 
-  it.skipIf(!browser)(`GS2 shared-state newer user selection cancels forced focus ${width}`, async () => {
+  for (const selection of ["settings", "desk"] as const) {
+  it.skipIf(!browser)(`GS2 shared-state newer user selection cancels forced focus ${width}/${selection}`, async () => {
     const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
     const { target, runtime, dispose } = await mounted();
     try {
@@ -343,11 +362,12 @@ for (const width of [320, 1280] as const) {
       flushSync();
       // Controlled synchronous DOM delivery before the queued focus task:
       // exercises the real nav handler, not physical human race timing.
-      const settings = button(target, t("surface.settings.title", {}, "era_1995")); settings.focus(); settings.click();
-      await settle(); expect(target.querySelector("main")?.dataset.surface).toBe("settings");
-      expect(document.activeElement).toBe(settings); expect(runtime.requests).toEqual([]);
+      const choice = button(target, t(selection === "settings" ? "surface.settings.title" : "surface.desk.title", {}, "era_1995")); choice.focus(); choice.click();
+      await settle(); expect(target.querySelector("main")?.dataset.surface).toBe(selection);
+      expect(document.activeElement).toBe(choice); expect(runtime.requests).toEqual([]);
     } finally { try { await dispose(); } finally { await page.viewport(1280, 720); } }
   });
+  }
 }
 
 // RP-330: real semantic layout over decoder-admitted public fixtures, not

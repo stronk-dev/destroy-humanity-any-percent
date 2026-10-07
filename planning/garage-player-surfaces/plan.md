@@ -7,7 +7,25 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: GS2-A1/A5 visible Trophy Case fixtures and RP-338 native
+Latest bounded work: RP-339–341 accepted GS0.5/0.6 host repair after actual
+red test checkpoint6d36a9d3 and separate product predeclaration88153822.
+Held Desk read now has heading/status, Trophy stale values are disclosed,
+forced arm-loss Desk focus is cancellable by newer selection/snapshot.
+Forty selected native executions pass; nine real faults discriminate and
+restore exactly. Final full Garage326 /performance two, client9,814 /487
+explicit skips/types/build/copy/source/static topology pass. Compilation
+collision in first attempt disclosed and fixed before behavioral evidence.
+Entire0fe2f57c-exclusive span through this repair/record commit needs Claude,
+including both predeclarations and failed-test checkpoint; earlier exact
+ranges remain owed. No checkbox/lifecycle/archive/push/release promotion.
+Next: predeclare remaining forced-context focus populations (Fiscal/Meters/
+Reputation) under GS0.5/0.6; first-read failure/retry requires a separate truth
+audit, not invented UI. Real GS2-A4/Linux/SQL remain capacity-held, cleanup
+permission unanswered, no deletion/full-disk rerun. Firefox/manual AT/zoom/
+author/body/GS4/full AC7/default-player/privacy/platform/numeric/full-nine-
+tier1.0 obligations remain live.
+
+Preceding bounded work: GS2-A1/A5 visible Trophy Case fixtures and RP-338 native
 nav repair. Test-only6c578197..ffabda04 records actual WebKit Tab failure;
 separate e30b5e00 predeclares explicit tabindex0 on ten existing nav buttons,
 unchanged order/handlers/copy. Twelve public fixture cases×two engines cover

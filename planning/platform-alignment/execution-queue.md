@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage shared host states checkpoint — 2026-10-07
+
+RP-339–341 actual red baseline6d36a9d3, separate product scope88153822:
+Desk loading heading/status, Trophy stale-value disclosure and cancellable
+forced Desk-heading focus. Forty native selected executions pass; nine
+actual faults discriminate and restore exactly. Final Garage326 /performance
+two, client9,814 /487 explicit skips/types/build/copy/source/static topology
+pass. **READY FOR CLAUDE:** complete0fe2f57c-exclusive span through containing
+repair/record commit, including failed-first checkpoint and product authority.
+Prior85fdcfdf..0fe2f57c and every earlier exact range remain independently owed.
+
+**NEXT:** predeclare remaining GS0.5/0.6 forced-context focus populations;
+first-read failure/retry is a separate truth audit, not permission to invent
+recovery UI. Actual GS2-A4/Linux/SQL capacity-held; no Docker cleanup approval,
+deletion or full-disk run. All Firefox/AT/zoom/body/GS4/full AC7/default-player/
+privacy/platform/numeric/full-nine-tier1.0 gates remain; no lifecycle/push.
+
 ## Garage visible Trophy Case / native nav checkpoint — 2026-10-07
 
 GS2-A1/A5 under6c578197; red test-only checkpointffabda04 records RP-338

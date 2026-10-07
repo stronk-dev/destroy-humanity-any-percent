@@ -41,7 +41,19 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   Ten actual faults discriminate, including an unnamed nav button triggering
   axe `button-name` and a removed nav Tab attribute failing WebKit. Evidence
   covers these Chromium/WebKit fixtures, not every conditional nav population,
-  loading/reconnect/null-arm state, Firefox, actual 400% zoom or manual AT.
+  all shared states, Firefox, actual 400% zoom or manual AT.
+- **Shared host states (RP-339–341):** a credentialled first Desk read shows
+  its heading and the existing loading status, without fabricated controls.
+  Trophy Case retains authoritative scores/rows during offline, resync or
+  not-ready transport and visibly marks them stale; recovery clears that note.
+  Loss of a mounted achievement/Fiscal/Meters/Reputation arm returns to Desk
+  and schedules Desk-heading focus after rendering. A newer selection or
+  snapshot cancels that pending focus; normal tab choices retain nav focus.
+  Forty native Chromium/WebKit executions cover held Desk read and Trophy
+  reconnect/null-arm/cancellation fixtures at 320/1280 px. Nine actual faults
+  discriminate. This does not prove the other forced contexts, first-read
+  failure/retry, real-service recovery, Firefox, manual AT or the full shared
+  accessibility floor. Independent review remains pending.
 - **Achievement/meter announcements:** exact event decoders drive the single polite chrome
   announcement, not game-state arithmetic. Achievement copy is announced once per scoped cursor;
   meter changes announce on the Meters surface or badge its nav until visited. Unknown presentation

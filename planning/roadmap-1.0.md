@@ -5,7 +5,21 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** GS2 visible Trophy Case/RP-338 native
+**Latest bounded work (2026-10-07):** RP-339–341 shared host repair. Actual
+red test-only checkpoint6d36a9d3 precedes separate accepted product scope
+88153822. Held Desk read has heading/loading status; Trophy stale values
+stay visible and disclosed; forced Desk focus cancels after a newer choice.
+Forty native fixture executions and nine real faults discriminate; final
+Garage326 /performance two, client9,814 /487 skips/types/build/copy/source/
+static topology pass. Not real-service/full Linux/Firefox/manual AT/all-state
+or release proof. Full0fe2f57c-exclusive span through records requires Claude
+separately from earlier spans. Next accepted work: remaining forced-context
+focus fixtures; first-read failure/retry separately audited, not improvised.
+Docker cleanup permission unanswered; no deletion/full-disk rerun. Real GS2-A4
+and all existing full-nine-tier1.0/owner/body/privacy/platform/numeric/review
+holds remain. No lifecycle/push/preview substitution.
+
+**Preceding bounded work (2026-10-07):** GS2 visible Trophy Case/RP-338 native
 nav correction. Real WebKit Tab baseline red, first test-only6c578197..
 ffabda04, then scoped accepted repair predeclaratione30b5e00. Ten existing
 nav buttons now explicit tabindex0, unchanged order/copy/handlers. Twelve

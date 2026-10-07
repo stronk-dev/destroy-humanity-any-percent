@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, tick as afterDOMUpdate } from "svelte";
 
   import type { GameUISnapshot } from "../api/generated/types";
   import { applicationCopyCatalog, t, type CopyEra, type CopyKey } from "../copy";
@@ -47,6 +47,7 @@
   let snapshot = $state<ParsedGameUISnapshot | undefined>();
   let surface = $state<GameUISurfaceID>(initialSurface);
   let navigation = new GameUINavigation(initialSurface);
+  let selectionGeneration = 0;
   let actionPending = $state(false);
   let refreshPending = $state(false);
   const pending = $derived(actionPending || refreshPending);
@@ -102,6 +103,7 @@
   }
 
   function show(next: GameUISurfaceID): void {
+    selectionGeneration += 1;
     if (next === "meters") metersChanged = false;
     if (next === "fiscal") fiscalHarvested = false;
     navigation.select(next);
@@ -473,7 +475,15 @@
   $effect(() => {
     const armless = surface === "achievements" && !liveFeatures?.achievements || surface === "fiscal" && !liveFeatures?.fiscal ||
       surface === "meters" && !liveFeatures?.meters || surface === "reputation_tree" && !liveFeatures?.reputation;
-    if (snapshot && armless) show("desk");
+    if (snapshot && armless) {
+      const forcedSnapshot = snapshot;
+      show("desk");
+      const forcedSelection = selectionGeneration;
+      void afterDOMUpdate().then(() => {
+        if (selectionGeneration !== forcedSelection || snapshot !== forcedSnapshot || surface !== "desk") return;
+        root?.querySelector<HTMLElement>("#desk-heading")?.focus();
+      });
+    }
   });
   const founderControls = $derived(founderRevision !== undefined && !offline && !resyncing);
 
@@ -531,6 +541,9 @@
   {/if}
 
   {#if snapshot}<p class="announcement" role="status">{announcement}</p>{/if}
+  {#if snapshot && surface === "achievements" && (offline || resyncing || !transportReady)}
+    <p class="snapshot-stale">{t("common.stale_note", {}, era)}</p>
+  {/if}
   {#if snapshot && surface !== "fiscal" && surface !== "pet"}<p class="intent-notice" role="status">{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>{/if}
   {#if draining}
     <aside class="notice" role="status"><strong>{t("system.drain_notice.title", {}, era)}</strong><span>{t("system.drain_notice.body", {}, era)}</span></aside>
@@ -555,9 +568,14 @@
         <small>{t("screen.vision_slide.small_print", {}, era)}</small>
       </article>
     </section>
+  {:else if !snapshot && surface === "desk"}
+    <section class="surface loading" aria-labelledby="loading-heading">
+      <h1 id="loading-heading" tabindex="-1">{t("surface.desk.title", {}, era)}</h1>
+      <p role="status">{t("common.loading", {}, era)}</p>
+    </section>
   {:else if snapshot && surface === "desk"}
     <section class="surface desk" aria-labelledby="desk-heading">
-      <h1 id="desk-heading">{t("surface.desk.title", {}, era)}</h1>
+      <h1 id="desk-heading" tabindex="-1">{t("surface.desk.title", {}, era)}</h1>
       {#if liveFeatures?.pet_adoption}
         {@const adoption = liveFeatures.pet_adoption}
         <AdoptionCard availability={adoption.pet_adoption} adopted={adoption.pets[0]} {era} {pending} controlsEnabled={founderControls}

@@ -4525,3 +4525,29 @@ Permission still unanswered, no deletion/full-disk run. All author/body/
 GS4/full AC7/AT/default-player/privacy/platform/numeric/review/full-nine-tier
 1.0 holds remain. Goal active/progress, not complete/blocked; no archive/
 push/mint/deploy/shortened-preview substitution.
+
+## 2026-10-07 — shared host loading/stale/forced focus RP-339–341
+
+Actual red checkpoint6d36a9d3, product scope88153822 separately predeclared.
+Forty native selected executions: held first read, five Trophy transport
+states, retained/removed-fact null-arm focus and controlled newer selection.
+Nine real source faults fail; Settings cancellation survivor and not-ready
+fault's additional restart failure disclosed. First attempt's tick naming
+collision fixed before any behavioral claim. Existing copy only, no new
+mechanics/clock/CI/balance/RFC-body changes; sources restored exactly.
+
+Final Garage326/326 in Chromium/WebKit, isolated performance two, client9,814
+/487 explicit browser skips/types/build/copy/source/static topology pass.
+Copy hash unchanged; worker/CSS unchanged. Docs/ledger/inventory/plan/board/
+queue agree. Entire0fe2f57c-exclusive span through this containing repair/
+record commit requires Claude, INCLUDING red checkpoint and separate product
+scope; no prior review ranges waived. Codex first filter, not designated
+approval. No boxes/lifecycle/archive/push/release change.
+
+Next accepted work: remaining GS0.5/0.6 forced-context focus populations;
+first-read failure/retry separately audited before invented recovery UI.
+Real GS2-A4/full Linux/SQL remain capacity-held, fresh overlay0 available100%.
+Cleanup question unanswered; no deletion/full-disk retry. Firefox/manual AT/
+zoom/author/body/GS4/full AC7/default-player/privacy/platform/numeric/full-
+nine-tier1.0 and independent review remain live. Goal active/progress, not
+complete/blocked; no shortened-preview substitution.

@@ -3540,3 +3540,75 @@ types/client/build/source/topology/copy. No SQL/full-Linux/hosted/Firefox/AT/
 all-context/first-read-rejection/retry proof invented; capacity remains held,
 no cleanup authority/deletion. Whole new span after0fe2f57c needs Claude
 including failed-first tests and this separate product scope. No archival.
+
+## 2026-10-07 — RP-339–341 local repair / first filter
+
+Review by: Codex (implementer first filter, not designated review).
+Recorded by: Codex. Proposed complete reviewed span:0fe2f57c-exclusive
+through this containing repair/record commit, including923a51ab,
+6d36a9d3 and88153822. Claude verdict still required independently of
+85fdcfdf..0fe2f57c and every earlier exact span. No archival gate consumed.
+
+Supplemented baseline645459 terminal2:32 failures/eight controls pass,
+286 unselected, forty native executions. Not-ready-alone also fails missing
+stale marker; Settings/Desk cancellation still pass trivially before callback.
+Initial repair imported tick beside the existing timer variable: f97900
+collects zero tests/two import errors;4fcaa3 types three errors. No behavioral
+or mutation credit. Alias afterDOMUpdate resolves collision without changing
+timer;38d5b3 types clean, b3bce6 forty selected native passes/performance two.
+
+Actual accepted host correction: existing loading heading/status while Desk
+first read is held; Trophy-only stale note for offline/resync/not-ready;
+last scores/rows stay authoritative; Desk h1 negative tabindex; existing
+null-arm effect schedules heading focus after DOM update and cancels if
+newer selection/snapshot wins. Normal nav never autofocuses. Other shared
+effect contexts are changed mechanically but not proven by Trophy fixtures.
+No copy/protocol/clock/balance/kernel/CI/Make/RFC-body edit. The forty fixture
+population uses public Runtime messages/decoder-admitted v4 at320/1280:
+held read, recovering/closed/resync/restart/not-ready, null arm with retained/
+removed fact, repeated null after user navigation, Settings/Desk cancellation.
+The synchronous race uses real DOM handlers, not physical human timing.
+
+Nine compiling source faults run independently on the same forty cases:
+
+| Fault | Terminal output | Fail/pass | Actual discrimination |
+|---|---|---|---|
+| Loading role omitted |399def|4/36|exact status absent|
+| Loading heading empty |e2f1f8|4/36|exact visible heading absent|
+| Stale note omitted |ee1ef0|20/20|all five transport populations lack marker|
+| Stale note hidden |7d1d6b|20/20|native rectangle zero|
+| Not-ready condition omitted |50b0d8|8/32|not-ready-alone AND restart fail|
+| Stale note retained after recovery |45638d|20/20|marker wrongly persists|
+| Forced focus no-op |34bccf|8/32|activeElement remains nav/body|
+| Desk tabindex omitted |1d9a3a|8/32|native heading focus fails|
+| Cancellation guards bypassed |5c4d09|4/36|newer Desk nav loses focus; Settings controls survive|
+
+All terminate2 on real semantic/native assertions; no parse/type-error credit.
+Exact restoration71c5c5: host
+3ccce9406c83d57be75f4d89a9cea7cd32ea3665eeb5df947c313ec910f24217;
+driver3ed18590ba4a52f050f3a32316b100c358f447294301d12b07d0adb63f70a06c.
+
+Final immutable-source root checks f5f331→24fd6d terminal0: full native
+Garage326/326,83.21s, real minute idle retained; chained isolated performance
+two passes /22 unselected. c74ec0→b3c2a0 terminal0: types zero errors/warnings,
+client9,814 passes /487 explicit browser skips (105 files pass22skip),214-
+module production build. UI JS index-CaLZW7xF.js changes; worker
+prediction.worker-MqspU_iu.js and CSS index-DaRqgLww.css unchanged. Source
+boundary seven component/four copy negatives, shell/UI cosmetic ten Go/
+eleven Svelte negatives, CI topology13 negatives pass. dc33f6→6e906e
+terminal0:658 copy keys, unchanged
+a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings, deployment content manifest passes. No source/
+HEAD edit during live checks/history scan. Diff whitespace clean.
+
+Docs/ledger/inventory/plan/board/queue/checkpoint log reconciled in this
+repair commit. Bounded local first filter only, not real service/persistence,
+all shared states/all contexts/first-read rejection/retry/Firefox/manual AT/
+actual400%zoom/full GS2/platform/1.0. Next accepted work: separately predeclare
+remaining Fiscal/Meters/Reputation forced-context focus populations; first-read
+failure/retry needs truth audit before new UI. Actual GS2-A4/Linux/SQL remain
+capacity-held; fresh554a42 overlay0 available/100%. Human scoped cleanup
+permission unanswered; no deletion or full-disk run. All prior author/body/
+GS4/AC7/default-player/privacy/platform/numeric/full-nine-tier1.0/review holds
+remain. Goal active/progress; no boxes/lifecycle/archive/mint/push/deploy/
+release/shortened-preview promotion.
