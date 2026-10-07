@@ -5186,3 +5186,41 @@ ready gate, stale text/visibility, or committed-value/update binding. No budgets
 retries/CI/exclusions/dependencies/owner wording/status/boxes/archive/push/mint.
 Whole current span after85b8e826 and every older span needs designated Claude
 review; prior green40/full734 remain at their own exact source coordinates.
+
+### RP-356 test-first RED; separately scoped accepted state correction
+
+Final refined driver pins 3100ms remaining (ceils4) so the actual350ms wait
+would cross to3 under a locally decaying display. Both opportunity and buff
+remain4 until the next decoded attended-time projection; that projection
+advances attended2000→3000 and both must show3. No timer/clock jump/extra read.
+Typed-clean612e32→217a67 zero errors/warnings; c46490→4cbe99 Make2/child1,
+40fail/690unselected,6.70s. Twenty disclosure cases fail absent exact regional
+stale reason. Eight availability cases fail at first unready-alone/restart
+dispatch (Company1);12 recovering/closed/resync cases survive initial disable
+but fail after next snapshot clears offline/resync while transport remains
+unready (actual Company2 Claim request). Independent properties expose both,
+not just a missing class. No product bytes changed. Earlier clean81b67f shows
+same40 failures before the stronger duration/update assertions; it is not the
+final coordinate. Early RP-357 guessed key: d3d4dd type failure,4e9f5f includes
+12 RangeError cases; invalid instrument corrected via existing presentation
+registry, never a production/copy fault or acceptance evidence.
+
+Separate implementation scope, authorized by accepted GS5-inherited GS0.5:
+ONLY existing host controlsEnabled expression gains transportReady and existing
+OpportunityRegion receives no new prop: with a present arm and unavailable
+controls it renders registered common.stale_note as ordinary visible text.
+Retain last authoritative offer/buffs/attended values, current native disable
+and component callback guard. HTTP snapshot alone must not reset readiness;
+existing explicit recovered message reenables without new retries/subscription/
+focus policy. No changes to runtime, decoder, server, public wire pin, clocks,
+scheduler, payout, copy keys/owner content, kernel/balance, schema/contracts,
+deps/budgets/CI/exclusions/other regions/archived RFC bodies.
+
+Required controls: omit ready gate, enable unavailable native Claim, omit/wrong/
+hidden regional stale text, wrong committed seconds, ignore new attended-time
+projection, omit snapshot binding, Company→Founder scope misbinding. Faults must
+complete the unchanged40 population for their named properties and restore full
+source hashes. Full types/client/build/browser with real60s idle/performance/
+copy/boundaries/topology/no-payment after restoration; no matching source/HEAD/
+record edits mid-run. No plan-box/lifecycle/whole-GS5/1.0 approval; complete span
+after85b8e826 through final records requires Claude, every older range owed.

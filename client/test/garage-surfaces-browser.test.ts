@@ -1667,6 +1667,82 @@ function regionIndex(target: HTMLElement): number {
   return [...desk.children].findIndex((child) => child.getAttribute("data-region") === "desk.region.opportunity");
 }
 
+// GS5 inherits GS0.5 inside the region. Independent property cases keep a
+// missing reason from masking readiness; native click probes HTML disabled
+// dispatch, not keyboard accessibility or real-service recovery.
+for (const width of [320, 1280] as const) {
+  for (const [label, message] of [
+    ["recovering", { kind: "transport_recovering" }],
+    ["closed", { kind: "transport_closed" }],
+    ["resync", { kind: "system", value: { kind: "resync_required" } }],
+    ["restart", { kind: "system", value: { kind: "server_restarting", resume_after_ms: 1_000 } }],
+    ["not-ready-alone", null],
+  ] as const) {
+    for (const property of ["availability", "disclosure"] as const) {
+      it.skipIf(!browser)(`GS5 connection ${label}/${property}/${width}`, async () => {
+        const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+        const connectedSnapshot = (next = false) => {
+          const source = claimSnapshot(next), arm = source.features.opportunity!;
+          return parseGameUISnapshot({ ...source, features: { ...source.features, opportunity: { ...arm,
+            attended_now_ms: next ? 3_000 : 2_000,
+            pending: { ...arm.pending!, expires_attended_ms: 5_100 },
+            buffs: arm.buffs.map((row) => ({ ...row, expires_attended_ms: 5_100 })),
+          } } });
+        };
+        const runtime = new Runtime(); runtime.current = connectedSnapshot();
+        runtime.outcome = { outcome: "rejected", category: "not_eligible", detail: "opportunity_expired", currentRevision: 2, sessionExpired: false };
+        // Even a new subscription after transport_closed must stay unready
+        // until the test explicitly supplies the real recovered message kind.
+        const subscribe = vi.spyOn(runtime, "subscribe").mockImplementation((_founder, listener) => { runtime.listener = listener; return () => {}; });
+        const read = vi.spyOn(runtime, "snapshot");
+        let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+        try {
+          fixture = await mounted(runtime); const { target } = fixture;
+          const desk = button(target, t("surface.desk.title", {}, "era_1995")); desk.focus();
+          const region = target.querySelector<HTMLElement>(".opportunity")!;
+          const claim = button(region, t("desk.opportunity.claim", {}, "era_1995"));
+          if (message !== null) {
+            runtime.listener?.({ kind: "transport_recovered" }); await settle();
+            expect(claim.disabled).toBe(false);
+            runtime.listener?.(message); await settle();
+          }
+          const assertReconnect = (next = false) => {
+            if (property === "availability") {
+              claim.click(); expect(runtime.requests).toEqual([]);
+              expect(claim.disabled).toBe(true);
+            } else sharedStateVisibleText(region, "p", t("common.stale_note", {}, "era_1995"));
+            expect(document.activeElement).toBe(desk);
+            sharedStateVisibleText(region, "h3", t(FEATURES_PRESENTATION.opportunityEffects.get("active.lucky")!.title_key, {}, "era_1995"));
+            sharedStateVisibleText(region, "p", `${t("desk.opportunity.remaining_frame", { seconds: next ? 3 : 4 }, "era_1995")} ${t("desk.opportunity.attended_note", {}, "era_1995")}`);
+            sharedStateVisibleText(region, ".buffs li span", t(FEATURES_PRESENTATION.opportunityEffects.get("active.production")!.title_key, {}, "era_1995"));
+            sharedStateVisibleText(region, ".buffs li span", t("desk.buff.remaining_frame", { seconds: next ? 3 : 4 }, "era_1995"));
+          };
+          assertReconnect(); expect(read).toHaveBeenCalledTimes(1);
+          await new Promise((resolve) => setTimeout(resolve, 350)); await settle();
+          assertReconnect(); expect(read).toHaveBeenCalledTimes(1);
+          runtime.current = connectedSnapshot(true);
+          runtime.listener?.({ kind: "snapshot", value: runtime.current }); await settle();
+          expect(region.isConnected).toBe(true); expect(button(region, t("desk.opportunity.claim", {}, "era_1995"))).toBe(claim);
+          assertReconnect(true); expect(read).toHaveBeenCalledTimes(1);
+          runtime.listener?.({ kind: "transport_recovered" }); await settle();
+          expect(claim.disabled).toBe(false); expect(document.activeElement).toBe(desk);
+          expect(region.textContent).not.toContain(t("common.stale_note", {}, "era_1995"));
+          target.querySelector<HTMLButtonElement>("section.manual button")!.focus();
+          await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(claim);
+          await userEvent.keyboard(width === 320 ? "{Enter}" : " "); await settle();
+          expect(runtime.requests).toEqual([{ intent_id: expect.any(String), expected_revision: 2, kind: "claim_opportunity", opportunity_id: "01986666-0000-7000-8000-000000000002" }]);
+          expect(read).toHaveBeenCalledTimes(1); expect(document.activeElement).toBe(claim);
+          sharedStateVisibleText(target, '.intent-notice[role="status"]', t("desk.opportunity.rejection.expired", {}, "era_1995"));
+          expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width + 1); await assertAxe(target, `Claim connection ${label}/${property}/${width}`);
+        } finally {
+          try { if (fixture) await fixture.dispose(); }
+          finally { subscribe.mockRestore(); read.mockRestore(); await page.viewport(1280, 720); }
+        }
+      });
+    }
+  }
+}
+
 // GS0.6/0.8/GS5: decoded public-arm fixtures, not live acquisition/payout,
 // natural expiry, a new wire contract or assistive-technology evidence.
 const claimOutcome: IntentOutcome = { outcome: "applied", receipt: { outcome: "applied", receipt: { opportunity: {
