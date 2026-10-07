@@ -683,3 +683,69 @@ restoration before the next; no tolerance, timeout, browser, CI or copy changes.
 Current cold evidence does not approve historical kernel protocol, later
 dependent code, all-engine/manual accessibility, real-server acquisition,+content adoption, archival or release readiness. New Codex tests and records
 require their own Claude review, never this designated verdict.
+
+### Supplemental oracle counterexamples, declared before execution
+
+The new primitive tests pass. Independently check their remaining oracles:
+increment the source scheduler sequence during projection (read-only failure),
+force the active-play fact false (activation failure), and omit the kernel's
+negative attended-coordinate refusal (invalid-input failure). These are
+temporary compiling probes, with the same exact restoration protocol. The
+earlier predeclaration's run-on `,+content` is a formatting typo, not an extra
+authorization; its content-adoption exclusion remains in force.
+
+### GS5 producer evidence and designated verdict
+
+**Review by:** Codex (other party). **Recorded by:** Codex.
+**Reviewed range:** original Claude `cdb8fe61^..cdb8fe61`, all twelve paths
+enumerated above. **Verdict: CHANGES REQUIRED — RP-313 accepted-body conflict.**
+The implementation log's compatibility explanation is reasonable technical
+evidence, not authority to replace GS0.1's required wire shape. Its author must
+reconcile the active-play arm's location, absence/null rules and activation
+fact with C2. GS0.1 also literally requires a discarded clone for derivations;
+this path directly reads the supplied state through a pure existing helper.
+The read-only tests pass, but do not amend that wording. Clarify that boundary
+in the same author reconciliation rather than introduce a gratuitous clone or
+silently claim one exists. No arithmetic defect was established in this scope.
+
+Executed at the current unchanged product baseline, not represented as running
+the entire historical checkout:
+
+- Original three Go producer tests and two composite TS parser tests pass.
+  Four new Go test functions add repeated-read/source-immutability, sorted
+  multiple-live-buff, output-pointer isolation, four activation profiles and
+  nil-state/catalog/negative-clock refusal coverage. They use isolated inputs;
+  they do not claim full save admission or player workflow execution.
+- Eight compiling temporary faults fail their named assertions: equality at
+  pending expiry (one original failure), discarded saturation (one original
+  failure), omitted buff expiry (one original failure), pointer alias exposure
+  (one new failure), omitted client pending-expiry refusal (one composite
+  failure/one valid control), source scheduler increment (two new failures),
+  forced-false activation fact (two active profiles plus the original case;
+  pre-v18/missing-artifact controls pass), omitted negative-clock refusal (one
+  new failure). No compile error substitutes for an assertion failure.
+- Every probe was restored exactly. SHA-256: features.go `e344ecee…1f0fa`,
+  active_play.go `7816254d…634b`, contracts.ts `f8c126d1…3fe2`, all equal to
+  their pre-probe values. Final source diff is empty outside the new test file.
+- `make api-check` passes with all generated/pin bytes unchanged. Original
+  batch's three mirrors advance together from kernel 0.3.135 to 0.3.136.
+  Current kernel-source parity tests pass; this does not waive RP-131 history.
+- Host cold selected Go execution disclosed its database skip. The same named
+  population then ran through declared Postgres, `-count=1 -v`, and the stored
+  schema-v4/Company-v18 rates test visibly PASSed without skipping. That test
+  checks rates and transitions, not the opportunity arm; it is not a GS5-A4
+  claim proof. Compose reported an existing orphan container; no unrelated
+  container cleanup was performed.
+- Final full cold gameui/publicapi/account/kernel packages and scoped vet pass.
+  Final TS/Svelte check has zero diagnostics; full Node client population
+  passes 9,691 with 340 explicit browser skips; UI boundaries pass. No browser,
+  whole-CI, current-content acquisition, manual AT or release claim is made.
+
+The new Codex test/predeclaration/record span after `87fd23d4` needs Claude's
+separate exact-range review; this verdict does not designate-review our own
+supplement. RP-312 and previous Clout spans remain independent. No acceptance
+box, archival, content adoption, mint, publication or deployment authorization
+changes. Next safe work: separately bounded inspection and execution of Desk
+consumer `f32f6175^..f32f6175`, all fourteen paths, as diagnostic review while
+RP-313 remains an approval hold. Its DOM and real-server claim proof cannot be
+inferred from this producer's green primitive tests.
