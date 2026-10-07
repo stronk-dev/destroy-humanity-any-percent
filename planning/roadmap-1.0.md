@@ -5,17 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest acceptance audit (2026-10-07):** predeclared124b086a,
-sourcefc911784; all29 Garage GS1–GS6 gates/eight overall criteria mapped in
-`planning/garage-player-surfaces/acceptance-evidence.md`. Fresh focused Go
--count=1 passes116 parent/subtest PASS reports, two explicit SQL skips.
-No fresh persisted/native/TS claim. RP-329 incomplete meter decoder,
-RP-330 semantic narrow layout and RP-331 exact persisted/DOM proof gaps
-recorded; not failed-kernel claims. Next predeclared native GS0.5 missing
-copy/presentation diagnostic, no product repair inside audit range. Newspan
-afterfc911784 through records needs Claude; runtimea42406f0..fc911784 and
-all preceding ranges independently owed. Docker/Firefox/AT/author/body/
-default-player/review/full1.0 gates remain; no status/checkbox promotion.
+**Latest bounded repair (2026-10-07):**8ea7cb94, predeclared4c9e06b2/
+81b4f51d/test-first532855fe. RP-332 missing Trophy Case/Meters presentation
+is locally contained, with own alert/one invariant/recovery/navigation.
+Eight baseline failures; five compiling faults each fail4/8 and restore
+exact source. Full native Garage Chromium/WebKit246/performance1,
+client9,758/446explicitbrowser skips/types/build/boundaries/copy/topology
+pass, not full-state/all-engine/AT/composed/release. RP-333 performance
+fixture lacks populated Garage arms; AC7 stays open. All29/eight acceptance
+gates mapped; next accepted GS3-A1 complete/missing-ID failed-first controls
+before repair (RP-329). Whole newspan aftercc62cea8 through this record needs
+Claude; audit exactfc911784..cc62cea8/runtimea42406f0..fc911784/earlier spans
+independent. Fresh Docker overlay0free/100%; no population/cleanup. All
+RP-330/331/333/author/body/default-player/full-nine-tier1.0 gates remain.
 
 **Latest bounded repair (2026-10-07):** `45bf2edb`, predeclareda8f2a527/
 failing-first7cac400d: Fiscal/care outcome ownership and async-origin/no-bleed

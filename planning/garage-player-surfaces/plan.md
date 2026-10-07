@@ -7,18 +7,19 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest acceptance audit: predeclared124b086a; acceptance-evidence.md pins
-all29 GS1–GS6 gates/eight overall criteria to fc911784. Fresh focused Go
--count=1 passes116 parent/subtest PASS reports, with two SQL tests explicitly
-skipped; no fresh database/native/TS claim. RP-329 incomplete meter decoder,
-RP-330 semantic narrow-layout mismatch and RP-331 exact persisted/DOM proof
-gaps recorded. Dedicated companion lint exists; author body reconciliation
-still required. Next native decoder-legal missing-copy/band GS0.5 diagnostic,
-no product repair inside this audit range. Full audit span afterfc911784
-through records needs Claude; runtime exacta42406f0..fc911784, HTTP consumer
-6d700838..a42406f0, noticee950216a..6d700838/all earlier spans independent.
-Docker capacity, engine/AT/author/default-workflow/full1.0 holds remain;
-no checkbox or lifecycle promotion.
+Latest bounded repair:8ea7cb94, predeclared4c9e06b2/81b4f51d and test-first
+532855fe. RP-332 decoder-legal missing achievement-copy/meter-band no longer
+throws outside its panel: own alert/one invariant/recovery/nav locally proven.
+Eight baseline failures, five compiling faults each fail4/8/restored exact;
+full Garage Chromium/WebKit246/performance1 and client9,758/446explicit
+browser skips/types/build/boundaries/copy/topology pass. RP-333 performance
+fixture has null feature arms, not populated Garage AC7. Whole repair span
+aftercc62cea8 through this record needs Claude; audit exactfc911784..cc62cea8,
+runtimea42406f0..fc911784 and earlier ranges independent. Inventory covers
+all29/eight gates, no completion claim. Next predeclare GS3-A1 complete/
+missing-ID controls before decoder repair (RP-329). Fresh read-only Docker
+overlay still0free/100%; no Docker run/cleanup. RP-330/331/333, author/body/
+Firefox/AT/composed/full1.0 remain; no checkbox/lifecycle promotion.
 
 Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,
 predeclareda8f2a527/test-first7cac400d. Fiscal/care own mapped notice regions,

@@ -4303,3 +4303,20 @@ controls before any repair. Complete audit span afterfc911784 through
 records needs Claude; runtimea42406f0..fc911784/all earlier ranges independent.
 All Docker/engine/AT/author/body/default-player/review/full-nine-tier1.0
 holds retained. Goal active/progress; no lifecycle/checkbox/archive/mint/push.
+
+## 2026-10-07 — GS0.5 contained presentation checkpoint
+
+RP-3328ea7cb94 follows bounded predeclarations and eight typed-clean native
+baseline failures. Missing Trophy Case copy/Meters band is contained within
+its panel; one alert/invariant, healthy refresh recovery and other navigation
+locally proven. Five compiling faults fail4/8 each and restore exactly.
+Full native Chromium/WebKit Garage246/performance1, client9,758/446explicit
+browser skips/types/build/boundaries/copy/manifest/topology pass. RP-333:
+null-feature performance fixture is not the populated Garage AC7 witness.
+Fresh actual Docker overlay remains0available/100%; no population/cleanup.
+Next accepted GS3-A1 RP-329 controls/decoder repair, not a shortcut release.
+Complete error range aftercc62cea8 INCLUDING record edge needs Claude;
+audit exactfc911784..cc62cea8/runtimea42406f0..fc911784/earlier spans independent.
+All author/body/engine/AT/composed/default-player/platform/privacy/numeric/
+review/full-nine-tier1.0 holds retained. Goal active/progress, no lifecycle/
+checkbox/archive/mint/push or preview substitution.

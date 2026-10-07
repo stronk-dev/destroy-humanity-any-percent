@@ -4,18 +4,20 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest acceptance audit:** predeclared124b086a, sourcefc911784, all29
-Garage GS1–GS6 gates/eight overall criteria mapped in
-`planning/garage-player-surfaces/acceptance-evidence.md`. Fresh focused Go
--count=1 passes116 parent/subtest PASS reports; two SQL tests explicitly
-skip, no fresh persisted proof. RP-329 incomplete meter decoder, RP-330
-semantic narrow layout and RP-331 missing exact persisted/DOM witnesses
-remain. Next bounded GS0.5 unknown-copy/band native diagnostic; candidate
-render containment gap is not yet an executed defect. No product/lifecycle
-change. Audit range afterfc911784 through records needs Claude separately
-from runtimea42406f0..fc911784 and all earlier spans. Previous runtime21/
-native238 evidence stays at its own source, not rerun. Docker0free/100%,
-Firefox/AT/author/body/default-player/review/full-nine-tier1.0 holds remain.
+**Latest Garage repair:**8ea7cb94, predeclared4c9e06b2/81b4f51d,
+test-first532855fe. RP-332 missing achievement-copy/meter-band presentation
+now stays in its panel: own alert/one invariant/healthy recovery/navigation.
+Eight baseline native failures; five compiling faults each fail4/8 and restore
+exact source. Full Garage Chromium/WebKit246/performance1, client9,758/
+446explicitbrowser skips/types/build/boundaries/copy/topology pass. Not full
+state/all-engine/AT/composed/release approval. RP-333 flags null-feature
+performance fixture, not populated Garage AC7. Whole newspan aftercc62cea8
+through records needs Claude; audit exactfc911784..cc62cea8,
+runtimea42406f0..fc911784/all earlier ranges independent. All29/eight gates
+mapped in Garage acceptance-evidence.md; next accepted GS3-A1 complete-ID
+failed-first controls/repair (RP-329). Fresh read-only Docker still0free/
+100%; no population/cleanup. RP-330/331/333 and all author/body/default-
+player/privacy/platform/numeric/review/full-nine-tier1.0 gates remain.
 
 **Latest repair:** `45bf2edb`, predeclared `a8f2a527`, failing-first
 `7cac400d`: RP-326 Fiscal/care outcomes now belong to the submitting panel;

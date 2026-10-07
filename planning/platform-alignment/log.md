@@ -3134,3 +3134,25 @@ product edit inside this audit range. Complete span afterfc911784 through
 records requires Claude, independent of a42406f0..fc911784/earlier spans.
 RP-236 capacity, engine/AT/author/body/default-workflow/review/full1.0 holds
 remain. No boxes/status/archive/mint/publication or shortcut authorization.
+
+## 2026-10-07 — GS0.5 real render defect locally repaired
+
+RP-3328ea7cb94, predeclared4c9e06b2/81b4f51d/test-first532855fe.
+Two legal-wire mappings reproduce eight native RangeError/assertion failures;
+two read-only components now preflight their required mappings, render own
+alert/one invariant, recover from healthy refresh and retain other navigation.
+No host/network/wire/kernel/schema/balance/copy/CI change. Five independent
+compiling faults each fail4/8, exact hashes restored. Full Garage Chromium/
+WebKit246/performance1 and client9,758/446explicitbrowser skips/types/build/
+boundaries/copy/manifest/topology+13 negative controls pass. Intermediate
+native output truncation and initial instrumentation/EPERM failures disclosed
+in Garage log, not acceptance substitutions.
+
+RP-333 records null feature arms in the passing isolated performance fixture;
+not populated Garage AC7 or a measured performance regression. Fresh read-
+only Docker overlay still0available/100%; no container population/cleanup.
+Next accepted GS3-A1 complete/missing-ID controls and bounded repair. Whole
+newspan aftercc62cea8 THROUGH record edge needs Claude; audit exactfc911784..
+cc62cea8/runtimea42406f0..fc911784 and earlier spans independent. All full
+state/engine/AT/composed/author/body/default-player/platform/privacy/numeric/
+review/full-nine-tier1.0 holds remain; no lifecycle/publication/mint claim.

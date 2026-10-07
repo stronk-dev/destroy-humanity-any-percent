@@ -3,26 +3,28 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Garage acceptance audit — 2026-10-07
+## Garage contained presentation repair — 2026-10-07
 
-Predeclared124b086a; sourcefc911784. All29 GS1–GS6 gates/eight overall
-criteria now mapped in `planning/garage-player-surfaces/acceptance-evidence.md`.
-Fresh focused Go -count=1 passes116 parent/subtest PASS reports; two SQL
-tests explicitly skip. No fresh persisted/native/TS claim. RP-329 partial
-meter decoder, RP-330 semantic narrow layout and RP-331 exact persisted/DOM
-proof gaps recorded. Dedicated companion safety lint exists; author body
-holds remain. **READY FOR CLAUDE:** complete audit span afterfc911784 through
-records; prior runtime exacta42406f0..fc911784, HTTP-consumer6d700838..
-a42406f0, noticee950216a..6d700838 and earlier ranges independently owed.
+RP-3328ea7cb94, predeclared4c9e06b2/81b4f51d/test-first532855fe.
+Decoder-legal missing achievement copy/declared meter-band presentation no
+longer throws outside its panel: own alert/one invariant/recovery/navigation.
+Eight baseline native failures; five compiling faults each fail4/8 and
+restore exact source. Full Garage Chromium/WebKit246/performance1,
+client9,758/446explicitbrowser skips/types/build/boundaries/copy/topology
+pass. No full-state/all-engine/AT/composed/release approval. RP-333:
+unchanged performance fixture has null feature arms, not populated AC7.
+**READY FOR CLAUDE:** entire newspan aftercc62cea8 through records. Audit
+exactfc911784..cc62cea8 (all29 GS1–GS6/eight overall criteria), runtime
+a42406f0..fc911784 and earlier ranges independently owed.
 
-**READY next:** separately predeclare native GS0.5 decoder-legal missing
-achievement-copy and declared unknown-band diagnostic with healthy controls,
-explicit render-error observations and alert/invariant/navigation assertions.
-No product repair inside this audit range. Following accepted work: GS3-A1
-complete-ID guard and GS3-A3 semantic list. Persisted/composed RP-331 waits
-for capacity repair/recheck; no new Docker population or unrelated cleanup.
-Previous actual overlay measurement0free/100%; engine/AT/body/default-player/
-review/all-Garage/release remain open.
+**READY next:** predeclare GS3-A1 complete/missing/extra meter-ID controls
+and fail the current partial decoder before bounded accepted repair (RP-329),
+using one authoritative meter contract, not a convenience count or second
+hand-maintained list. Following accepted routes: GS3-A3 semantic narrow
+layout, populated AC7 observation and exact source guards. RP-331 persisted/
+DOM composed proofs wait for capacity repair/recheck. Fresh read-only overlay
+still0free/100%; no new Docker population or unrelated cleanup. All engine/
+AT/author/body/default-player/review/all-Garage/release holds remain.
 Full nine-tier1.0 goal and all author/owner/numeric/platform/privacy/content/
 CI/review/release gates remain active; no lifecycle promotion.
 
