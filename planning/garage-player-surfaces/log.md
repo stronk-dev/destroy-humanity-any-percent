@@ -4662,3 +4662,39 @@ nine-tier1.0/review/owner release obligations remain. Synthetic terminal fixture
 are NOT evidence of player reachability of IPO/acquisition/full endings. Earlier
 cleanup/startup questions unanswered; no Retry/ruling/body/checkbox/lifecycle/
 archive/push/deploy/release/preview substitution. Goal active/progress.
+
+## 2026-10-07 — Fiscal native pending/receipt-focus supplement predeclaration
+
+Baseline `c24b8f6d`, clean tree. Accepted Garage RFC read fully; GS0.2/0.6/0.8
+and GS1-A2/A4/A5 own this test-only supplement. Read current Fiscal component,
+host act/refresh, full existing Fiscal supplement and current plan/evidence.
+Existing held-intent/read and removal tests script-focus/click their action;
+component-only native guard evidence remains valuable but is not native host
+entry or context-survival proof. No new product defect is asserted yet.
+
+Population: three existing actions (harvest, generator level, Pitch unlock),
+320/1280 CSS px, native Enter/Space, Chromium/WebKit: twelve definitions/twenty-
+four native executions. Seed only the existing Desk nav's starting focus, then
+native Tab/activation for Fiscal/nav/actions/Settings/return. Bounded traversal
+comes from the mounted page's existing controls plus one; no script-focused
+action, additional hotkeys or raised deadline. Fixtures go through the actual
+v4 decoder; same public fixture authorities, not natural quarter or SQL proof.
+
+Each action has a held ordinary refusal (exact existing reason, no refresh),
+then held applied reply AND held authoritative read with a retained eligible
+action. Native duplicates must produce one intent per deliberate operation,
+pending stays focusable and visible through both holds, receipt notice remains
+owned by Fiscal. Native selection of Settings before read completion must keep
+its newer focus/context; native return and next action use the new Founder
+revision, never the old one or Company revision. Exact pending/notice/aria-busy,
+request and read-count assertions, full-page reflow and axe required.
+
+This scope does not define removed/disabled-action policy, change queue mechanics,
+write copy, waive any old fixture, simulate auth, or alter game/time/math/CI.
+If red, record actual findings before a separate accepted repair scope. Prove
+relevant host/component/payload/status/focus faults fail and restore exactly;
+run complete local client/types/build/boundaries/topology, combined current
+Garage/Game UI native modules and unchanged separate performance objective.
+No Linux/SQL run while Docker is full. No manual AT/400% zoom/Firefox/hosted/
+whole-GS1/full-1.0 claim. Entire new range needs Claude; prior ranges remain
+independent. No acceptance boxes/body/status/archival/push/mint/release changes.
