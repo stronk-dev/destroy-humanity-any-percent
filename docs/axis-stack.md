@@ -119,6 +119,14 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   floor-reset/census/false-state probes discriminate. This is bounded fixture
   activation evidence, not natural progression, all mode/buff seams, a minted
   default player journey or full CV4/AC7 acceptance. Claude review remains.
+  The separately predeclared [action/buff/mode observation](../planning/clout-v1-and-pr-interns/sequence-research.md)
+  now covers16 continuous sequences/136 actual command attempts and48 malformed
+  claim refusals in each runtime. Real claims, PR2 purchases, compute spending,
+  buff expiry, two mode paths,25h catchup and actual provision ticks match full
+  receipts/events/states/restores. Census/forged-event/contribution/burst probes
+  fail and sources restore exactly. This is synthetic in-memory integration,
+  not all seeds/combo caps, live claim/burst persistence or natural/default mint.
+  Original27AC6 failures and independent review obligations remain unchanged.
 - Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
   passes and rejects a retroactive-factor fault, but the unchanged production
   engine fails 27 of128 seeded millisecond partitions under full encoded-state

@@ -1,8 +1,21 @@
 # Current repository state
 
-Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a released or
+Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a released or
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
+
+**Latest Clout integration checkpoint:** predeclared9974f1d3 at0d866359,
+test-only CV3/CV4. All four actual opportunity effects appear in16 continuous
+Go/TS sequences/136 command attempts plus48 unchanged-state claim refusals per
+runtime. Claims, PR2, compute debit/burst, mode switches, expiry, permits and
+provision ticks match full receipts/events/saves. Three mistaken clock/tick
+instrument assumptions are disclosed; real census/event/contribution/burst
+mutations fail and restore exactly. Client9640/340skip/types/vet/build/topology/
+native11 populations pass; cold Go retains ONLY original27AC6 failures.
+No product byte changed, wholeCI/mint/fullClout/1.0 promotion. Next separately
+predeclare persisted claim/burst/retry boundaries; accumulation/RP-308 and all
+prior holds/review spans remain independent. Entire newspan after0d866359
+including all records needs Claude. [Evidence/limits](clout-v1-and-pr-interns/sequence-research.md).
 
 **Latest public-projection checkpoint:** RP-302 test-only supplement after`c70861c1`
 connects actual purchase/Exit to stored GameUISnapshot: current factor1/rate5

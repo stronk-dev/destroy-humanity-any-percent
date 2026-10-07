@@ -3924,3 +3924,23 @@ journey/defaultmint/allplatform/review/owner obligations remain. Whole newspan
 after65c3a34c including records needs Claude; older scopes independent. Full1.0
 goalactive/progress, no checkbox/status/archive/mint/push/deploy/release call.
 [Evidence/limits](clout-v1-and-pr-interns/activation-research.md).
+
+## 2026-10-07 — Actual opportunity/buff/action/mode sequences
+
+Test-only9974f1d3 at0d866359, corrected instrument assumptions predeclared.
+Sixteen actual continuous Go/TS sequences/136 command attempts,48 full-state
+claim refusals per runtime pass. All four effects, real PR2/compute spending/
+burst/expiry/mode paths and permits/provision ticks bind to full receipts,
+ordered events and complete saves/restores. Three initial clock/tick errors
+disclosed. Census/event/actual contribution/burst controls fail and restore.
+
+Client9640/340skip/types/vet/build/topology/native11 research populations pass.
+Cold production66.536s fails ONLY original27AC6; no tolerated/skipped regression,
+wholeCI/history/AMD64/hosted fix inferred. No production/catalog/kernel/RFC/copy
+or earlier artifact bytes changed. Next separately predeclare live claim/burst
+Service/Store persistence/retry/history boundaries, not duplicate the earlier
+Exit proof. R-012 representation/RP-308 and all prior full-product/platform/
+owner/content/review obligations remain. Entire newspan after0d866359 including
+records needs Claude; older spans independent. Full1.0 goalactive/progress,
+no checkbox/status/archive/mint/push/deploy/release call or shortcut scope.
+[Evidence/limits](clout-v1-and-pr-interns/sequence-research.md).

@@ -5,6 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest sequence checkpoint (2026-10-07):** test-only9974f1d3 at0d866359.
+Sixteen continuous actual Go/TS sequences/136 command attempts span all four
+opportunity effects, claims, PR2, compute debit/burst, mode switching, expiry
+and provision ticks. Forty-eight malformed claims per runtime refuse unchanged.
+Clock/tick instrument mistakes disclosed; real contribution/burst/event/census
+probes fail and restore. Client9640/340skip/types/vet/build/topology/native11
+pass; original27AC6/history/AMD64/hosted remain open. No product byte changed.
+Next separately predeclare persisted claim/burst/retry boundaries; representation
+and RP-308 episode ruling remain independent gates. Whole newspan after0d866359
+including records needs Claude; earlier spans remain. No fullClout/natural mint,
+wholeCI or1.0 promotion; full nine-tier/platform goal active.
+[Evidence/limits](clout-v1-and-pr-interns/sequence-research.md).
+
 **Latest activation checkpoint (2026-10-07):** test-only ea43ef5b at65c3a34c.
 Six actual pinned epoch8v18→unmintedv19 four-transition Go/TS sequences pass.
 One two-epoch live Service/Store/Postgres path fires all14 rollback faults,

@@ -3,6 +3,25 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## CV3/CV4 action, claim, buff and mode observation — 2026-10-07
+
+Test-only9974f1d3 at0d866359; instrument amendments recorded BEFORE corrected
+experiments. Sixteen complete continuous Go/TS sequences/136 actual command
+attempts span four effects, two gaps and two mode paths;48 malformed claims
+per runtime refuse unchanged. Actual contribution and burst severing fail,
+as do omitted-row/forged-event controls; all sources restore exactly.
+Client9640/340skip/types/vet/build/topology/native11 pass. Cold production
+fails ONLY original27AC6; no wholeCI/AMD64/hosted/history repair claim.
+
+**READY next:** separately predeclare actual Service/Store claim/burst persistence,
+retry and recorded history boundaries under accepted CV3/CV4. Prior Exit14fault
+proof is not automatically claim/burst proof. R-012 accumulation representation
+and RP-308 episode-authority gates remain independent and unresolved. Whole
+newspan after0d866359 INCLUDING records needs designated Claude review; older
+spans/owner/content holds remain. No checkbox/status/archive/mint/push/deploy,
+fullClout or shortened1.0 acceptance.
+[Evidence/limits](../clout-v1-and-pr-interns/sequence-research.md).
+
 ## CV4/AC7 pinned activation observation — 2026-10-07
 
 Test-only ea43ef5b at65c3a34c, actual old epoch8→unminted axis fixture.

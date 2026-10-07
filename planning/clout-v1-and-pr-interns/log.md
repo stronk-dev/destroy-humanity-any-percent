@@ -1644,3 +1644,48 @@ not a scheduler defect. No corpus exists. Plan predeclares actual short-gap
 online manual preludes, full continuous outputs and explicit per-row/total
 command census, retaining all effects/founders/eight core commands/refusals.
 No seed filtering, fabricated pending buff, production edit or gate waiver.
+
+### Actual sequence observation — full continuous replay and real failure controls
+
+9974f1d3 at0d866359; corrections eabebf80/83d553ff/eca45c0c precede corrected
+experiments.40767/0bee34 publishes FIRST valid report0.637s:16 sequences/136
+actual command attempts/48 claim refusals, all original effects/founders/gaps/
+modes retained. TS11397/bc1a60 fullclient9640/340skip. Full receipts/ordered
+events/pre-poststates/restores agree; actual PR2/bank/burst/buff expiry/permits
+and0 short/1440 long provisions bind. Initial tick/clock errors retained.
+
+Discrimination: omitted row80026/5fa473 fails census despite61declarations;
+forged claim54716/a5e385 fails full event equality. Compiling actual Go
+contribution39951/1e2cc9 fails non-neutral semantic assertion before source
+pins. Actual TS omission46736/83ad61 fails10 receipts, while two short click
+arms survive because buff expires before their manual command and four Lucky
+arms correctly survive buff-only mutation. Actual TS burst91166/64b2f0 fails
+ALL16 new receipts plus existing doctrine corpus1. One patch-context rejection
+wrote nothing/executed no experiment; corrected target read directly. Exact
+runtime/source restore after terminal handles; no compiler failure counted.
+
+Final33205/ee803b client9640/340skip;57401/131d98 types0warnings/errors/full
+vet/build213modules713ms/topology13controls pass. Native28013/cb57bf ALL11
+research/integration populations/noSkip5.476s, including priorSQL1215/16 and
+activation14faults. Cold87688/5dabf9 production66.536s fails ONLYoriginal27AC6;
+economy7.401/decimal.267/kernel.169pass. Longer concurrent walltime is not a
+performance finding (checks ran concurrently, no causal benchmark inferred).
+Process-list read denied; no inferred diagnosis or rerun
+from timeout. Source-only CI routing verified; hosted/AMD64 not executed and
+historicalRP-131 unchanged. Existing orphan warning not cleanup authority.
+
+6e181d verifies18sourcepins/exact136attempt/48negativecensus, reportSHA
+6ec5ed1ba93ab2ebcd6f50f3c7c0aac1458748bfc9823695b3a47b0f5cf81c54.
+Prior artifacts/kernel/runtime unchanged. Canonical docs/ledger/currentqueues/
+roadmap/log reconciled. Next separately predeclare live Service/Store claim/
+burst persistence/retry/history; not all seeds/combo/natural/minted journey,
+fullCV3/CV4, accumulation repair or AC6 acceptance. RP-308 delegation unanswered.
+ENTIRE span after0d866359 including all records needs Claude independently;
+earlier spans and owner/content/environment/release holds remain. Goalactive/
+progress; no checkbox/status/archive/mint/push/deploy/release call.
+
+Final non-writing observer58247/be57d8 passes0.618s, complete report byte-exact.
+e0de35 checks both append-only logs against0d866359,120applied/16rejected and
+parses all full observed JSON. Full staged sources/doc/record diffs inspected;
+zero residual runtime mutation, only13 declared paths. Reproduction commands
+and explicit writer boundary now retained in sequence-research.md.

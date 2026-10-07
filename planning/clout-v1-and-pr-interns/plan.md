@@ -729,3 +729,18 @@ checks exact prelude count/timestamps/online kinds, every core mode/coordinate,
 and the original full outputs and semantic checkpoints with an explicit offset.
 No initial inventory/history or production rule changes. This corrects only
 the clock instrument and expands observed commands, not the gameplay scope.
+
+Sequence result: all16 continuous Go/TS sequences/136 command attempts and48
+unchanged-state claim refusals per runtime pass,65 TS declarations. Actual
+claim/PR2/bank/burst/expiry/permits/provision bindings hold within the declared
+population. Three tick/clock instrument errors remain disclosed, no dropped
+arm or runtime change. Census/forged-event/real Go and TS contribution/burst
+controls discriminate; short click controls survive for the documented expiry
+reason. All source restoration exact. Fullclient9640/340skip/types/vet/build/
+topology/native11 pass; cold Go fails ONLY original27AC6. Full CI/history/
+AMD64/hosted and all previous owner/content/review holds remain. Next separate
+scope: live Service/Store claim/burst persistence/retry/history, not reuse Exit
+proof or promote accumulation representation. sequence-research.md records
+exact producers, sources, failures and limits. Entire range after0d866359
+including every record edge needs Claude; no checkbox/status/archive/mint/
+push/deploy/fullClout/1.0 acceptance. Proper long-term goal active/progress.

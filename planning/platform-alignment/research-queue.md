@@ -340,12 +340,18 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   completed old/independent Founder histories and full new OPEN-run replay head.
   Floor-reset/census/false-state probes fire and restore; initial instrument
   errors disclosed. [Evidence/limits](../clout-v1-and-pr-interns/activation-research.md).
-  Next separately predeclare relevant action/buff/mode seams; representation/
-  episode meaning/all-mode/natural-mint/persistence breadth remain open.
+  Subsequently9974f1d3 test-only action/buff/mode population executes16 actual
+  continuous Go/TS sequences/136 command attempts plus48 unchanged-state claim
+  refusals per runtime. All four effects, real PR2/compute debit/burst/expiry,
+  two mode paths and provision ticks match full outputs/restores. Instrument
+  clock/tick errors disclosed; contribution/burst/census/event controls fail
+  and restore exactly. [Evidence/limits](../clout-v1-and-pr-interns/sequence-research.md).
+  Next separately predeclare live Service/Store claim/burst persistence/retry;
+  representation/episode meaning/all-mode/natural-mint breadth remain open.
   The earlier ordinary observer alone is not partition, new representation,
   mode/buff, Service/Store or natural-player proof. The separately declared
   activation SQL witness does not promote those wider populations.
-  Later predeclare actual paired action/buff/mode/multi-resource seams;
+  Wider action/buff/combo/multi-resource and live persistence seams remain;
   canonical rate lists/byte-framed JSON/scalar anchors are not whole-engine proof.
   Full mode/offline/provision/migration/state/receipt integration remains unproved.
 - **Question:** Can an explicit conserved accumulation/settlement representation
