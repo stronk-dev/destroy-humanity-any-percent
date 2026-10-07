@@ -31,6 +31,13 @@ that would need one is recorded as a blocker in `log.md` instead.
   Claude independently.
   This existing checkbox records implementation, not acceptance or archival.
 - [x] GS6 provisioning caps + owned-upgrade text on the Desk.
+- Shared GS0.2 supplement (not an acceptance checkbox): RP-322 through
+  `efa557b8` locally restores rate-limit/exclusive refresh-before-reactivation.
+  Baseline mapper/native failures and separate arm severing discriminate;
+  full Garage Chromium/WebKit100/client9,737/373 skips/types/build/boundaries/
+  actual composed pass. Runtime-double refused intents, not real429/Soul
+  sessions. Entire new span after `3f867956` through final tracking requires
+  Claude separately from care `c7d8f815..3f867956` and all earlier ranges.
 - [x] GS0.3 event decoders (announcements only): achievement and meter-band announcements.
   Review note: original `301728c8^..301728c8` is **CHANGES REQUIRED** for RP-312;
   the scoped direction repair and simulated-reconnect supplement are locally verified,

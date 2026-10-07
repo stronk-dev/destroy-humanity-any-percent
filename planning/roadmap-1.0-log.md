@@ -4168,3 +4168,21 @@ Next separately predeclare accepted GS0.2 shared HTTP/exclusive care refusal
 consumer checks; measure disabled-until-next-snapshot before inferring a fix.
 Full nine-tier/author/numeric/content/platform/review/release holds remain.
 Active/progress, no boxes/status/archive/mint/publication or reduced scope.
+
+## 2026-10-07 — Shared refusals now wait for authoritative state
+
+RP-322 accepted GS0.2 correction `efa557b8`, predeclared `3f231ba2`, test-first
+`d362c95e`: two mapper/four native failures first; existing refresh effect
+now keeps care pending/focusable/guarded until the read resolves. No automatic
+retry; next player activation binds Founder8/fresh ID. Independent429 and
+exclusive omissions each fail one mapper/two native assertions, restored
+exactly. Final Garage Chromium/WebKit100/performance1, client9,737/373 explicit
+browser skips/types/build/boundaries and actual built-client/Postgres/
+WebSocket composed pass. Refusal tests are runtime doubles, not service429/
+Soul-session evidence. Actual care persists at Founder5; no status crossing/
+raw-care/announcement/minted release proof. Full new span after `3f867956`
+INCLUDING this tracking edge needs Claude; care exact
+`c7d8f815..3f867956`, RP-316 and earlier spans stay separate. Next independently
+predeclare Fiscal pending/readiness/native/refusal checks. All previous
+full-nine-tier/product/platform/author/owner/numeric/content/accessibility/
+review/release holds remain. Active/progress, no box/status/archive/mint/push.

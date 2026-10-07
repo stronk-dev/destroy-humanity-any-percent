@@ -4,7 +4,21 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest care correction:** `ea06183b`, test-first `0784f126` and predeclaration
+**Latest shared refusal correction:** `efa557b8`, predeclared `3f231ba2` and
+test-first `d362c95e`, locally repairs RP-322. Rate-limit/exclusive responses
+use the existing refresh effect: held read prevents reactivation; only fresh
+player consent sends Founder8/fresh ID. Baseline two mapper/four native
+failures; separate arm faults fail one mapper/two native assertions each,
+restored exactly. Final Garage Chromium/WebKit100/performance1, client9,737/
+373 explicit browser skips/types/build/boundaries and actual Postgres/
+WebSocket composed pass. Refusal population is runtime-double evidence, not
+real-service429/Soul-session or minted release proof. Entire new span after
+`3f867956` THROUGH this tracking edge needs Claude. Earlier care range stays
+exact `c7d8f815..3f867956`. Next: independently predeclare Fiscal pending/
+readiness/native/refusal tests under GS1/GS0.5/GS0.8. Firefox/AT/author/raw-
+care/content/numeric/platform/release holds and full nine-tier scope remain.
+
+**Preceding care correction:** `ea06183b`, test-first `0784f126` and predeclaration
 `970d47a5`: care pending focus/text, native Tab and eligibility-change focus
 handoff, stale explanation and restart readiness are locally repaired. Full
 Garage Chromium/WebKit82/performance1, client9,735/364 browser skips, types/
@@ -15,9 +29,9 @@ state at Founder revision5; reload retains feed ineligibility. Test-only bundle,
 not release-manifest/status-crossing/raw-care/AT/full-Garage acceptance.
 Firefox zero executed before connection timeout; failed teardown stopped,
 RP-256 remains. Entire new Codex span after `c7d8f815` THROUGH this tracking
-edge needs Claude. RP-319/320/321 locally corrected, not closed. Next bounded
-accepted work: predeclare shared HTTP/exclusive refusal consumer checks under
-GS0.2; no remedy inferred from source alone. All prior holds/full1.0 remain.
+edge needs Claude; now exact `c7d8f815..3f867956`. RP-319/320/321 locally
+corrected, not closed. Its then-next shared refusal checks execute above.
+All prior holds/full1.0 remain.
 
 **Preceding Garage pet review:** original Claude `7a61e4b6^..7a61e4b6`, all eight
 paths: designated **CHANGES REQUIRED for the existing RP-132/GS4×PA7 author

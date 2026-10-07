@@ -3,7 +3,28 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Garage care correction / real workflow proof — 2026-10-07
+## Garage shared refusal/read boundary correction — 2026-10-07
+
+RP-322 locally corrected through `efa557b8`, predeclared `3f231ba2`,
+failing-first `d362c95e`. Shared429/exclusive arms use existing refresh;
+held read prevents activation until fresh state, and a new player command
+uses Founder8/fresh ID. Unit/native failures and separate arm severing
+discriminate and restore exactly. Final Garage Chromium/WebKit100/
+performance1, client9,737/373 explicit browser skips/types/build/boundaries/
+actual composed Postgres+WebSocket pass. Refusal tests use runtime doubles,
+not actual service429/Soul-session or minted release-artifact evidence.
+
+**READY FOR CLAUDE:** whole new span after `3f867956` THROUGH this tracking
+edge, all predeclaration/test/product/docs/ledger/log/records. Separate care
+exact `c7d8f815..3f867956`, RP-316 `c0eb3dc5..876b331c` and earlier ranges
+remain owed. **READY next accepted work:** independently predeclare Fiscal
+GS1/GS0.5/GS0.8 pending/readiness/native keyboard/refusal checks. Its current
+component natively disables pending controls without text/aria, and its host
+omits transportReady; establish actual failures before narrowly repairing.
+All Firefox/AT/author/owner/privacy/numeric/content/platform/release holds
+and full nine-tier goal remain; no box/status/archive/mint/publication.
+
+## Garage care correction / real workflow proof — 2026-10-07 (preceding checkpoint)
 
 RP-319/320/321 locally corrected through `ea06183b`, predeclared `970d47a5`,
 failing-first `0784f126`. Care pending/read/focus, native activation,
@@ -17,9 +38,9 @@ bundle, no status crossing/announcement/raw-care/minted release claim.
 Firefox connects no session before timeout: zero tests, one error; failed
 teardown stopped. RP-256 remains, no hosted-CI/full-Garage/AT promotion.
 
-**READY FOR CLAUDE:** entire new span after `c7d8f815` THROUGH this tracking
-edge, including predeclaration/tests/repair/tool/docs/ledger/log. All earlier
-ranges stay independently owed. **READY next accepted work:** separately
+**READY FOR CLAUDE:** exact `c7d8f815..3f867956`, including predeclaration/
+tests/repair/tool/docs/ledger/log/tracking. All earlier ranges stay
+independently owed. **Then-next, now corrected above:** separately
 predeclare GS0.2 care/shared HTTP and exclusive refusals, actual native
 disabled-until-snapshot and no-retry controls; establish failures before any
 remedy. RP-132/GS4×PA7, RP-318 copy/event, RP-313 and all prior/full-nine-tier

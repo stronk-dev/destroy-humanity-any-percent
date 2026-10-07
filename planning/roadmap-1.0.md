@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded correction (2026-10-07):** care `ea06183b`, predeclared
+**Latest bounded correction (2026-10-07):** RP-322 `efa557b8`, predeclared
+`3f231ba2`, failing-first `d362c95e`. Two shared mapper arms now refresh
+before reactivation, without retries/timers/new policy. Two baseline mapper
+failures/four native failures; separate arm severing breaks its mapper and
+both native engines, restored exactly. Final Garage Chromium/WebKit100/
+performance1, client9,737/373 explicit skips/types/build/boundaries and actual
+Postgres/WebSocket composed pass. Runtime-double refused intents, not actual
+429/Soul-session/minted release/full-Garage/hosted-CI/AT evidence. Entire
+span after `3f867956` INCLUDING this tracking edge needs Claude; earlier care
+exact `c7d8f815..3f867956` remains separately owed. Next Fiscal native pending/
+readiness/refusal supplement under accepted GS1/GS0.5/GS0.8. All prior holds
+and the full nine-tier/product/platform goal remain; no lifecycle promotion.
+
+**Preceding bounded correction (2026-10-07):** care `ea06183b`, predeclared
 `970d47a5`/test-first `0784f126`, fixes RP-319/320/321 locally, not
 designated-approved. Eight native fault probes and actual DOM callback
 severing fail and restore exactly. Full Garage Chromium/WebKit82/performance1,
@@ -14,9 +27,9 @@ Actual Postgres/WebSocket DOM adoption→feed→positive bound receipt→public
 state/reload passes at Founder revision5. No status crossing/announcement,
 raw-care/minted release/AT/full-Garage/hosted CI claim. Firefox zero executed
 before connection timeout, then failed teardown stopped; RP-256 remains.
-Whole span after `c7d8f815` INCLUDING this record edge needs Claude; earlier
-spans independent. Next: shared HTTP/exclusive care refusal consumer tests
-under accepted GS0.2. All full nine-tier/product/platform/author/review gates
+Whole care span is now exact `c7d8f815..3f867956` and needs Claude; earlier
+spans independent. Its then-next shared refusal tests now execute above.
+All full nine-tier/product/platform/author/review gates
 remain; no archive, owner-copy or release promotion.
 
 **Preceding bounded review (2026-10-07):** original Claude pet slice
