@@ -7,6 +7,15 @@
   let { arm, era }: { arm: GameUIAchievementsArm; era: CopyEra } = $props();
 
   const earned = $derived(arm.rows.filter((row) => row.earned !== null).length);
+  const presentationUnavailable = $derived(arm.rows.some((row) => !applicationCopyCatalog.byKey.has(row.copy_key)));
+  let presentationErrorReported = false;
+  $effect(() => {
+    if (!presentationUnavailable) { presentationErrorReported = false; return; }
+    if (!presentationErrorReported) {
+      console.error("game UI invariant: achievements surface presentation unavailable");
+      presentationErrorReported = true;
+    }
+  });
   function title(row: GameUIAchievementsArm["rows"][number]): string {
     if (!applicationCopyCatalog.byKey.has(row.copy_key)) throw new RangeError(`achievement copy ${row.copy_key} is missing`);
     return t(row.copy_key as CopyKey, {}, era);
@@ -18,6 +27,9 @@
 
 <section class="surface achievements" aria-labelledby="achievements-heading">
   <h1 id="achievements-heading" tabindex="-1">{t("surface.achievements.title", {}, era)}</h1>
+  {#if presentationUnavailable}
+    <p role="alert">{t("common.surface_error", {}, era)}</p>
+  {:else}
   <p>{t("achievements.score_frame", { run: arm.score.run, lifetime: arm.score.lifetime }, era)}</p>
   {#if arm.rows.length === 0}
     <p>{t("achievements.empty", {}, era)}</p>
@@ -34,6 +46,7 @@
         </li>
       {/each}
     </ul>
+  {/if}
   {/if}
 </section>
 

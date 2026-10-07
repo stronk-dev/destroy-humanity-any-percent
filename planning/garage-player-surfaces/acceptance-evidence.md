@@ -117,3 +117,28 @@ Following safe accepted work: GS3-A1 complete-ID decoder; GS3-A3 semantic narrow
 layout; exact source guards; missing real DOM acquisition/meter
 witnesses after capacity restoration. RP-132/313/318 author obligations remain
 separate. No additional empirical or owner decisions are answered by this file.
+
+## Follow-up: RP-332 / RP-333 (separate range after cc62cea8)
+
+The candidate above was reproduced after this audit: predeclared `4c9e06b2`,
+typed-clean failed-first `532855fe` (eight native rendering/assertion failures),
+bounded repair step `81b4f51d`. The two components now contain unavailable
+achievement-copy / declared meter-band presentation with an own alert and
+once-per-error-episode invariant; healthy authoritative refresh recovers, other
+navigation remains operable, no synthetic intent. Five compiling faults each
+fail four of eight focused executions, exact source restored. Fresh full Garage
+Chromium/WebKit passes 246 executions; client/types/build/boundaries/copy/
+topology pass. This is a local correction, **not** designated approval or full
+GS0.5/GS2/GS3/accessibility/composed acceptance. Exact evidence in log.md.
+
+Further performance inspection identifies RP-333: the unchanged screen fixture
+in `client/test/game-ui-screens-browser.test.ts` has every feature arm null.
+Its isolated passing 1,200-update scenario covers sixty **simulated** seconds,
+not the populated Garage Desk regions required by overall AC7. Retain that
+existing guard and add the missing population separately; do not loosen its
+budget or infer a performance regression from this source gap.
+
+Audit range `fc911784..cc62cea8`, the subsequent whole RP-332 range through its
+record edge, and all prior ranges need their own Claude verdicts. RP-329/330/331,
+Docker capacity (fresh read-only check still 0 available / 100%), Firefox/AT/
+author/body/default-workflow/full nine-tier 1.0 holds remain independently open.

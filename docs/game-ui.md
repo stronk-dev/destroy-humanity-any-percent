@@ -197,6 +197,17 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   shared by the real driver and counterexample tests, uses the existing numeric
   parser, and reports which branch actually ran; its fixtures are not server
   payout or Lucky-acquisition evidence.
+- **Trophy Case / Meters presentation errors (GS0.5):** decoder-legal
+  achievement rows whose copy key is unavailable, or meter rows whose declared
+  band lacks presentation, render only the unchanged surface heading and
+  `common.surface_error` in one alert. No numeric/list content or controls are
+  rendered; mechanical IDs are not substituted for missing text. Entering this
+  error state reports one fixed client invariant per mounted surface episode;
+  repeated snapshots and display ticks do not duplicate it. A healthy authoritative
+  snapshot restores normal content and permits a later error episode to report
+  anew. Other navigation remains operable. This checks these required mappings
+  before rendering; it does not catch arbitrary component or malformed-wire errors,
+  repair missing meter IDs, or prove the complete shared-state/accessibility floor.
 - **Pet (GS4):** a nav tab unlocked by `feature.pets`, which the server sets true only when an adopted
   pet exists. It renders the PA7 projection only: name, status band text, and one button per
   catalog care action in catalog order. An action the server does not list as eligible is disabled
@@ -366,7 +377,7 @@ balance from the event's factor/starter IDs.
 `make verify-client-boundary` scans the Game UI components alongside the archived UI primitives.
 It rejects transport/replay imports, raw network calls, player-facing text literals, and governed
 style literals. `make test-browser` applies the WCAG 2.2 AA axe gate to all five lifecycle surfaces and to every minigame surface state in
-Chromium, Firefox, and WebKit and includes the sixty-second observable performance scenario. The
+Chromium, Firefox, and WebKit and includes the sixty-simulated-second observable performance scenario. The
 focused `make test-game-ui-performance` command runs that scenario alone.
 `make test-game-ui-composed` additionally drives Chromium through the real Vite proxy, composed
 gameserver, Postgres bootstrap transaction, authenticated live snapshot-v4 route (asserting the live `features` arms), and Centrifuge
@@ -394,6 +405,9 @@ Chromium/Firefox/WebKit matrix, then feeds 1,200 authoritative snapshot updates 
 seconds at 20 Hz through 600 shared formatter windows in a 1280×720 viewport. Isolation keeps
 concurrent browser engines from becoming part of the measurement. The shared renderer may commit
 a hot Amount at most 600 times and may not produce a long task over 200 ms.
+The current screen fixture leaves its feature arms null. Its passing result
+does not cover the populated Garage Desk regions required by Garage AC7
+(RP-333); that population remains a separate open gate, not a budget waiver.
 Four-times CPU throttling and the five-percent dropped-frame allowance remain a manual release
 profile; deterministic CI gates observable commits and long tasks as ruled. The 2026-08-22
 reference run passed for 60,001.9 ms at 4× in pinned Chromium: 598 production prediction

@@ -2084,3 +2084,56 @@ or instrumentation mistakes, never loosen assertions/budgets. No Docker run,
 schema/kernel/balance/owner-copy/host/semantic reflow/missing-ID repair.
 All-engine/AT/composed/default-player/body/review/full1.0 remain open. Whole
 new span aftercc62cea8 through final records requires Claude, not self-approval.
+
+## 2026-10-07 — RP-332 containment locally corrected and discriminating
+
+Review by: Codex (self first filter, NOT designated approval).
+Recorded by: Codex. Predeclarations4c9e06b2/81b4f51d; failed-first532855fe.
+Only two read-only components changed: validate required mapping availability
+before content rendering, existing common.surface_error alert, one fixed
+invariant per mounted error episode; unchanged snapshots/ticks don't duplicate,
+healthy refresh restores content and resets reporting for the next episode.
+Host/network, guarded kernel, wire, schema, balance, owner copy and CI unchanged.
+Original tests retained; no catch-all that swallows unrelated errors.
+
+Typed targeted28557 exits0 (zero errors/warnings); native80980 exits0:
+8/8 new executions,238 unselected; unchanged isolated performance1 passes.
+Five independent compiling faults (each terminal root Make exit2):
+
+| Fault | Handle | Failed / passed / unselected | Actual discrimination |
+|---|---|---|---|
+| Bypass Trophy Case error branch | 19611 | 4 / 4 / 238 | observed RangeError and absent containment |
+| Bypass Meters error branch | 48196 | 4 / 4 / 238 | observed RangeError and absent containment |
+| Change alert to note | 45938 | 4 / 4 / 238 | zero alerts instead of one |
+| Omit Meters invariant | 36045 | 4 / 4 / 238 | zero diagnostics instead of one |
+| Never reset Trophy Case episode | 45455 | 4 / 4 / 238 | second episode reports one total instead of two |
+
+All faults removed before final gates, exact production SHA256 restored:
+Achievements877a39910e1b859e962a0929d674973c3010052ccf20bcd1bac2226fae2901a9;
+Meters1d22055bf9ed92f260958487f6c519ef622147b6cee319b932421833c8b1df32.
+No source edits while a corresponding check was live.
+
+Final plain root native67775 terminal0:246/246 Garage executions across
+Chromium/WebKit,77.15s including the unchanged actual60s idle check. Module
+summary242/242 valid. Separate unchanged isolated performance1/22 unselected,
+317ms observation/1.32s process. Intermediate native output was tool-truncated
+(12,031→3,000 and25,833→24,000 tokens); terminal populations/diagnostics are
+retained, not a full-trace claim. Initial compound read/check launch hit EPERM
+before collection; no test result claimed, reissued the ordinary Make command.
+
+Final10237 terminal0: types0/0, client9,758pass/446 explicit browser skips
+(105 files pass/22 skip),5.15s; build213 modules/index-Crfq0_YP.js,
+unchanged CSS and worker; boundaries14shell/8UI/22GameUI pass.
+Copy/topology19498 terminal0:658 keys, unchangeda5df8920…1adeb0e5e hash,
+611 orphan warnings; content manifest/topology and13 negative controls pass.
+Fresh read-only declared Postgres container df still125.7G/122.7Gused/
+0available/100% overlay,63M available shm. No Docker population/cleanup.
+
+Performance source inspection found RP-333: the passing isolated screen
+scenario has null feature arms and sixty simulated seconds, so it is not
+the populated Garage AC7 witness. The gate stays open; no threshold change
+or performance regression inferred. RP-329/330/331 and all author/body/
+Firefox/AT/composed/review/full1.0 obligations remain. Next accepted bounded
+work: predeclare complete/missing meter-ID controls before GS3-A1 repair.
+Whole error span aftercc62cea8 INCLUDING following record edge needs Claude;
+audit exactfc911784..cc62cea8 and earlier ranges independently owed.

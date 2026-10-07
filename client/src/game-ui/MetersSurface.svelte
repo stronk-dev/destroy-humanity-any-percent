@@ -8,6 +8,15 @@
   let { arm, era }: { arm: GameUIMetersArm; era: CopyEra } = $props();
 
   type Row = GameUIMetersArm["meters"][number];
+  const presentationUnavailable = $derived(arm.meters.some((row) => !FEATURES_PRESENTATION.meterBands.has(row.band_id)));
+  let presentationErrorReported = false;
+  $effect(() => {
+    if (!presentationUnavailable) { presentationErrorReported = false; return; }
+    if (!presentationErrorReported) {
+      console.error("game UI invariant: meters surface presentation unavailable");
+      presentationErrorReported = true;
+    }
+  });
   const byID = $derived(new Map(arm.meters.map((row) => [row.meter_id, row])));
   const constituencies = $derived.by(() => {
     const groups = new Map<CopyKey, { standing?: Row; grievance?: Row }>();
@@ -42,6 +51,9 @@
 
 <section class="surface meters" aria-labelledby="meters-heading">
   <h1 id="meters-heading" tabindex="-1">{t("surface.meters.title", {}, era)}</h1>
+  {#if presentationUnavailable}
+    <p role="alert">{t("common.surface_error", {}, era)}</p>
+  {:else}
   <p>{t("meters.curtain", {}, era)}</p>
   <table>
     <thead>
@@ -71,6 +83,7 @@
     </section>
   {/if}
   <small>{t("meters.as_of_note", {}, era)}</small>
+  {/if}
 </section>
 
 <style>
