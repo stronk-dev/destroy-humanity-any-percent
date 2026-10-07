@@ -1058,3 +1058,19 @@ each; no live-handle edit or weakened failure setting. Full client/types/
 build/boundaries and targeted native oracle cases. Claude must review the
 complete new span after `c0eb3dc5`, predeclaration through tracking edge;
 no self-designated approval, boxes/status/archival/publication or full CI claim.
+
+### RP-316 lifted baseline, before any predicate repair
+
+The old receipt guard/Lucky-string/buff-ID predicate is mechanically lifted
+into `client/tools/opportunity-claim-proof.mjs`; real composed caller imports
+it. There is one predicate, not a competing test implementation. Natural
+driver cadence, guards, input and reads are unchanged. New pure .mjs tests
+remain included in the existing Node/browser collectors; no config exclusion.
+
+Full client at the unchanged predicate: 21 intended assertion failures,
+9,700 passes/348 explicit browser skips. The new 29-case population has
+5 admitted effect/zero controls and 3 already-discriminating negative controls;
+21 missing-state/cash/coordinate/effect negatives survive wrongly. This is
+oracle discrimination, not a proven producer defect or integration evidence.
+The saturated-zero fixture is explicit, not permission to require every
+credit to be positive. No payout arithmetic will be copied into this checker.

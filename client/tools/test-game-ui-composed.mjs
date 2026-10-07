@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { chromium } from "playwright";
 import { createServer } from "vite";
+import { assertOpportunityClaimEffect } from "./opportunity-claim-proof.mjs";
 
 const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = path.resolve(clientRoot, "..");
@@ -244,10 +245,7 @@ async function witnessOpportunityClaim(page) {
       const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
       return response.json();
     });
-    const arm = after?.features?.opportunity;
-    const lucky = claim.effect_row_id === "active.lucky" && typeof claim.actual_credited_delta === "string";
-    const buffed = typeof claim.buff_instance_id === "string" && arm?.buffs?.some((buff) => buff.buff_instance_id === claim.buff_instance_id);
-    if (!lucky && !buffed) throw new Error(`GS5 claim effect is absent from the next snapshot: ${JSON.stringify({ claim, arm })}`);
+    assertOpportunityClaimEffect(result, after);
     return { effect_row_id: claim.effect_row_id, manual_clicks: attempt - expiredClaims.length, expired_claims: expiredClaims.length };
   }
   throw new Error("GS5: no opportunity became claimable within 60 manual clicks (4/s, under the account limiter)");
