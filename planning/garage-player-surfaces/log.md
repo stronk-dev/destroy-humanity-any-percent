@@ -563,3 +563,25 @@ coordinate-record commit and any later touching edges. This entry does not
 self-approve its own record edge or authorize archival. Original Claude
 `301728c8^..301728c8` remains CHANGES REQUIRED; the correction's independent
 verdict is a separate gate. Next: the separately scoped five-path remainder.
+
+## 2026-10-07 — Fiscal/buff/reflow designated review, predeclared
+
+**Review by:** Codex. **Recorded by:** Codex. **Original Claude range:**
+`6594b646^..6594b646`, all five paths read completely (host, event decoders,
+pet grid CSS and both test files). Baseline `900f409e`. Original GS0.3's RP-312
+finding and the new Codex correction remain separate; no full Garage or later
+implementation range is absorbed by this review.
+
+Compare both Fiscal union arms and both accepted buff payload shapes to
+`server/save/intent.go` and execute the retained decoder assertions cold.
+Execute the current Garage native population in Chromium/WebKit, including
+Fiscal badge clearing, Desk buff copy and all five mounted surfaces at 320px.
+Firefox and manual 400%/AT are not inferred from those two engines or geometry.
+
+Independent compiling counterexamples, one at a time with exact restoration:
+omit the automatic credit-sum relation; leave the buff decoder unwired; omit
+the Fiscal visit's badge clear; remove chrome nav wrapping. Each must fail its
+named existing oracle, while unrelated controls may survive legitimately.
+These are temporary review probes, not retained product changes. Do not raise
+timeouts, change browser failure/attachment settings, alter copy or redesign
+payloads. A record-only verdict is not acceptance of the entire Garage lane.
