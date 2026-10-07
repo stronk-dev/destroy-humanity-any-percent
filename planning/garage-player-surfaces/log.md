@@ -2397,3 +2397,27 @@ includes this test-first record through its eventual production/final edge.
 Claude review is separately owed; RP-329 exact 5fbf4cff..bddfc58e and all
 earlier ranges remain pending. No checkbox/status/archive/mint/AT/all-engine/
 persisted/release claim; no Docker run or cleanup, full 1.0 goal active.
+
+## 2026-10-07 — GS3-A3 bounded repair and severing step
+
+After test-first 09655d1e / corrected six-failure baseline 50408, implement
+only MetersSurface.svelte: a real trust definition list and separate p(doom)
+definition row below 30rem, the existing table at/above it, exactly one
+rendered population. Reuse current presentation/copy/committed values and
+shared meter/value/band markup. Every narrow dt names its native meter via
+aria-labelledby; no new copy or invented data. A mount-owned matchMedia
+`(width < 30rem)` listener handles resizing and is removed on unmount. This
+is layout observation, not another reduced-motion listener or gameplay input.
+Retain RP-332 error containment, existing full-page heading/nav behavior.
+
+Predeclare independent executable faults before probes: remove axis text
+from the narrow term; omit its aria-labelledby binding; substitute a zero
+native meter value; change the breakpoint to 20rem; omit the live change
+listener while retaining its initial read; suppress band text. Actual named
+association/value/breakpoint/live-resize assertions must fail, not parsing
+or type errors. Restore the exact healthy component SHA after each probe.
+Do not loosen existing tests, timeouts, copy or budgets. Final root types/
+client/build/boundaries, full native Garage and copy/topology gates remain
+mandatory; no green claim before terminal results. Whole range after
+bddfc58e through final records requires Claude, no archival or acceptance
+promotion. RP-329 5fbf4cff..bddfc58e stays separate.
