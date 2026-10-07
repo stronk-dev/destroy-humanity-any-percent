@@ -13,13 +13,14 @@
   // order; one the server does not list as eligible is disabled AND says so in
   // text (never greying alone). Eligibility is decided by the server; this
   // surface pre-evaluates nothing. Sincere tone; no price, urgency, or parody.
-  let { pets, cosmetics, era, pending, controlsEnabled, reducedMotion, onCare }: {
+  let { pets, cosmetics, era, pending, controlsEnabled, reducedMotion, notice = null, onCare }: {
     pets: readonly GameUIPetRow[];
     cosmetics: GameUICosmeticsArm | null;
     era: CopyEra;
     pending: boolean;
     controlsEnabled: boolean;
     reducedMotion: boolean;
+    notice?: CopyKey | null;
     onCare(petID: string, actionID: string): void;
   } = $props();
 
@@ -47,6 +48,7 @@
 
 <section bind:this={root} class="surface pet-care" aria-labelledby="pet-care-heading">
   <h1 bind:this={heading} id="pet-care-heading" tabindex="-1">{t("pet.care.panel.title", {}, era)}</h1>
+  <p class="intent-notice" role="status">{notice ? t(notice, {}, era) : ""}</p>
   {#if !controlsEnabled}<p class="care-stale" role="status">{t("common.stale_note", {}, era)}</p>{/if}
   {#if pending}<p class="care-pending" role="status">{t("common.pending", {}, era)}</p>{/if}
   {#each pets as pet (pet.pet_id)}

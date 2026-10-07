@@ -63,6 +63,7 @@
   let orderPlaced = $state(false);
   let energyRefilled = $state(false);
   let intentNotice = $state<CopyKey | null>(null);
+  let intentNoticeOwner = $state<GameUISurfaceID | undefined>();
   // GS0.6: one polite chrome region for cross-surface announcements, deduped
   // by stream cursor so a replay after reconnect announces nothing.
   let announcement = $state("");
@@ -164,6 +165,9 @@
     observed?: (outcome: IntentOutcome) => void;
     failed?: (error: unknown) => void;
   }> = {}): Promise<void> {
+    // Capture before any queue/read await: completion belongs to the submitter,
+    // not whichever panel the player selects while the response is in flight.
+    const noticeOwner = surface;
     if (!snapshot) return;
     if (options.scope === "founder" && founderRevision === undefined) return;
     const kind = typeof body.kind === "string" ? body.kind : "";
@@ -180,6 +184,7 @@
     const task = (async () => {
       try {
         intentNotice = null;
+        intentNoticeOwner = noticeOwner;
         const expected = options.scope === "founder" ? founderRevision! : snapshot!.revision;
         const outcome = await runtime.intent({ intent_id: newIntentID(), expected_revision: expected, ...body });
         const notice = noticeForOutcome(outcome, options.rejections);
@@ -526,7 +531,7 @@
   {/if}
 
   {#if snapshot}<p class="announcement" role="status">{announcement}</p>{/if}
-  {#if snapshot}<p class="intent-notice" role="status">{intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>{/if}
+  {#if snapshot && surface !== "fiscal" && surface !== "pet"}<p class="intent-notice" role="status">{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>{/if}
   {#if draining}
     <aside class="notice" role="status"><strong>{t("system.drain_notice.title", {}, era)}</strong><span>{t("system.drain_notice.body", {}, era)}</span></aside>
   {/if}
@@ -692,7 +697,7 @@
       offline={offline || !transportReady}
       feedback={reputationFeedback} onPurchase={purchaseReputation} />
   {:else if surface === "fiscal" && liveFeatures?.fiscal}
-    <FiscalSurface arm={liveFeatures.fiscal} {era} serverNowMs={estimatedServerNowMS()} {pending} controlsEnabled={founderControls && transportReady}
+    <FiscalSurface arm={liveFeatures.fiscal} {era} serverNowMs={estimatedServerNowMS()} {pending} controlsEnabled={founderControls && transportReady} notice={intentNoticeOwner === "fiscal" ? intentNotice : null}
       onHarvest={() => act({ kind: "harvest_fiscal_period" }, { scope: "founder", rejections: fiscalRejections, applied: harvestNotice })}
       onSpendLevel={(generatorID) => act({ kind: "spend_fiscal_credit", target: { kind: "generator_level", generator_id: generatorID, levels: 1 } }, { scope: "founder", rejections: fiscalRejections })}
       onSpendUnlock={(unlockID) => act({ kind: "spend_fiscal_credit", target: { kind: "unlock", unlock_id: unlockID } }, { scope: "founder", rejections: fiscalRejections })} />
@@ -701,7 +706,7 @@
     {#if pitchAvailability?.human_content_locked}<p class="intent-notice" role="note">{t("minigame.availability.soul_locked", {}, era)}</p>{/if}
     <MinigameSessionSurface port={runtime.minigame} minigameID="pitch" {era} newCommandID={() => newIntentID()} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
   {:else if snapshot && surface === "pet" && liveFeatures?.pet_adoption && liveFeatures.pet_adoption.pets.length > 0}
-    <PetCareSurface pets={liveFeatures.pet_adoption.pets} cosmetics={liveFeatures.cosmetics ?? null} {era} {pending} controlsEnabled={founderControls && transportReady} reducedMotion={prefersReducedMotion}
+    <PetCareSurface pets={liveFeatures.pet_adoption.pets} cosmetics={liveFeatures.cosmetics ?? null} {era} {pending} controlsEnabled={founderControls && transportReady} reducedMotion={prefersReducedMotion} notice={intentNoticeOwner === "pet" ? intentNotice : null}
       onCare={(petID, actionID) => act({ kind: "care_action", pet_id: petID, action_id: actionID }, { scope: "founder", rejections: CARE_REJECTIONS, applied: () => "pet.care.applied" })} />
   {:else if snapshot && surface === "garden" && runtime.garden}
     <GardenSurface port={runtime.garden} {era} {pending} refreshKey={gardenRefresh}

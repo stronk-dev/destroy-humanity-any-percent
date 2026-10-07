@@ -9,12 +9,13 @@
   // GS1. The harvest phase is display-only, derived from the host's server-time
   // estimate against the pinned windows; the receipt decides (a stale early
   // estimate produces an honest rejection).
-  let { arm, era, serverNowMs, pending, controlsEnabled, onHarvest, onSpendLevel, onSpendUnlock }: {
+  let { arm, era, serverNowMs, pending, controlsEnabled, notice = null, onHarvest, onSpendLevel, onSpendUnlock }: {
     arm: GameUIFiscalArm;
     era: CopyEra;
     serverNowMs: number;
     pending: boolean;
     controlsEnabled: boolean;
+    notice?: CopyKey | null;
     onHarvest(): void;
     onSpendLevel(generatorID: string): void;
     onSpendUnlock(unlockID: string): void;
@@ -68,6 +69,7 @@
 
 <section bind:this={root} class="surface fiscal" aria-labelledby="fiscal-heading" data-phase={phase}>
   <h1 bind:this={heading} id="fiscal-heading" tabindex="-1">{t("surface.fiscal.title", {}, era)}</h1>
+  <p class="intent-notice" role="status">{notice ? t(notice, {}, era) : ""}</p>
   {#if !controlsEnabled}<p class="fiscal-state" role="status">{t("common.stale_note", {}, era)}</p>{/if}
   {#if pending}<p class="fiscal-state" role="status">{t("common.pending", {}, era)}</p>{/if}
 
@@ -140,7 +142,7 @@
 
 <style>
   .fiscal { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); gap: var(--cc-space-md); }
-  .fiscal > h1, .fiscal > .fiscal-state { grid-column: 1 / -1; }
+  .fiscal > h1, .fiscal > .fiscal-state, .fiscal > .intent-notice { grid-column: 1 / -1; }
   .card { display: grid; gap: var(--cc-space-sm); align-content: start; }
   ul { display: grid; gap: var(--cc-space-sm); margin: 0; padding: 0; list-style: none; }
   li { display: grid; gap: var(--cc-space-xs); }

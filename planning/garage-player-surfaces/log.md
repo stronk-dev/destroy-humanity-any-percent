@@ -1713,3 +1713,64 @@ RP-236 and must not be claimed. No all-engine/AT/release acceptance. Tests
 commit first; product/docs/records separately. Exact new boundary begins
 e950216a exclusive through eventual record edge and needs Claude; earlier
 browser/Fiscal/care/shared and all other spans independent. Goalactive.
+
+## 2026-10-07 — RP-326 narrow repair and native discrimination
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Tests
+predeclareda8f2a527, failing-first7cac400d; original24/24 real DOM failures
+98729 are unchanged. Repair binds the one existing mapped notice to the
+surface captured before act's queue/read awaits. Fiscal/care get optional
+presentation-only CopyKey `notice` props, no duplicate mapping authority;
+one own polite outcome region after the heading. Fiscal region spans the
+existing grid. Generic chrome result is invisible outside its captured
+origin; cross-surface stream announcements remain unchanged. No result
+history, retry/timer/copy text/kernel/server/schema/balance/owner change.
+
+Initial restored24/150unselected plus performance1/22unselected pass73952;
+strict types67851 zeroerrors/warnings. Five independent compiling native
+faults (full24selected,150explicitlyunselected each):
+
+| Fault | Failed | Passed | Make exit |
+| --- | ---: | ---: | ---: |
+| Omit Fiscal notice | 8 | 16 | 2 |
+| Omit care notice | 8 | 16 | 2 |
+| Duplicate result in chrome | 8 | 16 | 2 |
+| Remove chrome origin condition | 16 | 8 | 2 |
+| Capture owner at response completion | 8 | 16 | 2 |
+
+All fail at AssertionError, not syntax/import errors, and source is restored
+before the next fault. Final exactSHA256:
+GameUIApp9ea86275b688712047703e2e6b794fcf5d6b5b61706d874b51ee13462459223a,
+FiscalSurface76cf10c5dece9652ea338c9768d38b8533fa89dfb708f464b7c32a20965df8f1,
+PetCareSurface35e72f3987d5b58c913e8513bb5c0373e030dd7b361a9ae54a46107c3004af99.
+No prior assertion, selector or test was deleted/relaxed to obtain the pass.
+
+Full restored native Garage97700:174/174 in Chromium/WebKit,71.01s,
+including existing real-minute idle control; original isolated performance
+1/22explicitunselected,318ms/1.28s. HTTP170/170+performance1/1 valid, no
+pending/earlycloses. Tool retrieval truncates15,665tokens of functional
+trace; terminal count/summaries/performance directly retrieved, not a claim
+of complete per-request traces. Root57092: types0/0, client9,737pass/
+410declared browser skips of10,147;105filespass/22skip; Vite213modules,
+index-DwwjDcZC.js/index-DhbUhBbR.css and unchanged workerMqspU_iu; boundary
+14shell/8UI/22GameUI pass. Copy/topology91872 still live at this record;
+source/HEAD held unchanged until terminal, no pass claim yet.
+
+This is native consumer proof for Fiscal/care applied/ordinary refusals and
+origin isolation, not all-surface/HTTP-failure/queued-origin/fullGS0.6/AT/
+Firefox or hosted-CI acceptance. Real composed not rerun on this changed
+production tree because RP-236 disk capacity remains unresolved; earlier
+Fiscal real composed belongs to the earlier source, never substitute it.
+RP-132/313/318 and author/copy/content/numeric/privacy/release/all prior
+holds remain. Exact newspan starts e950216a exclusive through final records,
+Claude gate remains; no boxes/status/archive/push/mint. Full1.0 progress.
+
+Copy/topology91872 now terminal0 on the same source/HEAD:658 keys,
+hasha5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611existingorphan warnings; generated content manifest unchanged/valid;
+CI topology+13seeded negative controls pass. This is local copy/manifest/
+topology evidence, never hosted execution. All verification/fault handles
+terminal; source hashes still exact above. The isolated earlier failed
+artifact/log-link patch is disclosed in platform log and applied no partial
+log change; no behavioral implication. Commit product/docs/ledger/log now,
+then reconcile tracking as a separate same-range record edge.

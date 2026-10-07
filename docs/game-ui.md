@@ -41,7 +41,8 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   - The Harvest button carries its curtain small print. There are +1 level buttons and unlock rows.
   - Unlock rows without a `features-presentation.json` row are withheld; `unlock.arcade` is
     withheld (F12).
-  - Intents are Founder-scoped. Harvest outcomes and Fiscal rejections render in the status line.
+  - Intents are Founder-scoped. Harvest outcomes and Fiscal rejections render in
+    the Fiscal panel's own polite status line, never duplicated in chrome.
     A generator-level cap rejection uses that snapshot row's reason key, not
     the shared generic cap sentence. Unknown target refusals report one invariant.
   - Harvest, level and unlock controls keep native keyboard focus and visible
@@ -55,8 +56,13 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
     use runtime doubles; the separate composed lane exercises actual harvest
     and unlock against Postgres and a real WebSocket. Neither replaces Firefox,
     manual accessibility, all-Garage or release-manifest proof.
-    Outcome notices still live in the shared chrome status line; surface-local
-    ownership and cross-tab notice isolation are a separate open GS0.6 boundary.
+    The host maps the existing result/reason key once and passes a presentation-only
+    `notice` to the panel. It captures the submitting surface before any queue/read
+    await; late completion does not display on another tab. The host still stores
+    only the last result, not an outcome history. Native runtime-double placement,
+    completed-navigation and held-response controls cover Fiscal and care applied/
+    ordinary refused outcomes; they do not prove all-surface, AT or real-service
+    outcome delivery. Other Garage GS0.6 obligations remain independently open.
 - **Reputation Board (`meters`):** read-only, unlocked by `feature.meters`. It is a 5 × 2 table of
   constituency Standing/Grievance plus p(doom). Each cell has a native `<meter>`, numeric text and
   band text. Below 30rem it collapses to labelled rows. It carries the curtain and the "as of last
@@ -262,8 +268,12 @@ documented in its own section, and the Reputation and Clout surfaces are covered
 `feature.active_play` follows `opportunity`. `feature.pets` is true only when `pet_adoption` holds
 at least one pet.
 
-Intents return their typed outcome (GS0.2). A rejected intent is an HTTP 200 whose reason renders
-in the chrome `role="status"` line. A stale revision (`revision_conflict`) triggers one
+Intents return their typed outcome (GS0.2). A rejected intent is an HTTP 200 whose
+reason renders in `role="status"`: Fiscal and pet care own their outcome region;
+other existing host results use the chrome line only while their captured
+submitting surface is current. Care receives the host's single mapped presentation
+key just like Fiscal. Cross-surface event announcements keep their separate,
+cursor-deduplicated chrome region. A stale revision (`revision_conflict`) triggers one
 authoritative refresh and is never auto-retried. Founder-scoped intents send the Founder revision.
 An applied intent keeps its controls pending through an authoritative snapshot refresh, so the
 next action uses the updated Founder or Company revision even if the stream receipt arrives late.
