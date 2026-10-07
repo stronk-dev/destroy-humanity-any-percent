@@ -3449,3 +3449,35 @@ AT/default-player/privacy/platform/numeric/full-nine-tier1.0/review holds
 remain. Next accepted work: predeclare GS0.5 Trophy Case loading/reconnect/
 null-arm context-change focus fixtures; actual GS2-A4 stays capacity-held.
 No boxes/lifecycle/archive/mint/push/deploy/release/preview promotion.
+
+## 2026-10-07 — shared Trophy Case states failed-first predeclaration
+
+At0fe2f57c clean checkout; last turn progressed actual RP-338 repair, not
+full release. Fresh802666/9b21f8/554a42: declared Postgres healthy but actual
+overlay still zero available/100%, no deletion/cleanup approval/full-disk run.
+Current source lacks a no-snapshot loading branch, a Trophy stale marker and
+forced arm-loss Desk heading focus. These are candidates, not executed defects.
+
+TEST-ONLY baseline range: decoder-admitted public fixtures, actual host and
+native Chromium/WebKit at320/1280. Hold the initial runtime snapshot promise:
+credentialled returning-player Desk heading plus common.loading role=status,
+no fabricated rows/controls, then resolve and require real existing Desk.
+On Trophy Case, cross recovering/closed/resync/restart with both widths:
+keep exact last run2/career5 and rows, visibly mark common.stale_note, no
+local score change/intents while native clock runs. Recover with unchanged
+snapshot, remove stale marker; deliver an explicit valid updated snapshot
+(new generator achievement earned, run3/career5) and require only that value.
+Null-arm ×retained/removed feature fact ×two widths: actual snapshot delivery
+forces Desk, unmounts Trophy Case, focuses a negative-tabindex Desk heading;
+repeated null delivery must not move later user nav focus. Cover a newer
+player-selected surface cancelling a pending forced-focus callback. No
+fixture-only focus implementation or browser preference change.
+
+Record executed failing populations before any product correction. Later
+repair needs separate accepted GS0.5/GS0.6 predeclaration, not a silent scope
+expansion of this test-only boundary. Existing assertions/copy/clock behavior
+remain unchanged. Further discrimination faults will be predeclared after
+the baseline identifies actual defects. Not real service/persistence/AT/
+400%zoom/Firefox/all-state/full GS2 acceptance. No RFC/copy/balance/kernel/
+CI/Make changes or lifecycle/push/owner-body promotion. Entire new span after
+0fe2f57c needs Claude separately from85fdcfdf..0fe2f57c and earlier spans.
