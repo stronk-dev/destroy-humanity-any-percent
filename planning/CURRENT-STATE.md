@@ -68,9 +68,12 @@ queue and current verification, not a claim to have rerun every acceptance crite
   builds and serves production assets, verifies exact browser-loaded HTML/JS/CSS/worker bytes,
   and passes its real Postgres/socket/gameplay population. Cosmetics already used a separate
   production build. Neither establishes release-artifact/clean-host proof.
-- Latest whole composed command40231 is **RED** after that main pass: the unchanged Cosmetic
-  driver times out awaiting equip after Buy/reload/adoption (RP-385). Cause is untraced; care
-  and later steps did not complete. A passing main journey is not a green aggregate.
+- Latest whole composed command28799 **PASSES** both main and Cosmetic journeys. Its preceding
+  red40231 equip timeout remains recorded (RP-385): a controlled mounted-host test reproduces
+  refresh suppressing a native click after pointer-down, and the G10 driver now uses one-shot
+  ready DOM activation for equip/unequip, preserving exact receipts/persistence/deadlines. Final46
+  native browser checks and types pass. Original40231's unique cause remains untraced; future
+  failures retain input/request/response metadata. No general reliability or hosted-green claim.
 - Intermittent composed timeout RP-378 remains open despite subsequent passes. Manual input
   retention/rate choice RP-368 and attendance-clock D-024 remain unruled, not silently fixed.
 

@@ -127,12 +127,17 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   `cosmetics` and runs the built browser client through real Postgres, gameserver, and WebSocket
   transport. It observes T0 locked → visible T1 Buy → applied intent → server-owned state after
   reload under the request/payment trap; severing the server Cosmetics projector fails the run.
-  Buy uses one guarded DOM activation after checking visibility, hit-testing and the actual
-  enabled/non-pending state. This is DOM-consumer proof, not native pointer/keyboard AC11 proof.
+  Buy and the owned item's equip/unequip controls use one guarded DOM activation after checking
+  visibility, hit-testing, exact label, item state and the actual enabled/non-pending state.
+  Ambiguous labels refuse activation. This is DOM-consumer proof, not native pointer/keyboard
+  AC11 proof. A controlled mounted-host browser test reproduces a refresh suppressing the
+  native click after pointer-down; a completed pointer command alone cannot prove submission.
   Adoption/equip/care/unequip check exact applied receipts, then wait for the mounted host's
   authoritative refresh to finish within the same 30-second action deadline before inspecting
   the pet overlay. A receipt or separate server read is not proof that the UI has rendered it;
   a settled host with a missing overlay still fails immediately.
+  Failed Founder actions report bounded input events (with dropped-event counts), action phase,
+  emitted-request count, response statuses and request failures without tokens or request bodies.
   This fixture is not a production content mint, and its Codex range awaits cross-party review.
 - **G10 release acceptance:** the live pet-panel overlay is implemented and its controlled
   real-server path is witnessed. Production content, owner copy adoption and designated reviews

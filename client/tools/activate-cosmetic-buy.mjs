@@ -1,12 +1,22 @@
 // Passed directly to page.evaluate; also exercised in native-browser tests.
 // Only DOM globals: no runtime/API access and exactly one enabled activation.
-export async function activateCosmeticBuy(expectedLabel) {
-  const deadline = performance.now() + 30_000;
+export async function activateCosmeticBuy(input) {
+  const expectedLabel = typeof input === "string" ? input : input.label;
+  const expectedState = typeof input === "string" ? "unowned" : input.state;
+  const budgetMs = typeof input === "string" ? 30_000 : input.budgetMs;
+  if (typeof expectedLabel !== "string" || expectedLabel.length === 0 ||
+      !["unowned", "owned"].includes(expectedState) || !Number.isFinite(budgetMs) || budgetMs <= 0 || budgetMs > 30_000) {
+    throw new Error("invalid cosmetic DOM activation boundary");
+  }
+  const deadline = performance.now() + budgetMs;
   while (performance.now() < deadline) {
     const item = document.querySelector('[data-testid="cosmetic-shelf"] [data-cosmetic="horse_armor"]');
-    const main = item?.closest("main"), control = item?.querySelector("button");
+    const main = item?.closest("main");
+    const controls = [...item?.querySelectorAll("button") ?? []].filter((control) => control.textContent?.trim() === expectedLabel);
+    if (controls.length > 1) throw new Error("ambiguous cosmetic DOM activation label");
+    const control = controls[0];
     if (main?.getAttribute("data-surface") === "desk" && main.getAttribute("aria-busy") === "false" &&
-        item?.getAttribute("data-state") === "unowned" && control?.isConnected && !control.disabled &&
+        item?.getAttribute("data-state") === expectedState && control?.isConnected && !control.disabled &&
         control.textContent?.trim() === expectedLabel) {
       control.scrollIntoView({ block: "center", inline: "nearest" });
       const bounds = control.getBoundingClientRect(), style = getComputedStyle(control);
@@ -19,5 +29,5 @@ export async function activateCosmeticBuy(expectedLabel) {
     }
     await new Promise(requestAnimationFrame);
   }
-  throw new Error("cosmetic AC14 Buy never became visibly actionable before the single DOM activation");
+  throw new Error("cosmetic control never became visibly actionable before the single DOM activation");
 }

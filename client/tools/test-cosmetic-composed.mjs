@@ -211,32 +211,68 @@ async function founderDOMIntent(page, requests, control, kind, expectedFields) {
   const matching = () => requests.filter((request) => request.method() === "POST" &&
     new URL(request.url()).pathname === "/api/v1/intents" && request.postDataJSON()?.kind === kind);
   const priorCount = matching().length;
-  await control.click({ trial: true, timeout: 30_000 });
-  const deadline = Date.now() + 30_000;
-  const remaining = () => {
-    const budget = deadline - Date.now();
-    if (budget <= 0) throw new Error(`cosmetic G10 ${kind} exceeded the action deadline`);
-    return budget;
+  await page.evaluate(() => { globalThis.__cosmeticActionTrace = []; });
+  const responses = [];
+  const observeResponse = (response) => {
+    const request = response.request();
+    if (request.method() === "POST" && new URL(request.url()).pathname === "/api/v1/intents" &&
+        request.postDataJSON()?.kind === kind) responses.push({ status: response.status() });
   };
-  const responseTask = page.waitForResponse((response) => response.request().method() === "POST" &&
-    new URL(response.url()).pathname === "/api/v1/intents" && response.request().postDataJSON()?.kind === kind, { timeout: remaining() });
-  await control.click({ timeout: remaining() });
-  const response = await responseTask;
-  const receipt = await response.json();
-  const emitted = matching();
-  const body = emitted.at(-1)?.postDataJSON();
-  const requiredKeys = ["intent_id", "kind", "expected_revision", ...Object.keys(expectedFields)].sort();
-  if (emitted.length !== priorCount + 1 || !body || Object.keys(body).sort().join("\0") !== requiredKeys.join("\0") ||
-      body.expected_revision !== before.founder_revision || Object.entries(expectedFields).some(([key, value]) => body[key] !== value) ||
-      response.status() !== 200 || receipt.outcome !== "applied" || receipt.founder_revision !== before.founder_revision + 1) {
-    throw new Error(`cosmetic G10 ${kind} did not emit one exact Founder-scoped applied intent: ${JSON.stringify({ body, receipt, emitted: emitted.length - priorCount })}`);
+  page.on("response", observeResponse);
+  let phase = "actionability";
+  try {
+    await control.click({ trial: true, timeout: 30_000 });
+    const deadline = Date.now() + 30_000;
+    const remaining = () => {
+      const budget = deadline - Date.now();
+      if (budget <= 0) throw new Error(`cosmetic G10 ${kind} exceeded the action deadline`);
+      return budget;
+    };
+    const responseTask = page.waitForResponse((response) => response.request().method() === "POST" &&
+      new URL(response.url()).pathname === "/api/v1/intents" && response.request().postDataJSON()?.kind === kind, { timeout: remaining() })
+      .then((value) => ({ value }), (error) => ({ error }));
+    if (kind === "equip_cosmetic" || kind === "unequip_cosmetic") {
+      phase = "guarded-dom-activation";
+      // G10 proves the real DOM consumer/persisted result, not physical pointer
+      // timing. As for AC14 Buy, wait for ready state and activate once in that
+      // same browser task; a completed pointer sequence need not emit a click.
+      await page.evaluate(activateCosmeticBuy, { label: await control.innerText(), state: "owned", budgetMs: remaining() });
+    } else {
+      phase = "pointer-activation";
+      await control.click({ timeout: remaining() });
+    }
+    phase = "response";
+    const result = await responseTask;
+    if (result.error) throw result.error;
+    const response = result.value;
+    const receipt = await response.json();
+    const emitted = matching();
+    const body = emitted.at(-1)?.postDataJSON();
+    const requiredKeys = ["intent_id", "kind", "expected_revision", ...Object.keys(expectedFields)].sort();
+    if (emitted.length !== priorCount + 1 || !body || Object.keys(body).sort().join("\0") !== requiredKeys.join("\0") ||
+        body.expected_revision !== before.founder_revision || Object.entries(expectedFields).some(([key, value]) => body[key] !== value) ||
+        response.status() !== 200 || receipt.outcome !== "applied" || receipt.founder_revision !== before.founder_revision + 1) {
+      throw new Error(`cosmetic G10 ${kind} did not emit one exact Founder-scoped applied intent: ${JSON.stringify({ body, receipt, emitted: emitted.length - priorCount })}`);
+    }
+    // GS0.2: an HTTP receipt is not the mounted host's completed authoritative
+    // refresh. Stay within this action's deadline; do not retry the intent or
+    // poll for an overlay that a settled but broken consumer never rendered.
+    await page.waitForFunction(() => document.querySelector("main.game-ui")?.getAttribute("aria-busy") === "false",
+      undefined, { timeout: remaining() });
+    return receipt;
+  } catch (error) {
+    const dom = await page.evaluate(() => ({ events: globalThis.__cosmeticActionTrace,
+      dropped_events: globalThis.__cosmeticActionTrace?.dropped ?? 0,
+      surface: document.querySelector("main")?.getAttribute("data-surface"),
+      busy: document.querySelector("main")?.getAttribute("aria-busy") }));
+    const emitted = matching().slice(priorCount);
+    throw new Error(`cosmetic G10 ${kind} boundary failed: ${JSON.stringify({ phase, dom,
+      emitted: emitted.length, responses,
+      requestFailures: emitted.map((request) => request.failure()?.errorText ?? null) })}`, { cause: error });
+  } finally {
+    page.off("response", observeResponse);
+    await page.evaluate(() => { globalThis.__cosmeticActionTrace = null; });
   }
-  // GS0.2: an HTTP receipt is not the mounted host's completed authoritative
-  // refresh. Stay within this action's deadline; do not retry the intent or
-  // poll for an overlay that a settled but broken consumer never rendered.
-  await page.waitForFunction(() => document.querySelector("main.game-ui")?.getAttribute("aria-busy") === "false",
-    undefined, { timeout: remaining() });
-  return receipt;
 }
 
 function assertPersistedWearer(view, petID, worn) {
@@ -388,18 +424,23 @@ try {
     // Passive input trace includes the single guarded DOM activation below;
     // no retries, network bodies/tokens or gameplay API shortcuts.
     globalThis.__cosmeticBuyTrace = [];
+    globalThis.__cosmeticActionTrace = null;
     for (const type of ["pointerdown", "pointerup", "click"]) document.addEventListener(type, (event) => {
-      const trace = globalThis.__cosmeticBuyTrace;
-      if (!trace) return;
+      const traces = [globalThis.__cosmeticBuyTrace, globalThis.__cosmeticActionTrace].filter(Array.isArray);
+      if (traces.length === 0) return;
       const target = event.target instanceof Element ? event.target : null;
       const button = target?.closest("button");
       const main = document.querySelector("main");
       const item = button?.closest("[data-cosmetic]");
-      trace.push({ type, time: performance.now(), trusted: event.isTrusted,
+      const row = { type, time: performance.now(), trusted: event.isTrusted,
         target: target?.tagName ?? null, button: button?.textContent ?? null,
         disabled: button?.disabled ?? null, connected: button?.isConnected ?? null,
         cosmetic: item?.getAttribute("data-cosmetic") ?? null, state: item?.getAttribute("data-state") ?? null,
-        surface: main?.getAttribute("data-surface") ?? null, busy: main?.getAttribute("aria-busy") ?? null });
+        surface: main?.getAttribute("data-surface") ?? null, busy: main?.getAttribute("aria-busy") ?? null };
+      for (const trace of traces) {
+        trace.push(row);
+        if (trace.length > 32) { trace.shift(); trace.dropped = (trace.dropped ?? 0) + 1; }
+      }
     }, { capture: true, passive: true });
     const originalFetch = window.fetch;
     window.fetch = (input, init) => {
@@ -467,7 +508,7 @@ try {
       globalThis.__cosmeticBuyTrace = null;
       const item = document.querySelector('[data-testid="cosmetic-shelf"] [data-cosmetic="horse_armor"]');
       const button = item?.querySelector("button");
-      return { events, state: item?.getAttribute("data-state") ?? null,
+      return { events, dropped_events: events.dropped ?? 0, state: item?.getAttribute("data-state") ?? null,
         disabled: button?.disabled ?? null, busy: document.querySelector("main")?.getAttribute("aria-busy") ?? null };
     });
     const emitted = requests.filter(isAcquire).slice(beforeIntents);

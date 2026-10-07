@@ -96,6 +96,41 @@ function withShop(arm: GameUICosmeticsArm | undefined, tier: number): GameUISnap
 const shelf = (target: HTMLElement) => target.querySelector("[data-testid=cosmetic-shelf]");
 const staticCard = (target: HTMLElement) => [...target.querySelectorAll("section.card h2")].some((node) => node.textContent?.includes("Horse Armor"));
 
+it.skipIf(!browser)("a native equip pointer attempt suppressed by a receipt refresh emits no intent", async () => {
+  const { userEvent } = await import("vitest/browser");
+  let release!: (value: ParsedGameUISnapshot) => void;
+  const read = new Promise<ParsedGameUISnapshot>((resolve) => { release = resolve; });
+  class RefreshRuntime extends Runtime {
+    holding = false;
+    override async snapshot(): Promise<ParsedGameUISnapshot> { return this.holding ? read : this.current; }
+  }
+  const runtime = new RefreshRuntime();
+  runtime.current = withShop(arms["owned-not-worn"], 1);
+  const { target, dispose } = await mounted(runtime);
+  const control = shelf(target)!.querySelector<HTMLButtonElement>("button")!;
+  const events: string[] = [];
+  control.addEventListener("pointerdown", () => {
+    events.push("pointerdown");
+    runtime.holding = true;
+    runtime.listener?.({ kind: "receipt" });
+  }, { once: true });
+  control.addEventListener("click", () => events.push("click"));
+  try {
+    expect(control.disabled).toBe(false);
+    await userEvent.click(control);
+    await settle();
+    expect(events).toEqual(["pointerdown"]);
+    expect(control.disabled).toBe(true);
+    expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+    expect(runtime.requests).toEqual([]);
+    release(runtime.current); await settle();
+    expect(control.disabled).toBe(false);
+    // The driver cannot equate a completed pointer command with an emitted
+    // intent, or replay the absent click when the read completes.
+    expect(runtime.requests).toEqual([]);
+  } finally { release(runtime.current); await dispose(); }
+});
+
 // RP-377 / GS0.2 / Cosmetic §7.4: a receipt can arrive before the mounted
 // authoritative refresh. Navigation is still available in that pending window;
 // neither the receipt nor a separate server read is the overlay's render input.

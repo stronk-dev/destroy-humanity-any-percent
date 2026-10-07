@@ -1750,3 +1750,35 @@ the result does not establish no request, server refusal, attendance cause or RP
 Aggregate RED; no retry, deadline/assertion change or later care/reload success claimed.
 Next: inspect/diagnose this action boundary before a scoped repair. Cosmetic source is unchanged
 in this batch; the Garage log owns the separate production-build change and review range.
+
+## 2026-10-08 — G10 native pointer/refresh false-failure route
+
+Under Cosmetic §7.3 / manifest G10, retain passive action input/request/response metadata and
+reuse AC14's existing one-shot visible DOM readiness helper for equip/unequip. A completed
+Playwright pointer command need not emit a click: controlled mounted-host test85978 in both
+native engines delivers a receipt refresh on pointer-down, disables Equip before click and
+emits zero intents. Releasing the read does not replay it. This proves a driver false-failure
+route, not unique attribution of untraced40231. Diagnostic-only real-service run75598 passes;
+it is not evidence the original defect disappeared.
+
+The helper now requires the owned state and exact unique label within the same shelf, checks
+visibility/hit-testing/enabled/non-pending state, then clicks once. It cannot invoke runtime/API,
+force disabled input, retry an emitted intent or expand the action deadline. Adoption/care stay
+native pointer steps; physical-input/keyboard AC11 checks remain separate and unchanged.
+Failure metadata shows the action phase, bounded input trace plus dropped-event count, emitted
+requests, response statuses and failures, never auth tokens or request bodies. Exact payload,
+revision, applied receipt, persisted wearer and settled overlay assertions are unchanged.
+
+Final affected browser55704:46 Chromium/WebKit PASS, including controlled native suppression,
+Buy/Equip blocked-state guards, ambiguous-control and invalid-budget refusals, host/curtains/
+keyboard/overlay tests. Types91744:0 errors/warnings. Whole root28799 PASS:5 asset observer
+tests, all8 refresh cases/all7 persisted parents, production build/exact browser assets, main
+Fiscal/opportunity/Pitch/early endings/recovery and Cosmetic Buy/adopt/equip/care/unequip/reloads.
+Main122 requests/15.595s; Cosmetic75/N5 no violation/6.445s. Syntax/diff pass; subsequent driver
+formatting is indentation-only. No production/kernel/balance/Actions/copy/clock change.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Range `d717e590` exclusive
+through this batch needs Claude's designated review; prior ranges remain separate. No full
+feature/reliability/Firefox/AT/hosted-CI/clean-host/1.0 acceptance, archive or push. RP-365/D-024
+and other original intermittent observations remain open. Next: consolidated Cosmetic review
+and remaining accepted gates, not another retry to erase prior red evidence.

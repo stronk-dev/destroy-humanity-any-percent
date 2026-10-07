@@ -2,7 +2,15 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
-Current checkpoint (2026-10-07): RP-377's premature overlay check is locally corrected: the
+Current checkpoint (2026-10-08): RP-385's native-pointer/refresh false-failure route is reproduced
+in the actual mounted host in Chromium/WebKit. G10 equip/unequip now reuse the one-shot guarded
+DOM activation used for Buy; exact receipts, persisted wearing/overlay and the same action
+deadline remain. Final46 affected native checks, types and whole real-service composed28799
+PASS. Original40231's unique cause remains untraced; passive failure metadata is retained.
+Designated review, shared-clock D-024, copy/content and full feature acceptance remain. Next:
+consolidate review/remaining accepted gates; diagnose any distinct recurrence from its trace.
+
+Preceding checkpoint (2026-10-07): RP-377's premature overlay check is locally corrected: the
 driver awaits host settlement within the original action deadline, retaining exact receipt,
 persisted wearer and rendered-overlay assertions. Focused Chromium/WebKit and the real-service
 Cosmetic journey pass; designated review remains. Subsequent ordinary whole68777 also passes,
