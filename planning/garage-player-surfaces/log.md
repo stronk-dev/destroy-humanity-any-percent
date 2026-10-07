@@ -4981,3 +4981,18 @@ full browser objective includes the real60s idle and separate performance lane.
 Root types/client/build/boundaries/topology/copy final checks; no source/HEAD/record
 edits while matching final handles live. Plan boxes/status/archive stay unchanged;
 entire f5be35f6-exclusive test/repair/records range needs Claude, all prior spans owed.
+
+### RP-352/RP-353 — executed typed-clean red baseline
+
+Test-first scope7093e40a; final driver11d56e99c2d74bf32ff5419ed0e12c3eb853ea8dffd8003711f4615154b46b8c,
+Opportunity5ee8223a/host9cb074e5 unchanged. Final root types41c694 →ce5edf exit0,
+zero errors/warnings. Native16febd →09b665 Make2/child1:36 failures/four passing
+unavailable controls/650 unselected,2.86s.24 held-host cases and four isolated
+pending cases fail native-disable; eight independent immediate-success cases
+show Claim removed and focus BODY rather than existing Desk heading (RP-353).
+These are decoded fixtures/native UI, not live Go/SQL acquisition or public wire
+reconciliation. The early test driver had nullable-cap/legacy-union type mistakes:
+d39fba two compiler errors,49c0b3 one; correct canonical isLiveSnapshot narrowing
+and known cap fixture before this final typed-clean run. Early native runs334253/
+82f1fb retain same36/four results but are not the final source coordinate.
+All handles terminal before record/commit; no product bytes moved.

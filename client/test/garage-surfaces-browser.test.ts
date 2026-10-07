@@ -4,13 +4,14 @@ import { expect, it, vi } from "vitest";
 
 import type { GameUISnapshot } from "../src/api/generated/types";
 import { t, type CopyKey } from "../src/copy";
-import { parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
+import { isLiveSnapshot, parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import { decodeGameUIAnnouncement, decodeGameUIEvent } from "../src/game-ui/events";
 import { FEATURES_PRESENTATION } from "../src/game-ui/features-presentation";
 import { GAME_UI_PRESENTATION } from "../src/game-ui/presentation";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import FiscalSurface from "../src/game-ui/FiscalSurface.svelte";
 import PetCareSurface from "../src/game-ui/pet/PetCareSurface.svelte";
+import OpportunityRegion from "../src/game-ui/OpportunityRegion.svelte";
 import { GameUIRequestError, type IntentOutcome } from "../src/game-ui/intent-outcome";
 import { createBrowserGameUIRuntime, type GameUIRuntime, type GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import type { GameUISurfaceID } from "../src/game-ui/surface-catalog";
@@ -1664,6 +1665,156 @@ const withOpportunity = (arm: ReturnType<typeof opportunityArm> | null): GameUIS
 function regionIndex(target: HTMLElement): number {
   const desk = target.querySelector("section.desk")!;
   return [...desk.children].findIndex((child) => child.getAttribute("data-region") === "desk.region.opportunity");
+}
+
+// GS0.6/0.8/GS5: decoded public-arm fixtures, not live acquisition/payout,
+// natural expiry, a new wire contract or assistive-technology evidence.
+const claimOutcome: IntentOutcome = { outcome: "applied", receipt: { outcome: "applied", receipt: { opportunity: {
+  opportunity_id: "01986666-0000-7000-8000-000000000001", effect_row_id: "active.lucky", selected_target: null,
+  buff_instance_id: null, requested_delta: "5e3", actual_credited_delta: "1e2", saturated: true,
+  cap_reason_key: "cap.cash", next_sampled_interval_ms: 1_000, next_opportunity_attended_ms: 9_000,
+} } } };
+function claimSnapshot(next = false, retained = true) {
+  const snapshot = structuredClone(withOpportunity(opportunityArm(retained)));
+  snapshot.resources[0]!.amount = next ? "1e3" : "9e2"; snapshot.resources[0]!.cap!.amount = "1e3";
+  if (next) {
+    snapshot.revision = 2; snapshot.founder_revision = 8;
+    if (snapshot.features.opportunity?.pending) snapshot.features.opportunity.pending.opportunity_id = "01986666-0000-7000-8000-000000000002";
+  }
+  const decoded = parseGameUISnapshot(snapshot);
+  if (!isLiveSnapshot(decoded)) throw new Error("Claim fixture must use the current public v4 decoder");
+  return decoded;
+}
+for (const path of ["retained", "removed", "newer-selection"] as const) {
+  for (const width of [320, 1280] as const) {
+    for (const activation of ["{Enter}", " "] as const) {
+      it.skipIf(!browser)(`GS5 held native Claim ${path}/${width}/${activation === " " ? "Space" : "Enter"}`, async () => {
+        const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+        const runtime = new Runtime(); runtime.current = claimSnapshot();
+        const refusal: IntentOutcome = { outcome: "rejected", category: "not_eligible", detail: "opportunity_expired", currentRevision: 1, sessionExpired: false };
+        runtime.outcome = refusal;
+        let reject!: (value: IntentOutcome) => void, apply!: (value: IntentOutcome) => void, release!: (value: ParsedGameUISnapshot) => void;
+        const heldRefusal = new Promise<IntentOutcome>((resolve) => { reject = resolve; });
+        const heldApplied = new Promise<IntentOutcome>((resolve) => { apply = resolve; });
+        const heldRead = new Promise<ParsedGameUISnapshot>((resolve) => { release = resolve; });
+        let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+        let restore = () => {};
+        try {
+          fixture = await mounted(runtime); const { target } = fixture;
+          const intent = vi.spyOn(runtime, "intent")
+            .mockImplementationOnce((request) => { runtime.requests.push(request); return heldRefusal; })
+            .mockImplementationOnce((request) => { runtime.requests.push(request); return heldApplied; });
+          const read = vi.spyOn(runtime, "snapshot").mockReturnValueOnce(heldRead);
+          restore = () => { intent.mockRestore(); read.mockRestore(); };
+          const reach = async (destination: HTMLElement, stage: string) => {
+            const bound = target.querySelectorAll("button,input,summary,[tabindex='0']").length + 1;
+            const trace: string[] = [];
+            for (let step = 0; document.activeElement !== destination && step < bound; step++) {
+              await userEvent.keyboard("{Tab}"); await settle();
+              trace.push(`${document.activeElement?.tagName}:${document.activeElement?.textContent}`);
+            }
+            expect(document.activeElement, `${stage}: ${JSON.stringify(trace)}`).toBe(destination);
+          };
+          const request = (revision: number, id: string) => ({ intent_id: expect.any(String), expected_revision: revision, kind: "claim_opportunity", opportunity_id: id });
+          const oldID = "01986666-0000-7000-8000-000000000001", newID = "01986666-0000-7000-8000-000000000002";
+          const claim = button(target, t("desk.opportunity.claim", {}, "era_1995"));
+          target.querySelector<HTMLButtonElement>("section.manual button")!.focus();
+          await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(claim);
+          const pending = () => {
+            expect(claim.disabled).toBe(false); expect(claim.getAttribute("aria-disabled")).toBe("true");
+            expect(document.activeElement).toBe(claim);
+            sharedStateVisibleText(target, '.opportunity [role="status"]', t("common.pending", {}, "era_1995"));
+            expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+          };
+          await userEvent.keyboard(activation); await settle(); pending();
+          await userEvent.keyboard("{Enter}"); await userEvent.keyboard(" "); await settle();
+          expect(runtime.requests).toEqual([request(1, oldID)]); expect(read).not.toHaveBeenCalled();
+          reject(refusal); await settle();
+          expect(claim.disabled).toBe(false); expect(claim.hasAttribute("aria-disabled")).toBe(false);
+          expect(document.activeElement).toBe(claim); expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+          sharedStateVisibleText(target, '.intent-notice[role="status"]', t("desk.opportunity.rejection.expired", {}, "era_1995"));
+          expect(target.querySelector(".opportunity")?.textContent).not.toContain(t("common.pending", {}, "era_1995"));
+          expect(read).not.toHaveBeenCalled(); await assertAxe(target, `Claim refusal ${path}/${width}`);
+          await userEvent.keyboard(activation); await settle(); pending();
+          expect(runtime.requests).toEqual([request(1, oldID), request(1, oldID)]);
+          expect(target.querySelector(".intent-notice")?.textContent).toBe("");
+          apply(claimOutcome); await settle(); pending(); expect(read).toHaveBeenCalledExactlyOnceWith();
+          sharedStateVisibleText(target, '.intent-notice[role="status"]', t("desk.opportunity.lucky_capped", {}, "era_1995"));
+          sharedStateVisibleText(target, ".opportunity p", `${t("desk.opportunity.lucky_frame", { amount: "1e2" }, "era_1995")} ${formatAmount("1e2")}`);
+          sharedStateVisibleText(target, ".opportunity p", `${t("desk.opportunity.lucky_capped", {}, "era_1995")} ${t("cap.cash", {}, "era_1995")}`);
+          await userEvent.keyboard("{Enter}"); await userEvent.keyboard(" "); await settle();
+          expect(runtime.requests).toEqual([request(1, oldID), request(1, oldID)]);
+          const settings = button(target, t("surface.settings.title", {}, "era_1995"));
+          if (path === "newer-selection") {
+            await reach(settings, "newer Settings"); await userEvent.keyboard(activation); await settle();
+            expect(document.activeElement).toBe(settings); expect(target.querySelector("main")?.dataset.surface).toBe("settings");
+            expect(target.querySelector(".intent-notice")?.textContent).toBe("");
+          }
+          runtime.current = claimSnapshot(true, path === "retained"); release(runtime.current); await settle();
+          expect(read).toHaveBeenCalledExactlyOnceWith(); expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+          if (path === "newer-selection") {
+            expect(document.activeElement).toBe(settings); expect(target.querySelector("main")?.dataset.surface).toBe("settings");
+            expect(target.querySelector(".intent-notice")?.textContent).toBe("");
+            const desk = button(target, t("surface.desk.title", {}, "era_1995"));
+            await reach(desk, "return Desk"); await userEvent.keyboard(activation); await settle(); expect(document.activeElement).toBe(desk);
+          } else if (path === "removed") {
+            expect(claim.isConnected).toBe(false); expect(document.activeElement).toBe(target.querySelector("#desk-heading"));
+          } else {
+            expect(document.activeElement).toBe(claim); expect(claim.disabled).toBe(false); expect(claim.hasAttribute("aria-disabled")).toBe(false);
+            runtime.outcome = { ...refusal, currentRevision: 2 };
+            await userEvent.keyboard(activation); await settle();
+            expect(runtime.requests).toEqual([request(1, oldID), request(1, oldID), request(2, newID)]);
+            expect(new Set(runtime.requests.map((row) => row.intent_id)).size).toBe(3); expect(document.activeElement).toBe(claim);
+            sharedStateVisibleText(target, '.intent-notice[role="status"]', t("desk.opportunity.rejection.expired", {}, "era_1995"));
+          }
+          expect(target.querySelector(".opportunity button") === null).toBe(path !== "retained");
+          expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width + 1);
+          await assertAxe(target, `Claim completion ${path}/${width}`);
+        } finally {
+          reject(refusal); apply(claimOutcome); release(runtime.current); await settle(); restore();
+          try { if (fixture) await fixture.dispose(); } finally { await page.viewport(1280, 720); }
+        }
+      });
+    }
+  }
+}
+for (const width of [320, 1280] as const) {
+  for (const activation of ["{Enter}", " "] as const) {
+    it.skipIf(!browser)(`GS5 immediate removed Claim focus ${width}/${activation === " " ? "Space" : "Enter"}`, async () => {
+      const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+      const runtime = new Runtime(); runtime.current = claimSnapshot(); runtime.outcome = claimOutcome;
+      const { target, dispose } = await mounted(runtime);
+      try {
+        runtime.current = claimSnapshot(true, false);
+        const claim = button(target, t("desk.opportunity.claim", {}, "era_1995"));
+        target.querySelector<HTMLButtonElement>("section.manual button")!.focus();
+        await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(claim);
+        await userEvent.keyboard(activation); await settle();
+        expect(runtime.requests).toEqual([{ intent_id: expect.any(String), expected_revision: 1, kind: "claim_opportunity", opportunity_id: "01986666-0000-7000-8000-000000000001" }]);
+        expect(claim.isConnected).toBe(false); expect(document.activeElement).toBe(target.querySelector("#desk-heading"));
+        expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width + 1); await assertAxe(target, "immediate Claim removal");
+      } finally { try { await dispose(); } finally { await page.viewport(1280, 720); } }
+    });
+  }
+}
+for (const state of ["pending", "unavailable"] as const) {
+  for (const activation of ["{Enter}", " "] as const) {
+    it.skipIf(!browser)(`GS5 isolated Claim callback ${state}/${activation === " " ? "Space" : "Enter"}`, async () => {
+      const { userEvent } = await import("vitest/browser"); const onClaim = vi.fn();
+      const target = document.createElement("div"); document.body.append(target);
+      const app = mount(OpportunityRegion, { target, props: { arm: claimSnapshot().features.opportunity!, era: "era_1995",
+        pending: state === "pending", controlsEnabled: state !== "unavailable", lastClaim: undefined, onClaim } });
+      try {
+        await settle(); const claim = button(target, t("desk.opportunity.claim", {}, "era_1995"));
+        expect(claim.disabled).toBe(state === "unavailable");
+        if (state === "pending") {
+          claim.focus(); expect(document.activeElement).toBe(claim); expect(claim.getAttribute("aria-disabled")).toBe("true");
+          sharedStateVisibleText(target, '[role="status"]', t("common.pending", {}, "era_1995"));
+        }
+        await userEvent.keyboard(activation); await settle(); expect(onClaim).not.toHaveBeenCalled();
+      } finally { await unmount(app); target.remove(); }
+    });
+  }
 }
 
 it.skipIf(!browser)("keeps the opportunity region in a fixed Desk position and never moves focus on spawn (GS5-A1/A5)", async () => {
