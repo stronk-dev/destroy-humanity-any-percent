@@ -7,7 +7,24 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-345 / RP-082 exact-next native continuation repair.
+Latest bounded work: RP-346 native tab stop / RP-347 pending focus repair.
+2e5ba552 → red a3dab732 → separatefd56b866 → retry diagnosis → separate
+38d8d650. Current read control explicit tabindex0/pending aria-disabled;
+existing guard actually suppresses duplicated native activation. Standard96
+across four labels/three eras + stronger scripted56 cases pass. Eleven real
+faults discriminate/restored; traversal bounds unchanged. Full native670/four
+isolated-performance skips, separate performance two; types/build/copy/
+boundaries/static topology/no-payment pass. First full client RED at Garden
+child entry; unchanged later full run9,814/637 skips passes. RP-348 retains
+that failure/unknown cause, not hidden by a repeat. Next safe work: separately
+predeclare child-control startup/scanner observability and budget discrimination,
+read its accepted Garden authority before any test edit; no ceiling/CI change
+inferred. Full0e7910ed-exclusive through repair/records needs Claude, prior
+0e548992..0e7910ed and earlier spans independent. Fresh Docker0 available/100%
+still blocks Linux/SQL. No cleanup/startup ruling, Retry, auth/copy/read-policy
+change, boxes/body/status/archive/push/release/full1.0 promotion.
+
+Preceding bounded work: RP-345 / RP-082 exact-next native continuation repair.
 Test scope19cc5609 → red94c88b72 → separate accepted scope160eeb0d. Refuse
 wrong Founder before binding, retain exact-next/failure behavior; removed focused
 continuation exposes Desk heading without taking surviving newer focus. Same56

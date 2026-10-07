@@ -455,6 +455,11 @@ The successor check matches both the terminal Founder and exactly `run_seq+1`
 before binding any values or changing subscriptions (RP-345). A mismatched or
 failed read retains the terminal payload and re-enables continuation using the
 existing failure disclosure; it does not bootstrap, renew or change accounts.
+The native button declares `tabindex="0"` (RP-346). During its read it remains
+focusable with `aria-disabled="true"`, and the existing pending guard drops
+duplicate activation without another read (RP-347). A refused read clears that
+state without removing or blurring the triggering control. This is a read-only
+control, not a new intent or retry/authentication policy.
 After success removes the focused continuation control, the host focuses the
 existing Desk heading after rendering (RP-082). A surviving newer focus target
 is not displaced; a newer selection during render scheduling cancels the handoff.
@@ -464,6 +469,17 @@ terminal at320/1280, Enter/Space, same/skipped sequence, another Founder, reject
 read, removed-origin and surviving-focus controls. Public decoder fixtures and
 held runtime-double reads are not real HTTP/auth/SQL, standard-terminal native,
 Firefox, manual AT or full composed acceptance.
+
+A further 96 native standard-terminal executions cover each currently registered
+standard label (acquihire, acquisition, collapse, IPO), terminal tiers0/1/2,
+320/1280 px and Enter/Space in Chromium/WebKit. Each starts from a decoded
+non-first run2 terminal, reaches Continue by native Tab, preserves the exact
+terminal through stale/skipped/foreign/rejected reads, then enters same-Founder
+run3 at the supplied Garage snapshot and checks Settings' actual saved-state
+reader. The earlier 56 cases now also require focus-preserving pending semantics.
+These are decoder fixtures/runtime doubles, not issuance, natural reachability
+of those Exit types or the complete nine-tier endings. Traversal allowances and
+performance thresholds are unchanged; eleven actual source faults discriminate.
 
 If an HTTP sample has already advanced beyond `run_started`, the runtime still
 delivers its immutable summary only for the sampled Founder, exact run sequence

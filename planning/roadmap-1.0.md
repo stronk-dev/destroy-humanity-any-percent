@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** native continuation truth/repair.
+**Latest bounded work (2026-10-07):** standard-ending native recovery.
+2e5ba552 → red a3dab732 → separatefd56b866 / later38d8d650 focus scope.
+RP-346 explicit native continuation stop; RP-347 pending aria-disabled retains
+focus and actual guard blocks duplicates. Four standard labels/three eras/
+widths/native Enter-Space96 + stronger scripted56 pass; eleven faults discriminate
+and restore. Full native670/four isolated-performance skips, performance two,
+types/build/copy/boundaries/static topology/no-payment pass. First full client
+RED at Garden child-entry marker; unchanged repeat9,814/637 skips passes.
+RP-348 timing/observability cause remains open. Next safe work: predeclare that
+child startup/scanner observation, never raise its budget to get green. Full
+0e7910ed-exclusive through repair/records needs Claude; prior ranges independent.
+Fresh Docker still0 available/100%; Linux/SQL not repeated. Real HTTP/auth/
+natural endings/composed/Firefox/AT/full1.0/body/privacy/platform/numeric/owner
+release holds unchanged; no cleanup/startup-ruling/Retry/archive/push/preview.
+
+**Preceding bounded work (2026-10-07):** native continuation truth/repair.
 19cc5609 test scope → red94c88b72 → separate accepted repair160eeb0d.
 RP-345 wrong-Founder exact-next snapshot now refuses before binding. RP-082
 removed continuation hands off focus to Desk without stealing newer surviving

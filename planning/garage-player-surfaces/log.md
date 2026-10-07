@@ -4562,3 +4562,103 @@ fault restoring native pending disable must fail; omitted function pending
 guard must now genuinely fail duplicated native-read checks. Original nine
 seeds + these two must discriminate; prior disclosure/type/labels/first tab/
 copy/balance/CI gates unchanged. Full containing range remains Claude-owned.
+
+Stronger red2cd3df→f965df terminal2:all152 selected native cases fail existing
+HTML disabled=true versus required focus-preserving disabled=false,474
+unselected. Input38d8d650 plus disclosed one-tabindex working patch; no pending
+aria repair yet. No old failure hidden by raised bounds or direct focusing.
+
+## 2026-10-07 — Standard recovery/native pending repaired; RP-348 retained
+
+Review by: Codex (implementer first filter, NOT designated review).
+Recorded by: Codex. Inspected committed input0e7910ed..38d8d650 plus final
+source/test/record diff. Designated target is entire0e7910ed-exclusive through
+this containing commit INCLUDING2e5ba552, red a3dab732, separatefd56b866 and
+trace/focus scope38d8d650; preceding0e548992..0e7910ed and every earlier span
+independently owed. No archival gate consumed.
+
+Permanent product diff is one existing Continue button: tabindex0, pending
+aria-disabled instead of native disabled. Existing function pending guard,
+Founder/exact-next checks, read/failure/destination/copy semantics unchanged.
+Accepted Game UI keyboard task / Garage GS0.6 focus floor; GS0.8 supplies an
+existing implementation pattern, not classification of this read as an intent.
+No new copy, read cancellation, authentication, credentials, balances, timing,
+schemas, backend or CI changes. No script-focused Continue or key interception
+in standard native traversal. No assertion/time/traversal ceiling raised.
+
+Old scripted56 now asserts focus retained/aria pending/actual duplicate no-op;
+new96 = four current standard labels ×three shipped terminal eras ×two widths
+×Enter/Space ×two engines. Non-first run2; each standard case rejects same2,
+skipped4, another-Founder3 and rejected read, then reaches same-Founder3/Garage:
+480 continuation read attempts, plus96 initial reads, not480 independent tests
+or real HTTP requests. Actual public parser/envelope/event decoders admit
+fixtures. Full paragraph array and title/payout/era equality; immutable terminal
+on refusal; native retry/control focus; no subscription/intent mutation; final
+Desk context focus then actual Settings saved-state reader. Duration shape and
+complete registered frame, not just prefix. Initial nonexistent-class oracle
+was discarded before pending repair; rejected trace/exhaustions retained.
+
+Healthy51c945→6f0928 terminal0:152 pass/474 unselected,17.85s, chained performance
+two/22 unselected. Typesd7c08a zero errors/warnings. Eleven actual compiling
+source faults all terminal2 with474 unselected, restored after each:
+
+| Fault | Terminal output | Fail/pass selected |
+|---|---|---|
+| Remove explicit tab stop |5a2abc|48/104 (all failing WebKit) |
+| Suppress standard heading |524811|96/56 |
+| Bind every Exit label to collapse |6df978|72/80 (collapse + scripted controls pass) |
+| Omit Founder guard |9bb139|104/48 |
+| Omit sequence guard |938abc|112/40 |
+| Omit continuation context focus |7ec695|104/48 |
+| Keep pending after refusal |d74ee7|128/24 |
+| Keep offline after healthy snapshot |aaffd8|96/56 (actual Settings reader) |
+| Omit Continue handler |819044|152/0 |
+| Restore native pending disable |312500|152/0 |
+| Omit existing function pending guard |546a4f|152/0 (second read actually occurs) |
+
+Unlike earlier native-disabled activation, aria pending now genuinely exercises
+the function's duplicate guard. No type/collection error credit. All sources
+restored exactly:29a1b8 diff check;9432ef only intended one-control diff,
+unchanged payload-only RunEnd component. d6982f hashes matche45910:
+host9cb074e5e857e087822edb88c9c68155c51330505af64de9f51b9d63b4f4afd3;
+RunEnd86d7ad09ba49137923f4ee2ca9e07eb53a865f4333043892561be1492b807ee9;
+driver3bac627d502c09d95682da10c597fb9d180bb576eb4b5af706f6651220a6716a.
+
+Finalb16413→c79d43 native terminal0:670 pass/four explicitly isolated performance
+skips, four modules,152.27s; unchanged real60s idle. Isolated performance two/
+22 unselected pass. First polling chunk98cd28 truncated passive HTTP logs;
+complete terminal totals retained separately. f57c64→46f16c types zero errors/
+warnings but full client terminal2:1 failed/9,813 pass/637 explicit browser skips,
+104 files pass/one fail/22 skip,40.05s. Existing Garden valid-fixture child has
+no entered-loader stdout (1032ms child test); initial assertion prevents display
+of its error/status/signal. Whole-process timeout is1000ms, but missing marker
+does NOT by itself prove ETIMEDOUT, parser hang or CPU cause. RP-348 remains open.
+Do not silently promote that initial chain: build/boundary targets never ran.
+
+After native/copy handles were terminal, unchanged full clientb15e01→9f8475
+terminal0:9,814 pass/637 skip,105 files pass/22 skip,7.38s. Separate build/
+boundaries5f6dfa→ecc158 terminal0:214 modules, UI JS index-h_Id1Wf-.js; unchanged
+worker-MqspU_iu.js/CSS index-DaRqgLww.css. Achievement seven component/four copy
+negatives, shell/UI plus ten Go/eleven Svelte cosmetic negatives, static topology
+thirteen negatives pass. This repeat is evidence, NOT diagnosis/closure of RP-348
+or hosted/global CI. No source/budget/assertion changed to get that repeat green.
+
+Copyb3c7b9→6dcb44 terminal0:658 keys, unchanged SHA256
+a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings, content manifest pass.1031d0 no-payment terminal0:
+six refused negatives/two near-misses. No source/HEAD/records edited during live
+final validation/history scan. PS first sandbox refused; narrow read-only
+escalationb28b49 observes concurrent process names/CPU/timing (no arguments/
+environments/private files), not controlled causal attribution. Current live
+copy handle55194 re-polled through6dcb44, never restarted because output quiet.
+Fresh Docker c084ea:125.7G/122.7G/0 available/100%; no deletion or Linux/SQL retry.
+
+Canonical docs/ledger/inventory/plan/board/queue/checkpoints reconciled. Next safe
+work: separately predeclare RP-348 child startup/scanner observation and budget
+discrimination; read accepted Garden authority before any test edit. No raised
+ceiling/CI/Garden production repair inferred. GS6-A1 and remaining Garage/real
+composed/HTTP/auth/SQL/Firefox/manual AT/body/privacy/platform/numeric/full
+nine-tier1.0/review/owner release obligations remain. Synthetic terminal fixtures
+are NOT evidence of player reachability of IPO/acquisition/full endings. Earlier
+cleanup/startup questions unanswered; no Retry/ruling/body/checkbox/lifecycle/
+archive/push/deploy/release/preview substitution. Goal active/progress.

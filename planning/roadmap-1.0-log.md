@@ -4679,3 +4679,31 @@ SQL/Firefox/manual AT/shared-state/capacity/body/privacy/platform/numeric/
 full nine-tier1.0/independent review/owner release remain open. Unanswered cleanup
 and startup-posture questions do not permit deletion/Retry/copy changes.
 No boxes/lifecycle/archival/push/deploy/release/preview substitution. Goal active.
+
+## 2026-10-07 — Standard-native recovery repair; validation timing finding
+
+2e5ba552 → red a3dab732 (48 WebKit/48 controls) → separatefd56b866 tab scope →
+partial native retry failure/trace → separate38d8d650 pending-focus scope.
+RP-346 tabindex0, RP-347 pending aria-disabled retains native focus. Existing
+actual guard drops duplicate read; no writable intent/auth/read/selection/copy
+policy invented. Stronger old56 + standard96 across four registered labels /
+three UI eras pass; eleven real faults fail48/96/72/104/112/104/128/96/152/152/152
+with exact restoration and named controls. Original traversal/performance bounds
+unchanged; no script-focused continuation to mask native Tab failure.
+
+Final native670/four isolated-performance skips; isolated performance two;
+types/build/copy/boundaries/static topology/no-payment pass. Initial full client
+RED at existing Garden child's entered-loader marker:1 failed/9,813 pass/637
+skip; unchanged later full run9,814/637 skip passes after native/copy terminal.
+RP-348 remains unresolved timing/observability evidence, not a retry-closed
+defect or attributed parser/CPU cause. Next safe work: separate startup/scanner
+measurement predeclaration and accepted Garden authority read; no increased
+budget/CI change inferred. Entire0e7910ed-exclusive through repair/records needs
+Claude; prior0e548992..0e7910ed and earlier spans independently owed.
+
+Fresh Docker c084ea still0 available/100%; no cleanup/Linux/SQL repetition.
+Standard decoder fixtures do not prove issuance/natural ending reachability.
+Real composed/auth/HTTP/SQL/Firefox/AT/body/privacy/platform/numeric/full
+nine-tier1.0/independent reviews/owner release remain open. No owner cleanup/
+startup answer inferred; no Retry/boxes/body/status/lifecycle/archive/push/
+deploy/release/shortened-preview substitution. Goal active/progress.

@@ -727,7 +727,7 @@
     </section>
   {:else if surface === "run_end" && ended}
     <RunEndSurface {ended} />
-    <button type="button" disabled={pending} onclick={continueRun}>{t("screen.run_end.continue", {}, era)}</button>
+    <button type="button" tabindex="0" aria-disabled={pending || undefined} onclick={continueRun}>{t("screen.run_end.continue", {}, era)}</button>
     {#if offline}<p role="alert">{t("settings.save_status.offline", {}, era)}</p>{/if}
   {:else if surface === "achievements" && liveFeatures?.achievements}
     <AchievementsSurface arm={liveFeatures.achievements} {era} />

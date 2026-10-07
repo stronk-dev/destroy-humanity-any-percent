@@ -3,6 +3,25 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage standard-terminal recovery checkpoint — 2026-10-07
+
+2e5ba552 → red a3dab732 → separate tab-stopfd56b866 → retry trace → separate
+focus scope38d8d650. RP-346 tabindex0; RP-347 focus-preserving aria-disabled,
+actual existing function guard prevents duplicate reads. Standard96 + strengthened
+scripted56 native executions pass; eleven actual faults discriminate/restored.
+Full native670/four isolated-performance skips; performance two/types/build/
+copy/boundaries/static topology/no-payment pass. First full client RED; unchanged
+later full run9,814/637 skips passes. RP-348 child entry/timing remains unresolved,
+not a green-repeat closure. No hosted/global CI/real-service/endgame claim.
+**READY FOR CLAUDE:** entire0e7910ed-exclusive through containing repair/records
+including scopes/red/refinement;0e548992..0e7910ed and all prior spans independently
+owed. **NEXT safe work:** separately predeclare RP-348 startup/scanner observations
+and budget discrimination; inspect accepted Garden authority before any test edit.
+No ceiling increase/CI or production Garden change inferred. Fresh Docker0
+available/100%; no Linux/SQL repeat/cleanup. Auth/HTTP/real composed/Firefox/AT/
+privacy/platform/numeric/full nine-tier1.0/review/owner release remain open.
+No Retry/archive/push/release/preview substitution.
+
 ## Garage native continuation checkpoint — 2026-10-07
 
 Test-only19cc5609 → red94c88b72 → separate accepted repair160eeb0d.

@@ -92,6 +92,38 @@ two and client/types/build/copy/boundaries/topology pass. Local first filter,
 not lifecycle/all-context/first-read rejection/retry/Firefox/AT/live SQL proof.
 Separate entire82614848-exclusive range requires Claude.
 
+## RP-346 / RP-347 standard-terminal keyboard recovery
+
+2e5ba552 test scope → a3dab732 typed red (48 WebKit/48 Chromium controls) →
+fd56b866 separate tab-stop scope → partial retry red24df13 → diagnostic
+fec61e (BODY loses document focus) →38d8d650 separately declared pending-focus
+scope. Stronger pending/focus/duplicate oracles in both populations fail all152
+before aria repair. Current control is explicit tabindex0, pending aria-disabled,
+with existing actual pending guard. No read/intent/auth/copy/navigation policy
+change, extra keyboard handler or raised traversal bound.
+
+96 native executions = four registered standard labels ×tiers0/1/2 ×widths
+320/1280 ×Enter/Space ×Chromium/WebKit. Every case is non-first run2 and performs
+four refused native read stages then healthy same-Founder run3/Garage. Actual
+public snapshot/terminal decoders; native Tab reachability without focusing
+Continue in script; exact complete terminal paragraphs/payout/era/title, retained
+terminal/focus on refusal, no subscription change/intents, Desk heading focus,
+then native Settings saved-state reader. No production issuance/natural ending
+reachability/physical AT/actual HTTP/auth/SQL proof. New96 + stronger old56 pass.
+Eleven actual faults fail48/96/72/104/112/104/128/96/152/152/152 with stated
+positive controls and exact restoration. Omitting the function pending guard
+now actually yields duplicated reads; prior HTML disable did not prove it.
+
+Full native670/four isolated-performance skips; separate performance two;
+types/build/copy/boundaries/static topology/no-payment pass. First full client
+fails Garden child-control entry (RP-348); unchanged rerun after native/copy
+terminal passes9,814/637 explicit skips. This does not resolve that timing cause
+or establish hosted/global CI. Fresh Docker read still0 available/100%; no
+Linux/Postgres rerun or cleanup. Entire0e7910ed-exclusive through containing
+repair/records requires Claude including all predeclarations/red/refinement.
+Prior0e548992..0e7910ed and every earlier range remain independent. No boxes/
+lifecycle/RFC body/release promotion; full real workflows/1.0 stay open.
+
 ## RP-345 / RP-082 bounded native continuation
 
 19cc5609 test-only scope → red94c88b72 (16 failures/32 controls) → separate
@@ -114,8 +146,8 @@ isolated scheduling-generation guard necessity.
 
 Combined Garage/Game UI574 passes/four isolated-performance skips; separate
 performance two. Types/client9,814/589 explicit skips/build/copy/boundaries/
-static topology/no-payment pass. Entire0e548992-exclusive through containing
-repair/record commit requires Claude, including both scopes/red/control
+static topology/no-payment pass. Entire0e548992..0e7910ed
+requires Claude, including both scopes/red/control
 refinement. All earlier spans independently owed. Only scripted terminal here;
 old standard-terminal click test is not native/focus proof. Real composed/HTTP/
 auth/SQL/Firefox/manual AT/full1.0 remain open; no lifecycle promotion.

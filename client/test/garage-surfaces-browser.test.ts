@@ -1384,7 +1384,8 @@ for (const arm of ["healthy", "same-sequence", "skipped-sequence", "other-founde
           });
           continuation.focus(); await userEvent.keyboard(activation); await settle();
           expect(read).toHaveBeenCalledExactlyOnceWith(); expect(runtime.requests).toEqual([]);
-          expect(continuation.disabled).toBe(true); expect(terminal.textContent).toBe(terminalText);
+          expect(continuation.disabled).toBe(false); expect(continuation.getAttribute("aria-disabled")).toBe("true");
+          expect(document.activeElement).toBe(continuation); expect(terminal.textContent).toBe(terminalText);
           expect(target.querySelector("main")?.dataset.surface).toBe("run_end");
           await userEvent.keyboard(activation); await settle();
           expect(read).toHaveBeenCalledExactlyOnceWith();
@@ -1407,6 +1408,7 @@ for (const arm of ["healthy", "same-sequence", "skipped-sequence", "other-founde
             expect(target.querySelector("main")?.dataset.surface, "foreign or non-next reads must not bind").toBe("run_end");
             expect(terminal.isConnected).toBe(true); expect(terminal.textContent).toBe(terminalText);
             expect(continuation.isConnected).toBe(true); expect(continuation.disabled).toBe(false);
+            expect(continuation.hasAttribute("aria-disabled")).toBe(false); expect(document.activeElement).toBe(continuation);
             sharedStateVisibleText(target, '[role="alert"]', t("settings.save_status.offline", {}, "era_1995"));
           }
           expect(subscribed.mock.calls.map(([id]) => id), "continuation cannot switch Founder subscriptions").toEqual([v4.run.founder_id]);
@@ -1459,8 +1461,15 @@ for (const exitType of ["acquihire", "acquisition", "collapse", "ipo"] as const)
             for (const [index, stage] of stages.entries()) {
               const controls = target.querySelectorAll("button,input,summary,[tabindex='0']").length;
               let tabs = 0;
+              const position = () => ({ tag: document.activeElement?.tagName, id: document.activeElement?.id,
+                text: document.activeElement instanceof HTMLButtonElement ? document.activeElement.textContent : null,
+                documentFocus: document.hasFocus() });
+              const trace = [position()];
               while (document.activeElement !== continuation && tabs <= controls) {
-                await userEvent.keyboard("{Tab}"); await settle(); tabs += 1;
+                await userEvent.keyboard("{Tab}"); await settle(); tabs += 1; trace.push(position());
+              }
+              if (document.activeElement !== continuation) {
+                throw new Error(`native traversal exhausted ${stage}/${tabs}/${controls + 1}: ${JSON.stringify({ trace })}`);
               }
               expect(document.activeElement, `${stage}: native traversal exhausted ${tabs}/${controls + 1}`).toBe(continuation);
               expect(continuation.disabled).toBe(false);
@@ -1477,7 +1486,8 @@ for (const exitType of ["acquihire", "acquisition", "collapse", "ipo"] as const)
                 return successor;
               });
               await userEvent.keyboard(activation); await settle();
-              expect(read).toHaveBeenCalledTimes(index + 1); expect(continuation.disabled).toBe(true);
+              expect(read).toHaveBeenCalledTimes(index + 1); expect(continuation.disabled).toBe(false);
+              expect(continuation.getAttribute("aria-disabled")).toBe("true"); expect(document.activeElement).toBe(continuation);
               expect(terminal.textContent).toBe(terminalText); expect(runtime.requests).toEqual([]);
               await userEvent.keyboard(activation); await settle(); expect(read).toHaveBeenCalledTimes(index + 1);
               releaseRead(); await settle();
@@ -1485,6 +1495,7 @@ for (const exitType of ["acquihire", "acquisition", "collapse", "ipo"] as const)
                 expect(target.querySelector("main")?.dataset.surface, stage).toBe("run_end");
                 expect(terminal.isConnected).toBe(true); expect(terminal.textContent).toBe(terminalText);
                 expect(continuation.disabled).toBe(false);
+                expect(continuation.hasAttribute("aria-disabled")).toBe(false); expect(document.activeElement).toBe(continuation);
                 sharedStateVisibleText(target, '[role="alert"]', t("settings.save_status.offline", {}, era));
                 if (index === 0) await assertAxe(target, `standard refused ${exitType}/${tier}`);
               } else {
