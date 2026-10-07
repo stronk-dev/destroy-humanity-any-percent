@@ -27,20 +27,7 @@ type nativeAlertMessage struct {
 }
 
 func TestNativeAlertmanagerDeliveryIntegration(t *testing.T) {
-	binary := os.Getenv("CLOUD_CLICKER_ALERTMANAGER_TEST_BINARY")
-	if binary == "" {
-		t.Skip("use make test-operations-alertmanager-native ALERTMANAGER_BINARY=<absolute path>")
-	}
-	if !filepath.IsAbs(binary) {
-		t.Fatal("Alertmanager test binary must be an absolute path")
-	}
-	versionCtx, versionCancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer versionCancel()
-	version, err := exec.CommandContext(versionCtx, binary, "--version").CombinedOutput()
-	if err != nil || !strings.Contains(string(version), "alertmanager, version 0.32.1 (") {
-		t.Fatalf("requires pinned Alertmanager 0.32.1: %s (%v)", version, err)
-	}
-	t.Logf("real evaluator: %s", strings.TrimSpace(string(version)))
+	binary := requireNativeOperationsBinary(t, "CLOUD_CLICKER_ALERTMANAGER_TEST_BINARY", "alertmanager, version 0.32.1 (", "test-operations-alertmanager-native")
 
 	for _, reject := range []bool{false, true} {
 		name := "firing_and_resolution"
@@ -138,6 +125,25 @@ func TestNativeAlertmanagerDeliveryIntegration(t *testing.T) {
 	}
 }
 
+func requireNativeOperationsBinary(t *testing.T, environment, versionPrefix, target string) string {
+	t.Helper()
+	binary := os.Getenv(environment)
+	if binary == "" {
+		t.Skip("requires pinned native executable; use make " + target)
+	}
+	if !filepath.IsAbs(binary) {
+		t.Fatal("native operations binary must be an absolute path")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	version, err := exec.CommandContext(ctx, binary, "--version").CombinedOutput()
+	if err != nil || !strings.Contains(string(version), versionPrefix) {
+		t.Fatalf("requires %s: %s (%v)", versionPrefix, version, err)
+	}
+	t.Logf("real service: %s", strings.TrimSpace(string(version)))
+	return binary
+}
+
 func startNativeAlertmanager(t *testing.T, ctx context.Context, binary, receiverURL string) string {
 	t.Helper()
 	configuration, err := os.ReadFile(filepath.Join("..", "..", "deployment", "operations", "alertmanager.test.yml"))
@@ -154,19 +160,31 @@ func startNativeAlertmanager(t *testing.T, ctx context.Context, binary, receiver
 	if err := os.WriteFile(configPath, []byte(strings.Replace(string(configuration), receiver, receiverURL+"/alerts", 1)), 0o600); err != nil {
 		t.Fatal(err)
 	}
+	address := nativeOperationsAddress(t)
+	return startNativeOperationsProcess(t, ctx, "Alertmanager", binary, root, address,
+		"--config.file="+configPath, "--storage.path="+filepath.Join(root, "data"), "--web.listen-address="+address, "--cluster.listen-address=")
+}
+
+func nativeOperationsAddress(t *testing.T) string {
+	t.Helper()
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatal(err)
 	}
 	address := listener.Addr().String()
 	_ = listener.Close()
-	logPath := filepath.Join(root, "alertmanager.log")
+	return address
+}
+
+func startNativeOperationsProcess(t *testing.T, ctx context.Context, name, binary, root, address string, arguments ...string) string {
+	t.Helper()
+	logPath := filepath.Join(root, name+".log")
 	log, err := os.Create(logPath)
 	if err != nil {
 		t.Fatal(err)
 	}
 	processCtx, stop := context.WithCancel(ctx)
-	command := exec.CommandContext(processCtx, binary, "--config.file="+configPath, "--storage.path="+filepath.Join(root, "data"), "--web.listen-address="+address, "--cluster.listen-address=")
+	command := exec.CommandContext(processCtx, binary, arguments...)
 	command.Stdout, command.Stderr = log, log
 	command.WaitDelay = 2 * time.Second
 	if err := command.Start(); err != nil {
@@ -183,7 +201,7 @@ func startNativeAlertmanager(t *testing.T, ctx context.Context, binary, receiver
 		_ = log.Close()
 		if t.Failed() {
 			data, _ := os.ReadFile(logPath)
-			t.Logf("Alertmanager process log: %s", data)
+			t.Logf("%s process log: %s", name, data)
 		}
 	})
 	client := &http.Client{Timeout: 2 * time.Second}
@@ -191,7 +209,7 @@ func startNativeAlertmanager(t *testing.T, ctx context.Context, binary, receiver
 	for ctx.Err() == nil {
 		select {
 		case <-done:
-			t.Fatalf("Alertmanager exited before readiness: %v", waitErr)
+			t.Fatalf("%s exited before readiness: %v", name, waitErr)
 		default:
 		}
 		response, err := client.Get(endpoint + "/-/ready")
@@ -203,6 +221,6 @@ func startNativeAlertmanager(t *testing.T, ctx context.Context, binary, receiver
 		}
 		time.Sleep(100 * time.Millisecond)
 	}
-	t.Fatalf("Alertmanager readiness: %v", ctx.Err())
+	t.Fatalf("%s readiness: %v", name, ctx.Err())
 	return ""
 }

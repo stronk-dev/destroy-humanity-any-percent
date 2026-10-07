@@ -736,6 +736,22 @@ runtime delivery record's count-derived semantics, and do not prove rule firing,
 Prometheus scraping, Caddy isolation, pinned Linux images, an operator's configured receiver or
 clean-host R-006. Run the declared operations Compose and release populations for those claims.
 
+The combined local command is `make test-operations-native
+ALERTMANAGER_BINARY=/absolute/path/to/alertmanager
+PROMETHEUS_BINARY=/absolute/path/to/prometheus`, with checksum-verified native Prometheus **3.12.0**
+and Alertmanager **0.32.1**. It also runs a real scrape/rule/delivery journey: the production
+registry's cleanup failure counter is first scraped at zero, one `ObserveJob` failure raises it
+to one, and the shipped rule must deliver a firing notification and then resolve naturally.
+The five-minute `increase()` window, fifteen-second scrape/evaluation cadence and one-minute
+notification grouping are not shortened. The counter must still be one after resolution; no
+alert API injection or counter reset completes this journey.
+
+The generated test configuration changes only service addresses and the rule-file path.
+Caddy/node-exporter targets deliberately return unavailable, and database collection uses a
+fixture; no healthy-all-targets, Caddy isolation, actual cleanup coordinator or Postgres claim
+follows. The eight-minute journey guard is not an operating latency target. Both manual commands
+remain supplemental to the pinned private-network and exact-release populations.
+
 All seven services write to persistent journald with a unique bounded tag. Journal capacity is not
 a guessed constant: `deployment-operations journal-observe` records the predeclared workload,
 interval, sample count, observed bytes, peak bytes/day, filesystem size and proposed budget.

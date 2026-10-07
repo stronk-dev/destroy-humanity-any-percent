@@ -4616,3 +4616,36 @@ receiver-side evidence supplements, but does not repair, the runtime record's co
 per-family attribution. Original R5, actual scrape/rule-to-receiver/private-network/Caddy and
 exact-artifact clean-host gates remain open. Docker overlay rechecked at 0 free / 100%; no cleanup,
 deployment, publication, archival or full-1.0 promotion.
+
+## 2026-10-07 — DP7 real cleanup metric → rule → delivery → resolution
+
+Added `prometheus_native_integration_test.go` and `make test-operations-native`; shared native
+process/version helpers avoid a second launcher implementation. Production registry, shipped
+Prometheus config and unchanged alert rules feed real Prometheus 3.12.0 and Alertmanager 0.32.1.
+Only service addresses/rule path are rewritten. Unavailable Caddy/node-exporter and fixture DB
+are explicit exclusions, not healthy substitutes. No direct alert injection, counter reset or
+shortened rule completes the cleanup journey. The eight-minute completion watchdog accommodates
+the declared five-minute rule window and one-minute grouping; it is not a release latency bound.
+
+Execute `make test-operations-native ALERTMANAGER_BINARY=<verified absolute path>
+PROMETHEUS_BINARY=<verified absolute path>`; the official binary/archive provenance is in the
+preceding R11/native-notification entries. Full target PASS, 399.199s, all selected cases executed:
+
+- Existing real notification population passes again (60.52s), including every injected family's
+  firing/resolution and a healthy-but-500 receiver failing on an actual failed request.
+- Fresh production zero series scraped at 6.423s; one real `ObserveJob` failure scraped as one
+  at 21.447s; actual cleanup firing notification received at 35.748s; natural resolution received
+  at 5m35.754s with counter still one. Job labels retain `job=gameserver` and
+  `job_name=credential_cleanup`; no `exported_job`/proof nonce substitutes for the metric route.
+- Missing binary inputs fail the combined target with exit 2. Cold affected Go tests/vet pass
+  (operations 0.900s, releasepackage 1.124s), optional native/DB/Compose tests excluded from that
+  ordinary command. Initial unprivileged unit run hit a denied loopback bind; identical source
+  passes with narrow listener permission. CI topology and all thirteen existing controls pass;
+  no hosted CI claim. All test/process handles are terminal before records are edited.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. The related native-test commits
+after `8f2e29d8`, including `7140548c` and this batch's records, form one consolidated Claude
+review range. R11's original correction retains its separate bounded designated approval.
+Actual private-network services, Caddy isolation, real Postgres/cleanup coordinator, other live
+rule producers, release images and R-006 remain unproved here; original R5 and all older ranges
+remain open. No acceptance checkbox, CI, runtime, kernel, balance, archive or publication change.

@@ -4964,3 +4964,11 @@ Goal active: measured findings are progress, not grounds to weaken release floor
   Marco's explicit direction; designated cross-party review of this batch remains pending.
 - Next: diagnose RP-364 in the Cosmetic driver and run the actual journey; one concise batch
   record, without a separate research-predeclaration commit. No product completion claimed.
+
+## 2026-10-07 — Local operations evidence checkpoint
+
+R11's alert correction is independently approved; related native tests now execute the actual
+cleanup metric→Prometheus→Alertmanager firing/natural resolution chain and seven-family injected
+delivery/rejection. Commands, provenance and limits live in the Deployment plan/log, not a second
+ledger here. New test range needs consolidated Claude review. Private-network, exact Linux
+artifact, clean-host, owner/author decisions and full nine-tier 1.0 gates remain open.
