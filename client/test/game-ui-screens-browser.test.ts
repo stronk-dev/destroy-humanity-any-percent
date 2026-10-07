@@ -17,6 +17,7 @@ import { GAME_UI_PERFORMANCE_BUDGET, validatePerformanceObservation } from "../s
 import { amountRenderScheduler } from "../src/ui/render-scheduler";
 import { formatAmount } from "../src/ui/amount-format";
 import type { WorkerCommand, WorkerOutput } from "../src/shell/worker-protocol";
+import { MinigameAPIError, type MinigameSessionPort } from "../src/game-ui/minigame/session-port";
 
 const snapshot: GameUISnapshot = {
   constants_hash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -164,6 +165,64 @@ it.skipIf(typeof document === "undefined")("runs bootstrap and player actions th
   manual.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
   expect(runtime.requests[0]).toMatchObject({ kind: "perform_manual_batch", action_id: "manual.click", count: 1 });
   await unmount(app); target.remove();
+});
+
+it.skipIf(typeof document === "undefined")("keeps Exit offer precedence over a pending or rendered locked Pitch rejection", async () => {
+  const { userEvent } = await import("vitest/browser");
+  for (const order of ["offer-before-rejection", "offer-after-rejection"] as const) {
+    let rejectCreate: (error: Error) => void = () => { throw new Error("create was not submitted"); };
+    const creates: string[] = [];
+    const port: MinigameSessionPort = {
+      async current() { return { kind: "none" }; },
+      create(_minigameID, key) {
+        creates.push(key);
+        return new Promise((_resolve, reject) => { rejectCreate = reject; });
+      },
+      async command() { throw new Error("locked launcher must not send commands"); },
+      async resolve() { throw new Error("locked launcher must not resolve"); },
+    };
+    const runtime = Object.assign(new FixtureRuntime(true), { minigame: port });
+    runtime.current = parseGameUISnapshot({ ...snapshot,
+      facts: [...snapshot.facts, { fact_id: "feature.minigame.pitch", value: true }]
+        .sort((left, right) => left.fact_id < right.fact_id ? -1 : left.fact_id > right.fact_id ? 1 : 0),
+      features: { ...snapshot.features, minigames: { rows: [
+        { active_session: false, human_content_locked: false, minigame_id: "pitch", unlocked: false },
+      ] } },
+    });
+    const target = document.createElement("div"); document.body.append(target);
+    const app = mount(GameUIApp, { target, props: { runtime } });
+    const settle = async () => { for (let step = 0; step < 4; step++) { await new Promise((resolve) => setTimeout(resolve, 0)); await tick(); flushSync(); } };
+    const button = (name: string) => {
+      const found = [...target.querySelectorAll<HTMLButtonElement>("button")].find((row) => row.textContent?.trim() === name);
+      expect(found, name).toBeDefined(); return found!;
+    };
+    const preempt = async () => {
+      runtime.listener?.({ kind: "event", revision: 2, scope: "company", value: offer });
+      await settle();
+      expect(target.querySelector("main")?.dataset.surface, order).toBe("offer_sheet");
+      expect(target.querySelector(".minigame-session")).toBeNull();
+      expect(document.activeElement).toBe(target.querySelector("#offer-heading"));
+    };
+    const reject = async () => { rejectCreate(new MinigameAPIError(409, "not_eligible", "fiscal_unlock_required")); await settle(); };
+    try {
+      await settle();
+      button("The Pitch").focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(target.querySelector("main")?.dataset.surface).toBe("minigame_session");
+      button("Start a pitch").focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(creates).toHaveLength(1);
+      if (order === "offer-before-rejection") { await preempt(); await reject(); }
+      else {
+        await reject();
+        expect(target.querySelector(".minigame-session [role=status]")?.textContent).toBe("Locked. Unlock it with Fiscal credit first.");
+        await preempt();
+      }
+      expect(target.querySelector("main")?.dataset.surface).toBe("offer_sheet");
+      expect(target.textContent).not.toContain("Locked. Unlock it with Fiscal credit first.");
+      expect(creates).toHaveLength(1);
+      expect(runtime.requests).toEqual([]);
+      expect(document.activeElement).toBe(target.querySelector("#offer-heading"));
+    } finally { await unmount(app); target.remove(); }
+  }
 });
 
 it.skipIf(typeof document === "undefined")("renders only server-projected transition controls and submits their existing intents", async () => {

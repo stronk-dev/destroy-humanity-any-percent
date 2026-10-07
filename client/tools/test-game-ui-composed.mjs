@@ -697,7 +697,23 @@ async function playPitchThroughUI(page, accessToken) {
   if (locked.status() !== 409 || lockedBody.category !== "not_eligible" || lockedBody.detail !== "fiscal_unlock_required") {
     throw new Error(`locked Pitch create was not the typed fiscal rejection (${locked.status()}): ${JSON.stringify(lockedBody)}`);
   }
-  await page.getByText("Locked. Unlock it with Fiscal credit first.", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  try {
+    await page.getByText("Locked. Unlock it with Fiscal credit first.", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  } catch (error) {
+    // Capture the mounted lifecycle boundary, not credentials, full responses
+    // or private state. A valid HTTP rejection alone does not prove its notice.
+    const dom = await page.evaluate(() => {
+      const main = document.querySelector("main");
+      return { surface: main?.getAttribute("data-surface"), busy: main?.getAttribute("aria-busy"),
+        headings: [...(main?.querySelectorAll("h1") ?? [])].map((item) => item.textContent?.trim()),
+        statuses: [...(main?.querySelectorAll('[role="status"], [role="alert"]') ?? [])].map((item) => item.textContent?.trim()),
+        pitchMounted: Boolean(main?.querySelector(".minigame-session")),
+        offerMounted: Boolean(main?.querySelector("#offer-heading")),
+        trace: globalThis.__composedPitchActionTrace };
+    });
+    throw new Error(`locked Pitch rejection notice missing: ${JSON.stringify({ dom,
+      response: { status: locked.status(), category: lockedBody.category, detail: lockedBody.detail }, snapshotRevisions })}`, { cause: error });
+  }
 
   await unlockPitchThroughFiscalUI(page);
   const beforeSession = await founderState(accessToken);

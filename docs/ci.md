@@ -233,9 +233,12 @@ content. The third invocation selects `--axis-stack` in the same driver: only te
 native generator/PR purchases earn attainment and persist ownership, while rendered factors,
 reload and the SQL head/event are checked. `make test-clout-composed` selects that variant alone.
 It does not mint content or claim natural pacing. All earlier assertions and the six-job topology
-remain; no timeout grows. Current local expanded-run failure RP-389 stops in the first driver
+remain; no timeout grows. Recorded local expanded-run failure RP-389 stops in the first driver
 after a correct locked-Pitch409 but before its visible notice, so that run does not execute
-the later variants. Focused fixture passes do not close it or establish hosted latency/green.
+the later variants. A subsequent expanded run executes all three populations successfully;
+it does not close RP-389 or establish reliability/hosted latency/green. Controlled native host
+evidence demonstrates offer preemption removing Pitch's notice; the oracle's lifecycle handling
+remains open. Failure diagnostics now expose the mounted public surface/status context.
 On local ARM64 hosts, use
 `make test-game-ui-composed GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f compose.game-ui-arm64.yml'`;
 hosted x86 CI uses the default Compose file. RP-172's test-only actionability correction

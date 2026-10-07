@@ -82,13 +82,15 @@ queue and current verification, not a claim to have rerun every acceptance crite
   failures retain input/request/response metadata. No general reliability or hosted-green claim.
 - Intermittent composed timeout RP-378 remains open despite subsequent passes. Manual input
   retention/rate choice RP-368 and attendance-clock D-024 remain unruled, not silently fixed.
-- Focused Clout fixture and earlier ordinary composed population pass locally after the new
-  purchase/SQL proof. The expanded composed target now includes that variant, but its final
-  run fails earlier in unchanged main gameplay: correct locked-Pitch409, missing visible notice
-  (RP-389). Later variants do not run in that attempt; no aggregate/hosted-green or adopted PR
-  content claim. One selected run passed PR but failed care receipt/projection equality
+- Focused Clout fixture and the expanded composed target's three populations now pass locally
+  (56007), including purchase/SQL proof. Earlier70861 fails in main gameplay: correct
+  locked-Pitch409, missing visible notice (RP-389); later variants do not run in that attempt.
+  A controlled native host test demonstrates a valid preemption route: an Exit offer unmounts
+  Pitch before or after its notice renders. It is not unique attribution of70861. Public failure
+  diagnostics retain lifecycle context; oracle handling remains to repair. No reliability,
+  hosted-green or adopted PR content claim. One selected run passed PR but failed care equality
   (RP-388); its cause remains untraced, with precise public failure metadata now retained.
-  The Clout/Cosmetic logs own evidence and pending review.
+  The Garage/Clout/Cosmetic logs own evidence and pending review.
 
 ### What the weeks of work accomplished
 

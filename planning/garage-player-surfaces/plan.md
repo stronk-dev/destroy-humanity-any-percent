@@ -7,7 +7,15 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-08): the main composed player journey now uses the production client
+Current checkpoint (2026-10-08): all three expanded composed populations execute and pass
+locally56007, including the unminted Clout purchase/SQL variant. Earlier locked-Pitch notice
+failure RP-389 remains open: a controlled native host test proves that an Exit offer correctly
+unmounts the launcher before or after the refusal, while an unconditional notice wait assumes
+it stays mounted. Failure-only public lifecycle diagnostics now retain that context. Affected
+Chromium/WebKit files184 and types pass; next repair the oracle's lifecycle handling without
+dropping the mounted-launcher notice requirement. No reliability/hosted/full-Garage acceptance.
+
+Preceding checkpoint: the main composed player journey now uses the production client
 build, with exact browser-loaded HTML/JS/CSS/worker bytes and a started bundled worker verified.
 Its real Postgres/socket/gameplay population passes; the aggregate then fails at Cosmetic equip
 (RP-385), so whole-lane green is not claimed. Test-only; no gameplay/CI budget changes. Next:

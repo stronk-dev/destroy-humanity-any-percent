@@ -128,9 +128,10 @@ after its unchanged main and default Cosmetic journeys. It retains the existing
 Cosmetic/care population. One run
 passed Clout but failed the care receipt/projection equality (RP-388); the
 subsequent diagnostic and ordinary default journeys passed, without resolving
-that earlier failure. The final expanded CI-target run stops earlier in main
-gameplay at RP-389's locked-Pitch notice, before this variant; no aggregate-green
-claim follows. No assertion, retry or deadline is weakened. The owning
+that earlier failure. One expanded CI-target run stops earlier in main gameplay
+at RP-389's locked-Pitch notice, before this variant; a subsequent expanded run
+executes all three populations successfully. Neither diagnoses the original
+failure or establishes reliability/hosted green. No assertion, retry or deadline is weakened. The owning
 log records all results. This is not natural pacing, adopted content, full CV9
 UI obligations, assistive-technology proof or whole-feature/release acceptance.
 

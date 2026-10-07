@@ -6256,3 +6256,31 @@ through this batch needs designated cross-party review. No acceptance/checkbox/a
 GitHub was freshly read: latest run37641907701 at0f9f4214 remains RED (server/client/browser);
 schema/harness/composed green on that older HEAD, not on this local range. Next: existing
 Garage review and the separate reproduced defects; full nine-tier1.0 objective remains active.
+
+## 2026-10-08 — RP-389 controlled lifecycle route and composed diagnostic
+
+Outcome under GS0.4/GS0.6 and Minigame MA-C9: the unchanged host gives Exit offers precedence
+over Pitch. A native Enter launcher test now covers offer-before-rejection and
+offer-after-visible-rejection. One create is submitted, a mounted launcher shows the exact
+locked reason, an offer unmounts it and focuses its heading, and a late reply neither steals
+that focus nor retries. This demonstrates a valid route to the composed oracle's missing
+notice; it does not uniquely reconstruct the original70861 browser state or authorize a
+product retention policy. Production bytes, rejection assertions and30s bound are unchanged.
+The composed failure now captures public surface/headings/status/mount flags, input trace,
+typed response pair and snapshot revisions rather than losing the lifecycle context.
+
+Actual expanded target56007 completes all three populations: assets5, persisted refresh8,
+required DB parents7, main gameplay/production-byte proof, default Cosmetic/care, and new
+Clout/SQL/Cosmetic/care variant all PASS. Main93 requests/12.118s; Cosmetic74/9.005s and94/7.411s.
+The final output completes and the process handle disappears; no saved whole-command exit
+metadata is substituted. Earlier red70861 and care63825 remain open, not erased by this pass.
+First controlled browser96145 is invalid: my unsorted facts reject before mounting; native
+Firefox also cannot connect. Completed test summary is red; shutdown interrupted130. Corrected
+explicit Chromium/WebKit54142 passes both event orders. Final affected files55040 pass184
+cases/four performance-only skips; typecheck64297 has zero errors/warnings. No Firefox,
+performance, hosted CI, release-content or reliability proof. Capacity: test DB102.8MiB/7.7GiB free.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after `303677f9`
+through this test/diagnostic/records batch needs designated review. No acceptance/archive/push.
+Next: repair the composed oracle's lifecycle handling while retaining exact typed refusal and
+a visible mounted-launcher notice requirement; collect public failure metadata on recurrence.

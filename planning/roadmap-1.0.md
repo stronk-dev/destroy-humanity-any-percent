@@ -8,7 +8,8 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 **Current product rollup (2026-10-08):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08).
 We are integrating and hardening the Garage, with substantial later-tier construction still
 ahead. Real-service PR purchase/render/reload/SQL fixture proof now runs in the existing composed
-CI target; its final aggregate run is RED at the earlier locked-Pitch notice (RP-389).
+CI target. One aggregate run is RED at the earlier locked-Pitch notice (RP-389); a later run
+executes all three populations successfully without resolving that failure.
 Focused passes do not establish release readiness. The owning Clout log records the evidence;
 the milestone path below remains the full nine-tier goal, not a narrowed preview objective.
 Older checkpoint narratives and next-action lists below are dated history where superseded;
