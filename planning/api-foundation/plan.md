@@ -13,6 +13,10 @@ RFC: `rfc/api-foundation.md`
 - [x] Generate OpenAPI 3.1 and TypeScript from the registry; add compatibility pins/gate.
 - [ ] Compose the public router, full-registry privacy/conformance integration, canonical docs,
   independent full-range review, and archive.
+  - [x] Test caching and shared IP limiting through every currently mounted public operation,
+    including changed-content and exhausted-budget cases (A8/C16/C20).
+  - [ ] Resolve the undeclared bodiless 304 response arm before claiming full schema/status
+    conformance. Runtime caching tests do not resolve this contract gap.
 
 Carried dependency: historical formula serving stays unavailable until a protocol-compliant mint
 stores formula bytes in the artifact set; no current-formula fallback is permitted.

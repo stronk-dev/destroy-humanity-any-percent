@@ -759,3 +759,24 @@ No behavior, rate, retry or deadline change. Syntax/diff checks pass; fixture co
 owned listener ports are clear after completion. Review by: Codex (first-filter); Recorded by:
 Codex. Range starts after21ff5578; designated review pending. Next: isolate redundant
 receipt-triggered reads and the shared request budget without weakening either contract.
+
+## 2026-10-07 — mounted public-cache and limiter coverage
+
+Accepted A8/C16/C20; test-only batch after `5f856f97`. `publicread/cache_test.go` enumerates
+the mounted registry (missing fixture fails), uses the actual operational policy, router,
+handlers and middleware, and controlled reader data/time. All three operations verify SHA256
+ETags over served bytes, exact cache ages/request-ID echo, bodiless 304, zero token charge
+before/after exhaustion, exactly 60 uncached successes, typed/non-cacheable 429, changed-data
+invalidation, separate client budgets and a one-token refill. A fourth case spends one shared
+IP budget across all three paths. Existing production bytes/registry/contracts/CI unchanged.
+
+Focused test (73070) and cold httpapi/publicapi/publicread/leaderboard packages (5313) PASS;
+selected vet PASS. Six leaderboard Postgres tests explicitly SKIP without TEST_DATABASE_URL;
+no DB, deployed proxy, generated 304-arm, hosted CI or whole-AC3 claim. Existing push CI runs
+these tests through verify-server-core's package population. Negative cases are ordinary
+cache/budget/content cases, not a new mutation or measurement framework. All runs terminal.
+
+Review by: Codex (diff/first-filter only); Recorded by: Codex. New test/plan/log range requires
+designated review with related API work; no archival or push. Next: implement C14's accepted
+raw verification readers; catalog owner descriptors, generated dispatcher and 304 metadata
+resolution remain separate open obligations. Full nine-tier 1.0 remains incomplete.
