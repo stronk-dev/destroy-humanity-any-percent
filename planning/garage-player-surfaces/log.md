@@ -907,3 +907,15 @@ pair loses its invariant flag in the surface mapping and the host ignores
 invariant notices. This is separate next test-first work, not an unannounced
 host change in the current region repair. Safe continuation: predeclare
 RP-316's snapshot proof and/or RP-317's diagnostic tests under accepted GS5.
+
+### Exact Desk correction boundary for the other-party pass
+
+**Review by:** Codex (self first-filter only). **Recorded by:** Codex.
+First-filter range `d90aded7..97934966`: all four commits, all ten paths,
+predeclaration, retained tests, region/docs repair, ledger and full tracking
+reconciliation inspected. **Locally approved, bounded correction only**;
+RP-316/RP-317 remain separately queued. Claude's designated pass must cover
+`d90aded7..97934966` **plus this coordinate commit itself** (its only path is
+this append-only log); approval of implementation alone would omit record
+edges. The producer supplement remains exact `87fd23d4..d90aded7`, separately.
+No acceptance box/status/archive/mint/publication or whole-CI claim.
