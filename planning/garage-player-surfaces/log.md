@@ -1774,3 +1774,37 @@ terminal; source hashes still exact above. The isolated earlier failed
 artifact/log-link patch is disclosed in platform log and applied no partial
 log change; no behavioral implication. Commit product/docs/ledger/log now,
 then reconcile tracking as a separate same-range record edge.
+
+## 2026-10-07 — HTTP-error consumer census predeclared
+
+Resume at clean6d700838. Accepted GS0.2/GS0.5/GS0.6 authorize this
+test-only supplement; no new mechanics or production repair assumed.
+Population: Fiscal harvest and care feed, each mounted from the existing
+public runtime-double fixture, native Enter, immediate or held until a real
+Meters navigation. Eight error arms: parsed400/409/429/401/404/503, transport
+TypeError and malformed-response SyntaxError. Total32 declarations across
+native Chromium/WebKit =64 selected assertions. Existing tests unchanged.
+
+Predeclared outcomes:400 exact generic own-panel status, one fixed invariant,
+no read/offline/retry;409/429 exact own-panel status and one held snapshot
+read, no activation until Founder8 read completes, then new explicit consent
+with distinct intent ID/revision8;401/404/503/transport/malformed go offline,
+no snapshot/read/replay/mechanical message/invariant. After held-away errors,
+no outcome text on Meters, navigation focus preserved; returning to origin
+may show the last mapped notice but is not a retention/history promise.
+Inspect whole host for leaks and exact status count/ownership. Initial
+runtime-double errors do not prove fetch parsing, actual server refusal,
+credential renewal, AT announcement delivery or queued-action origin.
+
+Run selected population before any product change. A green baseline is
+valid negative research: do not manufacture a repair. Then demonstrate
+compiling faults independently: sever429 refresh, sever400 invariant flag,
+capture notice owner on error completion. Each must fail real DOM/behavior
+assertions (not compiler/import errors), restore exact source hashes before
+next fault. If a fault survives, disclose/refine within this population.
+Run restored full two-engine Garage including unchanged idle/performance,
+strict types/client/build/boundaries. Docker-backed composed/fullLinux held
+by RP-236; no new container run or cleanup, no prior-source substitution.
+No copy/kernel/server/schema/CI/bounds change, no checkbox/status/archive/
+mint/push. New review range starts6d700838 exclusive through final records;
+Claude designated gate and all earlier independent ranges remain owed.
