@@ -1247,3 +1247,43 @@ band/eligibility and next Founder revision. Preserve runtime fixture labels;
 not SQL/real acquisition/GS4-A5 proof. No raw care field or owner copy added.
 Predeclare and test these cases before any narrowly authorized code repair;
 RP-132/GS4×PA7 and RP-318 copy hold remain, no lifecycle promotion.
+
+## 2026-10-07 — Predeclare care-consumer supplement and narrow UI repairs
+
+Baseline `c7d8f815`, clean. Accepted authority GS0.2/GS0.5/GS0.6/GS0.8,
+GS4 refusal/Founder/keyboard/refresh requirements, PA7 public identity/band/
+eligible actions and PA8.5 sprite. Existing author-wire/raw-care/copy holds
+remain; no acceptance of a different end state. No player prose is authored.
+
+First add native Chromium/WebKit cases for all four exact ordinary care
+refusals and both unknown-ID invariants; Tab plus Enter/Space; three actual
+recovering/resync/restart messages with disabled controls and existing reason
+text; missing Founder revision; held intent AND separately held authoritative
+refresh with one request, pending text, aria-disabled, native focus retained;
+and successive public band/eligibility refreshes bound to Founder revisions.
+These are labelled runtime-double checks, not real-server band acquisition.
+Source findings RP-319 (pending removes focusability/no text) and RP-320
+(restart bypasses care readiness) go into the ledger before measurement.
+
+Repair only confirmed care presentation/binding defects under those accepted
+rules: no server/kernel/math/schema/epoch/copy-content/protocol change.
+Preserve native disabling for actual ineligibility and reconnect; pending
+eligible controls stay focusable but their callback refuses action. Reuse
+`common.pending`; demonstrate independent compiling omission faults against
+the new native population, restore each exact source before another edit.
+
+Also extend the existing built-client Cosmetic G10 composed driver with one
+real care action after its real DOM adoption/equip path. Reuse its declared
+test-only pinned bundle, named Postgres and built client/real WebSocket; do not
+seed pet state, warp care time, synthesize gameplay fetches or change the
+existing T1 cash-only setup. DOM care response must bind request/pet/action/
+Founder revision and positive actual care; next persisted public arm and
+visible panel must match receipt band and remove that action from eligibility.
+Reload preserves it. Do not relabel this unminted setup as release-artifact
+proof or require a status-band crossing that natural initial care may not
+produce. RP-318 event/copy remains separate. The care state comes from the
+actual service, never a fabricated receipt. Sever the actual UI care callback
+and demonstrate real composed failure before restoring. Full client/types/
+build/boundaries, targeted native, existing composed lanes. No silent skips,
+new CI exclusion/workflow, all-Garage/hosted-CI/1.0 promotion or self-archive.
+Claude must review the entire new span after `c7d8f815`, including all records.
