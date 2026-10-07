@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-349 native Fiscal delayed completion,
+**Latest bounded work (2026-10-07):** RP-352/353 Claim pending/removal correction
+after typed-clean native red; separate RP-354 provisional 1995 two-color tuning.
+Forty native Chromium/WebKit cases at320/1280 with Enter/Space pass, including
+delayed refusal/applied/read, exact Company/receipt bindings, duplicate guards,
+removed-control handoff and non-stealing newer Settings focus. Fourteen valid
+faults discriminate/restored; RP-355 invalid numeric instrument discarded and
+replaced. Full native734/four explicit isolated-performance skips plus performance
+two, client9816/669 browser skips/types0/build214/copy/boundaries/topology pass.
+Entire f5be35f6-exclusive new span requires Claude, all earlier spans independent.
+Next safe accepted work: separately predeclare RP-356 native GS5/GS0.5 connection
+states before repair. Not whole-GS5 acceptance, real payout/acquisition/expiry,
+HTTP/SQL/Firefox/AT/400%/all-era or full-nine-tier1.0. RP-313 wire/body, Docker
+capacity and all platform/privacy/numeric/full-ending/owner/review holds remain.
+No cleanup/CI/copy/kernel/balance/status/archive/mint/push/preview substitution.
+
+**Preceding bounded work (2026-10-07):** RP-349 native Fiscal delayed completion,
 test-only under aa296eba.24 keyboard paths cover three actions,320/1280,
 Enter/Space and two engines; exact refusal/applied/read holds, native duplicate
 guards, newer Settings focus/notice ownership and native return use Founder8,

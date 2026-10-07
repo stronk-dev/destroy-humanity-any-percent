@@ -3,6 +3,27 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Claim pending/removal and contrast checkpoint — 2026-10-07
+
+RP-352/353 typed red7093e40a/bc11fbe3 → separate6b0ba460/5064245f component
+repair →32 contrast failures → separate48f6d63e C9 provisional two-token tuning.
+Twenty declarations/40 native Chromium-WebKit executions at320/1280 cover held
+refusal/applied/read, exact Company scope/receipt, actual duplicate guards,
+removed Claim heading handoff and newer native Settings focus. Fourteen valid
+faults discriminate/restored; invalid RP-355 numeric control retained/excluded
+then valid credit-misbinding probe24fail. Full native734/four explicit
+isolated-performance skips plus performance2/client9816/types0/build214/copy/
+boundary/topology/no-payment pass. No budget/CI/schema/copy/kernel/mechanic edit.
+
+**READY FOR CLAUDE:** entire f5be35f6-exclusive new span through containing
+records, including test-first, separate repair, separate palette data and record
+edges. All previous ranges independently owed; no self-approved archival.
+**NEXT safe accepted work:** separately predeclare RP-356 native GS5/GS0.5
+connection-state audit. Source Claim gate omits transportReady and has no visible
+stale reason; not yet an executed state verdict. RP-313 author wire-body/capacity/
+real composed/auth/SQL/Firefox/AT/400%/all-era/platform/numeric/endings/all-nine-
+tier1.0/owner-release holds remain. No cleanup/startup Retry/archive/mint/push.
+
 ## Runner diagnostic checkpoint — 2026-10-07
 
 R-013 under25971114: five complete24-execution arms; healthy passes, both former

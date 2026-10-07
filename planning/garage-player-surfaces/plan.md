@@ -7,7 +7,23 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-349 native Fiscal pending/receipt focus under aa296eba,
+Latest bounded work: RP-352/353 Claim pending/removal repair5064245f after
+typed-clean test-first red09b665; separate RP-354 C9 provisional two-token
+tuning under48f6d63e. Twenty declarations/40 Chromium-WebKit executions at
+320/1280 with native Enter/Space: held refusal/applied/read, exact Company
+revision/receipt, duplicate guard, surviving/newer-selection focus and removed
+Claim handoff. Fourteen valid source faults discriminate/restored; RP-355 invalid
+Decimal control discarded and replaced by a valid credit-misbinding control.
+Full native734/four isolated-performance skips plus performance two; client9816/
+669 browser-only skips/types0/build214/copy/boundaries/topology/no-payment pass.
+Whole f5be35f6-exclusive new span through final records needs Claude; all prior
+spans independently owed. No boxes/lifecycle/whole-GS5/full1.0 promotion.
+Next accepted work: separately predeclare GS5-inherited GS0.5 native connection
+state proof (RP-356 source finding), before any readiness/stale-reason repair.
+RP-313 author wire-body, Docker capacity, real service/SQL/Firefox/AT/400%/
+populated performance/full-nine-tier/owner release holds remain.
+
+Preceding bounded work: RP-349 native Fiscal pending/receipt focus under aa296eba,
 test-only. Three actions ×320/1280 ×Enter/Space ×Chromium/WebKit:24 executions;
 held refusal/applied/read, duplicate guard, native Settings/newer focus and native
 return with new Founder revision. Eight valid source faults discriminate and
@@ -17,16 +33,15 @@ skips plus performance two; client9816/649 browser skips/types/unchanged build/
 copy/boundaries/topology/no-payment pass. No product bytes changed or whole-GS1
 acceptance. Entire c24b8f6d-exclusive new range requires Claude, all prior spans
 independent. R-013's separately declared first diagnostic wave completes without
-reproducing either stall or attributing its phase; RP-351 remains OPEN. Next safe
-work: predeclare RP-352 native held Opportunity Claim proof under GS0.6/0.8/GS5,
+reproducing either stall or attributing its phase; RP-351 remains OPEN. Its next
+RP-352 native held Opportunity Claim proof under GS0.6/0.8/GS5 now runs above,
 without resolving author-owned RP-313 compatibility intent or guessing mechanics.
 Linux/SQL capacity and all full-nine-tier 1.0/owner/review holds remain.
 
-Current next batch RP-352 is predeclared in log:20 new declarations/40 native
-executions, test-first only. Held Claim refusal/applied/read, independent removal
-and newer-selection paths plus isolated callback controls. Preserve current
-public wire inputs; no repair before executed red and separate scope, no lifecycle
-or whole-GS5 acceptance. Every earlier review obligation remains independent.
+RP-352's original test-first predeclaration and red remain in the append-only log;
+the separate repair/tuning and current full proof do not retroactively make that
+baseline green. Current public wire inputs remain preserved. Every earlier
+review obligation remains independent.
 
 Preceding cross-lane checkpoint: RP-348 observation work moved to accepted Garden
 SG1/AC1 undera9fadedd. Complete child diagnostics and real startup/hang controls

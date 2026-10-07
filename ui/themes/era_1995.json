@@ -5,12 +5,12 @@
     "bg": "#c0c0c0",
     "surface": "#ffffff",
     "text": "#000000",
-    "text_muted": "#555555",
+    "text_muted": "#4f4f4f",
     "accent": "#000080",
     "accent_text": "#ffffff",
     "border": "#808080",
     "link": "#0000ee",
-    "danger": "#aa0000",
+    "danger": "#a30000",
     "success": "#006600"
   },
   "type": {

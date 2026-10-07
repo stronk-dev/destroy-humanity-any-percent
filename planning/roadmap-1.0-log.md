@@ -4779,3 +4779,31 @@ Next accepted work: predeclare RP-352 native held Opportunity Claim audit;
 source pending disable/missing text/aria mismatch recorded, no runtime consequence
 claimed yet. RP-313 wire-body/capacity/real SQL/Firefox/AT/owner/full-nine-tier1.0
 and review obligations remain; no publication/archival/release call. Goal active.
+
+## 2026-10-07 — Claim pending/removal and capped-bank contrast corrected locally
+
+Test-first7093e40a/bc11fbe3 exposes36 native failures/four unavailable-control
+passes; separate6b0ba460/5064245f component repair reaches actual axe contrast
+RED32/eight controls. Separate48f6d63e C9 provisional data tuning changes only
+two1995 colors to nearest same-hue integer values meeting unchanged4.5:1.
+Twenty declarations/40 native Chromium-WebKit executions now pass. Fourteen
+valid source faults discriminate/restored, including isolated callback guard,
+actual wrong canonical credited amount, omitted authoritative read, removed
+focus handoff, focus theft and each previous color independently. RP-355's
+initial0e0 numeric mutation is invalid/discarded, not counted for credit proof.
+
+Full final native734/four explicit isolated-performance skips in120.40s with
+real60s idle retained; separate performance2pass. Client9816/669 browser-only
+skips, types zero errors/warnings, build214 modules, copy658/sameSHA/611 existing
+orphan warnings/current manifest, boundaries/topology/no-payment pass. Full
+healthy hashes restored, all matching final handles terminal before records.
+No change to wire/public pin, HTTP/auth/read policy, server payout/clock/scheduler,
+kernel/balance/owner wording/schema/CI/budgets/eras/type/layout/motion.
+
+Whole f5be35f6-exclusive new implementation/records span requires Claude;
+every earlier review span independently owed. No self-approved acceptance or
+archival. Next safe accepted work: separately predeclare RP-356 GS5/GS0.5 native
+connection-state proof before readiness/stale-reason repair. RP-313 author
+wire-body, Docker capacity, real composed/auth/SQL/Firefox/AT/400%/full populated
+performance/platform/privacy/numeric/full endings/full-nine-tier1.0/owner release
+holds remain. No cleanup/startup Retry/mint/push/preview substitution. Goal active.

@@ -5064,3 +5064,92 @@ full final populations/budgets retained. Restoring either old color MUST fail
 the actual capped-bank axe population, then restore exact theme hash; no raw
 test outcome or historical failure restamped. Theme tunability does not waive
 cross-party review/range-union/whole-era/state/1.0/owner release gates.
+
+### RP-352–355 — restored faults and full healthy verification
+
+Claim product checkpoint5064245f; separate palette scope48f6d63e. Healthy
+Opportunity SHA388d35a97fd37ff5088bf76f92a648fb4cf00b3ed838cfcf870691f987bb5864,
+host9cb074e5e857e087822edb88c9c68155c51330505af64de9f51b9d63b4f4afd3,
+driver95e0adff5f0703a9ae17692256d38c885a6a93f2f12bf74560fa2838f55dc080,
+tuned themee58746774afc28a0ea5c7a72d95887a92d4eab5b2d3445428f037827cf6c59c2.
+All matching handles terminal before every mutation/reversal and before records;
+full four-file hashes checked around each arm, no residual host/component fault.
+Targeted healthy5c0cc9→945dd7 Make0:40pass/650unselected,4.34s, separate
+performance2pass. Each valid fault below completes Make2/child1 on the same40
+population;650 unselected are not test coverage. Counts are actual, not normalized.
+
+| Actual source fault | Fails / positive controls | Launch → terminal |
+|---|---|---|
+| Pending native disable |32 /8|a96565→951b73|
+| Omit pending aria-disabled |28 /12|64350b→2c3fb2|
+| Omit pending text |28 /12|115047→653243|
+| Wrong pending text |28 /12|3dc6a3→c3dc76|
+| Hide pending text |28 /12|38550c→d6b783|
+| Remove component callback guard |4 /36|7c4ac6→e73618|
+| Bind Company intent to Founder revision |32 /8|8327bd→0de6ab|
+| Drop applied receipt notice |24 /16|1ab9fc→29c745|
+| Valid wrong credit1e0 instead of1e2 |24 /16|6f2113→3a1282|
+| Omit authoritative read |32 /8|0963e7→4c96aa|
+| Omit removed-Claim heading handoff |16 /24|de3fe3→00dc12|
+| Steal newer selected focus |32 /8|9c1b4b→63e821|
+| Restore old muted token only |32 /8|b66d1b→ba4244|
+| Restore old danger token only |32 /8|504ea1→c2acf3|
+
+The callback fault is caught by four isolated component cases; the host's
+existing same-kind guard lets its36 cases survive. This is defense in depth,
+not a claim that the host population detects the missing component guard.
+Both old colors fail actual capped-bank axe, not merely contrast arithmetic.
+All restorations verified: c1c96d/ddab19/6025a1/b53110/4a2408/facacd/630e16/
+e3822f/51cd48/26aad9/a98e8b/714b76/882341/3c92c0 respectively. Source restoration
+51cd48 also proves the final host byte-identical to its predeclared baseline.
+
+RP-355 instrument correction: initial credit fault used0e0, an INVALID canonical
+Decimal. ba844e→2dadcf completes32fail/eightpass but includes browser
+`SyntaxError: invalid canonical Decimal: 0e0`. Discarded for receipt-credit proof;
+the numeric/browser error guard firing is not the intended misbinding property.
+Restorationd1e8d0 preceded the separately executed valid1e0 replacement. That
+replacement completes24fail/16pass in4.56s, with actual whole text
+`Lucky break credited: 1e0 1 ` versus expected `Lucky break credited: 1e2 100 `,
+no unexpected syntax/unhandled error. Fourteen valid controls, fifteen attempts;
+the invalid attempt stays disclosed rather than being restamped as useful.
+Raw fault output and some broad browser diagnostics truncated by the tool;
+complete terminal populations/exit codes and reported named failures retained.
+
+Final root verification launched at HEAD48f6d63e with ONLY the two palette
+leaves/docs dirty and the four pinned healthy source hashes above. No source,
+HEAD, records or gates changed while any matching final handle ran:
+
+- types/client/build/boundaries/topology/no-payment3c9ca4→90a49b→4b3064,
+  exit0: types zero errors/warnings;105 files/9816 tests pass,22 files/669
+  explicit browser-only skips;214 build modules. WorkerMqspU_iu and
+  CSSDaRqgLww unchanged, UI JSD9CxUTUa changed as expected for component/data.
+- full Garage + Game UI Chromium/WebKit9c5aad→063c71 exit0:734pass/four
+  explicit isolated-performance skips,120.40s. Real60s idle objective unchanged;
+  separate performance2pass/22unselected,1.86s. No Firefox/AT/full-era claim.
+- copy77c131→4c9ae7 exit0:658 keys, SHA
+  a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+ 611 existing orphan warnings and current deployment content manifest verified.
+
+Local correction/evidence only; no whole GS5 or 1.0 acceptance. RP-313's current
+public-wire/body authority issue, real acquisition/payout/expiry/composed/auth/
+SQL/Firefox/AT/400%/populated performance and all older review holds remain.
+Docker capacity still unresolved; no cleanup/Linux retry/CI/owner copy/kernel/
+balance/clock/scheduler/policy/status/archive/mint/push/release promotion.
+
+Next bounded source inspection: GS5 explicitly inherits GS0.5 reconnect states.
+Host Claim controls omit !transportReady and the region has no stale-reason prop;
+readiness/state proof needs a separate test-first population before any repair.
+This is a source finding, not a new executed reconnect verdict or startup ruling.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Inspected the
+complete f5be35f6..48f6d63e committed range and current scoped two-token/docs/
+ledger/plan/evidence/queue/1.0-record diff; git diff --check61bf1c clean. Product
+diff is only the predeclared component plus two independently scoped theme
+leaves; host fully restored, no server/CI/owner copy/archive/RFC-body edits.
+Executed failing controls and final complete native/client/types/build/copy/
+boundaries compared with the declarations; invalid instrument and coverage
+limits retained. This is NOT the designated independent pass. Entire
+f5be35f6-exclusive through this entry's containing commit needs Claude, including
+all predeclaration/record edges; Fiscal c24b8f6d..fc901f70, research
+fc901f70..f5be35f6 and every earlier span independently owed. No archival gate
+or approval has been consumed; plan boxes/status remain unchanged.

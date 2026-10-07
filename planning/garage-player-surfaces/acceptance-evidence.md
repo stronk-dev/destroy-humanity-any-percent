@@ -75,9 +75,9 @@ evidence merely because its text exists.
 | GS4-A5 composed | adoption producer → real care/receipt/state/reload | Historical cosmetic composed positive feed witness | DG-4 producer now mechanically exists, but RP-132 body reconciliation and RP-318 missing pet-status decoder/copy remain. **Not silently cleared:** full GS4 population is blocked, never a skipped success. |
 | GS5-A1 stable order | optional opportunity arm → persistent Desk region | B stable region/index/focus native test | Bounded proof; original wire mismatch RP-313 remains. Scope review does not follow from local tests. |
 | GS5-A2 no synthetic commands | host cadence → no idle intent | B actual 60 s native wait; RP-315 timer correction/probe | Bounded two-engine actual-timer evidence, not a shortened virtual run. Full F/hosted population still RED/held. |
-| GS5-A3 cap | Lucky/buff receipt → Desk notice + pinned reason | B saturated Lucky/capped-buff/projected cap; RP-314 compiling omissions | Bounded receipt fixture proof, not real Lucky payout. Correction awaiting designated review; RP-313 authority hold independent. |
+| GS5-A3 cap | Lucky/buff receipt → Desk notice + pinned reason | B saturated Lucky/capped-buff/projected cap; RP-314 compiling omissions; RP-352 exact complete credited/cap text on held reply/read | Bounded receipt fixture proof, not real Lucky payout. Valid wrong credit fails24 cases; invalid RP-355 numeric fault discarded. Two old palette leaves each independently fail actual capped-bank axe. Corrective ranges awaiting designated review; RP-313 authority hold independent. |
 | GS5-A4 composed | real DOM clicks/claim → receipt-bound successor | C actual click buff at revision26; shared driver's oracle unit/native tests and six faults | Actual buff branch only, **not Lucky integration**. Changed-host rerun held; old vacuous shortcut survivor and corrected fixture disclosed under RP-316. |
-| GS5-A5 accessibility | opportunity region → native claim/text | B Tab + Enter/Space, axe and 320 px | Partial all-engine/state/400%/AT proof; announcement timing and off-surface withholding require their own population, not keyboard substitution. |
+| GS5-A5 accessibility | opportunity region → native claim/text | B Tab + Enter/Space, axe and 320 px; RP-352/35320 declarations/40 actual two-engine executions | Locally repaired pending and removed-control focus under separate scopes;14 valid source faults/restorations and full native734/performance2 green. Not all-state/engine/400%/AT proof; connection states (RP-356), announcement timing/off-surface withholding need their own populations. Designated review still owed for the entire f5be35f6-exclusive new span and prior spans. |
 | GS6-A1 cap reason | generator `provision_cap` → Desk card | B provisioned=cap fixture checks exact reason; G generator projection | Bounded reason-text proof; executed omission seed and exact review coverage must be pinned for this gate. No whole Desk acceptance inferred. |
 | GS6-A2 no fake purchase | production Go predicate/decoder → real component AST → existing root boundary | RP-335: a valid registered-copy fake legacy-shelf button passed the old boundary; new verification-only guard rejects it, a replaced/dynamic real callback kind, a missing production decoder case and a checker bypass; exact sources restored | **Locally witnessed source guard; designated review pending.** Ten Go/eleven Svelte negatives, legitimate acquire/equip/unequip and current source pass. Explicit envelopes/current wrappers only, not whole-program analysis, eligibility, persistence or complete Shop acceptance. Later accepted Shop commands are not banned; any stale Garage body reconciliation remains author-owned. |
 | GS6-A3 no wider Desk | paired public v4 fixture → current full 1995 Desk/chrome → native 320 px measurements | Test-only supplement predeclared 757f1ca2: provisioned=0/owned=false vs provisioned=cap=3/owned=true, identical other content and cap. Chromium/WebKit document/main 320/320, Desk/chrome 284/284, extents 0–320; 90→93 measured nodes. Six real faults fail both engines; sources restored. | **Locally witnessed fixture comparison; designated review pending.** Absence/presence in current source, NOT historical executable, full later Desk, actual 400% zoom, Firefox, AT or real service. Accessibility retains ownership of its old 647 px record; no acceptance/lifecycle promotion. Complete range after 54c8c8da needs Claude separately from source guard d3ce0f76..54c8c8da and every preceding span. |
@@ -91,6 +91,33 @@ tabindex removal). Host restored byte-identically. Full Garage350/performance
 two and client/types/build/copy/boundaries/topology pass. Local first filter,
 not lifecycle/all-context/first-read rejection/retry/Firefox/AT/live SQL proof.
 Separate entire82614848-exclusive range requires Claude.
+
+## RP-352–355 native Claim correction and contrast evidence
+
+Twenty declarations execute40 times across Chromium/WebKit. Three held-host
+paths (retained offer, removed Claim, newer native Settings selection) ×widths
+320/1280 ×Enter/Space =24; independent immediate-success/removal eight and
+isolated pending/unavailable callback eight. Actual public decoder and Company
+1→2 versus Founder7→8 distinguish scope; exact requests/notices/receipt credit,
+read counts, delayed pending/native duplicates, native return, focus, reflow and
+axe asserted. Only initial manual focus is seeded; Tab reaches host Claim and
+later navigation without direct action focus. Isolated callback cases prevent
+the existing host guard from hiding a removed component guard.
+
+Typed baseline36fail/four unavailable controls, separate component scope then
+32 contrast failures/eight controls, separate two-leaf C9 provisional palette
+scope then40pass. Fourteen valid faults all fail their intended properties and
+restore exactly; RP-355's non-canonical0e0 arm discarded, valid1e0 replacement
+fails24 actual whole-credit comparisons. Component guard omission caught only
+by four isolated cases, explicitly not attributed to the36 passing host cases.
+
+Final full native734/four isolated-performance skips plus performance two;
+client9816/669 explicit browser skips/types0/build214/copy/boundaries/topology/
+no-payment pass. Real60s idle objective retained. Same current wire fixture,
+not acquisition/expiry/payout/real HTTP/SQL/Firefox/AT/400%/all-era/whole-GS5.
+RP-313 authority and all full-release holds remain. Entire f5be35f6-exclusive
+new span through final records requires Claude; earlier spans independently owed.
+No acceptance checkbox/status/archive/mint/push/release promotion.
 
 ## RP-349 native Fiscal delayed completion (test-only)
 

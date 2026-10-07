@@ -20,6 +20,14 @@ geometry directly, but governed colors, fonts, shadows, radii, and durations mus
 `--cc-*` tokens. The source gate parses Svelte style ASTs and rejects seeded static, inline, and
 directive violations.
 
+The C9 color literals are provisional styling data, not immutable contract values.
+The current 1995 muted text is `#4f4f4f` and danger text `#a30000`: the nearest
+darker integer-channel values on their original gray/red hue rays that meet
+4.5:1 on the actual `#c0c0c0` capped-bank background (and also on white).
+Native capped-bank axe checks exercise both values; restoring either previous
+value reproduces its contrast failure. The 41-token shape, other eras, type,
+layout, numeric formatting and zero-motion budget are unchanged.
+
 ## Amount
 
 `Amount` accepts a canonical Decimal string and an optional `{amount, reason_key}` cap. It parses
