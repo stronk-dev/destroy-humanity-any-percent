@@ -2578,3 +2578,61 @@ records and requires Claude. No optimization, owner copy, catalog/kernel/
 balance/schema/CI change, checkbox/status/archive/mint/push/release claim.
 Docker capacity, RP-331/Firefox/AT/actual zoom/manual profile/author/body/
 numeric/privacy/platform/default-player/full-nine-tier 1.0 gates remain.
+
+## 2026-10-07 — RP-334 native findings and bounded test-only correction
+
+Fresh local checkout remains clean 04b10f97 before the probes; no newer Claude
+commit is present locally. Existing root isolated baseline 38175 passes one /
+22 unselected. Omitted measured fixture updates 71274 also passes one; final
+actual busy task at twice the unchanged 200 ms ceiling 70295 also passes one.
+The original validator cannot reject either fault. Browser console output on
+passing tests was not displayed, so separate observation-only reruns deliberately
+throw AFTER the validator returns and cleanup completes: 31335 reports zero
+visible commits, claimed inputs 1,200 and terminal 100; 98149 reports 400 ms
+actual synchronous duration, 217 commits, 1,200 claimed inputs and longest task
+0. Their exits 2 are reporting instrumentation, not discriminating gate exits.
+Both faults/restoration use apply_patch; no source edit during a live check.
+Restored original test and budget SHA match the preceding predeclaration.
+
+Correction to my population wording: Lucky is an immediate payout, NOT a buff
+(docs/active-play and the pinned opportunities artifact). Do not invent a Lucky
+buff merely because the decoder admits its ID. The intended four effect rows
+are pending Lucky plus building/click/production buff rows, valid selected
+building target, sorted UUIDv7 instances and combo. This supersedes my earlier
+"all four effect buffs" sketch, not the RFC or any owner-authored text.
+
+Predeclare the implementation now, before source changes: add one independent
+populated scenario under the EXISTING isolated selector, preserving the complete
+old scenario byte-identically. Construct a decoder-admitted public snapshot
+using current presentation/catalog IDs, pending Lucky/three buffs/combo, capped
+provisioning, owned upgrade, free shelf and supported achievements/Fiscal/Meters
+nav facts with corresponding arms. These are separate tabs, not mounts. Pet,
+Pitch without its runtime port, Adoption/Cosmetics/AxisStack/Reputation/T2 and
+later current-release populations remain explicit exclusions, not all-release
+performance claims. Select the CASH resource Amount, not the earlier static
+combo Amount. Keep runtime.current coherent with the measured samples so a
+background recovery sample cannot erase the population.
+
+The new test-only driver must count inputs only after real delivery, require
+nonzero native visible commits, exact terminal formatted cash, connected hot
+output and named-region/copy census after EVERY input, and zero intents. Native
+MutationObserver and Long Tasks support are mandatory. Flush native queued
+records after real rendering/task turns before disconnect; teardown in finally.
+Retain every original numeric ceiling and 60-simulated-second interpretation.
+Use the existing runner annotation attachment API for an inspectable JSON
+observation; no new reporter/workflow/Make target/config/production plumbing.
+
+Predeclared faults, one at a time against the completed new driver: omit input
+delivery; hold hot Amount rendering fixed while inputs continue; inject a final
+actual 400 ms task; remove Long Tasks availability; remove an opportunity buff
+from the measured population after setup. Each must execute and fail the named
+activity/terminal/budget/support/census oracle, not fail compilation. Restore
+healthy test source exactly between probes. The old guard may survive and that
+survival is retained, not covered up by changing its assertion or population.
+Root isolated lane, types/full client/build/boundaries then final records.
+Full Linux browser/SQL/manual profile/AT/review holds remain unchanged.
+
+Review by: Codex (self first filter only). Recorded by: Codex. Complete new
+range begins 127eb052 exclusive through final records; Claude verdict owed.
+No production/numeric/catalog/kernel/balance/copy/CI/schema/owner-text change,
+acceptance checkbox, lifecycle, archival, push or release promotion authorized.
