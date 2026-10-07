@@ -2,15 +2,18 @@
 
 RFC: `rfc/api-foundation.md`
 
-Current checkpoint (2026-10-07): the historical catalog database source is implemented and
+Current checkpoint (2026-10-08): the historical catalog database source is implemented and
 locally verified against real Postgres; accepted identities return exact stored artifacts,
 not newer files, and corrupt/unaccepted evidence refuses. The future formula artifact now has
 a shared version-14 model and owner schema, checked against actual byte-identical generation
 and malformed-input controls. Both replay loaders and Go resolution now accept optional stored
 formulas with exact integer grammar/identity; real Postgres proves old/new coexistence and
 malformed-version refusal. This does not mount the catalog
-HTTP reader or mint product formulas. RP-383/RP-384 compatibility guard corrections also pass
-locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Catalog owner descriptors,
+HTTP reader or mint product formulas. Categories now exports the first descriptor for the
+nineteen pinned families; five actual current/historical/candidate fixtures and malformed-input
+controls pass. Its existing loader retains semantic-policy validation. The other eighteen
+owner descriptors and complete union remain open. RP-383/RP-384 compatibility corrections pass
+locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Remaining owner descriptors,
 remaining route/client registration, third-party verification, 304 metadata and designated
 reviews stay open; not full API acceptance or green hosted CI. Latest log owns exact evidence.
 
@@ -28,6 +31,11 @@ is implemented; its draft decisions and full API acceptance remain open.
   - [x] Resolve C20's limiter/proxy/key-ID/request-ID literals.
 - [ ] Register public DTOs/readers and raw verification evidence endpoints.
   - [ ] Export and compose C18's ruled owner artifact descriptors.
+    - [x] Export the existing category catalog's closed v1 descriptor, with all five canonical
+      row bindings; actual historical/current/candidate catalogs and 26 negative cases pass
+      (`TestCategoryOwnerSchemaAdmitsStoredAndCandidateCatalogsWithoutChangingBytes`,
+      `TestCategoryOwnerSchemaRejectsUndeclaredAndWrongRowShapes`). Loader semantic checks
+      remain mandatory; no complete union or HTTP endpoint claim.
     - [x] Extract the future formula artifact's shared model and closed version-14 owner
       descriptor; actual generator preserves bytes and validates before writing
       (`TestPublishedFormulaModelAndDescriptorPreserveExistingBytes`, populated/refusal

@@ -1153,3 +1153,24 @@ Known Clout/kernel-history CI failures remain; no whole-API/Account/1.0 acceptan
 Next: remaining HTTP caller/route migration and catalog owner/public verification integration.
 The closed C19 schema|raw response model still cannot honestly register existing bodiless
 DELETE successes or conditional304; amend that contract before describing those as JSON.
+
+## 2026-10-08 — category artifact owner descriptor
+
+Outcome under API A5/C17/C18: `leaderboard.CategorySchemas()` exports the existing v1
+category grammar, binding each of the five IDs to its name/timer/predicate and closing nested
+objects. No loader, balance, historical artifact, mounted route or generated contract changes.
+Array cardinality/order, gate correspondence and canonical policy values remain loader checks;
+the count-41 control explicitly proves schema validation alone is not policy validation.
+
+Executed: `make test-go GO_PACKAGES='./leaderboard ./publicapi' GO_TEST_FLAGS='-count=1'`
+PASS; `make vet GO_PACKAGES='./leaderboard ./publicapi'` PASS; `make api-check` PASS with
+byte-unchanged generated outputs. A separate cold verbose `TestCategoryOwner` run executes
+five actual catalog fixtures, all five row arms, 26 negative cases, semantic separation and
+fresh deterministic exports. No DB boundary changed; native DB-dependent tests skip, and no
+Postgres/HTTP/TypeScript third-party proof is inferred from these checks.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. New review range is
+`a7f8f54a` exclusive through this coherent source/test/docs/record commit. Designated review
+remains pending. Categories is one of nineteen served artifact families, not a completed
+catalog union. Next: remaining eighteen owner descriptors, then complete HTTP composition
+and actual public-verifier journey. No content mint, archive, CI/workflow change or push.

@@ -357,8 +357,18 @@ Postgres fixture mint loads and resolves alongside the older epoch, and its publ
 bytes also load without rewriting; a hash-matching unsupported formula version refuses.
 These are test-only epochs, not adopted balance or proof of the HTTP/third-party verifier loop.
 
+`leaderboard.CategorySchemas()` now exports the closed `CategoryCatalogV1` owner descriptor.
+Its five existing category arms bind each ID to its name key, timer and predicate shape;
+fact-set keys and nested predicate fields are closed. Current, historical and candidate catalog
+bytes validate without normalization. Unknown categories/fields, mismatched row bindings,
+unsupported versions, wrong types and invalid int64 literals refuse. The descriptor does not
+replace `LoadCategoryCatalog`: array cardinality/order, gate correspondence, fact membership
+and canonical policy values remain loader checks. A grammar-valid count of 41 is still refused
+by that loader's existing Phase-0 policy. No balance rule or historical bytes changed.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. The C18 catalog union still requires exact descriptors
-from the nineteen currently pinned artifact owners. The formula artifact needs a
+TypeScript verification loop remain open. Categories is the first owner descriptor for the
+nineteen currently pinned artifact families; the other eighteen and the composed C18 catalog
+union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.
