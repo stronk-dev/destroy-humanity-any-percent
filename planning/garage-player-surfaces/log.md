@@ -1647,3 +1647,36 @@ changes neither workflow nor Firefox acceptance policy and cannot be cited
 as an executed hosted-CI run. Keep source immutable and poll its live handle.
 Full nine-tier/product/platform/author/owner/numeric/content/review/release
 holds remain. Goal active/progress; no box/status/archive/mint/publication.
+
+## 2026-10-07 — RP-326 outcome ownership: predeclare native failing-first census
+
+Baselinee950216a; full browser evidence separately4dcd9969..e950216a needs
+Claude and is RED/incomplete (RP-327/328/236); no new Docker run. Fiscal
+correction stays separatelyb64a91af..4dcd9969, previous care/shared refusals
+independent. Read accepted GS0.6/GS1: panel owns its intent outcome status;
+chrome owns cross-surface event announcements. Current globalintentNotice
+violates the boundary in source; establish executable failures first.
+
+Test-only supplement to existing Garage native file, existing runtime-double
+fixtures and registered keys, Chromium/WebKit only.12 cases: Fiscal and care
+each applied and ordinary refused outcomes; each in three populations:
+exact own-panel polite result with no duplicate chrome result, completed
+result then real nav transition to unrelated Meters with no result bleed,
+held response then nav transition before completion with no wrong-tab result.
+Require one correctly scoped request, actual nav focus preserved, unchanged
+registered reason/success text. No new retention policy: late-away result
+may be retained for origin or discarded; this census does not require either
+or invent a result history. No manual AT claim. Runtime doubles are not real
+care/quarter/refusal or parser-valid producer/minted-content evidence.
+
+Success/failure thresholds are exact DOM placement/text/count, not duration
+or a suffix match. Existing pending controls are distinct from outcome region;
+count only exact outcome messages. Wrong-tab assertions inspect the entire
+host, not merely a missing node in the new panel. Do not change prior tests
+to fit new routing before recording the baseline. Cases fail at real DOM
+assertions; import/compiler failures are invalid instruments, not proofs.
+Production source unchanged until tests commit; narrowly repair only under
+GS0.6 after the failed baseline, with own predeclaration and compiling faults
+for placement/duplicate/origin. No copy text/kernel/server/schema/timer/queue/
+retry/CI/owner decision change, no checkbox/status/archive/push. Keep source
+immutable during live native handle; goal remains full1.0 active/progress.
