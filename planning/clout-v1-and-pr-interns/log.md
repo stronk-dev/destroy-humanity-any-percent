@@ -1342,3 +1342,26 @@ population under acceptedCV4; terminal predicate is still only a source finding.
 RP-308 delegation unanswered, no owner/body edits or accumulation waiver.
 Entire new span after685debe7 needs Claude including record edges, prior ranges
 independent. Goal active; no checkbox/status/archival/mint/push/deploy/release call.
+
+### RP-310 local range review — scheduler admission only
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `685debe7..65eb0cdf`, all fifteen changed paths, including
+483fa5ed predeclaration, the single scheduler predicate, honest kernel164 and
+both mirrors, nine refusal tests, source-only re-observation and linked records.
+Runtime diff admits Company>=18 without removing any evidence validation. The
+terminal guard and all numeric/save/balance/CI/RFC body bytes are unchanged.
+
+Executed evidence: all48newfile cases pass, all24original Go receipts/events/
+poststates match exactly. The original guard rejects24valid replays; severing
+after-sequence validation lets three corrupt inputs apply purchases. Both real
+runtime mutants are restored. Artifact comparison changes ONLY two source pins,
+not outputs or population. Full client9547pass/340visible skips; types/vet/
+topology/formulas/API/native research pass. Original27GoAC6 and historicalRP-131
+remain red; this local correction does not waive them or establish hosted CI.
+
+Decision: bounded repair validated, NOT designated approval or full CV4/Clout
+acceptance. Counts and limitations agree across the dossier/docs/ledger/queues/
+roadmap. Terminal/next-run behavior is not yet measured. Claude must inspect the
+ENTIRE span after685debe7 INCLUDING this record edge before any archival claim;
+all prior independent review obligations remain separate. No status promotion.
