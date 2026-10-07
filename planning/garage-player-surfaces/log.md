@@ -1183,3 +1183,51 @@ turned into success. No copied player content, permanent product change,
 schema/kernel/mint/workflow/status/archive/push or acceptance-box flips.
 Inspect known missing GS4 states/announcements separately from this narrow
 slice; do not claim existing population covers those absent branches.
+
+## 2026-10-07 — Designated original pet slice verdict
+
+Review by: Codex. Recorded by: Codex. Exact range:
+`7a61e4b6^..7a61e4b6`, ALL eight paths, full line-content diff inspected.
+Verdict: **CHANGES REQUIRED for the existing accepted-contract hold**;
+mechanical subset verified, not full GS4 acceptance. GS4 demands its raw
+PetsArm/mood/cooldown/soul states; PA7 explicitly forbids those internals and
+requires another wire shape (RP-132). The log's disclosed GS4×PA7 gap is
+honest but not author reconciliation. Keep current privacy/compatibility
+boundaries; the author must reconcile both bodies before contract approval.
+No new payout/eligibility defect inferred from this conflict.
+
+Executed current original pet browser cases:4 passes across Chromium/WebKit,
+46 other cases explicitly unselected, plus isolated performance1/22 skips;
+cold original Go adopted-pet fact passes (`-count=1`). The four separately
+compiling care callback/Company-revision/unavailable-text/overlay faults each
+fail one pet case per engine (2 fail/2 pass/46 unselected). Expected revision
+is7, not1; disconnected callback emits no request. Empty-map fact fault fails
+Go with `feature.pets must be false with no adopted pet`. All restored before
+the next probe and final rerun; final browser4/performance1/Go pass.
+Restored SHA256: PetCareSurface
+`54fdf3350c11213e1c92f65227737fde3952b3d0d4f1f10bfce992973f37487a`,
+GameUIApp `cea53999751ab5fc6dfca79ad5d6cadd6effb11988035135fb015d03db34635c`,
+server/features `e344ecee553f1260e1a33802985d98c45970ff6035cd677ebf4548425f61f0fa`.
+No source mutation remains. Current PetCare CSS differs from the original only
+by the separately reviewed `6594b646` reflow fix; no absorption of its range.
+
+The browser population proves catalog action order, text for ineligibility,
+feed intent/Founder revision, applied notice and one cooldown rejection;
+it does NOT prove the other three rejection rows, native keyboard, updated
+server band, pending/reconnect behavior or real-server care/refresh. The Go
+fixture has a pinned species bundle, not a fresh real deployed Founder.
+GS4-A5 and owner-copy/mint/wire holds stay explicit. Later docs/records are
+separate review ranges, no self-archive or full Garage/CI/release promotion.
+
+### Predeclare separate remaining status-event diagnostic (RP-318)
+
+Accepted GS0.3 explicitly includes `pet_status_changed.v1`; GS4 wants a polite
+announcement only while mounted. Source inspection finds no decoder member or
+host branch; the specified announcement key is absent from the current catalog.
+This is NOT attributed to the original eight-path care slice, which did not
+claim to implement this decoder. Execute the current decoder through the
+existing Vite SSR loader, all12 distinct transitions of the server's four
+valid bands and invalid UUID/same/unknown-band/extra/missing-field controls.
+Report actual undefined/throw results; no fixture gets relabelled integration.
+No file/product/test-collector/CI or owner-copy change. Author copy adoption
+and raw-care conflict are not inferred from this diagnostic.
