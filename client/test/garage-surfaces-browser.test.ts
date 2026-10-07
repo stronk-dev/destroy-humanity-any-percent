@@ -3,7 +3,7 @@ import { flushSync, mount, tick, unmount } from "svelte";
 import { expect, it, vi } from "vitest";
 
 import type { GameUISnapshot } from "../src/api/generated/types";
-import { t } from "../src/copy";
+import { t, type CopyKey } from "../src/copy";
 import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import { GameUIRequestError, type IntentOutcome } from "../src/game-ui/intent-outcome";
@@ -455,6 +455,163 @@ it.skipIf(!browser)("states unavailable care actions in text, sends Founder-scop
     button(target, "PENDING OWNER COPY: care.pet").click(); await settle();
     expect(target.querySelector(".intent-notice")?.textContent).toBe("PENDING OWNER COPY: rejection cooldown");
   } finally { await dispose(); }
+});
+
+// Care supplement: native host/runtime-double evidence, not a server care or
+// raw-stat/cooldown projection. All values below are public PA7 fields.
+const careText = (key: CopyKey): string => t(key, {}, "era_1995");
+for (const activation of ["{Enter}", " "]) {
+  it.skipIf(!browser)(`care supplement reaches the next eligible action with Tab and ${activation === " " ? "Space" : "Enter"}`, async () => {
+    const runtime = new Runtime(); runtime.current = withPet();
+    const { target, dispose } = await mounted(runtime);
+    try {
+      button(target, careText("pet.care.panel.title")).click(); await settle();
+      const feed = button(target, careText("pet.care.action.feed.title"));
+      const pet = button(target, careText("pet.care.action.pet.title"));
+      const { userEvent } = await import("vitest/browser");
+      feed.focus();
+      await userEvent.keyboard("{Tab}"); await settle();
+      expect(document.activeElement).toBe(pet);
+      await userEvent.keyboard(activation); await settle();
+      expect(runtime.requests).toEqual([expect.objectContaining({ kind: "care_action", pet_id: petRow.pet_id, action_id: "care.pet", expected_revision: 7 })]);
+      expect(document.activeElement).toBe(pet);
+      expect(target.querySelector(".intent-notice")?.textContent).toBe(careText("pet.care.applied"));
+    } finally { await dispose(); }
+  });
+}
+
+for (const [category, detail, key, reports] of [
+  ["not_eligible", "cooldown", "pet.care.rejection.cooldown", 0],
+  ["not_eligible", "ineligible", "pet.care.rejection.ineligible", 0],
+  ["not_eligible", "saturated", "pet.care.rejection.saturated", 0],
+  ["not_eligible", "human_content_locked", "pet.care.rejection.soul_locked", 0],
+  ["unknown_id", "unknown_pet", "intent.rejection.unknown", 1],
+  ["unknown_id", "unknown_action", "intent.rejection.unknown", 1],
+] as const) {
+  it.skipIf(!browser)(`care supplement renders ${category}/${detail} without a retry or mechanical disclosure`, async () => {
+    const runtime = new Runtime(); runtime.current = withPet();
+    runtime.outcome = { outcome: "rejected", category, detail, currentRevision: 7, sessionExpired: false };
+    const { target, dispose } = await mounted(runtime);
+    const diagnostics = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      button(target, careText("pet.care.panel.title")).click(); await settle();
+      const feed = button(target, careText("pet.care.action.feed.title")); feed.focus(); feed.click(); await settle();
+      expect(runtime.requests).toHaveLength(1);
+      expect(runtime.requests[0]).toMatchObject({ kind: "care_action", pet_id: petRow.pet_id, action_id: "care.feed", expected_revision: 7 });
+      expect(target.querySelector(".intent-notice")?.textContent).toBe(careText(key));
+      expect(target.querySelector(".intent-notice")?.textContent).not.toContain(`${category}/${detail}`);
+      expect(diagnostics).toHaveBeenCalledTimes(reports);
+      for (const call of diagnostics.mock.calls) expect(call).toEqual([expect.stringMatching(/^game UI invariant: /u)]);
+      expect(feed.disabled).toBe(false);
+      expect(document.activeElement).toBe(feed);
+      await assertAxe(target, `care ${detail}`);
+    } finally { diagnostics.mockRestore(); await dispose(); }
+  });
+}
+
+for (const [label, message, reasonKey] of [
+  ["recovering", { kind: "transport_recovering" }, "common.stale_note"],
+  ["resync", { kind: "system", value: { kind: "resync_required" } }, "system.resync.title"],
+  ["restart", { kind: "system", value: { kind: "server_restarting", resume_after_ms: 1_000 } }, "system.drain_notice.title"],
+] as const) {
+  it.skipIf(!browser)(`care supplement prevents commands during ${label} and recovers without an automatic care intent`, async () => {
+    const runtime = new Runtime(); runtime.current = withPet();
+    const { target, dispose } = await mounted(runtime);
+    try {
+      button(target, careText("pet.care.panel.title")).click(); await settle();
+      runtime.listener?.(message); await settle();
+      const actions = [...target.querySelectorAll<HTMLButtonElement>(".pet-care .actions button")];
+      expect(actions).toHaveLength(5);
+      expect(actions.every((action) => action.disabled)).toBe(true);
+      expect(target.textContent).toContain(careText(reasonKey));
+      for (const action of actions) action.click(); await settle();
+      expect(runtime.requests).toEqual([]);
+      runtime.listener?.({ kind: "transport_recovered" }); await settle();
+      expect(button(target, careText("pet.care.action.feed.title")).disabled).toBe(false);
+      expect(runtime.requests).toEqual([]);
+    } finally { await dispose(); }
+  });
+}
+
+it.skipIf(!browser)("care supplement disables Founder controls when its revision is unavailable", async () => {
+  const runtime = new Runtime(); const withoutRevision = { ...withPet() };
+  delete (withoutRevision as unknown as Record<string, unknown>).founder_revision;
+  runtime.current = withoutRevision;
+  const { target, dispose } = await mounted(runtime);
+  try {
+    button(target, careText("pet.care.panel.title")).click(); await settle();
+    for (const action of target.querySelectorAll<HTMLButtonElement>(".pet-care .actions button")) {
+      expect(action.disabled).toBe(true); action.click();
+    }
+    await settle(); expect(runtime.requests).toEqual([]);
+  } finally { await dispose(); }
+});
+
+it.skipIf(!browser)("care supplement retains keyboard focus and pending text through the intent AND authoritative refresh", async () => {
+  const runtime = new Runtime(); runtime.current = withPet();
+  const { target, dispose } = await mounted(runtime);
+  let finishIntent!: (value: IntentOutcome) => void;
+  let finishRead!: (value: ParsedGameUISnapshot) => void;
+  const heldIntent = new Promise<IntentOutcome>((resolve) => { finishIntent = resolve; });
+  const heldRead = new Promise<ParsedGameUISnapshot>((resolve) => { finishRead = resolve; });
+  const intent = vi.spyOn(runtime, "intent").mockImplementation((body) => { runtime.requests.push(body); return heldIntent; });
+  const read = vi.spyOn(runtime, "snapshot").mockReturnValue(heldRead);
+  try {
+    button(target, careText("pet.care.panel.title")).click(); await settle();
+    const feed = button(target, careText("pet.care.action.feed.title")); feed.focus();
+    const { userEvent } = await import("vitest/browser");
+    await userEvent.keyboard("{Enter}"); await settle();
+    const assertPending = () => {
+      expect(feed.disabled).toBe(false);
+      expect(feed.getAttribute("aria-disabled")).toBe("true");
+      expect(document.activeElement).toBe(feed);
+      expect(target.querySelector(".pet-care")?.textContent).toContain(careText("common.pending"));
+      expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+    };
+    assertPending();
+    feed.click(); button(target, careText("pet.care.action.pet.title")).click(); await settle();
+    expect(runtime.requests).toHaveLength(1);
+    finishIntent({ outcome: "applied", receipt: {} }); await settle();
+    expect(read).toHaveBeenCalledTimes(1); assertPending();
+    feed.click(); await settle(); expect(runtime.requests).toHaveLength(1);
+    finishRead({ ...withPet(), founder_revision: 8 }); await settle();
+    expect(feed.disabled).toBe(false);
+    expect(feed.getAttribute("aria-disabled")).not.toBe("true");
+    expect(document.activeElement).toBe(feed);
+    expect(target.querySelector(".pet-care")?.textContent).not.toContain(careText("common.pending"));
+  } finally {
+    finishIntent({ outcome: "applied", receipt: {} }); finishRead(runtime.current); await settle();
+    intent.mockRestore(); read.mockRestore(); await dispose();
+  }
+});
+
+it.skipIf(!browser)("care supplement refreshes public band and eligibility before binding the next Founder intent", async () => {
+  const runtime = new Runtime(); runtime.current = withPet();
+  const { target, dispose } = await mounted(runtime);
+  const read = vi.spyOn(runtime, "snapshot");
+  const intent = vi.spyOn(runtime, "intent").mockImplementation(async (body) => {
+    runtime.requests.push(body);
+    const next = withPet();
+    runtime.current = { ...next, founder_revision: 8,
+      features: { ...next.features, pet_adoption: { ...next.features.pet_adoption!, pets: [{ ...petRow, status_band: "high", eligible_action_ids: ["care.groom"] }] } } };
+    return { outcome: "applied", receipt: {} };
+  });
+  try {
+    button(target, careText("pet.care.panel.title")).click(); await settle();
+    const feed = button(target, careText("pet.care.action.feed.title")); feed.focus(); feed.click(); await settle();
+    expect(read).toHaveBeenCalledTimes(1);
+    const surface = target.querySelector(".pet-care")!;
+    expect(surface.textContent).toContain(careText("pet.care.band.high"));
+    expect(surface.textContent).not.toContain(careText("pet.care.band.normal"));
+    expect(button(target, careText("pet.care.action.feed.title")).disabled).toBe(true);
+    expect(button(target, careText("pet.care.action.groom.title")).disabled).toBe(false);
+    expect(document.activeElement).toBe(surface.querySelector("h1"));
+    button(target, careText("pet.care.action.groom.title")).click(); await settle();
+    expect(runtime.requests).toEqual([
+      expect.objectContaining({ kind: "care_action", action_id: "care.feed", expected_revision: 7 }),
+      expect.objectContaining({ kind: "care_action", action_id: "care.groom", expected_revision: 8 }),
+    ]);
+  } finally { intent.mockRestore(); read.mockRestore(); await dispose(); }
 });
 
 it.skipIf(!browser)("badges the Fiscal nav on an off-surface harvest and announces a buff start on the Desk (GS0.3 remainder)", async () => {

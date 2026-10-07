@@ -1287,3 +1287,26 @@ and demonstrate real composed failure before restoring. Full client/types/
 build/boundaries, targeted native, existing composed lanes. No silent skips,
 new CI exclusion/workflow, all-Garage/hosted-CI/1.0 promotion or self-archive.
 Claude must review the entire new span after `c7d8f815`, including all records.
+
+Initial instrument run is invalid: new tests omitted the mandatory copy params
+and guessed action keys without `.title`;28 harness errors prove no product
+finding. Mechanical test-only correction resolves registered keys through
+the actual copy resolver with `{}`/era1995; no text copied or rewritten.
+Next terminal baseline:16 failing assertions/12 passes/50 unselected across
+both engines. Actual pending native-disable/focus failures, WebKit Tab skip,
+restart enabled and recovering missing explanation appear. Refusal mapping
+and public-state/revision controls otherwise pass. The recovering assertion
+initially used the Settings offline sentence; correct it to GS0.5's actual
+`common.stale_note`, not a new requirement. RP-321 records the missing care
+stale label. Same populated surface lacks that key, so no claim rests on the
+wrong sentence. Before repair extend public-refresh case to focus the care
+control and assert GS0.6 heading fallback after eligibility disables it.
+No product edit yet. If that fails, repair the existing accepted fallback
+with a focusable heading and guarded pre-update focus handoff only when the
+currently focused care control becomes disabled; no spawn/reconnect focus
+steal or global hotkey. Continue within the declared care-only UI boundary.
+
+Final unmodified-product baseline after instrument corrections:18 actual
+assertion failures/10 positive controls/50 unselected in the two-engine
+population. Both public-refresh cases now fail with focus on body instead
+of the care heading. Test-first cases land before the narrow product repair.
