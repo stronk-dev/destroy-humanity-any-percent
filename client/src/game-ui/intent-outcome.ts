@@ -60,7 +60,7 @@ export function noticeForOutcome(outcome: IntentOutcome, surface: SurfaceRejecti
     case "unaffordable": return { effect: "none", notice: "intent.rejection.unaffordable", invariant: false };
     case "cap_exceeded": return { effect: "none", notice: "intent.rejection.cap_exceeded", invariant: false };
   }
-  if (pair === "not_eligible/exclusive_activity") return { effect: "none", notice: "intent.rejection.exclusive_activity", invariant: false };
+  if (pair === "not_eligible/exclusive_activity") return { effect: "refresh", notice: "intent.rejection.exclusive_activity", invariant: false };
   if (pair === "not_eligible/minigame_session_active") return { effect: "none", notice: "intent.rejection.minigame_session_active", invariant: false };
   return { effect: "none", notice: "intent.rejection.unknown", invariant: true };
 }
@@ -68,7 +68,7 @@ export function noticeForOutcome(outcome: IntentOutcome, surface: SurfaceRejecti
 export function noticeForError(error: unknown): IntentNotice {
   if (!(error instanceof GameUIRequestError)) return { effect: "offline", notice: null, invariant: false };
   if (error.status === 409) return { effect: "refresh", notice: "intent.conflict", invariant: false };
-  if (error.status === 429) return { effect: "none", notice: "intent.rate_limited", invariant: false };
+  if (error.status === 429) return { effect: "refresh", notice: "intent.rate_limited", invariant: false };
   if (error.status === 400) return { effect: "none", notice: "intent.rejection.unknown", invariant: true };
   return { effect: "offline", notice: null, invariant: false };
 }

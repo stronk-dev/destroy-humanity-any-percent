@@ -252,6 +252,11 @@ in the chrome `role="status"` line. A stale revision (`revision_conflict`) trigg
 authoritative refresh and is never auto-retried. Founder-scoped intents send the Founder revision.
 An applied intent keeps its controls pending through an authoritative snapshot refresh, so the
 next action uses the updated Founder or Company revision even if the stream receipt arrives late.
+HTTP429 rate limits and `not_eligible/exclusive_activity` rejections also trigger
+that authoritative refresh. Pending controls cannot reactivate while it is held;
+the response never retries the rejected command. A subsequent player action
+uses the refreshed revision and a fresh intent ID. Native care controls retain
+focus and `aria-disabled` pending semantics during that read.
 Only transport failures and 401/404/5xx mark the UI offline.
 
 The

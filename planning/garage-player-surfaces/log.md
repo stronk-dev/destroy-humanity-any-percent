@@ -1437,3 +1437,49 @@ Attempted CLIENT_TEST_FLAGS selector is not supported by the root target:
 it ran the FULL client population,2 fail/9,735 pass/373 explicit browser skips,
 not a focused6-case run. Both handles terminate normally; no product changed.
 Tests land before the authorized two-arm mapper repair.
+
+## 2026-10-07 — RP-322 shared refusal boundary repaired locally
+
+Review by: Codex (implementer/self first-filter ONLY).
+Recorded by: Codex. Range: entire new span after `3f867956`, including
+predeclaration `3f231ba2`, failing-first `d362c95e`, two-arm correction,
+docs/ledger/log and final tracking edge. Designated Claude pass remains owed.
+Previous care range stays separately exact `c7d8f815..3f867956`.
+
+Correction changes only429/exclusive mapper effect from none to the existing
+refresh. No host queue, timer/retry/session, server/wire/math/kernel/copy/
+epoch/workflow change. Native refusal population18/18 passes: a held read
+keeps care focusable but aria-disabled/guarded; no extra request happens until
+the read resolves AND the player activates anew, using Founder8/fresh ID.
+Conflict, invalid and offline controls retain their intended distinctions.
+They are runtime-double evidence, not service429 or real Soul-session tests.
+
+Independent429→none fault: full client1 fail/9,736 pass/373 explicit browser
+skips; native2 fail/16 pass/82 unselected. Restore429 before exclusive→none:
+same counts, but only the exclusive mapper/native cases fail. Both are
+compiling behavioral faults, not type failures. Exact restored mapper SHA256
+`a7aa1eb05e014b9f7862a02834fc91492d5ff66f40c5b7be4b5fd20a6c751710`.
+Final full immutable Garage file100/100 Chromium/WebKit, including minute
+idle; performance1/22 explicit unselected; types/Svelte0 errors/warnings;
+client9,737 pass/373 explicit browser skips (10,110 total),105 files pass/
+22 skip;213-module built client; boundaries14/8/22 pass. No Firefox retry:
+its zero-execution connection hold remains, no all-engine/AT/full-Garage gate.
+
+Final existing actual built-client/Postgres/WebSocket composed lanes pass:
+10 DOM clicks→active.click at revision21/zero expiries; Fiscal five Pitch
+commands/one visible offer decline/credit1e0 at revision25; v4 transitions/
+both terminal states/next-run/recovery. Actual DOM care feed receipt at
+Founder5 and persisted public-state/reload pass; Cosmetics8.77s/75 audited
+requests/no N5 violation. These actual workflows are not the runtime-double
+429/exclusive population or minted release proof. Earlier copy/manifest/
+topology observations remain dated, not claimed rerun in this boundary.
+
+Self full-range diff filter: two production mapper lines only, two unit cases,
+nine native consumer cases, canonical doc/ledger/log. No acceptance box/status/
+archival or full1.0 promotion. Next accepted lane: independently predeclare
+Fiscal GS1/GS0.5/GS0.8 native pending/read/keyboard/stale/restart/refusal checks.
+Source Fiscal still natively disables pending buttons without aria/pending
+text; its host readiness omits transportReady. The existing delayed Fiscal
+test explicitly expects disabled=true: retain its revision proof but correct
+that expectation only alongside new tests of the accepted focusable contract.
+Do not silently copy care approval to Fiscal or modify unmeasured semantics.
