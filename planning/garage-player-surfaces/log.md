@@ -5725,3 +5725,52 @@ through containing observation records needs Claude independently of
 mint/push/owner/release promotion. Next: inspect/predeclare exact missing real
 initial-meter DOM and first-purchase→earned-event→refreshed-row witnesses;
 an existing successful workflow cannot substitute for either named outcome.
+
+### RP-362 — GS3-A4 real initial-meter DOM proof predeclaration
+
+Baseline1d623dde clean, RP-361 host-native route usable. Accepted authority:
+Garage GS3-A4 (real Standing50/Grievance0/doom50 after DOM bootstrap; arm
+severing must fail), GS3 readable values/layout, existing root composed setup.
+Scope: additive checks in client/tools/test-game-ui-composed.mjs ONLY, records;
+no product/Go/registry/copy/data/balance/kernel/schema/dependency/CI changes.
+Current implementation sources and actual accepted seed/artifact inspected;
+no empirical/owner decision or missing raw/private field inferred.
+
+Population: same complete root make test-game-ui-composed, both drivers, no
+selectors/env substitutions/shortened existing bounds. Insert after real fresh
+DOM bootstrap/public feature checks and BEFORE missed-receipt mutation, gameplay,
+server-side gate setup, exits or continuation. Visible nav opens Meters; existing
+1280 and320 physical viewports separately check exact five constituency×two
+axis values and separate doom. Restore1280 and visible Desk before original
+recovery sequence; all old assertions/paths remain. No gameplay POST during
+the new read-only navigation/resize observation. Fresh actual public wire arm
+must have exactly the eleven IDs, min0/max100, low band and fixed accepted
+seeds; never derive expected values from that arm or from DOM. Registered copy
+translation supplies expected full labels/value/band text (consumer binding,
+not independent authored-copy correctness). Each expected value must appear
+as visible text in its own semantically associated cell/definition and in native
+meter properties, not merely a body prefix, color or aggregate count. No real
+zoom/AT/Firefox claim from this viewport population.
+
+Negative controls, independent transient source edits AFTER completed healthy
+run: (1) mounted Meters arm replaced with empty rows; (2) numeric text only
+value+1; (3) native meter value only+1; (4) numeric text hidden; (5) producer
+employees Standing projected as valid51 instead of50. Same root must fail at
+the new named check, not compilation or an unrelated existing oracle. Preserve
+all controls/backend/driver when severing consumer; producer fault affects only
+one public valid row, not stored state/catalog/migrations. Restore complete
+source hashes between faults; final full healthy target after all restoration.
+An incomplete/compile-only probe is invalid and retained as such, never green.
+
+Pinsfcd7cf: old driver392dba99bb9b023ebb2e162cdfc40d588ba0b44897d29ceb10fc17ff92b35749;
+Meters5ebc07105fb33e745935dfe5a8f53b3c378cdd081b603ebce0eba103b26f4a95;
+host432a27995e7d93b5e5c88ed138dbd990ec46e8106ae501671f634a6d37978b1f;
+Go featurese344ecee553f1260e1a33802985d98c45970ff6035cd677ebf4548425f61f0fa;
+meter artifact320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485;
+presentation8b75f766fb251fa75382ed506292ce2ebb32dd35e68169c2a49bba3026357702.
+Root/build/type/client/boundary checks use existing targets; no edits to source/
+HEAD/records during live matching gates. Named ephemeral DB/task-owned teardown
+only; no general cleanup/operator-data reset/new full-disk image build. Verify
+ports/DB sessions/source hashes at final completion. Whole1d623dde-exclusive
+through final records needs Claude; older ranges independent. No plan boxes/
+body/status/archive/mint/push/release promotion; GS2-A4 remains separate.
