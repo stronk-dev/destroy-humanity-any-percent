@@ -4000,3 +4000,21 @@ content contracts remain held. Entire newspan after3868e3d2 INCLUDING records
 needs Claude. Goalactive/progress, no checkbox/status/archive/mint/push/deploy/
 release call or shortened full-nine-tier scope.
 [Evidence/limits](clout-v1-and-pr-interns/receipt-projection.md).
+
+## 2026-10-07 — accepted criteria reconciled; CV10 mask prerequisite proved
+
+At64f836c2,41dd8c9f predeclares test-only actual simulation mask proof.
+Four admitted fixture states/four masks:16literal rates,32full-state advances,
+8liveEvaluate companions/four invalid entrypoints pass. Actual compiling mask
+omission fails8rates/16advances; neutral/unowned controls survive, exact restore.
+Initial verbose fault output was truncated and repeated with unchanged exact
+assertions/complete compact diagnostics. Cold selected production+harness/vet
+pass; full production still ONLYoriginal27AC6red. No runtime/kernel/balance/
+CI/oldcorpus/copy change. AC1–AC12 map retains all actual blockers and reviews.
+Initial proposed runtime-next note overlooked DG-D/D-021; forward body/queue
+correction BEFORE any construction, no architecture selected or delegation
+inferred. Next independent work is pending designated review Claude Garage
+GS0.3 `301728c8^..301728c8`, all14paths. Newspan after64f836c2 INCLUDING records
+needs Claude; older spans independent. Goalactive/progress, no fullClout/wholeCI/
+1.0/archival/mint/push/deploy/release promotion or shortened nine-tier scope.
+[Requirements and evidence](clout-v1-and-pr-interns/acceptance-reconciliation.md).

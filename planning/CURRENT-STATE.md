@@ -4,6 +4,17 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+**Latest Clout harness prerequisite:** all12accepted criteria mapped; new
+Go simulation effect-mask tests pass16literal rates/32full-state advances,
+8live companions/four refusal entrypoints. Compiling guard omission fails
+8rates/16advances; source restored. Cold focused production+harness/vet pass;
+full production still ONLYoriginal27AC6red. No runtime/balance/kernel change.
+DG-D/D-021 architecture stays unselected; the provisional proposed-next note
+is forward-corrected, not runtime authority. Next bounded designated review:
+Claude's Garage GS0.3 `301728c8^..301728c8` all14paths. Newspan after64f836c2
+including records needs Claude; all previous owner/platform/review holds remain.
+[Criterion map and bounded evidence](clout-v1-and-pr-interns/acceptance-reconciliation.md).
+
 **Latest Clout receipt checkpoint:** separate RP-31179285a14 at3868e3d2,
 tests-first03f513ef. Real ordinary/refreshed/Exit receipt producers now emit
 the exact CV5-derived object, propagate errors, preserve legacy bytes; kernel166.

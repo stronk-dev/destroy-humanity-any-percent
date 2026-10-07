@@ -3,6 +3,24 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Clout residual criteria and CV10 simulation mask — 2026-10-07
+
+All twelve accepted criteria reconciled against concrete evidence. Test-only
+41dd8c9f scope:16literal rate projections/32full-state advances,8liveEvaluate
+companions/four invalid-mask entrypoints PASS. Actual guard omission fails
+8rates/16advances; neutral controls survive honestly, source restored exactly.
+Cold selected production+harness/vet PASS; full production ONLYoriginal27AC6RED.
+No runtime/kernel/oldcorpus/balance/CI/copy/checkbox/mint/archive change.
+
+**READY next:** designated bounded review of Claude's Garage GS0.3 original
+`301728c8^..301728c8`, all14paths; current/remainder/correction spans independent.
+DG-D/D-021 evaluation architecture remains unselected:41dd8c9f's proposed
+runtime-next text was forward-corrected BEFORE any runtime edit. AC3/DG-B,
+DG-C,D-022,representation/RP-308,owner mint/copy and prior platform/review holds
+remain. Whole new span after64f836c2 INCLUDING records needs Claude. No wholeCI,
+fullClout/1.0 promotion or shorter release goal.
+[Requirement map/evidence](../clout-v1-and-pr-interns/acceptance-reconciliation.md).
+
 ## RP-311 CV5 applied receipt producer repair — 2026-10-07
 
 Separate79285a14 scope at3868e3d2, actual red03f513ef, kernel166. Real Go/TS

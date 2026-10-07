@@ -17,6 +17,13 @@ complete with a silently neutral stack. PR relevance, purchase observations and
 scenario invariant ratchet (RFC CV10) remain blocked on the DG-D/D-021 contract;
 the scalar cap helper is tested directly, not active in axis-enabled scenarios.
 
+Clout's public simulation mask now has distinct literal-rate and complete-state
+accrual tests (16projections/32online+offline advances, including admitted owned
+PR rows). A compiling omission of the real contribution-mask guard fails both
+oracles. This confirms the existing simulation primitive, not the currently
+refused scenario integration, attainment observer, reference policy or pacing.
+See [all remaining Clout criteria and proof limits](../planning/clout-v1-and-pr-interns/acceptance-reconciliation.md).
+
 `testdata/harness/scenarios/phase0-production.json` is scenario version 4 (the economy + Routes + Commons
 balance bundle) and runs two versioned policies:
 

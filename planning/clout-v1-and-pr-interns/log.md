@@ -2042,3 +2042,53 @@ restore before cold gates. First-hour axis refusal remains until a separately
 predeclared runtime really executes pinned attainment. No AC9/pacing/relevance/
 mint/archival/release promotion. All new edges need designated Claude review;
 Codex executes implementation and first filter directly, not a substitute gate.
+
+### CV10 diagnostic amendment before the complete repeat probe
+
+28346/597968 unchanged runtime passes16rates/32advances and two invalid-mask
+rows (four refused entrypoints). Actual mask-guard omission38263/378c61 exits2
+and visibly fails both rates and full states. Full-save diagnostics produce
+25,498 output tokens, exceeding the22,000 return limit: not complete cell-count
+evidence. Source restored exactly(c0b25b) after terminal handle;30120/5c0de6
+normal production+harness refusal/invariant pass, veteb27c6 passes. Replace ONLY
+failure messages with cash and full-state hashes, retaining exact byte equality
+and every arm; repeat normal then compiling fault with complete diagnostics.
+No observation budget, assertion, population or runtime contract is loosened.
+
+### CV10 executed proof and authority correction
+
+31778/145913 unchanged-production repeat PASS. Compiling content mask guard
+omission48457/f324ea exits2 with COMPLETE2774token diagnostics: eight literal
+rate failures and sixteen full-state online/offline failures, eight rate and
+sixteen advance controls legitimately survive. Both unknown/duplicate mask
+guards survive as expected. Source restored exactly after terminal handle
+(efb8cb). Final44233/4505bb root selected production+harness PASS(.318/2.268s)
+including actual source-boundary gates; vet16daeb PASS. Combined AC6 repeat
+09ba26 shows27original failures; full cold production22905/787fb3 after35.727s
+likewise ONLYoriginal27AC6red. No test removed, tolerance or kernel change.
+
+Forward correction of Codex's41dd8c9f proposed-next note: actual decision
+register D-021 and original DG-D still select NEITHER shared served hooks nor
+a harness-local observer. Initial acceptance map overlooked that hold. Corrected
+current body/queue/plan before ANY runtime implementation; retained original
+append-only entry, no inferred delegation. New mask tests do not depend on an
+architecture selection and remain inside accepted CV10's simulation primitive.
+No product changes or falsified rejection-to-completion claim occurred.
+
+Complete AC1–AC12 reconciliation now identifies the specific proof, missing
+authority or empirical failure per row. Next distinct unblocked agent-side lane
+is designated review of Claude Garage GS0.3 `301728c8^..301728c8` (14paths);
+later remainder/current Codex corrections separate. Read full Garage RFC before
+starting. No Clout/AC9/wholeCI/1.0/AT/hosted/AMD64/defaultmint promotion. All
+prior review/owner/author/numeric/platform holds remain. Current tests+canon+
+records after64f836c2 INCLUDING edges need designated Claude review.
+
+Review by: Codex (implementer-side self first-filter). Recorded by: Codex.
+Inspected entire new test160lines, actual live assembly and mask guard, exact
+literal expected factors/deltas, full-state/projection immutability and public
+mask rejection; independently executed normal/fault/restored populations.
+Full first probe output limitation and provisional authority-map mistake
+disclosed; neither accepted as complete evidence or implementation authority.
+Decision: bounded mask primitive VERIFIED LOCALLY, not designated approval.
+All handles terminal, source restored; no checkbox/status/archive/mint/push/
+deploy/release call. Long-term full-nine-tier goalactive/progress.

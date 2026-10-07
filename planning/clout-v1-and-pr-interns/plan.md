@@ -1069,4 +1069,6 @@ simulation, harness scenario execution, dynamic reference pricing, whole ANY/ALL
 minted pacing, AC9, AC6 or 1.0 completion. Claude independently reviews the full
 new test/record span including edges. Acceptance map is
 `acceptance-reconciliation.md`; the subsequent first-hour runtime integration
-must have its own predeclaration rather than hide inside this proof.
+requires D-021 author/owner selection and accepted evaluation contract FIRST,
+then its own predeclaration rather than hiding inside this proof. Forward
+correction of41dd8c9f's proposed-next text: no architecture branch is authorized.

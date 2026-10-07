@@ -201,3 +201,11 @@ an active axis-enabled scenario. DG-D/D-021 requires an accepted evaluation
 contract before PR relevance, dead-row and purchase-time measurements can run.
 The bounded `527246f1^..527246f1` guard commit is independently reviewed; no
 full Clout or archival approval follows. See the [review and pending work](../planning/clout-v1-and-pr-interns/log.md).
+
+The public Go simulation effect mask is separately checked on admitted latched
+Company fixtures:16literal rate projections and32online/offline advances retain
+ownership/attainment and all other saved fields, while masking only the chosen
+PR contribution. Removing the actual mask guard fails rates and full-state
+accrual checks. This is a prerequisite proof, not an axis-enabled harness run.
+The [criterion map and mask evidence](../planning/clout-v1-and-pr-interns/acceptance-reconciliation.md)
+keep all twelve accepted criteria and DG-D/D-021's unselected architecture visible.

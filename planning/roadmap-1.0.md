@@ -5,6 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest acceptance/prerequisite checkpoint (2026-10-07):** all12Clout criteria
+mapped. Test-only16literal mask rates/32full-state online+offline advances,
+8live companions/four refusal entrypoints pass; actual guard omission fails
+8rates/16advances, restored exactly. Focused production+harness/vet pass; full
+production ONLYoriginal27AC6red. No arithmetic/balance/kernel/CI change.
+DG-D/D-021 remains unselected; initial provisional runtime-next note corrected
+before any construction. Next bounded designated review of Claude GarageGS0.3
+`301728c8^..301728c8`; newspan after64f836c2 including records needs Claude.
+All owner/author/numeric/content/platform/prior-review holds remain, no acceptance
+or release promotion and no reduction of the full nine-tier objective.
+[Full requirement map](clout-v1-and-pr-interns/acceptance-reconciliation.md).
+
 **Latest receipt checkpoint (2026-10-07):** separateRP-31179285a14 at3868e3d2,
 actual red03f513ef, kernel166. Go/TS applied ordinary/refreshed/Exit receipt
 producers emit exact CV5 object; errors propagate, legacy bytes unchanged.
