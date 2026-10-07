@@ -3115,3 +3115,67 @@ chained performance and root types/client/build/boundary/topology afterwards.
 New driver SHA before additional probes:
 8af13159c9438ee23b22f024ad1ea0414d1bdc5669868e9b1ebb8020c92992f2.
 All preceding authority/review/full-nine-tier exclusions remain unchanged.
+
+## 2026-10-07 — exact rendered Fiscal edges final evidence / first filter
+
+Review by: Codex (implementer self/first filter, NOT designated).
+Recorded by: Codex. Entire new span starts after 57efdc39, includes
+2ff59fbe/f1914ace and the containing test/docs/tracking commit. Claude's
+mandatory independent verdict must cover that full span separately from
+narrow Desk 54c8c8da..57efdc39, source guard d3ce0f76..54c8c8da, performance
+127eb052..d3ce0f76 and every earlier range. No self archival/approval claim.
+
+Actual additional faults: 224f7e remaining ceil→floor fails four/two-engine
+cases (ripening text says zero instead of one second; last early auto-note
+also differs), with four controls passing. 43db27 enabled callback removed
+fails six cases because click delivery is zero, while both disabled cases
+still pass. Both terminal exit 2 are actual rendered/callback assertions;
+both seeds pass the actual Svelte parser and execute. Together with the
+preceding six faults, the eight fault populations fail 2/2/8/8/4/2/4/6
+executions respectively, with unaffected controls retained. Source restored
+exactly between probes and finally to:
+FiscalSurface 76cf10c5dece9652ea338c9768d38b8533fa89dfb708f464b7c32a20965df8f1;
+fiscal-phase e426fe70ebad1c7587fb7586b5768400ea1c27edc4003d767686f22d84e201f4;
+test driver 8af13159c9438ee23b22f024ad1ea0414d1bdc5669868e9b1ebb8020c92992f2.
+No product source fault or production diff is committed.
+
+Final healthy native b6db84 (session83281) exits 0: full current Garage
+Chromium/WebKit 262/262 passes, 78.48 s; chained isolated performance two
+passes /22 explicitly unselected. The existing real sixty-second idle
+population and all prior host assertions remain unchanged. Four new cases
+per engine directly mount actual FiscalSurface over decoded public fixtures
+and fixed server-time props; no host worker, injected fake timer, service
+clock/pacing adjustment, real intent or receipt. They verify exact visible
+text, independent expected rounding/risk, native disabled state and callback
+delivery. Not a full-Garage/real-service/Firefox/AT/release proof.
+
+8451c7 root types/client/build/boundary/topology exits 0: types zero errors/
+warnings; client 9,814 passes /455 explicit browser skips, 105 files pass /
+22 skip; unchanged 214-module worker/JS/CSS build; boundary14/8/22 and ten
+Go/eleven Svelte source negatives; static topology thirteen negatives. This
+static CI check is not the still-red full Linux/hosted CI gate. No Go/SQL
+run invented for this test-only span. Earlier type setup failures remain
+disclosed, not product defects or purported passing gates.
+
+Fresh read-only Docker preflight during final verification: 32c79f confirms
+both declared Postgres services healthy; 0235dc actual owned game-ui Postgres
+container df still overlay125.7G/122.7G used/zero available/100%, shm63M free.
+83801f global Docker accounting reports images80.06GB, volumes40.44GB and
+build cache3.185GB; its reclaimable figures do NOT authorize broad pruning.
+Three cloud-clicker-labelled old cache volumes are inspected read-only
+(2bad3f), with no attached containers (42767c). Unlabelled artifacts and all
+databases/release artifacts/other projects remain unowned for cleanup. Asked
+the human asynchronously for tightly scoped, ownership-verified cleanup;
+no approval assumed, nothing deleted and no full-disk container test begun.
+Capacity/CI/RP-331 holds are freshly verified, not copied from old prose.
+
+Canonical docs, ledger RP-336, acceptance inventory, current board, queue,
+plan and checkpoint log reconciled in this range. RP-336 is author-owned
+props/body correspondence, NOT an executed phase bug; this rendering proof
+does not clear it. All other author/body/GS4/full AC7/actual zoom/AT/default
+player/privacy/platform/numeric/review/full-nine-tier 1.0 gates remain.
+Next priority: finish read-only capacity ownership/size inventory; if the
+human authorizes exact scoped cleanup, recover capacity and re-run declared
+full cold Linux/SQL populations. Otherwise safe accepted GS2-A3 score-vs-
+Clout source binding guard remains available with predeclared faults. No
+checkbox/lifecycle/archive/mint/push/deploy or preview substitution.

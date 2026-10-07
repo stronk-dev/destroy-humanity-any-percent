@@ -38,6 +38,14 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   - Shows credit against its visible cap, the auto-sweep preview, the hoard preview (next run only),
     and a display-only phase (`fiscal-phase.ts`: ripening, early with its stated success chance, or
     guaranteed).
+    Native component-fixture tests render the exact early-minus-one/early/
+    guaranteed-minus-one/guaranteed millisecond boundaries using a fixed public
+    time prop. They check exact visible phase/risk/countdown text, curtain linkage,
+    native disabled state and click delivery. Eight real source faults discriminate
+    in Chromium/WebKit. This is not a live host clock, service receipt, pacing,
+    Firefox or full accessibility proof. The host samples a reactive numeric
+    `serverNowMs` and passes mapped `notice`; the RFC's older callback/lastOutcome
+    prop wording remains an author-owned correspondence finding (RP-336).
   - The Harvest button carries its curtain small print. There are +1 level buttons and unlock rows.
   - Unlock rows without a `features-presentation.json` row are withheld; `unlock.arcade` is
     withheld (F12).

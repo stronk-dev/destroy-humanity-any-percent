@@ -4441,3 +4441,34 @@ not synthetic live-clock evidence. Docker RP-236 repair/recheck and full Linux
 CI remain held; all author/body/GS4/persisted/full AC7/AT/default-player/
 privacy/platform/numeric/review/full-nine-tier 1.0 gates remain. Goal active/
 progress, no checkbox/lifecycle/archive/push/deploy/release/preview promotion.
+
+## 2026-10-07 — exact rendered Fiscal edge checkpoint / fresh capacity
+
+Under 2ff59fbe/f1914ace, four direct actual component fixtures with decoded
+public state and fixed time verify early-1/early/guaranteed-1/guaranteed:
+exact visible phase/risk/countdown, native readiness/curtain/click delivery.
+Eight actual source faults fail 2/2/8/8/4/2/4/6 cases in both engines; source
+hashes restore exactly. Initial version-union type mistakes disclosed and
+corrected. Full native Garage262 +isolated performance two pass; client
+9,814 passes /455 browser skips/types/unchanged build/boundaries/static
+topology pass. No product/copy/clock/balance/CI change or live time/service/
+pacing/Firefox/AT/whole acceptance. RP-336 stale prop/body interface recorded
+for author action, not a phase bug or permission to self-reconcile.
+
+Fresh read-only Docker preflight verifies actual zero available/100% overlay,
+healthy declared Postgres services, images80.06GB/volumes40.44GB. Three old
+cloud-clicker-labelled caches are unreferenced: browser modules123MB, pnpm
+store0B, go cache3.61GB. These figures alone do not prove sufficient headroom
+for a full cold run. No cleanup performed; global reclaimability is NOT
+authority to prune release/database/other-project/unlabelled artifacts.
+Human scoped permission requested asynchronously; ownership/size inventory
+can continue read-only. Full Linux/SQL capacity hold is fresh evidence.
+
+Docs/ledger/inventory/board/plan/queue/log synchronized. Complete span after
+57efdc39 through this containing commit requires Claude independently of
+Desk54c8c8da..57efdc39, source guard d3ce0f76..54c8c8da and earlier exact
+ranges. Next priority: validated scoped capacity restoration if authorized,
+then declared cold Linux/SQL verification; safe accepted GS2-A3 source guard
+otherwise remains available. All full-nine-tier 1.0/author/body/GS4/full AC7/
+AT/default-player/privacy/platform/numeric/review/release holds remain.
+Goal active/progress, not complete or blocked; no archive/push/preview claim.

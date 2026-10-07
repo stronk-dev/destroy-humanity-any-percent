@@ -298,6 +298,63 @@ for (const surface of ["achievements", "meters"] as const) {
   }
 }
 
+// GS1-A3 exact component-fixture time: no live host clock or server pacing
+// claim. Expected display outputs do not call the phase implementation.
+const fiscalEdgeFixtures = [
+  { elapsed: 99_999, phase: "ripening", disabled: true, autoRemaining: "0:03:21",
+    text: t("fiscal.period.ripening_frame", { remaining: "0:00:01" }, "era_1995") },
+  { elapsed: 100_000, phase: "early", disabled: false, autoRemaining: "0:03:20",
+    text: t("fiscal.period.early_frame", { success_percent: 50 }, "era_1995") },
+  { elapsed: 199_999, phase: "early", disabled: false, autoRemaining: "0:01:41",
+    text: t("fiscal.period.early_frame", { success_percent: 50 }, "era_1995") },
+  { elapsed: 200_000, phase: "guaranteed", disabled: false, autoRemaining: "0:01:40",
+    text: t("fiscal.period.guaranteed", {}, "era_1995") },
+] as const;
+for (const fixture of fiscalEdgeFixtures) {
+  it.skipIf(!browser)(`GS1-A3 renders exact Fiscal edge ${fixture.elapsed} as visible ${fixture.phase} with native readiness`, async () => {
+    const snapshot = parseGameUISnapshot({ ...v4, features: { ...v4.features,
+      fiscal: { ...v4.features.fiscal!, period: { ...v4.features.fiscal!.period, opened_wall_ms: NOW - fixture.elapsed } },
+    } });
+    if (snapshot.schema_version !== 4 || !("features" in snapshot)) throw new Error("Fiscal edge fixture did not decode as v4");
+    const arm = snapshot.features.fiscal!;
+    expect(arm.period).toMatchObject({ early_ms: 100_000, guaranteed_ms: 200_000, auto_ms: 300_000, early_success_ppm: 500_000 });
+    expect(snapshot.server_now_ms - arm.period.opened_wall_ms).toBe(fixture.elapsed);
+    const target = document.createElement("div"); document.body.append(target);
+    const onHarvest = vi.fn(), onSpendLevel = vi.fn(), onSpendUnlock = vi.fn();
+    const app = mount(FiscalSurface, { target, props: {
+      arm, era: "era_1995", serverNowMs: snapshot.server_now_ms, pending: false, controlsEnabled: true,
+      onHarvest, onSpendLevel, onSpendUnlock,
+    } });
+    try {
+      await settle();
+      const surface = target.querySelector<HTMLElement>(".fiscal")!;
+      expect(surface.dataset.phase).toBe(fixture.phase);
+      expect(surface.querySelectorAll(".phase")).toHaveLength(1);
+      const phase = surface.querySelector<HTMLElement>(".phase")!;
+      expect(phase.textContent).toBe(fixture.text);
+      const style = getComputedStyle(phase), rectangle = phase.getBoundingClientRect();
+      expect(style.display).not.toBe("none"); expect(style.visibility).toBe("visible");
+      expect(Number(style.opacity)).toBeGreaterThan(0);
+      expect(rectangle.width).toBeGreaterThan(0); expect(rectangle.height).toBeGreaterThan(0);
+      expect(phase.closest('[role="status"], [role="alert"], [aria-live]')).toBeNull();
+      expect(phase.getAttribute("aria-hidden")).not.toBe("true");
+      const region = surface.querySelector('[data-fiscal-region="harvest"]')!;
+      const paragraphs = [...region.querySelectorAll("p")].map((node) => node.textContent);
+      expect(paragraphs).toEqual([fixture.text, t("fiscal.period.auto_note", { remaining: fixture.autoRemaining }, "era_1995")]);
+      const harvest = surface.querySelector<HTMLButtonElement>('[data-fiscal-action="harvest"]')!;
+      expect(harvest.textContent).toBe(t("fiscal.harvest", {}, "era_1995"));
+      expect(harvest.disabled).toBe(fixture.disabled);
+      expect(harvest.getAttribute("aria-disabled")).toBeNull();
+      expect(harvest.getAttribute("aria-describedby")).toBe("fiscal-harvest-curtain");
+      expect(surface.querySelector("#fiscal-harvest-curtain")!.textContent).toBe(t("fiscal.harvest_tooltip", {}, "era_1995"));
+      expect(onHarvest).not.toHaveBeenCalled();
+      harvest.click(); await settle();
+      expect(onHarvest).toHaveBeenCalledTimes(fixture.disabled ? 0 : 1);
+      expect(onSpendLevel).not.toHaveBeenCalled(); expect(onSpendUnlock).not.toHaveBeenCalled();
+    } finally { await unmount(app); target.remove(); }
+  });
+}
+
 it.skipIf(!browser)("derives Fiscal phases at the window edges and sends Founder-scoped intents (GS1-A2/A3/A4)", async () => {
   const { target, app, runtime, dispose } = await mounted();
   try {

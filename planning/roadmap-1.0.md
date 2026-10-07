@@ -5,7 +5,24 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** test-only GS6-A3 paired current-source
+**Latest bounded work (2026-10-07):** GS1-A3 exact rendered Fiscal fixture
+edges, test-only under 2ff59fbe/f1914ace. Four decoded component cases check
+visible exact phase/risk/countdown/native readiness/curtain/callbacks; eight
+real faults fail/restored exactly. Final full native Garage262 /isolated
+performance two passes, client9,814 passes /455 explicit browser skips,
+types/unchanged build/boundaries/static topology pass. No product/clock/copy/
+CI change or live time/service/pacing/Firefox/AT/whole acceptance claim.
+RP-336 stale prop/body contract recorded for author action. Full span after
+57efdc39 through records needs Claude separately from narrow Desk
+54c8c8da..57efdc39, source guard d3ce0f76..54c8c8da and all earlier ranges.
+Fresh Docker zero free/100% confirmed; ownership inspection only, no deletion.
+Scoped cleanup permission requested, not assumed. Restore measured capacity
+if authorized, then re-run declared full cold Linux/SQL populations; safe
+accepted GS2-A3 source guard remains available otherwise. All author/body/
+GS4/full AC7/AT/default-player/privacy/platform/numeric/review/full-nine-tier
+1.0 holds remain; no archival/push/mint/release/preview substitution.
+
+**Preceding bounded work (2026-10-07):** test-only GS6-A3 paired current-source
 whole-Desk measurement at 320 CSS px. Native Chromium/WebKit agree on
 document/main 320/320, Desk/chrome 284/284, extents 0–320, 90→93 nodes;
 exact visible population/focus/no-intents/own-scroll/no-masking checks.

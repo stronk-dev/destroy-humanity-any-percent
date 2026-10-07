@@ -3,6 +3,31 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage exact rendered Fiscal edges checkpoint — 2026-10-07
+
+GS1-A3 test-only component fixtures, predeclared 2ff59fbe/f1914ace. Decoder-
+admitted fixed public time, early-1/early/guaranteed-1/guaranteed; exact
+visible phase/risk/countdown text, native disabled/callback state and curtain.
+Eight independent real source faults fail, restore exactly. Full native
+Garage Chromium/WebKit262 and isolated performance two passes; client9,814
+passes /455 browser skips/types/unchanged build/boundaries/static topology
+pass. No product/clock/copy/balance/CI change or live time/service/pacing/
+Firefox/AT/whole acceptance claim. RP-336 props/body discrepancy remains
+author-owned. **READY FOR CLAUDE:** entire57efdc39-exclusive span through
+final records; Desk54c8c8da..57efdc39/source guard d3ce0f76..54c8c8da/
+all previous exact ranges remain independently owed.
+
+**NEXT:** complete read-only Docker artifact ownership/size inventory. Fresh
+actual owned Postgres-container df remains zero free/100%; no run/deletion.
+Unused cloud-clicker-labelled old cache volumes identified, all databases/
+release artifacts/other projects preserved. Await human scoped cleanup
+permission; reclaimable global figures are not authority. If authorized,
+perform only validated exact scoped cleanup, measure sufficient capacity
+then run declared full cold Linux/SQL gates. Otherwise predeclare accepted
+GS2-A3 score-vs-Clout source binding guard and demonstrate its failures.
+Full Linux RED/held/RP-331/author/body/GS4/full AC7/AT/default-player/privacy/
+platform/numeric/review/full-nine-tier 1.0 gates stay open. No promotion.
+
 ## Garage paired narrow Desk checkpoint — 2026-10-07
 
 GS6-A3 test-only paired current-source public fixtures, predeclared 757f1ca2.
@@ -15,7 +40,7 @@ reporting-only exit disclosed. Full native Garage 254 and isolated performance
 two passes; client 9,814 passes /451 browser skips, types/build/boundaries/
 static topology pass. No product/CI change, historical executable, old 647 px
 accessibility closure/actual zoom/AT/Firefox/real service/release claim.
-**READY FOR CLAUDE:** full 54c8c8da-exclusive span through final records,
+**READY FOR CLAUDE:** exact 54c8c8da..57efdc39,
 independently of source guard d3ce0f76..54c8c8da and all earlier exact spans.
 
 **READY next:** predeclare exact rendered Fiscal phase-edge fixture population

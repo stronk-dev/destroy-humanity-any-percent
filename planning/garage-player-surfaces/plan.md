@@ -7,7 +7,26 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: test-only GS6-A3 paired whole-Desk 320 px measurement,
+Latest bounded work: test-only GS1-A3 exact rendered Fiscal edge fixtures,
+predeclared 2ff59fbe/f1914ace. Four decoded public component fixtures at
+early-1/early/guaranteed-1/guaranteed; actual visible exact copy/risk/countdown,
+native readiness/curtain/callbacks checked. Eight source faults discriminate,
+restored exactly; setup type narrowing mistakes disclosed. Final full native
+Garage Chromium/WebKit262 passes, isolated performance two passes, client
+9,814 passes /455 browser skips, types/unchanged build/boundary/topology pass.
+No product/clock/copy/balance/CI change or live service/pacing/Firefox/AT claim.
+New RP-336 props/body finding remains author-owned. Complete new range after
+57efdc39 through final records needs Claude separately from Desk
+54c8c8da..57efdc39, source guard d3ce0f76..54c8c8da and every earlier span.
+Fresh read-only Docker still 0 free/100%; no deletion/container rerun. Cache
+ownership inspection ongoing, scoped cleanup authority requested but not
+assumed. If authorized, recover measured capacity then re-run declared cold
+Linux/SQL gates; otherwise accepted GS2-A3 score-vs-Clout source guard is
+available for predeclared work. RP-331/author/body/GS4/full AC7/AT/default-
+player/privacy/platform/numeric/review/full-nine-tier 1.0 holds stay open.
+No checkbox/lifecycle/archive/mint/push/release/preview promotion.
+
+Preceding bounded work: test-only GS6-A3 paired whole-Desk 320 px measurement,
 predeclared 757f1ca2. Exact absent/present provision/cap/owned census,
 visible unchanged regions, focus/no-intents and whole-page/descendant/own-
 scroll/no-masking measurements; six real faults fail both engines and restore

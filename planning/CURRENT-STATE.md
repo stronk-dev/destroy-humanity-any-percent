@@ -4,7 +4,23 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage work:** test-only GS6-A3 paired current-source Desk measurement
+**Latest Garage work:** GS1-A3 exact rendered Fiscal fixture edges. Four public
+decoded component cases cover early-1/early/guaranteed-1/guaranteed with exact
+visible text/risk/countdown/native readiness/curtain/callbacks; eight actual
+source faults fail and restore exactly. Final full native Garage262 and
+isolated performance two passes; client9,814 passes /455 browser skips,
+types/unchanged build/boundaries/static topology pass. No product/copy/clock/
+CI change or live-time/service/pacing/Firefox/AT claim. RP-336 stale props/
+body wording recorded for author action. Entire span after 57efdc39 through
+final records needs Claude independently of Desk54c8c8da..57efdc39, source
+guard d3ce0f76..54c8c8da and all earlier spans. Fresh Docker df still zero
+available/100%; unused repo cache metadata inspected, no deletion. Await
+human scoped cleanup authority, not broad pruning; capacity repair/recheck
+then declared cold Linux/SQL tests remain priorities. Safe GS2-A3 source
+binding work remains available. Full-nine-tier 1.0/author/body/GS4/full AC7/
+default-player/privacy/platform/numeric/AT/review gates remain, no promotion.
+
+**Preceding Garage work:** test-only GS6-A3 paired current-source Desk measurement
 at 320 CSS px. Both native engines measure document/main 320/320, Desk/chrome
 284/284, extents 0–320, nodes 90→93 as the three GS6 text additions become
 visible. Six real faults fail/restored exactly; no historical-before-build/
