@@ -3342,3 +3342,26 @@ correction here. Commit the red discriminating population and record before
 a separately scoped implementation. No acceptance box or broad keyboard
 proof; GS2-A5/full Linux/real AT/review remains unfinished. Cross-party must
 cover the failed-test checkpoint as well as subsequent repair. No archive.
+
+## 2026-10-07 — RP-338 accepted native nav correction predeclaration
+
+Separate from test-only6c578197..ffabda04: accepted GS0.4 keyboard rule
+and GS2 keyboard map/GS2-A5 authorize making existing nav buttons native Tab
+stops in the supported engine population. No new navigation/filter/mechanics
+or browser preference waiver. Narrow correction: explicit tabindex0 on the
+existing GameUIApp nav buttons in unchanged DOM order, matching existing
+Fiscal buttons. Keep negative tabindex heading and every original/new test
+assertion unchanged. No script key interception, forced focus per Tab,
+native-browser configuration or test-provider changes allowed.
+
+First rerun the exact red population; WebKit must traverse normally with no
+synthetic helper, Chromium controls remain green. Then independently revert
+just the nav attributes to prove actual loss of traversal fails the same
+gate. Also execute the nine prior predeclared Trophy Case visibility/text/
+empty/error/width/unlabelled-nav faults. Every temporary product fault is
+restored exactly; only scoped native attributes are permanent. Final full
+Garage Chromium/WebKit/types/client/build/copy/source/static CI gates.
+No renderer/clock/copy/protocol/balance/kernel/CI/Make/RFC-body scope added.
+Docs and records in repair range; full new span after85fdcfdf needs Claude
+with explicit test-only and product-repair boundaries. Full three-engine/
+all-state/AT/persisted-player/1.0/archival approval remains unproved.
