@@ -4351,3 +4351,86 @@ topology/no-payment. Docs/ledger/inventory/plan/board/queue/checkpoints reconcil
 in repair commit; do not claim real-service/auth/SQL/AT/Firefox/full1.0.
 0e548992-exclusive fullspan including both predeclarations/red requires Claude;
 preceding ranges independent. No checkbox/lifecycle/archive/push/cleanup/release.
+
+## 2026-10-07 — Continuation positive focus-control refinement
+
+Healthy4fe3a6 terminal0:48 selected pass/474 unselected, chained performance
+two/22 unselected. Before faults, add eight surviving-new-choice controls:
+while read held, native Settings activation retains its persistent nav focus;
+existing continuation still selects Desk on success, but must not steal that
+surviving focus. This observes/preserves existing navigation policy, not a new
+read cancellation rule. Total56 native executions. A separate compiling fault
+that bypasses the surviving-focus check must fail these controls. Other six
+predeclared faults and exact restoration/final gates unchanged.
+
+## 2026-10-07 — Native continuation locally repaired, designated review owed
+
+Review by: Codex (implementer first filter, NOT designated review).
+Recorded by: Codex. Inspected committed input0e548992..160eeb0d plus current
+product/control-refinement/record diff. Designated target is entire0e548992-
+exclusive through this containing commit INCLUDING19cc5609, red94c88b72,
+separate repair scope160eeb0d and control refinement. Prior fbea2158..0e548992
+and every earlier exact span remain independently owed. No archival consumed.
+
+Only permanent product path is host continueRun: terminal Founder captured
+before await, another-Founder response refused before binding/subscription,
+existing exact-next sequence preserved. Successful removal hands native focus
+to existing Desk heading after render only if old focused origin disappeared
+and no surviving newer focus exists. Render-selection guard retained. Existing
+Desk-on-success policy after held-read navigation preserved. Failure still keeps
+the terminal/payout and existing disclosure; no auth/credentials/Retry/control
+field/Company stream/category/copy/timing/intents/value schema change. Companion
+RP-082 context repair; new RP-345 coordinate failure locally corrected.
+
+Corrected typed red331b7f terminal2:16 failures/32 controls,474 unselected.
+Initial TS2344 annotation error and initial native result disclosed at red
+checkpoint, no product/error credit. Healthy4fe3a6:48 pass; refined14d1a2:
+56 pass, each chained performance two/22 unselected. Seven actual compiling
+faults below, all native terminal2 with474 unselected and exact restoration:
+
+| Fault | Terminal output | Fail/pass selected | Discriminated outcome |
+|---|---|---|---|
+| Omit Founder guard |ace545|8/48|Foreign read wrongly binds Desk |
+| Omit sequence guard |0b4825|16/40|Same/skipped sequence wrongly binds Desk |
+| Omit continuation focus |ffae9f|8/48|Removed trigger leaves BODY |
+| Omit Desk negative tabindex |d77c86|8/48|Existing heading cannot receive focus |
+| Omit native pending disable |f371af|56/0|Held continuation remains enabled |
+| Drop terminal on refused read |33be45|32/24|Failure incorrectly selects Desk |
+| Bypass surviving-origin/focus protection |1265ce|8/48|Completion steals Settings focus |
+
+Pending-control seed tests disabled native control, not isolated async entry-
+guard necessity; revised narrower seed, no claim of programmatic duplicate
+guard discrimination. Broader focus seed tests surviving-focus outcome, not
+isolated generation predicate. First terminal-drop patch refused because its
+context stopped mid-signature; no edit/evidence credit, corrected exact context
+then actual33be45 failure. All final restored semantic tests unchanged.
+
+Final9820c3→5b1af4 terminal0: combined Garage/Game UI574 pass/four explicitly
+isolated performance skips, four modules,105.29s; unchanged real60s idle.
+Chained isolated performance two/22 unselected pass. Initial polling chunk
+truncated passive module-HTTP logging; final named totals/terminal retained.
+660878→4d6c38 terminal0: types zero errors/warnings; client9,814 pass/589
+explicit browser skips,105 files pass/22 skip.214-module build UI JS
+index-CF5OqXch.js changed; worker-MqspU_iu.js and index-DaRqgLww.css unchanged.
+Achievement seven component/four copy negatives; shell/UI plus ten Go/eleven
+Svelte cosmetic negatives; static CI topology thirteen negatives all pass.
+91b08b→eb68a8 copy terminal0:658 keys, unchanged SHA256
+a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings, deployment content manifest pass.f54f27 no-payment
+terminal0: six negative refusals/two near-misses. No source/HEAD/record mutation
+during live final checks/history scan. Restored f5f85f SHA256:
+host3c53eb3ca6a15c3e73c81344babb502a81fb42f7e1643e9dc73a80b3e91f9484;
+drivercf7ace21a28ccb5228f7f52a6d344e56e9c05ddc396d047117eb6bc111d056af.
+
+56 executions = seven arms ×320/1280 ×Enter/Space ×two native engines. Synthetic
+held runtime read; production snapshot and public terminal decoders; programmatic
+initial focus with native activation, not end-to-end keyboard traversal/physical
+AT, actual HTTP/auth/SQL issuance or full acceptance. Newly emitted terminal is
+scripted_first only. Old standard-terminal click test remains useful regression,
+not native context proof. Next accepted work: separately predeclare that missing
+standard-terminal continuation/refusal/recovery population; no invented blocker
+or new policy. Docs/ledger/inventory/plan/board/queue/checkpoints synchronized,
+no boxes/RFC body/status/lifecycle moved. Cleanup/startup questions unanswered;
+no deletion/full-disk Linux/SQL/Retry. Capacity/real composed/Firefox/AT/body/
+privacy/platform/numeric/whole-nine-tier1.0 and all designated reviews still live.
+No archive/mint/push/deploy/release/shortened-preview substitution. Goal active.

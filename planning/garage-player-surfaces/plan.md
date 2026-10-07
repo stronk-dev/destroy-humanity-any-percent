@@ -7,7 +7,22 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-082 forced Offer/Run-End context focus. Predeclare
+Latest bounded work: RP-345 / RP-082 exact-next native continuation repair.
+Test scope19cc5609 → red94c88b72 → separate accepted scope160eeb0d. Refuse
+wrong Founder before binding, retain exact-next/failure behavior; removed focused
+continuation exposes Desk heading without taking surviving newer focus. Same56
+native cases pass; seven real faults discriminate/restored. Combined Garage/
+Game UI574 passes/four isolated-performance skips, separate performance two;
+client9,814/589 explicit skips, types/build/copy/boundaries/static topology/
+no-payment pass. Entire0e548992-exclusive through containing repair/records
+requires Claude; all preceding spans independent. Next accepted work: predeclare
+standard-terminal native continuation/refusal/recovery population. New decoded
+helper currently emits scripted_first only; old standard click-only test is
+not native focus proof. Real composed/HTTP/auth/SQL/Firefox/AT/full shared-state/
+full1.0 remain open. No new startup Retry/copy/credential/navigation-cancellation
+policy, cleanup/ruling/boxes/lifecycle/archive/push/release inferred.
+
+Preceding bounded work: RP-082 forced Offer/Run-End context focus. Predeclare
 3451fdb0 → actual 52-failure/8-control red checkpoint 73a5ccce → separate
 accepted product scope ac6a5788. Existing headings now focus after render;
 newer choices cancel pending focus, cursor ordering/replay preserved. Same

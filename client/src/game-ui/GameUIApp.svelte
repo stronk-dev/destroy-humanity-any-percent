@@ -232,16 +232,26 @@
 
   async function continueRun(): Promise<void> {
     if (!ended || pending) return;
+    const expectedFounderID = ended.payload.founder_id;
     const expectedRunSeq = ended.payload.run_id.run_seq + 1;
+    const focusedOrigin = document.activeElement;
     actionPending = true;
     try {
       const value = await runtime.snapshot();
+      if (value.run.founder_id !== expectedFounderID) throw new RangeError("next Company snapshot belongs to another Founder");
       if (value.run.run_seq !== expectedRunSeq) throw new RangeError("next Company snapshot did not advance exactly one run");
       bindSnapshot(value);
       ended = undefined;
       offer = undefined;
       exitPlan = [];
       show("desk");
+      const continuationSelection = selectionGeneration;
+      await afterDOMUpdate();
+      if (selectionGeneration === continuationSelection && surface === "desk"
+        && focusedOrigin instanceof HTMLElement && !focusedOrigin.isConnected
+        && (document.activeElement === focusedOrigin || document.activeElement === document.body)) {
+        root?.querySelector<HTMLElement>("#desk-heading")?.focus();
+      }
     } catch { offline = true; }
     finally { actionPending = false; }
   }

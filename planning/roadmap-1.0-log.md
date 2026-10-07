@@ -4657,3 +4657,25 @@ capacity/Firefox/manual AT/body/privacy/platform/numeric/full-nine-tier1.0 and
 independent review stay open. Cleanup/startup draft unanswered, no deletion/
 Retry/boxes/lifecycle/archive/push/release/shortened-preview promotion.
 Goal active/progress.
+
+## 2026-10-07 — Exact-next native continuation repaired, not 1.0 closure
+
+Test-only19cc5609 → red94c88b72 → separate accepted repair160eeb0d.
+RP-345 another-Founder read now refuses before binding; existing exact-next
+sequence/failure behavior preserved. Companion RP-082 removed native trigger
+hands focus to Desk without taking surviving newer focus; existing held-read
+Desk completion policy preserved.56 native Chromium/WebKit width/Enter/Space
+executions pass, seven actual faults fail8/16/8/8/56/32/8 with exact restoration.
+Full combined Garage/Game UI574/four isolated-performance skips; separate
+performance two; client9,814/589 explicit skips/types/build/copy/boundaries/
+static topology/no-payment pass. Product UI bundle changes; worker/CSS/copy
+unchanged. Entire0e548992-exclusive through containing repair/records needs
+Claude including both scopes/red/control refinement. Prior spans independent.
+
+New terminal fixture is scripted only; next accepted work is a separately
+predeclared standard-terminal native continuation/refusal/recovery population,
+not acceptance based on the old standard click test. Real composed/HTTP/auth/
+SQL/Firefox/manual AT/shared-state/capacity/body/privacy/platform/numeric/
+full nine-tier1.0/independent review/owner release remain open. Unanswered cleanup
+and startup-posture questions do not permit deletion/Retry/copy changes.
+No boxes/lifecycle/archival/push/deploy/release/preview substitution. Goal active.

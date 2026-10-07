@@ -92,6 +92,34 @@ two and client/types/build/copy/boundaries/topology pass. Local first filter,
 not lifecycle/all-context/first-read rejection/retry/Firefox/AT/live SQL proof.
 Separate entire82614848-exclusive range requires Claude.
 
+## RP-345 / RP-082 bounded native continuation
+
+19cc5609 test-only scope → red94c88b72 (16 failures/32 controls) → separate
+accepted repair160eeb0d. Eight other-Founder cases wrongly bound Desk; eight
+healthy continuation-focus cases left BODY. Existing same/skipped sequence and
+rejected reads refused. Initial spy annotation error disclosed; typed red repeat
+unchanged. Host now checks terminal Founder+exact-next sequence before binding
+and hands off removed native origin to Desk heading after rendering without
+displacing a surviving newer focus. Navigation during held read remains existing
+Desk-on-completion policy; no new cancellation/auth/credential/category rule.
+
+56 native executions: seven arms ×320/1280 ×Enter/Space ×Chromium/WebKit.
+Actual public envelope/event and snapshot parsers admit fixtures; held runtime
+double read, no intents, duplicate native activation stays disabled, stable
+terminal on refusal, unchanged Founder subscription, exact heading focus,
+surviving Settings focus, reflow and axe. Seven compiling faults fail8/16/8/8/
+56/32/8 cases respectively; source restored. Pending-control fault proves native
+disable, not isolated entry-guard necessity. Broader focus fault does not prove
+isolated scheduling-generation guard necessity.
+
+Combined Garage/Game UI574 passes/four isolated-performance skips; separate
+performance two. Types/client9,814/589 explicit skips/build/copy/boundaries/
+static topology/no-payment pass. Entire0e548992-exclusive through containing
+repair/record commit requires Claude, including both scopes/red/control
+refinement. All earlier spans independently owed. Only scripted terminal here;
+old standard-terminal click test is not native/focus proof. Real composed/HTTP/
+auth/SQL/Firefox/manual AT/full1.0 remain open; no lifecycle promotion.
+
 ## RP-082 bounded forced lifecycle context focus
 
 Accepted GS0.4/0.6 own floor, not acceptance of the broader Accessibility draft.

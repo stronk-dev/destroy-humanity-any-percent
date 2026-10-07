@@ -5,7 +5,21 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-082 forced Offer/Run-End focus repair.
+**Latest bounded work (2026-10-07):** native continuation truth/repair.
+19cc5609 test scope → red94c88b72 → separate accepted repair160eeb0d.
+RP-345 wrong-Founder exact-next snapshot now refuses before binding. RP-082
+removed continuation hands off focus to Desk without stealing newer surviving
+focus. Fifty-six native cases pass; seven actual faults discriminate/restored.
+Combined Garage/Game UI574 passes/four isolated-performance skips, separate
+performance two; client9,814/589 explicit skips/types/build/copy/boundaries/
+static topology/no-payment pass. Full0e548992-exclusive repair/record span needs
+Claude independently of all prior spans. Next accepted work: predeclare native
+standard-terminal continuation/refusal/recovery proof (new helper is scripted
+only). Real HTTP/auth/SQL/composed/Firefox/manual AT/full shared-state/1.0 and
+capacity/owner/body/privacy/platform/numeric/review holds remain. No cleanup/
+startup-ruling/Retry/deletion/archive/push/preview substitution.
+
+**Preceding bounded work (2026-10-07):** RP-082 forced Offer/Run-End focus repair.
 3451fdb0 → red checkpoint 73a5ccce → separate accepted scope ac6a5788.
 Sixty native cases pass; eight actual faults discriminate and restore.
 Combined Garage/Game UI 518 passes / 4 isolated-performance skips, separate

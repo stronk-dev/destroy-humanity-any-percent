@@ -1353,7 +1353,7 @@ for (const width of [320, 1280] as const) {
 
 // Accepted exact-next continuation, separate from transport/authentication proof.
 // Runtime double reads hold the actual native activation's completion boundary.
-for (const arm of ["healthy", "same-sequence", "skipped-sequence", "other-founder", "rejected-read", "heading-focus"] as const) {
+for (const arm of ["healthy", "same-sequence", "skipped-sequence", "other-founder", "rejected-read", "heading-focus", "surviving-focus"] as const) {
   for (const width of [320, 1280] as const) {
     for (const activation of ["{Enter}", " "] as const) {
       it.skipIf(!browser)(`GS0 next-company ${arm}/${width}/${activation === " " ? "Space" : "Enter"}`, async () => {
@@ -1386,8 +1386,13 @@ for (const arm of ["healthy", "same-sequence", "skipped-sequence", "other-founde
           expect(target.querySelector("main")?.dataset.surface).toBe("run_end");
           await userEvent.keyboard(activation); await settle();
           expect(read).toHaveBeenCalledExactlyOnceWith();
+          const settings = button(target, t("surface.settings.title", {}, "era_1995"));
+          if (arm === "surviving-focus") {
+            settings.focus(); await userEvent.keyboard(activation); await settle();
+            expect(target.querySelector("main")?.dataset.surface).toBe("settings"); expect(document.activeElement).toBe(settings);
+          }
           releaseRead(); await settle();
-          if (arm === "healthy" || arm === "heading-focus") {
+          if (arm === "healthy" || arm === "heading-focus" || arm === "surviving-focus") {
             expect(target.querySelector("main")?.dataset.surface).toBe("desk");
             expect(continuation.isConnected).toBe(false); expect(terminal.isConnected).toBe(false);
             const heading = sharedStateVisibleText(target, "h1", t("surface.desk.title", {}, "era_1995"));
@@ -1395,6 +1400,7 @@ for (const arm of ["healthy", "same-sequence", "skipped-sequence", "other-founde
               expect({ tag: document.activeElement?.tagName, id: document.activeElement?.id }, "removed continuation exposes new context").toEqual({ tag: "H1", id: "desk-heading" });
               expect(document.activeElement).toBe(heading); expect(heading.getAttribute("tabindex")).toBe("-1");
             }
+            if (arm === "surviving-focus") expect(document.activeElement, "completion preserves surviving newer focus").toBe(settings);
           } else {
             expect(target.querySelector("main")?.dataset.surface, "foreign or non-next reads must not bind").toBe("run_end");
             expect(terminal.isConnected).toBe(true); expect(terminal.textContent).toBe(terminalText);

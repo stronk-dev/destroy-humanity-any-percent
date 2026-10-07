@@ -3,6 +3,24 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage native continuation checkpoint — 2026-10-07
+
+Test-only19cc5609 → red94c88b72 → separate accepted repair160eeb0d.
+RP-345: reject another Founder before binding exact-next snapshot; RP-082:
+removed native continuation origin focuses Desk, surviving newer choice retains
+focus.56 selected native cases pass, seven real faults discriminate/restored.
+Combined Garage/Game UI574/four isolated-performance skips; isolated performance
+two; client9,814/589 skips/types/build/copy/boundaries/static topology/no-payment
+pass. Not hosted/global CI/SQL/Firefox/AT proof.
+**READY FOR CLAUDE:** entire0e548992-exclusive through containing repair/record
+commit including both scopes/red/control refinement; fbea2158..0e548992 and
+all preceding spans independently owed. **NEXT accepted work:** predeclare
+standard-terminal native continuation/refusal/recovery supplement. New public
+helper is scripted only, old standard test clicks/asserts destination without
+native focus. Startup/cleanup unanswered, capacity still unrepaired. Real
+composed/auth/SQL/full shared states/platform/numeric/full nine-tier1.0/review/
+owner release holds remain. No Retry/deletion/archival/push/preview promotion.
+
 ## Garage forced lifecycle context-focus checkpoint — 2026-10-07
 
 RP-082: test scope 3451fdb0 → red 73a5ccce (52 failures / 8 controls) → separate

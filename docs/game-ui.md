@@ -451,6 +451,20 @@ stays selected. Only **Start the Next Company** clears the terminal state, after
 a fresh exact-successor snapshot check. A concurrently generated offer delivered
 after `run_ended` also cannot replace the terminal screen.
 
+The successor check matches both the terminal Founder and exactly `run_seq+1`
+before binding any values or changing subscriptions (RP-345). A mismatched or
+failed read retains the terminal payload and re-enables continuation using the
+existing failure disclosure; it does not bootstrap, renew or change accounts.
+After success removes the focused continuation control, the host focuses the
+existing Desk heading after rendering (RP-082). A surviving newer focus target
+is not displaced; a newer selection during render scheduling cancels the handoff.
+Existing completion navigation remains Desk even if another tab was chosen
+during the read. Fifty-six native Chromium/WebKit executions cover the scripted
+terminal at320/1280, Enter/Space, same/skipped sequence, another Founder, rejected
+read, removed-origin and surviving-focus controls. Public decoder fixtures and
+held runtime-double reads are not real HTTP/auth/SQL, standard-terminal native,
+Firefox, manual AT or full composed acceptance.
+
 If an HTTP sample has already advanced beyond `run_started`, the runtime still
 delivers its immutable summary only for the sampled Founder, exact run sequence
 and start time, on the Company scope. Old/future-run or other-Founder duplicates
