@@ -196,6 +196,6 @@ func TestAxisActivationReplayResearch(t *testing.T) {
 	if len(report.Rows) != 6 {
 		t.Fatal("activation population truncated")
 	}
-	sourceResearchArtifact(t, "../../testdata/axis-stack/activation-research-v1.json", "UPDATE_ACTIVATION_RESEARCH", report)
+	sourceResearchRegressionArtifact(t, "../../testdata/axis-stack/activation-research-v1.json", "UPDATE_ACTIVATION_RESEARCH", &report, &report.Sources)
 	t.Log("six complete actual old/manual→activation→new/manual/purchase sequences; not natural progression or AC6")
 }

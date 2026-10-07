@@ -2108,3 +2108,36 @@ Claude must inspect ENTIRE newspan after64f836c2 INCLUDING this coordinate
 edge; prior receipt/migration/persistence and other ranges remain separate.
 Next GarageGS0.3 pending exact-range review, not unruled harness construction.
 No checkbox/status/archive/mint/push/deploy or release/goal completion claim.
+
+## 2026-10-07 — meaningful research regressions, not historical checkout equality
+
+Outcome (RP-382, existing CV3/CV4/AC7 and RFC-0000 verification procedure): execute the current
+activation, SQL and action/buff/mode observers against their exact retained outputs without
+requiring every historical source byte to remain unchanged. Preserve recorded provenance;
+no observation regenerated, no production formula/save/kernel/workflow/Make change.
+
+Regression: native activation23807 fails on source/results drift; declared Postgres SQL73203
+fails likewise. Existing comparator cannot distinguish those from changed outcomes. New narrow
+comparator validates the same source-path population/canonical digests, reports changed sources,
+and compares every remaining report byte exactly. Explicit writers retain actual current hashes.
+Ten controls exercise unchanged/source-only, wrong receipt including simultaneous source change,
+truncation, false acceptance, version and source/digest defects; three corrupt artifacts refuse.
+Current report sources restore on every comparison. Test-only helper; no historical-proof claim.
+
+Coverage: native12127 passes activation/comparator. Actual Postgres82087 passes the repaired SQL
+and activation, but reveals the same source-only coupling in the action observer; that caller is
+included in the coherent repair, not ignored. Final declared real-DB70077 executes all ten Axis
+research tests plus comparator, PASS1.948s: SQL1215/16, six activation sequences, action16/136
+commands/48 refusals, all other retained observers unchanged. TS56249 passes772 cases/four
+files; vet88678 passes. Cold full real-DB production47199 takes83.795s and fails ONLY the original
+27 AC6 partition cases. This is linux/arm64/Postgres16.15, not amd64/hosted CI. Two initial native
+selector mistakes execute no intended population (Make's dollar handling/unquoted regex pipe);
+corrected quoted selector executes the named tests. No green credit from those attempts.
+
+Handoff: Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after
+`cd0c8581` through this repair's commit needs designated review; older spans remain separate.
+Full diff inspected; historical artifacts and production bytes unchanged. Records/docs identify
+local correction without hiding current hosted red, RP-307/RP-131, numerical-policy/owner/author
+holds or missing late-game/release proof. All process handles terminal before records/commit.
+Next: remaining accepted integration/review work; numerical repair still needs its compatible
+accepted representation/episode contract. No acceptance checkbox, mint, archive, push or release.

@@ -280,6 +280,6 @@ func TestAxisActionBuffModeReplayResearch(t *testing.T) {
 		}
 		report.CommandAttempts += len(row.Actions)
 	}
-	sourceResearchArtifact(t, "../../testdata/axis-stack/sequence-research-v1.json", "UPDATE_SEQUENCE_RESEARCH", report)
+	sourceResearchRegressionArtifact(t, "../../testdata/axis-stack/sequence-research-v1.json", "UPDATE_SEQUENCE_RESEARCH", &report, &report.Sources)
 	t.Logf("16 actual sequences/eight core commands plus clock preludes/%d command attempts/48 unchanged-state claim refusals; not SQL/natural progression/AC6", report.CommandAttempts)
 }

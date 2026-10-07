@@ -97,6 +97,22 @@ make verify-push
 broader developer aggregate, `make verify`, retains the exhaustive server harness but does not
 stand in for the composed browser job and must not be cited as push-workflow parity.
 
+### Research provenance versus regression results
+
+The Clout activation, action/buff/mode and Postgres anchor observers execute current code and
+compare their complete results to the retained observations. Receipts, events, encoded states,
+population counts, SQL outcomes, versions and acceptance labels remain byte-exact. The recorded
+`source_sha256` values describe the historical measurement: a source-only edit is reported in
+verbose test output, not treated as a changed gameplay result. Source-path populations and
+digest encoding still validate. This does not verify the historical checkout at current HEAD.
+
+Ordinary regression runs never rewrite these artifacts. Their explicit measurement switches
+still write actual current source identities when deliberately requested. A changed result must
+be investigated rather than restamped to get green. The independent Clout partition-invariance
+property remains a release/CI failure until the underlying arithmetic contract is satisfied.
+
+### Focused commands
+
 The narrower commands are useful while iterating:
 
 ```sh

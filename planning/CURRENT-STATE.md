@@ -43,10 +43,15 @@ queue and current verification, not a claim to have rerun every acceptance crite
 - RP-381's two hosted WebKit constructor assertions are locally corrected, preserving the
   native parser failure and request/credential checks. Node 27 and Chromium/WebKit 54 pass;
   types pass. Production handling and CI configuration are unchanged.
+- RP-382's activation/SQL/action-sequence regression checks now distinguish historical source
+  provenance from changed outcomes. All retained observation bytes outside source digests
+  still compare exactly; artifacts remain unchanged. Actual Postgres research tests and TS772
+  pass. Full real-DB production remains red only on the original 27 Clout partition cases.
 - Latest inspected [hosted CI run 37641907701](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37641907701)
   at `0f9f4214` is **RED**: schema, harness and composed pass; server, client and browser fail.
-  Browser's two failures have the local correction above. Server Clout research/partition
-  failures and client's historical kernel guard at `50a3a514` remain unresolved. There is no
+  Browser's two failures and server research-provenance failures have the local corrections
+  above. Clout partition failures and client's historical kernel guard at `50a3a514` remain
+  unresolved. There is no
   hosted result for these local repairs; nothing is pushed by this closeout.
 - Recent implementation/correction spans still need exact-range cross-party review. Older
   approvals do not cover later code, and a self-review is not the designated gate.

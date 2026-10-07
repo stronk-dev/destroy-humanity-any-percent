@@ -6,6 +6,13 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+Current checkpoint (2026-10-07): RP-382's activation/SQL/action-sequence regression checks now
+separate historical provenance from current outcomes. Full non-provenance bytes remain exact;
+recorded artifacts are unchanged. Real-DB research population, TS companions and vet pass;
+full real-DB production still fails the original27 RP-307 partition cases. Designated review
+remains. Numeric representation/episode, author contracts, D-021/D-022 and mint gates are not
+resolved by this test-only correction; see the latest log for executed commands and range.
+
 Under A, CV6 (the Clout ledger) and CV7 (the social seam) are **not** implemented: the RFC's CV0
 table marks the ledger "no" for A, and the acceptance rejects B/C. The Gaia-law test (AC4) still
 lands, with the allowed writer set empty.

@@ -126,7 +126,7 @@ func anchorSQLResearchArtifact(t *testing.T, report anchorSQLReport) {
 	// Explicitly compare at the recorded environment identity, not as a claim
 	// that this replay executed there. The test log retains actual environment.
 	report.ServerVersion, report.Runtime = recorded.ServerVersion, recorded.Runtime
-	sourceResearchArtifact(t, anchorSQLResearchPath, "UPDATE_ANCHOR_SQL_RESEARCH", report)
+	sourceResearchRegressionArtifact(t, anchorSQLResearchPath, "UPDATE_ANCHOR_SQL_RESEARCH", &report, &report.Sources)
 }
 
 func TestAxisAnchorSQLIntegrationResearch(t *testing.T) {
