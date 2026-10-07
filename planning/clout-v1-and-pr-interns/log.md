@@ -1572,3 +1572,31 @@ action/buff/mode seams. RP-308 delegation unanswered, no accumulationwaiver.
 Whole newspan after65c3a34c INCLUDING allrecords needs Claude independently;
 older spans remain. Goalactive/progress; no checkbox/status/archive/mint/push/
 deploy/release call. No fullCV4/Clout/natural-player/1.0 acceptance.
+
+### Pinned activation range self first-filter
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `65c3a34c..a540dab9`, thirteen paths, including
+ea43ef5b predeclaration, both Go observers, TS full sequence comparator,
+complete source-pinned corpus and docs/ledger/queue/roadmap/append-only records.
+Executed comparisons and failure controls are recorded above; staged source
+and all canonical-record diffs inspected directly. Independent e3eab7 verifies
+all22 selected source SHA256 identities and six rows; artifact SHA256
+`b185b69dc7bebdedc6f69f3267a20d1de4a846451a6527c98fcf105102363f3f`.
+gitdiff confirms zero residual runtime/kernel/oldcorpus change. 65fecb proves
+both prior HEAD log files are exact byte prefixes. Initial uncommitted roadmap
+entry matched a repeated link and was inserted before the previous terminal
+entry; diff review caught it, moved it to EOF and verified prefix before commit.
+
+One record clarification in this edge: research queue's former "not Service/
+Store proof" now explicitly refers to the EARLIER ordinary observer; the new
+separate bounded SQL witness exists, without promoting all persistence breadth.
+No observed result or downstream acceptance changes.
+
+Decision: bounded pinned activation/rollback evidence locally validated, NOT
+designated approval, full CV4/AC7/P3/Clout or 1.0 acceptance. Source hypotheses
+initially failed through instrument clocks/reader boundaries and were disclosed;
+no production defect inferred from them. Original27AC6 and all author/content/
+environment/release holds remain. Claude must cover ENTIRE newspan after
+65c3a34c INCLUDING this record/clarification edge; older independent spans
+unchanged. No checkbox/status/archive/mint/push/deploy/release call.

@@ -342,8 +342,9 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   errors disclosed. [Evidence/limits](../clout-v1-and-pr-interns/activation-research.md).
   Next separately predeclare relevant action/buff/mode seams; representation/
   episode meaning/all-mode/natural-mint/persistence breadth remain open.
-  This is bounded ordinary parity, not partition,
-  new representation, mode/buff, Service/Store or natural-player proof.
+  The earlier ordinary observer alone is not partition, new representation,
+  mode/buff, Service/Store or natural-player proof. The separately declared
+  activation SQL witness does not promote those wider populations.
   Later predeclare actual paired action/buff/mode/multi-resource seams;
   canonical rate lists/byte-framed JSON/scalar anchors are not whole-engine proof.
   Full mode/offline/provision/migration/state/receipt integration remains unproved.
