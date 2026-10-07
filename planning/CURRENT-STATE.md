@@ -4,6 +4,21 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+**Latest repair:** `45bf2edb`, predeclared `a8f2a527`, failing-first
+`7cac400d`: RP-326 Fiscal/care outcomes now belong to the submitting panel;
+late responses do not display on another tab.24 baseline DOM failures;
+five compiling placement/duplicate/origin faults fail and restore exactly.
+Full native Garage Chromium/WebKit174/performance1, client9,737/410browser
+skips/types/build/boundaries/copy/manifest/topology pass. No prior assertion
+relaxed. Changed-tree real composed NOT rerun under RP-236; prior source pass
+is not substituted. Native applied/ordinary refused runtime-double evidence,
+not HTTP-failure/queued-origin/all-surface/AT/Firefox/fullGS0.6/release proof.
+Entire new span aftere950216a through this tracking edge needs Claude.
+Browser evidence separately exact4dcd9969..e950216a; Fiscal separately exact
+b64a91af..4dcd9969, all earlier ranges independent. Next predeclare native
+HTTP-error outcome-origin/refresh controls under GS0.2/GS0.6; no new Docker
+browser/composed run before measured capacity repair/recheck. Full1.0 active.
+
 **Latest verification:** unchanged full cold Linux ARM64 browser lane at
 `36c28692` is RED:373/378 files pass,30,366 tests pass/four fail/six explicit
 skips, two Firefox suites uncollected. Fiscal keyboard native-worker error,

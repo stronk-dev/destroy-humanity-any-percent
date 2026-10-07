@@ -4228,3 +4228,24 @@ hosted/all-engine/mint/AT/full-Garage/release inference. Next accepted native
 RP-326 outcome ownership/no-bleed/async-origin test-first work. All full
 nine-tier/product/platform/author/owner/numeric/privacy/content/review gates
 remain; goal active/progress, no status/archive/publication or shortcut.
+
+## 2026-10-07 — Fiscal/care own-panel result repair checkpoint
+
+45bf2edb, predeclareda8f2a527/test-first7cac400d:24/24 baseline native DOM
+failures establish wrong-panel and completed/late-away bleed. Narrow GS0.6
+captured-origin/own-panel presentation repair locally passes full Garage
+Chromium/WebKit174/performance1; five independent compiling omission/
+duplicate/unscoped/late-owner faults fail and restore exact hashes. Strict
+types/client9,737pass/410browser skips/build213/boundaries/copy658/manifest/
+topology+13negatives pass. No prior assertion relaxed or player copy changed.
+Changed-tree real composed not rerun due RP-236 Docker0free; earlier-source
+pass cannot cover new production source. Not HTTP-failure/queued-origin/
+all-surface/AT/Firefox/hosted-CI/fullGS0.6/mint/release acceptance.
+
+New reviewspan aftere950216a THROUGH this tracking edge requires Claude;
+browser exact4dcd9969..e950216a, Fiscal exactb64a91af..4dcd9969, all preceding
+spans independent. Next accepted native HTTP-error outcome-origin/refresh
+census, predeclare before edits; no third container population until capacity
+repaired and measured, no unrelated cleanup. Full-nine-tier1.0 objective and
+all author/owner/numeric/privacy/content/operations/CI/AT/review/release gates
+remain active. No boxes/status/archive/mint/push/deploy or shortened scope.

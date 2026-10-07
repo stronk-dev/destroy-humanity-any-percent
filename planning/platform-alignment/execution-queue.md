@@ -3,6 +3,26 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Fiscal/care outcome ownership correction — 2026-10-07
+
+RP-326 `45bf2edb` locally binds result to submitted panel and keeps late-away
+results off other tabs. Predeclareda8f2a527/test-first7cac400d:24 baseline DOM
+failures; five compiling faults fail/restored exactly. Full native Garage
+Chromium/WebKit174/performance1, client9,737/410browser skips/types/build/
+boundaries/copy/manifest/topology pass. No prior assertion relaxed. Runtime
+doubles for applied/ordinary refusals, not HTTP-failure/queued-origin/AT/
+Firefox/all-surface/fullGS0.6. Changed-tree composed held by RP-236; no prior
+source substitution. **READY FOR CLAUDE:** complete span aftere950216a through
+this record edge. Browser exact4dcd9969..e950216a, Fiscal exactb64a91af..
+4dcd9969 and all preceding independent ranges stay owed.
+
+**READY next native work:** separately predeclare GS0.2/GS0.6 HTTP-error
+outcome-origin/refresh populations (same-panel and held-away response),
+existing keys/refresh/consent/no-retry semantics, no source change before
+failed baseline. No third Docker browser/composed invocation until capacity
+resolved/rechecked; no unrelated resource cleanup. All full1.0/author/owner/
+privacy/numeric/content/platform/CI/accessibility/review/release holds remain.
+
 ## Full Linux browser verification RED / capacity — 2026-10-07
 
 At36c28692, cold full three-engine run94542 terminal2:373/378 files pass,

@@ -7,6 +7,19 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,
+predeclareda8f2a527/test-first7cac400d. Fiscal/care own mapped notice regions,
+origin captured before act awaits.24 baseline DOM failures; five independent
+compiling faults fire/restored exactly. Full native two-engine Garage174/
+performance1, client9,737/410browser skips/types/build/boundaries/copy/
+manifest/topology pass. No previous assertion relaxed. Changed-tree composed
+not rerun under RP-236; no earlier-source substitution. Whole span after
+e950216a through tracking needs Claude separately from browser4dcd9969..
+e950216a/Fiscalb64a91af..4dcd9969 and prior ranges. HTTP-failure/queued-origin/
+all-surface/AT/Firefox/fullGS0.6/full-Garage/release remain unproved. Next
+accepted native HTTP-error origin/refresh census; Docker capacity preflight
+must succeed before another container population. No lifecycle promotion.
+
 - [x] GS0.2 runtime: `intent()` returns the typed outcome; non-2xx throws `GameUIRequestError`;
   `act()` scopes `expected_revision` (Company vs Founder); rejected intents render their reason.
 - [x] GS0.1 projection: Game UI snapshot v4 (`features` arms + `generators[].provision_cap` +

@@ -5,6 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest bounded repair (2026-10-07):** `45bf2edb`, predeclareda8f2a527/
+failing-first7cac400d: Fiscal/care outcome ownership and async-origin/no-bleed
+locally corrected (RP-326), not approved.24 baseline native failures; five
+compiling faults discriminate/restored exactly. Full Garage two-engine174/
+performance1, client9,737/410explicit skips/types/build/boundaries/copy/
+manifest/topology pass. Earlier composed pass not substituted for changed
+source: RP-236 prevents rerun. All-engine/AT/HTTP-failure/queued-origin/
+all-surface/fullGS0.6/mint/release gates remain. Newspan aftere950216a through
+record edge needs Claude; browser exact4dcd9969..e950216a, Fiscal separately
+b64a91af..4dcd9969 and all earlier spans independent. Next accepted native
+HTTP-error origin/refresh census; Docker capacity must be measured repaired
+before another container population. Full-nine-tier1.0 goal active/progress.
+
 **Latest verification (2026-10-07):** unchanged full cold Linux ARM64 browser
 lane36c28692 RED:373/378 files pass,30,366 tests pass/four fail/six skips,
 two uncollected Firefox suites. RP-327/328 import/worker/keyboard outcomes
