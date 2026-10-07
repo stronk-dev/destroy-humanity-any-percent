@@ -92,6 +92,29 @@ two and client/types/build/copy/boundaries/topology pass. Local first filter,
 not lifecycle/all-context/first-read rejection/retry/Firefox/AT/live SQL proof.
 Separate entire82614848-exclusive range requires Claude.
 
+## RP-082 bounded forced lifecycle context focus
+
+Accepted GS0.4/0.6 own floor, not acceptance of the broader Accessibility draft.
+3451fdb0 test predeclaration → 52 native focus failures / 8 controls at 73a5ccce
+→ separate product scope ac6a5788. Existing cursor-ordered host navigation now
+focuses the actual Offer/Run-End heading after DOM update; both headings are
+non-tab-stop focus targets. Newer player choice cancels pending focus. Sixty
+executions cover Fiscal/Trophy Case/Meters ×nav/removed-heading ×destination
+×320/1280 ×two engines plus Settings cancellation/ordered lifecycle/replay.
+Real decoders admit public fixtures; runtime-double delivery, explicit heading
+focus and synchronous race controls are not a physical keyboard/AT/server session.
+Eight compiling actual faults fail 52/24/28/24/28/8/4/12 cases respectively;
+remaining controls pass and every source fault is restored. No assertions,
+budgets, copy, lifecycle precedence, payload-only Run-End or clock changed.
+
+Combined Garage/Game UI 518 native passes / 4 explicitly isolated performance
+skips; separate performance two pass. Client/types/build/copy/boundaries/
+no-payment/static topology pass. Full fbea2158-exclusive through repair/record
+commit needs Claude separately from prior spans. Firefox/manual AT/real service/
+continuation/all contexts/full shared accessibility remain open. Changed host
+still needs real composed rerun after capacity repair; no lifecycle/acceptance
+promotion from the native fixture proof.
+
 ## RP-344 GS3 event/badge/value separation (test-only)
 
 96439cfe predeclared; existing combined oracle survives an actual off-surface

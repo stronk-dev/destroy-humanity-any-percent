@@ -4204,3 +4204,81 @@ both predeclarations and red checkpoint; preceding review spans independently
 owed. Native/fixture context focus, not real-service/AT/Firefox/all contexts/
 full1.0 proof. No cleanup/Retry answer inferred, deletion/mint/push/archive/
 release/shortened-preview substitution. Goal active/progress.
+
+## 2026-10-07 — RP-082 forced lifecycle context focus locally repaired
+
+Review by: Codex (implementer first filter, NOT designated review).
+Recorded by: Codex. Reviewed committed input fbea2158..ac6a5788 plus current
+repair/record working diff. Designated target is the entire fbea2158-exclusive
+through this containing commit, INCLUDING 3451fdb0, red 73a5ccce and separate
+product scope ac6a5788. Prior 9f485993..fbea2158, 4b2fd904..9f485993 and all
+earlier exact spans remain independently owed. No archival gate consumed.
+
+The existing navigation lifecycle cursor guard/Settings confirmation semantics
+remain unchanged. Host helper observes actual transition, focuses the destination
+heading after DOM update and refuses stale work after newer selection or changed
+destination. Existing Offer and payload-only Run-End headings gain tabindex=-1.
+Literal copy/payload/timing/snapshot/intent behavior unchanged. Only two permanent
+production paths; no new global hotkey/live region/animation or focus-on-restyle.
+Fixture export paths are not substituted for production publication handling.
+
+Three initial surfaces ×persistent nav/removed heading ×Offer/Run-End ×320/1280
+×Chromium/WebKit:48 native executions. Eight controlled newer-Settings cases
+and four ordered Offer→Run-End / later Settings + consumed replay cases make60.
+Production envelope/lifecycle decoders admit public fixtures before runtime-double
+delivery. Native Enter selects the source; removed-heading focus and synchronous
+same-callback cancellation are explicitly controlled populations, not physical
+AT/OS interaction evidence. Visible heading/destination then actual focused node,
+non-tab-stop attribute, native axe/reflow/read-only controls checked.
+
+Red baseline66150f→06b9e3 terminal2:52 failures/8 controls, already committed
+73a5ccce. No assertion/budget loosened. Healthy after repairc1d839→242bfb
+terminal0:60 passes/414 explicitly unselected, chained performance two/22
+unselected. Types76be66→9f1cbf zero errors/warnings. Eight independent compiling
+faults, all terminal2 and actual native semantic failures, each414 unselected:
+
+| Fault | Terminal output | Fail/pass selected | What fails |
+|---|---|---|---|
+| Remove helper focus call |5b43ea|52/8|Old BUTTON/BODY, not new heading |
+| Remove Offer heading tabindex |2d4b66|24/36|Offer cannot receive native focus |
+| Remove Run-End heading tabindex |5295da|28/32|Run-End cannot receive native focus |
+| Omit Offer helper invocation |8e812b|24/36|Offer changes screen without exposing focus |
+| Omit Run-End helper invocation |bc3e2d|28/32|Run-End changes screen without exposing focus |
+| Cancelled Settings callback focuses Desk nav |d41f77|8/52|Newer player choice loses focus; positive controls pass |
+| Pending Offer refuses newer Run-End |fb9142|4/56|Ordered newest destination remains Offer |
+| Bypass existing navigation cursor guard |c00596|12/48|Consumed replay preempts newer Settings |
+
+Broader cancelled-callback seed proves the cancellation outcome, not isolated
+selection-generation predicate necessity. No compile-error credit. All faults
+restored before next probe/final checks.3d7853 diff check: only intended host/
+RunEnd diff. SHA256 host520e537bdf6f0d743ec5489542407eec9690685d90ac3d4c51a199abf58cc4c4;
+RunEnd86d7ad09ba49137923f4ee2ca9e07eb53a865f4333043892561be1492b807ee9;
+unchanged navigation92e3516ad524f55ed5786a7da25d6f9e9f014680be3a1fc2151359b56349726b;
+driver7fc4ae01bd48725bad020549319ef4850ab1e2d4f4a6873f8588c4594d65359a.
+
+Final native8fa234→decaed terminal0: combined Garage/Game UI518 pass/4 explicitly
+isolated performance skips, four modules,106.21s; real60s idle unchanged.
+Chained isolated performance two/22 unselected pass.7e9f95→42d752 terminal0:
+types zero errors/warnings,client9,814 passes/561 explicit browser skips,
+105 files pass/22 skip.214-module build: UI JS index-3Ps1z7ss.js changes as
+expected; prediction.worker-MqspU_iu.js and index-DaRqgLww.css unchanged.
+Achievement seven component/four copy negatives; shell/UI and ten Go/eleven
+Svelte cosmetic negatives; static CI topology thirteen negatives pass.
+753517→a9334b copy terminal0:658 keys, unchanged SHA256
+a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings, content manifest pass.cff85d no-payment terminal0:
+six rejected negatives/two admitted near-misses. No source/HEAD mutation during
+live final checks/history scan. No full Linux/hosted/Postgres/composed claim.
+
+Initial routine git stage refused .git/index.lock before any stage/commit;
+narrow pre-authorized git-add/commit escalation then succeeded. No lock deleted,
+history rewritten or external publication. No RFC body/status or owner copy edit.
+Docs/ledger/inventory/plan/board/queue/checkpoint log reconciled. RP-082's bounded
+native repair is not full R-005/Accessibility acceptance: Firefox/manual AT/
+real service/other contexts/continuation/all shared states remain. Current
+continuation test clicks and asserts selected surface, not native keyboard/focus;
+next accepted work is a separate truth predeclaration before any new repair.
+Cleanup/startup questions unanswered; no deletion/full-disk run/Retry. Body/
+GS4/full AC7/default-player/privacy/platform/numeric/full-nine-tier1.0 and every
+designated review remain live. No boxes/lifecycle/archive/push/mint/deploy/release/
+shortened-preview substitution. Goal active/progress.

@@ -4635,3 +4635,25 @@ defect yet. RP-342/D-023 startup draft remains unruled. Full Linux/SQL/
 Firefox/AT/body/privacy/platform/numeric/full-nine-tier1.0/review holds remain.
 No boxes/lifecycle/archive/push/release/shortened-preview promotion.
 Goal active/progress.
+
+## 2026-10-07 — RP-082 forced context focus repaired locally
+
+3451fdb0 predeclares current accepted-Garage GS0.4/0.6 population; red73a5ccce
+records52 native focus failures/8 controls. Separate product scope ac6a5788:
+post-render Offer/Run-End heading focus, non-tab-stop attributes, newer-choice
+cancellation and existing cursor ordering retained. Same60 cases pass; eight
+actual faults fail52/24/28/24/28/8/4/12 with remaining controls passing and
+exact source restoration. No payload/copy/clock/snapshot/intent/CI change.
+Combined Garage/Game UI518 native passes/4 isolated-performance skips, separate
+performance two;client9,814/561 explicit skips/types/build/copy/boundaries/
+no-payment/static topology pass. UI JS changes,worker/CSS/copy unchanged.
+Entire fbea2158-exclusive through containing repair/record commit needs Claude,
+including both predeclarations/red checkpoint; every earlier exact span owed.
+
+Next accepted work: separate native continuation context/focus truth audit
+with exact-next-Company and refused-read controls; current click/surface-only
+test does not prove focus. No new continuation defect yet. Full Linux/SQL/
+capacity/Firefox/manual AT/body/privacy/platform/numeric/full-nine-tier1.0 and
+independent review stay open. Cleanup/startup draft unanswered, no deletion/
+Retry/boxes/lifecycle/archive/push/release/shortened-preview promotion.
+Goal active/progress.

@@ -246,6 +246,19 @@
     finally { actionPending = false; }
   }
 
+  function preemptLifecycle(cursor: number, destination: "offer_sheet" | "run_end"): void {
+    const previous = navigation.active;
+    navigation.lifecycle({ cursor, surface: destination });
+    surface = navigation.active;
+    if (surface === previous || surface !== destination) return;
+    const forcedSelection = selectionGeneration;
+    void afterDOMUpdate().then(() => {
+      if (selectionGeneration !== forcedSelection || surface !== destination) return;
+      const headingID = destination === "offer_sheet" ? "offer-heading" : "run-end-heading";
+      root?.querySelector<HTMLElement>(`#${headingID}`)?.focus();
+    });
+  }
+
   function consumePublication(message: GameUIRuntimeMessage): void {
     if (message.kind === "transport_closed") { offline = true; transportReady = false; subscribedFounderID = undefined; unsubscribe(); return; }
     if (message.kind === "transport_recovering") { offline = true; transportReady = false; return; }
@@ -283,12 +296,12 @@
       // the next control does not depend on a separate receipt publication.
       void refresh();
     } else if (value.kind === "exit_offer_spawned" && !ended) {
-      offer = value; navigation.lifecycle({ cursor: value.cursor, surface: "offer_sheet" }); surface = navigation.active;
+      offer = value; preemptLifecycle(value.cursor, "offer_sheet");
     } else if (value.kind === "run_ended") {
       ended = value;
       timer?.terminal(value.payload.rta_ms);
       if (snapshot) writeLocalRunTiming(localTimingStorage(), { category: snapshot.run.category, founder_id: value.payload.founder_id, pb_rta_ms: value.payload.rta_ms, run_seq: value.payload.run_id.run_seq, splits });
-      navigation.lifecycle({ cursor: value.cursor, surface: "run_end" }); surface = navigation.active;
+      preemptLifecycle(value.cursor, "run_end");
     } else if (value.kind === "exit_offer_resolved" && value.payload.offer_id === offer?.payload.offer_id) offer = undefined;
   }
 
@@ -694,7 +707,7 @@
     </section>
   {:else if surface === "offer_sheet" && offer}
     <section class="surface" aria-labelledby="offer-heading">
-      <h1 id="offer-heading">{t("screen.offer_sheet.heading", {}, era)}</h1><p>{t("screen.offer_sheet.preamble", {}, era)}</p><h2>{t("screen.offer_sheet.terms_label", {}, era)}</h2>
+      <h1 id="offer-heading" tabindex="-1">{t("screen.offer_sheet.heading", {}, era)}</h1><p>{t("screen.offer_sheet.preamble", {}, era)}</p><h2>{t("screen.offer_sheet.terms_label", {}, era)}</h2>
       <p>{exitTitle(offer.payload.exit_type)}</p>
       {#each renderPrestigeTermRows(offer.payload.payout_preview, era) as row}<p>{row}</p>{/each}
       <p title={t("screen.offer_sheet.countdown_tooltip", {}, era)}>{t("screen.offer_sheet.countdown_frame", { remaining: duration(offer.payload.expires_at_ms - estimatedServerNowMS()) }, era)}</p>

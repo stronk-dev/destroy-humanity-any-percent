@@ -22,6 +22,16 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   absent/null/object tree arms, canonical factor and applied-starter array order.
   This reader is plumbing, not a rendered carry-over summary or AC12 acceptance.
 - Settings/System: save status, drain notice, and explicit resync action.
+- **Forced lifecycle focus (RP-082):** an authoritative Offer or Run-End
+  preemption moves focus after rendering to its existing heading, now a
+  programmatically focusable non-tab-stop (`tabindex="-1"`). The host retains
+  cursor-ordered navigation; a newer selected tab cancels pending context focus
+  and consumed lifecycle replay does not steal it back. Sixty native executions
+  cover Fiscal/Trophy Case/Meters, persistent-nav and removed-heading origins,
+  320/1280 px, newer Settings and ordered Offer→Run-End/replay controls in
+  Chromium/WebKit. Eight actual faults discriminate. Public decoded fixtures
+  with runtime-double delivery, not real server issuance, physical AT, Firefox,
+  every lifecycle/continuation context or the complete accessibility floor.
 - **Trophy Case (`achievements`):** read-only, unlocked by `feature.achievements`. It shows the run
   and career score, an earned/total count, and each row's scope, text state (earned this run,
   earned in career, not earned yet), score grant, and the existing possession warning. The score is

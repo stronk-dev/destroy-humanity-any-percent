@@ -44,7 +44,7 @@
 </script>
 
 <section class="surface" aria-labelledby="run-end-heading">
-  <h1 id="run-end-heading">{ended.payload.exit_type === "scripted_first" ? t(curriculumTitle, {}, era) : t("screen.run_end.standard.title", {}, era)}</h1>
+  <h1 id="run-end-heading" tabindex="-1">{ended.payload.exit_type === "scripted_first" ? t(curriculumTitle, {}, era) : t("screen.run_end.standard.title", {}, era)}</h1>
   <p>{t("screen.run_end.exit_frame", { exit_type: exitTitle(ended.payload.exit_type), tier: ended.payload.tier }, era)}</p>
   <p>{t("screen.run_end.attended_frame", { attended: duration(ended.payload.attended_ms) }, era)}</p>
   {#if ended.payload.exit_type === "scripted_first"}

@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage forced lifecycle context-focus checkpoint — 2026-10-07
+
+RP-082: test scope 3451fdb0 → red 73a5ccce (52 failures / 8 controls) → separate
+accepted product scope ac6a5788. Existing Offer/Run-End headings focus after
+render; newer choice cancels stale focus, cursor ordering/replay retained.
+Same 60 cases pass; eight valid faults discriminate, exact source restoration.
+Combined Garage/Game UI 518 passes / 4 isolated-performance skips; separate
+performance two, client 9,814 / 561 explicit skips/types/build/copy/boundaries/
+no-payment/static topology pass. Not full Linux/SQL or manual AT.
+**READY FOR CLAUDE:** entire fbea2158-exclusive through containing repair/record
+commit, including both predeclarations and red checkpoint; earlier exact spans
+independently owed. **NEXT accepted work:** predeclare native continuation
+focus/context truth audit with failed/exact-next read controls before fix.
+No new continuation defect yet. Capacity/Firefox/AT/body/privacy/platform/
+numeric/full-nine-tier 1.0 and startup-draft/cleanup holds remain; no deletion/
+Retry/acceptance/archival/push/preview promotion.
+
 ## Garage event/badge/value checkpoint — 2026-10-07
 
 RP-344 test-only under 96439cfe: existing combined oracle survives actual

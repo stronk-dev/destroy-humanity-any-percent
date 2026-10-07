@@ -7,7 +7,23 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-344 GS3 event/badge/value separation, test-only under
+Latest bounded work: RP-082 forced Offer/Run-End context focus. Predeclare
+3451fdb0 → actual 52-failure/8-control red checkpoint 73a5ccce → separate
+accepted product scope ac6a5788. Existing headings now focus after render;
+newer choices cancel pending focus, cursor ordering/replay preserved. Same
+60 native cases pass; eight real faults discriminate and restore. Combined
+Garage/Game UI 518 passes / 4 isolated-performance skips; separate performance
+two, client 9,814 / 561 explicit skips, types/build/copy/boundaries/no-payment/
+static topology pass. Full fbea2158-exclusive range through repair/records
+needs Claude; 9f485993..fbea2158 and earlier exact spans independently owed.
+Next accepted work: predeclare native continuation context/focus truth audit,
+including exact-next-Company and failed-read controls, before any repair.
+Current .click/surface-only test does not prove keyboard/focus. Not yet a new
+executed continuation defect. Capacity/full Linux/SQL/Firefox/AT/body/privacy/
+platform/numeric/full-nine-tier 1.0/review holds remain; cleanup/startup draft
+unanswered, no deletion/Retry/checkbox/lifecycle/push authority inferred.
+
+Preceding bounded work: RP-344 GS3 event/badge/value separation, test-only under
 96439cfe. Existing combined oracle survives actual forbidden global-announcement
 fault; sixteen new native executions catch it and eight other real source
 faults. Up/down p(doom)/users Standing at 320/1280: exact polite text/badge/

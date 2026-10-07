@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-344 GS3 event/badge/value proof,
+**Latest bounded work (2026-10-07):** RP-082 forced Offer/Run-End focus repair.
+3451fdb0 → red checkpoint 73a5ccce → separate accepted scope ac6a5788.
+Sixty native cases pass; eight actual faults discriminate and restore.
+Combined Garage/Game UI 518 passes / 4 isolated-performance skips, separate
+performance two; client 9,814 / 561 explicit skips, types/build/copy/boundaries/
+no-payment/static topology pass. Complete fbea2158-exclusive repair/record
+span requires Claude separately from every prior span. Next accepted work:
+predeclare native continuation context/focus truth audit; current surface-only
+click test is not keyboard/focus evidence. Full Linux/SQL capacity/Firefox/AT/
+body/privacy/platform/numeric/full-nine-tier 1.0/review holds remain. No
+cleanup/startup-draft ruling/deletion/push/archival/preview substitution.
+
+**Preceding bounded work (2026-10-07):** RP-344 GS3 event/badge/value proof,
 test-only under 96439cfe. Existing oracle survives a real forbidden global
 announcement; sixteen new native cases catch it and eight other valid faults.
 Production restores exactly. Full Garage 414 / performance two, client 9,814
