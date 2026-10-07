@@ -4731,3 +4731,35 @@ composed/Firefox/AT/auth/body/privacy/platform/numeric/full endings/full-nine-ti
 1.0/independent review/owner release remain. No owner cleanup/startup answer
 inferred; no Retry/credential/copy/CI/budget/boxes/status/archive/push changes.
 Goal active/progress; observation repair is not release acceptance.
+
+## 2026-10-07 — Native Fiscal delayed-completion proof; runner question exposed
+
+Accepted test-only scope aa296eba;24 actual native paths, not script-focused
+action substitutes. Harvest/level/unlock at320/1280/Enter-Space/Chromium-WebKit,
+held ordinary refusal/applied/read, exact pending notices/payloads, native
+duplicates, newer Settings selection/focus and native return using new Founder8
+versus old7/Company2.72 actual runtime-double intent calls are not72 independent
+tests or a real persisted quarter/spend proof. Existing eligibility intentionally
+retained; removed/disabled-action/all-state/era/AT/400%/real-service proof separate.
+
+Eight valid complete source faults fail24/24/24/24/24/24/8/24; original bytes
+restored. My ambiguous reversal matched the wrong null-assignment site (RP-350);
+subsequent control discarded, precise correction/hash checks instituted. Two
+native fault probes stall at near100% parent CPU and need scoped termination of
+their proven owned runner (RP-351); causes unproven, no complete population
+credit. Both invalid/incomplete histories remain explicit. R-013 routes the
+bounded read-only diagnosis, not a timeout/dependency/CI waiver.
+
+Final full native694/four isolated-performance skips,118.25s, real60s idle
+unchanged; separate performance two pass. Complete client9816/649 explicit
+browser skips/types0/build214 modules same hashes/boundaries/topology/no-payment
+pass. Copy658 keys/same SHA/611 old orphan warnings/content manifest pass.
+All matching handles terminal before records/commit. Original RP-348 historical
+failure not explained by this passing population. Fresh Docker still0/100%; no
+cleanup or Linux/SQL/full-CI claim. Entire c24b8f6d-exclusive new range needs
+Claude, every prior range independently owed; no self-approved archival.
+
+Whole 1.0 remains the objective: real composed/auth/SQL/Firefox/AT/body/privacy/
+platform/numeric/full endings/all-nine-tiers/independent reviews/owner release.
+No owner cleanup/startup answers inferred, product/CI/copy/budget/boxes/body/
+status/archive/mint/push/release/preview substitution. Goal active/progress.

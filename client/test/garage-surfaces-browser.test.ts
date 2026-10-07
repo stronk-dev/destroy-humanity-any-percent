@@ -941,6 +941,117 @@ for (const [label, index] of [["harvest", 0], ["level", 1], ["unlock", 2]] as co
   });
 }
 
+// GS0.2/0.6/0.8: actual native host entry and delayed completion. Public
+// decoder fixtures deliberately retain eligibility; not a persisted spend,
+// natural quarter, disabled/removal policy, auth or assistive-technology proof.
+for (const [label, index, category, detail, key, body] of [
+  ["harvest", 0, "not_eligible", "period_not_ripe", "fiscal.rejection.period_not_ripe", { kind: "harvest_fiscal_period" }],
+  ["level", 1, "unaffordable", "fiscal_credit", "fiscal.rejection.unaffordable", { kind: "spend_fiscal_credit", target: { kind: "generator_level", generator_id: "generator.beige_tower", levels: 1 } }],
+  ["unlock", 2, "not_eligible", "already_unlocked", "fiscal.rejection.already_unlocked", { kind: "spend_fiscal_credit", target: { kind: "unlock", unlock_id: "minigame.pitch" } }],
+] as const) {
+  for (const width of [320, 1280] as const) {
+    for (const activation of ["{Enter}", " "] as const) {
+      it.skipIf(!browser)(`GS1 native pending ${label}/${width}/${activation === " " ? "Space" : "Enter"}`, async () => {
+        const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+        const runtime = new Runtime(); runtime.current = parseGameUISnapshot(structuredClone(withRipeFiscal()));
+        const rejected: IntentOutcome = { outcome: "rejected", category, detail, currentRevision: 7, sessionExpired: false };
+        const applied: IntentOutcome = { outcome: "applied", receipt: label === "harvest" ? { harvest_outcome: "guaranteed" } : {} };
+        runtime.outcome = rejected;
+        let finishRejected!: (value: IntentOutcome) => void, finishApplied!: (value: IntentOutcome) => void;
+        let releaseRead!: (value: ParsedGameUISnapshot) => void;
+        const refused = new Promise<IntentOutcome>((resolve) => { finishRejected = resolve; });
+        const accepted = new Promise<IntentOutcome>((resolve) => { finishApplied = resolve; });
+        const heldRead = new Promise<ParsedGameUISnapshot>((resolve) => { releaseRead = resolve; });
+        let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+        let restore = () => {};
+        try {
+          fixture = await mounted(runtime); const { target } = fixture;
+          const intent = vi.spyOn(runtime, "intent")
+            .mockImplementationOnce((request) => { runtime.requests.push(request); return refused; })
+            .mockImplementationOnce((request) => { runtime.requests.push(request); return accepted; });
+          const read = vi.spyOn(runtime, "snapshot").mockReturnValueOnce(heldRead);
+          restore = () => { intent.mockRestore(); read.mockRestore(); };
+          const nav = button(target, fiscalText("surface.fiscal.title"));
+          const settings = button(target, fiscalText("surface.settings.title"));
+          const reach = async (destination: HTMLElement, stage: string) => {
+            const controls = target.querySelectorAll("button,input,summary,[tabindex='0']").length;
+            const trace: (string | undefined)[] = [];
+            let tabs = 0;
+            while (document.activeElement !== destination && tabs <= controls) {
+              await userEvent.keyboard("{Tab}"); await settle(); tabs += 1;
+              trace.push(document.activeElement?.tagName + ":" + document.activeElement?.textContent);
+            }
+            expect(document.activeElement, `${stage} native Tab ${tabs}/${controls + 1}: ${JSON.stringify(trace)}`).toBe(destination);
+          };
+          const request = (revision: number) => ({ intent_id: expect.any(String), expected_revision: revision, ...body });
+          button(target, fiscalText("surface.desk.title")).focus();
+          await reach(nav, "initial Fiscal nav"); await userEvent.keyboard(activation); await settle();
+          expect(target.querySelector("main")?.dataset.surface).toBe("fiscal"); expect(document.activeElement).toBe(nav);
+          const action = fiscalControls(target)[index];
+          await reach(action, "initial Fiscal action");
+          const pending = () => {
+            expect(action.disabled).toBe(false); expect(action.getAttribute("aria-disabled")).toBe("true");
+            expect(document.activeElement).toBe(action);
+            sharedStateVisibleText(target, ".fiscal .fiscal-state", fiscalText("common.pending"));
+            expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+          };
+          await userEvent.keyboard(activation); await settle(); pending();
+          await userEvent.keyboard("{Enter}"); await userEvent.keyboard(" "); await settle();
+          expect(runtime.requests).toEqual([request(7)]); expect(read).not.toHaveBeenCalled();
+          finishRejected(rejected); await settle();
+          expect(action.hasAttribute("aria-disabled")).toBe(false); expect(action.disabled).toBe(false);
+          expect(document.activeElement).toBe(action); expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+          sharedStateVisibleText(target, '.fiscal .intent-notice[role="status"]', fiscalText(key));
+          expect(target.querySelector(".fiscal")?.textContent).not.toContain(fiscalText("common.pending"));
+          expect(read).not.toHaveBeenCalled(); await assertAxe(target, `native Fiscal refusal ${label}/${width}`);
+
+          await userEvent.keyboard(activation); await settle(); pending();
+          expect(runtime.requests).toEqual([request(7), request(7)]);
+          expect(target.querySelector(".fiscal .intent-notice")?.textContent).toBe("");
+          finishApplied(applied); await settle(); pending(); expect(read).toHaveBeenCalledExactlyOnceWith();
+          expect(target.querySelector('.fiscal .intent-notice[role="status"]')?.textContent)
+            .toBe(label === "harvest" ? fiscalText("fiscal.outcome.guaranteed") : "");
+          await userEvent.keyboard("{Enter}"); await userEvent.keyboard(" "); await settle();
+          expect(runtime.requests).toEqual([request(7), request(7)]);
+          await reach(settings, "newer Settings selection"); await userEvent.keyboard(activation); await settle();
+          expect(target.querySelector("main")?.dataset.surface).toBe("settings"); expect(document.activeElement).toBe(settings);
+          expect(target.querySelector('.intent-notice[role="status"]')?.textContent).toBe("");
+          sharedStateVisibleText(target, '[aria-labelledby="settings-heading"] p', fiscalText("settings.save_status.saving"));
+          const next = structuredClone(withRipeFiscal()); next.founder_revision = 8; next.revision = 2;
+          runtime.current = parseGameUISnapshot(next); releaseRead(runtime.current); await settle();
+          expect(target.querySelector("main")?.dataset.surface).toBe("settings"); expect(document.activeElement).toBe(settings);
+          expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+          expect(target.querySelector('.intent-notice[role="status"]')?.textContent).toBe("");
+          const status = target.querySelector<HTMLElement>('[aria-labelledby="settings-heading"] p')!;
+          const [prefix, suffix] = t("settings.save_status.saved_frame", { ago: "__AGO__" }, "era_1995").split("__AGO__");
+          const text = status.textContent!;
+          expect(text.startsWith(prefix!)).toBe(true); expect(text.endsWith(suffix!)).toBe(true);
+          const ago = text.slice(prefix!.length, suffix!.length ? -suffix!.length : undefined);
+          expect(ago).toMatch(/^\d+:[0-5]\d:[0-5]\d$/u);
+          sharedStateVisibleText(target, '[aria-labelledby="settings-heading"] p', t("settings.save_status.saved_frame", { ago }, "era_1995"));
+          await assertAxe(target, `native Fiscal newer Settings ${label}/${width}`);
+          await reach(nav, "return Fiscal nav"); await userEvent.keyboard(activation); await settle();
+          const retry = fiscalControls(target)[index]; await reach(retry, "fresh Fiscal action");
+          expect(retry.disabled).toBe(false); expect(retry.hasAttribute("aria-disabled")).toBe(false);
+          runtime.outcome = { ...rejected, currentRevision: 8 };
+          await userEvent.keyboard(activation); await settle();
+          expect(runtime.requests).toEqual([request(7), request(7), request(8)]);
+          expect(new Set(runtime.requests.map((row) => row.intent_id)).size).toBe(3);
+          expect(read).toHaveBeenCalledExactlyOnceWith(); expect(document.activeElement).toBe(retry);
+          sharedStateVisibleText(target, '.fiscal .intent-notice[role="status"]', fiscalText(key));
+          expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width + 1);
+          await assertAxe(target, `native Fiscal retry ${label}/${width}`);
+        } finally {
+          finishRejected(rejected); finishApplied(applied); releaseRead(runtime.current); await settle();
+          restore();
+          try { if (fixture) await fixture.dispose(); }
+          finally { await page.viewport(1280, 720); }
+        }
+      });
+    }
+  }
+}
+
 for (const [category, detail, key, index, invariant] of [
   ["not_eligible", "period_not_ripe", "fiscal.rejection.period_not_ripe", 0, false],
   ["unaffordable", "fiscal_credit", "fiscal.rejection.unaffordable", 1, false],

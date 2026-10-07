@@ -7,7 +7,20 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest cross-lane checkpoint: RP-348 observation work moved to accepted Garden
+Latest bounded work: RP-349 native Fiscal pending/receipt focus under aa296eba,
+test-only. Three actions ×320/1280 ×Enter/Space ×Chromium/WebKit:24 executions;
+held refusal/applied/read, duplicate guard, native Settings/newer focus and native
+return with new Founder revision. Eight valid source faults discriminate and
+restore; contaminated RP-350 probe discarded, two incomplete runner probes at
+RP-351 retained and routed to R-013. Full browser694/four isolated-performance
+skips plus performance two; client9816/649 browser skips/types/unchanged build/
+copy/boundaries/topology/no-payment pass. No product bytes changed or whole-GS1
+acceptance. Entire c24b8f6d-exclusive new range requires Claude, all prior spans
+independent. Next safe work: separately predeclare read-only RP-351/R-013 runner
+failure-reporting diagnosis without budget/population/CI/dependency changes.
+Linux/SQL capacity and all full-nine-tier 1.0/owner/review holds remain.
+
+Preceding cross-lane checkpoint: RP-348 observation work moved to accepted Garden
 SG1/AC1 undera9fadedd. Complete child diagnostics and real startup/hang controls
 locally pass; historical failure cause remains open. No admission/deadline/CI or
 product change. Final client9816/637 skips, native raw74/six Node-only skips,

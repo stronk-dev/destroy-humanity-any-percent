@@ -410,3 +410,42 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   restamping, altered quantization, longer budgets, rewritten archived authority,
   CI bypasses or full-domain proof. The bounded reference is not an enormous-
   exponent implementation, real SQL/service/browser evidence or Clout acceptance.
+
+## R-013 — native browser failure reporting stalls (RP-351)
+
+- **Question:** Where do the two observed native Mac fault runs stall: compilation,
+  browser execution, failure serialization/source mapping, or teardown? Current
+  CPU/process observations do not distinguish these and do not establish hosted
+  Linux or RP-348 causality.
+- **Baseline:** accepted Garage GS0.2/0.6/0.8/GS1 supplement under aa296eba.
+  Healthy complete24 native paths and full694 population pass. Direct receipt
+  notice=null yields12 Chromium failures but no complete verdict; false&&pending
+  yields no complete population. Owned86507/20682 stay near100% CPU with idle
+  browser children and survive SIGTERM; explicit SIGKILL makes each terminal.
+  RP-350 contaminated omit-refresh is invalid and excluded from this question.
+- **Population:** current12 GS1-native-pending declarations: three actions,
+  two widths, Enter/Space, both Chromium/WebKit (24 executions per complete arm).
+  Pin exact source/test/toolchain identities before any new observation.
+- **Arms:** restored healthy baseline; each of the two recorded stalled source
+  faults; their corresponding completing semantic controls (no-notice applied
+  mapping, wrong pending text). Profile/inspect only processes/socket/handles
+  proven owned by that arm. No unrelated process termination or secret/environment
+  inspection. Any project-only decomposition is diagnostic, never the full arm.
+- **Method:** separately predeclare the exact diagnostic commands/read-only stack
+  sampling and phase evidence in the per-lane log before executing. Retain launch,
+  import/collection/test/result/cleanup observations where actually available,
+  actual process parentage/CPU/elapsed, source identities and terminal exit. An
+  active handle is polled, not restarted because an observation expired.
+- **Controls:** healthy and completing-fault arms establish usable diagnostics;
+  complete versus incomplete populations stay distinct. Missing profile, lost
+  child identity, contaminated source or manually stopped run cannot masquerade
+  as an ordinary completed failure. Verify original hashes after EVERY arm.
+- **Exit:** evidence locates the blocked phase/call path sufficiently for a
+  separately authorized instrument repair, or records explicitly which attribution
+  remains unsupported. A negative/uninformative profile is a completed bounded
+  observation, not permission to invent the cause or claim the symptom fixed.
+- **May authorize:** precise defect/repair proposal, separate test-instrument
+  scope or an explicit successor draft if dependency/CI authority is required.
+- **Cannot authorize:** larger timeouts, retries, reporter/browser/population
+  exclusions, dependency/workflow changes, incomplete-result acceptance, global
+  CI/hosted claims, production changes, archival or release status promotion.

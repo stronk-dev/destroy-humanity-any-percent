@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-348 test-observation repair undera9fadedd.
+**Latest bounded work (2026-10-07):** RP-349 native Fiscal delayed completion,
+test-only under aa296eba.24 keyboard paths cover three actions,320/1280,
+Enter/Space and two engines; exact refusal/applied/read holds, native duplicate
+guards, newer Settings focus/notice ownership and native return use Founder8,
+not old7 or Company2. Eight valid faults discriminate/restored. RP-350 bad
+reversal/contaminated control discarded; two incomplete native runner faults
+remain RP-351, routed to R-013, not hidden by passing healthy checks. Full
+browser694/four isolated-performance skips plus performance two, client9816/
+649 browser skips/types/unchanged build/copy/boundaries/topology pass. Whole
+c24b8f6d-exclusive new span needs Claude, all prior spans independent.
+Next safe work: bounded read-only R-013 failure-reporting diagnosis; no budget/
+population/CI/dependency change inferred. Docker0/100% and real service/SQL/
+Firefox/AT/auth/body/privacy/platform/numeric/full endings/full-nine-tier1.0/
+owner release gates remain. No product change, archival/push/preview substitution.
+
+**Preceding bounded work (2026-10-07):** RP-348 test-observation repair undera9fadedd.
 Original SG1 admission/loader program/corpus/1000ms guard unchanged; all failures
 now carry actual entry observation, elapsed and complete child result. Two real
 startup/hang controls plus three restored faults discriminate. Final client9816/

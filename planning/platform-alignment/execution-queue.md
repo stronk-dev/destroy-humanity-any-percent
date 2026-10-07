@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Fiscal native pending/receipt-focus checkpoint — 2026-10-07
+
+Test-only RP-349 under aa296eba:24 native paths for harvest/level/unlock at
+320/1280 with Enter/Space in Chromium/WebKit. Exact delayed refusal/applied/read,
+duplicate guards, newer Settings focus/notice ownership and native return bind
+Founder7→8 rather than Company1→2. Eight complete faults discriminate/restored;
+RP-350 contaminated control and two RP-351 incomplete runner probes excluded.
+Full browser694/four isolated-performance skips plus performance two; client9816/
+649 browser skips/types/unchanged build/copy/boundaries/topology/no-payment pass.
+**READY FOR CLAUDE:** entire c24b8f6d-exclusive new range through implementation/
+records, including predeclaration/instrument correction; previous spans owed.
+**NEXT safe work:** separately predeclare R-013/RP-351 read-only runner reporting
+diagnosis. No budget/population/CI/dependency change inferred. RP-348 historical
+cause still open. Fresh Docker0/100%; Linux/SQL/composed not rerun. Full states/
+400% zoom/Firefox/AT/auth/body/privacy/platform/numeric/full endings/full-nine-tier
+1.0/reviews/owner release remain. No cleanup/Retry/archival/push/preview shortcut.
+
 ## Garden child-observation checkpoint — 2026-10-07
 
 Test-only undera9fadedd: complete child result/elapsed on every existing SG1

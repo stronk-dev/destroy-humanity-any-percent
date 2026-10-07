@@ -4698,3 +4698,155 @@ Garage/Game UI native modules and unchanged separate performance objective.
 No Linux/SQL run while Docker is full. No manual AT/400% zoom/Firefox/hosted/
 whole-GS1/full-1.0 claim. Entire new range needs Claude; prior ranges remain
 independent. No acceptance boxes/body/status/archival/push/mint/release changes.
+
+### Fiscal probe-instrument correction (before further evidence)
+
+Initial types `fda8fa` / `ab6019` zero errors/warnings; native `1569d4` /
+`a77c8a`24 selected pass/626 unselected,6.31s, separate performance two pass.
+Cell6062 first two actual faults are valid: pending native-disable `1d9298`
+and wrong revision `a66f21`, each24fail/626 unselected, exits2.
+
+The direct receipt-notice=null probe produces12 Chromium failures but no complete
+WebKit/result population, then hangs with Node100%/browser children idle. Do not
+infer compiler causality or credit a complete24-failure witness. Read-only
+process/socket observation `6d3297` / `b2c94b` identifies only owned runner86507
+at test port51204. Scoped SIGTERM `dab1bd` closes its port but process remains
+alive `fa935b`; scoped SIGKILL `45cabb` makes handle terminal `eb1071`, Make2
+with child137. No unrelated process killed and no timeout/budget/config changed.
+
+More importantly, MY reversal then matched the earlier identical null assignment,
+not the mutated receipt site. Cell6062's "both sources restored" message was
+false. Diff `35efdf` proves the two swapped assignments; following omit-refresh
+`fe63d3` is contaminated and discarded, even though24 tests fail. This is not
+product evidence and not a fresh startup defect. Precision correction uses both
+surrounding contexts, `a61163` restores original host/Fiscal/test hashes exactly,
+`18d928` empty product diff. `d8ac0b` / `fe32dc` prove socket and the three
+identified runner/browser processes gone. No committed product byte changed.
+
+Further controls use context-specific patches/reversals plus a checked full
+host/Fiscal SHA after EACH probe, before any successor. Substitute actual outcome
+mapping with no-notice applied mapping rather than repeat the incomplete direct
+null probe. Keep all three invalid/stalled/control observations disclosed; no
+green-by-retry or incomplete-population credit. RP-349 tracks the bounded native
+evidence route; RP-350 records this transient instrument/restoration defect.
+
+### Corrected Fiscal controls complete; runner robustness finding RP-351
+
+Context-specific tools cells6071/6072 verify the original host and Fiscal SHA
+before each mutation AND after each restoration. Valid complete controls:
+receipt outcome replaced with no-notice applied mapping `57ed66`24fail (restore
+`01d6ea`); omit refresh `b0d369`24fail (`4c81e9`); steal newer Settings focus
+`0064b1`24fail (`cf02c0`); omit status role `81a87e`24fail (`70975a`); leak
+Fiscal notice into Settings `3b5f47`8harvest fail/16level-unlock controls pass
+(`2c11ab`). Each retains626 unselected old tests and exits2; no collection/type
+error credited. The corrected omit-refresh witness, not fe63d3, is evidence.
+
+The final false&&pending probe stalls separately. Read-only socket `9c249e`
+and metadata `6ad5ce` identify owned20682 at98.5% CPU, browser children idle;
+diff `35bad8` proves only its intended conditional is changed. SIGTERM `62cc4d`
+closes the port but `7c43d0` confirms runner stillalive/99.9%; scoped SIGKILL
+`d95cbe` makes handle terminal `0bbb9f`, Make2/child137. No complete population
+credit and no compiler/source-map/capacity/CPU-cause attribution. Checked restore
+`0e5c4a` holds. Together with eb1071 this is RP-351, a real native-runner robustness
+question, not a production finding or proof of any hosted failure. No retries,
+budget changes or source exclusions; original incomplete attempts stay recorded.
+
+Replacement pending-text semantic fault: keep the live branch, render existing
+common.loading instead of common.pending. `3c34da` / terminal `53ba58`24fail/
+626 unselected,3.45s, correct visible-text assertion. This is new controlled
+evidence, not a rerun masquerading as a completed false-branch attempt. Native
+initial healthy24 plus eight complete faults (24/24/24/24/24/24/8/24 failures)
+now cover pending native state, stream binding, notices, refresh, surviving newer
+focus, status semantics, context ownership and pending text.
+
+Final restore `b97d43` matches all three original product/test SHA from21cc73;
+`6a0b1e` empty product diff; `27d7f5` confirms owned20682/20706/20724 gone.
+Docker `a7c6d2` still0 available/100% (125.7G/122.8G); no cleanup/Linux/SQL run.
+Next run final healthy local populations on these exact restored bytes, no
+record/source/HEAD edits while their matching handles remain live. All stalled
+and contaminated controls remain disclosed; RP-348 still unexplained.
+
+### Fiscal native supplement — final evidence and implementer first filter
+
+All matching gates executed on the exact restored product/test hashes `b97d43`,
+no source/HEAD/records changed during their live handles. Root `0b71c0` /
+terminal `a8ad51` exits0: types zero errors/warnings, complete client9,816 passes /
+649 explicit browser skips (twelve new declarations execute in native browsers),
+105 passing /22 skipped files,7.56s. Garden child-observation controls pass in
+this population; this does not diagnose RP-348's earlier failure. Build214 modules,
+UI `index-h_Id1Wf-.js`, worker `prediction.worker-MqspU_iu.js`, CSS
+`index-DaRqgLww.css` unchanged. Achievement seven component/four copy negatives,
+shell/UI plus10Go/11Svelte cosmetic negatives, topology13 negatives and no-payment
+six negatives/two near-misses pass. No Go/SQL or hosted run is inferred.
+
+Full native `892dd5` / terminal `b6338d` exits0: all four Garage/Game UI modules,
+694 passes /four explicitly isolated performance skips,118.25s. Root's separate
+unchanged performance objective two passes /22 unselected,2.20s. Original real
+60s idle objective retained, not shortened to make this run finish. Early poll
+`4c63e1` truncates passive HTTP logs; complete terminal totals retained separately.
+Copy/history `d822f4` / terminal `efcf23` exits0:658keys, unchanged SHA
+`a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e`,
+611 existing orphan warnings, deployment content manifest exact. Every handle
+terminal before closeout records and commit; no quiet-run restart.
+
+RP-349's new24 native paths actually navigate Desk→Fiscal→action, hold ordinary
+refusal, retry/hold applied reply and authoritative read, choose Settings natively
+while read pending, retain that focus/context and suppress Fiscal notice leakage,
+then native return/fresh intent with Founder8, not old7 or Company2. Exact three
+request bodies/fresh IDs, read counts, all native duplicate guards, visible status/
+busy states, full-page reflow and axe execute.72 deliberate runtime-double
+requests are not72 independent tests or a real persisted quarter/spend proof.
+Fixtures intentionally retain eligibility; removed/disabled-action semantics,
+all additional states/eras/engines,400% zoom/manual AT and live HTTP/auth/SQL are
+not proved. Existing separate component guard/removal/real-service evidence stays
+independent; this supplement does not overwrite or promote it.
+
+Eight valid complete source faults: native pending-disable24 (`1d9298`), wrong
+stream24 (`a66f21`), no-notice mapping24 (`57ed66`), omit refresh24 (`b0d369`),
+steal newer focus24 (`0064b1`), omit status role24 (`81a87e`), Settings leak8 with
+16 unaffected controls (`3b5f47`), wrong pending text24 (`53ba58`). Restorations
+checked explicitly; failed RP-350 cleanup/contaminated `fe63d3` and incomplete
+`eb1071`/`0bbb9f` do not enter that table. Neither runner-stall cause nor the
+historical child-marker failure is resolved by these later healthy runs.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Test-only diff,
+public decoder inputs, actual keyboard path, payload/revision/notice/focus guards,
+bounded traversal, cleanup and existing assertions inspected. Full new range
+`c24b8f6d`-exclusive through this containing implementation/records commit, including
+aa296eba and instrument correction history, needs Claude's designated review.
+Prior `4b44a563..c24b8f6d`, `0e7910ed..4b44a563` and all older spans stay owed.
+No approval, acceptance box/body/status/archive/mint/push/deployment/release claim.
+
+Docs behavior unchanged because no product byte changes. Canonical acceptance
+inventory/backlog/plan/queue/1.0 board/log reconciled. Fresh Docker `a7c6d2` still
+zero available/100%; no cleanup authority or repeated full-disk Linux/SQL run.
+Next safe work is separately predeclared R-013/RP-351 read-only failure-reporting
+diagnosis, preserving populations/budgets/CI. Read accepted CI Baseline in full;
+it does not authorize arbitrary dependency, timeout or workflow changes. All
+body/privacy/platform/numeric/Firefox/AT/real composed/full-ending/full-nine-tier
+1.0 and independent-review/owner release obligations remain. Goal active/progress.
+
+First-filter instrument refinement before commit: the final ordinary refusal
+now reports currentRevision8, matching its freshly accepted Founder8 snapshot,
+instead of reusing the first refusal's7. No assertion or product change. The
+eight fault results retain their earlier driver SHA309e45f9; do not restamp them
+onto the refined fixture. Re-run full matching healthy gates on the refined
+driver and retain both source coordinates; earlier complete run remains evidence,
+not the final coordinate. This is fixture realism, not a shipped product repair.
+
+### Refined Fiscal fixture — exact final verification coordinate
+
+Final driver SHA256 `2040c434eeb5c1c181106e4c5bba26c9484298bbad54b9731a73e27976dc846e`.
+Root refined checks `a1d3ea` exit0: typecheck zero errors/warnings, client9,816
+passes /649 explicit browser skips,105 passing /22 skipped files,10.06s; unchanged
+214-module build and all achievement/client/topology/no-payment boundary controls
+pass. Matching native handle54329 terminal `21e73e` exits0:694 passes /four
+explicitly isolated performance skips, four modules,119.07s; separate unchanged
+performance objective two passes /22 unselected,1.85s. Passive HTTP output was
+truncated, not test totals; terminal totals retained. Matching copy/history
+handle86951 terminal `ee38c2` exits0:658keys, unchanged copy SHA above,611 existing
+orphan warnings, exact deployment content manifest. Neither source nor HEAD nor
+records changed while these matching handles were live; both terminal before
+this append. Earlier fault results remain pinned to driver309e45f9, not relabelled
+as executions on the refined driver. Product bytes remain unchanged. These are
+local gates, not cold Linux/Postgres, hosted CI or designated review evidence.
