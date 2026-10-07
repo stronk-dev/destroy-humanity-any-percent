@@ -5039,3 +5039,28 @@ No axe exclusion or fixture shrink. Final source/fixture hashes pinned above;
 no acceptance/status/archive promotion. Subsequent style-data repair must be
 separately scoped; it cannot silently enter the declared Claim component range.
 All original comparison/fault/final verification and designated review still owed.
+
+### RP-354 — separately predeclared provisional theme-data correction
+
+Authority: UI Foundation C9 explicitly delegates literal colors as PROVISIONAL,
+tunable styling DATA, retaining the closed key contract; C7/C11 require zero
+serious/critical axe WCAG AA. The active Garage GS0.6/GS5 surface floor consumes
+that existing primitive contract. This is two existing data-leaf tunings, not a
+new token/schema/primitive/system, typography/layout or normative archived edit.
+No claim that original frozen RFC literals were different; canonical docs record
+the current tuned data. Scope: ui/themes/era_1995.json color.text_muted and
+color.danger ONLY, docs/ui-foundation.md and evidence records, separate from the
+preceding component repair. Other39 token leaves, other eras, schema, component
+styles/Amount formatting/scheduler, motion, copy/kernel/balance/CI unchanged.
+
+Predeclared selection is nearest darker integer RGB on each existing hue ray
+(neutral gray or red), satisfying unchanged4.5 threshold on actual gray192 and
+white255 backgrounds. Calculation846201 matches actual old axe ratios:
+muted85/85/85=4.097615; nearest79/79/79 (#4f4f4f)=4.502120, next80 fails4.431853;
+danger170/0/0=4.260395; nearest163/0/0 (#a30000)=4.513462, next164 fails4.476359.
+White backgrounds pass8.191131/8.211766. This calculation proposes values; actual
+native DOM/axe is the acceptance witness, not math alone. Same40 cases and all
+full final populations/budgets retained. Restoring either old color MUST fail
+the actual capped-bank axe population, then restore exact theme hash; no raw
+test outcome or historical failure restamped. Theme tunability does not waive
+cross-party review/range-union/whole-era/state/1.0/owner release gates.
