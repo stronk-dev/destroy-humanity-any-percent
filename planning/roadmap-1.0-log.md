@@ -4113,3 +4113,21 @@ lanes pass. Actual claim is a click buff, not Lucky. Entire new span after
 accepted work: predeclare RP-316 snapshot-credit oracle. RP-313 and all prior
 holds/full nine-tier goal remain. Active/progress, no acceptance/status/box/
 archive/mint/push/deploy/whole-CI/release promotion.
+
+## 2026-10-07 — Claim evidence now requires the authoritative successor
+
+RP-316 accepted GS5-A4 observer repair through `0befc01c`; predeclared
+`00fb7366`, original-predicate lift/test-first `cdd00ee5`. First21 then7
+unsupported outcomes fail before correction. Shared actual driver/test oracle
+checks exact request/revision/run, canonical credit/receipt/successor cash,
+actual capped-zero evidence, unique buff ID/effect and registered200 read.
+No payout formula copied. Six independently compiling fault probes fail;
+source restored exactly. Final native86/performance1, client9,735/348 skips,
+types/build/boundaries and actual Postgres/WebSocket composed lanes pass.
+Actual claim is click buff at revision26 after15 DOM clicks/zero expiries;
+not Lucky acquisition proof. Whole new Codex span after `c0eb3dc5` INCLUDING
+this tracking edge needs Claude. Earlier diagnostic/Desk/producer/RP-312/
+Clout spans stay separate. Next: diagnostic review of original Claude pet
+`7a61e4b6^..7a61e4b6`, with RP-132/GS4×PA7 author hold intact. All other
+holds/full nine-tier goal remain. Active/progress, no box/status/close/archive/
+mint/publication or whole-CI/release promotion.

@@ -4,7 +4,19 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage diagnostic correction:** RP-317's accepted GS5/GS0.2 mapper
+**Latest Garage proof correction:** RP-316's shared GS5-A4 observer through
+`0befc01c` now checks request/revision/run/cash/buff bindings and successful
+successor reads. Test-first failures and six independent compiling omission
+probes discriminate; source restored exactly. Native86/performance1, client
+9,735/348 skips, types/build/boundaries and actual Postgres/WebSocket composed
+lanes pass. Actual claim: click buff at revision26 after15 DOM clicks, NOT
+Lucky integration. No product runtime/schema/kernel/copy/CI changes. Entire
+Codex range after `c0eb3dc5` through its tracking edge needs Claude; RP-316
+is not closed. Next: original Claude pet diagnostic review
+`7a61e4b6^..7a61e4b6`, preserving RP-132/GS4×PA7 author hold. RP-313 and
+all prior holds/full nine-tier objective remain; no lifecycle promotion.
+
+**Preceding Garage diagnostic correction:** RP-317's accepted GS5/GS0.2 mapper
 flag and host reporting repair through `092ef3eb` passes types/client
 9,692/348 skips/build/boundaries, native Chromium/WebKit Garage50/performance1,
 and actual Postgres/WebSocket composed tests. Ordinary refusals are unchanged;
@@ -14,7 +26,7 @@ not counted; single-engine failing baselines terminate normally. No Lucky,
 Firefox/AT/full-Garage/whole-CI/release proof. Entire new Codex span after
 `0f3a1a7a` including all tracking edges needs Claude. Desk correction is
 separately exact `d90aded7..0f3a1a7a`, producer `87fd23d4..d90aded7`.
-Next: separately predeclare RP-316's snapshot-credit oracle. All prior holds
+Its then-next RP-316 snapshot-credit oracle is now recorded above. All prior holds
 and full nine-tier goal remain, without status/archive/mint/publication.
 
 **Preceding Garage Desk review:** original Claude `f32f6175^..f32f6175`, all

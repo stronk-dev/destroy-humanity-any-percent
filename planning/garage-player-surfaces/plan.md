@@ -21,8 +21,10 @@ that would need one is recorded as a blocker in `log.md` instead.
   tests do not resolve this. Original consumer `f32f6175^..f32f6175`, all
   fourteen paths, is separately CHANGES REQUIRED for RP-314/315/316. Narrow
   cap/keyboard/timer correction through `d9e4e274` passes 40 native cases;
-  exact Codex correction `d90aded7..0f3a1a7a` needs Claude. RP-316's Lucky
-  oracle remains separately queued. RP-317 diagnostic mapping/host repair
+  exact Codex correction `d90aded7..0f3a1a7a` needs Claude. RP-316's shared
+  oracle through `0befc01c` is locally corrected (native86, six faults fire,
+  actual click-buff composed pass, NOT Lucky); entire Codex span after
+  `c0eb3dc5` through tracking needs Claude. RP-317 diagnostic mapping/host repair
   through `092ef3eb` passes 50 native cases; separate entire Codex span after
   `0f3a1a7a`, including its tracking edge, needs Claude. Producer supplement
   `87fd23d4..d90aded7` requires

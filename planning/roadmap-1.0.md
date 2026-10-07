@@ -5,7 +5,17 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded correction (2026-10-07):** accepted GS5/GS0.2 invariant
+**Latest bounded correction (2026-10-07):** RP-316 GS5-A4 claim observer
+through `0befc01c` is locally corrected, not designated-approved. Shared
+actual-driver/test predicate; six compiling faults fail and restore exactly.
+Native86/performance1, client9,735/348 skips/types/build/boundaries and actual
+Postgres/WebSocket composed pass. Actual click buff, revision26/15 DOM clicks;
+not Lucky integration or a payout correction. No product/kernel/schema/copy/
+workflow byte changed. Whole Codex span after `c0eb3dc5` through tracking
+needs Claude. Next: original pet `7a61e4b6^..7a61e4b6` diagnostic review,
+preserving RP-132/GS4×PA7, RP-313 and other holds. Full nine-tier 1.0.
+
+**Preceding bounded correction (2026-10-07):** accepted GS5/GS0.2 invariant
 reporting through `092ef3eb`, RP-317. Failing-first mapper and native host
 cases reproduce missing unknown/unlisted/invalid diagnostics; ordinary
 refusals stay ordinary. Three compiling omission faults fail and are removed
@@ -13,8 +23,8 @@ exactly. Final types/client 9,692/348 skips/build/boundaries/native Garage50
 and performance1/actual Postgres+WebSocket composed lanes pass. Not Lucky,
 Firefox/AT/full-Garage/whole-CI/release evidence. Whole new Codex span after
 `0f3a1a7a`, including records, needs Claude; Desk `d90aded7..0f3a1a7a`, producer
-`87fd23d4..d90aded7`, RP-312/Clout spans remain separate. Next: predeclare
-RP-316 snapshot-credit oracle; RP-313 and all prior holds remain. Full 1.0.
+`87fd23d4..d90aded7`, RP-312/Clout spans remain separate. Its then-next
+RP-316 snapshot-credit oracle is recorded above; prior holds remain. Full 1.0.
 
 **Preceding bounded review (2026-10-07):** original Claude Desk consumer
 `f32f6175^..f32f6175`, all fourteen paths: designated Codex **CHANGES REQUIRED**,

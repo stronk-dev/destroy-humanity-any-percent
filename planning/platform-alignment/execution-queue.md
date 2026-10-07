@@ -3,7 +3,25 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Garage intent diagnostic correction — 2026-10-07
+## Garage claim-proof correction — 2026-10-07
+
+RP-316 shared GS5-A4 oracle through `0befc01c` is locally corrected, NOT
+designated-approved. Test-first21 then7 negatives fail; six compiling
+shortcut/cash/revision/effect/zero/status omissions fail independently and
+restore exactly. Native86/performance1, client9,735/348 skips/types/build/
+boundaries and actual Postgres/WebSocket composed pass. Actual click buff,
+revision26 after15 DOM clicks, not Lucky integration. Pure tooling/test/docs/
+tracking only; no product runtime/kernel/schema/copy/workflow change.
+
+**READY next diagnostic review:** original Claude pet consumer
+`7a61e4b6^..7a61e4b6`, all paths. RP-132/GS4×PA7 author hold stays binding.
+**READY FOR CLAUDE:** entire Codex range after `c0eb3dc5` through this tracking
+edge, including `00fb7366`, `cdd00ee5`, `0befc01c`. Independent diagnostic
+`0f3a1a7a..c0eb3dc5`, Desk `d90aded7..0f3a1a7a`, producer
+`87fd23d4..d90aded7`, RP-312 and Clout spans remain separate. RP-313 and
+all other holds/full nine-tier objective remain; no close/archive/mint/push.
+
+## Garage intent diagnostic correction — 2026-10-07 (preceding checkpoint)
 
 RP-317's accepted GS5/GS0.2 repair through `092ef3eb` is locally verified,
 NOT designated-approved. One mapper failure and three native failures per
@@ -13,8 +31,8 @@ Final types/client 9,692 passes/348 skips/build/boundaries/native Garage
 50/performance1/actual Postgres+WebSocket composed lanes pass. No Lucky,
 Firefox/AT/full-Garage/whole-CI/release promotion.
 
-**READY next accepted work:** separately predeclare RP-316's snapshot-credit
-oracle construction, retaining the natural DOM population and bounded guard.
+**Then-next, now locally corrected above:** RP-316 snapshot-credit oracle,
+retaining the natural DOM population and bounded guard.
 **READY FOR CLAUDE:** entire new diagnostic span after `0f3a1a7a`, including
 predeclaration `090c1d61`, tests `c990329d`, product `092ef3eb` and this
 tracking edge. Separate Desk `d90aded7..0f3a1a7a`, producer
