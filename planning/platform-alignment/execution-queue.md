@@ -3,6 +3,27 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage visible Trophy Case / native nav checkpoint — 2026-10-07
+
+GS2-A1/A5 under6c578197; red test-only checkpointffabda04 records RP-338
+actual WebKit Tab skip before axe. Separately predeclarede30b5e00 repair:
+ten existing nav buttons explicit tabindex0, unchanged handlers/order/copy.
+Twelve decoder-admitted populated/empty/error ×320/1280 ×Enter/Space cases
+in two native engines; exact visible text, single-column/unmasked geometry,
+native Tab/Shift-Tab/Desk return/read-only/axe. Ten real source faults fail;
+sources restore exactly. Full native Garage286 /isolated performance two,
+client9,814 /467 skips/types/build/copy/source/static topology pass. UI JS
+changes; worker/CSS unchanged. No arbitrary all-state/Firefox/AT/persisted/
+full1.0 proof. **READY FOR CLAUDE:** entire85fdcfdf-exclusive span through
+records, including failed-test and separate product scope, not just repair.
+Prior3609e776..85fdcfdf and every earlier exact range remain independently owed.
+
+**NEXT:** predeclare accepted GS0.5 Trophy Case loading/reconnect/null-arm
+focus fixtures; actual GS2-A4 persistence awaits Docker capacity. Human scoped
+cleanup authority unanswered, no deletion/full-disk run. All Linux/SQL/
+author/body/GS4/full AC7/Firefox/actual zoom/AT/default-player/privacy/platform/
+numeric/full-nine-tier1.0/review gates stay open. No lifecycle/push/mint/preview.
+
 ## Garage score-vs-Clout source guard checkpoint — 2026-10-07
 
 RP-337/GS2-A3 verification-only, predeclared305b8e8b/a32b8358. Old gate's

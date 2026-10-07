@@ -3365,3 +3365,87 @@ No renderer/clock/copy/protocol/balance/kernel/CI/Make/RFC-body scope added.
 Docs and records in repair range; full new span after85fdcfdf needs Claude
 with explicit test-only and product-repair boundaries. Full three-engine/
 all-state/AT/persisted-player/1.0/archival approval remains unproved.
+
+## 2026-10-07 — RP-338 native nav correction / final first filter
+
+Review by: Codex (implementer self/first filter, NOT designated).
+Recorded by: Codex. Full new range starts after85fdcfdf and includes test
+predeclaration6c578197, failed test-onlycheckpointffabda04, separate accepted
+product predeclaratione30b5e00 and this containing repair/docs/tracking commit.
+Claude must cover the full union, independently of source guard3609e776..
+85fdcfdf, Fiscal57efdc39..3609e776 and all preceding ranges. No self archival.
+
+Citation precision: e30b5e00's phrase "GS0.4 keyboard rule" refers to that
+section's native-button host contract; the explicit keyboard-map/acceptance
+requirement is GS2/GS2-A5 (GS1-A5 by reference). No invented GS0.4 clause,
+new mechanic or change to anyone else's RFC/ruling text. The initial test-only
+scope ended atffabda04; production work began only after separate predeclaration.
+
+Permanent source diff is ten existing nav buttons' explicit tabindex0,
+unchanged DOM order/copy/conditions/handlers, no script keyboard interception,
+forced focus between Tabs, provider preference/configuration or test weakening.
+80ae98→89078d native healthy population exits0:24/24 new executions,262
+explicitly unselected; chained isolated performance two /22 unselected pass.
+This intervention removes the prior twelve native WebKit failures. Actual
+Fiscal nav tabindex removal6cc49d then fails twelve WebKit cases (Tab skips
+to Reputation Board), while twelve Chromium controls pass. Same keyboard
+route, not a fixture manually focusing the supposed next stop.
+
+Ten source faults executed through native browser collection, not parser/type
+errors. Each command terminal exit2; untouched population controls retained:
+
+| Fault | Terminal output | Failed / passed selected executions | Actual witness |
+|---|---|---|---|
+| state text removed | 02ccaf | 10 /16 | original GS2-A1 plus exact new visible state |
+| state display:none | 889096 | 8 /18 | new visibility fails; original raw-text assertions survive |
+| run/career score swapped | a1eaa8 | 8 /16 | exact run2/career5 header |
+| possession warning omitted | b2b198 | 8 /16 | expected warning census |
+| min-width40rem | a9c38f | 12 /12 | native single-column/scroll: actual narrow overflow656>321 |
+| wide panel masked by host overflow:hidden | 978954 | 24 /0 | ancestor clipping refusal |
+| empty copy removed | 16fbef | 8 /16 | visible exact empty message |
+| missing-copy alert removed | 11dfd6 | 8 /16 | exact role/text alert |
+| Settings nav name erased | e7f679 | 24 /0 | actual critical axe button-name violation, not button lookup |
+| Fiscal nav Tab attribute removed | 6cc49d | 12 /12 | native WebKit next-stop failure; Chromium control survives |
+
+First two selectors include unchanged GS2-A1 as well as new GS2-A5; remaining
+selectors execute only twelve new cases×two engines. No failed population
+relabeled passing. One patch with reverse-ordered hunks failed atomically
+while restoring hidden state/applying score swap; verified actual diff,
+restored hidden seed, then applied the independent score probe correctly.
+No unintended source edit/seed committed. Final hashes8089de:
+AchievementsSurface877a39910e1b859e962a0929d674973c3010052ccf20bcd1bac2226fae2901a9
+(original unchanged); GameUIApp5fa422dfdf96a8484477f26c687c23c3ee6f887c8d3caffaaebd4fcc23c6272d
+(only intended explicit nav attributes). All seed CSS/copy changes restored.
+Earlier annotation-driver mistakes and disconfirmed axe hypothesis retained
+above, not silently treated as product causes or passing measurements.
+
+Finalb59ba1→e86a58 terminal0: full current native Garage Chromium/WebKit
+286/286,78.74s, real minute idle population retained; chained isolated
+performance two /22 unselected pass. c7d6de→4e9f1f terminal0: types zero
+errors/warnings; client9,814 passes /467 explicit browser skips,105 files
+pass22skip;214-module build. UI JS index-Dt0SMABe.js changes as expected,
+worker prediction.worker-MqspU_iu.js and CSS index-DaRqgLww.css unchanged.
+Source guard seven component/four copy negatives, UI14shell/8UI/22GameUI
+with ten Go/eleven Svelte cosmetic negatives and topology13 negatives pass.
+Copy3d903e→8e6919 terminal0:658 keys, unchanged hash
+a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings, content manifest passes. No HEAD/source changes
+during the history scan. No Go/SQL/persisted/hosted gate invented.
+
+Twelve fixtures=populated(run/career/locked)/empty/unavailable presentation
+×320/1280×Enter/Space. Exact visible state/title/scope/grant/possession/score
+or empty/error; read-only/no intents; readable single-column/own-scroll/bounds
+and no ancestor masking; native navigation and serious/critical axe checks.
+Annotations capture Trophy geometry before Desk navigation (test annotations,
+not committed measurement artifacts). Not loading/reconnect/null-arm/every
+conditional nav/Firefox/actual400%zoom/manual AT/current service acquisition
+or complete GS2-A5/platform/1.0 acceptance. Changed host composed needs real
+SQL after capacity repair; prior-source composed output is not substituted.
+
+Docs/ledger RP-338/inventory/plan/board/queue/checkpoint log reconciled.
+Human Docker cleanup permission still unanswered; no deletion/full-disk run,
+fresh capacity recovery or Linux-CI claim. All RP-331/author/body/GS4/full AC7/
+AT/default-player/privacy/platform/numeric/full-nine-tier1.0/review holds
+remain. Next accepted work: predeclare GS0.5 Trophy Case loading/reconnect/
+null-arm context-change focus fixtures; actual GS2-A4 stays capacity-held.
+No boxes/lifecycle/archive/mint/push/deploy/release/preview promotion.

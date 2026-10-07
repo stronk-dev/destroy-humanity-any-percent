@@ -31,6 +31,17 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   negatives. It ignores comments and does not ban the separate Clout consumer.
   This is a bounded source firewall, not arbitrary computed dataflow or a
   persisted-player achievement acceptance proof.
+- **Native navigation (RP-338):** existing chrome nav buttons explicitly use
+  `tabindex="0"` in their unchanged DOM order. The native WebKit fixture previously
+  skipped those buttons on Tab; the same route now passes without script key
+  interception or forced focus between Tab steps. Headings keep negative
+  tabindex. Trophy Case populated/empty/unavailable-copy fixtures check exact
+  visible score/state/scope/grant/possession or empty/error text, read-only
+  controls, Enter/Space/Tab/Shift-Tab, axe and readable 320/1280 px geometry.
+  Ten actual faults discriminate, including an unnamed nav button triggering
+  axe `button-name` and a removed nav Tab attribute failing WebKit. Evidence
+  covers these Chromium/WebKit fixtures, not every conditional nav population,
+  loading/reconnect/null-arm state, Firefox, actual 400% zoom or manual AT.
 - **Achievement/meter announcements:** exact event decoders drive the single polite chrome
   announcement, not game-state arithmetic. Achievement copy is announced once per scoped cursor;
   meter changes announce on the Meters surface or badge its nav until visited. Unknown presentation

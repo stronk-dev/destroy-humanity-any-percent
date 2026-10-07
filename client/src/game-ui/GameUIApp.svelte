@@ -515,16 +515,16 @@
         <span>{t("chrome.run_title.tier_frame", { tier: snapshot.run.tier }, era)}</span>
       </div>
       <nav aria-label={t("surface.desk.title", {}, era)}>
-        <button type="button" aria-current={surface === "desk" ? "page" : undefined} onclick={() => show("desk")}>{t("surface.desk.title", {}, era)}</button>
-        {#if factTrue("feature.achievements")}<button type="button" aria-current={surface === "achievements" ? "page" : undefined} onclick={() => show("achievements")}>{t("surface.achievements.title", {}, era)}</button>{/if}
-        {#if factTrue("feature.fiscal")}<button type="button" aria-current={surface === "fiscal" ? "page" : undefined} onclick={() => show("fiscal")}>{t("surface.fiscal.title", {}, era)}{#if fiscalHarvested}<span class="nav-badge">{t("fiscal.nav.harvest_badge", {}, era)}</span>{/if}</button>{/if}
-        {#if factTrue("feature.pets")}<button type="button" aria-current={surface === "pet" ? "page" : undefined} onclick={() => show("pet")}>{t("pet.care.panel.title", {}, era)}</button>{/if}
-        {#if factTrue("feature.meters")}<button type="button" aria-current={surface === "meters" ? "page" : undefined} onclick={() => show("meters")}>{t("surface.meters.title", {}, era)}{#if metersChanged} {t("meters.nav_changed_badge", {}, era)}{/if}</button>{/if}
-        {#if runtime.minigame && factTrue("feature.minigame.pitch")}<button type="button" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
-        {#if runtime.soulRecovery}<button type="button" aria-current={surface === "soul_recovery" ? "page" : undefined} onclick={() => show("soul_recovery")}>{t("soul.recovery_surface.title", {}, era)}</button>{/if}
-        {#if factTrue("feature.reputation_tree")}<button type="button" aria-current={surface === "reputation_tree" ? "page" : undefined} onclick={() => show("reputation_tree")}>{t("reputation_tree.title", {}, era)}</button>{/if}
-        {#if runtime.garden && gardenVisible}<button type="button" aria-current={surface === "garden" ? "page" : undefined} onclick={() => show("garden")}>{t("garden.title", {}, era)}</button>{/if}
-        <button type="button" aria-current={surface === "settings" ? "page" : undefined} onclick={() => show("settings")}>{t("surface.settings.title", {}, era)}</button>
+        <button type="button" tabindex="0" aria-current={surface === "desk" ? "page" : undefined} onclick={() => show("desk")}>{t("surface.desk.title", {}, era)}</button>
+        {#if factTrue("feature.achievements")}<button type="button" tabindex="0" aria-current={surface === "achievements" ? "page" : undefined} onclick={() => show("achievements")}>{t("surface.achievements.title", {}, era)}</button>{/if}
+        {#if factTrue("feature.fiscal")}<button type="button" tabindex="0" aria-current={surface === "fiscal" ? "page" : undefined} onclick={() => show("fiscal")}>{t("surface.fiscal.title", {}, era)}{#if fiscalHarvested}<span class="nav-badge">{t("fiscal.nav.harvest_badge", {}, era)}</span>{/if}</button>{/if}
+        {#if factTrue("feature.pets")}<button type="button" tabindex="0" aria-current={surface === "pet" ? "page" : undefined} onclick={() => show("pet")}>{t("pet.care.panel.title", {}, era)}</button>{/if}
+        {#if factTrue("feature.meters")}<button type="button" tabindex="0" aria-current={surface === "meters" ? "page" : undefined} onclick={() => show("meters")}>{t("surface.meters.title", {}, era)}{#if metersChanged} {t("meters.nav_changed_badge", {}, era)}{/if}</button>{/if}
+        {#if runtime.minigame && factTrue("feature.minigame.pitch")}<button type="button" tabindex="0" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
+        {#if runtime.soulRecovery}<button type="button" tabindex="0" aria-current={surface === "soul_recovery" ? "page" : undefined} onclick={() => show("soul_recovery")}>{t("soul.recovery_surface.title", {}, era)}</button>{/if}
+        {#if factTrue("feature.reputation_tree")}<button type="button" tabindex="0" aria-current={surface === "reputation_tree" ? "page" : undefined} onclick={() => show("reputation_tree")}>{t("reputation_tree.title", {}, era)}</button>{/if}
+        {#if runtime.garden && gardenVisible}<button type="button" tabindex="0" aria-current={surface === "garden" ? "page" : undefined} onclick={() => show("garden")}>{t("garden.title", {}, era)}</button>{/if}
+        <button type="button" tabindex="0" aria-current={surface === "settings" ? "page" : undefined} onclick={() => show("settings")}>{t("surface.settings.title", {}, era)}</button>
       </nav>
       {#if snapshot.run.run_seq === 1 && visitorCount !== undefined}<span class="visitor" title={t("chrome.visitor_counter.tooltip", {}, era)}>{t("chrome.visitor_counter.frame", { count: visitorCount }, era)}</span>{/if}
     </header>

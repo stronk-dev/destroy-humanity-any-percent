@@ -4496,3 +4496,32 @@ Linux/SQL. Permission still unanswered; no deletion/full-disk run. All
 RP-331/author/body/GS4/full AC7/AT/default-player/privacy/platform/numeric/
 review/full-nine-tier 1.0 gates remain. Goal active/progress, not complete or
 blocked; no archival/mint/push/deploy/shortened-preview substitution.
+
+## 2026-10-07 — visible Trophy Case / native nav defect checkpoint
+
+GS2-A1/A5 test predeclaration6c578197 and red test-onlycheckpointffabda04
+find RP-338: native WebKit Tab skips implicit nav buttons before axe. Initial
+annotation overload error fixed; suspected axe cause disconfirmed explicitly.
+Separate accepted product scopee30b5e00 then adds explicit tabindex0 to ten
+existing nav buttons, unchanged order/handlers/copy; no forced Tab focus,
+key interception or provider waiver. Twelve decoded fixture cases×two
+engines prove bounded populated/empty/error visible text/readability/keyboard/
+axe; ten real source faults discriminate and restore exactly. Original
+raw-text gate survives hidden-state CSS; new visible gate fails it honestly.
+
+Full native Garage286 /isolated performance two passes; client9,814 /467
+explicit browser skips/types/build/copy/source/static topology pass. Only
+UI JS changes; worker/CSS unchanged. Not loading/reconnect/null-arm/every
+conditional nav/Firefox/manual AT/actual zoom/live acquisition/full GS2-A5
+or Linux-CI/release evidence. No source/HEAD mutation during copy history scan.
+
+Whole new span after85fdcfdf through this containing repair/record commit
+needs Claude, INCLUDING failed-test and separately predeclared product scope,
+independent of3609e776..85fdcfdf and all earlier spans. Docs/ledger/inventory/
+plan/board/queue/log agree, no boxes/lifecycle promotion. Next safe accepted
+work: GS0.5 Trophy Case loading/reconnect/null-arm focus fixtures; GS2-A4
+actual acquisition waits on scoped-authorized measured Docker recovery.
+Permission still unanswered, no deletion/full-disk run. All author/body/
+GS4/full AC7/AT/default-player/privacy/platform/numeric/review/full-nine-tier
+1.0 holds remain. Goal active/progress, not complete/blocked; no archive/
+push/mint/deploy/shortened-preview substitution.

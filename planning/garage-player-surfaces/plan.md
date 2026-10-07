@@ -7,7 +7,26 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-337 GS2-A3 verification-only source guard under
+Latest bounded work: GS2-A1/A5 visible Trophy Case fixtures and RP-338 native
+nav repair. Test-only6c578197..ffabda04 records actual WebKit Tab failure;
+separate e30b5e00 predeclares explicit tabindex0 on ten existing nav buttons,
+unchanged order/handlers/copy. Twelve public fixture cases×two engines cover
+populated/empty/error at320/1280 with Enter/Space, exact visible text and
+unmasked geometry/native traversal/axe. Ten actual faults discriminate;
+sources restore exactly. Full native Garage286 /isolated performance two,
+types/client9,814 /467 explicit browser skips/build/copy/source/static topology
+pass. UI JS changes as expected; worker/CSS unchanged. Driver annotation
+error and disconfirmed axe hypothesis disclosed, no assertion weakened.
+Complete new span after85fdcfdf through records needs Claude independently
+of source guard3609e776..85fdcfdf and every earlier span. No acceptance box/
+lifecycle/archive/push/mint/release change. Next accepted work: GS2 shared
+loading/reconnect/null-arm context-change fixtures under GS0.5, predeclared
+and discriminating; persisted GS2-A4 waits on capacity. Cleanup permission
+still unanswered, no deletion/full-disk run. Firefox/all-state/actual zoom/
+AT/author/body/GS4/full AC7/default-player/privacy/platform/numeric/full-nine-
+tier 1.0 holds remain. No shortened-preview substitution.
+
+Preceding bounded work: RP-337 GS2-A3 verification-only source guard under
 305b8e8b/a32b8358. Old gate survives real binding/label faults; existing-tool
 extension checks actual Svelte AST and canonical source achievement copy/era
 variants, not generated output. Seven component/four copy negatives and five

@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-337/GS2-A3 source guard, verification
+**Latest bounded work (2026-10-07):** GS2 visible Trophy Case/RP-338 native
+nav correction. Real WebKit Tab baseline red, first test-only6c578197..
+ffabda04, then scoped accepted repair predeclaratione30b5e00. Ten existing
+nav buttons now explicit tabindex0, unchanged order/copy/handlers. Twelve
+decoded fixture cases×two engines and ten real faults prove bounded visible
+populated/empty/error text/320+1280/keyboard/axe, not real acquisition/full
+AT/all-state/all-engine. Full native Garage286 /performance two, client9,814
+/467 skips/types/build/copy/source/static topology pass. Only UI JS changes;
+worker/CSS unchanged. Full new span after85fdcfdf needs Claude separately
+from all earlier spans. Next: accepted GS0.5 Trophy Case loading/reconnect/
+null-arm focus fixtures; capacity restoration/SQL only with exact human
+cleanup permission (still unanswered). No deletion/full-disk run. Firefox/
+all-state/actual zoom/AT/author/body/GS4/full AC7/default-player/privacy/
+platform/numeric/full-nine-tier1.0 holds remain; no lifecycle/push/preview.
+
+**Preceding bounded work (2026-10-07):** RP-337/GS2-A3 source guard, verification
 only. Existing gate survives actual faults; bounded extension parses Trophy
 Case and builds canonical source achievement copy/era variants. Seven
 component/four copy negatives and five real faults discriminate/restored
