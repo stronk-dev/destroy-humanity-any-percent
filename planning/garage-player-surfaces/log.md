@@ -3179,3 +3179,38 @@ human authorizes exact scoped cleanup, recover capacity and re-run declared
 full cold Linux/SQL populations. Otherwise safe accepted GS2-A3 score-vs-
 Clout source binding guard remains available with predeclared faults. No
 checkbox/lifecycle/archive/mint/push/deploy or preview substitution.
+
+## 2026-10-07 — GS2-A3 source guard baseline predeclaration
+
+At 3609e776, clean checkout; no newer local Claude commit or verdict is
+inferred. Accepted GS2-A3 requires a source guard against achievement score
+binding lifetime Clout or being labelled Clout. The existing achievements
+boundary scans only Go ownership/dependencies; GS2-A1's rendered assertion is
+not the required source gate. Clout OD-1=A keeps achievement score distinct
+from the separate reach/PR axis; legitimate Clout consumers are outside this
+bounded check.
+
+Before correction, run the healthy existing achievements gate, then seed a
+valid Svelte local `CloutLifetime = arm.score.lifetime` actually used by the
+score frame. Separately relabel the canonical source score frame as Clout,
+keeping schema/parameters unchanged. Run the existing gate on each. Green
+survivors establish missing coverage, not a healthy-HEAD player bug. Restore
+subjects byte-exactly after each; no regenerated/committed faulty product or
+copy. No subject changes while a check runs. Baseline hashes are recorded.
+
+Bounded correction if probes survive: extend the existing root achievements
+boundary already in verify-client, without a new CI lane. Parse the actual
+Svelte component, ignoring comments but rejecting Clout identifiers/literal
+member names and rendered Clout labels. Inspect canonical copy through the
+existing Copy Pipeline including era variants, not stale generated artifacts
+or a second copy table. Scope to Trophy Case/achievement copy families, never
+the separate Clout consumer. Include positive comment/score/unrelated-Clout
+controls, negative fixtures, actual component/copy faults and checker-bypass
+mutation. Parser/schema failures do not count as semantic discrimination.
+
+No mechanics, player copy, protocol, balance, numeric, kernel, Make/CI or RFC
+body changes. Final: healthy boundary, types/client/build/UI/isolation/topology
+and focused native Trophy Case rendering. Full Linux/SQL stays capacity-held;
+no cleanup approval/deletion/rerun. Self review is first filter; complete new
+span after 3609e776 needs Claude separately from all preceding spans. No boxes,
+lifecycle/archive/mint/push/release promotion.
