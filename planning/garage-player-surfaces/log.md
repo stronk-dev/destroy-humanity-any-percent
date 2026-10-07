@@ -1868,3 +1868,38 @@ edge, including predeclaration/test/records, and requires Claude. Previous
 notice exacte950216a..6d700838, browser4dcd9969..e950216a, Fiscalb64a91af..
 4dcd9969 and all earlier ranges independent. No boxes/status/archive/copy/
 mint/push; full-nine-tier1.0 goal remains active, meaningful progress.
+
+## 2026-10-07 — GS0.2 real-runtime HTTP boundary predeclared
+
+Resume clean a42406f0. Accepted GS0.2 runtime contract, not a new API or
+credential policy. Extend existing game-ui-intent-outcome unit suite with21
+declarations exercising createBrowserGameUIRuntime and actual Response.json,
+while substituting fetch only: six parsed non2xx statuses400/409/429/401/
+404/503; seven malformed409 error bodies (extra/missing keys, null/array,
+wrong detail type, nonmechanical category, empty detail); two valid200
+outcome arms; two invalid200 receipts; nonJSON200/503; transport rejection;
+missing credentials. Existing six tests unchanged. Synthetic mechanical
+pairs validate parsing, not server registry membership or actual refusals.
+
+Success exact: valid errors remain GameUIRequestError with unchanged status/
+pair and full existing mapped effect/notice/invariant; malformed bodies
+remain generic transport errors/offline, never actionable typed409; valid
+outcomes retain receipt/revision/refusal fields; invalid200/nonJSON fail
+closed; transport error identity retained. Every attempted credentialed
+intent emits exactly one POST to the intent path, exact bearer/JSON headers
+and body, leaves credential storage unchanged, and performs no implicit
+read/renewal/retry. Missing credentials emits zero requests. Test dummy
+credentials only. No real network/server/DB/browser/AT/renewal proof.
+
+Run full root make test-client baseline before any product change. A green
+baseline completes bounded research without inventing a repair. Commit
+tests before four independent compiling faults: ignore non2xx branch;
+accept extra error-body keys; strip expected_revision from submitted body;
+duplicate intent POST. Each must cause assertion failures, not compiler/
+import errors; restore exact runtime/parser hashes before the next probe.
+Retain any surviving fault honestly; refine only a distinguishing population
+within these declared properties. Final strict types/client/build/boundaries.
+No copy/kernel/server/schema/CI/timeout/retry/credential policy changes,
+no checkbox/status/archive/mint/push. Docker-backed runs remain RP-236 held.
+New review range starts a42406f0 exclusive through final records, requires
+Claude independently of HTTP-consumer6d700838..a42406f0 and earlier spans.
