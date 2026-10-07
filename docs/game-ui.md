@@ -17,6 +17,12 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   visible pending text without changing its action label. Same-kind repeats drop; another kind
   waits and binds to the refreshed revision. Affordability, owned upgrades and stale-state
   disabling remain genuine eligibility restrictions; this does not retain manual clicks.
+  Gate, Incorporate and Wind Down follow the same pending-focus rule; all faction buttons share
+  the `incorporate` kind. A removed Gate/Incorporate control hands focus to the nearest surviving
+  enabled button in its transition region, or the Desk heading if none survives. A newer focus
+  choice, selected tab or lifecycle preemption takes precedence. Queued Wind Down binds both
+  Company and Founder revisions after waiting for the authoritative read, not at the earlier
+  click. No gameplay transition, retry, clock or rate-limit policy changes.
 - Offer Sheet: authoritative exit type, complete payout terms, server-clock-relative expiry,
   Company-only decline, and Founder-CAS-guarded acceptance.
   Sign/Decline keep their action labels and native Tab stops during pending intent/read work.

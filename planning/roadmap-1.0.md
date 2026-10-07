@@ -5,18 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint (2026-10-07):** generator/upgrade pending focus and shared conflict-refresh
-duplicate suppression (RP-319/RP-379) are locally corrected under the accepted Garage contract.
-Affected browser/performance checks and ordinary whole composed55806 pass real Postgres,
-Fiscal refusals, main player workflows and Cosmetics. The preceding Fiscal response timeout
-(RP-378) remains OPEN: passive input/request diagnostics are now verified with a controlled
-missing-activation failure, not an inferred fix or reliability claim. RP-377's premature overlay
-check is locally corrected; its driver waits for the existing host completion boundary, not a
-retry or a longer deadline. Next: remaining accepted Desk pending controls; use the retained
-trace on RP-378 recurrence rather than guessing a fix. [Garage log](garage-player-surfaces/log.md),
-[Cosmetic log](cosmetic-shop-v1/log.md) and [API log](api-foundation/log.md) own evidence and
-pending designated review. Full CI, unresolved owner/author contracts, integrated nine-tier
-gameplay and release-artifact/deployment proof remain open; this is not a 1.0 completion claim.
+**Current checkpoint (2026-10-07):** Gate/Incorporate/Wind Down now join purchases in the locally
+corrected Garage pending-focus path (RP-319); removed-control fallback respects newer focus and
+lifecycle changes. Queued Wind Down binds both refreshed revisions (RP-380). Affected functional
+browser checks and final composed99336 pass real Postgres, Fiscal refusals, player workflows and
+Cosmetics. Designated review remains. Latest hosted CI at `0f9f4214` is RED: server Clout research/
+partition tests, client historical kernel guard and two WebKit parse-error constructor tests.
+The latter reproduce locally (RP-381), next repair. RP-365/RP-368/RP-378 and owner/author holds
+remain; a passing journey does not resolve them. [Garage log](garage-player-surfaces/log.md),
+[Cosmetic log](cosmetic-shop-v1/log.md) and [API log](api-foundation/log.md) own evidence.
+The full nine-tier gameplay and release-artifact/deployment proof remain incomplete.
 
 **Preceding checkpoint (2026-10-07):** public-board error masking (RP-367), Gate/Decline
 concurrent reads (RP-369) and late receipt duplicate reads (RP-370) are locally corrected,

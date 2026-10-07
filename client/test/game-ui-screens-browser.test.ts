@@ -590,6 +590,204 @@ for (const key of ["{Enter}", " "] as const) {
   });
 }
 
+for (const action of ["cross_gate", "incorporate", "wind_down"] as const) {
+  for (const key of ["{Enter}", " "] as const) {
+    for (const conflict of [false, true]) {
+      it.skipIf(typeof document === "undefined")(`GS0.8 transition ${action} retains native ${key} focus through ${conflict ? "conflict" : "applied"} and refresh`, async () => {
+        const { userEvent } = await import("vitest/browser");
+        const releaseReads: (() => void)[] = [];
+        class HeldReadRuntime extends FixtureRuntime {
+          override async snapshot(): Promise<ParsedGameUISnapshot> {
+            if (this.requests.length === 0) return super.snapshot();
+            this.snapshotCalls++;
+            await new Promise<void>((resolve) => releaseReads.push(resolve));
+            return this.current;
+          }
+        }
+        const base: GameUISnapshot = action === "cross_gate" ? snapshot : {
+          ...snapshot, run: { ...snapshot.run, tier: action === "incorporate" ? 2 : 1 },
+          transitions: { cross_gate: null, wind_down: { eligible: true }, ...(action === "incorporate" ? {
+            incorporate: { factions: [
+              { copy_key: "incorporate.bootstrapper", faction_id: "bootstrapper" },
+              { copy_key: "incorporate.open_source", faction_id: "open_source" },
+            ] },
+          } : {}) },
+        };
+        const runtime = new HeldReadRuntime(true);
+        runtime.current = base;
+        runtime.intentOutcome = conflict
+          ? { outcome: "rejected", category: "revision_conflict", detail: "expected_revision", currentRevision: 2, sessionExpired: false }
+          : { outcome: "applied", receipt: {} };
+        let releaseIntent = () => {};
+        runtime.intentBlock = new Promise<void>((resolve) => { releaseIntent = resolve; });
+        const target = document.createElement("div"); document.body.append(target);
+        const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+        try {
+          await settleIntentState();
+          const era = eraForSnapshot(base);
+          const windDown = [...target.querySelectorAll<HTMLButtonElement>("button")].find((button) => button.textContent === t("desk.wind_down", {}, era))!;
+          const controls = action === "incorporate" ? [...target.querySelectorAll<HTMLButtonElement>(".incorporate button")]
+            : action === "wind_down" ? [windDown]
+            : [[...target.querySelectorAll<HTMLButtonElement>("button")].find((button) => button.textContent === t("desk.cross_gate", {}, era))!];
+          const index = action === "incorporate" && key === " " ? 1 : 0;
+          const origin = controls[index];
+          const labels = controls.map((control) => control.textContent);
+          const expected = action === "cross_gate" ? { kind: action, gate_id: "gate.t0_to_t1", route_id: null }
+            : action === "incorporate" ? { kind: action, faction_id: index === 0 ? "bootstrapper" : "open_source" }
+            : { kind: action, expected_founder_revision: 1 };
+          origin.focus(); await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(1);
+          expect(runtime.requests[0]).toMatchObject({ ...expected, expected_revision: 1 });
+          const pendingState = () => {
+            expect(document.activeElement).toBe(origin);
+            for (const control of controls) {
+              expect(control.disabled, "temporary pending must keep transition Tab stops").toBe(false);
+              expect(control.getAttribute("aria-disabled")).toBe("true");
+              expect(control.getAttribute("aria-describedby")).toBe("desk-pending");
+            }
+            expect(controls.map((control) => control.textContent)).toEqual(labels);
+            const message = target.querySelector<HTMLElement>(".intent-notice #desk-pending")!;
+            expect(message?.textContent).toBe(t("common.pending", {}, era));
+            expect(message.getBoundingClientRect().height).toBeGreaterThan(0);
+          };
+          pendingState();
+          await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(1);
+          await userEvent.keyboard("{Shift>}{Tab}{/Shift}{Tab}");
+          expect(document.activeElement).toBe(origin);
+          if (action === "incorporate") {
+            controls[1 - index].focus(); await userEvent.keyboard(key); await settleIntentState();
+            expect(runtime.requests, "another faction is the same pending kind, not another consent").toHaveLength(1);
+            origin.focus();
+          }
+          releaseIntent(); await settleIntentState();
+          expect(releaseReads).toHaveLength(1);
+          pendingState();
+          if (conflict) expect(target.querySelector(".intent-notice")?.textContent).toContain(t("intent.conflict", {}, era));
+          await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(1);
+          runtime.current = { ...base, revision: 2, founder_revision: 2 };
+          if (!conflict && action !== "wind_down") runtime.current = {
+            ...runtime.current, run: { ...base.run, tier: action === "cross_gate" ? 1 : 2 },
+            transitions: { cross_gate: null, wind_down: { eligible: true } },
+          };
+          if (!conflict && action === "wind_down") {
+            runtime.listener?.({ kind: "event", scope: "company", revision: 2,
+              value: { ...ended, payload: { ...ended.payload, exit_type: "collapse", tier: 1 } } });
+            await settleIntentState();
+            expect(document.activeElement).toBe(target.querySelector("#run-end-heading"));
+          }
+          releaseReads.splice(0).forEach((release) => release()); await settleIntentState();
+          expect(runtime.requests, "pending repeats must not run after refresh").toHaveLength(1);
+          expect(target.querySelector("#desk-pending")).toBeNull();
+          if (conflict) {
+            expect(document.activeElement).toBe(origin);
+            expect(origin.hasAttribute("aria-disabled")).toBe(false);
+            await userEvent.keyboard(key); await settleIntentState();
+            expect(runtime.requests).toHaveLength(2);
+            expect(runtime.requests[1]).toMatchObject({ ...expected, expected_revision: 2,
+              ...(action === "wind_down" ? { expected_founder_revision: 2 } : {}) });
+            expect(runtime.requests[1].intent_id).not.toBe(runtime.requests[0].intent_id);
+          } else if (action === "wind_down") {
+            expect(document.activeElement).toBe(target.querySelector("#run-end-heading"));
+          } else {
+            expect(origin.isConnected).toBe(false);
+            expect(document.activeElement, "removed transition must hand focus to the surviving region control").toBe(windDown);
+          }
+        } finally {
+          releaseIntent(); releaseReads.splice(0).forEach((release) => release());
+          await settleIntentState(); await unmount(app as never); target.remove();
+        }
+      });
+    }
+  }
+}
+
+for (const destination of ["heading", "newer_control", "newer_surface"] as const) {
+  it.skipIf(typeof document === "undefined")(`GS0.6 removed transition respects ${destination} after the held read`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const releaseReads: (() => void)[] = [];
+    class HeldReadRuntime extends FixtureRuntime {
+      override async snapshot(): Promise<ParsedGameUISnapshot> {
+        if (this.requests.length === 0) return super.snapshot();
+        this.snapshotCalls++;
+        await new Promise<void>((resolve) => releaseReads.push(resolve));
+        return this.current;
+      }
+    }
+    const runtime = new HeldReadRuntime(true);
+    const target = document.createElement("div"); document.body.append(target);
+    const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+    try {
+      await settleIntentState();
+      const origin = [...target.querySelectorAll<HTMLButtonElement>("button")].find((button) => button.textContent === t("desk.cross_gate", {}, "era_1995"))!;
+      origin.focus(); await userEvent.keyboard("{Enter}"); await settleIntentState();
+      expect(releaseReads).toHaveLength(1);
+      expect(document.activeElement).toBe(origin);
+      let chosen: HTMLElement | undefined;
+      if (destination === "newer_control") {
+        chosen = target.querySelector<HTMLButtonElement>("section[aria-labelledby='upgrades-heading'] button")!;
+        chosen.focus();
+      } else if (destination === "newer_surface") {
+        chosen = [...target.querySelectorAll<HTMLButtonElement>("nav button")].find((button) => button.textContent === t("surface.settings.title", {}, "era_1995"))!;
+        chosen.focus(); await userEvent.keyboard("{Enter}"); await settleIntentState();
+        expect(target.querySelector("main")?.getAttribute("data-surface")).toBe("settings");
+      }
+      runtime.current = { ...snapshot, revision: 2, run: { ...snapshot.run, tier: 1 },
+        transitions: { cross_gate: null, wind_down: { eligible: destination !== "heading" } } };
+      releaseReads.splice(0).forEach((release) => release()); await settleIntentState();
+      expect(origin.isConnected).toBe(false);
+      expect(runtime.requests).toHaveLength(1);
+      expect(document.activeElement).toBe(chosen ?? target.querySelector("#desk-heading"));
+      if (destination === "newer_surface") expect(target.querySelector("main")?.getAttribute("data-surface")).toBe("settings");
+    } finally {
+      releaseReads.splice(0).forEach((release) => release());
+      await settleIntentState(); await unmount(app as never); target.remove();
+    }
+  });
+}
+
+it.skipIf(typeof document === "undefined")("GS0.8 queued Wind Down binds both refreshed stream revisions", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const releaseReads: (() => void)[] = [];
+  class HeldReadRuntime extends FixtureRuntime {
+    override async snapshot(): Promise<ParsedGameUISnapshot> {
+      if (this.requests.length === 0) return super.snapshot();
+      this.snapshotCalls++;
+      await new Promise<void>((resolve) => releaseReads.push(resolve));
+      return this.current;
+    }
+  }
+  const runtime = new HeldReadRuntime(true);
+  const base: GameUISnapshot = { ...snapshot, run: { ...snapshot.run, tier: 1 },
+    transitions: { cross_gate: null, wind_down: { eligible: true } } };
+  runtime.current = base;
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+  try {
+    await settleIntentState();
+    const purchase = target.querySelector<HTMLButtonElement>("section[aria-labelledby='generators-heading'] button")!;
+    purchase.focus(); await userEvent.keyboard("{Enter}"); await settleIntentState();
+    expect(releaseReads).toHaveLength(1);
+    const windDown = [...target.querySelectorAll<HTMLButtonElement>("button")].find((button) => button.textContent === t("desk.wind_down", {}, eraForSnapshot(base)))!;
+    expect(windDown.disabled).toBe(false);
+    expect(windDown.hasAttribute("aria-disabled")).toBe(false);
+    windDown.focus(); await userEvent.keyboard("{Enter}"); await settleIntentState();
+    expect(runtime.requests).toHaveLength(1);
+    // A Founder update may accompany the intervening authoritative read even
+    // though the preceding purchase itself is Company-scoped.
+    runtime.current = { ...base, revision: 2, founder_revision: 2 };
+    releaseReads.splice(0).forEach((release) => release()); await settleIntentState();
+    expect(runtime.requests).toHaveLength(2);
+    expect(runtime.requests[1]).toMatchObject({ kind: "wind_down", expected_revision: 2, expected_founder_revision: 2 });
+    expect(windDown.getAttribute("aria-disabled")).toBe("true");
+    expect(document.activeElement).toBe(windDown);
+  } finally {
+    releaseReads.splice(0).forEach((release) => release());
+    await settleIntentState(); await unmount(app as never); target.remove();
+  }
+});
+
 for (const action of ["accept_exit_offer", "decline_exit_offer"] as const) {
   for (const key of ["{Enter}", " "] as const) {
     for (const conflict of [false, true]) {

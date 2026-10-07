@@ -71,7 +71,7 @@ function verifyCosmeticCommands(ast, label) {
   const host = label === "game-ui/GameUIApp.svelte";
   const functions = new Map();
   visit(ast, (node) => {
-    if (node.type === "FunctionDeclaration" && ["act", "withPlan", "gardenAct"].includes(node.id?.name)) {
+    if (node.type === "FunctionDeclaration" && ["act", "withPlan", "gardenAct", "actTransition"].includes(node.id?.name)) {
       if (functions.has(node.id.name)) throw new Error(`${label}: duplicate command wrapper`);
       functions.set(node.id.name, node);
     }
@@ -92,15 +92,19 @@ function verifyCosmeticCommands(ast, label) {
       properties[1].value.elements[0].type !== "SpreadElement" || properties[1].value.elements[0].argument.type !== "Identifier" ||
       properties[1].value.elements[0].argument.name !== "exitPlan") throw new Error(`${label}: unsupported Exit-plan command transformation`);
   }
-  const gardenAct = functions.get("gardenAct");
-  if (gardenAct) {
+  const forwarders = ["gardenAct", "actTransition"].map((name) => functions.get(name)).filter(Boolean);
+  for (const forwarder of forwarders) {
     let bodyReferences = 0, forwardingCalls = 0;
-    visit(gardenAct.body, (node) => {
-      if (isBody(node)) bodyReferences++;
+    const memberNames = new Set();
+    visit(forwarder.body, (node) => {
+      if (node.type === "MemberExpression" && !node.computed) memberNames.add(node.property);
+    });
+    visit(forwarder.body, (node) => {
+      if (isBody(node) && !memberNames.has(node)) bodyReferences++;
       if (node.type === "CallExpression" && node.callee.type === "Identifier" && node.callee.name === "act" && isBody(node.arguments[0])) forwardingCalls++;
     });
-    if (label !== "game-ui/GameUIApp.svelte" || !isBody(gardenAct.params[0]) || bodyReferences !== 1 || forwardingCalls !== 1) {
-      throw new Error(`${label}: unsupported Garden command forwarding`);
+    if (label !== "game-ui/GameUIApp.svelte" || !isBody(forwarder.params[0]) || bodyReferences !== 1 || forwardingCalls !== 1) {
+      throw new Error(`${label}: unsupported ${forwarder.id.name} command forwarding (body references=${bodyReferences}, act calls=${forwardingCalls})`);
     }
   }
   const seen = new Set();
@@ -109,16 +113,16 @@ function verifyCosmeticCommands(ast, label) {
     if (node === null || typeof node !== "object" || seen.has(node)) return;
     seen.add(node);
     if (node.type === "CallExpression") {
-      if (host && node.callee.type === "Identifier" && ["act", "withPlan", "gardenAct"].includes(node.callee.name)) {
+      if (host && node.callee.type === "Identifier" && ["act", "withPlan", "gardenAct", "actTransition"].includes(node.callee.name)) {
         const argument = node.arguments[0];
-        const gardenForward = node.callee.name === "act" && gardenAct && ancestors.includes(gardenAct) && isBody(argument);
+        const verifiedForward = node.callee.name === "act" && forwarders.some((forwarder) => ancestors.includes(forwarder)) && isBody(argument);
         const planWrapper = argument?.type === "CallExpression" && argument.callee.type === "Identifier" && argument.callee.name === "withPlan" && withPlan;
         const envelope = planWrapper ? argument.arguments[0] : argument;
-        if (!gardenForward && (envelope?.type !== "ObjectExpression" || envelope.properties.some((property) => property.type !== "Property" || property.computed))) {
+        if (!verifiedForward && (envelope?.type !== "ObjectExpression" || envelope.properties.some((property) => property.type !== "Property" || property.computed))) {
           throw new Error(`${label}: opaque intent envelope cannot prove cosmetic source authority`);
         }
-        const kinds = gardenForward ? [] : envelope.properties.filter((property) => propertyName(property) === "kind");
-        if (!gardenForward && (kinds.length !== 1 || kinds[0].value.type !== "Literal" || typeof kinds[0].value.value !== "string")) {
+        const kinds = verifiedForward ? [] : envelope.properties.filter((property) => propertyName(property) === "kind");
+        if (!verifiedForward && (kinds.length !== 1 || kinds[0].value.type !== "Literal" || typeof kinds[0].value.value !== "string")) {
           throw new Error(`${label}: dynamic intent kind cannot prove cosmetic source authority`);
         }
       }
@@ -226,10 +230,13 @@ verifyCosmeticCommands(cosmeticSeed(`const text = '({kind:"buy_horse_armor",cosm
 const forwardingFixture = 'function act(body) { runtime.intent({intent_id:identity(),expected_revision:1,...body}); }';
 const planFixture = 'function withPlan(body) { return exitPlan.length === 0 ? body : {...body,reputation_plan:[...exitPlan]}; }';
 const gardenFixture = 'function gardenAct(body) { void act(body,{scope:"founder"}).then(() => { refresh++; }); }';
+const transitionFixture = 'async function actTransition(body, origin) { await act(body); if (document.activeElement === document.body) origin.focus(); }';
 verifyCosmeticCommands(cosmeticSeed(forwardingFixture + 'act({kind:"buy_generator",generator_id:"generator.beige_tower"});'), "game-ui/GameUIApp.svelte");
 verifyCosmeticCommands(cosmeticSeed(forwardingFixture), "game-ui/GameUIApp.svelte");
 verifyCosmeticCommands(cosmeticSeed(forwardingFixture + planFixture + 'act(withPlan({kind:"wind_down"}));'), "game-ui/GameUIApp.svelte");
 verifyCosmeticCommands(cosmeticSeed(forwardingFixture + gardenFixture + 'gardenAct({kind:"garden_plant"});'), "game-ui/GameUIApp.svelte");
+verifyCosmeticCommands(cosmeticSeed(forwardingFixture + transitionFixture + 'actTransition({kind:"cross_gate"}, origin);'), "game-ui/GameUIApp.svelte");
+verifyCosmeticCommands(cosmeticSeed(forwardingFixture + transitionFixture + planFixture + 'actTransition(withPlan({kind:"wind_down"}), origin);'), "game-ui/GameUIApp.svelte");
 verifyCosmeticCommands(cosmeticSeed('function act(run) { run(); } act(() => onPlant());'), "garden local callback, not host dispatcher");
 const rejectedCosmetic = [
   'act({kind:"buy_horse_armor",cosmetic_id:"horse_armor"});',
@@ -243,6 +250,10 @@ const rejectedCosmetic = [
   'act({kind:"acquire_cosmetic",kind:"buy_horse_armor",cosmetic_id:"horse_armor"});',
   planFixture.replace('reputation_plan:[...exitPlan]', 'kind:"buy_horse_armor"') + 'act(withPlan({kind:"wind_down"}));',
   gardenFixture.replace('void act(body', 'body.kind = "buy_horse_armor"; void act(body') + 'gardenAct({kind:"garden_plant"});',
+  transitionFixture.replace('await act(body)', 'body.kind = "buy_horse_armor"; await act(body)') + 'actTransition({kind:"cross_gate"}, origin);',
+  transitionFixture + 'actTransition(body, origin);',
+  transitionFixture + 'actTransition({kind:dynamic}, origin);',
+  transitionFixture + 'actTransition({kind:"buy_horse_armor",cosmetic_id:"horse_armor"}, origin);',
 ];
 for (const fixture of rejectedCosmetic) {
   let rejected = false;

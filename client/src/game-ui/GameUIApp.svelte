@@ -93,6 +93,10 @@
   const generatorPending = $derived(pending && activeActionKind === "buy_generator");
   const upgradePending = $derived(pending && activeActionKind === "buy_upgrade");
   const purchasePending = $derived(generatorPending || upgradePending);
+  const gatePending = $derived(pending && activeActionKind === "cross_gate");
+  const incorporatePending = $derived(pending && activeActionKind === "incorporate");
+  const windDownPending = $derived(pending && activeActionKind === "wind_down");
+  const deskPending = $derived(purchasePending || gatePending || incorporatePending || windDownPending);
 
   const era = $derived<CopyEra>(snapshot ? eraForSnapshot(snapshot) : "era_1995");
 
@@ -191,7 +195,7 @@
     // Finish that authoritative refresh, then bind the intent to its revision.
     if (refreshTask) await refreshTask;
     if (!snapshot || actionTask || !commandControls) return;
-    if (options.scope === "founder" && founderRevision === undefined) return;
+    if ((options.scope === "founder" || kind === "wind_down") && founderRevision === undefined) return;
     actionPending = true;
     activeActionKind = kind;
     const task = (async () => {
@@ -200,6 +204,9 @@
         intentNoticeOwner = noticeOwner;
         const expected = options.scope === "founder" ? founderRevision! : snapshot!.revision;
         const intentID = newIntentID();
+        // Wind Down consumes both streams. Bind its Founder coordinate after
+        // any queue/read wait, just like the Company's expected revision.
+        if (kind === "wind_down") body = { ...body, expected_founder_revision: founderRevision! };
         const outcome = await runtime.intent({ intent_id: intentID, expected_revision: expected, ...body });
         const notice = noticeForOutcome(outcome, options.rejections);
         if (notice.invariant) console.error("game UI invariant: intent rejection");
@@ -250,6 +257,27 @@
   let exitPlan = $state<string[]>([]);
   function withPlan(body: Record<string, unknown>): Record<string, unknown> {
     return exitPlan.length === 0 ? body : { ...body, reputation_plan: [...exitPlan] };
+  }
+  async function actTransition(body: Record<string, unknown>, origin: HTMLButtonElement): Promise<void> {
+    const region = origin.closest("section");
+    const controls = [...(region?.querySelectorAll<HTMLButtonElement>("button") ?? [])];
+    const originIndex = controls.indexOf(origin);
+    const submittedSelection = selectionGeneration;
+    let latestFocus: EventTarget | null = document.activeElement;
+    const observeFocus = (event: FocusEvent) => { latestFocus = event.target; };
+    document.addEventListener("focusin", observeFocus);
+    try {
+      await act(body);
+      await afterDOMUpdate();
+      // GS0.6: a disappearing transition returns focus within its own region.
+      // A newer native focus choice or lifecycle navigation always takes precedence.
+      if (surface !== "desk" || selectionGeneration !== submittedSelection || origin.isConnected
+          || latestFocus !== origin || (document.activeElement !== origin && document.activeElement !== document.body)) return;
+      const nearest = controls.map((control, index) => ({ control, index, distance: Math.abs(index - originIndex) }))
+        .filter(({ control }) => control.isConnected && !control.disabled)
+        .sort((left, right) => left.distance - right.distance || right.index - left.index)[0]?.control;
+      (nearest ?? root?.querySelector<HTMLElement>("#desk-heading"))?.focus();
+    } finally { document.removeEventListener("focusin", observeFocus); }
   }
   function acceptOffer(): void {
     if (pending || !offer || founderRevision === undefined) return;
@@ -599,7 +627,7 @@
     <p class="snapshot-stale">{t("common.stale_note", {}, era)}</p>
   {/if}
   {#if snapshot && surface !== "fiscal" && surface !== "pet"}
-    <p class="intent-notice" role="status">{#if surface === "offer_sheet" && pending}<span id="offer-pending">{t("common.pending", {}, era)}</span> {/if}{#if surface === "desk" && purchasePending}<span id="desk-pending">{t("common.pending", {}, era)}</span> {/if}{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>
+    <p class="intent-notice" role="status">{#if surface === "offer_sheet" && pending}<span id="offer-pending">{t("common.pending", {}, era)}</span> {/if}{#if surface === "desk" && deskPending}<span id="desk-pending">{t("common.pending", {}, era)}</span> {/if}{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>
   {/if}
   {#if draining}
     <aside class="notice" role="status"><strong>{t("system.drain_notice.title", {}, era)}</strong><span>{t("system.drain_notice.body", {}, era)}</span></aside>
@@ -707,18 +735,18 @@
         {@const transitions = snapshot.transitions}
         <section class="card">
           {#if transitions.cross_gate}
-            <button type="button" disabled={pending || !commandControls || !transitions.cross_gate.eligible} onclick={() => act({ kind: "cross_gate", gate_id: transitions.cross_gate!.gate_id, route_id: null })}>{t("desk.cross_gate", {}, era)}</button>
+            <button type="button" tabindex="0" disabled={!commandControls || !transitions.cross_gate.eligible} aria-disabled={gatePending || undefined} aria-describedby={gatePending ? "desk-pending" : undefined} onclick={(event) => actTransition({ kind: "cross_gate", gate_id: transitions.cross_gate!.gate_id, route_id: null }, event.currentTarget)}>{t("desk.cross_gate", {}, era)}</button>
           {/if}
           {#if transitions.incorporate}
             <fieldset class="incorporate">
               <legend>{t("incorporate.panel.title", {}, era)}</legend>
               <p>{t("incorporate.panel.hint", {}, era)}</p>
               {#each transitions.incorporate.factions as row (row.faction_id)}
-                <button type="button" disabled={pending || !commandControls} onclick={() => act({ kind: "incorporate", faction_id: row.faction_id })}>{t(declaredCopyKey(row.copy_key), {}, era)}</button>
+                <button type="button" tabindex="0" disabled={!commandControls} aria-disabled={incorporatePending || undefined} aria-describedby={incorporatePending ? "desk-pending" : undefined} onclick={(event) => actTransition({ kind: "incorporate", faction_id: row.faction_id }, event.currentTarget)}>{t(declaredCopyKey(row.copy_key), {}, era)}</button>
               {/each}
             </fieldset>
           {/if}
-          <button type="button" disabled={pending || !founderControls || !transitions.wind_down.eligible} onclick={() => act(withPlan({ kind: "wind_down", expected_founder_revision: founderRevision }))}>{t("desk.wind_down", {}, era)}</button>
+          <button type="button" tabindex="0" disabled={!founderControls || !transitions.wind_down.eligible} aria-disabled={windDownPending || undefined} aria-describedby={windDownPending ? "desk-pending" : undefined} onclick={(event) => actTransition(withPlan({ kind: "wind_down", expected_founder_revision: founderRevision }), event.currentTarget)}>{t("desk.wind_down", {}, era)}</button>
           {#if liveFeatures?.reputation && transitions.wind_down.eligible}<ReputationPlanPanel arm={liveFeatures.reputation} {era} previewDelta={0} onChange={(plan) => { exitPlan = [...plan]; }} />{/if}
         </section>
       {/if}

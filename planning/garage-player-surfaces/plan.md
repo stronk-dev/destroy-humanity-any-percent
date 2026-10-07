@@ -7,13 +7,13 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint: generator Buy 1/Buy Max and upgrade Buy now retain native pending focus
-under GS0.8. RP-379's shared conflict-refresh guard is locally corrected under GS0.2/0.8;
-repeated same-kind input drops, another kind waits for the refreshed revision. Final affected
-browser checks, performance, types/build/boundaries and whole real-service55806 pass. Designated
-review and remaining Desk controls are still open; Manual's pending-input choice is unruled.
-Next accepted work: Gate/Incorporate/Wind Down pending focus, retaining the existing lifecycle
-and queue semantics. The latest `log.md` owns results; do not infer full Garage/CI/1.0 acceptance.
+Current checkpoint: purchases and Gate/Incorporate/Wind Down retain native pending focus under
+GS0.8. Removed transitions recover focus within their region without stealing newer choices;
+queued Wind Down now binds both refreshed revisions (RP-380). Affected functional browser,
+type/build/boundary and final real-service journeys pass; designated review remains.
+Next: repair the locally reproduced hosted WebKit non-JSON error-constructor test (RP-381),
+then consolidate Garage review/remaining acceptance. Manual's pending-input choice is unruled.
+The latest `log.md` owns results; do not infer full Garage/CI/1.0 acceptance.
 
 Preceding checkpoint: ordinary whole composed68777 passes required Postgres, Fiscal refusals,
 both terminal states/continuation/recovery and Cosmetics. RP-378's earlier Fiscal response

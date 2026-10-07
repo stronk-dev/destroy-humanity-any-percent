@@ -6172,3 +6172,35 @@ Review by: Codex (implementer first filter); Recorded by: Codex. Exact span afte
 through this batch requires designated cross-party review; no acceptance/archival/push or
 full-CI/Firefox/AT/nine-tier1.0 claim. Next: Gate/Incorporate/Wind Down pending controls under
 the existing lifecycle/queue contract; Manual input retention still needs the owner choice.
+
+## 2026-10-07 — transition keyboard focus and queued Wind Down revisions
+
+GS0.2/0.6/0.8 repair: Gate/Incorporate/Wind Down remain native Tab stops with active-kind
+aria/pending text through request and read. Removed controls return focus within the transition
+region or to the Desk heading, unless newer focus/navigation/lifecycle takes precedence. Same
+kind drops, another waits. RP-380 additionally binds queued Wind Down's two revisions after the
+wait; no gameplay, copy, retry, timing or limiter change.
+
+Old native88315:24 pending failures. Attribute correction exposed eight removed-control
+failures in48585; corrected terminal fixture uses the real `collapse` exit, not command
+`wind_down` (17747's fixture errors excluded). Queued regression10332:2 stale-Founder failures.
+Final focused31140:32 PASS; affected host/Garage/Cosmetic36833:956 PASS/4 performance-only skips.
+After equivalent request-envelope refactoring, final host3971:174 PASS/4 skips; types/build
+93882 PASS. Source gate initially rejected the new forwarding shape; retained strict envelope,
+explicitly verified transparent wrapper and distinguished `document.body`'s property name from
+the command parameter. Final boundary35931 PASS:10 Go/15 Svelte negatives, no weakened guard.
+
+Final `make test-game-ui-composed`99336 PASS:8 refresh cases/all7 required DB parents, actual
+Fiscal refusals/fresh consent, purchase/achievement, opportunity,6 Pitch commands, both endings/
+continuation/recovery and compiled Cosmetics/adoption/care/reloads. Main100 requests/12.831s;
+Cosmetic73/N5 no violation/6.520s. Owned ports and other fixture DB sessions absent afterward.
+No performance/Firefox/AT/clean-host/full-CI claim. Intermittent RP-378 remains open.
+
+Fresh status check: latest Actions37641907701 (`0f9f4214`) has schema/harness/composed green,
+server/client/browser red. Kernel92747 remains RP-131-red; hosted server lists Clout research
+and27 partition failures. Hosted WebKit non-JSON constructor failures reproduce locally63855:
+2 fail/2 pass (RP-381), next bounded test repair, not a product failure inferred from that type.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after `58f1131d`
+through this batch needs designated review; older spans remain independent. No archive/push or
+full Garage/1.0 acceptance. Next: RP-381, then consolidate review and remaining acceptance work.
