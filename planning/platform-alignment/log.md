@@ -2950,3 +2950,40 @@ Use the existing deploymentbackup integration lane on isolated Postgres 16; this
 **Review by:** Codex (implementer first filter). **Recorded by:** Codex. The retained test in the existing deploymentbackup integration file used real migrated Postgres, age-encrypted custom dumps and `pg_restore`. It started with one subject account, one active Founder link, two live streams, one verified board row and a bystander. `account.Repository.DeleteAccount` removed the account and archived/unlinked its Founder/streams. Restoring B_pre recreated the account, active link and streams; restoring B_post preserved deletion. Board and bystander stayed present in both. The entire five-test backup integration population passed `-test.count=1 -test.v` on an isolated ARM64 Postgres 16 Compose override; the inherited amd64-specific `GODEBUG` string printed an unknown-feature warning but did not skip or fail a test. Native `make test-go GO_PACKAGES='./deploymentbackup' GO_TEST_FLAGS='-count=1'` passed compilation/unit checks.
 
 The predeclared negative temporarily replaced `DELETE FROM accounts` with a no-op update. The test failed at the source post-delete census (`account:1`, archived/unlinked Founder link absent). The production source was restored byte-exact, the ARM64 binary rebuilt, and the full five-test integration population passed again. The test has no credential/session/recovery-code or HTTP route claim; Claude's older `b27ca321` diagnostic covers those only at its historical coordinate and removed its temporary executable. This current witness does not decide D-009/D-015, prove protected-backup expiry or R-006 on supported amd64, or authorize Deployment/Account archival. Dossier: `data-rights-restore-resurrection.md`. Claude's designated review of the exact Codex range remains required.
+
+## 2026-10-07 — Predeclare full Linux browser-lane execution
+
+Baseline `4dcd9969`, clean; Fiscal consumer proof range is separately exact
+`b64a91af..4dcd9969` and needs Claude. This is existing local verification,
+not authority to change CI, browser policy, implementation or release scope.
+Run root `make test-browser-ci`, unchanged `compose.browser-test.yml`: pinned
+Playwright1.62.0 image, pnpm11.15.1 frozen-lock cold install in anonymous Linux
+dependency volumes; existing full functional collector on Chromium/Firefox/
+WebKit, then existing isolated performance collector. No test/file selector,
+new exclusion, timeout increase, retries, fixture mutation or ignored error.
+
+Local image inspection proves image already exists, Linux ARM64,
+`sha256:5e63ffc997394026acb443c255703c7278f97d43cdc3d49cf51bc8fdce7d5383`.
+This is NOT GitHub's Ubuntu AMD64 runner, hosted CI or the native-Mac Firefox
+runtime. Successful Firefox here can prove only this Linux population; keep
+RP-256's native-host zero-execution connection hold independently explicit.
+It does not mint a release bundle, prove clean-host deployment or manual AT.
+
+Pass criterion: terminal exit0 with full declared test/file/engine counts,
+zero suite failures/unhandled browser errors and valid module-observation
+summaries; report existing declared skips separately, never as executed tests.
+If install/startup/failure prevents reaching all engines, report which stage
+and actual executed denominator. Retain named failure output, do not weaken
+the gate. Existing seeded error guard and component/oracle fault evidence
+remain the discrimination record; this execution changes no gate. Keep all
+relevant source immutable until the actual handle is terminal; observation
+timeout alone is not completion or permission to restart. Verify Git status
+afterward for unexpected install/test writes; preserve unrelated state.
+
+Normal Compose --rm owns only its test container/anonymous dependency volumes;
+do not clean existing Postgres/orphan containers or broader Docker resources.
+No secrets/provider credentials/publication/deployment/archival/status claim.
+Record the result and exact new evidence-only review range independently of
+the Fiscal implementation and all preceding review obligations. Goal remains
+full nine-tier1.0, active/progress; source outcome ownership RP-326 is next
+accepted diagnostic work after this concrete verification handle terminates.
