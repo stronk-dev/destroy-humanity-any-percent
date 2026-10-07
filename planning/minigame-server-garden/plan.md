@@ -5,6 +5,18 @@ Fixture-first: no production mint (SG13). Numbering is landing-order: the RFC's 
 means next-free, and at landing that is **Founder v25** (v22 Reputation, v23 Pet, v24 Cosmetics).
 Replay inputs take the next free wire version, and the event migration takes the next free number.
 
+**Latest bounded instrument work, 2026-10-07:** RP-348 under `a9fadedd` adds
+full child-result/elapsed diagnostics without changing any raw input, admission
+assertion, loader program, 1000ms guard or 10000ms outer bound. Two real Node
+controls exercise pre-entry exception and entered nontermination. Three restored
+instrument faults fail 2/1/2 tests respectively; production/corpus remain exact.
+Final client 9,816 passes / 637 explicit skips; types/build/boundaries/topology,
+native raw-catalog 74 passes / six Node-only skips and isolated performance two
+pass. This repairs hidden failure output, NOT the unexplained historical failure's
+cause or reliability. No Linux/SQL/hosted/full-Garden claim. Entire new range from
+4b44a563-exclusive requires Claude; every prior Garden/UI range remains owed.
+Observe any recurrence on its first failure; do not raise/retry-hide the guard.
+
 **Review checkpoint, 2026-10-06:** the checked G1–G7 rows below record implementation presence,
 not designated acceptance. Codex's bounded SG1 review found RP-212–RP-214 in the original loader;
 the separately predeclared catalog correction and 36-case raw-byte population are locally green

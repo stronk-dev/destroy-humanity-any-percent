@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** standard-ending native recovery.
+**Latest bounded work (2026-10-07):** RP-348 test-observation repair undera9fadedd.
+Original SG1 admission/loader program/corpus/1000ms guard unchanged; all failures
+now carry actual entry observation, elapsed and complete child result. Two real
+startup/hang controls plus three restored faults discriminate. Final client9816/
+637 skips, native raw74/six Node-only skips, types/unchanged build/boundaries/
+topology/isolated performance two pass. Historical cause/reliability remains open,
+not retry-closed or a hosted/Linux/SQL/full-Garden claim. Whole4b44a563-exclusive
+new range needs Claude independently of every previous span. Next accepted work:
+inspect/predeclare native Fiscal pending/receipt-focus audit under GS0.6/GS1.
+Capacity/real composed/auth/Firefox/AT/body/privacy/platform/numeric/full endings/
+full-nine-tier1.0/reviews/owner release remain. No cleanup/Retry/push/archival.
+
+**Preceding bounded work (2026-10-07):** standard-ending native recovery.
 2e5ba552 → red a3dab732 → separatefd56b866 / later38d8d650 focus scope.
 RP-346 explicit native continuation stop; RP-347 pending aria-disabled retains
 focus and actual guard blocks duplicates. Four standard labels/three eras/

@@ -31,6 +31,41 @@ function input(test: RawCase): string {
 const cases: RawCase[] = rawCorpus.cases;
 const browser = typeof document !== "undefined";
 
+interface ChildResult {
+  stdout: string; stderr: string; error?: Error & { code?: string };
+  signal: string | null; status: number | null;
+}
+
+// Observation only: absence of the marker does not identify why entry was not
+// observed. Retain the original child outputs and the whole-process deadline.
+async function observeChild(program: string, args: string[] = []): Promise<{ result: ChildResult; elapsedMs: number }> {
+  const moduleName = "node:child_process";
+  const { spawnSync } = await import(/* @vite-ignore */ moduleName) as {
+    spawnSync(command: string, args: string[], options: { encoding: "utf8"; timeout: number }): ChildResult;
+  };
+  const node = (globalThis as unknown as { process: { execPath: string } }).process;
+  const start = performance.now();
+  const result = spawnSync(node.execPath, ["--input-type=module", "-e", program, ...args], { encoding: "utf8", timeout: 1000 });
+  return { result, elapsedMs: performance.now() - start };
+}
+
+function assertChildAdmission(result: ChildResult, elapsedMs: number, name: string, reject: boolean): void {
+  const diagnostic = JSON.stringify({
+    name, entry: result.stdout.includes("entered-loader\n") ? "observed" : "unobserved",
+    elapsedMs, deadlineMs: 1000,
+    error: result.error ? { message: result.error.message, code: result.error.code ?? null } : null,
+    signal: result.signal, status: result.status, stdout: result.stdout, stderr: result.stderr,
+  });
+  // Every failure, including the first missing marker, carries the entire
+  // observation. A guard termination is never accepted as a syntax rejection.
+  expect(result.stdout, diagnostic).toContain("entered-loader\n");
+  expect(result.error?.message, diagnostic).toBeUndefined();
+  expect(result.signal, diagnostic).toBeNull();
+  expect(result.status, diagnostic).toBe(0);
+  expect(result.stderr, diagnostic).toBe("");
+  expect(result.stdout, diagnostic).toBe(`entered-loader\n${reject ? "SyntaxError" : "accepted"}\n`);
+}
+
 describe("Server Garden raw catalog admission (SG1)", () => {
   it("retains the complete literal-byte population", () => {
     expect(rawCorpus.version).toBe(1);
@@ -52,13 +87,6 @@ describe("Server Garden raw catalog admission (SG1)", () => {
   // Node APIs are imported only inside the Node-only body, never at collection
   // time: the unmodified browser configuration collects this test too.
   it.skipIf(browser)("contains malformed-string regressions in a child process", async () => {
-    const moduleName = "node:child_process";
-    const { spawnSync } = await import(/* @vite-ignore */ moduleName) as {
-      spawnSync(command: string, args: string[], options: { encoding: "utf8"; timeout: number }): {
-        stdout: string; stderr: string; error?: Error; signal: string | null; status: number | null;
-      };
-    };
-    const node = (globalThis as unknown as { process: { execPath: string } }).process;
     const serialized = JSON.stringify(Object.fromEntries(Object.entries(declarations).map(([key, values]) => [key, [...values]])));
     const program = `
       import { loadGardenCatalog } from "./src/garden/catalog.ts";
@@ -73,15 +101,50 @@ describe("Server Garden raw catalog admission (SG1)", () => {
       }
     `;
     for (const test of [cases[0]!, ...cases.filter((candidate) => candidate.contained)]) {
-      const result = spawnSync(node.execPath, ["--input-type=module", "-e", program, input(test), serialized, test.reject ? "reject" : "accept"], { encoding: "utf8", timeout: 1000 });
-      expect(result.stdout, test.name).toContain("entered-loader\n");
-      expect(result.error?.message, test.name).toBeUndefined();
-      expect(result.signal, test.name).toBeNull();
-      expect(result.status, test.name).toBe(0);
-      expect(result.stderr, test.name).toBe("");
-      expect(result.stdout, test.name).toBe(`entered-loader\n${test.reject ? "SyntaxError" : "accepted"}\n`);
+      const { result, elapsedMs } = await observeChild(program, [input(test), serialized, test.reject ? "reject" : "accept"]);
+      assertChildAdmission(result, elapsedMs, test.name, test.reject);
     }
   }, 10_000);
+
+  for (const control of [
+    { name: "startup-exception", program: 'throw new Error("SG1 child startup control");', entered: false },
+    { name: "entered-nontermination", program: 'console.log("entered-loader"); while (true) {}', entered: true },
+  ]) {
+    it.skipIf(browser)(`reports and refuses real ${control.name} control`, async () => {
+      const { result, elapsedMs } = await observeChild(control.program);
+      expect(Number.isFinite(elapsedMs)).toBe(true);
+      expect(elapsedMs).toBeGreaterThanOrEqual(0);
+      let failure: unknown;
+      try { assertChildAdmission(result, elapsedMs, control.name, true); }
+      catch (error) { failure = error; }
+      expect(failure).toBeInstanceOf(Error);
+      const message = (failure as Error).message;
+      expect(message).toContain(`"name":"${control.name}"`);
+      expect(message).toContain(`"entry":"${control.entered ? "observed" : "unobserved"}"`);
+      expect(message).toMatch(/"elapsedMs":\d+(?:\.\d+)?/);
+      expect(message).toContain('"deadlineMs":1000');
+      if (control.entered) {
+        expect(result.error?.code).toBe("ETIMEDOUT");
+        expect(result.signal).toBe("SIGTERM");
+        expect(result.status).toBeNull();
+        expect(message).toContain('"code":"ETIMEDOUT"');
+        expect(message).toContain('"signal":"SIGTERM"');
+        expect(message).toContain('"status":null');
+        expect(message).toContain('"stdout":"entered-loader\\n"');
+        expect(message).toContain('"stderr":""');
+      } else {
+        expect(result.error).toBeUndefined();
+        expect(result.signal).toBeNull();
+        expect(result.status).toBe(1);
+        expect(message).toContain('"error":null');
+        expect(message).toContain('"signal":null');
+        expect(message).toContain('"status":1');
+        expect(message).toContain('"stdout":""');
+        expect(message).toContain('"stderr":');
+        expect(message).toContain("SG1 child startup control");
+      }
+    }, 10_000);
+  }
 
   for (const test of cases.filter((candidate) => candidate.contained)) {
     // Actual native browser loader calls; subprocess-only in Node. The full

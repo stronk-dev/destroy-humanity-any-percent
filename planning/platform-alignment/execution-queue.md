@@ -3,6 +3,24 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garden child-observation checkpoint — 2026-10-07
+
+Test-only undera9fadedd: complete child result/elapsed on every existing SG1
+admission assertion; observed/unobserved entry, not inferred cause. Real startup
+exception and entered hang controls; three restored instrument faults fail2/1/2.
+No loader/corpus/child program/1000ms guard/10000ms bound/CI changes or retries.
+Final client9816/637 skips; native raw74/six Node-only skips, performance two,
+types/unchanged build/boundaries/static topology pass. RP-348 hidden output locally
+repaired, original cause/reliability OPEN; local green is not hosted parity.
+**READY FOR CLAUDE:** whole4b44a563-exclusive through implementation/records;
+0e7910ed..4b44a563 and every earlier UI/Garden range independently owed.
+**NEXT safe accepted work:** inspect then separately predeclare native Fiscal
+pending/receipt focus under GS0.6/GS1; retain existing states/revisions/copy and
+all receipt/refusal controls. Observe first RP-348 recurrence without retry waiver.
+Docker capacity/real SQL/composed/Firefox/AT/auth/privacy/platform/numeric/
+full-nine-tier1.0/independent reviews/owner release holds remain. No cleanup,
+Retry/credential policy, boxes/archival/push/release/preview substitution.
+
 ## Garage standard-terminal recovery checkpoint — 2026-10-07
 
 2e5ba552 → red a3dab732 → separate tab-stopfd56b866 → retry trace → separate

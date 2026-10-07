@@ -2686,3 +2686,58 @@ checks with unchanged admission semantics. RP-348 cause/reliability remains open
 unless an actual recurrence exposes it. Log every red result; no repeated-green
 closure. Entire new range needs Claude's designated review; previous UI/Garden
 review ranges remain independent. No boxes/status/archival/push/release changes.
+
+### Executed RP-348 observation and discrimination
+
+Scope `a9fadedd`; one test file changed. Node import remains inside a Node-only
+call; browser collection runs the same original 36 literal cases. Exported
+production loader, child loader program and six admission predicates unchanged.
+Each assertion now includes name, observed/unobserved entry, parent elapsed,
+deadline, actual error message/code, signal/status and full stdout/stderr. Entry
+absence is deliberately not labelled a startup or scanner diagnosis.
+
+Initial root `8dab34` / terminal `e6e18f`: types zero errors/warnings; complete
+client 9,816 passes / 637 explicit skips, 105 passing / 22 skipped files, 8.39s.
+The two additional Node controls use actual children: deliberate startup Error
+exits 1 with no entry/error/signal and retained stderr; entered infinite loop
+terminates on the unchanged guard with ETIMEDOUT/SIGTERM/status null. Both fail
+the admission oracle, with each named result field checked in its failure text.
+These simulated faults do not reproduce RP-348's original unexplained child.
+
+Three temporary test-instrument mutations, all complete root `make test-client`:
+
+- `969296` / `cc6795`: revert message to name-only; both diagnostic controls fail,
+  9,814 controls pass / 637 skips, exit 2, 6.90s.
+- `09b56f` / `027499`: return successfully on ETIMEDOUT; nontermination control
+  fails because no refusal occurs, 9,815 controls pass / 637 skips, exit 2, 7.21s.
+- `780b45` / `e61656`: omit result/error/output fields but keep phase/timing/name;
+  both controls fail on missing actual error evidence, 9,814 controls pass / 637
+  skips, exit 2, 6.24s. Observed child elapsed about156ms /1005ms is that probe's
+  observation, not a new performance threshold.
+
+Restore confirmed `cbef3a`: test SHA
+`c80e01ba0797fcf151f847e8f4af2afafb93c52369ea54e9cb4d72e752ef9151`,
+production loader SHA
+`2449743c472e9751b93a9c6dc496c2f33eca5e82996d4507955045a5c1b1626b`,
+raw corpus SHA
+`2787af5723acc3dfbc206cfe204cafb106baf215a20aaa062cb72abbf7a08bb7`.
+All equal their pre-mutation identities; no product mutation ever made.
+
+Final root `b71d6d` / `305655` exits 0: types zero errors/warnings, complete client
+9,816 passes /637 skips, 105 passing /22 skipped files, 5.99s. Build214 modules,
+UI `index-h_Id1Wf-.js`, worker `prediction.worker-MqspU_iu.js`, CSS
+`index-DaRqgLww.css` unchanged. Shell/UI boundaries and its10Go/11Svelte negatives,
+static CI topology and13 negatives pass. Native `ec8781` / `fd842a` exits0:
+74 raw-catalog executions across Chromium/WebKit, six explicit Node-only skips,
+3.09s; root's separate performance population two passes/22 unselected,1.81s.
+No Node import/uncaught/worker error on browser collection. These are bounded
+local checks, not full browser/Linux/SQL/hosted CI parity.
+
+RP-348 observation deficiency locally repaired; original cause/reliability open.
+No production/copy/corpus/kernel/CI/budget/owner-policy change, retry waiver or
+complete-Garden/1.0 claim. Every handle terminal before record edits. Review by:
+Codex (implementer first filter). Recorded by: Codex. Whole4b44a563-exclusive
+range through containing implementation/records needs Claude; prior spans stay
+independent. No checkbox/status/archival/push. Next accepted work: separately
+predeclare bounded native Fiscal pending/receipt-focus audit under GS0.6/GS1,
+inspect actual existing tests first; not invented mechanics or a SQL bypass.

@@ -4707,3 +4707,27 @@ Real composed/auth/HTTP/SQL/Firefox/AT/body/privacy/platform/numeric/full
 nine-tier1.0/independent reviews/owner release remain open. No owner cleanup/
 startup answer inferred; no Retry/boxes/body/status/lifecycle/archive/push/
 deploy/release/shortened-preview substitution. Goal active/progress.
+
+## 2026-10-07 — RP-348 child failure output repaired; cause remains open
+
+Accepted SG1/AC1 instrument scopea9fadedd, one test file; loader/corpus/program/
+six predicates/1000ms guard/10000ms bound unchanged. Every failure now retains
+actual entry observation, elapsed/error/code/signal/status/stdout/stderr. Real
+startup-exception and entered-hang controls refuse; name-only diagnostic, timeout
+admission bypass and missing result fields fail2/1/2 with all original controls
+green. Exact test/product/corpus hashes restored; no production mutation.
+
+Final root client9816/637 skips/types0/build214modules unchanged artifacts,
+shell/UI boundaries/static topology and negatives pass. Native raw74/six explicit
+Node-only skips across Chromium/WebKit; separate isolated performance two pass.
+Original unexplained first-run failure stays atRP348; these deliberate controls
+are not its reproduction and passing local checks do not establish reliability
+or hosted/Linux/SQL parity. Complete4b44a563-exclusive new range needs Claude;
+0e7910ed..4b44a563 and all prior spans independently owed, no approval invented.
+
+Next accepted work: inspect/predeclare bounded native Fiscal pending/receipt-focus
+audit under GS0.6/GS1; no new mechanics or real-service bypass. Capacity/real SQL/
+composed/Firefox/AT/auth/body/privacy/platform/numeric/full endings/full-nine-tier
+1.0/independent review/owner release remain. No owner cleanup/startup answer
+inferred; no Retry/credential/copy/CI/budget/boxes/status/archive/push changes.
+Goal active/progress; observation repair is not release acceptance.

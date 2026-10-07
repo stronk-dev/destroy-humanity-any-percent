@@ -7,7 +7,16 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-346 native tab stop / RP-347 pending focus repair.
+Latest cross-lane checkpoint: RP-348 observation work moved to accepted Garden
+SG1/AC1 undera9fadedd. Complete child diagnostics and real startup/hang controls
+locally pass; historical failure cause remains open. No admission/deadline/CI or
+product change. Final client9816/637 skips, native raw74/six Node-only skips,
+types/unchanged build/boundaries/topology/performance pass. New4b44a563-exclusive
+range and every earlier Garage range independently need Claude. Next accepted
+Garage work: inspect then predeclare native Fiscal pending/receipt-focus audit,
+retaining existing copy/revision/refusal states. No startup Retry authority.
+
+Latest Garage bounded work: RP-346 native tab stop / RP-347 pending focus repair.
 2e5ba552 → red a3dab732 → separatefd56b866 → retry diagnosis → separate
 38d8d650. Current read control explicit tabindex0/pending aria-disabled;
 existing guard actually suppresses duplicated native activation. Standard96
