@@ -2654,3 +2654,35 @@ The separate successor `rfc/browser-session-renewal.md` remains draft; R-011
 research/API/owner boundaries must resolve before auth implementation. Garden
 `b58277cb..bff05b5e` and all earlier exact review ranges stay independent; no
 new Garden approval, checkbox, launch content, public pin or archival claim.
+
+## 2026-10-07 — RP-348 child-control observation predeclaration (Codex)
+
+Baseline `4b44a563`, clean tree. Accepted Garden RFC read completely, SG1/AC1,
+the original raw-catalog predeclaration and current plan/log reconciled. The
+previous complete client failure lacked `entered-loader` in valid-fixture stdout;
+its first assertion concealed error/status/signal/stderr. A later unchanged pass
+does not identify the cause. Do not infer parser hang, timeout or CPU causality.
+
+Test-instrument-only scope: preserve all 36 raw cases, declarations, literal-byte
+replacement, loader program, six admission assertions, 1000ms whole-process guard
+and 10000ms outer bound. Add parent elapsed observation and full named child
+result diagnostics to every assertion. Classify only whether loader entry was
+observed, not whether an unobserved child reached or completed the loader. No
+extra success retries or ignored guard terminations. No production/corpus/kernel,
+copy, Make/CI/dependency/browser-budget changes.
+
+Predeclared diagnostic controls use real Node children: an explicit startup
+exception before the entry marker, and an entered-marker infinite loop terminated
+by the same existing guard. Both must fail the admission oracle, and failure text
+must retain actual error/code/status/signal/stdout/stderr/elapsed fields. They are
+instrument controls, NOT runs of a defective production loader or proof of the
+historical failure's cause. Seed missing diagnostic fields to demonstrate these
+checks discriminate, restore exactly. Preserve healthy valid/rejection controls;
+run full client/type/build plus native collection of this same test in Chromium
+and WebKit. Docker remains full, so no Linux/SQL/hosted parity claim.
+
+Exit criterion: actionable child failure output and discriminating observation
+checks with unchanged admission semantics. RP-348 cause/reliability remains open
+unless an actual recurrence exposes it. Log every red result; no repeated-green
+closure. Entire new range needs Claude's designated review; previous UI/Garden
+review ranges remain independent. No boxes/status/archival/push/release changes.
