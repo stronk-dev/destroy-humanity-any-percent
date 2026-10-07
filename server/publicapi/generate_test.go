@@ -47,3 +47,30 @@ func TestGenerateOpenAPIAndTypeScriptFromImmutableRegistry(t *testing.T) {
 		t.Fatalf("invalid compatibility pins: %v\n%s", err, pins)
 	}
 }
+
+func TestGeneratedClientPreservesRawSuccessAndStatusDescriptors(t *testing.T) {
+	operations := testOperations()
+	operations[1].Responses = []Response{
+		{Kind: ResponseRaw, Status: 200, ContentType: ContentGzip, ContentHashHeader: "X-Content-SHA256"},
+		{Kind: ResponseSchema, Status: 404, ContentType: ContentJSON, SchemaRef: "APIError"},
+	}
+	registry, err := NewRegistry(testSchemas(), operations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	types, err := GenerateTypeScript(registry)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, required := range []string{
+		`get_epochs: { path: {  }; request: null; response: Uint8Array | APIError };`,
+		`get_epochs: { status: 200; body: Uint8Array } | { status: 404; body: APIError };`,
+		`{ status: 200, kind: "raw", contentType: "application/gzip", contentHashHeader: "X-Content-SHA256" }`,
+		`{ status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }`,
+		`export function createAPIClient(`,
+	} {
+		if !bytes.Contains(types, []byte(required)) {
+			t.Errorf("generated client omitted %q", required)
+		}
+	}
+}

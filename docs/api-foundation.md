@@ -43,15 +43,43 @@ shape, while a retained historical shape uses an explicit `V<n>` suffix. A compa
 refresh must cite its authorizing ruling and be recorded in the owning planning log in the same
 change; an otherwise valid widening is not permission for a silent re-baseline.
 
-The generated contract is not yet the complete runtime API or a generated HTTP
-dispatcher. Current metadata covers seventeen operations and omits the existing
+The generated registry is not yet the complete runtime API. Current metadata covers seventeen operations and omits the existing
 session refresh route and its refresh-specific error alternatives. Actual TypeScript
-callers cannot represent that path or those errors; Game UI runtime and minigame
-transport still call `fetcher` outside the generated directory. `api-check` passes
+callers cannot represent that path or those errors. Bootstrap and main state reads use the
+generated client; intents, minigame/Soul/Garden ports still call `fetcher` outside the
+generated directory. `api-check` passes
 for the registered subset, not AC4 completion. Manual
 `make research-refresh-generated-contract` retains compiler/counterfactual evidence
 outside CI/verify; it does not implement or authorize browser renewal. See the
 [bounded census](../planning/platform-alignment/refresh-generated-contract.md).
+
+### Generated HTTP client
+
+`createAPIClient(fetcher?, baseURL?)` is emitted inside the generated module from an embedded
+generator template, with operation-specific method/path, auth, query and response metadata
+from the registry. `call(operationID, input)` accepts generated path/request/query types,
+explicit access tokens only for private operations, and optional request ID/abort signal.
+Path components are URL-encoded; declared query values are serialized in registry order.
+Unknown path/query fields, missing auth and inexact integer parameters fail before HTTP.
+The client never forwards an access token on a public operation. There is no token storage,
+refresh, retry, timeout, or request-ID policy hidden in it.
+
+`OperationResponses` preserves status/body associations. Schema responses are JSON-decoded;
+these TypeScript types are not runtime schema validation. Wrappers retain their existing
+application decoders. Raw successes are `Uint8Array`, not an omitted success type or parsed
+JSON. They require the registered media type and content-hash header, checked against SHA256
+over downloaded bytes. Error statuses on raw operations remain JSON. Undeclared status,
+malformed JSON, raw type/hash failure and network/abort errors are surfaced, never retried.
+The undeclared 304 arm remains open; this client does not invent an alternative for it.
+
+The actual Game UI bootstrap and main state reads now use this transport without changing
+the bootstrap journal, credential storage, snapshot decoder or revision reconciliation.
+Lost replies and HTTP/parser failures retain the persisted bootstrap key for an explicit
+retry; no client-level retry is added. Remaining HTTP callers and the C9 raw-fetch lint are
+still unfinished, so this is not AC4 completion. Unit/browser tests use controlled fetches;
+the existing composed journey separately exercises these migrated calls against real HTTP,
+Postgres and WebSocket services. Raw-client controlled-byte tests are not yet a public
+TypeScript archive-reverification journey.
 
 GU-C26 authorized the Game UI schema v3 compatibility-pin baseline. Accepted Garage Player
 Surfaces GS0.1 (2026-09-25) authorizes the v4 re-baseline. The unversioned `GameUISnapshot` is the
@@ -211,5 +239,6 @@ existing archive encoder embeds the stored JSON value compactly; endpoint/storag
 remains byte-exact. This does not prove cross-epoch catalog retrieval, a public TypeScript
 verification journey, or the complete third-party loop without database-supplied catalogs.
 
-The catalog HTTP reader and thin generated-client transport remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
+The catalog HTTP reader, remaining generated-client caller migration and full public
+TypeScript verification loop remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
 historical formulas never fall back to current bytes.

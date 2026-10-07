@@ -1,4 +1,4 @@
-import type { BootstrapResponse } from "../api/generated/types";
+import { createAPIClient, type BootstrapResponse } from "../api/generated/types";
 import { createBrowserMinigameSessionPort, type MinigameSessionPort } from "./minigame/session-port";
 import { createBrowserSoulRecoveryPort, type SoulRecoveryPort } from "./soul/recovery-surface";
 import { createBrowserGardenPort, type GardenPort } from "./garden/garden-port";
@@ -89,10 +89,9 @@ function credentials(storage: RuntimeStorage): GameUICredentials | undefined {
   } catch { return undefined; }
 }
 
-async function responseJSON(response: Response): Promise<unknown> {
-  const value = await response.json();
+function responseValue(response: { ok: boolean; status: number; body: unknown }): unknown {
   if (!response.ok) throw new Error(`game UI request failed (${response.status})`);
-  return value;
+  return response.body;
 }
 
 export function createBrowserGameUIRuntime(
@@ -102,6 +101,7 @@ export function createBrowserGameUIRuntime(
   socketFactory: (url: string) => WebSocket = (url) => new WebSocket(url),
   locationSource?: Readonly<{ protocol: string; host: string }>,
 ): GameUIRuntime {
+  const api = createAPIClient(fetcher);
   let latestSnapshot: ParsedGameUISnapshot | undefined;
   let activeCursor: PlayerRevisionCursor | undefined;
   const authHeaders = (): HeadersInit => {
@@ -120,7 +120,7 @@ export function createBrowserGameUIRuntime(
     return value;
   };
   const loadSnapshot = async (): Promise<ParsedGameUISnapshot> => {
-    const parsed = parseGameUISnapshot(await responseJSON(await fetcher("/api/v1/founder/state", { headers: authHeaders() })));
+    const parsed = parseGameUISnapshot(responseValue(await api.call("get_game_ui_snapshot", { path: {}, request: null, accessToken: accessToken() })));
     if (!isLiveSnapshot(parsed)) throw new SyntaxError("live Game UI snapshot must use schema v4");
     return rememberSnapshot(parsed);
   };
@@ -140,7 +140,7 @@ export function createBrowserGameUIRuntime(
     async bootstrap() {
       let pending = storage.getItem(bootstrapKey);
       if (!pending) { pending = randomHex(32, cryptoSource); storage.setItem(bootstrapKey, pending); }
-      const value = await responseJSON(await fetcher("/api/v1/bootstrap", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ idempotency_key: pending }) })) as BootstrapResponse;
+      const value = responseValue(await api.call("create_bootstrap", { path: {}, request: { idempotency_key: pending } })) as BootstrapResponse;
       const parsed = parseGameUISnapshot(value.game_ui_snapshot);
       storage.setItem(credentialKey, JSON.stringify({ accessToken: value.session.access_token, refreshToken: value.session.refresh_token, accountID: value.account.account_id, recoveryCode: value.account.recovery_code } satisfies GameUICredentials));
       storage.removeItem(bootstrapKey);

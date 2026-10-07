@@ -17,6 +17,10 @@ RFC: `rfc/api-foundation.md`
   - [ ] Complete the third-party loop using public catalogs and the TypeScript verifier;
     same-epoch Go download proof does not close this requirement.
 - [x] Generate OpenAPI 3.1 and TypeScript from the registry; add compatibility pins/gate.
+  - [x] Generate typed HTTP dispatch and raw/status response associations; bind real Game UI
+    bootstrap/state reads (generated-api/runtime tests and real composed journey).
+  - [ ] Migrate remaining HTTP callers; register missing routes/contracts and enforce C9's
+    raw-fetch lint. Typed dispatch over the current subset is not AC4 completion.
 - [ ] Compose the public router, full-registry privacy/conformance integration, canonical docs,
   independent full-range review, and archive.
   - [x] Test caching and shared IP limiting through every currently mounted public operation,

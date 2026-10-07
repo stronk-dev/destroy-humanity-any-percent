@@ -139,12 +139,13 @@ func TestGeneratedArtifactsCarryQueryParameters(t *testing.T) {
 			t.Fatalf("TypeScript lacks %s:\n%s", want, types)
 		}
 	}
-	// Operations without query parameters keep their prior generated shape.
+	// Query-free operations declare neither metadata parameters nor input fields.
+	// The shared generated transport can still contain generic query-handling code.
 	plain, err := GenerateTypeScript(plainRegistry(t))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if bytes.Contains(plain, []byte("query")) {
+	if bytes.Contains(plain, []byte("queryParameters: [")) || bytes.Contains(plain, []byte("; query: {")) {
 		t.Fatalf("query-free registry grew query output:\n%s", plain)
 	}
 }

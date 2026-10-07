@@ -126,6 +126,43 @@ describe("browser Game UI runtime", () => {
     expect(requests.map((request) => (request.headers as Record<string, string>).Authorization)).toEqual(["Bearer access", "Bearer access"]);
   });
 
+  it("retains the bootstrap journal after a lost reply and reuses it only on explicit retry", async () => {
+    const storage = new MemoryStorage();
+    const failure = new Error("lost bootstrap reply");
+    const fetcher = vi.fn()
+      .mockRejectedValueOnce(failure)
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        account: { account_id: "account", created_at: "2026-08-10T12:00:00.000Z", recovery_code: "recover" },
+        session: { access_token: "access", refresh_token: "refresh" }, game_ui_snapshot: currentSnapshot,
+      }), { status: 201 }));
+    const runtime = createBrowserGameUIRuntime(storage, fetcher);
+    await expect(runtime.bootstrap()).rejects.toBe(failure);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(runtime.hasCredentials()).toBe(false);
+    const pending = storage.getItem("cloud-clicker.bootstrap-key.v1");
+    expect(pending).toMatch(/^[0-9a-f]{64}$/u);
+    expect(storage.getItem("cloud-clicker.credentials.v1")).toBeNull();
+    expect((await runtime.bootstrap()).revision).toBe(1);
+    expect(fetcher).toHaveBeenCalledTimes(2);
+    for (const [, init] of fetcher.mock.calls) expect(init.body).toBe(JSON.stringify({ idempotency_key: pending }));
+    expect(storage.getItem("cloud-clicker.bootstrap-key.v1")).toBeNull();
+    expect(runtime.hasCredentials()).toBe(true);
+  });
+
+  it.each([
+    [429, { category: "rate_limited", detail: "ip" }],
+    [201, { account: {}, session: {}, game_ui_snapshot: null }],
+  ])("does not replace the bootstrap journal or credentials on HTTP/parser failure (%s)", async (status, body) => {
+    const storage = new MemoryStorage();
+    const pending = "b".repeat(64);
+    storage.setItem("cloud-clicker.bootstrap-key.v1", pending);
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(body), { status }));
+    await expect(createBrowserGameUIRuntime(storage, fetcher).bootstrap()).rejects.toThrow();
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(storage.getItem("cloud-clicker.bootstrap-key.v1")).toBe(pending);
+    expect(storage.getItem("cloud-clicker.credentials.v1")).toBeNull();
+  });
+
   it("does not let an older concurrent snapshot regress the live revision cursor", async () => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));

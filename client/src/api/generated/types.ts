@@ -191,23 +191,23 @@ export type SoulRecoveryStartResponse = { activity_id: string; attended_progress
 export type SoulRecoveryTerminalResponse = { action: "cancel" | "resolve"; activity_id: string; band_after: "dimming" | "hollow" | "near_zero" | "whole"; band_before: "dimming" | "hollow" | "near_zero" | "whole"; cancelled_by?: "player" | "watchdog"; company_revision: number; founder_revision: number; intent_id: string; outcome: "applied"; session_id: string; soul_after: number; soul_before: number };
 
 export const operations = {
-  cancel_soul_recovery: { auth: "access_token", method: "POST", path: "/api/v1/soul-recovery/cancel", pathParameters: [] },
-  create_bootstrap: { auth: "none", method: "POST", path: "/api/v1/bootstrap", pathParameters: [] },
-  create_minigame_session: { auth: "access_token", method: "POST", path: "/api/v1/minigames/{minigame_id}/sessions", pathParameters: ["minigame_id"] },
-  get_current_garden: { auth: "access_token", method: "GET", path: "/api/v1/garden/current", pathParameters: [] },
-  get_current_minigame_session: { auth: "access_token", method: "GET", path: "/api/v1/minigames/sessions/current", pathParameters: [] },
-  get_game_ui_snapshot: { auth: "access_token", method: "GET", path: "/api/v1/founder/state", pathParameters: [] },
-  get_public_run_genesis: { auth: "none", method: "GET", path: "/api/public/v1/runs/{stream}/{seq}/genesis", pathParameters: ["stream", "seq"] },
-  get_public_run_replay_log: { auth: "none", method: "GET", path: "/api/public/v1/runs/{stream}/{seq}/replay-log", pathParameters: ["stream", "seq"] },
-  get_public_run_verdict: { auth: "none", method: "GET", path: "/api/public/v1/runs/{stream}/{seq}/verdict", pathParameters: ["stream", "seq"] },
-  list_public_board: { auth: "none", method: "GET", path: "/api/public/v1/boards/{category}", pathParameters: ["category"], queryParameters: ["cursor", "epoch", "limit", "mandate", "variables"] },
-  list_public_epochs: { auth: "none", method: "GET", path: "/api/public/v1/epochs", pathParameters: [], queryParameters: ["cursor", "limit"] },
-  list_public_routes: { auth: "none", method: "GET", path: "/api/public/v1/registry/routes", pathParameters: [], queryParameters: ["cursor", "limit"] },
-  play_minigame_command: { auth: "access_token", method: "POST", path: "/api/v1/minigames/sessions/{session_id}/commands", pathParameters: ["session_id"] },
-  progress_soul_recovery: { auth: "access_token", method: "POST", path: "/api/v1/soul-recovery/progress", pathParameters: [] },
-  resolve_minigame_session: { auth: "access_token", method: "POST", path: "/api/v1/minigames/sessions/{session_id}/resolve", pathParameters: ["session_id"] },
-  resolve_soul_recovery: { auth: "access_token", method: "POST", path: "/api/v1/soul-recovery/resolve", pathParameters: [] },
-  start_soul_recovery: { auth: "access_token", method: "POST", path: "/api/v1/soul-recovery/start", pathParameters: [] },
+  cancel_soul_recovery: { auth: "access_token", method: "POST", path: "/api/v1/soul-recovery/cancel", pathParameters: [], hasRequest: true, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 401, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 503, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  create_bootstrap: { auth: "none", method: "POST", path: "/api/v1/bootstrap", pathParameters: [], hasRequest: true, responses: [{ status: 201, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  create_minigame_session: { auth: "access_token", method: "POST", path: "/api/v1/minigames/{minigame_id}/sessions", pathParameters: ["minigame_id"], hasRequest: true, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 401, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 503, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  get_current_garden: { auth: "access_token", method: "GET", path: "/api/v1/garden/current", pathParameters: [], hasRequest: false, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 401, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 503, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  get_current_minigame_session: { auth: "access_token", method: "GET", path: "/api/v1/minigames/sessions/current", pathParameters: [], hasRequest: false, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 401, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 503, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  get_game_ui_snapshot: { auth: "access_token", method: "GET", path: "/api/v1/founder/state", pathParameters: [], hasRequest: false, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 401, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 503, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  get_public_run_genesis: { auth: "none", method: "GET", path: "/api/public/v1/runs/{stream}/{seq}/genesis", pathParameters: ["stream", "seq"], hasRequest: false, responses: [{ status: 200, kind: "raw", contentType: "application/json", contentHashHeader: "X-Content-SHA256" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  get_public_run_replay_log: { auth: "none", method: "GET", path: "/api/public/v1/runs/{stream}/{seq}/replay-log", pathParameters: ["stream", "seq"], hasRequest: false, responses: [{ status: 200, kind: "raw", contentType: "application/gzip", contentHashHeader: "X-Content-SHA256" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  get_public_run_verdict: { auth: "none", method: "GET", path: "/api/public/v1/runs/{stream}/{seq}/verdict", pathParameters: ["stream", "seq"], hasRequest: false, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  list_public_board: { auth: "none", method: "GET", path: "/api/public/v1/boards/{category}", pathParameters: ["category"], queryParameters: ["cursor", "epoch", "limit", "mandate", "variables"], hasRequest: false, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  list_public_epochs: { auth: "none", method: "GET", path: "/api/public/v1/epochs", pathParameters: [], queryParameters: ["cursor", "limit"], hasRequest: false, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  list_public_routes: { auth: "none", method: "GET", path: "/api/public/v1/registry/routes", pathParameters: [], queryParameters: ["cursor", "limit"], hasRequest: false, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  play_minigame_command: { auth: "access_token", method: "POST", path: "/api/v1/minigames/sessions/{session_id}/commands", pathParameters: ["session_id"], hasRequest: true, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 401, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 503, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  progress_soul_recovery: { auth: "access_token", method: "POST", path: "/api/v1/soul-recovery/progress", pathParameters: [], hasRequest: true, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 401, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 503, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  resolve_minigame_session: { auth: "access_token", method: "POST", path: "/api/v1/minigames/sessions/{session_id}/resolve", pathParameters: ["session_id"], hasRequest: true, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 401, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 503, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  resolve_soul_recovery: { auth: "access_token", method: "POST", path: "/api/v1/soul-recovery/resolve", pathParameters: [], hasRequest: true, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 401, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 503, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
+  start_soul_recovery: { auth: "access_token", method: "POST", path: "/api/v1/soul-recovery/start", pathParameters: [], hasRequest: true, responses: [{ status: 200, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 400, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 401, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 404, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 409, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 429, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 500, kind: "schema", contentType: "application/json", contentHashHeader: "" }, { status: 503, kind: "schema", contentType: "application/json", contentHashHeader: "" }] },
 } as const;
 
 export type OperationID = keyof typeof operations;
@@ -219,8 +219,8 @@ export interface OperationTypes {
   get_current_garden: { path: {  }; request: null; response: GardenCurrentResponse | APIError };
   get_current_minigame_session: { path: {  }; request: null; response: MinigameCurrentResponse | APIError };
   get_game_ui_snapshot: { path: {  }; request: null; response: GameUISnapshot | APIError };
-  get_public_run_genesis: { path: { stream: string; seq: number }; request: null; response: APIError };
-  get_public_run_replay_log: { path: { stream: string; seq: number }; request: null; response: APIError };
+  get_public_run_genesis: { path: { stream: string; seq: number }; request: null; response: Uint8Array | APIError };
+  get_public_run_replay_log: { path: { stream: string; seq: number }; request: null; response: Uint8Array | APIError };
   get_public_run_verdict: { path: { stream: string; seq: number }; request: null; response: PublicRunVerdict | APIError };
   list_public_board: { path: { category: string }; query: { cursor?: string; epoch: number; limit?: number; mandate: number; variables: string }; request: null; response: PublicBoardPage | APIError };
   list_public_epochs: { path: {  }; query: { cursor?: string; limit?: number }; request: null; response: PublicEpochPage | APIError };
@@ -230,4 +230,94 @@ export interface OperationTypes {
   resolve_minigame_session: { path: { session_id: string }; request: MinigameEmptyRequest; response: MinigameSessionResponseTerminal | APIError };
   resolve_soul_recovery: { path: {  }; request: SoulRecoveryFinishRequest; response: SoulRecoveryTerminalResponse | APIError };
   start_soul_recovery: { path: {  }; request: SoulRecoveryStartRequest; response: SoulRecoveryStartResponse | APIError };
+}
+
+export interface OperationResponses {
+  cancel_soul_recovery: { status: 200; body: SoulRecoveryTerminalResponse } | { status: 400; body: APIError } | { status: 401; body: APIError } | { status: 404; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError } | { status: 503; body: APIError };
+  create_bootstrap: { status: 201; body: BootstrapResponse } | { status: 400; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError };
+  create_minigame_session: { status: 200; body: MinigameSessionResponseActive } | { status: 400; body: APIError } | { status: 401; body: APIError } | { status: 404; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError } | { status: 503; body: APIError };
+  get_current_garden: { status: 200; body: GardenCurrentResponse } | { status: 400; body: APIError } | { status: 401; body: APIError } | { status: 404; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError } | { status: 503; body: APIError };
+  get_current_minigame_session: { status: 200; body: MinigameCurrentResponse } | { status: 400; body: APIError } | { status: 401; body: APIError } | { status: 404; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError } | { status: 503; body: APIError };
+  get_game_ui_snapshot: { status: 200; body: GameUISnapshot } | { status: 400; body: APIError } | { status: 401; body: APIError } | { status: 404; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError } | { status: 503; body: APIError };
+  get_public_run_genesis: { status: 200; body: Uint8Array } | { status: 404; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError };
+  get_public_run_replay_log: { status: 200; body: Uint8Array } | { status: 404; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError };
+  get_public_run_verdict: { status: 200; body: PublicRunVerdict } | { status: 404; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError };
+  list_public_board: { status: 200; body: PublicBoardPage } | { status: 400; body: APIError } | { status: 404; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError };
+  list_public_epochs: { status: 200; body: PublicEpochPage } | { status: 400; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError };
+  list_public_routes: { status: 200; body: PublicRoutePage } | { status: 400; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError };
+  play_minigame_command: { status: 200; body: MinigameSessionResponse } | { status: 400; body: APIError } | { status: 401; body: APIError } | { status: 404; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError } | { status: 503; body: APIError };
+  progress_soul_recovery: { status: 200; body: SoulRecoveryProgressResponse } | { status: 400; body: APIError } | { status: 401; body: APIError } | { status: 404; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError } | { status: 503; body: APIError };
+  resolve_minigame_session: { status: 200; body: MinigameSessionResponseTerminal } | { status: 400; body: APIError } | { status: 401; body: APIError } | { status: 404; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError } | { status: 503; body: APIError };
+  resolve_soul_recovery: { status: 200; body: SoulRecoveryTerminalResponse } | { status: 400; body: APIError } | { status: 401; body: APIError } | { status: 404; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError } | { status: 503; body: APIError };
+  start_soul_recovery: { status: 200; body: SoulRecoveryStartResponse } | { status: 400; body: APIError } | { status: 401; body: APIError } | { status: 404; body: APIError } | { status: 409; body: APIError } | { status: 429; body: APIError } | { status: 500; body: APIError } | { status: 503; body: APIError };
+}
+
+export type OperationInput<K extends OperationID> = Pick<OperationTypes[K], "path" | "request">
+  & (OperationTypes[K] extends { query: infer Q } ? { query: Q } : {})
+  & (typeof operations[K]["auth"] extends "access_token" ? { accessToken: string } : { accessToken?: never })
+  & { requestID?: string; signal?: AbortSignal };
+
+export type OperationResult<K extends OperationID> = OperationResponses[K] & { ok: boolean; headers: Headers };
+
+interface ClientOperation {
+  readonly auth: "none" | "access_token";
+  readonly method: string;
+  readonly path: string;
+  readonly pathParameters: readonly string[];
+  readonly queryParameters?: readonly string[];
+  readonly hasRequest: boolean;
+  readonly responses: readonly { status: number; kind: "schema" | "raw"; contentType: string; contentHashHeader: string }[];
+}
+
+// No token storage/refresh, retries, or automatic request-ID generation. Wrappers
+// own application outcomes and retain their exact DTO decoders. Schema bodies
+// are JSON-decoded, not claimed runtime-schema-validated by their TS types.
+export function createAPIClient(fetcher: typeof fetch = fetch, baseURL = "") {
+  return {
+    async call<K extends OperationID>(id: K, input: OperationInput<K>): Promise<OperationResult<K>> {
+      const operation: ClientOperation = operations[id];
+      if (!operation) throw new TypeError("unknown API operation");
+      const pathValues = input.path as Record<string, unknown>;
+      if (Object.keys(pathValues).some((name) => !operation.pathParameters.includes(name))) throw new TypeError("unknown API path parameter");
+      const scalar = (value: unknown): string => {
+        if (typeof value === "string" || typeof value === "boolean") return String(value);
+        if (typeof value === "number" && Number.isSafeInteger(value)) return String(value);
+        throw new TypeError("invalid API parameter");
+      };
+      let path = operation.path;
+      for (const name of operation.pathParameters) path = path.replace(`{${name}}`, encodeURIComponent(scalar(pathValues[name])));
+      const query = "query" in input ? input.query as Record<string, unknown> : {};
+      const queryParameters = operation.queryParameters ?? [];
+      if (Object.keys(query).some((name) => !queryParameters.includes(name))) throw new TypeError("unknown API query parameter");
+      const params = new URLSearchParams();
+      for (const name of queryParameters) if (query[name] !== undefined) params.set(name, scalar(query[name]));
+      if (params.size !== 0) path += `?${params}`;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (operation.auth === "access_token") {
+        if (typeof input.accessToken !== "string" || input.accessToken.length === 0) throw new TypeError("missing API access token");
+        headers.Authorization = `Bearer ${input.accessToken}`;
+      }
+      if (input.requestID !== undefined) headers["X-Request-ID"] = input.requestID;
+      if (!operation.hasRequest && input.request !== null) throw new TypeError("unexpected API request body");
+      const response = await fetcher(baseURL.replace(/\/$/u, "") + path, {
+        method: operation.method, headers, signal: input.signal,
+        ...(operation.hasRequest ? { body: JSON.stringify(input.request) } : {}),
+      });
+      const descriptor = operation.responses.find((candidate) => candidate.status === response.status);
+      if (!descriptor) throw new TypeError(`undeclared API response status (${response.status})`);
+      let body: unknown;
+      if (descriptor.kind === "raw") {
+        if (response.headers.get("Content-Type")?.split(";")[0].trim() !== descriptor.contentType) throw new TypeError("invalid raw API content type");
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+        const hash = [...digest].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+        if (response.headers.get(descriptor.contentHashHeader) !== hash) throw new TypeError("invalid raw API content hash");
+        body = bytes;
+      } else {
+        body = await response.json();
+      }
+      const result: unknown = { status: response.status, ok: response.ok, headers: response.headers, body };
+      return result as OperationResult<K>;
+    },
+  };
 }

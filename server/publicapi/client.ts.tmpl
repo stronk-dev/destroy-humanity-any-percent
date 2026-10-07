@@ -1,0 +1,69 @@
+export type OperationInput<K extends OperationID> = Pick<OperationTypes[K], "path" | "request">
+  & (OperationTypes[K] extends { query: infer Q } ? { query: Q } : {})
+  & (typeof operations[K]["auth"] extends "access_token" ? { accessToken: string } : { accessToken?: never })
+  & { requestID?: string; signal?: AbortSignal };
+
+export type OperationResult<K extends OperationID> = OperationResponses[K] & { ok: boolean; headers: Headers };
+
+interface ClientOperation {
+  readonly auth: "none" | "access_token";
+  readonly method: string;
+  readonly path: string;
+  readonly pathParameters: readonly string[];
+  readonly queryParameters?: readonly string[];
+  readonly hasRequest: boolean;
+  readonly responses: readonly { status: number; kind: "schema" | "raw"; contentType: string; contentHashHeader: string }[];
+}
+
+// No token storage/refresh, retries, or automatic request-ID generation. Wrappers
+// own application outcomes and retain their exact DTO decoders. Schema bodies
+// are JSON-decoded, not claimed runtime-schema-validated by their TS types.
+export function createAPIClient(fetcher: typeof fetch = fetch, baseURL = "") {
+  return {
+    async call<K extends OperationID>(id: K, input: OperationInput<K>): Promise<OperationResult<K>> {
+      const operation: ClientOperation = operations[id];
+      if (!operation) throw new TypeError("unknown API operation");
+      const pathValues = input.path as Record<string, unknown>;
+      if (Object.keys(pathValues).some((name) => !operation.pathParameters.includes(name))) throw new TypeError("unknown API path parameter");
+      const scalar = (value: unknown): string => {
+        if (typeof value === "string" || typeof value === "boolean") return String(value);
+        if (typeof value === "number" && Number.isSafeInteger(value)) return String(value);
+        throw new TypeError("invalid API parameter");
+      };
+      let path = operation.path;
+      for (const name of operation.pathParameters) path = path.replace(`{${name}}`, encodeURIComponent(scalar(pathValues[name])));
+      const query = "query" in input ? input.query as Record<string, unknown> : {};
+      const queryParameters = operation.queryParameters ?? [];
+      if (Object.keys(query).some((name) => !queryParameters.includes(name))) throw new TypeError("unknown API query parameter");
+      const params = new URLSearchParams();
+      for (const name of queryParameters) if (query[name] !== undefined) params.set(name, scalar(query[name]));
+      if (params.size !== 0) path += `?${params}`;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (operation.auth === "access_token") {
+        if (typeof input.accessToken !== "string" || input.accessToken.length === 0) throw new TypeError("missing API access token");
+        headers.Authorization = `Bearer ${input.accessToken}`;
+      }
+      if (input.requestID !== undefined) headers["X-Request-ID"] = input.requestID;
+      if (!operation.hasRequest && input.request !== null) throw new TypeError("unexpected API request body");
+      const response = await fetcher(baseURL.replace(/\/$/u, "") + path, {
+        method: operation.method, headers, signal: input.signal,
+        ...(operation.hasRequest ? { body: JSON.stringify(input.request) } : {}),
+      });
+      const descriptor = operation.responses.find((candidate) => candidate.status === response.status);
+      if (!descriptor) throw new TypeError(`undeclared API response status (${response.status})`);
+      let body: unknown;
+      if (descriptor.kind === "raw") {
+        if (response.headers.get("Content-Type")?.split(";")[0].trim() !== descriptor.contentType) throw new TypeError("invalid raw API content type");
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+        const hash = [...digest].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+        if (response.headers.get(descriptor.contentHashHeader) !== hash) throw new TypeError("invalid raw API content hash");
+        body = bytes;
+      } else {
+        body = await response.json();
+      }
+      const result: unknown = { status: response.status, ok: response.ok, headers: response.headers, body };
+      return result as OperationResult<K>;
+    },
+  };
+}

@@ -2,6 +2,7 @@ package publicapi
 
 import (
 	"bytes"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"sort"
@@ -10,6 +11,9 @@ import (
 )
 
 const GeneratorVersion = "1"
+
+//go:embed client.ts.tmpl
+var typeScriptClientTemplate string
 
 // GenerateOpenAPI emits canonical OpenAPI 3.1 JSON from the same immutable
 // registry that mounts runtime handlers. No router reflection or handwritten
@@ -144,7 +148,7 @@ func openAPISchema(schema *Schema) map[string]any {
 }
 
 // GenerateTypeScript emits exact DTO types plus operation metadata and the
-// request/response association used by the handwritten transport boundary.
+// request/response association and registry-driven HTTP transport.
 func GenerateTypeScript(registry *Registry) ([]byte, error) {
 	if registry == nil {
 		return nil, ErrInvalidOperation
@@ -174,7 +178,15 @@ func GenerateTypeScript(registry *Registry) ([]byte, error) {
 			}
 			output.WriteString("]")
 		}
-		output.WriteString(" },\n")
+		fmt.Fprintf(&output, ", hasRequest: %t, responses: [", operation.Request != "")
+		for index, response := range operation.Responses {
+			if index != 0 {
+				output.WriteString(", ")
+			}
+			fmt.Fprintf(&output, "{ status: %d, kind: %q, contentType: %q, contentHashHeader: %q }",
+				response.Status, response.Kind, response.ContentType, response.ContentHashHeader)
+		}
+		output.WriteString("] },\n")
 	}
 	output.WriteString("} as const;\n\nexport type OperationID = keyof typeof operations;\n\n")
 	output.WriteString("export interface OperationTypes {\n")
@@ -186,9 +198,10 @@ func GenerateTypeScript(registry *Registry) ([]byte, error) {
 		responses := []string{}
 		seen := map[string]bool{}
 		for _, response := range operation.Responses {
-			if response.Kind == ResponseSchema && !seen[response.SchemaRef] {
-				seen[response.SchemaRef] = true
-				responses = append(responses, response.SchemaRef)
+			responseType := typeScriptResponse(response)
+			if !seen[responseType] {
+				seen[responseType] = true
+				responses = append(responses, responseType)
 			}
 		}
 		pathFields := []string{}
@@ -210,8 +223,24 @@ func GenerateTypeScript(registry *Registry) ([]byte, error) {
 		fmt.Fprintf(&output, "  %s: { path: { %s };%s request: %s; response: %s };\n", operation.ID,
 			strings.Join(pathFields, "; "), query, request, strings.Join(responses, " | "))
 	}
-	output.WriteString("}\n")
+	output.WriteString("}\n\nexport interface OperationResponses {\n")
+	for _, operation := range registry.Operations() {
+		responses := make([]string, len(operation.Responses))
+		for index, response := range operation.Responses {
+			responses[index] = fmt.Sprintf("{ status: %d; body: %s }", response.Status, typeScriptResponse(response))
+		}
+		fmt.Fprintf(&output, "  %s: %s;\n", operation.ID, strings.Join(responses, " | "))
+	}
+	output.WriteString("}\n\n")
+	output.WriteString(typeScriptClientTemplate)
 	return output.Bytes(), nil
+}
+
+func typeScriptResponse(response Response) string {
+	if response.Kind == ResponseRaw {
+		return "Uint8Array"
+	}
+	return response.SchemaRef
 }
 
 func typeScriptSchema(schema *Schema) string {

@@ -841,3 +841,36 @@ catalogs, TypeScript raw transport/reverification, cross-epoch retrieval and bod
 registry metadata remain open. This is a same-epoch Go download proof, not the whole public
 verification loop or full nine-tier 1.0. Next: catalog-owner descriptors and public catalog
 serving under C18; no current-byte fallback for missing historical artifacts.
+
+## 2026-10-07 — generated HTTP transport and default bootstrap/state consumers
+
+Batch after `f5450259`, accepted A2/A5/C9/C19. RP-373 reproduces omitted raw-success types
+(68082 red); generate Uint8Array successes, status/body associations and response metadata.
+Embed one transport template in the generator: registered paths/method/auth/query/body,
+JSON decoding or byte-preserving raw decoding with media/hash checks, explicit signal/request
+ID, no token storage/refresh/retry/timeout policy. Bind actual Game UI bootstrap and state
+reads; preserve existing snapshot parser, journal, credential ownership and revision handling.
+No HTTP wire/pin/OpenAPI, kernel, balance, gameplay, copy or CI-workflow change.
+
+Cold publicapi/publicread/account/gen-api (8739), selected vet, typecheck (62910,18852) and
+client build PASS. Client tests (35884):132 pass across generated client/runtime/run-started/
+intent outcomes. Native Chromium/WebKit (57736):88 pass, including browser raw SHA checks.
+Wrong/missing hash, changed bytes, wrong media, malformed JSON, undeclared status and bad
+runtime inputs refuse; network/abort propagates once. Bootstrap lost-reply and HTTP/parser
+negatives retain the journal, and explicit retry reuses its key. Raw fixtures are controlled
+fetch bytes, not an actual public TypeScript archive-verification journey.
+Full real-Postgres/browser `make test-game-ui-composed` (75802) PASS: eight refresh cases,
+six persisted parent cases (including public downloads/privacy), main gameplay/Pitch/endings/
+recovery and Cosmetic. This does not close the earlier RP-368 limiter/reliability finding.
+First draft runs85903/76732/7051 failed at the old whole-source query-word assertion,
+two mistaken operation IDs and a compiler-too-complex cast. Correct IDs from registry, inspect
+actual query declarations, and cast the unvalidated JSON result through unknown; no assertion,
+request/status rule or threshold weakened to conceal a product failure. All handles terminal.
+
+Regeneration preserves OpenAPI/compatibility-pin bytes; staged `make api-check` PASS.
+Fixture DB sessions and owned composed/browser listeners absent. Review by: Codex
+(diff/first-filter only); Recorded by: Codex. Entire range after `f5450259` needs designated
+review, independently of preceding work; no archive/push/hosted-CI/full-AC4 or 1.0 claim.
+Next: migrate registered Garden/Minigame/Soul callers through this generated boundary.
+Missing route contracts, C9's raw-fetch lint, C18 owner descriptors/historical catalogs,
+304 metadata and full public TypeScript re-verification remain open.
