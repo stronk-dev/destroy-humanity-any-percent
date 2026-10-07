@@ -167,3 +167,46 @@ when touching the fixture next.
   execution passes; the false green claim is not repeated.
 - `6e55f45` adds base power 105: the chart stage computes floor(136.5) = 136 in both runtimes,
   distinguishing the mandated floor from round-to-nearest.
+
+## 2026-10-07 — Go division boundary under existing C3 / AC6
+
+Implemented the accepted no-native-division law on the Go side rather than narrowing the
+RFC to TypeScript. A recursive Go AST checker covers production and test sources under
+`server/combat`, including future engine subdirectories. Binary division, assignment division,
+constant/closure division, URL-shaped masking, malformed sources, missing/empty populations and
+symlinked subtrees are refusal controls; strings/comments and shared helper calls are accepted.
+The ordinary Go test population exercises the repository itself. The root server verification
+targets now also run the CLI; the Node-only client job remains unchanged.
+
+Before the correction, the new repository test failed on the real direct operator in
+`server/combat/arithmetic.go:99:27`. An initial incorrect relative test path failed on a missing
+directory and was corrected; that setup error is not behavioral evidence. Existing damage
+division now uses checked `server/integer.DivideFloor`; test-side uint64 formatting uses
+`strconv.FormatUint`. Stage ordering, results, saturation, RNG, vector bytes and content are
+unchanged. Invalid helper inputs have explicit refusal tests. No kernel bump, balance change,
+workflow YAML, timeout/retry change or relaxed assertion is included.
+
+Finished-batch verification, all terminal exit 0:
+
+- `make test-go vet verify-combat-go-boundary verify-combat-boundary verify-ci-topology
+  GO_PACKAGES='./combat ./integer ./cmd/check-combat-boundary ./determinism'
+  GO_TEST_FLAGS='-count=1 -v'`: cold affected Go arithmetic/RNG/helper/checker tests, vet,
+  both actual source gates and CI topology including its 13 negative controls pass.
+- `client/node_modules/.bin/vitest run --root client test/combat-arithmetic.test.ts`:
+  18 shared arithmetic/RNG checks pass.
+- `make test-browser-focused BROWSER_TEST_FLAGS='test/combat-arithmetic.test.ts
+  --project chromium --project webkit'`: 36 native browser checks pass. The first sandboxed
+  attempt could not bind its local listener (`EPERM`) and executed no checks; the authorized
+  rerun passes. No Firefox claim is made.
+- `make test-save-integration SAVE_TEST_PACKAGES='./combat ./integer
+  ./cmd/check-combat-boundary' SAVE_TEST_FLAGS='-v'`: the same affected Go population passes
+  cold in the declared Linux container. These tests do not exercise persistence; this is not
+  a database integration or hosted Linux-amd64/whole-CI claim. The Compose orphan warning was
+  not followed by cleanup.
+
+**Review by:** Codex (implementer first filter). **Recorded by:** Codex.
+Review boundary is `94b927b5` exclusive through this batch's final commit, including docs and
+this record. Designated Claude review remains required before parent acceptance or archival;
+earlier verdicts do not cover this new range. C2's catalog/effect union and C5's Trust/Soul
+tables remain author/specification gaps; battle engines and bots remain draft child RFCs.
+This closes the Go source-enforcement gap locally, not combat gameplay or full parent acceptance.

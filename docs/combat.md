@@ -16,8 +16,18 @@ Damage is calculated identically in Go and TypeScript using integer stages:
 5. storage saturates to signed int32.
 
 Every intermediate is int64/BigInt. HP and stamina use explicit integer clamp operations. Native
-division is absent from `client/src/combat`; the shared `idiv` helper is outside that directory and a
-fail-closed source gate recursively parses every `.js`, `.jsx`, `.ts`, `.tsx`, `.mts`, and `.cts` combat module
+division is absent from `server/combat` and `client/src/combat`; the shared Go
+`integer.DivideFloor` and TypeScript `idiv` helpers live outside those directories. Both accept
+nonnegative dividends and positive divisors, with invalid inputs rejected. The Go helper leaves
+the existing staged damage calculation and int32 saturation unchanged.
+
+`make verify-combat-go-boundary` recursively parses all Go combat sources, including tests and
+future engine subdirectories, with Go's AST. It rejects `/` and `/=`, malformed sources,
+symlinks, missing trees and empty source populations. Its tests exercise those refusals alongside
+safe comments, strings and helper calls. It runs in both server verification targets, including
+the server CI lane and local `verify-push`.
+
+`make verify-combat-boundary` recursively parses every `.js`, `.jsx`, `.ts`, `.tsx`, `.mts`, and `.cts` combat module
 with TypeScript's AST. On every verification run it proves direct `/`, `/=`, division inside or
 after a template interpolation, and TSX division are rejected; strings, comments, and regular
 expressions cannot create blind spots or false positives; and a seeded violation in a nested future

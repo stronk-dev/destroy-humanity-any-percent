@@ -3,6 +3,8 @@ package combat
 import (
 	"errors"
 	"math"
+
+	"cloud-clicker/server/integer"
 )
 
 var ErrInvalidArithmetic = errors.New("invalid combat arithmetic")
@@ -96,7 +98,13 @@ func floorRatio(value, numerator, denominator int64) int64 {
 	if value <= 0 || numerator <= 0 || denominator <= 0 {
 		return 0
 	}
-	return value * numerator / denominator
+	quotient, err := integer.DivideFloor(value*numerator, denominator)
+	if err != nil {
+		// Damage validates its int32 inputs; its staged products fit in int64.
+		// An internal domain violation must fail loudly rather than wrap.
+		panic(err)
+	}
+	return quotient
 }
 
 func temperamentIndex(value Temperament) (int, bool) {

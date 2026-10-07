@@ -134,16 +134,5 @@ func loadArithmeticFixture(t *testing.T) arithmeticFixture {
 }
 
 func formatUint(value uint64) string {
-	const digits = "0123456789"
-	if value == 0 {
-		return "0"
-	}
-	var buffer [20]byte
-	index := len(buffer)
-	for value > 0 {
-		index--
-		buffer[index] = digits[value%10]
-		value /= 10
-	}
-	return string(buffer[index:])
+	return strconv.FormatUint(value, 10)
 }

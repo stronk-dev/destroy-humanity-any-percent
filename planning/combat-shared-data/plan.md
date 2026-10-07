@@ -8,5 +8,8 @@
 2. [x] Implement exact int32/int64 combat arithmetic and Temperament chart in Go and TypeScript.
 3. [ ] Add the strict combat catalog/schema and the complete Phase-0 fixture.
 4. [ ] Add fixture-only Trust/Soul tables and cross-runtime golden vectors.
-5. [ ] Add source lint and full parent acceptance/property coverage.
+5. [ ] Add source lint and full parent acceptance/property coverage. Both Go and TypeScript
+   division boundaries now execute locally; `TestRepositoryCombatDivisionBoundary` and its
+   AST/recursive negative controls cover Go, and `make verify-combat-boundary` covers TypeScript.
+   Full parent acceptance and designated review remain open; this is not a catalog/table closeout.
 6. [ ] Publish canonical docs and record independent review before archival.

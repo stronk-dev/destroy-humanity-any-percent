@@ -2,6 +2,7 @@
 .PHONY: test-deployment-release test-deployment-operations test-deployment-rehearsal deployment-rehearsal-probe deployment-rehearsal-observe-host deployment-rehearsal-install-candidate deployment-rehearsal-run-browser deployment-rehearsal-recover-empty deployment-rehearsal-recover-populated deployment-rehearsal-lifecycle-release deployment-rehearsal-lifecycle-rollback deployment-rehearsal-supply-chain deployment-rehearsal-forge-proof build-deployment-rehearsal build-deployment-browser-linux-amd64 build-deployment-operations-linux-amd64 build-deployment-rehearsal-linux-amd64 generate-image-sbom
 .PHONY: reputation-activation-corpus reputation-input-shape-corpus reputation-offer-corpus reputation-boundary-corpus
 .PHONY: test-operations-alertmanager-native test-operations-native test-browser-focused
+.PHONY: verify-combat-go-boundary
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -663,6 +664,9 @@ verify-ci-topology:
 verify-combat-boundary:
 	node client/tools/verify-combat-boundaries.mjs
 
+verify-combat-go-boundary:
+	cd server && go run ./cmd/check-combat-boundary -root=..
+
 verify-meters-boundary:
 	node client/tools/verify-meters-boundaries.mjs
 
@@ -675,9 +679,9 @@ verify-cosmetic-boundary:
 verify-no-payment:
 	node client/tools/verify-no-payment.mjs
 
-verify-server: vet test-go pitch-corpus-check formulas-check api-check harness-check verify-routes-boundary verify-commons-boundary
+verify-server: vet test-go pitch-corpus-check formulas-check api-check harness-check verify-routes-boundary verify-commons-boundary verify-combat-go-boundary
 
-verify-server-core: vet test-go-core pitch-corpus-check formulas-check api-check verify-routes-boundary verify-commons-boundary
+verify-server-core: vet test-go-core pitch-corpus-check formulas-check api-check verify-routes-boundary verify-commons-boundary verify-combat-go-boundary
 
 reputation-harness-check:
 	cd server && CLOUD_CLICKER_REPUTATION_EXHAUSTIVE=1 go test -p 1 -count=1 -timeout 60m ./harness -run '^(TestReputationTreeRelevance|TestReputationCareerStartersShortenRunThree)$$' -v
