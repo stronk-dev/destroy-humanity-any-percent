@@ -2719,3 +2719,36 @@ copy/style/network fixtures, but overall AC4 still needs its current-source
 fault bound to exact executed evidence. RP-331/SQL/default-player/Docker,
 author/body/engine/actual zoom/AT/privacy/platform/numeric/full-nine-tier 1.0
 holds remain. Active goal progress, not completion or a shortened release path.
+
+## 2026-10-07 — overall AC4 current-source boundary probes predeclared
+
+Fresh clean d3ce0f76. Previous goal turn is progress: RP-333/334 test-only
+measurement and six actual failure cases committed with current tracking.
+New span starts d3ce0f76 exclusive; prior exact 127eb052..d3ce0f76 is
+independently owed to Claude, not re-reviewed or archived here.
+
+Accepted Garage overall AC4 requires current mounted components to pass the
+existing boundary and a literal seed to fail. Inspecting the existing scanner
+shows internal seeded fixtures already present; this work adds executed
+current-source evidence, not another inferred missing validator. No production
+repair is preauthorized by a diagnostic survivor; record it first if found.
+
+Run healthy root make verify-client-boundary. Then one transient source fault
+at a time in OpportunityRegion.svelte: (1) the existing scanner's unregistered
+paragraph text, (2) one raw fetch in a syntactically valid unused function,
+(3) a type-only import from the real shell/runtime module, (4) literal color
+instead of governed token. Each seed must parse as valid Svelte and root
+boundary must fail its named policy, not a syntax error. No live browser or
+other matching source check during edits. Restore exact source SHA between
+every run and finish with healthy root boundary/typecheck. Do not commit any
+seed, alter owner copy, budgets, scanner, production behavior, CI or Make.
+
+Original OpportunityRegion SHA-256:
+5ee8223a531430fb1256e53f73a2a05e15020ccfef81dd8d7d4a70f2b18e6516.
+Original scanner SHA-256:
+ed06b3583ea48846c9b0134130f14fe3ab7804fdf9804ba799f15b658803ed32.
+This only binds AC4's source policy to executed evidence. It does not prove
+runtime behavior, all acceptance criteria, full browser/SQL/AT/default-player
+populations or release readiness. GS6-A2 cosmetic source authority is separate:
+the later accepted Shop's legitimate commands must not be incorrectly banned.
+No checkbox/lifecycle/archive/push/release change; no review relay authorized.
