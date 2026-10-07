@@ -90,6 +90,9 @@
   let lastRefreshedIntentID: string | undefined;
   let actionTask: Promise<void> | undefined;
   let activeActionKind: string | undefined;
+  const generatorPending = $derived(pending && activeActionKind === "buy_generator");
+  const upgradePending = $derived(pending && activeActionKind === "buy_upgrade");
+  const purchasePending = $derived(generatorPending || upgradePending);
 
   const era = $derived<CopyEra>(snapshot ? eraForSnapshot(snapshot) : "era_1995");
 
@@ -202,7 +205,9 @@
         if (notice.invariant) console.error("game UI invariant: intent rejection");
         intentNotice = outcome.outcome === "applied" && options.applied ? options.applied(outcome.receipt) : notice.notice;
         options.observed?.(outcome);
-        if (notice.effect === "refresh") void refresh();
+        // Keep the single-flight guard through conflict recovery too. A repeat
+        // of this kind during the read must drop, not await it as fresh consent.
+        if (notice.effect === "refresh") await refresh();
         else if (outcome.outcome === "applied") {
           // GS0.2: keep controls pending until the next intent can bind to the
           // authoritative revision, even when its stream receipt arrives late.
@@ -228,7 +233,7 @@
         intentNotice = notice.notice;
         options.failed?.(error);
         if (notice.effect === "offline") { needsAuthoritativeSnapshot = true; offline = true; }
-        else if (notice.effect === "refresh") void refresh();
+        else if (notice.effect === "refresh") await refresh();
       }
       finally {
         actionTask = undefined;
@@ -594,7 +599,7 @@
     <p class="snapshot-stale">{t("common.stale_note", {}, era)}</p>
   {/if}
   {#if snapshot && surface !== "fiscal" && surface !== "pet"}
-    <p class="intent-notice" role="status">{#if surface === "offer_sheet" && pending}<span id="offer-pending">{t("common.pending", {}, era)}</span> {/if}{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>
+    <p class="intent-notice" role="status">{#if surface === "offer_sheet" && pending}<span id="offer-pending">{t("common.pending", {}, era)}</span> {/if}{#if surface === "desk" && purchasePending}<span id="desk-pending">{t("common.pending", {}, era)}</span> {/if}{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>
   {/if}
   {#if draining}
     <aside class="notice" role="status"><strong>{t("system.drain_notice.title", {}, era)}</strong><span>{t("system.drain_notice.body", {}, era)}</span></aside>
@@ -663,7 +668,7 @@
               <Amount value={generator.next_cost} era={era} />
               {#if generator.provisioned > 0}<span>{t("desk.provisioned_frame", { count: generator.provisioned }, era)}</span>{/if}
               {#if "provision_cap" in generator && generator.provision_cap !== null && generator.provisioned >= generator.provision_cap.amount}<span>{t(generator.provision_cap.reason_key as CopyKey, {}, era)}</span>{/if}
-              <div><button type="button" disabled={pending || !commandControls || generator.max_affordable < 1} onclick={() => act({ kind: "buy_generator", generator_id: generator.generator_id, count: { mode: "exact", value: 1 } })}>{t("desk.buy_one", {}, era)}</button><button type="button" disabled={pending || !commandControls || generator.max_affordable < 1} onclick={() => act({ kind: "buy_generator", generator_id: generator.generator_id, count: { mode: "max" } })}>{t("desk.buy_max", {}, era)}</button></div>
+              <div><button type="button" tabindex="0" disabled={!commandControls || generator.max_affordable < 1} aria-disabled={generatorPending || undefined} aria-describedby={generatorPending ? "desk-pending" : undefined} onclick={() => act({ kind: "buy_generator", generator_id: generator.generator_id, count: { mode: "exact", value: 1 } })}>{t("desk.buy_one", {}, era)}</button><button type="button" tabindex="0" disabled={!commandControls || generator.max_affordable < 1} aria-disabled={generatorPending || undefined} aria-describedby={generatorPending ? "desk-pending" : undefined} onclick={() => act({ kind: "buy_generator", generator_id: generator.generator_id, count: { mode: "max" } })}>{t("desk.buy_max", {}, era)}</button></div>
             </article>
           {/each}
         </div>
@@ -675,7 +680,7 @@
         <div class="cards">
           {#each snapshot.upgrades as upgrade (upgrade.upgrade_id)}
             {@const presentation = upgradePresentation(upgrade.upgrade_id)}
-            <article class="card"><h3>{t(presentation.title_key, {}, era)}</h3><p>{t(presentation.description_key, {}, era)}</p><Amount value={upgrade.cost_amount} era={era} />{#if upgrade.owned}<strong>{t("desk.upgrade.owned", {}, era)}</strong>{/if}<button type="button" disabled={pending || !commandControls || !upgrade.eligible || upgrade.owned} onclick={() => act({ kind: "buy_upgrade", upgrade_id: upgrade.upgrade_id })}>{t("desk.buy_one", {}, era)}</button></article>
+            <article class="card"><h3>{t(presentation.title_key, {}, era)}</h3><p>{t(presentation.description_key, {}, era)}</p><Amount value={upgrade.cost_amount} era={era} />{#if upgrade.owned}<strong>{t("desk.upgrade.owned", {}, era)}</strong>{/if}<button type="button" tabindex="0" disabled={!commandControls || !upgrade.eligible || upgrade.owned} aria-disabled={upgradePending || undefined} aria-describedby={upgradePending ? "desk-pending" : undefined} onclick={() => act({ kind: "buy_upgrade", upgrade_id: upgrade.upgrade_id })}>{t("desk.buy_one", {}, era)}</button></article>
           {/each}
         </div>
       </section>

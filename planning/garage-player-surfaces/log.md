@@ -6139,3 +6139,36 @@ Review by: Codex (implementer first filter); Recorded by: Codex. Exact range aft
 through this batch needs designated review, independently of older implementation spans.
 RP-378 remains OPEN; next recurrence gets this trace, not a speculative fix or retry. Other
 accepted work continues. No archive/push/full-CI or nine-tier1.0 completion claim.
+
+## 2026-10-07 — RP-319 purchase focus and RP-379 conflict-refresh guard
+
+Accepted GS0.2/GS0.8 correction: generator Buy1/BuyMax and upgrade Buy retain native
+Tab stops and focus through intent/read work. Only the active kind is aria-disabled and
+describes existing `common.pending`; labels/copy stay unchanged. Genuine owned/unaffordable/
+stale disabling remains. Shared dispatcher now awaits its existing refusal/error refresh before
+releasing the single-flight guard. Same-kind repeats drop; another kind still waits and binds
+to the refreshed revision. No retry, input buffering, limiter, clock, kernel or CI change.
+
+Retained native tests86184 fail24 old cases on pending focus/native disabling. Initial focus
+correction2336 passes12 applied cases but fails12 conflicts with an extra command after the
+held read: RP-379, not accepted intermediate code. Guard correction41684 passes28 cases;
+final supplement adds actual mapped HTTP409 alongside200 conflicts and applied outcomes.
+First broader35049 fails24 existing Claim cases because generic Desk pending text duplicates
+Claim-owned feedback. Scope the new status to purchases, preserving those unchanged assertions.
+Final focused67193 passes64 purchase/Claim cases. Tests use actual native keyboard/host with
+runtime-double ordering, not real HTTP outages or full completion-focus/AT proof.
+
+Final root checks: `make test-browser BROWSER_TEST_FLAGS='test/game-ui-screens-browser.test.ts
+test/garage-surfaces-browser.test.ts test/cosmetic-host-browser.test.ts --project chromium
+--project webkit'`24297:924 PASS/4 declared performance-only skips, followed by existing
+performance2 PASS. `make typecheck`5753:0 errors/warnings; build24539:214 modules PASS;
+boundaries98756 and diff PASS. `make test-game-ui-composed`55806 PASS:8 refresh cases/all7
+persisted parents, actual Fiscal refusals/fresh consent, native purchase/event, opportunity,
+Pitch, both terminal states/continuation/recovery and Cosmetics/adoption/care/reloads. Main98
+requests/12.586s; Cosmetic72/N5 no violation/9.476s. All handles terminal before records.
+This does not resolve intermittent RP-378, manual throughput RP-368 or attendance RP-365.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact span afterf83e758e
+through this batch requires designated cross-party review; no acceptance/archival/push or
+full-CI/Firefox/AT/nine-tier1.0 claim. Next: Gate/Incorporate/Wind Down pending controls under
+the existing lifecycle/queue contract; Manual input retention still needs the owner choice.

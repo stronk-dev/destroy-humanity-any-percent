@@ -447,6 +447,149 @@ for (const completion of ["failed_read", "recovering", "healthy"] as const) {
   });
 }
 
+for (const purchase of ["one", "max", "upgrade"] as const) {
+  for (const key of ["{Enter}", " "] as const) {
+    for (const completion of ["applied", "rejected_conflict", "http_conflict"] as const) {
+      it.skipIf(typeof document === "undefined")(`GS0.8 Desk ${purchase} retains native ${key} focus through ${completion} and refresh`, async () => {
+        const { userEvent } = await import("vitest/browser");
+        const conflict = completion !== "applied";
+        const releaseReads: (() => void)[] = [];
+        class HeldReadRuntime extends FixtureRuntime {
+          override async intent(body: Readonly<Record<string, unknown>>): Promise<IntentOutcome> {
+            const result = await super.intent(body);
+            if (completion === "http_conflict") throw new GameUIRequestError(409, "conflict", "intent");
+            return result;
+          }
+          override async snapshot(): Promise<ParsedGameUISnapshot> {
+            if (this.requests.length === 0) return super.snapshot();
+            this.snapshotCalls++;
+            await new Promise<void>((resolve) => releaseReads.push(resolve));
+            return this.current;
+          }
+        }
+        const runtime = new HeldReadRuntime(true);
+        runtime.intentOutcome = conflict
+          ? { outcome: "rejected", category: "revision_conflict", detail: "expected_revision", currentRevision: 2, sessionExpired: false }
+          : { outcome: "applied", receipt: {} };
+        let releaseIntent = () => {};
+        runtime.intentBlock = new Promise<void>((resolve) => { releaseIntent = resolve; });
+        const target = document.createElement("div"); document.body.append(target);
+        const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+        try {
+          await settleIntentState();
+          const controls = [...target.querySelectorAll<HTMLButtonElement>("section[aria-labelledby='generators-heading'] button, section[aria-labelledby='upgrades-heading'] button")];
+          expect(controls).toHaveLength(3);
+          const index = purchase === "one" ? 0 : purchase === "max" ? 1 : 2;
+          const origin = controls[index];
+          const labels = controls.map((control) => control.textContent);
+          origin.focus(); await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(1);
+          const expected = purchase === "upgrade"
+            ? { kind: "buy_upgrade", upgrade_id: "upgrade.beige_tower_cache", expected_revision: 1 }
+            : { kind: "buy_generator", generator_id: "generator.beige_tower", expected_revision: 1,
+              count: purchase === "one" ? { mode: "exact", value: 1 } : { mode: "max" } };
+          expect(runtime.requests[0]).toMatchObject(expected);
+          const pendingState = () => {
+            expect(document.activeElement).toBe(origin);
+            for (const [controlIndex, control] of controls.entries()) {
+              expect(control.disabled, "pending must retain native purchase Tab stops").toBe(false);
+              const sameKind = (controlIndex === 2) === (purchase === "upgrade");
+              expect(control.getAttribute("aria-disabled")).toBe(sameKind ? "true" : null);
+              expect(control.getAttribute("aria-describedby")).toBe(sameKind ? "desk-pending" : null);
+            }
+            expect(controls.map((control) => control.textContent)).toEqual(labels);
+            const message = target.querySelector<HTMLElement>(".intent-notice #desk-pending")!;
+            expect(message?.textContent).toBe(t("common.pending", {}, "era_1995"));
+            expect(message.getBoundingClientRect().height).toBeGreaterThan(0);
+          };
+          pendingState();
+          await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(1);
+          const neighbor = index === 2 ? index - 1 : index + 1;
+          await userEvent.keyboard(index === 2 ? "{Shift>}{Tab}{/Shift}" : "{Tab}");
+          expect(document.activeElement).toBe(controls[neighbor]);
+          await userEvent.keyboard(index === 2 ? "{Tab}" : "{Shift>}{Tab}{/Shift}");
+          expect(document.activeElement).toBe(origin);
+          runtime.current = { ...snapshot, revision: 2, upgrades: snapshot.upgrades.map((upgrade) =>
+            !conflict && purchase === "upgrade" ? { ...upgrade, owned: true, eligible: false } : upgrade) };
+          releaseIntent(); await settleIntentState();
+          expect(runtime.snapshotCalls).toBe(2);
+          pendingState();
+          if (conflict) expect(target.querySelector(".intent-notice")?.textContent).toContain(t("intent.conflict", {}, "era_1995"));
+          await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(1);
+          releaseReads.splice(0).forEach((release) => release()); await settleIntentState();
+          expect(runtime.requests, "same-kind input during either hold must not queue a later command").toHaveLength(1);
+          expect(target.querySelector("#desk-pending")).toBeNull();
+          expect(origin.hasAttribute("aria-disabled")).toBe(false);
+          expect(origin.hasAttribute("aria-describedby")).toBe(false);
+          if (!conflict && purchase === "upgrade") {
+            expect(origin.disabled, "ownership remains a genuine ineligible state").toBe(true);
+            expect(target.querySelector("section[aria-labelledby='upgrades-heading'] strong")?.textContent).toBe(t("desk.upgrade.owned", {}, "era_1995"));
+          } else {
+            expect(document.activeElement).toBe(origin);
+            await userEvent.keyboard(key); await settleIntentState();
+            expect(runtime.requests).toHaveLength(2);
+            expect(runtime.requests[1]).toMatchObject({ ...expected, expected_revision: 2 });
+            expect(runtime.requests[1].intent_id).not.toBe(runtime.requests[0].intent_id);
+          }
+        } finally {
+          releaseIntent(); releaseReads.splice(0).forEach((release) => release());
+          await settleIntentState(); await unmount(app as never); target.remove();
+        }
+      });
+    }
+  }
+}
+
+for (const key of ["{Enter}", " "] as const) {
+  it.skipIf(typeof document === "undefined")(`GS0.8 Desk queues a different kind behind the held conflict refresh with native ${key}`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const releaseReads: (() => void)[] = [];
+    class HeldReadRuntime extends FixtureRuntime {
+      override async snapshot(): Promise<ParsedGameUISnapshot> {
+        if (this.requests.length === 0) return super.snapshot();
+        this.snapshotCalls++;
+        await new Promise<void>((resolve) => releaseReads.push(resolve));
+        return this.current;
+      }
+    }
+    const runtime = new HeldReadRuntime(true);
+    runtime.intentOutcome = { outcome: "rejected", category: "revision_conflict", detail: "expected_revision", currentRevision: 2, sessionExpired: false };
+    let releaseIntent = () => {};
+    runtime.intentBlock = new Promise<void>((resolve) => { releaseIntent = resolve; });
+    const target = document.createElement("div"); document.body.append(target);
+    const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+    try {
+      await settleIntentState();
+      const generator = target.querySelector<HTMLButtonElement>("section[aria-labelledby='generators-heading'] button")!;
+      const upgrade = target.querySelector<HTMLButtonElement>("section[aria-labelledby='upgrades-heading'] button")!;
+      generator.focus(); await userEvent.keyboard(key); await settleIntentState();
+      await userEvent.keyboard("{Tab}{Tab}"); expect(document.activeElement).toBe(upgrade);
+      expect(upgrade.hasAttribute("aria-disabled"), "a different kind may consent to waiting, not masquerade as disabled").toBe(false);
+      await userEvent.keyboard(key); await settleIntentState();
+      expect(runtime.requests).toHaveLength(1);
+      runtime.current = { ...snapshot, revision: 2 };
+      releaseIntent(); await settleIntentState();
+      expect(runtime.requests, "different-kind consent must wait for the authoritative revision").toHaveLength(1);
+      expect(releaseReads).toHaveLength(1);
+      runtime.intentOutcome = { outcome: "applied", receipt: {} };
+      releaseReads.splice(0).forEach((release) => release()); await settleIntentState();
+      expect(runtime.requests).toHaveLength(2);
+      expect(runtime.requests[1]).toMatchObject({ kind: "buy_upgrade", upgrade_id: "upgrade.beige_tower_cache", expected_revision: 2 });
+      expect(runtime.requests[1].intent_id).not.toBe(runtime.requests[0].intent_id);
+      expect(upgrade.getAttribute("aria-disabled")).toBe("true");
+      runtime.current = { ...snapshot, revision: 3, upgrades: snapshot.upgrades.map((row) => ({ ...row, owned: true, eligible: false })) };
+      releaseReads.splice(0).forEach((release) => release()); await settleIntentState();
+      expect(runtime.requests).toHaveLength(2);
+      expect(upgrade.disabled).toBe(true);
+    } finally {
+      releaseIntent(); releaseReads.splice(0).forEach((release) => release());
+      await settleIntentState(); await unmount(app as never); target.remove();
+    }
+  });
+}
+
 for (const action of ["accept_exit_offer", "decline_exit_offer"] as const) {
   for (const key of ["{Enter}", " "] as const) {
     for (const conflict of [false, true]) {

@@ -12,6 +12,11 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
 - Desk: manual action, resources and visible cap explanations, generator purchases, upgrades,
   server-projected Gate/Wind Down controls, local splits, the free Horse Armor shelf, shareware
   registration/order form, and README.TXT.
+  Generator Buy 1/Buy Max and upgrade Buy retain native focus and Tab stops during their
+  intent and refresh. The active purchase kind uses `aria-disabled` and describes the existing
+  visible pending text without changing its action label. Same-kind repeats drop; another kind
+  waits and binds to the refreshed revision. Affordability, owned upgrades and stale-state
+  disabling remain genuine eligibility restrictions; this does not retain manual clicks.
 - Offer Sheet: authoritative exit type, complete payout terms, server-clock-relative expiry,
   Company-only decline, and Founder-CAS-guarded acceptance.
   Sign/Decline keep their action labels and native Tab stops during pending intent/read work.
@@ -409,6 +414,9 @@ submitting surface is current. Care receives the host's single mapped presentati
 key just like Fiscal. Cross-surface event announcements keep their separate,
 cursor-deduplicated chrome region. A stale revision (`revision_conflict`) triggers one
 authoritative refresh and is never auto-retried. Founder-scoped intents send the Founder revision.
+Applied intents and refresh-requiring refusals/errors keep the shared single-flight guard
+through the authoritative read. Same-kind input during a conflict refresh cannot become a later
+command; only a subsequent fresh consent or the already permitted different-kind wait may submit.
 An applied intent keeps its controls pending through an authoritative snapshot refresh, so the
 next action uses the updated Founder or Company revision even if the stream receipt arrives late.
 Gate and Decline share an in-flight stream-triggered refresh instead of starting a parallel read.
