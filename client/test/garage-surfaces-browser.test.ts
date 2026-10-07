@@ -6,6 +6,7 @@ import type { GameUISnapshot } from "../src/api/generated/types";
 import { t, type CopyKey } from "../src/copy";
 import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
+import FiscalSurface from "../src/game-ui/FiscalSurface.svelte";
 import PetCareSurface from "../src/game-ui/pet/PetCareSurface.svelte";
 import { GameUIRequestError, type IntentOutcome } from "../src/game-ui/intent-outcome";
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
@@ -185,7 +186,8 @@ it.skipIf(!browser)("keeps Fiscal pending until the applied harvest refresh supp
     expect(runtime.requests[0]).toMatchObject({ kind: "harvest_fiscal_period", expected_revision: 7 });
     expect(runtime.snapshotCalls).toBe(1);
     expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
-    expect(button(target, "Unlock for 3").disabled).toBe(true);
+    expect(button(target, "Unlock for 3").disabled).toBe(false);
+    expect(button(target, "Unlock for 3").getAttribute("aria-disabled")).toBe("true");
     runtime.releaseRefresh();
     await settle();
     expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
@@ -193,6 +195,209 @@ it.skipIf(!browser)("keeps Fiscal pending until the applied harvest refresh supp
     await settle();
     expect(runtime.requests[1]).toMatchObject({ kind: "spend_fiscal_credit", expected_revision: 8, target: { kind: "unlock", unlock_id: "minigame.pitch" } });
   } finally { runtime.releaseRefresh(); await dispose(); }
+});
+
+// Fiscal supplement uses public snapshot fixtures and runtime doubles. It is
+// consumer evidence, never a real quarter clock or persisted Founder proof.
+const fiscalText = (key: CopyKey): string => t(key, {}, "era_1995");
+const withRipeFiscal = (): GameUISnapshot => ({ ...v4,
+  features: { ...v4.features, fiscal: { ...v4.features.fiscal!, period: { ...v4.features.fiscal!.period, opened_wall_ms: NOW - 250_000 } } } });
+const fiscalControls = (target: HTMLElement) => [
+  button(target, fiscalText("fiscal.harvest")),
+  button(target, t("fiscal.level_buy", { cost: 1 }, "era_1995")),
+  button(target, t("fiscal.unlock_buy", { cost: 3 }, "era_1995")),
+];
+
+for (const activation of ["{Enter}", " "]) {
+  it.skipIf(!browser)(`Fiscal supplement keyboard ${activation === " " ? "Space" : "Enter"} traverses and activates harvest, level and unlock`, async () => {
+    const runtime = new Runtime(); runtime.current = withRipeFiscal();
+    runtime.outcome = { outcome: "applied", receipt: { harvest_outcome: "guaranteed" } };
+    const { target, dispose } = await mounted(runtime);
+    try {
+      button(target, fiscalText("surface.fiscal.title")).click(); await settle();
+      const [harvest, level, unlock] = fiscalControls(target);
+      const { userEvent } = await import("vitest/browser"); harvest.focus();
+      await userEvent.keyboard(activation); await settle();
+      expect(document.activeElement).toBe(harvest);
+      await userEvent.keyboard("{Tab}"); expect(document.activeElement).toBe(level);
+      await userEvent.keyboard(activation); await settle();
+      expect(document.activeElement).toBe(level);
+      await userEvent.keyboard("{Tab}"); expect(document.activeElement).toBe(unlock);
+      await userEvent.keyboard(activation); await settle();
+      expect(document.activeElement).toBe(unlock);
+      expect(runtime.requests).toEqual([
+        expect.objectContaining({ kind: "harvest_fiscal_period", expected_revision: 7 }),
+        expect.objectContaining({ kind: "spend_fiscal_credit", expected_revision: 7, target: { kind: "generator_level", generator_id: "generator.beige_tower", levels: 1 } }),
+        expect.objectContaining({ kind: "spend_fiscal_credit", expected_revision: 7, target: { kind: "unlock", unlock_id: "minigame.pitch" } }),
+      ]);
+    } finally { await dispose(); }
+  });
+}
+
+for (const [label, index] of [["harvest", 0], ["level", 1], ["unlock", 2]] as const) {
+  it.skipIf(!browser)(`Fiscal supplement ${label} stays focusable and guarded through held intent AND held read`, async () => {
+    const runtime = new Runtime(); runtime.current = withRipeFiscal();
+    const { target, dispose } = await mounted(runtime);
+    let finish!: (value: IntentOutcome) => void, release!: (value: ParsedGameUISnapshot) => void;
+    const heldIntent = new Promise<IntentOutcome>((resolve) => { finish = resolve; });
+    const heldRead = new Promise<ParsedGameUISnapshot>((resolve) => { release = resolve; });
+    const intent = vi.spyOn(runtime, "intent").mockImplementation((body) => { runtime.requests.push(body); return heldIntent; });
+    const read = vi.spyOn(runtime, "snapshot").mockReturnValue(heldRead);
+    const applied: IntentOutcome = { outcome: "applied", receipt: { harvest_outcome: "guaranteed" } };
+    try {
+      button(target, fiscalText("surface.fiscal.title")).click(); await settle();
+      const control = fiscalControls(target)[index]; control.focus(); control.click(); await settle();
+      const assertPending = () => {
+        expect(control.disabled).toBe(false); expect(control.getAttribute("aria-disabled")).toBe("true");
+        expect(document.activeElement).toBe(control);
+        expect(target.querySelector(".fiscal")?.textContent).toContain(fiscalText("common.pending"));
+        expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+      };
+      assertPending(); control.click(); await settle(); expect(runtime.requests).toHaveLength(1);
+      finish(applied); await settle(); expect(read).toHaveBeenCalledTimes(1); assertPending();
+      control.click(); await settle(); expect(runtime.requests).toHaveLength(1);
+      release({ ...withRipeFiscal(), founder_revision: 8 }); await settle();
+      expect(control.getAttribute("aria-disabled")).not.toBe("true"); expect(document.activeElement).toBe(control);
+      expect(target.querySelector(".fiscal")?.textContent).not.toContain(fiscalText("common.pending"));
+      control.click(); await settle(); expect(runtime.requests).toHaveLength(2);
+      expect(runtime.requests[1].expected_revision).toBe(8);
+    } finally { finish(applied); release(runtime.current); await settle(); intent.mockRestore(); read.mockRestore(); await dispose(); }
+  });
+}
+
+for (const [category, detail, key, index, invariant] of [
+  ["not_eligible", "period_not_ripe", "fiscal.rejection.period_not_ripe", 0, false],
+  ["unaffordable", "fiscal_credit", "fiscal.rejection.unaffordable", 1, false],
+  ["not_eligible", "already_unlocked", "fiscal.rejection.already_unlocked", 2, false],
+  ["cap_exceeded", "generator.beige_tower", "cap.fiscal_level.beige_tower", 1, false],
+  ["unknown_id", "generator.not_in_catalog", "intent.rejection.unknown", 1, true],
+  ["unknown_id", "unlock.not_in_catalog", "intent.rejection.unknown", 2, true],
+] as const) {
+  it.skipIf(!browser)(`Fiscal supplement refusal ${category}/${detail} renders its exact reason and invariant policy`, async () => {
+    const runtime = new Runtime(); runtime.current = withRipeFiscal();
+    runtime.outcome = { outcome: "rejected", category, detail, currentRevision: 7, sessionExpired: false };
+    const { target, dispose } = await mounted(runtime);
+    const diagnostics = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      button(target, fiscalText("surface.fiscal.title")).click(); await settle();
+      const control = fiscalControls(target)[index]; control.focus(); control.click(); await settle();
+      expect(runtime.requests).toHaveLength(1); expect(runtime.requests[0].expected_revision).toBe(7);
+      expect(target.querySelector(".intent-notice")?.textContent).toBe(fiscalText(key));
+      expect(target.querySelector(".intent-notice")?.textContent).not.toContain(`${category}/${detail}`);
+      expect(diagnostics.mock.calls).toEqual(invariant ? [["game UI invariant: intent rejection"]] : []);
+      expect(control.disabled).toBe(false); expect(document.activeElement).toBe(control);
+      await assertAxe(target, `Fiscal refusal ${detail}`);
+    } finally { diagnostics.mockRestore(); await dispose(); }
+  });
+}
+
+for (const outcome of ["early_succeeded", "early_failed", "guaranteed", "consumed_by_auto"] as const) {
+  it.skipIf(!browser)(`Fiscal supplement renders the applied ${outcome} harvest outcome without predicting it`, async () => {
+    const runtime = new Runtime(); runtime.current = withRipeFiscal();
+    runtime.outcome = { outcome: "applied", receipt: { harvest_outcome: outcome } };
+    const { target, dispose } = await mounted(runtime);
+    try {
+      button(target, fiscalText("surface.fiscal.title")).click(); await settle();
+      fiscalControls(target)[0].click(); await settle();
+      expect(runtime.requests).toHaveLength(1);
+      expect(target.querySelector(".intent-notice")?.textContent).toBe(fiscalText(`fiscal.outcome.${outcome}`));
+    } finally { await dispose(); }
+  });
+}
+
+for (const [label, message] of [
+  ["recovering", { kind: "transport_recovering" }],
+  ["resync", { kind: "system", value: { kind: "resync_required" } }],
+  ["restart", { kind: "system", value: { kind: "server_restarting", resume_after_ms: 1_000 } }],
+] as const) {
+  it.skipIf(!browser)(`Fiscal supplement marks ${label} values stale and refuses intents until recovery`, async () => {
+    const runtime = new Runtime(); runtime.current = withRipeFiscal();
+    const { target, dispose } = await mounted(runtime);
+    try {
+      button(target, fiscalText("surface.fiscal.title")).click(); await settle();
+      runtime.listener?.(message); await settle();
+      expect(fiscalControls(target).every((control) => control.disabled)).toBe(true);
+      expect(target.querySelector(".fiscal")?.textContent).toContain(fiscalText("common.stale_note"));
+      for (const control of fiscalControls(target)) control.click(); await settle(); expect(runtime.requests).toEqual([]);
+      runtime.listener?.({ kind: "transport_recovered" }); await settle();
+      expect(fiscalControls(target).every((control) => !control.disabled)).toBe(true); expect(runtime.requests).toEqual([]);
+    } finally { await dispose(); }
+  });
+}
+
+it.skipIf(!browser)("Fiscal supplement disables all Founder commands when its revision is unavailable", async () => {
+  const runtime = new Runtime(); const value = withRipeFiscal();
+  delete (value as unknown as Record<string, unknown>).founder_revision; runtime.current = value;
+  const { target, dispose } = await mounted(runtime);
+  try {
+    button(target, fiscalText("surface.fiscal.title")).click(); await settle();
+    expect(fiscalControls(target).every((control) => control.disabled)).toBe(true);
+    for (const control of fiscalControls(target)) control.click(); await settle(); expect(runtime.requests).toEqual([]);
+  } finally { await dispose(); }
+});
+
+for (const [label, index, navigate] of [["owned unlock", 2, false], ["capped level", 1, false], ["selected nav", 2, true]] as const) {
+  it.skipIf(!browser)(`Fiscal supplement ${label} refresh preserves the accepted focus boundary`, async () => {
+    const runtime = new Runtime(); runtime.current = withRipeFiscal();
+    const { target, dispose } = await mounted(runtime);
+    let finish!: (value: IntentOutcome) => void;
+    const held = new Promise<IntentOutcome>((resolve) => { finish = resolve; });
+    const intent = vi.spyOn(runtime, "intent").mockImplementation((body) => { runtime.requests.push(body); return held; });
+    try {
+      button(target, fiscalText("surface.fiscal.title")).click(); await settle();
+      const control = fiscalControls(target)[index]; control.focus(); control.click(); await settle();
+      const nav = button(target, fiscalText("surface.meters.title")); if (navigate) nav.focus();
+      const next = withRipeFiscal(), fiscal = next.features.fiscal!;
+      runtime.current = { ...next, founder_revision: 8, features: { ...next.features, fiscal: {
+        ...fiscal,
+        generator_levels: fiscal.generator_levels.map((row) => index === 1 ? { ...row, level: row.level_cap.amount, next_level_cost: null } : row),
+        unlocks: fiscal.unlocks.map((row) => index === 2 && row.unlock_id === "minigame.pitch" ? { ...row, owned: true } : row),
+      } } };
+      finish({ outcome: "applied", receipt: {} }); await settle();
+      expect(control.isConnected).toBe(false); expect(runtime.requests).toHaveLength(1);
+      expect(document.activeElement).toBe(navigate ? nav : target.querySelector("#fiscal-heading"));
+      expect(target.querySelector(".fiscal")?.textContent).toContain(fiscalText(index === 1 ? "cap.fiscal_level.beige_tower" : "fiscal.unlock_owned"));
+    } finally { finish({ outcome: "applied", receipt: {} }); await settle(); intent.mockRestore(); await dispose(); }
+  });
+}
+
+it.skipIf(!browser)("Fiscal supplement prefers a surviving control in the same region when the level button is removed", async () => {
+  const runtime = new Runtime(), value = withRipeFiscal(), fiscal = value.features.fiscal!;
+  // Public runtime fixture with an existing presentation row; this does not
+  // assert that the current production catalog sells this second Fiscal level.
+  const levels = [...fiscal.generator_levels, { ...fiscal.generator_levels[0], generator_id: "generator.answering_machine", next_level_cost: 2 }];
+  runtime.current = { ...value, features: { ...value.features, fiscal: { ...fiscal, generator_levels: levels } } };
+  const { target, dispose } = await mounted(runtime);
+  const intent = vi.spyOn(runtime, "intent").mockImplementation(async (body) => {
+    runtime.requests.push(body);
+    runtime.current = { ...value, founder_revision: 8, features: { ...value.features, fiscal: { ...fiscal,
+      generator_levels: levels.map((row) => row.generator_id === "generator.beige_tower" ? { ...row, level: row.level_cap.amount, next_level_cost: null } : row),
+    } } };
+    return { outcome: "applied", receipt: {} };
+  });
+  try {
+    button(target, fiscalText("surface.fiscal.title")).click(); await settle();
+    const level = button(target, t("fiscal.level_buy", { cost: 1 }, "era_1995"));
+    const surviving = button(target, t("fiscal.level_buy", { cost: 2 }, "era_1995"));
+    level.focus(); level.click(); await settle();
+    expect(level.isConnected).toBe(false); expect(document.activeElement).toBe(surviving);
+    expect(runtime.requests).toHaveLength(1);
+  } finally { intent.mockRestore(); await dispose(); }
+});
+
+it.skipIf(!browser)("Fiscal supplement component pending guards do not depend on the host single-flight queue", async () => {
+  const target = document.createElement("div"); document.body.append(target);
+  const onHarvest = vi.fn(), onSpendLevel = vi.fn(), onSpendUnlock = vi.fn();
+  const app = mount(FiscalSurface, { target, props: { arm: withRipeFiscal().features.fiscal!, era: "era_1995", serverNowMs: NOW, pending: true, controlsEnabled: true, onHarvest, onSpendLevel, onSpendUnlock } });
+  try {
+    await settle(); const { userEvent } = await import("vitest/browser");
+    for (const control of fiscalControls(target)) {
+      expect(control.disabled).toBe(false); expect(control.getAttribute("aria-disabled")).toBe("true");
+      control.focus(); control.click(); await userEvent.keyboard("{Enter}"); await userEvent.keyboard(" "); await settle();
+      expect(document.activeElement).toBe(control);
+    }
+    expect(onHarvest).not.toHaveBeenCalled(); expect(onSpendLevel).not.toHaveBeenCalled(); expect(onSpendUnlock).not.toHaveBeenCalled();
+  } finally { await unmount(app); target.remove(); }
 });
 
 it.skipIf(!browser)("shows provisioned counts with their cap reason and owned upgrades as text on the Desk (GS6)", async () => {

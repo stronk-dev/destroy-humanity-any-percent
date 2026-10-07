@@ -1521,3 +1521,25 @@ no repeated install/skip/timeout workaround or all-engine/AT acceptance.
 Full new span after `b64a91af`, including predeclaration/tests/repair/docs/
 ledger/log/tracking edge, requires Claude independently of prior ranges.
 No checkbox/status/archive/mint/push/deploy/wholeCI/full1.0 promotion.
+
+Initial native runtime-double baseline executes48 assertions:31 fail/17 pass/
+98 unselected. Separately, the new test copy helper's broad Record params
+does not satisfy the generated key-specific TS union; typecheck rejects that
+instrument before product changes. Correct helper to parameterless keys plus
+direct typed cost resolvers, no cast or safety relaxation. Re-run the unchanged
+product baseline and types before recording it as the test-first checkpoint.
+
+Corrected instrument types pass zero errors/warnings; unchanged-product native
+baseline still31 failures/17 passes, including exact row-cap notice mismatch.
+Before repair add the declared nearest-surviving same-region control case:
+existing generator presentation/public fixture only, not a claim that this
+second generator currently sells a Fiscal level. This must discriminate a
+heading-only implementation, not leave that accepted clause unobserved.
+
+Final test-first baseline:24 new Fiscal cases plus the preserved delayed-read
+case execute50 assertions;33 fail/17 pass/98 unselected, types zero errors/
+warnings. Both nearest-survivor cases fail on body; four harvest outcome
+controls and missing-revision/no-focus-steal controls pass. The two browser
+engines differ on transient native-disable focus loss; no engine's result
+is substituted for the other. Native failures are assertions, not launch or
+build errors. Tests are committed before any production change.
