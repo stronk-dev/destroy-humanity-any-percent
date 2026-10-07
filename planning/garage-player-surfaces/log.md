@@ -749,3 +749,19 @@ changes. Next safe work: separately bounded inspection and execution of Desk
 consumer `f32f6175^..f32f6175`, all fourteen paths, as diagnostic review while
 RP-313 remains an approval hold. Its DOM and real-server claim proof cannot be
 inferred from this producer's green primitive tests.
+
+### GS5 supplement exact first-filter boundary
+
+**Review by:** Codex (implementer-side self first filter).
+**Recorded by:** Codex. **Reviewed range:** `87fd23d4..c41432d4`, all three
+commits and all nine paths: one new Go test file, backlog, Garage plan/log,
+decision/execution queues, current state and 1.0 board/log. All changed content
+was inspected; existing log prefixes remain intact and no checkbox flips.
+The only retained test/source change is the new isolated Go population; no
+product, kernel, balance, generated API, copy, deployment or CI bytes changed.
+Committed cold `-run Opportunity -count=1` passes. First filter passes only;
+Claude must review this entire span PLUS this coordinate-record edge before
+the supplement can be consumed as designated-approved. RP-313 remains open.
+The original producer verdict covers only Claude's twelve-path original
+commit; the new four-function supplement is not relabelled as independent
+evidence review. Next is the separate fourteen-path consumer diagnostic scope.
