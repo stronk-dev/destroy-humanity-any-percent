@@ -4544,3 +4544,39 @@ Claude must cover the entire new span after `fbbf0150`, including this following
 record commit. Original R18 CHANGES REQUIRED and all older independent ranges
 remain live; this does not approve full DP-F/R-006 or a release. No archival,
 deployment or external publication. Full 1.0 goal remains active.
+
+## 2026-10-07 — R11 designated review: alert rules executed, bounded approval
+
+Review by: Codex (cross-party reviewer of Claude's implementation). Recorded by: Codex.
+Verdict: **APPROVED for R11 only**, exact range
+`1f376cccdabf83359b8d3810fb37ab2c5f0a030b..711071c003f7080299eceb0662f1fafef2e41e16`.
+All five changed paths inspected, including the historical evidence entry and canonical docs.
+The rule files and affected Go test are unchanged from that range at `54a3ef5f`.
+
+Executed against the real Prometheus evaluator, not `ValidateOperationsProfile`'s structural
+checks. The official [Prometheus 3.12.0 release](https://github.com/prometheus/prometheus/releases/tag/v3.12.0)
+provides a native darwin/arm64 `promtool`; no global install, release image or Make/CI change.
+Downloaded using `gh release download v3.12.0 --repo prometheus/prometheus --pattern
+prometheus-3.12.0.darwin-arm64.tar.gz --pattern sha256sums.txt --dir <temporary-directory>`.
+Verified archive SHA256 `d758070049a4de5abbeb925b1d4540c5c38a2f40d1356f59aa17a71ac8b48be3`
+against both official asset metadata and the release checksum file (SHA256
+`251981b6ade521ca72f35878ceee7ff6e9bc6774a8093faffa32776af57dfae9`).
+Tool reports 3.12.0, revision `9f27dffc1f93ca23287972f632025879f2d1c658`.
+
+- `<promtool> check rules deployment/operations/cloud-clicker-alerts.yml`: PASS, seven rules.
+- `<promtool> test rules deployment/operations/cloud-clicker-alerts.test.yml`: PASS, full
+  checked-in population, including duration/threshold controls, stale observation, scrape failure
+  and readiness/cleanup fire-then-clear cases.
+- Independent adversarial check in a temporary two-file copy: raise only the stale observation
+  threshold from 300 to 9999999. The same evaluator exits 1: the expected storage alert at ten
+  minutes is missing. No production file was modified; this does not claim independently
+  re-executing all thirteen historical probes.
+- `make test-go vet GO_PACKAGES='./releasepackage ./operations' GO_TEST_FLAGS='-count=1'`:
+  PASS (1.411s / 0.991s), including missing-rule/quiet-evidence/privacy rejection checks.
+
+The seven alert families and privacy boundaries are preserved; stale observation can no longer
+silently serve indefinitely healthy values. Native rule-unit evidence is admissible for this
+bounded correction, not Linux/amd64 image identity, real scrape-to-receiver delivery, clean-host
+R-006, complete DP-E/AC7 or release proof. Original R5 and all other outstanding independent
+implementation/record ranges remain open. Next deployment work: the remaining corrective
+reviews and exact-artifact/clean-host gates; no archival or publication.
