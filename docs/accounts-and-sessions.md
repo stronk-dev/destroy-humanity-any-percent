@@ -109,3 +109,12 @@ Founder archival, import, deletion/anonymization, and rate limiting against Post
 The integration suite also forces a legitimate rotation to race a replay and proves that no
 descendant refresh or access token remains live. The account path also proves stored-parameter
 credential upgrade and anonymized Founder/import-marker retention after deletion.
+
+`make test-game-ui-composed` also runs the seven refresh API cases against its declared disposable
+Postgres before starting the browser: live and expired-access rotation/reuse, New Founder binding,
+unknown/expired refresh rejection, a closed-database response, and limiter non-mutation/refill.
+The existing completeness observer requires every case to execute and pass; dependency skips
+cannot make this lane green. Credentials and private row snapshots are not emitted. These cases
+use HTTP over `net.Pipe`, not browser renewal or the Linux release artifact. The database-fault
+case records the current generic `401 unauthorized/refresh_token` mapping; it does not endorse
+that mapping as the eventual outage/recovery policy.

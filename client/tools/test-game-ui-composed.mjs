@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createServer } from "vite";
 import { assertOpportunityClaimEffect, assertOpportunityReadStatus } from "./opportunity-claim-proof.mjs";
+import { parents as refreshTests, refreshPopulationObserver } from "./observe-refresh-population.mjs";
 
 const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = path.resolve(clientRoot, "..");
@@ -34,6 +35,27 @@ await new Promise((resolve, reject) => {
 });
 
 const testDatabaseURL = "postgres://cloud_clicker:cloud_clicker_game_ui_test@127.0.0.1:55433/cloud_clicker_game_ui_test?sslmode=disable";
+resetTestDatabase();
+// Exercise the actual refresh API/repository before starting the browser. The
+// existing observer requires every case to pass and discards private Go output;
+// a package-level PASS with missing or skipped database tests is not success.
+const refreshChecks = spawnSync("make", ["test-go", "GO_PACKAGES=./account", `GO_TEST_FLAGS=-count=1 -json -run '^(${refreshTests.join("|")})$$'`], {
+  cwd: repositoryRoot,
+  env: { ...process.env, TEST_DATABASE_URL: testDatabaseURL },
+  encoding: "utf8",
+});
+if (refreshChecks.error) throw refreshChecks.error;
+const refreshObserver = refreshPopulationObserver();
+for (const line of (refreshChecks.stdout ?? "").split("\n")) refreshObserver.consumeLine(line);
+const refreshResult = refreshObserver.finish(refreshChecks.status);
+if (!refreshResult.valid) {
+  throw new Error(`persisted refresh population failed: ${JSON.stringify({
+    completed: refreshResult.completed_leaves, expected: refreshResult.expected_leaves,
+    missing: refreshResult.missing, skipped: refreshResult.skipped, failed: refreshResult.failed,
+    errors: refreshResult.errors, exit: refreshChecks.status, signal: refreshChecks.signal,
+  })}`);
+}
+console.info(`persisted refresh API population passed: ${refreshResult.completed_leaves}/${refreshResult.expected_leaves} cases (real Postgres, HTTP over net.Pipe; not browser renewal)`);
 resetTestDatabase();
 const persistedTests = [
   "TestFiscalProjectionMatchesPersistedHarvestIntegration",

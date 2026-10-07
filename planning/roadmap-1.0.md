@@ -5,7 +5,13 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint (2026-10-07):** real historical epoch-5→6 persistence uncovered and repaired
+**Current checkpoint (2026-10-07):** all seven existing refresh API cases now execute against
+real Postgres in the normal composed lane; the actual missing-DB control is rejected. The
+whole player journey also passes. [Account plan/log](account-and-session-bootstrap/plan.md)
+owns the evidence and pending review. Browser renewal, rights/retention, full CI and the full
+nine-tier release remain incomplete; no token policy or product scope changed.
+
+**Preceding checkpoint (2026-10-07):** real historical epoch-5→6 persistence uncovered and repaired
 RP-366's Fiscal activation clock mismatch. The full composed lane passes with retained replay
 and retry controls; designated review remains. [First Content plan/log](first-content-epoch/plan.md)
 owns the details. Full CI is not green: the historical RP-131 guard and RP-307 numeric failures

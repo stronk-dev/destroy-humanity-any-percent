@@ -779,3 +779,32 @@ Standalone fixtures/current client population and remaining separately executed
 gates pass; verify-client composite is still RP-131 RED. All handles terminal,
 no cleanup/deletion or push. Review by: Codex (first-filter only). Recorded by:
 Codex. Claude mandatory independently, no archival eligibility inferred.
+
+## 2026-10-07 — execute refresh cases on the existing composed Postgres lane
+
+Account D2/D3; routine test integration under the current RFC-0000 procedure. Added the four
+existing refresh test parents to `test-game-ui-composed.mjs`, using the existing seven-case
+observer, actual API/repository and declared ephemeral Postgres. Private Go output is consumed
+in memory, not printed or retained. Reset the fixture between Account, historical-content and
+browser populations; no runtime/token/policy/CI-topology change or new observer/artifact system.
+
+`make test-game-ui-composed` (82596) PASS: 7/7 refresh cases, persisted Fiscal/historical Exit
+checks, real DOM/server/WebSocket transitions and both endings/continuation/recovery, Fiscal
+refusals/fresh consent, achievement acquisition, opportunity effect, Pitch, and cosmetic
+Buy/adopt/care/equip/reload. Refresh cases include correct stored family/expiry/Founder binding,
+reuse revocation, rejected-request non-mutation and limiter refill. HTTP uses net.Pipe; the
+closed-DB case observes current 401 mapping, not adopted outage policy or browser renewal.
+
+`make test-refresh-observer` PASS (20 retained fixture controls); actual
+`node client/tools/observe-refresh-population.mjs --missing-db-control` (59722) correctly exits 1:
+Go child/package pass, four skips, 0/7 completed cases, stable listed sources, no truncation.
+Cold `make test-go GO_PACKAGES='./account ./publicapi' GO_TEST_FLAGS=-count=1` (46945) and
+selected `make vet` PASS; these latter ordinary runs skip DB cases and are not DB evidence.
+Node syntax/diff checks pass. All handles terminal before records; declared DB other sessions
+zero and ports 18081/18082/5173 absent. No cleanup, push, archive or full CI/release claim.
+
+Review by: Codex (first-filter only). Recorded by: Codex. New binding/docs/records range starts
+after `0f9f4214`; designated Claude review remains, alongside earlier prepared-test/observer
+ranges. The native route removes the execution gap for these seven cases, not RP-236's full
+Linux image/storage blocker. Next: generated refresh contract and browser policy need accepted
+authority before implementation; wider Account rights/retention/acceptance remain open.
