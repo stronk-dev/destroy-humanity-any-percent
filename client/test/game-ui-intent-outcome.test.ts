@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { COPY_KEYS } from "../src/copy";
 import { GameUIRequestError, noticeForError, noticeForOutcome, parseIntentErrorBody, parseIntentOutcome } from "../src/game-ui/intent-outcome";
 import { createBrowserGameUIRuntime, type RuntimeStorage } from "../src/game-ui/runtime";
+import { OPPORTUNITY_REJECTIONS } from "../src/game-ui/opportunity-claim";
 
 class MemoryStorage implements RuntimeStorage {
   readonly values = new Map<string, string>();
@@ -35,6 +36,16 @@ describe("GS0.2 intent outcomes", () => {
     expect(noticeForError(new TypeError("network")).effect).toBe("offline");
     const keys = new Set<string>(COPY_KEYS);
     for (const key of ["intent.conflict", "intent.rate_limited", "intent.rejection.unknown", "intent.rejection.unaffordable", "intent.rejection.cap_exceeded", "intent.rejection.exclusive_activity", "intent.rejection.minigame_session_active"]) expect(keys.has(key), key).toBe(true);
+  });
+
+  it("keeps the GS5 unknown-ID invariant separate from ordinary opportunity refusals", () => {
+    const rejected = (category: string, detail: string) => ({ outcome: "rejected" as const, category, detail, currentRevision: 1, sessionExpired: false });
+    expect(noticeForOutcome(rejected("unknown_id", "opportunity_id"), OPPORTUNITY_REJECTIONS))
+      .toEqual({ effect: "none", notice: "desk.opportunity.rejection.not_pending", invariant: true });
+    expect(noticeForOutcome(rejected("not_eligible", "opportunity_not_pending"), OPPORTUNITY_REJECTIONS))
+      .toEqual({ effect: "none", notice: "desk.opportunity.rejection.not_pending", invariant: false });
+    expect(noticeForOutcome(rejected("not_eligible", "opportunity_expired"), OPPORTUNITY_REJECTIONS))
+      .toEqual({ effect: "none", notice: "desk.opportunity.rejection.expired", invariant: false });
   });
 
   it("returns the receipt outcome from the browser runtime and types non-2xx errors", async () => {

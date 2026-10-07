@@ -6,7 +6,7 @@ import type { GameUISnapshot } from "../src/api/generated/types";
 import { t } from "../src/copy";
 import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
-import type { IntentOutcome } from "../src/game-ui/intent-outcome";
+import { GameUIRequestError, type IntentOutcome } from "../src/game-ui/intent-outcome";
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import type { GameUISurfaceID } from "../src/game-ui/surface-catalog";
 import { formatAmount } from "../src/ui/amount-format";
@@ -375,6 +375,37 @@ it.skipIf(!browser)("renders the projected combo cap number beside its label for
     await assertAxe(target, "unsaturated live buff cap");
   } finally { await dispose(); }
 });
+
+for (const refusal of [
+  { name: "unknown opportunity", category: "unknown_id", detail: "opportunity_id", notice: "desk.opportunity.rejection.not_pending", reports: 1 },
+  { name: "unlisted rejection", category: "not_eligible", detail: "unlisted_reason", notice: "intent.rejection.unknown", reports: 1 },
+  { name: "invalid request", category: "invalid", detail: "body", notice: "intent.rejection.unknown", reports: 1, error: true },
+  { name: "expired opportunity", category: "not_eligible", detail: "opportunity_expired", notice: "desk.opportunity.rejection.expired", reports: 0 },
+  { name: "not-pending opportunity", category: "not_eligible", detail: "opportunity_not_pending", notice: "desk.opportunity.rejection.not_pending", reports: 0 },
+] as const) {
+  it.skipIf(!browser)(`reports exactly the required invariant for ${refusal.name} (GS5/GS0.2)`, async () => {
+    const runtime = new Runtime(); runtime.current = withOpportunity(opportunityArm(true));
+    runtime.outcome = { outcome: "rejected", category: refusal.category, detail: refusal.detail, currentRevision: 1, sessionExpired: false };
+    if ("error" in refusal) vi.spyOn(runtime, "intent").mockImplementation(async (body) => {
+      runtime.requests.push(body); throw new GameUIRequestError(400, refusal.category, refusal.detail);
+    });
+    const { target, dispose } = await mounted(runtime);
+    const diagnostics = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      button(target, "Claim").click(); await settle();
+      expect(diagnostics).toHaveBeenCalledTimes(refusal.reports);
+      for (const call of diagnostics.mock.calls) {
+        expect(call).toEqual([expect.stringMatching(/^game UI invariant: /u)]);
+      }
+      const status = target.querySelector(".intent-notice")?.textContent;
+      expect(status).toBe(t(refusal.notice, {}, "era_1995"));
+      expect(status).not.toContain(`${refusal.category}/${refusal.detail}`);
+      expect(runtime.requests).toHaveLength(1);
+      expect(runtime.requests[0]).toMatchObject({ kind: "claim_opportunity", expected_revision: 1 });
+      expect(button(target, "Claim").disabled).toBe(false);
+    } finally { diagnostics.mockRestore(); await dispose(); }
+  });
+}
 
 it.skipIf(!browser)("renders an expired claim's typed reason (GS5 error mapping)", async () => {
   const runtime = new Runtime(); runtime.current = withOpportunity(opportunityArm(true));

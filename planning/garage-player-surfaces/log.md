@@ -946,3 +946,25 @@ named tests must fail. Restore exact source after each, no live-handle edits.
 Full client/types/build/boundaries plus focused native population and existing
 composed target rerun. All new Codex predeclaration/tests/product/docs/records
 after `0f3a1a7a` need Claude; no self-archive or acceptance box flip.
+
+### RP-317 failing-first evidence
+
+Unchanged production: full client population has 1 mapper failure, 9,691
+passes/348 explicit browser skips. Native single-engine reruns each terminate
+nonzero with exactly 3 diagnostic-count failures / 2 ordinary-refusal controls
+passing / 20 selector skips. Missing unknown/unlisted/invalid diagnostics
+reproduce in Chromium and WebKit; no compiler/timeout failure is counted.
+
+The earlier combined-engine invocation stalled after reporting Chromium's
+failures; its incomplete WebKit result is discarded. Ctrl-C/TERM did not
+finish. Read-only lsof identified this run's exact listener PID 50228 on
+51204; sandbox denied signal delivery, narrowly escalated TERM then KILL
+stopped only that owned Vitest process. Single-engine reruns above need no
+timeout/screenshot/failure-capture changes. A test-only era spelling was
+corrected to the existing `era_1995` type before reruns; not a product defect.
+
+Implementation seam refined without expanding scope: the optional surface
+invariant-pair set lives as metadata on the existing readonly copy Map,
+instead of adding a new act option/caller parameter. Ordinary copy maps stay
+compatible; GS5 owns its one pair. The unchanged actual mapper and host are
+still what the failing tests exercise. No product bytes changed yet.
