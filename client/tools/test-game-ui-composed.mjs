@@ -5,7 +5,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { chromium } from "playwright";
-import { createServer } from "vite";
+import { build, createServer, preview } from "vite";
+import { productionClientFiles, productionClientProof } from "./production-client-proof.mjs";
 import { assertOpportunityClaimEffect, assertOpportunityReadStatus } from "./opportunity-claim-proof.mjs";
 import { parents as refreshTests, refreshPopulationObserver } from "./observe-refresh-population.mjs";
 import { composedMode, observeManualBudget } from "./observe-manual-budget.mjs";
@@ -162,6 +163,7 @@ gameserver.stderr.on("data", (value) => process.stderr.write(value));
 gameserver.on("error", (error) => processErrors.push(error));
 
 let vite;
+let clientPreview;
 let browser;
 
 async function waitForReady() {
@@ -775,10 +777,20 @@ async function playPitchThroughUI(page, accessToken) {
 
 try {
   await waitForReady();
+  await build({ configFile: path.join(clientRoot, "vite.config.ts"), root: clientRoot });
+  const builtFiles = productionClientFiles(path.join(clientRoot, "dist"));
+  // Test-side expected-value helpers still evaluate their source modules. This
+  // HTTP middleware-only server is not listened and cannot serve the browser journey.
   vite = await createServer({
     configFile: path.join(clientRoot, "vite.config.ts"),
     root: clientRoot,
-    server: {
+    server: { middlewareMode: true },
+    appType: "custom",
+  });
+  clientPreview = await preview({
+    configFile: path.join(clientRoot, "vite.config.ts"),
+    root: clientRoot,
+    preview: {
       host: "127.0.0.1",
       port: 5173,
       strictPort: true,
@@ -788,7 +800,6 @@ try {
       },
     },
   });
-  await vite.listen();
   // The composed binary mounts the unauthenticated public read surface
   // beside the account API (API Foundation C10); prove it through the proxy.
   const publicEpochs = await fetch(`${uiURL}/api/public/v1/epochs?limit=1`);
@@ -803,6 +814,20 @@ try {
   } else {
   await witnessFiscalRefusalJourney();
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const clientProof = productionClientProof(builtFiles);
+  const clientResponses = [];
+  const clientErrors = [];
+  page.context().on("response", (response) => {
+    const url = new URL(response.url());
+    if (url.origin !== uiURL || url.pathname.startsWith("/api/") || url.pathname === "/favicon.ico") return;
+    clientResponses.push((response.status() === 304 ? Promise.resolve(undefined) : response.body())
+      .then((body) => clientProof.response(url.pathname, response.status(), body))
+      .catch((error) => clientErrors.push(new Error(`built-client response ${url.pathname} HTTP${response.status()}: ${error.message}`, { cause: error }))));
+  });
+  page.on("worker", (worker) => {
+    try { clientProof.worker(new URL(worker.url()).pathname); }
+    catch (error) { clientErrors.push(error); }
+  });
   requestTraceStart = performance.now();
   const tracedBrowserRequests = new WeakMap();
   page.on("request", (request) => {
@@ -1017,10 +1042,14 @@ try {
   console.log("composed Game UI v4 features + transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
   await page.goto("about:blank");
   await new Promise((resolve) => setTimeout(resolve, 100));
+  await Promise.all(clientResponses);
+  if (clientErrors.length > 0) throw new AggregateError(clientErrors, "production client asset proof failed");
+  console.log(`composed production client loaded exact HTML/JS/CSS/worker bytes and started bundled worker: ${JSON.stringify(clientProof.finish())}: PASS`);
   }
 } finally {
   await browser?.close();
   reportAccountRequests();
+  await clientPreview?.close();
   await vite?.close();
   await stopGameserver();
 }

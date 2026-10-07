@@ -1739,3 +1739,14 @@ log owns that failure. No rerun-to-green aggregate, full CI, Firefox, AT or G10 
 Review by: Codex (implementer first filter); Recorded by: Codex. Range afterd82e76c2 through
 this batch's commit needs designated cross-party review; no archival/push. Next: RP-378's
 Fiscal input/request diagnosis, then the remaining accepted Cosmetic/release gates.
+
+## 2026-10-08 — aggregate equip timeout (RP-385)
+
+Root `make test-game-ui-composed`40231 reaches the unchanged Cosmetic driver after the main
+production-build journey passes. Buy emits one HTTP200/applied receipt, ownership survives
+reload and adoption completes. `founderDOMIntent` then times out waiting for equip_cosmetic's
+response at driver line532 (30-second bound). No equip activation/request trace was retained;
+the result does not establish no request, server refusal, attendance cause or RP-377 recurrence.
+Aggregate RED; no retry, deadline/assertion change or later care/reload success claimed.
+Next: inspect/diagnose this action boundary before a scoped repair. Cosmetic source is unchanged
+in this batch; the Garage log owns the separate production-build change and review range.

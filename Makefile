@@ -249,6 +249,7 @@ research-browser-coordination:
 	docker compose -f compose.browser-test.yml run --rm browser bash -lc 'corepack enable && corepack prepare pnpm@11.15.1 --activate && pnpm --dir client install --frozen-lockfile && node client/tools/research-browser-coordination.mjs $(shell git rev-parse HEAD)'
 
 test-game-ui-composed:
+	node --test client/tools/production-client-proof.test.mjs
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-game-ui-composed.mjs
 	node client/tools/test-cosmetic-composed.mjs

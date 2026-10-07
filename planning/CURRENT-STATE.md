@@ -1,10 +1,10 @@
 # Current repository state
 
-Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a released or
+Reconciled 2026-10-08. Cloud Clicker remains a **development snapshot**, not a released or
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-## Whole-product overview — 2026-10-07
+## Whole-product overview — 2026-10-08
 
 **Bottom line:** substantial server/client foundations and an executable early-game loop exist.
 The current stage is **Garage integration and hardening**, not completion of the full game or
@@ -21,7 +21,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
 | Area | Actual progress | Still missing for the whole product |
 |---|---|---|
 | Engine and persistence | Shared Go/TS number handling, declarative economy, lazy production/offline accrual, versioned Postgres saves/migrations/replay, routes/gates and client worker foundations are implemented. | New feature arithmetic/replay must satisfy the same floor. Clout's partition/accrual defect remains open; core foundations do not make every new system correct. |
-| Early-game player loop | Browser client with real Postgres/WebSocket journey covers purchases, first gate, scripted and elective early endings, next Company and reconnect. Fiscal, active-play opportunity and Pitch are exercised through DOM controls. | Natural pacing/long-session recovery, remaining Garage acceptance and current-range designated reviews. The composed runner uses Vite-served client source, not a packaged production-client release artifact; accelerated fixture journeys are not complete nine-tier playthroughs. |
+| Early-game player loop | Production-built browser client with real Postgres/WebSocket journey covers purchases, first gate, scripted and elective early endings, next Company and reconnect. Fiscal, active-play opportunity and Pitch are exercised through DOM controls. | Natural pacing/long-session recovery, remaining Garage acceptance and current-range designated reviews. The main journey verifies exact built client bytes, but not a Caddy/image/clean-host release artifact; accelerated fixture journeys are not complete nine-tier playthroughs. |
 | Tier 2 / incorporation | Candidate economy/content, routes, era UI and bounded real-service transition/incorporation proof exist. | Pacing/relevance gates, adopted copy and content mint; epoch 9 is not minted. Headcount's seat-source choice is held and its allocation system is not built. |
 | Prestige / Reputation | Exit/reset foundations and earlier acceptance repairs are reviewed. Reputation nodes, plans, starters, persistence and UI have fixture-first implementations. | Run End's balance/carry display contract reconciliation, full feature review and adopted content. The two early endings are not the three designed final endings. |
 | Minigames | Pitch has a real API-to-player-to-payout journey. Soul, Typer, Arcade and Garden have substantial engines, components and bounded persistence/lifecycle tests. | Typer/Arcade public API and host integration; shared wire-contract decisions; Garden state-evolution clarification; authored content/mint, whole-player journeys and accessibility. Pinball remains a draft. |
@@ -53,7 +53,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
   generated client schema metadata and exact int64 validation; old/new stored sets coexist in
   real Postgres without a product mint. The catalog HTTP route, other owner descriptors and complete public
   third-party verification loop remain open; the API log owns the bounded evidence/review ranges.
-- Latest inspected [hosted CI run 37641907701](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37641907701)
+- Fresh GitHub check on 2026-10-08 confirms the latest [hosted CI run 37641907701](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37641907701)
   at `0f9f4214` is **RED**: schema, harness and composed pass; server, client and browser fail.
   Browser's two failures and server research-provenance failures have the local corrections
   above. Clout partition failures and client's historical kernel guard at `50a3a514` remain
@@ -64,9 +64,13 @@ queue and current verification, not a claim to have rerun every acceptance crite
 - Existing session creation/refresh now mount from the generated API authority with exact
   status/error alternatives and the same shared IP limiter. Real Postgres and composed
   browser/service checks pass locally; explicit calls do not implement automatic browser renewal.
-  The API log owns the additive pin refresh and pending review. A separate production client
-  build passes, but the composed runner uses Vite source: this corrects the earlier overview's
-  overstated “built-client” phrasing without promoting release-artifact proof.
+  The API log owns the additive pin refresh and pending review. The main composed journey now
+  builds and serves production assets, verifies exact browser-loaded HTML/JS/CSS/worker bytes,
+  and passes its real Postgres/socket/gameplay population. Cosmetics already used a separate
+  production build. Neither establishes release-artifact/clean-host proof.
+- Latest whole composed command40231 is **RED** after that main pass: the unchanged Cosmetic
+  driver times out awaiting equip after Buy/reload/adoption (RP-385). Cause is untraced; care
+  and later steps did not complete. A passing main journey is not a green aggregate.
 - Intermittent composed timeout RP-378 remains open despite subsequent passes. Manual input
   retention/rate choice RP-368 and attendance-clock D-024 remain unruled, not silently fixed.
 

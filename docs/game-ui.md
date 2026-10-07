@@ -588,7 +588,8 @@ Firefox/assistive-technology/real-server/later-Desk proof, or closure of accessi
 `make test-browser` applies the WCAG 2.2 AA axe gate to all five lifecycle surfaces and to every minigame surface state in
 Chromium, Firefox, and WebKit and includes the sixty-simulated-second observable performance scenario. The
 focused `make test-game-ui-performance` command runs that scenario alone.
-`make test-game-ui-composed` additionally drives Chromium through the real Vite proxy, composed
+`make test-game-ui-composed` builds the production client and drives Chromium through Vite's
+static preview/API/WebSocket proxy, composed
 gameserver, Postgres bootstrap transaction, authenticated live snapshot-v4 route (asserting the live `features` arms), and Centrifuge
 world subscription; its schema/revision and visible visitor-counter assertions prove the production
 HTTP synchronization and WebSocket handshake completed. The composed witness then closes the
@@ -608,6 +609,14 @@ selected and played by keyboard until the session reaches a terminal `applied` r
 must then fetch a snapshot at or beyond the receipt's Company revision, and `current` must read
 `none`. `make verify-game-ui` composes the existing client, browser,
 and composed lanes.
+
+The main journey verifies that browser-loaded HTML, entry JavaScript, styles and prediction-worker
+bytes match that build, and that the bundled worker actually starts. Development-source requests,
+wrong bytes and incomplete observations fail; a bodyless cache-revalidation response counts only
+after matching HTTP 200 bytes were observed in the same browser context. Expected-value helper
+modules still use a separate, unlistened HTTP middleware server; the browser cannot use it.
+The cosmetics driver separately builds and serves static client assets. These native-server/
+Postgres journeys are not a production Caddy/image/clean-host release rehearsal.
 
 The deterministic performance lane runs in an isolated Chromium process after the functional
 Chromium/Firefox/WebKit matrix, then feeds 1,200 authoritative snapshot updates representing 60

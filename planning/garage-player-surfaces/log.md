@@ -6226,3 +6226,33 @@ through this test/overview batch needs designated review; prior ranges remain se
 checkbox, RFC lifecycle, archive or release promotion. Next work is the existing baseline,
 Garage integration/review, rights/accessibility, deployment and full-nine-tier roadmap—not a
 narrower preview substituted for1.0. This turn ends with the requested total progress report.
+
+## 2026-10-08 — composed main journey uses the production client build
+
+Garage AC6 / archived Game UI AC1: replace the main driver's development HTTP server with a
+fresh production build and Vite static preview; retain a separate HTTP middleware-only server
+for test-side expected-value modules. The main browser must receive exact built HTML, entry JS,
+CSS and prediction-worker bytes and start that worker. No gameplay, fixtures, clock, retries,
+timeouts, Actions configuration or cosmetic-driver behavior changed. The existing root target
+runs the five small observer tests, including rejection of the old dev index, changed/missing
+assets, source requests, failed responses and a never-started worker.
+
+Initial root82741 and diagnostic58860: real main gameplay passes, but the new observer wrongly
+tries to read bodyless HTTP304 reload responses. Diagnostic58860 identifies the exact JS/CSS
+routes. Corrected observer accepts304 only after matching200 bytes in the same observation;
+the cache-before200 negative fails, so revalidation cannot manufacture coverage. Node9ed0f2
+passes5 cases; syntax/diff checks pass.
+
+Final root40231: all8 real-Postgres refresh cases and7 required persisted parent tests execute
+and pass, production build214 modules succeeds, Fiscal refusals/fresh consent, purchase/earned
+announcement, opportunity, Pitch payout, both early endings/continuation/socket recovery and
+exact four-file browser/worker proof PASS. Main101 requests/12.950s. The aggregate remains RED:
+unchanged Cosmetic driver times out at `founderDOMIntent` / equip after Buy, reload and adoption.
+RP-385 and the Cosmetic log own that untraced failure; no rerun-to-green or causal attribution.
+This is native Chromium + native gameserver/Postgres, not Linux/Caddy/image/R-006 release proof.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact range `af36ccdf` exclusive
+through this batch needs designated cross-party review. No acceptance/checkbox/archive/push.
+GitHub was freshly read: latest run37641907701 at0f9f4214 remains RED (server/client/browser);
+schema/harness/composed green on that older HEAD, not on this local range. Next: existing
+Garage review and the separate reproduced defects; full nine-tier1.0 objective remains active.

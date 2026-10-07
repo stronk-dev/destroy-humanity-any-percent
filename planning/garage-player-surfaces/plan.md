@@ -7,7 +7,14 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint: purchases and Gate/Incorporate/Wind Down retain native pending focus under
+Current checkpoint (2026-10-08): the main composed player journey now uses the production client
+build, with exact browser-loaded HTML/JS/CSS/worker bytes and a started bundled worker verified.
+Its real Postgres/socket/gameplay population passes; the aggregate then fails at Cosmetic equip
+(RP-385), so whole-lane green is not claimed. Test-only; no gameplay/CI budget changes. Next:
+consolidate Garage review/remaining acceptance and diagnose the separate equip failure in its
+owning lane. Latest logs own the evidence; no full Garage/CI/1.0 acceptance.
+
+Preceding checkpoint: purchases and Gate/Incorporate/Wind Down retain native pending focus under
 GS0.8. Removed transitions recover focus within their region without stealing newer choices;
 queued Wind Down now binds both refreshed revisions (RP-380). Affected functional browser,
 type/build/boundary and final real-service journeys pass; designated review remains.
