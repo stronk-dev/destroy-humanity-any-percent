@@ -451,3 +451,17 @@ host cursor guard separately; record legitimate surviving controls and any
 invalid instrument attempt. Do not infer real-server achievement acquisition,
 all-engine accessibility, later decoder acceptance, full CI or release proof.
 New Codex tests/repair/records require Claude's designated exact-range pass.
+
+### RP-312 test-first result
+
+`make test-client` executed cold: **eight new failures**, 9,682 passes and
+340 explicitly skipped browser cases. Four direct decoder assertions accept
+the contradictory payload; four socket-path assertions receive an actual
+announcement instead of `resync_required`. The four admitted boundary controls
+pass, as do both retained original announcement tests. Revision 1 is primed
+before revision 2, so a cursor gap cannot produce a vacuous recovery pass.
+The regression also checks the real transport-storage key and Founder-state
+endpoint, sourced before this executed run. The first `pnpm exec` launch emitted
+no output and was stopped (exit130); it is not counted as test execution. Root
+Make uses the installed executable and terminates normally. No product bytes
+have changed in this test-first checkpoint.

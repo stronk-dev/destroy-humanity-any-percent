@@ -350,6 +350,73 @@ describe("GS0.3 announcement decoders", () => {
     payload: { event_id: `achievement-${revision}`, kind: "achievement_earned.v1", scope: "company", rev: revision, cursor_effect: "advance",
       payload: { achievement_id: "achievement.first_gate", condition_scope: "run", run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 }, score_grant: 2, ...payload } },
   });
+  const meter = (direction: string, before: number, after: number) => ({
+    ...achievement(2), payload: { ...achievement(2).payload, kind: "meter_band_changed.v1",
+      payload: { direction, from_band: "low", meter_id: "doom.probability",
+        run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 },
+        to_band: "high", value_after: after, value_before: before } },
+  });
+  const contradictoryDirections = [
+    { direction: "up", before: 70, after: 70 },
+    { direction: "up", before: 71, after: 69 },
+    { direction: "down", before: 70, after: 70 },
+    { direction: "down", before: 69, after: 71 },
+  ];
+
+  it.each(contradictoryDirections)("refuses contradictory meter $direction/$before/$after at the decoder (RP-312)", ({ direction, before, after }) => {
+    expect(() => decodeGameUIAnnouncement(decodeTransportEnvelope(meter(direction, before, after))!)).toThrow(/band change/);
+  });
+
+  it.each(contradictoryDirections)("resyncs instead of announcing meter $direction/$before/$after through the socket (RP-312)", async ({ direction, before, after }) => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    const socket = new FakeSocket();
+    const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+    // Prime revision 1: revision 2 is a legal successor, NOT a gap that could
+    // independently trigger resync and mask the payload-domain defect.
+    await runtime.snapshot(); fetcher.mockClear();
+    const received: unknown[] = [];
+    const unsubscribe = runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    try {
+      openAndConnect(socket); subscribeReplies(socket);
+      publication(socket, `player:${snapshot.run.founder_id}`, 1, meter(direction, before, after));
+      expect(received).toEqual([
+        { kind: "transport_recovered" },
+        { kind: "system", value: { kind: "resync_required" } },
+      ]);
+      expect(socket.closeCount).toBe(1);
+      expect(storage.getItem(`cloud-clicker.transport.v1.${snapshot.run.founder_id}`)).toBeNull();
+      expect(fetcher).toHaveBeenCalledExactlyOnceWith("/api/v1/founder/state", expect.objectContaining({ headers: { Authorization: "Bearer access" } }));
+      await vi.waitFor(() => expect(received).toContainEqual({ kind: "snapshot", value: currentSnapshot }));
+    } finally { unsubscribe(); }
+  });
+
+  it.each([
+    { direction: "up", before: 0, after: 1 },
+    { direction: "up", before: 99, after: 100 },
+    { direction: "down", before: 100, after: 99 },
+    { direction: "down", before: 1, after: 0 },
+  ])("delivers legal boundary meter $direction/$before/$after without resync (RP-312 control)", async ({ direction, before, after }) => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    const socket = new FakeSocket();
+    const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+    await runtime.snapshot(); fetcher.mockClear();
+    const received: unknown[] = [];
+    const unsubscribe = runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    try {
+      openAndConnect(socket); subscribeReplies(socket);
+      publication(socket, `player:${snapshot.run.founder_id}`, 1, meter(direction, before, after));
+      expect(received).toEqual([
+        { kind: "transport_recovered" },
+        { kind: "announcement", scope: "company", value: { cursor: 2, kind: "meter_band_changed", payload: meter(direction, before, after).payload.payload } },
+      ]);
+      expect(fetcher).not.toHaveBeenCalled();
+      expect(socket.closeCount).toBe(0);
+    } finally { unsubscribe(); }
+  });
 
   it("delivers a decoded achievement announcement once and never replays a consumed offset", () => {
     const storage = new MemoryStorage();
