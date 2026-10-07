@@ -1004,3 +1004,16 @@ Original Desk review remains CHANGES REQUIRED, RP-316 unchanged Lucky oracle
 and RP-313 author-body hold remain open. Previous Desk correction is exact
 `d90aded7..0f3a1a7a` and producer `87fd23d4..d90aded7`, independent obligations.
 No acceptance checkbox, archive, content adoption/mint, push or deployment.
+
+### Exact diagnostic correction boundary for the other-party pass
+
+**Review by:** Codex (self first-filter only). **Recorded by:** Codex.
+Locally approved `0f3a1a7a..092ef3eb`, all three commits: predeclaration,
+test-first unit/native cases, three product seams, canonical docs and
+ledger/log inspected. Claude must review **that range plus this tracking
+commit itself**, covering its Garage log/plan, current state, execution queue,
+roadmap board and append-only roadmap log. Together they are the complete
+diagnostic correction span; this self first-filter is NOT designated review.
+Original consumer remains CHANGES REQUIRED; RP-316 and RP-313 remain open.
+Prior independent exact ranges are not absorbed or reset. No acceptance box,
+status/archive/mint/publication or full CI/release claim.

@@ -4,7 +4,20 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage Desk review:** original Claude `f32f6175^..f32f6175`, all
+**Latest Garage diagnostic correction:** RP-317's accepted GS5/GS0.2 mapper
+flag and host reporting repair through `092ef3eb` passes types/client
+9,692/348 skips/build/boundaries, native Chromium/WebKit Garage50/performance1,
+and actual Postgres/WebSocket composed tests. Ordinary refusals are unchanged;
+three compiling flag/outcome/error reporting faults fail independently and
+are removed exactly. The earlier stalled combined baseline was invalidated,
+not counted; single-engine failing baselines terminate normally. No Lucky,
+Firefox/AT/full-Garage/whole-CI/release proof. Entire new Codex span after
+`0f3a1a7a` including all tracking edges needs Claude. Desk correction is
+separately exact `d90aded7..0f3a1a7a`, producer `87fd23d4..d90aded7`.
+Next: separately predeclare RP-316's snapshot-credit oracle. All prior holds
+and full nine-tier goal remain, without status/archive/mint/publication.
+
+**Preceding Garage Desk review:** original Claude `f32f6175^..f32f6175`, all
 fourteen paths: designated Codex **CHANGES REQUIRED**, RP-314/315/316. Narrow
 receipt-reason/numeric-cap/native-focus correction through `d9e4e274` passes
 40 Chromium/WebKit cases, including actual-minute idle and native Enter/Space.

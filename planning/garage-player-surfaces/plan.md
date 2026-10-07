@@ -21,9 +21,11 @@ that would need one is recorded as a blocker in `log.md` instead.
   tests do not resolve this. Original consumer `f32f6175^..f32f6175`, all
   fourteen paths, is separately CHANGES REQUIRED for RP-314/315/316. Narrow
   cap/keyboard/timer correction through `d9e4e274` passes 40 native cases;
-  entire Codex correction span after `d90aded7` needs Claude. RP-316's Lucky
-  oracle and RP-317's diagnostic mapping are separately queued, not repaired
-  by this population. Producer supplement `87fd23d4..d90aded7` requires
+  exact Codex correction `d90aded7..0f3a1a7a` needs Claude. RP-316's Lucky
+  oracle remains separately queued. RP-317 diagnostic mapping/host repair
+  through `092ef3eb` passes 50 native cases; separate entire Codex span after
+  `0f3a1a7a`, including its tracking edge, needs Claude. Producer supplement
+  `87fd23d4..d90aded7` requires
   Claude independently.
   This existing checkbox records implementation, not acceptance or archival.
 - [x] GS6 provisioning caps + owned-upgrade text on the Desk.

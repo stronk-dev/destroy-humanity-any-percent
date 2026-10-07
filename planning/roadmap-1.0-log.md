@@ -4094,3 +4094,22 @@ docs/ledger/tracking/final edge needs Claude. Producer `87fd23d4..d90aded7`
 and RP-312 `7aab0e2e..900f409e` remain separate. Next: predeclare RP-316 and/or
 RP-317 accepted corrections. Full nine-tier goal remains active/progress;
 no acceptance/status/boxes/archive/mint/push/deploy/whole-CI/release change.
+
+## 2026-10-07 — Required intent diagnostics restored without changing notices
+
+Accepted GS5/GS0.2 RP-317 correction through `092ef3eb`, separately predeclared
+at `090c1d61` and test-first `c990329d`: unknown opportunity keeps its existing
+player notice while its invariant flag reaches the host; unlisted rejections
+and typed invalid requests report exactly once. Ordinary refusal controls
+remain quiet, no request/token/ID payload is logged. Mapper baseline fails;
+three native diagnostic cases fail in each engine. The initial combined run
+stalled and was explicitly invalidated/stopped; single-engine reruns provide
+terminal evidence. Flag/outcome-report/error-report omission probes fail
+independently, source restored exactly. Final types/client 9,692/348 skips/
+build/boundaries/native Garage50/performance1/real Postgres+WebSocket composed
+lanes pass. Actual claim is a click buff, not Lucky. Entire new span after
+`0f3a1a7a` including this tracking edge needs Claude; separate Desk correction
+`d90aded7..0f3a1a7a` and producer `87fd23d4..d90aded7` remain owed. Next safe
+accepted work: predeclare RP-316 snapshot-credit oracle. RP-313 and all prior
+holds/full nine-tier goal remain. Active/progress, no acceptance/status/box/
+archive/mint/push/deploy/whole-CI/release promotion.

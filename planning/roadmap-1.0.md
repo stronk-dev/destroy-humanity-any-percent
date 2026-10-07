@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded review (2026-10-07):** original Claude Desk consumer
+**Latest bounded correction (2026-10-07):** accepted GS5/GS0.2 invariant
+reporting through `092ef3eb`, RP-317. Failing-first mapper and native host
+cases reproduce missing unknown/unlisted/invalid diagnostics; ordinary
+refusals stay ordinary. Three compiling omission faults fail and are removed
+exactly. Final types/client 9,692/348 skips/build/boundaries/native Garage50
+and performance1/actual Postgres+WebSocket composed lanes pass. Not Lucky,
+Firefox/AT/full-Garage/whole-CI/release evidence. Whole new Codex span after
+`0f3a1a7a`, including records, needs Claude; Desk `d90aded7..0f3a1a7a`, producer
+`87fd23d4..d90aded7`, RP-312/Clout spans remain separate. Next: predeclare
+RP-316 snapshot-credit oracle; RP-313 and all prior holds remain. Full 1.0.
+
+**Preceding bounded review (2026-10-07):** original Claude Desk consumer
 `f32f6175^..f32f6175`, all fourteen paths: designated Codex **CHANGES REQUIRED**,
 RP-314/315/316. Test-first cap/receipt/WebKit focus failures are narrowly repaired
 through `d9e4e274`; 40 native Chromium/WebKit cases pass, including a real

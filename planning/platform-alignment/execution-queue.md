@@ -3,7 +3,25 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Garage Desk consumer correction — 2026-10-07
+## Garage intent diagnostic correction — 2026-10-07
+
+RP-317's accepted GS5/GS0.2 repair through `092ef3eb` is locally verified,
+NOT designated-approved. One mapper failure and three native failures per
+engine preceded the repair; ordinary controls pass. Three independent
+flag/outcome-report/error-report omissions fail, source restored exactly.
+Final types/client 9,692 passes/348 skips/build/boundaries/native Garage
+50/performance1/actual Postgres+WebSocket composed lanes pass. No Lucky,
+Firefox/AT/full-Garage/whole-CI/release promotion.
+
+**READY next accepted work:** separately predeclare RP-316's snapshot-credit
+oracle construction, retaining the natural DOM population and bounded guard.
+**READY FOR CLAUDE:** entire new diagnostic span after `0f3a1a7a`, including
+predeclaration `090c1d61`, tests `c990329d`, product `092ef3eb` and this
+tracking edge. Separate Desk `d90aded7..0f3a1a7a`, producer
+`87fd23d4..d90aded7`, RP-312 and prior Clout ranges remain owed. RP-313 author
+hold remains. No boxes/status/archive/mint/publication or narrowed 1.0.
+
+## Garage Desk consumer correction — 2026-10-07 (preceding checkpoint)
 
 Designated Codex review of original Claude `f32f6175^..f32f6175`, all fourteen
 paths: **CHANGES REQUIRED**, RP-314/315/316. Missing buff-receipt reason and
