@@ -156,6 +156,17 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   moved on spawn. The idle witness observes an actual minute of native timers,
   not a display-clock jump. The UI never sends a synthetic command to cause a spawn. A spawn is
   announced politely once per `opportunity_id` while the Desk is mounted.
+  The composed claim checker binds the response to its DOM request and exact
+  next Company revision/run. Lucky checks the canonical credited delta and
+  exact receipt-snapshot cash against the successor's unique cash row; the
+  receipt cash already includes lazy accrual, so no payout formula is duplicated.
+  A positive Lucky credit also needs a matching cash change with bank growth and
+  a total delta containing that credit. Zero is admitted only with the receipt's
+  saturation evidence and an actual successor bank at its published hardcap.
+  Buff claims check a unique matching live ID and effect. The pure checker is
+  shared by the real driver and counterexample tests, uses the existing numeric
+  parser, and reports which branch actually ran; its fixtures are not server
+  payout or Lucky-acquisition evidence.
 - **Pet (GS4):** a nav tab unlocked by `feature.pets`, which the server sets true only when an adopted
   pet exists. It renders the PA7 projection only: name, status band text, and one button per
   catalog care action in catalog order. An action the server does not list as eligible is disabled

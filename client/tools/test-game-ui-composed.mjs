@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { chromium } from "playwright";
 import { createServer } from "vite";
-import { assertOpportunityClaimEffect } from "./opportunity-claim-proof.mjs";
+import { assertOpportunityClaimEffect, assertOpportunityReadStatus } from "./opportunity-claim-proof.mjs";
 
 const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = path.resolve(clientRoot, "..");
@@ -221,6 +221,7 @@ async function clickAppliedIntentChoice(page, buttonLabels, label) {
 // projects an opportunity, then a DOM claim; the next authoritative snapshot
 // must show the claim's effect (a live buff, or a credited lucky payout).
 async function witnessOpportunityClaim(page) {
+  const { parseCanonical } = await vite.ssrLoadModule("/src/numeric.ts");
   const expiredClaims = [];
   for (let attempt = 0; attempt < 60; attempt += 1) {
     const claimable = await page.evaluate(() => [...document.querySelectorAll("[data-region='desk.region.opportunity'] button")]
@@ -240,13 +241,16 @@ async function witnessOpportunityClaim(page) {
     }
     const claim = result.body?.receipt?.opportunity;
     if (result.intent?.kind !== "claim_opportunity" || !claim?.effect_row_id) throw new Error(`GS5 claim receipt carried no opportunity evidence: ${JSON.stringify(result.body)}`);
-    const after = await page.evaluate(async () => {
+    const successor = await page.evaluate(async () => {
       const parsed = JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1"));
       const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
-      return response.json();
+      return { status: response.status, snapshot: await response.json() };
     });
-    assertOpportunityClaimEffect(result, after);
-    return { effect_row_id: claim.effect_row_id, manual_clicks: attempt - expiredClaims.length, expired_claims: expiredClaims.length };
+    assertOpportunityReadStatus(successor.status);
+    const after = successor.snapshot;
+    const proofBranch = assertOpportunityClaimEffect(result, after, parseCanonical);
+    return { effect_row_id: claim.effect_row_id, proof_branch: proofBranch, revision: after.revision,
+      manual_clicks: attempt - expiredClaims.length, expired_claims: expiredClaims.length };
   }
   throw new Error("GS5: no opportunity became claimable within 60 manual clicks (4/s, under the account limiter)");
 }
@@ -665,7 +669,7 @@ try {
   // The Fiscal prerequisite and Pitch play both originate in rendered player
   // controls; the composed epoch pins minigame.pitch at 3 credit.
   const opportunity = await witnessOpportunityClaim(page);
-  console.log(`composed GS5 opportunity: ${opportunity.manual_clicks} manual clicks, claimed ${opportunity.effect_row_id} (${opportunity.expired_claims} expired attempts), effect visible in the next snapshot: PASS`);
+  console.log(`composed GS5 opportunity: ${opportunity.manual_clicks} manual clicks, claimed ${opportunity.effect_row_id} (${opportunity.expired_claims} expired attempts), ${opportunity.proof_branch} effect bound to next snapshot revision ${opportunity.revision}: PASS`);
   seedGateRequirement(liveSnapshot.body.run.founder_id);
   await page.reload({ waitUntil: "networkidle" });
   const pitchTierGate = await waitForEnabledButton(page, "Move Into the Garage");

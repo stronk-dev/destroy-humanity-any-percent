@@ -1074,3 +1074,90 @@ Full client at the unchanged predicate: 21 intended assertion failures,
 oracle discrimination, not a proven producer defect or integration evidence.
 The saturated-zero fixture is explicit, not permission to require every
 credit to be positive. No payout arithmetic will be copied into this checker.
+
+Canonical-value construction refinement: inject the existing production
+`parseCanonical` into the pure oracle. Vitest imports that same TS module;
+the existing Vite server's SSR loader supplies it to the Node composed driver.
+No copied regex/precision/exponent constants or alternative Decimal parser.
+Only canonicality/nonnegativity and exact serialized cash identity are checked;
+no accrual/payout formula, rounding or tolerance is implemented here.
+
+### RP-316 first corrected baseline and a stronger credit refusal
+
+First corrected population: all 29 oracle cases pass; full client 9,721/348
+skips, types/Svelte zero, build/boundaries pass. Native oracle 58/58 plus
+default performance pass. Actual composed rerun binds `active.production`
+to revision31 after20 DOM manual clicks, zero expiries; other composed and
+cosmetic lanes pass. This is buff integration, NOT Lucky acquisition proof.
+
+Before closeout, test an unsupported positive credit (absent/mismatching cash
+change, insufficient delta, no balance growth) and a falsely capped zero
+(missing cap, below-cap bank, absent saturation). Current cash identity alone
+must not count these as credited outcomes. This stays inside the predeclared
+canonical credit/state proof, not a payout recomputation. Positive credit
+requires the unique receipt cash-change after value to equal both snapshots,
+with a canonical total delta at least the credited delta and actual bank
+growth. Claim only credits cash; its lazy cash accrual is nonnegative in the
+T0 population. Zero credit stays admitted only with the receipt saturation
+and cap reason plus actual successor bank at its published cap. All values
+use the same production Decimal parser/comparisons, no subtraction, formula,
+precision constant, tolerance or new threshold. Add the negatives before
+strengthening the oracle; disclose this initial incomplete instrument.
+
+The seven added unsupported-credit/false-zero cases fail against the first
+corrected checker (9,721 other passes/348 skips); all previous 29 cases still
+pass. Strengthening follows those actual failures. A separate admitted control
+with total cash delta30 and credited delta20 prevents demanding that total
+delta equal Lucky alone, since lazy accrual is included. No producer/payout
+code or acceptance bound changes.
+
+The five independently compiling predicate probes terminate nonzero in both
+engines: old Lucky shortcut 50 failures/24 passes; cash-identity omission
+2/72; exact successor-revision omission 4/70; buff-effect disconnection 2/72;
+capped-zero guard omission 6/68. Each restores exact checker SHA256
+`0954dcc0e0f472ff49e37485b77e291d6324657c86dfc0d87bcf1fa0a01cd0e6`
+before the next fault. No test/failure capture/timeout edits during probes.
+
+The successor HTTP check also needs an executable counterexample. Move that
+check into the same pure tooling module: page read returns actual status/body,
+the real caller and tests consume the one status predicate. Registered 200
+control; 0/201/401/500/503 negatives, even with snapshot-shaped data. No JSON
+error body or unsuccessful read can count as a successful next snapshot.
+No browser-config exclusion, public API/status change or gameplay bypass.
+
+### RP-316 final cold verification and first-filter disposition — 2026-10-07
+
+The sixth independent compiling fault disables only the successor status
+predicate: 10 assertion failures/76 passes across Chromium/WebKit, including
+all five unsuccessful statuses in each engine. Restored helper SHA256
+`6b7b73f152bffee7ca2bd82cd69475a58540244187819108b1b5de21c1d0acd0`;
+driver `392dba99bb9b023ebb2e162cdfc40d588ba0b44897d29ceb10fc17ff92b35749`.
+No probe remains. Final native population 86/86, isolated performance1 with
+22 explicit skips. Final types/Svelte zero errors/warnings, full client9,735
+passes/348 browser skips, build213 modules, boundary14 shell/8 UI/22 Game UI.
+No hosted/whole-CI claim from these selected local lanes.
+
+Final `make test-game-ui-composed` terminates exit0 on the unmodified checker:
+15 DOM manual clicks, `active.click`, zero expired attempts, exact successor
+revision26. Fiscal Pitch5 DOM commands, credited1e0 at revision29; v4
+transitions/both terminal states/next-run/real WebSocket recovery pass.
+Cosmetic composed passes in9.036s with69 observed requests/no violation.
+The earlier first-corrected run was production buff; this final one is click
+buff. Neither is Lucky acquisition/integration evidence. No repeated-account
+selection for Lucky or fabricated clock/epoch/gameplay command.
+
+Review by: Codex (implementer first-filter only). Recorded by: Codex.
+Scope: complete new change after `c0eb3dc5`, including predeclaration
+`00fb7366`, mechanical test-first lift `cdd00ee5`, this oracle/docs/ledger
+repair and forthcoming tracking edge. Local first filter passes narrowly:
+one actual tooling predicate shared by the driver/tests; production numeric
+parser, no copied payout arithmetic; strict request/revision/run/cash/buff
+binding; guards and natural population preserved. No product runtime,
+kernel/schema/balance/copy/workflow changes. RP-316 is locally corrected,
+NOT designated-approved or closed. Claude must inspect the entire exact
+new range including the final records before any acceptance/archival claim.
+RP-313's author-body conflict and all other holds remain independent.
+
+Next safe work: predeclare designated diagnostic review of original Claude
+pet consumer `7a61e4b6^..7a61e4b6`, all paths. Existing RP-132/GS4×PA7
+author-wire hold remains; inspecting/measuring does not resolve or bypass it.
