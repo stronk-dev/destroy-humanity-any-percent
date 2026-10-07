@@ -277,6 +277,13 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   fixtures cover delayed ordinary refusal/applied/read, Company-not-Founder
   revision binding, removed control and a newer Settings selection; they are not
   real-server opportunity acquisition or full accessibility acceptance evidence.
+  While the host is offline, resynchronizing or transport-unready, the projected
+  opportunity and buff values stay visible with the registered stale explanation;
+  Claim is unavailable. A new HTTP/streamed snapshot updates those committed
+  values without treating it as a recovered connection. The explicit transport
+  recovery signal reenables Claim; this adds no automatic retry, timer decay or
+  synthetic gameplay command. Native fixtures exercise these transitions, not
+  real-service connection recovery or credential expiration.
   The composed claim checker binds the response to its DOM request and exact
   next Company revision/run. Lucky checks the canonical credited delta and
   exact receipt-snapshot cash against the successor's unique cash row; the

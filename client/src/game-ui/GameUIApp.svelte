@@ -612,7 +612,7 @@
         <output>{t("desk.manual.meter_frame", { current: Math.floor(visibleManualTokensMilli() / 1000), cap: Math.floor(snapshot.manual_action.bucket_cap_milli / 1000) }, era)}</output>
         <button type="button" disabled={pending} title={t("desk.manual.meter_tooltip", {}, era)} onclick={() => act({ kind: "perform_manual_batch", action_id: snapshot!.manual_action.action_id, count: 1, window_ms: 1 })}>{t(requirePresentation(GAME_UI_PRESENTATION.manualActions, snapshot.manual_action.action_id).title_key, {}, era)}</button>
       </section>
-      <OpportunityRegion arm={liveFeatures?.opportunity ?? null} {era} {pending} controlsEnabled={!offline && !resyncing} {lastClaim}
+      <OpportunityRegion arm={liveFeatures?.opportunity ?? null} {era} {pending} controlsEnabled={transportReady && !offline && !resyncing} {lastClaim}
         onClaim={(opportunityID) => act({ kind: "claim_opportunity", opportunity_id: opportunityID }, { rejections: OPPORTUNITY_REJECTIONS, applied: claimApplied })} />
 
       <section aria-labelledby="resources-heading">

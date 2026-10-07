@@ -5224,3 +5224,20 @@ source hashes. Full types/client/build/browser with real60s idle/performance/
 copy/boundaries/topology/no-payment after restoration; no matching source/HEAD/
 record edits mid-run. No plan-box/lifecycle/whole-GS5/1.0 approval; complete span
 after85b8e826 through final records requires Claude, every older range owed.
+
+### RP-356 state correction checkpoint — targeted healthy, full gates still owed
+
+Final driver SHAf86ae8c2a0133cd43c9bece2715852e527a70bc491c374872868389d79cbcacf
+(red1e1fd2), corrected host432a27995e7d93b5e5c88ed138dbd990ec46e8106ae501671f634a6d37978b1f,
+Opportunity6b229ec67153a68ea38898728109b72e2d473fc6f9175a32952dc76c20688e73,
+themee5874677 unchanged. Root types5f0976→f62694 exit0 zero errors/warnings;
+d875dd→8d0bb7 Make0:40pass/690unselected,12.15s; separate performance2pass/
+22unselected,1.81s. Actual350ms wait and committed4→3 update assertions pass,
+as do fresh Company2 request after recovery, no stale requests/extra reads,
+regional explanation/disabled controls and unchanged native focus.
+
+Only the declared existing host expression/ordinary regional stale p and docs
+changed; no new props/keys/copy/retry/wire/runtime/payout/clock/policy. This
+targeted pass is not full final-client/browser/copy acceptance or a designated
+review. Nine declared real-source fault controls and the full restored root
+gates still required before local closeout; no boxes/status/archive promotion.

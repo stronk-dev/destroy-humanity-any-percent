@@ -43,6 +43,7 @@
 </script>
 
 <section bind:this={root} class="opportunity cc-window" data-region="desk.region.opportunity" aria-label={t("desk.opportunity.region_label", {}, era)}>
+  {#if arm && !controlsEnabled}<p>{t("common.stale_note", {}, era)}</p>{/if}
   {#if offer}
     {@const row = effectRow(offer.effect_row_id)!}
     <h3>{t(row.title_key, {}, era)}</h3>
