@@ -4,7 +4,25 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest shared refusal correction:** `efa557b8`, predeclared `3f231ba2` and
+**Latest Fiscal correction:** `891aee10`, predeclared `bd36f5bc`, failing-first
+`d0651029`; RP-323/324 consumer defects locally repaired, not approved. Pending
+intent/read, native keyboard, stale/restart, row reasons and focus boundaries
+discriminate:33 baseline failures; eleven valid behavioral faults fail and
+restore exactly. RP-325's two shortcuts survive old50 cases, then fail the
+refined parser-accepted reason/unequal-distance populations. Two invalid
+probe parse-error runs are disclosed, never counted. Final Garage Chromium/
+WebKit150/performance1, client9,737/398 explicit browser skips/types/boundaries
+pass. Same production hashes' build/copy/manifest/topology/actual Postgres/
+WebSocket composed pass before final test-only refinements. Not a hosted-CI/
+Firefox/AT/full-Garage/release gate. Entire new span after `b64a91af` THROUGH
+this tracking edge needs Claude; earlier spans independent. RP-326 separately
+records unscoped chrome outcomes, not yet a native failed case. Next: existing
+full Linux ARM64 three-engine `make test-browser-ci`, cold isolated install;
+then separately predeclare GS0.6 notice-origin/isolation tests. No workflow/
+policy change. All author/owner/privacy/numeric/content/platform/release holds
+and full nine-tier scope remain, goal active/progress.
+
+**Preceding shared refusal correction:** `efa557b8`, predeclared `3f231ba2` and
 test-first `d362c95e`, locally repairs RP-322. Rate-limit/exclusive responses
 use the existing refresh effect: held read prevents reactivation; only fresh
 player consent sends Founder8/fresh ID. Baseline two mapper/four native
@@ -13,9 +31,9 @@ restored exactly. Final Garage Chromium/WebKit100/performance1, client9,737/
 373 explicit browser skips/types/build/boundaries and actual Postgres/
 WebSocket composed pass. Refusal population is runtime-double evidence, not
 real-service429/Soul-session or minted release proof. Entire new span after
-`3f867956` THROUGH this tracking edge needs Claude. Earlier care range stays
-exact `c7d8f815..3f867956`. Next: independently predeclare Fiscal pending/
-readiness/native/refusal tests under GS1/GS0.5/GS0.8. Firefox/AT/author/raw-
+`3f867956..b64a91af` needs Claude. Earlier care range stays
+exact `c7d8f815..3f867956`. Its then-next Fiscal tests/repair now execute above.
+Firefox/AT/author/raw-
 care/content/numeric/platform/release holds and full nine-tier scope remain.
 
 **Preceding care correction:** `ea06183b`, test-first `0784f126` and predeclaration

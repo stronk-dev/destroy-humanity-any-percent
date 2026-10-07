@@ -3,7 +3,31 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Garage shared refusal/read boundary correction — 2026-10-07
+## Fiscal native state correction / oracle refinements — 2026-10-07
+
+RP-323/324 locally corrected through `891aee10`, predeclared `bd36f5bc`,
+test-first `d0651029`.33 baseline native failures; eleven valid behavioral
+faults fail and restore exactly, two invalid parse-error probes excluded and
+disclosed. RP-325's fixed-key/first-survivor shortcuts pass old50 cases;
+refined parser-accepted reason/unequal-distance fixtures catch each in both
+engines. Final Garage Chromium/WebKit150/performance1, client9,737/398 browser
+skips/types/boundaries pass. Same production tree build/copy/manifest/topology/
+actual Postgres+WebSocket composed pass. Not Firefox/AT/full-Garage/hosted-CI/
+minted release proof. New source finding RP-326: global chrome outcomes lack
+surface ownership; no native failure/production repair inferred yet.
+
+**READY FOR CLAUDE:** entire Fiscal span after `b64a91af` THROUGH this record
+edge, including `bd36f5bc`, `d0651029`, `86426db5`, `891aee10` and all
+docs/ledger/log/tracking. Shared refusals exact `3f867956..b64a91af`, care
+`c7d8f815..3f867956` and earlier ranges remain separately owed.
+**READY next safe verification:** predeclare existing full `make test-browser-ci`
+with cold isolated Linux ARM64 install and all three engines; locally present
+pinned image, no workflow/skip/timeout changes. Poll actual handle, no hosted/
+AMD64 substitution. Then separately predeclare GS0.6 surface-result/no-bleed/
+async-origin controls. All full-nine-tier/author/owner/content/numeric/platform/
+privacy/review/release holds remain; no box/status/archive/mint/publication.
+
+## Garage shared refusal/read boundary correction — 2026-10-07 (preceding checkpoint)
 
 RP-322 locally corrected through `efa557b8`, predeclared `3f231ba2`,
 failing-first `d362c95e`. Shared429/exclusive arms use existing refresh;
@@ -14,10 +38,10 @@ performance1, client9,737/373 explicit browser skips/types/build/boundaries/
 actual composed Postgres+WebSocket pass. Refusal tests use runtime doubles,
 not actual service429/Soul-session or minted release-artifact evidence.
 
-**READY FOR CLAUDE:** whole new span after `3f867956` THROUGH this tracking
-edge, all predeclaration/test/product/docs/ledger/log/records. Separate care
+**READY FOR CLAUDE:** exact `3f867956..b64a91af`, all predeclaration/test/product/
+docs/ledger/log/records. Separate care
 exact `c7d8f815..3f867956`, RP-316 `c0eb3dc5..876b331c` and earlier ranges
-remain owed. **READY next accepted work:** independently predeclare Fiscal
+remain owed. **Then-next, now executed above:** independently predeclare Fiscal
 GS1/GS0.5/GS0.8 pending/readiness/native keyboard/refusal checks. Its current
 component natively disables pending controls without text/aria, and its host
 omits transportReady; establish actual failures before narrowly repairing.

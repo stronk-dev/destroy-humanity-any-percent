@@ -14,6 +14,15 @@ that would need one is recorded as a blocker in `log.md` instead.
 - [x] GS3 Meters arm + surface.
 - [x] GS2 Achievements arm + surface.
 - [x] GS1 Fiscal arm + surface.
+  Narrow pending/readiness/row-reason correction `891aee10` is locally verified,
+  not designated-approved: failing-first33 native assertions; final full Garage
+  Chromium/WebKit150/client9,737/398 skips/types/boundaries pass. Independent
+  faults and refined former shortcuts discriminate; invalid instrumentation
+  runs disclosed. Same production tree build/copy/manifest/topology/actual
+  composed pass. Whole new span after `b64a91af` through final tracking requires
+  Claude, including predeclared tests and RP-325 refinements. RP-326 per-surface
+  outcome ownership, Firefox/AT/full-lane/release gates remain; this existing
+  checkbox still records implementation only, never archival acceptance.
 - [x] GS7 minigames availability arm wired into the existing Pitch surface/nav.
 - [x] GS5 active-play arm (`features.opportunity`, kernel export `ProjectActiveCombo`) + Desk opportunity region + composed claim witness (`cdb8fe61`, `f32f6175`).
   Original producer `cdb8fe61^..cdb8fe61`, all twelve paths: designated Codex

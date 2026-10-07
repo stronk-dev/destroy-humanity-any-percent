@@ -5,7 +5,21 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded correction (2026-10-07):** RP-322 `efa557b8`, predeclared
+**Latest bounded correction (2026-10-07):** Fiscal `891aee10`, predeclared
+`bd36f5bc`, failing-first `d0651029`. RP-323/324 pending/readiness/row-reason
+consumer defects locally corrected.33 baseline failures; eleven behavioral
+faults fail, all restored exactly; two invalid parse-error probes disclosed.
+RP-325 shortcuts survive old50 then fail parser-accepted refined fixtures.
+Final Garage Chromium/WebKit150/performance1, client9,737/398 browser skips/
+types/boundaries pass; same production tree build/copy/manifest/topology/
+actual composed pass. No release-artifact/full-Garage/Firefox/AT/hosted-CI
+promotion. Whole span after `b64a91af` THROUGH this tracking edge needs
+Claude, all earlier ranges independent. RP-326 source outcome-region gap
+remains unmeasured. Next full existing Linux ARM64 three-engine cold browser
+lane, then separately predeclared notice isolation under GS0.6. All full
+nine-tier/product/platform/author/owner/review gates remain, goal progress.
+
+**Preceding bounded correction (2026-10-07):** RP-322 `efa557b8`, predeclared
 `3f231ba2`, failing-first `d362c95e`. Two shared mapper arms now refresh
 before reactivation, without retries/timers/new policy. Two baseline mapper
 failures/four native failures; separate arm severing breaks its mapper and
@@ -13,9 +27,9 @@ both native engines, restored exactly. Final Garage Chromium/WebKit100/
 performance1, client9,737/373 explicit skips/types/build/boundaries and actual
 Postgres/WebSocket composed pass. Runtime-double refused intents, not actual
 429/Soul-session/minted release/full-Garage/hosted-CI/AT evidence. Entire
-span after `3f867956` INCLUDING this tracking edge needs Claude; earlier care
-exact `c7d8f815..3f867956` remains separately owed. Next Fiscal native pending/
-readiness/refusal supplement under accepted GS1/GS0.5/GS0.8. All prior holds
+exact span `3f867956..b64a91af` needs Claude; earlier care
+exact `c7d8f815..3f867956` remains separately owed. Its then-next Fiscal native
+supplement/repair now executes above. All prior holds
 and the full nine-tier/product/platform goal remain; no lifecycle promotion.
 
 **Preceding bounded correction (2026-10-07):** care `ea06183b`, predeclared

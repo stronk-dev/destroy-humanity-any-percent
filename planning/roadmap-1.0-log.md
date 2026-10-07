@@ -4186,3 +4186,28 @@ INCLUDING this tracking edge needs Claude; care exact
 predeclare Fiscal pending/readiness/native/refusal checks. All previous
 full-nine-tier/product/platform/author/owner/numeric/content/accessibility/
 review/release holds remain. Active/progress, no box/status/archive/mint/push.
+
+## 2026-10-07 — Fiscal focus/readiness and source-owned reason repaired
+
+RP-323/324 accepted consumer correction `891aee10`, predeclared `bd36f5bc`,
+test-first `d0651029`:33 actual native failures first, types instrument error
+corrected before recording baseline. Pending intent/read focus/aria/text,
+three independent callback guards, native keyboard, restart/stale/refusals,
+removed-control/nearest/no-focus-steal controls pass. Eleven behavioral
+faults fail and restore exactly. Two parse-error probe runs invalid/excluded,
+orchestration restoration error and exact recovery disclosed. RP-325 fixed
+default/first-survivor shortcuts pass old50 cases, then fail the parser-
+accepted refined snapshots in both engines. Original unsorted fixture not
+legal-wire evidence, corrected openly. No extra production correction.
+Final Garage Chromium/WebKit150/performance1, client9,737/398 explicit browser
+skips/types/boundaries pass; same production hashes' build/copy/manifest/
+topology/actual Postgres+WebSocket composed pass before test-only refinements.
+No all-engine/AT/full-Garage/hosted-CI/minted release claim. Whole new span after
+`b64a91af` INCLUDING this tracking edge needs Claude; shared refusals exact
+`3f867956..b64a91af`, care `c7d8f815..3f867956` and earlier ranges independent.
+RP-326 source finding: surface outcome ownership absent; do not infer its
+acceptance from focus proof. Next predeclare existing full cold Linux ARM64
+three-engine browser lane (image locally present), then native GS0.6 notice
+isolation/async-origin checks. Full nine-tier/product/platform/author/owner/
+numeric/privacy/content/accessibility/review/release holds remain. Goal active/
+progress, no box/status/archive/mint/push/deploy or reduced release scope.
