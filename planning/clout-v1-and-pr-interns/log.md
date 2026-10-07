@@ -1258,3 +1258,29 @@ new span after974c1a45 needs Claude including record edges; preceding research
 and all prior obligations independent. Next predeclare scheduler correction and
 actual terminal v19 population under acceptedCV4. Goal active; this turn repairs
 one real runtime rejection and proves retained refusal boundaries, not full1.0.
+
+### RP-309 local range review — ordinary presence correction only
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `974c1a45..e2a605b2`, all fifteen changed paths, including
+ff50031e predeclaration, one runtime guard, same-commit kernel source/mirrors,
+five companion tests, explicit source re-observation and all synchronized records.
+Source/artifact diffs inspected: exactly two report source identities changed,
+zero bundle/context/payload/input/receipt/event/poststate/negative-count changes.
+Earlier research corpora and all numeric/save/balance/copy/CI/RFC bodies untouched.
+
+Both predicate obligations remain enforced: evidence iff Company>=18, and active
+replay version>=5. Actual v18 good receipt/events remain exact; four invalid
+companions refuse at the named guard unchanged. Old guard lets missing-v19
+evidence apply a purchase; permissive guard fails all four refusal checks.
+Actual executed mutations, not a source-only claim of discrimination. Restored
+runtime92da4b6e is the single authorized change and kernel163 is a real behavior
+signal, not a correction of historicalRP-131 or a full-history pass.
+
+Decision: bounded local repair validated, NOT designated approval or complete
+CV4/Clout acceptance. All24positive calls still stop atRP-310scheduler before
+output comparison; terminal check is only a source finding. Counts/limitations
+agree across docs/ledger/queues/roadmap. No checkbox or archival/status promotion.
+Claude must review ENTIRE new span after974c1a45 INCLUDING this following edge;
+all older independent spans remain. Next accepted-CV4 scheduler/terminal work
+must be separately scoped; proper full1.0 goal remains active.
