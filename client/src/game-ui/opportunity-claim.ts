@@ -1,14 +1,15 @@
 import type { CopyKey } from "../copy";
+import type { SurfaceRejections } from "./intent-outcome";
 
 // GS5: what the Desk region shows about the last applied claim. Read from the
 // applied receipt's `receipt.opportunity` evidence; nothing is inferred.
 export interface LastClaim { readonly effectRowID: string; readonly credited: string | null; readonly saturated: boolean; readonly capReasonKey: string | null }
 
-export const OPPORTUNITY_REJECTIONS: ReadonlyMap<string, CopyKey> = new Map<string, CopyKey>([
+export const OPPORTUNITY_REJECTIONS: SurfaceRejections = Object.assign(new Map<string, CopyKey>([
   ["not_eligible/opportunity_expired", "desk.opportunity.rejection.expired"],
   ["not_eligible/opportunity_not_pending", "desk.opportunity.rejection.not_pending"],
   ["unknown_id/opportunity_id", "desk.opportunity.rejection.not_pending"],
-]);
+]), { invariantPairs: new Set(["unknown_id/opportunity_id"]) });
 
 export function lastClaimFromReceipt(receipt: Readonly<Record<string, unknown>>): LastClaim {
   const inner = receipt.receipt;

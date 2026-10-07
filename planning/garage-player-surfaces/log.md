@@ -968,3 +968,39 @@ invariant-pair set lives as metadata on the existing readonly copy Map,
 instead of adding a new act option/caller parameter. Ordinary copy maps stay
 compatible; GS5 owns its one pair. The unchanged actual mapper and host are
 still what the failing tests exercise. No product bytes changed yet.
+
+### RP-317 corrected baseline and independent refusal proofs
+
+The surface owns the single exact invariant pair as optional metadata on its
+existing copy map. Shared maps/callers stay compatible. Host consumes the
+existing flag once in outcome/error branches, using fixed console messages,
+no request/token/ID payload. No server, kernel, wire, copy/hash, clock, retry
+or offline behavior change. Canonical docs accompany the behavior.
+
+Corrected types/Svelte: 0 errors/warnings. Full client: 9,692 passes/348
+explicit browser skips. Build 213 modules and existing shell/UI boundaries
+pass. Focused native baseline 10 passes/40 skips; full final Garage native
+50/50 in Chromium/WebKit, 63.98s including actual-minute idle. Default
+performance 1 pass/22 skips. Actual existing composed target exits zero:
+GS5 click buff after 8 manual clicks, zero expiries; Fiscal/Pitch revision22,
+both terminals/continuation/real WebSocket recovery, then cosmetic driver
+8.197s/67 requests pass. Not Lucky, Firefox/AT, whole CI or release evidence.
+
+Independent compiling fault populations: omit only GS5's invariant pair:
+2 unknown-opportunity failures/8 controls pass; omit host outcome reporting:
+4 unknown/unlisted failures/6 controls pass; omit host error reporting:
+2 invalid failures/8 controls pass. Each has 40 selector skips, exits nonzero
+on count assertions, and has unchanged tests/failure capture/timeouts. All
+temporary faults removed. Restored SHA256: mapper `f4533d21…2bec6`, adapter
+`ca91c5de…d2af`, host `cea53999…635c`; exact values observed before and after.
+No mutation or commit was made under a relevant live check handle.
+
+**Review by:** Codex (implementer, self first-filter only).
+**Recorded by:** Codex. Local verdict **APPROVED, bounded correction**, spanning
+predeclaration `090c1d61`, test-first `c990329d`, current product/docs/ledger/log
+and all forthcoming tracking/coordinate edges after `0f3a1a7a`. Claude must
+review that entire span separately; this is not the designated verdict.
+Original Desk review remains CHANGES REQUIRED, RP-316 unchanged Lucky oracle
+and RP-313 author-body hold remain open. Previous Desk correction is exact
+`d90aded7..0f3a1a7a` and producer `87fd23d4..d90aded7`, independent obligations.
+No acceptance checkbox, archive, content adoption/mint, push or deployment.

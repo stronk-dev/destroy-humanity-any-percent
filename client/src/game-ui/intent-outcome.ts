@@ -46,13 +46,15 @@ export type IntentEffect = "none" | "refresh" | "offline";
 export interface IntentNotice { readonly effect: IntentEffect; readonly notice: CopyKey | null; readonly invariant: boolean }
 
 // Surface-specific exact pairs, checked before the shared rows.
-export type SurfaceRejections = ReadonlyMap<string, CopyKey>;
+export type SurfaceRejections = ReadonlyMap<string, CopyKey> & {
+  readonly invariantPairs?: ReadonlySet<string>;
+};
 
 export function noticeForOutcome(outcome: IntentOutcome, surface: SurfaceRejections = new Map()): IntentNotice {
   if (outcome.outcome === "applied") return { effect: "none", notice: null, invariant: false };
   const pair = `${outcome.category}/${outcome.detail}`;
   const exact = surface.get(pair) ?? surface.get(`${outcome.category}/*`);
-  if (exact) return { effect: "none", notice: exact, invariant: false };
+  if (exact) return { effect: "none", notice: exact, invariant: surface.invariantPairs?.has(pair) ?? false };
   switch (outcome.category) {
     case "revision_conflict": return { effect: "refresh", notice: "intent.conflict", invariant: false };
     case "unaffordable": return { effect: "none", notice: "intent.rejection.unaffordable", invariant: false };

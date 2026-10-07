@@ -183,6 +183,7 @@
         const expected = options.scope === "founder" ? founderRevision! : snapshot!.revision;
         const outcome = await runtime.intent({ intent_id: newIntentID(), expected_revision: expected, ...body });
         const notice = noticeForOutcome(outcome, options.rejections);
+        if (notice.invariant) console.error("game UI invariant: intent rejection");
         intentNotice = outcome.outcome === "applied" && options.applied ? options.applied(outcome.receipt) : notice.notice;
         options.observed?.(outcome);
         if (notice.effect === "refresh") void refresh();
@@ -195,6 +196,7 @@
         }
       } catch (error) {
         const notice = noticeForError(error);
+        if (notice.invariant) console.error("game UI invariant: invalid intent response");
         intentNotice = notice.notice;
         options.failed?.(error);
         if (notice.effect === "offline") offline = true;

@@ -144,7 +144,11 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   
   Claim sends a Company-scoped `claim_opportunity`. An applied receipt's `receipt.opportunity`
   evidence shows the lucky credit, and the `cap.cash` reason when saturated. Expired and gone
-  claims map to typed notices. A buff receipt's non-null cap reason remains visible
+  claims map to typed notices. An unknown opportunity ID retains the not-pending
+  notice and reports one client invariant; ordinary expired/not-pending refusals
+  do not. The shared host likewise reports unlisted rejections and typed invalid
+  requests once, without logging request bodies or identifiers. A buff receipt's
+  non-null cap reason remains visible
   even if the successor snapshot has no live capped buffs; this is receipt evidence,
   not a claim that the current buff product is still saturated. Claim has an explicit
   zero Tab index: native Tab from the manual button reaches it in Chromium and
