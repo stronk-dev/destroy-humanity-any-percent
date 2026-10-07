@@ -2215,3 +2215,22 @@ selected or DB proof claimed. RP-329 ledger updated. Test-first checkpoint
 only tests/records; production completeness repair follows. Complete new
 range after5fbf4cff through following records needs Claude independently of
 RP-332cc62cea8..5fbf4cff/auditfc911784..cc62cea8/all prior spans.
+
+## 2026-10-07 — GS3-A1 first green and producer-control faults predeclared
+
+Client repair imports the existing immutable REQUIRED_METER_IDS only; exact
+count/positional ID check follows existing sortedRows validation. First root
+types/full client53254 terminal0:zero type errors/warnings,9,814 passing/
+446 explicit browser skips (105 files pass/22 skip),5.69s. This is local
+admission proof, not all-engine/shared-v4/real DB/release acceptance.
+
+Before executing negative probes, add two scoped cold Go producer-control
+faults to the five already predeclared decoder faults: omit one emitted row,
+and sever the !present saved-value refusal (leave all other checks intact).
+Actual TestMetersProjectionUsesCompleteCatalogIDs must fail its complete-ID
+or each missing-value assertion respectively. These are transient probes,
+not authority to land producer/schema/kernel/balance changes; source restored
+exactly before final cold Go/vet and native/client gates. Record surviving
+probes/errors without changing the fixture. Baseline restored hashes:
+contracts43bfd6140dc7479eb800871fbc9225b914fe2a36a4a6364a813cfa4a3eabcb2b;
+server features e344ecee553f1260e1a33802985d98c45970ff6035cd677ebf4548425f61f0fa.
