@@ -803,3 +803,30 @@ server clock, alternate scheduler, direct gameplay intent or hidden payout fix.
 Retained sources must be exact after every temporary fault; no concurrent
 mutation while test handles are live. Other gaps become ledger rows, not
 unannounced expansion. All new Codex tests/product/record edges need Claude.
+
+### Desk test-first findings, before product correction
+
+Retained baseline: 34 native Garage passes across Chromium/WebKit plus default
+isolated performance pass. Existing composed target exits zero: actual GS5
+claims `active.click` after 18 DOM manual clicks (zero expired attempts),
+verifies its projected buff ID; Fiscal/Pitch/lifecycle/recovery pass, then the
+existing cosmetic driver passes. This is NOT Lucky branch coverage or an
+all-engine/release-artifact claim. Compose reports existing orphan containers;
+no unrelated cleanup performed.
+
+The original 400ms idle test **survives** a compiling 1-second auto-claim in
+the actual region (two passes). The replacement native 60-second observation
+checks retained intent history throughout and fails on that same fault in
+about 1.1 seconds, both engines. Region restored to exact pre-probe SHA
+`f9ea2af3…14503`. No product timer fault is retained. Its 70-second test-runner
+budget accommodates the specified 60-second population; the acceptance horizon
+is still exactly 60 seconds, with no fake timer or display-clock substitution.
+
+New cap/keyboard tests against unchanged product source: six genuine assertion
+failures, two admitted Chromium keyboard controls pass, 32 selector skips.
+Both engines omit the capped-buff receipt reason and the live combo limit.
+WebKit's native Tab skips Claim for Enter and Space; the old forced-focus click
+masked this. RP-315 now records that actual product defect as well. Narrow
+repair: explicit zero Tab index on Claim, existing keys/Amount for combo number
+and past buff receipt reason. No positive index, forced focus, browser setting,
+keyboard API, timing policy, new player prose, schema or kernel change.

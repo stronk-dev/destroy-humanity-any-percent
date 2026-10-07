@@ -9,6 +9,7 @@ import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import type { IntentOutcome } from "../src/game-ui/intent-outcome";
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import type { GameUISurfaceID } from "../src/game-ui/surface-catalog";
+import { formatAmount } from "../src/ui/amount-format";
 
 const browser = typeof document !== "undefined";
 const NOW = 1_800_000_000_000;
@@ -302,16 +303,21 @@ it.skipIf(!browser)("keeps the opportunity region in a fixed Desk position and n
 
 it.skipIf(!browser)("sends no command while an opportunity waits on an idle Desk (GS5-A2)", async () => {
   const runtime = new Runtime(); runtime.current = withOpportunity(opportunityArm(true));
-  const { app, dispose } = await mounted(runtime);
+  const { dispose } = await mounted(runtime);
   try {
-    app.fixtureMonotonicElapsed(60_000);
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    await settle();
-    expect(runtime.requests).toEqual([]);
+    // Native timers actually run for the specified minute. The display-only
+    // monotonic fixture cannot stand in for an elapsed setTimeout/interval.
+    const started = performance.now();
+    while (performance.now() - started < 60_000) {
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      expect(runtime.requests).toEqual([]);
+    }
+    expect(performance.now() - started).toBeGreaterThanOrEqual(60_000);
   } finally { await dispose(); }
-});
+}, 70_000);
 
-it.skipIf(!browser)("claims by keyboard and shows a saturated lucky payout's cap reason as text (GS5-A3/A5)", async () => {
+for (const activation of ["{Enter}", " "]) {
+it.skipIf(!browser)(`claims by native Tab and ${activation === " " ? "Space" : "Enter"}, with saturated Lucky cap text (GS5-A3/A5)`, async () => {
   const runtime = new Runtime(); runtime.current = withOpportunity(opportunityArm(true, true, true));
   runtime.outcome = { outcome: "applied", receipt: { outcome: "applied", receipt: { opportunity: { opportunity_id: "01986666-0000-7000-8000-000000000001", effect_row_id: "active.lucky",
     selected_target: null, buff_instance_id: null, requested_delta: "5e3", actual_credited_delta: "1e3", saturated: true, cap_reason_key: "cap.cash", next_sampled_interval_ms: 1_000, next_opportunity_attended_ms: 9_000 } } } };
@@ -321,11 +327,52 @@ it.skipIf(!browser)("claims by keyboard and shows a saturated lucky payout's cap
     expect(region.textContent).toContain("Your boosts are stacked up to the combo cap.");
     expect(region.textContent).toContain("Boost combo cap");
     const claim = button(target, "Claim");
-    claim.focus(); claim.click(); await settle();
+    const { userEvent } = await import("vitest/browser");
+    const manual = target.querySelector<HTMLButtonElement>("section.manual button")!;
+    manual.focus();
+    await userEvent.keyboard("{Tab}"); await settle();
+    expect(document.activeElement).toBe(claim);
+    await userEvent.keyboard(activation); await settle();
     expect(runtime.requests).toEqual([expect.objectContaining({ kind: "claim_opportunity", opportunity_id: "01986666-0000-7000-8000-000000000001", expected_revision: 1 })]);
     expect(region.textContent).toContain("The lucky break hit the cash cap. Cash cap");
     expect(region.textContent).toContain("Lucky break credited: 1e3");
     await assertAxe(target, "claimed");
+  } finally { await dispose(); }
+});
+}
+
+it.skipIf(!browser)("renders a capped buff receipt even after the live buff arm is empty (GS5)", async () => {
+  const runtime = new Runtime();
+  const arm = opportunityArm(true, false, false);
+  arm.pending!.effect_row_id = "active.production";
+  runtime.current = withOpportunity(arm);
+  runtime.outcome = { outcome: "applied", receipt: { outcome: "applied", receipt: { opportunity: {
+    opportunity_id: arm.pending!.opportunity_id, effect_row_id: "active.production",
+    selected_target: null, buff_instance_id: "01986666-0000-7000-8000-00000000000b",
+    requested_delta: null, actual_credited_delta: null, saturated: null,
+    cap_reason_key: "cap.active_combo", next_sampled_interval_ms: 1_000,
+    next_opportunity_attended_ms: 9_000,
+  } } } };
+  const { target, dispose } = await mounted(runtime);
+  try {
+    runtime.current = withOpportunity(opportunityArm(false, false, false));
+    button(target, "Claim").click(); await settle();
+    const region = target.querySelector("[data-region='desk.region.opportunity']")!;
+    expect(region.textContent).toContain("Boost combo cap");
+    expect(region.textContent).not.toContain("Lucky break credited");
+    await assertAxe(target, "capped buff receipt");
+  } finally { await dispose(); }
+});
+
+it.skipIf(!browser)("renders the projected combo cap number beside its label for live buffs (GS5)", async () => {
+  const runtime = new Runtime();
+  runtime.current = withOpportunity(opportunityArm(false, true, false));
+  const { target, dispose } = await mounted(runtime);
+  try {
+    const region = target.querySelector("[data-region='desk.region.opportunity']")!;
+    expect(region.textContent).toContain("Boost combo cap");
+    expect([...region.querySelectorAll("output")].map((node) => node.textContent)).toContain(formatAmount("1e4"));
+    await assertAxe(target, "unsaturated live buff cap");
   } finally { await dispose(); }
 });
 
