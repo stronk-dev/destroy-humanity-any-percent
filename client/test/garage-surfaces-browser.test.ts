@@ -1667,6 +1667,102 @@ function regionIndex(target: HTMLElement): number {
   return [...desk.children].findIndex((child) => child.getAttribute("data-region") === "desk.region.opportunity");
 }
 
+// RP-358: decoded publication is announcement authority, never projection
+// authority. A different admitted announcement separates replays: otherwise
+// assigning the same string can conceal a missing dedupe guard in Svelte.
+function opportunityAnnouncement(cursor: number, schema: 1 | 2 | "achievement"): GameUIRuntimeMessage {
+  const payload = schema === "achievement"
+    ? { achievement_id: "achievement.first_gate", condition_scope: "run", score_grant: 2,
+      run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 } }
+    : { activated_attended_ms: 2_000, buff_instance_id: "01986666-0000-7000-8000-00000000000b",
+      effect_row_id: "active.production", expires_attended_ms: 6_000, selected_target: null,
+      ...(schema === 2 ? { hardcap_reason_key: "cap.active_combo" } : {}) };
+  const envelope = decodeTransportEnvelope({ v: 2, ch: `player:${v4.run.founder_id}`, kind: "event", rev: cursor,
+    constants_hash: v4.constants_hash, ts: "2026-10-07T07:00:00Z",
+    payload: { event_id: `opportunity-${cursor}`, kind: schema === "achievement" ? "achievement_earned.v1" : "buff_started.v1",
+      scope: "company", rev: cursor, cursor_effect: "advance", payload } });
+  if (!envelope) throw new Error("opportunity announcement envelope not admitted");
+  const value = decodeGameUIAnnouncement(envelope);
+  if (!value || value.kind !== (schema === "achievement" ? "achievement_earned" : "buff_started"))
+    throw new Error("opportunity announcement payload not admitted");
+  return { kind: "announcement", scope: "company", value };
+}
+
+for (const width of [320, 1280] as const) {
+  for (const path of ["spawn-desk", "spawn-settings", "buff-v1-desk", "buff-v1-settings", "buff-v2-desk", "buff-v2-settings"] as const) {
+    it.skipIf(!browser)(`GS5 announcement authority ${path}/${width}`, async () => {
+      const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+      const runtime = new Runtime(); runtime.current = parseGameUISnapshot(withOpportunity(opportunityArm(false, false)));
+      let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+      try {
+        fixture = await mounted(runtime); const { target } = fixture;
+        const chrome = target.querySelector<HTMLElement>(".announcement")!;
+        expect(chrome.getAttribute("role")).toBe("status"); expect(chrome.textContent).toBe("");
+        const effect = (id: string) => t(FEATURES_PRESENTATION.opportunityEffects.get(id)!.title_key, {}, "era_1995");
+        const spawn = t("desk.opportunity.spawned_announcement", { effect: effect("active.lucky") }, "era_1995");
+        const buff = t("desk.buff.started_announcement", { effect: effect("active.production") }, "era_1995");
+        const earned = t("achievements.earned_announcement", { achievement: t("achievement.first_gate", {}, "era_1995") }, "era_1995");
+        expect(new Set([spawn, buff, earned]).size).toBe(3);
+        let focused: HTMLElement = target.querySelector<HTMLButtonElement>("section.manual button")!; focused.focus();
+        const selected = async (key: "surface.settings.title" | "surface.desk.title") => {
+          focused = button(target, t(key, {}, "era_1995")); focused.focus();
+          await userEvent.keyboard("{Enter}"); await settle(); expect(document.activeElement).toBe(focused);
+        };
+        const line = (expected: string) => {
+          expect(chrome.textContent).toBe(expected); expect(document.activeElement).toBe(focused);
+          expect(runtime.requests).toEqual([]);
+          if (expected) { const box = chrome.getBoundingClientRect(); expect(box.width).toBeGreaterThan(0); expect(box.height).toBeGreaterThan(0); expect(getComputedStyle(chrome).visibility).toBe("visible"); }
+        };
+        const publish = async (cursor: number, schema: 1 | 2 | "achievement", expected: string) => {
+          runtime.listener?.(opportunityAnnouncement(cursor, schema)); await settle(); line(expected);
+        };
+        const snapshot = async (arm: ReturnType<typeof opportunityArm>, revision: number) => {
+          const value = parseGameUISnapshot({ ...withOpportunity(arm), revision });
+          runtime.current = value; runtime.listener?.({ kind: "snapshot", value }); await settle();
+          expect(document.activeElement).toBe(focused); expect(runtime.requests).toEqual([]);
+        };
+        if (path.endsWith("settings")) await selected("surface.settings.title");
+        if (path.startsWith("spawn")) {
+          const offer = opportunityArm(true, false);
+          await snapshot(offer, 2); line(path.endsWith("settings") ? "" : spawn);
+          if (path.endsWith("settings")) { await selected("surface.desk.title"); line(spawn); }
+          await publish(11, 1, buff);
+          runtime.listener?.({ kind: "transport_recovered" }); await settle();
+          await snapshot(offer, 3); line(buff);
+          await selected("surface.settings.title"); line(buff);
+          await selected("surface.desk.title"); line(buff);
+          const next = opportunityArm(true, false); next.pending!.opportunity_id = "01986666-0000-7000-8000-000000000002";
+          await snapshot(next, 4); line(spawn);
+          await publish(12, "achievement", earned);
+          await snapshot(next, 5); line(earned);
+          expect(target.querySelector(".opportunity .buffs")).toBeNull();
+        } else {
+          const schema = path.startsWith("buff-v1") ? 1 : 2;
+          await publish(11, schema, path.endsWith("settings") ? "" : buff);
+          await publish(12, "achievement", earned);
+          if (path.endsWith("settings")) await selected("surface.desk.title");
+          line(earned); expect(target.querySelector(".opportunity .buffs")).toBeNull();
+          runtime.listener?.({ kind: "transport_recovered" }); await settle();
+          await publish(11, schema, earned);
+          expect(target.querySelector(".opportunity .buffs")).toBeNull();
+          await publish(13, schema, buff);
+          expect(target.querySelector(".opportunity .buffs")).toBeNull();
+          await snapshot(opportunityArm(false, true), 2); line(buff);
+          const remaining = () => [...target.querySelectorAll(".opportunity .buffs li span")].map((node) => node.textContent);
+          expect(remaining()).toEqual([effect("active.production"), t("desk.buff.remaining_frame", { seconds: 4 }, "era_1995")]);
+          await publish(14, "achievement", earned);
+          const advanced = opportunityArm(false, true); advanced.attended_now_ms = 3_000;
+          await snapshot(advanced, 3); line(earned);
+          expect(remaining()).toEqual([effect("active.production"), t("desk.buff.remaining_frame", { seconds: 3 }, "era_1995")]);
+          expect(target.querySelector(".opportunity .buffs")!.closest('[role="status"],[aria-live]')).toBeNull();
+        }
+        expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth);
+        await assertAxe(target, `${path}/${width}`); line(earned);
+      } finally { try { if (fixture) await fixture.dispose(); } finally { await page.viewport(1280, 720); } }
+    });
+  }
+}
+
 // GS5 inherits GS0.5 inside the region. Independent property cases keep a
 // missing reason from masking readiness; native click probes HTML disabled
 // dispatch, not keyboard accessibility or real-service recovery.
