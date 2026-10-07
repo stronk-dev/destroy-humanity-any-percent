@@ -4328,3 +4328,26 @@ not a fabricated duplicate defect. Runtime-double reads, public parser/terminal
 decoders/native Enter/Space, no real service/auth/SQL/AT claim. Existing false
 offline copy RP-080 untouched. All preceding exact review ranges still owed;
 complete0e548992-exclusive range including predeclaration/red needs Claude.
+
+## 2026-10-07 — Separate accepted continuation repair scope
+
+Baseline94c88b72 red witness checkpoint. Product authority: accepted Garage
+GS0.6 context focus and removed-trigger exception, Game UI AC1 already-created
+exact-next continuation, Prestige P4 same-Founder/Company transaction. Only host
+continueRun changes: capture terminal Founder before awaiting, refuse mismatched
+Founder OR non-next sequence before binding; preserve existing failure/terminal
+behavior. After successful existing Desk selection/render, hand off removed
+focused origin to existing Desk heading without taking focus from a surviving
+new choice. Newer selection after the render scheduling cancels focus. No new
+pending-read navigation/cancellation policy, category restriction, HTTP/auth/
+credential/Retry/copy/control field/stream schema or balance/timing change.
+
+Same48 native cases must pass. Predeclare compiling source faults: omit Founder
+guard; omit sequence guard; remove focus; remove Desk heading tabindex; bypass
+pending entry/read guard; drop terminal on refusal. Each must fail named outcome
+with unchanged positive controls, restore before next/final full Garage and Game
+UI populations, isolated performance, types/client/build/copy/boundaries/static
+topology/no-payment. Docs/ledger/inventory/plan/board/queue/checkpoints reconcile
+in repair commit; do not claim real-service/auth/SQL/AT/Firefox/full1.0.
+0e548992-exclusive fullspan including both predeclarations/red requires Claude;
+preceding ranges independent. No checkbox/lifecycle/archive/push/cleanup/release.
