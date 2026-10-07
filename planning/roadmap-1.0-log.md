@@ -4972,3 +4972,13 @@ cleanup metric→Prometheus→Alertmanager firing/natural resolution chain and s
 delivery/rejection. Commands, provenance and limits live in the Deployment plan/log, not a second
 ledger here. New test range needs consolidated Claude review. Private-network, exact Linux
 artifact, clean-host, owner/author decisions and full nine-tier 1.0 gates remain open.
+
+## 2026-10-08 — Whole-product rollup and real-service PR fixture
+
+At baseline `00a6f43d`, the new Clout batch proves native purchase, exact rendering and SQL/reload
+persistence with controlled unminted data; the owning Clout log records execution and pending
+designated review. The final expanded composed target is RED at the earlier Pitch notice
+(RP-389); care mismatch RP-388 also remains untraced. The current-state overview separates
+early-game integration from the unbuilt later tiers and unfinished rights/access/operations.
+No milestone, content mint, release or hosted-green claim. Next: diagnose RP-389, resolve the
+baseline arithmetic/history failures and consolidate feature reviews under existing authority.

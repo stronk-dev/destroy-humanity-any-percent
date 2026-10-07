@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { createServer as createHTTPServer, request as httpRequest } from "node:http";
@@ -11,6 +12,11 @@ import { chromium } from "playwright";
 import { build } from "vite";
 import { activateCosmeticBuy } from "./activate-cosmetic-buy.mjs";
 
+const args = process.argv.slice(2);
+if (args.length !== 0 && (args.length !== 1 || args[0] !== "--axis-stack")) {
+  throw new Error("supported composed fixture option: --axis-stack");
+}
+const axisFixture = args.length === 1;
 const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = path.resolve(clientRoot, "..");
 const gameserverURL = "http://127.0.0.1:18082";
@@ -48,7 +54,10 @@ function buildFixtureRoot() {
   const seed = JSON.parse(readFileSync(path.join(repositoryRoot, "balance/epochs/phase0.json"), "utf8"));
   const artifacts = new Map(seed.artifacts.map(({ name, path: relative }) => [name, readFileSync(path.join(repositoryRoot, relative))]));
   // Exact test-only chain used by replaycatalog's Reputation/Pet/Cosmetics fixtures.
-  const economy = JSON.parse(artifacts.get("economy").toString("utf8"));
+  // AC11 variant uses the existing declared PR fixture, not adopted epoch data.
+  const economy = JSON.parse(axisFixture
+    ? readFileSync(path.join(repositoryRoot, "balance/testdata/axis-stack/economy-v5-fixture.json"), "utf8")
+    : artifacts.get("economy").toString("utf8"));
   economy.multiplier_sources.push({ id: "reputation.founder_bonus", slot: "prestige", target: "all", provider: "reputation_tree" });
   artifacts.set("economy", Buffer.from(JSON.stringify(economy)));
   for (const [name, relative] of [
@@ -73,9 +82,9 @@ function buildFixtureRoot() {
   return hash;
 }
 
-function testDatabaseSQL(sql) {
+function testDatabaseSQL(sql, tuplesOnly = false) {
   const result = spawnSync("docker", ["compose", "-f", "compose.game-ui-test.yml", "exec", "-T", "game-ui-postgres",
-    "psql", "-v", "ON_ERROR_STOP=1", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test", "-c", sql],
+    "psql", "-v", "ON_ERROR_STOP=1", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test", ...(tuplesOnly ? ["-At"] : []), "-c", sql],
   { cwd: repositoryRoot, encoding: "utf8" });
   if (result.status !== 0) throw new Error(`cosmetic test DB command failed: ${result.stderr || result.stdout}`);
   return result.stdout;
@@ -95,7 +104,7 @@ function seedGateRequirement(founderID) {
     WHERE stream.owner_kind='founder' AND stream.owner_id='${founderID}' AND stream.scope='company' AND stream.archived_at IS NULL
     ORDER BY revision.revision DESC LIMIT 1
   ) INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash)
-    SELECT stream_id,revision+1,version,jsonb_set(state,'{balances,company.cash}',to_jsonb('1e5'::text),false),constants_hash FROM current;`);
+    SELECT stream_id,revision+1,version,jsonb_set(state,'{balances,company.cash}',to_jsonb('${axisFixture ? "1e8" : "1e5"}'::text),false),constants_hash FROM current;`);
   if (!result.includes("INSERT 0 1")) throw new Error(`cosmetic gate setup inserted no revision: ${result}`);
 }
 
@@ -206,6 +215,107 @@ function plainFixtureCopy(key) {
   return row.text;
 }
 
+async function companyDOMIntent(page, requests, control, kind, fields) {
+  const before = await snapshot(page);
+  const matching = () => requests.filter((request) => request.method() === "POST" &&
+    new URL(request.url()).pathname === "/api/v1/intents" && request.postDataJSON()?.kind === kind);
+  const priorCount = matching().length;
+  // Native keyboard activation of the actual mounted control; no direct API
+  // writes, runtime calls, forced disabled activation or intent retry.
+  await control.click({ trial: true, timeout: 30_000 });
+  await control.focus();
+  const responseTask = page.waitForResponse((response) => response.request().method() === "POST" &&
+    new URL(response.url()).pathname === "/api/v1/intents" && response.request().postDataJSON()?.kind === kind,
+  { timeout: 30_000 }).then((value) => ({ value }), (error) => ({ error }));
+  await control.press("Enter");
+  const result = await responseTask;
+  if (result.error) throw result.error;
+  const response = result.value;
+  const receipt = await response.json();
+  const emitted = matching();
+  assert.equal(emitted.length, priorCount + 1, `Clout ${kind}: exactly one DOM intent`);
+  const body = emitted.at(-1).postDataJSON();
+  assert.deepEqual(body, { intent_id: body.intent_id, expected_revision: before.revision, kind, ...fields }, `Clout ${kind}: exact request`);
+  assert.equal(response.status(), 200, `Clout ${kind}: HTTP result`);
+  assert.equal(receipt.intent_id, body.intent_id, `Clout ${kind}: bound receipt`);
+  assert.equal(receipt.outcome, "applied", `Clout ${kind}: authoritative application`);
+  assert.equal(receipt.new_revision, before.revision + 1, `Clout ${kind}: Company revision`);
+  await page.waitForFunction(() => document.querySelector("main.game-ui")?.getAttribute("aria-busy") === "false",
+    undefined, { timeout: 30_000 });
+  return receipt;
+}
+
+async function assertAxis(page, { input, product, factors, owned = false }) {
+  const view = await snapshot(page);
+  const arm = view.features?.axis_stack;
+  assert.ok(arm, "Clout AC11: real snapshot must carry axis_stack");
+  assert.equal(view.facts.find((row) => row.fact_id === "feature.axis_stack")?.value, true);
+  assert.equal(arm.input_kind, "achievement_attainment_run");
+  assert.equal(arm.input_value, input);
+  assert.equal(arm.input_cap, 44);
+  assert.equal(arm.saturated, false);
+  assert.equal(arm.product, product);
+  assert.deepEqual(arm.interns.map((row) => [row.upgrade_id, row.minimum, row.factor_ppm, row.owned, row.factor]), [
+    ["upgrade.pr_intern_1", 6, 25_000, owned, factors[0]],
+    ["upgrade.pr_intern_2", 10, 20_000, false, factors[1]],
+  ]);
+  assert.deepEqual(arm.contributions, owned
+    ? [{ source_id: "upgrade.pr_intern_1.axis", upgrade_id: "upgrade.pr_intern_1", factor: factors[0] }] : []);
+  const panel = page.locator("section.axis");
+  await panel.waitFor({ state: "visible", timeout: 30_000 });
+  // Fixture factors here are all e0; literal text equality never calls the
+  // subject's formatter or computes a factor from the raw achievement count.
+  assert.deepEqual(await panel.locator("output").allTextContents(), [product, ...factors].map((value) => value.replace(/e0$/u, "")));
+  assert.ok((await panel.innerText()).includes(`Achievement attainment this run: ${input} of 44`));
+  assert.ok((await panel.innerText()).includes(plainFixtureCopy("axis_stack.formula.caption")));
+  assert.deepEqual(await panel.locator("progress").evaluateAll((bars) => bars.map((bar) => ({ value: bar.value, max: bar.max }))),
+    owned ? [{ value: Math.min(input, 10), max: 10 }] : [{ value: Math.min(input, 6), max: 6 }, { value: Math.min(input, 10), max: 10 }]);
+  return view;
+}
+
+async function witnessAxis(page, requests) {
+  await assertAxis(page, { input: 2, product: "1e0", factors: ["1.05e0", "1.04e0"] });
+  const pr = page.locator('section[aria-labelledby="upgrades-heading"] article').filter({ has: page.getByRole("heading", { name: plainFixtureCopy("upgrade.pr_intern_1.title"), exact: true }) });
+  assert.equal(await pr.getByRole("button").isDisabled(), true, "PR purchase below required attainment is disabled");
+  const generators = page.locator('section[aria-labelledby="generators-heading"] article').filter({ has: page.getByRole("heading", { name: plainFixtureCopy("generator.beige_tower.title"), exact: true }) });
+  const purchase = await companyDOMIntent(page, requests, generators.getByRole("button", { name: plainFixtureCopy("desk.buy_max"), exact: true }),
+    "buy_generator", { generator_id: "generator.beige_tower", count: { mode: "max" } });
+  const ready = await assertAxis(page, { input: 12, product: "1e0", factors: ["1.3e0", "1.24e0"] });
+  assert.ok(ready.revision >= purchase.new_revision);
+  assert.deepEqual(ready.features.axis_stack.attained.map((row) => row.achievement_id), [
+    "achievement.first_gate", "achievement.generators_owned_100", "achievement.generators_purchased_1", "achievement.generators_purchased_25",
+  ]);
+  const receipt = await companyDOMIntent(page, requests, pr.getByRole("button", { name: plainFixtureCopy("desk.buy_one"), exact: true }),
+    "buy_upgrade", { upgrade_id: "upgrade.pr_intern_1" });
+  const after = await assertAxis(page, { input: 12, product: "1.3e0", factors: ["1.3e0", "1.24e0"], owned: true });
+  assert.ok(after.revision >= receipt.new_revision);
+  assert.equal(after.upgrades.find((row) => row.upgrade_id === "upgrade.pr_intern_1")?.owned, true);
+  assert.equal(await pr.getByRole("button").isDisabled(), true, "owned PR cannot be bought again");
+  await page.reload({ waitUntil: "networkidle" });
+  await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  const restored = await assertAxis(page, { input: 12, product: "1.3e0", factors: ["1.3e0", "1.24e0"], owned: true });
+  assert.equal(restored.run.founder_id, after.run.founder_id);
+  assert.equal(restored.run.run_seq, after.run.run_seq);
+  assert.equal(restored.upgrades.find((row) => row.upgrade_id === "upgrade.pr_intern_1")?.owned, true);
+  // Inspect the actual stored head/event, not just another browser read from
+  // the still-running service. Setup seeded cash only, never these fields.
+  const founderID = restored.run.founder_id;
+  assert.match(founderID, /^[0-9a-f-]{36}$/u);
+  const persisted = JSON.parse(testDatabaseSQL(`SELECT jsonb_build_object(
+    'version', revision.version, 'revision', revision.revision,
+    'attainment', revision.state->'attainment_score_run',
+    'attained', revision.state->'achievements_attained_run',
+    'owned', revision.state->'upgrades_owned' ? 'upgrade.pr_intern_1',
+    'purchases', (SELECT count(*) FROM events WHERE stream_id=revision.stream_id
+      AND kind='upgrade_purchased' AND payload->>'upgrade_id'='upgrade.pr_intern_1'))
+    FROM save_revisions revision JOIN save_streams stream ON stream.id=revision.stream_id
+    WHERE stream.owner_kind='founder' AND stream.owner_id='${founderID}' AND stream.scope='company' AND stream.archived_at IS NULL
+    ORDER BY revision.revision DESC LIMIT 1;`, true).trim());
+  assert.deepEqual(persisted, { version: 19, revision: receipt.new_revision, attainment: 12,
+    attained: ready.features.axis_stack.attained.map((row) => row.achievement_id), owned: true, purchases: 1 });
+  console.log("composed Clout AC11 fixture: DOM first gate → attainment 2 → native generator purchase → attainment 12 → native PR purchase → bound receipt → product 1.3 → owned reload + exact SQL head/event: PASS");
+}
+
 async function founderDOMIntent(page, requests, control, kind, expectedFields) {
   const before = await snapshot(page);
   const matching = () => requests.filter((request) => request.method() === "POST" &&
@@ -293,7 +403,13 @@ function assertPersistedCare(view, receipt) {
   if (view.founder_revision !== receipt.founder_revision || !pet ||
       Object.keys(pet).sort().join("\0") !== publicKeys.join("\0") || pet.status_band !== receipt.status_band ||
       !Array.isArray(pet.eligible_action_ids) || pet.eligible_action_ids.includes(receipt.action_id)) {
-    throw new Error("Garage care persisted public band/eligibility/Founder revision did not match the actual receipt");
+    // Public coordinates only: expose which existing equality failed without
+    // logging credentials, private raw care state or an entire response body.
+    throw new Error(`Garage care persisted public band/eligibility/Founder revision did not match the actual receipt: ${JSON.stringify({
+      expected: { founder_revision: receipt.founder_revision, status_band: receipt.status_band, action_id: receipt.action_id },
+      actual: { founder_revision: view.founder_revision, present: Boolean(pet), keys: pet ? Object.keys(pet).sort() : [],
+        status_band: pet?.status_band, eligible_action_ids: pet?.eligible_action_ids },
+    })}`);
   }
 }
 
@@ -478,6 +594,7 @@ try {
     throw new Error(`cosmetic live transport/presence did not reach the visitor counter: ${JSON.stringify({ websocketEvents, failedRequests, pageErrors: pageErrors.map(String), main: (await page.locator("main").innerText()).slice(0, 500) })}`, { cause: error });
   }
   const initial = await snapshot(page);
+  if (axisFixture) await assertAxis(page, { input: 0, product: "1e0", factors: ["1e0", "1e0"] });
   const firstArm = initial.features?.cosmetics;
   if (initial.constants_hash !== hash || firstArm?.active !== true || firstArm.items?.[0]?.cosmetic_id !== "horse_armor" || firstArm.items[0].owned !== false || firstArm.items[0].acquirable !== false || await page.locator('[data-testid="cosmetic-shelf"]').count() !== 0) {
     throw new Error(`cosmetic AC14 bootstrap/locked arm invalid: ${JSON.stringify({ hash: initial.constants_hash, arm: firstArm })}`);
@@ -495,6 +612,7 @@ try {
   if (beforeBuy.run.tier !== 1 || beforeBuy.features?.cosmetics?.items?.[0]?.acquirable !== true || beforeBuy.features.cosmetics.items[0].owned !== false) {
     throw new Error(`cosmetic AC14 T1 server snapshot invalid: ${JSON.stringify(beforeBuy.features?.cosmetics)}`);
   }
+  if (axisFixture) await witnessAxis(page, requests);
   const buy = shelf.getByRole("button", { name: /^Buy for/u });
   // A completed server snapshot can precede the Svelte/transport-ready render
   // by a frame. Require the actual control to become actionable, without

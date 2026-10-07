@@ -2173,3 +2173,55 @@ No AC/archival/served-epoch/AT/full-CI/1.0 completion claim. RP-307's original27
 failures and the unaccepted accumulation/episode contract remain; this is fixture-panel proof.
 Next: reuse the existing declared real-service journey and axis fixture for PR purchase,
 authoritative multiplier refresh and reload persistence, without claiming a release content mint.
+
+## 2026-10-08 — PR purchase reaches the actual built browser and database
+
+Outcome under CV9/AC11 and CI Baseline D2: reuse the existing Cosmetic service/built-client driver with explicit
+`--axis-stack` / root `make test-clout-composed`, selecting the existing unminted economy fixture.
+Only test cash is seeded. The actual DOM gate earns2; native Enter Buy Max earns12 with the
+exact four run IDs; native Enter PR Buy emits one exact Company intent and a bound applied
+receipt at the next revision. Snapshot and DOM progress/factors/product match literal expected
+values at input0/2/12, product1→1.3. Reload retains Founder/run/ownership. Direct Postgres checks
+the exact Company19 head, attainment set/score, owned upgrade and unique purchase event.
+No production, schema, numeric, balance, copy, content mint or Actions job/timeout change.
+The existing composed CI target retains its ordinary main/Cosmetic populations and adds this
+fixture variant; `make test-clout-composed` is the focused local selector, not a manual-only gate.
+
+Discrimination: healthy65767 passes the selected PR and existing Cosmetic/care populations.
+AC11's compiling producer-severing17563 then exits2 with `real snapshot must carry axis_stack`.
+Product source restored before subsequent runs; Git hash stays exactly
+`f88eee3d271f85a73e7c28d9622c3846900e4387` and its diff is empty. Restored72963 passes.
+Unknown CLI7237ce exits1 before test DB/temp setup; syntax and CI topology/13 negatives pass.
+Initial sandbox Docker denial executes no test; the permitted root runs own declared test ports.
+Test DB capacity preflight reports105.5MiB used/7.7GiB available on its tmpfs; no container pruning.
+
+Stronger63825 passes PR/SQL but fails the existing care projection equality: RP-388 stays OPEN.
+Public-coordinate diagnostic added without weakening the check; actual helper healthy/four
+mismatch controls d8a8d4 pass and omit a private sentinel. Diagnostic91893 passes the complete
+selected fixture (94 requests/7.699s), not a unique cause or reliability repair. Ordinary
+`make test-game-ui-composed`99343 passes its actual CI population: asset observer5, refresh8,
+all7 persisted parent tests, production-built main gameplay/Pitch/early endings/recovery and
+default Cosmetic/care/reloads (main101 requests; Cosmetic73/6.664s). No hosted/Linux-amd64/full
+CI/AT/default PR content proof substituted.
+
+Final expanded `make test-game-ui-composed`70861 is RED in its unchanged first driver, BEFORE
+either Cosmetic variant. Asset5, refresh8 and all7 persisted parents pass; actual locked Pitch
+409 has the expected not_eligible/fiscal_unlock_required, but its visible notice times out at
+the unchanged30s bound. No Clout failure or new-stage execution is inferred. RP-389 records
+this independently of earlier ordinary99343 PASS. Failed DB preserved before reset: latest
+Company36/v18/T1 has an Acquihire offer; spawn and gate events share revision36. The first
+read-only query used wrong exit_offer/id field names and provides no valid offer finding;
+corrected0bbbb6 uses offer_state/occurred_at/event_id. No failed browser DOM capture remains,
+so the offer is a lead, not unique cause. Local start22:53:45→terminal observation22:54:59 UTC
+is an incomplete74s attempt, not a completed latency observation or hosted-budget proof.
+Syntax, full diff and final CI topology/13 negatives pass; all process handles terminal.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range after
+`00a6f43d` through this batch's final driver/Make/docs/records commit needs designated review;
+the prior display correction and older Clout spans remain separate. No checkbox, archival,
+full CV9/Clout/1.0, mint or publication promotion. RP-307's numeric red and unaccepted repair
+contract, harness binding and remaining projected-factor/hint/Codex/notice obligations remain.
+Next: diagnose RP-389's actual locked-Pitch notice/lifecycle boundary and retain the failed DB
+until useful evidence is collected; then verify the expanded target without weakening its gates.
+Consolidate this fixture proof with the display correction for cross-party review; genuine
+numeric/harness/content/UI contracts remain explicit, not defaulted by a passing fixture.

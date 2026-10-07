@@ -16,7 +16,7 @@ runners, deployment credentials, or deployment steps.
 | `harness` | `make verify-harness-fast` | Cold harness tests, role proofs, Commons invariance, and complete balance/epoch history guards; no pacing/relevance simulation |
 | `client` | `make verify-client` | strict TypeScript and Node/V8 tests; full Git history is required by KV-1 |
 | `browser` | `make test-browser` | Chromium, Firefox, and WebKit functional suites, then isolated Chromium performance |
-| `game-ui-composed` | `make test-game-ui-composed` | Real Chromium/gameserver/Postgres/WebSocket bootstrap, recovery, transitions and terminals; test-only Cosmetics Buy→reload with a built client |
+| `game-ui-composed` | `make test-game-ui-composed` | Production-built Chromium/gameserver/Postgres/WebSocket gameplay and recovery; default Cosmetic/care journey plus the unminted Clout purchase/SQL/reload variant |
 | `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
 
 The fast harness, client, and schema jobs have five-minute ceilings. Server, browser, and
@@ -214,8 +214,8 @@ composite still fails the existing RP-131 history guard; passing its client
 population and separately run remaining gates is not whole-CI success.
 
 `make test-game-ui-composed` starts its isolated repository Postgres service. Its first driver
-starts the real composed gameserver and Vite, then drives Chromium through anonymous bootstrap, an authenticated live
-`/api/v1/founder/state` v3 round trip, and the actual Centrifuge WebSocket subscription. The
+starts the real composed gameserver and serves production-built client assets, then drives Chromium through anonymous bootstrap, an authenticated live
+`/api/v1/founder/state` v4 round trip, and the actual Centrifuge WebSocket subscription. The
 snapshot assertion and visitor-counter assertion prove both HTTP synchronization and the socket
 handshake. The same witness uses server-side precondition setup, then requires visible enabled
 Gate/Wind Down controls to traverse `runtime.ts`, renders both terminal variants, and continues to
@@ -229,7 +229,14 @@ The second driver resets only that named ephemeral test database, pins Cosmetics
 fixture epoch, serves the compiled client through a same-origin static/API/WebSocket proxy, and
 requires live visitor presence before T0 locked → T1 Buy → server-owned reload. It audits browser
 requests and refuses payment APIs or unexpected destinations. The fixture does not mint production
-content. On local ARM64 hosts, use
+content. The third invocation selects `--axis-stack` in the same driver: only test cash is seeded;
+native generator/PR purchases earn attainment and persist ownership, while rendered factors,
+reload and the SQL head/event are checked. `make test-clout-composed` selects that variant alone.
+It does not mint content or claim natural pacing. All earlier assertions and the six-job topology
+remain; no timeout grows. Current local expanded-run failure RP-389 stops in the first driver
+after a correct locked-Pitch409 but before its visible notice, so that run does not execute
+the later variants. Focused fixture passes do not close it or establish hosted latency/green.
+On local ARM64 hosts, use
 `make test-game-ui-composed GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f compose.game-ui-arm64.yml'`;
 hosted x86 CI uses the default Compose file. RP-172's test-only actionability correction
 addresses observed intermittent Pitch no-request timeouts; an independent hosted run and

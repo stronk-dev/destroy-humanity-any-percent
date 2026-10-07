@@ -232,11 +232,17 @@ test-browser-ci:
 # visible visitor counter: runtime.ts completed its actual Centrifuge
 # WebSocket handshake, not a mocked socket exchange.
 GAME_UI_COMPOSE_FILES ?= -f compose.game-ui-test.yml
-.PHONY: test-garden-composed diagnose-browser-session
+.PHONY: test-garden-composed test-clout-composed diagnose-browser-session
 # Fixture-only wall-clock journey; manual, deliberately not a push-CI dependency.
 test-garden-composed: build-gameserver build-client
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-garden-composed.mjs
+
+# Clout AC11's unminted axis fixture; reuse the built-client/service journey.
+# Focused selector; the normal composed CI target also runs this variant.
+test-clout-composed:
+	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
+	node client/tools/test-cosmetic-composed.mjs --axis-stack
 
 # Manual Account/Transport diagnostic; not automatic-renewal or release proof.
 diagnose-browser-session: build-gameserver build-client
@@ -253,6 +259,7 @@ test-game-ui-composed:
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-game-ui-composed.mjs
 	node client/tools/test-cosmetic-composed.mjs
+	node client/tools/test-cosmetic-composed.mjs --axis-stack
 
 verify-game-ui: verify-client test-browser test-game-ui-composed
 

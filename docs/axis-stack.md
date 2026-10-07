@@ -112,6 +112,28 @@ and a refresh that makes one intern owned. This is fixture-panel evidence, not
 the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
 [implementation log](../planning/clout-v1-and-pr-interns/log.md).
 
+## Real-service PR fixture
+
+`make test-clout-composed` selects the existing unminted economy-v5 fixture in
+the production-built browser/real-gameserver/Postgres/WebSocket driver. It
+seeds test cash only: the DOM first gate and native Enter generator purchase
+earn attainment 2 then 12, and a native PR purchase receives one bound applied
+receipt. The actual snapshot and rendered progress/current factors/product are
+checked before and after ownership and reload. A direct SQL read checks the
+Company v19 head, exact attainment set, ownership and one purchase event.
+Severing the server's axis producer makes this witness fail; the probe is restored.
+
+The normal `make test-game-ui-composed` CI target also runs this fixture variant,
+after its unchanged main and default Cosmetic journeys. It retains the existing
+Cosmetic/care population. One run
+passed Clout but failed the care receipt/projection equality (RP-388); the
+subsequent diagnostic and ordinary default journeys passed, without resolving
+that earlier failure. The final expanded CI-target run stops earlier in main
+gameplay at RP-389's locked-Pitch notice, before this variant; no aggregate-green
+claim follows. No assertion, retry or deadline is weakened. The owning
+log records all results. This is not natural pacing, adopted content, full CV9
+UI obligations, assistive-technology proof or whole-feature/release acceptance.
+
 ## Not yet delivered
 
 - Full v19 replay coverage beyond the separately scoped RP-309 ordinary dispatch
@@ -198,8 +220,9 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   The retained
   regression is intentionally red, so the current Go/CI tree is not green.
 - Served-epoch activation and the default composed PR purchase/rendering journey
-  (CV9 / AC11). Fixture-only snapshot producer and Desk panel code exist;
-  their presence does not complete that criterion.
+  (CV9 / AC11). The manual real-service fixture journey now exists, but does not
+  adopt a production epoch or complete all CV9 obligations (projected factors,
+  once-only contextual hint, Codex and coalesced re-attainment notices).
 - Harness relevance and observation rows (CV10 / AC9).
 - A production mint.
 - All copy: the keys named in RFC CV8 are owner-authored and still pending.

@@ -1782,3 +1782,19 @@ through this batch needs Claude's designated review; prior ranges remain separat
 feature/reliability/Firefox/AT/hosted-CI/clean-host/1.0 acceptance, archive or push. RP-365/D-024
 and other original intermittent observations remain open. Next: consolidated Cosmetic review
 and remaining accepted gates, not another retry to erase prior red evidence.
+
+## 2026-10-08 — RP-388 care projection equality, not uniquely diagnosed
+
+The new optional Clout fixture variant passes its native PR purchase, rendered multiplier,
+reload and direct SQL checks, then combined63825 exits2 at the existing assertPersistedCare.
+Founder-scoped care has already passed exact-request/applied-receipt checks. The old generic
+message does not identify which subsequent equality differs; do not label it RP-365 or a
+revision race. The test DB was reset for the diagnostic before preserving that failed head,
+so no original-row attribution is possible. The red remains evidence, not a dismissed flake.
+
+Failure metadata now selects public expected/actual Founder revision, presence/field names,
+band and eligibility only. Actual helper d8a8d4 accepts healthy input and rejects four injected
+revision/band/eligibility/missing-pet mismatches with those exact details, never the supplied
+private sentinel. Diagnostic91893 and ordinary whole99343 pass, without explaining63825.
+No care assertion, policy, input, retry or deadline change. The owning Clout log records the
+shared-driver implementation and exact review range; prior Cosmetic review debt remains.

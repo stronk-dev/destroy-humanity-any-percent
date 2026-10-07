@@ -5,14 +5,23 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint (2026-10-07):** Gate/Incorporate/Wind Down now join purchases in the locally
+**Current product rollup (2026-10-08):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08).
+We are integrating and hardening the Garage, with substantial later-tier construction still
+ahead. Real-service PR purchase/render/reload/SQL fixture proof now runs in the existing composed
+CI target; its final aggregate run is RED at the earlier locked-Pitch notice (RP-389).
+Focused passes do not establish release readiness. The owning Clout log records the evidence;
+the milestone path below remains the full nine-tier goal, not a narrowed preview objective.
+Older checkpoint narratives and next-action lists below are dated history where superseded;
+use the current rollup and owning plans for live execution and capacity state.
+
+**Preceding checkpoint (2026-10-07):** Gate/Incorporate/Wind Down now join purchases in the locally
 corrected Garage pending-focus path (RP-319); removed-control fallback respects newer focus and
 lifecycle changes. Queued Wind Down binds both refreshed revisions (RP-380). Affected functional
 browser checks and final composed99336 pass real Postgres, Fiscal refusals, player workflows and
 Cosmetics. Designated review remains. Latest hosted CI at `0f9f4214` is RED: server Clout research/
 partition tests, client historical kernel guard and two WebKit parse-error constructor tests.
 The latter are locally corrected (RP-381): affected Node27/native54 and types pass; no hosted
-rerun or product/CI change. The [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-07)
+rerun or product/CI change. The [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08)
 separates built foundations, fixture-first work and substantial unbuilt scope. RP-365/RP-368/RP-378 and owner/author holds
 remain; a passing journey does not resolve them. [Garage log](garage-player-surfaces/log.md),
 [Cosmetic log](cosmetic-shop-v1/log.md) and [API log](api-foundation/log.md) own evidence.

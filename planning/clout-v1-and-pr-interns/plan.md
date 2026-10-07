@@ -6,7 +6,14 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
-Current checkpoint (2026-10-07): RP-382's activation/SQL/action-sequence regression checks now
+Current checkpoint (2026-10-08): `make test-clout-composed` (also included in the composed CI
+population) now exercises
+real-service attainment, native PR purchase, progress/current-factor/product rendering,
+reload and the actual SQL head/event; its producer-severing control fails. General resource
+formatting is unchanged by RP-387's axis-only display correction. One combined care run fails
+RP-388; a diagnostic pass does not close that failure. Full CV9, adopted content and designated
+review remain. Final expanded composed70861 is RED at the existing locked-Pitch notice
+(RP-389), before either Cosmetic variant; next diagnose that lifecycle boundary. RP-382's activation/SQL/action-sequence regression checks now
 separate historical provenance from current outcomes. Full non-provenance bytes remain exact;
 recorded artifacts are unchanged. Real-DB research population, TS companions and vet pass;
 full real-DB production still fails the original27 RP-307 partition cases. Designated review
@@ -33,6 +40,8 @@ lands, with the allowed writer set empty.
   are absent from the original population; formula/helper parity is not that proof.
 - [x] P4 (`4c089f00`) — AC4 Gaia-law structural test (empty writer set under A; seeded writer fails).
 - [x] P5 (`2f2c5a04`) — CV9 snapshot producer (optional v4 field) + Desk PR row progress: implementation presence, not full AC11/default composed journey acceptance. RP-303 locally corrects native progress associations; its Codex span independently needs Claude.
+  AC11 service/DOM/SQL fixture proof now runs through `make test-clout-composed` and composed CI; full
+  CV9 obligations, served content and all related exact-range reviews remain open.
 - [ ] P6 — PARTIAL (see log P6; blocked on harness attainment evaluation) — CV10 harness: scenario bundle rejection without achievements, relevance mask, dead-row
   fixture, observation + `axis_input_within_cap` invariant. AC9.
 - [ ] P7 — Canon docs (AC12). Partial: `docs/axis-stack.md` and pointers landed; RFC index/manifest G09 rows and the final range are owed at completion.

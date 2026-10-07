@@ -26,7 +26,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
 | Prestige / Reputation | Exit/reset foundations and earlier acceptance repairs are reviewed. Reputation nodes, plans, starters, persistence and UI have fixture-first implementations. | Run End's balance/carry display contract reconciliation, full feature review and adopted content. The two early endings are not the three designed final endings. |
 | Minigames | Pitch has a real API-to-player-to-payout journey. Soul, Typer, Arcade and Garden have substantial engines, components and bounded persistence/lifecycle tests. | Typer/Arcade public API and host integration; shared wire-contract decisions; Garden state-evolution clarification; authored content/mint, whole-player journeys and accessibility. Pinball remains a draft. |
 | Pet care / cosmetics | Controlled real-service Buy → adoption → equip/care → reload works; several actual UI, race and timing defects are locally corrected. | Pet/API schema reconciliation, shared attendance-clock repair (RP-365), adopted copy/content, announcements and consolidated review. A passing journey does not close the clock defect. |
-| Clout / achievements | Achievement foundation, axis hooks, state/API and PR feature implementation exist. | RP-307 numeric partition correctness, offline-episode meaning, truthful role/harness bindings and measured/adopted balance. Hosted server CI is red here. |
+| Clout / achievements | Achievement foundation, axis hooks and state/API exist. A built-client real-service fixture now exercises native PR purchase, exact multiplier rendering, reload and the actual SQL head/event, with a failing producer-severing control. | RP-307 numeric partition correctness, offline-episode meaning, full UI obligations, truthful role/harness bindings and measured/adopted content/balance. Hosted server CI is red here. |
 | Account / API / transport | Account security, backend deletion, revocation, exact-response and transport recovery witnesses were independently approved in earlier ranges. Generated API dispatch and newer consumers are partly implemented. | Complete generated-client/route migration, startup failure and browser renewal contracts, visible recovery-code/recover-existing-account UX and long-session proof. |
 | Privacy / player rights | Relation-complete 60-table inventory and bounded browser/event/backup/deletion traces expose actual retained data. Research publication classification/sanitization is complete. | Owner export/deletion/retention choices (D-008/D-009/D-015), implementations and player workflows. Public board survival after deletion and restoration from pre-deletion backups remain explicit issues. An instance backup is not player export. |
 | Accessibility | Native keyboard, focus, pending feedback, reflow and announcement corrections exist across several surfaces; targeted browser checks execute. | Accepted cross-product task/assistive-technology matrix and actual task testing, including zoom/motion/longer workflows. Automated checks alone are not accessibility completion. |
@@ -82,6 +82,13 @@ queue and current verification, not a claim to have rerun every acceptance crite
   failures retain input/request/response metadata. No general reliability or hosted-green claim.
 - Intermittent composed timeout RP-378 remains open despite subsequent passes. Manual input
   retention/rate choice RP-368 and attendance-clock D-024 remain unruled, not silently fixed.
+- Focused Clout fixture and earlier ordinary composed population pass locally after the new
+  purchase/SQL proof. The expanded composed target now includes that variant, but its final
+  run fails earlier in unchanged main gameplay: correct locked-Pitch409, missing visible notice
+  (RP-389). Later variants do not run in that attempt; no aggregate/hosted-green or adopted PR
+  content claim. One selected run passed PR but failed care receipt/projection equality
+  (RP-388); its cause remains untraced, with precise public failure metadata now retained.
+  The Clout/Cosmetic logs own evidence and pending review.
 
 ### What the weeks of work accomplished
 
