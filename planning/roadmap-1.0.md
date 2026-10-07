@@ -5,7 +5,13 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint (2026-10-07):** local operations evidence now includes real Prometheus/
+**Current checkpoint (2026-10-07):** real historical epoch-5→6 persistence uncovered and repaired
+RP-366's Fiscal activation clock mismatch. The full composed lane passes with retained replay
+and retry controls; designated review remains. [First Content plan/log](first-content-epoch/plan.md)
+owns the details. Full CI is not green: the historical RP-131 guard and RP-307 numeric failures
+remain, as do the owner decisions and full nine-tier product/platform release obligations.
+
+**Preceding checkpoint (2026-10-07):** local operations evidence now includes real Prometheus/
 Alertmanager cleanup firing and natural resolution, plus all seven injected notification pairs
 and receiver rejection. See the Deployment plan/log for the bounded R11 approval and outstanding
 native-test review; private-network, Linux release artifact and clean-host gates remain open.

@@ -363,3 +363,34 @@ runner is future work. The four-arm runner honestly out of the slice.
   range after `ac3e3111` needs designated review; existing reviews retain their original scopes.
   No archival/status promotion. Next: persisted historical workflow evidence, exact review-range
   citations and author-owned body reconciliations, then full closeout review.
+
+## 2026-10-07 — persisted historical boundary exposed and repaired RP-366
+
+- Scope: coherent repair after `ad41d25a`. Exact epoch-5/6 bundles and declared history enter the
+  real database via `ReconcileSeed`; `Service.Handle` performs Exit. New connections reload both
+  saves, epoch pins, terminal old state, new genesis/frozen rows and both replay histories.
+  Wrong catalog hash/forged receipt reject; a fresh Service returns the identical persisted
+  duplicate receipt without changing either save. The existing composed target requires this
+  test's explicit PASS before the browser journeys, not an optional DB skip.
+- Actual red: the transaction aborts at Fiscal opening-time parity. Fiscal F8/F13 already require
+  the logged Founder-command timestamp, while the expected Company-derived carry used its
+  separately frozen evaluation clock. Retained ±25ms regressions fail on old code; equal clocks
+  pass. The six-line first-activation correction preserves full-state comparison and credit-
+  divergence refusal. Kernel advances 0.3.166→0.3.167; no balance/migration/replay-wire change.
+- Checks: focused cold Content/Fiscal/Founder tests and production vet PASS; full cold
+  `./fiscal ./kernel` and vet PASS; Go `TestApplyLoggedCrossRuntimeFixture` byte-compares the
+  unchanged corpus, plus Founder sweep/rollback PASS. Installed Vitest `--root client`
+  `test/replay.test.ts test/fiscal.test.ts`: 92 PASS. Whole `make test-game-ui-composed` PASS,
+  including actual Postgres proof, Fiscal refusals/fresh consent, achievements/opportunity/Pitch,
+  both terminal paths/continuation/WebSocket recovery and Cosmetic adoption/care/reload.
+- Corrections/limits: the first integration assertion confused command `wind_down` with the
+  contract's terminal type `collapse`; fixture SQL confirmed the latter and that expectation was
+  corrected. Initial pnpm invocation failed before tests on its global config dependency's DNS;
+  installed repository Vitest then executed the unchanged tests. `make verify-kernel-version`
+  remains RED on historical `50a3a514` (RP-131); the earlier full production population remains
+  RP-307-red. No aggregate/hosted CI green, natural full-game progression, clean-host release or
+  RP-365 repair claimed. Canonical Fiscal docs now disclose the already-minted artifact and clock.
+- Review by: Codex (implementer diff check); Recorded by: Codex. Designated review pending for
+  this batch after `ad41d25a`, alongside the prior supplements' separate ranges. No archival,
+  owner-text reconciliation or push. Next: remaining First Content acceptance/author-body work
+  and complete designated closeout review, not status promotion from this diagnostic journey.

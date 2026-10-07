@@ -1,8 +1,8 @@
 # Fiscal Quarters
 
-Fiscal Quarters are a Founder-scoped, wall-clock progression mechanic. The implementation is
-present in both runtimes, but no production epoch currently contains the optional `fiscal`
-artifact, so the mechanic remains inactive until a later balance mint.
+Fiscal Quarters are a Founder-scoped, wall-clock progression mechanic implemented in both
+runtimes. The `fiscal` artifact entered production in epoch 6 (First Content) and remains in
+the current epoch-8 bundle.
 
 ## Catalog and activation
 
@@ -15,6 +15,11 @@ The artifact activates Founder save v19 only at a new-run boundary. It requires 
 minigame and pet artifacts that own Founder v17 and v18; the Company save axis remains unchanged.
 New founders are initialized from the current pinned bundle through the same activation path.
 Pre-v19 founders finish their current run without Fiscal state.
+
+On Exit activation, the period opens at the authoritative Founder-command timestamp stored
+in the Founder log. The Company evaluation timestamp is a separate coordinate and cannot
+substitute for it. The live/replay comparison reconciles that activation timestamp and still
+checks the entire Founder state, including zero initial credit and complete zero levels.
 
 Founder v19 persists:
 

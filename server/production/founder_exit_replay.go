@@ -176,6 +176,12 @@ func applyFounderExitLive(founderCommand save.FounderReplayCommand, request Inte
 		if cloneErr != nil || applyFounderReplayOutput(wantState, wantAfter) != nil {
 			return FounderLoggedTransition{}, fmt.Errorf("%w: live Founder Exit expected state", ErrInvalidEngineState)
 		}
+		if save.VersionForState(before) < 19 && save.VersionForState(wantAfter) >= 19 {
+			// Fiscal F8/F13: first activation belongs to the recorded Founder
+			// command clock, not the separately frozen Company evaluation clock
+			// used by ApplyLoggedExit. Keep every other output field in parity.
+			wantState.FiscalPeriodOpenedWallMS = founderCommand.ServerTSMS
+		}
 		if catalogs.Fiscal != nil {
 			fiscalState := fiscalStateFromSave(wantState)
 			if _, sweepErr := catalogs.Fiscal.Sweep(&fiscalState, founderCommand.ServerTSMS); sweepErr != nil {

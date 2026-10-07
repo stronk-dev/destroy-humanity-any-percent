@@ -35,16 +35,24 @@ await new Promise((resolve, reject) => {
 
 const testDatabaseURL = "postgres://cloud_clicker:cloud_clicker_game_ui_test@127.0.0.1:55433/cloud_clicker_game_ui_test?sslmode=disable";
 resetTestDatabase();
-const fiscalProjectionTest = "TestFiscalProjectionMatchesPersistedHarvestIntegration";
-const fiscalProjection = spawnSync("make", ["test-go", "GO_PACKAGES=./gameui", `GO_TEST_FLAGS=-count=1 -v -run ^${fiscalProjectionTest}$$`], {
+const persistedTests = [
+  "TestFiscalProjectionMatchesPersistedHarvestIntegration",
+  "TestFirstContentEpochPersistedBoundaryIntegration",
+];
+const persistedChecks = spawnSync("make", ["test-go", "GO_PACKAGES=./gameui ./production", `GO_TEST_FLAGS=-count=1 -v -run '^(${persistedTests.join("|")})$$'`], {
   cwd: repositoryRoot,
   env: { ...process.env, TEST_DATABASE_URL: testDatabaseURL },
   encoding: "utf8",
 });
-process.stdout.write(fiscalProjection.stdout ?? "");
-process.stderr.write(fiscalProjection.stderr ?? "");
-if (fiscalProjection.status !== 0 || !fiscalProjection.stdout?.includes(`--- PASS: ${fiscalProjectionTest} (`)) {
-  throw new Error(`persisted Fiscal projection/harvest did not execute and pass (${fiscalProjection.status})`);
+process.stdout.write(persistedChecks.stdout ?? "");
+process.stderr.write(persistedChecks.stderr ?? "");
+if (persistedChecks.status !== 0) {
+  throw new Error(`persisted integration population failed (${persistedChecks.status})`);
+}
+for (const name of persistedTests) {
+  if (!persistedChecks.stdout?.includes(`--- PASS: ${name} (`)) {
+    throw new Error(`${name} did not execute and pass (${persistedChecks.status})`);
+  }
 }
 // Diagnostic streams/catalogs must not become the browser journey's epoch.
 resetTestDatabase();

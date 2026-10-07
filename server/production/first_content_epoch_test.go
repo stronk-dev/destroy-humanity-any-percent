@@ -352,3 +352,61 @@ func TestFirstContentEpochExitPreservesOldResourceUniverse(t *testing.T) {
 		t.Fatal("historical cross-epoch Exit did not replay byte-identically")
 	}
 }
+
+func TestFirstContentEpochExitFiscalActivationUsesFounderClock(t *testing.T) {
+	old, next := epoch5TestBundle(t), firstContentEpochBundle(t)
+	old.Next = &next
+	now := time.Date(2026, 8, 9, 15, 0, 0, 0, time.UTC)
+	for _, offset := range []time.Duration{-25 * time.Millisecond, 0, 25 * time.Millisecond} {
+		t.Run(offset.String(), func(t *testing.T) {
+			founder := initialPrestigeWitnessState(t, old.Economy, economy.ScopeFounder, now)
+			founder.ExitHistory = []save.ExitRecord{{RunID: 1, ExitType: "collapse", OccurredAt: now.Add(-time.Hour)}}
+			company := initialPrestigeWitnessState(t, old.Economy, economy.ScopeCompany, now)
+			company.RunSeq, company.Tier = 2, 3
+			company.RunStartedAt, company.LifetimeValue = now.Add(-20*time.Minute), decimal.New(27, 12)
+			request, err := ParseIntent([]byte(`{"intent_id":"01986666-0602-7000-8000-000000000001","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`))
+			if err != nil {
+				t.Fatal(err)
+			}
+			const owner = "01986666-0602-7000-8000-000000000002"
+			const companyStream = "01986666-0602-7000-8000-000000000003"
+			const founderStream = "01986666-0602-7000-8000-000000000004"
+			command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: companyStream,
+				FounderID: owner, Revision: 1, RunSeq: 2, RunLogSeq: 1}
+			carry := founderCarry(founder)
+			carry.FounderRevision, carry.FounderConstantsHash = 1, old.ConstantsHash
+			inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now,
+				IntentKind: request.Kind, RouteContextVersion: old.Routes.ContextVersion(), FounderCarry: &carry,
+				Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`),
+				NextConstantsHash: next.ConstantsHash})
+			if err != nil {
+				t.Fatal(err)
+			}
+			transition, err := ApplyLoggedExit(company, request.CanonicalPayload, old, inputs)
+			if err != nil || transition.Decision.Outcome != save.IntentApplied {
+				t.Fatalf("Company Exit decision=%+v err=%v", transition.Decision, err)
+			}
+			founderRevision := save.Revision{StreamID: founderStream, OwnerID: owner, Number: 1, Version: 14, ConstantsHash: old.ConstantsHash}
+			resolved, receipt, err := buildFounderExitAudit(command, founderRevision, founder, transition.Founder, transition.Decision, old)
+			if err != nil {
+				t.Fatal(err)
+			}
+			founderCommand := save.FounderReplayCommand{IntentID: request.IntentID, FounderStreamID: founderStream,
+				FounderID: owner, Revision: 1, FounderLogSeq: 1, ServerTSMS: now.Add(offset).UnixMilli()}
+			live, err := applyFounderExitLive(founderCommand, request, founder, transition.Founder, transition.Decision, resolved, receipt, old)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if live.State.FiscalPeriodOpenedWallMS != founderCommand.ServerTSMS || live.State.FiscalCredit != 0 ||
+				transition.Decision.NewCompanyState.RunStartedAt.UnixMilli() != now.UnixMilli() {
+				t.Fatal("activation conflated Founder/Company clocks or granted credit")
+			}
+			// Clock reconciliation must not exempt other Fiscal fields from the
+			// live/replay full-state check.
+			transition.Founder.FiscalCredit = 1
+			if _, err := applyFounderExitLive(founderCommand, request, founder, transition.Founder, transition.Decision, resolved, receipt, old); err == nil {
+				t.Fatal("Fiscal credit divergence bypassed live/replay parity")
+			}
+		})
+	}
+}

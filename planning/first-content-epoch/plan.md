@@ -11,8 +11,9 @@ RFC: `rfc/first-content-epoch.md`
 - [ ] Mint the complete dependency chain atomically, run every declared gate, receive the
   cross-party designated review, and archive.
 
-The owner-authorized production mint has landed. Dependent archival remains gated on the
-cross-party designated review of the complete mint range.
+The owner-authorized production mint and its original designated reviews are recorded in the
+log. This RFC remains open for post-mint acceptance and dependent closeout; the supplements below
+cannot archive it on their own.
 
 ### Historical regression supplement (2026-10-07)
 
@@ -23,5 +24,13 @@ cross-party designated review of the complete mint range.
 - [x] Exercise the epoch-5→6 terminal transition and restored replay:
   `TestFirstContentEpochExitPreservesOldResourceUniverse` passes cold, with the ending run's old
   resource universe retained and the new run initialized with permits/legal departments at zero.
-- [ ] Designated review of this supplement. Pure transition/init coverage does not replace the
-  persisted integration population, original mint gates or the complete archival review union.
+- [x] Prove the epoch-5→6 boundary through real Postgres:
+  `TestFirstContentEpochPersistedBoundaryIntegration` passes in `make test-game-ui-composed`.
+  New connections reload both saved axes, actual epoch pins, immutable genesis/contributions
+  and both replay histories; wrong hash/forged receipt reject and duplicate Exit does not mutate.
+- [x] Repair RP-366 under Fiscal F8/F13: the first Fiscal period uses the logged Founder clock,
+  not the Company's separate evaluation time. `TestFirstContentEpochExitFiscalActivationUsesFounderClock`
+  fails on the old comparison for both offsets and passes with the repair, retaining the credit
+  divergence rejection. Kernel 0.3.167 records this behavior correction.
+- [ ] Designated review of the supplements. Diagnostic integration fixtures are not naturally
+  earned progression, clean-host release proof, original mint gates or the full archival union.

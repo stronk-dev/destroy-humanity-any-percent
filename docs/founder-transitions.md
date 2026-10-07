@@ -50,6 +50,10 @@ state, receipt, ordered events, and result constants hash. The production path a
 transition before committing an Exit, so a live/replay semantic split fails the authoritative
 transaction rather than entering the immutable log.
 
+When an Exit first activates Fiscal (pre-v19 to v19+), its period opening time uses the logged
+Founder-command timestamp, not the Company evaluation timestamp. The live comparison accounts
+for those separate clock coordinates without exempting other Founder fields from parity.
+
 `save.Store.LoadFounderHistory` reads genesis, immutable commands, Founder-scoped events, and the
 authoritative head in one repeatable-read transaction. Both Go and TypeScript replay each row from
 genesis, require contiguous log and revision coordinates, resolve the row's input hash without a
