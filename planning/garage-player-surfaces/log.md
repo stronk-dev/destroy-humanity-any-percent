@@ -1017,3 +1017,44 @@ diagnostic correction span; this self first-filter is NOT designated review.
 Original consumer remains CHANGES REQUIRED; RP-316 and RP-313 remain open.
 Prior independent exact ranges are not absorbed or reset. No acceptance box,
 status/archive/mint/publication or full CI/release claim.
+
+### RP-316 authoritative claim-effect oracle — predeclaration
+
+Baseline `c0eb3dc5`, clean. Previous turn was progress: accepted presentation
+and diagnostic corrections plus executed counterexamples, not a wait or
+impasse. Authority for this separate test/tooling lane: accepted GS5-A4's
+DOM-only natural claim and authoritative next-snapshot effect. RP-313's
+accepted wire-body conflict remains author-owned; no shape/pin rewrite here.
+
+First mechanically lift the driver's existing receipt/buff/Lucky predicate
+into one pure tooling oracle, imported by both the real driver and tests.
+No duplicate test-side success predicate. Browser-safe .mjs tests can run in
+the existing Node/native collectors, with no new exclusion or CI workflow.
+Test-first reject Lucky with null/missing/stale/unrelated successor, missing
+or mismatching cash, malformed delta; wrong request/receipt/revision/run
+binding; unknown effect and a buff ID attached to the wrong effect. Existing
+matching buff/Lucky and saturated zero-credit controls must remain admitted.
+Fixtures prove the oracle only, not producer payout or server integration.
+
+Correct only the acceptance observer: require the applied receipt's exact
+intent/opportunity/revision/run coordinates; require the same post-command
+Game UI revision and run (reads do not persist accrual); Lucky's canonical
+nonnegative credited delta and receipt snapshot cash must match the unique
+cash row in the actual successor; buff ID/effect must match a unique live row.
+Use string identity, not a second payout formula or numeric tolerance. The
+receipt's canonical cash includes lazy accrual, so comparing an earlier
+pre-command bank plus Lucky alone would be false. Fail on unsuccessful read.
+Expose actual branch/revision in the run diagnostic, never call a buff run
+Lucky evidence. Single source oracle; canonical docs in the same change.
+
+Preserve 60 DOM attempts, 250ms manual cadence, three-expiry fail-closed guard,
+current epoch and real Postgres/WebSocket path. No extra synthetic gameplay
+intent, server clock, seed/epoch surgery, balance/kernel/schema/copy/mint or
+product change. One actual composed rerun must terminate and state its branch;
+do not loop accounts until a desired branch appears. Demonstrate compiling
+Lucky receipt-only, cash-mismatch and stale-revision acceptance faults in
+separate probes, plus a buff-effect disconnect. Restore exact source after
+each; no live-handle edit or weakened failure setting. Full client/types/
+build/boundaries and targeted native oracle cases. Claude must review the
+complete new span after `c0eb3dc5`, predeclaration through tracking edge;
+no self-designated approval, boxes/status/archival/publication or full CI claim.
