@@ -1396,3 +1396,33 @@ Next separately predeclare shared HTTP/exclusive refusal consumer checks:
 GS0.2 says429 and exclusive activity stay disabled until the next snapshot;
 the current mapper returns effect=none. Establish actual native behavior
 before inferring a production remedy or changing that shared authority.
+
+## 2026-10-07 — Predeclare shared refusal/read-boundary supplement
+
+Clean baseline `3f867956`; earlier care range is exactly
+`c7d8f815..3f867956`, independently awaiting Claude. Authority: accepted
+GS0.2 shared table and existing GS0.8 focus-preserving pending rules, GS4
+Founder revision/no automatic retry. RP-322 records source evidence first.
+
+Tests first: native care activation with actual runtime-double typed409
+conflict/intent,429 rate_limited/account and200 exclusive_activity; hold the
+authoritative snapshot promise. Require one read, existing exact status key,
+focusable aria-disabled pending control, no reactivation/request while held,
+then Founder revision8 and fresh distinct intent ID only on the player's next
+activation. This is consumer evidence, not an actual service rate-limit or
+Soul-recovery session. Add400 invalid/care_action control with exactly one
+fixed invariant and no mechanical bytes;401/404/503 plus transport errors
+must take the existing offline path, disable care without retry/read, and
+show the existing offline status in Settings. Parser/network trust is not
+inferred from a runtime double. Retain all previous populations.
+
+Only if current consumers fail the declared boundary: change the two shared
+mapper arms to the EXISTING refresh effect, whose held read already keeps
+pending focusable and guarded. No new timer/retry/session semantics, server/
+wire/math/kernel/content/copy/CI change. Add exact mapper unit tests before
+repair; independently sever429 and exclusive arms to demonstrate unit/native
+failure, restore source exactly. Final types/client/build/boundaries, full
+two-engine Garage native/performance and existing actual composed lanes.
+Firefox's failed connection is not retried as a different environment or
+excluded from acceptance. No box/status/archive/full-Garage/CI/1.0 promotion;
+entire new range after `3f867956` including every record edge needs Claude.
