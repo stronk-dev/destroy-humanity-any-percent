@@ -5303,3 +5303,44 @@ follows until an actual bounded population discriminates. RP-313 author body,
 capacity/real acquisition/payout/expiry/composed/auth/SQL/Firefox/AT/400%/whole-
 state/era/populated performance/platform/numeric/all-nine-tier/owner/review
 holds remain. The goal is full1.0, never preview substitution.
+
+### RP-358 — announcement authority/replay population predeclaration
+
+Baseline10e2d656 clean, no native handle live. Authority: accepted GS0.3,
+GS0.6 and GS5 focus/announcement clauses. Test-only; source guards are present,
+not a proved production defect. Read actual host, public decoder and server
+buff validator; use the presentation registry and existing copy keys only.
+
+Population: six paths (spawn on Desk, spawn received on Settings, buff schema1
+on Desk/off Desk, buff schema2 on Desk/off Desk) ×320/1280 ×Chromium/WebKit =
+twelve declarations/24 native executions. Buff schema1 omits hardcap_reason_key;
+schema2 carries the existing cap.active_combo reason. Exact decoded transport
+envelopes enter the existing runtime-double subscription. Snapshot fixtures
+pass the real public parser. Native Enter navigation, no fixtureSurface shortcut.
+
+Success: whole registered spawn/buff line in the chrome role=status; no focus
+movement or intent; spawn withheld off Desk then announced on first Desk return;
+same opportunity ID not reannounced on later snapshot or return, a new ID does
+announce. Buff withheld off Desk, consumed cursor replay still silent on return;
+new cursor announces on Desk. Interleave a distinct admitted buff announcement
+or achievement announcement before every replay: identical text alone cannot
+discriminate dedupe. Recovery signal followed by replay must preserve sentinel.
+Buff events never fabricate the projected buff list or values; only a delivered
+snapshot changes them. Verify committed buff remaining text, native focus,
+whole-page reflow and unchanged serious/critical axe floor. Teardown in finally.
+
+Required real-source failing controls: omit opportunity-ID guard; omit spawn
+surface guard; omit cursor guard; omit buff surface guard; suppress buff line;
+bind wrong buff effect title; steal focus on spawn. Each matching population
+must finish with a genuine assertion failure and restore exact full source
+hashes before the next probe. Invalid/incomplete controls are retained and do
+not count. No source/HEAD/record edits while a matching gate is live.
+
+Final restored types/client/build/native full Garage+Game UI (including real60s
+idle and separate performance), copy/boundary/topology/no-payment verification.
+If a real defect fires, record it and predeclare its accepted repair separately;
+do not improvise product behavior to make the test green. No wire/body/copy/
+clock/payout/acquisition/schema/CI/budget/dependency/kernel/archival/status change.
+Entire10e2d656-exclusive through final records needs designated Claude review;
+every preceding span independently owed. Real server/auth/SQL/Firefox/AT/400%/
+populated performance/all-era/full-nine-tier/owner/capacity/RP-313 holds remain.
