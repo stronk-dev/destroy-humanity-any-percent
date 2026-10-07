@@ -158,5 +158,25 @@ the served epoch page, request-ID echo, cache headers, a 304 on a matching ETag,
 404, and fail-closed composition. The composed Game UI lane also fetches the page through the Vite
 proxy.
 
-The catalogs and verification readers, and the thin generated-client transport remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
+### Verification evidence source (not yet an HTTP surface)
+
+`leaderboard.Repository.PublicRunEvidence` supplies C14's stored bytes and pinned metadata in
+one statement snapshot. Only an actual `verified_runs` record authorizes retrieval; a queue
+verdict, run pin or archive alone does not. Invalid/unknown run identities return
+`ErrUnknownPublicRun` without evidence. Missing or corrupt evidence for an authorized public
+run returns `ErrInvalidPublicRunEvidence`; database errors propagate as operational errors.
+
+The source returns the original genesis JSON bytes/version, the original `gzip+json.v1` replay
+archive, engine version and constants hash. It verifies that genesis uses the pinned constants
+hash and that archive bytes match the stored SHA256, and computes the genesis SHA256 over the
+stored bytes. It does not re-encode JSON, recompress gzip, substitute current engine/constants,
+or expose account/session metadata. Caller mutation does not rewrite stored evidence.
+
+The repository's real-Postgres test uses synthetic evidence to verify retrieval and refusal,
+including queue-only verification, missing bytes, corrupt hashes and cancellation. The normal
+composed lane requires this test to execute. This is not yet a third-party download/reverification
+witness: the HTTP handlers, manifest/schema registration and real verified-run round trip remain
+open, and the catalogs URL still requires the catalog reader.
+
+The catalogs and verification HTTP readers, and the thin generated-client transport remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
 historical formulas never fall back to current bytes.

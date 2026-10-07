@@ -780,3 +780,27 @@ Review by: Codex (diff/first-filter only); Recorded by: Codex. New test/plan/log
 designated review with related API work; no archival or push. Next: implement C14's accepted
 raw verification readers; catalog owner descriptors, generated dispatcher and 304 metadata
 resolution remain separate open obligations. Full nine-tier 1.0 remains incomplete.
+
+## 2026-10-07 — C14 immutable public-evidence repository source
+
+After `834369d7`, implement the accepted C14 producer in leaderboard/public_evidence.go,
+with its Postgres test and a mandatory execution marker in the existing composed preflight.
+One query authorizes via verified_runs (not queue status), returns pinned metadata and exact
+stored genesis/archive bytes, checks genesis/constants and archive SHA256 consistency, and
+distinguishes unknown/private runs from corrupt public evidence and operational DB errors.
+No wire schema, endpoint, migration, simulation/kernel, policy, copy or workflow changed.
+
+Cold leaderboard/publicread packages (39837), selected vet, Node syntax and diff checks PASS.
+Native package run alone skips DB tests; the whole root composed target (76163) then PASSes
+on real Postgres: 8/8 refresh cases, existing Fiscal/epoch/board cases and the new evidence
+population (12 subcases), main DOM/Pitch/transitions/endings/continuation/recovery and Cosmetic
+journey. New evidence cases cover exact bytes including distinct gzip metadata, caller-owned
+buffers, multiple board categories, queue-only/archive-only refusal, absent/corrupt data,
+pinned-hash mismatch, invalid JSON/identities and cancellation. Fixtures are synthetic evidence,
+not a shipped verifier verdict or HTTP download. Post-run fixture DB sessions/owned listeners
+are absent. Docker's non-PG overlay remains full; no deletion or Linux-image/full-CI claim.
+
+Canonical docs and plan updated. Review by: Codex (diff/first-filter); Recorded by: Codex.
+The complete producer/test/driver/docs/record range after `834369d7` requires designated review;
+no archival or push. Next: C14 HTTP/manifest binding and actual verified-run download proof,
+then continue the catalogs/generated-client/304 contract obligations. Full 1.0 remains active.

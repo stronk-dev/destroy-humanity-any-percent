@@ -106,6 +106,7 @@ const persistedTests = [
   "TestFiscalProjectionMatchesPersistedHarvestIntegration",
   "TestFirstContentEpochPersistedBoundaryIntegration",
   "TestPublicBoardRankingAndPagesIntegration",
+  "TestPublicRunEvidenceIntegration",
 ];
 const persistedChecks = spawnSync("make", ["test-go", "GO_PACKAGES=./gameui ./production ./leaderboard", `GO_TEST_FLAGS=-count=1 -v -run '^(${persistedTests.join("|")})$$'`], {
   cwd: repositoryRoot,

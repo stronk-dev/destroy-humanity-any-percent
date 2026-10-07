@@ -10,6 +10,9 @@ RFC: `rfc/api-foundation.md`
 - [ ] Register public DTOs/readers and raw verification evidence endpoints.
   - [ ] Resolve C18's artifact descriptor.
   - [x] Resolve C19's raw response arm.
+  - [x] C14 repository source: board-record authorization, exact immutable bytes/pinned metadata,
+    hash consistency and real-Postgres refusal tests.
+  - [ ] C14 HTTP handlers/manifest descriptors and a real verified-run download round trip.
 - [x] Generate OpenAPI 3.1 and TypeScript from the registry; add compatibility pins/gate.
 - [ ] Compose the public router, full-registry privacy/conformance integration, canonical docs,
   independent full-range review, and archive.
