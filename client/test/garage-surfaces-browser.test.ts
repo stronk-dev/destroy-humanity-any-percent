@@ -1715,6 +1715,7 @@ for (const effectID of ["active.building", "active.click", "active.lucky", "acti
         if (!row) {
           expect(region.querySelectorAll("button,input,select,textarea")).toHaveLength(0);
           expect([...region.querySelectorAll("h3")].map((node) => node.textContent)).toEqual([t("desk.buffs_label", {}, "era_1995")]);
+          expect([...region.querySelectorAll("p")].map((node) => node.textContent)).toEqual([`${t("cap.active_combo", {}, "era_1995")} ${formatAmount("1e4")} `]);
           expect(target.querySelector(".announcement")?.textContent).toBe("");
           expect(diagnostic).toHaveBeenCalledExactlyOnceWith("game UI invariant: unknown opportunity effect active.unregistered");
         } else {

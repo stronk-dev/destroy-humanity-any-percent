@@ -5515,3 +5515,33 @@ unchanged20 population with assertion failures and exact hash restoration.
 These supplement the nine already predeclared controls, not product changes,
 numeric policy changes or new copy. No matching gate handle now live. Final
 full restored root gates and designated-review range remain mandatory.
+
+### RP-359 — first eleven controls and unknown-copy oracle refinement
+
+Eleven declared actual faults all complete with Make2/child1 and exact full
+hash restoration:12/12/20/20/16/16/4/4/4/20/20 failures respectively; full table
+retained below. No invalid/incomplete/surviving control. First restored full
+root at7bf9d286: native91c4ae→9d6e00,818pass/four isolated-performance skips,
+134.39s/real60s idle; performance2pass1.80s. Clienteaab99→d744ae:9816pass/711
+browser-only skips,types0/build214/unchanged hashes/boundaries/topology/no-payment.
+Copy6086f8→d81817:658/sameSHA/611 old orphans/current manifest unchanged.
+
+After all handles terminal, refine the originally declared no-unknown-description
+oracle: unknown region's entire paragraph list must contain ONLY the projected
+combo label/value. Existing zero controls/exact heading list remains. Before
+further probe predeclare an independent description-only leak: add a valid
+registered Production description for an unknown pending row WITHOUT exposing
+Claim and WITHOUT removing the diagnostic. Same20 population must reject it;
+16 known controls expected green. This is a temporary template fault, not new
+copy or product behavior. Rerun targeted/types and all final restored root
+gates on the refined driver. No weakening of prior guard/invariant assertions.
+
+Read-only capacity refinement (not permission to retry or delete):7b2f7a
+existing named game-ui-postgres9402b6ad7eb7 has7.7G free tmpfs DB; Docker/tmp
+overlay still0 available/100%. cdf9d6 host/repo/.cache has180Gi free; composed
+driver builds Go/Vite on host, uses existing test DB, not a new Linux image.
+Ports18081/5173 absent (d0f03f/f7d5db). Thus disk hold for full Linux/container
+builds is verified, but it does NOT alone establish that this existing host-
+native composed target is blocked. Inspect named test DB activity/driver scope,
+then separately predeclare its unchanged root-target run; no smaller workflow,
+oracle, backend, CI, release-artifact substitute or reset of operator data.
