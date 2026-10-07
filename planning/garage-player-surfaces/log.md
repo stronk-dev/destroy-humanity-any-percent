@@ -3612,3 +3612,27 @@ permission unanswered; no deletion or full-disk run. All prior author/body/
 GS4/AC7/default-player/privacy/platform/numeric/full-nine-tier1.0/review holds
 remain. Goal active/progress; no boxes/lifecycle/archive/mint/push/deploy/
 release/shortened-preview promotion.
+
+## 2026-10-07 — remaining forced-context focus proof predeclaration
+
+At82614848 clean source, RP-339–341 local correction is committed, not
+designated-approved. New TEST-ONLY range under accepted GS0.5/0.6, with no
+product/copy/RFC/CI change. Fiscal/Meters/Reputation each uses an exact-decoder
+admitted mounted public arm, native Enter nav activation, then snapshot arm
+null with feature fact retained/removed at320/1280 in Chromium/WebKit:
+twelve declarations/twenty-four native executions. Require actual initial
+surface, selected nav focus, null unmount/Desk selection/visible negative-
+tabindex heading focus, no intents, then a later native Settings choice
+retains focus through repeated null delivery. Native serious/critical axe.
+Reputation uses the existing public wire grammar, not a new fixture adapter
+or mechanics. No claim of all contexts/lifecycle/manual AT/Firefox/live SQL.
+
+Run healthy population first; separately remove each original armless
+predicate (Fiscal/Meters/Reputation) in valid host source and require its
+eight executions to fail; other sixteen controls retained. Independently
+no-op forced focus and remove Desk tabindex: each must fail twenty-four
+native focus assertions. Restore exact host after each probe. No framework/
+compile errors credited. Final full Garage/types/client/build/boundaries/
+copy/topology and records. Complete82614848-exclusive span needs Claude
+independently of0fe2f57c..82614848 and all earlier exact spans; no box/archive/
+push/cleanup permission inferred. Real Linux/SQL capacity hold stays live.
