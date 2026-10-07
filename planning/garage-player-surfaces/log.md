@@ -919,3 +919,30 @@ RP-316/RP-317 remain separately queued. Claude's designated pass must cover
 this append-only log); approval of implementation alone would omit record
 edges. The producer supplement remains exact `87fd23d4..d90aded7`, separately.
 No acceptance box/status/archive/mint/publication or whole-CI claim.
+
+### RP-317 accepted invariant reporting — predeclaration
+
+Baseline `0f3a1a7a`, clean; separate from the exact Desk correction range
+`d90aded7..0f3a1a7a`. Authority: accepted GS5 unknown-opportunity rejection
+row plus GS0.2's unlisted-200/invalid-400 invariant rules. No owner decision
+or authored-copy edit needed; RP-313 wire-body hold remains unmodified.
+
+Test first: the actual shared mapper with the actual opportunity mapping must
+retain the not-pending copy and set the unknown-ID invariant, while expired
+and not-pending refusals remain ordinary. Native mounted-host cases must emit
+exactly one diagnostic for unknown opportunity, unlisted rejection and typed
+400 invalid, with the existing appropriate player status and no duplicate
+intent. Expired/not-pending controls emit zero diagnostics. No mechanical
+pair appears in player status. Both native engines; no fixture clock required.
+
+Minimal proposed seam: explicit optional surface invariant-pair set, keeping
+existing copy maps and callers compatible; GS5 declares its single pair.
+Host consumes the existing notice flag once in outcome/error branches, using
+fixed diagnostic strings with no request, token, ID or player-data payload.
+No kernel, schema, numeric, epoch, copy/hash, timing, retry or offline policy
+change. Canonical docs accompany host behavior. Independently omit the GS5
+flag and host outcome/error reporting in separate compiling probes; their
+named tests must fail. Restore exact source after each, no live-handle edits.
+Full client/types/build/boundaries plus focused native population and existing
+composed target rerun. All new Codex predeclaration/tests/product/docs/records
+after `0f3a1a7a` need Claude; no self-archive or acceptance box flip.
