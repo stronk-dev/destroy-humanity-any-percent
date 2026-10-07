@@ -175,9 +175,21 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   pet's sprite (cosmetic-shop G10). GS4's raw stats, mood, behaviour and cooldowns are not projected:
   PA7 forbids them, and the conflict is recorded as a DESIGN-GAP in
   `planning/garage-player-surfaces/log.md`.
+  Care actions remain focusable with `aria-disabled` and visible `common.pending`
+  until both the intent and authoritative refresh settle; pending activation is
+  ignored. Actual ineligibility or unavailable transport still disables them,
+  with the stale-state note visible. Explicit zero Tab indices support native
+  Tab/Enter/Space in Chromium and WebKit. If the currently focused action becomes
+  disabled after a refresh, focus returns to the care heading without taking it
+  from another control the player has selected.
   The controlled real-server Cosmetics driver adopts a pet, equips through the shelf, checks
   the live annoyed/no-text overlay and reload, exercises the browser's reduced-motion preference,
-  and verifies Unequip removes the overlay without losing ownership. It uses a test-only epoch,
+  and verifies Unequip removes the overlay without losing ownership. It also feeds
+  that actually adopted pet through its DOM care control, binds a positive care
+  receipt to the request and Founder revision, checks the next persisted public
+  band/eligibility and rendered disabled Feed, and reloads that state. This does
+  not require or prove a status-band crossing or the missing status announcement.
+  It uses a test-only epoch,
   not a production content pin; the GS4×PA7 contract and G10 release gates are not closed by it.
 - **Fiscal badge and buff announcements (GS0.3 remainder):**
   - A `fiscal_period_harvested.v1` event badges the Fiscal nav `(harvested)` while the player is

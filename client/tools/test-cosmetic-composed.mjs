@@ -239,6 +239,43 @@ function assertPersistedWearer(view, petID, worn) {
   }
 }
 
+function assertPersistedCare(view, receipt) {
+  const pet = view.features?.pet_adoption?.pets?.find((row) => row.pet_id === receipt.pet_id);
+  const publicKeys = ["eligible_action_ids", "name_key", "palette_id", "pet_id", "species_id", "status_band", "temperament"].sort();
+  if (view.founder_revision !== receipt.founder_revision || !pet ||
+      Object.keys(pet).sort().join("\0") !== publicKeys.join("\0") || pet.status_band !== receipt.status_band ||
+      !Array.isArray(pet.eligible_action_ids) || pet.eligible_action_ids.includes(receipt.action_id)) {
+    throw new Error("Garage care persisted public band/eligibility/Founder revision did not match the actual receipt");
+  }
+}
+
+async function witnessCare(page, requests, petID) {
+  const before = await snapshot(page);
+  const pet = before.features?.pet_adoption?.pets?.find((row) => row.pet_id === petID);
+  if (!pet?.eligible_action_ids.includes("care.feed")) throw new Error("Garage care real adopted pet cannot be fed");
+  const control = page.locator(".pet-care").getByRole("button", { name: plainFixtureCopy("pet.care.action.feed.title"), exact: true });
+  let receipt;
+  try { receipt = await founderDOMIntent(page, requests, control, "care_action", { pet_id: petID, action_id: "care.feed" }); }
+  catch (error) {
+    const emitted = requests.some((row) => row.method() === "POST" &&
+      new URL(row.url()).pathname === "/api/v1/intents" && row.postDataJSON()?.kind === "care_action");
+    if (!emitted) throw new Error("Garage care DOM callback emitted no care intent", { cause: error });
+    throw error;
+  }
+  const request = requests.filter((row) => row.method() === "POST" &&
+    new URL(row.url()).pathname === "/api/v1/intents" && row.postDataJSON()?.kind === "care_action").at(-1)?.postDataJSON();
+  if (receipt.intent_id !== request?.intent_id || receipt.pet_id !== petID || receipt.action_id !== "care.feed" ||
+      !Number.isSafeInteger(receipt.applied_ppm) || receipt.applied_ppm <= 0 ||
+      !Number.isSafeInteger(receipt.before_ppm) || !Number.isSafeInteger(receipt.after_ppm) || receipt.after_ppm <= receipt.before_ppm) {
+    throw new Error("Garage care DOM action returned no bound positive actual care receipt");
+  }
+  assertPersistedCare(await snapshot(page), receipt);
+  await page.locator(".pet-care").getByText(plainFixtureCopy(`pet.care.band.${receipt.status_band}`), { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  await page.waitForFunction(() => document.querySelector('.pet-care button[data-action-id="care.feed"]')?.disabled === true, undefined, { timeout: 30_000 });
+  console.log(`composed Garage care: real DOM adoption → DOM care.feed → positive bound receipt → public band ${receipt.status_band}/feed ineligible at Founder revision ${receipt.founder_revision}: PASS`);
+  return receipt;
+}
+
 async function openPetSurface(page) {
   await page.getByRole("button", { name: plainFixtureCopy("pet.care.panel.title"), exact: true }).click();
   await page.locator('main[data-surface="pet"]').waitFor({ state: "visible", timeout: 30_000 });
@@ -424,11 +461,16 @@ try {
   assertPersistedWearer(await snapshot(page), petID, "horse_armor");
   await openPetSurface(page);
   await assertLivePetOverlay(page, { present: true });
+  const care = await witnessCare(page, requests, petID);
   directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
   await page.reload({ waitUntil: "networkidle" });
   assertPersistedWearer(await snapshot(page), petID, "horse_armor");
+  assertPersistedCare(await snapshot(page), care);
   await openPetSurface(page);
   await assertLivePetOverlay(page, { present: true });
+  const restoredFeed = page.locator(".pet-care").getByRole("button", { name: plainFixtureCopy("pet.care.action.feed.title"), exact: true });
+  if (!await restoredFeed.isDisabled()) throw new Error("Garage care reload lost persisted feed ineligibility");
+  console.log("composed Garage care: reload retains the actual public care outcome and feed ineligibility: PASS");
 
   // Exercise the browser preference and the fresh mounted host's propagation,
   // not merely a fixture prop named reducedMotion on the isolated component.

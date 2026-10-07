@@ -1310,3 +1310,89 @@ Final unmodified-product baseline after instrument corrections:18 actual
 assertion failures/10 positive controls/50 unselected in the two-engine
 population. Both public-refresh cases now fail with focus on body instead
 of the care heading. Test-first cases land before the narrow product repair.
+
+First narrow correction passes27/28 native assertions; only WebKit's disabled
+focused-action fallback remains red. Its focus-loss timing can leave the
+disabled action active through `tick()` before falling to body. Accept either
+the captured action itself or body at handoff, never another newly selected
+control; no wait/bound relaxation. Corrected14-case population passes28/28.
+Add explicit no-focus-steal control and isolated pending component activation
+case, because the host's same-kind single-flight defense could mask a missing
+component pending guard. This strengthens the predeclared properties rather
+than treating the host queue as evidence of an unexecuted callback guard.
+
+First actual composed extension passes: same test-only bundle and existing
+T1 cash setup; real DOM adoption/equip, then care.feed with positive actual
+receipt, public normal band and feed ineligible at Founder revision5; reload
+preserves it. No pet-state/clock/receipt surgery or status-crossing claim.
+Existing Game UI/Fiscal/Pitch/recovery and Cosmetics lanes pass. RealSocket/
+Postgres alone is not release-manifest or author-contract acceptance.
+
+## 2026-10-07 — Care supplement: final local proof and first filter
+
+Review by: Codex (implementer/self first-filter ONLY).
+Recorded by: Codex. Scope: entire new span after `c7d8f815`, including
+predeclaration `970d47a5`, failing-first `0784f126`, repair/tests/driver/docs/
+ledger and subsequent tracking edge. Claude's designated pass is still owed.
+No checkbox, RFC status, author contract or archival gate is advanced.
+
+The final16-case care supplement passes32 Chromium/WebKit assertions. The
+component-only pending test avoids the host single-flight masking its guard;
+the no-focus-steal control requires the player's newly selected nav control
+to remain focused. Eight independent compiling omission/fault probes against
+that same population discriminate (fail/pass, with50 other tests unselected):
+
+- omit care transport readiness:2/30;
+- omit component pending callback guard:2/30;
+- omit stale note:2/30;
+- omit eligibility-change heading handoff:2/30;
+- omit pending text:2/30;
+- remove native Tab entry with tabindex=-1:4/28;
+- skip only care's authoritative refresh:6/26;
+- force unconditional heading focus:8/24, including no-focus-steal controls.
+
+All probes restored exactly. Final SHA256: PetCareSurface
+`4e5b731df9e459f8c3d0d118908ae781d0c247932c590e7843e5c9a00f381bd1`,
+GameUIApp `d49738f1be6ac2a89230487181e641ecd4e530f48bdcaf456baa0dd26d7e8e7c`,
+Cosmetic composed driver
+`6816b3496e4b34bde76faeda0620404ee3bfdedb489ed79f8df045c0b55b29a5`.
+
+Actual composed adversary: sever the DOM care callback only; the existing
+main Game UI/Fiscal/Pitch/WebSocket populations still pass, then care fails
+with `Garage care DOM callback emitted no care intent` (existing30s response
+guard, root Make exit2). No server mutation or acceptance-bound relaxation.
+Restore callback exactly, rebuild, then run the unmodified root composed
+lane again: real DOM adoption → DOM feed → positive bound receipt/public
+normal band/feed ineligible at Founder revision5 → reload retention passes.
+It does NOT prove a band crossing, status announcement, raw-care contract,
+minted release bundle or clean-host deployment. Final main lane also passes:
+17 DOM clicks, active.click buff at revision28/zero expired attempts; Fiscal
+five Pitch commands/credit1e0 at revision31; v4 transitions/both terminal
+states/next-run/WebSocket recovery. Cosmetic6.457s/72 audited requests, no N5
+violation. Natural opportunities are not a Lucky integration claim.
+
+Final immutable-source gates: full Garage file82 assertions across Chromium/
+WebKit, including actual-minute idle Desk; isolated performance1 pass/22
+explicitly unselected. Types/Svelte zero errors/warnings; client9,735 passes/
+364 explicit browser skips (10,099 total),105 files pass/22 skip; build213
+modules; shell/UI/GameUI boundary counts14/8/22. Complete copy pipeline658
+keys and content manifest pass; topology and13 seeded negatives pass. These
+are existing root lanes, including the unchanged CI composed job; no workflow
+or collector exclusion was added. Not an executed hosted-CI verdict.
+
+Firefox retry: same existing root native lane,16 care cases selected; browser
+session connection timeout at60.03s before import, zero tests/one unhandled
+error. Teardown did not terminate, so this failed handle was stopped with
+Ctrl-C (terminal exit130). No launch options/install/timeout/skip changed;
+RP-256 remains open, not a green or skipped population. Copy-check completed
+normally on its original handle; no duplicate run was used as replacement.
+
+Self diff filter confirms only care component/host, two isolation tests,
+existing composed tool and docs/ledger/log changed after the test-first commit.
+No server/math/kernel/schema/epoch/copy-content/workflow/generated byte.
+Existing RP-132/GS4×PA7 and RP-318 copy/event obligations remain open. Other
+Garage controls' pending discipline is not accepted by this narrow repair.
+Next separately predeclare shared HTTP/exclusive refusal consumer checks:
+GS0.2 says429 and exclusive activity stay disabled until the next snapshot;
+the current mapper returns effect=none. Establish actual native behavior
+before inferring a production remedy or changing that shared authority.

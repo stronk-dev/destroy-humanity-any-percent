@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from "svelte";
   import type { GameUICosmeticsArm, GameUIPetRow } from "../../api/generated/types";
   import { t, type CopyEra, type CopyKey } from "../../copy";
   import CosmeticOverlay from "../cosmetics/CosmeticOverlay.svelte";
@@ -22,14 +23,32 @@
     onCare(petID: string, actionID: string): void;
   } = $props();
 
+  let root: HTMLElement | undefined;
+  let heading: HTMLHeadingElement | undefined;
+  $effect.pre(() => {
+    const nextPets = pets, enabled = controlsEnabled;
+    const action = document.activeElement;
+    if (!(action instanceof HTMLButtonElement) || !root?.contains(action)) return;
+    const nextPet = nextPets.find((pet) => pet.pet_id === action.dataset.petId);
+    if (enabled && nextPet?.eligible_action_ids.includes(action.dataset.actionId ?? "")) return;
+    // Capture the actual focused control before DOM disabling loses it. Never
+    // steal focus if the player moved elsewhere while the snapshot settled.
+    void tick().then(() => {
+      if (heading?.isConnected && action.disabled &&
+          (document.activeElement === action || document.activeElement === document.body)) heading.focus();
+    });
+  });
+
   function worn(petID: string) {
     const id = cosmetics?.wearers.find((row) => row.pet_id === petID)?.worn;
     return id ? COSMETIC_SHOP_PRESENTATION.cosmetics.get(id) : undefined;
   }
 </script>
 
-<section class="surface pet-care" aria-labelledby="pet-care-heading">
-  <h1 id="pet-care-heading">{t("pet.care.panel.title", {}, era)}</h1>
+<section bind:this={root} class="surface pet-care" aria-labelledby="pet-care-heading">
+  <h1 bind:this={heading} id="pet-care-heading" tabindex="-1">{t("pet.care.panel.title", {}, era)}</h1>
+  {#if !controlsEnabled}<p class="care-stale" role="status">{t("common.stale_note", {}, era)}</p>{/if}
+  {#if pending}<p class="care-pending" role="status">{t("common.pending", {}, era)}</p>{/if}
   {#each pets as pet (pet.pet_id)}
     {@const name = t(pet.name_key as CopyKey, {}, era)}
     {@const band = FEATURES_PRESENTATION.petBands.get(pet.status_band)}
@@ -45,7 +64,9 @@
         {#each [...FEATURES_PRESENTATION.petActions] as [actionID, titleKey] (actionID)}
           {@const eligible = pet.eligible_action_ids.includes(actionID)}
           <li>
-            <button type="button" disabled={pending || !controlsEnabled || !eligible} onclick={() => onCare(pet.pet_id, actionID)}>{t(titleKey, {}, era)}</button>
+            <button type="button" tabindex="0" data-pet-id={pet.pet_id} data-action-id={actionID}
+              disabled={!controlsEnabled || !eligible} aria-disabled={pending || undefined}
+              onclick={() => { if (!pending) onCare(pet.pet_id, actionID); }}>{t(titleKey, {}, era)}</button>
             {#if !eligible}<small>{t("pet.care.action.unavailable", {}, era)}</small>{/if}
           </li>
         {/each}

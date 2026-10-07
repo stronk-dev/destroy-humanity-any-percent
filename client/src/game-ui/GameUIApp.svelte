@@ -696,7 +696,7 @@
     {#if pitchAvailability?.human_content_locked}<p class="intent-notice" role="note">{t("minigame.availability.soul_locked", {}, era)}</p>{/if}
     <MinigameSessionSurface port={runtime.minigame} minigameID="pitch" {era} newCommandID={() => newIntentID()} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
   {:else if snapshot && surface === "pet" && liveFeatures?.pet_adoption && liveFeatures.pet_adoption.pets.length > 0}
-    <PetCareSurface pets={liveFeatures.pet_adoption.pets} cosmetics={liveFeatures.cosmetics ?? null} {era} {pending} controlsEnabled={founderControls} reducedMotion={prefersReducedMotion}
+    <PetCareSurface pets={liveFeatures.pet_adoption.pets} cosmetics={liveFeatures.cosmetics ?? null} {era} {pending} controlsEnabled={founderControls && transportReady} reducedMotion={prefersReducedMotion}
       onCare={(petID, actionID) => act({ kind: "care_action", pet_id: petID, action_id: actionID }, { scope: "founder", rejections: CARE_REJECTIONS, applied: () => "pet.care.applied" })} />
   {:else if snapshot && surface === "garden" && runtime.garden}
     <GardenSurface port={runtime.garden} {era} {pending} refreshKey={gardenRefresh}

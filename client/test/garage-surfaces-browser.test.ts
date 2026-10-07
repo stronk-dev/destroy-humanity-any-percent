@@ -6,6 +6,7 @@ import type { GameUISnapshot } from "../src/api/generated/types";
 import { t, type CopyKey } from "../src/copy";
 import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
+import PetCareSurface from "../src/game-ui/pet/PetCareSurface.svelte";
 import { GameUIRequestError, type IntentOutcome } from "../src/game-ui/intent-outcome";
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import type { GameUISurfaceID } from "../src/game-ui/surface-catalog";
@@ -612,6 +613,42 @@ it.skipIf(!browser)("care supplement refreshes public band and eligibility befor
       expect.objectContaining({ kind: "care_action", action_id: "care.groom", expected_revision: 8 }),
     ]);
   } finally { intent.mockRestore(); read.mockRestore(); await dispose(); }
+});
+
+it.skipIf(!browser)("care supplement refuses pending activation inside the component, independent of the host queue", async () => {
+  const target = document.createElement("div"); document.body.append(target);
+  const onCare = vi.fn();
+  const app = mount(PetCareSurface, { target, props: { pets: [petRow], cosmetics: null, era: "era_1995", pending: true, controlsEnabled: true, reducedMotion: true, onCare } });
+  try {
+    await settle();
+    const feed = button(target, careText("pet.care.action.feed.title")); feed.focus();
+    expect(feed.disabled).toBe(false);
+    expect(feed.getAttribute("aria-disabled")).toBe("true");
+    feed.click(); await settle(); expect(onCare).not.toHaveBeenCalled();
+    const { userEvent } = await import("vitest/browser");
+    await userEvent.keyboard("{Enter}"); await userEvent.keyboard(" "); await settle();
+    expect(onCare).not.toHaveBeenCalled(); expect(document.activeElement).toBe(feed);
+  } finally { await unmount(app); target.remove(); }
+});
+
+it.skipIf(!browser)("care supplement does not steal focus from a nav control selected while the intent is pending", async () => {
+  const runtime = new Runtime(); runtime.current = withPet();
+  const { target, dispose } = await mounted(runtime);
+  let finish!: (value: IntentOutcome) => void;
+  const held = new Promise<IntentOutcome>((resolve) => { finish = resolve; });
+  const intent = vi.spyOn(runtime, "intent").mockImplementation((body) => { runtime.requests.push(body); return held; });
+  try {
+    button(target, careText("pet.care.panel.title")).click(); await settle();
+    const feed = button(target, careText("pet.care.action.feed.title")); feed.focus(); feed.click(); await settle();
+    const nav = button(target, careText("surface.meters.title")); nav.focus();
+    const next = withPet();
+    runtime.current = { ...next, founder_revision: 8,
+      features: { ...next.features, pet_adoption: { ...next.features.pet_adoption!, pets: [{ ...petRow, eligible_action_ids: [] }] } } };
+    finish({ outcome: "applied", receipt: {} }); await settle();
+    expect(feed.disabled).toBe(true);
+    expect(document.activeElement).toBe(nav);
+    expect(runtime.requests).toHaveLength(1);
+  } finally { finish({ outcome: "applied", receipt: {} }); await settle(); intent.mockRestore(); await dispose(); }
 });
 
 it.skipIf(!browser)("badges the Fiscal nav on an off-surface harvest and announces a buff start on the Desk (GS0.3 remainder)", async () => {
