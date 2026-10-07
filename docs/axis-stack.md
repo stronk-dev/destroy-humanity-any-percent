@@ -34,6 +34,10 @@ proposals awaiting owner SHA ratification. `pr_intern_3` is absent until Tier 2 
 - **Activation:** v19 exists exactly when the pinned economy declares `axis_stack`, and such a
   bundle must pin `opportunities` (v19 extends the v18 active-play wire). Activation is new-run
   bound, the set starts empty, and it is discarded at Exit. Nothing settles to the Founder.
+- **Ordinary logged replay:** both Go and TypeScript require resolved active-play
+  evidence for Company versions18and19 and replay input version5or later. Earlier
+  Company versions reject unexpected evidence. RP-309 corrects the client's
+  former v18-only check; kernel0.3.163 records that replay behavior change.
 - **Second hook pass:** the achievement hook runs a second pass (Go `attainRun`, TS `attainRun`)
   against the same pre-achievement observation and proof batch as `NewlyEarned`.
   - It attains run-scoped definitions not yet attained whose condition and proof hold, whether or
@@ -87,12 +91,13 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
 
 ## Not yet delivered
 
-- Actual v19 logged TypeScript replay (RP-309). A separately predeclared
-  [24-case producer observation](../planning/clout-v1-and-pr-interns/logged-policy-research.md)
-  succeeds in Go, but every TypeScript positive call refuses valid active-play
-  evidence because applyLogged recognizes only v18 at that check. Six catch-up
-  negatives are masked by the earlier failure. Exact initial restoration is not
-  receipt/event/poststate parity, and this test-only range does not repair it.
+- Full v19 replay coverage beyond the separately scoped RP-309 ordinary dispatch
+  correction. The original [24-case observation](../planning/clout-v1-and-pr-interns/logged-policy-research.md)
+  records the former rejection honestly; correcting that gate alone does not
+  prove all numeric/receipt/event/state, migration, Exit or persistence behavior.
+  All24positive calls now fail at the scheduler's separate v18-only guard
+  (RP-310). Nine catch-up refusals and five compatibility/refusal companions
+  pass; those passes do not complete v19 gameplay or final-output comparison.
 - Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
   passes and rejects a retroactive-factor fault, but the unchanged production
   engine fails 27 of128 seeded millisecond partitions under full encoded-state

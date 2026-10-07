@@ -439,3 +439,12 @@ native research population and kernel/topology validators. Original27AC6 and
 RP-131 history/AMD64/hosted blockers stay explicit. Self first-filter then Claude
 designated review over the entire new span including record edges; no checkbox,
 full-Clout approval, archival/mint/push/deploy/release status promotion.
+
+RP-309 execution: ordinary presence/version correction and honest kernel163
+implemented; all9catchup and5companion cases pass. Original guard31fails,
+permissive guard28fails; both restored exact. Full re-observation changes ONLY
+two source pins, all24Go outputs unchanged. TS24positive calls now fail the
+separate scheduler's exact-v18 guard(RP-310); paired outputs remain unproved.
+No expansion into scheduler/terminal code was made. Next separately predeclare
+that correction/terminal population. Cold gates/limits in log and dossier; no
+checkbox or full-RFC promotion. Entire new span after974c1a45 needs Claude.

@@ -3815,3 +3815,26 @@ integrated defect and executable red witness rather than spending the gate on
 another scalar comparison. Proper nine-tier/platform1.0 remains active; no
 runtime/body/acceptance/checkbox/mint/archive/push/deploy/release change.
 [Evidence](clout-v1-and-pr-interns/logged-policy-research.md).
+
+## 2026-10-07 — Bounded v19 ordinary dispatch corrected, scheduler gap exposed
+
+Predeclaredff50031e at974c1a45 under acceptedCV4. Two ordinary replay presence/
+version predicates corrected with honest kernel162→163; no scheduler/terminal
+or numeric/save/balance/copy/CI body/code change. Nine catchup refusals andfive
+old-version/presence companions pass. Old/permissive guard faults fail31/28tests
+and restore exactly. Full Go re-observation changes ONLY two source identities,
+all24bundle/context/payload/evidence/receipt/events/poststate outputs unchanged.
+
+Actual TS24positive calls now fail the scheduler's separate exact-v18 guard
+(RP-310). Terminal exact-v18 guard is source finding, not execution. No payout
+parity or complete CV4 approval. Client9514pass/24fail/340skip; Go original27AC6
+failures remain; types/vet/topology13controls/native7researchtests pass. Full
+kernel history still fails historicalRP-131/50a3a514; independentfixtures pass.
+No hosted/AMD64/fullCI/release claim. All handles terminal, no mutant left.
+
+Next separately scope scheduler correction/actual terminal replay under accepted
+CV4. Full new span after974c1a45 including records needs Claude; earlier spans
+and unanswered author/owner/content/environment/release holds independent.
+Previous goal turn progress; this turn changes runtime toward the actual v19
+contract and preserves invalid-evidence refusal. Full nine-tier/platform1.0
+active; no status/checkbox/archive/mint/push/deploy or owner release call.

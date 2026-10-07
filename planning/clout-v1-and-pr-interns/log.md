@@ -1212,3 +1212,49 @@ the one-line two-predicate correction, honest kernel162→163, unchanged24/9
 outputs with explicit source re-observation, five companion controls and two
 actual guard mutants in plan.md BEFORE implementation. Nothing absorbs or
 approves the preceding research spans; RP-308 wording question remains unanswered.
+
+### RP-309 bounded ordinary-dispatch correction — deeper RP-310 exposed
+
+Predeclaredff50031e after974c1a45. Runtime diff ONLY the two ordinary v18-only
+presence/version predicates to>=18, plus honest kernel0.3.162→0.3.163 in source
+and both mirrors. Companion TS tests use actual old pinned v18/v16 fixtures,
+not demoted axis state. No scheduler/terminal or numeric body/code changed.
+
+First actual39-test execution9564b9/6403 terminal07cd5a exit2:all nine catchup
+target refusals and all FIVE compatibility/refusal companions pass; all24
+positive calls now fail at scheduler's separate v18-only state guard. RP-310
+immediately ledgered. Terminal guard also tests exactly18:SOURCE finding only,
+not an executed terminal failure or authority to expand this presence-only range.
+
+Old guard mutantc941d4/9873 terminal364c59 exit2:31newfile failures, including
+missing-v19 evidence wrongly applying a purchase. Permissive mutant80d1d8/86392
+terminal7e9c90 exit2:28newfile failures; all FOUR companion refusals fail (three
+apply, unexpectedv16 throws the wrong scheduler error). Positive calls continue
+to hit unchanged scheduler. Both probes compile and restore exactly atccc181:
+runtime92da4b6e/observer040c48de/artifactb400abe4. No live handle during edits.
+
+Explicit complete Go writerccc181/84678 terminal3ec00b exit0,0.471s. JSON
+comparison408220 against974c1a45:ONLY runtime/TS-observer source identities
+change, ALL bundle/profile/payload/input/receipt/event/poststate/negative counts
+unchanged. Current artifactf8154b7e, prior red source/artifact retained atb55f2131.
+No output restamp/tolerance or old research artifact rewrite.
+
+Final clientb1b346/77367 terminale6d214 exit2:9514pass/24fail/340visible skips;
+newfile15pass/24fail, all failuresRP-310before output comparisons. Final Go
+c65515/3218 terminal2393eb exit2:production42.813s fails ONLY original27AC6;
+economy6.241s/decimal.225s/kernel.214s pass. Independentc72804/87214 terminal
+6d02c0 exit0:types/Svelte zero errors/warnings, fullvet, topology13controls pass.
+Native64e87a/98043 terminal9ad025 exit0,1.431s:all SEVEN research tests execute,
+old SQL1215/16complete. New observer itself still in-memory, not SQLtransactions.
+
+Kernel742ea9/44773 terminal9e100f exit2:CI checkout contract and fixtures pass,
+full kernel history remains red at50a3a514(RP-131), not this source163 correction.
+Independent version fixtures3cdc46/95578 terminalb3000f exit0. A read-only ps
+check was sandbox denied; no escalation/restart, actual handles confirm terminal.
+AMD64/hosted/history and all other author/owner/content/release holds remain.
+
+Records synchronized; no checkbox/RFC approval/archival/mint/push/deploy. Entire
+new span after974c1a45 needs Claude including record edges; preceding research
+and all prior obligations independent. Next predeclare scheduler correction and
+actual terminal v19 population under acceptedCV4. Goal active; this turn repairs
+one real runtime rejection and proves retained refusal boundaries, not full1.0.

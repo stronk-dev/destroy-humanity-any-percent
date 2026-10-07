@@ -310,6 +310,13 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   not successful target refusals. Three parser refusals/census pass. Separately
   predeclare accepted-CV4 runtime repair before claiming actual payout parity.
   [Logged producer finding/limits](../clout-v1-and-pr-interns/logged-policy-research.md).
+  Separate accepted-CV4 correction predeclaredff50031e repairs only ordinary
+  presence/version predicates, with kernel163. All9catchup and5companions pass;
+  actual24positive calls now fail the scheduler's v18-only guard(RP-310). Old/
+  permissive mutations discriminate, exact outputs unchanged after source
+  re-observation. Next separately scope scheduler repair/actual terminal
+  population before claiming full output parity; neither replaces R-012's
+  unresolved accumulation/episode/persistence representation questions.
   Later predeclare actual paired action/buff/mode/multi-resource seams;
   canonical rate lists/byte-framed JSON/scalar anchors are not whole-engine proof.
   Full mode/offline/provision/migration/state/receipt integration remains unproved.

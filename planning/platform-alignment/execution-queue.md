@@ -3,6 +3,21 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## RP-309 ordinary dispatch corrected / RP-310 next — 2026-10-07
+
+Predeclaredff50031e at974c1a45:accepted-CV4 two ordinary predicates corrected,
+kernel162→163 honestly. All9catchup refusals and5compatibility/presence cases
+pass; old/permissive guards fail31/28newfile tests and restore exactly. Explicit
+Go re-observation changes ONLY two source identities, all24outputs/bundle exact.
+TS24positive calls now fail later at scheduler exact-v18 guard(RP-310); no
+payout parity. Client9514pass/24fail/340skip; original27GoAC6remain red;
+types/vet/topology/native7researchtests pass. HistoryRP-131/AMD64/hosted held.
+**READY next:** separately predeclare scheduler repair/actual terminal replay
+under acceptedCV4; do not absorb it into this presence-only correction.
+Full new span after974c1a45 needs Claude, all older spans/questions independent.
+No full-Clout/1.0/CI/archive/mint/push/deploy promotion.
+[Evidence](../clout-v1-and-pr-interns/logged-policy-research.md).
+
 ## R-012 logged replay / RP-309 — 2026-10-07
 
 Predeclared6141af35 after7effff9a:24actual Go purchases/57full restores and9

@@ -104,3 +104,42 @@ accepted accumulation/save migration and Service/Store replay remain unproved.
 Original27AC6 failures stay red, not waived. Claude must independently review
 the ENTIRE span after7effff9a, including later records; all prior spans independent.
 No checkbox/body/status/mint/archive/push/deploy or full1.0 claim follows.
+
+## Subsequent RP-309 correction — separate accepted-CV4 range
+
+The preceding observation is historical atb55f2131 (red source/artifact retained
+in Git). Predeclarationff50031e at974c1a45 authorizes ONLY the two ordinary
+presence/version predicates. Correcting them requires kernel162→163; it does
+not alter scheduler/terminal/numeric policies. Five companion tests use genuine
+old pinned v18/v16 populations: exact first v18 receipt/events, missing v18/v19
+evidence, unexpected v16 evidence, and v18 with input version4. All five pass
+with unchanged state on refusals. All nine catch-up target refusals now pass.
+
+Every positive v19 replay still fails, now later at `active schedule state
+mismatch`: the private scheduler independently tests exactlyv18 (RP-310).
+A separate exact-v18 terminal guard is a source finding only, not yet an
+executed terminal failure. No final-output/numeric parity can be claimed.
+
+Restoring the old ordinary predicate makes31tests fail:24presence failures,
+sixmasked catch-up negatives, and the missing-v19 negative wrongly applies
+its purchase. Replacing the predicate withfalse makes28fail:24still hit the
+scheduler, and all four companion refusals fail (three wrongly apply, v16 fails
+at the wrong guard). Both runtime probes compile and restore byte-exactly.
+
+Complete explicit Go re-observation passes24/9; comparison with974c1a45 proves
+ALL output/bundle/profile/payload/input/negative-count values unchanged. ONLY
+client replay and observer source hashes change. Current artifactSHA256:
+f8154b7ef11b0d823cd41af3814265606274d0b1198c8480814f9028c1607b3a.
+Original artifactb400abe4 belongs to the preceding research checkpoint, not the
+new code identity. Earlier research artifacts remain unchanged.
+
+Cold client9514pass/24fail/340skip (newfile15pass/24fail); independent types/vet/
+topology13controls pass. Go production42.813s still fails original27AC6cases;
+economy6.241s/decimal.225s/kernel.214s pass. Native runs all seven research tests,
+no skips (1.431s), unchanged SQL1215/16. Kernel-history checkout/fixtures pass,
+full version history still fails RP-131 at50a3a514; independent version-guard
+fixtures pass. No whole CI/AMD64/hosted or release claim.
+
+Next separately scope the actual scheduler correction and terminal replay
+population under CV4. This correction/record edge and all earlier spans need
+Claude independently; nothing is archived or marked full-Clout approved.

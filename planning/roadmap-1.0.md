@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest logged-replay checkpoint (2026-10-07):** R-012 completes24actual Go
+**Latest runtime checkpoint (2026-10-07):** RP-309 ordinary replay predicates
+corrected under acceptedCV4/predeclarationff50031e, with honest kernel163.
+All9catchup and5old-version/refusal companions pass; two compiling guard faults
+discriminate and restore. Go source re-observation preserves ALL24outputs;
+only two source identities change. Actual TS calls now expose scheduler's
+separate v18-only check(RP-310), all24positive calls still fail before payout
+comparisons. Client9514pass/24fail/340skip; Go original27AC6red; types/vet/
+topology/native research pass, history/AMD64/hosted held. Next separately scope
+scheduler/terminal replay, not full-Clout or1.0 approval. Entire new span
+after974c1a45 needs Claude; older spans/questions independent. Full scope intact.
+[Evidence](clout-v1-and-pr-interns/logged-policy-research.md).
+
+**Previous logged-replay checkpoint (2026-10-07):** R-012 completes24actual Go
 logged purchases/57restores and9catchup refusals. Actual TS v19 initial restore
 passes, but all24 logged calls fail a v18-only active-play presence check(RP-309).
 Six target negative cases are masked, not passed; three parser refusals/census
