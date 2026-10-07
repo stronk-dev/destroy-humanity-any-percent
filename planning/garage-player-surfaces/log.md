@@ -765,3 +765,41 @@ the supplement can be consumed as designated-approved. RP-313 remains open.
 The original producer verdict covers only Claude's twelve-path original
 commit; the new four-function supplement is not relabelled as independent
 evidence review. Next is the separate fourteen-path consumer diagnostic scope.
+
+## 2026-10-07 — GS5 Desk consumer review and corrections, predeclared
+
+**Review by:** Codex (other party). **Recorded by:** Codex. Original Claude
+range `f32f6175^..f32f6175`, all fourteen paths, including candidate/generated
+copy, presentation data/parser, host/region/receipt adapter, native browser
+tests, composed driver, orphan inventory, Go keys and deployment copy-hash.
+Baseline `d90aded7`, clean. This is separate from the producer verdict RP-313,
+which remains held; no adoption, full Garage approval or archival is inferred.
+
+RP-314/315/316 record source findings immediately. First execute the retained
+browser population and the existing composed lane at the unchanged baseline.
+Use Chromium/WebKit; Firefox launch failure remains a separate open hold.
+Prove RP-315 with a compiling delayed synthetic claim after 1 second: the
+existing 400ms test may survive; do not count survival as discrimination.
+Then replace it with a real 60-second timer observation. A per-test execution
+budget must accommodate that required population; it does not extend an
+opportunity's lifetime or change any acceptance bound/CI workflow.
+
+Replace simulated clicking in the keyboard test with native Tab from the
+manual button, Enter/Space activation and outgoing intent assertions. Retain
+the axe/population checks. Demonstrate refusal using a seeded negative Tab
+index/keyboard-prevention fault, one at a time and exact source restoration.
+
+RP-314 test-first: applied buff receipt with `cap_reason_key:cap.active_combo`,
+null Lucky delta and non-saturated/empty successor arm must display its reason;
+live buffs must expose the projected cap number, not just its label. Repair
+only region/receipt presentation under accepted GS5 using existing copy keys
+and Amount; no new authored text, arithmetic, epoch, kernel, pin or wire.
+The original and any new correction receive distinct verdicts/provenance.
+
+RP-316 is not waived by a green random buff run. Inspect/execute the existing
+driver, bind observed result to the branch actually exercised, and predeclare
+any later snapshot-credit oracle construction separately. No forged test epoch,
+server clock, alternate scheduler, direct gameplay intent or hidden payout fix.
+Retained sources must be exact after every temporary fault; no concurrent
+mutation while test handles are live. Other gaps become ledger rows, not
+unannounced expansion. All new Codex tests/product/record edges need Claude.
