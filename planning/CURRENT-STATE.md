@@ -35,6 +35,18 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Latest bounded API work: the category catalog now has its explicit owner descriptor (one of
+  nineteen current artifact families). The shared error schema no longer makes public reads
+  import private Account; affected tests/vet and byte-identical generation pass. Remaining
+  descriptor exports conflict with the replay guard's broad watched paths, and intent receipts
+  need a typed-dictionary contract reconciliation (RP-391). Neither exception nor schema
+  amendment is silently adopted. The API log owns evidence and pending review.
+- Cosmetic test-only commit `1d301497` extends the actual composed service journey to native
+  Enter and Space Buy activation, exact one-request/receipt/revision binding, owned focus and
+  persisted reload. Root37641 passes all three journey populations; affected Chromium/WebKit
+  checks pass68. Native Firefox fails to connect, so there is no all-engine/full-CI green claim.
+  Explicit focus setup is not a keyboard-only navigation/AT study. No production content or
+  feature acceptance changed; the Cosmetic log owns evidence and pending designated review.
 - Gameplay repair `e55eb1e9`: transition controls retain native pending focus, removed controls
   recover focus without overriding newer choices, and queued Wind Down binds both refreshed
   revisions. Final host checks: 174 passes / four performance-only skips; types/build/source

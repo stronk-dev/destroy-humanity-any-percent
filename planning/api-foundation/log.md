@@ -1203,3 +1203,24 @@ Review by: Codex (implementer diff/first filter). Recorded by: Codex. New range 
 exclusive through this source/test/docs/record commit. Designated review pending; prior ranges
 remain separate. No false replay version, history rewrite, CI/workflow edit, archive or push.
 Next: resolve the catalog scope boundary; continue accepted remaining API integration meanwhile.
+
+## 2026-10-08 — remaining intent caller has a schema-contract gap (RP-391)
+
+Source inspection atce626440 traces the remaining handwritten `runtime.ts` intent fetch to
+`account.submitIntent`, which returns the original persisted receipt bytes. Company's
+`production.wireSnapshot` embeds typed maps keyed by catalog resource/generator/transition/meter
+IDs; `founderCosmeticReceipt` embeds `cosmetics.equipped` keyed by runtime-created pet UUIDs.
+These are dictionaries, not finite field sets derived from one current fixture. The current
+C17 union has no dictionary arm; C19's raw response also requires headers this route does not
+emit. No honest full registration follows from the present contract.
+
+This is a source-confirmed architecture gap, not a measured gameplay failure or runtime schema
+validation result. The actual Cosmetic/native purchase journey separately passes under its
+existing contract. Required API author/owner reconciliation: explicitly key-constrained typed
+dictionaries, or a versioned HTTP projection preserving original storage/replay receipts.
+Neither is adopted here; do not introduce arbitrary JSON, silently re-encode old receipts,
+register only the convenient intent kinds or evade the replay guard.
+
+Editorial finding/route only; checked cited sources and diff, no software suite for this record.
+No product, RFC body, acceptance, archive or push change. Next: obtain that contract choice;
+safe work under other already-accepted contracts continues.
