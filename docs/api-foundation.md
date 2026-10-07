@@ -44,7 +44,7 @@ refresh must cite its authorizing ruling and be recorded in the owning planning 
 change; an otherwise valid widening is not permission for a silent re-baseline.
 
 The generated contract is not yet the complete runtime API or a generated HTTP
-dispatcher. Current metadata covers fourteen operations and omits the existing
+dispatcher. Current metadata covers seventeen operations and omits the existing
 session refresh route and its refresh-specific error alternatives. Actual TypeScript
 callers cannot represent that path or those errors; Game UI runtime and minigame
 transport still call `fetcher` outside the generated directory. `api-check` passes
@@ -143,10 +143,14 @@ while each surface still mounts from its own registry.
   field and rejects account, email, token, session, recovery, password, secret, stream, save, IP,
   device and presence fields. It permits founder identity only at `PublicBoardItem.founder_id` and
   `PublicRoute.first_executor_founder_id`.
-- **Composed:** the composed-server witness seeds a real account. It then requests every public
+- **Composed:** the composed-server witness seeds a real private account. It then requests every public
   registry operation (a missing request builder fails the test) and asserts that no response
   body or header contains the seeded account ID, recovery code, tokens, founder ID or company
-  stream ID.
+  stream ID. Evidence endpoints return identical, non-cacheable 404s for private and unknown
+  runs. A separate actual verified-run download check permits C4's public Founder/Company
+  history but rejects account IDs, recovery codes and session tokens in the manifest, genesis
+  and decompressed replay archive. Raw-response privacy requires this content check; the
+  schema walker cannot inspect a gzip body.
 
 `publicread.NewRouter` composes the surface. It loads the strict policy, resolves the named cursor
 secrets (`CursorSecretResolver`, see `docs/gameserver.md`), builds the request-ID runtime and
@@ -158,7 +162,29 @@ the served epoch page, request-ID echo, cache headers, a 304 on a matching ETag,
 404, and fail-closed composition. The composed Game UI lane also fetches the page through the Vite
 proxy.
 
-### Verification evidence source (not yet an HTTP surface)
+### Public verification evidence
+
+The registry mounts three unauthenticated GETs at
+`/api/public/v1/runs/{stream}/{seq}/{genesis,replay-log,verdict}`. The stream is a canonical
+Company UUID; the sequence is an exact positive integer without signs or leading zeros.
+Private/unverified, unknown and invalid run identities return exactly
+`404 {"category":"unknown_id","detail":"run"}`; corrupt authorized evidence or operational
+failures return `500 internal_invariant/public_api`. Neither response exposes evidence or
+carries cache/content-hash metadata.
+
+`verdict` returns the exact nine-field `PublicRunVerdict` descriptor:
+`catalog_url`, `constants_hash`, `engine_version`, `genesis_sha256`, `genesis_url`,
+`replay_log_sha256`, `replay_log_url`, `run_id`, `verdict`. The only verdict is `verified`.
+URLs are relative public API paths; hashes use `sha256:` prefixes. The catalogs URL names
+the run's pinned constants, never current constants. Its reader is still unavailable.
+Genesis version is present in the archive rather than an extra manifest field.
+
+`genesis` serves the original stored JSON as `application/json`; `replay-log` serves the
+original gzip bytes as `application/gzip`. Both raw registry arms require `X-Content-SHA256`
+(unprefixed hex over served bytes). All three successful responses have strong SHA256 ETags
+and `public,max-age=31536000,immutable`. Matching conditional reads return bodiless 304s
+before charging the shared IP bucket, retaining cache/ETag and raw hash headers. Exhausted
+uncached reads return non-cacheable `429 rate_limited/ip` without a raw hash header.
 
 `leaderboard.Repository.PublicRunEvidence` supplies C14's stored bytes and pinned metadata in
 one statement snapshot. Only an actual `verified_runs` record authorizes retrieval; a queue
@@ -174,9 +200,16 @@ or expose account/session metadata. Caller mutation does not rewrite stored evid
 
 The repository's real-Postgres test uses synthetic evidence to verify retrieval and refusal,
 including queue-only verification, missing bytes, corrupt hashes and cancellation. The normal
-composed lane requires this test to execute. This is not yet a third-party download/reverification
-witness: the HTTP handlers, manifest/schema registration and real verified-run round trip remain
-open, and the catalogs URL still requires the catalog reader.
+composed lane requires this test to execute. It also executes the existing composed Exit/board
+witness: a real queue-verified run is downloaded over unauthenticated HTTP, every served byte
+and digest is checked against immutable storage, and its Company/`founder_advanced` event
+projection reverifies with the pinned DB catalog bundle. This matches the database verifier's
+selection; the archive retains additional Founder history (including Fiscal events), which
+that kernel projection does not reverify. A deliberately corrupted downloaded receipt is
+rejected. Embedded genesis JSON is compared with whitespace-only compaction because the
+existing archive encoder embeds the stored JSON value compactly; endpoint/storage equality
+remains byte-exact. This does not prove cross-epoch catalog retrieval, a public TypeScript
+verification journey, or the complete third-party loop without database-supplied catalogs.
 
-The catalogs and verification HTTP readers, and the thin generated-client transport remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
+The catalog HTTP reader and thin generated-client transport remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
 historical formulas never fall back to current bytes.

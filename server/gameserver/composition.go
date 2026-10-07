@@ -402,7 +402,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 		random = rand.Reader
 	}
 	publicRouter, err := publicread.NewRouter(publicread.Dependencies{PolicyJSON: publicPolicy, CursorKeys: config.PublicCursorKeys,
-		Epochs: epochRepository, Boards: epochRepository, Routes: routeProjector, Clock: config.Clock, Random: random})
+		Epochs: epochRepository, Boards: epochRepository, Routes: routeProjector, Evidence: epochRepository, Clock: config.Clock, Random: random})
 	if err != nil {
 		return nil, err
 	}

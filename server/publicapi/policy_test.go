@@ -2,6 +2,7 @@ package publicapi
 
 import (
 	"bytes"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -11,6 +12,32 @@ import (
 
 	"cloud-clicker/server/httpapi"
 )
+
+func TestCachedRawHashHeaderCannotOverwriteProtocolHeaders(t *testing.T) {
+	ids, err := httpapi.NewRequestIDs(requestIDPatternLiteral, 64, bytes.NewReader(bytes.Repeat([]byte{0xbb}, 64)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	runtime, err := NewRuntime(phase0Policy(t), time.Now, ids)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, headers := range [][]string{{""}, {"bad header"}, {"ETag"}, {"cache-control"}, {"Content-Type"}, {"Content-Length"}, {"x-request-id"}, {"X-Hash", "X-Other-Hash"}} {
+		t.Run(strings.Join(headers, ","), func(t *testing.T) {
+			response := httptest.NewRecorder()
+			request := httptest.NewRequest(http.MethodGet, "/raw", nil)
+			request.Header.Set("X-Request-ID", "reserved-header-test")
+			runtime.WithRequestID(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+				if err := runtime.WriteCached(response, request, CacheVerification, ContentGzip, []byte("archive"), headers...); !errors.Is(err, ErrInvalidPolicy) {
+					t.Fatalf("invalid hash header accepted: %v", err)
+				}
+			})).ServeHTTP(response, request)
+			if response.Body.Len() != 0 || response.Header().Get("X-Request-ID") != "reserved-header-test" || len(response.Header()) != 1 {
+				t.Fatalf("invalid hash header wrote body/protocol metadata: %v %q", response.Header(), response.Body.String())
+			}
+		})
+	}
+}
 
 func phase0Policy(t *testing.T) Policy {
 	t.Helper()

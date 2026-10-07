@@ -1029,6 +1029,9 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 		statusErr := db.QueryRowContext(ctx, `SELECT status FROM verification_queue WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&status)
 		boardErr := db.QueryRowContext(ctx, `SELECT count(*) FROM verified_runs WHERE run_id=$1 AND category_id='any_percent'`, companyRevision.StreamID+":1").Scan(&boardRows)
 		if statusErr == nil && boardErr == nil && status == "verified" && boardRows == 1 {
+			assertPublicVerifiedEvidence(t, db, httpServer, companyRevision.StreamID, pinnedGenesis, pinnedReplayBundle, map[string]string{
+				"account_id": created.AccountID, "recovery_code": created.RecoveryCode, "access_token": tokens.AccessToken, "refresh_token": tokens.RefreshToken,
+			})
 			activeRun, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
 			if err != nil {
 				t.Fatal(err)
@@ -1684,6 +1687,14 @@ func assertPublicSurfacePrivacy(t *testing.T, server *httptest.Server, secrets m
 		publicread.ListRoutesOperation: {"/api/public/v1/registry/routes", "/api/public/v1/registry/routes?limit=100"},
 		publicread.ListBoardOperation:  {},
 	}
+	for id, suffix := range map[string]string{
+		publicread.GetRunGenesisOperation: "genesis", publicread.GetRunReplayLogOperation: "replay-log", publicread.GetRunVerdictOperation: "verdict",
+	} {
+		requests[id] = []string{
+			"/api/public/v1/runs/" + secrets["company_stream_id"] + "/1/" + suffix,
+			"/api/public/v1/runs/" + secrets["company_stream_id"] + "/999/" + suffix,
+		}
+	}
 	for _, category := range []string{"any_percent", "ethical_percent", "hundred_percent", "low_percent", "valuation"} {
 		requests[publicread.ListBoardOperation] = append(requests[publicread.ListBoardOperation],
 			fmt.Sprintf("/api/public/v1/boards/%s?epoch=%d&mandate=0&variables=%s", category, page.Items[0].EpochID, variables))
@@ -1697,7 +1708,14 @@ func assertPublicSurfacePrivacy(t *testing.T, server *httptest.Server, secrets m
 		for _, path := range paths {
 			response := compositionRequest(t, server.Client(), http.MethodGet, server.URL+path, "", "")
 			body := responseBody(response)
-			if response.StatusCode != http.StatusOK {
+			wantStatus := http.StatusOK
+			if operation.ID == publicread.GetRunGenesisOperation || operation.ID == publicread.GetRunReplayLogOperation || operation.ID == publicread.GetRunVerdictOperation {
+				wantStatus = http.StatusNotFound
+				if body != "{\"category\":\"unknown_id\",\"detail\":\"run\"}\n" || response.Header.Get("ETag") != "" || response.Header.Get("Cache-Control") != "" || response.Header.Get(publicread.EvidenceHashHeader) != "" {
+					t.Fatalf("private/unknown evidence must refuse identically without cache/hash: %s %v %s", path, response.Header, body)
+				}
+			}
+			if response.StatusCode != wantStatus {
 				t.Fatalf("privacy enumeration %s status=%d body=%s", path, response.StatusCode, body)
 			}
 			for name, value := range secrets {
@@ -1708,7 +1726,7 @@ func assertPublicSurfacePrivacy(t *testing.T, server *httptest.Server, secrets m
 			enumerated++
 		}
 	}
-	if enumerated != 9 {
-		t.Fatalf("privacy enumeration covered %d requests, want 9", enumerated)
+	if enumerated != 15 {
+		t.Fatalf("privacy enumeration covered %d requests, want 15", enumerated)
 	}
 }

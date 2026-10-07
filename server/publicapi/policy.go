@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"cloud-clicker/server/httpapi"
@@ -209,8 +210,18 @@ func RequestID(request *http.Request) string {
 	return value
 }
 
-func (runtime *Runtime) WriteCached(response http.ResponseWriter, request *http.Request, class CacheClass, contentType string, body []byte) error {
+// contentHashHeader optionally supplies a raw response's registry-declared C19
+// header. It is emitted only on success/304, never on a limiter rejection.
+func (runtime *Runtime) WriteCached(response http.ResponseWriter, request *http.Request, class CacheClass, contentType string, body []byte, contentHashHeader ...string) error {
 	if runtime == nil || response == nil || request == nil || RequestID(request) == "" || (contentType != ContentJSON && contentType != ContentGzip) {
+		return ErrInvalidPolicy
+	}
+	if len(contentHashHeader) > 1 {
+		return ErrInvalidPolicy
+	}
+	if len(contentHashHeader) == 1 && (!responseHeaderPattern.MatchString(contentHashHeader[0]) ||
+		strings.EqualFold(contentHashHeader[0], "ETag") || strings.EqualFold(contentHashHeader[0], "Cache-Control") ||
+		strings.EqualFold(contentHashHeader[0], "Content-Type") || strings.EqualFold(contentHashHeader[0], "Content-Length") || strings.EqualFold(contentHashHeader[0], "X-Request-ID")) {
 		return ErrInvalidPolicy
 	}
 	cacheControl, ok := runtime.cacheControl(class)
@@ -222,6 +233,9 @@ func (runtime *Runtime) WriteCached(response http.ResponseWriter, request *http.
 	response.Header().Set("Cache-Control", cacheControl)
 	response.Header().Set("ETag", etag)
 	if request.Header.Get("If-None-Match") == etag {
+		if len(contentHashHeader) == 1 {
+			response.Header().Set(contentHashHeader[0], digest)
+		}
 		response.WriteHeader(http.StatusNotModified)
 		return nil
 	}
@@ -235,6 +249,9 @@ func (runtime *Runtime) WriteCached(response http.ResponseWriter, request *http.
 		return nil
 	}
 	response.Header().Set("Content-Type", contentType)
+	if len(contentHashHeader) == 1 {
+		response.Header().Set(contentHashHeader[0], digest)
+	}
 	response.Header().Set("Content-Length", strconv.Itoa(len(body)))
 	response.WriteHeader(http.StatusOK)
 	_, err := response.Write(body)

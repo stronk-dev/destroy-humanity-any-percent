@@ -94,6 +94,57 @@
       ]
     },
     {
+      "id": "get_public_run_genesis",
+      "method": "GET",
+      "path": "/api/public/v1/runs/{stream}/{seq}/genesis",
+      "surface": "public_v1",
+      "auth": "none",
+      "parameters": [
+        "stream={\"format\":\"uuid\",\"type\":\"string\"}",
+        "seq={\"maximum\":9007199254740991,\"minimum\":1,\"type\":\"integer\"}"
+      ],
+      "responses": [
+        "200:raw:application/json:",
+        "404:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "get_public_run_replay_log",
+      "method": "GET",
+      "path": "/api/public/v1/runs/{stream}/{seq}/replay-log",
+      "surface": "public_v1",
+      "auth": "none",
+      "parameters": [
+        "stream={\"format\":\"uuid\",\"type\":\"string\"}",
+        "seq={\"maximum\":9007199254740991,\"minimum\":1,\"type\":\"integer\"}"
+      ],
+      "responses": [
+        "200:raw:application/gzip:",
+        "404:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "get_public_run_verdict",
+      "method": "GET",
+      "path": "/api/public/v1/runs/{stream}/{seq}/verdict",
+      "surface": "public_v1",
+      "auth": "none",
+      "parameters": [
+        "stream={\"format\":\"uuid\",\"type\":\"string\"}",
+        "seq={\"maximum\":9007199254740991,\"minimum\":1,\"type\":\"integer\"}"
+      ],
+      "responses": [
+        "200:schema:application/json:PublicRunVerdict",
+        "404:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
+      ]
+    },
+    {
       "id": "list_public_board",
       "method": "GET",
       "path": "/api/public/v1/boards/{category}",
@@ -309,6 +360,7 @@
             "recovery_progress",
             "recovery_session",
             "recovery_token",
+            "run",
             "session_id",
             "soul_recovery_cancel",
             "soul_recovery_not_ready",
@@ -2660,6 +2712,57 @@
       "required": [
         "items",
         "next_cursor"
+      ],
+      "type": "object"
+    },
+    "PublicRunVerdict": {
+      "additionalProperties": false,
+      "properties": {
+        "catalog_url": {
+          "type": "string"
+        },
+        "constants_hash": {
+          "format": "sha256-prefixed",
+          "type": "string"
+        },
+        "engine_version": {
+          "format": "semver",
+          "type": "string"
+        },
+        "genesis_sha256": {
+          "format": "sha256-prefixed",
+          "type": "string"
+        },
+        "genesis_url": {
+          "type": "string"
+        },
+        "replay_log_sha256": {
+          "format": "sha256-prefixed",
+          "type": "string"
+        },
+        "replay_log_url": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "verdict": {
+          "enum": [
+            "verified"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "catalog_url",
+        "constants_hash",
+        "engine_version",
+        "genesis_sha256",
+        "genesis_url",
+        "replay_log_sha256",
+        "replay_log_url",
+        "run_id",
+        "verdict"
       ],
       "type": "object"
     },

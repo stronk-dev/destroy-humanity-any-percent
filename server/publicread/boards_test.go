@@ -76,7 +76,7 @@ func boardRouterWithRoutes(t *testing.T, routes *fakeRoutes) http.Handler {
 func composedTestRouter(t *testing.T, boards *fakeBoards, routes *fakeRoutes) http.Handler {
 	t.Helper()
 	router, err := NewRouter(Dependencies{PolicyJSON: phase0PolicyJSON(t), CursorKeys: CursorKeys{CurrentID: "k1", Current: secret(1)},
-		Epochs: &fakeEpochs{rows: epochRows()}, Boards: boards, Routes: routes,
+		Epochs: &fakeEpochs{rows: epochRows()}, Boards: boards, Routes: routes, Evidence: &fakeEvidence{},
 		Clock: func() time.Time { return time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC) }, Random: rand.Reader})
 	if err != nil {
 		t.Fatal(err)

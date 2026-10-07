@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
 	"time"
 
@@ -18,25 +19,27 @@ import (
 // These tests exercise the real registry-mounted handlers and shared middleware,
 // with controlled reader data and time. They do not prove Postgres or proxy setup.
 type publicCacheFixture struct {
-	router http.Handler
-	now    time.Time
-	epochs *fakeEpochs
-	boards *fakeBoards
-	routes *fakeRoutes
+	router   http.Handler
+	now      time.Time
+	epochs   *fakeEpochs
+	boards   *fakeBoards
+	routes   *fakeRoutes
+	evidence *fakeEvidence
 }
 
 func newPublicCacheFixture(t *testing.T) *publicCacheFixture {
 	t.Helper()
 	fixture := &publicCacheFixture{
-		now:    time.Date(2026, 10, 7, 12, 0, 0, 0, time.UTC),
-		epochs: &fakeEpochs{rows: epochRows()},
-		boards: &fakeBoards{kinds: map[string]leaderboard.RankingKind{"any_percent": leaderboard.RankingTimeMS}, rows: boardRows()},
-		routes: &fakeRoutes{rows: routeRows()},
+		now:      time.Date(2026, 10, 7, 12, 0, 0, 0, time.UTC),
+		epochs:   &fakeEpochs{rows: epochRows()},
+		boards:   &fakeBoards{kinds: map[string]leaderboard.RankingKind{"any_percent": leaderboard.RankingTimeMS}, rows: boardRows()},
+		routes:   &fakeRoutes{rows: routeRows()},
+		evidence: exampleEvidence(),
 	}
 	var err error
 	fixture.router, err = NewRouter(Dependencies{
 		PolicyJSON: phase0PolicyJSON(t), CursorKeys: CursorKeys{CurrentID: "k1", Current: secret(1)},
-		Epochs: fixture.epochs, Boards: fixture.boards, Routes: fixture.routes,
+		Epochs: fixture.epochs, Boards: fixture.boards, Routes: fixture.routes, Evidence: fixture.evidence,
 		Clock: func() time.Time { return fixture.now }, Random: rand.Reader,
 	})
 	if err != nil {
@@ -49,6 +52,7 @@ type publicCacheCase struct {
 	path         string
 	cacheControl string
 	change       func(*publicCacheFixture)
+	contentType  string
 }
 
 func publicCacheCases(t *testing.T) map[string]publicCacheCase {
@@ -56,17 +60,35 @@ func publicCacheCases(t *testing.T) map[string]publicCacheCase {
 	query := url.Values{"epoch": {"8"}, "mandate": {"0"}, "variables": {variablesParam(t, publicapi.BoardVariables{})}}
 	cases := map[string]publicCacheCase{
 		ListBoardOperation: {
-			path: "/api/public/v1/boards/any_percent?" + query.Encode(), cacheControl: "public,max-age=60",
+			path: "/api/public/v1/boards/any_percent?" + query.Encode(), cacheControl: "public,max-age=60", contentType: publicapi.ContentJSON,
 			change: func(fixture *publicCacheFixture) { fixture.boards.rows[0].Key++ },
 		},
 		ListEpochsOperation: {
-			path: "/api/public/v1/epochs", cacheControl: "public,max-age=3600",
+			path: "/api/public/v1/epochs", cacheControl: "public,max-age=3600", contentType: publicapi.ContentJSON,
 			change: func(fixture *publicCacheFixture) { fixture.epochs.rows[0].Name = "Changed epoch" },
 		},
 		ListRoutesOperation: {
-			path: "/api/public/v1/registry/routes", cacheControl: "public,max-age=300",
+			path: "/api/public/v1/registry/routes", cacheControl: "public,max-age=300", contentType: publicapi.ContentJSON,
 			change: func(fixture *publicCacheFixture) { fixture.routes.rows[0].AdoptionCount++ },
 		},
+	}
+	for _, resource := range []struct{ id, suffix, contentType string }{
+		{GetRunGenesisOperation, "genesis", publicapi.ContentJSON},
+		{GetRunReplayLogOperation, "replay-log", publicapi.ContentGzip},
+		{GetRunVerdictOperation, "verdict", publicapi.ContentJSON},
+	} {
+		cases[resource.id] = publicCacheCase{
+			path:         "/api/public/v1/runs/" + evidenceStream + "/1/" + resource.suffix,
+			cacheControl: "public,max-age=31536000,immutable", contentType: resource.contentType,
+			// Reader fault only: stored production evidence is immutable. Verify that
+			// conditional requests cannot mask changed bytes if a source is wrong.
+			change: func(f *publicCacheFixture) {
+				f.evidence.value.Genesis = []byte(`{"v":1,"changed":true}`)
+				f.evidence.value.GenesisSHA256 = fmt.Sprintf("sha256:%x", sha256.Sum256(f.evidence.value.Genesis))
+				f.evidence.value.ReplayLog = append(f.evidence.value.ReplayLog, 0xff)
+				f.evidence.value.ReplayLogSHA256 = fmt.Sprintf("sha256:%x", sha256.Sum256(f.evidence.value.ReplayLog))
+			},
+		}
 	}
 	registry, err := Registry()
 	if err != nil {
@@ -105,16 +127,16 @@ func assertPublicCacheResponse(t *testing.T, response *httptest.ResponseRecorder
 	switch status {
 	case http.StatusOK:
 		want := fmt.Sprintf(`"%x"`, sha256.Sum256(response.Body.Bytes()))
-		if etag != want || response.Header().Get("Content-Type") != publicapi.ContentJSON ||
+		if etag != want || (response.Header().Get("Content-Type") != publicapi.ContentJSON && response.Header().Get("Content-Type") != publicapi.ContentGzip) ||
 			response.Header().Get("Content-Length") != fmt.Sprint(response.Body.Len()) {
-			t.Fatalf("200 must identify the exact served JSON bytes: %v %q", response.Header(), response.Body.String())
+			t.Fatalf("200 must identify the exact served bytes: %v %q", response.Header(), response.Body.String())
 		}
 	case http.StatusNotModified:
 		if response.Body.Len() != 0 || response.Header().Get("Content-Type") != "" || response.Header().Get("Content-Length") != "" {
 			t.Fatalf("304 must be bodiless: %v %q", response.Header(), response.Body.String())
 		}
 	case http.StatusTooManyRequests:
-		if response.Body.String() != "{\"category\":\"rate_limited\",\"detail\":\"ip\"}\n" || response.Header().Get("Content-Type") != publicapi.ContentJSON {
+		if response.Body.String() != "{\"category\":\"rate_limited\",\"detail\":\"ip\"}\n" || response.Header().Get("Content-Type") != publicapi.ContentJSON || response.Header().Get(EvidenceHashHeader) != "" {
 			t.Fatalf("429 must be the typed, non-cacheable limiter response: %v %q", response.Header(), response.Body.String())
 		}
 	default:
@@ -134,9 +156,18 @@ func TestMountedPublicReadsCacheWithoutSpendingTokensAndInvalidateChangedBytes(t
 			first := publicCacheRequest(fixture.router, test.path, "", ip)
 			etag := first.Header().Get("ETag")
 			assertPublicCacheResponse(t, first, http.StatusOK, test.cacheControl, etag)
+			if first.Header().Get("Content-Type") != test.contentType {
+				t.Fatalf("operation %s served the wrong content type: %v", operation, first.Header())
+			}
 			// More cache hits than the real configured burst: none may charge a token.
 			for index := 0; index <= policy.PublicLimiter.Burst; index++ {
-				assertPublicCacheResponse(t, publicCacheRequest(fixture.router, test.path, etag, ip), http.StatusNotModified, test.cacheControl, etag)
+				cached := publicCacheRequest(fixture.router, test.path, etag, ip)
+				assertPublicCacheResponse(t, cached, http.StatusNotModified, test.cacheControl, etag)
+				if operation == GetRunGenesisOperation || operation == GetRunReplayLogOperation {
+					if cached.Header().Get(EvidenceHashHeader) != strings.Trim(etag, `"`) {
+						t.Fatal("raw cached evidence lost its declared hash header")
+					}
+				}
 			}
 			// Exactly burst-1 remaining uncached requests succeed at this frozen time.
 			for index := 1; index < policy.PublicLimiter.Burst; index++ {

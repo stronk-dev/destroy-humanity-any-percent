@@ -804,3 +804,40 @@ Canonical docs and plan updated. Review by: Codex (diff/first-filter); Recorded 
 The complete producer/test/driver/docs/record range after `834369d7` requires designated review;
 no archival or push. Next: C14 HTTP/manifest binding and actual verified-run download proof,
 then continue the catalogs/generated-client/304 contract obligations. Full 1.0 remains active.
+
+## 2026-10-07 — C14 public downloads and real verified-run replay
+
+Batch after `bb84e355`, accepted C2/C4/C14/C19 and A8/C16. Register/mount genesis, replay-log
+and nine-field verdict; preserve stored bytes, pinned references and content-hash headers.
+Only board-authorized evidence is public. Private/unknown runs refuse identically; corrupt
+evidence fails without caching. Existing shared limiter/cache tests now enumerate all six
+public operations. Add raw-header collision refusal, real-account private-run refusal, and
+HTTP downloads from the existing actual queue-verified Exit/board witness. No kernel, archive
+producer, migration, balance, account policy, CI workflow or player copy change.
+
+Verification: full `make test-game-ui-composed` (41927) PASS: 8/8 refresh cases, six mandatory
+Postgres parent tests (including downloads/privacy), main gameplay/Pitch/recovery and Cosmetic.
+Downloaded genesis/archive equal storage bytes and manifest hashes; replay passes with pinned
+DB catalogs; corrupted receipt refuses. Initial implementation run rejected reversed path-param
+order. Download checks then exposed two test-adapter errors: archive embeds compact JSON rather
+than PG's spaced genesis, and full Founder archive history includes Fiscal events outside the
+database verifier's Company/founder_advanced projection. Correct only those comparisons/adapters;
+retain exact download/storage bytes and corruption rejection. Runs 52239/31541/23348/90340
+remain recorded failures, not production fixes or green evidence. No retries or bounds loosened.
+Cold seven affected Go packages (71228), selected vet, typecheck (47720), and diff check PASS.
+Final publicread rerun (8906) PASS after preserving exact per-operation media-type assertions.
+
+Regenerate OpenAPI/TS (17 operations). Old compatibility pin passes before refresh. `api-pin`
+also included earlier Garden/UI additions; retain only its generated three evidence rows,
+PublicRunVerdict and APIError response detail `run`, under C2's additive law and C4/C14/C19.
+Previous baseline rows/schemas remain unchanged; unrelated additions are not re-baselined here.
+Final staged `make api-check` PASS; fixture DB sessions and owned listener ports absent.
+All verification handles terminal before edits. Cleanup check's first invocation used the
+wrong fixture role and failed; the corrected declared user/database check succeeds.
+
+Review by: Codex (diff/first-filter only); Recorded by: Codex. Designated review of the entire
+range after `bb84e355` remains required; no archival, push or hosted/full-CI claim. Public
+catalogs, TypeScript raw transport/reverification, cross-epoch retrieval and bodiless-304
+registry metadata remain open. This is a same-epoch Go download proof, not the whole public
+verification loop or full nine-tier 1.0. Next: catalog-owner descriptors and public catalog
+serving under C18; no current-byte fallback for missing historical artifacts.

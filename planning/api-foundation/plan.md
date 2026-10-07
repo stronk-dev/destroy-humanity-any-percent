@@ -12,7 +12,10 @@ RFC: `rfc/api-foundation.md`
   - [x] Resolve C19's raw response arm.
   - [x] C14 repository source: board-record authorization, exact immutable bytes/pinned metadata,
     hash consistency and real-Postgres refusal tests.
-  - [ ] C14 HTTP handlers/manifest descriptors and a real verified-run download round trip.
+  - [x] C14 HTTP handlers/manifest descriptors and a real verified-run download round trip
+    (TestComposedGameserverExitVerificationAndBoardIntegration; pinned catalogs supplied from DB).
+  - [ ] Complete the third-party loop using public catalogs and the TypeScript verifier;
+    same-epoch Go download proof does not close this requirement.
 - [x] Generate OpenAPI 3.1 and TypeScript from the registry; add compatibility pins/gate.
 - [ ] Compose the public router, full-registry privacy/conformance integration, canonical docs,
   independent full-range review, and archive.

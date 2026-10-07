@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -55,6 +56,7 @@ type Dependencies struct {
 	Epochs     EpochReader
 	Boards     BoardReader
 	Routes     RouteReader
+	Evidence   EvidenceReader
 	Clock      func() time.Time
 	Random     io.Reader
 }
@@ -64,7 +66,7 @@ var notFound = []byte(`{"category":"unknown_id","detail":"route"}` + "\n")
 // NewRouter mounts every public operation from the public registry, and only
 // those, behind the shared request-ID middleware.
 func NewRouter(dependencies Dependencies) (http.Handler, error) {
-	if dependencies.Epochs == nil || dependencies.Boards == nil || dependencies.Routes == nil || dependencies.Clock == nil || dependencies.Random == nil {
+	if dependencies.Epochs == nil || dependencies.Boards == nil || dependencies.Routes == nil || dependencies.Evidence == nil || dependencies.Clock == nil || dependencies.Random == nil {
 		return nil, ErrComposition
 	}
 	policy, err := publicapi.LoadPolicy(dependencies.PolicyJSON)
@@ -99,6 +101,10 @@ func NewRouter(dependencies Dependencies) (http.Handler, error) {
 		{OperationID: ListEpochsOperation, Handler: EpochsHandler{Registry: registry, Cursors: cursors, Runtime: runtime, Epochs: dependencies.Epochs}},
 		{OperationID: ListRoutesOperation, Handler: RoutesHandler{Registry: registry, Cursors: cursors, Runtime: runtime, Routes: dependencies.Routes}},
 	}
+	for _, id := range []string{GetRunGenesisOperation, GetRunReplayLogOperation, GetRunVerdictOperation} {
+		bindings = append(bindings, publicapi.Binding{OperationID: id, Handler: EvidenceHandler{OperationID: id, Registry: registry, Runtime: runtime, Evidence: dependencies.Evidence}})
+	}
+	sort.Slice(bindings, func(i, j int) bool { return bindings[i].OperationID < bindings[j].OperationID })
 	if err := registry.Mount(router, bindings, nil); err != nil {
 		return nil, errors.Join(ErrComposition, err)
 	}

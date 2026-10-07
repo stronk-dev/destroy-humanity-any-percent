@@ -57,6 +57,7 @@
               "recovery_progress",
               "recovery_session",
               "recovery_token",
+              "run",
               "session_id",
               "soul_recovery_cancel",
               "soul_recovery_not_ready",
@@ -3324,6 +3325,57 @@
         ],
         "type": "object"
       },
+      "PublicRunVerdict": {
+        "additionalProperties": false,
+        "properties": {
+          "catalog_url": {
+            "type": "string"
+          },
+          "constants_hash": {
+            "format": "sha256-prefixed",
+            "type": "string"
+          },
+          "engine_version": {
+            "format": "semver",
+            "type": "string"
+          },
+          "genesis_sha256": {
+            "format": "sha256-prefixed",
+            "type": "string"
+          },
+          "genesis_url": {
+            "type": "string"
+          },
+          "replay_log_sha256": {
+            "format": "sha256-prefixed",
+            "type": "string"
+          },
+          "replay_log_url": {
+            "type": "string"
+          },
+          "run_id": {
+            "type": "string"
+          },
+          "verdict": {
+            "enum": [
+              "verified"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "catalog_url",
+          "constants_hash",
+          "engine_version",
+          "genesis_sha256",
+          "genesis_url",
+          "replay_log_sha256",
+          "replay_log_url",
+          "run_id",
+          "verdict"
+        ],
+        "type": "object"
+      },
       "SoulRecoveryFinishRequest": {
         "additionalProperties": false,
         "properties": {
@@ -3778,6 +3830,230 @@
               }
             },
             "description": "HTTP 400"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
+          }
+        }
+      }
+    },
+    "/api/public/v1/runs/{stream}/{seq}/genesis": {
+      "get": {
+        "operationId": "get_public_run_genesis",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "stream",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "seq",
+            "required": true,
+            "schema": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "HTTP 200",
+            "headers": {
+              "X-Content-SHA256": {
+                "required": true,
+                "schema": {
+                  "format": "sha256",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 404"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
+          }
+        }
+      }
+    },
+    "/api/public/v1/runs/{stream}/{seq}/replay-log": {
+      "get": {
+        "operationId": "get_public_run_replay_log",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "stream",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "seq",
+            "required": true,
+            "schema": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/gzip": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "HTTP 200",
+            "headers": {
+              "X-Content-SHA256": {
+                "required": true,
+                "schema": {
+                  "format": "sha256",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 404"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
+          }
+        }
+      }
+    },
+    "/api/public/v1/runs/{stream}/{seq}/verdict": {
+      "get": {
+        "operationId": "get_public_run_verdict",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "stream",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "seq",
+            "required": true,
+            "schema": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicRunVerdict"
+                }
+              }
+            },
+            "description": "HTTP 200"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 404"
           },
           "429": {
             "content": {

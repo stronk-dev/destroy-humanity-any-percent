@@ -80,6 +80,7 @@ func Schemas() []publicapi.NamedSchema {
 	}
 	schemas = append(schemas, boardSchemas()...)
 	schemas = append(schemas, routeSchemas()...)
+	schemas = append(schemas, evidenceSchemas()...)
 	sort.Slice(schemas, func(left, right int) bool { return schemas[left].Name < schemas[right].Name })
 	return schemas
 }
@@ -90,7 +91,7 @@ func Operations() []publicapi.Operation {
 	errorResponse := func(status int, body ...[]byte) publicapi.Response {
 		return publicapi.Response{Kind: publicapi.ResponseSchema, Status: status, ContentType: publicapi.ContentJSON, SchemaRef: "APIError", ExactJSON: body}
 	}
-	return []publicapi.Operation{boardOperation(errorResponse), {
+	operations := []publicapi.Operation{boardOperation(errorResponse), {
 		ID: ListEpochsOperation, Method: http.MethodGet, Path: "/api/public/v1/epochs",
 		Surface: publicapi.SurfacePublicV1, Auth: publicapi.AuthNone, Public: true,
 		Query: []publicapi.QueryParameter{
@@ -105,6 +106,7 @@ func Operations() []publicapi.Operation {
 			errorResponse(http.StatusInternalServerError, internalPublic),
 		},
 	}, routesOperation(errorResponse)}
+	return sortOperations(append(operations, evidenceOperations(errorResponse)...))
 }
 
 // Registry is the immutable public-read authority used for mounting, cursor
