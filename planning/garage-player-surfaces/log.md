@@ -1952,3 +1952,31 @@ to grow a count. New exact span beginsa42406f0 exclusive THROUGH final
 records and needs Claude. Prior HTTP-consumer6d700838..a42406f0, notice
 e950216a..6d700838 and all preceding spans remain independent. No boxes/
 status/archive/mint/push; full nine-tier1.0 remains active/progress.
+
+## 2026-10-07 — GS1–GS6 acceptance reconciliation predeclared
+
+Resume cleanfc911784. Inventory all29 named GS1–GS6 gates and eight overall
+RFC criteria against current producer/consumer/content/test/runtime records;
+write acceptance-evidence.md with exact source coordinate, evidence scope,
+named open gate and next route. No status/checkbox promotion, no assumption
+that historical composed/native proofs execute on this source or cover all
+fixtures/engines/default players. Review obligations remain independent.
+Cold focused gameui/fiscal/achievements/meters Go population through root
+Make, -count=1 and verbose explicit SQL skips; native browser populations
+only after own bounded predeclaration. Docker RP-236 remains; no run/cleanup.
+
+Source reconciliation identifies a candidate GS0.5 gap: Achievements.title
+and Meters.band throw on unavailable presentation/copy, and no host boundary
+renders common.surface_error while preserving other surfaces. Inspect actual
+decoder admission before calling this a defect; malformed wire is distinct
+from decoder-legal unresolved presentation. If legal, predeclare two native
+error-state cases (unknown achievement copy and declared unknown meter band)
+with healthy controls, exact existing alert text, no mechanical leak/intent,
+one invariant and operable other navigation. Observe errors explicitly;
+expected render crashes are baseline evidence, not passing acceptance. No
+production edits in this audit range; a repair requires separate scope.
+Missing specified copy remains an author hold, never invented prose.
+
+New documentation/evidence range beginsfc911784 exclusive through final
+tracking and needs Claude. Goal remains full nine-tier1.0; no archive/mint/
+CI/copy/kernel/schema/owner decision/push, no test-count completion proxy.
