@@ -5,8 +5,9 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint (2026-10-07):** public-board error masking (RP-367) and Gate/Decline
-concurrent reads (RP-369) are locally corrected, with regressions and real main-journey evidence.
+**Current checkpoint (2026-10-07):** public-board error masking (RP-367), Gate/Decline
+concurrent reads (RP-369) and late receipt duplicate reads (RP-370) are locally corrected,
+with regressions and real main-journey evidence.
 The latest whole composed target passes after fixing the observed Cosmetic driver activation
 race (RP-364). Its original untraced timeout and the instrumented Pitch `429` (RP-368) remain
 open; a different random passing population does not prove reliability or repair the limiter.

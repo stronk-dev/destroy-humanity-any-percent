@@ -409,6 +409,11 @@ next action uses the updated Founder or Company revision even if the stream rece
 Gate and Decline share an in-flight stream-triggered refresh instead of starting a parallel read.
 If that read predates the commit (its Company revision is below the applied receipt's
 `new_revision`), the host obtains a fresh snapshot before enabling the next action.
+The runtime preserves an applied stream receipt's intent ID. The host remembers only its last
+local intent covered by a successful read started after the HTTP response; that intent's late
+receipt does not repeat the main read. Reused pre-response reads, failures, other or unidentified
+receipts remain conservative. The marker resets on Company identity changes. Garden advisory
+invalidation still runs independently, since the main snapshot does not contain its DTO.
 HTTP429 rate limits and `not_eligible/exclusive_activity` rejections also trigger
 that authoritative refresh. Pending controls cannot reactivate while it is held;
 the response never retries the rejected command. A subsequent player action

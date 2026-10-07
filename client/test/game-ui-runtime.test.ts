@@ -195,6 +195,27 @@ describe("browser Game UI runtime", () => {
     });
   });
 
+  it("preserves applied receipt identity without inventing one for other payloads", () => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const socket = new FakeSocket();
+    const runtime = createBrowserGameUIRuntime(storage, fetch, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+    const received: unknown[] = [];
+    const dispose = runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    openAndConnect(socket); subscribeReplies(socket);
+    const intentID = "01985555-1111-7111-8111-111111111119";
+    const payloads = [{ outcome: "applied", intent_id: intentID, new_revision: 2 },
+      { outcome: "applied", founder_revision: 8 }, { outcome: "rejected", intent_id: intentID },
+      { outcome: "applied", intent_id: 42 }];
+    for (const [index, payload] of payloads.entries()) publication(socket, `player:${snapshot.run.founder_id}`, index + 1, {
+      v: 2, ch: `player:${snapshot.run.founder_id}`, kind: "receipt", rev: 2,
+      constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:00Z", payload,
+    });
+    expect(received).toEqual([{ kind: "transport_recovered" }, { kind: "receipt", intentID },
+      { kind: "receipt" }, { kind: "receipt" }, { kind: "receipt" }]);
+    dispose();
+  });
+
   it("treats an already-consumed channel offset as delivered without re-emitting or resyncing", () => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));

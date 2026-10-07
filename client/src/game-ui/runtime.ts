@@ -19,7 +19,7 @@ export type GameUIRuntimeMessage =
   | Readonly<{ kind: "announcement"; scope: "company" | "founder"; value: GameUIAnnouncementEvent }>
   | Readonly<{ kind: "historical_event"; revision: number; scope: "company" | "founder"; eventID: string; eventKind: string; value: Readonly<Record<string, unknown>> }>
   | Readonly<{ kind: "presence"; count: number }>
-  | Readonly<{ kind: "receipt" }>
+  | Readonly<{ kind: "receipt"; intentID?: string }>
   | Readonly<{ kind: "snapshot"; value: ParsedGameUISnapshot }>
   | Readonly<{ kind: "system"; value: GameUISystemEvent }>
   | Readonly<{ kind: "transport_recovered" }>
@@ -258,7 +258,9 @@ export function createBrowserGameUIRuntime(
             else if (announcement) listener({ kind: "announcement", scope, value: announcement });
           }
         } else if (envelope.kind === "receipt") {
-          listener({ kind: "receipt" });
+          const intentID = envelope.payload.outcome === "applied" && typeof envelope.payload.intent_id === "string"
+            ? envelope.payload.intent_id : undefined;
+          listener(intentID === undefined ? { kind: "receipt" } : { kind: "receipt", intentID });
         } else if (envelope.kind === "presence" && envelope.ch === "world") {
           listener({ kind: "presence", count: envelope.payload.count as number });
         } else if (envelope.kind === "snapshot" && envelope.ch === "world") {

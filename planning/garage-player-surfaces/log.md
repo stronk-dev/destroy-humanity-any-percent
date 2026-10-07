@@ -5962,3 +5962,26 @@ Handles terminal, owned ports absent and fixture other sessions0. Review by: Cod
 (first-filter). Recorded by: Codex. Range starts afteracf7ec76 through this batch's commit;
 designated review pending, no archival/push. Next: Cosmetic AC14 input actionability and the
 remaining late-receipt/budget interaction; other Garage/CI/full nine-tier gates remain open.
+
+## 2026-10-07 — late receipt main-read deduplication (RP-370)
+
+Accepted GS0.2 fix: runtime preserves applied receipt intent ID; host remembers only its last
+local intent covered by a successful read started after HTTP completion. That late receipt
+does not repeat the main read. Shared pre-response/failed reads and other/unknown receipts
+still refresh; Company identity resets the marker, terminal behavior and Garden invalidation
+remain intact. No rate limit, retry, deadline, copy, wire or kernel change.
+Old runtime62957 fails identity assertion; old mounted host61798 fails expected1 read/got2.
+Initial browser startup was denied loopback before tests; narrow escalation ran the regression.
+Final runtime58301:28 PASS; affected screen/Garden81345:76 Chromium/WebKit PASS/4 explicit
+performance skips. Cases include native Enter, failed-read recovery, unknown/other IDs,
+pending stream read ordering, next revision and Garden's separate advisory re-read.
+Typecheck60955:0 errors/warnings; build49942:214 modules PASS; diff PASS.
+Whole make test-game-ui-composed84015 PASS:8 refresh/Postgres API cases, persisted Fiscal,
+epoch boundary and public boards, real Fiscal refusals/fresh consent, purchase/achievement,
+Lucky claim, Pitch, both endings/continuation/recovery and Cosmetic/adoption/care/reloads.
+Main102 issued/12.737s/peak27/s; GS2 ten intents/ten state reads, GS5 fourteen/fifteen.
+Cosmetic N5:71 requests/no violation. All handles terminal, owned ports absent/DB sessions0.
+This repairs a proved duplicate path, not RP-368's retained actual429 or reliability; populations
+and timing differ. Next: shared account request budget, not a larger ceiling or automatic retry.
+Review by: Codex (first-filter); Recorded by: Codex. Exact range after5b6157e3 through this
+batch's commit needs designated review. No archival/push/full-CI or nine-tier release claim.

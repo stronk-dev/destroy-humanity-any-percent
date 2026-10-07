@@ -82,7 +82,9 @@
   let unsubscribeShell = () => {};
   let unsubscribe = () => {};
   let tick: ReturnType<typeof setInterval> | undefined;
-  let refreshTask: Promise<void> | undefined;
+  let refreshTask: Promise<boolean> | undefined;
+  // Bounded to one local command. Unknown/older receipts remain conservative.
+  let lastRefreshedIntentID: string | undefined;
   let actionTask: Promise<void> | undefined;
   let activeActionKind: string | undefined;
 
@@ -128,6 +130,7 @@
     const nextRunIdentity = `${value.run.founder_id}\0${value.run.run_seq}\0${value.run.category}`;
     if (runIdentity !== nextRunIdentity) {
       runIdentity = nextRunIdentity;
+      lastRefreshedIntentID = undefined;
       splits = [];
       personalBestMS = priorPersonalBest(readLocalTiming(localTimingStorage(), value.run.founder_id), value.run.founder_id, value.run.run_seq, value.run.category);
     }
@@ -140,12 +143,12 @@
     offline = false;
   }
 
-  function refresh(): Promise<void> {
+  function refresh(): Promise<boolean> {
     if (refreshTask) return refreshTask;
     refreshPending = true;
     refreshTask = (async () => {
-      try { bindSnapshot(await runtime.snapshot()); }
-      catch { offline = true; }
+      try { bindSnapshot(await runtime.snapshot()); return true; }
+      catch { offline = true; return false; }
       finally { refreshPending = false; refreshTask = undefined; }
     })();
     return refreshTask;
@@ -188,7 +191,8 @@
         intentNotice = null;
         intentNoticeOwner = noticeOwner;
         const expected = options.scope === "founder" ? founderRevision! : snapshot!.revision;
-        const outcome = await runtime.intent({ intent_id: newIntentID(), expected_revision: expected, ...body });
+        const intentID = newIntentID();
+        const outcome = await runtime.intent({ intent_id: intentID, expected_revision: expected, ...body });
         const notice = noticeForOutcome(outcome, options.rejections);
         if (notice.invariant) console.error("game UI invariant: intent rejection");
         intentNotice = outcome.outcome === "applied" && options.applied ? options.applied(outcome.receipt) : notice.notice;
@@ -197,13 +201,21 @@
         else if (outcome.outcome === "applied") {
           // GS0.2: keep controls pending until the next intent can bind to the
           // authoritative revision, even when its stream receipt arrives late.
-          await refresh();
+          let postResponseRead = refreshTask === undefined;
+          let refreshed = await refresh();
           // Gate/Decline used to bypass coalescing. Reuse an in-flight read,
           // but not its result if it sampled before this command committed.
           const appliedRevision = outcome.receipt.new_revision;
           if (!offline && (kind === "cross_gate" || kind === "decline_exit_offer") &&
               typeof appliedRevision === "number" && Number.isSafeInteger(appliedRevision) &&
-              snapshot && snapshot.revision < appliedRevision) await refresh();
+              snapshot && snapshot.revision < appliedRevision) {
+            postResponseRead = true;
+            refreshed = await refresh();
+          }
+          // The stream may deliver this same persisted receipt after HTTP and
+          // its read have finished. Only a successful read STARTED after the
+          // response covers it; a reused pre-commit read or a failure does not.
+          if (refreshed && postResponseRead && outcome.receipt.intent_id === intentID) lastRefreshedIntentID = intentID;
         }
       } catch (error) {
         const notice = noticeForError(error);
@@ -285,7 +297,7 @@
     // the player explicitly continues.
     if (message.kind === "receipt") {
       if (!ended) {
-        void refresh();
+        if (offline || message.intentID === undefined || message.intentID !== lastRefreshedIntentID) void refresh();
         // SG10: the main snapshot does not carry Garden's advisory DTO.
         // Receipt publications must invalidate the mounted Garden read too.
         gardenRefresh += 1;

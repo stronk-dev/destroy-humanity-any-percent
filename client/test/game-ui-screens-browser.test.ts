@@ -262,7 +262,8 @@ for (const [kind, beforeCommit] of [
 
       const committed = { ...snapshot, revision: 2, run: { ...snapshot.run, tier: 1 },
         transitions: { cross_gate: null, wind_down: { eligible: true } } };
-      runtime.intentOutcome = { outcome: "applied", receipt: { new_revision: 2 } };
+      const intentID = runtime.requests[0].intent_id as string;
+      runtime.intentOutcome = { outcome: "applied", receipt: { intent_id: intentID, new_revision: 2 } };
       if (!beforeCommit) runtime.current = committed;
       runtime.snapshotCalls = 0;
       if (kind === "cross_gate" && !beforeCommit) runtime.listener?.({ kind: "event", revision: 2, scope: "company", value: crossed });
@@ -281,6 +282,11 @@ for (const [kind, beforeCommit] of [
       }
       expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
       expect(runtime.requests).toHaveLength(1);
+      runtime.listener?.({ kind: "receipt", intentID }); await settle();
+      // A shared read started before HTTP completion is not marked covered.
+      // The pre-commit arm needed a new post-response read, so its ID is covered.
+      expect(runtime.snapshotCalls, "coverage requires a successful post-response read, not merely an awaited task").toBe(2);
+      releaseReads.splice(0).forEach((release) => release()); await settle();
       app.fixtureSurface("desk"); await settle();
       const windDown = [...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")!;
       expect(windDown.disabled).toBe(false);
@@ -290,6 +296,46 @@ for (const [kind, beforeCommit] of [
       releaseIntent(); releaseReads.splice(0).forEach((release) => release());
       await settle(); await unmount(app as never); target.remove();
     }
+  });
+}
+
+for (const failedRead of [false, true]) {
+  it.skipIf(typeof document === "undefined")(`late receipt ${failedRead ? "retries a failed read" : "does not repeat the successful post-response read"} (GS0.2)`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    class AppliedRuntime extends FixtureRuntime {
+      override async intent(body: Readonly<Record<string, unknown>>): Promise<IntentOutcome> {
+        this.requests.push(body);
+        this.current = { ...snapshot, revision: 2 };
+        this.failSnapshot = failedRead;
+        return { outcome: "applied", receipt: { intent_id: body.intent_id, new_revision: 2 } };
+      }
+    }
+    const runtime = new AppliedRuntime(true);
+    const target = document.createElement("div"); document.body.append(target);
+    const app = mount(GameUIApp, { target, props: { runtime } });
+    const settle = async () => {
+      for (let step = 0; step < 4; step++) { await new Promise((resolve) => setTimeout(resolve, 0)); await tick(); flushSync(); }
+    };
+    try {
+      await settle(); runtime.snapshotCalls = 0;
+      const control = target.querySelector<HTMLButtonElement>(".manual button")!;
+      control.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(runtime.requests).toHaveLength(1);
+      expect(runtime.requests[0]).toMatchObject({ kind: "perform_manual_batch", expected_revision: 1 });
+      expect(runtime.snapshotCalls).toBe(1);
+      runtime.failSnapshot = false;
+      const intentID = runtime.requests[0].intent_id as string;
+      runtime.listener?.({ kind: "receipt", intentID }); await settle();
+      expect(runtime.snapshotCalls, "only a successful post-response read may cover the late receipt").toBe(failedRead ? 2 : 1);
+      expect(runtime.requests).toHaveLength(1);
+      expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+      runtime.listener?.({ kind: "receipt", intentID: "01985555-1111-7111-8111-111111111119" }); await settle();
+      runtime.listener?.({ kind: "receipt" }); await settle();
+      expect(runtime.snapshotCalls, "other and unidentified receipts still refresh").toBe(failedRead ? 4 : 3);
+      control.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(runtime.requests).toHaveLength(2);
+      expect(runtime.requests[1]).toMatchObject({ kind: "perform_manual_batch", expected_revision: 2 });
+    } finally { await unmount(app); target.remove(); }
   });
 }
 

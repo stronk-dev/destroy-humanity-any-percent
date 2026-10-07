@@ -50,10 +50,10 @@ class Socket {
     this.emit("open"); this.reply({ id: 1, connect: {} });
     for (const id of [2, 3]) this.reply({ id, subscribe: { recoverable: true, positioned: true, recovered: false, epoch: `epoch-${id}`, offset: 0, publications: [] } });
   }
-  receipt() {
+  receipt(intentID?: string) {
     this.reply({ push: { channel: `player:${founderID}`, pub: { offset: 1, data: {
       v: 2, ch: `player:${founderID}`, kind: "receipt", rev: 8, constants_hash: constantsHash,
-      ts: "2026-10-06T02:00:00Z", payload: { outcome: "applied", founder_revision: 8 },
+      ts: "2026-10-06T02:00:00Z", payload: { outcome: "applied", founder_revision: 8, ...(intentID === undefined ? {} : { intent_id: intentID }) },
     } } } });
   }
 }
@@ -179,6 +179,27 @@ it.skipIf(!browser)("Garden host rejection displays Garden detail and refreshes 
     expect(cell(host.target, 0, 0).dataset.stage).toBe("mature");
     expect(cell(host.target, 0, 0).disabled).toBe(false);
     expect(host.reads()).toBe(3); host.assertHTTP();
+  } finally { await host.dispose(); }
+});
+
+it.skipIf(!browser)("Garden host keeps advisory invalidation when a late receipt's main read is already covered", async () => {
+  const host = await mounted();
+  try {
+    button(host.target, "Server Garden").click(); await settle();
+    button(host.target, "Mainframe").click(); await settle();
+    const intent = host.intents()[0]!;
+    const next = active(8); next.garden.substrate_id = "mainframe";
+    next.garden.substrate_lockout_until_ms = next.server_ms + 600_000;
+    host.set(next, 8);
+    host.acknowledge({ outcome: "applied", intent_id: intent.intent_id, kind: "garden_set_substrate", founder_revision: 8 });
+    await settle();
+    const mainReads = host.requests.filter((request) => request.path === "/api/v1/founder/state").length;
+    const gardenReads = host.reads();
+    host.socket.receipt(intent.intent_id as string); await settle();
+    expect(host.requests.filter((request) => request.path === "/api/v1/founder/state")).toHaveLength(mainReads);
+    expect(host.reads()).toBe(gardenReads + 1);
+    expect(button(host.target, "Mainframe").getAttribute("aria-pressed")).toBe("true");
+    expect(host.intents()).toHaveLength(1); host.assertHTTP();
   } finally { await host.dispose(); }
 });
 
