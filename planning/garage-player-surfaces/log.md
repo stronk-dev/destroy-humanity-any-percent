@@ -4886,3 +4886,61 @@ an invented JS cause. Native sample output may locate execution/serialization/
 source-map/teardown only if its actual stack supports that inference. Research
 exit is bounded attributed evidence or explicit unsupported attribution, not a
 claim the runner is repaired. No acceptance checkbox or archival/status promotion.
+
+### R-013 first observation — both former stalls complete, attribution unresolved
+
+Predeclaration25971114; source coordinate fc901f70, final driver2040c434 unchanged.
+OS20b142: Darwin27.0.0/ARM64_T6031; lock SHA8825a9d8815bbf8aa91a87c71734cb7360f0f60c206c86312d69ef645ab094e3;
+browser config SHAada11b645b62ab03ebb539ec4bd49b05ff2625435f18a19f00461f6d310481a0.
+Five serial full arms, each24 selected native executions /626 unselected declarations:
+
+| Arm | Launch → terminal | Result | Native duration / source coordinate |
+|---|---|---|---|
+| Healthy |375be4 →6b0b73|Make0,24pass; separate performance2pass|5.98s, baseline hashes|
+| Direct receipt notice=null |42b977 →bb1013|Make2/child1,24fail|6.11s; host ffec9f9ba657771fd92d08841e73c480d594294d14e7e090283e00174106efd3|
+| false&&pending |217c89 →bfed22|Make2/child1,24fail|4.78s; Fiscal7a2d30522aa160d6efecbac9109dc241ca0fd766e8f852db464aa9b5f3dbe264|
+| No-notice applied mapping |eee49d →16e770|Make2/child1,24fail|4.10s; host295886f35dd0887c2b445cb5566a2dd39bea1d2ba1241ab426527b0f42eec917|
+| Wrong pending text |079d7c →3332f7|Make2/child1,24fail|3.07s; Fiscal2cf08d21d5d0ff38487682513300350e60a216c08385a872622c866d21acdc3b|
+
+No stalled arm reproduced; no manual stop/restart/timeout relaxation. Each arm's
+actual baseline restoration: af4a16/a77170/d20875/7ba87a, all full three-file
+hashes equal the declared baseline. One initial context-mismatched patch refused
+before any fault launch; it changed no source. Final restored healthya5e434 →
+9708d0 Make0,24pass/626 unselected,13.10s, separate performance2pass/22 unselected,
+2.08s. No product diff or live51204 listener at closeout. Final driver matches
+the earlier full694/client9816/copy verification exactly; no hosted/SQL claim.
+
+Diagnostic controls exposed limits, not a cause. Healthy76987, direct79213 and
+pending81049 listener PIDs independently identified; ps/sample attempts find them
+already gone (12160f/dde166,388b8d/163509,4e2172/e721a5). No samples to interpret.
+Mapping control84238: sandbox sample63b359 denied privileges; narrow escalated
+attempt0d26c9 then finds it gone. This is not a successful profile. Pending-text
+control85425 identified4b62a0, narrow read-only samplee39f70 →f06dc5 exits0.
+Actual report timestamp11:48:15.668+0200, launch11:48:13.078, **Call graph empty**,
+recursive/top-of-stack sections empty; binary-image listing alone locates no JS
+phase. Raw temporary report SHAfb75896f20c8f768ad87cb54accd42ed74a194c4919dc41f4e468b39ab0341c6,
+`/private/tmp/cloud-clicker-r013.tBWZ32/pending-control.sample.txt`; header/empty
+sections retained here, not treating sample exit0 as informative stack evidence.
+No process signals, unrelated process/private argument/environment inspection,
+profiler flags, dependencies, cache purge, budgets, reporter or workflow changes.
+
+Bounded observation COMPLETE with an uninformative attribution result. RP-351
+symptom/cause remains OPEN; prior forced-stopped runs stay incomplete, not
+restamped onto these complete faults. Cache/compilation/serialization/teardown,
+RP-348 and hosted causality all unsupported. Future recurrence should sample
+the proven live runner immediately under a separately declared diagnostic scope;
+no endless rerun campaign or speculative repair follows from this wave.
+
+Review by: Codex (research/implementer first filter). Recorded by: Codex.
+Exact source restoration, executed full populations/terminal codes, profile
+failure/empty-graph limits and no product/CI diff inspected. Entire
+fc901f70-exclusive through containing research records, including25971114, needs
+Claude's designated pass; c24b8f6d..fc901f70 and every earlier range independently
+owed. No boxes/status/body/archival/mint/push/release promotion.
+
+Next accepted-source inspection: OpportunityRegion's Claim is still
+`disabled={pending || !controlsEnabled}`, without common.pending/aria-disabled,
+contrary to GS0.8. RP-352 records this source fact, not an executed focus defect.
+Existing GS5 keyboard proof settles replies immediately; predeclare held native
+intent/read/focus/duplicate proof before any repair. RP-313 wire/body ruling
+remains author-owned and independent; preserve current compatibility inputs.

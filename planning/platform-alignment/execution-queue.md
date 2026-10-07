@@ -3,6 +3,18 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Runner diagnostic checkpoint — 2026-10-07
+
+R-013 under25971114: five complete24-execution arms; healthy passes, both former
+stall faults and semantic controls fail normally. No stall reproduced; gone
+processes/denied sample/empty native call graph do not attribute a phase. Bounded
+wave complete, RP-351 cause remains OPEN; no speculative repair or repeat loop.
+Exact source restoration/final healthy24 plus performance2 recorded. Research
+span fc901f70-exclusive needs Claude separately from Fiscalc24b8f6d..fc901f70
+and all older spans. **NEXT:** predeclare RP-352 native held Opportunity Claim
+audit under accepted GS0.6/0.8/GS5; source pending-state mismatch already recorded.
+RP-313 author wire-body hold and every real-service/capacity/1.0 gate remain.
+
 ## Fiscal native pending/receipt-focus checkpoint — 2026-10-07
 
 Test-only RP-349 under aa296eba:24 native paths for harvest/level/unlock at

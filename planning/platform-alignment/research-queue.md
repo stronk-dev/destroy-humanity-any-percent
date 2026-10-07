@@ -449,3 +449,14 @@ needs Claude; no other queue or full1.0 gate closes by implication.
 - **Cannot authorize:** larger timeouts, retries, reporter/browser/population
   exclusions, dependency/workflow changes, incomplete-result acceptance, global
   CI/hosted claims, production changes, archival or release status promotion.
+
+**First bounded observation,25971114:** healthy24pass; both recorded stalled
+source faults and both semantic controls complete24 failures each on driver
+2040c434. No stall reproduced. Early processes already exited; one denied sample
+and a later empty-call-graph sample yield no phase attribution. Source restored
+after every arm, final healthy24pass plus performance2pass. This wave completes
+with an explicit uninformative result; RP-351 remains OPEN, no cache/compiler/
+serialization/teardown/hosted/RP-348 cause or repair inferred. Exact evidence and
+source/lock/config/profile hashes in Garage log. Sample a proven live runner on
+a future recurrence under separately declared scope; no speculative repair or
+unbounded repeat campaign. Entire fc901f70-exclusive records span needs Claude.

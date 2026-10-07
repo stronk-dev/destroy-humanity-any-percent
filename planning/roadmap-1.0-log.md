@@ -4763,3 +4763,19 @@ Whole 1.0 remains the objective: real composed/auth/SQL/Firefox/AT/body/privacy/
 platform/numeric/full endings/all-nine-tiers/independent reviews/owner release.
 No owner cleanup/startup answers inferred, product/CI/copy/budget/boxes/body/
 status/archive/mint/push/release/preview substitution. Goal active/progress.
+
+## 2026-10-07 — R-013 bounded diagnosis; no stall cause invented
+
+Fiscal supplement committedfc901f70; refined full browser694/client9816/type/
+build/copy/boundary proof and exact restoration retained in Garage log. Separate
+R-013 scope25971114 executes five24-case arms: healthy passes, two prior stalled
+faults/two semantic controls fail normally. Early processes already gone; one
+sandbox sample denied, narrow escalated control report has empty call graph.
+No stall reproduced or phase attributed. RP-351 remains OPEN, original incomplete
+runs not restamped, no speculative budgets/dependency/CI/cache repair. Every arm
+restored, final healthy24 plus performance2; no product bytes changed. Research
+span afterfc901f70 requires Claude independently of all prior spans.
+Next accepted work: predeclare RP-352 native held Opportunity Claim audit;
+source pending disable/missing text/aria mismatch recorded, no runtime consequence
+claimed yet. RP-313 wire-body/capacity/real SQL/Firefox/AT/owner/full-nine-tier1.0
+and review obligations remain; no publication/archival/release call. Goal active.

@@ -16,8 +16,10 @@ RP-351 retained and routed to R-013. Full browser694/four isolated-performance
 skips plus performance two; client9816/649 browser skips/types/unchanged build/
 copy/boundaries/topology/no-payment pass. No product bytes changed or whole-GS1
 acceptance. Entire c24b8f6d-exclusive new range requires Claude, all prior spans
-independent. Next safe work: separately predeclare read-only RP-351/R-013 runner
-failure-reporting diagnosis without budget/population/CI/dependency changes.
+independent. R-013's separately declared first diagnostic wave completes without
+reproducing either stall or attributing its phase; RP-351 remains OPEN. Next safe
+work: predeclare RP-352 native held Opportunity Claim proof under GS0.6/0.8/GS5,
+without resolving author-owned RP-313 compatibility intent or guessing mechanics.
 Linux/SQL capacity and all full-nine-tier 1.0/owner/review holds remain.
 
 Preceding cross-lane checkpoint: RP-348 observation work moved to accepted Garden

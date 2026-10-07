@@ -15,8 +15,11 @@ remain RP-351, routed to R-013, not hidden by passing healthy checks. Full
 browser694/four isolated-performance skips plus performance two, client9816/
 649 browser skips/types/unchanged build/copy/boundaries/topology pass. Whole
 c24b8f6d-exclusive new span needs Claude, all prior spans independent.
-Next safe work: bounded read-only R-013 failure-reporting diagnosis; no budget/
-population/CI/dependency change inferred. Docker0/100% and real service/SQL/
+R-013's separately declared first wave now completes: both former stalls and
+semantic controls fail normally; no phase attribution from gone processes or
+empty native call graph. RP-351 remains OPEN, no speculative repair/repeat loop.
+Next safe work: predeclare RP-352 native held Opportunity Claim proof under
+GS0.6/0.8/GS5; no budget/population/CI/dependency change inferred. Docker0/100% and real service/SQL/
 Firefox/AT/auth/body/privacy/platform/numeric/full endings/full-nine-tier1.0/
 owner release gates remain. No product change, archival/push/preview substitution.
 
