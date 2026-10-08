@@ -3,6 +3,7 @@ import { mkdirSync } from "node:fs";
 import { createServer as createTCPServer } from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isDeepStrictEqual } from "node:util";
 
 import { chromium } from "playwright";
 import { build, createServer, preview } from "vite";
@@ -161,14 +162,18 @@ const buildGameserver = spawnSync("go", ["build", "-o", gameserverBinary, "./cmd
 if (buildGameserver.status !== 0) {
   throw new Error(`composed gameserver build failed (${buildGameserver.status}): ${buildGameserver.stderr || buildGameserver.stdout}`);
 }
-const gameserver = spawn(gameserverBinary, [], {
-  cwd: repositoryRoot,
-  env: gameserverEnvironment,
-  stdio: ["ignore", "pipe", "pipe"],
-});
-gameserver.stdout.on("data", (value) => process.stdout.write(value));
-gameserver.stderr.on("data", (value) => process.stderr.write(value));
-gameserver.on("error", (error) => processErrors.push(error));
+function startGameserver() {
+  const child = spawn(gameserverBinary, [], {
+    cwd: repositoryRoot,
+    env: gameserverEnvironment,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stdout.on("data", (value) => process.stdout.write(value));
+  child.stderr.on("data", (value) => process.stderr.write(value));
+  child.on("error", (error) => processErrors.push(error));
+  return child;
+}
+let gameserver = startGameserver();
 
 let vite;
 let clientPreview;
@@ -177,13 +182,13 @@ let browser;
 async function waitForReady() {
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {
-    if (processErrors.length > 0 || gameserver.exitCode !== null) throw processErrors[0] ?? new Error(`gameserver exited ${gameserver.exitCode}`);
+    if (processErrors.length > 0 || gameserverStopped()) throw processErrors[0] ?? new Error("composed gameserver stopped before readiness");
     try {
       const response = await fetch(`${gameserverURL}/readyz`);
       if (response.ok) {
         // A stale listener must not let a newly failed child masquerade as ready.
         await new Promise((resolve) => setTimeout(resolve, 100));
-        if (processErrors.length > 0 || gameserver.exitCode !== null) throw processErrors[0] ?? new Error(`gameserver exited ${gameserver.exitCode}`);
+        if (processErrors.length > 0 || gameserverStopped()) throw processErrors[0] ?? new Error("composed gameserver stopped during readiness");
         return;
       }
     } catch {
@@ -209,6 +214,40 @@ async function stopGameserver() {
 
 function gameserverStopped() {
   return gameserver.exitCode !== null || gameserver.signalCode !== null;
+}
+
+async function crashGameserver() {
+  if (gameserverStopped()) throw new Error("cannot crash an already stopped composed gameserver");
+  const child = gameserver;
+  let timeout;
+  try {
+    await new Promise((resolve, reject) => {
+      timeout = setTimeout(() => reject(new Error("composed gameserver did not exit after SIGKILL")), 10_000);
+      child.once("exit", (code, signal) => {
+        if (signal === "SIGKILL") resolve();
+        else reject(new Error(`composed crash exited unexpectedly (${code}, ${signal})`));
+      });
+      if (!child.kill("SIGKILL")) reject(new Error("could not SIGKILL the owned composed gameserver"));
+    });
+  } finally { clearTimeout(timeout); }
+  return child.pid;
+}
+
+function assertPitchHistory(sessionID, commands, status, expectedSnapshot) {
+  if (!/^[0-9a-f-]{36}$/u.test(sessionID)) throw new Error("invalid Pitch session ID in history check");
+  const sql = `SELECT json_build_object('revision', revision, 'status', status, 'snapshot', state,
+    'commands', (SELECT count(*) FROM minigame_session_commands WHERE session_id = session.session_id),
+    'receipts', (SELECT count(*) FROM minigame_command_receipts WHERE session_id = session.session_id))
+    FROM minigame_sessions session WHERE session_id = '${sessionID}';`;
+  const result = spawnSync("docker", ["compose", "-f", "compose.game-ui-test.yml", "exec", "-T", "game-ui-postgres",
+    "psql", "-v", "ON_ERROR_STOP=1", "-At", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test", "-c", sql],
+  { cwd: repositoryRoot, encoding: "utf8" });
+  if (result.status !== 0) throw new Error("Pitch persisted history query failed");
+  const history = JSON.parse(result.stdout.trim());
+  if (history.revision !== commands + 1 || history.commands !== commands || history.receipts !== commands || history.status !== status) {
+    throw new Error(`Pitch persisted history does not match once-only commands: ${JSON.stringify({ revision: history.revision, commands: history.commands, receipts: history.receipts, status: history.status })}`);
+  }
+  if (expectedSnapshot !== undefined && !isDeepStrictEqual(history.snapshot, expectedSnapshot)) throw new Error("Pitch persisted snapshot differs from the committed command response");
 }
 
 function seedGateRequirement(founderID) {
@@ -788,11 +827,51 @@ async function playPitchThroughUI(page, accessToken) {
   if (!startClicked) throw new Error("unlocked Pitch Start was repeatedly preempted by Exit offers");
   const created = await create;
   if (created.status() !== 200) throw new Error(`unlocked Pitch create failed (${created.status()}): ${JSON.stringify(await created.json())}`);
+  const createdSession = await created.json();
   const duringSession = await founderState(accessToken);
   if (duringSession?.transitions?.wind_down?.eligible !== false) {
     throw new Error(`active Pitch session offered Wind Down: ${JSON.stringify(duringSession?.transitions)}`);
   }
 
+  // Commit one native command upstream, lose only its reply, then kill the
+  // actual owned OS process. The browser must use its existing same-ID retry;
+  // neither a reload nor a driver-issued gameplay request may repair the run.
+  const commandRoute = "**/api/v1/minigames/sessions/*/commands";
+  const retryRequests = [];
+  let lostReply;
+  let crashInjected = false;
+  let bootstrapDuringCrash = 0;
+  let navigationsDuringCrash = 0;
+  const observeRetry = (request) => {
+    const pathname = new URL(request.url()).pathname;
+    if (/^\/api\/v1\/minigames\/sessions\/[^/]+\/commands$/u.test(pathname)) retryRequests.push({ pathname, body: request.postData() });
+    if (pathname === "/api/v1/bootstrap" && request.method() === "POST") bootstrapDuringCrash += 1;
+  };
+  const observeNavigation = (frame) => { if (frame === page.mainFrame()) navigationsDuringCrash += 1; };
+  page.on("request", observeRetry);
+  page.on("framenavigated", observeNavigation);
+  let crashFinished;
+  let crashFailed;
+  const crashBoundary = new Promise((resolve, reject) => { crashFinished = resolve; crashFailed = reject; }).catch((error) => error);
+  await page.route(commandRoute, async (route) => {
+    if (crashInjected) { await route.continue(); return; }
+    crashInjected = true;
+    try {
+      // Playwright's fetch diagnostics can contain Authorization headers.
+      const committed = await route.fetch({ maxRetries: 0 }).catch(() => { throw new Error("Pitch upstream command failed before crash injection"); });
+      const text = await committed.text();
+      const body = JSON.parse(text);
+      if (committed.status() !== 200 || body.status !== "active" || body.session_id !== createdSession.session_id || body.revision !== createdSession.revision + 1) {
+        throw new Error("Pitch crash requires one committed nonterminal command on the created session");
+      }
+      lostReply = { text, body, request: retryRequests[0], oldPID: await crashGameserver() };
+      await route.abort("connectionreset");
+      crashFinished();
+    } catch (error) {
+      crashFailed(error);
+      await route.abort().catch(() => {});
+    }
+  });
   let commands = 0;
   const terminal = page.getByText("Credited to the company", { exact: false });
   for (let step = 0; step < 64; step += 1) {
@@ -802,7 +881,8 @@ async function playPitchThroughUI(page, accessToken) {
       [...document.querySelectorAll("button")].some((button) => button.textContent?.trim() === "Close the shop" && !button.disabled) ||
       document.body.textContent?.includes("Credited to the company"), undefined, { timeout: 30_000 });
     if (await terminal.isVisible()) break;
-    const commandResponse = page.waitForResponse((response) => /^\/api\/v1\/minigames\/sessions\/[^/]+\/commands$/u.test(new URL(response.url()).pathname), { timeout: 30_000 });
+    const commandResponse = page.waitForResponse((response) => /^\/api\/v1\/minigames\/sessions\/[^/]+\/commands$/u.test(new URL(response.url()).pathname) &&
+      (step !== 0 || response.status() === 200), { timeout: 30_000 }).catch((error) => error);
     if (await hand.count() > 0) {
       // Keyboard-only selection: focus each native checkbox and press Space.
       const count = Math.min(4, await hand.count());
@@ -818,8 +898,44 @@ async function playPitchThroughUI(page, accessToken) {
       await page.getByRole("button", { name: "Close the shop", exact: true }).focus();
       await page.keyboard.press("Enter");
     }
+    if (step === 0) {
+      // A severed native control must fail on the existing response deadline,
+      // not leave the fault callback waiting forever for a request.
+      const crashed = await Promise.race([crashBoundary, commandResponse.then((result) => result instanceof Error ? result :
+        new Error("Pitch command returned before the OS-crash boundary"))]);
+      if (crashed instanceof Error) throw crashed;
+      await page.locator(".minigame-session").getByText("Connection lost. Your last move is kept and will be sent again.", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+      await page.locator(".minigame-session").getByRole("button", { name: "Retry", exact: true }).waitFor({ state: "visible" });
+      const socketsBeforeRestart = await page.evaluate(() => globalThis.__cloudClickerTestSockets.length);
+      const recoveredSnapshot = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/founder/state" && response.status() === 200,
+        { timeout: 30_000 }).catch((error) => error);
+      gameserver = startGameserver();
+      if (gameserver.pid === lostReply.oldPID) throw new Error("Pitch crash did not create a new gameserver process");
+      await waitForReady();
+      await page.waitForFunction((count) => globalThis.__cloudClickerTestSockets.length > count &&
+        globalThis.__cloudClickerTestSockets.at(-1)?.readyState === WebSocket.OPEN, socketsBeforeRestart, { timeout: 30_000 });
+      const refreshed = await recoveredSnapshot;
+      if (refreshed instanceof Error) throw refreshed;
+      const state = await refreshed.json();
+      if (state.run?.founder_id !== beforeSession.run.founder_id || state.run?.run_seq !== beforeSession.run.run_seq) {
+        throw new Error("Pitch crash recovery changed Founder or Company run identity");
+      }
+    }
     const response = await commandResponse;
+    if (response instanceof Error) throw response;
     if (response.status() !== 200) throw new Error(`Pitch command failed (${response.status()}): ${JSON.stringify(await response.json())}`);
+    if (step === 0) {
+      if (await response.text() !== lostReply.text) throw new Error("Pitch crash retry did not return byte-identical committed response");
+      if (retryRequests.length < 2 || retryRequests.some((request) => request.pathname !== lostReply.request.pathname || request.body !== lostReply.request.body)) {
+        throw new Error("Pitch crash retry changed command identity/body or did not execute");
+      }
+      assertPitchHistory(createdSession.session_id, 1, "active", lostReply.body.snapshot);
+      if (bootstrapDuringCrash !== 0 || navigationsDuringCrash !== 0) throw new Error("Pitch crash recovery replaced the account or navigated the document");
+      await page.unroute(commandRoute);
+      page.off("request", observeRetry);
+      page.off("framenavigated", observeNavigation);
+      console.log("composed Pitch OS crash after commit/lost reply: visible pause, new process, socket/snapshot recovery, identical browser retry and one persisted command/receipt: PASS");
+    }
     commands += 1;
     await page.waitForFunction(() => document.querySelector("main section[aria-busy]")?.getAttribute("aria-busy") !== "true", undefined, { timeout: 30_000 });
   }
@@ -827,6 +943,7 @@ async function playPitchThroughUI(page, accessToken) {
   const final = minigameResponses.filter((row) => row.status === 200 && row.body?.status === "resolved").at(-1);
   const receipt = final?.body?.resolution_receipt;
   if (!receipt || receipt.outcome !== "applied" || receipt.credited_resource_id !== "company.cash") throw new Error(`terminal response carried no applied receipt: ${JSON.stringify(final)}`);
+  assertPitchHistory(createdSession.session_id, commands, "resolved");
   // The host refreshes the authoritative Game UI snapshot exactly once after
   // the terminal receipt; it must reflect the resolution's Company revision.
   const deadline = Date.now() + 30_000;

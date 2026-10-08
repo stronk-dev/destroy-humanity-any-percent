@@ -151,6 +151,17 @@ becomes a `MinigameTransportError`.
   session. The detached surface ignores late success/rejection and content-loading completion;
   it cannot refetch, notify its former host or move focus. A later visit reconnects normally.
 
+The normal composed browser journey also exercises a lost nonterminal command reply across
+an actual gameserver process crash. A native Pitch command commits through the real HTTP
+handler; the driver withholds that response, SIGKILLs its own child, and restarts the same
+binary/configuration over the unchanged Postgres. The production client visibly pauses and
+automatically retries the identical command ID/body, without navigating or bootstrapping a
+replacement account. The retried response is byte-identical; independent SQL checks require
+the committed snapshot, one command and one receipt. Socket/Founder-state recovery preserves
+the same run, and native play continues through payout with exact final history counts.
+This is the post-commit/lost-reply boundary, not a death during an uncommitted transaction,
+Postgres/host crash, release-image upgrade, credential renewal or clean-host rehearsal.
+
 The tenant-surface registry (`tenant-registry.ts`) is keyed by the same `(engine_ref,
 engine_version)` arm as the pinned `balance/minigame-api/first-content.json` tenant rows. Loading
 fails in either direction: a tenant row with no child, or a child with no tenant row. A session

@@ -12,8 +12,12 @@ in the owning log. The preceding Pitch stored-outcome checkpoint is complete loc
 designated review and the remaining contracts are still independent obligations. The HTTP
 Pitch lifecycle now reconstructs the whole application over the same Postgres after a
 nonterminal command, preserving the complete snapshot, exact receipts and once-only payout.
-This strengthens the existing solo path; it is not an OS-crash/clean-host or generic async API
-proof. RP-459 repairs this test's reused-database bootstrap-receipt isolation. The owning log
+The browser journey now separately kills its actual gameserver after a native nonterminal
+command commits but before its reply reaches the player. Existing automatic same-ID retry,
+persisted snapshot/history, socket recovery and continued payout are required without reload
+or replacement bootstrap. This strengthens solo Pitch, not death inside a transaction,
+host/DB crash, clean-host recovery or a generic async API. RP-459 repairs the HTTP test's
+reused-database bootstrap-receipt isolation. The owning log
 records execution and review status; no whole-feature acceptance checkbox changes.
 
 - [x] Compose the minigame repository, closed Pitch tenant registry, pinned content resolver, and

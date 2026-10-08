@@ -1239,3 +1239,40 @@ rerun is required for this Go test-only change; no whole/hosted CI green claim f
 Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new review
 range begins after `e0de6299` through this containing commit; designated cross-party
 review pending. No acceptance flips, archival, push or unrelated cleanup.
+
+## 2026-10-08 — Browser survives process death after a committed Pitch command
+
+Under MA AC1/MA-C5/C13, extend the existing main journey rather than introduce a
+driver or retry policy. The first native command reaches the real handler and
+commits a nonterminal result; Playwright withholds its reply, confirms SIGKILL
+exit of the owned gameserver child, then reports the lost connection. Require
+the actual paused notice/Retry control before restarting the same binary/config
+over unchanged Postgres. The browser automatically sends the identical command
+ID/body and gets byte-identical committed response bytes. Independent SQL checks
+require the complete saved snapshot, revision2, one command and one receipt.
+New socket/authoritative Founder read preserves the run; neither account bootstrap
+nor document navigation may substitute for recovery. Native play then reaches
+the applied payout and exact terminal command/receipt/history counts. The existing
+response deadline also bounds a missing native dispatch; fetch failure diagnostics
+do not print Playwright's potentially credential-bearing upstream request log.
+
+Executed: whole `make test-game-ui-composed`72014 exits0, including real persisted
+populations, the new crash case, bounded Soul Recovery, Cosmetic/Reputation/Clout,
+N5 failure controls, Garden and Tier2. Tier2 still emits two Vite WebSocket reset
+diagnostics before passing its actual SQL/reload assertions. Subsequently tightened
+the saved-snapshot assertion and bounded fault wait; final affected
+`node client/tools/test-game-ui-composed.mjs`54224 exits0 on those exact final bytes.
+It executes all required DB populations, exact built-client/Worker proof, crash
+recovery, six native Pitch commands to payout, and bounded Soul Recovery. Its
+request trace retains one deliberately failed command delivery followed by the
+successful same-ID retry. Unaffected sibling journeys were not rerun after those
+last main-journey guards. Node syntax and diff checks pass; both sessions terminal.
+
+Test/tool/docs only: no production, schema, kernel, balance, CI workflow or timeout
+policy changes. This covers process death after commit, not mid-transaction death,
+Postgres/host failure, release-image/clean-host recovery, browser credential renewal,
+generic async HTTP or whole-feature acceptance. Review by: Codex (implementer first
+filter). Recorded by: Codex. Exact new range starts after `a0052ddf` through this
+containing commit and requires designated cross-party review. No acceptance flips,
+archival or push. Next: remaining accepted API/player integrations and consolidated
+review; held public-wire, clock, content and owner decisions remain separate.
