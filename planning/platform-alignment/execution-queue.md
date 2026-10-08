@@ -11,9 +11,12 @@ and AC2 parity now locally pass; see the latest Garage log for evidence. Continu
 accepted per-surface gates; persisted Fiscal and GS2 acquisition require designated review.
 Use the owning plans/logs and [current product overview](../CURRENT-STATE.md) for results
 and next work; checkpoints below are historical, not new predeclaration requirements.
-Latest whole composed run 39780 passes actual player, Reputation, Cosmetic/Clout, Garden and
-Tier 2 fixture journeys after RP-438's observer correction. These are controlled integration
-populations, not content mint, natural pacing or feature acceptance. Continue accepted
+Latest whole composed64767 is RED at native Pet Care feed (RP-440): a trusted click
+during host busy emits no request. Its real-Postgres solo/async minigame, other persisted
+checks and main journey pass; later populations are not reached. Diagnose the activation
+boundary without retries, timeout changes or assumed clock attribution. Earlier whole99680
+and39780 pass their full populations; they do not erase the latest red. These are controlled
+integration populations, not content mint, natural pacing or feature acceptance. Continue accepted
 Garage/API/minigame construction and consolidate exact-range reviews. Headcount's seat-source
 choice and sibling contracts remain held; startup recovery, renewal, numeric conservation and
 shared attendance successors remain draft. Latest hosted CI 37778647275 at `f3851e8b` is red

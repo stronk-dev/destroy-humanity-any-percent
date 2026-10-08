@@ -36,6 +36,11 @@ RFC: `rfc/minigame-platform-foundation.md`
   - [x] Compose Company payout, Founder rating, token-owned session resolution, and the window in
     one Founder→Company→session transaction.
 - [ ] Compose the platform into the gameserver and prove solo/async-snapshot lifecycle ACs.
+  - 2026-10-08: both modes now execute persisted nonterminal resume, terminal
+    certification/payout and the existing fault/retry population against actual
+    Postgres in the composed lane. This is backend evidence, not the fixture
+    tenant mounted through public HTTP or full AC1 completion. Latest aggregate
+    run stops later at Pet Care (RP-440); see the owning log.
 - [ ] Mint the production artifact only after owner/harness-supplied balance rows.
 - [ ] Update canonical docs, pass normal repository-root verification, obtain independent
   full-range adversarial review, and archive.

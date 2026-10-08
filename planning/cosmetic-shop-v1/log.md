@@ -2035,3 +2035,22 @@ pending, independently of earlier spans. No server, kernel, content mint, copy a
 composed aggregate, Firefox/AT/performance, hosted/full-CI or complete Cosmetic acceptance claim.
 Next: consolidate original C4/C6 review and resolve the named author-body/content gates; the
 full nine-tier 1.0 objective remains active. No archival, deploy or push.
+
+## 2026-10-08 — Latest whole composed run fails native care activation (RP-440)
+
+During the test-only Minigame Platform supplement, whole99680 passes all
+populations, but final64767 exits2 at native care.feed after successful Buy,
+adoption/equip and main gameplay. The passive trace records trusted pointerdown,
+pointerup and click on the connected feed button while main aria-busy=true;
+zero care requests/responses/failures were recorded. At timeout busy=false.
+The existing30s response deadline expires. Later populations are not reached.
+
+Source inspection: PetCareSurface has pending aria-disabled and refuses the
+callback while pending; founderDOMIntent's care branch uses native pointer
+activation. This is not yet a causal reproduction or proof that either product
+or driver is wrong. No product/driver repair, input substitution, retry, deadline
+change or attribution to RP-365 is made. Next: deterministically inspect the
+refresh/activation boundary, retain native-input and authoritative persisted-
+outcome assertions, then correct only the demonstrated defect under GS0.8/GS4.
+Review by: Codex (diagnosis); Recorded by: Codex. Latest aggregate remains RED;
+earlier local green observations and pending feature reviews remain intact.

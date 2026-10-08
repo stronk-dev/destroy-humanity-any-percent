@@ -5061,3 +5061,25 @@ The Tier-2 owning log holds exact commands/results and the pending designated-re
 Current-state/roadmap reflect this concrete integration, not full Tier-2 or Garage acceptance.
 RP-437 action copy, pacing/relevance/Headcount/mint and the full later-game/platform scope remain.
 All processes terminal. No hosted-CI success, archive, release promotion, deployment or push.
+
+## 2026-10-08 — Finish platform test batch and reconcile whole-product progress
+
+At Marco's request, finish the coherent range after `ad74fd7c` and update the
+existing overview, not a new tracker. Solo and async platform persistence/payout
+populations now both execute against real Postgres. The owning Minigame Platform
+log records evidence, fixture/observer corrections, limitations and pending
+cross-party review. Final whole64767 is RED at native Pet Care activation
+(RP-440), despite passing backend and main-gameplay populations; earlier whole
+green evidence is retained, not substituted. Cosmetic's log owns the next diagnosis.
+
+The whole product remains Garage integration/hardening: working foundations and
+selected real-service player paths, fixture-first Tier2/content, substantial
+unbuilt world/combat/Tier3–8/final-ending scope, and incomplete rights/recovery/
+accessibility/current-artifact operations. The current-state table and milestone
+row now distinguish these, including combat arithmetic versus an actual engine.
+No percentage/date, full CI green, accepted feature, archive or release follows
+from the volume of commits or records. Last inspected hosted CI remains the
+recorded red at `f3851e8b`; no new hosted query or push was made. Editorial
+reconciliation uses source, owning logs/plans and diff inspection; no additional
+software suite just for this overview. All processes terminal; no publication,
+deployment or cleanup. Full nine-tier1.0 remains the active objective.

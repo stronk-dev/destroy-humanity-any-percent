@@ -41,6 +41,23 @@ replay arithmetic are unchanged. Real Postgres tests cover rollback, cancellatio
 immediate retry, no duplicate credit/revisions/events, replaced-token isolation and
 post-commit receipt survival.
 
+The real-Postgres `TestResolveMinigameSessionIntegrationAtomicReplayAndFaults`
+now runs the same population in both `solo` and `async_snapshot` modes. Each
+mode persists a nonterminal command, reconstructs the service/repository and
+loads the saved state before completing play. Tenant calls, including terminal
+certification replay, must retain the selected mode and original scaling values
+after the caller changes its input map. Both modes execute the existing payout,
+rating/quality, rollback, cancellation, retry, post-commit projection-failure and
+zero-credit cases. The existing composed target requires this top-level test to
+actually pass; no database produces a top-level skip, not a misleading parent
+pass over skipped children.
+
+This fixture exercises the platform/production/SQL boundary. It does not mount
+the fixture tenant through public HTTP, change live scaling-source state, restart
+Postgres or kill an OS process; those broader claims and complete platform AC1
+remain open. Its passing backend population also does not make a later failing
+browser population green; current aggregate results belong in the owning log.
+
 ## Tier unlock arm (TT-PA2)
 
 `unlock_condition` also accepts `{"kind":"tier_at_least","tier":0..9}`, with an optional

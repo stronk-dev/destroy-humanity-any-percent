@@ -109,6 +109,7 @@ const persistedTests = [
   "TestSoulRecoveryErrorRegistryIntegration",
   "TestFiscalProjectionMatchesPersistedHarvestIntegration",
   "TestFirstContentEpochPersistedBoundaryIntegration",
+  "TestResolveMinigameSessionIntegrationAtomicReplayAndFaults",
   "TestPublicBoardRankingAndPagesIntegration",
   "TestPublicRunEvidenceIntegration",
   "TestComposedGameserverPostgresSocketClearingAndGCIntegration",

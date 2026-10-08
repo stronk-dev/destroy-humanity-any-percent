@@ -19,7 +19,9 @@ import (
 	"cloud-clicker/server/save"
 )
 
-type resolutionFixtureTenant struct{}
+type resolutionFixtureTenant struct {
+	observe func(minigame.ApplyInput)
+}
 
 type resolutionFixtureSnapshot struct {
 	Total int64 `json:"total"`
@@ -32,7 +34,7 @@ type resolutionFixtureCommand struct {
 
 func (resolutionFixtureTenant) Descriptor() minigame.Descriptor {
 	return minigame.Descriptor{EngineRef: "fixture.counter", EngineVersion: "1.0.0", CommandSchema: "fixture.command.v1",
-		SnapshotSchema: "fixture.snapshot.v1", ResultSchema: "fixture.result.v1", Modes: []minigame.Mode{minigame.ModeSolo},
+		SnapshotSchema: "fixture.snapshot.v1", ResultSchema: "fixture.result.v1", Modes: []minigame.Mode{minigame.ModeSolo, minigame.ModeAsyncSnapshot},
 		ErrorTaxonomy: []string{"invalid_command"}, Destinations: map[string]minigame.DestinationClass{"option.count": minigame.DestinationBreadth}}
 }
 func (resolutionFixtureTenant) ValidateCommand(data json.RawMessage) error {
@@ -44,7 +46,10 @@ func (resolutionFixtureTenant) ValidateSnapshot(data json.RawMessage) error {
 	return decodeResolutionFixture(data, &snapshot)
 }
 func (resolutionFixtureTenant) ValidateResult(result *minigame.Result) error {
-	if result == nil || result.Outcome != "completed" || result.RatingDelta == nil || len(result.ScoreFacts) != 1 || result.ScoreFacts[0].Kind != "score.total" {
+	if result == nil {
+		return nil // Nonterminal play has no certified result yet (C14).
+	}
+	if result.Outcome != "completed" || result.RatingDelta == nil || len(result.ScoreFacts) != 1 || result.ScoreFacts[0].Kind != "score.total" {
 		return minigame.ErrInvalidTenant
 	}
 	return nil
@@ -52,7 +57,10 @@ func (resolutionFixtureTenant) ValidateResult(result *minigame.Result) error {
 func (resolutionFixtureTenant) Create(minigame.CreateInput) (json.RawMessage, error) {
 	return json.RawMessage(`{"total":0}`), nil
 }
-func (resolutionFixtureTenant) Apply(input minigame.ApplyInput) (minigame.ApplyOutput, error) {
+func (tenant resolutionFixtureTenant) Apply(input minigame.ApplyInput) (minigame.ApplyOutput, error) {
+	if tenant.observe != nil {
+		tenant.observe(input)
+	}
 	var snapshot resolutionFixtureSnapshot
 	var command resolutionFixtureCommand
 	if decodeResolutionFixture(input.Snapshot, &snapshot) != nil || decodeResolutionFixture(input.Command, &command) != nil || command.Add < 0 {
@@ -81,10 +89,21 @@ func decodeResolutionFixture(data []byte, target any) error {
 }
 
 func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
-	databaseURL := os.Getenv("TEST_DATABASE_URL")
-	if databaseURL == "" {
+	// A parent with only skipped children reports PASS. Keep this prerequisite
+	// at the observed top level so the composed lane cannot count an absent DB.
+	if os.Getenv("TEST_DATABASE_URL") == "" {
 		t.Skip("TEST_DATABASE_URL not set")
 	}
+	for _, mode := range []minigame.Mode{minigame.ModeSolo, minigame.ModeAsyncSnapshot} {
+		t.Run(string(mode), func(t *testing.T) {
+			testResolveMinigameSessionAtomicReplayAndFaults(t, mode)
+		})
+	}
+}
+
+func testResolveMinigameSessionAtomicReplayAndFaults(t *testing.T, mode minigame.Mode) {
+	t.Helper()
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	ctx := context.Background()
 	db, err := save.OpenPostgres(ctx, databaseURL)
 	if err != nil {
@@ -158,7 +177,12 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	registry, err := minigame.NewTenantRegistry(resolutionFixtureTenant{})
+	registry, err := minigame.NewTenantRegistry(resolutionFixtureTenant{observe: func(input minigame.ApplyInput) {
+		t.Helper()
+		if input.Mode != mode || len(input.ScalingInputs) != 1 || input.ScalingInputs["option.count"] != 3 {
+			t.Fatalf("tenant lost persisted mode/frozen scaling: mode=%s scaling=%v", input.Mode, input.ScalingInputs)
+		}
+	}})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -175,13 +199,36 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 	makeResolution := func(index int) *minigame.CertifiedResolution {
 		t.Helper()
 		sessionID := fmt.Sprintf("01986666-a9%02x-7000-8000-%012d", index, index)
+		scaling := map[string]int64{"option.count": 3}
 		if _, startErr := platform.Start(ctx, minigame.StartRequest{SessionID: sessionID, MinigameID: "fixture.counter", FounderID: founderID,
 			CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
-			ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "1", Mode: minigame.ModeSolo}); startErr != nil {
+			ConstantsHash: bundle.ConstantsHash, ScalingInputs: scaling, Seed: "1", Mode: mode}); startErr != nil {
 			t.Fatal(startErr)
 		}
+		// Later source changes cannot rewrite this session's frozen values.
+		scaling["option.count"] = 8
 		decision, playErr := platform.Play(ctx, minigame.PlayRequest{FounderID: founderID, SessionID: sessionID, ExpectedRevision: 1,
-			Command: json.RawMessage(`{"add":400,"finish":true}`)})
+			Command: json.RawMessage(`{"add":100,"finish":false}`)})
+		if playErr != nil || decision.Resolution != nil || decision.Session.Revision != 2 {
+			t.Fatalf("nonterminal play revision=%d resolution=%v err=%v", decision.Session.Revision, decision.Resolution, playErr)
+		}
+		// Construct new service/repository objects and resume from the SQL row.
+		// This is an in-process reconstruction, not a database/host crash claim.
+		resumedRepository, resumeErr := minigame.NewRepository(db)
+		if resumeErr != nil {
+			t.Fatal(resumeErr)
+		}
+		platform, resumeErr = minigame.NewService(resumedRepository, registry)
+		if resumeErr != nil {
+			t.Fatal(resumeErr)
+		}
+		persisted, resumeErr := platform.Load(ctx, founderID, sessionID)
+		if resumeErr != nil || persisted.Mode != mode || persisted.Revision != 2 || persisted.Status != minigame.StatusActive ||
+			!bytes.Equal(persisted.State, []byte(`{"total":100}`)) {
+			t.Fatalf("persisted resume did not retain its mode/state: session=%+v err=%v", persisted, resumeErr)
+		}
+		decision, playErr = platform.Play(ctx, minigame.PlayRequest{FounderID: founderID, SessionID: sessionID, ExpectedRevision: 2,
+			Command: json.RawMessage(`{"add":300,"finish":true}`)})
 		if playErr != nil || decision.Resolution == nil {
 			t.Fatalf("play resolution=%v err=%v", decision.Resolution, playErr)
 		}
@@ -243,7 +290,7 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 	apiSessionID := "01986666-a964-7000-8000-000000000100"
 	if _, err := platform.Start(ctx, minigame.StartRequest{SessionID: apiSessionID, MinigameID: "fixture.counter", FounderID: founderID,
 		CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
-		ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "2", Mode: minigame.ModeSolo}); err != nil {
+		ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "2", Mode: mode}); err != nil {
 		t.Fatal(err)
 	}
 	apiCommand := PlayMinigameAPIRequest{FounderID: founderID, SessionID: apiSessionID, CommandID: "terminal-1", ExpectedRevision: 1,
@@ -281,7 +328,7 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 			faultSessionID := fmt.Sprintf("01986666-a966-7000-8000-%012d", 300+index)
 			started, startErr := platform.Start(ctx, minigame.StartRequest{SessionID: faultSessionID, MinigameID: "fixture.counter", FounderID: founderID,
 				CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
-				ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "3", Mode: minigame.ModeSolo})
+				ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "3", Mode: mode})
 			if startErr != nil {
 				t.Fatal(startErr)
 			}
@@ -409,7 +456,7 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 		const sessionID = "01986666-a967-7000-8000-000000000400"
 		if _, err := platform.Start(ctx, minigame.StartRequest{SessionID: sessionID, MinigameID: "fixture.counter", FounderID: founderID,
 			CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
-			ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "3", Mode: minigame.ModeSolo}); err != nil {
+			ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "3", Mode: mode}); err != nil {
 			t.Fatal(err)
 		}
 		command := PlayMinigameAPIRequest{FounderID: founderID, SessionID: sessionID, CommandID: "post-commit", ExpectedRevision: 1,
@@ -443,7 +490,7 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 	zeroSessionID := "01986666-a965-7000-8000-000000000200"
 	if _, err := platform.Start(ctx, minigame.StartRequest{SessionID: zeroSessionID, MinigameID: "fixture.counter", FounderID: founderID,
 		CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
-		ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "4", Mode: minigame.ModeSolo}); err != nil {
+		ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "4", Mode: mode}); err != nil {
 		t.Fatal(err)
 	}
 	zeroPlay, err := platform.Play(ctx, minigame.PlayRequest{FounderID: founderID, SessionID: zeroSessionID, ExpectedRevision: 1,

@@ -802,3 +802,52 @@ bump, is outside CLAUDE.md's two permitted rewrite classes, so it needs an expli
   verdict in general; this genuine review closes only the `8add475` provenance need.
   `make verify-kernel-version` remains red on the separate pushed `50a3a514` history item,
   so no current-head CI or release claim follows.
+
+## 2026-10-08 — Both Phase-A modes exercise persisted resume and atomic payout
+
+Under MP1/C14/C20/C37–C40 and AC1, extend the existing production integration
+population rather than add a second driver. Its fixture now admits both modes
+already present in the checked catalog. Each persists nonterminal revision2,
+constructs new service/repository objects over the same DB, loads the exact saved
+mode/state, then finishes. Every tenant application, including certification
+replay, must receive the original scaling3 after the caller mutates its map to8.
+Both modes retain payout/rating/quality, ten fault boundaries, rollback/cancel/
+retry, projection-failure and zero-credit cases. No production or catalog byte,
+kernel identity, payout rule or gameplay semantics is changed.
+
+Reuse the composed driver's persisted-test list. Its existing PASS observer must
+see the top-level function execute. Native missing-DB run95653 exposed a false
+parent PASS over skipped mode children; moving the prerequisite to the parent
+produces explicit top-level SKIP in73059, so no absent database can satisfy that
+observer. Go correctly exits0 for a skipped package; this is not a nonzero-exit
+claim. First real run45283 failed because the old fixture rejected its own
+nonterminal nil result; its validator now accepts that C14 result. This was a
+fixture repair, not a production defect.
+
+Executed evidence:
+
+- Whole `make test-game-ui-composed`99680 exits0, including both modes, all
+  existing browser populations and negative payment builds.
+- Final whole64767 exits2: both modes PASS in2.99s against real Postgres, all
+  refresh/persisted checks and the main browser journey pass, then Pet Care
+  emits no intent while the host is busy (RP-440). Later Reputation, Garden,
+  Tier2 and negative-build populations are not reached in this final run. The
+  earlier green does not erase this red; the aggregate is currently red.
+- Cold selected production/save tests and vet26772 pass; its minigame selector
+  matches no tests, so supplemental
+  `make test-go vet GO_PACKAGES='./minigame ./save' GO_TEST_FLAGS='-count=1'`
+  (70613) executes the affected non-DB populations
+  successfully. Native DB tests skip; the real-DB evidence is the composed run.
+- Driver syntax, gofmt and diff/whitespace checks pass.
+
+Limits: backend Platform→Production→Postgres, not public-HTTP fixture composition,
+live Company/Founder scaling-source mutation, OS-process/database crash, complete
+AC1, production content or release acceptance. No acceptance box flips. RP-440
+is recorded in the Cosmetic log for separate diagnosis, without speculative
+product changes, retries or timeout changes.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact new range
+starts after `ad74fd7c` through this batch commit; designated cross-party review
+remains pending. Earlier ranges retain their own reviews. Next: resolve the
+Pet Care failure and remaining mounted-API/tenant contracts; do not archive or
+claim full CI, clean-host proof or 1.0 completion. No push/deploy/cleanup.
