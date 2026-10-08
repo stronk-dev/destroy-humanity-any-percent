@@ -49,7 +49,29 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Latest finished source checkpoint (2026-10-08, `2b33fb2c`): the mounted Recovery
+- Latest finished source checkpoint (2026-10-08, `9265049b`): concurrent encrypted
+  backups can no longer replace an already completed backup with the same ID. The
+  old-source regression reproduced actual overwritten envelopes; atomic no-replace
+  commit now preserves the winning bytes and refuses the losing writer. Cold native
+  and Linux-amd64 checks pass. Separately, `make test-deployment-backup` executes all
+  six real Postgres16/encrypted dump-and-restore integration functions, zero skips.
+  The [Deployment log](deployment-foundation/log.md) owns the pending designated
+  range `d0fc603a..9265049b`. This is backup safety, not clean-host release recovery
+  or closure of the pre-deletion-backup privacy issue.
+- Recovery checkpoint `d0fc603a`: the existing watchdog terminal is now admitted
+  by the generated API contract and consumed without a progress-rendering crash or
+  duplicate host notification. Old HTTP/Postgres and mounted-browser regressions fail;
+  affected cold Go, Linux-amd64/Postgres, Chromium/WebKit, full client, types and API
+  checks pass, followed by the final built-client/real-service main journey. The
+  [Minigame API log](minigame-api-and-surface/log.md) owns the pending designated
+  range `d5b40996..d0fc603a` and its limits: injected server expiry/controlled browser
+  replies, not a natural 24-hour browser observation or whole-feature acceptance.
+- Published CI rechecked read-only at this checkpoint: latest run
+  [37795560514](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37795560514)
+  at `cbd2069f` remains red. Schema, harness and composed player journey pass;
+  client, server and browser jobs fail. Newer local repairs are not a hosted verdict.
+  Source work is committed; no push, archival or release approval is implied.
+- Preceding source checkpoint (2026-10-08, `2b33fb2c`): the mounted Recovery
   journey now drops a real heartbeat reply after the server commits it, verifies visible
   pause/no queued beats, then uses native Reconnect to rotate the same session's token.
   Missed time earns no progress; the next fresh interval advances the rendered state.

@@ -7,9 +7,11 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-08):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08).
 We are integrating and hardening the Garage, with substantial later-tier construction still
-ahead. Latest source `2b33fb2c` adds a real mounted Recovery heartbeat reply-loss/reconnect
-witness, following `75f5830b`'s browser recovery after server process death. These strengthen
-existing player paths, not tier/content coverage. All original Pet implementation batches now
+ahead. Latest source `9265049b` prevents concurrent encrypted backups from replacing a
+completed backup ID; the real Postgres encrypted restore population passes. Preceding
+`d0fc603a` corrects Recovery watchdog terminal handling, following the reply-loss/reconnect
+and server-process-death journeys. These strengthen existing paths and safety, not tier/content
+coverage or release readiness. All original Pet implementation batches now
 have complete review dispositions at `a1197552`; findings and later Codex corrections remain
 distinct, and the corrections still need designated review. See the
 [milestone path](#milestone-path) and [current next moves](#current-next-moves) for the live
@@ -1992,7 +1994,7 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Current at source `2b33fb2c` (2026-10-08). These are delivery boundaries, not a claim that
+Current at source `9265049b` (2026-10-08). These are delivery boundaries, not a claim that
 every listed change is authorized immediately. Accepted RFCs and their owning plans decide that.
 
 1. **Finish Garage's actual player integrations.** Complete Typer/Arcade public API and host
