@@ -49,6 +49,19 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest completed implementation checkpoint: `950be202` (2026-10-08). The existing public
+  Pitch HTTP lifecycle now independently checks its persisted cash payout, certified result,
+  save revisions, required events/receipts, single quota spend and Founder replay, including
+  mid-session reconnect and unchanged-state retries. The complete `gameserver` package passes
+  against declared real Postgres16 on Linux/amd64, with no skips; a deliberately corrupted
+  quota fails the new check. Native package tests/vet also pass, but native DB skips are not
+  counted as integration proof. This is test-only strengthening of the existing solo public
+  API, not a new async endpoint or complete Minigame Platform acceptance. The
+  [owning log](minigame-api-and-surface/log.md#2026-10-08--bind-the-public-pitch-lifecycle-to-its-stored-outcome)
+  records the exact pending designated-review range. Hosted run 37778647275 was rechecked
+  read-only for this overview: still terminal red, four jobs pass and client/server fail;
+  newer local commits have not been pushed. No full-suite rerun or release promotion is
+  inferred from this documentation reconciliation.
 - Latest native-care checkpoint (2026-10-08), range after `c977ad36`: RP-440's
   global busy guard discarded a completed trusted click; RP-441's inserted busy message
   independently moved the button during a pointer sequence. Separate old-behavior controls
