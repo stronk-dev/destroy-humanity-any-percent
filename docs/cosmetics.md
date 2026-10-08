@@ -141,6 +141,12 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   authoritative refresh to finish within the same 30-second action deadline before inspecting
   the pet overlay. A receipt or separate server read is not proof that the UI has rendered it;
   a settled host with a missing overlay still fails immediately.
+  Adoption uses native Enter/Space in the respective fixtures and checks welcome-heading focus.
+  Care checks the actual SQL head and recorded receipt, then independently derives the expected
+  band and complete action eligibility from pinned policy at that response's attended-time
+  sample. Rendered band text binds to the host's own refresh, not a later diagnostic read or the
+  receipt's earlier frozen band. The same persisted outcome/projection checks run after reload.
+  This verifies read projection, not RP-365/D-024's unresolved shared-attendance policy.
   Failed Founder actions report bounded input events (with dropped-event counts), action phase,
   emitted-request count, response statuses and request failures without tokens or request bodies.
   This fixture is not a production content mint, and its Codex range awaits cross-party review.

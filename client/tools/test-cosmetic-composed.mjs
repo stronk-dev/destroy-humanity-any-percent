@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { build } from "vite";
 import { activateCosmeticBuy, assertNativeCosmeticBuyTrace } from "./activate-cosmetic-buy.mjs";
+import { assertCareSnapshot } from "./care-snapshot-proof.mjs";
 
 const args = process.argv.slice(2);
 if (args.length !== 0 && (args.length !== 1 || args[0] !== "--axis-stack")) {
@@ -403,35 +404,44 @@ function assertPersistedWearer(view, petID, worn) {
   }
 }
 
-function assertPersistedCare(view, receipt) {
-  const pet = view.features?.pet_adoption?.pets?.find((row) => row.pet_id === receipt.pet_id);
-  const publicKeys = ["eligible_action_ids", "name_key", "palette_id", "pet_id", "species_id", "status_band", "temperament"].sort();
-  if (view.founder_revision !== receipt.founder_revision || !pet ||
-      Object.keys(pet).sort().join("\0") !== publicKeys.join("\0") || pet.status_band !== receipt.status_band ||
-      !Array.isArray(pet.eligible_action_ids) || pet.eligible_action_ids.includes(receipt.action_id)) {
-    // Public coordinates only: expose which existing equality failed without
-    // logging credentials, private raw care state or an entire response body.
-    throw new Error(`Garage care persisted public band/eligibility/Founder revision did not match the actual receipt: ${JSON.stringify({
-      expected: { founder_revision: receipt.founder_revision, status_band: receipt.status_band, action_id: receipt.action_id },
-      actual: { founder_revision: view.founder_revision, present: Boolean(pet), keys: pet ? Object.keys(pet).sort() : [],
-        status_band: pet?.status_band, eligible_action_ids: pet?.eligible_action_ids },
-    })}`);
-  }
+function assertPersistedCare(view, receipt, hash) {
+  const founderID = view.run.founder_id;
+  for (const id of [founderID, receipt.pet_id, receipt.intent_id]) assert.match(id, /^[0-9a-f-]{36}$/u);
+  // Read only the actual head and this command's log from the disposable test
+  // DB. Do not seed care state or project from a receipt-only fixture.
+  const persisted = JSON.parse(testDatabaseSQL(`SELECT jsonb_build_object(
+    'revision', revision.revision, 'constants_hash', revision.constants_hash,
+    'age_ms', revision.state->'age_ms', 'care', revision.state->'pets'->'${receipt.pet_id}',
+    'receipt', log.receipt,
+    'command_attended_ms', log.replay_inputs->'resolved'->'attendance'->'effective_founder_attended_ms')
+    FROM save_revisions revision JOIN save_streams stream ON stream.id=revision.stream_id
+    JOIN founder_log log ON log.founder_stream_id=stream.id AND log.intent_id='${receipt.intent_id}'
+    WHERE stream.owner_kind='founder' AND stream.owner_id='${founderID}' AND stream.scope='founder' AND stream.archived_at IS NULL
+    ORDER BY revision.revision DESC LIMIT 1;`, true).trim());
+  const catalog = JSON.parse(readFileSync(path.join(fixtureRoot, "balance/cosmetic-ac14/pets.json"), "utf8"));
+  return assertCareSnapshot(view, receipt, persisted, catalog, hash);
 }
 
-async function witnessCare(page, requests, petID) {
+async function witnessCare(page, requests, petID, hash) {
   const before = await snapshot(page);
   const pet = before.features?.pet_adoption?.pets?.find((row) => row.pet_id === petID);
   if (!pet?.eligible_action_ids.includes("care.feed")) throw new Error("Garage care real adopted pet cannot be fed");
   const control = page.locator(".pet-care").getByRole("button", { name: plainFixtureCopy("pet.care.action.feed.title"), exact: true });
   let receipt;
+  const hostReads = [];
+  const observeRead = (response) => {
+    if (response.request().method() === "GET" && new URL(response.url()).pathname === "/api/v1/founder/state") {
+      hostReads.push(response);
+    }
+  };
+  page.on("response", observeRead);
   try { receipt = await founderDOMIntent(page, requests, control, "care_action", { pet_id: petID, action_id: "care.feed" }); }
   catch (error) {
     const emitted = requests.some((row) => row.method() === "POST" &&
       new URL(row.url()).pathname === "/api/v1/intents" && row.postDataJSON()?.kind === "care_action");
     if (!emitted) throw new Error("Garage care DOM callback emitted no care intent", { cause: error });
     throw error;
-  }
+  } finally { page.off("response", observeRead); }
   const request = requests.filter((row) => row.method() === "POST" &&
     new URL(row.url()).pathname === "/api/v1/intents" && row.postDataJSON()?.kind === "care_action").at(-1)?.postDataJSON();
   if (receipt.intent_id !== request?.intent_id || receipt.pet_id !== petID || receipt.action_id !== "care.feed" ||
@@ -439,10 +449,20 @@ async function witnessCare(page, requests, petID) {
       !Number.isSafeInteger(receipt.before_ppm) || !Number.isSafeInteger(receipt.after_ppm) || receipt.after_ppm <= receipt.before_ppm) {
     throw new Error("Garage care DOM action returned no bound positive actual care receipt");
   }
-  assertPersistedCare(await snapshot(page), receipt);
-  await page.locator(".pet-care").getByText(plainFixtureCopy(`pet.care.band.${receipt.status_band}`), { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  // Observe the host's own authoritative refresh before issuing any additional
+  // diagnostic read. A later test fetch is a different attendance sample and
+  // cannot tell us which band the mounted host should have rendered.
+  const refreshes = await Promise.all(hostReads.map(async (response) => {
+    assert.equal(response.status(), 200, "care host refresh succeeded");
+    return response.json();
+  }));
+  const refreshed = refreshes.filter((view) => view.founder_revision === receipt.founder_revision).at(-1);
+  assert.ok(refreshed, "care action must produce an authoritative host refresh at the applied revision");
+  const projected = assertPersistedCare(refreshed, receipt, hash);
+  await page.locator(".pet-care").getByText(plainFixtureCopy(`pet.care.band.${projected.status_band}`), { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.waitForFunction(() => document.querySelector('.pet-care button[data-action-id="care.feed"]')?.disabled === true, undefined, { timeout: 30_000 });
-  console.log(`composed Garage care: real DOM adoption → DOM care.feed → positive bound receipt → public band ${receipt.status_band}/feed ineligible at Founder revision ${receipt.founder_revision}: PASS`);
+  assertPersistedCare(await snapshot(page), receipt, hash);
+  console.log(`composed Garage care: DOM care.feed → exact stored receipt/state → actual host read at attendance ${projected.attended_ms} → rendered band ${projected.status_band}/feed ineligible at Founder revision ${receipt.founder_revision}: PASS`);
   return receipt;
 }
 
@@ -717,11 +737,11 @@ try {
   assertPersistedWearer(await snapshot(page), petID, "horse_armor");
   await openPetSurface(page);
   await assertLivePetOverlay(page, { present: true });
-  const care = await witnessCare(page, requests, petID);
+  const care = await witnessCare(page, requests, petID, hash);
   directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
   await page.reload({ waitUntil: "networkidle" });
   assertPersistedWearer(await snapshot(page), petID, "horse_armor");
-  assertPersistedCare(await snapshot(page), care);
+  assertPersistedCare(await snapshot(page), care, hash);
   await openPetSurface(page);
   await assertLivePetOverlay(page, { present: true });
   const restoredFeed = page.locator(".pet-care").getByRole("button", { name: plainFixtureCopy("pet.care.action.feed.title"), exact: true });

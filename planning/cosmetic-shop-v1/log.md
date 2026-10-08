@@ -1837,3 +1837,46 @@ range after `3b2b9a0e`. They establish a legitimate later-read decay route, not 
 read-clock attribution. No care assertion, gameplay, retry or deadline changed; the axis/Space
 population never runs. Next: replace receipt/read equality with an exact read-sample-bound
 oracle and execute its negative cases and real journey. Original63825 and RP-365 remain open.
+
+## 2026-10-08 — RP-388 exact read-sample oracle, actual whole journey passes
+
+Outcome under Pet Care's pinned fixed-grid rules, PA7 read-only projection and Garage GS4:
+replace the invalid later-read/earlier-receipt equality, not care semantics. A small test-only
+helper independently integrates all four stats with BigInt using the pinned artifact and the
+response's existing `opportunity.attended_now_ms`, plus persisted Founder age and the current
+watermark clamp. It checks exact band/complete eligibility, permitted public fields, SQL head
+revision/constants, HTTP versus stored receipt, and persisted stat/Trust/cooldown/watermark.
+There is no arbitrary-band allowance or duplicated product authority. Missing inputs fail.
+This deliberately does not rule RP-365/D-024's shared-clock policy.
+
+The driver passively captures the host's own refresh after DOM care and compares its rendered
+band with that exact response, before a separate diagnostic read. SQL/pinned-policy checks
+also run on that read and after reload. No care seeding, command bypass, new retry, relaxed
+deadline, product/copy/catalog/kernel/Actions-workflow change. The existing composed Make
+target runs the helper's tests alongside its existing asset-observer controls.
+
+Retained regression: the 1920/1921/1922 threshold input fails old receipt equality but passes
+the correct high/high/normal read projections without mutating state. Helper25 PASS includes
+22 malformed/failure controls (stale/arbitrary band, wrong clock/revision/constants, unbound
+receipt, lost applied stat/Trust/cooldown, changed eligibility, private field, bad remainder
+and unsafe attendance). Asset5 plus helper25:30 PASS. Syntax/diff checks pass.
+
+Actual root `make test-game-ui-composed`69425 exits0, unchanged assertions beyond this repair:
+8 real-Postgres refresh cases, all7 persisted parents, production-build/exact client-byte main
+gameplay/early endings/Pitch/WebSocket recovery, default Cosmetic and Clout/SQL variants.
+Care host samples1843 and2886 both render `normal`, check actual stored outcomes and survive
+reload; N5 default73/axis91 requests, no violation. Native Enter and Space adoption/welcome
+focus both execute. The axis stored receipt is `normal` at2868, so that run is not cited as a
+live high→normal crossing; the retained threshold tests establish that branch. Prior6685 and
+original63825 remain recorded; no unique original-run attribution or reliability claim.
+
+Capacity preflight: native host143GiB free; DB data is existing tmpfs with7.7GiB free, while
+Docker's unrelated root overlay remains0/100%. This run used that existing tmpfs DB and native
+build/browser, not a new image or Linux-browser/clean-host gate. No cleanup or capacity repair
+claimed. No full/hosted CI, AT, content mint, feature acceptance or archival follows.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. New range `50f7f49c` exclusive
+through this test/tool/docs/record commit awaits designated cross-party review; native adoption
+is separately `3b2b9a0e..50f7f49c`, and earlier debt remains. Next: consolidate these related
+ranges for review and continue the accepted Garage/API obligations; shared-clock, PA7/C2 and
+content/release gates remain explicit.
