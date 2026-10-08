@@ -1,5 +1,6 @@
 import { isStateValue, parseCanonical } from "../numeric";
 import type { TransportEnvelope } from "../transport";
+import type { GameUIPetRow } from "../api/generated/types";
 
 type RunID = Readonly<{ company_stream_id: string; run_seq: number }>;
 export type PrestigeTerms = Readonly<{
@@ -189,12 +190,13 @@ export function decodeGameUISystemEvent(envelope: TransportEnvelope): GameUISyst
 // throws, taking the runtime's existing authoritative-resync path.
 export type AchievementEarnedEvent = Readonly<{ cursor: number; kind: "achievement_earned"; payload: Readonly<{ achievement_id: string; condition_scope: "career" | "run"; run_id: RunID; score_grant: number }> }>;
 export type MeterBandChangedEvent = Readonly<{ cursor: number; kind: "meter_band_changed"; payload: Readonly<{ direction: "down" | "up"; from_band: string; meter_id: string; run_id: RunID; to_band: string; value_after: number; value_before: number }> }>;
+export type PetStatusChangedEvent = Readonly<{ cursor: number; kind: "pet_status_changed"; payload: Readonly<{ pet_id: string; from_status_band: GameUIPetRow["status_band"]; to_status_band: GameUIPetRow["status_band"] }> }>;
 // GS0.3 remainder: the Fiscal harvest drives only a nav badge (OD-3); a buff
 // start drives only a polite Desk announcement. Both mirror the exact server
 // payload validators in server/save/intent.go.
 export type FiscalPeriodHarvestedEvent = Readonly<{ cursor: number; kind: "fiscal_period_harvested"; payload: Readonly<{ source: "automatic" | "manual"; credit_after: number }> }>;
 export type BuffStartedEvent = Readonly<{ cursor: number; kind: "buff_started"; payload: Readonly<{ buff_instance_id: string; effect_row_id: string; expires_attended_ms: number }> }>;
-export type GameUIAnnouncementEvent = AchievementEarnedEvent | MeterBandChangedEvent | FiscalPeriodHarvestedEvent | BuffStartedEvent;
+export type GameUIAnnouncementEvent = AchievementEarnedEvent | MeterBandChangedEvent | PetStatusChangedEvent | FiscalPeriodHarvestedEvent | BuffStartedEvent;
 
 const buffUUIDv7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 
@@ -229,8 +231,18 @@ function decodeBuffStarted(rev: number, payload: Record<string, unknown>): BuffS
 export function decodeGameUIAnnouncement(envelope: TransportEnvelope): GameUIAnnouncementEvent | undefined {
   if (envelope.kind !== "event" || !Number.isSafeInteger(envelope.rev)) return undefined;
   const kind = envelope.payload.kind;
-  if (kind !== "achievement_earned.v1" && kind !== "meter_band_changed.v1" && kind !== "fiscal_period_harvested.v1" && kind !== "buff_started.v1") return undefined;
+  if (kind !== "achievement_earned.v1" && kind !== "meter_band_changed.v1" && kind !== "pet_status_changed.v1" && kind !== "fiscal_period_harvested.v1" && kind !== "buff_started.v1") return undefined;
   const payload = object(envelope.payload.payload, "Game UI announcement payload");
+  if (kind === "pet_status_changed.v1") {
+    exact(payload, ["pet_id", "from_status_band", "to_status_band"], kind);
+    const band = (value: unknown): GameUIPetRow["status_band"] => {
+      if (value !== "floor" && value !== "low" && value !== "normal" && value !== "high") throw new SyntaxError("invalid pet status band");
+      return value;
+    };
+    const from = band(payload.from_status_band), to = band(payload.to_status_band);
+    if (from === to) throw new SyntaxError("pet status band must change");
+    return { cursor: envelope.rev, kind: "pet_status_changed", payload: { pet_id: uuidString(payload.pet_id), from_status_band: from, to_status_band: to } };
+  }
   if (kind === "fiscal_period_harvested.v1") return decodeFiscalHarvest(envelope.rev, payload);
   if (kind === "buff_started.v1") return decodeBuffStarted(envelope.rev, payload);
   if (kind === "achievement_earned.v1") {

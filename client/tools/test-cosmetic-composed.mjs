@@ -65,6 +65,12 @@ function buildFixtureRoot() {
     : artifacts.get("economy").toString("utf8"));
   economy.multiplier_sources.push({ id: "reputation.founder_bonus", slot: "prestige", target: "all", provider: "reputation_tree" });
   artifacts.set("economy", Buffer.from(JSON.stringify(economy)));
+  // RP-318: make the already-real adoption/feed journey cross a status band.
+  // This disposable catalog is not minted content: hunger starts low, the
+  // other stats high, so one ordinary feed must produce low → high.
+  const pets = JSON.parse(artifacts.get("pets").toString("utf8"));
+  for (const stat of pets.stat_policy.stats) stat.initial_ppm = stat.stat_id === "hunger" ? 499_999 : 800_000;
+  artifacts.set("pets", Buffer.from(JSON.stringify(pets)));
   for (const [name, relative] of [
     ["reputation_tree", "balance/testdata/reputation-tree/fixture-v1.json"],
     ["pet_species", "balance/testdata/pet-species/fixture-v1.json"],
@@ -443,10 +449,11 @@ function assertPersistedCare(view, receipt, hash) {
   return assertCareSnapshot(view, receipt, persisted, catalog, hash);
 }
 
-async function witnessCare(page, requests, petID, hash) {
+async function witnessCare(page, requests, petID, hash, statusPublications) {
   const before = await snapshot(page);
   const pet = before.features?.pet_adoption?.pets?.find((row) => row.pet_id === petID);
   if (!pet?.eligible_action_ids.includes("care.feed")) throw new Error("Garage care real adopted pet cannot be fed");
+  assert.equal(pet.status_band, "low", "status fixture must start with a genuinely low adopted pet");
   const control = page.locator(".pet-care").getByRole("button", { name: plainFixtureCopy("pet.care.action.feed.title"), exact: true });
   let receipt;
   const hostReads = [];
@@ -483,6 +490,37 @@ async function witnessCare(page, requests, petID, hash) {
   await page.locator(".pet-care").getByText(plainFixtureCopy(`pet.care.band.${projected.status_band}`), { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.waitForFunction(() => document.querySelector('.pet-care button[data-action-id="care.feed"]')?.disabled === true, undefined, { timeout: 30_000 });
   assertPersistedCare(await snapshot(page), receipt, hash);
+  const statusEvents = JSON.parse(testDatabaseSQL(`SELECT coalesce(jsonb_agg(jsonb_build_object(
+    'event_id',event_id,'revision',revision,'payload',payload)), '[]'::jsonb)
+    FROM events WHERE intent_id='${receipt.intent_id}' AND kind='pet_status_changed.v1';`, true).trim());
+  assert.equal(statusEvents.length, 1, "feed must store exactly one actual status change");
+  const changed = statusEvents[0];
+  assert.equal(changed.revision, receipt.founder_revision, "status event binds the care command revision");
+  assert.deepEqual(changed.payload, { pet_id: petID, from_status_band: "low", to_status_band: "high" });
+  const catalog = JSON.parse(readFileSync(path.join(clientRoot, "src/copy/generated/catalog.json"), "utf8"));
+  const copy = catalog.entries.find((entry) => entry.key === "pet.status_changed_announcement");
+  assert.deepEqual(copy?.params, [{ name: "band", type: "string" }]);
+  assert.equal(copy.era_variants, null, "status fixture copy is era-independent");
+  const sentence = copy.text.replace("{band}", plainFixtureCopy("pet.care.band.high"));
+  try {
+    await page.locator('.announcement[role="status"]').getByText(sentence, { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  } catch (error) {
+    throw new Error(`pet status announcement missing: ${JSON.stringify({ changed, statusPublications,
+      host: await page.locator("main").innerText(),
+      relatedEvents: JSON.parse(testDatabaseSQL(`SELECT coalesce(jsonb_agg(jsonb_build_object(
+        'revision',revision,'kind',kind,'intent_id',intent_id,'payload',payload) ORDER BY revision,occurred_at),'[]'::jsonb)
+        FROM events WHERE stream_id=(SELECT stream_id FROM events WHERE event_id='${changed.event_id}');`, true).trim()) })}`, { cause: error });
+  }
+  const publications = statusPublications.filter((event) => event.payload?.event_id === changed.event_id);
+  assert.ok(publications.length > 0, "stored status event must reach the real socket");
+  // Transport may replay an event; the host must deduplicate its announcement,
+  // not demand exactly-once network delivery. Every observed copy stays bound.
+  for (const event of publications) {
+    assert.equal(event.payload.scope, "founder");
+    assert.equal(event.rev, changed.revision);
+    assert.deepEqual(event.payload.payload, changed.payload);
+  }
+  console.log("composed RP-318: adopted low pet → native feed → exact SQL low/high event → actual WebSocket → visible polite status: PASS");
   console.log(`composed Garage care: DOM care.feed → exact stored receipt/state → actual host read at attendance ${projected.attended_ms} → rendered band ${projected.status_band}/feed ineligible at Founder revision ${receipt.founder_revision}: PASS`);
   return receipt;
 }
@@ -562,6 +600,7 @@ try {
   const directViolations = [];
   const requests = [];
   const websocketEvents = [];
+  const statusPublications = [];
   const pageErrors = [];
   const failedRequests = [];
   const safetyBlockedRequests = [];
@@ -578,7 +617,14 @@ try {
     websocketEvents.push({ url: socket.url(), sent: 0, received: 0, closed: false, errors: 0 });
     const state = websocketEvents.at(-1);
     socket.on("framesent", () => { state.sent += 1; });
-    socket.on("framereceived", () => { state.received += 1; });
+    socket.on("framereceived", (frame) => {
+      state.received += 1;
+      for (const line of String(frame.payload).trim().split("\n")) {
+        if (!line) continue;
+        const event = JSON.parse(line).push?.pub?.data;
+        if (event?.kind === "event" && event.payload?.kind === "pet_status_changed.v1") statusPublications.push(event);
+      }
+    });
     socket.on("close", () => { state.closed = true; });
     socket.on("socketerror", () => { state.errors += 1; });
     try { assertNetwork(socket.url(), "websocket"); } catch (error) { violations.push(error.message); }
@@ -780,7 +826,7 @@ try {
   assertPersistedWearer(await snapshot(page), petID, "horse_armor");
   await openPetSurface(page);
   await assertLivePetOverlay(page, { present: true });
-  const care = await witnessCare(page, requests, petID, hash);
+  const care = await witnessCare(page, requests, petID, hash, statusPublications);
   directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
   await page.reload({ waitUntil: "networkidle" });
   assertPersistedWearer(await snapshot(page), petID, "horse_armor");

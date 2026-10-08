@@ -71,7 +71,8 @@
   let intentNotice = $state<CopyKey | null>(null);
   let intentNoticeOwner = $state<GameUISurfaceID | undefined>();
   // GS0.6: one polite chrome region for cross-surface announcements, deduped
-  // by stream cursor so a replay after reconnect announces nothing.
+  // by event identity at its stream cursor, not revision alone: one commit
+  // can contain distinct Fiscal and care/achievement events.
   let announcement = $state("");
   let metersChanged = $state(false);
   // OD-3: a Fiscal harvest while elsewhere badges the Fiscal nav (no modal).
@@ -410,7 +411,7 @@
       return;
     }
     if (message.kind === "presence") { visitorCount = message.count; return; }
-    if (message.kind === "announcement") { announce(message.scope, message.value); return; }
+    if (message.kind === "announcement") { announce(message.scope, message.value, message.eventID); return; }
     if (message.kind === "system") {
       transportReady = false;
       if (message.value.kind === "server_restarting") draining = true;
@@ -473,8 +474,10 @@
     return row ? t("meters.row_frame", { constituency: t(row.constituency_key, {}, era), axis: t(row.axis_key, {}, era) }, era) : undefined;
   }
 
-  function announce(scope: "company" | "founder", value: GameUIAnnouncementEvent): void {
-    const key = `${scope}\0${value.cursor}`;
+  function announce(scope: "company" | "founder", value: GameUIAnnouncementEvent, eventID?: string): void {
+    // Production always supplies the validated transport event ID. Older
+    // fixture runtimes omit it; kind keeps distinct event families separate.
+    const key = `${scope}\0${value.cursor}\0${eventID ?? value.kind}`;
     if (announcedCursors.has(key)) return;
     announcedCursors.add(key);
     if (value.kind === "achievement_earned") {
@@ -485,6 +488,14 @@
     }
     if (value.kind === "fiscal_period_harvested") {
       if (surface !== "fiscal") fiscalHarvested = true;
+      return;
+    }
+    if (value.kind === "pet_status_changed") {
+      if (scope !== "founder" || surface !== "pet") return;
+      const pet = liveFeatures?.pet_adoption?.pets.find((row) => row.pet_id === value.payload.pet_id);
+      const band = FEATURES_PRESENTATION.petBands.get(value.payload.to_status_band);
+      if (!pet || !band) { console.error(`game UI invariant: unannounceable pet status ${value.payload.pet_id}`); return; }
+      announcement = t("pet.status_changed_announcement", { band: t(band, {}, era) }, era);
       return;
     }
     if (value.kind === "buff_started") {

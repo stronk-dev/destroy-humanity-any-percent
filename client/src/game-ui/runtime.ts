@@ -16,7 +16,7 @@ export interface GameUICredentials {
 
 export type GameUIRuntimeMessage =
   | Readonly<{ kind: "event"; revision: number; scope: "company" | "founder"; value: GameUILifecycleEvent }>
-  | Readonly<{ kind: "announcement"; scope: "company" | "founder"; value: GameUIAnnouncementEvent }>
+  | Readonly<{ kind: "announcement"; scope: "company" | "founder"; eventID?: string; value: GameUIAnnouncementEvent }>
   | Readonly<{ kind: "historical_event"; revision: number; scope: "company" | "founder"; eventID: string; eventKind: string; value: Readonly<Record<string, unknown>> }>
   | Readonly<{ kind: "presence"; count: number }>
   | Readonly<{ kind: "receipt"; intentID?: string }>
@@ -255,7 +255,7 @@ export function createBrowserGameUIRuntime(
               }
               listener({ kind: "event", revision: envelope.rev, scope, value: event });
             }
-            else if (announcement) listener({ kind: "announcement", scope, value: announcement });
+            else if (announcement) listener({ kind: "announcement", scope, eventID: envelope.payload.event_id as string, value: announcement });
           }
         } else if (envelope.kind === "receipt") {
           const intentID = envelope.payload.outcome === "applied" && typeof envelope.payload.intent_id === "string"

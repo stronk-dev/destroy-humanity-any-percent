@@ -6458,3 +6458,36 @@ generated/docs/records range starts after `cc8b975d` through this commit; design
 review remains. No Firefox/manual AT/performance/full-CI, Garage acceptance, archival or push
 claim. Next: consolidate related Garage review and continue remaining accepted capabilities;
 unruled lifecycle/rights/numeric contracts and later-tier construction remain separate work.
+
+## 2026-10-08 — Pet status reaches the player; same-revision collision repaired (RP-318/RP-419)
+
+Outcome: implemented accepted GS0.3/GS4's missing exact `pet_status_changed.v1` decoder and
+mounted-only, Founder/adopted-pet-bound polite announcement. Unknown pets are withheld/reported;
+malformed payloads resync; off-surface events do not queue speech. Pet values and eligibility
+remain snapshot-owned. One companion-tone sentence is explicitly PENDING OWNER COPY.
+
+Regression: old-source Node12078 fails20 cases (12 valid transitions, seven malformed controls,
+socket delivery); browser11511 fails8. Initial whole composed41543 passes the default care
+variant but fails Clout's new announcement check. Actual SQL shows Fiscal harvest, care and
+status events sharing Founder revision5; revision-only host deduplication suppresses status.
+Deterministic native41373 reproduces four failures. Runtime now preserves the existing transport
+event ID; host keys scope/revision/event identity, with kind fallback for older fixture runtimes.
+Distinct same-kind events remain distinct and replays stay silent. No wire/gameplay/clock change.
+
+Coverage: final affected Node78322 passes158; native19113 passes814 across Garage/Pet/Cosmetic
+host files in Chromium/WebKit, including320/1280, native navigation, snapshot separation,
+wrong scope/pet, replay and same-revision controls. Types/build/boundaries99284 pass. Copy80931
+passes665 keys/618 advisory orphans and manifest identity; only copy_hash changes. Whole
+`make test-game-ui-composed`44710 passes real Postgres, exact production-client main journey,
+both adopted-pet care variants and forbidden-payment controls. Its disposable catalog makes
+ordinary feed cross low→high; exact stored event/revision/payload reaches the actual WebSocket
+and visible status. Final observer correction admits legitimate transport replay while binding
+every observed copy; `make test-clout-composed`21483 executes it and passes. The preceding
+non-escalated focused invocation was permission-denied, not a test failure or completed run.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact source/test/generated/
+docs/records range: `c557a027` exclusive through this commit; designated cross-party review
+pending. No kernel/balance/content mint, retries, timeout increase, CI change, full-CI/Firefox/
+manual-AT/performance, Pet/Garage acceptance, archive or push claim. RP-132/RP-365 and the full
+nine-tier release remain open. Next: consolidate related Garage review and continue accepted
+feature integration; do not repeat this completed status-event study.

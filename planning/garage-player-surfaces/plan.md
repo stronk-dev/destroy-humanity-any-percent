@@ -7,7 +7,15 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-08): OD-15 upgrade ineligibility reasons now reach the Desk from
+Current checkpoint (2026-10-08): RP-318's missing pet status decoder/announcement is locally
+implemented under GS0.3/GS4. Founder events announce only for an adopted pet while Pet Care is
+mounted; replays/off-surface events do not repeat or queue speech, and values remain snapshot-owned.
+The existing real-service care journey now exercises an actual low → high status transition,
+stored event and socket delivery. See the latest owning log for final checks and exact review
+range. New companion-tone copy remains pending owner adoption; RP-132/RP-365 and full acceptance
+are separate obligations.
+
+Preceding checkpoint (2026-10-08): OD-15 upgrade ineligibility reasons now reach the Desk from
 the authoritative projection, with visible text and button descriptions. The production-built
 real-service journey exercises window/requirement rows, and the complete composed target passes.
 The latest owning log records affected checks and the pending exact-range designated review;
@@ -479,7 +487,8 @@ must succeed before another container population. No lifecycle promotion.
   bundle, no status crossing/raw-care/full GS4-A5 acceptance. Firefox zero
   executed before connection timeout; RP-256 remains. Entire new span after
   `c7d8f815` through its tracking edge requires Claude independently. RP-318
-  records the unimplemented pet-status decoder/
-  announcement and missing owner-copy key. No acceptance/archival credit.
+  originally recorded the missing pet-status decoder/announcement and copy key. The latest
+  GS0.3/GS4 batch now implements that path locally with a real stored-event/socket/player check;
+  owner copy and designated review remain, with no full GS4 acceptance/archival credit.
 - [x] 320 px reflow measurement across Desk/Fiscal/Meters/Trophy Case/pet (`6594b646`).
 - [ ] Canonical docs, cold gates, hand-off for Codex designated review (never self-archive).

@@ -375,6 +375,7 @@
     "pet.name.server_room_cat.n11",
     "pet.species.server_room_cat.description",
     "pet.species.server_room_cat.name",
+    "pet.status_changed_announcement",
     "pet.temperament.chaotic.label",
     "pet.temperament.curious.label",
     "pet.temperament.lazy.label",

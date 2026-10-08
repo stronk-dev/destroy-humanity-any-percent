@@ -356,6 +356,14 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   pet's sprite (cosmetic-shop G10). GS4's raw stats, mood, behaviour and cooldowns are not projected:
   PA7 forbids them, and the conflict is recorded as a DESIGN-GAP in
   `planning/garage-player-surfaces/log.md`.
+  `pet_status_changed.v1` now has an exact closed decoder matching the server's UUID,
+  four-band and distinct-transition constraints. A Founder-scoped event for an adopted
+  pet announces `pet.status_changed_announcement` politely in the existing host region
+  only while Pet Care is mounted. Off-surface events are consumed without queuing a later
+  announcement; event replays do not repeat it. Unknown pet/presentation rows are withheld
+  with a diagnostic. Events never mutate the projected pet or its care eligibility: those
+  change only on an authoritative snapshot. Malformed status events take the existing
+  runtime resync path. The new sentence remains explicitly pending owner copy.
   Care actions remain focusable with `aria-disabled` and visible `common.pending`
   until both the intent and authoritative refresh settle; pending activation is
   ignored. Actual ineligibility or unavailable transport still disables them,
@@ -444,7 +452,10 @@ reason renders in `role="status"`: Fiscal and pet care own their outcome region;
 other existing host results use the chrome line only while their captured
 submitting surface is current. Care receives the host's single mapped presentation
 key just like Fiscal. Cross-surface event announcements keep their separate,
-cursor-deduplicated chrome region. A stale revision (`revision_conflict`) triggers one
+event-deduplicated chrome region. The production runtime carries the existing transport event
+ID: the host binds scope, revision and event identity so different events committed at the
+same revision do not suppress each other. Legacy fixture runtimes without an event ID use
+the event kind at that coordinate. A stale revision (`revision_conflict`) triggers one
 authoritative refresh and is never auto-retried. Founder-scoped intents send the Founder revision.
 Applied intents and refresh-requiring refusals/errors keep the shared single-flight guard
 through the authoritative read. Same-kind input during a conflict refresh cannot become a later

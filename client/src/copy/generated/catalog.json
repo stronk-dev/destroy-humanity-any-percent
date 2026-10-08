@@ -3577,6 +3577,19 @@
       "tone": "companion"
     },
     {
+      "key": "pet.status_changed_announcement",
+      "text": "PENDING OWNER COPY: Your companion's status is now {band}.",
+      "params": [
+        {
+          "name": "band",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
       "key": "pet.temperament.chaotic.label",
       "text": "PENDING OWNER COPY: chaotic",
       "params": [],

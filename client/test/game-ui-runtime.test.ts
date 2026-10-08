@@ -414,6 +414,50 @@ describe("GS0.3 announcement decoders", () => {
         run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 },
         to_band: "high", value_after: after, value_before: before } },
   });
+  const petStatus = (revision: number, changes: Record<string, unknown> = {}) => ({
+    ...achievement(revision), payload: { ...achievement(revision).payload, kind: "pet_status_changed.v1", scope: "founder",
+      payload: { pet_id: "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa", from_status_band: "normal", to_status_band: "high", ...changes } },
+  });
+  const petBands = ["floor", "low", "normal", "high"] as const;
+  it.each(petBands.flatMap((from) => petBands.filter((to) => to !== from).map((to) => ({ from, to }))))(
+    "decodes pet status $from → $to without projecting state (RP-318)", ({ from, to }) => {
+      expect(decodeGameUIAnnouncement(decodeTransportEnvelope(petStatus(2, { from_status_band: from, to_status_band: to }))!)).toEqual({
+        cursor: 2, kind: "pet_status_changed", payload: { pet_id: "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa", from_status_band: from, to_status_band: to },
+      });
+    });
+  const badPetStatuses: Record<string, unknown>[] = [
+    { pet_id: "pet.cat" }, { pet_id: "01986666-aaaa-0aaa-8aaa-aaaaaaaaaaaa" },
+    { from_status_band: "future" }, { to_status_band: "future" },
+    { from_status_band: null }, { to_status_band: "normal" }, { extra: true },
+  ];
+  it.each(badPetStatuses)("refuses malformed pet status %j (RP-318)", (changes) => {
+    expect(() => decodeGameUIAnnouncement(decodeTransportEnvelope(petStatus(2, changes))!)).toThrow();
+  });
+  it("resyncs malformed pet status and delivers a legal Founder event once through the socket (RP-318)", async () => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    const socket = new FakeSocket();
+    const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+    await runtime.snapshot(); fetcher.mockClear();
+    const received: unknown[] = [];
+    const unsubscribe = runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    try {
+      openAndConnect(socket); subscribeReplies(socket);
+      publication(socket, `player:${snapshot.run.founder_id}`, 1, petStatus(2));
+      publication(socket, `player:${snapshot.run.founder_id}`, 2, petStatus(2));
+      expect(received).toEqual([
+        { kind: "transport_recovered" },
+        { kind: "announcement", scope: "founder", eventID: "achievement-2", value: { cursor: 2, kind: "pet_status_changed", payload: petStatus(2).payload.payload } },
+      ]);
+      expect(fetcher).not.toHaveBeenCalled();
+      publication(socket, `player:${snapshot.run.founder_id}`, 3, petStatus(3, { to_status_band: "future" }));
+      expect(received.at(-1)).toEqual({ kind: "system", value: { kind: "resync_required" } });
+      expect(socket.closeCount).toBe(1);
+      await vi.waitFor(() => expect(received.at(-1)).toEqual({ kind: "snapshot", value: currentSnapshot }));
+      expect(fetcher).toHaveBeenCalledExactlyOnceWith("/api/v1/founder/state", expect.objectContaining({ headers: expect.objectContaining({ Authorization: "Bearer access" }) }));
+    } finally { unsubscribe(); }
+  });
   const contradictoryDirections = [
     { direction: "up", before: 70, after: 70 },
     { direction: "up", before: 71, after: 69 },
@@ -469,7 +513,7 @@ describe("GS0.3 announcement decoders", () => {
       publication(socket, `player:${snapshot.run.founder_id}`, 1, meter(direction, before, after));
       expect(received).toEqual([
         { kind: "transport_recovered" },
-        { kind: "announcement", scope: "company", value: { cursor: 2, kind: "meter_band_changed", payload: meter(direction, before, after).payload.payload } },
+        { kind: "announcement", scope: "company", eventID: "achievement-2", value: { cursor: 2, kind: "meter_band_changed", payload: meter(direction, before, after).payload.payload } },
       ]);
       expect(fetcher).not.toHaveBeenCalled();
       expect(socket.closeCount).toBe(0);
@@ -491,7 +535,7 @@ describe("GS0.3 announcement decoders", () => {
     publication(socket, `player:${snapshot.run.founder_id}`, 1, achievement(1));
     publication(socket, `player:${snapshot.run.founder_id}`, 2, achievement(1));
     expect(received.filter((message) => message.kind === "announcement")).toEqual([
-      { kind: "announcement", scope: "company", value: { cursor: 1, kind: "achievement_earned", payload: { achievement_id: "achievement.first_gate", condition_scope: "run", run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 }, score_grant: 2 } } },
+      { kind: "announcement", scope: "company", eventID: "achievement-1", value: { cursor: 1, kind: "achievement_earned", payload: { achievement_id: "achievement.first_gate", condition_scope: "run", run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 }, score_grant: 2 } } },
     ]);
   });
 
@@ -531,7 +575,7 @@ describe("GS0.3 announcement decoders", () => {
       } });
       subscribeReplies(sockets[1], { recovered: true, playerOffset: 2, publications: [{ offset: 2, data: achievement(1) }] });
       expect(received.filter((message) => message.kind === "announcement")).toEqual([
-        { kind: "announcement", scope: "company", value: { cursor: 1, kind: "achievement_earned", payload: achievement(1).payload.payload } },
+        { kind: "announcement", scope: "company", eventID: "achievement-1", value: { cursor: 1, kind: "achievement_earned", payload: achievement(1).payload.payload } },
       ]);
       expect(received.filter((message) => message.kind === "transport_recovered")).toHaveLength(2);
       expect(received.filter((message) => message.kind === "system")).toEqual([]);
