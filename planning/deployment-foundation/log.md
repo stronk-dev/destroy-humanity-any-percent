@@ -4723,3 +4723,33 @@ No source/test/assertion change was needed, so no duplicate regression or new re
 invented. Existing implementation reviews remain pending. This is component integration, not
 off-host scheduling, a real release bundle, Caddy smoke, measured RPO/RTO or R-006 clean-host
 evidence. DP-C/AC4 remain open. No acceptance checkbox, archive, push or release promotion.
+
+## 2026-10-08 — A concurrent backup cannot replace a completed backup ID (RP-466)
+
+DP6/AC4 atomic commit already rejects existing destinations, but its early `Lstat` followed
+by replacing `Rename` leaves a race. Old-source20621 reproduces overwrite with two real encrypted
+envelopes: the existing commit seam finishes the second writer between the first writer's check
+and rename; both return success and the winning bytes disappear. No sleeps/goroutine timing or
+fabricated winning envelope are needed. The regression retains exact winning bytes, authenticated
+restore/header identity, losing-writer refusal/temporary cleanup and an already-existing control.
+
+Use atomic no-replace rename: Linux `renameat2(RENAME_NOREPLACE)`, Darwin development
+`renamex_np(RENAME_EXCL)`. Existing target collisions remain `ErrInvalid`; other filesystem
+failures propagate, with no replacing fallback. Unsupported platforms return unsupported rather
+than weaken the guarantee. The already-pinned x/sys0.47.0 becomes a direct dependency, with no
+version/sum change. Encryption, receipt/header bytes, sync ordering, retention and objectives
+remain unchanged. Additional real-filesystem controls cover absent/file/symlink/directory targets.
+
+Executed: cold complete native backup/CLI/release/rehearsal and vet13818 pass. Declared Linux-
+amd64 backup/CLI23256 passes the new collision/rename controls and the real20 clean-target SQL
+arms; five full-restore functions explicitly skip in that service. Separately the exact full
+`make test-deployment-backup`34023 executes all six integration functions with actual pg_dump/
+pg_restore16 and age, zero skips: empty/populated and pre/post-deletion restores, identity mutation
+and refusal controls all pass. Its owned disposable project tears down normally. Gofmt/diff checks
+pass; every process is terminal before this record edit. No browser/gameplay rerun is relevant.
+
+Review by: Codex (implementer actual-diff first filter). Recorded by: Codex. Exact new range is
+`d0fc603a` exclusive through this containing commit, pending designated cross-party review.
+This is local backup safety, not off-host filesystem coverage, natural RPO/RTO, a current bundle,
+clean-host R-006, full Deployment acceptance or hosted CI. Pre-deletion revival/rights decisions
+and other named holds remain. No acceptance flips, archival, push, deployment or release claim.

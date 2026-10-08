@@ -336,3 +336,128 @@ func TestCreateVerifiesTheCommittedEnvelopeBytes(t *testing.T) {
 		t.Fatalf("torn envelope left files behind: %v err=%v", entries, err)
 	}
 }
+
+func TestCreateDoesNotOverwriteAConcurrentCompletedBackup(t *testing.T) {
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	directory := t.TempDir()
+	now := time.Date(2026, 10, 8, 12, 0, 0, 0, time.UTC)
+	manifest := "sha256:" + strings.Repeat("a", 64)
+	input := CreateInput{Directory: directory, BackupID: "20261008T120000Z-abcdef123456",
+		ServerID: "server", ReleaseManifestSHA256: manifest, EpochID: 8,
+		StartedAt: now.Add(-time.Minute), Now: func() time.Time { return now }, Recipient: identity.Recipient().String()}
+	firstDump := []byte("PGDMP\x01first writer")
+	winnerDump := []byte("PGDMP\x01completed concurrent writer")
+	var winnerPath string
+	var winnerBytes []byte
+	var winnerHeader Header
+	// Deterministically finish another real encrypted backup after the first
+	// writer's destination check, without sleeps, goroutines or fake envelopes.
+	beforeEnvelopeCommit = func(_ string) error {
+		beforeEnvelopeCommit = nil
+		other := input
+		other.Dump = bytes.NewReader(winnerDump)
+		winnerHeader, winnerPath, err = Create(other)
+		if err != nil {
+			return err
+		}
+		winnerBytes, err = os.ReadFile(winnerPath)
+		return err
+	}
+	t.Cleanup(func() { beforeEnvelopeCommit = nil })
+	input.Dump = bytes.NewReader(firstDump)
+	header, path, createErr := Create(input)
+	if len(winnerBytes) == 0 {
+		t.Fatalf("concurrent writer did not commit a valid fixture: %v", createErr)
+	}
+	current, err := os.ReadFile(winnerPath)
+	if err != nil || !bytes.Equal(current, winnerBytes) {
+		t.Fatalf("completed concurrent backup was overwritten: read=%v create=%v", err, createErr)
+	}
+	if !errors.Is(createErr, ErrInvalid) || path != "" || header != (Header{}) {
+		t.Fatalf("colliding writer reported success: path=%q err=%v", path, createErr)
+	}
+	var restored bytes.Buffer
+	if actual, err := Restore(winnerPath, manifest, identity, &restored); err != nil || actual != winnerHeader || !bytes.Equal(restored.Bytes(), winnerDump) {
+		t.Fatalf("winning backup did not retain its exact restored identity: %v", err)
+	}
+	entries, err := os.ReadDir(directory)
+	if err != nil || len(entries) != 1 || entries[0].Name() != filepath.Base(winnerPath) {
+		t.Fatalf("collision left partial backup files: %v err=%v", entries, err)
+	}
+	// An already-existing destination still refuses without touching its bytes.
+	input.Dump = bytes.NewReader(firstDump)
+	if _, _, err := Create(input); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("existing completed backup accepted: %v", err)
+	}
+	if current, err := os.ReadFile(winnerPath); err != nil || !bytes.Equal(current, winnerBytes) {
+		t.Fatalf("existing backup changed after refusal: %v", err)
+	}
+}
+
+func TestEnvelopeRenameRefusesEveryExistingDestination(t *testing.T) {
+	for _, kind := range []string{"absent", "file", "symlink", "directory"} {
+		t.Run(kind, func(t *testing.T) {
+			directory := t.TempDir()
+			source := filepath.Join(directory, ".backup-envelope-123.tmp")
+			destination := filepath.Join(directory, "completed.ccbackup")
+			victim := filepath.Join(directory, "symlink-target")
+			if err := os.WriteFile(source, []byte("verified envelope"), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			var err error
+			switch kind {
+			case "file":
+				err = os.WriteFile(destination, []byte("existing envelope"), 0o600)
+			case "symlink":
+				err = os.WriteFile(victim, []byte("unchanged target"), 0o600)
+				if err == nil {
+					err = os.Symlink(victim, destination)
+				}
+			case "directory":
+				err = os.Mkdir(destination, 0o700)
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			err = renameEnvelopeNoReplace(source, destination)
+			if kind == "absent" {
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, err := os.Lstat(source); !errors.Is(err, os.ErrNotExist) {
+					t.Fatalf("successful rename retained source: %v", err)
+				}
+				if data, err := os.ReadFile(destination); err != nil || string(data) != "verified envelope" {
+					t.Fatalf("successful rename changed bytes: %v", err)
+				}
+				return
+			}
+			if !errors.Is(err, os.ErrExist) {
+				t.Fatalf("existing %s was not refused as a collision: %v", kind, err)
+			}
+			if data, err := os.ReadFile(source); err != nil || string(data) != "verified envelope" {
+				t.Fatalf("refused rename consumed or changed source: %v", err)
+			}
+			switch kind {
+			case "file":
+				if data, err := os.ReadFile(destination); err != nil || string(data) != "existing envelope" {
+					t.Fatalf("existing envelope changed: %v", err)
+				}
+			case "symlink":
+				if target, err := os.Readlink(destination); err != nil || target != victim {
+					t.Fatalf("existing symlink changed: %v", err)
+				}
+				if data, err := os.ReadFile(victim); err != nil || string(data) != "unchanged target" {
+					t.Fatalf("symlink target changed: %v", err)
+				}
+			case "directory":
+				if info, err := os.Lstat(destination); err != nil || !info.IsDir() {
+					t.Fatalf("existing directory changed: %v", err)
+				}
+			}
+		})
+	}
+}

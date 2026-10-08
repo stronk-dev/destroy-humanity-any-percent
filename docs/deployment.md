@@ -448,8 +448,14 @@ after all of the following succeed:
 - the dump, manifest, epoch and authenticated metadata are encrypted to the operator's age X25519
   recipient; and
 - the complete temporary envelope is re-read and its header, payload length and checksum verified
-  (so a torn or short write never commits), synced, atomically renamed to `<backup-id>.ccbackup`,
-  and the target directory is synced so the rename survives a crash.
+  (so a torn or short write never commits), synced, atomically renamed without replacement to
+  `<backup-id>.ccbackup`, and the target directory is synced so the rename survives a crash.
+
+The final rename, not just an earlier existence check, refuses an occupied backup ID. A concurrent
+writer cannot overwrite another writer's completed envelope; the loser reports failure and removes
+only its own temporaries. Linux uses `renameat2(RENAME_NOREPLACE)`; macOS development checks use
+`renamex_np(RENAME_EXCL)`. A filesystem/platform without that guarantee fails rather than falling
+back to a replacing rename. The supported release host remains Linux/amd64.
 
 No unencrypted dump is written to the off-host target. Interrupted reads and writes remove their
 temporary output.

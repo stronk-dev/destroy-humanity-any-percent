@@ -166,7 +166,12 @@ func Create(input CreateInput) (Header, string, error) {
 	if written, err := ReadHeader(temporaryPath); err != nil || written != header {
 		return Header{}, "", errors.Join(ErrInvalid, err)
 	}
-	if err := os.Rename(temporaryPath, finalPath); err != nil {
+	// The precheck above is only an early refusal. Another backup can finish
+	// between it and this commit; the rename itself must never replace a winner.
+	if err := renameEnvelopeNoReplace(temporaryPath, finalPath); err != nil {
+		if errors.Is(err, os.ErrExist) {
+			return Header{}, "", errors.Join(ErrInvalid, err)
+		}
 		return Header{}, "", err
 	}
 	// Persist the rename itself; without a directory sync a crash can lose a
