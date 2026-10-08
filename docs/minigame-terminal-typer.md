@@ -28,6 +28,9 @@ replaced before any production mint.
 - **Snapshot.** `typer.snapshot.v1` has exactly eighteen keys. Only the current prompt is ever
   exposed. Both replay engines reject negative counters, unknown assist levels, malformed
   submission feedback and miss counters above the pinned catalog hardcap before applying a command.
+  A `typing` snapshot must have `prompt_index < prompts_total`; Go refuses an
+  exhausted-but-still-typing snapshot before prompt lookup, matching TS's refusal.
+  A genuine final prompt still completes; terminal snapshots may retain the full count.
 - **Scaling.** The `typer.era_tier` input and stored snapshot identity must be in the pinned
   TT1 clamp range 1..9, even if content declares a valid tier-zero era with a full prompt pool.
 - **Prompt order.** A downward Fisher–Yates over the byte-sorted eligible pool, using the

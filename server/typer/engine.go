@@ -447,6 +447,7 @@ func decodeSnapshot(data []byte) (Snapshot, error) {
 		value.AssistLevel != nil && *value.AssistLevel != AssistTimed && *value.AssistLevel != AssistUntimed ||
 		(value.CurrentPromptID == nil) != (value.CurrentPromptText == nil) ||
 		(value.Phase == PhaseTyping) != (value.CurrentPromptID != nil) ||
+		value.Phase == PhaseTyping && value.PromptIndex >= value.PromptsTotal ||
 		(value.Phase == PhaseReady) != (value.AssistLevel == nil && value.StartedServerMS == nil && value.LastServerMS == nil && value.PromptIndex == 0) && value.Phase != PhaseTerminal ||
 		(value.AssistLevel == nil) != (value.StartedServerMS == nil) ||
 		(value.DeadlineServerMS != nil) != (value.AssistLevel != nil && *value.AssistLevel == AssistTimed) {

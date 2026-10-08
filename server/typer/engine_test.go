@@ -1,6 +1,7 @@
 package typer
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"os"
@@ -380,6 +381,73 @@ func TestTyperSnapshotRejectsMalformedState(t *testing.T) {
 		Content: h.content, ContentHash: h.hash, ContentSchemaVersion: SchemaVersion, ServerTimeMs: 2})
 	if !errors.Is(err, minigame.ErrTenantDivergence) {
 		t.Fatalf("above-cap misses should diverge against pinned content: %v", err)
+	}
+}
+
+func TestTyperTypingSnapshotRequiresRemainingPrompt(t *testing.T) {
+	h := newHarness(t, 42)
+	if err := h.apply(`{"assist_level":"untimed","kind":"begin"}`, 1); err != nil {
+		t.Fatal(err)
+	}
+	for h.state().PromptIndex < h.state().PromptsTotal-1 {
+		if err := h.apply(submit(h.currentText()), h.revision); err != nil {
+			t.Fatal(err)
+		}
+	}
+	last := h.state()
+	if err := NewTenant().ValidateSnapshot(h.snapshot); err != nil {
+		t.Fatalf("valid final prompt refused: %v", err)
+	}
+	registry, err := minigame.NewTenantRegistry(NewTenant())
+	if err != nil {
+		t.Fatal(err)
+	}
+	invalid := last
+	invalid.PromptIndex, invalid.LinesCleared = last.PromptsTotal, last.PromptsTotal
+	encoded, err := encodeSnapshot(invalid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := NewTenant().ValidateSnapshot(encoded); !errors.Is(err, minigame.ErrInvalidTenant) {
+		t.Errorf("typing at prompts_total must be refused: %v", err)
+	}
+	input := minigame.ApplyInput{Mode: minigame.ModeSolo, Seed: h.seed, Revision: h.revision,
+		Snapshot: encoded, Command: json.RawMessage(`{"kind":"end_run"}`),
+		ScalingInputs: map[string]int64{ScalingDestination: 1}, Content: h.content,
+		ContentHash: h.hash, ContentSchemaVersion: SchemaVersion, ServerTimeMs: h.revision}
+	for name, apply := range map[string]func(minigame.ApplyInput) (minigame.ApplyOutput, error){
+		"tenant": NewTenant().Apply,
+		"registry": func(value minigame.ApplyInput) (minigame.ApplyOutput, error) {
+			return registry.Apply(EngineRef, EngineVersion, value)
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			defer func() {
+				if failure := recover(); failure != nil {
+					t.Fatalf("malformed typing snapshot panicked instead of refusing: %v", failure)
+				}
+			}()
+			before := append([]byte(nil), input.Snapshot...)
+			output, err := apply(input)
+			if !errors.Is(err, minigame.ErrTenantDivergence) || len(output.Snapshot) != 0 || output.Result != nil {
+				t.Fatalf("malformed snapshot must diverge without output: %+v %v", output, err)
+			}
+			if !bytes.Equal(input.Snapshot, before) {
+				t.Fatal("refusal mutated the input snapshot")
+			}
+		})
+	}
+	// Genuine final prompt still completes through the registry; no hardcoded
+	// provisional run length or rejection of every typing state can satisfy this.
+	input.Snapshot, input.Command = h.snapshot, json.RawMessage(submit(h.currentText()))
+	output, err := registry.Apply(EngineRef, EngineVersion, input)
+	if err != nil || output.Result == nil || output.Result.Outcome != OutcomeCompleted ||
+		fact(output.Result, "typer.lines_cleared") != last.PromptsTotal ||
+		fact(output.Result, "typer.clean_lines") != last.PromptsTotal {
+		t.Fatalf("valid final prompt did not complete: %+v %v", output, err)
+	}
+	if err := NewTenant().ValidateSnapshot(output.Snapshot); err != nil {
+		t.Fatalf("valid terminal output refused: %v", err)
 	}
 }
 

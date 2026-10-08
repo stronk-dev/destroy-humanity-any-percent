@@ -665,3 +665,45 @@ implementer first filter). Recorded by: Codex. The entire new range after
 `76b58dc2` through this containing component/test/docs/record commit requires
 Claude's designated review, independently of the earlier Typer correction ranges.
 No B6 checkbox/acceptance/archive/push or 1.0 promotion.
+
+## 2026-10-08 — B1 malformed typing-index panic correction (RP-395)
+
+Accepted TT4.5/TT4.6 and the platform's fail-closed tenant contract. Baseline
+`e019e670`. Review by: Codex on the original B1 engine boundary (`345dc0b9^..345dc0b9`);
+targeted CHANGES REQUIRED, not a full B1 verdict. Recorded by: Codex.
+
+New cold regression38938 reproduces standalone admission and an index[8]/length8
+panic through BOTH real Go tenant and registry Apply. The corrupt snapshot keeps
+phase typing/current prompt but sets prompt_index and lines_cleared to prompts_total.
+The test reports recovered panics as failures, never as valid refusals. TS already
+refuses the same state. Both tests construct a real final-prompt state first and
+require genuine completion afterward, deriving run length from pinned content.
+
+One structural guard now refuses exhausted typing before lookup, with existing
+ErrInvalidTenant/ErrTenantDivergence and no output/input mutation. No new engine
+taxonomy, runtime recovery wrapper, command/snapshot field, content or payout
+policy. Shared kernel168->169 in all three mirrors because this is a genuine
+replay acceptance-set repair; engine1.0.0/content corpus stay unchanged.
+
+Cold `make test-go GO_PACKAGES='./decimal ./typer ./minigame ./replaycatalog ./kernel' GO_TEST_FLAGS='-count=1'`88068
+and affected vet42066 pass; the retained corpus re-observation matches without
+regeneration. Real Postgres Typer selector89096 executes replay-quota refusal,
+server-owned start eligibility, unlock/play/payout/Exit/neutrality (timed3e0,
+untimed3e0), plus the tenant row. These are service-level witnesses, not public
+Typer command/receipt HTTP or browser integration. Node corpus10 passes; final
+affected Chromium/WebKit99263 passes74. Types/build/boundaries35839 pass with
+zero errors/warnings; diff check passes.
+
+Broader client88284 is RED:10017 tests pass/831 skips but Vitest collects two
+Node-test tool files and rejects them as "No test suite found" (RP-396). Their
+Node assertions actually pass25+5; no exclusion/runner fix is hidden in this
+engine commit. Its chained later checks did not run, so those were executed
+separately above. Kernel99372 remains RED at historical pushed50a3a514 after
+its checkout/topology fixtures pass; it does not approve the new bump or full CI.
+
+New correction first filter by: Codex (implementer). Recorded by: Codex.
+Exact new range after `e019e670` through this containing engine/test/version/docs/
+record commit needs Claude, independently of B6 and earlier B1 repairs. RP-162,
+public C2/content/AT/whole feature/hosted gates remain; no checkbox/archive/push.
+Next: fix RP-396 in the CI owner lane without dropping the existing Node tests,
+then continue the original engine review and unresolved author contract work.
