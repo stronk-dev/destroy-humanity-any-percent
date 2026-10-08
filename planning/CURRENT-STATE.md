@@ -56,7 +56,7 @@ operations remain required alongside that construction, not optional end-stage p
   against the built production client, real server/Postgres/WebSocket, including both
   early endings, next Company and process-death recovery. This is not the full composed
   aggregate or hosted CI. The [API log](api-foundation/log.md) owns review handoff and
-  separate unresolved OpenAPI header finding RP-477. Preceding Typer correction
+  related locally corrected OpenAPI header finding RP-477. Preceding Typer correction
   `59e5cc49` resets composition state when an authoritative terminal removes the input;
   old-behavior browser failures and affected browser/real-Postgres passes are in the
   [Typer log](minigame-terminal-typer/log.md). Both corrections await designated review;

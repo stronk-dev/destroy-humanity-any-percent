@@ -3,9 +3,83 @@ package publicapi
 import (
 	"bytes"
 	"encoding/json"
+	"reflect"
 	"strings"
 	"testing"
 )
+
+func TestOpenAPIResponseHeadersByRepresentation(t *testing.T) {
+	type header struct {
+		Required    bool              `json:"required"`
+		Description string            `json:"description"`
+		Schema      map[string]string `json:"schema"`
+	}
+	raw := func(media, name string) Response {
+		return Response{Kind: ResponseRaw, Status: 200, ContentType: media, ContentHashHeader: name}
+	}
+	schema := Response{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "APIError"}
+	expectHeader := func(required bool, media string) header {
+		description := ""
+		if media != "" {
+			description = "Required for " + media + " responses."
+		}
+		return header{Required: required, Description: description, Schema: map[string]string{"format": "sha256", "type": "string"}}
+	}
+	for _, test := range []struct {
+		name      string
+		responses []Response
+		headers   map[string]header
+	}{
+		{"single raw", []Response{raw(ContentGzip, "X-Content-SHA256")}, map[string]header{
+			"X-Content-SHA256": expectHeader(true, ""),
+		}},
+		{"shared raw header", []Response{raw(ContentGzip, "X-Content-SHA256"), raw(ContentJSON, "X-Content-SHA256")}, map[string]header{
+			"X-Content-SHA256": expectHeader(true, ""),
+		}},
+		{"case insensitive shared header", []Response{raw(ContentGzip, "X-Content-SHA256"), raw(ContentJSON, "X-content-sha256")}, map[string]header{
+			"X-Content-SHA256": expectHeader(true, ""),
+		}},
+		{"distinct raw headers", []Response{raw(ContentGzip, "X-Gzip-SHA256"), raw(ContentJSON, "X-JSON-SHA256")}, map[string]header{
+			"X-Gzip-SHA256": expectHeader(false, ContentGzip),
+			"X-JSON-SHA256": expectHeader(false, ContentJSON),
+		}},
+		{"raw and schema", []Response{raw(ContentGzip, "X-Content-SHA256"), schema}, map[string]header{
+			"X-Content-SHA256": expectHeader(false, ContentGzip),
+		}},
+		{"schema only", []Response{schema}, nil},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			operations := testOperations()
+			// A schema response at another status must not make a success header optional.
+			operations[1].Responses = append(test.responses, Response{Kind: ResponseSchema, Status: 404, ContentType: ContentJSON, SchemaRef: "APIError"})
+			registry, err := NewRegistry(testSchemas(), operations)
+			if err != nil {
+				t.Fatal(err)
+			}
+			document, err := GenerateOpenAPI(registry, "Header test")
+			if err != nil {
+				t.Fatal(err)
+			}
+			var parsed struct {
+				Paths map[string]map[string]struct {
+					Responses map[string]struct {
+						Headers map[string]header `json:"headers"`
+					} `json:"responses"`
+				} `json:"paths"`
+			}
+			if err := json.Unmarshal(document, &parsed); err != nil {
+				t.Fatal(err)
+			}
+			responses := parsed.Paths[operations[1].Path]["get"].Responses
+			if !reflect.DeepEqual(responses["200"].Headers, test.headers) {
+				t.Errorf("success headers = %#v; want %#v", responses["200"].Headers, test.headers)
+			}
+			if responses["404"].Headers != nil {
+				t.Errorf("raw success headers leaked into schema error: %#v", responses["404"].Headers)
+			}
+		})
+	}
+}
 
 func TestGenerateOpenAPIAndTypeScriptFromImmutableRegistry(t *testing.T) {
 	registry := testRegistry(t)

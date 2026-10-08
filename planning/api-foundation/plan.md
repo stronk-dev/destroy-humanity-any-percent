@@ -6,7 +6,11 @@ Current bounded correction (2026-10-08, RP-476): generated SDK dispatch selects 
 media representation when one status has alternatives. Single-representation schema decoding,
 raw digest checks and mounted endpoint formats remain unchanged. Old-client failures, affected
 checks and the real main player journey are recorded in the log; designated review is pending.
-Separate OpenAPI header aggregation finding RP-477 remains unresolved, not covered by this fix.
+Related OpenAPI header aggregation RP-477 is now locally corrected in a separate coherent
+batch: all raw headers survive, shared names combine case-insensitively, and conditional
+requirements name their media type instead of applying to an unrelated schema alternative.
+Six actual-registry generation populations and unchanged mounted API generation pass;
+runtime verification is unchanged. Its designated review is also pending.
 
 Current bounded correction (2026-10-08, RP-473): operational policy admission now requires
 all exact, non-null root/nested fields before struct decoding. Missing/null proxy hops no

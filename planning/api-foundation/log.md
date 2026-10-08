@@ -1403,3 +1403,27 @@ Review by: Codex (implementer diff/first filter). Recorded by: Codex. New range
 begins after59e5cc49 through this coherent source/tests/docs/plan/ledger/log change;
 designated review pending. All check handles terminal. No acceptance, archival,
 kernel/balance change, push, deployment, whole-CI green or release claim.
+
+## 2026-10-08 — Preserve representation-specific OpenAPI headers (RP-477)
+
+A2/A5/C19 generation now aggregates every raw hash header at a status, coalesces
+case-insensitive names and marks a header unconditionally required only if every
+alternative declares it. Otherwise generated prose names the requiring media type;
+the runtime/SDK still require the selected raw descriptor's hash. This follows the
+status-level response/header structure in OpenAPI3.1:
+https://spec.openapis.org/oas/v3.1.0.html#response-object and #header-object.
+
+Actual NewRegistry→GenerateOpenAPI regression on old source fails distinct-header,
+case-alias and raw/schema populations; single/shared raw and schema-only controls
+pass, with a separate404 proving per-status isolation. Initial21495's lowercase
+first character violates the existing descriptor grammar; the corrected legal
+X-content-sha256 population reproduces the overwrite before any production change.
+Final full publicapi/cmd/gen-api -count=1 tests26196 and vet6699 pass, including all
+six populations. api-check preserves mounted OpenAPI/TS/compatibility bytes exactly.
+Gofmt/diff checks pass. No browser/DB rerun: only generation changes; no mounted
+operation gains alternatives, and no decoder, HTTP response or runtime hash check moves.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. New range
+begins after1b563d68 through this source/tests/docs/plan/ledger/log commit; designated
+review pending and consolidatable with the preceding representation-dispatch fix.
+No whole-API acceptance, hosted-CI green, archival, kernel bump, publication or push.

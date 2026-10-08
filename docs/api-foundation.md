@@ -160,6 +160,12 @@ Malformed JSON reports its HTTP status without echoing reply bytes. Body-read fa
 propagate unchanged rather than being relabelled as JSON errors.
 The undeclared 304 arm remains open; this client does not invent an alternative for it.
 
+OpenAPI retains every raw hash header across same-status representations, combining header
+names case-insensitively. A header is marked required at the status level only when every
+representation declares it; otherwise its generated description names the media type that
+requires it. This expresses the existing representation contract, not optional raw verification:
+the SDK still requires and verifies the selected raw descriptor's hash header.
+
 The actual Game UI bootstrap and main state reads now use this transport without changing
 the bootstrap journal, credential storage, snapshot decoder or revision reconciliation.
 Lost replies and HTTP/parser failures retain the persisted bootstrap key for an explicit

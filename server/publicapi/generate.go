@@ -74,8 +74,10 @@ func GenerateOpenAPI(registry *Registry, title string) ([]byte, error) {
 
 func openAPIResponses(responses []Response) map[string]any {
 	result := map[string]any{}
+	representations := map[string][]Response{}
 	for _, response := range responses {
 		status := strconv.Itoa(response.Status)
+		representations[status] = append(representations[status], response)
 		row, _ := result[status].(map[string]any)
 		if row == nil {
 			row = map[string]any{"description": "HTTP " + status, "content": map[string]any{}}
@@ -86,12 +88,49 @@ func openAPIResponses(responses []Response) map[string]any {
 			content[response.ContentType] = map[string]any{"schema": map[string]any{"$ref": "#/components/schemas/" + response.SchemaRef}}
 		} else {
 			content[response.ContentType] = map[string]any{"schema": map[string]any{"format": "binary", "type": "string"}}
-			row["headers"] = map[string]any{response.ContentHashHeader: map[string]any{
-				"required": true, "schema": map[string]any{"format": "sha256", "type": "string"},
-			}}
+		}
+	}
+	for status, alternatives := range representations {
+		if headers := openAPIResponseHeaders(alternatives); len(headers) != 0 {
+			result[status].(map[string]any)["headers"] = headers
 		}
 	}
 	return result
+}
+
+// OpenAPI headers belong to the status, not to an individual media type. A
+// conditional raw header must not become mandatory for a schema alternative.
+func openAPIResponseHeaders(responses []Response) map[string]any {
+	type usage struct {
+		name       string
+		mediaTypes []string
+	}
+	usages := map[string]*usage{}
+	for _, response := range responses {
+		if response.Kind != ResponseRaw {
+			continue
+		}
+		key := strings.ToLower(response.ContentHashHeader)
+		entry := usages[key]
+		if entry == nil {
+			entry = &usage{name: response.ContentHashHeader}
+			usages[key] = entry
+		}
+		entry.mediaTypes = append(entry.mediaTypes, response.ContentType)
+	}
+	headers := map[string]any{}
+	for _, entry := range usages {
+		required := len(entry.mediaTypes) == len(responses)
+		header := map[string]any{
+			"required": required, "schema": map[string]any{"format": "sha256", "type": "string"},
+		}
+		if !required {
+			sort.Strings(entry.mediaTypes)
+			header["description"] = "Required for " + strings.Join(entry.mediaTypes, ", ") + " responses."
+		}
+		headers[entry.name] = header
+	}
+	return headers
 }
 
 func openAPISchema(schema *Schema) map[string]any {
