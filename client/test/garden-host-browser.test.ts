@@ -77,6 +77,16 @@ function button(target: HTMLElement, text: string): HTMLButtonElement {
   return found;
 }
 
+async function openGarden(target: HTMLElement): Promise<void> {
+  // A few event-loop turns do not establish completion of the startup read.
+  // Poll observations, never repeat activation or fabricate transport readiness.
+  await expect.poll(() => [...target.querySelectorAll("nav button")]
+    .some((node) => node.textContent?.trim() === "Server Garden")).toBe(true);
+  button(target, "Server Garden").click();
+  await expect.poll(() => target.querySelector(".garden button.cell")).not.toBeNull();
+  await settle();
+}
+
 async function mounted(initial: GardenCurrentResponse = active(), connected = true, options: { holdInitialGarden?: boolean } = {}) {
   let currentSnapshot = snapshot(7), currentGarden = initial;
   const data = new Map([["cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "garden-host-token", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" })]]);
@@ -279,12 +289,35 @@ for (const focus of ["harvest", "navigation"] as const) it.skipIf(!browser)(`Gar
   } finally { await host.dispose(); }
 });
 
+it.skipIf(!browser)("Garden connection test waits for a delayed startup read without manufacturing readiness", async () => {
+  const host = await mounted(active(), false, { holdInitialGarden: true });
+  try {
+    await settle();
+    expect(host.reads()).toBe(1);
+    expect(() => button(host.target, "Server Garden")).toThrow("missing DOM control Server Garden");
+    expect(host.intents()).toEqual([]);
+    host.resolveGarden(active());
+    // Releasing fetch is not completing Response.json or the mounted render.
+    // The old connection test's immediate lookup fails here deterministically.
+    await openGarden(host.target);
+    expect(button(host.target, "Harvest all mature").disabled).toBe(true);
+    expect(host.target.querySelector(".garden")?.textContent).toContain(t("common.stale_note", {}, "era_1995"));
+    expect(host.reads()).toBe(2);
+    expect(host.intents()).toEqual([]);
+    // Waiting for the read/tab must not fabricate a socket handshake.
+    expect(host.socket.sent).toEqual([]);
+    host.socket.connect(); await settle();
+    expect(button(host.target, "Harvest all mature").disabled).toBe(false);
+    host.assertHTTP();
+  } finally { await host.dispose(); }
+});
+
 for (const state of ["not-ready", "recovering", "resync"] as const) {
   it.skipIf(!browser)(`Garden connection ${state} visibly disables commands until the real handshake recovers`, async () => {
     const { userEvent } = await import("vitest/browser");
     const host = await mounted(active(), state !== "not-ready");
     try {
-      button(host.target, "Server Garden").click(); await settle();
+      await openGarden(host.target);
       if (state !== "not-ready") {
         cell(host.target, 0, 0).click(); await settle();
         expect(button(host.target, "Harvest").disabled).toBe(false);

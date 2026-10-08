@@ -3171,3 +3171,32 @@ All processes terminal; diff/whitespace checked. Next diagnose RP-468's startup 
 Review by: Codex (implementer first filter). Recorded by: Codex. Entire new corrective range
 begins after `a257faaa`; designated cross-party review remains required. All earlier holds
 and independent ranges remain open. No feature checkbox, archive, push or deployment.
+
+## 2026-10-08 — Connection-test startup readiness (RP-468)
+
+Under SG9/SG10 and the delivery procedure, correct the test's prerequisite, not gameplay.
+The first failure66403 is retained. Its immediate tab lookup follows five event-loop turns,
+which cannot prove completion of an asynchronous startup response. A controlled held initial
+Garden read through the actual mounted GameUIApp/runtime/generated adapter reproduces the
+same `missing DOM control Server Garden` failure in both native engines (90359). Releasing
+fetch still precedes Response.json and render completion. This establishes a false-failure
+route, not the unique timing/cause of that untraced historical Firefox run.
+
+The three connection cases now wait for the actual rendered navigation button, activate it
+once, and wait for the mounted grid. Existing disabled, disclosure, refusal, focus, refreshed
+revision and explicit runtime handshake assertions remain unchanged. The new delayed-read
+case proves absence before completion, exactly two reads (startup/surface), zero intents and
+no fabricated socket send; controls become usable only after the test delivers the handshake.
+No production change, longer timeout, repeated activation, skip or CI configuration change.
+
+Finished checks: native Chromium/WebKit host+refresh files48940 pass86; types/Svelte91139
+pass with zero errors/warnings. Cold declared Linux browser97590 runs the same four-file
+population that failed66403, plus the new case:270 pass across Chromium/Firefox/WebKit,
+zero skips. Dependency bootstrap and browser image are unchanged. This is the scoped browser
+population, not full CI/performance/AT or real Go/Postgres transport proof. No software suite
+rerun for the editorial closeout; all processes terminal and diff/whitespace checked.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Test-only corrective range
+begins after `c54c6846`; designated cross-party review is pending. RP-430, natural growth/
+renewal, authored contract/content holds and prior review ranges remain independent.
+Continue remaining accepted Garden feature review; no checkbox, archival, release or push.

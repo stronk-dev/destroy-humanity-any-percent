@@ -16,9 +16,10 @@ separate holds; G1–G7 below still mean implementation presence, not feature ac
 
 RP-467 now locally corrects substrate expiry scheduling: reread at the earlier server growth/
 lockout deadline, keep the old lock on read failure, and never unlock from client time. The
-real-service harvest journey passes; the bounded Linux browser population has a separate
-Firefox startup lookup failure (RP-468), not full green. Diagnose that startup prerequisite
-next without repeating the held natural-growth journey. Exact evidence/review range is in
+real-service harvest journey passes. RP-468's startup lookup now has a controlled reproduction
+and test-only readiness correction; final bounded Linux population passes270 across three
+engines, not whole CI or proof of the original failure's unique cause. Continue remaining
+accepted feature review without repeating the held natural-growth journey. Exact evidence/review range is in
 the owning log; no feature acceptance or previous corrective approval is implied.
 
 **Current integration batch:** `test-garden-harvest-composed` extends the existing real-service
