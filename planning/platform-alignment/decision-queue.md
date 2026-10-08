@@ -25,6 +25,23 @@ Implementation agents may gather evidence and frame options; they may not infer 
 | **D-020** | Reconcile Arcade AC7's required Pitch-less start with API MA-C15's owner-ruled `minigame_api → pitch` dependency: explicitly amend to tenant-independent catalog activation, or retain the dependency and have the ruling author reconcile AC7. | RP-201: freshly hashed complete catalogs with only Pitch removed refuse in both actual Go/TS loaders; unchanged complete controls load. Arcade AR1.2 retains the earlier full chain and names no amendment to MA-C15. | `rfc/minigame-api-and-surface.md` MA-C15 and `rfc/minigame-demo-disc-arcade.md` AR1.2/AR-P3/AC7, authored body reconciliation. | Full Arcade AC7/A4 acceptance; internal starts in complete Pitch-containing bundles remain safe to verify. No independent permission to change public schema, mint or copy. |
 | **D-021** | Resolve existing Clout DG-D: have the harness execute shared served foundation hooks, or accept an explicitly specified attainment observer with complete proof/transition parity. No branch selected; agents may not substitute approximate attainment for the actual rule. | Independent current-source probe on Claude 527246f1 removes only first-hour refusal and the unsupported fixture completes neutrally; restored guards/default harness suite pass. Scalar cap tests are not active PR scenarios. Accountable evaluation semantics, provenance/burn/Founder independence, pacing impacts and exact downstream measurement population must precede construction/ratchets. | Clout CV10/AC9 and accepted harness amendment as needed; `planning/clout-v1-and-pr-interns/log.md`, RP-241. | Remaining P6/AC9 PR relevance/dead-row/purchase observations/invariant scenario ratchet and honest Clout/T2 balance; not the approved bounded refusal primitive. |
 
+## Typer timing arithmetic domain — RP-460 (author reconciliation pending)
+
+TT3 admits every positive safe integer as `timed_budget_ms`; TT4.6 requires adding the
+server stamp. Real pure-engine diagnostics with budget9007199254740991 and
+stamp1700000000000 produce exact Go deadline9008899254740991 versus rounded TS
+deadline9008899254740992. Go then ends normally; TS refuses its own next snapshot as
+outside the exact safe-integer domain. The ordinary fixture budget120000 is unaffected.
+
+The Typer/platform authors must reconcile admission and arithmetic with the shared wire:
+either specify a checked representability/refusal boundary (including its error and when
+it applies), or adopt an exact wider representation through the appropriate versioned
+contract. Do not silently narrow allowed balance data, round, relax the decoder or invent
+new error grammar. Include related revision/time arithmetic domains in that reconciliation;
+only deadline addition is demonstrated here. Canonical intent home: Typer TT3/TT4 and any
+needed platform amendment. Owning evidence: `planning/minigame-terminal-typer/log.md`.
+No option is adopted by this finding; public-wire and RP-162 remain separate holds.
+
 ## Tier-2 T0 comparison population — RP-433 (unruled)
 
 Tier-2 §P3 demands an unchanged T0 relevance report except identity fields, but the existing

@@ -54,6 +54,11 @@ replaced before any production mint.
   supplies time. `t = max(sample, last_server_ms)`, so the run clock never rewinds.
 - **Deadline.** A timed run has deadline `t_begin + timed_budget_ms`. A submit stamped exactly at
   the deadline is scored; one stamped later ends the run `timed_out`, unscored.
+  Known admission defect RP-460: a catalog budget near the safe-integer maximum can produce
+  a deadline outside JavaScript's exact range. Go retains the exact sum; TS rounds it and
+  rejects its own next snapshot. The fixture's120000ms budget is unaffected. A checked
+  timing-domain/refusal or representation contract awaits author reconciliation; no new
+  cap or wire semantics have been adopted to disguise this limit.
 - **Comparison.**
   - `invalid_text` is decided first: C0, U+007F, malformed raw UTF-8 and unpaired JSON surrogate
     escapes are refused. A valid U+FFFD is a scored miss against the ASCII prompt. Go validates

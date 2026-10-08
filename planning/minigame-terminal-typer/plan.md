@@ -5,7 +5,7 @@ Fixture-first (OD-11): no production epoch is minted by this plan.
 
 ## Batches
 
-- [ ] B1 — PARTIAL (`345dc0b9`; AC12 budget `64467fd8`, TT1 tier clamp `cdc6c20c`, and TT4.5 TS replay-state parity `505c4e3b` await Claude's cross-party review; RP-162 TT4.7 result-bound DESIGN-GAP and Codex's full B1 review remain open) — Content + engine (TT3/TT4): `balance/testdata/typer-v1.json` fixture (placeholder
+- [ ] B1 — PARTIAL (full original `345dc0b9^..345dc0b9` designated Codex review is now CHANGES REQUIRED, recorded in the 2026-10-08 log; Codex's separate corrective ranges still await Claude. RP-162 result bounds and RP-460 timing arithmetic remain author-contract gaps) — Content + engine (TT3/TT4): `balance/testdata/typer-v1.json` fixture (placeholder
   prompts per OD-9), Go `server/typer` + TS `client/src/typer` loaders and pure engine,
   `ApplyInput.ServerTimeMs` (TT-PA1 item 2), shared content-gate corpus
   `testdata/typer/content-gate-v1.json`. ACs 1 (artifact half), 2, 4, 5, 6, 7, 10 (engine
@@ -46,7 +46,7 @@ cover duplicate keys at root/nested/escaped names and integer token spelling bef
 parsing can discard evidence. Engine creation/application and both replay-bundle
 loaders exercise the boundary; valid escaped keys/text and command error taxonomy
 remain intact. Kernel176->177 records the changed replay acceptance set. The log
-owns executed results and review range. B1 remains partial: RP-162, original review,
+owns executed results and review range. B1 remains partial: RP-162/RP-460, corrective review,
 public C2 integration, adopted content and feature acceptance are not closed here.
 
 ### B6 native keyboard/lifecycle correction (2026-10-08)

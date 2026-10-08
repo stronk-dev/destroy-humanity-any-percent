@@ -818,3 +818,59 @@ commit requires Claude's designated review; no self-acceptance/archive/push.
 B1 full review, RP-162, public C2/content mint, manual AT and earlier review spans
 remain open. Next capability step: resolve the delivered public API versioning
 choice before implementing Typer/Arcade's live journey; do not invent its answer.
+
+## 2026-10-08 — Full original B1 designated review; timing-domain finding RP-460
+
+Verdict: **CHANGES REQUIRED**. Review by: Codex (designated cross-party reviewer of
+Claude's original implementation). Recorded by: Codex. Exact reviewed range:
+`345dc0b9^..345dc0b9`, all24 changed paths, not approval of subsequent Codex corrections.
+
+Inspected both original loaders/engines, Go/TS tests and corpus generator/consumers;
+the15-prompt fixture and38 candidate-copy entries; generated catalog/types/hash/Go
+keys/orphans; all kernel mirrors/watched prefixes; ApplyInput's clock field; Make targets,
+deployment copy identity, docs and the implementation record. Against accepted TT1–TT4
+and AC1/2/4/5/6/7/10/12/15, the original range retains the previously demonstrated
+U+FFFD, budget, tier, snapshot/mode and raw-admission defects. Their corrections are
+separate implementation ranges, not retroactive approval. RP-162's content-free
+ValidateResult cannot enforce the stated run-length bound and still requires its authors.
+
+Mechanical checks re-derived the original generated relationships:278 prior copy entries
+remain exactly unchanged;38 additions equal the candidate source; generated TS/Go keys
+and orphan additions match. Actual generated-catalog SHA is
+`98c73cb762f8233f00cb85fa714e6bea763c8775e48d02c547f0df80d7559077`, matching the
+hash file, types and deployment manifest. All kernel mirrors equal0.3.103 and both new
+engine paths are watched. The original corpus has8 scenarios/66 attempts/61 applied;
+its declared61 counts only applied attempts (already repaired separately). Fixture SHA
+and all15 declared prompt IDs bind correctly. Current corpus changes are the recorded
+budget/U+FFFD supplement, not an owner content mint.
+
+New RP-460: both loaders admit timed_budget_ms9007199254740991, while unchanged TT4.6
+adds the timestamp without an exact shared domain check. At current baseline9815b208,
+temporary actual-engine diagnostics use freshly hashed fixture content with only that
+policy value changed, seed42, solo, tier1; Create → timed Begin at1700000000000 →
+End at1700000000001. Go37929 emits exact deadline9008899254740991 and ends normally.
+TS7326 fails exact deadline bytes, emitting9008899254740992. TS47677 retains that
+failure and independently reaches the continuation: End rejects with `Typer snapshot
+requires exact safe integer tokens`. This is a legitimate admitted-content path, not
+forged state. Ordinary120000 budget remains green; no deployed exploit is asserted.
+Temporary diagnostics were removed with exact zero residual test/source diff.
+
+The accepted catalog domain, numeric wire and required addition cannot all hold for this
+population. The decision queue asks the Typer/platform authors for a checked domain/
+refusal contract or exact representation amendment; no arbitrary cap, new error, widened
+wire, rounded acceptance or author-body edit was implemented. Other arithmetic domains
+need consideration in that ruling but were not separately demonstrated here.
+
+Executed on the current descendant, not misrepresented as original-revision green:
+`make test-go vet GO_PACKAGES='./typer ./minigame ./replaycatalog ./kernel'
+GO_TEST_FLAGS='-count=1'`48491 passes all four packages and vet. Existing Node Typer
+file46792 passes48 checks. These pure checks exercise the actual engines/replay loaders,
+not public HTTP, DB timing, UI, AT or whole CI. `make copy-check`80250 exits0:
+669-key copy pipeline and deployment content manifest both validate. `git diff --check`
+passes; temporary diagnostics leave no residual source/test diff.
+No product, content, kernel, acceptance-checkbox, archive or push change.
+
+This completes the original B1 review, not B1 acceptance. Codex corrective ranges still
+require Claude; RP-162/RP-460, the separately held public API choice, adopted content
+and full feature acceptance remain. Next safe work is remaining original feature reviews
+and accepted integration; do not repeat this full B1 review or infer the held rulings.
