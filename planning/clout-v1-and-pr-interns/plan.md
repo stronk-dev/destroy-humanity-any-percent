@@ -22,7 +22,7 @@ full real-DB production still fails the original27 RP-307 partition cases. Desig
 remains. Numeric representation/episode, author contracts, D-021/D-022 and mint gates are not
 resolved by this test-only correction; see the latest log for executed commands and range.
 The next accounting step is the [Production Accrual Conservation draft](../../rfc/production-accrual-conservation.md):
-resolve episode meaning and the exact durable accounting/compatibility contract, rather than
+resolve episode/settlement meaning, origin lifetime and the exact accounting/compatibility contract, rather than
 repeat completed fidelity studies. It is a proposal, not implementation authority or AC6 completion.
 
 2026-10-08 bounded follow-up at `32f7518c`: test whether projecting the actual evaluator

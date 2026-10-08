@@ -266,6 +266,17 @@ func TestReputationCurrentAndNextPublicProjectionIntegration(t *testing.T) {
 		t.Fatal("mid-run purchase changed complete Company head or frozen rows")
 	}
 	retry(now.Add(time.Second), purchase, applied)
+	// Additional reads before the same later Exit must not become accrual
+	// settlements. The existing read helper compares all twelve recorded tables;
+	// these assertions also bind the full committed resource/generator views.
+	for _, offset := range []time.Duration{time.Millisecond, 500 * time.Millisecond, time.Second, 1553 * time.Millisecond} {
+		view := read(now.Add(offset))
+		assert(view, 1, 5, "1e0", "1.003e0", "5e0")
+		if view.ServerNowMS != now.Add(offset).UnixMilli() || view.Revision != after.Revision || view.FounderRevision != after.FounderRevision ||
+			!bytes.Equal(encode(view.Resources), encode(after.Resources)) || !bytes.Equal(encode(view.Generators), encode(after.Generators)) {
+			t.Fatal("display-time read advanced committed production or revisions")
+		}
+	}
 	exit := encode(map[string]any{"intent_id": "01986666-e401-7000-8000-000000000002", "kind": production.IntentWindDown, "expected_revision": player.Number, "expected_founder_revision": owner.Number + 1, "reputation_plan": []string{"reputation.starter.cash_small", "reputation.starter.generated_beige_tower"}})
 	ended, err := service.Handle(ctx, player.StreamID, production.ModeOnline, now.Add(2*time.Second), exit)
 	if err != nil || ended.Replay || !appliedOutcome(ended) {

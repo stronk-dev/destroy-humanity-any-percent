@@ -2319,3 +2319,36 @@ acceptance before implementing it. RP-308 adoption remains unanswered; RP-307 re
 Review by: Codex (test/draft first filter). Recorded by: Codex. Exact new range after
 `32f7518c` through this containing commit needs designated cross-party review; earlier
 ranges remain independent. No feature completion, archival, push or release claim.
+
+## 2026-10-08 — Correct the assumed persistence requirement
+
+Baseline `6559a3d5`. Source tracing finds GameUISnapshot projects committed states without
+committing accrual; ordinary Handle, Exit, offline catch-up and suppression belong to logged
+mutation boundaries. Simulation and content diagnostics operate on hypothetical states.
+This does not establish that a conservation origin must span authorized saved heads.
+Codex's own draft assertion that durable state was necessarily required was unsupported.
+The body and current next-action pointer now distinguish operation-local versus durable
+origins, pending author interval/settlement resolution. No accepted contract is narrowed;
+the original partition property and all 27 failures remain, and no version/field is adopted.
+
+Under existing GU-C9/read-only projection and Reputation AC7, the actual persisted public
+projection test now performs four extra reads before the same later Exit. Each checks its
+advancing display time, unchanged revisions/full resource and generator views; the existing
+observer binds unchanged full rows in twelve tables. The later Exit/continuation and exact
+retry checks still execute. This is the real projector/Store/Postgres path with candidate
+Reputation content, not every public HTTP/read path or a Clout production repair.
+
+Executed root checks: focused real-DB projection PASS (0.199s); final
+`make test-save-integration SAVE_TEST_PACKAGES='./gameui' SAVE_TEST_FLAGS='-run Integration -v'`
+PASS (0.404s, all three named populations including four Fiscal arms, no skips);
+`make test-go GO_PACKAGES='./gameui' GO_TEST_FLAGS='-count=1'` PASS (0.430s);
+`make vet GO_PACKAGES='./gameui'` and diff checks PASS. Host tests alone are not DB proof;
+the declared Postgres run is. No production, kernel, save, balance, content or CI bytes changed.
+
+Next: settle the accounting origin's required lifetime before choosing a storage format;
+prove action/hook integration for the selected contract. Do not infer new persistence from
+the scalar defect or weaken accepted invariance to avoid it. RP-308 remains unanswered.
+Review by: Codex (test/draft first filter). Recorded by: Codex. Exact new range after
+`6559a3d5` through this containing commit needs designated cross-party review; the earlier
+origin experiment/draft and all older implementation ranges remain independent. No archival,
+feature/release promotion or push.
