@@ -49,7 +49,22 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Latest finished implementation checkpoint (`e15e0ff5`): Recovery's built-client journey
+- Latest finished source checkpoint (`aca464ac`): Garden rereads at the earlier substrate-lock
+  expiry or growth tick, so Mainframe's ten-minute lock does not remain visibly active until
+  its fifteen-minute growth tick. The server projection, old-behavior browser failures,
+  corrected mounted cases and built-client/real-service/Postgres harvest journey are recorded
+  in the [Garden log](minigame-server-garden/log.md). The journey uses prepared maturity,
+  not natural fifteen-minute growth. That production correction is `a257faaa..c54c6846`;
+  designated review remains pending.
+- The subsequent test-only range `c54c6846..aca464ac` waits for actual rendered startup
+  readiness before connection assertions instead of assuming five event-loop turns suffice.
+  A deliberately held initial read reproduces the old failure. Final affected native checks
+  pass; the declared Linux Chromium/Firefox/WebKit four-file population passes 270 checks,
+  zero skips. This does not close every intermittent-input report or establish whole CI.
+  Both ranges are committed, with no live verification process or uncommitted source work.
+  Original G6/G7 review, corrective-range review, author/content holds and natural growth/
+  renewal remain open; preliminary inspection is not a designated verdict.
+- Earlier finished implementation checkpoint (`e15e0ff5`): Recovery's built-client journey
   now resumes the same committed session after actual gameserver process death and a lost
   reply, with unchanged persisted progress before reconnect and no credit for the missed
   interval. The retained data-loss control fails at the new assertion. Fiscal's keyboard
