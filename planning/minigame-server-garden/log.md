@@ -3360,3 +3360,50 @@ Recorded by: Codex. New range begins after `c67f22e5`; designated review pending
 G4–G7 are now fully dispositioned, not approved. Original G1–G3 review, prior corrective
 reviews, RP-222/RP-229/RP-471 author work, renewal, content/mint and AC13 remain open.
 Continue original G1–G3 next. No feature checkbox, archival, push or whole-CI/release claim.
+
+## 2026-10-08 — Original G1–G3 review completed; all original batches dispositioned
+
+Review by: Codex (designated cross-party reviewer of Claude's original implementation).
+Recorded by: Codex.
+
+- **G1 `02f91d10^..02f91d10`: CHANGES REQUIRED.** Complete26-path inspection covers
+  catalog/state/engine/commands and both runtimes' tests, Make consumers, kernel pins,
+  copy registrations and generated fixtures. RP-212–RP-214 block strict catalog admission;
+  RP-219 blocks safe-counter advancement. Existing corrections and the independent harvest/
+  tick witnesses remain separate, not approved through this verdict. The original ten-scenario
+  Go-generated corpus establishes parity, not independent mathematical correctness. All50
+  candidate copy rows equal their generated rows; all553 older rows remain unchanged. Species
+  names/descriptions and Chaos tooltip remain explicitly pending owner adoption. The structural
+  budget witness is out-of-domain, as the original log already discloses; no new defect inferred.
+- **Combined G2/G3 `415bea4d^..415bea4d`: CHANGES REQUIRED.** Complete25-path inspection
+  covers bundle dependencies/hash/floors, Founder v25 codec, activation, cloned carry, Go/TS
+  replay and predecessor tests, generated fixture/version changes and records. The138 changed
+  replay-fixture scalars are exclusively v11→v12. RP-215 blocks the original strict-codec claim;
+  RP-222 leaves the admitted starter-retune/carry contract unresolved. Original G3 also introduced
+  the minigame internal-test import cycle, corrected in original G4 with injected platform
+  payout validation. Its grep-filtered Postgres claim was already retracted in that G4 log;
+  it is not admissible integration proof. Current actual New-Founder and both Exit witnesses
+  are useful later supplements, not evidence those original helper-only tests exercised them.
+
+Fresh checks at unchanged production source `8fd83b40`:
+
+- Cold80654 passes full garden/save/replaycatalog/kernel, but full production is RED on the
+  known27 RP-307 partitions and a stale policy-observation digest. No whole-server pass claimed.
+  The separate `a31621ee` actual44-profile re-observation changes only that digest; ordinary
+  cold replay passes,18 diagnostic differences/NOT_PROVEN retained. Clout's log owns that repair.
+- Declared Linux-amd64/Postgres27266 exits0 for production/save/replaycatalog selected Garden,
+  Founder-v25 and bundle tests. Actual New-Founder, both retained Exits, skewed clocks,
+  coordinator rollback, replay/history and transitive dependency refusals execute. RP-222's
+  diagnostic still exposes the starter-promotion contradiction; its pass is not acceptance.
+  Verbose output is tool-truncated, not a claimed complete retained transcript.
+- Ten selected client files56180 pass155 with three explicit browser-only raw-loader exclusions;
+  Node child-loader/failure controls do execute. No browser/AT/natural-growth claim from Node.
+- Affected vet, cold minigame internal tests, corpus drift check, generated-copy/content-manifest
+  checks and typecheck pass. Svelte reports zero errors/warnings. These checks are terminal.
+
+**Original G1–G7 now all have complete designated dispositions, not blanket approval.**
+No further original-batch restart is queued. Next: consolidate the already recorded corrective
+ranges for Claude, continue independent work authorized by accepted contracts, and obtain the
+RP-222/RP-229/RP-471 author reconciliations. Renewal, natural growth, adopted copy/content,
+SG13 production activation and AC13 remain open. No behavior checkbox, archival, push or release
+promotion. This documentation-only closeout adds no implementation range or new acceptance test.

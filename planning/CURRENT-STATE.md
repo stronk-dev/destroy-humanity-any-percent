@@ -49,11 +49,19 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Garden original G4–G7 now have complete designated CHANGES REQUIRED dispositions.
+- Garden original G1–G7 now all have complete designated CHANGES REQUIRED dispositions;
+  the remaining original reviews are finished, not implicitly approved. Current-source cold
+  Garden/save/replaycatalog/kernel and minigame checks,155 client tests, types/copy/corpus/vet
+  and selected real Linux-amd64/Postgres activation/Exit/rollback/history checks pass. Full
+  production80654 remains red on the27 Clout partition cases plus stale policy provenance;
+  `a31621ee` re-observes all44 policy pairs, changing only that digest and preserving the
+  negative results. The underlying arithmetic defect remains. No whole-CI or new tier claim.
   The new SG8 event-admission repair after `c67f22e5` passes actual Postgres rollback and
   producer/integration checks, pending independent review. RP-471 additionally records an
   above-cap contradiction in AC6 for its author; no gameplay policy was changed. The
-  [Garden log](minigame-server-garden/log.md) owns the exact evidence and remaining G1–G3 work.
+  [Garden log](minigame-server-garden/log.md) owns exact dispositions and corrective review
+  handoffs; original-batch reviews must not restart. Hosted run37795560514 was rechecked
+  read-only: schema/harness/composed pass, server/client/browser fail at published `cbd2069f`.
 - Latest bounded source repair (2026-10-08, after `ebbb465c`): Garden no longer admits null
   row/column as plot zero. Old authenticated Linux/Postgres HTTP actually removed a plant
   for a null-row uproot. Final real HTTP now rejects all six command/field combinations

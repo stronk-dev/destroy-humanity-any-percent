@@ -5,7 +5,14 @@ Fixture-first: no production mint (SG13). Numbering is landing-order: the RFC's 
 means next-free, and at landing that is **Founder v25** (v22 Reputation, v23 Pet, v24 Cosmetics).
 Replay inputs take the next free wire version, and the event migration takes the next free number.
 
-**Current execution, 2026-10-08:** pending/response-focus, connection-state and current-context
+**Current execution, 2026-10-08:** all original G1–G7 batches now have complete designated
+CHANGES REQUIRED dispositions; their exact ranges and evidence are in the latest [log](log.md).
+Do not restart those reviews or mistake them for approval of corrected descendants. Consolidate
+the existing corrective ranges for Claude while continuing safe work under accepted contracts.
+RP-222/RP-229/RP-471 author reconciliation, renewal/natural growth, adopted content/SG13 and
+AC13 remain open. The following dated checkpoints retain their earlier evidence, not a new queue.
+
+Pending/response-focus, connection-state and current-context
 read/visibility and native help corrections are locally verified (RP-409/RP-410/RP-420/RP-421/RP-422); designated
 review remains open. The latest [owning log](log.md) records exact ranges and checks. Continue
 remaining accepted feature gates and consolidated review. Fresh hosted Firefox failure RP-430
@@ -19,9 +26,9 @@ lockout deadline, keep the old lock on read failure, and never unlock from clien
 real-service harvest journey passes. RP-468's startup lookup now has a controlled reproduction
 and test-only readiness correction; final bounded Linux population passes270 across three
 engines, not whole CI or proof of the original failure's unique cause. Continue remaining
-accepted feature review without repeating the held natural-growth journey. Original G5–G7 now
-have complete designated CHANGES REQUIRED dispositions; finish the original G1–G4 coverage,
-then consolidate the separate corrective review ranges, without restarting G5–G7.
+accepted feature work without repeating the held natural-growth journey. Original G1–G7 now
+have complete designated CHANGES REQUIRED dispositions; consolidate the separate corrective
+review ranges without restarting the original batches.
 Exact evidence/review range is in
 the owning log; no feature acceptance or previous corrective approval is implied.
 
@@ -211,7 +218,8 @@ integration under SG13, retaining author/owner/CI and complete nine-tier 1.0 obl
   AC10, AC15.
 - [x] G7 — Garden surface under `client/src/game-ui/` (grid, roving tabindex, non-colour stage,
   reduced motion, 320 px). AC13 stays blocked on the Accessibility RFC's acceptance; AC14 copy.
-- [ ] Docs, then hand off for Codex's designated review. Never self-archive.
+- [ ] Remaining acceptance/docs and consolidated corrective review; original G1–G7 reviews
+  are dispositioned, not approved. Never self-archive.
 
 Separate SG7/SG10 purchase correction under `e02fbfc1` / diagnosis `d24b40f6`,
 authority `6ba1252c`, confirms RP-232: actual producer offered Garden but Fiscal

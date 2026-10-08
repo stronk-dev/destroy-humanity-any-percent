@@ -5129,3 +5129,15 @@ suite for editorial records, no new hosted query or claim. Last inspected publis
 red at `cbd2069f`; later local evidence is separate. No push/deployment/archival or owner-choice
 adoption. The full nine-tier1.0 objective remains active; current delivery boundaries are in
 the existing roadmap rather than a new tracker.
+
+## 2026-10-08 — Finish current review work and reconcile whole-product status
+
+Production source `8fd83b40`; observation repair `a31621ee`. Original Garden G1–G7 reviews
+now all have exact-range dispositions, retaining defects rather than approving descendants.
+The owning Garden log records fresh scoped Go/client/Postgres evidence and the broader
+production red. Policy re-observation changes one digest, not the27 known Clout failures.
+Read-only hosted check still shows37795560514 red at `cbd2069f`. Updated existing entry points,
+not a new tracking system. Actual stage: Garage integration/hardening; incomplete v0.1 and
+substantial unbuilt Tier3–8/world/combat/final endings plus rights/accessibility/operations.
+Next remains accepted construction/correctness and consolidated corrective review. No tier,
+feature acceptance, archive, push or release promotion; full nine-tier1.0 remains the goal.
