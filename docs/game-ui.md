@@ -133,6 +133,15 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   invented text/values. Nine actual source faults discriminate. This is bounded
   catalog/DOM evidence, not all meter IDs/eras, real delivery or manual AT.
 - **Earnings Calls (`fiscal`):** unlocked by `feature.fiscal`.
+  - The navigation gains `fiscal.nav_ripe_badge` when the existing host time estimate
+    reaches the current period's early-harvest boundary, and keeps it through the
+    guaranteed phase. This is display-only readiness, not a payout or guaranteed
+    early success. It neither announces, moves focus, polls nor submits an intent.
+    Visiting Fiscal leaves readiness visible; a newer authoritative ripening period
+    or absent Fiscal arm clears it. The separate off-surface `(harvested)` event badge
+    still clears on visit. The new readiness string is explicitly pending owner copy,
+    not adopted release content. Native exact-edge/keyboard/reflow checks cover 320/1280px;
+    the existing composed Fiscal-to-Pitch path also checks its production-client suffix.
   - Shows credit against its visible cap, the auto-sweep preview, the hoard preview (next run only),
     and a display-only phase (`fiscal-phase.ts`: ripening, early with its stated success chance, or
     guaranteed).

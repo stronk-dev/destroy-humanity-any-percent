@@ -190,6 +190,7 @@
     "fiscal.level_frame",
     "fiscal.levels_label",
     "fiscal.nav.harvest_badge",
+    "fiscal.nav_ripe_badge",
     "fiscal.next_run_note",
     "fiscal.outcome.consumed_by_auto",
     "fiscal.outcome.early_failed",

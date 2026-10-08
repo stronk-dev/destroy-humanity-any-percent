@@ -6537,3 +6537,43 @@ Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact corr
 `c977ad36` exclusive through this source/tests/docs/ledger/log/status commit; designated
 cross-party review pending. No archival or push. Next: continue missing accepted Garage/API/
 minigame integration and consolidate related review ranges; unruled contracts remain held.
+
+## 2026-10-08 — Show ready-quarter navigation without inventing a harvest (RP-442)
+
+Outcome: implement the missing accepted GS1/OD-3 suffix using the existing shared Fiscal
+phase and host time estimate. Ready starts at early_ms, persists through guaranteed, and
+clears when authoritative period state returns to ripening or the arm disappears. It is
+ordinary accessible button text, not a live announcement, payout, poll or automatic command.
+The separate harvested-event badge still clears on visit; readiness does not. Add only the
+specified copy key, visibly `PENDING OWNER COPY`, and regenerate copy/manifest identity;
+constants/content epoch and existing owner text stay unchanged. Native/real-service drivers
+identify Fiscal navigation independently of its changing suffix; commands remain DOM-origin.
+
+Regression: old UI52091 fails all four Chromium/WebKit320/1280 readiness cases at exactly
+100000ms. Corrected16104 passes. Final tests also cover early-minus-one, guaranteed-minus-one,
+guaranteed, no requests/extra reads/live-region changes/focus theft, native Enter navigation,
+harvested acknowledgement independence, authoritative reset, absent arm and hidden feature.
+First broad54010 has1062 passes/two failures/four performance-only exclusions: an existing
+nav inventory compared formatting-only outer whitespace. It now trims that whitespace but
+still requires exact titles; no badge/phase/outcome assertion was relaxed. First whole83083
+fails my new driver's missing translator binding after its badge lookup; corrected before
+the final run. Initial malformed browser CLI and sandbox listen refusal ran no tests.
+
+Coverage: final Garage99774 passes820/820 native cases; the other six affected file/project
+executions in54010 pass244 with four existing performance-only exclusions. Final focused3545
+passes4 after adding explicit controls against ARIA naming that would hide the suffix.
+Commands: `make test-browser-focused BROWSER_TEST_FLAGS='--project chromium --project webkit
+test/garage-surfaces-browser.test.ts'`; the earlier affected population additionally selected
+game-ui-screens, cosmetic-host and pet-adoption files. `make typecheck build-client copy-check
+verify-client-boundary`28873 passes; final typecheck52271 has zero errors/warnings. Copy check
+validates669 keys and the regenerated manifest (only copy_hash changes). Generated Go package
+compilation/vet pass; it has no tests, not extra gameplay evidence. Whole
+`make test-game-ui-composed`7260 passes all required Postgres populations, production-client
+Fiscal readiness/Pitch, both early endings/continuation/recovery, both pet-care variants,
+Reputation, Garden, Tier2 and forbidden-payment negatives. All tool sessions are terminal.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range:
+`727c783a` exclusive through this source/tests/generated/docs/ledger/plan/log commit;
+designated cross-party review pending. No Firefox/manual AT/performance/full-CI, clock repair,
+whole Garage acceptance, mint, archival, push or release claim. Next: remaining accepted
+Garage/API/minigame integration and consolidated review; unaccepted successors remain held.

@@ -273,7 +273,7 @@ try {
   // Compile every end-of-journey SQL column now, before the real 15-minute wait.
   sql("SELECT quota_used FROM minigame_faucet_window LIMIT 0; SELECT revision,payload,intent_id FROM events LIMIT 0; SELECT canonical_payload,replay_inputs,receipt,applied_revision,source_company_stream_id,source_run_seq,source_run_log_seq FROM founder_log LIMIT 0; SELECT company_stream_id,run_seq,seq,canonical_payload,replay_inputs,receipt,applied_revision FROM run_log LIMIT 0;");
   await control("garden.title").click(); await page.getByText(text("garden.state.locked"), { exact: true }).waitFor({ timeout: 30_000 });
-  await control("surface.fiscal.title").click(); await page.locator('main[data-surface="fiscal"]').waitFor({ timeout: 30_000 });
+  await page.locator('nav button[data-nav-surface="fiscal"]').click(); await page.locator('main[data-surface="fiscal"]').waitFor({ timeout: 30_000 });
   const available = await snapshot(page);
   assert(available.features.fiscal.unlocks.some((row) => row.unlock_id === bundle.garden.unlock_id && row.cost === 3 && !row.owned), "actual producer offers Garden unlock");
   const unlockRow = page.locator(".fiscal li").filter({ has: page.getByRole("heading", { name: text("garden.title"), exact: true }) });

@@ -1914,6 +1914,14 @@
       "tone": "corporate"
     },
     {
+      "key": "fiscal.nav_ripe_badge",
+      "text": "PENDING OWNER COPY: ready to harvest",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "fiscal.next_run_note",
       "text": "Spending here and the confidence hoard take effect on your next run, not this one.",
       "params": [],

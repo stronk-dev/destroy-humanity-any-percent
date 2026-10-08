@@ -82,7 +82,8 @@ async function assertAxe(target: HTMLElement, label: string): Promise<void> {
 }
 
 function button(target: HTMLElement, text: string): HTMLButtonElement {
-  const found = [...target.querySelectorAll("button")].find((candidate) => candidate.textContent?.trim() === text);
+  const found = [...target.querySelectorAll("button")].find((candidate) =>
+    (candidate.querySelector(":scope > [data-nav-label]") ?? candidate).textContent?.trim() === text);
   if (!found) throw new Error(`missing button ${text}`);
   return found;
 }
@@ -97,7 +98,7 @@ async function mounted(runtime = new Runtime()) {
 it.skipIf(!browser)("unlocks one nav button per live feature fact and renders the Meters board as text (GS3)", async () => {
   const { target, dispose } = await mounted();
   try {
-    const nav = [...target.querySelectorAll("nav button")].map((node) => node.textContent);
+    const nav = [...target.querySelectorAll("nav button")].map((node) => node.textContent?.trim());
     expect(nav).toEqual(expect.arrayContaining(["Trophy Case", "Earnings Calls", "Reputation Board"]));
     button(target, "Reputation Board").click(); await settle();
     const meters = target.querySelector(".meters")!;
@@ -731,6 +732,74 @@ for (const surface of ["achievements", "meters"] as const) {
       }
     });
   }
+}
+
+for (const width of [320, 1280] as const) {
+  it.skipIf(!browser)(`GS1/OD-3 Fiscal ready navigation follows exact phase edges silently at ${width}px`, async () => {
+    const { page, userEvent } = await import("vitest/browser");
+    await page.viewport(width, 720);
+    const runtime = new Runtime();
+    const reads = vi.spyOn(runtime, "snapshot");
+    const { target, app, dispose } = await mounted(runtime);
+    try {
+      const nav = [...target.querySelectorAll<HTMLButtonElement>("nav button")]
+        .find((node) => node.textContent?.trim() === "Earnings Calls")!;
+      const desk = button(target, "The Desk");
+      desk.focus();
+      const initialReads = reads.mock.calls.length;
+      const announcements = [...target.querySelectorAll('[role="status"], [role="alert"], [aria-live]')]
+        .map((node) => node.textContent);
+      // Synchronous host-clock fixtures: the real 100ms tick cannot cross an
+      // exact boundary between setting the estimate and checking the DOM.
+      for (const [elapsed, ready] of [[99_999, false], [100_000, true], [199_999, true], [200_000, true]] as const) {
+        app.fixtureMonotonicElapsed(elapsed); flushSync();
+        const badge = nav.querySelector<HTMLElement>(".fiscal-ripe-badge");
+        expect(badge !== null, `readiness at ${elapsed}ms`).toBe(ready);
+        if (badge) {
+          expect(badge.textContent).toBe("PENDING OWNER COPY: ready to harvest");
+          expect(badge.closest('[role="status"], [role="alert"], [aria-live]')).toBeNull();
+          expect(badge.getAttribute("aria-hidden")).not.toBe("true");
+          expect(badge.getBoundingClientRect().width).toBeGreaterThan(0);
+          expect(badge.getBoundingClientRect().height).toBeGreaterThan(0);
+        }
+        expect(document.activeElement).toBe(desk);
+        expect(target.querySelector("main")?.getAttribute("data-surface")).toBe("desk");
+        expect([...target.querySelectorAll('[role="status"], [role="alert"], [aria-live]')].map((node) => node.textContent))
+          .toEqual(announcements);
+        expect(runtime.requests).toHaveLength(0);
+        expect(reads.mock.calls).toHaveLength(initialReads);
+      }
+
+      // An authoritative new period clears readiness; visiting the old ready
+      // period does not claim a harvest or consume its indication.
+      const ready = { ...v4, features: { ...v4.features, fiscal: { ...v4.features.fiscal!,
+        period: { ...v4.features.fiscal!.period, opened_wall_ms: NOW - 150_000 } } } };
+      app.fixtureSnapshot(ready); flushSync();
+      expect(nav.textContent?.replace(/\s+/gu, " ").trim()).toBe("Earnings Calls PENDING OWNER COPY: ready to harvest");
+      expect(nav.hasAttribute("aria-label")).toBe(false);
+      expect(nav.hasAttribute("aria-labelledby")).toBe(false);
+      runtime.listener?.({ kind: "announcement", scope: "founder", value: { cursor: 42, kind: "fiscal_period_harvested", payload: { source: "automatic", credit_after: 10 } } });
+      await settle();
+      expect(nav.querySelector(".nav-badge")?.textContent).toBe("(harvested)");
+      nav.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(target.querySelector(".fiscal")?.getAttribute("data-phase")).toBe("early");
+      expect(nav.querySelector(".fiscal-ripe-badge")).not.toBeNull();
+      expect(nav.querySelector(".nav-badge")).toBeNull();
+      expect(document.activeElement).toBe(nav);
+      expect(runtime.requests).toHaveLength(0);
+      expect(target.scrollWidth).toBeLessThanOrEqual(width);
+      await assertAxe(target, `Fiscal ready navigation ${width}`);
+      app.fixtureSnapshot({ ...v4, founder_revision: 8, features: { ...v4.features,
+        fiscal: { ...v4.features.fiscal!, period: { ...v4.features.fiscal!.period, seq: 1 } } } });
+      flushSync();
+      expect(nav.querySelector(".fiscal-ripe-badge")).toBeNull();
+      app.fixtureSnapshot({ ...ready, features: { ...ready.features, fiscal: null } }); flushSync();
+      expect(nav.querySelector(".fiscal-ripe-badge")).toBeNull();
+      app.fixtureSnapshot({ ...ready, facts: ready.facts.map((fact) => fact.fact_id === "feature.fiscal" ? { ...fact, value: false } : fact) });
+      flushSync();
+      expect(nav.isConnected).toBe(false);
+    } finally { reads.mockRestore(); await dispose(); }
+  });
 }
 
 // GS1-A3 exact component-fixture time: no live host clock or server pacing

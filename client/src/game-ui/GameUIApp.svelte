@@ -26,6 +26,7 @@
   import ReputationPlanPanel from "./ReputationPlanPanel.svelte";
   import AchievementsSurface from "./AchievementsSurface.svelte";
   import FiscalSurface from "./FiscalSurface.svelte";
+  import { fiscalPhase } from "./fiscal-phase";
   import MetersSurface from "./MetersSurface.svelte";
   import MinigameSessionSurface from "./minigame/MinigameSessionSurface.svelte";
   import SoulRecoverySurface from "./soul/SoulRecoverySurface.svelte";
@@ -556,6 +557,12 @@
     return ({ owned: "desk.upgrade.owned", window: "desk.rejection.not_in_window", requirement: "desk.rejection.requires", unaffordable: "desk.rejection.unaffordable" } as const)[reason];
   }
   const liveFeatures = $derived(snapshot && "features" in snapshot ? snapshot.features : undefined);
+  // GS1/OD-3: readiness is quiet, display-only period state, not evidence of
+  // a harvested receipt. A newer authoritative period naturally clears it.
+  const fiscalRipe = $derived(!!liveFeatures?.fiscal && fiscalPhase(
+    Math.max(0, estimatedServerNowMS() - liveFeatures.fiscal.period.opened_wall_ms),
+    liveFeatures.fiscal.period,
+  ) !== "ripening");
 
   // GS5: the last applied claim (receipt evidence) and a once-per-opportunity
   // polite spawn announcement while the Desk is mounted. Focus never moves.
@@ -756,7 +763,13 @@
       <nav aria-label={t("surface.desk.title", {}, era)}>
         <button type="button" tabindex="0" aria-current={surface === "desk" ? "page" : undefined} onclick={() => show("desk")}>{t("surface.desk.title", {}, era)}</button>
         {#if factTrue("feature.achievements")}<button type="button" tabindex="0" aria-current={surface === "achievements" ? "page" : undefined} onclick={() => show("achievements")}>{t("surface.achievements.title", {}, era)}</button>{/if}
-        {#if factTrue("feature.fiscal")}<button type="button" tabindex="0" aria-current={surface === "fiscal" ? "page" : undefined} onclick={() => show("fiscal")}>{t("surface.fiscal.title", {}, era)}{#if fiscalHarvested}<span class="nav-badge">{t("fiscal.nav.harvest_badge", {}, era)}</span>{/if}</button>{/if}
+        {#if factTrue("feature.fiscal")}
+          <button type="button" tabindex="0" data-nav-surface="fiscal" aria-current={surface === "fiscal" ? "page" : undefined} onclick={() => show("fiscal")}>
+            <span data-nav-label>{t("surface.fiscal.title", {}, era)}</span>
+            {#if fiscalRipe} <span class="fiscal-ripe-badge">{t("fiscal.nav_ripe_badge", {}, era)}</span>{/if}
+            {#if fiscalHarvested} <span class="nav-badge">{t("fiscal.nav.harvest_badge", {}, era)}</span>{/if}
+          </button>
+        {/if}
         {#if factTrue("feature.pets")}<button type="button" tabindex="0" aria-current={surface === "pet" ? "page" : undefined} onclick={() => show("pet")}>{t("pet.care.panel.title", {}, era)}</button>{/if}
         {#if factTrue("feature.meters")}<button type="button" tabindex="0" aria-current={surface === "meters" ? "page" : undefined} onclick={() => show("meters")}>{t("surface.meters.title", {}, era)}{#if metersChanged} {t("meters.nav_changed_badge", {}, era)}{/if}</button>{/if}
         {#if runtime.minigame && factTrue("feature.minigame.pitch")}<button type="button" tabindex="0" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}

@@ -7,7 +7,16 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-08): RP-440/RP-441 native pointer/read defects are locally corrected.
+Current checkpoint (2026-10-08): RP-442's GS1/OD-3 ready-quarter navigation suffix is
+locally implemented using the existing Fiscal phase and host estimate. No modal,
+announcement, request or timer/payout policy changed. The harvested-event acknowledgement
+remains separate; new copy is visibly pending owner adoption. Exact-edge native regressions
+fail the old UI; affected browser, type/build/copy checks and the production-built
+real-service target pass within their recorded populations. See the latest owning log for
+commands, intermediate failures and the pending designated-review range. This is not
+whole Garage acceptance or a repair of the separate shared-clock defect.
+
+Preceding checkpoint (2026-10-08): RP-440/RP-441 native pointer/read defects are locally corrected.
 Care's command guard now identifies its own command, not every background read or
 different-kind intent. Shared busy feedback remains in a reserved line so it cannot move
 the button between pointerdown and click. The existing single-flight queue retains the

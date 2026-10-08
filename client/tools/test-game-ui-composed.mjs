@@ -271,7 +271,8 @@ async function declinePitchOffer(page, destination, surface) {
   const result = await clickAppliedIntent(page, "Decline", "Pitch offer preemption");
   if (result.intent?.kind !== "decline_exit_offer") throw new Error(`Pitch preemption did not use visible Decline: ${JSON.stringify(result.intent)}`);
   pitchOffersDeclined += 1;
-  await page.getByRole("button", { name: destination, exact: true }).click();
+  await (surface === "fiscal" ? page.locator('nav button[data-nav-surface="fiscal"]')
+    : page.getByRole("button", { name: destination, exact: true })).click();
   await page.locator(`main[data-surface="${surface}"]`).waitFor({ state: "visible", timeout: 30_000 });
 }
 
@@ -622,7 +623,7 @@ async function witnessFiscalRefusalJourney() {
     await page.getByRole("button", { name: "BEGIN ATTEMPT", exact: true }).click();
     await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
     const accessToken = await page.evaluate(() => JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1")).accessToken);
-    await page.getByRole("button", { name: "Earnings Calls", exact: true }).click();
+    await page.locator('nav button[data-nav-surface="fiscal"]').click();
     await page.locator('main[data-surface="fiscal"]').waitFor({ state: "visible", timeout: 30_000 });
     await new Promise((resolve) => setTimeout(resolve, 400));
     await clickAppliedIntent(page, "Hold the earnings call", "Fiscal refusal journey initial harvest");
@@ -642,11 +643,16 @@ async function witnessFiscalRefusalJourney() {
 }
 
 async function unlockPitchThroughFiscalUI(page) {
-  await page.getByRole("button", { name: "Earnings Calls", exact: true }).click();
+  const { t } = await vite.ssrLoadModule("/src/copy/index.ts");
+  await page.locator('nav button[data-nav-surface="fiscal"]').click();
   await page.locator('main[data-surface="fiscal"]').waitFor({ state: "visible", timeout: 30_000 });
   // The composed Fiscal clock guarantees a harvest 200 ms after the period
   // opens. The player uses the rendered controls for both prerequisite intents.
   await new Promise((resolve) => setTimeout(resolve, 400));
+  const readyBadge = await page.locator('nav button[data-nav-surface="fiscal"] .fiscal-ripe-badge').textContent();
+  if (readyBadge !== t("fiscal.nav_ripe_badge", {})) {
+    throw new Error(`Fiscal harvest is ready but its navigation suffix is absent or incorrect: ${JSON.stringify(readyBadge)}`);
+  }
   const harvest = await clickAppliedIntent(page, "Hold the earnings call", "Fiscal harvest for Pitch");
   if (harvest.intent?.kind !== "harvest_fiscal_period") throw new Error(`Fiscal harvest control emitted ${JSON.stringify(harvest.intent)}`);
   const intentRequest = page.waitForRequest((request) => new URL(request.url()).pathname === "/api/v1/intents" &&
