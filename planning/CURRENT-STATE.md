@@ -35,10 +35,13 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
-- Typer keyboard/focus correction (RP-394) and malformed-snapshot refusal (RP-395) are locally
+- Typer keyboard/focus correction (RP-394) and malformed-snapshot refusals (RP-395/RP-400) are locally
   verified. Native Chromium/WebKit input checks, the shared Go/TS corpus and real-Postgres Typer
   service tests pass. The old Go snapshot could panic at the exhausted prompt index; it now
-  refuses without preventing valid final-prompt completion. Public Typer registration/wire,
+  refuses without preventing valid final-prompt completion. Go also now refuses null numeric
+  counters and cleared feedback missing its mandatory index, matching TS; affected Go/vet,
+  real-Postgres service tests,76 native Chromium/WebKit checks and types/build/corpus pass.
+  Public Typer registration/wire,
   adopted content, full player journeys and designated review remain open.
 - Client runner collision (RP-396) is locally corrected without dropping checks: the full
   Vitest population passes10017/831 existing skips, and the actual composed target executes

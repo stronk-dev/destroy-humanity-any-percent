@@ -1,6 +1,7 @@
 package typer
 
 import (
+	"bytes"
 	"encoding/json"
 	"strings"
 	"unicode/utf8"
@@ -435,6 +436,22 @@ func decodeSnapshot(data []byte) (Snapshot, error) {
 	if !uniqueJSONKeys(data) || !hasExactJSONKeys(data, "typer_content_hash", "typer_schema_version", "phase", "era_tier", "assist_level",
 		"prompt_index", "prompts_total", "current_prompt_id", "current_prompt_text", "current_prompt_misses", "lines_cleared", "clean_lines",
 		"misses", "started_server_ms", "deadline_server_ms", "last_server_ms", "last_submission", "revision") {
+		return Snapshot{}, minigame.ErrInvalidTenant
+	}
+	// encoding/json silently leaves non-pointer integer fields at zero on
+	// null. TT4.5 requires actual numbers; nullable feedback still has two
+	// required keys when present, even when its cleared index is null.
+	var fields map[string]json.RawMessage
+	if json.Unmarshal(data, &fields) != nil {
+		return Snapshot{}, minigame.ErrInvalidTenant
+	}
+	for _, key := range []string{"typer_schema_version", "era_tier", "prompt_index", "prompts_total", "current_prompt_misses", "lines_cleared", "clean_lines", "misses", "revision"} {
+		if bytes.Equal(bytes.TrimSpace(fields[key]), []byte("null")) {
+			return Snapshot{}, minigame.ErrInvalidTenant
+		}
+	}
+	feedback := fields["last_submission"]
+	if !bytes.Equal(bytes.TrimSpace(feedback), []byte("null")) && !hasExactJSONKeys(feedback, "outcome", "first_mismatch_index") {
 		return Snapshot{}, minigame.ErrInvalidTenant
 	}
 	var value Snapshot

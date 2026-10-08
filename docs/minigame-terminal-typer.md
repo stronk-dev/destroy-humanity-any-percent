@@ -28,6 +28,9 @@ replaced before any production mint.
 - **Snapshot.** `typer.snapshot.v1` has exactly eighteen keys. Only the current prompt is ever
   exposed. Both replay engines reject negative counters, unknown assist levels, malformed
   submission feedback and miss counters above the pinned catalog hardcap before applying a command.
+  Nonnullable numeric fields must be numbers, never JSON `null`. Nonnull submission feedback
+  must contain both `outcome` and `first_mismatch_index`, including an explicit null index
+  for a cleared line. Go refuses these malformed inputs rather than coercing null to zero.
   A `typing` snapshot must have `prompt_index < prompts_total`; Go refuses an
   exhausted-but-still-typing snapshot before prompt lookup, matching TS's refusal.
   A genuine final prompt still completes; terminal snapshots may retain the full count.

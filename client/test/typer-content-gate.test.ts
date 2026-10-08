@@ -122,6 +122,30 @@ describe("Typer shared content gate", () => {
     ] });
   });
 
+  it("requires numeric snapshot values and exact cleared feedback in every phase", async () => {
+    const identity = { content, content_hash: corpus.typer_content_hash, content_schema_version: 1, seed: 42n, mode: "solo" as const,
+      scaling_inputs: { "typer.era_tier": 1 } };
+    const ready = await createTyper(identity);
+    const begun = await applyTyper({ ...identity, revision: 1, snapshot: ready,
+      command: '{"assist_level":"untimed","kind":"begin"}', server_time_ms: 1 });
+    const cleared = await applyTyper({ ...identity, revision: 2, snapshot: begun.snapshot,
+      command: JSON.stringify({ kind: "submit_line", text: JSON.parse(begun.snapshot).current_prompt_text }), server_time_ms: 2 });
+    const ended = await applyTyper({ ...identity, revision: 3, snapshot: cleared.snapshot, command: '{"kind":"end_run"}', server_time_ms: 3 });
+    for (const snapshot of [ready, cleared.snapshot, ended.snapshot]) {
+      const valid = JSON.parse(snapshot);
+      const input = { ...identity, revision: valid.revision, snapshot, command: '{"kind":"end_run"}', server_time_ms: 10 };
+      if (valid.phase === "terminal") await expect(applyTyper(input)).rejects.toMatchObject({ code: "illegal_phase" });
+      else expect((await applyTyper(input)).result?.outcome).toBe("ended_early");
+      const fields = ["typer_schema_version", "era_tier", "prompt_index", "prompts_total", "current_prompt_misses", "lines_cleared", "clean_lines", "misses", "revision"];
+      for (const field of fields) {
+        await expect(applyTyper({ ...input, snapshot: JSON.stringify({ ...valid, [field]: null }) }), `${valid.phase}: ${field}`).rejects.toThrow(SyntaxError);
+      }
+      if (valid.last_submission !== null) {
+        await expect(applyTyper({ ...input, snapshot: JSON.stringify({ ...valid, last_submission: { outcome: "cleared" } }) }), `${valid.phase}: feedback index`).rejects.toThrow(SyntaxError);
+      }
+    }
+  });
+
   it("rejects catalog defects the Go loader rejects", () => {
     const keys = new Set(COPY_KEYS);
     const mutate = (change: (value: Record<string, any>) => void) => { const value = JSON.parse(content); change(value); return value; };

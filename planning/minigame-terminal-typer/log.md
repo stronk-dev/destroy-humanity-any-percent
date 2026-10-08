@@ -707,3 +707,30 @@ record commit needs Claude, independently of B6 and earlier B1 repairs. RP-162,
 public C2/content/AT/whole feature/hosted gates remain; no checkbox/archive/push.
 Next: fix RP-396 in the CI owner lane without dropping the existing Node tests,
 then continue the original engine review and unresolved author contract work.
+
+## 2026-10-08 — B1 strict snapshot value admission (RP-400)
+
+TT4.5/TT4.6 correction: nonnullable numbers cannot be null; nonnull feedback
+requires both keys, including the cleared line's explicit null index. Old-source
+regression76783 fails13 cases across actual engine-produced ready/typing/terminal
+snapshots. Go silently coerced null counters to zero or admitted missing feedback;
+TS already refused. Standalone validation and real tenant/registry Apply are
+exercised, with valid phase controls and no-output/no-input-mutation refusals.
+The bounded decoder correction and matched TS regression preserve existing
+taxonomy, content, commands, time and payout policy. Kernel169->170 in all mirrors
+is a genuine replay acceptance-set change, not a fix for historical RP-131.
+
+Final cold five-package Go82200 and vet23861 pass. Real Postgres75173 executes
+quota refusal, pinned-tier/start/Exit eligibility, unlock/play/payout/neutrality
+(timed3e0/untimed3e0), and tenant-row tests: four top-level tests, not public Typer
+HTTP/browser integration. Native Chromium/WebKit47183 passes76 checks; Node
+shared-corpus11 passes. Types/build/boundaries/corpus67712 pass with zero errors/
+warnings. Initial native launch was sandbox EPERM, before any test; the authorized
+local-listener run above executes the population. Diff check passes.
+
+Review by: Codex (original B1 targeted finding; correction implementer first filter).
+Recorded by: Codex. Exact new range `e2b391e7` exclusive through this containing
+commit needs Claude's designated review. Original B1 remains partial; RP-162,
+public C2/content mint, full AT/feature/hosted CI and other review spans stay open.
+No checkbox, acceptance, archival or push. Next: finish the remaining accepted
+engine review and consolidate related correction ranges for cross-party review.

@@ -451,6 +451,94 @@ func TestTyperTypingSnapshotRequiresRemainingPrompt(t *testing.T) {
 	}
 }
 
+func TestTyperSnapshotRequiresNumericValuesAndExactFeedback(t *testing.T) {
+	h := newHarness(t, 42)
+	type state struct {
+		name     string
+		snapshot json.RawMessage
+		revision int64
+	}
+	states := []state{{PhaseReady, h.snapshot, h.revision}}
+	if err := h.apply(`{"assist_level":"untimed","kind":"begin"}`, 1); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.apply(submit(h.currentText()), 2); err != nil {
+		t.Fatal(err)
+	}
+	states = append(states, state{PhaseTyping, h.snapshot, h.revision})
+	if err := h.apply(`{"kind":"end_run"}`, 3); err != nil {
+		t.Fatal(err)
+	}
+	states = append(states, state{PhaseTerminal, h.snapshot, h.revision})
+	registry, err := minigame.NewTenantRegistry(NewTenant())
+	if err != nil {
+		t.Fatal(err)
+	}
+	apply := map[string]func(minigame.ApplyInput) (minigame.ApplyOutput, error){
+		"tenant": NewTenant().Apply,
+		"registry": func(input minigame.ApplyInput) (minigame.ApplyOutput, error) {
+			return registry.Apply(EngineRef, EngineVersion, input)
+		},
+	}
+	for _, valid := range states {
+		t.Run(valid.name, func(t *testing.T) {
+			input := minigame.ApplyInput{Mode: minigame.ModeSolo, Seed: h.seed, Revision: valid.revision,
+				Snapshot: valid.snapshot, Command: json.RawMessage(`{"kind":"end_run"}`),
+				ScalingInputs: map[string]int64{ScalingDestination: 1}, Content: h.content,
+				ContentHash: h.hash, ContentSchemaVersion: SchemaVersion, ServerTimeMs: 10}
+			if err := NewTenant().ValidateSnapshot(valid.snapshot); err != nil {
+				t.Fatalf("valid %s snapshot refused: %v", valid.name, err)
+			}
+			for path, run := range apply {
+				output, err := run(input)
+				if valid.name == PhaseTerminal {
+					if rejectionCode(err) != "illegal_phase" {
+						t.Fatalf("%s valid terminal must reach its phase gate: %v", path, err)
+					}
+				} else if err != nil || output.Result == nil || output.Result.Outcome != OutcomeEndedEarly {
+					t.Fatalf("%s valid %s did not end: %+v %v", path, valid.name, output, err)
+				}
+			}
+			fields := []string{"typer_schema_version", "era_tier", "prompt_index", "prompts_total", "current_prompt_misses", "lines_cleared", "clean_lines", "misses", "revision"}
+			if valid.name != PhaseReady {
+				fields = append(fields, "missing feedback index")
+			}
+			for _, field := range fields {
+				t.Run(field, func(t *testing.T) {
+					var row map[string]json.RawMessage
+					if err := json.Unmarshal(valid.snapshot, &row); err != nil {
+						t.Fatal(err)
+					}
+					if field == "missing feedback index" {
+						row["last_submission"] = json.RawMessage(`{"outcome":"cleared"}`)
+					} else {
+						row[field] = json.RawMessage(`null`)
+					}
+					encoded, err := json.Marshal(row)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if err := NewTenant().ValidateSnapshot(encoded); !errors.Is(err, minigame.ErrInvalidTenant) {
+						t.Errorf("malformed %s admitted: %v", field, err)
+					}
+					invalid := input
+					invalid.Snapshot = encoded
+					before := append([]byte(nil), encoded...)
+					for path, run := range apply {
+						output, err := run(invalid)
+						if !errors.Is(err, minigame.ErrTenantDivergence) || len(output.Snapshot) != 0 || output.Result != nil {
+							t.Errorf("%s malformed %s must refuse without output: %+v %v", path, field, output, err)
+						}
+						if !bytes.Equal(invalid.Snapshot, before) {
+							t.Fatalf("%s refusal mutated the snapshot", path)
+						}
+					}
+				})
+			}
+		})
+	}
+}
+
 func TestTyperIsolation(t *testing.T) {
 	for _, path := range []string{"engine.go", "catalog.go"} {
 		source, err := os.ReadFile(path)
