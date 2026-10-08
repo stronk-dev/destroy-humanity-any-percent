@@ -26,7 +26,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
 | Prestige / Reputation | Exit/reset foundations and earlier acceptance repairs are reviewed. Reputation nodes, plans, starters, persistence and UI have fixture-first implementations. | Career/relevance evidence remains red: the latest hosted maintenance run reproduces six starter timing ties and report drift. Run End's balance/carry display contract reconciliation, full feature review and adopted content also remain. The two early endings are not the three designed final endings. |
 | Minigames | Pitch has a real API-to-player-to-payout journey. Soul, Typer, Arcade and Garden have substantial engines, components and bounded persistence/lifecycle tests. | Typer/Arcade public API and host integration; shared wire-contract decisions; Garden state-evolution clarification; authored content/mint, whole-player journeys and accessibility. Pinball remains a draft. |
 | Pet care / cosmetics | Controlled real-service Buy → adoption → equip/care → reload works; several actual UI, race and timing defects are locally corrected. Pet status announcements connect an actual stored care event through WebSocket to the mounted production client. Purchase and adoption completion respect newer keyboard focus; saved pet reads/reloads/Desk remounts no longer repeat adoption speech. | Pet/API schema reconciliation, shared attendance-clock repair (RP-365), adopted copy/content and consolidated review. A passing journey does not close the clock defect. |
-| Clout / achievements | Achievement foundation, axis hooks and state/API exist. A built-client real-service fixture exercises native PR purchase, exact multiplier rendering, reload and the actual SQL head/event, with a failing producer-severing control. PR factors/progress now sit on the actual purchase cards. Native `?` help and once-per-transition re-attainment notices are locally verified through the real-service fixture; their text remains pending owner copy. | RP-307 numeric partition correctness, offline-episode meaning, projected-factor/hint definitions (RP-427), truthful role/harness bindings and measured/adopted content/balance. The last recorded hosted server result is red here; current local work has not been pushed. |
+| Clout / achievements | Achievement foundation, axis hooks and state/API exist. A built-client real-service fixture exercises native PR purchase, exact multiplier rendering, reload and the actual SQL head/event, with a failing producer-severing control. PR factors/progress now sit on the actual purchase cards. Native `?` help and once-per-transition re-attainment notices are locally verified through the real-service fixture; their text remains pending owner copy. | RP-307 numeric partition correctness, offline-episode meaning, projected-factor/hint definitions (RP-427), truthful role/harness bindings and measured/adopted content/balance. Current published-source hosted server CI still fails the 27 Clout partition cases. |
 | Account / API / transport | Account security, backend deletion, revocation, exact-response and transport recovery witnesses were independently approved in earlier ranges. Generated API dispatch and newer consumers are partly implemented. Credential responses now consistently refuse HTTP caching, locally verified against real Postgres; that new range awaits designated review. A recovery player-flow/storage/copy proposal is now drafted, not accepted or built. | Complete generated-client/route migration, startup failure and browser renewal contracts, visible recovery-code/recover-existing-account UX and long-session proof. |
 | Privacy / player rights | Relation-complete 60-table inventory and bounded browser/event/backup/deletion traces expose actual retained data. Research publication classification/sanitization is complete. | Owner export/deletion/retention choices (D-008/D-009/D-015), implementations and player workflows. Public board survival after deletion and restoration from pre-deletion backups remain explicit issues. An instance backup is not player export. |
 | Accessibility | Native keyboard, focus, pending feedback, reflow and announcement corrections exist across several surfaces; targeted browser checks execute. | Accepted cross-product task/assistive-technology matrix and actual task testing, including zoom/motion/longer workflows. Automated checks alone are not accessibility completion. |
@@ -35,7 +35,26 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
-- Latest source checkpoint: `c0a85602` (2026-10-08), clean working tree before this overview
+- Latest published source: `20a57019` (2026-10-08); local `main` and recorded `origin/main`
+  both match before the diagnostic batch below. The earlier unpushed counts are historical,
+  not the current branch state. Codex did not push during this reconciliation.
+  [Hosted CI 37763502364](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37763502364)
+  is **RED: three jobs pass, three fail**, with all six jobs terminal:
+  schema, harness and composed pass; client, server and browser fail.
+  Client executes 10,223 passing tests/928 skips before RP-131's historical kernel guard
+  rejects `50a3a514`; server retains the same 27 Clout partition failures (RP-307).
+  Browser executes 33,425 passes/one failure/15 skips: Firefox Garden uproot re-consent
+  records no callback (RP-430). The separate browser performance command does not run after
+  that failure. The composed job executes all three built-client/real-Postgres journeys and
+  both no-payment negative builds successfully; it is not clean-host release proof.
+  The unchanged focused Linux Firefox Garden reproduction passes, not a diagnosis or fix.
+  Native macOS Firefox executes zero tests after browser-session connection failure.
+  Garden's new diagnostics preserve native input, existing assertions and timeouts;
+  all255 affected Linux three-engine checks and strict types pass. A deliberately dropped
+  test callback produces the intended failure with input/focus evidence, then is restored.
+  The [Garden log](minigame-server-garden/log.md) owns the bounded results and pending review range.
+  No full-CI success, feature acceptance or release promotion follows.
+- Previous source checkpoint: `c0a85602` (2026-10-08), clean working tree before this overview
   reconciliation; 95 commits ahead of the locally recorded `origin/main`, not pushed.
   Adoption welcome now binds the actual local receipt and matching authoritative pet, rather
   than celebrating an ordinary read. Old-source regressions fail in Chromium/WebKit;
@@ -236,12 +255,12 @@ queue and current verification, not a claim to have rerun every acceptance crite
   generated client schema metadata and exact int64 validation; old/new stored sets coexist in
   real Postgres without a product mint. The catalog HTTP route, other owner descriptors and complete public
   third-party verification loop remain open; the API log owns the bounded evidence/review ranges.
-- Fresh GitHub check on 2026-10-08 confirms the latest [hosted CI run 37641907701](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37641907701)
+- Earlier GitHub check on 2026-10-08 records [hosted CI run 37641907701](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37641907701)
   at `0f9f4214` is **RED**: schema, harness and composed pass; server, client and browser fail.
   Browser's two failures and server research-provenance failures have the local corrections
   above. Clout partition failures and client's historical kernel guard at `50a3a514` remain
-  unresolved. There is no
-  hosted result for these local repairs; nothing is pushed by this closeout.
+  unresolved. At that checkpoint there was no hosted result for those local repairs;
+  the newer published-source run and its distinct Garden failure are recorded above.
 - A fresh GitHub run/job/log read also finds [Maintenance evidence 37723923274](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37723923274)
   at the same `0f9f4214` **RED** on 2026-10-08: numeric-maintenance and harness-evidence pass,
   reputation-evidence fails. Its completed `make reputation-harness-check` records six Casual

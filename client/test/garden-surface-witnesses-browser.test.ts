@@ -134,6 +134,20 @@ for (const action of ["plant", "uproot", "harvest"] as const) {
   it.skipIf(!browser)(`Garden open-menu ${action} stays focusable but cannot dispatch while pending`, async () => {
     const { userEvent } = await import("vitest/browser");
     const host = mounted({ current: async () => active() });
+    let phase = "open menu";
+    const element = (node: EventTarget | null) => node instanceof HTMLElement ? {
+      tag: node.tagName, id: node.id, text: node instanceof HTMLButtonElement ? node.textContent?.trim() : null,
+      connected: node.isConnected,
+      disabled: node instanceof HTMLButtonElement ? node.disabled : null,
+      ariaDisabled: node.getAttribute("aria-disabled"),
+    } : null;
+    const input: unknown[] = [];
+    const observe = (event: Event) => input.push({
+      phase, type: event.type, key: event instanceof KeyboardEvent ? event.key : null,
+      target: element(event.target), focused: element(document.activeElement),
+    });
+    const events = ["keydown", "keyup", "click", "focusin", "focusout"] as const;
+    for (const event of events) document.addEventListener(event, observe, true);
     try {
       await settle();
       const cells = [...host.target.querySelectorAll<HTMLButtonElement>("button.cell")];
@@ -143,6 +157,7 @@ for (const action of ["plant", "uproot", "harvest"] as const) {
       if (action === "uproot") await userEvent.keyboard("{Tab}");
       const trigger = document.activeElement as HTMLButtonElement;
       expect(trigger.textContent?.trim()).toBe(action === "plant" ? "Plant Strain A (PENDING OWNER NAME)" : action === "uproot" ? "Uproot" : "Harvest");
+      phase = "pending activation refused";
       host.app.update({ pending: true });
       await settle();
       expect(document.activeElement).toBe(trigger);
@@ -153,14 +168,27 @@ for (const action of ["plant", "uproot", "harvest"] as const) {
       await settle();
       expect(host.calls).toEqual([]);
       expect(host.target.querySelector(".menu")).not.toBeNull();
+      phase = "reenable";
       host.app.update({ pending: false });
       await settle();
+      expect(document.activeElement).toBe(trigger);
+      expect(trigger.disabled).toBe(false);
+      expect(trigger.getAttribute("aria-disabled")).not.toBe("true");
+      phase = "fresh Enter";
       await userEvent.keyboard("{Enter}");
       await settle();
       expect(host.calls).toEqual([action === "plant" ? "plant 1,0 strain_a" : action === "uproot" ? "uproot 0,0" : "harvest 0,0"]);
       expect(host.target.querySelector(".menu")).toBeNull();
       expect(document.activeElement).toBe(cells[action === "plant" ? 6 : 0]);
-    } finally { await unmount(host.app); host.target.remove(); }
+    } catch (cause) {
+      throw new Error(`Garden ${action} input failure: ${JSON.stringify({
+        phase, focused: element(document.activeElement), calls: host.calls,
+        menu: host.target.querySelector(".menu")?.textContent?.trim() ?? null, input,
+      })}`, { cause });
+    } finally {
+      for (const event of events) document.removeEventListener(event, observe, true);
+      await unmount(host.app); host.target.remove();
+    }
   });
 }
 

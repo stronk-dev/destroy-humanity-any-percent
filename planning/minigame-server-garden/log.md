@@ -2934,3 +2934,35 @@ Only copy identity changes; constants/kernel/server logic/API/CI unchanged. No w
 rerun for this local disclosure, Firefox/AT/full-CI, full Garden acceptance, mint/archive/push
 or nine-tier1.0 completion claim. Next: consolidate review and remaining accepted feature gates;
 renewal, SG13 and RP-222 remain separate holds. Whole-product status remains in CURRENT-STATE.
+
+## 2026-10-08 — Diagnose fresh hosted Firefox re-consent failure (RP-430)
+
+Published-source CI37763502364 at20a57019 fails exactly the Firefox open-menu uproot
+callback assertion after pending clears; existing pending refusal assertions pass.
+This is a new observed failure, not closure of an older browser incident. Native macOS
+Firefox33579 cannot connect to its browser session: zero tests, owned lingering runner
+interrupted after the terminal error. Unchanged declared Linux reproduction85941 passes
+three selected menu actions/34 deselections; that does not explain the hosted failure.
+
+Under SG10, the existing test now explicitly checks focus and enabled state before fresh
+Enter, and retains passive keydown/keyup/click/focus records with phase, target and final
+menu/callback state on failure. All original input, callback/menu/focus assertions and
+settling/deadline behavior remain. No production, provider, retry, timeout or CI change.
+
+Executed via the declared compose.browser-test.yml service with its pinned image and cold
+frozen install; command override only selects the existing Vitest population. Initial
+changed-file run87487 passes111/111 across Chromium/Firefox/WebKit. Dropping only the test
+harness's uproot callback makes selected Firefox79683 fail at the original callback
+assertion: trace shows fresh Enter and click reaching enabled Uproot, subsequent plot focus,
+closed menu and zero callbacks. This validates diagnostic output, NOT attribution of the
+hosted incident. Test callback restored exactly before final checks. Final2329 runs all five
+Garden browser files in all three Linux engines:255/255 pass,15 file populations, zero skips.
+Typecheck99399 passes with zero errors/warnings; diff-check passes. Some routine browser
+stdout is truncated; terminal counts and the complete selected failure trace are retained,
+not a raw timing/reliability study. No full-CI, performance, AT or service/Garden payout proof.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range:20a57019
+exclusive through this test/record commit; designated cross-party review remains pending.
+RP-430 stays OPEN. Next recurrence must use the retained focus/native-input evidence to
+distinguish delivery, control state and callback failure; no speculative product fix.
+CURRENT-STATE records the complete hosted result and corrects obsolete unpublished claims.

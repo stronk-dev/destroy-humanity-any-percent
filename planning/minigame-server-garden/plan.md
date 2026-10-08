@@ -8,8 +8,10 @@ Replay inputs take the next free wire version, and the event migration takes the
 **Current execution, 2026-10-08:** pending/response-focus, connection-state and current-context
 read/visibility and native help corrections are locally verified (RP-409/RP-410/RP-420/RP-421/RP-422); designated
 review remains open. The latest [owning log](log.md) records exact ranges and checks. Continue
-remaining accepted feature gates and consolidated review, not repeated help/loader
-diagnostics or the renewal-blocked long-session journey. SG13, RP-222 and browser renewal remain
+remaining accepted feature gates and consolidated review. Fresh hosted Firefox failure RP-430
+is open: pending-menu re-consent records no uproot callback. The unchanged Linux focused case
+passes, so passive input/focus diagnostics are added without claiming a product fix. Do not
+repeat unrelated help/loader diagnostics or the renewal-blocked long-session journey. SG13, RP-222 and browser renewal remain
 separate holds; G1–G7 below still mean implementation presence, not feature acceptance.
 
 **Historical bounded instrument work, 2026-10-07:** RP-348 under `a9fadedd` adds
