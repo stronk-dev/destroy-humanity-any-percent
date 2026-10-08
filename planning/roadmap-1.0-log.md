@@ -5005,3 +5005,17 @@ advance a missing authorized player capability or resolve a named contract block
 than repeat these completed instrumentation experiments. Checkpoint verification is diff,
 source/plan/log and remote-job inspection; no software suite for this editorial-only update.
 No acceptance, archival, content mint, push or release promotion.
+
+## 2026-10-08 — Finish current batch and reconcile whole-product overview
+
+At Marco's request, finished the bounded adoption welcome correction at `c0a85602`, after
+the PR-card integration at `d039fe66`; detailed results and pending exact-range reviews stay
+in their owning logs. CURRENT-STATE now reflects both. The product remains Garage integration/
+hardening, not a completed Garage release or a late-stage 1.0 candidate; later tiers, full MMO,
+endings and the platform floor still require substantial work.
+
+Corrected this board's stale claim that the v0.1 manifest was unaccepted: its active RFC and
+index record owner acceptance on2026-09-25. That scope acceptance is not release authorization,
+adopted final content or a tested release bundle. Verification for this editorial checkpoint:
+source/log/index/RFC comparison and diff/whitespace check; no additional software suite, new
+owner ruling, acceptance, archival or push. The full nine-tier1.0 goal remains active.

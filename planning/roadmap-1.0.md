@@ -1927,10 +1927,11 @@ postponed by changing the release label.
 | v0.4 Frontier | **Design intent; blocked by upstream systems** | Tier 5, research/canonization/casino, pet battles, Commons/Ethical%, challenge runs, Compute Credits and Soul-gated content. | Earlier world/social/combat paths and measured balance; accessible player surfaces and reviewed content for each mode. |
 | v1.0 Transcendence | **Long-term goal; not release-ready** | Tiers 6–8, all three designed endings and variants, complete category/challenge set, run-end retrospectives and the Honesty appendix. | All prior gates plus an owner-adopted exact 1.0 content/release manifest, full-path ending proofs and preservation posture appropriate to the final release. |
 
-The Phase-0 label and scope are adopted; the exact later release manifests have not been adopted.
-Several v0.1 feature RFCs have been accepted and implemented locally, but that does not adopt a
-v0.1 release manifest or complete a milestone. Rows for v0.2–1.0 remain design intent requiring
-decisions, research and accepted RFCs before implementation. No date or team-capacity promise is inferred.
+The Phase-0 label and scope are adopted. The v0.1 Garage scope/DAG RFC was also accepted on
+2026-09-25; it remains implementing, not a completed release or proof of an exact releasable
+bundle and adopted launch content. Several constituent feature RFCs have local implementations
+and unresolved acceptance gates. Rows for v0.2–1.0 remain design intent requiring decisions,
+research and accepted RFCs before implementation. No date or team-capacity promise is inferred.
 
 ## Cross-cutting workstreams at this checkpoint
 
