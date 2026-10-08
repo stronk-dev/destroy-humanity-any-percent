@@ -262,6 +262,11 @@ func ValidateJSON(schemaName string, data []byte, definitions map[string]*Schema
 	if schema == nil {
 		return ErrInvalidSchema
 	}
+	// Map decoding discards duplicate members, including escaped spellings of
+	// the same name. Validate the original bytes before that evidence is lost.
+	if rejectDuplicateJSONKeys(data) != nil {
+		return fmt.Errorf("%w: ambiguous or malformed JSON", ErrInvalidSchema)
+	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.UseNumber()
 	var value any

@@ -82,6 +82,57 @@ func TestSchemaRegistryIsClosedAndValidatesRuntimeBytes(t *testing.T) {
 	}
 }
 
+func TestSchemaRegistryRejectsDuplicateJSONMembersBeforeMapDecoding(t *testing.T) {
+	registry := testRegistry(t)
+	for name, body := range map[string]string{
+		"root overwritten invalid":   `{"items":false,"items":[],"next_cursor":null}`,
+		"root identical":             `{"items":[],"items":[],"next_cursor":null}`,
+		"escaped root key":           `{"items":false,"\u0069tems":[],"next_cursor":null}`,
+		"nested overwritten invalid": `{"items":[{"epoch_id":0,"epoch_id":1,"name":"x","started_at":"2026-08-03T12:34:56.789Z"}],"next_cursor":null}`,
+		"nested identical":           `{"items":[{"epoch_id":1,"name":"x","name":"x","started_at":"2026-08-03T12:34:56.789Z"}],"next_cursor":null}`,
+		"escaped nested key":         `{"items":[{"epoch_id":1,"name":"x","\u006eame":"y","started_at":"2026-08-03T12:34:56.789Z"}],"next_cursor":null}`,
+		"union overwritten invalid":  `{"items":[],"next_cursor":false,"next_cursor":null}`,
+	} {
+		t.Run(name, func(t *testing.T) {
+			if err := registry.ValidateResponse("get_epochs", 200, []byte(body)); !errors.Is(err, ErrInvalidSchema) {
+				t.Fatalf("ambiguous response accepted: %v", err)
+			}
+		})
+	}
+	// Escapes and repeated names in DIFFERENT objects remain valid. The raw
+	// bytes are evidence; unmarshalling and re-marshalling the fixture loses it.
+	for _, body := range []string{
+		`{"items":[],"\u006eext_cursor":null}`,
+		`{"items":[{"epoch_id":1,"name":"{\"name\":1,\"name\":2}","started_at":"2026-08-03T12:34:56.789Z"},{"epoch_id":2,"name":"y","started_at":"2026-08-03T12:34:56.789Z"}],"next_cursor":null}`,
+	} {
+		if err := registry.ValidateResponse("get_epochs", 200, []byte(body)); err != nil {
+			t.Fatalf("unambiguous response rejected: %v", err)
+		}
+	}
+}
+
+func TestSchemaRegistryRejectsDuplicateRequestMembers(t *testing.T) {
+	registry, err := NewRegistry(testSchemas(), []Operation{{
+		ID: "submit_example", Method: http.MethodPost, Path: "/api/v1/example",
+		Surface: SurfacePrivateV1, Auth: AuthAccessToken, Request: "APIError",
+		Responses: []Response{{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "APIError"}},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, body := range []string{
+		`{"category":"private","category":"invalid","detail":"body"}`,
+		`{"category":"invalid","detail":"first","\u0064etail":"body"}`,
+	} {
+		if err := registry.ValidateRequest("submit_example", []byte(body)); !errors.Is(err, ErrInvalidSchema) {
+			t.Fatalf("ambiguous request accepted: %v", err)
+		}
+	}
+	if err := registry.ValidateRequest("submit_example", []byte(`{"category":"invalid","detail":"body"}`)); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestSchemaRegistryRejectsReferenceCycles(t *testing.T) {
 	for name, schemas := range map[string][]NamedSchema{
 		"direct": {{Name: "Loop", Schema: &Schema{Kind: SchemaRef, Ref: "Loop"}}},

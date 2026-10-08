@@ -2,6 +2,11 @@
 
 RFC: `rfc/api-foundation.md`
 
+Bounded validator correction (2026-10-08, RP-439): raw duplicate object members now refuse
+before schema map decoding, including escaped/nested names. The old-behavior regression,
+affected packages/vet and byte-unchanged API generation pass locally. No handler output,
+DSL extension, request middleware or full conformance claim; designated review remains.
+
 Current checkpoint (2026-10-08): the historical catalog database source is implemented and
 locally verified against real Postgres; accepted identities return exact stored artifacts,
 not newer files, and corrupt/unaccepted evidence refuses. The future formula artifact now has
