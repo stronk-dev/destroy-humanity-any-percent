@@ -23,7 +23,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
 | Engine and persistence | Shared Go/TS number handling, declarative economy, lazy production/offline accrual, versioned Postgres saves/migrations/replay, routes/gates and client worker foundations are implemented. | New feature arithmetic/replay must satisfy the same floor. Clout's partition/accrual defect remains open; core foundations do not make every new system correct. |
 | Early-game player loop | Production-built browser client with real Postgres/WebSocket journey covers purchases, first gate, scripted and elective early endings, next Company and reconnect. Fiscal, active-play opportunity and Pitch are exercised through DOM controls. | Natural pacing/long-session recovery, remaining Garage acceptance and current-range designated reviews. The main journey verifies exact built client bytes, but not a Caddy/image/clean-host release artifact; accelerated fixture journeys are not complete nine-tier playthroughs. |
 | Tier 2 / incorporation | Candidate economy/content, routes, era UI and bounded real-service transition/incorporation proof exist. | Pacing/relevance gates, adopted copy and content mint; epoch 9 is not minted. Headcount's seat-source choice is held and its allocation system is not built. |
-| Prestige / Reputation | Exit/reset foundations and earlier acceptance repairs are reviewed. Reputation nodes, plans, starters, persistence and UI have fixture-first implementations. | Run End's balance/carry display contract reconciliation, full feature review and adopted content. The two early endings are not the three designed final endings. |
+| Prestige / Reputation | Exit/reset foundations and earlier acceptance repairs are reviewed. Reputation nodes, plans, starters, persistence and UI have fixture-first implementations. | Career/relevance evidence remains red: the latest hosted maintenance run reproduces six starter timing ties and report drift. Run End's balance/carry display contract reconciliation, full feature review and adopted content also remain. The two early endings are not the three designed final endings. |
 | Minigames | Pitch has a real API-to-player-to-payout journey. Soul, Typer, Arcade and Garden have substantial engines, components and bounded persistence/lifecycle tests. | Typer/Arcade public API and host integration; shared wire-contract decisions; Garden state-evolution clarification; authored content/mint, whole-player journeys and accessibility. Pinball remains a draft. |
 | Pet care / cosmetics | Controlled real-service Buy → adoption → equip/care → reload works; several actual UI, race and timing defects are locally corrected. | Pet/API schema reconciliation, shared attendance-clock repair (RP-365), adopted copy/content, announcements and consolidated review. A passing journey does not close the clock defect. |
 | Clout / achievements | Achievement foundation, axis hooks and state/API exist. A built-client real-service fixture now exercises native PR purchase, exact multiplier rendering, reload and the actual SQL head/event, with a failing producer-severing control. | RP-307 numeric partition correctness, offline-episode meaning, full UI obligations, truthful role/harness bindings and measured/adopted content/balance. Hosted server CI is red here. |
@@ -35,7 +35,17 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
-- Latest code batch `2fff9748` corrects cosmetic replay-input admission: Go now rejects missing,
+- Latest finished batch `c78501d1` adds actual no-payment negative builds to the existing
+  composed CI target. Both built Buy callbacks (checkout fetch and PaymentRequest) must fail
+  through the intended detector after native input and the authoritative purchase; unrelated
+  failure or incomplete cleanup is rejected. The final local `make test-game-ui-composed`
+  run84658 passes the production-byte early-game journey, normal/Clout cosmetic-care journeys,
+  real Postgres populations and both expected negative failures. Preceding `ee7f1118` proves
+  transaction rollback, seven persisted refusals and eight concurrent identical retries against
+  real Postgres. These are completed local test/tool batches, not new later-game features,
+  complete Cosmetic acceptance or hosted success. Their exact ranges and remaining review
+  live in the [Cosmetic log](cosmetic-shop-v1/log.md).
+- Most recent product correction `2fff9748` fixes cosmetic replay-input admission: Go now rejects missing,
   null, unsafe or extraneous recorded Company context consistently with TS. Shared valid cases
   preserve full receipt/event/state bytes; rejected cases cannot mutate state. Selected real
   Postgres command, retry/conflict, Exit, Soul recovery and history tests pass, as do affected
@@ -149,6 +159,13 @@ queue and current verification, not a claim to have rerun every acceptance crite
   above. Clout partition failures and client's historical kernel guard at `50a3a514` remain
   unresolved. There is no
   hosted result for these local repairs; nothing is pushed by this closeout.
+- A fresh GitHub run/job/log read also finds [Maintenance evidence 37723923274](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37723923274)
+  at the same `0f9f4214` **RED** on 2026-10-08: numeric-maintenance and harness-evidence pass,
+  reputation-evidence fails. Its completed `make reputation-harness-check` records six Casual
+  run-three starter timing ties, career-report drift and relevance-report drift; all970 H5
+  sources are retained/recomposed before failure. This corroborates existing local H4/H5
+  failures in the Reputation log, not a timeout or a newly diagnosed root cause. No report
+  regeneration, balance retune or criterion relaxation is authorized by this status check.
 - Recent implementation/correction spans still need exact-range cross-party review. Older
   approvals do not cover later code, and a self-review is not the designated gate.
 - Existing session creation/refresh now mount from the generated API authority with exact

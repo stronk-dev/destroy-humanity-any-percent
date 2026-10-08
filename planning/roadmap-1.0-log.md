@@ -4982,3 +4982,26 @@ designated review. The final expanded composed target is RED at the earlier Pitc
 early-game integration from the unbuilt later tiers and unfinished rights/access/operations.
 No milestone, content mint, release or hosted-green claim. Next: diagnose RP-389, resolve the
 baseline arithmetic/history failures and consolidate feature reviews under existing authority.
+
+## 2026-10-08 — Finished-batch closeout and owner-requested whole-product status
+
+Source checkpoint `c78501d1`, clean tree before this editorial update. Cosmetic's owning log
+records completed local command rollback/concurrent-retry evidence (`ee7f1118`) and actual
+negative payment-attempt builds retained in the composed CI target (`c78501d1`). Final whole
+composed84658 passes its real-service populations; exact ranges still need designated review.
+These finish the current test/tool batches, not Cosmetic acceptance or a later-game increment.
+
+Reconciled CURRENT-STATE's latest-batch and Reputation evidence statements against source,
+owning plans/logs and fresh read-only GitHub results. Latest ordinary CI37641907701 remains red
+at `0f9f4214`; newer maintenance37723923274 is also red on Reputation career/relevance, while
+its numeric and exhaustive harness jobs pass. Failed-job log retains six starter timing ties
+and career/relevance report drift, consistent with existing local H4/H5 failures. No current
+local-head hosted result, report regeneration or root-cause repair is inferred.
+
+Whole-product state remains Garage integration/hardening: Tier2 candidate content/headcount
+and measured balance are incomplete; later-tier/MMO/final-ending construction and rights,
+accessibility, recovery and clean-host operations remain substantial. Next delivery should
+advance a missing authorized player capability or resolve a named contract blocker, rather
+than repeat these completed instrumentation experiments. Checkpoint verification is diff,
+source/plan/log and remote-job inspection; no software suite for this editorial-only update.
+No acceptance, archival, content mint, push or release promotion.
