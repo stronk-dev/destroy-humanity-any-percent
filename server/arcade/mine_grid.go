@@ -529,7 +529,15 @@ func validateMineGridAgainstCatalog(value MineGridSnapshot, catalog *Catalog, se
 }
 
 func validHash(value string) bool {
-	return strings.HasPrefix(value, "sha256:") && len(value) == 71
+	if !strings.HasPrefix(value, "sha256:") || len(value) != 71 {
+		return false
+	}
+	for _, digit := range []byte(value[len("sha256:"):]) {
+		if !(digit >= '0' && digit <= '9' || digit >= 'a' && digit <= 'f') {
+			return false
+		}
+	}
+	return true
 }
 
 func encodeCanonical(value any) (json.RawMessage, error) {

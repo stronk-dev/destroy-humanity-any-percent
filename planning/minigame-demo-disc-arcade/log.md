@@ -2248,3 +2248,30 @@ exclusive through this coherent source/tests/docs/record commit; Claude designat
 remains pending independently of prior ranges. No full raw/domain parity, public browser-to-
 Arcade service journey, feature acceptance, archival, push or green-CI claim. Public API C2,
 RP-211 copy/contract, AR8 mint and other acceptance/review holds remain separate.
+
+## 2026-10-08 — Snapshot hash spelling parity (RP-472)
+
+Under AR1.2/AR3/AR4, both tenants must decode the same SHA-256 identity grammar.
+Go checked only prefix/length, admitting non-hex characters, uppercase, spaces and
+punctuation that TypeScript already refused. Shared twelve-case vectors replace only
+the hash in actual Mine Grid/Snake genesis states: old-source88897 fails twelve
+negative checks; unchanged client24 checks pass. Valid synthetic hashes test spelling
+only, not catalog identity. Actual engine genesis is also a positive control.
+
+Go now requires all64 digest characters to be lowercase hexadecimal. Apply's existing
+separate content binding remains; this is not evidence of an exploitable saved state.
+Kernel183→184 and both runtime pins record the genuine admission change. Content,
+gameplay, result/command/snapshot fields, public wire, copy and CI configuration are unchanged.
+
+Executed final checks: cold complete Arcade/Minigame/Kernel packages18284 pass; affected
+vet passes; five client files259 checks pass; types report zero errors/warnings; build
+passes; arcade-corpus-check79676 passes without regenerating any gameplay bytes.
+verify-kernel-version55393 passes its checkout/negative guards, then fails at historical
+50a3a514 (RP-131), not repaired or waived by this bump. Diff/format/whitespace checked.
+No DB, browser or whole-CI rerun/claim: this correction changes pure snapshot decoding,
+not those boundaries.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact range: a519892c
+exclusive through this source/tests/docs/record commit, READY FOR CLAUDE DESIGNATED REVIEW.
+No feature acceptance or archival; other accepted work can continue while the public-wire,
+owner-copy/content and remaining full-feature gates stay open.

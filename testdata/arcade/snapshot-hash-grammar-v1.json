@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "cases": [
+    {"name": "zero_digest", "valid": true, "hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"},
+    {"name": "lowercase_hex_digest", "valid": true, "hash": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"},
+    {"name": "all_f_digest", "valid": true, "hash": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"},
+    {"name": "non_hex_first", "valid": false, "hash": "sha256:g000000000000000000000000000000000000000000000000000000000000000"},
+    {"name": "non_hex_middle", "valid": false, "hash": "sha256:0000000000000000000000000000000g00000000000000000000000000000000"},
+    {"name": "non_hex_last", "valid": false, "hash": "sha256:000000000000000000000000000000000000000000000000000000000000000g"},
+    {"name": "uppercase_digest", "valid": false, "hash": "sha256:ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789"},
+    {"name": "embedded_space", "valid": false, "hash": "sha256:0000000000000000000000000000000 00000000000000000000000000000000"},
+    {"name": "punctuation", "valid": false, "hash": "sha256:000000000000000000000000000000000000000000000000000000000000000/"},
+    {"name": "short_digest", "valid": false, "hash": "sha256:000000000000000000000000000000000000000000000000000000000000000"},
+    {"name": "long_digest", "valid": false, "hash": "sha256:00000000000000000000000000000000000000000000000000000000000000000"},
+    {"name": "wrong_prefix", "valid": false, "hash": "SHA256:0000000000000000000000000000000000000000000000000000000000000000"}
+  ]
+}

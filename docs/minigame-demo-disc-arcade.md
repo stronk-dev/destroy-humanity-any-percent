@@ -45,6 +45,12 @@ Both engines are pure `minigame.Tenant`s. They are solo only, take the literal s
 `1` at `minigame.arcade.<toy>`, return `rating_delta: null`, and have exact snapshot key sets that
 carry `arcade_content_hash` and `arcade_schema_version`.
 
+Both snapshot decoders require `arcade_content_hash` to be `sha256:` followed by exactly
+64 lowercase hexadecimal characters. The Go spelling check was corrected in kernel
+0.3.184 to match TypeScript; `Apply` still separately binds that digest to the supplied
+catalog. `snapshot-hash-grammar-v1.json` shares invalid spellings and valid digest controls
+between both tenants and runtimes. No valid engine output or gameplay rule changed.
+
 - **`mine_grid` 1.0.0 (AR3):**
   - Mines are placed lazily at the first reveal, excluding the first cell and its neighbours, by a
     descending Fisher–Yates over the eligible cells.
