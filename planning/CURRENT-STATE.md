@@ -49,6 +49,12 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest source is `a4c09f31`: Pitch's bounded native Enter/Space/Tab correction is locally
+  verified, pending designated review. The complete original Claude Pitch surface range now
+  has a Codex CHANGES REQUIRED disposition, not retroactive approval of its later repairs.
+  Fresh affected component/unit/copy checks pass; the historical kernel gate still fails.
+  The [Minigame API log](minigame-api-and-surface/log.md) owns exact coverage and limits.
+  This closes original-batch review work, not Garage acceptance, another tier or whole CI.
 - Latest bounded API correction (2026-10-08, RP-476): the generated client now chooses
   the declared media representation when a status has alternatives. Both old-client
   regressions fail; affected Go/vet,160 Node and346 native Chromium/WebKit checks,

@@ -1,5 +1,11 @@
 # Minigame API & Surface implementation plan
 
+Original Pitch review finished (2026-10-09): the complete 23-path Claude range
+`50a3a514^..50a3a514` has a designated Codex **CHANGES REQUIRED** disposition in the log.
+RP-131, RP-415 and RP-478 remain distinct from their later corrections. The latter two are
+locally repaired, not independently approved by this original-range review. Complete MA
+range coverage, corrective review, authored contract/copy reconciliation and acceptance remain.
+
 Current bounded correction (2026-10-08, RP-478): Pitch declares zero Tab indices for native
 controls, matching the existing Typer pattern. The revised existing component flow uses actual
 Enter/Space for Start/cards/play/buy/end-shop/Return and Leave, with launcher/terminal Tab and

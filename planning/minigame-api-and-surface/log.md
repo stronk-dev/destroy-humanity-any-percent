@@ -1439,3 +1439,53 @@ prove uninterrupted keyboard navigation through the default host/server journey.
 Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range
 begins after7142dd50 through this source/tests/docs/plan/ledger/log commit; designated
 review pending. All handles terminal; no acceptance flip, archival, content mint or push.
+
+## 2026-10-09 — Complete designated review of the original Pitch surface
+
+**Review by:** Codex. **Recorded by:** Codex. **Exact reviewed range:**
+`50a3a514^..50a3a514` (`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444`, Claude implementation).
+**Decision: CHANGES REQUIRED.** Inspected all 23 changed paths: host/runtime/catalog wiring,
+six minigame source files, all three affected tests, candidate/generated copy, hash/manifest
+bindings, canonical docs and the original log. This completes that original batch's review;
+it is not approval of intervening changes or of the whole MA implementation span.
+
+- **RP-478 — keyboard evidence was overstated.** The original browser test labels native
+  keyboard selection but invokes `box.click()` and programmatic button clicks. That cannot
+  prove keyboard operation. The later retained native WebKit failure at heading→Start and
+  corrected Enter/Space/Tab population now supply meaningful component evidence. The
+  correction is `7142dd50..a4c09f31`, pending the other party's review.
+- **RP-415 — component lifetime was incomplete.** Original `reject`/`refetch` can issue a
+  fresh read after Leave/unmount; `bind` also lacks a post-content-await lifetime check.
+  The earlier recorded mounted deferred-response regressions reproduce the unwanted second
+  read. Their correction and guards remain separate pending-review work, not approved
+  retroactively by reviewing the original commit.
+- **RP-131 — the original guard explanation was false.** The batch itself adds six files
+  under the then-watched minigame prefix without a version signal. Fresh execution still
+  rejects this exact commit, rather than merely the older correction it blamed. Full diff
+  inspection finds presentation, transport and decoding additions, not simulation/replay
+  arithmetic; that does not authorize a false semantic bump, history rewrite or guard bypass.
+  Kernel History Guard Integrity remains **draft**, awaiting its owner decision.
+
+The original log honestly discloses that its detailed component enumeration follows the
+unadopted GS7 proposal and its new copy is candidate wording. Neither becomes accepted
+authority through this review. The two-way tenant/child binding, pinned-content refusal,
+same-command retry and generated-DTO transport seam are real implementation, not evidence
+of all MA acceptance or full accessibility. No new mechanic or owner text was authored here.
+
+Executed on current source `a4c09f31`, separately from the historical verdict:
+`make test-browser-focused BROWSER_TEST_FLAGS='test/minigame-surface-browser.test.ts --project=chromium --project=webkit'`
+passes 14 mounted executions (session16628). The root Vitest selector for
+`test/minigame-surface.test.ts test/generated-operation-ports.test.ts test/game-ui.test.ts`
+passes 173. `make copy-check verify-client-boundary verify-kernel-version` passes generation
+fixtures, all 669 current keys/history, deployment manifest and boundaries, then fails on
+`50a3a514` (session46868). The independent boundary/kernel67642 run confirms the same red
+gate; this duplicate scan adds no coverage.
+Read-only checks against the actual original Git objects also verify all 38 new entries exactly
+match their generated catalog, TS/Go keys and orphan records, with the original artifact hash
+matching the deployment pin. `git diff --check 50a3a514^ 50a3a514` passes.
+
+No current-source edits preceded those runs; all handles are terminal. Current tests are not
+a rerun of the original revision, a fresh full server journey, Firefox/Linux/AT, whole CI or
+release proof. The existing built-client real-service journey remains separately recorded.
+Next: consolidate remaining MA original/corrective review coverage and continue accepted
+construction; no archive, feature-completion checkbox, content mint or push follows.
