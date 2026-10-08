@@ -27,7 +27,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
 | Minigames | Pitch has a real API-to-player-to-payout journey. Soul, Typer, Arcade and Garden have substantial engines, components and bounded persistence/lifecycle tests. | Typer/Arcade public API and host integration; shared wire-contract decisions; Garden state-evolution clarification; authored content/mint, whole-player journeys and accessibility. Pinball remains a draft. |
 | Pet care / cosmetics | Controlled real-service Buy → adoption → equip/care → reload works; several actual UI, race and timing defects are locally corrected. | Pet/API schema reconciliation, shared attendance-clock repair (RP-365), adopted copy/content, announcements and consolidated review. A passing journey does not close the clock defect. |
 | Clout / achievements | Achievement foundation, axis hooks and state/API exist. A built-client real-service fixture exercises native PR purchase, exact multiplier rendering, reload and the actual SQL head/event, with a failing producer-severing control. The native `?` help mechanism now passes affected browser and real-service checks; its text remains explicitly pending owner copy. | RP-307 numeric partition correctness, offline-episode meaning, remaining UI obligations, truthful role/harness bindings and measured/adopted content/balance. Hosted server CI is red here. |
-| Account / API / transport | Account security, backend deletion, revocation, exact-response and transport recovery witnesses were independently approved in earlier ranges. Generated API dispatch and newer consumers are partly implemented. A recovery player-flow/storage/copy proposal is now drafted, not accepted or built. | Complete generated-client/route migration, startup failure and browser renewal contracts, visible recovery-code/recover-existing-account UX and long-session proof. |
+| Account / API / transport | Account security, backend deletion, revocation, exact-response and transport recovery witnesses were independently approved in earlier ranges. Generated API dispatch and newer consumers are partly implemented. Credential responses now consistently refuse HTTP caching, locally verified against real Postgres; that new range awaits designated review. A recovery player-flow/storage/copy proposal is now drafted, not accepted or built. | Complete generated-client/route migration, startup failure and browser renewal contracts, visible recovery-code/recover-existing-account UX and long-session proof. |
 | Privacy / player rights | Relation-complete 60-table inventory and bounded browser/event/backup/deletion traces expose actual retained data. Research publication classification/sanitization is complete. | Owner export/deletion/retention choices (D-008/D-009/D-015), implementations and player workflows. Public board survival after deletion and restoration from pre-deletion backups remain explicit issues. An instance backup is not player export. |
 | Accessibility | Native keyboard, focus, pending feedback, reflow and announcement corrections exist across several surfaces; targeted browser checks execute. | Accepted cross-product task/assistive-technology matrix and actual task testing, including zoom/motion/longer workflows. Automated checks alone are not accessibility completion. |
 | MMO and later game | Commons, guild, faction, doctrine and combat arithmetic primitives exist. | Complete world/feed/ticker/social surfaces, combat engines/integration and fair bot backfill, Tier 3–8 content, challenge/category set and all final endings. These are substantial unbuilt work, not merely closeout paperwork. |
@@ -35,7 +35,15 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
-- Latest finished product batch `4055b4fe` fixes terminal minigame failure recovery: rolled-back
+- Latest finished product batch `069532f5` prevents HTTP caching of credentials across account
+  creation, bootstrap, session creation and refresh, including failures and rate refusals.
+  Old-source regressions fail; the corrected full Linux/amd64/Postgres Account and Gameserver
+  populations pass with no skips, alongside affected native tests, vet and unchanged API
+  generation. This does not change token policy or implement recovery/renewal UX. The exact
+  range `634b8360` exclusive through `069532f5` awaits designated cross-party review; the
+  [Account log](account-and-session-bootstrap/log.md) owns the evidence. The working tree was
+  clean at this closeout; no push, full-CI or release claim is made.
+- Preceding product batch `4055b4fe` fixes terminal minigame failure recovery: rolled-back
   API commands release only their own resolution claim, allowing an immediate retry instead
   of waiting for the five-minute lease. Real Linux/amd64/Postgres tests exercise rollback,
   cancellation, replaced-worker ownership, committed-result protection and exactly-once retry;
