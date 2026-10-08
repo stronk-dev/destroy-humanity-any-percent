@@ -120,7 +120,17 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
 - **N4:** `make verify-no-payment`. Runtime dependencies must equal
   `client/tools/runtime-dependency-allowlist.json`, and a denylist scans the lockfile and Go modules
   for payment, IAP and ads SDKs.
-- **N5:** the browser network trap (`client/test/network-trap.ts`) wraps the shop flow.
+- **N5:** component tests use `client/test/network-trap.ts`; the real composed driver independently
+  traps requests/payment APIs through the built-client shop flow. `make test-cosmetic-n5` builds
+  two isolated negative clients whose actual native Buy callback attempts off-origin checkout
+  fetch or `PaymentRequest`. Each child must exit 1 specifically at the N5 gate after its real
+  applied Buy receipt, with exactly one recorded attempt and no outgoing forbidden request.
+  A separate browser route abort prevents accidental egress if a primary trap regresses, but
+  reaching that fallback fails the negative verifier. Green children, unrelated failures,
+  missing/duplicate injection and incomplete cleanup also fail. Negative bundles are emitted
+  only under the driver's temporary fixture directory, never into `client/dist` or repo source.
+  Both negatives and their classifier controls run in `make test-game-ui-composed`; passing
+  locally does not establish the Caddy/header or whole release-security floor.
 - **N6:** Caddy sends `Permissions-Policy: payment=()` and
   `Content-Security-Policy: connect-src 'self' wss://{host}`, which `ValidateCaddyfile` requires.
 - **N7:** the copy-check currency rule: no currency amount in `shop.*` or `cosmetic.*` copy.

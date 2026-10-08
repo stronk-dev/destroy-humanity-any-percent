@@ -12,12 +12,14 @@ import { chromium } from "playwright";
 import { build } from "vite";
 import { activateCosmeticBuy, assertNativeCosmeticBuyTrace } from "./activate-cosmetic-buy.mjs";
 import { assertCareSnapshot } from "./care-snapshot-proof.mjs";
+import { cosmeticN5Fixture, n5CleanupMarker, n5Faults, n5RejectionPrefix } from "./cosmetic-n5-fixture.mjs";
 
 const args = process.argv.slice(2);
-if (args.length !== 0 && (args.length !== 1 || args[0] !== "--axis-stack")) {
-  throw new Error("supported composed fixture option: --axis-stack");
+const n5Fault = args[0]?.startsWith("--n5-fault=") ? args[0].slice("--n5-fault=".length) : null;
+if (args.length !== 0 && (args.length !== 1 || (args[0] !== "--axis-stack" && !n5Faults.includes(n5Fault)))) {
+  throw new Error("supported composed fixture options: --axis-stack, --n5-fault=checkout, --n5-fault=payment-request");
 }
-const axisFixture = args.length === 1;
+const axisFixture = args[0] === "--axis-stack";
 const buyKey = axisFixture ? " " : "Enter";
 const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = path.resolve(clientRoot, "..");
@@ -25,6 +27,7 @@ const gameserverURL = "http://127.0.0.1:18082";
 const uiURL = "http://localhost:5173";
 const databaseURL = "postgres://cloud_clicker:cloud_clicker_game_ui_test@127.0.0.1:55433/cloud_clicker_game_ui_test?sslmode=disable";
 const fixtureRoot = mkdtempSync(path.join(os.tmpdir(), "cloud-clicker-cosmetic-ac14-"));
+const clientDist = path.join(fixtureRoot, "client-dist");
 const startedAt = Date.now();
 const processErrors = [];
 let gameserver;
@@ -152,7 +155,7 @@ function assertNetwork(url, kind) {
 }
 
 async function serveBuiltClient() {
-  const dist = path.join(clientRoot, "dist");
+  const dist = clientDist;
   const server = createHTTPServer((request, response) => {
     const pathname = new URL(request.url, uiURL).pathname;
     if (pathname.startsWith("/api/")) {
@@ -532,7 +535,8 @@ try {
   gameserver.stderr.on("data", (value) => process.stderr.write(value));
   gameserver.on("error", (error) => processErrors.push(error));
   await waitForReady();
-  await build({ configFile: path.join(clientRoot, "vite.config.ts"), root: clientRoot, logLevel: "error" });
+  await build({ configFile: path.join(clientRoot, "vite.config.ts"), root: clientRoot, logLevel: "error",
+    build: { outDir: clientDist, emptyOutDir: true }, plugins: n5Fault ? [cosmeticN5Fixture(n5Fault)] : [] });
   staticServer = await serveBuiltClient();
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
@@ -542,6 +546,7 @@ try {
   const websocketEvents = [];
   const pageErrors = [];
   const failedRequests = [];
+  const safetyBlockedRequests = [];
   const acquireResponses = [];
   const isAcquire = (request) => request.method() === "POST" &&
     new URL(request.url()).pathname === "/api/v1/intents" && request.postDataJSON()?.kind === "acquire_cosmetic";
@@ -560,9 +565,18 @@ try {
     socket.on("socketerror", () => { state.errors += 1; });
     try { assertNetwork(socket.url(), "websocket"); } catch (error) { violations.push(error.message); }
   });
+  if (n5Fault) await page.route("**/*", async (route) => {
+    // Independent local-only safety net for deliberately bad fixture builds.
+    // If reached, the negative verifier refuses to credit the primary trap.
+    try { assertNetwork(route.request().url(), "request"); }
+    catch { safetyBlockedRequests.push(route.request().url()); await route.abort("blockedbyclient"); return; }
+    await route.continue();
+  });
   await page.addInitScript(() => {
     const failures = [];
     globalThis.__cosmeticN5Failures = failures;
+    globalThis.__cosmeticN5FixtureExecutions = [];
+    window.addEventListener("cosmetic-n5-fixture", (event) => { globalThis.__cosmeticN5FixtureExecutions.push(event.detail); });
     // Passive input trace includes the native keyboard Buy activation below;
     // no retries, network bodies/tokens or gameplay API shortcuts.
     globalThis.__cosmeticBuyTrace = [];
@@ -612,6 +626,16 @@ try {
       navigator.credentials[name] = () => { failures.push(`navigator.credentials.${name}`); return Promise.reject(new TypeError("credentials blocked")); };
     }
   });
+  async function requireCleanN5(phase) {
+    const direct = [...directViolations, ...await page.evaluate(() => globalThis.__cosmeticN5Failures)];
+    if (violations.length || direct.length || pageErrors.length || safetyBlockedRequests.length) {
+      const report = { phase, fixture: n5Fault,
+        fixtureExecutions: await page.evaluate(() => globalThis.__cosmeticN5FixtureExecutions),
+        violations, directViolations: direct, safetyBlockedRequests, pageErrors: pageErrors.map(String) };
+      console.error(`${n5RejectionPrefix}${JSON.stringify(report)}`);
+      throw new Error("cosmetic N5 network/payment gate rejected the built client");
+    }
+  }
   await page.goto(uiURL, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "BEGIN ATTEMPT" }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
@@ -703,6 +727,7 @@ try {
   await shelf.locator(".owned").evaluate((owned) => {
     if (document.activeElement !== owned) throw new Error("native Buy lost focus instead of transferring it to the owned state");
   });
+  await requireCleanN5("after-native-buy");
   directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
   await page.reload({ waitUntil: "networkidle" });
   await shelf.locator('[data-cosmetic="horse_armor"][data-state="owned"]').waitFor({ state: "visible", timeout: 30_000 });
@@ -770,10 +795,7 @@ try {
   assertPersistedWearer(await snapshot(page), petID, null);
   await openPetSurface(page);
   await assertLivePetOverlay(page, { present: false });
-  directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
-  if (violations.length || directViolations.length || pageErrors.length) {
-    throw new Error(`cosmetic AC14 network/page violations: ${JSON.stringify({ violations, directViolations, pageErrors: pageErrors.map(String) })}`);
-  }
+  await requireCleanN5("complete");
   console.log(`composed Cosmetic AC14/G10: T0 locked → T1 Buy → owned reload → DOM adopt/equip → live annoyed overlay → worn reload/reduced motion → DOM unequip → unworn reload; N5 requests ${requests.length}, no violation; ${(Date.now() - startedAt) / 1000}s: PASS`);
 } finally {
   await browser?.close();
@@ -781,4 +803,5 @@ try {
   if (staticServer) await new Promise((resolve, reject) => staticServer.close((error) => error ? reject(error) : resolve()));
   await stopGameserver();
   rmSync(fixtureRoot, { recursive: true, force: true });
+  if (n5Fault) console.log(n5CleanupMarker);
 }

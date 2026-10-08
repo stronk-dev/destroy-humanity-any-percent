@@ -97,10 +97,13 @@ migration take the next free numbers at landing.
   C6's old `.click()` test as keyboard proof or claim the wider task/AT gate complete.
 - [ ] C7/AC13 N5 network witness (RP-168): a browser-level observer now captures four HTTP
   transport/resource classes on a disallowed served path in the cold Linux three-engine lane,
-  with RP-170's full-suite race corrected and a fired listener-severing control. Off-origin
-  attempts blocked before a request remain unproved; the real-server AC14 flow is now locally
-  witnessed but awaits Claude's cross-party review. Claude's
-  review of both Codex test ranges is required.
+  with RP-170's full-suite race corrected and a fired listener-severing control. The composed
+  lane now includes two actual fixture builds whose native Buy callback attempts off-origin
+  checkout fetch or PaymentRequest; exact primary-trap rejections are locally witnessed before
+  egress. Green/unrelated failures, missing injection, secondary route aborts and incomplete
+  cleanup cannot satisfy the negative verifier. Final execution and limits live in the latest
+  log; the real-server AC14 flow and this supplement await Claude's cross-party review of the
+  relevant correction/evidence ranges. No whole-feature acceptance is inferred.
 - [x] Controlled real-server G10 pet-overlay witness: the existing Garage mount now has actual
   DOM adoption/equip, pet-panel/reload, browser reduced-motion preference and unequip proof.
   The test-only driver supplement and restored consumer/motion probes land in this range.

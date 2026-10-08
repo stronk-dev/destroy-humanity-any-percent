@@ -16,7 +16,7 @@ runners, deployment credentials, or deployment steps.
 | `harness` | `make verify-harness-fast` | Cold harness tests, role proofs, Commons invariance, and complete balance/epoch history guards; no pacing/relevance simulation |
 | `client` | `make verify-client` | strict TypeScript and Node/V8 tests; full Git history is required by KV-1 |
 | `browser` | `make test-browser` | Chromium, Firefox, and WebKit functional suites, then isolated Chromium performance |
-| `game-ui-composed` | `make test-game-ui-composed` | Production-built Chromium/gameserver/Postgres/WebSocket gameplay and recovery; default Cosmetic/care journey plus the unminted Clout purchase/SQL/reload variant |
+| `game-ui-composed` | `make test-game-ui-composed` | Production-built Chromium/gameserver/Postgres/WebSocket gameplay and recovery; default Cosmetic/care and unminted Clout journeys; two built-client no-payment negatives |
 | `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
 
 The fast harness, client, and schema jobs have five-minute ceilings. Server, browser, and
@@ -213,9 +213,11 @@ filename collision (RP-239) was caught by `verify-client` and corrected. That
 composite still fails the existing RP-131 history guard; passing its client
 population and separately run remaining gates is not whole-CI success.
 
-`make test-game-ui-composed` first runs the five production-asset oracle checks and twenty-five
-care-projection controls with Node's native test runner. Those files use the `.fixtures.mjs`
-suffix (`production-client-proof.fixtures.mjs`, `care-snapshot-proof.fixtures.mjs`), not
+`make test-game-ui-composed` first runs the five production-asset oracle checks, twenty-five
+care-projection controls and five no-payment fixture/classifier checks with Node's native test
+runner. Those files use the `.fixtures.mjs`
+suffix (`production-client-proof.fixtures.mjs`, `care-snapshot-proof.fixtures.mjs`,
+`cosmetic-n5-fixture.fixtures.mjs`), not
 `.test.mjs`: Vitest cannot register `node:test` suites. They remain mandatory in this blocking
 Make/Actions lane rather than being silently excluded from all automation. The client/browser
 Vitest configurations and their legitimate `.test.mjs` population are unchanged.
@@ -239,7 +241,13 @@ requests and refuses payment APIs or unexpected destinations. The fixture does n
 content. The third invocation selects `--axis-stack` in the same driver: only test cash is seeded;
 native generator/PR purchases earn attainment and persist ownership, while rendered factors,
 reload and the SQL head/event are checked. `make test-clout-composed` selects that variant alone.
-It does not mint content or claim natural pacing. All earlier assertions and the six-job topology
+It does not mint content or claim natural pacing. The target then invokes `make test-cosmetic-n5`:
+two fixture-only Vite builds inject checkout-fetch and PaymentRequest attempts into the actual
+native Buy callback. Both must reach the real applied Buy receipt, then fail specifically at
+the primary N5 trap before egress, complete cleanup and exit 1. An unrelated failure, a green
+child or the independent route-abort safety net cannot satisfy that gate. All Cosmetic builds
+use isolated temporary output directories; negative bytes never replace `client/dist`.
+All earlier assertions and the six-job topology
 remain; no timeout grows. Recorded local expanded-run failure RP-389 stops in the first driver
 after a correct locked-Pitch409 but before its visible notice, so that run does not execute
 the later variants. A subsequent expanded run executes all three populations successfully;

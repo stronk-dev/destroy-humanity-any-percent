@@ -1960,3 +1960,41 @@ Review by: Codex (implementer first filter); Recorded by: Codex. Exact new test/
 authorization, all acquisition eligibility populations, browser/hosted/full-CI or complete C4/
 Cosmetic acceptance is claimed. Next: remaining original C4 review and C7/N5 negative population;
 author-body, attendance, content and earlier correction-review debt remain separate.
+
+## 2026-10-08 — AC13 actual negative builds enter the composed CI lane (RP-168)
+
+Outcome under §10 N5/AC13: the actual production-build shelf Buy callback now has two explicit
+test-only Vite variants, checkout fetch and PaymentRequest construction. Repository sources stay
+unchanged; all Cosmetic outputs go under the owned temporary fixture root, including ordinary
+runs, so a negative build cannot poison `client/dist`. The plugin refuses missing/duplicate Buy
+anchors and requires its attempt in emitted bundle bytes. Native input, exact applied receipt,
+request/revision binding and owned-state focus execute before the N5 failure checkpoint.
+
+Each negative child must exit1 with exactly its primary-trap violation, one built callback
+execution, no unexpected requests/page errors/secondary aborts, and completed cleanup. A
+separate Playwright request abort is a local-only safety net, never passing evidence for the
+primary trap. The negative classifier refuses a green or unrelated failing child, absent/duplicate
+injection/rejection/cleanup and substituted failure channels. Five Node control tests execute
+these invalid cases. No direct page-evaluate payment attempt substitutes for a fixture build.
+
+Verification: first actual `make test-cosmetic-n5`15184 passes both expected child failures;
+after adding the explicit cleanup requirement, final `make test-game-ui-composed`84658 exits0.
+It executes35 Node controls, all8 real-Postgres refresh cases and all7 persisted parents, the
+production-byte main gameplay/early endings/Pitch/recovery journey, normal Enter/Space Cosmetic/
+care populations and both negative builds. Each final negative reports childExit1,
+phase=after-native-buy, its one exact direct violation and empty request/secondary/page-error
+lists. `verify-no-payment`, `verify-client-boundary`, CI topology/13 invalid controls, syntax and
+diff checks pass. Named test DB has0 other sessions; ports18081/18082/5173 have no listeners.
+Initial unprivileged Docker denial ran no journey; permitted execution above is the evidence.
+Transient Vite reset diagnostics during main WebSocket recovery did not fail its retained
+recovery or page-error assertions; no timing/assertion/timeout/retry change was made.
+
+The existing Actions composed job invokes this exact expanded Make target; its workflow and
+10-minute timeout are unchanged. This is local macOS/Chromium + real-Postgres fixture evidence,
+not a hosted/Linux run, Caddy/header proof, production content mint or full release-security
+claim. No product/kernel/mechanics/copy change or acceptance checkbox flip.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact new tool/Make/docs/record
+range starts `ee7f1118` exclusive through this commit; designated cross-party review remains
+pending, along with earlier spans. Next: finish the remaining original C4/C6 reviews and resolve
+the named author-body/content gates; do not repeat these completed AC13 experiments per edit.

@@ -232,7 +232,7 @@ test-browser-ci:
 # visible visitor counter: runtime.ts completed its actual Centrifuge
 # WebSocket handshake, not a mocked socket exchange.
 GAME_UI_COMPOSE_FILES ?= -f compose.game-ui-test.yml
-.PHONY: test-garden-composed test-clout-composed diagnose-browser-session
+.PHONY: test-garden-composed test-clout-composed test-cosmetic-n5 diagnose-browser-session
 # Fixture-only wall-clock journey; manual, deliberately not a push-CI dependency.
 test-garden-composed: build-gameserver build-client
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
@@ -243,6 +243,11 @@ test-garden-composed: build-gameserver build-client
 test-clout-composed:
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-cosmetic-composed.mjs --axis-stack
+
+# AC13: real built-client negatives must fail specifically at the N5 trap.
+test-cosmetic-n5:
+	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
+	node client/tools/test-cosmetic-n5.mjs
 
 # Manual Account/Transport diagnostic; not automatic-renewal or release proof.
 diagnose-browser-session: build-gameserver build-client
@@ -255,11 +260,12 @@ research-browser-coordination:
 	docker compose -f compose.browser-test.yml run --rm browser bash -lc 'corepack enable && corepack prepare pnpm@11.15.1 --activate && pnpm --dir client install --frozen-lockfile && node client/tools/research-browser-coordination.mjs $(shell git rev-parse HEAD)'
 
 test-game-ui-composed:
-	node --test client/tools/production-client-proof.fixtures.mjs client/tools/care-snapshot-proof.fixtures.mjs
+	node --test client/tools/production-client-proof.fixtures.mjs client/tools/care-snapshot-proof.fixtures.mjs client/tools/cosmetic-n5-fixture.fixtures.mjs
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-game-ui-composed.mjs
 	node client/tools/test-cosmetic-composed.mjs
 	node client/tools/test-cosmetic-composed.mjs --axis-stack
+	$(MAKE) test-cosmetic-n5
 
 verify-game-ui: verify-client test-browser test-game-ui-composed
 
