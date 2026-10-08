@@ -1,6 +1,8 @@
 package pet
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"regexp"
@@ -18,6 +20,29 @@ type Identity struct {
 	NameKey             string `json:"name_key"`
 	AdoptedAtMS         int64  `json:"adopted_at_ms"`
 	AdoptedAtAttendedMS int64  `json:"adopted_at_attended_ms"`
+}
+
+// UnmarshalJSON enforces PA3.2 at every identity wire boundary, including
+// Company replay carry. A missing/null coordinate must not become numeric zero.
+// Domain and pinned-catalog validation remain with the existing validators.
+func (identity *Identity) UnmarshalJSON(data []byte) error {
+	keys := []string{"species_id", "temperament", "palette_id", "name_key", "adopted_at_ms", "adopted_at_attended_ms"}
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &fields); err != nil || !hasRawKeys(fields, keys) {
+		return fmt.Errorf("%w: identity fields are not exact", ErrInvalidIdentity)
+	}
+	for _, key := range keys {
+		if bytes.Equal(bytes.TrimSpace(fields[key]), []byte("null")) {
+			return fmt.Errorf("%w: identity field %q is null", ErrInvalidIdentity, key)
+		}
+	}
+	type decodedIdentity Identity
+	var decoded decodedIdentity
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidIdentity, err)
+	}
+	*identity = Identity(decoded)
+	return nil
 }
 
 var (

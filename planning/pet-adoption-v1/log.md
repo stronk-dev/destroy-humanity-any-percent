@@ -547,3 +547,41 @@ First filter Review by: Codex (implementer); Recorded by: Codex. Exact range: `a
 through this test/log commit awaits Claude's designated review. No full Pet acceptance, archival,
 hosted CI, release or push. Next: recover the existing SQL run when Docker is available, then
 execute current persisted controls and consolidate outstanding review/contract gates.
+
+## 2026-10-08 — RP-406 required identity fields in Company replay carry
+
+Review by: Codex (cross-party targeted review of Claude P4 `b29e70c0^..b29e70c0`).
+Recorded by: Codex. **CHANGES REQUIRED**, limited to PA3.2/PA6's identity-carry decoder, not a
+complete verdict over all22 original paths. P4 decoded carry into plain `pet.Identity` integers;
+the save codec's required-field pointers did not protect this separate boundary. At35849d9a,
+old-source72749 executes24 malformed cases: eight omitted/null timestamp cases incorrectly
+apply Wind Down/Accept Offer; the sixteen string-field controls already refuse. This is an
+actual replay admission defect, not a demonstrated live-client exploit.
+
+The shared Go identity JSON decoder now checks every exact-name non-null field before assigning
+its destination, then uses normal typed decoding. Existing shape/domain/pinned validators retain
+their responsibilities; encoding and all authored/fixture bytes are unchanged. The actual replay
+acceptance-set change advances kernel173→174 in all three mirrors. Unit controls retain explicit
+numeric zero and unchanged destinations on invalid input. Both runtimes' actual Exit arms refuse
+all24 malformed carry cases without mutating Company state; both explicit-zero Exit controls apply
+with unchanged receipts. No copy, balance, save schema, migration, API or timeout policy changed.
+
+Executed final verification: selected five-package Go15681 passes; complete Pet/Save/Replaycatalog/
+Kernel28269 passes (DB-dependent tests skip, not real-Postgres proof). Production48831 passes
+the24 refusals/two zero controls, original Pet/Cosmetic corpus regeneration comparisons and
+the unchanged cross-runtime apply-log fixture. Final affected vet passes. Node37865 passes130
+across four Pet/replay files; native Chromium/WebKit55309 passes84 across three Pet files.
+Types72323 report zero errors/warnings; production build passes215 modules. Diff/whitespace checks
+pass. No new raw corpus or regenerated golden file is needed.
+
+Kernel adversarial fixtures39941 pass. The actual `make verify-kernel-version`64857 remains RED
+at historical `50a3a514` against`0cf9f7a6` (RP-131); the real174 bump neither bypasses nor fixes
+that historical violation. Docker inspect again cannot connect to its daemon; the original
+`cloud-clicker-test-run-9a63203faa7b` terminal result stays unknown, with no restart or new SQL
+pass inferred. No whole-CI, full-P4/AC2/AC8, Pet feature, archive or release approval.
+
+Correction Review by: Codex (implementer diff/first filter); Recorded by: Codex. Exact new range:
+`35849d9a` exclusive through this source/test/docs/ledger/plan/log commit awaits Claude's
+designated review. Earlier pending ranges remain separate. Next: complete remaining accepted
+review/integration work; recover the existing SQL run before any fresh persisted rerun once
+Docker is restored. The full nine-tier1.0 goal remains active; no push/publication performed.

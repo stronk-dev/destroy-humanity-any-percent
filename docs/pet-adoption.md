@@ -67,6 +67,11 @@ synthesized. The Company replay carry holds `pet_identities` from replay-inputs 
 pinned Founder floor is at least 23. v10 is otherwise byte-identical to v9 apart from the version
 field.
 
+Identity decoding in Company replay carry also requires all six non-null fields, using their
+exact names. Missing/null timestamps refuse rather than silently becoming zero; explicitly
+recorded numeric zero remains valid. This is wire-shape validation, not a substitute for the
+existing care-key, coordinate, species and cap checks under the pinned catalog.
+
 ## The `adopt_pet` intent
 
 The wire is exactly `{intent_id, kind:"adopt_pet", expected_revision, species_id, name_key}`, with

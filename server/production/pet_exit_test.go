@@ -189,3 +189,90 @@ func TestPetIdentityAndCareSurviveBothExitPaths(t *testing.T) {
 		t.Fatalf("expected both nonempty Exit paths, got %d", count)
 	}
 }
+
+// PA3.2 applies to the replay carry as well as the saved Founder: omitted
+// and null coordinates are not an explicitly recorded numeric zero.
+func TestPetExitIdentityFieldsAreRequired(t *testing.T) {
+	raw, err := os.ReadFile(cosmeticCorpusPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var source cosmeticCorpus
+	if err := json.Unmarshal(raw, &source); err != nil {
+		t.Fatal(err)
+	}
+	shop := cosmeticsContentBundle(t)
+	count := 0
+	for _, row := range source.ExitCases {
+		if row.Name != "exit-wind-down-preserves-owned-equipped" && row.Name != "exit-accept-offer-preserves-owned-equipped" {
+			continue
+		}
+		count++
+		for _, field := range []string{"species_id", "temperament", "palette_id", "name_key", "adopted_at_ms", "adopted_at_attended_ms"} {
+			for _, null := range []bool{false, true} {
+				name := row.Name + "/" + field + "/omitted"
+				if null {
+					name = row.Name + "/" + field + "/null"
+				}
+				t.Run(name, func(t *testing.T) {
+					wire := reputationShapeObject(t, row.Company.Case.ReplayInputs)
+					resolved := reputationShapeObject(t, wire["resolved"])
+					carry := reputationShapeObject(t, resolved["founder_carry"])
+					extensions := reputationShapeObject(t, carry["founder_extensions"])
+					identities := reputationShapeObject(t, extensions["pet_identities"])
+					if len(identities) != 1 {
+						t.Fatal("requires one recorded identity")
+					}
+					for id, data := range identities {
+						identity := reputationShapeObject(t, data)
+						if null {
+							identity[field] = json.RawMessage(`null`)
+						} else {
+							delete(identity, field)
+						}
+						identities[id] = reputationShapeJSON(t, identity)
+					}
+					extensions["pet_identities"] = reputationShapeJSON(t, identities)
+					carry["founder_extensions"] = reputationShapeJSON(t, extensions)
+					resolved["founder_carry"] = reputationShapeJSON(t, carry)
+					wire["resolved"] = reputationShapeJSON(t, resolved)
+					company := replayFixtureStateFromEncoded(t, shop, row.Company.Case.PreState)
+					before := mustEncodeState(t, company)
+					transition, err := ApplyLoggedExit(company, []byte(canonicalFixtureJSON(t, row.Company.Case.CanonicalPayload)), shop, reputationShapeJSON(t, wire))
+					if err == nil || !bytes.Equal(before, mustEncodeState(t, company)) {
+						t.Fatalf("malformed identity accepted or changed Company: outcome=%s err=%v", transition.Decision.Outcome, err)
+					}
+				})
+			}
+		}
+		t.Run(row.Name+"/explicit-zero-coordinates", func(t *testing.T) {
+			wire, err := parseReplayInputs(row.Company.Case.ReplayInputs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var resolved replayExitResolved
+			if err := json.Unmarshal(wire.Resolved, &resolved); err != nil {
+				t.Fatal(err)
+			}
+			identities := resolved.FounderCarry.FounderExtensions.PetIdentities
+			if identities == nil || len(*identities) != 1 {
+				t.Fatal("requires one recorded identity")
+			}
+			for id, identity := range *identities {
+				identity.AdoptedAtMS, identity.AdoptedAtAttendedMS = 0, 0
+				(*identities)[id] = identity
+			}
+			wire.Resolved = reputationShapeJSON(t, resolved)
+			company := replayFixtureStateFromEncoded(t, shop, row.Company.Case.PreState)
+			transition, err := ApplyLoggedExit(company, []byte(canonicalFixtureJSON(t, row.Company.Case.CanonicalPayload)), shop, reputationShapeJSON(t, wire))
+			if err != nil || transition.Decision.Outcome != save.IntentApplied ||
+				canonicalFixtureValue(t, transition.Founder.PetIdentities) != canonicalFixtureValue(t, *identities) ||
+				canonicalFixtureJSON(t, transition.Decision.Receipt) != row.Company.Case.ReceiptJSON {
+				t.Fatalf("explicit zero coordinates rejected or changed: %v", err)
+			}
+		})
+	}
+	if count != 2 {
+		t.Fatalf("expected both Exit paths, got %d", count)
+	}
+}

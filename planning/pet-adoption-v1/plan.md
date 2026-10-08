@@ -11,6 +11,11 @@ review. P5's missing final-history AC7 refusal checks (RP-405) are also locally 
 await designated review plus database-backed execution. Existing checkboxes describe
 implementation presence, not full-feature acceptance.
 
+P4's Company replay identity decoder also has a bounded CHANGES REQUIRED finding (RP-406):
+missing/null adoption coordinates were accepted as zero. The local correction, paired refusal/
+explicit-zero controls and pending independent review are recorded in the latest log; this
+does not approve P4's complete range or close its full acceptance population.
+
 Numbering, ruled by landing order: the RFC's "Founder v22" maps to the **next free Founder version
 = v23**, because Reputation Tree v1 already took v22. The RFC's "replay-inputs v7" maps to the next
 free replay-inputs version. Cosmetic Shop then takes v24.

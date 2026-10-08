@@ -89,4 +89,35 @@ describe("pet Exit boundaries (PA3.5/PA6, AC6/AC8/AC14)", () => {
     await expect(applyLoggedExit(state, canonicalJSONString(source.case.canonical_payload), catalogs, inputs)).rejects.toThrow();
     expect(canonicalJSONString(encodeReplayState(state))).toBe(encodedBefore);
   });
+
+  it.each(exits)("requires every recorded identity field across $name, not invented zeroes", async (row) => {
+    const source = row.company;
+    const catalogs = await loadReplayCatalogBundle(source.constants_hash, source.artifacts as unknown as ReplayArtifacts);
+    for (const field of ["species_id", "temperament", "palette_id", "name_key", "adopted_at_ms", "adopted_at_attended_ms"]) {
+      for (const nullValue of [false, true]) {
+        const inputs = structuredClone(source.case.replay_inputs);
+        const identities = inputs.resolved.founder_carry.founder_extensions.pet_identities as Record<string, Record<string, unknown>>;
+        expect(Object.keys(identities)).toHaveLength(1);
+        for (const identity of Object.values(identities)) {
+          if (nullValue) identity[field] = null;
+          else delete identity[field];
+        }
+        const state = companyState(source.case.pre_state, catalogs);
+        const before = canonicalJSONString(encodeReplayState(state));
+        await expect(applyLoggedExit(state, canonicalJSONString(source.case.canonical_payload), catalogs, inputs), `${field}/${nullValue ? "null" : "omitted"}`).rejects.toThrow();
+        expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
+      }
+    }
+    // Zero is a valid explicit coordinate, not a missing-value sentinel.
+    const inputs = structuredClone(source.case.replay_inputs);
+    const identities = inputs.resolved.founder_carry.founder_extensions.pet_identities as Record<string, Record<string, unknown>>;
+    for (const identity of Object.values(identities)) {
+      identity.adopted_at_ms = 0;
+      identity.adopted_at_attended_ms = 0;
+    }
+    const applied = await applyLoggedExit(companyState(source.case.pre_state, catalogs), canonicalJSONString(source.case.canonical_payload), catalogs, inputs);
+    expect(applied.outcome).toBe("applied");
+    expect(canonicalJSONString(applied.founder!.founder_extensions!.pet_identities)).toBe(canonicalJSONString(identities));
+    expect(canonicalJSONString(applied.receipt)).toBe(source.case.receipt_json);
+  });
 });
