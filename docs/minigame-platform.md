@@ -256,8 +256,14 @@ only its HTTP reply. The mounted client must display its network pause without o
 progress, send no beats or automatic restart across the catalog ceiling, and leave the complete
 stored session unchanged. Native Reconnect must preserve that session/progress and rotate its
 capability. The first post-gap heartbeat credits nothing; the next ordinary attended interval
-advances rendered progress, without queued requests. This is deliberate single-response loss
-through the real handler/Postgres, not a whole-network outage or browser-background test.
+advances rendered progress, without queued requests. A second instance kills the actual owned
+gameserver with SIGKILL after the heartbeat commits and its reply is withheld. Restart must use
+a different OS process over the same Postgres, recover the WebSocket, and preserve the entire
+stored session before native Reconnect. The same session/progress and rotated capability must
+then resume without missed-interval credit, another bootstrap or a document reload; ordinary
+cancellation still writes exactly one terminal event/receipt. These are post-commit reply loss
+and gameserver process death, not death inside an uncommitted transaction, Postgres/host loss,
+a whole-network outage, browser-background behavior or clean release-host recovery.
 Normal `make test-game-ui-composed` executes this bounded population; it does not wait five
 minutes on every push. The Pitch prerequisite also handles
 its existing Exit-offer preemption through visible Decline before fresh harvest consent;

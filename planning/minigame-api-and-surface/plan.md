@@ -22,6 +22,9 @@ records execution and review status; no whole-feature acceptance checkbox change
 The bounded Recovery journey now also loses a real committed heartbeat reply while mounted:
 visible pause, frozen persisted progress, native same-session token rotation and no missed-gap
 credit before fresh attended progress. This is one transport failure case, not general reliability.
+The same player path now separately survives actual gameserver SIGKILL after a heartbeat commits:
+new process, unchanged stored session, WebSocket recovery and native reconnect without account
+replacement/reload. The latest log owns execution, the incomplete fault control and pending review.
 
 - [x] Compose the minigame repository, closed Pitch tenant registry, pinned content resolver, and
   platform service in `gameserver.Compose`; expose it on `Composition`.

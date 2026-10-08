@@ -5,7 +5,9 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-export async function witnessSoulRecovery(page, repositoryRoot, founderID, complete = false) {
+export async function witnessSoulRecovery(page, repositoryRoot, founderID, complete = false, serverLifecycle) {
+  assert.equal(typeof serverLifecycle?.crash, "function", "Recovery needs the owned real-server crash boundary");
+  assert.equal(typeof serverLifecycle?.restart, "function", "Recovery needs the owned real-server restart boundary");
   assert.match(founderID, /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/u);
   const catalog = JSON.parse(readFileSync(path.join(repositoryRoot, "balance/soul/first-content.json"), "utf8"));
   const activity = catalog.recovery_activities.find((row) => row.activity_id === "repot");
@@ -148,9 +150,14 @@ export async function witnessSoulRecovery(page, repositoryRoot, founderID, compl
     await page.waitForFunction((value) => document.querySelector(".recovery progress")?.value >= value, progress.attended_progress_ms);
     return progress;
   }
-  async function loseCommittedBeat(active, before) {
+  async function loseCommittedBeat(active, before, crash = false) {
     const routePath = "**/api/v1/soul-recovery/progress";
-    let calls = 0, failure, committed, durable, displayed;
+    let calls = 0, failure, committed, durable, displayed, oldPID;
+    let bootstraps = 0, navigations = 0;
+    const observeBootstrap = (request) => {
+      if (new URL(request.url()).pathname === "/api/v1/bootstrap" && request.method() === "POST") bootstraps += 1;
+    };
+    const observeNavigation = (frame) => { if (frame === page.mainFrame()) navigations += 1; };
     const dropReply = async (route) => {
       try {
         assert.equal(++calls, 1, "recovery dispatched again before native reconnect");
@@ -170,6 +177,10 @@ export async function witnessSoulRecovery(page, repositoryRoot, founderID, compl
         assert(committed.attended_progress_ms > prior.attended_progress_ms, "lost heartbeat must credit a real interval");
         assert.equal(durable.attended_progress_ms, committed.attended_progress_ms);
         assert.equal(durable.last_progress_server_ms, committed.last_progress_server_ms);
+        if (crash) {
+          oldPID = await serverLifecycle.crash();
+          assert(Number.isSafeInteger(oldPID) && oldPID > 0, "Recovery did not kill an owned server process");
+        }
         await route.abort("connectionreset");
       } catch {
         // Playwright upstream errors can contain Authorization headers. Keep
@@ -178,6 +189,7 @@ export async function witnessSoulRecovery(page, repositoryRoot, founderID, compl
         await route.abort().catch(() => {});
       }
     };
+    page.on("request", observeBootstrap); page.on("framenavigated", observeNavigation);
     await page.route(routePath, dropReply);
     try {
       await control("soul.recovery_surface.reconnect").waitFor({ state: "visible", timeout: 30_000 });
@@ -196,26 +208,45 @@ export async function witnessSoulRecovery(page, repositoryRoot, founderID, compl
       const frozen = heads();
       assert.equal(frozen.founder.state.soul, before.founder.state.soul);
       assert.deepEqual(frozen.company.state.balances, before.company.state.balances);
-    } finally { await page.unroute(routePath, dropReply); }
+      await page.unroute(routePath, dropReply);
 
-    const firstBeat = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/soul-recovery/progress" &&
-      response.status() === 200, { timeout: 30_000 }).then((response) => ({ response }), (error) => ({ error }));
-    const resumeIndex = requests.length;
-    const reconnected = await command(control("soul.recovery_surface.reconnect"), "start", { activity_id: activity.activity_id });
-    assert.equal(reconnected.session_id, active.session_id);
-    assert(reconnected.progress_token !== active.progress_token, "network reconnect must rotate capability (values withheld)");
-    assert.equal(reconnected.attended_progress_ms, committed.attended_progress_ms);
-    assert(stored(active.session_id).progress_token === reconnected.progress_token, "stored rotated capability mismatch (values withheld)");
-    const first = await firstBeat;
-    if (first.error) throw first.error;
-    const resumed = await first.response.json();
-    assert.equal(resumed.session_id, active.session_id);
-    assert(resumed.last_progress_server_ms - committed.last_progress_server_ms > catalog.policy.recovery_beat_ceiling_ms);
-    assert.equal(resumed.attended_progress_ms, committed.attended_progress_ms, "reconnect credited the missed heartbeat interval");
-    await waitBeat(active.session_id, resumed.attended_progress_ms);
-    assert.equal(requests.slice(resumeIndex).filter((request) => new URL(request.url()).pathname === "/api/v1/soul-recovery/progress").length, 2,
-      "reconnect replayed queued heartbeats before the fresh interval");
-    console.log("Soul Recovery committed heartbeat/lost reply: visible pause, frozen SQL/progress, native token rotation, no missed-interval credit, fresh attended beat: PASS");
+      if (crash) {
+        const socketsBeforeRestart = await page.evaluate(() => globalThis.__cloudClickerTestSockets.length);
+        const newPID = await serverLifecycle.restart();
+        assert(Number.isSafeInteger(newPID) && newPID > 0 && newPID !== oldPID,
+          "Recovery restart must create a different real server process");
+        await page.waitForFunction((count) => globalThis.__cloudClickerTestSockets.length > count &&
+          globalThis.__cloudClickerTestSockets.at(-1)?.readyState === WebSocket.OPEN,
+        socketsBeforeRestart, { timeout: 30_000 });
+        assert(JSON.stringify(stored(active.session_id)) === JSON.stringify(durable),
+          "server restart changed the committed Recovery session (capability withheld)");
+      }
+
+      const firstBeat = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/soul-recovery/progress" &&
+        response.status() === 200, { timeout: 30_000 }).then((response) => ({ response }), (error) => ({ error }));
+      const resumeIndex = requests.length;
+      const reconnected = await command(control("soul.recovery_surface.reconnect"), "start", { activity_id: activity.activity_id });
+      assert.equal(reconnected.session_id, active.session_id);
+      assert(reconnected.progress_token !== active.progress_token, "reconnect must rotate capability (values withheld)");
+      assert.equal(reconnected.attended_progress_ms, committed.attended_progress_ms);
+      assert(stored(active.session_id).progress_token === reconnected.progress_token, "stored rotated capability mismatch (values withheld)");
+      const first = await firstBeat;
+      if (first.error) throw first.error;
+      const resumed = await first.response.json();
+      assert.equal(resumed.session_id, active.session_id);
+      assert(resumed.last_progress_server_ms - committed.last_progress_server_ms > catalog.policy.recovery_beat_ceiling_ms);
+      assert.equal(resumed.attended_progress_ms, committed.attended_progress_ms, "reconnect credited the missed heartbeat interval");
+      await waitBeat(active.session_id, resumed.attended_progress_ms);
+      assert.equal(requests.slice(resumeIndex).filter((request) => new URL(request.url()).pathname === "/api/v1/soul-recovery/progress").length, 2,
+        "reconnect replayed queued heartbeats before the fresh interval");
+      assert.equal(bootstraps, 0, "Recovery loss/reconnect replaced the account");
+      assert.equal(navigations, 0, "Recovery loss/reconnect navigated or reloaded the document");
+      console.log(`Soul Recovery committed heartbeat/lost reply${crash ? " across real server SIGKILL/new-process restart" : ""}: visible pause, frozen SQL/progress, native token rotation, no missed-interval credit, fresh attended beat, no bootstrap/reload: PASS`);
+      return reconnected;
+    } finally {
+      await page.unroute(routePath, dropReply);
+      page.off("request", observeBootstrap); page.off("framenavigated", observeNavigation);
+    }
   }
   async function stopped() {
     // An already-returning request may settle; then two normal beat intervals
@@ -261,7 +292,8 @@ export async function witnessSoulRecovery(page, repositoryRoot, founderID, compl
     assert.equal(reconnected.attended_progress_ms, paused.attended_progress_ms);
     assert(stored(started.session_id).progress_token === reconnected.progress_token, "stored/reconnect capability mismatch (tokens withheld)");
     await waitBeat(started.session_id);
-    await loseCommittedBeat(reconnected, before);
+    const afterNetworkLoss = await loseCommittedBeat(reconnected, before);
+    await loseCommittedBeat(afterNetworkLoss, before, true);
     const cancelled = await command(control("soul.recovery_surface.cancel"), "cancel", { session_id: started.session_id });
     assert.equal(cancelled.cancelled_by, "player");
     terminalStored(cancelled, "cancel", before);

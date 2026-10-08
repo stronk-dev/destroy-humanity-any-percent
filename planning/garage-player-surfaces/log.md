@@ -6651,3 +6651,21 @@ Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new 
 designated cross-party review pending. No Firefox/manual AT/performance/whole-CI, full Garage,
 content mint, acceptance, archival, push or release claim. This finishes the bounded repair;
 full nine-tier construction and rights/recovery/accessibility/operations obligations remain.
+
+## 2026-10-08 — RP-378 natural recurrence captures the missing Fiscal activation
+
+During the Minigame API crash-witness fault-control run24143, the unchanged Fiscal invalid arm
+times out before the main/Recovery journey. All required persisted populations and production
+build pass first. The trace records initial setup's untrusted harvest click at1235ms, followed
+by trusted Enter down/up at1375/1377ms on a BUTTON with no `data-fiscal-action`, while Fiscal is
+ripening. No harvest focusin/click follows; emitted/routed/read/response/failure/diagnostic
+counts are all zero. At the deadline the harvest is enabled/guaranteed but not focused.
+
+This localizes this recurrence to activation/focus, not a server response hang. The driver
+focuses harvest without first waiting for eligibility after the preceding harvest resets its
+period; native focus on a disabled control is a concrete route to investigate, not yet a
+reproduced unique cause or permission for a gameplay change. Final restored main12650 passes
+this refusal path and Recovery, without repairing or erasing24143. RP-378 remains OPEN.
+Next: bounded disabled→eligible consent/readiness reproduction, preserving native Enter,
+exact real refusals and no retry. Review by: Codex (observation); Recorded by: Codex.
+The Minigame API log owns its new test range. No acceptance, CI or release promotion.

@@ -1354,3 +1354,38 @@ Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new 
 after `d5b40996` through this containing commit; designated cross-party review remains pending.
 No archival, push, release promotion or inferred owner choice. Continue accepted integration
 and consolidate corrective review; typed dictionaries, attendance and rights decisions stay held.
+
+## 2026-10-08 — Recovery survives real post-commit gameserver process death
+
+Under MA2/MA3/AC1 and SR-C6, extend the existing real-service journey after its network-only
+reply-loss case. An actual scheduled heartbeat commits through HTTP/Postgres, then the driver
+SIGKILLs its owned gameserver and withholds that reply. Require visible network pause, no
+queued beats across the real catalog ceiling, unchanged complete SQL session/balances/Soul,
+different restarted OS process and a recovered WebSocket. Native Reconnect must preserve the
+session/progress, rotate its capability, credit no missed interval, then render fresh attended
+progress. No new bootstrap or document navigation is permitted. Existing Stop still proves one
+stored terminal receipt/event/log and unchanged balances. No runtime, schema, clock, retry,
+balance, content or CI-workflow change; reuse the existing process lifecycle and player driver.
+
+Executed `node client/tools/test-game-ui-composed.mjs`55038 and final restored12650: exit0.
+All eight persisted refresh cases and required Account/GameUI/Production/Leaderboard/Gameserver
+Postgres populations execute. Built-client main journey passes both early endings/continuation,
+Fiscal/refusals, active play, Pitch process death/retry/payout, and both Recovery reply-loss cases
+plus cancellation. Exact production HTML/JS/CSS/Worker proof passes. Connection refusals during
+the deliberate outage are expected diagnostics, not concealed retries.
+
+Fault-control limits are explicit: attempt49874 to reset the disposable session's progress after
+restart is rejected by Postgres's nonregression trigger, before the new equality assertion.
+Attempt24143 with a transaction-local trigger bypass never reaches Recovery: RP-378 recurs at
+the earlier Fiscal invalid arm (Enter targets a non-harvest button, zero request/route/response).
+Neither attempt establishes the new equality oracle's fault discrimination. Both temporary SQL
+lines are removed before final12650; no trigger, migration or production byte was changed.
+The Garage log/ledger retain that recurrence; a subsequent pass does not repair its cause.
+
+Limits: gameserver death after a committed heartbeat, not interrupted transaction/DB/host death,
+clean-host R-006, full five-minute completion rerun, background-tab/AT/Firefox, sibling composed
+journeys, whole CI or complete MA acceptance. Syntax/diff checks pass; processes are terminal.
+Review by: Codex (actual-diff implementer first filter). Recorded by: Codex. Exact new range is
+`af610f72` exclusive through this containing commit, pending designated cross-party review.
+No acceptance flip, archive, push or release promotion. Next: finish RP-378's bounded readiness/
+focus diagnosis, continue accepted construction and consolidate corrective review.

@@ -1248,7 +1248,15 @@ try {
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
   console.log(`composed Fiscal UI harvest + Pitch unlock: ${pitch.commands} Pitch UI commands, ${pitchOffersDeclined} visible offer declines, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);
   requestPhase = "Soul Recovery player workflow";
-  await witnessSoulRecovery(page, repositoryRoot, liveSnapshot.body.run.founder_id, fullRecovery);
+  await witnessSoulRecovery(page, repositoryRoot, liveSnapshot.body.run.founder_id, fullRecovery, {
+    crash: crashGameserver,
+    async restart() {
+      if (!gameserverStopped()) throw new Error("Recovery cannot restart a live gameserver");
+      gameserver = startGameserver();
+      await waitForReady();
+      return gameserver.pid;
+    },
+  });
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "Soul Recovery browser path emitted page errors");
   console.log("composed Game UI v4 features + transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
   await page.goto("about:blank");
