@@ -62,8 +62,12 @@ The owner ratifies the literal from that report (§M3).
 - An authoritative §P3 relevance report. The combined `scenario.t1_t2_relevance`
   (`balance/testdata/t2/relevance-scenario-t1-t2-v1.json`, policy `relevance-candidate-v1.json`)
   currently fails its gate. Its non-authoritative diagnostic
-  (`relevance-t1-t2-diagnostic-v1.json`) shows `open_plan_floor` and `managed_services_contract`
-  with zero individual contribution to 1e9, and the three Tier-2 upgrades never bought. Retuning
-  is an owner decision.
+  (`relevance-t1-t2-diagnostic-v1.json`) independently reproduces byte-for-byte. All six
+  Tier-2 rows are instrument-affected: exact generator removal or removal of an upgrade's
+  effect target prevents those findings from being a clean verdict that the content is dead
+  or dominated. Reference purchases and deltas are observations of that instrument, not
+  sufficient authority to retune. The separate §P3 T0 unchanged-report requirement also fails
+  against a fresh epoch-8 control because the ratified Chaos policy's catalog-wide candidate
+  population changes (RP-433). Its population/contract must be reconciled explicitly.
 - §M mint: goldens, the formulas regeneration, `changelog/epoch-9.md`, and the composed Postgres
   proof.

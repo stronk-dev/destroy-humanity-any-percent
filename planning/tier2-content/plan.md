@@ -14,6 +14,13 @@ actual candidate-content browser/service integration, Headcount, adopted copy an
 remain outside that approval. The current screen fixtures change the tier on older content;
 do not cite them as a played or fully rendered Tier-2 catalog. No archival is authorized.
 
+**P3 finding, 2026-10-08 (RP-433):** the fresh T0 control/candidate comparison is not invariant:
+the existing Chaos v1 policy enumerates all catalog generators, so the new unaffordable rows
+change its draw population. The owning log has the executed evidence and proposed versioned
+population amendment. This is a contract-reconciliation gate, not permission to retune or
+regenerate reports. The combined C6 diagnostic independently reproduces byte-for-byte but its
+six Tier-2 rows are all instrument-affected; it is not a clean content-dominance verdict.
+
 - [x] C1 — Candidate artifacts (§A1, §A2, §B1 minus `headcount_seats`, §B2, §B3): economy
   (schema v4 carry; v5 is headcount-only), routes, categories under `balance/testdata/t2/`,
   derived from the epoch-8 bytes by insertion only, with a SHA file.

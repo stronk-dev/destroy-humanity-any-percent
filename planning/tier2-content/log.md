@@ -371,3 +371,55 @@ Review by: Codex (implementer first filter); Recorded by: Codex. The test correc
 C6 range or the measurement. Next: non-update exhaustive C5 pacing reproduction, then complete
 the C5/C6 review with the recorded instrument and Headcount limitations intact. No acceptance,
 archival, content mint or push.
+
+## 2026-10-08 — C6 reproduction and RP-433 T0 population conflict
+
+Review by: Codex (cross-party measurement/contract inspection, not whole C6 acceptance).
+Recorded by: Codex. Source `e6a64aff`; the following runs change no production/balance inputs.
+
+- Combined C6: `make t0-t1-relevance
+  RELEVANCE_SCENARIO=balance/testdata/t2/relevance-scenario-t1-t2-v1.json
+  RELEVANCE_OUTPUT=.cache/tier2-review-e6a64aff.json`53242 exits2 as required by the red gate.
+  All167 runs/4,715,708 transitions complete. The diagnostic is byte-identical to the committed
+  one (`cmp` exit0; both SHA256 `5896a7005b9541bb741edf56cacd42d4fa61b10d4b8666636b216543b612af1e`).
+  All six T2 rows, including the positive hot-desk row, are instrument-affected. The old
+  “weak or dominated” headline is not a clean content verdict; neither zero deltas nor missing
+  purchases after those exclusions authorize retuning. The historical record is retained;
+  current docs now state this limitation explicitly.
+- P3 T0 comparison: run the existing `balance/testdata/t0-t1/relevance-scenario-v2.json` control;
+  for the candidate, copy it exactly and replace only `catalog` and `routes_catalog` with the
+  two T2 candidate paths. Retain the original T0 policy and every other value. The original
+  economy/routes files are byte-identical to epoch8's active files (`git diff --no-index` exit0).
+  Both use `make t0-t1-relevance` with those scenario paths and separate ignored output paths.
+  Initial setup wrongly supplied the complete T1–T2 policy; loader refusal happens before
+  measurement and is excluded. The corrected scenario differs only in those two paths,
+  checked with Node deep equality. Controls70478 and candidate92020 both finish107 runs and
+  correctly exit2 with non-authoritative diagnostics, not an authoritative release golden.
+- Removing only `scenario_hash`, `constants_hash` and `relevance_policy_hash` leaves thirteen
+  changed report leaves: work180,936→175,182, dot-matrix purchases46→41, nephew5→1, nephew
+  delta0→5,400,000ms/support/floor changes, two role counts, and six→five findings. Thus even
+  the fresh-control prerequisite for §P3 invariance fails; this does not claim reproduction
+  of a historical T0 golden or a player-visible gameplay regression.
+
+Local artifact SHA256s (raw files remain ignored; do not require them for ordinary CI):
+
+- Scenario `.cache/tier2-review-t0-scenario-e6a64aff.json`:
+  `c069c0df2295c042f8ad39ad88a70e756ba59ba50c3488861d9f1acdce4d2ccb`.
+- Control `.cache/tier2-review-t0-control-e6a64aff.diagnostic.json`:
+  `5ee5ae2cad87de352e7d2e8906d915bd46815c57ce9872ade7362fdb90856dcb`.
+- Candidate `.cache/tier2-review-t0-candidate-e6a64aff.diagnostic.json`:
+  `49827306c4f3cf553534de0e01b8b50b60d44d7a3c59c9801659dfa86bc0bf9e`.
+
+**DESIGN-GAP / RP-433:** archived Balance Harness Foundation requires Chaos v1's uniform
+syntactically-valid provider with one template per catalog generator and forbids changing its
+behavior under v1. `Suite.intentBytes` still implements it: nine versus twelve generators
+changes the draw universe. §P3's unaffordability argument is insufficient to imply report
+identity. The changed scenario/constants hashes also enter deviation-probe selection, so the
+work-count difference alone is not a content signal. Proposed explicit amendment: a new
+versioned controlled comparison population, preserving v1 and executing actual candidate
+production rules; reconcile §P3's population/comparison contract before implementation.
+This is a proposal, not authority to filter v1, loosen assertions, regenerate goldens or mint.
+
+The original seven-literal C5 reproduction and an existing candidate-owned branch diagnostic
+remain live on their original handles; no result for either is claimed here. No software suite
+rerun for this evidence/docs-only checkpoint, acceptance checkbox, lifecycle/archive or push.
