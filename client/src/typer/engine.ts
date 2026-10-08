@@ -1,6 +1,7 @@
 import { substream } from "../combat/rng";
+import { parseIntegerCatalogJSON, parseUniqueKeysJSON } from "../catalog-json";
 import { COPY_KEYS } from "../copy";
-import { parseTyperCatalog, typerContentHash, typerPool, TYPER_ERA_TIER_MAX, TYPER_ERA_TIER_MIN, TYPER_SCHEMA_VERSION, type TyperCatalog, type TyperPrompt } from "./catalog";
+import { loadTyperCatalogJSON, typerContentHash, typerPool, TYPER_ERA_TIER_MAX, TYPER_ERA_TIER_MIN, TYPER_SCHEMA_VERSION, type TyperCatalog, type TyperPrompt } from "./catalog";
 
 // Terminal Typer pure engine (TT4), the TS mirror of server/typer/engine.go.
 export const TYPER_ENGINE_VERSION = "1.0.0" as const;
@@ -150,7 +151,7 @@ export function typerPromptOrder(catalog: TyperCatalog, seed: bigint, eraTier: n
 
 function decodeCommand(source: string): TyperCommand {
   let value: unknown;
-  try { value = JSON.parse(source); } catch { throw new TyperRejection("illegal_phase", "command is not JSON"); }
+  try { value = parseUniqueKeysJSON(source, "Typer command"); } catch { throw new TyperRejection("illegal_phase", "command JSON is invalid or has duplicate keys"); }
   if (value === null || typeof value !== "object" || Array.isArray(value)) throw new TyperRejection("illegal_phase", "command is not an object");
   const row = value as Record<string, unknown>, keys = Object.keys(row).sort().join("\0");
   if (row.kind === "begin") {
@@ -183,7 +184,7 @@ function validSubmittedText(text: string): boolean {
 }
 
 function decodeSnapshot(source: string): Mutable {
-  const parsed: unknown = JSON.parse(source);
+  const parsed = parseIntegerCatalogJSON(source, "Typer snapshot");
   if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) throw new SyntaxError("invalid Typer snapshot");
   const value = parsed as Mutable;
   const keys = ["assist_level", "clean_lines", "current_prompt_id", "current_prompt_misses", "current_prompt_text", "deadline_server_ms", "era_tier",
@@ -232,7 +233,7 @@ export function encodeSnapshot(snapshot: TyperSnapshot): string {
 
 async function resolveCatalog(input: TyperContentInput): Promise<TyperCatalog> {
   if (input.content_schema_version !== TYPER_SCHEMA_VERSION || input.content_hash !== await typerContentHash(input.content)) throw new SyntaxError("Typer content identity mismatch");
-  return parseTyperCatalog(JSON.parse(input.content), new Set(COPY_KEYS));
+  return loadTyperCatalogJSON(input.content, new Set(COPY_KEYS));
 }
 
 function validScaling(values: Readonly<Record<string, number>>, catalog: TyperCatalog): number {

@@ -13,6 +13,8 @@ The exact-key catalog has `policy`, `eras` and `prompts`. Both loaders, `server/
 `client/src/typer`, reject:
 
 - unknown or missing keys;
+- duplicate JSON keys at any nesting level, including escaped spellings of the same key;
+- decimal/exponent number tokens, unsafe integers and fractions rounded by ordinary JSON parsing;
 - non-printable-ASCII prompt text, and leading, trailing or doubled spaces;
 - unsorted prompt IDs;
 - unknown eras or copy keys;
@@ -32,6 +34,8 @@ replaced before any production mint.
   Nonnullable numeric fields must be numbers, never JSON `null`. Nonnull submission feedback
   must contain both `outcome` and `first_mismatch_index`, including an explicit null index
   for a cleared line. Go refuses these malformed inputs rather than coercing null to zero.
+  Raw snapshots also reject duplicate keys (including nested feedback) and require integer
+  number tokens before ordinary parsing can normalize or round them.
   A `typing` snapshot must have `prompt_index < prompts_total`; Go refuses an
   exhausted-but-still-typing snapshot before prompt lookup, matching TS's refusal.
   A genuine final prompt still completes; terminal snapshots may retain the full count.
@@ -41,6 +45,9 @@ replaced before any production mint.
   `typer.prompts.v1` substream of the `typer.run.v1` run seed.
 - **Commands.** `begin {assist_level: timed|untimed}`, `submit_line {text}` and `end_run`. Exact
   keys are required, so any client-authored score, time or prompt ID is rejected.
+  Duplicate keys reject as `illegal_phase` before command shape validation. Unique-key
+  malformed commands retain their existing shape/type rejection codes; numeric JSON overflow
+  refuses at the raw boundary, matching Go. Escaped unique keys and key-shaped text remain valid.
   Both engines admit only `solo` for creation and command application, in every phase;
   TypeScript validates the runtime mode rather than relying on its compile-time type.
 - **Time.** Only `ApplyInput.ServerTimeMs`, the platform's per-command server sample (TT-PA1),
@@ -70,6 +77,10 @@ replays every step in TS: rejections, the terminal snapshot, the result and the 
 The corpus covers every prompt, all three outcomes, both modes, every rejection code, the
 exact-deadline and one-late vectors, a backwards clock, the smart-punctuation map, a case miss and
 a fullwidth look-alike miss.
+
+`testdata/typer/raw-json-v1.json` supplies matching Go/TS raw-input cases for content,
+snapshots and commands. Both replay-bundle loaders exercise the content cases against a
+freshly hashed complete artifact chain; valid escaped-key controls remain loadable.
 
 ## Content pinning and composition (TT-PA3)
 

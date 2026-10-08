@@ -39,6 +39,16 @@ Kernel protocol: every commit touching a `kernel/affecting-paths.json` prefix bu
 `kernel/VERSION` (+ Go/TS constants) in the same commit; new engine dirs are registered in the
 commit that creates them.
 
+### B1 raw JSON admission correction (2026-10-08)
+
+RP-429: TT3/TT4 raw-input parity, not public-wire construction. Shared Go/TS vectors
+cover duplicate keys at root/nested/escaped names and integer token spelling before
+parsing can discard evidence. Engine creation/application and both replay-bundle
+loaders exercise the boundary; valid escaped keys/text and command error taxonomy
+remain intact. Kernel176->177 records the changed replay acceptance set. The log
+owns executed results and review range. B1 remains partial: RP-162, original review,
+public C2 integration, adopted content and feature acceptance are not closed here.
+
 ### B6 native keyboard/lifecycle correction (2026-10-08)
 
 RP-394: accepted TT8.3/TT8.6/TT9 child behavior, not a public-wire amendment.

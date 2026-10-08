@@ -1,5 +1,6 @@
 import fixtureJSON from "../../testdata/replay/apply-logged-v1.json";
 import typerV1Raw from "../../balance/testdata/typer-v1.json?raw";
+import typerRawJSON from "../../testdata/typer/raw-json-v1.json";
 import arcadeV1Raw from "../../balance/testdata/arcade-v1.json?raw";
 import arcadeMinigamesRaw from "../../testdata/minigame/pitch-typer-arcade-v3.json?raw";
 import arcadeAPIRaw from "../../balance/testdata/minigame-api-arcade-candidate-v1.json?raw";
@@ -544,6 +545,13 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		const load = async (artifacts: Record<string, string>) =>
 			loadReplayCatalogBundle(await artifactHash(artifacts as unknown as ReplayArtifacts), artifacts as unknown as ReplayArtifacts);
 		expect((await load(await complete())).typer?.prompts.length).toBeGreaterThanOrEqual(12);
+		for (const test of typerRawJSON.catalog) {
+			const artifacts = await complete();
+			expect(artifacts.typer!.split(test.find)).toHaveLength(2);
+			artifacts.typer = artifacts.typer!.replace(test.find, test.replace);
+			if (test.valid) expect((await load(artifacts)).typer).toBeDefined();
+			else await expect(load(artifacts), test.name).rejects.toThrow(SyntaxError);
+		}
 		const pitchOnlyAPI = JSON.stringify((await import("../../balance/testdata/minigame-api-candidate-v1.json")).default);
 		const pitchOnlyMinigames = JSON.stringify((await import("../../testdata/minigame/pitch-v3.json")).default);
 		const mutations: Record<string, (a: Record<string, string>) => void> = {

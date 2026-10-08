@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"cloud-clicker/server/epochseed"
@@ -263,6 +264,32 @@ func TestLoadTyperChainIsAllOrNothing(t *testing.T) {
 	bundle, hash, err := load(complete())
 	if err != nil || bundle.Typer == nil || bundle.Pitch == nil {
 		t.Fatalf("complete Typer chain bundle=%+v err=%v", bundle.Typer, err)
+	}
+	var rawVectors struct {
+		Catalog []struct {
+			Name, Find, Replace string
+			Valid               bool
+		}
+	}
+	if err := json.Unmarshal(read("testdata", "typer", "raw-json-v1.json"), &rawVectors); err != nil {
+		t.Fatal(err)
+	}
+	for _, row := range rawVectors.Catalog {
+		t.Run("raw catalog/"+row.Name, func(t *testing.T) {
+			artifacts := complete()
+			if strings.Count(string(artifacts["typer"]), row.Find) != 1 {
+				t.Fatal("raw catalog mutation must target exactly one token")
+			}
+			artifacts["typer"] = []byte(strings.Replace(string(artifacts["typer"]), row.Find, row.Replace, 1))
+			loaded, _, err := load(artifacts)
+			if row.Valid {
+				if err != nil || loaded.Typer == nil {
+					t.Fatalf("valid raw catalog refused by bundle loader: %v", err)
+				}
+			} else if err == nil {
+				t.Fatal("malformed raw catalog admitted by bundle loader")
+			}
+		})
 	}
 	for _, arm := range [][2]string{{"typer", "1.0.0"}, {"pitch", "1.0.0"}} {
 		if _, ok := (production.ReplayCatalogSet{hash: bundle}).ResolveTenantContent(hash, arm[0], arm[1]); !ok {

@@ -788,3 +788,33 @@ containing commit needs Claude's designated review. B1, RP-162, public C2/conten
 mint, AT, full CI and older review spans remain open. No checkbox/acceptance/
 archive/push. Continue the remaining accepted review; the separate first-read
 Retry posture question is delivered, not an owner ruling or implementation grant.
+
+## 2026-10-08 — B1 raw JSON admission parity (RP-429)
+
+TT3/TT4 correction: TS ordinary parsing discarded duplicate keys and normalized
+integer token spelling before validation. Old production regression08b512 fails
+17 engine cases plus the actual replay-bundle test. The shared raw population
+now covers catalog/command/snapshot boundaries, escaped duplicates and valid
+escaped-key/text controls. A supplementary overflow case d8c9b1 fails first on
+the intermediate duplicate-only correction; Go rejects the same command before
+shape validation. Final command parsing preserves finite-number shape/type
+taxonomy and rejects raw overflow. No corpus, balance, authored copy or API change.
+
+TS reuses the raw scanner for both engine and replay-bundle loading; paired Go
+tests exercise actual tenant creation/application and complete freshly hashed
+bundle loading. Kernel176->177 in all mirrors is the genuine replay acceptance-
+set change. Final cold four-package Go07a22b/0acd43 and vetd723fe pass. Nodec31b3e
+passes6,479 with3 browser-only Garden cases excluded; native Chromium/WebKitcd4ca0
+passes12,958 with6 Node subprocess-only Garden cases excluded. Types/build/
+boundaries/unchanged-corpus8e76ad pass with zero diagnostics. Initial native
+startup48a693 was sandbox EPERM before tests; approved listener run executes.
+These are affected pure-engine/replay checks, not Postgres/public gameplay/full CI.
+Kernel guard11d7c1 remains RED at historical pushed50a3a514 after checkout fixtures
+pass; it does not certify this bump or the full CI lane. Diff check passes.
+
+Review by: Codex (targeted original B1 finding; correction implementer first filter).
+Recorded by: Codex. Exact new range `439aa884` exclusive through this containing
+commit requires Claude's designated review; no self-acceptance/archive/push.
+B1 full review, RP-162, public C2/content mint, manual AT and earlier review spans
+remain open. Next capability step: resolve the delivered public API versioning
+choice before implementing Typer/Arcade's live journey; do not invent its answer.

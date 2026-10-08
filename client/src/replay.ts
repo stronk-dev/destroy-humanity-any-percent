@@ -27,7 +27,7 @@ import { cosmeticStatesEqual, emptyCosmeticState, encodeCosmeticState, parseCosm
 import { loadGardenCatalog, type GardenCatalog } from "./garden/catalog";
 import { advanceGarden, encodeGardenState, gardenAdvanceVisible, gateGarden, GardenRejection, harvestGarden, newGardenState, parseGardenState, plantGarden, setGardenSubstrate, uprootGarden, validGardenHarvestTargets, type GardenAdvance, type GardenHarvest, type GardenState } from "./garden/engine";
 import { encodePetIdentities, initialPetCareState, parsePetIdentities, type PetIdentity } from "./pet/identity";
-import { parseTyperCatalog, type TyperCatalog } from "./typer/catalog";
+import { loadTyperCatalogJSON, type TyperCatalog } from "./typer/catalog";
 import { ARCADE_ENGINE_VERSION, parseArcadeCatalog, type ArcadeCatalog } from "./arcade/catalog";
 import { parsePitchCatalog, type PitchCatalog } from "./pitch/catalog";
 import { parsePetCareStates, validatePetCareStatesForCatalog, type PetCareState } from "./pet/state";
@@ -210,7 +210,7 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   if (minigameAPI && (!pitch || !minigames || !minigameAPI.tenants.some((row) => row.minigameId === "pitch" && row.engineRef === "pitch" && row.engineVersion === "1.0.0"))) throw new SyntaxError("minigame API requires the Pitch content chain");
   // TT-PA3 loader chain: the typer definition row, the pinned typer artifact,
   // and the minigame_api typer tenant exist together or not at all.
-  const typer = artifacts.typer === undefined ? undefined : parseTyperCatalog(parseJSON(artifacts.typer), new Set(COPY_KEYS));
+  const typer = artifacts.typer === undefined ? undefined : loadTyperCatalogJSON(artifacts.typer, new Set(COPY_KEYS));
   const typerDefinition = minigames?.minigames.find((row) => row.minigame_id === "typer");
   const typerTenant = minigameAPI?.tenants.some((row) => row.minigameId === "typer" && row.engineRef === "typer" && row.engineVersion === "1.0.0") ?? false;
   if ((typerDefinition !== undefined) !== (typer !== undefined) || minigameAPI !== undefined && typerTenant !== (typer !== undefined) ||

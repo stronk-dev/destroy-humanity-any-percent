@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import content from "../../balance/testdata/typer-v1.json?raw";
 import corpusSource from "../../testdata/typer/content-gate-v1.json";
+import rawJSON from "../../testdata/typer/raw-json-v1.json";
 import { COPY_KEYS } from "../src/copy";
 import { parseTyperCatalog, typerContentHash } from "../src/typer/catalog";
 import { applyTyper, createTyper, encodeSnapshot, firstMismatchIndex, normalizeTyperLine, TyperRejection, typerPromptOrder, type TyperResult } from "../src/typer/engine";
@@ -15,6 +16,51 @@ interface Corpus {
 }
 
 const corpus = corpusSource as unknown as Corpus;
+
+function replaceRaw(source: string, test: { find: string; replace: string }): string {
+  expect(source.split(test.find)).toHaveLength(2);
+  return source.replace(test.find, test.replace);
+}
+
+describe("Typer raw JSON parity", () => {
+  const identity = { content, content_hash: corpus.typer_content_hash, content_schema_version: 1,
+    seed: 42n, mode: "solo" as const, scaling_inputs: { "typer.era_tier": 1 } };
+
+  it.each(rawJSON.catalog)("catalog: $name", async (test) => {
+    const candidate = replaceRaw(content, test);
+    const input = { ...identity, content: candidate, content_hash: await typerContentHash(candidate) };
+    if (test.valid) expect(JSON.parse(await createTyper(input))).toMatchObject({ phase: "ready" });
+    else await expect(createTyper(input)).rejects.toThrow(SyntaxError);
+  });
+
+  it.each(rawJSON.snapshot)("snapshot: $name", async (test) => {
+    const ready = await createTyper(identity);
+    const begun = await applyTyper({ ...identity, revision: 1, snapshot: ready,
+      command: '{"kind":"begin","assist_level":"untimed"}', server_time_ms: 1 });
+    const miss = await applyTyper({ ...identity, revision: 2, snapshot: begun.snapshot,
+      command: '{"kind":"submit_line","text":"miss"}', server_time_ms: 2 });
+    const snapshot = replaceRaw(miss.snapshot, test);
+    const input = { ...identity, revision: 3, snapshot, command: '{"kind":"end_run"}', server_time_ms: 3 };
+    if (test.valid) expect((await applyTyper(input)).result?.outcome).toBe("ended_early");
+    else await expect(applyTyper(input)).rejects.toThrow(SyntaxError);
+    expect(input.snapshot).toBe(snapshot);
+  });
+
+  it.each(rawJSON.commands)("command: $name", async (test) => {
+    let snapshot = await createTyper(identity);
+    let revision = 1;
+    if (test.phase === "typing") {
+      snapshot = (await applyTyper({ ...identity, revision, snapshot,
+        command: '{"kind":"begin","assist_level":"untimed"}', server_time_ms: 1 })).snapshot;
+      revision++;
+    }
+    const input = { ...identity, snapshot, revision, command: test.raw, server_time_ms: 2 };
+    if (test.expect === "applied") {
+      expect(JSON.parse((await applyTyper(input)).snapshot).revision).toBe(revision + 1);
+    } else await expect(applyTyper(input)).rejects.toMatchObject({ code: test.expect });
+    expect(input.snapshot).toBe(snapshot);
+  });
+});
 
 describe("Typer shared content gate", () => {
   it("byte-replays every Go-generated scenario, rejections included", async () => {

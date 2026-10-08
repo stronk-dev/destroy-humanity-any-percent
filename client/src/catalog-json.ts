@@ -3,6 +3,15 @@
  * Shape/domain validation belongs to each catalog loader. Every scanner loop
  * advances within the input; final JSON.parse rejects other malformed syntax. */
 export function parseIntegerCatalogJSON(text: string, label: string): unknown {
+  return parseRawJSON(text, label, true);
+}
+
+/** Go-compatible JSON numbers and unique keys, before command shape/type validation. */
+export function parseUniqueKeysJSON(text: string, label: string): unknown {
+  return parseRawJSON(text, label, false);
+}
+
+function parseRawJSON(text: string, label: string, integerTokens: boolean): unknown {
   const scopes: { kind: "{" | "["; keys: Set<string>; expectKey: boolean }[] = [];
   for (let index = 0; index < text.length; index += 1) {
     const char = text[index]!, top = scopes.at(-1);
@@ -21,7 +30,8 @@ export function parseIntegerCatalogJSON(text: string, label: string): unknown {
       let end = index + 1;
       while (end < text.length && /[0-9.eE+-]/u.test(text[end]!)) end += 1;
       const token = text.slice(index, end);
-      if (!/^-?(?:0|[1-9][0-9]*)$/u.test(token) || !Number.isSafeInteger(Number(token))) throw new SyntaxError(`${label} requires exact safe integer tokens`);
+      if (integerTokens && (!/^-?(?:0|[1-9][0-9]*)$/u.test(token) || !Number.isSafeInteger(Number(token)))) throw new SyntaxError(`${label} requires exact safe integer tokens`);
+      if (!Number.isFinite(Number(token))) throw new SyntaxError(`${label} has a nonfinite JSON number`);
       index = end - 1; continue;
     }
     if (char === "{" || char === "[") scopes.push({ kind: char, keys: new Set(), expectKey: char === "{" });

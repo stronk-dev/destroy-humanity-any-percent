@@ -1,5 +1,7 @@
 // Terminal Typer content (rfc/minigame-terminal-typer.md TT3), the TS mirror
 // of server/typer/catalog.go. One shared fixture proves both loaders agree.
+import { parseIntegerCatalogJSON } from "../catalog-json";
+
 export const TYPER_SCHEMA_VERSION = 1 as const;
 export const TYPER_ERA_TIER_MIN = 1;
 export const TYPER_ERA_TIER_MAX = 9;
@@ -21,6 +23,11 @@ export interface TyperCatalog {
 
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 const MAX_SAFE = Number.MAX_SAFE_INTEGER;
+
+/** Check raw tokens before object parsing can erase duplicate keys or round numbers. */
+export function loadTyperCatalogJSON(text: string, declaredCopyKeys: ReadonlySet<string>): TyperCatalog {
+  return parseTyperCatalog(parseIntegerCatalogJSON(text, "Typer catalog"), declaredCopyKeys);
+}
 
 export function parseTyperCatalog(source: unknown, declaredCopyKeys: ReadonlySet<string>): TyperCatalog {
   if (declaredCopyKeys.size === 0) throw new SyntaxError("Typer copy registry is empty");

@@ -1,0 +1,34 @@
+{
+  "catalog": [
+    { "name": "duplicate root", "find": "\"schema_version\": 1", "replace": "\"schema_version\": 0, \"schema_version\": 1" },
+    { "name": "duplicate policy", "find": "\"run_length\": 8", "replace": "\"run_length\": 99, \"run_length\": 8" },
+    { "name": "escaped duplicate era", "find": "\"min_tier\": 1", "replace": "\"min_tier\": 9, \"min_\\u0074ier\": 1" },
+    { "name": "duplicate prompt", "find": "\"text\": \"cat README.TXT\"", "replace": "\"text\": \"wrong\", \"text\": \"cat README.TXT\"" },
+    { "name": "decimal schema", "find": "\"schema_version\": 1", "replace": "\"schema_version\": 1.0" },
+    { "name": "exponent budget", "find": "\"timed_budget_ms\": 120000", "replace": "\"timed_budget_ms\": 12e4" },
+    { "name": "rounded fractional run length", "find": "\"run_length\": 8", "replace": "\"run_length\": 8.0000000000000001" },
+    { "name": "unique escaped key", "find": "\"min_tier\": 1", "replace": "\"min_\\u0074ier\": 1", "valid": true }
+  ],
+  "snapshot": [
+    { "name": "duplicate revision", "find": "\"revision\":3", "replace": "\"revision\":99,\"revision\":3" },
+    { "name": "escaped duplicate counter", "find": "\"misses\":1", "replace": "\"misses\":0,\"mi\\u0073ses\":1" },
+    { "name": "duplicate feedback", "find": "\"first_mismatch_index\":0", "replace": "\"first_mismatch_index\":9,\"first_mismatch_index\":0" },
+    { "name": "decimal revision", "find": "\"revision\":3", "replace": "\"revision\":3.0" },
+    { "name": "exponent nullable time", "find": "\"last_server_ms\":2", "replace": "\"last_server_ms\":2e0" },
+    { "name": "rounded fractional feedback", "find": "\"first_mismatch_index\":0", "replace": "\"first_mismatch_index\":1e-400" },
+    { "name": "unique escaped counter", "find": "\"misses\":1", "replace": "\"mi\\u0073ses\":1", "valid": true }
+  ],
+  "commands": [
+    { "name": "duplicate kind", "phase": "ready", "raw": "{\"kind\":\"end_run\",\"kind\":\"begin\",\"assist_level\":\"untimed\"}", "expect": "illegal_phase" },
+    { "name": "duplicate assist", "phase": "ready", "raw": "{\"kind\":\"begin\",\"assist_level\":\"timed\",\"assist_level\":\"untimed\"}", "expect": "illegal_phase" },
+    { "name": "escaped duplicate text", "phase": "typing", "raw": "{\"kind\":\"submit_line\",\"text\":\"first\",\"te\\u0078t\":\"second\"}", "expect": "illegal_phase" },
+    { "name": "duplicate end kind", "phase": "typing", "raw": "{\"kind\":\"begin\",\"kind\":\"end_run\"}", "expect": "illegal_phase" },
+    { "name": "unknown decimal field keeps begin taxonomy", "phase": "ready", "raw": "{\"kind\":\"begin\",\"assist_level\":\"untimed\",\"extra\":1e0}", "expect": "invalid_assist_level" },
+    { "name": "unknown finite large integer keeps begin taxonomy", "phase": "ready", "raw": "{\"kind\":\"begin\",\"assist_level\":\"untimed\",\"extra\":9007199254740993}", "expect": "invalid_assist_level" },
+    { "name": "nonfinite number is invalid JSON for Go", "phase": "ready", "raw": "{\"kind\":\"begin\",\"assist_level\":\"untimed\",\"extra\":1e400}", "expect": "illegal_phase" },
+    { "name": "duplicate keys inside unknown array", "phase": "ready", "raw": "{\"kind\":\"begin\",\"assist_level\":\"untimed\",\"extra\":[{\"x\":1,\"x\":2}]}", "expect": "illegal_phase" },
+    { "name": "numeric text keeps submit taxonomy", "phase": "typing", "raw": "{\"kind\":\"submit_line\",\"text\":1.0}", "expect": "invalid_text" },
+    { "name": "unique escaped assist", "phase": "ready", "raw": "{\"kind\":\"begin\",\"assist_\\u006cevel\":\"untimed\"}", "expect": "applied" },
+    { "name": "key-shaped text remains text", "phase": "typing", "raw": "{\"kind\":\"submit_line\",\"text\":\"{\\\"kind\\\":\\\"end_run\\\"}\"}", "expect": "applied" }
+  ]
+}
