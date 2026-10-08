@@ -3014,3 +3014,15 @@ Review by: Codex (implementer first filter); Recorded by: Codex. New range begin
 `4b2c72a0` and includes this entire test/Make/docs/record batch; designated cross-party review
 remains required. Older ranges, natural long-session renewal, RP-222/RP-229, SG13 launch
 content/mint and AC13 remain open. No feature checkbox, archive, push or release promotion.
+
+## 2026-10-08 — Proxy-completion failure in later aggregate (RP-438)
+
+Final whole `make test-game-ui-composed`66940, after the new Reputation test-only integration,
+passes main, Cosmetic/Reputation, Clout and both payment-negative populations, then fails
+unchanged Garden observer at line476. One `/api/v1/founder/state` read is HTTP200 and upstream-
+ended, but browser-finished=false/browser-closed=true. Root exits2; Tier2 is not reached.
+Earlier passing Garden5589/93007 evidence remains historical, not a current reliability claim.
+No unchanged retry, timeout/assertion change, product fix or source edit is made here. Next
+inspect deliberate navigation and required-response binding before correcting the observer.
+Review by: Codex (observation only); Recorded by: Codex. All handles terminal; no full green,
+feature acceptance, natural-growth, content mint, archive or push claim.

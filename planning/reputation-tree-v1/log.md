@@ -9273,3 +9273,38 @@ Self-inspected test/record diff and diff-check. Corrective review range starts
 pending, no acceptance/archive/push. The broader finished-browser run is live
 79091 and its terminal result will be recorded in the subsequent Garden closeout,
 not inferred here from focused passes. Earlier exact review spans remain owed.
+
+## 2026-10-08 — Native production-browser purchase and Exit-plan journey
+
+Outcome: R5/R6/R9's actual controls now execute against the existing Cosmetic composed
+fixture's active tree on a fresh account, not another server/framework. Initial earned budget6
+and cash2e5 in Companies1/2 are explicit SQL setup. Native first ending/continuation, producing-
+unit buy, gate, Escape cancellation, two confirmed node buys, reload, plan selection and elective
+Exit produce run3. Exact request/revision/receipt, nonzero unchanged current rate, unchanged
+Company head/frozen rows, next-only factor1.003, persisted starters5/cash1000, spend6/available0,
+purchase events and linked distinct Company/Founder Exit records are checked. Exact built
+HTML/JS/CSS/Worker bytes and a started Worker are required. No product bytes changed.
+
+Execution: focused normal Cosmetic+Reputation13223 passes. Temporarily disconnecting the
+host's purchase callback96517 fails with `purchase_reputation_node: 0 requests, no matching
+response`. Exact production restoration confirmed by empty diff and original SHA256
+`7d82696c227b9b11d5924809b14be6afe096613260ae75fc0580a718bece164b` before the final run.
+Final `make test-game-ui-composed`66940 is RED: main, Cosmetic+new Reputation, Clout and both
+payment-negative populations pass; Garden then fails its proxy-completion observer (RP-438),
+and Tier2 is not reached. No unchanged retry or whole-lane/hosted green claim. Helper/runner
+syntax and diff checks pass; no unrelated unit/browser suite for this test-only change.
+
+Instrument failures retained:80833 uses nonexistent `tree_active` instead of the actual
+feature fact;47512 refuses a zero-rate curriculum branch;86992 assumes wrong catalog order;
+96832 omits the second gate needed for the Wind Down panel;66161 wrongly compares the two
+streams' different Exit receipts;20613 activates Buy before transport actionability. Corrected
+setup/oracles follow the actual contracts, with one enabled native activation, not retries,
+larger timeouts or altered product behavior. Initial sandbox Docker denial executed no journey;
+narrow permitted local test execution follows. All handles are terminal and no fault remains.
+
+Review by: Codex (implementer first-filter); Recorded by: Codex. Full range after `f3851e8b`
+through the commit containing this entry needs designated cross-party review. No acceptance
+box, archive, copy/balance adoption, mint, deployment or push. This is not earning/pacing,
+replay verification of seeded history or complete AC12/AC15. RP-283/RP-284/H4/H5 remain open.
+Next: diagnose RP-438's explicit navigation/read-completion boundary without suppressing it;
+Headcount choice/body reconciliation has been asked of Marco, with no answer assumed.

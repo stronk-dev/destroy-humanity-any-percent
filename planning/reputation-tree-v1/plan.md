@@ -4,7 +4,14 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
-Current tooling checkpoint: RP-281 paired template/generated Go repair under
+Current integration checkpoint (2026-10-08): native Reputation purchases, Escape cancellation,
+next-run-only effect, Exit plan and third-Company starter/bonus carry execute in the existing
+normal composed lane using its already-active tree fixture and a separate fresh account.
+Budget/cash are explicit setup; no earned-budget, seeded-history replay, mint or full acceptance
+claim. The owning log has final results, a disconnected-purchase control and pending designated
+review after `f3851e8b`. RP-283/RP-284, H4/H5 and all content/owner gates remain separate.
+
+Preceding tooling checkpoint: RP-281 paired template/generated Go repair under
 da7cfa56 passes five generation goldens/collision/six corruptions, fired template
 severings and actual drift; output equals gofmt(old Go). Other artifacts/copy658/
 hash/manifest unchanged. Cold client/vet/core package union pass with initial

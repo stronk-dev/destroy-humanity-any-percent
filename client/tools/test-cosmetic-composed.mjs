@@ -13,6 +13,7 @@ import { build } from "vite";
 import { activateCosmeticBuy, assertNativeCosmeticBuyTrace } from "./activate-cosmetic-buy.mjs";
 import { assertCareSnapshot } from "./care-snapshot-proof.mjs";
 import { cosmeticN5Fixture, n5CleanupMarker, n5Faults, n5RejectionPrefix } from "./cosmetic-n5-fixture.mjs";
+import { witnessReputation } from "./reputation-composed.mjs";
 
 const args = process.argv.slice(2);
 const n5Fault = args[0]?.startsWith("--n5-fault=") ? args[0].slice("--n5-fault=".length) : null;
@@ -933,6 +934,7 @@ try {
   await assertLivePetOverlay(page, { present: false });
   await requireCleanN5("complete");
   console.log(`composed Cosmetic AC14/G10: T0 locked → T1 Buy → owned reload → DOM adopt/equip → live annoyed overlay → worn reload/reduced motion → DOM unequip → unworn reload; N5 requests ${requests.length}, no violation; ${(Date.now() - startedAt) / 1000}s: PASS`);
+  if (!axisFixture) await witnessReputation({ browser, uiURL, clientDist, hash, snapshot, sql: testDatabaseSQL, copy: plainFixtureCopy });
 } finally {
   await browser?.close();
   for (const socket of proxySockets) socket.destroy();

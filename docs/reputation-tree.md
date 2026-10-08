@@ -614,6 +614,24 @@ make test-client
 make reputation-boundary-corpus
 ```
 
+## Production-browser integration (controlled budget)
+
+The existing normal `make test-game-ui-composed` lane now also exercises Reputation in the
+Cosmetic fixture's already-active tree, on a separate fresh account. Native Buy/Confirm and
+Escape, direct purchases, reload, an Exit plan and the third Company's starter/bonus carry
+run against the actual server, Postgres and production-built client. Purchase receipts, stored
+heads, purchase events and the distinct linked Company/Founder Exit records are checked.
+A real producing-unit purchase makes the unchanged-current-rate check nonzero; frozen rows
+stay unchanged until Exit, then the next run receives the non-unit bonus and generated units.
+Loaded HTML/JS/CSS/Worker bytes and a started Worker are required. A disconnected purchase
+callback fails this journey rather than passing on rendered controls alone.
+
+Initial Reputation6 and cash2e5 in each of the first two Companies are explicit DB test setup.
+No ownership, spending, endings, starter units, plan, receipts or events are seeded. This is not
+earned-Reputation/pacing evidence, replay verification of that seeded history, content adoption,
+complete AC12/AC15 or a mint. The existing replay-career tests below remain separate evidence;
+Run End's author-owned display reconciliation and the failing harness gates remain open.
+
 ## Portable Founder-history evidence
 
 `server/production/reputation_history_test.go` drives the public
