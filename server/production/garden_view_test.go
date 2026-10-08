@@ -24,6 +24,45 @@ func gardenViewFounder(t *testing.T, grown CatalogBundle, now time.Time) *save.S
 	return state
 }
 
+// SG5/SG9: a Mainframe's ten-minute substrate lock expires before its first
+// fifteen-minute growth tick. The client must reread to learn that expiry;
+// neither this projection nor that read advances the persisted garden.
+func TestGardenViewSubstrateExpiryPrecedesGrowth(t *testing.T) {
+	grown := gardenContentBundle(t)
+	now := time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC)
+	state := gardenViewFounder(t, grown, now)
+	state.ServerGarden.SubstrateID = "mainframe"
+	stamp := now.UnixMilli()
+	state.ServerGarden.SubstrateSetWallMS = &stamp
+	before := mustEncodeState(t, state)
+	for _, elapsed := range []int64{0, 599_999, 600_000} {
+		encoded, err := ProjectGardenView(grown, state, 1, stamp+elapsed)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var response struct {
+			Garden gardenView `json:"garden"`
+		}
+		if err := json.Unmarshal(encoded, &response); err != nil {
+			t.Fatal(err)
+		}
+		view := response.Garden
+		if view.NextTickWallMS == nil || *view.NextTickWallMS != stamp+900_000 || view.TickSeq != state.ServerGarden.TickSeq {
+			t.Fatalf("elapsed %d: growth occurred before its deadline: %s", elapsed, encoded)
+		}
+		if elapsed < 600_000 {
+			if view.SubstrateLockoutUntilMS == nil || *view.SubstrateLockoutUntilMS != stamp+600_000 {
+				t.Fatalf("elapsed %d: premature substrate unlock: %s", elapsed, encoded)
+			}
+		} else if view.SubstrateLockoutUntilMS != nil {
+			t.Fatalf("expired substrate remains locked: %s", encoded)
+		}
+		if !bytes.Equal(before, mustEncodeState(t, state)) {
+			t.Fatal("substrate expiry projection mutated persisted state")
+		}
+	}
+}
+
 // AC15: at equal server_ms, the projected view equals the garden the next
 // command commits (projection = advance on a discarded clone).
 func TestGardenViewMatchesTheNextCommit(t *testing.T) {

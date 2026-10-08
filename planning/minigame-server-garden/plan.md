@@ -14,6 +14,13 @@ passes, so passive input/focus diagnostics are added without claiming a product 
 repeat unrelated help/loader diagnostics or the renewal-blocked long-session journey. SG13, RP-222 and browser renewal remain
 separate holds; G1–G7 below still mean implementation presence, not feature acceptance.
 
+RP-467 now locally corrects substrate expiry scheduling: reread at the earlier server growth/
+lockout deadline, keep the old lock on read failure, and never unlock from client time. The
+real-service harvest journey passes; the bounded Linux browser population has a separate
+Firefox startup lookup failure (RP-468), not full green. Diagnose that startup prerequisite
+next without repeating the held natural-growth journey. Exact evidence/review range is in
+the owning log; no feature acceptance or previous corrective approval is implied.
+
 **Current integration batch:** `test-garden-harvest-composed` extends the existing real-service
 driver with explicit controlled maturity, native single/batched harvest, actual cross-stream
 cash/events/log/window checks and persisted/rendered reload. The existing composed CI target

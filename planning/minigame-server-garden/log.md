@@ -3130,3 +3130,44 @@ All processes terminal; only editorial records change. This is a full original-G
 disposition, not full G1–G7 review, natural fifteen-minute growth, token renewal, adopted
 content, AC13, feature acceptance or archival. Continue the independent accepted work while
 renewal, RP-222/RP-229 and launch-content holds remain. No push or deployment.
+
+## 2026-10-08 — Substrate eligibility reread (RP-467)
+
+Outcome under SG5/SG9/SG10: Mainframe players can change substrate after the server's
+ten-minute lock, without waiting for its fifteen-minute growth tick. The actual projector
+test confirms lock at 0/599999 ms, unlock at600000 ms, unchanged tick and persisted state.
+Old mounted Chromium/WebKit run61950 fails four deadline/error checks;20 controls pass.
+Native Go9664 confirms the server already returns the correct expiry. This is a UI scheduling
+defect, not a change to substrate duration, growth, auth, API, payout, content or kernel.
+
+Schedule the existing read for the earlier non-null growth/lockout timestamp, relative to
+the response's server_ms. Only a server response unlocks controls. Retain hidden-page gating,
+read-generation guards, failure/stale state, timer replacement and unmount cancellation.
+Six additional mounted cases cover growth-before/equal/after expiry, hidden return, failed
+expiry and cancellation by a newer receipt refresh. No automatic intent or growth simulation.
+
+Final checks on the source in this batch:
+
+- 42129: four affected browser files, native Chromium/WebKit,178 pass.12664: types/Svelte
+  check zero errors/warnings and production build pass.89802: three pure ProjectGardenView
+  tests cold plus production vet pass; gofmt diff is empty.
+- 66403: declared cold Linux browser image/dependency setup, the same four files with all
+  three engines:266 pass, one Firefox failure. All13 refresh cases per engine pass. RP-468
+  records the existing host connection not-ready case's missing startup Garden button; this
+  is not RP-430's pending-menu callback symptom. No unchanged rerun or speculative fix.
+- 57069: `make test-garden-harvest-composed` exits0:12 observer controls plus exact built
+  HTML/JS/CSS/Worker, real-service/Postgres native plant/uproot/single/batched harvest,
+  substrate, durable cash/hash/faucet/idempotency and rendered reload pass. Maturity is
+  explicitly prepared state, not natural growth.64 upstream responses complete; one old-
+  document cancelled read is separately counted, not claimed consumed. Initial46040 fails
+  localhost bind in the sandbox before the real journey; the permitted invocation executes.
+
+Timing tests use virtual timers and injected HTTP DTOs through the actual browser adapter;
+the Go projection is independently executed. The real journey checks ordinary substrate/
+harvest integration, not ten minutes of natural expiry, token renewal, full accessibility,
+whole CI or release readiness. No test deadline, retries, skip or CI configuration changed.
+All processes terminal; diff/whitespace checked. Next diagnose RP-468's startup prerequisite.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Entire new corrective range
+begins after `a257faaa`; designated cross-party review remains required. All earlier holds
+and independent ranges remain open. No feature checkbox, archive, push or deployment.

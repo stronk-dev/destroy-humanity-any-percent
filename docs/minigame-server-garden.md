@@ -256,6 +256,11 @@ payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release cl
 - Growth announcements go to a polite live region once per refresh.
 - It re-reads at `next_tick_wall_ms` while visible and after every receipt, with no client
   simulation.
+  A non-null `substrate_lockout_until_ms` also schedules a read; the earlier deadline wins.
+  This lets Mainframe's ten-minute lock expire before its fifteen-minute growth tick without
+  waiting an extra five minutes. Only the new server response enables substrates; a hidden
+  page defers the read, and a failed read retains the locked/stale view. Receipt refresh and
+  unmount replace/cancel the timer as for growth reads.
   The delay is the positive difference from the response's `server_ms`, including a
   sub-second remainder; there is no one-second polling floor or client epoch conversion.
   Nonpositive advisory differences yield to a one-millisecond timer turn.

@@ -115,6 +115,101 @@ for (const wait of [60_000, 137]) {
   });
 }
 
+for (const tickWait of [300_000, 600_000, 900_000]) {
+  it.skipIf(!browser)(`Garden substrate expiry rereads at ten minutes with a ${tickWait} ms growth deadline`, async () => {
+    const initial = growing(tickWait);
+    initial.garden.substrate_id = tickWait === 900_000 ? "mainframe" : "bare_metal";
+    initial.garden.substrate_lockout_until_ms = initial.server_ms + 600_000;
+    const host = mounted(initial);
+    try {
+      await settle(); host.assertReads(1);
+      const substrate = host.target.querySelector<HTMLButtonElement>(".substrates button")!;
+      expect(substrate.matches(":disabled")).toBe(true);
+      substrate.click(); expect(host.commands).toEqual([]);
+      const firstWait = Math.min(tickWait, 600_000);
+      const first = structuredClone(initial);
+      first.server_ms += firstWait;
+      first.garden.next_tick_wall_ms = initial.server_ms + tickWait + (tickWait <= firstWait ? tickWait : 0);
+      if (firstWait === 600_000) first.garden.substrate_lockout_until_ms = null;
+      host.respond(first);
+      await vi.advanceTimersByTimeAsync(firstWait - 1); await settle(); host.assertReads(1);
+      expect(substrate.matches(":disabled")).toBe(true);
+      await vi.advanceTimersByTimeAsync(1); await settle(); host.assertReads(2);
+      if (firstWait < 600_000) {
+        expect(substrate.matches(":disabled")).toBe(true);
+        const unlocked = structuredClone(first);
+        unlocked.server_ms = initial.server_ms + 600_000;
+        unlocked.garden.substrate_lockout_until_ms = null;
+        unlocked.garden.next_tick_wall_ms = unlocked.server_ms + tickWait;
+        host.respond(unlocked);
+        await vi.advanceTimersByTimeAsync(600_000 - firstWait - 1); await settle(); host.assertReads(2);
+        expect(substrate.matches(":disabled")).toBe(true);
+        await vi.advanceTimersByTimeAsync(1); await settle(); host.assertReads(3);
+      }
+      expect(substrate.matches(":disabled")).toBe(false);
+      expect(host.target.querySelector(".live")?.textContent).toBe("");
+      // The expiry read itself never changes substrate or dispatches an intent.
+      // Only a fresh activation of a different substrate calls the host.
+      const other = [...host.target.querySelectorAll<HTMLButtonElement>(".substrates button")]
+        .find((button) => button.getAttribute("aria-pressed") === "false")!;
+      other.click(); await settle();
+      expect(host.commands).toEqual(["substrate"]);
+    } finally { await host.cleanup(); }
+  });
+}
+
+it.skipIf(!browser)("Garden hidden substrate expiry waits for visible server confirmation", async () => {
+  const initial = growing(900_000);
+  initial.garden.substrate_id = "mainframe";
+  initial.garden.substrate_lockout_until_ms = initial.server_ms + 600_000;
+  const host = mounted(initial);
+  try {
+    await settle(); host.assertReads(1);
+    host.visibility("hidden");
+    await vi.advanceTimersByTimeAsync(600_000); await settle(); host.assertReads(1);
+    expect(host.target.querySelector(".substrates button")?.matches(":disabled")).toBe(true);
+    const unlocked = structuredClone(initial);
+    unlocked.server_ms += 600_000;
+    unlocked.garden.substrate_lockout_until_ms = null;
+    host.respond(unlocked);
+    host.visibility("visible"); await settle(); host.assertReads(2);
+    expect(host.target.querySelector(".substrates button")?.matches(":disabled")).toBe(false);
+  } finally { await host.cleanup(); }
+});
+
+it.skipIf(!browser)("Garden failed substrate-expiry read never unlocks from the local clock", async () => {
+  const initial = growing(900_000);
+  initial.garden.substrate_id = "mainframe";
+  initial.garden.substrate_lockout_until_ms = initial.server_ms + 600_000;
+  const host = mounted(initial);
+  try {
+    await settle(); host.assertReads(1);
+    host.respond(new Error("expiry read offline"));
+    await vi.advanceTimersByTimeAsync(600_000); await settle(); host.assertReads(2);
+    expect(host.target.textContent).toContain("This view may be out of date. Refreshing.");
+    const substrate = host.target.querySelector<HTMLButtonElement>(".substrates button")!;
+    expect(substrate.matches(":disabled")).toBe(true);
+    substrate.click(); expect(host.commands).toEqual([]);
+  } finally { await host.cleanup(); }
+});
+
+it.skipIf(!browser)("Garden receipt refresh cancels an obsolete substrate-expiry deadline", async () => {
+  const initial = growing(900_000);
+  initial.garden.substrate_id = "mainframe";
+  initial.garden.substrate_lockout_until_ms = initial.server_ms + 600_000;
+  const host = mounted(initial);
+  try {
+    await settle(); host.assertReads(1);
+    await vi.advanceTimersByTimeAsync(10_000);
+    const replacement = growing(null);
+    replacement.garden.substrate_lockout_until_ms = null;
+    host.respond(replacement); host.app.update({ refreshKey: 1 }); await settle();
+    host.assertReads(2);
+    await vi.advanceTimersByTimeAsync(86_400_000); await settle(); host.assertReads(2);
+    expect(host.target.querySelector(".substrates button")?.matches(":disabled")).toBe(false);
+  } finally { await host.cleanup(); }
+});
+
 it.skipIf(!browser)("Garden refresh defers a hidden deadline and reads once on visible return", async () => {
   const host = mounted(growing(60_000));
   try {

@@ -96,7 +96,11 @@
 
   function schedule(view: ActiveView): void {
     if (timer !== undefined) clearTimeout(timer);
-    const next = view.garden.next_tick_wall_ms;
+    let next = view.garden.next_tick_wall_ms;
+    const lockout = view.garden.substrate_lockout_until_ms;
+    // Eligibility can change before growth (Mainframe: ten vs fifteen minutes).
+    // Ask the server at either boundary; never unlock from the local clock.
+    if (lockout !== null && (next === null || lockout < next)) next = lockout;
     if (next === null) return;
     // A read can arrive just before the tick. Honor its server-relative
     // interval rather than postponing every sub-second boundary to one second.
