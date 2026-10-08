@@ -145,6 +145,26 @@ func TestGameUISnapshotProjectsStoredSchemaV4CompanyV18RatesIntegration(t *testi
 	if json.Unmarshal(encoded, &projected) != nil {
 		t.Fatal("snapshot JSON")
 	}
+	var wire struct {
+		Upgrades []map[string]any `json:"upgrades"`
+	}
+	if err := json.Unmarshal(encoded, &wire); err != nil {
+		t.Fatal(err)
+	}
+	wanted := map[string]any{"upgrade.reply_all_macro": nil, "upgrade.beige_tower_cache": nil, "upgrade.rack_rail_standardization": "window"}
+	for _, row := range wire.Upgrades {
+		id := row["upgrade_id"].(string)
+		if expected, ok := wanted[id]; ok {
+			reason, present := row["ineligible_reason"]
+			if !present || reason != expected || row["eligible"] != (expected == nil) {
+				t.Fatalf("stored Company upgrade %s: %v, want reason %v", id, row, expected)
+			}
+			delete(wanted, id)
+		}
+	}
+	if len(wanted) != 0 {
+		t.Fatalf("missing stored upgrade rows: %v", wanted)
+	}
 	if projected.SchemaVersion != snapshotSchemaVersion || projected.FounderRevision != founderRevision.Number ||
 		len(projected.Generators) != 9 || projected.Generators[1].GeneratorID != "generator.beige_tower" ||
 		projected.Generators[1].RateContribution != "4.018e2" || len(projected.Resources) != 2 ||

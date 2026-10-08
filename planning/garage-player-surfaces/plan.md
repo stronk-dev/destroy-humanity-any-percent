@@ -7,7 +7,13 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-08): the locked-Pitch witness now handles post-response offer
+Current checkpoint (2026-10-08): OD-15 upgrade ineligibility reasons now reach the Desk from
+the authoritative projection, with visible text and button descriptions. The production-built
+real-service journey exercises window/requirement rows, and the complete composed target passes.
+The latest owning log records affected checks and the pending exact-range designated review;
+three new strings remain visibly pending owner copy. No Garage acceptance or release promotion.
+
+Preceding checkpoint (2026-10-08): the locked-Pitch witness now handles post-response offer
 preemption through visible Decline/navigation and fresh DOM Start, but still requires an exact
 409 and a visible mounted-launcher notice to pass. Native observer/host controls24 and full
 three-journey root23009 pass with exit0. That real run has no offer decline, so post-response
@@ -442,6 +448,10 @@ must succeed before another container population. No lifecycle promotion.
   Claude independently.
   This existing checkbox records implementation, not acceptance or archival.
 - [x] GS6 provisioning caps + owned-upgrade text on the Desk.
+  OD-15's missing upgrade reasons now also have a server → generated API → decoder → Desk
+  implementation, with snapshot-only explanation and an accessible button description.
+  See the latest owning log for executed checks and pending designated review. New reason
+  copy remains visibly pending owner adoption; this does not complete Garage acceptance.
 - Shared GS0.2 supplement (not an acceptance checkbox): RP-322 through
   `efa557b8` locally restores rate-limit/exclusive refresh-before-reactivation.
   Baseline mapper/native failures and separate arm severing discriminate;

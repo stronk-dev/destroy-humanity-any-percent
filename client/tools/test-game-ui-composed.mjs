@@ -415,6 +415,30 @@ async function witnessFirstPurchaseAchievement(page, frames, accessToken) {
   const { eraForSnapshot } = await vite.ssrLoadModule("/src/game-ui/contracts.ts");
   const { GAME_UI_PRESENTATION } = await vite.ssrLoadModule("/src/game-ui/presentation.ts");
   const era = eraForSnapshot(before), title = t(row.copy_key, {}, era);
+  // Garage OD-15: bind real persisted-state projection to the production DOM
+  // before this journey earns money. Both locked populations must actually
+  // exist, so a server that omits every reason cannot pass vacuously.
+  const reasonKeys = { owned: "desk.upgrade.owned", window: "desk.rejection.not_in_window", requirement: "desk.rejection.requires", unaffordable: "desk.rejection.unaffordable" };
+  const observedReasons = new Set();
+  for (const upgrade of before.upgrades) {
+    if (!Object.hasOwn(upgrade, "ineligible_reason")) throw new Error(`OD-15 missing server upgrade reason: ${upgrade.upgrade_id}`);
+    const reasonID = `upgrade-reason-${upgrade.upgrade_id}`;
+    const explanation = page.locator(`[id="${reasonID}"]`);
+    if (upgrade.ineligible_reason === null) {
+      if (!upgrade.eligible || await explanation.count() !== 0) throw new Error(`OD-15 eligible upgrade has a stale reason: ${upgrade.upgrade_id}`);
+      continue;
+    }
+    const key = reasonKeys[upgrade.ineligible_reason];
+    if (!key || upgrade.eligible) throw new Error(`OD-15 invalid server reason: ${upgrade.upgrade_id}`);
+    await explanation.waitFor({ state: "visible", timeout: 30_000 });
+    const control = explanation.locator("..").getByRole("button", { name: t("desk.buy_one", {}, era), exact: true });
+    if (await explanation.innerText() !== t(key, {}, era) || await control.isEnabled() || await control.getAttribute("aria-describedby") !== reasonID) {
+      throw new Error(`OD-15 upgrade explanation does not bind the disabled control: ${upgrade.upgrade_id}`);
+    }
+    observedReasons.add(upgrade.ineligible_reason);
+  }
+  if (!observedReasons.has("window") || !observedReasons.has("requirement")) throw new Error("OD-15 real initial journey did not exercise both window and requirement reasons");
+  console.log("composed OD-15: actual server window/requirement reasons → visible production-client text and disabled button descriptions: PASS");
   const achievementNav = page.getByRole("button", { name: t("surface.achievements.title", {}, era), exact: true });
   const displayed = page.locator(".achievements li").filter({ has: page.getByRole("heading", { name: title, exact: true }) });
   await achievementNav.click();

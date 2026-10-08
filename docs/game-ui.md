@@ -193,6 +193,16 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   request it shows the Fiscal-lock or Soul-lock reason from the minigames arm.
 - **Desk additions:** provisioned counts show `desk.provisioned_frame`, plus the cap reason text
   once provisioning reaches its visible cap. Owned upgrades show text, not only a disabled button.
+  Current v4 upgrade rows also emit `ineligible_reason`: `null` when eligible, otherwise
+  `owned`, `window`, `requirement` or `unaffordable`. The projector uses the existing checks
+  in purchase-refusal order (ownership → window → prerequisites, including the axis minimum
+  → funds). This describes the snapshot, not a guarantee about a later post-accrual command.
+  The Desk renders the explanation and associates it with the button via `aria-describedby`,
+  preserving any separate pending description. A newer eligible row removes the old explanation.
+  The three new explanatory strings are visibly marked **PENDING OWNER COPY**, not adopted text.
+  The shared API response field is optional under C2: older v4 rows remain readable without
+  a guessed reason, and stored v1–v3 decoding stays unchanged. Current producer rows always
+  include it, with an explicit null; the client rejects unknown or contradictory reasons.
   A resource cap whose reason key has no copy is withheld with a loud `console.error` invariant
   instead of crashing the Desk (F10).
 - **Arm going null:** if a mounted surface's arm becomes null, the UI returns to the Desk.

@@ -825,7 +825,9 @@ for (const purchase of ["one", "max", "upgrade"] as const) {
           expect(runtime.requests, "same-kind input during either hold must not queue a later command").toHaveLength(1);
           expect(target.querySelector("#desk-pending")).toBeNull();
           expect(origin.hasAttribute("aria-disabled")).toBe(false);
-          expect(origin.hasAttribute("aria-describedby")).toBe(false);
+          // Pending feedback is gone; the permanent owned explanation now
+          // remains associated with a successfully purchased upgrade (OD-15).
+          expect(origin.getAttribute("aria-describedby")).toBe(!conflict && purchase === "upgrade" ? `upgrade-reason-${snapshot.upgrades[0]!.upgrade_id}` : null);
           if (!conflict && purchase === "upgrade") {
             expect(origin.disabled, "ownership remains a genuine ineligible state").toBe(true);
             expect(target.querySelector("section[aria-labelledby='upgrades-heading'] strong")?.textContent).toBe(t("desk.upgrade.owned", {}, "era_1995"));

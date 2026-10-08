@@ -500,6 +500,11 @@
   }
 
   function factTrue(id: string): boolean { return snapshot?.facts.some((fact) => fact.fact_id === id && fact.value === true) ?? false; }
+  function upgradeReasonKey(upgrade: GameUISnapshot["upgrades"][number]): CopyKey | undefined {
+    const reason = upgrade.ineligible_reason;
+    if (reason === undefined || reason === null) return undefined;
+    return ({ owned: "desk.upgrade.owned", window: "desk.rejection.not_in_window", requirement: "desk.rejection.requires", unaffordable: "desk.rejection.unaffordable" } as const)[reason];
+  }
   const liveFeatures = $derived(snapshot && "features" in snapshot ? snapshot.features : undefined);
 
   // GS5: the last applied claim (receipt evidence) and a once-per-opportunity
@@ -770,7 +775,18 @@
         <div class="cards">
           {#each snapshot.upgrades as upgrade (upgrade.upgrade_id)}
             {@const presentation = upgradePresentation(upgrade.upgrade_id)}
-            <article class="card"><h3>{t(presentation.title_key, {}, era)}</h3><p>{t(presentation.description_key, {}, era)}</p><Amount value={upgrade.cost_amount} era={era} />{#if upgrade.owned}<strong>{t("desk.upgrade.owned", {}, era)}</strong>{/if}<button type="button" tabindex="0" disabled={!commandControls || !upgrade.eligible || upgrade.owned} aria-disabled={upgradePending || undefined} aria-describedby={upgradePending ? "desk-pending" : undefined} onclick={() => act({ kind: "buy_upgrade", upgrade_id: upgrade.upgrade_id })}>{t("desk.buy_one", {}, era)}</button></article>
+            {@const reasonKey = upgradeReasonKey(upgrade)}
+            {@const reasonID = `upgrade-reason-${upgrade.upgrade_id}`}
+            <article class="card">
+              <h3>{t(presentation.title_key, {}, era)}</h3>
+              <p>{t(presentation.description_key, {}, era)}</p>
+              <Amount value={upgrade.cost_amount} era={era} />
+              {#if upgrade.owned}<strong id={reasonID}>{t("desk.upgrade.owned", {}, era)}</strong>
+              {:else if reasonKey}<p id={reasonID}>{t(reasonKey, {}, era)}</p>{/if}
+              <button type="button" tabindex="0" disabled={!commandControls || !upgrade.eligible || upgrade.owned} aria-disabled={upgradePending || undefined}
+                aria-describedby={[...(upgrade.owned || reasonKey ? [reasonID] : []), ...(upgradePending ? ["desk-pending"] : [])].join(" ") || undefined}
+                onclick={() => act({ kind: "buy_upgrade", upgrade_id: upgrade.upgrade_id })}>{t("desk.buy_one", {}, era)}</button>
+            </article>
           {/each}
         </div>
       </section>

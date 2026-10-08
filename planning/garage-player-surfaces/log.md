@@ -6413,3 +6413,48 @@ review. A ledger-only RP-405 status correction reflects the already recorded rea
 it changes no Pet implementation or verdict. No acceptance/archive/push. Next: consolidate the
 related Garage review range and finish remaining accepted feature/integration gates; numeric,
 history guard, author/owner decisions and full nine-tier construction remain open independently.
+
+## 2026-10-08 — OD-15 upgrade explanations reach the player (RP-418)
+
+Implemented accepted GS6/OD-15, missing at `cc8b975d`: v4 emits an explicit nullable
+`ineligible_reason` on every upgrade. Existing projector checks determine owned → window →
+requirement (including axis minimum) → unaffordable, matching purchase-refusal precedence.
+No eligibility, price, accrual or persistence mechanics changed. The shared response descriptor
+adds an optional closed nullable enum under API C2, preserving its reference identity and the
+unchanged compatibility pin. Old v4 rows and stored v1–v3 remain readable; new contradictory or
+unknown reasons refuse. The Desk shows the server reason and associates it with the button,
+removing stale explanations on authoritative eligibility changes while retaining pending feedback.
+Three new copy rows are visibly PENDING OWNER COPY; no owner wording is adopted or overwritten.
+
+Executed evidence:
+
+- Old-source Go51816 fails all six reason/presence/precedence cases; Node88159 fails all five
+  admitted reason cases. Final native47555 passes complete gameui/account/publicapi packages.
+  Added independent cost-vs-requirement and PR axis threshold populations; decoder cases cover
+  all admitted reasons, contradictions, unknowns and historical rows. Final Node84868:148 pass.
+- Linux/amd64/Postgres `make test-go-ci CI_TEST_PACKAGES='./gameui' CI_TEST_FLAGS='-v'`85409:
+  full package PASS2.314s, including the persisted eligible/window wire and existing integration
+  populations, no skips. Account/Gameserver also pass in11836; that aggregate remains recorded
+  RED because its then-new Game UI ownership fixture changed synergy rates. Restored the
+  original rate population and assertion, rather than moving its numeric expectation.
+- Final affected native browser44078:998 PASS / four existing performance-only skips across
+  Garage, axis-stack and Game UI screens in Chromium/WebKit. OD-15 covers all reasons, visible
+  button descriptions,320/1280px, disabled input and fresh-revision native Enter. The earlier
+  four pending-focus failures required an exact permanent-owned description assertion, not
+  removal of pending/duplicate/focus checks. Three-engine3858 is RED at Firefox startup with
+  OS sandbox/framebuffer errors; four Chromium/WebKit OD-15 executions pass in that attempt.
+- Whole `make test-game-ui-composed`94874 PASS:35 tool controls, real-Postgres populations,
+  production-byte main journey plus explicit actual window/requirement explanation checks,
+  both Cosmetic/care variants and both expected forbidden-payment failures. Earlier85992 is
+  invalidated by my concurrent standalone client build replacing the measured dist bytes:
+  the asset verifier correctly rejects them. Final run has no concurrent build or source edit.
+- Types93723 zero errors/warnings, build94988, affected vet, API generation, copy-check10690,
+  content-manifest check, Node syntax and diff checks PASS. Current shared Fiscal snapshot
+  adds only the ten produced reason fields; full Go-to-fixture equality remains enforced.
+  Compatibility pin, kernel version, balance/content epoch and CI configuration are unchanged.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new source/test/
+generated/docs/records range starts after `cc8b975d` through this commit; designated cross-party
+review remains. No Firefox/manual AT/performance/full-CI, Garage acceptance, archival or push
+claim. Next: consolidate related Garage review and continue remaining accepted capabilities;
+unruled lifecycle/rights/numeric contracts and later-tier construction remain separate work.

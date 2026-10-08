@@ -1219,6 +1219,68 @@ it.skipIf(!browser)("shows provisioned counts with their cap reason and owned up
   } finally { await dispose(); }
 });
 
+for (const width of [320, 1280]) {
+  it.skipIf(!browser)(`OD-15 explains disabled upgrades from server reasons and removes stale explanations at ${width}px`, async () => {
+    const { page, userEvent } = await import("vitest/browser");
+    await page.viewport(width, 720);
+    const states = [
+      { id: "upgrade.beige_tower_cache", reason: "owned", key: "desk.upgrade.owned" },
+      { id: "upgrade.continuous_feed_paper", reason: null, key: null },
+      { id: "upgrade.hold_music_license", reason: "window", key: "desk.rejection.not_in_window" },
+      { id: "upgrade.nephew_business_cards", reason: "unaffordable", key: "desk.rejection.unaffordable" },
+      { id: "upgrade.reply_all_macro", reason: "requirement", key: "desk.rejection.requires" },
+    ] as const;
+    const runtime = new Runtime();
+    runtime.current = parseGameUISnapshot({ ...v4, upgrades: states.map((row) => ({
+      ...v4.upgrades[0], upgrade_id: row.id, eligible: row.reason === null,
+      owned: row.reason === "owned", ineligible_reason: row.reason,
+    })) });
+    const { target, app, dispose } = await mounted(runtime);
+    try {
+      const section = target.querySelector<HTMLElement>('section[aria-labelledby="upgrades-heading"]')!;
+      const cards = [...section.querySelectorAll<HTMLElement>("article")];
+      expect(cards).toHaveLength(states.length);
+      for (const [index, row] of states.entries()) {
+        const card = cards[index]!;
+        const control = card.querySelector("button")!;
+        const reasonID = `upgrade-reason-${row.id}`;
+        expect(control.disabled).toBe(row.reason !== null);
+        if (row.key) {
+          const reason = document.getElementById(reasonID)!;
+          expect(card.contains(reason)).toBe(true);
+          expect(reason.textContent).toBe(t(row.key, {}, "era_1995"));
+          expect(reason.getBoundingClientRect().height).toBeGreaterThan(0);
+          expect(getComputedStyle(reason).visibility).toBe("visible");
+          expect(control.getAttribute("aria-describedby")).toBe(reasonID);
+          control.click();
+        } else {
+          expect(document.getElementById(reasonID)).toBeNull();
+          expect(control.hasAttribute("aria-describedby")).toBe(false);
+        }
+      }
+      expect(runtime.requests).toEqual([]);
+      const main = target.querySelector<HTMLElement>("main.game-ui")!;
+      expect(main.scrollWidth).toBeLessThanOrEqual(main.clientWidth + 1);
+      await assertAxe(target, "OD-15 upgrade reasons");
+
+      // A newer authoritative snapshot, not local balance arithmetic, enables
+      // the formerly locked row and removes its description from the button.
+      const current = runtime.current;
+      runtime.current = parseGameUISnapshot({ ...current, revision: 2, upgrades: current.upgrades.map((row) => row.upgrade_id === "upgrade.reply_all_macro"
+        ? { ...row, eligible: true, ineligible_reason: null } : row) });
+      app.fixtureSnapshot(runtime.current); await settle();
+      const card = [...section.querySelectorAll<HTMLElement>("article")].at(-1)!;
+      const control = card.querySelector("button")!;
+      expect(control.disabled).toBe(false);
+      expect(document.getElementById("upgrade-reason-upgrade.reply_all_macro")).toBeNull();
+      expect(control.hasAttribute("aria-describedby")).toBe(false);
+      control.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(runtime.requests).toHaveLength(1);
+      expect(runtime.requests[0]).toMatchObject({ kind: "buy_upgrade", upgrade_id: "upgrade.reply_all_macro", expected_revision: 2 });
+    } finally { await dispose(); }
+  });
+}
+
 it.skipIf(!browser)("keeps the Desk up and reports loudly when a cap reason has no copy (F10)", async () => {
   const runtime = new Runtime();
   runtime.current = { ...v4, resources: [{ ...v4.resources[0]!, cap: { amount: "1e1000", reason_key: "cap.not_in_catalog" } }] };

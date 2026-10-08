@@ -109,11 +109,12 @@ type generatorRow struct {
 }
 
 type upgradeRow struct {
-	CostAmount     string `json:"cost_amount"`
-	CostResourceID string `json:"cost_resource_id"`
-	Eligible       bool   `json:"eligible"`
-	Owned          bool   `json:"owned"`
-	UpgradeID      string `json:"upgrade_id"`
+	CostAmount       string  `json:"cost_amount"`
+	CostResourceID   string  `json:"cost_resource_id"`
+	Eligible         bool    `json:"eligible"`
+	IneligibleReason *string `json:"ineligible_reason"`
+	Owned            bool    `json:"owned"`
+	UpgradeID        string  `json:"upgrade_id"`
 }
 
 type manualActionRow struct {
@@ -428,8 +429,21 @@ func upgradeRows(catalog *economy.Catalog, routeCatalog *routes.Catalog, state *
 		if !exists {
 			return nil, ErrInvalidProjection
 		}
+		// GS6 / OD-15: expose the same first-failure order as buyUpgrade.
+		// This describes this snapshot, not a promise about a later command.
+		var reason *string
+		switch {
+		case owned:
+			reason = new("owned")
+		case !inWindow:
+			reason = new("window")
+		case !eligible:
+			reason = new("requirement")
+		case balance.Lt(upgrade.Cost.Amount):
+			reason = new("unaffordable")
+		}
 		result = append(result, upgradeRow{CostAmount: upgrade.Cost.Amount.String(), CostResourceID: upgrade.Cost.ResourceID,
-			Eligible: !owned && inWindow && eligible && balance.Gte(upgrade.Cost.Amount), Owned: owned, UpgradeID: upgrade.ID})
+			Eligible: reason == nil, IneligibleReason: reason, Owned: owned, UpgradeID: upgrade.ID})
 	}
 	sort.Slice(result, func(left, right int) bool { return result[left].UpgradeID < result[right].UpgradeID })
 	return result, nil

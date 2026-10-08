@@ -84,6 +84,37 @@ describe("Game UI snapshot contract", () => {
   });
 });
 
+describe("server-derived upgrade reasons (Garage OD-15)", () => {
+  const row = { cost_amount: "1e1", cost_resource_id: "company.cash", eligible: false, owned: false, upgrade_id: "upgrade.reply_all_macro" };
+  const decode = (upgrade: unknown) => parseGameUISnapshot({ ...fiscalSnapshot, upgrades: [upgrade] });
+
+  it.each(["window", "requirement", "unaffordable", "owned", null])("accepts the exact reason %s", (reason) => {
+    const upgrade = { ...row, eligible: reason === null, owned: reason === "owned", ineligible_reason: reason };
+    expect(decode(upgrade).upgrades).toEqual([upgrade]);
+  });
+
+  it.each([
+    { ...row, ineligible_reason: "future" },
+    { ...row, ineligible_reason: false },
+    { ...row, ineligible_reason: {} },
+    { ...row, ineligible_reason: null },
+    { ...row, eligible: true, ineligible_reason: "window" },
+    { ...row, ineligible_reason: "owned" },
+    { ...row, owned: true, ineligible_reason: "requirement" },
+  ])("refuses an unknown or contradictory upgrade reason %#", (upgrade) => {
+    expect(() => decode(upgrade)).toThrow();
+  });
+
+  it("keeps older v4 and stored v1-v3 rows readable without guessing a reason", () => {
+    expect(decode(row).upgrades).toEqual([row]);
+    const { founder_revision: _founder, transitions: _transitions, ...legacy } = snapshot;
+    for (const source of [{ ...legacy, schema_version: 1 }, { ...legacy, founder_revision: 1, schema_version: 2 }, snapshot]) {
+      expect(parseGameUISnapshot({ ...source, upgrades: [row] }).upgrades).toEqual([row]);
+      expect(() => parseGameUISnapshot({ ...source, upgrades: [{ ...row, ineligible_reason: "window" }] })).toThrow(/exact/);
+    }
+  });
+});
+
 describe("Game UI payout presentation", () => {
   it("formats display deltas and withholds unknown governed IDs", () => {
     expect(renderPrestigeTermRows({

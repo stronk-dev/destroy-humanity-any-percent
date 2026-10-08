@@ -340,6 +340,10 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("cost_amount", apiString("canonical-decimal")),
 			apiField("cost_resource_id", apiString("mechanical-id")),
 			apiField("eligible", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
+			// Garage OD-15: current v4 emits this on every row. Keep the shared
+			// response descriptor additive so stored older receipts remain valid
+			// and C2's requiredness/reference identity pins stay intact.
+			publicapi.Field{Required: false, Name: "ineligible_reason", Schema: nullable(apiString("", "owned", "requirement", "unaffordable", "window"))},
 			apiField("owned", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
 			apiField("upgrade_id", apiString("mechanical-id")),
 		)},

@@ -2,6 +2,7 @@ package account
 
 import (
 	"bytes"
+	"encoding/json"
 	"net/http"
 	"strings"
 	"testing"
@@ -87,6 +88,21 @@ func TestGameUISnapshotAPIRegistryPinsTheProjectionEnvelope(t *testing.T) {
 	}
 	if err := registry.ValidateResponse("get_game_ui_snapshot", http.StatusOK, body); err != nil {
 		t.Fatalf("valid snapshot: %v", err)
+	}
+	var snapshot map[string]any
+	if err := json.Unmarshal(body, &snapshot); err != nil {
+		t.Fatal(err)
+	}
+	for _, reason := range []any{nil, "owned", "window", "requirement", "unaffordable", "future", false} {
+		snapshot["upgrades"] = []any{map[string]any{"upgrade_id": "upgrade.reply_all_macro", "cost_amount": "4e1", "cost_resource_id": "company.cash", "eligible": reason == nil, "owned": reason == "owned", "ineligible_reason": reason}}
+		encoded, err := json.Marshal(snapshot)
+		if err != nil {
+			t.Fatal(err)
+		}
+		valid := reason != "future" && reason != false
+		if err := registry.ValidateResponse("get_game_ui_snapshot", http.StatusOK, encoded); (err == nil) != valid {
+			t.Fatalf("upgrade reason %v: valid=%t err=%v", reason, valid, err)
+		}
 	}
 	legacy := bytes.ReplaceAll(body, []byte(`,"founder_revision":7`), nil)
 	legacy = bytes.ReplaceAll(legacy, []byte(`"schema_version":4`), []byte(`"schema_version":1`))

@@ -110,7 +110,7 @@ export type GameUITransitionIncorporateFaction = { copy_key: string; faction_id:
 
 export type GameUITransitions = { cross_gate: GameUITransitionCrossGate | null; incorporate?: GameUITransitionIncorporate; wind_down: GameUITransitionEligibility };
 
-export type GameUIUpgrade = { cost_amount: string; cost_resource_id: string; eligible: boolean; owned: boolean; upgrade_id: string };
+export type GameUIUpgrade = { cost_amount: string; cost_resource_id: string; eligible: boolean; ineligible_reason?: "owned" | "requirement" | "unaffordable" | "window" | null; owned: boolean; upgrade_id: string };
 
 export type GardenActive = { founder_revision: number; garden: GardenView; kind: "active"; server_ms: number };
 

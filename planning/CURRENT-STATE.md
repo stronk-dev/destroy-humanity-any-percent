@@ -35,6 +35,12 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Garage OD-15's previously missing upgrade explanation now connects the server projector,
+  generated API, strict decoder and Desk. Real-service production-client checks bind actual
+  window/requirement reasons to visible text and disabled-button descriptions; the whole
+  composed target passes. Three new explanatory strings remain visibly pending owner copy,
+  and designated review remains open. The [Garage log](garage-player-surfaces/log.md) owns
+  the complete batch results and exact range; this is not full Garage or release acceptance.
 - Latest finished product batch `069532f5` prevents HTTP caching of credentials across account
   creation, bootstrap, session creation and refresh, including failures and rate refusals.
   Old-source regressions fail; the corrected full Linux/amd64/Postgres Account and Gameserver

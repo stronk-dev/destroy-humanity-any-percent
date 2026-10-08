@@ -140,9 +140,15 @@ export function parseGameUISnapshot(source: unknown): ParsedGameUISnapshot {
 
   const upgrades = sortedRows(root.upgrades, "upgrade_id", "game UI upgrades");
   for (const row of upgrades) {
-    exact(row, ["cost_amount", "cost_resource_id", "eligible", "owned", "upgrade_id"], "game UI upgrade");
+    const hasReason = root.schema_version === 4 && Object.hasOwn(row, "ineligible_reason");
+    exact(row, ["cost_amount", "cost_resource_id", "eligible", "owned", "upgrade_id", ...(hasReason ? ["ineligible_reason"] : [])], "game UI upgrade");
     decimal(row.cost_amount); identifier(row.cost_resource_id);
     if (typeof row.eligible !== "boolean" || typeof row.owned !== "boolean" || row.owned && row.eligible) throw new SyntaxError("invalid upgrade state");
+    if (hasReason) {
+      const reason = row.ineligible_reason;
+      if (reason !== null) oneOf(reason, ["owned", "window", "requirement", "unaffordable"], "upgrade ineligibility reason");
+      if (row.eligible !== (reason === null) || row.owned !== (reason === "owned")) throw new SyntaxError("upgrade reason contradicts state");
+    }
   }
   return { ...(root as unknown as ParsedGameUISnapshot), revision, evaluated_through_ms: evaluatedThrough, server_now_ms: serverNow };
 }

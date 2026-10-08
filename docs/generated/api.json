@@ -2133,6 +2133,22 @@
           "eligible": {
             "type": "boolean"
           },
+          "ineligible_reason": {
+            "oneOf": [
+              {
+                "enum": [
+                  "owned",
+                  "requirement",
+                  "unaffordable",
+                  "window"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "owned": {
             "type": "boolean"
           },

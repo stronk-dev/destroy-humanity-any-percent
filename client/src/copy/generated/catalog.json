@@ -1468,6 +1468,30 @@
       "tone": "corporate"
     },
     {
+      "key": "desk.rejection.not_in_window",
+      "text": "PENDING OWNER COPY: This upgrade is outside its purchase window.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.rejection.requires",
+      "text": "PENDING OWNER COPY: This upgrade's requirements are not met.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.rejection.unaffordable",
+      "text": "PENDING OWNER COPY: Not enough funds for this upgrade.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "desk.upgrade.owned",
       "text": "Owned",
       "params": [],

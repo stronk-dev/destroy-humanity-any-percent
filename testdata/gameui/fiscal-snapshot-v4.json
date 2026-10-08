@@ -107,15 +107,15 @@
   "server_now_ms": 1800000000800,
   "transitions": {"cross_gate":null,"wind_down":{"eligible":true}},
   "upgrades": [
-    {"cost_amount":"1e3","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.beige_tower_cache"},
-    {"cost_amount":"1.2e4","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.continuous_feed_paper"},
-    {"cost_amount":"2.48832e8","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.crt_degauss_button"},
-    {"cost_amount":"7.5e7","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.employee_handbook_v0"},
-    {"cost_amount":"2e4","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.hold_music_license"},
-    {"cost_amount":"1e8","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.institutional_memory"},
-    {"cost_amount":"2e4","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.nephew_business_cards"},
-    {"cost_amount":"2.0736e7","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.rack_rail_standardization"},
-    {"cost_amount":"2e8","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.refurbished_sticker"},
-    {"cost_amount":"4e1","cost_resource_id":"company.cash","eligible":false,"owned":false,"upgrade_id":"upgrade.reply_all_macro"}
+    {"cost_amount":"1e3","cost_resource_id":"company.cash","eligible":false,"ineligible_reason":"window","owned":false,"upgrade_id":"upgrade.beige_tower_cache"},
+    {"cost_amount":"1.2e4","cost_resource_id":"company.cash","eligible":false,"ineligible_reason":"window","owned":false,"upgrade_id":"upgrade.continuous_feed_paper"},
+    {"cost_amount":"2.48832e8","cost_resource_id":"company.cash","eligible":false,"ineligible_reason":"requirement","owned":false,"upgrade_id":"upgrade.crt_degauss_button"},
+    {"cost_amount":"7.5e7","cost_resource_id":"company.cash","eligible":false,"ineligible_reason":"requirement","owned":false,"upgrade_id":"upgrade.employee_handbook_v0"},
+    {"cost_amount":"2e4","cost_resource_id":"company.cash","eligible":false,"ineligible_reason":"window","owned":false,"upgrade_id":"upgrade.hold_music_license"},
+    {"cost_amount":"1e8","cost_resource_id":"company.cash","eligible":false,"ineligible_reason":"requirement","owned":false,"upgrade_id":"upgrade.institutional_memory"},
+    {"cost_amount":"2e4","cost_resource_id":"company.cash","eligible":false,"ineligible_reason":"window","owned":false,"upgrade_id":"upgrade.nephew_business_cards"},
+    {"cost_amount":"2.0736e7","cost_resource_id":"company.cash","eligible":false,"ineligible_reason":"requirement","owned":false,"upgrade_id":"upgrade.rack_rail_standardization"},
+    {"cost_amount":"2e8","cost_resource_id":"company.cash","eligible":false,"ineligible_reason":"requirement","owned":false,"upgrade_id":"upgrade.refurbished_sticker"},
+    {"cost_amount":"4e1","cost_resource_id":"company.cash","eligible":false,"ineligible_reason":"window","owned":false,"upgrade_id":"upgrade.reply_all_macro"}
   ]
 }

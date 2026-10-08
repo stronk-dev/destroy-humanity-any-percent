@@ -1,6 +1,7 @@
 package gameui
 
 import (
+	"encoding/json"
 	"os"
 	"testing"
 	"time"
@@ -11,6 +12,119 @@ import (
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
+
+func TestUpgradeProjectionExplainsFirstFailedPurchaseCheck(t *testing.T) {
+	data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var source map[string]any
+	if err := json.Unmarshal(data, &source); err != nil {
+		t.Fatal(err)
+	}
+	// Separate the cost from the prerequisite in this candidate so an
+	// affordability failure cannot accidentally be a requirements failure.
+	for _, value := range source["upgrades"].([]any) {
+		row := value.(map[string]any)
+		if row["id"] == "upgrade.reply_all_macro" {
+			row["cost"].(map[string]any)["amount"] = "8e1"
+		}
+	}
+	data, err = json.Marshal(source)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, routeCatalog := loadCandidateCatalogs(t)
+	for _, test := range []struct {
+		name, cash, id string
+		owned, crossed bool
+		reason         any
+	}{
+		{"owned-before-window-requirement-and-cost", "0", "upgrade.reply_all_macro", true, true, "owned"},
+		{"closed-window-before-requirement-and-cost", "0", "upgrade.reply_all_macro", false, true, "window"},
+		{"unopened-window", "1e9", "upgrade.rack_rail_standardization", false, false, "window"},
+		{"requirement-before-cost", "0", "upgrade.reply_all_macro", false, false, "requirement"},
+		{"unaffordable", "6e1", "upgrade.reply_all_macro", false, false, "unaffordable"},
+		{"eligible", "1e2", "upgrade.reply_all_macro", false, false, nil},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			state := candidateState(t, catalog)
+			state.UpgradesOwned[test.id] = test.owned
+			state.GatesCrossed["gate.t0_to_t1"] = test.crossed
+			cash, _ := state.Ledger.Balance("company.cash")
+			if _, err := state.Ledger.Apply(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: decimal.FromString(test.cash).Sub(cash)}}}); err != nil {
+				t.Fatal(err)
+			}
+			rows, err := upgradeRows(catalog, routeCatalog, state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			encoded, err := json.Marshal(rows)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var wire []map[string]any
+			if err := json.Unmarshal(encoded, &wire); err != nil {
+				t.Fatal(err)
+			}
+			for _, row := range wire {
+				if row["upgrade_id"] != test.id {
+					continue
+				}
+				reason, present := row["ineligible_reason"]
+				if !present || reason != test.reason || row["eligible"] != (test.reason == nil) || row["owned"] != test.owned {
+					t.Fatalf("upgrade state = %v, want explicit reason %v", row, test.reason)
+				}
+				return
+			}
+			t.Fatalf("missing upgrade %s", test.id)
+		})
+	}
+}
+
+func TestUpgradeProjectionExplainsAxisRequirementWithoutClientMath(t *testing.T) {
+	data, err := os.ReadFile("../../balance/testdata/axis-stack/economy-v5-fixture.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, routeCatalog := loadCandidateCatalogs(t)
+	state := axisProjectionState(t, catalog)
+	state.GatesCrossed = map[string]bool{"gate.t0_to_t1": true}
+	state.DoctrinesByTransition = map[string]string{}
+	state.LedgerFactKinds, state.RegionTraits = map[string]bool{}, map[string]bool{}
+	state.MeterBands = map[string]int{}
+	if _, err := state.Ledger.Apply(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: decimal.FromString("1e9")}}}); err != nil {
+		t.Fatal(err)
+	}
+	for _, input := range []int64{8, 10} {
+		state.AttainmentScoreRun = input
+		rows, err := upgradeRows(catalog, routeCatalog, state)
+		if err != nil {
+			t.Fatal(err)
+		}
+		found := false
+		for _, row := range rows {
+			if row.UpgradeID != "upgrade.pr_intern_2" {
+				continue
+			}
+			found = true
+			if row.Eligible != (input == 10) || input == 8 && (row.IneligibleReason == nil || *row.IneligibleReason != "requirement") || input == 10 && row.IneligibleReason != nil {
+				t.Fatalf("axis input %d: %+v", input, row)
+			}
+		}
+		if !found {
+			t.Fatal("missing PR intern row")
+		}
+	}
+}
 
 func loadCandidateCatalogs(t *testing.T) (*economy.Catalog, *routes.Catalog) {
 	t.Helper()
