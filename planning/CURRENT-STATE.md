@@ -35,13 +35,22 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
-- Garage OD-15's previously missing upgrade explanation now connects the server projector,
-  generated API, strict decoder and Desk. Real-service production-client checks bind actual
+- Latest finished product batch `267dbf55` connects actual pet-status events to the mounted
+  Pet Care surface and fixes an announcement collision: distinct events committed at the same
+  revision no longer suppress one another, while replays remain silent. Old-source regressions
+  fail; 158 affected Node and 814 Chromium/WebKit checks pass, alongside types/build/copy checks.
+  The whole real-service composed target passes; its final observer refinement also executes
+  in the passing focused Clout journey. One new sentence remains pending owner copy. The exact
+  range `c557a027` exclusive through `267dbf55` awaits designated review. This does not repair
+  the shared attendance-clock defect or complete Pet/Garage acceptance. The
+  [Garage log](garage-player-surfaces/log.md) owns the detailed evidence and limits.
+- Preceding Garage batch `c557a027`: OD-15's previously missing upgrade explanation connects
+  the server projector, generated API, strict decoder and Desk. Real-service production-client checks bind actual
   window/requirement reasons to visible text and disabled-button descriptions; the whole
   composed target passes. Three new explanatory strings remain visibly pending owner copy,
   and designated review remains open. The [Garage log](garage-player-surfaces/log.md) owns
   the complete batch results and exact range; this is not full Garage or release acceptance.
-- Latest finished product batch `069532f5` prevents HTTP caching of credentials across account
+- Account batch `069532f5` prevents HTTP caching of credentials across account
   creation, bootstrap, session creation and refresh, including failures and rate refusals.
   Old-source regressions fail; the corrected full Linux/amd64/Postgres Account and Gameserver
   populations pass with no skips, alongside affected native tests, vet and unchanged API
@@ -70,7 +79,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
   and node-exporter images absent. No image substitution, cleanup or successful Compose run
   is inferred; the owning Deployment log records this environment boundary. The previously
   executed native alert delivery tests are narrower evidence, not a substitute for this gate.
-- Latest full composed evidence `c78501d1` adds actual no-payment negative builds to the existing
+- Earlier composed test batch `c78501d1` adds actual no-payment negative builds to the existing
   composed CI target. Both built Buy callbacks (checkout fetch and PaymentRequest) must fail
   through the intended detector after native input and the authoritative purchase; unrelated
   failure or incomplete cleanup is rejected. The final local `make test-game-ui-composed`
