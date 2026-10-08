@@ -182,3 +182,56 @@ it.skipIf(!browser)("associates native PR progress with the correct intern befor
     expect(runtime.requests).toEqual([]);
   } finally { await dispose(); }
 });
+
+// CV9.4: opening the Codex is an actual keyboard action, not merely a
+// registered copy key. The current candidate text remains explicitly unadopted.
+for (const tier of [0, 1, 2]) {
+  for (const activation of ["{Enter}", " "]) {
+    it.skipIf(!browser)(`opens and closes PR Codex with native keyboard: tier ${tier}, ${JSON.stringify(activation)}`, async () => {
+      const { page, userEvent } = await import("vitest/browser");
+      await page.viewport(320, 720);
+      const runtime = new Runtime();
+      const current = withAxis(axisArm as GameUIAxisStackArm);
+      runtime.current = parseGameUISnapshot({ ...current, run: { ...current.run, tier } });
+      let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+      try {
+        fixture = await mounted(runtime);
+        const { target, app } = fixture;
+        const details = target.querySelector<HTMLDetailsElement>("section.axis details");
+        expect(details, "CV9 requires an operable PR Codex disclosure").not.toBeNull();
+        const summary = details!.querySelector<HTMLElement>("summary")!;
+        const content = details!.querySelector<HTMLElement>(".codex")!;
+        expect(summary.textContent?.trim()).toBe("?");
+        expect(summary.getAttribute("aria-label")).toBe("PENDING OWNER COPY: PR Intern help");
+        // Native summary roles differ between browsers; do not override the
+        // native disclosure role just to make a button-role query succeed.
+        expect(summary.getAttribute("role")).toBeNull();
+        expect(content.textContent?.trim()).toBe("PENDING OWNER COPY: axis-stack Codex");
+        expect(details!.open).toBe(false);
+        const prior = [...target.querySelectorAll<HTMLButtonElement>('section[aria-labelledby="generators-heading"] button')].at(-1)!;
+        prior.focus(); await userEvent.keyboard("{Tab}");
+        expect(document.activeElement).toBe(summary);
+        await userEvent.keyboard(activation); await settle();
+        expect(details!.open).toBe(true);
+        expect(content.getBoundingClientRect().height).toBeGreaterThan(0);
+        expect(document.activeElement).toBe(summary);
+        // A normal authoritative update must not close the player's help.
+        const refreshed = structuredClone(runtime.current);
+        app.fixtureSnapshot(parseGameUISnapshot({ ...refreshed, revision: refreshed.revision + 1 })); await settle();
+        expect(details!.open).toBe(true);
+        expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth + 1);
+        expect(target.textContent).not.toContain("codex.axis_stack");
+        await assertAxe(target, "open PR Codex");
+        await userEvent.keyboard(activation); await settle();
+        expect(details!.open).toBe(false);
+        expect(document.activeElement).toBe(summary);
+        await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+        expect(document.activeElement).toBe(prior);
+        expect(runtime.requests).toEqual([]);
+      } finally {
+        try { if (fixture) await fixture.dispose(); }
+        finally { await page.viewport(1280, 720); }
+      }
+    });
+  }
+}

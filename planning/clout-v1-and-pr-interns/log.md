@@ -2352,3 +2352,43 @@ Review by: Codex (test/draft first filter). Recorded by: Codex. Exact new range 
 `6559a3d5` through this containing commit needs designated cross-party review; the earlier
 origin experiment/draft and all older implementation ranges remain independent. No archival,
 feature/release promotion or push.
+
+## 2026-10-08 — CV9.4 native PR Codex help (RP-412)
+
+Baseline `143174da`. Accepted CV9.4 already requires `?` to open `codex.axis_stack`;
+the panel and catalog lacked both. Native details/summary now provides keyboard
+open/close, visible focus, a 44px target and wrapping content. Snapshot replacement
+preserves the open state; help submits no gameplay command. The accepted Garage
+manifest's 2026-09-25 placeholder allowance owns the explicitly `PENDING OWNER COPY`
+label/body. No final prose is adopted. Generated catalog/types/Go keys and deployment
+copy hash change together; constants hash, kernel, balance, save and CI are unchanged.
+
+Verification: old production fails all12 new keyboard cases (31733), with existing
+cases deselected. Final `make test-browser-focused BROWSER_TEST_FLAGS='test/axis-stack-browser.test.ts
+--project=chromium --project=webkit'` passes20 (19890): all three current eras,
+Enter/Space, Tab/Shift-Tab, 320px reflow, fresh-revision snapshot preservation,
+axe serious/critical floor and zero intents. `make test-clout-composed` passes
+(30766): actual built-client keyboard help, then PR purchase/render/reload/SQL
+and the existing Cosmetic/adoption/care journey. No HTTP or authoritative action
+was replaced with a fixture callback. Node driver syntax passes.
+
+Intermediate evidence retained: a test-side button-role assumption made two
+composed attempts fail (15001/62609) and12 mounted cases fail (86824). The native
+summary existed; the accessibility snapshot was a group. [W3C's summary rule](https://www.w3.org/WAI/standards-guidelines/act/rules/2t702h/)
+explicitly distinguishes native summary from button-role queries. Tests now select
+the native summary and bind its label plus real keyboard outcome; no explicit
+role override, retry, budget increase or changed product behavior hides that error.
+The initial unsorted catalog also failed generation and was sorted before rerun.
+
+Finished source types/build/boundary/copy checks pass (32257); final test-source
+typecheck also passes (85483, zero Svelte errors/warnings). Generation verifies
+661 keys and the exact copy hash, retaining614 visible orphan warnings. Current
+constants hash is unchanged. These are bounded local checks, not full/hosted CI,
+manual assistive-technology acceptance, adopted Codex content, projected factors,
+once-only hint, coalesced notices, content mint or whole Clout/1.0 completion.
+RP-307's27 partition failures and the other owner/author holds remain separate.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
+`143174da` exclusive through this containing implementation/test/record commit
+requires designated cross-party review; earlier ranges remain independent.
+No completion checkbox, acceptance/archive, push or release claim.

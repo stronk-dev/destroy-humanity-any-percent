@@ -112,6 +112,15 @@ and a refresh that makes one intern owned. This is fixture-panel evidence, not
 the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
 [implementation log](../planning/clout-v1-and-pr-interns/log.md).
 
+The panel also has a native `?` disclosure for `codex.axis_stack`. Tab reaches its
+summary, Enter/Space open and close it without a gameplay request, and ordinary
+snapshot refresh preserves the open state. Its accessible label and Codex body
+are explicitly `PENDING OWNER COPY` candidate entries, not adopted player text.
+The control has a visible keyboard-focus outline and reflows at320px. Controlled
+Chromium/WebKit checks cover all three current eras; the real-service PR fixture
+also exercises the production-built disclosure. This implements the help
+mechanism, not the still-unwritten final Codex or full accessibility acceptance.
+
 ## Real-service PR fixture
 
 `make test-clout-composed` selects the existing unminted economy-v5 fixture in
@@ -223,7 +232,7 @@ UI obligations, assistive-technology proof or whole-feature/release acceptance.
 - Served-epoch activation and the default composed PR purchase/rendering journey
   (CV9 / AC11). The manual real-service fixture journey now exists, but does not
   adopt a production epoch or complete all CV9 obligations (projected factors,
-  once-only contextual hint, Codex and coalesced re-attainment notices).
+  once-only contextual hint, adopted Codex content and coalesced re-attainment notices).
 - Harness relevance and observation rows (CV10 / AC9).
 - A production mint.
 - All copy: the keys named in RFC CV8 are owner-authored and still pending.

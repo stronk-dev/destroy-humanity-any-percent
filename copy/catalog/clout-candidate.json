@@ -18,6 +18,22 @@
    "tone": "corporate"
   },
   {
+   "key": "axis_stack.help.label",
+   "text": "PENDING OWNER COPY: PR Intern help",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "axis_stack.help.symbol",
+   "text": "?",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
    "key": "axis_stack.input_frame",
    "text": "Achievement attainment this run: {value} of {cap}",
    "params": [
@@ -86,6 +102,14 @@
   {
    "key": "cap.axis_stack_input",
    "text": "Achievement attainment counts up to a fixed cap.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "codex.axis_stack",
+   "text": "PENDING OWNER COPY: axis-stack Codex",
    "params": [],
    "era_variants": null,
    "provenance": [],

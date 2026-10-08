@@ -280,6 +280,24 @@ async function assertAxis(page, { input, product, factors, owned = false }) {
 
 async function witnessAxis(page, requests) {
   await assertAxis(page, { input: 2, product: "1e0", factors: ["1.05e0", "1.04e0"] });
+  const help = page.locator("section.axis details");
+  // Native summary does not expose a button role in every browser. Keep the
+  // native semantics and test its label and actual keyboard behavior instead.
+  const opener = help.locator("summary");
+  assert.equal(await opener.count(), 1, "built PR Codex must have one native summary");
+  assert.equal(await opener.getAttribute("aria-label"), plainFixtureCopy("axis_stack.help.label"));
+  assert.equal(await opener.getAttribute("role"), null);
+  const intentsBeforeHelp = requests.filter((request) => request.method() === "POST" && new URL(request.url()).pathname === "/api/v1/intents").length;
+  assert.equal(await help.evaluate((node) => node.open), false);
+  await opener.press("Enter");
+  assert.equal(await help.evaluate((node) => node.open), true);
+  assert.equal(await help.locator(".codex").isVisible(), true);
+  assert.equal(await help.locator(".codex").innerText(), plainFixtureCopy("codex.axis_stack"));
+  await opener.press("Space");
+  assert.equal(await help.evaluate((node) => node.open), false);
+  assert.equal(requests.filter((request) => request.method() === "POST" && new URL(request.url()).pathname === "/api/v1/intents").length, intentsBeforeHelp,
+    "opening PR help must not submit gameplay");
+  console.info("Clout CV9: built-client native PR Codex open/close passed (owner copy pending)");
   const pr = page.locator('section[aria-labelledby="upgrades-heading"] article').filter({ has: page.getByRole("heading", { name: plainFixtureCopy("upgrade.pr_intern_1.title"), exact: true }) });
   assert.equal(await pr.getByRole("button").isDisabled(), true, "PR purchase below required attainment is disabled");
   const generators = page.locator('section[aria-labelledby="generators-heading"] article').filter({ has: page.getByRole("heading", { name: plainFixtureCopy("generator.beige_tower.title"), exact: true }) });

@@ -25,6 +25,13 @@ The next accounting step is the [Production Accrual Conservation draft](../../rf
 resolve episode/settlement meaning, origin lifetime and the exact accounting/compatibility contract, rather than
 repeat completed fidelity studies. It is a proposal, not implementation authority or AC6 completion.
 
+RP-412 bounded UI follow-up: CV9.4's native `?` help mechanism now opens/closes
+`codex.axis_stack`, preserves open state across snapshot replacement and submits no gameplay.
+Affected Chromium/WebKit20 and the production-built real-service Clout journey pass.
+The label/body remain explicitly pending owner copy under the accepted placeholder allowance;
+projected factors, contextual hint, coalesced notices and full CV9 acceptance remain open.
+The owning log records the red baseline, corrected test assumption and pending review range.
+
 2026-10-08 bounded follow-up at `32f7518c`: test whether projecting the actual evaluator
 from an unchanged encoded Company origin can advance the visible state through the actual
 ledger, without directly replacing balances. Population: the original 128 seeds/cuts, plus

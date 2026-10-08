@@ -12,6 +12,10 @@
 
 <section class="axis card" aria-labelledby="axis-heading">
   <h2 id="axis-heading">{t("axis_stack.panel.title", {}, era)}</h2>
+  <details class="axis-help">
+    <summary tabindex="0" aria-label={t("axis_stack.help.label", {}, era)}>{t("axis_stack.help.symbol", {}, era)}</summary>
+    <p class="codex">{t("codex.axis_stack", {}, era)}</p>
+  </details>
   <p>{t("axis_stack.formula.caption", {}, era)}</p>
   <p id="axis-why"><small>{t("axis_stack.tooltip.why", {}, era)}</small></p>
   <p>{t("axis_stack.input_frame", { value: Math.min(arm.input_value, arm.input_cap), cap: arm.input_cap }, era)}</p>
@@ -37,6 +41,9 @@
   .axis { display: grid; gap: var(--cc-space-sm); padding: var(--cc-space-lg); border: var(--cc-border-width) var(--cc-border-style) var(--cc-chrome-window_border); border-radius: var(--cc-border-radius); background: var(--cc-chrome-window_bg); }
   h2, p { margin: 0; }
   h2 { font-family: var(--cc-type-font_display); }
+  summary { display: grid; place-items: center; inline-size: max-content; min-inline-size: 44px; min-block-size: 44px; cursor: pointer; }
+  summary:focus-visible { outline: 2px solid var(--cc-color-accent); outline-offset: 2px; }
+  .codex { overflow-wrap: anywhere; }
   .interns { display: grid; gap: var(--cc-space-sm); margin: 0; padding: 0; list-style: none; }
   .interns li { display: grid; gap: var(--cc-space-xs); }
   progress { inline-size: 100%; accent-color: var(--cc-color-accent); }
