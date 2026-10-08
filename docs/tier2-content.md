@@ -56,6 +56,12 @@ on OD-1.
 [2 h, 3 h] envelope and pins its report in `balance/testdata/t2/pacing-calibration-v1.json`.
 The owner ratifies the literal from that report (§M3).
 
+The independent non-update reproduction covers seven literals and 672 seed runs. None of
+those sampled literals satisfies both personas' envelope; at the provisional `1e7`, p50 is
+5,054,000 ms for Chaos and 2,605,000 ms for Casual. This finite sweep does not prove that every
+literal in `[1e7,1e9)` fails. It establishes neither an adopted balance nor full §P2 acceptance:
+Headcount/allocation and the new reference policy remain held.
+
 ## Not yet implemented
 
 - §H headcount, the P4 seats row and P5 (OD-1).

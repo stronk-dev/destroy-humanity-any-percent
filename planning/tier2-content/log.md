@@ -423,3 +423,34 @@ This is a proposal, not authority to filter v1, loosen assertions, regenerate go
 The original seven-literal C5 reproduction and an existing candidate-owned branch diagnostic
 remain live on their original handles; no result for either is claimed here. No software suite
 rerun for this evidence/docs-only checkpoint, acceptance checkbox, lifecycle/archive or push.
+
+## 2026-10-08 — C5 bounded designated approval, negative pacing reproduced
+
+Review by: Codex (designated cross-party reviewer of Claude's original C5 implementation).
+Recorded by: Codex. Verdict: APPROVED for `5ee36056^..5ee36056`'s bounded runner, tests and
+seven-literal measurement, with the finite-sample interpretation below. This does not approve
+full §P1/§P2, Headcount, the C6 implementation or later Codex corrections. The addendum
+`90a54f55^..90a54f55` is inspected as a producer record; its separate 5e7/7e7 probe was not
+independently rerun and is not included in this executed-measurement approval.
+
+At source `e6a64aff`, non-update `make test-go GO_PACKAGES='./harness'
+GO_TEST_FLAGS='-count=1 -run TestTier2PacingCalibration -timeout 90m -v'
+CLOUD_CLICKER_T2_PACING=1 T2_PACING_UPDATE=0 T2_GATE_AMOUNTS=`67961 passes in 1537.198s.
+All 14 populations/672 seeds complete without an invalid-measurement abort; the test's actual
+byte comparison matches the committed report, SHA256
+`d0cb00515879a4a26d08866b0f419df3dedb2e1d3a512ec72c7b7a3a78326caa`.
+Subsequent edits during the run were evidence/docs only; runner/input paths remain unchanged.
+Earlier cold mechanics/refusal checks83704 and full default harness/vet48178 also pass.
+
+No sampled literal satisfies the two-persona envelope. At provisional 1e7, Chaos p50 is
+5,054,000 ms and Casual 2,605,000 ms; at the four sampled literals ≥1e8, Chaos reaches 0/64.
+Unreached samples remain visible and count as infinity, not exclusions. The historical
+“no literal in [1e7,1e9)” assertion exceeds this finite evidence: the supported statement is
+“none of the seven sampled literals satisfies both envelopes.” Current docs reconcile that
+interpretation; the append-only producer history is retained. No new bound, clock, policy,
+balance, content mint, acceptance checkbox or archival is authorized by reproducibility.
+The product rollup also now calls C3's known proof in-memory, not real-service, consistent
+with the original C1–C4 review's explicit boundary.
+
+Next: finish the live branch diagnostic; C6 correction RP-432 still needs cross-party review,
+RP-433 needs an explicit policy/population amendment, and pacing/Headcount choices remain open.

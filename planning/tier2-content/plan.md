@@ -8,8 +8,8 @@ held until it is. Fixture-first: candidates live under `balance/testdata/t2/`; e
 (M1–M4 owner-gated).
 
 **Review checkpoint, 2026-10-08:** Codex independently approves the original C1–C4 candidate,
-era and control changes in the four exact commit ranges cited in the latest owning log entry.
-This is bounded implementation review, not AC0–AC10 completion: C5/C6, later corrections,
+era and control changes and the bounded C5 pacing implementation/reproduction in the exact
+ranges cited in the owning log. This is bounded review, not AC0–AC10 completion: C6, later corrections,
 actual candidate-content browser/service integration, Headcount, adopted copy and the mint
 remain outside that approval. The current screen fixtures change the tier on older content;
 do not cite them as a played or fully rendered Tier-2 catalog. No archival is authorized.
@@ -33,7 +33,9 @@ six Tier-2 rows are all instrument-affected; it is not a clean content-dominance
   energy-bar chrome stub with curtain; candidate copy (§E4 keys).
 - [~] C5 — Harness policy registry v2 subset (§P1 `exit_rule: t01_c32_readiness_once`,
   `offer_rule: ignore`, T2 gate crossing) and the T2 pacing scenario; measurement report for the
-  `gate.t1_to_t2` literal against the [2h,3h] envelope (§P2, OD-7/OD-8).
+  `gate.t1_to_t2` literal against the [2h,3h] envelope (§P2, OD-7/OD-8). Bounded implementation
+  reviewed; all seven sampled literals reproduce and fail the envelope. Full policy/allocation
+  scope and owner balance adoption remain open.
 - [~] C6 — (measured; gate FAILS, see log C6) Relevance: T0 identity vs epoch 8 on the candidate bundle; T1–T2 combined scenario
   report (§P3).
 - [ ] Held — §H headcount, P4 seats row, P5, AC2/AC3 (headcount parity/partition) — OD-1.
