@@ -2,7 +2,15 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
-Current checkpoint (2026-10-08): RP-385's native-pointer/refresh false-failure route is reproduced
+Current checkpoint (2026-10-08, `2fff9748`): RP-411's recorded-context admission correction is
+committed and locally verified in both replay runtimes and the real Postgres Cosmetic population.
+Valid receipt/event/state bytes remain unchanged; malformed context is refused without mutation.
+Full production remains red on the existing 27 Clout partition cases; the historical kernel guard
+also remains red. The latest log owns commands and limits. Remaining C4 review, author-body
+reconciliation, N5 negative coverage, content and designated correction reviews stay open;
+this is a finished bounded repair, not whole-feature approval or archival.
+
+Preceding checkpoint (2026-10-08): RP-385's native-pointer/refresh false-failure route is reproduced
 in the actual mounted host in Chromium/WebKit. G10 equip/unequip now reuse the one-shot guarded
 DOM activation used for Buy; exact receipts, persisted wearing/overlay and the same action
 deadline remain. Final46 affected native checks, types and whole real-service composed28799

@@ -35,6 +35,13 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Latest code batch `2fff9748` corrects cosmetic replay-input admission: Go now rejects missing,
+  null, unsafe or extraneous recorded Company context consistently with TS. Shared valid cases
+  preserve full receipt/event/state bytes; rejected cases cannot mutate state. Selected real
+  Postgres command, retry/conflict, Exit, Soul recovery and history tests pass, as do affected
+  client tests, types, vectors and vet. The broader production population still fails the same
+  27 Clout partition cases, and the historical kernel guard remains red. The Cosmetic log owns
+  the exact commands and pending designated review; this does not complete Cosmetic acceptance.
 - Garden pending and response-focus repairs (RP-409/RP-410) are locally verified: native
   pending activation cannot duplicate a command, menu handoffs respect newer choices, and
   response rendering recovers usable focus when Harvest all disappears or substrates lock.
