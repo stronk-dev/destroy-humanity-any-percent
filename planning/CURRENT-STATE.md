@@ -87,8 +87,10 @@ operations remain required alongside that construction, not optional end-stage p
   API, not a new async endpoint or complete Minigame Platform acceptance. The
   [owning log](minigame-api-and-surface/log.md#2026-10-08--bind-the-public-pitch-lifecycle-to-its-stored-outcome)
   records the exact pending designated-review range. Hosted run 37778647275 was rechecked
-  read-only for this overview: still terminal red, four jobs pass and client/server fail;
-  newer local commits have not been pushed. No full-suite rerun or release promotion is
+  read-only for the earlier overview: terminal red, four jobs pass and client/server fail.
+  At that inspection newer commits were local; origin/main has since advanced to `cbd2069f`
+  by an external push during the Recovery work. Codex did not perform that push and has not
+  rechecked hosted results at that newer coordinate. No full-suite rerun or release promotion is
   inferred from this documentation reconciliation.
 - Latest native-care checkpoint (2026-10-08), range after `c977ad36`: RP-440's
   global busy guard discarded a completed trusted click; RP-441's inserted busy message
