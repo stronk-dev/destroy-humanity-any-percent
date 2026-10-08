@@ -2286,3 +2286,36 @@ Review by: Codex (draft/diff self-inspection). Recorded by: Codex. The new draft
 `10d94e70` through this containing commit needs designated cross-party review before acceptance;
 it does not approve earlier implementation ranges. Documentation links and `git diff --check`
 verified before commit. No archival, push or release claim.
+
+## 2026-10-08 — Actual evaluator/ledger origin feasibility
+
+Baseline `32f7518c`; bounded population declared in the owning plan before execution.
+New test-only `axis_origin_projection_test.go` restores an unchanged whole-Company origin,
+uses the actual contributions/evaluator, and advances visible balances only through
+`Ledger.ApplyAccrual`. Every cut checks exact targets, reproducible receipt deltas, the
+five non-ledger evaluation outputs, full encoded Company equality and ordinary restoration.
+All 128 original seeded profiles pass this candidate; the ordinary rebased control retains
+27 differences. Twelve provider/burst/mode intersections execute six cuts, positive permits
+and literal provision counts/carry. Four single-episode offline cases check cap/bank floor
+and saturation; two debit/re-anchor cases require literal payouts without capped overflow.
+
+Executed root checks: focused `make test-go GO_PACKAGES='./production'
+GO_TEST_FLAGS='-count=1 -run TestAxisOriginProjection -v'` PASS (0.676s, all 146 profiles);
+`make vet GO_PACKAGES='./production'` PASS. Finished package
+`make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1'` remains RED (36.422s,
+exit 2), with only the original 27 partition failures reported. No regression is skipped,
+tolerated or replaced. `git diff --check` passes. This host run is not SQL or hosted CI proof.
+
+The draft now states the bounded algorithm/write set and a material integration constraint:
+pre-advancing before unchanged ApplyLogged would suppress its elapsed-driven accrual hooks;
+running hooks on every cut would instead add semantic events. Neither is an allowed shortcut.
+The accepted repair must bind logical settlement results/once-only hooks and the closed
+persisted mutation boundary. The experiment is Go-only, with no external/active-buff inputs;
+whole-Company JSON is diagnostic, not a proposed production schema or storage bound. No
+production, numeric, save/replay version, content, CI or recorded-artifact bytes changed.
+
+Next: resolve the minimal durable context and settlement-result contract, then obtain
+acceptance before implementing it. RP-308 adoption remains unanswered; RP-307 remains red.
+Review by: Codex (test/draft first filter). Recorded by: Codex. Exact new range after
+`32f7518c` through this containing commit needs designated cross-party review; earlier
+ranges remain independent. No feature completion, archival, push or release claim.

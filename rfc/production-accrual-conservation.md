@@ -34,6 +34,11 @@ Completed R-012 research establishes these bounded facts:
   reconstructed raw rates. This does not prove a new frozen-context schema or codec.
 - Actual logged Go/TS actions, buffs, modes, nonzero permits, provisioning, Exit and
   transactional sequences have bounded evidence. None implements conservation.
+- A test-only whole-Company origin now projects all 128 original profiles through
+  the actual evaluator and ledger, preserving the original one-shot final state.
+  Twelve multi-resource provider/burst/mode intersections, four single-episode
+  offline cases and two cap/debit cases also pass. This is bounded Go feasibility,
+  not the proposed production codec or a repaired `ApplyLogged` path.
 
 Sources: [anchor](../planning/clout-v1-and-pr-interns/anchor-research.md),
 [rates and SQL](../planning/clout-v1-and-pr-interns/rate-and-sql-research.md),
@@ -78,12 +83,50 @@ the ledger at every minute would introduce extra quantization compared with the 
 one-shot evaluation; simply resetting at every producer change is not yet a solution.
 Multi-resource accounting and the catalog's original source/slot order remain mandatory.
 
+#### Bounded executable algorithm and write set
+
+`server/production/axis_origin_projection_test.go` exercises the following candidate:
+
+1. Restore the unchanged encoded origin and reconstruct its contributions using the
+   actual pinned catalog. Evaluate it once from the original cursor to the requested time.
+2. For each resource, form a canonical nonnegative difference between that projected
+   balance and the currently visible balance. Submit those entries to `Ledger.ApplyAccrual`;
+   require the committed balances to equal the projected targets exactly and every receipt
+   delta to reproduce its target. A failed exact commit is a failure, not a direct overwrite.
+3. Transfer only Evaluate's non-ledger outputs: `ComputeCreditMS`,
+   `ComputeBurstRemainingMS`, `GeneratorProvisioned`, `ProvisionRemaindersPPM` and
+   `EvaluatedThrough`. Require complete encoded Company equality with the one-shot projection.
+4. Restore the visible state after every cut, retaining the distinct unchanged origin.
+   At a real debit boundary, settle first and create a new origin from the post-debit state.
+
+The original branch that instead rebases at each cut retains all 27 discrepancies.
+The additional intersection checks require positive permits, expired burst, and literal
+provision counts/remainders; the bank cases check floor/saturation, and the debit cases
+require literal post-debit payouts rather than recovery of earlier capped overflow.
+
+This experiment freezes the entire existing Company only to avoid guessing a partial
+schema. It uses no external/active-buff contributions, SQL or new versioned fields. It
+does not establish a production storage bound or prove that all admitted numeric targets
+can be reached through a quantized difference. The exact minimal context and that domain
+obligation remain acceptance blockers, not implicit conclusions of these 146 profiles.
+
 ### C3 — Settlement, caps and receipts are part of the repair
 
 Specify which applied actions settle the old interval before a debit or input change,
 and which origin is used afterward. A new PR factor cannot reprice the prior interval.
 Rejected actions must preserve the complete state; internal evaluations cannot silently
 become settlement actions. Mode/episode changes follow C1, not a convenient reset rule.
+
+Do not implement this by pre-projecting the live state before calling the unchanged
+`ApplyLogged`. The existing transition evaluates and then passes its `EvaluationResult`
+to the closed Prestige → Faction → Guild → Commons hook chain. Pre-advancing the cursor
+would make that evaluation report zero elapsed time and omit legitimate hooks. Conversely,
+running those hooks for every internal projection would turn cuts into additional semantic
+events. The accepted repair must bind elapsed/production/banking/progress and resource
+receipts to the logical settlement interval, preserving event order and once-only hooks.
+Internal work cuts do not authorize unlogged persisted Company writes, new commands or
+extra revisions. Any durable partial-work protocol must be specified explicitly rather
+than added beside the existing closed mutation boundary.
 
 The ledger remains the atomic resource authority. A projected balance must have a
 canonical nonnegative accrual receipt whose delta re-adds to that exact balance.
@@ -147,3 +190,5 @@ identity extend the implementation contract; they are not already implied save f
 ## Changelog
 
 - 2026-10-08: decision draft from completed R-012 evidence and current cold regressions.
+- 2026-10-08: add actual evaluator/ledger origin projection feasibility and the explicit
+  closed-hook/persistence integration boundary. Still draft; no runtime authority.

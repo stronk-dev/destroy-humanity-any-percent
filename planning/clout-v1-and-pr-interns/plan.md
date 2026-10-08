@@ -25,6 +25,16 @@ The next accounting step is the [Production Accrual Conservation draft](../../rf
 resolve episode meaning and the exact durable accounting/compatibility contract, rather than
 repeat completed fidelity studies. It is a proposal, not implementation authority or AC6 completion.
 
+2026-10-08 bounded follow-up at `32f7518c`: test whether projecting the actual evaluator
+from an unchanged encoded Company origin can advance the visible state through the actual
+ledger, without directly replacing balances. Population: the original 128 seeds/cuts, plus
+12 provider/burst/mode intersections with nonzero permits and six cuts across minute boundaries,
+four single-episode offline cap/bank cases, and two cap/debit/re-anchor cases. Require exact
+full-state agreement at every cut and receipts that reproduce each balance; the ordinary
+rebased branch must retain the original 27 differences. This can settle only bounded Go
+evaluation/ledger feasibility, not the production field schema, hook/action semantics, SQL,
+TS parity, operating limits or RP-308 adoption. No new raw artifact or runtime mutation.
+
 Under A, CV6 (the Clout ledger) and CV7 (the social seam) are **not** implemented: the RFC's CV0
 table marks the ledger "no" for A, and the acceptance rejects B/C. The Gaia-law test (AC4) still
 lands, with the allowed writer set empty.
