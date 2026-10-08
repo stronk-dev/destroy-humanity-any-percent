@@ -10,9 +10,16 @@ We are integrating and hardening the Garage, with substantial later-tier constru
 ahead. The Tier-2 research/review checkpoint is finished at `0d9a9f43`: bounded original C1–C5
 approval, independently reproduced negative pacing/relevance evidence, a locally corrected
 inherited-policy test and an unresolved comparison-population contract. This is not a completed
-Tier-2 player journey or a new release milestone. The next concrete integration boundary is
-native Garden harvest through the real API and persisted result, with explicitly controlled
-initial state and unchanged growth/balance; implementation has not started at this checkpoint.
+Tier-2 player journey or a new release milestone. Native Garden harvest through the built
+browser, real API and Postgres is now locally verified with explicitly controlled maturity:
+single and batched harvest, actual payout/history, retry refusal and rendered reload. The
+whole existing composed lane passes with this added population, and a disconnected native
+harvest callback fails. Growth/balance is unchanged; this is not natural maturation, production
+activation or designated acceptance. The existing session-expiry diagnostic still confirms
+absent automatic renewal. The [Garden log](minigame-server-garden/log.md) owns the new range
+after `4b2c72a0`, failed instrumentation attempts and pending review. Continue remaining
+accepted Garage integration; renewal and unresolved content/clock contracts remain separate
+gates, not permission to shorten growth or invent policy.
 Real-service PR purchase/render/reload/SQL fixture proof now runs in the existing composed
 CI target. The locked-Pitch witness now handles independently reproduced Exit-offer preemption
 without counting it as rejection-notice proof; the latest aggregate run executes all three

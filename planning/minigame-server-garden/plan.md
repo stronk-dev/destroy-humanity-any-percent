@@ -14,6 +14,14 @@ passes, so passive input/focus diagnostics are added without claiming a product 
 repeat unrelated help/loader diagnostics or the renewal-blocked long-session journey. SG13, RP-222 and browser renewal remain
 separate holds; G1–G7 below still mean implementation presence, not feature acceptance.
 
+**Current integration batch:** `test-garden-harvest-composed` extends the existing real-service
+driver with explicit controlled maturity, native single/batched harvest, actual cross-stream
+cash/events/log/window checks and persisted/rendered reload. The existing composed CI target
+includes it; no growth/catalog/auth policy changes. This does not replace the natural
+fifteen-minute journey or its renewal hold, replay the seeded setup, or complete Garden.
+The latest owning log records actual execution, RP-434/RP-435 driver corrections and the
+designated-review handoff; earlier pending ranges remain independent.
+
 **Historical bounded instrument work, 2026-10-07:** RP-348 under `a9fadedd` adds
 full child-result/elapsed diagnostics without changing any raw input, admission
 assertion, loader program, 1000ms guard or 10000ms outer bound. Two real Node

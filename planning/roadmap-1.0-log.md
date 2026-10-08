@@ -5035,3 +5035,15 @@ harvest→real API→persisted result boundary; no implementation has started at
 Verification: source/plan/log and diff/whitespace inspection, no software suite for editorial
 records. Review by: Codex (editorial reconciliation); Recorded by: Codex. No new acceptance,
 archive, content mint, hosted-CI result, push or release claim.
+
+## 2026-10-08 — Native Garden harvest integration, controlled maturity
+
+Range after `4b2c72a0` adds the missing built-browser → real API → Postgres harvest proof
+to the existing composed lane, not a new framework. Native single/batched harvest, actual
+payout/history, idempotent retry/refusal and persisted/rendered reload pass; maturity is an
+explicit disposable-DB setup, not natural growth. Final whole composed lane and existing
+session-expiry diagnostic pass; absent automatic renewal remains a confirmed gap. The
+[Garden log](minigame-server-garden/log.md) owns commands, retained red instrumentation
+runs, disconnected-callback evidence and pending designated review. Current-state/roadmap
+entry points reflect this bounded construction, not another finished tier. All processes
+terminal; no acceptance, archive, content mint, push or hosted-CI/release claim.

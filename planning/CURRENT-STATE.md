@@ -24,7 +24,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
 | Early-game player loop | Production-built browser client with real Postgres/WebSocket journey covers purchases, first gate, scripted and elective early endings, next Company and reconnect. Fiscal, active-play opportunity and Pitch are exercised through DOM controls. | Natural pacing/long-session recovery, remaining Garage acceptance and current-range designated reviews. The main journey verifies exact built client bytes, but not a Caddy/image/clean-host release artifact; accelerated fixture journeys are not complete nine-tier playthroughs. |
 | Tier 2 / incorporation | Candidate economy/content, routes, era UI and in-memory gate/incorporation proof exist. Original C1–C4 and the C5 pacing subset have bounded Codex designated approval. The seven-literal pacing report and combined relevance diagnostic independently reproduce; neither passes its acceptance floor. Headcount has a locally verified source-independent Go/TS allocation library, not wired into gameplay. | Pacing/relevance, RP-433's T0 policy-population conflict, actual candidate-content browser/service integration, adopted copy and content mint; epoch 9 is not minted. Headcount's seat-source choice and sibling contract reconciliation remain held; its live allocation system is not built. |
 | Prestige / Reputation | Exit/reset foundations and earlier acceptance repairs are reviewed. Reputation nodes, plans, starters, persistence and UI have fixture-first implementations. | Career/relevance evidence remains red: the latest hosted maintenance run reproduces six starter timing ties and report drift. Run End's balance/carry display contract reconciliation, full feature review and adopted content also remain. The two early endings are not the three designed final endings. |
-| Minigames | Pitch has a real API-to-player-to-payout journey. Soul, Typer, Arcade and Garden have substantial engines, components and bounded persistence/lifecycle tests. | Typer/Arcade public API and host integration; shared wire-contract decisions; Garden state-evolution clarification; authored content/mint, whole-player journeys and accessibility. Pinball remains a draft. |
+| Minigames | Pitch has a real API-to-player-to-payout journey. Soul, Typer, Arcade and Garden have substantial engines, components and bounded persistence/lifecycle tests. Garden now also has locally verified native single/batched harvest through the built browser, real service and Postgres, including payout, retry and rendered reload; maturity is explicitly prepared test state. | Typer/Arcade public API and host integration; shared wire-contract decisions; Garden natural growth/long-session recovery and state-evolution clarification; authored content/mint, remaining whole-player journeys and accessibility. Pinball remains a draft. |
 | Pet care / cosmetics | Controlled real-service Buy → adoption → equip/care → reload works; several actual UI, race and timing defects are locally corrected. Pet status announcements connect an actual stored care event through WebSocket to the mounted production client. Purchase and adoption completion respect newer keyboard focus; saved pet reads/reloads/Desk remounts no longer repeat adoption speech. | Pet/API schema reconciliation, shared attendance-clock repair (RP-365), adopted copy/content and consolidated review. A passing journey does not close the clock defect. |
 | Clout / achievements | Achievement foundation, axis hooks and state/API exist. A built-client real-service fixture exercises native PR purchase, exact multiplier rendering, reload and the actual SQL head/event, with a failing producer-severing control. PR factors/progress now sit on the actual purchase cards. Native `?` help and once-per-transition re-attainment notices are locally verified through the real-service fixture; their text remains pending owner copy. | RP-307 numeric partition correctness, offline-episode meaning, projected-factor/hint definitions (RP-427), truthful role/harness bindings and measured/adopted content/balance. Current published-source hosted server CI still fails the 27 Clout partition cases. |
 | Account / API / transport | Account security, backend deletion, revocation, exact-response and transport recovery witnesses were independently approved in earlier ranges. Generated API dispatch and newer consumers are partly implemented. Credential responses now consistently refuse HTTP caching, locally verified against real Postgres; that new range awaits designated review. A recovery player-flow/storage/copy proposal is now drafted, not accepted or built. | Complete generated-client/route migration, startup failure and browser renewal contracts, visible recovery-code/recover-existing-account UX and long-session proof. |
@@ -49,9 +49,19 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Finished source checkpoint: `0d9a9f43` (2026-10-08), clean working tree and nine commits
-  ahead of the locally recorded `origin/main` before this editorial update. All Tier-2
-  measurement processes are terminal; no Garden integration implementation is in progress.
+- Latest construction checkpoint (2026-10-08), range after `4b2c72a0`: the existing composed
+  lane now includes native Garden single/batched harvest against the real API and Postgres.
+  Final whole lane passes, including existing player/Cosmetic/Clout journeys and no-payment
+  negatives. The Garden case independently binds fifteen cash, two sends, receipts/events/logs,
+  unchanged-state retries and rendered reload; disconnecting its native harvest callback fails.
+  Its explicit mature-state setup is not elapsed growth, replayable maturation history or
+  production content activation. The shared driver's session-expiry diagnostic also passes:
+  absent automatic renewal remains confirmed, and only a test-operated refresh recovers.
+  All processes are terminal. The [Garden log](minigame-server-garden/log.md) owns exact results,
+  failed instrumentation attempts and the pending designated review. No feature acceptance,
+  archive, hosted-CI success or release milestone follows.
+- Finished research checkpoint: `0d9a9f43` (2026-10-08). All Tier-2 measurement processes
+  are terminal.
   Original C1–C4 and bounded C5 have designated approval. C6 remains CHANGES REQUIRED for
   the inherited-policy test hole; Codex's regression-tested correction at `e6a64aff` needs
   the other party's review. The seven-literal pacing report and combined relevance diagnostic
@@ -61,9 +71,10 @@ operations remain required alongside that construction, not optional end-stage p
   decision, not balance retuning or golden regeneration. The [Tier-2 log](tier2-content/log.md)
   owns commands, digests, results and exact review ranges. No new playable tier, minted content
   or release milestone follows from completing this research/review checkpoint.
-- Latest published source recorded here: `20a57019` (2026-10-08). The nine local commits add
+- Latest published source recorded here: `20a57019` (2026-10-08). Local commits add
   Garden diagnostics, the Arcade admission correction, full-backup evidence, bounded Tier-2
-  review/reproduction and the inherited-policy test correction, with associated records.
+  review/reproduction, the inherited-policy test correction and controlled-state Garden harvest
+  integration, with associated records.
   The earlier large unpushed counts are historical, not the current branch state. Codex did
   not push during this reconciliation. No hosted result is recorded here for those local commits.
   [Hosted CI 37763502364](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37763502364)

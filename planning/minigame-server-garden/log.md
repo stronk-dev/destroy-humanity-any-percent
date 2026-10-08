@@ -2966,3 +2966,51 @@ exclusive through this test/record commit; designated cross-party review remains
 RP-430 stays OPEN. Next recurrence must use the retained focus/native-input evidence to
 distinguish delivery, control state and callback failure; no speculative product fix.
 CURRENT-STATE records the complete hosted result and corrects obsolete unpublished claims.
+
+## 2026-10-08 — Native harvest through the real service, explicit mature-state fixture
+
+Under SG6/SG9/SG10/SG13, extend the existing composed driver, not a second framework.
+`make test-garden-harvest-composed` uses the exact existing grown bundle and enters the normal
+`test-game-ui-composed` push/PR target. Actual Account/bootstrap, WebSocket, Fiscal harvest/
+unlock and native plant/uproot run first. One explicit disposable-DB Founder revision changes
+only three planted strains' age/maturity fields; full-head equality checks that setup does not
+grant cash, change clocks/salt or touch other state. It is not natural growth or replayable
+maturation history. No production, balance, catalog, API, auth or kernel bytes change.
+
+Enter harvests one plant; Space harvests two together. Literal units and independently formed
+hashes bind browser receipts, both saved heads/events/logs and cross-stream coordinates. Three
+five-unit plants yield fifteen cash with exactly two sends. Diagnostic HTTP retry returns
+identical bytes; changed-body retry refuses without changing heads/window or appending events,
+logs/intents. Reload retains empty plots/substrate and actual server/rendered cash15. The
+existing verifier checks delivered build/Worker bytes; served API/socket JSON excludes salt.
+
+Retained failed instrumentation:25009 exposed RP-434's old nonexistent Founder-payload intent
+ID; corrected to the actual separate column and exact canonical fields.29314 exposed my new
+rejection lookup at the wrong envelope level; corrected without touching response semantics.
+88723 and full composed87205 exposed RP-435's passive Chromium body lookup across navigation.
+The first drain and tracked-request attempts were insufficient (77273/31000).94956 shows
+complete local-proxy responses despite a headerless browser observation. Record complete JSON
+in that existing proxy instead; native receipts remain browser-read and consumer outcomes
+remain mounted-DOM checks. Browser-closed advisory reads are explicitly counted and excluded
+from natural completed-read checks, not silently called consumed. Incomplete upstream or
+other unfinished responses fail. Ultimate browser-protocol causality/reliability is not claimed.
+
+Focused proxy-observer run92984 passes in7.319s. Disconnecting the actual Garden harvest
+callback fails11991 and, after observer replacement,63980 with zero emitted harvest intents;
+source restored byte-identically before final checks. No longer timeout or retry-to-green.
+Final `make test-game-ui-composed`93007 exits0: existing Node controls, eight real-Postgres
+refresh cases, selected Postgres populations, main player journey, both Cosmetic/Clout
+journeys and both no-payment negatives pass before the new Garden population. The latter
+passes in7.152s, with67 complete upstream responses and one visibly counted browser-closed
+advisory read. Earlier aggregate87205 remains a failed instrumentation run, not erased by
+this result. `make diagnose-browser-session`23893 also exits0 in24.722s: actual401/socket
+closure and absent automatic renewal, then one test-operated rotation restores the same
+Founder/Garden without gameplay mutation. All21 upstream responses complete, zero canceled
+advisory reads. This is a diagnosed gap, not renewal acceptance. Node syntax, diff/whitespace
+and CI-topology checks pass; topology executes thirteen negative controls. No full hosted-CI
+or natural-growth run is claimed. All process handles are terminal before closeout.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. New range begins after
+`4b2c72a0` and includes this entire test/Make/docs/record batch; designated cross-party review
+remains required. Older ranges, natural long-session renewal, RP-222/RP-229, SG13 launch
+content/mint and AC13 remain open. No feature checkbox, archive, push or release promotion.

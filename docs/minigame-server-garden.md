@@ -325,13 +325,44 @@ grown replay bundle and its unchanged three five-minute ticks; every gameplay
 intent comes from a DOM control. Execution evidence and limitations are recorded
 in the Garden planning log; adding the driver is not by itself a passing claim.
 The first native fifteen-minute run reached actual ticks one and two but missed
-the maturity objective. Full harvest/reload proof remains open. The browser
+the maturity objective. Natural-maturation-to-harvest proof remains open. The browser
 runtime currently has no session-renewal path despite the account's fifteen-minute
 access-token lifetime; RP-234 routes that separate Account/Transport consumer gap.
 The run did not emit its collected boundary errors, so its precise failing HTTP
 status is not established. The instrument now emits those errors on failure.
 RP-233 separately retains an intermittent next-plot interaction failure; a later
 setup success is not a reliability verdict.
+
+`make test-garden-harvest-composed` reuses that driver with `--harvest-fixture` and
+also runs in the existing `test-game-ui-composed` push/PR target. It uses the same
+unchanged Garden bundle, built client, real Account/API/server, WebSocket and named
+disposable Postgres database. Native Fiscal harvest/unlock, planting and uprooting
+run first. Setup explicitly appends one controlled Founder revision marking three
+planted strains mature; it preserves the actual salt, clocks, Company, cash and
+every other Founder field. This is not elapsed growth or a replayable maturation
+history, and cannot close the renewal-blocked natural journey.
+
+Native Enter harvests one plant; Space on Harvest all submits the two remaining
+plots in one command. Independent literal units/hash checks bind actual receipts,
+both persisted heads, Founder/Company events and log coordinates, fifteen cash
+units and exactly two faucet sends. Diagnostic HTTP retries check exact receipt
+bytes and changed-body refusal without changing heads/window or appending events,
+logs or intent records. Reload verifies empty harvested plots, substrate, server
+cash and the rendered Desk amount. The existing built-client verifier checks actual
+HTML/JS/CSS/Worker bytes, and public payloads are checked for hidden Garden state.
+API JSON is recorded from complete responses in the existing local proxy, avoiding
+Chromium's navigation-scoped body cache; native action receipts are independently
+read in the browser before continuing. Proxy observations are served bytes, not
+proof that the browser consumed every advisory read; the consumer proof is the
+mounted Garden and Desk outcome. Incomplete upstream responses fail. Garden GETs
+closed by the browser before proxy finish are explicitly counted, still enumerated
+for hidden data, and excluded from the natural journey's completed-read checks;
+other unfinished responses fail. Its Founder log
+binding uses the separate `intent_id` column, not
+a nonexistent canonical-payload field (RP-434/RP-435). The owning log records run
+results and pending designated review. This is bounded controlled-state harvest
+integration, not production activation, full Garden/accessibility acceptance or
+hosted-CI/release proof.
 
 - `make garden-corpus-check`
 - `make test-go GO_PACKAGES=./garden GO_TEST_FLAGS='-count=1'`
