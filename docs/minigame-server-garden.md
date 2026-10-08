@@ -361,7 +361,11 @@ navigation query markers distinguish old and new documents without replacing fet
 or changing the app. This includes old-page requests arriving at the proxy after
 navigation starts; new-page reads, commands and cancellations outside that window
 receive no exception. Every upstream body must still complete and be enumerated
-for hidden data. Cancelled reads are not consumed-read proof and remain excluded
+for hidden data. The proxy continues draining its upstream body after the browser
+disconnects, including cancellation before response headers; Node's automatic
+pipe/unpipe backpressure must not truncate the independent observer. A multi-chunk
+stream regression checks both cancellation timings without relaxing completion.
+Cancelled reads are not consumed-read proof and remain excluded
 from natural-growth completed-read checks. A controlled real-browser/HTTP regression
 and negative cases run with the harvest target. Its Founder log
 binding uses the separate `intent_id` column, not

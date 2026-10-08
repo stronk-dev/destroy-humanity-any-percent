@@ -2,8 +2,37 @@ import assert from "node:assert/strict";
 import { once, EventEmitter } from "node:events";
 import { createServer, request as httpRequest } from "node:http";
 import test from "node:test";
+import { PassThrough, Writable } from "node:stream";
 import { chromium } from "playwright";
-import { navigationAPIProof } from "./navigation-api-proof.mjs";
+import { navigationAPIProof, pipeObservedAPIResponse } from "./navigation-api-proof.mjs";
+
+for (const timing of ["before headers", "during body"]) {
+  test(`browser cancellation ${timing} still drains a multi-chunk upstream body`, async () => {
+    const proof = navigationAPIProof(), received = new PassThrough();
+    const response = new Writable({ write(_chunk, _encoding, done) { done(); } });
+    const row = proof.observe(response, "/api/v1/founder/state", "GET", "http://fixture/old");
+    row.status = 200;
+    const chunks = [];
+    received.on("data", (chunk) => chunks.push(chunk));
+    received.on("end", () => { row.upstream_ended = true; });
+    if (timing === "during body") pipeObservedAPIResponse(received, response);
+    try {
+      received.write('{"founder_');
+      await proof.reload("http://fixture/old", async () => {
+        const closed = once(response, "close");
+        response.destroy();
+        await closed;
+        if (timing === "before headers") pipeObservedAPIResponse(received, response);
+        received.end('revision":7}');
+        await new Promise((resolve) => setImmediate(resolve));
+      });
+      assert.equal(Buffer.concat(chunks).toString("utf8"), '{"founder_revision":7}', "browser cancellation must not truncate upstream observation");
+      assert.deepEqual(proof.finish(), { upstream_responses: 1, navigation_cancelled_reads: 1 });
+    } finally {
+      received.destroy(); response.destroy();
+    }
+  });
+}
 
 test("real navigation cancels a held old-page read; complete upstream bytes remain required", { timeout: 30_000 }, async () => {
   const proof = navigationAPIProof();
@@ -29,7 +58,7 @@ test("real navigation cancels a held old-page read; complete upstream bytes rema
           observed(Buffer.concat(chunks).toString("utf8"));
         });
         response.writeHead(received.statusCode, received.headers);
-        received.pipe(response);
+        pipeObservedAPIResponse(received, response);
       });
       forwarded.on("error", (error) => observed(error));
       forwarded.end();

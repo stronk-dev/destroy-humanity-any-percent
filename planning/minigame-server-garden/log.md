@@ -3055,3 +3055,33 @@ Review by: Codex (implementer first filter); Recorded by: Codex. Exact new range
 `8e7e4427` through this batch's commit. Designated cross-party review remains required; older
 ranges remain independent. All processes terminal. No general browser-reliability, elapsed
 growth, renewal, full feature acceptance, content mint, archival, hosted-green or release claim.
+
+## 2026-10-08 — drain upstream observation after browser cancellation (RP-445)
+
+Whole composed46706 is RED after the API request-admission repair: a cancelled old-document
+Founder GET has status200 but no upstream end. This differs from RP-438's completed upstream
+body. Node pipe unpipes/pauses its source when the browser destination closes; the separate
+data collector alone does not keep it flowing. A two-chunk stream regression fails immediately
+on old behavior with only the first JSON fragment, reproducing truncation without browser timing.
+
+Under SG9/SG10, the proxy now resumes its independent observer after pipe's close listener.
+If the browser already closed before upstream headers, drain without piping into a destroyed
+destination. The initial before-headers candidate exposed why resume-after-pipe is insufficient
+there; final code handles both timings. Existing original-Referer/navigation rules and mandatory
+upstream completion/hidden-state checks are unchanged. No gameplay, timeout, retry, production,
+schema, balance, rate or CI-workflow change.
+
+Final observer suite passes12/12, including actual Chromium/HTTP cancellation, multi-chunk
+cancellation at both timings and missing-upstream/new-document/command/outside-window negatives.
+The sandbox-only full fixture attempt cannot bind localhost and is not a product failure;
+escalated fixture and normal composed target both execute it successfully. Final whole
+`make test-game-ui-composed`82013 exits0: cold persisted populations, main gameplay, Cosmetic/
+care/Reputation, Clout, both no-payment negatives, Garden and Tier2. Garden records64 complete
+upstream responses and one separately counted cancelled old-document read; this is not
+consumed-read proof. Native receipt/SQL/payout/retry/rendered-reload assertions still pass.
+Syntax and diff checks pass. Original46706 remains red, not relabelled by the later correction.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range begins after
+`ef10238f` through this correction/test/docs/record commit; designated review pending and older
+ranges remain separate. All process handles terminal. No natural-growth, whole-feature,
+general-reliability, hosted-green, archival, release or push promotion.

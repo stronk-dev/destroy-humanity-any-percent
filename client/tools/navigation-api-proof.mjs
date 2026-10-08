@@ -1,5 +1,14 @@
 import assert from "node:assert/strict";
 
+// pipe() unpipes and pauses its source when the destination closes. Keep the
+// independent data/end observer flowing after a browser abandons its response.
+// Install AFTER pipe's close listener so its unpipe cannot undo resume().
+export function pipeObservedAPIResponse(received, response) {
+  if (response.destroyed) { received.resume(); return; }
+  received.pipe(response);
+  response.once("close", () => { received.resume(); });
+}
+
 // A page reload may abandon old-page reads. This is not consumed-response
 // evidence: the proxy must still enumerate their complete upstream bytes.
 export function navigationAPIProof() {

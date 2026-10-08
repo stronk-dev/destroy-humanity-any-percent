@@ -49,7 +49,21 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Latest completed implementation checkpoint: `950be202` (2026-10-08). The existing public
+- Latest local checkpoint (2026-10-08): session request admission at `13acd872` and eight
+  bootstrap/Minigame/Soul write routes at `ef10238f` now enforce their existing exact schemas
+  before decoding or mutation. Eighteen session and thirty activity/bootstrap refusal controls
+  pass against real Postgres, including unchanged stored rows and usable valid controls.
+  Affected cold native tests/vet and byte-identical API generation pass. The first whole
+  composed46706 is RED at Garden's upstream-observation truncation (RP-445), not concealed.
+  Its separate proxy correction resumes upstream collection after browser cancellation;
+  twelve observer regressions pass, with mandatory complete-body checks unchanged. Final
+  whole `make test-game-ui-composed`82013 exits0, executing persisted populations, main play,
+  pets/Cosmetics/Reputation, Clout, no-payment negatives, Garden and Tier2. This is the existing
+  CI target run locally, not a hosted/full-CI or release claim. The [API log](api-foundation/log.md),
+  [Account log](account-and-session-bootstrap/log.md) and [Garden log](minigame-server-garden/log.md)
+  retain exact pending-review ranges and intermediate failures. No schema widening, rate,
+  payout, balance, kernel, CI-workflow, acceptance or release change follows.
+- Earlier minigame checkpoint: `950be202` (2026-10-08). The existing public
   Pitch HTTP lifecycle now independently checks its persisted cash payout, certified result,
   save revisions, required events/receipts, single quota spend and Founder replay, including
   mid-session reconnect and unchanged-state retries. The complete `gameserver` package passes

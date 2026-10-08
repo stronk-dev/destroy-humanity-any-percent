@@ -9,7 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { productionClientFiles, productionClientProof } from "./production-client-proof.mjs";
-import { navigationAPIProof } from "./navigation-api-proof.mjs";
+import { navigationAPIProof, pipeObservedAPIResponse } from "./navigation-api-proof.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const uiURL = "http://localhost:5173";
@@ -123,7 +123,7 @@ async function serve(observeAPI) {
             try { observeAPI(pathname, received.statusCode, Buffer.concat(chunks), boundary); }
             catch (error) { errors.push(new Error(`Garden proxy observation ${pathname}: ${error.message}`, { cause: error })); }
           });
-          response.writeHead(received.statusCode ?? 502, received.headers); received.pipe(response);
+          response.writeHead(received.statusCode ?? 502, received.headers); pipeObservedAPIResponse(received, response);
         });
       upstream.on("error", (error) => { errors.push(error); response.writeHead(502); response.end(); }); request.pipe(upstream); return;
     }
