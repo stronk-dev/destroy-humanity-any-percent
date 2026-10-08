@@ -66,17 +66,22 @@ function buttonNamed(target: HTMLElement, text: string): HTMLButtonElement {
 let ids = 0;
 function nextID(): string { ids += 1; return `01986666-0000-7000-8000-${ids.toString(16).padStart(12, "0")}`; }
 
-it.skipIf(!browser)("mounts The Pitch as the tenant child and plays launcher → table → shop → terminal through the port only", async () => {
+it.skipIf(!browser)("activates Pitch launcher → table → shop → terminal → Return by native keyboard through the port only", async () => {
+  const { userEvent } = await import("vitest/browser");
   const snapshot = await pitchSnapshot();
   const port = new FakePort();
   port.createReply = () => active(snapshot, 1);
   const terminals: MinigameResolutionReceipt[] = [];
+  let exits = 0;
   const target = host();
-  const app = mount(MinigameSessionSurface, { target, props: { port, minigameID: "pitch", era: "era_1995", newCommandID: nextID, onExitToHost: () => {}, onTerminal: (value: MinigameResolutionReceipt) => terminals.push(value) } });
+  const app = mount(MinigameSessionSurface, { target, props: { port, minigameID: "pitch", era: "era_1995", newCommandID: nextID, onExitToHost: () => { exits += 1; }, onTerminal: (value: MinigameResolutionReceipt) => terminals.push(value) } });
   try {
     await settle();
     await assertAxe(target, "launcher");
-    buttonNamed(target, "Start a pitch").click();
+    target.querySelector<HTMLElement>("#minigame-heading")!.focus();
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(buttonNamed(target, "Start a pitch"));
+    await userEvent.keyboard("{Enter}");
     await settle();
     expect(port.creates).toHaveLength(1);
     await assertAxe(target, "active table");
@@ -86,14 +91,20 @@ it.skipIf(!browser)("mounts The Pitch as the tenant child and plays launcher →
     const boxes = [...target.querySelectorAll<HTMLInputElement>("fieldset input[type=checkbox]")];
     expect(boxes).toHaveLength(7);
     // Keyboard selection: focus + Space on native checkboxes; the fifth is refused visibly.
-    for (const box of boxes.slice(0, 5).reverse()) { box.focus(); box.click(); }
+    boxes[4]!.focus();
+    for (let index = 4; index >= 0; index -= 1) {
+      expect(document.activeElement).toBe(boxes[index]);
+      await userEvent.keyboard(" ");
+      if (index > 0) await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+    }
     await settle();
     expect(boxes.filter((box) => box.checked)).toHaveLength(4);
     expect(boxes[0]!.getAttribute("aria-disabled")).toBe("true");
     expect(target.querySelector("fieldset [role=status]")).not.toBeNull();
 
     port.replies.push(() => active({ ...snapshot, phase: "shop", hand: [], shop_offers: [{ hack_id: "buzzword", offer_id: "offer.1", price: 2 }] }, 2));
-    buttonNamed(target, "Pitch these cards").click();
+    buttonNamed(target, "Pitch these cards").focus();
+    await userEvent.keyboard("{Enter}");
     await settle();
     const played = port.commands[0]!;
     expect(played.expected_revision).toBe(1);
@@ -101,12 +112,14 @@ it.skipIf(!browser)("mounts The Pitch as the tenant child and plays launcher →
     await assertAxe(target, "shop");
 
     port.replies.push(() => active({ ...snapshot, phase: "shop", hand: [], run_currency: 2, shop_offers: [], slotted_hacks: ["buzzword"] }, 3));
-    buttonNamed(target, "Buy for 2").click();
+    buttonNamed(target, "Buy for 2").focus();
+    await userEvent.keyboard(" ");
     await settle();
     expect(port.commands[1]).toMatchObject({ expected_revision: 2, command: { kind: "buy_hack", offer_id: "offer.1" } });
 
     port.replies.push(() => ({ ...descriptor, revision: 4, snapshot: { ...snapshot, phase: "terminal", hand: [], revision: 4 }, status: "resolved", resolution_receipt: receipt }));
-    buttonNamed(target, "Close the shop").click();
+    buttonNamed(target, "Close the shop").focus();
+    await userEvent.keyboard("{Enter}");
     await settle();
     expect(port.commands[2]).toMatchObject({ expected_revision: 3, command: { kind: "end_shop" } });
     expect(terminals).toEqual([receipt]);
@@ -114,6 +127,11 @@ it.skipIf(!browser)("mounts The Pitch as the tenant child and plays launcher →
     expect(target.textContent).toContain("Credited to the company");
     await assertAxe(target, "terminal");
     expect(new Set(port.commands.map((command) => command.command_id)).size).toBe(3);
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(buttonNamed(target, "Back to the desk"));
+    await userEvent.keyboard(" ");
+    expect(exits).toBe(1);
+    expect(port.commands).toHaveLength(3);
   } finally { unmount(app); target.remove(); }
 });
 
@@ -187,6 +205,7 @@ it.skipIf(!browser)("returns to the launcher with the typed reason when the mini
 });
 
 it.skipIf(!browser).each(["revision conflict", "unknown session", "terminal receipt"] as const)("ignores a late %s after leaving the Pitch table", async (outcome) => {
+  const { userEvent } = await import("vitest/browser");
   const snapshot = await pitchSnapshot();
   const port = new FakePort();
   const currentValue: MinigameCurrentResponse = { kind: "active", session: { ...descriptor, revision: 1, status: "active" }, snapshot };
@@ -214,7 +233,8 @@ it.skipIf(!browser).each(["revision conflict", "unknown session", "terminal rece
     expect(buttonNamed(target, "Pitch these cards").disabled).toBe(true);
     // Leaving is permitted while the server owns the in-flight command. It
     // closes only this presentation; it must not cancel or repeat gameplay.
-    buttonNamed(target, "Leave the table").click();
+    buttonNamed(target, "Leave the table").focus();
+    await userEvent.keyboard(" ");
     await settle();
     expect(left).toBe(true);
     expect(target.querySelector(".minigame-session")).toBeNull();

@@ -168,6 +168,9 @@ fails in either direction: a tenant row with no child, or a child with no tenant
 whose arm or `minigame_id` is not registered renders the error state. Pitch `1.0.0` registers one
 presentation-only child, `PitchTable.svelte`: native checkboxes (capped at `play_size`, with
 `cap.pitch_play` text shown), a play button, shop offer buttons, and close-shop.
+Pitch controls declare zero Tab indices, preserving native DOM order in WebKit's
+button-navigation configuration as well as Chromium. Disabled controls remain disabled;
+there is no positive Tab ordering, custom key handler or gameplay change.
 
 The Pitch snapshot carries only instance IDs. The table resolves card and hack copy from the pinned
 `balance/pitch.json` bytes bundled with the client, and only when their SHA-256 equals the
@@ -179,13 +182,17 @@ wording drafted by the implementer and awaits owner adoption; it is not ruled co
 `test/minigame-surface-browser.test.ts` runs in all three browsers and covers:
 
 - axe checks in every state;
-- keyboard selection with the play-size cap;
-- the complete launcher → table → shop → terminal flow;
+- native Enter/Space activation through launcher → table → shop → terminal → Return,
+  with Tab from launcher/terminal headings, reverse Tab across cards and play-size refusal;
 - same-ID retry;
 - selection clearing on a revision conflict;
-- no detached refetch or host callback after a pending command settles;
+- native Space on Leave during a pending command, with no detached refetch or host callback
+  after it settles;
 - failing closed on an unknown tenant or foreign content;
 - the create-key hold.
+
+These are mounted component checks with a controlled port, not screen-reader observations,
+uninterrupted keyboard focus throughout a real-server game or acceptance of the held GS7 proposal.
 
 `client/src/game-ui/soul/SoulRecoverySurface.svelte` is the SR-C3 `soul_recovery` surface. It uses
 `SoulRecoveryPort` (`recovery-surface.ts`) with the generated start/progress/resolve/cancel

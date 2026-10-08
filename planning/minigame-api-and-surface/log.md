@@ -1408,3 +1408,34 @@ control, not a discovered production data-loss bug, whole reliability claim or M
 The Garage log owns the driver repair and exact new pending designated range after8f5520db
 through this containing commit. Review by: Codex (executed control); Recorded by: Codex.
 Prior incomplete attempts remain recorded, not replaced by this result. No push or archival.
+
+## 2026-10-08 — Native Pitch activation and Tab reachability (RP-478)
+
+Under accepted MA3/UI Foundation keyboard operability, replace programmatic clicks
+in the existing full component flow with native Enter/Space for Start, selected cards,
+play, buy, end-shop and Return. Keep exact command IDs/revisions/card selection,
+play-size refusal, receipt/terminal focus and axe assertions. Existing late-response
+cases now leave with native Space and still require no repeat command/refetch/host callback.
+
+Activation-only59640 passes both native engines. Adding actual launcher/terminal Tab
+and reverse card traversal exposes WebKit75898: heading→Start goes to body instead
+of the button; Chromium and13 other cases pass. Pitch now explicitly declares zero
+Tab indices, matching Typer's existing pattern, without positive ordering, key handlers,
+copy, wire, retry or pending-disable changes. Final full affected file56075 passes14
+in Chromium/WebKit, including Return's exact host callback and no extra gameplay.
+Apple documents preference-dependent Tab behavior; this correction is verified for
+the actual local WebKit configuration, not a universal browser or assistive-tool claim:
+https://help.apple.com/safari/mac/8.0/en.lproj/cpsh003.html
+
+Related units60143 pass74 in the two actual selected files. The earlier guessed
+minigame-session-port filename matches no file and contributes no proof; that run
+executes only the nine minigame-surface units. Final types/build/boundaries77496 pass,
+zero Svelte diagnostics. Initial sandbox listener denial runs no browser tests;
+permitted native runs above do. No Firefox/Linux/performance/whole-CI or real-server
+rerun: the change is native control focusability, exercised at its mounted boundary.
+This does not implement the held GS7 proposal's extra focus/presentation rules or
+prove uninterrupted keyboard navigation through the default host/server journey.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range
+begins after7142dd50 through this source/tests/docs/plan/ledger/log commit; designated
+review pending. All handles terminal; no acceptance flip, archival, content mint or push.

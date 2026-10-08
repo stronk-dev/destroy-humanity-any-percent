@@ -154,7 +154,7 @@
     <p role="status">{t("minigame.state.loading", {}, era)}</p>
   {:else if view.kind === "launcher"}
     <p>{t("minigame.state.none", {}, era)}</p>
-    <button type="button" disabled={pending} onclick={start}>{t("minigame.start", {}, era)}</button>
+    <button type="button" tabindex="0" disabled={pending} onclick={start}>{t("minigame.start", {}, era)}</button>
   {:else if view.kind === "active" && content}
     <PitchTable snapshot={view.snapshot} {content} {era} {pending} {selectionEpoch}
       onPlayHand={(cardIDs) => dispatch({ kind: "play_hand", card_ids: [...cardIDs] })}
@@ -162,20 +162,20 @@
       onEndShop={() => dispatch({ kind: "end_shop" })} />
   {:else if view.kind === "paused_reconnect"}
     <p role="alert">{t("minigame.state.paused_reconnect", {}, era)}</p>
-    <button type="button" disabled={busy} onclick={manualRetry}>{t("minigame.retry", {}, era)}</button>
+    <button type="button" tabindex="0" disabled={busy} onclick={manualRetry}>{t("minigame.retry", {}, era)}</button>
   {:else if view.kind === "required_terminal"}
     {@const receipt = view.response.resolution_receipt}
     <p role="status">{t("pitch.table.terminal", {}, era)}</p>
     <p>{t("minigame.receipt.credited_label", {}, era)} <Amount value={receipt.credited_delta} {era} /></p>
     {#if receipt.configured_cap_forfeit_units > 0}<p>{t("minigame.receipt.forfeit_frame", { units: receipt.configured_cap_forfeit_units }, era)}</p>{/if}
-    <button type="button" onclick={onExitToHost}>{t("minigame.return", {}, era)}</button>
+    <button type="button" tabindex="0" onclick={onExitToHost}>{t("minigame.return", {}, era)}</button>
   {:else if view.kind === "error"}
     <p role="alert">{t(view.message, {}, era)}</p>
-    <button type="button" onclick={onExitToHost}>{t("minigame.return", {}, era)}</button>
+    <button type="button" tabindex="0" onclick={onExitToHost}>{t("minigame.return", {}, era)}</button>
   {/if}
 
   {#if view.kind === "active" || view.kind === "launcher" || view.kind === "paused_reconnect"}
-    <button type="button" class="leave" onclick={onExitToHost}>{t("minigame.leave_table", {}, era)}</button>
+    <button type="button" tabindex="0" class="leave" onclick={onExitToHost}>{t("minigame.leave_table", {}, era)}</button>
   {/if}
 </section>
 

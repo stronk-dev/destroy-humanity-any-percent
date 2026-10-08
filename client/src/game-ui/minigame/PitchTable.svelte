@@ -71,7 +71,7 @@
         {@const row = card(instance)}
         {@const checked = selected.includes(instance)}
         <label class="card" data-selected={checked}>
-          <input type="checkbox" value={instance} {checked} aria-disabled={!checked && full ? "true" : undefined}
+          <input type="checkbox" tabindex="0" value={instance} {checked} aria-disabled={!checked && full ? "true" : undefined}
             onchange={(event) => { if (!checked && full) { event.currentTarget.checked = false; return; } toggle(instance, event.currentTarget.checked); }} />
           <span>{t(row.copy_key as CopyKey, {}, era)}</span>
           <small>{t("pitch.table.card_metric_label", {}, era)} <Amount value={row.base_metric} {era} /></small>
@@ -79,17 +79,17 @@
       {/each}
       {#if full}<p class="cap" role="status">{t(content.catalog.policy.play_size_reason_key as CopyKey, {}, era)}</p>{/if}
     </fieldset>
-    <button type="button" disabled={pending || selected.length === 0} onclick={play}>{t("pitch.table.play", {}, era)}</button>
+    <button type="button" tabindex="0" disabled={pending || selected.length === 0} onclick={play}>{t("pitch.table.play", {}, era)}</button>
   {:else if snapshot.phase === "shop"}
     <section aria-labelledby="pitch-shop-heading">
       <h3 id="pitch-shop-heading">{t("pitch.table.shop_heading", {}, era)}</h3>
       <ul class="offers">
         {#each snapshot.shop_offers as offer (offer.offer_id)}
           <li><span>{t(hackKey(offer.hack_id), {}, era)}</span>
-            <button type="button" disabled={pending || offer.price > snapshot.run_currency} onclick={() => onBuyHack(offer.offer_id)}>{t("pitch.table.offer_frame", { price: offer.price }, era)}</button></li>
+            <button type="button" tabindex="0" disabled={pending || offer.price > snapshot.run_currency} onclick={() => onBuyHack(offer.offer_id)}>{t("pitch.table.offer_frame", { price: offer.price }, era)}</button></li>
         {/each}
       </ul>
-      <button type="button" disabled={pending} onclick={onEndShop}>{t("pitch.table.end_shop", {}, era)}</button>
+      <button type="button" tabindex="0" disabled={pending} onclick={onEndShop}>{t("pitch.table.end_shop", {}, era)}</button>
     </section>
   {:else}
     <p role="status">{t("pitch.table.terminal", {}, era)}</p>

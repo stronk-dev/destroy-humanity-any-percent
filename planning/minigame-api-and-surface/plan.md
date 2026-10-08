@@ -1,5 +1,12 @@
 # Minigame API & Surface implementation plan
 
+Current bounded correction (2026-10-08, RP-478): Pitch declares zero Tab indices for native
+controls, matching the existing Typer pattern. The revised existing component flow uses actual
+Enter/Space for Start/cards/play/buy/end-shop/Return and Leave, with launcher/terminal Tab and
+reverse card traversal. Old-source native WebKit fails before Start; corrected affected files,
+types/build/boundaries pass. The log owns evidence and pending review. No whole accessibility,
+full server keyboard journey, new mechanics or GS7 proposal adoption is claimed.
+
 Current checkpoint (2026-10-08): RP-446 adds native Soul Recovery start/attended progress/
 leave/reconnect/cancel through the production-built client, real service and SQL to the normal
 composed target. Native manual actions/purchases first establish real positive idle production,
