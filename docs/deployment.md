@@ -277,8 +277,9 @@ command; a clean-host rehearsal cannot pass by substituting crash classification
 The bundle mutations remove the catalog, client, root license, config or release helper, or change
 an image digest, runtime-config digest or image SBOM. The config matrices use the production
 startup decoder and require every missing/malformed secret, duplicate key identity/value and
-invalid origin/proxy variant to reject. The public-metrics probe first rebinds its changed Caddyfile
-in the manifest so it reaches the semantic route validator rather than passing on an unrelated
+invalid origin/proxy variant to reject. The public-metrics probe first validates its intact
+candidate, then rebinds its changed Caddyfile in the manifest so it reaches the semantic route
+validator rather than passing on an unrelated
 hash mismatch. Bundle mutation uses a private temporary hardlink tree, never edits the retained
 bundle, and a cleanup failure invalidates the outcome. The typed host, alert, journal and objective
 negatives exercise their production evidence validators; they are falsifiers, not claims that a
@@ -292,8 +293,11 @@ hash), so the release gate can reject only on meaning: a missing required artifa
 longer derives the manifest's closure, or an SBOM whose subject no longer names the image's config
 identity. A mutation caught only by a stale byte hash therefore no longer counts.
 
-The seeded-source probe scans a valid tracked-file fixture; the seeded-image probe hides its
-sentinel in a file inside a gzip-compressed layer blob, the shape BuildKit's `type=docker` export
+The seeded-source and seeded-image probes first scan corresponding clean fixtures and require
+the no-secrets gate to accept their empty findings. An always-rejecting gate is a setup error,
+not secret-detection evidence. The seeded-source probe then scans a tracked-file fixture;
+the seeded-image probe hides its sentinel in a file inside a gzip-compressed layer blob,
+the shape BuildKit's `type=docker` export
 produces, rather than relying on a malformed archive or a flat outer member. Each requires exactly the scanner's
 named sentinel finding before the no-secrets gate may produce exit `3`. A parser/setup error is
 therefore not accepted as secret-detection evidence.

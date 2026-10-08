@@ -379,22 +379,32 @@ func runSecretNegativeProbe(request ProbeRequest, requireNone secretGate) (outco
 		}
 	}()
 	seed := strings.Join([]string{"CLOUD_CLICKER_", "SECRET_SCAN_SENTINEL_", "r006probe1234567"}, "")
-	var findings []releasepackage.SecretFinding
-	if request.Population == "seeded_source_secret" {
-		path := filepath.Join(root, "source.go")
-		if err := os.WriteFile(path, []byte("package fixture\n// "+seed+"\n"), 0o600); err != nil {
-			return ProbeAccepted, err
+	scan := func(stem, content string) ([]releasepackage.SecretFinding, error) {
+		switch request.Population {
+		case "seeded_source_secret":
+			name := stem + ".go"
+			if err := os.WriteFile(filepath.Join(root, name), []byte("package fixture\n// "+content+"\n"), 0o600); err != nil {
+				return nil, err
+			}
+			return releasepackage.ScanTrackedFiles(root, []string{name})
+		case "seeded_image_secret":
+			path := filepath.Join(root, stem+".tar")
+			if err := writeSecretTar(path, content); err != nil {
+				return nil, err
+			}
+			return releasepackage.ScanDockerArchive(path)
+		default:
+			return nil, ErrInvalid
 		}
-		findings, err = releasepackage.ScanTrackedFiles(root, []string{"source.go"})
-	} else if request.Population == "seeded_image_secret" {
-		path := filepath.Join(root, "fixture.tar")
-		if err := writeSecretTar(path, seed); err != nil {
-			return ProbeAccepted, err
-		}
-		findings, err = releasepackage.ScanDockerArchive(path)
-	} else {
-		return ProbeAccepted, ErrInvalid
 	}
+	baseline, err := scan("clean", "ordinary fixture content")
+	if err != nil || len(baseline) != 0 {
+		return ProbeAccepted, errors.Join(ErrInvalid, err)
+	}
+	if err := requireNone(baseline); err != nil {
+		return ProbeAccepted, errors.Join(ErrInvalid, err)
+	}
+	findings, err := scan("seeded", seed)
 	if err != nil || len(findings) != 1 || findings[0].Rule != "seeded-fixture" {
 		return ProbeAccepted, errors.Join(ErrInvalid, err)
 	}
@@ -461,6 +471,9 @@ func runPreparedBundleProbe(request ProbeRequest, prepare func(string) error, va
 	}()
 	if err := hardlinkBundle(request.CandidateBundle, root); err != nil {
 		return ProbeAccepted, err
+	}
+	if err := validate(root); err != nil {
+		return ProbeAccepted, errors.Join(ErrInvalid, err)
 	}
 	if err := prepare(root); err != nil {
 		return ProbeAccepted, err

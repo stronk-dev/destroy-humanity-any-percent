@@ -4783,3 +4783,30 @@ is claimed. Review by: Codex (implementer actual-diff first filter); Recorded by
 Exact corrective range starts after `1efea9cf` through this containing source/tests/docs/
 ledger/plan/log commit, pending designated cross-party review. No acceptance flip, archive,
 push or deployment; continue accepted construction and the existing explicit contract holds.
+
+## 2026-10-09 — Healthy baselines for metrics/secret release probes (RP-482)
+
+Outcome under DP2/DP3/AC2/AC7/AC8: a negative must discriminate the injected defect,
+not reward an already-broken subject. Old-source47610 fails four arms: all three
+always-rejecting gates count as success, and a real assembled bundle with tampered client
+bytes counts as public-metrics isolation. Intact-route and missing-manifest controls pass.
+
+Validate the intact candidate before preparing the metrics route; retain the existing
+manifest rebinding and semantic rejection. Source/image probes now scan clean fixtures
+through the actual scanners and require the same no-secrets gate to admit them before
+scanning their seeded counterparts. No scanner rule, network/runtime configuration,
+release bound or existing backup behavior changes. Reuse the real bundle assembler fixture
+(synthetic executable/image/client inputs, not runnable release artifacts), not a new framework.
+Tests retain input Caddy bytes and require empty probe-work directories.
+
+Focused27871 passes. Full native37774 runs rehearsal, rehearsal CLI and releasepackage cold
+tests plus vet, all pass. The declared Linux/amd64 target89854 runs the same three full
+packages successfully with zero skips. Gofmt and diff checks pass; all handles terminal.
+These are actual bundle-gate/scanner executions, not private runtime reachability,
+production-image scans, a clean-host rehearsal or whole CI. No browser/DB rerun is claimed.
+
+Review by: Codex (implementer actual-diff first filter). Recorded by: Codex. Exact new range
+begins after `b76d1a08` through this containing source/tests/docs/ledger/plan/log commit;
+designated review pending. It may be reviewed together with RP-481 as one coherent range
+after `1efea9cf`. No acceptance flips, archival, push or deployment. Kernel-history RFC
+adoption has been requested from the owner; no answer or implementation authority is inferred.

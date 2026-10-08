@@ -86,6 +86,36 @@ func TestR18MigrationProbeRequiresForwardCompatibleControl(t *testing.T) {
 	}
 }
 
+func TestPublicMetricsProbeRequiresIntactCandidateBeforeRouteMutation(t *testing.T) {
+	for _, kind := range []string{"intact", "tampered_client", "missing_manifest"} {
+		t.Run(kind, func(t *testing.T) {
+			request := releaseProbeFixture(t, "0.1.0-preview.2", "0.1.0-preview.1")
+			request.Population = "public_metrics_route"
+			caddyPath := filepath.Join(request.CandidateBundle, "Caddyfile")
+			originalCaddy := readProbeInput(t, caddyPath)
+			if kind == "tampered_client" {
+				writeProbeInput(t, filepath.Join(request.CandidateBundle, "site", "index.html"), []byte("not bound to the manifest"), 0o644)
+			} else if kind == "missing_manifest" {
+				if err := os.Remove(filepath.Join(request.CandidateBundle, releasepackage.ReleaseManifestPath)); err != nil {
+					t.Fatal(err)
+				}
+			}
+			outcome, err := RunProbe(request)
+			if kind == "intact" {
+				if err != nil || outcome != ProbeRejected {
+					t.Fatalf("actual public-metrics mutation did not reject: outcome=%d err=%v", outcome, err)
+				}
+			} else if err == nil || outcome == ProbeRejected {
+				t.Fatalf("invalid candidate counted as metrics-isolation evidence: outcome=%d err=%v", outcome, err)
+			}
+			if !bytes.Equal(originalCaddy, readProbeInput(t, caddyPath)) {
+				t.Fatal("probe changed retained Caddyfile")
+			}
+			assertProbeWorkEmpty(t, request.WorkDirectory)
+		})
+	}
+}
+
 func assertProbeWorkEmpty(t *testing.T, root string) {
 	t.Helper()
 	entries, err := os.ReadDir(root)

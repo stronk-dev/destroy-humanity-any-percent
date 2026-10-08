@@ -7,7 +7,12 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Bounded checkpoint, 2026-10-09:** RP-481's interrupted-writer probe now requires a real
+**Bounded checkpoint, 2026-10-09:** RP-482 adds healthy baselines to the public-metrics and
+source/image-secret probes. Actual assembled-bundle tampering and always-rejecting gates
+fail the old checks; affected native/Linux-amd64 packages pass after correction. This range
+after `b76d1a08` can share designated review with RP-481; no DP-F acceptance follows.
+
+**Preceding bounded checkpoint, 2026-10-09:** RP-481's interrupted-writer probe now requires a real
 encrypted create/restore baseline and the exact consumed dump failure, with no partial files
 or damage to the baseline. Old-source regression and affected native/Linux-amd64 checks
 pass as recorded in the owning log. The corrective range after `1efea9cf` awaits designated

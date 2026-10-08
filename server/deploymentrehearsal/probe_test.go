@@ -164,39 +164,92 @@ func TestPublicMetricsProbeRebindsArtifactBeforeSemanticRejection(t *testing.T) 
 	if err := os.WriteFile(filepath.Join(request.CandidateBundle, releasepackage.ReleaseManifestPath), append(encoded, '\n'), 0o600); err != nil {
 		t.Fatal(err)
 	}
+	calls := 0
 	outcome, err := runPreparedBundleProbe(request, preparePublicMetricsRoute, func(root string) error {
+		calls++
 		caddy, readErr := os.ReadFile(filepath.Join(root, "Caddyfile"))
-		if readErr != nil || !strings.Contains(string(caddy), "/metrics") {
-			t.Fatalf("public route fixture missing: %v", readErr)
+		if readErr != nil {
+			t.Fatal(readErr)
 		}
 		manifestData, readErr := os.ReadFile(filepath.Join(root, releasepackage.ReleaseManifestPath))
 		var changed releasepackage.ReleaseManifest
 		if readErr != nil || json.Unmarshal(manifestData, &changed) != nil || changed.Artifacts[0].SHA256 != hashBytes(caddy) {
 			t.Fatalf("mutated artifact was not rebound: %v", readErr)
 		}
+		if calls == 1 {
+			if string(caddy) != "fixture" {
+				t.Fatal("baseline already contains the injected route")
+			}
+			return nil
+		}
+		if !strings.Contains(string(caddy), "/metrics") {
+			t.Fatal("public route fixture missing")
+		}
 		return errors.New("semantic Caddy gate rejected public metrics")
 	})
-	if err != nil || outcome != ProbeRejected {
+	if err != nil || outcome != ProbeRejected || calls != 2 {
 		t.Fatalf("public metrics outcome=%d err=%v", outcome, err)
 	}
 	original, err := os.ReadFile(filepath.Join(request.CandidateBundle, "Caddyfile"))
 	if err != nil || string(original) != "fixture" {
 		t.Fatalf("retained Caddyfile changed: %q err=%v", original, err)
 	}
+	outcome, err = runPreparedBundleProbe(request, preparePublicMetricsRoute, func(string) error { return nil })
+	if err != nil || outcome != ProbeAccepted {
+		t.Fatalf("accepted public route counted as a successful negative: outcome=%d err=%v", outcome, err)
+	}
+	assertProbeWorkEmpty(t, request.WorkDirectory)
 }
 
 func TestSeededSecretProbesRequireAnActualScannerFinding(t *testing.T) {
 	for _, population := range []string{"seeded_source_secret", "seeded_image_secret"} {
 		t.Run(population, func(t *testing.T) {
 			request := validProbeDirectories(t, population)
-			outcome, err := runSecretNegativeProbe(request, releasepackage.RequireNoSecrets)
-			if err != nil || outcome != ProbeRejected {
+			calls := 0
+			outcome, err := runSecretNegativeProbe(request, func(findings []releasepackage.SecretFinding) error {
+				calls++
+				if calls == 1 && len(findings) != 0 {
+					t.Fatal("secret gate did not receive the clean scanner baseline first")
+				}
+				if calls == 2 && (len(findings) != 1 || findings[0].Rule != "seeded-fixture") {
+					t.Fatal("secret gate did not receive the actual seeded finding")
+				}
+				return releasepackage.RequireNoSecrets(findings)
+			})
+			if err != nil || outcome != ProbeRejected || calls != 2 {
 				t.Fatalf("secret fixture outcome=%d err=%v", outcome, err)
 			}
 			outcome, err = runSecretNegativeProbe(request, func([]releasepackage.SecretFinding) error { return nil })
 			if err != nil || outcome != ProbeAccepted {
 				t.Fatalf("sleeping secret gate satisfied row: outcome=%d err=%v", outcome, err)
 			}
+		})
+	}
+}
+
+func TestReleaseNegativeProbesCannotCountAlwaysRejectingGates(t *testing.T) {
+	for _, population := range []string{"public_metrics_route", "seeded_source_secret", "seeded_image_secret"} {
+		t.Run(population, func(t *testing.T) {
+			request := validProbeDirectories(t, population)
+			unrelated := errors.New("baseline gate is broken")
+			var outcome ProbeOutcome
+			var err error
+			if population == "public_metrics_route" {
+				prepared := false
+				outcome, err = runPreparedBundleProbe(request, func(string) error {
+					prepared = true
+					return nil
+				}, func(string) error { return unrelated })
+				if prepared {
+					t.Error("negative prepared before the healthy baseline passed")
+				}
+			} else {
+				outcome, err = runSecretNegativeProbe(request, func([]releasepackage.SecretFinding) error { return unrelated })
+			}
+			if !errors.Is(err, unrelated) || outcome == ProbeRejected {
+				t.Fatalf("always-rejecting gate counted as release proof: outcome=%d err=%v", outcome, err)
+			}
+			assertProbeWorkEmpty(t, request.WorkDirectory)
 		})
 	}
 }
