@@ -44,6 +44,12 @@ critical path, battle seed, all three registered Phase-0 substream labels, and b
 The bounded corpus records the number of draws consumed and includes a case that rejects four
 successive draws before accepting, so a modulo-biased implementation cannot pass accidentally.
 
+The same shared fixture also pins all 36 directed temperament pairs, nine signed-int32
+saturation boundaries, thirteen clamp results and invalid clamp/damage domains in both
+runtimes. Its high-ATK disadvantage case exceeds int32 between stages but finishes below it,
+so saturating before the final store produces the wrong result. These are pure-kernel checks,
+not evidence of an integrated battle, populated combat catalog or live HP/stamina consumer.
+
 The strict combat catalog and Trust/Soul input tables remain unimplemented because their active RFC
 does not yet enumerate the promised closed effect union or literal piecewise table points. Those are
 recorded as DESIGN-GAPs in the active planning log rather than represented here as shipped behavior.

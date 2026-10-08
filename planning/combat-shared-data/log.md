@@ -210,3 +210,25 @@ this record. Designated Claude review remains required before parent acceptance 
 earlier verdicts do not cover this new range. C2's catalog/effect union and C5's Trust/Soul
 tables remain author/specification gaps; battle engines and bots remain draft child RFCs.
 This closes the Go source-enforcement gap locally, not combat gameplay or full parent acceptance.
+
+## 2026-10-08 — shared store/domain and exact-cycle vectors
+
+Extended the existing C1/C3 / AC2/AC4 fixture and both consumers: 13 damage results (two new
+ordering cases), nine saturation boundaries, thirteen clamps, five invalid clamp domains,
+six invalid damage domains, all36 directed temperament pairs and unknown-temperament refusals.
+The new stage-order case gives1 rather than3 if chart precedes ATK; the late-store case gives
+2064888121 after an intermediate2684354558, rather than1651910497 with premature int32 clipping.
+Original vectors and RNG cases remain; duplicate extreme-store assertions now use the shared
+boundary rows. No product bug fired or runtime, balance, kernel identity, content or CI change.
+
+Executed final `make test-go vet verify-combat-go-boundary verify-combat-boundary
+GO_PACKAGES='./combat ./integer ./determinism' GO_TEST_FLAGS='-count=1'`: pass (determinism has
+no own tests; combat executes its existing actual RNG vectors). Existing Vitest combat file:
+54 checks pass. `make typecheck`: zero errors/warnings. Format/diff inspected. Representative
+literal outcomes plus invalid-domain refusals exercise the real pure functions; no extra
+source mutations, DB/browser/full-CI run or invented measurement framework is needed for this
+test-only batch. This does not prove combat catalog/engines, Trust/Soul tables or live clamps.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range is
+`4bde5176` exclusive through this tests/fixture/docs/record commit; Claude designated review
+remains pending, alongside earlier independent ranges. No acceptance checkbox or archive.

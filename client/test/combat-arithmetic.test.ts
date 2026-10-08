@@ -1,12 +1,17 @@
 import { describe, expect, it } from "vitest";
 
 import fixtureJson from "../../testdata/combat/arithmetic-vectors.json";
-import { chart, damage, saturateInt32, type ChartResult, type Temperament } from "../src/combat/arithmetic";
+import { chart, clamp, damage, saturateInt32, type ChartResult, type Temperament } from "../src/combat/arithmetic";
 import { battleSeed, substream } from "../src/combat/rng";
 
 const fixture = fixtureJson as {
   version: number;
   damage: readonly { name: string; base_power: number; attacker_atk: number; chart: ChartResult; critical: boolean; expected: number }[];
+  saturation: readonly { value: string; expected: number }[];
+  clamp: readonly { name: string; value: string; minimum: number; maximum: number; expected: number }[];
+  invalid_clamp: readonly { name: string; value: string; minimum: number; maximum: number }[];
+  invalid_damage: readonly { name: string; base_power: number; attacker_atk: number; chart: ChartResult; critical: boolean }[];
+  chart: { temperaments: readonly Temperament[]; rows: readonly (readonly ChartResult[])[] };
   rng: {
     match_seed: string;
     battle_seed: string;
@@ -21,9 +26,37 @@ describe("combat shared arithmetic", () => {
   it.each(fixture.damage)("$name", (vector) => {
     expect(damage(vector.base_power, vector.attacker_atk, vector.chart, vector.critical)).toBe(vector.expected);
   });
-  it("saturates int32 stores", () => {
-    expect(saturateInt32(9_223_372_036_854_775_807n)).toBe(2_147_483_647);
-    expect(saturateInt32(-9_223_372_036_854_775_808n)).toBe(-2_147_483_648);
+  it("retains the complete shared boundary population", () => {
+    expect(fixture.damage).toHaveLength(13);
+    expect(fixture.saturation).toHaveLength(9);
+    expect(fixture.clamp).toHaveLength(13);
+    expect(fixture.invalid_clamp).toHaveLength(5);
+    expect(fixture.invalid_damage).toHaveLength(6);
+  });
+  it.each(fixture.saturation)("stores int64 $value without wrapping", (vector) => {
+    expect(saturateInt32(BigInt(vector.value))).toBe(vector.expected);
+  });
+  it.each(fixture.clamp)("clamps $name", (vector) => {
+    expect(clamp(BigInt(vector.value), vector.minimum, vector.maximum)).toBe(vector.expected);
+  });
+  it.each(fixture.invalid_clamp)("rejects clamp $name", (vector) => {
+    expect(() => clamp(BigInt(vector.value), vector.minimum, vector.maximum)).toThrow(RangeError);
+  });
+  it.each(fixture.invalid_damage)("rejects damage $name", (vector) => {
+    expect(() => damage(vector.base_power, vector.attacker_atk, vector.chart, vector.critical)).toThrow(RangeError);
+  });
+  it("matches every ruled cycle edge, including self and opposite neutrality", () => {
+    expect(fixture.chart.temperaments).toEqual(temperaments);
+    expect(fixture.chart.rows).toHaveLength(6);
+    for (const [row, attacker] of fixture.chart.temperaments.entries()) {
+      expect(fixture.chart.rows[row]).toHaveLength(6);
+      for (const [column, defender] of fixture.chart.temperaments.entries()) {
+        expect(chart(attacker, defender)).toBe(fixture.chart.rows[row]![column]);
+      }
+    }
+    for (const [attacker, defender] of [["unknown", "lazy"], ["lazy", "unknown"], ["", ""]]) {
+      expect(() => chart(attacker as Temperament, defender as Temperament)).toThrow(RangeError);
+    }
   });
   it("gives every Temperament two wins and two losses without a 2x path", () => {
     for (const attacker of temperaments) {

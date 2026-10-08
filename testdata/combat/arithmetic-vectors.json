@@ -7,12 +7,66 @@
     {"name":"crit_after_chart","base_power":100,"attacker_atk":64,"chart":1,"critical":true,"expected":195},
     {"name":"disadvantage_crit_order","base_power":100,"attacker_atk":64,"chart":-1,"critical":true,"expected":114},
     {"name":"atk_scaling_non_identity","base_power":100,"attacker_atk":100,"chart":0,"critical":false,"expected":156},
+    {"name":"atk_before_chart_and_crit","base_power":10,"attacker_atk":10,"chart":1,"critical":true,"expected":1},
+    {"name":"saturate_only_after_multipliers","base_power":2147483647,"attacker_atk":80,"chart":-1,"critical":false,"expected":2064888121},
     {"name":"advantage_rounds_after_chart","base_power":101,"attacker_atk":64,"chart":1,"critical":false,"expected":131},
     {"name":"advantage_floors_half","base_power":105,"attacker_atk":64,"chart":1,"critical":false,"expected":136},
     {"name":"minimum_one","base_power":1,"attacker_atk":1,"chart":-1,"critical":false,"expected":1},
     {"name":"zero_power","base_power":0,"attacker_atk":2147483647,"chart":1,"critical":true,"expected":0},
     {"name":"saturates_store","base_power":2147483647,"attacker_atk":2147483647,"chart":1,"critical":true,"expected":2147483647}
   ],
+  "saturation": [
+    {"value":"-9223372036854775808","expected":-2147483648},
+    {"value":"-2147483649","expected":-2147483648},
+    {"value":"-2147483648","expected":-2147483648},
+    {"value":"-2147483647","expected":-2147483647},
+    {"value":"0","expected":0},
+    {"value":"2147483646","expected":2147483646},
+    {"value":"2147483647","expected":2147483647},
+    {"value":"2147483648","expected":2147483647},
+    {"value":"9223372036854775807","expected":2147483647}
+  ],
+  "clamp": [
+    {"name":"hp_below_zero","value":"-1","minimum":0,"maximum":100,"expected":0},
+    {"name":"hp_at_zero","value":"0","minimum":0,"maximum":100,"expected":0},
+    {"name":"hp_inside","value":"42","minimum":0,"maximum":100,"expected":42},
+    {"name":"hp_at_cap","value":"100","minimum":0,"maximum":100,"expected":100},
+    {"name":"hp_above_cap","value":"101","minimum":0,"maximum":100,"expected":100},
+    {"name":"stamina_zero_cap","value":"1","minimum":0,"maximum":0,"expected":0},
+    {"name":"nonzero_floor","value":"0","minimum":10,"maximum":20,"expected":10},
+    {"name":"nonzero_inside","value":"15","minimum":10,"maximum":20,"expected":15},
+    {"name":"single_value","value":"100","minimum":10,"maximum":10,"expected":10},
+    {"name":"int64_below","value":"-9223372036854775808","minimum":0,"maximum":2147483647,"expected":0},
+    {"name":"int32_above","value":"2147483648","minimum":0,"maximum":2147483647,"expected":2147483647},
+    {"name":"int64_above","value":"9223372036854775807","minimum":0,"maximum":2147483647,"expected":2147483647},
+    {"name":"int32_cap","value":"2147483647","minimum":0,"maximum":2147483647,"expected":2147483647}
+  ],
+  "invalid_clamp": [
+    {"name":"negative_floor","value":"0","minimum":-1,"maximum":10},
+    {"name":"negative_ceiling","value":"0","minimum":0,"maximum":-1},
+    {"name":"reversed_bounds","value":"15","minimum":20,"maximum":10},
+    {"name":"ceiling_outside_int32","value":"0","minimum":0,"maximum":2147483648},
+    {"name":"floor_outside_int32","value":"0","minimum":2147483648,"maximum":2147483648}
+  ],
+  "invalid_damage": [
+    {"name":"negative_power","base_power":-1,"attacker_atk":64,"chart":0,"critical":false},
+    {"name":"negative_atk","base_power":100,"attacker_atk":-1,"chart":0,"critical":false},
+    {"name":"chart_below_union","base_power":100,"attacker_atk":64,"chart":-2,"critical":false},
+    {"name":"chart_above_union","base_power":100,"attacker_atk":64,"chart":2,"critical":false},
+    {"name":"zero_power_invalid_atk","base_power":0,"attacker_atk":-1,"chart":0,"critical":false},
+    {"name":"zero_power_invalid_chart","base_power":0,"attacker_atk":64,"chart":2,"critical":false}
+  ],
+  "chart": {
+    "temperaments": ["lazy","playful","curious","sassy","shy","chaotic"],
+    "rows": [
+      [0,1,1,0,-1,-1],
+      [-1,0,1,1,0,-1],
+      [-1,-1,0,1,1,0],
+      [0,-1,-1,0,1,1],
+      [1,0,-1,-1,0,1],
+      [1,1,0,-1,-1,0]
+    ]
+  },
   "rng": {
     "match_seed": "42",
     "battle_seed": "13679457532755275413",

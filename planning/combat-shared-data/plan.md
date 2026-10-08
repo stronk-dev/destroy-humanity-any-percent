@@ -13,3 +13,9 @@
    AST/recursive negative controls cover Go, and `make verify-combat-boundary` covers TypeScript.
    Full parent acceptance and designated review remain open; this is not a catalog/table closeout.
 6. [ ] Publish canonical docs and record independent review before archival.
+
+2026-10-08 C1/C3 / AC2/AC4 supplement: the existing shared vector suite now covers exact
+cycle edges, HP/stamina clamp domains, signed store boundaries and late-only saturation.
+Both runtimes, affected Go/vet, source-division gates and type checks pass locally; the
+owning log records the exact review range. No production arithmetic changes or parent
+acceptance claim; catalog/effect and Trust/Soul specification gaps remain unchanged.
