@@ -18,6 +18,80 @@ func v24FounderState(t *testing.T) *State {
 	return state
 }
 
+func TestFounderCosmeticsRequiresExactCaseKeys(t *testing.T) {
+	catalog := stateCatalog(t)
+	state := v24FounderState(t)
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var original map[string]json.RawMessage
+	if err := json.Unmarshal(encoded, &original); err != nil {
+		t.Fatal(err)
+	}
+	for name, raw := range map[string]string{
+		"Owned":                    `{"Owned":[],"equipped":{}}`,
+		"OWNED":                    `{"OWNED":[],"equipped":{}}`,
+		"Equipped":                 `{"owned":[],"Equipped":{}}`,
+		"EQUIPPED":                 `{"owned":[],"EQUIPPED":{}}`,
+		"owned alias collision":    `{"owned":[],"Owned":[],"equipped":{}}`,
+		"equipped alias collision": `{"owned":[],"equipped":{},"Equipped":{}}`,
+	} {
+		t.Run(name, func(t *testing.T) {
+			candidate := make(map[string]json.RawMessage, len(original))
+			for key, value := range original {
+				candidate[key] = value
+			}
+			candidate["cosmetics"] = json.RawMessage(raw)
+			data, err := json.Marshal(candidate)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := RestoreState(data, 24, catalog, economy.ScopeFounder, time.Time{}); !errors.Is(err, ErrInvalidState) {
+				t.Fatalf("noncanonical Cosmetic keys accepted or wrong error: %v", err)
+			}
+		})
+	}
+	for _, alias := range []string{"Cosmetics", "COSMETICS"} {
+		for _, retainCanonical := range []bool{false, true} {
+			t.Run(alias+map[bool]string{false: "/replacement", true: "/collision"}[retainCanonical], func(t *testing.T) {
+				candidate := make(map[string]json.RawMessage, len(original)+1)
+				for key, value := range original {
+					candidate[key] = value
+				}
+				candidate[alias] = original["cosmetics"]
+				if !retainCanonical {
+					delete(candidate, "cosmetics")
+				}
+				data, err := json.Marshal(candidate)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, err := RestoreState(data, 24, catalog, economy.ScopeFounder, time.Time{}); !errors.Is(err, ErrInvalidState) {
+					t.Fatalf("noncanonical Cosmetic envelope accepted or wrong error: %v", err)
+				}
+			})
+		}
+	}
+	for _, raw := range []string{` { "equipped" : {}, "owned" : [] } `, `{"\u006fwned":[],"\u0065quipped":{}}`} {
+		t.Run(raw, func(t *testing.T) {
+			candidate := make(map[string]json.RawMessage, len(original))
+			for key, value := range original {
+				candidate[key] = value
+			}
+			candidate["cosmetics"] = json.RawMessage(raw)
+			data, err := json.Marshal(candidate)
+			if err != nil {
+				t.Fatal(err)
+			}
+			restored, err := RestoreState(data, 24, catalog, economy.ScopeFounder, time.Time{})
+			if err != nil || !restored.Cosmetics.Equal(cosmetic.NewState()) {
+				t.Fatalf("equivalent decoded keys rejected: %+v %v", restored, err)
+			}
+		})
+	}
+}
+
 // AC3: the Founder v24 codec round-trips cosmetics and rejects every listed
 // shape violation. Catalog-aware rejections (unknown id, bundle without the
 // artifact) are production.ValidateFoundationState's half.

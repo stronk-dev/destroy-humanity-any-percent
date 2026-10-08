@@ -49,6 +49,16 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest saved-state checkpoint (2026-10-08): complete original Cosmetic C1/C3
+  reviews join C4/C6/C7/C8; their CHANGES REQUIRED verdicts do not approve Codex
+  corrections. RP-457's ten Go case-alias acceptance failures are locally corrected,
+  with valid encoding controls preserved. Affected cold Go/vet,120 client tests,
+  types and declared Linux-amd64/real-Postgres Cosmetic/Exit/isolation checks pass.
+  Canonical saved bytes/content are unchanged; kernel179→180 is an admission fix,
+  not historical-guard repair. The [Cosmetic log](cosmetic-shop-v1/log.md) owns the
+  exact review ranges. C5 disposition, author/body/content/shared-clock and whole
+  feature acceptance remain open. This finishes a bounded review/repair checkpoint,
+  not another tier, hosted CI success or progress toward final endings.
 - Latest bounded closeout (2026-10-08): Cosmetic event-key admission RP-453 is locally
   corrected at `377279c4`, with cold Go/TS and actual Linux/Postgres checks. Original Claude
   C4 review is complete at `f097df7e`; the complete original C6/C7/C8 reviews are also finished

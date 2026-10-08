@@ -50,12 +50,26 @@ describe("Founder v24 cosmetics (Cosmetic Shop v1 AC3)", () => {
       ["equipped not owned", { owned: [], equipped: { [PET]: "horse_armor" } }],
       ["extra key", { owned: [], equipped: {}, price: 0 }],
       ["missing equipped", { owned: [] }],
+      ["Owned alias", { Owned: [], equipped: {} }],
+      ["OWNED alias", { OWNED: [], equipped: {} }],
+      ["Equipped alias", { owned: [], Equipped: {} }],
+      ["EQUIPPED alias", { owned: [], EQUIPPED: {} }],
+      ["owned alias collision", { owned: [], Owned: [], equipped: {} }],
+      ["equipped alias collision", { owned: [], equipped: {}, Equipped: {} }],
     ];
     for (const [name, cosmetics] of cases) {
       expect(() => restoreFounderReplayState({ ...encoded, cosmetics }, 24, bundle), name).toThrow();
     }
     const { cosmetics: _omitted, ...missing } = encoded;
     expect(() => restoreFounderReplayState(missing, 24, bundle), "v24 without cosmetics").toThrow();
+    for (const alias of ["Cosmetics", "COSMETICS"]) {
+      expect(() => restoreFounderReplayState({ ...missing, [alias]: encoded.cosmetics }, 24, bundle), `${alias} replacement`).toThrow();
+      expect(() => restoreFounderReplayState({ ...encoded, [alias]: encoded.cosmetics }, 24, bundle), `${alias} collision`).toThrow();
+    }
+    for (const raw of [' { "equipped" : {}, "owned" : [] } ', '{"\\u006fwned":[],"\\u0065quipped":{}}']) {
+      const restoredEmpty = restoreFounderReplayState({ ...encoded, cosmetics: JSON.parse(raw) }, 24, bundle);
+      expect(restoredEmpty.cosmetics).toEqual({ owned: [], equipped: {} });
+    }
   });
 
   it("binds v24 to the pinned cosmetics artifact in both directions", async () => {

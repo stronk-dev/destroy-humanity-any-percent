@@ -733,6 +733,12 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 			if strings.EqualFold(key, "meter_bands") {
 				return nil, fmt.Errorf("%w: superseded meter_bands in v%d", ErrInvalidState, version)
 			}
+			if scope == economy.ScopeFounder && version >= 24 && strings.EqualFold(key, "cosmetics") && key != "cosmetics" {
+				return nil, fmt.Errorf("%w: noncanonical cosmetics key", ErrInvalidState)
+			}
+		}
+		if scope == economy.ScopeFounder && version >= 24 && !exactJSONKeys(keys["cosmetics"], "owned", "equipped") {
+			return nil, fmt.Errorf("%w: invalid cosmetics keys", ErrInvalidState)
 		}
 	}
 

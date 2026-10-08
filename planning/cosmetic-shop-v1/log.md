@@ -2241,3 +2241,48 @@ descendants. Claude must review the Codex correction/evidence ranges, including
 `f097df7e..c802c2dc` and `c802c2dc..4c87dcdd`; the older correction index remains.
 RP-174/RP-176 author reconciliation, broader C1/C3/C5 dispositions, shared clock,
 copy/content and feature acceptance stay separate. No archive, mint or push.
+
+## 2026-10-08 — complete original C1/C3 reviews; saved-state case parity (RP-457)
+
+Review by: Codex (designated cross-party reviewer of Claude). Recorded by: Codex.
+Complete original C1 `afe6529b^..afe6529b` inspected across all12 paths, including
+catalog/loaders/fixtures, kernel identity/registration, the disclosed formatting-only
+minigame line and records. Verdict: CHANGES REQUIRED for RP-175; no additional
+confirmed finding. Complete original C3 `581886a4^..581886a4` inspected across all20
+paths, including codecs/state, activation/Exit/replay, tests, identity and records.
+Its two large fixture diffs independently compare semantically: exactly131+6
+replay-inputs v10→v11 changes, no other changed values. Verdict: CHANGES REQUIRED
+for RP-176/RP-181 and newly reproduced RP-457, not approval of corrected descendants.
+
+Outcome under §3/AC3: both runtimes refuse wrongly capitalized Cosmetic save
+fields while preserving canonical ownership and valid JSON encodings. Old Go
+91069 accepts all ten new malformed cases (test exits2); two equivalent-encoding
+controls pass. Unchanged TS65385 already refuses the aliases. Correction uses
+RestoreState's existing raw-key map and decoded exact-key helper, limited to the
+v24+ Founder cosmetic object. No legacy migration, duplicate-token policy,
+canonical saved bytes, activation/content or general replay-key audit is changed.
+Kernel179→180 accurately marks this watched admission change, not an RP-131 repair.
+
+Finished verification:
+- Cold `make test-go GO_PACKAGES='./save ./cosmetic ./replaycatalog ./kernel'
+  GO_TEST_FLAGS='-count=1'`41595 passes all four packages. Native DB skips, where
+  present, are not integration evidence.
+- Root `client/node_modules/.bin/vitest run --root client` with cosmetic catalog,
+  Founder state, bundle, replay and pet/reputation Founder consumers16228 passes120.
+  Initial root `pnpm exec vitest` found no binary and ran no tests; use the declared
+  client-local executable rather than install another tool.
+- `make vet GO_PACKAGES='./save ./production'` passes; `make typecheck`11484
+  passes with zero errors/warnings. Cold production activation/validation/corpus/
+  both Exit-path population56109 passes.
+- `make test-go-ci CI_TEST_PACKAGES='./save ./production'
+  CI_TEST_FLAGS='-run Cosmetic -v'`62566 exits0 against declared Linux-amd64/
+  real Postgres16, without skips in the selected population: new refusal/positive
+  controls, persisted ownership/replay and both Exits, SQL payload negatives and
+  200×288-step isolation plus its three leak controls. Production completes97.378s.
+
+Review by: Codex (implementer diff/first filter of the correction). Recorded by:
+Codex. Corrective range `46c7ecac` exclusive through this containing commit needs
+Claude's designated review. No browser/composed rerun for a Go saved-state-only
+change; previous native/composed results are not relabelled as newly executed.
+C5's broader original disposition, RP-174/RP-176 author reconciliation, shared
+clock, adopted content and whole acceptance remain. No archive, push or release.

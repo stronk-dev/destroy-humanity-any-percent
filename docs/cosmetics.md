@@ -27,6 +27,9 @@ and `{}`, never `null`.
 
 - **Validation:** every equipped key must be a `pets` key, and every equipped value must be owned
   and use the pet slot. One owned item may be worn by several pets.
+  Founder restore requires the exact decoded keys `cosmetics`, `owned` and `equipped`;
+  case aliases and alias collisions are refused in both runtimes. JSON whitespace and
+  equivalent escaped key spellings remain valid; canonical saved bytes are unchanged.
 - **Activation:** v24 activates only at a new-run boundary (or for a new Founder) under a
   `cosmetics`-pinning bundle, with nothing owned. It never activates mid-run.
 - **Exit:** Exit carries `cosmetics` byte-identically. The Company replay carry holds it from

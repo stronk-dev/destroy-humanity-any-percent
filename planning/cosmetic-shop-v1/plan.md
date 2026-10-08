@@ -2,16 +2,16 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
-Current checkpoint (2026-10-08): original C4 review is complete at `f097df7e`; original C6/C7/C8
-reviews are now complete in the latest owning-log entry. All retain CHANGES REQUIRED for their
-recorded findings; current Codex corrections still need Claude review. The remaining original
-C6/C7/C8 diffs are no longer unperformed review work. Their corrected implementation is not
-retroactively approved by these original-range verdicts.
+Current checkpoint (2026-10-08): complete original C1/C3 reviews join C4 at `f097df7e` and
+C6/C7/C8 at `46c7ecac`. Their CHANGES REQUIRED dispositions remain distinct from approval
+of Codex corrections. C2 already has its bounded approval; broader C5 disposition remains.
+The latest owning-log entry records C1/C3 ranges, RP-457's saved-state correction and checks.
+Author-body RP-174/RP-176, content, consolidated corrective review and full acceptance remain.
 RP-453 event-key admission and RP-454/RP-455 completion focus are locally corrected. The latest
 C6 correction (RP-456) routes terminal refusal to the existing Desk status only; six old-host
 native cases reproduce duplicate delivery. Final affected Chromium/WebKit280, types/build/
 boundaries pass. The preceding full real-service composed1397 passes for `c802c2dc`; it was
-not rerun for this announcement-only correction. Broader C6 review, shared clock, content and
+not rerun for this announcement-only correction. Corrective review, shared clock, content and
 whole-feature acceptance remain; the latest log owns exact ranges and limits.
 
 Preceding checkpoint (2026-10-08): RP-424's Buy-to-owned focus handoff now respects newer focus,
@@ -59,7 +59,7 @@ migration take the next free numbers at landing.
 
 - [x] C1 Catalog grammar: `cosmetics` schema v1 loaders (Go `server/cosmetic`, TS
   `client/src/cosmetic`), shared reject fixtures, and the permanent-ID transition check (AC1, AC2).
-  Codex's targeted review found RP-175 raw-number parity; the corrective range awaits Claude's
+  Codex's complete original review retains RP-175 raw-number parity; the corrective range awaits Claude's
   designated review. This checkbox is implementation presence, not archival approval.
 - [x] C2 Replay-bundle wiring: `cosmetics` joins the constants bundle (OD-10) and requires
   `pet_species` on the scalar Founder chain. Codex designated-approved this bounded C2 range
@@ -71,6 +71,8 @@ migration take the next free numbers at landing.
   presence, not C3 acceptance or archival approval; ruling-author reconciliation is required.
   RP-181's separate AC8 test-only supplement now covers nonempty owned/equipped carry through
   both named Exit paths in Go/TS and real Postgres; Claude designated review remains required.
+  The complete original C3 review additionally found RP-457's Go saved-state case aliases;
+  its bounded correction awaits designated review, not full C3 acceptance.
 - [x] C4 Intents `acquire_cosmetic` / `equip_cosmetic` / `unequip_cosmetic`, the three events and
   the migration, with Go/TS parity and Postgres integration (AC5, AC6, AC9). Codex's targeted
   C4/AC9 review found RP-177: only the Go decoder, not Postgres, rejected extra event payload
