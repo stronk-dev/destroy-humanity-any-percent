@@ -110,8 +110,13 @@ draws below one million; it is not claimed to be separately discriminated.
 - Plot coordinates require integer values in[0,5], including every batched harvest target.
   Null is invalid, not an alias for zero. Malformed coordinates retain the existing invalid
   row/col/plots receipt and do not mutate either saved stream; explicit zero remains valid.
+- Persisted Garden event records require exact, unique field names, including nested plot
+  records. Only the two reason-key fields admit null; zero/false remain valid scalar values.
+  Malformed events abort the enclosing write instead of committing defaulted or ambiguous data.
 - **The advance pre-step** runs after the Fiscal sweep and before the body, for exactly the garden
-  commands plus `spend_fiscal_credit` (a property test proves this set is sufficient). An applied
+  commands plus `spend_fiscal_credit`. A below-cap property test checks trigger-set equality;
+  above the cap, extra evaluations can process more ticks under the per-advance hardcap
+  (RP-471; AC6's unqualified equality claim needs author reconciliation). An applied
   trigger's receipt carries `garden_advance`, and `garden_advanced.v1` precedes the command event
   when visible.
 - **Harvest** commits through the Founder→Company coordinator:

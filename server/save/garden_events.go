@@ -1,6 +1,7 @@
 package save
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"regexp"
@@ -41,11 +42,16 @@ func validGardenCell(row, col int64) bool {
 // a payload: every key must be present (nullable keys included) and exact.
 func validateGardenEventPayload(event EventWrite) error {
 	invalid := fmt.Errorf("%w: invalid %s payload", ErrInvalidStream, event.Kind)
-	if event.SchemaVersion != 1 || !exactJSONKeys(event.Payload, gardenEventKeys[event.Kind]...) {
+	fields := gardenEventFields(event.Payload, gardenEventKeys[event.Kind]...)
+	if event.SchemaVersion != 1 || fields == nil {
 		return invalid
 	}
 	switch event.Kind {
 	case EventGardenAdvanced:
+		if !gardenEventItems(fields["matured"], "row", "col", "species_id") ||
+			!gardenEventItems(fields["spawned"], "row", "col", "species_id", "recipe_id") {
+			return invalid
+		}
 		var payload garden.Advance
 		if decodeStrictJSON(event.Payload, &payload) != nil || payload.TicksApplied < 0 || payload.TickSeqAfter < payload.TicksApplied ||
 			payload.TickSeqAfter > decimal.MaxExactInteger || payload.CatchupForfeitedMS < 0 || payload.CatchupForfeitedMS > decimal.MaxExactInteger ||
@@ -82,6 +88,9 @@ func validateGardenEventPayload(event EventWrite) error {
 			return invalid
 		}
 	case EventGardenHarvested:
+		if !gardenEventItems(fields["plots"], "row", "col", "species_id", "units") {
+			return invalid
+		}
 		var payload garden.Harvest
 		if decodeStrictJSON(event.Payload, &payload) != nil || len(payload.Plots) < 1 || len(payload.Plots) > int(garden.MaxGridSide*garden.MaxGridSide) ||
 			payload.SeedsDiscovered == nil || !gardenHashPattern.MatchString(payload.HarvestHash) || payload.TotalUnits < 0 || payload.TotalUnits > decimal.MaxExactInteger {
@@ -127,6 +136,53 @@ var gardenEventKeys = map[EventKind][]string{
 	EventGardenSubstrateSet:    {"from_substrate_id", "to_substrate_id", "partial_tick_forfeited_ms"},
 	EventGardenHarvested:       {"plots", "total_units", "seeds_discovered", "harvest_hash"},
 	EventGardenHarvestCredited: {"harvest_hash", "selected_units", "credited", "forfeited_units", "cap_reason_key", "faucet_applied"},
+}
+
+// Check the original tokens before struct/map decoding loses duplicate names,
+// accepts case aliases, or turns a missing/null scalar into its zero value.
+// Only SG8's two explicitly nullable reason fields admit null. Keep this scoped
+// to Garden; exactJSONKeys is also used by the saved Cosmetic state codec.
+func gardenEventFields(data []byte, keys ...string) map[string]json.RawMessage {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	first, err := decoder.Token()
+	if err != nil || first != json.Delim('{') || len(keys) == 0 {
+		return nil
+	}
+	allowed := make(map[string]bool, len(keys))
+	for _, key := range keys {
+		allowed[key] = true
+	}
+	fields := make(map[string]json.RawMessage, len(keys))
+	for decoder.More() {
+		token, err := decoder.Token()
+		key, ok := token.(string)
+		if err != nil || !ok || !allowed[key] || fields[key] != nil {
+			return nil
+		}
+		var raw json.RawMessage
+		if decoder.Decode(&raw) != nil || bytes.Equal(bytes.TrimSpace(raw), []byte("null")) && key != "catchup_reason_key" && key != "cap_reason_key" {
+			return nil
+		}
+		fields[key] = raw
+	}
+	last, err := decoder.Token()
+	if err != nil || last != json.Delim('}') || len(fields) != len(keys) || ensureJSONEnd(decoder) != nil {
+		return nil
+	}
+	return fields
+}
+
+func gardenEventItems(data []byte, keys ...string) bool {
+	var items []json.RawMessage
+	if json.Unmarshal(data, &items) != nil || items == nil {
+		return false
+	}
+	for _, item := range items {
+		if gardenEventFields(item, keys...) == nil {
+			return false
+		}
+	}
+	return true
 }
 
 func exactJSONKeys(data []byte, keys ...string) bool {

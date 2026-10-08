@@ -3297,3 +3297,66 @@ designated disposition. Original G1–G4 coverage, prior corrective reviews, RP-
 natural growth/renewal, launch content and AC13 remain open. No checkbox, archive, push,
 whole-CI or release claim. Next accepted boundary is the remaining original G4 command,
 replay and persistence inspection, followed by original G1–G3 dispositions.
+
+## 2026-10-08 — Complete original G4 disposition; SG8 event admission repair
+
+Review by: Codex (designated cross-party reviewer of Claude's original implementation).
+Recorded by: Codex. **Original G4 `0759fcaf^..0759fcaf`: CHANGES REQUIRED.** All23 paths
+inspected: live command resolution/dispatch, Go/TS pre-step and replay, decoder, carry law,
+event registry and migration, payout-loader dependency injection, fixture helpers, tests,
+version pins and original log. Generated corpus inspected structurally (21 Founder cases,
+one Exit) against its producer/consumers rather than treating4239 generated lines as new
+independent expectations. Migration82 preserves every previous kind, adds exactly six Garden
+kinds, and its Down restores the prior set; no applied migration was edited.
+
+RP-469 blocks the original command-admission claim: null coordinates targeted zero. The
+separate correction `ebbb465c..c67f22e5` remains pending Claude, not approved here. RP-470
+also blocks original SG8's strict-event claim: the actual pre-write validator accepts null
+scalar defaults, duplicate members and missing/case-aliased nested plot fields. Old8867
+reproduces those admissions. Actual Linux/Postgres Store16974 accepts both malformed credit
+events, while the valid zero-credit control passes. The first producer-corpus reader lacked
+underscore JSON tags and failed event envelopes; fixed test-only before the repair,20433
+then admits all13 actual producer events. One malformed Make regex ran no tests; corrected
+selector is used below. Neither instrument error is a product finding.
+
+SG8 repair checks original decoded field names and nullability before typed decoding,
+including matured/spawned/harvest plot records. The ordinary Store integration test now
+checks complete saved-state/revision plus event/idempotency counts after invalid callbacks;
+valid zero/false/null-reason credit persists. Existing event versions, migration, gameplay,
+corpora and other validators are unchanged. The shared Cosmetic `exactJSONKeys` helper is
+deliberately untouched. Kernel stays0.3.183: Garden event validation is not a kernel-watched
+path, and this changes no arithmetic/replay transition or valid event bytes.
+
+Finished final production-source checks:
+
+- `make test-go GO_PACKAGES='./save ./garden ./minigame ./replaycatalog ./kernel'
+  GO_TEST_FLAGS='-count=1'`72990 passes all five packages (DB-skipped native tests are not
+  integration evidence); affected `make vet`46754 passes.
+- `make test-go-ci CI_TEST_PACKAGES='./save ./production ./gameserver'
+  CI_TEST_FLAGS="-run '^(TestStoreIntegrationRevisionLifecycle|TestGarden|TestComposedGarden)' -v"`
+  84479 exits0 against Linux-amd64/Postgres. Actual Store rollback/control, Garden coordinator
+  faults, refusals, clock arms, corpus/history and authenticated two-account HTTP execute.
+- The four affected Garden client replay/state/engine/command files76789 pass75. No client
+  production change, new browser input path, longer-session or release-host proof is claimed.
+
+The original G4 property claim has a separate specification limit, RP-471. Its150 timelines
+are all below the24h cap. A retained actual-engine diagnostic shows24h equal288/288 ticks,
+but evaluations at24h+48h produce576 versus288 ticks when the unrelated command is omitted
+from the trigger set; both end at the same anchor. This follows the already ruled per-call
+cap, not a production exploit. AC6 lacks AC3's below-cap qualification. The author must
+reconcile SG3/AC6; neither the trigger set nor the cap was changed to manufacture equality.
+The diagnostic passes as a counterexample record, not as AC6 acceptance.
+
+Final test-only addition checked after the production-source runs above: cold native
+garden/save33257 and vet pass. Declared Linux-amd64/Postgres garden/save53331 exits0,
+including the same288/288 and576/288 diagnostic, event admission, all13 producer events
+and Store rollback/control. Its verbose output is tool-truncated; the command exit and named
+results are observed, not a claimed complete retained transcript. Canonical docs now qualify
+their former universal property claim; accepted RFC text is left to its author. All checks
+terminal before this editorial closeout; diff/whitespace checked.
+
+Review by: Codex (implementer first filter of the new corrective/test batch).
+Recorded by: Codex. New range begins after `c67f22e5`; designated review pending. Original
+G4–G7 are now fully dispositioned, not approved. Original G1–G3 review, prior corrective
+reviews, RP-222/RP-229/RP-471 author work, renewal, content/mint and AC13 remain open.
+Continue original G1–G3 next. No feature checkbox, archival, push or whole-CI/release claim.

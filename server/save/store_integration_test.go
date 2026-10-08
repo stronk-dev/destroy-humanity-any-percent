@@ -316,4 +316,56 @@ func TestStoreIntegrationRevisionLifecycle(t *testing.T) {
 	if err := db.QueryRowContext(ctx, `SELECT version FROM save_revisions WHERE stream_id=$1 AND revision=2`, legacyStreamID).Scan(&migratedVersion); err != nil || migratedVersion != CurrentVersion {
 		t.Fatalf("legacy migrated version=%d err=%v", migratedVersion, err)
 	}
+
+	// SG8 event admission is a transaction boundary, not just a typed decoder.
+	// Malformed internal credit events must roll back the callback's balance
+	// change, revision, event and idempotency record. Valid false/null/zero stays
+	// admissible. Reuse this suite's actual store, database and initial state.
+	creditEvent := `{"harvest_hash":"sha256:` + strings.Repeat("0", 64) + `","selected_units":0,"credited":"0","forfeited_units":0,"cap_reason_key":null,"faucet_applied":false}`
+	for _, candidate := range []struct {
+		name, owner, payload string
+		valid                bool
+	}{
+		{"null flag", "01986666-9902-7000-8000-000000000002", strings.Replace(creditEvent, `"faucet_applied":false`, `"faucet_applied":null`, 1), false},
+		{"duplicate", "01986666-9902-7000-8000-000000000003", creditEvent[:len(creditEvent)-1] + `,"selected_units":0}`, false},
+		{"valid zero credit", "01986666-9902-7000-8000-000000000004", creditEvent, true},
+	} {
+		t.Run("garden event/"+candidate.name, func(t *testing.T) {
+			created, err := store.CreateStream(ctx, StreamKey{OwnerKind: OwnerFounder, OwnerID: candidate.owner, Scope: economy.ScopeCompany}, hash, state, WriteContext{Cause: "integration.garden-event"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			before, err := EncodeState(state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, err = store.ApplyIntent(ctx, created.StreamID, 1, gardenEventIntent, requestHash, func(working *State, _ Revision) (IntentDecision, error) {
+				if _, err := working.Ledger.Apply(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: decimal.One}}}); err != nil {
+					return IntentDecision{}, err
+				}
+				return gardenEventDecision(EventGardenHarvestCredited, []byte(candidate.payload)), nil
+			})
+			if candidate.valid && err != nil || !candidate.valid && !errors.Is(err, ErrInvalidStream) {
+				t.Fatalf("valid=%v error=%v", candidate.valid, err)
+			}
+			loaded, err := store.LoadLatest(ctx, created.StreamID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var events, intents int
+			if err := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM events WHERE stream_id=$1), (SELECT count(*) FROM intent_records WHERE stream_id=$1)`, created.StreamID).Scan(&events, &intents); err != nil {
+				t.Fatal(err)
+			}
+			if candidate.valid {
+				if loaded.Revision.Number != 2 || loaded.State.Ledger.Snapshot()["company.cash"] != "1.1e1" || events != 1 || intents != 1 {
+					t.Fatalf("valid event failed to persist: revision=%d cash=%s events=%d intents=%d", loaded.Revision.Number, loaded.State.Ledger.Snapshot()["company.cash"], events, intents)
+				}
+			} else {
+				after, err := EncodeState(loaded.State)
+				if err != nil || string(before) != string(after) || loaded.Revision.Number != 1 || events != 0 || intents != 0 {
+					t.Fatalf("invalid event persisted effects: revision=%d events=%d intents=%d err=%v", loaded.Revision.Number, events, intents, err)
+				}
+			}
+		})
+	}
 }

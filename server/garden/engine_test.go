@@ -503,3 +503,35 @@ func TestGardenTriggerSetWithoutSpendDiverges(t *testing.T) {
 		t.Fatal("removing spend_fiscal_credit from the trigger set must diverge when a level purchase widens the grid")
 	}
 }
+
+// This is a diagnostic of AC6's unqualified wording, not a passing AC6 gate.
+// SG3's per-advance catch-up cap makes an extra evaluation observably different
+// above the cap even when that command changes no Garden input. Do not alter
+// the ruled trigger set or cap to make the stronger claim pass.
+func TestGardenTriggerSetCatchupCapDiagnostic(t *testing.T) {
+	catalog := scenarioCatalog(t, nil)
+	const anchor = int64(1_000_000)
+	every := map[string]bool{"garden": true, "level_up": true, "other": true}
+	set := map[string]bool{"garden": true, "level_up": true}
+	for _, row := range []struct {
+		name          string
+		otherAt, end  int64
+		wantEveryTick int64
+		wantSetTick   int64
+	}{
+		{"below cap control", catalog.CatchupCapMS / 2, catalog.CatchupCapMS, 288, 288},
+		{"two cap intervals", catalog.CatchupCapMS, 2 * catalog.CatchupCapMS, 576, 288},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			events := []timelineEvent{{at: anchor + row.otherAt, kind: "other"}}
+			all := replayTimeline(t, catalog, events, anchor+row.end, every)
+			ruled := replayTimeline(t, catalog, events, anchor+row.end, set)
+			if all.TickSeq != row.wantEveryTick || ruled.TickSeq != row.wantSetTick ||
+				*all.TickAnchorWallMS != anchor+row.end || *ruled.TickAnchorWallMS != anchor+row.end ||
+				all.Equal(ruled) != (row.wantEveryTick == row.wantSetTick) {
+				t.Fatalf("every tick=%d anchor=%d; ruled tick=%d anchor=%d", all.TickSeq, *all.TickAnchorWallMS, ruled.TickSeq, *ruled.TickAnchorWallMS)
+			}
+			t.Logf("every_command_ticks=%d ruled_trigger_ticks=%d identical=%v", all.TickSeq, ruled.TickSeq, all.Equal(ruled))
+		})
+	}
+}

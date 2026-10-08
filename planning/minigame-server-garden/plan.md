@@ -234,3 +234,9 @@ AC12, with failing-old real HTTP/Postgres and decoder evidence and final passing
 checks. New corrective range begins after `ebbb465c`; cross-party review is pending. No
 original G4 or feature checkbox is promoted. Finish the remaining original G4 inspection,
 then G1–G3; keep prior corrective reviews and authored/content/renewal/AT holds separate.
+
+2026-10-08: Original G4 `0759fcaf^..0759fcaf` is fully dispositioned CHANGES REQUIRED
+(RP-469/RP-470 and AC6's above-cap contradiction RP-471). SG8 event admission is locally
+corrected with actual Store rollback and producer compatibility checks; new range begins
+after `c67f22e5`, pending designated review. Author reconciles SG3/AC6 without an inferred
+mechanics change. Next original reviews are G1–G3, not a restart of completed G4–G7.

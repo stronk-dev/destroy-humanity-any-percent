@@ -49,6 +49,11 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Garden original G4–G7 now have complete designated CHANGES REQUIRED dispositions.
+  The new SG8 event-admission repair after `c67f22e5` passes actual Postgres rollback and
+  producer/integration checks, pending independent review. RP-471 additionally records an
+  above-cap contradiction in AC6 for its author; no gameplay policy was changed. The
+  [Garden log](minigame-server-garden/log.md) owns the exact evidence and remaining G1–G3 work.
 - Latest bounded source repair (2026-10-08, after `ebbb465c`): Garden no longer admits null
   row/column as plot zero. Old authenticated Linux/Postgres HTTP actually removed a plant
   for a null-row uproot. Final real HTTP now rejects all six command/field combinations
