@@ -481,3 +481,29 @@ guard and RP-307 arithmetic remain independently red, so neither this fix nor
 the passing composed journey is a green verify-push/hosted/release claim. Next
 accepted corrections are the named browser failures; author-held contracts and
 the full nine-tier 1.0 floor remain unchanged.
+
+## 2026-10-08 — Finish the current checkpoint; Firefox remains open
+
+Under CI D2 and archived UI Foundation UF5/C7, inspected RP-451's existing native
+Enter → era-change check and its plain-button fixture. No cause established and
+no test, product, retry, timeout, engine or workflow change made. Root focused
+command: `make test-browser-focused BROWSER_TEST_FLAGS='--project firefox test/shell-browser.test.ts'`.
+Initial sandbox attempt cannot listen on localhost and runs no tests; permitted
+run93099 starts Vitest, then fails to connect to the Firefox browser session
+within60s, reporting no tests and one unhandled error. This is unavailable local
+verification, not a reproduction or repair of the hosted era assertion. The
+runner remained alive after reporting that error; interrupted only this owned
+run during teardown, terminal Make exit130. No natural successful exit claimed.
+The declared browser service's read-only capacity probe also reports overlay0free/
+100%full; no install, cleanup or capacity workaround attempted.
+
+Read-only GitHub reconciliation confirms37795560514 at cbd2069f is still the
+latest CI run: schema/harness/composed pass; client/server/browser fail. Local
+API repair and Account witness evidence stay in their owning logs, not a claim
+this historical run became green. Current-state overview distinguishes those
+repairs from open RP-131/RP-307/RP-450/RP-451 and the full unbuilt product scope.
+This checkpoint changes records only; no acceptance, archival, release or push.
+Next Firefox action: establish a usable native or declared Linux browser
+environment, then capture actual focus/key/click/era behavior without replacing
+native input or weakening its assertion. Safe accepted construction remains
+possible independently; this verification limitation does not block all work.

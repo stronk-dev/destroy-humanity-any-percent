@@ -49,6 +49,15 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Batch wrap-up (2026-10-08): the account drain witness at `b0f26d47` now keeps
+  its healthy control peer reading and requires the actual server-drain close code.
+  The complete declared Linux/amd64/Postgres gameserver population passes without
+  skips; the [Account log](account-and-session-bootstrap/log.md) owns the evidence
+  and pending designated review. The original hosted timeout remains unexplained
+  (RP-450), not closed by these local passes. A fresh focused native Firefox run
+  fails to establish its browser session and executes no tests; RP-451 remains
+  open. Latest published CI was rechecked read-only and remains the red run below.
+  The source batches are committed, not accepted as whole features or released.
 - Latest API correction (2026-10-08): RP-449 is locally corrected by separating strict
   registry HTTP admission from shared artifact descriptor validation. Unchanged Go/TypeScript
   formula/replay controls and actual Postgres request/catalog/formula populations pass;
@@ -64,7 +73,8 @@ operations remain required alongside that construction, not optional end-stage p
   types/build/boundaries38428 pass. Final real-service `make test-game-ui-composed`49119
   exits0 through main/Recovery, pets/Reputation, Clout, payment negatives, Garden and Tier2.
   The [Garage log](garage-player-surfaces/log.md) owns the pending designated-review range.
-  Separate cold formulas/replaycatalog tests are RED (RP-449), and latest hosted CI below
+  At that checkpoint separate cold formulas/replaycatalog tests were RED (RP-449);
+  the later API correction above repairs that local regression. Latest hosted CI below
   remains RED. This bounded correction is not whole-CI, full Garage or release acceptance.
 - Latest Garage checkpoint (2026-10-08): RP-447's stale purchase handoff is locally corrected.
   Every Company action checks whether a coalesced read predates its applied revision and,
@@ -198,9 +208,10 @@ operations remain required alongside that construction, not optional end-stage p
   and an account-family socket-revocation deadline (RP-450). A cold local formulas/replaycatalog
   run reproduces the same admission failures; these are not hosted-only. Firefox's shell primitive
   accessibility/focus/naming test keeps era_1995 after Enter instead of era_2000 (RP-451);
-  browser reports33683 passes/one failure/15 skips. These new observations are queued for
-  diagnosis, not declared fixed or dismissed as flakes. Newer local Garage/Recovery work
-  has not been pushed; local selected/composed passes do not establish hosted/full-CI green.
+  browser reports33683 passes/one failure/15 skips. Since that run, RP-449 is locally
+  corrected and RP-450's drain witness is strengthened; both need designated review,
+  and RP-450/RP-451 remain open. Newer local Garage/Recovery/API/Account work has not
+  been pushed; local selected/composed passes do not establish hosted/full-CI green.
 - Earlier published source inspected: `f3851e8b` (2026-10-08).
   [Hosted CI 37778647275](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37778647275)
   is terminal **RED: four jobs pass, two fail**. Composed, browser, schema and fast harness
