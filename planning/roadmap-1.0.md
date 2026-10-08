@@ -5,7 +5,11 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current product rollup (2026-10-08):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08).
+**Current product rollup (2026-10-09):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-09).
+Finished source `1b484c50` adds locally verified release-probe baseline repairs after Recovery's
+terminal-order correction; both remain pending designated review. Fresh read-only inspection
+still finds published CI37795560514 red at `cbd2069f`, with no newer hosted verdict.
+No playable tier, feature acceptance or release milestone advances in this checkpoint.
 We are integrating and hardening the Garage, with substantial later-tier construction still
 ahead. The latest gameplay-foundation checkpoint `9f518477` adds locally verified Combat team/deck reference decoding,
 not a battle engine or live player feature; its exact range awaits designated review.
@@ -74,7 +78,7 @@ browser checks and final composed99336 pass real Postgres, Fiscal refusals, play
 Cosmetics. Designated review remains. Latest hosted CI at `0f9f4214` is RED: server Clout research/
 partition tests, client historical kernel guard and two WebKit parse-error constructor tests.
 The latter are locally corrected (RP-381): affected Node27/native54 and types pass; no hosted
-rerun or product/CI change. The [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08)
+rerun or product/CI change. The [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-09)
 separates built foundations, fixture-first work and substantial unbuilt scope. RP-365/RP-368/RP-378 and owner/author holds
 remain; a passing journey does not resolve them. [Garage log](garage-player-surfaces/log.md),
 [Cosmetic log](cosmetic-shop-v1/log.md) and [API log](api-foundation/log.md) own evidence.
@@ -2002,8 +2006,9 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Current at source `9f518477` (2026-10-08). Combat's structural decoding is an isolated
-foundation increment; no additional playable tier or milestone is completed.
+Reconciled at source `1b484c50` (2026-10-09). The intervening API, input, Recovery and
+Deployment repairs improve existing paths/proofs; no additional playable tier or milestone
+is completed. Combat's structural decoding remains an isolated foundation increment.
 These are delivery boundaries, not a claim that
 every listed change is authorized immediately. Accepted RFCs and their owning plans decide that.
 

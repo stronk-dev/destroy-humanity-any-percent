@@ -4,7 +4,7 @@ Reconciled 2026-10-09. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-## Whole-product overview — 2026-10-08
+## Whole-product overview — 2026-10-09
 
 **Bottom line:** substantial server/client foundations and an executable early-game loop exist.
 The current stage is **Garage integration and hardening**, not completion of the full game or
@@ -49,6 +49,19 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Current finished source is `1b484c50` (2026-10-09). The latest Deployment corrections
+  require healthy baselines before interrupted-backup, public-metrics and source/image-secret
+  probes can count a failure as evidence (RP-481/RP-482). Old-behavior regressions fail;
+  affected cold native Go/vet and declared Linux-amd64 packages pass with zero skips.
+  The coherent range `1efea9cf..1b484c50` awaits designated review. These are release-check
+  repairs, not new gameplay, runtime isolation or R-006 clean-host proof. The
+  [Deployment log](deployment-foundation/log.md) owns commands, results and limitations.
+- Read-only GitHub inspection at this closeout confirms latest published CI
+  [37795560514](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37795560514)
+  at `cbd2069f` still fails server/client/browser; schema/harness/composed pass.
+  There is no hosted verdict for the newer local source. The implementation checkpoint
+  is committed and clean; this editorial reconciliation does not rerun software tests,
+  adopt pending proposals, approve corrective ranges or authorize a push/release.
 - Finished bounded checkpoint (2026-10-09): Recovery now preserves a known terminal result
   when a pending Finish fails, and clears superseded notices (RP-480). Old behavior fails
   eight native cases; corrected affected60 browser/84 unit checks, types/build/boundaries pass.

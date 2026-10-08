@@ -5163,3 +5163,21 @@ hosted verdict exists. Verification for this editorial-only checkpoint is source
 and diff inspection, not unrelated software suites. No product change, acceptance, archival,
 mint, cleanup, push, deployment or release claim. Full nine-tier1.0 remains active; no new
 feature was started before the requested handoff.
+
+## 2026-10-09 — Finish current checkpoint; reconcile whole-product overview
+
+Implementation source `1b484c50` is committed and clean, 58 commits ahead of the locally
+recorded origin/main before this editorial closeout. RP-481/RP-482 strengthen actual release
+probes with healthy baselines and specific failure evidence. The Deployment log owns cold
+native/vet and Linux-amd64 passes and pending designated range `1efea9cf..1b484c50`.
+Recovery's preceding terminal-order fix and all earlier review debt remain separate.
+
+Reconciled the existing overview and roadmap entry points for the owner's whole-progress
+request. Stage remains Garage integration/hardening: substantial early-game implementation,
+fixture-first Tier2/features, incomplete v0.1 and substantial unbuilt world/combat/Tier3–8/
+final endings plus recovery, rights, accessibility and operations. No new tier is completed.
+Read-only `gh run list` and `gh run view` confirm latest CI37795560514 at published
+`cbd2069f` remains red: server/client/browser fail; schema/harness/composed pass. No current
+source hosted verdict. Verification for this editorial change is diff, link and factual
+comparison only; no unrelated software rerun. No draft adoption, acceptance, archival,
+push/deployment or release claim. The full nine-tier1.0 goal remains active.
