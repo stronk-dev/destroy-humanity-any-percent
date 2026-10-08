@@ -115,6 +115,9 @@ focus choice. Mode, Submit and End controls remain native tab stops while pendin
 `aria-disabled`, and guard their callbacks against duplicate commands; the section exposes
 `aria-busy`. Terminal transitions hand off focus from a removed child control to Leave, without
 stealing newer focus or running after unmount.
+Composition is local to the mounted text field: ordinary snapshot responses retain it,
+but removing the field on a phase transition clears it even without `compositionend`.
+Reusing the child for a later run cannot leave that run's native submissions suppressed.
 
 A separate polite live region announces the new prompt text once per prompt ID change;
 miss/clear feedback uses its own status. Chromium/WebKit checks execute forward/backward Tab

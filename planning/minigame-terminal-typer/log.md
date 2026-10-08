@@ -925,3 +925,46 @@ containing commit; Claude's designated review remains required. No checkbox,
 archival, mint, push or full Typer acceptance. Full B3/B4 review obligations are
 now complete as CHANGES REQUIRED; outstanding corrections, RP-162/RP-460, public
 wire, owner content and task accessibility remain separate.
+
+## 2026-10-08 — Complete original B6/B7 reviews; interrupted composition RP-475
+
+Review by: Codex (designated cross-party reviewer of Claude's originals).
+Recorded by: Codex. Separate **CHANGES REQUIRED** verdicts cover the complete
+`ade1083b^..ade1083b` (B6, all three paths), `a3c87149^..a3c87149`
+(B7, all six paths) and `9e82a7f0^..9e82a7f0` (B7 addendum, both paths).
+Read the entire accepted Typer RFC, original diffs/records and affected current
+consumer/coordinator/tests. B6 retains RP-149's missing prompt announcement,
+RP-187's reactive clock feedback and RP-394's pending/response-focus defects;
+its original "keyboard" tests use click/requestSubmit and do not complete a run.
+RP-475 below is an additional state leak, not a public-route exploit. B7's tier
+guard itself reads pinned server state and its three kernel mirrors agree, but
+the original test drives legacy start (RP-154), uses inconsistent run_seq and
+queries activity rather than exercising Exit (RP-157). Cap/quality proof was
+also absent (RP-158). Original records correctly disclose the missing HTTP path.
+Later fixes/supplements are not retroactive approval of any of these originals.
+
+RP-475 correction, Review by: Codex (implementer first filter); Recorded by: Codex.
+Under TT8.2/TT9, an input removed during composition must not poison later input.
+Old child at73bcc42b plus the new regression fails native Chromium/WebKit42020:
+Begin works in the next run, but Enter never dispatches its line. Same-input
+response/composition suppression already passes. Clear the input-local flag on
+leaving typing; no engine, scoring, clock, content, wire or server change.
+Initial sandbox listener denial executes no tests, then permitted execution
+records those two real failures. Final complete affected browser5074 passes48;
+types/build/shell boundaries74152 pass with zero diagnostics. Composition events
+are injected, but removal, focus and subsequent Enter are actual browser actions;
+this is not native OS IME/manual assistive-technology or public integration proof.
+
+Current-descendant real-Postgres68893 executes all three TestTyper cases cold,
+zero skips: replay quota rejection, actual API-start coordinator refusal/success,
+and service-level play/payout/retry/quality/fifth-sixth cap/real Exit. Timed and
+untimed each credit3e0. That proves the corrected backend populations, not the
+original revision, public MA HTTP or earned/natural pacing. Full CI/Firefox,
+RP-162/RP-460, public-wire choice, adopted content and feature acceptance remain.
+
+Diff/whitespace checked; all handles terminal. Exact new correction/tests/docs/
+plan/ledger/log range begins after73bcc42b through this commit; Claude's designated
+review remains required, independently of earlier corrective ranges. No whole-CI,
+acceptance, archival, kernel bump, owner copy, cleanup or push. Original B6/B7
+review work is finished; continue accepted integration without repeating it or
+inventing the still-held public-wire/timing/result contracts.

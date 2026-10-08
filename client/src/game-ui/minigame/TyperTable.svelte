@@ -51,6 +51,9 @@
     const phase = snapshot.phase;
     if (promptID === lastPromptID && phase === lastPhase) return;
     const previousPrompt = lastPromptID;
+    // Removing the text field can cancel composition without compositionend.
+    // That input-local state must not suppress commands in a later run.
+    if (phase !== "typing") composing = false;
     const focused = document.activeElement;
     const ownedFocus = focused !== null && root?.contains(focused);
     const enterInput = promptID !== null && (focused === input ||

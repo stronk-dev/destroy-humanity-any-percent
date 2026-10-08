@@ -305,6 +305,47 @@ it.skipIf(!browser)("ends the run and exits to the host using native keyboard ac
   } finally { dispose(); }
 });
 
+it.skipIf(!browser)("an interrupted composition cannot suppress a later run's native submission", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const commands: TyperCommand[] = [];
+  const view = controlled(typing(), (command) => commands.push(command));
+  try {
+    await settle();
+    const originalInput = view.target.querySelector<HTMLInputElement>("input")!;
+    originalInput.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
+    // A new response alone must not end composition on the still-mounted field.
+    flushSync(() => view.app.advance(typing({ revision: 3 })));
+    await settle();
+    view.target.querySelector("form")!.requestSubmit();
+    expect(commands, "an active composition still suppresses submission").toEqual([]);
+
+    // An authoritative terminal removes the input without requiring the browser
+    // to dispatch compositionend. The host may subsequently reuse the child.
+    flushSync(() => view.app.advance(snapshot({ phase: "terminal", revision: 4 })));
+    await settle();
+    expect(originalInput.isConnected).toBe(false);
+    expect(view.target.querySelector("input")).toBeNull();
+    flushSync(() => view.app.advance(snapshot()));
+    await settle();
+    button(view.target, "Untimed run").focus();
+    await userEvent.keyboard("{Enter}");
+    expect(commands).toEqual([{ kind: "begin", assist_level: "untimed" }]);
+    flushSync(() => view.app.advance(typing()));
+    await settle();
+    const nextInput = view.target.querySelector<HTMLInputElement>("input")!;
+    expect(nextInput).not.toBe(originalInput);
+    expect(document.activeElement).toBe(nextInput);
+    nextInput.value = "ls -la";
+    nextInput.dispatchEvent(new Event("input", { bubbles: true }));
+    await settle();
+    await userEvent.keyboard("{Enter}");
+    expect(commands).toEqual([
+      { kind: "begin", assist_level: "untimed" },
+      { kind: "submit_line", text: "ls -la" },
+    ]);
+  } finally { view.dispose(); }
+});
+
 it.skipIf(!browser)("announces each new prompt once while focus remains in the input", async () => {
   const target = document.createElement("main"); document.body.append(target);
   installTheme(target, UI_THEMES.era_2000, false);

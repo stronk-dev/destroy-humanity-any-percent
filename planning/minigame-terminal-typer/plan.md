@@ -23,8 +23,12 @@ Fixture-first (OD-11): no production epoch is minted by this plan.
 - [ ] B5 — PARTIAL (`d7c1ce6e`: error details only; snapshot/command arms blocked by the TT-PA4 vs API C2 DESIGN-GAP) — TT-PA4 API arms (Typer snapshot/command arms) + generated client. AC10 (API half).
 - [ ] B6 — PARTIAL (`ade1083b`: TyperTable + AC13 gates; registration waits on the pin and the C2 gap) — UI: `TyperTable` child under `client/src/game-ui/minigame/`, tenant-registry row,
   accessibility contract TT8. ACs 13, 14.
+  Full original `ade1083b^..ade1083b` designated review is now CHANGES REQUIRED;
+  the 2026-10-08 log records all three paths and the separate correction evidence.
 - [ ] B7 — PARTIAL (`a3c87149`, `9e82a7f0`, `ec2dfbf9`, `1260be38`, `11c7af4b`: AC9, AC11, AC8 service-level path including real Exit, fifth/sixth daily cap, offline quality and replay quota rejection; public MA path blocked) — Composed platform path (real Postgres): create → begin → submits → terminal → faucet →
   receipt; neutrality timed/untimed. ACs 8, 11.
+  Full original `a3c87149^..a3c87149` and `9e82a7f0^..9e82a7f0` designated
+  reviews are now CHANGES REQUIRED, not implicit approval of Codex's supplements.
 - [ ] Canonical docs (`docs/minigame-terminal-typer.md`), designated Codex review, archival (Codex).
 
 ### B6 local display-clock correction (2026-10-05)
@@ -65,3 +69,9 @@ only untimed child run uses actual TS engine/pinned placeholder data, not server
 or payout proof. The owning log records final affected checks and exact review
 scope. B6 stays partial: public registration/C2, adopted content, full three-
 engine/manual-AT acceptance and designated review remain separate obligations.
+
+RP-475's interrupted-composition correction is also locally verified under TT8.2/TT9:
+removing the text field clears its composition flag, while a same-input response retains it.
+The old child suppresses a later run's native Enter in both Chromium/WebKit; the corrected
+complete child population, types/build and shell boundaries pass. This is component lifecycle
+proof, not public registration, OS IME certification or acceptance of B6.
