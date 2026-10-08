@@ -146,6 +146,35 @@ describe("Typer shared content gate", () => {
     }
   });
 
+  it("enforces the solo tenant mode on creation", async () => {
+    const identity = { content, content_hash: corpus.typer_content_hash, content_schema_version: 1,
+      seed: 42n, mode: "solo" as const, scaling_inputs: { "typer.era_tier": 1 } };
+    const ready = await createTyper(identity);
+    expect(JSON.parse(ready)).toMatchObject({ phase: "ready", revision: 1 });
+    for (const mode of ["async_snapshot", "ranked", ""]) {
+      // Runtime replay inputs can violate the static solo-only type.
+      await expect(createTyper({ ...identity, mode: mode as "solo" })).rejects.toThrow(SyntaxError);
+    }
+  });
+
+  it.each(["ready", "typing", "terminal"].flatMap((phase) =>
+    ["async_snapshot", "ranked", ""].map((mode) => ({ phase, mode }))))
+  ("refuses runtime mode '$mode' in $phase while admitting its solo companion", async ({ phase, mode }) => {
+    const identity = { content, content_hash: corpus.typer_content_hash, content_schema_version: 1,
+      seed: 42n, mode: "solo" as const, scaling_inputs: { "typer.era_tier": 1 } };
+    let snapshot = await createTyper(identity);
+    if (phase !== "ready") snapshot = (await applyTyper({ ...identity, revision: 1, snapshot,
+      command: '{"assist_level":"untimed","kind":"begin"}', server_time_ms: 1 })).snapshot;
+    if (phase === "terminal") snapshot = (await applyTyper({ ...identity, revision: 2, snapshot,
+      command: '{"kind":"end_run"}', server_time_ms: 2 })).snapshot;
+    const input = { ...identity, revision: JSON.parse(snapshot).revision, snapshot,
+      command: '{"kind":"end_run"}', server_time_ms: 3 };
+    if (phase === "terminal") await expect(applyTyper(input)).rejects.toMatchObject({ code: "illegal_phase" });
+    else expect((await applyTyper(input)).result?.outcome).toBe("ended_early");
+    await expect(applyTyper({ ...input, mode: mode as "solo" })).rejects.toThrow(SyntaxError);
+    expect(input.snapshot).toBe(snapshot);
+  });
+
   it("rejects catalog defects the Go loader rejects", () => {
     const keys = new Set(COPY_KEYS);
     const mutate = (change: (value: Record<string, any>) => void) => { const value = JSON.parse(content); change(value); return value; };

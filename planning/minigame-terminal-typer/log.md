@@ -734,3 +734,30 @@ commit needs Claude's designated review. Original B1 remains partial; RP-162,
 public C2/content mint, full AT/feature/hosted CI and other review spans stay open.
 No checkbox, acceptance, archival or push. Next: finish the remaining accepted
 engine review and consolidate related correction ranges for cross-party review.
+
+## 2026-10-08 — B1 runtime solo-mode parity (RP-401)
+
+TT1/TT4.1 correction: TS application must enforce the same solo-only runtime
+identity as creation and Go. Old TS mode-by-phase regression fails all nine
+cases (chunk56cdb2): async_snapshot, unknown ranked and empty mode across actual
+ready/typing/terminal states. Ready/typing incorrectly emit terminal results;
+terminal reaches illegal_phase rather than identity refusal. Go tenant/registry
+companions16359 pass unchanged. An intermediate test edit had an extra brace;
+its transform failure is a test-author error, not product evidence.
+
+One TS mode guard now refuses before snapshot/command application. Valid solo
+states remain admitted, including terminal's existing illegal_phase behavior.
+Kernel170->171 is the genuine TS replay acceptance-set correction; no server
+semantics, content, commands, time/payout rules or corpus bytes changed.
+
+Finished batch: Node54644 passes21, native Chromium/WebKit49787 passes96,
+cold four-package Go14423/vet25132 pass, types/build/boundaries/corpus7479 pass
+with zero errors/warnings. Diff check passes. No persistence boundary changed;
+the previous Postgres service evidence is not relabeled as a new public journey.
+
+Review by: Codex (original B1 targeted finding; new correction implementer first
+filter). Recorded by: Codex. Exact new range `ba1365c9` exclusive through this
+containing commit requires Claude's designated review. B1 remains partial with
+RP-162 and the remaining review; public C2/content/AT/whole feature/CI remain
+open. No checkbox, acceptance, archive or push. Continue the accepted engine
+review; held public API contracts cannot be invented to complete registration.

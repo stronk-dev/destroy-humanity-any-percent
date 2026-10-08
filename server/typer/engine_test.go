@@ -539,6 +539,72 @@ func TestTyperSnapshotRequiresNumericValuesAndExactFeedback(t *testing.T) {
 	}
 }
 
+func TestTyperRejectsNonSoloModeInEveryPhase(t *testing.T) {
+	h := newHarness(t, 42)
+	states := []json.RawMessage{h.snapshot}
+	if err := h.apply(`{"assist_level":"untimed","kind":"begin"}`, 1); err != nil {
+		t.Fatal(err)
+	}
+	states = append(states, h.snapshot)
+	if err := h.apply(`{"kind":"end_run"}`, 2); err != nil {
+		t.Fatal(err)
+	}
+	states = append(states, h.snapshot)
+	registry, err := minigame.NewTenantRegistry(NewTenant())
+	if err != nil {
+		t.Fatal(err)
+	}
+	invalidModes := []minigame.Mode{minigame.ModeAsyncSnapshot, "ranked", ""}
+	create := minigame.CreateInput{Mode: minigame.ModeSolo, Seed: h.seed,
+		ScalingInputs: map[string]int64{ScalingDestination: 1}, Content: h.content,
+		ContentHash: h.hash, ContentSchemaVersion: SchemaVersion}
+	for _, mode := range invalidModes {
+		input := create
+		input.Mode = mode
+		if output, err := NewTenant().Create(input); !errors.Is(err, minigame.ErrInvalidTenant) || len(output) != 0 {
+			t.Fatalf("non-solo creation %q must refuse without output: %s %v", mode, output, err)
+		}
+	}
+	for _, encoded := range states {
+		var snapshot Snapshot
+		if err := json.Unmarshal(encoded, &snapshot); err != nil {
+			t.Fatal(err)
+		}
+		t.Run(snapshot.Phase, func(t *testing.T) {
+			input := minigame.ApplyInput{Mode: minigame.ModeSolo, Seed: h.seed, Revision: snapshot.Revision,
+				Snapshot: encoded, Command: json.RawMessage(`{"kind":"end_run"}`),
+				ScalingInputs: create.ScalingInputs, Content: h.content, ContentHash: h.hash,
+				ContentSchemaVersion: SchemaVersion, ServerTimeMs: 3}
+			for _, mode := range append([]minigame.Mode{minigame.ModeSolo}, invalidModes...) {
+				input.Mode = mode
+				for path, run := range map[string]func(minigame.ApplyInput) (minigame.ApplyOutput, error){
+					"tenant": NewTenant().Apply,
+					"registry": func(input minigame.ApplyInput) (minigame.ApplyOutput, error) {
+						return registry.Apply(EngineRef, EngineVersion, input)
+					},
+				} {
+					before := append([]byte(nil), encoded...)
+					output, err := run(input)
+					if mode != minigame.ModeSolo {
+						if !errors.Is(err, minigame.ErrInvalidTenant) || len(output.Snapshot) != 0 || output.Result != nil {
+							t.Errorf("%s non-solo %q must refuse without output: %+v %v", path, mode, output, err)
+						}
+					} else if snapshot.Phase == PhaseTerminal {
+						if rejectionCode(err) != "illegal_phase" {
+							t.Errorf("%s valid solo terminal must reach phase gate: %v", path, err)
+						}
+					} else if err != nil || output.Result == nil || output.Result.Outcome != OutcomeEndedEarly {
+						t.Errorf("%s valid solo must end: %+v %v", path, output, err)
+					}
+					if !bytes.Equal(encoded, before) {
+						t.Fatalf("%s mutated input snapshot", path)
+					}
+				}
+			}
+		})
+	}
+}
+
 func TestTyperIsolation(t *testing.T) {
 	for _, path := range []string{"engine.go", "catalog.go"} {
 		source, err := os.ReadFile(path)

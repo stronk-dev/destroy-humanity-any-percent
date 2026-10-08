@@ -45,6 +45,7 @@ export async function createTyper(input: TyperCreateInput): Promise<string> {
 
 export async function applyTyper(input: TyperApplyInput): Promise<{ readonly snapshot: string; readonly result: TyperResult | null }> {
   const catalog = await resolveCatalog(input);
+  if (input.mode !== "solo") throw new SyntaxError("Typer is solo only");
   const eraTier = validScaling(input.scaling_inputs, catalog);
   const snapshot = decodeSnapshot(input.snapshot);
   if (snapshot.revision !== input.revision || snapshot.typer_content_hash !== input.content_hash || snapshot.typer_schema_version !== input.content_schema_version ||

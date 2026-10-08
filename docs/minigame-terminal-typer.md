@@ -40,6 +40,8 @@ replaced before any production mint.
   `typer.prompts.v1` substream of the `typer.run.v1` run seed.
 - **Commands.** `begin {assist_level: timed|untimed}`, `submit_line {text}` and `end_run`. Exact
   keys are required, so any client-authored score, time or prompt ID is rejected.
+  Both engines admit only `solo` for creation and command application, in every phase;
+  TypeScript validates the runtime mode rather than relying on its compile-time type.
 - **Time.** Only `ApplyInput.ServerTimeMs`, the platform's per-command server sample (TT-PA1),
   supplies time. `t = max(sample, last_server_ms)`, so the run clock never rewinds.
 - **Deadline.** A timed run has deadline `t_begin + timed_budget_ms`. A submit stamped exactly at
