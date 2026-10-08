@@ -49,6 +49,17 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest Garage checkpoint (2026-10-08): RP-448's analogous Founder handoff is locally
+  corrected under GS0.2/GS1-A6. The shared dispatcher compares the actual read's Founder
+  revision with the applied receipt, including across Company changes; Company revisions
+  remain run-scoped. Native precommit tests fail the old host in both browsers. Current-read,
+  across-Company, failed-fresh-read/no-retry and prior Company controls pass. Final affected
+  Chromium/WebKit12631 passes1080 cases with four separate performance-only exclusions;
+  types/build/boundaries38428 pass. Final real-service `make test-game-ui-composed`49119
+  exits0 through main/Recovery, pets/Reputation, Clout, payment negatives, Garden and Tier2.
+  The [Garage log](garage-player-surfaces/log.md) owns the pending designated-review range.
+  Separate cold formulas/replaycatalog tests are RED (RP-449), and latest hosted CI below
+  remains RED. This bounded correction is not whole-CI, full Garage or release acceptance.
 - Latest Garage checkpoint (2026-10-08): RP-447's stale purchase handoff is locally corrected.
   Every Company action checks whether a coalesced read predates its applied revision and,
   if so, completes a post-response refresh before clearing pending. Founder/run identity
@@ -100,8 +111,8 @@ operations remain required alongside that construction, not optional end-stage p
   records the exact pending designated-review range. Hosted run 37778647275 was rechecked
   read-only for the earlier overview: terminal red, four jobs pass and client/server fail.
   At that inspection newer commits were local; origin/main has since advanced to `cbd2069f`
-  by an external push during the Recovery work. Codex did not perform that push and has not
-  rechecked hosted results at that newer coordinate. No full-suite rerun or release promotion is
+  by an external push during the Recovery work. Codex did not perform that push; the newer
+  hosted result is reconciled below. No full-suite rerun or release promotion is
   inferred from this documentation reconciliation.
 - Latest native-care checkpoint (2026-10-08), range after `c977ad36`: RP-440's
   global busy guard discarded a completed trusted click; RP-441's inserted busy message
@@ -172,7 +183,19 @@ operations remain required alongside that construction, not optional end-stage p
   decision, not balance retuning or golden regeneration. The [Tier-2 log](tier2-content/log.md)
   owns commands, digests, results and exact review ranges. No new playable tier, minted content
   or release milestone follows from completing this research/review checkpoint.
-- Latest published source verified read-only: `f3851e8b` (2026-10-08).
+- Latest published CI verified read-only: `cbd2069f` (2026-10-08),
+  [run37795560514](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37795560514).
+  All six jobs are terminal: schema, fast harness and composed pass; client, server and
+  browser fail. Client executes10294 passing tests/943 skips, then rejects historical
+  kernel commit50a3a514 (RP-131). Server retains27 Clout partition failures (RP-307), and
+  additionally reports formula/replaycatalog duplicate/nesting admission conflicts (RP-449)
+  and an account-family socket-revocation deadline (RP-450). A cold local formulas/replaycatalog
+  run reproduces the same admission failures; these are not hosted-only. Firefox's shell primitive
+  accessibility/focus/naming test keeps era_1995 after Enter instead of era_2000 (RP-451);
+  browser reports33683 passes/one failure/15 skips. These new observations are queued for
+  diagnosis, not declared fixed or dismissed as flakes. Newer local Garage/Recovery work
+  has not been pushed; local selected/composed passes do not establish hosted/full-CI green.
+- Earlier published source inspected: `f3851e8b` (2026-10-08).
   [Hosted CI 37778647275](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37778647275)
   is terminal **RED: four jobs pass, two fail**. Composed, browser, schema and fast harness
   pass. Client runs 10,258 passing tests/928 skips, then the historical kernel guard rejects

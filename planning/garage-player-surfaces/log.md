@@ -6608,3 +6608,46 @@ Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new 
 designated cross-party review pending. No Firefox/manual AT/performance/hosted/full-CI or
 whole Garage/release claim, archival or push. Continue accepted construction/integration and
 consolidated review; unresolved owner contracts and the full nine-tier objective stay intact.
+
+## 2026-10-08 — Refresh the committed Founder stream before clearing pending
+
+Outcome: RP-448, existing GS0.2/GS1-A6. The same shared-read race also affected Founder
+actions: a pre-harvest snapshot7 returned after applied receipt8, then pending cleared.
+Compare the actual snapshot's Founder revision, not the separate publication watermark.
+Founder comparisons survive Companies; Company comparisons still require the submitting run;
+both require the same Founder. Stale reads get one post-response refresh, not an intent retry.
+Failed fresh reads retain the existing offline behavior. Legacy snapshots are narrowed by
+field presence, without changing their schema. No clock, limiter, content, balance, kernel,
+copy, CI-workflow or timeout bytes changed.
+
+Regression: existing Fiscal delayed-read test extended, not a new harness. Old host11053
+fails two precommit cases (Chromium/WebKit); two already-current controls pass. Corrected57157
+passes14 selected Fiscal/Company/successor checks. Final four Fiscal populations include a
+Company transition and failed fresh read: focused58501 passes18 selected checks with prior
+Company controls. The next native Unlock binds revision8; failure never retries harvest or
+enables stale Unlock. These controlled mounted-runtime tests prove read ordering, not a
+server transaction/attendance-clock defect or a naturally played Company transition.
+
+Coverage: final `make test-browser-focused`12631 selects game-ui-screens, garage-surfaces,
+cosmetic-host and pet-adoption in Chromium/WebKit:1080 pass, four separate performance-only
+exclusions. Initial typecheck25682 rejects direct Founder-field access on the legacy union;
+field-presence narrowing corrects it. Final `make typecheck build-client
+verify-client-boundary`38428 passes with zero Svelte/type diagnostics. Final unchanged
+`make test-game-ui-composed`49119 exits0 through persisted HTTP/Postgres populations,
+production-built main/Pitch/bounded Recovery, pets/Cosmetics/Reputation, Clout, no-payment
+negatives, Garden and Tier2. Existing SQL/reload/native-consent assertions remain unchanged.
+Diff checks pass; all execution sessions are terminal.
+
+Whole-product reconciliation also inspected published CI37795560514 at cbd2069f: schema,
+fast harness and composed pass; client/server/browser fail. Historical kernel RP-131 and
+27 Clout partition failures remain. Newly recorded RP-449 formula/replaycatalog duplicate
+admission conflicts reproduce with cold `make test-go GO_PACKAGES='./formulas ./replaycatalog'
+GO_TEST_FLAGS='-count=1'` (exit2). RP-450 is a socket-revocation integration deadline; RP-451
+is Firefox's shell era/focus transition. Those are open diagnosis work, not this repair's
+coverage or permission to relax an oracle. CURRENT-STATE records the current hosted result.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range:
+`04acc775` exclusive through this source/tests/docs/plan/ledger/checkpoint/log commit;
+designated cross-party review pending. No Firefox/manual AT/performance/whole-CI, full Garage,
+content mint, acceptance, archival, push or release claim. This finishes the bounded repair;
+full nine-tier construction and rights/recovery/accessibility/operations obligations remain.

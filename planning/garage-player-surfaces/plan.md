@@ -7,7 +7,13 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-08): RP-447's ordinary Company purchase/read handoff is repaired
+Current checkpoint (2026-10-08): RP-448 extends the existing applied-read handoff to Founder
+actions under GS0.2/GS1-A6. A shared pre-harvest read must be refreshed against the actual
+snapshot Founder revision before pending clears, including across Company changes. Failed
+fresh reads preserve offline handling and never retry the intent. The owning log records
+old-host failures, current-read/Company controls, final verification and pending review.
+
+Preceding checkpoint (2026-10-08): RP-447's ordinary Company purchase/read handoff is repaired
 under GS0.2. A reused pre-commit read requires a post-response refresh before pending clears;
 same-Founder/run comparison keeps successor-Company genesis separate. Deterministic native
 purchase regressions fail the old host in Chromium/WebKit. Final affected and real-service

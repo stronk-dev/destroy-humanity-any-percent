@@ -306,14 +306,18 @@
           let postResponseRead = refreshTask === undefined;
           let refreshed = await refresh();
           if (disposed) return;
-          // Every Company action may share a pre-commit stream read, not just
-          // Gate/Decline. Its receipt bounds the same Company's fresh state;
-          // a successor Company starts a different revision sequence.
-          const appliedRevision = outcome.receipt.new_revision;
-          if (!offline && options.scope !== "founder" &&
+          // A shared read may predate either stream's commit. Founder revisions
+          // survive Companies; Company revisions only compare within one run.
+          const founderAction = options.scope === "founder";
+          const appliedRevision = founderAction ? outcome.receipt.founder_revision : outcome.receipt.new_revision;
+          const sampledRevision = founderAction
+            ? (snapshot && "founder_revision" in snapshot ? snapshot.founder_revision : undefined)
+            : snapshot?.revision;
+          if (!offline &&
               typeof appliedRevision === "number" && Number.isSafeInteger(appliedRevision) &&
               snapshot && snapshot.run.founder_id === submittedRun.founder_id &&
-              snapshot.run.run_seq === submittedRun.run_seq && snapshot.revision < appliedRevision) {
+              (founderAction || snapshot.run.run_seq === submittedRun.run_seq) &&
+              typeof sampledRevision === "number" && sampledRevision < appliedRevision) {
             postResponseRead = true;
             refreshed = await refresh();
           }
