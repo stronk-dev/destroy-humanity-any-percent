@@ -350,3 +350,24 @@ C1–C4's preceding bounded approval stands; C5/C6 review and full Tier-2 accept
 Next in this lane: complete the measurement/policy review and resolve the recorded pacing,
 relevance and Headcount boundaries before mint/integration acceptance. No product changes,
 report regeneration, checkbox promotion, archive or push in this checkpoint.
+
+## 2026-10-08 — RP-432: make the C6 policy-preservation assertion real
+
+Outcome under §P3: the candidate must preserve inherited policy rows while adding only the
+six specified Tier-2 rows. The former test skipped inherited rows entirely. Extracting its
+unchanged checks and changing an inherited epsilon produces the expected red regression:
+focused37771 exits2, `accepted a changed inherited epsilon`; the unmodified candidate passes.
+
+The test-only correction uses the existing complete policy type, compares inherited fields,
+schema and groups, rejects duplicate IDs and retains the exact six new IDs/window/threshold/
+no-exemption restrictions. Eleven altered-policy cases exercise those checks. Focused58788
+passes; cold complete default `make test-go vet GO_PACKAGES='./harness'
+GO_TEST_FLAGS='-count=1'`48178 passes (85.781s plus vet). Exhaustive opt-in measurements are
+not part of that default population. No production code, candidate balance or recorded report
+changed. `git diff --check` passes.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. The test correction after
+`0512405b` through this commit needs designated cross-party review; it cannot approve its own
+C6 range or the measurement. Next: non-update exhaustive C5 pacing reproduction, then complete
+the C5/C6 review with the recorded instrument and Headcount limitations intact. No acceptance,
+archival, content mint or push.
