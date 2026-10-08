@@ -75,5 +75,9 @@ Headcount/allocation and the new reference policy remain held.
   sufficient authority to retune. The separate §P3 T0 unchanged-report requirement also fails
   against a fresh epoch-8 control because the ratified Chaos policy's catalog-wide candidate
   population changes (RP-433). Its population/contract must be reconciled explicitly.
+  The existing branch diagnostic selects `ping_pong_table` and `move_fast_break_things` on
+  controlled legal prefixes, with effect-masked losses of 52,447 ms and 213,996 ms respectively.
+  `nap_pod` remains unselected, so that diagnostic also fails. These branch-specific observations
+  do not certify the three instrument-affected generators or make the main scenario pass.
 - §M mint: goldens, the formulas regeneration, `changelog/epoch-9.md`, and the composed Postgres
   proof.

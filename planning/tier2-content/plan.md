@@ -36,7 +36,8 @@ six Tier-2 rows are all instrument-affected; it is not a clean content-dominance
   `gate.t1_to_t2` literal against the [2h,3h] envelope (§P2, OD-7/OD-8). Bounded implementation
   reviewed; all seven sampled literals reproduce and fail the envelope. Full policy/allocation
   scope and owner balance adoption remain open.
-- [~] C6 — (measured; gate FAILS, see log C6) Relevance: T0 identity vs epoch 8 on the candidate bundle; T1–T2 combined scenario
-  report (§P3).
+- [~] C6 — Relevance (§P3): combined diagnostic independently reproduced; main and branch
+  gates still fail. T0 comparison exposes RP-433's policy-population conflict. Original C6
+  test coverage requires the RP-432 correction's designated review; no full P3 acceptance.
 - [ ] Held — §H headcount, P4 seats row, P5, AC2/AC3 (headcount parity/partition) — OD-1.
 - [ ] Owner — M3 SHA ratification, E4 copy round, M1–M4 mint.

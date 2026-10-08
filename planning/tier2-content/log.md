@@ -454,3 +454,31 @@ with the original C1–C4 review's explicit boundary.
 
 Next: finish the live branch diagnostic; C6 correction RP-432 still needs cross-party review,
 RP-433 needs an explicit policy/population amendment, and pacing/Headcount choices remain open.
+
+## 2026-10-08 — Branch diagnostic complete; C6 review disposition
+
+Review by: Codex (designated cross-party reviewer of Claude's original C6).
+Recorded by: Codex. Original range `a63740cd^..a63740cd`: CHANGES REQUIRED for the policy-
+preservation test hole RP-432. Candidate derivation and the negative combined measurement are
+verified; a negative hypothesis is completed research, not a reason to invent a passing result.
+Codex's correction `0512405b..e6a64aff` is locally verified but still needs the other party's
+designated review. Full P3 additionally remains open on the executed RP-433 contract conflict.
+
+The existing `make relevance-branches` target76057 used the same T1–T2 scenario and fresh
+hash-matched combined diagnostic as input, writing only `.cache/tier2-review-branches-e6a64aff`.
+It completes 3,659,464 transitions and exits2 with exactly `branch_unselected:upgrade.nap_pod`.
+The diagnostic SHA256 is
+`cbecd31e5645fb4dec3ac3dc6b188e552b8b287b0a03aac073a3b25ae09d495c`.
+The real-engine branch prefixes select `ping_pong_table` and `move_fast_break_things`; from
+their post-purchase states, effect-masked completions lose 52,447 ms and 213,996 ms respectively,
+above the unchanged 1,000 ms epsilon. Three existing T1 branch proofs also pass. These are
+controlled branch-specific proofs, not whole-path dominance, ordinary player choices or a
+certification of the three instrument-affected T2 generators. Nap pod's unselected branch is
+not a measurement of its absence after the still-held Headcount mechanic is added.
+
+All four measurement commands from this batch are terminal; no experiment is left running.
+Their exact runtime/input paths remain unchanged from `e6a64aff`; no reports are regenerated.
+Next delivery: the missing fixture-only native Garden→API→persisted-harvest boundary under
+SG9/SG10/SG13, without repeating the renewal-blocked natural long-session task or changing
+growth/balance. Controlled initial state must be explicit; it will not complete Garden, T2 or
+release acceptance. The policy/pacing/Headcount choices above remain unruled. No push or archive.
