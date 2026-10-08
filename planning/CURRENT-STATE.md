@@ -30,7 +30,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
 | Account / API / transport | Account security, backend deletion, revocation, exact-response and transport recovery witnesses were independently approved in earlier ranges. Generated API dispatch and newer consumers are partly implemented. Credential responses now consistently refuse HTTP caching, locally verified against real Postgres; that new range awaits designated review. A recovery player-flow/storage/copy proposal is now drafted, not accepted or built. | Complete generated-client/route migration, startup failure and browser renewal contracts, visible recovery-code/recover-existing-account UX and long-session proof. |
 | Privacy / player rights | Relation-complete 60-table inventory and bounded browser/event/backup/deletion traces expose actual retained data. Research publication classification/sanitization is complete. | Owner export/deletion/retention choices (D-008/D-009/D-015), implementations and player workflows. Public board survival after deletion and restoration from pre-deletion backups remain explicit issues. An instance backup is not player export. |
 | Accessibility | Native keyboard, focus, pending feedback, reflow and announcement corrections exist across several surfaces; targeted browser checks execute. | Accepted cross-product task/assistive-technology matrix and actual task testing, including zoom/motion/longer workflows. Automated checks alone are not accessibility completion. |
-| MMO and later game | Commons, guild, faction and doctrine primitives exist. Combat's shared Go/TS arithmetic now checks all 36 exact type edges plus bounded damage, saturation and store-clamp fixtures; this is not a battle engine. | Complete world/feed/ticker/social surfaces, combat engines/integration and fair bot backfill, Tier 3–8 content, challenge/category set and all final endings. These are substantial unbuilt work, not merely closeout paperwork. |
+| MMO and later game | Commons, guild, faction and doctrine primitives exist. Combat has shared Go/TS arithmetic, deterministic random streams and strict ordered three-member team/eight-card deck reference decoding. The new decoder is a standalone library with no live player consumer, not a battle engine. | Combat catalog/effect definitions and Trust/Soul tables; complete world/feed/ticker/social surfaces, combat engines/integration and fair bot backfill, Tier 3–8 content, challenge/category set and all final endings. These are substantial unbuilt work, not merely closeout paperwork. |
 | Deployment / operations | Accepted single-node Compose/Caddy floor; packaging, configuration, encrypted backup, release/rollback and operations tooling implemented with several bounded corrective approvals. | Remaining findings and exact-range reviews; rebuild current candidate/previous bundles; R-006 clean Linux-host install/restore/rollback rehearsal. Historical bundles and native helper tests do not establish current release readiness. |
 
 ### What the weeks of work have delivered
@@ -49,6 +49,19 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Finished source checkpoint `9f518477` (2026-10-08): Combat C2's structural team/deck
+  reference decoder is committed. Cold complete affected Go, vet, both division boundaries,
+  88 Node checks, strict types and 176 native Chromium/WebKit checks pass; the
+  [Combat log](combat-shared-data/log.md) owns the exact evidence and pending designated
+  range `1e8a25bc..9f518477`. No catalog, battle engine, live integration, Linux/Firefox or
+  whole-CI claim follows. Existing five-minute Recovery completion already has a recorded
+  real-browser/service/Postgres pass; it is not new or unfinished work to recreate.
+  Original Pet, Garden and Arcade reviews have complete dispositions; later corrective
+  ranges remain independently reviewable. Fresh read-only GitHub inspection still finds
+  run37795560514 at `cbd2069f` red (schema/harness/composed pass; server/client/browser fail).
+  The source checkpoint is clean and 45 commits ahead of the locally recorded origin/main,
+  with no current-head hosted verdict. This overview update is editorial closeout, not an
+  accepted feature, content mint, release, push or another player milestone.
 - Arcade's original A1–A7 batches now all have complete designated CHANGES REQUIRED
   dispositions, not implicit approval of later repairs. At source `281340d8`, selected
   Linux-amd64/real-Postgres engine/start/play/rollback/Exit populations and 363 client

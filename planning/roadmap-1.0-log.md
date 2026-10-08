@@ -5141,3 +5141,25 @@ not a new tracking system. Actual stage: Garage integration/hardening; incomplet
 substantial unbuilt Tier3–8/world/combat/final endings plus rights/accessibility/operations.
 Next remains accepted construction/correctness and consolidated corrective review. No tier,
 feature acceptance, archive, push or release promotion; full nine-tier1.0 remains the goal.
+
+## 2026-10-08 — Finish Combat checkpoint and owner-requested whole-product report
+
+Source `9f518477`, clean main and 45 commits ahead of locally recorded origin/main before this
+editorial closeout. Combat's owning plan/log records completed structural team/deck decoding,
+affected Go/Node/types/Chromium/WebKit passes and pending designated range
+`1e8a25bc..9f518477`. It has no live consumer or battle engine. Original Arcade reviews are
+complete dispositions at `1e8a25bc`, not implicit approval of corrected descendants. The
+existing five-minute Recovery journey already passed; no duplicate driver or rerun was needed.
+
+Reconciled the existing whole-product table and roadmap entry points against the active index,
+owning plans/logs, decision queue, design milestones and actual client era boundary (T0–T2).
+The stage remains Garage integration/hardening, with incomplete v0.1 and substantial later-tier,
+MMO/combat/ending construction plus rights/accessibility/recovery/operations still required.
+Recent corrective integration and review are useful work, not equivalent to new tier content.
+
+Fresh read-only GitHub run/job queries confirm latest CI37795560514 at published `cbd2069f`
+remains red: schema/harness/composed pass; server/client/browser fail. No current-local-head
+hosted verdict exists. Verification for this editorial-only checkpoint is source/record/link
+and diff inspection, not unrelated software suites. No product change, acceptance, archival,
+mint, cleanup, push, deployment or release claim. Full nine-tier1.0 remains active; no new
+feature was started before the requested handoff.

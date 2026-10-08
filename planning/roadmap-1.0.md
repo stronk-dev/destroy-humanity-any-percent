@@ -7,7 +7,10 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-08):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08).
 We are integrating and hardening the Garage, with substantial later-tier construction still
-ahead. All original Garden G1–G7 reviews are now dispositioned CHANGES REQUIRED at source
+ahead. Latest source `9f518477` adds locally verified Combat team/deck reference decoding,
+not a battle engine or live player feature; its exact range awaits designated review.
+Original Arcade A1–A7 reviews are now also fully dispositioned CHANGES REQUIRED at `1e8a25bc`.
+All original Garden G1–G7 reviews are dispositioned CHANGES REQUIRED at source
 `8fd83b40`; corrective approval, authored contracts, natural growth and production content
 remain open. Current scoped Go/client/real-Postgres evidence is in the owning log; full
 production still exposes the27 Clout partition failures. `a31621ee` refreshes only an actually
@@ -1999,7 +2002,8 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Current at production source `8fd83b40`, with observation repair `a31621ee` (2026-10-08).
+Current at source `9f518477` (2026-10-08). Combat's structural decoding is an isolated
+foundation increment; no additional playable tier or milestone is completed.
 These are delivery boundaries, not a claim that
 every listed change is authorized immediately. Accepted RFCs and their owning plans decide that.
 
@@ -2012,8 +2016,8 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
    semantics, the shared attendance-clock contract and historical kernel guard. Finish the
    natural pacing/relevance and candidate-copy/content gates; controlled cash/maturity fixtures
    are integration proof, not evidence that the economy or progression is ready to ship.
-3. **Consolidate review rather than restart original reviews.** Original Cosmetic, Pet, Garden
-   and reviewed Typer batches retain their recorded dispositions. Related Codex corrections and
+3. **Consolidate review rather than restart original reviews.** Original Cosmetic, Pet, Garden,
+   Arcade and reviewed Typer batches retain their recorded dispositions. Related Codex corrections and
    new integrated proofs need exact-range cross-party review before acceptance/archival.
    Owning logs hold those ranges; no new per-edit review ceremony or duplicate ledger.
 4. **Build and prove the public-release floor alongside gameplay.** Resolve remaining rights/
