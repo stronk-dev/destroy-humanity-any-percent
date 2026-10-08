@@ -166,10 +166,30 @@
   }
 
   async function beginAttempt(): Promise<void> {
+    if (pending) return;
+    let origin = document.activeElement instanceof HTMLElement ? document.activeElement : undefined;
+    let latestFocus: EventTarget | null | undefined = origin;
+    const observeFocus = (event: FocusEvent) => { latestFocus = event.target; };
+    document.addEventListener("focusin", observeFocus);
+    const replaceRemovedFocus = async (destination: "vision_slide" | "desk", generation: number) => {
+      await afterDOMUpdate();
+      if (!root?.isConnected || surface !== destination || selectionGeneration !== generation ||
+          !origin || origin.isConnected || latestFocus !== origin ||
+          (document.activeElement !== origin && document.activeElement !== document.body)) return;
+      const replacement = root.querySelector<HTMLElement>(destination === "desk" ? "#desk-heading" : "#vision-begin");
+      if (replacement) { origin = replacement; replacement.focus(); }
+    };
     actionPending = true; offline = false;
-    try { const value = await runtime.bootstrap(); startShell(); bindSnapshot(value); show("desk"); }
+    // Retry disappears when its old error clears. Keep pending focus in the
+    // same region; after success the removed entry control hands off to Desk.
+    const pendingFocus = replaceRemovedFocus("vision_slide", selectionGeneration);
+    try {
+      const value = await runtime.bootstrap(); startShell(); bindSnapshot(value); show("desk");
+      await pendingFocus;
+      await replaceRemovedFocus("desk", selectionGeneration);
+    }
     catch { offline = true; }
-    finally { actionPending = false; }
+    finally { await pendingFocus; actionPending = false; document.removeEventListener("focusin", observeFocus); }
   }
 
   // GS0.2: `scope` binds expected_revision to the Company or Founder stream;
@@ -647,8 +667,8 @@
         <h2>{t("screen.vision_slide.contract_title", {}, era)}</h2>
         <p>{t("screen.vision_slide.contract_category", {}, era)}</p>
         <p>{t("screen.vision_slide.timer_frame", { rta: duration(0), pb: t("chrome.run_title.pb_empty", {}, era) }, era)}</p>
-        <button type="button" disabled={pending} onclick={beginAttempt}>{pending ? t("screen.vision_slide.connecting", {}, era) : t("screen.vision_slide.begin_attempt", {}, era)}</button>
-        {#if offline}<p role="alert">{t("screen.vision_slide.offline_fallback", {}, era)}</p><button type="button" onclick={beginAttempt}>{t("screen.vision_slide.retry", {}, era)}</button>{/if}
+        <button id="vision-begin" type="button" tabindex="0" aria-disabled={pending || undefined} onclick={beginAttempt}>{pending ? t("screen.vision_slide.connecting", {}, era) : t("screen.vision_slide.begin_attempt", {}, era)}</button>
+        {#if offline}<p role="alert">{t("screen.vision_slide.offline_fallback", {}, era)}</p><button type="button" tabindex="0" aria-disabled={pending || undefined} onclick={beginAttempt}>{t("screen.vision_slide.retry", {}, era)}</button>{/if}
         <small>{t("screen.vision_slide.small_print", {}, era)}</small>
       </article>
     </section>

@@ -35,6 +35,14 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Vision entry correction (RP-393) now covers native Tab/Enter/Space, pending focus,
+  duplicate suppression, existing Retry and authoritative Desk focus without overriding
+  newer choices. Nine old-source failures become ten focused passes; affected native suite
+  passes960/four performance-only skips, types/build/boundaries pass. Whole composed42217
+  exits0 through actual HTTP201 bootstrap, production-client gameplay and both Cosmetic/care
+  populations. The initial new oracle's mistaken HTTP200 expectation is recorded, not a
+  server defect. Designated review and full accessibility/first-read/renewal/CI gates remain;
+  the Garage log owns this bounded range.
 - Latest native Pet Adoption correction (RP-392): Tab/arrow selection, pending focus/visible
   feedback, duplicate suppression and Not now/reopen focus handoffs now execute in Chromium/
   WebKit. Old component fails four regressions; final14 checks, types and build pass. Actual

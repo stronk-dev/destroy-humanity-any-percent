@@ -893,6 +893,10 @@ try {
   const websocketFrames = [];
   const websocketReceivedFrames = [];
   const snapshotRevisions = [];
+  let bootstrapRequests = 0;
+  page.on("request", (request) => {
+    if (new URL(request.url()).pathname === "/api/v1/bootstrap" && request.method() === "POST") bootstrapRequests++;
+  });
   page.on("pageerror", (error) => pageErrors.push(error));
   page.on("response", async (response) => {
     if (new URL(response.url()).pathname !== "/api/v1/founder/state" || response.status() !== 200) return;
@@ -906,9 +910,20 @@ try {
     socket.on("framereceived", (event) => websocketReceivedFrames.push(String(event.payload)));
   });
   await page.goto(uiURL, { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: "BEGIN ATTEMPT" }).click();
+  const bootstrapReply = page.waitForResponse((response) =>
+    new URL(response.url()).pathname === "/api/v1/bootstrap" && response.request().method() === "POST");
+  // Native activation against the real service; sequential Tab and held/failing
+  // replies are covered separately by the controlled native browser population.
+  await page.getByRole("button", { name: "BEGIN ATTEMPT" }).press("Enter");
+  const bootstrapStatus = (await bootstrapReply).status();
+  if (bootstrapStatus !== 201 || bootstrapRequests !== 1) {
+    throw new Error(`native Begin activation expected one HTTP201 bootstrap; status=${bootstrapStatus}, requests=${bootstrapRequests}`);
+  }
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
   await page.getByText(/You are visitor #\d+/u).waitFor({ state: "visible", timeout: 30_000 });
+  if (!await page.locator("#desk-heading").evaluate((heading) => document.activeElement === heading)) {
+    throw new Error("successful native Begin did not hand focus to the authoritative Desk");
+  }
   const stored = await page.evaluate(() => ({
     bootstrap: localStorage.getItem("cloud-clicker.bootstrap-key.v1"),
     credentials: localStorage.getItem("cloud-clicker.credentials.v1"),

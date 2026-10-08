@@ -167,6 +167,83 @@ it.skipIf(typeof document === "undefined")("runs bootstrap and player actions th
   await unmount(app); target.remove();
 });
 
+for (const key of ["{Enter}", " "]) for (const firstReply of ["success", "failure"] as const) {
+  it.skipIf(typeof document === "undefined")(`native Vision entry ${JSON.stringify(key)} preserves pending focus and ${firstReply}`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const runtime = new FixtureRuntime(false);
+    let resolveBootstrap!: (value: GameUISnapshot) => void;
+    let rejectBootstrap!: (error: Error) => void;
+    const bootstrap = vi.spyOn(runtime, "bootstrap").mockImplementation(() => new Promise((resolve, reject) => {
+      resolveBootstrap = resolve; rejectBootstrap = reject;
+    }));
+    const target = document.createElement("div"); target.style.inlineSize = "320px";
+    const sentinel = document.createElement("button"); sentinel.tabIndex = 0;
+    document.body.append(sentinel, target);
+    const app = mount(GameUIApp, { target, props: { runtime } });
+    const settle = async () => { for (let step = 0; step < 4; step++) { await tick(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync(); } };
+    try {
+      await settle();
+      sentinel.focus(); await userEvent.keyboard("{Tab}");
+      const begin = target.querySelector<HTMLButtonElement>(".vision button")!;
+      expect(document.activeElement, "native Tab reaches Begin Attempt").toBe(begin);
+      await userEvent.keyboard(key); await settle();
+      expect(bootstrap).toHaveBeenCalledTimes(1);
+      expect(document.activeElement, "Begin stays focused while bootstrap is held").toBe(begin);
+      expect(begin.getAttribute("aria-disabled")).toBe("true");
+      expect(begin.textContent).toBe(t("screen.vision_slide.connecting", {}, "era_1995"));
+      expect(target.querySelector("main")?.dataset.surface).toBe("vision_slide");
+      expect(runtime.snapshotCalls).toBe(0);
+      expect(runtime.listener).toBeUndefined();
+      await userEvent.keyboard("{Enter} "); await settle();
+      expect(bootstrap).toHaveBeenCalledTimes(1);
+      if (firstReply === "failure") {
+        rejectBootstrap(new Error("controlled bootstrap failure")); await settle();
+        expect(target.querySelector("main")?.dataset.surface).toBe("vision_slide");
+        expect(target.querySelector(".vision [role=alert]")?.textContent).toBe(t("screen.vision_slide.offline_fallback", {}, "era_1995"));
+        expect(document.activeElement, "failure keeps Begin focus").toBe(begin);
+        expect(begin.hasAttribute("aria-disabled")).toBe(false);
+        await userEvent.keyboard("{Tab}");
+        const retry = [...target.querySelectorAll<HTMLButtonElement>(".vision button")].find((control) => control !== begin)!;
+        expect(document.activeElement, "native Tab reaches the existing Retry").toBe(retry);
+        await userEvent.keyboard(key); await settle();
+        expect(bootstrap).toHaveBeenCalledTimes(2);
+        expect(document.activeElement, "removed Retry hands pending focus to the surviving Begin").toBe(begin);
+        await userEvent.keyboard("{Enter} "); await settle();
+        expect(bootstrap).toHaveBeenCalledTimes(2);
+      }
+      resolveBootstrap(snapshot); await settle();
+      expect(target.querySelector("main")?.dataset.surface).toBe("desk");
+      expect(document.activeElement, "authoritative success hands focus to Desk").toBe(target.querySelector("#desk-heading"));
+      expect(runtime.requests).toEqual([]);
+      expect(target.scrollWidth).toBeLessThanOrEqual(target.clientWidth);
+      await assertAxe(target, "native bootstrap completion");
+    } finally { bootstrap.mockRestore(); await unmount(app); target.remove(); sentinel.remove(); }
+  });
+}
+
+it.skipIf(typeof document === "undefined")("native Vision completion respects a newer outside focus choice", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const runtime = new FixtureRuntime(false);
+  let complete!: (value: GameUISnapshot) => void;
+  const bootstrap = vi.spyOn(runtime, "bootstrap").mockImplementation(() => new Promise((resolve) => { complete = resolve; }));
+  const target = document.createElement("div");
+  const sentinel = document.createElement("button"); sentinel.tabIndex = 0;
+  const outside = document.createElement("button"); outside.tabIndex = 0;
+  document.body.append(sentinel, target, outside);
+  const app = mount(GameUIApp, { target, props: { runtime } });
+  try {
+    await tick(); flushSync(); sentinel.focus();
+    await userEvent.keyboard("{Tab}{Enter}"); await tick(); flushSync();
+    expect(bootstrap).toHaveBeenCalledTimes(1);
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(outside);
+    complete(snapshot);
+    for (let step = 0; step < 4; step++) { await tick(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync(); }
+    expect(target.querySelector("main")?.dataset.surface).toBe("desk");
+    expect(document.activeElement).toBe(outside);
+  } finally { bootstrap.mockRestore(); await unmount(app); target.remove(); sentinel.remove(); outside.remove(); }
+});
+
 it.skipIf(typeof document === "undefined")("keeps Exit offer precedence over a pending or rendered locked Pitch rejection", async () => {
   const { userEvent } = await import("vitest/browser");
   for (const order of ["offer-before-rejection", "offer-after-rejection"] as const) {

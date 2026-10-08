@@ -9,6 +9,12 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
 
 - Vision Slide: silently creates the anonymous account through the idempotent bootstrap
   coordinator and persists credentials before entering play.
+  Begin Attempt and the existing Retry have explicit native Tab stops. Pending bootstrap
+  retains focus and uses `aria-disabled` plus a callback guard to suppress duplicate
+  activation. A removed Retry hands focus to the surviving Begin control; authoritative
+  success hands focus to the Desk heading after rendering, unless the player chose another
+  focus target. This does not change bootstrap/credential/retry policy or repair the separate
+  credentialled first-read failure (RP-342).
 - Desk: manual action, resources and visible cap explanations, generator purchases, upgrades,
   server-projected Gate/Wind Down controls, local splits, the free Horse Armor shelf, shareware
   registration/order form, and README.TXT.

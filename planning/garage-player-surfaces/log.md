@@ -6312,3 +6312,34 @@ through this driver/helper/tests/docs/records batch needs designated review. No 
 hosted-green or release claim. Next: retain recurrence diagnostics and consolidate this
 related review range; continue accepted API catalog HTTP integration, not reruns for a lucky
 preemption seed. Full numerical/rights/access/clean-host/later-tier obligations remain.
+
+## 2026-10-08 — native Vision entry conformance (RP-393)
+
+Routine accepted-contract correction under archived Game UI U1/U2 and Garage GS0.6/GS0.8:
+Begin/Retry now have explicit native Tab stops. Pending bootstrap retains focus with
+aria-disabled and a callback guard; removed Retry hands focus to Begin and authoritative
+success to the rendered Desk heading. Newer focus choice and detached roots take precedence.
+Bootstrap, credentials, existing retry behavior, copy and gameplay policy are unchanged.
+
+Old-source21640: nine native failures/one positive control across Chromium/WebKit; Chromium
+loses pending focus and WebKit skips Begin on Tab. Corrected56644: ten passes/180 unrelated
+cases deselected, covering native Enter/Space, held success/failure, existing Retry, duplicate
+suppression, exact existing status text, 320px geometry/axe and a newer outside focus choice.
+Affected75130:960 passes/four performance-only skips, exit0. Typecheck16271:zero errors or
+warnings; build/boundary8307 and driver syntax/diff checks pass.
+
+The main real-service driver now uses native Enter, requires exactly one registered HTTP201
+bootstrap, retained credential handoff and focused Desk, before its unchanged gameplay proof.
+Initial48522 is RED from my new oracle's mistaken HTTP200 expectation; Account's registered
+create_bootstrap descriptor and handler specify201. Corrected42217 exits0: tool30, actual
+Postgres refresh8 and required persisted parents7, production-client main journey (both early
+endings/continuation/recovery), default Cosmetic/care and Clout/Cosmetic/care all pass. Main
+113 requests/14.325s; Cosmetic71/9.728s and89/7.435s. No retry/deadline increase or server fix.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after e8218377
+through this product/tests/driver/docs/records commit needs Claude's designated review.
+No first-read RP-342 or renewal resolution, post-unmount runtime-lifecycle proof, Firefox,
+physical AT, full CI, reliability, acceptance, archival, content mint or release claim.
+Existing tmpfs/native route remains usable; Docker overlay capacity is not repaired.
+Next: consolidate coherent review ranges and continue accepted Garage/API construction;
+Clout arithmetic, kernel-history, author/owner holds and full nine-tier release scope remain.
