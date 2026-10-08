@@ -49,13 +49,25 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Latest published source recorded here: `20a57019` (2026-10-08); local source is `1bc8ce93`,
-  four commits ahead before this editorial checkpoint (Garden diagnostics, Arcade admission,
-  full-backup evidence and bounded original Tier-2 C1–C4 review).
+- Finished source checkpoint: `0d9a9f43` (2026-10-08), clean working tree and nine commits
+  ahead of the locally recorded `origin/main` before this editorial update. All Tier-2
+  measurement processes are terminal; no Garden integration implementation is in progress.
+  Original C1–C4 and bounded C5 have designated approval. C6 remains CHANGES REQUIRED for
+  the inherited-policy test hole; Codex's regression-tested correction at `e6a64aff` needs
+  the other party's review. The seven-literal pacing report and combined relevance diagnostic
+  independently reproduce, but their acceptance gates do not pass. Controlled branch tests
+  prove effects for two Tier-2 upgrades, not whole-content relevance or ordinary player choices;
+  nap pod's branch remains unselected. RP-433 requires a versioned comparison-population
+  decision, not balance retuning or golden regeneration. The [Tier-2 log](tier2-content/log.md)
+  owns commands, digests, results and exact review ranges. No new playable tier, minted content
+  or release milestone follows from completing this research/review checkpoint.
+- Latest published source recorded here: `20a57019` (2026-10-08). The nine local commits add
+  Garden diagnostics, the Arcade admission correction, full-backup evidence, bounded Tier-2
+  review/reproduction and the inherited-policy test correction, with associated records.
   The earlier large unpushed counts are historical, not the current branch state. Codex did
   not push during this reconciliation. No hosted result is recorded here for those local commits.
   [Hosted CI 37763502364](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37763502364)
-  is **RED: three jobs pass, three fail**, with all six jobs terminal:
+  was **RED at the last recorded check: three jobs pass, three fail**, with all six jobs terminal:
   schema, harness and composed pass; client, server and browser fail.
   Client executes 10,223 passing tests/928 skips before RP-131's historical kernel guard
   rejects `50a3a514`; server retains the same 27 Clout partition failures (RP-307).

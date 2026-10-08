@@ -7,7 +7,13 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-08):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08).
 We are integrating and hardening the Garage, with substantial later-tier construction still
-ahead. Real-service PR purchase/render/reload/SQL fixture proof now runs in the existing composed
+ahead. The Tier-2 research/review checkpoint is finished at `0d9a9f43`: bounded original C1–C5
+approval, independently reproduced negative pacing/relevance evidence, a locally corrected
+inherited-policy test and an unresolved comparison-population contract. This is not a completed
+Tier-2 player journey or a new release milestone. The next concrete integration boundary is
+native Garden harvest through the real API and persisted result, with explicitly controlled
+initial state and unchanged growth/balance; implementation has not started at this checkpoint.
+Real-service PR purchase/render/reload/SQL fixture proof now runs in the existing composed
 CI target. The locked-Pitch witness now handles independently reproduced Exit-offer preemption
 without counting it as rejection-notice proof; the latest aggregate run executes all three
 populations successfully. Original-failure attribution and general reliability remain open.

@@ -5019,3 +5019,19 @@ index record owner acceptance on2026-09-25. That scope acceptance is not release
 adopted final content or a tested release bundle. Verification for this editorial checkpoint:
 source/log/index/RFC comparison and diff/whitespace check; no additional software suite, new
 owner ruling, acceptance, archival or push. The full nine-tier1.0 goal remains active.
+
+## 2026-10-08 — Research/review checkpoint finished; whole-product status reconciled
+
+Source `0d9a9f43`: clean tree, nine commits ahead of the locally recorded origin before this
+editorial checkpoint. All Tier-2 measurements are terminal. Original C1–C4 and bounded C5
+are designated-approved; C6 requires the RP-432 correction's cross-party review, while RP-433,
+pacing and Headcount remain separate contract/owner gates. The Tier-2 log owns executed results.
+Current report digests and combined-diagnostic byte equality rechecked; no studies repeated.
+
+Updated the existing current-state overview and roadmap entry point, not a new tracker.
+The product remains Garage integration/hardening, with substantial Tier3–8/MMO/ending and
+platform work unbuilt or incomplete. Next concrete construction is the missing native Garden
+harvest→real API→persisted result boundary; no implementation has started at this checkpoint.
+Verification: source/plan/log and diff/whitespace inspection, no software suite for editorial
+records. Review by: Codex (editorial reconciliation); Recorded by: Codex. No new acceptance,
+archive, content mint, hosted-CI result, push or release claim.
