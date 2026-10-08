@@ -35,9 +35,10 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
-- Latest published source: `20a57019` (2026-10-08); local `main` and recorded `origin/main`
-  both match before the diagnostic batch below. The earlier unpushed counts are historical,
-  not the current branch state. Codex did not push during this reconciliation.
+- Latest published source: `20a57019` (2026-10-08); local source is `e478b248`, two commits
+  ahead before this editorial checkpoint (Garden diagnostics and Arcade admission correction).
+  The earlier large unpushed counts are historical, not the current branch state. Codex did
+  not push during this reconciliation. No hosted result exists here for those two local commits.
   [Hosted CI 37763502364](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37763502364)
   is **RED: three jobs pass, three fail**, with all six jobs terminal:
   schema, harness and composed pass; client, server and browser fail.
@@ -54,6 +55,19 @@ queue and current verification, not a claim to have rerun every acceptance crite
   test callback produces the intended failure with input/focus evidence, then is restored.
   The [Garden log](minigame-server-garden/log.md) owns the bounded results and pending review range.
   No full-CI success, feature acceptance or release promotion follows.
+- Arcade's raw JSON admission correction `e478b248` passes shared Go/TS rejection vectors,
+  444 affected Linux Chromium/Firefox/WebKit cases without skips, all four selected actual
+  Postgres Arcade integration functions, and affected type/build/package checks. The full
+  client test command passes before the separately executed historical kernel guard remains
+  red. This repairs client admission, not the missing public Arcade API/host journey or content
+  mint. The [Arcade log](minigame-demo-disc-arcade/log.md) owns the exact range and pending review.
+- At `e478b248`, the full declared Linux/amd64 Postgres16 encrypted backup target now executes
+  all six integration functions without skips: empty/populated dump/restore identity, unsafe
+  target refusal, recovery-identity negatives and pre/post-deletion state. This closes the
+  earlier skipped full-backup execution, not Deployment acceptance. Pre-deletion restore still
+  revives the deleted account (RP-125). Scheduling, measured RPO/RTO, private operations and
+  exact-artifact clean-host R-006 remain open; the [Deployment log](deployment-foundation/log.md)
+  owns the result. The isolated test project is removed; no deployment or push occurred.
 - Previous source checkpoint: `c0a85602` (2026-10-08), clean working tree before this overview
   reconciliation; 95 commits ahead of the locally recorded `origin/main`, not pushed.
   Adoption welcome now binds the actual local receipt and matching authoritative pet, rather

@@ -8,11 +8,14 @@
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
 **Current checkpoint, 2026-10-08:** RP-423 corrects false-clean restore targets containing
-schema-only or nonrelational objects. Twenty actual Postgres cases pass; affected native tests/vet
-and selected Linux packages pass. The broader Linux selection remains red on two preflight
-tests with Docker at zero available space. The owning log records exact commands, skips and
-pending designated-review range. This does not close original R20, DP-C or the full restore/
-clean-host criteria; do not repeat this finished guard study instead of those gates.
+schema-only or nonrelational objects. At `e478b248`, the declared Linux/amd64 Postgres16 backup
+target now executes all six integration functions without skips, including real encrypted
+empty/populated dump/restore, recovery identity, non-clean-target refusal and pre/post-deletion
+backups. Its isolated project is removed by the target. This supersedes the earlier missing
+full-backup execution, not the broader Linux release preflight failures or private operations
+composition gate. Pre-deletion restore still revives the deleted account (RP-125), as the test
+explicitly records. Original R20/DP-C, measured RPO/RTO, exact release/clean-host criteria and
+designated review remain open; the owning log holds the bounded result.
 
 ## Delivery sequence
 

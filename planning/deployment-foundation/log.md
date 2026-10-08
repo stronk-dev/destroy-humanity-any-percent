@@ -4700,3 +4700,26 @@ pending alongside earlier Deployment spans. Original R20/DP-C/R-006 are not appr
 component correction. No archive, release, deploy or push. Next: remaining accepted deployment
 and gameplay integration, full restore/private-service gates when capacity permits, and
 consolidated review. The full nine-tier1.0 objective stays active.
+
+## 2026-10-08 — Execute the full encrypted Postgres backup/restore population
+
+At clean source `e478b248`, `make test-deployment-backup` PASS. The existing target compiles
+the Linux/amd64 test binary and runs the declared Postgres16 service, actual pg_dump/pg_restore
+and age encryption, rather than the save-test lane that skipped the restore functions.
+All six top-level integration functions execute, zero skips:
+
+- Twenty clean-target arms cover empty admission and refusal/preservation of existing objects.
+- Empty and populated databases survive real encrypted dump/restore with exact header and
+  restored player/database identity checks. Wrong migration binding is rejected.
+- Pre-deletion and post-deletion backups restore their respective account/Founder/stream state.
+  The former revives a deleted account: this corroborates RP-125, not a privacy acceptance.
+- Recovery validation rejects a projected board event without a verified run, restore refuses
+  an occupied target, and same-row-count content mutation changes both identity digests.
+
+The isolated `cloud-clicker-backup-test` project had no containers before execution; its normal
+target teardown removes its database container/network, and the final `ps -a` is empty. No
+existing development database, unrelated Docker resource or deployed service is modified.
+No source/test/assertion change was needed, so no duplicate regression or new review range is
+invented. Existing implementation reviews remain pending. This is component integration, not
+off-host scheduling, a real release bundle, Caddy smoke, measured RPO/RTO or R-006 clean-host
+evidence. DP-C/AC4 remain open. No acceptance checkbox, archive, push or release promotion.
