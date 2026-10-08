@@ -7,6 +7,13 @@ the `headcount_budget_respected` invariant, the P4 `headcount_seats` role row an
 held until it is. Fixture-first: candidates live under `balance/testdata/t2/`; epoch 9 is NOT minted
 (M1–M4 owner-gated).
 
+**Review checkpoint, 2026-10-08:** Codex independently approves the original C1–C4 candidate,
+era and control changes in the four exact commit ranges cited in the latest owning log entry.
+This is bounded implementation review, not AC0–AC10 completion: C5/C6, later corrections,
+actual candidate-content browser/service integration, Headcount, adopted copy and the mint
+remain outside that approval. The current screen fixtures change the tier on older content;
+do not cite them as a played or fully rendered Tier-2 catalog. No archival is authorized.
+
 - [x] C1 — Candidate artifacts (§A1, §A2, §B1 minus `headcount_seats`, §B2, §B3): economy
   (schema v4 carry; v5 is headcount-only), routes, categories under `balance/testdata/t2/`,
   derived from the epoch-8 bytes by insertion only, with a SHA file.

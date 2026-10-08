@@ -283,3 +283,53 @@ finding for the owner.
 - record trap exemptions with justification keys, a policy change.
 
 No production artifact changed, and the gate literal stays `1e7`.
+
+## 2026-10-08 — Designated review of original C1–C4, bounded approval
+
+**Review by:** Codex (designated cross-party reviewer of Claude's implementation).
+**Recorded by:** Codex. **Verdict:** APPROVED for the bounded changes below, not whole-feature
+acceptance. Exact reviewed ranges:
+
+- `6bc4c43b^..6bc4c43b` — candidate derivation, identity, loader/refusal and ApplyLogged
+  reachability (C1–C3), associated tests, Make target and records.
+- `3623b260^..3623b260` — era tokens, closed era/schema/copy vocabulary, tier mapping,
+  mounted theme checks and associated docs/records (C4a).
+- `a513d3d6^..a513d3d6` — adjacent-gate projection, optional incorporation DTO/decoder/control,
+  inert energy chrome, generated/candidate copy and associated tests/docs/records (C4b).
+- `2215fc2a^..2215fc2a` — complete candidate presentation bindings, derivation and copy
+  references with their tests/generated outputs/records (C4c).
+
+These four commit diffs cover the original C1–C4 changes. Intervening Pet records, later
+harness C5/C6 commits, subsequent Codex UI corrections and their own independent-review debt
+are not approved by this verdict. Execution is on clean current source `f3a859be`, not a claim
+to have checked out and rerun each historical revision. The original candidate artifacts,
+reachability test, theme and Tier-2 preview test remain byte-identical; the generator's later
+relevance extension is outside the reviewed C1–C4 scope.
+
+Executed evidence:
+
+- `make t2-candidates-check`5126 PASS: deterministic current derivation, three cold Go
+  reachability/insertion tests and three TS candidate tests. The epoch-8 control actually
+  rejects the new gate/incorporation; mismatched categories reject under a correct bundle hash.
+- Cold complete `./gameui`89237 PASS. Inspection binds the preview to production's discarded
+  clone, the cash boundary to actual transition outcomes, and incorporation to the pinned
+  faction catalog without changing the production kernel or below-Tier-2 wire fields.
+- Declared Linux Playwright service89815, cold frozen install, complete `tier2-candidates`,
+  `game-ui`, `game-ui-screens-browser` and `ui/themes` files:615 PASS across all three engines;
+  six explicitly separate performance-only skips. Initial focused9412:42 PASS/579 deselected,
+  superseded for coverage by the complete file population. These exercise native transition
+  input/focus consumers as well as the original theme, incorporation and inert-refill checks.
+- `make typecheck api-check copy-check verify-schema vet GO_PACKAGES='./gameui'`78647 PASS:
+  zero type/Svelte errors or warnings, byte-unchanged API generation, content/copy consistency,
+  all three theme schemas and Go vet. Copy-check retains621 orphan warnings; this does not
+  adopt candidate copy or establish a zero-orphan release. No hosted-CI claim.
+
+Important acceptance boundary: the mounted Tier-2 fixtures retain the older generator/gate
+content and change the tier/control fields. The current generated presentation is still the
+older content presentation; C4c provides candidate bindings, not their release activation.
+These tests therefore prove bounded era/control behavior, not actual Tier-2 catalog rendering,
+browser→API→Postgres crossing/incorporation, Headcount or AC8/AC10. The Go reachability case
+is in-memory ApplyLogged, not persistence. Full integration remains required after contract/
+content preparation, not waived by this approval. C5/C6 review, RP-413/RP-414, pacing/relevance,
+copy/SHA adoption, mint and the full nine-tier goal remain open. No product edit, acceptance
+checkbox, lifecycle/archive, deployment or push is performed in this review.
