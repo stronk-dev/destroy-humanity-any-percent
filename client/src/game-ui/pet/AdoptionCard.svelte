@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tick } from "svelte";
+  import { onDestroy, tick } from "svelte";
 
   import { t, type CopyEra, type CopyKey } from "../../copy";
   import PetSprite from "./PetSprite.svelte";
@@ -18,7 +18,7 @@
     controlsEnabled: boolean;
     rejection: CopyKey | null;
     reducedMotion: boolean;
-    onAdopt(speciesID: string, nameKey: string): void;
+    onAdopt(speciesID: string, nameKey: string): Promise<string | undefined>;
   } = $props();
 
   const speciesKey = $derived(`pet.species.${availability.starter_species_id.slice("pet_species.".length)}.name` as CopyKey);
@@ -30,6 +30,38 @@
   let welcome = $state<HTMLElement | undefined>();
   let root: HTMLElement | undefined;
   let announcedPetID: string | undefined;
+  let appliedPetID = $state<string | undefined>();
+  let focusAfterReceipt = $state.raw<{ origin: HTMLButtonElement; stopObserving(): void }>();
+
+  function clearFocusRequest(): void {
+    focusAfterReceipt?.stopObserving();
+    focusAfterReceipt = undefined;
+  }
+  onDestroy(clearFocusRequest);
+
+  async function adopt(origin: HTMLButtonElement): Promise<void> {
+    if (pending || !controlsEnabled) return;
+    clearFocusRequest();
+    appliedPetID = undefined;
+    if (document.activeElement === origin) {
+      const observeFocus = (event: FocusEvent) => {
+        // A newer choice wins permanently, even if that control disappears
+        // before the authoritative pet arrives and focus returns to body.
+        if (event.target !== origin) clearFocusRequest();
+      };
+      document.addEventListener("focusin", observeFocus);
+      focusAfterReceipt = { origin, stopObserving: () => document.removeEventListener("focusin", observeFocus) };
+    }
+    try {
+      const petID = await onAdopt(availability.starter_species_id, selected);
+      if (!root?.isConnected) return;
+      appliedPetID = petID;
+      if (!petID) clearFocusRequest();
+    } catch (error) {
+      clearFocusRequest();
+      console.error("game UI invariant: adoption completion", error);
+    }
+  }
 
   async function setCollapsed(next: boolean, trigger: EventTarget | null): Promise<void> {
     const focused = trigger instanceof HTMLButtonElement && document.activeElement === trigger ? trigger : undefined;
@@ -44,13 +76,19 @@
     replacement?.focus();
   }
 
-  // Exactly one announcement per adopted pet; resyncs and retries that
-  // re-deliver the same pet never re-announce.
+  // PA8.3: celebrate an applied local receipt only after its matching pet
+  // appears. Saved/remote reads and Desk remounts are not new adoptions.
   $effect(() => {
-    if (!adopted || announcedPetID === adopted.pet_id) return;
+    if (!adopted || appliedPetID !== adopted.pet_id || announcedPetID === adopted.pet_id) return;
     announcedPetID = adopted.pet_id;
     announced = t("pet.adoption.announce.adopted", { pet_name: t(adopted.name_key as CopyKey, {}, era) }, era);
-    void tick().then(() => welcome?.focus());
+    const request = focusAfterReceipt;
+    if (!request) return;
+    void tick().then(() => {
+      if (focusAfterReceipt !== request || !root?.isConnected) return;
+      clearFocusRequest();
+      if (!request.origin.isConnected && (document.activeElement === request.origin || document.activeElement === document.body)) welcome?.focus();
+    });
   });
 </script>
 
@@ -82,7 +120,7 @@
     <p class="cap">{t("pet.adoption.cap.label", { count: availability.count, cap: availability.cap }, era)}</p>
     <div class="actions">
       <button type="button" tabindex="0" aria-describedby={rejection ? "pet-adoption-rejection" : undefined} disabled={!controlsEnabled} aria-disabled={pending || undefined}
-        onclick={() => { if (!pending) onAdopt(availability.starter_species_id, selected); }}>{t("pet.adoption.action.adopt", {}, era)}</button>
+        onclick={(event) => { void adopt(event.currentTarget); }}>{t("pet.adoption.action.adopt", {}, era)}</button>
       <button type="button" tabindex="0" onclick={(event) => { void setCollapsed(true, event.currentTarget); }}>{t("pet.adoption.action.later", {}, era)}</button>
     </div>
     {#if rejection}<p id="pet-adoption-rejection">{t(rejection, {}, era)}</p>{/if}

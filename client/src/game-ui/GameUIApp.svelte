@@ -618,7 +618,18 @@
     ["not_eligible/species_locked", "pet.adoption.reject.species_locked"],
     ["not_eligible/adoption_cap_reached", "pet.adoption.reject.adoption_cap_reached"],
   ]);
-  function adoptionApplied(): null { void refresh(); return null; }
+  async function adoptPet(speciesID: string, nameKey: string): Promise<string | undefined> {
+    let petID: string | undefined;
+    await act({ kind: "adopt_pet", species_id: speciesID, name_key: nameKey }, {
+      scope: "founder", rejections: ADOPTION_REJECTIONS,
+      applied: (receipt) => {
+        if (typeof receipt.pet_id === "string") petID = receipt.pet_id;
+        else console.error("game UI invariant: adoption receipt has no pet identity");
+        return null;
+      },
+    });
+    return petID;
+  }
   // Cosmetic Shop v1 §7.3: inline rejections and the session-local parody
   // receipt (not re-announced after a reload; ownership comes from the snapshot).
   // Server Garden SG5: every closed detail maps to its error.garden.* key.
@@ -796,7 +807,7 @@
         {@const adoption = liveFeatures.pet_adoption}
         <AdoptionCard availability={adoption.pet_adoption} adopted={adoption.pets[0]} {era} {pending} controlsEnabled={founderControls}
           rejection={intentNotice?.startsWith("pet.adoption.reject.") ? intentNotice : null} reducedMotion={prefersReducedMotion}
-          onAdopt={(speciesID, nameKey) => act({ kind: "adopt_pet", species_id: speciesID, name_key: nameKey }, { scope: "founder", rejections: ADOPTION_REJECTIONS, applied: adoptionApplied })} />
+          onAdopt={adoptPet} />
       {/if}
       <section class="manual cc-window">
         <h2>{t(requirePresentation(GAME_UI_PRESENTATION.manualActions, snapshot.manual_action.action_id).title_key, {}, era)}</h2>

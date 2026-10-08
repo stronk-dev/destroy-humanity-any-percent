@@ -641,3 +641,44 @@ full Pet acceptance, archival, content mint, hosted-CI or release approval. Thes
 simulation comparisons are not a persisted adoption-to-Exit player journey or natural-pacing
 study; PA7, attendance, authored copy, rights and accessibility remain open. Next: consolidated
 feature review and remaining accepted integration gates, not another repetition of this study.
+
+## 2026-10-08 — RP-428 receipt-bound welcome and current-interaction focus
+
+PA8.3/GS0.6 conformance correction: opening Desk with an existing pet is a read, not a new
+adoption. The host returns the actual locally applied receipt's pet identity after its ordinary
+authoritative refresh; the card announces only when that identity matches the projected pet.
+Snapshot-first and receipt-first ordering both work without optimistic ownership. Refusal,
+unrelated projections and remounts stay quiet. A newer focus choice permanently cancels the
+handoff (including a subsequently removed control); unmount removes the listener and ignores
+late completion. No copy, balance, wire, save, clock, kernel or CI contract changes.
+
+Regression: old-source run77715 fails all12 quiet-read/newer-focus executions across native
+Chromium/WebKit. Earlier56037 also exposed missing explicit Tab eligibility in the test's
+outside button; that instrument defect was corrected before the valid baseline. The existing
+keyboard/refusal test now completes a rejected attempt before submitting a fresh successful
+one, and counts actual live-region updates rather than merely comparing retained text.
+
+Finished checks:
+- Focused adoption83201 passes30 executions, including both delivery orders, mismatched pet,
+  refusal, duplicate input, newer retained/removed focus, resync and unmount.
+- Adoption/screens64179 passes230 with four separate performance-only exclusions; actual
+  Garage host file51102 passes790. Total1,020 affected Chromium/WebKit passes. The64179
+  selection also contained a nonexistent Garage filename; it is not counted as coverage, and
+  the actual file was executed separately. No assertions, retries or deadlines were weakened.
+- Full `make test-game-ui-composed`74489 passes:35 driver controls, actual Postgres populations,
+  production-client early-game journey, normal/Clout native adoption/equip/care journeys and
+  both actual no-payment negative builds. New checks require one actual adoption live update,
+  quiet persisted reloads, quiet Desk remount and retained navigation focus.
+- Types/build/client-boundary19315 passes; final strict types46115 has zero errors/warnings.
+  `make copy-check`63427 passes with unchanged668-key hash and content manifest (621 existing
+  orphan warnings). Diff/whitespace checks pass.
+
+The unselected native-browser attempt77573 passed26 Chromium/WebKit executions but failed
+to connect its Firefox session, then required cancellation of the remaining runner (exit130).
+It is not an all-browser pass. No full CI, Linux browser, performance, assistive-technology,
+natural-pacing or clean-host release claim is made. PA7, attendance, owner copy, rights and
+full Pet acceptance remain open.
+
+Review by: Codex (implementer diff/first filter); Recorded by: Codex. Exact new range:
+`d039fe66` exclusive through this source/test/docs/record commit needs Claude's designated
+review; earlier ranges remain separate. No archival, mint, push or release approval.

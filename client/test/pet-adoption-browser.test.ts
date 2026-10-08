@@ -2,7 +2,7 @@ import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
 import { expect, it } from "vitest";
 
-import { t } from "../src/copy";
+import { t, type CopyKey } from "../src/copy";
 import AdoptionCard from "../src/game-ui/pet/AdoptionCard.svelte";
 import PetAdoptionHarness from "./PetAdoptionHarness.svelte";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
@@ -33,11 +33,63 @@ function button(target: HTMLElement, text: string): HTMLButtonElement {
   return found;
 }
 
+for (const preexisting of [false, true]) {
+  it.skipIf(!browser)(`does not celebrate a pet read without a local applied adoption (preexisting ${preexisting})`, async () => {
+    const target = host();
+    const outside = document.createElement("button"); target.before(outside); outside.focus();
+    let calls = 0;
+    const app = mount(PetAdoptionHarness, { target, props: { initial: {
+      availability: { ...availability, count: preexisting ? 1 : 0 }, adopted: preexisting ? adopted : undefined,
+      era: "era_1995", pending: false, controlsEnabled: true, rejection: null, reducedMotion: true,
+      onAdopt: async () => { calls += 1; return undefined; },
+    } } }) as unknown as { update(patch: Record<string, unknown>): void };
+    try {
+      await settle();
+      if (!preexisting) { app.update({ adopted, availability: { ...availability, count: 1 } }); await settle(); }
+      expect(target.querySelector("[aria-live=polite]")?.textContent, "saved or remote state is not an applied local receipt").toBe("");
+      expect(document.activeElement, "a read must not take keyboard focus").toBe(outside);
+      expect(target.querySelector("h2")?.textContent).toBe(t("pet.adoption.welcome.title", { pet_name: t(adopted.name_key as CopyKey, {}, "era_1995") }, "era_1995"));
+      expect(calls).toBe(0);
+    } finally { await unmount(app as never); target.remove(); outside.remove(); }
+  });
+}
+
+for (const key of ["{Enter}", " "]) for (const removed of [false, true]) {
+  it.skipIf(!browser)(`adoption completion preserves a newer ${removed ? "removed" : "retained"} focus choice (${JSON.stringify(key)})`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const target = host();
+    const outside = document.createElement("button"); outside.tabIndex = 0; target.after(outside);
+    let finish!: (id: string | undefined) => void;
+    const completion = new Promise<string | undefined>((resolve) => { finish = resolve; });
+    const app = mount(PetAdoptionHarness, { target, props: { initial: { availability, adopted: undefined,
+      era: "era_1995", pending: false, controlsEnabled: true, rejection: null, reducedMotion: true,
+      onAdopt: () => completion,
+    } } }) as unknown as { update(patch: Record<string, unknown>): void };
+    try {
+      await settle();
+      const adopt = button(target, "action.adopt"); adopt.focus();
+      await userEvent.keyboard(key); app.update({ pending: true }); await settle();
+      await userEvent.keyboard("{Tab}{Tab}");
+      expect(document.activeElement, "native Tab selected a newer outside control").toBe(outside);
+      if (removed) outside.remove();
+      const chosenFocus = document.activeElement;
+      app.update({ adopted, availability: { ...availability, count: 1 }, pending: false });
+      finish(adopted.pet_id); await settle();
+      expect(document.activeElement, "completion cannot reclaim a superseded focus choice").toBe(chosenFocus);
+      expect(target.querySelector("[aria-live=polite]")?.textContent).toBe(t("pet.adoption.announce.adopted", { pet_name: t(adopted.name_key as CopyKey, {}, "era_1995") }, "era_1995"));
+    } finally { finish(undefined); await unmount(app as never); target.remove(); outside.remove(); }
+  });
+}
+
 it.skipIf(!browser)("adopts by keyboard, focuses the welcome, announces once, and shows no price text", async () => {
   const { userEvent } = await import("vitest/browser");
   const adoptions: [string, string][] = [];
+  let finish!: (id: string | undefined) => void;
   const initial = { availability, adopted: undefined, era: "era_1995" as const, pending: false, controlsEnabled: true,
-    rejection: null, reducedMotion: false, onAdopt: (species: string, name: string) => { adoptions.push([species, name]); } };
+    rejection: null, reducedMotion: false, onAdopt: (species: string, name: string) => {
+      adoptions.push([species, name]);
+      return new Promise<string | undefined>((resolve) => { finish = resolve; });
+    } };
   const target = host();
   const sentinel = document.createElement("button");
   target.before(sentinel);
@@ -70,14 +122,24 @@ it.skipIf(!browser)("adopts by keyboard, focuses the welcome, announces once, an
     await userEvent.keyboard("{Enter} ");
     expect(adoptions).toHaveLength(1);
     app.update({ pending: false, rejection: "pet.adoption.reject.adoption_cap_reached" });
+    finish(undefined);
     await settle();
     expect(document.activeElement, "a refusal leaves focus at Adopt").toBe(adopt);
     expect(adopt.getAttribute("aria-describedby")).toBe("pet-adoption-rejection");
     for (const token of ["$", "0.00", "Free", "free", "limited"]) expect(target.textContent, token).not.toContain(token);
+    await userEvent.keyboard("{Enter}");
+    expect(adoptions).toHaveLength(2);
+    app.update({ rejection: null });
     app.update({ adopted, availability: { ...availability, count: 1 } });
     await settle();
-    expect(document.activeElement?.id).toBe("pet-adoption-heading");
     const live = target.querySelector("[aria-live=polite]")!;
+    expect(live.textContent, "a projection arriving before its applied receipt is not enough").toBe("");
+    let announcements = 0;
+    const observer = new MutationObserver(() => { if (live.textContent?.includes("announce adopted")) announcements += 1; });
+    observer.observe(live, { childList: true, characterData: true, subtree: true });
+    finish(adopted.pet_id);
+    await settle();
+    expect(document.activeElement?.id).toBe("pet-adoption-heading");
     const first = live.textContent;
     expect(first).toContain("announce adopted");
     const sprite = target.querySelector<HTMLElement>("[data-family=cat]")!;
@@ -93,8 +155,50 @@ it.skipIf(!browser)("adopts by keyboard, focuses the welcome, announces once, an
     elsewhere.remove();
     await settle();
     expect(live.textContent).toBe(first);
+    expect(announcements, "one actual live-region update, including resync").toBe(1);
+    observer.disconnect();
     expect(target.querySelectorAll("[aria-live]")).toHaveLength(1);
   } finally { unmount(app as never); target.remove(); sentinel.remove(); }
+});
+
+it.skipIf(!browser)("waits for the applied receipt's matching pet, not an unrelated projection", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const target = host();
+  const app = mount(PetAdoptionHarness, { target, props: { initial: { availability, adopted: undefined,
+    era: "era_1995", pending: false, controlsEnabled: true, rejection: null, reducedMotion: true,
+    onAdopt: async () => adopted.pet_id,
+  } } }) as unknown as { update(patch: Record<string, unknown>): void };
+  try {
+    await settle();
+    const adopt = button(target, "action.adopt"); adopt.focus();
+    await userEvent.keyboard("{Enter}"); await settle();
+    expect(target.querySelector("[aria-live=polite]")?.textContent).toBe("");
+    expect(document.activeElement).toBe(adopt);
+    app.update({ adopted: { ...adopted, pet_id: "01986666-bbbb-7bbb-8bbb-bbbbbbbbbbbb" } }); await settle();
+    expect(target.querySelector("[aria-live=polite]")?.textContent).toBe("");
+    expect(document.activeElement?.id).not.toBe("pet-adoption-heading");
+    app.update({ adopted }); await settle();
+    expect(target.querySelector("[aria-live=polite]")?.textContent).toBe(t("pet.adoption.announce.adopted", { pet_name: t(adopted.name_key as CopyKey, {}, "era_1995") }, "era_1995"));
+    expect(document.activeElement?.id).toBe("pet-adoption-heading");
+  } finally { await unmount(app as never); target.remove(); }
+});
+
+it.skipIf(!browser)("a late adoption completion cannot affect an unmounted card", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const target = host();
+  const outside = document.createElement("button"); target.after(outside);
+  let finish!: (id: string | undefined) => void;
+  const completion = new Promise<string | undefined>((resolve) => { finish = resolve; });
+  const app = mount(AdoptionCard, { target, props: { availability, adopted: undefined, era: "era_1995",
+    pending: false, controlsEnabled: true, rejection: null, reducedMotion: true, onAdopt: () => completion } });
+  let mounted = true;
+  try {
+    await settle(); button(target, "action.adopt").focus(); await userEvent.keyboard("{Enter}");
+    await unmount(app); mounted = false; outside.focus();
+    finish(adopted.pet_id); await settle();
+    expect(document.activeElement).toBe(outside);
+    expect(target.querySelector("[aria-live]")).toBeNull();
+  } finally { finish(undefined); if (mounted) await unmount(app); target.remove(); outside.remove(); }
 });
 
 for (const reopening of [false, true]) for (const boundary of ["newer-focus", "unmount"] as const) {
@@ -102,7 +206,7 @@ for (const reopening of [false, true]) for (const boundary of ["newer-focus", "u
     const target = host();
     const outside = document.createElement("button"); target.after(outside);
     const app = mount(AdoptionCard, { target, props: { availability, adopted: undefined, era: "era_1995", pending: false,
-      controlsEnabled: true, rejection: null, reducedMotion: true, onAdopt: () => {} } });
+      controlsEnabled: true, rejection: null, reducedMotion: true, onAdopt: async () => undefined } });
     let mounted = true;
     try {
       await settle();
@@ -125,7 +229,7 @@ for (const reopening of [false, true]) for (const boundary of ["newer-focus", "u
 
 it.skipIf(!browser)("renders a static pose under reduced motion", async () => {
   const target = host();
-  const app = mount(AdoptionCard, { target, props: { availability: { ...availability, count: 1 }, adopted, era: "era_1995", pending: false, controlsEnabled: true, rejection: null, reducedMotion: true, onAdopt: () => {} } });
+  const app = mount(AdoptionCard, { target, props: { availability: { ...availability, count: 1 }, adopted, era: "era_1995", pending: false, controlsEnabled: true, rejection: null, reducedMotion: true, onAdopt: async () => undefined } });
   try {
     await settle();
     const sprite = target.querySelector<HTMLElement>("[data-family=cat]")!;
@@ -139,7 +243,7 @@ it.skipIf(!browser)("collapses on Not now to a persistent entry point and shows 
   const target = host(320);
   const sentinel = document.createElement("button"); target.before(sentinel);
   const app = mount(AdoptionCard, { target, props: { availability, adopted: undefined, era: "era_1995", pending: false, controlsEnabled: true,
-    rejection: "pet.adoption.reject.adoption_cap_reached", reducedMotion: false, onAdopt: () => {} } });
+    rejection: "pet.adoption.reject.adoption_cap_reached", reducedMotion: false, onAdopt: async () => undefined } });
   try {
     await settle();
     expect(target.scrollWidth).toBeLessThanOrEqual(target.clientWidth);

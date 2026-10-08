@@ -240,6 +240,13 @@ function plainFixtureCopy(key) {
   return row.text;
 }
 
+async function assertQuietAdoptionRead(page) {
+  const heading = page.locator("#pet-adoption-heading");
+  await heading.waitFor({ state: "visible", timeout: 30_000 });
+  assert.equal(await page.locator('.adoption [aria-live="polite"]').textContent(), "", "saved pets must not replay adoption speech");
+  assert.equal(await heading.evaluate((node) => document.activeElement === node), false, "saved pet reads must not take focus");
+}
+
 async function companyDOMIntent(page, requests, control, kind, fields) {
   const before = await snapshot(page);
   const matching = () => requests.filter((request) => request.method() === "POST" &&
@@ -853,11 +860,24 @@ try {
   const availability = afterReload.features?.pet_adoption?.pet_adoption;
   if (!availability || availability.count !== 0) throw new Error("cosmetic G10 bootstrap lacks the empty real adoption producer");
   const nameKey = await page.locator('input[name="pet-name"]:checked').inputValue();
+  const catalog = JSON.parse(readFileSync(path.join(clientRoot, "src/copy/generated/catalog.json"), "utf8"));
+  const welcomeCopy = catalog.entries.find((entry) => entry.key === "pet.adoption.announce.adopted");
+  assert.deepEqual(welcomeCopy?.params, [{ name: "pet_name", type: "string" }]);
+  assert.equal(welcomeCopy.era_variants, null);
+  const welcomeSentence = welcomeCopy.text.replace("{pet_name}", plainFixtureCopy(nameKey));
+  await page.locator('.adoption [aria-live="polite"]').evaluate((live, sentence) => {
+    globalThis.__adoptionWelcomeUpdates = 0;
+    new MutationObserver(() => {
+      if (live.textContent === sentence) globalThis.__adoptionWelcomeUpdates += 1;
+    }).observe(live, { childList: true, characterData: true, subtree: true });
+  }, welcomeSentence);
   const adoption = await founderDOMIntent(page, requests,
     page.getByRole("button", { name: plainFixtureCopy("pet.adoption.action.adopt"), exact: true }), "adopt_pet",
     { species_id: availability.starter_species_id, name_key: nameKey });
   assert.equal(await page.locator("#pet-adoption-heading").evaluate((heading) => document.activeElement === heading),
     true, "authoritative native adoption must focus the welcome heading");
+  assert.equal(await page.locator('.adoption [aria-live="polite"]').textContent(), welcomeSentence);
+  assert.equal(await page.evaluate(() => globalThis.__adoptionWelcomeUpdates), 1, "one live update for the actual applied adoption");
   const petID = adoption.pet_id;
   if (typeof petID !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(petID)) {
     throw new Error("cosmetic G10 adoption returned no real pet identity");
@@ -875,6 +895,7 @@ try {
   const care = await witnessCare(page, requests, petID, hash, statusPublications);
   directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
   await page.reload({ waitUntil: "networkidle" });
+  await assertQuietAdoptionRead(page);
   assertPersistedWearer(await snapshot(page), petID, "horse_armor");
   assertPersistedCare(await snapshot(page), care, hash);
   await openPetSurface(page);
@@ -888,11 +909,15 @@ try {
   await page.emulateMedia({ reducedMotion: "reduce" });
   directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
   await page.reload({ waitUntil: "networkidle" });
+  await assertQuietAdoptionRead(page);
   assertPersistedWearer(await snapshot(page), petID, "horse_armor");
   await openPetSurface(page);
   await assertLivePetOverlay(page, { present: true, reducedMotion: true });
   await page.locator("nav button").first().click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  await assertQuietAdoptionRead(page);
+  assert.equal(await page.locator("nav button").first().evaluate((button) => document.activeElement === button), true,
+    "returning to Desk retains navigation focus instead of repeating adoption");
   const unequip = await founderDOMIntent(page, requests, shelf.getByRole("button"), "unequip_cosmetic", { pet_id: petID });
   if (unequip.event?.kind !== "cosmetic_unequipped.v1" || unequip.event.payload?.pet_id !== petID || unequip.event.payload?.cosmetic_id !== "horse_armor") {
     throw new Error(`cosmetic G10 unequip returned no exact wearing event: ${JSON.stringify(unequip)}`);
@@ -902,6 +927,7 @@ try {
   await assertLivePetOverlay(page, { present: false });
   directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
   await page.reload({ waitUntil: "networkidle" });
+  await assertQuietAdoptionRead(page);
   assertPersistedWearer(await snapshot(page), petID, null);
   await openPetSurface(page);
   await assertLivePetOverlay(page, { present: false });

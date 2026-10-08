@@ -142,9 +142,12 @@ the top of the Desk. It appears whenever `features.pet_adoption` is present.
   re-nags. If collapsing removes the focused control, focus moves to that entry point; reopening
   returns it to the selected name. These post-render handoffs respect a newer outside focus choice
   and do not run after the card unmounts.
-- **Adoption:** Adopt sends `adopt_pet` as a Founder intent. On success, a welcome state takes
-  over. Focus moves to its heading, and exactly one polite live-region announcement fires per pet;
-  a resync that re-delivers the same pet neither re-announces nor steals focus.
+- **Adoption:** Adopt sends `adopt_pet` as a Founder intent. The authoritative pet replaces
+  the card with a welcome state. Only a local applied receipt with that same pet identity triggers
+  its one polite announcement; a receipt alone never invents ownership. Initial saved-state reads,
+  Desk remounts and resyncs do not replay the welcome announcement. Focus transfers from the removed
+  Adopt control to the heading only while that interaction still owns focus. Any newer focus
+  choice wins, even if its control is subsequently removed, and unmount cancels the handoff.
 - **Pending:** Adopt stays focusable with `aria-disabled`, suppresses duplicate activation, and
   shows the existing `common.pending` text in the polite status region. Unavailable controls remain
   disabled. The welcome announcement uses the same region, visually hidden when not pending.

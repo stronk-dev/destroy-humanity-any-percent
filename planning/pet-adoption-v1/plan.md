@@ -12,6 +12,12 @@ the selected real-Postgres corruption population now passes, and designated revi
 Existing checkboxes describe
 implementation presence, not full-feature acceptance.
 
+P6's adoption welcome also has a bounded local correction (RP-428): saved pet reads no longer
+celebrate a new adoption, and receipt completion respects newer keyboard focus. The welcome
+requires an actual local applied receipt and its matching authoritative pet. The latest owning
+log records native regressions, the real-service journey and pending designated review; this
+does not resolve PA7, shared attendance, owner copy or the full accessibility floor.
+
 P4's Company replay identity decoder also has a bounded CHANGES REQUIRED finding (RP-406):
 missing/null adoption coordinates were accepted as zero. The local correction, paired refusal/
 explicit-zero controls and pending independent review are recorded in the latest log; this
