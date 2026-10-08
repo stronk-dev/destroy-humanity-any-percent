@@ -49,6 +49,16 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Arcade's original A1–A7 batches now all have complete designated CHANGES REQUIRED
+  dispositions, not implicit approval of later repairs. At source `281340d8`, selected
+  Linux-amd64/real-Postgres engine/start/play/rollback/Exit populations and 363 client
+  checks pass. Mounted Chromium/WebKit controls pass 38 checks; native Firefox fails
+  to connect, so that aggregate is not green. The [Arcade log](minigame-demo-disc-arcade/log.md)
+  owns exact ranges and corrective-review debt. Public Typer/Arcade wire and host,
+  author/copy reconciliation and production content remain open; this closes original
+  review work, not a playable tier or feature acceptance. Read-only GitHub inspection
+  still confirms run 37795560514 at published `cbd2069f` is red: schema/harness/composed
+  pass, server/client/browser fail. Later local checks are not a hosted verdict.
 - Garden original G1–G7 now all have complete designated CHANGES REQUIRED dispositions;
   the remaining original reviews are finished, not implicitly approved. Current-source cold
   Garden/save/replaycatalog/kernel and minigame checks,155 client tests, types/copy/corpus/vet

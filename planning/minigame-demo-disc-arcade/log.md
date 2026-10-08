@@ -2275,3 +2275,76 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact range: a5
 exclusive through this source/tests/docs/record commit, READY FOR CLAUDE DESIGNATED REVIEW.
 No feature acceptance or archival; other accepted work can continue while the public-wire,
 owner-copy/content and remaining full-feature gates stay open.
+
+## 2026-10-08 — Complete original A1–A7 designated review dispositions
+
+Review by: Codex. Recorded by: Codex. Verdict: **CHANGES REQUIRED** for each of the
+three exact original Claude ranges below. These are complete range dispositions,
+consolidating the earlier bounded findings, not approval of their later corrections.
+No original batch needs to restart its review; corrective ranges retain their own
+cross-party handoffs. Source checked here is `281340d8`, unchanged throughout execution.
+
+- **A1–A3, `508fe19a^..508fe19a`, all 28 changed paths:** inspected both catalog
+  loaders, both Go/TS engines, engine/catalog/content tests, candidate and corpus
+  artifacts, generated copy, kernel pins/paths, Make targets, manifest, docs and log.
+  The historical 16-scenario corpus has 60 attempted commands but declares 43 applied
+  transitions; its TS hidden-information check inspects terminal states only, and
+  literal cross-runtime comparisons omit genesis/intermediate outputs. Its Snake
+  clear is 6×5, not the mandated 5×5 population. RP-190/191/194/196 retain those
+  executed evidence defects. RP-192/193/195/200/431/472 retain the demonstrated
+  decoder/admission mismatches; RP-197/198/199 retain additional missing failure
+  populations. Their subsequent repairs do not retroactively approve this range.
+  Read-only structural checks parsed all corpus rows and matched its actual fixture
+  SHA-256. All 545 generated copy entries equal the parent catalog plus 36 candidate
+  entries; full TS key/parameter types, Go keys/companion keys, orphans, copy hash
+  and deployment manifest agree. Candidate copy designation is not a JSON status
+  field or owner-adoption proof; two toy names remain PENDING OWNER NAME.
+- **A4/A5, `e1c71d7c^..e1c71d7c`, all 13 changed paths:** inspected the catalog
+  chain/bindings, resolver, real tenant registration, Go/TS replay changes/tests,
+  two definition/API fixtures, original Postgres witness, kernel pins and log.
+  The witness uses legacy StartMinigameSession, not the public API's atomic start
+  coordinator; low-Soul refusal covers only Mine Grid, zero-credit checks omit
+  explicit empty cap_reason_key, and Exit claims observe repository activity
+  booleans rather than the actual eligible actions. RP-202/203/204/206 retain
+  executed reproductions and bounded supplements. RP-201/D-020 remains an author/
+  owner conflict: AC7's Pitch-less start contradicts the retained MA-C15 chain.
+  Registered tenants and internal Postgres play/resolution do not prove public
+  HTTP/socket/browser integration; AR-P4/P5 and that player journey are unbuilt.
+- **A6/A7, `fca062a1^..fca062a1`, all 13 changed paths:** inspected both complete
+  children, the original four-case browser test, all eight candidate-copy additions
+  and generated outputs, manifest, docs, plan and log. This completes, rather than
+  relabels, the earlier bounded scheduling/input/lifecycle/motion reviews. RP-188
+  retains the fixed-delay instrument failure; RP-189 the missing native-key complete
+  game/quit proof; RP-208/209/210 the delayed-Quit, terminal-drain and board-focus
+  defects. RP-211 remains unresolved: disclosed terminal mines are named hidden,
+  and the author/copy contract lacks the required mine-state name. The 553 generated
+  keys, parameter types, Go/companion sets, copy digest, orphans and manifest match
+  the parent plus eight additions. Generation and axe are not copy adoption,
+  semantic assistive-technology proof or completion of the absent public host/menu.
+
+Current-source execution, separate from those historical verdicts:
+
+- Root `make test-go-ci CI_TEST_PACKAGES='./arcade ./production ./replaycatalog'
+  CI_TEST_FLAGS="-run 'TestArcade|TestMineGrid|TestSnake|TestLoadArcade' -v"`
+  (11095) passes on declared Linux-amd64/Postgres 16. All four production Arcade
+  functions actually execute: atomic starts/both low-Soul refusals, play/zero-credit
+  resolution, rejected-command rollback/history/claim release, and actual active/
+  claimed/quit/released Exit behavior. The complete 1,024-seed 5×5 strategy population
+  and catalog-chain failures execute too. This is not public browser/API proof.
+- Selected Vitest (1772) executes six existing files / 363 tests, all passing.
+  The extra arcade-content-chain filename supplied to the filter does not exist
+  and contributes no test; actual replay-chain cases are in replay.test.ts.
+- Focused native mounted boards (63797): Chromium/WebKit execute 38 checks and pass.
+  Firefox connects to no test session and reports an unhandled session timeout;
+  the aggregate is not green. The first sandboxed invocation could not listen
+  and ran no tests. After the permitted invocation printed its timeout summary,
+  its stuck runner was interrupted (Make exit 2); its identified Firefox child
+  also exited. No timeout, retry, source or configuration was changed. Earlier
+  three-engine Linux evidence remains dated evidence, not a fresh Firefox pass.
+
+No product changes, acceptance flips, archival, publication or new whole-CI claim.
+The source repair `a519892c..281340d8` and older Codex corrective spans still need
+Claude's designated review, preferably consolidated with exact coverage. The
+historical kernel guard RP-131, public-wire decision, author/copy/content holds
+and remaining full-feature acceptance criteria are not waived. Next construction
+is the public tenant contract/host once authorized, not repeating original reviews.

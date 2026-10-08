@@ -1,13 +1,16 @@
 # Demo Disc Arcade — implementation plan
 
 RFC: `rfc/minigame-demo-disc-arcade.md` (accepted 2026-09-25, recommended defaults). Fixture-first;
-no production mint (AR8). Implemented by Claude; every range awaits Codex designated review.
+no production mint (AR8). Original Claude A1–A7 ranges now have complete Codex designated
+CHANGES REQUIRED dispositions (2026-10-08 log). Later Codex repairs await Claude review;
+neither the original implementation checkboxes nor those repairs constitute acceptance.
 
-**Current bounded correction, 2026-10-08:** RP-431 aligns TS raw catalog and command admission
-with the existing Go contract, including the replay-bundle entry. Shared raw vectors reproduce
-the old mismatch and pass after correction; kernel0.3.178 records the acceptance-set change.
-The owning log holds executed scope and the new Codex range awaiting Claude. This does not
-approve original A1–A7, resolve the public-wire choice, mint content or complete Arcade.
+**Current checkpoint, 2026-10-08:** complete the original-range reviews, not another round of
+the same bounded findings. The log consolidates A1–A3, A4/A5 and A6/A7 coverage and distinguishes
+current-source checks from historical verdicts. RP-431's raw-admission repair and RP-472's
+snapshot-hash repair are locally verified; current kernel is 0.3.184. Related corrective ranges
+can be reviewed together with exact range coverage. Public-wire choice, RP-201/RP-211 author
+reconciliation, adopted copy, AR8 mint and full integrated acceptance remain open.
 
 - [x] A1 — `arcade` artifact grammar (AR1.2/AR3.1/AR4.1): Go + TS loaders, one shared fixture,
   loader-bound rejections, candidate copy keys (AR6.6) in `copy/catalog/arcade-candidate.json`.
