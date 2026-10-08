@@ -20,7 +20,12 @@ owns the new range after `205e0c7d` and pending designated review. Native Garden
 browser, real API and Postgres is now locally verified with explicitly controlled maturity:
 single and batched harvest, actual payout/history, retry refusal and rendered reload. The
 whole existing composed lane passes with this added population, and a disconnected native
-harvest callback fails. Growth/balance is unchanged; this is not natural maturation, production
+harvest callback fails. The latest whole run 39780 also executes native Reputation purchases,
+next-run bonus and Exit-plan starters, with controlled budget/cash rather than earning/pacing
+proof. RP-438's reload observer is locally corrected with real document-bound cancellation
+and negative controls; its earlier aggregate failure is retained. Latest hosted CI 37778647275
+at published `f3851e8b` passes four jobs, but client/kernel-history and server/Clout remain red.
+Growth/balance is unchanged; this is not natural maturation, production
 activation or designated acceptance. The existing session-expiry diagnostic still confirms
 absent automatic renewal. The [Garden log](minigame-server-garden/log.md) owns the new range
 after `4b2c72a0`, failed instrumentation attempts and pending review. Continue remaining

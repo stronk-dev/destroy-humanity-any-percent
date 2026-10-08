@@ -49,12 +49,21 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest Garden observer checkpoint (2026-10-08), range after `8e7e4427`: RP-438 is
+  locally corrected with real old-document Referer binding, not a blanket unfinished-read
+  exemption. Ten observer cases include actual Chromium/HTTP cancellation and negative
+  controls. Final `make test-game-ui-composed` (39780) **passes end to end**, including
+  Reputation, Garden and Tier 2. Garden enumerates 67 complete upstream responses and
+  separately counts four old-document cancellations. Original 66940 and the unsuccessful
+  timestamp-only attempt remain recorded in the [Garden log](minigame-server-garden/log.md).
+  No production gameplay, deadline, retry or CI-workflow change; designated review remains.
 - Latest Reputation integration checkpoint (2026-10-08), range after `f3851e8b`: its new
   native production-browser/service/SQL journey passes, including Escape cancellation,
   next-run-only bonus and an Exit plan; a disconnected purchase callback fails. Budget/cash
-  are controlled setup, not earning or pacing. Final whole composed66940 is **RED** at Garden's
-  incomplete proxy observation RP-438 after Reputation and the preceding populations pass;
-  Tier2 is not reached. The [Reputation log](reputation-tree-v1/log.md) owns detailed results
+  are controlled setup, not earning or pacing. Its original whole composed66940 is **RED**
+  at Garden's incomplete proxy observation RP-438; Tier2 is not reached in that run. The
+  subsequent observer repair and successful whole39780 above do not erase that failure.
+  The [Reputation log](reputation-tree-v1/log.md) owns detailed results
   and pending designated review. No full-CI, mint or acceptance claim follows.
 - Latest Tier-2 construction checkpoint (2026-10-08), range after `205e0c7d`: actual candidate
   presentation consumption fixes RP-436's built-client crash. Native real-service/SQL gate,
@@ -86,15 +95,17 @@ operations remain required alongside that construction, not optional end-stage p
   decision, not balance retuning or golden regeneration. The [Tier-2 log](tier2-content/log.md)
   owns commands, digests, results and exact review ranges. No new playable tier, minted content
   or release milestone follows from completing this research/review checkpoint.
-- Latest published source recorded here: `20a57019` (2026-10-08). Local commits add
-  Garden diagnostics, the Arcade admission correction, full-backup evidence, bounded Tier-2
-  review/reproduction, the inherited-policy test correction and controlled-state Garden harvest
-  integration, followed by candidate Tier-2 presentation/real-service integration, with
-  associated records.
-  The earlier large unpushed counts are historical, not the current branch state. Codex did
-  not push during this reconciliation. No hosted result is recorded here for those local commits.
+- Latest published source verified read-only: `f3851e8b` (2026-10-08).
+  [Hosted CI 37778647275](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37778647275)
+  is terminal **RED: four jobs pass, two fail**. Composed, browser, schema and fast harness
+  pass. Client runs 10,258 passing tests/928 skips, then the historical kernel guard rejects
+  `50a3a514` (RP-131). Server reproduces 27 Clout accrual-partition failures (RP-307).
+  The previous Firefox Garden failure does not recur in this hosted run; that is not a
+  causal diagnosis or general reliability proof. The newer Reputation and Garden-observer
+  commits have local evidence only. Codex did not push during this reconciliation.
+  The earlier large unpushed counts and the following run are historical:
   [Hosted CI 37763502364](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37763502364)
-  was **RED at the last recorded check: three jobs pass, three fail**, with all six jobs terminal:
+  was **RED: three jobs pass, three fail**, with all six jobs terminal:
   schema, harness and composed pass; client, server and browser fail.
   Client executes 10,223 passing tests/928 skips before RP-131's historical kernel guard
   rejects `50a3a514`; server retains the same 27 Clout partition failures (RP-307).

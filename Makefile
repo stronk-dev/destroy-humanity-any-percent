@@ -241,6 +241,7 @@ test-garden-composed: build-gameserver build-client
 # Bounded real-service harvest population with explicitly seeded mature plots.
 # Does not replace the natural wall-clock/renewal journey above.
 test-garden-harvest-composed: build-gameserver build-client
+	node --test client/tools/navigation-api-proof.fixtures.mjs
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-garden-composed.mjs --harvest-fixture
 

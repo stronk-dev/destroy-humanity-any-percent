@@ -19,7 +19,10 @@ driver with explicit controlled maturity, native single/batched harvest, actual 
 cash/events/log/window checks and persisted/rendered reload. The existing composed CI target
 includes it; no growth/catalog/auth policy changes. This does not replace the natural
 fifteen-minute journey or its renewal hold, replay the seeded setup, or complete Garden.
-The latest owning log records actual execution, RP-434/RP-435 driver corrections and the
+RP-438's reload observer now binds cancelled Founder/Garden GETs to their actual old
+document via Referer and distinct navigation URLs; it does not exempt commands,
+new-page reads or incomplete upstream data. The latest owning log records actual
+execution, RP-434/RP-435/RP-438 driver corrections and the
 designated-review handoff; earlier pending ranges remain independent.
 
 **Historical bounded instrument work, 2026-10-07:** RP-348 under `a9fadedd` adds

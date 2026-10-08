@@ -354,10 +354,16 @@ API JSON is recorded from complete responses in the existing local proxy, avoidi
 Chromium's navigation-scoped body cache; native action receipts are independently
 read in the browser before continuing. Proxy observations are served bytes, not
 proof that the browser consumed every advisory read; the consumer proof is the
-mounted Garden and Desk outcome. Incomplete upstream responses fail. Garden GETs
-closed by the browser before proxy finish are explicitly counted, still enumerated
-for hidden data, and excluded from the natural journey's completed-read checks;
-other unfinished responses fail. Its Founder log
+mounted Garden and Desk outcome. Incomplete upstream responses fail. During an
+explicit full-document reload, unfinished Founder/Garden GETs are counted separately
+only when the browser's actual Referer binds them to the old document. Distinct
+navigation query markers distinguish old and new documents without replacing fetch
+or changing the app. This includes old-page requests arriving at the proxy after
+navigation starts; new-page reads, commands and cancellations outside that window
+receive no exception. Every upstream body must still complete and be enumerated
+for hidden data. Cancelled reads are not consumed-read proof and remain excluded
+from natural-growth completed-read checks. A controlled real-browser/HTTP regression
+and negative cases run with the harvest target. Its Founder log
 binding uses the separate `intent_id` column, not
 a nonexistent canonical-payload field (RP-434/RP-435). The owning log records run
 results and pending designated review. This is bounded controlled-state harvest

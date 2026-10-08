@@ -9,6 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { productionClientFiles, productionClientProof } from "./production-client-proof.mjs";
+import { navigationAPIProof } from "./navigation-api-proof.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const uiURL = "http://localhost:5173";
@@ -21,7 +22,7 @@ const started = Date.now();
 const sockets = new Set();
 const errors = [];
 const apiBoundaries = [];
-const proxyBoundaries = [];
+const apiProof = navigationAPIProof(), proxyBoundaries = apiProof.boundaries;
 let server, assets, browser, heartbeat;
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const copy = JSON.parse(readFileSync(path.join(root, "client/src/copy/generated/catalog.json"), "utf8"));
@@ -111,10 +112,7 @@ async function serve(observeAPI) {
   const listener = createServer((request, response) => {
     const pathname = new URL(request.url, uiURL).pathname;
     if (pathname.startsWith("/api/")) {
-      const boundary = { path: pathname, method: request.method, status: null, upstream_ended: false, browser_finished: false, browser_closed: false };
-      proxyBoundaries.push(boundary);
-      response.on("finish", () => { boundary.browser_finished = true; });
-      response.on("close", () => { boundary.browser_closed = true; });
+      const boundary = apiProof.observe(response, pathname, request.method, request.headers.referer);
       const upstream = httpRequest(new URL(request.url, serverURL), { method: request.method, headers: { ...request.headers, host: new URL(serverURL).host } },
         (received) => {
           boundary.status = received.statusCode;
@@ -203,13 +201,19 @@ try {
     try { clientProof.worker(new URL(worker.url()).pathname); }
     catch (error) { errors.push(error); }
   });
+  let navigationSequence = 0;
   async function reload() {
     // Actual API bytes are observed in the proxy, not Chromium's navigation-
     // scoped response cache. Native command receipts are also read immediately
     // in domIntent, and the real consumer must render the resulting state.
     await Promise.all(responses);
     assert.equal(errors.length, 0, errors.map(String).join("\n"));
-    await page.reload({ waitUntil: "networkidle" });
+    // A distinct document URL lets the proxy bind the browser's real Referer:
+    // an old-page request may arrive after navigation STARTS, but a cancelled
+    // new-page read must never receive that old-page exception. No fetch shim.
+    const next = new URL(uiURL);
+    next.searchParams.set("garden_navigation", String(++navigationSequence));
+    await apiProof.reload(page.url(), () => page.goto(next.href, { waitUntil: "networkidle" }));
   }
   page.on("websocket", (socket) => {
     assert.equal(socket.url(), `${uiURL.replace("http:", "ws:")}/connection/websocket`);
@@ -472,10 +476,7 @@ try {
   console.log(`Garden loaded exact built HTML/JS/CSS and bundled prediction Worker: ${JSON.stringify(clientProof.finish())}: PASS`);
   console.log(`Garden composed ${harvestFixture ? "controlled-maturity fixture" : "real wall-clock"}: DOM bootstrap/unlock/plant/uproot → ${harvestFixture ? "explicit mature-state setup" : "native three-tick maturation"} → native single/all harvest → substrate/reload; two real cash sends, bound hashes, hidden salt; ${(Date.now() - started) / 1000}s: PASS`);
   }
-  const cancelledAdvisory = (row) => row.path === "/api/v1/garden/current" && row.method === "GET" && row.browser_closed && !row.browser_finished;
-  assert(proxyBoundaries.every((row) => row.status !== null && row.upstream_ended && (row.browser_finished || cancelledAdvisory(row))),
-    `API proxy observation incomplete: ${JSON.stringify(proxyBoundaries.filter((row) => row.status === null || !row.upstream_ended || !row.browser_finished && !cancelledAdvisory(row)))}`);
-  console.log(`Garden API observation: ${proxyBoundaries.length} complete upstream responses; ${proxyBoundaries.filter(cancelledAdvisory).length} advisory reads closed by browser before finish (not consumed-read proof); all complete JSON still enumerated`);
+  console.log(`Garden API observation: ${JSON.stringify(apiProof.finish())}; cancelled old-page reads are not consumed-read proof; all complete JSON still enumerated`);
 } catch (error) {
   throw new Error(`Garden composed objective failed; boundary errors: ${JSON.stringify(errors.map(String))}; HTTP statuses: ${JSON.stringify(apiBoundaries)}; recent proxy boundaries: ${JSON.stringify(proxyBoundaries.slice(-12))}`, { cause: error });
 } finally {

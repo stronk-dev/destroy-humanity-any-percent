@@ -3026,3 +3026,32 @@ No unchanged retry, timeout/assertion change, product fix or source edit is made
 inspect deliberate navigation and required-response binding before correcting the observer.
 Review by: Codex (observation only); Recorded by: Codex. All handles terminal; no full green,
 feature acceptance, natural-growth, content mint, archive or push claim.
+
+## 2026-10-08 — RP-438 document-bound reload observation
+
+Correct the test observer under SG9/SG10, not gameplay. A delayed receipt can issue a
+Founder/Garden read around the driver's reload. The first navigation-window attempt still
+fails focused run 66211; timed run 26190 shows old-page GETs arriving 2 ms after navigation begins.
+Snapshotting only already-arrived requests is insufficient. Distinct full-document navigation
+URLs plus the browser's actual Referer now bind old-page cancellations, including queued reads.
+No fetch shim, retry, deadline increase, API/body/catalog/auth/kernel or production edit.
+Every upstream body must complete and enter hidden-state enumeration; commands, new-page
+reads, unrelated routes and cancellations outside explicit navigation still fail. Native
+receipt reads and all persisted/rendered harvest checks remain unchanged.
+
+The retained real Chromium/HTTP regression holds an actual upstream Founder read, navigates
+away, observes browser close without finish and then enumerates the complete upstream bytes.
+It demonstrates the old guard's false rejection and refuses missing upstream data. Negative
+and queued-read cases execute with it in the existing harvest target: ten pass, zero skips.
+Initial sandbox-only attempt cannot bind localhost; it is not execution evidence. Escalated
+control passes; final focused run 84771 passes with 65 complete upstream responses and no cancelled
+reads. Final whole `make test-game-ui-composed` (39780) exits 0: existing controls/cold Postgres,
+main player journey, Cosmetic/Reputation, Clout, both actual no-payment negatives, Garden and
+Tier 2 all execute. Garden records 67 complete upstream responses/four explicitly old-document
+cancellations; these are not consumed-read proof. Original 66940 and failed 66211/26190 remain
+red observations, not erased. Syntax/diff checks and CI topology with 13 negatives pass.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact new range begins after
+`8e7e4427` through this batch's commit. Designated cross-party review remains required; older
+ranges remain independent. All processes terminal. No general browser-reliability, elapsed
+growth, renewal, full feature acceptance, content mint, archival, hosted-green or release claim.

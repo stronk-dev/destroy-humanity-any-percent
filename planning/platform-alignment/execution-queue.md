@@ -3,15 +3,22 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Current action — 2026-10-07
+## Current action — 2026-10-08
 
 RP-365's backwards-clock failure route is diagnosed; D-024/draft Monotonic Founder Attendance
 must settle the shared boundary before repair (Cosmetic log/reproducer). GS1 shared-decode
 and AC2 parity now locally pass; see the latest Garage log for evidence. Continue the remaining
 accepted per-surface gates; persisted Fiscal and GS2 acquisition require designated review.
-Use the owning plans/logs for results and next work; checkpoints below are historical, not new
-predeclaration requirements. Latest whole target passes with real Fiscal refusal/consent coverage;
-RP-365's separate pause regression, author RP-363 and all 1.0 obligations remain.
+Use the owning plans/logs and [current product overview](../CURRENT-STATE.md) for results
+and next work; checkpoints below are historical, not new predeclaration requirements.
+Latest whole composed run 39780 passes actual player, Reputation, Cosmetic/Clout, Garden and
+Tier 2 fixture journeys after RP-438's observer correction. These are controlled integration
+populations, not content mint, natural pacing or feature acceptance. Continue accepted
+Garage/API/minigame construction and consolidate exact-range reviews. Headcount's seat-source
+choice and sibling contracts remain held; startup recovery, renewal, numeric conservation and
+shared attendance successors remain draft. Latest hosted CI 37778647275 at `f3851e8b` is red
+on RP-131/RP-307, with four other jobs passing. RP-365's separate pause regression, author
+RP-363 and the full nine-tier/rights/accessibility/clean-host 1.0 obligations remain.
 
 ## Earlier composed findings — 2026-10-07
 
