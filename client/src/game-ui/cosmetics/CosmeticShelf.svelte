@@ -31,9 +31,13 @@
     return row ? [{ item, row }] : [];
   }));
   const ownedHeadings = new Map<string, HTMLElement>();
+  let shelfHeading: HTMLHeadingElement;
+  type WearerFocus = { petID: string; worn: string | null; region: HTMLElement };
   let focusAfterReceipt = $state.raw<{
     cosmeticID: string;
     origin: HTMLButtonElement;
+    wearer?: WearerFocus;
+    sawPending: boolean;
     stopObserving(): void;
   }>();
 
@@ -48,7 +52,7 @@
     const row = presentation.cosmetics.get(id)!;
     return [...row.curtains.map((curtain) => curtainID(id, curtain.pattern)), curtainID("shop", "checkout_flow")].join(" ");
   }
-  function buy(id: string, origin: HTMLButtonElement): void {
+  function observeCompletion(id: string, origin: HTMLButtonElement, wearer?: WearerFocus): void {
     clearFocusRequest();
     if (document.activeElement === origin) {
       const observeFocus = (event: FocusEvent) => {
@@ -57,20 +61,41 @@
         if (event.target !== origin) clearFocusRequest();
       };
       document.addEventListener("focusin", observeFocus);
-      focusAfterReceipt = { cosmeticID: id, origin, stopObserving: () => document.removeEventListener("focusin", observeFocus) };
+      focusAfterReceipt = { cosmeticID: id, origin, wearer, sawPending: false, stopObserving: () => document.removeEventListener("focusin", observeFocus) };
     }
+  }
+  function buy(id: string, origin: HTMLButtonElement): void {
+    observeCompletion(id, origin);
     onAcquire(id);
   }
-  // §7.3 / GS0.6: only the replaced, still-current Buy interaction owns a
+  function changeWearer(id: string, petID: string, worn: string | null, origin: HTMLButtonElement): void {
+    const region = origin.parentElement;
+    observeCompletion(id, origin, region ? { petID, worn: worn === id ? null : id, region } : undefined);
+    if (worn === id) onUnequip(petID);
+    else onEquip(id, petID);
+  }
+  // §7.3 / GS0.6: only the replaced, still-current interaction owns a
   // handoff. Pointer activation without focus must not claim keyboard focus.
   $effect(() => {
     const request = focusAfterReceipt;
-    if (!request || !rows.some(({ item }) => item.owned && request.cosmeticID === item.cosmetic_id)) return;
+    if (!request) return;
+    if (pending) { request.sawPending = true; return; }
+    if (!controlsEnabled) return;
+    const wearer = request.wearer;
+    const applied = wearer
+      ? arm.wearers.some((current) => current.pet_id === wearer.petID && current.worn === wearer.worn)
+      : rows.some(({ item }) => item.owned && request.cosmeticID === item.cosmetic_id);
+    // A refusal also ends pending. Restore its still-enabled control rather
+    // than leaving focus on body after the browser disabled it.
+    if (!applied && !request.sawPending) return;
     void tick().then(() => {
-      if (focusAfterReceipt !== request) return;
+      if (focusAfterReceipt !== request || pending || !controlsEnabled) return;
       clearFocusRequest();
-      if (!request.origin.isConnected && (document.activeElement === request.origin || document.activeElement === document.body)) {
-        ownedHeadings.get(request.cosmeticID)?.focus();
+      if (document.activeElement === request.origin || document.activeElement === document.body) {
+        const target = request.origin.isConnected && !request.origin.disabled ? request.origin
+          : request.wearer?.region.querySelector<HTMLButtonElement>("button:not(:disabled)")
+            ?? ownedHeadings.get(request.cosmeticID) ?? shelfHeading;
+        target.focus();
       }
     });
   });
@@ -78,7 +103,7 @@
 </script>
 
 <section class="shelf cc-window" aria-labelledby="shelf-heading" data-testid="cosmetic-shelf">
-  <h2 id="shelf-heading">{t(presentation.shop.heading_key, {}, era)}</h2>
+  <h2 id="shelf-heading" tabindex="-1" bind:this={shelfHeading}>{t(presentation.shop.heading_key, {}, era)}</h2>
   <small id={curtainID("shop", "checkout_flow")} class="curtain">{t(presentation.shop.curtains[0]!.key, {}, era)}</small>
   {#each rows as { item, row } (item.cosmetic_id)}
     <article class="item" data-cosmetic={item.cosmetic_id} data-state={item.owned ? "owned" : pending ? "pending" : "unowned"}>
@@ -94,9 +119,9 @@
             {#each arm.wearers as wearer (wearer.pet_id)}
               <li>
                 {#if wearer.worn === item.cosmetic_id}
-                  <button type="button" disabled={pending || !controlsEnabled} aria-describedby={describedBy(item.cosmetic_id)} onclick={() => onUnequip(wearer.pet_id)}>{t("shop.cosmetics.unequip", { pet: petName(wearer.pet_id) }, era)}</button>
+                  <button type="button" disabled={pending || !controlsEnabled} aria-describedby={describedBy(item.cosmetic_id)} onclick={(event) => changeWearer(item.cosmetic_id, wearer.pet_id, wearer.worn, event.currentTarget)}>{t("shop.cosmetics.unequip", { pet: petName(wearer.pet_id) }, era)}</button>
                 {:else}
-                  <button type="button" disabled={pending || !controlsEnabled} aria-describedby={describedBy(item.cosmetic_id)} onclick={() => onEquip(item.cosmetic_id, wearer.pet_id)}>{t("shop.cosmetics.equip", { pet: petName(wearer.pet_id) }, era)}</button>
+                  <button type="button" disabled={pending || !controlsEnabled} aria-describedby={describedBy(item.cosmetic_id)} onclick={(event) => changeWearer(item.cosmetic_id, wearer.pet_id, wearer.worn, event.currentTarget)}>{t("shop.cosmetics.equip", { pet: petName(wearer.pet_id) }, era)}</button>
                 {/if}
               </li>
             {/each}

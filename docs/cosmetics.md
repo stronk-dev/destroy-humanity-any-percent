@@ -94,6 +94,10 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
     heading only if the player has not chosen another focus target. A newer choice permanently
     cancels that handoff, even if the newer control subsequently disappears. Unfocused
     activation does not claim focus, and unmount removes the pending focus observer.
+  - Equip/Unequip completion hands focus to the replacement wearer control after pending
+    and the authoritative wearer update finish. A refusal restores the still-enabled
+    triggering control; if it becomes unavailable, the local heading receives focus.
+    These handoffs use the same newer-focus cancellation guard as Buy.
 - **Fail-closed card:** below v24 the static card renders unchanged.
 - **Overlay:** `CosmeticOverlay.svelte` is the CSS-only layer and the "annoyed" pose. It has no
   text, is presentation-only, and is static under reduced motion. Its CSS media rule matches

@@ -2129,3 +2129,45 @@ the unrelated historical RP-131 gate remains red.
 The remaining original C4 diff review is no longer a next task. Continue the
 broader C6 surface review, retain the distinct author-body/content holds, and
 consolidate corrective review rather than repeating unchanged experiments.
+
+## 2026-10-08 — Cosmetic completion focus (RP-454/RP-455)
+
+Current C6 surface review under Cosmetic §7.3 and Garage GS0.2/GS0.6 finds two
+native-input defects: applied Equip/Unequip replaces the focused button and
+leaves focus on body; terminal refusal can also lose focus after pending
+disables its button. Old-source23607 fails all eight Enter/Space wearer cases
+in Chromium/WebKit. Refusal37749 fails Buy/Equip/Unequip in Chromium and Equip
+in WebKit; the other two WebKit controls pass. Initial6337 stopped at an
+invented test label, not focus; corrected tests use actual copy keys. Later
+90463's four newer-focus failures came from the test omitting the established
+explicit tabindex on its navigation control; that test setup is corrected,
+not cited as a product defect or concealed as a green full run.
+
+Correction: extend the existing Buy focus-ownership guard, rather than add a
+second observer. Wearer completion waits for its authoritative state and the
+end of pending, then targets the replacement control. Refusal restores the
+still-enabled origin, or the local heading if unavailable. A newer focus choice
+permanently cancels either handoff, even if that newer control is removed.
+Native disabling, command payloads, single-flight behavior, labels, server
+rules and copy remain unchanged; unmount retains the shared observer cleanup.
+
+Finished verification:
+- `make test-browser-focused BROWSER_TEST_FLAGS='--project chromium --project webkit test/cosmetic-shelf-browser.test.ts test/cosmetic-host-browser.test.ts test/game-ui-screens-browser.test.ts'`
+  60526 exits0:272 pass/four separately gated performance exclusions. Includes
+  native Enter/Space both wearer directions, real host pending→refresh ordering
+  with a runtime double, refusals, newer-focus cancellation and locked fallback.
+- `make typecheck build-client verify-client-boundary`39479 exits0, zero errors/
+  warnings; boundary negative fixtures execute. No separate performance claim.
+- Whole `make test-game-ui-composed`1397 exits0 against real Postgres/service/
+  WebSocket and production-built client bytes: native Buy/reload, actual adopt/
+  equip/unequip and pet overlay, main/Recovery, Reputation/Clout, both N5 negative
+  clients, Garden and Tier2. Its equip/unequip steps are DOM controls, not native
+  keyboard-focus evidence; the mounted browser checks above supply that boundary.
+  Controlled content/cash/maturity remain fixtures, not natural pacing or mint.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact
+corrective review range starts after `f097df7e` through this containing commit.
+Claude designated review remains pending. This does not complete the broader
+original C6 review, resolve author-body/content holds, establish Firefox/AT/
+hosted CI, accept/archive Cosmetics or authorize a push. Continue the remaining
+C6/feature gates; do not repeat these completed probes per editorial edit.

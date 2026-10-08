@@ -4,6 +4,7 @@ import { expect, it } from "vitest";
 
 import fixture from "../../testdata/gameui/cosmetics-arm-v1.json";
 import type { GameUICosmeticsArm } from "../src/api/generated/types";
+import { t } from "../src/copy";
 import CosmeticOverlay from "../src/game-ui/cosmetics/CosmeticOverlay.svelte";
 import { COSMETIC_SHOP_PRESENTATION } from "../src/game-ui/cosmetics/presentation";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
@@ -125,6 +126,40 @@ it.skipIf(!browser)("activates Buy once with Space and waits for authoritative o
 });
 
 for (const key of ["{Enter}", " "]) {
+  for (const initiallyWorn of [false, true]) {
+    it.skipIf(!browser)(`wearer completion retains keyboard focus (${key}, worn=${initiallyWorn})`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const calls: string[] = [];
+      const target = host();
+      const app = mount(CosmeticShelfHarness, { target, props: { initial: {
+        arm: arms[initiallyWorn ? "owned-worn" : "owned-not-worn"]!, presentation: COSMETIC_SHOP_PRESENTATION,
+        price: "$0.00", era: "era_2000" as const, pending: false, controlsEnabled: true,
+        petName: () => "Mittens", receipt: null, rejection: null, onAcquire: () => {},
+        onEquip: (id: string, pet: string) => { calls.push(`equip:${id}:${pet}`); },
+        onUnequip: (pet: string) => { calls.push(`unequip:${pet}`); },
+      } } }) as unknown as { update(patch: Record<string, unknown>): void };
+      try {
+        await settle();
+        const control = target.querySelector<HTMLButtonElement>("button")!;
+        control.focus();
+        await userEvent.keyboard(key);
+        expect(calls).toEqual([initiallyWorn ? `unequip:${CAT}` : `equip:horse_armor:${CAT}`]);
+        app.update({ pending: true });
+        await settle();
+        expect(control.disabled).toBe(true);
+        app.update({ pending: false, arm: arms[initiallyWorn ? "owned-not-worn" : "owned-worn"]! });
+        await settle();
+        const next = target.querySelector<HTMLButtonElement>("button")!;
+        expect(next.textContent).toBe(t(initiallyWorn ? "shop.cosmetics.equip" : "shop.cosmetics.unequip", { pet: "Mittens" }, "era_2000"));
+        expect(document.activeElement, "authoritative wearer change must not discard native focus").toBe(next);
+        expect(calls).toHaveLength(1);
+        assertCurtainsVisible(target, "wearer completion");
+      } finally { await unmount(app); target.remove(); }
+    });
+  }
+}
+
+for (const key of ["{Enter}", " "]) {
   for (const removeNewerControl of [false, true]) {
     it.skipIf(!browser)(`purchase completion preserves newer keyboard focus (${key}, removed=${removeNewerControl})`, async () => {
       const { userEvent } = await import("vitest/browser");
@@ -164,6 +199,101 @@ for (const key of ["{Enter}", " "]) {
     });
   }
 }
+
+for (const initiallyWorn of [false, true]) {
+  for (const removeNewerControl of [false, true]) {
+    it.skipIf(!browser)(`wearer completion respects newer focus (worn=${initiallyWorn}, removed=${removeNewerControl})`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const calls: string[] = [];
+      const target = host();
+      const newer = document.createElement("button");
+      newer.textContent = "Next control";
+      newer.tabIndex = 0;
+      target.after(newer);
+      const app = mount(CosmeticShelfHarness, { target, props: { initial: {
+        arm: arms[initiallyWorn ? "owned-worn" : "owned-not-worn"]!, presentation: COSMETIC_SHOP_PRESENTATION,
+        price: "$0.00", era: "era_2000" as const, pending: false, controlsEnabled: true,
+        petName: () => "Mittens", receipt: null, rejection: null, onAcquire: () => {},
+        onEquip: (id: string, pet: string) => { calls.push(`equip:${id}:${pet}`); },
+        onUnequip: (pet: string) => { calls.push(`unequip:${pet}`); },
+      } } }) as unknown as { update(patch: Record<string, unknown>): void };
+      try {
+        await settle();
+        const control = target.querySelector<HTMLButtonElement>("button")!;
+        control.focus();
+        await userEvent.keyboard("{Enter}");
+        expect(calls).toEqual([initiallyWorn ? `unequip:${CAT}` : `equip:horse_armor:${CAT}`]);
+        app.update({ pending: true });
+        await settle();
+        await userEvent.keyboard("{Tab}");
+        expect(document.activeElement).toBe(newer);
+        if (removeNewerControl) newer.remove();
+        const expectedFocus = removeNewerControl ? document.body : newer;
+        app.update({ pending: false, arm: arms[initiallyWorn ? "owned-not-worn" : "owned-worn"]! });
+        await settle();
+        expect(target.querySelector<HTMLButtonElement>("button")!.disabled).toBe(false);
+        expect(document.activeElement, "completed wearer intent cannot reclaim superseded focus").toBe(expectedFocus);
+        expect(calls).toHaveLength(1);
+      } finally { await unmount(app); target.remove(); newer.remove(); }
+    });
+  }
+}
+
+for (const kind of ["buy", "equip", "unequip"] as const) {
+  it.skipIf(!browser)(`rejected ${kind} restores its still-current keyboard focus`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const calls: string[] = [];
+    const target = host();
+    const app = mount(CosmeticShelfHarness, { target, props: { initial: {
+      arm: arms[kind === "buy" ? "acquirable-at-tier-1" : kind === "equip" ? "owned-not-worn" : "owned-worn"]!,
+      presentation: COSMETIC_SHOP_PRESENTATION, price: "$0.00", era: "era_2000" as const,
+      pending: false, controlsEnabled: true, petName: () => "Mittens", receipt: null, rejection: null,
+      onAcquire: () => { calls.push("buy"); }, onEquip: () => { calls.push("equip"); }, onUnequip: () => { calls.push("unequip"); },
+    } } }) as unknown as { update(patch: Record<string, unknown>): void };
+    try {
+      await settle();
+      const control = target.querySelector<HTMLButtonElement>("button")!;
+      control.focus();
+      await userEvent.keyboard("{Enter}");
+      expect(calls).toEqual([kind]);
+      app.update({ pending: true });
+      await settle();
+      expect(control.disabled).toBe(true);
+      app.update({ pending: false, rejection: "shop.cosmetics.reject.unknown" });
+      await settle();
+      expect(control.isConnected).toBe(true);
+      expect(control.disabled).toBe(false);
+      expect(document.activeElement, "rejection retains the player's triggering control").toBe(control);
+      expect(calls).toEqual([kind]);
+    } finally { await unmount(app); target.remove(); }
+  });
+}
+
+it.skipIf(!browser)("a refused purchase that becomes locked hands focus to the shelf heading", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const calls: string[] = [];
+  const target = host();
+  const app = mount(CosmeticShelfHarness, { target, props: { initial: {
+    arm: arms["acquirable-at-tier-1"]!, presentation: COSMETIC_SHOP_PRESENTATION, price: "$0.00", era: "era_2000" as const,
+    pending: false, controlsEnabled: true, petName: () => "", receipt: null, rejection: null,
+    onAcquire: () => { calls.push("buy"); }, onEquip: () => {}, onUnequip: () => {},
+  } } }) as unknown as { update(patch: Record<string, unknown>): void };
+  try {
+    await settle();
+    const control = target.querySelector<HTMLButtonElement>("button")!;
+    control.focus();
+    await userEvent.keyboard("{Enter}");
+    expect(calls).toEqual(["buy"]);
+    app.update({ pending: true });
+    await settle();
+    app.update({ pending: false, arm: arms["locked-at-tier-0"]!, rejection: "shop.cosmetics.reject.locked" });
+    await settle();
+    expect(control.isConnected).toBe(true);
+    expect(control.disabled).toBe(true);
+    expect(document.activeElement).toBe(target.querySelector("#shelf-heading"));
+    expect(calls).toEqual(["buy"]);
+  } finally { await unmount(app); target.remove(); }
+});
 
 it.skipIf(!browser)("shows the lock reason, the no-wearer line, and reflows at 320 px", async () => {
   const base = { presentation: COSMETIC_SHOP_PRESENTATION, price: "$0.00", era: "era_2000" as const, pending: false, controlsEnabled: true,

@@ -97,6 +97,9 @@ migration take the next free numbers at landing.
   Claude must designated-review this Codex correction. The first full browser run was red on
   RP-187/RP-188; later Typer and Arcade corrections pass the cold full browser target. The
   historical kernel-history gate still blocks complete CI; this is not C6 or release acceptance.
+  RP-454/RP-455 add native applied/refused completion-focus regressions for wearer controls
+  and Buy. The bounded guard correction is tracked in the owning log, separately from
+  original C6 approval and whole-product assistive-technology acceptance.
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
   RP-180's syntax-aware package-gate correction is locally tested and awaits Claude's

@@ -97,6 +97,51 @@ const shelf = (target: HTMLElement) => target.querySelector("[data-testid=cosmet
 const staticCard = (target: HTMLElement) => [...target.querySelectorAll("section.card h2")].some((node) => node.textContent?.includes("Horse Armor"));
 
 for (const key of ["{Enter}", " "]) {
+  for (const initiallyWorn of [false, true]) {
+    it.skipIf(!browser)(`wearer response preserves native focus through host pending (${key}, worn=${initiallyWorn})`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      let complete!: (outcome: IntentOutcome) => void;
+      const outcome = new Promise<IntentOutcome>((resolve) => { complete = resolve; });
+      class HeldRuntime extends Runtime {
+        override async intent(body: Readonly<Record<string, unknown>>): Promise<IntentOutcome> {
+          this.requests.push(body);
+          return outcome;
+        }
+      }
+      const runtime = new HeldRuntime();
+      runtime.current = withShop(arms[initiallyWorn ? "owned-worn" : "owned-not-worn"], 1);
+      const { target, dispose } = await mounted(runtime);
+      try {
+        const control = shelf(target)!.querySelector<HTMLButtonElement>("button")!;
+        control.focus();
+        await userEvent.keyboard(key);
+        await settle();
+        expect(runtime.requests).toHaveLength(1);
+        expect(runtime.requests[0]).toMatchObject({
+          kind: initiallyWorn ? "unequip_cosmetic" : "equip_cosmetic", expected_revision: 7,
+          pet_id: "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa",
+          ...(initiallyWorn ? {} : { cosmetic_id: "horse_armor" }),
+        });
+        expect(control.disabled).toBe(true);
+        expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+        runtime.current = { ...withShop(arms[initiallyWorn ? "owned-not-worn" : "owned-worn"], 1), founder_revision: 8 };
+        complete({ outcome: "applied", receipt: {
+          intent_id: runtime.requests[0]!.intent_id, outcome: "applied", founder_revision: 8,
+          kind: initiallyWorn ? "unequip_cosmetic" : "equip_cosmetic",
+        } });
+        await settle();
+        const next = shelf(target)!.querySelector<HTMLButtonElement>("button")!;
+        expect(next).not.toBe(control);
+        expect(next.disabled).toBe(false);
+        expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+        expect(document.activeElement, "pending completion hands focus to the replacement wearer control").toBe(next);
+        expect(runtime.requests).toHaveLength(1);
+      } finally { complete({ outcome: "applied", receipt: {} }); await dispose(); }
+    });
+  }
+}
+
+for (const key of ["{Enter}", " "]) {
   it.skipIf(!browser)(`a delayed cosmetic purchase preserves newer Desk navigation focus (${key})`, async () => {
     const { userEvent } = await import("vitest/browser");
     let complete!: (outcome: IntentOutcome) => void;
