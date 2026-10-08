@@ -130,6 +130,58 @@ const cases = [
   { name: "substrate", kind: "garden_set_substrate", fields: { substrate_id: "mainframe" }, at: null, action: "Mainframe" },
 ] as const;
 
+for (const action of ["harvest-all", "substrate", "menu-harvest"] as const) {
+  for (const newerChoice of [false, true]) {
+    it.skipIf(!browser)(`Garden response focus ${action} ${newerChoice ? "preserves newer navigation" : "recovers usable control"}`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const host = await mounted();
+      try {
+        button(host.target, "Server Garden").click();
+        await settle();
+        const origin = cell(host.target, 0, 0);
+        origin.focus();
+        if (action === "menu-harvest") await userEvent.keyboard("{Enter}{Tab}");
+        else await userEvent.keyboard(action === "harvest-all" ? "{Tab}" : "{Tab}{Tab}{Tab}{Tab}{Tab}");
+        const trigger = document.activeElement as HTMLButtonElement;
+        expect(trigger.textContent?.trim()).toBe(action === "menu-harvest" ? "Harvest" : action === "harvest-all" ? "Harvest all mature" : "Mainframe");
+        await userEvent.keyboard("{Enter}");
+        await settle();
+        expect(host.intents()).toHaveLength(1);
+        const command = host.intents()[0]!;
+        expect(command.kind).toBe(action === "substrate" ? "garden_set_substrate" : "garden_harvest");
+        expect(document.activeElement).toBe(action === "menu-harvest" ? origin : trigger);
+        const navigation = button(host.target, "Settings");
+        if (newerChoice) navigation.focus();
+        const next = active(8);
+        if (action === "substrate") {
+          next.garden.substrate_id = "mainframe";
+          next.garden.substrate_lockout_until_ms = next.server_ms + 600_000;
+        } else next.garden.plots = next.garden.plots.filter((plot) => action === "menu-harvest"
+          ? plot.row !== 0 || plot.col !== 0 : plot.stage !== "mature");
+        host.set(next, 8);
+        host.acknowledge({ outcome: "applied", intent_id: command.intent_id, kind: command.kind, founder_revision: 8 });
+        await settle();
+        expect(host.reads()).toBe(3);
+        expect(host.intents()).toHaveLength(1);
+        if (newerChoice) expect(document.activeElement).toBe(navigation);
+        else if (action === "substrate") {
+          expect(trigger.matches(":disabled")).toBe(true);
+          expect(document.activeElement).toBe(host.target.querySelector("#garden-heading"));
+        } else if (action === "menu-harvest") {
+          expect(origin.dataset.stage).toBe("empty");
+          expect(document.activeElement).toBe(origin);
+        } else {
+          expect(trigger.isConnected).toBe(false);
+          // These are the two adjacent surviving tab stops around Harvest all.
+          expect([origin, button(host.target, "Bare metal")]).toContain(document.activeElement);
+          expect((document.activeElement as HTMLElement).matches(":disabled")).toBe(false);
+        }
+        host.assertHTTP();
+      } finally { await host.dispose(); }
+    });
+  }
+}
+
 for (const row of cases) it.skipIf(!browser)(`Garden host ${row.name} binds Founder revision and refreshes after receipt`, async () => {
   const host = await mounted();
   try {

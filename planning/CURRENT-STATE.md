@@ -35,6 +35,12 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Garden pending and response-focus repairs (RP-409/RP-410) are locally verified: native
+  pending activation cannot duplicate a command, menu handoffs respect newer choices, and
+  response rendering recovers usable focus when Harvest all disappears or substrates lock.
+  Final affected Chromium/WebKit128, types/build/boundaries pass. This is controlled actual-host
+  evidence, not real maturation/payout, full accessibility, hosted CI or Garden acceptance;
+  the Garden log owns the exact review ranges, which still need designated review.
 - Pet economy-isolation evidence (RP-408) now compares actual adoption/no-adoption inputs through
   the pacing consumer: all97 paired seeds pass, as do both Company Exit paths in Go/TS with
   deliberate economic-input/Company-write controls. The complete native harness CI target passes;

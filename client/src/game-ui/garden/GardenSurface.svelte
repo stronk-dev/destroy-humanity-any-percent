@@ -31,6 +31,8 @@
   let timer: ReturnType<typeof setTimeout> | undefined;
   let destroyed = false;
   let readGeneration = 0;
+  let root: HTMLElement | undefined;
+  let heading: HTMLHeadingElement | undefined;
   const cells = new Map<string, HTMLButtonElement>();
 
   // Substrates resolve from the copy registry (no second hardcoded catalog):
@@ -47,6 +49,26 @@
 
   // Re-read on every refreshKey bump; load() itself must not become a dependency.
   $effect(() => { void refreshKey; untrack(() => { void load(); }); });
+
+  // A read can remove Harvest all or lock the focused substrate. Keep surviving
+  // controls focused; recover only if focus became unusable and wasn't moved.
+  $effect.pre(() => {
+    void viewState;
+    const action = document.activeElement;
+    if (!(action instanceof HTMLButtonElement) || !root?.contains(action)) return;
+    const region = action.closest(".menu,.substrates") ?? root;
+    const previous = [...region.querySelectorAll<HTMLButtonElement>("button")].filter((control) => control.tabIndex >= 0);
+    const position = previous.indexOf(action);
+    void tick().then(() => {
+      if (!root?.isConnected || action.isConnected && !action.matches(":disabled") ||
+          document.activeElement !== action && document.activeElement !== document.body) return;
+      const surviving = !action.isConnected ? previous
+        .map((control, index) => ({ control, distance: Math.abs(index - position) }))
+        .filter(({ control }) => control !== action && control.isConnected && control.tabIndex >= 0 && !control.matches(":disabled"))
+        .sort((a, b) => a.distance - b.distance)[0]?.control : undefined;
+      (surviving ?? heading)?.focus();
+    });
+  });
 
   async function load(): Promise<void> {
     const generation = ++readGeneration;
@@ -121,8 +143,8 @@
   }
 </script>
 
-<section class="garden cc-window" aria-labelledby="garden-heading" aria-busy={pending || viewState.kind === "loading"}>
-  <h1 id="garden-heading">{t("garden.title", {}, era)}</h1>
+<section bind:this={root} class="garden cc-window" aria-labelledby="garden-heading" aria-busy={pending || viewState.kind === "loading"}>
+  <h1 bind:this={heading} id="garden-heading" tabindex="-1">{t("garden.title", {}, era)}</h1>
   <p class="hint">{t("garden.hint.first", {}, era)}</p>
   <small title={t("garden.why", {}, era)}>{t("garden.why", {}, era)}</small>
   <p id="garden-status" class="live" role="status" aria-live="polite">{pending ? t("common.pending", {}, era) : announcement}</p>

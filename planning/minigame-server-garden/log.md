@@ -2818,3 +2818,29 @@ does not prove real maturation/payout, post-refresh removed-control recovery, Li
 manual AT, full CI or Garden acceptance. No checkbox, archive, mint, push or release promotion.
 Next: remaining accepted Garden integration and response-focus gates; renewal, RP-222,
 SG13 and earlier review ranges remain separate. The full nine-tier1.0 objective remains active.
+
+## 2026-10-08 — Garden response-focus recovery (RP-410)
+
+Outcome under GS0.6: receipt-triggered reads preserve usable focus; removed Harvest all
+recovers the nearest surviving tab stop, substrate lockout recovers the heading, and a newer
+focus choice wins. Only the grid's active roving tab stop is eligible for recovery.
+
+At `0fc31e46`, actual mounted-host/runtime regressions5574 fail four recovery cases across
+Chromium/WebKit; eight companions for surviving plot controls and newer navigation pass.
+The corrected renderer captures the focused control before read rendering and checks its
+connection/actual inherited disabled state after rendering. It does not alter commands,
+pending behavior, clocks, copy, server state or the grid's arrow navigation.
+
+Focused response tests38400 pass12 (20 other cases deselected). Finished affected population:
+`make test-browser-focused BROWSER_TEST_FLAGS='test/garden-surface-browser.test.ts test/garden-surface-witnesses-browser.test.ts test/garden-host-browser.test.ts test/garden-refresh-browser.test.ts test/garden-fiscal-browser.test.ts --project=chromium --project=webkit'`
+passes128/128 (50827,5.73s). `make typecheck build-client verify-client-boundary`65127 passes,
+zero type/Svelte diagnostics. Actual diff and whitespace inspected. Passive module traces
+are partially truncated in output; the terminal verdict is retained, not a raw measurement study.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Range `0fc31e46` exclusive
+through this source/test/docs/record commit needs designated Claude review; it can be grouped
+with the preceding pending-focus correction. The actual browser host uses controlled HTTP,
+socket and receipt boundaries, not a real Go/Postgres maturation journey. No Firefox/Linux,
+manual AT, full CI, Garden acceptance, content mint, archival or publication claim. Remaining
+renewal, SG13, RP-222 and earlier review debt are unchanged. This finishes the current bounded
+focus batch, not the full Garden feature or nine-tier1.0 goal.

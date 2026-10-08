@@ -229,6 +229,10 @@ payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release cl
   status region's visible `common.pending` message, and guard native/programmatic activation.
   An open menu cannot submit or close itself through a pending command; ordinary Close still
   works. Substrate lockout remains natively disabled, distinct from temporary pending state.
+- After a read, a surviving usable control keeps focus. Removed controls hand focus to the
+  nearest surviving tab stop in the same region, otherwise the heading; a substrate made
+  unusable by lockout falls back to the heading. Recovery never overrides a newer focus
+  choice or targets an inactive grid cell outside the single roving tab stop.
 - Stage and dormancy are text plus a border shape, never colour.
 - Growth announcements go to a polite live region once per refresh.
 - It re-reads at `next_tick_wall_ms` while visible and after every receipt, with no client
