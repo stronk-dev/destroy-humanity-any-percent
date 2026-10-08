@@ -6374,3 +6374,8 @@ through this coherent source/tests/docs/records commit requires Claude's designa
 No acceptance/archive/push. Catalog owner-scope and Account dictionary/bodiless-contract holds
 remain; next work must use existing accepted authority, not partial public catalogs or a false
 kernel bump. Whole nine-tier construction and platform/release obligations remain active.
+
+Citation correction: the shared reduced-motion paragraph is Garage **GS0.6**, not GS0.7
+as the preceding entry and9d4295fe subject label it. Archived Shell D4/C4 remains the repair's
+implementation authority; Garage's reference to future accessibility A4 is not treated as
+acceptance of that draft or its full task matrix. Editorial correction only; diff checked.
