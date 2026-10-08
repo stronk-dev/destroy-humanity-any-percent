@@ -7,8 +7,15 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-08):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08).
 We are integrating and hardening the Garage, with substantial later-tier construction still
-ahead. The latest committed player-path witness (`75f5830b`) adds browser recovery after
-server process death with a committed reply lost; it adds recovery evidence, not another tier.
+ahead. Latest source `2b33fb2c` adds a real mounted Recovery heartbeat reply-loss/reconnect
+witness, following `75f5830b`'s browser recovery after server process death. These strengthen
+existing player paths, not tier/content coverage. All original Pet implementation batches now
+have complete review dispositions at `a1197552`; findings and later Codex corrections remain
+distinct, and the corrections still need designated review. See the
+[milestone path](#milestone-path) and [current next moves](#current-next-moves) for the live
+strategic summary. No complete Garage release or nearly finished 1.0 is claimed.
+
+**Preceding integration checkpoint (2026-10-08):**
 The RP-391 typed-dictionary amendment (`852a2b7f`) remains a draft prerequisite to generated
 intent-client migration, pending owner choice and review. The Tier-2 research/review checkpoint is finished at `0d9a9f43`: bounded original C1–C5
 approval, independently reproduced negative pacing/relevance evidence, a locally corrected
@@ -1967,11 +1974,11 @@ bundle and adopted launch content. Several constituent feature RFCs have local i
 and unresolved acceptance gates. Rows for v0.2–1.0 remain design intent requiring decisions,
 research and accepted RFCs before implementation. No date or team-capacity promise is inferred.
 
-## Cross-cutting workstreams at this checkpoint
+## Cross-cutting workstreams — retained earlier audit background
 
-Rows retaining the older `7e8aa70` audit population are leads, not assertions that every
-underlying table or browser failure was re-executed at `a7ab2640`; this checkpoint independently
-rechecked the CI/kernel, PA7 and RP-133–RP-135 Deployment boundaries recorded below.
+This table retains the earlier `7e8aa70` / `a7ab2640` audit and review routing. It is not the
+live status of later corrective ranges: use the whole-product overview, current next moves
+and owning plans/logs. Its old review and next-action lists must not restart completed work.
 
 | Workstream | Current evidence boundary | Next authority or proof |
 |---|---|---|
@@ -1985,49 +1992,31 @@ rechecked the CI/kernel, PA7 and RP-133–RP-135 Deployment boundaries recorded 
 
 ## Current next moves
 
-Immediate execution overlay (2026-10-08): native input/focus/motion corrections
-and real-service composed checks pass within their recorded populations, not
-whole-feature/accessibility/release acceptance. R-012's existing-context SQL
-fidelity seam is complete; do not repeat the completed rate/SQL studies. Reconcile
-remaining accepted feature gates and consolidate review; resolve the numeric/
-history guard contracts without suppressing their failures. Rights, recovery,
-accessibility, clean-host proof and substantial later-tier construction remain
-separate required work. The whole-product overview at the top is the live rollup.
-Host-native and declared Postgres research populations execute; Docker image/root
-capacity still requires preflight but does not categorically block every Docker
-test. No milestone, author choice or release status is promoted.
+Current at source `2b33fb2c` (2026-10-08). These are delivery boundaries, not a claim that
+every listed change is authorized immediately. Accepted RFCs and their owning plans decide that.
 
-1. Keep the newly landed v0.1 implementation **unapproved** until Codex reviews exact commit
-   ranges. MA3's RP-145/RP-146 corrections await Claude's designated review of
-   `9ceed1cf^..47562850`; RP-147's GS0.2/Fiscal→Pitch correction at `efe68333` also awaits
-   cross-party review. None approves the wider Minigame API/Surface or Garage Surfaces ranges. The
-   earlier targeted finding RP-132 requires Pet Adoption PA7/C2 author reconciliation;
-   Typer/Arcade public wire and adopted content/copy remain separate open boundaries. Do not
-   archive by counting implemented RFCs.
-2. Resolve RP-131's kernel-history/provenance gate under explicit process authority. The
-   [Kernel History Guard Integrity draft](../rfc/kernel-history-guard-integrity.md) frames the
-   path-scope exception and forged-review controls; it is not implementation authority. At the
-   current HEAD, the red `verify-kernel-version` result blocks a green `verify-push` claim;
-   `origin/main` already contains the offending commits, so no unpushed-history rewrite route exists.
-3. Codex designated review of Claude's Deployment corrective range `67fd415..ec5518b`
-   (R1–R17, `planning/deployment-foundation/claude-corrective-handoff.md`) and remaining DP-F
-   ranges. Codex's targeted R1 RP-133 and R2 RP-134 findings are CHANGES REQUIRED; Claude must
-   separately designated-review Codex's R1 correction `5f14a808^..d19b5d8a`, R2 correction
-   `8e9b46d0^..2d8ca3f1`, and R3 correction `d871339d^..a7ab2640`. The RFC author must rule on six
-   recorded DESIGN-GAPs: RPO semantics, per-family alert
-   attribution, `UpgradeResolved`, overlay granularity, the previous-bundle security floor and
-   asserted host fields. Rebuild candidate and previous bundles after review, then take them
-   through authorized clean-host browser, board-arrival, recovery and rollback witnesses (R-006/R-007).
-4. Bring the source-traced [`Phase-0 exact-manifest proposal`](platform-alignment/phase0-manifest-proposal.md)
-   to Marco for D-007 adoption or edits; it names P01–P07 player tasks and F01–F05 public-release
-   floor obligations without calling them complete. Then bind D-018 and R-008 to the adopted tasks.
-   Finish remaining nested-payload classification and clean-host operator proof, then
-   prepare the separate account export/deletion/retention decisions. RP-119's predicate-level
-   joined probe now confirms stale active counts; the full projection/recompute/player witness
-   and owner semantics remain. None of this is optional preview polish.
-5. Reconcile v0.1's accepted feature set to its still-unadopted exact release manifest, then
-   advance v0.2–1.0 through bounded manifests and dependency-ordered RFCs. Do not implement later
-   content directly from this board; the preview floor never replaces the 1.0 obligations.
+1. **Finish Garage's actual player integrations.** Complete Typer/Arcade public API and host
+   integration, generated-client migration, Headcount and the missing world/feed surfaces
+   under accepted contracts. The typed-receipt dictionary choice, Typer arithmetic/public-wire
+   reconciliation and Headcount seat source are specific prerequisites, not permission to
+   invent wire formats or mechanics. Continue independent accepted work while they are held.
+2. **Repair correctness and balance without hiding failures.** Resolve Clout partition/offline
+   semantics, the shared attendance-clock contract and historical kernel guard. Finish the
+   natural pacing/relevance and candidate-copy/content gates; controlled cash/maturity fixtures
+   are integration proof, not evidence that the economy or progression is ready to ship.
+3. **Consolidate review rather than restart original reviews.** Original Cosmetic, Pet and
+   reviewed Typer batches retain their recorded dispositions. Related Codex corrections and
+   new integrated proofs need exact-range cross-party review before acceptance/archival.
+   Owning logs hold those ranges; no new per-edit review ceremony or duplicate ledger.
+4. **Build and prove the public-release floor alongside gameplay.** Resolve remaining rights/
+   retention and accessibility choices, implement recovery/renewal and player export/deletion,
+   then execute actual tasks. Finish Deployment findings/reviews, rebuild exact current and
+   previous bundles, and run R-006/R-007 on an authorized clean Linux host. Local focused passes
+   neither replace the hosted CI verdict nor establish release-artifact recovery.
+5. **Construct the rest of the game.** Progress through the cumulative v0.2–v1.0 milestones:
+   world/social/events, combat and fair bots, Tier 3–8 content, categories/challenges and all
+   final endings. Each needs accepted specifications, real content, balance and integrated
+   player proof. Completing Garage or publishing a preview does not complete this 1.0 goal.
 
 ## Update protocol
 

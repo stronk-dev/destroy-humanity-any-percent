@@ -49,6 +49,23 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest finished source checkpoint (2026-10-08, `2b33fb2c`): the mounted Recovery
+  journey now drops a real heartbeat reply after the server commits it, verifies visible
+  pause/no queued beats, then uses native Reconnect to rotate the same session's token.
+  Missed time earns no progress; the next fresh interval advances the rendered state.
+  The final affected built-client/real-service/Postgres main journey passes, including
+  required backend populations, Pitch process-death recovery and ordinary Recovery cancel.
+  Unaffected sibling journeys and five-minute completion were not rerun for this tool-only
+  change. The [Minigame API log](minigame-api-and-surface/log.md) owns the pending review
+  range `a1197552..2b33fb2c`; no whole-CI or whole-feature acceptance follows.
+- Pet checkpoint finished at `a1197552`: all original P1–P7 batches now have full
+  designated dispositions, retaining CHANGES REQUIRED for their specific defects rather
+  than approving later corrections by implication. RP-463's saved identity case-alias
+  repair at `ff5275fc` passes affected cold Go/client checks and actual Linux/Postgres
+  adoption/Exit cases. Full client passes 10,321 with 977 explicit exclusions. The actual
+  historical kernel-version gate remains red; PA7/C2, shared attendance, adopted content
+  and corrective-range review remain open. Exact evidence lives in the
+  [Pet log](pet-adoption-v1/log.md). These are review/correctness results, not another tier.
 - Finished-work checkpoint (2026-10-08, source `852a2b7f`): the browser crash-recovery
   witness is committed at `75f5830b`. The whole composed lane passed before the final
   saved-snapshot/fault-wait tightening; the affected main journey then passed on the

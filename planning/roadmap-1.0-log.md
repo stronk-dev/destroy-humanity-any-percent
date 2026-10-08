@@ -5106,3 +5106,26 @@ Updated existing current-state/roadmap entry points, not a new tracker. Verifica
 editorial checkpoint is source/plan/log/job comparison and diff checking, not another software
 suite. Next work remains concrete accepted-feature integration and baseline repairs, with
 coherent review ranges and explicit contract choices; the full nine-tier goal stays active.
+
+## 2026-10-08 — Latest work finished; whole-product report reconciled
+
+Source `2b33fb2c`, clean main, 27 commits ahead of the locally recorded origin/main before
+this editorial checkpoint. The Recovery reply-loss proof is committed and its final affected
+main journey passes real browser/server/Postgres; the owning Minigame API log records exact
+scope, exclusions and pending review. All original Pet batches have complete dispositions at
+`a1197552`; the saved-admission correction at `ff5275fc` remains separately reviewable.
+No live implementation change is left unstaged, and no new watchdog/API policy is introduced.
+
+Reconciled the existing overview and strategic next moves against the active RFC index,
+design roadmap, decisions and owning logs. Replaced stale current-next instructions rather
+than starting already completed original reviews again; retained earlier audit background and
+dated checkpoints explicitly as history. The actual stage remains Garage integration and
+hardening: working T0–T1, selected candidate Tier2/features, incomplete v0.1, substantial unbuilt
+world/combat/Tier3–8/final endings, plus outstanding correctness/balance/rights/accessibility/
+recovery/operations. No percentage, date, accepted feature or release promotion is justified.
+
+Verification: documentation diff, local links and source/plan/log consistency only; no software
+suite for editorial records, no new hosted query or claim. Last inspected published CI remains
+red at `cbd2069f`; later local evidence is separate. No push/deployment/archival or owner-choice
+adoption. The full nine-tier1.0 objective remains active; current delivery boundaries are in
+the existing roadmap rather than a new tracker.
