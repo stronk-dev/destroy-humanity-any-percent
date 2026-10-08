@@ -16,6 +16,10 @@ Fixture-first (OD-11): no production epoch is minted by this plan.
   (`not_eligible/tier_required`, `not_eligible/curriculum_exit_required`). AC9.
 - [x] B4 (`391beb76`) — TT-PA3 content resolver/bundle generalization + TT1 tenant row in a fixture minigames
   artifact + `minigame_api` loader chain. AC1 (definition/artifact/api chain half).
+  Full original B3 (`885237a7^..885237a7`) and B4 (`391beb76^..391beb76`)
+  designated Codex reviews now record CHANGES REQUIRED in the 2026-10-08 log:
+  RP-152/RP-154/RP-155 and raw unlock admission RP-461. Separate Codex corrections
+  require Claude; checked rows record implementation presence, not feature acceptance.
 - [ ] B5 — PARTIAL (`d7c1ce6e`: error details only; snapshot/command arms blocked by the TT-PA4 vs API C2 DESIGN-GAP) — TT-PA4 API arms (Typer snapshot/command arms) + generated client. AC10 (API half).
 - [ ] B6 — PARTIAL (`ade1083b`: TyperTable + AC13 gates; registration waits on the pin and the C2 gap) — UI: `TyperTable` child under `client/src/game-ui/minigame/`, tenant-registry row,
   accessibility contract TT8. ACs 13, 14.

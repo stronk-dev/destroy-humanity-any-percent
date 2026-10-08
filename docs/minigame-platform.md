@@ -60,6 +60,14 @@ browser population green; current aggregate results belong in the owning log.
 
 ## Tier unlock arm (TT-PA2)
 
+The TypeScript raw catalog entry is `parseMinigameCatalogJSON`; replay-bundle loading
+uses it before parsing can discard duplicate members or normalize numeric tokens.
+Like Go, it rejects duplicate/escaped-duplicate keys and fractional/exponent spellings
+of integer fields, including values that would round into the accepted domain.
+Valid escaped names, integer `-0` and safe-integer boundaries remain accepted.
+The object-level parser remains available for already-decoded values; it cannot recover
+raw evidence that its caller has discarded. Catalog schema and stored bytes are unchanged.
+
 `unlock_condition` also accepts `{"kind":"tier_at_least","tier":0..9}`, with an optional
 `"exit_history_at_least": n ≥ 0`. The Go and TS loaders reject unknown keys, null clauses, non-integers and
 out-of-domain values. The composed start coordinator evaluates `UnlockCondition.TierUnlockFailure`

@@ -1,4 +1,5 @@
 import { MAX_EXACT_INTEGER } from "../numeric";
+import { parseIntegerCatalogJSON } from "../catalog-json";
 import { parseOfflineQualityPolicy, type OfflineQualityPolicy } from "./offline-quality";
 
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
@@ -32,6 +33,11 @@ export interface MinigameCatalog {
   readonly minigameIds: readonly string[];
   readonly ratingSeasons: readonly string[];
   readonly minigames: readonly MinigameDefinition[];
+}
+
+/** Preserve duplicate-member and integer-token evidence at raw artifact boundaries. */
+export function parseMinigameCatalogJSON(text: string): MinigameCatalog {
+  return parseMinigameCatalog(parseIntegerCatalogJSON(text, "Minigame catalog"));
 }
 
 export function parseMinigameCatalog(source: unknown): MinigameCatalog {

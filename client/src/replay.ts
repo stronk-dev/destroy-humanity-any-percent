@@ -18,7 +18,7 @@ import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quant
 import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { parseRelevancePolicy, type RelevancePolicy } from "./relevance";
 import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputationBonusFactor, reputationPurchase, reputationUnlockPpm as reputationUnlockPpmFor, validateReputationTransition, type ReputationTree } from "./reputation";
-import { minigameCatalogSupportsSoul, parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
+import { minigameCatalogSupportsSoul, parseMinigameCatalogJSON, type MinigameCatalog } from "./minigame/catalog";
 import { applyFounderMinigameResolution, type CertifiedMinigameResult, type MinigameRatingState } from "./minigame/resolution";
 import { parsePetCatalog, petCatalogSupportsSoul, type PetCatalog } from "./pet/catalog";
 import { drawPetAdoption, loadPetSpeciesCatalog, petSpeciesRow, type PetSpeciesCatalog } from "./pet/species";
@@ -200,7 +200,7 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   validateAxisInputs(economy, true, achievements.definitions.filter((row) => row.conditionScope === "run").reduce((sum, row) => sum + row.scoreGrant, 0), achievements.definitions.reduce((sum, row) => sum + row.scoreGrant, 0));
   const doctrines = artifacts.doctrines === undefined ? undefined : loadDoctrineCatalog(artifacts.doctrines);
   if (doctrines) validateDoctrineRoutes(doctrines, routes);
-  const minigames = artifacts.minigames === undefined ? undefined : parseMinigameCatalog(parseJSON(artifacts.minigames));
+  const minigames = artifacts.minigames === undefined ? undefined : parseMinigameCatalogJSON(artifacts.minigames);
   const pets = artifacts.pets === undefined ? undefined : parsePetCatalog(parseJSON(artifacts.pets));
   const fiscal = artifacts.fiscal === undefined ? undefined : loadFiscalCatalog(parseJSON(artifacts.fiscal), economy);
 	const soul = artifacts.soul === undefined ? undefined : parseSoulCatalog(parseJSON(artifacts.soul), { copyKeys: new Set(COPY_KEYS), epochSeeded: true, catchupCeilingMs: prestige.catchupCeilingMs });

@@ -874,3 +874,54 @@ This completes the original B1 review, not B1 acceptance. Codex corrective range
 require Claude; RP-162/RP-460, the separately held public API choice, adopted content
 and full feature acceptance remain. Next safe work is remaining original feature reviews
 and accepted integration; do not repeat this full B1 review or infer the held rulings.
+
+## 2026-10-08 — Full original B3/B4 reviews; raw unlock parity repair RP-461
+
+Review by: Codex (designated reviewer of Claude's original implementation).
+Recorded by: Codex. Verdicts: **CHANGES REQUIRED**, separately covering every path
+of `885237a7^..885237a7` (B3,10 paths) and `391beb76^..391beb76` (B4,15 paths).
+Inspected loaders, predicates/start, tenant resolver/composition, bundle dependency
+checks, fixtures, tests, three kernel mirrors, docs and records against TT-PA2/PA3.
+Original B3 retains RP-152's explicit-null parity defect and RP-154's missing actual
+API-coordinator evidence; original B4 retains RP-155's wrong-engine/version mismatch.
+Their previously recorded repairs/evidence remain separate, not retroactive approvals.
+B2's existing clock review/witnesses already execute; no repeat or new clock fix claimed.
+
+New RP-461: actual TS replay-bundle loading parses `minigames` with JSON.parse
+before semantic validation. Shared16-case raw unlock population runs through Go's
+complete catalog loader and TS's freshly hashed complete Typer bundle. Go78019
+passes; old-client28498 accepts9 invalid cases: duplicate/escaped duplicate tier,
+duplicate first-Exit guard, fractional/exponent tokens and fractions rounded into
+the valid domain. Five valid controls plus null/unknown-key negatives already pass.
+The initial TS test draft had an invalid await in describe (zero tests, not defect
+evidence); fixed the import before the recorded9 actual failures. The final assertion
+maps a surprising success to a short string rather than dumping the whole bundle.
+
+Correction under TT-PA2/PA3: raw `parseMinigameCatalogJSON` reuses the existing exact-
+integer/unique-key scanner, then the unchanged semantic parser. The actual replay
+bundle uses it. Go/catalog fixtures, public API, balance, saved bytes and content
+remain unchanged. Kernel180→181 in all mirrors is the genuine replay-admission
+change, not repair of the separately held historical guard.
+
+Finished affected checks: Node11518 passes108; cold Go69930 passes minigame,
+replaycatalog/kernel and vet. Types/build65031 pass with zero diagnostics; that
+combined command then names a nonexistent boundary target and exits2. Correct
+`make verify-client-boundary` passes separately. Native94965 passes216 across
+Chromium/WebKit; the first malformed browser selector and then sandbox listener
+denial execute zero tests, not feature failures. Approved listener execution is
+the recorded pass. Linux-amd64/real-Postgres9411 executes the existing API start
+gate population cold, passing precise tier/first-Exit refusals and valid start;
+it precedes the TS-only correction and is not public HTTP/player/clock evidence.
+
+Broader `make test-client`55351 is RED:10318 pass,977 explicit browser skips,
+one R-012 source-hash failure (RP-462). Save-state source was already changed by
+Cosmetic7f94671a; none of the14 diagnostic source files changed in this batch.
+Do not refresh that hash by hand: next execute the existing producer observation
+and compare its full results in its own lane. No whole-client/CI green claim.
+
+Review by: Codex (correction implementer first filter). Recorded by: Codex.
+Exact new correction/test/record range is `90ed75a7` exclusive through this
+containing commit; Claude's designated review remains required. No checkbox,
+archival, mint, push or full Typer acceptance. Full B3/B4 review obligations are
+now complete as CHANGES REQUIRED; outstanding corrections, RP-162/RP-460, public
+wire, owner content and task accessibility remain separate.

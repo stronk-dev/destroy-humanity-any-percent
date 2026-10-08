@@ -1,0 +1,20 @@
+{
+  "cases": [
+    {"name":"tier only","valid":true,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":1}"},
+    {"name":"zero exits","valid":true,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":1,\"exit_history_at_least\":0}"},
+    {"name":"maximum exact exits","valid":true,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":9,\"exit_history_at_least\":9007199254740991}"},
+    {"name":"escaped tier name","valid":true,"unlock":"{\"kind\":\"tier_at_least\",\"t\\u0069er\":1,\"exit_history_at_least\":1}"},
+    {"name":"negative zero tier","valid":true,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":-0}"},
+    {"name":"duplicate tier","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":9,\"tier\":1}"},
+    {"name":"escaped duplicate tier","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":9,\"t\\u0069er\":1}"},
+    {"name":"duplicate exit guard","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":1,\"exit_history_at_least\":1,\"exit_history_at_least\":0}"},
+    {"name":"fractional tier token","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":1.0}"},
+    {"name":"exponent tier token","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":1e0}"},
+    {"name":"rounded fractional tier","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":1.00000000000000001}"},
+    {"name":"rounded above maximum tier","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":9.0000000000000001}"},
+    {"name":"fractional exit token","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":1,\"exit_history_at_least\":1.0}"},
+    {"name":"rounded fractional maximum exits","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":1,\"exit_history_at_least\":9007199254740991.1}"},
+    {"name":"explicit null exit guard","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":1,\"exit_history_at_least\":null}"},
+    {"name":"unknown unlock member","valid":false,"unlock":"{\"kind\":\"tier_at_least\",\"tier\":1,\"extra\":0}"}
+  ]
+}

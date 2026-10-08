@@ -1,6 +1,7 @@
 import fixtureJSON from "../../testdata/replay/apply-logged-v1.json";
 import typerV1Raw from "../../balance/testdata/typer-v1.json?raw";
 import typerRawJSON from "../../testdata/typer/raw-json-v1.json";
+import tierUnlockRaw from "../../testdata/minigame/tier-unlock-raw-v1.json";
 import arcadeV1Raw from "../../balance/testdata/arcade-v1.json?raw";
 import arcadeMinigamesRaw from "../../testdata/minigame/pitch-typer-arcade-v3.json?raw";
 import arcadeAPIRaw from "../../balance/testdata/minigame-api-arcade-candidate-v1.json?raw";
@@ -531,6 +532,22 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		expect(encodeFounderReplayState(state)).toMatchObject({ minigame_session_seq: 41 });
 		expect(() => restoreFounderReplayState(source, 20, { ...bundle, minigameAPI: undefined })).toThrow(/fields are not exact|inactive/);
 		expect(() => restoreFounderReplayState(source, 21, { ...bundle, minigameAPI: undefined })).toThrow(/requires minigame API/);
+	});
+
+	it.each(tierUnlockRaw.cases)("preserves raw tier unlock admission in the actual replay bundle: $name", async (test) => {
+		const artifacts = structuredClone(fixture.soul_artifacts) as unknown as Record<string, string>;
+		artifacts.pitch = JSON.stringify((await import("../../balance/testdata/pitch-v1.json")).default);
+		const minigames = structuredClone((await import("../../testdata/minigame/pitch-typer-v3.json")).default);
+		const typerRow = minigames.minigames.find((row) => row.minigame_id === "typer")!;
+		const encodedUnlock = JSON.stringify(typerRow.unlock_condition);
+		const encodedCatalog = JSON.stringify(minigames);
+		expect(encodedCatalog.split(encodedUnlock)).toHaveLength(2);
+		artifacts.minigames = encodedCatalog.replace(encodedUnlock, test.unlock);
+		artifacts.minigame_api = JSON.stringify((await import("../../balance/testdata/minigame-api-typer-candidate-v1.json")).default);
+		artifacts.typer = typerV1Raw;
+		const result = loadReplayCatalogBundle(await artifactHash(artifacts as unknown as ReplayArtifacts), artifacts as unknown as ReplayArtifacts);
+		if (test.valid) expect((await result).minigames?.minigameIds).toContain("typer");
+		else await expect(result.then(() => "admitted invalid raw unlock")).rejects.toThrow(SyntaxError);
 	});
 
 	it("loads Typer only with its definition, artifact, and minigame API tenant together (TT-PA3)", async () => {

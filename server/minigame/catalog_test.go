@@ -1,10 +1,65 @@
 package minigame
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"testing"
 )
+
+func TestTierUnlockRawCatalogAdmission(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/minigame/pitch-typer-v3.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var catalog struct {
+		Minigames []struct {
+			ID     string          `json:"minigame_id"`
+			Unlock json.RawMessage `json:"unlock_condition"`
+		} `json:"minigames"`
+	}
+	if err := json.Unmarshal(data, &catalog); err != nil {
+		t.Fatal(err)
+	}
+	var original json.RawMessage
+	for _, row := range catalog.Minigames {
+		if row.ID == "typer" {
+			original = row.Unlock
+		}
+	}
+	if len(original) == 0 || bytes.Count(data, original) != 1 {
+		t.Fatal("expected exactly one Typer unlock condition")
+	}
+	fixture, err := os.ReadFile("../../testdata/minigame/tier-unlock-raw-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var population struct {
+		Cases []struct {
+			Name   string `json:"name"`
+			Valid  bool   `json:"valid"`
+			Unlock string `json:"unlock"`
+		} `json:"cases"`
+	}
+	if err := json.Unmarshal(fixture, &population); err != nil || len(population.Cases) != 16 {
+		t.Fatalf("raw unlock population: %v", err)
+	}
+	for _, row := range population.Cases {
+		t.Run(row.Name, func(t *testing.T) {
+			loaded, err := LoadCatalog(bytes.Replace(data, original, []byte(row.Unlock), 1))
+			if row.Valid {
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, found := loaded.Definition("typer"); !found {
+					t.Fatal("valid catalog lost Typer definition")
+				}
+			} else if err == nil {
+				t.Fatal("invalid raw unlock admitted")
+			}
+		})
+	}
+}
 
 func TestLoadCatalogClosesPinnedPolicySurface(t *testing.T) {
 	data, err := os.ReadFile("../../testdata/minigame/catalog-v2.json")
