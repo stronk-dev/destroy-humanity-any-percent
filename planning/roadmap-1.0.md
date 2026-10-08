@@ -23,8 +23,10 @@ whole existing composed lane has passed with this added population, and a discon
 harvest callback fails. Earlier whole run39780 also executes native Reputation purchases,
 next-run bonus and Exit-plan starters, with controlled budget/cash rather than earning/pacing
 proof. RP-438's reload observer is locally corrected with real document-bound cancellation
-and negative controls; its earlier aggregate failure is retained. Latest hosted CI 37778647275
-at published `f3851e8b` passes four jobs, but client/kernel-history and server/Clout remain red.
+and negative controls; its earlier aggregate failure is retained. Latest hosted CI 37795560514
+at published `cbd2069f` passes schema, fast harness and composed; client, server and browser
+remain red. The [current verification overview](CURRENT-STATE.md#current-verification-and-closeout)
+distinguishes the later local repairs from these published failures.
 Growth/balance is unchanged; this is not natural maturation, production
 activation or designated acceptance. The existing session-expiry diagnostic still confirms
 absent automatic renewal. The [Garden log](minigame-server-garden/log.md) owns the new range

@@ -49,6 +49,17 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest source batch: `43afbbd1` (2026-10-08), Recovery RP-452. A terminal
+  reply arriving after its surface unmounts no longer notifies the old host or
+  moves focus. Native Chromium/WebKit regressions fail on the old behavior;
+  corrected affected browser26/unit75 checks, types/build/boundaries and the
+  existing full real-service composed target pass. The held-response regression
+  uses a port double; the composed journey separately exercises ordinary real
+  cancellation, not that delayed-response condition. The
+  [Minigame API log](minigame-api-and-surface/log.md) owns the exact pending
+  designated-review range `0e465815..43afbbd1`. This closes the local repair,
+  not whole-feature acceptance. Source work is committed; no push or archival.
+  Read-only CI recheck still finds the published red run37795560514 below.
 - Batch wrap-up (2026-10-08): the account drain witness at `b0f26d47` now keeps
   its healthy control peer reading and requires the actual server-drain close code.
   The complete declared Linux/amd64/Postgres gameserver population passes without
