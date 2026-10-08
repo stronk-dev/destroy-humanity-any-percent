@@ -35,6 +35,12 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- R-012's existing-context SQL seam is now locally proven for64 diagnostic
+  Company profiles: real Postgres16 jsonb preserves full restored state, raw
+  production rate bits and evaluation results. All64 changed-context controls
+  discriminate; cold related research tests and vet pass. This is bounded Linux
+  ARM64 research, not a new save representation or Clout acceptance. RP-307's
+  original27 partition failures remain; the owning Clout log records review/limits.
 - Reduced-motion integration (RP-084) is locally corrected: numeric counters now honor
   startup and live browser preference changes while preserving the native prediction Worker.
   Old-source Chromium/WebKit regressions fail; final native Worker/DOM/cadence/unmount checks,

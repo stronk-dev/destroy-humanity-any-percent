@@ -1090,3 +1090,32 @@ new test/record span including edges. Acceptance map is
 requires D-021 author/owner selection and accepted evaluation contract FIRST,
 then its own predeclaration rather than hiding inside this proof. Forward
 correction of41dd8c9f's proposed-next text: no architecture branch is authorized.
+
+## R-012 existing producer context through SQL — bounded seam
+
+Predeclared 2026-10-08 at `3d1171b3`, before measurement. Previous raw-rate and
+scalar-prototype SQL studies remain complete and unchanged. Question: does the
+existing Company producer context preserve the actual raw rate and full Evaluate
+outcome when that same context traverses real Postgres16 jsonb?
+
+Reuse the 64 admitted diagnostic profiles: eight generator counts, online/offline,
+2000/3114/2045/60000ms, fixed 2026-10-07T12:00Z cursor and test-local cap1e100.
+Actual Company Encode -> transaction-local SQL jsonb -> existing RestoreState ->
+pinned foundation validation -> actual Rates/Evaluate. Require exact canonical
+restored state, every raw mantissa IEEE bit/exponent, full EvaluationResult and
+final encoded state; actual cash must equal original raw AccrueConstant. No
+tolerance, byte-framing equality after jsonb, custom decoder or saved-rate field.
+
+For each profile, also persist a valid-but-altered producer count with consistent
+purchased total (1 becomes2; other counts become1). Require admission but different
+full state, raw rates and final cash. These 64 controls distinguish fidelity from
+mere successful decoding. Complete64/64 or fail; missing DB explicitly NOT_EXECUTED,
+connection/SQL/one-minute operation guard invalidates measurement. TEMP table and
+rollback only; no live save tables, migrations, deletes or Docker cleanup.
+
+Deliverable: one executable test plus concise measured results/commands/environment
+in this owning log; no new frozen corpus or duplicate research framework. Existing
+source-pinned artifacts stay untouched. This supports a bounded existing-context
+fidelity conclusion only: not Store/replay, natural progression, served TS producer,
+new conserved save representation, offline policy, AC6 or release acceptance.
+No production/kernel/balance/content/CI/RFC-body change; author/owner holds remain.

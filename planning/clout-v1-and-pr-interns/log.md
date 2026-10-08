@@ -2225,3 +2225,38 @@ Next: diagnose RP-389's actual locked-Pitch notice/lifecycle boundary and retain
 until useful evidence is collected; then verify the expanded target without weakening its gates.
 Consolidate this fixture proof with the display correction for cross-party review; genuine
 numeric/harness/content/UI contracts remain explicit, not defaulted by a passing fixture.
+
+## 2026-10-08 — Existing producer context survives real jsonb
+
+Baseline `3d1171b3`; predeclared in this plan before measurement. Test-only
+R-012 follow-up, not a repetition of the completed scalar-anchor SQL study.
+`TestAxisRateContextSQLIntegrationResearch` executes all64 admitted Company
+profiles through Encode -> Postgres16.15 jsonb -> existing RestoreState ->
+foundation validation -> actual Rates/Evaluate. All canonical restored states,
+raw mantissa bits/exponents, full evaluation results and final states are exact;
+cash equals original raw AccrueConstant. All64 admitted changed-count controls
+produce different context, rates and cash. SQL128 rows are transaction-local;
+explicit rollback succeeds. Actual Go runtime linux/arm64, not AMD64 evidence.
+
+Commands executed cold from root:
+
+- `make test-save-integration SAVE_TEST_PACKAGES=./production SAVE_TEST_FLAGS='-run TestAxisRateContextSQLIntegrationResearch -v'`: PASS,0.161s.
+- `make test-go GO_PACKAGES=./production GO_TEST_FLAGS='-run TestAxisContextRawRateComparator -v -count=1'`: PASS; exact companion and six negatives, including a low-bit difference hidden by identical canonical rate text.
+- `make test-save-integration SAVE_TEST_PACKAGES=./production SAVE_TEST_FLAGS='-run TestAxis.*Research'`: PASS,2.047s; related research regression population unchanged.
+- `make vet` and `git diff --check`: PASS.
+
+Initial ordinary host run explicitly skipped as NOT_EXECUTED without DB; it is
+not SQL proof. Self-inspection fixed helper closures to receive the subtest T
+before SQL execution. No production/save fields/kernel/balance/content/CI or
+old source-pinned artifact bytes changed. No new frozen corpus/framework.
+
+Conclusion: existing context reconstruction survives SQL for this bounded
+population. It does not adopt a conserved representation, settle offline episode
+meaning or repair RP-307's original27 partition failures. Store/replay, served
+TS producer, natural progression and whole-feature/release acceptance are not
+claimed. Next R-012 work must address the remaining representation/policy question,
+not repeat these completed fidelity waves. D-021/D-022 and author holds remain.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
+after `3d1171b3` through this containing test/record commit needs designated
+cross-party review; earlier ranges remain separate. No acceptance/archive/push.

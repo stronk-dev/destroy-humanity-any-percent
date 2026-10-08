@@ -1,5 +1,26 @@
 # R-012 — live rate precision and Postgres fidelity
 
+## Follow-up — existing Company context through SQL (2026-10-08)
+
+The original study below separated CPU restoration of the actual producer context
+from SQL restoration of a scalar prototype. The follow-up closes that sampled
+integration seam: actual Company Encode, Postgres16.15 jsonb, existing RestoreState,
+pinned foundation validation and actual Rates/Evaluate in one executable path.
+
+All64 original producer profiles retain exact encoded context, every raw mantissa
+bit/exponent, full evaluation result and final state; cash matches the original raw
+accrual primitive. All64 admitted altered-count SQL controls differ in context,
+rates and cash. A same-canonical-text low-bit comparator control also discriminates.
+Actual execution is Linux ARM64. Only a transaction-local TEMP table is written,
+then rolled back; there is no new save format or production change.
+
+Reproduce with the focused `make test-save-integration` command in the owning
+[log](log.md), which records selectors, execution and limits. Existing corpora remain unchanged.
+This does not resolve AC6/RP-307, offline episode policy or natural/default-player
+progression, and it is not an executed Store/replay or served TS producer proof.
+
+## Original third-wave observation
+
 2026-10-07. Baseline `9050fe4d`; predeclaration `9a35aa78`.
 Test-only research, not a production repair, accepted save format or AC6 pass.
 
