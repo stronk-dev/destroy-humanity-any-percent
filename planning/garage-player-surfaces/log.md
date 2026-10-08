@@ -6343,3 +6343,34 @@ physical AT, full CI, reliability, acceptance, archival, content mint or release
 Existing tmpfs/native route remains usable; Docker overlay capacity is not repaired.
 Next: consolidate coherent review ranges and continue accepted Garage/API construction;
 Clout arithmetic, kernel-history, author/owner holds and full nine-tier release scope remain.
+
+## 2026-10-08 — production reduced-motion integration (RP-084)
+
+Outcome under archived Shell D4/C4/AC5 and Garage GS0.7: initial browser preference and live
+media changes now reach existing/new numeric counters, theme and pet/cosmetic presentation.
+Enabling reduction ends interpolation and queued pulses; existing500ms sampling remains.
+Preference changes preserve the Worker, authority, rates, caps and receipts; no read/intent,
+kernel/balance, copy, wire, retry or CI policy change. The host removes its listener on unmount.
+
+Old-source80982 fails in both native engines: actual reduced media preference still produces
+numeric changes less than500ms apart. Final native test uses the original Worker unchanged,
+observes actual shell values and rendered cash, toggles reduce→normal→reduce, verifies ongoing
+production/no Worker replacement/no extra requests and checks post-unmount listener removal.
+Deterministic tests cover mid-interpolation switching, repeated notifications, existing/new
+resources, queued pulse suppression, receipt explanation, cap reason and activity preservation.
+
+Executed final checks: Node Shell/Game UI104 PASS; affected native host/Shell/primitive/Cosmetic
+90114:240 PASS/four separate performance skips; types/build/boundaries29585 PASS with zero
+warnings. Focused11865 passes before the added unmount check; final90114 covers that addition.
+The initial unit fixture guessed an incorrect Decimal spelling; corrected expected201, not
+numeric code. The initial Svelte capture warning is removed using explicit initial preference.
+Performance17619 passes concurrently (diagnostic); isolated final59668 passes both profiles.
+Whole composed81031 exits0 through tool30, real-DB refresh8/required parents7, production-built
+main gameplay and default/Clout Cosmetic/care/reload. This is not physical AT, native Firefox,
+all shared/task accessibility, reference-hardware AC5 renewal, reliability or hosted CI proof.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after7888fcdc
+through this coherent source/tests/docs/records commit requires Claude's designated review.
+No acceptance/archive/push. Catalog owner-scope and Account dictionary/bodiless-contract holds
+remain; next work must use existing accepted authority, not partial public catalogs or a false
+kernel bump. Whole nine-tier construction and platform/release obligations remain active.

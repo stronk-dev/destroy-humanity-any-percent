@@ -26,7 +26,7 @@ export interface ShellView {
 
 export class ShellController {
   readonly #policy: ClientShellPolicy;
-  readonly #reduced: boolean;
+  #reduced: boolean;
   readonly #begin: () => void | Promise<void>;
   readonly #telemetry: ClientTelemetry;
   readonly #clock: () => number;
@@ -53,6 +53,13 @@ export class ShellController {
 
   subscribe(listener: (view: ShellView) => void): () => void {
     this.#listeners.add(listener); listener(this.view()); return () => this.#listeners.delete(listener);
+  }
+
+  setReducedMotion(value: boolean): void {
+    if (value === this.#reduced) return;
+    this.#reduced = value;
+    for (const counter of this.#counters.values()) counter.setReducedMotion(value);
+    this.#emit();
   }
 
   async beginAttempt(): Promise<void> { await this.#begin(); this.#attemptStartedMs = this.#clock(); this.#attemptEndedMs = undefined; this.#screen = "main"; this.#emit(); }

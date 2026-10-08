@@ -35,6 +35,12 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Reduced-motion integration (RP-084) is locally corrected: numeric counters now honor
+  startup and live browser preference changes while preserving the native prediction Worker.
+  Old-source Chromium/WebKit regressions fail; final native Worker/DOM/cadence/unmount checks,
+  affected shell/host/cosmetic tests, types/build/boundaries and whole composed81031 pass.
+  Garage log owns performance evidence and pending designated review; this is not full R-005,
+  assistive-technology, hosted CI or release acceptance.
 - Vision entry correction (RP-393) now covers native Tab/Enter/Space, pending focus,
   duplicate suppression, existing Retry and authoritative Desk focus without overriding
   newer choices. Nine old-source failures become ten focused passes; affected native suite

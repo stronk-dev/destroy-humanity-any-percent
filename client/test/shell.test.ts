@@ -81,6 +81,61 @@ describe("reconciliation and display", () => {
     expect(counter.applyAuthoritative({ amount: "1e2", ratePerSecond: "1e0" }, 1, receipt)).toEqual({ mode: "rebase", explanation: "unaffordable" });
     expect(counter.view(500)).toMatchObject({ explanation: "unaffordable", pulse: false });
   });
+  it("changes preference during interpolation without restarting or resetting the counter", () => {
+    const counter = new DisplayCounter({ amount: "1e2", ratePerSecond: "1e0" }, policy);
+    counter.applyPrediction({ mantissa: 1.005, exponent: 2 });
+    counter.applyAuthoritative({ amount: "1e2", ratePerSecond: "1e0" }, 0);
+    expect(counter.view(200).value).toBe("100.25");
+    counter.setReducedMotion(true);
+    expect(counter.view(200)).toMatchObject({ value: "100", pulse: false });
+    counter.applyPrediction({ mantissa: 1.008, exponent: 2 });
+    expect(counter.view(699).value).toBe("100");
+    counter.setReducedMotion(true); // repeated notifications cannot restart sampling
+    expect(counter.view(700).value).toBe("100.8");
+    counter.setReducedMotion(false);
+    counter.applyPrediction({ mantissa: 1.01, exponent: 2 });
+    expect(counter.view(701)).toMatchObject({ value: "101", pulse: false });
+  });
+  it("suppresses a queued pulse but preserves receipt explanation, cap and producing activity", () => {
+    const resource = { amount: "1e2", ratePerSecond: "1e0", cap: { amount: "1.01e2", reasonKey: "cap.phase0_cash" } };
+    const counter = new DisplayCounter(resource, policy);
+    counter.applyPrediction({ mantissa: 1.01, exponent: 2 });
+    const receipt = { revision: 2, intentId: "018f6b7c-9abc-7def-8abc-111111111111", status: "rejected", rejectionCode: "unaffordable" } as const;
+    counter.applyAuthoritative({ ...resource, amount: "1.01e2" }, 100, receipt);
+    counter.setReducedMotion(true);
+    expect(counter.view(100)).toEqual({ value: "101", activityPpm: 1, pulse: false, explanation: "unaffordable", capReasonKey: "cap.phase0_cash" });
+    counter.setReducedMotion(false);
+    expect(counter.view(101)).toEqual({ value: "101", activityPpm: 1, pulse: false, explanation: "unaffordable", capReasonKey: "cap.phase0_cash" });
+  });
+});
+
+it("applies changed motion preference to existing and newly introduced resources", () => {
+  let now = 0;
+  const controller = new ShellController(policy, undefined, false, undefined, () => now);
+  const listener = vi.fn(); controller.subscribe(listener);
+  controller.applyAuthoritative(snapshot(), undefined, now);
+  controller.setReducedMotion(true);
+  const calls = listener.mock.calls.length;
+  controller.setReducedMotion(true);
+  expect(listener).toHaveBeenCalledTimes(calls);
+  now = 100;
+  controller.applyAuthoritative({ ...snapshot(), revision: 2, resources: {
+    ...snapshot().resources, "company.energy": { amount: "2e2", ratePerSecond: "1e0" },
+  } }, undefined, now);
+  controller.applyPrediction({ revision: 2, atMonotonicMs: now, resources: {
+    "company.cash": { mantissa: 1.005, exponent: 2 }, "company.energy": { mantissa: 2.005, exponent: 2 },
+  } }, now);
+  expect(controller.view(499).resources["company.cash"].value).toBe("100");
+  expect(controller.view(599).resources["company.energy"].value).toBe("200");
+  expect(controller.view(600).resources["company.energy"].value).toBe("200.5");
+  now = 601; controller.setReducedMotion(false);
+  controller.applyPrediction({ revision: 2, atMonotonicMs: now, resources: {
+    "company.cash": { mantissa: 1.01, exponent: 2 }, "company.energy": { mantissa: 2.01, exponent: 2 },
+  } }, now);
+  expect(controller.view(now).resources["company.cash"].value).toBe("101");
+  expect(controller.view(now).resources["company.energy"].value).toBe("201");
+  expect(controller.view(now).revision).toBe(2);
+  controller.dispose();
 });
 
 it("always dispatches intents to the authoritative adapter", async () => {

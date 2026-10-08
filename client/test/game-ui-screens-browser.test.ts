@@ -17,6 +17,8 @@ import { GAME_UI_PERFORMANCE_BUDGET, validatePerformanceObservation } from "../s
 import { amountRenderScheduler } from "../src/ui/render-scheduler";
 import { formatAmount } from "../src/ui/amount-format";
 import type { WorkerCommand, WorkerOutput } from "../src/shell/worker-protocol";
+import { DisplayCounter } from "../src/shell/display";
+import { GameUIShell } from "../src/game-ui/shell-bridge";
 import { MinigameAPIError, type MinigameSessionPort } from "../src/game-ui/minigame/session-port";
 
 const snapshot: GameUISnapshot = {
@@ -243,6 +245,65 @@ it.skipIf(typeof document === "undefined")("native Vision completion respects a 
     expect(document.activeElement).toBe(outside);
   } finally { bootstrap.mockRestore(); await unmount(app); target.remove(); sentinel.remove(); outside.remove(); }
 });
+
+it.skipIf(typeof document === "undefined")("production shell follows actual reduced-motion preference without stopping prediction", async () => {
+  const { commands } = await import("vitest/browser");
+  const motion = commands as typeof commands & { setReducedMotionPreference(value: "reduce" | "no-preference"): Promise<void> };
+  await motion.setReducedMotionPreference("reduce");
+  const runtime = new FixtureRuntime(true);
+  const target = document.createElement("div"); document.body.append(target);
+  const samples: { at: number; value: string; pulse: boolean }[] = [];
+  const originalView = DisplayCounter.prototype.view;
+  const view = vi.spyOn(DisplayCounter.prototype, "view").mockImplementation(function (this: DisplayCounter, now) {
+    const result = originalView.call(this, now);
+    samples.push({ at: now, value: result.value, pulse: result.pulse });
+    return result;
+  });
+  const prediction = observeNativePrediction();
+  const motionUpdates = vi.spyOn(GameUIShell.prototype, "setReducedMotion");
+  const app = mount(GameUIApp, { target, props: { runtime } });
+  let observer: MutationObserver | undefined;
+  const rendered: string[] = [];
+  try {
+    await expect.poll(() => target.querySelector(".card .cc-amount output")).not.toBeNull();
+    const cash = target.querySelector(".card .cc-amount output")!;
+    observer = new MutationObserver(() => { rendered.push(cash.textContent ?? ""); });
+    observer.observe(cash, { characterData: true, childList: true, subtree: true });
+    for (const preference of ["reduce", "no-preference", "reduce"] as const) {
+      await motion.setReducedMotionPreference(preference);
+      await expect.poll(() => target.querySelector<HTMLElement>("main")?.dataset.reducedMotion).toBe(String(preference === "reduce"));
+      await expect.poll(() => prediction.outputs.some((output) => output.kind === "predicted_snapshot")).toBe(true);
+      samples.length = 0;
+      rendered.length = 0;
+      const initialText = cash.textContent;
+      const outputCount = prediction.outputs.length;
+      await new Promise((resolve) => setTimeout(resolve, 1_350));
+      expect(prediction.outputs.length, "preference must not stop the native prediction Worker").toBeGreaterThan(outputCount);
+      const changes = samples.filter((sample, index) => index > 0 && sample.value !== samples[index - 1].value);
+      expect(changes.length, "producing cash must not freeze in either mode").toBeGreaterThan(0);
+      expect(rendered.some((text) => text !== initialText), "the mounted cash counter actually advances").toBe(true);
+      const allowedText = new Set([initialText, ...samples.map((sample) => formatAmount(canonicalString(sample.value)))]);
+      expect(rendered.every((text) => allowedText.has(text)), "DOM renders sampled shell values, not an independent animation").toBe(true);
+      if (preference === "reduce") {
+        expect(samples.every((sample) => !sample.pulse)).toBe(true);
+        expect(changes.every((sample, index) => index === 0 || sample.at - changes[index - 1].at >= 500), "numeric presentation changes at most twice per second").toBe(true);
+      } else {
+        expect(changes.some((sample, index) => index > 0 && sample.at - changes[index - 1].at < 500), "normal presentation resumes without replacing the Worker").toBe(true);
+      }
+      expect(prediction.commands.filter((command) => command.kind === "initialize")).toHaveLength(1);
+      expect(runtime.snapshotCalls).toBe(1);
+      expect(runtime.requests).toEqual([]);
+    }
+  } finally {
+    observer?.disconnect(); await unmount(app); target.remove(); prediction.dispose(); view.mockRestore();
+    const count = motionUpdates.mock.calls.length;
+    try {
+      await motion.setReducedMotionPreference("no-preference");
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(motionUpdates, "unmounted host removes its actual media-change listener").toHaveBeenCalledTimes(count);
+    } finally { motionUpdates.mockRestore(); }
+  }
+}, 15_000);
 
 it.skipIf(typeof document === "undefined")("keeps Exit offer precedence over a pending or rendered locked Pitch rejection", async () => {
   const { userEvent } = await import("vitest/browser");

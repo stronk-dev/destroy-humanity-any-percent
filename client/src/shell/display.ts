@@ -8,12 +8,22 @@ import { reconcileContinuous, type ReconciliationDecision } from "./reconciliati
 export interface CounterView { readonly value: string; readonly activityPpm: number; readonly capReasonKey?: string; readonly explanation?: string; readonly pulse: boolean }
 
 export class DisplayCounter {
-  readonly #policy: ClientShellPolicy; readonly #reducedMotion: boolean;
+  readonly #policy: ClientShellPolicy; #reducedMotion: boolean;
   #resource: ResourceState; #value: Decimal; #from: Decimal; #to: Decimal; #startedMs = 0; #durationMs = 0;
   #activityPpm = 0; #explanation: string | undefined; #pulse = false; #lastReducedMs = -Infinity; #reducedValue = "0";
   constructor(resource: ResourceState, policy: ClientShellPolicy, reducedMotion = false) {
     this.#resource = resource; this.#policy = policy; this.#reducedMotion = reducedMotion;
     this.#value = parseCanonical(resource.amount); this.#from = this.#value; this.#to = this.#value; this.#reducedValue = this.#value.toString();
+  }
+  setReducedMotion(value: boolean): void {
+    if (value === this.#reducedMotion) return;
+    this.#reducedMotion = value;
+    if (value && this.#durationMs > 0) {
+      this.#value = this.#to; this.#from = this.#value; this.#durationMs = 0;
+    }
+    this.#pulse = false;
+    this.#lastReducedMs = -Infinity;
+    this.#reducedValue = this.#value.toString();
   }
   applyPrediction(predicted: DecimalTuple): void {
     const next = Decimal.fromMantissaExponent(predicted.mantissa, predicted.exponent);

@@ -61,6 +61,15 @@ at a declared cap exposes the cap's `reason_key`. Typed progress coordinates rem
 the shell renders the supplied current and target strings and derives only the visual fill ratio.
 Formatting and Svelte view refresh are throttled to 100 ms.
 
+The production Game UI initializes the shell from `prefers-reduced-motion` and listens for
+changes during play. Existing and newly introduced counters use the same preference; enabling
+it stops any in-flight interpolation and suppresses queued pulses, while disabling it resumes
+normal presentation. Sampling keeps the existing 500 ms policy. Preference changes do not
+restart prediction, request a snapshot, submit an intent or replace authoritative state.
+The same reactive preference updates theme durations and pet/cosmetic presentation; the host
+removes its media-query listener on unmount. This corrects RP-084 locally, not the whole
+cross-product accessibility floor.
+
 Client telemetry is aggregate-only: epsilon breaches, discrete rebases, rejection categories,
 Worker overrun count, and total overrun milliseconds. It retains no intent IDs or player data.
 

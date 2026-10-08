@@ -42,6 +42,8 @@
   let { runtime = createBrowserGameUIRuntime(), timingStorage }: { runtime?: GameUIRuntime; timingStorage?: LocalTimingStorage } = $props();
   function localTimingStorage(): LocalTimingStorage { return timingStorage ?? localStorage; }
   let root: HTMLElement;
+  const initialReducedMotion = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let prefersReducedMotion = $state(initialReducedMotion);
   function startupSurface(): GameUISurfaceID { return runtime.hasCredentials() ? "desk" : "vision_slide"; }
   const initialSurface = startupSurface();
   let snapshot = $state<ParsedGameUISnapshot | undefined>();
@@ -80,7 +82,7 @@
   let subscribedFounderID: string | undefined;
   let runIdentity: string | undefined;
   let timer = $state<RTATimer | undefined>();
-  const shell = new GameUIShell(() => { void refresh(); });
+  const shell = new GameUIShell(() => { void refresh(); }, initialReducedMotion);
   let shellView = $state<ShellView>(shell.view());
   let unsubscribeShell = () => {};
   let unsubscribe = () => {};
@@ -100,14 +102,21 @@
 
   const era = $derived<CopyEra>(snapshot ? eraForSnapshot(snapshot) : "era_1995");
 
-  $effect(() => { if (root) installTheme(root, UI_THEMES[era], matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false); });
+  $effect(() => { if (root) installTheme(root, UI_THEMES[era], prefersReducedMotion); });
 
   onMount(() => {
+    const motion = typeof matchMedia === "function" ? matchMedia("(prefers-reduced-motion: reduce)") : undefined;
+    const updateMotion = () => {
+      prefersReducedMotion = motion?.matches ?? false;
+      shell.setReducedMotion(prefersReducedMotion);
+    };
+    updateMotion();
+    motion?.addEventListener("change", updateMotion);
     unsubscribeShell = shell.subscribe((value) => { shellView = value; });
     monotonicMS = performance.now();
     tick = setInterval(() => { monotonicMS = performance.now(); }, 100);
     if (runtime.hasCredentials()) startShell();
-    return () => { if (tick) clearInterval(tick); unsubscribe(); unsubscribeShell(); shell.dispose(); };
+    return () => { motion?.removeEventListener("change", updateMotion); if (tick) clearInterval(tick); unsubscribe(); unsubscribeShell(); shell.dispose(); };
   });
 
   function startShell(): void {
@@ -562,7 +571,6 @@
     const row = liveFeatures?.pet_adoption?.pets.find((pet) => pet.pet_id === petID);
     return row ? t(row.name_key as CopyKey, {}, era) : "";
   }
-  const prefersReducedMotion = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
   const HARVEST_OUTCOMES: Readonly<Record<string, CopyKey>> = {
     consumed_by_auto: "fiscal.outcome.consumed_by_auto", early_failed: "fiscal.outcome.early_failed",
     early_succeeded: "fiscal.outcome.early_succeeded", guaranteed: "fiscal.outcome.guaranteed",

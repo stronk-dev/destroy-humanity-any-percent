@@ -44,6 +44,10 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   absent/null/object tree arms, canonical factor and applied-starter array order.
   This reader is plumbing, not a rendered carry-over summary or AC12 acceptance.
 - Settings/System: save status, drain notice, and explicit resync action.
+- Reduced motion: the browser preference reaches numeric-shell presentation at startup and
+  on live changes, alongside theme and pet/cosmetic presentation. Producing counters continue
+  stepping under the existing 500 ms policy without restarting the prediction Worker or
+  submitting gameplay requests. See [Client Shell](client-shell.md#reconciliation-and-display).
 - **Forced lifecycle focus (RP-082):** an authoritative Offer or Run-End
   preemption moves focus after rendering to its existing heading, now a
   programmatically focusable non-tab-stop (`tabindex="-1"`). The host retains

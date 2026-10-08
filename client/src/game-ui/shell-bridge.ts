@@ -36,9 +36,9 @@ export class GameUIShell {
   readonly #runtime;
   #started = false;
 
-  constructor(requestSnapshot: () => void) {
+  constructor(requestSnapshot: () => void, reducedMotion = false) {
     const policy = parseClientShellPolicy(policySource);
-    this.#controller = new ShellController(policy);
+    this.#controller = new ShellController(policy, undefined, reducedMotion);
     this.#stream = new GameUISnapshotStream(requestSnapshot);
     this.#runtime = new ShellRuntime(this.#controller, policy, this.#stream);
   }
@@ -49,6 +49,7 @@ export class GameUIShell {
     this.#runtime.start();
   }
   publish(snapshot: ParsedGameUISnapshot, receipt?: IntentReceipt): void { this.#stream.publish(snapshot, receipt); }
+  setReducedMotion(value: boolean): void { this.#controller.setReducedMotion(value); }
   subscribe(consumer: (view: ShellView) => void): () => void { return this.#controller.subscribe(consumer); }
   view(): ShellView { return this.#controller.view(); }
   dispose(): void { this.#runtime.dispose(); }
