@@ -1,10 +1,15 @@
 # Minigame API & Surface implementation plan
 
-Current checkpoint (2026-10-08): extend the existing real-socket lifecycle with actual
-mid-run reconnect/nonterminal retry and independent stored payout/history/quota checks
-before and after terminal retries. This is test-only MA1/AC1/MA-C13 evidence; no new
-tenant, mode, schema, gameplay or acceptance promotion. Latest results and pending
-review range belong in the owning log.
+Current checkpoint (2026-10-08): RP-446 adds native Soul Recovery start/attended progress/
+leave/reconnect/cancel through the production-built client, real service and SQL to the normal
+composed target. Native manual actions/purchases first establish real positive idle production,
+so unchanged balances during recovery are not a zero-producer control. The explicit full-duration
+target also executes unchanged five-minute Repot
+through native Finish, exact 5-Soul grant, unchanged Company balances and reload, after disclosed
+Soul 40 setup. This is MA2/MA3 player-integration evidence, not a natural debit/history-replay,
+all-duration/AT/whole-feature or release claim. Latest results and pending review range belong
+in the owning log. The preceding Pitch stored-outcome checkpoint is complete locally;
+designated review and the remaining contracts are still independent obligations.
 
 - [x] Compose the minigame repository, closed Pitch tenant registry, pinned content resolver, and
   platform service in `gameserver.Compose`; expose it on `Composition`.

@@ -21,8 +21,9 @@ The minted rows are:
 - `server_room`: 2,700,000 attended milliseconds, 30 Soul.
 
 The disclosure is deliberately sincere: the activity produces nothing besides Soul recovery.
-Interactive toys and final disclosure rendering remain owned by the UI successor and do not affect
-authoritative progress.
+The UI successor implements decorative toys and disclosure rendering in the Recovery surface;
+neither affects authoritative progress. See [Minigame platform](minigame-platform.md#client-surface)
+for current implementation and bounded real-service player verification.
 
 ## Authenticated coordinator
 
@@ -41,8 +42,8 @@ remain server errors.
 
 The framework-neutral client scheduler beats only while the recovery surface is active and
 visible. Its interval is contracted (SR-C6) to be one third of the catalog ceiling; the shipped
-scheduler accepts any interval ≥ 1 ms, and the ceiling/3 derivation is owed by the UI wiring that
-constructs it. An elapsed gap greater than
+scheduler accepts any interval ≥ 1 ms; `loadSoulRecoveryContent` derives the actual surface's
+interval from the pinned catalog ceiling. An elapsed gap greater than
 `3 * beat_interval_ms`, whether caused by a hidden tab, sleep, clock regression, or transport
 failure, enters a reconnect-required pause. No further beat is sent until reconnect rotates the
 token. An under-ceiling hidden interval may resume immediately, and queued beats are never replayed.
@@ -56,6 +57,7 @@ totals at terminal resolution; heartbeat cadence itself never becomes replay inp
 The designated review consumed implementation set `{4973c8e, ab9d15e, 3cfc0e6}` plus docs-tier
 `{f04c2f3, d1cd39c}` and approved archival in verdict `5754901`. At that archive coordinate, the
 production mint and UI toy/disclosure acceptance criteria were explicit successor work. First
-Content subsequently minted the three activity rows in epoch 6; the toy and disclosure UI remains
-carried work. The later mint updates current delivery state without changing the archive's
-fixture-first implementation and review boundary.
+Content subsequently minted the three activity rows in epoch 6; the UI successor subsequently
+implemented the toys/disclosure. Its current player verification and designated review remain
+separate from this archive. Neither successor changes the archive's fixture-first implementation
+and review boundary.

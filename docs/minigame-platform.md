@@ -201,6 +201,29 @@ heartbeat survives the surface.
 The keyboard-only component case activates Begin and Stop early with Enter (no click helper),
 checks the cancellation receipt and terminal focus, and runs axe in both active and terminal
 states. This does not substitute for a real assistive-technology task study.
+
+The production-built real-service journey now uses native keyboard controls for Recovery:
+Begin → actual attended heartbeat/rendered progress → leave (scheduler stops) → return/Begin
+(same session, rotated token) → Stop early. Independent SQL checks bind its stored terminal
+receipt, both save revisions, one start/terminal event and Founder log, unchanged Soul and
+unchanged Company resource balances. Before Recovery, native manual actions at 1 Hz fund two
+ordinary generator purchases; the second purchase proves positive persisted idle accrual net
+of its exact cost. Recovery therefore suppresses a Company that demonstrably produces, not
+an inert zero-rate fixture. Normal `make test-game-ui-composed` executes this bounded
+population; it does not wait five minutes on every push. The Pitch prerequisite also handles
+its existing Exit-offer preemption through visible Decline before fresh harvest consent;
+it neither retries the harvest intent nor skips its applied receipt.
+
+`make test-soul-recovery-composed` additionally runs Repot for its unchanged minted 300,000 ms
+using the real browser scheduler/server clock. The explicit disposable-DB setup changes only
+Founder Soul to 40 and appends its revision; it does not grant progress or alter the catalog.
+Native Finish must remain absent early, appear after server eligibility, and produce matching
+receipt/event/stored/rendered Soul 40→45 with unchanged Company balances and persisted reload.
+This proves a real five-minute activity after disclosed depletion setup, not naturally earning
+that state, full history replay, hidden-tab/network/watchdog behavior through the real browser,
+the 15/45-minute activities or complete MA/assistive-technology/release acceptance. The owning
+Minigame API log records local results and pending designated review.
+
 `make verify-client-boundary` now scans the `minigame/` and `soul/` Svelte components with the
 same literal, style, import and network rules as the Game UI.
 

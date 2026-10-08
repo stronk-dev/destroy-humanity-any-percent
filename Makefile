@@ -257,6 +257,13 @@ test-tier2-composed:
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-game-ui-composed.mjs --tier2-fixture
 
+# MA3 natural-duration completion; bounded native recovery runs in normal CI.
+# No cadence/catalog/time acceleration; normal CI verifies the bounded lifecycle.
+.PHONY: test-soul-recovery-composed
+test-soul-recovery-composed:
+	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
+	node client/tools/test-game-ui-composed.mjs --soul-recovery-full
+
 # AC13: real built-client negatives must fail specifically at the N5 trap.
 test-cosmetic-n5:
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres

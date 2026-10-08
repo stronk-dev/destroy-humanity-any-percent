@@ -49,7 +49,21 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Latest local checkpoint (2026-10-08): session request admission at `13acd872` and eight
+- Latest Recovery checkpoint (2026-10-08): the production-built client now exercises native
+  Begin, real attended progress, leave/stopped scheduler, same-session reconnect/token rotation
+  and cancellation against the real service/Postgres. Native manual actions and two purchases
+  first prove actual positive idle production; unchanged Recovery balances are therefore not
+  an inert-Company check. `make test-soul-recovery-composed`59876 also passes the unchanged
+  five-minute activity through native Finish, exact stored/event/rendered Soul40→45 and reload.
+  Soul40 is explicit setup, not a natural debit/history-replay proof. The bounded lifecycle
+  joins normal composed CI. Final whole89786 passes Recovery and the preceding player/DB
+  populations, pets/Reputation, Clout, payment negatives and Garden, then is RED in Tier2:
+  a native upgrade carries revision11 after the previous purchase committed12 (RP-447).
+  This is not a whole-target pass. The [Minigame API log](minigame-api-and-surface/log.md)
+  retains failed setup attempts, the earlier blocked-Begin negative control and pending
+  designated-review range. No gameplay, clock, catalog, limiter, CI-workflow, acceptance or
+  release change; longer activities, browser renewal and broader recovery/AT tasks remain open.
+- Preceding local checkpoint (2026-10-08): session request admission at `13acd872` and eight
   bootstrap/Minigame/Soul write routes at `ef10238f` now enforce their existing exact schemas
   before decoding or mutation. Eighteen session and thirty activity/bootstrap refusal controls
   pass against real Postgres, including unchanged stored rows and usable valid controls.

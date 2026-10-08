@@ -1117,3 +1117,54 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new revie
 `8eb2eb70` exclusive through this test/docs/plan/log commit; designated cross-party review
 pending. No acceptance flips, archival, push or cleanup. Next: remaining accepted integration
 and consolidated review; Typer/Arcade wire choices and other unaccepted successors remain held.
+
+## 2026-10-08 — Native Recovery through the production client and real service
+
+Outcome: RP-446, under MA2/MA3/AC5. Extend the existing composed journey with native keyboard
+Begin → real scheduler/progress → leave/stopped beats → same-session reconnect with rotated
+capability → Stop early. Independent SQL binds terminal receipt, both save revisions, one
+start/terminal event and Founder log, unchanged Soul and Company balances. Before Recovery,
+native manual actions at1Hz fund two ordinary generator purchases; positive persisted idle
+accrual net of purchase cost makes the production-suppression check nonvacuous. Default CI
+gets this bounded lifecycle; an explicit root target waits unchanged minted Repot300000ms
+and requires native Finish, exact stored/event/rendered Soul40→45, stopped beats and reload.
+Only the full population appends disclosed Founder Soul40/revision setup; no clock/progress
+grant, catalog/rate/limiter, production/schema/kernel or CI-workflow/timeout change.
+
+Regression and instrument corrections: earlier blocked-Begin control31123 prevents the native
+event reaching the mounted handler, emits zero start requests and fails after30s; no production
+mutation. Removed/restored before final runs. It predates the producing-Company supplement,
+not falsely represented as a severing of every final assertion. Initial91687/8833 fail my SQL
+observer's wrong Founder-log column and psql command-tag parsing. Earlier full31975 passes
+the actual five-minute flow, but final review catches its zero-producer population weakness.
+Producer attempts12710/66611 find the actual post-gate cash1e0 cannot afford the generator;
+use actual manual earnings, not another cash grant.74804 then hits real HTTP429 because my
+duplicate observer reads amplify setup traffic; remove the duplicate and use native1Hz input
+below the unchanged300/min refill, with no request retry.94296 independently stops in the
+existing Pitch prerequisite when an Exit offer preempts Fiscal harvest. The driver now uses
+the same bounded visible Decline handling already present at Pitch start/unlock, then fresh
+harvest consent; it still requires the applied harvest receipt. These were driver/population
+failures, not silently classified as game fixes or discarded green-search attempts.
+Both final main journeys report zero offer declines: the added harvest-preemption branch was
+not separately seeded in this batch and is not claimed as uniquely reproduced repair evidence.
+
+Coverage: final `make test-soul-recovery-composed`59876 exits0. Fourteen native manual actions,
+two purchases and positive stored accrual pass; both cancel and full resolution preserve the
+producing Company's balances. The main browser journey takes350231ms and observes180 actual
+Recovery progress replies, all200; exact built HTML/JS/CSS/Worker and started Worker pass.
+Final whole `make test-game-ui-composed`89786 is RED, not rerun to seek green: the actual bounded
+Recovery, main/DB populations, pets/Reputation, Clout, payment negatives and Garden pass, then
+Tier2's native second upgrade carries11 against observed12. Read-only retained SQL confirms
+the preceding first upgrade committed12 from11. RP-447 routes this stale-revision handoff to
+Garage GS0.2 and requires a deterministic read-order regression; no unrelated production
+repair or weakening of the exact assertion is mixed into this test-only range. Syntax/diff checks and
+`make verify-ci-topology` pass, including all13 rejecting controls. Earlier whole86299/29352
+passes precede the producer supplement and do not substitute for the final source run.
+
+Limits/handoff: this is a played real five-minute activity after explicit depletion, not natural
+Soul debit/history replay, 15/45-minute activities, real-browser hidden/network/watchdog tasks,
+renewal, full MA/accessibility acceptance or a clean-host/release proof. The last inspected hosted
+kernel-history/Clout failures remain independent. Review by: Codex (implementer first filter).
+Recorded by: Codex. Exact new review range is `cbd2069f` exclusive through this containing
+test/Make/docs/record commit; designated cross-party review pending. No acceptance flips,
+archive, push or cleanup. Existing public-wire and other unaccepted successor contracts stay held.

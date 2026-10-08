@@ -12,8 +12,10 @@ import { parents as refreshTests, refreshPopulationObserver } from "./observe-re
 import { composedMode, observeManualBudget } from "./observe-manual-budget.mjs";
 import { observeLockedPitchView } from "./pitch-locked-view.mjs";
 import { tier2Fixture, witnessTier2 } from "./tier2-composed.mjs";
+import { witnessSoulRecovery } from "./soul-recovery-composed.mjs";
 
-const mode = process.argv.length === 3 && process.argv[2] === "--tier2-fixture" ? "tier2-fixture" : composedMode(process.argv.slice(2));
+const fullRecovery = process.argv.length === 3 && process.argv[2] === "--soul-recovery-full";
+const mode = fullRecovery ? "journey" : process.argv.length === 3 && process.argv[2] === "--tier2-fixture" ? "tier2-fixture" : composedMode(process.argv.slice(2));
 
 const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = path.resolve(clientRoot, "..");
@@ -655,7 +657,16 @@ async function unlockPitchThroughFiscalUI(page) {
   if (readyBadge !== t("fiscal.nav_ripe_badge", {})) {
     throw new Error(`Fiscal harvest is ready but its navigation suffix is absent or incorrect: ${JSON.stringify(readyBadge)}`);
   }
-  const harvest = await clickAppliedIntent(page, "Hold the earnings call", "Fiscal harvest for Pitch");
+  let harvest;
+  for (let offers = 0; offers < 3; offers += 1) {
+    const result = await clickAppliedIntentChoice(page, ["Hold the earnings call", "Decline"], "Fiscal harvest for Pitch or offer preemption");
+    if (result.intent?.kind === "harvest_fiscal_period") { harvest = result; break; }
+    if (result.intent?.kind !== "decline_exit_offer") throw new Error(`unexpected Fiscal preemption intent: ${result.intent?.kind}`);
+    pitchOffersDeclined += 1;
+    await page.locator('nav button[data-nav-surface="fiscal"]').click();
+    await page.locator('main[data-surface="fiscal"]').waitFor({ state: "visible", timeout: 30_000 });
+  }
+  if (!harvest) throw new Error("Pitch Fiscal harvest was repeatedly preempted by Exit offers");
   if (harvest.intent?.kind !== "harvest_fiscal_period") throw new Error(`Fiscal harvest control emitted ${JSON.stringify(harvest.intent)}`);
   const intentRequest = page.waitForRequest((request) => new URL(request.url()).pathname === "/api/v1/intents" &&
     request.postDataJSON()?.kind === "spend_fiscal_credit", { timeout: 30_000 });
@@ -1119,6 +1130,9 @@ try {
   const pitch = await playPitchThroughUI(page, parsedCredentials.accessToken);
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
   console.log(`composed Fiscal UI harvest + Pitch unlock: ${pitch.commands} Pitch UI commands, ${pitchOffersDeclined} visible offer declines, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);
+  requestPhase = "Soul Recovery player workflow";
+  await witnessSoulRecovery(page, repositoryRoot, liveSnapshot.body.run.founder_id, fullRecovery);
+  if (pageErrors.length > 0) throw new AggregateError(pageErrors, "Soul Recovery browser path emitted page errors");
   console.log("composed Game UI v4 features + transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
   await page.goto("about:blank");
   await new Promise((resolve) => setTimeout(resolve, 100));
