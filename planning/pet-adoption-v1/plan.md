@@ -1,14 +1,16 @@
 # Pet Adoption v1 implementation plan
 
 RFC: `rfc/pet-adoption-v1.md` (accepted 2026-09-25; every OD at its recommended default).
-Implemented by: Claude. Every batch awaits Codex's designated cross-party review. No
-self-approval, no archival, and no production mint (fixture-first; OD-4/PA8.6 copy gates the mint).
+Original implementation by: Claude. P1–P7 now have complete original-batch Codex review
+dispositions: CHANGES REQUIRED. Corrective descendants still need their own designated review;
+the original verdicts do not approve them. No archival or production mint (OD-4/PA8.6).
 
-2026-10-08 review checkpoint: bounded P1 phrase admission (RP-403) and P2/P3 raw species
-admission (RP-404) are CHANGES REQUIRED in the original Claude implementation. Codex's
+2026-10-08 review checkpoint: complete original P1 (RP-403) and P2/P3 (RP-404) reviews
+retain CHANGES REQUIRED for phrase and raw species admission. Codex's
 corrections and executed evidence are in the latest log entries and need Claude's exact-range
-review. P5's missing final-history AC7 refusal checks (RP-405) are also locally corrected;
-the selected real-Postgres corruption population now passes, and designated review remains.
+review. Complete original P5 review is now CHANGES REQUIRED for the missing final-history
+AC7 refusal checks (RP-405). Those are locally corrected; the selected real-Postgres
+corruption population passes, and independent review of the correction remains.
 Existing checkboxes describe
 implementation presence, not full-feature acceptance.
 
@@ -17,6 +19,10 @@ celebrate a new adoption, and receipt completion respects newer keyboard focus. 
 requires an actual local applied receipt and its matching authoritative pet. The latest owning
 log records native regressions, the real-service journey and pending designated review; this
 does not resolve PA7, shared attendance, owner copy or the full accessibility floor.
+Both complete original P6 commits now have CHANGES REQUIRED dispositions: PA7/C2's
+author-owned wire conflict (RP-132), and the keyboard/welcome defects (RP-392/RP-428).
+Complete original P7 review also retains CHANGES REQUIRED for RP-408's missing paired
+economy comparison. Its later test supplement is locally verified, not independently approved.
 
 P4's complete original range `b29e70c0^..b29e70c0` now has a designated Codex review:
 CHANGES REQUIRED. In addition to RP-406's missing/null Company carry coordinates, RP-463
@@ -48,7 +54,8 @@ free replay-inputs version. Cosmetic Shop then takes v24.
   AC16 is carried under the release floor
   (D-008/D-009/D-015 are unruled).
 
-Tests for each flipped box, all inside the reviewed range `e5b7541a..HEAD`:
+Implementation-presence tests originally recorded across `e5b7541a..235b888a`:
+this table is provenance, not designated approval of that range or its descendants.
 
 | Box | Commit | Tests |
 |---|---|---|

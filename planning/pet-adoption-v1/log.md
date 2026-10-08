@@ -723,3 +723,79 @@ the other party's designated review. No original-batch approval is inferred from
 current-source passes. No full CI, whole-browser/AT, Pet acceptance, copy adoption, content
 mint, archival, release or push. PA7, shared attendance and rights remain open. Next: complete
 the original P5/P6/P7 reviews, retaining separate review of corrective ranges.
+
+## 2026-10-08 — complete original P5/P6/P7 review dispositions
+
+Review by: Codex (designated cross-party review of Claude). Recorded by: Codex.
+These verdicts cover each listed original diff in full, not later corrective descendants:
+
+| Original range | Verdict | Required change |
+|---|---|---|
+| `5ff37cc1^..5ff37cc1` (18 paths, P5) | CHANGES REQUIRED | RP-405: the original nonce comparison and honest-history test do not establish AC7's final refusal verdicts. The later test-only correction remains separately reviewable. |
+| `c380896a^..c380896a` (16 paths, P6 projection) | CHANGES REQUIRED | RP-132: the optional nested v4 arm is not the accepted PA7 wire. Generated agreement cannot reconcile that author-owned contract. |
+| `21707c2b^..21707c2b` (10 paths, P6 surface) | CHANGES REQUIRED | RP-392/RP-428: programmatic clicks missed keyboard/pending/removal failures; any pet read triggered adoption speech/focus. Later fixes do not retrospectively approve this original. |
+| `235b888a^..235b888a` and `327e0660^..327e0660` (P7 implementation/closeout) | CHANGES REQUIRED | RP-408: unchanged harness scenarios that never adopted cannot establish the required adoption/no-adoption comparison. The later paired supplement remains separate. |
+
+P5 inspection includes the parser/routing, transaction and entropy placement, replay arm,
+identity invariant, migration/event registry, corpus and all tests/docs/version/record edits.
+The original adoption implementation and corpus are byte-unchanged at current source.
+The store checks recorded receipts before revision/guard/callback; SQL inserts state, event,
+history, intent record and player outbox in one transaction. Source routing inspection confirms
+the player-only event trigger/relay and that configured Commons/guild projectors ignore adoption;
+this is not a fresh cross-product privacy/transport acceptance claim. P6 includes its complete
+generated contract diff, read-only care projection, visual/palette, host and mounted controls.
+P7's frozen-input comparison is useful but narrower than the acceptance claim it made.
+
+Executed at `ff5275fc` without source edits:
+- Declared Linux-amd64/Postgres67212 passes the production adoption/history, nonce/retry/conflict,
+  event-constraint, identity-invariant and related Exit populations; all nine persisted-history
+  corruptions refuse. The release-package migration-contiguity test also passes. The same selector
+  matches no Save tests, so it is not Save-package coverage. No selected production DB skips.
+- Client80140 passes42 adoption/Exit replay tests; projection/visual checks pass5. Complete
+  native Go GameUI/Pet22349 passes (native DB skips are not SQL evidence). `make api-check`
+  regenerates byte-identically; technical agreement does not close RP-132.
+- Focused native adoption58740 completes30 Chromium/WebKit checks, then reports a Firefox
+  browser-session connection error (existing RP-451). After the runner's result summary it
+  remains alive and is stopped with exit130. Initial sandbox EPERM ran no tests; permitted
+  localhost execution produced the results above. No all-browser or hosted-CI pass.
+
+No new production change, acceptance checkbox, archive, copy adoption, content mint, release or
+push. Earlier RP-408 full paired pacing results are retained, not needlessly repeated for this
+review-only checkpoint. The owning plan no longer labels its original implementation table a
+reviewed range. P1/P2/P3 still have bounded findings rather than complete original verdicts;
+complete those next, then consolidate outstanding corrective review and unresolved contracts.
+
+## 2026-10-08 — complete original P1/P2/P3 review; Pet checkpoint finished
+
+Review by: Codex (designated cross-party review of Claude). Recorded by: Codex.
+All paths in these original ranges are inspected; later corrections are not approved by them:
+
+| Original range | Verdict | Required change |
+|---|---|---|
+| `bcccca24^..bcccca24` (11 paths, P1) | CHANGES REQUIRED | RP-403: permitted whitespace/typographic punctuation bypasses companion phrase lint. Existing correction and old-behavior failure remain separately reviewable. |
+| `9d01eef2^..9d01eef2` (11 paths, P2) | CHANGES REQUIRED | RP-404: object-level TS fixtures cannot establish raw duplicate-key/integer-token parity with Go. |
+| `2f9878bc^..2f9878bc` (10 paths, P3) | CHANGES REQUIRED | RP-404: actual TS bundle admission normalizes the raw species artifact before validating it. The existing raw-admission correction is separate. |
+
+P1 includes the runtime/pipeline, candidate text, generated catalog/types/Go registries,
+orphans, identity mirrors, manifest and log. Semantic comparisons confirm exactly34 new
+companion placeholders, unchanged423 preceding entries, exact generated registries and orphan
+additions, and matching copy identities. No owner-authored copy adoption is inferred.
+P2 includes both loaders/draws, tests, fixture, corpus, versions and log. All18 original species
+cases were compared with their baseline. Independent Node crypto recomputation of the original
+79 draw vectors plus the restricted vector matches PA4, covering all six temperaments and ten
+palettes. P3 includes both bundle consumers, dependency/hash wiring, fixtures/tests and records;
+the historically surviving redundant `valid()` probe stays disclosed as defense in depth.
+
+Current-source execution at `ff5275fc`: focused Node59970 passes25 species/bundle tests;
+cold complete Go Replaycatalog96358 passes (Pet22349 passed above). `make copy-check`17519
+finishes successfully, including generation/safety/history and deployment-manifest validation:
+669 keys, copy identity `sha256:5214783a8fdec8997a1ea0d6a7eb0db0e3b65ca5b1af0b3b145b3927a9493364`,
+622 explicit orphan warnings. These execute corrected descendants, not untouched historical
+checkouts. Prior regressions establish the original defects; no repeated source mutation is
+needed for unchanged checks. Final record diff passes `git diff --check`.
+
+All original P1–P7 batches now have full dispositions, including P4's preceding verdict.
+This finishes original-batch review work, not Pet acceptance. Next: consolidate related Codex
+corrections for the other party's designated review, resolve PA7/C2 and shared attendance under
+their authors' authority, and complete adopted-content/accessibility/rights gates. Firefox's
+failed run above remains a failure; no whole-CI, archival, mint, release or push claim.
