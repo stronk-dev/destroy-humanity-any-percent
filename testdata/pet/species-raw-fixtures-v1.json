@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "valid": "balance/testdata/pet-species/fixture-v1.json",
+  "cases": [
+    { "name": "canonical", "reject": false },
+    { "name": "whitespace", "reject": false, "prefix": " \t\r\n", "suffix": " \t\r\n" },
+    { "name": "escaped-root-key", "reject": false, "from": "\"schema_version\": 1", "to": "\"\\u0073chema_version\": 1", "occurrences": 1 },
+    { "name": "escaped-row-value", "reject": false, "from": "\"visual_family\": \"cat\"", "to": "\"visual_family\": \"\\u0063at\"", "occurrences": 1 },
+    { "name": "maximum-safe-cap", "reject": false, "from": "\"max_pets_per_founder\": 1", "to": "\"max_pets_per_founder\": 9007199254740991", "occurrences": 1 },
+    { "name": "duplicate-root-equal", "reject": true, "from": "\"schema_version\": 1", "to": "\"schema_version\": 1, \"schema_version\": 1", "occurrences": 1 },
+    { "name": "duplicate-root-last-wins", "reject": true, "from": "\"max_pets_per_founder\": 1", "to": "\"max_pets_per_founder\": 0, \"max_pets_per_founder\": 1", "occurrences": 1 },
+    { "name": "duplicate-escaped-root-key", "reject": true, "from": "\"schema_version\": 1", "to": "\"schema_version\": 0, \"\\u0073chema_version\": 1", "occurrences": 1 },
+    { "name": "duplicate-row-equal", "reject": true, "from": "\"visual_family\": \"cat\"", "to": "\"visual_family\": \"cat\", \"visual_family\": \"cat\"", "occurrences": 1 },
+    { "name": "duplicate-escaped-row-key", "reject": true, "from": "\"visual_family\": \"cat\"", "to": "\"visual_family\": \"robot\", \"\\u0076isual_family\": \"cat\"", "occurrences": 1 },
+    { "name": "duplicate-array-field", "reject": true, "from": "\"name_keys\": [", "to": "\"name_keys\": [], \"name_keys\": [", "occurrences": 1 },
+    { "name": "decimal-version-token", "reject": true, "from": "\"schema_version\": 1", "to": "\"schema_version\": 1.0", "occurrences": 1 },
+    { "name": "exponent-version-token", "reject": true, "from": "\"schema_version\": 1", "to": "\"schema_version\": 1e0", "occurrences": 1 },
+    { "name": "decimal-cap-token", "reject": true, "from": "\"max_pets_per_founder\": 1", "to": "\"max_pets_per_founder\": 1.0", "occurrences": 1 },
+    { "name": "exponent-cap-token", "reject": true, "from": "\"max_pets_per_founder\": 1", "to": "\"max_pets_per_founder\": 1e0", "occurrences": 1 },
+    { "name": "rounded-fractional-cap", "reject": true, "from": "\"max_pets_per_founder\": 1", "to": "\"max_pets_per_founder\": 9007199254740991.1", "occurrences": 1 },
+    { "name": "null-cap", "reject": true, "from": "\"max_pets_per_founder\": 1", "to": "\"max_pets_per_founder\": null", "occurrences": 1 },
+    { "name": "unknown-row-field", "reject": true, "from": "\"visual_family\": \"cat\"", "to": "\"visual_family\": \"cat\", \"price\": 1", "occurrences": 1 },
+    { "name": "trailing-document", "reject": true, "suffix": "{}" }
+  ]
+}

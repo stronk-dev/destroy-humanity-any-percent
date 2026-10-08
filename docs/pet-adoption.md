@@ -8,6 +8,12 @@ the Founder-scoped adoption path to the Pet Care foundation. It is fixture-first
 
 `server/pet/species.go` and `client/src/pet/species.ts` load the strict schema-v1 artifact
 `{schema_version, max_pets_per_founder, species[]}`. It is exact-key at every level.
+The TypeScript replay boundary uses `loadPetSpeciesCatalog` on original artifact text, before
+`JSON.parse` can erase duplicate keys or number spelling. Like Go, it refuses duplicate keys
+(including escaped equivalents) and decimal/exponent tokens in the integer fields. It shares
+Garden's raw integer-catalog scanner; catalog-specific shape and domain checks remain separate.
+The object-level `parsePetSpeciesCatalog` is for already-decoded values, not raw wire validation.
+Original bytes still determine constants identity; no canonicalization rewrites stored artifacts.
 
 - **Species rows** are byte-sorted by the namespaced `pet_species.*` id. Exactly one row has
   `availability: "starter"`. `visual_family` is the closed member `cat`.
@@ -18,7 +24,8 @@ the Founder-scoped adoption path to the Pet Care foundation. It is fixture-first
   `companion` tone. Go checks this through the generated `copykeys.CompanionKeys()`.
 
 The fixture is `balance/testdata/pet-species/fixture-v1.json`. The shared loader corpus is
-`testdata/pet/species-fixtures-v1.json`.
+`testdata/pet/species-fixtures-v1.json`; literal raw-byte mutations and valid controls shared by
+Go and the TS replay loader are in `testdata/pet/species-raw-fixtures-v1.json`.
 
 A bundle may pin `pet_species` only together with `pets` and `reputation_tree`. On the scalar
 Founder chain, Founder v23 extends v22's Reputation state. The artifact joins constants identity.

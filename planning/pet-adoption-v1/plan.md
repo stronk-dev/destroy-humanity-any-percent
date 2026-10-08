@@ -4,6 +4,11 @@ RFC: `rfc/pet-adoption-v1.md` (accepted 2026-09-25; every OD at its recommended 
 Implemented by: Claude. Every batch awaits Codex's designated cross-party review. No
 self-approval, no archival, and no production mint (fixture-first; OD-4/PA8.6 copy gates the mint).
 
+2026-10-08 review checkpoint: bounded P1 phrase admission (RP-403) and P2/P3 raw species
+admission (RP-404) are CHANGES REQUIRED in the original Claude implementation. Codex's
+corrections and executed evidence are in the latest log entries and need Claude's exact-range
+review. Existing checkboxes describe implementation presence, not full-feature acceptance.
+
 Numbering, ruled by landing order: the RFC's "Founder v22" maps to the **next free Founder version
 = v23**, because Reputation Tree v1 already took v22. The RFC's "replay-inputs v7" maps to the next
 free replay-inputs version. Cosmetic Shop then takes v24.

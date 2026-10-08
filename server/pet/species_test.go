@@ -4,11 +4,53 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"cloud-clicker/server/combat"
 	"cloud-clicker/server/copykeys"
 )
+
+// Preserve literal spelling: JSON decode/re-encode would erase duplicate keys
+// and the number tokens on which Go and the TS raw replay loader must agree.
+func TestSpeciesRawCatalogAdmission(t *testing.T) {
+	var corpus struct {
+		Version int    `json:"version"`
+		Valid   string `json:"valid"`
+		Cases   []struct {
+			Name        string `json:"name"`
+			Reject      bool   `json:"reject"`
+			From        string `json:"from"`
+			To          string `json:"to"`
+			Occurrences int    `json:"occurrences"`
+			Prefix      string `json:"prefix"`
+			Suffix      string `json:"suffix"`
+		} `json:"cases"`
+	}
+	if err := json.Unmarshal(readRepo(t, "testdata/pet/species-raw-fixtures-v1.json"), &corpus); err != nil || corpus.Version != 1 || len(corpus.Cases) != 19 {
+		t.Fatalf("raw species corpus is incomplete or invalid: %v", err)
+	}
+	valid := string(readRepo(t, corpus.Valid))
+	for _, test := range corpus.Cases {
+		t.Run(test.Name, func(t *testing.T) {
+			input := valid
+			if test.From != "" {
+				if count := strings.Count(input, test.From); count != test.Occurrences {
+					t.Fatalf("replacement has %d matches, expected %d", count, test.Occurrences)
+				}
+				input = strings.Replace(input, test.From, test.To, 1)
+			}
+			catalog, err := LoadSpeciesCatalog([]byte(test.Prefix+input+test.Suffix), speciesDeclarations())
+			if test.Reject {
+				if err == nil || catalog != nil {
+					t.Fatal("invalid raw pet_species artifact admitted")
+				}
+			} else if err != nil || catalog == nil {
+				t.Fatalf("valid raw pet_species artifact refused: %v", err)
+			}
+		})
+	}
+}
 
 func speciesDeclarations() SpeciesDeclarations {
 	declarations := SpeciesDeclarations{CopyKeys: map[string]struct{}{}, CompanionKeys: map[string]struct{}{}}

@@ -5,6 +5,7 @@
     "client/src/active-play.ts",
     "client/src/api/generated/formula-schema.ts",
     "client/src/arcade/",
+    "client/src/catalog-json.ts",
     "client/src/commons.ts",
     "client/src/cosmetic/",
     "client/src/curriculum.ts",

@@ -41,11 +41,13 @@ interface ChildResult {
 async function observeChild(program: string, args: string[] = []): Promise<{ result: ChildResult; elapsedMs: number }> {
   const moduleName = "node:child_process";
   const { spawnSync } = await import(/* @vite-ignore */ moduleName) as {
-    spawnSync(command: string, args: string[], options: { encoding: "utf8"; timeout: number }): ChildResult;
+    spawnSync(command: string, args: string[], options: { cwd: URL; encoding: "utf8"; timeout: number }): ChildResult;
   };
   const node = (globalThis as unknown as { process: { execPath: string } }).process;
   const start = performance.now();
-  const result = spawnSync(node.execPath, ["--input-type=module", "-e", program, ...args], { encoding: "utf8", timeout: 1000 });
+  const result = spawnSync(node.execPath, ["--input-type=module", "-e", program, ...args], {
+    cwd: new URL("../", import.meta.url), encoding: "utf8", timeout: 1000,
+  });
   return { result, elapsedMs: performance.now() - start };
 }
 

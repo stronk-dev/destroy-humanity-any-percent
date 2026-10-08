@@ -1,3 +1,4 @@
+import { parseIntegerCatalogJSON } from "../catalog-json";
 import { MAX_EXACT_INTEGER } from "../numeric";
 
 // Pet Adoption v1 (rfc/pet-adoption-v1.md PA2/PA4): the pet_species artifact
@@ -30,6 +31,11 @@ const speciesID = /^pet_species\.[a-z][a-z0-9_]*$/u;
 const paletteID = /^pet_palette\.[a-z0-9_]+$/u;
 const nameKey = /^pet\.name\.[a-z0-9_]+\.[a-z0-9_]+$/u;
 const copyKey = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/u;
+
+/** Raw wire boundary: retain the distinctions the Go catalog loader checks. */
+export function loadPetSpeciesCatalog(bytes: string, declarations: PetSpeciesDeclarations): PetSpeciesCatalog {
+  return parsePetSpeciesCatalog(parseIntegerCatalogJSON(bytes, "pet_species"), declarations);
+}
 
 export function parsePetSpeciesCatalog(source: unknown, declarations: PetSpeciesDeclarations): PetSpeciesCatalog {
   const root = exactObject(source, ["schema_version", "max_pets_per_founder", "species"], "pet_species");

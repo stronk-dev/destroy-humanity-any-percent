@@ -21,7 +21,7 @@ import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputatio
 import { minigameCatalogSupportsSoul, parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
 import { applyFounderMinigameResolution, type CertifiedMinigameResult, type MinigameRatingState } from "./minigame/resolution";
 import { parsePetCatalog, petCatalogSupportsSoul, type PetCatalog } from "./pet/catalog";
-import { drawPetAdoption, parsePetSpeciesCatalog, petSpeciesRow, type PetSpeciesCatalog } from "./pet/species";
+import { drawPetAdoption, loadPetSpeciesCatalog, petSpeciesRow, type PetSpeciesCatalog } from "./pet/species";
 import { cosmeticItem, loadCosmeticCatalog, type CosmeticCatalog } from "./cosmetic/catalog";
 import { cosmeticStatesEqual, emptyCosmeticState, encodeCosmeticState, parseCosmeticState, type CosmeticState } from "./cosmetic/state";
 import { loadGardenCatalog, type GardenCatalog } from "./garden/catalog";
@@ -239,7 +239,7 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const reputationTree = artifacts.reputation_tree === undefined ? undefined : loadReputationTree(parseJSON(artifacts.reputation_tree), { economy, curriculum, copyKeys: new Set(COPY_KEYS) });
   // Pet Adoption v1 PA2: the species catalog; on the scalar Founder chain it
   // requires reputation_tree (Founder v23 extends v22).
-  const petSpecies = artifacts.pet_species === undefined ? undefined : parsePetSpeciesCatalog(parseJSON(artifacts.pet_species), { copyKeys: new Set(COPY_KEYS),
+  const petSpecies = artifacts.pet_species === undefined ? undefined : loadPetSpeciesCatalog(artifacts.pet_species, { copyKeys: new Set(COPY_KEYS),
     companionKeys: new Set(applicationCopyCatalog.entries.filter((entry) => entry.tone === "companion").map((entry) => entry.key)) });
   // Cosmetic Shop v1 §2 (OD-10): cosmetics joins the constants bundle and, on
   // the scalar Founder chain, requires pet_species (Founder v24 extends v23).

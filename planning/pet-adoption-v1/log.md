@@ -434,3 +434,40 @@ Correction first filter by: Codex (implementer). Recorded by: Codex. Exact corre
 is still required. No P1/full AC13, owner sincerity/copy adoption, accessibility, content mint,
 hosted CI, archival or release promotion. Next: consolidate remaining Pet Adoption review and
 contract work; the API empty-response decision is requested separately, not assumed.
+
+## 2026-10-08 — RP-404 raw species admission parity
+
+Targeted cross-party review by: Codex. Recorded by: Codex. Original Claude ranges
+`9d01eef2^..9d01eef2` (P2) and `2f9878bc^..2f9878bc` (P3), limited to PA2/AC1 raw artifact
+admission: **CHANGES REQUIRED**. Go passes all19 shared raw cases; the actual old TS replay
+bundle loader fails11 because JSON decoding erases duplicate keys and integer-token spelling
+or rounding before validation. This is not a verdict over either complete original batch.
+
+The correction loads original pet-species text through Garden's mechanically extracted raw
+integer-catalog scanner. Shape/domain validation and artifact identity still use their existing
+authorities. The shared helper joins kernel-watched paths; the real admission-set change advances
+kernel172→173. No save shape, draw, payout, authored content, mint, CI or timeout change.
+Garden's native-TS subprocess uses an explicit source extension and stable client cwd; strict
+noEmit type-checking remains enabled with TS-extension imports permitted.
+
+Final affected Node population passes123; native Chromium/WebKit passes124 with six explicit
+Node-only skips. Cold Go `./pet ./replaycatalog ./garden ./kernel` and their vet pass; types
+report zero errors/warnings, production build passes, kernel-guard adversarial fixtures pass,
+and `git diff --check` passes. Shared raw corpus has five admitted and fourteen refused cases.
+
+Verification limitations remain visible. Initial Garden Node execution exposed a child cwd/import
+failure, corrected above. Subsequent runs still time out before observed loader/control entry
+under the unchanged1000ms guard. One final isolated run56898 is RED:34pass/3fail/3skip, including
+valid fixture and both startup/nontermination controls. A standalone child observation measured
+798.880ms to its expected exception; it does not uniquely explain those failures or establish
+reliability. No bound/assertion was weakened, and no further retry was used to seek green.
+Real-Postgres adoption/replay run44626 never reaches test output; even Docker status13421 stalls.
+Both client commands were interrupted (exit130). Thus no current PostgreSQL pass, daemon-cause
+diagnosis or whole-feature/full-CI success is claimed; container-side state remains unconfirmed.
+
+Correction first filter by: Codex (implementer). Recorded by: Codex. Exact correction range:
+`9c3b49c1` exclusive through this code/test/docs/ledger/log commit awaits Claude's designated
+review. No full P2/P3/AC1, PA7, feature, accessibility, rights, content or release promotion.
+Next: consolidate the remaining review/contract gates; resolve the Node containment limitation
+and rerun persisted adoption/replay once Docker responds, rather than treating missing evidence
+as a pass.
