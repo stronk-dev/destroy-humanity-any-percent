@@ -49,7 +49,21 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Finished source checkpoint `9f518477` (2026-10-08): Combat C2's structural team/deck
+- Latest finished source checkpoint `da21dae2` (2026-10-08): API policy admission now
+  refuses missing/null members and case aliases instead of silently accepting an altered
+  startup policy (`e4fd61fa`). Raw WebSocket test peers now answer protocol pings, preventing
+  a no-pong disconnect from invalidating the account-revocation witness (`da21dae2`, test-only).
+  Both regressions fail on the old behavior. Affected cold native tests/vet, unchanged API
+  generation and the declared Linux-amd64/real-Postgres publicapi/publicread/gameserver
+  population pass; the latter executes revocation and drain, first-hour replay, public evidence,
+  proxy, Garden and Minigame/Soul cases with zero skips. The earlier Linux failure remains
+  recorded, and RP-450's distinct hosted drain failure is not declared resolved. Exact ranges
+  `53f3f663..e4fd61fa` and `e4fd61fa..da21dae2` await designated review; the
+  [API log](api-foundation/log.md) and [Account log](account-and-session-bootstrap/log.md)
+  own detailed evidence. Source is committed and the worktree is clean, with no live check
+  handles or push. This is correctness/test-fixture work, not new gameplay, whole-CI green,
+  acceptance, archival or release readiness. The latest recorded hosted verdict below remains red.
+- Previous Combat source checkpoint `9f518477` (2026-10-08): C2's structural team/deck
   reference decoder is committed. Cold complete affected Go, vet, both division boundaries,
   88 Node checks, strict types and 176 native Chromium/WebKit checks pass; the
   [Combat log](combat-shared-data/log.md) owns the exact evidence and pending designated

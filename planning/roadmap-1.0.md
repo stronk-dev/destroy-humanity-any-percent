@@ -7,7 +7,7 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-08):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08).
 We are integrating and hardening the Garage, with substantial later-tier construction still
-ahead. Latest source `9f518477` adds locally verified Combat team/deck reference decoding,
+ahead. The latest gameplay-foundation checkpoint `9f518477` adds locally verified Combat team/deck reference decoding,
 not a battle engine or live player feature; its exact range awaits designated review.
 Original Arcade A1–A7 reviews are now also fully dispositioned CHANGES REQUIRED at `1e8a25bc`.
 All original Garden G1–G7 reviews are dispositioned CHANGES REQUIRED at source
