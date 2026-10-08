@@ -1427,3 +1427,34 @@ Review by: Codex (implementer diff/first filter). Recorded by: Codex. New range
 begins after1b563d68 through this source/tests/docs/plan/ledger/log commit; designated
 review pending and consolidatable with the preceding representation-dispatch fix.
 No whole-API acceptance, hosted-CI green, archival, kernel bump, publication or push.
+
+## 2026-10-09 — Executed bodiless-response gap; bounded amendment drafted (RP-483)
+
+At source `b9613d1b`, rechecked remaining accepted API work rather than infer approval of
+unanswered dictionary/kernel proposals. Existing C19 cannot represent actual204/304 without
+lying about body/media type. `api.go` still writes bare204 for both DELETE lifecycle handlers;
+`Runtime.WriteCached` writes304 before rate limiting, without a content body/media type.
+
+Executed `make test-go GO_PACKAGES='./publicread' GO_TEST_FLAGS='-count=1 -run
+TestMountedPublicReadsCacheWithoutSpendingTokensAndInvalidateChangedBytes -v'`76208:
+all six mounted operations pass cold, including budget-exhausted304, exact metadata and
+changed-byte invalidation. Controlled readers, not DB/proxy/hosted integration. A direct
+Node26 import of the actual generated `types.ts` then calls `list_public_epochs` with a
+fetcher returning `new Response(null,{status:304})`: exact rejection is `undeclared API
+response status (304)`, one fetch. `operations` has neither DELETE account nor DELETE session.
+This is an executed missing declaration/dispatch, not evidence of a newly broken server.
+
+Draft `rfc/api-bodiless-responses.md` defines the closed empty arm, strict byte validation,
+OpenAPI/status/undefined typing, explicit If-None-Match input, additive pins and unchanged
+handler registration. Checked RFC9110 sections15.3.5/15.4.5 and OpenAPI3.1's no-return-value
+response example against the current writer/generator; primary links are in the draft.
+Reuse API's existing plan/log; no new program, test framework, acceptance flip or product change.
+The existing logged gap now has ledger/decision/index links. Owner question delivered; no answer
+or authority is inferred. Full proposed acceptance is not executed before adoption/build.
+
+Review by: Codex (proposal author, actual-diff first filter). Recorded by: Codex. Exact draft/
+record range begins after `b9613d1b` through this containing commit, pending owner adoption
+and designated normative review. No generator/SDK/handler/pin/replay bytes changed; no full
+API, current-head CI, rights completion, archival, push or release claim. All check handles
+terminal before edits. Next: the specified implementation after those authority gates; continue
+other safe accepted work without treating this draft as a contract or shrinking the1.0 goal.

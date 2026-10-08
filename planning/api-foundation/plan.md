@@ -2,6 +2,12 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current prerequisite (2026-10-09, RP-483): `rfc/api-bodiless-responses.md` proposes a closed
+empty204/304 arm and explicit conditional-read input. Fresh existing six-operation cache
+checks pass; the actual generated SDK rejects304 and has no DELETE lifecycle operations.
+Owner adoption/review are pending. Do not implement this third response arm under unamended
+C19, label204 JSON, or treat the proposal as rights/retention or browser-cache policy approval.
+
 Current bounded correction (2026-10-08, RP-476): generated SDK dispatch selects the declared
 media representation when one status has alternatives. Single-representation schema decoding,
 raw digest checks and mounted endpoint formats remain unchanged. Old-client failures, affected

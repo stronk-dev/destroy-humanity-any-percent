@@ -37,6 +37,16 @@ fixture-key enumeration, partial intent union or receipt rewrite is authorized. 
 prerequisite; lawful watched-owner schema exports and complete registration remain separate.
 Canonical home: the draft amendment and API Foundation; evidence in its owning log.
 
+## Existing bodiless API responses — RP-483 (unruled)
+
+API C19's closed schema/raw union excludes the actual204 account/session DELETE and304 public
+cache replies. The [bounded amendment](../../rfc/api-bodiless-responses.md) proposes an explicit
+empty arm and conditional-read input without changing handlers, deletion/retention, cache ages
+or retry policy. Owner adoption requested2026-10-09; no answer/adoption inferred. Designated
+normative review remains mandatory. API Foundation's plan/log owns executed SDK refusal and
+six-operation mounted-cache evidence. This blocks those registrations/full status conformance,
+not unrelated accepted API work; dictionary/catalog/rights/renewal decisions remain separate.
+
 ## Typer timing arithmetic domain — RP-460 (author reconciliation pending)
 
 TT3 admits every positive safe integer as `timed_budget_ms`; TT4.6 requires adding the
