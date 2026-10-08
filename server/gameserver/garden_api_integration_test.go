@@ -234,6 +234,18 @@ func TestComposedGardenAuthenticatedCommandsAndReadIntegration(t *testing.T) {
 		}
 	}
 	refuse(firstTokens.AccessToken, "garden_harvest", revision, `"plots":[{"row":0,"col":0}]`, "not_eligible", "plant_not_mature")
+	// A malformed coordinate must not default to zero: the first two would
+	// otherwise uproot the actual plant at (0,0). Preserve both owners' heads.
+	for _, malformed := range []struct{ kind, fields, detail string }{
+		{"garden_uproot", `"row":null,"col":0`, "row"},
+		{"garden_uproot", `"row":0,"col": null `, "col"},
+		{"garden_plant", `"row":null,"col":1,"species_id":"strain_b"`, "row"},
+		{"garden_plant", `"row":1,"col":null,"species_id":"strain_b"`, "col"},
+		{"garden_harvest", `"plots":[{"row":null,"col":0}]`, "plots"},
+		{"garden_harvest", `"plots":[{"row":0,"col":null}]`, "plots"},
+	} {
+		refuse(firstTokens.AccessToken, malformed.kind, revision, malformed.fields, "invalid", malformed.detail)
+	}
 	for _, field := range []string{`"tick_seq":9`, `"server_ms":1`, `"salt_hex":"0123456789abcdef"`, fmt.Sprintf(`"founder_id":%q`, secondFounder)} {
 		refuse(firstTokens.AccessToken, "garden_plant", revision, `"row":0,"col":1,"species_id":"strain_b",`+field, "invalid", "garden_plant.fields")
 	}

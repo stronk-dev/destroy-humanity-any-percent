@@ -228,3 +228,9 @@ next-menu failure and native Mac Firefox launch failure; later setup/CI success
 is not a reliability ruling. No checkbox/public pin/AC13/Garden promotion.
 Exact new range begins `e02fbfc1^` (`b58277cb`), endpoint pinned in the log;
 Claude required independently of all earlier ranges. Final gates are in the log.
+
+2026-10-08: RP-469 null-coordinate admission is locally corrected under existing SG5/AC7/
+AC12, with failing-old real HTTP/Postgres and decoder evidence and final passing scoped
+checks. New corrective range begins after `ebbb465c`; cross-party review is pending. No
+original G4 or feature checkbox is promoted. Finish the remaining original G4 inspection,
+then G1–G3; keep prior corrective reviews and authored/content/renewal/AT holds separate.

@@ -3255,3 +3255,45 @@ dispositions still remain, despite their existing bounded findings/supplements. 
 are now fully dispositioned, not approved. Corrective cross-party review, RP-222/RP-229,
 renewal, launch content, AC13 and whole-feature acceptance remain open. No archive, push,
 deployment, current hosted-green or release claim.
+
+## 2026-10-08 — Reject null Garden coordinates (RP-469)
+
+While inspecting original G4, reproduced a real SG5/AC7/AC12 violation rather than an
+unanswered mechanic. Go's integer decoder accepts JSON null without assigning a value;
+the Garden parser therefore treated null as zero. Old-source6771 fails12 compact/whitespace
+null arms in a72-case command/field/token matrix, while60 controls pass. More importantly,
+old-source authenticated Linux/Postgres HTTP81692 actually uproots the existing plant at
+(0,0) for a null-row request. TS already rejects null; its42 replay cases pass39706 before
+the Go repair. These are regression reproductions, not artificial production mutations.
+
+Only Garden coordinate admission now excludes null before the existing integer/domain
+check. Explicit0/5, all other command parsers, receipt details, canonical content and replay
+corpora are unchanged. Added six HTTP refusals preserve both accounts' complete Founder/
+Company heads; six TS logged-rejection cases preserve the whole Founder state and no events.
+Kernel0.3.182→0.3.183 identifies this genuine admission change; it does not repair RP-131.
+Canonical command docs now state the existing non-null integer contract explicitly.
+
+Finished final-source verification:
+
+- 77072: cold root Go production/kernel Garden and version-source checks pass.
+- 54361: declared Linux-amd64/Postgres production/gameserver Garden and composed API
+  population passes cold. The authenticated lifecycle now checks55 salt-free public
+  payloads, all six null refusals, unchanged heads, valid commands/retries and both Founder
+  histories. The wider selected population includes ten actual retention/coordinator fault
+  boundaries, six harvest-clock arms and six salted/unsalted read-clock arms. No DB skip
+  is counted as integration evidence; starter-retune diagnostic remains a diagnostic hold.
+- 92521: four existing Garden engine/state/command/replay files pass75 tests. The command
+  named a nonexistent kernel-version TS file too; it executed no such file. Go's actual
+  source-of-truth check above is the version witness, not an invented TS result.
+- 31201: affected production/gameserver vet passes. 67013: typecheck/Svelte zero errors
+  or warnings, byte-identical API generation, and unchanged Go Garden engine corpus pass.
+- Additional shared numeric regression: cold Go decimal/kernel passes; TS decimal vectors
+  20671 pass6304. No numeric formula or generated-vector changes.
+
+All processes terminal before record edits. Review by: Codex (implementer first filter).
+Recorded by: Codex. New corrective range begins after `ebbb465c`; designated cross-party
+review remains pending. Full original G4 inspection is not finished and this is not its
+designated disposition. Original G1–G4 coverage, prior corrective reviews, RP-222/RP-229,
+natural growth/renewal, launch content and AC13 remain open. No checkbox, archive, push,
+whole-CI or release claim. Next accepted boundary is the remaining original G4 command,
+replay and persistence inspection, followed by original G1–G3 dispositions.

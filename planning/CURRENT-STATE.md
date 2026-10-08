@@ -49,7 +49,14 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Latest finished source checkpoint (`aca464ac`): Garden rereads at the earlier substrate-lock
+- Latest bounded source repair (2026-10-08, after `ebbb465c`): Garden no longer admits null
+  row/column as plot zero. Old authenticated Linux/Postgres HTTP actually removed a plant
+  for a null-row uproot. Final real HTTP now rejects all six command/field combinations
+  without changing either saved stream; the72-case decoder matrix,75 affected client
+  tests, types/vet/API/corpus and both shared numeric suites pass. The
+  [Garden log](minigame-server-garden/log.md) owns the pending designated range and limits.
+  This is a command-admission repair, not completed Garden acceptance, a new tier or whole-CI.
+- Previous finished source checkpoint (`aca464ac`): Garden rereads at the earlier substrate-lock
   expiry or growth tick, so Mainframe's ten-minute lock does not remain visibly active until
   its fifteen-minute growth tick. The server projection, old-behavior browser failures,
   corrected mounted cases and built-client/real-service/Postgres harvest journey are recorded

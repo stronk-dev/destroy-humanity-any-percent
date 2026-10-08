@@ -40,6 +40,29 @@ describe("garden intents cross-runtime corpus", () => {
     const state = restoreFounderReplayState(applied.pre_state, applied.state_version, catalogs);
     await expect(applyFounderLogged(state, canonicalJSONString(applied.canonical_payload), catalogs, inputs)).rejects.toThrow(/advance/u);
   });
+
+  for (const kind of ["garden_plant", "garden_uproot", "garden_harvest"]) {
+    for (const field of ["row", "col"]) {
+      it(`replays the invalid ${kind} null ${field} receipt without targeting plot zero`, async () => {
+        const original = corpus.cases.find((row) => row.name === "rejects-client-tick-seq")!;
+        const catalogs = await bundle(original.bundle);
+        const state = restoreFounderReplayState(original.pre_state, original.state_version, catalogs);
+        const before = canonicalJSONString(encodeFounderReplayState(state));
+        const coordinate = { row: 0, col: 0, [field]: null };
+        const detail = kind === "garden_harvest" ? "plots" : field;
+        const payload = { kind, expected_revision: original.canonical_payload.expected_revision,
+          ...(kind === "garden_harvest" ? { plots: [coordinate] } : coordinate),
+          ...(kind === "garden_plant" ? { species_id: "strain_a" } : {}) };
+        const inputs = { ...structuredClone(original.replay_inputs), resolved: { kind: "invalid", detail } };
+        const transition = await applyFounderLogged(state, canonicalJSONString(payload), catalogs, inputs);
+        expect(transition.outcome).toBe("rejected");
+        expect(transition.receipt).toEqual({ current_revision: inputs.command.revision,
+          intent_id: inputs.command.intent_id, outcome: "rejected", rejection: { category: "invalid", detail } });
+        expect(transition.events).toEqual([]);
+        expect(canonicalJSONString(encodeFounderReplayState(transition.state))).toBe(before);
+      });
+    }
+  }
 });
 
 describe("garden Company credit arm (SG6, AC9 Company half)", () => {

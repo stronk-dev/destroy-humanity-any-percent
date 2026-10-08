@@ -107,6 +107,9 @@ draws below one million; it is not claimed to be separately discriminated.
 - `garden_plant`, `garden_uproot`, `garden_set_substrate` and `garden_harvest` are Founder intents
   on `/api/v1/intents`. Their schemas are exact; a client time, tick, outcome or salt field is
   terminal `invalid`.
+- Plot coordinates require integer values in[0,5], including every batched harvest target.
+  Null is invalid, not an alias for zero. Malformed coordinates retain the existing invalid
+  row/col/plots receipt and do not mutate either saved stream; explicit zero remains valid.
 - **The advance pre-step** runs after the Fiscal sweep and before the body, for exactly the garden
   commands plus `spend_fiscal_credit` (a property test proves this set is sufficient). An applied
   trigger's receipt carries `garden_advance`, and `garden_advanced.v1` precedes the command event

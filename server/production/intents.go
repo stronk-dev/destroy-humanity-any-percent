@@ -2391,7 +2391,10 @@ func canonicalRequest(root map[string]json.RawMessage) ([]byte, string) {
 
 // parseGardenCoordinate accepts an exact integer row/column in [0,5] (SG5).
 func parseGardenCoordinate(raw json.RawMessage, destination *int64) bool {
-	return parseNonNegativeSafeInt(raw, destination) && *destination < garden.MaxGridSide
+	// encoding/json leaves an integer unchanged on null. A coordinate is
+	// required, so null must not silently select the default plot at zero.
+	return !bytes.Equal(bytes.TrimSpace(raw), []byte("null")) &&
+		parseNonNegativeSafeInt(raw, destination) && *destination < garden.MaxGridSide
 }
 
 func parsePositiveSafeInt(raw json.RawMessage, destination *int64) bool {
