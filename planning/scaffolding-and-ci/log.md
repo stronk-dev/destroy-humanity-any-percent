@@ -507,3 +507,38 @@ Next Firefox action: establish a usable native or declared Linux browser
 environment, then capture actual focus/key/click/era behavior without replacing
 native input or weakening its assertion. Safe accepted construction remains
 possible independently; this verification limitation does not block all work.
+
+## 2026-10-08 — Expose primitive input delivery without changing its oracle (RP-451)
+
+Outcome under CI D2 / archived UI Foundation UF5/C7: the existing native Enter
+and exact era_2000 assertion now retain passive before/after document/button
+focus, actual key/click targets, trusted input and default prevention in the
+failure message. No refocus, retry, wait, input substitution, product change or
+CI-workflow change. The fixture/listeners now clean up in finally after failure.
+Two native negative controls distinguish focus moved elsewhere from prevented
+Enter; both keep era_1995 and produce no activation click on the expected button.
+
+Environment diagnosis: initial minimal standalone Firefox launch13066 aborts
+inside the sandbox. Permitted launch80331 hangs; verified only its own node
+parent89187 and interrupted it, terminal130. Bounded stage diagnostic1113 exits1
+at launch (no usable page), reporting macOS sandbox-extension denial for its
+plugin-container and SWGL framebuffer failure. The diagnostic's5s launch limit
+is not a changed test/acceptance timeout. No browser security setting, install,
+Docker cleanup or hosted run was changed. These logs explain unavailable local
+execution, not the hosted Enter assertion's cause. Local Firefox remains unproved.
+
+Executed: initial focused run fails sandbox localhost admission before tests.
+Permitted root `make test-browser-focused BROWSER_TEST_FLAGS='test/shell-browser.test.ts
+--project=chromium --project=webkit'`59996 passes10/10, including existing era,
+Amount, axe/focus/name checks and both diagnostic controls. Root `make typecheck`
+13833 passes with zero Svelte errors/warnings. Final finished-source repeat8984
+also passes10/10; all handles terminal and diff checked. No build, Postgres,
+performance or whole-journey rerun for this isolated test/diagnostic change;
+no full/hosted CI, Firefox or accessibility-completion claim.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new
+range starts after `c382a48a` through this containing test/docs/record commit;
+designated cross-party review pending. RP-451 remains OPEN. Next: use a usable
+Firefox environment to capture the original path with this diagnostic intact,
+then repair the demonstrated cause. Other accepted construction may continue;
+the Typer/Arcade public-wire question and Clout DG-D/D-021 remain unruled.

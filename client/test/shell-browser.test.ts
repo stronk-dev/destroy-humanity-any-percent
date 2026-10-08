@@ -20,6 +20,28 @@ function structure(node: Element): unknown {
   };
 }
 
+// Preserve native input and the exact era oracle. On failure, distinguish a
+// focused DOM node from an actually focused frame, and delivery from activation.
+function observePrimitiveInput(target: HTMLElement, button: HTMLButtonElement) {
+  const events: Event[] = [];
+  const phases: { phase: string; documentFocused: boolean; buttonFocused: boolean; activeTag: string | null; era?: string }[] = [];
+  const kinds = ["keydown", "keyup", "click", "focusin", "focusout"] as const;
+  const record = (event: Event) => { events.push(event); };
+  for (const kind of kinds) document.addEventListener(kind, record, true);
+  return {
+    checkpoint(phase: string) {
+      phases.push({ phase, documentFocused: document.hasFocus(), buttonFocused: document.activeElement === button,
+        activeTag: document.activeElement?.tagName ?? null, era: target.querySelector("main")?.dataset.era });
+    },
+    report() {
+      return { phases, events: events.map((event) => ({ type: event.type,
+        key: event instanceof KeyboardEvent ? event.key : null, trusted: event.isTrusted,
+        onButton: event.target === button, defaultPrevented: event.defaultPrevented })) };
+    },
+    stop() { for (const kind of kinds) document.removeEventListener(kind, record, true); },
+  };
+}
+
 it.skipIf(typeof document === "undefined")("switches the full primitive fixture between eras without changing DOM structure", async () => {
   const target = document.createElement("div"); document.body.append(target);
   const fixture = mount(FixtureHost, { target }) as unknown as FixtureExports;
@@ -76,26 +98,67 @@ it.skipIf(typeof document === "undefined")("meets the primitive accessibility, f
   const fixture = mount(FixtureHost, { target }) as unknown as FixtureExports;
   flushSync();
   const button = target.querySelector("button")!;
-  button.focus();
-  expect(document.activeElement).toBe(button);
-  await userEvent.keyboard("{Enter}");
-  flushSync();
-  expect(target.querySelector("main")?.dataset.era).toBe("era_2000");
-  expect(getComputedStyle(button).outlineStyle).not.toBe("none");
-  expect(button.textContent?.trim().length).toBeGreaterThan(0);
-  expect(target.querySelector("output")?.getAttribute("aria-label")).toBeNull();
+  const trace = observePrimitiveInput(target, button);
+  try {
+    button.focus();
+    expect(document.activeElement).toBe(button);
+    trace.checkpoint("before Enter");
+    await userEvent.keyboard("{Enter}");
+    flushSync();
+    trace.checkpoint("after Enter");
+    expect(target.querySelector("main")?.dataset.era, JSON.stringify(trace.report())).toBe("era_2000");
+    expect(getComputedStyle(button).outlineStyle).not.toBe("none");
+    expect(button.textContent?.trim().length).toBeGreaterThan(0);
+    expect(target.querySelector("output")?.getAttribute("aria-label")).toBeNull();
 
-  for (const era of ["era_1995", "era_2000"] as const) {
-    if (era === "era_1995") {
-      fixture.switchEra();
-    } else {
-      fixture.switchEra();
-      fixture.setCap({ amount: "1e3", reason_key: "resource.company_cash.cap.phase0" });
-      flushSync();
-      expect(target.querySelector("output")?.getAttribute("aria-label")).toBe("1.23 K. Cash is capped. The cap is a number, the number is visible, and nothing will ever sell you the difference.");
+    for (const era of ["era_1995", "era_2000"] as const) {
+      if (era === "era_1995") {
+        fixture.switchEra();
+      } else {
+        fixture.switchEra();
+        fixture.setCap({ amount: "1e3", reason_key: "resource.company_cash.cap.phase0" });
+        flushSync();
+        expect(target.querySelector("output")?.getAttribute("aria-label")).toBe("1.23 K. Cash is capped. The cap is a number, the number is visible, and nothing will ever sell you the difference.");
+      }
+      const result = await axe.run(target, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } });
+      expect(result.violations.filter((violation) => violation.impact === "serious" || violation.impact === "critical"), era).toEqual([]);
     }
-    const result = await axe.run(target, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } });
-    expect(result.violations.filter((violation) => violation.impact === "serious" || violation.impact === "critical"), era).toEqual([]);
+  } finally {
+    trace.stop();
+    await unmount(fixture); target.remove();
   }
-  await unmount(fixture); target.remove();
 });
+
+for (const failure of ["focus moved", "Enter prevented"] as const) {
+  it.skipIf(typeof document === "undefined")(`primitive input diagnostics distinguish ${failure} without replacing native input`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const target = document.createElement("div"); document.body.append(target);
+    const fixture = mount(FixtureHost, { target }) as unknown as FixtureExports;
+    flushSync();
+    const button = target.querySelector("button")!;
+    const other = document.createElement("button"); other.textContent = "Diagnostic focus destination"; target.append(other);
+    const trace = observePrimitiveInput(target, button);
+    const preventEnter = (event: KeyboardEvent) => { if (event.key === "Enter") event.preventDefault(); };
+    try {
+      button.focus();
+      if (failure === "focus moved") other.focus();
+      else button.addEventListener("keydown", preventEnter);
+      trace.checkpoint("before Enter");
+      await userEvent.keyboard("{Enter}");
+      flushSync();
+      trace.checkpoint("after Enter");
+      // Both faults remain wrong outcomes, rather than being accepted as an era switch.
+      expect(target.querySelector("main")?.dataset.era).toBe("era_1995");
+      const report = trace.report();
+      expect(report.phases).toHaveLength(2);
+      expect(report.phases.every((phase) => phase.buttonFocused === (failure === "Enter prevented"))).toBe(true);
+      expect(report.events).toContainEqual({ type: "keydown", key: "Enter", trusted: true,
+        onButton: failure === "Enter prevented", defaultPrevented: failure === "Enter prevented" });
+      expect(report.events.filter((event) => event.type === "click" && event.onButton)).toEqual([]);
+    } finally {
+      button.removeEventListener("keydown", preventEnter);
+      trace.stop();
+      await unmount(fixture); target.remove();
+    }
+  });
+}

@@ -197,6 +197,13 @@ Latest local repetition is incomplete: Firefox reports no device space and Docke
 filesystem is full, despite free shared memory and host space. Passing individual repetitions
 do not establish reliable CI. Broad Docker pruning is not a repository verification command.
 
+The primitive keyboard/era assertion includes passive focus and native key/click diagnostics
+in its failure message: frame focus, active button, before/after era, delivery target, trusted
+input and default prevention. Its Enter input and exact expected era are unchanged; it does
+not retry or refocus to obtain a pass. Native moved-focus and prevented-Enter controls check
+the diagnostic distinctions. The fixture and listeners are removed even after an assertion
+fails. This observation is not a correction of the open hosted Firefox failure (RP-451).
+
 `make test-refresh-census` is a manual Account refresh population observer, outside
 CI and `verify`. It runs the declared Postgres integration service cold and requires
 all four named tests/seven cases to execute and pass. A package pass with missing,
