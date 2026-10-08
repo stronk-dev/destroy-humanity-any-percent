@@ -219,7 +219,14 @@ payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release cl
 ## Client surface
 
 `client/src/game-ui/garden/GardenSurface.svelte` is the SG10 surface:
-- The Garden tab appears only when the read is `locked` or `active`.
+- The Garden tab appears only when the latest current-context read is `locked` or `active`.
+  Startup and mounted reads share a presence guard scoped to Founder ID and constants hash.
+  A confirmed `inactive` removes the tab and returns a mounted Garden to Desk with heading
+  focus, without overriding newer navigation. Failed reads do not establish absence.
+  A Founder/content change re-probes presence and remounts the panel, discarding the previous
+  grid and its pending read. If that removes focused Garden content or navigation, focus
+  recovers to the new heading unless the player moved elsewhere. An ordinary Company change
+  under the same Founder and bundle preserves the grid/menu; Garden remains Founder-owned.
 - The grid is a `role="grid"` of native buttons with a roving tabindex and arrow keys.
 - Menu actions, Refresh, Harvest all and substrates have explicit native tab stops in DOM
   order, including WebKit. Tab/Shift-Tab reaches the seed and mature menus without changing

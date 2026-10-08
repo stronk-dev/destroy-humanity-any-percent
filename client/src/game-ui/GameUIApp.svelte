@@ -29,6 +29,7 @@
   import MinigameSessionSurface from "./minigame/MinigameSessionSurface.svelte";
   import SoulRecoverySurface from "./soul/SoulRecoverySurface.svelte";
   import GardenSurface from "./garden/GardenSurface.svelte";
+  import type { GardenPort } from "./garden/garden-port";
   import { loadSoulRecoveryContent } from "./soul/recovery-surface";
   import { GameUIShell } from "./shell-bridge";
   import { GameUIRequestError, noticeForError, noticeForOutcome, type IntentOutcome, type SurfaceRejections } from "./intent-outcome";
@@ -153,7 +154,6 @@
 
   function bindSnapshot(value: ParsedGameUISnapshot): void {
     if (disposed) return;
-    if (snapshot === undefined) void probeGarden();
     const sampledMonotonicMs = performance.now();
     if (snapshot === undefined) {
       const authoritativeDefault = defaultSurface(Object.fromEntries(value.facts.map((fact) => [fact.fact_id, fact.value])));
@@ -165,6 +165,22 @@
     monotonicMS = sampledMonotonicMs;
     snapshotMonotonicMS = sampledMonotonicMs;
     snapshot = value;
+    const nextGardenContext = `${value.run.founder_id}\0${value.constants_hash}`;
+    if (gardenContext !== nextGardenContext) {
+      const origin = document.activeElement;
+      const ownedFocus = origin instanceof HTMLElement && surface === "garden" &&
+        (root?.querySelector(".garden")?.contains(origin) || origin.matches('nav button[aria-current="page"]'));
+      const selected = selectionGeneration;
+      gardenContext = nextGardenContext;
+      gardenPresence = "unknown";
+      void probeGarden();
+      if (ownedFocus) void afterDOMUpdate().then(() => {
+        if (disposed || gardenContext !== nextGardenContext || surface !== "garden" ||
+            selectionGeneration !== selected || origin.isConnected ||
+            document.activeElement !== origin && document.activeElement !== document.body) return;
+        root?.querySelector<HTMLElement>("#garden-heading")?.focus();
+      });
+    }
     founderRevision = "founder_revision" in value ? value.founder_revision : undefined;
     shell.publish(value);
     const nextRunIdentity = `${value.run.founder_id}\0${value.run.run_seq}\0${value.run.category}`;
@@ -592,15 +608,33 @@
       "substrate_unchanged", "substrate_lockout"].map((detail): [string, CopyKey] => [`not_eligible/${detail}`, `error.garden.${detail}` as CopyKey]),
     ...["garden_species", "garden_plot", "garden_substrate"].map((detail): [string, CopyKey] => [`unknown_id/${detail}`, `error.garden.${detail}` as CopyKey]),
   ]);
-  // The garden tab appears only when the read says locked or active (SG10).
-  let gardenVisible = $state(false);
+  // SG2/SG9/SG10: presence and the mounted read belong to one Founder and
+  // pinned catalog. Startup and surface reads share this ordering guard.
+  let gardenContext = $state("");
+  let gardenPresence = $state<"unknown" | "inactive" | "present">("unknown");
+  let gardenReadGeneration = 0;
   let gardenRefresh = $state(0);
+  const gardenPort: GardenPort = {
+    async current() {
+      const context = gardenContext, generation = ++gardenReadGeneration;
+      const view = await runtime.garden!.current();
+      if (!disposed && context === gardenContext && generation === gardenReadGeneration) {
+        gardenPresence = view.kind === "inactive" ? "inactive" : "present";
+      }
+      return view;
+    },
+  };
   async function probeGarden(): Promise<void> {
     if (!runtime.garden) return;
-    try { const view = await runtime.garden.current(); gardenVisible = view.kind !== "inactive"; } catch { gardenVisible = false; }
+    // Failed reads are not evidence of absence. The mounted surface owns its
+    // error/stale display; an unconfirmed startup tab stays hidden.
+    try { await gardenPort.current(); } catch { /* retain unknown/last known presence */ }
   }
   function gardenAct(body: Record<string, unknown>): void {
-    void act(body, { scope: "founder", rejections: GARDEN_REJECTIONS }).then(() => { gardenRefresh += 1; });
+    const context = gardenContext;
+    void act(body, { scope: "founder", rejections: GARDEN_REJECTIONS }).then(() => {
+      if (!disposed && context === gardenContext) gardenRefresh += 1;
+    });
   }
   const COSMETIC_REJECTIONS: SurfaceRejections = new Map([
     ["not_eligible/inactive", "shop.cosmetics.reject.inactive"], ["not_eligible/locked", "shop.cosmetics.reject.locked"],
@@ -633,7 +667,8 @@
   // GS0.5: an arm going null while its surface is mounted returns to the Desk.
   $effect(() => {
     const armless = surface === "achievements" && !liveFeatures?.achievements || surface === "fiscal" && !liveFeatures?.fiscal ||
-      surface === "meters" && !liveFeatures?.meters || surface === "reputation_tree" && !liveFeatures?.reputation;
+      surface === "meters" && !liveFeatures?.meters || surface === "reputation_tree" && !liveFeatures?.reputation ||
+      surface === "garden" && gardenPresence === "inactive";
     if (snapshot && armless) {
       const forcedSnapshot = snapshot;
       show("desk");
@@ -693,7 +728,7 @@
         {#if runtime.minigame && factTrue("feature.minigame.pitch")}<button type="button" tabindex="0" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
         {#if runtime.soulRecovery}<button type="button" tabindex="0" aria-current={surface === "soul_recovery" ? "page" : undefined} onclick={() => show("soul_recovery")}>{t("soul.recovery_surface.title", {}, era)}</button>{/if}
         {#if factTrue("feature.reputation_tree")}<button type="button" tabindex="0" aria-current={surface === "reputation_tree" ? "page" : undefined} onclick={() => show("reputation_tree")}>{t("reputation_tree.title", {}, era)}</button>{/if}
-        {#if runtime.garden && gardenVisible}<button type="button" tabindex="0" aria-current={surface === "garden" ? "page" : undefined} onclick={() => show("garden")}>{t("garden.title", {}, era)}</button>{/if}
+        {#if runtime.garden && gardenPresence === "present"}<button type="button" tabindex="0" aria-current={surface === "garden" ? "page" : undefined} onclick={() => show("garden")}>{t("garden.title", {}, era)}</button>{/if}
         <button type="button" tabindex="0" aria-current={surface === "settings" ? "page" : undefined} onclick={() => show("settings")}>{t("surface.settings.title", {}, era)}</button>
       </nav>
       {#if snapshot.run.run_seq === 1 && visitorCount !== undefined}<span class="visitor" title={t("chrome.visitor_counter.tooltip", {}, era)}>{t("chrome.visitor_counter.frame", { count: visitorCount }, era)}</span>{/if}
@@ -900,12 +935,14 @@
     <PetCareSurface pets={liveFeatures.pet_adoption.pets} cosmetics={liveFeatures.cosmetics ?? null} {era} {pending} controlsEnabled={founderControls && transportReady} reducedMotion={prefersReducedMotion} notice={intentNoticeOwner === "pet" ? intentNotice : null}
       onCare={(petID, actionID) => act({ kind: "care_action", pet_id: petID, action_id: actionID }, { scope: "founder", rejections: CARE_REJECTIONS, applied: () => "pet.care.applied" })} />
   {:else if snapshot && surface === "garden" && runtime.garden}
-    <GardenSurface port={runtime.garden} {era} {pending} controlsEnabled={founderControls} refreshKey={gardenRefresh}
+    {#key gardenContext}
+    <GardenSurface port={gardenPort} {era} {pending} controlsEnabled={founderControls} refreshKey={gardenRefresh}
       rejection={intentNotice?.startsWith("error.garden.") ? intentNotice : null}
       onPlant={(row, col, species) => gardenAct({ kind: "garden_plant", row, col, species_id: species })}
       onUproot={(row, col) => gardenAct({ kind: "garden_uproot", row, col })}
       onHarvest={(plots) => gardenAct({ kind: "garden_harvest", plots: plots.map((plot) => ({ row: plot.row, col: plot.col })) })}
       onSetSubstrate={(substrate) => gardenAct({ kind: "garden_set_substrate", substrate_id: substrate })} />
+    {/key}
   {:else if snapshot && surface === "soul_recovery" && runtime.soulRecovery}
     <SoulRecoverySurface port={runtime.soulRecovery} content={loadSoulRecoveryContent()} {era} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
   {:else if snapshot && surface === "settings"}

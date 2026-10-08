@@ -2873,3 +2873,34 @@ the actual browser runtime, not a real Go/Postgres maturation/payout or long-ses
 No server/wire/clock/payout/copy/kernel/content/CI/budget change; no Firefox/manual AT/full-CI,
 Garden acceptance, archive or push claim. Browser renewal, SG13, RP-222 and prior review debt
 remain. Next: continue accepted Garden/host integration, not repeat this finished connection fix.
+
+## 2026-10-08 — Garden reads stay with their Founder/content context (RP-421)
+
+Outcome under SG2/SG9/SG10 and GS0.5/GS0.6: startup and mounted reads share current-context/
+latest-request presence. A confirmed inactive response removes the tab and returns a mounted
+Garden to Desk without overriding newer navigation. Founder/content changes re-probe and
+replace the component; old responses cannot revive its tab/grid. Same-Founder, same-bundle
+Company changes preserve the Garden/menu. Removed Garden content/nav focus recovers safely.
+
+Old `eb475bd0` fails all ten lifecycle regressions89537. Initial correction73636 passes those;
+companions47835 and32280 expose missing replacement-focus recovery for the old panel and nav
+(two failures each). Both corrected without weakening assertions. Final selected population:
+`make test-browser-focused BROWSER_TEST_FLAGS='test/garden-surface-browser.test.ts test/garden-surface-witnesses-browser.test.ts test/garden-host-browser.test.ts test/garden-refresh-browser.test.ts test/garden-fiscal-browser.test.ts test/garage-surfaces-browser.test.ts test/game-ui-screens-browser.test.ts --project=chromium --project=webkit'`
+24600 passes1148/four existing separate-performance skips. Types/boundaries47970 pass with zero
+diagnostics. Passive module traces are output-truncated; terminal counts are retained, not
+treated as a new raw measurement study.
+
+Whole `make test-game-ui-composed`87643 exits0:35 tool controls, actual Postgres refresh8 plus
+seven integration parents, exact production-client gameplay/Fiscal/Pitch/both early endings/
+continuation/recovery, default/Clout Cosmetic/adoption/care and both forbidden-payment controls.
+The target builds the changed client; no concurrent build or source edit occurred during it.
+The new Garden lifecycle cases themselves use actual runtime/generated parsing with injected
+HTTP/socket responses, not real account-switching, Garden growth or payout. No server, wire,
+clock, copy, kernel, content mint, CI policy or test-budget change.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact range `eb475bd0`
+exclusive through this source/test/docs/records commit awaits designated cross-party review;
+it may consolidate with earlier Garden ranges. No full-CI/Firefox/manual AT/performance,
+whole Garden acceptance, archive or push claim. Renewal, SG13 and RP-222 remain. Next: remaining
+accepted SG10 help/focus-accessible disclosure and consolidated review; do not repeat this
+finished context study or the known renewal-blocked long-session journey.

@@ -5,7 +5,14 @@ Fixture-first: no production mint (SG13). Numbering is landing-order: the RFC's 
 means next-free, and at landing that is **Founder v25** (v22 Reputation, v23 Pet, v24 Cosmetics).
 Replay inputs take the next free wire version, and the event migration takes the next free number.
 
-**Latest bounded instrument work, 2026-10-07:** RP-348 under `a9fadedd` adds
+**Current execution, 2026-10-08:** pending/response-focus, connection-state and current-context
+read/visibility corrections are locally verified (RP-409/RP-410/RP-420/RP-421); designated
+review remains open. The latest [owning log](log.md) records exact ranges and checks. Continue
+remaining SG10 help/focus-accessible disclosure and consolidated review, not repeated loader
+diagnostics or the renewal-blocked long-session journey. SG13, RP-222 and browser renewal remain
+separate holds; G1–G7 below still mean implementation presence, not feature acceptance.
+
+**Historical bounded instrument work, 2026-10-07:** RP-348 under `a9fadedd` adds
 full child-result/elapsed diagnostics without changing any raw input, admission
 assertion, loader program, 1000ms guard or 10000ms outer bound. Two real Node
 controls exercise pre-entry exception and entered nontermination. Three restored

@@ -77,12 +77,14 @@ function button(target: HTMLElement, text: string): HTMLButtonElement {
   return found;
 }
 
-async function mounted(initial: GardenCurrentResponse = active(), connected = true) {
+async function mounted(initial: GardenCurrentResponse = active(), connected = true, options: { holdInitialGarden?: boolean } = {}) {
   let currentSnapshot = snapshot(7), currentGarden = initial;
   const data = new Map([["cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "garden-host-token", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" })]]);
   const storage: RuntimeStorage = { getItem: (key) => data.get(key) ?? null, setItem: (key, value) => { data.set(key, value); }, removeItem: (key) => { data.delete(key); } };
   const requests: { path: string; method: string; auth: string | null; body: unknown }[] = [];
   let release: ((value: unknown) => void) | undefined;
+  let holdGardenRead = options.holdInitialGarden ?? false;
+  let releaseGarden: ((value: GardenCurrentResponse) => void) | undefined;
   const sockets: Socket[] = [];
   const urls: string[] = [];
   const runtime = createBrowserGameUIRuntime(storage, async (input, init) => {
@@ -91,7 +93,12 @@ async function mounted(initial: GardenCurrentResponse = active(), connected = tr
     requests.push({ path, method, auth: new Headers(init?.headers).get("Authorization"), body });
     let response: unknown;
     if (path === "/api/v1/founder/state" && method === "GET") response = currentSnapshot;
-    else if (path === "/api/v1/garden/current" && method === "GET") response = currentGarden;
+    else if (path === "/api/v1/garden/current" && method === "GET") {
+      if (holdGardenRead) {
+        holdGardenRead = false;
+        response = await new Promise<GardenCurrentResponse>((resolve) => { releaseGarden = resolve; });
+      } else response = currentGarden;
+    }
     else if (path === "/api/v1/intents" && method === "POST") response = await new Promise((resolve) => { release = resolve; });
     else throw new Error(`unexpected HTTP ${method} ${path}`);
     return new Response(JSON.stringify(response), { status: 200, headers: { "Content-Type": "application/json" } });
@@ -108,8 +115,12 @@ async function mounted(initial: GardenCurrentResponse = active(), connected = tr
     target, requests, sockets,
     get socket() { return sockets.at(-1)!; },
     set(view: GardenCurrentResponse, revision: number) { currentGarden = view; currentSnapshot = snapshot(revision); },
+    context(view: GardenCurrentResponse, value: GameUISnapshot) { currentGarden = view; currentSnapshot = value; },
+    holdGarden() { if (releaseGarden) throw new Error("Garden read already held"); holdGardenRead = true; },
+    resolveGarden(value: GardenCurrentResponse) { if (!releaseGarden) throw new Error("no held Garden read"); const resolve = releaseGarden; releaseGarden = undefined; resolve(value); },
     acknowledge(value: unknown) { if (!release) throw new Error("no pending intent"); const resolve = release; release = undefined; resolve(value); },
     async dispose() {
+      releaseGarden?.({ kind: "inactive" }); releaseGarden = undefined;
       release?.({ outcome: "rejected", intent_id: "cleanup", current_revision: 8, rejection: { category: "not_eligible", detail: "plot_occupied" } });
       await settle(); await unmount(app); target.remove(); expect(sockets.at(-1)!.closed).toBe(true);
     },
@@ -139,6 +150,134 @@ const cases = [
   { name: "harvest-all", kind: "garden_harvest", fields: { plots: [{ row: 0, col: 0 }, { row: 0, col: 1 }, { row: 1, col: 1 }] }, at: null, action: "Harvest all mature" },
   { name: "substrate", kind: "garden_set_substrate", fields: { substrate_id: "mainframe" }, at: null, action: "Mainframe" },
 ] as const;
+
+for (const newerNavigation of [false, true]) {
+  it.skipIf(!browser)(`Garden lifecycle inactive read ${newerNavigation ? "preserves newer navigation" : "returns to Desk"}`, async () => {
+    const host = await mounted();
+    try {
+      button(host.target, "Server Garden").click(); await settle();
+      button(host.target, "Harvest all mature").focus();
+      host.holdGarden(); host.set({ kind: "inactive" }, 8);
+      host.socket.receipt(); await settle();
+      const settings = button(host.target, "Settings");
+      if (newerNavigation) { settings.focus(); settings.click(); await settle(); }
+      host.resolveGarden({ kind: "inactive" }); await settle();
+      expect([...host.target.querySelectorAll("nav button")].some((node) => node.textContent?.trim() === "Server Garden")).toBe(false);
+      expect(host.target.querySelector(".garden")).toBeNull();
+      expect(document.activeElement).toBe(newerNavigation ? settings : host.target.querySelector("#desk-heading"));
+      if (newerNavigation) expect(host.target.querySelector("#settings-heading")).not.toBeNull();
+      expect(host.intents()).toEqual([]); host.assertHTTP();
+    } finally { await host.dispose(); }
+  });
+}
+
+for (const context of ["founder", "content"] as const) {
+  it.skipIf(!browser)(`Garden lifecycle ${context} change replaces the old grid and ignores its late read`, async () => {
+    const host = await mounted();
+    try {
+      host.holdGarden(); button(host.target, "Server Garden").click(); await settle();
+      expect(host.target.querySelector(".garden .grid")).toBeNull();
+      const next = snapshot(8);
+      if (context === "founder") next.run.founder_id = "01985555-2222-7222-8222-222222222222";
+      else next.constants_hash = `sha256:${"b".repeat(64)}`;
+      const view = active(8); view.garden.substrate_id = "containerized";
+      host.context(view, next); host.socket.resync(); await settle();
+      await expect.poll(() => host.sockets.length).toBe(2);
+      host.socket.connect(); await settle();
+      host.resolveGarden(active()); await settle();
+      expect(button(host.target, "Containerized").getAttribute("aria-pressed")).toBe("true");
+      expect(button(host.target, "Bare metal").getAttribute("aria-pressed")).toBe("false");
+      expect(host.intents()).toEqual([]);
+      button(host.target, "Mainframe").focus();
+      const { userEvent } = await import("vitest/browser");
+      await userEvent.keyboard("{Enter}"); await settle();
+      expect(host.intents()).toEqual([{ intent_id: expect.any(String), expected_revision: 8,
+        kind: "garden_set_substrate", substrate_id: "mainframe" }]);
+      host.assertHTTP();
+    } finally { await host.dispose(); }
+  });
+}
+
+it.skipIf(!browser)("Garden lifecycle late previous-Founder startup probe cannot revive the new Founder's inactive tab", async () => {
+  const host = await mounted(active(), true, { holdInitialGarden: true });
+  try {
+    const next = snapshot(8); next.run.founder_id = "01985555-2222-7222-8222-222222222222";
+    host.context({ kind: "inactive" }, next); host.socket.resync(); await settle();
+    await expect.poll(() => host.sockets.length).toBe(2);
+    host.socket.connect(); await settle();
+    host.resolveGarden(active()); await settle();
+    expect([...host.target.querySelectorAll("nav button")].some((node) => node.textContent?.trim() === "Server Garden")).toBe(false);
+    expect(host.reads()).toBe(2);
+    expect(host.intents()).toEqual([]); host.assertHTTP();
+  } finally { await host.dispose(); }
+});
+
+it.skipIf(!browser)("Garden lifecycle Company change retains its Founder-owned grid and open menu", async () => {
+  const host = await mounted();
+  try {
+    button(host.target, "Server Garden").click(); await settle();
+    const plot = cell(host.target, 1, 0);
+    plot.focus(); plot.click(); await settle();
+    const menu = host.target.querySelector(".garden .menu");
+    const next = snapshot(8); next.run.run_seq = 2; next.revision = 42;
+    host.context(active(8), next); host.socket.resync(); await settle();
+    await expect.poll(() => host.sockets.length).toBe(2);
+    host.socket.connect(); await settle();
+    expect(cell(host.target, 1, 0)).toBe(plot);
+    expect(host.target.querySelector(".garden .menu")).toBe(menu);
+    expect(host.reads()).toBe(2); // Neither Founder nor catalog changed.
+    const { userEvent } = await import("vitest/browser");
+    button(host.target, "Plant Strain A (PENDING OWNER NAME)").focus();
+    await userEvent.keyboard("{Enter}"); await settle();
+    expect(host.intents()).toEqual([{ intent_id: expect.any(String), expected_revision: 8,
+      kind: "garden_plant", row: 1, col: 0, species_id: "strain_a" }]);
+    host.assertHTTP();
+  } finally { await host.dispose(); }
+});
+
+it.skipIf(!browser)("Garden lifecycle new content discovers a previously inactive Garden", async () => {
+  const host = await mounted({ kind: "inactive" });
+  try {
+    const next = snapshot(8); next.constants_hash = `sha256:${"b".repeat(64)}`;
+    host.context(active(8), next); host.socket.resync(); await settle();
+    await expect.poll(() => host.sockets.length).toBe(2);
+    host.socket.connect(); await settle();
+    button(host.target, "Server Garden").click(); await settle();
+    expect(cell(host.target, 0, 0).dataset.stage).toBe("mature");
+    expect(host.reads()).toBe(3);
+    expect(host.intents()).toEqual([]); host.assertHTTP();
+  } finally { await host.dispose(); }
+});
+
+it.skipIf(!browser)("Garden lifecycle older same-context probe cannot revive a newer inactive surface", async () => {
+  const host = await mounted();
+  try {
+    button(host.target, "Server Garden").click(); await settle();
+    const next = snapshot(8); next.constants_hash = `sha256:${"b".repeat(64)}`;
+    host.holdGarden(); host.context(active(8), next); host.socket.resync(); await settle();
+    await expect.poll(() => host.sockets.length).toBe(2);
+    host.socket.connect(); await settle();
+    expect(host.reads()).toBe(4); // Held context probe plus fresh mounted read.
+    host.context({ kind: "inactive" }, next); host.socket.receipt(); await settle();
+    expect(host.target.querySelector(".garden")).toBeNull();
+    host.resolveGarden(active(8)); await settle();
+    expect([...host.target.querySelectorAll("nav button")].some((node) => node.textContent?.trim() === "Server Garden")).toBe(false);
+    expect(host.intents()).toEqual([]); host.assertHTTP();
+  } finally { await host.dispose(); }
+});
+
+for (const focus of ["harvest", "navigation"] as const) it.skipIf(!browser)(`Garden lifecycle replaced ${focus} focus stays usable`, async () => {
+  const host = await mounted();
+  try {
+    button(host.target, "Server Garden").click(); await settle();
+    const origin = button(host.target, focus === "harvest" ? "Harvest all mature" : "Server Garden"); origin.focus();
+    const next = snapshot(8); next.constants_hash = `sha256:${"b".repeat(64)}`;
+    host.context(active(8), next); host.socket.resync(); await settle();
+    if (focus === "harvest") expect(origin.isConnected).toBe(false);
+    expect(document.activeElement).toBe(origin.isConnected ? origin : host.target.querySelector("#garden-heading"));
+    expect(host.intents()).toEqual([]); host.assertHTTP();
+  } finally { await host.dispose(); }
+});
 
 for (const state of ["not-ready", "recovering", "resync"] as const) {
   it.skipIf(!browser)(`Garden connection ${state} visibly disables commands until the real handshake recovers`, async () => {

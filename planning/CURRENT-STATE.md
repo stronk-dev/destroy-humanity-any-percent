@@ -35,7 +35,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
-- Latest finished product batch `267dbf55` connects actual pet-status events to the mounted
+- Garage batch `267dbf55` connects actual pet-status events to the mounted
   Pet Care surface and fixes an announcement collision: distinct events committed at the same
   revision no longer suppress one another, while replays remain silent. Old-source regressions
   fail; 158 affected Node and 814 Chromium/WebKit checks pass, alongside types/build/copy checks.
@@ -96,12 +96,14 @@ queue and current verification, not a claim to have rerun every acceptance crite
   client tests, types, vectors and vet. The broader production population still fails the same
   27 Clout partition cases, and the historical kernel guard remains red. The Cosmetic log owns
   the exact commands and pending designated review; this does not complete Cosmetic acceptance.
-- Garden pending and response-focus repairs (RP-409/RP-410) are locally verified: native
-  pending activation cannot duplicate a command, menu handoffs respect newer choices, and
-  response rendering recovers usable focus when Harvest all disappears or substrates lock.
-  Final affected Chromium/WebKit128, types/build/boundaries pass. This is controlled actual-host
-  evidence, not real maturation/payout, full accessibility, hosted CI or Garden acceptance;
-  the Garden log owns the exact review ranges, which still need designated review.
+- Garden pending/focus, connection and read-context repairs (RP-409/RP-410/RP-420/RP-421) are
+  locally verified. Inactive reads remove the tab; Founder/content changes discard old grids
+  and late reads, while ordinary same-Founder Company changes preserve the Garden. Broader
+  Chromium/WebKit1148 pass/four separate performance skips, types/boundaries and the whole
+  real-service composed target pass. New lifecycle cases use injected HTTP/socket boundaries,
+  not an implemented account-switching UX or real Garden maturation/payout proof. The
+  [Garden log](minigame-server-garden/log.md) owns exact review ranges, still pending; renewal,
+  full accessibility, hosted CI and Garden acceptance remain open.
 - Pet economy-isolation evidence (RP-408) now compares actual adoption/no-adoption inputs through
   the pacing consumer: all97 paired seeds pass, as do both Company Exit paths in Go/TS with
   deliberate economic-input/Company-write controls. The complete native harness CI target passes;
