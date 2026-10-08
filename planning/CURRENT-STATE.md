@@ -33,12 +33,27 @@ queue and current verification, not a claim to have rerun every acceptance crite
 | MMO and later game | Commons, guild, faction, doctrine and combat arithmetic primitives exist. | Complete world/feed/ticker/social surfaces, combat engines/integration and fair bot backfill, Tier 3–8 content, challenge/category set and all final endings. These are substantial unbuilt work, not merely closeout paperwork. |
 | Deployment / operations | Accepted single-node Compose/Caddy floor; packaging, configuration, encrypted backup, release/rollback and operations tooling implemented with several bounded corrective approvals. | Remaining findings and exact-range reviews; rebuild current candidate/previous bundles; R-006 clean Linux-host install/restore/rollback rehearsal. Historical bundles and native helper tests do not establish current release readiness. |
 
+### What the weeks of work have delivered
+
+The working engine, persisted early-game loop and selected real-service player journeys are
+substantial implementation progress. Tier-2 candidate construction, security/recovery witnesses,
+backup restore checks and concrete UI/lifecycle corrections add useful capability and confidence.
+Audit, research, review and record repairs are not additional playable content; their volume must
+not be presented as equivalent progress toward the remaining tiers. This is still an early-game
+development build, not a nearly finished 1.0 awaiting deployment.
+
+The next delivery boundaries are completing Garage's missing integrated capabilities; resolving
+the specific numeric, clock, Headcount and public-wire contracts; adopting and validating content;
+and building the world/combat/later-tier game. Rights, recovery, accessibility and real clean-host
+operations remain required alongside that construction, not optional end-stage polish.
+
 ### Current verification and closeout
 
-- Latest published source: `20a57019` (2026-10-08); local source is `e478b248`, two commits
-  ahead before this editorial checkpoint (Garden diagnostics and Arcade admission correction).
+- Latest published source recorded here: `20a57019` (2026-10-08); local source is `1bc8ce93`,
+  four commits ahead before this editorial checkpoint (Garden diagnostics, Arcade admission,
+  full-backup evidence and bounded original Tier-2 C1–C4 review).
   The earlier large unpushed counts are historical, not the current branch state. Codex did
-  not push during this reconciliation. No hosted result exists here for those two local commits.
+  not push during this reconciliation. No hosted result is recorded here for those local commits.
   [Hosted CI 37763502364](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37763502364)
   is **RED: three jobs pass, three fail**, with all six jobs terminal:
   schema, harness and composed pass; client, server and browser fail.

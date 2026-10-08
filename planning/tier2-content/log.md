@@ -333,3 +333,20 @@ is in-memory ApplyLogged, not persistence. Full integration remains required aft
 content preparation, not waived by this approval. C5/C6 review, RP-413/RP-414, pacing/relevance,
 copy/SHA adoption, mint and the full nine-tier goal remain open. No product edit, acceptance
 checkbox, lifecycle/archive, deployment or push is performed in this review.
+
+## 2026-10-08 — C5/C6 review checkpoint before whole-product status handoff
+
+At source `1bc8ce93`, cold `make test-go GO_PACKAGES='./harness'
+GO_TEST_FLAGS='-count=1 -run TestTier2 -v'`83704 exits0: the actual pacing reach/refusal/
+unreached test and the six-row candidate test pass. `TestTier2PacingCalibration` explicitly
+SKIPS because its exhaustive opt-in is unset. No calibration or combined relevance experiment
+was rerun, so this is not independent reproduction of either recorded measurement and gives
+no C5/C6 designated approval. The candidate test's six added-row checks are not an assertion
+that all inherited policy fields are unchanged. Historical finite gate samples likewise must
+not be read as independently established proof about every literal in a continuous interval.
+
+Review by: Codex (partial cross-party inspection, no acceptance verdict). Recorded by: Codex.
+C1–C4's preceding bounded approval stands; C5/C6 review and full Tier-2 acceptance remain open.
+Next in this lane: complete the measurement/policy review and resolve the recorded pacing,
+relevance and Headcount boundaries before mint/integration acceptance. No product changes,
+report regeneration, checkbox promotion, archive or push in this checkpoint.
