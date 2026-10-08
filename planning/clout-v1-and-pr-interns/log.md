@@ -2474,3 +2474,34 @@ Next: resolve those definitions while continuing other accepted construction.
 Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 `627e0f9e` exclusive through this containing implementation/test/record commit
 requires designated cross-party review. No acceptance/archive or push.
+
+## 2026-10-08 — RP-462 producer observation freshness
+
+At `1fe602e2`, the broader client check55351 fails exactly the R-012 producer
+source binding (10318 pass/977 explicit skips); ordinary Go75894 independently
+fails `research source/results drifted`. Cosmetic7f94671a changed the pinned
+save decoder; no diagnostic census source changed in the intervening Typer fix.
+
+Re-executed the existing predeclared64-profile observation, with no changed
+population, thresholds, instrument or production source:
+`make test-go GO_PACKAGES='./production'
+GO_TEST_FLAGS='-run TestAxisRateSerializationResearch -v -count=1'
+UPDATE_RATE_RESEARCH=1`43429 passes. Structural comparison to committed artifact
+confirms only `source_sha256[server/save/state.go]` changes. All64 rows, fourteen
+source names, fixture hash,64 precision changes/five payout differences and
+`NOT_PROVEN: production AC6 remains red` are unchanged. No manual hash edit.
+
+Ordinary cold producer replay/vet1991 passes. Full `make test-client`22451 exits0:
+10319 pass/977 explicit skips. Declared `make test-go-ci
+CI_TEST_PACKAGES='./production'
+CI_TEST_FLAGS='-run "TestAxisRateSerializationResearch|TestTyperAPIStartIntegrationUsesPinnedTierAndExit" -v'`
+76993 passes both named populations on Linux-amd64/real Postgres, none skipped.
+This is affected CI-environment evidence, not full server/hosted CI, a new SQL
+measurement, natural progression or closure of RP-307/AC6. Diff check passes.
+
+Review by: Codex (measurement implementer first filter). Recorded by: Codex.
+Exact new artifact/dossier/record range `1fe602e2` exclusive through this
+containing commit requires Claude's designated review. All earlier review debt
+remains. No runtime, kernel, API, balance, CI-workflow, acceptance or release
+change. Next safe work: remaining accepted integrations/reviews; do not repeat
+the completed64-profile study or infer the held numeric/owner rulings.

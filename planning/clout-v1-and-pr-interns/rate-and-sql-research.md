@@ -1,5 +1,17 @@
 # R-012 — live rate precision and Postgres fidelity
 
+## Producer observation freshness — 2026-10-08
+
+The full client suite detected RP-462: Cosmetic save-admission repair `7f94671a`
+changed a pinned source, so the old observation no longer certified current source.
+The existing Go writer re-executed all64 producer profiles at `1fe602e2`.
+All observations, fixture identity, counts and `NOT_PROVEN` status are unchanged;
+only the `server/save/state.go` source digest changes. This was measured, not a
+hand-edited digest. Ordinary Go replay and the independent full client suite pass
+after regeneration. The owning [log](log.md) retains the failing checks and exact
+verification/review boundary. RP-307/AC6 remains unresolved; no new numeric,
+SQL, persistence or production contract follows from this freshness repair.
+
 ## Follow-up — existing Company context through SQL (2026-10-08)
 
 The original study below separated CPU restoration of the actual producer context

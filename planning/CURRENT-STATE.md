@@ -49,6 +49,15 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest checkpoint (2026-10-08): original Typer B3/B4 reviews are complete as
+  CHANGES REQUIRED; RP-461's raw unlock admission is locally corrected at `1fe602e2`.
+  Affected Node/native Chromium-WebKit, cold Go/vet and type/build checks pass.
+  Broader client verification exposed RP-462's stale producer source identity;
+  actual64-profile re-observation preserves every result and changes only that
+  source digest. Full client now passes10319 with977 explicit skips; selected
+  Linux-amd64/Postgres producer/start tests also pass. Owning Typer/Clout logs
+  retain exact evidence and pending corrective review. This is not whole CI,
+  public Typer integration, a numeric-contract ruling or feature acceptance.
 - Latest Cosmetic review checkpoint (2026-10-08): all original C1–C8 diffs now have
   recorded dispositions, not blanket approval of corrected descendants. C5's
   newly reproduced RP-458 is locally corrected: unowned unavailable items require
