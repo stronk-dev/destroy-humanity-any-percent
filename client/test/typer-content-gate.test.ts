@@ -187,6 +187,24 @@ describe("Typer shared content gate", () => {
     ]) expect(() => parseTyperCatalog(mutate(change), keys)).toThrow();
   });
 
+  it("requires numeric era tiers in catalog loading and tenant creation", async () => {
+    for (const minTier of [0, 1, null, "0", false, [], {}, 0.5, -1, 10]) {
+      const value = JSON.parse(content);
+      value.eras[0].min_tier = minTier;
+      const candidate = JSON.stringify(value);
+      const identity = { content: candidate, content_hash: await typerContentHash(candidate), content_schema_version: 1,
+        seed: 42n, mode: "solo" as const, scaling_inputs: { "typer.era_tier": 1 } };
+      if (minTier === 0 || minTier === 1) {
+        expect(parseTyperCatalog(value, new Set(COPY_KEYS)).eras[0]?.min_tier).toBe(minTier);
+        expect(JSON.parse(await createTyper(identity))).toMatchObject({ phase: "ready", typer_content_hash: identity.content_hash });
+      } else {
+        expect(() => parseTyperCatalog(value, new Set(COPY_KEYS))).toThrow(SyntaxError);
+        await expect(createTyper(identity)).rejects.toThrow(SyntaxError);
+      }
+      expect(JSON.stringify(value)).toBe(candidate);
+    }
+  });
+
   it("rejects scaling below the pinned tier-one clamp even with a valid tier-zero era", async () => {
     const value = JSON.parse(content);
     value.eras[0].min_tier = 0;

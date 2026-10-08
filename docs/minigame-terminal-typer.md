@@ -16,6 +16,7 @@ The exact-key catalog has `policy`, `eras` and `prompts`. Both loaders, `server/
 - non-printable-ASCII prompt text, and leading, trailing or doubled spaces;
 - unsorted prompt IDs;
 - unknown eras or copy keys;
+- null or nonnumeric era `min_tier` values (a genuine numeric zero is valid);
 - `max_line_bytes` outside 1..1024;
 - any reachable `era_tier` in 1..9 whose cumulative pool (OD-6) cannot deal `run_length`
   prompts.

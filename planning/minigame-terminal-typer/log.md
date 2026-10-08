@@ -761,3 +761,30 @@ containing commit requires Claude's designated review. B1 remains partial with
 RP-162 and the remaining review; public C2/content/AT/whole feature/CI remain
 open. No checkbox, acceptance, archive or push. Continue the accepted engine
 review; held public API contracts cannot be invented to complete registration.
+
+## 2026-10-08 — B1 exact catalog tier admission (RP-402)
+
+TT3 correction: era min_tier must be a number, not null coerced to zero. The
+corrected old-source regression22999 fails only null: loader accepts tier0 and
+both tenant/registry create a ready snapshot. Genuine numeric0/1 and seven other
+invalid type/range controls pass; TS already refuses null in loader and creation.
+Initial65503 also wrongly expected the tenant's error class at the registry
+boundary; corrected to its existing non-taxonomy-error divergence, then reran
+before any product edit. Those seven test-author failures are not product evidence.
+
+The bounded raw-era admission check preserves numeric zero and the existing
+range/reachability rules. Kernel171->172 is a genuine loader acceptance-set bump;
+no content bytes, policy, command, API, time or payout behavior changed.
+Cold four-package Go5709/vet57816 pass. Node76756 passes22 and native Chromium/
+WebKit58832 passes98. Types/build/boundaries/corpus19389 pass with zero errors/
+warnings. Real Postgres58289 executes all four Typer service/tenant-row tests,
+including start refusal, unlock/play/Exit, replay quota and timed/untimed payout
+neutrality. These service checks are not the still-unavailable public Typer
+HTTP/browser journey. Diff check passes.
+
+Review by: Codex (original B1 targeted finding; correction implementer first
+filter). Recorded by: Codex. Exact new range `ed92ede7` exclusive through this
+containing commit needs Claude's designated review. B1, RP-162, public C2/content
+mint, AT, full CI and older review spans remain open. No checkbox/acceptance/
+archive/push. Continue the remaining accepted review; the separate first-read
+Retry posture question is delivered, not an owner ruling or implementation grant.

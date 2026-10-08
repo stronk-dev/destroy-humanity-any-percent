@@ -81,7 +81,12 @@ func LoadCatalog(data []byte, declarations Declarations) (*Catalog, error) {
 		return nil, ErrInvalidCatalog
 	}
 	for _, row := range raw.Eras {
-		if !hasExactJSONKeys(row, "era_id", "min_tier", "copy_key") {
+		// A null integer otherwise silently decodes to tier zero.
+		var era struct {
+			MinTier *int64 `json:"min_tier"`
+		}
+		if !hasExactJSONKeys(row, "era_id", "min_tier", "copy_key") ||
+			json.Unmarshal(row, &era) != nil || era.MinTier == nil {
 			return nil, ErrInvalidCatalog
 		}
 	}

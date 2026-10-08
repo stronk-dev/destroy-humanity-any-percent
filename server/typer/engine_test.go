@@ -102,6 +102,65 @@ func TestTyperCreateRejectsScalingBelowPinnedClamp(t *testing.T) {
 	}
 }
 
+func TestTyperCatalogRequiresNumericEraTier(t *testing.T) {
+	registry, err := minigame.NewTenantRegistry(NewTenant())
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, test := range []struct {
+		name  string
+		value any
+		valid bool
+	}{
+		{"zero", 0, true}, {"one", 1, true},
+		{"null", nil, false}, {"string", "0", false}, {"boolean", false, false},
+		{"array", []any{}, false}, {"object", map[string]any{}, false},
+		{"fraction", 0.5, false}, {"negative", -1, false}, {"above_max", 10, false},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			content := mutateFixture(t, func(value map[string]any) {
+				value["eras"].([]any)[0].(map[string]any)["min_tier"] = test.value
+			})
+			catalog, err := LoadCatalog(content, declarations())
+			if test.valid {
+				if err != nil || catalog == nil || len(catalog.Eras) != 1 || catalog.Eras[0].MinTier != int64(test.value.(int)) {
+					t.Fatalf("numeric tier must load unchanged: %+v %v", catalog, err)
+				}
+			} else if !errors.Is(err, ErrInvalidCatalog) || catalog != nil {
+				t.Errorf("malformed tier must refuse, not coerce: %+v %v", catalog, err)
+			}
+			input := minigame.CreateInput{Mode: minigame.ModeSolo, Seed: 42,
+				ScalingInputs: map[string]int64{ScalingDestination: 1}, Content: content,
+				ContentHash: ContentHash(content), ContentSchemaVersion: SchemaVersion}
+			for path, create := range map[string]func(minigame.CreateInput) (json.RawMessage, error){
+				"tenant": NewTenant().Create,
+				"registry": func(input minigame.CreateInput) (json.RawMessage, error) {
+					return registry.Create(EngineRef, EngineVersion, input)
+				},
+			} {
+				before := append([]byte(nil), content...)
+				snapshot, err := create(input)
+				refusal := minigame.ErrInvalidTenant
+				if path == "registry" {
+					// Registry creation maps non-taxonomy tenant failures to divergence.
+					refusal = minigame.ErrTenantDivergence
+				}
+				if test.valid {
+					var value Snapshot
+					if err != nil || json.Unmarshal(snapshot, &value) != nil || value.Phase != PhaseReady || value.TyperContentHash != input.ContentHash {
+						t.Errorf("%s valid tier must create pinned ready state: %s %v", path, snapshot, err)
+					}
+				} else if !errors.Is(err, refusal) || len(snapshot) != 0 {
+					t.Errorf("%s malformed tier must refuse without state: %s %v", path, snapshot, err)
+				}
+				if !bytes.Equal(content, before) {
+					t.Fatalf("%s changed pinned content", path)
+				}
+			}
+		})
+	}
+}
+
 type harness struct {
 	t        *testing.T
 	content  []byte
