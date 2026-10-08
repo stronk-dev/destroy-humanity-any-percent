@@ -19,7 +19,10 @@ lockout deadline, keep the old lock on read failure, and never unlock from clien
 real-service harvest journey passes. RP-468's startup lookup now has a controlled reproduction
 and test-only readiness correction; final bounded Linux population passes270 across three
 engines, not whole CI or proof of the original failure's unique cause. Continue remaining
-accepted feature review without repeating the held natural-growth journey. Exact evidence/review range is in
+accepted feature review without repeating the held natural-growth journey. Original G5–G7 now
+have complete designated CHANGES REQUIRED dispositions; finish the original G1–G4 coverage,
+then consolidate the separate corrective review ranges, without restarting G5–G7.
+Exact evidence/review range is in
 the owning log; no feature acceptance or previous corrective approval is implied.
 
 **Current integration batch:** `test-garden-harvest-composed` extends the existing real-service

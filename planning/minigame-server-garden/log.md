@@ -3200,3 +3200,58 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Test-only corre
 begins after `c54c6846`; designated cross-party review is pending. RP-430, natural growth/
 renewal, authored contract/content holds and prior review ranges remain independent.
 Continue remaining accepted Garden feature review; no checkbox, archival, release or push.
+
+## 2026-10-08 — Complete original G6/G7 designated dispositions
+
+Review by: Codex (designated cross-party reviewer of Claude's original implementations).
+Recorded by: Codex. These are two historical-range verdicts, not approval of Codex corrections.
+
+**G6 — CHANGES REQUIRED.** Exact reviewed range `e4ac04f8^..e4ac04f8`, all16 paths:
+projector/service, Account handler and schemas, registry/composition, tests and pinned views,
+generated API/TS, version pins and original completion records. The operation is authenticated,
+identity comes from the account, the projection clones state and the response schema is closed.
+RP-223 remains the blocking original implementation defect: the Service used handler time,
+not database time. RP-226 also records the original integration-evidence gap: its composed
+assertion proves only inactive. The original log's claim that active HTTP evidence requires
+a production mint is too strong; the later controlled-bundle HTTP test executes it without
+minting. Original AC10 enumeration is narrower than all public payloads. Later supplements
+and repairs have their own evidence/ranges and still need Claude; this verdict does not consume
+them as designated-approved. No additional production defect is claimed from this inspection.
+
+**G7 — CHANGES REQUIRED.** Exact reviewed range `725d8662^..725d8662`, all19 paths:
+surface/port, host/runtime/surface registry, browser and registry tests, candidate/generated copy,
+content-manifest identity, canonical docs and original completion records. Inspected the
+complete component, not just its later corrected descendant. Blocking original defects are
+RP-224's stale completion admission, RP-230's delayed near-tick refresh and RP-231's missing
+streamed-receipt refresh. The subsequent original-behavior reproductions also establish native
+traversal/pending/response-focus/readiness/context/help defects (RP-398/RP-409/RP-410/RP-420/
+RP-421/RP-422), plus independent lock-expiry scheduling RP-467. Their local corrections are
+not approved here. Original synthetic ArrowRight/programmatic clicks do not establish native
+Enter/Space/Tab or assistive-technology completion; the original log correctly leaves AC13 held.
+Structural generated-copy comparison verifies exactly13 added keys, no removed keys, unchanged
+prior candidate rows and CompanionKeys, and exact candidate-to-generated row equality. No
+launch copy is adopted and no content mint occurs. No new defect is claimed from this inspection.
+
+Current-source verification at `daeed3b6`, separately from the original-range verdicts:
+
+- 72033: `make test-go GO_PACKAGES='./production ./account'
+  GO_TEST_FLAGS='-count=1 -run GardenView -v'`, exit0: three projector tests and the four-view
+  schema/forbidden-salt test execute cold.
+- 26420: `make test-go-ci CI_TEST_PACKAGES='./production ./gameserver'
+  CI_TEST_FLAGS="-run '^(TestGardenRead|TestComposedGarden|TestComposedMinigameAPI)' -v"`, exit0.
+  Actual Linux-amd64/Postgres executes six salted/unsalted normal/±24h clock arms, read-source
+  failure controls, two-account public HTTP unlock/plant/substrate/uproot/retries/refusals,
+  read-only persistence checks and43 salt-free public payloads. The actual composed Pitch/API
+  lifecycle also executes; no DB skip is counted as evidence.
+- 86118: `make api-check copy-check verify-client-boundary`, exit0: API regeneration has zero
+  diff, copy history/generation and deployment copy identity pass, component boundaries and
+  their negative controls pass.669 keys/622 advisory orphan warnings are reported, not hidden.
+- Reuse the unchanged affected browser source's recorded final97590 at `aca464ac`:270 pass,
+  zero skips, all three declared Linux engines. Only editorial records changed after that
+  source; no duplicate whole-browser/performance or natural-growth run for these verdicts.
+
+All verification processes terminal; no product changes in this batch. Full original G1–G4
+dispositions still remain, despite their existing bounded findings/supplements. Original G5–G7
+are now fully dispositioned, not approved. Corrective cross-party review, RP-222/RP-229,
+renewal, launch content, AC13 and whole-feature acceptance remain open. No archive, push,
+deployment, current hosted-green or release claim.

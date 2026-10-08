@@ -62,8 +62,10 @@ operations remain required alongside that construction, not optional end-stage p
   pass; the declared Linux Chromium/Firefox/WebKit four-file population passes 270 checks,
   zero skips. This does not close every intermittent-input report or establish whole CI.
   Both ranges are committed, with no live verification process or uncommitted source work.
-  Original G6/G7 review, corrective-range review, author/content holds and natural growth/
-  renewal remain open; preliminary inspection is not a designated verdict.
+  Original G5–G7 now have complete designated CHANGES REQUIRED dispositions, not approval of
+  corrected descendants. Original G1–G4 coverage, corrective-range review, author/content
+  holds and natural growth/renewal remain open. The latest owning log records the full G6/G7
+  inspection and current cold real-Postgres/HTTP/schema/copy checks separately from the verdicts.
 - Earlier finished implementation checkpoint (`e15e0ff5`): Recovery's built-client journey
   now resumes the same committed session after actual gameserver process death and a lost
   reply, with unchanged persisted progress before reconnect and no credit for the missed
