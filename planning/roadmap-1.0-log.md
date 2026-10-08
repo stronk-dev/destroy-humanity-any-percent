@@ -5083,3 +5083,26 @@ recorded red at `f3851e8b`; no new hosted query or push was made. Editorial
 reconciliation uses source, owning logs/plans and diff inspection; no additional
 software suite just for this overview. All processes terminal; no publication,
 deployment or cleanup. Full nine-tier1.0 remains the active objective.
+
+## 2026-10-08 — Finish open work; owner-requested total progress overview
+
+Source `852a2b7f`: crash/lost-reply browser witness `75f5830b` is committed; the existing
+Minigame API log owns the whole-lane and final affected-journey passes, limits and pending
+designated review. RP-391's typed-dictionary proposal is committed as draft only, with
+owner choice and normative review pending. No schema/handler migration is claimed.
+
+Rechecked the product rollup against the active RFC index, Tier2/Headcount, combat, pet,
+Arcade/Garden and Deployment plans, actual client era boundary and latest owning logs.
+The product remains an early-game development build: T0–T1's integrated loop, candidate
+Tier2 and selected Garage features, not complete v0.1 or a nearly finished 1.0. Most recent
+work is corrective integration/recovery/review, not construction of Tiers3–8 or final endings.
+Rights/accessibility, balanced adopted content, full social/combat and current-artifact
+clean-host operations remain substantial work, not paperwork-only closeout.
+
+Read-only GitHub run/job inspection confirms latest published CI37795560514 at `cbd2069f`
+still fails client/server/browser while schema/harness/composed pass. The 23 local commits
+ahead at this source have no newer hosted verdict. No push, accepted draft or release claim.
+Updated existing current-state/roadmap entry points, not a new tracker. Verification for this
+editorial checkpoint is source/plan/log/job comparison and diff checking, not another software
+suite. Next work remains concrete accepted-feature integration and baseline repairs, with
+coherent review ranges and explicit contract choices; the full nine-tier goal stays active.

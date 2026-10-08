@@ -7,7 +7,10 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-08):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-08).
 We are integrating and hardening the Garage, with substantial later-tier construction still
-ahead. The Tier-2 research/review checkpoint is finished at `0d9a9f43`: bounded original C1–C5
+ahead. The latest committed player-path witness (`75f5830b`) adds browser recovery after
+server process death with a committed reply lost; it adds recovery evidence, not another tier.
+The RP-391 typed-dictionary amendment (`852a2b7f`) remains a draft prerequisite to generated
+intent-client migration, pending owner choice and review. The Tier-2 research/review checkpoint is finished at `0d9a9f43`: bounded original C1–C5
 approval, independently reproduced negative pacing/relevance evidence, a locally corrected
 inherited-policy test and an unresolved comparison-population contract. This is not a completed
 Tier-2 acceptance or a new release milestone. A new bounded native candidate journey now

@@ -49,6 +49,19 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Finished-work checkpoint (2026-10-08, source `852a2b7f`): the browser crash-recovery
+  witness is committed at `75f5830b`. The whole composed lane passed before the final
+  saved-snapshot/fault-wait tightening; the affected main journey then passed on the
+  final bytes against the real service/Postgres. It proves same-command retry after
+  a committed reply is lost during server process death, not DB/host disaster recovery.
+  Its owning [Minigame API log](minigame-api-and-surface/log.md) records the pending
+  designated range. The [typed-dictionary proposal](../rfc/api-typed-dictionaries.md)
+  is also committed, but remains draft: RP-391 blocks honest generated-client migration
+  of ordinary intent receipts. Owner choice and normative review remain pending;
+  drafting the prerequisite is not implementing or completing that migration.
+  Read-only GitHub inspection again confirms published CI `37795560514` at `cbd2069f`
+  is red: schema/harness/composed pass; client/server/browser fail. Later local repairs
+  and their pending reviews do not change that published verdict.
 - Latest checkpoint (2026-10-08): original Typer B3/B4 reviews are complete as
   CHANGES REQUIRED; RP-461's raw unlock admission is locally corrected at `1fe602e2`.
   Affected Node/native Chromium-WebKit, cold Go/vet and type/build checks pass.
