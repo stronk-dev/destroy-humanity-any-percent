@@ -913,3 +913,33 @@ Review by: Codex (implementer first filter); Recorded by: Codex. Exact new range
 `7cd232c5` through this coherent source/test/docs/record commit; designated review remains pending.
 Earlier ranges remain separately owed. All command sessions are terminal. No feature checkbox,
 archive, hosted-CI/release approval or push. Recovery/renewal and wider API construction remain open.
+
+## 2026-10-08 — Keep the revocation witness's healthy peer responsive during drain
+
+Outcome: RP-450 investigation under Account AC2 and Transport D4/AC5. The hosted error is
+the final drain, after revoked-before-connect, live denial and unrevoked-family subscription
+assertions passed. Original focused real-Postgres13068 passes23.80s; unchanged one/two-CPU
+controls73516 pass21.09s/16.06s. These are misses, not a reproduced cause or a closed defect.
+
+Confirmed fixture omission: the healthy control stops reading before drain. Centrifuge0.38's
+transport close waits up to5s for a peer handshake; its asynchronous Disconnect and hub
+shutdown can overlap. This is compatible with the recorded2s teardown deadline, not a
+demonstrated explanation of the hosted occurrence. The fixture now reads through drain and
+asserts the healthy peer actually receives4003; failed drain diagnostics name that phase.
+The same2s teardown and30s revocation guards, authentication, reauthentication cadence,
+revocation assertions and production bytes remain unchanged. No stalled-consumer or new
+production-policy claim follows.
+
+Coverage: corrected one/two-CPU Postgres42891 passes21.11s/18.27s with typed-close checks.
+Cold native gameserver/transport tests and vet46225 pass; native DB skips are not integration
+proof. Full `make test-go-ci CI_TEST_PACKAGES='./gameserver' CI_TEST_FLAGS='-v'`68738 passes
+all named cases without skips on declared Linux/amd64 and real Postgres (50.105s), including
+revocation14.26s, first-hour replay, verification, Garden, Minigame/Soul and drain cases.
+Gofmt and diff checks pass; all sessions terminal. Original hosted failure remains RP-450 OPEN;
+focused/full local passes are not hosted-green or reliability evidence.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new test/docs/
+plan/ledger/log range begins after `dcd9475d` through this commit; designated review pending.
+No product, timeout, retry, kernel, schema, balance, CI-workflow, acceptance, archive, push or
+release change. Next: retain this clearer witness for the next authorized hosted run, and
+diagnose the separate Firefox RP-451 under its existing surface contract.

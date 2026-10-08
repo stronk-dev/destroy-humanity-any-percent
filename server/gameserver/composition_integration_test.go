@@ -853,10 +853,18 @@ func TestComposedAccountFamilyRevocationRevalidatesSocketsIntegration(t *testing
 		t.Fatalf("unrevoked family control subscribe=%+v", reply)
 	}
 
+	// This is a healthy control peer, not a stalled-consumer fixture. Keep
+	// reading through drain so the WebSocket close handshake is acknowledged.
+	// Otherwise teardown can race Centrifuge's five-second close-frame wait.
+	controlClosed := make(chan websocket.StatusCode, 1)
+	go func() { controlClosed <- waitSocketCloseStatus(t, unrevoked.connection, 2*time.Second) }()
 	drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancelDrain()
 	if err := composition.Server.Drain(drainContext, time.Now()); err != nil {
-		t.Fatal(err)
+		t.Fatalf("drain after successful revocation and unrevoked-family assertions: %v", err)
+	}
+	if status := <-controlClosed; status != websocket.StatusCode(transport.CloseServerDrain) {
+		t.Fatalf("healthy control drain close=%d want=%d", status, transport.CloseServerDrain)
 	}
 }
 

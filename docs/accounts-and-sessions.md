@@ -118,6 +118,11 @@ Founder archival, import, deletion/anonymization, and rate limiting against Post
 The integration suite also forces a legitimate rotation to race a replay and proves that no
 descendant refresh or access token remains live. The account path also proves stored-parameter
 credential upgrade and anonymized Founder/import-marker retention after deletion.
+The composed socket-revocation witness checks revoked-before-connect and already-connected
+denials, plus a separate unrevoked family. That healthy control keeps reading through teardown
+and must observe server-drain code 4003 within the existing two-second test window; it is not
+a stalled-consumer fixture. This additional observation does not by itself prove the cause of
+the recorded intermittent CI deadline or change production drain/reauthentication policy.
 The normal composed lane also requires the real-Postgres session-admission regression: nine
 invalid bodies per session operation, exact uncached refusals, unchanged credential/gameplay
 rows, and a valid escaped-key request using the same still-usable credentials after every refusal.

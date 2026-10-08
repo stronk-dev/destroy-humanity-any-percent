@@ -4,6 +4,12 @@
 - **RFC:** `rfc/account-and-session-bootstrap.md`
 - **Started:** 2026-07-29
 
+Current bounded witness work (2026-10-08, RP-450): the hosted deadline occurs in drain after
+the revocation assertions, not in their denial checks. The unrevoked healthy control now reads
+through teardown and must observe code 4003 with the existing deadline. Old focused controls
+also pass, so the original intermittent failure remains open rather than declared solved.
+The owning log records execution and pending review; no authentication or timeout change.
+
 1. [x] Add account/founder/session/access-token migrations and repository.
 2. [x] Implement recovery credentials, exact-claim JWTs, refresh-family rotation, and revocation.
 3. [x] Implement New Founder, import, deletion, and active-Founder state initialization.
