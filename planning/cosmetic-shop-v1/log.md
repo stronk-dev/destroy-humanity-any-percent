@@ -1998,3 +1998,40 @@ Review by: Codex (implementer first filter); Recorded by: Codex. Exact new tool/
 range starts `ee7f1118` exclusive through this commit; designated cross-party review remains
 pending, along with earlier spans. Next: finish the remaining original C4/C6 reviews and resolve
 the named author-body/content gates; do not repeat these completed AC13 experiments per edit.
+
+## 2026-10-08 — Purchase completion respects newer focus (RP-424)
+
+Outcome under §7.3/AC11 and Garage GS0.6: the Buy-to-owned handoff now belongs to the focused
+trigger, not merely the item ID. A newer focus choice cancels it permanently, even if that
+control disappears before ownership arrives. Unfocused activation cannot claim focus; completion
+and unmount remove the observer, and a superseded scheduled handoff cannot run. Ownership,
+receipt, pending labels, requests, copy, economy and persistence semantics are unchanged.
+
+Old-source10703 fails all eight new Chromium/WebKit Enter/Space → pending → native Tab cases,
+with retained and removed newer controls. The original no-newer-choice owned-heading case
+still passes after correction. Mounted-host additions hold the actual intent response, natively
+reselect Desk, then deliver applied receipt/authoritative ownership without reclaiming nav focus.
+Initial83111's WebKit fixture control lacked explicit tabindex; those precondition failures
+are excluded. Initial80947's four host failures used the wrong era's literal Desk label;
+the correction selects the existing active nav control, without changing the focus assertion.
+
+Finished verification: `make test-browser-focused BROWSER_TEST_FLAGS='--project chromium --project webkit test/cosmetic-shelf-browser.test.ts test/cosmetic-host-browser.test.ts test/game-ui-screens-browser.test.ts'`
+40067 PASS230/four performance-only skips; `make typecheck verify-client-boundary`40091 and
+`make build-client verify-client-boundary`32565 PASS. `make test-clout-composed`63984 PASS:
+production-built native Space Buy → exact applied receipt → owned focus → persisted reload,
+plus PR, adoption/equip/annoyed overlay/care/event/socket/reload and unequip. The new delayed
+response/navigation races use a controlled runtime, not server fault injection.
+
+The Buy signature's N5 fixture anchor changes with its consumer. Its five Node controls now
+read the actual shelf source and PASS; `make test-cosmetic-n5`25659 executes both isolated
+production-build negatives. Each child exits1 specifically after native Buy at the primary
+checkout/PaymentRequest trap, with no forbidden outgoing request or unrelated page error and
+successful cleanup. The initial unprivileged browser/Docker commands ran no tests/journey;
+the permitted executions above are the evidence. Diff/whitespace inspected.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new code/tests/tool/docs/
+record range starts after `f1281138` through this commit; designated cross-party review remains
+pending, independently of earlier spans. No server, kernel, content mint, copy adoption, full
+composed aggregate, Firefox/AT/performance, hosted/full-CI or complete Cosmetic acceptance claim.
+Next: consolidate original C4/C6 review and resolve the named author-body/content gates; the
+full nine-tier 1.0 objective remains active. No archival, deploy or push.

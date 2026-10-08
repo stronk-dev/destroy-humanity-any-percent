@@ -124,6 +124,47 @@ it.skipIf(!browser)("activates Buy once with Space and waits for authoritative o
   } finally { unmount(app); target.remove(); }
 });
 
+for (const key of ["{Enter}", " "]) {
+  for (const removeNewerControl of [false, true]) {
+    it.skipIf(!browser)(`purchase completion preserves newer keyboard focus (${key}, removed=${removeNewerControl})`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const calls: string[] = [];
+      const target = host();
+      const newer = document.createElement("button");
+      newer.textContent = "Next control";
+      newer.tabIndex = 0;
+      target.after(newer);
+      const app = mount(CosmeticShelfHarness, { target, props: { initial: {
+        arm: arms["acquirable-at-tier-1"]!, presentation: COSMETIC_SHOP_PRESENTATION, price: "$0.00", era: "era_2000" as const,
+        pending: false, controlsEnabled: true, petName: () => "", receipt: null, rejection: null,
+        onAcquire: (id: string) => { calls.push(id); }, onEquip: () => {}, onUnequip: () => {},
+      } } }) as unknown as { update(patch: Record<string, unknown>): void };
+      try {
+        await settle();
+        const buy = target.querySelector<HTMLButtonElement>("button")!;
+        buy.focus();
+        await userEvent.keyboard(key);
+        expect(calls).toEqual(["horse_armor"]);
+        app.update({ pending: true });
+        await settle();
+        expect(buy.disabled).toBe(true);
+        expect(target.querySelector("[data-state=owned]")).toBeNull();
+        await userEvent.keyboard("{Tab}");
+        expect(document.activeElement, "native Tab chooses another control while Buy is pending").toBe(newer);
+        if (removeNewerControl) newer.remove();
+        const expectedFocus = removeNewerControl ? document.body : newer;
+        expect(document.activeElement).toBe(expectedFocus);
+        app.update({ pending: false, arm: arms["owned-no-wearer"]!, receipt: { cosmeticId: "horse_armor", orderNumber: 1 } });
+        await settle();
+        expect(target.querySelector("[data-state=owned]")).not.toBeNull();
+        expect(target.querySelector("[role=status].receipt")?.textContent).toContain("#1");
+        expect(document.activeElement, "the completed purchase must not reclaim an older focus choice").toBe(expectedFocus);
+        expect(calls).toEqual(["horse_armor"]);
+      } finally { await unmount(app); target.remove(); newer.remove(); }
+    });
+  }
+}
+
 it.skipIf(!browser)("shows the lock reason, the no-wearer line, and reflows at 320 px", async () => {
   const base = { presentation: COSMETIC_SHOP_PRESENTATION, price: "$0.00", era: "era_2000" as const, pending: false, controlsEnabled: true,
     petName: () => "", receipt: null, rejection: null, onAcquire: () => {}, onEquip: () => {}, onUnequip: () => {} };

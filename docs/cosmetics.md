@@ -87,7 +87,11 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
     absent at Tier 0 until something is owned;
   - it shows Buy, the lock reason, the owned state, per-wearer equip and unequip, and the no-wearer
     line;
-  - the parody receipt is an inline `role=status` line, never a modal.
+  - the parody receipt is an inline `role=status` line, never a modal;
+  - when authoritative ownership replaces the focused Buy button, focus moves to the owned
+    heading only if the player has not chosen another focus target. A newer choice permanently
+    cancels that handoff, even if the newer control subsequently disappears. Unfocused
+    activation does not claim focus, and unmount removes the pending focus observer.
 - **Fail-closed card:** below v24 the static card renders unchanged.
 - **Overlay:** `CosmeticOverlay.svelte` is the CSS-only layer and the "annoyed" pose. It has no
   text, is presentation-only, and is static under reduced motion. Its CSS media rule matches

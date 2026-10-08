@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tick } from "svelte";
+  import { onDestroy, tick } from "svelte";
 
   import type { GameUICosmeticsArm } from "../../api/generated/types";
   import { t, type CopyEra, type CopyKey } from "../../copy";
@@ -31,22 +31,48 @@
     return row ? [{ item, row }] : [];
   }));
   const ownedHeadings = new Map<string, HTMLElement>();
-  let focusAfterReceipt: string | undefined;
+  let focusAfterReceipt = $state.raw<{
+    cosmeticID: string;
+    origin: HTMLButtonElement;
+    stopObserving(): void;
+  }>();
+
+  function clearFocusRequest(): void {
+    focusAfterReceipt?.stopObserving();
+    focusAfterReceipt = undefined;
+  }
+  onDestroy(clearFocusRequest);
 
   function curtainID(id: string, pattern: string): string { return `curtain-${id}-${pattern}`; }
   function describedBy(id: string): string {
     const row = presentation.cosmetics.get(id)!;
     return [...row.curtains.map((curtain) => curtainID(id, curtain.pattern)), curtainID("shop", "checkout_flow")].join(" ");
   }
-  function buy(id: string): void { focusAfterReceipt = id; onAcquire(id); }
-  // Keyboard focus follows the replaced Buy button to the owned-state heading.
-  $effect(() => {
-    for (const { item } of rows) {
-      if (item.owned && focusAfterReceipt === item.cosmetic_id) {
-        focusAfterReceipt = undefined;
-        void tick().then(() => ownedHeadings.get(item.cosmetic_id)?.focus());
-      }
+  function buy(id: string, origin: HTMLButtonElement): void {
+    clearFocusRequest();
+    if (document.activeElement === origin) {
+      const observeFocus = (event: FocusEvent) => {
+        // A newer choice cancels this handoff permanently, even if that control
+        // is later removed and focus returns to body before ownership arrives.
+        if (event.target !== origin) clearFocusRequest();
+      };
+      document.addEventListener("focusin", observeFocus);
+      focusAfterReceipt = { cosmeticID: id, origin, stopObserving: () => document.removeEventListener("focusin", observeFocus) };
     }
+    onAcquire(id);
+  }
+  // §7.3 / GS0.6: only the replaced, still-current Buy interaction owns a
+  // handoff. Pointer activation without focus must not claim keyboard focus.
+  $effect(() => {
+    const request = focusAfterReceipt;
+    if (!request || !rows.some(({ item }) => item.owned && request.cosmeticID === item.cosmetic_id)) return;
+    void tick().then(() => {
+      if (focusAfterReceipt !== request) return;
+      clearFocusRequest();
+      if (!request.origin.isConnected && (document.activeElement === request.origin || document.activeElement === document.body)) {
+        ownedHeadings.get(request.cosmeticID)?.focus();
+      }
+    });
   });
   function register(node: HTMLElement, id: string) { ownedHeadings.set(id, node); return { destroy: () => ownedHeadings.delete(id) }; }
 </script>
@@ -79,7 +105,7 @@
       {:else}
         {#if item.lock}<p>{t("shop.cosmetics.locked", { tier: item.lock.tier }, era)}</p>{/if}
         <button type="button" disabled={pending || !controlsEnabled || !item.acquirable} aria-describedby={describedBy(item.cosmetic_id)}
-          onclick={() => buy(item.cosmetic_id)}>{t("shop.cosmetics.buy", { price }, era)}</button>
+          onclick={(event) => buy(item.cosmetic_id, event.currentTarget)}>{t("shop.cosmetics.buy", { price }, era)}</button>
       {/if}
       {#if receipt && receipt.cosmeticId === item.cosmetic_id}
         <p role="status" class="receipt">{t("shop.receipt.line", { order_number: receipt.orderNumber, item: t(row.title_key, {}, era), price }, era)} {t("shop.receipt.payment_method", {}, era)}</p>

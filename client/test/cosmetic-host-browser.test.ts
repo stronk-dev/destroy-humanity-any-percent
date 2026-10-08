@@ -96,6 +96,48 @@ function withShop(arm: GameUICosmeticsArm | undefined, tier: number): GameUISnap
 const shelf = (target: HTMLElement) => target.querySelector("[data-testid=cosmetic-shelf]");
 const staticCard = (target: HTMLElement) => [...target.querySelectorAll("section.card h2")].some((node) => node.textContent?.includes("Horse Armor"));
 
+for (const key of ["{Enter}", " "]) {
+  it.skipIf(!browser)(`a delayed cosmetic purchase preserves newer Desk navigation focus (${key})`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    let complete!: (outcome: IntentOutcome) => void;
+    const outcome = new Promise<IntentOutcome>((resolve) => { complete = resolve; });
+    class HeldRuntime extends Runtime {
+      override async intent(body: Readonly<Record<string, unknown>>): Promise<IntentOutcome> {
+        this.requests.push(body);
+        return outcome;
+      }
+    }
+    const runtime = new HeldRuntime();
+    runtime.current = withShop(arms["acquirable-at-tier-1"], 1);
+    const { target, dispose } = await mounted(runtime);
+    try {
+      const buy = shelf(target)!.querySelector<HTMLButtonElement>("button")!;
+      buy.focus();
+      await userEvent.keyboard(key);
+      await settle();
+      expect(runtime.requests).toHaveLength(1);
+      expect(runtime.requests[0]).toMatchObject({ kind: "acquire_cosmetic", cosmetic_id: "horse_armor", expected_revision: 7 });
+      expect(buy.disabled).toBe(true);
+      expect(shelf(target)!.querySelector("[data-state=owned]")).toBeNull();
+      const desk = target.querySelector<HTMLButtonElement>('nav button[aria-current="page"]')!;
+      desk.focus();
+      await userEvent.keyboard("{Enter}");
+      expect(document.activeElement).toBe(desk);
+      expect(buy.isConnected, "the current Desk shelf survives reselection").toBe(true);
+      runtime.current = { ...withShop(arms["owned-no-wearer"], 1), founder_revision: 8 };
+      complete({ outcome: "applied", receipt: {
+        intent_id: runtime.requests[0]!.intent_id, kind: "acquire_cosmetic", founder_revision: 8,
+        event: { kind: "cosmetic_acquired.v1", payload: { cosmetic_id: "horse_armor", order_number: 1 } },
+      } });
+      await settle();
+      expect(shelf(target)!.querySelector("[data-state=owned]")).not.toBeNull();
+      expect(shelf(target)!.querySelector(".receipt")?.textContent).toContain("#1");
+      expect(document.activeElement, "authoritative purchase completion must respect newer navigation").toBe(desk);
+      expect(runtime.requests).toHaveLength(1);
+    } finally { complete({ outcome: "applied", receipt: {} }); await dispose(); }
+  });
+}
+
 it.skipIf(!browser)("a native equip pointer attempt suppressed by a receipt refresh emits no intent", async () => {
   const { userEvent } = await import("vitest/browser");
   let release!: (value: ParsedGameUISnapshot) => void;

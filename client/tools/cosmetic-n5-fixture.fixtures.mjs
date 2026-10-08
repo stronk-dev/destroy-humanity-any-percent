@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import { assertCosmeticN5Rejection, cosmeticN5Fixture, n5CleanupMarker, n5Faults, n5RejectionPrefix } from "./cosmetic-n5-fixture.mjs";
 
 const shelf = "/fixture/client/src/game-ui/cosmetics/CosmeticShelf.svelte";
-const source = "function buy(id: string): void { onAcquire(id); }";
+const source = readFileSync(new URL("../src/game-ui/cosmetics/CosmeticShelf.svelte", import.meta.url), "utf8");
 function failure(fault) {
   return { code: 1, signal: null, stdout: `${n5CleanupMarker}\n`, stderr: `${n5RejectionPrefix}${JSON.stringify({
     phase: "after-native-buy", fixture: fault, fixtureExecutions: [fault],

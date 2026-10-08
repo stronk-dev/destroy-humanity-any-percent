@@ -2,12 +2,19 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
-Current checkpoint (2026-10-08, `2fff9748`): RP-411's recorded-context admission correction is
+Current checkpoint (2026-10-08): RP-424's Buy-to-owned focus handoff now respects newer focus,
+including a later-removed control and same-Desk navigation. Old-source native regressions fail;
+230 affected Chromium/WebKit cases pass (four separate performance skips), with types/build/
+boundaries, the production-built Clout/Cosmetic service journey and both actual N5 negative
+builds passing. The N5 fixture unit controls now read the actual shelf rather than a mock callback.
+The latest log owns the exact range and limits; designated review and full feature gates remain.
+
+Preceding checkpoint (2026-10-08, `2fff9748`): RP-411's recorded-context admission correction is
 committed and locally verified in both replay runtimes and the real Postgres Cosmetic population.
 Valid receipt/event/state bytes remain unchanged; malformed context is refused without mutation.
 Full production remains red on the existing 27 Clout partition cases; the historical kernel guard
 also remains red. The latest log owns commands and limits. Remaining C4 review, author-body
-reconciliation, N5 negative coverage, content and designated correction reviews stay open;
+reconciliation, content and designated correction reviews stay open;
 this is a finished bounded repair, not whole-feature approval or archival.
 
 Preceding checkpoint (2026-10-08): RP-385's native-pointer/refresh false-failure route is reproduced

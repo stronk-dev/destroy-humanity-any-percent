@@ -4,7 +4,7 @@ export const n5Faults = Object.freeze(["checkout", "payment-request"]);
 export const n5RejectionPrefix = "COSMETIC_N5_REJECTED ";
 export const n5CleanupMarker = "COSMETIC_N5_CLEANUP_COMPLETE";
 const marker = "cosmetic-n5-fixture";
-const buyAnchor = "function buy(id: string): void {";
+const buyAnchor = "function buy(id: string, origin: HTMLButtonElement): void {";
 
 // Build-time fixture only: change the actual shelf's native Buy callback in
 // an isolated Vite output, never repository source or a released build.
