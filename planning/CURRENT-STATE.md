@@ -35,6 +35,16 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Finished source checkpoint: `ca862e50` (2026-10-08), clean working tree before this
+  editorial reconciliation; 89 commits ahead of the locally recorded `origin/main`.
+  Deployment restore now refuses schema-only/nonrelational target databases (RP-423).
+  Twenty actual Postgres cases and affected native tests/vet pass; the broader Linux
+  deployment-release population remains red at two preflight checks in the disk-full Docker
+  environment. Five full-backup integration functions skip in the selected service population.
+  This is a completed local safety correction, not full backup/restore, clean-host or hosted-CI
+  proof. Its exact range after `ed48bea2` through `ca862e50` awaits designated review;
+  the [Deployment log](deployment-foundation/log.md) owns the results and exclusions.
+  No product milestone, release approval, archival or push follows from this checkpoint.
 - Garage batch `267dbf55` connects actual pet-status events to the mounted
   Pet Care surface and fixes an announcement collision: distinct events committed at the same
   revision no longer suppress one another, while replays remain silent. Old-source regressions
