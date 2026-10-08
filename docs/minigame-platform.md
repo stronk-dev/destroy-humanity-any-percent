@@ -205,6 +205,14 @@ bundled with the client.
   session ID rebinds the scheduler.
 - **Session gone:** a `404 unknown_id/recovery_session` ends the surface without a reconnect-start,
   so a watchdog-ended session is never silently replaced.
+- **Watchdog heartbeat:** progress can instead return the existing exact watchdog cancellation
+  receipt with HTTP 200 (MA-C1). The generated response is a closed union of the unchanged
+  five-key progress update and that terminal arm, not an expiry error. The surface consumes
+  the receipt, stops/unsubscribes its scheduler, shows the existing watchdog message and
+  notifies the mounted host once. It never renders terminal bytes as progress or automatically
+  starts another session. A receipt arriving after unmount cannot notify or focus the former host.
+  A concurrent Stop and heartbeat returning the same terminal also produce only one host
+  notification, regardless of reply order.
 - **Finish and Stop:** Finish appears once the session is eligible. "Stop early" states that
   nothing is restored. The terminal message shows the Soul before/after or the watchdog
   cancellation, focus moves to the heading, and the mounted host refreshes once. If the
@@ -228,6 +236,13 @@ still-mounted controls require the ordinary receipt, terminal text and heading f
 The keyboard-only component case activates Begin and Stop early with Enter (no click helper),
 checks the cancellation receipt and terminal focus, and runs axe in both active and terminal
 states. This does not substitute for a real assistive-technology task study.
+
+The watchdog-heartbeat regression runs the generated browser port with a controlled successful
+terminal response, including a held response released after unmount. Separately, the composed
+HTTP/Postgres lifecycle advances its injected server clock beyond the unchanged 24-hour policy,
+expires the session through `/progress`, validates the actual terminal bytes and requires a
+subsequent `/cancel` to replay those bytes with no Soul grant. These are complementary boundary
+checks, not a 24-hour mounted-browser or clean-host observation.
 
 The production-built real-service journey now uses native keyboard controls for Recovery:
 Begin → actual attended heartbeat/rendered progress → leave (scheduler stops) → return/Begin

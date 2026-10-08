@@ -10,6 +10,22 @@ func soulRecoveryAPISchemas() []publicapi.NamedSchema {
 	integer := func(minimum, maximum int64) *publicapi.Schema {
 		return &publicapi.Schema{Kind: publicapi.SchemaInteger, Minimum: apiInteger(minimum), Maximum: apiInteger(maximum)}
 	}
+	terminal := func(actions []string, cancelledBy publicapi.Field) *publicapi.Schema {
+		return apiObject(
+			apiField("action", apiString("", actions...)),
+			apiField("activity_id", apiString("mechanical-id")),
+			apiField("band_after", apiString("", "dimming", "hollow", "near_zero", "whole")),
+			apiField("band_before", apiString("", "dimming", "hollow", "near_zero", "whole")),
+			cancelledBy,
+			apiField("company_revision", integer(1, apiMaxExactInteger)),
+			apiField("founder_revision", integer(1, apiMaxExactInteger)),
+			apiField("intent_id", apiString("uuid-v7")),
+			apiField("outcome", apiString("", "applied")),
+			apiField("session_id", apiString("uuid-v7")),
+			apiField("soul_after", integer(0, 100)),
+			apiField("soul_before", integer(0, 100)),
+		)
+	}
 	return []publicapi.NamedSchema{
 		{Name: "SoulRecoveryFinishRequest", Schema: apiObject(
 			apiField("session_id", apiString("uuid-v7")),
@@ -18,13 +34,15 @@ func soulRecoveryAPISchemas() []publicapi.NamedSchema {
 			apiField("progress_token", apiString("uuid")),
 			apiField("session_id", apiString("uuid-v7")),
 		)},
-		{Name: "SoulRecoveryProgressResponse", Schema: apiObject(
+		// MA-C1 preserves the existing watchdog terminal bytes on progress;
+		// the ordinary five-key update remains the first, unchanged union arm.
+		{Name: "SoulRecoveryProgressResponse", Schema: &publicapi.Schema{Kind: publicapi.SchemaOneOf, Alternates: []*publicapi.Schema{apiObject(
 			apiField("attended_progress_ms", integer(0, apiMaxExactInteger)),
 			apiField("eligible", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
 			apiField("last_progress_server_ms", integer(0, apiMaxExactInteger)),
 			apiField("required_duration_attended_ms", integer(1, apiMaxExactInteger)),
 			apiField("session_id", apiString("uuid-v7")),
-		)},
+		), terminal([]string{"cancel"}, apiField("cancelled_by", apiString("", "watchdog")))}}},
 		{Name: "SoulRecoveryStartRequest", Schema: apiObject(
 			apiField("activity_id", apiString("mechanical-id")),
 		)},
@@ -37,20 +55,8 @@ func soulRecoveryAPISchemas() []publicapi.NamedSchema {
 			apiField("session_id", apiString("uuid-v7")),
 			apiField("started_wall_ms", integer(0, apiMaxExactInteger)),
 		)},
-		{Name: "SoulRecoveryTerminalResponse", Schema: apiObject(
-			apiField("action", apiString("", "cancel", "resolve")),
-			apiField("activity_id", apiString("mechanical-id")),
-			apiField("band_after", apiString("", "dimming", "hollow", "near_zero", "whole")),
-			apiField("band_before", apiString("", "dimming", "hollow", "near_zero", "whole")),
-			publicapi.Field{Required: false, Name: "cancelled_by", Schema: apiString("", "player", "watchdog")},
-			apiField("company_revision", integer(1, apiMaxExactInteger)),
-			apiField("founder_revision", integer(1, apiMaxExactInteger)),
-			apiField("intent_id", apiString("uuid-v7")),
-			apiField("outcome", apiString("", "applied")),
-			apiField("session_id", apiString("uuid-v7")),
-			apiField("soul_after", integer(0, 100)),
-			apiField("soul_before", integer(0, 100)),
-		)},
+		{Name: "SoulRecoveryTerminalResponse", Schema: terminal([]string{"cancel", "resolve"},
+			publicapi.Field{Required: false, Name: "cancelled_by", Schema: apiString("", "player", "watchdog")})},
 	}
 }
 

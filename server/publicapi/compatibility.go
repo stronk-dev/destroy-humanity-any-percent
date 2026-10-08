@@ -116,6 +116,32 @@ func compareCompatibilitySchema(oldSchema, nextSchema map[string]any, mode compa
 		}
 		return compareNamedCompatibility(strings.TrimPrefix(oldRef, "#/components/schemas/"), mode, oldDefinitions, nextDefinitions, stack)
 	}
+	// C2/C18 allow response widening. A formerly single closed object may gain
+	// terminal alternatives while preserving its original arm and all old bytes.
+	// oneOf needs more than a superset: an overlapping new arm could make old
+	// responses match twice and become invalid. Accept only demonstrably disjoint
+	// closed object arms here; unknown/ref/nested-union cases stay conservative.
+	if _, alreadyUnion := oldSchema["oneOf"]; !alreadyUnion {
+		if alternatives, widened := nextSchema["oneOf"].([]any); widened {
+			if mode&compatibilityRequest != 0 || len(alternatives) < 2 {
+				return ErrInvalidSchema
+			}
+			preserved, ok := alternatives[0].(map[string]any)
+			if !ok {
+				return ErrInvalidSchema
+			}
+			if err := compareCompatibilitySchema(oldSchema, preserved, mode, oldDefinitions, nextDefinitions, stack); err != nil {
+				return err
+			}
+			for _, alternative := range alternatives[1:] {
+				other, ok := alternative.(map[string]any)
+				if !ok || !disjointClosedCompatibilityObjects(preserved, other) {
+					return ErrInvalidSchema
+				}
+			}
+			return nil
+		}
+	}
 	oldType, _ := oldSchema["type"].(string)
 	nextType, _ := nextSchema["type"].(string)
 	if oldType != nextType || stringValue(oldSchema["format"]) != stringValue(nextSchema["format"]) {
@@ -178,6 +204,29 @@ func compareCompatibilitySchema(oldSchema, nextSchema map[string]any, mode compa
 		}
 	}
 	return nil
+}
+
+func disjointClosedCompatibilityObjects(left, right map[string]any) bool {
+	if left["type"] != "object" || right["type"] != "object" ||
+		left["additionalProperties"] != false || right["additionalProperties"] != false {
+		return false
+	}
+	leftProperties, leftOK := left["properties"].(map[string]any)
+	rightProperties, rightOK := right["properties"].(map[string]any)
+	if !leftOK || !rightOK {
+		return false
+	}
+	for name := range stringSet(left["required"]) {
+		if _, allowed := rightProperties[name]; !allowed {
+			return true
+		}
+	}
+	for name := range stringSet(right["required"]) {
+		if _, allowed := leftProperties[name]; !allowed {
+			return true
+		}
+	}
+	return false
 }
 
 func compatibleBounds(oldSchema, nextSchema map[string]any) bool {

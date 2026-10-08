@@ -196,7 +196,7 @@ export type SoulRecoveryFinishRequest = { session_id: string };
 
 export type SoulRecoveryProgressRequest = { progress_token: string; session_id: string };
 
-export type SoulRecoveryProgressResponse = { attended_progress_ms: number; eligible: boolean; last_progress_server_ms: number; required_duration_attended_ms: number; session_id: string };
+export type SoulRecoveryProgressResponse = { attended_progress_ms: number; eligible: boolean; last_progress_server_ms: number; required_duration_attended_ms: number; session_id: string } | { action: "cancel"; activity_id: string; band_after: "dimming" | "hollow" | "near_zero" | "whole"; band_before: "dimming" | "hollow" | "near_zero" | "whole"; cancelled_by: "watchdog"; company_revision: number; founder_revision: number; intent_id: string; outcome: "applied"; session_id: string; soul_after: number; soul_before: number };
 
 export type SoulRecoveryStartRequest = { activity_id: string };
 

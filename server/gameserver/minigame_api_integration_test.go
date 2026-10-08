@@ -554,11 +554,32 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		t.Fatalf("watchdog token refresh status=%d body=%s", watchdogRefresh.StatusCode, responseBody(watchdogRefresh))
 	}
 	decodeCompositionResponse(t, watchdogRefresh, &tokens)
+	// Expiry can be discovered by a scheduled heartbeat, not only an explicit
+	// Stop. Validate that actual response against the progress operation itself.
+	watchdogProgress := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/soul-recovery/progress", tokens.AccessToken,
+		fmt.Sprintf(`{"session_id":%q,"progress_token":%q}`, watchdog.SessionID, watchdog.ProgressToken))
+	watchdogBytes := readCompositionBytes(t, watchdogProgress)
+	if watchdogProgress.StatusCode != http.StatusOK {
+		t.Fatalf("watchdog heartbeat status=%d (body withheld)", watchdogProgress.StatusCode)
+	}
+	if err := registry.ValidateResponse("progress_soul_recovery", http.StatusOK, watchdogBytes); err != nil {
+		t.Fatalf("progress descriptor rejects actual watchdog terminal: %v", err)
+	}
+	var ended struct {
+		Action      string `json:"action"`
+		CancelledBy string `json:"cancelled_by"`
+		SoulBefore  int64  `json:"soul_before"`
+		SoulAfter   int64  `json:"soul_after"`
+	}
+	if err := json.Unmarshal(watchdogBytes, &ended); err != nil || ended.Action != "cancel" || ended.CancelledBy != "watchdog" || ended.SoulAfter != ended.SoulBefore {
+		t.Fatal("watchdog heartbeat did not cancel without restoring Soul")
+	}
 	watchdogCancel := compositionRequest(t, httpServer.Client(), http.MethodPost,
 		httpServer.URL+"/api/v1/soul-recovery/cancel", tokens.AccessToken, fmt.Sprintf(`{"session_id":%q}`, watchdog.SessionID))
-	watchdogBytes := readCompositionBytes(t, watchdogCancel)
-	if watchdogCancel.StatusCode != http.StatusOK || registry.ValidateResponse("cancel_soul_recovery", http.StatusOK, watchdogBytes) != nil || !bytes.Contains(watchdogBytes, []byte(`"cancelled_by":"watchdog"`)) {
-		t.Fatalf("watchdog cancel status=%d body=%s", watchdogCancel.StatusCode, watchdogBytes)
+	if retryBytes := readCompositionBytes(t, watchdogCancel); watchdogCancel.StatusCode != http.StatusOK ||
+		registry.ValidateResponse("cancel_soul_recovery", http.StatusOK, retryBytes) != nil || !bytes.Equal(retryBytes, watchdogBytes) {
+		t.Fatal("Stop after watchdog did not replay the exact committed terminal receipt")
 	}
 
 	// The existing 24-hour watchdog boundary also refills the shared IP bucket.

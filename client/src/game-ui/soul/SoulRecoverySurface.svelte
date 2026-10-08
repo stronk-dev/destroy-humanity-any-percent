@@ -48,7 +48,7 @@
     } };
   }
 
-  function sessionFrom(activity: SoulRecoveryActivity, response: SoulRecoveryStartResponse | SoulRecoveryProgressResponse, eligible: boolean): Session {
+  function sessionFrom(activity: SoulRecoveryActivity, response: SoulRecoveryStartResponse | Exclude<SoulRecoveryProgressResponse, SoulRecoveryTerminalResponse>, eligible: boolean): Session {
     return { activity, sessionID: response.session_id, attended: response.attended_progress_ms, required: response.required_duration_attended_ms, eligible };
   }
 
@@ -58,7 +58,17 @@
     scheduler = new RecoveryScheduler({
       session_id: session.sessionID, progress_token: token, beat_interval_ms: content.beatIntervalMS, now, visibility,
       transport: { progress: async (sessionID, progressToken) => {
-        try { return await port.progress(sessionID, progressToken); }
+        try {
+          const response = await port.progress(sessionID, progressToken);
+          if ("action" in response) {
+            await showTerminal(response);
+            // The scheduler consumes progress updates, not terminal receipts.
+            // showTerminal stops it before rejecting this completed beat, so
+            // its stopped-request guard neither pauses nor schedules another.
+            throw new DOMException("Recovery session ended", "AbortError");
+          }
+          return response;
+        }
         catch (error) { lastProgressError = error; throw error; }
       } },
     }, {
@@ -123,15 +133,21 @@
     busy = true; notice = null;
     try {
       const response = action === "resolve" ? await port.resolve(view.session.sessionID) : await port.cancel(view.session.sessionID);
-      if (destroyed) return;
-      scheduler?.stop(action === "resolve" ? "resolved" : response.cancelled_by === "watchdog" ? "watchdog" : "cancelled");
-      scheduler = undefined;
-      view = { kind: "terminal", response };
-      onTerminal(response);
-      await tick();
-      heading?.focus();
+      await showTerminal(response);
     } catch (error) { fail(error); }
     finally { busy = false; }
+  }
+
+  async function showTerminal(response: SoulRecoveryTerminalResponse): Promise<void> {
+    // A scheduled heartbeat and an explicit Stop may return the same stored
+    // terminal. Commit the surface/host transition once, in either reply order.
+    if (destroyed || view.kind === "terminal") return;
+    scheduler?.stop(response.action === "resolve" ? "resolved" : response.cancelled_by === "watchdog" ? "watchdog" : "cancelled");
+    scheduler = undefined;
+    view = { kind: "terminal", response };
+    onTerminal(response);
+    await tick();
+    if (!destroyed) heading?.focus();
   }
 
   function fail(error: unknown): void {

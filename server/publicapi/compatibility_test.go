@@ -140,3 +140,62 @@ func TestCompatibilityPinAllowsOnlyAdditiveV1Changes(t *testing.T) {
 		})
 	}
 }
+
+func TestCompatibilityPinAllowsDisjointResponseObjectUnion(t *testing.T) {
+	progress := func() *Schema {
+		return &Schema{Kind: SchemaObject, Fields: []Field{
+			{Name: "eligible", Required: true, Schema: &Schema{Kind: SchemaBoolean}},
+			{Name: "note", Required: false, Schema: &Schema{Kind: SchemaString}},
+		}}
+	}
+	terminal := func() *Schema {
+		return &Schema{Kind: SchemaObject, Fields: []Field{
+			{Name: "cancelled_by", Required: true, Schema: &Schema{Kind: SchemaString, Enum: []string{"watchdog"}}},
+		}}
+	}
+	for _, shape := range []string{"direct", "array", "union", "request", "shared"} {
+		t.Run(shape, func(t *testing.T) {
+			prior := compatibilityPayloadRegistry(t, progress(), shape)
+			pin, err := CanonicalOperationPins(prior)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := CheckCompatibilityPin(pin, prior); err != nil {
+				t.Fatalf("unchanged control rejected: %v", err)
+			}
+			widened := &Schema{Kind: SchemaOneOf, Alternates: []*Schema{progress(), terminal()}}
+			err = CheckCompatibilityPin(pin, compatibilityPayloadRegistry(t, widened, shape))
+			wantRefusal := shape == "request" || shape == "shared"
+			if (err != nil) != wantRefusal {
+				t.Fatalf("object to disjoint union: error=%v, want refusal=%v", err, wantRefusal)
+			}
+		})
+	}
+	prior := compatibilityPayloadRegistry(t, progress(), "direct")
+	pin, err := CanonicalOperationPins(prior)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"removed field", "required promotion", "changed type", "duplicate arm", "overlapping optional arm"} {
+		t.Run(name, func(t *testing.T) {
+			first, extra := progress(), terminal()
+			switch name {
+			case "removed field":
+				first.Fields = first.Fields[1:]
+			case "required promotion":
+				first.Fields[1].Required = true
+			case "changed type":
+				first.Fields[0].Schema = &Schema{Kind: SchemaString}
+			case "duplicate arm":
+				extra = progress()
+			case "overlapping optional arm":
+				extra = progress()
+				extra.Fields = append(extra.Fields, Field{Name: "terminal", Required: false, Schema: &Schema{Kind: SchemaBoolean}})
+			}
+			widened := &Schema{Kind: SchemaOneOf, Alternates: []*Schema{first, extra}}
+			if err := CheckCompatibilityPin(pin, compatibilityPayloadRegistry(t, widened, "direct")); err == nil {
+				t.Fatal("union concealed a breaking change or made old responses ambiguous")
+			}
+		})
+	}
+}

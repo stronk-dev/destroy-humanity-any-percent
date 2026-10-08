@@ -5,7 +5,7 @@ import { expect, it } from "vitest";
 import type { SoulRecoveryProgressResponse, SoulRecoveryStartResponse, SoulRecoveryTerminalResponse } from "../src/api/generated/types";
 import { MinigameAPIError, MinigameTransportError } from "../src/game-ui/minigame/session-port";
 import type { RecoveryVisibility } from "../src/soul/recovery-scheduler";
-import { loadSoulRecoveryContent, type SoulRecoveryContent, type SoulRecoveryPort } from "../src/game-ui/soul/recovery-surface";
+import { createBrowserSoulRecoveryPort, loadSoulRecoveryContent, type SoulRecoveryContent, type SoulRecoveryPort } from "../src/game-ui/soul/recovery-surface";
 import SoulRecoverySurface from "../src/game-ui/soul/SoulRecoverySurface.svelte";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
 
@@ -85,6 +85,104 @@ function mountSurface(port: FakePort, visibility: FakeVisibility, clock: { now: 
   const app = mount(SoulRecoverySurface, { target, props: { port, content: content(), era: "era_1995", visibility, now: () => clock.now, toySeed: 7,
     onExitToHost: () => {}, onTerminal: (response: SoulRecoveryTerminalResponse) => terminals.push(response) } });
   return { target, app };
+}
+
+for (const mounted of [true, false]) {
+  it.skipIf(!browser)(`consumes watchdog heartbeat through the generated port only while mounted (${mounted})`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const requests: string[] = [];
+    const response = terminal("cancel", "watchdog");
+    let release!: () => void;
+    const received = new Promise<void>((resolve) => { release = resolve; });
+    const terminals: SoulRecoveryTerminalResponse[] = [];
+    const visibility = new FakeVisibility();
+    const port = createBrowserSoulRecoveryPort(() => "fixture-access-token", async (input, init) => {
+      const route = String(input);
+      requests.push(route);
+      expect(init?.method).toBe("POST");
+      if (route.endsWith("/start")) return Response.json(started());
+      expect(route).toBe("/api/v1/soul-recovery/progress");
+      expect(JSON.parse(String(init?.body))).toEqual({ session_id: SESSION, progress_token: TOKEN_1 });
+      await received;
+      return Response.json(response);
+    });
+    const target = host();
+    const app = mount(SoulRecoverySurface, { target, props: { port, content: content(), era: "era_1995", visibility,
+      now: () => 1_000, toySeed: 7, onExitToHost: () => {}, onTerminal: (receipt: SoulRecoveryTerminalResponse) => terminals.push(receipt) } });
+    const newer = document.createElement("button");
+    newer.textContent = "Another surface";
+    document.body.append(newer);
+    let unmounted = false;
+    try {
+      await settle();
+      target.querySelector<HTMLButtonElement>("li button")!.focus();
+      await userEvent.keyboard("{Enter}");
+      await expect.poll(() => requests.length).toBe(2);
+      if (!mounted) { await unmount(app); unmounted = true; newer.focus(); }
+      release();
+      if (mounted) {
+        await expect.poll(() => terminals).toEqual([response]);
+        expect(target.querySelector("[role=status]")?.textContent).toContain("ran too long");
+        expect(target.querySelector("progress")).toBeNull();
+        expect(target.querySelector("[role=alert]")).toBeNull();
+        expect([...target.querySelectorAll("button")].map((control) => control.textContent?.trim())).toEqual(["Back"]);
+        expect(document.activeElement?.id).toBe("recovery-heading");
+        await assertAxe(target, "heartbeat watchdog terminal");
+      }
+      await settle(100);
+      expect(requests).toEqual(["/api/v1/soul-recovery/start", "/api/v1/soul-recovery/progress"]);
+      expect(visibility.listener).toBeUndefined();
+      expect(terminals).toEqual(mounted ? [response] : []);
+      if (!mounted) expect(document.activeElement).toBe(newer);
+    } finally {
+      release();
+      if (!unmounted) await unmount(app);
+      target.remove(); newer.remove();
+    }
+  });
+}
+
+for (const first of ["progress", "cancel"] as const) {
+  it.skipIf(!browser)(`notifies once when watchdog heartbeat and Stop race (${first} replies first)`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const response = terminal("cancel", "watchdog");
+    const releases = new Map<string, () => void>();
+    const requests: string[] = [];
+    const terminals: SoulRecoveryTerminalResponse[] = [];
+    const visibility = new FakeVisibility();
+    const port = createBrowserSoulRecoveryPort(() => "fixture-access-token", async (input) => {
+      const operation = String(input).split("/").at(-1)!;
+      requests.push(operation);
+      if (operation === "start") return Response.json(started());
+      expect(["progress", "cancel"]).toContain(operation);
+      await new Promise<void>((resolve) => { releases.set(operation, resolve); });
+      return Response.json(response);
+    });
+    const target = host();
+    const app = mount(SoulRecoverySurface, { target, props: { port, content: content(), era: "era_1995", visibility,
+      now: () => 1_000, toySeed: 7, onExitToHost: () => {}, onTerminal: (receipt: SoulRecoveryTerminalResponse) => terminals.push(receipt) } });
+    try {
+      await settle();
+      target.querySelector<HTMLButtonElement>("li button")!.focus();
+      await userEvent.keyboard("{Enter}");
+      await expect.poll(() => releases.has("progress")).toBe(true);
+      button(target, "Stop early").focus();
+      await userEvent.keyboard("{Enter}");
+      await expect.poll(() => releases.has("cancel")).toBe(true);
+      releases.get(first)!();
+      await expect.poll(() => terminals.length).toBe(1);
+      releases.get(first === "progress" ? "cancel" : "progress")!();
+      await settle(100);
+      expect(terminals).toEqual([response]);
+      expect(requests).toEqual(["start", "progress", "cancel"]);
+      expect(visibility.listener).toBeUndefined();
+      expect(target.querySelector("[role=status]")?.textContent).toContain("ran too long");
+      expect(document.activeElement?.id).toBe("recovery-heading");
+    } finally {
+      for (const release of releases.values()) release();
+      await unmount(app); target.remove();
+    }
+  });
 }
 
 it.skipIf(!browser)("runs pick → beats → hidden pause → network pause → reconnect rotation → finish through the port only", async () => {

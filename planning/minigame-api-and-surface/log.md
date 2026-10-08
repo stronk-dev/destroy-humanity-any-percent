@@ -1305,3 +1305,52 @@ change. Review by: Codex (implementer diff/first filter). Recorded by: Codex. Ex
 `a1197552` exclusive through this containing test/docs/plan/log commit, pending designated review.
 No acceptance flips, archive, mint, push or release promotion. Continue accepted integration and
 consolidated review; the typed-dictionary choice is separately requested and remains unruled.
+
+## 2026-10-08 — Recovery watchdog heartbeat becomes an honest terminal transition
+
+MA-C1/MA3 and AC1/AC5 require the existing watchdog receipt, not a new expiry error or
+restart policy. RP-464 was reproduced through actual HTTP/Postgres69582 (the registered
+progress descriptor rejects the server's terminal) and native Chromium/WebKit72027
+(both mounted surfaces crash on non-finite progress and never notify the host; detached
+controls pass). Describe the existing watchdog-only cancel arm beside the unchanged
+five-key progress arm; regenerate the typed consumer. Consume that receipt in the surface,
+stop/unsubscribe the existing scheduler, show the existing terminal message and notify/focus
+only while mounted. An intermediate race regression17157 also caught duplicate host
+notifications when heartbeat and Stop replies coincide; the terminal transition now commits
+once in either order. Coordinator, scheduler, receipt bytes, durations and rewards are unchanged.
+
+RP-465 is the bounded API C2/C18 prerequisite: the old checker rejected response object-to-
+union widening despite preserving the old arm. Cold49182 failed three positive embeddings
+while the request/shared and breaking controls refused correctly. The checker now requires
+a compatible first arm and added closed-object arms provably disjoint from it by required-key
+exclusion. Ambiguous/unknown cases and request/shared widening still refuse. Ordinary
+generation does not replace the compatibility pin. A structural comparison confirms the
+entire API artifact is unchanged except the progress union, whose first arm equals the old
+progress object; the separate terminal descriptor and baseline pin remain unchanged.
+
+Executed on final source:
+- Cold native publicapi/account tests17651 and affected Go vet pass.
+- Full declared Linux-amd64/Postgres publicapi/account/gameserver16776 passes, including
+  actual expiry via heartbeat, unchanged Soul and byte-identical subsequent cancel replay;
+  the original refresh, security, first-hour and admission populations also execute.
+- Native Chromium/WebKit29467 passes all34 executions, including generated-port watchdog,
+  detached reply and both Stop/heartbeat orders. Full client84643 passes10321 with981 explicit
+  exclusions; typecheck53080 reports zero errors/warnings. Four affected client files pass45.
+- Ordinary API generation74975 and staged-output api-check pass without updating the pin.
+- Final affected `node client/tools/test-game-ui-composed.mjs`9130 exits0. Required persisted
+  populations execute, final client/Worker assets build and load byte-exactly, both early
+  endings/continuation, native Pitch process-death/lost-reply retry/payout, WebSocket recovery,
+  and native Recovery production suppression/reply-loss/reconnect/cancel all pass. Its trace
+  retains the deliberately lost Pitch and Recovery replies, not concealed retries.
+- Gofmt and diff checks pass. All test sessions are terminal. Initial bad Go/browser selectors
+  and sandbox listener refusal executed no relevant population and are not counted as passes.
+
+Limits: watchdog API expiry uses the injected server clock; native terminal regressions use
+controlled replies through the generated port. This is not a natural 24-hour mounted-browser
+expiry, full five-minute completion rerun, Firefox/AT, clean Linux release host, whole composed
+sibling aggregate or hosted/full-CI verdict. Unaffected sibling journeys were not rerun. No
+kernel/balance/catalog/copy/migration/workflow change, false version bump or acceptance flip.
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range starts
+after `d5b40996` through this containing commit; designated cross-party review remains pending.
+No archival, push, release promotion or inferred owner choice. Continue accepted integration
+and consolidate corrective review; typed dictionaries, attendance and rights decisions stay held.

@@ -64,6 +64,12 @@ byte-compares both outputs as part of `make verify-server`. The committed
 operations, request unions, statuses, required fields, and bounds cannot narrow or disappear;
 responses may add optional fields or widen an enum/union. Updating the compatibility baseline is
 an explicit `make api-pin` operation, never an incidental effect of ordinary generation.
+A single response object may become a closed-object union without replacing that baseline:
+the first arm must preserve the old contract, and every added arm must be provably disjoint
+from it through required-key exclusion. Overlapping arms could invalidate old bytes under
+`oneOf` and are refused, as are request/shared widening and cases whose disjointness this
+bounded check cannot prove. Recovery uses this for its already-shipped watchdog terminal on
+the heartbeat route; ordinary progress and other response descriptors are unchanged.
 Existing optional fields cannot become required in requests, responses or shared definitions,
 including through array/reference/union nesting; failures identify the affected field. Numeric
 bounds compare as exact signed int64 values, not float64 projections, so a one-unit narrowing
