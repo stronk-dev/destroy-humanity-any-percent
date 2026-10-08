@@ -35,6 +35,11 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Pet adoption/history and cosmetic Exit persistence now execute at `7b4bc001` against real
+  Postgres16: both Exit arms and all nine adoption/history corruption controls pass (49678).
+  Docker has recovered; the original stalled container is confirmed absent, not retrospectively
+  green. This selected database proof does not complete Pet acceptance or its remaining contracts;
+  the Pet Adoption log owns the command and limits.
 - Typer keyboard/focus correction (RP-394) and malformed-snapshot refusals (RP-395/RP-400) are locally
   verified. Native Chromium/WebKit input checks, the shared Go/TS corpus and real-Postgres Typer
   service tests pass. The old Go snapshot could panic at the exhausted prompt index; it now

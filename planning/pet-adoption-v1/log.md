@@ -585,3 +585,21 @@ Correction Review by: Codex (implementer diff/first filter); Recorded by: Codex.
 designated review. Earlier pending ranges remain separate. Next: complete remaining accepted
 review/integration work; recover the existing SQL run before any fresh persisted rerun once
 Docker is restored. The full nine-tier1.0 goal remains active; no push/publication performed.
+
+## 2026-10-08 — current-source persisted adoption/replay and Exit checks
+
+Docker is responding again. Inspect confirms the old
+`cloud-clicker-test-run-9a63203faa7b` container no longer exists; its original terminal result
+remains unknown. No cleanup, daemon restart or retrospective pass is inferred.
+
+Fresh declared run at `7b4bc001`: `make test-save-integration SAVE_TEST_PACKAGES='./production'
+SAVE_TEST_FLAGS='-run "TestPetAdoptionIntegrationPersistsReplayableFounderLog|TestCosmeticExitCarryIntegration" -v'`
+passes (49678, exit0) against real Postgres16. Both Wind Down and Accept Offer persistence
+arms execute, as does the adoption/history test with all nine corruption controls: nonce,
+missing nonce, receipt pet, missing event, event name, identity name, care watermark, applied
+revision and head revision. This closes the missing execution boundary for these selected
+current-source tests; it does not prove the full adoption-to-Exit player journey, all AC7,
+PA7/schema reconciliation, shared-clock repair, rights or full Pet acceptance.
+
+Record/diff check by: Codex; Recorded by: Codex. Verification-only checkpoint, no production
+change or new review verdict. Existing implementation ranges still await designated review.
