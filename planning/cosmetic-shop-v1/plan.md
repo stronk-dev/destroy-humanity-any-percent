@@ -2,8 +2,11 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
-Current checkpoint (2026-10-08): original C4 review is complete at `f097df7e`, CHANGES REQUIRED
-with its existing findings consolidated; current Codex corrections still need Claude review.
+Current checkpoint (2026-10-08): original C4 review is complete at `f097df7e`; original C6/C7/C8
+reviews are now complete in the latest owning-log entry. All retain CHANGES REQUIRED for their
+recorded findings; current Codex corrections still need Claude review. The remaining original
+C6/C7/C8 diffs are no longer unperformed review work. Their corrected implementation is not
+retroactively approved by these original-range verdicts.
 RP-453 event-key admission and RP-454/RP-455 completion focus are locally corrected. The latest
 C6 correction (RP-456) routes terminal refusal to the existing Desk status only; six old-host
 native cases reproduce duplicate delivery. Final affected Chromium/WebKit280, types/build/
@@ -46,8 +49,9 @@ route, both real Postgres/DOM and deterministic cutoff regression. Sources resto
 probe and exact evidence in latest `log.md`. Shared-clock repair needs D-024/the draft successor's
 explicit boundary; no pet clamp/retry is authorized. RP-364 Buy cause and prior reviews remain.
 
-Implemented by: Claude. Every range awaits Codex's designated cross-party review. There is no
-self-approval, no archival and no production mint (fixture-first).
+Original implementation by: Claude. Original-range verdicts and remaining corrective reviews
+are recorded below and in the log; not every implementation checkbox is an approval. There is
+no self-approval, no archival and no production mint (fixture-first).
 
 Numbering is landing-order. The RFC's "Founder v22" (OD-16: next free) becomes **Founder v24**,
 because Reputation took v22 and Pet Adoption took v23. The replay-inputs carry and the events
@@ -108,11 +112,14 @@ migration take the next free numbers at landing.
   historical kernel-history gate still blocks complete CI; this is not C6 or release acceptance.
   RP-454/RP-455 add native applied/refused completion-focus regressions for wearer controls
   and Buy. The bounded guard correction is tracked in the owning log, separately from
-  original C6 approval and whole-product assistive-technology acceptance.
+  whole-product assistive-technology acceptance. The complete original C6 diff now has a
+  consolidated CHANGES REQUIRED verdict; corrective Claude review remains, including RP-456.
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
   RP-180's syntax-aware package-gate correction is locally tested and awaits Claude's
   designated review; the old regex admitted a real dynamic economy import.
+  The complete original C7 diff now has a consolidated CHANGES REQUIRED verdict for
+  RP-168/RP-180; its remaining original diff is reviewed, not retroactively approved.
 - [x] AC14 composed real-server witness (Buy → reload under the N5 trap, with a severed-producer
   failing case). A test-only epoch pins `cosmetics`; no production mint. The test and checkbox
   land in the same range; Claude's designated review remains an independent archival gate.
@@ -141,7 +148,8 @@ migration take the next free numbers at landing.
   nil Founder contributions. The test-only correction retains 200 × 288 steps, compares every
   receipt/complete state, consumes correctly frozen bonuses and checks a separate next-run
   consumer with firing negatives. Claude's designated review is required; this box records
-  implementation presence, not C8 approval. RP-180's package-gate correction also awaits review.
+  implementation presence, not C8 approval. The complete original C8 diff now has a consolidated
+  CHANGES REQUIRED verdict for RP-182. RP-180's package-gate correction also awaits review.
 
 Box evidence: each flipped box's exercising tests landed in that batch's commit
 (`afe6529b`, `8e315569`, `581886a4`, `500d944c`, `1a477d9e`, `1bba27ba`, `a4b22429`, and this

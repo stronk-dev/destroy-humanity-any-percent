@@ -51,7 +51,8 @@ operations remain required alongside that construction, not optional end-stage p
 
 - Latest bounded closeout (2026-10-08): Cosmetic event-key admission RP-453 is locally
   corrected at `377279c4`, with cold Go/TS and actual Linux/Postgres checks. Original Claude
-  C4 review is complete at `f097df7e`, CHANGES REQUIRED consolidating its existing findings;
+  C4 review is complete at `f097df7e`; the complete original C6/C7/C8 reviews are also finished
+  in the latest Cosmetic log. Each retains CHANGES REQUIRED for its recorded defects;
   Codex corrections still require Claude. Completion-focus RP-454/RP-455 at `c802c2dc`
   passes affected native checks and the full real-service composed1397. The subsequent
   announcement-only RP-456 correction removes duplicate refusal delivery; six old-host
