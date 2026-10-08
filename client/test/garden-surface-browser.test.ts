@@ -33,7 +33,7 @@ function host(width?: number): HTMLElement {
 
 function mountSurface(port: GardenPort, calls: string[], width?: number) {
   const target = host(width);
-  const app = mount(GardenSurface, { target, props: { port, era: "era_1995", pending: false, refreshKey: 0, rejection: null, visible: () => true,
+  const app = mount(GardenSurface, { target, props: { port, era: "era_1995", pending: false, controlsEnabled: true, refreshKey: 0, rejection: null, visible: () => true,
     onPlant: (row: number, col: number, species: string) => calls.push(`plant ${row},${col} ${species}`),
     onUproot: (row: number, col: number) => calls.push(`uproot ${row},${col}`),
     onHarvest: (plots: readonly { row: number; col: number }[]) => calls.push(`harvest ${plots.map((plot) => `${plot.row},${plot.col}`).join(" ")}`),

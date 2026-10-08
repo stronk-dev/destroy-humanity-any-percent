@@ -38,7 +38,7 @@ function mounted(port: GardenPort) {
   document.body.append(target);
   installTheme(target, UI_THEMES.era_1995, false);
   const initial: ComponentProps<typeof GardenSurface> = {
-    port, era: "era_1995", pending: false, refreshKey: 0, rejection: null, visible: () => true,
+    port, era: "era_1995", pending: false, controlsEnabled: true, refreshKey: 0, rejection: null, visible: () => true,
     onPlant: (row: number, col: number, species: string) => record(`plant ${row},${col} ${species}`),
     onUproot: (row: number, col: number) => record(`uproot ${row},${col}`),
     onHarvest: (plots: readonly { row: number; col: number }[]) => record(`harvest ${plots.map(({ row, col }) => `${row},${col}`).join(" ")}`),
@@ -48,6 +48,39 @@ function mounted(port: GardenPort) {
   return { target, app, calls,
     holdCommands(after?: () => void) { commandStarted = () => { app.update({ pending: true }); after?.(); }; },
   };
+}
+
+for (const menu of ["empty", "mature"] as const) {
+  it.skipIf(!browser)(`Garden unavailable ${menu} menu guards every callback and restores only explicit input`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const host = mounted({ current: async () => active() });
+    try {
+      await settle();
+      const plot = host.target.querySelectorAll<HTMLButtonElement>("button.cell")[menu === "empty" ? 6 : 0]!;
+      plot.click(); await settle();
+      const trigger = host.target.querySelector<HTMLButtonElement>(".menu button")!;
+      trigger.focus();
+      host.app.update({ controlsEnabled: false }); await settle();
+      expect(document.activeElement).toBe(host.target.querySelector("#garden-heading"));
+      const controls = [...host.target.querySelectorAll<HTMLButtonElement>("button")].filter((node) => node.textContent?.trim() !== "Close");
+      for (const control of controls) {
+        expect(control.disabled).toBe(true);
+        expect(control.getAttribute("aria-describedby")?.split(" ")).toContain("garden-stale");
+        // Explicit dispatch bypasses HTMLButtonElement.click's native disabled
+        // suppression: the component must guard its callbacks too.
+        control.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      }
+      await settle();
+      expect(host.calls).toEqual([]);
+      expect(host.target.querySelector(".menu")).not.toBeNull();
+      host.app.update({ controlsEnabled: true }); await settle();
+      expect(host.calls).toEqual([]);
+      expect(trigger.disabled).toBe(false);
+      trigger.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(host.calls).toEqual([menu === "empty" ? "plant 1,0 strain_a" : "harvest 0,0"]);
+      expect(document.activeElement).toBe(plot);
+    } finally { await unmount(host.app); host.target.remove(); }
+  });
 }
 
 for (const key of ["{Enter}", " "]) {

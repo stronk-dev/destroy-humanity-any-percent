@@ -2844,3 +2844,32 @@ socket and receipt boundaries, not a real Go/Postgres maturation journey. No Fir
 manual AT, full CI, Garden acceptance, content mint, archival or publication claim. Remaining
 renewal, SG13, RP-222 and earlier review debt are unchanged. This finishes the current bounded
 focus batch, not the full Garden feature or nine-tier1.0 goal.
+
+## 2026-10-08 — Garden connection-state controls (RP-420)
+
+Outcome under SG10/GS0.5: Garden inherits the host's Founder/transport readiness, keeps its last
+read visible with the existing stale reason, and disables grid/menu/harvest/substrate commands.
+Callbacks independently refuse direct dispatch. Unusable focus recovers to the heading; pending
+controls retain their existing focusable behavior and menu-to-plot handoff. Recovery submits
+nothing automatically; fresh native Enter binds the current Founder revision.
+
+Old-source1208 fails all six Chromium/WebKit connection cases. The independent availability
+assertions in88444 also fail; that attempt's synthetic sweep activated replaced menu elements,
+so its resulting null-menu errors are excluded from product findings. The corrected test uses
+current controls. Initial affected16616 finds four pending-menu focus regressions introduced by
+the draft: prop-container invalidation scheduled a competing heading fallback. The correction
+now reacts only to changed view/readiness values; no existing assertion was weakened.
+
+Final `make test-browser-focused BROWSER_TEST_FLAGS='test/garden-surface-browser.test.ts test/garden-surface-witnesses-browser.test.ts test/garden-host-browser.test.ts test/garden-refresh-browser.test.ts test/garden-fiscal-browser.test.ts --project=chromium --project=webkit'`
+48224 passes138/138. It includes initial handshake/reconnect/resync, fresh HTTP snapshot before
+socket recovery, exact revision/command binding, no queued replay, disabled callback controls
+for empty/mature menus, and retained timing/navigation/pending/focus cases. Final
+`make typecheck build-client verify-client-boundary`39435 passes with zero diagnostics.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range: `bbcf7349`
+exclusive through this source/tests/docs/ledger/log commit; designated cross-party review is
+pending and may consolidate with earlier Garden ranges. HTTP/socket frames are injected into
+the actual browser runtime, not a real Go/Postgres maturation/payout or long-session proof.
+No server/wire/clock/payout/copy/kernel/content/CI/budget change; no Firefox/manual AT/full-CI,
+Garden acceptance, archive or push claim. Browser renewal, SG13, RP-222 and prior review debt
+remain. Next: continue accepted Garden/host integration, not repeat this finished connection fix.

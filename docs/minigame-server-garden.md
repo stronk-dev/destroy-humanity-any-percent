@@ -229,10 +229,16 @@ payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release cl
   status region's visible `common.pending` message, and guard native/programmatic activation.
   An open menu cannot submit or close itself through a pending command; ordinary Close still
   works. Substrate lockout remains natively disabled, distinct from temporary pending state.
-- After a read, a surviving usable control keeps focus. Removed controls hand focus to the
-  nearest surviving tab stop in the same region, otherwise the heading; a substrate made
+- Command availability also inherits the host's Founder/transport readiness. Before handshake,
+  during reconnect and while resync awaits a recovered subscription, the last read remains
+  visible with `common.stale_note`; grid, menu intents, Harvest all and substrates are natively
+  disabled and describe that reason. Callback guards also refuse explicitly dispatched events.
+  Recovery does not submit refused input: the player must activate a control again.
+- After a read or readiness change, a surviving usable control keeps focus. Removed controls
+  hand focus to the nearest surviving tab stop in the same region, otherwise the heading; a substrate made
   unusable by lockout falls back to the heading. Recovery never overrides a newer focus
-  choice or targets an inactive grid cell outside the single roving tab stop.
+  choice or targets an inactive grid cell outside the single roving tab stop. Pending-only
+  prop updates leave the menu's existing plot-focus handoff in charge.
 - Stage and dormancy are text plus a border shape, never colour.
 - Growth announcements go to a polite live region once per refresh.
 - It re-reads at `next_tick_wall_ms` while visible and after every receipt, with no client

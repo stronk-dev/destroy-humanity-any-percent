@@ -8,10 +8,11 @@
   // Server Garden SG10: a DOM-first grid of native buttons over the advisory
   // read (no client simulation). The surface re-reads at next_tick_wall_ms
   // while visible and whenever the host bumps refreshKey after a receipt.
-  let { port, era, pending, refreshKey, rejection, onPlant, onUproot, onHarvest, onSetSubstrate, visible = () => document.visibilityState === "visible", now = () => Date.now() }: {
+  let { port, era, pending, controlsEnabled, refreshKey, rejection, onPlant, onUproot, onHarvest, onSetSubstrate, visible = () => document.visibilityState === "visible", now = () => Date.now() }: {
     port: GardenPort;
     era: CopyEra;
     pending: boolean;
+    controlsEnabled: boolean;
     refreshKey: number;
     rejection: CopyKey | null;
     onPlant(row: number, col: number, speciesID: string): void;
@@ -33,6 +34,8 @@
   let readGeneration = 0;
   let root: HTMLElement | undefined;
   let heading: HTMLHeadingElement | undefined;
+  let focusView: GardenViewState | undefined;
+  let focusReadiness: boolean | undefined;
   const cells = new Map<string, HTMLButtonElement>();
 
   // Substrates resolve from the copy registry (no second hardcoded catalog):
@@ -50,10 +53,14 @@
   // Re-read on every refreshKey bump; load() itself must not become a dependency.
   $effect(() => { void refreshKey; untrack(() => { void load(); }); });
 
-  // A read can remove Harvest all or lock the focused substrate. Keep surviving
-  // controls focused; recover only if focus became unusable and wasn't moved.
+  // A read or connection change can make focus unusable. Prop containers may
+  // also invalidate this effect for pending-only updates; those retain the
+  // menu's own handoff rather than scheduling a competing heading fallback.
   $effect.pre(() => {
-    void viewState;
+    const nextView = viewState, nextReadiness = controlsEnabled;
+    if (focusView === nextView && focusReadiness === nextReadiness) return;
+    focusView = nextView;
+    focusReadiness = nextReadiness;
     const action = document.activeElement;
     if (!(action instanceof HTMLButtonElement) || !root?.contains(action)) return;
     const region = action.closest(".menu,.substrates") ?? root;
@@ -136,7 +143,7 @@
     }
   }
   function act(run: () => void): void {
-    if (pending) return;
+    if (pending || !controlsEnabled) return;
     const origin = document.activeElement;
     run();
     void closeMenu(origin);
@@ -148,6 +155,7 @@
   <p class="hint">{t("garden.hint.first", {}, era)}</p>
   <small title={t("garden.why", {}, era)}>{t("garden.why", {}, era)}</small>
   <p id="garden-status" class="live" role="status" aria-live="polite">{pending ? t("common.pending", {}, era) : announcement}</p>
+  {#if !controlsEnabled}<p id="garden-stale" role="status">{t("common.stale_note", {}, era)}</p>{/if}
   {#if rejection}<p role="alert">{t(rejection, {}, era)}</p>{/if}
 
   {#if viewState.kind === "loading"}
@@ -167,8 +175,8 @@
             {@const stage = stageOf(active, row, col)}
             <div role="gridcell">
               <button type="button" class="cell" data-stage={stage} tabindex={row === focusRow && col === focusCol ? 0 : -1}
-                aria-label={label(active, row, col)} aria-disabled={pending} aria-describedby={pending ? "garden-status" : undefined} use:register={`${row},${col}`}
-                onkeydown={(event) => move(event, active)} onclick={() => { if (!pending) open(row, col); }}>
+                aria-label={label(active, row, col)} disabled={!controlsEnabled} aria-disabled={pending || !controlsEnabled} aria-describedby={!controlsEnabled ? "garden-stale" : pending ? "garden-status" : undefined} use:register={`${row},${col}`}
+                onkeydown={(event) => move(event, active)} onclick={() => { if (!pending && controlsEnabled) open(row, col); }}>
                 <span aria-hidden="true">{t(`garden.glyph.${stage}`, {}, era)}</span>
               </button>
             </div>
@@ -183,26 +191,26 @@
         {#if !plot && stageOf(active, at.row, at.col) === "empty"}
           <p>{t("garden.plot.choose_seed", {}, era)}</p>
           {#each active.garden.seed_collection as species (species)}
-            <button type="button" tabindex="0" aria-disabled={pending} aria-describedby={pending ? "garden-status" : undefined} onclick={() => act(() => onPlant(at.row, at.col, species))}>{t("garden.action.plant_frame", { species: speciesName(species) }, era)}</button>
+            <button type="button" tabindex="0" disabled={!controlsEnabled} aria-disabled={pending || !controlsEnabled} aria-describedby={!controlsEnabled ? "garden-stale" : pending ? "garden-status" : undefined} onclick={() => act(() => onPlant(at.row, at.col, species))}>{t("garden.action.plant_frame", { species: speciesName(species) }, era)}</button>
           {/each}
         {/if}
         {#if plot?.stage === "mature"}
-          <button type="button" tabindex="0" aria-disabled={pending} aria-describedby={pending ? "garden-status" : undefined} onclick={() => act(() => onHarvest([{ row: at.row, col: at.col }]))}>{t("garden.action.harvest", {}, era)}</button>
+          <button type="button" tabindex="0" disabled={!controlsEnabled} aria-disabled={pending || !controlsEnabled} aria-describedby={!controlsEnabled ? "garden-stale" : pending ? "garden-status" : undefined} onclick={() => act(() => onHarvest([{ row: at.row, col: at.col }]))}>{t("garden.action.harvest", {}, era)}</button>
         {/if}
         {#if plot}
-          <button type="button" tabindex="0" aria-disabled={pending} aria-describedby={pending ? "garden-status" : undefined} onclick={() => act(() => onUproot(at.row, at.col))}>{t("garden.action.uproot", {}, era)}</button>
+          <button type="button" tabindex="0" disabled={!controlsEnabled} aria-disabled={pending || !controlsEnabled} aria-describedby={!controlsEnabled ? "garden-stale" : pending ? "garden-status" : undefined} onclick={() => act(() => onUproot(at.row, at.col))}>{t("garden.action.uproot", {}, era)}</button>
         {/if}
         <button type="button" tabindex="0" onclick={() => closeMenu()}>{t("garden.action.close", {}, era)}</button>
       </div>
     {/if}
     {#if mature(active).length > 0}
-      <button type="button" tabindex="0" aria-disabled={pending} aria-describedby={pending ? "garden-status" : undefined} onclick={() => { if (!pending) onHarvest(mature(active)); }}>{t("garden.action.harvest_all", {}, era)}</button>
+      <button type="button" tabindex="0" disabled={!controlsEnabled} aria-disabled={pending || !controlsEnabled} aria-describedby={!controlsEnabled ? "garden-stale" : pending ? "garden-status" : undefined} onclick={() => { if (!pending && controlsEnabled) onHarvest(mature(active)); }}>{t("garden.action.harvest_all", {}, era)}</button>
     {/if}
     <fieldset class="substrates" disabled={active.garden.substrate_lockout_until_ms !== null}>
       <legend>{t("garden.substrate.label", {}, era)}</legend>
       {#each SUBSTRATES as substrate (substrate)}
-        <button type="button" tabindex="0" aria-disabled={pending} aria-pressed={active.garden.substrate_id === substrate} aria-describedby={`garden-substrate-${substrate}${pending ? " garden-status" : ""}`}
-          onclick={() => { if (!pending && active.garden.substrate_id !== substrate) onSetSubstrate(substrate); }}>{t(`garden.substrate.${substrate}.name` as CopyKey, {}, era)}</button>
+        <button type="button" tabindex="0" disabled={!controlsEnabled} aria-disabled={pending || !controlsEnabled} aria-pressed={active.garden.substrate_id === substrate} aria-describedby={`garden-substrate-${substrate}${!controlsEnabled ? " garden-stale" : pending ? " garden-status" : ""}`}
+          onclick={() => { if (!pending && controlsEnabled && active.garden.substrate_id !== substrate) onSetSubstrate(substrate); }}>{t(`garden.substrate.${substrate}.name` as CopyKey, {}, era)}</button>
         <small id={`garden-substrate-${substrate}`}>{t(`garden.substrate.${substrate}.tooltip` as CopyKey, {}, era)}</small>
       {/each}
     </fieldset>

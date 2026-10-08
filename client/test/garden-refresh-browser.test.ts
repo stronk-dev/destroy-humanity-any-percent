@@ -62,7 +62,7 @@ function mounted(response: Active) {
   const target = document.createElement("main");
   document.body.append(target);
   const initial: ComponentProps<typeof GardenSurface> = {
-    port, era: "era_1995", pending: false, refreshKey: 0, rejection: null,
+    port, era: "era_1995", pending: false, controlsEnabled: true, refreshKey: 0, rejection: null,
     onPlant: () => commands.push("plant"), onUproot: () => commands.push("uproot"),
     onHarvest: () => commands.push("harvest"), onSetSubstrate: () => commands.push("substrate"),
     // Deliberately do not override visible(): exercise the actual Page Visibility reader.

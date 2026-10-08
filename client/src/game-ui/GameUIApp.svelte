@@ -900,7 +900,7 @@
     <PetCareSurface pets={liveFeatures.pet_adoption.pets} cosmetics={liveFeatures.cosmetics ?? null} {era} {pending} controlsEnabled={founderControls && transportReady} reducedMotion={prefersReducedMotion} notice={intentNoticeOwner === "pet" ? intentNotice : null}
       onCare={(petID, actionID) => act({ kind: "care_action", pet_id: petID, action_id: actionID }, { scope: "founder", rejections: CARE_REJECTIONS, applied: () => "pet.care.applied" })} />
   {:else if snapshot && surface === "garden" && runtime.garden}
-    <GardenSurface port={runtime.garden} {era} {pending} refreshKey={gardenRefresh}
+    <GardenSurface port={runtime.garden} {era} {pending} controlsEnabled={founderControls} refreshKey={gardenRefresh}
       rejection={intentNotice?.startsWith("error.garden.") ? intentNotice : null}
       onPlant={(row, col, species) => gardenAct({ kind: "garden_plant", row, col, species_id: species })}
       onUproot={(row, col) => gardenAct({ kind: "garden_uproot", row, col })}

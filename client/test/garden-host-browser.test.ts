@@ -3,6 +3,7 @@ import { expect, it } from "vitest";
 
 import views from "../../testdata/garden/view-fixtures-v1.json";
 import type { GardenCurrentResponse, GameUISnapshot } from "../src/api/generated/types";
+import { t } from "../src/copy";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import { createBrowserGameUIRuntime, type RuntimeStorage } from "../src/game-ui/runtime";
 
@@ -46,9 +47,15 @@ class Socket {
   close() { this.closed = true; }
   emit(kind: string, event: { data?: string } = {}) { for (const listener of this.listeners.get(kind) ?? []) listener(event); }
   reply(value: unknown) { this.emit("message", { data: JSON.stringify(value) }); }
-  connect() {
+  connect(recovered = false) {
     this.emit("open"); this.reply({ id: 1, connect: {} });
-    for (const id of [2, 3]) this.reply({ id, subscribe: { recoverable: true, positioned: true, recovered: false, epoch: `epoch-${id}`, offset: 0, publications: [] } });
+    for (const id of [2, 3]) this.reply({ id, subscribe: { recoverable: true, positioned: true, recovered, epoch: `epoch-${id}`, offset: 0, publications: [] } });
+  }
+  resync() {
+    this.reply({ push: { channel: "world", pub: { offset: 1, data: {
+      v: 2, ch: "world", kind: "system", rev: 0, constants_hash: constantsHash,
+      ts: "2026-10-08T02:00:00Z", payload: { code: "resync_required" },
+    } } } });
   }
   receipt(intentID?: string) {
     this.reply({ push: { channel: `player:${founderID}`, pub: { offset: 1, data: {
@@ -70,13 +77,13 @@ function button(target: HTMLElement, text: string): HTMLButtonElement {
   return found;
 }
 
-async function mounted(initial: GardenCurrentResponse = active()) {
+async function mounted(initial: GardenCurrentResponse = active(), connected = true) {
   let currentSnapshot = snapshot(7), currentGarden = initial;
   const data = new Map([["cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "garden-host-token", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" })]]);
   const storage: RuntimeStorage = { getItem: (key) => data.get(key) ?? null, setItem: (key, value) => { data.set(key, value); }, removeItem: (key) => { data.delete(key); } };
   const requests: { path: string; method: string; auth: string | null; body: unknown }[] = [];
   let release: ((value: unknown) => void) | undefined;
-  const socket = new Socket();
+  const sockets: Socket[] = [];
   const urls: string[] = [];
   const runtime = createBrowserGameUIRuntime(storage, async (input, init) => {
     const path = String(input), method = init?.method ?? "GET";
@@ -88,20 +95,23 @@ async function mounted(initial: GardenCurrentResponse = active()) {
     else if (path === "/api/v1/intents" && method === "POST") response = await new Promise((resolve) => { release = resolve; });
     else throw new Error(`unexpected HTTP ${method} ${path}`);
     return new Response(JSON.stringify(response), { status: 200, headers: { "Content-Type": "application/json" } });
-  }, crypto, (url) => { urls.push(url); return socket as unknown as WebSocket; }, { protocol: "https:", host: "garden.example.invalid" });
+  }, crypto, (url) => { urls.push(url); const socket = new Socket(); sockets.push(socket); return socket as unknown as WebSocket; }, { protocol: "https:", host: "garden.example.invalid" });
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime } });
   await settle();
   expect(urls).toEqual(["wss://garden.example.invalid/connection/websocket"]);
-  socket.connect(); await settle();
-  expect(socket.sent).toEqual([{ id: 1, connect: { token: "garden-host-token" } }, { id: 2, subscribe: { channel: `player:${founderID}` } }, { id: 3, subscribe: { channel: "world" } }]);
+  if (connected) {
+    sockets[0]!.connect(); await settle();
+    expect(sockets[0]!.sent).toEqual([{ id: 1, connect: { token: "garden-host-token" } }, { id: 2, subscribe: { channel: `player:${founderID}` } }, { id: 3, subscribe: { channel: "world" } }]);
+  }
   return {
-    target, requests, socket,
+    target, requests, sockets,
+    get socket() { return sockets.at(-1)!; },
     set(view: GardenCurrentResponse, revision: number) { currentGarden = view; currentSnapshot = snapshot(revision); },
     acknowledge(value: unknown) { if (!release) throw new Error("no pending intent"); const resolve = release; release = undefined; resolve(value); },
     async dispose() {
       release?.({ outcome: "rejected", intent_id: "cleanup", current_revision: 8, rejection: { category: "not_eligible", detail: "plot_occupied" } });
-      await settle(); await unmount(app); target.remove(); expect(socket.closed).toBe(true);
+      await settle(); await unmount(app); target.remove(); expect(sockets.at(-1)!.closed).toBe(true);
     },
     reads() { return requests.filter((row) => row.path === "/api/v1/garden/current").length; },
     intents() { return requests.filter((row) => row.path === "/api/v1/intents").map((row) => row.body as Record<string, unknown>); },
@@ -129,6 +139,51 @@ const cases = [
   { name: "harvest-all", kind: "garden_harvest", fields: { plots: [{ row: 0, col: 0 }, { row: 0, col: 1 }, { row: 1, col: 1 }] }, at: null, action: "Harvest all mature" },
   { name: "substrate", kind: "garden_set_substrate", fields: { substrate_id: "mainframe" }, at: null, action: "Mainframe" },
 ] as const;
+
+for (const state of ["not-ready", "recovering", "resync"] as const) {
+  it.skipIf(!browser)(`Garden connection ${state} visibly disables commands until the real handshake recovers`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const host = await mounted(active(), state !== "not-ready");
+    try {
+      button(host.target, "Server Garden").click(); await settle();
+      if (state !== "not-ready") {
+        cell(host.target, 0, 0).click(); await settle();
+        expect(button(host.target, "Harvest").disabled).toBe(false);
+        button(host.target, "Harvest").focus();
+        if (state === "recovering") { host.socket.closed = true; host.socket.emit("close"); }
+        else { host.set(active(8), 8); host.socket.resync(); }
+        await settle();
+        expect(document.activeElement).toBe(host.target.querySelector("#garden-heading"));
+      }
+      const garden = host.target.querySelector<HTMLElement>(".garden")!;
+      const stages = [...garden.querySelectorAll<HTMLButtonElement>("button.cell")].map((node) => node.dataset.stage);
+      expect.soft(garden.textContent).toContain(t("common.stale_note", {}, "era_1995"));
+      const commands = [...garden.querySelectorAll<HTMLButtonElement>("button")].filter((node) => node.textContent?.trim() !== "Close");
+      expect(commands.length).toBeGreaterThan(36);
+      expect.soft(commands.map((control) => control.disabled)).toEqual(commands.map(() => true));
+      button(host.target, "Harvest all mature").click();
+      button(host.target, "Mainframe").click();
+      cell(host.target, 0, 0).click();
+      await settle();
+      expect(host.intents()).toEqual([]);
+      expect([...garden.querySelectorAll<HTMLButtonElement>("button.cell")].map((node) => node.dataset.stage)).toEqual(stages);
+      if (state !== "not-ready") {
+        await expect.poll(() => host.sockets.length).toBe(2);
+        // The main HTTP resync alone is not a recovered transport handshake.
+        expect(button(host.target, "Harvest all mature").disabled).toBe(true);
+      }
+      host.socket.connect(state === "recovering"); await settle();
+      expect(garden.textContent).not.toContain(t("common.stale_note", {}, "era_1995"));
+      expect(button(host.target, "Harvest all mature").disabled).toBe(false);
+      expect(host.intents()).toEqual([]); // Recovery must not replay a refused click.
+      const harvest = button(host.target, "Harvest all mature");
+      harvest.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(host.intents()).toEqual([{ intent_id: expect.any(String), expected_revision: state === "resync" ? 8 : 7,
+        kind: "garden_harvest", plots: [{ row: 0, col: 0 }, { row: 0, col: 1 }, { row: 1, col: 1 }] }]);
+      host.assertHTTP();
+    } finally { await host.dispose(); }
+  });
+}
 
 for (const action of ["harvest-all", "substrate", "menu-harvest"] as const) {
   for (const newerChoice of [false, true]) {
