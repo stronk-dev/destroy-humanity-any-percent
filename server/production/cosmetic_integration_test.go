@@ -2,7 +2,10 @@ package production
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
+	"fmt"
+	"math/big"
 	"os"
 	"strings"
 	"testing"
@@ -41,7 +44,7 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `TRUNCATE accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`); err != nil {
 		t.Fatal(err)
 	}
-	bundle := cosmeticsContentBundle(t)
+	bundle := twoItemCosmeticsBundle(t)
 	seedProductionEpoch(t, db, bundle.ConstantsHash, bundle.Artifacts)
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{bundle.ConstantsHash: bundle.Economy},
 		routes: map[string]*routes.Catalog{bundle.ConstantsHash: bundle.Routes}, prestige: map[string]*prestigecore.Policy{bundle.ConstantsHash: bundle.Prestige},
@@ -272,6 +275,7 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 			t.Fatalf("cosmetic equip/unequip during Soul recovery receipt=%s err=%v", applied.Receipt, err)
 		}
 	}
+	exerciseCosmeticCommandPersistence(t, ctx, db, store, service, bundle, companyRevision.StreamID, founderRevision.StreamID, cursor)
 	// Advancing the Founder for a cosmetic intent must not strand the active
 	// recovery coordinator or erase cosmetics when recovery resolves. Each beat
 	// uses the pinned policy and server-controlled test clock, not client time.
@@ -298,7 +302,7 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 		t.Fatalf("Soul recovery did not persist its terminal state: %v", err)
 	}
 	afterRecovery, err := store.LoadLatest(ctx, founderRevision.StreamID)
-	if err != nil || afterRecovery.Revision.Number != 5 || !loaded.State.Cosmetics.Equal(afterRecovery.State.Cosmetics) {
+	if err != nil || afterRecovery.Revision.Number != 7 || !loaded.State.Cosmetics.Equal(afterRecovery.State.Cosmetics) {
 		t.Fatalf("Soul recovery changed cosmetic state or failed to advance Founder: %v", err)
 	}
 	history, err = store.LoadFounderHistory(ctx, founderRevision.StreamID)
@@ -307,5 +311,334 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 	}
 	if verdict := VerifyFounderHistory(history, ReplayCatalogSet{bundle.ConstantsHash: bundle}); verdict != ReplayVerified {
 		t.Fatalf("Founder history after cosmetic acquisition and Soul recovery verdict=%v", verdict)
+	}
+}
+
+// Exercise the real transaction before the simulated recovery clock advances.
+// The second fixture item makes not_owned reachable; ownership and equip state
+// still come exclusively from Service.Handle.
+func exerciseCosmeticCommandPersistence(t *testing.T, ctx context.Context, db *sql.DB, store *save.Store,
+	service *Service, bundle CatalogBundle, companyStreamID, founderStreamID string, now time.Time) {
+	t.Helper()
+	type observation struct {
+		founder, company string
+		counts           [6]int64
+	}
+	observe := func(t *testing.T) observation {
+		t.Helper()
+		var observed observation
+		for index, stream := range []string{founderStreamID, companyStreamID} {
+			loaded, err := store.LoadLatest(ctx, stream)
+			if err != nil {
+				t.Fatal(err)
+			}
+			value := fmt.Sprintf("%d/%s/%s", loaded.Revision.Number, loaded.Revision.ConstantsHash, mustEncodeState(t, loaded.State))
+			if index == 0 {
+				observed.founder = value
+			} else {
+				observed.company = value
+			}
+		}
+		if err := db.QueryRowContext(ctx, `SELECT
+			(SELECT count(*) FROM save_revisions WHERE stream_id IN ($1,$2)),
+			(SELECT count(*) FROM events WHERE stream_id IN ($1,$2)),
+			(SELECT count(*) FROM intent_records WHERE stream_id IN ($1,$2)),
+			(SELECT count(*) FROM founder_log WHERE founder_stream_id=$1),
+			(SELECT count(*) FROM transport_player_outbox WHERE stream_id IN ($1,$2)),
+			(SELECT count(*) FROM founder_genesis WHERE founder_stream_id=$1)`, founderStreamID, companyStreamID).
+			Scan(&observed.counts[0], &observed.counts[1], &observed.counts[2], &observed.counts[3], &observed.counts[4], &observed.counts[5]); err != nil {
+			t.Fatal(err)
+		}
+		return observed
+	}
+	assertRows := func(t *testing.T, intentID string, wantCommand, wantEvent int64) {
+		t.Helper()
+		var commands, logs, receipts, events, eventDeliveries int64
+		if err := db.QueryRowContext(ctx, `SELECT
+			(SELECT count(*) FROM intent_records WHERE stream_id=$1 AND intent_id=$2),
+			(SELECT count(*) FROM founder_log WHERE founder_stream_id=$1 AND intent_id=$2),
+			(SELECT count(*) FROM transport_player_outbox WHERE stream_id=$1 AND message_kind='receipt' AND source_id=$2),
+			(SELECT count(*) FROM events WHERE stream_id=$1 AND intent_id=$2),
+			(SELECT count(*) FROM transport_player_outbox o JOIN events e ON e.stream_id=o.stream_id AND e.event_id=o.source_id
+			 WHERE o.stream_id=$1 AND o.message_kind='event' AND e.intent_id=$2)`, founderStreamID, intentID).
+			Scan(&commands, &logs, &receipts, &events, &eventDeliveries); err != nil {
+			t.Fatal(err)
+		}
+		if commands != wantCommand || logs != wantCommand || receipts != wantCommand || events != wantEvent || eventDeliveries != wantEvent {
+			t.Fatalf("%s persisted commands/logs/receipts/events/event-deliveries = %d/%d/%d/%d/%d, want %d/%d/%d/%d/%d",
+				intentID, commands, logs, receipts, events, eventDeliveries, wantCommand, wantCommand, wantCommand, wantEvent, wantEvent)
+		}
+	}
+	expectedAppliedReceipt := func(t *testing.T, intentID string, revision int64, cosmeticJSON string) string {
+		t.Helper()
+		// A real wall-clock command can cross a Fiscal period. Derive that
+		// permitted shared prelude from the previous SQL state, pinned policy
+		// and recorded evaluation time; do not discard an unexpected field or
+		// make the fixture clock slower just to keep the literal receipt green.
+		var credit, opened, sequence, evaluated int64
+		if err := db.QueryRowContext(ctx, `SELECT (r.state->>'fiscal_credit')::bigint,
+			(r.state->>'fiscal_period_opened_wall_ms')::bigint,(r.state->>'fiscal_period_seq')::bigint,l.server_ts_ms
+			FROM save_revisions r JOIN founder_log l ON l.founder_stream_id=r.stream_id
+			WHERE r.stream_id=$1 AND r.revision=$2 AND l.intent_id=$3`, founderStreamID, revision-1, intentID).
+			Scan(&credit, &opened, &sequence, &evaluated); err != nil {
+			t.Fatal(err)
+		}
+		if evaluated < opened {
+			t.Fatal("stored cosmetic command moves Fiscal time backwards")
+		}
+		periods := (evaluated - opened) / bundle.Fiscal.Clock.AutoMS
+		minted := new(big.Int).Mul(big.NewInt(periods), big.NewInt(bundle.Fiscal.Credit.CreditPerPeriod))
+		headroom := big.NewInt(bundle.Fiscal.Credit.Hardcap - credit)
+		saturated := minted.Cmp(headroom) > 0
+		credited := new(big.Int).Set(minted)
+		if saturated {
+			credited.Set(headroom)
+		}
+		var fields map[string]json.RawMessage
+		if err := json.Unmarshal([]byte(cosmeticJSON), &fields); err != nil {
+			t.Fatal(err)
+		}
+		if periods > 0 {
+			sweep := map[string]any{"periods": periods, "credit_before": credit, "credited": credited.Int64(),
+				"credit_after": credit + credited.Int64(), "opened_before_ms": opened,
+				"opened_after_ms": opened + periods*bundle.Fiscal.Clock.AutoMS, "seq_before": sequence,
+				"seq_after": sequence + periods, "saturated": saturated, "hardcap_reason_key": bundle.Fiscal.Credit.HardcapReasonKey}
+			encoded, err := json.Marshal(sweep)
+			if err != nil {
+				t.Fatal(err)
+			}
+			fields["fiscal_sweep"] = encoded
+		}
+		var afterCredit, afterOpened, afterSequence int64
+		if err := db.QueryRowContext(ctx, `SELECT (state->>'fiscal_credit')::bigint,
+			(state->>'fiscal_period_opened_wall_ms')::bigint,(state->>'fiscal_period_seq')::bigint
+			FROM save_revisions WHERE stream_id=$1 AND revision=$2`, founderStreamID, revision).
+			Scan(&afterCredit, &afterOpened, &afterSequence); err != nil {
+			t.Fatal(err)
+		}
+		if afterCredit != credit+credited.Int64() || afterOpened != opened+periods*bundle.Fiscal.Clock.AutoMS || afterSequence != sequence+periods {
+			t.Fatal("applied cosmetic command persisted the wrong Fiscal prelude")
+		}
+		return canonicalFixtureValue(t, fields)
+	}
+	assertStored := func(t *testing.T, intentID string, receipt json.RawMessage, revision int64, applied bool) {
+		t.Helper()
+		var record, log, delivery []byte
+		var appliedRevision sql.NullInt64
+		var deliveryRevision int64
+		if err := db.QueryRowContext(ctx, `SELECT r.receipt,l.receipt,l.applied_revision,o.payload,o.revision
+			FROM intent_records r JOIN founder_log l ON l.founder_stream_id=r.stream_id AND l.intent_id=r.intent_id
+			JOIN transport_player_outbox o ON o.stream_id=r.stream_id AND o.source_id=r.intent_id AND o.message_kind='receipt'
+			WHERE r.stream_id=$1 AND r.intent_id=$2`, founderStreamID, intentID).
+			Scan(&record, &log, &appliedRevision, &delivery, &deliveryRevision); err != nil {
+			t.Fatal(err)
+		}
+		for _, value := range [][]byte{record, log, delivery} {
+			if canonicalFixtureJSON(t, value) != canonicalFixtureJSON(t, receipt) {
+				t.Fatalf("%s persisted receipt differs from returned receipt: %s != %s", intentID, value, receipt)
+			}
+		}
+		if deliveryRevision != revision || appliedRevision.Valid != applied || applied && appliedRevision.Int64 != revision {
+			t.Fatalf("%s applied revision=%v delivery revision=%d, want applied=%v revision=%d", intentID, appliedRevision, deliveryRevision, applied, revision)
+		}
+		var eventCount int64
+		if applied {
+			eventCount = 1
+			var envelope founderCosmeticReceipt
+			if err := json.Unmarshal(receipt, &envelope); err != nil {
+				t.Fatal(err)
+			}
+			var kind string
+			var payload []byte
+			var eventRevision int64
+			if err := db.QueryRowContext(ctx, `SELECT kind,payload,revision FROM events WHERE stream_id=$1 AND intent_id=$2 AND kind LIKE 'cosmetic_%'`, founderStreamID, intentID).
+				Scan(&kind, &payload, &eventRevision); err != nil {
+				t.Fatal(err)
+			}
+			if kind != string(envelope.Event.Kind) || eventRevision != revision || canonicalFixtureJSON(t, payload) != canonicalFixtureValue(t, envelope.Event.Payload) {
+				t.Fatalf("%s persisted event differs from receipt: %s/%d/%s", intentID, kind, eventRevision, payload)
+			}
+			var fields map[string]json.RawMessage
+			if err := json.Unmarshal(receipt, &fields); err != nil {
+				t.Fatal(err)
+			}
+			if sweep, ok := fields["fiscal_sweep"]; ok {
+				eventCount++
+				var expectedPayload map[string]any
+				if err := json.Unmarshal(sweep, &expectedPayload); err != nil {
+					t.Fatal(err)
+				}
+				expectedPayload["source"] = "automatic"
+				if err := db.QueryRowContext(ctx, `SELECT payload,revision FROM events WHERE stream_id=$1 AND intent_id=$2 AND kind='fiscal_period_harvested.v1'`, founderStreamID, intentID).
+					Scan(&payload, &eventRevision); err != nil {
+					t.Fatal(err)
+				}
+				if eventRevision != revision || canonicalFixtureJSON(t, payload) != canonicalFixtureValue(t, expectedPayload) {
+					t.Fatal("persisted automatic Fiscal event differs from the independently checked receipt")
+				}
+			}
+		}
+		assertRows(t, intentID, 1, eventCount)
+	}
+	request := func(id, kind string, revision int64, fields string) []byte {
+		return []byte(fmt.Sprintf(`{"intent_id":%q,"kind":%q,"expected_revision":%d,%s}`, id, kind, revision, fields))
+	}
+	assertRejection := func(t *testing.T, result HandleResult, id string, revision int64, category, detail string) {
+		t.Helper()
+		want := fmt.Sprintf(`{"intent_id":%q,"outcome":"rejected","current_revision":%d,"rejection":{"category":%q,"detail":%q}}`, id, revision, category, detail)
+		if canonicalFixtureJSON(t, result.Receipt) != canonicalFixtureJSON(t, []byte(want)) {
+			t.Fatalf("receipt=%s, want %s", result.Receipt, want)
+		}
+	}
+	checkRejection := func(t *testing.T, id, kind string, revision int64, fields, category, detail string) {
+		t.Helper()
+		body := request(id, kind, revision, fields)
+		before := observe(t)
+		result, err := service.Handle(ctx, companyStreamID, ModeOnline, now, body)
+		if err != nil || result.Replay {
+			t.Fatalf("first rejection replay=%v err=%v", result.Replay, err)
+		}
+		assertRejection(t, result, id, revision, category, detail)
+		assertStored(t, id, result.Receipt, revision, false)
+		after := observe(t)
+		if before.founder != after.founder || before.company != after.company || before.counts[0] != after.counts[0] || before.counts[1] != after.counts[1] ||
+			after.counts[2] != before.counts[2]+1 || after.counts[3] != before.counts[3]+1 || after.counts[4] != before.counts[4]+1 || after.counts[5] != before.counts[5] {
+			t.Fatalf("rejection changed state/events or persisted unexpected rows: before=%+v after=%+v", before.counts, after.counts)
+		}
+		retry, err := service.Handle(ctx, companyStreamID, ModeOnline, now, body)
+		if err != nil || !retry.Replay || string(retry.Receipt) != string(result.Receipt) || observe(t) != after {
+			t.Fatalf("rejected retry changed persisted state: replay=%v receipt=%s err=%v", retry.Replay, retry.Receipt, err)
+		}
+		changed := request(id, kind, revision+1, fields)
+		conflict, err := service.Handle(ctx, companyStreamID, ModeOnline, now, changed)
+		if err != nil || conflict.Replay {
+			t.Fatalf("changed rejected request replay=%v err=%v", conflict.Replay, err)
+		}
+		assertRejection(t, conflict, id, revision, "idempotency_conflict", id)
+		assertStored(t, id, result.Receipt, revision, false)
+		if observe(t) != after {
+			t.Fatal("changed payload rewrote a recorded rejection")
+		}
+	}
+	for index, row := range []struct{ name, kind, fields, category, detail string }{
+		{"unknown-cosmetic", IntentAcquireCosmetic, `"cosmetic_id":"missing_armor"`, "unknown_id", "cosmetic_id"},
+		{"unknown-equip-cosmetic", IntentEquipCosmetic, `"cosmetic_id":"missing_armor","pet_id":"` + adoptedPetID + `"`, "unknown_id", "cosmetic_id"},
+		{"unknown-pet", IntentEquipCosmetic, `"cosmetic_id":"horse_armor","pet_id":"01986666-7e00-7000-8000-000000000099"`, "unknown_id", "pet_id"},
+		{"unknown-unequip-pet", IntentUnequipCosmetic, `"pet_id":"01986666-7e00-7000-8000-000000000099"`, "unknown_id", "pet_id"},
+		{"not-owned", IntentEquipCosmetic, `"cosmetic_id":"zebra_armor","pet_id":"` + adoptedPetID + `"`, "not_eligible", "not_owned"},
+		{"nothing-equipped", IntentUnequipCosmetic, `"pet_id":"` + adoptedPetID + `"`, "not_eligible", "nothing_equipped"},
+	} {
+		t.Run("persisted-rejection-"+row.name, func(t *testing.T) {
+			id := fmt.Sprintf("01986666-7e00-7000-8000-%012d", index+100)
+			checkRejection(t, id, row.kind, 4, row.fields, row.category, row.detail)
+		})
+	}
+
+	const equipID = "01986666-7e00-7000-8000-000000000110"
+	equip := request(equipID, IntentEquipCosmetic, 4, `"cosmetic_id":"horse_armor","pet_id":"`+adoptedPetID+`"`)
+	before := observe(t)
+	// Fail the LAST insert in ApplyFounderLogged: state, event, history and
+	// intent receipt have already been written inside its transaction. The
+	// scoped constraint affects only this fixture command, not other requests.
+	if _, err := db.ExecContext(ctx, `ALTER TABLE transport_player_outbox ADD CONSTRAINT cosmetic_test_receipt_failure
+		CHECK (source_id <> '01986666-7e00-7000-8000-000000000110'::uuid) NOT VALID`); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		if _, err := db.ExecContext(ctx, `ALTER TABLE transport_player_outbox DROP CONSTRAINT IF EXISTS cosmetic_test_receipt_failure`); err != nil {
+			t.Errorf("remove test-only outbox fault: %v", err)
+		}
+	}()
+	if _, err := service.Handle(ctx, companyStreamID, ModeOnline, now, equip); err == nil || !strings.Contains(err.Error(), "cosmetic_test_receipt_failure") {
+		t.Fatalf("expected actual receipt insert failure, got %v", err)
+	}
+	if observe(t) != before {
+		t.Fatal("failed receipt insert left partial state, events, history or outbox rows")
+	}
+	assertRows(t, equipID, 0, 0)
+	if _, err := db.ExecContext(ctx, `ALTER TABLE transport_player_outbox DROP CONSTRAINT cosmetic_test_receipt_failure`); err != nil {
+		t.Fatal(err)
+	}
+
+	// Concurrent retries of that same request must commit exactly once, not
+	// turn the losers into already_equipped or stale-revision rejections.
+	type response struct {
+		result HandleResult
+		err    error
+	}
+	const submissions = 8
+	start := make(chan struct{})
+	responses := make(chan response, submissions)
+	for range submissions {
+		go func() {
+			<-start
+			result, err := service.Handle(ctx, companyStreamID, ModeOnline, now, equip)
+			responses <- response{result, err}
+		}()
+	}
+	close(start)
+	completed := make([]response, 0, submissions)
+	for range submissions {
+		completed = append(completed, <-responses)
+	}
+	var original json.RawMessage
+	fresh := 0
+	for _, response := range completed {
+		if response.err != nil {
+			t.Fatal(response.err)
+		}
+		if !response.result.Replay {
+			fresh++
+		}
+		if original == nil {
+			original = response.result.Receipt
+		} else if string(response.result.Receipt) != string(original) {
+			t.Fatalf("concurrent retry receipt=%s differs from %s", response.result.Receipt, original)
+		}
+	}
+	wantEquip := fmt.Sprintf(`{"intent_id":%q,"outcome":"applied","founder_revision":5,"kind":"equip_cosmetic","cosmetics":{"owned":["horse_armor"],"equipped":{%q:"horse_armor"}},"event":{"kind":"cosmetic_equipped.v1","payload":{"cosmetic_id":"horse_armor","pet_id":%q,"replaced_cosmetic_id":null}}}`, equipID, adoptedPetID, adoptedPetID)
+	if fresh != 1 || canonicalFixtureJSON(t, original) != expectedAppliedReceipt(t, equipID, 5, wantEquip) {
+		t.Fatalf("concurrent commits=%d receipt=%s, want one exact equip", fresh, original)
+	}
+	assertStored(t, equipID, original, 5, true)
+	loaded, err := store.LoadLatest(ctx, founderStreamID)
+	if err != nil || loaded.Revision.Number != 5 || loaded.State.Cosmetics.Equipped[adoptedPetID] != "horse_armor" {
+		t.Fatalf("concurrent equip did not persist exactly one revision: revision=%d err=%v", loaded.Revision.Number, err)
+	}
+	if observe(t).company != before.company {
+		t.Fatal("cosmetic equip changed Company state")
+	}
+	t.Run("persisted-rejection-already-equipped", func(t *testing.T) {
+		checkRejection(t, "01986666-7e00-7000-8000-000000000112", IntentEquipCosmetic, 5,
+			`"cosmetic_id":"horse_armor","pet_id":"`+adoptedPetID+`"`, "not_eligible", "already_equipped")
+	})
+
+	const staleID = "01986666-7e00-7000-8000-000000000111"
+	stale := request(staleID, IntentUnequipCosmetic, 4, `"pet_id":"`+adoptedPetID+`"`)
+	before = observe(t)
+	result, err := service.Handle(ctx, companyStreamID, ModeOnline, now, stale)
+	if err != nil || result.Replay {
+		t.Fatalf("stale command replay=%v err=%v", result.Replay, err)
+	}
+	assertRejection(t, result, staleID, 5, "revision_conflict", "expected_revision")
+	assertRows(t, staleID, 0, 0)
+	if observe(t) != before {
+		t.Fatal("stale request mutated state or persisted a terminal command")
+	}
+	// A revision conflict is not a recorded terminal intent: the same UUID with
+	// a newly read revision can apply. A true recorded rejection cannot change.
+	corrected := request(staleID, IntentUnequipCosmetic, 5, `"pet_id":"`+adoptedPetID+`"`)
+	result, err = service.Handle(ctx, companyStreamID, ModeOnline, now, corrected)
+	if err != nil || result.Replay {
+		t.Fatalf("corrected revision replay=%v err=%v", result.Replay, err)
+	}
+	wantUnequip := fmt.Sprintf(`{"intent_id":%q,"outcome":"applied","founder_revision":6,"kind":"unequip_cosmetic","cosmetics":{"owned":["horse_armor"],"equipped":{}},"event":{"kind":"cosmetic_unequipped.v1","payload":{"cosmetic_id":"horse_armor","pet_id":%q}}}`, staleID, adoptedPetID)
+	if canonicalFixtureJSON(t, result.Receipt) != expectedAppliedReceipt(t, staleID, 6, wantUnequip) {
+		t.Fatalf("corrected unequip receipt=%s, want %s", result.Receipt, wantUnequip)
+	}
+	assertStored(t, staleID, result.Receipt, 6, true)
+	loaded, err = store.LoadLatest(ctx, founderStreamID)
+	if err != nil || loaded.Revision.Number != 6 || !loaded.State.Cosmetics.Owns("horse_armor") || len(loaded.State.Cosmetics.Equipped) != 0 || observe(t).company != before.company {
+		t.Fatalf("corrected unequip lost ownership, changed Company or did not persist: err=%v", err)
 	}
 }

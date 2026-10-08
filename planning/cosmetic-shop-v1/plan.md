@@ -67,6 +67,10 @@ migration take the next free numbers at landing.
   accepting unsafe revisions or extraneous null context that TS rejects. The bounded strict
   correction and shared admission fixtures are locally verified; the latest owning log gives
   the exact range and executed results. No complete C4 or archival approval is inferred.
+  The real-Postgres command population now also checks seven persisted refusal/retry cases,
+  eight concurrent identical submissions, stale/corrected revisions and rollback when the last
+  receipt-outbox insert fails. Focused race and selected Cosmetic/save tests pass; the owning
+  log records scope and pending designated review. This is not HTTP authorization coverage.
   This checkbox records implementation presence, not full C4 approval.
 - [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); Codex's targeted review found RP-173, whose corrective range awaits Claude's designated review, and RP-174 still requires ruling-author body reconciliation. This checkbox is implementation presence, not archival approval.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).

@@ -1922,3 +1922,41 @@ designated cross-party review remains required. Prior C4 findings/corrections an
 review debt remain separate. No browser/hosted/full-CI, whole Cosmetic acceptance, archival,
 publication or release claim. Continue accepted implementation/review while shared attendance,
 author contracts, content and rights/deployment gates retain their own authority.
+
+## 2026-10-08 — real command rollback, refusal and concurrent-retry evidence
+
+Outcome under §4/AC5–AC6/AC9: extend the existing real-Postgres service journey, reusing its
+fixture and the existing second-item catalog. No product, migration, balance, copy or kernel
+change. Seven refusal cases check exact receipts, unchanged full Founder/Company state and
+revision/event counts, exactly one stored rejection/log/delivery, byte-identical retries and
+changed-payload conflicts that cannot overwrite the original rejection.
+
+A command-scoped test-only constraint forces the final receipt-outbox insert to fail after the
+transaction has attempted its save/event/history/receipt writes. The error names that constraint;
+all six table counts and both complete saved states remain unchanged, with zero command-specific
+rows. After removing the fault, eight concurrent identical equip submissions produce one commit
+and seven byte-identical replays. Stale unequip writes nothing; the same ID with the current
+revision then applies. Both applied commands check exact receipts, saved equip state, event and
+delivery rows. Existing Soul resolution and full Founder-history verification still execute.
+
+Verification: focused real-Postgres race run60771 PASS; final selected production/save population
+73502 (`make test-save-integration SAVE_TEST_PACKAGES='./production ./save' SAVE_TEST_FLAGS='-run Cosmetic -v'`)
+PASS cold, including existing isolation/corpus and both Exit arms. Focused race command substitutes
+`SAVE_TEST_PACKAGES='./production'` and `SAVE_TEST_FLAGS='-race -run TestCosmeticIntegrationPersistsReplayableFounderLog -v'`.
+Affected vet and diff checks PASS. SQL confirms the race run's equip settled one Fiscal period,
+unequip settled none, and the temporary constraint is absent. Fiscal receipt/state values are
+independently derived from previous SQL state, recorded time and pinned policy; extra fields and
+unregistered events are not ignored to accommodate that crossing.
+
+Setup failures retained:63693 selected no tests;44808 placed commands after the fixture's future
+recovery clock and exposed incorrect cleanup ordering (fault removed after exact inspection).
+9637's broad race attempt exposed an omitted legitimate Fiscal prelude; stopped during costly
+isolation after that known red, not claimed green.99517 queried the wrong Fiscal sequence key.
+Corrected ordering, deferred local cleanup, exact field name and strict period-aware expectations
+precede the final passes. None is recorded as a product defect or concealed by retries/budgets.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact new test/record range is
+`9290d114` exclusive through this commit; designated review remains pending. No HTTP/account
+authorization, all acquisition eligibility populations, browser/hosted/full-CI or complete C4/
+Cosmetic acceptance is claimed. Next: remaining original C4 review and C7/N5 negative population;
+author-body, attendance, content and earlier correction-review debt remain separate.
