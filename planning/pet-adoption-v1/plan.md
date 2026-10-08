@@ -7,7 +7,9 @@ self-approval, no archival, and no production mint (fixture-first; OD-4/PA8.6 co
 2026-10-08 review checkpoint: bounded P1 phrase admission (RP-403) and P2/P3 raw species
 admission (RP-404) are CHANGES REQUIRED in the original Claude implementation. Codex's
 corrections and executed evidence are in the latest log entries and need Claude's exact-range
-review. Existing checkboxes describe implementation presence, not full-feature acceptance.
+review. P5's missing final-history AC7 refusal checks (RP-405) are also locally corrected and
+await designated review plus database-backed execution. Existing checkboxes describe
+implementation presence, not full-feature acceptance.
 
 Numbering, ruled by landing order: the RFC's "Founder v22" maps to the **next free Founder version
 = v23**, because Reputation Tree v1 already took v22. The RFC's "replay-inputs v7" maps to the next

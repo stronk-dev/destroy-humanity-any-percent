@@ -471,3 +471,43 @@ review. No full P2/P3/AC1, PA7, feature, accessibility, rights, content or relea
 Next: consolidate the remaining review/contract gates; resolve the Node containment limitation
 and rerun persisted adoption/replay once Docker responds, rather than treating missing evidence
 as a pass.
+
+## 2026-10-08 — RP-405 final-history integrity witnesses
+
+Targeted cross-party review by: Codex. Recorded by: Codex. Original Claude range
+`5ff37cc1^..5ff37cc1`, limited to AC7's claimed evidence: **CHANGES REQUIRED**. Its nonce tests
+compare changed transition output, and its SQL witness verifies an honest Go history. They do
+not execute AC7's required final Go/TS refusal verdicts for changed nonce/event evidence and
+missing species bytes. This is a verification gap, not a demonstrated production replay defect
+or a verdict on the full P5 transaction. P4 source/codec/activation checks found no new defect;
+the original golden-file changes independently reduce to137 envelope9→10 substitutions, but
+neither that observation nor this entry approves P4's complete implementation range.
+
+New test-only witnesses call the actual Go and TS final history verifiers against all ten
+committed corpus rows. Nine independent nonce/receipt/event/head/revision corruptions must return
+the exact divergence/log-gap verdict, and original histories must remain verified after each
+control. Missing catalogs refuse. Removing only `pet_species` retains every other artifact:
+Go refuses the invalid pinned bundle; TS's real loader refuses its unchanged hash, and final
+verification refuses the unavailable pin even with the older tree bundle available. Single-row
+corpus histories rebase only local log sequence; they do not establish persisted chronology.
+The same Go controls are wired into the existing Postgres-loaded service history test.
+
+Final cold affected Go production checks62190, complete Save/Pet packages63738 and production
+vet86506 pass. Native Chromium/WebKit68093 passes66; strict types7112 report zero errors/warnings.
+Final serialized four-file client24667 passes145, including the full replay corpus. Earlier
+parallel81659 is RED:144pass/one5000ms timeout in the existing51-entry mixed-run test (reported
+5194ms). That result is retained; the isolated pass neither uniquely attributes it nor establishes
+reliability. No budget, retry policy, assertion, production behavior, fixture or kernel byte changed.
+
+Docker status15621 confirmed the previous container `cloud-clicker-test-run-9a63203faa7b` still
+running; it was not restarted. Logs56646 returned no output, top55236 returned502, and subsequent
+inspect calls fail with "Docker Desktop is unable to start." Its terminal result is unknown.
+Native Go explicitly skips the SQL witness; no current DB, full AC7, P5, CI or feature acceptance
+is claimed. Docker recovery was requested; inspect that original container before starting a
+new current-source persisted run, then verify the newly added controls actually execute.
+
+Test-batch first filter by: Codex (implementer). Recorded by: Codex. Exact new range:
+`9ba37f9b` exclusive through this test/ledger/plan/log commit awaits Claude's designated review.
+No archival, mint, release or push. Next: database-backed AC7/AC9/AC10 execution when available,
+and the remaining full Pet Adoption review/contract gates; PA7, copy adoption, rights and full
+accessibility remain open independently.

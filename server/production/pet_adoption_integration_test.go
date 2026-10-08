@@ -151,4 +151,5 @@ func TestPetAdoptionIntegrationPersistsReplayableFounderLog(t *testing.T) {
 	if verdict := VerifyFounderHistory(history, ReplayCatalogSet{bundle.ConstantsHash: bundle}); verdict != ReplayVerified {
 		t.Fatalf("Founder history verdict=%v", verdict)
 	}
+	assertPetAdoptionHistoryIntegrity(t, history, ReplayCatalogSet{bundle.ConstantsHash: bundle})
 }
