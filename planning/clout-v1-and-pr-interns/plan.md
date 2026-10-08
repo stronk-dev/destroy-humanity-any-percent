@@ -21,6 +21,9 @@ recorded artifacts are unchanged. Real-DB research population, TS companions and
 full real-DB production still fails the original27 RP-307 partition cases. Designated review
 remains. Numeric representation/episode, author contracts, D-021/D-022 and mint gates are not
 resolved by this test-only correction; see the latest log for executed commands and range.
+The next accounting step is the [Production Accrual Conservation draft](../../rfc/production-accrual-conservation.md):
+resolve episode meaning and the exact durable accounting/compatibility contract, rather than
+repeat completed fidelity studies. It is a proposal, not implementation authority or AC6 completion.
 
 Under A, CV6 (the Clout ledger) and CV7 (the social seam) are **not** implemented: the RFC's CV0
 table marks the ledger "no" for A, and the acceptance rejects B/C. The Gaia-law test (AC4) still

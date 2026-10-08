@@ -2260,3 +2260,29 @@ not repeat these completed fidelity waves. D-021/D-022 and author holds remain.
 Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 after `3d1171b3` through this containing test/record commit needs designated
 cross-party review; earlier ranges remain separate. No acceptance/archive/push.
+
+## 2026-10-08 — Route completed research into an accounting contract
+
+Baseline `10d94e70`. Current cold checks:
+
+- `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run TestAxisAccrualPartitionProperty'`:
+  RED, 27 of the original 128 seeded cases fail (exit 2). Population, cuts and assertions unchanged.
+- `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run TestAxisAttainmentChangesOnlyFutureAccrual'`:
+  PASS, all 64 timing arms. This does not repair partition accounting.
+
+Completed carry, anchor, raw-rate, policy, logged-sequence and SQL evidence now routes to
+`rfc/production-accrual-conservation.md`, indexed as a draft. It identifies a frozen-producer
+origin direction and explicitly leaves the exact state fields, boundary/receipt algorithm,
+versioned activation and operating bounds unresolved. Rounded rate serialization is rejected
+by the existing five payout differences; resetting at every provision boundary is not assumed
+equivalent to the old one-shot calculation. No completed experiment or artifact was regenerated.
+
+RP-308's internal-chunks versus distinct-reconnect distinction was put to Marco; no answer or
+body-reconciliation delegation is recorded. RP-307 remains red. No accepted body, runtime,
+schema, balance, kernel, content, CI or completion checkbox changed. Next: resolve those actual
+contract questions before implementation; do not repeat completed SQL fidelity studies.
+
+Review by: Codex (draft/diff self-inspection). Recorded by: Codex. The new draft range after
+`10d94e70` through this containing commit needs designated cross-party review before acceptance;
+it does not approve earlier implementation ranges. Documentation links and `git diff --check`
+verified before commit. No archival, push or release claim.

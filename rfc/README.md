@@ -43,6 +43,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Minigame — Server Garden](minigame-server-garden.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Fiscal / Tier 2 |
 | [Garage Player Surfaces](garage-player-surfaces.md) | accepted 2026-09-25 (recommended defaults); implementing | Game UI Screens / Fiscal / Achievements / Meters / Pet / Active Play / Minigame API |
 | [Clout v1 & PR Interns](clout-v1-and-pr-interns.md) | accepted 2026-09-25 (recommended defaults); implementing | Achievements / Economy Kernel |
+| [Production Accrual Conservation](production-accrual-conservation.md) | draft — RP-307/RP-308; accounting/episode contract unresolved; not implementation authority | Production Engine / Clout / Save Layer |
 | [Cosmetic Shop v1 — Horse Armor](cosmetic-shop-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Game UI / Save Layer / Pet |
 | [Pet Adoption v1](pet-adoption-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Pet Care / Save Layer / Game UI |
 | [Ticker Launch Corpus](ticker-launch-corpus.md) | accepted 2026-09-25 (recommended defaults; blocked on Feed VQ-3); implementing | Feed & Dispatch / Copy Pipeline |
