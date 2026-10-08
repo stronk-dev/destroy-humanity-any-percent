@@ -2904,3 +2904,33 @@ it may consolidate with earlier Garden ranges. No full-CI/Firefox/manual AT/perf
 whole Garden acceptance, archive or push claim. Renewal, SG13 and RP-222 remain. Next: remaining
 accepted SG10 help/focus-accessible disclosure and consolidated review; do not repeat this
 finished context study or the known renewal-blocked long-session journey.
+
+## 2026-10-08 — Native Garden help and target sizing (RP-422)
+
+Under SG10/design11 §2, `?` now opens the existing `garden.codex` through native
+details/summary. Enter, Space and pointer input work in active, locked and error states at
+320/1280px without commands or extra reads. An ordinary visibility refresh preserves its
+open state/focus. The existing why-text remains visible and describes the control; substrate
+curtain text remains visible/associated. No hover-only replacement or new tooltip framework.
+
+Old component at261d3d94 fails all12 new help cases (76259). The first draft's rectangle test
+mistook closed-details layout boxes for visibility; corrected to actual `checkVisibility`,
+retaining the hidden/visible assertion. First affected93904 exposes four old Tab-order
+expectations and one WebKit320px target-size failure (18px substrate buttons). Native Refresh
+tests now assert the added help stop before Refresh, without dropping the Refresh action/read
+assertions; all buttons have a minimum24px target and help44px.
+
+Final affected `make test-browser-focused BROWSER_TEST_FLAGS='test/garden-surface-browser.test.ts test/garden-surface-witnesses-browser.test.ts test/garden-host-browser.test.ts test/garden-refresh-browser.test.ts test/garden-fiscal-browser.test.ts --project=chromium --project=webkit'`
+2229 passes170/170, including open-help axe checks, unchanged intent guards and focus/read
+populations. Final types/build/boundaries48068 pass, zero diagnostics. `make copy-generate`
+and `make copy-check`8564 pass:667 keys,620 advisory orphans and deployment copy identity
+verified; source/generated diffs and whitespace checked. The constants hash is unchanged.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact range261d3d94
+exclusive through this source/tests/docs/copy/record commit awaits designated cross-party
+review and may consolidate with earlier Garden ranges. `garden.codex` remains the candidate
+"Seed collection", not a finished manual; new help-label copy is explicitly pending adoption.
+Only copy identity changes; constants/kernel/server logic/API/CI unchanged. No whole composed
+rerun for this local disclosure, Firefox/AT/full-CI, full Garden acceptance, mint/archive/push
+or nine-tier1.0 completion claim. Next: consolidate review and remaining accepted feature gates;
+renewal, SG13 and RP-222 remain separate holds. Whole-product status remains in CURRENT-STATE.

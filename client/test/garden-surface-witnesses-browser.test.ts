@@ -402,6 +402,8 @@ for (const key of ["{Enter}", " "]) {
       await settle();
       expect(reads).toBe(1);
       before.focus(); await userEvent.keyboard("{Tab}");
+      expect(document.activeElement).toBe(target.querySelector(".garden-help summary"));
+      await userEvent.keyboard("{Tab}");
       expect(document.activeElement?.textContent?.trim()).toBe("Refresh");
       await userEvent.keyboard(key); await settle();
       expect(reads).toBe(2);

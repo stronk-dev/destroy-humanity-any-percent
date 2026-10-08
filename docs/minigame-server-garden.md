@@ -228,6 +228,12 @@ payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release cl
   recovers to the new heading unless the player moved elsewhere. An ordinary Company change
   under the same Founder and bundle preserves the grid/menu; Garden remains Founder-owned.
 - The grid is a `role="grid"` of native buttons with a roving tabindex and arrow keys.
+- A native `?` disclosure opens `garden.codex` with Enter, Space or pointer input, including
+  locked/error states. Its 44px control describes the always-visible `garden.why`; substrate
+  curtain text remains visible and associated with its buttons. Help does not dispatch intents
+  or trigger reads, and stays open/focused across an ordinary refresh. All buttons have at least
+  24px targets. The codex is still the terse candidate "Seed collection", not completed help
+  content; the new accessible help label is explicitly pending owner copy.
 - Menu actions, Refresh, Harvest all and substrates have explicit native tab stops in DOM
   order, including WebKit. Tab/Shift-Tab reaches the seed and mature menus without changing
   the grid's single roving stop. Enter/Space uses the existing callbacks; closing or acting

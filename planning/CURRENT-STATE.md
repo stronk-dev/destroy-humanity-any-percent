@@ -104,6 +104,10 @@ queue and current verification, not a claim to have rerun every acceptance crite
   not an implemented account-switching UX or real Garden maturation/payout proof. The
   [Garden log](minigame-server-garden/log.md) owns exact review ranges, still pending; renewal,
   full accessibility, hosted CI and Garden acceptance remain open.
+  The subsequent SG10 batch (RP-422) adds native keyboard/pointer `?` help, an accessible
+  association to the visible why-text, and minimum button target sizes. All170 affected
+  Chromium/WebKit cases pass. This completes the local mechanism, not the placeholder codex
+  content or the full accessibility floor; designated review remains pending.
 - Pet economy-isolation evidence (RP-408) now compares actual adoption/no-adoption inputs through
   the pacing consumer: all97 paired seeds pass, as do both Company Exit paths in Go/TS with
   deliberate economic-input/Company-write controls. The complete native harness CI target passes;

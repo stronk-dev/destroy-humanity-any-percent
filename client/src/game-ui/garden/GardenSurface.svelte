@@ -152,8 +152,12 @@
 
 <section bind:this={root} class="garden cc-window" aria-labelledby="garden-heading" aria-busy={pending || viewState.kind === "loading"}>
   <h1 bind:this={heading} id="garden-heading" tabindex="-1">{t("garden.title", {}, era)}</h1>
+  <details class="garden-help">
+    <summary tabindex="0" aria-label={t("garden.help.label", {}, era)} aria-describedby="garden-why">{t("garden.help.symbol", {}, era)}</summary>
+    <p class="codex">{t("garden.codex", {}, era)}</p>
+  </details>
   <p class="hint">{t("garden.hint.first", {}, era)}</p>
-  <small title={t("garden.why", {}, era)}>{t("garden.why", {}, era)}</small>
+  <small id="garden-why">{t("garden.why", {}, era)}</small>
   <p id="garden-status" class="live" role="status" aria-live="polite">{pending ? t("common.pending", {}, era) : announcement}</p>
   {#if !controlsEnabled}<p id="garden-stale" role="status">{t("common.stale_note", {}, era)}</p>{/if}
   {#if rejection}<p role="alert">{t(rejection, {}, era)}</p>{/if}
@@ -227,6 +231,10 @@
   .garden { display: grid; gap: var(--cc-space-md); max-width: 72rem; margin: auto; padding: var(--cc-space-lg); border: var(--cc-border-width) var(--cc-border-style) var(--cc-chrome-window_border); border-radius: var(--cc-border-radius); background: var(--cc-chrome-window_bg); color: var(--cc-color-text); }
   h1 { margin: 0; font-family: var(--cc-type-font_display); }
   p { margin: 0; }
+  .garden-help summary { display: grid; place-items: center; inline-size: max-content; min-inline-size: 44px; min-block-size: 44px; cursor: pointer; }
+  .garden-help summary:focus-visible { outline: 2px solid var(--cc-color-accent); outline-offset: 2px; }
+  .codex { overflow-wrap: anywhere; }
+  button { min-block-size: 24px; min-inline-size: 24px; }
   .live { min-block-size: 1em; }
   .grid { display: grid; gap: var(--cc-space-xs); max-inline-size: 100%; }
   .row { display: grid; grid-template-columns: repeat(6, minmax(1.5rem, 1fr)); gap: var(--cc-space-xs); }

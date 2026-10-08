@@ -6,6 +6,7 @@ import views from "../../testdata/garden/view-fixtures-v1.json";
 import type { GardenCurrentResponse } from "../src/api/generated/types";
 import GardenSurface from "../src/game-ui/garden/GardenSurface.svelte";
 import type { GardenPort } from "../src/game-ui/garden/garden-port";
+import { t } from "../src/copy";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
 
 const browser = typeof document !== "undefined";
@@ -42,6 +43,54 @@ function mountSurface(port: GardenPort, calls: string[], width?: number) {
 }
 
 const active = views.active as GardenCurrentResponse;
+
+for (const width of [320, 1280]) {
+  for (const [state, response] of [["active", active], ["locked", views.locked], ["error", views.inactive]] as const) {
+    it.skipIf(!browser)(`opens Garden codex with native keyboard and pointer input in ${state} at ${width}px without gameplay`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const port = new FakePort([response as GardenCurrentResponse]);
+      const calls: string[] = [];
+      const { target, app } = mountSurface(port, calls, width);
+      try {
+        await settle();
+        const details = target.querySelector<HTMLDetailsElement>("details.garden-help");
+        expect(details, "SG10 requires a local codex disclosure").not.toBeNull();
+        const summary = details!.querySelector<HTMLElement>("summary")!;
+        const codex = details!.querySelector<HTMLElement>(".codex")!;
+        expect(summary.textContent).toBe("?");
+        expect(summary.getAttribute("aria-label")).toBe(t("garden.help.label", {}, "era_1995"));
+        expect(summary.getAttribute("aria-describedby")).toBe("garden-why");
+        expect(target.querySelector("#garden-why")?.textContent).toBe(t("garden.why", {}, "era_1995"));
+        expect(codex.textContent).toBe(t("garden.codex", {}, "era_1995"));
+        expect(details!.open).toBe(false);
+        expect(codex.checkVisibility()).toBe(false);
+        expect(summary.getBoundingClientRect().width).toBeGreaterThanOrEqual(44);
+        expect(summary.getBoundingClientRect().height).toBeGreaterThanOrEqual(44);
+        for (const button of target.querySelectorAll<HTMLButtonElement>("button")) {
+          expect(button.getBoundingClientRect().width).toBeGreaterThanOrEqual(24);
+          expect(button.getBoundingClientRect().height).toBeGreaterThanOrEqual(24);
+        }
+        summary.focus();
+        await userEvent.keyboard("{Enter}"); await settle();
+        expect(details!.open).toBe(true);
+        expect(codex.checkVisibility()).toBe(true);
+        expect(document.activeElement).toBe(summary);
+        await assertAxe(target, `${state} help open`);
+        document.dispatchEvent(new Event("visibilitychange")); await settle();
+        expect(port.reads).toBe(2);
+        expect(details!.open).toBe(true);
+        expect(document.activeElement).toBe(summary);
+        await userEvent.keyboard(" "); await settle();
+        expect(details!.open).toBe(false);
+        await userEvent.click(summary); await settle();
+        expect(details!.open).toBe(true);
+        expect(target.scrollWidth).toBeLessThanOrEqual(target.clientWidth);
+        expect(calls).toEqual([]);
+        expect(port.reads).toBe(2);
+      } finally { unmount(app); target.remove(); }
+    });
+  }
+}
 
 it.skipIf(!browser)("renders the active garden as an accessible grid with non-colour stages and dispatches through callbacks only", async () => {
   const calls: string[] = [];

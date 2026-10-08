@@ -2222,6 +2222,22 @@
       "tone": "corporate"
     },
     {
+      "key": "garden.help.label",
+      "text": "PENDING OWNER COPY: Garden help",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "garden.help.symbol",
+      "text": "?",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "garden.hint.first",
       "text": "Plant a strain in an empty rack slot. It grows on the wall clock, even while you are away.",
       "params": [],

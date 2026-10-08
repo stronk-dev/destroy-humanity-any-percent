@@ -222,6 +222,8 @@
     "garden.glyph.empty",
     "garden.glyph.growing",
     "garden.glyph.mature",
+    "garden.help.label",
+    "garden.help.symbol",
     "garden.hint.first",
     "garden.next_tick",
     "garden.plot.choose_seed",
