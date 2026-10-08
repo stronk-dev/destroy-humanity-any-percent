@@ -185,3 +185,47 @@ it.skipIf(!browser)("returns to the launcher with the typed reason when the mini
     expect(port.creates[1]).toBe(port.creates[0]);
   } finally { unmount(app); target.remove(); }
 });
+
+it.skipIf(!browser).each(["revision conflict", "unknown session", "terminal receipt"] as const)("ignores a late %s after leaving the Pitch table", async (outcome) => {
+  const snapshot = await pitchSnapshot();
+  const port = new FakePort();
+  const currentValue: MinigameCurrentResponse = { kind: "active", session: { ...descriptor, revision: 1, status: "active" }, snapshot };
+  let reads = 0;
+  port.current = async () => { reads += 1; return currentValue; };
+  let complete!: (value: MinigameSessionResponse) => void;
+  let fail!: (error: unknown) => void;
+  const reply = new Promise<MinigameSessionResponse>((resolve, reject) => { complete = resolve; fail = reject; });
+  port.command = async (_sessionID, request) => { port.commands.push(request); return reply; };
+  const terminals: MinigameResolutionReceipt[] = [];
+  const target = host();
+  let left = false;
+  const app = mount(MinigameSessionSurface, { target, props: {
+    port, minigameID: "pitch", era: "era_1995", newCommandID: nextID,
+    onExitToHost: () => { left = true; void unmount(app); },
+    onTerminal: (value: MinigameResolutionReceipt) => terminals.push(value),
+  } });
+  try {
+    await settle();
+    target.querySelector<HTMLInputElement>("fieldset input")!.click();
+    await settle();
+    buttonNamed(target, "Pitch these cards").click();
+    await settle();
+    expect(port.commands).toHaveLength(1);
+    expect(buttonNamed(target, "Pitch these cards").disabled).toBe(true);
+    // Leaving is permitted while the server owns the in-flight command. It
+    // closes only this presentation; it must not cancel or repeat gameplay.
+    buttonNamed(target, "Leave the table").click();
+    await settle();
+    expect(left).toBe(true);
+    expect(target.querySelector(".minigame-session")).toBeNull();
+    if (outcome === "terminal receipt") complete({ ...descriptor, revision: 2, snapshot: { ...snapshot, phase: "terminal", hand: [], revision: 2 }, status: "resolved", resolution_receipt: receipt });
+    else fail(outcome === "revision conflict"
+      ? new MinigameAPIError(409, "conflict", "minigame_revision")
+      : new MinigameAPIError(404, "unknown_id", "minigame_session"));
+    await settle();
+    expect(reads, "a detached surface must not refetch after its command settles").toBe(1);
+    expect(port.commands).toHaveLength(1);
+    expect(terminals, "a detached surface must not refresh its former host").toEqual([]);
+    expect(target.childElementCount).toBe(0);
+  } finally { if (!left) await unmount(app); target.remove(); }
+});

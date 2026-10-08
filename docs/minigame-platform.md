@@ -91,6 +91,9 @@ becomes a `MinigameTransportError`.
   idempotency key until it succeeds.
 - **Terminal receipt:** it is rendered once and moves focus to the surface heading. The host's
   `onTerminal` then runs a single authoritative refresh.
+- **Leaving during a command:** closing the table does not cancel the server command or
+  session. The detached surface ignores late success/rejection and content-loading completion;
+  it cannot refetch, notify its former host or move focus. A later visit reconnects normally.
 
 The tenant-surface registry (`tenant-registry.ts`) is keyed by the same `(engine_ref,
 engine_version)` arm as the pinned `balance/minigame-api/first-content.json` tenant rows. Loading
@@ -113,6 +116,7 @@ wording drafted by the implementer and awaits owner adoption; it is not ruled co
 - the complete launcher → table → shop → terminal flow;
 - same-ID retry;
 - selection clearing on a revision conflict;
+- no detached refetch or host callback after a pending command settles;
 - failing closed on an unknown tenant or foreign content;
 - the create-key hold.
 

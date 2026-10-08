@@ -1015,3 +1015,27 @@ are not thereby approved.
   MA3/AC5 test-only correction under the accepted RFC, pending Claude's
   exact-range cross-party designated review. It does not establish Firefox,
   screen-reader task success, full MA range-union approval or release readiness.
+
+## 2026-10-08 — Pitch detached-command lifecycle correction (RP-415)
+
+- **Outcome/authority:** MA3/MA-C9 gives the surface lifecycle ownership. Leaving
+  during an in-flight command now prevents late rejection handling from reading
+  the session again. Deferred content completion and terminal focus also respect
+  unmount. No command cancellation, game mechanics, receipt or retry policy change.
+- **Regression:** a mounted active table submits one command, leaves through its
+  real Leave button, then receives a held revision-conflict/unknown-session reply.
+  Both cases failed on the old component in Chromium and WebKit: `current()` ran
+  twice instead of once. A held terminal success already passed and remains a
+  control: no former-host terminal callback. Initial test execution used the wrong
+  Leave label and failed before the behavior; corrected before the actual red run.
+- **Coverage:** final complete affected browser file passes14 executions in
+  Chromium/WebKit; `minigame-surface.test.ts` passes9; `make typecheck build-client`
+  completes with zero errors/warnings and a successful production build. Initial
+  sandbox listen denial ran no tests; permitted local-server runs executed normally.
+  This controlled port test proves component lifetime, not HTTP/SQL faults or a new
+  full-game journey. No Firefox, performance, hosted or full-CI rerun/claim.
+- **Handoff:** exact new review range starts after `4b8861d9` through this commit.
+  Review by: Codex (implementer first filter). Recorded by: Codex. Designated
+  cross-party review remains pending alongside earlier ranges; no acceptance or
+  archival promotion. Next: the existing wider API/Surface closeout, not another
+  lifecycle framework. The full-product status remains in `planning/CURRENT-STATE.md`.

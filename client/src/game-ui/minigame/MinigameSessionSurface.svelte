@@ -44,8 +44,15 @@
     if (destroyed) return;
     if ((next.kind === "active" || next.kind === "required_terminal") && !checkTenant(next.kind === "active" ? next.session : next.response)) return;
     if (next.kind === "active") {
-      try { content = await contentFor(next.snapshot.pitch_content_hash); }
-      catch (error) { view = { kind: "error", message: error instanceof PitchContentMismatch ? "minigame.error.content_mismatch" : "minigame.error.generic" }; return; }
+      try {
+        const loaded = await contentFor(next.snapshot.pitch_content_hash);
+        if (destroyed) return;
+        content = loaded;
+      }
+      catch (error) {
+        if (!destroyed) view = { kind: "error", message: error instanceof PitchContentMismatch ? "minigame.error.content_mismatch" : "minigame.error.generic" };
+        return;
+      }
       automaticRetries = 0;
     }
     const wasTerminal = view.kind === "required_terminal";
@@ -54,7 +61,7 @@
     if (next.kind === "required_terminal" && !wasTerminal) {
       onTerminal(next.response.resolution_receipt);
       await tick();
-      heading?.focus();
+      if (!destroyed) heading?.focus();
     }
   }
 
@@ -73,6 +80,7 @@
   }
 
   async function refetch(): Promise<void> {
+    if (destroyed) return;
     busy = true;
     try { await bind(stateFromCurrent(await port.current())); }
     catch (error) { await reject(error, null); }
@@ -80,6 +88,7 @@
   }
 
   async function reject(error: unknown, failed: PendingCommand | null): Promise<void> {
+    if (destroyed) return;
     const effect = rejectionFor(error);
     notice = effect.notice;
     if (effect.clearSelection) selectionEpoch += 1;
