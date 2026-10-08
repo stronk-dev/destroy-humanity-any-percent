@@ -7,6 +7,12 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
 
 ## Shipped surfaces
 
+- Host cleanup is final for that mounted instance: late bootstrap/snapshot/intent replies and
+  already queued socket publications cannot restart its shell/subscription or initiate further
+  reads. A command still waiting locally behind another action is not submitted after unmount.
+  Pending focus observers are removed immediately, even if their request never settles.
+  Already-submitted commands are not cancelled or undone; credentials and the server remain
+  authoritative, and a future mounted host loads current state normally.
 - Vision Slide: silently creates the anonymous account through the idempotent bootstrap
   coordinator and persists credentials before entering play.
   Begin Attempt and the existing Retry have explicit native Tab stops. Pending bootstrap

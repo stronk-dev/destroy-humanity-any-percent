@@ -87,6 +87,10 @@
   let unsubscribeShell = () => {};
   let unsubscribe = () => {};
   let tick: ReturnType<typeof setInterval> | undefined;
+  // HTTP work can finish after component cleanup. It must not recreate the
+  // socket/Worker or submit a command that was still waiting in this host.
+  let disposed = false;
+  const focusObservers = new Set<(event: FocusEvent) => void>();
   let refreshTask: Promise<boolean> | undefined;
   // Bounded to one local command. Unknown/older receipts remain conservative.
   let lastRefreshedIntentID: string | undefined;
@@ -116,14 +120,29 @@
     monotonicMS = performance.now();
     tick = setInterval(() => { monotonicMS = performance.now(); }, 100);
     if (runtime.hasCredentials()) startShell();
-    return () => { motion?.removeEventListener("change", updateMotion); if (tick) clearInterval(tick); unsubscribe(); unsubscribeShell(); shell.dispose(); };
+    return () => {
+      disposed = true;
+      for (const observer of focusObservers) document.removeEventListener("focusin", observer);
+      focusObservers.clear();
+      motion?.removeEventListener("change", updateMotion);
+      if (tick) clearInterval(tick);
+      unsubscribe(); unsubscribeShell(); shell.dispose();
+    };
   });
 
+  function observeDocumentFocus(observer: (event: FocusEvent) => void): () => void {
+    focusObservers.add(observer);
+    document.addEventListener("focusin", observer);
+    return () => { focusObservers.delete(observer); document.removeEventListener("focusin", observer); };
+  }
+
   function startShell(): void {
+    if (disposed) return;
     shell.start();
   }
 
   function show(next: GameUISurfaceID): void {
+    if (disposed) return;
     selectionGeneration += 1;
     if (next === "meters") metersChanged = false;
     if (next === "fiscal") fiscalHarvested = false;
@@ -132,6 +151,7 @@
   }
 
   function bindSnapshot(value: ParsedGameUISnapshot): void {
+    if (disposed) return;
     if (snapshot === undefined) void probeGarden();
     const sampledMonotonicMs = performance.now();
     if (snapshot === undefined) {
@@ -164,25 +184,30 @@
   }
 
   function refresh(): Promise<boolean> {
+    if (disposed) return Promise.resolve(false);
     if (refreshTask) return refreshTask;
     refreshPending = true;
     refreshTask = (async () => {
-      try { bindSnapshot(await runtime.snapshot()); return true; }
-      catch { needsAuthoritativeSnapshot = true; offline = true; return false; }
+      try {
+        const value = await runtime.snapshot();
+        if (disposed) return false;
+        bindSnapshot(value); return true;
+      }
+      catch { if (!disposed) { needsAuthoritativeSnapshot = true; offline = true; } return false; }
       finally { refreshPending = false; refreshTask = undefined; }
     })();
     return refreshTask;
   }
 
   async function beginAttempt(): Promise<void> {
-    if (pending) return;
+    if (disposed || pending) return;
     let origin = document.activeElement instanceof HTMLElement ? document.activeElement : undefined;
     let latestFocus: EventTarget | null | undefined = origin;
     const observeFocus = (event: FocusEvent) => { latestFocus = event.target; };
-    document.addEventListener("focusin", observeFocus);
+    const stopObservingFocus = observeDocumentFocus(observeFocus);
     const replaceRemovedFocus = async (destination: "vision_slide" | "desk", generation: number) => {
       await afterDOMUpdate();
-      if (!root?.isConnected || surface !== destination || selectionGeneration !== generation ||
+      if (disposed || !root?.isConnected || surface !== destination || selectionGeneration !== generation ||
           !origin || origin.isConnected || latestFocus !== origin ||
           (document.activeElement !== origin && document.activeElement !== document.body)) return;
       const replacement = root.querySelector<HTMLElement>(destination === "desk" ? "#desk-heading" : "#vision-begin");
@@ -193,12 +218,14 @@
     // same region; after success the removed entry control hands off to Desk.
     const pendingFocus = replaceRemovedFocus("vision_slide", selectionGeneration);
     try {
-      const value = await runtime.bootstrap(); startShell(); bindSnapshot(value); show("desk");
+      const value = await runtime.bootstrap();
+      if (disposed) return;
+      startShell(); bindSnapshot(value); show("desk");
       await pendingFocus;
       await replaceRemovedFocus("desk", selectionGeneration);
     }
-    catch { offline = true; }
-    finally { await pendingFocus; actionPending = false; document.removeEventListener("focusin", observeFocus); }
+    catch { if (!disposed) offline = true; }
+    finally { await pendingFocus; actionPending = false; stopObservingFocus(); }
   }
 
   // GS0.2: `scope` binds expected_revision to the Company or Founder stream;
@@ -213,17 +240,18 @@
     // Capture before any queue/read await: completion belongs to the submitter,
     // not whichever panel the player selects while the response is in flight.
     const noticeOwner = surface;
-    if (!snapshot || !commandControls) return;
+    if (disposed || !snapshot || !commandControls) return;
     if (options.scope === "founder" && founderRevision === undefined) return;
     const kind = typeof body.kind === "string" ? body.kind : "";
     if (actionTask) {
       if (activeActionKind === kind) return;
       await actionTask;
     }
+    if (disposed) return;
     // A click that raced an ordered event/receipt refresh must not disappear.
     // Finish that authoritative refresh, then bind the intent to its revision.
     if (refreshTask) await refreshTask;
-    if (!snapshot || actionTask || !commandControls) return;
+    if (disposed || !snapshot || actionTask || !commandControls) return;
     if ((options.scope === "founder" || kind === "wind_down") && founderRevision === undefined) return;
     actionPending = true;
     activeActionKind = kind;
@@ -237,6 +265,7 @@
         // any queue/read wait, just like the Company's expected revision.
         if (kind === "wind_down") body = { ...body, expected_founder_revision: founderRevision! };
         const outcome = await runtime.intent({ intent_id: intentID, expected_revision: expected, ...body });
+        if (disposed) return;
         const notice = noticeForOutcome(outcome, options.rejections);
         if (notice.invariant) console.error("game UI invariant: intent rejection");
         intentNotice = outcome.outcome === "applied" && options.applied ? options.applied(outcome.receipt) : notice.notice;
@@ -249,6 +278,7 @@
           // authoritative revision, even when its stream receipt arrives late.
           let postResponseRead = refreshTask === undefined;
           let refreshed = await refresh();
+          if (disposed) return;
           // Gate/Decline used to bypass coalescing. Reuse an in-flight read,
           // but not its result if it sampled before this command committed.
           const appliedRevision = outcome.receipt.new_revision;
@@ -264,6 +294,7 @@
           if (refreshed && postResponseRead && outcome.receipt.intent_id === intentID) lastRefreshedIntentID = intentID;
         }
       } catch (error) {
+        if (disposed) return;
         const notice = noticeForError(error);
         if (notice.invariant) console.error("game UI invariant: invalid intent response");
         intentNotice = notice.notice;
@@ -288,25 +319,26 @@
     return exitPlan.length === 0 ? body : { ...body, reputation_plan: [...exitPlan] };
   }
   async function actTransition(body: Record<string, unknown>, origin: HTMLButtonElement): Promise<void> {
+    if (disposed) return;
     const region = origin.closest("section");
     const controls = [...(region?.querySelectorAll<HTMLButtonElement>("button") ?? [])];
     const originIndex = controls.indexOf(origin);
     const submittedSelection = selectionGeneration;
     let latestFocus: EventTarget | null = document.activeElement;
     const observeFocus = (event: FocusEvent) => { latestFocus = event.target; };
-    document.addEventListener("focusin", observeFocus);
+    const stopObservingFocus = observeDocumentFocus(observeFocus);
     try {
       await act(body);
       await afterDOMUpdate();
       // GS0.6: a disappearing transition returns focus within its own region.
       // A newer native focus choice or lifecycle navigation always takes precedence.
-      if (surface !== "desk" || selectionGeneration !== submittedSelection || origin.isConnected
+      if (disposed || surface !== "desk" || selectionGeneration !== submittedSelection || origin.isConnected
           || latestFocus !== origin || (document.activeElement !== origin && document.activeElement !== document.body)) return;
       const nearest = controls.map((control, index) => ({ control, index, distance: Math.abs(index - originIndex) }))
         .filter(({ control }) => control.isConnected && !control.disabled)
         .sort((left, right) => left.distance - right.distance || right.index - left.index)[0]?.control;
       (nearest ?? root?.querySelector<HTMLElement>("#desk-heading"))?.focus();
-    } finally { document.removeEventListener("focusin", observeFocus); }
+    } finally { stopObservingFocus(); }
   }
   function acceptOffer(): void {
     if (pending || !offer || founderRevision === undefined) return;
@@ -318,13 +350,14 @@
   }
 
   async function continueRun(): Promise<void> {
-    if (!ended || pending) return;
+    if (disposed || !ended || pending) return;
     const expectedFounderID = ended.payload.founder_id;
     const expectedRunSeq = ended.payload.run_id.run_seq + 1;
     const focusedOrigin = document.activeElement;
     actionPending = true;
     try {
       const value = await runtime.snapshot();
+      if (disposed) return;
       if (value.run.founder_id !== expectedFounderID) throw new RangeError("next Company snapshot belongs to another Founder");
       if (value.run.run_seq !== expectedRunSeq) throw new RangeError("next Company snapshot did not advance exactly one run");
       bindSnapshot(value);
@@ -334,12 +367,12 @@
       show("desk");
       const continuationSelection = selectionGeneration;
       await afterDOMUpdate();
-      if (selectionGeneration === continuationSelection && surface === "desk"
+      if (!disposed && selectionGeneration === continuationSelection && surface === "desk"
         && focusedOrigin instanceof HTMLElement && !focusedOrigin.isConnected
         && (document.activeElement === focusedOrigin || document.activeElement === document.body)) {
         root?.querySelector<HTMLElement>("#desk-heading")?.focus();
       }
-    } catch { needsAuthoritativeSnapshot = true; offline = true; }
+    } catch { if (!disposed) { needsAuthoritativeSnapshot = true; offline = true; } }
     finally { actionPending = false; }
   }
 
@@ -350,13 +383,14 @@
     if (surface === previous || surface !== destination) return;
     const forcedSelection = selectionGeneration;
     void afterDOMUpdate().then(() => {
-      if (selectionGeneration !== forcedSelection || surface !== destination) return;
+      if (disposed || selectionGeneration !== forcedSelection || surface !== destination) return;
       const headingID = destination === "offer_sheet" ? "offer-heading" : "run-end-heading";
       root?.querySelector<HTMLElement>(`#${headingID}`)?.focus();
     });
   }
 
   function consumePublication(message: GameUIRuntimeMessage): void {
+    if (disposed) return;
     if (message.kind === "transport_closed") { offline = true; transportReady = false; subscribedFounderID = undefined; unsubscribe(); return; }
     if (message.kind === "transport_recovering") { offline = true; transportReady = false; return; }
     if (message.kind === "transport_recovered") { offline = needsAuthoritativeSnapshot; transportReady = true; draining = false; resyncing = false; return; }

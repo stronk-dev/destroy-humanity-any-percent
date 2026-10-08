@@ -35,6 +35,11 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Detached gameplay-host lifecycle (RP-407) is locally corrected: late responses no longer
+  recreate sockets, restart the shell, refresh or submit a queued command after unmount; pending
+  focus listeners are removed immediately. Affected Chromium/WebKit200, Node76, types/build/
+  boundaries and the whole real-service composed target59352 pass. The new race is tested with
+  controlled runtime completion, not server fault injection; designated review remains open.
 - Pet adoption/history and cosmetic Exit persistence now execute at `7b4bc001` against real
   Postgres16: both Exit arms and all nine adoption/history corruption controls pass (49678).
   Docker has recovered; the original stalled container is confirmed absent, not retrospectively

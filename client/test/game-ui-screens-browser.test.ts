@@ -147,6 +147,112 @@ function assertNoMechanicalPresentation(target: HTMLElement): void {
   }
 }
 
+for (const entry of ["snapshot", "bootstrap"] as const) {
+  it.skipIf(typeof document === "undefined")(`late ${entry} cannot revive an unmounted host`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    let release = () => {};
+    const blocked = new Promise<void>((resolve) => { release = resolve; });
+    const runtime = new FixtureRuntime(entry === "snapshot");
+    if (entry === "snapshot") {
+      runtime.snapshot = async () => { runtime.snapshotCalls += 1; await blocked; return snapshot; };
+    } else {
+      runtime.bootstrap = async () => { await blocked; return snapshot; };
+    }
+    const subscribe = vi.spyOn(runtime, "subscribe");
+    const start = vi.spyOn(GameUIShell.prototype, "start");
+    const focusAdded = vi.spyOn(document, "addEventListener");
+    const focusRemoved = vi.spyOn(document, "removeEventListener");
+    const target = document.createElement("div"); document.body.append(target);
+    const app = mount(GameUIApp, { target, props: { runtime } });
+    let removed = false;
+    const settle = async () => {
+      for (let step = 0; step < 4; step += 1) { await new Promise((resolve) => setTimeout(resolve, 0)); await tick(); flushSync(); }
+    };
+    try {
+      await settle();
+      focusAdded.mockClear();
+      if (entry === "bootstrap") {
+        const begin = target.querySelector<HTMLButtonElement>("#vision-begin")!;
+        begin.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      }
+      expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+      const starts = start.mock.calls.length;
+      const reads = runtime.snapshotCalls;
+      await unmount(app); removed = true;
+      const focusObservers = focusAdded.mock.calls.filter(([event]) => event === "focusin");
+      expect(focusObservers).toHaveLength(entry === "bootstrap" ? 1 : 0);
+      for (const [, observer] of focusObservers) expect(focusRemoved).toHaveBeenCalledWith("focusin", observer);
+      release(); await settle();
+      expect(subscribe, "a detached host must not recreate its socket subscription").not.toHaveBeenCalled();
+      expect(start, "a detached host must not restart its disposed shell").toHaveBeenCalledTimes(starts);
+      expect(runtime.snapshotCalls, "late bootstrap must not start an initial read").toBe(reads);
+      expect(runtime.listener).toBeUndefined();
+      expect(target.childElementCount).toBe(0);
+    } finally {
+      release(); await settle();
+      if (!removed) await unmount(app);
+      subscribe.mockRestore(); start.mockRestore(); focusAdded.mockRestore(); focusRemoved.mockRestore(); target.remove();
+    }
+  });
+}
+
+for (const result of ["applied", "rejected-conflict", "http-conflict", "queued"] as const) {
+  it.skipIf(typeof document === "undefined")(`late ${result} completion cannot refresh an unmounted host`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    let release = () => {};
+    const blocked = new Promise<void>((resolve) => { release = resolve; });
+    const runtime = new FixtureRuntime(true);
+    runtime.intent = async (body) => {
+      runtime.requests.push(body);
+      await blocked;
+      if (result === "http-conflict") throw new GameUIRequestError(409, "conflict", "intent");
+      runtime.current = { ...snapshot, revision: 2 };
+      return result !== "rejected-conflict" ? { outcome: "applied", receipt: { intent_id: body.intent_id, new_revision: 2 } }
+        : { outcome: "rejected", category: "revision_conflict", detail: "intent", currentRevision: 2, sessionExpired: false };
+    };
+    const target = document.createElement("div"); document.body.append(target);
+    const app = mount(GameUIApp, { target, props: { runtime } });
+    let removed = false;
+    const focusAdded = vi.spyOn(document, "addEventListener");
+    const focusRemoved = vi.spyOn(document, "removeEventListener");
+    const settle = async () => {
+      for (let step = 0; step < 4; step += 1) { await new Promise((resolve) => setTimeout(resolve, 0)); await tick(); flushSync(); }
+    };
+    try {
+      await settle();
+      focusAdded.mockClear();
+      const control = [...target.querySelectorAll("button")].find((button) => button.textContent ===
+        (result === "queued" ? t("desk.buy_one", {}, "era_1995") : "Move Into the Garage"))!;
+      control.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      if (result === "queued") {
+        const gate = [...target.querySelectorAll("button")].find((button) => button.textContent === "Move Into the Garage")!;
+        gate.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      }
+      expect(runtime.requests).toHaveLength(1);
+      const reads = runtime.snapshotCalls;
+      const latePublication = runtime.listener!;
+      await unmount(app); removed = true;
+      expect(runtime.listener).toBeUndefined();
+      const focusObservers = focusAdded.mock.calls.filter(([event]) => event === "focusin");
+      expect(focusObservers).toHaveLength(1);
+      for (const [, observer] of focusObservers) expect(focusRemoved).toHaveBeenCalledWith("focusin", observer);
+      release(); await settle();
+      expect(runtime.requests, "an unmounted host must not submit its waiting command").toHaveLength(1);
+      expect(runtime.snapshotCalls, "completion must not start new work after unmount").toBe(reads);
+      // An already queued publication may outlive unsubscribe; it also belongs
+      // to the detached host, not to a future mounted instance.
+      latePublication({ kind: "receipt" }); await settle();
+      expect(runtime.snapshotCalls, "late delivery must not restart authoritative reads").toBe(reads);
+      expect(runtime.requests).toHaveLength(1);
+      expect(target.childElementCount).toBe(0);
+    } finally {
+      release(); await settle();
+      if (!removed) await unmount(app);
+      focusAdded.mockRestore(); focusRemoved.mockRestore(); target.remove();
+    }
+  });
+}
+
 it.skipIf(typeof document === "undefined")("runs bootstrap and player actions through the mounted Phase-A UI", async () => {
   const { userEvent } = await import("vitest/browser");
   const runtime = new FixtureRuntime(false);

@@ -6379,3 +6379,37 @@ Citation correction: the shared reduced-motion paragraph is Garage **GS0.6**, no
 as the preceding entry and9d4295fe subject label it. Archived Shell D4/C4 remains the repair's
 implementation authority; Garage's reference to future accessibility A4 is not treated as
 acceptance of that draft or its full task matrix. Editorial correction only; diff checked.
+
+## 2026-10-08 — RP-407 detached host cannot restart asynchronous work
+
+Accepted-contract conformance under the existing Shell lifecycle and Garage GS0.2/GS0.6/GS0.8:
+component cleanup is final for that host. Late reads cannot recreate subscriptions; bootstrap
+cannot restart a disposed shell; completed actions/socket delivery cannot initiate more reads;
+a different-kind command still waiting locally is not submitted after unmount. Pending document
+focus observers are removed immediately. Submitted commands are not cancelled or undone, and
+live-host queue/revision semantics, credentials, first-read/renewal policy and authored copy stay
+unchanged. No kernel, balance, timeout, retry, CI or content bytes changed.
+
+Old-source44578 reproduces ten product failures across Chromium/WebKit (five cases per engine).
+Its two queued-arm failures were test setup: the copy lookup omitted required parameters.
+Corrected60872 proves both actual queued-command failures: a second intent submits after unmount.
+Initial63916's rejected fixture also used an unknown pair;44578 corrects that to revision_conflict.
+The final six scenarios cover delayed bootstrap/initial read, applied/rejected/HTTP-conflict
+completion, queued native Buy→Gate and already queued receipt delivery. Focus cleanup is asserted
+before the blocked HTTP work resolves, not inferred from eventual promise completion.
+
+Final affected native98540 passes200/four separate performance-only skips. Node runtime/mapper/
+Shell checks pass76; the earlier45297 selected only two existing files/58 because the guessed
+bridge filename did not exist. Types42849 report zero errors/warnings; build/boundary66402 and
+diff checks pass. Whole `make test-game-ui-composed`59352 exits0: tool30, real-Postgres refresh8
+and required parents7, production-built main gameplay/both early endings/continuation/recovery,
+default Cosmetic/adoption/care/reload and Clout/Cosmetic/adoption/care/reload all execute and pass.
+The new race itself is controlled mounted-host evidence with a runtime double, not real-server
+late-response fault injection. No Firefox/manual AT, full CI, reliability or release claim.
+
+Review by: Codex (implementer diff/first filter); Recorded by: Codex. Exact correction range:
+`0fd146e0` exclusive through this source/tests/docs/ledger/log commit requires Claude's designated
+review. A ledger-only RP-405 status correction reflects the already recorded real-Postgres pass;
+it changes no Pet implementation or verdict. No acceptance/archive/push. Next: consolidate the
+related Garage review range and finish remaining accepted feature/integration gates; numeric,
+history guard, author/owner decisions and full nine-tier construction remain open independently.
