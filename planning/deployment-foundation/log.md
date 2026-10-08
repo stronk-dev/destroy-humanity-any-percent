@@ -4660,3 +4660,43 @@ used the exact Compose digest and also found it absent. No pull, service run or 
 attempted, and no executed test or R5 verdict is claimed. Existing native supplements do not
 prove the private network/Caddy boundary. Resume the declared composition when Docker capacity
 is restored; do not substitute images or waive its gate. No product or test-tool change.
+
+## 2026-10-08 — Restore refuses schema-only and nonrelational targets (RP-423)
+
+Outcome under DP5/DP6/AC4: the read-only clean-target guard now refuses existing user catalog
+objects, not just selected relation kinds. Catalog OIDs use PG16's initdb/user boundary;
+explicitly numbered large objects are checked unconditionally. This also catches a user
+function in `pg_catalog`, not just public-schema objects. Error class and restore ordering stay
+unchanged; no migration, kernel, gameplay, CI or release-policy change.
+
+Old-source50086, real Postgres16 through the declared save-test service, fails five cases:
+enum, domain, function, empty schema and large object. Empty/table controls pass. The correction
+and extended coverage execute20 arms (empty, table and18 schema-only/nonrelational controls),
+checking initial empty admission, the exact refusal and retained seeded object. Each arm owns
+and removes a fresh random test database; no existing application/test database is reset.
+The OID boundary is verified against PostgreSQL16's primary source:
+[transam.h](https://github.com/postgres/postgres/blob/REL_16_STABLE/src/include/access/transam.h).
+It is a database-format identity, not a gameplay cap or a convenience measurement threshold.
+
+Final `make test-go-ci CI_TEST_PACKAGES='./deploymentbackup ./cmd/deployment-backup ./deploymentrehearsal' CI_TEST_FLAGS='-v'`
+74555 passes all selected packages, including all20 actual SQL arms. Five existing full-backup/
+rights/identity integration functions explicitly skip: this service does not supply their
+restore/admin URLs or pg_dump/pg_restore16 population. This is NOT full backup integration.
+`make test-go vet GO_PACKAGES='./deploymentbackup ./deploymentrelease ./deploymentrehearsal ./cmd/deployment-backup' GO_TEST_FLAGS='-count=1'`
+35016 passes all four native packages and vet. Diff/format/whitespace inspected.
+
+Broader Linux39755 is RED: backup, rehearsal and backup CLI pass; release fails
+`TestDockerRuntimePreflightRunsCandidateConfigAndPrivateDatabaseInspection` and
+`TestDockerRuntimeInitialInstallRequiresCleanStateAndCleansFailedStart`. Focused73724 reproduces
+both at their preflight acceptance calls with `ErrInvalid`; the earlier output filter omitted
+the detailed failure lines, hence this diagnostic execution. Docker overlay is independently
+0 available/100%, consistent with preflight's actual filesystem-space checks. Native equivalents
+pass. No floor, fixture, timeout or assertion was weakened; no cleanup, image substitution or
+green full-Linux/hosted-CI claim. The full pinned backup/clean-host gates remain separate.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range starts
+after `ed48bea2` through this code/tests/docs/record commit; designated cross-party review remains
+pending alongside earlier Deployment spans. Original R20/DP-C/R-006 are not approved by this
+component correction. No archive, release, deploy or push. Next: remaining accepted deployment
+and gameplay integration, full restore/private-service gates when capacity permits, and
+consolidated review. The full nine-tier1.0 objective stays active.

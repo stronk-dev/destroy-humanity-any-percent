@@ -22,6 +22,11 @@ import (
 var postgres16Version = regexp.MustCompile(`^pg_(?:dump|restore) \(PostgreSQL\) 16(?:\.[0-9]+)?\n?$`)
 var databaseName = regexp.MustCompile(`^[a-z_][a-z0-9_]{0,62}$`)
 
+// PostgreSQL 16 FirstNormalObjectId separates initdb objects from user-created
+// objects, including those placed in system namespaces. It applies after OID wrap.
+// https://github.com/postgres/postgres/blob/REL_16_STABLE/src/include/access/transam.h
+const postgres16FirstNormalObjectID = 16384
+
 type PostgresBackupInput struct {
 	Directory        string
 	BackupID         string
@@ -198,12 +203,61 @@ func RequireCleanTarget(ctx context.Context, database *sql.DB) error {
 	}
 	var objects int
 	err := database.QueryRowContext(ctx, `
-		SELECT count(*)
-		FROM pg_catalog.pg_class c
-		JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
-		WHERE n.nspname NOT IN ('pg_catalog','information_schema')
-		  AND n.nspname !~ '^pg_toast'
-		  AND c.relkind IN ('r','p','v','m','S','f')`).Scan(&objects)
+		SELECT count(*) FROM (
+			SELECT oid FROM pg_catalog.pg_class WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_proc WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_type WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_collation WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_conversion WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_operator WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_opclass WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_opfamily WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_ts_config WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_ts_dict WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_ts_parser WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_ts_template WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_namespace WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_largeobject_metadata
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_extension WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_foreign_data_wrapper
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_foreign_server
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_user_mapping
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_event_trigger
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_publication
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_subscription
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_default_acl
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_language WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_cast WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_am WHERE oid >= $1::oid
+			UNION ALL
+			SELECT oid FROM pg_catalog.pg_transform
+			UNION ALL
+			SELECT objoid FROM pg_catalog.pg_seclabel
+		) existing_objects`, postgres16FirstNormalObjectID).Scan(&objects)
 	if err != nil {
 		return errors.Join(ErrInvalid, err)
 	}
@@ -214,7 +268,7 @@ func RequireCleanTarget(ctx context.Context, database *sql.DB) error {
 }
 
 // ErrNonCleanTarget is the restore refusal for a database that already holds
-// relations; it wraps ErrInvalid so existing callers keep failing closed.
+// user objects; it wraps ErrInvalid so existing callers keep failing closed.
 var ErrNonCleanTarget = fmt.Errorf("%w: restore target database is not clean", ErrInvalid)
 
 func requireMigrationIdentity(ctx context.Context, database *sql.DB, expected int) error {

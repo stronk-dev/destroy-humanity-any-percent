@@ -543,6 +543,22 @@ identity. It also proves a non-clean target is refused. Corrupt/truncated envelo
 wrong manifests, wrong epoch bytes, partial output, missing/late populations and incomplete or
 out-of-bound objective measurements have focused negative tests.
 
+The restore clean-target gate checks more than tables: it also refuses user-created schema,
+routine/type, collation/operator/text-search, extension/language, foreign-data, replication,
+default-privilege and large-object state. For catalog objects, it uses PostgreSQL16's
+`FirstNormalObjectId` boundary, not a namespace/name allowlist: a user function in `pg_catalog`
+is still existing state. Large objects are checked regardless of their explicitly chosen OID.
+Fresh initdb objects remain allowed. This is a read-only guard before `pg_restore`, not a lock
+against concurrent administrator writes or a substitute for the release's clean-volume sequence.
+Its real-database component test runs without dump/restore tools through:
+
+```sh
+make test-save-integration SAVE_TEST_PACKAGES='./deploymentbackup' SAVE_TEST_FLAGS='-run TestRequireCleanTargetRejectsNonRelationalObjectsIntegration -v'
+```
+
+That command proves the guard and retained objects, not a complete dump/restore, CLI-stderr
+provenance, Caddy recovery or R-006. Keep `make test-deployment-backup` and clean-host gates separate.
+
 DP-C does not claim the 6-hour RPO or 4-hour RTO from component execution. The helper exposes a
 measurement validator, but an observation is invalid until incident time, restore start and the
 authenticated post-restore Caddy smoke completion are all present. Those bounds become release

@@ -3,11 +3,14 @@ package deploymentbackup
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	"database/sql"
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -21,6 +24,92 @@ type rightsRestoreCatalog struct{}
 
 func (rightsRestoreCatalog) Resolve(hash string) (*economy.Catalog, bool) {
 	return &economy.Catalog{}, hash == "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
+
+func TestRequireCleanTargetRejectsNonRelationalObjectsIntegration(t *testing.T) {
+	adminURL := os.Getenv("TEST_DATABASE_URL")
+	if adminURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	admin, err := save.OpenPostgres(ctx, adminURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer admin.Close()
+	for _, arm := range []struct {
+		name, create, observe string
+	}{
+		{"empty", "", "SELECT 1"},
+		{"table", "CREATE TABLE public.occupied(id integer)", "SELECT count(*) FROM pg_class WHERE relname='occupied'"},
+		{"enum", "CREATE TYPE public.occupied AS ENUM ('kept')", "SELECT count(*) FROM pg_type WHERE typname='occupied'"},
+		{"domain", "CREATE DOMAIN public.occupied AS integer CHECK (VALUE > 0)", "SELECT count(*) FROM pg_type WHERE typname='occupied'"},
+		{"function", "CREATE FUNCTION public.occupied() RETURNS integer LANGUAGE sql AS 'SELECT 7'", "SELECT public.occupied() / 7"},
+		{"system_namespace_function", "CREATE FUNCTION pg_catalog.occupied() RETURNS integer LANGUAGE sql AS 'SELECT 7'", "SELECT pg_catalog.occupied() / 7"},
+		{"schema", "CREATE SCHEMA occupied", "SELECT count(*) FROM pg_namespace WHERE nspname='occupied'"},
+		{"large_object", "SELECT lo_create(123)", "SELECT count(*) FROM pg_largeobject_metadata WHERE oid=123"},
+		{"extension", "CREATE EXTENSION hstore WITH SCHEMA pg_catalog", "SELECT count(*) FROM pg_extension WHERE extname='hstore'"},
+		{"collation", "CREATE COLLATION public.occupied (provider=libc, locale='C')", "SELECT count(*) FROM pg_collation WHERE collname='occupied'"},
+		{"operator", "CREATE OPERATOR public.=== (LEFTARG=integer, RIGHTARG=integer, FUNCTION=pg_catalog.int4eq)", "SELECT count(*) FROM pg_operator WHERE oprname='==='"},
+		{"operator_family", "CREATE OPERATOR FAMILY public.occupied USING btree", "SELECT count(*) FROM pg_opfamily WHERE opfname='occupied'"},
+		{"text_search_configuration", "CREATE TEXT SEARCH CONFIGURATION public.occupied (COPY=pg_catalog.simple)", "SELECT count(*) FROM pg_ts_config WHERE cfgname='occupied'"},
+		{"text_search_dictionary", "CREATE TEXT SEARCH DICTIONARY public.occupied (TEMPLATE=pg_catalog.simple)", "SELECT count(*) FROM pg_ts_dict WHERE dictname='occupied'"},
+		{"foreign_data_wrapper", "CREATE FOREIGN DATA WRAPPER occupied", "SELECT count(*) FROM pg_foreign_data_wrapper WHERE fdwname='occupied'"},
+		{"publication", "CREATE PUBLICATION occupied", "SELECT count(*) FROM pg_publication WHERE pubname='occupied'"},
+		{"default_privileges", "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO PUBLIC", "SELECT count(*) FROM pg_default_acl"},
+		{"language", "CREATE LANGUAGE occupied HANDLER pg_catalog.plpgsql_call_handler", "SELECT count(*) FROM pg_language WHERE lanname='occupied'"},
+		{"cast", "CREATE CAST (uuid AS integer) WITH INOUT", "SELECT count(*) FROM pg_cast WHERE castsource='uuid'::regtype AND casttarget='integer'::regtype"},
+		{"access_method", "CREATE ACCESS METHOD occupied TYPE TABLE HANDLER pg_catalog.heap_tableam_handler", "SELECT count(*) FROM pg_am WHERE amname='occupied'"},
+	} {
+		t.Run(arm.name, func(t *testing.T) {
+			name := "backup_clean_" + strings.ToLower(rand.Text())
+			if !databaseName.MatchString(name) {
+				t.Fatal("invalid generated database name")
+			}
+			if _, err := admin.ExecContext(ctx, "CREATE DATABASE "+name+" TEMPLATE template0"); err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() {
+				if _, err := admin.ExecContext(context.Background(), "DROP DATABASE "+name); err != nil {
+					t.Error(err)
+				}
+			})
+			parsed, err := url.Parse(adminURL)
+			if err != nil {
+				t.Fatal(err)
+			}
+			parsed.Path = "/" + name
+			database, err := save.OpenPostgres(ctx, parsed.String())
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() {
+				if err := database.Close(); err != nil {
+					t.Error(err)
+				}
+			})
+			if err := RequireCleanTarget(ctx, database); err != nil {
+				t.Fatalf("fresh database refused: %v", err)
+			}
+			if arm.create != "" {
+				if _, err := database.ExecContext(ctx, arm.create); err != nil {
+					t.Fatal(err)
+				}
+			}
+			err = RequireCleanTarget(ctx, database)
+			if arm.create == "" {
+				if err != nil {
+					t.Fatalf("empty database refused: %v", err)
+				}
+			} else if !errors.Is(err, ErrNonCleanTarget) {
+				t.Errorf("existing %s accepted as clean: %v", arm.name, err)
+			}
+			var retained int
+			if err := database.QueryRowContext(ctx, arm.observe).Scan(&retained); err != nil || retained != 1 {
+				t.Fatalf("existing object changed: observed=%d err=%v", retained, err)
+			}
+		})
+	}
 }
 
 type rightsRestoreState struct {

@@ -7,6 +7,13 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current checkpoint, 2026-10-08:** RP-423 corrects false-clean restore targets containing
+schema-only or nonrelational objects. Twenty actual Postgres cases pass; affected native tests/vet
+and selected Linux packages pass. The broader Linux selection remains red on two preflight
+tests with Docker at zero available space. The owning log records exact commands, skips and
+pending designated-review range. This does not close original R20, DP-C or the full restore/
+clean-host criteria; do not repeat this finished guard study instead of those gates.
+
 ## Delivery sequence
 
 The release package is the integration boundary. Work is split so each batch has one authority,
