@@ -1,6 +1,7 @@
 package production
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -135,12 +136,33 @@ func applyFounderCosmeticResolved(state *save.State, request IntentRequest, revi
 		return FounderLoggedTransition{}, fmt.Errorf("%w: cosmetic Founder command", ErrInvalidReplayInputs)
 	}
 	var resolved founderCosmeticResolved
+	var fields map[string]json.RawMessage
+	keys := []string{"kind"}
+	if request.Kind == IntentAcquireCosmetic {
+		keys = append(keys, "active_company")
+	}
+	if decodeReplayStrict(resolvedJSON, &fields) != nil || !hasExactKeys(fields, keys...) {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: cosmetic Founder fields", ErrInvalidReplayInputs)
+	}
+	if request.Kind == IntentAcquireCosmetic {
+		var activeFields map[string]json.RawMessage
+		if decodeReplayStrict(fields["active_company"], &activeFields) != nil ||
+			!hasExactKeys(activeFields, "company_stream_id", "company_revision", "run_seq", "tier") {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: cosmetic active Company fields", ErrInvalidReplayInputs)
+		}
+		for _, value := range activeFields {
+			if bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+				return FounderLoggedTransition{}, fmt.Errorf("%w: null cosmetic active Company field", ErrInvalidReplayInputs)
+			}
+		}
+	}
 	if err := decodeReplayStrict(resolvedJSON, &resolved); err != nil || resolved.Kind != request.Kind ||
 		(request.Kind == IntentAcquireCosmetic) != (resolved.ActiveCompany != nil) {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: cosmetic Founder inputs", ErrInvalidReplayInputs)
 	}
 	if active := resolved.ActiveCompany; active != nil && (!cosmeticStreamIDPattern.MatchString(active.CompanyStreamID) ||
-		active.CompanyRevision < 1 || active.RunSeq < 0 || active.RunSeq > decimal.MaxExactInteger || active.Tier < 0 || active.Tier > 8) {
+		active.CompanyRevision < 1 || active.CompanyRevision > decimal.MaxExactInteger ||
+		active.RunSeq < 0 || active.RunSeq > decimal.MaxExactInteger || active.Tier < 0 || active.Tier > 8) {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: cosmetic active Company context", ErrInvalidReplayInputs)
 	}
 	reject := func(category, detail string) (FounderLoggedTransition, error) {

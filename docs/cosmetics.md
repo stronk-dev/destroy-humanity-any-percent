@@ -49,6 +49,12 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
     into the replay inputs (the client never sends a tier);
   - equip: `unknown_id/pet_id`, `not_owned`, `already_equipped`;
   - unequip: `unknown_id/pet_id`, `nothing_equipped`.
+- **Recorded context:** acquisition replay requires exactly `kind` and `active_company`,
+  whose four fields are all present and non-null. The Company revision is a positive safe
+  integer, run sequence is a nonnegative safe integer, tier is 0–8 and stream ID is a lowercase
+  UUID. Equip/unequip record only `kind`, with no nullable extra Company context. Both runtimes
+  reject malformed context as invalid replay without changing state; valid replay bytes and
+  the ordinary locked/owned refusal order are unchanged.
 - **Events:** `cosmetic_acquired.v1 {cosmetic_id, order_number}`, where `order_number` is the owned
   count after insertion; `cosmetic_equipped.v1 {cosmetic_id, pet_id, replaced_cosmetic_id|null}`;
   `cosmetic_unequipped.v1 {cosmetic_id, pet_id}`. Payloads are strict. Migration `00080` admits the

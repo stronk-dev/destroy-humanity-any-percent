@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import corpus from "../../testdata/replay/cosmetic-v1.json";
+import boundaries from "../../testdata/replay/cosmetic-input-boundaries.json";
 import { applyFounderLogged, applyLoggedExit, canonicalJSONString, encodeFounderReplayState, encodeReplayState, loadReplayCatalogBundle, restoreFounderReplayState, restoreReplayState, withNextReplayCatalogBundle, type ReplayArtifacts, type ReplayCatalogBundle } from "../src/replay";
 
 // Cosmetic Shop v1 AC5/AC6 (and C3's Exit-activation witness): the TS Founder
@@ -13,6 +14,31 @@ function bundle(name: string): Promise<ReplayCatalogBundle> {
 }
 
 describe("cosmetic intents cross-runtime corpus", () => {
+  it.each(boundaries)("validates recorded context: $name", async (row) => {
+    const base = corpus.cases.find((entry) => entry.name === row.base)!;
+    expect(base).toBeDefined();
+    const catalogs = await bundle(base.bundle);
+    const inputs = structuredClone(base.replay_inputs) as { resolved: Record<string, unknown> };
+    if (typeof row.field === "string") {
+      const target = "resolved" in row && row.resolved ? inputs.resolved : inputs.resolved.active_company as Record<string, unknown>;
+      if ("omit" in row && row.omit) delete target[row.field];
+      else target[row.field] = "value" in row ? row.value : undefined;
+    }
+    const state = restoreFounderReplayState(base.pre_state, base.state_version, catalogs);
+    const before = canonicalJSONString(encodeFounderReplayState(state));
+    const transition = applyFounderLogged(state, canonicalJSONString(base.canonical_payload), catalogs, inputs);
+    if (row.valid) {
+      const applied = await transition;
+      expect(applied.outcome).toBe("applied");
+      expect(canonicalJSONString(applied.receipt)).toBe(base.receipt_json);
+      expect(canonicalJSONString(applied.events)).toBe(base.events_json);
+      expect(canonicalJSONString(encodeFounderReplayState(state))).toBe(base.post_state_json);
+    } else {
+      await expect(transition).rejects.toThrow();
+      expect(canonicalJSONString(encodeFounderReplayState(state))).toBe(before);
+    }
+  });
+
   it("pins every §4 row", () => {
     const names = corpus.cases.map((row) => row.name);
     for (const required of ["rejects-inactive-below-v24", "rejects-price-field", "rejects-locked-at-tier-0", "applies-acquire-at-tier-1", "rejects-second-acquire",

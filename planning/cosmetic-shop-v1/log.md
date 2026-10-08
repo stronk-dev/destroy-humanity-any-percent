@@ -1880,3 +1880,45 @@ through this test/tool/docs/record commit awaits designated cross-party review; 
 is separately `3b2b9a0e..50f7f49c`, and earlier debt remains. Next: consolidate these related
 ranges for review and continue the accepted Garage/API obligations; shared-clock, PA7/C2 and
 content/release gates remain explicit.
+
+## 2026-10-08 — strict cosmetic replay context (RP-411)
+
+Bounded §4/AC5–AC6 review of the original C4 replay arm (`500d944c`) finds Go silently
+defaulting missing/null run sequence/tier, admitting unsafe Company revisions and ignoring
+extraneous null Company context on equip/unequip. This is corrupt recorded-input admission,
+not client control of the server-selected tier. No full original17-path C4 verdict is claimed.
+
+At `32850174`, corrected test setup14678 executes28 shared literal boundaries: seven fail
+in Go,21 pass (including all seven valid controls); TS39994 passes all60 existing/new replay
+tests. The first two Go attempts5350/41751 incorrectly supplied pretty/raw request shapes to
+the canonical-payload boundary; those setup failures are not product evidence. The corrected
+test uses the existing canonical serializer. An initial TS index-narrowing type error72455
+is corrected before final verification; no assertion or admission expectation was loosened.
+
+Go now requires exact, non-null active Company fields and a safe Company revision, matching
+TS's existing grammar. Equip/unequip permit only their recorded `kind`. Valid controls compare
+complete canonical receipt/event/post-state bytes to the existing corpus; invalid controls
+require invalid-replay failure and byte-identical state. Run sequence0 remains admitted in both
+runtimes. Kernel0.3.175 records this real admission change; no artifact mint or save version change.
+
+Finished verification:
+
+- Focused cold Go10930 passes cosmetic commands/corpus, isolation and related state/version
+  checks (native DB cases skip). Real Postgres89851 separately executes all selected Cosmetic
+  production/save tests, including both Exit arms, idempotency/conflict, rejected fields,
+  strict DB payload keys, real Soul recovery and verified Founder history; PASS, no DB skip.
+  Command: `make test-save-integration SAVE_TEST_PACKAGES='./production ./save' SAVE_TEST_FLAGS='-run Cosmetic -v'`.
+- `client/node_modules/.bin/vitest run --root client test/cosmetic-replay.test.ts test/cosmetic-founder-state.test.ts test/cosmetic-catalog.test.ts test/decimal-vectors.test.ts`
+  passes6398 (88899). Types/Svelte and unchanged6296-vector generation57717 PASS; affected vet7907 PASS.
+- Full cold `make test-go GO_PACKAGES='./production ./save ./cosmetic ./kernel ./decimal' GO_TEST_FLAGS='-count=1'`
+  is RED90613 on the existing27 Clout partition cases (RP-307); the other four packages pass.
+  No exclusion, assertion, timing or gameplay change is made to conceal this baseline.
+- `make verify-kernel-version`90680 remains RED at historical `50a3a514` (RP-131); current
+  version parity passes separately in Go. The new bump does not excuse that historical miss.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Actual diff/whitespace inspected.
+New exact range starts `32850174` exclusive through this source/test/fixture/docs/record commit;
+designated cross-party review remains required. Prior C4 findings/corrections and all original
+review debt remain separate. No browser/hosted/full-CI, whole Cosmetic acceptance, archival,
+publication or release claim. Continue accepted implementation/review while shared attendance,
+author contracts, content and rights/deployment gates retain their own authority.
