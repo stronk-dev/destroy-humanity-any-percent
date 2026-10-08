@@ -39,8 +39,10 @@ RFC: `rfc/minigame-platform-foundation.md`
   - 2026-10-08: both modes now execute persisted nonterminal resume, terminal
     certification/payout and the existing fault/retry population against actual
     Postgres in the composed lane. This is backend evidence, not the fixture
-    tenant mounted through public HTTP or full AC1 completion. Latest aggregate
-    run stops later at Pet Care (RP-440); see the owning log.
+    tenant mounted through public HTTP or full AC1 completion. Its original aggregate
+    stopped later at Pet Care (RP-440), since locally corrected in the Garage lane.
+    The API/Surface lane now supplements the accepted solo Pitch HTTP journey with
+    stored payout/retry/replay checks; it does not add a generic fixture/async wire.
 - [ ] Mint the production artifact only after owner/harness-supplied balance rows.
 - [ ] Update canonical docs, pass normal repository-root verification, obtain independent
   full-range adversarial review, and archive.

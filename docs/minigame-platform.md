@@ -94,6 +94,13 @@ the shared account limiter without changing the active session; after refill, th
 snapshot remains current and ordinary play resumes. Recovery heartbeats retain their additional
 per-session limiter.
 
+The Pitch HTTP integration also reconnects after an applied nonterminal command and compares
+the complete snapshot, then retries that command without advancing it. Before and after terminal
+command/resolve/create retries, independent SQL-backed reads bind the certified result hash,
+exact cash delta, Founder rating/quality, terminal revision coordinates, command history/receipts,
+both resolution logs/events, single faucet spend and verified Founder replay. This is the
+accepted solo Pitch wire, not a generic fixture/async HTTP API or full platform AC1 completion.
+
 The internal recovery command kind remains `resolve_soul_recovery` or
 `cancel_soul_recovery` for replay. The public durable terminal receipt uses the API grammar's
 `action: "resolve" | "cancel"`; the distinction is explicit so internal command vocabulary cannot

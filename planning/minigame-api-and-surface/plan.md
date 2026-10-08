@@ -1,5 +1,11 @@
 # Minigame API & Surface implementation plan
 
+Current checkpoint (2026-10-08): extend the existing real-socket lifecycle with actual
+mid-run reconnect/nonterminal retry and independent stored payout/history/quota checks
+before and after terminal retries. This is test-only MA1/AC1/MA-C13 evidence; no new
+tenant, mode, schema, gameplay or acceptance promotion. Latest results and pending
+review range belong in the owning log.
+
 - [x] Compose the minigame repository, closed Pitch tenant registry, pinned content resolver, and
   platform service in `gameserver.Compose`; expose it on `Composition`.
 - [x] Attach the authenticated minigame coordinator adapter after MA-C10–MA-C14 are ruled.

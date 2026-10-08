@@ -1079,3 +1079,41 @@ are not thereby approved.
   remains pending; no feature acceptance or archival. Typer/Arcade public-wire
   choice has been requested, not adopted. Clout's undefined projection target,
   numeric/episode decisions and the full nine-tier release scope remain open.
+
+## 2026-10-08 — Bind the public Pitch lifecycle to its stored outcome
+
+Outcome: under MA1/AC1/MA-C13 and Platform MP1/MP4, extend the existing composed HTTP
+test, not a new driver. After the first real command, retry returns identical bytes and
+current-session reconnect returns the entire applied revision2 snapshot. HTTP still owns
+all mutations; independent repository/SQL reads observe frozen start coordinates, the
+certified terminal/hash, exact cash delta, unchanged unrated Pitch rating, selected quality,
+both save revisions and terminal coordinates, command/receipt counts, required resolution
+logs/events, one faucet spend and verified Founder history. Recheck after terminal command,
+resolve and create retries. No production, schema, catalog, kernel, balance or CI byte changed.
+
+Regression/control: temporarily incrementing the actual test database's quota after the
+successful HTTP retries makes54476 fail `HTTP resolve/retry faucet quota=2`; response-byte
+assertions had passed. Removed the injected update before final tests. Initial native compile
+caught my use of Ledger.Balance's bool as an error; fixed before DB execution. First DB52712
+failed an assumed total event count2 (actual3); the test now checks exactly one of each required
+minigame event on its correct stream rather than incorrectly forbidding ancillary events.
+Founder replay continues to check its complete event history. Focused79986 then passes.
+
+Coverage: final `make test-save-integration SAVE_TEST_PACKAGES='./gameserver' SAVE_TEST_FLAGS='-v'`
+69693 passes the complete package in53.137s, including the changed HTTP test1.62s, all DB/socket
+populations and existing wrong-receipt/authorization controls, no skips. The inspected cached
+golang:1.26 image is Linux/amd64; Postgres16 is real and declared by Compose. Final native
+`make test-go vet GO_PACKAGES='./gameserver' GO_TEST_FLAGS='-count=1'`18897 passes; native DB
+tests skip without TEST_DATABASE_URL, not substituted for the container evidence. Earlier full
+package38144 passes before the final mid-run reconnect supplement. Gofmt/diff checks pass.
+
+Boundary: accepted public v1 is solo with closed tenant wire schemas. Composition registers
+real tenants, not the platform's arbitrary fixture. This supplement does not invent an async/
+fixture HTTP endpoint, prove live scaling-source mutation, full Platform AC1, browser/AT tasks,
+OS crash recovery or release readiness. No browser/full-CI rerun needed for test-only Go work;
+the last inspected hosted kernel-history/Clout failures remain open independently.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new review range:
+`8eb2eb70` exclusive through this test/docs/plan/log commit; designated cross-party review
+pending. No acceptance flips, archival, push or cleanup. Next: remaining accepted integration
+and consolidated review; Typer/Arcade wire choices and other unaccepted successors remain held.

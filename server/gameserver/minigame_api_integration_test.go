@@ -3,18 +3,23 @@ package gameserver
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sort"
 	"testing"
 	"time"
 
 	"cloud-clicker/server/account"
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/minigame"
+	"cloud-clicker/server/production"
 	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/save"
 )
@@ -113,6 +118,34 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	var current minigameAPIEnvelope
 	if json.Unmarshal(createdBytes, &current) != nil || current.Status != "active" || current.Revision != 1 || current.SessionID == "" {
 		t.Fatalf("create envelope=%s", createdBytes)
+	}
+	// Independently read the real persistence boundary; HTTP envelopes alone
+	// cannot prove a terminal response actually paid or retained replay data.
+	companyIdentity, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	store, err := save.NewStore(db, composition.Catalogs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	beforeCompany, err := store.LoadLatest(ctx, companyIdentity.StreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	beforeCash, hasCash := beforeCompany.State.Ledger.Balance("company.cash")
+	if !hasCash {
+		t.Fatal("HTTP-created Company has no cash balance")
+	}
+	founderStreamID := activeFounderStreamID(t, ctx, db, companyIdentity.FounderID)
+	beforeFounder, err := store.LoadLatest(ctx, founderStreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	persistedStart, err := composition.Minigames.Load(ctx, companyIdentity.FounderID, current.SessionID)
+	if err != nil || persistedStart.Mode != minigame.ModeSolo || persistedStart.CompanyStreamID != companyIdentity.StreamID ||
+		persistedStart.ConstantsHash != composition.CurrentHash || string(persistedStart.ScalingInputs) != `{"minigame.pitch":1}` {
+		t.Fatalf("public create did not freeze server-owned coordinates: session=%+v err=%v", persistedStart, err)
 	}
 
 	// Server Garden SG9: the composed garden read answers through the same
@@ -241,6 +274,35 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		if json.Unmarshal(responseBytes, &current) != nil {
 			t.Fatalf("command %d response=%s", step, responseBytes)
 		}
+		if step == 0 {
+			if current.Status != "active" || current.Revision != 2 {
+				t.Fatalf("fixture must reach a nonterminal persisted command before reconnect: %s", responseBytes)
+			}
+			commandRetry := compositionRequest(t, httpServer.Client(), http.MethodPost,
+				httpServer.URL+"/api/v1/minigames/sessions/"+current.SessionID+"/commands", tokens.AccessToken, string(terminalCommand))
+			if retryBytes := readCompositionBytes(t, commandRetry); commandRetry.StatusCode != http.StatusOK || !bytes.Equal(retryBytes, responseBytes) {
+				t.Fatalf("nonterminal command retry status=%d body=%s", commandRetry.StatusCode, retryBytes)
+			}
+			// Reconnect after play, not merely after creation. Bind the entire
+			// returned snapshot, including fields the test's command picker ignores.
+			read := compositionRequest(t, httpServer.Client(), http.MethodGet,
+				httpServer.URL+"/api/v1/minigames/sessions/current", tokens.AccessToken, "")
+			readBytes := readCompositionBytes(t, read)
+			var resumed struct {
+				Kind     string              `json:"kind"`
+				Session  minigameAPIEnvelope `json:"session"`
+				Snapshot any                 `json:"snapshot"`
+			}
+			var applied struct {
+				Snapshot any `json:"snapshot"`
+			}
+			if read.StatusCode != http.StatusOK || registry.ValidateResponse("get_current_minigame_session", http.StatusOK, readBytes) != nil ||
+				json.Unmarshal(readBytes, &resumed) != nil || json.Unmarshal(responseBytes, &applied) != nil ||
+				resumed.Kind != "active" || resumed.Session.SessionID != current.SessionID || resumed.Session.Revision != 2 ||
+				!reflect.DeepEqual(resumed.Snapshot, applied.Snapshot) {
+				t.Fatalf("mid-run reconnect lost applied state: applied=%s resumed=%s", responseBytes, readBytes)
+			}
+		}
 		if current.Status == "resolved" {
 			terminalBytes = responseBytes
 		}
@@ -248,6 +310,97 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	if len(terminalBytes) == 0 || len(current.ResolutionReceipt) == 0 {
 		t.Fatalf("Pitch did not auto-resolve: %+v", current)
 	}
+	assertPersistedResolution := func() {
+		t.Helper()
+		session, err := composition.Minigames.Load(ctx, companyIdentity.FounderID, current.SessionID)
+		if err != nil || session.Status != minigame.StatusResolved || session.Revision != current.Revision ||
+			session.ClaimToken != "" || session.ResolvedAt == nil ||
+			!bytes.Equal(session.ScalingInputs, persistedStart.ScalingInputs) || session.Seed != persistedStart.Seed ||
+			!bytes.Equal(session.Genesis, persistedStart.Genesis) || !bytes.Equal(session.ResolutionReceipt, current.ResolutionReceipt) {
+			t.Fatalf("terminal HTTP receipt differs from persisted session: session=%+v err=%v", session, err)
+		}
+		var certified minigame.Result
+		if err := json.Unmarshal(session.Result, &certified); err != nil || len(certified.ScoreFacts) != 2 ||
+			certified.ScoreFacts[1].Kind != "pitch.final_round" || certified.ScoreFacts[1].Value != current.Snapshot.Round ||
+			certified.RatingDelta != nil || current.Snapshot.Round < 1 {
+			t.Fatalf("stored result does not certify the HTTP terminal: result=%s err=%v", session.Result, err)
+		}
+		var receipt struct {
+			SessionID           string `json:"session_id"`
+			Outcome             string `json:"outcome"`
+			CertifiedResultHash string `json:"certified_result_hash"`
+			CreditedResourceID  string `json:"credited_resource_id"`
+			CreditedDelta       string `json:"credited_delta"`
+			CompanyRevision     int64  `json:"company_revision"`
+			FounderRevision     int64  `json:"founder_revision"`
+		}
+		// Independent arithmetic for this pinned test policy: first send,
+		// floor(final_round * 500000 / 1000000), below its 300-unit cap.
+		wantCredit := decimal.FromString(fmt.Sprint(current.Snapshot.Round / 2))
+		if err := json.Unmarshal(current.ResolutionReceipt, &receipt); err != nil ||
+			receipt.SessionID != current.SessionID || receipt.Outcome != "applied" ||
+			receipt.CertifiedResultHash != fmt.Sprintf("sha256:%x", sha256.Sum256(session.Result)) ||
+			receipt.CreditedResourceID != "company.cash" || receipt.CreditedDelta != wantCredit.String() {
+			t.Fatalf("certified payout receipt=%s err=%v", current.ResolutionReceipt, err)
+		}
+		company, err := store.LoadLatest(ctx, companyIdentity.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cash, hasCash := company.State.Ledger.Balance("company.cash")
+		if !hasCash || company.Revision.Number != beforeCompany.Revision.Number+1 ||
+			receipt.CompanyRevision != company.Revision.Number || cash.Sub(beforeCash).String() != wantCredit.String() {
+			t.Fatalf("payout not persisted once: company=%d cash=%s before=%s want=%s hasCash=%v",
+				company.Revision.Number, cash, beforeCash, wantCredit, hasCash)
+		}
+		founder, err := store.LoadLatest(ctx, founderStreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		wantGrade := int64(200_000)
+		for _, row := range []struct{ round, grade int64 }{{3, 500_000}, {5, 800_000}, {8, 1_000_000}} {
+			if current.Snapshot.Round >= row.round {
+				wantGrade = row.grade
+			}
+		}
+		if founder.Revision.Number != beforeFounder.Revision.Number+1 || receipt.FounderRevision != founder.Revision.Number ||
+			founder.State.MinigameRatings["pitch"] != beforeFounder.State.MinigameRatings["pitch"] ||
+			founder.State.MinigameOfflineQuality["pitch"].GradePPM != wantGrade ||
+			session.ResolutionCompanyRevision == nil || *session.ResolutionCompanyRevision != company.Revision.Number ||
+			session.ResolutionFounderRevision == nil || *session.ResolutionFounderRevision != founder.Revision.Number {
+			t.Fatalf("payout Founder/session coordinates differ: founder=%d rating=%+v quality=%+v session=%+v",
+				founder.Revision.Number, founder.State.MinigameRatings["pitch"], founder.State.MinigameOfflineQuality["pitch"], session)
+		}
+		for _, check := range []struct {
+			name, query string
+			want        int64
+		}{
+			{"commands", `SELECT count(*) FROM minigame_session_commands WHERE session_id=$1`, current.Revision - 1},
+			{"command receipts", `SELECT count(*) FROM minigame_command_receipts WHERE session_id=$1`, current.Revision - 1},
+			{"Company resolution log", `SELECT count(*) FROM run_log WHERE intent_id=$1 AND (convert_from(canonical_payload,'UTF8')::jsonb)->>'kind'='resolve_minigame_session'`, 1},
+			{"Founder resolution log", `SELECT count(*) FROM founder_log WHERE intent_id=$1 AND (convert_from(canonical_payload,'UTF8')::jsonb)->>'kind'='resolve_minigame_session'`, 1},
+			{"Company resolution event", `SELECT count(*) FROM events WHERE intent_id=$1 AND kind='minigame_resolved.v1' AND stream_id=(SELECT company_stream_id FROM minigame_sessions WHERE session_id=$1)`, 1},
+			{"Founder resolution event", `SELECT count(*) FROM events WHERE intent_id=$1 AND kind='minigame_rating_changed.v1' AND stream_id=(SELECT id FROM save_streams WHERE owner_id=(SELECT founder_id FROM minigame_sessions WHERE session_id=$1) AND scope='founder' AND archived_at IS NULL)`, 1},
+		} {
+			var count int64
+			if err := db.QueryRowContext(ctx, check.query, current.SessionID).Scan(&count); err != nil || count != check.want {
+				t.Fatalf("%s count=%d want=%d err=%v", check.name, count, check.want, err)
+			}
+		}
+		var quota int64
+		if err := db.QueryRowContext(ctx, `SELECT quota_used FROM minigame_faucet_window WHERE founder_id=$1 AND minigame_id='pitch'`,
+			companyIdentity.FounderID).Scan(&quota); err != nil || quota != 1 {
+			t.Fatalf("HTTP resolve/retry faucet quota=%d err=%v", quota, err)
+		}
+		history, err := store.LoadFounderHistory(ctx, founderStreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if verdict := production.VerifyFounderHistory(history, composition.Catalogs.replay); verdict != production.ReplayVerified {
+			t.Fatalf("HTTP-created/resolved Founder replay verdict=%s", verdict)
+		}
+	}
+	assertPersistedResolution()
 
 	// Command retry, explicit resolve, and create retry all return the exact
 	// durable response bytes rather than re-executing tenant or payout logic.
@@ -271,6 +424,7 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	if currentResponse.StatusCode != http.StatusOK || string(currentBytes) != `{"kind":"none"}` {
 		t.Fatalf("terminal current status=%d body=%s", currentResponse.StatusCode, currentBytes)
 	}
+	assertPersistedResolution()
 
 	// The recovery half of MA AC1 uses only the composed authenticated socket:
 	// start, reconnect/token rotation, attended heartbeats, resolve/retry, and a
@@ -364,6 +518,7 @@ type minigameAPIEnvelope struct {
 type pitchAPISnapshot struct {
 	Phase string   `json:"phase"`
 	Hand  []string `json:"hand"`
+	Round int64    `json:"round"`
 }
 
 type recoveryAPIStart struct {
