@@ -41,7 +41,8 @@ class FakePort implements SoulRecoveryPort {
   steady: SoulRecoveryProgressResponse | undefined;
   startReplies: (() => SoulRecoveryStartResponse | Promise<SoulRecoveryStartResponse>)[] = [];
   progressReplies: (() => SoulRecoveryProgressResponse)[] = [];
-  terminalReply: () => SoulRecoveryTerminalResponse = () => terminal("resolve");
+  terminalCalls: ("resolve" | "cancel")[] = [];
+  terminalReply: () => SoulRecoveryTerminalResponse | Promise<SoulRecoveryTerminalResponse> = () => terminal("resolve");
   async start(activityID: string): Promise<SoulRecoveryStartResponse> { this.starts.push(activityID); const next = this.startReplies.shift(); if (!next) throw new Error("unexpected start"); return next(); }
   async progress(_sessionID: string, token: string): Promise<SoulRecoveryProgressResponse> {
     this.tokens.push(token);
@@ -52,8 +53,8 @@ class FakePort implements SoulRecoveryPort {
     this.steady = value;
     return value;
   }
-  async resolve(): Promise<SoulRecoveryTerminalResponse> { return this.terminalReply(); }
-  async cancel(): Promise<SoulRecoveryTerminalResponse> { return this.terminalReply(); }
+  async resolve(): Promise<SoulRecoveryTerminalResponse> { this.terminalCalls.push("resolve"); return this.terminalReply(); }
+  async cancel(): Promise<SoulRecoveryTerminalResponse> { this.terminalCalls.push("cancel"); return this.terminalReply(); }
 }
 
 async function settle(ms = 0): Promise<void> {
@@ -310,3 +311,58 @@ it.skipIf(!browser)("starts and stops Soul recovery with keyboard-only controls"
     await assertAxe(target, "keyboard-terminal recovery");
   } finally { unmount(app); target.remove(); }
 });
+
+for (const action of ["resolve", "cancel"] as const) {
+  for (const mounted of [true, false]) {
+    it.skipIf(!browser)(`delayed Recovery ${action} notifies only a still-mounted host (${mounted})`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const port = new FakePort();
+      const visibility = new FakeVisibility();
+      const terminals: SoulRecoveryTerminalResponse[] = [];
+      const response = terminal(action, action === "cancel" ? "player" : undefined);
+      port.startReplies.push(() => started(SESSION, TOKEN_1, REQUIRED));
+      port.steady = progressed(REQUIRED);
+      let releaseTerminal!: (value: SoulRecoveryTerminalResponse) => void;
+      port.terminalReply = () => new Promise((resolve) => { releaseTerminal = resolve; });
+      const { target, app } = mountSurface(port, visibility, { now: 1_000 }, terminals);
+      const newer = document.createElement("button");
+      newer.textContent = "Another surface";
+      document.body.append(newer);
+      let unmounted = false;
+      try {
+        await settle();
+        target.querySelector<HTMLButtonElement>("li button")!.focus();
+        await userEvent.keyboard("{Enter}");
+        await settle();
+        button(target, action === "resolve" ? "Finish" : "Stop early").focus();
+        await userEvent.keyboard("{Enter}");
+        await settle();
+        expect(port.terminalCalls).toEqual([action]);
+        expect(terminals).toEqual([]);
+        if (!mounted) {
+          await unmount(app);
+          unmounted = true;
+          newer.focus();
+        }
+        releaseTerminal(response);
+        await settle(80);
+        expect(port.terminalCalls).toEqual([action]);
+        expect(terminals).toEqual(mounted ? [response] : []);
+        if (mounted) {
+          expect(target.querySelector("[role=status]")?.textContent).toBe(action === "resolve" ? "Done. Soul went from 40 to 52." : "Stopped. Nothing was restored.");
+          expect(document.activeElement?.id).toBe("recovery-heading");
+        } else {
+          expect(document.activeElement).toBe(newer);
+          expect(target.textContent).toBe("");
+          expect(visibility.listener).toBeUndefined();
+          const beats = port.tokens.length;
+          await settle(80);
+          expect(port.tokens).toHaveLength(beats);
+        }
+      } finally {
+        if (!unmounted) await unmount(app);
+        target.remove(); newer.remove();
+      }
+    });
+  }
+}

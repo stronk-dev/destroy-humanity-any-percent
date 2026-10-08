@@ -1168,3 +1168,35 @@ kernel-history/Clout failures remain independent. Review by: Codex (implementer 
 Recorded by: Codex. Exact new review range is `cbd2069f` exclusive through this containing
 test/Make/docs/record commit; designated cross-party review pending. No acceptance flips,
 archive, push or cleanup. Existing public-wire and other unaccepted successor contracts stay held.
+
+## 2026-10-08 — Ignore Recovery terminal replies after the surface leaves (RP-452)
+
+Outcome: conform MA3/AC5's owned surface lifecycle to unmount, matching the existing Begin/
+Reconnect guards and detached Minigame surface behavior. Finish and Stop early now check
+destruction after the awaited terminal response, before changing the view or notifying the
+former host. The server command is not cancelled/retried; timing, payout, schemas, copy,
+clock, kernel and CI remain unchanged. Canonical platform docs describe this boundary.
+
+Regression: native Begin and Finish/Stop with a held port reply, then either remain mounted
+or unmount and focus another control. Old-source61951 fails all four detached executions
+in Chromium/WebKit while four mounted controls pass. Earlier58746/86342 also exposed two
+mistakes in my expected terminal text (case and missing existing prefix); corrected against
+the unchanged catalog before retaining61951 as the clean baseline. No production copy edit.
+The new tests require one command, no detached terminal callback/focus move/heartbeat, and
+the normal mounted receipt/text/heading focus. They use a mounted component and port double,
+not a delayed real HTTP/SQL response or proof of a server transaction defect.
+
+Coverage: final affected browser file67846 passes26/26 (Chromium/WebKit);75 related scheduler,
+surface and generated-port units pass. Root typecheck/build/boundaries92249 passes with zero
+Svelte/type diagnostics. Full unchanged `make test-game-ui-composed`24540 exits0: actual
+Postgres/HTTP/socket populations, production-built main/Pitch/bounded Recovery, pets/Reputation,
+Clout, no-payment negatives, Garden and Tier2. Its Recovery cancel is an ordinary real-service
+path, not the held-response regression or a new five-minute resolve run. Tier2 emits two Vite
+proxy ECONNRESET diagnostics but completes its existing exact SQL/reload assertions; no claim
+of zero transport errors. Diff check passes; all sessions terminal.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new source/test/
+docs/ledger/log range begins after `0e465815` through this commit; designated cross-party
+review pending. No feature acceptance, archival, push, Firefox/AT/whole-CI or release claim.
+Continue accepted integration; the separately requested Typer/Arcade public-wire choice is
+not adopted by asking it, and all other owner/author-held contracts remain held.

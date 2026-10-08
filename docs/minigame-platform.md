@@ -185,7 +185,10 @@ bundled with the client.
   so a watchdog-ended session is never silently replaced.
 - **Finish and Stop:** Finish appears once the session is eligible. "Stop early" states that
   nothing is restored. The terminal message shows the Soul before/after or the watchdog
-  cancellation, focus moves to the heading, and the host refreshes once.
+  cancellation, focus moves to the heading, and the mounted host refreshes once. If the
+  surface unmounts while Finish/Stop is pending, its late response cannot notify the former
+  host or move focus. The submitted command is not cancelled or retried; server state stays
+  authoritative and the next visit uses the existing reconnect path.
 - **Rejections:** `RECOVERY_REJECTIONS` maps exact recovery-handler pairs. A unit test checks that
   every mapped pair is written by `server/account/api.go`.
 - **Toy:** `RecoveryToy.svelte` is decorative only (`aria-hidden`, no animation). Its cells follow a
@@ -197,7 +200,9 @@ pause, a network pause with no beats replayed, reconnect token rotation, finish,
 gone/watchdog/not-ready paths, and reconnect precedence across a background/foreground cycle.
 It also starts with the document already hidden and verifies that the first beat waits for a
 visible event, and defers both start and reconnect responses across unmount to prove that no
-heartbeat survives the surface.
+heartbeat survives the surface. Delayed Finish/Stop cases also require no terminal callback
+after unmount, no focus movement or surviving heartbeat, and exactly one submitted action;
+still-mounted controls require the ordinary receipt, terminal text and heading focus.
 The keyboard-only component case activates Begin and Stop early with Enter (no click helper),
 checks the cancellation receipt and terminal focus, and runs axe in both active and terminal
 states. This does not substitute for a real assistive-technology task study.

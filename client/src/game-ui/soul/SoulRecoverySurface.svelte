@@ -123,6 +123,7 @@
     busy = true; notice = null;
     try {
       const response = action === "resolve" ? await port.resolve(view.session.sessionID) : await port.cancel(view.session.sessionID);
+      if (destroyed) return;
       scheduler?.stop(action === "resolve" ? "resolved" : response.cancelled_by === "watchdog" ? "watchdog" : "cancelled");
       scheduler = undefined;
       view = { kind: "terminal", response };
