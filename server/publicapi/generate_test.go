@@ -75,3 +75,56 @@ func TestGeneratedClientPreservesRawSuccessAndStatusDescriptors(t *testing.T) {
 		}
 	}
 }
+
+func TestGeneratedClientSameStatusRepresentations(t *testing.T) {
+	for _, kind := range []ResponseKind{ResponseRaw, ResponseSchema} {
+		t.Run(string(kind), func(t *testing.T) {
+			operations := testOperations()
+			jsonResponse := Response{Kind: kind, Status: 200, ContentType: ContentJSON}
+			if kind == ResponseRaw {
+				jsonResponse.ContentHashHeader = "X-Content-SHA256"
+			} else {
+				jsonResponse.SchemaRef = "APIError"
+			}
+			operations[1].Responses = []Response{
+				{Kind: ResponseRaw, Status: 200, ContentType: ContentGzip, ContentHashHeader: "X-Content-SHA256"},
+				jsonResponse,
+				{Kind: ResponseSchema, Status: 404, ContentType: ContentJSON, SchemaRef: "APIError"},
+			}
+			registry, err := NewRegistry(testSchemas(), operations)
+			if err != nil {
+				t.Fatalf("legal same-status representations refused: %v", err)
+			}
+			document, err := GenerateOpenAPI(registry, "Representation test")
+			if err != nil {
+				t.Fatal(err)
+			}
+			var parsed struct {
+				Paths map[string]map[string]struct {
+					Responses map[string]struct {
+						Content map[string]json.RawMessage `json:"content"`
+					} `json:"responses"`
+				} `json:"paths"`
+			}
+			if err := json.Unmarshal(document, &parsed); err != nil {
+				t.Fatal(err)
+			}
+			content := parsed.Paths[operations[1].Path]["get"].Responses["200"].Content
+			if len(content) != 2 || content[ContentGzip] == nil || content[ContentJSON] == nil {
+				t.Fatalf("OpenAPI lost a same-status representation: %s", document)
+			}
+			generated, err := GenerateTypeScript(registry)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, representation := range []string{
+				`{ status: 200, kind: "raw", contentType: "application/gzip", contentHashHeader: "X-Content-SHA256" }`,
+				`{ status: 200, kind: "` + string(kind) + `", contentType: "application/json", contentHashHeader: "` + jsonResponse.ContentHashHeader + `" }`,
+			} {
+				if !bytes.Contains(generated, []byte(representation)) {
+					t.Fatalf("generated client lost %s", representation)
+				}
+			}
+		})
+	}
+}

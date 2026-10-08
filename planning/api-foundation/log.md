@@ -1368,3 +1368,38 @@ designated review pending. No browser, full hosted CI, clean-host, complete API,
 new player feature or release claim. All handles terminal; no acceptance, archival,
 kernel bump, config/content change, cleanup or push. Next: fix the demonstrated
 raw-peer defect, then continue accepted integration with existing contract holds.
+
+## 2026-10-08 — Select the declared SDK representation (RP-476)
+
+Under A2/A5/C19, generated dispatch now selects by media type when one status has
+multiple declared representations, before choosing JSON or opaque-byte handling.
+Missing/undeclared media refuses before body reads. Single-schema decoding, raw
+SHA256 requirements, application decoders, mounted endpoints and retries are unchanged.
+
+The old generated client fails both new raw/raw and raw/schema cases with a gzip
+type mismatch. Actual Go registry/generation accepts both populations and retains
+their metadata. Tests also retain missing/wrong raw hash and missing/unknown-media
+refusals; temporary synthetic operation metadata is restored in finally. This is
+SDK conformance, not a new server representation or full runtime schema validation.
+
+Final affected checks: Go publicapi/cmd/gen-api tests at -count=1 and vet6878 pass;
+Node42573 passes160; native Chromium/WebKit50848 passes346; strict types, client
+build and shell boundaries10480 pass. api-check passes after staging the intended
+generated TS; OpenAPI and compatibility-pin bytes are unchanged. Real main journey
+33328 passes with the production client bytes, Go server, Postgres and WebSocket:
+both early terminal states/next Company, native purchases/Fiscal/Pitch, committed
+reply-loss and actual server-process restart recovery, attended Soul and cancellation.
+The driver also executes its eight refresh and ten named DB boundary populations,
+with no skips. Expected proxy ECONNREFUSED during deliberate process death is
+followed by successful recovery. This is the main driver, not the aggregate's
+separate Cosmetic/Clout/Reputation/Garden/Tier-2 journeys or hosted CI.
+
+Diff inspection additionally found RP-477's same-status OpenAPI header aggregation
+problem. It is recorded as source analysis only, not repaired or executed evidence.
+The complete catalog reader remains held on lawful artifact-owner schema exports;
+no guard exception or unanswered owner choice is assumed.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. New range
+begins after59e5cc49 through this coherent source/tests/docs/plan/ledger/log change;
+designated review pending. All check handles terminal. No acceptance, archival,
+kernel/balance change, push, deployment, whole-CI green or release claim.

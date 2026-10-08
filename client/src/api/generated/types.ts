@@ -335,11 +335,16 @@ export function createAPIClient(fetcher: APIFetcher = fetch, baseURL = "") {
         method: operation.method, headers, signal: input.signal,
         ...(operation.hasRequest ? { body: JSON.stringify(input.request) } : {}),
       });
-      const descriptor = operation.responses.find((candidate) => candidate.status === response.status);
-      if (!descriptor) throw new TypeError(`undeclared API response status (${response.status})`);
+      const descriptors = operation.responses.filter((candidate) => candidate.status === response.status);
+      if (descriptors.length === 0) throw new TypeError(`undeclared API response status (${response.status})`);
+      const contentType = response.headers.get("Content-Type")?.split(";")[0].trim();
+      // C19 permits several representations at one status. Select the declared
+      // media type before choosing JSON decoding versus opaque-byte verification.
+      const descriptor = descriptors.length === 1 ? descriptors[0] : descriptors.find((candidate) => candidate.contentType === contentType);
+      if (!descriptor) throw new TypeError(`undeclared API response content type (${response.status})`);
       let body: unknown;
       if (descriptor.kind === "raw") {
-        if (response.headers.get("Content-Type")?.split(";")[0].trim() !== descriptor.contentType) throw new TypeError("invalid raw API content type");
+        if (contentType !== descriptor.contentType) throw new TypeError("invalid raw API content type");
         const bytes = new Uint8Array(await response.arrayBuffer());
         const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
         const hash = [...digest].map((byte) => byte.toString(16).padStart(2, "0")).join("");

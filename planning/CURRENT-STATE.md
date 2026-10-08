@@ -49,6 +49,18 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest bounded API correction (2026-10-08, RP-476): the generated client now chooses
+  the declared media representation when a status has alternatives. Both old-client
+  regressions fail; affected Go/vet,160 Node and346 native Chromium/WebKit checks,
+  types/build/boundaries and API regeneration pass. Main journey33328 also passes
+  against the built production client, real server/Postgres/WebSocket, including both
+  early endings, next Company and process-death recovery. This is not the full composed
+  aggregate or hosted CI. The [API log](api-foundation/log.md) owns review handoff and
+  separate unresolved OpenAPI header finding RP-477. Preceding Typer correction
+  `59e5cc49` resets composition state when an authoritative terminal removes the input;
+  old-behavior browser failures and affected browser/real-Postgres passes are in the
+  [Typer log](minigame-terminal-typer/log.md). Both corrections await designated review;
+  neither adds a playable tier or closes the parent feature.
 - Latest finished source checkpoint `da21dae2` (2026-10-08): API policy admission now
   refuses missing/null members and case aliases instead of silently accepting an altered
   startup policy (`e4fd61fa`). Raw WebSocket test peers now answer protocol pings, preventing

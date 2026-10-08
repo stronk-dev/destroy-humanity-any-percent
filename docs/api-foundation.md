@@ -149,7 +149,10 @@ refresh, retry, timeout, or request-ID policy hidden in it.
 
 `OperationResponses` preserves status/body associations. Schema responses are JSON-decoded;
 these TypeScript types are not runtime schema validation. Wrappers retain their existing
-application decoders. Raw successes are `Uint8Array`, not an omitted success type or parsed
+application decoders. When a status declares multiple representations, the client selects
+the descriptor by the response's media type (ignoring parameters such as charset) before
+choosing its decoder; a missing or undeclared type refuses before reading the body.
+Single-representation schema decoding is unchanged. Raw successes are `Uint8Array`, not an omitted success type or parsed
 JSON. They require the registered media type and content-hash header, checked against SHA256
 over downloaded bytes. Error statuses on raw operations remain JSON. Undeclared status,
 malformed JSON, raw type/hash failure and network/abort errors are surfaced, never retried.

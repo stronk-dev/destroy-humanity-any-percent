@@ -150,6 +150,49 @@ describe("registry-generated HTTP client", () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
+  it.each(["raw", "schema"] as const)("selects a same-status %s JSON representation by media type", async (kind) => {
+    // Exercise the transport with the legal C19 same-status metadata population
+    // checked by Go's TestGeneratedClientSameStatusRepresentations. No mounted
+    // endpoint gains a representation; restore the generated row after the test.
+    const operation = operations.get_public_run_replay_log;
+    const original = operation.responses;
+    const raw = original.find((descriptor) => descriptor.status === 200)!;
+    const json = { status: 200, kind, contentType: "application/json", contentHashHeader: kind === "raw" ? "X-Content-SHA256" : "" };
+    const text = '{ "category": "unknown_id", "detail": "run" }';
+    const bytes = new TextEncoder().encode(text);
+    const digest = await hash(bytes);
+    Object.defineProperty(operation, "responses", { value: [raw, json, ...original.filter((descriptor) => descriptor.status !== 200)] });
+    try {
+      for (const contentType of ["application/gzip", "application/json; charset=utf-8"]) {
+        const fetcher = vi.fn(async () => new Response(bytes, { status: 200, headers: {
+          "Content-Type": contentType, "X-Content-SHA256": digest,
+        } }));
+        const response = await createAPIClient(fetcher).call("get_public_run_replay_log", { path: { stream, seq: 1 }, request: null });
+        expect(response.body).toEqual(kind === "schema" && contentType.startsWith("application/json") ? JSON.parse(text) : bytes);
+        expect(fetcher).toHaveBeenCalledTimes(1);
+      }
+      if (kind === "raw") {
+        for (const contentHash of [null, "0".repeat(64)]) {
+          const headers = new Headers({ "Content-Type": "application/json" });
+          if (contentHash !== null) headers.set("X-Content-SHA256", contentHash);
+          await expect(createAPIClient(async () => new Response(bytes, { status: 200, headers })).call(
+            "get_public_run_replay_log", { path: { stream, seq: 1 }, request: null },
+          )).rejects.toThrow("invalid raw API content hash");
+        }
+      }
+      for (const contentType of ["text/plain", null]) {
+        const headers = new Headers({ "X-Content-SHA256": digest });
+        if (contentType !== null) headers.set("Content-Type", contentType);
+        const response = new Response(bytes, { status: 200, headers });
+        const read = vi.spyOn(response, "arrayBuffer");
+        const readText = vi.spyOn(response, "text");
+        await expect(createAPIClient(async () => response).call("get_public_run_replay_log", { path: { stream, seq: 1 }, request: null })).rejects.toThrow(/content type/u);
+        expect(read).not.toHaveBeenCalled();
+        expect(readText).not.toHaveBeenCalled();
+      }
+    } finally { Object.defineProperty(operation, "responses", { value: original }); }
+  });
+
   it("decodes a raw operation's registered error as JSON, not bytes", async () => {
     const fetcher = vi.fn(async () => new Response('{"category":"unknown_id","detail":"run"}', { status: 404 }));
     const response = await createAPIClient(fetcher).call("get_public_run_genesis", { path: { stream, seq: 1 }, request: null });
