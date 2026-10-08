@@ -224,7 +224,11 @@ payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release cl
 - Menu actions, Refresh, Harvest all and substrates have explicit native tab stops in DOM
   order, including WebKit. Tab/Shift-Tab reaches the seed and mature menus without changing
   the grid's single roving stop. Enter/Space uses the existing callbacks; closing or acting
-  in a menu returns focus to its plot. Disabled/inherited-disabled controls remain disabled.
+  in a menu returns focus to its plot unless a newer focus choice has already won.
+- Pending command controls remain focusable with `aria-disabled`, point to the existing polite
+  status region's visible `common.pending` message, and guard native/programmatic activation.
+  An open menu cannot submit or close itself through a pending command; ordinary Close still
+  works. Substrate lockout remains natively disabled, distinct from temporary pending state.
 - Stage and dormancy are text plus a border shape, never colour.
 - Growth announcements go to a polite live region once per refresh.
 - It re-reads at `next_tick_wall_ms` while visible and after every receipt, with no client

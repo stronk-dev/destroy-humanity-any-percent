@@ -105,15 +105,27 @@
   }
   function register(node: HTMLButtonElement, key: string) { cells.set(key, node); return { destroy: () => cells.delete(key) }; }
   function open(row: number, col: number): void { focusRow = row; focusCol = col; menu = { row, col }; }
-  async function closeMenu(): Promise<void> { const at = menu; menu = null; await tick(); if (at) cells.get(`${at.row},${at.col}`)?.focus(); }
-  function act(run: () => void): void { run(); void closeMenu(); }
+  async function closeMenu(origin = document.activeElement): Promise<void> {
+    const at = menu;
+    menu = null;
+    await tick();
+    if (!destroyed && at && (document.activeElement === origin || document.activeElement === document.body)) {
+      cells.get(`${at.row},${at.col}`)?.focus();
+    }
+  }
+  function act(run: () => void): void {
+    if (pending) return;
+    const origin = document.activeElement;
+    run();
+    void closeMenu(origin);
+  }
 </script>
 
 <section class="garden cc-window" aria-labelledby="garden-heading" aria-busy={pending || viewState.kind === "loading"}>
   <h1 id="garden-heading">{t("garden.title", {}, era)}</h1>
   <p class="hint">{t("garden.hint.first", {}, era)}</p>
   <small title={t("garden.why", {}, era)}>{t("garden.why", {}, era)}</small>
-  <p class="live" role="status" aria-live="polite">{announcement}</p>
+  <p id="garden-status" class="live" role="status" aria-live="polite">{pending ? t("common.pending", {}, era) : announcement}</p>
   {#if rejection}<p role="alert">{t(rejection, {}, era)}</p>{/if}
 
   {#if viewState.kind === "loading"}
@@ -133,8 +145,8 @@
             {@const stage = stageOf(active, row, col)}
             <div role="gridcell">
               <button type="button" class="cell" data-stage={stage} tabindex={row === focusRow && col === focusCol ? 0 : -1}
-                aria-label={label(active, row, col)} disabled={pending} use:register={`${row},${col}`}
-                onkeydown={(event) => move(event, active)} onclick={() => open(row, col)}>
+                aria-label={label(active, row, col)} aria-disabled={pending} aria-describedby={pending ? "garden-status" : undefined} use:register={`${row},${col}`}
+                onkeydown={(event) => move(event, active)} onclick={() => { if (!pending) open(row, col); }}>
                 <span aria-hidden="true">{t(`garden.glyph.${stage}`, {}, era)}</span>
               </button>
             </div>
@@ -149,26 +161,26 @@
         {#if !plot && stageOf(active, at.row, at.col) === "empty"}
           <p>{t("garden.plot.choose_seed", {}, era)}</p>
           {#each active.garden.seed_collection as species (species)}
-            <button type="button" tabindex="0" disabled={pending} onclick={() => act(() => onPlant(at.row, at.col, species))}>{t("garden.action.plant_frame", { species: speciesName(species) }, era)}</button>
+            <button type="button" tabindex="0" aria-disabled={pending} aria-describedby={pending ? "garden-status" : undefined} onclick={() => act(() => onPlant(at.row, at.col, species))}>{t("garden.action.plant_frame", { species: speciesName(species) }, era)}</button>
           {/each}
         {/if}
         {#if plot?.stage === "mature"}
-          <button type="button" tabindex="0" disabled={pending} onclick={() => act(() => onHarvest([{ row: at.row, col: at.col }]))}>{t("garden.action.harvest", {}, era)}</button>
+          <button type="button" tabindex="0" aria-disabled={pending} aria-describedby={pending ? "garden-status" : undefined} onclick={() => act(() => onHarvest([{ row: at.row, col: at.col }]))}>{t("garden.action.harvest", {}, era)}</button>
         {/if}
         {#if plot}
-          <button type="button" tabindex="0" disabled={pending} onclick={() => act(() => onUproot(at.row, at.col))}>{t("garden.action.uproot", {}, era)}</button>
+          <button type="button" tabindex="0" aria-disabled={pending} aria-describedby={pending ? "garden-status" : undefined} onclick={() => act(() => onUproot(at.row, at.col))}>{t("garden.action.uproot", {}, era)}</button>
         {/if}
         <button type="button" tabindex="0" onclick={() => closeMenu()}>{t("garden.action.close", {}, era)}</button>
       </div>
     {/if}
     {#if mature(active).length > 0}
-      <button type="button" tabindex="0" disabled={pending} onclick={() => onHarvest(mature(active))}>{t("garden.action.harvest_all", {}, era)}</button>
+      <button type="button" tabindex="0" aria-disabled={pending} aria-describedby={pending ? "garden-status" : undefined} onclick={() => { if (!pending) onHarvest(mature(active)); }}>{t("garden.action.harvest_all", {}, era)}</button>
     {/if}
-    <fieldset class="substrates" disabled={pending || active.garden.substrate_lockout_until_ms !== null}>
+    <fieldset class="substrates" disabled={active.garden.substrate_lockout_until_ms !== null}>
       <legend>{t("garden.substrate.label", {}, era)}</legend>
       {#each SUBSTRATES as substrate (substrate)}
-        <button type="button" tabindex="0" aria-pressed={active.garden.substrate_id === substrate} aria-describedby={`garden-substrate-${substrate}`}
-          onclick={() => { if (active.garden.substrate_id !== substrate) onSetSubstrate(substrate); }}>{t(`garden.substrate.${substrate}.name` as CopyKey, {}, era)}</button>
+        <button type="button" tabindex="0" aria-disabled={pending} aria-pressed={active.garden.substrate_id === substrate} aria-describedby={`garden-substrate-${substrate}${pending ? " garden-status" : ""}`}
+          onclick={() => { if (!pending && active.garden.substrate_id !== substrate) onSetSubstrate(substrate); }}>{t(`garden.substrate.${substrate}.name` as CopyKey, {}, era)}</button>
         <small id={`garden-substrate-${substrate}`}>{t(`garden.substrate.${substrate}.tooltip` as CopyKey, {}, era)}</small>
       {/each}
     </fieldset>

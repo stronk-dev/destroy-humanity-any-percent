@@ -142,7 +142,12 @@ for (const row of cases) it.skipIf(!browser)(`Garden host ${row.name} binds Foun
     const { intent_id, ...command } = host.intents()[0]!;
     expect(intent_id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
     expect(command).toEqual({ expected_revision: 7, kind: row.kind, ...row.fields });
-    expect([...host.target.querySelectorAll<HTMLButtonElement>(".garden button.cell")].every((node) => node.disabled)).toBe(true);
+    expect([...host.target.querySelectorAll<HTMLButtonElement>(".garden button.cell")].every((node) => !node.disabled && node.getAttribute("aria-disabled") === "true")).toBe(true);
+    // ARIA alone cannot suppress events. Pending controls must not enqueue
+    // another command, including a different kind, through the actual host.
+    cell(host.target, 1, 0).click();
+    expect(host.target.querySelector(".garden .menu")).toBeNull();
+    for (const control of host.target.querySelectorAll<HTMLButtonElement>(".garden button[aria-disabled=true]:not(.cell)")) control.click();
     expect([...host.target.querySelectorAll<HTMLButtonElement>(".garden button.cell")].map((node) => node.dataset.stage)).toEqual(before);
     expect(host.reads()).toBe(2);
     const next = active(8);

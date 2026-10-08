@@ -2781,3 +2781,40 @@ feature checkbox/status/archival/push. No Linux/native Firefox/manual AT/SQL/
 hosted/full-CI/Garden/1.0 acceptance; RP-131, RP-307, renewal and SG13 remain open.
 Next safe boundary: continue remaining accepted integration review while the
 named policy/author decisions and Docker capacity require their own resolution.
+
+## 2026-10-08 — Garden pending focus and menu handoff (RP-409)
+
+Outcome under accepted SG10/GS0.6/GS0.8: a pending Garden command keeps its keyboard
+position, shows the existing `common.pending` text in the existing polite region and cannot
+dispatch again. Menu completion returns to its plot only if no newer focus choice has won.
+
+At `073ec7ad`, native Enter/Space regressions56594 fail12 checks across Chromium/WebKit:
+menu return loses focus in both engines; Chromium also drops Harvest-all/substrate focus,
+while WebKit retains some disabled controls but fails the required pending semantics.
+Separately, the unchanged menu handoff58173 fails four newer-choice checks. Initial sandbox
+listen denial executed no tests; the permitted loopback run supplied the actual baseline.
+
+The renderer now uses focusable ARIA pending state plus real guards for grid/menu/Harvest-all/
+substrate activations. The always-mounted polite region supplies visible pending feedback
+and its description; no new authored text or live region. Lockout still disables substrates.
+The menu captures its trigger before dispatch and checks focus again after render. Existing
+pending tests now assert focus/ARIA AND native repeat refusal, rather than native disabled
+alone. Actual-host tests also attempt pending clicks of other kinds and retain exact request,
+nonoptimistic-state, receipt refresh and next-revision checks.
+
+Final `make test-browser-focused` over `garden-surface-browser`, `garden-surface-witnesses-browser`,
+`garden-host-browser`, `garden-refresh-browser` and `garden-fiscal-browser` with Chromium/WebKit
+passes116/116 (7846,4.96s). This includes pending recovery/re-consent, all three open-menu
+commands and newer-focus companions. Types/build/boundaries53196 pass with zero diagnostics;
+diff/whitespace checks pass. Earlier affected108-case and focused12-case runs also pass, not
+substitutes for the final population. Browser module trace output is partially truncated;
+the terminal verdict is available, not a complete raw observation dataset.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. New range `073ec7ad` exclusive
+through this source/test/docs/record commit awaits Claude's designated review. No server,
+Garden math/clock, receipt schema, catalog/copy, CI workflow/budget or kernel change. Mounted
+components and actual browser runtime use controlled HTTP/socket/receipt boundaries; this
+does not prove real maturation/payout, post-refresh removed-control recovery, Linux/Firefox,
+manual AT, full CI or Garden acceptance. No checkbox, archive, mint, push or release promotion.
+Next: remaining accepted Garden integration and response-focus gates; renewal, RP-222,
+SG13 and earlier review ranges remain separate. The full nine-tier1.0 objective remains active.

@@ -5,6 +5,7 @@ import views from "../../testdata/garden/view-fixtures-v1.json";
 import type { GardenCurrentResponse } from "../src/api/generated/types";
 import GardenSurface from "../src/game-ui/garden/GardenSurface.svelte";
 import type { GardenPort } from "../src/game-ui/garden/garden-port";
+import { t } from "../src/copy";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
 import GardenSurfaceHarness from "./GardenSurfaceHarness.svelte";
 
@@ -31,18 +32,130 @@ async function settle(): Promise<void> {
 
 function mounted(port: GardenPort) {
   const calls: string[] = [];
+  let commandStarted = () => {};
+  const record = (value: string) => { calls.push(value); commandStarted(); };
   const target = document.createElement("main");
   document.body.append(target);
   installTheme(target, UI_THEMES.era_1995, false);
   const initial: ComponentProps<typeof GardenSurface> = {
     port, era: "era_1995", pending: false, refreshKey: 0, rejection: null, visible: () => true,
-    onPlant: (row: number, col: number, species: string) => calls.push(`plant ${row},${col} ${species}`),
-    onUproot: (row: number, col: number) => calls.push(`uproot ${row},${col}`),
-    onHarvest: (plots: readonly { row: number; col: number }[]) => calls.push(`harvest ${plots.map(({ row, col }) => `${row},${col}`).join(" ")}`),
-    onSetSubstrate: (substrate: string) => calls.push(`substrate ${substrate}`),
+    onPlant: (row: number, col: number, species: string) => record(`plant ${row},${col} ${species}`),
+    onUproot: (row: number, col: number) => record(`uproot ${row},${col}`),
+    onHarvest: (plots: readonly { row: number; col: number }[]) => record(`harvest ${plots.map(({ row, col }) => `${row},${col}`).join(" ")}`),
+    onSetSubstrate: (substrate: string) => record(`substrate ${substrate}`),
   };
   const app = mount(GardenSurfaceHarness, { target, props: { initial } });
-  return { target, app, calls };
+  return { target, app, calls,
+    holdCommands(after?: () => void) { commandStarted = () => { app.update({ pending: true }); after?.(); }; },
+  };
+}
+
+for (const key of ["{Enter}", " "]) {
+  for (const action of ["menu-harvest", "harvest-all", "substrate"] as const) {
+    it.skipIf(!browser)(`Garden pending ${action} retains native ${JSON.stringify(key)} focus and refuses repeats`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const host = mounted({ current: async () => active() });
+      try {
+        await settle();
+        host.holdCommands();
+        const origin = host.target.querySelector<HTMLButtonElement>("button.cell")!;
+        origin.focus();
+        let expectedFocus: HTMLButtonElement = origin;
+        if (action === "menu-harvest") {
+          await userEvent.keyboard("{Enter}{Tab}");
+          expect(document.activeElement?.textContent?.trim()).toBe("Harvest");
+        } else {
+          await userEvent.keyboard(action === "harvest-all" ? "{Tab}" : "{Tab}{Tab}{Tab}{Tab}{Tab}");
+          expectedFocus = document.activeElement as HTMLButtonElement;
+          expect(expectedFocus.textContent?.trim()).toBe(action === "harvest-all" ? "Harvest all mature" : "Mainframe");
+        }
+        await userEvent.keyboard(key);
+        await settle();
+        const expected = action === "menu-harvest" ? "harvest 0,0" : action === "harvest-all" ? "harvest 0,0 0,1 1,1" : "substrate mainframe";
+        expect(host.calls).toEqual([expected]);
+        expect(document.activeElement).toBe(expectedFocus);
+        expect(expectedFocus.disabled).toBe(false);
+        expect(expectedFocus.getAttribute("aria-disabled")).toBe("true");
+        expect(host.target.querySelector(".garden")?.getAttribute("aria-busy")).toBe("true");
+        expect(host.target.querySelector(".live")?.textContent).toBe(t("common.pending", {}, "era_1995"));
+        await userEvent.keyboard("{Enter} ");
+        expectedFocus.click();
+        await settle();
+        expect(host.calls).toEqual([expected]);
+        expect(host.target.querySelector(".menu")).toBeNull();
+        host.app.update({ pending: false });
+        await settle();
+        expect(document.activeElement).toBe(expectedFocus);
+        expect(expectedFocus.getAttribute("aria-disabled")).not.toBe("true");
+        expect(host.target.querySelector(".live")?.textContent).toBe("");
+        if (action === "menu-harvest") await userEvent.keyboard("{Enter}{Tab}");
+        await userEvent.keyboard(key);
+        await settle();
+        expect(host.calls).toEqual([expected, expected]);
+      } finally { await unmount(host.app); host.target.remove(); }
+    });
+  }
+}
+
+for (const action of ["plant", "uproot", "harvest"] as const) {
+  it.skipIf(!browser)(`Garden open-menu ${action} stays focusable but cannot dispatch while pending`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const host = mounted({ current: async () => active() });
+    try {
+      await settle();
+      const cells = [...host.target.querySelectorAll<HTMLButtonElement>("button.cell")];
+      cells[0]!.focus();
+      if (action === "plant") await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}{Tab}");
+      if (action === "uproot") await userEvent.keyboard("{Tab}");
+      const trigger = document.activeElement as HTMLButtonElement;
+      expect(trigger.textContent?.trim()).toBe(action === "plant" ? "Plant Strain A (PENDING OWNER NAME)" : action === "uproot" ? "Uproot" : "Harvest");
+      host.app.update({ pending: true });
+      await settle();
+      expect(document.activeElement).toBe(trigger);
+      expect(trigger.disabled).toBe(false);
+      expect(trigger.getAttribute("aria-disabled")).toBe("true");
+      await userEvent.keyboard("{Enter} ");
+      trigger.click();
+      await settle();
+      expect(host.calls).toEqual([]);
+      expect(host.target.querySelector(".menu")).not.toBeNull();
+      host.app.update({ pending: false });
+      await settle();
+      await userEvent.keyboard("{Enter}");
+      await settle();
+      expect(host.calls).toEqual([action === "plant" ? "plant 1,0 strain_a" : action === "uproot" ? "uproot 0,0" : "harvest 0,0"]);
+      expect(host.target.querySelector(".menu")).toBeNull();
+      expect(document.activeElement).toBe(cells[action === "plant" ? 6 : 0]);
+    } finally { await unmount(host.app); host.target.remove(); }
+  });
+}
+
+for (const key of ["{Enter}", " "]) {
+  it.skipIf(!browser)(`Garden menu completion preserves a newer focus choice after native ${JSON.stringify(key)}`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const host = mounted({ current: async () => active() });
+    const newerChoice = document.createElement("button");
+    newerChoice.textContent = "Another control";
+    document.body.append(newerChoice);
+    try {
+      await settle();
+      host.target.querySelector<HTMLButtonElement>("button.cell")!.focus();
+      await userEvent.keyboard("{Enter}{Tab}");
+      expect(document.activeElement?.textContent?.trim()).toBe("Harvest");
+      // A focus choice made after submission but before the menu's async
+      // render/handoff completes must win. No real server response is mocked.
+      host.holdCommands(() => newerChoice.focus());
+      await userEvent.keyboard(key);
+      await settle();
+      expect(host.calls).toEqual(["harvest 0,0"]);
+      expect(host.target.querySelector(".menu")).toBeNull();
+      expect(document.activeElement).toBe(newerChoice);
+      host.app.update({ pending: false });
+      await settle();
+      expect(document.activeElement).toBe(newerChoice);
+    } finally { await unmount(host.app); host.target.remove(); newerChoice.remove(); }
+  });
 }
 
 class OrderedPort implements GardenPort {
@@ -146,8 +259,9 @@ for (const key of ["{Enter}", " "]) {
       expect(document.activeElement).toBe(cells[0]);
       app.update({ pending: true });
       await settle();
-      expect(cells.every((cell) => cell.disabled)).toBe(true);
-      expect([...target.querySelectorAll<HTMLButtonElement>(".substrates button")].every((button) => button.matches(":disabled"))).toBe(true);
+      expect(cells.every((cell) => !cell.disabled && cell.getAttribute("aria-disabled") === "true")).toBe(true);
+      expect(document.activeElement).toBe(cells[0]);
+      expect([...target.querySelectorAll<HTMLButtonElement>(".substrates button")].every((button) => !button.matches(":disabled") && button.getAttribute("aria-disabled") === "true")).toBe(true);
       await userEvent.keyboard(key);
       await settle();
       expect(calls).toEqual(["harvest 0,0"]);
