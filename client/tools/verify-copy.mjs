@@ -79,6 +79,26 @@ for (const [text, pattern] of [["Adopt her for $0.00", /price token/], ["Adopt n
 }
 expectFailure("pet key outside the companion tone fixture", () => validateCopySafety([{ ...companionEntry, tone: "diegetic" }], claims, terms), /pet copy must use the companion tone/);
 validateCopySafety([{ ...companionEntry, text: "Not now" }], claims, terms);
+// PA8.2/AC13: wrapping or normal typographic punctuation cannot disguise a
+// forbidden phrase. Exercise both base text and the era-variant safety path.
+for (const [text, pattern] of [
+  ["Act\nnow.", /urgency or streak token/],
+  ["Last  chance.", /urgency or streak token/],
+  ["Right\u00a0now.", /urgency or streak token/],
+  ["Don’t miss her.", /urgency or streak token/],
+  ["A dark\npattern.", /curtain or disclosure phrasing/],
+  ["This is a\njoke.", /curtain or disclosure phrasing/],
+]) {
+  validatePlainCopyText(text, "companion phrase fixture");
+  expectFailure(`companion formatted base phrase: ${JSON.stringify(text)}`,
+    () => validateCopySafety([{ ...companionEntry, text }], claims, terms), pattern);
+  expectFailure(`companion formatted variant phrase: ${JSON.stringify(text)}`,
+    () => validateCopySafety([{ ...companionEntry, era_variants: { era_1995: text } }], claims, terms), pattern);
+}
+for (const text of ["Not\nnow", "She curls up\n beside you.", "The cat’s paws are warm."]) {
+  validatePlainCopyText(text, "companion sincere fixture");
+  validateCopySafety([{ ...companionEntry, text, era_variants: { era_1995: text } }], claims, terms);
+}
 expectFailure("missing statistic provenance fixture", () => validateCopySafety([safetyEntry], claims, terms), /requires verified provenance/);
 expectFailure("known-name copy fixture", () => validateCopySafety([{ ...safetyEntry, text: "Habbo", provenance: [] }], claims, terms), /known red-list term habbo/);
 for (const fixture of ["     indented code", ">quoted", "#", "<!DOCTYPE html>", "<?xml version=\"1.0\"?>", "line  \nnext", "Heading\n=", "Heading\n--"]) {

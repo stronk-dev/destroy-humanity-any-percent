@@ -345,7 +345,10 @@ export function validateCompanionEntry(entry) {
   if (entry.key.startsWith("pet.") && entry.tone !== "companion") fail(entry.key, "pet copy must use the companion tone");
   if (entry.tone !== "companion") return;
   for (const text of [entry.text, ...Object.values(entry.era_variants ?? {})]) {
-    for (const [pattern, label] of companionForbidden) if (pattern.test(withoutPlaceholders(text))) fail(entry.key, `companion copy may not contain a ${label}`);
+    // Match the same phrases across allowed line wrapping/spacing and curly
+    // apostrophes. This is a lint probe only; never rewrite authored copy.
+    const literal = withoutPlaceholders(text).replace(/\s+/gu, " ").replace(/[‘’]/gu, "'");
+    for (const [pattern, label] of companionForbidden) if (pattern.test(literal)) fail(entry.key, `companion copy may not contain a ${label}`);
     if (containsStatistic(text)) fail(entry.key, "companion copy may not contain a statistic");
   }
 }

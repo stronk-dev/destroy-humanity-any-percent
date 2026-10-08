@@ -84,6 +84,14 @@ text may contain a currency symbol or ISO code with a number, or a number of "po
 row carries a provenance claim. Placeholders are exempt, so the zero price reaches copy only
 through `{price}`. `verify-copy.mjs` carries its failing fixtures.
 
+Every `pet.*` key must use the `companion` tone. Companion base text and era variants reject
+the declared price, urgency/streak and curtain/disclosure tokens, plus statistic-detector hits.
+Phrase matching collapses whitespace and treats curly apostrophes as straight apostrophes in
+the lint probe, so wrapping or typography cannot disguise a forbidden phrase. Authored and
+generated text are not rewritten. The explicit "Not now" control remains admitted. This token
+lint is not a general sincerity/guilt classifier or a substitute for the owner's sincerity review
+and adoption of pending pet copy.
+
 The known-name lint checks case-folded NFC tokens and separator/punctuation bypasses. It enforces
 the maintained red list; it is not a general trademark, defamation, or editorial-safety proof.
 Independent full-range review remains the human assurance record. No self-asserted

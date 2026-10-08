@@ -410,3 +410,27 @@ through this implementation/test/docs/record commit awaits designated cross-part
 earlier reviews are not substituted. No feature acceptance, archival or push. Next: bind the
 care witness to its actual read-time projection, retain negative controls, then execute the
 real journey; independently consolidate the feature's outstanding review and contract gates.
+
+## 2026-10-08 — RP-403 companion phrase admission correction
+
+Targeted cross-party review by: Codex. Recorded by: Codex. Original Claude P1 range
+`bcccca24^..bcccca24`, limited to PA8.2/AC13's companion phrase validator and its fixtures:
+**CHANGES REQUIRED**. Six grammar-valid phrases bypassed the existing urgency/curtain patterns
+using newlines, extra/nonbreaking spaces or a curly apostrophe. This is not a finding that
+current pet copy contains those phrases, nor a verdict over all eleven P1 paths.
+
+The existing `verify-copy.mjs` regression fails on old behavior at wrapped "Act now" (exit1).
+The correction normalizes only the lint probe's whitespace/apostrophes; authored/generated
+text, token vocabulary, runtime rendering, gameplay and copy identities stay unchanged.
+All twelve base/era-variant refusal cases and three sincere controls pass; wrapped "Not now"
+remains admitted. Six generated artifacts compare byte-identically. Runtime `test/copy.test.ts`
+passes6; both changed scripts pass `node --check` and the diff passes `git diff --check`.
+Full `make copy-check` passes: all detector/generation/history checks,658 keys and the unchanged
+copy hash `sha256:a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e`, plus
+deployment-manifest verification. Its611 orphan warnings remain visible, not waived.
+
+Correction first filter by: Codex (implementer). Recorded by: Codex. Exact correction range:
+`8dc5b7b4` exclusive through this code/test/docs/ledger/log commit; Claude's designated review
+is still required. No P1/full AC13, owner sincerity/copy adoption, accessibility, content mint,
+hosted CI, archival or release promotion. Next: consolidate remaining Pet Adoption review and
+contract work; the API empty-response decision is requested separately, not assumed.
