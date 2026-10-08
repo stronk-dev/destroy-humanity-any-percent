@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "scope": "effective-heads-only; not catalog, rate, transition or replay acceptance",
+  "hardcap": 9007199254740991,
+  "roles": [
+    { "id": "role.converter", "kind": "convert", "from_role_id": "role.producer", "heads_per_converter": 1 },
+    { "id": "role.feeder", "kind": "pool_feed" },
+    { "id": "role.producer", "kind": "produce" }
+  ],
+  "effective_heads": [
+    {
+      "name": "fewer converters than source heads", "seats": 12, "k": 1,
+      "assigned": { "role.converter": 3, "role.feeder": 0, "role.producer": 8 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 5 }, "diverted": { "role.converter": 3 }, "idle_converters": { "role.converter": 0 }, "unassigned": 1 }
+    },
+    {
+      "name": "equal source and converter counts", "seats": 10, "k": 1,
+      "assigned": { "role.converter": 4, "role.feeder": 0, "role.producer": 4 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 0 }, "diverted": { "role.converter": 4 }, "idle_converters": { "role.converter": 0 }, "unassigned": 2 }
+    },
+    {
+      "name": "excess converters stay idle", "seats": 10, "k": 1,
+      "assigned": { "role.converter": 6, "role.feeder": 0, "role.producer": 3 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 0 }, "diverted": { "role.converter": 3 }, "idle_converters": { "role.converter": 3 }, "unassigned": 1 }
+    },
+    {
+      "name": "three heads per converter with source remaining", "seats": 12, "k": 3,
+      "assigned": { "role.converter": 2, "role.feeder": 0, "role.producer": 8 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 2 }, "diverted": { "role.converter": 6 }, "idle_converters": { "role.converter": 0 }, "unassigned": 2 }
+    },
+    {
+      "name": "partially occupied converter is not idle", "seats": 12, "k": 3,
+      "assigned": { "role.converter": 3, "role.feeder": 0, "role.producer": 8 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 0 }, "diverted": { "role.converter": 8 }, "idle_converters": { "role.converter": 0 }, "unassigned": 1 }
+    },
+    {
+      "name": "three-head bottleneck exposes excess converters", "seats": 15, "k": 3,
+      "assigned": { "role.converter": 5, "role.feeder": 0, "role.producer": 8 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 0 }, "diverted": { "role.converter": 8 }, "idle_converters": { "role.converter": 2 }, "unassigned": 2 }
+    },
+    {
+      "name": "zero source heads", "seats": 5, "k": 3,
+      "assigned": { "role.converter": 3, "role.feeder": 0, "role.producer": 0 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 0 }, "diverted": { "role.converter": 0 }, "idle_converters": { "role.converter": 3 }, "unassigned": 2 }
+    },
+    {
+      "name": "all heads unassigned", "seats": 40, "k": 1,
+      "assigned": { "role.converter": 0, "role.feeder": 0, "role.producer": 0 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 0 }, "diverted": { "role.converter": 0 }, "idle_converters": { "role.converter": 0 }, "unassigned": 40 }
+    },
+    {
+      "name": "feeder heads do not enter conversion", "seats": 13, "k": 1,
+      "assigned": { "role.converter": 2, "role.feeder": 4, "role.producer": 5 },
+      "expected": { "producing_heads": { "role.feeder": 4, "role.producer": 3 }, "diverted": { "role.converter": 2 }, "idle_converters": { "role.converter": 0 }, "unassigned": 2 }
+    },
+    {
+      "name": "admissible product above safe-integer range", "seats": 9000000000000000, "k": 3,
+      "assigned": { "role.converter": 3100000000000000, "role.feeder": 0, "role.producer": 5900000000000000 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 0 }, "diverted": { "role.converter": 5900000000000000 }, "idle_converters": { "role.converter": 1133333333333333 }, "unassigned": 0 }
+    },
+    {
+      "name": "maximum conversion ratio without ceil-addition overflow", "seats": 9007199254740991, "k": 9007199254740991,
+      "assigned": { "role.converter": 1, "role.feeder": 0, "role.producer": 9007199254740990 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 0 }, "diverted": { "role.converter": 9007199254740990 }, "idle_converters": { "role.converter": 0 }, "unassigned": 0 }
+    },
+    {
+      "name": "maximum seats with no converters", "seats": 9007199254740991, "k": 1,
+      "assigned": { "role.converter": 0, "role.feeder": 0, "role.producer": 9007199254740991 },
+      "expected": { "producing_heads": { "role.feeder": 0, "role.producer": 9007199254740991 }, "diverted": { "role.converter": 0 }, "idle_converters": { "role.converter": 0 }, "unassigned": 0 }
+    }
+  ]
+}

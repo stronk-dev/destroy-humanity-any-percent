@@ -8,6 +8,8 @@ Implemented systems:
   state/wire rules, economy helpers, and verification commands.
 - [Economy kernel](economy-kernel.md) — strict shared resource/generator catalog, cross-runtime
   cost curves, scoped authoritative ledger transactions, and receipt boundary.
+- [Headcount allocation](headcount-allocation.md) — source-independent integer arithmetic
+  library only; live catalog/state/intent/rate/UI integration remains held and unbuilt.
 - [Continuous integration](ci.md) — public hosted workflow, blocking verification jobs, dependency
   cache boundaries, and balance-schema gate.
 - [Deployment](deployment.md) — fail-closed production configuration and the manifest-derived,
