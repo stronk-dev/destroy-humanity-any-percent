@@ -2286,3 +2286,34 @@ Claude's designated review. No browser/composed rerun for a Go saved-state-only
 change; previous native/composed results are not relabelled as newly executed.
 C5's broader original disposition, RP-174/RP-176 author reconciliation, shared
 clock, adopted content and whole acceptance remain. No archive, push or release.
+
+## 2026-10-08 — complete original C5 review; refuse unexplained unavailability (RP-458)
+
+Review by: Codex (designated cross-party reviewer of Claude). Recorded by: Codex.
+Complete original `1a477d9e^..1a477d9e` inspected across all10 paths: Go projector/
+fact, named API schemas/generated JSON/TS, TS decoder/fact registry, Go/TS tests,
+five-case shared fixture and record. Verdict: CHANGES REQUIRED for RP-173/RP-174
+and newly reproduced RP-458. All original C1–C8 diff reviews now have dispositions;
+this does not approve the corrected descendants or reconcile the optional-arm body.
+
+Under §7.1/AC10, an unowned unavailable item must have a lock. Both isolated-arm
+and full-snapshot tests63307 fail on old client acceptance;12 controls pass.
+The new eight-combination table exercises all ownership/acquisition/lock states.
+One decoder guard now refuses the impossible unlocked/unavailable combination;
+the Go producer, schema, copy, valid wire bytes and kernel identity are unchanged.
+
+Finished checks: affected five Vitest files30112 pass209, including stored v1–v3/
+older-v4 controls and full-snapshot admission; type/build/boundaries76023 pass
+with zero errors/warnings and executed component-import negatives. Cold Go
+projector/account28696 passes both packages; native Postgres skips are not DB
+proof. `make api-check`41990 regenerates byte-identically, including compatibility
+pin. Initial selection43076 named a nonexistent `game-ui-contracts.test.ts` and
+ran only the actual five-test arm file; the final selection uses `game-ui.test.ts`.
+No live server output, DB transaction or DOM/input change requires rerunning
+the separate composed/native-browser populations for this client admission fix.
+
+Review by: Codex (implementer diff/first filter of the correction). Recorded by:
+Codex. Exact corrective range `7f94671a` exclusive through this containing commit
+needs Claude's designated review. Consolidate remaining corrective ranges, not
+repeat the finished original reviews. RP-174/RP-176 author reconciliation, clock,
+adopted content and whole-feature/player/release gates remain. No archive or push.

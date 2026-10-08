@@ -2,10 +2,12 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
-Current checkpoint (2026-10-08): complete original C1/C3 reviews join C4 at `f097df7e` and
-C6/C7/C8 at `46c7ecac`. Their CHANGES REQUIRED dispositions remain distinct from approval
-of Codex corrections. C2 already has its bounded approval; broader C5 disposition remains.
-The latest owning-log entry records C1/C3 ranges, RP-457's saved-state correction and checks.
+Current checkpoint (2026-10-08): all original C1–C8 diff reviews are complete. C2 retains its
+bounded approval; the other original batches retain CHANGES REQUIRED, not approval of Codex
+corrections. Latest C5 disposition consolidates RP-173/RP-174/RP-458. The snapshot decoder
+now refuses unexplained unavailability; old isolated/full-snapshot regressions fail, corrected
+affected209 client checks/types/build/boundaries and Go projector/account packages pass.
+The latest owning-log entry records exact ranges, generated-contract verification and limits.
 Author-body RP-174/RP-176, content, consolidated corrective review and full acceptance remain.
 RP-453 event-key admission and RP-454/RP-455 completion focus are locally corrected. The latest
 C6 correction (RP-456) routes terminal refusal to the existing Desk status only; six old-host
@@ -100,12 +102,15 @@ migration take the next free numbers at landing.
   constraint while accepting equivalent JSON whitespace/escapes. The new semantic-key
   regressions fail on the old validator; owning log records executed SQL controls and the
   separate pending review of this Codex correction. No full C4 approval is implied.
-- [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); Codex's targeted review found RP-173, whose corrective range awaits Claude's designated review, and RP-174 still requires ruling-author body reconciliation. This checkbox is implementation presence, not archival approval.
+- [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); complete original
+  review retains CHANGES REQUIRED for RP-173/RP-174/RP-458. Codex corrections await Claude's
+  designated review; RP-174 requires ruling-author body reconciliation. This is implementation
+  presence, not archival approval.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).
   Codex's bounded AC12 review found RP-183: Equip/Unequip lacked the visible curtains'
   `aria-describedby` links. A retained all-controls assertion fails first across all three
   engines; the link-only correction and independently firing Unequip probe pass locally.
-  Claude designated review of this correction and the broader C6 review remain required.
+  Claude designated review of this correction remains required; original C6 review is complete.
   AC15 review also found RP-185's prop-only media evidence and RP-186's actual CSS specificity
   defect. The failing-first three-engine preference case and bounded CSS correction pass all
   shelf cases and both real-server journeys, with separate firing motion/caption probes.

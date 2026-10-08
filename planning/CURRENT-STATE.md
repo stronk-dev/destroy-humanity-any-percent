@@ -49,6 +49,13 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest Cosmetic review checkpoint (2026-10-08): all original C1–C8 diffs now have
+  recorded dispositions, not blanket approval of corrected descendants. C5's
+  newly reproduced RP-458 is locally corrected: unowned unavailable items require
+  a lock. Two old-client failures become green; affected209 client checks, types/
+  build/boundaries, cold Go projector/account and byte-identical API generation
+  pass. Exact ranges and limits are in the [Cosmetic log](cosmetic-shop-v1/log.md).
+  Corrective review, author-body, shared-clock/content and full acceptance remain.
 - Latest saved-state checkpoint (2026-10-08): complete original Cosmetic C1/C3
   reviews join C4/C6/C7/C8; their CHANGES REQUIRED verdicts do not approve Codex
   corrections. RP-457's ten Go case-alias acceptance failures are locally corrected,

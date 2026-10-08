@@ -318,6 +318,7 @@ export function parseCosmeticsArm(source: unknown): void {
     identifier(row.cosmetic_id);
     if (typeof row.owned !== "boolean" || typeof row.acquirable !== "boolean") throw new SyntaxError("cosmetic flags must be boolean");
     if (row.owned && row.acquirable) throw new SyntaxError("an owned cosmetic cannot be acquirable");
+    if (!row.owned && !row.acquirable && row.lock === null) throw new SyntaxError("an unowned unavailable cosmetic must have a lock");
     if (row.lock !== null) {
       const lock = object(row.lock, "cosmetic lock");
       exact(lock, ["kind", "tier"], "cosmetic lock");
