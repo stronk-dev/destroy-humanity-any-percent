@@ -2505,3 +2505,23 @@ containing commit requires Claude's designated review. All earlier review debt
 remains. No runtime, kernel, API, balance, CI-workflow, acceptance or release
 change. Next safe work: remaining accepted integrations/reviews; do not repeat
 the completed64-profile study or infer the held numeric/owner rulings.
+
+## 2026-10-08 — RP-462 policy-observation sibling reconciled
+
+During Garden closeout at `8fd83b40`, cold full production80654 reproduces the
+27 known RP-307 partition failures plus policy-observation source drift. The
+44-profile sibling still pins the old save decoder, independently of the earlier
+64-profile repair. Re-executed its existing producer with
+`make test-go GO_PACKAGES='./production'
+GO_TEST_FLAGS='-run TestAxisPolicyBoundaryResearch -v -count=1'
+UPDATE_POLICY_RESEARCH=1` (terminal exit0), then the same cold command without
+the update switch (exit0). All44 full-state/restore pairs execute,18 differ as
+before, and AC6 remains NOT_PROVEN. The entire artifact diff is one source hash;
+all measurements, population, thresholds and other provenance bytes are unchanged.
+No manual hash replacement or runtime/policy/test change. The earlier full-package
+red is retained, not relabelled green by the focused replay. No client consumes
+this policy artifact; no unrelated browser run was needed for its refresh.
+
+Review by: Codex (measurement implementer first filter). Recorded by: Codex.
+New range begins after `8fd83b40`, requires designated review, and closes only
+this stale-observation sibling. RP-307/RP-308 and prior review debt remain open.
