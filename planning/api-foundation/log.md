@@ -1316,3 +1316,25 @@ after `c0809cab` through this coherent source/tests/docs/plan/ledger/checkpoint/
 designated review pending. No whole-browser/whole-CI, public catalog HTTP completion, mint,
 acceptance, archive, push or release claim. RP-131/RP-307/RP-450/RP-451 remain open; next
 diagnose socket-revocation and Firefox failures independently under their existing contracts.
+
+## 2026-10-08 — RP-391 typed-dictionary proposal, not implementation
+
+Rechecked the remaining handwritten player-intent caller against `account.submitIntent`,
+`production.wireSnapshot` and the founder cosmetic receipt. Existing saved response bytes
+contain typed resource/generator/transition/meter and runtime pet-ID dictionaries, which
+accepted C17 cannot describe. The draft `rfc/api-typed-dictionaries.md` specifies a closed
+dictionary arm with existing key grammars, typed values, runtime admission, generated schema/
+TypeScript, compatibility and immutability tests. It preserves saved receipts and the separate
+stored-artifact decoder contract. Existing plans/logs own the work; no new execution program.
+
+Owner choice between that preserve-receipt option and a separately designed versioned HTTP
+projection was requested, not received or adopted. Complete intent registration, lawful
+watched-owner exports and the other API gates remain separate; no open JSON, partial union,
+history exception or implementation is authorized by the draft. Index, existing RP-391 row
+and decision routing now link the proposal without changing their unresolved status.
+
+Verification: descriptor/generator/compatibility source and current TS configuration inspected;
+draft diff, local links, JSON example and whitespace checked. No software suite or implemented
+schema support claimed for this proposal-only change. Review by: Codex (draft author/first
+filter). Recorded by: Codex. New range begins after `75f5830b` through this checkpoint; owner
+adoption and designated normative review remain pending. No acceptance, archival or push.

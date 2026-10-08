@@ -21,6 +21,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Leaderboard Readers & Player Surface](leaderboard-readers-and-player-surface.md) | draft — not implementation authority | Leaderboards / API Foundation / Game UI / Route Registry |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 | [API Foundation](api-foundation.md) | accepted — C1–C20 ruled; implementing | Account API / Transport / Gameserver Composition |
+| [Typed Dictionaries in API Schemas](api-typed-dictionaries.md) | draft — RP-391, preserve-receipt option proposed; owner choice/review pending | API Foundation C17 / existing intent receipts |
 | [Minigame Platform Foundation](minigame-platform-foundation.md) | accepted — C1–C40 ruled; implementing | Gameserver Composition / Founder Attendance / Combat |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
