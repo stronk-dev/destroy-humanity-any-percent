@@ -9248,3 +9248,28 @@ changed. Logs append at EOF; no live handle/fault/archive/push/deploy/cleanup,
 fullAC7/RFC/hostedCI/release/1.0 promotion. This review record is a new uncovered
 edge: Claude must cover the ENTIRE afterc70861c1 span INCLUDING this record
 before any closeout/archival use; previous independent spans remain live.
+
+## 2026-10-08 — R9 host pending oracle follows the native-input contract (RP-397)
+
+Routine test-only correction under R6/R9 and accepted Garage GS0.6/GS0.8. The
+full native run39477 failed40 host plan cases because the old assertion required
+native disabled, contrary to the focus-preserving transition implementation.
+Do not restore focus loss to satisfy that stale representation check.
+
+Existing request, selected-plan/order, omitted-empty-plan, UUID/revision, privacy
+and recovery assertions remain. The test now requires enabled native focus,
+aria-disabled/aria-busy and existing visible pending copy, repeats actual
+Enter/Space while held and observes exactly one unchanged request, then releases
+the rejection and checks focus/readiness. Fresh native consent must dispatch the
+same visible plan with a distinct intent UUID. No production/schema/algorithm,
+copy, timeout/retry, acceptance checkbox or author/owner intent changed.
+
+Executed58090: all176 host cases pass in native Chromium/WebKit. Finished-batch
+9150:298 affected Reputation/Garden/Typer cases pass;64990 strict types/Svelte
+zero errors/warnings. No SQL/server/native-Firefox/manual-AT/full-R9/RFC/hosted
+claim; RP-283/RP-284 author gaps and the earlier missing-iframe RP-399 stand.
+Self-inspected test/record diff and diff-check. Corrective review range starts
+663976f1 exclusive through this containing commit; Claude designated review
+pending, no acceptance/archive/push. The broader finished-browser run is live
+79091 and its terminal result will be recorded in the subsequent Garden closeout,
+not inferred here from focused passes. Earlier exact review spans remain owed.

@@ -203,9 +203,30 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
           if (offerFlow) expect(request.offer_id).toBe("01985555-3333-7333-8333-333333333333");
           if (selected) expect(request.reputation_plan).toEqual(ids);
           else expect(Object.hasOwn(request, "reputation_plan"), "empty visible plan must not submit hidden spending").toBe(false);
-          expect(exit.disabled).toBe(true);
+          // GS0.6/GS0.8 keep pending native controls focusable. The real
+          // guarantee is retained focus and single flight, not disabled=true.
+          expect(exit.disabled).toBe(false);
+          expect(exit.getAttribute("aria-disabled")).toBe("true");
+          expect(document.activeElement).toBe(exit);
+          expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+          expect(target.querySelector(offerFlow ? "#offer-pending" : "#desk-pending")?.textContent).toBe(t("common.pending", {}, era));
+          await userEvent.keyboard(key); await settle();
+          expect(boundary.requests).toEqual([request]);
+          expect(document.activeElement).toBe(exit);
           boundary.deliverIntent(rejection(request.intent_id, "invalid", rawDetail, offerFlow ? 14 : 13));
-          await expect.poll(() => exit.disabled).toBe(false);
+          await expect.poll(() => exit.getAttribute("aria-disabled")).toBeNull();
+          expect(exit.disabled).toBe(false);
+          expect(document.activeElement).toBe(exit);
+          expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+          // Fresh native consent after rejection must still dispatch the
+          // selected plan, with a new intent identity rather than a retry.
+          await userEvent.keyboard(key); await settle();
+          expect(boundary.requests).toHaveLength(2);
+          const fresh = boundary.requests[1]!;
+          expect(fresh.intent_id).not.toBe(request.intent_id);
+          expect({ ...fresh, intent_id: request.intent_id }).toEqual(request);
+          boundary.deliverIntent(rejection(fresh.intent_id, "invalid", rawDetail, offerFlow ? 14 : 13));
+          await expect.poll(() => exit.getAttribute("aria-disabled")).toBeNull();
           expect(boundary.snapshotCalls).toBe(offerFlow ? 2 : 1); expect(boundary.unexpected).toEqual([]);
           expect(boundary.headers.every((header) => header === "Bearer controlled-access")).toBe(true);
           expect(target.textContent).not.toContain(rawDetail);
