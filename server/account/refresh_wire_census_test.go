@@ -84,14 +84,17 @@ func TestRefreshWireParserCensus(t *testing.T) {
 		{"object-token", `{"refresh_token":{}}`, http.StatusBadRequest},
 		{"array-token", `{"refresh_token":[]}`, http.StatusBadRequest},
 		{"oversize-body", `{"refresh_token":"` + strings.Repeat("x", 2048) + `"}`, http.StatusBadRequest},
-		{"missing-token", `{}`, http.StatusUnauthorized},
-		{"null-root", `null`, http.StatusUnauthorized},
-		{"null-token", `{"refresh_token":null}`, http.StatusUnauthorized},
+		{"missing-token", `{}`, http.StatusBadRequest},
+		{"null-root", `null`, http.StatusBadRequest},
+		{"null-token", `{"refresh_token":null}`, http.StatusBadRequest},
 		{"empty-token", `{"refresh_token":""}`, http.StatusUnauthorized},
 		{"bad-token-encoding", `{"refresh_token":"%not-a-token"}`, http.StatusUnauthorized},
 		{"short-token", `{"refresh_token":"YQ"}`, http.StatusUnauthorized},
-		{"duplicate-token", `{"refresh_token":"bad","refresh_token":"also-bad"}`, http.StatusUnauthorized},
-		{"case-insensitive-member", `{"REFRESH_TOKEN":"bad"}`, http.StatusUnauthorized},
+		{"duplicate-token", `{"refresh_token":"bad","refresh_token":"also-bad"}`, http.StatusBadRequest},
+		{"escaped-duplicate-token", `{"refresh_token":"bad","refresh_\u0074oken":"also-bad"}`, http.StatusBadRequest},
+		{"case-insensitive-member", `{"REFRESH_TOKEN":"bad"}`, http.StatusBadRequest},
+		{"case-alias-member", `{"REFRESH_TOKEN":"bad","refresh_token":"also-bad"}`, http.StatusBadRequest},
+		{"valid-escaped-member", `{"refresh_\u0074oken":"bad"}`, http.StatusUnauthorized},
 	}
 	for _, row := range cases {
 		t.Run(row.name, func(t *testing.T) {

@@ -459,7 +459,7 @@ func (api *API) createSession(response http.ResponseWriter, request *http.Reques
 		AccountID    string `json:"account_id"`
 		RecoveryCode string `json:"recovery_code"`
 	}
-	if err := decodeRequest(response, request, api.config.MaxBodyBytes, &body); err != nil {
+	if err := api.decodeRegisteredRequest(response, request, "create_session", &body); err != nil {
 		writeError(response, http.StatusBadRequest, "invalid", "body")
 		return
 	}
@@ -475,7 +475,7 @@ func (api *API) refreshSession(response http.ResponseWriter, request *http.Reque
 	var body struct {
 		RefreshToken string `json:"refresh_token"`
 	}
-	if err := decodeRequest(response, request, api.config.MaxBodyBytes, &body); err != nil {
+	if err := api.decodeRegisteredRequest(response, request, "refresh_session", &body); err != nil {
 		writeError(response, http.StatusBadRequest, "invalid", "body")
 		return
 	}
@@ -651,6 +651,20 @@ func (api *API) limitAccount(next http.Handler) http.Handler {
 func requestClaims(request *http.Request) Claims {
 	claims, _ := request.Context().Value(claimsContextKey{}).(Claims)
 	return claims
+}
+
+// Validate the original bounded bytes before struct decoding can discard
+// duplicates, accept case aliases or turn missing/null members into zero values.
+// Registered session DTOs remain the sole authority for their request shapes.
+func (api *API) decodeRegisteredRequest(response http.ResponseWriter, request *http.Request, operationID string, target any) error {
+	body, err := io.ReadAll(http.MaxBytesReader(response, request.Body, api.config.MaxBodyBytes))
+	if err != nil {
+		return err
+	}
+	if err := api.privateRegistry.ValidateRequest(operationID, body); err != nil {
+		return err
+	}
+	return json.Unmarshal(body, target)
 }
 
 func decodeRequest(response http.ResponseWriter, request *http.Request, limit int64, target any) error {

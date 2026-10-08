@@ -106,6 +106,7 @@ if (!refreshResult.valid) {
 console.info(`persisted refresh API population passed: ${refreshResult.completed_leaves}/${refreshResult.expected_leaves} cases (real Postgres, HTTP over net.Pipe; not browser renewal)`);
 resetTestDatabase();
 const persistedTests = [
+  "TestSessionRequestSchemaAdmissionIntegration",
   "TestSoulRecoveryErrorRegistryIntegration",
   "TestFiscalProjectionMatchesPersistedHarvestIntegration",
   "TestFirstContentEpochPersistedBoundaryIntegration",

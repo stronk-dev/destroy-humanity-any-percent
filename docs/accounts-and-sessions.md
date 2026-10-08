@@ -84,6 +84,12 @@ The chi router owns the versioned `/api/v1` surface:
   account-rate-limited; failed authentication also consumes the caller's IP bucket;
 - request decoders reject unknown keys, trailing JSON values, empty required bodies, and bodies
   over 64 KiB under the Phase-0 configuration;
+- session creation and refresh validate the original request bytes against their registered
+  schemas before using credentials. Duplicate names (including escaped duplicates), wrong-case
+  aliases, missing required members and null bodies/members return `400 invalid/body` without
+  issuing, rotating or revoking credentials. A single escaped canonical name remains valid.
+  Well-shaped but invalid credentials retain their existing `401` errors; the IP limiter still
+  precedes admission. Other handwritten decoders have not all been bound to this validation;
 - errors use `{category, detail}` and rate-limit failures use the `rate_limited` category;
 - router-level 404/405 responses use that same typed shape;
 - account creation, bootstrap, session creation and refresh carry `Cache-Control: no-store`
@@ -112,6 +118,9 @@ Founder archival, import, deletion/anonymization, and rate limiting against Post
 The integration suite also forces a legitimate rotation to race a replay and proves that no
 descendant refresh or access token remains live. The account path also proves stored-parameter
 credential upgrade and anonymized Founder/import-marker retention after deletion.
+The normal composed lane also requires the real-Postgres session-admission regression: nine
+invalid bodies per session operation, exact uncached refusals, unchanged credential/gameplay
+rows, and a valid escaped-key request using the same still-usable credentials after every refusal.
 
 `make test-game-ui-composed` also runs eight refresh API cases against its declared disposable
 Postgres before starting the browser: live and expired-access rotation/reuse, New Founder binding,

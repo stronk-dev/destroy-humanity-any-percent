@@ -66,9 +66,12 @@ limiter. Their successful two-string token pairs reuse the `BootstrapSession` ow
 creation takes `{account_id,recovery_code}`, refresh takes `{refresh_token}`. Registered errors
 are exact operation/status-specific bytes: `400 invalid/body`, `429 rate_limited/ip`, creation's
 `401 unauthorized/credential`, and refresh's `401 unauthorized/refresh_token` or
-`401 refresh_reused/session_family_revoked`. The refresh parser's existing null/missing/case-
-insensitive behavior is unchanged; documenting canonical typed callers does not introduce
-request-schema middleware that tightens the live handler.
+`401 refresh_reused/session_family_revoked`. Both session handlers validate their original,
+size-bounded request bytes against those existing descriptors before decoding/credential use.
+Duplicate/escaped duplicate members, case aliases, missing members and nulls therefore refuse
+as `400 invalid/body`, rather than bypassing exact-key validation through Go struct decoding.
+Valid single escaped names remain accepted. The shared IP limiter and `no-store` wrapper still
+precede admission. This repair changes no schema/pin, renewal policy or other handler's parser.
 
 Explicit generated calls can now represent those routes/errors; they do not add automatic
 renewal, credential replacement, recovery UX or retry policy. The deliberate additive pin refresh

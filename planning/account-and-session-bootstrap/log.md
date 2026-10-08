@@ -884,3 +884,32 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 Catalog composition remains held on its already-recorded schema/versioning boundary. Account
 Recovery's draft adoption and the other player lifecycle/rights contracts remain open; safe
 accepted work may continue without treating this security fix as their completion.
+
+## 2026-10-08 — enforce existing session request schemas (RP-443)
+
+Account AC1's exact-key boundary and API A5/C17 already specify these request shapes, but the
+mounted session handlers decoded directly to structs. With usable credentials, old-source
+Postgres regression73138 fails14/18 cases: duplicate, escaped-duplicate, uppercase and case-alias
+bodies succeed200; missing/null shapes return401. This is malformed-request admission, not an
+authentication bypass: the successful requests contain legitimate credentials.
+
+Both handlers now validate original size-bounded bytes against their existing registered request
+descriptors before decoding/credential use. Invalid shapes return exact uncached400 invalid/body;
+well-shaped invalid credentials retain401. Shared IP limiting still precedes admission. No schema,
+compatibility pin, TTL, rotation/reuse policy, browser renewal, other handler or kernel change.
+Updated the old parser census to the existing schema contract rather than preserve the defect.
+
+Executed: focused real-Postgres82798 passes all18 cases plus a valid escaped-name request using
+the same credential after every refusal. Checks bind unchanged credential/gameplay rows, family
+counts, authentic issued credentials and (for refresh) one genuine rotation. Full Account
+`make test-save-integration SAVE_TEST_PACKAGES='./account' SAVE_TEST_FLAGS='-run Integration -v'`
+23840 passes with no skips. Cold five-package Account/publicapi/publicread/gameserver/gen-api
+tests and vet83191 pass; native DB skips are not the integration evidence. `make api-check`
+passes byte-unchanged. Normal `make test-game-ui-composed`94098 passes entirely, requires the new
+test's actual PASS, and retains all existing real-service/browser journeys and negatives.
+Gofmt/diff checks pass; no extra source mutations or unrelated full-suite reruns.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact new range starts after
+`7cd232c5` through this coherent source/test/docs/record commit; designated review remains pending.
+Earlier ranges remain separately owed. All command sessions are terminal. No feature checkbox,
+archive, hosted-CI/release approval or push. Recovery/renewal and wider API construction remain open.
