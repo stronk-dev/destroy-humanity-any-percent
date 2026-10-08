@@ -1,6 +1,6 @@
 # Current repository state
 
-Reconciled 2026-10-08. Cloud Clicker remains a **development snapshot**, not a released or
+Reconciled 2026-10-09. Cloud Clicker remains a **development snapshot**, not a released or
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
@@ -49,7 +49,15 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Latest source is `a4c09f31`: Pitch's bounded native Enter/Space/Tab correction is locally
+- Finished bounded checkpoint (2026-10-09): Recovery now preserves a known terminal result
+  when a pending Finish fails, and clears superseded notices (RP-480). Old behavior fails
+  eight native cases; corrected affected60 browser/84 unit checks, types/build/boundaries pass.
+  The original Claude Recovery batch has a complete CHANGES REQUIRED disposition, not approval
+  of later fixes. Ticker's retained TL4 counterexample (RP-479) also blocks an honest selector
+  implementation alongside the existing Feed hold. These are correctness/review/research
+  progress, not new playable tiers. The Minigame API and Ticker logs own evidence and review
+  boundaries; the latest recorded hosted verdict below remains red, with no current-HEAD run.
+- Preceding Pitch checkpoint `a4c09f31`: the bounded native Enter/Space/Tab correction is locally
   verified, pending designated review. The complete original Claude Pitch surface range now
   has a Codex CHANGES REQUIRED disposition, not retroactive approval of its later repairs.
   Fresh affected component/unit/copy checks pass; the historical kernel gate still fails.

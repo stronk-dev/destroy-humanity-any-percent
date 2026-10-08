@@ -78,3 +78,9 @@ replacement/reload. The latest log owns execution, the incomplete fault control 
 Corrected Q-002 and its separate API Foundation registry lane received designated approval at
 `bfd9b65`. This closes AC2/AC3/AC4's bounded backend witnesses only; the surface and archival boxes
 above remain open.
+
+2026-10-09: original Recovery surface `b92a05de` now has a complete designated Codex
+CHANGES REQUIRED disposition, separate from later repairs. RP-480's current terminal/error
+race is locally corrected with both reply orders through the generated browser port;
+60 affected native checks,84 units and types/build/boundaries pass. The new range after
+`5c9d0293` awaits cross-party review. No full MA acceptance or archival follows.

@@ -1489,3 +1489,57 @@ a rerun of the original revision, a fresh full server journey, Firefox/Linux/AT,
 release proof. The existing built-client real-service journey remains separately recorded.
 Next: consolidate remaining MA original/corrective review coverage and continue accepted
 construction; no archive, feature-completion checkbox, content mint or push follows.
+
+## 2026-10-09 — Original Recovery review and terminal/error race repair
+
+**Review by:** Codex. **Recorded by:** Codex. **Exact original reviewed range:**
+`b92a05de^..b92a05de` (`b92a05de3fbd4c8c6b663c008baa2ddb2a910c20`, Claude implementation).
+**Decision: CHANGES REQUIRED.** Inspected all22 paths: component/toy/port, shared operation
+extraction, host/runtime/catalog, boundaries, both new tests and host test, candidate/generated
+copy, deployment pin, canonical docs and original log. This completes the original batch's
+disposition, not approval of its corrected descendants or the full MA implementation span.
+
+The original visible-only subscription misses an already-hidden document (RP-145), delayed
+start/reconnect can create a scheduler after unmount (RP-146), and delayed Finish/Stop can
+notify a departed host (RP-452). The original browser tests use programmatic clicks, not the
+claimed keyboard boundary (RP-148). Their recorded failing cases and later corrections remain
+separate review ranges. Original candidate copy is not adopted through this review. The
+original kernel-red explanation is also false: this batch adds watched `src/soul` presentation
+files without a version change, already acknowledged in the later path-relocation record.
+That does not authorize a fake arithmetic bump, rewrite or guard exception (RP-131).
+
+Read-only original Git-object checks execute successfully: all18 new candidate entries equal
+their generated entries; TS/Go/orphan keys agree; SHA-256 matches the original deployment pin;
+removing exactly those18 keys reconstructs the original Go file. Historical diff whitespace
+check passes. This is not execution of the original browser revision. The current affected
+checks below verify corrected source, not historical acceptance.
+
+**Current correction, RP-480 (MA3/SR-C3):** a pending Finish failure must not overwrite a known
+heartbeat terminal or leave contradictory notices beside it. Terminal entry now clears the old
+notice; `fail` ignores terminal/detached surfaces. Six controlled generated-client cases cover
+transport failure, conflict and not-ready, each before/after the heartbeat receipt. Without a
+known terminal, errors must still display; afterward require one exact host receipt, one Back
+control, heading focus, no progress/alert/stale notice and an unsubscribed scheduler.
+
+Old-source session69554 reproduces eight failures and four passing reverse-order controls in
+Chromium/WebKit. Earlier instrument78361 used the wrong expected watchdog wording; its
+reverse-order failures are not regression evidence. Correcting that test expectation precedes
+the valid red run. No production copy was changed.
+
+Final commands, all exit0:
+- `make test-browser-focused BROWSER_TEST_FLAGS='test/soul-recovery-surface-browser.test.ts test/minigame-surface-browser.test.ts --project=chromium --project=webkit'`
+  passes60 native checks (25495).
+- Root Vitest selects Soul surface/scheduler, minigame surface and generated operation ports:
+ 84 units pass (59433).
+- `make typecheck build-client verify-client-boundary` passes with zero Svelte diagnostics
+  (82928).
+
+These are mounted native-input/generated-port checks with controlled HTTP replies, not a new
+Go/Postgres/real-service run, Firefox/AT, whole CI or long-session observation. No server,
+retry, timing, payout, catalog or release semantics changed; broader performance/DB reruns are
+not required for this local error-ordering correction. All handles are terminal.
+
+**Current-range first filter:** Review by: Codex (implementer). Recorded by: Codex.
+Exact new range begins after `5c9d0293` through this source/test/docs/plan/ledger/log and status
+checkpoint. Designated cross-party review remains pending; existing review debt does not block
+other safe accepted construction. No acceptance checkbox, archival, content mint or push.

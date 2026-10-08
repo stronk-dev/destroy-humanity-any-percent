@@ -185,6 +185,66 @@ for (const first of ["progress", "cancel"] as const) {
   });
 }
 
+for (const failure of ["transport", "conflict", "not-ready"] as const) {
+  for (const first of ["progress", "resolve"] as const) {
+    it.skipIf(!browser)(`keeps the Recovery terminal when pending Finish fails (${failure}, ${first} first)`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const response = terminal("cancel", "watchdog");
+      const releases = new Map<string, () => void>();
+      const requests: string[] = [];
+      const terminals: SoulRecoveryTerminalResponse[] = [];
+      const visibility = new FakeVisibility();
+      const port = createBrowserSoulRecoveryPort(() => "fixture-access-token", async (input) => {
+        const operation = String(input).split("/").at(-1)!;
+        requests.push(operation);
+        if (operation === "start") return Response.json(started(SESSION, TOKEN_1, REQUIRED));
+        expect(["progress", "resolve"]).toContain(operation);
+        await new Promise<void>((resolve) => { releases.set(operation, resolve); });
+        if (operation === "progress") return Response.json(response);
+        if (failure === "transport") throw new TypeError("Finish reply lost");
+        if (failure === "not-ready") return Response.json({ category: "not_eligible", detail: "soul_recovery_not_ready" }, { status: 400 });
+        return Response.json({ category: "idempotency_conflict", detail: "recovery_session" }, { status: 409 });
+      });
+      const target = host();
+      const app = mount(SoulRecoverySurface, { target, props: { port, content: content(), era: "era_1995", visibility,
+        now: () => 1_000, toySeed: 7, onExitToHost: () => {}, onTerminal: (receipt: SoulRecoveryTerminalResponse) => terminals.push(receipt) } });
+      try {
+        await settle();
+        target.querySelector<HTMLButtonElement>("li button")!.focus();
+        await userEvent.keyboard("{Enter}");
+        await expect.poll(() => releases.has("progress")).toBe(true);
+        button(target, "Finish").focus();
+        await userEvent.keyboard("{Enter}");
+        await expect.poll(() => releases.has("resolve")).toBe(true);
+        releases.get(first)!();
+        if (first === "progress") {
+          await expect.poll(() => terminals).toEqual([response]);
+        } else {
+          // Without a terminal receipt, the same errors must still be surfaced.
+          const selector = failure === "not-ready" ? "[role=status]" : "[role=alert]";
+          const message = failure === "transport" ? "Connection lost" : failure === "not-ready" ? "Not quite done yet." : "cannot explain";
+          await expect.poll(() => target.querySelector(selector)?.textContent).toContain(message);
+          expect(terminals).toEqual([]);
+        }
+        releases.get(first === "progress" ? "resolve" : "progress")!();
+        await settle(100);
+        expect(terminals).toEqual([response]);
+        expect(requests).toEqual(["start", "progress", "resolve"]);
+        expect(visibility.listener).toBeUndefined();
+        expect(target.querySelector("progress")).toBeNull();
+        expect(target.querySelector("[role=alert]")).toBeNull();
+        expect([...target.querySelectorAll("[role=status]")].map((node) => node.textContent))
+          .toEqual(["This session ran too long and was closed. Nothing was restored."]);
+        expect([...target.querySelectorAll("button")].map((control) => control.textContent?.trim())).toEqual(["Back"]);
+        expect(document.activeElement?.id).toBe("recovery-heading");
+      } finally {
+        for (const release of releases.values()) release();
+        await unmount(app); target.remove();
+      }
+    });
+  }
+}
+
 it.skipIf(!browser)("runs pick → beats → hidden pause → network pause → reconnect rotation → finish through the port only", async () => {
   const port = new FakePort();
   const visibility = new FakeVisibility();

@@ -144,6 +144,7 @@
     if (destroyed || view.kind === "terminal") return;
     scheduler?.stop(response.action === "resolve" ? "resolved" : response.cancelled_by === "watchdog" ? "watchdog" : "cancelled");
     scheduler = undefined;
+    notice = null;
     view = { kind: "terminal", response };
     onTerminal(response);
     await tick();
@@ -151,6 +152,7 @@
   }
 
   function fail(error: unknown): void {
+    if (destroyed || view.kind === "terminal") return;
     const rejection = recoveryRejectionFor(error);
     if (rejection.effect === "notice") { notice = rejection.notice; return; }
     if (rejection.effect === "gone") { endSession("soul.recovery_surface.gone"); return; }

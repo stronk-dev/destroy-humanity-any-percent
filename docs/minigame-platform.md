@@ -219,7 +219,9 @@ bundled with the client.
   notifies the mounted host once. It never renders terminal bytes as progress or automatically
   starts another session. A receipt arriving after unmount cannot notify or focus the former host.
   A concurrent Stop and heartbeat returning the same terminal also produce only one host
-  notification, regardless of reply order.
+  notification, regardless of reply order. A known terminal receipt clears superseded notices
+  and cannot be replaced or accompanied by a late failed Finish reply. Before a terminal is
+  known, those same failures still display their ordinary error or not-ready notice.
 - **Finish and Stop:** Finish appears once the session is eligible. "Stop early" states that
   nothing is restored. The terminal message shows the Soul before/after or the watchdog
   cancellation, focus moves to the heading, and the mounted host refreshes once. If the
