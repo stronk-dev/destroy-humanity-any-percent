@@ -18,10 +18,12 @@ requires an actual local applied receipt and its matching authoritative pet. The
 log records native regressions, the real-service journey and pending designated review; this
 does not resolve PA7, shared attendance, owner copy or the full accessibility floor.
 
-P4's Company replay identity decoder also has a bounded CHANGES REQUIRED finding (RP-406):
-missing/null adoption coordinates were accepted as zero. The local correction, paired refusal/
-explicit-zero controls and pending independent review are recorded in the latest log; this
-does not approve P4's complete range or close its full acceptance population.
+P4's complete original range `b29e70c0^..b29e70c0` now has a designated Codex review:
+CHANGES REQUIRED. In addition to RP-406's missing/null Company carry coordinates, RP-463
+finds case-aliased saved identity keys accepted by Go but refused by TypeScript. Both are
+locally corrected with refusal and valid-encoding controls; affected real-Postgres checks
+pass. Codex's corrections still need the other party's exact-range review. This verdict
+does not approve corrected descendants, other original batches or full Pet acceptance.
 
 Numbering, ruled by landing order: the RFC's "Founder v22" maps to the **next free Founder version
 = v23**, because Reputation Tree v1 already took v22. The RFC's "replay-inputs v7" maps to the next

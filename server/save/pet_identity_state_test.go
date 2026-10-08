@@ -1,8 +1,11 @@
 package save
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -11,6 +14,83 @@ import (
 )
 
 const v23PetID = "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa"
+
+func TestFounderPetIdentitiesRequireExactCaseKeys(t *testing.T) {
+	for _, state := range []*State{v23FounderState(t), v24FounderState(t)} {
+		t.Run(fmt.Sprintf("v%d", state.WireVersion), func(t *testing.T) {
+			encoded, err := EncodeState(state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			decode := func(data []byte) (*State, error) {
+				return RestoreState(data, state.WireVersion, stateCatalog(t), economy.ScopeFounder, time.Time{})
+			}
+			object := func(data []byte) map[string]json.RawMessage {
+				t.Helper()
+				var value map[string]json.RawMessage
+				if err := json.Unmarshal(data, &value); err != nil {
+					t.Fatal(err)
+				}
+				return value
+			}
+			marshal := func(value any) []byte {
+				t.Helper()
+				data, err := json.Marshal(value)
+				if err != nil {
+					t.Fatal(err)
+				}
+				return data
+			}
+			refuse := func(name string, data []byte) {
+				t.Helper()
+				t.Run(name, func(t *testing.T) {
+					if _, err := decode(data); !errors.Is(err, ErrInvalidState) {
+						t.Fatalf("noncanonical pet identity keys accepted or wrong error: %v", err)
+					}
+				})
+			}
+			for _, key := range []string{"pet_identities", "species_id", "temperament", "palette_id", "name_key", "adopted_at_ms", "adopted_at_attended_ms"} {
+				for _, alias := range []string{strings.ToUpper(key[:1]) + key[1:], strings.ToUpper(key)} {
+					for _, retainCanonical := range []bool{false, true} {
+						root := object(encoded)
+						target := root
+						if key != "pet_identities" {
+							pets := object(root["pet_identities"])
+							target = object(pets[v23PetID])
+						}
+						target[alias] = target[key]
+						if !retainCanonical {
+							delete(target, key)
+						}
+						if key != "pet_identities" {
+							root["pet_identities"] = marshal(map[string]json.RawMessage{v23PetID: marshal(target)})
+						}
+						refuse(fmt.Sprintf("%s/retain=%t", alias, retainCanonical), marshal(root))
+					}
+				}
+			}
+			for _, data := range [][]byte{encoded, bytes.ReplaceAll(bytes.ReplaceAll(encoded,
+				[]byte(`"pet_identities"`), []byte(`"pet_\u0069dentities"`)), []byte(`"adopted_at_ms"`), []byte(`"adopted_at_\u006ds"`))} {
+				restored, err := decode(data)
+				if err != nil {
+					t.Fatalf("valid decoded names rejected: %v", err)
+				}
+				roundTrip, err := EncodeState(restored)
+				if err != nil || !bytes.Equal(roundTrip, encoded) {
+					t.Fatalf("valid save bytes changed: %v", err)
+				}
+			}
+			root := object(encoded)
+			pets := object(root["pet_identities"])
+			identity := object(pets[v23PetID])
+			identity["adopted_at_ms"], identity["adopted_at_attended_ms"] = json.RawMessage(`0`), json.RawMessage(`0`)
+			root["pet_identities"] = marshal(map[string]json.RawMessage{v23PetID: marshal(identity)})
+			if restored, err := decode(marshal(root)); err != nil || restored.PetIdentities[v23PetID].AdoptedAtMS != 0 || restored.PetIdentities[v23PetID].AdoptedAtAttendedMS != 0 {
+				t.Fatalf("explicit zero coordinates rejected: %v", err)
+			}
+		})
+	}
+}
 
 func v23CareState() pet.CareState {
 	return pet.CareState{

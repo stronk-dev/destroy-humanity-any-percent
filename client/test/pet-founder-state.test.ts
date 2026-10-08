@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { initialPetCareState } from "../src/pet/identity";
 import { encodeFounderReplayState, loadReplayCatalogBundle, restoreFounderReplayState, type FounderReplayState, type ReplayArtifacts, type ReplayCatalogBundle } from "../src/replay";
 import { constantsHashArtifacts, petSpeciesArtifacts, reputationArtifacts } from "./pet-fixture-bundle";
+import { cosmeticsArtifacts } from "./cosmetic-fixture-bundle";
 
 const PET = "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa";
 const identity = { species_id: "pet_species.server_room_cat", temperament: "curious" as const, palette_id: "pet_palette.fur_03",
@@ -33,6 +34,28 @@ function founderState(bundle: ReplayCatalogBundle, overrides: Partial<FounderRep
 }
 
 describe("Founder v23 pet identities (AC2)", () => {
+  it.each([{ version: 23 as const, artifacts: petSpeciesArtifacts }, { version: 24 as const, artifacts: cosmeticsArtifacts }])("requires exact identity names in Founder v$version", async ({ version, artifacts }) => {
+    const bundle = await load(artifacts);
+    const encoded = encodeFounderReplayState(founderState(bundle, { wireVersion: version })) as Record<string, unknown>;
+    for (const key of ["pet_identities", ...Object.keys(identity)]) {
+      for (const alias of [key[0]!.toUpperCase() + key.slice(1), key.toUpperCase()]) {
+        for (const retainCanonical of [false, true]) {
+          const candidate = structuredClone(encoded);
+          const target = key === "pet_identities" ? candidate : (candidate.pet_identities as Record<string, Record<string, unknown>>)[PET]!;
+          target[alias] = target[key];
+          if (!retainCanonical) delete target[key];
+          expect(() => restoreFounderReplayState(candidate, version, bundle), `${alias}/retain=${retainCanonical}`).toThrow();
+        }
+      }
+    }
+    const escaped = JSON.stringify(encoded).replaceAll('"pet_identities"', '"pet_\\u0069dentities"').replaceAll('"adopted_at_ms"', '"adopted_at_\\u006ds"');
+    for (const candidate of [encoded, JSON.parse(escaped)]) {
+      expect(encodeFounderReplayState(restoreFounderReplayState(candidate, version, bundle))).toEqual(encoded);
+    }
+    const zero = { ...encoded, pet_identities: { [PET]: { ...identity, adopted_at_ms: 0, adopted_at_attended_ms: 0 } } };
+    expect(restoreFounderReplayState(zero, version, bundle).petIdentities[PET]).toEqual(zero.pet_identities[PET]);
+  });
+
   it("round-trips an adopted pet and rejects every identity invariant violation", async () => {
     const bundle = await load(petSpeciesArtifacts);
     const encoded = encodeFounderReplayState(founderState(bundle, {})) as Record<string, unknown>;

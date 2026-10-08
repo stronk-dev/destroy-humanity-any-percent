@@ -682,3 +682,44 @@ full Pet acceptance remain open.
 Review by: Codex (implementer diff/first filter); Recorded by: Codex. Exact new range:
 `d039fe66` exclusive through this source/test/docs/record commit needs Claude's designated
 review; earlier ranges remain separate. No archival, mint, push or release approval.
+
+## 2026-10-08 — complete original P4 review and RP-463 saved-identity repair
+
+Review by: Codex (designated cross-party review of Claude). Recorded by: Codex.
+Exact original range: `b29e70c0^..b29e70c0`, all22 changed paths. Verdict:
+**CHANGES REQUIRED** for RP-406 and RP-463, not approval of later corrections.
+The original Founder codec, activation, replay/carry, versions, tests, docs and records
+were inspected. Independent recursive comparison confirms the two original replay fixtures
+change only137 envelope versions from9 to10. The first comparison exceeded Node's default
+read buffer before returning a result; the corrected read completes. Landing-order Founder23
+and replay-inputs10 are consistent with existing predecessors. Execution below examines
+current descendants, not an untouched checkout of the original P4 commit.
+
+RP-463: save-specific pointer decoding bypassed the existing strict `pet.Identity` decoder.
+Old-source Go13582 accepts all56 invalid case-alias replacements/collisions across Founder23/24;
+TypeScript28690 rejects the same population. The saved decoder now reuses that existing
+identity grammar and refuses case-aliased `pet_identities` envelopes. Canonical byte roundtrips,
+escaped canonical names and explicit zero timestamps remain valid. The stored-JSON duplicate
+policy is unchanged. Kernel181→182 reflects the actual acceptance-set repair, not a new
+save version, content change or attempted historical-guard bypass.
+
+Finished verification:
+- Cold complete Save/Pet/Replaycatalog/Kernel1194 passes; native DB skips are not SQL proof.
+  Selected production66585 passes Pet, Founder carry and ApplyLogged populations.
+- Declared Linux-amd64/Postgres82233 passes the exact-case regression, Pet populations,
+  persisted adoption/history with all nine corruption controls, and both Cosmetic Exit
+  persistence arms. No selected test skips. This is not a complete adopted-player journey.
+- Affected client54468 passes48; full `make test-client`45101 passes10321 with977 explicit
+  exclusions. Types71675 report zero errors/warnings; build23482 and affected Go vet8817 pass.
+- The existing64-profile rate-source observation was actually rerun after changing its save
+  producer. Only that source digest changes; all results, population/fixture identity and
+  AC6 NOT_PROVEN remain unchanged. Normal non-update replay50760 then passes.
+- Kernel-history adversarial fixtures7915 pass. Actual `make verify-kernel-version`59858
+  remains RED at historical `50a3a514` against `0cf9f7a6` (RP-131);182 does not repair it.
+
+Correction first filter Review by: Codex (implementer); Recorded by: Codex. Exact correction
+range: `0084a1bb` exclusive through this source/test/docs/ledger/plan/log commit, awaiting
+the other party's designated review. No original-batch approval is inferred from these
+current-source passes. No full CI, whole-browser/AT, Pet acceptance, copy adoption, content
+mint, archival, release or push. PA7, shared attendance and rights remain open. Next: complete
+the original P5/P6/P7 reviews, retaining separate review of corrective ranges.

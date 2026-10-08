@@ -53,7 +53,7 @@ exact `{species_id, temperament, palette_id, name_key, adopted_at_ms, adopted_at
 Both codecs reject:
 - a key-set mismatch with `pets`, in either direction;
 - a non-UUIDv7 pet ID;
-- missing or extra identity keys;
+- missing, extra or case-aliased identity keys, including a noncanonical `pet_identities` envelope;
 - identities before v23;
 - v23 without the map, and Company v23.
 
@@ -71,6 +71,9 @@ Identity decoding in Company replay carry also requires all six non-null fields,
 exact names. Missing/null timestamps refuse rather than silently becoming zero; explicitly
 recorded numeric zero remains valid. This is wire-shape validation, not a substitute for the
 existing care-key, coordinate, species and cap checks under the pinned catalog.
+The saved-Founder decoder uses that same strict identity grammar. JSON escapes that decode to
+the canonical names remain valid; case aliases and additional alias members do not. Canonical
+save output and the existing stored-JSON duplicate decoding policy are unchanged.
 
 ## The `adopt_pet` intent
 

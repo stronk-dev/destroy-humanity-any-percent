@@ -413,6 +413,19 @@ type wirePetIdentity struct {
 	AdoptedAtAttendedMS *int64  `json:"adopted_at_attended_ms"`
 }
 
+// Reuse PA3's strict identity decoder instead of encoding/json's case-insensitive
+// struct matching. The save wire's pointers still distinguish required fields.
+func (identity *wirePetIdentity) UnmarshalJSON(data []byte) error {
+	var decoded pet.Identity
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*identity = wirePetIdentity{SpeciesID: &decoded.SpeciesID, Temperament: &decoded.Temperament,
+		PaletteID: &decoded.PaletteID, NameKey: &decoded.NameKey, AdoptedAtMS: &decoded.AdoptedAtMS,
+		AdoptedAtAttendedMS: &decoded.AdoptedAtAttendedMS}
+	return nil
+}
+
 func encodePetIdentities(values map[string]pet.Identity) map[string]wirePetIdentity {
 	result := make(map[string]wirePetIdentity, len(values))
 	for id, identity := range values {
@@ -735,6 +748,9 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 			}
 			if scope == economy.ScopeFounder && version >= 24 && strings.EqualFold(key, "cosmetics") && key != "cosmetics" {
 				return nil, fmt.Errorf("%w: noncanonical cosmetics key", ErrInvalidState)
+			}
+			if scope == economy.ScopeFounder && version >= 23 && strings.EqualFold(key, "pet_identities") && key != "pet_identities" {
+				return nil, fmt.Errorf("%w: noncanonical pet identities key", ErrInvalidState)
 			}
 		}
 		if scope == economy.ScopeFounder && version >= 24 && !exactJSONKeys(keys["cosmetics"], "owned", "equipped") {
