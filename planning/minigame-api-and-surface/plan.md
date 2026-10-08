@@ -9,7 +9,12 @@ through native Finish, exact 5-Soul grant, unchanged Company balances and reload
 Soul 40 setup. This is MA2/MA3 player-integration evidence, not a natural debit/history-replay,
 all-duration/AT/whole-feature or release claim. Latest results and pending review range belong
 in the owning log. The preceding Pitch stored-outcome checkpoint is complete locally;
-designated review and the remaining contracts are still independent obligations.
+designated review and the remaining contracts are still independent obligations. The HTTP
+Pitch lifecycle now reconstructs the whole application over the same Postgres after a
+nonterminal command, preserving the complete snapshot, exact receipts and once-only payout.
+This strengthens the existing solo path; it is not an OS-crash/clean-host or generic async API
+proof. RP-459 repairs this test's reused-database bootstrap-receipt isolation. The owning log
+records execution and review status; no whole-feature acceptance checkbox changes.
 
 - [x] Compose the minigame repository, closed Pitch tenant registry, pinned content resolver, and
   platform service in `gameserver.Compose`; expose it on `Composition`.

@@ -1200,3 +1200,42 @@ docs/ledger/log range begins after `0e465815` through this commit; designated cr
 review pending. No feature acceptance, archival, push, Firefox/AT/whole-CI or release claim.
 Continue accepted integration; the separately requested Typer/Arcade public-wire choice is
 not adopted by asking it, and all other owner/author-held contracts remain held.
+
+## 2026-10-08 — Resume public Pitch through a reconstructed application
+
+Outcome: strengthen the existing MA AC1/MA-C2–C4 HTTP lifecycle, not introduce another
+driver or public tenant. After command revision2, drain and stop the original server;
+Compose fresh catalogs, account middleware, repository, platform and handlers over the
+same Postgres. Require fresh authority objects, original create/command bytes and the
+complete current snapshot, then finish through the existing exact SQL payout/history/
+replay and duplicate-receipt controls. Recovery/refusal/authentication checks also run
+through the replacement server. Test/docs/records only; no production behavior changes.
+
+Regression: Linux/Postgres57029/73685/39033 reach the new restart/resume/payout checks,
+then fail the existing bootstrap authentication control. A sanitized temporary diagnostic
+finds the returned JWT expired and its access-token row absent. Migration73 deliberately
+has no account FK; this test's cleanup omitted bootstrap receipts, leaving an earlier
+run's encrypted response at its fixed idempotency key. RP-459 adds that test-owned table
+to setup/cleanup, without changing authentication, receipt semantics or the assertion.
+Exploratory token decoding is removed; the retained failure message reports only error/
+presence/matching booleans, never credentials. An initial native vet context-leak finding
+is fixed with separately owned original/resumed cancellation functions.
+
+Coverage: focused declared Linux-amd64/Postgres10981 passes (2.341s). That invocation's
+flags included count2 but the root target appended count1; it is one execution, not two.
+The actual repeated run24410 uses `CI_TEST_COUNT=2`: both full lifecycle executions pass
+on the same database (5.752s total), including30 refusal controls each. Native affected
+`make test-go GO_PACKAGES='./gameserver' GO_TEST_FLAGS='-count=1'`78941 and
+`make vet GO_PACKAGES='./gameserver'` pass; native DB cases skip, not integration evidence.
+Full declared `make test-go-ci CI_TEST_PACKAGES='./gameserver' CI_TEST_FLAGS='-v'`
+45737 passes (156.690s), with the DB populations actually executed and no skips; the
+strengthened lifecycle passes after the first-hour/account/Garden populations as well.
+Gofmt and `git diff --check` pass. All command sessions are terminal.
+
+Limits/handoff: graceful in-process reconstruction under identical configuration, not
+OS-process death, a clean release host, live scaling-source mutation, generic async HTTP,
+Typer/Arcade wire adoption, browser/AT tasks or whole Platform/MA acceptance. No browser
+rerun is required for this Go test-only change; no whole/hosted CI green claim follows.
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new review
+range begins after `e0de6299` through this containing commit; designated cross-party
+review pending. No acceptance flips, archival, push or unrelated cleanup.

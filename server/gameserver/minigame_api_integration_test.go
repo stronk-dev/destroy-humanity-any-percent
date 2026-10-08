@@ -41,7 +41,9 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	if err := save.Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	const cleanDatabase = `TRUNCATE accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`
+	// Bootstrap receipts deliberately have no account FK; account truncation does
+	// not remove their encrypted idempotent responses from a previous test run.
+	const cleanDatabase = `TRUNCATE bootstrap_receipts,accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`
 	if _, err := db.ExecContext(ctx, cleanDatabase); err != nil {
 		t.Fatal(err)
 	}
@@ -53,13 +55,14 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 
 	now := time.Now().UTC().Add(-time.Second).Truncate(100 * time.Millisecond)
 	clock := &mutableClock{now: now}
-	composition, err := Compose(ctx, CompositionConfig{
+	configuration := CompositionConfig{
 		PublicCursorKeys: testPublicCursorKeys(),
 		DB:               db, RepositoryRoot: composedMinigameRepositoryRoot(t, filepathRoot(t)),
 		ServerID: "01986666-f100-4000-8000-000000000001", ActivityBracket: "activity.standard",
 		Clock: clock.Time, SigningKeys: account.SigningKeys{CurrentID: "minigame-lifecycle", Current: bytes.Repeat([]byte{0x57}, 32)},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-minigame", Current: bytes.Repeat([]byte{0x58}, 32)},
-	})
+	}
+	composition, err := Compose(ctx, configuration)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +72,7 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		t.Fatal(err)
 	}
 	httpServer := httptest.NewServer(composition.Server.Handler())
-	defer httpServer.Close()
+	defer func() { httpServer.Close() }()
 	waitHTTPStatus(t, httpServer.Client(), httpServer.URL+"/readyz", http.StatusNoContent)
 
 	createdResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/account", "", `{}`)
@@ -285,6 +288,46 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		if step == 0 {
 			if current.Status != "active" || current.Revision != 2 {
 				t.Fatalf("fixture must reach a nonterminal persisted command before reconnect: %s", responseBytes)
+			}
+			// Stop the original application before reconnect. The replacement has
+			// fresh repositories, tenant registry, catalogs, account middleware and
+			// HTTP handlers. Configuration is reused; durable player state comes
+			// from Postgres rather than the old application's objects.
+			// This is graceful in-process reconstruction, not an OS-crash rehearsal.
+			previous := composition
+			drainContext, cancelDrain := context.WithTimeout(ctx, 2*time.Second)
+			drainErr := previous.Server.Drain(drainContext, clock.Time())
+			cancelDrain()
+			if drainErr != nil {
+				t.Fatalf("drain before persisted reconnect: %v", drainErr)
+			}
+			waitHTTPStatus(t, httpServer.Client(), httpServer.URL+"/readyz", http.StatusServiceUnavailable)
+			cancelServer()
+			httpServer.Close()
+			composition, err = Compose(ctx, configuration)
+			if err != nil {
+				t.Fatalf("reconstruct composed minigame server: %v", err)
+			}
+			if composition.Server == previous.Server || composition.Accounts == previous.Accounts ||
+				composition.Minigames == previous.Minigames || composition.Catalogs == previous.Catalogs ||
+				composition.Production == previous.Production {
+				t.Fatal("persisted reconnect reused an original application authority")
+			}
+			resumedContext, cancelResumed := context.WithCancel(ctx)
+			defer cancelResumed()
+			if err := composition.Server.Start(resumedContext); err != nil {
+				t.Fatal(err)
+			}
+			httpServer = httptest.NewServer(composition.Server.Handler())
+			waitHTTPStatus(t, httpServer.Client(), httpServer.URL+"/readyz", http.StatusNoContent)
+			store, err = save.NewStore(db, composition.Catalogs, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			createRetry := compositionRequest(t, httpServer.Client(), http.MethodPost,
+				httpServer.URL+"/api/v1/minigames/pitch/sessions", tokens.AccessToken, createBody)
+			if retryBytes := readCompositionBytes(t, createRetry); createRetry.StatusCode != http.StatusOK || !bytes.Equal(retryBytes, createdBytes) {
+				t.Fatalf("reconstructed create retry status=%d body=%s", createRetry.StatusCode, retryBytes)
 			}
 			commandRetry := compositionRequest(t, httpServer.Client(), http.MethodPost,
 				httpServer.URL+"/api/v1/minigames/sessions/"+current.SessionID+"/commands", tokens.AccessToken, string(terminalCommand))
@@ -536,7 +579,8 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	}
 	claims, err := composition.Accounts.Authenticate(ctx, bootstrap.Session.AccessToken)
 	if err != nil || claims.Subject != bootstrap.Account.AccountID || claims.FounderID == "" {
-		t.Fatal("valid bootstrap control did not issue authentic bound credentials")
+		t.Fatalf("valid bootstrap control did not issue authentic bound credentials: authentication=%v subject_matches=%t founder_present=%t token_present=%t",
+			err, claims.Subject == bootstrap.Account.AccountID, claims.FounderID != "", bootstrap.Session.AccessToken != "")
 	}
 	bootstrapRetry := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/bootstrap", "", bootstrapBody)
 	if retryBytes := readCompositionBytes(t, bootstrapRetry); bootstrapRetry.StatusCode != http.StatusCreated ||
