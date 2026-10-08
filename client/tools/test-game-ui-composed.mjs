@@ -585,10 +585,18 @@ async function witnessFiscalServerRefusals(page, accessToken) {
     await page.route("**/api/v1/intents", corruptRequest);
     try {
       const harvest = page.getByRole("button", { name: t("fiscal.harvest", {}, era), exact: true });
+      // The preceding harvest opens a new ripening quarter. Native focus on
+      // its disabled button is ignored; wait for actual actionability, without
+      // activating it or sending Enter to the previously focused navigation.
+      await harvest.click({ trial: true, timeout: 30_000 });
       const responseTask = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/intents" &&
         response.request().postDataJSON()?.kind === "harvest_fiscal_period", { timeout: 30_000 })
         .then((value) => ({ value }), (error) => ({ error }));
-      await harvest.focus(); await page.keyboard.press("Enter");
+      await harvest.focus();
+      if (!await harvest.evaluate((button) => document.activeElement === button)) {
+        throw new Error(`Fiscal ${arm} consent did not focus the eligible harvest control`);
+      }
+      await page.keyboard.press("Enter");
       const result = await responseTask;
       if (result.error) throw result.error;
       const response = result.value, body = await response.json();

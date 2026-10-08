@@ -1389,3 +1389,22 @@ Review by: Codex (actual-diff implementer first filter). Recorded by: Codex. Exa
 `af610f72` exclusive through this containing commit, pending designated cross-party review.
 No acceptance flip, archive, push or release promotion. Next: finish RP-378's bounded readiness/
 focus diagnosis, continue accepted construction and consolidate corrective review.
+
+## 2026-10-08 — Complete the Recovery restart data-loss control
+
+After RP-378's driver-readiness repair, normal main32419 exits0 through the real server restart,
+native reconnect and terminal proof. For the previously interrupted data-loss control only,
+temporary SQL in the disposable test database resets the active session's committed progress
+after the actual restart. A transaction-local trigger bypass is necessary because ordinary
+regression is correctly forbidden by Postgres. No migration, production helper or persistent
+trigger setting changes. Probe23899 reaches the target and exits1 specifically at `server restart
+changed the committed Recovery session (capability withheld)`, not a SQL/earlier readiness error.
+
+Remove the temporary line after the process is terminal. Restored helper SHA256
+`e8b420c542a691d7299c7825f20b505b0e712e856bbee3bf828945bad1128b12` and main driver
+`3a3a49c4e0a8de45c197831fb28c66ce8a81c3034c9f1d18384679024e900829` match normal32419
+exactly; there is no residual helper diff against8f5520db. This closes the earlier incomplete
+control, not a discovered production data-loss bug, whole reliability claim or MA acceptance.
+The Garage log owns the driver repair and exact new pending designated range after8f5520db
+through this containing commit. Review by: Codex (executed control); Recorded by: Codex.
+Prior incomplete attempts remain recorded, not replaced by this result. No push or archival.

@@ -859,6 +859,41 @@ for (const fixture of fiscalEdgeFixtures) {
   });
 }
 
+it.skipIf(!browser)("RP-378 disabled Fiscal harvest ignores focus and sends Enter to the prior navigation control", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const { target, app, runtime, dispose } = await mounted();
+  try {
+    const nav = button(target, "Earnings Calls");
+    nav.focus(); await userEvent.keyboard("{Enter}"); await settle();
+    const harvest = target.querySelector<HTMLButtonElement>('[data-fiscal-action="harvest"]')!;
+    expect(target.querySelector(".fiscal")?.getAttribute("data-phase")).toBe("ripening");
+    expect(harvest.disabled).toBe(true);
+    nav.focus();
+    // The old composed sequence focuses without waiting for eligibility. The
+    // browser ignores that focus, so Enter activates the still-focused nav.
+    harvest.focus();
+    expect(document.activeElement).toBe(nav);
+    await userEvent.keyboard("{Enter}"); await settle();
+    expect(runtime.requests).toHaveLength(0);
+    expect(target.querySelector("main")?.getAttribute("data-surface")).toBe("fiscal");
+
+    // A controlled eligible phase, not a longer wall-clock sleep or UI change.
+    app.fixtureSnapshot({ ...v4, features: { ...v4.features, fiscal: { ...v4.features.fiscal!,
+      period: { ...v4.features.fiscal!.period, opened_wall_ms: NOW - 250_000 },
+    } } });
+    await settle();
+    expect(harvest.disabled).toBe(false);
+    expect(runtime.requests).toHaveLength(0);
+    runtime.outcome = { outcome: "rejected", category: "not_eligible", detail: "period_not_ripe", currentRevision: 7, sessionExpired: false };
+    harvest.focus();
+    expect(document.activeElement).toBe(harvest);
+    await userEvent.keyboard("{Enter}"); await settle();
+    expect(runtime.requests).toHaveLength(1);
+    expect(runtime.requests[0]).toMatchObject({ kind: "harvest_fiscal_period", expected_revision: 7 });
+    expect(target.querySelector(".fiscal .intent-notice")?.textContent).toBe("It is too soon for an earnings call.");
+  } finally { await dispose(); }
+});
+
 it.skipIf(!browser)("derives Fiscal phases at the window edges and sends Founder-scoped intents (GS1-A2/A3/A4)", async () => {
   const { target, app, runtime, dispose } = await mounted();
   try {

@@ -6669,3 +6669,33 @@ this refusal path and Recovery, without repairing or erasing24143. RP-378 remain
 Next: bounded disabled→eligible consent/readiness reproduction, preserving native Enter,
 exact real refusals and no retry. Review by: Codex (observation); Recorded by: Codex.
 The Minigame API log owns its new test range. No acceptance, CI or release promotion.
+
+## 2026-10-08 — RP-378 post-harvest eligibility before native refusal consent
+
+The captured24143 route is reproducible in native Chromium/WebKit20481: during ripening,
+`harvest.focus()` is ignored, Enter activates the still-focused Earnings Calls nav, and no
+intent is emitted. After binding a controlled eligible phase, native focus/Enter submits exactly
+one Founder-scoped harvest and preserves the rejection notice. This is mounted real input with
+a runtime double, not a real server refusal or a unique explanation for untraced15953.
+
+Correct only the composed driver: Playwright's existing trial click waits for actionability but
+does not activate; focus must then actually belong to Harvest before one native Enter. No fixed
+sleep, command retry, server/cadence/gameplay change, weaker oracle or longer response deadline.
+The natural old-driver failure is recorded above; the fixture retains both disabled and eligible
+controls. It is a browser behavior reproduction, not a test importing the driver's implementation.
+
+Executed affected Fiscal browser87079:78 pass,750 explicitly deselected; typecheck61397:zero
+errors/warnings. The final actual built-client/Postgres main32419 exits0: all required persisted
+populations, exact invalid400/stale200 refusals and fresh consent, early endings/continuation,
+Fiscal/Pitch, active play, both process-crash recoveries and exact asset/Worker proof pass.
+Initial malformed browser selector and sandbox listener denials execute no tests. Correctly
+selected browser20481 executes two cases; permitted affected87079 executes the stated78.
+The subsequent deliberate Recovery data-loss probe23899 passes this Fiscal prerequisite and
+fails only at its intended Recovery persistence assertion; its owner log records restoration.
+
+Scope: the reproduced readiness route is locally corrected, not every possible activation/focus
+race, the unique original15953 cause, Firefox/AT, sibling journeys, full CI or Garage acceptance.
+Review by: Codex (actual-diff implementer first filter). Recorded by: Codex. Exact new range is
+`8f5520db` exclusive through this containing commit, pending designated cross-party review.
+No archive/push/release promotion. Next: continue accepted product construction and consolidate
+related corrective review; do not restart this resolved readiness diagnosis without new evidence.
