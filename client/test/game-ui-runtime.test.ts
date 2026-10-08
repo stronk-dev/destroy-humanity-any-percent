@@ -419,6 +419,37 @@ describe("GS0.3 announcement decoders", () => {
       payload: { pet_id: "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa", from_status_band: "normal", to_status_band: "high", ...changes } },
   });
   const petBands = ["floor", "low", "normal", "high"] as const;
+  it("delivers distinct re-attainments at one revision and resyncs a malformed successor", async () => {
+    const earned = achievement(2);
+    const { condition_scope: _scope, ...payload } = earned.payload.payload;
+    const event = { ...earned, payload: { ...earned.payload, kind: "achievement_reattained.v1", payload } };
+    const second = { ...event, payload: { ...event.payload, event_id: "another-reattainment",
+      payload: { ...payload, achievement_id: "achievement.generators_purchased_1" } } };
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    const socket = new FakeSocket();
+    const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+    await runtime.snapshot(); fetcher.mockClear();
+    const received: Array<{ kind: string }> = [];
+    const unsubscribe = runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    try {
+      openAndConnect(socket); subscribeReplies(socket);
+      publication(socket, `player:${snapshot.run.founder_id}`, 1, event);
+      publication(socket, `player:${snapshot.run.founder_id}`, 2, second);
+      expect(received.filter((message) => message.kind === "announcement")).toEqual([event, second].map((value) => ({
+        kind: "announcement", scope: "company", eventID: value.payload.event_id,
+        value: { cursor: 2, kind: "achievement_reattained", payload: value.payload.payload },
+      })));
+      expect(fetcher).not.toHaveBeenCalled();
+      publication(socket, `player:${snapshot.run.founder_id}`, 3, { ...event, rev: 3,
+        payload: { ...event.payload, rev: 3, event_id: "malformed", payload: { ...payload, score_grant: 0 } } });
+      expect(received.at(-1)).toEqual({ kind: "system", value: { kind: "resync_required" } });
+      expect(socket.closeCount).toBe(1);
+      await vi.waitFor(() => expect(received.at(-1)).toEqual({ kind: "snapshot", value: currentSnapshot }));
+      expect(fetcher).toHaveBeenCalledExactlyOnceWith("/api/v1/founder/state", expect.objectContaining({ headers: expect.objectContaining({ Authorization: "Bearer access" }) }));
+    } finally { unsubscribe(); }
+  });
   it.each(petBands.flatMap((from) => petBands.filter((to) => to !== from).map((to) => ({ from, to }))))(
     "decodes pet status $from → $to without projecting state (RP-318)", ({ from, to }) => {
       expect(decodeGameUIAnnouncement(decodeTransportEnvelope(petStatus(2, { from_status_band: from, to_status_band: to }))!)).toEqual({
@@ -551,7 +582,11 @@ describe("GS0.3 announcement decoders", () => {
     expect(decodeGameUIAnnouncement(envelope(eventEnvelope(4)))).toBeUndefined();
   });
 
-  it("does not reannounce an achievement recovered at a new offset after an actual simulated reconnect (GS2-A2)", async () => {
+  it.each(["achievement_earned", "achievement_reattained"] as const)("does not reannounce %s recovered at a new offset after an actual simulated reconnect (GS2-A2)", async (kind) => {
+    const original = achievement(1);
+    const { condition_scope: _scope, ...reattainedPayload } = original.payload.payload;
+    const event = { ...original, payload: { ...original.payload, kind: `${kind}.v1`,
+      payload: kind === "achievement_earned" ? original.payload.payload : reattainedPayload } };
     vi.useFakeTimers();
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
@@ -564,7 +599,7 @@ describe("GS0.3 announcement decoders", () => {
     const unsubscribe = runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
     try {
       openAndConnect(sockets[0]); subscribeReplies(sockets[0]);
-      publication(sockets[0], `player:${snapshot.run.founder_id}`, 1, achievement(1));
+      publication(sockets[0], `player:${snapshot.run.founder_id}`, 1, event);
       sockets[0].emit("close", { code: 1006 });
       expect(received.at(-1)).toEqual({ kind: "transport_recovering" });
       await vi.advanceTimersByTimeAsync(1_000);
@@ -573,9 +608,9 @@ describe("GS0.3 announcement decoders", () => {
       expect(JSON.parse(sockets[1].sent[1])).toEqual({ id: 2, subscribe: {
         channel: `player:${snapshot.run.founder_id}`, recover: true, epoch: "player-epoch", offset: 1,
       } });
-      subscribeReplies(sockets[1], { recovered: true, playerOffset: 2, publications: [{ offset: 2, data: achievement(1) }] });
+      subscribeReplies(sockets[1], { recovered: true, playerOffset: 2, publications: [{ offset: 2, data: event }] });
       expect(received.filter((message) => message.kind === "announcement")).toEqual([
-        { kind: "announcement", scope: "company", eventID: "achievement-1", value: { cursor: 1, kind: "achievement_earned", payload: achievement(1).payload.payload } },
+        { kind: "announcement", scope: "company", eventID: "achievement-1", value: { cursor: 1, kind, payload: event.payload.payload } },
       ]);
       expect(received.filter((message) => message.kind === "transport_recovered")).toHaveLength(2);
       expect(received.filter((message) => message.kind === "system")).toEqual([]);

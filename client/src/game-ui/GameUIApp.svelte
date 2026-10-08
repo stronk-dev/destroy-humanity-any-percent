@@ -75,6 +75,9 @@
   // by event identity at its stream cursor, not revision alone: one commit
   // can contain distinct Fiscal and care/achievement events.
   let announcement = $state("");
+  // Identical coalesced notices from distinct transitions still need a DOM
+  // insertion inside the existing live region, not an unchanged text value.
+  let reattainmentNoticeVersion = $state(0);
   let metersChanged = $state(false);
   // OD-3: a Fiscal harvest while elsewhere badges the Fiscal nav (no modal).
   let fiscalHarvested = $state(false);
@@ -491,6 +494,21 @@
   }
 
   function announce(scope: "company" | "founder", value: GameUIAnnouncementEvent, eventID?: string): void {
+    if (value.kind === "achievement_reattained") {
+      if (scope !== "company" || !liveFeatures?.axis_stack || value.payload.run_id.run_seq !== snapshot?.run.run_seq) return;
+      const row = liveFeatures.achievements?.rows.find((candidate) => candidate.achievement_id === value.payload.achievement_id);
+      if (!row || row.condition_scope !== "run" || !applicationCopyCatalog.byKey.has(row.copy_key)) {
+        console.error(`game UI invariant: unannounceable re-attainment ${value.payload.achievement_id}`); return;
+      }
+      // CV9.5: one generic notice for the complete transition, not one per
+      // event. Stream identity separates equal revisions in later Companies.
+      const key = `${scope}\0${value.payload.run_id.company_stream_id}\0${value.cursor}\0${value.kind}`;
+      if (announcedCursors.has(key)) return;
+      announcedCursors.add(key);
+      announcement = t("achievement.reattained.notice", {}, era);
+      reattainmentNoticeVersion += 1;
+      return;
+    }
     // Production always supplies the validated transport event ID. Older
     // fixture runtimes omit it; kind keeps distinct event families separate.
     const key = `${scope}\0${value.cursor}\0${eventID ?? value.kind}`;
@@ -735,7 +753,7 @@
     </header>
   {/if}
 
-  {#if snapshot}<p class="announcement" role="status">{announcement}</p>{/if}
+  {#if snapshot}<p class="announcement" role="status">{#key reattainmentNoticeVersion}{announcement}{/key}</p>{/if}
   {#if snapshot && (surface === "desk" || surface === "offer_sheet" || surface === "achievements" || surface === "meters") && !commandControls}
     <p class="snapshot-stale">{t("common.stale_note", {}, era)}</p>
   {/if}

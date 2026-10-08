@@ -2,6 +2,14 @@
  "schema_version": 1,
  "entries": [
   {
+   "key": "achievement.reattained.notice",
+   "text": "PENDING OWNER COPY: achievement progress restored this run",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "achievement"
+  },
+  {
    "key": "axis_stack.factor_label",
    "text": "Multiplier at current attainment",
    "params": [],

@@ -7,9 +7,11 @@ import type { GameUIAxisStackArm, GameUISnapshot } from "../src/api/generated/ty
 import { parseGameUISnapshot } from "../src/game-ui/contracts";
 import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
+import { decodeGameUIAnnouncement } from "../src/game-ui/events";
 import type { IntentOutcome } from "../src/game-ui/intent-outcome";
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import type { GameUISurfaceID } from "../src/game-ui/surface-catalog";
+import type { TransportEnvelope } from "../src/transport";
 
 const browser = typeof document !== "undefined";
 const NOW = 1_800_000_000_000;
@@ -95,6 +97,62 @@ function withAxis(arm: GameUIAxisStackArm | null): GameUISnapshot {
     { cost_amount: "5e7", cost_resource_id: "company.cash", eligible: false, owned: false, upgrade_id: "upgrade.pr_intern_2" }];
   const facts = [...v4.facts, { fact_id: "feature.axis_stack", value: arm !== null }].sort((a, b) => a.fact_id < b.fact_id ? -1 : 1);
   return parseGameUISnapshot({ ...v4, facts, features, upgrades, run: { ...v4.run, tier: 1 } }) as GameUISnapshot;
+}
+
+for (const width of [320, 1280]) {
+  it.skipIf(!browser)(`coalesces re-attainment by Company transition without suppressing later notices (${width}px)`, async () => {
+    const { page } = await import("vitest/browser");
+    await page.viewport(width, 720);
+    const runtime = new Runtime();
+    runtime.current = withAxis(axisArm as GameUIAxisStackArm);
+    const { target, app, dispose } = await mounted(runtime);
+    const region = target.querySelector<HTMLElement>('.announcement[role="status"]')!;
+    const updates: string[] = [];
+    const observer = new MutationObserver(() => { updates.push(region.textContent ?? ""); });
+    observer.observe(region, { childList: true, characterData: true, subtree: true });
+    const send = (cursor: number, eventID: string, achievementID = "achievement.first_gate", runSeq = 1, streamID = "01985555-2222-7222-8222-222222222222") => {
+      const envelope: TransportEnvelope = { v: 2, ch: `player:${v4.run.founder_id}`, kind: "event", rev: cursor,
+        constants_hash: v4.constants_hash, ts: "2026-10-08T12:00:00Z", payload: { kind: "achievement_reattained.v1",
+          event_id: eventID, scope: "company", rev: cursor, cursor_effect: "advance",
+          payload: { achievement_id: achievementID, score_grant: 2, run_id: { company_stream_id: streamID, run_seq: runSeq } } } };
+      const value = decodeGameUIAnnouncement(envelope);
+      expect(value, "the existing server event must reach the announcement consumer").not.toBeUndefined();
+      if (!value) throw new Error("re-attainment announcement not decoded");
+      runtime.listener?.({ kind: "announcement", scope: "company", eventID, value });
+    };
+    try {
+      const desk = target.querySelector<HTMLButtonElement>('nav button[aria-current="page"]')!;
+      desk.focus();
+      const before = target.querySelector("section.axis")!.textContent;
+      const notice = "PENDING OWNER COPY: achievement progress restored this run";
+      send(9, "first"); await settle();
+      expect(region.textContent).toBe(notice);
+      expect(updates).toEqual([notice]);
+      send(9, "second", "achievement.generators_purchased_1"); await settle();
+      send(9, "first"); await settle();
+      expect(updates, "distinct events at one transition and replay produce one notice").toEqual([notice]);
+      runtime.listener?.({ kind: "announcement", scope: "company", eventID: "earned", value: { cursor: 10, kind: "achievement_earned",
+        payload: { achievement_id: "achievement.first_gate", condition_scope: "run", score_grant: 2,
+          run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 } } } });
+      await settle();
+      const earned = region.textContent!;
+      expect(earned).not.toBe(notice);
+      send(9, "second", "achievement.generators_purchased_1"); await settle();
+      expect(region.textContent, "an old transition cannot overwrite a newer announcement").toBe(earned);
+      send(11, "later"); await settle();
+      send(12, "next"); await settle();
+      expect(updates, "identical text must still reach the live DOM for distinct transitions").toEqual([notice, earned, notice, notice]);
+      app.fixtureSnapshot({ ...runtime.current, run: { ...runtime.current.run, run_seq: 2 } }); await settle();
+      send(12, "old-company"); await settle();
+      expect(updates).toHaveLength(4);
+      send(9, "new-company", "achievement.first_gate", 2, "01985555-3333-7333-8333-333333333333"); await settle();
+      expect(updates).toEqual([notice, earned, notice, notice, notice]);
+      expect(target.querySelector("section.axis")!.textContent).toBe(before);
+      expect(document.activeElement).toBe(desk);
+      expect(runtime.requests).toEqual([]);
+      expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth + 1);
+    } finally { observer.disconnect(); await dispose(); await page.viewport(1280, 720); }
+  });
 }
 
 it.skipIf(!browser)("renders the server-derived axis readout and PR Intern progress on the Desk", async () => {

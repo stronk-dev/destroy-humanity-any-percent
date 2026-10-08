@@ -117,6 +117,20 @@ function seedGateRequirement(founderID) {
   ) INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash)
     SELECT stream_id,revision+1,version,jsonb_set(state,'{balances,company.cash}',to_jsonb('${axisFixture ? "1e8" : "1e5"}'::text),false),constants_hash FROM current;`);
   if (!result.includes("INSERT 0 1")) throw new Error(`cosmetic gate setup inserted no revision: ${result}`);
+  if (axisFixture) {
+    // Controlled prior-run history, not a simulated prior playthrough. Current
+    // Company attainment stays empty; real intents must produce every notice.
+    const history = testDatabaseSQL(`WITH current AS (
+      SELECT revision.* FROM save_revisions revision JOIN save_streams stream ON stream.id=revision.stream_id
+      WHERE stream.owner_kind='founder' AND stream.owner_id='${founderID}' AND stream.scope='founder' AND stream.archived_at IS NULL
+      ORDER BY revision.revision DESC LIMIT 1
+    ) INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash)
+      SELECT stream_id,revision+1,version,
+        jsonb_set(jsonb_set(state,'{achievements_earned_lifetime}',
+          '["achievement.first_gate","achievement.generators_owned_100","achievement.generators_purchased_1","achievement.generators_purchased_25"]'::jsonb,false),
+          '{achievement_score_lifetime}','12'::jsonb,false),constants_hash FROM current;`);
+    assert.ok(history.includes("INSERT 0 1"), `prior-earned history setup inserted no revision: ${history}`);
+  }
 }
 
 async function waitForPort(port) {
@@ -286,6 +300,9 @@ async function assertAxis(page, { input, product, factors, owned = false }) {
 
 async function witnessAxis(page, requests) {
   await assertAxis(page, { input: 2, product: "1e0", factors: ["1.05e0", "1.04e0"] });
+  const notice = plainFixtureCopy("achievement.reattained.notice");
+  await page.waitForFunction((text) => globalThis.__reattainmentNotices?.length === 1 &&
+    globalThis.__reattainmentNotices[0] === text, notice);
   const help = page.locator("section.axis details");
   // Native summary does not expose a button role in every browser. Keep the
   // native semantics and test its label and actual keyboard behavior instead.
@@ -314,6 +331,19 @@ async function witnessAxis(page, requests) {
   assert.deepEqual(ready.features.axis_stack.attained.map((row) => row.achievement_id), [
     "achievement.first_gate", "achievement.generators_owned_100", "achievement.generators_purchased_1", "achievement.generators_purchased_25",
   ]);
+  await page.waitForFunction((text) => globalThis.__reattainmentNotices?.length === 2 &&
+    globalThis.__reattainmentNotices[1] === text, notice);
+  const reattained = JSON.parse(testDatabaseSQL(`SELECT coalesce(jsonb_agg(jsonb_build_object(
+    'revision',revision,'achievement_id',payload->>'achievement_id') ORDER BY revision,payload->>'achievement_id'),'[]'::jsonb)
+    FROM events WHERE kind='achievement_reattained.v1' AND stream_id=(
+      SELECT id FROM save_streams WHERE owner_kind='founder' AND owner_id='${ready.run.founder_id}'
+        AND scope='company' AND archived_at IS NULL);`, true).trim());
+  assert.deepEqual(reattained.map((event) => event.achievement_id), ready.features.axis_stack.attained.map((row) => row.achievement_id));
+  assert.deepEqual(reattained.slice(1).map((event) => event.revision), Array(3).fill(purchase.new_revision),
+    "three actual producer events must share the native purchase transition");
+  assert.deepEqual(await page.evaluate(() => globalThis.__reattainmentNotices), [notice, notice],
+    "four real events in two transitions must yield two, not four, live-region updates");
+  console.info("Clout CV9.5: four stored re-attainment events → two built-client live-region updates: PASS (prior-earned history fixture)");
   const receipt = await companyDOMIntent(page, requests, pr.getByRole("button", { name: plainFixtureCopy("desk.buy_one"), exact: true }),
     "buy_upgrade", { upgrade_id: "upgrade.pr_intern_1" });
   const after = await assertAxis(page, { input: 12, product: "1.3e0", factors: ["1.3e0", "1.24e0"], owned: true });
@@ -327,7 +357,8 @@ async function witnessAxis(page, requests) {
   assert.equal(restored.run.run_seq, after.run.run_seq);
   assert.equal(restored.upgrades.find((row) => row.upgrade_id === "upgrade.pr_intern_1")?.owned, true);
   // Inspect the actual stored head/event, not just another browser read from
-  // the still-running service. Setup seeded cash only, never these fields.
+  // the still-running service. Setup seeded cash and Founder history only,
+  // never Company attainment, PR ownership, purchases or notice events.
   const founderID = restored.run.founder_id;
   assert.match(founderID, /^[0-9a-f-]{36}$/u);
   const persisted = JSON.parse(testDatabaseSQL(`SELECT jsonb_build_object(
@@ -717,6 +748,14 @@ try {
   seedGateRequirement(initial.run.founder_id);
   directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
   await page.reload({ waitUntil: "networkidle" });
+  if (axisFixture) await page.evaluate((notice) => {
+    globalThis.__reattainmentNotices = [];
+    const region = document.querySelector(".announcement");
+    if (!region) throw new Error("re-attainment live region unavailable");
+    new MutationObserver(() => {
+      if (region.textContent === notice) globalThis.__reattainmentNotices.push(region.textContent);
+    }).observe(region, { childList: true, characterData: true, subtree: true });
+  }, plainFixtureCopy("achievement.reattained.notice"));
   const crossGate = page.getByRole("button", { name: "Move Into the Garage", exact: true });
   await crossGate.waitFor({ state: "visible", timeout: 30_000 });
   if (!await crossGate.isEnabled()) throw new Error("cosmetic AC14 T1 cross-gate disabled after server-side setup");

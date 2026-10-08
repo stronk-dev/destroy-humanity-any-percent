@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "keys": [
+    "achievement.reattained.notice",
     "achievements.earned_announcement",
     "achievements.empty",
     "achievements.grant_frame",

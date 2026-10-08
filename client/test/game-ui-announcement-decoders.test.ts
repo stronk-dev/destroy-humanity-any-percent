@@ -18,6 +18,34 @@ const buff = { buff_instance_id: "01986666-0000-7000-8000-00000000000b", effect_
   activated_attended_ms: 1_000, expires_attended_ms: 6_000, hardcap_reason_key: null };
 
 describe("GS0.3 remainder decoders", () => {
+  const reattained = { achievement_id: "achievement.first_gate", score_grant: 2,
+    run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 } };
+  const reattainmentEnvelope = (payload: Record<string, unknown>): TransportEnvelope => {
+    const event = envelope("achievement_reattained.v1", payload);
+    return { ...event, payload: { ...event.payload, scope: "company" } };
+  };
+  it("decodes exact Company re-attainment without adding lifetime ownership", () => {
+    expect(decodeGameUIAnnouncement(reattainmentEnvelope(reattained))).toEqual({ cursor: 5, kind: "achievement_reattained", payload: reattained });
+  });
+  for (const changes of [
+    { extra: true }, { condition_scope: "run" }, { achievement_id: null }, { achievement_id: "not an id" },
+    { score_grant: null }, { score_grant: 0 }, { score_grant: -1 }, { score_grant: 1.5 }, { score_grant: Number.MAX_SAFE_INTEGER + 1 },
+    { run_id: null }, { run_id: { company_stream_id: "invalid", run_seq: 1 } },
+    { run_id: { company_stream_id: reattained.run_id.company_stream_id, run_seq: 0 } },
+  ]) {
+    it(`refuses malformed re-attainment ${JSON.stringify(changes)}`, () => {
+      expect(() => decodeGameUIAnnouncement(reattainmentEnvelope({ ...reattained, ...changes }))).toThrow();
+    });
+  }
+  it("refuses re-attainment on the Founder stream and missing required fields", () => {
+    expect(() => decodeGameUIAnnouncement(envelope("achievement_reattained.v1", reattained))).toThrow();
+    for (const key of Object.keys(reattained)) {
+      const payload: Record<string, unknown> = { ...reattained };
+      delete payload[key];
+      expect(() => decodeGameUIAnnouncement(reattainmentEnvelope(payload))).toThrow();
+    }
+  });
+
   it("decodes both Fiscal harvest sources and a buff start", () => {
     expect(decodeGameUIAnnouncement(envelope("fiscal_period_harvested.v1", automatic))).toEqual({ cursor: 5, kind: "fiscal_period_harvested", payload: { source: "automatic", credit_after: 10 } });
     expect(decodeGameUIAnnouncement(envelope("fiscal_period_harvested.v1", manual))).toEqual({ cursor: 5, kind: "fiscal_period_harvested", payload: { source: "manual", credit_after: 7 } });

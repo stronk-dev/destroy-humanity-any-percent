@@ -2392,3 +2392,47 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 `143174da` exclusive through this containing implementation/test/record commit
 requires designated cross-party review; earlier ranges remain independent.
 No completion checkbox, acceptance/archive, push or release claim.
+
+## 2026-10-08 — CV9.5 coalesced re-attainment notices (RP-425)
+
+Baseline `24cefcd5`. The accepted producer already emits Company
+`achievement_reattained.v1`; the browser decoder ignored it. The exact decoder
+now admits its three fields and rejects malformed/Founder payloads through the
+existing resync path. The host announces once per Company stream/revision,
+ignores trailing previous-run events, preserves focus and snapshot authority,
+and updates the existing live DOM even for identical text at later transitions.
+No timer, factor arithmetic or optimistic state is added. The CV8 notice key is
+explicitly `PENDING OWNER COPY`; generated outputs and deployment copy hash move
+together, with constants hash/kernel/save/balance/CI unchanged.
+
+Executed evidence: old decoder population884822 fails14 cases (two controls pass),
+and old mounted host33142 fails all four new native cases. Final selected decoder/
+runtime Node population15238 passes69, including actual simulated reconnect replay,
+distinct same-revision events and malformed-successor resync. Final affected root
+browser population76730 passes1014 Chromium/WebKit cases, with four existing
+performance-only skips. New cases bind actual live-region mutations, same-transition
+coalescing, identical later text, new Company/reused revision, previous-run refusal,
+ordinary earned notices, unchanged axis values/focus and zero intents at320/1280px.
+Types (zero errors/warnings), production build, copy/manifest and client-boundary
+checks96798 pass; driver syntax and diff checks pass. Copy verification retains621
+visible orphan warnings rather than claiming catalog adoption.
+
+`make test-clout-composed`15804 passes against real Postgres and WebSocket with the
+production-built browser. Its controlled setup now seeds four prior-earned Founder
+IDs/score12 in addition to cash, never Company attainment or events. Native first
+gate and Buy Max generate four actual stored re-attainment events in two revisions;
+the browser records exactly two notice updates. This is not a played prior run.
+Existing PR help/purchase/receipt/render/reload/SQL and Cosmetic/adoption/care remain.
+Final whole `make test-game-ui-composed`84866 exits0:35 driver controls, real-DB
+refresh/Fiscal/content/board/composition populations, production-byte early journey,
+both normal/Clout cosmetic-care journeys and both intended no-payment failures.
+Expected reconnect proxy resets are visible; no assertion, retry or deadline is
+weakened. Focused and whole fixture passes are not full/hosted CI or reliability proof.
+
+Next: remaining CV9 projected factors/contextual hint and owner content, alongside
+the separately held accounting/harness contracts. RP-307's27 partition failures,
+offline-episode meaning, mint, manual AT and whole Clout acceptance remain open.
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
+`24cefcd5` exclusive through this containing implementation/test/record commit
+requires designated cross-party review; earlier ranges remain independent.
+No completion checkbox, acceptance/archive, push or release claim.

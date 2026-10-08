@@ -121,12 +121,26 @@ Chromium/WebKit checks cover all three current eras; the real-service PR fixture
 also exercises the production-built disclosure. This implements the help
 mechanism, not the still-unwritten final Codex or full accessibility acceptance.
 
+The browser decodes the exact Company `achievement_reattained.v1` payload and
+announces `achievement.reattained.notice` once per Company stream/revision,
+regardless of how many run achievements that transition re-attains. Replay is
+silent; a later transition with the same notice text still updates the persistent
+polite live region. A trailing previous-run event is ignored. The announcement
+does not modify attainment, factors or focus; those values remain snapshot-owned.
+The notice is explicitly `PENDING OWNER COPY`, not adopted prose. Controlled
+Chromium/WebKit checks observe actual DOM mutations at320/1280px, while socket
+tests cover same-revision delivery, malformed-event resync and reconnect replay.
+This is the CV9.5 mechanism, not a manual assistive-technology acceptance claim.
+
 ## Real-service PR fixture
 
 `make test-clout-composed` selects the existing unminted economy-v5 fixture in
 the production-built browser/real-gameserver/Postgres/WebSocket driver. It
-seeds test cash only: the DOM first gate and native Enter generator purchase
-earn attainment 2 then 12, and a native PR purchase receives one bound applied
+seeds test cash and four prior-earned Founder achievements (lifetime score12),
+not a played prior run. Company attainment starts empty. The DOM first gate and
+native Enter generator purchase re-attain scores2 then12; four actual stored
+events across those two transitions yield exactly two browser live-region updates.
+No Company attainment, event or notice is seeded. A native PR purchase receives one bound applied
 receipt. The actual snapshot and rendered progress/current factors/product are
 checked before and after ownership and reload. A direct SQL read checks the
 Company v19 head, exact attainment set, ownership and one purchase event.
@@ -232,7 +246,7 @@ UI obligations, assistive-technology proof or whole-feature/release acceptance.
 - Served-epoch activation and the default composed PR purchase/rendering journey
   (CV9 / AC11). The manual real-service fixture journey now exists, but does not
   adopt a production epoch or complete all CV9 obligations (projected factors,
-  once-only contextual hint, adopted Codex content and coalesced re-attainment notices).
+  once-only contextual hint and adopted Codex/notice content).
 - Harness relevance and observation rows (CV10 / AC9).
 - A production mint.
 - All copy: the keys named in RFC CV8 are owner-authored and still pending.

@@ -29,8 +29,16 @@ RP-412 bounded UI follow-up: CV9.4's native `?` help mechanism now opens/closes
 `codex.axis_stack`, preserves open state across snapshot replacement and submits no gameplay.
 Affected Chromium/WebKit20 and the production-built real-service Clout journey pass.
 The label/body remain explicitly pending owner copy under the accepted placeholder allowance;
-projected factors, contextual hint, coalesced notices and full CV9 acceptance remain open.
+projected factors, contextual hint and full CV9 acceptance remain open.
 The owning log records the red baseline, corrected test assumption and pending review range.
+
+RP-425 bounded follow-up: CV9.5 now consumes real re-attainment events and emits
+one live-region update per Company transition, without suppressing identical
+notices at later transitions. Decoder/socket/reconnect and mounted browser checks
+pass; the real-service fixture seeds prior-earned Founder history, then verifies
+four actual stored events produce two DOM announcements. Notice copy remains
+explicitly pending owner adoption. No full CV9/P5/P6 acceptance or numeric repair
+is implied; the owning log records final checks and the pending review range.
 
 2026-10-08 bounded follow-up at `32f7518c`: test whether projecting the actual evaluator
 from an unchanged encoded Company origin can advance the visible state through the actual

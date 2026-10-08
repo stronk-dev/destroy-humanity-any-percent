@@ -98,6 +98,14 @@
       "tone": "achievement"
     },
     {
+      "key": "achievement.reattained.notice",
+      "text": "PENDING OWNER COPY: achievement progress restored this run",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
       "key": "achievement.tier_5",
       "text": "Hyperscale — Reached Tier 5. Your infrastructure has infrastructure.",
       "params": [],
