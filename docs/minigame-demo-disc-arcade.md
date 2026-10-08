@@ -25,6 +25,13 @@ row before decoding its integer field, so null cannot silently become zero. Lega
 integer `-0` and surrounding whitespace remain accepted. This loader-only correction is
 kernel 0.3.147; no content, mechanics or wire fields changed.
 
+Raw artifact loading now checks unique decoded keys and safe integer tokens before
+`JSON.parse`, both in engine content resolution and replay-bundle loading. Duplicate keys
+(including escaped equivalents), decimal/exponent tokens and fractions rounded to integers
+are refused consistently with Go. Legal escaped keys, whitespace and stage-tier `-0` remain
+accepted. Object-level `parseArcadeCatalog` is for already-parsed values; raw artifact callers
+use `loadArcadeCatalogJSON` (admission correction: kernel 0.3.178).
+
 The candidate bytes are `balance/testdata/arcade-v1.json` (the RFC's provisional v1 rows). The
 corpus fixture is `testdata/arcade/corpus-fixture-v1.json`: small boards, and a 6×5 Snake board,
 which supports the current cycle-based clearing driver. That driver does not supply AR7's
@@ -53,14 +60,22 @@ carry `arcade_content_hash` and `arcade_schema_version`.
     falls before `through_tick` rejects `advance_past_terminal` without mutation.
   - Facts: `snake.food_eaten` and `snake.ticks_survived`.
 
+Raw commands reject duplicate keys before dispatch. Mine Grid coordinates and Snake advance/
+turn ticks require canonical safe-integer tokens, including Go's refusal of integer `-0` in
+commands (unlike catalog stage tiers). Invalid coordinates retain `cell_out_of_range`, invalid
+advance integers retain `advance_window`, and duplicate keys retain `illegal_phase`.
+`testdata/arcade/raw-json-v1.json` exercises both real engines with shared valid/refusal cases;
+freshly hashed replay-bundle tests also refuse malformed raw catalogs. This does not mount
+the blocked public Arcade API or establish all-domain semantic parity.
+
 Snake snapshot decoding validates all nine numeric scalar fields and every body element as
 nonnullable integers in the shared safe-integer range. Content identity and `food_seed` are
 strings, not values coerced to strings. Both decoders refuse duplicate keys, decimal/exponent
 integer tokens and malformed field types before transition. Valid whitespace, escapes,
 reordered keys and integer negative-zero spelling remain usable. Movement, food placement,
 growth, clocks, descriptor and snapshot field sets are unchanged (decoder correction introduced
-in kernel 0.3.146; current kernel 0.3.148 includes the separate catalog null-tier and
-due-cross-gate fixes).
+in kernel 0.3.146; separate catalog null-tier and due-cross-gate fixes followed in
+0.3.147 and 0.3.148).
 
 `testdata/arcade/snake-snapshot-negatives-v1.json` supplies 45 shared raw negatives and seven
 legal controls over actual genesis, moved/grown playing and cleared terminal states. Go and

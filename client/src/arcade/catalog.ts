@@ -1,5 +1,7 @@
 // Demo Disc Arcade pinned artifact (AR1.2/AR3.1/AR4.1), the TS mirror of
 // server/arcade/catalog.go. Cross-artifact checks belong to replay loading.
+import { parseIntegerCatalogJSON } from "../catalog-json";
+
 export const ARCADE_SCHEMA_VERSION = 1 as const;
 export const ARCADE_ENGINE_VERSION = "1.0.0" as const;
 const STAGE_TIER_MAX = 9;
@@ -18,6 +20,11 @@ export interface ArcadeCatalog {
 }
 
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
+
+/** Validate raw tokens before object parsing can erase duplicates or round numbers. */
+export function loadArcadeCatalogJSON(text: string, declaredCopyKeys: ReadonlySet<string>): ArcadeCatalog {
+  return parseArcadeCatalog(parseIntegerCatalogJSON(text, "Arcade catalog"), declaredCopyKeys);
+}
 
 export function parseArcadeCatalog(source: unknown, declaredCopyKeys: ReadonlySet<string>): ArcadeCatalog {
   if (declaredCopyKeys.size === 0) throw new SyntaxError("arcade copy registry is empty");

@@ -1,7 +1,7 @@
 import { substream } from "../combat/rng";
 import type { ArcadeSnakeContent } from "./catalog";
 import { parseSnapshotJSON } from "./snapshot-json";
-import { ArcadeRejection, encodeCanonical, keysOf, parseCommandObject, requireLiteralScaling, resolveArcadeCatalog, safeInteger,
+import { ArcadeRejection, encodeCanonical, keysOf, parseCommandObject, requireCommandIntegerTokens, requireLiteralScaling, resolveArcadeCatalog, safeInteger,
   type ArcadeApplyInput, type ArcadeCreateInput, type ArcadeResult } from "./common";
 
 // `snake` 1.0.0 (AR4), the TS mirror of server/arcade/snake.go. The client
@@ -131,12 +131,13 @@ function terminate(snapshot: SnakeMutable, outcome: "cleared" | "crashed" | "qui
 export function decodeSnakeCommand(source: string): SnakeCommand {
   const row = parseCommandObject(source, () => { throw new ArcadeRejection("illegal_phase", "command is not an object"); });
   if (row.kind === "advance") {
+    requireCommandIntegerTokens(source, () => { throw new ArcadeRejection("advance_window", "advance requires safe integer tokens"); });
     if (keysOf(row) !== "kind\0through_tick\0turns" || !Array.isArray(row.turns)) throw new ArcadeRejection("advance_window", "advance schema mismatch");
-    if (!safeInteger(row.through_tick)) throw new ArcadeRejection("advance_window", "through_tick must be a safe integer");
+    if (!safeInteger(row.through_tick) || Object.is(row.through_tick, -0)) throw new ArcadeRejection("advance_window", "through_tick must be a safe integer");
     const turns = row.turns.map((item): SnakeTurn => {
       if (item === null || typeof item !== "object" || Array.isArray(item) || keysOf(item as Record<string, unknown>) !== "direction\0tick") throw new ArcadeRejection("advance_window", "turn schema mismatch");
       const turn = item as Record<string, unknown>;
-      if (!safeInteger(turn.tick) || typeof turn.direction !== "string") throw new ArcadeRejection("advance_window", "turn tick must be a safe integer and direction a string");
+      if (!safeInteger(turn.tick) || Object.is(turn.tick, -0) || typeof turn.direction !== "string") throw new ArcadeRejection("advance_window", "turn tick must be a safe integer and direction a string");
       if (!isSnakeDirection(turn.direction)) throw new ArcadeRejection("invalid_turn", "unknown direction");
       return { tick: turn.tick, direction: turn.direction };
     });

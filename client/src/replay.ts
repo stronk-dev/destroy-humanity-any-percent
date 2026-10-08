@@ -28,7 +28,7 @@ import { loadGardenCatalog, type GardenCatalog } from "./garden/catalog";
 import { advanceGarden, encodeGardenState, gardenAdvanceVisible, gateGarden, GardenRejection, harvestGarden, newGardenState, parseGardenState, plantGarden, setGardenSubstrate, uprootGarden, validGardenHarvestTargets, type GardenAdvance, type GardenHarvest, type GardenState } from "./garden/engine";
 import { encodePetIdentities, initialPetCareState, parsePetIdentities, type PetIdentity } from "./pet/identity";
 import { loadTyperCatalogJSON, type TyperCatalog } from "./typer/catalog";
-import { ARCADE_ENGINE_VERSION, parseArcadeCatalog, type ArcadeCatalog } from "./arcade/catalog";
+import { ARCADE_ENGINE_VERSION, loadArcadeCatalogJSON, type ArcadeCatalog } from "./arcade/catalog";
 import { parsePitchCatalog, type PitchCatalog } from "./pitch/catalog";
 import { parsePetCareStates, validatePetCareStatesForCatalog, type PetCareState } from "./pet/state";
 import { applyPetCareTransition, careStatus, eligibleCareActions } from "./pet/transition";
@@ -219,7 +219,7 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   }
   // AR-P1 loader chain: arcade-engine definitions exist exactly when the arcade
   // artifact does, every stage toy resolves to one, and each is a minigame_api tenant.
-  const arcade = artifacts.arcade === undefined ? undefined : parseArcadeCatalog(parseJSON(artifacts.arcade), new Set(COPY_KEYS));
+  const arcade = artifacts.arcade === undefined ? undefined : loadArcadeCatalogJSON(artifacts.arcade, new Set(COPY_KEYS));
   const arcadeDefinitions = (minigames?.minigames ?? []).filter((row) => row.engine_ref === "mine_grid" || row.engine_ref === "snake");
   if (arcadeDefinitions.some((row) => arcade === undefined || row.engine_version !== ARCADE_ENGINE_VERSION ||
       minigameAPI !== undefined && !minigameAPI.tenants.some((tenant) => tenant.minigameId === row.minigame_id && tenant.engineRef === row.engine_ref && tenant.engineVersion === row.engine_version)) ||

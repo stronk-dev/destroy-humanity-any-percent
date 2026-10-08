@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "catalog": [
+    {"name":"duplicate root key","find":"\"schema_version\":1","replace":"\"schema_version\":1,\"schema_version\":1","valid":false},
+    {"name":"escaped duplicate root key","find":"\"schema_version\":1","replace":"\"schema_version\":1,\"schema_versio\\u006e\":1","valid":false},
+    {"name":"duplicate nested key","find":"\"start_length\":3","replace":"\"start_length\":3,\"start_length\":3","valid":false},
+    {"name":"decimal schema version","find":"\"schema_version\":1","replace":"\"schema_version\":1.0","valid":false},
+    {"name":"exponent stage tier","find":"\"min_tier\":0","replace":"\"min_tier\":0e0","valid":false},
+    {"name":"underflow stage tier","find":"\"min_tier\":0","replace":"\"min_tier\":1e-400","valid":false},
+    {"name":"rounded preset width","find":"\"width\":30","replace":"\"width\":30.0000000000000001","valid":false},
+    {"name":"decimal snake budget","find":"\"max_ticks_per_advance\":64","replace":"\"max_ticks_per_advance\":64.0","valid":false},
+    {"name":"negative zero stage tier","find":"\"min_tier\":0","replace":"\"min_tier\":-0","valid":true},
+    {"name":"escaped key","find":"\"start_length\":3","replace":"\"start_lengt\\u0068\":3","valid":true},
+    {"name":"whitespace integer","find":"\"width\":30","replace":"\"width\": 30 ","valid":true},
+    {"name":"number-like string","find":"\"stage_id\":\"cover_disc\"","replace":"\"stage_id\":\"cover_e3\"","valid":true}
+  ],
+  "commands": [
+    {"name":"Mine Grid duplicate kind","engine":"mine_grid","raw":"{\"kind\":\"reveal\",\"kind\":\"reveal\",\"cell\":0}","expect":"illegal_phase"},
+    {"name":"Mine Grid duplicate cell","engine":"mine_grid","raw":"{\"kind\":\"reveal\",\"cell\":0,\"cell\":0}","expect":"illegal_phase"},
+    {"name":"Mine Grid escaped duplicate","engine":"mine_grid","raw":"{\"kind\":\"reveal\",\"cell\":0,\"cel\\u006c\":0}","expect":"illegal_phase"},
+    {"name":"Mine Grid decimal cell","engine":"mine_grid","raw":"{\"kind\":\"reveal\",\"cell\":0.0}","expect":"cell_out_of_range"},
+    {"name":"Mine Grid exponent cell","engine":"mine_grid","raw":"{\"kind\":\"reveal\",\"cell\":0e0}","expect":"cell_out_of_range"},
+    {"name":"Mine Grid underflow cell","engine":"mine_grid","raw":"{\"kind\":\"reveal\",\"cell\":1e-400}","expect":"cell_out_of_range"},
+    {"name":"Mine Grid negative zero cell","engine":"mine_grid","raw":"{\"kind\":\"reveal\",\"cell\":-0}","expect":"cell_out_of_range"},
+    {"name":"Mine Grid valid zero","engine":"mine_grid","raw":" {\"cell\": 0, \"kind\":\"reveal\"} ","expect":"applied"},
+    {"name":"Mine Grid escaped key","engine":"mine_grid","raw":"{\"kind\":\"reveal\",\"cel\\u006c\":0}","expect":"applied"},
+    {"name":"Snake duplicate kind","engine":"snake","raw":"{\"kind\":\"advance\",\"kind\":\"advance\",\"through_tick\":1,\"turns\":[]}","expect":"illegal_phase"},
+    {"name":"Snake nested duplicate tick","engine":"snake","raw":"{\"kind\":\"advance\",\"through_tick\":1,\"turns\":[{\"tick\":1,\"tick\":1,\"direction\":\"up\"}]}","expect":"illegal_phase"},
+    {"name":"Snake escaped duplicate direction","engine":"snake","raw":"{\"kind\":\"advance\",\"through_tick\":1,\"turns\":[{\"tick\":1,\"direction\":\"up\",\"directio\\u006e\":\"up\"}]}","expect":"illegal_phase"},
+    {"name":"Snake decimal through tick","engine":"snake","raw":"{\"kind\":\"advance\",\"through_tick\":1.0,\"turns\":[]}","expect":"advance_window"},
+    {"name":"Snake exponent through tick","engine":"snake","raw":"{\"kind\":\"advance\",\"through_tick\":1e0,\"turns\":[]}","expect":"advance_window"},
+    {"name":"Snake rounded through tick","engine":"snake","raw":"{\"kind\":\"advance\",\"through_tick\":1.0000000000000001,\"turns\":[]}","expect":"advance_window"},
+    {"name":"Snake exponent turn tick","engine":"snake","raw":"{\"kind\":\"advance\",\"through_tick\":1,\"turns\":[{\"tick\":1e0,\"direction\":\"up\"}]}","expect":"advance_window"},
+    {"name":"Snake negative zero turn tick","engine":"snake","raw":"{\"kind\":\"advance\",\"through_tick\":1,\"turns\":[{\"tick\":-0,\"direction\":\"up\"}]}","expect":"advance_window"},
+    {"name":"Snake unknown direction unchanged","engine":"snake","raw":"{\"kind\":\"advance\",\"through_tick\":1,\"turns\":[{\"tick\":1,\"direction\":\"sideways\"}]}","expect":"invalid_turn"},
+    {"name":"Snake valid advance","engine":"snake","raw":"{\"turns\":[],\"through_tick\": 1,\"kind\":\"advance\"}","expect":"applied"},
+    {"name":"Snake valid escaped direction","engine":"snake","raw":"{\"kind\":\"advance\",\"through_tick\":1,\"turns\":[{\"tick\":1,\"direction\":\"u\\u0070\"}]}","expect":"applied"}
+  ]
+}

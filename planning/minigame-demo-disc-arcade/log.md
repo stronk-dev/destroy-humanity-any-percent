@@ -2209,3 +2209,42 @@ the test-only supplement, its diagnostics and docs/tracking. RP-211 is an unreso
 owner-copy gap, not part of a claimed fix. All runtime probes are restored; the tree has no
 remaining source mutation. The next lane is other accepted work and the named author/owner
 routes, not public Arcade construction without its authority.
+
+## 2026-10-08 — Raw Arcade catalog/command admission parity (RP-431)
+
+Outcome under AR1.2/AR3/AR4/AR7: the client must not erase malformed raw content or commands
+before checking the same grammar as Go. At b277d620, shared raw vectors reproduce22 client
+engine failures and one replay-bundle failure (23246); the latter admits both freshly hashed
+duplicate-key and exponent-tier catalogs. Unchanged Go35981 passes all32 shared cases through
+the catalog, both tenant create entries, and direct command validation/apply with no input
+mutation or output on refusal. Raw commands deliberately bypass the test helper's JSON
+canonicalization, which would otherwise conceal these failures.
+
+Both TS engines and bundle loading now use the existing raw catalog scanner. Commands check
+unique decoded keys first and numeric spelling after kind dispatch, preserving rejection codes.
+Go's canonical command integers exclude -0; catalog stage-tier -0 remains valid. Shared vectors
+retain escaped keys/directions, whitespace and valid engine steps. Kernel177→178 records a
+real client admission change; no Go gameplay, balance/content bytes, public API, copy, schema,
+provider, timeout, retry or CI configuration change. Existing corpus bytes remain unchanged.
+
+Finished-batch executed checks:
+
+- Focused Node26556:120/120; affected Arcade/replay99618:594 pass/19 browser-only skips.
+- Declared Linux browser service25097, cold frozen install and four selected existing/new files:
+ 444/444 in Chromium/Firefox/WebKit,12 file populations, zero skips.
+- Full client71365:10255 pass/928 existing skips,115 files pass/23 skipped; source boundaries
+ and negatives pass. Types/build22877 pass, zero errors/warnings.
+- Cold complete Arcade/Kernel/Minigame packages and vet51022 pass. Initial broader Go selector
+ was incorrectly shell-quoted and failed before tests; the corrected root invocation above
+ runs complete affected packages, not the failed selection.
+- Real Postgres target5086 executes all four existing production Arcade integration functions:
+ atomic starts/low-Soul refusals, play/zero-credit resolution, rejected advances with unchanged
+ persisted state/history and released claims, and active/claimed/quit/Exit behavior. All pass.
+- verify-kernel-version47481 stays RED at historical50a3a514 after checkout/negative guards
+ pass; the new semantic bump is not a historical exemption. Diff/format/whitespace inspected.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range:b277d620
+exclusive through this coherent source/tests/docs/record commit; Claude designated review
+remains pending independently of prior ranges. No full raw/domain parity, public browser-to-
+Arcade service journey, feature acceptance, archival, push or green-CI claim. Public API C2,
+RP-211 copy/contract, AR8 mint and other acceptance/review holds remain separate.

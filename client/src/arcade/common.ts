@@ -1,5 +1,6 @@
 import { COPY_KEYS } from "../copy";
-import { arcadeContentHash, parseArcadeCatalog, ARCADE_SCHEMA_VERSION, type ArcadeCatalog } from "./catalog";
+import { parseIntegerCatalogJSON, parseUniqueKeysJSON } from "../catalog-json";
+import { arcadeContentHash, loadArcadeCatalogJSON, ARCADE_SCHEMA_VERSION, type ArcadeCatalog } from "./catalog";
 
 export interface ArcadeContentInput { readonly content: string; readonly content_hash: string; readonly content_schema_version: number }
 export interface ArcadeCreateInput extends ArcadeContentInput { readonly seed: bigint; readonly mode: "solo"; readonly scaling_inputs: Readonly<Record<string, number>> }
@@ -10,7 +11,7 @@ export class ArcadeRejection extends Error { constructor(readonly code: string, 
 
 export async function resolveArcadeCatalog(input: ArcadeContentInput): Promise<ArcadeCatalog> {
   if (input.content_schema_version !== ARCADE_SCHEMA_VERSION || input.content_hash !== await arcadeContentHash(input.content)) throw new SyntaxError("arcade content identity mismatch");
-  return parseArcadeCatalog(JSON.parse(input.content), new Set(COPY_KEYS));
+  return loadArcadeCatalogJSON(input.content, new Set(COPY_KEYS));
 }
 
 /** AR2's only scaling input: the literal breadth 1 at the toy's destination. */
@@ -29,9 +30,14 @@ export function encodeCanonical(value: unknown): string {
 
 export function parseCommandObject(source: string, onInvalid: () => never): Record<string, unknown> {
   let value: unknown;
-  try { value = JSON.parse(source); } catch { onInvalid(); }
+  try { value = parseUniqueKeysJSON(source, "Arcade command"); } catch { onInvalid(); }
   if (value === null || typeof value !== "object" || Array.isArray(value)) onInvalid();
   return value as Record<string, unknown>;
+}
+
+/** Run after kind dispatch so malformed integers retain that command's error class. */
+export function requireCommandIntegerTokens(source: string, onInvalid: () => never): void {
+  try { parseIntegerCatalogJSON(source, "Arcade command"); } catch { onInvalid(); }
 }
 
 export function keysOf(row: Record<string, unknown>): string { return Object.keys(row).sort().join("\0"); }

@@ -1,7 +1,7 @@
 import { substream } from "../combat/rng";
 import { arcadePreset, type ArcadeCatalog } from "./catalog";
 import { parseSnapshotJSON } from "./snapshot-json";
-import { ArcadeRejection, encodeCanonical, keysOf, parseCommandObject, requireLiteralScaling, resolveArcadeCatalog, safeInteger,
+import { ArcadeRejection, encodeCanonical, keysOf, parseCommandObject, requireCommandIntegerTokens, requireLiteralScaling, resolveArcadeCatalog, safeInteger,
   type ArcadeApplyInput, type ArcadeCreateInput, type ArcadeResult } from "./common";
 
 // `mine_grid` 1.0.0 (AR3), the TS mirror of server/arcade/mine_grid.go.
@@ -145,7 +145,8 @@ export function decodeMineGridCommand(source: string): MineGridCommand {
     return { kind: "choose_board", preset_id: row.preset_id };
   }
   if (row.kind === "reveal" || row.kind === "toggle_flag" || row.kind === "chord") {
-    if (keysOf(row) !== "cell\0kind" || !safeInteger(row.cell)) throw new ArcadeRejection("cell_out_of_range", "cell command requires an integer cell");
+    requireCommandIntegerTokens(source, () => { throw new ArcadeRejection("cell_out_of_range", "cell must be a safe integer"); });
+    if (keysOf(row) !== "cell\0kind" || !safeInteger(row.cell) || Object.is(row.cell, -0)) throw new ArcadeRejection("cell_out_of_range", "cell command requires an integer cell");
     return { kind: row.kind, cell: row.cell };
   }
   if (row.kind === "quit") {

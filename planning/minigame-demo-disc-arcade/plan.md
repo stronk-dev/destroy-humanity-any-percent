@@ -3,6 +3,12 @@
 RFC: `rfc/minigame-demo-disc-arcade.md` (accepted 2026-09-25, recommended defaults). Fixture-first;
 no production mint (AR8). Implemented by Claude; every range awaits Codex designated review.
 
+**Current bounded correction, 2026-10-08:** RP-431 aligns TS raw catalog and command admission
+with the existing Go contract, including the replay-bundle entry. Shared raw vectors reproduce
+the old mismatch and pass after correction; kernel0.3.178 records the acceptance-set change.
+The owning log holds executed scope and the new Codex range awaiting Claude. This does not
+approve original A1–A7, resolve the public-wire choice, mint content or complete Arcade.
+
 - [x] A1 — `arcade` artifact grammar (AR1.2/AR3.1/AR4.1): Go + TS loaders, one shared fixture,
   loader-bound rejections, candidate copy keys (AR6.6) in `copy/catalog/arcade-candidate.json`.
   RP-199 adds matched 22-case Go/TS negative populations, real valid boundary/stage controls
