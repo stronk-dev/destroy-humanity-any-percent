@@ -35,7 +35,28 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
-- Latest finished batch `c78501d1` adds actual no-payment negative builds to the existing
+- Latest finished product batch `4055b4fe` fixes terminal minigame failure recovery: rolled-back
+  API commands release only their own resolution claim, allowing an immediate retry instead
+  of waiting for the five-minute lease. Real Linux/amd64/Postgres tests exercise rollback,
+  cancellation, replaced-worker ownership, committed-result protection and exactly-once retry;
+  all ten minigame database integration functions execute and pass. Affected client checks,
+  types, build and API generation pass. Earlier `b0eab61f` prevents detached Pitch surfaces from
+  reacting to late responses. Both exact ranges need designated review; neither completes the
+  Minigame/API features or resolves Typer/Arcade's public-wire choice. The
+  [Minigame API log](minigame-api-and-surface/log.md) owns results and limits.
+- `4b8861d9` implements the source-independent Headcount allocation library in Go/TS, with
+  shared vectors, independent arbitrary-precision checks, native browser and Linux/amd64
+  execution. Only tests consume it: **there is no live Headcount allocation gameplay yet**.
+  Seat-source and sibling contract conflicts remain unruled (RP-413/RP-414). `dbd8e274` adds
+  native PR help under the existing Clout contract, with affected browser and real-service
+  checks; its text remains pending owner copy. Account Recovery's player flow is a draft,
+  not an implemented capability. These advances do not change the milestone reached.
+- Deployment's private operations composition remains unexecuted here. A fresh 2026-10-08
+  check finds Docker's overlay at zero available / 100% and the declared Caddy, Alertmanager
+  and node-exporter images absent. No image substitution, cleanup or successful Compose run
+  is inferred; the owning Deployment log records this environment boundary. The previously
+  executed native alert delivery tests are narrower evidence, not a substitute for this gate.
+- Latest full composed evidence `c78501d1` adds actual no-payment negative builds to the existing
   composed CI target. Both built Buy callbacks (checkout fetch and PaymentRequest) must fail
   through the intended detector after native input and the authoritative purchase; unrelated
   failure or incomplete cleanup is rejected. The final local `make test-game-ui-composed`
@@ -45,7 +66,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
   real Postgres. These are completed local test/tool batches, not new later-game features,
   complete Cosmetic acceptance or hosted success. Their exact ranges and remaining review
   live in the [Cosmetic log](cosmetic-shop-v1/log.md).
-- Most recent product correction `2fff9748` fixes cosmetic replay-input admission: Go now rejects missing,
+- Cosmetic correction `2fff9748` fixes replay-input admission: Go now rejects missing,
   null, unsafe or extraneous recorded Company context consistently with TS. Shared valid cases
   preserve full receipt/event/state bytes; rejected cases cannot mutate state. Selected real
   Postgres command, retry/conflict, Exit, Soul recovery and history tests pass, as do affected

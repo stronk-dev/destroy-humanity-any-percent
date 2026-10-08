@@ -4649,3 +4649,14 @@ review range. R11's original correction retains its separate bounded designated 
 Actual private-network services, Caddy isolation, real Postgres/cleanup coordinator, other live
 rule producers, release images and R-006 remain unproved here; original R5 and all older ranges
 remain open. No acceptance checkbox, CI, runtime, kernel, balance, archive or publication change.
+
+## 2026-10-08 — R5 resumption: private composition still environment-blocked
+
+At `4055b4fe`, re-read the shipped operations Compose profile, its real-service test and DP7/DP8
+contract. Read-only inspection finds Docker's overlay at zero available / 100%; the exact pinned
+Caddy, Alertmanager and node-exporter images are absent. The pinned Prometheus image is present
+as Linux/amd64. An initial node-exporter lookup used an incorrect digest; the subsequent lookup
+used the exact Compose digest and also found it absent. No pull, service run or cleanup was
+attempted, and no executed test or R5 verdict is claimed. Existing native supplements do not
+prove the private network/Caddy boundary. Resume the declared composition when Docker capacity
+is restored; do not substitute images or waive its gate. No product or test-tool change.
