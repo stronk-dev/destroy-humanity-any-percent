@@ -257,15 +257,14 @@ func validateSchema(schema *Schema, definitions map[string]*Schema, depth int) e
 	return nil
 }
 
+// ValidateJSON checks the decoded value against the closed descriptor. Artifact
+// owners also use it and retain encoding/json's last-value member semantics.
+// HTTP requests, responses and registered literals additionally require the
+// original-byte uniqueness check in validateWireJSON.
 func ValidateJSON(schemaName string, data []byte, definitions map[string]*Schema) error {
 	schema := definitions[schemaName]
 	if schema == nil {
 		return ErrInvalidSchema
-	}
-	// Map decoding discards duplicate members, including escaped spellings of
-	// the same name. Validate the original bytes before that evidence is lost.
-	if rejectDuplicateJSONKeys(data) != nil {
-		return fmt.Errorf("%w: ambiguous or malformed JSON", ErrInvalidSchema)
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.UseNumber()

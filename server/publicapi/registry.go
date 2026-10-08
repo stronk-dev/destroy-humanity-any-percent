@@ -221,6 +221,15 @@ func (registry *Registry) cursorSchema(operationID string) (string, bool) {
 	return operation.CursorKey, ok && operation.CursorKey != ""
 }
 
+func validateWireJSON(schemaName string, data []byte, definitions map[string]*Schema) error {
+	// Map decoding erases duplicate members, including escaped spellings. Keep
+	// this admission rule at the HTTP boundary, not in shared artifact decoding.
+	if rejectDuplicateJSONKeys(data) != nil {
+		return fmt.Errorf("%w: ambiguous or malformed JSON", ErrInvalidSchema)
+	}
+	return ValidateJSON(schemaName, data, definitions)
+}
+
 func (registry *Registry) ValidateResponse(operationID string, status int, data []byte) error {
 	operation, ok := registry.byID[operationID]
 	if !ok {
@@ -228,7 +237,7 @@ func (registry *Registry) ValidateResponse(operationID string, status int, data 
 	}
 	for _, response := range operation.Responses {
 		if response.Status == status && response.Kind == ResponseSchema {
-			if err := ValidateJSON(response.SchemaRef, data, registry.schemas); err != nil {
+			if err := validateWireJSON(response.SchemaRef, data, registry.schemas); err != nil {
 				return err
 			}
 			if len(response.ExactJSON) == 0 {
@@ -256,7 +265,7 @@ func (registry *Registry) ValidateRequest(operationID string, data []byte) error
 		}
 		return nil
 	}
-	return ValidateJSON(operation.Request, data, registry.schemas)
+	return validateWireJSON(operation.Request, data, registry.schemas)
 }
 
 func (registry *Registry) ValidateRawResponse(operationID string, status int, contentType string, data []byte, contentHash string) error {
@@ -287,7 +296,7 @@ func validResponse(response Response, definitions map[string]*Schema) bool {
 		}
 		var previous []byte
 		for _, literal := range response.ExactJSON {
-			if len(literal) == 0 || previous != nil && bytes.Compare(previous, literal) >= 0 || ValidateJSON(response.SchemaRef, literal, definitions) != nil {
+			if len(literal) == 0 || previous != nil && bytes.Compare(previous, literal) >= 0 || validateWireJSON(response.SchemaRef, literal, definitions) != nil {
 				return false
 			}
 			previous = literal

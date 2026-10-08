@@ -1282,3 +1282,37 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 after `13acd872` through this coherent repair/test/docs/record commit; designated review
 pending, not conflated with preceding ranges. No checkbox/archive/release/push promotion.
 Both full process handles are terminal. Next: repair the demonstrated Garden observer failure.
+
+## 2026-10-08 — Keep HTTP admission out of historical artifact decoding (RP-449)
+
+Outcome: API A5/C17/C18. RP-439 added HTTP duplicate rejection to the shared descriptor
+validator, also used by formula artifacts. That unintentionally narrowed the previously
+implemented Go/TypeScript last-value decoding contract. Its earlier affected-package selection
+missed formulas/replaycatalog; the published failure reproduces locally. Move original-byte
+uniqueness into registry request/response admission and exact-literal construction. Generic
+descriptor validation again preserves the established artifact grammar. No formula fixture,
+stored/generated artifact, schema pin, arithmetic, watched source, kernel version or policy
+change; raw historical bytes remain identity-bearing and unchanged.
+
+Regression: the prior cold formulas/replaycatalog run fails existing duplicate/overwritten
+nesting controls. New shared-versus-HTTP regression42901 also fails the old code with
+"shared decoder contract narrowed". Corrected Go formula/replay controls and unchanged
+TypeScript controls pass. Existing escaped/nested duplicate HTTP refusal tests remain green;
+an additional exact-literal member-repeat case prevents the construction path losing its check.
+
+Coverage: cold99380 tests/vet pass publicapi, formulas, replaycatalog, both generators,
+publicread, Account, Game UI and gameserver;60044 additionally passes leaderboard/vet.
+Final publicapi tests also pass after adding the literal control. Node99072 passes all121
+formula/replay tests. `make formulas-check api-check`10255 preserves generated formula,
+client metadata, OpenAPI, TypeScript and compatibility-pin bytes. Real Postgres52249 executes
+session request admission, composed Minigame/Soul request refusal/lifecycle and stored formula
+replay; all pass. Its selected publicread package has no matching tests and contributes no DB
+proof. Separate leaderboard91150 executes all nine historical catalog cases, including exact
+stored formula bytes and corrupt/refused sets; all pass. First malformed shell selector exits2
+before running tests, then is corrected. Gofmt/diff checks pass; all sessions are terminal.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range begins
+after `c0809cab` through this coherent source/tests/docs/plan/ledger/checkpoint/log commit;
+designated review pending. No whole-browser/whole-CI, public catalog HTTP completion, mint,
+acceptance, archive, push or release claim. RP-131/RP-307/RP-450/RP-451 remain open; next
+diagnose socket-revocation and Firefox failures independently under their existing contracts.

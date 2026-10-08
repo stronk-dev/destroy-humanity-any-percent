@@ -2,8 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current bounded correction (2026-10-08, RP-449): duplicate-member rejection belongs at
+registry HTTP admission, including exact-response literal construction. Shared descriptor
+validation restores the existing Go/TypeScript formula-artifact last-value contract without
+rewriting stored bytes or changing fixtures. The owning log records regression, consumer and
+Postgres results and the pending designated-review range; this is not full API/CI acceptance.
+
 Bounded validator correction (2026-10-08, RP-439): raw duplicate object members now refuse
-before schema map decoding, including escaped/nested names. The old-behavior regression,
+at HTTP admission before schema map decoding, including escaped/nested names. The old-behavior regression,
 affected packages/vet and byte-unchanged API generation pass locally. No handler output,
 DSL extension, request middleware or full conformance claim; designated review remains.
 

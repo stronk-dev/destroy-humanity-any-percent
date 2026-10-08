@@ -49,6 +49,12 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest API correction (2026-10-08): RP-449 is locally corrected by separating strict
+  registry HTTP admission from shared artifact descriptor validation. Unchanged Go/TypeScript
+  formula/replay controls and actual Postgres request/catalog/formula populations pass;
+  generated contracts/artifacts remain byte-identical. The [API log](api-foundation/log.md)
+  owns the pending designated-review range. This does not repair the other CI failures or
+  make the earlier published run green.
 - Latest Garage checkpoint (2026-10-08): RP-448's analogous Founder handoff is locally
   corrected under GS0.2/GS1-A6. The shared dispatcher compares the actual read's Founder
   revision with the applied receipt, including across Company changes; Company revisions

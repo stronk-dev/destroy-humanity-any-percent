@@ -11,12 +11,16 @@ values consumed by runtime mounting, OpenAPI generation, TypeScript generation, 
 v1 compatibility pin. Authenticated Soul Recovery and minigame routes mount exclusively from this
 registry; missing, extra, unsorted, or nil runtime bindings fail during router construction.
 
-`ValidateJSON` checks raw object-member uniqueness before decoding to maps. Duplicate names
+HTTP registry admission checks raw object-member uniqueness before decoding to maps. Duplicate names
 at any level, including different escape spellings of the same name, return `ErrInvalidSchema`
 rather than silently keeping the final value. Valid escaped names, string contents resembling
 JSON and repeated names in separate objects remain allowed. `ValidateRequest` and
 `ValidateResponse` share this check; it does not add request-validation middleware to handlers
 that do not already call the registry, or rewrite any successful handler response.
+Registered exact-response literals require the same admission at construction. The shared
+`ValidateJSON` descriptor checker retains `encoding/json` last-value decoding for artifact
+owners; formula replay artifacts depend on that existing Go/TypeScript contract. Their original
+bytes and hash identity are not normalized or rewritten by HTTP validation.
 
 Bootstrap, session creation/refresh, minigame create/command/resolve and all four Soul-Recovery
 writes now validate original size-bounded request bytes through their registered descriptors

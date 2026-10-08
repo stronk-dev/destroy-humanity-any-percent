@@ -133,6 +133,37 @@ func TestSchemaRegistryRejectsDuplicateRequestMembers(t *testing.T) {
 	}
 }
 
+func TestSchemaValidationPreservesStoredDecoderSemanticsWithoutWeakeningWireAdmission(t *testing.T) {
+	definitions, err := ValidateSchemaDefinitions(testSchemas())
+	if err != nil {
+		t.Fatal(err)
+	}
+	registry := testRegistry(t)
+	// Stored artifact owners share descriptor validation, not HTTP admission.
+	// Retain the decoder's last-value semantics while rejecting these same bytes
+	// at the wire boundary. Both checks still require the closed schema.
+	for _, body := range []string{
+		`{"category":"private","category":"invalid","detail":"body"}`,
+		`{"category":"invalid","detail":"first","\u0064etail":"body"}`,
+	} {
+		if err := ValidateJSON("APIError", []byte(body), definitions); err != nil {
+			t.Fatalf("shared decoder contract narrowed: %v", err)
+		}
+		if err := registry.ValidateResponse("get_epochs", 400, []byte(body)); !errors.Is(err, ErrInvalidSchema) {
+			t.Fatalf("ambiguous HTTP response admitted: %v", err)
+		}
+	}
+	for _, body := range []string{
+		`{"category":"invalid","category":"private","detail":"body"}`,
+		`{"category":"invalid","detail":"body","private":true}`,
+		`{"category":"invalid","detail":"body"} {}`,
+	} {
+		if err := ValidateJSON("APIError", []byte(body), definitions); !errors.Is(err, ErrInvalidSchema) {
+			t.Fatalf("invalid decoded schema admitted: %v", err)
+		}
+	}
+}
+
 func TestSchemaRegistryRejectsReferenceCycles(t *testing.T) {
 	for name, schemas := range map[string][]NamedSchema{
 		"direct": {{Name: "Loop", Schema: &Schema{Kind: SchemaRef, Ref: "Loop"}}},
@@ -215,6 +246,7 @@ func TestRegistryExactJSONIsClosedAndDiscriminating(t *testing.T) {
 		"empty":          {{}},
 		"duplicate":      {bytes.Clone(exact), bytes.Clone(exact)},
 		"schema-invalid": {[]byte(`{"category":"not_registered","detail":"body"}` + "\n")},
+		"member-repeat":  {[]byte(`{"category":"unknown_id","category":"invalid","detail":"body"}`)},
 		"unsorted":       {unknown, bytes.Clone(exact)},
 	} {
 		t.Run(name, func(t *testing.T) {
