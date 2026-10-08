@@ -191,6 +191,19 @@ func (service *Service) PlayWithReceipt(ctx context.Context, request PlayRequest
 	return service.play(ctx, request, commandID, requestHash, build)
 }
 
+// ReleaseResolutionClaim returns an unsuccessfully coordinated terminal play
+// to its last committed snapshot. The opaque certification owns only its
+// original token: a replaced claim or committed resolution returns ErrClaimLost
+// without changing that newer state. Callers must not reuse a released
+// certification; retry the original play request to obtain a fresh one.
+func (service *Service) ReleaseResolutionClaim(ctx context.Context, resolution *CertifiedResolution) error {
+	if service == nil || resolution == nil || !validResolutionIdentity(resolution.identity) {
+		return ErrInvalidSession
+	}
+	identity := resolution.identity
+	return service.repository.releaseClaim(ctx, identity.founderID, identity.sessionID, identity.claimToken)
+}
+
 func (service *Service) play(ctx context.Context, request PlayRequest, commandID, requestHash string,
 	build CommandReceiptBuilder,
 ) (decision APIPlayDecision, err error) {

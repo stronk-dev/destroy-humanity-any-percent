@@ -28,6 +28,19 @@ events, and replay logs in one transaction. Fault injection covers every write b
 answered from the durable session-ID idempotency receipt without executing the tenant or faucet
 again.
 
+For an API terminal command that returns an error, the coordinator attempts to release
+its original opaque claim token using a context independent of request cancellation.
+After a rolled-back resolution the session returns to active at its previous snapshot
+and revision; the same command ID/body can retry immediately. This performs no automatic
+retry and spends no quota. A replaced token or already-committed terminal row cannot be
+released; a committed command still returns its stored receipt on retry, including after
+a post-commit projection failure. Other cleanup errors remain visible alongside the
+original failure. The five-minute lease still handles an actual crashed worker.
+Kernel0.3.176 records this API failure/recovery behavior change; successful payout and
+replay arithmetic are unchanged. Real Postgres tests cover rollback, cancellation,
+immediate retry, no duplicate credit/revisions/events, replaced-token isolation and
+post-commit receipt survival.
+
 ## Tier unlock arm (TT-PA2)
 
 `unlock_condition` also accepts `{"kind":"tier_at_least","tier":0..9}`, with an optional

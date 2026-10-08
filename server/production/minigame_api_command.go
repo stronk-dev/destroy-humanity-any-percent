@@ -3,6 +3,7 @@ package production
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"regexp"
 	"time"
@@ -24,7 +25,7 @@ type PlayMinigameAPIRequest struct {
 	Command          json.RawMessage
 }
 
-// PlayMinigameAPICommand is the typed, not-yet-mounted MA-C13 coordinator.
+// PlayMinigameAPICommand is the typed MA-C13 coordinator.
 // It checks the durable command receipt before tenant execution, commits a
 // nonterminal response with the snapshot update, and auto-resolves a terminal
 // result through the cross-stream transaction in the same request.
@@ -67,6 +68,14 @@ func (s *Service) PlayMinigameAPICommand(ctx context.Context, platform *minigame
 	resolved, err := s.ResolveMinigameAPICommand(ctx, platform, decision.Resolution,
 		request.CommandID, requestHash, now, fault)
 	if err != nil {
+		// A completed failure is not a crashed worker. Release only our token,
+		// including after request cancellation, so the original command can be
+		// retried without waiting for the crash lease. A lost token is expected
+		// if commit succeeded but later event projection failed, or a newer
+		// worker took over: neither state may be reopened by this cleanup.
+		if releaseErr := platform.ReleaseResolutionClaim(context.WithoutCancel(ctx), decision.Resolution); releaseErr != nil && !errors.Is(releaseErr, minigame.ErrClaimLost) {
+			err = errors.Join(err, releaseErr)
+		}
 		return save.IntentResult{}, err
 	}
 	return save.IntentResult{Outcome: save.IntentApplied, Receipt: resolved.Receipt, Replay: resolved.Replay}, nil

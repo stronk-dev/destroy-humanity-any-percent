@@ -166,8 +166,9 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	projectionFailure := &failNextProjection{}
 	production, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver), WithCurrentConstantsHash(bundle.ConstantsHash),
-		WithReplayCatalogs(ReplayCatalogSet{bundle.ConstantsHash: bundle}), WithGuildSettlements(emptyGuildSettlements{}))
+		WithReplayCatalogs(ReplayCatalogSet{bundle.ConstantsHash: bundle}), WithGuildSettlements(emptyGuildSettlements{}), WithEventProjector(projectionFailure))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -272,27 +273,108 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 		t.Fatalf("API command receipts=%d err=%v", commandReceipts, err)
 	}
 
-	faultSessionID := "01986666-a964-7000-8000-000000000101"
-	if _, err := platform.Start(ctx, minigame.StartRequest{SessionID: faultSessionID, MinigameID: "fixture.counter", FounderID: founderID,
-		CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
-		ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "3", Mode: minigame.ModeSolo}); err != nil {
-		t.Fatal(err)
-	}
-	_, err = production.PlayMinigameAPICommand(ctx, platform, PlayMinigameAPIRequest{FounderID: founderID, SessionID: faultSessionID,
-		CommandID: "terminal-fault", ExpectedRevision: 1, Command: json.RawMessage(`{"add":400,"finish":true}`)}, now.Add(3*time.Minute), func(step string) error {
-		if step == "company_revision" {
-			return errors.New("injected API terminal fault")
-		}
-		return nil
-	})
-	if err == nil {
-		t.Fatal("API terminal fault committed")
-	}
-	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM minigame_command_receipts WHERE session_id=$1`, faultSessionID).Scan(&commandReceipts); err != nil || commandReceipts != 0 {
-		t.Fatalf("API terminal fault receipts=%d err=%v", commandReceipts, err)
-	}
-	if _, err := db.ExecContext(ctx, `DELETE FROM minigame_sessions WHERE session_id=$1`, faultSessionID); err != nil {
-		t.Fatal(err)
+	for index, failure := range []struct {
+		step   string
+		cancel bool
+	}{{step: "company_revision"}, {step: "retention"}, {step: "company_revision", cancel: true}} {
+		t.Run(fmt.Sprintf("API rollback retry %s cancel=%t", failure.step, failure.cancel), func(t *testing.T) {
+			faultSessionID := fmt.Sprintf("01986666-a966-7000-8000-%012d", 300+index)
+			started, startErr := platform.Start(ctx, minigame.StartRequest{SessionID: faultSessionID, MinigameID: "fixture.counter", FounderID: founderID,
+				CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
+				ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "3", Mode: minigame.ModeSolo})
+			if startErr != nil {
+				t.Fatal(startErr)
+			}
+			beforeCompany, loadErr := store.LoadLatest(ctx, companyRevision.StreamID)
+			if loadErr != nil {
+				t.Fatal(loadErr)
+			}
+			beforeFounder, loadErr := store.LoadLatest(ctx, founderRevision.StreamID)
+			if loadErr != nil {
+				t.Fatal(loadErr)
+			}
+			window := func() string {
+				t.Helper()
+				var value string
+				if queryErr := db.QueryRowContext(ctx, `SELECT row_to_json(w)::text FROM minigame_faucet_window w WHERE founder_id=$1 AND minigame_id='fixture.counter'`, founderID).Scan(&value); queryErr != nil {
+					t.Fatal(queryErr)
+				}
+				return value
+			}
+			beforeWindow := window()
+			command := PlayMinigameAPIRequest{FounderID: founderID, SessionID: faultSessionID, CommandID: "terminal-fault", ExpectedRevision: 1,
+				Command: json.RawMessage(`{"add":400,"finish":true}`)}
+			failedCtx, cancel := context.WithCancel(ctx)
+			defer cancel()
+			injected := errors.New("injected API terminal fault")
+			fired := false
+			_, playErr := production.PlayMinigameAPICommand(failedCtx, platform, command, now.Add(2*time.Minute), func(step string) error {
+				if step != failure.step {
+					return nil
+				}
+				fired = true
+				if failure.cancel {
+					cancel()
+				}
+				return injected
+			})
+			if !fired || !errors.Is(playErr, injected) {
+				t.Fatalf("terminal fault fired=%t err=%v", fired, playErr)
+			}
+			failedSession, loadErr := repository.Load(ctx, founderID, faultSessionID)
+			if loadErr != nil || failedSession.Status != minigame.StatusActive || failedSession.ClaimToken != "" || failedSession.ClaimedAt != nil ||
+				failedSession.Revision != started.Revision || !bytes.Equal(failedSession.State, started.State) || len(failedSession.ResolutionReceipt) != 0 {
+				t.Fatalf("failed terminal command must release its claim without applying: session=%+v err=%v", failedSession, loadErr)
+			}
+			for _, before := range []save.Loaded{beforeCompany, beforeFounder} {
+				after, readErr := store.LoadLatest(ctx, before.Revision.StreamID)
+				if readErr != nil || after.Revision.Number != before.Revision.Number || !bytes.Equal(mustEncodeState(t, after.State), mustEncodeState(t, before.State)) {
+					t.Fatalf("failed API terminal command changed stream %s: err=%v", before.Revision.StreamID, readErr)
+				}
+			}
+			var receipts, commands int
+			if queryErr := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM minigame_command_receipts WHERE session_id=$1),(SELECT count(*) FROM minigame_session_commands WHERE session_id=$1)`, faultSessionID).Scan(&receipts, &commands); queryErr != nil || receipts != 0 || commands != 0 || window() != beforeWindow {
+				t.Fatalf("rollback leaked receipts=%d commands=%d err=%v", receipts, commands, queryErr)
+			}
+			// No lease ageing, deletion, replacement command ID or service restart:
+			// the exact failed request can complete immediately and then replay.
+			applied, retryErr := production.PlayMinigameAPICommand(ctx, platform, command, now.Add(2*time.Minute), nil)
+			if retryErr != nil || applied.Replay {
+				t.Fatalf("immediate retry replay=%t err=%v", applied.Replay, retryErr)
+			}
+			appliedHeads := make([]save.Loaded, 0, 2)
+			for _, before := range []save.Loaded{beforeCompany, beforeFounder} {
+				head, readErr := store.LoadLatest(ctx, before.Revision.StreamID)
+				if readErr != nil || head.Revision.Number != before.Revision.Number+1 {
+					t.Fatalf("retry did not advance stream %s once: err=%v", before.Revision.StreamID, readErr)
+				}
+				appliedHeads = append(appliedHeads, head)
+			}
+			beforeCash, _ := beforeCompany.State.Ledger.Balance("company.cash")
+			paidCash, _ := appliedHeads[0].State.Ledger.Balance("company.cash")
+			if paidCash.Sub(beforeCash).String() != "5e1" || !bytes.Contains(applied.Receipt, []byte(`"credited_delta":"5e1"`)) {
+				t.Fatalf("retry payout cash=%s/%s receipt=%s", beforeCash, paidCash, applied.Receipt)
+			}
+			appliedWindow := window()
+			replayed, retryErr := production.PlayMinigameAPICommand(ctx, platform, command, now.Add(2*time.Minute), nil)
+			if retryErr != nil || !replayed.Replay || !bytes.Equal(applied.Receipt, replayed.Receipt) {
+				t.Fatalf("committed retry replay=%t equal=%t err=%v", replayed.Replay, bytes.Equal(applied.Receipt, replayed.Receipt), retryErr)
+			}
+			terminal, loadErr := repository.Load(ctx, founderID, faultSessionID)
+			if loadErr != nil || terminal.Status != minigame.StatusResolved || terminal.Revision != started.Revision+1 {
+				t.Fatalf("retried terminal session=%+v err=%v", terminal, loadErr)
+			}
+			for _, appliedHead := range appliedHeads {
+				after, readErr := store.LoadLatest(ctx, appliedHead.Revision.StreamID)
+				if readErr != nil || after.Revision.Number != appliedHead.Revision.Number || !bytes.Equal(mustEncodeState(t, after.State), mustEncodeState(t, appliedHead.State)) {
+					t.Fatalf("durable replay changed stream %s: err=%v", appliedHead.Revision.StreamID, readErr)
+				}
+			}
+			var events int
+			if queryErr := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM minigame_command_receipts WHERE session_id=$1),(SELECT count(*) FROM minigame_session_commands WHERE session_id=$1),(SELECT count(*) FROM events WHERE intent_id=$1)`, faultSessionID).Scan(&receipts, &commands, &events); queryErr != nil || receipts != 1 || commands != 1 || events != 2 || window() != appliedWindow {
+				t.Fatalf("retry duplicated committed work: receipts=%d commands=%d events=%d err=%v", receipts, commands, events, queryErr)
+			}
+		})
 	}
 
 	faultSteps := []string{"faucet_window", "session_terminal", "founder_revision", "founder_events", "company_revision", "company_events", "run_log", "founder_log", "intent_record", "retention"}
@@ -322,6 +404,37 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+
+	t.Run("API post-commit projection failure preserves terminal receipt", func(t *testing.T) {
+		const sessionID = "01986666-a967-7000-8000-000000000400"
+		if _, err := platform.Start(ctx, minigame.StartRequest{SessionID: sessionID, MinigameID: "fixture.counter", FounderID: founderID,
+			CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
+			ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "3", Mode: minigame.ModeSolo}); err != nil {
+			t.Fatal(err)
+		}
+		command := PlayMinigameAPIRequest{FounderID: founderID, SessionID: sessionID, CommandID: "post-commit", ExpectedRevision: 1,
+			Command: json.RawMessage(`{"add":400,"finish":true}`)}
+		projectionFailure.fail = true
+		if _, err := production.PlayMinigameAPICommand(ctx, platform, command, now.Add(3*time.Minute), nil); !errors.Is(err, ErrInvalidEngineState) || errors.Is(err, minigame.ErrClaimLost) || projectionFailure.fail {
+			t.Fatalf("post-commit projection error=%v fired=%t", err, !projectionFailure.fail)
+		}
+		committed, loadErr := repository.Load(ctx, founderID, sessionID)
+		if loadErr != nil || committed.Status != minigame.StatusResolved || committed.Revision != 2 || len(committed.ResolutionReceipt) == 0 {
+			t.Fatalf("cleanup reopened committed session=%+v err=%v", committed, loadErr)
+		}
+		var storedResponse []byte
+		if err := db.QueryRowContext(ctx, `SELECT response::text FROM minigame_command_receipts WHERE session_id=$1 AND command_id='post-commit'`, sessionID).Scan(&storedResponse); err != nil {
+			t.Fatal(err)
+		}
+		canonicalResponse, err := normalizeReplayJSON(storedResponse)
+		if err != nil {
+			t.Fatal(err)
+		}
+		retried, err := production.PlayMinigameAPICommand(ctx, platform, command, now.Add(3*time.Minute), nil)
+		if err != nil || !retried.Replay || !bytes.Equal(retried.Receipt, canonicalResponse) {
+			t.Fatalf("post-commit receipt retry replay=%t equal=%t err=%v", retried.Replay, bytes.Equal(retried.Receipt, canonicalResponse), err)
+		}
+	})
 
 	// A resolution whose faucet credits nothing (zero score here; an exhausted
 	// daily window or a saturated hardcap reach the same empty ledger receipt)

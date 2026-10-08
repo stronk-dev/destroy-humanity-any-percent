@@ -1039,3 +1039,43 @@ are not thereby approved.
   cross-party review remains pending alongside earlier ranges; no acceptance or
   archival promotion. Next: the existing wider API/Surface closeout, not another
   lifecycle framework. The full-product status remains in `planning/CURRENT-STATE.md`.
+
+## 2026-10-08 — terminal failure releases its own claim (RP-416)
+
+- **Outcome/authority:** MA-C13 / Platform C38's token-owned, atomic terminal
+  coordinator now releases its claim on a returned failure, just as nonterminal
+  play releases rejected work. `ReleaseResolutionClaim` accepts only the opaque
+  certification and cannot release a replaced token or reopen a committed result.
+  Request cancellation does not cancel cleanup; other cleanup errors join the
+  original error. There is no automatic retry or change to the crash lease,
+  public schema, successful payout formula or replay arithmetic. Kernel175→176
+  lands with the real failure/recovery change in all three mirrors.
+- **Regression:** replaced the prior API-fault cleanup-by-deletion with immediate
+  same-ID/body retry. Old-source real Postgres run82333 fails because the first
+  rolled-back session remains claimed at revision1; subsequent cases cannot start
+  because that session blocks exclusive activity, not three independent defect
+  reproductions. Final company-write/final-retention/cancellation cases all reach
+  their named fault, preserve both full save states/revisions, faucet and empty
+  command/receipt history, then immediately credit exactly50 once. Repeated retry
+  returns identical bytes and preserves both heads, faucet and single command/
+  receipt plus two events. No lease ageing/deletion/restart rescues these cases.
+- **Safety controls:** a separate real-DB test deliberately replaces an aged
+  worker claim; old-token cleanup refuses without affecting the new token. Current
+  cleanup restores the committed snapshot; repeated cleanup and cleanup after a
+  real terminal commit refuse unchanged. A real coordinator post-commit projector
+  failure preserves the resolved row and exact SQL-backed command response.
+- **Executed coverage:** final container80544 passes the new claim test, complete
+  resolution/rollback/zero-credit population and composed real-HTTP Pitch/Soul
+  lifecycle; container41275 executes all10 minigame DB integration functions with
+  no skips. Declared `golang:1.26` image is Linux/amd64 (inspected), with real
+  Postgres16. Native minigame/kernel tests and affected vet pass; broad native
+  production retains only the original27 RP-307 Clout partition failures. TS
+  replay/resolution/surface tests103, types (zero diagnostics), production build
+  and byte-unchanged `api-check` pass. No Firefox, browser-fault journey, hosted or
+  whole-CI green claim; the historical kernel guard remains independently open.
+- **Review/handoff:** Review by: Codex (implementer first filter). Recorded by:
+  Codex. Exact new range is `b0eab61f` exclusive through this commit, including
+  the regression, runtime, version and these records. Claude designated review
+  remains pending; no feature acceptance or archival. Typer/Arcade public-wire
+  choice has been requested, not adopted. Clout's undefined projection target,
+  numeric/episode decisions and the full nine-tier release scope remain open.
