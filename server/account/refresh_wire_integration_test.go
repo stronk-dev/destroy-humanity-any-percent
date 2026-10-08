@@ -82,6 +82,9 @@ func refreshPersistenceRequest(t *testing.T, server *testhttp.Server, token stri
 	if response.Header.Get("Content-Type") != "application/json" {
 		t.Fatal("refresh response lost exact application/json content type")
 	}
+	if wantStatus == http.StatusOK && response.Header.Get("Cache-Control") != "no-store" {
+		t.Fatal("rotated credentials are not protected by no-store (body withheld)")
+	}
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		t.Fatal(err)

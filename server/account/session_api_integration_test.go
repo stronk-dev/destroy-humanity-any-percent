@@ -29,6 +29,9 @@ func TestSessionOperationRegistryIntegration(t *testing.T) {
 		if readErr != nil || response.StatusCode != status || response.Header.Get("Content-Type") != "application/json" {
 			t.Fatal("session creation lost its expected status/JSON response (body withheld)")
 		}
+		if status == http.StatusOK && response.Header.Get("Cache-Control") != "no-store" {
+			t.Fatal("issued session credentials are not protected by no-store (body withheld)")
+		}
 		if registry.ValidateResponse(operation.ID, status, data) != nil {
 			t.Fatal("actual session creation response violates its descriptor (body withheld)")
 		}

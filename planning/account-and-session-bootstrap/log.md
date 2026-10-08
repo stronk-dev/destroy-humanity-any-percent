@@ -854,3 +854,33 @@ claim. Review by: Codex (drafter first filter); Recorded by: Codex. New normativ
 `1f95a62a` needs owner contract/copy adoption and designated cross-party specification review.
 Next: obtain that bounded adoption, then implement the existing real player task with its tests;
 do not reopen D-005 or treat unrelated rights choices as a blocker for this scoped successor.
+
+## 2026-10-08 — credential responses consistently refuse HTTP caching (RP-417)
+
+Account D1–D3's credential boundary: session creation and refresh omitted the no-store protection
+already used for account/bootstrap secrets. The four registry bindings now apply one narrow
+wrapper outside the unchanged shared IP limiter. Issued credentials, parser/dependency failures
+and rate refusals carry `Cache-Control: no-store`. Bodies/statuses, token rotation, TTLs, stored
+receipts, browser storage and renewal policy are unchanged; no simulation identity change.
+
+Old-source native92435 fails all four route regressions; bootstrap reaches the limiter case.
+Real Linux/amd64/Postgres83366 issues a session and fails its missing-header assertion; the first
+selector's nonexistent refresh alternative ran no refresh case. Corrected selection88087 runs
+both live/expired-access rotation cases and both fail on the same missing header. No credentials
+are printed by the new assertions. The final implementation passes:
+
+- `make test-go GO_PACKAGES='./account' GO_TEST_FLAGS='-count=1'` (76831), ordinary native checks;
+  dependency skips here are not the database evidence.
+- `make test-go-ci CI_TEST_PACKAGES='./account ./gameserver' CI_TEST_FLAGS='-v'` (29229), entire
+  populations, no skips: Account3.334s, Gameserver52.459s. Real issue/rotation/reuse/reply-loss,
+  all four credential routes' success/limit/refill, socket revocation, first-hour replay,
+  bootstrap rollback and Garden/Pitch/Soul composition execute. Image inspected Linux/amd64.
+- `make vet GO_PACKAGES='./account ./gameserver'` and byte-unchanged `make api-check` pass;
+  gofmt and diff checks clean. No client source, CI configuration, public caching or release
+  image changed; no new full-browser, hosted-CI, clean-host or whole Account acceptance claim.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range starts after
+`634b8360` through this source/test/docs/record commit; designated cross-party review pending.
+Catalog composition remains held on its already-recorded schema/versioning boundary. Account
+Recovery's draft adoption and the other player lifecycle/rights contracts remain open; safe
+accepted work may continue without treating this security fix as their completion.

@@ -85,8 +85,11 @@ The chi router owns the versioned `/api/v1` surface:
 - request decoders reject unknown keys, trailing JSON values, empty required bodies, and bodies
   over 64 KiB under the Phase-0 configuration;
 - errors use `{category, detail}` and rate-limit failures use the `rate_limited` category;
-- router-level 404/405 responses use that same typed shape, and the one-time recovery-code response
-  carries `Cache-Control: no-store`;
+- router-level 404/405 responses use that same typed shape;
+- account creation, bootstrap, session creation and refresh carry `Cache-Control: no-store`
+  before the IP limiter, including their error/rate-limit responses. Recovery codes and token
+  pairs must not be stored in HTTP caches. This does not change the browser's current explicit
+  credential storage or implement renewal;
 - `POST /intents` resolves the active company stream and calls the authoritative Production
   service. The client never chooses a stream ID.
 

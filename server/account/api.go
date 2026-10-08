@@ -181,18 +181,18 @@ func (api *API) Router() http.Handler {
 	})
 	bindings := []publicapi.Binding{
 		{OperationID: "cancel_soul_recovery", Handler: http.HandlerFunc(api.cancelSoulRecovery)},
-		{OperationID: "create_account", Handler: api.limitUnauthenticated(http.HandlerFunc(api.createAccount))},
-		{OperationID: "create_bootstrap", Handler: api.limitUnauthenticated(http.HandlerFunc(api.createBootstrap))},
+		{OperationID: "create_account", Handler: preventCredentialCaching(api.limitUnauthenticated(http.HandlerFunc(api.createAccount)))},
+		{OperationID: "create_bootstrap", Handler: preventCredentialCaching(api.limitUnauthenticated(http.HandlerFunc(api.createBootstrap)))},
 		{OperationID: "create_founder", Handler: http.HandlerFunc(api.newFounder)},
 		{OperationID: "create_minigame_session", Handler: http.HandlerFunc(api.createMinigameSession)},
-		{OperationID: "create_session", Handler: api.limitUnauthenticated(http.HandlerFunc(api.createSession))},
+		{OperationID: "create_session", Handler: preventCredentialCaching(api.limitUnauthenticated(http.HandlerFunc(api.createSession)))},
 		{OperationID: "get_current_garden", Handler: http.HandlerFunc(api.getCurrentGarden)},
 		{OperationID: "get_current_minigame_session", Handler: http.HandlerFunc(api.getCurrentMinigameSession)},
 		{OperationID: "get_founder", Handler: http.HandlerFunc(api.getFounder)},
 		{OperationID: "get_game_ui_snapshot", Handler: http.HandlerFunc(api.getGameUISnapshot)},
 		{OperationID: "play_minigame_command", Handler: http.HandlerFunc(api.playMinigameCommand)},
 		{OperationID: "progress_soul_recovery", Handler: http.HandlerFunc(api.progressSoulRecovery)},
-		{OperationID: "refresh_session", Handler: api.limitUnauthenticated(http.HandlerFunc(api.refreshSession))},
+		{OperationID: "refresh_session", Handler: preventCredentialCaching(api.limitUnauthenticated(http.HandlerFunc(api.refreshSession)))},
 		{OperationID: "resolve_minigame_session", Handler: http.HandlerFunc(api.resolveMinigameSession)},
 		{OperationID: "resolve_soul_recovery", Handler: http.HandlerFunc(api.resolveSoulRecovery)},
 		{OperationID: "start_soul_recovery", Handler: http.HandlerFunc(api.startSoulRecovery)},
@@ -205,8 +205,16 @@ func (api *API) Router() http.Handler {
 	return router
 }
 
+// Credential responses must not be stored by HTTP caches. Apply this outside
+// the limiter so refused requests have the same protection as issued secrets.
+func preventCredentialCaching(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		response.Header().Set("Cache-Control", "no-store")
+		next.ServeHTTP(response, request)
+	})
+}
+
 func (api *API) createBootstrap(response http.ResponseWriter, request *http.Request) {
-	response.Header().Set("Cache-Control", "no-store")
 	var body struct {
 		IdempotencyKey string `json:"idempotency_key"`
 	}
@@ -443,7 +451,6 @@ func (api *API) createAccount(response http.ResponseWriter, request *http.Reques
 		writeError(response, http.StatusInternalServerError, "internal_invariant", "account_create")
 		return
 	}
-	response.Header().Set("Cache-Control", "no-store")
 	writeJSON(response, http.StatusCreated, created)
 }
 

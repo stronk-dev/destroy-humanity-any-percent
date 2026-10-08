@@ -632,9 +632,17 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	server := testhttp.New(api.Router())
 	defer server.Close()
 
+	readCredentialBody := func(response *http.Response) string {
+		t.Helper()
+		defer response.Body.Close()
+		if response.Header.Get("Cache-Control") != "no-store" {
+			t.Fatal("credential response lost no-store protection (body withheld)")
+		}
+		return readBody(response)
+	}
 	assertLimited := func(response *http.Response, operation string) {
 		t.Helper()
-		body := readBody(response)
+		body := readCredentialBody(response)
 		if response.StatusCode != http.StatusTooManyRequests || body != "{\"category\":\"rate_limited\",\"detail\":\"ip\"}\n" {
 			t.Fatalf("%s limiter status=%d body=%s", operation, response.StatusCode, body)
 		}
@@ -652,7 +660,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if firstAccount.StatusCode != http.StatusCreated {
 		t.Fatalf("first account status=%d body=%s", firstAccount.StatusCode, readBody(firstAccount))
 	}
-	_ = readBody(firstAccount)
+	_ = readCredentialBody(firstAccount)
 	accountCounts := bootstrapCounts(t, db)
 	assertLimited(requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/account", "", `{}`, accountIP), "create account")
 	assertCounts(accountCounts, "create account")
@@ -661,7 +669,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if refilledAccount.StatusCode != http.StatusCreated {
 		t.Fatalf("refilled account status=%d body=%s", refilledAccount.StatusCode, readBody(refilledAccount))
 	}
-	_ = readBody(refilledAccount)
+	_ = readCredentialBody(refilledAccount)
 
 	loginAccount, err := repository.CreateAccount(ctx)
 	if err != nil {
@@ -673,7 +681,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if firstLogin.StatusCode != http.StatusOK {
 		t.Fatalf("first recovery login status=%d body=%s", firstLogin.StatusCode, readBody(firstLogin))
 	}
-	_ = readBody(firstLogin)
+	_ = readCredentialBody(firstLogin)
 	loginCounts := bootstrapCounts(t, db)
 	assertLimited(requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/session", "", loginBody, loginIP), "recovery login")
 	assertCounts(loginCounts, "recovery login")
@@ -682,7 +690,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if refilledLogin.StatusCode != http.StatusOK {
 		t.Fatalf("refilled recovery login status=%d body=%s", refilledLogin.StatusCode, readBody(refilledLogin))
 	}
-	_ = readBody(refilledLogin)
+	_ = readCredentialBody(refilledLogin)
 
 	refreshAccount, err := repository.CreateAccount(ctx)
 	if err != nil {
@@ -702,7 +710,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if firstRefresh.StatusCode != http.StatusOK {
 		t.Fatalf("first refresh status=%d body=%s", firstRefresh.StatusCode, readBody(firstRefresh))
 	}
-	_ = readBody(firstRefresh)
+	_ = readCredentialBody(firstRefresh)
 	refreshCounts := bootstrapCounts(t, db)
 	secondRefreshBody := fmt.Sprintf(`{"refresh_token":%q}`, secondFamily.RefreshToken)
 	assertLimited(requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/session/refresh", "", secondRefreshBody, refreshIP), "session refresh")
@@ -712,7 +720,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if refilledRefresh.StatusCode != http.StatusOK {
 		t.Fatalf("refilled refresh status=%d body=%s", refilledRefresh.StatusCode, readBody(refilledRefresh))
 	}
-	_ = readBody(refilledRefresh)
+	_ = readCredentialBody(refilledRefresh)
 
 	bootstrapIP := "192.0.2.40"
 	firstBootstrap := requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/bootstrap", "",
@@ -720,7 +728,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if firstBootstrap.StatusCode != http.StatusCreated {
 		t.Fatalf("first bootstrap status=%d body=%s", firstBootstrap.StatusCode, readBody(firstBootstrap))
 	}
-	_ = readBody(firstBootstrap)
+	_ = readCredentialBody(firstBootstrap)
 	bootstrapState := bootstrapCounts(t, db)
 	secondBootstrapBody := fmt.Sprintf(`{"idempotency_key":%q}`, strings.Repeat("cd", 32))
 	assertLimited(requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/bootstrap", "", secondBootstrapBody, bootstrapIP), "bootstrap")
@@ -730,7 +738,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if refilledBootstrap.StatusCode != http.StatusCreated {
 		t.Fatalf("refilled bootstrap status=%d body=%s", refilledBootstrap.StatusCode, readBody(refilledBootstrap))
 	}
-	_ = readBody(refilledBootstrap)
+	_ = readCredentialBody(refilledBootstrap)
 }
 
 type rateLimitGameUI struct{ bootstrapSnapshotFixture }
