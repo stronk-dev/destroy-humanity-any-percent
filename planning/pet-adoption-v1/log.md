@@ -603,3 +603,41 @@ PA7/schema reconciliation, shared-clock repair, rights or full Pet acceptance.
 
 Record/diff check by: Codex; Recorded by: Codex. Verification-only checkpoint, no production
 change or new review verdict. Existing implementation ranges still await designated review.
+
+## 2026-10-08 — RP-408 actual adoption/no-adoption economic comparisons
+
+Targeted review by: Codex; Recorded by: Codex. **CHANGES REQUIRED** on Claude's P7 closeout
+claim at `327e0660`: the unchanged harness never adopted, so its green result did not supply
+AC15's paired comparison. This finding concerns that claim, not a complete P7 review.
+
+Test-only correction reuses the pinned adoption/Cosmetic corpora and existing production
+transitions/first-hour runner. An actual adoption's frozen contributions drive paired pacing
+runs; a real Fiscal-level leak changes their outputs. Go and TS replay both Company Exit paths
+with empty versus nonempty identity/care, holding cosmetic ownership/equipment equal. Full
+final-Company/new-Company/receipt vectors match; a test-only Company generator write before
+replay is detected. Existing expected receipts/new Companies still match the committed corpus.
+No production, balance, fixture, migration, kernel, copy or CI-workflow bytes changed.
+
+Executed final checks:
+- `make verify-harness-fast` passes (16884; full harness package81.834s plus role, Commons and
+  history guards). Ordinary adoption comparison runs one seed from each of all three policies;
+  no test skip or timeout/retry change. Full study is explicit, not mislabelled as ordinary CI.
+- `make test-go GO_PACKAGES='./harness -args -pet-adoption-pacing=all'
+  GO_TEST_FLAGS='-count=1 -run TestPetAdoptionPacing -v'` passes (43087,154.208s):97/97 paired
+  runs, complete milestones/endings, no invariant or pacing-envelope failures; leak control passes.
+  The earlier serial full comparison also passed (33613,297.529s); its measured cost motivated
+  representative ordinary coverage, not weaker assertions or a larger CI budget.
+- Production Pet/Adoption/Cosmetic population passes (21035,33.519s), including both new Exit
+  comparisons/Company-write controls. Client `pet-exit-replay.test.ts` passes9 tests (39801).
+  Affected harness/production vet passes; strict typecheck73426 has zero errors/warnings.
+
+Invalid population selector38016 correctly exits nonzero. The first custom-flag invocation
+put the flag before the package and ran no tests; the corrected command above supplies `-args`
+after the package. No failed run is counted as evidence. Diff and whitespace checks pass.
+
+Correction first filter Review by: Codex (implementer); Recorded by: Codex. Exact new range:
+`b7f351cb` exclusive through this test/record commit awaits Claude's designated review. No
+full Pet acceptance, archival, content mint, hosted-CI or release approval. These pure replay/
+simulation comparisons are not a persisted adoption-to-Exit player journey or natural-pacing
+study; PA7, attendance, authored copy, rights and accessibility remain open. Next: consolidated
+feature review and remaining accepted integration gates, not another repetition of this study.

@@ -7,8 +7,9 @@ self-approval, no archival, and no production mint (fixture-first; OD-4/PA8.6 co
 2026-10-08 review checkpoint: bounded P1 phrase admission (RP-403) and P2/P3 raw species
 admission (RP-404) are CHANGES REQUIRED in the original Claude implementation. Codex's
 corrections and executed evidence are in the latest log entries and need Claude's exact-range
-review. P5's missing final-history AC7 refusal checks (RP-405) are also locally corrected and
-await designated review plus database-backed execution. Existing checkboxes describe
+review. P5's missing final-history AC7 refusal checks (RP-405) are also locally corrected;
+the selected real-Postgres corruption population now passes, and designated review remains.
+Existing checkboxes describe
 implementation presence, not full-feature acceptance.
 
 P4's Company replay identity decoder also has a bounded CHANGES REQUIRED finding (RP-406):
@@ -33,8 +34,10 @@ free replay-inputs version. Cosmetic Shop then takes v24.
   Founder replay, idempotency (AC4, AC5, AC7, AC9, AC10), and the replay-inputs Founder carry (AC8).
 - [x] P6 The snapshot `features.pet` projection (AC11) and the adoption surface with its visual
   contract (AC12, AC13 DOM).
-- [x] P7 Economy isolation (AC15) and docs canon (AC17). The AC15 test and docs have landed. The
-  box stays open until the harness half of AC15 is recorded in this log. AC16 is carried under the release floor
+- [x] P7 Economy isolation (AC15) and docs canon (AC17) implementation presence, not acceptance.
+  RP-408 replaces the original no-adoption-in-the-harness argument with an actual paired pacing
+  comparison and both runtimes' Company Exit vectors; executed results and review are in the log.
+  AC16 is carried under the release floor
   (D-008/D-009/D-015 are unruled).
 
 Tests for each flipped box, all inside the reviewed range `e5b7541a..HEAD`:

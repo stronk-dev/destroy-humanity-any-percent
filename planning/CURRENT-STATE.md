@@ -35,6 +35,12 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Pet economy-isolation evidence (RP-408) now compares actual adoption/no-adoption inputs through
+  the pacing consumer: all97 paired seeds pass, as do both Company Exit paths in Go/TS with
+  deliberate economic-input/Company-write controls. The complete native harness CI target passes;
+  its ordinary test population covers every policy without repeating the full study per push.
+  This test-only batch still needs designated review; it does not close Pet acceptance or prove
+  hosted CI, a live adoption-to-Exit journey or release pacing.
 - Detached gameplay-host lifecycle (RP-407) is locally corrected: late responses no longer
   recreate sockets, restart the shell, refresh or submit a queued command after unmount; pending
   focus listeners are removed immediately. Affected Chromium/WebKit200, Node76, types/build/

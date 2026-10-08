@@ -11,6 +11,81 @@ import (
 	"cloud-clicker/server/save"
 )
 
+// AC15: the actual Company Exit consumer must produce the same economic
+// vectors with empty and nonempty pet carry. Remove equipment in both arms so
+// the only input difference is pet identity/care, not cosmetic ownership.
+func TestPetAdoptionCompanyExitVectorsAreUnchanged(t *testing.T) {
+	raw, err := os.ReadFile(cosmeticCorpusPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var source cosmeticCorpus
+	if err := json.Unmarshal(raw, &source); err != nil {
+		t.Fatal(err)
+	}
+	shop := cosmeticsContentBundle(t)
+	count := 0
+	for _, row := range source.ExitCases {
+		if row.Name != "exit-wind-down-preserves-owned-equipped" && row.Name != "exit-accept-offer-preserves-owned-equipped" {
+			continue
+		}
+		count++
+		t.Run(row.Name, func(t *testing.T) {
+			vectors := func(adopted, companyLeak bool) string {
+				t.Helper()
+				wire, err := parseReplayInputs(row.Company.Case.ReplayInputs)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var resolved replayExitResolved
+				if err := json.Unmarshal(wire.Resolved, &resolved); err != nil {
+					t.Fatal(err)
+				}
+				extensions := resolved.FounderCarry.FounderExtensions
+				if extensions == nil || extensions.PetIdentities == nil || extensions.Cosmetics == nil || len(extensions.Pets) != 1 || len(*extensions.PetIdentities) != 1 {
+					t.Fatal("requires the recorded nonempty adopted pet")
+				}
+				extensions.Cosmetics.Equipped = map[string]string{}
+				if !adopted {
+					extensions.Pets = map[string]pet.CareState{}
+					empty := map[string]pet.Identity{}
+					extensions.PetIdentities = &empty
+				}
+				wire.Resolved = reputationShapeJSON(t, resolved)
+				company := replayFixtureStateFromEncoded(t, shop, row.Company.Case.PreState)
+				if companyLeak {
+					// Test-only violating adoption arm writes a real Company field
+					// BEFORE replay. The full final-Company vector must expose it,
+					// even when the reset would erase it from the next Company.
+					company.GeneratorCounts["generator.beige_tower"]++
+				}
+				transition, err := ApplyLoggedExit(company, []byte(canonicalFixtureJSON(t, row.Company.Case.CanonicalPayload)), shop, reputationShapeJSON(t, wire))
+				if err != nil || transition.Decision.Outcome != save.IntentApplied || transition.Company == nil || transition.Decision.NewCompanyState == nil {
+					t.Fatalf("Company Exit did not apply: %v", err)
+				}
+				if !companyLeak && (canonicalFixtureJSON(t, transition.Decision.Receipt) != row.Company.Case.ReceiptJSON || canonicalFixtureJSON(t, mustEncodeState(t, transition.Decision.NewCompanyState)) != row.Company.Case.NewCompanyJSON) {
+					t.Fatal("Company economics drifted from the committed replay vector")
+				}
+				return canonicalFixtureValue(t, map[string]json.RawMessage{
+					"final_company": mustEncodeState(t, transition.Company),
+					"new_company":   mustEncodeState(t, transition.Decision.NewCompanyState),
+					"receipt":       transition.Decision.Receipt,
+				})
+			}
+			without, adopted := vectors(false, false), vectors(true, false)
+			if without != adopted {
+				t.Fatal("adoption changed a Company replay vector")
+			}
+			if vectors(true, true) == without {
+				t.Fatal("Company-vector comparison missed the test-only Company write")
+			}
+		})
+	}
+	if count != 2 {
+		t.Fatalf("expected both Company Exit paths, got %d", count)
+	}
+}
+
 // PA6/AC14: replay the same recorded economic Exit under two next-run pins.
 // Only the required empty identity map may differ from the immutable source
 // outputs. A newer bundle is available even in the no-activation control.

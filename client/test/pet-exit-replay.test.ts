@@ -64,6 +64,39 @@ describe("pet Exit boundaries (PA3.5/PA6, AC6/AC8/AC14)", () => {
 
   const exits = cosmetics.exit_cases.filter((row) => row.name === "exit-wind-down-preserves-owned-equipped" || row.name === "exit-accept-offer-preserves-owned-equipped");
   it("includes both nonempty pet carry paths", () => expect(exits).toHaveLength(2));
+  it.each(exits)("keeps Company vectors identical with and without adoption across $name", async (row) => {
+    const source = row.company;
+    const catalogs = await loadReplayCatalogBundle(source.constants_hash, source.artifacts as unknown as ReplayArtifacts);
+    const vectors = async (adopted: boolean, companyLeak: boolean) => {
+      const inputs = structuredClone(source.case.replay_inputs);
+      const extensions = inputs.resolved.founder_carry.founder_extensions;
+      expect(Object.keys(extensions.pets)).toHaveLength(1);
+      expect(Object.keys(extensions.pet_identities)).toHaveLength(1);
+      // Keep cosmetic ownership equal and equipment empty in both arms.
+      const fields = extensions as Record<string, unknown>;
+      fields.cosmetics = { ...extensions.cosmetics, equipped: {} };
+      if (!adopted) {
+        fields.pets = {};
+        fields.pet_identities = {};
+      }
+      const company = companyState(source.case.pre_state, catalogs);
+      // AC15's violating arm writes a real Company field before replay;
+      // compare final Company as well as its reset successor and receipt.
+      if (companyLeak) company.generators["generator.beige_tower"]++;
+      const transition = await applyLoggedExit(company, canonicalJSONString(source.case.canonical_payload), catalogs, inputs);
+      expect(transition.outcome).toBe("applied");
+      expect(transition.newCompany).not.toBeNull();
+      if (!companyLeak) {
+        expect(canonicalJSONString(transition.receipt)).toBe(source.case.receipt_json);
+        expect(canonicalJSONString(encodeReplayState(transition.newCompany!))).toBe(source.case.new_company_json);
+      }
+      return canonicalJSONString({ final_company: encodeReplayState(transition.finalCompany),
+        new_company: encodeReplayState(transition.newCompany!), receipt: transition.receipt });
+    };
+    const without = await vectors(false, false);
+    expect(await vectors(true, false)).toBe(without);
+    expect(await vectors(true, true)).not.toBe(without);
+  });
   it.each(exits)("preserves identity and care across $name, refusing an omitted carry", async (row) => {
     const source = row.company;
     const catalogs = await loadReplayCatalogBundle(source.constants_hash, source.artifacts as unknown as ReplayArtifacts);
