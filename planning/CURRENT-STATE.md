@@ -49,7 +49,20 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Latest source batch: `43afbbd1` (2026-10-08), Recovery RP-452. A terminal
+- Latest bounded closeout (2026-10-08): Cosmetic event-key admission RP-453 is locally
+  corrected at `377279c4`, with cold Go/TS and actual Linux/Postgres checks. Original Claude
+  C4 review is complete at `f097df7e`, CHANGES REQUIRED consolidating its existing findings;
+  Codex corrections still require Claude. Completion-focus RP-454/RP-455 at `c802c2dc`
+  passes affected native checks and the full real-service composed1397. The subsequent
+  announcement-only RP-456 correction removes duplicate refusal delivery; six old-host
+  native failures become green, including unchanged revision-conflict controls and refusal
+  retention after shelf removal. Finished affected Chromium/WebKit280, types/build/boundaries
+  pass; four performance-only exclusions are separate. That last correction does not change
+  gameplay, persistence or callbacks, and the real-service journey was not rerun for it.
+  The [Cosmetic log](cosmetic-shop-v1/log.md) owns exact review ranges and intermediate results.
+  These are bounded repairs, not complete C6/feature acceptance, AT, hosted CI or a new tier.
+  Latest inspected published CI remains red at `cbd2069f`; newer work is local, not pushed.
+- Preceding source batch: `43afbbd1` (2026-10-08), Recovery RP-452. A terminal
   reply arriving after its surface unmounts no longer notifies the old host or
   moves focus. Native Chromium/WebKit regressions fail on the old behavior;
   corrected affected browser26/unit75 checks, types/build/boundaries and the

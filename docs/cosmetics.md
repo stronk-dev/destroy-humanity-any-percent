@@ -90,6 +90,9 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   - it shows Buy, the lock reason, the owned state, per-wearer equip and unequip, and the no-wearer
     line;
   - the parody receipt is an inline `role=status` line, never a modal;
+  - terminal refusals use the Desk's existing intent-status region once, not a second
+    copy in the shelf. The reason remains visible if the shelf disappears; shared revision
+    conflicts use the same host region. Successful parody receipts stay inside the card;
   - when authoritative ownership replaces the focused Buy button, focus moves to the owned
     heading only if the player has not chosen another focus target. A newer choice permanently
     cancels that handoff, even if the newer control subsequently disappears. Unfocused

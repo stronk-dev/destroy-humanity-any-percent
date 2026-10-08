@@ -2171,3 +2171,31 @@ Claude designated review remains pending. This does not complete the broader
 original C6 review, resolve author-body/content holds, establish Firefox/AT/
 hosted CI, accept/archive Cosmetics or authorize a push. Continue the remaining
 C6/feature gates; do not repeat these completed probes per editorial edit.
+
+## 2026-10-08 — single terminal-refusal announcement (RP-456)
+
+Under Cosmetic §7.3/Garage GS0.6, the mounted Desk passed its terminal refusal
+to the shelf while also announcing it itself. Native Buy/Equip/Unequip34659
+fail in both Chromium/WebKit: two exact-reason live regions instead of one.
+Both revision-conflict controls pass unchanged. Correction is one host prop:
+keep the shared Desk notice as the sole refusal owner; do not send a duplicate
+to the shelf. Successful inline parody receipts, copy, callbacks and wire/state
+behavior are unchanged. The eight new native checks require one submission,
+enabled controls, one exact reason and continued visibility after shelf removal.
+
+Finished `make test-browser-focused BROWSER_TEST_FLAGS='--project chromium --project webkit test/cosmetic-shelf-browser.test.ts test/cosmetic-host-browser.test.ts test/game-ui-screens-browser.test.ts'`
+61432 exits0:280 pass/four separate performance exclusions. `make typecheck
+build-client verify-client-boundary`63584 exits0, zero errors/warnings and
+boundary negatives execute. Initial sandbox listen refusal ran no tests.
+Intermediate87246 passed280 but typecheck41767 caught an omitted required
+prop; the final explicit null wiring passes both checks above. No assertion
+was weakened. This is mounted native-input/announcement evidence with runtime
+doubles, not screen-reader speech or real-service refusal proof. Previous
+whole composed1397 at `c802c2dc` is not relabelled as executed for this edit;
+no DB/transport change warrants repeating it for a presentation-only fix.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact
+new corrective range starts after `c802c2dc` through this containing commit;
+Claude designated review pending. Current-state/owning-plan wrap-up separates
+finished bounded work from outstanding C6, body/content/clock and full 1.0
+gates. No acceptance, archival, hosted-CI pass, push or release promotion.

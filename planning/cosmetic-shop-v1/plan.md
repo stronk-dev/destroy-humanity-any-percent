@@ -2,7 +2,16 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
-Current checkpoint (2026-10-08): RP-424's Buy-to-owned focus handoff now respects newer focus,
+Current checkpoint (2026-10-08): original C4 review is complete at `f097df7e`, CHANGES REQUIRED
+with its existing findings consolidated; current Codex corrections still need Claude review.
+RP-453 event-key admission and RP-454/RP-455 completion focus are locally corrected. The latest
+C6 correction (RP-456) routes terminal refusal to the existing Desk status only; six old-host
+native cases reproduce duplicate delivery. Final affected Chromium/WebKit280, types/build/
+boundaries pass. The preceding full real-service composed1397 passes for `c802c2dc`; it was
+not rerun for this announcement-only correction. Broader C6 review, shared clock, content and
+whole-feature acceptance remain; the latest log owns exact ranges and limits.
+
+Preceding checkpoint (2026-10-08): RP-424's Buy-to-owned focus handoff now respects newer focus,
 including a later-removed control and same-Desk navigation. Old-source native regressions fail;
 230 affected Chromium/WebKit cases pass (four separate performance skips), with types/build/
 boundaries, the production-built Clout/Cosmetic service journey and both actual N5 negative

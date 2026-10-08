@@ -4,6 +4,7 @@ import { expect, it } from "vitest";
 
 import armFixture from "../../testdata/gameui/cosmetics-arm-v1.json";
 import type { GameUICosmeticsArm, GameUISnapshot } from "../src/api/generated/types";
+import { t } from "../src/copy";
 import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import type { IntentOutcome } from "../src/game-ui/intent-outcome";
@@ -95,6 +96,41 @@ function withShop(arm: GameUICosmeticsArm | undefined, tier: number): GameUISnap
 }
 const shelf = (target: HTMLElement) => target.querySelector("[data-testid=cosmetic-shelf]");
 const staticCard = (target: HTMLElement) => [...target.querySelectorAll("section.card h2")].some((node) => node.textContent?.includes("Horse Armor"));
+
+for (const [arm, kind, detail, notice] of [
+  ["acquirable-at-tier-1", "acquire_cosmetic", "owned", "shop.cosmetics.reject.owned"],
+  ["owned-not-worn", "equip_cosmetic", "already_equipped", "shop.cosmetics.reject.already_equipped"],
+  ["owned-worn", "unequip_cosmetic", "nothing_equipped", "shop.cosmetics.reject.nothing_equipped"],
+  ["acquirable-at-tier-1", "acquire_cosmetic", "revision_conflict", "intent.conflict"],
+] as const) {
+  it.skipIf(!browser)(`native ${kind} refusal announces its outcome once (${detail})`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const runtime = new Runtime();
+    runtime.current = withShop(arms[arm], 1);
+    runtime.outcome = { outcome: "rejected", category: detail === "revision_conflict" ? detail : "not_eligible", detail,
+      currentRevision: 7, sessionExpired: false };
+    const { target, app, dispose } = await mounted(runtime);
+    try {
+      const control = shelf(target)!.querySelector<HTMLButtonElement>("button")!;
+      control.focus();
+      await userEvent.keyboard("{Enter}");
+      await settle();
+      expect(runtime.requests).toHaveLength(1);
+      expect(runtime.requests[0]).toMatchObject({ kind, expected_revision: 7 });
+      expect(control.disabled).toBe(false);
+      const reason = t(notice, {}, "era_2000");
+      const announcements = () => [...target.querySelectorAll('[role="status"]')]
+        .filter((node) => node.textContent?.trim() === reason);
+      expect(announcements(), "one refusal must not be announced by both Desk and shelf").toHaveLength(1);
+      expect(target.querySelector(".intent-notice")?.textContent?.trim()).toBe(reason);
+      app.fixtureSnapshot(withShop(undefined, 1));
+      await settle();
+      expect(shelf(target)).toBeNull();
+      expect(announcements(), "removing the shelf must not swallow the refusal").toHaveLength(1);
+      expect(runtime.requests).toHaveLength(1);
+    } finally { await dispose(); }
+  });
+}
 
 for (const key of ["{Enter}", " "]) {
   for (const initiallyWorn of [false, true]) {

@@ -909,7 +909,7 @@
         {#if shop.items.some((item) => item.acquirable || item.owned)}
           <CosmeticShelf arm={shop} presentation={COSMETIC_SHOP_PRESENTATION} price={requirePresentationConstant("constant.price_zero")} {era} {pending}
             controlsEnabled={founderControls} petName={cosmeticPetName} receipt={cosmeticReceipt}
-            rejection={intentNotice?.startsWith("shop.cosmetics.reject.") ? intentNotice : null}
+            rejection={null}
             onAcquire={(id) => act({ kind: "acquire_cosmetic", cosmetic_id: id }, { scope: "founder", rejections: COSMETIC_REJECTIONS, applied: cosmeticApplied })}
             onEquip={(id, petID) => act({ kind: "equip_cosmetic", cosmetic_id: id, pet_id: petID }, { scope: "founder", rejections: COSMETIC_REJECTIONS, applied: cosmeticApplied })}
             onUnequip={(petID) => act({ kind: "unequip_cosmetic", pet_id: petID }, { scope: "founder", rejections: COSMETIC_REJECTIONS, applied: cosmeticApplied })} />
