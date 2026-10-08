@@ -7,7 +7,13 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Current checkpoint, 2026-10-08:** RP-423 corrects false-clean restore targets containing
+**Bounded checkpoint, 2026-10-09:** RP-481's interrupted-writer probe now requires a real
+encrypted create/restore baseline and the exact consumed dump failure, with no partial files
+or damage to the baseline. Old-source regression and affected native/Linux-amd64 checks
+pass as recorded in the owning log. The corrective range after `1efea9cf` awaits designated
+review; this does not close DP-C/DP-F or substitute for the actual clean-host rehearsal.
+
+**Preceding checkpoint, 2026-10-08:** RP-423 corrects false-clean restore targets containing
 schema-only or nonrelational objects. At `e478b248`, the declared Linux/amd64 Postgres16 backup
 target now executes all six integration functions without skips, including real encrypted
 empty/populated dump/restore, recovery identity, non-clean-target refusal and pre/post-deletion

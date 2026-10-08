@@ -4753,3 +4753,33 @@ Review by: Codex (implementer actual-diff first filter). Recorded by: Codex. Exa
 This is local backup safety, not off-host filesystem coverage, natural RPO/RTO, a current bundle,
 clean-host R-006, full Deployment acceptance or hosted CI. Pre-deletion revival/rights decisions
 and other named holds remain. No acceptance flips, archival, push, deployment or release claim.
+
+## 2026-10-09 — Interrupted-backup proof rejects unrelated failures (RP-481)
+
+Outcome under DP6/AC4: the named release negative must reach its injected dump failure,
+not count a broken writer or unrelated filesystem/setup error. Old-source94296 fails all
+three regression arms: the probe reports `ProbeRejected` with no error after only one call.
+It had neither a successful baseline nor proof that the failing read was reached.
+
+The same writer must now create an age envelope that restores the exact baseline payload.
+The second call must consume partial bytes and propagate that reader's unique failure.
+Only the unchanged valid baseline may remain. Eight new controls reject always-failing/
+pre-read/unrelated failures, absent/wrong baseline output, partial leftovers and damaged
+baseline, while a wrapped real interruption is recognized. The existing sleeping-writer
+control now actually creates the baseline, then wrongly commits the interrupted prefix;
+that cannot satisfy the negative. Production backup format/behavior and release bounds
+are unchanged. Temporary probe populations are removed; retained release inputs are untouched.
+
+Coverage: focused96881 passes; native15442 runs full `deploymentrehearsal`, rehearsal CLI
+and `deploymentbackup` cold tests plus vet, all pass. Declared `make test-go-ci
+CI_TEST_PACKAGES='./deploymentrehearsal ./cmd/deployment-rehearsal' CI_TEST_FLAGS='-v'`
+97505 passes both full packages on Linux/amd64, zero skips. Initial unquoted regex command
+fails in the shell before executing tests; the correctly quoted focused run above executes.
+Gofmt and diff checks pass; all handles terminal before this record edit.
+
+These are actual encrypted-envelope/filesystem probe executions, not Postgres dump contents,
+off-host storage, RPO/RTO, clean-host R-006 or whole CI. No unrelated browser/gameplay rerun
+is claimed. Review by: Codex (implementer actual-diff first filter); Recorded by: Codex.
+Exact corrective range starts after `1efea9cf` through this containing source/tests/docs/
+ledger/plan/log commit, pending designated cross-party review. No acceptance flip, archive,
+push or deployment; continue accepted construction and the existing explicit contract holds.

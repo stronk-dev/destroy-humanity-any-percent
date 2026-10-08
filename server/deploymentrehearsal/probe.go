@@ -203,16 +203,43 @@ func runInterruptedBackupProbe(request ProbeRequest, create backupCreateGate) (o
 		return ProbeAccepted, err
 	}
 	started := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
-	_, _, err = create(deploymentbackup.CreateInput{Directory: root, BackupID: "20260823T120000Z-abcdef123456",
+	payload := []byte("PGDMP complete interruption-probe baseline")
+	input := deploymentbackup.CreateInput{Directory: root, BackupID: "20260823T120000Z-abcdef123456",
 		ServerID: "r006-probe", ReleaseManifestSHA256: "sha256:" + strings.Repeat("a", 64), EpochID: 8,
 		StartedAt: started, Now: func() time.Time { return started.Add(time.Minute) }, Recipient: identity.Recipient().String(),
-		Dump: &interruptedBackupReader{data: []byte("PGDMP partial")}})
+		Dump: bytes.NewReader(payload)}
+	header, path, err := create(input)
+	if err != nil || path != filepath.Join(root, input.BackupID+".ccbackup") {
+		return ProbeAccepted, errors.Join(ErrInvalid, err)
+	}
+	var restored bytes.Buffer
+	restoredHeader, err := deploymentbackup.Restore(path, input.ReleaseManifestSHA256, identity, &restored)
+	if err != nil || restoredHeader != header || !bytes.Equal(restored.Bytes(), payload) {
+		return ProbeAccepted, errors.Join(ErrInvalid, err)
+	}
+	baseline, err := os.ReadFile(path)
+	if err != nil {
+		return ProbeAccepted, err
+	}
+	// A negative counts only if this writer first produced a working envelope,
+	// then reached and propagated this exact injected dump failure.
+	dump := &interruptedBackupReader{data: []byte("PGDMP partial"), failure: errors.New("injected interrupted backup writer")}
+	input.BackupID = "20260823T120000Z-abcdef123457"
+	input.Dump = dump
+	_, _, err = create(input)
 	if err == nil {
 		return ProbeAccepted, nil
 	}
+	if !dump.delivered || !dump.failed || !errors.Is(err, dump.failure) {
+		return ProbeAccepted, errors.Join(ErrInvalid, err)
+	}
 	entries, readErr := os.ReadDir(root)
-	if readErr != nil || len(entries) != 0 {
+	if readErr != nil || len(entries) != 1 || entries[0].Name() != filepath.Base(path) {
 		return ProbeAccepted, errors.Join(ErrInvalid, readErr)
+	}
+	retained, err := os.ReadFile(path)
+	if err != nil || !bytes.Equal(retained, baseline) {
+		return ProbeAccepted, errors.Join(ErrInvalid, err)
 	}
 	return ProbeRejected, nil
 }
@@ -220,11 +247,14 @@ func runInterruptedBackupProbe(request ProbeRequest, create backupCreateGate) (o
 type interruptedBackupReader struct {
 	data      []byte
 	delivered bool
+	failed    bool
+	failure   error
 }
 
 func (reader *interruptedBackupReader) Read(destination []byte) (int, error) {
 	if reader.delivered {
-		return 0, errors.New("injected interrupted backup writer")
+		reader.failed = true
+		return 0, reader.failure
 	}
 	reader.delivered = true
 	return copy(destination, reader.data), nil

@@ -301,8 +301,11 @@ therefore not accepted as secret-detection evidence.
 The backup-envelope probes first create and restore a valid encrypted production envelope. They
 then independently require truncated and corrupted payloads, the wrong age identity and a wrong
 release-manifest identity to fail through the production restore gate. The interrupted-writer row
-injects a dump read failure only after valid bytes were consumed and accepts the negative only when
-creation fails and leaves no completed or temporary backup file. These are envelope and atomicity
+first requires the same writer to create an envelope that restores the exact baseline payload.
+It then injects a dump read failure after partial bytes were consumed and accepts the negative only
+when the writer reaches and propagates that exact failure, leaves no partial/completed second
+backup, and preserves the baseline bytes. An unrelated or pre-read failure is a probe error,
+not successful interruption evidence. These are envelope and atomicity
 falsifiers; the empty/populated database restore and non-clean target checks still require their
 real Postgres populations.
 

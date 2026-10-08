@@ -273,11 +273,95 @@ func TestBackupEnvelopeProbesDiscriminate(t *testing.T) {
 	}
 
 	request = validProbeDirectories(t, "interrupted_backup_writer")
-	outcome, err = runInterruptedBackupProbe(request, func(deploymentbackup.CreateInput) (deploymentbackup.Header, string, error) {
-		return deploymentbackup.Header{}, "", nil
+	createCalls := 0
+	outcome, err = runInterruptedBackupProbe(request, func(input deploymentbackup.CreateInput) (deploymentbackup.Header, string, error) {
+		createCalls++
+		if createCalls == 2 {
+			// A defective writer discards the read failure and commits the prefix.
+			data, _ := io.ReadAll(input.Dump)
+			input.Dump = strings.NewReader(string(data))
+		}
+		return deploymentbackup.Create(input)
 	})
-	if err != nil || outcome != ProbeAccepted {
+	if err != nil || outcome != ProbeAccepted || createCalls != 2 {
 		t.Fatalf("sleeping create gate satisfied negative: outcome=%d err=%v", outcome, err)
+	}
+}
+
+func TestInterruptedBackupProbeCannotCountUnrelatedFailures(t *testing.T) {
+	for _, kind := range []string{"always_rejects", "rejects_before_read", "different_error_after_read"} {
+		t.Run(kind, func(t *testing.T) {
+			request := validProbeDirectories(t, "interrupted_backup_writer")
+			calls := 0
+			unrelated := errors.New("unrelated backup failure")
+			outcome, err := runInterruptedBackupProbe(request, func(input deploymentbackup.CreateInput) (deploymentbackup.Header, string, error) {
+				calls++
+				if kind != "always_rejects" && calls == 1 {
+					return deploymentbackup.Create(input)
+				}
+				if kind == "different_error_after_read" {
+					_, _ = io.Copy(io.Discard, input.Dump)
+				}
+				return deploymentbackup.Header{}, "", unrelated
+			})
+			if err == nil || outcome == ProbeRejected {
+				t.Fatalf("unrelated failure counted as interrupted-write proof: outcome=%d err=%v calls=%d", outcome, err, calls)
+			}
+			entries, readErr := os.ReadDir(request.WorkDirectory)
+			if readErr != nil || len(entries) != 0 {
+				t.Fatalf("probe leaked its temporary population: entries=%v err=%v", entries, readErr)
+			}
+		})
+	}
+}
+
+func TestInterruptedBackupProbeRequiresRestorableBaselineAndPreservesIt(t *testing.T) {
+	for _, kind := range []string{"no_envelope", "wrong_payload", "wrapped_interruption", "partial_file", "changed_baseline"} {
+		t.Run(kind, func(t *testing.T) {
+			request := validProbeDirectories(t, "interrupted_backup_writer")
+			calls := 0
+			var baselinePath string
+			outcome, err := runInterruptedBackupProbe(request, func(input deploymentbackup.CreateInput) (deploymentbackup.Header, string, error) {
+				calls++
+				if calls == 1 {
+					if kind == "no_envelope" {
+						return deploymentbackup.Header{}, "", nil
+					}
+					if kind == "wrong_payload" {
+						input.Dump = strings.NewReader("wrong baseline bytes")
+					}
+					header, path, err := deploymentbackup.Create(input)
+					baselinePath = path
+					return header, path, err
+				}
+				_, readErr := io.Copy(io.Discard, input.Dump)
+				if readErr == nil {
+					t.Fatal("negative fixture did not deliver its interruption")
+				}
+				if kind == "partial_file" {
+					if err := os.WriteFile(filepath.Join(input.Directory, ".leftover.tmp"), []byte("partial"), 0o600); err != nil {
+						t.Fatal(err)
+					}
+				}
+				if kind == "changed_baseline" {
+					if err := os.WriteFile(baselinePath, []byte("corrupted"), 0o600); err != nil {
+						t.Fatal(err)
+					}
+				}
+				return deploymentbackup.Header{}, "", errors.Join(errors.New("writer context"), readErr)
+			})
+			if kind == "wrapped_interruption" {
+				if err != nil || outcome != ProbeRejected || calls != 2 {
+					t.Fatalf("propagated interruption was not recognized: outcome=%d err=%v calls=%d", outcome, err, calls)
+				}
+			} else if err == nil || outcome == ProbeRejected {
+				t.Fatalf("invalid baseline/cleanup counted: outcome=%d err=%v calls=%d", outcome, err, calls)
+			}
+			entries, readErr := os.ReadDir(request.WorkDirectory)
+			if readErr != nil || len(entries) != 0 {
+				t.Fatalf("probe leaked its temporary population: entries=%v err=%v", entries, readErr)
+			}
+		})
 	}
 }
 
