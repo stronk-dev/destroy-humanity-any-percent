@@ -109,6 +109,9 @@
   const gatePending = $derived(pending && activeActionKind === "cross_gate");
   const incorporatePending = $derived(pending && activeActionKind === "incorporate");
   const windDownPending = $derived(pending && activeActionKind === "wind_down");
+  // A background read is not a care submission. Let act() retain fresh care
+  // consent while awaiting that read; only care's own flight drops repeats.
+  const carePending = $derived(pending && activeActionKind === "care_action");
   const deskPending = $derived(purchasePending || gatePending || incorporatePending || windDownPending);
 
   const era = $derived<CopyEra>(snapshot ? eraForSnapshot(snapshot) : "era_1995");
@@ -972,7 +975,7 @@
     {#if pitchAvailability?.human_content_locked}<p class="intent-notice" role="note">{t("minigame.availability.soul_locked", {}, era)}</p>{/if}
     <MinigameSessionSurface port={runtime.minigame} minigameID="pitch" {era} newCommandID={() => newIntentID()} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
   {:else if snapshot && surface === "pet" && liveFeatures?.pet_adoption && liveFeatures.pet_adoption.pets.length > 0}
-    <PetCareSurface pets={liveFeatures.pet_adoption.pets} cosmetics={liveFeatures.cosmetics ?? null} {era} {pending} controlsEnabled={founderControls && transportReady} reducedMotion={prefersReducedMotion} notice={intentNoticeOwner === "pet" ? intentNotice : null}
+    <PetCareSurface pets={liveFeatures.pet_adoption.pets} cosmetics={liveFeatures.cosmetics ?? null} {era} {pending} {carePending} controlsEnabled={founderControls && transportReady} reducedMotion={prefersReducedMotion} notice={intentNoticeOwner === "pet" ? intentNotice : null}
       onCare={(petID, actionID) => act({ kind: "care_action", pet_id: petID, action_id: actionID }, { scope: "founder", rejections: CARE_REJECTIONS, applied: () => "pet.care.applied" })} />
   {:else if snapshot && surface === "garden" && runtime.garden}
     {#key gardenContext}

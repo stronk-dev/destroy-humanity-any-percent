@@ -6491,3 +6491,49 @@ pending. No kernel/balance/content mint, retries, timeout increase, CI change, f
 manual-AT/performance, Pet/Garage acceptance, archive or push claim. RP-132/RP-365 and the full
 nine-tier release remain open. Next: consolidate related Garage review and continue accepted
 feature integration; do not repeat this completed status-event study.
+
+## 2026-10-08 — Native care survives shared work without moving its control (RP-440/RP-441)
+
+Implemented accepted GS0.8/GS4: care's guard now represents its own command, not every
+background read or different-kind intent. Fresh care consent enters the existing queue,
+waits for the authoritative read and binds its Founder revision. Same-kind repeats still
+drop; failed reads and unmounted hosts submit nothing. Shared read/equipment feedback stays
+visible in a reserved line, preventing its insertion from moving Feed during native input.
+No queue/server/attendance-clock policy, player copy, retry, deadline, kernel or CI change.
+
+The original whole64767 failure remains in Cosmetic's log. Initial old-source79002 failed
+two refreshed arms, but its pointerdown-only observer did not distinguish a dropped handler
+from a missing click. First correction23027/19002 passed focused cases; broader52813 failed
+two existing equipment-feedback assertions because that correction hid shared feedback.
+Restoring feedback with a separate care guard still failed broader96855. Whole42398/26808
+passed in between; neither superseded those narrower reds or established reliability.
+
+Improved observer4669 required both trusted pointerdown and click: six pointerdown-triggered
+arms failed, while click-triggered arms passed. Explicit geometry32450 reproduced Feed
+y292.5→326.046875 in both Chromium/WebKit (RP-441). With the reserved line in place, restoring
+only the old global guard56227 preserved position and both trusted events, then failed on
+zero intents (RP-440). Restored the corrected guard before final verification. These are
+independent causal controls, not a claim that the original trace lacked a completed click.
+
+Final verification:
+
+- `make test-browser-focused BROWSER_TEST_FLAGS='--project chromium --project webkit test/garage-surfaces-browser.test.ts test/game-ui-screens-browser.test.ts test/cosmetic-host-browser.test.ts test/pet-adoption-browser.test.ts'`91596:
+  1,060 PASS / four existing performance-only exclusions, eight file/project executions.
+  New pointerdown/click-triggered read races cover320/1280px and success/failure/unmount;
+  exact trusted events, fixed position and refreshed revision are required. Native Enter
+  also queues care behind a purchase and drops its own duplicate. Existing assertions remain.
+- `make typecheck build-client verify-client-boundary`74341 PASS, zero type errors/warnings.
+- Whole `make test-game-ui-composed`76975 exits0:35 observer controls, eight real-Postgres
+  refresh cases, all eight required persisted parents, production-built main gameplay/both
+  early endings/continuation/recovery, default and Clout Cosmetic/adoption/care variants,
+  Reputation, Garden, Tier2 and both expected forbidden-payment failures execute and pass.
+
+New race tests use a mounted runtime double; the whole journey supplies the actual service/
+Postgres/WebSocket boundary, not real-server injection of every race. No Firefox/manual AT,
+performance, full-CI, general reliability, clock repair, feature acceptance, mint or release
+claim. Last inspected hosted CI remains red independently (RP-131/RP-307).
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact correction range:
+`c977ad36` exclusive through this source/tests/docs/ledger/log/status commit; designated
+cross-party review pending. No archival or push. Next: continue missing accepted Garage/API/
+minigame integration and consolidate related review ranges; unruled contracts remain held.

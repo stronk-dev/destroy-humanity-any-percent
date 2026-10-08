@@ -365,8 +365,14 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   change only on an authoritative snapshot. Malformed status events take the existing
   runtime resync path. The new sentence remains explicitly pending owner copy.
   Care actions remain focusable with `aria-disabled` and visible `common.pending`
-  until both the intent and authoritative refresh settle; pending activation is
-  ignored. Actual ineligibility or unavailable transport still disables them,
+  until their own care intent and authoritative refresh settle; same-kind pending
+  activation is ignored. An unrelated intent or background read is not a care
+  submission: a fresh care click enters the shared queue, waits for that work,
+  and binds the refreshed Founder revision. A failed read or unmounted host
+  cannot dispatch the waiting care intent. Shared read/equipment busy feedback
+  remains visible even when it is not a pending care command. Its reserved line
+  prevents insertion/removal from moving the actions during a pointer sequence.
+  Actual ineligibility or unavailable transport still disables them,
   with the stale-state note visible. Explicit zero Tab indices support native
   Tab/Enter/Space in Chromium and WebKit. If the currently focused action becomes
   disabled after a refresh, focus returns to the care heading without taking it

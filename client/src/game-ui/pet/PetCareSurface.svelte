@@ -13,11 +13,13 @@
   // order; one the server does not list as eligible is disabled AND says so in
   // text (never greying alone). Eligibility is decided by the server; this
   // surface pre-evaluates nothing. Sincere tone; no price, urgency, or parody.
-  let { pets, cosmetics, era, pending, controlsEnabled, reducedMotion, notice = null, onCare }: {
+  let { pets, cosmetics, era, pending, carePending, controlsEnabled, reducedMotion, notice = null, onCare }: {
     pets: readonly GameUIPetRow[];
     cosmetics: GameUICosmeticsArm | null;
     era: CopyEra;
     pending: boolean;
+    // Keep shared read/equipment feedback without discarding fresh care input.
+    carePending: boolean;
     controlsEnabled: boolean;
     reducedMotion: boolean;
     notice?: CopyKey | null;
@@ -50,7 +52,9 @@
   <h1 bind:this={heading} id="pet-care-heading" tabindex="-1">{t("pet.care.panel.title", {}, era)}</h1>
   <p class="intent-notice" role="status">{notice ? t(notice, {}, era) : ""}</p>
   {#if !controlsEnabled}<p class="care-stale" role="status">{t("common.stale_note", {}, era)}</p>{/if}
-  {#if pending}<p class="care-pending" role="status">{t("common.pending", {}, era)}</p>{/if}
+  <div class="care-progress">
+    {#if pending}<p class="care-pending" role="status">{t("common.pending", {}, era)}</p>{/if}
+  </div>
   {#each pets as pet (pet.pet_id)}
     {@const name = t(pet.name_key as CopyKey, {}, era)}
     {@const band = FEATURES_PRESENTATION.petBands.get(pet.status_band)}
@@ -67,8 +71,8 @@
           {@const eligible = pet.eligible_action_ids.includes(actionID)}
           <li>
             <button type="button" tabindex="0" data-pet-id={pet.pet_id} data-action-id={actionID}
-              disabled={!controlsEnabled || !eligible} aria-disabled={pending || undefined}
-              onclick={() => { if (!pending) onCare(pet.pet_id, actionID); }}>{t(titleKey, {}, era)}</button>
+              disabled={!controlsEnabled || !eligible} aria-disabled={carePending || undefined}
+              onclick={() => { if (!carePending) onCare(pet.pet_id, actionID); }}>{t(titleKey, {}, era)}</button>
             {#if !eligible}<small>{t("pet.care.action.unavailable", {}, era)}</small>{/if}
           </li>
         {/each}
@@ -80,6 +84,8 @@
 <style>
   .pet-care { display: grid; gap: var(--cc-space-lg); max-width: 72rem; margin: auto; padding: var(--cc-space-lg); }
   .pet { display: grid; gap: var(--cc-space-sm); padding: var(--cc-space-md); }
+  /* A refresh must not move a button between native pointerdown and click. */
+  .care-progress { min-block-size: 1lh; }
   .portrait { position: relative; inline-size: fit-content; }
   .actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr)); gap: var(--cc-space-sm); margin: 0; padding: 0; list-style: none; }
   .actions li { display: grid; gap: var(--cc-space-xs); }

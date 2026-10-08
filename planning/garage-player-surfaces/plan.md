@@ -7,7 +7,15 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-08): RP-318's missing pet status decoder/announcement is locally
+Current checkpoint (2026-10-08): RP-440/RP-441 native pointer/read defects are locally corrected.
+Care's command guard now identifies its own command, not every background read or
+different-kind intent. Shared busy feedback remains in a reserved line so it cannot move
+the button between pointerdown and click. The existing single-flight queue retains the
+click and binds the refreshed Founder revision; failed-read/unmount and same-kind duplicate controls pass.
+Affected-suite and real-service verification pass and belong in the latest owning log; no feature
+acceptance or clock repair follows from this bounded correction.
+
+Preceding checkpoint (2026-10-08): RP-318's missing pet status decoder/announcement is locally
 implemented under GS0.3/GS4. Founder events announce only for an adopted pet while Pet Care is
 mounted; replays/off-surface events do not repeat or queue speech, and values remain snapshot-owned.
 The existing real-service care journey now exercises an actual low → high status transition,

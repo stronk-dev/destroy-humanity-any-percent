@@ -30,10 +30,9 @@ activation or designated acceptance. The existing session-expiry diagnostic stil
 absent automatic renewal. The [Garden log](minigame-server-garden/log.md) owns the new range
 after `4b2c72a0`, failed instrumentation attempts and pending review. The latest platform
 supplement now exercises both solo/async saved-state resume and atomic payout/fault paths
-against real Postgres. Those pass in final whole64767, but that aggregate is RED later at
-native Pet Care feed (RP-440); downstream populations are not reached. The owning
-[Minigame Platform log](minigame-platform-foundation/log.md) and
-[Cosmetic log](cosmetic-shop-v1/log.md) retain the results and open diagnosis.
+against real Postgres. The subsequent native-care correction and latest full composed
+result are in the [current verification overview](CURRENT-STATE.md#current-verification-and-closeout)
+and [Garage log](garage-player-surfaces/log.md); the original failure remains recorded.
 Continue remaining
 accepted Garage integration; renewal and unresolved content/clock contracts remain separate
 gates, not permission to shorten growth or invent policy.
@@ -1951,7 +1950,7 @@ postponed by changing the release label.
 | Gate | State at checkpoint | Product exit from `design/07` | Main dependency / proof still needed |
 |---|---|---|---|
 | Phase-0 Playable Preview | **In construction; unreleased** | Honest T0–T1 click → generator → first Exit → next Company browser journey, with the bounded preview manifest. | Independently review Deployment Foundation's corrective range, rebuild both bundles, and run R-006 on the exact clean-host artifact. Account rights, recovery, task accessibility and retention still need their own decisions/contracts and end-to-end proof. |
-| v0.1 The Garage | **Accepted feature RFCs implementing; release unproved** | T0–T2, first Exit/Reputation, Fiscal/Clout/shop, three named minigames, pet care, ambient presence/feed/counters, era UI and launch content. | Bounded real-service Reputation, PR, Garden and Tier2 candidate journeys now exist, not complete acceptance. Typer/Arcade public wire and host integration, numeric/clock/renewal repairs, RP-440 activation diagnosis, natural pacing/relevance, adopted copy/content mint, world/feed surfaces and consolidated reviews remain. RP-132's Pet/API body conflict and the Phase-0 floor also apply. |
+| v0.1 The Garage | **Accepted feature RFCs implementing; release unproved** | T0–T2, first Exit/Reputation, Fiscal/Clout/shop, three named minigames, pet care, ambient presence/feed/counters, era UI and launch content. | Bounded real-service Reputation, PR, Garden and Tier2 candidate journeys now exist, not complete acceptance. Typer/Arcade public wire and host integration, numeric/clock/renewal repairs, natural pacing/relevance, adopted copy/content mint, world/feed surfaces and consolidated reviews remain. RP-132's Pet/API body conflict and the Phase-0 floor also apply. |
 | v0.2 Incorporation | **Design intent; blocked by upstream systems** | Factions, guild/exchange, Tier 3 and the first measured community milestone; Events Layers 1–2. | Rule and prove privacy-preserving milestone measurement before threshold selection; complete social/world/event dependencies and real content. |
 | v0.3 Hyperscale | **Design intent; blocked by upstream systems** | Tier 4, The Lane, clocks/shop, ranked board-game queue with fair bot backfill, Event Layer 3, GM/war log and speedrun surfaces. | Accepted combat/match, feed/world, leaderboard readers, operator and content contracts with real multiplayer/bot fallback proof. |
 | v0.4 Frontier | **Design intent; blocked by upstream systems** | Tier 5, research/canonization/casino, pet battles, Commons/Ethical%, challenge runs, Compute Credits and Soul-gated content. | Earlier world/social/combat paths and measured balance; accessible player surfaces and reviewed content for each mode. |

@@ -2420,6 +2420,108 @@ it.skipIf(!browser)("states unavailable care actions in text, sends Founder-scop
 // Care supplement: native host/runtime-double evidence, not a server care or
 // raw-stat/cooldown projection. All values below are public PA7 fields.
 const careText = (key: CopyKey): string => t(key, {}, "era_1995");
+it.skipIf(!browser)("care native input queues behind a different intent without duplicating care", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const runtime = new Runtime(); runtime.current = withPet();
+  const { target, dispose } = await mounted(runtime);
+  let finishPurchase!: (value: IntentOutcome) => void;
+  let finishCare!: (value: IntentOutcome) => void;
+  const purchase = new Promise<IntentOutcome>((resolve) => { finishPurchase = resolve; });
+  const care = new Promise<IntentOutcome>((resolve) => { finishCare = resolve; });
+  const intent = vi.spyOn(runtime, "intent").mockImplementation((body) => {
+    runtime.requests.push(body);
+    return body.kind === "buy_generator" ? purchase : care;
+  });
+  try {
+    const buy = target.querySelector<HTMLButtonElement>("section[aria-labelledby='generators-heading'] button")!;
+    await userEvent.click(buy); await settle();
+    expect(runtime.requests).toHaveLength(1);
+    button(target, careText("pet.care.panel.title")).click(); await settle();
+    const feed = button(target, careText("pet.care.action.feed.title"));
+    expect(feed.getAttribute("aria-disabled"), "another intent is not a pending care command").not.toBe("true");
+    feed.focus(); await userEvent.keyboard("{Enter}"); await settle();
+    expect(runtime.requests, "care must wait for the first intent and its read").toHaveLength(1);
+    runtime.current = { ...withPet(), revision: 2, founder_revision: 8 };
+    finishPurchase({ outcome: "applied", receipt: {} }); await settle();
+    expect(runtime.requests).toHaveLength(2);
+    expect(runtime.requests[1]).toMatchObject({ kind: "care_action", expected_revision: 8,
+      pet_id: petRow.pet_id, action_id: "care.feed" });
+    expect(feed.getAttribute("aria-disabled")).toBe("true");
+    await userEvent.keyboard("{Enter}"); await settle();
+    expect(runtime.requests, "same-kind pending care remains single flight").toHaveLength(2);
+    runtime.current = { ...runtime.current, founder_revision: 9 };
+    finishCare({ outcome: "applied", receipt: {} }); await settle();
+    expect(feed.getAttribute("aria-disabled")).not.toBe("true");
+    expect(target.querySelector(".pet-care .intent-notice")?.textContent).toBe(careText("pet.care.applied"));
+  } finally {
+    finishPurchase({ outcome: "applied", receipt: {} }); finishCare({ outcome: "applied", receipt: {} });
+    await settle(); await dispose(); intent.mockRestore();
+  }
+});
+
+const careRefreshCases = (["pointerdown", "click"] as const).flatMap((refreshAt) =>
+  (["refreshed", "read-failed", "unmounted"] as const).flatMap((completion) =>
+    ([320, 1280] as const).map((width) => ({ refreshAt, completion, width }))));
+for (const { refreshAt, completion, width } of careRefreshCases) {
+  it.skipIf(!browser)(`care native pointer racing a background refresh/${refreshAt}/${completion}/${width}`, async () => {
+    const { page, userEvent } = await import("vitest/browser");
+    await page.viewport(width, 720);
+    const runtime = new Runtime(); runtime.current = withPet();
+    const { target, dispose } = await mounted(runtime);
+    let finishRead!: (value: ParsedGameUISnapshot) => void;
+    let failRead!: (error: Error) => void;
+    const heldRead = new Promise<ParsedGameUISnapshot>((resolve, reject) => { finishRead = resolve; failRead = reject; });
+    const read = vi.spyOn(runtime, "snapshot").mockImplementationOnce(() => heldRead)
+      .mockImplementation(async () => runtime.current);
+    const intent = vi.spyOn(runtime, "intent").mockImplementation(async (body) => {
+      runtime.requests.push(body);
+      runtime.current = { ...withPet(), founder_revision: 9 };
+      return { outcome: "applied", receipt: { intent_id: body.intent_id, founder_revision: 9 } };
+    });
+    let disposed = false;
+    const pointerEvents: { type: string; trusted: boolean }[] = [];
+    try {
+      button(target, careText("pet.care.panel.title")).click(); await settle();
+      const feed = button(target, careText("pet.care.action.feed.title"));
+      const initialY = feed.getBoundingClientRect().y;
+      // Separate movement during the pointer sequence from a completed click
+      // reaching its handler during refresh. Both must preserve native consent.
+      for (const type of ["pointerdown", "click"] as const) feed.addEventListener(type, (event) => {
+        pointerEvents.push({ type, trusted: event.isTrusted });
+        if (type === refreshAt) flushSync(() => runtime.listener?.({ kind: "receipt" }));
+      }, { capture: true, once: true });
+      await userEvent.click(feed); await settle();
+      expect(feed.getBoundingClientRect().y, "busy feedback must not move the care control").toBe(initialY);
+      expect(pointerEvents, "refresh must not move the control out of the native pointer sequence").toEqual([
+        { type: "pointerdown", trusted: true }, { type: "click", trusted: true },
+      ]);
+      expect(read).toHaveBeenCalledTimes(1);
+      expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+      expect(runtime.requests, "do not submit against the old Founder revision").toHaveLength(0);
+      if (completion === "unmounted") { await dispose(); disposed = true; }
+      runtime.current = { ...withPet(), founder_revision: 8 };
+      if (completion === "read-failed") failRead(new Error("authoritative read failed"));
+      else finishRead(runtime.current);
+      await settle();
+      if (completion === "refreshed") {
+        expect(runtime.requests, "the accepted click must not vanish during refresh").toHaveLength(1);
+        expect(runtime.requests[0]).toEqual({ intent_id: expect.any(String), expected_revision: 8,
+          kind: "care_action", pet_id: petRow.pet_id, action_id: "care.feed" });
+        expect(read).toHaveBeenCalledTimes(2);
+        expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+        expect(target.querySelector(".pet-care .intent-notice")?.textContent).toBe(careText("pet.care.applied"));
+      } else {
+        expect(runtime.requests, "failed reads and disposed hosts cannot dispatch queued care").toHaveLength(0);
+        if (completion === "read-failed") expect(feed.disabled).toBe(true);
+      }
+    } finally {
+      finishRead(runtime.current); await settle();
+      if (!disposed) await dispose();
+      intent.mockRestore(); read.mockRestore();
+    }
+  });
+}
+
 for (const activation of ["{Enter}", " "]) {
   it.skipIf(!browser)(`care supplement reaches the next eligible action with Tab and ${activation === " " ? "Space" : "Enter"}`, async () => {
     const runtime = new Runtime(); runtime.current = withPet();
@@ -2670,7 +2772,7 @@ for (const [label, error] of [
 it.skipIf(!browser)("care supplement refuses pending activation inside the component, independent of the host queue", async () => {
   const target = document.createElement("div"); document.body.append(target);
   const onCare = vi.fn();
-  const app = mount(PetCareSurface, { target, props: { pets: [petRow], cosmetics: null, era: "era_1995", pending: true, controlsEnabled: true, reducedMotion: true, onCare } });
+  const app = mount(PetCareSurface, { target, props: { pets: [petRow], cosmetics: null, era: "era_1995", pending: true, carePending: true, controlsEnabled: true, reducedMotion: true, onCare } });
   try {
     await settle();
     const feed = button(target, careText("pet.care.action.feed.title")); feed.focus();
