@@ -3085,3 +3085,48 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 `ef10238f` through this correction/test/docs/record commit; designated review pending and older
 ranges remain separate. All process handles terminal. No natural-growth, whole-feature,
 general-reliability, hosted-green, archival, release or push promotion.
+
+## 2026-10-08 — Complete original G5 designated disposition
+
+Review by: Codex (designated cross-party reviewer of Claude's original implementation).
+Recorded by: Codex. Exact reviewed range: `f8d170a8^..f8d170a8`, all 21 changed paths.
+**Verdict: CHANGES REQUIRED**, extending the earlier bounded clock disposition to the
+complete batch, not approving Codex's later corrections.
+
+Inspected the harvest routing/transition, persistent faucet export, shared Store options,
+Founder and Company replay in both runtimes, history linkage, migration 00083, version pins,
+tests and original completion claims against SG6/SG8/SG-P1/SG-P2. The generated corpus remains
+byte-identical to G5 at current HEAD. Structural comparison with its parent confirms unchanged
+bundles, all 21 retained Founder cases and the Exit case, plus two new Founder/four Company
+cases; the Go corpus test regenerates and compares exact bytes, and the TS consumer checks
+receipt, events and final state rather than only names.
+
+The blocking dispositions remain RP-217 (handler-time probe/commit instead of locked DB time),
+RP-227 (missing genesis fault/full-row rollback proof), RP-228 (missing saved Company-head and
+hash-verdict proof), and RP-229 (SG8's unnamed extra resource event). Earlier log entries own
+their reproductions and corrective evidence. The first three have local corrections; those
+ranges still require Claude. RP-229 requires specification-author reconciliation, not an
+invented event. No additional defect is claimed from this completed diff inspection.
+
+Current-source execution at `e15e0ff5`, separately from the historical verdict:
+
+- `make test-go-ci CI_TEST_PACKAGES='./production ./save ./minigame ./garden'
+  CI_TEST_FLAGS='-run Garden -v'` (6063), exit 0: cold Linux-amd64/real-Postgres Garden
+  population, including clock skew, full-row rollback, saved histories and refusal cases.
+  This selector also exercises the save Garden codec; the minigame package has no matching
+  Garden tests, so its no-test result is not integration evidence.
+- `client/node_modules/.bin/vitest run --root client test/garden-replay.test.ts` (27214),
+  exit 0, 36 tests pass.
+- Shared coordinator consumers (30419), cold Linux-amd64/real Postgres, exit 0: selected
+  `TestResolveMinigameSessionIntegrationAtomicReplayAndFaults` (solo and async),
+  `TestSoulRecoveryIntegrationAtomicSuppressionReplayAndExclusivity`, Founder-only refusal,
+  Company envelope admission and zero-credit replay. Selector:
+  `make test-go-ci CI_TEST_PACKAGES='./production' CI_TEST_FLAGS="-run
+  'Test(ResolveMinigameSessionIntegration|SoulRecoveryIntegration|CompanyArmEnvelopesParse|CompanyMinigameResolution|FounderOnlyHarvest)' -v"`.
+  Initial unquoted alternation expanded into a shell pipeline and failed before the intended
+  population executed; corrected quoting above, not a product fix or hidden passing run.
+
+All processes terminal; only editorial records change. This is a full original-G5
+disposition, not full G1–G7 review, natural fifteen-minute growth, token renewal, adopted
+content, AC13, feature acceptance or archival. Continue the independent accepted work while
+renewal, RP-222/RP-229 and launch-content holds remain. No push or deployment.

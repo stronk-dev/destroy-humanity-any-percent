@@ -49,7 +49,22 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Latest finished source checkpoint (2026-10-08, `9265049b`): concurrent encrypted
+- Latest finished implementation checkpoint (`e15e0ff5`): Recovery's built-client journey
+  now resumes the same committed session after actual gameserver process death and a lost
+  reply, with unchanged persisted progress before reconnect and no credit for the missed
+  interval. The retained data-loss control fails at the new assertion. Fiscal's keyboard
+  driver now waits for harvest eligibility before focusing and pressing Enter; the native
+  reproduction and final affected real-service journey pass. These are committed, pending
+  designated review, not proof of DB/host disaster recovery or whole-CI reliability.
+  The [Minigame API log](minigame-api-and-surface/log.md) and
+  [Garage log](garage-player-surfaces/log.md) own the exact ranges and evidence.
+- Garden's complete original G5 range `f8d170a8^..f8d170a8` now has a designated Codex
+  **CHANGES REQUIRED** disposition, preserving its clock/test/specification findings rather
+  than implicitly approving later corrections. Current-source cold Linux-amd64/Postgres
+  Garden and shared-coordinator consumers pass; all 36 client replay tests pass. Natural
+  growth remains held by browser renewal; author reconciliation, corrective review and
+  launch content remain open. The [Garden log](minigame-server-garden/log.md) owns this result.
+- Previous backup safety checkpoint (2026-10-08, `9265049b`): concurrent encrypted
   backups can no longer replace an already completed backup with the same ID. The
   old-source regression reproduced actual overwritten envelopes; atomic no-replace
   commit now preserves the winning bytes and refuses the losing writer. Cold native
