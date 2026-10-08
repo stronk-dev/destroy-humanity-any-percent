@@ -511,3 +511,39 @@ Test-batch first filter by: Codex (implementer). Recorded by: Codex. Exact new r
 No archival, mint, release or push. Next: database-backed AC7/AC9/AC10 execution when available,
 and the remaining full Pet Adoption review/contract gates; PA7, copy adoption, rights and full
 accessibility remain open independently.
+
+## 2026-10-08 — Pet Exit preservation and pinned activation witnesses
+
+Test-only AC6/AC8/AC14 coverage reuses the committed Reputation and Cosmetic corpora; no new
+large fixture, production byte, content mint or acceptance checkbox. Go and TS execute both
+Company-log and Founder-log Exit arms. The old pin stays inactive despite an available species
+bundle; the recorded species pin adds only the required empty identity map and leaves Company
+economics/receipt unchanged. Wind Down and Accept Offer preserve nonempty identity/care maps.
+Missing target bytes, a wrong activation version and omitted carry identities refuse without
+changing their input state. Go's existing test hook also severs the actual Founder Exit arm by
+dropping identities: the transition must fail and restore the complete original Founder.
+
+Final root `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run
+"Pet|Adoption|Cosmetic|Reputation"'` passes (36911,168.620s); this includes the existing200-seed
+cosmetic isolation population but does not execute PostgreSQL tests without their dependency.
+The four named Exit regressions also pass verbosely62594; production vet passes. Client Node
+91774 passes105 across `pet-exit-replay`, `pet-adoption-replay`, `cosmetic-replay` and
+`reputation-replay`. Focused native Chromium/WebKit13677 passes10; typecheck69097 reports
+zero errors/warnings. Both new-file diffs were inspected and whitespace checks pass.
+
+Initial Go construction failed because indented corpus payloads were passed instead of canonical
+intent bytes; a subsequent assertion tried to encode the Company arm's partial Founder carry as
+a complete save. The corrected tests canonicalize payloads and compare that carry through its
+existing extension encoder. These were test setup errors, not production findings. One Node
+invocation named a nonexistent fourth file and ran only three files/70 tests;91774 is the actual
+four-file result. An anchored Go selector lost its dollar sign to Make and ran no tests;62594
+uses the corrected selector. Initial browser startup hit sandbox listen denial and ran no tests;
+the permitted local-server command produced the result above. No assertion or budget was relaxed.
+
+Docker inspect still returns "Docker Desktop is unable to start". The original
+`cloud-clicker-test-run-9a63203faa7b` result remains unknown; no restart, cleanup or new SQL pass
+is claimed. These replay tests do not prove a persisted adoption-to-Exit player journey.
+First filter Review by: Codex (implementer); Recorded by: Codex. Exact range: `aa53aad4` exclusive
+through this test/log commit awaits Claude's designated review. No full Pet acceptance, archival,
+hosted CI, release or push. Next: recover the existing SQL run when Docker is available, then
+execute current persisted controls and consolidate outstanding review/contract gates.
