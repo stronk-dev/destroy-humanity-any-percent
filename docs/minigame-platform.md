@@ -236,8 +236,15 @@ receipt, both save revisions, one start/terminal event and Founder log, unchange
 unchanged Company resource balances. Before Recovery, native manual actions at 1 Hz fund two
 ordinary generator purchases; the second purchase proves positive persisted idle accrual net
 of its exact cost. Recovery therefore suppresses a Company that demonstrably produces, not
-an inert zero-rate fixture. Normal `make test-game-ui-composed` executes this bounded
-population; it does not wait five minutes on every push. The Pitch prerequisite also handles
+an inert zero-rate fixture. The same journey also lets an actual heartbeat commit and drops
+only its HTTP reply. The mounted client must display its network pause without optimistic
+progress, send no beats or automatic restart across the catalog ceiling, and leave the complete
+stored session unchanged. Native Reconnect must preserve that session/progress and rotate its
+capability. The first post-gap heartbeat credits nothing; the next ordinary attended interval
+advances rendered progress, without queued requests. This is deliberate single-response loss
+through the real handler/Postgres, not a whole-network outage or browser-background test.
+Normal `make test-game-ui-composed` executes this bounded population; it does not wait five
+minutes on every push. The Pitch prerequisite also handles
 its existing Exit-offer preemption through visible Decline before fresh harvest consent;
 it neither retries the harvest intent nor skips its applied receipt.
 
@@ -247,7 +254,7 @@ Founder Soul to 40 and appends its revision; it does not grant progress or alter
 Native Finish must remain absent early, appear after server eligibility, and produce matching
 receipt/event/stored/rendered Soul 40→45 with unchanged Company balances and persisted reload.
 This proves a real five-minute activity after disclosed depletion setup, not naturally earning
-that state, full history replay, hidden-tab/network/watchdog behavior through the real browser,
+that state, full history replay, hidden-tab/watchdog or general network reliability through the real browser,
 the 15/45-minute activities or complete MA/assistive-technology/release acceptance. The owning
 Minigame API log records local results and pending designated review.
 

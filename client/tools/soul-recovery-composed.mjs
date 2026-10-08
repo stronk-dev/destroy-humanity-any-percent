@@ -139,14 +139,83 @@ export async function witnessSoulRecovery(page, repositoryRoot, founderID, compl
     assert.equal(await row.getByText(text(activity.disclosure_copy_key), { exact: true }).count(), 1);
     return row.getByRole("button", { name: text("soul.recovery_surface.begin"), exact: true });
   }
-  async function waitBeat(sessionID) {
+  async function waitBeat(sessionID, afterProgress = 0) {
     const reply = await page.waitForResponse(async (response) => new URL(response.url()).pathname === "/api/v1/soul-recovery/progress" &&
-      response.status() === 200 && (await response.json()).attended_progress_ms > 0, { timeout: 30_000 });
+      response.status() === 200 && (await response.json()).attended_progress_ms > afterProgress, { timeout: 30_000 });
     const progress = await reply.json();
     assert.equal(progress.session_id, sessionID);
     assert.equal(progress.required_duration_attended_ms, activity.duration_attended_ms);
     await page.waitForFunction((value) => document.querySelector(".recovery progress")?.value >= value, progress.attended_progress_ms);
     return progress;
+  }
+  async function loseCommittedBeat(active, before) {
+    const routePath = "**/api/v1/soul-recovery/progress";
+    let calls = 0, failure, committed, durable, displayed;
+    const dropReply = async (route) => {
+      try {
+        assert.equal(++calls, 1, "recovery dispatched again before native reconnect");
+        const request = route.request().postDataJSON();
+        assert(Object.keys(request).sort().join(",") === "progress_token,session_id" &&
+          request.session_id === active.session_id && request.progress_token === active.progress_token,
+        "heartbeat request capability mismatch (values withheld)");
+        const prior = stored(active.session_id);
+        displayed = await surface().locator("progress").evaluate((element) => element.value);
+        const upstream = await route.fetch({ maxRetries: 0 }).catch(() => {
+          throw new Error("recovery heartbeat failed before reply-loss injection");
+        });
+        assert.equal(upstream.status(), 200, "heartbeat must commit before losing its reply");
+        committed = await upstream.json();
+        durable = stored(active.session_id);
+        assert.equal(committed.session_id, active.session_id);
+        assert(committed.attended_progress_ms > prior.attended_progress_ms, "lost heartbeat must credit a real interval");
+        assert.equal(durable.attended_progress_ms, committed.attended_progress_ms);
+        assert.equal(durable.last_progress_server_ms, committed.last_progress_server_ms);
+        await route.abort("connectionreset");
+      } catch {
+        // Playwright upstream errors can contain Authorization headers. Keep
+        // capabilities and raw upstream diagnostics out of failure output.
+        failure = new Error("committed recovery heartbeat reply-loss setup failed (private details withheld)");
+        await route.abort().catch(() => {});
+      }
+    };
+    await page.route(routePath, dropReply);
+    try {
+      await control("soul.recovery_surface.reconnect").waitFor({ state: "visible", timeout: 30_000 });
+      if (failure) throw failure;
+      assert.equal(calls, 1);
+      assert.equal(await surface().getByRole("alert").textContent(), text("soul.recovery_surface.paused_network"));
+      assert.equal(await surface().locator("progress").evaluate((element) => element.value), displayed,
+        "lost response must not optimistically change displayed progress");
+      const count = requests.length;
+      // Cross the actual server ceiling, not a shortened fixture clock. A
+      // reconnect must not credit/replay this unattended interval.
+      await page.waitForTimeout(catalog.policy.recovery_beat_ceiling_ms + beatMS);
+      assert.equal(requests.length, count, "paused recovery replayed beats or automatically restarted");
+      assert(JSON.stringify(stored(active.session_id)) === JSON.stringify(durable),
+        "paused recovery mutated its stored row (capability withheld)");
+      const frozen = heads();
+      assert.equal(frozen.founder.state.soul, before.founder.state.soul);
+      assert.deepEqual(frozen.company.state.balances, before.company.state.balances);
+    } finally { await page.unroute(routePath, dropReply); }
+
+    const firstBeat = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/soul-recovery/progress" &&
+      response.status() === 200, { timeout: 30_000 }).then((response) => ({ response }), (error) => ({ error }));
+    const resumeIndex = requests.length;
+    const reconnected = await command(control("soul.recovery_surface.reconnect"), "start", { activity_id: activity.activity_id });
+    assert.equal(reconnected.session_id, active.session_id);
+    assert(reconnected.progress_token !== active.progress_token, "network reconnect must rotate capability (values withheld)");
+    assert.equal(reconnected.attended_progress_ms, committed.attended_progress_ms);
+    assert(stored(active.session_id).progress_token === reconnected.progress_token, "stored rotated capability mismatch (values withheld)");
+    const first = await firstBeat;
+    if (first.error) throw first.error;
+    const resumed = await first.response.json();
+    assert.equal(resumed.session_id, active.session_id);
+    assert(resumed.last_progress_server_ms - committed.last_progress_server_ms > catalog.policy.recovery_beat_ceiling_ms);
+    assert.equal(resumed.attended_progress_ms, committed.attended_progress_ms, "reconnect credited the missed heartbeat interval");
+    await waitBeat(active.session_id, resumed.attended_progress_ms);
+    assert.equal(requests.slice(resumeIndex).filter((request) => new URL(request.url()).pathname === "/api/v1/soul-recovery/progress").length, 2,
+      "reconnect replayed queued heartbeats before the fresh interval");
+    console.log("Soul Recovery committed heartbeat/lost reply: visible pause, frozen SQL/progress, native token rotation, no missed-interval credit, fresh attended beat: PASS");
   }
   async function stopped() {
     // An already-returning request may settle; then two normal beat intervals
@@ -192,6 +261,7 @@ export async function witnessSoulRecovery(page, repositoryRoot, founderID, compl
     assert.equal(reconnected.attended_progress_ms, paused.attended_progress_ms);
     assert(stored(started.session_id).progress_token === reconnected.progress_token, "stored/reconnect capability mismatch (tokens withheld)");
     await waitBeat(started.session_id);
+    await loseCommittedBeat(reconnected, before);
     const cancelled = await command(control("soul.recovery_surface.cancel"), "cancel", { session_id: started.session_id });
     assert.equal(cancelled.cancelled_by, "player");
     terminalStored(cancelled, "cancel", before);

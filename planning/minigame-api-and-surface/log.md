@@ -1276,3 +1276,32 @@ filter). Recorded by: Codex. Exact new range starts after `a0052ddf` through thi
 containing commit and requires designated cross-party review. No acceptance flips,
 archival or push. Next: remaining accepted API/player integrations and consolidated
 review; held public-wire, clock, content and owner decisions remain separate.
+
+## 2026-10-08 — Native Recovery reconnect after a committed heartbeat reply is lost
+
+Under MA2/MA3/AC1 and SR-C6, extend the existing composed Recovery journey, not the protocol,
+clock or retry policy. A native scheduled heartbeat reaches the real handler and credits an
+interval in Postgres; Playwright drops only its reply. Require the visible network pause,
+unchanged displayed progress, no beats/automatic start across the real catalog ceiling, and
+exact unchanged stored session. Native Reconnect preserves session/progress and rotates the
+capability. Its first heartbeat must credit none of the missed interval; the next fresh interval
+advances rendered progress with exactly two resumed dispatches. Existing terminal SQL/event/
+Soul and positive-production suppression controls remain. Capabilities/upstream request details
+are withheld from fault diagnostics. No new driver, fixture epoch, CI lane or production change.
+
+Executed `node client/tools/test-game-ui-composed.mjs`73472: exit0. All eight persisted refresh
+cases and all required selected Account/GameUI/Production/Leaderboard/Gameserver DB populations
+execute and pass. The production-built browser main journey passes Fiscal/refusals, acquisition,
+active play, both early endings/continuation, Pitch crash/lost-reply recovery/payout, WebSocket
+recovery and Recovery's new committed-heartbeat loss plus ordinary cancellation. Exact built
+HTML/JS/CSS/Worker proof passes. The sanitized trace records one deliberately failed Recovery
+heartbeat delivery, then one native reconnect and two normal resumed beats. Node syntax and final
+diff checks pass. The process is terminal; no source edits occurred while it ran.
+
+Limits: deliberate single-response loss after commit, not a whole-network outage, hidden-tab/
+watchdog observation, fresh five-minute completion, assistive technology, Linux release host,
+whole composed aggregate or hosted CI. Unaffected sibling journeys are not rerun for this tool-only
+change. Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range is
+`a1197552` exclusive through this containing test/docs/plan/log commit, pending designated review.
+No acceptance flips, archive, mint, push or release promotion. Continue accepted integration and
+consolidated review; the typed-dictionary choice is separately requested and remains unruled.

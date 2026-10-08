@@ -19,6 +19,9 @@ or replacement bootstrap. This strengthens solo Pitch, not death inside a transa
 host/DB crash, clean-host recovery or a generic async API. RP-459 repairs the HTTP test's
 reused-database bootstrap-receipt isolation. The owning log
 records execution and review status; no whole-feature acceptance checkbox changes.
+The bounded Recovery journey now also loses a real committed heartbeat reply while mounted:
+visible pause, frozen persisted progress, native same-session token rotation and no missed-gap
+credit before fresh attended progress. This is one transport failure case, not general reliability.
 
 - [x] Compose the minigame repository, closed Pitch tenant registry, pinned content resolver, and
   platform service in `gameserver.Compose`; expose it on `Composition`.
