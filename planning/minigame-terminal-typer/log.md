@@ -619,3 +619,49 @@ full Typer acceptance or archival. Claude must independently review the Codex co
 display-effect fix, canonical docs, reinstated-feedback failure and truthful verification/
 planning checkpoint. This is not a designated verdict or full B6 approval. RP-188's unchanged
 Snake case and RP-131's historic version guard remain separately open.
+
+## 2026-10-08 — B6 native keyboard and response-focus correction (RP-394)
+
+Outcome: accepted TT8.3/TT8.6/TT9 child keyboard operations remain reachable
+while pending; responses retain owned input focus without overriding newer
+choices, and completion leaves a reachable host exit. Targeted original B6
+review (`ade1083b^..ade1083b`, child keyboard/focus only): CHANGES REQUIRED,
+not a full B6 or Typer verdict. Baseline for the new correction is `76b58dc2`.
+
+Regression: unchanged component20251 fails24 checks, but includes two mistaken
+new test labels (Submit versus existing Enter copy and a missing feedback prefix).
+Correct those test errors before product edits; rerun89425 then fails24 real
+checks/two newer-focus controls pass. Pending native disable loses focus/removes
+reachability, prompt updates steal focus, terminal removes the input without
+handoff, and WebKit native Tab skips mode choices. Chromium's complete untimed
+run reaches the real engine's terminal result then fails the Leave-focus check.
+
+Correction: explicit native button tab stops, aria-disabled/busy and handler
+guards; pre-render focus capture plus post-render connected/current-state and
+newer-focus checks. No engine/time/payout/API/kernel/content/copy changes.
+Existing harness gains only pending and Leave controls. Native full-run test
+dispatches actual DOM commands into the TS engine with pinned placeholder data
+and synthetic times, checking miss/correction, every prompt, exact terminal facts
+and native Leave. No direct engine command substitutes for a gameplay control.
+
+Executed: final `make test-browser-focused BROWSER_TEST_FLAGS='test/typer-table-browser.test.ts test/typer-content-gate.test.ts test/minigame-surface-browser.test.ts --project=chromium --project=webkit'`65145
+passes72 checks; child46/shared-corpus18/host8. Forward/backward Tab leaves the
+child without a trap, pending Enter/Space/direct-click duplicates are refused,
+and newer-focus controls pass. Root Node shared-corpus9 passes. Final
+`make typecheck build-client verify-client-boundary`35699 passes, zero errors/
+warnings; `git diff --check` passes. Earlier added traversal test used ES2023
+toReversed; typecheck44075 correctly rejected it. Use ES2022 array-copy/reverse,
+then rerun affected browser/types/build rather than changing project settings.
+
+Coverage limits: no public Typer API, actual server command clock, payout,
+production content mint, Firefox/AT, whole CI or feature acceptance. No unrelated
+composed journey is substituted for the unavailable Typer public path. Existing
+TT-PA4/C2, RP-162, owner content and historical version-guard holds remain.
+Next: continue the original B1/engine review or other accepted implementation;
+public registration still requires its named author/owner contract reconciliation.
+
+Review by: Codex (original targeted cross-party finding; new correction's
+implementer first filter). Recorded by: Codex. The entire new range after
+`76b58dc2` through this containing component/test/docs/record commit requires
+Claude's designated review, independently of the earlier Typer correction ranges.
+No B6 checkbox/acceptance/archive/push or 1.0 promotion.

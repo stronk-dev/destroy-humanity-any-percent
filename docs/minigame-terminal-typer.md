@@ -84,11 +84,20 @@ The TT1 row fixture is `testdata/minigame/pitch-typer-v3.json`, with the two-ten
 ## Child surface status
 
 `TyperTable` is an unregistered presentation-only child. It offers both timed and untimed starts,
-accepts native text-field input (including paste and composition), and leaves focus in the input
-when a prompt advances. A separate polite live region announces the new prompt text once per
-prompt ID change; miss/clear feedback uses its own status. Its browser gate covers Enter-driven
-start and submit, prompt change, reflow and axe checks, but this does not establish a hosted
-Typer workflow or substitute for manual assistive-technology evidence.
+accepts native text-field input (including paste and composition), and retains input focus
+when that input still owns focus as a prompt advances. Responses never override a newer player
+focus choice. Mode, Submit and End controls remain native tab stops while pending, expose
+`aria-disabled`, and guard their callbacks against duplicate commands; the section exposes
+`aria-busy`. Terminal transitions hand off focus from a removed child control to Leave, without
+stealing newer focus or running after unmount.
+
+A separate polite live region announces the new prompt text once per prompt ID change;
+miss/clear feedback uses its own status. Chromium/WebKit checks execute forward/backward Tab
+traversal, pending Enter/Space, prompt/lifecycle focus, reflow and axe. A complete native-keyboard
+untimed component run now uses the actual TS engine and pinned placeholder content, including a
+miss, correction, all prompts, exact result facts and Leave. The harness supplies synthetic
+command times: this is not a public server/receipt/payout journey. Firefox/manual assistive-
+technology and full public registration/acceptance remain open.
 
 The countdown samples local monotonic time once when the authoritative response time or
 snapshot revision changes. Both display-clock fields are assigned from the same non-reactive

@@ -2,8 +2,11 @@ import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
 import { expect, it } from "vitest";
 
+import content from "../../balance/testdata/typer-v1.json?raw";
+import { t } from "../src/copy";
 import TyperTable from "../src/game-ui/minigame/TyperTable.svelte";
-import type { TyperCommand, TyperSnapshot } from "../src/typer/engine";
+import { typerContentHash } from "../src/typer/catalog";
+import { applyTyper, createTyper, type TyperCommand, type TyperResult, type TyperSnapshot } from "../src/typer/engine";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
 import TyperTableHarness from "./TyperTableHarness.svelte";
 
@@ -40,6 +43,181 @@ function button(target: HTMLElement, text: string): HTMLButtonElement {
   if (!found) throw new Error(`missing button ${text}: ${target.textContent}`);
   return found;
 }
+
+interface ControlledTyper {
+  advance(next: TyperSnapshot): void;
+  setPending(value: boolean): void;
+}
+
+function controlled(value: TyperSnapshot, dispatch: (command: TyperCommand) => void, exitToHost: () => void = () => {}) {
+  const target = document.createElement("main");
+  document.body.append(target);
+  installTheme(target, UI_THEMES.era_2000, false);
+  const component = mount(TyperTableHarness, { target, props: { initial: value, dispatch, exitToHost } });
+  return { target, app: component as unknown as ControlledTyper, dispose: () => { unmount(component); target.remove(); } };
+}
+
+for (const action of ["Timed run", "Untimed run", "Enter", "End run"] as const) for (const key of ["{Enter}", " "] as const) {
+  it.skipIf(!browser)(`Typer native ${action} ${key} keeps pending focus and refuses duplicates`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const commands: TyperCommand[] = [];
+    const value = action === "Timed run" || action === "Untimed run" ? snapshot() : typing();
+    const view = controlled(value, (command) => {
+      commands.push(command);
+      flushSync(() => view.app.setPending(true));
+    });
+    try {
+      await settle();
+      const trigger = button(view.target, action);
+      trigger.focus();
+      await userEvent.keyboard(key);
+      await settle();
+      expect(commands).toHaveLength(1);
+      expect(document.activeElement, "pending must retain native action focus").toBe(trigger);
+      expect(trigger.disabled, "pending must remain keyboard reachable").toBe(false);
+      expect(trigger.getAttribute("aria-disabled")).toBe("true");
+      expect(view.target.querySelector("section")?.getAttribute("aria-busy")).toBe("true");
+      await userEvent.keyboard("{Enter} ");
+      trigger.click(); // A focusable pending control also needs a handler guard.
+      expect(commands).toHaveLength(1);
+      flushSync(() => view.app.setPending(false));
+      await settle();
+      await userEvent.keyboard(key);
+      expect(commands).toHaveLength(2);
+    } finally { view.dispose(); }
+  });
+}
+
+for (const boundary of ["before-response", "before-focus-tick"] as const) {
+  it.skipIf(!browser)(`Typer prompt advance respects newer focus ${boundary}`, async () => {
+    const view = controlled(typing(), () => {});
+    const outside = document.createElement("button");
+    view.target.after(outside);
+    try {
+      await settle();
+      const chosen = boundary === "before-response" ? button(view.target, "Leave the table") : outside;
+      if (boundary === "before-response") chosen.focus();
+      flushSync(() => view.app.advance(typing({ current_prompt_id: "cd_www", current_prompt_text: "cd /var/www", prompt_index: 1, revision: 3 })));
+      if (boundary === "before-focus-tick") chosen.focus();
+      await settle();
+      expect(document.activeElement).toBe(chosen);
+      expect(view.target.querySelector<HTMLInputElement>("input")?.value).toBe("");
+      expect(view.target.querySelector(".prompt-announcement")?.textContent).toBe("cd /var/www");
+    } finally { view.dispose(); outside.remove(); }
+  });
+}
+
+for (const preserveNewerFocus of [false, true]) {
+  it.skipIf(!browser)(`Typer terminal handoff ${preserveNewerFocus ? "preserves newer focus" : "reaches Leave"}`, async () => {
+    const view = controlled(typing(), () => {});
+    const outside = document.createElement("button");
+    view.target.after(outside);
+    try {
+      await settle();
+      expect(document.activeElement).toBe(view.target.querySelector("input"));
+      flushSync(() => view.app.advance(snapshot({ phase: "terminal", revision: 3 })));
+      if (preserveNewerFocus) outside.focus();
+      await settle();
+      expect(document.activeElement).toBe(preserveNewerFocus ? outside : button(view.target, "Leave the table"));
+    } finally { view.dispose(); outside.remove(); }
+  });
+}
+
+for (const phase of ["ready", "typing"] as const) {
+  it.skipIf(!browser)(`Typer ${phase} native Tab and Shift-Tab reach every action without a trap`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const commands: TyperCommand[] = [];
+    const view = controlled(phase === "ready" ? snapshot() : typing(), (command) => commands.push(command));
+    const before = document.createElement("button"), after = document.createElement("button");
+    before.tabIndex = 0; after.tabIndex = 0;
+    view.target.before(before); view.target.after(after);
+    try {
+      await settle();
+      const stops = phase === "ready"
+        ? ["Timed run", "Untimed run", "End run", "Leave the table"]
+        : ["Enter", "End run", "Leave the table"];
+      if (phase === "ready") before.focus();
+      else expect(document.activeElement).toBe(view.target.querySelector("input"));
+      for (const label of stops) {
+        await userEvent.keyboard("{Tab}");
+        expect(document.activeElement, `forward ${label}`).toBe(button(view.target, label));
+      }
+      await userEvent.keyboard("{Tab}");
+      expect(document.activeElement, "Tab can leave the child").toBe(after);
+      for (const label of [...stops].reverse()) {
+        await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+        expect(document.activeElement, `backward ${label}`).toBe(button(view.target, label));
+      }
+      await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+      expect(document.activeElement).toBe(phase === "ready" ? before : view.target.querySelector("input"));
+      expect(commands).toEqual([]);
+    } finally { view.dispose(); before.remove(); after.remove(); }
+  });
+}
+
+it.skipIf(!browser)("Typer native keyboard untimed run completes through the real pure engine and leaves the table", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const identity = { content, content_hash: await typerContentHash(content), content_schema_version: 1,
+    seed: 42n, mode: "solo" as const, scaling_inputs: { "typer.era_tier": 1 } };
+  let encoded = await createTyper(identity);
+  let state = JSON.parse(encoded) as TyperSnapshot;
+  let result: TyperResult | null = null;
+  let operation = Promise.resolve();
+  let serverTime = 1_000;
+  let exits = 0;
+  const commands: TyperCommand[] = [];
+  const view = controlled(state, (command) => {
+    commands.push(command);
+    flushSync(() => view.app.setPending(true));
+    operation = applyTyper({ ...identity, snapshot: encoded, revision: state.revision,
+      command: JSON.stringify(command), server_time_ms: serverTime++ }).then((output) => {
+      encoded = output.snapshot;
+      state = JSON.parse(encoded) as TyperSnapshot;
+      result = output.result;
+      flushSync(() => { view.app.advance(state); view.app.setPending(false); });
+    });
+  }, () => { exits++; });
+  const sentinel = document.createElement("button");
+  view.target.before(sentinel);
+  try {
+    await settle();
+    sentinel.focus();
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement, "native Tab reaches timed choice").toBe(button(view.target, "Timed run"));
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement, "native Tab reaches untimed choice").toBe(button(view.target, "Untimed run"));
+    await userEvent.keyboard("{Enter}");
+    await operation; await settle();
+    const input = view.target.querySelector<HTMLInputElement>("input")!;
+    expect(document.activeElement).toBe(input);
+    await userEvent.keyboard("WRONG{Enter}");
+    await operation; await settle();
+    expect(state.misses).toBe(1);
+    expect(input.value).toBe("WRONG");
+    expect(view.target.querySelector(".feedback")?.textContent).toBe(t("typer.feedback.miss", { index: 1 }, "era_2000"));
+    await userEvent.keyboard("{Backspace}".repeat(5));
+    const total = state.prompts_total;
+    for (let index = 0; index < total; index++) {
+      const prompt = view.target.querySelector(".prompt")?.textContent;
+      expect(prompt, `current prompt ${index}`).toBe(state.current_prompt_text);
+      expect(document.activeElement, `prompt ${index} input focus`).toBe(input);
+      expect(input.value, `prompt ${index} input cleared`).toBe("");
+      await userEvent.keyboard(`${prompt}{Enter}`);
+      await operation; await settle();
+      expect(state.lines_cleared).toBe(index + 1);
+    }
+    expect(state.phase).toBe("terminal");
+    expect(result).toMatchObject({ outcome: "completed", rating_delta: null, score_facts: [
+      { kind: "typer.assisted", value: 1 }, { kind: "typer.clean_lines", value: total - 1 },
+      { kind: "typer.elapsed_ms", value: total + 1 }, { kind: "typer.lines_cleared", value: total }, { kind: "typer.misses", value: 1 },
+    ] });
+    expect(commands).toHaveLength(total + 2);
+    expect(document.activeElement, "completion retains a reachable host exit").toBe(button(view.target, "Leave the table"));
+    await assertAxe(view.target, "terminal");
+    await userEvent.keyboard(" ");
+    expect(exits).toBe(1);
+  } finally { await operation; view.dispose(); sentinel.remove(); }
+});
 
 it.skipIf(!browser)("samples an increasing monotonic clock without reactive feedback across server revisions", async () => {
   const target = document.createElement("main"); document.body.append(target);

@@ -21,10 +21,13 @@
   let line = $state("");
   let composing = false;
   let input = $state<HTMLInputElement | undefined>();
+  let root: HTMLElement | undefined;
+  let leave: HTMLButtonElement | undefined;
   let sampledAt = $state(0);
   let now = $state(0);
   let timer: ReturnType<typeof setInterval> | undefined;
   let lastPromptID: string | null = null;
+  let lastPhase: TyperSnapshot["phase"] | undefined;
   let promptAnnouncement = $state("");
 
   onMount(() => {
@@ -41,17 +44,29 @@
     sampledAt = sample; now = sample;
   });
 
-  // Clear the field when the prompt advances; keep it on a miss so the player
-  // can correct it. Focus stays in the input (TT8.3).
-  $effect(() => {
+  // Capture focus before a response removes its control. Keep typed text on a
+  // miss, and never undo a newer player focus choice while awaiting render.
+  $effect.pre(() => {
     const promptID = snapshot.current_prompt_id;
-    if (promptID !== lastPromptID) {
-      const hadFocus = document.activeElement === input;
-      lastPromptID = promptID;
-      promptAnnouncement = snapshot.current_prompt_text ?? "";
-      line = "";
-      if (hadFocus || promptID !== null) void tick().then(() => input?.focus());
-    }
+    const phase = snapshot.phase;
+    if (promptID === lastPromptID && phase === lastPhase) return;
+    const previousPrompt = lastPromptID;
+    const focused = document.activeElement;
+    const ownedFocus = focused !== null && root?.contains(focused);
+    const enterInput = promptID !== null && (focused === input ||
+      previousPrompt === null && (ownedFocus || focused === document.body));
+    const terminalHandoff = phase === "terminal" && ownedFocus && focused !== leave;
+    lastPromptID = promptID;
+    lastPhase = phase;
+    promptAnnouncement = snapshot.current_prompt_text ?? "";
+    line = "";
+    if (!enterInput && !terminalHandoff) return;
+    void tick().then(() => {
+      if (!root?.isConnected || snapshot.current_prompt_id !== promptID || snapshot.phase !== phase) return;
+      if (document.activeElement !== focused && !(focused && !focused.isConnected && document.activeElement === document.body)) return;
+      if (terminalHandoff) leave?.focus();
+      else input?.focus();
+    });
   });
 
   const remainingSeconds = $derived.by(() => {
@@ -67,21 +82,29 @@
     dispatch({ kind: "submit_line", text: line });
   }
 
+  function begin(assist_level: "timed" | "untimed"): void {
+    if (!pending && snapshot.phase === "ready") dispatch({ kind: "begin", assist_level });
+  }
+
+  function endRun(): void {
+    if (!pending && snapshot.phase !== "terminal") dispatch({ kind: "end_run" });
+  }
+
   // Enter during IME composition confirms the composition, never the line.
   function keydown(event: KeyboardEvent): void {
     if (event.key === "Enter" && (event.isComposing || composing)) event.preventDefault();
   }
 </script>
 
-<section class="typer" aria-labelledby="typer-heading">
+<section bind:this={root} class="typer" aria-labelledby="typer-heading" aria-busy={pending}>
   <h2 id="typer-heading">{t("typer.title", {}, era)}</h2>
   <p class="host">{t("typer.host", {}, era)}</p>
   <p class="prompt-announcement" aria-live="polite" aria-atomic="true">{promptAnnouncement}</p>
 
   {#if snapshot.phase === "ready"}
     <div class="modes">
-      <button type="button" disabled={pending} onclick={() => dispatch({ kind: "begin", assist_level: "timed" })}>{t("typer.mode.timed", {}, era)}</button>
-      <button type="button" disabled={pending} aria-describedby="typer-untimed-note" onclick={() => dispatch({ kind: "begin", assist_level: "untimed" })}>{t("typer.mode.untimed", {}, era)}</button>
+      <button type="button" tabindex="0" aria-disabled={pending || undefined} onclick={() => begin("timed")}>{t("typer.mode.timed", {}, era)}</button>
+      <button type="button" tabindex="0" aria-disabled={pending || undefined} aria-describedby="typer-untimed-note" onclick={() => begin("untimed")}>{t("typer.mode.untimed", {}, era)}</button>
     </div>
     <p id="typer-untimed-note" class="note">{t("typer.mode.untimed.note", {}, era)}</p>
   {:else if snapshot.phase === "typing"}
@@ -95,7 +118,7 @@
       <label for="typer-line">{t("typer.input_label", {}, era)}</label>
       <input id="typer-line" bind:this={input} bind:value={line} type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
         autocorrect="off" onkeydown={keydown} oncompositionstart={() => { composing = true; }} oncompositionend={() => { composing = false; }} />
-      <button type="submit" disabled={pending}>{t("typer.submit", {}, era)}</button>
+      <button type="submit" tabindex="0" aria-disabled={pending || undefined}>{t("typer.submit", {}, era)}</button>
     </form>
     <p class="feedback" role="status" aria-live="polite">
       {#if snapshot.last_submission?.outcome === "miss"}{t("typer.feedback.miss", { index: (snapshot.last_submission.first_mismatch_index ?? 0) + 1 }, era)}{:else if snapshot.last_submission?.outcome === "cleared"}{t("typer.feedback.cleared", {}, era)}{/if}
@@ -103,9 +126,9 @@
   {/if}
 
   {#if snapshot.phase !== "terminal"}
-    <button type="button" disabled={pending} onclick={() => dispatch({ kind: "end_run" })}>{t("typer.end_run", {}, era)}</button>
+    <button type="button" tabindex="0" aria-disabled={pending || undefined} onclick={endRun}>{t("typer.end_run", {}, era)}</button>
   {/if}
-  <button type="button" class="leave" onclick={exitToHost}>{t("minigame.leave_table", {}, era)}</button>
+  <button bind:this={leave} type="button" tabindex="0" class="leave" onclick={exitToHost}>{t("minigame.leave_table", {}, era)}</button>
 </section>
 
 <style>

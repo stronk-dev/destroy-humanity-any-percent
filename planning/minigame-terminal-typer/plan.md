@@ -38,3 +38,16 @@ earlier Snake failure and RP-131's historical kernel guard remain independent op
 Kernel protocol: every commit touching a `kernel/affecting-paths.json` prefix bumps
 `kernel/VERSION` (+ Go/TS constants) in the same commit; new engine dirs are registered in the
 commit that creates them.
+
+### B6 native keyboard/lifecycle correction (2026-10-08)
+
+RP-394: accepted TT8.3/TT8.6/TT9 child behavior, not a public-wire amendment.
+Old-source native Chromium/WebKit checks fail24 times: pending control focus/
+reachability, newer-focus theft, terminal focus loss and WebKit Tab entry.
+Mode/Submit/End now retain native tab stops with guarded pending callbacks;
+pre-render focus capture and post-render ownership/lifecycle checks preserve
+newer choices and move removed terminal controls to Leave. Complete keyboard-
+only untimed child run uses actual TS engine/pinned placeholder data, not server
+or payout proof. The owning log records final affected checks and exact review
+scope. B6 stays partial: public registration/C2, adopted content, full three-
+engine/manual-AT acceptance and designated review remain separate obligations.
