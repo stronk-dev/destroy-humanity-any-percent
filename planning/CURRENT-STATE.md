@@ -49,7 +49,18 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Latest Recovery checkpoint (2026-10-08): the production-built client now exercises native
+- Latest Garage checkpoint (2026-10-08): RP-447's stale purchase handoff is locally corrected.
+  Every Company action checks whether a coalesced read predates its applied revision and,
+  if so, completes a post-response refresh before clearing pending. Founder/run identity
+  keeps successor-Company genesis separate; no intent retry or driver assertion change.
+  Old-host purchase regressions fail in Chromium/WebKit; the affected native1074 cases
+  pass with four separate performance-only exclusions, and types/build/boundaries pass.
+  Final whole `make test-game-ui-composed`93889 exits0, including native Recovery, pets,
+  Reputation, Clout, payment negatives, Garden and Tier2 with exact SQL/history/reload checks.
+  Earlier whole89786's failure below is preserved, not a claimed pass. The [Garage log](garage-player-surfaces/log.md)
+  owns the exact pending designated-review range. This is local composed-CI evidence, not
+  hosted/full-CI, Firefox, full feature acceptance, content mint or release readiness.
+- Recovery checkpoint (2026-10-08): the production-built client now exercises native
   Begin, real attended progress, leave/stopped scheduler, same-session reconnect/token rotation
   and cancellation against the real service/Postgres. Native manual actions and two purchases
   first prove actual positive idle production; unchanged Recovery balances are therefore not

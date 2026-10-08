@@ -7,7 +7,14 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-08): RP-442's GS1/OD-3 ready-quarter navigation suffix is
+Current checkpoint (2026-10-08): RP-447's ordinary Company purchase/read handoff is repaired
+under GS0.2. A reused pre-commit read requires a post-response refresh before pending clears;
+same-Founder/run comparison keeps successor-Company genesis separate. Deterministic native
+purchase regressions fail the old host in Chromium/WebKit. Final affected and real-service
+results, exact range and pending designated review belong in the owning log. No input retry,
+new gameplay/schema/clock/limiter policy or whole Garage acceptance follows.
+
+Preceding checkpoint (2026-10-08): RP-442's GS1/OD-3 ready-quarter navigation suffix is
 locally implemented using the existing Fiscal phase and host estimate. No modal,
 announcement, request or timer/payout policy changed. The harvested-event acknowledgement
 remains separate; new copy is visibly pending owner adoption. Exact-edge native regressions

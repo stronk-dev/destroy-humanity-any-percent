@@ -530,6 +530,8 @@ it.skipIf(typeof document === "undefined")("serializes a distinct transition cli
 for (const [kind, beforeCommit] of [
   ["cross_gate", false], ["cross_gate", true],
   ["decline_exit_offer", false], ["decline_exit_offer", true],
+  ["buy_generator", false], ["buy_generator", true],
+  ["buy_upgrade", false], ["buy_upgrade", true],
 ] as const) {
   const name = beforeCommit ? `refreshes ${kind} again when the stream read predates the committed action`
     : `coalesces ${kind} HTTP completion with the pending stream refresh`;
@@ -557,7 +559,11 @@ for (const [kind, beforeCommit] of [
       await settle();
       if (kind === "decline_exit_offer") { app.fixtureOffer(offer); await settle(); }
       const label = kind === "cross_gate" ? "Move Into the Garage" : "Decline";
-      const control = [...target.querySelectorAll("button")].find((button) => button.textContent === label)!;
+      const control = kind === "buy_generator"
+        ? target.querySelector<HTMLButtonElement>('section[aria-labelledby="generators-heading"] button')!
+        : kind === "buy_upgrade"
+          ? target.querySelector<HTMLButtonElement>('[data-upgrade="upgrade.beige_tower_cache"] button')!
+          : [...target.querySelectorAll("button")].find((button) => button.textContent === label)!;
       expect(control.disabled).toBe(false);
       control.focus(); await userEvent.keyboard("{Enter}"); await settle();
       expect(runtime.requests).toHaveLength(1);
@@ -601,6 +607,30 @@ for (const [kind, beforeCommit] of [
     }
   });
 }
+
+it.skipIf(typeof document === "undefined")("does not compare a successor Company's revision with the previous purchase receipt (GS0.2)", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const runtime = new FixtureRuntime(true);
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } });
+  const settle = async () => {
+    for (let step = 0; step < 4; step += 1) { await new Promise((resolve) => setTimeout(resolve, 0)); await tick(); flushSync(); }
+  };
+  try {
+    await settle(); runtime.snapshotCalls = 0;
+    runtime.current = { ...snapshot, revision: 1, run: { ...snapshot.run, run_seq: 2 } };
+    runtime.intentOutcome = { outcome: "applied", receipt: { new_revision: 50 } };
+    const buy = target.querySelector<HTMLButtonElement>('section[aria-labelledby="generators-heading"] button')!;
+    buy.focus(); await userEvent.keyboard("{Enter}"); await settle();
+    expect(runtime.requests).toHaveLength(1);
+    expect(runtime.snapshotCalls, "a new Company's genesis is not a stale old-Company read").toBe(1);
+    expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+    runtime.intentOutcome = { outcome: "applied", receipt: {} };
+    buy.focus(); await userEvent.keyboard("{Enter}"); await settle();
+    expect(runtime.requests).toHaveLength(2);
+    expect(runtime.requests[1]).toMatchObject({ kind: "buy_generator", expected_revision: 1 });
+  } finally { await unmount(app); target.remove(); }
+});
 
 for (const failedRead of [false, true]) {
   it.skipIf(typeof document === "undefined")(`late receipt ${failedRead ? "retries a failed read" : "does not repeat the successful post-response read"} (GS0.2)`, async () => {

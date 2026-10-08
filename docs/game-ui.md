@@ -29,6 +29,11 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   visible pending text without changing its action label. Same-kind repeats drop; another kind
   waits and binds to the refreshed revision. Affordability, owned upgrades and stale-state
   disabling remain genuine eligibility restrictions; this does not retain manual clicks.
+  Every Company action checks a coalesced read against its applied receipt: if the read
+  predates that same Company's committed revision, one post-response refresh completes
+  before pending clears. This includes ordinary purchases, not just Gate/Decline (RP-447).
+  Revisions are compared only within the same Founder/run; a successor Company's genesis
+  is not stale against the previous Company's receipt. No gameplay intent is retried.
   Gate, Incorporate and Wind Down follow the same pending-focus rule; all faction buttons share
   the `incorporate` kind. A removed Gate/Incorporate control hands focus to the nearest surviving
   enabled button in its transition region, or the Desk heading if none survives. A newer focus

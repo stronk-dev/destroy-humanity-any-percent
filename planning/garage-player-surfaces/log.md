@@ -6577,3 +6577,34 @@ Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new 
 designated cross-party review pending. No Firefox/manual AT/performance/full-CI, clock repair,
 whole Garage acceptance, mint, archival, push or release claim. Next: remaining accepted
 Garage/API/minigame integration and consolidated review; unaccepted successors remain held.
+
+## 2026-10-08 — Keep ordinary purchases pending through a pre-commit shared read
+
+Outcome: RP-447, GS0.2. The host reused an in-flight snapshot that sampled before an ordinary
+purchase committed, then cleared pending at the old Company revision. Its stale-read repair
+previously applied only to Gate/Decline. Every Company action now checks that read against the
+applied receipt and performs one post-response refresh when needed, before pending clears.
+Compare only the submitting Founder/run: a successor Company's genesis is a new revision
+sequence. Founder-scoped behavior is unchanged. No intent retry, driver assertion relaxation,
+new gameplay/clock/limiter policy, schema/kernel/balance/copy or CI-workflow/timeout change.
+
+Regression: extend the existing native read-order population, not a new harness. Old host99487
+fails both pre-commit purchase kinds in Chromium/WebKit (four failures; four already-current
+controls pass). Corrected53736 passes all16 purchase/gate/decline ordering cases. A new native
+successor-Company control requires one read, then a fresh purchase bound to genesis revision1,
+not the previous Company's receipt50. Existing late-receipt coverage, queue, failure/unmount,
+Founder and lifecycle consumers remain in the affected population.
+
+Coverage: final65362 passes1074 native tests across the four affected files in Chromium/WebKit;
+the focused runner separately excludes four performance-only cases. `make typecheck build-client
+verify-client-boundary`33258 passes with zero type/Svelte diagnostics. Final unchanged
+`make test-game-ui-composed`93889 exits0: actual Postgres/HTTP/socket populations, built-client
+main/Pitch/Recovery, pets/Cosmetics/Reputation, Clout, payment negatives, Garden and Tier2.
+Tier2 retains exact revision, six-purchase, incorporation, SQL history and rendered reload
+assertions; the earlier89786 failure is not erased. Diff checks pass; all sessions are terminal.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range is
+`429a5aa9` exclusive through this source/tests/docs/plan/ledger/checkpoint/log commit;
+designated cross-party review pending. No Firefox/manual AT/performance/hosted/full-CI or
+whole Garage/release claim, archival or push. Continue accepted construction/integration and
+consolidated review; unresolved owner contracts and the full nine-tier objective stay intact.

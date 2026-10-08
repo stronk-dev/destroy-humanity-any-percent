@@ -286,6 +286,7 @@
         intentNotice = null;
         intentNoticeOwner = noticeOwner;
         const expected = options.scope === "founder" ? founderRevision! : snapshot!.revision;
+        const submittedRun = snapshot!.run;
         const intentID = newIntentID();
         // Wind Down consumes both streams. Bind its Founder coordinate after
         // any queue/read wait, just like the Company's expected revision.
@@ -305,12 +306,14 @@
           let postResponseRead = refreshTask === undefined;
           let refreshed = await refresh();
           if (disposed) return;
-          // Gate/Decline used to bypass coalescing. Reuse an in-flight read,
-          // but not its result if it sampled before this command committed.
+          // Every Company action may share a pre-commit stream read, not just
+          // Gate/Decline. Its receipt bounds the same Company's fresh state;
+          // a successor Company starts a different revision sequence.
           const appliedRevision = outcome.receipt.new_revision;
-          if (!offline && (kind === "cross_gate" || kind === "decline_exit_offer") &&
+          if (!offline && options.scope !== "founder" &&
               typeof appliedRevision === "number" && Number.isSafeInteger(appliedRevision) &&
-              snapshot && snapshot.revision < appliedRevision) {
+              snapshot && snapshot.run.founder_id === submittedRun.founder_id &&
+              snapshot.run.run_seq === submittedRun.run_seq && snapshot.revision < appliedRevision) {
             postResponseRead = true;
             refreshed = await refresh();
           }
