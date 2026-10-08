@@ -35,6 +35,7 @@
   import { GameUIRequestError, noticeForError, noticeForOutcome, type IntentOutcome, type SurfaceRejections } from "./intent-outcome";
   import { FEATURES_PRESENTATION } from "./features-presentation";
   import { upgradePresentation } from "./axis-presentation";
+  import { formatAxisFactor } from "./axis-factor-format";
   import AxisStackPanel from "./AxisStackPanel.svelte";
   import OpportunityRegion from "./OpportunityRegion.svelte";
   import { lastClaimFromReceipt, OPPORTUNITY_REJECTIONS, type LastClaim } from "./opportunity-claim";
@@ -841,14 +842,23 @@
             {@const presentation = upgradePresentation(upgrade.upgrade_id)}
             {@const reasonKey = upgradeReasonKey(upgrade)}
             {@const reasonID = `upgrade-reason-${upgrade.upgrade_id}`}
-            <article class="card">
-              <h3>{t(presentation.title_key, {}, era)}</h3>
+            {@const axisIntern = liveFeatures?.axis_stack?.interns.find((intern) => intern.upgrade_id === upgrade.upgrade_id)}
+            <article class="card" data-upgrade={upgrade.upgrade_id}>
+              <h3 id={`upgrade-title-${upgrade.upgrade_id}`}>{t(presentation.title_key, {}, era)}</h3>
               <p>{t(presentation.description_key, {}, era)}</p>
               <Amount value={upgrade.cost_amount} era={era} />
+              {#if axisIntern && liveFeatures?.axis_stack}
+                {#if !upgrade.owned}
+                  <span id={`axis-progress-${upgrade.upgrade_id}`}>{t("axis_stack.progress_frame", { minimum: axisIntern.minimum, value: Math.min(liveFeatures.axis_stack.input_value, liveFeatures.axis_stack.input_cap) }, era)}</span>
+                  <progress max={axisIntern.minimum} value={Math.min(liveFeatures.axis_stack.input_value, axisIntern.minimum)}
+                    aria-labelledby={`upgrade-title-${upgrade.upgrade_id}`} aria-describedby={`axis-progress-${upgrade.upgrade_id} axis-why`}></progress>
+                {/if}
+                <span class="axis-factor" id={`axis-factor-${upgrade.upgrade_id}`}>{t("axis_stack.factor_label", {}, era)} <output>{formatAxisFactor(axisIntern.factor)}</output></span>
+              {/if}
               {#if upgrade.owned}<strong id={reasonID}>{t("desk.upgrade.owned", {}, era)}</strong>
               {:else if reasonKey}<p id={reasonID}>{t(reasonKey, {}, era)}</p>{/if}
               <button type="button" tabindex="0" disabled={!commandControls || !upgrade.eligible || upgrade.owned} aria-disabled={upgradePending || undefined}
-                aria-describedby={[...(upgrade.owned || reasonKey ? [reasonID] : []), ...(upgradePending ? ["desk-pending"] : [])].join(" ") || undefined}
+                aria-describedby={[...(upgrade.owned || reasonKey ? [reasonID] : []), ...(axisIntern ? [`axis-factor-${upgrade.upgrade_id}`, ...(!upgrade.owned ? [`axis-progress-${upgrade.upgrade_id}`] : [])] : []), ...(upgradePending ? ["desk-pending"] : [])].join(" ") || undefined}
                 onclick={() => act({ kind: "buy_upgrade", upgrade_id: upgrade.upgrade_id })}>{t("desk.buy_one", {}, era)}</button>
             </article>
           {/each}
@@ -981,6 +991,7 @@
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); gap: var(--cc-space-md); }
   .surface > *, .surface h1 { min-inline-size: 0; overflow-wrap: anywhere; }
   .card { display: grid; gap: var(--cc-space-sm); }
+  .card progress { inline-size: 100%; accent-color: var(--cc-color-accent); }
   .manual { display: grid; gap: var(--cc-space-sm); padding: var(--cc-space-lg); }
   .notice { display: flex; flex-wrap: wrap; gap: var(--cc-space-sm); margin-block-end: var(--cc-space-md); color: var(--cc-color-text); background: var(--cc-color-surface); }
   button { padding: var(--cc-space-sm) var(--cc-space-md); color: var(--cc-color-text); background: var(--cc-chrome-button_face); border: var(--cc-border-width) var(--cc-border-style) var(--cc-color-border); border-radius: var(--cc-border-radius); font-family: var(--cc-type-font_ui); font-size: inherit; cursor: pointer; }

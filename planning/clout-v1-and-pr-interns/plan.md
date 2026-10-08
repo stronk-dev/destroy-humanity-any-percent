@@ -40,6 +40,16 @@ four actual stored events produce two DOM announcements. Notice copy remains
 explicitly pending owner adoption. No full CV9/P5/P6 acceptance or numeric repair
 is implied; the owning log records final checks and the pending review range.
 
+RP-426: the current factor/progress now render on each actual PR purchase card,
+with native heading associations and Buy descriptions. The shared panel keeps
+one product/formula/cap readout, not duplicated Intern rows. Affected mounted and
+production-built real-service checks pass; exact review remains in the log.
+RP-427: CV9's projected-factor target and the contextual hint's once-only lifetime
+are unspecified. Owner questions have been delivered, not answered or adopted;
+the decision queue names the choices. These block those two additions, not other
+accepted Clout work. The hint's trigger remains the first row's window opening,
+not an invented affordability/attainment threshold.
+
 2026-10-08 bounded follow-up at `32f7518c`: test whether projecting the actual evaluator
 from an unchanged encoded Company origin can advance the visible state through the actual
 ledger, without directly replacing balances. Population: the original 128 seeds/cuts, plus

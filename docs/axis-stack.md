@@ -105,11 +105,15 @@ The general Amount component's ruled integer/Standard notation remains unchanged
 RP-387's browser regression observes literal product/factor values at attainment
 8, 12 and 44; the previous panel displayed the fractional values as `1`.
 
-The Desk panel's native PR Intern progress bars reference their existing
-translated intern titles as accessible names and their numeric progress sentences
-as descriptions. The controlled browser witness checks distinct row associations
-and a refresh that makes one intern owned. This is fixture-panel evidence, not
-the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
+PR Intern progress and current factors render on the actual Desk upgrade cards,
+next to their price and Buy control, not as a second set of rows in the shared
+axis panel. Native progress bars reference the card's translated heading as their
+accessible name and their numeric progress sentence plus the shared why-text as
+descriptions. The Buy control also references its current factor and, while
+unowned, progress. Owned cards retain their factor and owned text without an
+unlock bar. Authoritative refresh updates these values without local factor math.
+The controlled browser witness checks distinct row associations and a refresh
+that makes one intern owned. This is not manual assistive-user acceptance. See RP-303/RP-426 in the
 [implementation log](../planning/clout-v1-and-pr-interns/log.md).
 
 The panel also has a native `?` disclosure for `codex.axis_stack`. Tab reaches its
@@ -142,7 +146,8 @@ native Enter generator purchase re-attain scores2 then12; four actual stored
 events across those two transitions yield exactly two browser live-region updates.
 No Company attainment, event or notice is seeded. A native PR purchase receives one bound applied
 receipt. The actual snapshot and rendered progress/current factors/product are
-checked before and after ownership and reload. A direct SQL read checks the
+checked before and after ownership and reload; each Intern factor/progress is
+bound to its actual purchase card. A direct SQL read checks the
 Company v19 head, exact attainment set, ownership and one purchase event.
 Severing the server's axis producer makes this witness fail; the probe is restored.
 

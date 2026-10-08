@@ -93,10 +93,57 @@ async function mounted(runtime = new Runtime()) {
 function withAxis(arm: GameUIAxisStackArm | null): GameUISnapshot {
   const features = arm === null ? v4.features : { ...v4.features, axis_stack: arm };
   const upgrades = arm === null ? v4.upgrades : [...v4.upgrades,
-    { cost_amount: "1e6", cost_resource_id: "company.cash", eligible: false, owned: true, upgrade_id: "upgrade.pr_intern_1" },
-    { cost_amount: "5e7", cost_resource_id: "company.cash", eligible: false, owned: false, upgrade_id: "upgrade.pr_intern_2" }];
+    { cost_amount: "1e6", cost_resource_id: "company.cash", eligible: false, owned: arm.interns[0].owned, upgrade_id: "upgrade.pr_intern_1" },
+    { cost_amount: "5e7", cost_resource_id: "company.cash", eligible: false, owned: arm.interns[1].owned, upgrade_id: "upgrade.pr_intern_2" }];
   const facts = [...v4.facts, { fact_id: "feature.axis_stack", value: arm !== null }].sort((a, b) => a.fact_id < b.fact_id ? -1 : 1);
   return parseGameUISnapshot({ ...v4, facts, features, upgrades, run: { ...v4.run, tier: 1 } }) as GameUISnapshot;
+}
+
+for (const tier of [0, 1, 2]) for (const width of [320, 1280]) {
+  it.skipIf(!browser)(`binds PR progress and factors to their purchase cards (tier ${tier}, ${width}px)`, async () => {
+    const { page } = await import("vitest/browser");
+    await page.viewport(width, 720);
+    const runtime = new Runtime();
+    const initial = withAxis(axisArm as GameUIAxisStackArm);
+    runtime.current = parseGameUISnapshot({ ...initial, run: { ...initial.run, tier } });
+    const { target, app, dispose } = await mounted(runtime);
+    const cards = () => [...target.querySelectorAll<HTMLElement>('section[aria-labelledby="upgrades-heading"] article')];
+    const card = (title: string) => cards().find((row) => row.querySelector("h3")?.textContent === title)!;
+    try {
+      const first = card("PR Intern"), second = card("Senior PR Intern");
+      expect(first.querySelector(".axis-factor output")?.textContent, "owned factor beside its purchase control").toBe("1.2");
+      expect(second.querySelector(".axis-factor output")?.textContent, "unowned factor beside its purchase control").toBe("1.16");
+      expect(first.querySelector("progress")).toBeNull();
+      const bar = second.querySelector("progress")!;
+      expect(bar, "unlock progress belongs on the actual upgrade card").not.toBeNull();
+      expect({ value: bar.value, maximum: bar.max }).toEqual({ value: 8, maximum: 10 });
+      expect(page.getByRole("progressbar", { name: "Senior PR Intern", exact: true }).query()).toBe(bar);
+      const buy = second.querySelector("button")!;
+      const descriptions = () => (buy.getAttribute("aria-describedby") ?? "").split(/\s+/u).filter(Boolean)
+        .map((id) => document.getElementById(id)?.textContent);
+      expect(descriptions()).toContain("Unlocks at attainment 10 (now 8)");
+      expect(descriptions()).toContain("Multiplier at current attainment 1.16");
+      expect(buy.disabled).toBe(true);
+      expect(card("Beige Tower Cache").querySelector("progress, .axis-factor")).toBeNull();
+      expect(target.querySelectorAll("section.axis output")).toHaveLength(1);
+      expect(target.querySelectorAll("section.axis progress")).toHaveLength(0);
+
+      const updated = structuredClone(axisArm) as GameUIAxisStackArm;
+      updated.input_value = 12; updated.product = "1.3e0";
+      updated.contributions[0].factor = "1.3e0";
+      updated.interns[0].factor = "1.3e0"; updated.interns[1].factor = "1.24e0";
+      const refreshed = withAxis(updated);
+      app.fixtureSnapshot(parseGameUISnapshot({ ...refreshed, run: { ...refreshed.run, tier }, revision: 2 })); await settle();
+      expect(card("PR Intern").querySelector(".axis-factor output")?.textContent).toBe("1.3");
+      expect(card("Senior PR Intern").querySelector(".axis-factor output")?.textContent).toBe("1.24");
+      expect(descriptions()).toContain("Unlocks at attainment 10 (now 12)");
+      expect(descriptions()).toContain("Multiplier at current attainment 1.24");
+      expect({ value: bar.value, maximum: bar.max }).toEqual({ value: 10, maximum: 10 });
+      expect(runtime.requests).toEqual([]);
+      expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth + 1);
+      await assertAxe(target, "PR purchase cards");
+    } finally { await dispose(); await page.viewport(1280, 720); }
+  });
 }
 
 for (const width of [320, 1280]) {
@@ -164,13 +211,15 @@ it.skipIf(!browser)("renders the server-derived axis readout and PR Intern progr
     expect(panel, target.textContent ?? "").not.toBeNull();
     const text = panel!.textContent ?? "";
     expect(text).toContain("Achievement attainment this run: 8 of 44");
-    expect(text).toContain("Unlocks at attainment 10 (now 8)");
+    const upgrades = target.querySelector('section[aria-labelledby="upgrades-heading"]')!;
+    expect(upgrades.textContent).toContain("Unlocks at attainment 10 (now 8)");
     // Independent expected values from the Go projector golden, not the UI's
     // formatter: rounding these multipliers to 1 hides the production effect.
-    expect([...panel!.querySelectorAll("output")].map((node) => node.textContent)).toEqual(["1.2", "1.2", "1.16"]);
-    const rows = [...panel!.querySelectorAll("li")].map((row) => row.getAttribute("data-upgrade"));
+    expect([...panel!.querySelectorAll("output")].map((node) => node.textContent)).toEqual(["1.2"]);
+    expect([...upgrades.querySelectorAll(".axis-factor output")].map((node) => node.textContent)).toEqual(["1.2", "1.16"]);
+    const rows = [...upgrades.querySelectorAll(".axis-factor")].map((row) => row.closest("article")?.getAttribute("data-upgrade"));
     expect(rows).toEqual(["upgrade.pr_intern_1", "upgrade.pr_intern_2"]);
-    expect(panel!.querySelectorAll("progress")).toHaveLength(1);
+    expect(upgrades.querySelectorAll("progress")).toHaveLength(1);
     const titles = [...target.querySelectorAll("article.card h3")].map((node) => node.textContent);
     expect(titles).toEqual(expect.arrayContaining(["PR Intern", "Senior PR Intern"]));
     for (const id of ["upgrade.pr_intern_1", "upgrade.pr_intern_2", "achievement.first_gate"]) expect(target.textContent).not.toContain(id);
@@ -192,7 +241,7 @@ it.skipIf(!browser)("preserves fractional PR multipliers when authoritative atta
       updated.interns[1].factor = secondFactor;
       app.fixtureSnapshot(withAxis(updated));
       await settle();
-      expect([...target.querySelectorAll("section.axis output")].map((node) => node.textContent)).toEqual(input === 12 ? ["1.3", "1.3", "1.24"] : ["2.1", "2.1", "1.88"]);
+      expect([...target.querySelectorAll("section.axis output, .axis-factor output")].map((node) => node.textContent)).toEqual(input === 12 ? ["1.3", "1.3", "1.24"] : ["2.1", "2.1", "1.88"]);
     }
     expect(runtime.requests).toEqual([]);
   } finally { await dispose(); }
@@ -221,7 +270,7 @@ it.skipIf(!browser)("associates native PR progress with the correct intern befor
       const found = page.getByRole("progressbar", { name, exact: true }).query();
       expect(found, `native progressbar named ${name}`).not.toBeNull();
       const bar = found as HTMLProgressElement;
-      expect(bar.closest("li")?.getAttribute("data-upgrade")).toBe(id);
+      expect(bar.closest("article")?.getAttribute("data-upgrade")).toBe(id);
       expect({ value: bar.value, maximum: bar.max }).toEqual({ value, maximum });
       const descriptionIDs = (bar.getAttribute("aria-describedby") ?? "").split(/\s+/u).filter(Boolean);
       const descriptions = descriptionIDs.map((ref) => document.getElementById(ref));
@@ -229,12 +278,12 @@ it.skipIf(!browser)("associates native PR progress with the correct intern befor
       expect(descriptions.some((node) => node?.textContent === "Unlocks at attainment " + maximum + " (now 8)")).toBe(true);
       expect(descriptions.some((node) => node?.id === "axis-why")).toBe(true);
     };
-    expect(target.querySelectorAll("section.axis progress")).toHaveLength(2);
+    expect(target.querySelectorAll('section[aria-labelledby="upgrades-heading"] progress')).toHaveLength(2);
     assertProgress("PR Intern", "upgrade.pr_intern_1", 6, 6);
     assertProgress("Senior PR Intern", "upgrade.pr_intern_2", 8, 10);
     app.fixtureSnapshot(withAxis(axisArm as GameUIAxisStackArm));
     await settle();
-    expect(target.querySelectorAll("section.axis progress")).toHaveLength(1);
+    expect(target.querySelectorAll('section[aria-labelledby="upgrades-heading"] progress')).toHaveLength(1);
     expect(page.getByRole("progressbar", { name: "PR Intern", exact: true }).query()).toBeNull();
     assertProgress("Senior PR Intern", "upgrade.pr_intern_2", 8, 10);
     expect(runtime.requests).toEqual([]);

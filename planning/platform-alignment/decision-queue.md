@@ -25,6 +25,24 @@ Implementation agents may gather evidence and frame options; they may not infer 
 | **D-020** | Reconcile Arcade AC7's required Pitch-less start with API MA-C15's owner-ruled `minigame_api → pitch` dependency: explicitly amend to tenant-independent catalog activation, or retain the dependency and have the ruling author reconcile AC7. | RP-201: freshly hashed complete catalogs with only Pitch removed refuse in both actual Go/TS loaders; unchanged complete controls load. Arcade AR1.2 retains the earlier full chain and names no amendment to MA-C15. | `rfc/minigame-api-and-surface.md` MA-C15 and `rfc/minigame-demo-disc-arcade.md` AR1.2/AR-P3/AC7, authored body reconciliation. | Full Arcade AC7/A4 acceptance; internal starts in complete Pitch-containing bundles remain safe to verify. No independent permission to change public schema, mint or copy. |
 | **D-021** | Resolve existing Clout DG-D: have the harness execute shared served foundation hooks, or accept an explicitly specified attainment observer with complete proof/transition parity. No branch selected; agents may not substitute approximate attainment for the actual rule. | Independent current-source probe on Claude 527246f1 removes only first-hour refusal and the unsupported fixture completes neutrally; restored guards/default harness suite pass. Scalar cap tests are not active PR scenarios. Accountable evaluation semantics, provenance/burn/Founder independence, pacing impacts and exact downstream measurement population must precede construction/ratchets. | Clout CV10/AC9 and accepted harness amendment as needed; `planning/clout-v1-and-pr-interns/log.md`, RP-241. | Remaining P6/AC9 PR relevance/dead-row/purchase observations/invariant scenario ratchet and honest Clout/T2 balance; not the approved bounded refusal primitive. |
 
+## Clout projected factor and contextual-hint lifetime — RP-427 (unruled)
+
+CV9.1 requires a projected factor but does not name its future input/ownership
+state; the current producer supplies only each Intern's factor at current input.
+CV9.3 requires a hint once when the first PR row's window opens, without defining
+what “once” survives. Owner questions delivered 2026-10-08, no ruling received:
+
+- Project at the visible attainment hardcap (recommended), or at that Intern's
+  unlock threshold; do not compute a new factor in the browser.
+- Hint once per Founder career (recommended), or once per Company run, retained
+  across reloads/devices. The trigger remains window opening, not affordability
+  or attainment eligibility. Exact acknowledgment/storage behavior must be
+  reconciled in the accepted Clout contract before construction.
+
+Canonical home: Clout CV5/CV9 and any affected persistence/API contract. These
+choices block those additions, not existing PR purchases, help or notices.
+Candidate copy still needs owner adoption; recommendations are not rulings.
+
 ## Shared attendance continuity — D-024 / RP-365 (unruled)
 
 Real adoption→pause→Feed and deterministic cutoff tests prove clone-only classification

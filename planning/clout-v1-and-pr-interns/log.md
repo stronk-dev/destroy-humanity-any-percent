@@ -2436,3 +2436,41 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 `24cefcd5` exclusive through this containing implementation/test/record commit
 requires designated cross-party review; earlier ranges remain independent.
 No completion checkbox, acceptance/archive, push or release claim.
+
+## 2026-10-08 — Put PR progress/factors beside the purchase (RP-426)
+
+Baseline `627e0f9e`. CV9.1 requires the existing upgrade rows to carry Intern
+progress/current factors; they instead lived in a separate panel. Actual PR
+purchase cards now render the server-supplied factor and unowned unlock bar.
+Bars name their own card heading; Buy descriptions include factor/progress plus
+existing refusal/pending reasons. Owned cards retain factor/owned text without
+unlock progress. The shared panel keeps one product/formula/cap/help readout,
+not duplicate Intern rows. No new math, copy, API, save, kernel or CI behavior.
+
+Regression65028 fails both unchanged-source Chromium widths at the missing card
+factor. Initial46155 incorrectly selected the price output and used two wrong
+copy literals; it also ended with a browser-connection error after two failures,
+so is not credited as a complete baseline. Corrected selectors target the factor
+inside the actual purchase card, not arbitrary outputs. Fixture ownership now
+agrees across upgrade and Intern arms instead of hardcoding the first as owned.
+Final5086 passes all36 Clout Chromium/WebKit cases; final affected78060 passes236
+with four existing separate-performance skips. New cases cover all three current
+eras at320/1280px, independent literal factors, actual card/name/description
+bindings, refresh, non-PR isolation, no duplicate readout and axe/reflow floors.
+Existing fractional precision, progress refresh, help and notice checks remain.
+Types (zero errors/warnings), production build and boundaries12281 pass; copy/
+manifest5638 pass byte-unchanged, retaining621 orphan warnings. Diff checks pass.
+
+Real `make test-clout-composed`15331 exits0: production-built purchase cards bind
+each actual projected factor/progress, native PR purchase and owned reload retain
+exact SQL checks, real re-attainment notices and existing Cosmetic/care pass.
+No new whole/hosted CI, natural pacing, manual AT, content or feature acceptance
+claim follows. RP-307 and all earlier holds/review ranges remain independent.
+
+RP-427 names two genuine missing definitions: projected-factor target and the
+hint's once-only lifetime. Owner questions delivered, not answered/adopted; the
+decision queue records options. Do not invent projection inputs or persistence.
+Next: resolve those definitions while continuing other accepted construction.
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
+`627e0f9e` exclusive through this containing implementation/test/record commit
+requires designated cross-party review. No acceptance/archive or push.

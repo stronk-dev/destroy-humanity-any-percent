@@ -290,10 +290,17 @@ async function assertAxis(page, { input, product, factors, owned = false }) {
   await panel.waitFor({ state: "visible", timeout: 30_000 });
   // Fixture factors here are all e0; literal text equality never calls the
   // subject's formatter or computes a factor from the raw achievement count.
-  assert.deepEqual(await panel.locator("output").allTextContents(), [product, ...factors].map((value) => value.replace(/e0$/u, "")));
+  assert.deepEqual(await panel.locator("output").allTextContents(), [product.replace(/e0$/u, "")]);
+  const upgrades = page.locator('section[aria-labelledby="upgrades-heading"]');
+  for (const [index, titleKey] of ["upgrade.pr_intern_1.title", "upgrade.pr_intern_2.title"].entries()) {
+    const card = upgrades.locator("article").filter({ has: page.getByRole("heading", { name: plainFixtureCopy(titleKey), exact: true }) });
+    assert.deepEqual(await card.locator(".axis-factor output").allTextContents(), [factors[index].replace(/e0$/u, "")]);
+    assert.equal(await card.getByRole("button").count(), 1, "PR progress and factor must share the real purchase card");
+  }
   assert.ok((await panel.innerText()).includes(`Achievement attainment this run: ${input} of 44`));
   assert.ok((await panel.innerText()).includes(plainFixtureCopy("axis_stack.formula.caption")));
-  assert.deepEqual(await panel.locator("progress").evaluateAll((bars) => bars.map((bar) => ({ value: bar.value, max: bar.max }))),
+  assert.equal(await panel.locator("progress").count(), 0, "do not duplicate PR purchase rows in the shared readout");
+  assert.deepEqual(await upgrades.locator("progress").evaluateAll((bars) => bars.map((bar) => ({ value: bar.value, max: bar.max }))),
     owned ? [{ value: Math.min(input, 10), max: 10 }] : [{ value: Math.min(input, 6), max: 6 }, { value: Math.min(input, 10), max: 10 }]);
   return view;
 }
