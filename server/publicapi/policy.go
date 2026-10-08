@@ -53,7 +53,7 @@ type Policy struct {
 }
 
 func LoadPolicy(data []byte) (Policy, error) {
-	if len(data) == 0 || len(data) > 64<<10 || rejectDuplicateJSONKeys(data) != nil {
+	if len(data) == 0 || len(data) > 64<<10 || rejectDuplicateJSONKeys(data) != nil || !completePolicyObject(data) {
 		return Policy{}, ErrInvalidPolicy
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
@@ -67,6 +67,45 @@ func LoadPolicy(data []byte) (Policy, error) {
 		return Policy{}, ErrInvalidPolicy
 	}
 	return policy, nil
+}
+
+// Struct decoding is case-insensitive and gives missing/null scalars their
+// zero value. C20 requires every exact field, including an explicit zero for
+// a direct deployment's trusted_proxy_hops. Check decoded member names before
+// interpreting values; escaped canonical names remain equivalent JSON.
+func completePolicyObject(data []byte) bool {
+	root, ok := policyObject(data, "cache_max_age_seconds", "cursor_key_ids", "public_limiter", "request_id", "schema_version", "trusted_proxy_hops")
+	if !ok {
+		return false
+	}
+	for _, object := range []struct {
+		name   string
+		fields []string
+	}{
+		{"cache_max_age_seconds", []string{"boards", "catalogs_epochs", "registry", "verification"}},
+		{"cursor_key_ids", []string{"current", "previous"}},
+		{"public_limiter", []string{"burst", "max_ip_entries", "refill_per_minute"}},
+		{"request_id", []string{"max_bytes", "pattern"}},
+	} {
+		if _, ok := policyObject(root[object.name], object.fields...); !ok {
+			return false
+		}
+	}
+	return true
+}
+
+func policyObject(data []byte, fields ...string) (map[string]json.RawMessage, bool) {
+	var object map[string]json.RawMessage
+	if json.Unmarshal(data, &object) != nil || len(object) != len(fields) {
+		return nil, false
+	}
+	for _, field := range fields {
+		value, exists := object[field]
+		if !exists || bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return nil, false
+		}
+	}
+	return object, true
 }
 
 func validPolicy(policy Policy) bool {

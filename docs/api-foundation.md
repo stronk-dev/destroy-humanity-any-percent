@@ -287,6 +287,11 @@ byte-identical generated OpenAPI, TypeScript and compatibility pins.
 `publicread.NewRouter` composes the surface. It loads the strict policy, resolves the named cursor
 secrets (`CursorSecretResolver`, see `docs/gameserver.md`), builds the request-ID runtime and
 limiter, and mounts every public registry operation (and only those) through `Registry.Mount`.
+Policy admission requires every exact, non-null root and nested member; case aliases and
+case-alias collisions refuse before mounting. In particular, missing/null `trusted_proxy_hops`
+cannot silently select zero. Explicit zero remains valid for a direct deployment, and escaped
+canonical JSON member names remain equivalent. Configured values and proxy/limiter semantics
+are otherwise unchanged.
 Unknown public paths and non-GET methods return `404 unknown_id/route` and never fall through to
 the account router. The gameserver mounts it at `/api/public/v1/`, and composition fails closed
 without a valid policy or cursor pair. The composed-server Postgres witness checks all of this:

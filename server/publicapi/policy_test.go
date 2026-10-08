@@ -2,6 +2,7 @@ package publicapi
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -74,6 +75,83 @@ func TestPhase0PolicyIsExactAndSecretsFailClosed(t *testing.T) {
 	codec, err := ResolveCursorCodec(policy, registry, func(id string) ([]byte, bool) { return key, id == "k1" || id == "k0" })
 	if err != nil || codec == nil {
 		t.Fatalf("first-deploy shared secret rejected: %v", err)
+	}
+}
+
+func TestPolicyRequiresEveryExactNonNullField(t *testing.T) {
+	source, err := os.ReadFile("../../balance/api/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root map[string]json.RawMessage
+	if err := json.Unmarshal(source, &root); err != nil {
+		t.Fatal(err)
+	}
+	for _, scope := range []string{"", "cache_max_age_seconds", "cursor_key_ids", "public_limiter", "request_id"} {
+		fields := root
+		if scope != "" {
+			fields = nil
+			if err := json.Unmarshal(root[scope], &fields); err != nil {
+				t.Fatal(err)
+			}
+		}
+		for name := range fields {
+			for _, change := range []string{"missing", "null", "case_replacement", "case_collision"} {
+				t.Run(scope+"/"+name+"/"+change, func(t *testing.T) {
+					var candidate map[string]json.RawMessage
+					if err := json.Unmarshal(source, &candidate); err != nil {
+						t.Fatal(err)
+					}
+					object := candidate
+					if scope != "" {
+						object = nil
+						if err := json.Unmarshal(candidate[scope], &object); err != nil {
+							t.Fatal(err)
+						}
+					}
+					switch change {
+					case "missing":
+						delete(object, name)
+					case "null":
+						object[name] = json.RawMessage("null")
+					case "case_replacement":
+						object[strings.ToUpper(name)] = object[name]
+						delete(object, name)
+					case "case_collision":
+						object[strings.ToUpper(name)] = object[name]
+					}
+					if scope != "" {
+						encoded, err := json.Marshal(object)
+						if err != nil {
+							t.Fatal(err)
+						}
+						candidate[scope] = encoded
+					}
+					data, err := json.Marshal(candidate)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if policy, err := LoadPolicy(data); !errors.Is(err, ErrInvalidPolicy) || policy != (Policy{}) {
+						t.Fatalf("invalid configuration admitted or partially returned: err=%v", err)
+					}
+				})
+			}
+		}
+	}
+}
+
+func TestPolicyPreservesExplicitZeroProxyAndEquivalentKeyEncoding(t *testing.T) {
+	source, err := os.ReadFile("../../balance/api/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := phase0Policy(t)
+	want.TrustedProxyHops = 0
+	data := bytes.Replace(source, []byte(`"trusted_proxy_hops": 1`), []byte(`"tr\u0075sted_proxy_hops": 0`), 1)
+	data = bytes.Replace(data, []byte(`"boards"`), []byte(`"bo\u0061rds"`), 1)
+	policy, err := LoadPolicy(data)
+	if err != nil || policy != want {
+		t.Fatalf("valid explicit zero/escaped keys refused: err=%v", err)
 	}
 }
 

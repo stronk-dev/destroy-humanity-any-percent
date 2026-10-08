@@ -2,6 +2,12 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current bounded correction (2026-10-08, RP-473): operational policy admission now requires
+all exact, non-null root/nested fields before struct decoding. Missing/null proxy hops no
+longer silently select zero; explicit zero and escaped canonical names remain valid.
+The owning log records old-source failures and final consumer checks. No configured values,
+generated contract, proxy topology or limiter semantics changed; designated review is pending.
+
 Current bounded correction (2026-10-08, RP-449): duplicate-member rejection belongs at
 registry HTTP admission, including exact-response literal construction. Shared descriptor
 validation restores the existing Go/TypeScript formula-artifact last-value contract without

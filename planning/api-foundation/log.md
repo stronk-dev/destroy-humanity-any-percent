@@ -1338,3 +1338,33 @@ draft diff, local links, JSON example and whitespace checked. No software suite 
 schema support claimed for this proposal-only change. Review by: Codex (draft author/first
 filter). Recorded by: Codex. New range begins after `75f5830b` through this checkpoint; owner
 adoption and designated normative review remain pending. No acceptance, archival or push.
+
+## 2026-10-08 — Refuse incomplete/case-aliased operational policy (RP-473)
+
+Under API C20/A8, require every exact non-null root/nested member before Go struct
+decoding. Missing/null trusted_proxy_hops previously became zero; case replacement
+and collision were accepted across the policy. Existing values, integer bounds,
+secret resolution, proxy topology, rate budget, duplicate-key rule and error remain.
+Explicit zero and escaped canonical names still admit; public router construction
+now refuses malformed policy before returning a handler, with a valid actual GET control.
+
+Old-code focused regression fails on missing/null proxy and root/nested aliases.
+Initial99789 overpopulated nested cases by reusing a nonnil map; corrected the test
+before changing production, and the corrected old-source run still fails. Final
+68-case matrix and positive controls pass. No source mutation ceremony was needed.
+
+Cold root tests/vet24399 pass publicapi/publicread/gameserver/cmd/gameserver.
+API drift64296 passes with byte-unchanged generated files. Declared Linux-amd64/
+Postgres88884 passes publicapi/publicread and all but one gameserver case: live
+revocation receives3012 no-pong rather than4001 (RP-474); aggregate exits2. Real
+first-hour/verified evidence/proxy boundary/Garden/Minigame/Soul cases execute/pass,
+not skipped. This red is retained, not replaced with the earlier native green.
+The existing raw peer ignores application pings; repair that separately, without
+weakening authentication assertions. Original RP-450 drain failure remains distinct.
+
+Review by: Codex (implementer diff/first filter); Recorded by: Codex. Exact new
+range starts after53f3f663 through this source/tests/docs/plan/ledger/log commit;
+designated review pending. No browser, full hosted CI, clean-host, complete API,
+new player feature or release claim. All handles terminal; no acceptance, archival,
+kernel bump, config/content change, cleanup or push. Next: fix the demonstrated
+raw-peer defect, then continue accepted integration with existing contract holds.

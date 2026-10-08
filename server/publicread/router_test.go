@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/rand"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -75,6 +76,44 @@ func TestNewRouterFailsClosedWithoutPolicyOrCursorSecrets(t *testing.T) {
 	}
 	if _, err := routerFor(t, phase0PolicyJSON(t), CursorKeys{CurrentID: "k1", Current: secret(1)}, nil); err == nil {
 		t.Fatal("a missing reader must fail composition")
+	}
+}
+
+func TestNewRouterRefusesIncompleteOrAliasedPolicyBeforeMounting(t *testing.T) {
+	source := phase0PolicyJSON(t)
+	var missingProxy map[string]json.RawMessage
+	if err := json.Unmarshal(source, &missingProxy); err != nil {
+		t.Fatal(err)
+	}
+	delete(missingProxy, "trusted_proxy_hops")
+	missing, err := json.Marshal(missingProxy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for name, data := range map[string][]byte{
+		"missing_proxy": missing,
+		"null_proxy":    bytes.Replace(source, []byte(`"trusted_proxy_hops": 1`), []byte(`"trusted_proxy_hops": null`), 1),
+		"proxy_alias":   bytes.Replace(source, []byte(`"trusted_proxy_hops"`), []byte(`"TRUSTED_PROXY_HOPS"`), 1),
+		"nested_alias":  bytes.Replace(source, []byte(`"burst"`), []byte(`"BURST"`), 1),
+	} {
+		t.Run(name, func(t *testing.T) {
+			router, err := routerFor(t, data, CursorKeys{CurrentID: "k1", Current: secret(1)}, &fakeEpochs{rows: epochRows()})
+			if router != nil || !errors.Is(err, ErrComposition) || !errors.Is(err, publicapi.ErrInvalidPolicy) {
+				t.Fatalf("invalid policy mounted or failed at the wrong boundary: err=%v", err)
+			}
+		})
+	}
+	// Zero is supported when explicitly supplied; equivalent escaped JSON keys
+	// must not prevent the real public router from mounting and serving a read.
+	direct := bytes.Replace(source, []byte(`"trusted_proxy_hops": 1`), []byte(`"tr\u0075sted_proxy_hops": 0`), 1)
+	router, err := routerFor(t, direct, CursorKeys{CurrentID: "k1", Current: secret(1)}, &fakeEpochs{rows: epochRows()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	response := httptest.NewRecorder()
+	router.ServeHTTP(response, httptest.NewRequest(http.MethodGet, "/api/public/v1/epochs", nil))
+	if response.Code != http.StatusOK || response.Header().Get("X-Request-ID") == "" {
+		t.Fatalf("valid policy did not serve the registered read: status=%d", response.Code)
 	}
 }
 
