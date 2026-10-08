@@ -213,7 +213,14 @@ filename collision (RP-239) was caught by `verify-client` and corrected. That
 composite still fails the existing RP-131 history guard; passing its client
 population and separately run remaining gates is not whole-CI success.
 
-`make test-game-ui-composed` starts its isolated repository Postgres service. Its first driver
+`make test-game-ui-composed` first runs the five production-asset oracle checks and twenty-five
+care-projection controls with Node's native test runner. Those files use the `.fixtures.mjs`
+suffix (`production-client-proof.fixtures.mjs`, `care-snapshot-proof.fixtures.mjs`), not
+`.test.mjs`: Vitest cannot register `node:test` suites. They remain mandatory in this blocking
+Make/Actions lane rather than being silently excluded from all automation. The client/browser
+Vitest configurations and their legitimate `.test.mjs` population are unchanged.
+
+The target then starts its isolated repository Postgres service. Its first driver
 starts the real composed gameserver and serves production-built client assets, then drives Chromium through anonymous bootstrap, an authenticated live
 `/api/v1/founder/state` v4 round trip, and the actual Centrifuge WebSocket subscription. The
 snapshot assertion and visitor-counter assertion prove both HTTP synchronization and the socket

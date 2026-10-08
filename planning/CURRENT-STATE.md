@@ -35,6 +35,20 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Typer keyboard/focus correction (RP-394) and malformed-snapshot refusal (RP-395) are locally
+  verified. Native Chromium/WebKit input checks, the shared Go/TS corpus and real-Postgres Typer
+  service tests pass. The old Go snapshot could panic at the exhausted prompt index; it now
+  refuses without preventing valid final-prompt completion. Public Typer registration/wire,
+  adopted content, full player journeys and designated review remain open.
+- Client runner collision (RP-396) is locally corrected without dropping checks: the full
+  Vitest population passes10017/831 existing skips, and the actual composed target executes
+  all30 byte-identical Node controls plus all three real-service journeys. Types/build and
+  CI topology pass. This does not clear RP-131's history guard, Clout's numeric defect or
+  establish three-engine/hosted/full-CI success; the CI log owns the correction range.
+  The full native Chromium/WebKit functional run is RED:21635 pass/43 fail/10 existing skips.
+  Forty Reputation checks retain a stale pending-disabled oracle (RP-397), two Garden WebKit
+  checks fail native menu traversal (RP-398), and one Typer WebKit keyboard-provider case
+  cannot find its iframe (RP-399). Focused earlier passes do not erase this broader result.
 - R-012's existing-context SQL seam is now locally proven for64 diagnostic
   Company profiles: real Postgres16 jsonb preserves full restored state, raw
   production rate bits and evaluation results. All64 changed-context controls

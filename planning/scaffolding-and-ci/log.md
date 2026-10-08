@@ -441,3 +441,43 @@ the final handoff supplies its literal endpoint. Review by: Codex (first-filter
 only). Recorded by: Codex. No Claude verdict, source correction, completed second
 population or acceptance is implied. Earlier R-011/session/Garden ranges remain
 independent. Docker capacity inquiry is nonblocking for non-Docker scoped work.
+
+## 2026-10-08 — Keep Node fixtures in their actual CI runner (RP-396)
+
+Accepted CI D2/D3; routine runner-discovery correction, not a new topology or policy.
+The preceding full client88284 exited2 with two "No test suite found" errors:
+Vitest collected the care/production proof files written for node:test. Their30
+assertions passed under Node but could not register as Vitest suites.
+
+Both files move byte-identically from `.test.mjs` to `.fixtures.mjs`, following
+the existing refresh-observer convention; the existing test-game-ui-composed
+invocation follows the names. Matching Git blobs: production
+cf88a62e65d6e215816c45eb17267ba557536f96, care
+028c4207869a6d558a0a42b4c9b85051a5e37293. No assertion, Vitest filter,
+workflow/package, engine, timeout, retry, population or production byte changes.
+
+Executed finished-batch checks (all handles terminal):
+
+- 19241: whole test-client10017 pass/831 existing skips,112 passing files/23
+ skipped; strict types/Svelte zero errors/warnings; build and topology with13
+ negative controls pass.
+- 9941: actual root test-game-ui-composed executes all30 Node checks/zero skips,
+ then passes main built-client/Postgres/socket gameplay, default Cosmetic/care
+ and axis-stack Clout/Cosmetic/care journeys. Standalone Node30 also passes.
+- 39477: full native Chromium/WebKit functional population exits2:21635 pass,
+ 43 fail,10 existing skips;264 files pass/four fail. No Node-fixture collection
+ errors.40 R9 host cases fail the stale `exit.disabled` pending assertion after
+ focus-preserving transition handling (RP-397). Garden WebKit Enter/Space fail
+ menu→Harvest Tab (RP-398). Typer WebKit Timed Enter fails keyboard provider's
+ missing iframe before dispatch (RP-399). No rerun, deadline increase, assertion
+ deletion or root-cause/reliability claim. Some passive trace output is truncated;
+ this is executed regression evidence, not a complete module-research dataset.
+
+Self-inspected rename/Make/docs/record diff; diff-check passes. No status or
+acceptance checkbox flips, archival, history rewrite or push. Designated Claude
+review remains required for the complete corrective commit after f423e704; this
+is Codex implementation verification, not designated approval. RP-131 historical
+guard and RP-307 arithmetic remain independently red, so neither this fix nor
+the passing composed journey is a green verify-push/hosted/release claim. Next
+accepted corrections are the named browser failures; author-held contracts and
+the full nine-tier 1.0 floor remain unchanged.
