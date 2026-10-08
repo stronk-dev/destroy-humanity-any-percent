@@ -31,7 +31,7 @@ func (api *API) createMinigameSession(response http.ResponseWriter, request *htt
 		writeError(response, http.StatusServiceUnavailable, "not_configured", "minigame_api")
 		return
 	}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil ||
+	if api.decodeRegisteredRequest(response, request, "create_minigame_session", &body) != nil ||
 		!minigameOpaqueIDPattern.MatchString(body.IdempotencyKey) || !apiMechanicalIDPattern.MatchString(minigameID) {
 		writeError(response, http.StatusBadRequest, "invalid", "minigame_create")
 		return
@@ -62,7 +62,7 @@ func (api *API) playMinigameCommand(response http.ResponseWriter, request *http.
 		writeError(response, http.StatusServiceUnavailable, "not_configured", "minigame_api")
 		return
 	}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil ||
+	if api.decodeRegisteredRequest(response, request, "play_minigame_command", &body) != nil ||
 		!minigameOpaqueIDPattern.MatchString(body.CommandID) || body.ExpectedRevision < 1 || body.ExpectedRevision > apiMaxExactInteger ||
 		!apiUUIDV7Pattern.MatchString(chi.URLParam(request, "session_id")) ||
 		len(body.Command) == 0 || body.Command[0] != '{' {
@@ -93,7 +93,7 @@ func (api *API) resolveMinigameSession(response http.ResponseWriter, request *ht
 		return
 	}
 	var body struct{}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil ||
+	if api.decodeRegisteredRequest(response, request, "resolve_minigame_session", &body) != nil ||
 		!apiUUIDV7Pattern.MatchString(chi.URLParam(request, "session_id")) {
 		writeError(response, http.StatusBadRequest, "invalid", "body")
 		return

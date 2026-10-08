@@ -222,7 +222,7 @@ func (api *API) createBootstrap(response http.ResponseWriter, request *http.Requ
 		writeError(response, http.StatusInternalServerError, "internal_invariant", "bootstrap")
 		return
 	}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil {
+	if api.decodeRegisteredRequest(response, request, "create_bootstrap", &body) != nil {
 		writeError(response, http.StatusBadRequest, "invalid", "bootstrap")
 		return
 	}
@@ -299,7 +299,7 @@ func (api *API) startSoulRecovery(response http.ResponseWriter, request *http.Re
 		writeError(response, http.StatusServiceUnavailable, "not_configured", "soul_recovery")
 		return
 	}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || !apiMechanicalIDPattern.MatchString(body.ActivityID) {
+	if api.decodeRegisteredRequest(response, request, "start_soul_recovery", &body) != nil || !apiMechanicalIDPattern.MatchString(body.ActivityID) {
 		writeError(response, http.StatusBadRequest, "invalid", "body")
 		return
 	}
@@ -328,7 +328,7 @@ func (api *API) progressSoulRecovery(response http.ResponseWriter, request *http
 		writeError(response, http.StatusServiceUnavailable, "not_configured", "soul_recovery")
 		return
 	}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || !apiUUIDV7Pattern.MatchString(body.SessionID) || !apiUUIDPattern.MatchString(body.ProgressToken) {
+	if api.decodeRegisteredRequest(response, request, "progress_soul_recovery", &body) != nil || !apiUUIDV7Pattern.MatchString(body.SessionID) || !apiUUIDPattern.MatchString(body.ProgressToken) {
 		writeError(response, http.StatusBadRequest, "invalid", "body")
 		return
 	}
@@ -368,7 +368,11 @@ func (api *API) finishSoulRecovery(response http.ResponseWriter, request *http.R
 		writeError(response, http.StatusServiceUnavailable, "not_configured", "soul_recovery")
 		return
 	}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || !apiUUIDV7Pattern.MatchString(body.SessionID) {
+	operationID := "cancel_soul_recovery"
+	if resolve {
+		operationID = "resolve_soul_recovery"
+	}
+	if api.decodeRegisteredRequest(response, request, operationID, &body) != nil || !apiUUIDV7Pattern.MatchString(body.SessionID) {
 		writeError(response, http.StatusBadRequest, "invalid", "body")
 		return
 	}
@@ -655,7 +659,7 @@ func requestClaims(request *http.Request) Claims {
 
 // Validate the original bounded bytes before struct decoding can discard
 // duplicates, accept case aliases or turn missing/null members into zero values.
-// Registered session DTOs remain the sole authority for their request shapes.
+// Registered DTOs remain the sole authority for their request shapes.
 func (api *API) decodeRegisteredRequest(response http.ResponseWriter, request *http.Request, operationID string, target any) error {
 	body, err := io.ReadAll(http.MaxBytesReader(response, request.Body, api.config.MaxBodyBytes))
 	if err != nil {

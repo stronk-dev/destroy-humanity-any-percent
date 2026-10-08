@@ -86,6 +86,14 @@ cancel, and resolve requests. Founder identity always comes from the access toke
 reject Founder IDs, Company stream IDs, and server-clock coordinates, and a foreign session ID is
 indistinguishable from a well-formed missing session ID.
 
+Write handlers validate the original bounded JSON against those registered descriptors before
+calling the coordinator. Duplicate members (including escaped names and nested command members),
+case aliases and unknown fields return their existing operation-specific `400 invalid/*` errors
+without changing stored sessions, progress, payouts or replay history. Resolve requires `{}`, not
+`null`. The real-socket lifecycle includes these refusal/nonmutation controls alongside ordinary
+create/play/reconnect/recovery/resolve/cancel, and the normal composed CI target requires it to
+execute. This is the current Pitch command union, not adoption of the held Typer/Arcade wire arms.
+
 The real-socket integration path proves a complete Pitch session and a complete Soul-Recovery
 session through the composed binary. Recovery reconnect rotates the progress token; the old token
 fails, attended heartbeats reach eligibility, terminal retry returns identical durable bytes, and

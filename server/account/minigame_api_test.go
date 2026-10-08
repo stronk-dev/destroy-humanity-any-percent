@@ -56,8 +56,12 @@ func minigameAPIRequest(method, path, body string, parameters map[string]string)
 func TestTypedMinigameHandlersKeepIdentityAndTenantCommandOffTheFlatWire(t *testing.T) {
 	now := time.Date(2026, 8, 7, 12, 0, 0, 0, time.UTC)
 	stub := &minigameAPIStub{result: json.RawMessage(`{"ok":true}`)}
+	registry, err := newPrivateAPIRegistry()
+	if err != nil {
+		t.Fatal(err)
+	}
 	api := &API{repository: &Repository{clock: func() time.Time { return now }, random: bytes.NewReader(bytes.Repeat([]byte{0xaa}, 32))},
-		config: APIConfig{MaxBodyBytes: 64 << 10}, minigames: stub}
+		config: APIConfig{MaxBodyBytes: 64 << 10}, minigames: stub, privateRegistry: registry}
 
 	response := httptest.NewRecorder()
 	api.createMinigameSession(response, minigameAPIRequest(http.MethodPost, "/api/v1/minigames/pitch/sessions",

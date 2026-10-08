@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"sort"
+	"strings"
 	"testing"
 	"time"
 
@@ -110,6 +111,8 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		t.Fatal(err)
 	}
 	createBody := `{"idempotency_key":"pitch-create-1"}`
+	assertComposedRequestAdmission(t, db, httpServer, "create_minigame_session", "/api/v1/minigames/pitch/sessions",
+		tokens.AccessToken, createBody, "idempotency_key", "minigame_create")
 	createResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/minigames/pitch/sessions", tokens.AccessToken, createBody)
 	createdBytes := readCompositionBytes(t, createResponse)
 	if createResponse.StatusCode != http.StatusOK || registry.ValidateResponse("create_minigame_session", http.StatusOK, createdBytes) != nil {
@@ -263,6 +266,11 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		terminalCommand, err = json.Marshal(requestValue)
 		if err != nil {
 			t.Fatal(err)
+		}
+		if step == 0 {
+			nestedDuplicate := bytes.Replace(terminalCommand, []byte(`"kind":"play_hand"`), []byte(`"kind":"play_hand","kind":"play_hand"`), 1)
+			assertComposedRequestAdmission(t, db, httpServer, "play_minigame_command", "/api/v1/minigames/sessions/"+current.SessionID+"/commands",
+				tokens.AccessToken, string(terminalCommand), "command_id", "minigame_command", string(nestedDuplicate))
 		}
 		commandResponse := compositionRequest(t, httpServer.Client(), http.MethodPost,
 			httpServer.URL+"/api/v1/minigames/sessions/"+current.SessionID+"/commands", tokens.AccessToken, string(terminalCommand))
@@ -429,6 +437,10 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	// The recovery half of MA AC1 uses only the composed authenticated socket:
 	// start, reconnect/token rotation, attended heartbeats, resolve/retry, and a
 	// separate watchdog-terminal session.
+	assertComposedRequestAdmission(t, db, httpServer, "resolve_minigame_session", "/api/v1/minigames/sessions/"+current.SessionID+"/resolve",
+		tokens.AccessToken, `{}`, "", "body")
+	assertComposedRequestAdmission(t, db, httpServer, "start_soul_recovery", "/api/v1/soul-recovery/start",
+		tokens.AccessToken, `{"activity_id":"repot"}`, "activity_id", "body")
 	recoveryStart := compositionRequest(t, httpServer.Client(), http.MethodPost,
 		httpServer.URL+"/api/v1/soul-recovery/start", tokens.AccessToken, `{"activity_id":"repot"}`)
 	recoveryStartBytes := readCompositionBytes(t, recoveryStart)
@@ -454,6 +466,8 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		t.Fatalf("stale recovery token status=%d body=%s", staleProgress.StatusCode, staleBytes)
 	}
 	var progress recoveryAPIProgress
+	assertComposedRequestAdmission(t, db, httpServer, "progress_soul_recovery", "/api/v1/soul-recovery/progress",
+		tokens.AccessToken, fmt.Sprintf(`{"session_id":%q,"progress_token":%q}`, reconnected.SessionID, reconnected.ProgressToken), "progress_token", "body")
 	for progress.AttendedProgressMS < reconnected.RequiredDurationAttendedMS {
 		clock.Set(clock.Time().Add(5 * time.Second))
 		progressResponse := compositionRequest(t, httpServer.Client(), http.MethodPost,
@@ -467,6 +481,8 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	if !progress.Eligible || progress.AttendedProgressMS != reconnected.RequiredDurationAttendedMS {
 		t.Fatalf("recovery progress=%+v", progress)
 	}
+	assertComposedRequestAdmission(t, db, httpServer, "resolve_soul_recovery", "/api/v1/soul-recovery/resolve",
+		tokens.AccessToken, fmt.Sprintf(`{"session_id":%q}`, reconnected.SessionID), "session_id", "body")
 	recoveryResolve := compositionRequest(t, httpServer.Client(), http.MethodPost,
 		httpServer.URL+"/api/v1/soul-recovery/resolve", tokens.AccessToken, fmt.Sprintf(`{"session_id":%q}`, reconnected.SessionID))
 	recoveryResolveBytes := readCompositionBytes(t, recoveryResolve)
@@ -486,6 +502,8 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	if watchdogStart.StatusCode != http.StatusOK || json.Unmarshal(watchdogStartBytes, &watchdog) != nil {
 		t.Fatalf("watchdog start status=%d body=%s", watchdogStart.StatusCode, watchdogStartBytes)
 	}
+	assertComposedRequestAdmission(t, db, httpServer, "cancel_soul_recovery", "/api/v1/soul-recovery/cancel",
+		tokens.AccessToken, fmt.Sprintf(`{"session_id":%q}`, watchdog.SessionID), "session_id", "body")
 	clock.Set(clock.Time().Add(24*time.Hour + time.Millisecond))
 	watchdogRefresh := compositionRequest(t, httpServer.Client(), http.MethodPost,
 		httpServer.URL+"/api/v1/session/refresh", "", fmt.Sprintf(`{"refresh_token":%q}`, tokens.RefreshToken))
@@ -498,6 +516,32 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	watchdogBytes := readCompositionBytes(t, watchdogCancel)
 	if watchdogCancel.StatusCode != http.StatusOK || registry.ValidateResponse("cancel_soul_recovery", http.StatusOK, watchdogBytes) != nil || !bytes.Contains(watchdogBytes, []byte(`"cancelled_by":"watchdog"`)) {
 		t.Fatalf("watchdog cancel status=%d body=%s", watchdogCancel.StatusCode, watchdogBytes)
+	}
+
+	// The existing 24-hour watchdog boundary also refills the shared IP bucket.
+	// Keep these extra unauthenticated checks out of the separate, budget-tight
+	// three-member composition journey; do not raise the production limit.
+	bootstrapBody := fmt.Sprintf(`{"idempotency_key":%q}`, strings.Repeat("ac", 32))
+	assertComposedRequestAdmission(t, db, httpServer, "create_bootstrap", "/api/v1/bootstrap", "",
+		bootstrapBody, "idempotency_key", "bootstrap")
+	bootstrapResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/bootstrap", "", bootstrapBody)
+	bootstrapBytes := readCompositionBytes(t, bootstrapResponse)
+	if bootstrapResponse.StatusCode != http.StatusCreated || bootstrapResponse.Header.Get("Cache-Control") != "no-store" ||
+		registry.ValidateResponse("create_bootstrap", http.StatusCreated, bootstrapBytes) != nil {
+		t.Fatal("valid bootstrap lost its registered uncached response after refusals (body withheld)")
+	}
+	var bootstrap bootstrapResponseEnvelope
+	if json.Unmarshal(bootstrapBytes, &bootstrap) != nil {
+		t.Fatal("valid bootstrap control cannot decode (body withheld)")
+	}
+	claims, err := composition.Accounts.Authenticate(ctx, bootstrap.Session.AccessToken)
+	if err != nil || claims.Subject != bootstrap.Account.AccountID || claims.FounderID == "" {
+		t.Fatal("valid bootstrap control did not issue authentic bound credentials")
+	}
+	bootstrapRetry := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/bootstrap", "", bootstrapBody)
+	if retryBytes := readCompositionBytes(t, bootstrapRetry); bootstrapRetry.StatusCode != http.StatusCreated ||
+		!bytes.Equal(retryBytes, bootstrapBytes) || bootstrapRetry.Header.Get("Cache-Control") != "no-store" {
+		t.Fatal("valid bootstrap retry changed its receipt after admission checks (body withheld)")
 	}
 
 	drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)

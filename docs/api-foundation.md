@@ -18,6 +18,16 @@ JSON and repeated names in separate objects remain allowed. `ValidateRequest` an
 `ValidateResponse` share this check; it does not add request-validation middleware to handlers
 that do not already call the registry, or rewrite any successful handler response.
 
+Bootstrap, session creation/refresh, minigame create/command/resolve and all four Soul-Recovery
+writes now validate original size-bounded request bytes through their registered descriptors
+before credential or gameplay work. Duplicate/escaped duplicate names and case aliases cannot
+bypass admission through Go struct decoding; nested tenant commands are checked too, and
+minigame resolution requires an object rather than `null`. Existing operation-specific invalid
+errors, authentication/limiter order and unavailable-service precedence remain. Live HTTP/Postgres
+tests retain unchanged credential/activity/gameplay/history rows on refusal and the existing
+successful lifecycle. This does not change the command union, implement Typer/Arcade wire arms,
+or claim conformance for handwritten import/intents or historical empty-body account/Founder calls.
+
 Operations may declare exact scalar query parameters (string, bounded integer, or boolean). They
 are byte-sorted by name and never shadow a path parameter. The reserved `cursor` parameter is a
 non-required string, and it is present exactly when the operation declares a cursor key.
@@ -71,7 +81,7 @@ size-bounded request bytes against those existing descriptors before decoding/cr
 Duplicate/escaped duplicate members, case aliases, missing members and nulls therefore refuse
 as `400 invalid/body`, rather than bypassing exact-key validation through Go struct decoding.
 Valid single escaped names remain accepted. The shared IP limiter and `no-store` wrapper still
-precede admission. This repair changes no schema/pin, renewal policy or other handler's parser.
+precede admission. Session schemas/pins and renewal policy are unchanged.
 
 Explicit generated calls can now represent those routes/errors; they do not add automatic
 renewal, credential replacement, recovery UX or retry policy. The deliberate additive pin refresh

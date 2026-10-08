@@ -114,6 +114,7 @@ const persistedTests = [
   "TestPublicBoardRankingAndPagesIntegration",
   "TestPublicRunEvidenceIntegration",
   "TestComposedGameserverPostgresSocketClearingAndGCIntegration",
+  "TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration",
   "TestComposedGameserverExitVerificationAndBoardIntegration",
 ];
 const persistedChecks = spawnSync("make", ["test-go", "GO_PACKAGES=./account ./gameui ./production ./leaderboard ./gameserver", `GO_TEST_FLAGS=-count=1 -v -run '^(${persistedTests.join("|")})$$'`], {
