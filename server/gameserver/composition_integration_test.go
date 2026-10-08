@@ -1428,8 +1428,33 @@ func waitSocketCloseStatus(t *testing.T, connection *websocket.Conn, timeout tim
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	for {
-		if _, _, err := connection.Read(ctx); err != nil {
+		_, data, err := connection.Read(ctx)
+		if err != nil {
 			return websocket.CloseStatus(err)
+		}
+		if err := acknowledgeCompositionPings(ctx, connection, data); err != nil {
+			return websocket.CloseStatus(err)
+		}
+	}
+}
+
+// Centrifuge's JSON application ping is an empty reply, not a WebSocket
+// control frame. Raw test peers must answer it with an empty command, just
+// like the production SDK, while preserving surrounding batched replies.
+func acknowledgeCompositionPings(ctx context.Context, connection *websocket.Conn, data []byte) error {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	for {
+		var reply json.RawMessage
+		if err := decoder.Decode(&reply); err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+		if bytes.Equal(bytes.TrimSpace(reply), []byte("{}")) {
+			if err := connection.Write(ctx, websocket.MessageText, []byte("{}")); err != nil {
+				return err
+			}
 		}
 	}
 }
@@ -1445,6 +1470,9 @@ func readWS(t *testing.T, socket *compositionSocket) wsReply {
 	defer cancel()
 	_, data, err := socket.connection.Read(ctx)
 	if err != nil {
+		t.Fatal(err)
+	}
+	if err := acknowledgeCompositionPings(ctx, socket.connection, data); err != nil {
 		t.Fatal(err)
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))

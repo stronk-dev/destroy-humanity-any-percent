@@ -4,6 +4,13 @@
 - **RFC:** `rfc/account-and-session-bootstrap.md`
 - **Started:** 2026-07-29
 
+Current bounded witness correction (2026-10-08, RP-474): a real Linux/Postgres run exposed
+the raw peer's missing application-level pong, closing3012 before the expected auth denial.
+Both raw read helpers now acknowledge protocol pings; forced ping/batched-reply regressions
+and the unchanged real revocation4001/healthy-drain4003 assertions pass. This is test-only,
+not a production/auth/timing change or closure of the separate RP-450 drain failure.
+The owning log holds exact evidence and the pending designated review range.
+
 Current bounded witness work (2026-10-08, RP-450): the hosted deadline occurs in drain after
 the revocation assertions, not in their denial checks. The unrevoked healthy control now reads
 through teardown and must observe code 4003 with the existing deadline. Old focused controls

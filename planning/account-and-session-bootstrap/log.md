@@ -943,3 +943,36 @@ plan/ledger/log range begins after `dcd9475d` through this commit; designated re
 No product, timeout, retry, kernel, schema, balance, CI-workflow, acceptance, archive, push or
 release change. Next: retain this clearer witness for the next authorized hosted run, and
 diagnose the separate Firefox RP-451 under its existing surface contract.
+
+## 2026-10-08 — Healthy raw peers answer application pings (RP-474)
+
+Account AC2/Transport T5: declared Linux-amd64/Postgres88884 fails live revocation
+with3012, not4001. Centrifuge0.38's primary source identifies3012 as no-pong and
+sends an empty JSON reply as its application ping. The first ping and OnAlive
+have randomized initial ordering; our raw close-wait/read helpers never answer
+that ping. This is a demonstrated test-peer defect, separate from RP-450's
+previous drain deadline; it is not an observed production authentication bypass.
+
+New real-WebSocket controls force a ping before4001/4003 and between two replies.
+Old helpers26595 fail both typed-close cases and the batched-ping case; the
+nested-empty-object non-ping control passes. Both existing raw read paths now
+decode frame-level replies and answer only actual empty-reply pings with an empty
+command. Surrounding replies and original input/error parsing remain. Existing
+30s revocation/2s drain guards, exact codes, authentication, production transport,
+SDK, server timing and configuration are unchanged.
+
+Final cold native gameserver tests and vet56399 pass. Same declared
+`make test-go-ci CI_TEST_PACKAGES='./publicapi ./publicread ./gameserver'
+CI_TEST_FLAGS='-v'`72237 exits0, all three packages/no skips; gameserver91.711s.
+Actual revoked-before-connect/live4001 and healthy-family/drain4003 execute
+(revocation21.64s), alongside real first-hour replay, verified public downloads,
+proxy boundary, Garden and Minigame/Soul. New forced-ping controls also pass in
+Linux. Prior red88884 remains recorded; this is not a hosted/full-CI, browser,
+universal timing-reliability or original RP-450 resolution claim. No new policy.
+
+Review by: Codex (test implementer diff/first filter); Recorded by: Codex. Exact
+new range starts after `e4fd61fa` through this tests/plan/ledger/log commit;
+designated cross-party review pending. All handles terminal and diff inspected.
+No acceptance, archive, kernel/config/content change, cleanup, push or release.
+Continue accepted construction; held public-wire, renewal and owner choices
+remain explicit, and pending review does not stop independent accepted work.
