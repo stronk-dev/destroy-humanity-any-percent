@@ -79,6 +79,10 @@ migration take the next free numbers at landing.
   receipt-outbox insert fails. Focused race and selected Cosmetic/save tests pass; the owning
   log records scope and pending designated review. This is not HTTP authorization coverage.
   This checkbox records implementation presence, not full C4 approval.
+  RP-453's event-key admission correction aligns Go with the existing exact-key database
+  constraint while accepting equivalent JSON whitespace/escapes. The new semantic-key
+  regressions fail on the old validator; owning log records executed SQL controls and the
+  separate pending review of this Codex correction. No full C4 approval is implied.
 - [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); Codex's targeted review found RP-173, whose corrective range awaits Claude's designated review, and RP-174 still requires ruling-author body reconciliation. This checkbox is implementation presence, not archival approval.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).
   Codex's bounded AC12 review found RP-183: Equip/Unequip lacked the visible curtains'

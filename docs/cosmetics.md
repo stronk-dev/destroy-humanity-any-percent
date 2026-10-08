@@ -59,8 +59,10 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   count after insertion; `cosmetic_equipped.v1 {cosmetic_id, pet_id, replaced_cosmetic_id|null}`;
   `cosmetic_unequipped.v1 {cosmetic_id, pet_id}`. Payloads are strict. Migration `00080` admits the
   three kinds; append-only migration `00084` requires exactly those keys for each cosmetic kind
-  at the Postgres boundary, leaving other event kinds unchanged. The Go decoder separately checks
-  the event payload values before persistence.
+  at the Postgres boundary, leaving other event kinds unchanged. Go checks the same exact decoded
+  key names before validating payload values: case aliases reject, while equivalent JSON
+  whitespace and escaped key spellings remain valid. `replaced_cosmetic_id` is required even
+  when null. Normal producer/receipt bytes are unchanged by this admission correction.
 - **Receipts:** they carry the complete `cosmetics` object and the event, and no amount, price,
   currency or payment field.
 - **Commit guard:** only the three cosmetic intents may change `cosmetics`. Any other Founder

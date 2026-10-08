@@ -4,12 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math/big"
 	"os"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgconn"
 
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
@@ -226,10 +229,54 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 			if affected, err := result.RowsAffected(); err != nil || affected != 1 {
 				t.Fatalf("valid %s payload updated %d events: %v", row.name, affected, err)
 			}
+			var canonical string
+			if err := tx.QueryRowContext(ctx, `SELECT payload::text FROM events WHERE event_id=$1`, eventID).Scan(&canonical); err != nil {
+				t.Fatal(err)
+			}
+			for _, equivalent := range []string{
+				strings.ReplaceAll(row.valid, ":", " \n\t: "),
+				strings.ReplaceAll(row.valid, "_", `\u005f`),
+			} {
+				if _, err := tx.ExecContext(ctx, `UPDATE events SET kind=$1,payload=$2::jsonb WHERE event_id=$3`, row.kind, equivalent, eventID); err != nil {
+					t.Fatalf("database rejected equivalent %s JSON: %v", row.name, err)
+				}
+				var actual string
+				if err := tx.QueryRowContext(ctx, `SELECT payload::text FROM events WHERE event_id=$1`, eventID).Scan(&actual); err != nil || actual != canonical {
+					t.Fatalf("equivalent JSON changed %s payload: actual=%s canonical=%s err=%v", row.name, actual, canonical, err)
+				}
+			}
 			if _, err := tx.ExecContext(ctx, `UPDATE events SET kind=$1,payload=$2::jsonb WHERE event_id=$3`, row.kind, row.extra, eventID); err == nil {
 				t.Fatalf("database accepted an extra field on %s payload", row.name)
 			}
 		})
+		var fields map[string]any
+		if err := json.Unmarshal([]byte(row.valid), &fields); err != nil {
+			t.Fatal(err)
+		}
+		for key, value := range fields {
+			t.Run("database-payload-case-"+row.name+"/"+key, func(t *testing.T) {
+				var aliased map[string]any
+				if err := json.Unmarshal([]byte(row.valid), &aliased); err != nil {
+					t.Fatal(err)
+				}
+				delete(aliased, key)
+				aliased[strings.ToUpper(key)] = value
+				raw, err := json.Marshal(aliased)
+				if err != nil {
+					t.Fatal(err)
+				}
+				tx, err := db.BeginTx(ctx, nil)
+				if err != nil {
+					t.Fatal(err)
+				}
+				defer tx.Rollback()
+				_, err = tx.ExecContext(ctx, `UPDATE events SET kind=$1,payload=$2::jsonb WHERE event_id=$3`, row.kind, string(raw), eventID)
+				var constraint *pgconn.PgError
+				if !errors.As(err, &constraint) || constraint.Code != "23514" || constraint.ConstraintName != "events_cosmetic_payload_keys_check" {
+					t.Fatalf("wrong-case %s key %s did not fail the exact payload constraint: %v", row.name, key, err)
+				}
+			})
+		}
 		t.Run("database-payload-required-"+row.name, func(t *testing.T) {
 			tx, err := db.BeginTx(ctx, nil)
 			if err != nil {

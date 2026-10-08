@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"strings"
 	"time"
 
 	"cloud-clicker/server/decimal"
@@ -835,31 +834,37 @@ func validateEventPayload(event EventWrite) error {
 			return fmt.Errorf("%w: invalid pet_adopted.v1 payload", ErrInvalidStream)
 		}
 	case EventCosmeticAcquired:
+		var fields map[string]json.RawMessage
 		var payload struct {
 			CosmeticID  string `json:"cosmetic_id"`
 			OrderNumber *int64 `json:"order_number"`
 		}
-		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !cosmeticIDPattern.MatchString(payload.CosmeticID) ||
+		if decodeStrictJSON(event.Payload, &fields) != nil || !hasExactRawKeys(fields, "cosmetic_id", "order_number") ||
+			decodeStrictJSON(event.Payload, &payload) != nil || !cosmeticIDPattern.MatchString(payload.CosmeticID) ||
 			payload.OrderNumber == nil || *payload.OrderNumber < 1 || *payload.OrderNumber > decimal.MaxExactInteger {
 			return fmt.Errorf("%w: invalid cosmetic_acquired.v1 payload", ErrInvalidStream)
 		}
 	case EventCosmeticEquipped:
+		var fields map[string]json.RawMessage
 		var payload struct {
 			CosmeticID         string  `json:"cosmetic_id"`
 			PetID              string  `json:"pet_id"`
 			ReplacedCosmeticID *string `json:"replaced_cosmetic_id"`
 		}
-		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !cosmeticIDPattern.MatchString(payload.CosmeticID) ||
-			!cosmeticPetIDPattern.MatchString(payload.PetID) || !strings.Contains(string(event.Payload), `"replaced_cosmetic_id":`) ||
+		if decodeStrictJSON(event.Payload, &fields) != nil || !hasExactRawKeys(fields, "cosmetic_id", "pet_id", "replaced_cosmetic_id") ||
+			decodeStrictJSON(event.Payload, &payload) != nil || !cosmeticIDPattern.MatchString(payload.CosmeticID) ||
+			!cosmeticPetIDPattern.MatchString(payload.PetID) ||
 			payload.ReplacedCosmeticID != nil && !cosmeticIDPattern.MatchString(*payload.ReplacedCosmeticID) {
 			return fmt.Errorf("%w: invalid cosmetic_equipped.v1 payload", ErrInvalidStream)
 		}
 	case EventCosmeticUnequipped:
+		var fields map[string]json.RawMessage
 		var payload struct {
 			CosmeticID string `json:"cosmetic_id"`
 			PetID      string `json:"pet_id"`
 		}
-		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !cosmeticIDPattern.MatchString(payload.CosmeticID) || !cosmeticPetIDPattern.MatchString(payload.PetID) {
+		if decodeStrictJSON(event.Payload, &fields) != nil || !hasExactRawKeys(fields, "cosmetic_id", "pet_id") ||
+			decodeStrictJSON(event.Payload, &payload) != nil || !cosmeticIDPattern.MatchString(payload.CosmeticID) || !cosmeticPetIDPattern.MatchString(payload.PetID) {
 			return fmt.Errorf("%w: invalid cosmetic_unequipped.v1 payload", ErrInvalidStream)
 		}
 	case EventReputationNodePurchased:

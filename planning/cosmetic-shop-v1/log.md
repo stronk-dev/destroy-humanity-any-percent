@@ -2054,3 +2054,50 @@ refresh/activation boundary, retain native-input and authoritative persisted-
 outcome assertions, then correct only the demonstrated defect under GS0.8/GS4.
 Review by: Codex (diagnosis); Recorded by: Codex. Latest aggregate remains RED;
 earlier local green observations and pending feature reviews remain intact.
+
+## 2026-10-08 — C4 event-key admission review and correction (RP-453)
+
+Review by: Codex (designated reviewer of Claude). Recorded by: Codex. Reviewed
+original range `500d944c^..500d944c`, bounded to §4.5/AC9's save event admission
+and its original ten payload controls. Verdict: CHANGES REQUIRED, RP-453.
+Struct decoding accepts six wrong-case field aliases; the required nullable
+replacement field is instead checked by a raw substring, rejecting legal JSON
+whitespace/escaped keys. Cold old-source85575 fails eight of24 new checks.
+This is not a complete17-path C4 approval, nor a demonstrated client exploit.
+The existing Postgres exact-key constraint remains authoritative and unchanged.
+
+Correction by: Codex. Reuse the save validator's decoded exact-key helper for
+all three cosmetic event kinds; remove substring presence detection. Existing
+value, missing/extra-field and required-nullable rules remain. Normal producer,
+receipt and replay-corpus bytes, balance, schemas and applied migrations remain
+unchanged. Kernel178→179 accompanies this real watched admission-set change.
+
+Executed verification (root, cold Go):
+- `make test-go GO_PACKAGES='./save ./cosmetic ./kernel' GO_TEST_FLAGS='-count=1'`
+  10169 passes; native missing-DB skips are not integration evidence.
+- `make vet GO_PACKAGES='./save ./cosmetic ./production'`60795 passes; final
+  save/production vet also passes after the SQL diagnostic refinement.
+- `make test-go-ci CI_TEST_PACKAGES='./save ./production' CI_TEST_FLAGS='-run Cosmetic -v'`
+  21310 exits0 on Linux/amd64 with actual Postgres: commands, refusals/retries,
+  concurrency/rollback, replay, both persisted Exit paths and the200-policy
+  isolation population execute without skips. Production package73.939s.
+- Final focused31139 repeats event admission, actual Cosmetic commands and both
+  Exit paths with the finished SQL controls, exits0. Seven case aliases must
+  produce SQLSTATE23514 from `events_cosmetic_payload_keys_check`, not just any
+  SQL error. Six whitespace/escaped encodings store byte-identical normalized
+  JSON in rolled-back probes; no artificial event survives into verified history.
+- Client cosmetic catalog/bundle/Founder-state/replay checks70133 pass96 cases;
+  `make typecheck`19860 passes with zero Svelte errors/warnings. The Go corpus
+  drift check and TS reproduction pass without rewriting their shared fixture.
+- `make verify-kernel-version`84092 is RED on historical50a3a514/RP-131 after
+  its checkout/fixture controls pass. The new bump does not repair or bypass
+  that historical failure. No full production/hosted CI, browser, natural
+  progression or full feature acceptance is claimed; RP-307 remains separate.
+
+Review by: Codex (implementer diff/first filter of the correction). Recorded by:
+Codex. Exact new code/test/version/docs/plan/ledger/log range starts after
+`6f85d3ad` through this containing commit; designated Claude review pending.
+Original C4 remainder and earlier correction reviews, RP-174/RP-176 author
+reconciliation, attendance and owner content remain separate. No checkbox,
+acceptance, archival, push or release promotion. Continue accepted construction
+and consolidated original review; do not repeat these completed probes per edit.
