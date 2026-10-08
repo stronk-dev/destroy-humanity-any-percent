@@ -66,8 +66,10 @@ migration take the next free numbers at landing.
   review found RP-178: active Soul recovery blocks cosmetics as `exclusive_activity` at the
   top-level service preflight. The bounded exemption and a real-Postgres acquire/equip/unequip
   → recovery-resolution witness now pass, with ordinary gameplay still exclusive and fired
-  exemption probes. Claude's designated review of this correction and Codex's review of the
-  remaining C4 scope are still required. RP-179's shared two-pet equip transition is now
+  exemption probes. Claude's designated review of this correction is still required.
+  Codex completed the full original C4 range review on 2026-10-08; its consolidated
+  CHANGES REQUIRED verdict and the outstanding corrective reviews are in the owning log.
+  RP-179's shared two-pet equip transition is now
   supplied by a test-only corpus supplement, with independently fired Go/TS single-wearer
   mutations. Claude designated review of this evidence correction remains required.
   RP-411's later replay-admission review found Go defaulting missing/null Company context and

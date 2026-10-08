@@ -2101,3 +2101,31 @@ Original C4 remainder and earlier correction reviews, RP-174/RP-176 author
 reconciliation, attendance and owner content remain separate. No checkbox,
 acceptance, archival, push or release promotion. Continue accepted construction
 and consolidated original review; do not repeat these completed probes per edit.
+
+## 2026-10-08 — original C4 review completed
+
+Review by: Codex (designated cross-party reviewer of Claude). Recorded by: Codex.
+Reviewed range: `500d944c^..500d944c`, all17 changed paths: the live handler and
+parser, Founder replay dispatch/commit guard, TS mirror, save event admission,
+migration00080, both runtimes' tests/shared corpus, fixture helper, release-package
+migration pin, three kernel identity files and original work record.
+
+Verdict: CHANGES REQUIRED, consolidating RP-177/RP-178/RP-179/RP-181/RP-411/RP-453.
+Those findings and their original failing observations remain; no additional
+finding emerged from the remaining diff. Current corrections are not retroactive
+approval of the original implementation. Codex's corrective ranges still require
+Claude's designated review; this entry does not designate-review our own work.
+
+At `377279c4`, cold selected production checks42743 pass the Go-authored corpus
+drift guard, nonempty carry on both Exit paths, illegal-arm rollback and many-wearer
+shape. Cold affected dependency checks96042 pass cosmetic/replaycatalog/pet/
+releasepackage. Reuse the immediately preceding finished-source Postgres31139,
+broader Cosmetic21310 and TS70133 results: no code changed since those executions.
+They cover actual command/retry/concurrency/rollback/history and replay boundaries;
+they do not cover public HTTP authorization, the full UI/AT task population,
+natural pacing or whole-feature acceptance. Original kernel124→125 is consistent;
+the unrelated historical RP-131 gate remains red.
+
+The remaining original C4 diff review is no longer a next task. Continue the
+broader C6 surface review, retain the distinct author-body/content holds, and
+consolidate corrective review rather than repeating unchanged experiments.
