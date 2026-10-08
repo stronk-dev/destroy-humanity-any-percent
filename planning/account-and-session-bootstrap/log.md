@@ -833,3 +833,24 @@ entry. No production auth/TTL/parser, generated contract, kernel, copy, CI topol
 push changes. Asked Marco whether to accept/delegate the draft browser-renewal proposal; no
 answer or acceptance inferred. API S-A1 and recovery S-A2 still need resolution before their
 consumer implementation. No full CI/Account/1.0 claim.
+
+## 2026-10-08 — missing recovery player-flow contract drafted
+
+At `1f95a62a`, rechecked Account D1/D2, archived Game UI's idempotent bootstrap/security contract,
+accepted Garage manifest F01, D-005 and the actual runtime. Session creation is already generated
+and mounted; the browser still silently stores the code and has no recovery UI. F01 explicitly
+requires a successor contract, so no new UI/storage policy is inferred from the posture alone.
+
+Drafted `rfc/account-recovery-player-flow.md`: one resumable save-credential setup, native
+copy/download/manual acknowledgement, legacy migration without discarding the only code,
+generated same-account login/read/persist/bind sequence and bounded failure/lifecycle handling.
+Proposed exact sincere utility copy is explicitly unadopted. Existing renewal/first-read policy,
+export/deletion/retention and release floors remain separate; no server auth or TTL amendment.
+The active index, D-005 route and RP-123 now link this draft instead of losing it in chat.
+
+Verification: inspected referenced server/SDK operations, current credential/startup source and
+the actual spec/record diff. No software suite for a draft-only change and no passing acceptance
+claim. Review by: Codex (drafter first filter); Recorded by: Codex. New normative proposal after
+`1f95a62a` needs owner contract/copy adoption and designated cross-party specification review.
+Next: obtain that bounded adoption, then implement the existing real player task with its tests;
+do not reopen D-005 or treat unrelated rights choices as a blocker for this scoped successor.

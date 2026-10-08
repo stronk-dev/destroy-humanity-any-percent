@@ -12,6 +12,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Kernel History Guard Integrity](kernel-history-guard-integrity.md) | draft — RP-131, owner choice pending; not implementation authority | Run Genesis & Replay KV-1 / CI Baseline |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
+| [Account Recovery Player Flow](account-recovery-player-flow.md) | draft — D-005 posture ruled; player flow, local credential migration and copy proposed, not implementation authority | Account / archived Game UI / API Foundation |
 | [Browser Session Renewal & Recovery](browser-session-renewal.md) | draft — RP-048/RP-234 consumer diagnosed; policy/API/browser gates unaccepted | Account / Transport / API Foundation / archived Game UI |
 | [Game UI First-read Failure & Recovery](game-ui-first-read-recovery.md) | draft — RP-342 measured; startup precedence/retry/copy unaccepted; not implementation authority | Garage Player Surfaces / archived Game UI / API Foundation / Account |
 | [Monotonic Founder Attendance](founder-attendance-monotonicity.md) | draft — RP-365 reproduced; D-024 shared-clock boundary unruled | Founder Attendance / Pet Care & Adoption / Garden / Minigame Platform |
