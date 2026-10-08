@@ -7,6 +7,12 @@
 1. [x] Extract one shared SplitMix64/rejection-sampling authority and add labeled substreams.
 2. [x] Implement exact int32/int64 combat arithmetic and Temperament chart in Go and TypeScript.
 3. [ ] Add the strict combat catalog/schema and the complete Phase-0 fixture.
+   - C2's independent team/deck reference envelopes are now implemented in Go/TS:
+     exact three/eight slots, ordered declared references, strict wire refusal and
+     isolated output storage. `TestLoadoutReferenceVectors` and
+     `client/test/combat-references.test.ts` pass, including current native
+     Chromium/WebKit. This does not provide the blocked catalog/effect schemas,
+     engine legality or a live player consumer; full item 3 remains open.
 4. [ ] Add fixture-only Trust/Soul tables and cross-runtime golden vectors.
 5. [ ] Add source lint and full parent acceptance/property coverage. Both Go and TypeScript
    division boundaries now execute locally; `TestRepositoryCombatDivisionBoundary` and its

@@ -1,7 +1,29 @@
 # Combat Shared Kernel
 
-The implemented combat foundation currently owns exact arithmetic and deterministic random streams;
-it does not yet claim a content catalog or either battle engine.
+The implemented combat foundation currently owns exact arithmetic, deterministic random streams
+and structural team/deck reference decoding. It does not yet claim a content catalog or either
+battle engine.
+
+## Team and deck references
+
+`DecodeTeamReferences` / `decodeTeamReferences` and the corresponding deck functions implement
+Combat C2's exact `{v: 1, ids: [...]}` envelope. Teams have three ordered species references;
+decks have eight ordered card references. Callers must supply declarations from their validated,
+pinned catalog. Unknown references, wrong slot counts, missing/extra/duplicate keys, noninteger
+version tokens and non-string entries refuse. Escaped keys/references, whitespace and valid Unicode
+remain valid; malformed surrogate escapes cannot become a declared replacement-character ID.
+
+Slots are preserved, not sorted or deduplicated. This is structural reference validation, not
+authorization, pet-instance selection, duplicate-selection policy or battle/cycle legality.
+Those checks belong to the complete catalog/engine/integration contracts. The result owns its
+storage (a Go array; a frozen TypeScript tuple), with no mutation of source or declarations and
+no partial references returned on refusal. Both runtimes consume
+`testdata/combat/reference-vectors.json`; the tests use declarations, not a fabricated combat
+catalog. No live/replay/HTTP consumer imports this new layer yet. Combat's authoritative
+integration must register its runtime paths with the kernel identity guard and perform the
+genuine semantic version change; this standalone library is not a replay activation or mint.
+
+## Arithmetic and deterministic streams
 
 The six Temperaments are ordered lazy, playful, curious, sassy, shy, chaotic. An attacker has
 advantage over the next two entries, disadvantage against the previous two, and a neutral result

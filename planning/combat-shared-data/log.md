@@ -232,3 +232,36 @@ test-only batch. This does not prove combat catalog/engines, Trust/Soul tables o
 Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range is
 `4bde5176` exclusive through this tests/fixture/docs/record commit; Claude designated review
 remains pending, alongside earlier independent ranges. No acceptance checkbox or archive.
+
+## 2026-10-08 — Construct C2 team/deck reference envelopes
+
+Under accepted Combat Shared Data C2, added Go/TypeScript decoding of the exact
+`{v:1,ids:[...]}` player-data envelope, with three team slots or eight deck slots,
+ordered membership in caller-supplied catalog declarations and isolated result
+storage. Refusal returns no partial references. No sorting, deduplication, pet
+ownership, instance selection or engine legality is inferred. This is new library
+construction, not a fix whose old implementation existed.
+
+The shared 32-case fixture contains four valid wire controls and 28 refusals:
+counts, membership, version/type/shape, duplicate/escaped keys, trailing syntax
+and malformed Unicode. Literal replacement characters, real surrogate pairs,
+escaped slash/backslash and slot order remain valid. Additional controls verify
+no input/declaration mutation, no result alias, empty/changed declarations and
+Go's invalid-UTF8 refusal. No fabricated catalog or battle fixture is introduced.
+
+Finished checks: cold complete `make test-go GO_PACKAGES='./combat'
+GO_TEST_FLAGS='-count=1'` passes; affected vet and both combat division boundaries
+pass. Existing/new Node files execute 88 checks, all passing. Strict types/Svelte
+report zero errors/warnings. The same two files execute 176 checks in native
+Chromium/WebKit (1982), all passing. Firefox/Linux are not claimed: native Firefox
+cannot establish a session and Docker overlay is confirmed full. No shipped
+bundle, DB, performance or whole-CI run is appropriate to this unimported pure
+library. Source/test/docs diff and formatting inspected after all runs terminated.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
+starts after `1e8a25bc` through this source/tests/docs/record commit; designated
+Claude review remains pending. No kernel bump: combat paths are not yet registered
+and these functions have no live/replay consumer. Authoritative engine integration
+must register those paths and make the genuine semantic bump, not evade identity.
+C2's effect/spell catalog and full fixture, C5's Trust/Soul tables and child-engine
+acceptance remain open. No full item-3, combat gameplay, archival or release claim.

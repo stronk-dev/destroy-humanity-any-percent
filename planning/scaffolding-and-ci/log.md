@@ -542,3 +542,18 @@ designated cross-party review pending. RP-451 remains OPEN. Next: use a usable
 Firefox environment to capture the original path with this diagnostic intact,
 then repair the demonstrated cause. Other accepted construction may continue;
 the Typer/Arcade public-wire question and Clout DG-D/D-021 remain unruled.
+
+## 2026-10-08 — Revalidate RP-451 environment; continue independent construction
+
+At `1e8a25bc`, read the actual failed hosted log for 37795560514: Firefox's native
+Enter/era assertion remains the browser failure, not an Arcade failure. Current
+source already contains the passive diagnostics from the preceding entry; do not
+repeat that work or claim a cause from unavailable execution. The declared browser
+service's fresh `df -h / /workspace /tmp` probe again reports overlay 0 free / 100% full,
+while the source mount has 119 GB free. No install, test, cleanup or CI change ran
+in that capacity probe. Unused build cache is 3.791 GB; narrowly scoped cleanup was
+asked of the owner and remains unapproved. Images, volumes and services are intact.
+Native Firefox's prior terminal session-timeout evidence is not a fresh test pass.
+RP-451 remains open; its next step is the unchanged native-input test in a usable
+Firefox environment. Independent accepted Combat C2 construction continues in
+its own plan/log. No whole-CI, hosted repair, acceptance or archival claim.
