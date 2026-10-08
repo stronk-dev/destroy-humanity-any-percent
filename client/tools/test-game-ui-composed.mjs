@@ -11,8 +11,9 @@ import { assertOpportunityClaimEffect, assertOpportunityReadStatus } from "./opp
 import { parents as refreshTests, refreshPopulationObserver } from "./observe-refresh-population.mjs";
 import { composedMode, observeManualBudget } from "./observe-manual-budget.mjs";
 import { observeLockedPitchView } from "./pitch-locked-view.mjs";
+import { tier2Fixture, witnessTier2 } from "./tier2-composed.mjs";
 
-const mode = composedMode(process.argv.slice(2));
+const mode = process.argv.length === 3 && process.argv[2] === "--tier2-fixture" ? "tier2-fixture" : composedMode(process.argv.slice(2));
 
 const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = path.resolve(clientRoot, "..");
@@ -133,6 +134,7 @@ resetTestDatabase();
 
 const gameserverBinary = path.join(repositoryRoot, ".cache", "game-ui-gameserver");
 mkdirSync(path.dirname(gameserverBinary), { recursive: true });
+const tier2 = mode === "tier2-fixture" ? tier2Fixture(repositoryRoot) : null;
 const gameserverEnvironment = {
   ...process.env,
   CLOUD_CLICKER_ACTIVITY_BRACKET: "activity.standard",
@@ -140,7 +142,7 @@ const gameserverEnvironment = {
   CLOUD_CLICKER_BOOTSTRAP_KEY_ID: "browser-fixture",
   CLOUD_CLICKER_CURSOR_KEY: key,
   CLOUD_CLICKER_JWT_KEY: key,
-  CLOUD_CLICKER_REPOSITORY_ROOT: repositoryRoot,
+  CLOUD_CLICKER_REPOSITORY_ROOT: tier2?.root ?? repositoryRoot,
   CLOUD_CLICKER_SERVER_ID: "01986666-b001-4000-8000-000000000001",
   DATABASE_URL: testDatabaseURL,
   GOCACHE: path.join(repositoryRoot, ".cache", "go-build"),
@@ -861,7 +863,9 @@ try {
     throw new Error(`composed public epochs failed: ${publicEpochs.status} ${JSON.stringify(publicEpochsBody)}`);
   }
   browser = await chromium.launch({ headless: true });
-  if (mode === "manual-budget") {
+  if (mode === "tier2-fixture") {
+    await witnessTier2(browser, uiURL, builtFiles, repositoryRoot, tier2);
+  } else if (mode === "manual-budget") {
     await observeManualBudget(browser, uiURL);
   } else {
   await witnessFiscalRefusalJourney();
@@ -1119,4 +1123,5 @@ try {
   await clientPreview?.close();
   await vite?.close();
   await stopGameserver();
+  tier2?.cleanup();
 }

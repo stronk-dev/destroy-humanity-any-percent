@@ -482,3 +482,68 @@ Next delivery: the missing fixture-only native Garden→API→persisted-harvest 
 SG9/SG10/SG13, without repeating the renewal-blocked natural long-session task or changing
 growth/balance. Controlled initial state must be explicit; it will not complete Garden, T2 or
 release acceptance. The policy/pacing/Headcount choices above remain unruled. No push or archive.
+
+## 2026-10-08 — Actual candidate browser/service integration; RP-436 presentation repair
+
+Authority: accepted Tier-2 A/B/E, bounded AC8/AC10 integration, not held §H or the §M mint.
+Range: `205e0c7d` exclusive through the commit containing this entry, including product,
+tests/driver, Make wiring and records. Review by: Codex (implementer, first-filter only).
+Recorded by: Codex. Designated cross-party review remains pending; no archival/acceptance.
+
+The missing boundary was real: composed54292 loads the exact existing candidate bundle into
+the real server/Account/Postgres and crashes on initial Desk before any cash setup, with
+`missing presentation binding for generator.hot_desk_program`. The old screen test changed
+the tier on older catalog rows. RP-436 repairs consumption of the existing candidate generator,
+upgrade and split bindings through the existing strict schema-3 presentation parser. Pinned
+bindings retain priority, PR supplementation remains and unknown/malformed IDs refuse. The
+screen/axe test now actually renders all six candidate purchase rows. No server, kernel,
+balance, generated artifact, owner copy, migration, API contract or CI YAML changed.
+
+`client/tools/tier2-composed.mjs` extends the existing built-client runner with an isolated
+candidate-root mode, not another server framework. Its 19 artifact bytes reproduce the
+committed candidate hash; temporary test epoch1 is explicitly unminted, never epoch9.
+Native Enter/Space controls produce a genuine scripted first failure and next Company, both
+gates, all three generators/upgrades and Open Source incorporation. Each action binds exactly
+one UUIDv7 command/current revision to an applied receipt; second-Company SQL history binds
+the separate intent-ID column, exact canonical payload, receipt and applied revision. Saved
+gates/faction/ownership and rendered reload are checked. Exact built HTML/JS/CSS/Worker bytes,
+a started Worker, actual WebSocket traffic and absence of client errors are required.
+Cash-only disposable DB setups of1e5 and9e8 are explicit; Founder ending history is played,
+not fabricated. This is not earned-cash, natural pacing, Headcount or complete AC8/AC10 proof.
+
+Retained red instrument runs:55736 wrongly expected ordinary +1 revision for Wind Down
+(the accepted production transition commits terminal+genesis, +2);66448 omitted the actual
+server offer ID from the decline assertion. Corrected to the existing contracts, not changed
+production. Focused50350 then passes. Strengthening exact SQL history in whole24988 finds
+another test mistake: ordinary canonical payload excludes the separately stored intent ID.
+That run's earlier main/Cosmetic/Clout/payment-negative/Garden populations pass, but the root
+command remains red. Comparing both actual fields separately repairs the observer; final
+focused8626 and whole5589 pass. These are changed-instrument runs, not unchanged retries
+used to erase a product failure.
+
+Final executed verification, all terminal:
+
+- `make test-tier2-composed`8626 and `make test-game-ui-composed`5589 PASS. The latter includes
+  35 existing observer controls, cold real-Postgres prerequisites, main/Fiscal/Pitch journeys,
+  Cosmetic/Clout, both actual payment-attempt negatives, Garden harvest and the added Tier-2
+  native journey. Normal composed CI inherits the new population through its existing target.
+- Declared Linux browser container51484: frozen pnpm install then `vitest run --config
+  vitest.browser.config.ts test/game-ui-screens-browser.test.ts
+  test/garage-surfaces-browser.test.ts test/axis-stack-browser.test.ts`, performance disabled
+  as in the functional lane. Chromium/Firefox/WebKit:9 files,1,539 PASS, six separate
+  performance-only skips,216.92s. Actual Tier-2 Desk/Run End axe checks execute.
+- Native screen run59991 remains RED: Chromium/WebKit200 pass/four performance exclusions;
+  Firefox executes zero tests, fails browser-session connection/launch. Linux's executed
+  Firefox pass is separate evidence, not a relabelled native success or diagnosed host fix.
+- `make test-client`87833 PASS:10,258 pass/928 explicit skips; `make typecheck`90609 PASS.
+- `make t2-candidates-check`45224 PASS, including cold Go candidate and TS checks;
+  `make copy-check`11313 PASS with existing orphan warnings and unchanged content manifest.
+- Final `make verify-ci-topology` PASS with13 negative controls; affected client/cosmetic
+  boundary checks71330 PASS. Helper syntax and `git diff --check` PASS.
+
+RP-437 remains open: the actual second gate submits the right ID but reuses the owner-authored
+“Move Into the Garage” action label. Preserve the exact first-gate copy; explicitly adopt a
+later-gate label in E4's owner round. The new journey does not certify that misleading UX.
+Pacing/relevance, RP-432 review, RP-433 population amendment, Headcount seat-source/body,
+copy/content adoption, minted-bundle proof and later-tier/platform obligations remain open.
+No full hosted CI, performance/AT completion, content mint, archive, deployment or push claim.

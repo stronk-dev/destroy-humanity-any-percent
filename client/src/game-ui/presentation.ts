@@ -48,21 +48,25 @@ function constants(values: readonly ConstantBinding[]): ReadonlyMap<string, stri
   return result;
 }
 
-exact(source, ["clout_reach_notes", "constants", "cosmetic_stubs", "exit_types", "gates", "generators", "manual_actions", "network_slots", "schema_version", "upgrades"], "game UI presentation");
-if (source.schema_version !== 3) throw new SyntaxError("game UI presentation must be schema v3");
+export function parseGameUIPresentation(source: typeof import("./presentation.generated.json")): GameUIPresentation {
+  exact(source, ["clout_reach_notes", "constants", "cosmetic_stubs", "exit_types", "gates", "generators", "manual_actions", "network_slots", "schema_version", "upgrades"], "game UI presentation");
+  if (source.schema_version !== 3) throw new SyntaxError("game UI presentation must be schema v3");
 
-export const GAME_UI_PRESENTATION: GameUIPresentation = Object.freeze({
-  schemaVersion: 3,
-  cloutReachNotes: rows(source.clout_reach_notes as TextBinding[], ["id", "text_key"], "Clout-reach presentation"),
-  constants: constants(source.constants as ConstantBinding[]),
-  generators: rows(source.generators as GeneratorBinding[], ["cap_reason_key", "description_key", "id", "title_key"], "generator presentation"),
-  upgrades: rows(source.upgrades as DescribedBinding[], ["description_key", "id", "title_key"], "upgrade presentation"),
-  manualActions: rows(source.manual_actions as DescribedBinding[], ["description_key", "id", "title_key"], "manual presentation"),
-  cosmeticStubs: rows(source.cosmetic_stubs as CosmeticBinding[], ["description_key", "disclosure_key", "id", "purchasable", "stateful", "title_key"], "cosmetic presentation"),
-  gates: rows(source.gates as NamedBinding[], ["id", "title_key"], "gate presentation"),
-  exitTypes: rows(source.exit_types as NamedBinding[], ["id", "title_key"], "exit presentation"),
-  networkSlots: rows(source.network_slots as NamedBinding[], ["id", "title_key"], "network-slot presentation"),
-});
+  return Object.freeze({
+    schemaVersion: 3,
+    cloutReachNotes: rows(source.clout_reach_notes as TextBinding[], ["id", "text_key"], "Clout-reach presentation"),
+    constants: constants(source.constants as ConstantBinding[]),
+    generators: rows(source.generators as GeneratorBinding[], ["cap_reason_key", "description_key", "id", "title_key"], "generator presentation"),
+    upgrades: rows(source.upgrades as DescribedBinding[], ["description_key", "id", "title_key"], "upgrade presentation"),
+    manualActions: rows(source.manual_actions as DescribedBinding[], ["description_key", "id", "title_key"], "manual presentation"),
+    cosmeticStubs: rows(source.cosmetic_stubs as CosmeticBinding[], ["description_key", "disclosure_key", "id", "purchasable", "stateful", "title_key"], "cosmetic presentation"),
+    gates: rows(source.gates as NamedBinding[], ["id", "title_key"], "gate presentation"),
+    exitTypes: rows(source.exit_types as NamedBinding[], ["id", "title_key"], "exit presentation"),
+    networkSlots: rows(source.network_slots as NamedBinding[], ["id", "title_key"], "network-slot presentation"),
+  });
+}
+
+export const GAME_UI_PRESENTATION = parseGameUIPresentation(source);
 
 export function requirePresentation<T>(values: ReadonlyMap<string, T>, id: string): T {
   const value = values.get(id);

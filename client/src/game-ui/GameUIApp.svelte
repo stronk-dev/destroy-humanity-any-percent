@@ -11,6 +11,7 @@
   import type { ExitOfferSpawnedEvent, RunEndedEvent } from "./events";
   import { GameUINavigation } from "./navigation";
   import { GAME_UI_PRESENTATION, requirePresentation, requirePresentationConstant } from "./presentation";
+  import { generatorPresentation, gatePresentation } from "./tier2-presentation";
   import { renderPrestigeTermRows } from "./prestige-terms";
   import { createBrowserGameUIRuntime, newIntentID, type GameUIRuntime, type GameUIRuntimeMessage } from "./runtime";
   import { defaultSurface, type GameUISurfaceID } from "./surface-catalog";
@@ -832,7 +833,7 @@
         <h2 id="generators-heading">{t("desk.generators_label", {}, era)}</h2>
         <div class="cards">
           {#each snapshot.generators as generator (generator.generator_id)}
-            {@const presentation = requirePresentation(GAME_UI_PRESENTATION.generators, generator.generator_id)}
+            {@const presentation = generatorPresentation(generator.generator_id)}
             <article class="card">
               <h3>{t(presentation.title_key, {}, era)}</h3><p>{t(presentation.description_key, {}, era)}</p>
               <span>{t("desk.owned_frame", { count: generator.owned }, era)}</span><span>{t("desk.rate_frame", { rate: formatAmount(generator.rate_contribution) }, era)}</span>
@@ -877,7 +878,7 @@
       </section>
 
       {#if splits.length}
-        <details><summary>{t("chrome.splits.label", {}, era)}</summary>{#each splits as split}<p>{t(requirePresentation(GAME_UI_PRESENTATION.gates, split.gate_id).title_key, {}, era)} {duration(split.rta_ms)}</p>{/each}{#if personalBestMS === undefined}<p>{t("chrome.splits.first_attempt_note", {}, era)}</p>{/if}</details>
+        <details><summary>{t("chrome.splits.label", {}, era)}</summary>{#each splits as split}<p>{t(gatePresentation(split.gate_id).title_key, {}, era)} {duration(split.rta_ms)}</p>{/each}{#if personalBestMS === undefined}<p>{t("chrome.splits.first_attempt_note", {}, era)}</p>{/if}</details>
       {/if}
 
       {#if liveFeatures?.cosmetics?.active}

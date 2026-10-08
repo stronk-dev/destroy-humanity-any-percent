@@ -35,9 +35,30 @@ applies. The same commands on the epoch-8 bundle reject with `unknown_id/gate.t1
 - The optional `transitions.incorporate` control appears exactly when incorporate can apply.
 - At `era_2010` the Desk shows a presentation-only FarmVille energy bar. It limits nothing and
   emits nothing, and its curtain is always visible.
+- Generator, upgrade and split labels consume the existing candidate presentation when an
+  authoritative snapshot supplies a candidate-only ID. Pinned bindings retain precedence;
+  unknown IDs still refuse. This repairs the real candidate's missing-binding render crash
+  (RP-436), without activating content or adopting copy. The first gate keeps its exact
+  owner-authored label; the misleading reuse for the second gate remains RP-437's E4 copy gate.
 
 See [Game UI](game-ui.md). Candidate copy for owner adoption is in
 `copy/catalog/tier2-candidate.json`.
+
+## Controlled real-service journey
+
+`make test-tier2-composed` runs the production-built browser, actual server, WebSocket and
+declared disposable Postgres service against the exact existing candidate bundle hash. It is
+also included in `make test-game-ui-composed`, the existing composed CI lane.
+
+The journey uses native controls for a genuine first scripted failure and next Company, both
+gates, all three candidate generators/upgrades and Open Source incorporation. It binds each
+command's ID/fields/revision to its response and the second Company's durable history, checks
+saved ownership/faction/gates and verifies rendered ownership after reload. Loaded HTML, JS,
+CSS and Worker bytes must match the production build, with a started Worker and no client error.
+
+Two explicit cash-only DB setups (`1e5`, then `9e8`) avoid a pacing claim; Founder Exit history
+is produced by gameplay, not seeded. This proves a bounded candidate integration, not earned
+cash, natural pacing, Headcount, content adoption, an epoch mint or complete AC8/AC10 acceptance.
 
 ## Pacing measurement (§P2 subset)
 
@@ -79,5 +100,5 @@ Headcount/allocation and the new reference policy remain held.
   controlled legal prefixes, with effect-masked losses of 52,447 ms and 213,996 ms respectively.
   `nap_pod` remains unselected, so that diagnostic also fails. These branch-specific observations
   do not certify the three instrument-affected generators or make the main scenario pass.
-- §M mint: goldens, the formulas regeneration, `changelog/epoch-9.md`, and the composed Postgres
-  proof.
+- §M mint: goldens, the formulas regeneration, `changelog/epoch-9.md`, and integrated proof on
+  the adopted/minted bundle. The controlled candidate journey above does not discharge it.

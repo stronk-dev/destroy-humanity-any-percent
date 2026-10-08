@@ -5047,3 +5047,17 @@ session-expiry diagnostic pass; absent automatic renewal remains a confirmed gap
 runs, disconnected-callback evidence and pending designated review. Current-state/roadmap
 entry points reflect this bounded construction, not another finished tier. All processes
 terminal; no acceptance, archive, content mint, push or hosted-CI/release claim.
+
+## 2026-10-08 — Tier-2 real candidate integration and presentation crash repair
+
+Range after `205e0c7d`: the actual candidate, unlike older tier-number-only screen fixtures,
+crashes the built client on missing presentation. RP-436 is locally corrected using existing
+candidate bindings with pinned precedence, without changing content/copy or activating an
+epoch. A native real-service/Postgres journey now covers genuine first failure/next Company,
+both gates, six purchases, incorporation, exact durable history and rendered reload. Cash is
+explicit setup, not pacing. Final whole composed5589 and1,539 affected Linux three-engine
+checks pass; native Firefox launch failure and corrected instrument failures remain recorded.
+The Tier-2 owning log holds exact commands/results and the pending designated-review range.
+Current-state/roadmap reflect this concrete integration, not full Tier-2 or Garage acceptance.
+RP-437 action copy, pacing/relevance/Headcount/mint and the full later-game/platform scope remain.
+All processes terminal. No hosted-CI success, archive, release promotion, deployment or push.

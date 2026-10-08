@@ -1379,7 +1379,13 @@ it.skipIf(typeof document === "undefined")("renders the Tier-2 era_2010 Desk and
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(true) } }) as unknown as AppExports;
   await new Promise((resolve) => setTimeout(resolve, 0));
-  app.fixtureSnapshot({ ...snapshot, run: { ...snapshot.run, tier: 2 } }); app.fixtureSurface("desk"); flushSync();
+  const generators = ["generator.open_plan_floor", "generator.managed_services_contract", "generator.hot_desk_program"];
+  const upgrades = ["upgrade.ping_pong_table", "upgrade.move_fast_break_things", "upgrade.nap_pod"];
+  app.fixtureSnapshot({ ...snapshot, run: { ...snapshot.run, tier: 2 },
+    generators: generators.map((generator_id) => ({ ...snapshot.generators[0]!, generator_id })),
+    upgrades: upgrades.map((upgrade_id) => ({ ...snapshot.upgrades[0]!, upgrade_id })),
+  }); app.fixtureSurface("desk"); flushSync();
+  for (const id of [...generators, ...upgrades]) expect([...target.querySelectorAll("h3")].some((heading) => heading.textContent === t(`${id}.title` as CopyKey, {}, "era_2010"))).toBe(true);
   expect(target.querySelector("main")?.getAttribute("data-era")).toBe("era_2010");
   expect(target.querySelector("main")?.style.getPropertyValue("--cc-color-accent")).toBe("#1864ab");
   assertNoMechanicalPresentation(target); await assertAxe(target, "tier-2 desk");

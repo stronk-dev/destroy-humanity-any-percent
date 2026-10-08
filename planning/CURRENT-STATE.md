@@ -22,7 +22,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
 |---|---|---|
 | Engine and persistence | Shared Go/TS number handling, declarative economy, lazy production/offline accrual, versioned Postgres saves/migrations/replay, routes/gates and client worker foundations are implemented. | New feature arithmetic/replay must satisfy the same floor. Clout's partition/accrual defect remains open; core foundations do not make every new system correct. |
 | Early-game player loop | Production-built browser client with real Postgres/WebSocket journey covers purchases, first gate, scripted and elective early endings, next Company and reconnect. Fiscal, active-play opportunity and Pitch are exercised through DOM controls. | Natural pacing/long-session recovery, remaining Garage acceptance and current-range designated reviews. The main journey verifies exact built client bytes, but not a Caddy/image/clean-host release artifact; accelerated fixture journeys are not complete nine-tier playthroughs. |
-| Tier 2 / incorporation | Candidate economy/content, routes, era UI and in-memory gate/incorporation proof exist. Original C1–C4 and the C5 pacing subset have bounded Codex designated approval. The seven-literal pacing report and combined relevance diagnostic independently reproduce; neither passes its acceptance floor. Headcount has a locally verified source-independent Go/TS allocation library, not wired into gameplay. | Pacing/relevance, RP-433's T0 policy-population conflict, actual candidate-content browser/service integration, adopted copy and content mint; epoch 9 is not minted. Headcount's seat-source choice and sibling contract reconciliation remain held; its live allocation system is not built. |
+| Tier 2 / incorporation | Candidate economy/content, routes and era UI exist. Native candidate controls now work through the real service/Postgres: both gates, genuine first failure/next Company, three generators/three upgrades, incorporation and persisted/rendered reload, using explicit cash setups. This caught and repaired a real missing-presentation crash; the new range awaits designated review. Original C1–C4 and the C5 pacing subset have bounded Codex designated approval. Pacing/relevance reproduce but fail their floors. Headcount has a source-independent Go/TS allocation library, not live gameplay. | Natural pacing/relevance, RP-433's T0 policy-population conflict, adopted copy (including RP-437's misleading second-gate label), full player acceptance and content mint; epoch 9 is not minted. Headcount's seat-source choice and sibling contract reconciliation remain held; its live allocation system is not built. |
 | Prestige / Reputation | Exit/reset foundations and earlier acceptance repairs are reviewed. Reputation nodes, plans, starters, persistence and UI have fixture-first implementations. | Career/relevance evidence remains red: the latest hosted maintenance run reproduces six starter timing ties and report drift. Run End's balance/carry display contract reconciliation, full feature review and adopted content also remain. The two early endings are not the three designed final endings. |
 | Minigames | Pitch has a real API-to-player-to-payout journey. Soul, Typer, Arcade and Garden have substantial engines, components and bounded persistence/lifecycle tests. Garden now also has locally verified native single/batched harvest through the built browser, real service and Postgres, including payout, retry and rendered reload; maturity is explicitly prepared test state. | Typer/Arcade public API and host integration; shared wire-contract decisions; Garden natural growth/long-session recovery and state-evolution clarification; authored content/mint, remaining whole-player journeys and accessibility. Pinball remains a draft. |
 | Pet care / cosmetics | Controlled real-service Buy → adoption → equip/care → reload works; several actual UI, race and timing defects are locally corrected. Pet status announcements connect an actual stored care event through WebSocket to the mounted production client. Purchase and adoption completion respect newer keyboard focus; saved pet reads/reloads/Desk remounts no longer repeat adoption speech. | Pet/API schema reconciliation, shared attendance-clock repair (RP-365), adopted copy/content and consolidated review. A passing journey does not close the clock defect. |
@@ -49,6 +49,14 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
+- Latest Tier-2 construction checkpoint (2026-10-08), range after `205e0c7d`: actual candidate
+  presentation consumption fixes RP-436's built-client crash. Native real-service/SQL gate,
+  purchase, incorporation and reload proof now joins the existing composed lane; controlled
+  cash is not pacing or earned-cash evidence. The affected Linux three-engine suite passes
+  1,539 cases with six separate performance exclusions; the native Firefox launch failure is
+  retained, not relabelled as green. The [Tier-2 log](tier2-content/log.md) owns full commands,
+  final aggregate outcome, instrumentation corrections and pending designated review. No
+  full-CI, complete feature acceptance, content mint, archive or release milestone follows.
 - Latest construction checkpoint (2026-10-08), range after `4b2c72a0`: the existing composed
   lane now includes native Garden single/batched harvest against the real API and Postgres.
   Final whole lane passes, including existing player/Cosmetic/Clout journeys and no-payment
@@ -74,7 +82,8 @@ operations remain required alongside that construction, not optional end-stage p
 - Latest published source recorded here: `20a57019` (2026-10-08). Local commits add
   Garden diagnostics, the Arcade admission correction, full-backup evidence, bounded Tier-2
   review/reproduction, the inherited-policy test correction and controlled-state Garden harvest
-  integration, with associated records.
+  integration, followed by candidate Tier-2 presentation/real-service integration, with
+  associated records.
   The earlier large unpushed counts are historical, not the current branch state. Codex did
   not push during this reconciliation. No hosted result is recorded here for those local commits.
   [Hosted CI 37763502364](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37763502364)

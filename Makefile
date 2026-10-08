@@ -250,6 +250,12 @@ test-clout-composed:
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-cosmetic-composed.mjs --axis-stack
 
+.PHONY: test-tier2-composed
+# Unminted candidate catalog and controlled cash; not pacing/Headcount proof.
+test-tier2-composed:
+	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
+	node client/tools/test-game-ui-composed.mjs --tier2-fixture
+
 # AC13: real built-client negatives must fail specifically at the N5 trap.
 test-cosmetic-n5:
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
@@ -273,6 +279,7 @@ test-game-ui-composed:
 	node client/tools/test-cosmetic-composed.mjs --axis-stack
 	$(MAKE) test-cosmetic-n5
 	$(MAKE) test-garden-harvest-composed
+	$(MAKE) test-tier2-composed
 
 verify-game-ui: verify-client test-browser test-game-ui-composed
 

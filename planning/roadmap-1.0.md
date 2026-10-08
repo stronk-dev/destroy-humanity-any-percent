@@ -10,7 +10,13 @@ We are integrating and hardening the Garage, with substantial later-tier constru
 ahead. The Tier-2 research/review checkpoint is finished at `0d9a9f43`: bounded original C1–C5
 approval, independently reproduced negative pacing/relevance evidence, a locally corrected
 inherited-policy test and an unresolved comparison-population contract. This is not a completed
-Tier-2 player journey or a new release milestone. Native Garden harvest through the built
+Tier-2 acceptance or a new release milestone. A new bounded native candidate journey now
+passes through the production-built browser, real server/SQL and transport: genuine first
+failure/next Company, both gates, six purchases, incorporation and persisted/rendered reload.
+It caught RP-436's real presentation crash, now repaired without changing candidate bytes or
+owner copy. Cash is explicit fixture setup; Headcount, natural pacing/relevance, adopted copy,
+mint and complete feature acceptance remain open. The [Tier-2 log](tier2-content/log.md)
+owns the new range after `205e0c7d` and pending designated review. Native Garden harvest through the built
 browser, real API and Postgres is now locally verified with explicitly controlled maturity:
 single and batched harvest, actual payout/history, retry refusal and rendered reload. The
 whole existing composed lane passes with this added population, and a disconnected native

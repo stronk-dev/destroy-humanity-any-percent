@@ -1,7 +1,8 @@
 import source from "./axis-presentation.json";
 
 import { applicationCopyCatalog, type CopyKey } from "../copy";
-import { GAME_UI_PRESENTATION, requirePresentation } from "./presentation";
+import { GAME_UI_PRESENTATION } from "./presentation";
+import { tier2UpgradePresentation } from "./tier2-presentation";
 
 // Clout v1 CV9: presentation rows for the axis-scaled (PR Intern) upgrades.
 // They live beside the pinned presentation catalog, as the Garage lane's
@@ -31,5 +32,5 @@ export function parseAxisPresentation(value: unknown): ReadonlyMap<string, Bindi
 export const AXIS_PRESENTATION = parseAxisPresentation(source);
 
 export function upgradePresentation(id: string): Binding {
-  return AXIS_PRESENTATION.get(id) ?? requirePresentation(GAME_UI_PRESENTATION.upgrades, id);
+  return AXIS_PRESENTATION.get(id) ?? tier2UpgradePresentation(id);
 }

@@ -10,9 +10,16 @@ held until it is. Fixture-first: candidates live under `balance/testdata/t2/`; e
 **Review checkpoint, 2026-10-08:** Codex independently approves the original C1–C4 candidate,
 era and control changes and the bounded C5 pacing implementation/reproduction in the exact
 ranges cited in the owning log. This is bounded review, not AC0–AC10 completion: C6, later corrections,
-actual candidate-content browser/service integration, Headcount, adopted copy and the mint
-remain outside that approval. The current screen fixtures change the tier on older content;
-do not cite them as a played or fully rendered Tier-2 catalog. No archival is authorized.
+the new candidate-content browser/service integration, Headcount, adopted copy and the mint
+remain outside that approval. The new screen fixture renders all six candidate purchases;
+the real-service journey uses explicit cash setups, not natural pacing. No archival is authorized.
+
+**Construction checkpoint, 2026-10-08:** RP-436's actual candidate Desk crash is repaired by
+consuming existing presentation bindings, preserving pinned precedence and unknown-ID refusal.
+The new native candidate journey passes real server/SQL/transport, both gates, genuine scripted
+first failure/next Company, all six purchases, incorporation and persisted/rendered reload.
+The owning log records verification and its pending designated review. E4's misleading second-
+gate action label remains RP-437, not permission to edit owner copy or claim full acceptance.
 
 **P3 finding, 2026-10-08 (RP-433):** the fresh T0 control/candidate comparison is not invariant:
 the existing Chaos v1 policy enumerates all catalog generators, so the new unaffordable rows
