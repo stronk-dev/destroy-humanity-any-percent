@@ -156,6 +156,114 @@ for (const key of ["{Enter}", " "]) {
   });
 }
 
+for (const empty of [false, true]) {
+  it.skipIf(!browser)(`Garden native Tab and Shift-Tab traverse the ${empty ? "seed" : "mature"} menu and substrates`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const { target, app, calls } = mounted({ current: async () => active() });
+    try {
+      await settle();
+      const cells = [...target.querySelectorAll<HTMLButtonElement>("button.cell")];
+      cells[0]!.focus();
+      if (empty) { await userEvent.keyboard("{ArrowDown}"); await settle(); }
+      const origin = cells[empty ? 6 : 0]!;
+      expect(document.activeElement).toBe(origin);
+      await userEvent.keyboard("{Enter}"); await settle();
+      const menu = [...target.querySelectorAll<HTMLButtonElement>(".menu button")];
+      expect(menu).toHaveLength(3);
+      expect(menu.map((row) => row.textContent?.trim())).toEqual(empty
+        ? ["Plant Strain A (PENDING OWNER NAME)", "Plant Strain B (PENDING OWNER NAME)", "Close"]
+        : ["Harvest", "Uproot", "Close"]);
+      const all = [...target.querySelectorAll<HTMLButtonElement>("button")].find((row) => row.textContent?.trim() === "Harvest all mature")!;
+      const substrates = [...target.querySelectorAll<HTMLButtonElement>(".substrates button")];
+      expect(substrates.map((row) => row.textContent?.trim())).toEqual(["Bare metal", "Chaos Monkey", "Containerized", "Mainframe"]);
+      const path = [...menu, all, ...substrates];
+      for (const control of path) {
+        await userEvent.keyboard("{Tab}");
+        expect(document.activeElement).toBe(control);
+      }
+      for (const control of [...path.slice(0, -1)].reverse().concat(origin)) {
+        await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+        expect(document.activeElement).toBe(control);
+      }
+      expect(calls).toEqual([]);
+      expect(cells.filter((cell) => cell.tabIndex === 0)).toEqual([origin]);
+    } finally { await unmount(app); target.remove(); }
+  });
+}
+
+for (const key of ["{Enter}", " "]) {
+  for (const [empty, at, expected] of [
+    [false, 1, "uproot 0,0"], [false, 2, null],
+    [true, 0, "plant 1,0 strain_a"], [true, 1, "plant 1,0 strain_b"],
+  ] as const) {
+    it.skipIf(!browser)(`Garden native ${JSON.stringify(key)} reaches ${empty ? "seed" : "mature"} menu action ${at}`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const { target, app, calls } = mounted({ current: async () => active() });
+      try {
+        await settle();
+        const cells = [...target.querySelectorAll<HTMLButtonElement>("button.cell")];
+        cells[0]!.focus();
+        if (empty) { await userEvent.keyboard("{ArrowDown}"); await settle(); }
+        const origin = cells[empty ? 6 : 0]!;
+        await userEvent.keyboard(key); await settle();
+        const action = target.querySelectorAll<HTMLButtonElement>(".menu button")[at]!;
+        for (let index = 0; index <= at; index++) await userEvent.keyboard("{Tab}");
+        expect(document.activeElement).toBe(action);
+        expect(calls).toEqual([]);
+        await userEvent.keyboard(key); await settle();
+        expect(calls).toEqual(expected === null ? [] : [expected]);
+        expect(target.querySelector(".menu")).toBeNull();
+        expect(document.activeElement).toBe(origin);
+      } finally { await unmount(app); target.remove(); }
+    });
+  }
+}
+
+for (const key of ["{Enter}", " "]) {
+  it.skipIf(!browser)(`Garden native ${JSON.stringify(key)} reaches Harvest all and every substrate`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const { target, app, calls } = mounted({ current: async () => active() });
+    try {
+      await settle();
+      target.querySelector<HTMLButtonElement>("button.cell")!.focus();
+      await userEvent.keyboard("{Tab}");
+      expect(document.activeElement?.textContent?.trim()).toBe("Harvest all mature");
+      await userEvent.keyboard(key); await settle();
+      expect(calls).toEqual(["harvest 0,0 0,1 1,1"]);
+      const substrates = [...target.querySelectorAll<HTMLButtonElement>(".substrates button")];
+      for (const [index, control] of substrates.entries()) {
+        await userEvent.keyboard("{Tab}");
+        expect(document.activeElement).toBe(control);
+        await userEvent.keyboard(key); await settle();
+        // The read still owns Bare metal; selecting it is a no-op. Other
+        // selections dispatch exactly once, without an optimistic view patch.
+        expect(calls).toEqual(["harvest 0,0 0,1 1,1", ...["chaos_monkey", "containerized", "mainframe"].slice(0, index).map((id) => `substrate ${id}`)]);
+        expect(pressed(target)).toBe("Bare metal");
+      }
+    } finally { await unmount(app); target.remove(); }
+  });
+
+  it.skipIf(!browser)(`Garden native ${JSON.stringify(key)} reaches Refresh after a failed read`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    let reads = 0;
+    const { target, app, calls } = mounted({ current: async () => {
+      if (++reads === 1) throw new Error("controlled read failure");
+      return active();
+    } });
+    const before = document.createElement("input"); target.before(before);
+    try {
+      await settle();
+      expect(reads).toBe(1);
+      before.focus(); await userEvent.keyboard("{Tab}");
+      expect(document.activeElement?.textContent?.trim()).toBe("Refresh");
+      await userEvent.keyboard(key); await settle();
+      expect(reads).toBe(2);
+      expect(target.querySelectorAll("button.cell")).toHaveLength(36);
+      expect(calls).toEqual([]);
+    } finally { await unmount(app); target.remove(); before.remove(); }
+  });
+}
+
 it.skipIf(!browser)("Garden receipt refresh sequential control displays the newer read", async () => {
   const port = new OrderedPort();
   const { target, app, calls } = mounted(port);

@@ -221,6 +221,10 @@ payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release cl
 `client/src/game-ui/garden/GardenSurface.svelte` is the SG10 surface:
 - The Garden tab appears only when the read is `locked` or `active`.
 - The grid is a `role="grid"` of native buttons with a roving tabindex and arrow keys.
+- Menu actions, Refresh, Harvest all and substrates have explicit native tab stops in DOM
+  order, including WebKit. Tab/Shift-Tab reaches the seed and mature menus without changing
+  the grid's single roving stop. Enter/Space uses the existing callbacks; closing or acting
+  in a menu returns focus to its plot. Disabled/inherited-disabled controls remain disabled.
 - Stage and dormancy are text plus a border shape, never colour.
 - Growth announcements go to a polite live region once per refresh.
 - It re-reads at `next_tick_wall_ms` while visible and after every receipt, with no client

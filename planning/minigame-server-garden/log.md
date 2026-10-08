@@ -2741,3 +2741,43 @@ range through containing implementation/records needs Claude; prior spans stay
 independent. No checkbox/status/archival/push. Next accepted work: separately
 predeclare bounded native Fiscal pending/receipt-focus audit under GS0.6/GS1,
 inspect actual existing tests first; not invented mechanics or a SQL bypass.
+
+## 2026-10-08 — Native Garden menu and action traversal (RP-398)
+
+Outcome under accepted SG10: native Tab/Shift-Tab reaches the plot menu and
+subsequent actions in DOM order; Enter/Space dispatches the existing callback
+and menu completion returns focus to the same roving-grid plot. No new keyboard
+interception, gameplay, clock, schema, copy or pending-policy contract.
+
+The original full39477 failed both WebKit Harvest paths. Expanded baseline81036
+also exposed a mistake in my seed-label expectations (both engines); corrected
+to the actual unchanged candidate copy before product changes. Corrected
+old-component11166 fails12 native WebKit checks/16 companions pass; twelve
+non-native selector skips. Initial13 failures are NOT thirteen product defects.
+
+Seven explicit tabindex0 attributes cover Refresh, seed choices, Harvest,
+Uproot, Close, Harvest all and substrates. Roving-grid indices, callbacks,
+disabled/inherited-disabled rules and all original tests stay intact. Added
+native checks traverse forward/backward, activate both seed IDs and menu actions,
+observe exact Harvest-all/substrate callbacks without optimistic state, and
+retry a failed controlled read. Starting grid focus is explicit setup, not a
+claim to have tested whole-application/AT entry or default-server maturation.
+
+Finished-batch verification:9830 passes68 Garden component/host cases before
+the final action supplements;9150 passes all298 affected Reputation/Garden/
+Typer cases, including76 final Garden cases.64990 strict types/Svelte zero
+errors/warnings;27852 build/boundary scan passes (production source unchanged
+after that build). Full native Chromium/WebKit79091 passes268 file populations,
+21706 tests/10 existing skips,149.23s. Prior full39477 RED and Typer provider's
+RP-399 remain recorded; no provider repair or proven recurrence cause. Some
+passive module traces truncate in tool output; not a complete research dataset.
+
+Self-inspected actual seven-attribute product diff and test/canonical-doc/record
+changes; diff-check passes. New designated review range starts c4ccd742 exclusive
+through this containing corrective commit; Claude review pending. Separate R9
+range663976f1..c4ccd742 remains reviewable; earlier ranges/author gaps stay owed.
+No kernel bump, artifact/corpus/payout, budget/retry/skip/engine/workflow change,
+feature checkbox/status/archival/push. No Linux/native Firefox/manual AT/SQL/
+hosted/full-CI/Garden/1.0 acceptance; RP-131, RP-307, renewal and SG13 remain open.
+Next safe boundary: continue remaining accepted integration review while the
+named policy/author decisions and Docker capacity require their own resolution.

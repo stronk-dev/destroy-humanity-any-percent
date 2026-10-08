@@ -45,10 +45,12 @@ queue and current verification, not a claim to have rerun every acceptance crite
   all30 byte-identical Node controls plus all three real-service journeys. Types/build and
   CI topology pass. This does not clear RP-131's history guard, Clout's numeric defect or
   establish three-engine/hosted/full-CI success; the CI log owns the correction range.
-  The full native Chromium/WebKit functional run is RED:21635 pass/43 fail/10 existing skips.
-  Forty Reputation checks retain a stale pending-disabled oracle (RP-397), two Garden WebKit
-  checks fail native menu traversal (RP-398), and one Typer WebKit keyboard-provider case
-  cannot find its iframe (RP-399). Focused earlier passes do not erase this broader result.
+  Earlier full native39477 was RED:21635 pass/43 fail/10 existing skips. The separate R9
+  pending-oracle correction (RP-397) retains actual native duplicate refusal and fresh consent;
+  Garden's tab-stop correction (RP-398) proves menu, seed, Harvest all, substrate and Refresh
+  paths. Final affected298 and full Chromium/WebKit79091 now pass21706/10 existing skips.
+  RP-399's earlier missing-iframe cause/reliability remains open: no Typer/provider repair,
+  retries, larger budgets, Firefox/Linux/hosted/full-CI success or feature acceptance inferred.
 - R-012's existing-context SQL seam is now locally proven for64 diagnostic
   Company profiles: real Postgres16 jsonb preserves full restored state, raw
   production rate bits and evaluation results. All64 changed-context controls

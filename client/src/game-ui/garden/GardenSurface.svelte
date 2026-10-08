@@ -122,7 +122,7 @@
     <p>{t("garden.state.locked", {}, era)}</p>
   {:else if viewState.kind === "error"}
     <p role="alert">{t("garden.state.error", {}, era)}</p>
-    <button type="button" onclick={() => load()}>{t("garden.action.refresh", {}, era)}</button>
+    <button type="button" tabindex="0" onclick={() => load()}>{t("garden.action.refresh", {}, era)}</button>
   {:else if active}
     {#if viewState.kind === "stale"}<p role="status">{t("garden.state.stale", {}, era)}</p>{/if}
     <p>{t("garden.collection.progress", { count: active.garden.seed_collection.length, total: active.garden.species_total }, era)}</p>
@@ -149,25 +149,25 @@
         {#if !plot && stageOf(active, at.row, at.col) === "empty"}
           <p>{t("garden.plot.choose_seed", {}, era)}</p>
           {#each active.garden.seed_collection as species (species)}
-            <button type="button" disabled={pending} onclick={() => act(() => onPlant(at.row, at.col, species))}>{t("garden.action.plant_frame", { species: speciesName(species) }, era)}</button>
+            <button type="button" tabindex="0" disabled={pending} onclick={() => act(() => onPlant(at.row, at.col, species))}>{t("garden.action.plant_frame", { species: speciesName(species) }, era)}</button>
           {/each}
         {/if}
         {#if plot?.stage === "mature"}
-          <button type="button" disabled={pending} onclick={() => act(() => onHarvest([{ row: at.row, col: at.col }]))}>{t("garden.action.harvest", {}, era)}</button>
+          <button type="button" tabindex="0" disabled={pending} onclick={() => act(() => onHarvest([{ row: at.row, col: at.col }]))}>{t("garden.action.harvest", {}, era)}</button>
         {/if}
         {#if plot}
-          <button type="button" disabled={pending} onclick={() => act(() => onUproot(at.row, at.col))}>{t("garden.action.uproot", {}, era)}</button>
+          <button type="button" tabindex="0" disabled={pending} onclick={() => act(() => onUproot(at.row, at.col))}>{t("garden.action.uproot", {}, era)}</button>
         {/if}
-        <button type="button" onclick={() => closeMenu()}>{t("garden.action.close", {}, era)}</button>
+        <button type="button" tabindex="0" onclick={() => closeMenu()}>{t("garden.action.close", {}, era)}</button>
       </div>
     {/if}
     {#if mature(active).length > 0}
-      <button type="button" disabled={pending} onclick={() => onHarvest(mature(active))}>{t("garden.action.harvest_all", {}, era)}</button>
+      <button type="button" tabindex="0" disabled={pending} onclick={() => onHarvest(mature(active))}>{t("garden.action.harvest_all", {}, era)}</button>
     {/if}
     <fieldset class="substrates" disabled={pending || active.garden.substrate_lockout_until_ms !== null}>
       <legend>{t("garden.substrate.label", {}, era)}</legend>
       {#each SUBSTRATES as substrate (substrate)}
-        <button type="button" aria-pressed={active.garden.substrate_id === substrate} aria-describedby={`garden-substrate-${substrate}`}
+        <button type="button" tabindex="0" aria-pressed={active.garden.substrate_id === substrate} aria-describedby={`garden-substrate-${substrate}`}
           onclick={() => { if (active.garden.substrate_id !== substrate) onSetSubstrate(substrate); }}>{t(`garden.substrate.${substrate}.name` as CopyKey, {}, era)}</button>
         <small id={`garden-substrate-${substrate}`}>{t(`garden.substrate.${substrate}.tooltip` as CopyKey, {}, era)}</small>
       {/each}
