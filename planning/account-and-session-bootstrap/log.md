@@ -1054,3 +1054,29 @@ cross-party review pending. All command handles terminal, diff inspected. Existi
 review debt remains; no acceptance, archive, cleanup, publication or release.
 Next: remaining lifecycle/credential persistence evidence and explicit draft
 adoption, not another repetition of completed primitive/committed-reply cases.
+
+## 2026-10-12 — Remove stale refresh-registration prerequisite
+
+At `87d1e72c`, S1/S-A1 of Codex's renewal proposal still ask to register/pin
+refresh, although API Foundation already did so. Inspected the actual operation
+descriptor, generated metadata/call types, existing success/error tests and the
+API plan/docs. Reconciled the proposal body to that existing authority: exact
+200 pair,400 invalid/body,401 unauthorized/refresh_token or refresh_reused/
+session_family_revoked,429 rate_limited/ip, and one existing generated call.
+No schema, endpoint, dispatcher, auth policy or acceptance criterion changed.
+
+Executed cold `make test-go GO_PACKAGES='./account'
+GO_TEST_FLAGS='-count=1 -run TestSessionAPIRegistryPinsExistingWire\|TestSessionRoutesRetainTheSharedUnauthenticatedLimiter -v'`
+42251: both named tests pass, including invalid pair/request fields, cross-operation
+error refusal and shared limiter behavior. Existing generated-client test file
+passes all28 cases, including refresh success and every error alternative with
+one dispatch/no automatic retry. `make api-check` passes with generated/pin bytes
+unchanged. All handles terminal; diff checked. These are contract/controlled-client
+checks, not a new DB/browser/production-renewal or complete C9 claim.
+
+Review by: Codex (proposal author, factual reconciliation). Recorded by: Codex.
+This editorial correction does not need a separate implementation verdict; the
+existing API implementation and research ranges still require designated review.
+The actual remaining renewal boundaries are policy adoption, production consumer
+bindings, lifecycle/storage evidence and player recovery/copy, not re-registering
+the completed operation. No milestone, archive, publication or release promotion.

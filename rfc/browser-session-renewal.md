@@ -44,14 +44,17 @@ public Garden activation, balance clocks, general SDK redesign and CI deadlines.
 
 ### S1 — One operation authority, unchanged server semantics
 
-Register the existing `POST /api/v1/session/refresh`, not a second endpoint:
+Use the existing registered `refresh_session` operation at
+`POST /api/v1/session/refresh`, not a second endpoint or descriptor:
 request exactly `{refresh_token:string}`, success HTTP 200 exactly
 `{access_token:string,refresh_token:string}`. Its authentication is the presented
 opaque refresh credential, not a required valid access token. Consume generated
 descriptors/types through API Foundation's single operation/transport authority.
-Pin the handler's complete existing error/status alternatives, including
-`refresh_reused/session_family_revoked`, before acceptance; do not incorrectly
-reuse the narrower Minigame error union. Existing compatibility pins remain intact.
+Its current operation/status-specific errors are `400 invalid/body`,
+`401 unauthorized/refresh_token`, `401 refresh_reused/session_family_revoked`
+and `429 rate_limited/ip`. These are already registered and pinned by API
+Foundation; do not incorrectly reuse the narrower Minigame error union or
+introduce a second response table. Existing compatibility pins remain intact.
 
 No change to Account's fifteen-minute access / thirty-day refresh lifetimes,
 family-row lock, single-use rotation or revocation-on-reuse. Every server response
@@ -178,10 +181,15 @@ into another identity. No second history store or client-authored receipt exists
   remain unchanged. This tests real committed-reply ambiguity, not the production
   credential document/coordinator, supported-profile completion, natural expiry,
   background/process/OS lifecycle or post-reply storage failures. R-011 stays open.
-- **API author boundary S-A1:** pin the complete existing refresh error/status
-  schema and exact generated dispatcher changes needed for C9. The current
-  handwritten runtime calls are not permission for another raw API client or an
-  unreviewed broad SDK migration. Split that foundational lane if necessary.
+- **API dependency S-A1 — registration implemented, consumer work remains:**
+  API Foundation already registers and pins the request, success and all existing
+  error/status alternatives, and generates `createAPIClient().call("refresh_session", ...)`.
+  Current registry refusal/shared-limiter tests, generated-client success/error
+  controls and byte-unchanged generation pass. There is no outstanding decision
+  to invent that operation or its wire schema. The API implementation still needs
+  its designated review; this draft does not approve it. Renewal must consume that
+  authority after its own acceptance, and complete its consumer bindings without
+  another raw API client or unreviewed broad SDK migration. Full C9 remains open.
 - **Recovery dependency S-A2:** ambiguous outcomes must remain honest even while
   D-005's actual recover-existing-account consumer/copy is unfinished. Specify the
   interim visible state and final release dependency; do not invent owner copy or
@@ -197,3 +205,6 @@ explicitly unadopted. Full nine-tier 1.0 and the complete platform floor remain.
 
 - 2026-10-06: proposed after bounded real-stack diagnosis; remains draft, no
   automatic authentication production code changed or owner acceptance recorded.
+- 2026-10-12: reconcile stale S1/S-A1 prerequisite to the existing registered,
+  generated and pinned refresh operation. Current focused contract/client/drift
+  checks pass; no new endpoint, SDK change, policy adoption or review approval.
