@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current bounded correction (2026-10-12, RP-492): query string validation uses JSON escaping,
+not Go literal escaping, while retaining malformed UTF-8 refusal and exact descriptor checks.
+The old-source regression rejects six descriptor-admitted strings and an enum member; affected
+cold Go/vet, generated-client tests and unchanged API generation pass after correction. The log
+records CHANGES REQUIRED on Claude's original query-descriptor commit `32560c4b` separately
+from this Codex repair's pending designated review. No approval of the later epoch-reader batch
+or adoption of the dictionary/bodiless/history drafts follows.
+
 Current prerequisite (2026-10-09, RP-483): `rfc/api-bodiless-responses.md` proposes a closed
 empty204/304 arm and explicit conditional-read input. Fresh existing six-operation cache
 checks pass; the actual generated SDK rejects304 and has no DELETE lifecycle operations.

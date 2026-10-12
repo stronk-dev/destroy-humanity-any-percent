@@ -1509,3 +1509,45 @@ records range is `3b5ce376` exclusive through this containing commit; designated
 consolidatable with RP-485 as `da3a922d` exclusive through this commit. Earlier review debt and
 the three draft-contract adoption gates remain open. All test handles terminal; diff checked.
 No acceptance, archival, push, deployment or release claim.
+
+## 2026-10-12 — Designated review: original query descriptors (RP-492)
+
+Review by: Codex (designated independent reviewer of Claude's implementation).
+Recorded by: Codex.
+Reviewed range: `32560c4b^..32560c4b` (exact seven changed paths).
+Decision: CHANGES REQUIRED.
+
+Inspected the descriptor/registry, validator, OpenAPI/TS generation, pins, tests and docs.
+The decoder uses `strconv.Quote`, whose Go-only escapes are invalid JSON. The retained
+`TestQueryStringEncodingPreservesDescriptorValues` first runs against the unmodified decoder
+at `6d2ffb99`; that file is byte-identical to the original query implementation, verified
+against `e63796d5`. Session61158 fails six descriptor-admitted strings and an explicitly
+declared escaped enum member; ten other string controls and four refusal controls pass.
+Each positive control first satisfies the actual JSON descriptor and URL round-trips exactly.
+This is execution of the unchanged original decoder, not a whole historical-checkout run.
+
+This verdict covers only the original query commit, not `cd5ba06d`, epoch-reader composition
+`e63796d5`, interleaved F9 or later corrective batches. No current mounted ASCII filter/cursor
+failure is alleged. The finding needs a conformance repair, not an invented string restriction
+or adoption of any draft. Original-query approval remains open until corrective review.
+
+## 2026-10-12 — Preserve exact descriptor-admitted query strings (RP-492)
+
+Outcome under A5/C17: JSON-encode string values before the existing shared validator, with
+explicit valid-UTF-8 admission so the encoder cannot silently repair malformed bytes. Required,
+empty, duplicate, integer/boolean and descriptor enum/format behavior otherwise remains.
+No new schema kind, status, handler, query metadata, saved receipt or compatibility pin changes.
+
+Final focused regression12971 passes all16 string cases, four refusal cases and enum positive/
+negative controls. Full `make test-go GO_PACKAGES='./publicapi ./publicread ./cmd/gen-api'
+GO_TEST_FLAGS='-count=1'`79284 passes; affected `make vet` passes. `make api-check` passes with
+byte-unchanged OpenAPI/TypeScript/pins. Existing `client/node_modules/.bin/vitest run --root
+client test/generated-api.test.ts` passes28, including URL/query serialization and refusal.
+No DB, browser input, gameplay or hosted-CI boundary changed or claimed tested.
+
+Review by: Codex (implementer first filter, not designated approval of this correction).
+Recorded by: Codex. Exact correction range begins after `6d2ffb99` through this containing
+source/test/docs/plan/ledger/log commit; Claude's designated review remains pending and may
+consolidate related API corrections. All handles terminal; diff checked. Full API acceptance,
+remaining original-reader review, prior review debt and draft adoption stay open. No archival,
+push, publication or release claim; continue accepted work without shrinking the1.0 objective.

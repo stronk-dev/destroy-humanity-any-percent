@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
 var queryNamePattern = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
@@ -91,10 +92,14 @@ func decodeQueryValue(schema *Schema, raw string) (any, error) {
 	var encoded string
 	switch schema.Kind {
 	case SchemaString:
-		if raw == "" {
+		if raw == "" || !utf8.ValidString(raw) {
 			return nil, ErrInvalidSchema
 		}
-		value, encoded = raw, strconv.Quote(raw)
+		quoted, err := json.Marshal(raw)
+		if err != nil {
+			return nil, ErrInvalidSchema
+		}
+		value, encoded = raw, string(quoted)
 	case SchemaInteger:
 		if !canonicalIntegerPattern.MatchString(raw) || strings.HasPrefix(raw, "-") && schema.Minimum != nil && *schema.Minimum >= 0 {
 			return nil, ErrInvalidSchema

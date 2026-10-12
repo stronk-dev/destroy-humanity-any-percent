@@ -47,6 +47,9 @@ non-required string, and it is present exactly when the operation declares a cur
 integers are strict base-10 (no sign, padding, or leading zero), and every value is checked by the
 same descriptor validator as response bodies. A failure returns `InvalidQueryError` naming the
 parameter; undeclared parameters are ignored.
+String values retain their exact valid UTF-8 content through JSON encoding before descriptor
+validation, including JSON-escaped control characters. Empty and malformed UTF-8 query strings
+are rejected; a literal Unicode replacement character is valid, not a malformed-byte substitute.
 
 Query parameters are generated as OpenAPI `in: query` entries, and TypeScript gets
 `queryParameters` plus an optional-aware `query` type. Query-free operations generate

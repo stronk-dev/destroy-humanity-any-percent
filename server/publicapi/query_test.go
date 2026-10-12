@@ -2,6 +2,7 @@ package publicapi
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"net/url"
 	"testing"
@@ -200,5 +201,64 @@ func TestQueryIntegersAreCanonicalBaseTen(t *testing.T) {
 		if value, err := decodeQueryValue(schema, raw); err != nil || value != want {
 			t.Fatalf("canonical integer %q = %v, %v", raw, value, err)
 		}
+	}
+}
+
+func TestQueryStringEncodingPreservesDescriptorValues(t *testing.T) {
+	newRegistry := func(schema *Schema) *Registry {
+		t.Helper()
+		operations := plainOperations()
+		operations[0].Query = []QueryParameter{{Name: "text", Schema: schema, Required: true}}
+		registry, err := NewRegistry(testSchemas(), operations)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return registry
+	}
+	schema := &Schema{Kind: SchemaString}
+	registry := newRegistry(schema)
+	for _, row := range []struct{ name, value string }{
+		{"ascii", "plain"}, {"quote", `a"b`}, {"backslash", `a\b`},
+		{"line feed", "a\nb"}, {"carriage return", "a\rb"}, {"tab", "a\tb"},
+		{"nul", "a\x00b"}, {"control one", "a\x01b"}, {"bell", "a\ab"},
+		{"vertical tab", "a\vb"}, {"unit separator", "a\x1fb"}, {"delete", "a\x7fb"},
+		{"nonbreaking space", "a\u00a0b"}, {"unicode", "café"},
+		{"supplementary unicode", "🌱"}, {"literal replacement", "a\ufffdb"},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			encoded, err := json.Marshal(row.value)
+			if err != nil || ValidateJSON("Text", encoded, map[string]*Schema{"Text": schema}) != nil {
+				t.Fatalf("control does not satisfy the declared string descriptor: %v", err)
+			}
+			// Use actual form encoding/decoding, not a different string normalizer.
+			query, err := url.ParseQuery(url.Values{"text": {row.value}}.Encode())
+			if err != nil || query.Get("text") != row.value {
+				t.Fatalf("URL round trip changed declared string: %v", err)
+			}
+			values, err := registry.ParseQuery("get_board", query)
+			if err != nil || values["text"] != row.value {
+				t.Fatalf("descriptor-admitted string rejected/changed: value=%q result=%v error=%v", row.value, values, err)
+			}
+		})
+	}
+	for name, query := range map[string]url.Values{
+		"missing required": {}, "empty": {"text": {""}},
+		"duplicate":    {"text": {"plain", "plain"}},
+		"invalid utf8": {"text": {string([]byte{'a', 0xff, 'b'})}},
+	} {
+		t.Run(name, func(t *testing.T) {
+			values, err := registry.ParseQuery("get_board", query)
+			var invalid *InvalidQueryError
+			if !errors.As(err, &invalid) || invalid.Parameter != "text" || values != nil {
+				t.Fatalf("invalid query returned values or wrong error: result=%v error=%v", values, err)
+			}
+		})
+	}
+	constrained := newRegistry(&Schema{Kind: SchemaString, Enum: []string{"a\x01b"}})
+	if values, err := constrained.ParseQuery("get_board", url.Values{"text": {"a\x01b"}}); err != nil || values["text"] != "a\x01b" {
+		t.Fatalf("declared escaped enum member rejected: %v", err)
+	}
+	if values, err := constrained.ParseQuery("get_board", url.Values{"text": {"other"}}); err == nil || values != nil {
+		t.Fatalf("string encoding bypassed the enum: result=%v error=%v", values, err)
 	}
 }
