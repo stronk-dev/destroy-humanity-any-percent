@@ -1487,3 +1487,25 @@ test/docs/records range is `da3a922d` exclusive through this containing commit; 
 cross-party review pending. No draft adoption, whole API/hosted CI, archival, push or release
 claim. The typed-dictionary/bodiless/history proposals and earlier corrective review debt
 remain separate; continue safe accepted integration work.
+
+## 2026-10-12 — Preflight the whole route binding set before mounting (RP-486)
+
+Outcome: accepted A5 conformance repair. `Registry.Mount` now checks every binding and
+required auth middleware before wrapping handlers or registering routes. Valid mounts
+retain their order/auth; invalid bindings cannot leave a partial route set in the caller's
+router. This covers validation errors, not transactional rollback of middleware/router panics.
+
+Old-source focused run15453 fails all three late-invalid configurations: the early route
+still serves200 after Mount returns an error; valid control passes. The retained real-chi
+regression also preserves a preexisting route and checks handler/wrapper counts. Final
+focused run passes all four cases. Full root `make test-go GO_PACKAGES='./publicapi ./publicread'
+GO_TEST_FLAGS='-count=1 -v'`83341 passes both affected packages, including existing authenticated
+mount/cache/refusal tests. `make vet GO_PACKAGES='./publicapi ./publicread'` and `make api-check`
+pass; generated OpenAPI, pin and client bytes are unchanged. No DB/gameplay/browser boundary
+changes or full CI claim; current composition callers' error handling is not alleged broken.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new source/tests/docs/
+records range is `3b5ce376` exclusive through this containing commit; designated review pending,
+consolidatable with RP-485 as `da3a922d` exclusive through this commit. Earlier review debt and
+the three draft-contract adoption gates remain open. All test handles terminal; diff checked.
+No acceptance, archival, push, deployment or release claim.

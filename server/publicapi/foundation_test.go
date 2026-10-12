@@ -446,6 +446,73 @@ func TestRegisteredRawHashHeadersPreserveMountedProtocolMetadata(t *testing.T) {
 	}
 }
 
+func TestRegistryMountPreflightsAllBindingsBeforeChangingRouter(t *testing.T) {
+	operations := testOperations()
+	operations[1].Auth, operations[1].Public, operations[1].Surface, operations[1].Path =
+		AuthAccessToken, false, SurfacePrivateV1, "/api/v1/epochs"
+	registry, err := NewRegistry(testSchemas(), operations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, fault := range []string{"nil late handler", "wrong late operation", "missing late auth", "valid control"} {
+		t.Run(fault, func(t *testing.T) {
+			router := chi.NewRouter()
+			router.Get("/existing", func(response http.ResponseWriter, _ *http.Request) {
+				_, _ = response.Write([]byte("existing-route"))
+			})
+			calls, authWraps := 0, 0
+			handler := http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
+				calls++
+				_, _ = response.Write([]byte(`{"items":[],"next_cursor":null}`))
+			})
+			bindings := []Binding{{OperationID: "get_board", Handler: handler}, {OperationID: "get_epochs", Handler: handler}}
+			middleware := map[AuthMode]Middleware{AuthAccessToken: func(next http.Handler) http.Handler {
+				authWraps++
+				return next
+			}}
+			switch fault {
+			case "nil late handler":
+				bindings[1].Handler = nil
+			case "wrong late operation":
+				bindings[1].OperationID = "get_board"
+			case "missing late auth":
+				delete(middleware, AuthAccessToken)
+			}
+			err := registry.Mount(router, bindings, middleware)
+			if fault == "valid control" {
+				if err != nil || authWraps != 1 {
+					t.Fatalf("valid mount refused: err=%v wraps=%d", err, authWraps)
+				}
+			} else if !errors.Is(err, ErrInvalidOperation) || authWraps != 0 {
+				t.Fatalf("invalid mount not rejected before wrapping: err=%v wraps=%d", err, authWraps)
+			}
+			for _, path := range []string{"/api/public/v1/boards/any_percent", "/api/v1/epochs"} {
+				response := httptest.NewRecorder()
+				router.ServeHTTP(response, httptest.NewRequest(http.MethodGet, path, nil))
+				want := http.StatusNotFound
+				if fault == "valid control" {
+					want = http.StatusOK
+				}
+				if response.Code != want {
+					t.Fatalf("partial mount at %s: status=%d want=%d", path, response.Code, want)
+				}
+			}
+			response := httptest.NewRecorder()
+			router.ServeHTTP(response, httptest.NewRequest(http.MethodGet, "/existing", nil))
+			if response.Code != http.StatusOK || response.Body.String() != "existing-route" {
+				t.Fatal("mount changed the caller's existing route")
+			}
+			wantCalls := 0
+			if fault == "valid control" {
+				wantCalls = 2
+			}
+			if calls != wantCalls {
+				t.Fatalf("wrong handler calls: got=%d want=%d", calls, wantCalls)
+			}
+		})
+	}
+}
+
 func TestRegistryMountRejectsBindingDriftAndAppliesDeclaredAuth(t *testing.T) {
 	operations := testOperations()
 	operations[0].Auth, operations[0].Public, operations[0].Surface, operations[0].Path = AuthAccessToken, false, SurfacePrivateV1, "/api/v1/boards/{category}"

@@ -9,7 +9,9 @@ invalid descriptor, duplicate operation ID, duplicate method/path, public/auth m
 unknown request/response schema. Runtime response fixtures validate against the same descriptor
 values consumed by runtime mounting, OpenAPI generation, TypeScript generation, and the committed
 v1 compatibility pin. Authenticated Soul Recovery and minigame routes mount exclusively from this
-registry; missing, extra, unsorted, or nil runtime bindings fail during router construction.
+registry. Mounting checks the entire binding set and every required auth middleware before
+wrapping handlers or registering routes. Missing, extra, unsorted, or nil runtime bindings,
+or absent required auth middleware, fail without changing the caller's existing router.
 
 Raw-response hash headers use the same admission rule at registry construction and
 cached emission: their existing name grammar applies, and they cannot equal `ETag`,

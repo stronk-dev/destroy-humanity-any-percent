@@ -200,13 +200,14 @@ func (registry *Registry) Mount(router chi.Router, bindings []Binding, middlewar
 		if binding.OperationID != operation.ID || binding.Handler == nil {
 			return ErrInvalidOperation
 		}
-		handler := binding.Handler
+		if operation.Auth != AuthNone && middleware[operation.Auth] == nil {
+			return ErrInvalidOperation
+		}
+	}
+	for index, operation := range registry.operations {
+		handler := bindings[index].Handler
 		if operation.Auth != AuthNone {
-			wrap := middleware[operation.Auth]
-			if wrap == nil {
-				return ErrInvalidOperation
-			}
-			handler = wrap(handler)
+			handler = middleware[operation.Auth](handler)
 		}
 		router.Method(operation.Method, operation.Path, handler)
 	}
