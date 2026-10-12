@@ -7,7 +7,17 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Latest bounded checkpoint, 2026-10-12:** RP-490 reads each recovery identity in one
+**Latest bounded checkpoint, 2026-10-12:** original Claude R5
+`78ec39a7^..78ec39a7` has bounded Codex designated approval. The unchanged private-service
+witness executes through `make test-deployment-operations-profile`: five healthy scrapes,
+cleanup firing, received nonce, HTTP-500 delivery refusal and peer admin isolation.
+The exact pinned Prometheus index's amd64 child passes rule evaluation; the affected actual
+Linux-amd64/Postgres startup/job test and cold packages/vet pass. The owning log discloses
+the mixed-architecture fixture, Docker digest-cache collision and rejected empty test
+selection. The new Make extraction needs Claude review after `ffc8bc25`; no aggregate,
+seven-family end-to-end, DP-E/AC7 or clean-host approval follows.
+
+**Preceding bounded checkpoint, 2026-10-12:** RP-490 reads each recovery identity in one
 read-only repeatable-read transaction. A real locked-table/concurrent account-write
 regression fails on the old implementation; all seven declared Linux-amd64/Postgres
 backup integration functions now pass, including cancellation with no partial identity
@@ -56,7 +66,7 @@ its own executable failure cases and a bounded review range. No batch may claim 
 | DP-D | Stop-drain-start release helper, release record, seven-day previous-version rollback without Down migrations | Real Caddy HTTP/WebSocket release and rollback population; severed courtesy frame, drain, migration, epoch and smoke paths fail | CHANGES REQUIRED — Claude designated review 2026-09-24 (log); corrective range needed |
 | DP-E | Private operations profile, metrics, journald policy and seven blocking alerts | Private reachability and retention fixtures; all seven alerts fire and severed metric/rule/receiver paths fail | CHANGES REQUIRED — Claude designated review 2026-09-24 (log); corrective range needed |
 | DP-E/DP8 corrective | Preserve WebSocket upgrades through operations instrumentation, append-only repair of the pushed kernel-history miss, and one mechanically bound local push-CI aggregate | Operations-enabled real WebSocket witness; kernel correction/version guard; topology mutation proving a missing local CI lane fails | APPROVED — Claude designated review 2026-09-24 over `7b510df..cf4ac25` |
-| Claude corrective R1–R22 | Owner-directed Claude corrections; the dated handoff is a historical review input, not a verdict | Individual exact-range verdicts and their executed evidence in `log.md`; historical aggregate runs do not establish green CI at current HEAD | partial bounded review only: R4/R7/R11/R13/R16/R17/R19/R21 approved; R11 rule evaluation executed with native Prometheus 3.12.0, not the Linux deployment/receiver lane. R14/R15 mechanisms have bounded approval but Codex witness supplements need Claude; R5 composed execution remains unverified here; other listed findings/corrections remain open. No full-range or DP-A–DP-E approval; retained bundles must be rebuilt |
+| Claude corrective R1–R22 | Owner-directed Claude corrections; the dated handoff is a historical review input, not a verdict | Individual exact-range verdicts and their executed evidence in `log.md`; historical aggregate runs do not establish green CI at current HEAD | partial bounded review only: R4/R5/R7/R11/R13/R16/R17/R19/R21 approved; R5's real private Compose witness now passes with its platform limits in the log. R11's prior native rule verdict is supplemented by exact-index amd64 rule execution, not full clean-host delivery. R14/R15 mechanisms have bounded approval but Codex witness supplements need Claude; other listed findings/corrections remain open. No full-range or DP-A–DP-E approval; retained bundles must be rebuilt |
 | Codex RP-164 / DP-B CSS attribution | Build-generated CSS package provenance and final asset hashes, consumed by release metadata and delivered notices | Direct and nested CSS-only npm fixture, missing/stale graph and stylesheet negatives, Vite/Go severing probes, real build+metadata | locally implemented; Claude designated review required; no AC8 or DP-B closure |
 | Codex RP-165/RP-166 / DP-B CSS URL and worker resources | Versioned CSS graph adds package assets inlined via `url()` and worker-only package stylesheets through a shared worker hook | Real Vite inlined SVG and worker-CSS shipped-byte controls; Go URL-only and worker-only notices, missing-file/v1 negatives; producer/consumer severing | locally implemented; Claude designated review required; no AC8 or DP-B closure |
 | Codex native operations witnesses / DP7 | Supplemental local delivery and production-registry→Prometheus→Alertmanager journeys using pinned native services | Preflight nonce, seven firing/resolution pairs, HTTP-500 rejection and actual first cleanup failure firing/natural resolution without reset or injected resolution | combined target locally passed; consolidated Claude review required for the new test range after `8f2e29d8`. Not original R5, private Compose/Caddy/DB or release acceptance |

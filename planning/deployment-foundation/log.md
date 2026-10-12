@@ -4882,3 +4882,86 @@ starts after `8ba84996` through this containing commit; designated review pendin
 RP-489/490 may share one coherent review after `630f6833`; earlier debt remains.
 This is not a snapshot bound to a separate pg_dump, measured RPO/RTO, clean-host
 R-006, hosted/whole CI or Deployment acceptance. No archival, push or deployment.
+
+## 2026-10-12 — Designated review: original Claude R5 operations correction
+
+Review by: Codex
+Recorded by: Codex
+Reviewed range: `78ec39a7^..78ec39a7`
+Decision: APPROVED
+
+Bounded to R5's three repairs, not DP-E/AC7 or later implementation. Inspected all
+18 original changed paths and the later changes to their consumers at `ffc8bc25`.
+The operations registry, delivery code, private fixture and scrape configuration
+remain byte-identical to R5; later Caddy payment headers and template/cursor/test
+additions are outside this verdict. R5's append-only predeclaration describes the
+first attempted counters/default-local admin design; its implementation entry
+explicitly records the corrected request counters and `admin off`. Current code
+and canonical docs describe the latter, not the superseded attempt.
+
+Executed evidence, cold:
+
+- `make test-deployment-operations-profile`31754 executes the unchanged
+  `TestPrivateOperationsProfileIntegration`, PASS61.67s, no skip: all five private
+  scrape targets healthy; the actual production registry's zero cleanup-failure
+  series observed, then its first `ObserveJob` failure produces a firing shipped
+  rule; the receiver gets the preflight nonce; a healthy receiver returning HTTP500
+  to notifications causes an explicit failed-notification error; a peer cannot
+  reach `caddy:2019/config/`. The test uses a fake DB behind the real registry,
+  not a gameserver/database workload. The target removes only its dedicated
+  containers/network; independent `compose ... ps -a` confirms none remain.
+- `make test-go GO_PACKAGES='./operations ./cmd/deployment-operations
+  ./releasepackage' GO_TEST_FLAGS='-count=1'`92089 and affected vet pass. Existing
+  failure controls refuse attempted-but-failed delivery and exposed/default/
+  duplicate admin listeners; the registry population checks zero series and
+  absence of reserved target labels. R5's recorded label/pre-creation severings
+  remain historical evidence, not newly rerun probes.
+- The pinned Prometheus manifest index `69f52414…60a8ac` declares amd64 child
+  `dd4bced05dfaddf23a7ec50f87334993a4149f7fcfbf58456d1c8bafce91cd13`.
+  `docker run --rm --platform linux/amd64 --entrypoint promtool -v
+  /Users/stronk/repos/cloud-clicker/deployment/operations:/work:ro
+  prom/prometheus@sha256:dd4bced05dfaddf23a7ec50f87334993a4149f7fcfbf58456d1c8bafce91cd13
+  test rules /work/cloud-clicker-alerts.test.yml`36424 reports SUCCESS. This is
+  the exact index's child, not a substituted release/version.
+- `make test-go-ci CI_TEST_PACKAGES='./gameserver'
+  CI_TEST_FLAGS='-run TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration -v'`
+  93146 executes the actual Linux-amd64/Postgres startup/clearing/session-GC job
+  witness, PASS0.65s, not skipped. It checks R5's composed `job_name` output.
+
+Failed attempts/limits are not erased: the first index-based amd64 promtool run
+71604 exits125 because Docker cannot overwrite the index digest already stored
+for arm64; no rule test executed. Resolving the index's declared child avoids
+that image-store collision without deleting any image. The first DB selector
+99617 used a single dollar anchor that Make consumed, yielding `[no tests to run]`;
+it supplies no evidence. The corrected verbose selector above actually runs.
+Docker had2.8GiB available before exact-image fetch55173 completed. No unrelated
+images, volumes, containers or application data were pruned. The profile runs
+on the ARM64 Docker host: Caddy amd64, Alertmanager/node-exporter/Postgres fixture
+images arm64, amd64 test binary, host-selected Prometheus. It is deliberately
+not claimed as an all-amd64 supported release-host execution.
+
+The delivery counters still cannot attribute each family/nonce. The actual nonce
+receiver observation strengthens this bounded fixture, not the count-derived
+seven-family release observation. Full seven-family producer→rule→receiver proof,
+retention, all other corrective ranges, exact fresh bundles, R-006 and complete
+Deployment acceptance remain open. No archival, publication or deployment.
+
+### Separate Codex test-target extraction — designated review pending
+
+Under DP7/RFC-0000, the existing private Compose recipe is extracted unchanged to
+`test-deployment-operations-profile`. Its original aggregate still evaluates
+rules, runs the exact same affected Go population, then calls the fixture. This
+allows direct execution without the known-red production suite preventing entry;
+it does not bypass that suite for aggregate success. `make -n
+test-deployment-operations` confirms ordering and cleanup. No test, assertion,
+service config, CI workflow, budget or product byte is changed.
+
+`make verify-ci-topology` passes with all13 negative controls; this checks
+lane wiring, not hosted job execution or green CI.
+
+Outcome/coverage are the actual fixture result above; docs explain the focused
+and aggregate boundaries. Review by: Codex (implementer first filter).
+Recorded by: Codex. The new Make/docs/records range starts after `ffc8bc25`
+through this containing commit and requires Claude. This original-R5 designated
+verdict does not approve Codex's extraction. Diff and whitespace checked; no
+whole aggregate, hosted CI, release or feature-completion claim.

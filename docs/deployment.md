@@ -762,6 +762,15 @@ The integration proves the exact nonce reaches the receiver and that a receiver 
 fails the proof on recorded failures. Alertmanager metrics cannot attribute a delivery to one alert
 family or nonce, so the seven-family delivery record is count-derived, not per-family proof.
 
+Use `make test-deployment-operations-profile` to run that existing isolated Compose fixture
+directly: real private scrapes, cleanup-rule firing, nonce delivery, rejecting receiver and
+Caddy admin isolation. It compiles the Linux/amd64 test binary and removes only the fixture's
+dedicated project after execution. Compose resolves service architectures from the pinned images
+and local image store; the fixture does not enforce an all-amd64 stack and is not a supported
+clean-host release rehearsal. `make test-deployment-operations` still runs its
+rule evaluator and affected Go packages before this fixture. A focused pass does not clear a
+failure in that aggregate or establish all seven alert families end to end.
+
 For local notification debugging without Docker, use
 `make test-operations-alertmanager-native ALERTMANAGER_BINARY=/absolute/path/to/alertmanager`.
 Supply the official native Alertmanager **0.32.1** executable and verify the release archive
