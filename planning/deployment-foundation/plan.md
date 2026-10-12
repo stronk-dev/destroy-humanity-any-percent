@@ -7,6 +7,13 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Bounded checkpoint, 2026-10-12:** RP-489 unifies backup-file header admission with
+the existing single-object decoder and bounds outer/decrypted metadata framing.
+Eight encrypted malformed arms fail on old code; final14 arms retain healthy,
+whitespace and exact64KiB controls. Affected cold Go/vet and all six declared
+Linux-amd64/Postgres backup integration functions pass. The owning log holds the
+range after `630f6833`; designated review, full Deployment and clean-host gates remain.
+
 **Bounded checkpoint, 2026-10-09:** RP-482 adds healthy baselines to the public-metrics and
 source/image-secret probes. Actual assembled-bundle tampering and always-rejecting gates
 fail the old checks; affected native/Linux-amd64 packages pass after correction. This range

@@ -4810,3 +4810,41 @@ begins after `b76d1a08` through this containing source/tests/docs/ledger/plan/lo
 designated review pending. It may be reviewed together with RP-481 as one coherent range
 after `1efea9cf`. No acceptance flips, archival, push or deployment. Kernel-history RFC
 adoption has been requested from the owner; no answer or implementation authority is inferred.
+
+## 2026-10-12 — Backup envelope readers reject trailing/unbounded metadata (RP-489)
+
+Under accepted DP6/AC4, inspection and restore must enforce the existing header
+contract before treating a file as a valid backup or emitting dump bytes. At
+baseline `630f6833`, the standalone DecodeHeader rejects trailing values but both
+file paths decode only the first value; restore also lacks bounded line framing.
+The new encrypted regressions68719 fail all eight malformed arms: second object,
+second scalar, garbage and oversized line in outer or authenticated metadata.
+Actual restore emits30/35 dump bytes on those old-code cases; four healthy/JSON-
+whitespace controls pass. Encrypted-metadata cases use genuine age ciphertext
+and a verified outer checksum, not corrupt-payload shortcuts.
+
+ReadHeader/Restore now share DecodeHeader via bounded ReadSlice framing. Restore
+also requires exactly one authenticated metadata object before io.Copy of the
+dump. Final14 arms add exact64KiB positive controls alongside the original
+healthy/whitespace and malformed cases. No envelope version/format, encryption,
+identity fields, checksum, schedule/retention, backup content or operator policy
+changes. Canonical docs and RP-489 reconcile in this batch; no new RFC needed for
+this contract-conformance correction.
+
+Final cold affected tests15623 pass all four packages: deploymentbackup,
+deploymentrelease, deploymentrehearsal and cmd/deployment-backup. Affected vet
+74079 passes. Declared `make test-deployment-backup`29449 executes all six
+integration functions against real Postgres16 on Linux-amd64, no skips: empty/
+populated encrypted dump/restore and identity equality, non-clean-object refusal,
+pre/post-deletion backup behavior and identity mutation/refusal. Earlier29958
+also passes before the two maximum-line controls were added. The declared target
+removes only its disposable test Postgres container/network. No application data
+or unrelated Docker resources were removed. Native initial88111 also passes
+the affected packages. All handles terminal; formatting and actual diff checked.
+
+This proves the parser correction and retained DB backup path, not clean-host
+R-006, production-sized RPO/RTO, rights deletion semantics or hosted/whole CI.
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
+starts after `630f6833` through this source/tests/docs/ledger/plan/log commit;
+designated cross-party review pending. Earlier review debt remains. No feature
+acceptance, archival, publication, deployment or release claim.

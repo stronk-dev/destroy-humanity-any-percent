@@ -467,6 +467,13 @@ back to a replacing rename. The supported release host remains Linux/amd64.
 No unencrypted dump is written to the off-host target. Interrupted reads and writes remove their
 temporary output.
 
+Backup inspection and restoration share the same envelope-header decoder: exactly one JSON
+object, with no unknown fields or trailing value/garbage. Both framing lines and the decrypted
+authenticated metadata line are bounded to64KiB including their newline; an oversized line
+refuses without reading an unbounded header into memory. Ordinary JSON whitespace remains
+valid. Restore rejects malformed header/metadata before emitting any dump bytes. Inspection
+still verifies the outer checksum, not decryptability; only explicit restore has the age identity.
+
 Every scheduled round classifies the complete target *before* writing anything:
 - **Completed backups:** regular `*.ccbackup` files.
 - **The helper's own temporaries** (`.backup-payload-*.tmp` / `.backup-envelope-*.tmp`):

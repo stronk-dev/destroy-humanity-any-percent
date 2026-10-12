@@ -202,18 +202,8 @@ func ReadHeader(path string) (Header, error) {
 	}
 	defer file.Close()
 	reader := bufio.NewReaderSize(file, 64<<10)
-	first, err := reader.ReadString('\n')
-	if err != nil || first != magic {
-		return Header{}, ErrInvalid
-	}
-	line, err := reader.ReadBytes('\n')
-	if err != nil || len(line) > 64<<10 {
-		return Header{}, ErrInvalid
-	}
-	var header Header
-	decoder := json.NewDecoder(strings.NewReader(string(line)))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&header) != nil || validateHeader(header) != nil {
+	header, err := readEnvelopeHeader(reader)
+	if err != nil {
 		return Header{}, ErrInvalid
 	}
 	hasher := sha256.New()
@@ -222,6 +212,21 @@ func ReadHeader(path string) (Header, error) {
 		return Header{}, ErrInvalid
 	}
 	return header, nil
+}
+
+// ReadSlice bounds framing to the caller's 64 KiB reader buffer rather than
+// allocating an arbitrarily long line before checking its size. DecodeHeader
+// owns the exact single-object contract for both inspection and restoration.
+func readEnvelopeHeader(reader *bufio.Reader) (Header, error) {
+	first, err := reader.ReadSlice('\n')
+	if err != nil || string(first) != magic {
+		return Header{}, ErrInvalid
+	}
+	line, err := reader.ReadSlice('\n')
+	if err != nil {
+		return Header{}, ErrInvalid
+	}
+	return DecodeHeader(line)
 }
 
 func DecodeHeader(data []byte) (Header, error) {
@@ -244,12 +249,8 @@ func Restore(path, expectedManifest string, identity age.Identity, output io.Wri
 	}
 	defer file.Close()
 	reader := bufio.NewReaderSize(file, 64<<10)
-	first, _ := reader.ReadString('\n')
-	line, lineErr := reader.ReadBytes('\n')
-	var header Header
-	decoder := json.NewDecoder(strings.NewReader(string(line)))
-	decoder.DisallowUnknownFields()
-	if first != magic || lineErr != nil || decoder.Decode(&header) != nil || validateHeader(header) != nil || header.ReleaseManifestSHA256 != expectedManifest {
+	header, err := readEnvelopeHeader(reader)
+	if err != nil || header.ReleaseManifestSHA256 != expectedManifest {
 		return Header{}, fmt.Errorf("%w: envelope header", ErrInvalid)
 	}
 	payload, err := os.CreateTemp("", ".cloud-clicker-restore-*.age")
@@ -276,15 +277,15 @@ func Restore(path, expectedManifest string, identity age.Identity, output io.Wri
 		return Header{}, fmt.Errorf("%w: age decryption", ErrInvalid)
 	}
 	plain := bufio.NewReaderSize(decrypted, 64<<10)
-	authenticatedLine, err := plain.ReadBytes('\n')
+	authenticatedLine, err := plain.ReadSlice('\n')
 	var authenticated authenticatedHeader
-	decoder = json.NewDecoder(strings.NewReader(string(authenticatedLine)))
-	decoder.DisallowUnknownFields()
 	if err != nil {
 		return Header{}, fmt.Errorf("%w: authenticated metadata framing: %v", ErrInvalid, err)
 	}
-	if decodeErr := decoder.Decode(&authenticated); decodeErr != nil {
-		return Header{}, fmt.Errorf("%w: authenticated metadata encoding: %v", ErrInvalid, decodeErr)
+	decoder := json.NewDecoder(bytes.NewReader(authenticatedLine))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&authenticated) != nil || decoder.Decode(&struct{}{}) != io.EOF {
+		return Header{}, fmt.Errorf("%w: authenticated metadata encoding", ErrInvalid)
 	}
 	if differences := authenticatedDifferences(authenticated, authenticatedFrom(header)); len(differences) != 0 {
 		return Header{}, fmt.Errorf("%w: authenticated metadata fields %s", ErrInvalid, strings.Join(differences, ","))

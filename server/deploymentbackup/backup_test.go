@@ -71,6 +71,145 @@ func TestBackupHeaderDecoderRejectsUnknownTrailingAndBackwardTime(t *testing.T) 
 	}
 }
 
+func TestBackupEnvelopeReadersEnforceSingleBoundedHeader(t *testing.T) {
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
+	manifest := "sha256:" + strings.Repeat("a", 64)
+	dump := []byte("PGDMP\x01envelope framing control")
+	_, original, err := Create(CreateInput{Directory: t.TempDir(), BackupID: "20261012T120000Z-abcdef123456",
+		ServerID: "server-a", ReleaseManifestSHA256: manifest, EpochID: 8,
+		StartedAt: now.Add(-time.Minute), Now: func() time.Time { return now }, Recipient: identity.Recipient().String(), Dump: bytes.NewReader(dump)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(original)
+	if err != nil {
+		t.Fatal(err)
+	}
+	parts := bytes.SplitN(data, []byte{'\n'}, 3)
+	if len(parts) != 3 {
+		t.Fatal("healthy backup has no complete envelope framing")
+	}
+	for _, row := range []struct {
+		name, suffix string
+		valid        bool
+	}{
+		{"healthy", "", true},
+		{"json-whitespace", " \t\r", true},
+		{"maximum-line", "", true},
+		{"second-object", "{}", false},
+		{"second-value", "true", false},
+		{"garbage", "!", false},
+		{"oversized-line", strings.Repeat(" ", 64<<10), false},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			path := filepath.Join(t.TempDir(), "candidate.ccbackup")
+			changed := append([]byte(magic), parts[1]...)
+			suffix := row.suffix
+			if row.name == "maximum-line" {
+				suffix = strings.Repeat(" ", (64<<10)-len(parts[1])-1)
+			}
+			changed = append(changed, suffix...)
+			changed = append(append(changed, '\n'), parts[2]...)
+			if err := os.WriteFile(path, changed, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			_, readErr := ReadHeader(path)
+			var output bytes.Buffer
+			_, restoreErr := Restore(path, manifest, identity, &output)
+			if row.valid {
+				if readErr != nil || restoreErr != nil || !bytes.Equal(output.Bytes(), dump) {
+					t.Fatalf("valid envelope refused: read=%v restore=%v", readErr, restoreErr)
+				}
+				return
+			}
+			if !errors.Is(readErr, ErrInvalid) || !errors.Is(restoreErr, ErrInvalid) || output.Len() != 0 {
+				t.Fatalf("malformed header admitted: read=%v restore=%v output_bytes=%d", readErr, restoreErr, output.Len())
+			}
+			if status := EvaluateSchedule([]string{path}, now); !status.Missing || len(status.Invalid) != 1 {
+				t.Fatal("malformed envelope counted as a scheduled backup")
+			}
+			if plan := PlanRetention([]string{path}, now); len(plan.Invalid) != 1 || len(plan.Keep)+len(plan.Delete) != 0 {
+				t.Fatal("malformed envelope entered the retention population")
+			}
+		})
+	}
+}
+
+func TestBackupRestoreEnforcesSingleBoundedAuthenticatedMetadata(t *testing.T) {
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
+	dump := []byte("PGDMP\x01authenticated framing control")
+	for _, row := range []struct {
+		name, suffix string
+		valid        bool
+	}{
+		{"healthy", "", true},
+		{"json-whitespace", " \t\r", true},
+		{"maximum-line", "", true},
+		{"second-object", "{}", false},
+		{"second-value", "true", false},
+		{"garbage", "!", false},
+		{"oversized-line", strings.Repeat(" ", 64<<10), false},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			header := Header{SchemaVersion: 1, BackupID: "20261012T120000Z-abcdef123456", ServerID: "server-a",
+				ReleaseManifestSHA256: "sha256:" + strings.Repeat("a", 64), EpochID: 8,
+				StartedAt: now.Add(-time.Minute), CompletedAt: now}
+			metadata, err := json.Marshal(authenticatedFrom(header))
+			if err != nil {
+				t.Fatal(err)
+			}
+			var payload bytes.Buffer
+			encrypted, err := age.Encrypt(&payload, identity.Recipient())
+			if err != nil {
+				t.Fatal(err)
+			}
+			suffix := row.suffix
+			if row.name == "maximum-line" {
+				suffix = strings.Repeat(" ", (64<<10)-len(metadata)-1)
+			}
+			plain := append(append(append(metadata, suffix...), '\n'), dump...)
+			if _, err := encrypted.Write(plain); err != nil {
+				t.Fatal(err)
+			}
+			if err := encrypted.Close(); err != nil {
+				t.Fatal(err)
+			}
+			header.PayloadSHA256, header.PayloadBytes = digest(payload.Bytes()), int64(payload.Len())
+			headerBytes, err := json.Marshal(header)
+			if err != nil {
+				t.Fatal(err)
+			}
+			path := filepath.Join(t.TempDir(), "candidate.ccbackup")
+			data := append(append(append([]byte(magic), headerBytes...), '\n'), payload.Bytes()...)
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			// The encrypted body is genuine and checksummed: only metadata parsing
+			// can distinguish these cases, not a corrupt-payload shortcut.
+			if actual, err := ReadHeader(path); err != nil || actual != header {
+				t.Fatalf("authenticated control has an invalid outer envelope: %v", err)
+			}
+			var output bytes.Buffer
+			_, restoreErr := Restore(path, header.ReleaseManifestSHA256, identity, &output)
+			if row.valid {
+				if restoreErr != nil || !bytes.Equal(output.Bytes(), dump) {
+					t.Fatalf("valid metadata refused: %v", restoreErr)
+				}
+			} else if !errors.Is(restoreErr, ErrInvalid) || output.Len() != 0 {
+				t.Fatalf("malformed authenticated metadata admitted: err=%v output_bytes=%d", restoreErr, output.Len())
+			}
+		})
+	}
+}
+
 func TestPlaintextEnvelopeIdentityCannotBeRewritten(t *testing.T) {
 	identity, _ := age.GenerateX25519Identity()
 	manifest := "sha256:" + strings.Repeat("a", 64)
