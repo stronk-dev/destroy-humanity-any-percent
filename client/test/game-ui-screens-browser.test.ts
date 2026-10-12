@@ -10,7 +10,9 @@ import { GameUIRequestError, type IntentOutcome } from "../src/game-ui/intent-ou
 import type { GameUIAxisStackArm, GameUICosmeticsArm, GameUISnapshot } from "../src/api/generated/types";
 import axisArmFixture from "../../testdata/axis-stack/game-ui-arm-v1.json";
 import cosmeticArmFixture from "../../testdata/gameui/cosmetics-arm-v1.json";
+import sharedSnapshotFixture from "../../testdata/gameui/fiscal-snapshot-v4.json";
 import { eraForSnapshot, isLiveSnapshot, parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
+import { GAME_UI_PRESENTATION, requirePresentation } from "../src/game-ui/presentation";
 import { FEATURES_PRESENTATION } from "../src/game-ui/features-presentation";
 import { t, type CopyKey } from "../src/copy";
 import { REQUIRED_METER_IDS } from "../src/meters/catalog";
@@ -1592,9 +1594,11 @@ function populatedGaragePerformanceSnapshot(): ParsedGameUISnapshot {
 
 // Reuse the current owner fixtures rather than a second cosmetic/axis schema.
 // These are decoded UI populations, not an earned or minted server save.
-function currentGaragePerformanceSnapshot(adopted: boolean): ParsedGameUISnapshot {
+function currentGaragePerformanceSnapshot(adopted: boolean, fullCatalog = false): ParsedGameUISnapshot {
   const base = populatedGaragePerformanceSnapshot();
   if (!isLiveSnapshot(base)) throw new Error("performance fixture must use the live v4 envelope");
+  const projected = parseGameUISnapshot(sharedSnapshotFixture);
+  if (!isLiveSnapshot(projected)) throw new Error("shared projection must use the live v4 envelope");
   const pet = { eligible_action_ids: ["care.feed", "care.pet"], name_key: "pet.name.server_room_cat.n01",
     palette_id: "pet_palette.fur_02", pet_id: "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa",
     species_id: "pet_species.server_room_cat", status_band: "normal", temperament: "curious" };
@@ -1605,9 +1609,12 @@ function currentGaragePerformanceSnapshot(adopted: boolean): ParsedGameUISnapsho
       .sort((a, b) => a.fact_id < b.fact_id ? -1 : a.fact_id > b.fact_id ? 1 : 0),
     run: { ...base.run, tier: 1, run_seq: 2, exit_count: 1 },
     transitions: { ...base.transitions, wind_down: { eligible: true } },
-    upgrades: [...base.upgrades,
+    resources: fullCatalog ? projected.resources.map((row) => base.resources.find((current) => current.resource_id === row.resource_id) ?? row) : base.resources,
+    generators: fullCatalog ? projected.generators.map((row) => base.generators.find((current) => current.generator_id === row.generator_id) ?? row) : base.generators,
+    upgrades: [...(fullCatalog ? projected.upgrades.map((row) => base.upgrades.find((current) => current.upgrade_id === row.upgrade_id) ?? row) : base.upgrades),
       { cost_amount: "1e6", cost_resource_id: "company.cash", eligible: false, owned: true, upgrade_id: "upgrade.pr_intern_1" },
-      { cost_amount: "5e7", cost_resource_id: "company.cash", eligible: false, owned: false, upgrade_id: "upgrade.pr_intern_2" }],
+      { cost_amount: "5e7", cost_resource_id: "company.cash", eligible: false, owned: false, upgrade_id: "upgrade.pr_intern_2" }]
+      .sort((a, b) => a.upgrade_id < b.upgrade_id ? -1 : a.upgrade_id > b.upgrade_id ? 1 : 0),
     features: { ...base.features,
       axis_stack: structuredClone(axisArmFixture) as GameUIAxisStackArm,
       cosmetics: structuredClone(cosmeticArmFixture.cases[adopted ? "owned-worn" : "acquirable-at-tier-1"]) as GameUICosmeticsArm,
@@ -1626,14 +1633,15 @@ function currentGaragePerformanceSnapshot(adopted: boolean): ParsedGameUISnapsho
   });
 }
 
-for (const population of ["bounded", "before-adoption", "adopted"] as const) {
+for (const population of ["bounded", "before-adoption", "adopted", "catalog"] as const) {
 it.skipIf(!chromiumPerformanceLane)(`holds the observable 20 Hz / 10 Hz screen budget with populated Garage regions and a completed native observation${population === "bounded" ? "" : ` (${population})`}`, async ({ annotate }) => {
   const budget = GAME_UI_PERFORMANCE_BUDGET;
   expect({ width: window.innerWidth, height: window.innerHeight }).toEqual(budget.viewport);
   const longTasksSupported = typeof PerformanceObserver !== "undefined" && PerformanceObserver.supportedEntryTypes.includes("longtask");
   if (!longTasksSupported || typeof MutationObserver === "undefined") throw new Error("invalid performance observation: native observers unavailable");
+  const adopted = population === "adopted" || population === "catalog";
   const populated = population === "bounded" ? populatedGaragePerformanceSnapshot()
-    : currentGaragePerformanceSnapshot(population === "adopted");
+    : currentGaragePerformanceSnapshot(adopted, population === "catalog");
   const runtime = new FixtureRuntime(true); runtime.current = populated;
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
@@ -1670,6 +1678,21 @@ it.skipIf(!chromiumPerformanceLane)(`holds the observable 20 Hz / 10 Hz screen b
       expect(generator?.textContent).toContain(text("desk.provisioned_frame", { count: 3 }));
       expect(generator?.textContent).toContain(text("generator.beige_tower.provisioned_cap"));
       expect(target.querySelector('section[aria-labelledby="upgrades-heading"] strong')?.textContent).toBe(text("desk.upgrade.owned"));
+      if (population === "catalog") {
+        // The shared Go-produced projection owns the row population; pinned
+        // presentation bindings independently name each rendered generator.
+        expect(populated.generators.map((row) => row.generator_id)).toEqual([...GAME_UI_PRESENTATION.generators.keys()]);
+        expect([...target.querySelectorAll('section[aria-labelledby="generators-heading"] article h3')]
+          .map((row) => row.textContent)).toEqual(populated.generators.map((row) =>
+            text(requirePresentation(GAME_UI_PRESENTATION.generators, row.generator_id).title_key)));
+        expect([...target.querySelectorAll('section[aria-labelledby="upgrades-heading"] article')]
+          .map((row) => row.getAttribute("data-upgrade"))).toEqual(populated.upgrades.map((row) => row.upgrade_id));
+        expect(populated.upgrades.filter((row) => !row.upgrade_id.startsWith("upgrade.pr_intern_"))
+          .map((row) => row.upgrade_id)).toEqual([...GAME_UI_PRESENTATION.upgrades.keys()]);
+        const resourceAmounts = target.querySelectorAll('section[aria-labelledby="resources-heading"] article output');
+        expect(resourceAmounts).toHaveLength(populated.resources.length);
+        expect(resourceAmounts[1]?.textContent).toBe(formatAmount(populated.resources[1].amount));
+      }
       if (population === "bounded") {
         const shelf = [...target.querySelectorAll("section.card")].find((row) => row.querySelector("h2")?.textContent === text("cosmetic.horse_armor_free.title"));
         expect(shelf?.textContent).toContain(text("cosmetic.horse_armor_free.disclosure"));
@@ -1688,8 +1711,8 @@ it.skipIf(!chromiumPerformanceLane)(`holds the observable 20 Hz / 10 Hz screen b
         const shelf = target.querySelector('[data-testid="cosmetic-shelf"]');
         expect(shelf).not.toBeNull();
         expect(shelf!.querySelector('[data-cosmetic="horse_armor"]')?.getAttribute("data-state"))
-          .toBe(population === "adopted" ? "owned" : "unowned");
-        expect(shelf!.querySelector(".wearers button") !== null).toBe(population === "adopted");
+          .toBe(adopted ? "owned" : "unowned");
+        expect(shelf!.querySelector(".wearers button") !== null).toBe(adopted);
         expect(shelf!.querySelector(".curtain")?.textContent).toBe(text("shop.cosmetics.checkout_disclosure"));
         expect(target.querySelector(".axis output")?.textContent).toBe("1.2");
         expect(target.querySelectorAll(".axis-factor output")).toHaveLength(2);
@@ -1703,7 +1726,7 @@ it.skipIf(!chromiumPerformanceLane)(`holds the observable 20 Hz / 10 Hz screen b
       expect([...target.querySelectorAll("nav button")].map((row) =>
         (row.querySelector(":scope > [data-nav-label]") ?? row).textContent)).toEqual([
         "surface.desk.title", "surface.achievements.title", "surface.fiscal.title",
-        ...(population === "adopted" ? ["pet.care.panel.title"] : []), "surface.meters.title",
+        ...(adopted ? ["pet.care.panel.title"] : []), "surface.meters.title",
         ...(population !== "bounded" ? ["reputation_tree.title"] : []), "surface.settings.title",
       ].map((key) => text(key as CopyKey)));
       expect(target.querySelector("nav .fiscal-ripe-badge")).toBeNull();
@@ -1715,7 +1738,8 @@ it.skipIf(!chromiumPerformanceLane)(`holds the observable 20 Hz / 10 Hz screen b
     tasks.observe({ entryTypes: ["longtask"] });
     for (let input = 1; input <= budget.inputCount; input++) {
       const current = parseGameUISnapshot({ ...populated, revision: input + 1,
-        resources: [{ ...populated.resources[0], amount: canonicalString(input + 100) }] });
+        resources: populated.resources.map((row) => row.resource_id === "company.cash"
+          ? { ...row, amount: canonicalString(input + 100) } : row) });
       runtime.current = current;
       app.fixtureSnapshot(current); inputs++;
       flushSync();
@@ -1739,6 +1763,7 @@ it.skipIf(!chromiumPerformanceLane)(`holds the observable 20 Hz / 10 Hz screen b
     const report = { population: population === "bounded" ? "garage-gs5-gs6-desk" : `garage-current-desk-${population}`,
       viewport: budget.viewport, simulatedDurationMS: budget.durationMS,
       inputs, regionSamples, formattedCommits, longestTaskMS, longTasksSupported, completed,
+      generators: populated.generators.length, upgrades: populated.upgrades.length, resources: populated.resources.length,
       terminalCash: amount?.textContent ?? null, intents: runtime.requests.length,
       exclusions: ["real-60-second-manual-4x-profile", "Firefox-WebKit", "SQL-default-player", "GS4-pet-care-tab",
         "Pitch-Recovery-Garden-runtime-ports", "Tier2-regions", "full-current-release-population",

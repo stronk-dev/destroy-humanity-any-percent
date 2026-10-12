@@ -58,9 +58,12 @@ operations remain required alongside that construction, not optional end-stage p
   RP-484 repairs that census locally, without changing budgets or the population; the
   exact performance target, Fiscal edge checks and types pass. Its range after `e0cb9187`
   awaits designated review and has no hosted verdict. A subsequent test-only batch
-  adds pre-adoption/adopted Desk performance populations: four isolated cases and
-  210 Chromium/WebKit functional checks pass, with a missing-axis control caught.
-  This remains partial AC7 coverage, not a complete catalog/default-player/manual profile.
+  adds pre-adoption/adopted Desk performance populations, with 210 Chromium/WebKit
+  functional checks passing and a missing-axis control caught. The latest catalog-width
+  supplement includes all nine pinned generators, twelve upgrades and both resources:
+  five isolated cases, the actual Go shared-projection check and types pass; final-input
+  generator/resource losses are caught. This remains partial AC7 coverage, not a later-
+  catalog/default-player/manual profile or a hosted verdict.
   The [Garage log](garage-player-surfaces/log.md)
   owns evidence. Earlier dated CI/local checkpoints below are historical, not current runs.
 - Current finished source is `1b484c50` (2026-10-09). The latest Deployment corrections

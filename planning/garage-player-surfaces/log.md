@@ -6760,3 +6760,31 @@ Runner annotations are not claimed as persisted artifacts. No whole AC7/hosted C
 approval. Review by: Codex (implementer first filter). Recorded by: Codex. Exact new review
 range: `56d59bf5` exclusive through this containing test/docs/records commit; designated
 cross-party review pending. Earlier ranges retain their separate review debt.
+
+## 2026-10-12 — Measure the complete pinned Desk row population
+
+Outcome: extend the same accepted Garage AC7 measurement to the current pinned catalog's
+width. The existing representative fixtures render only one generator/one base upgrade,
+while `gameui.generatorRows`/`upgradeRows` project every catalog row, including locked ones.
+Reuse `testdata/gameui/fiscal-snapshot-v4.json` for all nine generators/ten base upgrades;
+retain the existing owned/provisioned representative overrides and two PR Intern cards.
+Both Cash and Permits survive every update. Exact ordered generator titles/upgrade IDs,
+resource count/value and row-population annotation supplement the unchanged measurement.
+This is still a controlled decoded composite, not an earned save or later-tier catalog.
+
+Baseline root performance30964 passes five cases; types40829 pass. Cold root
+`make test-go GO_PACKAGES='./gameui' GO_TEST_FLAGS='-count=1 -run TestFiscalSharedSnapshot -v'`
+54725 passes the actual Go projection-to-fixture comparison without skips. Two temporary
+final-input faults independently fail only the catalog case: missing Legal Department95629
+fails ordered titles; missing Permits98102 fails the resource census. Both report1,200
+inputs/1,199 complete samples/completed:false; other four cases pass. Controls are removed.
+Final root performance60546 passes five cases/105 functional exclusions; types20501 have
+zero errors/warnings. No functional assertions changed: preceding210 native screen checks
+are not rerun or attributed to this new case. No production/build/SQL/CI/budget change.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. New increment starts after
+`c115bda6`; the three related performance repairs can consolidate designated review as
+`e0cb9187` exclusive through this containing commit, with none silently approved. Full AC7,
+later catalogs/optional runtime ports/separate care tab, manual4×/real-player/hosted evidence
+remain open. All handles terminal, diff checked, no transient fault remains. No push/archive/
+release claim; continue accepted construction while the proposed contract choices await adoption.

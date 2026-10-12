@@ -711,6 +711,14 @@ Removing the axis panel at input 1,200 fails both new cases with incomplete cens
 and `completed:false`; the original cases still pass. These are controlled UI
 populations, not earned saves or the complete generator/upgrade catalog.
 
+A further catalog-width case reuses all nine generator and ten base-upgrade rows
+from the shared Go-produced T0–T1 snapshot, adds the two existing PR Intern cards,
+and keeps both Cash and Permits throughout every update. It checks every rendered
+generator title and upgrade ID in order, plus the second resource's retained value.
+Removing a locked generator or Permits on the final update invalidates the census.
+This covers the pinned early-game row population, not later candidate catalogs or
+a naturally earned server state; the earlier representative cases remain intact.
+
 Executed missing-input, fixed-cash, final-400-ms-task, unavailable-observer,
 missing-buff and wrong-terminal-cash probes discriminate the original supplement
 under the unchanged budgets. This still does not close all of Garage AC7 (RP-333):
