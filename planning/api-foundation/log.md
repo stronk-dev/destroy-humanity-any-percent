@@ -1625,3 +1625,49 @@ Recorded by: Codex. The correction's exact test/plan/ledger/log range starts aft
 through this containing commit and awaits Claude review. All handles terminal; diff checked.
 Next: continue the remaining original public-router/board/route review and accepted construction;
 no archival, publication, push or narrowing of the full nine-tier1.0 goal.
+
+## 2026-10-12 — Designated review: Route Registry reader and structural privacy
+
+Review by: Codex (designated independent reviewer of Claude's implementation).
+Recorded by: Codex.
+Reviewed range: `09d12987^..09d12987` (exact sixteen changed paths).
+Decision: CHANGES REQUIRED (RP-494).
+
+Inspected source, handler/SQL tests, registry wiring, composed enumeration, all generated diffs
+and docs/log against A3/C10/C12/AC5. The four route reader/test files remain byte-identical to
+this commit. The prior real-Postgres56275 result applies to that unchanged source: exact-page
+continuation, approved-name control, pending-name withholding and deleted/orphan executor
+withholding pass. Execution count is the existing Registry aggregate, not a newly invented
+unique-player count or adoption curve. No new reader/privacy-policy defect is alleged.
+
+The structural privacy witness does not enforce its claimed publication boundary: it accepts
+innocent-looking extra state, skips APIError, and discards parent paths during recursion.
+RP-494's actual valid-registry fixtures reproduce three false admissions on the unchanged
+admission rules, extracted into an error-returning helper for testing; the existing forbidden
+account_id control refuses. This executes the original checker logic on the current registry,
+not a whole historical checkout. The composed value scan for a private, unverified Founder
+does not make an independent structural field gate unnecessary. Full API/304/rights and prior
+corrective review remain separate; router `731bb3e7` and boards `4c316c4c` are not approved here.
+
+## 2026-10-12 — Structural privacy field gate corrected (RP-494)
+
+Outcome under A3/C10/AC5: independent C12/C14 publication expectations for all current named
+public schemas, including APIError, plus full nested paths. Existing private-name exclusions
+and public-identity checks remain. These are test expectations, not another runtime registry
+or permission to widen publication. No handler, descriptor, generated or persistence byte changes.
+
+Old gate66101 admits route cash, error cash and nested reuse of an allowed name. Final five
+negative fixtures refuse while the actual healthy registry passes before and after independent
+exports. The optional additions also pass the actual compatibility check: compatibility alone
+is not privacy authority; the nested type change separately fails compatibility. Focused40145,
+full cold publicapi/publicread/gameserver38457, affected vet and byte-unchanged api-check pass.
+Selected Linux-amd64 Go1.26/Postgres final25296 passes the import/structural/refusal tests and
+`TestComposedGameserverPostgresSocketClearingAndGCIntegration`, executing the current six-operation
+private-read enumeration and real socket/clearing/GC path without skips. Earlier52670 also passes.
+No raw-body/gzip content, public verified-history policy, full CI or release acceptance follows.
+
+Review by: Codex (correction implementer first filter, not designated approval).
+Recorded by: Codex. Exact test/docs/plan/ledger/log correction range starts after `6af2830e`
+through this containing commit, pending Claude review and consolidatable with RP-493. All check
+handles terminal; diff checked. Next: remaining original router/board review and accepted build
+work. No owner-copy change, draft adoption, archival, publication, push or reduced1.0 scope.

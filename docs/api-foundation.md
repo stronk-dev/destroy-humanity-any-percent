@@ -291,10 +291,13 @@ byte-identical generated OpenAPI, TypeScript and compatibility pins.
 **Privacy (AC5)** is enforced two ways:
 
 - **Structural:** `publicread/privacy_test.go` requires every public operation to be an
-  unauthenticated GET under `/api/public/v1/` with no request body. It walks every public schema
-  field and rejects account, email, token, session, recovery, password, secret, stream, save, IP,
-  device and presence fields. It permits founder identity only at `PublicBoardItem.founder_id` and
-  `PublicRoute.first_executor_founder_id`.
+  unauthenticated GET under `/api/public/v1/` with no request body. Every named schema, including
+  `APIError`, must have a contract-derived publication field set; full field paths are checked
+  against it, so innocent-looking extra fields and nested reuse of an allowed name cannot bypass
+  the check. The existing account/email/token/session/recovery/password/secret/stream/save/IP/
+  device/presence exclusions also remain. Founder identity is permitted only at
+  `PublicBoardItem.founder_id` and `PublicRoute.first_executor_founder_id`. The field expectations
+  are independent test assertions, not a second runtime schema or permission to publish new data.
 - **Composed:** the composed-server witness seeds a real private account. It then requests every public
   registry operation (a missing request builder fails the test) and asserts that no response
   body or header contains the seeded account ID, recovery code, tokens, founder ID or company

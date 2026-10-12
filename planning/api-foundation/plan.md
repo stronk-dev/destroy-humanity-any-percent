@@ -2,6 +2,15 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current privacy-evidence correction (2026-10-12, RP-494): the structural gate now checks
+contract-derived field sets and complete nested paths, including APIError, rather than relying
+only on suspicious-name fragments. Three actual valid-registry negative fixtures fail against
+the old gate and pass after repair; compatible optional additions prove API compatibility is
+not privacy approval. No runtime DTO, handler or published field changes. The original Route
+Registry reader batch `09d12987` is now reviewed CHANGES REQUIRED for this evidence gap;
+the log owns executed checks and the test-only correction's pending designated review.
+Full original router/boards review and whole API acceptance remain separate.
+
 Current evidence correction (2026-10-12, RP-493): the board cursor's changed-epoch test now
 uses a valid second epoch, verifies each changed filter succeeds without a cursor, and requires
 the old cursor to fail before page retrieval. Deliberately disabling epoch binding passes the
