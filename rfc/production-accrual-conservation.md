@@ -118,6 +118,42 @@ the ledger at every minute would introduce extra quantization compared with the 
 one-shot evaluation; simply resetting at every producer change is not yet a solution.
 Multi-resource accounting and the catalog's original source/slot order remain mandatory.
 
+#### External producer context is distinct from the Company origin
+
+`TestAxisOriginDeferredExternalContextResearch` supplies a bounded additional finding:
+three producer-context profiles (real Commons modifier, real frozen Fiscal modifiers,
+and their combination with the declared Guild membership signal), each online/offline,
+at2001ms with four internal scratch cuts. The existing exact replay-accrual codec retains
+every resource's ordered raw rates, complete projections and subsequent logged manual
+state/receipt/events. Dropping the external contributions changes projected cash in all
+six cells. Pre-advancing the Company instead preserves cash but loses Prestige accrual
+and the present Commons/Guild hooks. Company encoding alone is therefore insufficient
+for these profiles; a rounded aggregate rate is still not a replacement.
+
+Any eventual accounting context must bind the committed pre-state and pinned artifact
+identity to these **existing** resolved inputs, rather than fetch their current values
+at each internal cut:
+
+- External `contributions`: exact ordered `{slot,source_id,target,factor}` rows. Their
+  admitted canonical factors are inputs to reconstructing raw rates, not encoded raw rates.
+  Preserve declaration/target validation and source/slot order.
+- `commons_weight_ppm`: the nullable participation weight used by the Commons accrual
+  event, distinct from the Commons production modifier and Company solidarity samples.
+- `guild_settlement_batch`: the existing identity/base sequence/ordered debit-credit rows.
+  A nonempty batch changes the pre-state before rate derivation and must apply once at its
+  existing transition boundary. This experiment's batch is empty; nonempty settlement
+  composition remains unproved.
+- `route_context_version`, Founder carry and active-play evidence: retain their current
+  authorities in the closed transition. The external-context experiment does not prove
+  that active buffs can be frozen for a whole interval, omit temporal schedule evidence,
+  or resolve the shared attendance/absence policy.
+
+This is a constraint on the pending design, not a new origin/save wire, adoption of an
+origin lifetime or a production fix. The initial120001ms population refused before action
+on the existing active-play due-transition ceiling; the successful shorter population
+does not establish that longer boundary. Actual provider/SQL state capture, nonempty Guild
+settlements, active-buff boundaries, Go/TS parity and full-domain conservation remain owed.
+
 #### Bounded executable algorithm and write set
 
 `server/production/axis_origin_projection_test.go` exercises the following candidate:

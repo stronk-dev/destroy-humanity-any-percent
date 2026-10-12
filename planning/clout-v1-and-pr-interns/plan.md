@@ -136,6 +136,28 @@ Next engineering boundary: complete producer-context and compatibility specifica
 including active/external contributions and non-purchase hooks, under the unresolved
 interval/authorized-head ruling. Do not pre-install a projected Company before ApplyLogged.
 
+2026-10-12 R-012 external-context follow-up, baseline `d9359e88`: six bounded cells
+(Commons, frozen Fiscal, combined Commons/Fiscal/Guild signal × online/offline). Retain
+the actual producer outputs through the existing exact replay-accrual codec, project four
+scratch cuts from an unchanged admitted Company, then execute a real logged manual action.
+Compare complete state/receipt/ordered events against that ordinary action, require positive
+prestige accrual and the present Commons/Guild hooks, and require omission of external inputs
+to change projected cash. A pre-advanced control must preserve cash while losing the real
+hooks. Stop on incomplete/invalid cells; no tolerances or retries. This can specify bounded
+external context needs, not a new conservation algorithm, live provider/SQL/TS proof,
+active-buff temporal composition, origin lifetime, interval-policy adoption or AC6 repair.
+No production, numeric, save/kernel, balance, accepted contract or CI changes.
+Initial120001ms setup refuses all six before the action on the existing active-play
+due-transition ceiling; it is invalid evidence for this experiment. Retain that result,
+leave the guard untouched, and use the admitted2001ms interval with cuts1/1000/2000/2001.
+No long-interval or complete active-play claim follows from the shorter population.
+Completed: all six admitted cells preserve every resource's ordered raw rates and complete
+manual-transition state/receipt/events. All omission controls change cash; all pre-advanced
+controls preserve cash but lose Prestige and the present Commons/Guild hooks. The decision
+draft now names the existing external context separately from the encoded Company. Active
+buffs, nonempty Guild settlements, live capture/SQL/TS and the unadopted interval/lifetime
+contract remain open. The owning log holds final checks and the invalid first population.
+
 ## Batches
 
 - [x] P1 (`ace4e67e`, formulas `80f1bd47`) — CV1 economy schema v5 (Go `server/economy`, TS `client/src/economy-kernel.ts`):

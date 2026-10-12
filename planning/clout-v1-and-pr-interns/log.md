@@ -2638,3 +2638,46 @@ needs Claude review; no self-approval or waiver of older debt. Next: complete pr
 compatibility specification and the remaining closed-hook boundaries under the unresolved
 interval/authorized-head contract, not repeating scalar studies or pre-advancing live state.
 No production, balance, save/kernel version, policy, accepted criterion, archival or push change.
+
+## 2026-10-12 — External producer context through a logged manual action (R-012)
+
+Predeclared at `d9359e88` in the owning plan. Extended the existing origin instrument,
+not production: actual Commons and frozen Fiscal producer outputs plus the declared neutral
+Guild membership signal, online/offline, six cells. The existing replay-accrual codec retains
+every resource's ordered raw Decimal rates. Four scratch projections leave the committed
+Company untouched; the subsequent actual logged manual action matches the complete ordinary
+state, exact receipt and ordered events. Positive gates require Prestige accrual and, where
+present, the Commons sample and positive Guild tithe. Every omission control changes projected
+cash; every pre-advanced control keeps cash but loses those hooks. Completed-cell census is
+incremented only after all assertions, preventing invalid arms from printing a success census.
+
+The first120001ms setup (75317) refused all six before action at the existing active-play
+due-transition ceiling. It is invalid accounting evidence, not a conservation success or
+authority to raise the ceiling. That observation remains recorded. The plan explicitly
+narrows this experiment to an admitted2001ms interval with cuts1/1000/2000/2001; it makes
+no longer-interval claim. Focused54294 then passes all six, followed by exact raw-rate gates.
+
+Final execution: cold native `make test-go vet GO_PACKAGES='./production'
+GO_TEST_FLAGS='-count=1 -run TestAxisOrigin'`7471 passes all old/new origin research and vet.
+Declared Linux-amd64 focused29525 passes all six new cells verbosely. It is in-memory
+research, not SQL persistence proof merely because the Docker lane supplies a DB URL.
+Full cold `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1'`68371 remains
+RED: exactly the original27 `TestAxisAccrualPartitionProperty` failures, 38.455s; no new
+failure or AC6 repair. Native DB prerequisites skip. No TS/browser/hosted/full-CI claim.
+Formatting and diff checks pass; all handles terminal.
+
+The Codex-authored decision draft now distinguishes encoded Company state from existing
+external contribution rows, participation weight, Guild settlement coordinates and the
+closed transition's other authorities. This is evidence constraining that pending design,
+not a new save format, arithmetic algorithm, chosen lifetime/absence policy or accepted RFC.
+Nonempty Guild settlements, active-buff temporal boundaries, live capture/SQL/TS and general
+conservation remain unproved. No production, balance, kernel/save, policy, owner copy,
+accepted contract, CI workflow or acceptance checkbox changed.
+
+Review by: Codex (research implementer first filter). Recorded by: Codex. Exact new
+test/draft/plan/log range begins after `d9359e88` through this containing commit; designated
+Claude review pending, separate from earlier debt. Next: finish the remaining producer and
+settlement contract (especially active temporal inputs and nonempty Guild batches) under
+the unresolved interval/lifetime ruling, then implement a reviewed viable algorithm. Do not
+repeat ordinary scalar profiles, pre-advance live state or call this green server CI.
+No archival, push, deployment, cleanup or release claim; the complete1.0 goal remains active.

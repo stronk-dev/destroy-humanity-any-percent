@@ -10,14 +10,22 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/commons"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/guild"
+	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/save"
 )
 
 // Test-only whole-Company origin. This deliberately uses the existing codec,
 // not a proposed production accrual schema. No production caller uses it.
 func originProjectionState(t *testing.T, bundle CatalogBundle, origin []byte, now time.Time, mode EvaluationMode) *save.State {
+	t.Helper()
+	return originProjectionStateWithExternal(t, bundle, origin, now, mode, nil)
+}
+
+func originProjectionStateWithExternal(t *testing.T, bundle CatalogBundle, origin []byte, now time.Time, mode EvaluationMode, external []multiplier.Contribution) *save.State {
 	t.Helper()
 	state, err := save.RestoreState(origin, 19, bundle.Economy, economy.ScopeCompany, now)
 	if err != nil {
@@ -26,7 +34,7 @@ func originProjectionState(t *testing.T, bundle CatalogBundle, origin []byte, no
 	if err := bundle.ValidateFoundationState(state); err != nil {
 		t.Fatal(err)
 	}
-	contributions, err := assembleContributions(state, bundle.Economy, nil)
+	contributions, err := assembleContributions(state, bundle.Economy, external)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -516,4 +524,188 @@ func TestAxisOriginDeferredLoggedPurchaseResearch(t *testing.T) {
 		t.Fatalf("incomplete logged-origin population: profiles=%d hook-loss controls=%d", profiles, preadvancedLosses)
 	}
 	t.Log("128 scratch-cut logged purchases retain full state/receipts/events; 128 live-preadvance controls lose prestige accrual despite matching cash; AC6 NOT_PROVEN")
+}
+
+// The Company alone is not a complete producer origin: these contributions
+// come from outside it. Use existing replay-owned context, not rounded rates
+// or a proposed save field, to test the next bounded composition requirement.
+func TestAxisOriginDeferredExternalContextResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	start := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
+	at := start.Add(2001 * time.Millisecond)
+	commonsCatalog, err := commons.LoadCatalog(bundle.Artifacts["commons"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	commonsValues, err := commons.Contribution(commonsCatalog, true, 800_000, 500_000)
+	if err != nil || len(commonsValues) != 1 || !commonsValues[0].Factor.Gt(decimal.One) {
+		t.Fatalf("Commons producer did not supply a positive modifier: values=%v err=%v", commonsValues, err)
+	}
+	carry := tier2FounderCarry(t, bundle, start)
+	founder, err := stateFromFounderCarry(carry, bundle)
+	if err != nil {
+		t.Fatal(err)
+	}
+	founder.FiscalCredit = 9
+	founder.FiscalGeneratorLevels["generator.beige_tower"] = 2
+	frozen, err := FrozenFiscalContributions(bundle.Fiscal, founder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fiscalValues, err := ResolveFrozenContributions(bundle.Economy, frozen)
+	if err != nil || len(fiscalValues) != 2 {
+		t.Fatalf("Fiscal producer context=%v err=%v", fiscalValues, err)
+	}
+	combined := append(append([]multiplier.Contribution{}, commonsValues...), fiscalValues...)
+	combined = append(combined, multiplier.Contribution{SourceID: guild.StockConsumptionSourceID,
+		Slot: multiplier.SlotFaction, Target: "all", Factor: decimal.One})
+	cells := 0
+	for _, profile := range []struct {
+		name     string
+		external []multiplier.Contribution
+		member   bool
+		guild    bool
+	}{
+		{"commons", commonsValues, true, false},
+		{"fiscal", fiscalValues, false, false},
+		{"commons_fiscal_guild", combined, true, true},
+	} {
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			t.Run(profile.name+"_"+string(mode), func(t *testing.T) {
+				initial := axisTimingState(t, bundle, start)
+				var weight *int64
+				if profile.member {
+					initial.CompactMember, initial.CompactTithePPM = true, commonsCatalog.DefaultTithePPM
+					value := int64(500_000)
+					weight = &value
+				}
+				if profile.guild {
+					initial.GuildTitheCarryPPM = 999_999
+				}
+				if err := bundle.ValidateFoundationState(initial); err != nil {
+					t.Fatalf("external-origin Company admission: %v", err)
+				}
+				origin := mustEncodeState(t, initial)
+				accrual, err := makeReplayAccrual(profile.external, weight, guild.SettlementBatch{}, bundle.Routes.ContextVersion())
+				if err != nil {
+					t.Fatal(err)
+				}
+				encodedContext, err := json.Marshal(accrual)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var retained replayAccrual
+				if err := json.Unmarshal(encodedContext, &retained); err != nil {
+					t.Fatal(err)
+				}
+				external, err := contributionsFromReplay(retained)
+				if err != nil {
+					t.Fatal(err)
+				}
+				liveContributions, err := assembleContributions(initial, bundle.Economy, profile.external)
+				if err != nil {
+					t.Fatal(err)
+				}
+				retainedContributions, err := assembleContributions(initial, bundle.Economy, external)
+				if err != nil {
+					t.Fatal(err)
+				}
+				liveRates, err := Rates(bundle.Economy, initial.GeneratorCounts, liveContributions)
+				if err != nil {
+					t.Fatal(err)
+				}
+				retainedRates, err := Rates(bundle.Economy, initial.GeneratorCounts, retainedContributions)
+				if err != nil || len(liveRates) != len(retainedRates) {
+					t.Fatalf("retained raw-rate resource population: %v", err)
+				}
+				for resource, rates := range liveRates {
+					if len(rates) != len(retainedRates[resource]) {
+						t.Fatalf("retained raw-rate source population for %s", resource)
+					}
+					for index, rate := range rates {
+						if !rate.Eq(retainedRates[resource][index]) {
+							t.Fatalf("external context changed raw rate for %s source%d", resource, index)
+						}
+					}
+				}
+				baseline := activationRestore(t, bundle, origin, 19, start)
+				ordinary := originLoggedManual(t, bundle, baseline, at, mode, accrual)
+				if !baseline.LifetimeValue.Gt(initial.LifetimeValue) ||
+					profile.member && (!hasEventKind(ordinary.Events, save.EventCompactSampled) || len(baseline.CompactSamples) == 0) ||
+					profile.guild && (!hasEventKind(ordinary.Events, save.EventGuildTitheAccrued) || baseline.GuildTitheCarryPPM == initial.GuildTitheCarryPPM) {
+					t.Fatal("ordinary manual action did not execute the declared accrual hooks")
+				}
+				deferred := activationRestore(t, bundle, origin, 19, start)
+				for _, offset := range []int64{1, 1000, 2000, 2001} {
+					now := start.Add(time.Duration(offset) * time.Millisecond)
+					expected := originProjectionStateWithExternal(t, bundle, origin, now, mode, profile.external)
+					projected := originProjectionStateWithExternal(t, bundle, origin, now, mode, external)
+					if !bytes.Equal(mustEncodeState(t, expected), mustEncodeState(t, projected)) ||
+						!bytes.Equal(origin, mustEncodeState(t, deferred)) || !bytes.Equal(origin, mustEncodeState(t, initial)) {
+						t.Fatal("retained external context changed projection or consumed the committed origin")
+					}
+				}
+				settled := originLoggedManual(t, bundle, deferred, at, mode, retained)
+				ordinaryEvents, err := json.Marshal(ordinary.Events)
+				if err != nil {
+					t.Fatal(err)
+				}
+				settledEvents, err := json.Marshal(settled.Events)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if !bytes.Equal(mustEncodeState(t, baseline), mustEncodeState(t, deferred)) ||
+					!bytes.Equal(ordinary.Receipt, settled.Receipt) || !bytes.Equal(ordinaryEvents, settledEvents) {
+					t.Fatal("retained producer context lost the closed manual transition state/receipt/events")
+				}
+				complete := originProjectionStateWithExternal(t, bundle, origin, at, mode, external)
+				missing := originProjectionState(t, bundle, origin, at, mode)
+				if complete.Ledger.Snapshot()["company.cash"] == missing.Ledger.Snapshot()["company.cash"] {
+					t.Fatal("omitted external inputs escaped the projection control")
+				}
+				wrong := originLoggedManual(t, bundle, complete, at, mode, retained)
+				if wrong.Outcome != save.IntentApplied || complete.Ledger.Snapshot()["company.cash"] != baseline.Ledger.Snapshot()["company.cash"] ||
+					!complete.LifetimeValue.Eq(initial.LifetimeValue) ||
+					profile.member && (hasEventKind(wrong.Events, save.EventCompactSampled) || len(complete.CompactSamples) != 0) ||
+					profile.guild && (hasEventKind(wrong.Events, save.EventGuildTitheAccrued) || complete.GuildTitheCarryPPM != initial.GuildTitheCarryPPM) {
+					t.Fatal("pre-advanced control failed to expose lost hooks despite equal cash")
+				}
+				cells++
+			})
+		}
+	}
+	if cells != 6 {
+		t.Fatalf("external-context census incomplete: %d", cells)
+	}
+	t.Log("6 external-context/manual cells preserve complete transitions; omission loses rates and pre-advance loses hooks; AC6 NOT_PROVEN")
+}
+
+func originLoggedManual(t *testing.T, bundle CatalogBundle, state *save.State, now time.Time, mode EvaluationMode, accrual replayAccrual) LoggedTransition {
+	t.Helper()
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0901-7000-8000-000000000902","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1000}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001",
+		FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: state.RunSeq, RunLogSeq: 1}
+	carry := tier2FounderCarry(t, bundle, state.RunStartedAt)
+	active, err := resolveActivePlaySchedule(state, bundle.Opportunities, bundle.Prestige, command.FounderID, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	external, err := contributionsFromReplay(accrual)
+	if err != nil {
+		t.Fatal(err)
+	}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind,
+		Contributions: external, CommonsWeightPPM: accrual.CommonsWeightPPM,
+		RouteContextVersion: accrual.RouteContextVersion, FounderCarry: &carry, ActivePlay: &active})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyLogged(state, request.CanonicalPayload, bundle, inputs)
+	if err != nil || transition.Outcome != save.IntentApplied {
+		t.Fatalf("external-origin manual action outcome=%s error=%v", transition.Outcome, err)
+	}
+	return transition
 }
