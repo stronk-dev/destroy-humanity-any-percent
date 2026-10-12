@@ -27,9 +27,11 @@ format/key placement, and route a confirmed authority gap rather than invent a n
 
 Diagnostic completed: both intact controls retain/restore; both outer-flag mutations
 are admitted by classification and delete the protected fixture. RP-505 remains an
-open DP6/AC4 defect. The metadata-binding draft is not implementation authority;
-complete its verification/publication/compatibility design before proposing adoption.
-Owning log records native/Linux execution and the pending designated review range.
+open DP6/AC4 defect. The metadata-binding draft now proposes exact signed-v2 metadata,
+external trust, target-owned cleanup and explicitly authenticated legacy copying.
+Adoption/normative review are pending; the missing resolution lifecycle remains a
+separate author hold. No implementation authority follows from this proposal. Owning
+log records diagnostic execution, design inspection and pending review ranges.
 
 **Latest bounded correction, 2026-10-12 (RP-503):** objective measurement now applies
 DP6/AC4's exact six-hour/four-hour bounds before whole-second report conversion. The

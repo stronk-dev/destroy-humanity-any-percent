@@ -5066,3 +5066,35 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new diagn
 draft range starts after `09cf45e5` through this containing commit; Claude designated review
 pending, combinable with related Deployment corrections. Earlier review debt remains.
 No acceptance, archival, hosted-CI, four-proposal adoption, push or deployment claim.
+
+## 2026-10-12 — Complete the RP-505 engineering recommendation (draft only)
+
+The previous goal turn made progress: two executed cases established unsafe deletion
+and the committed diagnostic/draft changed the next action. This batch completes a
+recommended repair contract rather than selecting an unreviewed runtime fix. BM1–BM5
+specify standard Ed25519 over exact metadata/payload identity, independent public trust,
+dedicated writer-secret placement, atomic single-file publication and target-owned locked
+cleanup. Authenticated legacy copying preserves original bytes/timestamps/protection;
+the schedule never gets the age identity. Post-rename sync failure is explicitly
+indeterminate durability, not an impossible promise to undo publication.
+
+Source inspection covered Create/ReadHeader/Restore, encrypted package extraction,
+Postgres create/restore, target classification, CLI scheduled/retention rounds, Linux
+no-replace rename, current Compose mounts and release-state authority. The official
+Go crypto/ed25519 documentation supports the selected standard-library API and key/
+signature sizes; it is not evidence this proposed integration works. The ciphertext's
+authenticated metadata and package format can remain unchanged because neither carries
+the outer schema version/payload hash. Existing resolution and actual snapshot-based RPO
+remain distinct author gaps; no protection flag is patched or inferred from release success.
+
+Verification is source/specification diff and whitespace inspection. No software/crypto
+acceptance tests were run for this normative draft, no private key generated, no backup
+converted and no operator configuration changed. Plan/index now point to adoption and
+normative review instead of unfinished engineering choices. RP-505 remains OPEN.
+
+Review by: Codex (author first filter). Recorded by: Codex. Exact draft range starts
+after `0e9503f2` through this containing commit; Claude designated normative review pending.
+Owner adoption is also required for the new format/signing-secret/legacy-copy contract;
+neither automatic goal continuation nor this record supplies it. No product implementation,
+acceptance/archival, CI-green, publication or deployment claim. Continue safe work under
+existing accepted contracts while this bounded amendment is held.
