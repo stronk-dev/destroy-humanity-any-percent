@@ -1458,3 +1458,32 @@ and designated normative review. No generator/SDK/handler/pin/replay bytes chang
 API, current-head CI, rights completion, archival, push or release claim. All check handles
 terminal before edits. Next: the specified implementation after those authority gates; continue
 other safe accepted work without treating this draft as a contract or shrinking the1.0 goal.
+
+## 2026-10-12 — Reject raw hash headers conflicting with protocol metadata at construction
+
+Outcome: RP-485 conformance fix under accepted A5/A8/C19. Registry construction admitted
+digest headers named ETag, Cache-Control, Content-Type, Content-Length or X-Request-ID,
+while the existing cached writer already rejected those names case-insensitively. Share
+that existing grammar/reservation rule; invalid operation definitions now fail before
+mounting or generation. Writer admission and current emitted bytes are unchanged.
+
+Corrected old-source baseline78464 fails all11 reserved/case-variant definitions while
+six valid-header/JSON-or-gzip controls pass. The first run9250 also had a test-authoring
+error (nil required request-ID dependency); it is not a healthy control baseline. The
+retained mounted tests use actual registry/chi/middleware/writer paths and require exact
+raw bytes/digests, content type/length, quoted ETag, cache policy and caller request ID.
+Existing304 controls retain metadata and no body; no304 registry arm/SDK policy is added.
+
+Final root `make test-go GO_PACKAGES='./publicapi ./publicread' GO_TEST_FLAGS='-count=1 -v'`
+26059 passes both full affected packages, including existing mounted cache/evidence/privacy
+checks. Neither package has a skip path. `make vet GO_PACKAGES='./publicapi ./publicread'`
+51206 and `make api-check`9129 pass; OpenAPI, compatibility pin and generated client remain
+byte-unchanged. No DB/private gameplay/browser/balance boundary changed or claimed tested.
+No observed metadata overwrite/leak in current endpoints is alleged; this is startup
+admission of definitions the runtime already refuses. All handles terminal, diff checked.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new implementation/
+test/docs/records range is `da3a922d` exclusive through this containing commit; designated
+cross-party review pending. No draft adoption, whole API/hosted CI, archival, push or release
+claim. The typed-dictionary/bodiless/history proposals and earlier corrective review debt
+remain separate; continue safe accepted integration work.

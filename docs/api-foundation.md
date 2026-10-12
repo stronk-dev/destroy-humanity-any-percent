@@ -11,6 +11,12 @@ values consumed by runtime mounting, OpenAPI generation, TypeScript generation, 
 v1 compatibility pin. Authenticated Soul Recovery and minigame routes mount exclusively from this
 registry; missing, extra, unsorted, or nil runtime bindings fail during router construction.
 
+Raw-response hash headers use the same admission rule at registry construction and
+cached emission: their existing name grammar applies, and they cannot equal `ETag`,
+`Cache-Control`, `Content-Type`, `Content-Length` or `X-Request-ID` case-insensitively.
+A conflicting descriptor fails with `ErrInvalidOperation` before mounting/generation;
+valid custom headers still preserve exact raw bytes and the independently owned metadata.
+
 HTTP registry admission checks raw object-member uniqueness before decoding to maps. Duplicate names
 at any level, including different escape spellings of the same name, return `ErrInvalidSchema`
 rather than silently keeping the final value. Valid escaped names, string contents resembling

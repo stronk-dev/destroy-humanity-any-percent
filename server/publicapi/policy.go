@@ -10,7 +10,6 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"cloud-clicker/server/httpapi"
@@ -258,9 +257,7 @@ func (runtime *Runtime) WriteCached(response http.ResponseWriter, request *http.
 	if len(contentHashHeader) > 1 {
 		return ErrInvalidPolicy
 	}
-	if len(contentHashHeader) == 1 && (!responseHeaderPattern.MatchString(contentHashHeader[0]) ||
-		strings.EqualFold(contentHashHeader[0], "ETag") || strings.EqualFold(contentHashHeader[0], "Cache-Control") ||
-		strings.EqualFold(contentHashHeader[0], "Content-Type") || strings.EqualFold(contentHashHeader[0], "Content-Length") || strings.EqualFold(contentHashHeader[0], "X-Request-ID")) {
+	if len(contentHashHeader) == 1 && !validContentHashHeader(contentHashHeader[0]) {
 		return ErrInvalidPolicy
 	}
 	cacheControl, ok := runtime.cacheControl(class)

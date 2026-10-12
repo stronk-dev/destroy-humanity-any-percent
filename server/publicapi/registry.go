@@ -304,10 +304,24 @@ func validResponse(response Response, definitions map[string]*Schema) bool {
 		return true
 	case ResponseRaw:
 		return len(response.ExactJSON) == 0 && (response.ContentType == ContentJSON || response.ContentType == ContentGzip) && response.SchemaRef == "" &&
-			responseHeaderPattern.MatchString(response.ContentHashHeader)
+			validContentHashHeader(response.ContentHashHeader)
 	default:
 		return false
 	}
+}
+
+// A raw digest must not replace metadata owned by the HTTP writer/middleware.
+// Registry construction and cached emission use the same admission rule.
+func validContentHashHeader(header string) bool {
+	if !responseHeaderPattern.MatchString(header) {
+		return false
+	}
+	for _, reserved := range []string{"ETag", "Cache-Control", "Content-Type", "Content-Length", "X-Request-ID"} {
+		if strings.EqualFold(header, reserved) {
+			return false
+		}
+	}
+	return true
 }
 
 func validMethod(method string) bool {

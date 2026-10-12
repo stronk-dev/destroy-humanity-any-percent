@@ -2,6 +2,7 @@ package publicapi
 
 import (
 	"bytes"
+	"compress/gzip"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
@@ -11,6 +12,9 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
+
+	"cloud-clicker/server/httpapi"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -351,6 +355,94 @@ func TestRegistryResponseUnionValidatesSchemaAndRawBytes(t *testing.T) {
 	invalid[1].Responses = []Response{{Kind: ResponseRaw, Status: 200, ContentType: "application/octet-stream", ContentHashHeader: "X-Content-SHA256"}}
 	if _, err := NewRegistry(testSchemas(), invalid); err == nil {
 		t.Fatal("generic raw media type accepted")
+	}
+}
+
+func TestRegistryRawHashHeaderCannotShadowProtocolMetadata(t *testing.T) {
+	for _, header := range []string{
+		"ETag", "Etag", "ETAG", "Cache-Control", "CACHE-CONTROL", "Content-Type",
+		"CONTENT-TYPE", "Content-Length", "CONTENT-LENGTH", "X-Request-ID", "X-REQUEST-ID",
+	} {
+		t.Run(header, func(t *testing.T) {
+			operations := testOperations()
+			operations[1].Responses = []Response{{Kind: ResponseRaw, Status: 200,
+				ContentType: ContentGzip, ContentHashHeader: header}}
+			if registry, err := NewRegistry(testSchemas(), operations); registry != nil || !errors.Is(err, ErrInvalidOperation) {
+				t.Fatalf("protocol hash header admitted at construction: registry_present=%t err=%v", registry != nil, err)
+			}
+		})
+	}
+}
+
+func TestRegisteredRawHashHeadersPreserveMountedProtocolMetadata(t *testing.T) {
+	for _, header := range []string{"X-Content-SHA256", "X-Archive-Hash", "X-Custom-ETag"} {
+		for _, contentType := range []string{ContentJSON, ContentGzip} {
+			t.Run(header+"/"+contentType, func(t *testing.T) {
+				body := []byte(`{ "immutable": "fixture" }`)
+				if contentType == ContentGzip {
+					var compressed bytes.Buffer
+					writer := gzip.NewWriter(&compressed)
+					if _, err := writer.Write(body); err != nil {
+						t.Fatal(err)
+					}
+					if err := writer.Close(); err != nil {
+						t.Fatal(err)
+					}
+					body = compressed.Bytes()
+				}
+				digest := fmt.Sprintf("%x", sha256.Sum256(body))
+				operations := testOperations()[1:]
+				operations[0].Responses = []Response{{Kind: ResponseRaw, Status: 200,
+					ContentType: contentType, ContentHashHeader: header}}
+				registry, err := NewRegistry(testSchemas(), operations)
+				if err != nil {
+					t.Fatal(err)
+				}
+				ids, err := httpapi.NewRequestIDs(requestIDPatternLiteral, 64, bytes.NewReader(bytes.Repeat([]byte{0xbb}, 64)))
+				if err != nil {
+					t.Fatal(err)
+				}
+				runtime, err := NewRuntime(phase0Policy(t), time.Now, ids)
+				if err != nil {
+					t.Fatal(err)
+				}
+				router := chi.NewRouter()
+				if err := registry.Mount(router, []Binding{{OperationID: "get_epochs",
+					Handler: http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+						if err := runtime.WriteCached(response, request, CacheVerification, contentType, body, header); err != nil {
+							t.Errorf("registered response refused by writer: %v", err)
+						}
+					})}}, nil); err != nil {
+					t.Fatal(err)
+				}
+				for _, status := range []int{http.StatusOK, http.StatusNotModified} {
+					request := httptest.NewRequest(http.MethodGet, operations[0].Path, nil)
+					request.Header.Set("X-Request-ID", "raw-header-control")
+					if status == http.StatusNotModified {
+						request.Header.Set("If-None-Match", `"`+digest+`"`)
+					}
+					response := httptest.NewRecorder()
+					runtime.WithRequestID(router).ServeHTTP(response, request)
+					if response.Code != status || response.Header().Get(header) != digest ||
+						response.Header().Get("ETag") != `"`+digest+`"` ||
+						response.Header().Get("Cache-Control") != "public,max-age=31536000,immutable" ||
+						response.Header().Get("X-Request-ID") != "raw-header-control" {
+						t.Fatalf("protocol metadata changed: status=%d headers=%v", response.Code, response.Header())
+					}
+					if status == http.StatusOK {
+						if !bytes.Equal(response.Body.Bytes(), body) || response.Header().Get("Content-Type") != contentType ||
+							response.Header().Get("Content-Length") != fmt.Sprint(len(body)) {
+							t.Fatal("registered raw response bytes/media/length changed")
+						}
+						if err := registry.ValidateRawResponse("get_epochs", status, contentType, response.Body.Bytes(), response.Header().Get(header)); err != nil {
+							t.Fatal(err)
+						}
+					} else if response.Body.Len() != 0 {
+						t.Fatal("conditional reply gained a body")
+					}
+				}
+			})
+		}
 	}
 }
 
