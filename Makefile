@@ -279,6 +279,12 @@ diagnose-browser-session: build-gameserver build-client
 research-browser-coordination:
 	docker compose -f compose.browser-test.yml run --rm browser bash -lc 'corepack enable && corepack prepare pnpm@11.15.1 --activate && pnpm --dir client install --frozen-lockfile && node client/tools/research-browser-coordination.mjs $(shell git rev-parse HEAD)'
 
+.PHONY: research-browser-refresh-dispatch
+# Manual R-011 native primitive research, never a renewal or full CI gate.
+RESEARCH_BROWSER_ENGINES ?= chromium firefox webkit
+research-browser-refresh-dispatch:
+	node client/tools/research-browser-refresh-dispatch.mjs $(shell git rev-parse HEAD) $(RESEARCH_BROWSER_ENGINES)
+
 test-game-ui-composed:
 	node --test client/tools/production-client-proof.fixtures.mjs client/tools/care-snapshot-proof.fixtures.mjs client/tools/cosmetic-n5-fixture.fixtures.mjs
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres

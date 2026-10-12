@@ -238,6 +238,11 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   retains exact traces/source/instrument identity and limits. Real Account
   ambiguity, storage denial, background/process crash and policy remain open.
   Local complete browser CI discovered RP-235; that lane is red, not waived.
+  Native interrupted-dispatch follow-up at baseline `a6fc7217` completes40
+  Chromium/WebKit cases: actual HTTP/page closure, retained-marker stop versus
+  omission redispatch, and native quota-denial-before-send. Firefox launch is
+  invalid with zero cases. The same dossier names limits; synthetic generations
+  do not establish real Account rotation, production renewal or marker adoption.
 - **Contract groundwork:** predeclared `d3e7196f`
   [parser/router census](session-refresh-contract-census.md) executes 22 malformed
   parser cases plus limiter/refill/method/path (27 requests), full-byte oracles,

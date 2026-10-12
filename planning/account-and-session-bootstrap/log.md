@@ -976,3 +976,47 @@ designated cross-party review pending. All handles terminal and diff inspected.
 No acceptance, archive, kernel/config/content change, cleanup, push or release.
 Continue accepted construction; held public-wire, renewal and owner choices
 remain explicit, and pending review does not stop independent accepted work.
+
+## 2026-10-12 — Native interrupted-dispatch and quota primitives (R-011)
+
+Baseline `a6fc7217`; population/controls declared in the owning plan before edits.
+Added one manual research instrument/Make target, outside CI/verify. Real native
+Web Locks, shared localStorage, loopback HTTP and actual page closure/reload test
+the candidate marker's primitive boundary. The receiver and generations are
+synthetic, not Account credentials, commits or a replacement production runtime.
+The existing coordination dossier retains exact outcomes, source SHA and versions;
+the original Linux observation/artifact remain untouched.
+
+Final `make research-browser-refresh-dispatch
+RESEARCH_BROWSER_ENGINES='chromium webkit'`13295 exits0:40 of40 cases, no guards
+or uncaught page errors. Healthy overlap sends once; post-dispatch owner closure
+leaves queued/reloaded successors stopped with the original generation; omitting
+the marker produces a second request/reuse control; native quota denial prevents
+all dispatch. These success/failure controls exercise the measured boundary, not
+just a tracker. Earlier10160 passes the same40 before launch-timeout cleanup and
+invalid-run reporting were tightened; final instrument SHA is in the dossier.
+
+Separate Firefox19452 exits2 after30-second launch timeout, zero of20 cases,
+with sandbox-extension/SWGL errors and `guard_exhausted:true`. Initial restricted
+localhost attempt exits2 with zero cases; the narrow permitted target then runs.
+No full60-case, Firefox, Linux or supported-profile completion is claimed. A
+read-only exact-PID check finds the Firefox process still OS-listed as `?Es`
+under parent1 after the launch timeout; no process-level cleanup/crash claim or
+manual process mutation follows. All command handles are terminal.
+
+Node syntax passes; an invalid source-HEAD argument exits1 before opening a
+receiver. CI topology and all13 existing negative controls pass unchanged.
+Source/Make/record diff checked. No TS/product source, schema, kernel, owner copy,
+auth, game state, browser flags, CI workflow, timeout policy or balance changes.
+No unrelated application/DB/full-CI rerun is claimed for this manual diagnostic.
+
+The draft now distinguishes this bounded quota/page-loss evidence from real
+credential persistence, identity replacement, permission/post-reply storage
+failures and browser-process/OS lifecycle. Its marker shape/lifetime and renewal
+policy remain unadopted. Next: the remaining real-Account/browser boundaries and
+contract adoption, not another repetition of the completed primitive population.
+
+Review by: Codex (research implementer first filter). Recorded by: Codex.
+Exact instrument/Make/draft/evidence/record range starts after `a6fc7217` through
+this containing commit and requires designated cross-party review. Earlier debt
+remains. No feature acceptance, archival, push, deployment or release claim.

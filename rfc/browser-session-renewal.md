@@ -162,7 +162,14 @@ into another identity. No second history store or client-authored receipt exists
   R-011's [first primitive wave](../planning/platform-alignment/browser-session-coordination.md)
   now completes 120 intervals / 30 page closures in the declared Linux engines
   and rejects bypass/guard controls. This is bounded candidate evidence only;
-  real rotation/commit ambiguity, storage denial and native lifecycle remain open.
+  real rotation/commit ambiguity, other storage failures and process/OS lifecycle remain open.
+  The 2026-10-12 native follow-up completes40 Chromium/WebKit cases with real
+  loopback dispatch, queued ownership, post-dispatch page closure/reload and native
+  storage-quota denial. Omitting the marker causes redispatch; retaining it stops
+  successors, and quota refusal prevents dispatch. The receiver uses synthetic
+  generations, not Account rotation. Firefox launch is invalid with zero cases;
+  process/OS crash, other storage failures, real credential persistence and the
+  production coordinator remain unproved. The experimental marker is not adopted.
 - **API author boundary S-A1:** pin the complete existing refresh error/status
   schema and exact generated dispatcher changes needed for C9. The current
   handwritten runtime calls are not permission for another raw API client or an

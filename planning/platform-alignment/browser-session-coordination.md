@@ -74,3 +74,36 @@ Codex implementer first-filter only. New span begins after `39f95329`, includes
 `d023dc26`, instrument/artifact/dossier and records; literal tip pinned after
 commit. Claude's cross-party verdict required; no prior span, owner decision,
 checkbox or archive consumed.
+
+## Native interrupted-dispatch follow-up — 2026-10-12
+
+Question/population predeclared at baseline `a6fc7217` in the Account plan. Reproduce
+with `make research-browser-refresh-dispatch RESEARCH_BROWSER_ENGINES='chromium webkit'`.
+The default names all three engines; explicit subsets report unexecuted engines and
+cannot claim full supported-browser completion. The instrument is test-only and
+prints its complete selected-case report rather than replacing the historical artifact.
+Final source SHA256 `86b1b77e32128cbf517c6e53b57f73fb305a786f5dc2ae438d3b1c29fa52abd8`;
+source HEAD identifies the pre-experiment baseline, not a committed instrument at that SHA.
+
+Native macOS27.0/arm64 Chromium151.0.7922.34 and WebKit26.5 execute five repetitions
+of each arm,40 total, with no exhausted guards or uncaught page errors:
+
+| Arm | Actual boundary/outcome per case |
+| --- | --- |
+| Healthy overlap | Native queued lock; one HTTP dispatch, generation2 stored, successor rereads it without sending. |
+| Owner closes after dispatch, before reply | Actual interrupted page; marker survives. Queued and reloaded successors stop with generation1 intact; one HTTP dispatch. |
+| Same closure without marker | Successor sends again; two HTTP dispatches and the synthetic receiver's reuse refusal. This is the failure control, not successful renewal. |
+| Native quota denial | Actual `QuotaExceededError`; marker cannot be stored and no HTTP request is sent. Original generation remains. |
+
+The final run13295 exits0. Earlier10160 passes the same40 before tightening launch
+cancellation/reporting. Initial restricted run cannot listen (zero cases, invalid).
+Separate Firefox19452 exits2 after its30-second launch guard: sandbox-extension/SWGL
+failure, zero of20 cases. No Firefox or full60-case result is credited.
+
+This bridges native exclusion/storage to a real HTTP dispatch and page-loss boundary.
+The HTTP receiver and generations are synthetic; real Account rotation/revocation,
+post-reply credential storage failure, permissions denial, identity replacement,
+browser-process/OS crash and disk durability remain separate. Quota-fill limits and
+observation guards are invalidity bounds, not production capacity/deadline choices.
+No marker schema/lifetime, coordinator, recovery copy or automatic retry is adopted.
+The Account log owns exact review/procedure evidence; R-011 and renewal stay open.

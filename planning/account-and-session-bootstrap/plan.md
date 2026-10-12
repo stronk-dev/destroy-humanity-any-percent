@@ -98,3 +98,33 @@ generated consumer and browser policy remain separate unaccepted work. RP-236 st
 image-based Linux route, not this proven native route. Under the current RFC-0000 procedure,
 do not repeat unchanged controls or add source mutations merely to satisfy the superseded
 per-edit routine; explicit Account acceptance criteria remain unchanged.
+
+## R-011 interrupted-dispatch primitive follow-up — 2026-10-12
+
+At `a6fc7217`, observe native Web Locks/localStorage and real loopback HTTP, using synthetic
+generations only. Question: does a marker written before dispatch survive actual owner-page
+closure and cause a queued/reloaded successor to stop without redispatch? Four arms, five
+repetitions per selected engine: healthy overlapping tabs; close after the server receives
+the request but before its reply; the same closure without the marker (failure control);
+native localStorage quota denial before dispatch. The default population is Chromium,
+Firefox and WebKit (60 cases); an explicit native Chromium/WebKit subset is40 cases,
+not full supported-browser completion. Use fresh test-owned contexts for each case.
+
+Observe actual server request counts, native queued-lock state, complete callback results,
+page interruption, marker/generation persistence and real quota exceptions. Healthy requires
+one dispatch and generation2 in both tabs; interrupted requires one dispatch and stopped
+queued/reloaded successors with generation1 intact; marker omission must produce two
+dispatches; quota denial must produce zero. Missing prerequisites, incomplete cases, uncaught
+errors or the existing30-second observation guard invalidate the experiment. Native quota
+filling is bounded to16MiB; reaching that guard is invalid, not a measured capacity claim.
+
+This is a test-only candidate with a synthetic HTTP receiver, not real Account rotation,
+browser-process/OS crash, production storage durability, renewal code or an adopted marker
+schema/lifetime. It may refine the draft's primitive evidence; it cannot authorize auth,
+storage/recovery policy, timers, gameplay retries, full R-011 or the15-minute Garden claim.
+
+Completed bounded native subset:40 Chromium/WebKit cases pass with the declared positive,
+interruption, omission and quota outcomes. Firefox launch executes zero cases and is invalid;
+full60-case coverage remains open. Evidence lives in the existing coordination dossier and
+latest owning log. The draft now distinguishes this primitive result from the remaining real
+credential/Account/process-lifecycle and owner-policy gates; no renewal implementation follows.
