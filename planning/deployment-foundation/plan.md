@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest bounded correction, 2026-10-12 (RP-507):** package extraction now consumes the
+authenticated stream after tar EOF and refuses any remaining bytes before returning a usable
+dump. The old implementation stalls for one extra byte, a zero block and a second archive;
+the exact-package control passes. The existing empty/populated Postgres restore population
+also proves refusal leaves its target clean before the intact backup restores with matching
+identities. The owning log records affected checks and the pending designated range. No
+metadata-binding draft adoption, retention/format change or clean-host acceptance follows.
+
 **Latest bounded correction, 2026-10-12 (RP-504):** populated recovery records its
 start after input/lock/checkpoint validation but before stopping the failed stack and
 resetting/restarting Postgres. Those required phases now count toward the existing4h

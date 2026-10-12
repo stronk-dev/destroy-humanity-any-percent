@@ -157,6 +157,7 @@ func ExtractPackage(path, expectedManifest string, identity age.Identity, destin
 		return ExtractedPackage{}, err
 	}
 	reader, writer := io.Pipe()
+	defer reader.Close()
 	type restoreResult struct {
 		header Header
 		err    error
@@ -168,6 +169,15 @@ func ExtractPackage(path, expectedManifest string, identity age.Identity, destin
 		restored <- restoreResult{header: header, err: err}
 	}()
 	result, extractErr := extractPackageTar(tar.NewReader(reader), destination)
+	if extractErr == nil {
+		// tar EOF is not the end of the authenticated stream. Consume its
+		// remainder before joining the decryptor: otherwise trailing bytes
+		// leave its pipe write blocked forever. Our exact package has no tail.
+		remaining, err := io.Copy(io.Discard, reader)
+		if err != nil || remaining != 0 {
+			extractErr = errors.Join(ErrInvalid, err)
+		}
+	}
 	if extractErr != nil {
 		_ = reader.CloseWithError(extractErr)
 	}

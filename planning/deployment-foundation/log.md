@@ -5098,3 +5098,41 @@ Owner adoption is also required for the new format/signing-secret/legacy-copy co
 neither automatic goal continuation nor this record supplies it. No product implementation,
 acceptance/archival, CI-green, publication or deployment claim. Continue safe work under
 existing accepted contracts while this bounded amendment is held.
+
+## 2026-10-12 — Package restore refuses trailing data without a pipe deadlock (RP-507)
+
+DP6/AC4 requires corrupt backups to fail visibly, not stall restoration. The exact
+four-member archive can reach tar EOF while its authenticated age stream still has bytes.
+ExtractPackage then waits for the decryptor, which is blocked writing that unread tail.
+New regression20185 on unchanged product fails for an extra byte, a zero block and a
+concatenated archive (each reaches the5s deadlock guard); exact-package control passes.
+Every fixture independently decrypts successfully with a matching outer checksum, so these
+failures exercise package framing, not damaged encryption or missing prerequisites.
+
+Consume the pipe to authenticated EOF after successful tar decoding; any remainder refuses.
+Close the reader on all returns. No archive/envelope writer, format, retention, secret,
+budget, timing objective, version, CI or operator configuration changes. Corrected
+regression72906 passes all four cases in0.08s. The5s test guard detects a deadlock; it is
+not a restore-performance measurement or a changed acceptance ceiling.
+
+Final checks:
+
+- `make test-go vet GO_PACKAGES='./deploymentbackup ./cmd/deployment-backup ./deploymentrelease ./deploymentrehearsal' GO_TEST_FLAGS='-count=1'`
+  79435: all four affected packages and vet PASS; native missing-URL DB cases are not SQL proof.
+- `make test-deployment-backup`67138: all seven Linux-amd64/Postgres16 integration functions
+  PASS. Both actual empty/populated pg_dump streams with authenticated extra data refuse;
+  RequireCleanTarget still accepts the target, then the intact originals restore with matching
+  stored and semantic recovery identities. The declared isolated project cleans itself up.
+- `make test-go-ci CI_TEST_PACKAGES='./deploymentbackup ./cmd/deployment-backup ./deploymentrelease ./deploymentrehearsal' CI_TEST_FLAGS='-v'`
+  32928: affected Linux-amd64 packages PASS cold count1, including all four new framing cases.
+  Its general DB service lacks the dedicated restore/admin URL population;67138 owns that proof.
+  The unrelated orphan warning did not authorize cleanup. The RP-505 diagnostic still reports
+  both protection failures despite its successful instrument exit; no retention acceptance.
+- gofmt and actual diff/whitespace checks PASS; all run handles terminal.
+
+Docs/plan and RP-507 reflect this bounded repair. No full Deployment/Actions, clean-host R-006,
+release artifact, nine-tier completion, acceptance checkbox, archival or publication claim.
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range starts after
+`4627861a` through this containing commit; Claude designated review pending, consolidatable
+with related Deployment corrections. Existing metadata-binding, snapshot-origin/resolution
+author holds and earlier independent ranges remain; no proposal was implicitly adopted.

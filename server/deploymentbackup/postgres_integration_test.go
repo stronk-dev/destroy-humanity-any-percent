@@ -314,6 +314,38 @@ func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T)
 			if err != nil {
 				t.Fatal(err)
 			}
+			// Keep the real pg_dump bytes and all package metadata, but append
+			// plaintext beyond tar EOF inside a valid authenticated age stream.
+			// Refusal must finish before the clean Postgres target is changed.
+			var plaintext bytes.Buffer
+			if _, err := Restore(path, manifestHash, identity, &plaintext); err != nil {
+				t.Fatal(err)
+			}
+			_, trailingPath, err := Create(CreateInput{
+				Directory: t.TempDir(), BackupID: header.BackupID, ServerID: header.ServerID,
+				ReleaseManifestSHA256: manifestHash, EpochID: header.EpochID,
+				StartedAt: header.StartedAt, Now: func() time.Time { return header.CompletedAt },
+				Recipient: identity.Recipient().String(), Dump: bytes.NewReader(append(plaintext.Bytes(), 'x')),
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if refused, err := RestorePostgresBackup(ctx, PostgresRestoreInput{
+				BackupPath: trailingPath, ExpectedManifestSHA256: manifestHash, IdentityFile: identityPath,
+				TargetDatabaseURLFile: targetSecret,
+			}); !errors.Is(err, ErrInvalid) || refused != (Header{}) {
+				t.Fatalf("authenticated trailing data not refused: header=%+v err=%v", refused, err)
+			}
+			cleanTarget, err := save.OpenPostgres(ctx, targetURL)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cleanErr := RequireCleanTarget(ctx, cleanTarget)
+			closeErr := cleanTarget.Close()
+			if cleanErr != nil || closeErr != nil {
+				t.Fatalf("trailing-data refusal changed target: clean=%v close=%v", cleanErr, closeErr)
+			}
+			t.Log("authenticated trailing data refused; real Postgres target remains clean")
 			restoredHeader, err := RestorePostgresBackup(ctx, PostgresRestoreInput{
 				BackupPath: path, ExpectedManifestSHA256: manifestHash, IdentityFile: identityPath,
 				TargetDatabaseURLFile: targetSecret,

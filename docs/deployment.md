@@ -474,6 +474,12 @@ refuses without reading an unbounded header into memory. Ordinary JSON whitespac
 valid. Restore rejects malformed header/metadata before emitting any dump bytes. Inspection
 still verifies the outer checksum, not decryptability; only explicit restore has the age identity.
 
+Package extraction consumes the authenticated stream through its actual EOF, not just the tar
+end marker. Additional plaintext after the exact four-member archive (including zero padding or
+a second archive) refuses before returning a usable dump to Postgres. It cannot leave the
+decryptor blocked on an unread pipe tail. Empty/populated real-Postgres checks preserve a clean
+target on that refusal, then restore the intact backup and compare its recovery identities.
+
 Every scheduled round classifies the complete target *before* writing anything:
 - **Completed backups:** regular `*.ccbackup` files.
 - **The helper's own temporaries** (`.backup-payload-*.tmp` / `.backup-envelope-*.tmp`):

@@ -97,6 +97,82 @@ func TestPackageRejectsTruncatedEnvelope(t *testing.T) {
 	}
 }
 
+func TestPackageConsumesAuthenticatedStreamAfterTarEnd(t *testing.T) {
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	epoch := fixtureEpoch(t, 8)
+	manifest := fixtureReleaseManifest(t, epoch)
+	now := time.Date(2026, 10, 12, 15, 0, 0, 0, time.UTC)
+	dump := []byte("PGDMP trailing-stream fixture")
+	header, path, err := CreatePackage(PackageInput{
+		Directory: t.TempDir(), BackupID: "20261012T145900Z-abcdef123456", ServerID: "server",
+		StartedAt: now.Add(-time.Minute), Now: func() time.Time { return now }, Recipient: identity.Recipient().String(),
+		Dump: bytes.NewReader(dump), ReleaseManifest: manifest, EpochDeclaration: epoch,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var original bytes.Buffer
+	if _, err := Restore(path, digest(manifest), identity, &original); err != nil {
+		t.Fatal(err)
+	}
+	for _, fixture := range []struct {
+		name string
+		tail []byte
+	}{
+		{"exact_package", nil},
+		{"one_extra_byte", []byte("x")},
+		{"extra_zero_block", make([]byte, 512)},
+		{"second_archive", original.Bytes()},
+	} {
+		t.Run(fixture.name, func(t *testing.T) {
+			plain := append(append([]byte(nil), original.Bytes()...), fixture.tail...)
+			_, path, err := Create(CreateInput{
+				Directory: t.TempDir(), BackupID: header.BackupID, ServerID: header.ServerID,
+				ReleaseManifestSHA256: header.ReleaseManifestSHA256, EpochID: header.EpochID,
+				StartedAt: header.StartedAt, Now: func() time.Time { return header.CompletedAt },
+				Recipient: identity.Recipient().String(), Dump: bytes.NewReader(plain),
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			// This is a valid age stream and matching outer checksum: only exact
+			// package framing can reject the additional plaintext after tar EOF.
+			var decrypted bytes.Buffer
+			if _, err := Restore(path, digest(manifest), identity, &decrypted); err != nil || !bytes.Equal(decrypted.Bytes(), plain) {
+				t.Fatalf("encrypted fixture not intact: %v", err)
+			}
+			destination := t.TempDir()
+			type outcome struct {
+				result ExtractedPackage
+				err    error
+			}
+			completed := make(chan outcome, 1)
+			go func() {
+				result, err := ExtractPackage(path, digest(manifest), identity, destination)
+				completed <- outcome{result, err}
+			}()
+			select {
+			case actual := <-completed:
+				if fixture.tail != nil {
+					if !errors.Is(actual.err, ErrInvalid) || actual.result.DumpPath != "" || actual.result.Header != (Header{}) {
+						t.Fatalf("trailing package data accepted or returned as usable: %+v err=%v", actual.result, actual.err)
+					}
+					return
+				}
+				restored, readErr := os.ReadFile(actual.result.DumpPath)
+				if actual.err != nil || readErr != nil || !bytes.Equal(restored, dump) {
+					t.Fatalf("exact package refused: restore=%v read=%v", actual.err, readErr)
+				}
+			case <-time.After(5 * time.Second):
+				t.Fatal("package extraction stalled after tar EOF instead of completing/refusing")
+			}
+		})
+	}
+}
+
 func TestObjectiveMeasurementFailsIncompleteLateAndSlowObservations(t *testing.T) {
 	now := time.Date(2026, 8, 22, 16, 0, 0, 0, time.UTC)
 	header := Header{SchemaVersion: 1, BackupID: "20260822T145900Z-abcdef123456", ServerID: "server",
