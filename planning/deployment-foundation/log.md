@@ -4848,3 +4848,37 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 starts after `630f6833` through this source/tests/docs/ledger/plan/log commit;
 designated cross-party review pending. Earlier review debt remains. No feature
 acceptance, archival, publication, deployment or release claim.
+
+## 2026-10-12 — Recovery inspection uses one database snapshot (RP-490)
+
+Under DP6/AC4, a recovery identity must describe one coherent database state.
+Old-code real-Postgres regression82454 fails: an actual table lock holds the
+inspector after hashing accounts, another connection commits a same-count account
+change, and one returned identity combines the old Database digest with the new
+Player digest. The six existing integration functions pass on that same run.
+
+All queries now use one read-only repeatable-read transaction; helpers require it
+and errors return no partial identity. The regression observes the actual blocked
+Postgres statement and verifies both digests change across the concurrent commit.
+Output/hash definitions, backup bytes, schema and gameplay/retention are unchanged.
+
+The added cancellation observer87372 fails its immediate NOWAIT lock probe. pgx
+v5.10.0 PgConn.asyncClose/CleanupDone and database/sql Tx.awaitDone confirm cleanup
+is asynchronous. Final observation requires actual database-lock acquisition within
+the unchanged30-second invalidity guard, plus context.Canceled and zero identity.
+No instantaneous-cleanup promise, retry, production timeout or guard increase.
+
+Final `make test-deployment-backup`25425 passes all seven actual Linux-amd64/
+Postgres16 integration functions, no skips, including concurrent-write coherence,
+cancelled-query/no-identity and database-observed lock release. The target removes
+only its disposable test Postgres container/network; no unrelated/application data.
+Final cold `make test-go vet GO_PACKAGES='./deploymentbackup ./deploymentrelease
+./deploymentrehearsal ./cmd/deployment-backup' GO_TEST_FLAGS='-count=1'`57464
+passes all four packages and vet. Initial corrected integration28087 also passes;
+no results inferred from lost handles. Final handles terminal; gofmt/diff checked.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. New exact range
+starts after `8ba84996` through this containing commit; designated review pending.
+RP-489/490 may share one coherent review after `630f6833`; earlier debt remains.
+This is not a snapshot bound to a separate pg_dump, measured RPO/RTO, clean-host
+R-006, hosted/whole CI or Deployment acceptance. No archival, push or deployment.

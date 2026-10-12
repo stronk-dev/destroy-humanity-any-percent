@@ -518,6 +518,13 @@ but must retain epoch/catalog authority; populated rehearsals require all six se
 be nonempty **and** at least one actual verified run. Recovery evidence compares the complete
 before/after identity.
 
+Each inspection reads migration identity, discovered tables, all row hashes and the verified-run
+count in one read-only repeatable-read transaction. A concurrent gameplay commit cannot make
+one result mix pre-commit database rows with post-commit domain rows. Separate inspections can
+still differ when real writes occur between them; this does not freeze gameplay or bind the
+inspection's snapshot to a separately created dump. Failed/cancelled transactions return no
+successful identity. The output version, domains and deterministic hash encoding are unchanged.
+
 The manifest-bound Docker runtime invokes backup creation, recovery identity and restore only as
 one-off services on the bundle's private database network. Scheduled/recovery backups and release
 pre-upgrade backups are distinct typed populations: the ordinary recovery path requires

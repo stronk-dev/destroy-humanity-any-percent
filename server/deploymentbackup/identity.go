@@ -60,47 +60,55 @@ func InspectRecoveryIdentity(ctx context.Context, input RecoveryIdentityInput) (
 	if err := database.PingContext(ctx); err != nil {
 		return RecoveryIdentity{}, err
 	}
-
-	var migration int
-	if err := database.QueryRowContext(ctx, `SELECT COALESCE(max(version_id) FILTER (WHERE is_applied),0) FROM goose_db_version`).Scan(&migration); err != nil {
-		return RecoveryIdentity{}, err
-	}
-	allTables, err := discoverIdentityTables(ctx, database, `SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public' ORDER BY tablename`)
+	snapshot, err := database.BeginTx(ctx, &sql.TxOptions{ReadOnly: true, Isolation: sql.LevelRepeatableRead})
 	if err != nil {
 		return RecoveryIdentity{}, err
 	}
-	eventTables, err := discoverIdentityTables(ctx, database, `SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public' AND (tablename='events' OR tablename='intent_records' OR tablename LIKE '%\_events' ESCAPE '\') ORDER BY tablename`)
+	defer snapshot.Rollback()
+
+	var migration int
+	if err := snapshot.QueryRowContext(ctx, `SELECT COALESCE(max(version_id) FILTER (WHERE is_applied),0) FROM goose_db_version`).Scan(&migration); err != nil {
+		return RecoveryIdentity{}, err
+	}
+	allTables, err := discoverIdentityTables(ctx, snapshot, `SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public' ORDER BY tablename`)
+	if err != nil {
+		return RecoveryIdentity{}, err
+	}
+	eventTables, err := discoverIdentityTables(ctx, snapshot, `SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public' AND (tablename='events' OR tablename='intent_records' OR tablename LIKE '%\_events' ESCAPE '\') ORDER BY tablename`)
 	if err != nil {
 		return RecoveryIdentity{}, err
 	}
 
 	identity := RecoveryIdentity{SchemaVersion: 2, DatabaseMigration: migration}
-	if identity.Database, err = hashIdentityQueries(ctx, database, tableQueries(allTables)); err != nil {
+	if identity.Database, err = hashIdentityQueries(ctx, snapshot, tableQueries(allTables)); err != nil {
 		return RecoveryIdentity{}, err
 	}
-	if identity.Player, err = hashIdentityQueries(ctx, database, tableQueries([]string{"accounts", "account_emails", "account_founders"})); err != nil {
+	if identity.Player, err = hashIdentityQueries(ctx, snapshot, tableQueries([]string{"accounts", "account_emails", "account_founders"})); err != nil {
 		return RecoveryIdentity{}, err
 	}
-	if identity.Founder, err = hashIdentityQueries(ctx, database, streamIdentityQueries("founder")); err != nil {
+	if identity.Founder, err = hashIdentityQueries(ctx, snapshot, streamIdentityQueries("founder")); err != nil {
 		return RecoveryIdentity{}, err
 	}
-	if identity.Company, err = hashIdentityQueries(ctx, database, streamIdentityQueries("company")); err != nil {
+	if identity.Company, err = hashIdentityQueries(ctx, snapshot, streamIdentityQueries("company")); err != nil {
 		return RecoveryIdentity{}, err
 	}
-	if identity.Events, err = hashIdentityQueries(ctx, database, tableQueries(eventTables)); err != nil {
+	if identity.Events, err = hashIdentityQueries(ctx, snapshot, tableQueries(eventTables)); err != nil {
 		return RecoveryIdentity{}, err
 	}
-	if identity.Board, err = hashIdentityQueries(ctx, database, tableQueries([]string{"verification_projection_events", "verified_runs"})); err != nil {
+	if identity.Board, err = hashIdentityQueries(ctx, snapshot, tableQueries([]string{"verification_projection_events", "verified_runs"})); err != nil {
 		return RecoveryIdentity{}, err
 	}
-	if err := database.QueryRowContext(ctx, `SELECT count(*) FROM public.verified_runs`).Scan(&identity.VerifiedRunRows); err != nil {
+	if err := snapshot.QueryRowContext(ctx, `SELECT count(*) FROM public.verified_runs`).Scan(&identity.VerifiedRunRows); err != nil {
 		return RecoveryIdentity{}, err
 	}
-	if identity.Epoch, err = hashIdentityQueries(ctx, database, tableQueries([]string{"catalog_sets", "catalog_artifacts", "epochs", "epoch_hashes", "run_epochs"})); err != nil {
+	if identity.Epoch, err = hashIdentityQueries(ctx, snapshot, tableQueries([]string{"catalog_sets", "catalog_artifacts", "epochs", "epoch_hashes", "run_epochs"})); err != nil {
 		return RecoveryIdentity{}, err
 	}
 	if ValidateRecoveryIdentity(identity) != nil {
 		return RecoveryIdentity{}, ErrInvalid
+	}
+	if err := snapshot.Commit(); err != nil {
+		return RecoveryIdentity{}, err
 	}
 	return identity, nil
 }
@@ -138,8 +146,8 @@ func ValidatePopulatedRecoveryIdentity(identity RecoveryIdentity) error {
 	return nil
 }
 
-func discoverIdentityTables(ctx context.Context, database *sql.DB, query string) ([]string, error) {
-	rows, err := database.QueryContext(ctx, query)
+func discoverIdentityTables(ctx context.Context, snapshot *sql.Tx, query string) ([]string, error) {
+	rows, err := snapshot.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -176,8 +184,8 @@ func streamIdentityQueries(scope string) []identityQuery {
 	}
 }
 
-func hashIdentityQueries(ctx context.Context, database *sql.DB, queries []identityQuery) (RecoveryDomainIdentity, error) {
-	if database == nil || len(queries) == 0 {
+func hashIdentityQueries(ctx context.Context, snapshot *sql.Tx, queries []identityQuery) (RecoveryDomainIdentity, error) {
+	if snapshot == nil || len(queries) == 0 {
 		return RecoveryDomainIdentity{}, ErrInvalid
 	}
 	digest := sha256.New()
@@ -187,7 +195,7 @@ func hashIdentityQueries(ctx context.Context, database *sql.DB, queries []identi
 			return RecoveryDomainIdentity{}, ErrInvalid
 		}
 		writeIdentityValue(digest, []byte(query.name))
-		rows, err := database.QueryContext(ctx, query.sql)
+		rows, err := snapshot.QueryContext(ctx, query.sql)
 		if err != nil {
 			return RecoveryDomainIdentity{}, err
 		}

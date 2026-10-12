@@ -458,6 +458,152 @@ func TestRecoveryIdentityDetectsSameCountContentMutationIntegration(t *testing.T
 	}
 }
 
+func TestRecoveryIdentityUsesOneSnapshotIntegration(t *testing.T) {
+	sourceURL, adminURL := os.Getenv("TEST_DATABASE_URL"), os.Getenv("TEST_ADMIN_DATABASE_URL")
+	if sourceURL == "" || adminURL == "" {
+		t.Skip("deployment backup database URLs not set")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	resetDatabase(t, adminURL, "cloud_clicker_source")
+	database, err := save.OpenPostgres(ctx, sourceURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer database.Close()
+	if err := save.Migrate(ctx, database); err != nil {
+		t.Fatal(err)
+	}
+	seedBackupEpoch(t, database)
+	seedBackupPopulation(t, database)
+	// The full-table digest reaches this last table only after accounts. A real
+	// table lock pauses inspection there while another connection commits a write.
+	const barrier = "zz_recovery_identity_barrier"
+	if _, err := database.ExecContext(ctx, `CREATE TABLE public.zz_recovery_identity_barrier(value integer)`); err != nil {
+		t.Fatal(err)
+	}
+	var following int
+	if err := database.QueryRowContext(ctx, `SELECT count(*) FROM pg_catalog.pg_tables WHERE schemaname='public' AND tablename > $1`, barrier).Scan(&following); err != nil || following != 0 {
+		t.Fatalf("barrier is not the final discovered table: count=%d err=%v", following, err)
+	}
+	secret := writeSecret(t, t.TempDir(), "source-url", sourceURL)
+	before, err := InspectRecoveryIdentity(ctx, RecoveryIdentityInput{DatabaseURLFile: secret})
+	if err != nil {
+		t.Fatal(err)
+	}
+	lock, err := database.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer lock.Rollback()
+	if _, err := lock.ExecContext(ctx, `LOCK TABLE public.zz_recovery_identity_barrier IN ACCESS EXCLUSIVE MODE`); err != nil {
+		t.Fatal(err)
+	}
+	type inspection struct {
+		identity RecoveryIdentity
+		err      error
+	}
+	result := make(chan inspection, 1)
+	go func() {
+		identity, err := InspectRecoveryIdentity(ctx, RecoveryIdentityInput{DatabaseURLFile: secret})
+		result <- inspection{identity, err}
+	}()
+	waitBlocked := func(result <-chan inspection) {
+		t.Helper()
+		for {
+			var blocked bool
+			if err := database.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM pg_stat_activity
+			WHERE datname=current_database() AND wait_event_type='Lock'
+			AND query=$1)`, `SELECT to_jsonb(t)::text FROM public."zz_recovery_identity_barrier" AS t ORDER BY to_jsonb(t)::text`).Scan(&blocked); err != nil {
+				t.Fatal(err)
+			}
+			if blocked {
+				return
+			}
+			select {
+			case early := <-result:
+				t.Fatalf("inspection completed before its real lock boundary: err=%v", early.err)
+			case <-ctx.Done():
+				t.Fatal("invalid observation: inspector did not reach the locked final table")
+			case <-time.After(10 * time.Millisecond):
+			}
+		}
+	}
+	waitBlocked(result)
+	write, err := database.ExecContext(ctx, `UPDATE accounts SET recovery_hash='concurrent-snapshot-control'`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if count, err := write.RowsAffected(); err != nil || count != 1 {
+		t.Fatalf("concurrent write did not change the declared account: rows=%d err=%v", count, err)
+	}
+	// Exec committed on a separate connection before releasing the reader.
+	if err := lock.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	var observed inspection
+	select {
+	case observed = <-result:
+	case <-ctx.Done():
+		t.Fatal("invalid observation: inspector did not finish after lock release")
+	}
+	if observed.err != nil {
+		t.Fatal(observed.err)
+	}
+	after, err := InspectRecoveryIdentity(ctx, RecoveryIdentityInput{DatabaseURLFile: secret})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if before.Player.Rows != after.Player.Rows || before.Database.Rows != after.Database.Rows ||
+		before.Player.SHA256 == after.Player.SHA256 || before.Database.SHA256 == after.Database.SHA256 {
+		t.Fatal("concurrent same-count write did not change both relevant identities")
+	}
+	if observed.identity != before {
+		if observed.identity.Database == before.Database && observed.identity.Player == after.Player {
+			t.Fatal("one recovery identity mixed pre-commit database with post-commit player rows")
+		}
+		t.Fatal("inspection did not retain its original database snapshot")
+	}
+	// A cancelled real query must return no identity and release snapshot locks.
+	// pgx closes cancelled connections asynchronously, so observe the database
+	// releasing the lock rather than assume it happens before the error returns.
+	lock, err = database.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer lock.Rollback()
+	if _, err := lock.ExecContext(ctx, `LOCK TABLE public.zz_recovery_identity_barrier IN ACCESS EXCLUSIVE MODE`); err != nil {
+		t.Fatal(err)
+	}
+	inspectionCtx, cancelInspection := context.WithCancel(ctx)
+	defer cancelInspection()
+	go func() {
+		identity, err := InspectRecoveryIdentity(inspectionCtx, RecoveryIdentityInput{DatabaseURLFile: secret})
+		result <- inspection{identity, err}
+	}()
+	waitBlocked(result)
+	cancelInspection()
+	select {
+	case cancelled := <-result:
+		if !errors.Is(cancelled.err, context.Canceled) || cancelled.identity != (RecoveryIdentity{}) {
+			t.Fatalf("cancelled inspection returned success/partial identity: err=%v", cancelled.err)
+		}
+	case <-ctx.Done():
+		t.Fatal("invalid observation: cancelled inspection did not terminate")
+	}
+	if err := lock.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	probe, err := database.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer probe.Rollback()
+	if _, err := probe.ExecContext(ctx, `LOCK TABLE public.accounts IN ACCESS EXCLUSIVE MODE`); err != nil {
+		t.Fatalf("cancelled snapshot retained its account read lock: %v", err)
+	}
+}
+
 func seedBackupPopulation(t *testing.T, database *sql.DB) {
 	seedBackupPopulationWithVerifiedRun(t, database, true)
 }

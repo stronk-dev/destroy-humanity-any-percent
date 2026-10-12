@@ -7,7 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Bounded checkpoint, 2026-10-12:** RP-489 unifies backup-file header admission with
+**Latest bounded checkpoint, 2026-10-12:** RP-490 reads each recovery identity in one
+read-only repeatable-read transaction. A real locked-table/concurrent account-write
+regression fails on the old implementation; all seven declared Linux-amd64/Postgres
+backup integration functions now pass, including cancellation with no partial identity
+and observed lock release. Affected cold Go/vet pass. The owning log records the
+corrected cancellation observer and review range after `8ba84996`; it can share
+review with RP-489. Separate dump snapshots and full Deployment/clean-host gates remain.
+
+**Preceding bounded checkpoint, 2026-10-12:** RP-489 unifies backup-file header admission with
 the existing single-object decoder and bounds outer/decrypted metadata framing.
 Eight encrypted malformed arms fail on old code; final14 arms retain healthy,
 whitespace and exact64KiB controls. Affected cold Go/vet and all six declared
