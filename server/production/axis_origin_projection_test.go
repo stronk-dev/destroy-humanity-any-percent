@@ -2,6 +2,7 @@ package production
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,6 +14,7 @@ import (
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/save"
@@ -682,10 +684,25 @@ func TestAxisOriginDeferredExternalContextResearch(t *testing.T) {
 
 func originLoggedManual(t *testing.T, bundle CatalogBundle, state *save.State, now time.Time, mode EvaluationMode, accrual replayAccrual) LoggedTransition {
 	t.Helper()
-	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0901-7000-8000-000000000902","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1000}`))
+	request, inputs := originManualInputs(t, bundle, state, now, mode, accrual, "manual.click")
+	transition, err := ApplyLogged(state, request.CanonicalPayload, bundle, inputs)
+	if err != nil || transition.Outcome != save.IntentApplied {
+		t.Fatalf("external-origin manual action outcome=%s error=%v", transition.Outcome, err)
+	}
+	return transition
+}
+
+func originManualInputs(t *testing.T, bundle CatalogBundle, state *save.State, now time.Time, mode EvaluationMode, accrual replayAccrual, actionID string) (IntentRequest, []byte) {
+	t.Helper()
+	request, err := ParseIntent([]byte(fmt.Sprintf(`{"intent_id":"01986666-0901-7000-8000-000000000902","kind":"perform_manual_batch","expected_revision":1,"action_id":%q,"count":1,"window_ms":1000}`, actionID)))
 	if err != nil {
 		t.Fatal(err)
 	}
+	return request, originRequestInputs(t, bundle, state, now, mode, accrual, request)
+}
+
+func originRequestInputs(t *testing.T, bundle CatalogBundle, state *save.State, now time.Time, mode EvaluationMode, accrual replayAccrual, request IntentRequest) []byte {
+	t.Helper()
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001",
 		FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: state.RunSeq, RunLogSeq: 1}
 	carry := tier2FounderCarry(t, bundle, state.RunStartedAt)
@@ -697,15 +714,166 @@ func originLoggedManual(t *testing.T, bundle CatalogBundle, state *save.State, n
 	if err != nil {
 		t.Fatal(err)
 	}
+	encodedBatch := accrual.GuildSettlementBatch
+	batch := guild.SettlementBatch{GuildID: encodedBatch.GuildID, BaseSeq: encodedBatch.BaseSeq}
+	for _, row := range encodedBatch.Settlements {
+		batch.Settlements = append(batch.Settlements, guild.Settlement{GuildID: batch.GuildID,
+			BoundarySeq: row.BoundarySeq, DebitUnits: row.DebitUnits, CreditUnits: row.CreditUnits})
+	}
 	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind,
 		Contributions: external, CommonsWeightPPM: accrual.CommonsWeightPPM,
-		RouteContextVersion: accrual.RouteContextVersion, FounderCarry: &carry, ActivePlay: &active})
+		GuildSettlementBatch: batch,
+		RouteContextVersion:  accrual.RouteContextVersion, FounderCarry: &carry, ActivePlay: &active})
 	if err != nil {
 		t.Fatal(err)
 	}
-	transition, err := ApplyLogged(state, request.CanonicalPayload, bundle, inputs)
-	if err != nil || transition.Outcome != save.IntentApplied {
-		t.Fatalf("external-origin manual action outcome=%s error=%v", transition.Outcome, err)
+	return inputs
+}
+
+type originGuildMember struct{}
+
+func (originGuildMember) FounderGuildMember(context.Context, string) (bool, error) { return true, nil }
+
+// Observes the real producer's input without replacing its rate calculation.
+type originSettlementProvider struct {
+	provider faction.StockConsumptionProvider
+	observed []byte
+}
+
+func (provider *originSettlementProvider) Contributions(ctx context.Context, state *save.State, catalog *economy.Catalog, revision save.Revision) ([]multiplier.Contribution, error) {
+	var err error
+	provider.observed, err = save.EncodeState(state)
+	if err != nil {
+		return nil, err
 	}
-	return transition
+	return provider.provider.Contributions(ctx, state, catalog, revision)
+}
+
+func TestAxisOriginDeferredGuildSettlementResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	start := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
+	at := start.Add(2001 * time.Millisecond)
+	guildID := "01986666-3000-7000-8000-000000000001"
+	completed := 0
+	for _, profile := range []struct {
+		name string
+		base int64
+		rows []guild.Settlement
+	}{
+		{"single", 0, []guild.Settlement{{GuildID: guildID, BoundarySeq: 1, DebitUnits: 3, CreditUnits: 7}}},
+		{"ordered", 0, []guild.Settlement{{GuildID: guildID, BoundarySeq: 1, DebitUnits: 3, CreditUnits: 7}, {GuildID: guildID, BoundarySeq: 2, DebitUnits: 2, CreditUnits: 1}}},
+		{"nonzero_base", 11, []guild.Settlement{{GuildID: guildID, BoundarySeq: 12, DebitUnits: 5, CreditUnits: 2}}},
+	} {
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			t.Run(profile.name+"_"+string(mode), func(t *testing.T) {
+				initial := axisTimingState(t, bundle, start)
+				initial.FactionID, initial.IncorporatedAt = "bootstrapper", start
+				setCash(t, initial, "0")
+				initial.StockUnits, initial.ConsumedStockUnits = 20, 3
+				initial.GuildBoundaryGuildID, initial.GuildBoundarySeq = guildID, profile.base
+				initial.GuildConsumedWindow, initial.GuildTitheCarryPPM = 1, 999_999
+				origin := mustEncodeState(t, initial)
+				batch := guild.SettlementBatch{GuildID: guildID, BaseSeq: profile.base, Settlements: profile.rows}
+				expectedSettled := activationRestore(t, bundle, origin, 19, start)
+				if err := guild.ApplySettlements(expectedSettled, batch, bundle.Faction.StockCap); err != nil {
+					t.Fatal(err)
+				}
+				provider := &originSettlementProvider{provider: faction.StockConsumptionProvider{Catalogs: bundle, Members: originGuildMember{}}}
+				service := Service{contributions: provider, guildSettlements: fixedGuildSettlements{batch: batch}}
+				values, resolvedBatch, err := service.resolveReplayAccrual(context.Background(), initial,
+					save.Revision{OwnerID: "01986666-2000-7000-8000-000000000001", ConstantsHash: bundle.ConstantsHash},
+					bundle.Economy, bundle.Faction.StockCap, IntentRequest{Kind: IntentPerformManualBatch})
+				if err != nil || !bytes.Equal(provider.observed, mustEncodeState(t, expectedSettled)) || !bytes.Equal(origin, mustEncodeState(t, initial)) {
+					t.Fatalf("live resolution did not observe settled inputs and restore origin: %v", err)
+				}
+				// Epoch-8 Guild data explicitly has no output bonus. Do not invent one
+				// merely to make cash an oracle for clearing state.
+				if len(values) != 1 || values[0].SourceID != guild.StockConsumptionSourceID || !values[0].Factor.Eq(decimal.One) {
+					t.Fatalf("actual pinned Guild producer: %+v", values)
+				}
+				accrual, err := makeReplayAccrual(values, nil, resolvedBatch, bundle.Routes.ContextVersion())
+				if err != nil {
+					t.Fatal(err)
+				}
+				encoded, err := json.Marshal(accrual)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var retained replayAccrual
+				if err := json.Unmarshal(encoded, &retained); err != nil {
+					t.Fatal(err)
+				}
+				retainedJSON, err := json.Marshal(retained)
+				if err != nil || !bytes.Equal(encoded, retainedJSON) {
+					t.Fatalf("existing codec lost exact settlement context: %v", err)
+				}
+				external, err := contributionsFromReplay(retained)
+				if err != nil {
+					t.Fatal(err)
+				}
+				ordinaryState := activationRestore(t, bundle, origin, 19, start)
+				ordinary := originLoggedManual(t, bundle, ordinaryState, at, mode, accrual)
+				if ordinaryState.StockUnits != expectedSettled.StockUnits || ordinaryState.ConsumedStockUnits != expectedSettled.ConsumedStockUnits ||
+					ordinaryState.GuildBoundarySeq != profile.rows[len(profile.rows)-1].BoundarySeq || ordinaryState.GuildBoundaryGuildID != guildID ||
+					ordinaryState.GuildConsumedWindow != expectedSettled.GuildConsumedWindow || !ordinaryState.LifetimeValue.Gt(initial.LifetimeValue) ||
+					!hasEventKind(ordinary.Events, save.EventGuildTitheAccrued) {
+					t.Fatal("logged action missed exact settlement coordinates or positive accrual hooks")
+				}
+				deferred := activationRestore(t, bundle, origin, 19, start)
+				for _, offset := range []int64{1, 1000, 2000, 2001} {
+					copy := activationRestore(t, bundle, origin, 19, start)
+					if err := applyReplayGuildSettlements(copy, retained.GuildSettlementBatch, bundle.Faction.StockCap); err != nil {
+						t.Fatal(err)
+					}
+					now := start.Add(time.Duration(offset) * time.Millisecond)
+					projected := originProjectionStateWithExternal(t, bundle, mustEncodeState(t, copy), now, mode, external)
+					expected := originProjectionStateWithExternal(t, bundle, mustEncodeState(t, expectedSettled), now, mode, values)
+					if !bytes.Equal(mustEncodeState(t, projected), mustEncodeState(t, expected)) || !bytes.Equal(origin, mustEncodeState(t, deferred)) {
+						t.Fatal("scratch clearing changed projection or consumed committed origin")
+					}
+				}
+				settled := originLoggedManual(t, bundle, deferred, at, mode, retained)
+				assertTransition := func(state *save.State, result LoggedTransition) {
+					t.Helper()
+					if !bytes.Equal(mustEncodeState(t, state), mustEncodeState(t, ordinaryState)) || !bytes.Equal(result.Receipt, ordinary.Receipt) ||
+						canonicalFixtureValue(t, result.Events) != canonicalFixtureValue(t, ordinary.Events) {
+						t.Fatal("closed settlement/manual state, exact receipt or ordered events changed")
+					}
+				}
+				assertTransition(deferred, settled)
+				missingBatch := retained
+				missingBatch.GuildSettlementBatch = replayGuildSettlementBatch{Settlements: []replayGuildSettlement{}}
+				omitted := activationRestore(t, bundle, origin, 19, start)
+				originLoggedManual(t, bundle, omitted, at, mode, missingBatch)
+				if bytes.Equal(mustEncodeState(t, omitted), mustEncodeState(t, ordinaryState)) || omitted.GuildBoundarySeq != profile.base ||
+					omitted.Ledger.Snapshot()["company.cash"] != ordinaryState.Ledger.Snapshot()["company.cash"] {
+					t.Fatal("omitted clearing was not exposed by state despite equal pinned neutral-rate cash")
+				}
+				beforeDuplicate := mustEncodeState(t, deferred)
+				request, inputs := originManualInputs(t, bundle, deferred, at, mode, retained, "manual.click")
+				if _, err := ApplyLogged(deferred, request.CanonicalPayload, bundle, inputs); err == nil || !bytes.Equal(beforeDuplicate, mustEncodeState(t, deferred)) {
+					t.Fatalf("duplicate clearing accepted or mutated settled Company: %v", err)
+				}
+				rejectedState := activationRestore(t, bundle, origin, 19, start)
+				request, err = ParseIntent([]byte(`{"intent_id":"01986666-0901-7000-8000-000000000902","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":1}}`))
+				if err != nil {
+					t.Fatal(err)
+				}
+				inputs = originRequestInputs(t, bundle, rejectedState, at, mode, retained, request)
+				rejected, err := ApplyLogged(rejectedState, request.CanonicalPayload, bundle, inputs)
+				if err != nil || rejected.Outcome != save.IntentRejected || len(rejected.Events) != 0 || !bytes.Equal(origin, mustEncodeState(t, rejectedState)) {
+					t.Fatalf("late unaffordable purchase leaked settlement/accrual/hooks: outcome=%s err=%v", rejected.Outcome, err)
+				}
+				if !bytes.Equal(rejected.Receipt, marshalRejection(request.IntentID, 1, "unaffordable", "generator.beige_tower")) {
+					t.Fatalf("rollback control did not reach the post-accrual affordability decision: %s", rejected.Receipt)
+				}
+				assertTransition(rejectedState, originLoggedManual(t, bundle, rejectedState, at, mode, retained))
+				completed++
+			})
+		}
+	}
+	if completed != 6 {
+		t.Fatalf("settlement population incomplete: %d/6", completed)
+	}
+	t.Log("6 nonempty Guild-context cells: exact closed transitions, settled producer inputs, omission/duplicate/rollback controls; AC6 NOT_PROVEN")
 }

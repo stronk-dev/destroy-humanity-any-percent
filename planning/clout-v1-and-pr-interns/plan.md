@@ -158,6 +158,35 @@ draft now names the existing external context separately from the encoded Compan
 buffs, nonempty Guild settlements, live capture/SQL/TS and the unadopted interval/lifetime
 contract remain open. The owning log holds final checks and the invalid first population.
 
+2026-10-12 R-012 settlement follow-up, baseline `a598167b`: exercise three nonempty
+Guild batches (one clearing, two ordered clearings, and an existing nonzero watermark),
+online/offline, through the real input resolver, stock-consumption provider and logged
+manual transition. Membership and pending-batch lookup are fixed test inputs, not SQL proof.
+Require the provider to observe settled stock/window/watermark while resolution restores
+the original Company; retain exact batch and contributions through the existing codec.
+Four scratch cuts at1/1000/2000/2001ms apply clearing only to fresh restored copies.
+The subsequent logged action must match ordinary full state/receipt/ordered events, execute
+positive Prestige/Guild hooks and consume exactly the declared clearing coordinates.
+Omission must lose clearing state even though the pinned zero consumption bonus can leave
+cash equal; duplicate application must refuse without changing an already-settled state.
+A late unaffordable purchase must roll back clearing, accrual and hooks, then allow the
+original valid action to reproduce the ordinary result. Complete exactly six cells; any
+invalid/incomplete cell fails. This constrains C2/C3, not a production accounting algorithm,
+adopted episode/lifetime policy, SQL clearing/capture, active-buff timing, TS parity or AC6.
+No production, balance, kernel/save, criterion, accepted contract or CI change.
+Instrument setup correction:23473 rejects all six before measurement because stock was
+seeded without incorporation. Use the existing admitted bootstrapper incorporation fields
+and zero initial cash; no production admission relaxed. Source inspection also shows an
+unknown manual action refuses before evaluation, so use the existing known-generator
+unaffordable purchase (with exact rejection receipt) for the late rollback control. Focused
+61026 then executes all six successfully; this changes the instrument, not the contract.
+Completed: final six-cell population passes natively and in the declared Linux-amd64 lane;
+the codec preserves exact context, duplicate delivery refuses, omitted clearing loses full
+state despite equal cash, and the exact unaffordable receipt proves late rollback followed
+by successful manual application. The draft now records this bounded once-only settlement
+boundary. Active-buff timing, live/SQL capture, general workloads, TS and the unresolved
+episode/origin lifetime remain; the owning log records checks and the initial invalid setup.
+
 ## Batches
 
 - [x] P1 (`ace4e67e`, formulas `80f1bd47`) — CV1 economy schema v5 (Go `server/economy`, TS `client/src/economy-kernel.ts`):

@@ -2681,3 +2681,45 @@ settlement contract (especially active temporal inputs and nonempty Guild batche
 the unresolved interval/lifetime ruling, then implement a reviewed viable algorithm. Do not
 repeat ordinary scalar profiles, pre-advance live state or call this green server CI.
 No archival, push, deployment, cleanup or release claim; the complete1.0 goal remains active.
+
+## 2026-10-12 — Nonempty Guild clearing through the closed transition (R-012)
+
+At `a598167b`, predeclared six cells: single/ordered/nonzero-base clearing batches ×
+online/offline. Extended the existing origin instrument and its manual input helper;
+the helper now preserves nonempty replay batches instead of dropping them. No production
+byte changed. Actual `resolveReplayAccrual` and `StockConsumptionProvider` execute with
+fixed membership/pending-batch lookup; observed full pre-provider state proves clearing
+precedes rate resolution, while the original Company remains exact after resolution.
+Existing context encoding retains the batch and contribution rows. Four fresh scratch
+copies followed by a real logged manual action reproduce ordinary whole state, exact
+receipt and ordered events, including positive Prestige/Guild hooks.
+
+Negative controls: omitted clearing keeps cash equal under the pinned zero Guild bonus
+but loses stock/consumption/watermark state; duplicate batch application refuses without
+mutation. A real known-generator purchase reaches its exact `unaffordable` receipt after
+accrual/hooks, rolls back the full Company, then the valid manual action reproduces the
+ordinary result. Census completes only after every assertion: six, no exclusions.
+Initial23473 instead refused all six at state admission because the fixture seeded stock
+without incorporation; invalid research evidence, not a product defect. Corrected to the
+existing bootstrapper incorporation fields and zero cash. An unknown manual action was
+also unsuitable for late rollback (source refuses before evaluation), so the instrument
+uses the specified unaffordable purchase; initial admitted61026 passes all six.
+
+Final checks: native78283 `make test-go vet GO_PACKAGES='./production ./faction ./guild'
+GO_TEST_FLAGS='-count=1 -run TestAxisOrigin'` passes all origin tests and vet (the selector
+finds no tests in Faction/Guild). Linux-amd6446428 `make test-go-ci
+CI_TEST_PACKAGES='./production' CI_TEST_FLAGS='-v -run TestAxisOriginDeferredGuildSettlementResearch'`
+passes all six verbosely. In-memory test, not SQL proof despite that lane's DB URL.
+Whole cold48993 `make test-go GO_PACKAGES='./production ./faction ./guild'
+GO_TEST_FLAGS='-count=1'`: Faction/Guild pass; production remains RED with exactly the
+original27 RP-307 partition failures (38.246s), no new failure. Native DB prerequisites
+skip; no TS, hosted, full-CI or AC6 success claim. All handles terminal; formatted/diff checked.
+
+The Codex-authored draft C2/C3 now records this bounded once-only/rollback evidence.
+General clearing workloads, live membership/SQL capture, temporal active buffs, TS and
+the unadopted episode/origin-lifetime contract remain. Review by: Codex (implementer first
+filter). Recorded by: Codex. Range after `a598167b` through this containing commit needs
+Claude review; no self-approval or waiver of earlier review debt. Next: specify and test
+temporal producer boundaries, then the viable accounting/compatibility algorithm under
+explicit episode/lifetime authority. No balance, save/kernel, policy, owner copy, criterion,
+accepted contract, workflow, archival, push or deployment changes; full1.0 goal active.

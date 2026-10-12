@@ -141,8 +141,8 @@ at each internal cut:
   event, distinct from the Commons production modifier and Company solidarity samples.
 - `guild_settlement_batch`: the existing identity/base sequence/ordered debit-credit rows.
   A nonempty batch changes the pre-state before rate derivation and must apply once at its
-  existing transition boundary. This experiment's batch is empty; nonempty settlement
-  composition remains unproved.
+  existing transition boundary. The external-context experiment uses an empty batch; the
+  separate bounded settlement experiment below covers three nonempty batch profiles.
 - `route_context_version`, Founder carry and active-play evidence: retain their current
   authorities in the closed transition. The external-context experiment does not prove
   that active buffs can be frozen for a whole interval, omit temporal schedule evidence,
@@ -151,8 +151,26 @@ at each internal cut:
 This is a constraint on the pending design, not a new origin/save wire, adoption of an
 origin lifetime or a production fix. The initial120001ms population refused before action
 on the existing active-play due-transition ceiling; the successful shorter population
-does not establish that longer boundary. Actual provider/SQL state capture, nonempty Guild
-settlements, active-buff boundaries, Go/TS parity and full-domain conservation remain owed.
+does not establish that longer boundary. Live provider/SQL state capture, general Guild
+settlement workloads, active-buff boundaries, Go/TS parity and full-domain conservation remain owed.
+
+`TestAxisOriginDeferredGuildSettlementResearch` adds six admitted Go cells: one clearing,
+two ordered clearings and a nonzero existing watermark, each online/offline at2001ms.
+The actual input resolver applies pending clearing before the actual stock-consumption
+provider and restores the pre-state afterward. Fixed membership and batch lookup are test
+inputs, not a live Guild/SQL claim. Existing replay encoding retains the exact batch and
+contributions. Fresh scratch copies consume clearing independently; a subsequent logged
+manual action on the unchanged committed Company matches the ordinary complete state,
+receipt and ordered events, including positive Prestige/Guild hooks. Applying that same
+batch again refuses without mutation. A known-generator unaffordable purchase, whose
+refusal occurs after accrual/hooks, restores the whole original Company; the subsequent
+valid manual action still reproduces the ordinary result.
+
+The pinned Guild consumption bonus is zero. Omitting clearing therefore preserves cash
+but loses stock/consumption/watermark state in all six cells. Cash equality cannot prove
+clearing delivery, even with a membership contribution present. This constrains C2/C3's
+once-only boundary and failure atomicity; it is not adoption of origin lifetime, an absence
+policy, an arbitrary batch algorithm, temporal buff semantics or a conservation repair.
 
 #### Bounded executable algorithm and write set
 
