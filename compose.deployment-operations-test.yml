@@ -1,6 +1,21 @@
 name: cloud-clicker-operations-test
 
 services:
+  postgres:
+    image: postgres:16-alpine@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685
+    environment:
+      POSTGRES_DB: cloud_clicker_operations_test
+      POSTGRES_USER: cloud_clicker
+      POSTGRES_PASSWORD: operations_test_only
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloud_clicker -d cloud_clicker_operations_test"]
+      interval: 1s
+      timeout: 5s
+      retries: 30
+    tmpfs:
+      - /var/lib/postgresql/data
+    networks: [operations]
+
   caddy:
     image: caddy:2.11.4-alpine@sha256:98eb57d882ccd5213d1688764db10c1ca2c58a1ca3a6717a3411ad798f7a423a
     environment:
@@ -46,13 +61,24 @@ services:
     command: ["-test.run", "^TestPrivateOperationsProfileIntegration$$", "-test.v", "-test.count=1"]
     environment:
       CLOUD_CLICKER_OPERATIONS_INTEGRATION: "1"
+      TEST_DATABASE_URL: postgres://cloud_clicker:operations_test_only@postgres:5432/cloud_clicker_operations_test?sslmode=disable
     volumes:
       - ./.cache/bin/operations.test:/test/operations.test:ro
       - operations-textfile:/textfile
     networks:
       operations:
         aliases: [gameserver]
-    depends_on: [caddy, prometheus, alertmanager, node-exporter]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      caddy:
+        condition: service_started
+      prometheus:
+        condition: service_started
+      alertmanager:
+        condition: service_started
+      node-exporter:
+        condition: service_started
 
 networks:
   operations:

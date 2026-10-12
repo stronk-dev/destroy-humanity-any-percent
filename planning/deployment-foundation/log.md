@@ -5501,3 +5501,60 @@ retention, clean-host R-006, whole-CI, Deployment acceptance or archival claim.
 Review by: Codex (implementer first filter). Recorded by: Codex. The complete
 new range after `24a343b8` through this containing commit requires Claude's
 designated review; it may consolidate with related operations corrections.
+
+## 2026-10-13 — Real Postgres collection failure reaches the operator (DP7)
+
+**Outcome / authority:** construct the missing producer→rule→receiver proof under
+Deployment DP7/AC7 and the existing reviewed database/collector rule. The private
+fixture previously supplied a fake unavailable database. It now owns a pinned
+Postgres16 service on its private network, no host port, with tmpfs data and only
+declared fixture credentials. Its current embedded migration chain must succeed.
+No production, migration, rule, threshold, kernel, provider or CI-workflow bytes change.
+
+**Test / discrimination:** from a healthy baseline, an actual exclusive lock on
+`verification_dead_letters` makes the production collector's count query exceed
+its existing2s context. Ping and scrape must remain1 while collection becomes0.
+The focused check requires unavailable count families to disappear, not return
+stale/invented zeros, and requires healthy collection after rollback. The private
+fixture additionally requires the unchanged2m rule, a received firing newer than
+the fault, and resolution carrying that exact firing's start time after lock release.
+The shared notification helper retains backup matching and forbids synthetic nonce
+notifications from satisfying these paths.
+
+Executed evidence:
+
+- `make test-go-ci CI_TEST_PACKAGES='./operations'
+  CI_TEST_FLAGS='-run TestDatabaseCollectorIntegration -v'`70699 passes the healthy
+  current-schema and new blocked-query/recovery populations,0.12s/2.11s, no skips.
+- Compiler overlay93504 maps only a task-owned copy of `operations/metrics.go`
+  into the declared Linux-amd64/Postgres test service, changing query-error
+  collection0 to1. The new test fails2.16s with `actual database health was hidden`,
+  showing the actual falsely healthy metric. Production source never changed;
+  the exact one-line copy diff was checked. Removed only the temporary source/
+  overlay and empty task directory after the probe completed.
+- `make test-go vet GO_PACKAGES='./operations ./releasepackage'
+  GO_TEST_FLAGS='-count=1'`53874 passes both affected packages and vet. Native
+  optional integration skips are not SQL/Compose evidence.
+- After the fault probe, `make test-go-ci CI_TEST_PACKAGES='./operations'
+  CI_TEST_FLAGS='-v'`70387 passes the complete cold package,3.149s. Both real SQL
+  tests execute; optional native binaries and the separate private profile skip
+  explicitly. No production restoration or cache-dependent success is needed.
+- `make test-deployment-operations-profile`31383 passes330.07s, exit0. All five
+  private scrape targets, synthetic nonce, cleanup firing, backup same-second
+  firing/matching resolution, actual Postgres collection failure after2m, its
+  received matching resolution, receiver500 refusal and Caddy-admin isolation
+  execute. Its8m completion guard covers the measured138.64s prior population
+  plus the new real2m hold and unchanged1m grouping transitions; no alert bound
+  was relaxed. The target removes only its dedicated fixture project/volume.
+
+**Coverage / handoff:** this is a real database/query failure, not simulated
+metric text or a stopped Postgres service/network partition. The gameserver
+target remains the actual registry served by a test fixture, not a release
+gameserver. Service images retain the existing host-selected/mixed architecture;
+Linux-amd64 Go/SQL and this private stack are not the clean release-host rehearsal.
+Other producer arms, retention, seven-family end-to-end acceptance, exact release
+bundles, R-006, current hosted CI and broader corrective reviews remain open.
+Review by: Codex (implementer first filter). Recorded by: Codex. The complete
+test/fixture/docs/plan/log range after `b4013e99` through this containing commit
+needs Claude's designated review, consolidatable with the preceding operations
+correction. No archival, publication, deployment or feature-completion promotion.

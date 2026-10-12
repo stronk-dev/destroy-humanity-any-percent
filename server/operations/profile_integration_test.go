@@ -14,16 +14,18 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"cloud-clicker/server/save"
 )
 
 func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	if os.Getenv("CLOUD_CLICKER_OPERATIONS_INTEGRATION") != "1" {
 		t.Skip("requires isolated operations Compose profile")
 	}
-	// The expanded population includes both backup delivery transitions at the
-	// unchanged one-minute Alertmanager grouping interval, then its 45s refusal
-	// window. This is a completion guard, not a relaxed alert/latency bound.
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	// The preceding population measured 138.64s. This adds a real two-minute
+	// database failure plus firing/resolution at the unchanged one-minute
+	// grouping interval. The eight-minute guard is not an alert/latency bound.
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
 	defer cancel()
 	received := make(chan []byte, 32)
 	var servers []*http.Server
@@ -38,7 +40,19 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	}
 	// The gameserver target is the real production registry, not hand-written
 	// exposition text, so label and series-shape defects reach real Prometheus.
-	registry, err := NewRegistry(fakeDatabase{ping: errors.New("integration fixture has no database")})
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Fatal("isolated operations profile requires its actual Postgres service")
+	}
+	database, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer database.Close()
+	if err := save.Migrate(ctx, database); err != nil {
+		t.Fatal(err)
+	}
+	registry, err := NewRegistry(database)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -162,6 +176,45 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	waitForBackupNotification(t, ctx, received, "resolved", clearedAt, firingStart)
 	t.Log("successful retry reached the receiver as resolution of that exact backup alert")
 
+	// The server is reachable throughout. A real Postgres table lock makes the
+	// collector's bounded count query time out, without replacing its metric
+	// values or taking the scrape target offline. Its health signal must page.
+	if !waitForQueryValue(ctx, client, "cloud_clicker_postgres_reachable", "1") ||
+		!waitForQueryValue(ctx, client, "cloud_clicker_database_collection_success", "1") ||
+		!waitForAlertState(ctx, client, "CloudClickerPostgresUnreachable", "inactive") {
+		t.Fatal("actual Postgres collector did not establish a healthy baseline")
+	}
+	lock, err := database.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer lock.Rollback()
+	if _, err := lock.ExecContext(ctx, "LOCK TABLE verification_dead_letters IN ACCESS EXCLUSIVE MODE"); err != nil {
+		t.Fatal(err)
+	}
+	blockedAt := time.Now().UTC()
+	if !waitForQueryValue(ctx, client, "cloud_clicker_postgres_reachable", "1") ||
+		!waitForQueryValue(ctx, client, "cloud_clicker_database_collection_success", "0") ||
+		!waitForQueryValue(ctx, client, `up{job="gameserver"}`, "1") ||
+		!waitForAlertState(ctx, client, "CloudClickerPostgresUnreachable", "firing") {
+		t.Fatal("real blocked database query did not fire its declared rule")
+	}
+	if elapsed := time.Since(blockedAt); elapsed < 2*time.Minute {
+		t.Fatalf("database alert bypassed its two-minute lower bound: %s", elapsed)
+	}
+	databaseFiringStart := waitForOperationsNotification(t, ctx, received, "CloudClickerPostgresUnreachable", "gameserver", "firing", blockedAt, time.Time{})
+	t.Log("real Postgres collection failure reached the receiver after the two-minute rule interval; ping and scrape stayed healthy")
+	unblockedAt := time.Now().UTC()
+	if err := lock.Rollback(); err != nil {
+		t.Fatal(err)
+	}
+	if !waitForQueryValue(ctx, client, "cloud_clicker_database_collection_success", "1") ||
+		!waitForAlertState(ctx, client, "CloudClickerPostgresUnreachable", "inactive") {
+		t.Fatal("real Postgres collector did not recover after lock release")
+	}
+	waitForOperationsNotification(t, ctx, received, "CloudClickerPostgresUnreachable", "gameserver", "resolved", unblockedAt, databaseFiringStart)
+	t.Log("lock release reached the configured receiver as resolution of that exact database alert")
+
 	// A receiver that rejects every notification must fail the delivery proof
 	// on recorded failures, not merely time out.
 	rejecting.Store(true)
@@ -175,10 +228,15 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 
 func waitForBackupNotification(t *testing.T, ctx context.Context, received <-chan []byte, status string, after, firingStart time.Time) time.Time {
 	t.Helper()
+	return waitForOperationsNotification(t, ctx, received, "CloudClickerBackupMissingOrFailed", "node-exporter", status, after, firingStart)
+}
+
+func waitForOperationsNotification(t *testing.T, ctx context.Context, received <-chan []byte, name, job, status string, after, firingStart time.Time) time.Time {
+	t.Helper()
 	for {
 		select {
 		case <-ctx.Done():
-			t.Fatalf("backup %s notification missing: %v", status, ctx.Err())
+			t.Fatalf("%s %s notification missing: %v", name, status, ctx.Err())
 		case body := <-received:
 			var message struct {
 				Alerts []struct {
@@ -192,7 +250,7 @@ func waitForBackupNotification(t *testing.T, ctx context.Context, received <-cha
 				t.Fatalf("invalid configured receiver notification: %v", err)
 			}
 			for _, alert := range message.Alerts {
-				if alert.Labels["alertname"] != "CloudClickerBackupMissingOrFailed" || alert.Status != status {
+				if alert.Labels["alertname"] != name || alert.Status != status {
 					continue
 				}
 				if status == "firing" && alert.StartsAt.Before(after) {
@@ -201,9 +259,9 @@ func waitForBackupNotification(t *testing.T, ctx context.Context, received <-cha
 				if status == "resolved" && (!alert.StartsAt.Equal(firingStart) || alert.EndsAt.Before(after)) {
 					continue
 				}
-				if alert.StartsAt.IsZero() || alert.Labels["job"] != "node-exporter" ||
+				if alert.StartsAt.IsZero() || alert.Labels["job"] != job ||
 					alert.Labels["severity"] != "page" || alert.Labels["proof_nonce"] != "" {
-					t.Fatalf("backup notification lost its actual producer identity: %+v", alert)
+					t.Fatalf("%s notification lost its actual producer identity: %+v", name, alert)
 				}
 				return alert.StartsAt
 			}

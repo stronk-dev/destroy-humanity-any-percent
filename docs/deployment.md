@@ -838,6 +838,18 @@ test input to the real textfile producer, not actual Postgres backup executions.
 scheduler regression runs the real encrypted-target admission, blocks on a foreign entry and
 recovers after its removal with a synthetic dump. Neither proof replaces real dump/restore,
 all seven producer journeys or the exact release-host rehearsal.
+
+The private fixture also owns a disposable Postgres16 service, with no published port,
+and migrates it using the current embedded migration chain. Its production registry now
+queries that real database rather than a fake unavailable database. After a healthy scraped
+baseline, an actual exclusive table lock blocks the bounded population query. Database ping
+and the gameserver scrape remain healthy while collection reports failure; the unchanged
+two-minute database/collector rule must fire and reach the configured receiver. Releasing
+the lock restores collection and must deliver resolution with the same alert start time.
+The focused SQL test also requires failed collection to omit unavailable population counts,
+not publish stale or invented zeros. This covers the rule's collection-failure arm, not a
+stopped Postgres service, network partition, dead-letter producer, or release-host incident.
+
 The target compiles the Linux/amd64 test binary and removes only the fixture's
 dedicated project after execution. Compose resolves service architectures from the pinned images
 and local image store; the fixture does not enforce an all-amd64 stack and is not a supported

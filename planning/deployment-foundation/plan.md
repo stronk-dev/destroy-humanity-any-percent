@@ -7,6 +7,19 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest DP7 acceptance construction, 2026-10-13:** the private operations fixture
+now owns a disposable, current-schema Postgres16 database instead of a fake
+unavailable database. Its real count query is blocked by an exclusive table lock:
+ping and scrape stay healthy, collection reports failure, the unchanged two-minute
+rule reaches the configured receiver, and lock release delivers matching resolution.
+The full fixture passes330.07s, including backup fire/clear and receiver rejection.
+The focused actual-SQL failure/recovery check passes cold on Linux-amd64; a compiler
+overlay falsely returning collection success makes it fail without touching production
+source. This is the collector-failure arm, not a Postgres process/network outage or
+the complete seven-family release population. The owning log holds the new range
+after `b4013e99`, consolidatable with RP-518; designated review and broad DP-E/AC7
+acceptance remain open. Continue the remaining producer paths and release-host proof.
+
 **Latest bounded correction, 2026-10-13 (RP-518):** helper observation now keeps
 an atomic bounded last-result gauge alongside the unchanged historical timestamps.
 The backup alert no longer loses a failure in the same whole second as success;
