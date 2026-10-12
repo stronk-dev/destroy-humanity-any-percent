@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest bounded correction, 2026-10-12 (RP-508):** rollback input preflight now uses the
+actual authenticated package decoder before stopping services/resetting Postgres. The old
+method admits encrypted non-packages and packages with trailing data; focused controls now
+also reject a changed dump with its old internal hash. Plaintext workspaces are private and
+removed on return. The R18 missing-input producer now creates a full package, retaining its
+healthy-first control and synthetic-dump limitation. Real Postgres/Caddy and affected native/
+Linux checks pass; the owning log holds the pending review range. D-019's separate per-release
+restore choice, logical restore/RTO, clean-host and broader Deployment gates remain open.
+
 **Latest bounded correction, 2026-10-12 (RP-507):** package extraction now consumes the
 authenticated stream after tar EOF and refuses any remaining bytes before returning a usable
 dump. The old implementation stalls for one extra byte, a zero block and a second archive;

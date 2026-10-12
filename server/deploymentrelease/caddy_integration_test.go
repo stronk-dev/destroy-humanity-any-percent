@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"net"
 	"net/http"
 	"os"
@@ -61,6 +62,8 @@ func TestCaddyIntegrationDrainReleaseAndExactBackupRollback(t *testing.T) {
 		t.Fatal(err)
 	}
 	backup := createReleaseBackup(t, database, databaseURL, root)
+	verifyReleaseBackupPackagePreflight(t, ctx, backup)
+	waitCaddy(t, client, origin+"/readyz", http.StatusNoContent)
 	expectedEpoch, err := epochseed.Load(root)
 	if err != nil {
 		t.Fatal(err)
@@ -204,6 +207,58 @@ func TestCaddyIntegrationDrainReleaseAndExactBackupRollback(t *testing.T) {
 
 type releaseBackupFixture struct {
 	path, manifestSHA256, manifestPath, identityPath, databaseURLFile string
+}
+
+func verifyReleaseBackupPackagePreflight(t *testing.T, ctx context.Context, backup releaseBackupFixture) {
+	t.Helper()
+	manifestBytes, err := os.ReadFile(backup.manifestPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle := Bundle{ManifestSHA256: backup.manifestSHA256}
+	if err := json.Unmarshal(manifestBytes, &bundle.Manifest); err != nil {
+		t.Fatal(err)
+	}
+	header, err := deploymentbackup.ReadHeader(backup.path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	runner := &commandFixture{}
+	runtime := dockerFixtureRuntime(runner, filepath.Dir(backup.path), backup.identityPath)
+	runtime.ServerID = header.ServerID
+	if err := runtime.VerifyRestoreInputs(ctx, bundle, BackupReference{ID: header.BackupID, Path: backup.path}); err != nil {
+		t.Fatalf("real Postgres backup package refused by rollback preflight: %v", err)
+	}
+	identityBytes, err := os.ReadFile(backup.identityPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	identity, err := age.ParseX25519Identity(strings.TrimSpace(string(identityBytes)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var plaintext bytes.Buffer
+	if _, err := deploymentbackup.Restore(backup.path, backup.manifestSHA256, identity, &plaintext); err != nil {
+		t.Fatal(err)
+	}
+	target := t.TempDir()
+	_, path, err := deploymentbackup.Create(deploymentbackup.CreateInput{
+		Directory: target, BackupID: header.BackupID, ServerID: header.ServerID,
+		ReleaseManifestSHA256: header.ReleaseManifestSHA256, EpochID: header.EpochID,
+		StartedAt: header.StartedAt, Now: func() time.Time { return header.CompletedAt },
+		Recipient: identity.Recipient().String(), Dump: bytes.NewReader(append(plaintext.Bytes(), 'x')), PreUpgrade: true,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	runtime.BackupTarget = target
+	if err := runtime.VerifyRestoreInputs(ctx, bundle, BackupReference{ID: header.BackupID, Path: path}); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("real Postgres backup with authenticated tail admitted by rollback preflight: %v", err)
+	}
+	if len(runner.calls) != 0 {
+		t.Fatalf("backup package preflight issued runtime commands: %v", runner.calls)
+	}
+	t.Log("real Postgres backup package accepted; authenticated trailing data refused before runtime commands")
 }
 
 func createReleaseBackup(t *testing.T, database *sql.DB, databaseURL, root string) releaseBackupFixture {

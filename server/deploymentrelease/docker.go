@@ -446,9 +446,9 @@ func (runtime DockerRuntime) RestoreRecoveryBackup(ctx context.Context, bundle B
 }
 
 // VerifyRestoreInputs authenticates the host backup with the same single age
-// identity population as the real restore before rollback touches Compose state.
-// It proves the key can decrypt the envelope, not that a database restore has
-// already succeeded; the clean-volume restore still runs and rechecks inputs.
+// identity population and package decoder as the real restore before rollback
+// touches Compose state. It does not prove a database restore has already
+// succeeded; the clean-volume restore still runs and rechecks inputs.
 func (runtime DockerRuntime) VerifyRestoreInputs(_ context.Context, bundle Bundle, backup BackupReference) error {
 	runtime, identityPath, err := runtime.restoreFiles(backup)
 	if err != nil {
@@ -463,7 +463,13 @@ func (runtime DockerRuntime) VerifyRestoreInputs(_ context.Context, bundle Bundl
 	if parseErr != nil || closeErr != nil || len(identities) != 1 {
 		return errors.Join(ErrInvalid, parseErr, closeErr)
 	}
-	header, err := deploymentbackup.Restore(backup.Path, bundle.ManifestSHA256, identities[0], io.Discard)
+	workspace, err := os.MkdirTemp("", ".cloud-clicker-rollback-preflight-*")
+	if err != nil {
+		return errors.Join(ErrInvalid, err)
+	}
+	defer os.RemoveAll(workspace)
+	extracted, err := deploymentbackup.ExtractPackage(backup.Path, bundle.ManifestSHA256, identities[0], workspace)
+	header := extracted.Header
 	if err != nil || header.BackupID != backup.ID || !validBackupHeader(header, bundle, runtime.ServerID, true) {
 		return errors.Join(ErrInvalid, err)
 	}

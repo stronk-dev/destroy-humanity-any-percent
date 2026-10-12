@@ -14,6 +14,8 @@ import (
 
 	"cloud-clicker/server/deploymentbackup"
 	"cloud-clicker/server/deploymentrelease"
+	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/releasepackage"
 )
 
 // errProbeRuntimeReached marks a guard runtime call. Release negatives must be
@@ -117,7 +119,7 @@ func runIrreversibleMigrationProbe(request ProbeRequest) (ProbeOutcome, error) {
 
 // runMissingPreviousInputProbe proves rollback refuses a missing pre-upgrade
 // backup and a missing previous image at the production gates that run before
-// anything destructive: VerifyRestoreInputs (host envelope, identity) and
+// anything destructive: VerifyRestoreInputs (authenticated package, identity) and
 // Prepare (image load and config-ID inspection). Each gate first accepts the
 // intact input so a rejection is attributable to the removed input alone.
 func runMissingPreviousInputProbe(request ProbeRequest) (ProbeOutcome, error) {
@@ -146,8 +148,16 @@ func runMissingPreviousInputProbe(request ProbeRequest) (ProbeOutcome, error) {
 	}
 	const serverID = "01986666-b001-4000-8000-000000000006"
 	now := time.Now().UTC()
-	header, backupPath, err := deploymentbackup.Create(deploymentbackup.CreateInput{Directory: target, BackupID: now.Format("20060102T150405Z") + "-abcdef123456",
-		ServerID: serverID, ReleaseManifestSHA256: previous.ManifestSHA256, EpochID: previous.Manifest.EpochID, StartedAt: now.Add(-time.Second),
+	manifest, err := os.ReadFile(filepath.Join(previous.Root, releasepackage.ReleaseManifestPath))
+	if err != nil {
+		return ProbeAccepted, err
+	}
+	epoch, err := os.ReadFile(filepath.Join(previous.Root, "content", filepath.FromSlash(epochseed.Path)))
+	if err != nil {
+		return ProbeAccepted, err
+	}
+	header, backupPath, err := deploymentbackup.CreatePackage(deploymentbackup.PackageInput{Directory: target, BackupID: now.Format("20060102T150405Z") + "-abcdef123456",
+		ServerID: serverID, ReleaseManifest: manifest, EpochDeclaration: epoch, StartedAt: now.Add(-time.Second),
 		Now: func() time.Time { return now }, Recipient: identity.Recipient().String(), Dump: bytes.NewReader([]byte("PGDMP\x01rollback-input probe")), PreUpgrade: true})
 	if err != nil {
 		return ProbeAccepted, err

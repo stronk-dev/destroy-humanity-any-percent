@@ -5136,3 +5136,50 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 `4627861a` through this containing commit; Claude designated review pending, consolidatable
 with related Deployment corrections. Existing metadata-binding, snapshot-origin/resolution
 author holds and earlier independent ranges remain; no proposal was implicitly adopted.
+
+## 2026-10-12 — Rollback validates the backup package before database destruction (RP-508)
+
+DP5/DP6/AC5 and the existing restore_inputs stage require corrupt input to refuse before
+stop/reset. RP-507's real package decoder refuses trailing data, but host rollback preflight
+still decrypts only to a discard sink. Regression49581 admits both an authenticated non-package
+and a complete package with trailing plaintext. Its healthy control now uses CreatePackage,
+not the old raw-dump envelope. Initial98310 has a wrong repository/content path and establishes
+no product failure; correction reads the existing root epoch without changing its bytes.
+
+Reuse ExtractPackage inside a private0700 temporary workspace before returning preflight
+success; its0600 dump and workspace are removed on return. Existing key/header/path checks
+remain, and no runtime command is issued. Add a changed-dump/old-hash refusal and assert no
+plaintext workspace survives all tested returns. R18's missing-input diagnostic initially
+fails its healthy control because it generates only a raw-dump envelope. Correct that existing
+producer to package the actual validated previous manifest/epoch and its explicitly synthetic
+dump; do not bypass the guard, count baseline failure as a negative, or claim a real DB restore.
+No backup format, secret placement, retention, objective bound, CI or controller ordering change.
+
+Executed evidence:
+
+- Focused corrected host check98794 passes. Final regression/cleanup51651 also passes on
+  declared Linux-amd64 with healthy, non-package, trailing-data and wrong-dump-hash populations,
+  while retaining existing missing/wrong/multiple identity, manifest/class and ciphertext cases.
+- Final `make test-go vet GO_PACKAGES='./deploymentbackup ./deploymentrelease ./deploymentrehearsal ./cmd/deployment-release ./cmd/deployment-rehearsal' GO_TEST_FLAGS='-count=1'`
+  25939 passes all five packages and vet. Native unavailable DB cases do not establish SQL proof.
+- `make test-go-ci CI_TEST_PACKAGES='./deploymentbackup ./deploymentrelease ./deploymentrehearsal ./cmd/deployment-release ./cmd/deployment-rehearsal'`
+  26233 passes all five affected Linux-amd64 packages cold count1, including repaired R18 controls.
+  Final test-only workspace assertion is separately covered by51651; no hosted/whole-CI claim.
+- `make test-deployment-release`78484 passes the real Linux-amd64/Postgres16/Caddy journey:
+  actual pg_dump package passes host preflight; its authenticated trailing-data variant refuses
+  before any runtime command; readiness remains; admitted work drains/socket courtesy closes;
+  restart, actual intact restore, identity/start/smoke and severed-artifact refusal still pass.
+  The declared isolated project cleans up. This is a repository fixture, not a release bundle
+  installed on a clean host or actual DockerRuntime rollback destroying a live volume.
+- Earlier36355 and the first release-target attempt fail compilation on a missing test import;
+ 77338 then exposes R18's invalid healthy fixture. These results remain red, not passed gates.
+ Final97018/26233 and25939/51651 supply the corrected consumer results. gofmt/diff checks pass;
+ all run handles terminal. Unrelated orphan containers were not cleaned.
+
+Docs/plan and RP-508 reflect the guarantee and its limits. Logical pg_restore acceptance and
+production-size extraction/RTO remain measured clean-host gates; D-019 still owns the distinct
+every-release isolated-restore choice. Metadata-binding/snapshot-origin/resolution holds remain.
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range starts after
+`cd609d07` through this containing commit; Claude designated review pending, combinable with
+related Deployment repairs. No full feature approval, checkbox, archival, push, deployment or
+nine-tier/release-completion claim follows.

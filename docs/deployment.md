@@ -678,11 +678,17 @@ deadline. Rollback accepts only those recorded values. Before it stops anything 
 verifies the previous bundle's images, runs the previous-bundle preflight, and verifies the restore
 inputs on the host: the backup path is a regular non-empty file in the backup target; the age
 identity is an owner-only regular file containing exactly one parseable identity; and a full
-authenticated decrypt to a discard sink proves that identity opens the backup and that the
+authenticated package decode proves that identity opens the backup and that the
 envelope's payload length/SHA-256, backup ID, server, previous manifest, epoch and pre-upgrade
-class all match (`restore_inputs` stage). A missing, corrupt or wrong backup or identity therefore
+class all match (`restore_inputs` stage). It also validates the exact archive members, internal
+manifest/epoch/metadata bindings, dump length/hash and authenticated EOF using the real restore's
+package decoder. Its mode-0700 temporary workspace holds only mode-0600 extracted dump data and
+is removed on return; neither plaintext nor the restore identity enters the off-host target.
+A missing, corrupt or wrong backup or identity therefore
 refuses with the live database untouched. This preflight does not claim a database restore has
-already succeeded; the clean-volume restore and exact identity checks remain required.
+already succeeded or that `pg_restore` accepts the dump's logical contents; the clean-volume
+restore and exact identity checks remain required. The R-006 rehearsal must measure the actual
+preflight extraction/storage cost rather than assume the RTO remains met.
 Only then does it stop the failed stack, remove only the
 named Postgres data volume, starts a clean Postgres service, restores the exact encrypted backup,
 starts the exact previous bundle, repeats epoch/artifact reconciliation and runs the same Caddy

@@ -1,6 +1,7 @@
 package deploymentrelease
 
 import (
+	"archive/tar"
 	"bytes"
 	"context"
 	"crypto/sha256"
@@ -490,6 +491,20 @@ func dockerFixtureBundle(t *testing.T) Bundle {
 
 func TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands(t *testing.T) {
 	bundle := dockerFixtureBundle(t)
+	contentRoot := filepath.Join("..", "..")
+	epoch, err := os.ReadFile(filepath.Join(contentRoot, filepath.FromSlash(epochseed.Path)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	content, err := epochseed.Load(contentRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	manifest := releaseBackupManifest(t, epoch, content, bundle.Manifest.DatabaseMigration)
+	if err := json.Unmarshal(manifest, &bundle.Manifest); err != nil {
+		t.Fatal(err)
+	}
+	bundle.ManifestSHA256 = digestBytes(manifest)
 	target := t.TempDir()
 	identityPath := filepath.Join(t.TempDir(), "identity")
 	identity, err := age.GenerateX25519Identity()
@@ -500,10 +515,10 @@ func TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands(t *testing.T) 
 		t.Fatal(err)
 	}
 	now := time.Date(2026, 8, 22, 18, 1, 0, 0, time.UTC)
-	create := func(id string, manifest string, preUpgrade bool) BackupReference {
+	create := func(id string, manifest []byte, preUpgrade bool) BackupReference {
 		t.Helper()
-		header, path, err := deploymentbackup.Create(deploymentbackup.CreateInput{Directory: target, BackupID: id, ServerID: "server-1",
-			ReleaseManifestSHA256: manifest, EpochID: bundle.Manifest.EpochID, StartedAt: now.Add(-time.Minute),
+		header, path, err := deploymentbackup.CreatePackage(deploymentbackup.PackageInput{Directory: target, BackupID: id, ServerID: "server-1",
+			ReleaseManifest: manifest, EpochDeclaration: epoch, StartedAt: now.Add(-time.Minute),
 			Now: func() time.Time { return now }, Recipient: identity.Recipient().String(),
 			Dump: bytes.NewReader([]byte("PGDMP\x01restore-input fixture")), PreUpgrade: preUpgrade})
 		if err != nil {
@@ -511,26 +526,89 @@ func TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands(t *testing.T) 
 		}
 		return BackupReference{ID: header.BackupID, Path: path}
 	}
-	valid := create("20260822T180000Z-acde00000001", bundle.ManifestSHA256, true)
+	valid := create("20260822T180000Z-acde00000001", manifest, true)
 	runner := &commandFixture{}
 	runtime := dockerFixtureRuntime(runner, target, identityPath)
+	workRoot := t.TempDir()
+	t.Setenv("TMPDIR", workRoot)
 	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, valid); err != nil {
 		t.Fatalf("valid restore inputs rejected: %v", err)
+	}
+	var original bytes.Buffer
+	header, err := deploymentbackup.Restore(valid.Path, bundle.ManifestSHA256, identity, &original)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var wrongDumpHash bytes.Buffer
+	archive := tar.NewReader(bytes.NewReader(original.Bytes()))
+	rewritten := tar.NewWriter(&wrongDumpHash)
+	for {
+		entry, err := archive.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		data, err := io.ReadAll(archive)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if entry.Name == "database.dump" {
+			data[0] ^= 0xff
+		}
+		if err := rewritten.WriteHeader(entry); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := rewritten.Write(data); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := rewritten.Close(); err != nil {
+		t.Fatal(err)
+	}
+	for name, plaintext := range map[string][]byte{
+		"not_a_package":   []byte("PGDMP\x01not the required package"),
+		"trailing_data":   append(append([]byte(nil), original.Bytes()...), 'x'),
+		"wrong_dump_hash": wrongDumpHash.Bytes(),
+	} {
+		t.Run(name, func(t *testing.T) {
+			attackTarget := t.TempDir()
+			_, path, err := deploymentbackup.Create(deploymentbackup.CreateInput{
+				Directory: attackTarget, BackupID: header.BackupID, ServerID: header.ServerID,
+				ReleaseManifestSHA256: header.ReleaseManifestSHA256, EpochID: header.EpochID,
+				StartedAt: header.StartedAt, Now: func() time.Time { return header.CompletedAt },
+				Recipient: identity.Recipient().String(), Dump: bytes.NewReader(plaintext), PreUpgrade: true,
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			var decrypted bytes.Buffer
+			if _, err := deploymentbackup.Restore(path, bundle.ManifestSHA256, identity, &decrypted); err != nil || !bytes.Equal(decrypted.Bytes(), plaintext) {
+				t.Fatalf("fixture is not authentically decryptable: %v", err)
+			}
+			attackRuntime := runtime
+			attackRuntime.BackupTarget = attackTarget
+			if err := attackRuntime.VerifyRestoreInputs(context.Background(), bundle, BackupReference{ID: header.BackupID, Path: path}); !errors.Is(err, ErrInvalid) {
+				t.Fatalf("malformed authenticated package admitted before destructive rollback: %v", err)
+			}
+		})
 	}
 
 	missing := BackupReference{ID: "20260822T180000Z-acde00000009", Path: filepath.Join(target, "20260822T180000Z-acde00000009.ccbackup")}
 	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, missing); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("missing backup accepted: %v", err)
 	}
-	wrongManifest := create("20260822T180000Z-acde00000002", "sha256:"+strings.Repeat("e", 64), true)
+	wrongManifestBytes := bytes.Replace(manifest, []byte(strings.Repeat("a", 40)), []byte(strings.Repeat("e", 40)), 1)
+	wrongManifest := create("20260822T180000Z-acde00000002", wrongManifestBytes, true)
 	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, wrongManifest); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("wrong-manifest backup accepted: %v", err)
 	}
-	recoveryClass := create("20260822T180000Z-acde00000003", bundle.ManifestSHA256, false)
+	recoveryClass := create("20260822T180000Z-acde00000003", manifest, false)
 	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, recoveryClass); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("non-pre-upgrade backup accepted as rollback input: %v", err)
 	}
-	corrupt := create("20260822T180000Z-acde00000004", bundle.ManifestSHA256, true)
+	corrupt := create("20260822T180000Z-acde00000004", manifest, true)
 	data, err := os.ReadFile(corrupt.Path)
 	if err != nil {
 		t.Fatal(err)
@@ -580,7 +658,7 @@ func TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands(t *testing.T) 
 	}
 	// Recompute the unauthenticated outer checksum after changing ciphertext.
 	// A header-only/checksum-only preflight accepts this, but authentication must not.
-	tampered := create("20260822T180000Z-acde00000005", bundle.ManifestSHA256, true)
+	tampered := create("20260822T180000Z-acde00000005", manifest, true)
 	raw, err := os.ReadFile(tampered.Path)
 	if err != nil {
 		t.Fatal(err)
@@ -613,6 +691,15 @@ func TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands(t *testing.T) 
 	}
 	if len(runner.calls) != 0 {
 		t.Fatalf("restore-input verification issued runtime commands: %v", runner.calls)
+	}
+	workEntries, err := os.ReadDir(workRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range workEntries {
+		if strings.HasPrefix(entry.Name(), ".cloud-clicker-rollback-preflight-") {
+			t.Fatalf("preflight left its plaintext workspace behind: %s", entry.Name())
+		}
 	}
 }
 
