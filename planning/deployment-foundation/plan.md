@@ -15,6 +15,22 @@ and invalid-clock refusal before destructive work. Affected cold packages/vet an
 Linux-amd64 recovery tests pass. Controlled runtime evidence, not an actual clean-host
 restore; the owning log holds the new pending review range, combinable with RP-503.
 
+2026-10-12 bounded retention integrity diagnostic at `09cf45e5`: two independent real
+encrypted backup populations, each with a recent normal backup and31-day unresolved
+pre-upgrade backup. Intact controls must retain both and restore the protected dump.
+Change only the outer `pre_upgrade` or `upgrade_resolved` boolean, preserving ciphertext/
+length/checksum. Observe actual ReadHeader, Restore, PlanRetention and ApplyRetention;
+record protection failure when cleanup deletes the protected local fixture despite an
+authenticated restore refusal. No real backup/operator data is used. This is a diagnostic,
+not retention acceptance: report unsafe-case census explicitly, preserve existing policy/
+format/key placement, and route a confirmed authority gap rather than invent a new key.
+
+Diagnostic completed: both intact controls retain/restore; both outer-flag mutations
+are admitted by classification and delete the protected fixture. RP-505 remains an
+open DP6/AC4 defect. The metadata-binding draft is not implementation authority;
+complete its verification/publication/compatibility design before proposing adoption.
+Owning log records native/Linux execution and the pending designated review range.
+
 **Latest bounded correction, 2026-10-12 (RP-503):** objective measurement now applies
 DP6/AC4's exact six-hour/four-hour bounds before whole-second report conversion. The
 12-case regression exposes four old-source subsecond-overrun false passes and passes

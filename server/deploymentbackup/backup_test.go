@@ -364,6 +364,85 @@ func TestRetentionNeverDeletesTheOnlyNewestBackupEvenAfterThirtyDays(t *testing.
 	}
 }
 
+// Diagnostic evidence, not a retention acceptance gate. It reports whether the
+// existing encrypted format lets unauthenticated outer flags remove protection.
+func TestRetentionOuterProtectionMetadataResearch(t *testing.T) {
+	now := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
+	manifest := "sha256:" + strings.Repeat("a", 64)
+	unsafe, completed := 0, 0
+	for _, field := range []string{"pre_upgrade", "upgrade_resolved"} {
+		t.Run(field, func(t *testing.T) {
+			identity, err := age.GenerateX25519Identity()
+			if err != nil {
+				t.Fatal(err)
+			}
+			directory := t.TempDir()
+			paths := []string{}
+			for index, elapsed := range []time.Duration{time.Hour, 31 * 24 * time.Hour} {
+				at := now.Add(-elapsed)
+				_, path, err := Create(CreateInput{Directory: directory,
+					BackupID: at.Format("20060102T150405Z") + "-abcdef12345" + string(rune('0'+index)),
+					ServerID: "server", ReleaseManifestSHA256: manifest, EpochID: 8,
+					StartedAt: at.Add(-time.Minute), Now: func() time.Time { return at },
+					Recipient: identity.Recipient().String(), Dump: strings.NewReader("PGDMP protected fixture"), PreUpgrade: index == 1})
+				if err != nil {
+					t.Fatal(err)
+				}
+				paths = append(paths, path)
+			}
+			if plan := PlanRetention(paths, now); len(plan.Keep) != 2 || len(plan.Delete)+len(plan.Invalid) != 0 {
+				t.Fatalf("intact protection baseline failed: %+v", plan)
+			}
+			var dump bytes.Buffer
+			if _, err := Restore(paths[1], manifest, identity, &dump); err != nil || dump.String() != "PGDMP protected fixture" {
+				t.Fatalf("intact protected restore baseline failed: %v", err)
+			}
+			data, err := os.ReadFile(paths[1])
+			if err != nil {
+				t.Fatal(err)
+			}
+			end := bytes.IndexByte(data[len(magic):], '\n') + len(magic)
+			var header map[string]any
+			if err := json.Unmarshal(data[len(magic):end], &header); err != nil {
+				t.Fatal(err)
+			}
+			header[field] = field == "upgrade_resolved"
+			encoded, err := json.Marshal(header)
+			if err != nil {
+				t.Fatal(err)
+			}
+			changed := append(append([]byte(magic), encoded...), '\n')
+			changed = append(changed, data[end+1:]...)
+			if err := os.WriteFile(paths[1], changed, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			dump.Reset()
+			if _, err := Restore(paths[1], manifest, identity, &dump); !errors.Is(err, ErrInvalid) || dump.Len() != 0 {
+				t.Fatalf("authenticated metadata corruption was not refused before output: %v", err)
+			}
+			_, headerErr := ReadHeader(paths[1])
+			plan, retentionErr := ApplyRetention(paths, now)
+			_, remainingErr := os.Lstat(paths[1])
+			if remainingErr != nil && !errors.Is(remainingErr, os.ErrNotExist) {
+				t.Fatalf("cannot observe protected backup after retention: %v", remainingErr)
+			}
+			deleted := errors.Is(remainingErr, os.ErrNotExist)
+			if deleted {
+				unsafe++
+			}
+			if _, err := os.Lstat(paths[0]); err != nil {
+				t.Fatalf("recent control backup was lost: %v", err)
+			}
+			t.Logf("field=%s header_error=%v retention_error=%v invalid=%d delete=%d protected_deleted=%t", field, headerErr, retentionErr, len(plan.Invalid), len(plan.Delete), deleted)
+			completed++
+		})
+	}
+	if completed != 2 {
+		t.Fatalf("retention integrity diagnostic incomplete: %d/2", completed)
+	}
+	t.Logf("retention protection failures=%d/2; successful instrument execution is NOT retention acceptance", unsafe)
+}
+
 type errorReader struct{ remaining int }
 
 func (reader *errorReader) Read(target []byte) (int, error) {

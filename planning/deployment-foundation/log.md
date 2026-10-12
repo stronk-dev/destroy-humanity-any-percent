@@ -5031,3 +5031,38 @@ the RP-503 range after `ad54b258`. Earlier debt remains. No acceptance checkbox,
 CI/workflow/budget, operator authority, four-proposal adoption, push or deployment change.
 The complete1.0 goal remains active; exact current/previous bundles, clean-host R-006/R-007,
 RP-131/RP-307 and author/owner decisions remain separate requirements.
+
+## 2026-10-12 — Outer protection metadata permits unsafe retention (RP-505)
+
+Under DP6/AC4, cleanup must preserve unresolved pre-upgrade backups and refuse corrupt
+input. Two independent real age-encrypted populations each retain and restore their
+intact31-day protected backup alongside a recent ordinary control. Changing only the
+outer `pre_upgrade` or `upgrade_resolved` flag preserves encrypted payload/checksum:
+`ReadHeader` accepts and actual `ApplyRetention` deletes the protected fixture, while
+authenticated `Restore` refuses before output. Both recent controls survive. Protection
+fails2/2; successful diagnostic execution is explicitly NOT retention acceptance.
+
+Executed final checks:8339 cold `make test-go vet
+GO_PACKAGES='./deploymentbackup ./cmd/deployment-backup' GO_TEST_FLAGS='-count=1'`
+passes affected packages/vet.59504 declared `make test-go-ci
+CI_TEST_PACKAGES='./deploymentbackup'
+CI_TEST_FLAGS='-v -run TestRetentionOuterProtectionMetadataResearch'` executes both arms
+on Linux-amd64 and reports the same2/2 failures. These are actual encryption/filesystem
+operations in test-owned temporary directories, not Postgres dumps or a clean-host
+rehearsal. Native DB prerequisites may skip; no SQL proof is claimed. Earlier61595/66459
+completion output was unavailable after context recovery; final evidence above was
+rerun after adding explicit refusal of an unobservable filesystem outcome. All current
+handles terminal; gofmt/diff checks pass.
+
+DESIGN-GAP: retention needs independently verifiable protection metadata while the age
+restore identity stays off-host. Draft `rfc/backup-protection-metadata.md` routes verification
+authority, atomic publication, existing-backup compatibility and the separately unresolved
+resolution lifecycle. No mechanism is selected/adopted; runtime bytes, format, key handling
+and retention durations are unchanged. Canonical docs now disclose the current limitation.
+Next: complete that engineering contract before construction, without treating a draft as
+authority or weakening DP6 to fit the implementation.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new diagnostic/docs/
+draft range starts after `09cf45e5` through this containing commit; Claude designated review
+pending, combinable with related Deployment corrections. Earlier review debt remains.
+No acceptance, archival, hosted-CI, four-proposal adoption, push or deployment claim.

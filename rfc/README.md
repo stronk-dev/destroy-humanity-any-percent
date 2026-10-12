@@ -36,6 +36,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Permits & the T3→T4 Gate](permits-and-t3-gate.md) | promoted in reviewed epoch 6; archival pending | Economy Kernel / Route Registry / First Content Epoch |
 | [First Content Epoch](first-content-epoch.md) | epoch 6 minted and designated-approved; dependent archival in progress | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | implementing — accepted at `cd102d7` | Gameserver / Client / Account / API / CI / operations |
+| [Backup Protection Metadata Binding](backup-protection-metadata.md) | draft — RP-505 integrity/compatibility contract unresolved; not implementation authority | Deployment DP6 / retention |
 | [Accessibility of Player Workflows](accessibility-player-workflows.md) | draft — current Game UI failures measured; owner task/AT matrix pending | UI Foundation / Game UI Screens; later surface RFCs consume its acceptance floor |
 | [v0.1 "The Garage" — Release Manifest & RFC DAG](v0.1-garage-release-manifest.md) | accepted 2026-09-25 (recommended defaults); implementing | design/07 Phase 1 |
 | [Reputation Tree v1](reputation-tree-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Prestige & Exits / Leaderboards & Epochs |

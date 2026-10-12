@@ -495,9 +495,17 @@ substituted payload is invalid for schedule, retention and restore, even when ag
 and the encrypted header copy would still verify.
 
 The retention policy keeps every completed six-hour backup for seven days, then one completed
-backup per UTC day through day 30. It always protects the newest valid backup and every unresolved
-pre-upgrade backup. A population containing an invalid file blocks deletion. A missing population
-or newest completion older than six hours is reported as a failing state.
+backup per UTC day through day 30. The current classifier protects the newest valid backup and
+every backup whose outer header identifies an unresolved pre-upgrade. A population containing
+an invalid file blocks deletion. A missing population or newest completion older than six
+hours is reported as a failing state.
+
+**Blocking limitation (RP-505):** the worker verifies payload length/checksum, not the
+authenticated copy of protection metadata inside that payload. Changing either outer protection
+flag can make cleanup delete an unresolved pre-upgrade backup even though explicit authenticated
+restore rejects the file. Do not cite current classification tests as proof of corruption-safe
+protection. The proposed [metadata-binding amendment](../rfc/backup-protection-metadata.md) is
+draft; no new proof format/key authority or automatic old-backup conversion is adopted.
 
 Restore requires the age identity explicitly; that identity is not mounted in the continuously
 running stack. The helper authenticates the outer envelope, encrypted metadata, release-manifest
