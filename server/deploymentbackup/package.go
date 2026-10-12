@@ -76,6 +76,11 @@ func CreatePackage(input PackageInput) (Header, string, error) {
 		return Header{}, "", err
 	}
 	_ = manifest
+	// Both passes describe the complete custom-format archive, regardless of
+	// the caller's current position. A suffix hash cannot bind a full dump.
+	if _, err := input.Dump.Seek(0, io.SeekStart); err != nil {
+		return Header{}, "", err
+	}
 	dumpHash := sha256.New()
 	dumpBytes, err := io.Copy(dumpHash, input.Dump)
 	if err != nil || dumpBytes < 1 {
@@ -98,7 +103,7 @@ func CreatePackage(input PackageInput) (Header, string, error) {
 	reader, writer := io.Pipe()
 	writeResult := make(chan error, 1)
 	go func() {
-		writeResult <- writePackageTar(writer, completedAt, metadataBytes, input.ReleaseManifest, input.EpochDeclaration, input.Dump, dumpBytes)
+		writeResult <- writePackageTar(writer, completedAt, metadataBytes, input.ReleaseManifest, input.EpochDeclaration, input.Dump, dumpBytes, metadata.DatabaseDumpSHA256)
 	}()
 	header, path, createErr := Create(CreateInput{
 		Directory: input.Directory, BackupID: input.BackupID, ServerID: input.ServerID,
@@ -119,7 +124,7 @@ func CreatePackage(input PackageInput) (Header, string, error) {
 	return header, path, nil
 }
 
-func writePackageTar(pipe *io.PipeWriter, timestamp time.Time, metadata, manifest, epoch []byte, dump io.Reader, dumpBytes int64) error {
+func writePackageTar(pipe *io.PipeWriter, timestamp time.Time, metadata, manifest, epoch []byte, dump io.Reader, dumpBytes int64, expectedDumpHash string) error {
 	tarWriter := tar.NewWriter(pipe)
 	closeWith := func(err error) error {
 		_ = tarWriter.Close()
@@ -141,7 +146,17 @@ func writePackageTar(pipe *io.PipeWriter, timestamp time.Time, metadata, manifes
 	if err := tarWriter.WriteHeader(&tar.Header{Name: dumpName, Mode: 0o600, Size: dumpBytes, ModTime: timestamp}); err != nil {
 		return closeWith(err)
 	}
-	if written, err := io.CopyN(tarWriter, dump, dumpBytes); err != nil || written != dumpBytes {
+	dumpHash := sha256.New()
+	if written, err := io.CopyN(io.MultiWriter(tarWriter, dumpHash), dump, dumpBytes); err != nil || written != dumpBytes {
+		return closeWith(errors.Join(ErrInvalid, err))
+	}
+	if "sha256:"+hex.EncodeToString(dumpHash.Sum(nil)) != expectedDumpHash {
+		return closeWith(ErrInvalid)
+	}
+	// Refuse a source that grew after hashing instead of silently packaging
+	// only its original prefix. EOF and digest must agree before Create can
+	// commit the envelope; any failure travels back through the pipe.
+	if extra, err := io.CopyN(io.Discard, dump, 1); extra != 0 || err != io.EOF {
 		return closeWith(errors.Join(ErrInvalid, err))
 	}
 	if err := tarWriter.Close(); err != nil {

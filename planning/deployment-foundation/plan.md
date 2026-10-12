@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest bounded correction (RP-510):** both package-creation passes now bind the
+same complete dump under DP6/AC4. Four old-source regressions fail; rewind before
+hashing plus streamed hash/EOF validation prevents publishing an inconsistent
+package. Actual positioned empty/populated Postgres dumps restore with matching
+recovery identity; affected native/vet and Linux checks pass. No format, retention,
+clock, key or CI contract change. The owning log records results and the full
+corrective range needing designated review; broader Deployment gates remain open.
+
 **Latest bounded correction, 2026-10-12 (RP-508):** rollback input preflight now uses the
 actual authenticated package decoder before stopping services/resetting Postgres. The old
 method admits encrypted non-packages and packages with trailing data; focused controls now

@@ -5183,3 +5183,42 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 `cd609d07` through this containing commit; Claude designated review pending, combinable with
 related Deployment repairs. No full feature approval, checkbox, archival, push, deployment or
 nine-tier/release-completion claim follows.
+
+## 2026-10-12 — Bind both backup creation passes to the complete dump (RP-510)
+
+Outcome under DP6/AC4: a completed package must bind the entire supplied dump,
+not a suffix hash or changed second pass. Definitive unchanged-source53556
+fails four cases: positioned-reader success followed by restore refusal,
+EOF-position rejection of a complete readable dump, same-length substitution
+accepted, and appended bytes silently omitted. Initial-position zero and stable
+input pass; shortened second-pass input already refuses. Initial24545's changed-
+source helper accidentally promoted bytes.Reader.WriteTo, bypassing its Read hook;
+those three changed-source results are invalid. Corrected helper hides that fast
+path and asserts exactly one between-pass replacement before counting evidence.
+
+Repair: rewind before first-pass hashing, hash the actual streamed second-pass
+bytes, and require exact EOF before closing the pipe successfully. Existing atomic
+envelope publication/cleanup remains authoritative. No backup format, age identity,
+metadata/retention choice, timestamp semantics, bound or CI workflow changes.
+Corrected89793 passes all seven regression arms; every changed source refuses
+with no header/path or retained files, while all initial positions restore exactly.
+
+Executed final checks:95691 root `make test-go vet GO_PACKAGES='./deploymentbackup
+./cmd/deployment-backup ./deploymentrelease ./deploymentrehearsal' GO_TEST_FLAGS='-count=1'`
+passes all four packages and vet.63312 `make test-go-ci` with the same four
+`CI_TEST_PACKAGES` passes cold on Linux/amd64.10138 `make test-deployment-backup`
+executes all seven real Postgres16 integration functions without skips: original
+empty/populated restore and trailing-data refusal remain, and both actual dumps
+repackaged after reading their signature restore with exact semantic recovery
+identity. Native/general-CI missing dedicated restore URLs are not that SQL proof.
+The declared isolated target cleans itself up; unrelated orphan containers are
+untouched. Formatting/diff checks pass; all handles terminal.
+
+Docs/plan and RP-510 record the guarantee and limitations. Review by: Codex
+(implementer first filter). Recorded by: Codex. Exact full source/test/docs/ledger/
+plan/log range after `e27eb832` through this containing commit needs Claude
+designated review, combinable with related backup corrections. No acceptance,
+archival, hosted/whole-CI, clean-host/RTO or release claim; signed protection
+metadata, snapshot-origin/resolution author holds and D-019 remain separate.
+Continue accepted construction/correctness while those specific contracts are
+held; full nine-tier1.0 goal remains active. Nothing pushed or deployed.

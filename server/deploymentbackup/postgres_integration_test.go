@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"io"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -368,6 +369,41 @@ func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T)
 			if err != nil || CompareRecoveryIdentity(beforeRecovery, afterRecovery) != nil {
 				t.Fatalf("semantic recovery identity mismatch\nbefore=%+v\nafter=%+v\nerr=%v", beforeRecovery, afterRecovery, err)
 			}
+			// Repackage the actual pg_dump file after a caller has read its
+			// signature. Creation still has to bind and restore the entire dump.
+			extracted, err := ExtractPackage(path, manifestHash, identity, t.TempDir())
+			if err != nil {
+				t.Fatal(err)
+			}
+			dump, err := os.Open(extracted.DumpPath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := dump.Seek(5, io.SeekStart); err != nil {
+				_ = dump.Close()
+				t.Fatal(err)
+			}
+			repackedHeader, repackedPath, createErr := CreatePackage(PackageInput{
+				Directory: t.TempDir(), BackupID: header.BackupID, ServerID: header.ServerID,
+				StartedAt: header.StartedAt, Now: func() time.Time { return header.CompletedAt },
+				Recipient: identity.Recipient().String(), Dump: dump,
+				ReleaseManifest: manifest, EpochDeclaration: epoch,
+			})
+			if closeErr := dump.Close(); createErr != nil || closeErr != nil {
+				t.Fatalf("positioned real dump creation failed: create=%v close=%v", createErr, closeErr)
+			}
+			resetDatabase(t, adminURL, "cloud_clicker_restore")
+			if restored, err := RestorePostgresBackup(ctx, PostgresRestoreInput{
+				BackupPath: repackedPath, ExpectedManifestSHA256: manifestHash, IdentityFile: identityPath,
+				TargetDatabaseURLFile: targetSecret,
+			}); err != nil || restored != repackedHeader {
+				t.Fatalf("positioned real dump was committed but not restorable: %v", err)
+			}
+			positionedRecovery, err := InspectRecoveryIdentity(ctx, RecoveryIdentityInput{DatabaseURLFile: targetSecret})
+			if err != nil || CompareRecoveryIdentity(beforeRecovery, positionedRecovery) != nil {
+				t.Fatalf("positioned real dump changed recovery identity: %v", err)
+			}
+			t.Log("positioned real pg_dump repackaged and restored with exact semantic recovery identity")
 		})
 	}
 }

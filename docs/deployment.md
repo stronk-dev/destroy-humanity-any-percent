@@ -452,6 +452,8 @@ after all of the following succeed:
 - the live Goose migration equals the exact release manifest;
 - `pg_dump` 16 completes a custom-format archive;
 - the release manifest and its exact epoch declaration validate and agree;
+- both package-creation passes cover the complete dump: the reader is rewound before hashing,
+  and the streamed second pass must have the same length/hash and end at EOF before publication;
 - the dump, manifest, epoch and authenticated metadata are encrypted to the operator's age X25519
   recipient; and
 - the complete temporary envelope is re-read and its header, payload length and checksum verified
@@ -465,7 +467,10 @@ only its own temporaries. Linux uses `renameat2(RENAME_NOREPLACE)`; macOS develo
 back to a replacing rename. The supported release host remains Linux/amd64.
 
 No unencrypted dump is written to the off-host target. Interrupted reads and writes remove their
-temporary output.
+temporary output. A dump reader already positioned past its signature is handled as the same
+complete archive, not a suffix. Changed, shortened or extended second-pass input refuses without
+committing an envelope. This verifies the packaged source bytes; it does not replace an actual
+Postgres restore or the release artifact's recovery rehearsal.
 
 Backup inspection and restoration share the same envelope-header decoder: exactly one JSON
 object, with no unknown fields or trailing value/garbage. Both framing lines and the decrypted

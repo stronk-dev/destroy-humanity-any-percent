@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"sort"
@@ -43,6 +44,119 @@ func TestPackageRoundTripBindsDumpManifestEpochAndHeader(t *testing.T) {
 	restored, err := os.ReadFile(extracted.DumpPath)
 	if err != nil || !bytes.Equal(restored, dump) || extracted.Header != header || extracted.Metadata.DatabaseDumpSHA256 != digest(dump) {
 		t.Fatalf("restored=%q header=%+v metadata=%+v err=%v", restored, extracted.Header, extracted.Metadata, err)
+	}
+}
+
+func TestPackageCreationUsesTheCompleteDumpRegardlessOfReaderPosition(t *testing.T) {
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	epoch := fixtureEpoch(t, 8)
+	manifest := fixtureReleaseManifest(t, epoch)
+	dump := []byte("PGDMP complete dump with distinct prefix and suffix")
+	now := time.Date(2026, 10, 12, 15, 0, 0, 0, time.UTC)
+	for _, position := range []int64{0, 5, int64(len(dump))} {
+		t.Run(fmt.Sprintf("position_%d", position), func(t *testing.T) {
+			reader := bytes.NewReader(dump)
+			if _, err := reader.Seek(position, io.SeekStart); err != nil {
+				t.Fatal(err)
+			}
+			header, path, err := CreatePackage(PackageInput{
+				Directory: t.TempDir(), BackupID: "20261012T145900Z-abcdef123456", ServerID: "server",
+				StartedAt: now.Add(-time.Minute), Now: func() time.Time { return now }, Recipient: identity.Recipient().String(),
+				Dump: reader, ReleaseManifest: manifest, EpochDeclaration: epoch,
+			})
+			if err != nil {
+				t.Fatalf("complete readable dump refused: %v", err)
+			}
+			extracted, err := ExtractPackage(path, digest(manifest), identity, t.TempDir())
+			if err != nil {
+				t.Fatalf("creation reported success for an unrestorable package: %v", err)
+			}
+			actual, err := os.ReadFile(extracted.DumpPath)
+			if err != nil || !bytes.Equal(actual, dump) || extracted.Header != header ||
+				extracted.Metadata.DatabaseDumpSHA256 != digest(dump) || extracted.Metadata.DatabaseDumpBytes != int64(len(dump)) {
+				t.Fatalf("completed package did not bind the complete dump: bytes=%q metadata=%+v err=%v", actual, extracted.Metadata, err)
+			}
+		})
+	}
+}
+
+// Replace the test input only when creation rewinds after reading its first
+// pass. This models a changed source between hashing and packaging without
+// altering ciphertext, metadata, clocks, or the production code.
+type packageChangingDump struct {
+	Reader      *bytes.Reader
+	replacement []byte
+	read        bool
+	changes     int
+}
+
+func (dump *packageChangingDump) Read(data []byte) (int, error) {
+	dump.read = true
+	return dump.Reader.Read(data)
+}
+
+func (dump *packageChangingDump) Seek(offset int64, whence int) (int64, error) {
+	if dump.read && offset == 0 && whence == io.SeekStart {
+		dump.Reader = bytes.NewReader(dump.replacement)
+		dump.read = false
+		dump.changes++
+	}
+	return dump.Reader.Seek(offset, whence)
+}
+
+func TestPackageCreationRefusesChangedDumpBeforeCommitting(t *testing.T) {
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	epoch := fixtureEpoch(t, 8)
+	manifest := fixtureReleaseManifest(t, epoch)
+	dump := []byte("PGDMP original dump bytes")
+	now := time.Date(2026, 10, 12, 15, 0, 0, 0, time.UTC)
+	for _, fixture := range []struct {
+		name        string
+		replacement []byte
+		valid       bool
+	}{
+		{"unchanged", dump, true},
+		{"same_length_changed", []byte("PGDMP modified dump bytes"), false},
+		{"truncated", dump[:len(dump)-1], false},
+		{"appended", append(bytes.Clone(dump), 'x'), false},
+	} {
+		t.Run(fixture.name, func(t *testing.T) {
+			directory := t.TempDir()
+			source := &packageChangingDump{Reader: bytes.NewReader(dump), replacement: fixture.replacement}
+			header, path, err := CreatePackage(PackageInput{
+				Directory: directory, BackupID: "20261012T145900Z-abcdef123456", ServerID: "server",
+				StartedAt: now.Add(-time.Minute), Now: func() time.Time { return now }, Recipient: identity.Recipient().String(),
+				Dump:            source,
+				ReleaseManifest: manifest, EpochDeclaration: epoch,
+			})
+			if source.changes != 1 {
+				t.Fatalf("invalid fixture: expected one between-pass replacement, got %d", source.changes)
+			}
+			if fixture.valid {
+				extracted, extractErr := ExtractPackage(path, digest(manifest), identity, t.TempDir())
+				if err != nil || extractErr != nil || extracted.Header != header {
+					t.Fatalf("intact two-pass input failed: create=%v extract=%v", err, extractErr)
+				}
+				actual, readErr := os.ReadFile(extracted.DumpPath)
+				if readErr != nil || !bytes.Equal(actual, dump) {
+					t.Fatalf("intact dump changed: %v", readErr)
+				}
+				return
+			}
+			if !errors.Is(err, ErrInvalid) || path != "" || header != (Header{}) {
+				t.Fatalf("changed input reported a completed backup: header=%+v path=%q err=%v", header, path, err)
+			}
+			entries, readErr := os.ReadDir(directory)
+			if readErr != nil || len(entries) != 0 {
+				t.Fatalf("failed creation retained files: entries=%v err=%v", entries, readErr)
+			}
+		})
 	}
 }
 
