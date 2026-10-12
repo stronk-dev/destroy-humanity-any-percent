@@ -1551,3 +1551,36 @@ source/test/docs/plan/ledger/log commit; Claude's designated review remains pend
 consolidate related API corrections. All handles terminal; diff checked. Full API acceptance,
 remaining original-reader review, prior review debt and draft adoption stay open. No archival,
 push, publication or release claim; continue accepted work without shrinking the1.0 objective.
+
+## 2026-10-12 — Designated review: original public epoch-reader commit
+
+Review by: Codex (designated independent reviewer of Claude's implementation).
+Recorded by: Codex.
+Reviewed range: `e63796d5^..e63796d5` (exact fourteen changed paths).
+Decision: CHANGES REQUIRED.
+
+Inspected original SQL/page/HTTP descriptors and tests, registry merge, shared error extraction,
+generation entry point, all three generated diffs and docs/log. SQL, its integration/unit tests
+and merge implementation remain byte-identical to this commit. Real declared Postgres run29236
+executes `TestPublicEpochPageIntegration` with no skip: newest-first pagination, strict keyset
+continuation, exhausted non-nil list, timestamps/null, byte-sorted accepted hashes, exact staged
+changelog bytes, bounds and missing-changelog refusal pass. Native hash test65741, full cold
+leaderboard88550 and vet pass; native DB tests in that full package are not counted as DB proof.
+The current API suites/generation checks are recorded in RP-492 above; current handler tests
+94782 additionally pass all five epoch response/cursor/limit/failure/cache/registry cases.
+
+Two original-batch blockers are not disguised by those passes. RP-390: the original public
+reader imports private Account for the error descriptor; the later shared-publicapi extraction
+already repairs that edge but still needs its own corrective review. RP-483: the reader serves
+the C16-required304 while its operation/OpenAPI omit that status. Fresh direct invocation of
+the current actual generated client still rejects a controlled304 as `undeclared API response
+status (304)`, exactly one fetch; this is dispatch evidence, not an HTTP/DB journey. The bodiless
+amendment remains draft, not authority to bypass conformance or fabricate a JSON body.
+
+No new defect row duplicates these existing findings. The original predeclaration `cd5ba06d`
+was inspected as context, not promoted to implementation approval; query `32560c4b` has its own
+verdict above. Interleaved F9 and later router/boards/routes/privacy commits are outside this
+review. This records a completed review with required corrections, not an archival approval,
+full public privacy, historical-checkout execution, hosted CI or a release claim. Next: review
+the existing RP-390 correction and the adopted304 amendment when authority permits; safe
+accepted work continues. No product bytes, owner rulings or authored copy changed here.

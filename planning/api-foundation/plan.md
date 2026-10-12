@@ -7,8 +7,11 @@ not Go literal escaping, while retaining malformed UTF-8 refusal and exact descr
 The old-source regression rejects six descriptor-admitted strings and an enum member; affected
 cold Go/vet, generated-client tests and unchanged API generation pass after correction. The log
 records CHANGES REQUIRED on Claude's original query-descriptor commit `32560c4b` separately
-from this Codex repair's pending designated review. No approval of the later epoch-reader batch
-or adoption of the dictionary/bodiless/history drafts follows.
+from this Codex repair's pending designated review. The original epoch-reader commit `e63796d5`
+now also has a CHANGES REQUIRED verdict: its unchanged SQL/keyset/changelog tests pass against
+real Postgres, but its private Account import (RP-390, separately repaired) and missing304
+declaration (RP-483, draft amendment) prevent whole-batch approval. The later router/boards/routes
+batch is not covered; no adoption of the dictionary/bodiless/history drafts follows.
 
 Current prerequisite (2026-10-09, RP-483): `rfc/api-bodiless-responses.md` proposes a closed
 empty204/304 arm and explicit conditional-read input. Fresh existing six-operation cache
