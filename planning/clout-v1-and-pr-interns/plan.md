@@ -60,6 +60,27 @@ rebased branch must retain the original 27 differences. This can settle only bou
 evaluation/ledger feasibility, not the production field schema, hook/action semantics, SQL,
 TS parity, operating limits or RP-308 adoption. No new raw artifact or runtime mutation.
 
+2026-10-12 follow-up question, baseline `237c2f17`: does the candidate's quantized
+`target.Sub(visible)` write set remain representable at the lower Decimal exponent boundary?
+Test-only population: five admitted generator rates (exponents -8999999999999999,
+-8999999999999998, -8999999999999996, -8999999999999987 and0), online/offline,
+and two projection pairs (1000→1001ms, 2000→2001ms):20 cells, no random search.
+Each uses a hash-bound modified fixture, an admitted zero-cash Company, the actual
+Evaluate/codec and the actual ledger. Record every unchanged/increasing target, invalid
+delta, refused commit and exact/wrong commit; source/projection failures invalidate the
+experiment. One valid projected pair the candidate cannot commit refutes general-domain
+feasibility; all cells passing would prove only this population. Preserve the original128
+property and prior research. No adopted representation, rounding, exponent floor, save,
+kernel, balance, episode or deployment policy changes. A finding may amend the decision
+draft/evidence, not authorize a production fix. Cross-runtime arithmetic controls follow
+any counterexample; they are not a full TS Company or SQL integration claim.
+
+Completed:20 cells yield nine non-state-delta refusals, ten exact commits and one unchanged
+projection. Five client arithmetic controls pass. The draft now rejects this candidate as a
+general write algorithm; next technical work is a viable ledger/receipt solution, not an
+owner waiver or another repeat of the ordinary146 profiles. The latest log owns evidence
+and pending review; AC6 remains red.
+
 Under A, CV6 (the Clout ledger) and CV7 (the social seam) are **not** implemented: the RFC's CV0
 table marks the ledger "no" for A, and the acceptance rejects B/C. The Gaia-law test (AC4) still
 lands, with the allowed writer set empty.

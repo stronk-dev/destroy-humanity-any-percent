@@ -2525,3 +2525,50 @@ this policy artifact; no unrelated browser run was needed for its refresh.
 Review by: Codex (measurement implementer first filter). Recorded by: Codex.
 New range begins after `8fd83b40`, requires designated review, and closes only
 this stale-observation sibling. RP-307/RP-308 and prior review debt remain open.
+
+## 2026-10-12 — Origin difference-write fails the lower admitted domain (RP-488)
+
+Baseline `237c2f17`. The plan predeclares20 actual Company projection pairs at five
+admitted generator-rate exponents, two modes and1000→1001ms /2000→2001ms. The
+hash-bound in-memory fixture keeps its existing1.001 frozen multiplier and removes
+the owned PR upgrade; zero initial cash isolates the producer. Current Company
+admission, pinned catalog loading, codec restore, Evaluate and ledger all execute.
+This is not adopted content or a change to the numeric domain.
+
+Cold observation87060 completes all20: nine non-state differences/refused commits,
+ten exact commits and one unchanged pair; zero wrong-target commits. For the floor
+online1000→1001ms pair, both `1.001e-8999999999999999` and
+`1.002001e-8999999999999999` are admitted targets, but `target.Sub(before)` is NaN
+in Go. Actual `Ledger.ApplyAccrual` refuses with `ErrInvalidTransaction`, preserving
+the complete encoded state and an empty receipt. The retained test now requires
+the exact census, literal primary pair, refusal cause/non-state delta, untouched
+state and exact positive receipt re-additions. An always-refusing ledger or wrong
+target cannot pass the observation.
+
+Five literal client arithmetic cases14040 pass: floor-online/near-floor-offline
+refusals plus near-floor-online and ordinary online/offline exact controls.
+These use actual numeric helpers but do not claim a TS Company evaluator, ledger
+or SQL boundary. The original anchor research source/artifacts are untouched.
+Affected client91424 passes1208 tests in four files: the new research, existing
+anchor/partition research and production accrual vectors. Types32235 pass with
+zero errors/warnings. Final cold Go origin population35365 and vet pass, including
+all146 prior candidate profiles and the added20-cell census. Earlier verbose83341
+records the same outcomes and original27 rebasing control.
+
+Full cold `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1'`51740
+exits2 (Go exits1) with precisely the original27 RP-307 partition divergences.
+It is RED, not a full-package pass or proof DB prerequisites ran. No runtime,
+kernel, save, balance, rounding, episode, receipt or CI-workflow byte changes.
+No browser/SQL/Linux/full or hosted CI claim is made for this test-only extension.
+
+The decision draft's C2 body now explicitly rejects the difference-write candidate
+as a general algorithm. Resolving a viable ledger/receipt algorithm is technical
+work, not an owner waiver. Episode/settlement and compatibility decisions still
+require their proper authority; neither this negative result nor the prior146
+successes adopts a production format or closes Clout AC6. Next: a viable accounting
+contract that retains these counterexamples and the unchanged numeric/receipt laws.
+
+Review by: Codex (research implementer first filter). Recorded by: Codex.
+Exact test/research/draft/record range `237c2f17` exclusive through this containing
+commit requires designated cross-party review. Earlier review debt remains;
+no acceptance, archival, push, deployment or release claim.

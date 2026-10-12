@@ -2,6 +2,8 @@ package production
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"math/rand"
 	"sort"
@@ -221,4 +223,98 @@ func TestAxisOriginProjectionCapDebitResetsOrigin(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Representation research only: an admitted one-shot target is not proof that
+// subtracting the previous projection yields an admitted incremental ledger delta.
+func TestAxisOriginProjectionLowerDomainResearch(t *testing.T) {
+	start := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
+	cells, unchanged, invalid, refused, exact, wrong := 0, 0, 0, 0, 0, 0
+	for _, exponent := range []int64{-8999999999999999, -8999999999999998, -8999999999999996, -8999999999999987, 0} {
+		bundle := axisContentBundle(t)
+		bundle.Artifacts = cloneArtifactMap(bundle.Artifacts)
+		var root map[string]any
+		if err := json.Unmarshal(bundle.Artifacts["economy"], &root); err != nil {
+			t.Fatal(err)
+		}
+		rate := fmt.Sprintf("1e%d", exponent)
+		root["generator_classes"].([]any)[0].(map[string]any)["production"].(map[string]any)["base_rate"] = rate
+		var err error
+		bundle.Artifacts["economy"], err = json.Marshal(root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		bundle.Economy, err = economy.LoadCatalog(bundle.Artifacts["economy"])
+		if err != nil {
+			t.Fatal(err)
+		}
+		bundle.ConstantsHash, err = save.ConstantsHashArtifacts(bundle.Artifacts)
+		if err != nil || !bundle.valid(bundle.ConstantsHash) {
+			t.Fatalf("research catalog admission: %v", err)
+		}
+		initial := axisTimingState(t, bundle, start)
+		delete(initial.UpgradesOwned, "upgrade.pr_intern_1")
+		setCash(t, initial, "0")
+		if err := bundle.ValidateFoundationState(initial); err != nil {
+			t.Fatal(err)
+		}
+		origin := mustEncodeState(t, initial)
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			for _, cut := range []int64{1000, 2000} {
+				cells++
+				visible := originProjectionState(t, bundle, origin, start.Add(time.Duration(cut)*time.Millisecond), mode)
+				projected := originProjectionState(t, bundle, origin, start.Add(time.Duration(cut+1)*time.Millisecond), mode)
+				beforeWire, targetWire := visible.Ledger.Snapshot()["company.cash"], projected.Ledger.Snapshot()["company.cash"]
+				if exponent == -8999999999999999 && mode == ModeOnline && cut == 1000 &&
+					(beforeWire != "1.001e-8999999999999999" || targetWire != "1.002001e-8999999999999999") {
+					t.Fatal("retained lower-domain counterexample changed")
+				}
+				before, target := mustDecimal(t, beforeWire), mustDecimal(t, targetWire)
+				if target.Lt(before) {
+					t.Fatal("one-shot projection decreased")
+				}
+				if target.Eq(before) {
+					unchanged++
+					t.Logf("rate=%s mode=%s cut=%d before=%s target=%s classification=unchanged", rate, mode, cut, beforeWire, targetWire)
+					continue
+				}
+				delta := target.Sub(before).Quantize(decimal.CanonicalSignificantDigits)
+				if !delta.IsStateValue() {
+					invalid++
+				}
+				beforeState := mustEncodeState(t, visible)
+				receipt, commitErr := visible.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: delta}}})
+				classification := "exact"
+				if commitErr != nil {
+					refused++
+					classification = "refused"
+					if delta.IsStateValue() || !errors.Is(commitErr, economy.ErrInvalidTransaction) {
+						t.Fatalf("refusal is not the measured non-state-delta case: %v", commitErr)
+					}
+					if !bytes.Equal(beforeState, mustEncodeState(t, visible)) || len(receipt.Changes) != 0 {
+						t.Fatal("refused experiment mutated the visible state")
+					}
+				} else if visible.Ledger.Snapshot()["company.cash"] != targetWire {
+					wrong++
+					classification = "wrong-target"
+				} else {
+					exact++
+					if len(receipt.Changes) != 1 || receipt.Changes[0].Before != beforeWire || receipt.Changes[0].After != targetWire ||
+						!before.Add(mustDecimal(t, receipt.Changes[0].Delta)).Quantize(decimal.CanonicalSignificantDigits).Eq(target) {
+						t.Fatal("successful experiment's receipt does not reproduce its target")
+					}
+				}
+				t.Logf("rate=%s mode=%s cut=%d before=%s target=%s delta=%s classification=%s error=%v", rate, mode, cut, beforeWire, targetWire, delta, classification, commitErr)
+			}
+		}
+	}
+	if cells != 20 || unchanged+refused+exact+wrong != cells {
+		t.Fatal("incomplete lower-domain research census")
+	}
+	// Retain both the negative finding and exact positive controls. Refusing all
+	// transactions or silently committing a wrong target must not pass this census.
+	if unchanged != 1 || invalid != 9 || refused != 9 || exact != 10 || wrong != 0 {
+		t.Fatalf("lower-domain observation changed: unchanged=%d invalid=%d refused=%d exact=%d wrong=%d", unchanged, invalid, refused, exact, wrong)
+	}
+	t.Logf("cells=%d unchanged=%d invalid-delta=%d refused=%d exact=%d wrong-target=%d; production conservation NOT_PROVEN", cells, unchanged, invalid, refused, exact, wrong)
 }

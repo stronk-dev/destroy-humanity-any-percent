@@ -124,10 +124,11 @@ Multi-resource accounting and the catalog's original source/slot order remain ma
 
 1. Restore the unchanged encoded origin and reconstruct its contributions using the
    actual pinned catalog. Evaluate it once from the original cursor to the requested time.
-2. For each resource, form a canonical nonnegative difference between that projected
+2. For each resource, attempt to form a canonical nonnegative difference between that projected
    balance and the currently visible balance. Submit those entries to `Ledger.ApplyAccrual`;
    require the committed balances to equal the projected targets exactly and every receipt
    delta to reproduce its target. A failed exact commit is a failure, not a direct overwrite.
+   This step fails admitted lower-domain cases below; it is not a general production algorithm.
 3. Transfer only Evaluate's non-ledger outputs: `ComputeCreditMS`,
    `ComputeBurstRemainingMS`, `GeneratorProvisioned`, `ProvisionRemaindersPPM` and
    `EvaluatedThrough`. Require complete encoded Company equality with the one-shot projection.
@@ -141,9 +142,32 @@ require literal post-debit payouts rather than recovery of earlier capped overfl
 
 This experiment freezes the entire existing Company only to avoid guessing a partial
 schema. It uses no external/active-buff contributions, SQL or new versioned fields. It
-does not establish a production storage bound or prove that all admitted numeric targets
-can be reached through a quantized difference. The exact minimal context and that domain
-obligation remain acceptance blockers, not implicit conclusions of these 146 profiles.
+does not establish a production storage bound. The exact minimal context remains an
+acceptance blocker, not an implicit conclusion of these 146 profiles.
+
+#### Lower-domain counterexample: the candidate write set is insufficient
+
+The predeclared 2026-10-12 extension executes20 cells through actual Company admission,
+Evaluate, codec restoration and `Ledger.ApplyAccrual`: five admitted in-memory generator
+rate exponents, both modes and1000→1001ms /2000→2001ms. The fixture retains its existing
+1.001 frozen multiplier. Its modified catalog is hash-bound but not adopted game content.
+Nine increasing projected pairs produce a non-state difference and the ledger correctly
+refuses them without mutation; ten commit exactly and one is unchanged. There are no
+wrong-target commits. The retained census checks positive controls as well as refusals.
+
+For example, both `1.001e-8999999999999999` and `1.002001e-8999999999999999` are admitted
+canonical projected balances. Their required increment lies below the existing exponent
+floor, so quantized subtraction is not an admitted ledger delta. Five literal client
+arithmetic controls independently retain this refusal, the near-floor offline refusal,
+and near-floor/ordinary successes; they are not TS Company or SQL integration evidence.
+See `planning/clout-v1-and-pr-interns/log.md` and RP-488 for commands and limits.
+
+Consequently step2 cannot satisfy the unchanged numeric/receipt contract across the
+admitted domain. A viable accounting/ledger algorithm is required before acceptance;
+choosing an origin lifetime alone does not resolve it. Do not silently restrict the domain,
+change rounding/receipt semantics, overwrite balances or substitute a tolerance. This
+finding concerns a test-only candidate; it neither proves current served content reaches
+these synthetic rates nor attributes the original27 partition failures to this edge.
 
 ### C3 — Settlement, caps and receipts are part of the repair
 
@@ -214,8 +238,10 @@ the red population with a convenient new one or alter its monetary expectations.
 
 - **C1/C1a:** owner/author adoption of absence-episode/settlement meaning, exact identity
   boundaries and whether an unsettled interval can span authorized committed heads.
-- **C2/C3:** complete field set, boundary integration and ledger/receipt algorithm, demonstrated
-  with actual Company producers. This draft deliberately does not invent those missing details.
+- **C2/C3:** complete field set, boundary integration and a viable ledger/receipt algorithm,
+  demonstrated with actual Company producers and the retained lower-domain counterexample.
+  The current difference-write candidate fails; this is technical work, not a choice for the
+  owner to approve away. This draft deliberately does not invent those missing details.
 - **C4:** activation/migration compatibility and assigned versions after the representation is fixed.
 - **Operating limits:** actual full-state size/work evidence, not the scalar prototype's bound.
 
@@ -236,3 +262,6 @@ implied save field and needs its own complete contract.
 - 2026-10-08: correct the unsupported assertion that new durable state is necessarily
   required. Trace the actual closed mutation/read paths; distinguish operation-local and
   durable origins pending author resolution. No accepted criterion or runtime changed.
+- 2026-10-12: retain actual lower-domain ledger counterexamples and paired client arithmetic
+  controls. Mark the candidate difference-write algorithm insufficient rather than generalize
+  its146 earlier successes. Still draft; no numeric, receipt, policy or implementation authority.
