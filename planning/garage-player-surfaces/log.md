@@ -6728,3 +6728,35 @@ pending. Hosted run remains red, with client RP-131, server RP-307 and over-five
 duration still open; no current-source hosted pass, whole Garage AC7, feature acceptance,
 archival, push or release claim. Continue independent accepted repairs; unadopted technical
 proposals remain separate holds, not a blanket stop on ordinary contract-conformance work.
+
+## 2026-10-12 — Include later Desk regions in the existing performance measurement
+
+Outcome: test-only RP-333 coverage improvement under accepted Garage AC7, Pet Adoption
+PA8, Cosmetic Shop §7.3, Clout CV9 and Reputation R9. The original bounded GS5/GS6 fixture
+explicitly excluded adoption, current cosmetic shelf, axis/PR Intern and Reputation controls.
+Add pre-adoption and adopted-cat/worn-Horse-Armor cases using existing owner axis/cosmetic
+fixtures and the public decoder. Census requires these regions after every delivered input.
+Preserve the original cases, 1,200 inputs/600 formatter windows, all observer/terminal/cleanup
+oracles, viewport and numeric ceilings. No product, authored copy, schema, balance or CI change.
+
+Initial performance runs82548/76940 pass four cases; type runs43506/43685 fail because the
+legacy/live snapshot union was not narrowed. Use the existing `isLiveSnapshot` predicate,
+not a new schema or type assertion for the envelope. Types88427 and final17499 pass with
+zero errors/warnings. A temporary test-only axis removal at input1,200 (69573) fails both
+new cases at the axis-output census: actual inputs1,200, regionSamples1,199, completed:false,
+terminal1.30K, zero intents. The original two controls pass. Removal is restored before final
+verification; no transient fault remains.
+
+Final isolated root `make test-game-ui-performance`48327 passes four cases/105 explicitly
+excluded functional declarations under unchanged budgets. Root `make test-browser-focused
+BROWSER_TEST_FLAGS='test/game-ui-screens-browser.test.ts --project=chromium --project=webkit'`
+77001 passes210 functional checks/eight excluded performance cases. All handles terminal.
+No production build or Postgres rerun for this test-only measurement extension.
+
+These are controlled decoded UI fixtures, not minted/earned saves or a full generator/upgrade
+catalog. Separate pet-care tab, optional Pitch/Recovery/Garden ports, Tier-2/full release
+population, real service/default player and actual-minute manual4× profile remain open.
+Runner annotations are not claimed as persisted artifacts. No whole AC7/hosted CI/release
+approval. Review by: Codex (implementer first filter). Recorded by: Codex. Exact new review
+range: `56d59bf5` exclusive through this containing test/docs/records commit; designated
+cross-party review pending. Earlier ranges retain their separate review debt.

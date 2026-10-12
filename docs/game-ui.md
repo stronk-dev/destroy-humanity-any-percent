@@ -703,11 +703,20 @@ terminal cash, intents and exclusions. The default local success reporter need
 not print annotations or persist their requested attachment; do not infer an
 on-disk measurement artifact merely from a passing test.
 
+Two additional decoded Desk populations cover the pre-adoption card and adopted
+cat/worn Horse Armor states, the current cosmetic shelf, PR Intern factors/progress,
+and Reputation Exit-plan controls. They reuse the existing axis/cosmetic fixtures
+and retain the supplement's per-input census, observation requirements and budgets.
+Removing the axis panel at input 1,200 fails both new cases with incomplete census
+and `completed:false`; the original cases still pass. These are controlled UI
+populations, not earned saves or the complete generator/upgrade catalog.
+
 Executed missing-input, fixed-cash, final-400-ms-task, unavailable-observer,
-missing-buff and wrong-terminal-cash probes discriminate this supplement under
-the unchanged budgets. It does not close all of Garage AC7 (RP-333): GS4/pet,
-later Desk additions, the complete current release population, real server/
-default-player proof and the manual reference profile remain separate gates.
+missing-buff and wrong-terminal-cash probes discriminate the original supplement
+under the unchanged budgets. This still does not close all of Garage AC7 (RP-333):
+the separate pet-care tab, optional Pitch/Recovery/Garden runtime ports, Tier-2
+regions, complete current release population, real server/default-player proof
+and the manual reference profile remain separate gates.
 Four-times CPU throttling and the five-percent dropped-frame allowance remain a manual release
 profile; deterministic CI gates observable commits and long tasks as ruled. The 2026-08-22
 reference run passed for 60,001.9 ms at 4× in pinned Chromium: 598 production prediction

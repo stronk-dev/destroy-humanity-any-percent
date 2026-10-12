@@ -49,7 +49,7 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-- Current published source is `e0cb9187`; main and origin/main are aligned. Hosted
+- Current published source is `e0cb9187`; subsequent local repairs are unpushed. Hosted
   [CI38222406320](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38222406320)
   (2026-10-12) passes schema/harness/composed, fails client/server/browser, and exceeds
   the five-minute blocking floor. Client fails the RP-131 historical version guard;
@@ -57,7 +57,11 @@ operations remain required alongside that construction, not optional end-stage p
   pass, but the isolated populated performance census fails on Fiscal layout whitespace.
   RP-484 repairs that census locally, without changing budgets or the population; the
   exact performance target, Fiscal edge checks and types pass. Its range after `e0cb9187`
-  awaits designated review and has no hosted verdict. The [Garage log](garage-player-surfaces/log.md)
+  awaits designated review and has no hosted verdict. A subsequent test-only batch
+  adds pre-adoption/adopted Desk performance populations: four isolated cases and
+  210 Chromium/WebKit functional checks pass, with a missing-axis control caught.
+  This remains partial AC7 coverage, not a complete catalog/default-player/manual profile.
+  The [Garage log](garage-player-surfaces/log.md)
   owns evidence. Earlier dated CI/local checkpoints below are historical, not current runs.
 - Current finished source is `1b484c50` (2026-10-09). The latest Deployment corrections
   require healthy baselines before interrupted-backup, public-metrics and source/image-secret

@@ -7,8 +7,10 @@ import RunEndSurface from "../src/game-ui/RunEndSurface.svelte";
 import type { ExitOfferSpawnedEvent, GateCrossedEvent, RunEndedEvent } from "../src/game-ui/events";
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import { GameUIRequestError, type IntentOutcome } from "../src/game-ui/intent-outcome";
-import type { GameUISnapshot } from "../src/api/generated/types";
-import { eraForSnapshot, parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
+import type { GameUIAxisStackArm, GameUICosmeticsArm, GameUISnapshot } from "../src/api/generated/types";
+import axisArmFixture from "../../testdata/axis-stack/game-ui-arm-v1.json";
+import cosmeticArmFixture from "../../testdata/gameui/cosmetics-arm-v1.json";
+import { eraForSnapshot, isLiveSnapshot, parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import { FEATURES_PRESENTATION } from "../src/game-ui/features-presentation";
 import { t, type CopyKey } from "../src/copy";
 import { REQUIRED_METER_IDS } from "../src/meters/catalog";
@@ -1588,12 +1590,50 @@ function populatedGaragePerformanceSnapshot(): ParsedGameUISnapshot {
   });
 }
 
-it.skipIf(!chromiumPerformanceLane)("holds the observable 20 Hz / 10 Hz screen budget with populated Garage regions and a completed native observation", async ({ annotate }) => {
+// Reuse the current owner fixtures rather than a second cosmetic/axis schema.
+// These are decoded UI populations, not an earned or minted server save.
+function currentGaragePerformanceSnapshot(adopted: boolean): ParsedGameUISnapshot {
+  const base = populatedGaragePerformanceSnapshot();
+  if (!isLiveSnapshot(base)) throw new Error("performance fixture must use the live v4 envelope");
+  const pet = { eligible_action_ids: ["care.feed", "care.pet"], name_key: "pet.name.server_room_cat.n01",
+    palette_id: "pet_palette.fur_02", pet_id: "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa",
+    species_id: "pet_species.server_room_cat", status_band: "normal", temperament: "curious" };
+  return parseGameUISnapshot({
+    ...base,
+    facts: [...base.facts, { fact_id: "feature.axis_stack", value: true },
+      { fact_id: "feature.pets", value: adopted }, { fact_id: "feature.reputation_tree", value: true }]
+      .sort((a, b) => a.fact_id < b.fact_id ? -1 : a.fact_id > b.fact_id ? 1 : 0),
+    run: { ...base.run, tier: 1, run_seq: 2, exit_count: 1 },
+    transitions: { ...base.transitions, wind_down: { eligible: true } },
+    upgrades: [...base.upgrades,
+      { cost_amount: "1e6", cost_resource_id: "company.cash", eligible: false, owned: true, upgrade_id: "upgrade.pr_intern_1" },
+      { cost_amount: "5e7", cost_resource_id: "company.cash", eligible: false, owned: false, upgrade_id: "upgrade.pr_intern_2" }],
+    features: { ...base.features,
+      axis_stack: structuredClone(axisArmFixture) as GameUIAxisStackArm,
+      cosmetics: structuredClone(cosmeticArmFixture.cases[adopted ? "owned-worn" : "acquirable-at-tier-1"]) as GameUICosmeticsArm,
+      pet_adoption: { pet_adoption: { cap: 1, count: adopted ? 1 : 0,
+        name_keys: ["pet.name.server_room_cat.n00", "pet.name.server_room_cat.n01", "pet.name.server_room_cat.n02"],
+        starter_species_id: "pet_species.server_room_cat" }, pets: adopted ? [pet] : [] },
+      reputation: { available: 4, bonus_factor_next_run: "1e0", bonus_factor_this_run: null,
+        level: 4, per_level_ppm: 10_000, spent: 0, unlock_ppm: 0,
+        nodes: [
+          { node_id: "reputation.unlock.p05", kind: "bonus_unlock", cost: 1, requires: [], state: "available",
+            title_key: "reputation_tree.node.unlock_p05.title", body_key: "reputation_tree.node.unlock_p05.body" },
+          { node_id: "reputation.starter.cash_small", kind: "starter", cost: 2, requires: [], state: "available",
+            title_key: "reputation_tree.node.starter_cash_small.title", body_key: "reputation_tree.node.starter_cash_small.body" },
+        ] },
+    },
+  });
+}
+
+for (const population of ["bounded", "before-adoption", "adopted"] as const) {
+it.skipIf(!chromiumPerformanceLane)(`holds the observable 20 Hz / 10 Hz screen budget with populated Garage regions and a completed native observation${population === "bounded" ? "" : ` (${population})`}`, async ({ annotate }) => {
   const budget = GAME_UI_PERFORMANCE_BUDGET;
   expect({ width: window.innerWidth, height: window.innerHeight }).toEqual(budget.viewport);
   const longTasksSupported = typeof PerformanceObserver !== "undefined" && PerformanceObserver.supportedEntryTypes.includes("longtask");
   if (!longTasksSupported || typeof MutationObserver === "undefined") throw new Error("invalid performance observation: native observers unavailable");
-  const populated = populatedGaragePerformanceSnapshot();
+  const populated = population === "bounded" ? populatedGaragePerformanceSnapshot()
+    : currentGaragePerformanceSnapshot(population === "adopted");
   const runtime = new FixtureRuntime(true); runtime.current = populated;
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
@@ -1630,13 +1670,41 @@ it.skipIf(!chromiumPerformanceLane)("holds the observable 20 Hz / 10 Hz screen b
       expect(generator?.textContent).toContain(text("desk.provisioned_frame", { count: 3 }));
       expect(generator?.textContent).toContain(text("generator.beige_tower.provisioned_cap"));
       expect(target.querySelector('section[aria-labelledby="upgrades-heading"] strong')?.textContent).toBe(text("desk.upgrade.owned"));
-      const shelf = [...target.querySelectorAll("section.card")].find((row) => row.querySelector("h2")?.textContent === text("cosmetic.horse_armor_free.title"));
-      expect(shelf?.textContent).toContain(text("cosmetic.horse_armor_free.disclosure"));
+      if (population === "bounded") {
+        const shelf = [...target.querySelectorAll("section.card")].find((row) => row.querySelector("h2")?.textContent === text("cosmetic.horse_armor_free.title"));
+        expect(shelf?.textContent).toContain(text("cosmetic.horse_armor_free.disclosure"));
+      } else {
+        const adoption = target.querySelector(".adoption");
+        expect(adoption).not.toBeNull();
+        if (population === "before-adoption") {
+          expect(adoption!.querySelectorAll('input[name="pet-name"]')).toHaveLength(3);
+          expect(adoption!.querySelector("h2")?.textContent).toBe(text("pet.adoption.card.title"));
+        } else {
+          expect(adoption!.querySelector("h2")?.textContent).toBe(text("pet.adoption.welcome.title", {
+            pet_name: text("pet.name.server_room_cat.n01"),
+          }));
+          expect(adoption!.querySelector('[data-family="cat"]')).not.toBeNull();
+        }
+        const shelf = target.querySelector('[data-testid="cosmetic-shelf"]');
+        expect(shelf).not.toBeNull();
+        expect(shelf!.querySelector('[data-cosmetic="horse_armor"]')?.getAttribute("data-state"))
+          .toBe(population === "adopted" ? "owned" : "unowned");
+        expect(shelf!.querySelector(".wearers button") !== null).toBe(population === "adopted");
+        expect(shelf!.querySelector(".curtain")?.textContent).toBe(text("shop.cosmetics.checkout_disclosure"));
+        expect(target.querySelector(".axis output")?.textContent).toBe("1.2");
+        expect(target.querySelectorAll(".axis-factor output")).toHaveLength(2);
+        expect([...target.querySelectorAll(".axis-factor output")].map((row) => row.textContent)).toEqual(["1.2", "1.16"]);
+        expect(target.querySelectorAll('article[data-upgrade="upgrade.pr_intern_2"] progress')).toHaveLength(1);
+        expect(target.querySelector("details.plan")).not.toBeNull();
+        expect(target.querySelectorAll('details.plan input[type="checkbox"]')).toHaveLength(2);
+      }
       // Fiscal's optional badges introduce layout whitespace outside its title.
       // Keep exact copy/order checks and separately require the unbadged fixture.
       expect([...target.querySelectorAll("nav button")].map((row) =>
         (row.querySelector(":scope > [data-nav-label]") ?? row).textContent)).toEqual([
-        "surface.desk.title", "surface.achievements.title", "surface.fiscal.title", "surface.meters.title", "surface.settings.title",
+        "surface.desk.title", "surface.achievements.title", "surface.fiscal.title",
+        ...(population === "adopted" ? ["pet.care.panel.title"] : []), "surface.meters.title",
+        ...(population !== "bounded" ? ["reputation_tree.title"] : []), "surface.settings.title",
       ].map((key) => text(key as CopyKey)));
       expect(target.querySelector("nav .fiscal-ripe-badge")).toBeNull();
       expect(target.querySelector("nav .nav-badge")).toBeNull();
@@ -1668,15 +1736,18 @@ it.skipIf(!chromiumPerformanceLane)("holds the observable 20 Hz / 10 Hz screen b
     completed = true;
   } finally {
     mutations.disconnect(); tasks.disconnect();
-    const report = { population: "garage-gs5-gs6-desk", viewport: budget.viewport, simulatedDurationMS: budget.durationMS,
+    const report = { population: population === "bounded" ? "garage-gs5-gs6-desk" : `garage-current-desk-${population}`,
+      viewport: budget.viewport, simulatedDurationMS: budget.durationMS,
       inputs, regionSamples, formattedCommits, longestTaskMS, longTasksSupported, completed,
       terminalCash: amount?.textContent ?? null, intents: runtime.requests.length,
-      exclusions: ["real-60-second-manual-4x-profile", "Firefox-WebKit", "SQL-default-player", "GS4-pet",
-        "Pitch-runtime-port", "later-adoption-cosmetics-axis-stack-reputation-T2-regions", "full-current-release-population"] };
+      exclusions: ["real-60-second-manual-4x-profile", "Firefox-WebKit", "SQL-default-player", "GS4-pet-care-tab",
+        "Pitch-Recovery-Garden-runtime-ports", "Tier2-regions", "full-current-release-population",
+        ...(population === "bounded" ? ["later-adoption-cosmetics-axis-stack-reputation-regions"] : [])] };
     try { await unmount(app); } finally { target.remove(); }
     await annotate(`Garage populated performance observation: ${JSON.stringify(report)}`, { contentType: "application/json", body: new TextEncoder().encode(JSON.stringify(report)) });
   }
 }, 75_000);
+}
 
 it.skipIf(typeof document === "undefined")("renders a rejected intent's reason in the status region instead of going offline (GS0.2, F2)", async () => {
   const runtime = new FixtureRuntime(true);
