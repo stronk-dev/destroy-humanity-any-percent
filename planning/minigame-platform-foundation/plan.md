@@ -2,6 +2,14 @@
 
 RFC: `rfc/minigame-platform-foundation.md`
 
+Current C24/C28 conformance repair (2026-10-13, RP-516/RP-517): Go scaling admission now
+requires the exact envelope and all non-null row fields, while TypeScript enforces actual
+string enums and the existing closed/canonical source-reference domains. Shared vectors and
+standalone/enclosing catalog regressions pass alongside real session start/solo/async resolution.
+The owning log records executed checks, generated fingerprint and review range. Lawful policy
+transformations, fairness, balance/content bytes and payouts are unchanged; this does not mint
+content, implement a held tenant/public wire or complete the platform.
+
 Current supplement (2026-10-12): extend the existing composed Pitch HTTP lifecycle with an
 ephemeral purchased-generator scaling population. Real public earnings/purchase change the
 Company source during play; the original frozen input must survive continuation, fresh-server

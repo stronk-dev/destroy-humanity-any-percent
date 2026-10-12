@@ -76,8 +76,30 @@ var founderCarryScalingPaths = map[string]bool{
 // the owning minigame declaration; passing it here makes the Fairness Law
 // enforceable without storing that policy twice in every row.
 func LoadScalingPolicy(data []byte, ranked bool) (*ScalingPolicy, error) {
-	if !uniqueJSONKeys(data) {
+	if !uniqueJSONKeys(data) || !hasExactJSONKeys(data, "schema_version", "scaling_inputs") {
 		return nil, ErrInvalidScalingPolicy
+	}
+	// Go struct decoding accepts case aliases and maps null integers to zero.
+	// Validate C28's exact required row before those distinctions are lost.
+	var raw struct {
+		Inputs []json.RawMessage `json:"scaling_inputs"`
+	}
+	if json.Unmarshal(data, &raw) != nil {
+		return nil, ErrInvalidScalingPolicy
+	}
+	for _, row := range raw.Inputs {
+		if !hasExactJSONKeys(row, "destination", "destination_class", "source_kind", "source_ref", "op", "operand", "clamp_min", "clamp_max") {
+			return nil, ErrInvalidScalingPolicy
+		}
+		var fields map[string]json.RawMessage
+		if json.Unmarshal(row, &fields) != nil {
+			return nil, ErrInvalidScalingPolicy
+		}
+		for _, field := range fields {
+			if bytes.Equal(bytes.TrimSpace(field), []byte("null")) {
+				return nil, ErrInvalidScalingPolicy
+			}
+		}
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()

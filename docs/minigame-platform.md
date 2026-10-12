@@ -369,6 +369,16 @@ minigame catalog. A policy contains one exact-key row per destination:
 `literal`, `tier`, `purchased_generator_count`, `founder_carry_counter`, or
 `attended_quality_grade`; operations are `identity`, `add`, `mul`, or `floordiv`.
 
+Go requires the exact `schema_version`/`scaling_inputs` policy envelope and all eight non-null
+row fields before struct decoding. Missing fields, case aliases and case-colliding additions
+cannot become an implicit zero operand or bound. Explicit zero and equivalent escaped key
+spellings remain valid. Both catalog parsers require actual string enums, canonical signed
+safe-integer literal references (no `-0`), `tier` for the tier source and mechanical generator/
+quality references. The Founder source is closed to `achievement_score_lifetime`, `age_ms`,
+`exit_history_count`, `notoriety`, `reputation_level`, and `route_knowledge_balance`.
+Shared source-reference vectors and malformed-field regressions exercise the actual policy
+and enclosing catalog admission; they do not grant access to live state during play.
+
 Resolution reads the source, applies the one declared integer operation, then clamps to the
 declared range. Intermediate arithmetic is exact and unbounded; `floordiv` uses mathematical floor
 for negative values as well as positive ones. The final values must fit the numeric core's exact

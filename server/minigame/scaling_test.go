@@ -1,9 +1,151 @@
 package minigame
 
 import (
+	"encoding/json"
 	"errors"
+	"os"
+	"strings"
 	"testing"
 )
+
+func TestScalingPolicyRequiresExactMandatoryFields(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/minigame/catalog-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var catalog map[string]json.RawMessage
+	var definitions []map[string]json.RawMessage
+	if json.Unmarshal(data, &catalog) != nil || json.Unmarshal(catalog["minigames"], &definitions) != nil || len(definitions) != 1 {
+		t.Fatal("invalid canonical catalog")
+	}
+	// A legitimate zero minimum exposes null/missing values that Go otherwise
+	// silently defaults. A missing maximum would change the resolved 3 to 0.
+	const baseline = `{"schema_version":1,"scaling_inputs":[{"destination":"option.count","destination_class":"breadth","source_kind":"literal","source_ref":"3","op":"identity","operand":0,"clamp_min":0,"clamp_max":8}]}`
+	loadCatalog := func(policy []byte) (*Catalog, error) {
+		definitions[0]["scaling"] = policy
+		catalog["minigames"] = scalingTestJSON(t, definitions)
+		return LoadCatalog(scalingTestJSON(t, catalog))
+	}
+	assertValid := func(raw []byte) {
+		t.Helper()
+		policy, err := LoadScalingPolicy(raw, true)
+		if err != nil {
+			t.Fatal(err)
+		}
+		resolved, err := policy.Resolve(ScalingContext{PurchasedGeneratorCounts: map[string]int64{},
+			FounderCarryCounters: map[string]int64{}, AttendedQualityGrades: map[string]int64{}})
+		if err != nil || resolved["option.count"] != 3 {
+			t.Fatalf("canonical scaling changed: %v err=%v", resolved, err)
+		}
+		if _, err := loadCatalog(raw); err != nil {
+			t.Fatalf("canonical catalog refused: %v", err)
+		}
+	}
+	assertValid([]byte(baseline))
+	assertValid([]byte(strings.Replace(baseline, `"destination"`, `"\u0064estination"`, 1)))
+	for _, scope := range []struct {
+		name string
+		keys []string
+	}{
+		{"root", []string{"schema_version", "scaling_inputs"}},
+		{"row", []string{"destination", "destination_class", "source_kind", "source_ref", "op", "operand", "clamp_min", "clamp_max"}},
+	} {
+		for _, key := range scope.keys {
+			for _, variant := range []string{"missing", "null", "wrong_case", "case_collision"} {
+				t.Run(scope.name+"/"+key+"/"+variant, func(t *testing.T) {
+					var root map[string]json.RawMessage
+					var rows []map[string]json.RawMessage
+					if json.Unmarshal([]byte(baseline), &root) != nil || json.Unmarshal(root["scaling_inputs"], &rows) != nil {
+						t.Fatal("invalid baseline policy")
+					}
+					fields := root
+					if scope.name == "row" {
+						fields = rows[0]
+					}
+					switch variant {
+					case "missing":
+						delete(fields, key)
+					case "null":
+						fields[key] = json.RawMessage("null")
+					case "wrong_case", "case_collision":
+						fields[strings.ToUpper(key)] = fields[key]
+						if variant == "wrong_case" {
+							delete(fields, key)
+						}
+					}
+					if scope.name == "row" {
+						root["scaling_inputs"] = scalingTestJSON(t, rows)
+					}
+					bad := scalingTestJSON(t, root)
+					if policy, err := LoadScalingPolicy(bad, true); !errors.Is(err, ErrInvalidScalingPolicy) || policy != nil {
+						t.Errorf("malformed policy admitted: %s err=%v", bad, err)
+					}
+					if catalog, err := loadCatalog(bad); !errors.Is(err, ErrInvalidCatalog) || catalog != nil {
+						t.Errorf("malformed nested catalog admitted: %v", err)
+					}
+				})
+			}
+		}
+	}
+}
+
+func scalingTestJSON(t *testing.T, value any) json.RawMessage {
+	t.Helper()
+	data, err := json.Marshal(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}
+
+func TestScalingSourceReferenceVectors(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/minigame/scaling-source-refs-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var population struct {
+		Cases []struct {
+			Name    string                     `json:"name"`
+			Changes map[string]json.RawMessage `json:"changes"`
+			Valid   bool                       `json:"valid"`
+		} `json:"cases"`
+	}
+	if json.Unmarshal(data, &population) != nil || len(population.Cases) != 29 {
+		t.Fatal("incomplete scaling source-reference population")
+	}
+	base, err := os.ReadFile("../../testdata/minigame/catalog-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, row := range population.Cases {
+		t.Run(row.Name, func(t *testing.T) {
+			var catalog map[string]json.RawMessage
+			var definitions []map[string]json.RawMessage
+			var policy map[string]json.RawMessage
+			var inputs []map[string]json.RawMessage
+			if json.Unmarshal(base, &catalog) != nil || json.Unmarshal(catalog["minigames"], &definitions) != nil ||
+				json.Unmarshal(definitions[0]["scaling"], &policy) != nil || json.Unmarshal(policy["scaling_inputs"], &inputs) != nil {
+				t.Fatal("invalid canonical catalog")
+			}
+			for key, value := range row.Changes {
+				inputs[0][key] = value
+			}
+			policy["scaling_inputs"] = scalingTestJSON(t, inputs)
+			policyBytes := scalingTestJSON(t, policy)
+			loadedPolicy, policyErr := LoadScalingPolicy(policyBytes, true)
+			definitions[0]["scaling"] = policyBytes
+			catalog["minigames"] = scalingTestJSON(t, definitions)
+			loadedCatalog, catalogErr := LoadCatalog(scalingTestJSON(t, catalog))
+			if row.Valid {
+				if policyErr != nil || catalogErr != nil || loadedPolicy == nil || loadedCatalog == nil {
+					t.Fatalf("valid source refused: policy=%v catalog=%v", policyErr, catalogErr)
+				}
+			} else if !errors.Is(policyErr, ErrInvalidScalingPolicy) || !errors.Is(catalogErr, ErrInvalidCatalog) || loadedPolicy != nil || loadedCatalog != nil {
+				t.Fatalf("invalid source admitted: policy=%v catalog=%v", policyErr, catalogErr)
+			}
+		})
+	}
+}
 
 const scalingFixture = `{"schema_version":1,"scaling_inputs":[
 {"destination":"challenge","destination_class":"power","source_kind":"literal","source_ref":"7","op":"mul","operand":3,"clamp_min":0,"clamp_max":100},

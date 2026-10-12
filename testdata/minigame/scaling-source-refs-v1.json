@@ -1,0 +1,33 @@
+{
+  "cases": [
+    {"name":"literal zero","changes":{"source_kind":"literal","source_ref":"0"},"valid":true},
+    {"name":"literal negative","changes":{"source_kind":"literal","source_ref":"-3"},"valid":true},
+    {"name":"literal maximum","changes":{"source_kind":"literal","source_ref":"9007199254740991"},"valid":true},
+    {"name":"literal minimum","changes":{"source_kind":"literal","source_ref":"-9007199254740991"},"valid":true},
+    {"name":"tier source","changes":{"source_kind":"tier","source_ref":"tier"},"valid":true},
+    {"name":"generator source","changes":{"source_kind":"purchased_generator_count","source_ref":"generator.beige_tower"},"valid":true},
+    {"name":"quality source","changes":{"source_kind":"attended_quality_grade","source_ref":"pitch"},"valid":true},
+    {"name":"career achievement score","changes":{"source_kind":"founder_carry_counter","source_ref":"achievement_score_lifetime"},"valid":true},
+    {"name":"career age","changes":{"source_kind":"founder_carry_counter","source_ref":"age_ms"},"valid":true},
+    {"name":"career exits","changes":{"source_kind":"founder_carry_counter","source_ref":"exit_history_count"},"valid":true},
+    {"name":"career notoriety","changes":{"source_kind":"founder_carry_counter","source_ref":"notoriety"},"valid":true},
+    {"name":"career reputation","changes":{"source_kind":"founder_carry_counter","source_ref":"reputation_level"},"valid":true},
+    {"name":"career route knowledge","changes":{"source_kind":"founder_carry_counter","source_ref":"route_knowledge_balance"},"valid":true},
+    {"name":"literal plus","changes":{"source_ref":"+3"},"valid":false},
+    {"name":"literal leading zero","changes":{"source_ref":"03"},"valid":false},
+    {"name":"literal fraction","changes":{"source_ref":"3.0"},"valid":false},
+    {"name":"literal exponent","changes":{"source_ref":"3e0"},"valid":false},
+    {"name":"literal negative zero","changes":{"source_ref":"-0"},"valid":false},
+    {"name":"literal above domain","changes":{"source_ref":"9007199254740992"},"valid":false},
+    {"name":"literal below domain","changes":{"source_ref":"-9007199254740992"},"valid":false},
+    {"name":"literal text","changes":{"source_ref":"wat"},"valid":false},
+    {"name":"wrong tier reference","changes":{"source_kind":"tier","source_ref":"age_ms"},"valid":false},
+    {"name":"malformed generator reference","changes":{"source_kind":"purchased_generator_count","source_ref":"Generator!"},"valid":false},
+    {"name":"malformed quality reference","changes":{"source_kind":"attended_quality_grade","source_ref":"Combat!"},"valid":false},
+    {"name":"unknown career field","changes":{"source_kind":"founder_carry_counter","source_ref":"soul"},"valid":false},
+    {"name":"unknown career path","changes":{"source_kind":"founder_carry_counter","source_ref":"typer.assisted"},"valid":false},
+    {"name":"coerced class","changes":{"destination_class":["breadth"]},"valid":false},
+    {"name":"coerced kind","changes":{"source_kind":["literal"]},"valid":false},
+    {"name":"coerced operation","changes":{"op":["identity"]},"valid":false}
+  ]
+}

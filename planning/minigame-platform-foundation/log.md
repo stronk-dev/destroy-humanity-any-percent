@@ -909,3 +909,49 @@ after `3d8672ce` through this batch commit and needs Claude's designated verdict
 approve the older implementation ranges. Next: consolidate this real-source supplement with
 related minigame corrective reviews and continue the remaining accepted integration work;
 do not invent the held Typer/Arcade/public fixture wire or treat this as complete AC1.
+
+## 2026-10-13 — Scaling admission matches the existing closed contract (RP-516/RP-517)
+
+Under accepted C24/C28, Go now checks the exact policy envelope and eight mandatory non-null
+row fields before struct decoding. Case aliases/collisions and defaulted absent/null numeric
+fields are not lawful policy. TypeScript no longer coerces enum arrays or admits invalid
+literal/tier/generator/quality/Founder source references. It mirrors the existing Go source
+domains, including all six frozen career fields and canonical signed safe-integer literals.
+No new source, transformation, producer access, gameplay policy, balance row or payout rule.
+
+Actual old regressions:31035 fails the standalone field population; refined38455 fails26/40
+cases at both standalone and enclosing catalog admission (Make2, package0.271s). Canonical zero
+and escaped-key controls pass. Shared29 source-reference cases contain13 valid controls and16
+refusals: Go46588 enforces all29, while old client36336 fails all16 invalid object-parser cases.
+Those failed first assertions did not reach their subsequent raw-parser assertions; no old raw
+execution is inferred. Corrected checks exercise both client entry points. Ordinary red/green
+regressions establish discrimination without another source-mutation ceremony.
+
+Finished verification, all terminal:
+- Cold `make test-go vet GO_PACKAGES='./minigame ./replaycatalog ./gameserver ./kernel
+  ./cmd/gen-formulas' GO_TEST_FLAGS='-count=1'`68907 passes complete affected native packages/vet.
+  Native DB skips are not persistence proof.
+- Declared Linux-amd64/Postgres22307 passes minigame/replaycatalog/gameserver/kernel, including
+  Gameserver84.405s, after the Go required-field fix. After adding the shared reference vectors,
+  60356 re-executes complete minigame/replaycatalog/kernel cold, all passing.
+- Linux-amd64/Postgres83054 executes the existing selected Production Minigame population,
+  including real start/sequence/idempotency/replay and both solo/async saved resume, atomic
+  certification/payout, rollback/cancellation/retry and post-commit failure. All pass,1.761s,
+  no skip. This selected run is not the known-red complete Production partition population.
+- Final client43206 passes89 affected checks across five files. Native32778 executes all74
+  catalog checks in Chromium and WebKit,148 passes. Initial sandbox listener denial runs zero
+  tests; permitted root target supplies the actual result. No Firefox or full-browser claim.
+- Types/build/API37319 pass with zero diagnostics and unchanged generated API/pin bytes.
+  `formulas-check` initially exits2 because the loader's real source change alters the generated
+  source fingerprint. Retain the normal generator output, verify its sole change is that digest,
+  stage it, and rerun the same target: pass. No formula text, formula schema or stored/minted
+  artifact is rewritten. Format/diff/whitespace checks pass; orphan services remain untouched.
+
+Kernel185→186 in all mirrors records genuine admission/replay-semantic corrections; it does not
+repair RP-131 or authorize its draft history exception. Canonical docs/plan and the two defect
+rows describe local correction only. No full platform/AC1, public async/held Typer/Arcade wire,
+natural pacing, clean-host release artifact, whole hosted CI, owner adoption or feature archival.
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new source/tests/docs/
+fixture/generated-fingerprint/record range starts after `9cbf33f0` through this containing commit;
+Claude designated review remains pending, consolidatable with related corrections without
+erasing earlier range debt. No push, deployment, operator secrets or unrelated cleanup.

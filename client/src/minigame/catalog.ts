@@ -95,10 +95,18 @@ function parseScaling(source: unknown): Readonly<Record<string, unknown>> {
     const destination = mechanicalString(row.destination, "scaling destination");
     if (destinations.has(destination)) throw new SyntaxError("duplicate scaling destination");
     destinations.add(destination);
-    if (!new Set(["breadth", "presentation"]).has(String(row.destination_class))) throw new SyntaxError("ranked power scaling is forbidden");
-    if (!new Set(["literal", "tier", "purchased_generator_count", "founder_carry_counter", "attended_quality_grade"]).has(String(row.source_kind)) ||
-      !new Set(["identity", "add", "mul", "floordiv"]).has(String(row.op))) throw new SyntaxError("invalid scaling grammar");
+    if (typeof row.destination_class !== "string" || !new Set(["breadth", "presentation"]).has(row.destination_class)) throw new SyntaxError("ranked power scaling is forbidden");
+    if (typeof row.source_kind !== "string" || !new Set(["literal", "tier", "purchased_generator_count", "founder_carry_counter", "attended_quality_grade"]).has(row.source_kind) ||
+      typeof row.op !== "string" || !new Set(["identity", "add", "mul", "floordiv"]).has(row.op)) throw new SyntaxError("invalid scaling grammar");
     if (typeof row.source_ref !== "string" || row.source_ref.length === 0) throw new SyntaxError("invalid scaling source");
+    if (row.source_kind === "literal") {
+      if (!/^-?(?:0|[1-9][0-9]*)$/.test(row.source_ref) || row.source_ref === "-0") throw new SyntaxError("invalid scaling literal");
+      safeInteger(Number(row.source_ref), -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER, "scaling literal");
+    } else if (row.source_kind === "tier") {
+      if (row.source_ref !== "tier") throw new SyntaxError("invalid tier scaling source");
+    } else if (row.source_kind === "founder_carry_counter") {
+      if (!new Set(["achievement_score_lifetime", "age_ms", "exit_history_count", "notoriety", "reputation_level", "route_knowledge_balance"]).has(row.source_ref)) throw new SyntaxError("invalid Founder scaling source");
+    } else mechanicalString(row.source_ref, "scaling source reference");
     const operand = safeInteger(row.operand, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER, "scaling operand");
     const minimum = safeInteger(row.clamp_min, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER, "scaling minimum");
     const maximum = safeInteger(row.clamp_max, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER, "scaling maximum");
