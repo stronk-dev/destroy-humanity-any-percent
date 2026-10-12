@@ -266,6 +266,9 @@ subsequent `/cancel` to replay those bytes with no Soul grant. These are complem
 checks, not a 24-hour mounted-browser or clean-host observation.
 
 The production-built real-service journey now uses native keyboard controls for Recovery:
+actual Tab traversal from current focus and Enter, never direct action-button focus. An
+excluded-Begin DOM negative must refuse before dispatch or stored-session creation; its
+original attribute is restored before the normal lifecycle.
 Begin → actual attended heartbeat/rendered progress → leave (scheduler stops) → return/Begin
 (same session, rotated token) → Stop early. Independent SQL checks bind its stored terminal
 receipt, both save revisions, one start/terminal event and Founder log, unchanged Soul and

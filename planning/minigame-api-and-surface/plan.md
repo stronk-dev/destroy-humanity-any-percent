@@ -1,5 +1,12 @@
 # Minigame API & Surface implementation plan
 
+Current keyboard-integration supplement (2026-10-12): the real Recovery journey no longer
+focuses action buttons directly. It uses Tab/Enter and an excluded-Begin negative that must
+refuse without a Recovery request or stored session. Both bounded cancellation/reconnect and
+the unchanged five-minute Repot/Finish selector share this helper. The owning log records
+old-driver failure, executed outcome and limits; this is not full MA/AT acceptance or review
+of earlier product corrections.
+
 Latest bounded correction (2026-10-12, RP-491): Recovery controls now declare zero Tab
 indices. The existing keyboard test no longer bypasses traversal with button.focus();
 native forward/reverse choices, Stop/Return, Reconnect/Finish and ended/error Return

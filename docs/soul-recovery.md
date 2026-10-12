@@ -55,6 +55,14 @@ heading; Tab from there reaches Back. Mounted Chromium/WebKit checks exercise ac
 Shift-Tab and Enter/Space with controlled coordinator replies, not direct button focus or clicks.
 They do not establish real assistive-technology or whole-player accessibility acceptance.
 
+The built-client/real-server Recovery journey also traverses from the current focus using
+Tab before Enter, rather than assigning focus to an action button. Its test-side negative
+removes Begin from Tab order and requires refusal with no Recovery request or new stored
+session, then restores the original DOM attribute before ordinary play. The same driver
+serves bounded cancellation/reconnect in normal composition and the explicit five-minute
+Finish population. This Chromium integration is distinct from the controlled multi-engine
+checks above; neither substitutes for assistive-technology acceptance.
+
 Only one progress request may be in flight. Stopping with `cancelled`, `resolved`, or `watchdog`
 emits one terminal callback and cancels future dispatch. Replay verifies accumulated attended
 totals at terminal resolution; heartbeat cadence itself never becomes replay input.

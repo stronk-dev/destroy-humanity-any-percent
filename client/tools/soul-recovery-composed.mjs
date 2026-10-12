@@ -51,7 +51,18 @@ export async function witnessSoulRecovery(page, repositoryRoot, founderID, compl
   const native = async (button) => {
     // Trial actionability waits for the real control without activating it.
     await button.click({ trial: true, timeout: 30_000 });
-    await button.focus(); await button.press("Enter");
+    // Traverse from the player's current focus, never assign the action target.
+    // Two complete document passes bound the check from the actual DOM census;
+    // hidden/disabled elements only make this conservative, not a timing budget.
+    const budget = 2 * (await page.locator("button,a[href],input,select,textarea,[tabindex]").count() + 1);
+    for (let step = 0; step < budget; step += 1) {
+      if (await button.evaluate((element) => element === document.activeElement)) {
+        await page.keyboard.press("Enter");
+        return;
+      }
+      await page.keyboard.press("Tab");
+    }
+    throw new Error("recovery control not reachable by Tab");
   };
   async function producingCompany() {
     await native(page.getByRole("button", { name: "The Desk", exact: true }));
@@ -276,7 +287,23 @@ export async function witnessSoulRecovery(page, repositoryRoot, founderID, compl
   try {
     await producingCompany();
     const before = heads();
-    const started = await command(await open(), "start", { activity_id: activity.activity_id });
+    const begin = await open();
+    // Test-side negative: an actionable control removed from keyboard traversal
+    // must not pass merely because the driver focuses it programmatically.
+    const originalTabIndex = await begin.getAttribute("tabindex");
+    const recoveryRequestsBefore = requests.length;
+    const sessionsBefore = sql(`SELECT count(*) FROM soul_recovery_sessions WHERE founder_id='${founderID}';`);
+    await begin.evaluate((element) => element.setAttribute("tabindex", "-1"));
+    try {
+      await assert.rejects(native(begin), /recovery control not reachable by Tab/u);
+      assert.equal(requests.length, recoveryRequestsBefore, "unreachable Begin dispatched Recovery traffic");
+      assert.equal(sql(`SELECT count(*) FROM soul_recovery_sessions WHERE founder_id='${founderID}';`), sessionsBefore,
+        "unreachable Begin created a stored session");
+    } finally {
+      await begin.evaluate((element, value) => value === null ? element.removeAttribute("tabindex") : element.setAttribute("tabindex", value), originalTabIndex);
+    }
+    console.log("Soul Recovery Tab reachability negative: excluded Begin rejected before request or persisted session: PASS");
+    const started = await command(begin, "start", { activity_id: activity.activity_id });
     assert.equal(started.required_duration_attended_ms, activity.duration_attended_ms);
     assert(stored(started.session_id).progress_token === started.progress_token, "stored/start capability mismatch (tokens withheld)");
     await waitBeat(started.session_id);

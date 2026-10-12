@@ -1570,3 +1570,41 @@ AT/whole-CI rerun or full MA/accessibility acceptance is claimed for this DOM fi
 Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 starts after `bc5d5f5d` through this containing commit; designated review remains
 pending, as do earlier ranges. No acceptance flip, archival, push or deployment.
+
+## 2026-10-12 — Real Recovery play traverses with Tab, including natural Finish
+
+MA3/MA-C9 keyboard gates apply to the real player seam too. Its old helper directly
+focused action buttons before Enter, so that journey could bypass unreachable controls.
+78149 retains the old-driver failure: after a test-side `tabindex=-1` on Begin,
+`assert.rejects` fails with "Missing expected rejection" and the browser issues a start
+request. This is an instrument finding, not a new broken-current-product allegation.
+
+Change only the existing helper to traverse from current focus with Tab before Enter.
+A bound derived from its actual document control census fails explicitly when unreachable;
+no direct action-button focus is left. Keep the excluded-Begin negative, require no Recovery
+traffic or stored session on refusal, and restore its original attribute in finally before
+normal play. Both normal bounded composition and the explicit full selector consume this
+same helper. No product, copy, API, catalog, kernel, duration, cadence or CI changes.
+
+68321 `make test-soul-recovery-composed` completes exit0 against the built production client,
+real Go server/Postgres/WebSocket: the negative passes; Tab/Enter drives leave/reconnect,
+cancel and both committed-heartbeat reply-loss/process-death arms; then unchanged300000ms
+Repot naturally becomes eligible and native Finish grants exactly5 Soul. Stored progress,
+terminal receipt/event/log, rendered Soul40→45, unchanged Company balances and reload all
+pass. Company production is positively established before Recovery. The explicit Soul40
+setup remains disclosed; no natural depletion/history replay, 15/45-minute, Firefox/WebKit,
+assistive-technology, full MA, clean-host or hosted-CI proof follows. The shared parent
+integration population also executes, including actual public SDK/TS replay consumption.
+
+Two sandbox Docker-socket refusals ran no population; the narrowly permitted existing target
+was used for both actual runs. No unrelated containers/volumes were cleaned. Node syntax,
+actual diff and whitespace checks pass; all run handles terminal. Docs/plan and RP-491 now
+distinguish this real-service supplement from the original controlled-browser repair.
+Inspection confirmed catalog owner exports and backup snapshot-origin changes still have
+their existing authority holds; neither was implemented or silently adopted.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new test/docs/record
+range starts after `15f069da` through this containing commit; Claude designated review remains
+pending, consolidatable with earlier Recovery corrections. No acceptance checkbox, archival,
+draft adoption, push or release. Continue remaining accepted construction/reviews; shared
+clock, long-session renewal, authored contracts and the full nine-tier floor remain open.
