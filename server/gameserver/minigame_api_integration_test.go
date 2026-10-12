@@ -245,6 +245,89 @@ func testComposedMinigameAPILifecycle(t *testing.T, liveScaling bool) {
 		}
 	}
 
+	// MA-C12 is a live HTTP boundary, not only a pure replay predicate. An
+	// active session blocks every ordinary Exit arm before its other eligibility
+	// checks. Repeat after application reconstruction, then prove the guard
+	// releases after resolution instead of permanently refusing all Exits.
+	exitAttempt := 0
+	assertExitBoundary := func(active bool) {
+		t.Helper()
+		company, err := store.LoadLatest(ctx, companyIdentity.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		founder, err := store.LoadLatest(ctx, founderStreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		companyBytes, err := save.EncodeState(company.State)
+		if err != nil {
+			t.Fatal(err)
+		}
+		founderBytes, err := save.EncodeState(founder.State)
+		if err != nil {
+			t.Fatal(err)
+		}
+		session, err := composition.Minigames.Load(ctx, companyIdentity.FounderID, current.SessionID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, arm := range []struct{ kind, unblockedDetail string }{
+			{"wind_down", "tier"}, {"file_ipo", "ipo_chain"}, {"accept_exit_offer", "exit_offer"},
+		} {
+			exitAttempt++
+			intentID := fmt.Sprintf("01986666-f200-7000-8000-%012d", exitAttempt)
+			body := map[string]any{"intent_id": intentID, "kind": arm.kind,
+				"expected_revision": company.Revision.Number, "expected_founder_revision": founder.Revision.Number}
+			if arm.kind == "accept_exit_offer" {
+				body["offer_id"] = "01986666-f200-7000-8000-000000000099"
+			}
+			requestBytes, err := json.Marshal(body)
+			if err != nil {
+				t.Fatal(err)
+			}
+			response := compositionRequest(t, httpServer.Client(), http.MethodPost,
+				httpServer.URL+"/api/v1/intents", tokens.AccessToken, string(requestBytes))
+			responseBytes := readCompositionBytes(t, response)
+			var receipt struct {
+				IntentID  string `json:"intent_id"`
+				Outcome   string `json:"outcome"`
+				Rejection struct {
+					Category string `json:"category"`
+					Detail   string `json:"detail"`
+				} `json:"rejection"`
+			}
+			wantDetail := arm.unblockedDetail
+			if active {
+				wantDetail = "minigame_session_active"
+			}
+			if response.StatusCode != http.StatusOK || json.Unmarshal(responseBytes, &receipt) != nil ||
+				receipt.IntentID != intentID || receipt.Outcome != "rejected" ||
+				receipt.Rejection.Category != "not_eligible" || receipt.Rejection.Detail != wantDetail {
+				t.Fatalf("Exit boundary active=%t kind=%s status=%d want=%s body=%s",
+					active, arm.kind, response.StatusCode, wantDetail, responseBytes)
+			}
+			afterCompany, err := store.LoadLatest(ctx, companyIdentity.StreamID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			afterFounder, err := store.LoadLatest(ctx, founderStreamID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			afterCompanyBytes, companyErr := save.EncodeState(afterCompany.State)
+			afterFounderBytes, founderErr := save.EncodeState(afterFounder.State)
+			afterSession, sessionErr := composition.Minigames.Load(ctx, companyIdentity.FounderID, current.SessionID)
+			if companyErr != nil || founderErr != nil || sessionErr != nil ||
+				afterCompany.Revision.Number != company.Revision.Number || afterFounder.Revision.Number != founder.Revision.Number ||
+				!bytes.Equal(afterCompanyBytes, companyBytes) || !bytes.Equal(afterFounderBytes, founderBytes) ||
+				!reflect.DeepEqual(afterSession, session) {
+				t.Fatalf("refused Exit changed saves/session: company=%v founder=%v session=%v", companyErr, founderErr, sessionErr)
+			}
+		}
+	}
+	assertExitBoundary(true)
+
 	// Server Garden SG9: the composed garden read answers through the same
 	// registry; the pinned epoch carries no server_garden artifact, so the
 	// exact inactive shape is the witness.
@@ -302,6 +385,13 @@ func testComposedMinigameAPILifecycle(t *testing.T, liveScaling bool) {
 	if currentResponse.StatusCode != http.StatusOK || !bytes.Equal(postFloodBytes, currentBytes) {
 		t.Fatalf("command flood mutated session: status=%d equal=%v body=%s", currentResponse.StatusCode, bytes.Equal(postFloodBytes, currentBytes), postFloodBytes)
 	}
+	// The limiter probe deliberately jumps the application clock ahead. Let
+	// real time catch up before any Founder write: Exit uses the transaction's
+	// database clock, and artificial future Fiscal state is not normal play.
+	// Preserve the actual flood/refill population, not a reset bucket or saved
+	// timestamp rewrite. This does not repair backwards-clock behavior.
+	time.Sleep(time.Until(clock.Time()))
+	clock.Set(save.CanonicalServerTime(time.Now().UTC()))
 
 	// A second authenticated account cannot enumerate the first account's
 	// current or addressed session. Addressing an existing foreign session is
@@ -444,6 +534,7 @@ func testComposedMinigameAPILifecycle(t *testing.T, liveScaling bool) {
 				!reflect.DeepEqual(resumed.Snapshot, applied.Snapshot) {
 				t.Fatalf("mid-run reconnect lost applied state: applied=%s resumed=%s", responseBytes, readBytes)
 			}
+			assertExitBoundary(true)
 		}
 		if current.Status == "resolved" {
 			terminalBytes = responseBytes
@@ -570,6 +661,9 @@ func testComposedMinigameAPILifecycle(t *testing.T, liveScaling bool) {
 	if currentResponse.StatusCode != http.StatusOK || string(currentBytes) != `{"kind":"none"}` {
 		t.Fatalf("terminal current status=%d body=%s", currentResponse.StatusCode, currentBytes)
 	}
+	assertPersistedResolution()
+
+	assertExitBoundary(false)
 	assertPersistedResolution()
 
 	if liveScaling {

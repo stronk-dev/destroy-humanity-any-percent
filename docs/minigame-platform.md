@@ -132,6 +132,17 @@ and persisted evaluation-time checks; retry returns the same receipt and changes
 This is real HTTP/Go/Postgres evidence, not a mounted-DOM journey, live Founder-source change,
 async HTTP tenant or complete platform acceptance.
 
+Both Pitch HTTP populations also exercise MA-C12 through the actual `/api/v1/intents`
+handler. Wind Down, File IPO and Accept Exit Offer each return
+`not_eligible/minigame_session_active` during the session, including after application
+reconstruction. After terminal resolution, those same arms instead reach their ordinary
+eligibility refusals (`tier`, `ipo_chain`, `exit_offer`). Independent reads require complete
+Company/Founder save bytes and session state to remain unchanged on every refusal; existing
+once-only payout and verified replay assertions still hold afterward. Refused intents may
+append their normal receipt/audit records. The fixture does not satisfy ordinary Exit
+eligibility: this proves guard release, not successful Exit, a claimed-session race, a
+mounted-DOM path or full minigame acceptance.
+
 The internal recovery command kind remains `resolve_soul_recovery` or
 `cancel_soul_recovery` for replay. The public durable terminal receipt uses the API grammar's
 `action: "resolve" | "cancel"`; the distinction is explicit so internal command vocabulary cannot

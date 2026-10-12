@@ -1608,3 +1608,45 @@ range starts after `15f069da` through this containing commit; Claude designated 
 pending, consolidatable with earlier Recovery corrections. No acceptance checkbox, archival,
 draft adoption, push or release. Continue remaining accepted construction/reviews; shared
 clock, long-session renewal, authored contracts and the full nine-tier floor remain open.
+
+## 2026-10-13 — Public Exit refusals cannot strand an active Pitch session
+
+Under accepted MA-C12, extend the existing HTTP/Postgres lifecycle, not a new framework.
+Both literal and live purchased-generator scaling populations submit all three ordinary
+Exit arms: active, active after application reconstruction, then resolved. All 18 public
+requests must return exact intent/outcome/category/detail coordinates. Active attempts
+return minigame_session_active; after resolution the ordinary tier/IPO/offer refusals return.
+Independent reads require unchanged full Company/Founder save bytes and revisions and
+unchanged session state. Existing certified payout, history, retry and Founder replay
+checks still pass afterward. Refused commands retain their normal receipt/audit writes.
+
+Initial 52803 fails both terminal Wind Down controls with HTTP 500. Diagnostic 38106 traces
+live Founder Exit parity; temporary error-only diagnostic 42081 isolates Fiscal sweep.
+The existing flood probe had advanced the injected application clock 15 seconds, then later
+writes could precede Exit's real database clock. Remove both diagnostics and let real time
+catch up immediately after the existing refill assertion, before later Founder writes;
+restore the application's current clock. No bucket reset, saved timestamp rewrite, relaxed
+receipt, timeout/retry increase or production backwards-clock repair. Production diagnostic
+diff is verified empty. This test setup finding does not settle D-024's shared-clock contract.
+
+Final selected real Linux-amd64/Postgres lifecycle 96317 passes both populations, no skip,
+35.55 seconds. `make test-go-ci CI_TEST_PACKAGES='./gameserver'` (88443) passes the complete
+affected package in 83.943 seconds. Native `make test-go vet GO_PACKAGES='./gameserver'
+GO_TEST_FLAGS='-count=1'` (4270) passes; native DB skips are not SQL proof. Related gameui
+unit/vet 39927 and declared Linux/Postgres package 86880 pass; focused preview 57737 passes
+its two named tests. An earlier unquoted parenthesized Make selector fails in the shell
+before tests and is not evidence. Formatting and actual diff/whitespace checks pass.
+
+Original F9 range `2def3612^..2def3612` already has the 2026-10-04 designated approval above;
+reinspection/current checks do not create a duplicate verdict or approve Codex's supplements.
+New scope is test/docs/plan/log only. No production, policy, balance, copy, schema, kernel,
+CI, acceptance-bound or feature-status change. The added realtime catch-up is bounded by
+the existing 15-second flood-clock advance in each population; no suite/performance budget
+was changed. No successful eligible Exit, claimed-state race, fresh mounted browser/AT,
+whole CI, full MA or release proof is claimed.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range begins
+after `c7071178` through this containing commit and needs Claude designated review,
+consolidatable with earlier related MA supplements. All checks listed above are terminal;
+no acceptance checkbox, archival, draft adoption, push or deployment. Continue accepted
+construction; contract decisions and the full nine-tier 1.0 objective remain separate.

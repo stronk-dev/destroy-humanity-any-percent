@@ -1,5 +1,15 @@
 # Minigame API & Surface implementation plan
 
+Current Exit-guard supplement (2026-10-13): both real HTTP/Postgres Pitch populations now
+exercise wind_down, file_ipo and accept_exit_offer while active, again after application
+reconstruction, and after resolution. Active attempts return minigame_session_active;
+terminal attempts reach their ordinary eligibility refusals instead. Complete Company,
+Founder and session state remain unchanged, and existing once-only payout/replay checks pass.
+The owning log records the synthetic clock correction, executed checks and review range.
+This is MA-C12 refusal/release evidence, not a successful Exit, claimed-state race, new
+DOM/assistive-technology journey or whole-feature acceptance. Original F9 approval remains
+the existing 2026-10-04 verdict; this new test range needs separate designated review.
+
 Current keyboard-integration supplement (2026-10-12): the real Recovery journey no longer
 focuses action buttons directly. It uses Tab/Enter and an excluded-Begin negative that must
 refuse without a Recovery request or stored session. Both bounded cancellation/reconnect and
