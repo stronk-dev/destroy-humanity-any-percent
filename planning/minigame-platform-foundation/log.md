@@ -851,3 +851,61 @@ starts after `ad74fd7c` through this batch commit; designated cross-party review
 remains pending. Earlier ranges retain their own reviews. Next: resolve the
 Pet Care failure and remaining mounted-API/tenant contracts; do not archive or
 claim full CI, clean-host proof or 1.0 completion. No push/deploy/cleanup.
+
+## 2026-10-12 — Frozen inputs survive a real mid-session Company purchase
+
+Outcome under MP1/MP2, C19/C28/C39 and the bounded AC1 path: supplement the existing
+`TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration`, retaining its original
+literal-policy population and all HTTP admission/privacy/flooding, resume, payout/retry and
+Soul-Recovery checks. The additional population changes only its ephemeral diagnostic scaling
+row to purchased Towers + 1. Public manual earnings and Buy persist zero→one ownership while
+Pitch is active; the live policy now derives 2 while the frozen session retains 1. Direct calls
+to the actual pinned Pitch tenant refuse 2 and accept 1 with the same content/seed context.
+Continued HTTP play, fresh application reconstruction and certification/payout succeed from the
+original frozen values. No production code, stored fixture, policy, kernel, API wire, copy,
+budget, retry or CI configuration changes.
+
+The exact existing payout/SQL/faucet/retry checks remain. Additional assertions preserve bought
+ownership and the unsettled Company cursor across the direct C39 credit. The next real public
+manual action settles the positive interval at the diagnostic economy's literal 1 cash/s plus
+1 manual cash. Its evaluation time comes from the committed replay inputs, not wall timing or
+the log insertion stamp. Exact balance/revision/ownership and encoded-state checks prove that
+retry neither re-earns production nor credits again. The normal composed driver already names
+this top-level function; the DB prerequisite remains at the parent, preventing a false PASS
+over skipped children. No new runner or acceptance checkbox.
+
+Executed final evidence:
+
+- `make test-go vet GO_PACKAGES='./gameserver' GO_TEST_FLAGS='-count=1'` (90738): PASS.
+  Native DB cases skip without their URL; this is compilation/unit/vet evidence, not SQL proof.
+- `make test-go-ci CI_TEST_PACKAGES='./gameserver' CI_TEST_FLAGS='-v -run TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration'`
+  (22075): both complete populations PASS, 3.95s, with their HTTP rejection children executing
+  rather than skipping. This uses real declared Postgres and Linux-amd64 Go.
+- `make test-go-ci CI_TEST_PACKAGES='./gameserver'` (62238): final whole affected package PASS,
+  55.335s, cold count1. The preceding whole-package run (88784, before the two direct tenant
+  controls) also passed, 61.653s; the final result supersedes it for this batch.
+- `gofmt` and `git diff --check`: clean.
+
+Initial test-author mistakes are retained, not product findings: nonexistent `FromInt64` caused
+a compile failure (28563); numeric and then string Buy counts were refused as `invalid/count`
+(43501/3289), before correction to the existing exact-count object. Payout arithmetic initially
+used the insertion timestamp (78973), then an invalid bytea conversion on jsonb (26015), then
+wrongly assumed direct minigame credit settles ordinary production (90979). Re-reading the actual
+C39 credit/replay boundary corrected that claim: credit preserves the cursor; the following
+ordinary action owns settlement. The corrected live population passed (57307), followed by the
+final positive/negative controls and package results above. No runtime was changed to satisfy
+these erroneous assertions, and no deadline/retry/acceptance bound was loosened.
+
+Limits: actual HTTP/Go/Postgres solo Pitch and Company-source mutation with diagnostic data, not
+a browser DOM, live Founder-source mutation, async HTTP fixture tenant, production scaling
+content, natural pacing, OS/DB crash, clean-host release rehearsal or full platform AC1. Pitch
+still admits only scaling value1; the diagnostic row is not adoption of broader Pitch behavior.
+The declared Linux-amd64 container retains its existing emulation CPU setting, not hosted CPU
+proof. Full Actions/`verify-push`, the known numeric/history failures, owner/author decisions,
+earlier review ranges and complete nine-tier/platform 1.0 remain open. No push/deploy/cleanup.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact new review range starts
+after `3d8672ce` through this batch commit and needs Claude's designated verdict; it cannot
+approve the older implementation ranges. Next: consolidate this real-source supplement with
+related minigame corrective reviews and continue the remaining accepted integration work;
+do not invent the held Typer/Arcade/public fixture wire or treat this as complete AC1.

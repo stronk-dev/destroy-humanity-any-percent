@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -12,6 +13,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -20,6 +22,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/minigame"
+	"cloud-clicker/server/pitch"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/save"
@@ -28,6 +31,22 @@ import (
 const composedPetCatalogV2 = `{"schema_version":2,"stat_policy":{"grid_ms":60000,"stats":[{"stat_id":"hunger","initial_ppm":800000,"floor_ppm":100000,"decay_ppm_per_grid":1000},{"stat_id":"energy","initial_ppm":800000,"floor_ppm":100000,"decay_ppm_per_grid":1000},{"stat_id":"cleanliness","initial_ppm":800000,"floor_ppm":100000,"decay_ppm_per_grid":1000},{"stat_id":"affection","initial_ppm":800000,"floor_ppm":100000,"decay_ppm_per_grid":1000}],"diminishing_threshold_ppm":700000,"diminishing_factor_ppm":500000},"actions":[{"action_id":"care.action_a","stat_id":"hunger","delta_ppm":100000,"cooldown_attended_ms":60000,"min_eligible_ppm":0,"soul_gate":"essential"},{"action_id":"care.action_b","stat_id":"hunger","delta_ppm":100000,"cooldown_attended_ms":60000,"min_eligible_ppm":0,"soul_gate":"ordinary"},{"action_id":"care.action_c","stat_id":"hunger","delta_ppm":100000,"cooldown_attended_ms":60000,"min_eligible_ppm":0,"soul_gate":"recovery"}],"trust_policy":{"initial_ppm":500000,"neutral_ppm":500000,"floor_ppm":100000,"cap_ppm":1000000,"gain_ppm_per_effective_action":1000,"decay_ppm_per_grid":100},"mood_policy":[{"mood_member":"withdrawn","floor_ppm":0},{"mood_member":"restless","floor_ppm":250000},{"mood_member":"neutral","floor_ppm":500000},{"mood_member":"engaged","floor_ppm":750000}],"behavior_policy":[{"from_state":"idle","event":"care_applied","to_state":"care_response","duration_grid_ticks":1}]}`
 
 func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *testing.T) {
+	if os.Getenv("TEST_DATABASE_URL") == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	for _, liveScaling := range []bool{false, true} {
+		name := "literal_scaling"
+		if liveScaling {
+			name = "purchased_generator_scaling"
+		}
+		t.Run(name, func(t *testing.T) {
+			testComposedMinigameAPILifecycle(t, liveScaling)
+		})
+	}
+}
+
+func testComposedMinigameAPILifecycle(t *testing.T, liveScaling bool) {
+	t.Helper()
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")
@@ -57,7 +76,7 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	clock := &mutableClock{now: now}
 	configuration := CompositionConfig{
 		PublicCursorKeys: testPublicCursorKeys(),
-		DB:               db, RepositoryRoot: composedMinigameRepositoryRoot(t, filepathRoot(t)),
+		DB:               db, RepositoryRoot: composedMinigameRepositoryRoot(t, filepathRoot(t), liveScaling),
 		ServerID: "01986666-f100-4000-8000-000000000001", ActivityBracket: "activity.standard",
 		Clock: clock.Time, SigningKeys: account.SigningKeys{CurrentID: "minigame-lifecycle", Current: bytes.Repeat([]byte{0x57}, 32)},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-minigame", Current: bytes.Repeat([]byte{0x58}, 32)},
@@ -152,6 +171,78 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	if err != nil || persistedStart.Mode != minigame.ModeSolo || persistedStart.CompanyStreamID != companyIdentity.StreamID ||
 		persistedStart.ConstantsHash != composition.CurrentHash || string(persistedStart.ScalingInputs) != `{"minigame.pitch":1}` {
 		t.Fatalf("public create did not freeze server-owned coordinates: session=%+v err=%v", persistedStart, err)
+	}
+	if liveScaling {
+		// This diagnostic policy maps purchased Towers + 1 to the existing
+		// breadth destination. Start must freeze 1 from the real zero-count
+		// Company. A later public purchase makes a live re-read yield 2, which
+		// Pitch rejects: successful subsequent play therefore needs the frozen
+		// inputs, not merely an unchanged session JSON field.
+		if beforeCompany.State.GeneratorCounts["generator.beige_tower"] != 0 {
+			t.Fatal("dynamic scaling fixture must start without a purchased Tower")
+		}
+		clock.Set(save.CanonicalServerTime(time.Now().UTC()))
+		manual := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken,
+			fmt.Sprintf(`{"intent_id":"01986666-f100-7000-8000-000000000004","kind":"perform_manual_batch","expected_revision":%d,"action_id":"manual.click","count":25,"window_ms":1000}`, beforeCompany.Revision.Number))
+		manualBytes := readCompositionBytes(t, manual)
+		if manual.StatusCode != http.StatusOK || !bytes.Contains(manualBytes, []byte(`"outcome":"applied"`)) {
+			t.Fatalf("earn purchase cash status=%d body=%s", manual.StatusCode, manualBytes)
+		}
+		earned, err := store.LoadLatest(ctx, companyIdentity.StreamID)
+		if err != nil || earned.Revision.Number != beforeCompany.Revision.Number+1 ||
+			earned.State.GeneratorCounts["generator.beige_tower"] != 0 {
+			t.Fatalf("manual earnings changed ownership/revision: state=%+v err=%v", earned, err)
+		}
+		clock.Set(save.CanonicalServerTime(time.Now().UTC()))
+		buy := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken,
+			fmt.Sprintf(`{"intent_id":"01986666-f100-7000-8000-000000000005","kind":"buy_generator","expected_revision":%d,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":1}}`, earned.Revision.Number))
+		buyBytes := readCompositionBytes(t, buy)
+		if buy.StatusCode != http.StatusOK || !bytes.Contains(buyBytes, []byte(`"outcome":"applied"`)) {
+			t.Fatalf("mid-session purchase status=%d body=%s", buy.StatusCode, buyBytes)
+		}
+		beforeCompany, err = store.LoadLatest(ctx, companyIdentity.StreamID)
+		if err != nil || beforeCompany.Revision.Number != earned.Revision.Number+1 ||
+			beforeCompany.State.GeneratorCounts["generator.beige_tower"] != 1 {
+			t.Fatalf("mid-session purchase did not persist: state=%+v err=%v", beforeCompany, err)
+		}
+		beforeCash, hasCash = beforeCompany.State.Ledger.Balance("company.cash")
+		if !hasCash || beforeCash.String() != "1.5e1" {
+			t.Fatalf("mid-session purchase cash=%s present=%v", beforeCash, hasCash)
+		}
+		bundle, ok := composition.Catalogs.ResolveReplayCatalogs(composition.CurrentHash)
+		if !ok {
+			t.Fatal("dynamic scaling lost its pinned catalog")
+		}
+		definition, ok := bundle.Minigames.Definition("pitch")
+		if !ok {
+			t.Fatal("dynamic scaling lost its Pitch definition")
+		}
+		liveInputs, err := definition.Scaling.Resolve(minigame.ScalingContext{
+			Tier: beforeCompany.State.Tier, PurchasedGeneratorCounts: beforeCompany.State.GeneratorCounts,
+			FounderCarryCounters: map[string]int64{}, AttendedQualityGrades: map[string]int64{},
+		})
+		if err != nil || !reflect.DeepEqual(liveInputs, map[string]int64{"minigame.pitch": 2}) {
+			t.Fatalf("live source did not diverge from frozen scaling: inputs=%v err=%v", liveInputs, err)
+		}
+		content, ok := bundle.TenantContent(pitch.EngineRef, pitch.EngineVersion)
+		seed, seedErr := strconv.ParseUint(persistedStart.Seed, 10, 64)
+		if !ok || seedErr != nil {
+			t.Fatalf("scaling negative control lost pinned content/seed: content=%v seed=%v", ok, seedErr)
+		}
+		probe := minigame.CreateInput{Mode: persistedStart.Mode, Seed: seed, ScalingInputs: liveInputs,
+			Content: content.Bytes, ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion}
+		if _, err := pitch.NewTenant().Create(probe); !errors.Is(err, minigame.ErrInvalidTenant) {
+			t.Fatalf("Pitch did not reject the changed live input: %v", err)
+		}
+		probe.ScalingInputs = map[string]int64{"minigame.pitch": 1}
+		if _, err := pitch.NewTenant().Create(probe); err != nil {
+			t.Fatalf("same pinned tenant context rejected the frozen input: %v", err)
+		}
+		unchanged, err := composition.Minigames.Load(ctx, companyIdentity.FounderID, current.SessionID)
+		if err != nil || !bytes.Equal(unchanged.ScalingInputs, persistedStart.ScalingInputs) ||
+			!bytes.Equal(unchanged.State, persistedStart.State) || unchanged.Revision != persistedStart.Revision {
+			t.Fatalf("Company purchase changed the active session: session=%+v err=%v", unchanged, err)
+		}
 	}
 
 	// Server Garden SG9: the composed garden read answers through the same
@@ -404,6 +495,10 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 			t.Fatalf("payout not persisted once: company=%d cash=%s before=%s want=%s hasCash=%v",
 				company.Revision.Number, cash, beforeCash, wantCredit, hasCash)
 		}
+		if liveScaling && (company.State.GeneratorCounts["generator.beige_tower"] != 1 ||
+			!company.State.EvaluatedThrough.Equal(beforeCompany.State.EvaluatedThrough)) {
+			t.Fatal("direct minigame credit changed purchased ownership or consumed unsettled production time")
+		}
 		founder, err := store.LoadLatest(ctx, founderStreamID)
 		if err != nil {
 			t.Fatal(err)
@@ -476,6 +571,58 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		t.Fatalf("terminal current status=%d body=%s", currentResponse.StatusCode, currentBytes)
 	}
 	assertPersistedResolution()
+
+	if liveScaling {
+		// C39's resolution is a direct credit, not an ordinary earning action.
+		// The next actual public action must settle all outstanding Tower income
+		// from the unchanged cursor exactly once, retaining the paid reward.
+		paid, err := store.LoadLatest(ctx, companyIdentity.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		paidCash, _ := paid.State.Ledger.Balance("company.cash")
+		clock.Set(clock.Time().Add(time.Second))
+		const settlementIntentID = "01986666-f100-7000-8000-000000000006"
+		body := fmt.Sprintf(`{"intent_id":%q,"kind":"perform_manual_batch","expected_revision":%d,"action_id":"manual.click","count":1,"window_ms":1000}`, settlementIntentID, paid.Revision.Number)
+		settled := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, body)
+		settledBytes := readCompositionBytes(t, settled)
+		if settled.StatusCode != http.StatusOK || !bytes.Contains(settledBytes, []byte(`"outcome":"applied"`)) {
+			t.Fatalf("post-session production settlement status=%d body=%s", settled.StatusCode, settledBytes)
+		}
+		var evaluatedAtMS int64
+		if err := db.QueryRowContext(ctx, `SELECT (replay_inputs->>'evaluated_at_ms')::bigint FROM run_log WHERE company_stream_id=$1 AND intent_id=$2`,
+			companyIdentity.StreamID, settlementIntentID).Scan(&evaluatedAtMS); err != nil {
+			t.Fatal(err)
+		}
+		elapsedMS := evaluatedAtMS - paid.State.EvaluatedThrough.UnixMilli()
+		if elapsedMS <= 0 {
+			t.Fatal("post-session production settlement must cover a positive interval")
+		}
+		// One Tower at 1 cash/s, then the one accepted manual action at 1 cash.
+		wantCash := paidCash.Add(decimal.FromFloat64(float64(elapsedMS)).Div(decimal.FromFloat64(1000))).Add(decimal.One)
+		after, err := store.LoadLatest(ctx, companyIdentity.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cash, ok := after.State.Ledger.Balance("company.cash")
+		if !ok || cash.String() != wantCash.String() || after.Revision.Number != paid.Revision.Number+1 ||
+			after.State.EvaluatedThrough.UnixMilli() != evaluatedAtMS || after.State.GeneratorCounts["generator.beige_tower"] != 1 {
+			t.Fatalf("post-session production lost earnings/ownership: cash=%s want=%s revision=%d err=%v", cash, wantCash, after.Revision.Number, err)
+		}
+		retry := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, body)
+		if retryBytes := readCompositionBytes(t, retry); retry.StatusCode != http.StatusOK || !bytes.Equal(retryBytes, settledBytes) {
+			t.Fatalf("post-session production retry status=%d body=%s", retry.StatusCode, retryBytes)
+		}
+		unchanged, err := store.LoadLatest(ctx, companyIdentity.StreamID)
+		unchangedBytes := []byte(nil)
+		afterBytes, encodeErr := save.EncodeState(after.State)
+		if err == nil {
+			unchangedBytes, err = save.EncodeState(unchanged.State)
+		}
+		if err != nil || encodeErr != nil || unchanged.Revision.Number != after.Revision.Number || !bytes.Equal(unchangedBytes, afterBytes) {
+			t.Fatalf("production retry changed the committed Company: load=%v encode=%v", err, encodeErr)
+		}
+	}
 
 	// The recovery half of MA AC1 uses only the composed authenticated socket:
 	// start, reconnect/token rotation, attended heartbeats, resolve/retry, and a
@@ -663,7 +810,7 @@ func readCompositionBytes(t *testing.T, response *http.Response) []byte {
 	return data.Bytes()
 }
 
-func composedMinigameRepositoryRoot(t *testing.T, repositoryRoot string) string {
+func composedMinigameRepositoryRoot(t *testing.T, repositoryRoot string, liveScaling bool) string {
 	t.Helper()
 	base, err := epochseed.Load(repositoryRoot)
 	if err != nil {
@@ -686,6 +833,23 @@ func composedMinigameRepositoryRoot(t *testing.T, repositoryRoot string) string 
 	artifacts["achievements"] = []byte(`{"schema_version":1,"achievements":[]}`)
 	artifacts["doctrines"] = compositionFixtureBaseline(t, repositoryRoot, "balance/testdata/doctrines-catalog-parity-v1.json")
 	artifacts["minigames"] = readCompositionFixture(t, repositoryRoot, "testdata/minigame/pitch-v3.json")
+	if liveScaling {
+		var catalog struct {
+			SchemaVersion int                          `json:"schema_version"`
+			RatingSeasons []string                     `json:"rating_seasons"`
+			Minigames     []map[string]json.RawMessage `json:"minigames"`
+		}
+		if err := json.Unmarshal(artifacts["minigames"], &catalog); err != nil || len(catalog.Minigames) != 1 {
+			t.Fatalf("dynamic scaling catalog err=%v", err)
+		}
+		// Ephemeral structural population, not adopted production balance.
+		catalog.Minigames[0]["scaling"] = json.RawMessage(`{"schema_version":1,"scaling_inputs":[{"destination":"minigame.pitch","destination_class":"breadth","source_kind":"purchased_generator_count","source_ref":"generator.beige_tower","op":"add","operand":1,"clamp_min":1,"clamp_max":8}]}`)
+		var err error
+		artifacts["minigames"], err = json.Marshal(catalog)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
 	artifacts["pets"] = []byte(composedPetCatalogV2)
 	artifacts["fiscal"] = composedFiscalCatalog(t, repositoryRoot)
 	artifacts["soul"] = composedSoulCatalog(t, repositoryRoot)

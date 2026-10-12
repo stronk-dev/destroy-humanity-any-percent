@@ -120,6 +120,18 @@ both resolution logs/events, single faucet spend and verified Founder replay. Th
 accepted solo Pitch wire and graceful in-process reconstruction, not OS-crash or clean-host
 release recovery, a generic fixture/async HTTP API or full platform AC1 completion.
 
+The same HTTP lifecycle also has a live-source diagnostic population: its ephemeral policy
+derives the initial breadth input from purchased Towers plus one. An actual public manual batch
+earns the cash, and an actual purchase changes the saved count from zero to one during play.
+The policy would now derive two, but the active session retains one through play, application
+reconstruction, certification and once-only payout. Pitch's supported input remains one; this
+diagnostic policy is not production content or a new Pitch scaling mechanic. Payout preserves
+the purchased generator and unsettled production cursor. A subsequent public manual action
+settles the outstanding one-cash-per-second income plus its manual earnings, with exact balance
+and persisted evaluation-time checks; retry returns the same receipt and changes no saved state.
+This is real HTTP/Go/Postgres evidence, not a mounted-DOM journey, live Founder-source change,
+async HTTP tenant or complete platform acceptance.
+
 The internal recovery command kind remains `resolve_soul_recovery` or
 `cancel_soul_recovery` for replay. The public durable terminal receipt uses the API grammar's
 `action: "resolve" | "cancel"`; the distinction is explicit so internal command vocabulary cannot

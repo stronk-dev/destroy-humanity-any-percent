@@ -2,6 +2,14 @@
 
 RFC: `rfc/minigame-platform-foundation.md`
 
+Current supplement (2026-10-12): extend the existing composed Pitch HTTP lifecycle with an
+ephemeral purchased-generator scaling population. Real public earnings/purchase change the
+Company source during play; the original frozen input must survive continuation, fresh-server
+resume, certification and once-only payout. Preserve outstanding ordinary production and prove
+its later settlement/retry. The owning log records executed checks and limitations. This does
+not adopt production scaling rows, add an async/fixture public wire, prove Founder-source
+mutation or close full AC1; no acceptance checkbox changes.
+
 - [x] Acceptance-review the draft and reconcile owner rulings C1–C18 into the normative body.
 - [x] Land the Postgres-authoritative session lifecycle and claim-token repository boundary.
   - [x] Append the `minigame_sessions` migration with closed modes/statuses and immutable frozen
