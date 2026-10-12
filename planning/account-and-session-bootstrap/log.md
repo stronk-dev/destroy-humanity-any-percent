@@ -1020,3 +1020,37 @@ Review by: Codex (research implementer first filter). Recorded by: Codex.
 Exact instrument/Make/draft/evidence/record range starts after `a6fc7217` through
 this containing commit and requires designated cross-party review. Earlier debt
 remains. No feature acceptance, archival, push, deployment or release claim.
+
+## 2026-10-12 — Real Account/browser committed-reply ambiguity (R-011)
+
+Baseline `e497cae2`; three cases predeclared in the owning plan before execution.
+One manual Make target and a test-only proxy/coordinator branch reuse the existing
+Garden fixture, actual gameserver and declared disposable Postgres. No production
+authentication, storage document, refresh policy, TTL, schema, gameplay, kernel,
+content or CI workflow changes. The existing coordination dossier records source
+digests and exact credential-family counts without tokens or private snapshots.
+
+Final `make diagnose-browser-session-coordination`10648 exits0. Healthy overlap
+rotates once and both tabs retain the same descendant. After actual committed
+rotation and owner-page closure before delivery, the marker stops queued/reloaded
+successors with the original stored pair and an unrevoked family. The omission
+control sends twice, receives exact401 reuse refusal and revokes both access
+generations. All ten privately compared Account/game tables remain unchanged.
+Old access still works in the interrupted arm before expiry; no recovery-after-
+expiry, automatic renewal, full R-011 or supported-engine completion is claimed.
+
+Initial6579 cannot access Docker, no cases. Permitted1957 fails bootstrap before
+the populations: the test's UUID-shaped key violates the existing64-hex contract.
+Corrected to the actual client's32-byte random-hex form; no production change.
+Final syntax checks pass. Existing `make test-garden-harvest-composed`9784 exits0
+through the unchanged normal branch: built client/server/Postgres/WebSocket,
+purchase, plant/uproot, controlled maturity, single/all harvest, receipt retry/
+refusal and reload. This is not the natural fifteen-minute Garden objective.
+CI topology and all13 negative controls pass; no hosted/full-CI green claim.
+
+Review by: Codex (diagnostic implementer first filter). Recorded by: Codex.
+Exact new range starts after `e497cae2` through this containing commit; designated
+cross-party review pending. All command handles terminal, diff inspected. Existing
+review debt remains; no acceptance, archive, cleanup, publication or release.
+Next: remaining lifecycle/credential persistence evidence and explicit draft
+adoption, not another repetition of completed primitive/committed-reply cases.

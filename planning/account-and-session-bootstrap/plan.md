@@ -128,3 +128,35 @@ interruption, omission and quota outcomes. Firefox launch executes zero cases an
 full60-case coverage remains open. Evidence lives in the existing coordination dossier and
 latest owning log. The draft now distinguishes this primitive result from the remaining real
 credential/Account/process-lifecycle and owner-policy gates; no renewal implementation follows.
+
+## R-011 real Account/browser follow-up — 2026-10-12
+
+Baseline `e497cae2`: reuse the Garden driver's actual gameserver, pinned fixture and declared
+disposable Postgres initialization, but not its gameplay or15-minute objective. Three fresh
+browser contexts/accounts, one case each: healthy queued overlap, owner-page closure after
+the real refresh response has committed but before downstream delivery, and identical closure
+with the test marker omitted. Test-operated browser fetches call unchanged bootstrap/refresh
+routes through a loopback proxy. No automatic coordinator is wired into the production client.
+
+Require actual200 rotation and private Postgres session/access/family counts before releasing
+or discarding its reply. Healthy sends once and both tabs use the same stored descendant;
+interrupted sends once and queued/reloaded tabs stop while the family remains unrevoked;
+omission sends twice, receives exact401 refresh_reused/session_family_revoked and revokes
+both access generations. Capture all ten existing refresh-census account/game tables privately
+before/after each case; require exact unchanged rows. No tokens, recovery codes, request/reply
+bodies or private snapshots enter diagnostic output. The existing30-second observation guard
+invalidates incomplete cases; no retries, new policy deadlines, clock/TTL edits or balance grants.
+
+This can establish bounded Chromium→real Account→Postgres ambiguity/exclusion evidence, not
+natural expiry, real production credential documents, automatic reconnect, supported-engine
+completion, OS/process crash, marker adoption or full R-011. A focused manual Make target
+runs it outside CI. Finish with the existing controlled-maturity Garden journey to check that
+the new diagnostic branch leaves the normal driver path intact.
+
+Completed: all three native Chromium/real Account/Postgres cases pass, including actual
+committed rotation and exact reuse/family revocation without the marker. The ten watched
+account/game tables remain unchanged. Existing controlled-maturity Garden journey also
+passes through the normal branch. The coordination dossier and owning log retain the
+initial invalid key attempt, exact source identity, commands and limits. Remaining work
+is supported-profile/lifecycle and production credential persistence evidence plus draft
+policy adoption, not repeating these three completed cases or claiming renewal implemented.

@@ -274,6 +274,12 @@ diagnose-browser-session: build-gameserver build-client
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-garden-composed.mjs --session-diagnostic
 
+.PHONY: diagnose-browser-session-coordination
+# R-011 real Account/browser observation; not production renewal or a CI gate.
+diagnose-browser-session-coordination: build-gameserver
+	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
+	node client/tools/test-garden-composed.mjs --session-coordination-diagnostic
+
 .PHONY: research-browser-coordination
 # R-011 primitive observation only; no default CI/release dependency or product auth.
 research-browser-coordination:

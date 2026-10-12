@@ -10,12 +10,14 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { productionClientFiles, productionClientProof } from "./production-client-proof.mjs";
 import { navigationAPIProof, pipeObservedAPIResponse } from "./navigation-api-proof.mjs";
+import { observeRealAccountCoordination } from "./research-real-account-coordination.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const uiURL = "http://localhost:5173";
 const serverURL = "http://127.0.0.1:18083";
-assert(process.argv.length === 2 || process.argv.length === 3 && ["--session-diagnostic", "--harvest-fixture"].includes(process.argv[2]), "unknown Garden driver argument");
+assert(process.argv.length === 2 || process.argv.length === 3 && ["--session-diagnostic", "--session-coordination-diagnostic", "--harvest-fixture"].includes(process.argv[2]), "unknown Garden driver argument");
 const sessionDiagnostic = process.argv[2] === "--session-diagnostic";
+const sessionCoordinationDiagnostic = process.argv[2] === "--session-coordination-diagnostic";
 const harvestFixture = process.argv[2] === "--harvest-fixture";
 const fixtureRoot = mkdtempSync(path.join(os.tmpdir(), "cloud-clicker-garden-composed-"));
 const started = Date.now();
@@ -178,8 +180,12 @@ try {
   } });
   server.on("error", (error) => errors.push(error)); server.stdout.on("data", (data) => process.stdout.write(data)); server.stderr.on("data", (data) => process.stderr.write(data));
   await ready();
-  const clientProof = productionClientProof(productionClientFiles(path.join(root, "client/dist")));
   browser = await chromium.launch({ headless: true });
+  if (sessionCoordinationDiagnostic) {
+    await observeRealAccountCoordination({ browser, serverURL, sql });
+    assert.equal(errors.length, 0, "gameserver reported an error during Account observation");
+  } else {
+  const clientProof = productionClientProof(productionClientFiles(path.join(root, "client/dist")));
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   const requests = [], views = [], publicData = [], responses = [], transport = { sent: 0, received: 0, closed: 0 };
   let expectExpiredGarden = false;
@@ -477,6 +483,7 @@ try {
   console.log(`Garden composed ${harvestFixture ? "controlled-maturity fixture" : "real wall-clock"}: DOM bootstrap/unlock/plant/uproot → ${harvestFixture ? "explicit mature-state setup" : "native three-tick maturation"} → native single/all harvest → substrate/reload; two real cash sends, bound hashes, hidden salt; ${(Date.now() - started) / 1000}s: PASS`);
   }
   console.log(`Garden API observation: ${JSON.stringify(apiProof.finish())}; cancelled old-page reads are not consumed-read proof; all complete JSON still enumerated`);
+  }
 } catch (error) {
   throw new Error(`Garden composed objective failed; boundary errors: ${JSON.stringify(errors.map(String))}; HTTP statuses: ${JSON.stringify(apiBoundaries)}; recent proxy boundaries: ${JSON.stringify(proxyBoundaries.slice(-12))}`, { cause: error });
 } finally {

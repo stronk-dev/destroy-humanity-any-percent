@@ -107,3 +107,50 @@ browser-process/OS crash and disk durability remain separate. Quota-fill limits 
 observation guards are invalidity bounds, not production capacity/deadline choices.
 No marker schema/lifetime, coordinator, recovery copy or automatic retry is adopted.
 The Account log owns exact review/procedure evidence; R-011 and renewal stay open.
+
+## Real Account/browser follow-up — 2026-10-12
+
+Predeclared at `e497cae2` in the Account plan. Reproduce from the repository root
+with `make diagnose-browser-session-coordination`. The existing Garden driver
+builds the actual gameserver and initializes its declared disposable Postgres;
+the diagnostic uses native Chromium, fresh contexts/accounts and a test-owned
+loopback proxy. It does not run the production client or implement renewal.
+Final helper SHA256 `e8a93b861e3ea71a660e431f9ebaa9cc5f8dc72fbb4fda6fc9b1fb1023a0fc71`;
+Garden driver SHA256 `952a18291fb069e4588886c85d7802358747d420e477aae981fbb697809ac39e`.
+
+Run10648 exits0 with all three cases, no exhausted guards or uncaught errors.
+Each first refresh is an actual200 from Account, with the Postgres rotation
+committed and the complete reply held before delivery to the owner page:
+
+| Arm | Refresh requests / upstream statuses | Credential-family counts | Observed result |
+| --- | --- | --- | --- |
+| Healthy native queued overlap | 1 /200 | `[2,1,0,2,0,0]` | Both tabs retain the same new pair; authenticated read returns the same Founder. |
+| Owner page closes after commit, before delivery | 1 /200 | `[2,1,0,2,0,0]` | Queued and reloaded successors stop on the retained marker; original stored pair remains; family is not revoked. |
+| Identical closure without marker | 2 /200,401 | `[2,1,2,2,2,1]` | Successor receives exact `refresh_reused/session_family_revoked`; both old and held-descendant access are refused. |
+
+Count order: sessions, consumed sessions, revoked sessions, access tokens,
+revoked access tokens, revoked families. Each account starts `[1,0,0,1,0,0]`.
+All ten Account/game tables listed by the instrument compare byte-exact privately
+before/after refresh; no rows change. Tokens, recovery codes, reply bodies and
+private snapshots are not serialized into the report. Thirty-second guards are
+invalidity bounds, not new product deadlines.
+
+Initial restricted attempt6579 cannot reach Docker (no cases). Permitted1957
+fails bootstrap before any case because the instrument supplied a UUID-shaped
+idempotency key instead of the existing64-lowercase-hex contract. The correction
+matches the actual client's32-byte key construction; no production parser or
+assertion changed. The final run above is the corrected instrument.
+
+The existing `make test-garden-harvest-composed`9784 also exits0: the unchanged
+normal branch exercises built client, actual server/Postgres/WebSocket, purchase,
+plant/uproot, controlled maturity, single/all harvest, receipt retry/refusal and
+reload. This checks the driver integration, not natural fifteen-minute growth.
+Node syntax and unchanged CI topology plus its13 negative controls pass.
+
+This establishes three bounded Chromium/real-Account committed-reply cases,
+including a real revocation failure control. The interrupted arm's old access
+still works before expiry; this is not successful recovery after expiry. The
+test credential document/coordinator is not the shipped runtime. Supported-engine
+completion, real credential persistence failures, background/process/OS lifecycle,
+natural expiry and automatic reconnect remain open. The candidate marker and
+renewal policy are not adopted. No feature acceptance or hosted-CI claim follows.

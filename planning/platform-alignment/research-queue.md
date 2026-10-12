@@ -243,6 +243,11 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   omission redispatch, and native quota-denial-before-send. Firefox launch is
   invalid with zero cases. The same dossier names limits; synthetic generations
   do not establish real Account rotation, production renewal or marker adoption.
+  Subsequent Chromium/real Account/Postgres follow-up completes three committed-
+  reply cases: healthy overlap, page loss with marker, and omission causing exact
+  reuse/family revocation. Ten watched Account/game tables remain unchanged.
+  This bounds real reply ambiguity; production renewal, supported-profile/lifecycle
+  and credential-persistence evidence plus policy adoption remain open.
 - **Contract groundwork:** predeclared `d3e7196f`
   [parser/router census](session-refresh-contract-census.md) executes 22 malformed
   parser cases plus limiter/refill/method/path (27 requests), full-byte oracles,

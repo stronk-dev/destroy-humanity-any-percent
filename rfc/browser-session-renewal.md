@@ -170,6 +170,14 @@ into another identity. No second history store or client-authored receipt exists
   generations, not Account rotation. Firefox launch is invalid with zero cases;
   process/OS crash, other storage failures, real credential persistence and the
   production coordinator remain unproved. The experimental marker is not adopted.
+  The subsequent native Chromium/real Account/Postgres follow-up completes three
+  cases: healthy queued overlap, owner-page closure after committed rotation but
+  before delivery, and identical closure without the test marker. Retaining it
+  stops queued/reloaded successors without revocation; omission produces exact
+  reuse refusal and revokes both access generations. Watched Account/game tables
+  remain unchanged. This tests real committed-reply ambiguity, not the production
+  credential document/coordinator, supported-profile completion, natural expiry,
+  background/process/OS lifecycle or post-reply storage failures. R-011 stays open.
 - **API author boundary S-A1:** pin the complete existing refresh error/status
   schema and exact generated dispatcher changes needed for C9. The current
   handwritten runtime calls are not permission for another raw API client or an
