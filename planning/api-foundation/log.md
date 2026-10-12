@@ -1796,3 +1796,42 @@ This closes only the outstanding normative correction review. Generated-caller
 migration/lint, catalogs and public TypeScript re-verification, missing204/304
 contracts, RP-495 and later corrective review ranges remain separate. No draft
 adoption, feature acceptance, archival, push, deployment or 1.0 promotion.
+
+## 2026-10-12 — HTTP conditional-cache conformance (RP-502)
+
+Outcome under accepted A8/C6/C16: valid weak tags, tag lists, repeated field lines and
+wildcard conditional GETs retain the existing bodiless304/cache/hash/request-ID behavior
+without spending an IP token. Parse the complete combined field, preserving quoted commas
+and valid empty list members; malformed/nonmatching conditions take the ordinary bucket path.
+Authorization and evidence validation remain before caching. No policy values, receipt/replay
+bytes, endpoint DTO, generation pin, retry, clock, kernel, schema or CI workflow changes.
+This is ordinary HTTP conformance, not adoption of RP-483's empty-response schema amendment.
+Primary semantics checked against RFC9110 §§8.8.3,13.1.2 and recipient list grammar §5.6.1.
+
+Extend the existing policy and six-operation cache tests, not a new framework. Initial62559
+also exhausts the fixture's finite request-ID entropy; later500s are instrumentation failures,
+not caching findings. Use explicit valid request IDs and retain exact echo assertions.
+Definitive unchanged-source64592 fails nine policy cases (eight valid conditional forms plus
+a malformed second field ignored after a matching first) while fourteen controls pass; all
+six mounted-operation cases fail on weak revalidation returning200 instead of304.
+
+Corrected cold `make test-go GO_PACKAGES='./publicapi ./publicread' GO_TEST_FLAGS='-count=1'`
+26763 passes. Final root `make test-go vet api-check GO_PACKAGES='./publicapi ./publicread
+./gameserver' GO_TEST_FLAGS='-count=1'`6788 passes all affected native non-DB checks/vet and
+byte-unchanged generated contract/pin/types. Native database tests skip without their URL;
+they are not cited as database proof. Declared `make test-go-ci CI_TEST_PACKAGES='./publicapi
+./publicread ./gameserver' CI_TEST_FLAGS='-v -run TestCachedMiddlewareSkipsLimiterFor304AndEchoesRequestID\|TestMountedPublicReadsCacheWithoutSpendingTokensAndInvalidateChangedBytes\|TestComposedGameserverExitVerificationAndBoardIntegration\|TestComposedGameserverPostgresSocketClearingAndGCIntegration'`
+81527 passes all four named functions, without skips, on Linux-amd64 with real Postgres.
+The evidence helper exercises five conditional forms on all three real queue-verified
+downloads, exact stored bytes/hashes and replay/corrupt-receipt refusal. Actual private/unknown
+run requests with wildcard still refuse identically with404 and no cache/hash. Mounted tests
+exhaust/refill the actual configured bucket and retain changed-byte invalidation. The declared
+emulation CPU setting is unchanged; this is not native hosted hardware or whole Actions CI.
+Catalogs still come from the pinned DB bundle, not the missing public TypeScript/catalog loop.
+The Compose orphan warning caused no cleanup. All handles terminal; format/diff checked.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range starts after
+`aaf78306` through this containing commit and needs Claude designated review. Earlier review
+debt stays separate. No draft adoption, full API/1.0 acceptance, archive, push or deploy.
+Next: continue accepted API/player construction and consolidated corrective review; held
+owner/author choices and release-artifact gates remain explicit, not a blanket work stop.

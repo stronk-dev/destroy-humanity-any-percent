@@ -184,15 +184,69 @@ func TestCachedMiddlewareSkipsLimiterFor304AndEchoesRequestID(t *testing.T) {
 		t.Fatalf("first status=%d headers=%v body=%q", first.Code, first.Header(), first.Body.String())
 	}
 
-	for index := 0; index < 2; index++ {
-		cached := httptest.NewRecorder()
-		retry := httptest.NewRequest(http.MethodGet, request.URL.String(), nil)
-		retry.RemoteAddr = request.RemoteAddr
-		retry.Header.Set("If-None-Match", first.Header().Get("ETag"))
-		handler.ServeHTTP(cached, retry)
-		if cached.Code != http.StatusNotModified || cached.Body.Len() != 0 || cached.Header().Get("ETag") == "" || cached.Header().Get("X-Request-ID") == "" {
-			t.Fatalf("cached %d status=%d headers=%v body=%q", index, cached.Code, cached.Header(), cached.Body.String())
-		}
+	etag := first.Header().Get("ETag")
+	for _, test := range []struct {
+		name   string
+		values []string
+	}{
+		{"strong", []string{etag}},
+		{"weak", []string{"W/" + etag}},
+		{"list matches last", []string{`"other", W/` + etag}},
+		{"list matches first", []string{etag + `, "other"`}},
+		{"repeated field", []string{`"other"`, etag}},
+		{"quoted comma", []string{`"other,tag", ` + etag}},
+		{"optional whitespace", []string{" \tW/" + etag + "\t "}},
+		{"empty list members", []string{", , " + etag + ", ,"}},
+		{"wildcard", []string{" *\t"}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			cached := httptest.NewRecorder()
+			retry := httptest.NewRequest(http.MethodGet, request.URL.String(), nil)
+			retry.RemoteAddr = request.RemoteAddr
+			retry.Header.Set("X-Request-ID", "conditional-cache-check")
+			for _, value := range test.values {
+				retry.Header.Add("If-None-Match", value)
+			}
+			handler.ServeHTTP(cached, retry)
+			if cached.Code != http.StatusNotModified || cached.Body.Len() != 0 || cached.Header().Get("ETag") != etag ||
+				cached.Header().Get("X-Request-ID") != "conditional-cache-check" || cached.Header().Get("Cache-Control") != first.Header().Get("Cache-Control") ||
+				cached.Header().Get("Content-Type") != "" || cached.Header().Get("Content-Length") != "" {
+				t.Fatalf("cached status=%d headers=%v body=%q", cached.Code, cached.Header(), cached.Body.String())
+			}
+		})
+	}
+	for _, test := range []struct {
+		name   string
+		values []string
+	}{
+		{"wrong tag", []string{`W/"other"`}},
+		{"opaque tag is case sensitive", []string{strings.ToUpper(etag)}},
+		{"lowercase weakness marker", []string{"w/" + etag}},
+		{"space inside weakness marker", []string{"W/ " + etag}},
+		{"match then invalid suffix", []string{etag + " garbage"}},
+		{"match then invalid field", []string{etag, "garbage"}},
+		{"unquoted tag", []string{strings.Trim(etag, `"`)}},
+		{"missing list separator", []string{etag + ` "other"`}},
+		{"unclosed quote", []string{etag + `, "other`}},
+		{"wildcard with tag", []string{"*, " + etag}},
+		{"tag with wildcard", []string{etag + ", *"}},
+		{"repeated wildcard", []string{"*", "*"}},
+		{"control in opaque tag", []string{etag + ", \"a\tb\""}},
+		{"empty members only", []string{", ,"}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			response := httptest.NewRecorder()
+			retry := httptest.NewRequest(http.MethodGet, request.URL.String(), nil)
+			retry.RemoteAddr = request.RemoteAddr
+			retry.Header.Set("X-Request-ID", "conditional-cache-check")
+			for _, value := range test.values {
+				retry.Header.Add("If-None-Match", value)
+			}
+			handler.ServeHTTP(response, retry)
+			if response.Code != http.StatusTooManyRequests || response.Header().Get("ETag") != "" || response.Header().Get("Cache-Control") != "" {
+				t.Fatalf("invalid/nonmatching condition bypassed exhausted bucket: %d %v %q", response.Code, response.Header(), response.Body.String())
+			}
+		})
 	}
 
 	limited := httptest.NewRecorder()

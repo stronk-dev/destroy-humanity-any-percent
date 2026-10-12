@@ -1755,7 +1755,19 @@ func assertPublicSurfacePrivacy(t *testing.T, server *httptest.Server, secrets m
 			t.Fatalf("public operation %s has no privacy enumeration request", operation.ID)
 		}
 		for _, path := range paths {
-			response := compositionRequest(t, server.Client(), http.MethodGet, server.URL+path, "", "")
+			request, err := http.NewRequest(http.MethodGet, server.URL+path, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if operation.ID == publicread.GetRunGenesisOperation || operation.ID == publicread.GetRunReplayLogOperation || operation.ID == publicread.GetRunVerdictOperation {
+				// A wildcard can suppress an authorized representation, never turn a
+				// private/unknown run into a successful public cache response.
+				request.Header.Set("If-None-Match", "*")
+			}
+			response, err := server.Client().Do(request)
+			if err != nil {
+				t.Fatal(err)
+			}
 			body := responseBody(response)
 			wantStatus := http.StatusOK
 			if operation.ID == publicread.GetRunGenesisOperation || operation.ID == publicread.GetRunReplayLogOperation || operation.ID == publicread.GetRunVerdictOperation {

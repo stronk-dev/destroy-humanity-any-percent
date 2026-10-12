@@ -160,8 +160,9 @@ func TestMountedPublicReadsCacheWithoutSpendingTokensAndInvalidateChangedBytes(t
 				t.Fatalf("operation %s served the wrong content type: %v", operation, first.Header())
 			}
 			// More cache hits than the real configured burst: none may charge a token.
+			conditions := []string{etag, "W/" + etag, `"other", ` + etag, etag + `, "other"`, "*", "\t" + etag + " ", ", " + etag + ","}
 			for index := 0; index <= policy.PublicLimiter.Burst; index++ {
-				cached := publicCacheRequest(fixture.router, test.path, etag, ip)
+				cached := publicCacheRequest(fixture.router, test.path, conditions[index%len(conditions)], ip)
 				assertPublicCacheResponse(t, cached, http.StatusNotModified, test.cacheControl, etag)
 				if operation == GetRunGenesisOperation || operation == GetRunReplayLogOperation {
 					if cached.Header().Get(EvidenceHashHeader) != strings.Trim(etag, `"`) {

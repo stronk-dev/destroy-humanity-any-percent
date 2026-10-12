@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"cloud-clicker/server/httpapi"
@@ -268,7 +269,7 @@ func (runtime *Runtime) WriteCached(response http.ResponseWriter, request *http.
 	etag := `"` + digest + `"`
 	response.Header().Set("Cache-Control", cacheControl)
 	response.Header().Set("ETag", etag)
-	if request.Header.Get("If-None-Match") == etag {
+	if ifNoneMatchMatches(request.Header.Values("If-None-Match"), etag) {
 		if len(contentHashHeader) == 1 {
 			response.Header().Set(contentHashHeader[0], digest)
 		}
@@ -292,6 +293,52 @@ func (runtime *Runtime) WriteCached(response http.ResponseWriter, request *http.
 	response.WriteHeader(http.StatusOK)
 	_, err := response.Write(body)
 	return err
+}
+
+// RFC 9110 §§8.8.3, 13.1.2: conditional GET uses weak comparison over the
+// combined field's entity-tag list. Parse quoted commas rather than splitting
+// opaque tags, and validate the whole condition before admitting a cache hit.
+// Malformed conditions follow the ordinary, rate-limited response path.
+func ifNoneMatchMatches(values []string, etag string) bool {
+	condition := strings.Trim(strings.Join(values, ","), " \t")
+	if condition == "*" {
+		return true // WriteCached already has an authorized representation.
+	}
+	matched := false
+	for len(condition) > 0 {
+		condition = strings.TrimLeft(condition, " \t")
+		if len(condition) == 0 {
+			break
+		}
+		if condition[0] == ',' { // Recipient list grammar permits empty members.
+			condition = condition[1:]
+			continue
+		}
+		condition = strings.TrimPrefix(condition, "W/")
+		if len(condition) == 0 || condition[0] != '"' {
+			return false
+		}
+		end := 1
+		for end < len(condition) && condition[end] != '"' {
+			c := condition[end]
+			if c < 0x21 || c == 0x7f { // etagc excludes whitespace and control bytes.
+				return false
+			}
+			end++
+		}
+		if end == len(condition) {
+			return false
+		}
+		matched = matched || condition[:end+1] == etag
+		condition = strings.TrimLeft(condition[end+1:], " \t")
+		if len(condition) > 0 {
+			if condition[0] != ',' {
+				return false
+			}
+			condition = condition[1:]
+		}
+	}
+	return matched
 }
 
 func (runtime *Runtime) cacheControl(class CacheClass) (string, bool) {

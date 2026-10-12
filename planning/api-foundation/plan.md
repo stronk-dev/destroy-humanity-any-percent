@@ -2,6 +2,15 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current runtime correction (2026-10-12, RP-502): shared conditional caching now parses the
+complete If-None-Match field and uses HTTP weak comparison for strong/weak tags, lists,
+repeated lines and wildcard. Nine old-source policy cases and all six mounted operations fail;
+corrected affected packages and actual Linux-amd64/Postgres public download/privacy checks
+pass without changing limiter values, evidence bytes, registry or generated artifacts.
+Malformed conditions cannot obtain a cache hit; wildcard private/unknown runs still404.
+The owning log records the test-fixture correction, exact checks and pending Claude review.
+RP-483 remains an unadopted schema/SDK prerequisite; no full API/CI acceptance follows.
+
 Current specification review (2026-10-12): Claude's A6/AC4 body correction
 `266b8d8c^..266b8d8c` is designated-APPROVED by Codex. It faithfully reconciles
 the already-adopted C9/C18 requirements; no new contract or implementation is

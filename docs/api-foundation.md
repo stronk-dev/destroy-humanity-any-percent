@@ -345,6 +345,15 @@ original gzip bytes as `application/gzip`. Both raw registry arms require `X-Con
 and `public,max-age=31536000,immutable`. Matching conditional reads return bodiless 304s
 before charging the shared IP bucket, retaining cache/ETag and raw hash headers. Exhausted
 uncached reads return non-cacheable `429 rate_limited/ip` without a raw hash header.
+The shared cache runtime evaluates `If-None-Match` using HTTP weak comparison:
+strong/weak tags, comma-separated lists (including repeated field lines), optional whitespace
+and a lone `*` match an authorized current representation. Quoted commas stay inside their
+opaque tag; malformed conditions and nonmatching tags take the ordinary rate-limited path.
+The entire combined field is validated, so a matching first field cannot hide a malformed
+second field. Authorization/evidence validation still precedes caching: private or unknown
+run requests with `*` return the same non-cacheable 404. See
+[RFC 9110 §13.1.2](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.2).
+This runtime conformance repair does not declare the still-held generated-client 304 arm.
 
 `leaderboard.Repository.PublicRunEvidence` supplies C14's stored bytes and pinned metadata in
 one statement snapshot. Only an actual `verified_runs` record authorizes retrieval; a queue

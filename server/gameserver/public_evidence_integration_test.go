@@ -42,21 +42,29 @@ func assertPublicVerifiedEvidence(t *testing.T, db *sql.DB, server *httptest.Ser
 		if path != base+"/verdict" && response.Header.Get(publicread.EvidenceHashHeader) != digest {
 			t.Fatalf("raw evidence %s lacks its exact content digest", path)
 		}
-		request, err := http.NewRequest(http.MethodGet, server.URL+path, nil)
-		if err != nil {
-			t.Fatal(err)
-		}
-		request.Header.Set("If-None-Match", response.Header.Get("ETag"))
-		cached, err := server.Client().Do(request)
-		if err != nil {
-			t.Fatal(err)
-		}
-		cachedBody, err := io.ReadAll(cached.Body)
-		_ = cached.Body.Close()
-		if err != nil || cached.StatusCode != http.StatusNotModified || len(cachedBody) != 0 ||
-			cached.Header.Get("ETag") != response.Header.Get("ETag") || cached.Header.Get("Cache-Control") != response.Header.Get("Cache-Control") ||
-			cached.Header.Get(publicread.EvidenceHashHeader) != response.Header.Get(publicread.EvidenceHashHeader) {
-			t.Fatalf("public evidence conditional read %s: status=%d headers=%v err=%v", path, cached.StatusCode, cached.Header, err)
+		etag := response.Header.Get("ETag")
+		for _, condition := range [][]string{{etag}, {"W/" + etag}, {`"other", W/` + etag}, {`"other"`, etag}, {"*"}} {
+			request, err := http.NewRequest(http.MethodGet, server.URL+path, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			request.Header.Set("X-Request-ID", "evidence-conditional-check")
+			for _, value := range condition {
+				request.Header.Add("If-None-Match", value)
+			}
+			cached, err := server.Client().Do(request)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cachedBody, err := io.ReadAll(cached.Body)
+			_ = cached.Body.Close()
+			if err != nil || cached.StatusCode != http.StatusNotModified || len(cachedBody) != 0 ||
+				cached.Header.Get("ETag") != etag || cached.Header.Get("Cache-Control") != response.Header.Get("Cache-Control") ||
+				cached.Header.Get(publicread.EvidenceHashHeader) != response.Header.Get(publicread.EvidenceHashHeader) ||
+				cached.Header.Get("X-Request-ID") != "evidence-conditional-check" ||
+				cached.Header.Get("Content-Type") != "" || cached.Header.Get("Content-Length") != "" {
+				t.Fatalf("public evidence conditional read %s (%q): status=%d headers=%v err=%v", path, condition, cached.StatusCode, cached.Header, err)
+			}
 		}
 		return body
 	}
