@@ -5,8 +5,21 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current product rollup (2026-10-12):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-09)
+**Current product rollup (2026-10-12):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-12)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
+Inspected source `2fbd246b`: Garage integration/hardening, incomplete v0.1, and substantial
+unbuilt world/combat/Tier 3–8/final-ending scope. Latest published CI remains red at
+`e0cb9187`; subsequent local repairs and complete original API review dispositions do not
+advance a gameplay milestone or establish release readiness. Use [current next moves](#current-next-moves)
+and the owning accepted RFC plans for execution. The four highlighted contract proposals
+remain drafts; unresolved arithmetic and integration are engineering work, not owner approval
+items. Neither decision holds nor pending review halt all accepted work.
+
+## Historical rollup checkpoints
+
+The following dated narratives retain their original source/evidence boundaries. They are
+not the current execution queue, even where an old entry uses “latest” or “current”.
+
 Published source `e0cb9187` now has hosted CI38222406320: schema/harness/composed pass;
 client/server/browser fail, and the blocking run exceeds five minutes. The browser's
 functional matrix passes; its populated performance census has the locally corrected
@@ -82,7 +95,7 @@ browser checks and final composed99336 pass real Postgres, Fiscal refusals, play
 Cosmetics. Designated review remains. Latest hosted CI at `0f9f4214` is RED: server Clout research/
 partition tests, client historical kernel guard and two WebKit parse-error constructor tests.
 The latter are locally corrected (RP-381): affected Node27/native54 and types pass; no hosted
-rerun or product/CI change. The [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-09)
+rerun or product/CI change. The [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-12)
 separates built foundations, fixture-first work and substantial unbuilt scope. RP-365/RP-368/RP-378 and owner/author holds
 remain; a passing journey does not resolve them. [Garage log](garage-player-surfaces/log.md),
 [Cosmetic log](cosmetic-shop-v1/log.md) and [API log](api-foundation/log.md) own evidence.
@@ -2010,9 +2023,11 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Reconciled at source `1b484c50` (2026-10-09). The intervening API, input, Recovery and
+Reconciled at source `2fbd246b` (2026-10-12). The intervening API, input, Recovery and
 Deployment repairs improve existing paths/proofs; no additional playable tier or milestone
-is completed. Combat's structural decoding remains an isolated foundation increment.
+is completed. The five original query/epoch/board/route/router API reviews now have complete
+CHANGES REQUIRED dispositions; later corrections and implementation ranges still need review.
+Combat's structural decoding remains an isolated foundation increment.
 These are delivery boundaries, not a claim that
 every listed change is authorized immediately. Accepted RFCs and their owning plans decide that.
 
@@ -2026,7 +2041,9 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
    natural pacing/relevance and candidate-copy/content gates; controlled cash/maturity fixtures
    are integration proof, not evidence that the economy or progression is ready to ship.
 3. **Consolidate review rather than restart original reviews.** Original Cosmetic, Pet, Garden,
-   Arcade and reviewed Typer batches retain their recorded dispositions. Related Codex corrections and
+   Arcade, reviewed Typer and the five original early API batches retain their recorded dispositions.
+   Continue later API verification/download and generated-consumer implementation reviews.
+   Related Codex corrections and
    new integrated proofs need exact-range cross-party review before acceptance/archival.
    Owning logs hold those ranges; no new per-edit review ceremony or duplicate ledger.
 4. **Build and prove the public-release floor alongside gameplay.** Resolve remaining rights/

@@ -4,7 +4,7 @@ Reconciled 2026-10-12. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-## Whole-product overview — 2026-10-09
+## Whole-product overview — 2026-10-12
 
 **Bottom line:** substantial server/client foundations and an executable early-game loop exist.
 The current stage is **Garage integration and hardening**, not completion of the full game or
@@ -48,6 +48,63 @@ and building the world/combat/later-tier game. Rights, recovery, accessibility a
 operations remain required alongside that construction, not optional end-stage polish.
 
 ### Current verification and closeout
+
+Source inspected: `2fbd246b`, clean `main`, 19 commits ahead of the locally recorded
+`origin/main` before this editorial checkpoint. These are different evidence populations:
+
+| Evidence | Result and limit |
+|---|---|
+| Latest published CI | Read-only `gh run list` / `gh run view` confirms [CI38222406320](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38222406320) on `e0cb9187`: schema, harness and composed pass; client, server and browser fail. No newer published CI run was returned. |
+| Published failures | Historical kernel guard (RP-131), 27 Clout accrual-partition cases (RP-307), and Fiscal whitespace in the populated performance census (RP-484). The blocking run also exceeds the five-minute floor. Do not suppress or reinterpret these failures as green. |
+| Later local repairs | Performance census, feedback/input, backup metadata/snapshot consistency and API admission/evidence corrections have scoped executed results in their owning logs. They remain unpushed and need designated review; they do not establish whole-CI success. |
+| Latest router repair | RP-496 refuses either incomplete previous cursor-key pair. Old-source regression fails; corrected affected cold Go/vet, unchanged API generation and selected real Linux-amd64/Postgres composition checks pass. `36f81dae..2fbd246b` needs Claude review. |
+| Original API reviews | Query `32560c4b`, epochs `e63796d5`, boards `4c316c4c`, routes `09d12987` and router `731bb3e7` now have complete original-range **CHANGES REQUIRED** dispositions. Do not restart those reviews or treat later repairs as approved. Later implementation ranges remain separate. |
+| Release artifact | No current-candidate clean-host R-006 install/restore/rollback proof. The executed local Caddy/Postgres release fixture is useful bounded evidence, not that rehearsal or approval of the complete Deployment range. |
+
+The [API log](api-foundation/log.md), [Garage log](garage-player-surfaces/log.md),
+[Minigame API log](minigame-api-and-surface/log.md), [Account log](account-and-session-bootstrap/log.md)
+and [Deployment log](deployment-foundation/log.md) own exact ranges, commands and exclusions.
+This editorial overview does not rerun software acceptance, accept drafts, waive review debt,
+authorize publication or promote a release.
+
+### Decisions versus engineering work
+
+The pending typed-dictionary, empty-response and historical-guard drafts need explicit
+adoption and normative review before their new contracts can be implemented. The accrual
+draft also needs absence/settlement semantics reconciled, but its arithmetic, persistence,
+compatibility and full-state measurements remain engineering obligations. Approval of a
+direction cannot substitute for a viable implementation or make failing tests disappear.
+The separate cursor policy/rotation-ledger contradiction (RP-495) belongs to the API and
+Deployment authors; it is not resolved by the RP-496 configuration repair.
+
+These holds apply to their affected work, not the whole repository. Continue accepted
+construction, reproduced conformance repairs and remaining independent implementation reviews.
+Recovery/renewal, rights, accessibility, content and later-game contracts have their own
+unresolved boundaries; the four proposals are not an exhaustive release decision packet.
+
+### Remaining program, in practical groups
+
+1. Complete Garage's player-facing integration and content: generated callers, minigame
+   boundaries, recovery, natural growth/pacing, Headcount and shared clocks. Prepared cash or
+   maturity is integration evidence, not a balanced release economy.
+2. Repair the known numeric and CI failures honestly; consolidate corrective review ranges
+   while continuing safe work under accepted contracts. Later API implementation reviews,
+   including verification/download and generated consumers, remain work, not owner decisions.
+3. Implement and exercise player export/deletion/recovery and task accessibility under
+   adopted contracts. Instance backup and automated keyboard checks are not substitutes.
+4. Finish Deployment findings/reviews; build the exact candidate and previous bundles and
+   prove installation, restore, rollback and operations on an authorized supported clean host.
+5. Build the substantial remaining world/social/event/combat/bot systems and Tier 3–8
+   progression, challenges and all final endings. Follow the cumulative
+   [milestone roadmap](roadmap-1.0.md#milestone-path); a preview never narrows 1.0.
+
+## Historical checkpoints
+
+Everything below preserves earlier evidence and then-current claims/next actions. In
+particular, a historical entry saying “current” or “latest” is not a live instruction.
+Use the overview above and owning plans/logs for current work. No historical result is deleted.
+
+### Historical verification and closeout
 
 - Current published source is `e0cb9187`; subsequent local repairs are unpushed. Hosted
   [CI38222406320](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38222406320)
@@ -778,7 +835,7 @@ The [active RFC index](../rfc/README.md), [owner/author decision queue](platform
 and [full roadmap](roadmap-1.0.md) own detailed authority, evidence and work. This overview
 does not accept drafts, resolve decisions, archive implementations or authorize publication.
 
-## Historical checkpoints
+### Earlier Garage and platform checkpoints
 
 The following entries preserve earlier evidence and then-current next actions. They are not the
 latest executable queue; use the overview and owning plans above.

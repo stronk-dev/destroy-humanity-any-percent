@@ -5191,3 +5191,20 @@ existing Garage/CI authority. The Garage log owns old failure, negative controls
 performance/Fiscal/type passes and review range. Client history, server accrual and hosted
 latency gates remain open. No gameplay milestone, proposal adoption, archival or release
 promotion; full nine-tier1.0 construction continues under accepted contracts.
+
+## 2026-10-12 — Separate the live whole-product overview from checkpoint history
+
+Inspected source `2fbd246b`: clean main, 19 local commits after the recorded origin/main.
+The current-state entry point now ends its live summary before approximately 700 lines of
+older verification checkpoints; the old records are preserved explicitly as history rather
+than competing “latest” instructions. Updated the roadmap's overview links and current next
+moves, including the five completed original early-API review dispositions and the distinction
+between draft adoption and engineering obligations. No tier, acceptance or release advances.
+
+Fresh read-only GitHub run/job inspection confirms CI38222406320 at e0cb9187 remains the
+latest returned CI run: schema/harness/composed pass; client/server/browser fail. Later local
+corrections have no hosted verdict. Verification is diff, local link/source and owning-log
+comparison; no software suite for editorial records, no tracker validator. This checkpoint
+does not approve implementation, adopt a proposal, authorize publication or waive the full
+nine-tier goal. Next remains accepted construction/correctness and later independent API
+implementation review, not repeating the five original reviews or waiting on all decisions.
