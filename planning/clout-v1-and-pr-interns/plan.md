@@ -6,6 +6,13 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+2026-10-12 RP-509 checkpoint: bounded review of original Claude P5's decoder
+finds that counting contributions does not establish one contribution per owned
+upgrade. The local repair rejects repeated upgrade identities, retaining legal
+distinct/equal-factor controls and the existing real-service PR journey. The
+owning log records old-source failures, affected checks and the new exact review
+range. This is not full P5/AC11 approval or adoption of pending contracts.
+
 Current checkpoint (2026-10-08): `make test-clout-composed` (also included in the composed CI
 population) now exercises
 real-service attainment, native PR purchase, progress/current-factor/product rendering,

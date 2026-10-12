@@ -96,6 +96,13 @@ and content review still apply.
 
 ## Fixture panel accessibility
 
+The snapshot decoder requires exactly one contribution per owned PR Intern,
+matched by upgrade identity as well as factor. Distinct sorted source IDs and
+the correct total row count cannot substitute for that identity check: a repeated
+intern with another owned intern omitted is refused before replacing the retained
+Game UI snapshot. Equal factors on different interns remain valid. This validates
+the supplied breakdown; it does not calculate factors or the product locally.
+
 The product and each intern's current factor render the supplied canonical value
 without resource-amount rounding. The panel places the decimal point within the
 coefficient using text (for example, `1.2e0` → `1.2`, `1.005e1` → `10.05`), and

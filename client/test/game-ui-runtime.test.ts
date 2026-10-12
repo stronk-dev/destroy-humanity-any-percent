@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import axisArm from "../../testdata/axis-stack/game-ui-arm-v1.json";
 
 import { createBrowserGameUIRuntime, newIntentID, type RuntimeStorage } from "../src/game-ui/runtime";
 import { decodeGameUIAnnouncement } from "../src/game-ui/events";
@@ -124,6 +125,28 @@ describe("browser Game UI runtime", () => {
     expect((await runtime.snapshot()).revision).toBe(1);
     await runtime.intent({ kind: "perform_manual_batch" });
     expect(requests.map((request) => (request.headers as Record<string, string>).Authorization)).toEqual(["Bearer access", "Bearer access"]);
+  });
+
+  it("refuses a duplicate PR contribution through the generated snapshot client without replacing the retained snapshot", async () => {
+    const storage = new MemoryStorage();
+    const credentialDocument = JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" });
+    storage.setItem("cloud-clicker.credentials.v1", credentialDocument);
+    const malformed = structuredClone(axisArm);
+    malformed.interns[1].owned = true;
+    malformed.contributions.push({ ...malformed.contributions[0], source_id: "upgrade.pr_intern_2.axis" });
+    let body = { ...currentSnapshot, features: { ...currentSnapshot.features, axis_stack: axisArm } };
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(body), { status: 200, headers: { "Content-Type": "application/json" } }));
+    const runtime = createBrowserGameUIRuntime(storage, fetcher as typeof fetch);
+    const retained = await runtime.snapshot();
+    body = { ...body, revision: 2, features: { ...body.features, axis_stack: malformed } };
+    await expect(runtime.snapshot()).rejects.toThrow(/exactly once/);
+    // An older healthy reply returns the retained revision, not the rejected
+    // revision 2. The malformed response must never enter rememberSnapshot.
+    body = { ...body, revision: 1, features: { ...body.features, axis_stack: axisArm } };
+    expect(await runtime.snapshot()).toEqual(retained);
+    expect(fetcher).toHaveBeenCalledTimes(3);
+    expect(storage.getItem("cloud-clicker.credentials.v1")).toBe(credentialDocument);
+    expect(storage.writes).toEqual(["cloud-clicker.credentials.v1"]);
   });
 
   it("retains the bootstrap journal after a lost reply and reuses it only on explicit retry", async () => {

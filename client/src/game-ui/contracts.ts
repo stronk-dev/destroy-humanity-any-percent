@@ -281,12 +281,15 @@ export function parseAxisStackArm(source: unknown): void {
     interns.set(id, { owned: row.owned as boolean, factor: row.factor });
     prior = id;
   }
+  const contributingInterns = new Set<string>();
   prior = "";
   for (const [index, value] of arm.contributions.entries()) {
     const row = object(value, `axis contribution ${index}`);
     exact(row, ["factor", "source_id", "upgrade_id"], "axis contribution");
-    const source = identifier(row.source_id), intern = interns.get(identifier(row.upgrade_id));
+    const source = identifier(row.source_id), upgradeID = identifier(row.upgrade_id), intern = interns.get(upgradeID);
     if (source <= prior || !intern || !intern.owned || row.factor !== intern.factor) throw new SyntaxError("axis contribution contradicts its intern");
+    if (contributingInterns.has(upgradeID)) throw new SyntaxError("every owned intern contributes exactly once");
+    contributingInterns.add(upgradeID);
     prior = source;
   }
   if (arm.contributions.length !== [...interns.values()].filter((row) => row.owned).length) throw new SyntaxError("every owned intern contributes exactly once");

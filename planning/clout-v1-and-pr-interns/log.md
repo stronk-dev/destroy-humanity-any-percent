@@ -2723,3 +2723,54 @@ Claude review; no self-approval or waiver of earlier review debt. Next: specify 
 temporal producer boundaries, then the viable accounting/compatibility algorithm under
 explicit episode/lifetime authority. No balance, save/kernel, policy, owner copy, criterion,
 accepted contract, workflow, archival, push or deployment changes; full1.0 goal active.
+
+## 2026-10-12 — One contribution per owned PR Intern (RP-509)
+
+**Review by:** Codex. **Recorded by:** Codex. **Decision:** CHANGES REQUIRED
+on the contribution-identity check in original Claude P5 `2f2c5a04^..2f2c5a04`.
+This is a bounded decoder finding, not a verdict covering all 30 original paths
+or approval of later Codex repairs. At clean `a5a2e94a`, the original count-only
+check is still present: two sorted unique source rows may repeat one owned
+upgrade and omit the other, while both factors match the named intern and the
+row count equals the owned count. Old-source `bf08f0` runs the13-case decoder
+population: both repetition directions FAIL with missing expected rejection;
+the other 11 cases pass. No producer emitting such a malformed arm or public
+client gameplay injection is alleged.
+
+Outcome under accepted CV9: reject that contradictory breakdown before it
+replaces the retained Game UI snapshot. The repair tracks contribution upgrade
+identities, leaving the existing ownership/factor/order/count checks intact.
+No locally calculated factor/product, API schema, Go producer, content/copy,
+save/kernel, gameplay arithmetic, owner choice or CI workflow changes. Tests
+retain distinct two-owned contributions, equal factors on distinct interns,
+the Go-projected golden, both duplicate directions and input immutability.
+The existing browser runtime test additionally traverses its actual generated
+snapshot client with a mocked HTTP response: refusal preserves retained
+revision and credentials; the healthy companion still loads. It is not a real
+HTTP/Postgres claim.
+
+Executed final checks:
+- `a92518`: four affected Node files (`axis-stack-arm`, `game-ui-runtime`,
+  `game-ui`, `axis-factor-format`), 185 passing tests.
+- `7298`: `make typecheck build-client`, zero Svelte errors/warnings and a
+  successful production build.
+- `88555`: root `make test-browser-focused` selecting `axis-stack-arm`,
+  `axis-stack-browser`, `game-ui-runtime` in native Chromium/WebKit, 170 tests
+  across six file executions pass. Initial sandbox local-listen refusal ran
+  no browser tests; the same narrow command then executed successfully.
+- `22116`: `make test-clout-composed` exits 0. Built client, real game service,
+  Postgres and WebSocket execute attainment 2→12, native first PR purchase,
+  product 1.3/current factors, owned reload, exact SQL head/purchase and four
+  real re-attainment events→two notices. Existing Cosmetic purchase/adoption/
+  equip/unequip and care populations also pass. This fixture has controlled
+  setup cash and only one owned PR Intern; two-owned identity controls above
+  are decoder tests, not two live purchases or pacing/mint evidence. Initial
+  sandbox Docker refusal ran no journey; unrelated orphan containers untouched.
+
+All handles terminal; diff checked. **Review by:** Codex (repair implementer
+first filter). **Recorded by:** Codex. New full source/test/docs/ledger/record
+range from `a5a2e94a` through this containing commit needs designated Claude review,
+consolidatable with related Clout corrective debt. No whole-P5/AC11/Clout,
+Firefox/Linux/hosted/full-CI, archival, push or release claim. Next: continue
+accepted outstanding implementation/review work; pending drafts remain pending
+and do not block unrelated accepted repairs. Full nine-tier 1.0 goal stays active.
