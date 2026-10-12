@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current bounded fix (2026-10-12, RP-506): registered dispatch now rejects exact `.`/`..`
+path components before fetch; ordinary dotted/escaped names and dot-valued queries stay
+unchanged. Four old-source regressions fail in Node/Chromium/WebKit; final affected
+Node/native-browser and Linux three-engine consumers, cold generator/vet, types/build
+and deterministic regeneration pass with unchanged OpenAPI/compatibility pins.
+This is A5/C1/C9 conformance, not a schema/HTTP contract amendment or independent approval
+of Codex's earlier download/client work. The owning log records the finished outcome.
+
 Current runtime correction (2026-10-12, RP-502): shared conditional caching now parses the
 complete If-None-Match field and uses HTTP weak comparison for strong/weak tags, lists,
 repeated lines and wildcard. Nine old-source policy cases and all six mounted operations fail;

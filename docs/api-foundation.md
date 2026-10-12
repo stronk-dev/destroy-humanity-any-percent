@@ -154,6 +154,9 @@ from the registry. `call(operationID, input)` accepts generated path/request/que
 explicit access tokens only for private operations, and optional request ID/abort signal.
 Path components are URL-encoded; declared query values are serialized in registry order.
 Unknown path/query fields, missing auth and inexact integer parameters fail before HTTP.
+Exact `.`/`..` path components also fail before dispatch because URL parsing treats them
+as navigation, not resource identities. Ordinary dotted names, percent-encoded literal
+inputs and query dots retain their existing encoding; this does not validate catalog IDs.
 Content-Type is sent only for operations with a JSON request body, not bodiless reads.
 The client never forwards an access token on a public operation. There is no token storage,
 refresh, retry, timeout, or request-ID policy hidden in it.

@@ -127,6 +127,48 @@ describe("registry-generated HTTP client", () => {
   });
 
   it.each([
+    ["public board", "."], ["public board", ".."],
+    ["authenticated creation", "."], ["authenticated creation", ".."],
+  ] as const)("refuses %s path navigation %s before HTTP", async (kind, value) => {
+    // Request applies the real URL parser: encodeURIComponent alone leaves
+    // these segments navigational. Never send a credential to the rewritten path.
+    const fetcher = vi.fn(async (url: string, init?: RequestInit): Promise<Response> => {
+      const actual = new Request(url, init);
+      throw new Error(`unexpected HTTP to ${new URL(actual.url).pathname}`);
+    });
+    const client = createAPIClient(fetcher, "https://example.test");
+    const call = kind === "public board"
+      ? client.call("list_public_board", { path: { category: value }, request: null,
+        query: { epoch: 8, mandate: 0, variables: "fixture" } })
+      : client.call("create_minigame_session", { path: { minigame_id: value },
+        request: { idempotency_key: "a".repeat(64) }, accessToken: "fixture-access" });
+    await expect(call).rejects.toThrow("invalid API path segment");
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [".profile", ".profile"], ["version..next", "version..next"],
+    ["%2e", "%252e"], ["%2e%2e", "%252e%252e"],
+    [". /", ".%20%2F"], ["x/y?reserved#", "x%2Fy%3Freserved%23"],
+  ])("preserves non-navigational path value %s and query dots", async (value, encoded) => {
+    const body = { category: "invalid", detail: "variables" };
+    const fetcher = vi.fn(async (url: string, init?: RequestInit) => {
+      const actual = new Request(url, init);
+      const parsed = new URL(actual.url);
+      expect(parsed.pathname).toBe(`/api/public/v1/boards/${encoded}`);
+      expect(parsed.searchParams.get("cursor")).toBe("..");
+      expect(actual.headers.get("Authorization")).toBeNull();
+      return new Response(JSON.stringify(body), { status: 400 });
+    });
+    const response = await createAPIClient(fetcher, "https://example.test").call("list_public_board", {
+      path: { category: value }, request: null, query: { epoch: 8, mandate: 0, variables: "fixture", cursor: ".." },
+    });
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual(body);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
     ["get_public_run_genesis", "application/json", new TextEncoder().encode('{ "z": 1, "a": "<>&" }')],
     // Opaque byte fixture: this transport checks identity, not gzip validity/replay.
     ["get_public_run_replay_log", "application/gzip", new Uint8Array([31, 139, 8, 0, 1, 2, 3, 255])],

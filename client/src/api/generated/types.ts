@@ -316,7 +316,13 @@ export function createAPIClient(fetcher: APIFetcher = fetch, baseURL = "") {
         throw new TypeError("invalid API parameter");
       };
       let path = operation.path;
-      for (const name of operation.pathParameters) path = path.replace(`{${name}}`, encodeURIComponent(scalar(pathValues[name])));
+      for (const name of operation.pathParameters) {
+        const value = scalar(pathValues[name]);
+        // URL parsing treats even percent-encoded dot segments as navigation;
+        // reject them rather than dispatching to a different registered path.
+        if (value === "." || value === "..") throw new TypeError("invalid API path segment");
+        path = path.replace(`{${name}}`, encodeURIComponent(value));
+      }
       const query = "query" in input ? input.query as Record<string, unknown> : {};
       const queryParameters = operation.queryParameters ?? [];
       if (Object.keys(query).some((name) => !queryParameters.includes(name))) throw new TypeError("unknown API query parameter");

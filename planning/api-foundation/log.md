@@ -1835,3 +1835,46 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 debt stays separate. No draft adoption, full API/1.0 acceptance, archive, push or deploy.
 Next: continue accepted API/player construction and consolidated corrective review; held
 owner/author choices and release-artifact gates remain explicit, not a blanket work stop.
+
+## 2026-10-12 — Preserve generated operation paths across URL parsing (RP-506)
+
+Under A5/C1/C9, generated dispatch must retain its registered operation path. Exact
+`.`/`..` parameters survive encodeURIComponent but the Request URL parser rewrites
+them as navigation. Old-source Node b34abd fails four cases: public-board requests
+become `/boards/` or `/api/public/v1/`, and authenticated minigame creation becomes
+`/api/v1/minigames/sessions` or `/api/v1/sessions`. Six ordinary dotted/percent/slash/
+query controls and the existing28 checks pass. Browser19606 independently reproduces
+all four in Chromium and WebKit. WHATWG's URL path parsing confirms why percent-encoding
+the dots again is not a repair. No cross-origin credential leak or server exploit is alleged.
+
+Fix only the embedded client template and regenerate its consumer: reject those exact
+path components before fetch/auth dispatch. Keep query dots and ordinary encoded values,
+requests/response decoding, errors, token ownership and no-retry behavior unchanged.
+No schema, mounted handler, pin, replay bytes, policy or kernel version changes. Existing
+regressions suffice; no separate RFC or repeated source-severing ceremony.
+
+Final57038 passes156 affected Node tests across generated client, operation ports and
+Game UI runtime.20239 passes206 complete affected Chromium/WebKit checks.34455 cold
+`make test-go vet GO_PACKAGES='./publicapi ./cmd/gen-api' GO_TEST_FLAGS='-count=1'`
+passes generator/registry packages/vet;90194 types/Svelte/build pass. `make api-check`
+c3b87a regenerates deterministically after staging the intended generated module;
+OpenAPI and compatibility-pin bytes are unchanged.
+
+51746 executes309 complete affected cases in all three declared Linux browser engines,
+including Firefox, with a cold frozen-lockfile install. Command uses the existing
+`compose.browser-test.yml` service/image/anonymous dependency volumes and replaces only
+its full-suite command with generated-api/generated-operation-ports file selection;
+no CI/config/retry/timeout exclusion changed. Native19606's Firefox failed session connection
+at60s (existing RP-116 environment note) and then hung in cleanup; initial sandbox listen
+denial ran no tests. Confirmed the exact task-owned runner PID7322 before TERM, retained
+its partial/red outcome and left unrelated user browsers alone. Linux success is distinct
+evidence, not a rewrite of that failure. No orphan services/volumes were pruned.
+
+These checks exercise the actual generated module, browser Request parsing and controlled
+fetch boundaries, not real API mutation/SQL, a full player journey or hosted Actions.
+All handles terminal; diff/whitespace checked. Review by: Codex (implementer first filter).
+Recorded by: Codex. Exact range starts after `ce61b82a` through this containing commit;
+Claude designated review pending, consolidatable with earlier generated-client corrections.
+No independent approval of Codex's earlier download/caller batches, draft adoption,
+full API/CI/1.0 acceptance, archival, push or deployment. Continue accepted work; the
+catalog/dictionary/bodiless/rotation and release-artifact holds remain explicit.
