@@ -35,9 +35,11 @@ deployment contract never falls back to a restart-generated secret. The API poli
 (`balance/api/phase0.json`, C20) fixes the cursor key names `k1` (current) and `k0` (previous), so
 the compose template pins `CLOUD_CLICKER_CURSOR_CURRENT_ID=k1`.
 
-`publicread.CursorSecretResolver` maps those names onto the deployment pair by ID. With no previous
-pair, `k0` resolves to the current secret: C20 allows both names to share one value at first
-deployment. Any other ID set fails startup. Composition loads the policy from the content root
+`publicread.CursorSecretResolver` maps those names onto the deployment pair by ID. Only with both
+the previous ID and previous material absent does `k0` resolve to the current secret: C20 allows
+both names to share one value at first deployment. A half-supplied previous pair fails composition,
+including direct Go composition that bypasses environment decoding. Any other ID set fails startup.
+Composition loads the policy from the content root
 (the runtime content closure stages `balance/api/phase0.json`). It mounts every public registry
 operation under `/api/public/v1/` beside the account routes, behind the shared request-ID
 middleware, and fails composition on a missing or invalid policy or cursor pair. The development

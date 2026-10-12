@@ -35,6 +35,11 @@ type CursorKeys struct {
 // unresolvable, so ResolveCursorCodec fails startup.
 func CursorSecretResolver(policy publicapi.Policy, keys CursorKeys) publicapi.SecretResolver {
 	return func(id string) ([]byte, bool) {
+		// Only a wholly absent previous pair may use C20's first-deployment
+		// alias. Never silently discard orphaned previous key material.
+		if (keys.PreviousID == "") != (len(keys.Previous) == 0) {
+			return nil, false
+		}
 		switch {
 		case id == "":
 			return nil, false

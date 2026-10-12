@@ -121,12 +121,21 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	// anchoring it to the day the test runs, so this real-socket proof cannot
 	// expire merely because its authored calendar date has passed.
 	clock := &mutableClock{now: time.Now().UTC().Truncate(time.Second)}
-	// The public cursor readers are composed, so composition without the
-	// deployment cursor pair must fail closed (API Foundation A7/C20).
-	if _, err := Compose(ctx, CompositionConfig{DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000301",
-		ActivityBracket: "activity.standard", SigningKeys: account.SigningKeys{CurrentID: "composition-integration", Current: bytes.Repeat([]byte{0x42}, 32)},
-		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-integration", Current: bytes.Repeat([]byte{0x43}, 32)}, Clock: clock.Time}); !errors.Is(err, publicread.ErrComposition) {
-		t.Fatalf("composition without cursor keys: %v", err)
+	// The public cursor readers are composed, so missing or incomplete
+	// deployment cursor pairs must fail closed (API Foundation A7/C20, Deployment DP3).
+	for name, keys := range map[string]publicread.CursorKeys{
+		"missing current": {},
+		"previous material without ID": {CurrentID: "k1", Current: testPublicCursorKeys().Current,
+			Previous: bytes.Repeat([]byte{0x44}, 32)},
+		"previous ID without material": {CurrentID: "k1", Current: testPublicCursorKeys().Current, PreviousID: "k0"},
+	} {
+		composition, err := Compose(ctx, CompositionConfig{DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000301",
+			ActivityBracket: "activity.standard", SigningKeys: account.SigningKeys{CurrentID: "composition-integration", Current: bytes.Repeat([]byte{0x42}, 32)},
+			BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-integration", Current: bytes.Repeat([]byte{0x43}, 32)},
+			Clock:         clock.Time, PublicCursorKeys: keys})
+		if composition != nil || !errors.Is(err, publicread.ErrComposition) {
+			t.Fatalf("composition with %s cursor pair: err=%v", name, err)
+		}
 	}
 	composition, err := Compose(ctx, CompositionConfig{
 		PublicCursorKeys: testPublicCursorKeys(),

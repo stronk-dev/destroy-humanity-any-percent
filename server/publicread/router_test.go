@@ -53,6 +53,7 @@ func TestCursorSecretResolverBindsPolicyNamesToTheDeploymentPair(t *testing.T) {
 		{CurrentID: "cursor-current", Current: secret(1)},                            // names do not match the policy
 		{CurrentID: "k1", Current: secret(1), PreviousID: "k9", Previous: secret(2)}, // previous pair under a foreign name
 		{CurrentID: "k1"}, // no material
+		{CurrentID: "k1", Current: secret(1), Previous: secret(2)}, // material without its ID is not a first deployment
 	} {
 		resolve := CursorSecretResolver(policy, keys)
 		_, currentOK := resolve("k1")
@@ -70,6 +71,17 @@ func TestNewRouterFailsClosedWithoutPolicyOrCursorSecrets(t *testing.T) {
 	}
 	if _, err := routerFor(t, phase0PolicyJSON(t), CursorKeys{CurrentID: "k1", Current: []byte("short")}, epochs); err == nil {
 		t.Fatal("a sub-32-byte cursor secret must fail composition")
+	}
+	for name, keys := range map[string]CursorKeys{
+		"previous material without ID": {CurrentID: "k1", Current: secret(1), Previous: secret(2)},
+		"previous ID without material": {CurrentID: "k1", Current: secret(1), PreviousID: "k0"},
+	} {
+		t.Run(name, func(t *testing.T) {
+			router, err := routerFor(t, phase0PolicyJSON(t), keys, epochs)
+			if router != nil || !errors.Is(err, ErrComposition) {
+				t.Fatalf("incomplete previous cursor pair mounted: err=%v", err)
+			}
+		})
 	}
 	if _, err := routerFor(t, []byte(`{}`), CursorKeys{CurrentID: "k1", Current: secret(1)}, epochs); err == nil {
 		t.Fatal("an invalid policy must fail composition")

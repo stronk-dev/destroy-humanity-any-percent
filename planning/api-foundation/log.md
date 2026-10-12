@@ -1671,3 +1671,75 @@ Recorded by: Codex. Exact test/docs/plan/ledger/log correction range starts afte
 through this containing commit, pending Claude review and consolidatable with RP-493. All check
 handles terminal; diff checked. Next: remaining original router/board review and accepted build
 work. No owner-copy change, draft adoption, archival, publication, push or reduced1.0 scope.
+
+## 2026-10-12 — Designated review: original public board reader
+
+Review by: Codex (designated independent reviewer of Claude's implementation).
+Recorded by: Codex.
+Reviewed range: `4c316c4c^..4c316c4c` (all eighteen changed paths; supersedes the earlier targeted-only review scope).
+Decision: CHANGES REQUIRED.
+
+Inspected the SQL query extraction/shared pinned-category loader, page/filter/key DTOs, handler,
+registry/composition changes, all tests, generated OpenAPI/TS/pin and docs/log against A6/C12/C13/C15.
+The original omits iteration-error handling (RP-367), imports Account for its error descriptor
+(RP-390), omits the served304 status (RP-483), and has the vacuous epoch-cursor assertion (RP-493).
+Later local corrections do not convert this original range into approval; the304 contract remains draft.
+
+Cold affected Go32942, vet and api-check pass on current source. Real Postgres83923 executes
+`TestPublicBoardRankingAndPagesIntegration`: pinned ranking kind, ties/keyset continuation,
+variable partitioning, magnitude order, exactly-full exhaustion and invalid stored catalog refusal.
+SQL helpers and that test are byte-identical to the original; ranking lookup differs only by
+RP-367's error propagation. Linux-amd64/Postgres54941 also executes that population and the
+existing epoch/legacy-board witness (ties, sub-quantum magnitude, negative exponent and zero).
+Linux19895 passes all three handler functions and the actual composed Exit→verified board/evidence
+round trip; it is current integration, not a historical checkout or the missing third-party TS loop.
+
+Independent JSON comparisons preserve every existing OpenAPI operation/schema except the four
+new response-error values and add exactly one board operation/five schemas. My first pin assertion
+failed because it wrongly assumed only those four values widened: the refresh also captures five
+already-served Typer values from `d7c1ce6e`. Comparing against the predecessor's actual OpenAPI
+confirms that provenance; all other existing pin operations/schemas are unchanged. No breaking
+pin reset, new count-category producer or mandate producer is inferred. The original log's exact
+error/path ratification questions remain visible. Reputation commits and other API ranges are excluded.
+
+## 2026-10-12 — Designated review: original public router and deployment wiring
+
+Review by: Codex (designated independent reviewer of Claude's implementation).
+Recorded by: Codex.
+Reviewed range: `731bb3e7^..731bb3e7` (all twenty-three changed paths).
+Decision: CHANGES REQUIRED (RP-495/RP-496).
+
+Inspected resolver/router, gameserver entry/composition, production/development config, secret
+schema/template/closure, Caddy fixture, composed/browser-driver changes and docs/log. Native
+affected packages1366 and vet pass; declared Linux-amd647452 runs config/closure/template/bundle
+and entry-point tests. Linux/Postgres12186 executes router/rotation controls, missing-key refusal,
+public read/cache/request-ID/privacy and real socket/clearing/GC plus the one-proxy boundary.
+`make test-deployment-release`2347 passes the actual Caddy/Postgres drain, release and exact backup
+rollback fixture; its isolated temporary test services are removed by that target. This is not
+R-006, rebuilt release bundles, the retained R5 range's approval or an official-host deployment.
+The changed composed browser driver was inspected, not rerun or claimed green in this review.
+
+RP-495 promotes the original disclosed DESIGN-GAP6 to the shared defect ledger: fixed runtime
+aliases conflict with the continuous never-reused rotation IDs and the overlay omits cursors.
+Existing native rotation/overlap tests32152 pass, proving their own mechanism, not compatibility
+with the runtime aliases. The ruling authors must reconcile their contract; this review invents
+no new IDs, alias swaps or shorter overlap. RP-496 is separately reproduced and corrected below.
+Later readers, middleware corrections, publication/rights contracts and archival remain separate.
+
+## 2026-10-12 — Reject incomplete direct-composition cursor pairs (RP-496)
+
+Outcome under A7/C20 and Deployment's complete-pair contract: only a wholly absent previous
+pair may use the first-deployment alias. The existing resolver now refuses an orphaned ID or
+material; production environment admission, wire bytes, policy names and key overlap are unchanged.
+On old source1734, resolver and real-router assertions fail: orphaned material resolves both
+names and mounts with nil error. The missing-material control already refuses. No secret contents
+are printed. Full corrected cold publicread/publicapi/gameserver/deploymentconfig/entry51881,
+vet and byte-unchanged api-check pass. Final Linux-amd64/Postgres72921 runs both half-pair
+composition refusals and valid real HTTP/socket/privacy/clearing/GC, proxy and verified-run paths
+without skips. Existing first-deployment, current/previous and retired-key controls stay green.
+
+Review by: Codex (correction implementer first filter, not designated approval).
+Recorded by: Codex. Exact correction/records range starts after `36f81dae` through this containing
+commit and awaits Claude review. Original independent verdicts above do not approve this repair.
+All handles terminal; no full hosted CI, browser, clean-host, draft adoption, archive, push or
+release promotion. Next: remaining accepted API construction/later review; full nine-tier1.0 stays active.

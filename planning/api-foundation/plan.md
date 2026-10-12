@@ -2,6 +2,17 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current router correction/review (2026-10-12, RP-495/RP-496): direct composition now refuses
+previous cursor material without its ID instead of treating it as the first-deployment alias.
+Old-source regressions fail; corrected cold affected packages and selected real Linux-amd64/
+Postgres composition tests pass. This Codex correction needs Claude review. The full original
+router `731bb3e7` and board `4c316c4c` ranges now have designated CHANGES REQUIRED verdicts in
+the log, completing those original reviews, not approving their later corrections. RP-495
+routes the already-disclosed fixed-name/rotation-ledger conflict to the API/Deployment authors;
+no fixed-name policy, overlap or ledger rule was changed. Next: remaining API construction and
+later implementation reviews under accepted authority; dictionary/bodiless/history drafts remain
+unadopted. Full API acceptance, clean-host deployment and nine-tier1.0 remain open.
+
 Current privacy-evidence correction (2026-10-12, RP-494): the structural gate now checks
 contract-derived field sets and complete nested paths, including APIError, rather than relying
 only on suspicious-name fragments. Three actual valid-registry negative fixtures fail against
@@ -9,7 +20,7 @@ the old gate and pass after repair; compatible optional additions prove API comp
 not privacy approval. No runtime DTO, handler or published field changes. The original Route
 Registry reader batch `09d12987` is now reviewed CHANGES REQUIRED for this evidence gap;
 the log owns executed checks and the test-only correction's pending designated review.
-Full original router/boards review and whole API acceptance remain separate.
+Whole API acceptance remains separate from the original review dispositions above.
 
 Current evidence correction (2026-10-12, RP-493): the board cursor's changed-epoch test now
 uses a valid second epoch, verifies each changed filter succeeds without a cursor, and requires
@@ -17,7 +28,7 @@ the old cursor to fail before page retrieval. Deliberately disabling epoch bindi
 old test and fails the corrected one; production source is restored unchanged. Cold affected
 packages, declared Postgres reader tests and selected Linux-amd64 composed-server privacy/socket
 integration pass. The log owns the targeted original evidence finding and pending test-only
-corrective review; the full router/boards/routes implementation review remains incomplete.
+corrective review; full original router/boards/routes dispositions are recorded separately above.
 
 Current bounded correction (2026-10-12, RP-492): query string validation uses JSON escaping,
 not Go literal escaping, while retaining malformed UTF-8 refusal and exact descriptor checks.
@@ -27,8 +38,8 @@ records CHANGES REQUIRED on Claude's original query-descriptor commit `32560c4b`
 from this Codex repair's pending designated review. The original epoch-reader commit `e63796d5`
 now also has a CHANGES REQUIRED verdict: its unchanged SQL/keyset/changelog tests pass against
 real Postgres, but its private Account import (RP-390, separately repaired) and missing304
-declaration (RP-483, draft amendment) prevent whole-batch approval. The later router/boards/routes
-batch is not covered; no adoption of the dictionary/bodiless/history drafts follows.
+declaration (RP-483, draft amendment) prevent whole-batch approval. Router/boards/routes have their
+own later verdicts; no adoption of the dictionary/bodiless/history drafts follows.
 
 Current prerequisite (2026-10-09, RP-483): `rfc/api-bodiless-responses.md` proposes a closed
 empty204/304 arm and explicit conditional-read input. Fresh existing six-operation cache
