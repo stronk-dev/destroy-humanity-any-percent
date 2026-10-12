@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current evidence correction (2026-10-12, RP-493): the board cursor's changed-epoch test now
+uses a valid second epoch, verifies each changed filter succeeds without a cursor, and requires
+the old cursor to fail before page retrieval. Deliberately disabling epoch binding passes the
+old test and fails the corrected one; production source is restored unchanged. Cold affected
+packages, declared Postgres reader tests and selected Linux-amd64 composed-server privacy/socket
+integration pass. The log owns the targeted original evidence finding and pending test-only
+corrective review; the full router/boards/routes implementation review remains incomplete.
+
 Current bounded correction (2026-10-12, RP-492): query string validation uses JSON escaping,
 not Go literal escaping, while retaining malformed UTF-8 refusal and exact descriptor checks.
 The old-source regression rejects six descriptor-admitted strings and an enum member; affected

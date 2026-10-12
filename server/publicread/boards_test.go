@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"errors"
+	"maps"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -16,17 +17,18 @@ import (
 )
 
 type fakeBoards struct {
-	kinds   map[string]leaderboard.RankingKind // category -> kind for epoch 8
-	rows    []leaderboard.PublicBoardRow
-	kindErr error
-	queries []leaderboard.PublicBoardQuery
+	kinds            map[string]leaderboard.RankingKind // category -> kind for epoch 8 and explicitly added epochs
+	additionalEpochs map[int64]bool
+	rows             []leaderboard.PublicBoardRow
+	kindErr          error
+	queries          []leaderboard.PublicBoardQuery
 }
 
 func (fake *fakeBoards) PublicBoardRankingKind(_ context.Context, categoryID string, epochID int64) (leaderboard.RankingKind, error) {
 	if fake.kindErr != nil {
 		return "", fake.kindErr
 	}
-	if epochID != 8 {
+	if epochID != 8 && !fake.additionalEpochs[epochID] {
 		return "", leaderboard.ErrUnknownPublicEpoch
 	}
 	kind, ok := fake.kinds[categoryID]
@@ -143,15 +145,22 @@ func TestBoardReaderServesTheC12PageAndPagesByKeysetCursor(t *testing.T) {
 		}
 		mutate(mutated)
 		kinds := map[string]leaderboard.RankingKind{"any_percent": leaderboard.RankingTimeMS}
-		response := getBoard(boardRouter(t, &fakeBoards{kinds: kinds, rows: boardRows()}), "/api/public/v1/boards/any_percent", mutated)
-		if name == "epoch" {
-			if response.Code != http.StatusNotFound {
-				t.Fatalf("epoch 9 is unknown to the fake: %d", response.Code)
-			}
-			continue
+		reader := &fakeBoards{kinds: kinds, rows: boardRows(), additionalEpochs: map[int64]bool{9: true}}
+		candidate := boardRouter(t, reader)
+		// Prove the changed filter itself is valid before reusing the old
+		// cursor. In particular, an unknown epoch's 404 is not MAC evidence.
+		withoutCursor := maps.Clone(mutated)
+		withoutCursor.Del("cursor")
+		control := getBoard(candidate, "/api/public/v1/boards/any_percent", withoutCursor)
+		if control.Code != http.StatusOK || len(reader.queries) != 1 || name == "epoch" && reader.queries[0].EpochID != 9 {
+			t.Fatalf("%s-mutated filter is not a valid positive control: %d %s queries=%+v", name, control.Code, control.Body.String(), reader.queries)
 		}
+		response := getBoard(candidate, "/api/public/v1/boards/any_percent", mutated)
 		if response.Code != http.StatusBadRequest || response.Body.String() != string(invalidCursor) {
 			t.Fatalf("%s-mutated filter accepted the cursor: %d %s", name, response.Code, response.Body.String())
+		}
+		if len(reader.queries) != 1 {
+			t.Fatalf("%s-mutated cursor reached the board page source", name)
 		}
 	}
 	// The same cursor on another category rejects too.

@@ -1584,3 +1584,44 @@ review. This records a completed review with required corrections, not an archiv
 full public privacy, historical-checkout execution, hosted CI or a release claim. Next: review
 the existing RP-390 correction and the adopted304 amendment when authority permits; safe
 accepted work continues. No product bytes, owner rulings or authored copy changed here.
+
+## 2026-10-12 — Targeted board cursor evidence review and repair (RP-493)
+
+Review by: Codex (designated reviewer of Claude's original acceptance evidence).
+Recorded by: Codex.
+Reviewed range: `4c316c4c^..4c316c4c`, scoped to the public board handler/cursor test;
+the helper composition change in `09d12987` was inspected as context.
+Decision: CHANGES REQUIRED (targeted C13/C15 evidence, not the full eighteen-path batch).
+
+The changed-epoch arm expects404 because its fake only admits epoch8. It therefore cannot
+prove a cursor binds the epoch. With only `EncodeBoardFilter`'s epoch field replaced by a
+constant, the old focused test91236 still passes. The corrected fixture admits epoch9 and
+proves each changed filter works without a cursor before requiring exact invalid/cursor
+refusal with the old cursor; none of these refused requests may reach page retrieval.
+The same compiling fault21227 fails with `epoch-mutated filter accepted the cursor: 200`.
+Both probes restore the exact production source in a finally block; no production diff remains.
+Healthy corrected focused59846 passes. Initial22153 used Values.Clone, unavailable to the
+repo's Go1.26 language version; replaced with supported maps.Clone, not counted as a gate run.
+
+Full cold `make test-go GO_PACKAGES='./publicapi ./publicread ./leaderboard ./routeprojection
+./gameserver' GO_TEST_FLAGS='-count=1'`80934 and affected vet pass; native DB skips are not DB
+evidence. `make api-check` preserves generated/pin bytes. Real declared Postgres56275 executes
+the public board/route/epoch/catalog/evidence reader populations without skips. Initial regex
+selection failed at the Make recipe's shell before any test; the corrected `-run TestPublic -v`
+selector is the credited run. Separate `make test-go-ci CI_TEST_PACKAGES='./publicread ./gameserver'
+CI_TEST_FLAGS='-run "TestBoardReader|TestComposedGameserverPostgresSocketClearingAndGCIntegration" -v'`
+62894 passes all three board-handler functions and the actual composed Postgres/socket/privacy/
+clearing/GC function on the declared Linux-amd64 Go1.26 service. This approximates CI, not a
+new hosted verdict, whole server job or full public/privacy/release acceptance.
+
+The review range inventory contains interleaved Reputation commits; these are excluded, never
+silently included in an API verdict. Original `731bb3e7`, `4c316c4c` and `09d12987` full-range
+reviews remain incomplete; this finding approves none of them. RP-367's earlier row-error repair,
+RP-390's shared error extraction,304/dictionary/rotation questions and prior review debt remain
+separate. No new test framework, product behavior, generated wire, policy or authored copy change.
+
+Review by: Codex (test correction implementer first filter, not independent approval).
+Recorded by: Codex. The correction's exact test/plan/ledger/log range starts after `737e0b2e`
+through this containing commit and awaits Claude review. All handles terminal; diff checked.
+Next: continue the remaining original public-router/board/route review and accepted construction;
+no archival, publication, push or narrowing of the full nine-tier1.0 goal.
