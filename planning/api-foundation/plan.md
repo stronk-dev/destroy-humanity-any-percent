@@ -2,6 +2,13 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current integration supplement (2026-10-12): the existing root composed lane now requires
+the generated SDK to download a real queue-verified Exit fixture's immutable evidence from
+its live Go HTTP server, then runs the actual TypeScript verifier with DB-pinned catalog bytes.
+Receipt/event corruption, log gaps and wrong constants must refuse. This is C14 construction,
+not adoption of the catalog/dictionary/bodiless drafts or a completed public download loop.
+The owning log records the actual run and boundary; designated review remains required.
+
 Current bounded fix (2026-10-12, RP-506): registered dispatch now rejects exact `.`/`..`
 path components before fetch; ordinary dotted/escaped names and dot-valued queries stay
 unchanged. Four old-source regressions fail in Node/Chromium/WebKit; final affected

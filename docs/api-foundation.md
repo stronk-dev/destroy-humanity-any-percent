@@ -186,8 +186,9 @@ Lost replies and HTTP/parser failures retain the persisted bootstrap key for an 
 retry; no client-level retry is added. Remaining HTTP callers and the C9 raw-fetch lint are
 still unfinished, so this is not AC4 completion. Unit/browser tests use controlled fetches;
 the existing composed journey separately exercises these migrated calls against real HTTP,
-Postgres and WebSocket services. Raw-client controlled-byte tests are not yet a public
-TypeScript archive-reverification journey.
+Postgres and WebSocket services. The composed Exit fixture additionally runs the generated
+client against live public HTTP downloads and the TypeScript replay verifier, as described
+below; controlled-byte SDK tests alone are not that integration evidence.
 
 The Minigame, Soul Recovery and Garden ports dispatch by generated operation ID with typed
 path/request inputs. Their shared adapter reads the current access token once per explicit
@@ -380,8 +381,19 @@ selection; the archive retains additional Founder history (including Fiscal even
 that kernel projection does not reverify. A deliberately corrupted downloaded receipt is
 rejected. Embedded genesis JSON is compared with whitespace-only compaction because the
 existing archive encoder embeds the stored JSON value compactly; endpoint/storage equality
-remains byte-exact. This does not prove cross-epoch catalog retrieval, a public TypeScript
-verification journey, or the complete third-party loop without database-supplied catalogs.
+remains byte-exact.
+
+The root composed lane additionally requires `public-replay-composed.mjs` to execute while
+that Go fixture's HTTP server remains alive. It loads the actual generated SDK and TypeScript
+verifier with the existing Vite SSR mechanism, downloads manifest/genesis/archive without
+credentials, binds engine/constants/URLs, and checks raw bytes and hashes against the Go
+fixture's storage-checked evidence. The TypeScript verifier accepts the downloaded Company
+projection and rejects changed receipts/events, a missing first entry and wrong constants.
+Pinned catalog bytes come from the database fixture, not a public catalog endpoint or current
+filesystem fallback. This is source-module SDK/HTTP/Postgres-to-TypeScript replay integration,
+not a browser-mounted or release-bundled public verification UI. Ordinary Go lanes explicitly
+do not run or claim this Node seam. No cross-epoch public catalog retrieval, complete
+third-party download loop, whole API acceptance or release-artifact proof follows.
 
 ### Historical catalog database source
 

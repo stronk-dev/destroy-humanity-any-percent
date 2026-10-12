@@ -11,7 +11,10 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"os/exec"
 	"testing"
+	"time"
 
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/publicread"
@@ -172,9 +175,42 @@ func assertPublicVerifiedEvidence(t *testing.T, db *sql.DB, server *httptest.Ser
 	if verdict := production.VerifyReplayRun(servedGenesis, archive.Genesis.Version, bundle, entries, manifest.ConstantsHash, false); verdict != production.ReplayVerified {
 		t.Fatalf("downloaded evidence did not reverify: %s", verdict)
 	}
+	assertTypeScriptPublicReplay(t, server.URL, stream, servedGenesis, servedArchive, bundle)
 	entries[0].ReceiptJSON = []byte(`{}`)
 	if verdict := production.VerifyReplayRun(servedGenesis, archive.Genesis.Version, bundle, entries, manifest.ConstantsHash, false); verdict == production.ReplayVerified {
 		t.Fatal("corrupt downloaded receipt was accepted by the replay check")
 	}
 	t.Log("public verification downloads match immutable storage and reverify; corrupted receipt refuses; pinned catalogs supplied from DB")
+}
+
+// The root browser-composition driver enables this seam and requires its PASS
+// marker. Ordinary Go/DB lanes do not acquire a Node dependency or claim TS proof.
+func assertTypeScriptPublicReplay(t *testing.T, baseURL, stream string, genesis, archive []byte, bundle production.CatalogBundle) {
+	t.Helper()
+	if os.Getenv("TEST_PUBLIC_REPLAY_CLIENT") != "1" {
+		t.Log("TypeScript public download/replay seam not requested (root composed lane owns it)")
+		return
+	}
+	input, err := json.Marshal(struct {
+		BaseURL       string            `json:"base_url"`
+		Stream        string            `json:"stream"`
+		ConstantsHash string            `json:"constants_hash"`
+		Genesis       []byte            `json:"genesis"`
+		Archive       []byte            `json:"archive"`
+		Artifacts     map[string][]byte `json:"artifacts"`
+	}{baseURL, stream, bundle.ConstantsHash, genesis, archive, bundle.Artifacts})
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	command := exec.CommandContext(ctx, "node", "client/tools/public-replay-composed.mjs")
+	command.Dir = filepathRoot(t)
+	command.Stdin = bytes.NewReader(input)
+	output, err := command.CombinedOutput()
+	const passed = "public SDK HTTP downloads → TypeScript replay: verified + receipt/event/gap/constants refusal; DB-pinned catalogs supplied: PASS"
+	if err != nil || !bytes.Contains(output, []byte(passed)) {
+		t.Fatalf("TypeScript public replay seam failed: %v\n%s", err, output)
+	}
+	t.Log(passed)
 }

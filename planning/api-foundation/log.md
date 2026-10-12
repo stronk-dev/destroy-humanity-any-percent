@@ -1878,3 +1878,43 @@ Claude designated review pending, consolidatable with earlier generated-client c
 No independent approval of Codex's earlier download/caller batches, draft adoption,
 full API/CI/1.0 acceptance, archival, push or deployment. Continue accepted work; the
 catalog/dictionary/bodiless/rotation and release-artifact holds remain explicit.
+
+## 2026-10-12 — Consume actual public downloads with the TypeScript verifier
+
+C14 requires downloaded evidence to work with the shipped verifier, not merely two
+independent fixture suites. Extend the existing Postgres Exit/board witness while its
+real HTTP server is alive: Node loads the actual generated SDK/replay modules through
+Vite SSR, fetches manifest/genesis/archive without credentials, checks exact bytes against
+the Go witness's storage-checked evidence, binds hashes/engine/URLs, and reverifies the
+Company/`founder_advanced` projection. No fake fetch response or synthetic verified row.
+Receipt corruption, event removal, a missing first entry and wrong constants each return
+the specific non-verified verdict. These invalid cases establish discrimination without
+another production-source mutation. Raw archive/storage equality remains separate from
+the decoded kernel projection; broader Founder events are not reverified by that projection.
+
+Pinned catalog bytes are supplied from the database bundle over the child process's stdin.
+The loader validates their exact hash; it never uses current files as a historical fallback.
+This does not complete the public catalog route, third-party download loop, browser-mounted
+verification UI, cross-epoch proof or release artifact. The original DOM-ending journey has
+explicit cash setup, so it is not relabelled replayable evidence. No runtime, kernel, schema,
+generated artifact, copy, balance, configuration or CI workflow bytes change.
+
+71272 `make test-game-ui-composed` completes exit0: both parent integration populations
+require the new PASS marker as well as all named Go parents, and the main built-client
+journey, actual process-crash/lost-reply recovery, Cosmetic/Clout/Reputation, N5 refusals,
+Garden and Tier-2 fixture populations complete. Existing cash/maturity/budget setups keep
+their declared limitations.71679 first stopped at my helper's undefined `httpServer` name;
+corrected to its actual `server` parameter before the passing run, not hidden as a green
+attempt.58443 selected cold Linux-amd64/Postgres Exit test passes, explicitly reporting
+that Node is not requested in the ordinary Go lane.92385's initial Make selector lost its
+literal dollar anchor and ran zero tests; not evidence, corrected before58443.13647 cold
+native gameserver tests and vet pass (native DB exclusions remain; not SQL proof); Node
+syntax and diff/whitespace checks pass. Actions already invokes the same root composed
+target with Node/dependencies, but no new hosted run or exact hosted-environment claim.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact test/docs range
+starts after `492f37ca` through this containing commit; Claude designated review remains
+pending and may consolidate with the earlier C14/generated-consumer ranges. No acceptance,
+archival, draft adoption, push or deployment. Next: exact owner catalog descriptors/public
+catalog composition and remaining generated consumers under their accepted authority;
+dictionary/bodiless prerequisites and the full nine-tier release floor remain open.

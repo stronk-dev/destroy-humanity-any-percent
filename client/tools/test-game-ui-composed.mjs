@@ -122,7 +122,7 @@ const persistedTests = [
 ];
 const persistedChecks = spawnSync("make", ["test-go", "GO_PACKAGES=./account ./gameui ./production ./leaderboard ./gameserver", `GO_TEST_FLAGS=-count=1 -v -run '^(${persistedTests.join("|")})$$'`], {
   cwd: repositoryRoot,
-  env: { ...process.env, TEST_DATABASE_URL: testDatabaseURL },
+  env: { ...process.env, TEST_DATABASE_URL: testDatabaseURL, TEST_PUBLIC_REPLAY_CLIENT: "1" },
   encoding: "utf8",
 });
 process.stdout.write(persistedChecks.stdout ?? "");
@@ -134,6 +134,9 @@ for (const name of persistedTests) {
   if (!persistedChecks.stdout?.includes(`--- PASS: ${name} (`)) {
     throw new Error(`${name} did not execute and pass (${persistedChecks.status})`);
   }
+}
+if (!persistedChecks.stdout?.includes("public SDK HTTP downloads → TypeScript replay: verified + receipt/event/gap/constants refusal; DB-pinned catalogs supplied: PASS")) {
+  throw new Error("public SDK/TypeScript replay integration did not execute and pass");
 }
 // Diagnostic streams/catalogs must not become the browser journey's epoch.
 resetTestDatabase();
