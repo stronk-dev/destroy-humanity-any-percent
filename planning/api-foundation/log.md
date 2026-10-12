@@ -1767,3 +1767,32 @@ Exact supplement range starts after `1ea43c67` through this containing commit; C
 consolidate it with the preceding `36f81dae..2fbd246b` cursor correction. No self-review
 promotion, RP-495 reconciliation, browser/full hosted CI, clean-host rehearsal, draft adoption,
 archive, publication or release claim. All verification handles completed before this record.
+
+## 2026-10-12 — Designated review: Claude's A6/AC4 body reconciliation
+
+Review by: Codex
+Recorded by: Codex
+Reviewed range: `266b8d8c^..266b8d8c`
+Decision: APPROVED
+
+Inspected both changed files, the complete original diff and the affected A2/A5/A6,
+AC4, C9/C12/C17/C18 and formula rulings. A6 now requires exactly the already-ruled
+artifact-owner descriptors in a name-discriminated closed union; AC4 repeats C9's
+generated-only HTTP caller/lint criterion instead of demanding deletion of an
+absent client layer. No owner ruling bytes, schema DSL, HTTP bytes or implementation
+are changed. The active RFC remains byte-identical to the reviewed revision.
+
+Re-derived the changelog's nineteen-family claim directly from
+`balance/epochs/phase0.json` at the predecessor and current `8f737115`: both name
+current epoch8 and the same nineteen artifacts, with no `formulas` artifact. The
+older C18 seven-arm sequencing note is explicitly historical/conditional, not
+authority to compose a partial current union or pretend a formula mint happened.
+Current served names still need complete owner exports; acceptance of this record
+does not approve missing implementations, generic JSON or a new mint.
+
+`git diff 266b8d8c^ 266b8d8c --check` passes; compared the ruling/body text and
+manifest sources rather than running unrelated software suites for Markdown.
+This closes only the outstanding normative correction review. Generated-caller
+migration/lint, catalogs and public TypeScript re-verification, missing204/304
+contracts, RP-495 and later corrective review ranges remain separate. No draft
+adoption, feature acceptance, archival, push, deployment or 1.0 promotion.

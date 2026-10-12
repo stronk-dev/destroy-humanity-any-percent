@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current specification review (2026-10-12): Claude's A6/AC4 body correction
+`266b8d8c^..266b8d8c` is designated-APPROVED by Codex. It faithfully reconciles
+the already-adopted C9/C18 requirements; no new contract or implementation is
+approved. The epoch8 manifest has nineteen artifact families at both the original
+boundary and current HEAD. Exact owner descriptors, generated-only caller/lint
+completion, historical formulas, missing response arms and later implementation
+reviews remain open. The owning log records this documentation-only review.
+
 Current configuration supplement (2026-10-12, RP-497): explicit previous cursor pairs now
 refuse duplicate current IDs/values in direct composition, matching Deployment DP3. The
 wholly absent C20 first-deployment alias remains valid. Old-source duplicate-value assertions
