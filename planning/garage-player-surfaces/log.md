@@ -6699,3 +6699,32 @@ Review by: Codex (actual-diff implementer first filter). Recorded by: Codex. Exa
 `8f5520db` exclusive through this containing commit, pending designated cross-party review.
 No archive/push/release promotion. Next: continue accepted product construction and consolidate
 related corrective review; do not restart this resolved readiness diagnosis without new evidence.
+
+## 2026-10-12 — Restore the populated performance census after Fiscal badge layout
+
+Outcome: RP-484, test-only conformance repair under Garage AC7/GS1 and CI D2. Current
+published CI38222406320 at e0cb9187 passes all functional browser files, then the isolated
+populated performance scenario fails before its first input: raw Fiscal button text is
+`Earnings Calls  ` while the census expects its exact title. Read the actual hosted diff;
+native root `make test-game-ui-performance`99032 reproduces the identical failure.
+
+Compare the existing dedicated title node where present, retaining exact copy and ordered
+navigation equality; separately require no ripe/harvest badges in this fixture. No trimming
+of authored copy, product code, rendered layout, budgets, observation population or workflow
+changes. Wrong-title probe63813 fails exact equality; unexpected-ripe-badge probe75999 fails
+the new absence assertion. Both temporary mutations are removed, not committed.
+
+Final unchanged root performance target34577 passes both scenarios (105 functional cases
+explicitly excluded). Positive input/render counters, complete census, exact terminal cash,
+zero intents and the original formatter/long-task budgets remain mandatory. Root focused
+Fiscal-ready native checks29285 pass four Chromium/WebKit phase-edge cases, including
+readiness/harvest/reset/keyboard behavior;824 cases deliberately deselected. Root
+`make typecheck`26692 passes with zero Svelte errors/warnings. No production build/SQL journey
+rerun for this test-only correction. All execution handles terminal; diff checked.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range is
+`e0cb9187` exclusive through this containing test/docs/records commit; designated review
+pending. Hosted run remains red, with client RP-131, server RP-307 and over-five-minute
+duration still open; no current-source hosted pass, whole Garage AC7, feature acceptance,
+archival, push or release claim. Continue independent accepted repairs; unadopted technical
+proposals remain separate holds, not a blanket stop on ordinary contract-conformance work.

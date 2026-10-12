@@ -690,7 +690,9 @@ receives its record (RP-334). Its result is not sufficient performance proof.
 An additional isolated Chromium scenario covers the bounded Garage GS5/GS6
 Desk population: pending Lucky, the three windowed buffs and combo, capped
 provisioning, an owned upgrade, the free shelf and achievements/Fiscal/Meters
-navigation. Those separate tabs are not falsely mounted on the Desk. It uses
+navigation. The census checks exact navigation titles independently of Fiscal's
+optional badge layout whitespace, and requires both Fiscal badges absent in this
+ripening, unharvested fixture. Those separate tabs are not falsely mounted on the Desk. It uses
 the public snapshot decoder, counts actual delivered updates, checks this
 population after every update, measures the cash Amount rather than the static
 combo Amount, requires positive visible activity and the exact terminal cash,

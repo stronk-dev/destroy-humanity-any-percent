@@ -1632,9 +1632,14 @@ it.skipIf(!chromiumPerformanceLane)("holds the observable 20 Hz / 10 Hz screen b
       expect(target.querySelector('section[aria-labelledby="upgrades-heading"] strong')?.textContent).toBe(text("desk.upgrade.owned"));
       const shelf = [...target.querySelectorAll("section.card")].find((row) => row.querySelector("h2")?.textContent === text("cosmetic.horse_armor_free.title"));
       expect(shelf?.textContent).toContain(text("cosmetic.horse_armor_free.disclosure"));
-      expect([...target.querySelectorAll("nav button")].map((row) => row.textContent)).toEqual([
+      // Fiscal's optional badges introduce layout whitespace outside its title.
+      // Keep exact copy/order checks and separately require the unbadged fixture.
+      expect([...target.querySelectorAll("nav button")].map((row) =>
+        (row.querySelector(":scope > [data-nav-label]") ?? row).textContent)).toEqual([
         "surface.desk.title", "surface.achievements.title", "surface.fiscal.title", "surface.meters.title", "surface.settings.title",
       ].map((key) => text(key as CopyKey)));
+      expect(target.querySelector("nav .fiscal-ripe-badge")).toBeNull();
+      expect(target.querySelector("nav .nav-badge")).toBeNull();
       expect(runtime.requests).toHaveLength(0);
     };
     census();

@@ -5181,3 +5181,13 @@ Read-only `gh run list` and `gh run view` confirm latest CI37795560514 at publis
 source hosted verdict. Verification for this editorial change is diff, link and factual
 comparison only; no unrelated software rerun. No draft adoption, acceptance, archival,
 push/deployment or release claim. The full nine-tier1.0 goal remains active.
+
+## 2026-10-12 — Reconcile newly published CI and repair its performance census
+
+Main now aligns with origin/main at e0cb9187. Hosted CI38222406320 remains red, but its
+functional browser matrix passes; the isolated populated performance census fails before
+input delivery on Fiscal layout whitespace. RP-484 is locally corrected, test-only, under
+existing Garage/CI authority. The Garage log owns old failure, negative controls, final
+performance/Fiscal/type passes and review range. Client history, server accrual and hosted
+latency gates remain open. No gameplay milestone, proposal adoption, archival or release
+promotion; full nine-tier1.0 construction continues under accepted contracts.

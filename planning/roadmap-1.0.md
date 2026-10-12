@@ -5,10 +5,14 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current product rollup (2026-10-09):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-09).
-Finished source `1b484c50` adds locally verified release-probe baseline repairs after Recovery's
-terminal-order correction; both remain pending designated review. Fresh read-only inspection
-still finds published CI37795560514 red at `cbd2069f`, with no newer hosted verdict.
+**Current product rollup (2026-10-12):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-09)
+and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
+Published source `e0cb9187` now has hosted CI38222406320: schema/harness/composed pass;
+client/server/browser fail, and the blocking run exceeds five minutes. The browser's
+functional matrix passes; its populated performance census has the locally corrected
+RP-484 whitespace defect. The Garage log owns final checks and the pending review range;
+there is no hosted verdict for that correction. Earlier release-probe/Recovery repairs
+remain pending designated review.
 No playable tier, feature acceptance or release milestone advances in this checkpoint.
 We are integrating and hardening the Garage, with substantial later-tier construction still
 ahead. The latest gameplay-foundation checkpoint `9f518477` adds locally verified Combat team/deck reference decoding,
