@@ -1743,3 +1743,27 @@ Recorded by: Codex. Exact correction/records range starts after `36f81dae` throu
 commit and awaits Claude review. Original independent verdicts above do not approve this repair.
 All handles terminal; no full hosted CI, browser, clean-host, draft adoption, archive, push or
 release promotion. Next: remaining accepted API construction/later review; full nine-tier1.0 stays active.
+
+## 2026-10-12 — Refuse explicit duplicate cursor secrets in direct composition (RP-497)
+
+Outcome under API A7/C20 and Deployment DP3: an explicitly supplied previous cursor pair
+must differ from current; only a wholly absent previous pair may use the first-deployment
+alias. The environment decoder already enforces this, but direct Go composition bypassed it.
+Old-source focused32212 fails both the resolver and actual-router duplicate-value assertions
+(`err=<nil>` mounted); duplicate-ID and existing half-pair controls already refuse. Reject
+duplicates before resolving either name, without changing policy IDs, key bytes or overlap.
+
+Full cold `make test-go GO_PACKAGES='./publicread ./publicapi ./gameserver ./deploymentconfig
+./cmd/gameserver' GO_TEST_FLAGS='-count=1'`73232, affected vet and unchanged api-check pass.
+Declared Linux-amd64/Postgres1248 (`make test-go-ci`, publicread/gameserver, selected cursor,
+router, evidence HTTP and composed socket/clearing/proxy/verified-run tests) passes with no
+skips. Actual composition checks both duplicate cases, then the valid real HTTP/socket path;
+the existing first-deployment and distinct-key rotation witnesses pass. Download evidence
+remains byte-identical to storage and the corrupted receipt refuses. The same-epoch Go
+re-verification uses pinned catalogs from DB, not the missing public catalog/TypeScript loop.
+
+Review by: Codex (implementer first filter, not independent approval). Recorded by: Codex.
+Exact supplement range starts after `1ea43c67` through this containing commit; Claude may
+consolidate it with the preceding `36f81dae..2fbd246b` cursor correction. No self-review
+promotion, RP-495 reconciliation, browser/full hosted CI, clean-host rehearsal, draft adoption,
+archive, publication or release claim. All verification handles completed before this record.

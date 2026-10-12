@@ -2,6 +2,13 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current configuration supplement (2026-10-12, RP-497): explicit previous cursor pairs now
+refuse duplicate current IDs/values in direct composition, matching Deployment DP3. The
+wholly absent C20 first-deployment alias remains valid. Old-source duplicate-value assertions
+fail; corrected cold packages/vet, unchanged API generation and selected real Linux-amd64/
+Postgres composition/download checks pass. This supplement and the preceding RP-496 repair
+need Claude review; neither resolves RP-495 or completes public re-verification/API acceptance.
+
 Current router correction/review (2026-10-12, RP-495/RP-496): direct composition now refuses
 previous cursor material without its ID instead of treating it as the first-deployment alias.
 Old-source regressions fail; corrected cold affected packages and selected real Linux-amd64/

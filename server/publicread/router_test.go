@@ -53,7 +53,8 @@ func TestCursorSecretResolverBindsPolicyNamesToTheDeploymentPair(t *testing.T) {
 		{CurrentID: "cursor-current", Current: secret(1)},                            // names do not match the policy
 		{CurrentID: "k1", Current: secret(1), PreviousID: "k9", Previous: secret(2)}, // previous pair under a foreign name
 		{CurrentID: "k1"}, // no material
-		{CurrentID: "k1", Current: secret(1), Previous: secret(2)}, // material without its ID is not a first deployment
+		{CurrentID: "k1", Current: secret(1), Previous: secret(2)},                   // material without its ID is not a first deployment
+		{CurrentID: "k1", Current: secret(1), PreviousID: "k0", Previous: secret(1)}, // an explicit duplicate value is not a first deployment
 	} {
 		resolve := CursorSecretResolver(policy, keys)
 		_, currentOK := resolve("k1")
@@ -75,11 +76,13 @@ func TestNewRouterFailsClosedWithoutPolicyOrCursorSecrets(t *testing.T) {
 	for name, keys := range map[string]CursorKeys{
 		"previous material without ID": {CurrentID: "k1", Current: secret(1), Previous: secret(2)},
 		"previous ID without material": {CurrentID: "k1", Current: secret(1), PreviousID: "k0"},
+		"duplicate previous value":     {CurrentID: "k1", Current: secret(1), PreviousID: "k0", Previous: secret(1)},
+		"duplicate previous ID":        {CurrentID: "k1", Current: secret(1), PreviousID: "k1", Previous: secret(2)},
 	} {
 		t.Run(name, func(t *testing.T) {
 			router, err := routerFor(t, phase0PolicyJSON(t), keys, epochs)
 			if router != nil || !errors.Is(err, ErrComposition) {
-				t.Fatalf("incomplete previous cursor pair mounted: err=%v", err)
+				t.Fatalf("invalid previous cursor pair mounted: err=%v", err)
 			}
 		})
 	}

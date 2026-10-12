@@ -40,6 +40,12 @@ func CursorSecretResolver(policy publicapi.Policy, keys CursorKeys) publicapi.Se
 		if (keys.PreviousID == "") != (len(keys.Previous) == 0) {
 			return nil, false
 		}
+		// C20's alias applies only when no previous pair was supplied. An
+		// explicit pair must meet DP3 even when composition bypasses the
+		// deployment environment decoder.
+		if keys.PreviousID != "" && (keys.PreviousID == keys.CurrentID || bytes.Equal(keys.Previous, keys.Current)) {
+			return nil, false
+		}
 		switch {
 		case id == "":
 			return nil, false
