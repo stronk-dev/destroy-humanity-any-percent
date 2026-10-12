@@ -1,5 +1,36 @@
 // GS5-A4 tooling oracle. The composed driver and its counterexample tests
 // consume this one predicate; this is not product or payout implementation.
+import { isDeepStrictEqual } from "node:util";
+
+export function assertQueuedOpportunityClaim({ purchase, read, result, requests, pendingID, history }) {
+  const fail = (detail) => { throw new Error(`GS5 queued claim proof: ${detail}`); };
+  if (requests?.length !== 2 || requests[0].phase !== "purchase-held" || requests[1].phase !== "released" ||
+      !isDeepStrictEqual(requests[0].intent, purchase?.intent) || !isDeepStrictEqual(requests[1].intent, result?.intent)) fail("not one purchase then one released Claim");
+  if (purchase.intent.kind !== "buy_generator" || purchase.intent.generator_id !== "generator.beige_tower" ||
+      purchase.intent.count?.mode !== "exact" || purchase.intent.count.value !== 1 ||
+      purchase.body?.outcome !== "applied" || purchase.body.intent_id !== purchase.intent.intent_id ||
+      !Number.isSafeInteger(purchase.intent.expected_revision) || purchase.intent.expected_revision < 1 ||
+      purchase.body.new_revision !== purchase.intent.expected_revision + 1) fail("missing exact applied purchase");
+  if (result?.intent?.kind !== "claim_opportunity" || result.intent.opportunity_id !== pendingID || !pendingID ||
+      result.intent.intent_id === purchase.intent.intent_id || result.body?.outcome !== "applied" ||
+      result.body.intent_id !== result.intent.intent_id || result.body.new_revision !== purchase.body.new_revision + 1 ||
+      result.intent.expected_revision !== purchase.body.new_revision || read?.schema_version !== 4 ||
+      read.revision !== purchase.body.new_revision || read.run?.run_seq !== purchase.body.snapshot?.run_seq ||
+      result.body.snapshot?.run_seq !== read.run.run_seq) fail("Claim did not bind the refreshed purchase revision/run/opportunity");
+  if (!Array.isArray(history) || history.length !== 2) fail("missing exact committed history");
+  for (const [index, command] of [purchase, result].entries()) {
+    const row = history[index], { intent_id: intentID, ...payload } = command.intent;
+    if (row?.intent_id !== intentID || row.applied_revision !== command.body.new_revision ||
+        row.run_seq !== read.run.run_seq || row.founder_id !== read.run.founder_id ||
+        !isDeepStrictEqual(row.payload, payload) || !isDeepStrictEqual(row.receipt, command.body) ||
+        !isDeepStrictEqual(row.record_receipt, command.body) ||
+        !isDeepStrictEqual(row.balances, command.body.snapshot.balances) ||
+        !isDeepStrictEqual(row.generators, command.body.snapshot.generators)) fail("SQL payload, receipt or saved state differs from the submitted command");
+  }
+  if (!history[0].stream_id || history[0].stream_id !== history[1].stream_id ||
+      !Number.isSafeInteger(history[0].seq) || history[0].seq < 1 || history[1].seq !== history[0].seq + 1) fail("not consecutive commands in the same Company stream");
+}
+
 export function assertOpportunityReadStatus(status) {
   if (status !== 200) throw new Error(`GS5 successor read failed (${status})`);
 }

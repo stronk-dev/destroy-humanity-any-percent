@@ -361,6 +361,13 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   shared by the real driver and counterexample tests, uses the existing numeric
   parser, and reports which branch actually ran; its fixtures are not server
   payout or Lucky-acquisition evidence.
+  The production-built real-service journey also presses Buy and then Claim
+  through native Enter while delivery of the actual purchase reply and following
+  state read is held. No response JSON is supplied. It requires no early Claim,
+  exactly one submission after release at the refreshed revision, and consecutive
+  run-log/intent-record receipts with matching saved balances and ownership in
+  Postgres. The observed effect must still pass the successor-snapshot checker;
+  a single run does not establish acquisition of every registered effect.
 - **Trophy Case / Meters presentation errors (GS0.5):** decoder-legal
   achievement rows whose copy key is unavailable, or meter rows whose declared
   band lacks presentation, render only the unchanged surface heading and

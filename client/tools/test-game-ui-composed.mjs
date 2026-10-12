@@ -8,7 +8,7 @@ import { isDeepStrictEqual } from "node:util";
 import { chromium } from "playwright";
 import { build, createServer, preview } from "vite";
 import { productionClientFiles, productionClientProof } from "./production-client-proof.mjs";
-import { assertOpportunityClaimEffect, assertOpportunityReadStatus } from "./opportunity-claim-proof.mjs";
+import { assertOpportunityClaimEffect, assertOpportunityReadStatus, assertQueuedOpportunityClaim } from "./opportunity-claim-proof.mjs";
 import { parents as refreshTests, refreshPopulationObserver } from "./observe-refresh-population.mjs";
 import { composedMode, observeManualBudget } from "./observe-manual-budget.mjs";
 import { observeLockedPitchView } from "./pitch-locked-view.mjs";
@@ -365,28 +365,145 @@ async function clickAppliedIntentChoice(page, buttonLabels, label) {
   return { body, clickedLabel, intent: request.postDataJSON() };
 }
 
-// GS5-A4: DOM-only manual clicks on the real server until the Desk region
-// projects an opportunity, then a DOM claim; the next authoritative snapshot
-// must show the claim's effect (a live buff, or a credited lucky payout).
+// GS0.8/GS5-A4: native Claim waits behind an actual purchase AND its actual
+// authoritative read. Only delivery is held: upstream bytes, gameplay and
+// persisted receipts are unchanged. No runtime double or supplied JSON.
+async function claimBehindPurchase(page, buy, pendingID) {
+  const latch = () => {
+    let resolve;
+    const promise = new Promise((done) => { resolve = done; });
+    return { promise, resolve };
+  };
+  const purchaseReady = latch(), readReady = latch(), claimReady = latch();
+  const releasePurchase = latch(), releaseRead = latch(), failure = latch();
+  const requests = [], tasks = new Set();
+  let phase = "purchase-held", purchaseStarted = false, purchase, read;
+  const timeout = setTimeout(() => failure.resolve({ error: new Error("GS5 queued purchase/Claim exceeded the existing 30-second action guard") }), 30_000);
+  const guard = async (task) => {
+    const outcome = await Promise.race([task.then((value) => ({ value })), failure.promise]);
+    if (outcome.error) throw outcome.error;
+    return outcome.value;
+  };
+  const record = (request) => {
+    if (request.method() === "POST" && new URL(request.url()).pathname === "/api/v1/intents") {
+      requests.push({ phase, intent: request.postDataJSON() });
+    }
+  };
+  const track = (handler) => (route) => {
+    const task = handler(route).catch(async (error) => {
+      failure.resolve({ error });
+      await route.abort().catch(() => {});
+    });
+    tasks.add(task);
+    task.finally(() => tasks.delete(task));
+    return task;
+  };
+  const intents = track(async (route) => {
+    const intent = route.request().postDataJSON();
+    if (intent.kind !== "buy_generator" && intent.kind !== "claim_opportunity") return route.continue();
+    if (intent.kind === "buy_generator") purchaseStarted = true;
+    const response = await route.fetch({ maxRetries: 0, timeout: 30_000 });
+    const body = await response.json();
+    if (response.status() !== 200 || body?.outcome !== "applied") throw new Error(`GS5 queued ${intent.kind} was not applied (${response.status()}): ${JSON.stringify(body)}`);
+    if (intent.kind === "buy_generator") {
+      purchase = { intent, body };
+      purchaseReady.resolve();
+      await releasePurchase.promise;
+    } else claimReady.resolve({ intent, body });
+    await route.fulfill({ response });
+  });
+  const reads = track(async (route) => {
+    if (!purchaseStarted || phase === "released") return route.continue();
+    const response = await route.fetch({ maxRetries: 0, timeout: 30_000 });
+    assertOpportunityReadStatus(response.status());
+    const snapshot = await response.json();
+    if (read === undefined) {
+      read = snapshot;
+      readReady.resolve();
+    }
+    await releaseRead.promise;
+    await route.fulfill({ response });
+  });
+  page.on("request", record);
+  await page.route("**/api/v1/intents", intents);
+  await page.route("**/api/v1/founder/state", reads);
+  try {
+    await buy.focus();
+    await page.keyboard.press("Enter");
+    await guard(purchaseReady.promise);
+    const claim = page.locator("[data-region='desk.region.opportunity']").getByRole("button", { name: "Claim", exact: true });
+    if (await claim.isDisabled() || await claim.getAttribute("aria-disabled") === "true") throw new Error("GS5 another purchase incorrectly disables fresh Claim input");
+    await claim.focus();
+    await page.keyboard.press("Enter");
+    await page.evaluate(async () => { await new Promise(requestAnimationFrame); await new Promise(requestAnimationFrame); });
+    if (requests.length !== 1 || requests[0].intent.kind !== "buy_generator") throw new Error("GS5 Claim submitted before the purchase reply");
+    phase = "read-held";
+    releasePurchase.resolve();
+    await guard(readReady.promise);
+    await page.evaluate(async () => { await new Promise(requestAnimationFrame); await new Promise(requestAnimationFrame); });
+    if (requests.length !== 1 || await page.locator("main").getAttribute("aria-busy") !== "true") throw new Error("GS5 Claim escaped the held authoritative purchase read");
+    phase = "released";
+    releaseRead.resolve();
+    const result = await guard(claimReady.promise);
+    await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
+    const ids = [purchase.intent.intent_id, result.intent.intent_id];
+    if (ids.some((id) => !/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(id))) throw new Error("GS5 invalid UUID in committed history check");
+    const sql = `SELECT json_build_object('stream_id', log.company_stream_id, 'founder_id', stream.owner_id,
+      'run_seq', log.run_seq, 'seq', log.seq, 'intent_id', log.intent_id, 'applied_revision', log.applied_revision,
+      'payload', convert_from(log.canonical_payload,'UTF8')::jsonb, 'receipt', log.receipt,
+      'record_receipt', record.receipt, 'balances', revision.state->'balances', 'generators', revision.state->'generators')
+      FROM run_log log JOIN save_streams stream ON stream.id=log.company_stream_id AND stream.scope='company'
+      JOIN intent_records record ON record.stream_id=log.company_stream_id AND record.intent_id=log.intent_id
+      JOIN save_revisions revision ON revision.stream_id=log.company_stream_id AND revision.revision=log.applied_revision
+      WHERE log.intent_id IN ('${ids[0]}','${ids[1]}') ORDER BY log.applied_revision;`;
+    const stored = spawnSync("docker", ["compose", "-f", "compose.game-ui-test.yml", "exec", "-T", "game-ui-postgres",
+      "psql", "-v", "ON_ERROR_STOP=1", "-At", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test", "-c", sql],
+    { cwd: repositoryRoot, encoding: "utf8" });
+    if (stored.status !== 0) throw new Error(`GS5 queued committed history query failed: ${stored.stderr}`);
+    const history = stored.stdout.trim().split("\n").filter(Boolean).map((line) => JSON.parse(line));
+    assertQueuedOpportunityClaim({ purchase, read, result, requests, pendingID, history });
+    return result;
+  } finally {
+    clearTimeout(timeout);
+    releasePurchase.resolve(); releaseRead.resolve();
+    await page.unroute("**/api/v1/intents", intents);
+    await page.unroute("**/api/v1/founder/state", reads);
+    await Promise.allSettled([...tasks]);
+    page.off("request", record);
+  }
+}
+
 async function witnessOpportunityClaim(page) {
   const { parseCanonical } = await vite.ssrLoadModule("/src/numeric.ts");
-  const expiredClaims = [];
+  const { t } = await vite.ssrLoadModule("/src/copy/index.ts");
+  const { eraForSnapshot } = await vite.ssrLoadModule("/src/game-ui/contracts.ts");
+  const { GAME_UI_PRESENTATION } = await vite.ssrLoadModule("/src/game-ui/presentation.ts");
+  const before = await page.evaluate(async () => {
+    const parsed = JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1"));
+    const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
+    return { status: response.status, snapshot: await response.json() };
+  });
+  assertOpportunityReadStatus(before.status);
+  const era = eraForSnapshot(before.snapshot);
+  const buy = page.locator('section[aria-labelledby="generators-heading"] article')
+    .filter({ has: page.getByRole("heading", { name: t(GAME_UI_PRESENTATION.generators.get("generator.beige_tower").title_key, {}, era), exact: true }) })
+    .getByRole("button", { name: t("desk.buy_one", {}, era), exact: true });
   for (let attempt = 0; attempt < 60; attempt += 1) {
     const claimable = await page.evaluate(() => [...document.querySelectorAll("[data-region='desk.region.opportunity'] button")]
       .some((button) => button.textContent?.trim() === "Claim" && !button.disabled));
-    if (!claimable) {
+    if (!claimable || !await buy.isEnabled()) {
       await clickAppliedIntent(page, "Fix Computer", "GS5 manual click toward an opportunity spawn");
       await new Promise((resolve) => setTimeout(resolve, 250));
       continue;
     }
-    let result;
-    try { result = await clickAppliedIntent(page, "Claim", "GS5 opportunity claim"); }
-    catch (error) {
-      if (!/opportunity_expired|opportunity_not_pending/u.test(String(error?.message))) throw error;
-      expiredClaims.push(String(error.message).slice(0, 200));
-      if (expiredClaims.length >= 3) throw new Error(`GS5 claims kept expiring: ${JSON.stringify(expiredClaims)}`);
-      continue;
-    }
+    const pendingID = await page.evaluate(async () => {
+      const parsed = JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1"));
+      const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
+      if (response.status !== 200) throw new Error(`GS5 pre-purchase read failed (${response.status})`);
+      return (await response.json()).features?.opportunity?.pending?.opportunity_id;
+    });
+    if (!pendingID) throw new Error("GS5 rendered Claim has no authoritative pending opportunity");
+    const result = await claimBehindPurchase(page, buy, pendingID);
     const claim = result.body?.receipt?.opportunity;
     if (result.intent?.kind !== "claim_opportunity" || !claim?.effect_row_id) throw new Error(`GS5 claim receipt carried no opportunity evidence: ${JSON.stringify(result.body)}`);
     const successor = await page.evaluate(async () => {
@@ -398,9 +515,9 @@ async function witnessOpportunityClaim(page) {
     const after = successor.snapshot;
     const proofBranch = assertOpportunityClaimEffect(result, after, parseCanonical);
     return { effect_row_id: claim.effect_row_id, proof_branch: proofBranch, revision: after.revision,
-      manual_clicks: attempt - expiredClaims.length, expired_claims: expiredClaims.length };
+      manual_clicks: attempt };
   }
-  throw new Error("GS5: no opportunity became claimable within 60 manual clicks (250 ms pause after each completed action; authenticated follow-up reads also consume the account limiter)");
+  throw new Error("GS5: no claimable opportunity and affordable purchase within 60 manual clicks (250 ms pause after each completed action; authenticated follow-up reads also consume the account limiter)");
 }
 
 function receiptCoordinate(result) {
@@ -613,7 +730,9 @@ async function witnessFiscalServerRefusals(page, accessToken) {
         throw new Error(`wrong real stale-revision receipt: ${JSON.stringify(body)}`);
       }
       const notice = t(arm === "invalid" ? "intent.rejection.unknown" : "intent.conflict", {}, era);
-      await page.locator(".fiscal .intent-notice[role=status]").getByText(notice, { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+      const feedback = page.locator(".fiscal [role=status]");
+      if (await feedback.count() !== 1) throw new Error(`Fiscal ${arm} requires exactly one own-surface feedback region`);
+      await feedback.locator(".intent-notice").getByText(notice, { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
       await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
       await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       const after = await founderState(accessToken);
@@ -1246,7 +1365,7 @@ try {
   // controls; the composed epoch pins minigame.pitch at 3 credit.
   requestPhase = "GS5 opportunity";
   const opportunity = await witnessOpportunityClaim(page);
-  console.log(`composed GS5 opportunity: ${opportunity.manual_clicks} manual clicks, claimed ${opportunity.effect_row_id} (${opportunity.expired_claims} expired attempts), ${opportunity.proof_branch} effect bound to next snapshot revision ${opportunity.revision}: PASS`);
+  console.log(`composed GS5 opportunity: ${opportunity.manual_clicks} manual clicks → native Buy/queued Claim → held real reply/read → consecutive SQL receipts; ${opportunity.effect_row_id} ${opportunity.proof_branch} effect bound to next snapshot revision ${opportunity.revision}: PASS`);
   requestPhase = "Pitch gate/unlock/play";
   seedGateRequirement(liveSnapshot.body.run.founder_id);
   await page.reload({ waitUntil: "networkidle" });

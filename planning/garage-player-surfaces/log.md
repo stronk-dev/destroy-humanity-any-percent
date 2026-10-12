@@ -6874,3 +6874,41 @@ Review by: Codex (implementer first filter). Recorded by: Codex. New increment s
 `2db7b03d`; related Claim repairs can receive one designated review over `7fd2549b` exclusive
 through this containing commit. Claude approval remains pending; older debt is independent.
 Continue accepted integration/acceptance work. No draft adoption, archival, push or release claim.
+
+## 2026-10-12 — Queued Claim across the actual server/SQL boundary; Fiscal selector repair
+
+Outcome: test/tool-only extension of the existing GS0.8/GS5-A4 production-built main journey.
+Earn through ordinary DOM manual work, press native Enter on Buy and Claim, and hold delivery
+of actual upstream purchase/read responses without supplying JSON. Claim must remain queued
+through both holds, submit once using the refreshed Company revision, and match consecutive
+SQL run-log/intent-record receipts, canonical submitted payloads, balances and ownership.
+The unchanged successor-effect checker still applies; expiry/rejection now fails this queued
+attempt immediately rather than seeking another opportunity. No mechanics, copy, fixture cash,
+clock, API, retry, CI workflow or timeout increase.
+
+Root `client/node_modules/.bin/vitest run --root client test/opportunity-composed-proof.test.mjs`
+passes65 cases before the real run and on final rerun, including21 new invalid queue/history
+cases and one healthy queue fixture; fixtures are not integration evidence. Initial real run37940 fails before
+Claim: RP-501's old Fiscal selector expects role=status on the child notice, removed by RP-487.
+Correct the consumer to require one surface-owned region containing the exact notice; retain
+all native request, actual400/200 rejection, read-count, no-retry, state and focus assertions.
+
+Corrected root `node client/tools/test-game-ui-composed.mjs`54414 exits0. Its cold8/8 refresh
+cases and all ten required integration functions execute against the declared real Postgres;
+the main native Chromium journey loads exact built HTML/JS/CSS/worker bytes. GS5 earns15
+manual actions, submits native Buy/queued Claim once each, binds consecutive SQL history and
+observes `active.building` in the next snapshot at Company revision37. Both Fiscal refusal
+arms/fresh consent, first-purchase achievement, both early endings/next runs, locked/Pitch
+flow and committed-lost-reply/real-process-crash Recovery controls pass. Socket proxy errors
+occur during the deliberate server crash; recovery checks complete rather than suppress them.
+`make typecheck`60125 passes with zero errors/warnings; final65 checker cases85e044 and
+driver syntax pass. The last diagnostic-only guard wording edit does not change the executed
+path. No whole `make test-game-ui-composed` aggregate, Linux/Firefox/WebKit server journey,
+actual assistive-technology speech, every-effect acquisition, hosted CI or full Garage claim.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact increment starts after
+`e8353eda` through this containing commit; related Claim work can consolidate designated
+review as `7fd2549b` exclusive through this commit. Earlier debt, including RP-487's producer,
+remains separate. All handles terminal; diff checked. No draft adoption, archive or push.
+Next: continue accepted remaining integration/acceptance while these changes await review;
+the four proposed contract choices remain unadopted, not a blanket work stop.

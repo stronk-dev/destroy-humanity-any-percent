@@ -7,7 +7,15 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-12): RP-499's mounted Claim feedback is locally repaired under
+Current checkpoint (2026-10-12): the production-built real-service main journey now exercises
+GS0.8's fresh Claim behind an actual purchase and held authoritative read, with exact consecutive
+Postgres payloads/receipts/state and the observed building buff in its successor snapshot.
+RP-501's stale Fiscal refusal selector is locally repaired; both real refusal/recovery arms pass.
+The latest log owns failed/final runs, boundaries and the consolidated Claim review range.
+No full composed aggregate, hosted CI, actual-AT, all-effect or Garage/release promotion follows.
+Continue accepted integration/acceptance work and consolidate outstanding designated review.
+
+Preceding checkpoint (2026-10-12): RP-499's mounted Claim feedback is locally repaired under
 GS0.6/GS5. The existing Desk status region owns pending and outcomes; Claim describes that
 visible pending text without adding a child live region. RP-500 retains an explicit separator
 between unchanged messages. The latest log owns old-source failures, final verification and
