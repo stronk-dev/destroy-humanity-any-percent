@@ -455,6 +455,73 @@ func testComposedMinigameAPILifecycle(t *testing.T, liveScaling bool) {
 			nestedDuplicate := bytes.Replace(terminalCommand, []byte(`"kind":"play_hand"`), []byte(`"kind":"play_hand","kind":"play_hand"`), 1)
 			assertComposedRequestAdmission(t, db, httpServer, "play_minigame_command", "/api/v1/minigames/sessions/"+current.SessionID+"/commands",
 				tokens.AccessToken, string(terminalCommand), "command_id", "minigame_command", string(nestedDuplicate))
+			// Hold the real service after tenant validation but before publishing
+			// its nonterminal receipt. No SQL status injection or fake activity
+			// resolver may stand in for the actual claimed session that Exit sees.
+			// Refuse this diagnostic receipt afterwards, so the ordinary HTTP
+			// command below still owns the first durable command and its retry.
+			prior := func() minigame.Session {
+				prior, err := composition.Minigames.Load(ctx, companyIdentity.FounderID, current.SessionID)
+				if err != nil {
+					t.Fatal(err)
+				}
+				commandBytes, err := json.Marshal(command)
+				if err != nil {
+					t.Fatal(err)
+				}
+				claimContext, cancelClaim := context.WithTimeout(ctx, 5*time.Second)
+				claimedReady, resumePlay, playFinished := make(chan struct{}), make(chan struct{}), make(chan struct{})
+				var heldPlayErr error
+				go func() {
+					_, heldPlayErr = composition.Minigames.PlayWithReceipt(claimContext, minigame.PlayRequest{
+						FounderID: companyIdentity.FounderID, SessionID: current.SessionID,
+						ExpectedRevision: current.Revision, Command: commandBytes,
+					}, "pitch-held-command", fmt.Sprintf("sha256:%x", sha256.Sum256(commandBytes)),
+						func(minigame.Session) (json.RawMessage, error) {
+							close(claimedReady)
+							select {
+							case <-resumePlay:
+							case <-claimContext.Done():
+							}
+							return nil, errors.New("diagnostic receipt refusal")
+						})
+					close(playFinished)
+				}()
+				defer func() {
+					close(resumePlay)
+					cancelClaim()
+					<-playFinished
+					if !errors.Is(heldPlayErr, minigame.ErrInvalidSession) {
+						t.Errorf("held command did not refuse the diagnostic receipt: %v", heldPlayErr)
+					}
+				}()
+				select {
+				case <-claimedReady:
+				case <-playFinished:
+					t.Fatalf("command never reached its held receipt: %v", heldPlayErr)
+				case <-claimContext.Done():
+					t.Fatal("command did not reach its held receipt before the diagnostic deadline")
+				}
+				claimed, err := composition.Minigames.Load(ctx, companyIdentity.FounderID, current.SessionID)
+				if err != nil || claimed.Status != minigame.StatusClaimed || claimed.ClaimToken == "" || claimed.ClaimedAt == nil {
+					t.Fatalf("held command has no real claim: session=%+v err=%v", claimed, err)
+				}
+				claimIdentity := claimed
+				claimIdentity.Status, claimIdentity.ClaimToken, claimIdentity.ClaimedAt = prior.Status, prior.ClaimToken, prior.ClaimedAt
+				claimIdentity.UpdatedAt = prior.UpdatedAt
+				if !reflect.DeepEqual(claimIdentity, prior) {
+					t.Fatal("claim changed frozen identity, revision, snapshot or resolution before receipt publication")
+				}
+				assertExitBoundary(true)
+				return prior
+			}()
+			// Claim cleanup may change only its bookkeeping timestamp. It must
+			// not consume the command, grant a payout or strand the session.
+			returned, err := composition.Minigames.Load(ctx, companyIdentity.FounderID, current.SessionID)
+			returned.UpdatedAt = prior.UpdatedAt
+			if err != nil || !reflect.DeepEqual(returned, prior) {
+				t.Fatalf("refused diagnostic command changed or stranded the session: session=%+v err=%v", returned, err)
+			}
 		}
 		commandResponse := compositionRequest(t, httpServer.Client(), http.MethodPost,
 			httpServer.URL+"/api/v1/minigames/sessions/"+current.SessionID+"/commands", tokens.AccessToken, string(terminalCommand))

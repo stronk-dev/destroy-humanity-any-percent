@@ -1650,3 +1650,37 @@ after `c7071178` through this containing commit and needs Claude designated revi
 consolidatable with earlier related MA supplements. All checks listed above are terminal;
 no acceptance checkbox, archival, draft adoption, push or deployment. Continue accepted
 construction; contract decisions and the full nine-tier 1.0 objective remain separate.
+
+## 2026-10-13 — Processing claims retain the public Exit guard
+
+MA-C12's `active|claimed` contract now has the previously missing controlled claimed-state
+HTTP proof in the existing two Pitch populations. A real service worker validates the
+nonterminal command and pauses at its receipt builder after committing its Postgres claim.
+Independent reads require a genuine token/claim timestamp and unchanged frozen session data.
+All three public Exit arms refuse with minigame_session_active; complete Company/Founder
+bytes/revisions and the held claim remain unchanged. Deliberately refusing the diagnostic
+receipt releases the claim, restoring the entire original session except UpdatedAt; the
+ordinary public command then runs and existing certification/payout/history/retry/replay
+checks remain. No SQL status injection, fake resolver, new public hook or production change.
+
+Executed evidence, all terminal:
+- Initial selected Linux/Postgres run46490 passes both populations (35.52s), before tightening
+  the post-release comparison from snapshot/revision to the complete session.
+- Compiling active-only activity-predicate fault3614 retains idle-session checks but fails
+  the first claimed Wind Down: actual tier refusal versus required minigame_session_active
+  (16.78s). Exact production query restored; its diff is empty. This is test discrimination,
+  not a defect in the restored implementation. No fault is committed.
+- Final `make test-go-ci CI_TEST_PACKAGES='./gameserver ./minigame'`66994 passes cold against
+  declared real Postgres/Linux-amd64: gameserver80.711s, minigame2.358s. Both lifecycle
+  populations remain in that package, including the stronger complete-session comparison.
+- `make test-go vet GO_PACKAGES='./gameserver ./minigame' GO_TEST_FLAGS='-count=1'`18888 passes;
+  native DB skips are not SQL proof. Formatting and diff checks pass. Existing warned orphan
+  services remain untouched; no cleanup, timeout/retry/CI or acceptance-bound change.
+
+The five-second diagnostic context only bounds the held worker and releases it on every test
+exit; it is not a new game timeout or measured latency claim. Controlled service/HTTP
+interleaving is not a public command-network stall, a create/Exit transaction race, successful
+eligible Exit, browser/AT, full hosted CI or full MA/1.0 acceptance. No checkbox or archival.
+Review by: Codex (implementer first filter). Recorded by: Codex. The test/docs/plan/log range
+after `67d3eece` through this containing commit needs Claude, consolidatable with earlier MA
+supplements; those earlier ranges remain separate. No owner decision inferred or push.

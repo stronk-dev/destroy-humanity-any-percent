@@ -1,5 +1,15 @@
 # Minigame API & Surface implementation plan
 
+Current claimed-session supplement (2026-10-13): the existing real HTTP/Postgres Pitch
+lifecycle now holds a real service command at its receipt builder, verifies the stored claim,
+and requires all three public Exit arms to refuse without changing saves or the claim. The
+deliberately refused diagnostic receipt restores the complete session except its bookkeeping
+timestamp; ordinary public play retains existing certification/payout/retry/replay checks.
+Removing claimed status from the production guard fails the new witness, then production is
+restored unchanged. The owning log records final checks and pending designated review.
+This is controlled service/HTTP concurrency, not a public command-network stall, a create/Exit
+transaction race, successful eligible Exit, new gameplay or whole-feature acceptance.
+
 Current Exit-guard supplement (2026-10-13): both real HTTP/Postgres Pitch populations now
 exercise wind_down, file_ipo and accept_exit_offer while active, again after application
 reconstruction, and after resolution. Active attempts return minigame_session_active;

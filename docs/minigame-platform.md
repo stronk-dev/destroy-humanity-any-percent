@@ -139,9 +139,15 @@ reconstruction. After terminal resolution, those same arms instead reach their o
 eligibility refusals (`tier`, `ipo_chain`, `exit_offer`). Independent reads require complete
 Company/Founder save bytes and session state to remain unchanged on every refusal; existing
 once-only payout and verified replay assertions still hold afterward. Refused intents may
-append their normal receipt/audit records. The fixture does not satisfy ordinary Exit
-eligibility: this proves guard release, not successful Exit, a claimed-session race, a
-mounted-DOM path or full minigame acceptance.
+append their normal receipt/audit records. A diagnostic call to the real service also pauses
+at its existing nonterminal receipt builder, after tenant validation and acquisition of a
+real Postgres claim. All three public Exit arms refuse while that session is `claimed`.
+Refusing the diagnostic receipt releases the claim without publishing a command; the complete
+session is restored except for its bookkeeping timestamp, and ordinary HTTP play then continues
+to once-only payout. An active-only guard fails this processing-session check. This controlled
+service/HTTP interleaving is not a public command-network stall or a create/Exit transaction race.
+The fixture does not satisfy ordinary Exit eligibility: successful Exit, a mounted-DOM path
+and full minigame acceptance remain separate proof.
 
 The internal recovery command kind remains `resolve_soul_recovery` or
 `cancel_soul_recovery` for replay. The public durable terminal receipt uses the API grammar's
