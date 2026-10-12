@@ -6845,3 +6845,32 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new code/
 records range starts after `7fd2549b` through this containing commit; designated Claude review
 pending. Earlier debt remains separate. Continue accepted conformance/integration work without
 adopting held contracts, archiving, pushing or promoting the full nine-tier release.
+
+## 2026-10-12 — One Desk owner for Claim feedback (RP-499/RP-500)
+
+Outcome: GS0.6/GS5 conformance repair. The existing host Desk status region owns Claim's
+pending and outcomes; its focused control describes the visible `desk-pending` text. Remove
+the child live region, leaving clocks, buffs and receipt amounts outside announcements.
+Explicit separators retain readable simultaneous messages without editing authored strings.
+No new command, retry, expiry, revision, navigation or accessibility policy.
+
+Extend the existing held native Claim population rather than create a new journey. Old
+source34176 fails24 Chromium/WebKit cases on duplicate regions. The first correction39425
+passes the other20 selected controls but fails those24 on joined pending/cap text (RP-500);
+fix the template separator, not the exact-text oracle. Corrected71575 passes44 selected
+checks: stable region identity/description, Enter/Space at320/1280px, refusal, applied/read
+hold, repeated-input refusal, removal/newer navigation and unrelated-work queue controls.
+The isolated callback fixture proves only the guard; full mounted cases prove feedback.
+
+Final root `make test-browser-focused BROWSER_TEST_FLAGS='test/garage-surfaces-browser.test.ts
+test/game-ui-screens-browser.test.ts --project=chromium --project=webkit'`59201 passes1058
+functional checks in137.56s;10 existing performance declarations are deliberately excluded
+by the functional selector. Root `make typecheck build-client verify-client-boundary`54956
+passes with zero errors/warnings. All handles terminal; diff checked. These are decoded
+runtime-double DOM/focus/markup checks, not SQL/socket, actual assistive-technology speech,
+Firefox/Linux, performance, whole Garage acceptance or hosted CI evidence.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. New increment starts after
+`2db7b03d`; related Claim repairs can receive one designated review over `7fd2549b` exclusive
+through this containing commit. Claude approval remains pending; older debt is independent.
+Continue accepted integration/acceptance work. No draft adoption, archival, push or release claim.

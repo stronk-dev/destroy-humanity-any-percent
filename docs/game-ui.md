@@ -326,7 +326,11 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   not a display-clock jump. The UI never sends a synthetic command to cause a spawn. A spawn is
   announced politely once per `opportunity_id` while the Desk is mounted.
   While Claim's intent and authoritative refresh are pending, its native control
-  stays focusable with `aria-disabled="true"` and visible registered pending text;
+  stays focusable with `aria-disabled="true"` and describes the visible `desk-pending`
+  text in the host's existing Desk status region. That one stable region owns both
+  pending and outcome feedback; the Opportunity child adds no separate live region.
+  Simultaneous pending/outcome messages retain an explicit text separator, while
+  attended clocks, buff values and receipt amounts remain outside live regions;
   the component callback and unchanged host single-flight guard suppress repeated
   activation. Another command or a background read is not a pending Claim: fresh
   Claim input reaches the existing single-flight queue and waits for the prior

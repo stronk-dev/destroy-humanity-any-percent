@@ -2235,12 +2235,26 @@ for (const path of ["retained", "removed", "newer-selection"] as const) {
           const request = (revision: number, id: string) => ({ intent_id: expect.any(String), expected_revision: revision, kind: "claim_opportunity", opportunity_id: id });
           const oldID = "01986666-0000-7000-8000-000000000001", newID = "01986666-0000-7000-8000-000000000002";
           const claim = button(target, t("desk.opportunity.claim", {}, "era_1995"));
+          const feedback = target.querySelector<HTMLElement>('.intent-notice[role="status"]')!;
+          const assertFeedback = (...keys: CopyKey[]) => {
+            const ownRegions = [...target.querySelectorAll('[role="status"], [aria-live="polite"]')]
+              .filter((node) => !node.classList.contains("announcement"));
+            expect(ownRegions, "Desk pending and outcome have one stable owner, separate from chrome").toEqual([feedback]);
+            expect(feedback.textContent?.trim()).toBe(keys.map((key) => t(key, {}, "era_1995")).join(" "));
+            for (const row of target.querySelectorAll(".opportunity p, .opportunity .buffs")) {
+              expect(row.closest('[role="status"], [aria-live]'), "values and attended clocks are not announcements").toBeNull();
+            }
+          };
+          assertFeedback();
           target.querySelector<HTMLButtonElement>("section.manual button")!.focus();
           await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(claim);
           const pending = () => {
             expect(claim.disabled).toBe(false); expect(claim.getAttribute("aria-disabled")).toBe("true");
             expect(document.activeElement).toBe(claim);
-            sharedStateVisibleText(target, '.opportunity [role="status"]', t("common.pending", {}, "era_1995"));
+            assertFeedback("common.pending");
+            const description = sharedStateVisibleText(target, '#desk-pending', t("common.pending", {}, "era_1995"));
+            expect(feedback.contains(description)).toBe(true);
+            expect(claim.getAttribute("aria-describedby")).toBe(description.id);
             expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
           };
           await userEvent.keyboard(activation); await settle(); pending();
@@ -2250,13 +2264,20 @@ for (const path of ["retained", "removed", "newer-selection"] as const) {
           expect(claim.disabled).toBe(false); expect(claim.hasAttribute("aria-disabled")).toBe(false);
           expect(document.activeElement).toBe(claim); expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
           sharedStateVisibleText(target, '.intent-notice[role="status"]', t("desk.opportunity.rejection.expired", {}, "era_1995"));
+          assertFeedback("desk.opportunity.rejection.expired");
+          expect(claim.hasAttribute("aria-describedby")).toBe(false);
           expect(target.querySelector(".opportunity")?.textContent).not.toContain(t("common.pending", {}, "era_1995"));
           expect(read).not.toHaveBeenCalled(); await assertAxe(target, `Claim refusal ${path}/${width}`);
           await userEvent.keyboard(activation); await settle(); pending();
           expect(runtime.requests).toEqual([request(1, oldID), request(1, oldID)]);
-          expect(target.querySelector(".intent-notice")?.textContent).toBe("");
-          apply(claimOutcome); await settle(); pending(); expect(read).toHaveBeenCalledExactlyOnceWith();
-          sharedStateVisibleText(target, '.intent-notice[role="status"]', t("desk.opportunity.lucky_capped", {}, "era_1995"));
+          assertFeedback("common.pending");
+          apply(claimOutcome); await settle();
+          expect(claim.disabled).toBe(false); expect(claim.getAttribute("aria-disabled")).toBe("true");
+          expect(document.activeElement).toBe(claim); expect(read).toHaveBeenCalledExactlyOnceWith();
+          expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+          assertFeedback("common.pending", "desk.opportunity.lucky_capped");
+          expect(claim.getAttribute("aria-describedby")).toBe("desk-pending");
+          sharedStateVisibleText(target, '#desk-pending', t("common.pending", {}, "era_1995"));
           // Amount's existing inline fragment contributes a trailing text space.
           const creditText = `${t("desk.opportunity.lucky_frame", { amount: "1e2" }, "era_1995")} ${formatAmount("1e2")} `;
           const actualReceiptText = [...target.querySelectorAll(".opportunity p")].map((row) => row.textContent);
@@ -2282,12 +2303,14 @@ for (const path of ["retained", "removed", "newer-selection"] as const) {
             expect(claim.isConnected).toBe(false); expect(document.activeElement).toBe(target.querySelector("#desk-heading"));
           } else {
             expect(document.activeElement).toBe(claim); expect(claim.disabled).toBe(false); expect(claim.hasAttribute("aria-disabled")).toBe(false);
+            expect(claim.hasAttribute("aria-describedby")).toBe(false);
             runtime.outcome = { ...refusal, currentRevision: 2 };
             await userEvent.keyboard(activation); await settle();
             expect(runtime.requests).toEqual([request(1, oldID), request(1, oldID), request(2, newID)]);
             expect(new Set(runtime.requests.map((row) => row.intent_id)).size).toBe(3); expect(document.activeElement).toBe(claim);
             sharedStateVisibleText(target, '.intent-notice[role="status"]', t("desk.opportunity.rejection.expired", {}, "era_1995"));
           }
+          assertFeedback(path === "retained" ? "desk.opportunity.rejection.expired" : "desk.opportunity.lucky_capped");
           expect(target.querySelector(".opportunity button") === null).toBe(path !== "retained");
           expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width + 1);
           await assertAxe(target, `Claim completion ${path}/${width}`);
@@ -2330,7 +2353,10 @@ for (const state of ["pending", "unavailable"] as const) {
         expect(claim.disabled).toBe(state === "unavailable");
         if (state === "pending") {
           claim.focus(); expect(document.activeElement).toBe(claim); expect(claim.getAttribute("aria-disabled")).toBe("true");
-          sharedStateVisibleText(target, '[role="status"]', t("common.pending", {}, "era_1995"));
+          // This callback-only fixture has no host; the mounted host population
+          // above proves the visible description and the single feedback region.
+          expect(claim.getAttribute("aria-describedby")).toBe("desk-pending");
+          expect(target.querySelectorAll('[role="status"], [aria-live]')).toHaveLength(0);
         }
         await userEvent.keyboard(activation); await settle(); expect(onClaim).not.toHaveBeenCalled();
       } finally { await unmount(app); target.remove(); }

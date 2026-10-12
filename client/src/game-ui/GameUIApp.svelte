@@ -116,7 +116,7 @@
   // Claim's own flight drops repeats; a different command or background read
   // must reach act() so fresh consent can wait for its authoritative revision.
   const claimPending = $derived(pending && activeActionKind === "claim_opportunity");
-  const deskPending = $derived(purchasePending || gatePending || incorporatePending || windDownPending);
+  const deskPending = $derived(purchasePending || gatePending || incorporatePending || windDownPending || claimPending);
 
   const era = $derived<CopyEra>(snapshot ? eraForSnapshot(snapshot) : "era_1995");
 
@@ -797,7 +797,7 @@
     <p class="snapshot-stale">{t("common.stale_note", {}, era)}</p>
   {/if}
   {#if snapshot && surface !== "fiscal" && surface !== "pet"}
-    <p class="intent-notice" role="status">{#if surface === "offer_sheet" && pending}<span id="offer-pending">{t("common.pending", {}, era)}</span> {/if}{#if surface === "desk" && deskPending}<span id="desk-pending">{t("common.pending", {}, era)}</span> {/if}{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>
+    <p class="intent-notice" role="status">{#if surface === "offer_sheet" && pending}<span id="offer-pending">{t("common.pending", {}, era)}</span>{" "}{/if}{#if surface === "desk" && deskPending}<span id="desk-pending">{t("common.pending", {}, era)}</span>{" "}{/if}{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>
   {/if}
   {#if draining}
     <aside class="notice" role="status"><strong>{t("system.drain_notice.title", {}, era)}</strong><span>{t("system.drain_notice.body", {}, era)}</span></aside>

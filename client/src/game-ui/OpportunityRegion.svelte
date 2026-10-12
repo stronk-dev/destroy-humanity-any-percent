@@ -51,8 +51,8 @@
     <p>{t("desk.opportunity.remaining_frame", { seconds: seconds(offer.expires_attended_ms) }, era)} <small>{t("desk.opportunity.attended_note", {}, era)}</small></p>
     {#if offer.effect_row_id === "active.lucky"}<small>{t("desk.opportunity.lucky_tooltip", {}, era)}</small>{/if}
     <button bind:this={claim} type="button" tabindex="0" disabled={!controlsEnabled} aria-disabled={pending || undefined}
+      aria-describedby={pending ? "desk-pending" : undefined}
       onclick={() => { if (!pending && controlsEnabled) onClaim(offer.opportunity_id); }}>{t("desk.opportunity.claim", {}, era)}</button>
-    {#if pending}<p role="status">{t("common.pending", {}, era)}</p>{/if}
   {/if}
   {#if lastClaim && lastClaim.credited !== null}
     <p>{t("desk.opportunity.lucky_frame", { amount: lastClaim.credited }, era)} <Amount value={lastClaim.credited} {era} /></p>

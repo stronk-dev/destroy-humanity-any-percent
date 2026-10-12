@@ -7,12 +7,19 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-12): RP-498's Claim guard now identifies only Claim's own flight,
+Current checkpoint (2026-10-12): RP-499's mounted Claim feedback is locally repaired under
+GS0.6/GS5. The existing Desk status region owns pending and outcomes; Claim describes that
+visible pending text without adding a child live region. RP-500 retains an explicit separator
+between unchanged messages. The latest log owns old-source failures, final verification and
+the related Claim review range. No actual-AT, whole Garage, CI or release promotion follows;
+continue the owning plan's remaining integrated acceptance and consolidate outstanding reviews.
+
+Preceding checkpoint (2026-10-12): RP-498's Claim guard now identifies only Claim's own flight,
 not another purchase or a background read. Native input reaches the existing GS0.8 queue,
 waits for the authoritative Company revision and stays single-flight; failed-read/unmount
 controls prevent submission. The latest log owns verification and the pending review range.
-No new retry, Manual-input policy, server mechanics or whole-Garage acceptance. RP-499's
-separate Desk/Opportunity status-region observation still needs mounted reproduction and repair.
+No new retry, Manual-input policy, server mechanics or whole-Garage acceptance. Its RP-499
+follow-up is recorded in the newer checkpoint rather than reopening this input repair.
 
 Preceding checkpoint (2026-10-08): RP-448 extends the existing applied-read handoff to Founder
 actions under GS0.2/GS1-A6. A shared pre-harvest read must be refreshed against the actual
