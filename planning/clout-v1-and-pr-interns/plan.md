@@ -113,6 +113,29 @@ Under A, CV6 (the Clout ledger) and CV7 (the social seam) are **not** implemente
 table marks the ledger "no" for A, and the acceptance rejects B/C. The Gaia-law test (AC4) still
 lands, with the allowed writer set empty.
 
+2026-10-12 next R-012 experiment, baseline `c2bd064e`: can operation-local scratch
+projections leave the actual closed purchase transition and its accrual hooks intact?
+Retain all128 original seed307/end/cut/mode profiles with admitted nonzero cash. Project
+two internal scratch copies from the unchanged origin, then execute the actual logged
+purchase on the unchanged committed pre-state. Compare full Company, exact receipt and
+ordered events with one ordinary logged purchase. Require literal purchase/reattainment
+and positive prestige lifetime accrual, not just equal resource balances. A separate
+branch deliberately evaluates the live pre-state before the same logged purchase; it
+must remain an admitted applied action with the same cash but lose lifetime accrual.
+Every profile must exercise both controls; failures invalidate the claimed hook boundary.
+This tests a proposed composition, not a repair of Evaluate or AC6, adoption of origin
+lifetime, Go/TS parity, persistence, all hook populations or full-domain feasibility.
+No production, kernel, save, balance, episode, receipt or criterion change is authorized.
+
+Executed: all128 scratch-cut purchases preserve complete logged Company/receipt/events;
+all128 applied pre-advanced controls match cash but lose prestige lifetime accrual.
+Cold native and Linux-amd64 new population, all origin research and vet pass. Full
+production retains the original27 AC6 failures. This supplies bounded closed-purchase
+evidence, not a conservation implementation or general producer/settlement contract.
+Next engineering boundary: complete producer-context and compatibility specification,
+including active/external contributions and non-purchase hooks, under the unresolved
+interval/authorized-head ruling. Do not pre-install a projected Company before ApplyLogged.
+
 ## Batches
 
 - [x] P1 (`ace4e67e`, formulas `80f1bd47`) — CV1 economy schema v5 (Go `server/economy`, TS `client/src/economy-kernel.ts`):

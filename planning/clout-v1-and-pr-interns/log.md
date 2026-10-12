@@ -2610,3 +2610,31 @@ commit; designated review pending, alongside earlier debt. No acceptance, archiv
 push or release. Next: settle the interval/authorized-head contract, then prove a
 complete candidate through the actual closed transition boundary—not another
 search for a sub-floor delta that the current domain cannot represent.
+
+## 2026-10-12 — Scratch cuts through the actual logged purchase boundary (R-012)
+
+Question/population predeclared in the owning plan at `c2bd064e`. All128 original
+seed307/end/cut/mode profiles now exercise actual logged purchases from admitted
+nonzero-cash origins. Two internal projections leave the committed pre-state untouched;
+the final purchase reproduces the ordinary full Company, exact receipt and ordered events.
+Literal generator/reattainment and positive prestige lifetime accrual gates prevent cash
+alone from standing in for the closed transition. In all128 deliberately pre-advanced
+controls, the real purchase still applies and cash matches, but prestige lifetime accrual
+is lost. The draft C3 body now cites that bounded integration finding, not an implemented
+accounting algorithm or adoption of scratch-cut/settlement meaning.
+
+Initial test-only compilation referred to a nonexistent Ledger.MustBalance helper, so no
+experiment executed; corrected to existing canonical snapshot/parse helpers. Focused89108
+then passes all128 profiles. Full cold origin78165, affected vet and declared Linux-amd64
+focused37014 pass. The Linux test is in-memory, not a new SQL persistence population.
+Full cold production58475 exits2 (Go exit1) with precisely the original27 RP-307 partition
+failures; no new failure, skip/tolerance repair or whole-package green claim. All handles
+completed; source formatted and diff inspected. No client change/TS parity, full hook
+population, lower-floor purchase, SQL/restart, production codec, hosted CI or release proof.
+
+Review by: Codex (research implementer first filter). Recorded by: Codex. Exact new
+test/draft/plan/ledger/log range starts after `c2bd064e` through this containing commit and
+needs Claude review; no self-approval or waiver of older debt. Next: complete producer-context/
+compatibility specification and the remaining closed-hook boundaries under the unresolved
+interval/authorized-head contract, not repeating scalar studies or pre-advancing live state.
+No production, balance, save/kernel version, policy, accepted criterion, archival or push change.

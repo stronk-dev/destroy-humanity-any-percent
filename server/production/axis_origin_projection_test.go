@@ -439,3 +439,81 @@ func TestAxisOriginDeferredLowerDomainSettlementResearch(t *testing.T) {
 	}
 	t.Log("20 deferred settlements match actual one-shot Company projections; ApplyLogged/hooks/episode authority NOT_PROVEN")
 }
+
+// Research of the closed transition boundary, not an implementation of AC6.
+// Scratch work must not consume the interval that ApplyLogged and its real
+// accrual hooks still need. Nonzero cash and a genuine purchase/reattainment
+// distinguish this population from the earlier zero-origin ledger experiment.
+func TestAxisOriginDeferredLoggedPurchaseResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	start := time.Date(2026, 10, 7, 12, 0, 0, 0, time.UTC)
+	random := rand.New(rand.NewSource(307))
+	profiles, preadvancedLosses := 0, 0
+	for policy := 0; policy < 64; policy++ {
+		end := int64(2000 + random.Intn(2000))
+		cut := int64(1 + random.Intn(int(end-1)))
+		if policy == 0 {
+			end, cut = 2000, 1000
+		}
+		if policy == 1 {
+			end, cut = 2001, 1
+		}
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			t.Run(fmt.Sprintf("policy_%02d_%s_end%d_cut%d", policy, mode, end, cut), func(t *testing.T) {
+				profiles++
+				initial := axisTimingState(t, bundle, start)
+				origin := mustEncodeState(t, initial)
+				at := start.Add(time.Duration(end) * time.Millisecond)
+				baseline := activationRestore(t, bundle, origin, 19, start)
+				ordinary := axisTimingPurchase(t, bundle, baseline, at, mode)
+				if !baseline.LifetimeValue.Gt(initial.LifetimeValue) ||
+					baseline.AttainmentScoreRun != 8 || baseline.GeneratorCounts["generator.beige_tower"] != 2 ||
+					!hasEventKind(ordinary.Events, save.EventAchievementReattained) {
+					t.Fatal("baseline did not execute positive lifetime accrual and purchase reattainment")
+				}
+
+				deferred := activationRestore(t, bundle, origin, 19, start)
+				for _, offset := range []int64{cut, end} {
+					projection := originProjectionState(t, bundle, origin, start.Add(time.Duration(offset)*time.Millisecond), mode)
+					if !projection.EvaluatedThrough.Equal(start.Add(time.Duration(offset)*time.Millisecond)) ||
+						!mustDecimal(t, projection.Ledger.Snapshot()["company.cash"]).Gt(mustDecimal(t, initial.Ledger.Snapshot()["company.cash"])) {
+						t.Fatal("scratch projection did not execute the declared nonzero interval")
+					}
+					if !bytes.Equal(origin, mustEncodeState(t, deferred)) || !bytes.Equal(origin, mustEncodeState(t, initial)) {
+						t.Fatal("internal projection consumed the committed origin")
+					}
+				}
+				settled := axisTimingPurchase(t, bundle, deferred, at, mode)
+				ordinaryEvents, err := json.Marshal(ordinary.Events)
+				if err != nil {
+					t.Fatal(err)
+				}
+				settledEvents, err := json.Marshal(settled.Events)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if !bytes.Equal(mustEncodeState(t, baseline), mustEncodeState(t, deferred)) ||
+					!bytes.Equal(ordinary.Receipt, settled.Receipt) || !bytes.Equal(ordinaryEvents, settledEvents) {
+					t.Fatal("scratch cuts changed the complete logged state, receipt or ordered events")
+				}
+
+				// Deliberately wrong integration: install the final projected
+				// state before the real transition, without running its hooks.
+				// An applied purchase and matching cash are not sufficient.
+				preadvanced := originProjectionState(t, bundle, origin, at, mode)
+				wrong := axisTimingPurchase(t, bundle, preadvanced, at, mode)
+				if wrong.Outcome != save.IntentApplied || preadvanced.Ledger.Snapshot()["company.cash"] != baseline.Ledger.Snapshot()["company.cash"] {
+					t.Fatal("preadvance control failed before demonstrating the hidden hook loss")
+				}
+				if !preadvanced.LifetimeValue.Eq(initial.LifetimeValue) || !baseline.LifetimeValue.Gt(preadvanced.LifetimeValue) {
+					t.Fatal("full transition oracle failed to distinguish missing prestige accrual")
+				}
+				preadvancedLosses++
+			})
+		}
+	}
+	if profiles != 128 || preadvancedLosses != profiles {
+		t.Fatalf("incomplete logged-origin population: profiles=%d hook-loss controls=%d", profiles, preadvancedLosses)
+	}
+	t.Log("128 scratch-cut logged purchases retain full state/receipts/events; 128 live-preadvance controls lose prestige accrual despite matching cash; AC6 NOT_PROVEN")
+}

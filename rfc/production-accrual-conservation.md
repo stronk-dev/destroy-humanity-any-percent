@@ -222,6 +222,16 @@ Internal work cuts do not authorize unlogged persisted Company writes, new comma
 extra revisions. Any durable partial-work protocol must be specified explicitly rather
 than added beside the existing closed mutation boundary.
 
+The test-only `TestAxisOriginDeferredLoggedPurchaseResearch` now executes all128 original
+seed307/end/cut/mode profiles with nonzero initial cash through actual `ApplyLogged`
+purchases. Scratch projections leave the committed pre-state unchanged; subsequent logged
+settlement reproduces the ordinary full Company, receipt and ordered events, including
+positive prestige lifetime accrual and purchase reattainment. All128 deliberately
+pre-advanced controls still apply and produce the same cash, but lose prestige lifetime
+accrual. Resource equality alone therefore cannot validate this integration. This is
+bounded Go evidence for leaving the closed transition in charge, not a new accounting
+implementation, all-hook/Go–TS/SQL proof, lower-floor purchase proof or AC6 repair.
+
 The ledger remains the atomic resource authority. A projected balance must have a
 canonical nonnegative accrual receipt whose delta re-adds to that exact balance.
 No direct balance overwrite may bypass minimum/hardcap/transaction checks. Saturation
@@ -306,3 +316,6 @@ implied save field and needs its own complete contract.
 - 2026-10-12: distinguish the floor pair's unrepresentable positive increment from a subtraction
   defect. Record20 bounded deferred-settlement successes and the unresolved internal-cut/saved-
   settlement contract. No production implementation, criterion weakening or adoption.
+- 2026-10-12: add bounded closed-purchase evidence with nonzero origins and full state/receipt/
+  event comparisons; all128 pre-advanced controls expose lost prestige accrual despite matching
+  cash. Preserve the unresolved lifetime/compatibility and production accounting obligations.
