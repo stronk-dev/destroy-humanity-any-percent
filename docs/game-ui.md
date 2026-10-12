@@ -328,7 +328,11 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   While Claim's intent and authoritative refresh are pending, its native control
   stays focusable with `aria-disabled="true"` and visible registered pending text;
   the component callback and unchanged host single-flight guard suppress repeated
-  activation. Unavailable controls remain natively disabled. An authoritative
+  activation. Another command or a background read is not a pending Claim: fresh
+  Claim input reaches the existing single-flight queue and waits for the prior
+  command's authoritative refresh before binding the Company revision. A failed
+  refresh or unmount prevents the queued command from being sent; no intent is
+  automatically retried. Unavailable controls remain natively disabled. An authoritative
   snapshot removing the focused Claim returns focus after rendering to the
   existing Desk heading (there is no other control in that region). Surviving
   Claim controls and newer player-selected focus are not moved. The bounded native

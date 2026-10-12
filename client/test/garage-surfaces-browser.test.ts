@@ -2132,6 +2132,76 @@ function claimSnapshot(next = false, retained = true) {
   if (!isLiveSnapshot(decoded)) throw new Error("Claim fixture must use the current public v4 decoder");
   return decoded;
 }
+for (const { blocker, completion } of (["purchase", "background-read"] as const).flatMap((blocker) =>
+  (["refreshed", "read-failed", "unmounted"] as const).map((completion) => ({ blocker, completion })))) {
+  it.skipIf(!browser)(`GS5 Claim queues behind ${blocker}/${completion} without stale or duplicate submission`, async () => {
+    const { page, userEvent } = await import("vitest/browser"); await page.viewport(320, 720);
+    const runtime = new Runtime(); runtime.current = claimSnapshot();
+    let finishPurchase!: (value: IntentOutcome) => void, finishClaim!: (value: IntentOutcome) => void;
+    let finishRead!: (value: ParsedGameUISnapshot) => void, failRead!: (error: Error) => void;
+    const purchase = new Promise<IntentOutcome>((resolve) => { finishPurchase = resolve; });
+    const claimReply = new Promise<IntentOutcome>((resolve) => { finishClaim = resolve; });
+    const readReply = new Promise<ParsedGameUISnapshot>((resolve, reject) => { finishRead = resolve; failRead = reject; });
+    const { target, dispose } = await mounted(runtime);
+    const intent = vi.spyOn(runtime, "intent").mockImplementation((request) => {
+      runtime.requests.push(request); return request.kind === "buy_generator" ? purchase : claimReply;
+    });
+    const read = vi.spyOn(runtime, "snapshot").mockReturnValueOnce(readReply);
+    let disposed = false;
+    const refusal: IntentOutcome = { outcome: "rejected", category: "not_eligible", detail: "opportunity_expired", currentRevision: 2, sessionExpired: false };
+    const applied: IntentOutcome = { outcome: "applied", receipt: { new_revision: 2 } };
+    try {
+      const buy = target.querySelector<HTMLButtonElement>('section[aria-labelledby="generators-heading"] button')!;
+      if (blocker === "purchase") {
+        await userEvent.click(buy); await settle();
+        expect(runtime.requests).toEqual([expect.objectContaining({ kind: "buy_generator", expected_revision: 1 })]);
+        await userEvent.keyboard("{Enter}"); await settle();
+        expect(runtime.requests, "same-kind purchase remains single flight").toHaveLength(1);
+      } else {
+        buy.focus(); runtime.listener?.({ kind: "receipt" }); await settle();
+        expect(read).toHaveBeenCalledExactlyOnceWith();
+      }
+      const initialRequests = blocker === "purchase" ? 1 : 0;
+      const claim = button(target, t("desk.opportunity.claim", {}, "era_1995"));
+      const bound = target.querySelectorAll("button,input,summary,[tabindex='0']").length + 1;
+      for (let step = 0; document.activeElement !== claim && step < bound; step++) {
+        await userEvent.keyboard("{Tab}"); await settle();
+      }
+      expect(document.activeElement).toBe(claim);
+      await userEvent.keyboard("{Enter}"); await settle();
+      expect(runtime.requests, "Claim waits rather than sending against revision1").toHaveLength(initialRequests);
+      if (blocker === "purchase") { finishPurchase(applied); await settle(); }
+      expect(read).toHaveBeenCalledExactlyOnceWith();
+      expect(runtime.requests, "Claim waits for the authoritative read").toHaveLength(initialRequests);
+      if (completion === "unmounted") { await dispose(); disposed = true; }
+      runtime.current = parseGameUISnapshot({ ...claimSnapshot(), revision: 2 });
+      if (completion === "read-failed") failRead(new Error("fixture snapshot failure"));
+      else finishRead(runtime.current);
+      await settle();
+      if (completion === "refreshed") {
+        expect(runtime.requests).toEqual([
+          ...(blocker === "purchase" ? [expect.objectContaining({ kind: "buy_generator", expected_revision: 1 })] : []),
+          { intent_id: expect.any(String), kind: "claim_opportunity", expected_revision: 2,
+            opportunity_id: "01986666-0000-7000-8000-000000000001" },
+        ]);
+        expect(document.activeElement).toBe(claim);
+        expect(claim.disabled).toBe(false); expect(claim.getAttribute("aria-disabled")).toBe("true");
+        await userEvent.keyboard("{Enter}"); await userEvent.keyboard(" "); await settle();
+        expect(runtime.requests, "same-kind Claim repeats stay dropped").toHaveLength(initialRequests + 1);
+        finishClaim(refusal); await settle();
+        expect(claim.hasAttribute("aria-disabled")).toBe(false);
+        sharedStateVisibleText(target, ".intent-notice", t("desk.opportunity.rejection.expired", {}, "era_1995"));
+      } else {
+        expect(runtime.requests, "failed read or unmount cancels queued Claim").toHaveLength(initialRequests);
+        if (completion === "read-failed") expect(claim.disabled).toBe(true);
+      }
+    } finally {
+      finishPurchase(applied); finishRead(runtime.current); finishClaim(refusal); await settle();
+      try { if (!disposed) await dispose(); }
+      finally { intent.mockRestore(); read.mockRestore(); await page.viewport(1280, 720); }
+    }
+  });
+}
 for (const path of ["retained", "removed", "newer-selection"] as const) {
   for (const width of [320, 1280] as const) {
     for (const activation of ["{Enter}", " "] as const) {

@@ -6815,3 +6815,33 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact implement
 docs/records range is `b3c8f178` exclusive through this containing commit; designated review
 pending. Earlier review debt, full Garage/task/AT acceptance and all1.0 obligations remain.
 No draft adoption, archival, push, deployment or release promotion.
+
+## 2026-10-12 — Retain fresh Claim input behind unrelated work (RP-498)
+
+Outcome: accepted GS0.8/GS5 conformance fix. OpportunityRegion receives only Claim's own
+pending flight, not the host's global busy flag. Fresh native input behind Buy or a receipt-
+triggered background read reaches the existing queue and binds the refreshed Company revision.
+The queue, server/wire contracts, copy, expiry and Manual-input policy are unchanged.
+
+Old-host purchase population65490 fails both healthy Chromium/WebKit cases because no Claim
+is submitted after the read; its four failed-read/unmount controls pass. The corrected
+population23778 adds background-read controls and passes12 executions (836 deliberately
+deselected): native Tab/Enter at320px, exact opportunity/revision2 request, retained focus,
+same-kind Buy/Claim repeat refusal, rendered expiry notice, failed-read and unmount cancellation.
+These are mounted DOM/public-decoder/runtime-double checks, not SQL/socket/server integration
+or actual assistive-technology speech evidence. Initial sandbox listen refusal ran no tests;
+the authorized local-server run above executed the population.
+
+Final root `make test-browser-focused BROWSER_TEST_FLAGS='test/garage-surfaces-browser.test.ts
+--project=chromium --project=webkit'`82909 passes all848 checks, zero skips, in137.37s. Root
+`make typecheck build-client verify-client-boundary`97645 passes (zero Svelte errors/warnings);
+final test-table types75842 also pass. Production bytes did not change between those checks.
+No worker/formatting-cost, numeric, persistence or CI workflow change: no unrelated performance,
+database, Firefox/Linux or hosted CI pass claimed. All retained execution handles are terminal;
+diff checked. RP-499 is a separate source-level status-region observation still needing mounted
+reproduction; this fix does not close it or whole Garage acceptance.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new code/tests/docs/
+records range starts after `7fd2549b` through this containing commit; designated Claude review
+pending. Earlier debt remains separate. Continue accepted conformance/integration work without
+adopting held contracts, archiving, pushing or promoting the full nine-tier release.

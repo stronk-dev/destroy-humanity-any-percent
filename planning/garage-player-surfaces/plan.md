@@ -7,7 +7,14 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-08): RP-448 extends the existing applied-read handoff to Founder
+Current checkpoint (2026-10-12): RP-498's Claim guard now identifies only Claim's own flight,
+not another purchase or a background read. Native input reaches the existing GS0.8 queue,
+waits for the authoritative Company revision and stays single-flight; failed-read/unmount
+controls prevent submission. The latest log owns verification and the pending review range.
+No new retry, Manual-input policy, server mechanics or whole-Garage acceptance. RP-499's
+separate Desk/Opportunity status-region observation still needs mounted reproduction and repair.
+
+Preceding checkpoint (2026-10-08): RP-448 extends the existing applied-read handoff to Founder
 actions under GS0.2/GS1-A6. A shared pre-harvest read must be refreshed against the actual
 snapshot Founder revision before pending clears, including across Company changes. Failed
 fresh reads preserve offline handling and never retry the intent. The owning log records
