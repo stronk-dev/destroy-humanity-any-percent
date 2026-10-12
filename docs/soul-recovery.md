@@ -48,6 +48,13 @@ interval from the pinned catalog ceiling. An elapsed gap greater than
 failure, enters a reconnect-required pause. No further beat is sent until reconnect rotates the
 token. An under-ceiling hidden interval may resume immediately, and queued beats are never replayed.
 
+The Recovery surface declares zero Tab indices for Begin, Reconnect, Finish, Stop and Back,
+preserving document-order keyboard traversal even when a browser omits implicit button stops.
+Disabled controls retain their native disabled behavior. Terminal receipts still focus the
+heading; Tab from there reaches Back. Mounted Chromium/WebKit checks exercise actual Tab/
+Shift-Tab and Enter/Space with controlled coordinator replies, not direct button focus or clicks.
+They do not establish real assistive-technology or whole-player accessibility acceptance.
+
 Only one progress request may be in flight. Stopping with `cancelled`, `resolved`, or `watchdog`
 emits one terminal callback and cancels future dispatch. Replay verifies accumulated attended
 totals at terminal resolution; heartbeat cadence itself never becomes replay input.

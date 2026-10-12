@@ -80,10 +80,10 @@ function button(target: HTMLElement, text: string): HTMLButtonElement {
   return found;
 }
 
-function mountSurface(port: FakePort, visibility: FakeVisibility, clock: { now: number }, terminals: SoulRecoveryTerminalResponse[] = []) {
+function mountSurface(port: FakePort, visibility: FakeVisibility, clock: { now: number }, terminals: SoulRecoveryTerminalResponse[] = [], onExitToHost = () => {}) {
   const target = host();
   const app = mount(SoulRecoverySurface, { target, props: { port, content: content(), era: "era_1995", visibility, now: () => clock.now, toySeed: 7,
-    onExitToHost: () => {}, onTerminal: (response: SoulRecoveryTerminalResponse) => terminals.push(response) } });
+    onExitToHost, onTerminal: (response: SoulRecoveryTerminalResponse) => terminals.push(response) } });
   return { target, app };
 }
 
@@ -445,7 +445,7 @@ it.skipIf(!browser)("does not restart heartbeats when a pending reconnect resolv
   } finally { if (!unmounted) unmount(app); target.remove(); }
 });
 
-it.skipIf(!browser)("starts and stops Soul recovery with keyboard-only controls", async () => {
+it.skipIf(!browser)("native Tab reaches Soul recovery choices, Stop and terminal Return", async () => {
   const { userEvent } = await import("vitest/browser");
   const port = new FakePort();
   const visibility = new FakeVisibility();
@@ -453,22 +453,117 @@ it.skipIf(!browser)("starts and stops Soul recovery with keyboard-only controls"
   port.startReplies.push(() => started());
   port.steady = progressed(1_000);
   port.terminalReply = () => terminal("cancel", "player");
-  const { target, app } = mountSurface(port, visibility, { now: 1_000 }, terminals);
+  let exits = 0;
+  const { target, app } = mountSurface(port, visibility, { now: 1_000 }, terminals, () => { exits += 1; });
   try {
     await settle();
-    target.querySelector<HTMLButtonElement>("li button")!.focus();
+    target.querySelector<HTMLElement>("#recovery-heading")!.focus();
+    const choices = [...target.querySelectorAll<HTMLButtonElement>("li button")];
+    expect(choices).toHaveLength(3);
+    for (const choice of [...choices, button(target, "Back")]) {
+      await userEvent.keyboard("{Tab}");
+      expect(document.activeElement).toBe(choice);
+    }
+    for (const choice of [...choices].reverse()) {
+      await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+      expect(document.activeElement).toBe(choice);
+    }
     await userEvent.keyboard("{Enter}");
     await settle();
     expect(port.starts).toEqual(["defrag"]);
     await assertAxe(target, "keyboard-active recovery");
-    button(target, "Stop early").focus();
+    target.querySelector<HTMLElement>("#recovery-heading")!.focus();
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(button(target, "Stop early"));
     await userEvent.keyboard("{Enter}");
     await settle();
     expect(terminals).toEqual([terminal("cancel", "player")]);
     expect(document.activeElement?.id).toBe("recovery-heading");
     await assertAxe(target, "keyboard-terminal recovery");
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(button(target, "Back"));
+    await userEvent.keyboard(" ");
+    expect(exits).toBe(1);
+    expect(port.terminalCalls).toEqual(["cancel"]);
   } finally { unmount(app); target.remove(); }
 });
+
+it.skipIf(!browser)("native Tab reaches Soul recovery Reconnect and Finish", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const port = new FakePort();
+  const visibility = new FakeVisibility();
+  const terminals: SoulRecoveryTerminalResponse[] = [];
+  port.startReplies.push(() => started(), () => started(SESSION, TOKEN_2, REQUIRED));
+  port.progressReplies.push(() => { throw new MinigameTransportError("offline"); }, () => progressed(REQUIRED));
+  let exits = 0;
+  const { target, app } = mountSurface(port, visibility, { now: 1_000 }, terminals, () => { exits += 1; });
+  try {
+    await settle();
+    target.querySelector<HTMLElement>("#recovery-heading")!.focus();
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(target.querySelector("li button"));
+    await userEvent.keyboard("{Enter}");
+    await expect.poll(() => target.querySelector("[role=alert]")?.textContent).toContain("Connection lost");
+    target.querySelector<HTMLElement>("#recovery-heading")!.focus();
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(button(target, "Reconnect"));
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(button(target, "Stop early"));
+    await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+    expect(document.activeElement).toBe(button(target, "Reconnect"));
+    await userEvent.keyboard("{Enter}");
+    await settle();
+    expect(port.starts).toEqual(["defrag", "defrag"]);
+    await expect.poll(() => port.tokens.includes(TOKEN_2)).toBe(true);
+    expect(target.querySelector("[role=alert]")).toBeNull();
+    target.querySelector<HTMLElement>("#recovery-heading")!.focus();
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(button(target, "Finish"));
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(button(target, "Stop early"));
+    await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+    expect(document.activeElement).toBe(button(target, "Finish"));
+    await userEvent.keyboard(" ");
+    await settle();
+    expect(port.terminalCalls).toEqual(["resolve"]);
+    expect(terminals).toEqual([terminal("resolve")]);
+    expect(document.activeElement?.id).toBe("recovery-heading");
+    await userEvent.keyboard("{Tab}");
+    expect(document.activeElement).toBe(button(target, "Back"));
+    await userEvent.keyboard("{Enter}");
+    expect(exits).toBe(1);
+  } finally { unmount(app); target.remove(); }
+});
+
+for (const effect of ["gone", "error"] as const) {
+  it.skipIf(!browser)(`native Tab reaches Soul recovery Return after ${effect}`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const port = new FakePort();
+    port.startReplies.push(() => {
+      if (effect === "gone") throw new MinigameAPIError(404, "unknown_id", "recovery_session");
+      throw new MinigameAPIError(503, "not_configured", "soul_recovery");
+    });
+    let exits = 0;
+    const { target, app } = mountSurface(port, new FakeVisibility(), { now: 1_000 }, [], () => { exits += 1; });
+    try {
+      await settle();
+      target.querySelector<HTMLElement>("#recovery-heading")!.focus();
+      await userEvent.keyboard("{Tab}");
+      expect(document.activeElement).toBe(target.querySelector("li button"));
+      await userEvent.keyboard("{Enter}");
+      await settle();
+      expect(port.starts).toEqual(["defrag"]);
+      expect(target.querySelector("[role=alert]")).not.toBeNull();
+      target.querySelector<HTMLElement>("#recovery-heading")!.focus();
+      await userEvent.keyboard("{Tab}");
+      expect(document.activeElement).toBe(button(target, "Back"));
+      await userEvent.keyboard("{Enter}");
+      expect(exits).toBe(1);
+      expect(port.terminalCalls).toEqual([]);
+      expect(port.tokens).toEqual([]);
+    } finally { unmount(app); target.remove(); }
+  });
+}
 
 for (const action of ["resolve", "cancel"] as const) {
   for (const mounted of [true, false]) {

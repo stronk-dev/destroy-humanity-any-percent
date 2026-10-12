@@ -1543,3 +1543,30 @@ not required for this local error-ordering correction. All handles are terminal.
 Exact new range begins after `5c9d0293` through this source/test/docs/plan/ledger/log and status
 checkpoint. Designated cross-party review remains pending; existing review debt does not block
 other safe accepted construction. No acceptance checkbox, archival, content mint or push.
+
+## 2026-10-12 — Recovery controls are reachable with native Tab (RP-491)
+
+MA3/MA-C9 require keyboard access. The old Begin/Stop test directly focuses buttons,
+so it misses WebKit's omitted implicit Tab stops. Strengthened that test and added
+Reconnect/Finish and ended/error Return paths: heading entry, actual forward/reverse
+Tab and Enter/Space, exact coordinator callbacks/terminal receipt and host return.
+No action button is focused/clicked by these four tests. The heading entry between
+states is explicit: this is state-specific traversal, not an uninterrupted whole
+player/assistive-technology journey.
+
+Old-source65700 fails all four WebKit paths at Begin; Chromium's four pass. Initial
+19661 incorrectly expects Pitch's Back wording and is not valid regression evidence;
+corrected the test to Recovery's existing "Back", without editing copy. First sandbox
+attempt cannot bind its localhost listener and runs zero tests. The correction adds
+only tabindex=0 to existing controls, retaining disabled/order/callback behavior.
+
+Final affected `make test-browser-focused`43808 passes all66 Recovery/Pitch executions
+in Chromium/WebKit. Selected Soul surface/scheduler, minigame surface and generated
+ports pass84 units. `make typecheck build-client verify-client-boundary`75990 passes
+with zero Svelte diagnostics. All handles terminal; actual diff/whitespace checked.
+No timing, API, payout, copy, kernel or CI change; no performance/DB/server/Firefox/
+AT/whole-CI rerun or full MA/accessibility acceptance is claimed for this DOM fix.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
+starts after `bc5d5f5d` through this containing commit; designated review remains
+pending, as do earlier ranges. No acceptance flip, archival, push or deployment.

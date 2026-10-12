@@ -180,11 +180,11 @@
           <p>{t(activity.description_copy_key as CopyKey, {}, era)}</p>
           <p>{t("soul.recovery_surface.duration_frame", { minutes: Math.ceil(activity.duration_attended_ms / 60_000) }, era)}</p>
           <small id={`disclosure-${activity.activity_id}`}>{t(activity.disclosure_copy_key as CopyKey, {}, era)}</small>
-          <button type="button" disabled={busy} aria-describedby={`disclosure-${activity.activity_id}`} onclick={() => begin(activity)}>{t("soul.recovery_surface.begin", {}, era)}</button>
+          <button type="button" tabindex="0" disabled={busy} aria-describedby={`disclosure-${activity.activity_id}`} onclick={() => begin(activity)}>{t("soul.recovery_surface.begin", {}, era)}</button>
         </li>
       {/each}
     </ul>
-    <button type="button" onclick={onExitToHost}>{t("soul.recovery_surface.back", {}, era)}</button>
+    <button type="button" tabindex="0" onclick={onExitToHost}>{t("soul.recovery_surface.back", {}, era)}</button>
   {:else if view.kind === "active"}
     {@const session = view.session}
     <h2>{t(session.activity.title_copy_key as CopyKey, {}, era)}</h2>
@@ -194,17 +194,17 @@
     {#if view.paused === "hidden"}<p role="status">{t("soul.recovery_surface.paused_hidden", {}, era)}</p>{/if}
     {#if view.paused === "network"}
       <p role="alert">{t("soul.recovery_surface.paused_network", {}, era)}</p>
-      <button type="button" disabled={busy} onclick={reconnect}>{t("soul.recovery_surface.reconnect", {}, era)}</button>
+      <button type="button" tabindex="0" disabled={busy} onclick={reconnect}>{t("soul.recovery_surface.reconnect", {}, era)}</button>
     {/if}
-    {#if session.eligible}<button type="button" disabled={busy} onclick={() => finish("resolve")}>{t("soul.recovery_surface.finish", {}, era)}</button>{/if}
-    <button type="button" disabled={busy} aria-describedby="recovery-cancel-note" onclick={() => finish("cancel")}>{t("soul.recovery_surface.cancel", {}, era)}</button>
+    {#if session.eligible}<button type="button" tabindex="0" disabled={busy} onclick={() => finish("resolve")}>{t("soul.recovery_surface.finish", {}, era)}</button>{/if}
+    <button type="button" tabindex="0" disabled={busy} aria-describedby="recovery-cancel-note" onclick={() => finish("cancel")}>{t("soul.recovery_surface.cancel", {}, era)}</button>
     <small id="recovery-cancel-note">{t("soul.recovery_surface.cancel_note", {}, era)}</small>
   {:else if view.kind === "terminal"}
     <p role="status">{terminalMessage(view.response)}</p>
-    <button type="button" onclick={onExitToHost}>{t("soul.recovery_surface.back", {}, era)}</button>
+    <button type="button" tabindex="0" onclick={onExitToHost}>{t("soul.recovery_surface.back", {}, era)}</button>
   {:else}
     <p role="alert">{t(view.message, {}, era)}</p>
-    <button type="button" onclick={onExitToHost}>{t("soul.recovery_surface.back", {}, era)}</button>
+    <button type="button" tabindex="0" onclick={onExitToHost}>{t("soul.recovery_surface.back", {}, era)}</button>
   {/if}
 </section>
 

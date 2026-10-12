@@ -1,5 +1,13 @@
 # Minigame API & Surface implementation plan
 
+Latest bounded correction (2026-10-12, RP-491): Recovery controls now declare zero Tab
+indices. The existing keyboard test no longer bypasses traversal with button.focus();
+native forward/reverse choices, Stop/Return, Reconnect/Finish and ended/error Return
+execute in Chromium/WebKit. Old-source WebKit fails all four paths at Begin; corrected
+affected66 browser checks,84 units, types/build/boundaries pass. The owning log records
+the exact range after `bc5d5f5d` and pending designated review. This is mounted keyboard
+proof, not Firefox, assistive technology, server/SQL or complete MA acceptance.
+
 Original Pitch review finished (2026-10-09): the complete 23-path Claude range
 `50a3a514^..50a3a514` has a designated Codex **CHANGES REQUIRED** disposition in the log.
 RP-131, RP-415 and RP-478 remain distinct from their later corrections. The latter two are
