@@ -2,6 +2,7 @@ package pitch
 
 import (
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -166,7 +167,7 @@ func decodeCommand(data []byte) (command, error) {
 			Kind    string   `json:"kind"`
 			CardIDs []string `json:"card_ids"`
 		}
-		if strictDecode(data, &wire) != nil || wire.CardIDs == nil {
+		if !hasExactJSONKeys(data, "kind", "card_ids") || strictDecode(data, &wire) != nil || wire.CardIDs == nil {
 			return command{}, reject("unknown_card", "play_hand schema mismatch")
 		}
 		if len(wire.CardIDs) > 4 {
@@ -181,7 +182,7 @@ func decodeCommand(data []byte) (command, error) {
 			Kind    string `json:"kind"`
 			OfferID string `json:"offer_id"`
 		}
-		if strictDecode(data, &wire) != nil || wire.OfferID == "" {
+		if !hasExactJSONKeys(data, "kind", "offer_id") || strictDecode(data, &wire) != nil || wire.OfferID == "" {
 			return command{}, reject("unknown_offer", "buy_hack schema mismatch")
 		}
 		return command{Kind: header.Kind, OfferID: wire.OfferID}, nil
@@ -189,7 +190,7 @@ func decodeCommand(data []byte) (command, error) {
 		var wire struct {
 			Kind string `json:"kind"`
 		}
-		if strictDecode(data, &wire) != nil {
+		if !hasExactJSONKeys(data, "kind") || strictDecode(data, &wire) != nil {
 			return command{}, reject("illegal_phase", "end_shop schema mismatch")
 		}
 		return command{Kind: header.Kind}, nil
@@ -199,8 +200,20 @@ func decodeCommand(data []byte) (command, error) {
 }
 
 func decodeSnapshot(data []byte) (Snapshot, error) {
-	if !uniqueJSONKeys(data) {
+	if !uniqueJSONKeys(data) || !hasRequiredPitchJSONKeys(data, "phase", "round", "hands_remaining", "deck_count", "hand",
+		"slotted_hacks", "run_currency", "shop_offers", "funding_target", "round_best_valuation", "revision",
+		"pitch_content_hash", "pitch_schema_version") {
 		return Snapshot{}, minigame.ErrInvalidTenant
+	}
+	var fields map[string]json.RawMessage
+	var offers []json.RawMessage
+	if json.Unmarshal(data, &fields) != nil || json.Unmarshal(fields["shop_offers"], &offers) != nil {
+		return Snapshot{}, minigame.ErrInvalidTenant
+	}
+	for _, offer := range offers {
+		if !hasRequiredPitchJSONKeys(offer, "hack_id", "offer_id", "price") {
+			return Snapshot{}, minigame.ErrInvalidTenant
+		}
 	}
 	var value Snapshot
 	if strictDecode(data, &value) != nil || (value.Phase != "playing" && value.Phase != "shop" && value.Phase != "terminal") ||
@@ -208,6 +221,10 @@ func decodeSnapshot(data []byte) (Snapshot, error) {
 		value.Hand == nil || value.SlottedHacks == nil || value.ShopOffers == nil || !strictlySorted(value.Hand) || !strictlySorted(value.SlottedHacks) ||
 		value.RunCurrency < 0 || value.RunCurrency > decimal.MaxExactInteger || value.Revision < 1 || value.PitchSchemaVersion != SchemaVersion ||
 		!strings.HasPrefix(value.PitchContentHash, "sha256:") || len(value.PitchContentHash) != 71 {
+		return Snapshot{}, minigame.ErrInvalidTenant
+	}
+	digest := strings.TrimPrefix(value.PitchContentHash, "sha256:")
+	if _, err := hex.DecodeString(digest); err != nil || digest != strings.ToLower(digest) {
 		return Snapshot{}, minigame.ErrInvalidTenant
 	}
 	for _, encoded := range []string{value.FundingTarget, value.RoundBestValuation} {
@@ -224,6 +241,25 @@ func decodeSnapshot(data []byte) (Snapshot, error) {
 		prior = offer.OfferID
 	}
 	return value, nil
+}
+
+// Exact decoded names keep Go's case-insensitive struct matching and null-to-zero
+// defaults from broadening the tenant wire. Escaped spellings of a canonical key
+// remain valid, as do explicitly present zero and empty collections.
+func hasRequiredPitchJSONKeys(data []byte, expected ...string) bool {
+	if !hasExactJSONKeys(data, expected...) {
+		return false
+	}
+	var fields map[string]json.RawMessage
+	if json.Unmarshal(data, &fields) != nil {
+		return false
+	}
+	for _, value := range fields {
+		if bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return false
+		}
+	}
+	return true
 }
 
 func validateSnapshotAgainstCatalog(value Snapshot, catalog *Catalog) error {

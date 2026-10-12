@@ -18,6 +18,16 @@ Pitch registers engine `pitch` version `1.0.0`, solo mode, the closed command un
 `<card_id>#<copy_ordinal>` identities, so two copies of one metric can form a pair without allowing
 duplicate command IDs.
 
+Tenant admission requires the exact decoded JSON keys for each command arm, all thirteen
+snapshot fields, and each shop offer's `hack_id`, `offer_id`, and `price`. Required values cannot
+be null. Case aliases and additional case-colliding keys are refused before execution; escaped
+spellings of the same canonical key and explicitly present zero values remain valid. Content
+hashes use `sha256:` followed by exactly 64 lowercase hexadecimal digits. Go and TypeScript
+exercise the same malformed-input population alongside canonical playing/shop controls and
+the existing shared scoring/content vectors. Valid snapshot bytes, commands, scoring and payout
+rules are unchanged. This tenant boundary supplements the public API's existing raw-command
+admission; it is not a new public operation or a demonstrated HTTP exploit.
+
 ## Deterministic deck, shop, and scoring
 
 The run coordinate is

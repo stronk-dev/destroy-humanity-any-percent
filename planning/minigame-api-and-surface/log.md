@@ -1684,3 +1684,48 @@ eligible Exit, browser/AT, full hosted CI or full MA/1.0 acceptance. No checkbox
 Review by: Codex (implementer first filter). Recorded by: Codex. The test/docs/plan/log range
 after `67d3eece` through this containing commit needs Claude, consolidatable with earlier MA
 supplements; those earlier ranges remain separate. No owner decision inferred or push.
+
+## 2026-10-13 — Exact Pitch tenant admission agrees across runtimes (RP-515)
+
+Outcome: conform Go's tenant parser to TP-C12/TP-C14's exact command/snapshot contract,
+consumed by accepted MA1. Case-insensitive struct matching admitted wrong-case/colliding
+keys; missing/null counters and offer price could become zero; hash admission checked only
+prefix/length. TypeScript already refuses these inputs. Go now reuses its existing exact-key
+helper, checks required non-null snapshot/offer values and lowercase hexadecimal hashes.
+Canonical escaped keys, explicit zero/empty arrays and all three command arms remain legal.
+Valid snapshot bytes, content, scoring, payouts and rejection taxonomy are unchanged.
+
+Regression: new `TestTenantRejectsMalformedJSONFields` fails on the old engine (7d5657,
+Make exit2, package0.227s), while actual engine-generated playing/shop controls succeed.
+The malformed population contains87 snapshot/offer/command/hash cases in each runtime.
+Go checks both admission and actual Apply; TS checks actual Apply. Old JSON observation
+output was truncated, so no old failure-count denominator is inferred from it. No additional
+source severing is needed for this ordinary reproduced regression. Existing API raw-command
+admission (RP-444) already protects public requests; this is a tenant/replay inconsistency,
+not a demonstrated new public HTTP exploit. Some malformed snapshots were also refused later
+by catalog/identity validation; permissive schema admission is not proof they earned payouts.
+
+Final executed checks, all terminal:
+- Focused verbose cold Go8585 passes all87 negative subtests and canonical controls (0.317s).
+- Native `make test-go vet GO_PACKAGES='./pitch ./minigame ./gameserver ./kernel'
+  GO_TEST_FLAGS='-count=1'`78169 passes; native DB skips are not SQL proof.
+- Declared `make test-go-ci CI_TEST_PACKAGES='./pitch ./minigame ./gameserver ./kernel'`
+  11831 passes on Linux-amd64/real Postgres: Pitch0.499s, Minigame2.362s,
+  Gameserver85.498s, Kernel0.033s. Separate verbose HTTP lifecycle89336 explicitly
+  passes literal and purchased-generator scaling,35.65s, no skip; existing resume,
+  claim/Exit refusal, certification, once-only payout, retry and replay checks remain.
+- Actual client Pitch/admission/content-gate43804 passes98 tests across three files,
+  including the same87 negatives and the existing shared content/scoring vectors.
+- `make typecheck api-check`99649 passes: zero Svelte errors/warnings and byte-unchanged
+  generated API artifacts. Formatting and actual diff/whitespace checks pass.
+
+The genuine admission change bumps all three kernel identities184→185. No historic correction,
+guard exemption, migration, balance/corpus bytes, player copy, UI, CI policy, timeout or accepted
+bound changes. These checks do not establish browser/AT, clean-host, natural pacing, complete
+hosted CI or whole MA/1.0 acceptance. RP-131 and all other independent holds remain.
+Canonical Pitch docs and this plan/ledger now describe the correction; archived Pitch records
+stay untouched. Review by: Codex (implementer first filter). Recorded by: Codex. New range starts
+after `6849005f` through this containing commit and needs Claude designated review, consolidatable
+with related MA corrections without erasing prior range debt. No acceptance checkbox, archival,
+owner adoption, publication or deployment. Continue accepted construction while true contract
+choices and the full nine-tier 1.0 objective remain open.

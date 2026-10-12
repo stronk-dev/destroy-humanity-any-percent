@@ -1,5 +1,13 @@
 # Minigame API & Surface implementation plan
 
+Current tenant-conformance correction (2026-10-13, RP-515): Go now requires the exact decoded
+command/snapshot/offer keys, non-null mandatory snapshot/offer values and canonical lowercase
+content hashes already required by TP-C12/TP-C14 and the TypeScript tenant. The shared malformed
+population, canonical commands, existing content vectors and real HTTP/Postgres lifecycle own
+verification; see the latest log for executed results and the range needing Claude. Valid content,
+snapshot bytes, scoring and payout rules are unchanged. This is not a new API schema, public
+exploit finding, content adoption, clock repair or whole-feature acceptance.
+
 Current claimed-session supplement (2026-10-13): the existing real HTTP/Postgres Pitch
 lifecycle now holds a real service command at its receipt builder, verifies the stored claim,
 and requires all three public Exit arms to refuse without changing saves or the claim. The
