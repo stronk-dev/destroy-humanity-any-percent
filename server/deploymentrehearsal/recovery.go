@@ -196,13 +196,18 @@ func runPopulatedRecovery(ctx context.Context, config ScenarioConfig, dependenci
 	if err != nil || validateRecoveryCheckpoint(checkpoint, config, bundle) != nil {
 		return ObjectiveObservation{}, ErrInvalid
 	}
+	// Stopping the failed stack and recreating Postgres are part of recovery,
+	// not untimed preparation. Validate its clock before destructive work.
+	restoreStarted := dependencies.now().UTC()
+	if restoreStarted.Before(checkpoint.IncidentAt) {
+		return ObjectiveObservation{}, ErrInvalid
+	}
 	if err := dependencies.runtime.StopFailed(ctx, bundle); err != nil {
 		return ObjectiveObservation{}, err
 	}
 	if err := dependencies.runtime.ResetDatabase(ctx, bundle); err != nil {
 		return ObjectiveObservation{}, err
 	}
-	restoreStarted := dependencies.now().UTC()
 	reference := deploymentrelease.BackupReference{ID: checkpoint.PopulatedBackup.ID, Path: checkpoint.PopulatedBackup.Path}
 	if err := dependencies.runtime.RestoreRecoveryBackup(ctx, bundle, reference); err != nil {
 		return ObjectiveObservation{}, err

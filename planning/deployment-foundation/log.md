@@ -4995,3 +4995,39 @@ separate from earlier debt. No acceptance checkbox, archival, CI/workflow change
 green or exact-bundle clean-host claim. RP-131/RP-307, author/operator decisions, rebuilt
 bundles and R-006/R-007 remain. Continue accepted construction/repair and consolidate reviews;
 the four pending proposals are not adopted by automatic goal continuation. No push/deploy.
+
+## 2026-10-12 — Include stop/reset in populated recovery elapsed time (RP-504)
+
+Outcome under DP6/AC4: time required recovery work, not just dump restoration onward.
+`runPopulatedRecovery` sampled restore start after `StopFailed`/`ResetDatabase`; real
+Docker adapters shut down the stack, remove its database volume and wait for fresh
+Postgres in those phases. The stopwatch now starts after validated inputs/operator lock/
+checkpoint, before those actions. A clock preceding the declared incident refuses before
+destructive calls. The4h bound, RPO origin, serialized format and final smoke endpoint
+remain unchanged; canonical docs state the corrected phase boundary.
+
+Regression uses the existing coordinator fixture with phase-driven time. At unchanged
+production code69008 all four cases fail: stop1min/reset2min/smoke3min reports180s,
+stop/reset over4h still emit success, and an invalid start reaches destructive work.
+Initial66138 also assumed the rehearsal error class for the last arm, but the old path
+returns the backup validator's error; removed that unsupported class assumption and
+reran unchanged production before correction. Final four cases pass, report360s, consume
+the actual written observation through its decoder, and leave no success artifact on
+overrun. No source severing/repeated acceptance programme needed for this regression.
+
+Final16318 `make test-go vet` with `GO_PACKAGES='./deploymentrehearsal
+./deploymentbackup ./deploymentrelease ./cmd/deployment-rehearsal'` and
+`GO_TEST_FLAGS='-count=1'` passes all affected packages/vet. Native DB prerequisites skip.
+69411 declared `make test-go-ci CI_TEST_PACKAGES='./deploymentrehearsal'
+CI_TEST_FLAGS='-v -run TestRecovery'` executes the new four and all existing recovery
+functions successfully on Linux-amd64. Runtime/bundle/backup/identity dependencies are
+controlled fixtures, not SQL restore proof merely because the lane supplies a DB URL.
+No actual Docker stop/volume reset, host incident or clean-host rehearsal executed here.
+All handles terminal, source formatted and diff checked.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range begins
+after `e6674289` through this containing commit; Claude review pending, combinable with
+the RP-503 range after `ad54b258`. Earlier debt remains. No acceptance checkbox, archival,
+CI/workflow/budget, operator authority, four-proposal adoption, push or deployment change.
+The complete1.0 goal remains active; exact current/previous bundles, clean-host R-006/R-007,
+RP-131/RP-307 and author/owner decisions remain separate requirements.

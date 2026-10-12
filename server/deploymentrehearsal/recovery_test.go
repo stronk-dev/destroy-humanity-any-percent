@@ -25,6 +25,8 @@ type recoveryRuntimeFixture struct {
 	smokes         int
 	failAt         string
 	onStop         func()
+	onReset        func()
+	onSmoke        func()
 }
 
 func (runtime *recoveryRuntimeFixture) InspectRecoveryIdentity(context.Context, deploymentrelease.Bundle) (deploymentbackup.RecoveryIdentity, error) {
@@ -63,6 +65,9 @@ func (runtime *recoveryRuntimeFixture) StopFailed(context.Context, deploymentrel
 }
 func (runtime *recoveryRuntimeFixture) ResetDatabase(context.Context, deploymentrelease.Bundle) error {
 	runtime.resets++
+	if runtime.onReset != nil {
+		runtime.onReset()
+	}
 	if runtime.failAt == "reset" {
 		return errors.New("injected reset failure")
 	}
@@ -91,6 +96,9 @@ func (runtime *recoveryRuntimeFixture) RestoreRecoveryBackup(_ context.Context, 
 }
 func (runtime *recoveryRuntimeFixture) AuthenticatedSmoke(context.Context, deploymentrelease.Bundle) error {
 	runtime.smokes++
+	if runtime.onSmoke != nil {
+		runtime.onSmoke()
+	}
 	if runtime.failAt == "smoke" {
 		return errors.New("injected smoke failure")
 	}
@@ -119,6 +127,62 @@ func TestRecoveryProducerRestoresExactEmptyAndPopulatedIdentities(t *testing.T) 
 	}
 	if _, err := DecodeObjectiveObservation(mustRead(t, filepath.Join(config.ArtifactsDirectory, requiredRunArtifactFiles["objective_observation"]))); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestRecoveryObjectiveIncludesStopAndDatabaseReset(t *testing.T) {
+	for _, testCase := range []struct {
+		name      string
+		stop      time.Duration
+		reset     time.Duration
+		valid     bool
+		clockBack bool
+	}{
+		{"complete_elapsed_time", time.Minute, 2 * time.Minute, true, false},
+		{"stop_exceeds_rto", 4*time.Hour + time.Nanosecond, 0, false, false},
+		{"reset_exceeds_rto", 0, 4*time.Hour + time.Nanosecond, false, false},
+		{"clock_before_incident", 0, 0, false, true},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			config, _, dependencies, runtime := recoveryProducerFixture(t)
+			checkpoint, err := runEmptyRecovery(context.Background(), config, dependencies)
+			if err != nil {
+				t.Fatal(err)
+			}
+			runtime.identities = []deploymentbackup.RecoveryIdentity{checkpoint.PopulatedIdentity}
+			start := checkpoint.IncidentAt.Add(time.Minute)
+			if testCase.clockBack {
+				start = checkpoint.IncidentAt.Add(-time.Nanosecond)
+			}
+			clock := start
+			dependencies.now = func() time.Time { return clock }
+			runtime.onStop = func() { clock = clock.Add(testCase.stop) }
+			runtime.onReset = func() { clock = clock.Add(testCase.reset) }
+			runtime.onSmoke = func() { clock = clock.Add(3 * time.Minute) }
+			stops, resets := runtime.stops, runtime.resets
+			observation, err := runPopulatedRecovery(context.Background(), config, dependencies)
+			objectivePath := filepath.Join(config.ArtifactsDirectory, requiredRunArtifactFiles["objective_observation"])
+			if !testCase.valid {
+				if err == nil || observation != (ObjectiveObservation{}) {
+					t.Fatalf("invalid complete recovery accepted: observation=%+v err=%v", observation, err)
+				}
+				if _, err := os.Lstat(objectivePath); !errors.Is(err, os.ErrNotExist) {
+					t.Fatalf("failed recovery committed objective evidence: %v", err)
+				}
+				if testCase.clockBack && (runtime.stops != stops || runtime.resets != resets) {
+					t.Fatal("invalid recovery start clock reached destructive work")
+				}
+				return
+			}
+			if observation.Objectives.RestoreStartedAt != start || observation.Objectives.RTOSeconds != 360 ||
+				observation.Objectives.AuthenticatedSmokeAt != clock || runtime.stops != stops+1 || runtime.resets != resets+1 || runtime.smokes != 1 {
+				t.Fatalf("recovery objective omitted stop/reset elapsed time: observation=%+v", observation)
+			}
+			stored, err := DecodeObjectiveObservation(mustRead(t, objectivePath))
+			if err != nil || stored != observation {
+				t.Fatalf("exact complete-duration observation did not survive its consumer: stored=%+v err=%v", stored, err)
+			}
+		})
 	}
 }
 

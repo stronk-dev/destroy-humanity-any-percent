@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest bounded correction, 2026-10-12 (RP-504):** populated recovery records its
+start after input/lock/checkpoint validation but before stopping the failed stack and
+resetting/restarting Postgres. Those required phases now count toward the existing4h
+RTO. Four old-source failures become passes: complete elapsed time, stop/reset overruns,
+and invalid-clock refusal before destructive work. Affected cold packages/vet and declared
+Linux-amd64 recovery tests pass. Controlled runtime evidence, not an actual clean-host
+restore; the owning log holds the new pending review range, combinable with RP-503.
+
 **Latest bounded correction, 2026-10-12 (RP-503):** objective measurement now applies
 DP6/AC4's exact six-hour/four-hour bounds before whole-second report conversion. The
 12-case regression exposes four old-source subsecond-overrun false passes and passes
