@@ -1292,3 +1292,33 @@ source-pinned artifacts stay untouched. This supports a bounded existing-context
 fidelity conclusion only: not Store/replay, natural progression, served TS producer,
 new conserved save representation, offline policy, AC6 or release acceptance.
 No production/kernel/balance/content/CI/RFC-body change; author/owner holds remain.
+
+## R-012 temporal producer context — bounded next measurement
+
+Predeclared at `b9dabdc4`, before execution. Question: can operation-local
+scratch observations retain the existing closed transition across active-buff
+expiry, and do frozen/omitted modifiers distinguish incorrect context?
+Reuse the existing origin test file and actual schedule, replay codec, Evaluate
+and ApplyLogged. Three controlled admitted origins: production frenzy, building
+special, and both. Pinned durations remain unchanged; the origin is at attended
+4000ms, with production expiry at5000 and building expiry at5500. Generator
+ownership/cash/buff history are test arrangement, not natural acquisition.
+
+Seven offsets (999/1000/1001/1499/1500/1501/6000ms), each online/offline:
+42 cells. For <=5000ms, require attended4000+offset and literal expiry identities;
+6000ms uses the existing catchup-ceiling absence classifier, requiring attended
+4000 and both original windows preserved. ModeOffline alone is not presumed
+to declare an absence. Require unchanged committed origin, exact restored
+replay inputs, whole final state/receipt/ordered events and positive lifetime
+accrual. Frozen-at-origin projection must diverge when a modifier expires;
+omitted-all projection must diverge when a modifier remains. Preserve legitimate
+equal-output controls, count every cell only after its assertions. Forged
+attended coordinate and missing active-play evidence must refuse unchanged.
+
+No new window integration algorithm, reward/attendance policy, production fix,
+durable origin, save fields, TS/SQL/hosted or full-domain claim. This measures
+the current endpoint schedule semantics, not hypothetical prorated buff payout.
+Any refusal/guard or incomplete census invalidates the population and is recorded.
+Run cold focused native and declared Linux lanes, then the affected production
+suite; retain the original27 partition failures. One coherent test/research
+record batch needs designated review; no self-approval or archival.

@@ -732,6 +732,197 @@ func originRequestInputs(t *testing.T, bundle CatalogBundle, state *save.State, 
 
 type originGuildMember struct{}
 
+// A controlled, already-active history, not a claim that these buffs were
+// acquired naturally. The pinned duration and target remain authoritative.
+func TestAxisOriginDeferredTemporalContextResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	start := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
+	founderID := "01986666-2000-7000-8000-000000000001"
+	completed, frozenDifferences, omittedDifferences := 0, 0, 0
+	for _, profile := range []struct {
+		name                 string
+		production, building bool
+	}{
+		{"production", true, false}, {"building", false, true}, {"combined", true, true},
+	} {
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			for _, offset := range []int64{999, 1000, 1001, 1499, 1500, 1501, 6000} {
+				t.Run(fmt.Sprintf("%s_%s_%d", profile.name, mode, offset), func(t *testing.T) {
+					initial := axisTimingState(t, bundle, start)
+					initial.RunStartedAt = start.Add(-4000 * time.Millisecond)
+					if profile.production {
+						effect, ok := bundle.Opportunities.Effect("active.production")
+						if !ok || effect.DurationMS != 5000 {
+							t.Fatal("pinned production duration changed")
+						}
+						initial.ActiveBuffs = append(initial.ActiveBuffs, save.ActiveBuff{
+							BuffInstanceID: "01985555-0000-7000-8000-000000000001", EffectRowID: effect.ID,
+							ActivatedAttendedMS: 0, ExpiresAttendedMS: effect.DurationMS})
+					}
+					if profile.building {
+						effect, ok := bundle.Opportunities.Effect("active.building")
+						if !ok || effect.DurationMS != 2000 {
+							t.Fatal("pinned building duration changed")
+						}
+						target := "generator.beige_tower"
+						initial.ActiveBuffs = append(initial.ActiveBuffs, save.ActiveBuff{
+							BuffInstanceID: "01985555-0000-7000-8000-000000000002", EffectRowID: effect.ID, SelectedTarget: &target,
+							ActivatedAttendedMS: 3500, ExpiresAttendedMS: 3500 + effect.DurationMS})
+					}
+					if err := bundle.ValidateFoundationState(initial); err != nil {
+						t.Fatal(err)
+					}
+					origin := mustEncodeState(t, initial)
+					at := start.Add(time.Duration(offset) * time.Millisecond)
+					accrual, err := makeReplayAccrual(nil, nil, guild.SettlementBatch{}, bundle.Routes.ContextVersion())
+					if err != nil {
+						t.Fatal(err)
+					}
+					request, inputs := originManualInputs(t, bundle, initial, at, mode, accrual, "manual.click")
+					var wire replayInputsWire
+					if err := json.Unmarshal(inputs, &wire); err != nil {
+						t.Fatal(err)
+					}
+					var resolved replayAccrualResolved
+					if err := json.Unmarshal(wire.Resolved, &resolved); err != nil || resolved.ActivePlay == nil {
+						t.Fatalf("active schedule missing: %v", err)
+					}
+					wire.Resolved, err = json.Marshal(resolved)
+					if err != nil {
+						t.Fatal(err)
+					}
+					retained, err := json.Marshal(wire)
+					if err != nil || !bytes.Equal(inputs, retained) {
+						t.Fatalf("existing typed replay codec changed retained inputs: %v", err)
+					}
+					attended := int64(4000) + offset
+					if offset > bundle.Prestige.CatchupCeilingMS {
+						attended = 4000
+					}
+					if resolved.ActivePlay.AttendedNowMS != attended {
+						t.Fatalf("attended coordinate: got%d want%d", resolved.ActivePlay.AttendedNowMS, attended)
+					}
+					expired := []activePlayExpiredBuff{}
+					kept := []save.ActiveBuff{}
+					for _, buff := range initial.ActiveBuffs {
+						if buff.ExpiresAttendedMS <= attended {
+							expired = append(expired, activePlayExpiredBuff{BuffInstanceID: buff.BuffInstanceID})
+						} else {
+							kept = append(kept, buff)
+						}
+					}
+					if canonicalFixtureValue(t, expired) != canonicalFixtureValue(t, resolved.ActivePlay.ExpiredBuffs) {
+						t.Fatal("wrong literal expiry identities")
+					}
+					// Scratch schedule and evaluator consume a fresh copy, never the
+					// committed origin. This is not an intermediate saved head.
+					projection := activationRestore(t, bundle, origin, 19, start)
+					if _, err := applyActivePlaySchedule(projection, bundle.Opportunities, bundle.Prestige, founderID, at, *resolved.ActivePlay); err != nil {
+						t.Fatal(err)
+					}
+					active, err := activePlayContributions(projection, bundle.Opportunities, attended)
+					if err != nil {
+						t.Fatal(err)
+					}
+					projected := originProjectionStateWithExternal(t, bundle, mustEncodeState(t, projection), at, mode, active)
+					frozen, err := activePlayContributions(initial, bundle.Opportunities, 4000)
+					if err != nil {
+						t.Fatal(err)
+					}
+					wrongFrozen := originProjectionStateWithExternal(t, bundle, origin, at, mode, frozen)
+					wrongMissing := originProjectionState(t, bundle, origin, at, mode)
+					cash := projected.Ledger.Snapshot()["company.cash"]
+					frozenChanged := cash != wrongFrozen.Ledger.Snapshot()["company.cash"]
+					omittedChanged := cash != wrongMissing.Ledger.Snapshot()["company.cash"]
+					if frozenChanged != (len(expired) > 0) || omittedChanged != (len(active) > 0) {
+						t.Fatal("frozen/omitted controls did not discriminate exact active context")
+					}
+					ordinaryState := activationRestore(t, bundle, origin, 19, start)
+					ordinary, err := ApplyLogged(ordinaryState, request.CanonicalPayload, bundle, inputs)
+					if err != nil || ordinary.Outcome != save.IntentApplied {
+						t.Fatalf("ordinary transition: %v", err)
+					}
+					// Bind the scratch accrual to the real action's ledger, not merely
+					// to a second execution of the same replay input. Only the one
+					// accepted manual action is added through the existing ledger.
+					action, ok := bundle.Economy.ManualAction("manual.click")
+					if !ok {
+						t.Fatal("pinned manual action missing")
+					}
+					contributions, err := assembleContributions(projection, bundle.Economy, active)
+					if err != nil {
+						t.Fatal(err)
+					}
+					factor, err := contributionFactorForTarget(bundle.Economy, action.ID, contributions)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if _, err := projected.Ledger.Apply(economy.Transaction{Entries: []economy.Entry{{
+						ResourceID: action.Output.ResourceID, Delta: action.Output.AmountPerAction.Mul(factor),
+					}}}); err != nil {
+						t.Fatal(err)
+					}
+					if canonicalFixtureValue(t, projected.Ledger.Snapshot()) != canonicalFixtureValue(t, ordinaryState.Ledger.Snapshot()) ||
+						canonicalFixtureValue(t, ordinaryState.ActiveBuffs) != canonicalFixtureValue(t, kept) {
+						t.Fatal("scheduled scratch accrual plus manual action missed actual ledger or kept buff identities")
+					}
+					if offset > bundle.Prestige.CatchupCeilingMS {
+						if len(ordinaryState.OfflineSpans) != 1 || !ordinaryState.OfflineSpans[0].From.Equal(start) || !ordinaryState.OfflineSpans[0].To.Equal(at) {
+							t.Fatal("long interval did not retain the exact absence span")
+						}
+					} else if len(ordinaryState.OfflineSpans) != 0 {
+						t.Fatal("short interval unexpectedly recorded an absence")
+					}
+					deferred := activationRestore(t, bundle, origin, 19, start)
+					if !bytes.Equal(origin, mustEncodeState(t, initial)) || !bytes.Equal(origin, mustEncodeState(t, deferred)) {
+						t.Fatal("scratch projection consumed committed origin")
+					}
+					settled, err := ApplyLogged(deferred, request.CanonicalPayload, bundle, retained)
+					if err != nil || settled.Outcome != save.IntentApplied || !bytes.Equal(mustEncodeState(t, deferred), mustEncodeState(t, ordinaryState)) ||
+						!bytes.Equal(settled.Receipt, ordinary.Receipt) || canonicalFixtureValue(t, settled.Events) != canonicalFixtureValue(t, ordinary.Events) ||
+						!deferred.LifetimeValue.Gt(initial.LifetimeValue) || len(deferred.ActiveBuffs) != len(initial.ActiveBuffs)-len(expired) {
+						t.Fatalf("retained temporal context lost complete transition: %v", err)
+					}
+					for _, missing := range []bool{false, true} {
+						bad := resolved
+						if missing {
+							bad.ActivePlay = nil
+						} else {
+							changed := *resolved.ActivePlay
+							changed.AttendedNowMS++
+							bad.ActivePlay = &changed
+						}
+						badWire := wire
+						badWire.Resolved, err = json.Marshal(bad)
+						if err != nil {
+							t.Fatal(err)
+						}
+						badInputs, err := json.Marshal(badWire)
+						if err != nil {
+							t.Fatal(err)
+						}
+						refused := activationRestore(t, bundle, origin, 19, start)
+						if _, err := ApplyLogged(refused, request.CanonicalPayload, bundle, badInputs); err == nil || !bytes.Equal(origin, mustEncodeState(t, refused)) {
+							t.Fatalf("forged/missing schedule did not refuse unchanged (missing=%v): %v", missing, err)
+						}
+					}
+					if frozenChanged {
+						frozenDifferences++
+					}
+					if omittedChanged {
+						omittedDifferences++
+					}
+					completed++
+				})
+			}
+		}
+	}
+	if completed != 42 || frozenDifferences != 24 || omittedDifferences != 24 {
+		t.Fatalf("incomplete temporal population: cells %d/42 frozen %d/24 omitted %d/24", completed, frozenDifferences, omittedDifferences)
+	}
+	t.Log("42 temporal cells: closed state/receipt/events retained, 24 frozen and 24 omitted cash differences, forged/missing schedule refused; AC6 NOT_PROVEN")
+}
+
 func (originGuildMember) FounderGuildMember(context.Context, string) (bool, error) { return true, nil }
 
 // Observes the real producer's input without replacing its rate calculation.

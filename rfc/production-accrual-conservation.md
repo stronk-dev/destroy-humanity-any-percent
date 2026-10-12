@@ -152,7 +152,29 @@ This is a constraint on the pending design, not a new origin/save wire, adoption
 origin lifetime or a production fix. The initial120001ms population refused before action
 on the existing active-play due-transition ceiling; the successful shorter population
 does not establish that longer boundary. Live provider/SQL state capture, general Guild
-settlement workloads, active-buff boundaries, Go/TS parity and full-domain conservation remain owed.
+settlement workloads, general temporal workloads, Go/TS parity and full-domain conservation remain owed.
+
+`TestAxisOriginDeferredTemporalContextResearch` adds42 admitted Go cells over
+production frenzy, building special and their combination, at seven offsets in
+both evaluation modes. Controlled existing histories use the unchanged pinned
+durations. Actual schedule evidence survives the existing replay codec; fresh
+scratch schedule/evaluation does not consume the committed origin. Its ledger,
+plus the one accepted manual action, matches the actual closed transition ledger.
+Retained replay reproduces whole state, exact receipt and ordered events; forged
+attended coordinates or missing schedule evidence refuse without mutation.
+Frozen-at-origin modifiers change cash in24 expired cases, while omitting all
+modifiers changes cash in24 still-active cases. Legitimate equal controls remain.
+
+This observes the **existing endpoint-selection semantics**: the schedule removes
+expired buffs before the command evaluates its accrual interval. It does not prove
+prorated payout through a buff boundary, nor authorize replacing endpoint behavior
+with a segmented-window formula. Short ModeOffline intervals still advance the
+attended coordinate; the6000ms case instead crosses the existing5000ms catchup
+ceiling and records the whole absence span, preserving the origin's attended
+coordinate in either mode. A future conservation implementation must retain that
+context/compatibility explicitly, not infer absence solely from evaluation mode or
+silently freeze active contributions. This is not adoption of the shared attendance
+policy, durable origin, a new numeric algorithm, SQL/TS proof or AC6 completion.
 
 `TestAxisOriginDeferredGuildSettlementResearch` adds six admitted Go cells: one clearing,
 two ordered clearings and a nonzero existing watermark, each online/offline at2001ms.
@@ -373,3 +395,5 @@ implied save field and needs its own complete contract.
 - 2026-10-12: add bounded closed-purchase evidence with nonzero origins and full state/receipt/
   event comparisons; all128 pre-advanced controls expose lost prestige accrual despite matching
   cash. Preserve the unresolved lifetime/compatibility and production accounting obligations.
+- 2026-10-12: record bounded temporal producer/replay evidence and distinguish current endpoint
+  selection from prorated window integration. No runtime semantics or pending owner choice changed.

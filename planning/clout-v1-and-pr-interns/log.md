@@ -2806,3 +2806,48 @@ decoder correction beginning after `a5a2e94a`. No full P5/AC11/Clout approval,
 Linux/hosted/full-CI, natural pacing, mint, archival, push or release claim.
 Next: continue accepted implementation/review work while pending owner/author
 contracts remain explicit. Full nine-tier 1.0 goal remains active.
+
+## 2026-10-12 — R-012 temporal context, without a new accounting policy
+
+Completed the bounded measurement predeclared in the owning plan at `b9dabdc4`.
+The existing origin test file now runs42 admitted cells: production frenzy,
+building special and their combination, seven offsets, online/offline. Buff
+history and cash are controlled arrangement; pinned durations/production bytes
+are unchanged. Typed replay-input roundtrip preserves exact bytes. Scratch
+schedule/evaluation leaves the committed origin untouched; its ledger plus one
+existing manual action matches the real logged transition. Retained context
+preserves full state, receipt and ordered events, positive lifetime accrual,
+exact surviving buff identities and the literal long-absence span.
+
+All cells complete without exclusions or guard termination. Frozen-at-origin
+modifiers change cash in24 expired cells; omitting modifiers changes cash in24
+still-active cells. Legitimate neutral controls survive. All84 forged-attended/
+missing-schedule variants refuse unchanged. The important compatibility finding:
+current command scheduling removes expired buffs BEFORE accruing that command's
+interval. This proves endpoint-context fidelity, NOT prorated window payout.
+Short ModeOffline intervals still advance attended time;6000ms crosses the
+existing5000ms classifier and records the entire absence in either mode. Neither
+observation authorizes a new absence policy or silently changed buff semantics.
+
+Executed: final15199 root `make test-go vet GO_PACKAGES='./production ./activeplay'
+GO_TEST_FLAGS='-count=1 -run TestAxisOrigin'` passes all origin tests and vet;
+Activeplay has no selected tests. Final28529 root `make test-go-ci
+CI_TEST_PACKAGES='./production' CI_TEST_FLAGS='-run TestAxisOriginDeferredTemporalContextResearch'`
+passes on declared Linux/amd64; in-memory population, not SQL proof. Earlier
+verbose native27652 and Linux35835 execute all42 individually. Cold broad74591
+`make test-go GO_PACKAGES='./production ./activeplay' GO_TEST_FLAGS='-count=1'`
+retains exactly the original27 RP-307 failures (production46.756s); Activeplay
+passes. That broad run precedes the final test-only absence-span/typed-roundtrip
+oracle strengthening; the final affected population and vet rerun pass. No
+tolerance, excluded failing fixture, production, balance, kernel, save, owner
+copy or CI-workflow edits. No hosted/TS/full-CI/AC6 success claim. All handles
+terminal; unrelated orphan containers untouched; formatting/diff checked.
+
+Codex-authored draft C2 now records this bounded evidence and remaining general
+temporal/compatibility obligations. Next: complete the viable accounting and
+compatibility proposal under explicit interval/origin-lifetime authority, rather
+than repeat these bounded successes or treat them as a general numeric repair.
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact full
+test/plan/draft/log range after `b9dabdc4` through this containing commit needs
+Claude designated review; earlier review debt remains. No adoption, acceptance,
+archival, push, deployment or release call. Full nine-tier 1.0 goal stays active.
