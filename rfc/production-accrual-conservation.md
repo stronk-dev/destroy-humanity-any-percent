@@ -169,6 +169,41 @@ change rounding/receipt semantics, overwrite balances or substitute a tolerance.
 finding concerns a test-only candidate; it neither proves current served content reaches
 these synthetic rates nor attributes the original27 partition failures to this edge.
 
+#### Intermediate commits and deferred settlement are different contracts
+
+The subsequent predeclared boundary experiment retains the actual floor pair above.
+Zero accrual leaves `1.001e-8999999999999999`; the minimum positive admitted delta
+`1e-8999999999999999` produces `2.001e-8999999999999999`, already above the desired
+`1.002001e-8999999999999999`. Actual ledger receipts reproduce those literal results;
+three larger positive controls also overshoot. Go rejects sub-floor construction;
+client arithmetic independently confirms zero/minimum sums and canonical sub-floor
+refusal. This is more specific than an unsuccessful subtraction implementation.
+
+The normalized-domain bound gives the analytical constraint: a positive state delta
+has mantissa at least1 and exponent at least the floor. For this pair, its minimum
+increment already exceeds the desired difference by orders of magnitude, well beyond
+the quantizer's rounding width. There is no canonical nonnegative accrual increment
+that reaches that intermediate target under the current ledger addition rule.
+This argument is not a finite-search proof over the whole numeric domain; it concerns
+the retained pair. It rules out committing every projected cut in that population
+while preserving both the target and the existing receipt rule.
+
+A separate test-only operation-local experiment restores/projects scratch copies at
+two intermediate times, leaves the original committed Company untouched, then makes
+one real ledger settlement from that original state. All20 lower-domain cells reach
+the exact full one-shot Company state with reproducing receipts. These origins have
+zero cash; no claim about arbitrary origins, saved intermediate heads, complete
+ApplyLogged/hooks, SQL or a production representation follows. Earlier candidate
+refusals and all27 original partition failures remain unchanged.
+
+Therefore C1/C1a must explicitly distinguish internal work/display projections from
+authorized saved settlements. Deferred settlement is a bounded candidate for the
+former, not permission to drop a required saved head, hide a production failure or
+redefine AC6. If the adopted interval requires these intermediate commits, the
+conflicting contract must be reconciled explicitly; a better subtraction cannot
+satisfy an unrepresentable increment. Neither a domain restriction nor a receipt
+change is adopted here.
+
 ### C3 — Settlement, caps and receipts are part of the repair
 
 Specify which applied actions settle the old interval before a debit or input change,
@@ -241,7 +276,10 @@ the red population with a convenient new one or alter its monetary expectations.
 - **C2/C3:** complete field set, boundary integration and a viable ledger/receipt algorithm,
   demonstrated with actual Company producers and the retained lower-domain counterexample.
   The current difference-write candidate fails; this is technical work, not a choice for the
-  owner to approve away. This draft deliberately does not invent those missing details.
+  owner to approve away. Operation-local deferred settlement now has bounded lower-domain
+  evidence, not full integration. If intermediate saved heads are required, reconcile the
+  demonstrated unrepresentable-increment conflict rather than demand another subtraction
+  algorithm or waive the original failures. This draft does not invent those missing details.
 - **C4:** activation/migration compatibility and assigned versions after the representation is fixed.
 - **Operating limits:** actual full-state size/work evidence, not the scalar prototype's bound.
 
@@ -265,3 +303,6 @@ implied save field and needs its own complete contract.
 - 2026-10-12: retain actual lower-domain ledger counterexamples and paired client arithmetic
   controls. Mark the candidate difference-write algorithm insufficient rather than generalize
   its146 earlier successes. Still draft; no numeric, receipt, policy or implementation authority.
+- 2026-10-12: distinguish the floor pair's unrepresentable positive increment from a subtraction
+  defect. Record20 bounded deferred-settlement successes and the unresolved internal-cut/saved-
+  settlement contract. No production implementation, criterion weakening or adoption.

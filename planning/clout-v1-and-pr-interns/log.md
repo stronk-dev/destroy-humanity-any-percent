@@ -2572,3 +2572,41 @@ Review by: Codex (research implementer first filter). Recorded by: Codex.
 Exact test/research/draft/record range `237c2f17` exclusive through this containing
 commit requires designated cross-party review. Earlier review debt remains;
 no acceptance, archival, push, deployment or release claim.
+
+## 2026-10-12 — Floor increment constraint and deferred settlement (R-012 / RP-488)
+
+Baseline `8e7eecc6`; question/population predeclared in the owning plan. Extended
+the existing test-only Company-origin instrument and client arithmetic controls.
+Actual ledger zero/minimum/three larger probes retain literal results: zero stays
+below the floor target, minimum positive accrual already overshoots it, receipts
+reproduce the real committed results, and sub-floor numeric values refuse. The
+normalized-domain bound explains the specific pair's unavailable positive
+increment; this is not an exhaustive library monotonicity or served-content claim.
+
+Separately all20 retained lower-domain cells project scratch copies while leaving
+the original Company untouched, then settle once through the actual ledger.
+Complete final encodings match one-shot Evaluate, with reproducible receipts.
+Origins have zero cash; arbitrary origins, saved intermediate heads, ApplyLogged/
+hooks/actions/SQL/TS Company integration and production field bounds remain open.
+The draft now requires a clear scratch-cut/authorized-settlement distinction,
+without adopting it or redefining AC6. No production/numeric/receipt/domain,
+kernel/save, balance, episode, authored copy or CI-workflow bytes changed.
+
+Cold `make test-go GO_PACKAGES='./production'
+GO_TEST_FLAGS='-count=1 -run TestAxisOrigin -v'`91799 passes every existing and
+new origin population, retaining the original27 rebasing discrepancies and the
+20-cell refusal/exact census. Four affected client files pass1209 checks; types
+48711 and affected vet pass. Initial client control incorrectly expected RangeError
+from canonical parsing; the existing parser's SyntaxError was confirmed from source
+and corrected in the test only. Its five earlier cases already passed; no assertion
+or production parser weakened. Final client suite passes all six new/existing arms.
+
+Full cold production48338 exits2 (Go exit1) with exactly the original27 RP-307
+partition failures, not new failures or a green package. No DB/browser/Linux/
+hosted/full-CI execution is claimed. All handles terminal, formatting/diff checked.
+Review by: Codex (research implementer first filter). Recorded by: Codex. Exact
+new test/draft/ledger/record range starts after `8e7eecc6` through this containing
+commit; designated review pending, alongside earlier debt. No acceptance, archive,
+push or release. Next: settle the interval/authorized-head contract, then prove a
+complete candidate through the actual closed transition boundary—not another
+search for a sub-floor delta that the current domain cannot represent.

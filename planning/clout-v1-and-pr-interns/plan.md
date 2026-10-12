@@ -81,6 +81,34 @@ general write algorithm; next technical work is a viable ledger/receipt solution
 owner waiver or another repeat of the ordinary146 profiles. The latest log owns evidence
 and pending review; AC6 remains red.
 
+2026-10-12 next research, baseline `8e7eecc6`: distinguish an unavailable subtraction
+from an unrepresentable positive accrual between the retained floor balances. Use the
+actual admitted Company/evaluator pair from RP-488; require zero to preserve its first
+balance and the smallest admitted positive delta to overshoot the second. Check literal
+Go/client sums, sub-floor refusal and actual ledger receipts; positive larger-delta
+controls must not accidentally reproduce the target. The representation's normalized
+mantissa/exponent bounds, not a finite search, determine the minimum positive delta.
+
+Separately execute all20 earlier lower-domain cells with an operation-local origin:
+restore/project intermediate copies without advancing the committed Company, then make
+one actual ledger settlement from the unchanged original state to the final target.
+Require no origin mutation, exact full encoded final state and reproducing receipts.
+This may establish bounded feasibility of deferred settlement and the impossibility of
+the specific intermediate floor increment. It cannot establish full-domain monotonicity,
+ApplyLogged/hooks/actions/SQL/TS Company integration, an adopted origin lifetime or AC6.
+Preserve the original20-cell/146-profile observations and all27 red partition cases;
+no numeric domain, receipt, episode, wire/version, balance or production code changes.
+
+Executed: the actual floor ledger probes preserve the literal zero result and show the
+minimum positive increment plus three larger controls overshoot the desired target.
+The normalized exponent/mantissa bound explains why that specific positive increment is
+unrepresentable, not merely a subtraction failure. All20 deferred settlements match the
+actual complete one-shot projections without intermediate Company mutation. Client6/
+affected1209 checks, Go origin tests, vet and types pass; full production retains exactly
+the original27 failures. The draft now distinguishes internal scratch cuts from authorized
+saved settlements; no interval policy or production solution is inferred. The owning log
+retains the incorrect initial client exception-class expectation and exact review boundary.
+
 Under A, CV6 (the Clout ledger) and CV7 (the social seam) are **not** implemented: the RFC's CV0
 table marks the ledger "no" for A, and the acceptance rejects B/C. The Gaia-law test (AC4) still
 lands, with the allowed writer set empty.

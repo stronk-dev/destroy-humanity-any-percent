@@ -37,6 +37,17 @@ const pairs = [
 ] as const;
 
 describe("R-012 origin delta lower-domain research, not AC6 acceptance", () => {
+  it("zero and the minimum positive delta bracket the retained floor target", () => {
+    const before = parseCanonical("1.001e-8999999999999999");
+    const target = parseCanonical("1.002001e-8999999999999999");
+    const minimum = parseCanonical("1e-8999999999999999");
+    expect(canonicalString(quantize(before.add(parseCanonical("0"))))).toBe("1.001e-8999999999999999");
+    expect(canonicalString(quantize(before.add(minimum)))).toBe("2.001e-8999999999999999");
+    expect(quantize(before.add(minimum)).gt(target)).toBe(true);
+    expect(() => parseCanonical("1e-9000000000000000")).toThrow(SyntaxError);
+    // A one-shot settlement from the original zero balance is representable.
+    expect(canonicalString(quantize(parseCanonical("0").add(target)))).toBe("1.002001e-8999999999999999");
+  });
   for (const pair of pairs) {
     it(pair.id, () => {
       const before = parseCanonical(pair.before);

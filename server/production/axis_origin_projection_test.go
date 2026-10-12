@@ -318,3 +318,124 @@ func TestAxisOriginProjectionLowerDomainResearch(t *testing.T) {
 	}
 	t.Logf("cells=%d unchanged=%d invalid-delta=%d refused=%d exact=%d wrong-target=%d; production conservation NOT_PROVEN", cells, unchanged, invalid, refused, exact, wrong)
 }
+
+// The numeric domain has a minimum positive value, not merely a subtraction
+// implementation that could be replaced. This probes the actual ledger on the
+// retained pair; no production delta or domain rule is altered.
+func TestAxisOriginFloorIncrementBoundaryResearch(t *testing.T) {
+	bundle, initial := originLowerDomainFixture(t, -8999999999999999)
+	origin := mustEncodeState(t, initial)
+	start := initial.EvaluatedThrough
+	first := originProjectionState(t, bundle, origin, start.Add(time.Second), ModeOnline)
+	last := originProjectionState(t, bundle, origin, start.Add(1001*time.Millisecond), ModeOnline)
+	before, target := first.Ledger.Snapshot()["company.cash"], last.Ledger.Snapshot()["company.cash"]
+	if before != "1.001e-8999999999999999" || target != "1.002001e-8999999999999999" {
+		t.Fatal("retained floor pair changed")
+	}
+	minimum := mustDecimal(t, "1e-8999999999999999")
+	if decimal.New(0.99999999999, minimum.Exponent()).IsStateValue() ||
+		decimal.New(1, minimum.Exponent()-1).IsStateValue() {
+		t.Fatal("the declared domain no longer has the retained minimum positive value")
+	}
+	for _, row := range []struct{ delta, after string }{
+		{"0", before},
+		{"1e-8999999999999999", "2.001e-8999999999999999"},
+		{"1.00000000001e-8999999999999999", "2.00100000001e-8999999999999999"},
+		{"9.99999999999e-8999999999999999", "1.1001e-8999999999999998"},
+		{"1e-8999999999999998", "1.1001e-8999999999999998"},
+	} {
+		t.Run(row.delta, func(t *testing.T) {
+			state := originProjectionState(t, bundle, origin, start.Add(time.Second), ModeOnline)
+			delta := mustDecimal(t, row.delta)
+			receipt, err := state.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: delta}}})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := state.Ledger.Snapshot()["company.cash"]; got != row.after || got == target {
+				t.Fatalf("floor increment result: got %s want %s (target %s)", got, row.after, target)
+			}
+			if row.delta == "0" {
+				if len(receipt.Changes) != 0 || !bytes.Equal(mustEncodeState(t, state), mustEncodeState(t, first)) {
+					t.Fatal("zero increment changed state or created a receipt")
+				}
+			} else if len(receipt.Changes) != 1 || receipt.Changes[0].Before != before || receipt.Changes[0].After != row.after ||
+				!mustDecimal(t, before).Add(mustDecimal(t, receipt.Changes[0].Delta)).Quantize(decimal.CanonicalSignificantDigits).Eq(mustDecimal(t, row.after)) {
+				t.Fatal("actual increment receipt cannot reproduce its literal result")
+			}
+		})
+	}
+	t.Log("floor pair: zero stays below target; minimum positive accrual overshoots; no intermediate-cut policy is adopted")
+}
+
+func originLowerDomainFixture(t *testing.T, exponent int64) (CatalogBundle, *save.State) {
+	t.Helper()
+	bundle := axisContentBundle(t)
+	bundle.Artifacts = cloneArtifactMap(bundle.Artifacts)
+	var root map[string]any
+	if err := json.Unmarshal(bundle.Artifacts["economy"], &root); err != nil {
+		t.Fatal(err)
+	}
+	root["generator_classes"].([]any)[0].(map[string]any)["production"].(map[string]any)["base_rate"] = fmt.Sprintf("1e%d", exponent)
+	var err error
+	bundle.Artifacts["economy"], err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle.Economy, err = economy.LoadCatalog(bundle.Artifacts["economy"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle.ConstantsHash, err = save.ConstantsHashArtifacts(bundle.Artifacts)
+	if err != nil || !bundle.valid(bundle.ConstantsHash) {
+		t.Fatalf("research catalog admission: %v", err)
+	}
+	initial := axisTimingState(t, bundle, time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC))
+	delete(initial.UpgradesOwned, "upgrade.pr_intern_1")
+	setCash(t, initial, "0")
+	if err := bundle.ValidateFoundationState(initial); err != nil {
+		t.Fatal(err)
+	}
+	return bundle, initial
+}
+
+func TestAxisOriginDeferredLowerDomainSettlementResearch(t *testing.T) {
+	cells := 0
+	for _, exponent := range []int64{-8999999999999999, -8999999999999998, -8999999999999996, -8999999999999987, 0} {
+		bundle, initial := originLowerDomainFixture(t, exponent)
+		origin := mustEncodeState(t, initial)
+		start := initial.EvaluatedThrough
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			for _, cut := range []int64{1000, 2000} {
+				t.Run(fmt.Sprintf("exponent%d_%s_cut%d", exponent, mode, cut), func(t *testing.T) {
+					cells++
+					// Work cuts are scratch projections, not extra saved heads.
+					for _, offset := range []int64{cut - 1, cut} {
+						projection := originProjectionState(t, bundle, origin, start.Add(time.Duration(offset)*time.Millisecond), mode)
+						if err := bundle.ValidateFoundationState(projection); err != nil {
+							t.Fatal(err)
+						}
+						if !bytes.Equal(origin, mustEncodeState(t, initial)) {
+							t.Fatal("scratch projection mutated the committed origin")
+						}
+					}
+					projected := originProjectionState(t, bundle, origin, start.Add(time.Duration(cut+1)*time.Millisecond), mode)
+					settled, err := save.RestoreState(origin, 19, bundle.Economy, economy.ScopeCompany, start)
+					if err != nil {
+						t.Fatal(err)
+					}
+					originProjectionAdvance(t, settled, projected)
+					if !bytes.Equal(origin, mustEncodeState(t, initial)) {
+						t.Fatal("settlement mutated the separate origin")
+					}
+					if !bytes.Equal(mustEncodeState(t, settled), mustEncodeState(t, projected)) {
+						t.Fatal("deferred ledger settlement differs from complete one-shot projection")
+					}
+				})
+			}
+		}
+	}
+	if cells != 20 {
+		t.Fatalf("incomplete deferred-settlement population: got %d want20", cells)
+	}
+	t.Log("20 deferred settlements match actual one-shot Company projections; ApplyLogged/hooks/episode authority NOT_PROVEN")
+}
