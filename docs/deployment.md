@@ -139,6 +139,10 @@ rejects a non-ELF or non-amd64
 binary, client symlinks, an absent SPA entry point, empty/missing inputs, mutable image references
 and a pre-existing output tree.
 
+Malformed gameserver image tar headers return an invalid-content error before their header is
+inspected, including corruption after a valid member. An archive-parser failure stops assembly
+before release manifest publication; partial output is not a reusable release bundle.
+
 The resulting directory contains the runtime content closure, site, gameserver, backup, release,
 operations and R-006 rehearsal helper binaries, the offline gameserver image archive,
 Docker/Caddy/Compose inputs, the strict deployment and rehearsal schemas, operations rules/templates, root and

@@ -7,6 +7,13 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest bounded correction (RP-511):** malformed gameserver archive headers now return
+invalid content rather than panicking in the validator/assembler. Eight old-source failures
+become refusals; intact controls and all twelve malformed-input cases pass. Affected cold
+native/vet and Linux packages plus existing real Postgres/Caddy integration pass. The log
+owns the pending designated range and fixture limits. Six Linux binaries, client, metadata
+and content build at `abf4b4ac`, but these pre-correction outputs are not a current full bundle.
+
 **Latest bounded correction (RP-510):** both package-creation passes now bind the
 same complete dump under DP6/AC4. Four old-source regressions fail; rewind before
 hashing plus streamed hash/EOF validation prevents publishing an inconsistent
@@ -188,8 +195,8 @@ For every batch:
 | Wave | Scope | State |
 |---|---|---|
 | DP-F1 | Initial-install command plus exact rehearsal schema/validator and sanitized evidence contract | implemented locally at `b9d7c8a`; review remains in the DP-F range |
-| DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | two byte-matched local candidate bundles at source `7e8aa70`; build records, scan and full local supply-chain check pass; 25/43 populations have real probes, no run claim or designated verdict |
-| DP-F3 | Clean Linux/amd64 host install, browser flow, backup/restart/restore/rollback, alert delivery, journal measurement and RPO/RTO observation with no checkout/providers | exact candidate/previous inputs prepared locally; blocked on explicit clean-host target authority and required designated review boundaries |
+| DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | historical byte-matched builds at `7e8aa70` are not current candidates and were invalidated by later validator corrections (log 2026-09-24). Current-source full image/SBOM/bundle rebuild and two-tree comparison remain open; partial builds at `abf4b4ac` do not replace them. No run claim or designated verdict. |
+| DP-F3 | Clean Linux/amd64 host install, browser flow, backup/restart/restore/rollback, alert delivery, journal measurement and RPO/RTO observation with no checkout/providers | requires the refreshed exact candidate/retained previous pair from DP-F2, explicit clean-host target authority and required designated review boundaries |
 | DP-F4 | R-006 dossier, canonical runbook/limitations, backlog/queue/RFC closeout and full-range first-filter | blocked on DP-F3 and designated approvals for DP-A–DP-E |
 
 ## RP-141 — R18 producer witness supplement

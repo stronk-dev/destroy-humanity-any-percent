@@ -48,8 +48,11 @@ func ValidateDockerArchive(path, expectedReference, releaseVersion, sourceCommit
 		if errors.Is(err, io.EOF) {
 			break
 		}
+		if err != nil {
+			return errors.Join(ErrInvalidContent, err)
+		}
 		cleanName := strings.TrimSuffix(header.Name, "/")
-		if err != nil || cleanName == "" || !validRelativePath(cleanName) || seen[header.Name] || header.Size < 0 || header.Size > 512<<20 {
+		if cleanName == "" || !validRelativePath(cleanName) || seen[header.Name] || header.Size < 0 || header.Size > 512<<20 {
 			return ErrInvalidContent
 		}
 		seen[header.Name] = true

@@ -5222,3 +5222,41 @@ archival, hosted/whole-CI, clean-host/RTO or release claim; signed protection
 metadata, snapshot-origin/resolution author holds and D-019 remain separate.
 Continue accepted construction/correctness while those specific contracts are
 held; full nine-tier1.0 goal remains active. Nothing pushed or deployed.
+
+## 2026-10-12 — Refuse malformed image tar headers without panic (RP-511)
+
+Local release construction at clean `abf4b4ac`:97246 builds all six Linux/amd64
+commands;77862 builds the client;11019 stages epoch8 content and generates metadata
+for53 dependencies. Outputs are ignored under `.cache/release-current-abf4b4ac/`
+and `client/dist/`; no image/SBOM/full bundle or reproducibility claim follows.
+The old candidate record still names `7e8aa70`; it was already invalidated by later
+validator corrections, so the plan now explicitly distinguishes that historical
+build from a usable current candidate. No old bytes or build record relabelled.
+
+During construction-path inspection, ValidateDockerArchive dereferences the tar
+header before checking Next's error. Old-source9013 reproduces four panics each
+through direct validation and AssembleBundle: short first/later headers and bad
+first/later checksums. Empty input and truncated member bodies already refuse;
+intact archive and assembled/validated bundle controls pass. These are synthetic
+structural archive/ELF fixtures, not an executed release image. Under DP1/AC1/AC8,
+check the parser error first and return invalid content with its original cause.
+Corrected848691 passes both named tests and all twelve negative arms; archive
+failure returns no manifest and leaves no published manifest in the output tree.
+
+Final checks:5883 cold native `make test-go vet` for releasepackage,
+cmd/assemble-release-bundle, cmd/gen-release-metadata, deploymentrelease and
+deploymentrehearsal passes; assembler command has no separate unit tests, its
+actual function is exercised above.74516 `make test-go-ci` for the same packages
+passes on Linux/amd64.99190 `make test-deployment-release` executes the real
+Postgres16/Caddy backup/drain/restart/rollback integration without a skip; it
+retains its helper-fixture boundary, not an installed exact release bundle.
+The isolated target removes its own services; unrelated orphans are untouched.
+Formatting and diff checks pass; all handles are terminal.
+
+Docs/plan and RP-511 reconciled. Review by: Codex (implementer first filter).
+Recorded by: Codex. Full source/test/docs/ledger/plan/log range after `abf4b4ac`
+through this containing commit needs Claude designated review, consolidatable
+with related packaging corrections. No new RFC, image/format/key/bound/CI change,
+hosted/full-CI, clean-host, acceptance or release claim. Next: rebuild exact
+current candidate inputs from the committed correction, retaining previous
+artifacts unchanged; operator/author holds and full nine-tier1.0 scope remain.
