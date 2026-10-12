@@ -164,11 +164,13 @@ func releaseProbeFixture(t *testing.T, candidateVersion, previousVersion string)
 		writeProbeInput(t, filepath.Join(metadata, "third-party-licenses.txt"), []byte("fixture attribution\n"), 0o644)
 		writeProbeInput(t, filepath.Join(metadata, "sbom.spdx.json"), probeSPDX("application"), 0o644)
 
-		config, err := json.Marshal(map[string]any{"architecture": "amd64", "os": "linux", "config": map[string]any{
-			"User": "65532:65532", "Entrypoint": []string{"/usr/local/bin/gameserver"}, "Labels": map[string]string{
-				"org.opencontainers.image.version": version, "org.opencontainers.image.revision": commit,
-				"org.opencontainers.image.source":   "https://github.com/stronk-dev/destroy-humanity-any-percent",
-				"org.opencontainers.image.licenses": "MIT"}}})
+		layer := []byte("synthetic fixture layer\n")
+		config, err := json.Marshal(map[string]any{"architecture": "amd64", "os": "linux",
+			"rootfs": map[string]any{"type": "layers", "diff_ids": []string{hashBytes(layer)}}, "config": map[string]any{
+				"User": "65532:65532", "Entrypoint": []string{"/usr/local/bin/gameserver"}, "Labels": map[string]string{
+					"org.opencontainers.image.version": version, "org.opencontainers.image.revision": commit,
+					"org.opencontainers.image.source":   "https://github.com/stronk-dev/destroy-humanity-any-percent",
+					"org.opencontainers.image.licenses": "MIT"}}})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -183,7 +185,7 @@ func releaseProbeFixture(t *testing.T, candidateVersion, previousVersion string)
 		for _, entry := range []struct {
 			name string
 			data []byte
-		}{{configName, config}, {"manifest.json", archiveManifest}, {"layer/layer.tar", []byte("synthetic fixture layer\n")}} {
+		}{{configName, config}, {"manifest.json", archiveManifest}, {"layer/layer.tar", layer}} {
 			if err := writer.WriteHeader(&tar.Header{Name: entry.name, Mode: 0o644, Size: int64(len(entry.data)), Typeflag: tar.TypeReg}); err != nil {
 				t.Fatal(err)
 			}

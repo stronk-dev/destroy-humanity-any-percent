@@ -5325,3 +5325,49 @@ Review by: Codex (first filter of outputs/record/docs, not designated approval).
 Recorded by: Codex. The record/docs/plan/ledger/log range after `102face6` through
 this containing commit is available for consolidated designated review. No
 product, migration, image pin, contract, bound, CI or owner-copy bytes changed.
+
+## 2026-10-12 — Bind actual image layers to configuration identity (RP-513)
+
+DP1/AC1/AC8 repair, not a new packaging format or product ruling. The archive
+validator previously checked the config hash and layer-name presence but never
+compared actual layer bytes to the config's ordered rootfs identities. The new
+plain/gzip population on unchanged production (48227) has ten failing negatives:
+changed first/second layer, reversed layer order, absent rootfs and missing DiffID;
+both intact controls pass. This establishes an offline validation defect, not a
+Docker-loader bypass: release preparation already loads/checks images before drain.
+
+The validator now streams uncompressed hashes and matches every manifest layer in
+order to `rootfs.diff_ids`. Plain/gzip encoding and existing512MiB member/1GiB
+decompression bounds remain; no layer is silently excluded. Bad gzip checksum,
+truncated stream, malformed header, unsupported zstd and source read failure refuse,
+with the read-error cause preserved. Synthetic existing fixtures acquire correct
+rootfs metadata without changing their payloads; they are still not runnable images.
+The new two-layer regression fixtures use actual inner tar archives.
+
+Final executed checks, all terminal:
+- 96093: cold verbose ordered-layer population, twelve cases, and all five codec/read
+  refusals pass; intact plain/gzip hash controls also pass.
+- 31939: cold affected releasepackage, deploymentrehearsal, deploymentrelease and
+  their three command packages pass, plus vet. The assembler command has no separate
+  tests; the actual assembly function remains exercised by releasepackage tests.
+- 19100: the same package boundary passes through the declared Linux/amd64 target.
+  This is not evidence of dedicated SQL integration populations executing there.
+- 99278: actual Postgres16/Caddy release/drain/exact-backup rollback integration
+  passes without skipping (2.38s); the isolated target removes its own services.
+- Fresh `make build-deployment-rehearsal`, then actual supply-chain probe against
+  both source102face6 bundle trees exits0 under this validator. These are independent
+  candidate copies, not a legitimate candidate/previous pair or clean-host R-006.
+
+An interrupted tool output hid earlier check handles/results; only the fully read
+fresh final runs above support the final check claim. Read-only process inspection
+confirmed no overlapping jobs for these packages before rerunning. Unrelated processes
+and the warned game-ui orphan remain untouched. Formatting/diff checks pass.
+
+Docs, plan and RP-513 reconcile in this batch. Review by: Codex (implementer first
+filter). Recorded by: Codex. The complete source/tests/docs/ledger/plan/log range
+after `13621c7d` through this containing commit needs designated Claude review,
+consolidatable with the packaging repairs. No new bound, wire, key, CI or gameplay
+change; no self-approval, archival, deployment or release claim. Retained source102
+bundle helpers predate this repair: rebuild at the final reviewed source rather
+than relabel artifacts. Actual previous artifacts/provenance, contract-author holds,
+full-range reviews and explicitly authorized exact clean-host rehearsal remain open.

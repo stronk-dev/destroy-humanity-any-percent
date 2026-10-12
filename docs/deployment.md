@@ -42,7 +42,12 @@ provenance attachment for the offline Docker archive, rewrites layer timestamps 
 caller-supplied `SOURCE_DATE_EPOCH` (normally the source commit time). The assembler verifies the
 saved config's Linux/amd64 identity, nonroot entry point and
 OCI version/revision/source/license labels against the release manifest; a digest from another
-commit is rejected.
+commit is rejected. It also binds the manifest's ordered layer payloads to the configuration's
+`rootfs.diff_ids`: these identify the uncompressed layer bytes, as defined by the
+[OCI image configuration](https://github.com/opencontainers/image-spec/blob/main/config.md#layer-diffid).
+Changed/reordered layers, missing identities and unreadable compression refuse validation. Plain
+and gzip members retain the scanner's existing decompression limit; zstd remains unsupported.
+This offline identity check does not replace Docker loading or a clean-host startup rehearsal.
 
 `deployment/compose.template.yml` defines the current core topology: only Caddy publishes two host
 ports; Caddy and gameserver share an internal application network; gameserver and Postgres share a

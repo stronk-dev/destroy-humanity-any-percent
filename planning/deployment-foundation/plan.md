@@ -16,6 +16,15 @@ bytes. A manifest-bound source/image scan and nine real-bundle mutation probes p
 This is local construction evidence, not a supported candidate/previous rollback pair,
 current CI, independent review, clean-host R-006 or any1.0 release acceptance.
 
+**Latest bounded correction (RP-513):** archive validation now binds ordered actual
+uncompressed layer hashes to the config's `rootfs.diff_ids`, rather than merely checking
+that layer names exist. Ten old-source negatives fail; corrected plain/gzip controls and
+compression-error refusals pass. Affected cold native/vet and Linux packages and real
+Postgres/Caddy integration pass. Both retained source102face6 candidate bundles still
+validate under the corrected native helper, but their bundled helpers do not contain this
+later repair. Rebuild at the final reviewed source; do not relabel those immutable artifacts.
+The owning log records the corrective range needing designated review and remaining gates.
+
 **Latest bounded correction (RP-511):** malformed gameserver archive headers now return
 invalid content rather than panicking in the validator/assembler. Eight old-source failures
 become refusals; intact controls and all twelve malformed-input cases pass. Affected cold

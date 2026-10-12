@@ -392,7 +392,8 @@ func fixtureSPDX(name string) string {
 
 func fixtureDockerArchive(t *testing.T, directory, architecture string) (string, string) {
 	t.Helper()
-	config := []byte("{\"architecture\":\"" + architecture + "\",\"os\":\"linux\",\"config\":{\"User\":\"65532:65532\",\"Entrypoint\":[\"/usr/local/bin/gameserver\"],\"Labels\":{\"org.opencontainers.image.version\":\"0.1.0-preview.1\",\"org.opencontainers.image.revision\":\"dddddddddddddddddddddddddddddddddddddddd\",\"org.opencontainers.image.source\":\"https://github.com/stronk-dev/destroy-humanity-any-percent\",\"org.opencontainers.image.licenses\":\"MIT\"}}}\n")
+	layer := []byte("fixture layer\n")
+	config := []byte("{\"architecture\":\"" + architecture + "\",\"os\":\"linux\",\"rootfs\":{\"type\":\"layers\",\"diff_ids\":[\"" + digest(layer) + "\"]},\"config\":{\"User\":\"65532:65532\",\"Entrypoint\":[\"/usr/local/bin/gameserver\"],\"Labels\":{\"org.opencontainers.image.version\":\"0.1.0-preview.1\",\"org.opencontainers.image.revision\":\"dddddddddddddddddddddddddddddddddddddddd\",\"org.opencontainers.image.source\":\"https://github.com/stronk-dev/destroy-humanity-any-percent\",\"org.opencontainers.image.licenses\":\"MIT\"}}}\n")
 	imageID := digest(config)
 	configName := strings.TrimPrefix(imageID, "sha256:") + ".json"
 	manifest := []byte("[{\"Config\":\"" + configName + "\",\"RepoTags\":[\"cloud-clicker/gameserver:fixture\"],\"Layers\":[\"layer/layer.tar\"]}]\n")
@@ -402,7 +403,7 @@ func fixtureDockerArchive(t *testing.T, directory, architecture string) (string,
 		t.Fatal(err)
 	}
 	writer := tar.NewWriter(file)
-	for name, data := range map[string][]byte{configName: config, "manifest.json": manifest, "layer/layer.tar": []byte("fixture layer\n")} {
+	for name, data := range map[string][]byte{configName: config, "manifest.json": manifest, "layer/layer.tar": layer} {
 		if err := writer.WriteHeader(&tar.Header{Name: name, Mode: 0o644, Size: int64(len(data)), Typeflag: tar.TypeReg}); err != nil {
 			t.Fatal(err)
 		}

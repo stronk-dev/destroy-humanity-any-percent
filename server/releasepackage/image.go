@@ -2,7 +2,11 @@ package releasepackage
 
 import (
 	"archive/tar"
+	"bufio"
 	"bytes"
+	"compress/gzip"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -20,7 +24,11 @@ type dockerArchiveManifest struct {
 type dockerImageConfig struct {
 	Architecture string `json:"architecture"`
 	OS           string `json:"os"`
-	Config       struct {
+	RootFS       struct {
+		Type    string   `json:"type"`
+		DiffIDs []string `json:"diff_ids"`
+	} `json:"rootfs"`
+	Config struct {
 		User       string            `json:"User"`
 		Entrypoint []string          `json:"Entrypoint"`
 		Labels     map[string]string `json:"Labels"`
@@ -43,6 +51,7 @@ func ValidateDockerArchive(path, expectedReference, releaseVersion, sourceCommit
 	hash := strings.TrimPrefix(expectedReference, "sha256:")
 	wantConfigs := map[string]bool{hash + ".json": true, "blobs/sha256/" + hash: true}
 	seen := map[string]bool{}
+	layerDiffIDs := map[string]string{}
 	for {
 		header, err := reader.Next()
 		if errors.Is(err, io.EOF) {
@@ -72,6 +81,12 @@ func ValidateDockerArchive(path, expectedReference, releaseVersion, sourceCommit
 			} else {
 				configBytes = data
 			}
+		} else {
+			diffID, err := archiveMemberDiffID(reader, header.Size)
+			if err != nil {
+				return err
+			}
+			layerDiffIDs[header.Name] = diffID
 		}
 	}
 	if len(manifestBytes) == 0 || len(configBytes) == 0 || digest(configBytes) != expectedReference {
@@ -82,11 +97,6 @@ func ValidateDockerArchive(path, expectedReference, releaseVersion, sourceCommit
 	if decoder.Decode(&manifest) != nil || decoder.Decode(&struct{}{}) != io.EOF || len(manifest) != 1 || !wantConfigs[manifest[0].Config] || len(manifest[0].Layers) == 0 {
 		return ErrInvalidContent
 	}
-	for _, layer := range manifest[0].Layers {
-		if !seen[layer] {
-			return ErrInvalidContent
-		}
-	}
 	var config dockerImageConfig
 	decoder = json.NewDecoder(bytes.NewReader(configBytes))
 	if decoder.Decode(&config) != nil || decoder.Decode(&struct{}{}) != io.EOF || config.Architecture != "amd64" || config.OS != "linux" ||
@@ -96,5 +106,39 @@ func ValidateDockerArchive(path, expectedReference, releaseVersion, sourceCommit
 		config.Config.Labels["org.opencontainers.image.licenses"] != "MIT" {
 		return ErrInvalidContent
 	}
+	if config.RootFS.Type != "layers" || len(config.RootFS.DiffIDs) != len(manifest[0].Layers) {
+		return ErrInvalidContent
+	}
+	for index, layer := range manifest[0].Layers {
+		if !hashPattern.MatchString(config.RootFS.DiffIDs[index]) || layerDiffIDs[layer] != config.RootFS.DiffIDs[index] {
+			return fmt.Errorf("%w: gameserver layer content identity mismatch", ErrInvalidContent)
+		}
+	}
 	return nil
+}
+
+// OCI DiffIDs hash uncompressed layer bytes, not a gzip member's compressed
+// blob identity. Reuse the existing archive scanner's decompression bound and
+// supported encodings; an unreadable or oversized member is never skipped.
+func archiveMemberDiffID(source io.Reader, size int64) (string, error) {
+	buffered := bufio.NewReader(io.LimitReader(source, size))
+	prefix, err := buffered.Peek(4)
+	if err != nil && !errors.Is(err, io.EOF) || bytes.HasPrefix(prefix, zstdMagic) {
+		return "", errors.Join(ErrInvalidContent, err)
+	}
+	var input io.Reader = buffered
+	if bytes.HasPrefix(prefix, gzipMagic) {
+		decompressor, err := gzip.NewReader(buffered)
+		if err != nil {
+			return "", errors.Join(ErrInvalidContent, err)
+		}
+		defer decompressor.Close()
+		input = decompressor
+	}
+	hash := sha256.New()
+	written, err := io.Copy(hash, io.LimitReader(input, maximumSecretScanDecompressed+1))
+	if err != nil || written > maximumSecretScanDecompressed {
+		return "", errors.Join(ErrInvalidContent, err)
+	}
+	return "sha256:" + hex.EncodeToString(hash.Sum(nil)), nil
 }
