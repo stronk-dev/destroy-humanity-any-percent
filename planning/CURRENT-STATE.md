@@ -31,7 +31,7 @@ queue and current verification, not a claim to have rerun every acceptance crite
 | Privacy / player rights | Relation-complete 60-table inventory and bounded browser/event/backup/deletion traces expose actual retained data. Research publication classification/sanitization is complete. | Owner export/deletion/retention choices (D-008/D-009/D-015), implementations and player workflows. Public board survival after deletion and restoration from pre-deletion backups remain explicit issues. An instance backup is not player export. |
 | Accessibility | Native keyboard, focus, pending feedback, reflow and announcement corrections exist across several surfaces; targeted browser checks execute. | Accepted cross-product task/assistive-technology matrix and actual task testing, including zoom/motion/longer workflows. Automated checks alone are not accessibility completion. |
 | MMO and later game | Commons, guild, faction and doctrine primitives exist. Combat has shared Go/TS arithmetic, deterministic random streams and strict ordered three-member team/eight-card deck reference decoding. The new decoder is a standalone library with no live player consumer, not a battle engine. | Combat catalog/effect definitions and Trust/Soul tables; complete world/feed/ticker/social surfaces, combat engines/integration and fair bot backfill, Tier 3–8 content, challenge/category set and all final endings. These are substantial unbuilt work, not merely closeout paperwork. |
-| Deployment / operations | Accepted single-node Compose/Caddy floor; packaging, configuration, encrypted backup, release/rollback and operations tooling implemented with several bounded corrective approvals. | Remaining findings and exact-range reviews; rebuild current candidate/previous bundles; R-006 clean Linux-host install/restore/rollback rehearsal. Historical bundles and native helper tests do not establish current release readiness. |
+| Deployment / operations | Accepted single-node Compose/Caddy floor; packaging, configuration, encrypted backup, release/rollback and operations tooling implemented with several bounded corrective approvals. Two complete independent local candidate builds at `102face6` now match, including fresh platform-verified image SBOMs; the Deployment plan/log and `release-builds/candidate-102face6.json` own evidence. | Remaining findings and exact-range reviews; recover/reconstruct the legitimate previous bundle/provenance and full pair supply-chain proof; R-006 clean Linux-host install/restore/rollback rehearsal. The new local build does not establish release readiness. |
 
 ### What the weeks of work have delivered
 
@@ -93,8 +93,9 @@ unresolved boundaries; the four proposals are not an exhaustive release decision
    including verification/download and generated consumers, remain work, not owner decisions.
 3. Implement and exercise player export/deletion/recovery and task accessibility under
    adopted contracts. Instance backup and automated keyboard checks are not substitutes.
-4. Finish Deployment findings/reviews; build the exact candidate and previous bundles and
-   prove installation, restore, rollback and operations on an authorized supported clean host.
+4. Finish Deployment findings/reviews; retain the new local candidate, recover/reconstruct
+   legitimate previous artifacts/provenance and full pair proof, then prove installation,
+   restore, rollback and operations on an authorized supported clean host.
 5. Build the substantial remaining world/social/event/combat/bot systems and Tier 3–8
    progression, challenges and all final endings. Follow the cumulative
    [milestone roadmap](roadmap-1.0.md#milestone-path); a preview never narrows 1.0.

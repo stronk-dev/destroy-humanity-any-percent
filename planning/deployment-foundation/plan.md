@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current local construction (2026-10-12):** two independently built candidate trees at
+`102face6` compare byte-identical, including74 artifacts, six Linux commands, no-cache image
+archives and seven independently scanned normalized image SBOMs. New retained record:
+`release-builds/candidate-102face6.json`; the old candidate/previous records stay historical.
+RP-512 corrects two ARM64 identities in the old records for this new build, not those old
+bytes. A manifest-bound source/image scan and nine real-bundle mutation probes pass.
+This is local construction evidence, not a supported candidate/previous rollback pair,
+current CI, independent review, clean-host R-006 or any1.0 release acceptance.
+
 **Latest bounded correction (RP-511):** malformed gameserver archive headers now return
 invalid content rather than panicking in the validator/assembler. Eight old-source failures
 become refusals; intact controls and all twelve malformed-input cases pass. Affected cold
@@ -195,7 +204,7 @@ For every batch:
 | Wave | Scope | State |
 |---|---|---|
 | DP-F1 | Initial-install command plus exact rehearsal schema/validator and sanitized evidence contract | implemented locally at `b9d7c8a`; review remains in the DP-F range |
-| DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | historical byte-matched builds at `7e8aa70` are not current candidates and were invalidated by later validator corrections (log 2026-09-24). Current-source full image/SBOM/bundle rebuild and two-tree comparison remain open; partial builds at `abf4b4ac` do not replace them. No run claim or designated verdict. |
+| DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | two full byte-identical local candidate builds at `102face6` with seven independent fresh image scans, correct amd64 config identities, retained record and structured scan. Historical `7e8aa70` builds remain invalid. The legitimate retained previous pair/full supply-chain run and remaining producer/author gates are still open; no R-006 run or designated verdict. |
 | DP-F3 | Clean Linux/amd64 host install, browser flow, backup/restart/restore/rollback, alert delivery, journal measurement and RPO/RTO observation with no checkout/providers | requires the refreshed exact candidate/retained previous pair from DP-F2, explicit clean-host target authority and required designated review boundaries |
 | DP-F4 | R-006 dossier, canonical runbook/limitations, backlog/queue/RFC closeout and full-range first-filter | blocked on DP-F3 and designated approvals for DP-A–DP-E |
 

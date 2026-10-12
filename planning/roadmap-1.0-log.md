@@ -5208,3 +5208,14 @@ comparison; no software suite for editorial records, no tracker validator. This 
 does not approve implementation, adopt a proposal, authorize publication or waive the full
 nine-tier goal. Next remains accepted construction/correctness and later independent API
 implementation review, not repeating the five original reviews or waiting on all decisions.
+
+## 2026-10-12 — Current implementation packaged twice; previous provenance still open
+
+Two independent complete local candidate builds at `102face6` compare byte-identical,
+including fresh platform-selected image scans and source/image scan. The new retained
+`planning/deployment-foundation/release-builds/candidate-102face6.json` and owning Deployment
+log hold exact identities, actual artifact probes and exclusions. RP-512 records two ARM64
+config IDs in the historical candidate/previous records; those records are not relabelled.
+Current next work is legitimate previous artifacts/provenance, full pair proof, outstanding
+reviews and authorized clean-host rehearsal, not merely rebuilding the already packaged
+candidate. No release state, playable tier, contract adoption, CI or1.0 acceptance advances.

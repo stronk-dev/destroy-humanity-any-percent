@@ -125,6 +125,14 @@ and its creation time to the declared release timestamp. It refuses empty graphs
 identities, or an existing destination. Independent real Caddy scans have produced byte-identical
 normalized output; the exact six-image set is still built and retained per release candidate.
 
+Resolve each upstream runtime-config ID from the pinned registry reference, not an unqualified
+host-native `docker image inspect`. Read `docker buildx imagetools inspect <reference> --raw`;
+for an index, select its unique `linux`/`amd64` child and read that child's `config.digest`.
+For a single-image manifest, read its `config.digest` directly. Inspect the selected manifest
+with `--format '{{json .Image}}'` and require `architecture: amd64` and `os: linux` before
+passing that ID to the platform-selected SBOM scan and assembler. A digest-pinned index
+contains multiple architectures; pinning alone does not make a host-selected config amd64.
+
 ## Release bundle assembly
 
 `make assemble-release-bundle` accepts only an empty output directory and requires all of the

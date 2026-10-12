@@ -5260,3 +5260,68 @@ with related packaging corrections. No new RFC, image/format/key/bound/CI change
 hosted/full-CI, clean-host, acceptance or release claim. Next: rebuild exact
 current candidate inputs from the committed correction, retaining previous
 artifacts unchanged; operator/author holds and full nine-tier1.0 scope remain.
+
+## 2026-10-12 — Fresh two-tree candidate construction; platform input defect (RP-512)
+
+DP1/AC1/AC8 local construction uses actual clean starting source
+`102face6f2aeadc8aaa0ff19af0d4d5bd0f63ef1`, timestamp `2026-10-12T21:29:21Z`,
+source-date epoch `1791840561` and existing local candidate label `0.1.0-preview.2` (not a
+published release). Both independent trees rebuild the client, six static
+Linux/amd64 Go commands, epoch8 content, metadata for53 dependencies, no-cache
+image archives and seven fresh Syft scans. No source/build input changes occur
+between them; the intervening dirty file is only the new RP-512 ledger row.
+The Dockerfiles match the repository template; BuildKit/Syft/frontend images
+stay pinned. Actual Docker28.4.0 and Compose2.39.4-desktop.1 are inspected, not
+inferred from old records. An initial metadata invocation used a mistaken full
+commit/time: `.cache/release-current-102face6/metadata/` is invalid and excluded.
+Both assembled trees instead use `metadata-corrected/` with the actual Git values.
+
+RP-512: pinned registry index → unique Linux/amd64 child → config.digest and
+config architecture/OS verification exposes two wrong identities in **both old
+records**. Alertmanager's old23b56bfd… and node-exporter's old84acc55a… are ARM64,
+also confirmed by cached-image inspection. Actual amd64 configs are6519630d…
+and9bbbca8f…. The other four upstream configs are independently checked too;
+single-image Caddy/Playwright manifests are handled without inventing an index.
+All fourteen platform-selected image scans execute; no old SBOM is reused.
+Documentation now explains explicit platform resolution instead of host-native
+image inspection. Old files/records remain unchanged, not silently repaired.
+
+Actual outputs:
+- `.cache/release-current-102face6/bundle-a` and
+  `.cache/release-rebuild-102face6/bundle-b`, each74 manifest-bound artifacts;
+- manifest `sha256:061375c80401d5aaaac172c894837cb4e3ca082a59250e7ad40b635338a46073`;
+- gameserver archive `sha256:0ffddcec5503ff6b20691a4a1039057e7eb3ad502e13b65cebc77033fc2e0d4b`;
+- gameserver config `sha256:0a6a731624aabc87cf0fb4df42afa8f35ba36b7c50e9455689dc1e48494a9677`.
+
+Root six-command build targets, `build-client`, `stage-release-content`,
+`generate-release-metadata`, `build-gameserver-image`, `generate-image-sbom`
+and `assemble-release-bundle` complete in each tree. `diff -r` compares the
+entire bundled trees byte-identical; separate comparisons also cover all six
+binaries, staged content, metadata, archives and seven normalized image SPDX
+documents. Raw nondeterministic Syft headers are neither compared nor shipped.
+The new small retained `release-builds/candidate-102face6.json` comes from actual
+bundle hashes/images, and the native-built rehearsal command's `validate-build`
+accepts it. The structured `make release-secret-scan` bound to the above manifest
+and exact image completes over2126 tracked files, zero findings, without a guard.
+Only the RP-512 tracking row was dirty during that scan; no build input changed.
+
+Both assemblers validate their actual bundle. The rehearsal `probe` command's
+healthy supply-chain population exits0 on this **independent candidate rebuild
+pair**, not an immediately previous release. Each of nine real-bundle mutations
+exits3 (`fixture_rejected`), not setup failure: removed catalog/client/license/
+config/helper, changed image/runtime-config/SBOM and wrong epoch/artifact set.
+Their healthy-first semantic/rebound checks preserve the originals; a final
+whole-tree comparison passes and probe work is empty. All handles are terminal.
+
+Limits/next: `.cache/release/previous/bundle` is absent on this machine; the old
+previous record has RP-512's bad architecture identities. Do not substitute the
+second candidate as a previous release or fabricate the missing supply-chain
+pair. Recover/reconstruct legitimate previous artifacts and resolve their
+provenance before the full candidate/previous supply-chain/rollback population.
+Full-range designated reviews, producer/author holds, actual CI and explicitly
+authorized clean-host R-006 still gate support/release; this construction is not
+a deployment, platform acceptance or the full nine-tier1.0 result. No push.
+Review by: Codex (first filter of outputs/record/docs, not designated approval).
+Recorded by: Codex. The record/docs/plan/ledger/log range after `102face6` through
+this containing commit is available for consolidated designated review. No
+product, migration, image pin, contract, bound, CI or owner-copy bytes changed.
