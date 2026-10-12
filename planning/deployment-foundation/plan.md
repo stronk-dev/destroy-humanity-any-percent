@@ -7,6 +7,18 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest bounded correction, 2026-10-13 (RP-518):** helper observation now keeps
+an atomic bounded last-result gauge alongside the unchanged historical timestamps.
+The backup alert no longer loses a failure in the same whole second as success;
+legacy newer-failure and six-hour deadline arms remain. The actual scheduler
+encrypted-target regression, cold affected native/vet and Linux-amd64/Postgres
+packages, and exact pinned rule evaluator pass. The private Compose fixture also
+proves production textfile→node-exporter→Prometheus→configured receiver firing
+and matching resolution, preserving the real receiver-rejection check. This uses
+controlled outcome/clock input, not a Postgres backup command or clean release host.
+The owning log records the range after `24a343b8` requiring Claude review; all
+other DP-E/AC7 and Deployment acceptance/archival gates remain open.
+
 **Historical predecessor reconstruction (2026-10-13, RP-514):** exact source44a4a72
 now has two independently rebuilt, byte-identical70-artifact trees, six fresh image
 SBOMs per build and corrected Linux/amd64 config identities. This restores artifacts,

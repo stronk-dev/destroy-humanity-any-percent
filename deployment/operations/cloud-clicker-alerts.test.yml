@@ -220,6 +220,54 @@ tests:
           - exp_labels: {severity: page}
             exp_annotations: {summary: "The six-hour encrypted backup contract is missing, late, or failed."}
 
+  # The real helper retains whole-second historical timestamps. Its latest
+  # outcome must still page on a same-second failure and clear on a new success.
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_backup_last_success_timestamp_seconds'
+        values: '10x2'
+      - series: 'cloud_clicker_backup_last_failure_timestamp_seconds'
+        values: '10x2'
+      - series: 'cloud_clicker_backup_last_result'
+        values: '1 0 1'
+    alert_rule_test:
+      - eval_time: 0s
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts: []
+      - eval_time: 15s
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "The six-hour encrypted backup contract is missing, late, or failed."}
+      - eval_time: 30s
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts: []
+
+  # A failed outcome cannot hide behind an earlier timestamp. Keep the legacy
+  # newer-failure clause too: old helpers do not overwrite the new outcome file.
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_backup_last_success_timestamp_seconds'
+        values: '20x2'
+      - series: 'cloud_clicker_backup_last_failure_timestamp_seconds'
+        values: '10 10 30'
+      - series: 'cloud_clicker_backup_last_result'
+        values: '1 0 1'
+    alert_rule_test:
+      - eval_time: 0s
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts: []
+      - eval_time: 15s
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "The six-hour encrypted backup contract is missing, late, or failed."}
+      - eval_time: 30s
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "The six-hour encrypted backup contract is missing, late, or failed."}
+
   - interval: 15s
     input_series:
       - series: 'cloud_clicker_filesystem_usage_ratio{storage="backup"}'

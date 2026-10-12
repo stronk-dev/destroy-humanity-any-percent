@@ -34,6 +34,9 @@ services:
 
   node-exporter:
     image: prom/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0
+    command: ["--collector.textfile.directory=/textfile"]
+    volumes:
+      - operations-textfile:/textfile:ro
     expose: ["9100"]
     networks: [operations]
 
@@ -45,6 +48,7 @@ services:
       CLOUD_CLICKER_OPERATIONS_INTEGRATION: "1"
     volumes:
       - ./.cache/bin/operations.test:/test/operations.test:ro
+      - operations-textfile:/textfile
     networks:
       operations:
         aliases: [gameserver]
@@ -53,3 +57,6 @@ services:
 networks:
   operations:
     internal: true
+
+volumes:
+  operations-textfile:

@@ -30,7 +30,21 @@ func RecordOperation(directory, operation, result string, at time.Time) error {
 	name := operation + "_last_" + result + "_timestamp_seconds"
 	data := []byte(fmt.Sprintf("# HELP cloud_clicker_%s Unix timestamp of the latest %s %s.\n# TYPE cloud_clicker_%s gauge\ncloud_clicker_%s %d\n",
 		name, operation, result, name, name, at.UTC().Unix()))
-	return writeMetricFile(directory, operation+"-"+result+".prom", data)
+	if err := writeMetricFile(directory, operation+"-"+result+".prom", data); err != nil {
+		return err
+	}
+	// Retain both historical timestamps, but never infer the latest outcome
+	// from their ordering: two operations can finish in the same second, and
+	// a clock correction can move backwards. The atomic outcome file changes
+	// only when the actual producer records another result.
+	outcome := 0
+	if result == "success" {
+		outcome = 1
+	}
+	name = operation + "_last_result"
+	data = []byte(fmt.Sprintf("# HELP cloud_clicker_%s Latest %s outcome: 1 for success, 0 for failure.\n# TYPE cloud_clicker_%s gauge\ncloud_clicker_%s %d\n",
+		name, operation, name, name, outcome))
+	return writeMetricFile(directory, operation+"-result.prom", data)
 }
 
 func RecordHost(directory string, persistentUsage, backupUsage float64, restartCount, journalBytes, journalBudget uint64) error {

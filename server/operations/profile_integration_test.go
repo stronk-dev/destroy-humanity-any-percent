@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -19,9 +20,12 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	if os.Getenv("CLOUD_CLICKER_OPERATIONS_INTEGRATION") != "1" {
 		t.Skip("requires isolated operations Compose profile")
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 150*time.Second)
+	// The expanded population includes both backup delivery transitions at the
+	// unchanged one-minute Alertmanager grouping interval, then its 45s refusal
+	// window. This is a completion guard, not a relaxed alert/latency bound.
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
-	received := make(chan []byte, 16)
+	received := make(chan []byte, 32)
 	var servers []*http.Server
 	start := func(address string, handler http.Handler) {
 		server := &http.Server{Addr: address, Handler: handler, ReadHeaderTimeout: 2 * time.Second}
@@ -38,6 +42,14 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	registry.SetReady(true)
+	// These are actual production textfiles, collected by the real node-exporter
+	// on the private network. The fixed clock intentionally makes success and
+	// failure indistinguishable in the old whole-second timestamp comparison.
+	backupAt := time.Now().UTC().Truncate(time.Second).Add(100 * time.Millisecond)
+	if err := RecordOperation("/textfile", "backup", "success", backupAt); err != nil {
+		t.Fatal(err)
+	}
 	metrics := http.NewServeMux()
 	metrics.Handle("/metrics", registry.Handler())
 	start(":8080", metrics)
@@ -45,7 +57,12 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	receiver := http.NewServeMux()
 	receiver.HandleFunc("/healthz", func(response http.ResponseWriter, _ *http.Request) { response.WriteHeader(http.StatusNoContent) })
 	receiver.HandleFunc("/alerts", func(response http.ResponseWriter, request *http.Request) {
-		data, _ := io.ReadAll(io.LimitReader(request.Body, 64<<10))
+		data, err := io.ReadAll(http.MaxBytesReader(response, request.Body, 64<<10))
+		if err != nil {
+			t.Errorf("incomplete notification: %v", err)
+			response.WriteHeader(http.StatusBadRequest)
+			return
+		}
 		if rejecting.Load() {
 			response.WriteHeader(http.StatusInternalServerError)
 			return
@@ -53,6 +70,9 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 		select {
 		case received <- data:
 		default:
+			t.Error("notification observation overflow; evidence incomplete")
+			response.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		response.WriteHeader(http.StatusNoContent)
 	})
@@ -112,6 +132,36 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 		t.Fatal("real cleanup failure never fired CloudClickerCleanupJobFailed")
 	}
 
+	// First prove a scraped healthy backup and no active backup alert. A prior
+	// missing-metric notification from service startup cannot count as this
+	// producer's failure: the received payload must start after failedAt.
+	if !waitForQueryValue(ctx, client, "cloud_clicker_backup_last_result", "1") ||
+		!waitForQueryValue(ctx, client, "cloud_clicker_backup_last_success_timestamp_seconds", fmt.Sprint(backupAt.Unix())) ||
+		!waitForAlertState(ctx, client, "CloudClickerBackupMissingOrFailed", "inactive") {
+		t.Fatal("real backup textfile did not establish a healthy baseline")
+	}
+	failedAt := time.Now().UTC()
+	if err := RecordOperation("/textfile", "backup", "failure", backupAt.Add(time.Millisecond)); err != nil {
+		t.Fatal(err)
+	}
+	if !waitForQueryValue(ctx, client, "cloud_clicker_backup_last_result", "0") ||
+		!waitForQueryValue(ctx, client, "cloud_clicker_backup_last_failure_timestamp_seconds", fmt.Sprint(backupAt.Unix())) ||
+		!waitForAlertState(ctx, client, "CloudClickerBackupMissingOrFailed", "firing") {
+		t.Fatal("same-second production backup failure did not fire through node-exporter")
+	}
+	firingStart := waitForBackupNotification(t, ctx, received, "firing", failedAt, time.Time{})
+	t.Log("same-second backup failure reached the configured receiver through node-exporter and Prometheus")
+	clearedAt := time.Now().UTC()
+	if err := RecordOperation("/textfile", "backup", "success", backupAt.Add(2*time.Millisecond)); err != nil {
+		t.Fatal(err)
+	}
+	if !waitForQueryValue(ctx, client, "cloud_clicker_backup_last_result", "1") ||
+		!waitForAlertState(ctx, client, "CloudClickerBackupMissingOrFailed", "inactive") {
+		t.Fatal("same-second successful retry did not resolve the backup rule")
+	}
+	waitForBackupNotification(t, ctx, received, "resolved", clearedAt, firingStart)
+	t.Log("successful retry reached the receiver as resolution of that exact backup alert")
+
 	// A receiver that rejects every notification must fail the delivery proof
 	// on recorded failures, not merely time out.
 	rejecting.Store(true)
@@ -123,12 +173,51 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	}
 }
 
+func waitForBackupNotification(t *testing.T, ctx context.Context, received <-chan []byte, status string, after, firingStart time.Time) time.Time {
+	t.Helper()
+	for {
+		select {
+		case <-ctx.Done():
+			t.Fatalf("backup %s notification missing: %v", status, ctx.Err())
+		case body := <-received:
+			var message struct {
+				Alerts []struct {
+					Status   string            `json:"status"`
+					Labels   map[string]string `json:"labels"`
+					StartsAt time.Time         `json:"startsAt"`
+					EndsAt   time.Time         `json:"endsAt"`
+				} `json:"alerts"`
+			}
+			if err := json.Unmarshal(body, &message); err != nil {
+				t.Fatalf("invalid configured receiver notification: %v", err)
+			}
+			for _, alert := range message.Alerts {
+				if alert.Labels["alertname"] != "CloudClickerBackupMissingOrFailed" || alert.Status != status {
+					continue
+				}
+				if status == "firing" && alert.StartsAt.Before(after) {
+					continue // stale startup-missing notification is not this failure
+				}
+				if status == "resolved" && (!alert.StartsAt.Equal(firingStart) || alert.EndsAt.Before(after)) {
+					continue
+				}
+				if alert.StartsAt.IsZero() || alert.Labels["job"] != "node-exporter" ||
+					alert.Labels["severity"] != "page" || alert.Labels["proof_nonce"] != "" {
+					t.Fatalf("backup notification lost its actual producer identity: %+v", alert)
+				}
+				return alert.StartsAt
+			}
+		}
+	}
+}
+
 func waitForQueryValue(ctx context.Context, client *http.Client, query, want string) bool {
 	for ctx.Err() == nil {
 		request, _ := http.NewRequestWithContext(ctx, http.MethodGet, "http://prometheus:9090/api/v1/query?query="+url.QueryEscape(query), nil)
 		if response, err := client.Do(request); err == nil {
 			var payload struct {
-				Data struct {
+				Status string `json:"status"`
+				Data   struct {
 					Result []struct {
 						Value []any `json:"value"`
 					} `json:"result"`
@@ -136,7 +225,8 @@ func waitForQueryValue(ctx context.Context, client *http.Client, query, want str
 			}
 			decodeErr := json.NewDecoder(response.Body).Decode(&payload)
 			_ = response.Body.Close()
-			if decodeErr == nil && len(payload.Data.Result) == 1 && len(payload.Data.Result[0].Value) == 2 && payload.Data.Result[0].Value[1] == want {
+			if decodeErr == nil && response.StatusCode == http.StatusOK && payload.Status == "success" &&
+				len(payload.Data.Result) == 1 && len(payload.Data.Result[0].Value) == 2 && payload.Data.Result[0].Value[1] == want {
 				return true
 			}
 		}
@@ -150,7 +240,8 @@ func waitForAlertState(ctx context.Context, client *http.Client, name, state str
 		request, _ := http.NewRequestWithContext(ctx, http.MethodGet, "http://prometheus:9090/api/v1/alerts", nil)
 		if response, err := client.Do(request); err == nil {
 			var payload struct {
-				Data struct {
+				Status string `json:"status"`
+				Data   struct {
 					Alerts []struct {
 						Labels map[string]string `json:"labels"`
 						State  string            `json:"state"`
@@ -159,11 +250,18 @@ func waitForAlertState(ctx context.Context, client *http.Client, name, state str
 			}
 			decodeErr := json.NewDecoder(response.Body).Decode(&payload)
 			_ = response.Body.Close()
-			if decodeErr == nil {
+			if decodeErr == nil && response.StatusCode == http.StatusOK && payload.Status == "success" {
+				found := false
 				for _, alert := range payload.Data.Alerts {
-					if alert.Labels["alertname"] == name && alert.State == state {
-						return true
+					if alert.Labels["alertname"] == name {
+						found = true
+						if alert.State == state {
+							return true
+						}
 					}
+				}
+				if state == "inactive" && !found {
+					return true
 				}
 			}
 		}

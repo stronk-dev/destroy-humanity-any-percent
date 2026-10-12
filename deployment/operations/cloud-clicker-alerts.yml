@@ -11,7 +11,7 @@ groups:
           summary: Public ingress or authoritative readiness has been unavailable for five minutes.
 
       - alert: CloudClickerBackupMissingOrFailed
-        expr: absent(cloud_clicker_backup_last_success_timestamp_seconds) == 1 or time() - cloud_clicker_backup_last_success_timestamp_seconds > 21600 or cloud_clicker_backup_last_failure_timestamp_seconds > cloud_clicker_backup_last_success_timestamp_seconds
+        expr: absent(cloud_clicker_backup_last_success_timestamp_seconds) == 1 or time() - cloud_clicker_backup_last_success_timestamp_seconds > 21600 or cloud_clicker_backup_last_failure_timestamp_seconds > cloud_clicker_backup_last_success_timestamp_seconds or cloud_clicker_backup_last_result == 0
         labels:
           severity: page
         annotations:

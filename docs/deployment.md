@@ -788,6 +788,16 @@ payloads and account/founder/stream/intent identifiers. No application label is 
 closed-set job's success and failure series is created at zero at startup so the first failure is
 an observable `increase()`. Backup, restore and release helpers write
 atomic node-exporter textfiles; a later failure does not erase the last successful timestamp.
+Each helper also atomically replaces its bounded `<operation>-result.prom` file, exposing
+`cloud_clicker_<operation>_last_result` as `1` for the most recently recorded success and `0`
+for failure. Publishing this outcome is part of `RecordOperation`: an invalid/unwritable
+outcome target returns an error, never a successful observation. The backup rule includes
+this failure signal because historical timestamps retain whole-second resolution and cannot
+distinguish success and failure within one second. Existing missing/late and newer-failure
+timestamp clauses remain; old helpers do not overwrite the new outcome file, and clock
+inconsistency must not silently erase those historical failure signals. The files are
+individually atomic, not a multi-file transaction; a failure publishing the outcome does not
+roll back a timestamp already written. No timestamp format, backup deadline or retry changes.
 The HTTP metrics wrapper preserves the underlying writer's WebSocket hijack capability; the
 operations-enabled Postgres composition population performs a real Centrifuge upgrade so ordinary
 HTTP instrumentation cannot silently disable the realtime path.
@@ -818,7 +828,17 @@ family or nonce, so the seven-family delivery record is count-derived, not per-f
 
 Use `make test-deployment-operations-profile` to run that existing isolated Compose fixture
 directly: real private scrapes, cleanup-rule firing, nonce delivery, rejecting receiver and
-Caddy admin isolation. It compiles the Linux/amd64 test binary and removes only the fixture's
+Caddy admin isolation. The same fixture now also collects actual production backup textfiles
+through node-exporter, requires a healthy scraped baseline, and observes a same-second
+failure firing and its successful retry resolving through the configured receiver. Receiver
+payloads must identify the node-exporter target; the firing must start after the injected
+failure, and resolution must carry that exact alert's start time. Stale startup-missing alerts
+and synthetic receiver-test alerts cannot satisfy it. Its clock and outcomes are controlled
+test input to the real textfile producer, not actual Postgres backup executions. A separate
+scheduler regression runs the real encrypted-target admission, blocks on a foreign entry and
+recovers after its removal with a synthetic dump. Neither proof replaces real dump/restore,
+all seven producer journeys or the exact release-host rehearsal.
+The target compiles the Linux/amd64 test binary and removes only the fixture's
 dedicated project after execution. Compose resolves service architectures from the pinned images
 and local image store; the fixture does not enforce an all-amd64 stack and is not a supported
 clean-host release rehearsal. `make test-deployment-operations` still runs its

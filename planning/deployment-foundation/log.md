@@ -5437,3 +5437,67 @@ Temporary checkout cleanup: removed only the dependency symlink created for thes
 the historical tree is clean and main's dependencies/retained artifacts remain. The managed
 archive operation refused because the worktree is protected by a pinned task or workspace.
 Left that checkout intact; no manual deletion or attempt to bypass its protection.
+
+## 2026-10-13 — Same-second backup failures reach the operator (RP-518)
+
+**Outcome / authority:** Deployment DP7/AC7 requires any backup failure to page.
+`RecordOperation` wrote whole-second success/failure timestamps; a blocked scheduled
+round one millisecond after a healthy round therefore produced equal values, and
+the shipped strict timestamp comparison stayed quiet. No new owner policy is needed.
+
+**Correction / regression:** preserve both timestamp files and add an individually
+atomic, label-free `<operation>-result.prom` gauge (`1` success / `0` failure) for
+the three existing closed operation names. Outcome publication errors propagate;
+symlink refusal leaves the protected target unchanged. The backup rule adds its
+failure arm and keeps all legacy newer-failure/missing/deadline clauses. Old
+helpers cannot overwrite this new file, so the legacy comparator is not suppressed.
+Files are individually atomic, not one transaction. No backup format, cadence,
+retention, alert threshold, gameplay, kernel identity or CI topology change.
+
+Executed evidence:
+
+- Old source: corrected-selector Go run52906 fails all nine outcome rows (no
+  outcome file); scheduler run62320 establishes equal actual timestamps then
+  fails at the missing outcome. Its healthy baseline creates a real encrypted
+  target with a synthetic dump and the failed round blocks on a foreign entry
+  without creating. The old failed assertion does not reach the retry. Exact-image
+  promtool27898 separately fails the intended15s same-second alert (`got:[]`).
+- Corrected focused94901 passes the nine rows and scheduler regression, including
+  removal of the foreign entry and a successful retry clearing the outcome. Final
+  `make test-go vet GO_PACKAGES='./operations ./cmd/deployment-backup
+  ./cmd/deployment-operations ./deploymentbackup ./deploymentrelease ./releasepackage'
+  GO_TEST_FLAGS='-count=1'`47316 passes all six packages and vet. This includes
+  failure to publish the outcome; optional integration skips are not proof.
+- `make test-go-ci CI_TEST_PACKAGES='./operations ./cmd/deployment-backup
+  ./cmd/deployment-operations ./deploymentbackup ./deploymentrelease ./releasepackage'`
+  87566 passes all six cold Linux-amd64/Postgres packages. Full custom-dump/restore
+  tests requiring the separate backup environment are not inferred from this run.
+- Exact pinned Prometheus index69f52414's amd64 childdd4bced0 was independently
+  re-read from registry metadata. Its actual `promtool test rules
+  /work/cloud-clicker-alerts.test.yml`47202 passes the full checked-in population,
+  including equal-time fire/clear, earlier failure timestamp and the retained
+  legacy newer-failure arm. No release/version substitution.
+- `make test-deployment-operations-profile`45444 passes138.64s, exit0: five real
+  private targets, node-exporter textfile collection, healthy backup baseline,
+  equal-time failure, received firing after that injection, received resolution
+  with that exact firing's start time, synthetic preflight nonce, actual cleanup
+  firing, HTTP500 receiver refusal and peer Caddy-admin isolation. Notification
+  overflow/truncation fails loudly; unsuccessful Prometheus responses cannot
+  establish a quiet baseline. The expanded5m completion guard accommodates the
+  unchanged1m grouping transitions plus45s rejection window, not an alert SLA.
+
+Non-evidence attempts retained: initial test parser namespace typo and unquoted
+Make regex did not run a valid population. The first index-based promtool attempt
+exited125 on Docker's existing architecture/digest collision; the exact index's
+verified amd64 child avoids it without deleting images. Initial profile61058
+was sandbox-denied before Docker execution; permitted45444 executed in full.
+
+**Coverage / handoff:** the Compose test injects controlled outcomes/times into
+the actual production textfile writer; it does not run pg_dump or the scheduled
+backup command. The scheduler proof is separate. Services retain the fixture's
+host-selected/mixed architecture, not an all-amd64 clean release host. The target
+removed only its dedicated fixture project/volume. No all-seven producer journey,
+retention, clean-host R-006, whole-CI, Deployment acceptance or archival claim.
+Review by: Codex (implementer first filter). Recorded by: Codex. The complete
+new range after `24a343b8` through this containing commit requires Claude's
+designated review; it may consolidate with related operations corrections.
