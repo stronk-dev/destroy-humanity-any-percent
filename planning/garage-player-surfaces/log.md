@@ -6788,3 +6788,30 @@ Review by: Codex (implementer first filter). Recorded by: Codex. New increment s
 later catalogs/optional runtime ports/separate care tab, manual4×/real-player/hosted evidence
 remain open. All handles terminal, diff checked, no transient fault remains. No push/archive/
 release claim; continue accepted construction while the proposed contract choices await adoption.
+
+## 2026-10-12 — Keep Fiscal and care feedback in one live region (RP-487)
+
+Outcome: GS0.6/GS1/GS4 conformance repair. Both surfaces retain one mounted status container
+for unchanged outcome/pending/stale text. Clocks, values and actions remain outside it;
+Pet Care's reserved pending line and existing grid gaps remain. No copy, command, revision,
+retry or focus policy changes. Existing Fiscal selectors now find the unchanged exact notice
+inside its live parent; error-ownership checks retain exact notice and single-region ownership.
+
+Old-source focused browser30175 fails eight cases (both panels, pending/stale-first paths,
+Chromium/WebKit): each exposes two regions instead of one. Corrected focused24822 passes all
+eight. Controls check stable region identity through transport recovery, native Enter/duplicate
+guard, exact Founder-scoped request, held authoritative refresh, one occurrence of each message,
+completion focus and separation from clocks/chrome. These are mounted runtime-double tests,
+not server integration or actual assistive-technology speech observations.
+
+Final `make test-browser-focused BROWSER_TEST_FLAGS='test/garage-surfaces-browser.test.ts
+test/cosmetic-host-browser.test.ts --project chromium --project webkit'`12427 passes all866
+checks, zero skips, including existing 320px reflow, pointer stability, care/equipment and
+pending/refusal/focus populations. `make typecheck` has zero errors/warnings; `make build-client
+verify-client-boundary` passes. No worker/counter/Desk-cost or DB boundary changes: no unrelated
+performance, balance, database, Firefox/Linux or full-CI claim. All handles terminal, diff checked.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact implementation/tests/
+docs/records range is `b3c8f178` exclusive through this containing commit; designated review
+pending. Earlier review debt, full Garage/task/AT acceptance and all1.0 obligations remain.
+No draft adoption, archival, push, deployment or release promotion.

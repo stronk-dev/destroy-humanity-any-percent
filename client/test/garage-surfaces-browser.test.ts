@@ -1138,7 +1138,7 @@ for (const [label, index, category, detail, key, body] of [
           finishRejected(rejected); await settle();
           expect(action.hasAttribute("aria-disabled")).toBe(false); expect(action.disabled).toBe(false);
           expect(document.activeElement).toBe(action); expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
-          sharedStateVisibleText(target, '.fiscal .intent-notice[role="status"]', fiscalText(key));
+          sharedStateVisibleText(target, '.fiscal [role="status"] .intent-notice', fiscalText(key));
           expect(target.querySelector(".fiscal")?.textContent).not.toContain(fiscalText("common.pending"));
           expect(read).not.toHaveBeenCalled(); await assertAxe(target, `native Fiscal refusal ${label}/${width}`);
 
@@ -1146,7 +1146,7 @@ for (const [label, index, category, detail, key, body] of [
           expect(runtime.requests).toEqual([request(7), request(7)]);
           expect(target.querySelector(".fiscal .intent-notice")?.textContent).toBe("");
           finishApplied(applied); await settle(); pending(); expect(read).toHaveBeenCalledExactlyOnceWith();
-          expect(target.querySelector('.fiscal .intent-notice[role="status"]')?.textContent)
+          expect(target.querySelector('.fiscal [role="status"] .intent-notice')?.textContent)
             .toBe(label === "harvest" ? fiscalText("fiscal.outcome.guaranteed") : "");
           await userEvent.keyboard("{Enter}"); await userEvent.keyboard(" "); await settle();
           expect(runtime.requests).toEqual([request(7), request(7)]);
@@ -1175,7 +1175,7 @@ for (const [label, index, category, detail, key, body] of [
           expect(runtime.requests).toEqual([request(7), request(7), request(8)]);
           expect(new Set(runtime.requests.map((row) => row.intent_id)).size).toBe(3);
           expect(read).toHaveBeenCalledExactlyOnceWith(); expect(document.activeElement).toBe(retry);
-          sharedStateVisibleText(target, '.fiscal .intent-notice[role="status"]', fiscalText(key));
+          sharedStateVisibleText(target, '.fiscal [role="status"] .intent-notice', fiscalText(key));
           expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width + 1);
           await assertAxe(target, `native Fiscal retry ${label}/${width}`);
         } finally {
@@ -3074,6 +3074,74 @@ it.skipIf(!browser)("reflows the Desk, Fiscal, Meters, Trophy Case and pet surfa
 // RP-326: consumer placement and origin boundaries only. These existing
 // runtime-double public fixtures are not producer/catalog or real-AT proof.
 for (const owner of ["fiscal", "care"] as const) {
+  for (const firstState of ["pending", "stale"] as const) {
+    it.skipIf(!browser)(`single surface feedback ${owner}/${firstState} retains one live region across recovery and completion`, async () => {
+      const runtime = new Runtime(), value = withPet();
+      runtime.current = { ...value, features: { ...value.features, fiscal: withRipeFiscal().features.fiscal } };
+      const { target, dispose } = await mounted(runtime);
+      const selector = owner === "fiscal" ? ".fiscal" : ".pet-care";
+      const title = careText(owner === "fiscal" ? "surface.fiscal.title" : "pet.care.panel.title");
+      const actionText = careText(owner === "fiscal" ? "fiscal.harvest" : "pet.care.action.feed.title");
+      const noticeKey: CopyKey = owner === "fiscal" ? "fiscal.outcome.guaranteed" : "pet.care.applied";
+      let finish!: (value: IntentOutcome) => void;
+      const response = new Promise<IntentOutcome>((resolve) => { finish = resolve; });
+      let releaseRead!: (value: ParsedGameUISnapshot) => void;
+      const refresh = new Promise<ParsedGameUISnapshot>((resolve) => { releaseRead = resolve; });
+      const intent = vi.spyOn(runtime, "intent").mockImplementation((body) => { runtime.requests.push(body); return response; });
+      const read = vi.spyOn(runtime, "snapshot").mockReturnValue(refresh);
+      try {
+        const { userEvent } = await import("vitest/browser");
+        await userEvent.click(button(target, title)); await settle();
+        const panel = target.querySelector<HTMLElement>(selector)!;
+        const region = panel.querySelector<HTMLElement>('[role="status"]')!;
+        const assertFeedback = (...keys: CopyKey[]) => {
+          expect(panel.querySelectorAll('[role="status"], [aria-live="polite"]')).toHaveLength(1);
+          expect(panel.querySelector('[role="status"]')).toBe(region);
+          for (const key of keys) {
+            const message = careText(key);
+            expect(region.textContent).toContain(message);
+            expect(region.textContent!.split(message)).toHaveLength(2);
+          }
+          for (const timer of panel.querySelectorAll('[data-fiscal-region="harvest"]')) expect(region.contains(timer)).toBe(false);
+        };
+        assertFeedback();
+        if (firstState === "stale") {
+          runtime.listener?.({ kind: "transport_recovering" }); await settle();
+          assertFeedback("common.stale_note");
+          expect(runtime.requests).toHaveLength(0);
+          runtime.listener?.({ kind: "transport_recovered" }); await settle();
+          assertFeedback(); expect(region.textContent).not.toContain(careText("common.stale_note"));
+        }
+        const action = button(target, actionText); action.focus();
+        await userEvent.keyboard("{Enter}"); await settle();
+        assertFeedback("common.pending");
+        expect(document.activeElement).toBe(action);
+        expect(action.getAttribute("aria-disabled")).toBe("true");
+        await userEvent.keyboard("{Enter}"); await settle();
+        expect(runtime.requests).toHaveLength(1);
+        expect(runtime.requests[0]).toMatchObject(owner === "fiscal"
+          ? { kind: "harvest_fiscal_period", expected_revision: 7 }
+          : { kind: "care_action", pet_id: petRow.pet_id, action_id: "care.feed", expected_revision: 7 });
+        finish({ outcome: "applied", receipt: { harvest_outcome: "guaranteed" } }); await settle();
+        expect(read).toHaveBeenCalledExactlyOnceWith();
+        assertFeedback("common.pending", noticeKey);
+        releaseRead({ ...runtime.current, founder_revision: 8 }); await settle();
+        assertFeedback(noticeKey);
+        expect(region.textContent).not.toContain(careText("common.pending"));
+        expect(document.activeElement).toBe(action);
+        expect(action.getAttribute("aria-disabled")).not.toBe("true");
+        expect(target.querySelector(".announcement")?.textContent).not.toContain(careText(noticeKey));
+        await assertAxe(target, `single surface feedback ${owner}/${firstState}`);
+      } finally {
+        finish({ outcome: "applied", receipt: { harvest_outcome: "guaranteed" } });
+        releaseRead(runtime.current); await settle();
+        intent.mockRestore(); read.mockRestore(); await dispose();
+      }
+    });
+  }
+}
+
+for (const owner of ["fiscal", "care"] as const) {
   for (const result of ["applied", "refused"] as const) {
     const outcome: IntentOutcome = result === "applied"
       ? { outcome: "applied", receipt: { harvest_outcome: "guaranteed" } }
@@ -3204,7 +3272,8 @@ for (const owner of ["fiscal", "care"] as const) {
           expect(diagnostics.mock.calls).toEqual(arm.label === "400" ? [["game UI invariant: invalid intent response"]] : []);
           if (arm.notice) {
             const message = careText(arm.notice);
-            const regions = [...target.querySelectorAll<HTMLElement>("[role=status]")].filter((node) => node.textContent?.trim() === message);
+            const regions = [...target.querySelectorAll<HTMLElement>("[role=status]")].filter((node) =>
+              (node.querySelector(".intent-notice") ?? node).textContent?.trim() === message);
             expect(regions).toHaveLength(1);
             expect(target.querySelector(selector)?.contains(regions[0]!)).toBe(true);
             expect(target.querySelector(".chrome")?.textContent).not.toContain(message);

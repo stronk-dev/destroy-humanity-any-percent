@@ -50,10 +50,12 @@
 
 <section bind:this={root} class="surface pet-care" aria-labelledby="pet-care-heading">
   <h1 bind:this={heading} id="pet-care-heading" tabindex="-1">{t("pet.care.panel.title", {}, era)}</h1>
-  <p class="intent-notice" role="status">{notice ? t(notice, {}, era) : ""}</p>
-  {#if !controlsEnabled}<p class="care-stale" role="status">{t("common.stale_note", {}, era)}</p>{/if}
-  <div class="care-progress">
-    {#if pending}<p class="care-pending" role="status">{t("common.pending", {}, era)}</p>{/if}
+  <div class="surface-status" role="status">
+    <p class="intent-notice">{notice ? t(notice, {}, era) : ""}</p>
+    {#if !controlsEnabled}<p class="care-stale">{t("common.stale_note", {}, era)}</p>{/if}
+    <div class="care-progress">
+      {#if pending}<p class="care-pending">{t("common.pending", {}, era)}</p>{/if}
+    </div>
   </div>
   {#each pets as pet (pet.pet_id)}
     {@const name = t(pet.name_key as CopyKey, {}, era)}
@@ -83,6 +85,7 @@
 
 <style>
   .pet-care { display: grid; gap: var(--cc-space-lg); max-width: 72rem; margin: auto; padding: var(--cc-space-lg); }
+  .surface-status { display: grid; gap: var(--cc-space-lg); }
   .pet { display: grid; gap: var(--cc-space-sm); padding: var(--cc-space-md); }
   /* A refresh must not move a button between native pointerdown and click. */
   .care-progress { min-block-size: 1lh; }

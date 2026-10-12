@@ -69,9 +69,11 @@
 
 <section bind:this={root} class="surface fiscal" aria-labelledby="fiscal-heading" data-phase={phase}>
   <h1 bind:this={heading} id="fiscal-heading" tabindex="-1">{t("surface.fiscal.title", {}, era)}</h1>
-  <p class="intent-notice" role="status">{notice ? t(notice, {}, era) : ""}</p>
-  {#if !controlsEnabled}<p class="fiscal-state" role="status">{t("common.stale_note", {}, era)}</p>{/if}
-  {#if pending}<p class="fiscal-state" role="status">{t("common.pending", {}, era)}</p>{/if}
+  <div class="surface-status" role="status">
+    <p class="intent-notice">{notice ? t(notice, {}, era) : ""}</p>
+    {#if !controlsEnabled}<p class="fiscal-state">{t("common.stale_note", {}, era)}</p>{/if}
+    {#if pending}<p class="fiscal-state">{t("common.pending", {}, era)}</p>{/if}
+  </div>
 
   <section class="card" aria-labelledby="fiscal-credit-heading">
     <h2 id="fiscal-credit-heading">{t("fiscal.credit_label", {}, era)}</h2>
@@ -142,7 +144,8 @@
 
 <style>
   .fiscal { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); gap: var(--cc-space-md); }
-  .fiscal > h1, .fiscal > .fiscal-state, .fiscal > .intent-notice { grid-column: 1 / -1; }
+  .fiscal > h1, .fiscal > .surface-status { grid-column: 1 / -1; }
+  .surface-status { display: grid; gap: var(--cc-space-md); }
   .card { display: grid; gap: var(--cc-space-sm); align-content: start; }
   ul { display: grid; gap: var(--cc-space-sm); margin: 0; padding: 0; list-style: none; }
   li { display: grid; gap: var(--cc-space-xs); }

@@ -472,7 +472,12 @@ at least one pet.
 Intents return their typed outcome (GS0.2). A rejected intent is an HTTP 200 whose
 reason renders in `role="status"`: Fiscal and pet care own their outcome region;
 other existing host results use the chrome line only while their captured
-submitting surface is current. Care receives the host's single mapped presentation
+submitting surface is current. Fiscal and pet care each retain one mounted polite
+status container for their outcome, pending and stale feedback; these messages
+do not create additional live regions. Fiscal clocks and pet values/actions remain
+outside that container. Pet care retains its reserved pending line so changing
+feedback cannot shift an action during pointer activation. Care receives the host's
+single mapped presentation
 key just like Fiscal. Cross-surface event announcements keep their separate,
 event-deduplicated chrome region. The production runtime carries the existing transport event
 ID: the host binds scope, revision and event identity so different events committed at the
