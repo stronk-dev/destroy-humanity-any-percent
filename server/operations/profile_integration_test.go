@@ -22,10 +22,10 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	if os.Getenv("CLOUD_CLICKER_OPERATIONS_INTEGRATION") != "1" {
 		t.Skip("requires isolated operations Compose profile")
 	}
-	// The preceding population measured 138.64s. This adds a real two-minute
-	// database failure plus firing/resolution at the unchanged one-minute
-	// grouping interval. The eight-minute guard is not an alert/latency bound.
-	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
+	// The preceding population measured 330.07s. This adds a second real
+	// two-minute database failure plus the unchanged notification intervals.
+	// The twelve-minute completion guard is not an alert/latency bound.
+	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Minute)
 	defer cancel()
 	received := make(chan []byte, 32)
 	var servers []*http.Server
@@ -214,6 +214,51 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	}
 	waitForOperationsNotification(t, ctx, received, "CloudClickerPostgresUnreachable", "gameserver", "resolved", unblockedAt, databaseFiringStart)
 	t.Log("lock release reached the configured receiver as resolution of that exact database alert")
+
+	// Separately deny actual connections to only the declared disposable subject.
+	// The control connection uses postgres, never the subject being disabled.
+	adminURL := os.Getenv("TEST_ADMIN_DATABASE_URL")
+	if adminURL == "" {
+		t.Fatal("private connection-failure proof requires its separate control database")
+	}
+	admin, err := save.OpenPostgres(ctx, adminURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer admin.Close()
+	var subject string
+	if err := database.QueryRowContext(ctx, "SELECT current_database()").Scan(&subject); err != nil || subject != "cloud_clicker_operations_test" {
+		t.Fatal("connection-failure proof refuses a non-fixture database")
+	}
+	refusedAt := time.Now().UTC()
+	restoreConnections := refuseOperationsDatabaseConnections(t, ctx, admin, subject)
+	defer func() {
+		if err := restoreConnections(); err != nil {
+			t.Error(err)
+		}
+	}()
+	if !waitForQueryValue(ctx, client, "cloud_clicker_postgres_reachable", "0") ||
+		!waitForQueryValue(ctx, client, "cloud_clicker_database_collection_success", "0") ||
+		!waitForQueryValue(ctx, client, `up{job="gameserver"}`, "1") ||
+		!waitForAlertState(ctx, client, "CloudClickerPostgresUnreachable", "firing") {
+		t.Fatal("actual refused database connections did not fire their rule")
+	}
+	if elapsed := time.Since(refusedAt); elapsed < 2*time.Minute {
+		t.Fatalf("connection alert bypassed its two-minute lower bound: %s", elapsed)
+	}
+	connectionFiringStart := waitForOperationsNotification(t, ctx, received, "CloudClickerPostgresUnreachable", "gameserver", "firing", refusedAt, time.Time{})
+	t.Log("actual refused Postgres connections reached the receiver after two minutes while metrics stayed reachable")
+	restoredAt := time.Now().UTC()
+	if err := restoreConnections(); err != nil {
+		t.Fatal(err)
+	}
+	if !waitForQueryValue(ctx, client, "cloud_clicker_postgres_reachable", "1") ||
+		!waitForQueryValue(ctx, client, "cloud_clicker_database_collection_success", "1") ||
+		!waitForAlertState(ctx, client, "CloudClickerPostgresUnreachable", "inactive") {
+		t.Fatal("real database pool did not reconnect after access restoration")
+	}
+	waitForOperationsNotification(t, ctx, received, "CloudClickerPostgresUnreachable", "gameserver", "resolved", restoredAt, connectionFiringStart)
+	t.Log("automatic pool reconnection delivered resolution of that exact connection-failure alert")
 
 	// A receiver that rejects every notification must fail the delivery proof
 	// on recorded failures, not merely time out.

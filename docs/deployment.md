@@ -850,6 +850,18 @@ The focused SQL test also requires failed collection to omit unavailable populat
 not publish stale or invented zeros. This covers the rule's collection-failure arm, not a
 stopped Postgres service, network partition, dead-letter producer, or release-host incident.
 
+The fixture separately refuses real connections to only its disposable database and
+terminates that subject's existing sessions through a different maintenance database.
+Both reachability and collection must become zero while the metrics scrape stays healthy;
+the same unchanged two-minute rule must deliver a new firing. Restoring access must make
+the existing database pool reconnect, restore health, and deliver that exact alert's
+resolution. The fault helper admits only the fixed private fixture name or generated
+test-database names, requires a separate control database, and restores access on assertion
+failure. The focused SQL test creates/migrates/drops only its own newly named database.
+This proves actual connection refusal and reconnection, not a Postgres process restart or
+network partition. Production code, migrations, deployment credentials and alert timings
+are not altered by these fixtures.
+
 The target compiles the Linux/amd64 test binary and removes only the fixture's
 dedicated project after execution. Compose resolves service architectures from the pinned images
 and local image store; the fixture does not enforce an all-amd64 stack and is not a supported

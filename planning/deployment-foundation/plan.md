@@ -7,6 +7,18 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest DP7 acceptance construction, 2026-10-13:** the private fixture now also
+tests actual connection refusal, distinct from the preceding blocked-query arm.
+A separate maintenance database disables access to only the disposable subject
+and terminates its existing sessions; the real pool reports both health signals0
+while metrics stay reachable. The unchanged2m rule delivers firing, and access
+restoration makes that same pool reconnect and delivers matching resolution.
+Full fixture60688 passes511.42s; focused/full Linux-amd64 SQL and native/vet checks
+pass, and a false-health compiler overlay fails the new oracle. All work is test/
+fixture/docs only. The new range after `391ae4a5` needs designated review and can
+consolidate with the two preceding operations batches. No process-restart/network
+partition, seven-family, retention, clean-host, whole-CI or archival claim.
+
 **Latest DP7 acceptance construction, 2026-10-13:** the private operations fixture
 now owns a disposable, current-schema Postgres16 database instead of a fake
 unavailable database. Its real count query is blocked by an exclusive table lock:

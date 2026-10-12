@@ -5558,3 +5558,60 @@ Review by: Codex (implementer first filter). Recorded by: Codex. The complete
 test/fixture/docs/plan/log range after `b4013e99` through this containing commit
 needs Claude's designated review, consolidatable with the preceding operations
 correction. No archival, publication, deployment or feature-completion promotion.
+
+## 2026-10-13 — Actual database connection refusal and reconnection (DP7)
+
+**Outcome / authority:** complete a distinct database alert producer path under
+Deployment DP7/AC7. A timed-out population query is not connection-loss evidence.
+The private fixture now supplies a separate maintenance database; it disables
+connections to only `cloud_clicker_operations_test` and terminates that subject's
+existing sessions. The same production registry/pool must report reachability0
+and collection0 while its HTTP scrape stays healthy. The unchanged2m rule must
+deliver a fresh firing; access restoration must produce automatic pool reconnect,
+healthy collection and received resolution of that exact alert. No direct alert
+injection, synthetic metrics, replacement registry or shortened rule interval.
+
+**Focused test / discrimination:** the SQL test creates and migrates its own
+generated database, observes healthy→refused→reconnected, and drops only that new
+subject. The helper allowlists fixture names, requires a separate control database,
+scopes termination by exact database name, and restores before caller cleanup on
+failure. Both failed-health families must be0 and unavailable count families absent.
+No production, migration, rule, gameplay, kernel, credential or CI-workflow bytes change.
+
+Executed evidence:
+
+- `make test-go-ci CI_TEST_PACKAGES='./operations'
+  CI_TEST_FLAGS='-run TestDatabaseCollectorIntegrationReportsConnectionRefusalAndRecovers -v'`
+  59410 passes1.19s after the helper cleanup-order correction; initial81533 also
+  passed its normal path but did not verify recovery on an assertion failure.
+- Compiler overlay22619 maps only a temporary source copy into the declared
+  Linux-amd64/Postgres service, falsifying both ping-error health gauges from0
+  to1. The test fails0.63s with `actual connection state hidden` and the two
+  falsely healthy metrics. Production source never changed; the two-line diff
+  was checked. Task-owned overlay/source/directory were removed after completion.
+- `make test-go vet GO_PACKAGES='./operations ./releasepackage'
+  GO_TEST_FLAGS='-count=1'`55706 passes both cold packages and vet. After the
+  probe, `make test-go-ci CI_TEST_PACKAGES='./operations' CI_TEST_FLAGS='-v'`
+  22916 passes the full cold package3.864s: all three actual-SQL functions
+  execute; optional native binaries/private-profile skips remain explicit.
+  Read-only fixture query9b31dc confirms zero generated reachability databases
+  remain after both normal and failed runs.
+- `make test-deployment-operations-profile`60688 passes511.42s, exit0. It retains
+  the backup firing/resolution, actual query-lock firing/resolution, nonce,
+  cleanup, receiver500 refusal and admin isolation, then executes actual
+  refused connections, new firing after2m, automatic pool reconnection and
+  matching resolution through the configured receiver. The new12m completion
+  guard covers the completed330.07s preceding population plus the additional
+  real2m hold and unchanged1m notification intervals; it is not an acceptance
+  bound or CI timeout increase. The target removes only its dedicated fixture.
+
+**Coverage / handoff:** actual Postgres connection refusal, not a service process
+restart or network partition. The private stack still uses host-selected/mixed
+service architectures and a registry fixture rather than an exact release
+gameserver/clean host. Remaining producer families, retention, exact release
+pair/rehearsal, hosted CI and corrective reviews stay open. No new defect or
+owner-policy choice was required for this accepted acceptance work.
+Review by: Codex (implementer first filter). Recorded by: Codex. The full new
+test/fixture/docs/plan/log range after `391ae4a5` through this containing commit
+needs Claude designated review, consolidatable with the preceding operations
+ranges. No feature-completion checkbox, archival, push or deployment.
