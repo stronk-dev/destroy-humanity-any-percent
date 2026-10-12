@@ -13,6 +13,11 @@ distinct/equal-factor controls and the existing real-service PR journey. The
 owning log records old-source failures, affected checks and the new exact review
 range. This is not full P5/AC11 approval or adoption of pending contracts.
 
+The composed PR fixture now additionally buys both Interns through native DOM
+controls and checks the combined ×1.612 receipt/readout, both distinct sources,
+owned reload and one SQL purchase per Intern. Setup cash remains explicitly
+controlled, not earned progression; the latest log owns execution and review.
+
 Current checkpoint (2026-10-08): `make test-clout-composed` (also included in the composed CI
 population) now exercises
 real-service attainment, native PR purchase, progress/current-factor/product rendering,

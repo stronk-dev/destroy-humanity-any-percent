@@ -151,11 +151,16 @@ seeds test cash and four prior-earned Founder achievements (lifetime score12),
 not a played prior run. Company attainment starts empty. The DOM first gate and
 native Enter generator purchase re-attain scores2 then12; four actual stored
 events across those two transitions yield exactly two browser live-region updates.
-No Company attainment, event or notice is seeded. A native PR purchase receives one bound applied
-receipt. The actual snapshot and rendered progress/current factors/product are
-checked before and after ownership and reload; each Intern factor/progress is
-bound to its actual purchase card. A direct SQL read checks the
-Company v19 head, exact attainment set, ownership and one purchase event.
+No Company attainment, event or notice is seeded. Native purchases of both PR
+Interns each receive one bound applied receipt. The actual snapshot and rendered
+progress/current factors/product are checked with zero, one and two owned Interns
+and after each owned reload; each Intern factor/progress is bound to its actual
+purchase card. The second purchase retains the individual factors ×1.3 and ×1.24,
+and the receipt and rendered readout carry the combined ×1.612 product and both
+distinct contribution identities. Direct SQL reads check the Company v19 head,
+exact attainment set, both ownership flags and exactly one purchase event per
+Intern. Setup cash is `1e10` so both prices remain affordable after native Buy
+Max; no earned-money, natural pacing or content-ratification claim follows.
 Severing the server's axis producer makes this witness fail; the probe is restored.
 
 The normal `make test-game-ui-composed` CI target also runs this fixture variant,

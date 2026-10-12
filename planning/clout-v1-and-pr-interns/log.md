@@ -2774,3 +2774,35 @@ consolidatable with related Clout corrective debt. No whole-P5/AC11/Clout,
 Firefox/Linux/hosted/full-CI, archival, push or release claim. Next: continue
 accepted outstanding implementation/review work; pending drafts remain pending
 and do not block unrelated accepted repairs. Full nine-tier 1.0 goal stays active.
+
+## 2026-10-12 — Both PR purchases through the built client
+
+Outcome under CV1/CV3/CV9/AC11: extend the existing composed fixture from one
+owned PR Intern to both, without changing product behavior or content. The
+original first-purchase/reload/SQL assertions remain. The native Senior PR Buy
+now checks its exact request and bound applied receipt, both distinct server
+contributions, literal ×1.612 product in receipt and rendered UI, disabled
+rebuy, both-owned reload and exactly one stored purchase event per Intern.
+Both individual factors remain ×1.3/×1.24; progress bars disappear only for
+owned rows. Setup cash changes from `1e8` to `1e10` so both existing prices are
+affordable after native Buy Max. This is explicit test arrangement, not earned
+cash, a pacing-bound change or content ratification. No attainment, ownership,
+purchase/notice event is seeded; controlled prior-earned Founder history remains.
+
+Executed: `31758` `make test-clout-composed` passes the new two-owned population
+and unchanged Cosmetic/care population (12.89s driver); initial sandbox Docker
+refusal ran no test. `32616` full `make test-game-ui-composed` exits 0: its
+mandatory refresh 8/8 and ten real-DB parent tests execute; main production
+client, two terminal states, next-run/recovery, default Cosmetic/Reputation,
+new two-owned Clout, both N5 failure fixtures, Garden harvest and Tier-2
+candidate journeys pass. Deliberate process-disconnect proxy errors remain
+visible; recovered outcomes are required. Syntax and diff checks pass; all
+handles terminal and unrelated orphan containers untouched.
+
+Review by: Codex (test implementer first filter). Recorded by: Codex. Exact
+new driver/docs/plan/log/ledger range after `0c2d1ef4` through this containing
+commit needs Claude designated review; it may be consolidated with the related
+decoder correction beginning after `a5a2e94a`. No full P5/AC11/Clout approval,
+Linux/hosted/full-CI, natural pacing, mint, archival, push or release claim.
+Next: continue accepted implementation/review work while pending owner/author
+contracts remain explicit. Full nine-tier 1.0 goal remains active.

@@ -116,9 +116,12 @@ function seedGateRequirement(founderID) {
     WHERE stream.owner_kind='founder' AND stream.owner_id='${founderID}' AND stream.scope='company' AND stream.archived_at IS NULL
     ORDER BY revision.revision DESC LIMIT 1
   ) INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash)
-    SELECT stream_id,revision+1,version,jsonb_set(state,'{balances,company.cash}',to_jsonb('${axisFixture ? "1e8" : "1e5"}'::text),false),constants_hash FROM current;`);
+    SELECT stream_id,revision+1,version,jsonb_set(state,'{balances,company.cash}',to_jsonb('${axisFixture ? "1e10" : "1e5"}'::text),false),constants_hash FROM current;`);
   if (!result.includes("INSERT 0 1")) throw new Error(`cosmetic gate setup inserted no revision: ${result}`);
   if (axisFixture) {
+    // Controlled setup cash leaves both PR prices affordable after native
+    // Buy Max; it is not earned-money or pacing evidence. Ownership,
+    // attainment and purchase events must still come from real DOM intents.
     // Controlled prior-run history, not a simulated prior playthrough. Current
     // Company attainment stays empty; real intents must produce every notice.
     const history = testDatabaseSQL(`WITH current AS (
@@ -278,7 +281,7 @@ async function companyDOMIntent(page, requests, control, kind, fields) {
   return receipt;
 }
 
-async function assertAxis(page, { input, product, factors, owned = false }) {
+async function assertAxis(page, { input, product, factors, owned = false, secondOwned = false }) {
   const view = await snapshot(page);
   const arm = view.features?.axis_stack;
   assert.ok(arm, "Clout AC11: real snapshot must carry axis_stack");
@@ -290,10 +293,12 @@ async function assertAxis(page, { input, product, factors, owned = false }) {
   assert.equal(arm.product, product);
   assert.deepEqual(arm.interns.map((row) => [row.upgrade_id, row.minimum, row.factor_ppm, row.owned, row.factor]), [
     ["upgrade.pr_intern_1", 6, 25_000, owned, factors[0]],
-    ["upgrade.pr_intern_2", 10, 20_000, false, factors[1]],
+    ["upgrade.pr_intern_2", 10, 20_000, secondOwned, factors[1]],
   ]);
-  assert.deepEqual(arm.contributions, owned
-    ? [{ source_id: "upgrade.pr_intern_1.axis", upgrade_id: "upgrade.pr_intern_1", factor: factors[0] }] : []);
+  assert.deepEqual(arm.contributions, [
+    ...(owned ? [{ source_id: "upgrade.pr_intern_1.axis", upgrade_id: "upgrade.pr_intern_1", factor: factors[0] }] : []),
+    ...(secondOwned ? [{ source_id: "upgrade.pr_intern_2.axis", upgrade_id: "upgrade.pr_intern_2", factor: factors[1] }] : []),
+  ]);
   const panel = page.locator("section.axis");
   await panel.waitFor({ state: "visible", timeout: 30_000 });
   // Fixture factors here are all e0; literal text equality never calls the
@@ -309,7 +314,10 @@ async function assertAxis(page, { input, product, factors, owned = false }) {
   assert.ok((await panel.innerText()).includes(plainFixtureCopy("axis_stack.formula.caption")));
   assert.equal(await panel.locator("progress").count(), 0, "do not duplicate PR purchase rows in the shared readout");
   assert.deepEqual(await upgrades.locator("progress").evaluateAll((bars) => bars.map((bar) => ({ value: bar.value, max: bar.max }))),
-    owned ? [{ value: Math.min(input, 10), max: 10 }] : [{ value: Math.min(input, 6), max: 6 }, { value: Math.min(input, 10), max: 10 }]);
+    [
+      ...(!owned ? [{ value: Math.min(input, 6), max: 6 }] : []),
+      ...(!secondOwned ? [{ value: Math.min(input, 10), max: 10 }] : []),
+    ]);
   return view;
 }
 
@@ -389,6 +397,39 @@ async function witnessAxis(page, requests) {
   assert.deepEqual(persisted, { version: 19, revision: receipt.new_revision, attainment: 12,
     attained: ready.features.axis_stack.attained.map((row) => row.achievement_id), owned: true, purchases: 1 });
   console.log("composed Clout AC11 fixture: DOM first gate → attainment 2 → native generator purchase → attainment 12 → native PR purchase → bound receipt → product 1.3 → owned reload + exact SQL head/event: PASS");
+
+  const senior = page.locator('section[aria-labelledby="upgrades-heading"] article').filter({ has: page.getByRole("heading", { name: plainFixtureCopy("upgrade.pr_intern_2.title"), exact: true }) });
+  const secondReceipt = await companyDOMIntent(page, requests, senior.getByRole("button", { name: plainFixtureCopy("desk.buy_one"), exact: true }),
+    "buy_upgrade", { upgrade_id: "upgrade.pr_intern_2" });
+  const both = await assertAxis(page, { input: 12, product: "1.612e0", factors: ["1.3e0", "1.24e0"], owned: true, secondOwned: true });
+  assert.equal(both.revision, secondReceipt.new_revision);
+  assert.equal(secondReceipt.snapshot.axis_stack.product, "1.612e0", "committed receipt carries the same combined product");
+  assert.deepEqual(secondReceipt.snapshot.axis_stack.contributions, both.features.axis_stack.contributions,
+    "receipt and UI producer identify both distinct purchased contributions");
+  assert.equal(await senior.getByRole("button").isDisabled(), true, "owned Senior PR cannot be bought again");
+  await page.reload({ waitUntil: "networkidle" });
+  await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  const bothRestored = await assertAxis(page, { input: 12, product: "1.612e0", factors: ["1.3e0", "1.24e0"], owned: true, secondOwned: true });
+  assert.equal(bothRestored.run.founder_id, both.run.founder_id);
+  assert.equal(bothRestored.run.run_seq, both.run.run_seq);
+  assert.equal(bothRestored.revision, secondReceipt.new_revision);
+  const bothPersisted = JSON.parse(testDatabaseSQL(`SELECT jsonb_build_object(
+    'version', revision.version, 'revision', revision.revision,
+    'attainment', revision.state->'attainment_score_run',
+    'owned_first', revision.state->'upgrades_owned' ? 'upgrade.pr_intern_1',
+    'owned_second', revision.state->'upgrades_owned' ? 'upgrade.pr_intern_2',
+    'purchases', (SELECT jsonb_agg(jsonb_build_object('upgrade_id',p.upgrade_id,'count',p.n) ORDER BY p.upgrade_id)
+      FROM (SELECT payload->>'upgrade_id' AS upgrade_id,count(*) AS n FROM events
+        WHERE stream_id=revision.stream_id AND kind='upgrade_purchased'
+          AND payload->>'upgrade_id' IN ('upgrade.pr_intern_1','upgrade.pr_intern_2')
+        GROUP BY payload->>'upgrade_id') p))
+    FROM save_revisions revision JOIN save_streams stream ON stream.id=revision.stream_id
+    WHERE stream.owner_kind='founder' AND stream.owner_id='${founderID}' AND stream.scope='company' AND stream.archived_at IS NULL
+    ORDER BY revision.revision DESC LIMIT 1;`, true).trim());
+  assert.deepEqual(bothPersisted, { version: 19, revision: secondReceipt.new_revision, attainment: 12,
+    owned_first: true, owned_second: true,
+    purchases: [{ upgrade_id: "upgrade.pr_intern_1", count: 1 }, { upgrade_id: "upgrade.pr_intern_2", count: 1 }] });
+  console.log("composed Clout two-owned fixture: native Senior PR purchase → exact receipt/UI contributions → product 1.612 → both owned reload + one SQL purchase per Intern: PASS (controlled cash)");
 }
 
 async function founderDOMIntent(page, requests, control, kind, expectedFields) {
