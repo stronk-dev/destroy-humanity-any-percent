@@ -178,6 +178,13 @@ The assembler records the current company and founder save versions in a new bun
 also accepts a retained previous bundle's lower positive versions (never a future version), so
 a later save-version bump does not invalidate the exact previous manifest before rollback. The
 governed rollback still requires the pre-upgrade backup, previous image and live smoke proof.
+Historical format compatibility does not waive the current runtime security floor. Two local
+reconstructions of source `44a4a72` match byte-for-byte, but that source's Compose/Caddy still
+enables the management API and fails current package validation. Its
+[incomplete reconstruction record](../planning/deployment-foundation/release-builds/reconstructed-44a4a72.incomplete.json)
+is evidence of rebuilt bytes, not an admissible rollback input; the
+[Deployment log](../planning/deployment-foundation/log.md) owns RP-514 and the required
+reviewed, floor-compliant predecessor. Original historical records remain unchanged.
 It intentionally describes a release *candidate*: designated approval of the implementation
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.

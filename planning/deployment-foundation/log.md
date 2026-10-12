@@ -5371,3 +5371,69 @@ change; no self-approval, archival, deployment or release claim. Retained source
 bundle helpers predate this repair: rebuild at the final reviewed source rather
 than relabel artifacts. Actual previous artifacts/provenance, contract-author holds,
 full-range reviews and explicitly authorized exact clean-host rehearsal remain open.
+
+## 2026-10-13 — Reconstruct the historical predecessor; current floor refuses it (RP-514)
+
+Source `44a4a72a52ef1b299075389bfa5f365baa00e4c8`, epoch1787441542,
+`2026-08-22T23:32:22Z`, was rebuilt in an exact managed historical checkout without
+product edits. Root Make lanes build all five original static Linux/amd64 commands,
+production client, epoch8 content (31 files), metadata for44 dependencies and the
+no-cache gameserver image. This pre-browser source has no deployment-browser helper;
+do not invent that output or claim the reconstructed bytes are the original binaries.
+The compiler is current `go1.27.2 darwin/arm64`, targeting Linux/amd64.
+
+Two independent builds each perform six actual fresh Syft scans and assemble70 artifacts.
+Pinned upstream indices/amd64 child manifests/configs are inspected, correcting the old
+ARM64 Alertmanager/node-exporter identities only for these new reconstructions. Tooling:
+Docker28.4.0, Compose2.39.4-desktop.1, pinned BuildKit0.24.0 and Syft1.51.0. Pins,
+historical source and all three existing build records remain unchanged. The small new
+`release-builds/reconstructed-44a4a72.incomplete.json` retains actual identities.
+
+Outputs retained in main's ignored `.cache/release-previous-44a4a72/`:
+- `a/bundle` and `b/bundle-matched-tag`, byte-identical whole trees;
+- manifest `sha256:4fe204c9475091405a0da7f2f260622ebe517703d7f2366f3f8695f4bf974bd4`;
+- archive `sha256:8fa5476b61ace42902174aa0a3782cd8bc4f3e8469241c4cb1a9cbec91b7cecd`;
+- config `sha256:1a23b95e96fb0db55075af6a1a1d82e22c7fea592402b74f94a8c89e6ddb67ea`.
+
+Exclusion disclosed: initial B used a different Docker tag, changing the archive and its
+manifest hash only. Those outputs remain in `b/bundle`. A third no-cache image build from
+B's independently rebuilt inputs uses A's same tag, followed by its own fresh gameserver
+scan and assembly into `b/bundle-matched-tag`. The corrected full comparison passes;
+separate staged-content and metadata comparisons pass. Total13 actual image scans,
+three image builds; raw nondeterministic scan headers are neither shipped nor compared.
+
+Fresh current rehearsal helper and temporary test-side diagnostics establish:
+- Current source102face6 candidate `ValidateBundle` passes. The reconstructed predecessor
+  fails `invalid release Compose`; its actual Caddy also fails the current admin-off/private
+  metrics requirement. Old Caddy declares `admin :2019`, not `admin off`; old Compose lacks
+  current cursor ID configuration. An in-memory diagnostic replacing2019 with2020 exposes
+  that next missing field; no source or artifact is changed. This is a floor refusal, not a
+  newly demonstrated live exploit or an assertion that historical cursor absence leaked data.
+- The actual prepared candidate/previous supply-chain probe exits2 `invalid_probe`, not
+  successful proof or fixture rejection3. Earlier invalid population-name/missing-work-dir
+  attempts are setup failures, excluded from the finding.
+- Both actual old image archives pass current ordered-layer/config validation (59491).
+  Diagnostic runs43945/22322 disclose the bundle refusal, not acceptance; temporary
+  diagnostic test files are removed. No safety validator or production byte is changed.
+- Fresh whole-bundle diff exits0. Actual record manifest/six SBOM hashes match the retained
+  artifacts. `validate-build` deliberately rejects the new incomplete record (exit1,
+  `invalid_evidence`), while the existing candidate record passes. This incomplete record
+  cannot enter R-006 as a supported predecessor. Existing records diff unchanged.
+
+The artifact-availability investigation is complete; the supported predecessor is not.
+Next is a reviewed floor-compliant rehearsal predecessor with explicit provenance, then
+full pair proof and exact clean-host rehearsal. Do not grandfather the old management API,
+relabel the historical package, use a second candidate as the previous release, or rerun this
+reconstruction as if missing files remained the blocker. Candidate helpers also predate
+RP-513 and must be rebuilt at final reviewed source. Producer/author holds, full-range
+reviews and explicit clean-host authority remain; no hosted CI, R-006, release or1.0 claim.
+
+Review by: Codex (output/record first filter, not designated approval). Recorded by: Codex.
+The records/docs/plan/ledger/checkpoint range after `07616e41` through this containing
+commit needs designated Claude review, consolidatable with the existing packaging range.
+No push, deployment, migration, bound, image pin, contract or owner-copy changes.
+
+Temporary checkout cleanup: removed only the dependency symlink created for these builds;
+the historical tree is clean and main's dependencies/retained artifacts remain. The managed
+archive operation refused because the worktree is protected by a pinned task or workspace.
+Left that checkout intact; no manual deletion or attempt to bypass its protection.

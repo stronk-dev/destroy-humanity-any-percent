@@ -5219,3 +5219,18 @@ config IDs in the historical candidate/previous records; those records are not r
 Current next work is legitimate previous artifacts/provenance, full pair proof, outstanding
 reviews and authorized clean-host rehearsal, not merely rebuilding the already packaged
 candidate. No release state, playable tier, contract adoption, CI or1.0 acceptance advances.
+
+## 2026-10-13 — Historical predecessor rebuilt, but unsupported under the current floor
+
+After `07616e41`, reconstructed exact source44a4a72 twice with fresh Linux/amd64 image
+provenance. Whole70-artifact trees match after controlling the image tag; the owning
+Deployment log discloses the excluded first-tag attempt and exact hashes. Current candidate
+validation passes, historical Compose/Caddy fails the current safety floor (RP-514), and
+the actual pair probe is invalid, not green. The retained reconstruction record explicitly
+marks the supported-predecessor objective incomplete. Old records/source remain unchanged.
+
+Next: establish a reviewed floor-compliant predecessor with explicit provenance, then full
+pair/rollback and authorized clean-host proof. Artifact availability is no longer the same
+blocker; do not weaken validators or promote reconstruction into release support. No tier,
+acceptance, draft adoption, hosted CI or release advancement. The new checkpoint range needs
+Claude alongside existing packaging reviews; accepted construction elsewhere continues.

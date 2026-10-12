@@ -7,7 +7,19 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Current local construction (2026-10-12):** two independently built candidate trees at
+**Historical predecessor reconstruction (2026-10-13, RP-514):** exact source44a4a72
+now has two independently rebuilt, byte-identical70-artifact trees, six fresh image
+SBOMs per build and corrected Linux/amd64 config identities. This restores artifacts,
+not a supported rollback target: current validation refuses the old Compose/Caddy
+floor (including its enabled2019 management API). The candidate validates, but the
+actual pair probe exits2 `invalid_probe`. The retained
+`release-builds/reconstructed-44a4a72.incomplete.json` deliberately marks the supported
+predecessor objective incomplete. Establish a reviewed floor-compliant predecessor
+with explicit provenance before full pair/rollback proof; do not weaken safety checks,
+relabel the historical source or repeat this already completed reconstruction. The
+owning log records exact output identities, exclusions and pending designated review.
+
+**Current local candidate construction (2026-10-12):** two independently built candidate trees at
 `102face6` compare byte-identical, including74 artifacts, six Linux commands, no-cache image
 archives and seven independently scanned normalized image SBOMs. New retained record:
 `release-builds/candidate-102face6.json`; the old candidate/previous records stay historical.
@@ -213,7 +225,7 @@ For every batch:
 | Wave | Scope | State |
 |---|---|---|
 | DP-F1 | Initial-install command plus exact rehearsal schema/validator and sanitized evidence contract | implemented locally at `b9d7c8a`; review remains in the DP-F range |
-| DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | two full byte-identical local candidate builds at `102face6` with seven independent fresh image scans, correct amd64 config identities, retained record and structured scan. Historical `7e8aa70` builds remain invalid. The legitimate retained previous pair/full supply-chain run and remaining producer/author gates are still open; no R-006 run or designated verdict. |
+| DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | two full byte-identical local candidate builds at `102face6` with seven independent fresh image scans, correct amd64 config identities, retained record and structured scan. Historical `7e8aa70` builds remain invalid. Source44a4a72 is now independently reconstructed, but fails the current Compose/Caddy floor (RP-514); establish a reviewed floor-compliant predecessor rather than retry artifact recovery. Full supported pair/supply-chain proof and remaining producer/author gates stay open; no R-006 run or designated verdict. |
 | DP-F3 | Clean Linux/amd64 host install, browser flow, backup/restart/restore/rollback, alert delivery, journal measurement and RPO/RTO observation with no checkout/providers | requires the refreshed exact candidate/retained previous pair from DP-F2, explicit clean-host target authority and required designated review boundaries |
 | DP-F4 | R-006 dossier, canonical runbook/limitations, backlog/queue/RFC closeout and full-range first-filter | blocked on DP-F3 and designated approvals for DP-A–DP-E |
 
