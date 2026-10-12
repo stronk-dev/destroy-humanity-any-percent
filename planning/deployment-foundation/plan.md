@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest bounded correction, 2026-10-12 (RP-503):** objective measurement now applies
+DP6/AC4's exact six-hour/four-hour bounds before whole-second report conversion. The
+12-case regression exposes four old-source subsecond-overrun false passes and passes
+after repair, including zero/below/exact/whole-second-over controls. Affected cold native
+packages/vet, declared Linux-amd64 objective tests and all seven real-Postgres backup
+integration functions pass. The owning log holds the exact range requiring Claude review.
+Report fields and clock origins are unchanged; no full Deployment, CI or clean-host claim.
+
 **Latest bounded checkpoint, 2026-10-12:** original Claude R5
 `78ec39a7^..78ec39a7` has bounded Codex designated approval. The unchanged private-service
 witness executes through `make test-deployment-operations-profile`: five healthy scrapes,

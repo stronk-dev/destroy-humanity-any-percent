@@ -120,6 +120,56 @@ func TestObjectiveMeasurementFailsIncompleteLateAndSlowObservations(t *testing.T
 	}
 }
 
+func TestObjectiveMeasurementEnforcesExactDurationBounds(t *testing.T) {
+	completed := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
+	header := Header{SchemaVersion: 1, BackupID: "20261012T115900Z-abcdef123456", ServerID: "server",
+		ReleaseManifestSHA256: "sha256:" + strings.Repeat("a", 64), EpochID: 8,
+		StartedAt: completed.Add(-time.Minute), CompletedAt: completed,
+		PayloadSHA256: "sha256:" + strings.Repeat("b", 64), PayloadBytes: 1}
+	for _, objective := range []struct {
+		name  string
+		bound time.Duration
+	}{
+		{"rpo", 6 * time.Hour},
+		{"rto", 4 * time.Hour},
+	} {
+		for _, boundary := range []struct {
+			name     string
+			duration time.Duration
+			valid    bool
+		}{
+			{"zero", 0, true},
+			{"one_ns_below", objective.bound - time.Nanosecond, true},
+			{"exact", objective.bound, true},
+			{"one_ns_over", objective.bound + time.Nanosecond, false},
+			{"999ms_over", objective.bound + 999*time.Millisecond, false},
+			{"one_second_over", objective.bound + time.Second, false},
+		} {
+			t.Run(objective.name+"_"+boundary.name, func(t *testing.T) {
+				rpo, rto := time.Minute, time.Minute
+				if objective.name == "rpo" {
+					rpo = boundary.duration
+				} else {
+					rto = boundary.duration
+				}
+				incident := completed.Add(rpo)
+				restore := incident.Add(time.Minute)
+				measurement, err := MeasureObjectives(header, ObjectiveObservation{
+					IncidentAt: incident, RestoreStartedAt: restore, SmokePassedAt: restore.Add(rto)})
+				if !boundary.valid {
+					if !errors.Is(err, ErrInvalid) || measurement != (ObjectiveMeasurement{}) {
+						t.Fatalf("out-of-bound duration accepted or partial result returned: duration=%s measurement=%+v err=%v", boundary.duration, measurement, err)
+					}
+					return
+				}
+				if err != nil || measurement.RPOSeconds != int64(rpo/time.Second) || measurement.RTOSeconds != int64(rto/time.Second) {
+					t.Fatalf("valid duration refused or existing whole-second report changed: measurement=%+v err=%v", measurement, err)
+				}
+			})
+		}
+	}
+}
+
 func fixtureReleaseManifest(t *testing.T, epoch []byte) []byte {
 	return fixtureReleaseManifestForMigration(t, epoch, 1)
 }

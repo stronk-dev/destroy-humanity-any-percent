@@ -4965,3 +4965,33 @@ Recorded by: Codex. The new Make/docs/records range starts after `ffc8bc25`
 through this containing commit and requires Claude. This original-R5 designated
 verdict does not approve Codex's extraction. Diff and whitespace checked; no
 whole aggregate, hosted CI, release or feature-completion claim.
+
+## 2026-10-12 — Exact backup objective bounds before report conversion (RP-503)
+
+Outcome under DP6/AC4: `MeasureObjectives` must refuse any duration beyond six-hour
+RPO/four-hour RTO, including subsecond overruns. Old code truncated to seconds first;
+the existing final rehearsal validator already compared durations. Added one regression
+with12 cases: each objective at zero, one nanosecond below, exactly at, one nanosecond
+over,999ms over and one second over. Old-source26841 fails precisely the four subsecond
+overrun cases, returning a success measurement. Corrected code compares full durations
+before constructing the unchanged whole-second report and returns no partial result on
+refusal. Backup completion/incident/restore/smoke meanings and all bounds stay unchanged.
+Canonical Deployment docs explain this distinction; no new policy or schema.
+
+Executed final checks:7823 cold `make test-go vet` over `./deploymentbackup
+./deploymentrehearsal ./cmd/deployment-backup ./cmd/deployment-rehearsal` with
+`GO_TEST_FLAGS='-count=1'` passes all affected packages and vet. Native DB prerequisites
+skip;66695 `make test-deployment-backup` separately executes and passes all seven actual
+Linux-amd64/Postgres16 integration functions, including empty/populated encrypted restore,
+non-clean refusals, identity mutation, concurrent snapshot and pre/post-deletion populations.
+Its declared isolated services/network are removed by the existing target.89677 declared
+`make test-go-ci CI_TEST_PACKAGES='./deploymentbackup' CI_TEST_FLAGS='-v -run TestObjectiveMeasurement'`
+passes the new12 cases plus the existing incomplete/late/slow tests verbosely; those objective
+tests are pure arithmetic, not SQL proof. All handles terminal; gofmt/diff checks pass.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact correction range
+starts after `ad54b258` through this containing commit; Claude designated review pending,
+separate from earlier debt. No acceptance checkbox, archival, CI/workflow change, full-CI
+green or exact-bundle clean-host claim. RP-131/RP-307, author/operator decisions, rebuilt
+bundles and R-006/R-007 remain. Continue accepted construction/repair and consolidate reviews;
+the four pending proposals are not adopted by automatic goal continuation. No push/deploy.

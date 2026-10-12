@@ -384,14 +384,14 @@ func MeasureObjectives(header Header, observation ObjectiveObservation) (Objecti
 		observation.IncidentAt.Before(header.CompletedAt) || observation.RestoreStartedAt.Before(observation.IncidentAt) || observation.SmokePassedAt.Before(observation.RestoreStartedAt) {
 		return ObjectiveMeasurement{}, ErrInvalid
 	}
-	measurement := ObjectiveMeasurement{
-		RPOSeconds: int64(observation.IncidentAt.Sub(header.CompletedAt) / time.Second),
-		RTOSeconds: int64(observation.SmokePassedAt.Sub(observation.RestoreStartedAt) / time.Second),
-	}
-	if measurement.RPOSeconds > int64((6*time.Hour)/time.Second) || measurement.RTOSeconds > int64((4*time.Hour)/time.Second) {
+	rpo := observation.IncidentAt.Sub(header.CompletedAt)
+	rto := observation.SmokePassedAt.Sub(observation.RestoreStartedAt)
+	// Enforce the exact bounds before converting the report to whole seconds;
+	// truncation must not turn a subsecond overrun into a passing observation.
+	if rpo > 6*time.Hour || rto > 4*time.Hour {
 		return ObjectiveMeasurement{}, ErrInvalid
 	}
-	return measurement, nil
+	return ObjectiveMeasurement{RPOSeconds: int64(rpo / time.Second), RTOSeconds: int64(rto / time.Second)}, nil
 }
 
 type boundedWriter struct {

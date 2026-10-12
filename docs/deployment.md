@@ -549,7 +549,9 @@ Then run `make deployment-rehearsal-recover-populated` with the same scenario. I
 checkpoint, destroys the empty-restored volume, restores the exact populated backup, compares the
 complete database identity before any new smoke state can be written, and finally runs the
 authenticated Caddy smoke. RPO is derived from backup completion to the declared incident; RTO is
-derived from restore start to smoke completion through the production objective validator. Only
+derived from restore start to smoke completion through the production objective validator.
+The full elapsed durations determine whether the six-hour/four-hour bounds pass; converting the
+reported values to whole seconds never admits a subsecond overrun. Only
 then is `objective-observation.json` written. Both lanes are destructive and belong only in the
 explicit clean-host release rehearsal, never push CI.
 
