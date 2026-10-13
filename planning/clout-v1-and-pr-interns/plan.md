@@ -6,6 +6,16 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+2026-10-13 P1/RP-538 checkpoint: original `ace4e67e^..ace4e67e`, all17 paths,
+now has full designated CHANGES REQUIRED for mandatory-role admission (RP-304)
+and source ownership (RP-538). Both current loaders locally refuse cross-upgrade
+source collisions with unchanged distinct/equal-factor controls; kernel0.3.187
+records that real acceptance-set correction. Affected checks pass while broader
+production retains27 partition failures and the historical version guard stays
+red. The owning log separates original review from pending Claude review of the
+correction. Continue original P2/P3 review and accepted construction; P1/P4/P5
+original dispositions are now complete, not full-feature acceptance.
+
 2026-10-13 RP-536 checkpoint: the shared axis readout now contains missing or
 parameter-incompatible cap-copy rows instead of crashing the Desk or silently
 ignoring unavailable presentation. Old-behavior regressions fail; startup,
@@ -242,7 +252,7 @@ episode/origin lifetime remain; the owning log records checks and the initial in
 
 ## Batches
 
-- [x] P1 (`ace4e67e`, formulas `80f1bd47`) — CV1 economy schema v5 (Go `server/economy`, TS `client/src/economy-kernel.ts`):
+- [x] P1 (`ace4e67e`, formulas `80f1bd47`) — implementation present, not full AC1 approval; original all17-path review CHANGES REQUIRED (RP-304/538). CV1 economy schema v5 (Go `server/economy`, TS `client/src/economy-kernel.ts`):
   `axis_stack` block, the axis upgrade-effect arm, the upgrade-only `axis_at_least` requirement,
   the `axis_stack` multiplier slot (after `milestones`), provider/declaration pairing, and
   cross-artifact validation against `achievements`. Shared loader corpus. AC1.

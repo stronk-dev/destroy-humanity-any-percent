@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"cloud-clicker/server/economy"
@@ -204,5 +205,59 @@ func TestAxisStackFixtureShape(t *testing.T) {
 	}
 	if fmt.Sprint(economy.MultiplierSlotOrder) != "[upgrades milestones axis_stack faction doctrine commons trust event_buffs prestige]" {
 		t.Fatalf("slot order = %v (OD-6: axis_stack after milestones, before faction)", economy.MultiplierSlotOrder)
+	}
+}
+
+func TestAxisContributionSourceOwnership(t *testing.T) {
+	fixture := repositoryFile(t, "balance/testdata/axis-stack/economy-v5-fixture.json")
+	for _, owner := range []string{"pr_intern_1", "pr_intern_2"} {
+		for _, equalFactors := range []bool{false, true} {
+			t.Run(fmt.Sprintf("shared/%s/equal=%t", owner, equalFactors), func(t *testing.T) {
+				other := "pr_intern_1"
+				if owner == other {
+					other = "pr_intern_2"
+				}
+				var mutations []axisCorpusMutator
+				recipe := fmt.Sprintf(`[
+					{"op":"set","path":["upgrades",{"id":"upgrade.%s"},"effects",0,"source_id"],"value":"upgrade.%s.axis"},
+					{"op":"delete","path":["multiplier_sources",{"id":"upgrade.%s.axis"}]}
+				]`, other, owner, other)
+				if err := json.Unmarshal([]byte(recipe), &mutations); err != nil {
+					t.Fatal(err)
+				}
+				if equalFactors {
+					for _, id := range []string{owner, other} {
+						var extra axisCorpusMutator
+						if err := json.Unmarshal([]byte(fmt.Sprintf(`{"op":"set","path":["upgrades",{"id":"upgrade.%s"},"effects",0,"factor_ppm"],"value":25000}`, id)), &extra); err != nil {
+							t.Fatal(err)
+						}
+						mutations = append(mutations, extra)
+					}
+				}
+				if _, err := economy.LoadCatalog(mutateJSON(t, fixture, mutations)); err == nil || !strings.Contains(err.Error(), "duplicate axis contribution source") {
+					t.Fatalf("shared source must refuse at catalog admission, got %v", err)
+				}
+			})
+		}
+	}
+	for _, equalFactors := range []bool{false, true} {
+		t.Run(fmt.Sprintf("distinct/equal=%t", equalFactors), func(t *testing.T) {
+			var mutations []axisCorpusMutator
+			if equalFactors {
+				if err := json.Unmarshal([]byte(`[{"op":"set","path":["upgrades",{"id":"upgrade.pr_intern_2"},"effects",0,"factor_ppm"],"value":25000}]`), &mutations); err != nil {
+					t.Fatal(err)
+				}
+			}
+			catalog, err := economy.LoadCatalog(mutateJSON(t, fixture, mutations))
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, id := range []string{"pr_intern_1", "pr_intern_2"} {
+				upgrade, ok := catalog.Upgrade("upgrade." + id)
+				if !ok || len(upgrade.Effects) != 1 || upgrade.Effects[0].SourceID != "upgrade."+id+".axis" {
+					t.Fatalf("distinct source control changed: %+v", upgrade)
+				}
+			}
+		})
 	}
 }

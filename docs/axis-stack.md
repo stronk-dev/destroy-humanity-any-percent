@@ -17,7 +17,12 @@ proposals awaiting owner SHA ratification. `pr_intern_3` is absent until Tier 2 
   `factor_ppm` in 1..1,000,000. It may not share an upgrade with the static `upgrades` arm. Each
   axis effect needs one explicit `multiplier_sources` row
   `{slot: axis_stack, target: all, provider: axis_stack}`. The slot and provider pair exactly, and
-  an orphan axis source rejects.
+  an orphan axis source rejects. A source ID belongs to exactly one axis effect
+  across the whole catalog: two upgrades cannot share its declaration, even when
+  their factors are equal. Both loaders refuse collisions before gameplay or
+  replay; kernel0.3.187 records this admission correction (RP-538). Distinct
+  sources with equal factors remain valid, and the original loader corpus and
+  fixture bytes are unchanged.
 - **`axis_at_least {minimum}`** is legal only in an upgrade's `requires`. The loader splits it off
   before the route condition parser runs, so route predicates and gates reject it and the route
   context version is unchanged.

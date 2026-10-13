@@ -3028,3 +3028,68 @@ of the later Codex corrections/research. Next: repair the guard's mutation/codec
 boundary and retained discriminating negatives under accepted AC4, then review
 that corrective range; remaining original P1/P2/P3 and full feature gates remain.
 No product, numeric, reward, copy, version, CI, mint, archival or release change.
+
+## 2026-10-13 — Full original P1 loader review
+
+Review by: Codex (designated independent reviewer of Claude). Recorded by: Codex.
+**CHANGES REQUIRED**, exact `ace4e67e^..ace4e67e`, all17 changed paths. Claude
+provenance is explicit in the original log and co-author trailer. Inspect both
+loaders, achievement maxima, Go/TS bundle checks and static-contribution skips,
+slot order/test, generator, shared loader tests/corpus/fixture, three version
+markers and the original record. Existing RP-304's executed empty-role findings
+block original approval; RP-305's truthful role/pool binding remains separate.
+
+RP-538 newly exposes source ownership: both original branches verify presence
+but reduce effects to a set without rejecting cross-upgrade repetition. Current
+old-behavior Go/TS regressions each admit four collisions (both owners, equal/
+different factors) while retaining two distinct-source controls. This is fresh
+execution of the current unchanged ownership branches, not a historical compiler
+or full original runtime execution. The original helper's "exactly one" comment
+does not establish that invariant; later source-keyed factor production and
+duplicate-contribution refusal depend on it.
+
+Readonly in-memory execution of the actual historical generator reproduces both
+original outputs byte-identically. Removing only the two proposed PR upgrades/
+declarations, axis block and schema5 increment restores the complete original
+v4 catalog. Corpus22 economy/4 cross/2 route names are unique; all three kernel
+markers agree at126 after125. No filesystem generation or balance mutation.
+These are artifact consistency checks, not content ratification, full route/
+reward/SQL proof or approval of the separate formula-publication commit.
+
+Later Codex role fixes and the following ownership correction need their own
+designated Claude review; this original negative verdict approves none. Original
+P1/P4/P5 reviews are complete; P2/P3 and whole-feature gates remain. No archival,
+content mint, historical rewrite, CI relaxation, push or release promotion.
+
+## 2026-10-13 — RP-538 unique axis contribution ownership
+
+Outcome under CV1 and existing contribution identity: reject two upgrades sharing
+one declared axis source before gameplay/replay. Retain distinct IDs even with
+equal factors. Four old-loader refusals fail per runtime; two legal controls pass.
+Reuse the existing mutation helpers, fixture and corpus; no new test framework.
+Both loaders now track axis source ownership explicitly. Kernel186→187 is a real
+admission-set change, not an attempt to repair RP-131; all three markers change
+together. Formula shapes, catalogs, values, copy, slots, schema and pins stay put.
+
+Executed root checks: affected economy/multiplier/achievements/replaycatalog/
+routes/decimal/kernel81433 and vet96593 pass cold, including Go golden vectors.
+Node4919 passes376 in eight actual files; the requested nonexistent numeric.test
+selector runs nothing and gets no vector credit. Corrected full `make test-client`
+16529 includes decimal-vectors and passes10801, with1030 explicit existing/browser
+skips (eight newly added Clout browser declarations explain the increase).
+Native2924 passes104 loader/role/formula executions in Chromium/WebKit,1.65s.
+Types/build/client-boundary/formulas4921 pass; generated formulas and original
+fixture/corpus/API pin stay byte-unchanged. All handles terminal; final diff checked.
+
+Broader cold production/gameui36590 exits2: production43.061s fails exactly the
+original27 RP-307 partition cases; gameui passes. `make verify-kernel-version`
+76631 also exits2 at historical50a3a514, with its checkout/adversarial controls
+passing first. No assertion, tolerance, guard, retry, timeout or CI lane is loosened.
+Native package runs do not supply fresh SQL, Linux/Firefox, hosted CI, content
+mint, full AC1/AC6 or release evidence; Docker-dependent journeys remain separate.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete corrective
+range after `e4054647` through this containing commit, including these records,
+needs designated Claude review, consolidatable with related CV1 fixes. Original
+P1's negative verdict is not approval of this range. Continue accepted work and
+remaining original P2/P3 reviews; the full nine-tier1.0 goal remains active.

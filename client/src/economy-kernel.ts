@@ -333,10 +333,13 @@ export function parseCatalog(source: unknown): EconomyCatalog {
   const upgradeById = new Map(upgrades.map((definition) => [definition.id, definition]));
   const allMultiplierSources = [...multiplierSources];
   const multiplierIds = new Set(multiplierSources.map((definition) => definition.id));
+  const axisSourceIds = new Set<string>();
   let axisEffects = 0;
   for (const upgrade of upgrades) {
     for (const effect of upgrade.effects) {
       if (effect.slot === "axis_stack") {
+        if (axisSourceIds.has(effect.sourceId)) throw new SyntaxError(`duplicate axis contribution source ${effect.sourceId}`);
+        axisSourceIds.add(effect.sourceId);
         const declaration = multiplierSources.find((value) => value.id === effect.sourceId);
         if (!declaration || declaration.slot !== "axis_stack" || declaration.target !== "all" || declaration.provider !== AXIS_STACK_PROVIDER) throw new SyntaxError(`upgrade ${upgrade.id} axis effect ${effect.sourceId} needs one multiplier_sources row {slot: axis_stack, target: all, provider: axis_stack}`);
         axisEffects += 1;
@@ -350,7 +353,6 @@ export function parseCatalog(source: unknown): EconomyCatalog {
   }
   if ((axisStack !== null) !== (axisEffects > 0)) throw new SyntaxError("axis_stack is required if and only if an upgrade carries an axis effect");
   if (axisStack === null && upgrades.some((upgrade) => upgrade.axisMinimum > 0)) throw new SyntaxError("axis_at_least requires an axis_stack");
-  const axisSourceIds = new Set(upgrades.flatMap((upgrade) => upgrade.effects.filter((effect) => effect.slot === "axis_stack").map((effect) => effect.sourceId)));
   for (const declaration of multiplierSources) if (declaration.slot === "axis_stack" && !axisSourceIds.has(declaration.id)) throw new SyntaxError(`axis_stack source ${declaration.id} has no axis effect`);
   const synergyPools = root.synergy_pools.map((value, index) => parseSynergyPool(value, index, generatorClasses, upgradeById));
   ensureUnique(synergyPools, "synergy pool");

@@ -1214,6 +1214,9 @@ func (c *Catalog) validateAxisStack(axisEffects, axisRequirements int) error {
 	for _, upgrade := range c.upgrades {
 		for _, effect := range upgrade.Effects {
 			if effect.Slot == SlotAxisStack {
+				if effects[effect.SourceID] {
+					return fmt.Errorf("duplicate axis contribution source %q", effect.SourceID)
+				}
 				effects[effect.SourceID] = true
 			}
 		}

@@ -65,3 +65,23 @@ describe("axis stack economy v5 loader corpus (CV1, AC1)", () => {
     expect([...MULTIPLIER_SLOT_ORDER]).toEqual(["upgrades", "milestones", "axis_stack", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige"]);
   });
 });
+
+describe("axis source ownership (RP-538)", () => {
+  for (const owner of ["pr_intern_1", "pr_intern_2"]) for (const equalFactors of [false, true]) {
+    it(`refuses a shared source owned by ${owner}, equal factors=${equalFactors}`, () => {
+      const other = owner === "pr_intern_1" ? "pr_intern_2" : "pr_intern_1";
+      const mutations: Mutation[] = [
+        { op: "set", path: ["upgrades", { id: `upgrade.${other}` }, "effects", 0, "source_id"], value: `upgrade.${owner}.axis` },
+        { op: "delete", path: ["multiplier_sources", { id: `upgrade.${other}.axis` }] },
+      ];
+      if (equalFactors) for (const id of [owner, other]) mutations.push({ op: "set", path: ["upgrades", { id: `upgrade.${id}` }, "effects", 0, "factor_ppm"], value: 25_000 });
+      expect(() => parseCatalog(mutate(fixtureJSON, mutations))).toThrow(/duplicate axis contribution source/u);
+    });
+  }
+  for (const equalFactors of [false, true]) it(`preserves distinct source IDs, equal factors=${equalFactors}`, () => {
+    const mutations: Mutation[] = equalFactors ? [{ op: "set", path: ["upgrades", { id: "upgrade.pr_intern_2" }, "effects", 0, "factor_ppm"], value: 25_000 }] : [];
+    const catalog = parseCatalog(mutate(fixtureJSON, mutations));
+    expect(catalog.upgrade("upgrade.pr_intern_1")!.effects[0]!.sourceId).toBe("upgrade.pr_intern_1.axis");
+    expect(catalog.upgrade("upgrade.pr_intern_2")!.effects[0]!.sourceId).toBe("upgrade.pr_intern_2.axis");
+  });
+});
