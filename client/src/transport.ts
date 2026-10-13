@@ -42,9 +42,9 @@ function validatePayload(kind: TransportKind, payload: Record<string, unknown>, 
   if (kind === "receipt") return; // Production C1 owns and validates this object unchanged.
   if (kind === "snapshot") {
     exact(payload, ["scope", "rev", "state"], "snapshot payload");
-    if (!["company", "world", "guild", "cohort"].includes(String(payload.scope)) || !Number.isSafeInteger(payload.rev) || (payload.rev as number) < 0 ||
+    if (typeof payload.scope !== "string" || !["company", "world", "guild", "cohort"].includes(payload.scope) || !Number.isSafeInteger(payload.rev) || (payload.rev as number) < 0 ||
         payload.rev !== envelopeRevision || typeof payload.state !== "object" || payload.state === null || Array.isArray(payload.state) ||
-        !scopeMatchesChannel(String(payload.scope), channel)) throw new SyntaxError("invalid snapshot payload");
+        !scopeMatchesChannel(payload.scope, channel)) throw new SyntaxError("invalid snapshot payload");
     if (payload.scope === "world") {
       const snapshot = decodeWorldSnapshot(payload.state);
       if (snapshot.world_rev !== payload.rev) throw new SyntaxError("world snapshot revision mismatch");
@@ -54,9 +54,9 @@ function validatePayload(kind: TransportKind, payload: Record<string, unknown>, 
   if (kind === "event") {
     exact(payload, ["event_id", "kind", "scope", "rev", "cursor_effect", "payload"], "event payload");
     if (typeof payload.event_id !== "string" || payload.event_id.length === 0 || typeof payload.kind !== "string" || !idPattern.test(payload.kind) ||
-        !["company", "founder"].includes(String(payload.scope)) ||
+        typeof payload.scope !== "string" || !["company", "founder"].includes(payload.scope) ||
         !Number.isSafeInteger(payload.rev) || (payload.rev as number) < 1 || payload.rev !== envelopeRevision ||
-        !["advance", "historical"].includes(String(payload.cursor_effect)) ||
+        typeof payload.cursor_effect !== "string" || !["advance", "historical"].includes(payload.cursor_effect) ||
         (payload.kind === "compensation") !== (payload.cursor_effect === "historical") ||
         typeof payload.payload !== "object" || payload.payload === null || Array.isArray(payload.payload)) throw new SyntaxError("invalid event payload");
     return;
@@ -67,7 +67,7 @@ function validatePayload(kind: TransportKind, payload: Record<string, unknown>, 
     return;
   }
   exact(payload, payload.code === "server_restarting" ? ["code", "resume_after_ms"] : ["code"], "system payload");
-  if (!["server_restarting", "history_expired", "resync_required"].includes(String(payload.code)) || payload.code === "server_restarting" && (!Number.isSafeInteger(payload.resume_after_ms) || (payload.resume_after_ms as number) < 0)) throw new SyntaxError("invalid system payload");
+  if (typeof payload.code !== "string" || !["server_restarting", "history_expired", "resync_required"].includes(payload.code) || payload.code === "server_restarting" && (!Number.isSafeInteger(payload.resume_after_ms) || (payload.resume_after_ms as number) < 0)) throw new SyntaxError("invalid system payload");
 }
 
 export function decodeWorldSnapshot(source: unknown): WorldSnapshot {

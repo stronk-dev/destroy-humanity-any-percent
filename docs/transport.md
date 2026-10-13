@@ -27,6 +27,18 @@ curated events/presence/system messages. Consequently a per-click receipt cannot
 channel through the generic publisher. Unknown future kinds remain client-ignored before payload
 interpretation as the version-2 forward-compatibility rule requires.
 
+Before struct decoding, Go validates Transport-owned payload fields (including nested world
+aggregates) against their DTO tags: every required key is present, aliases/extras refuse, and
+null cannot stand in for a scalar/array/object or an optional duration. The required nullable
+`milestones.active_id` still accepts null. Envelope revisions, presence counts and restart
+delays must fit the same exact safe-integer range as the client. TypeScript requires scope,
+cursor-effect and system-code enums to be strings, never coercing arrays into those values.
+Production receipt bodies and opaque save/event payloads retain their existing ownership and
+decoding behavior; this adds no raw-wire duplicate-key grammar or new fields. The shared
+`testdata/transport/payload-conformance-vectors.json` covers valid shapes and refusals in both
+runtimes. A connected protocol fixture also checks refusal before history and healthy delivery;
+its controlled identity/membership and net.Pipe transport are not a deployed player journey.
+
 The live Centrifuge writer is wrapped by an application-owned queue discipline. Its byte queue is
 the first bound. A separate per-connection counter enforces the declared private-player message
 bound; receipts remain ordered and lossless until either bound is reached, then the socket closes

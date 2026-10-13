@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"reflect"
 	"regexp"
 	"strings"
 	"time"
@@ -33,7 +34,7 @@ type Envelope struct {
 }
 
 func Encode(envelope Envelope, messageCap int) ([]byte, error) {
-	if envelope.Version != WireVersion || envelope.Channel == "" || !knownKind(envelope.Kind) || envelope.Revision < 0 ||
+	if envelope.Version != WireVersion || envelope.Channel == "" || !knownKind(envelope.Kind) || envelope.Revision < 0 || envelope.Revision > maxWireInteger ||
 		!hashPattern.MatchString(envelope.ConstantsHash) || envelope.Timestamp.IsZero() || len(envelope.Payload) == 0 || messageCap < 1 ||
 		!channelAllowsKind(envelope.Channel, envelope.Kind) || validatePayload(envelope) != nil {
 		return nil, ErrInvalidPolicy
@@ -112,7 +113,7 @@ func validatePayload(envelope Envelope) error {
 			Left   []string `json:"left"`
 			Count  int64    `json:"count"`
 		}
-		if decodeExactPayload(envelope.Payload, &payload) != nil || payload.Joined == nil || payload.Left == nil || payload.Count < 0 ||
+		if decodeExactPayload(envelope.Payload, &payload) != nil || payload.Joined == nil || payload.Left == nil || payload.Count < 0 || payload.Count > maxWireInteger ||
 			!nonemptyStrings(payload.Joined) || !nonemptyStrings(payload.Left) {
 			return ErrInvalidPolicy
 		}
@@ -126,7 +127,7 @@ func validatePayload(envelope Envelope) error {
 		}
 		switch payload.Code {
 		case "server_restarting":
-			if payload.ResumeAfterMS == nil || *payload.ResumeAfterMS < 0 {
+			if payload.ResumeAfterMS == nil || *payload.ResumeAfterMS < 0 || *payload.ResumeAfterMS > maxWireInteger {
 				return ErrInvalidPolicy
 			}
 		case "history_expired", "resync_required":
@@ -158,6 +159,15 @@ func scopeMatchesChannel(scope, channel string) bool {
 }
 
 func decodeExactPayload(data []byte, target any) error {
+	shape := reflect.TypeOf(target)
+	if shape == nil {
+		return ErrInvalidPolicy
+	}
+	if shape.Kind() == reflect.Pointer && shape.Elem().Kind() == reflect.Struct {
+		if err := validateWireObjectFields(data, shape.Elem()); err != nil {
+			return err
+		}
+	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(target); err != nil {
@@ -165,6 +175,52 @@ func decodeExactPayload(data []byte, target any) error {
 	}
 	if err := decoder.Decode(&struct{}{}); err != io.EOF {
 		return ErrInvalidPolicy
+	}
+	return nil
+}
+
+// Validate only Transport-owned DTOs. RawMessage/map fields belong to the
+// save/event/receipt owners and remain opaque. This preserves their existing
+// last-value JSON decoding rather than inventing a second raw-wire grammar.
+func validateWireObjectFields(data []byte, shape reflect.Type) error {
+	var fields map[string]json.RawMessage
+	if json.Unmarshal(data, &fields) != nil || fields == nil {
+		return ErrInvalidPolicy
+	}
+	known := make(map[string]bool, shape.NumField())
+	for index := 0; index < shape.NumField(); index++ {
+		field := shape.Field(index)
+		parts := strings.Split(field.Tag.Get("json"), ",")
+		name := parts[0]
+		known[name] = true
+		optional := len(parts) > 1 && parts[1] == "omitempty"
+		raw, present := fields[name]
+		if !present {
+			if !optional {
+				return ErrInvalidPolicy
+			}
+			continue
+		}
+		if bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+			// A required pointer is an explicitly nullable field (active_id).
+			// An omitted duration is not the same as a present null duration.
+			if field.Type.Kind() != reflect.Pointer || optional {
+				return ErrInvalidPolicy
+			}
+			continue
+		}
+		nested := field.Type
+		if nested.Kind() == reflect.Pointer {
+			nested = nested.Elem()
+		}
+		if nested.Kind() == reflect.Struct && validateWireObjectFields(raw, nested) != nil {
+			return ErrInvalidPolicy
+		}
+	}
+	for name := range fields {
+		if !known[name] {
+			return ErrInvalidPolicy
+		}
 	}
 	return nil
 }

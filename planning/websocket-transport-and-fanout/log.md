@@ -711,3 +711,42 @@ docs/records range after `95d390fc` through this containing commit requires desi
 review, consolidatable with related conformance fixes while preserving their own ranges.
 Earlier Q-003 approval is unchanged and does not approve this correction. Continue accepted
 work and actual declared service evidence when available; no push, publication or deployment.
+
+## 2026-10-13 — Known-payload producer/consumer conformance (RP-561)
+
+Baseline `b8eb4c58`; preceding goal turn corrected policy member admission. Typer's accepted
+TT-PA4 still conflicts with API C2's pinned v1 request/response contract, as its existing log
+records; do not bypass that pin. Continue accepted Transport D3/T3 construction/conformance.
+Go now checks Transport-owned DTO fields, including nested world aggregates, before struct
+decoding: required keys, exact names and nullability. Existing nullable active_id stays valid.
+Envelope rev, presence count and restart delay use the existing maxWireInteger domain. Client
+scope/cursor-effect/code require strings, not String(array). No new field, envelope version,
+origin, queue/retry/auth policy, authoritative state change or raw-wire duplicate grammar.
+Receipt/save/event-owned opaque objects remain opaque; invalid output fails before publishing.
+
+New shared literal corpus174 (12 valid/162 invalid) covers exact/missing/null/aliased fields,
+world nesting, actual enum types and safe-integer boundaries. The original Go JSON result was
+tool-truncated, so its captured subset is not the complete baseline census. Re-execute the
+original `b8eb4c58` wire.go through a Go compiler overlay at
+`/tmp/cloud-clicker-wire-baseline.vbwpzx/overlay.json`, never mutating production:14950 exits2,
+102 vector failures, all12 positive shapes retained, and the running publisher admits missing
+presence count with nil error. Its complete compact output has4273 tokens, not a truncated
+census. Old Node40881 independently fails4 enum-type cases while180 checks pass. Old failed
+assertions do not prove subsequent source-preservation or healthy-delivery assertions executed.
+
+Corrected focused58714 passes all174 vectors plus connected publisher proof: refused frame
+consumes no history offset; a valid presence reaches the real HTTP/WebSocket pipe peer with
+offset1 and exact payload. Controlled identity/membership, not real Account/SQL authorization.
+Root cold Transport/Account/Gameserver52568 passes13.385/0.489/0.396s; vet exits0. Focused
+race57003 passes1.472s. Node focused184 passes; native Chromium/WebKit78231 executes476 wire/
+runtime checks,2.60s. Types/Svelte46958 has zero diagnostics. Build/client-boundary18612 pass
+(217 modules); full test-client18164 passes11173, with1040 existing skips explicitly excluded.
+All handles terminal; formatting/diff checked. No current SQL/composed, Linux/Firefox, hosted
+CI, clean-host or full Transport/1.0 claim. Known history/conservation failures remain open.
+
+Review by: Codex (repair implementer first filter). Recorded by: Codex. Complete source/fixture/
+tests/docs/records range after `b8eb4c58` through this containing commit needs designated Claude
+review, consolidatable with RP-560 without absorbing older review debt. Canonical docs, owning
+plan and RP-561 updated together; no feature checkbox, body/ruling change, archival, mint,
+push, publication or deployment. Continue accepted work; public Typer/API and other named
+contract choices remain explicit, and the full nine-tier1.0 objective remains active.

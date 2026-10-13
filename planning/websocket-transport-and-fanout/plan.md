@@ -4,6 +4,13 @@
 - **RFC:** `rfc/websocket-transport-and-fanout.md`
 - **Started:** 2026-07-29
 
+Current known-payload conformance correction (2026-10-13, RP-561): Go validates exact
+DTO-owned fields/nullability and safe wire integers; the client requires actual string
+enums instead of coercing arrays. The shared174-case corpus, connected publisher/history
+refusal, healthy delivery and affected checks pass. The owning log records both old-source
+failures and the full range after `b8eb4c58`, pending Claude review. Opaque owner payloads,
+wire version and recovery policy are unchanged; no whole-feature or release promotion.
+
 Current bounded correction (2026-10-13, RP-560): policy loading validates exact original
 JSON members against the existing DTO tags before struct decoding. Case aliases and raw/
 escaped duplicate members now refuse; canonical escaping and the declared limits/origins
