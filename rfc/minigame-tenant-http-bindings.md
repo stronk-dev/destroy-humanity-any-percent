@@ -36,8 +36,8 @@ orders. Disjoint `/api/v1/typer/sessions` and different-method controls preserve
 Manual source: `planning/api-foundation/probes/tenant-route-probe.go.txt`. This is a registered
 stub-handler/routing experiment, not a real Typer HTTP, authentication or database run.
 
-**Not acceptance-ready:** finish the literal C17 descriptor/guard specification and atomic
-namespace-admission seam below, reconcile the affected authors' bodies, and obtain adoption
+**Not acceptance-ready:** finish the literal C17 descriptor/guard specification and schema2
+loader/version-floor specification, reconcile the affected authors' bodies, and obtain adoption
 and designated review. RP-460 timing and RP-162 result bounds remain separate author holds;
 this proposal cannot decide them or make admitted unsafe snapshots playable.
 
@@ -125,19 +125,100 @@ kernel paths; do not mint a false version signal for API-only metadata scaffoldi
 
 ## TB4 — Atomic namespace and stored-read binding
 
-Before creation or command mutation, under the same scope/transaction authority as the
-coordinator, prove the selected session/definition tuple has this namespace's declared HTTP
-binding. A preflight lookup followed by an unchecked transaction is insufficient across
-Founder/Company/epoch changes. Legacy operations likewise cannot create an unsupported tenant
-and only discover the wrong response shape after commit. Wrong-family requests produce the
-same404 absence without claims, rows, sequences, receipts, payouts or gameplay mutation.
+The binding is server configuration, not a request field: an immutable compiled entry keyed
+`(minigame_id,engine_ref,engine_version)`, with its four operation IDs and admitted modes.
+Composition checks it against the registry and pinned metadata; handlers select it by registered
+operation ID. Public callers cannot supply a tuple, hash, Founder or binding callback. Historical
+sessions resolve their own immutable hash, not the deployment-current bundle or current Company's
+newer hash. Existing request hashes and idempotency scopes remain unchanged.
 
-Reuse the existing create sequencing, request hashes, command receipts, sampled persisted DB
-clock, certification, once-only terminal composition and claim ownership. Stored retry bytes
-must not be reserialized with a different namespace or fresh sample. Lookup by session ID is
-authenticated-Founder scoped; resolved reads use the exact stored terminal receipt. No global
-lookup followed by caller-side ownership filtering. The concrete transaction seam/interface
-and idempotency lookup ordering need to be named before acceptance, not improvised while coding.
+### TB4.1 — Create and create replay
+
+Add a guarded variant of `save.Store.ApplyMinigameStartTransaction` with a required
+`MinigameStartAdmission` pair:
+
+- `New(ctx,tx,founder,founderRevision,company,companyRevision) error` receives the existing
+  locked states/revisions. Production resolves the definition and role IDs from that exact
+  Company hash and checks the selected compiled create binding. Run this before the first
+  genesis/log/sequence/session write, not just inside the existing mutation callback: that
+  callback currently runs after possible Founder-genesis insertion.
+- `Replay(ctx,tx,storedSessionID) error` runs on an equal-hash create receipt before returning
+  it. Select `session_id` along with the existing stored hash/response. The callback loads the
+  session with the same transaction and authenticated Founder predicate, then checks its own
+  pinned tuple/binding. It does not substitute the newly generated request session ID or require
+  that an old completed session belong to the current run/hash. A mismatched create-key hash
+  still returns the existing idempotency conflict; a key reused for a different minigame is
+  not silently treated as a retry.
+
+The public guarded entry also carries the authenticated account ID. Its existing Founder-row
+lock must require `account_id` equality and `archived_at IS NULL`; the adapter's earlier
+`ActiveCompanyState` read is only a locator. Preserve Founder → Founder stream → Company stream
+→ session ordering. Both callbacks are read-only and mandatory for public bindings; an internal
+backend start may retain the existing unguarded entry, but no mounted handler may call it.
+Namespace refusal is before writes, not a write followed by output validation and rollback.
+
+New-session response construction must check the owning operation's generated descriptor before
+receipt insertion/commit. That validation is provided by composition at the receipt-builder
+boundary, not a second schema in production. Preserve existing sequence/seed/unlock/Soul/genesis
+construction, sampling and the Founder replay transition. No migration or replay field is added
+merely to remember which HTTP route invoked the existing command.
+
+### TB4.2 — Command admission, replay and claim
+
+Add `minigame.Repository.ClaimOrReplayAPI` and a corresponding guarded service path, taking
+the authenticated account/Founder, session ID, command ID/hash and a required read-only
+`SessionAdmission` callback supplied by composition. One transaction must:
+
+1. Lock the active Founder row with its account predicate, as above.
+2. Load the requested session with `session_id AND founder_id`, locking that owned session.
+   Run admission against its immutable tuple/hash and pinned binding before looking at its
+   receipt hash, status, revision or acquiring a claim. Missing/wrong-family sessions both
+   return `ErrSessionGone` and the same404 bytes. Never load globally and filter in Go.
+3. Look up the existing command receipt under those locks. Equal hash returns the existing
+   canonical response without tenant execution, revision checks, clock sampling or claim
+   changes; unequal hash returns the existing command-idempotency conflict. This includes
+   resolved sessions. The old unguarded resolved/status fast path must not bypass replay.
+4. Only if no receipt exists, use the existing active/expired-claim predicate and lease to
+   acquire the claim, and take its one persisted command-clock sample before committing.
+   Admission failure must not update `claimed_at`, `updated_at`, token, state or revision.
+
+The return is a closed internal result: stored receipt **or** newly claimed Session. It is not
+an extra public JSON union. Preserve existing in-flight busy and stale-revision behavior;
+do not wait, poll or invent a second receipt/lease system. Pure tenant execution remains outside
+the claim transaction. Existing token-guarded nonterminal and terminal transactions remain the
+only completion owners; their receipt builders validate the selected operation DTO before any
+response receipt commits. Terminal payout and its command response still commit together.
+The certification's frozen tuple cannot be replaced by a newer bundle during resolution.
+
+### TB4.3 — Read and directory
+
+Add transaction-taking `minigame.Repository.LoadTx` and `CurrentTx` variants using the same
+Founder-scoped predicates as their existing reads. Composition opens a read-only repeatable-read
+transaction, resolves the account's active Founder and Company in it, and reads the session and
+pinned metadata in that same snapshot. No row claim, session-clock sample, evaluation, payout,
+token lease extension or repair is performed. Missing Founder stays404; no session is `none`
+only on the directory path. A session-ID read must check family admission before exposing its
+status or snapshot. Claimed-session reads expose only the persisted snapshot and public status,
+not the in-flight worker's candidate result or claim details.
+
+The session stores an immutable **inner resolution receipt**, not the entire terminal command
+HTTP response. Reconstruct the read envelope through `MinigameAPISessionReceipt` from the
+persisted terminal Session plus that stored inner receipt, then validate its read descriptor.
+Never rerun certification/payout or manufacture a fresh inner receipt. Command replay returns
+its own stored full response instead of using this reconstruction. Compare a terminal read
+against the first committed terminal command envelope in the real-Postgres acceptance population.
+
+### TB4.4 — Required failure evidence
+
+Real Postgres must show no writes for wrong-family create/command/read/resolve, including an
+existing opposite-family command receipt; missing and other-Founder IDs return the same absence.
+An equal create retry after Company run/hash change must bind the stored session, not mint a new
+one. An account/Founder change paused between adapter lookup and transaction admission must not
+execute under the old identity. Concurrent same-ID commands must return the recorded response
+after completion without another tenant application. Claimed/terminal reads must leave session,
+receipt, stream/log/event and faucet rows unchanged. Inspect timestamps/tokens as well as revision
+counts: a claim followed by release is not a no-write refusal. Run in the declared service;
+source inspection or a mocked transaction is not evidence that these guarantees hold.
 
 ## TB5 — Generated consumer and mounted child
 
@@ -162,7 +243,7 @@ supported server/client binding for every active tenant. Preserve Pitch's existi
 
 ## Acceptance and staged construction
 
-1. Complete descriptors, transaction seam, source/schema2 compatibility and client-guard
+1. Complete descriptors, source/schema2 compatibility and client-guard
    specification; reconcile TT-PA4/MA-C9 and obtain adoption/designated normative review.
 2. Implement metadata/codecs and generated guards; exact shared success/refusal vectors,
    immutable old artifacts and a genuine kernel change where applicable. No public promotion.

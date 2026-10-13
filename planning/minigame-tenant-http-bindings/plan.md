@@ -14,8 +14,10 @@ Next engineering work before adoption/review (owned by Codex, not owner design q
    using current snapshot/receipt ownership rather than another public schema table.
 2. Specify the generated client guard mechanism from the same Go descriptors; bind trusted
    host time/claimed-session read behavior without adding mutation retries or polling.
-3. Name the atomic namespace-admission and stored-read interfaces/transaction ordering;
-   prove wrong-family refusal can occur before creation/claims rather than after commit.
+3. TB4 now names the create new/replay admission callbacks, one-transaction command
+   replay/claim, account-scoped locks and read-only snapshot interfaces. Implement and prove
+   them against real Postgres only after adoption; source-derived placement is not atomicity
+   evidence. Preserve the stored inner-resolution versus full-command-response distinction.
 4. Close schema2's Go/TS/version-floor/replay representation and exact compiled role bindings;
    preserve all schema1 historical bytes. Reconcile TT-PA4/MA-C9/MA-C15 through their authors.
 5. Obtain adoption and designated normative review. Do not infer either from dependency

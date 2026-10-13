@@ -46,3 +46,32 @@ from specification-author repairs and implementer engineering. This proposal's f
 technical seams belong to Codex; approval is not being requested for an incomplete design.
 Headcount's hiring/output choice and account export/deletion/retention semantics remain actual
 owner choices in the existing decision queue. They do not halt unrelated accepted work.
+
+## 2026-10-14 — Transaction seam specified from current owners
+
+Resume at `e0f0ad5d`, clean tree. Previous turn made progress: preserved the executed routing
+finding and separated technical work from owner choices; no product acceptance advanced.
+Inspect actual save-start, minigame claim/receipt, gameserver adapter, Account ownership and
+terminal resolution owners. Create replay returns before its mutation callback, which can
+also run after a Founder-genesis insert; command replay and claim currently use separate
+transactions. Therefore a handler-only family check or callback added solely around tenant
+execution cannot enforce the proposed before-write guarantee on every path.
+
+TB4 now names required new/replay admission callbacks before writes/return, an account-scoped
+ClaimOrReplayAPI transaction, pinned historical binding and read-only snapshot interfaces.
+Preserve create-key mismatch taxonomy, existing request hashes, lease/clock/receipt owners
+and internal backend callers. Resolve a documentation ambiguity from actual production:
+FinalizeResolutionTx stores the inner resolution receipt, while InsertCommandReceiptTx stores
+the full terminal HTTP envelope. Reads reconstruct the former; command replay returns the
+latter. No new namespace field, receipt store, migration, polling or payout algorithm proposed.
+
+Verification: trace every proposed insertion point against the named current functions in
+`server/save/minigame_start.go`, `server/minigame/session.go`/`service.go`,
+`server/production/minigame_start.go`/`minigame_api_command.go`/`minigame_resolution.go`,
+`server/gameserver/minigame_api.go` and `server/account/store.go`; inspect diff/paths.
+No software suite for this draft-only change and no SQL/atomicity claim. Real concurrent
+Postgres failure populations are specified, not executed. No production or accepted-body
+change, adoption, independent approval, push/deploy or release advancement. Review by: Codex
+(proposal author first filter). Recorded by: Codex. The complete draft range after `6a5a742a`
+still needs independent normative review before adoption. Next: literal descriptors/guards
+and metadata2 loader/version-floor details; not another owner implementation question.
