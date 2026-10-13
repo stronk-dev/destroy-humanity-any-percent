@@ -1111,3 +1111,48 @@ checked; all named handles terminal. No full `verify-push`, Firefox/Linux, perfo
 composed/player or release claim; known RP-131/RP-307, environment and full nine-tier1.0 gates
 remain. No push/deploy, timeout/retry changes or production content. Retain the complete phase
 capture on a real recurrence and continue accepted construction/review, not reruns for green.
+
+## 2026-10-14 — RP-526 real native deadline localization and prior-stage timings
+
+Resume clean `213ad5f6`; the preceding goal turn made progress with a measured representation
+proposal, not gameplay. Continue the live queue's CI D2 native-input diagnosis. One unchanged
+complete Chromium/WebKit functional population26841 exits2:292 files,24,427 passes, one real
+WebKit Typer15s deadline, ten explicitly expected deadline controls and16 skips,175.54s. All
+selected functional files finish. Passive module records finish1,359/1,359 with none pending;
+the separate Chromium summary is0/0. No Firefox, isolated performance, SQL/composed or whole CI.
+
+Failure-only capture before teardown: `submit-prompt-4`, elapsed15001ms/current-stage1040ms,
+typing/prompt4/revision7/commands6, last command submit_line; input length12, focused input true,
+fixture connected true, pending false, native-input RPC outstanding. This localizes the new
+failure beyond initialization and leaves roughly13,961ms in earlier stages; it does not prove
+which earlier phase consumed that time, that the native provider itself caused it, or that any
+particular older failure shares this cause. No typed text/credentials are recorded. Actual
+installed provider source dispatches the sequence through serial key down/up/insert calls;
+source alone is not a latency attribution or permission to substitute fill/synthetic events.
+
+Retain complete ignored output `.cache/native-functional-213ad5f6.log`, SHA256
+`e4c8b6e7cba6f8bb643f0f2a91875c7a530fad27b3062f5f952fd96322a6c75d`.
+Read-only process inspection distinguishes this owned Make/Vitest tree from a concurrently
+running sibling-repository browser job. No process is killed or reconfigured, and the machine
+is not represented as isolated. The owned handle terminates normally; no observation timeout
+is treated as process death. A fresh bounded Docker socket ping88587 independently exits28
+after5007ms/zero bytes; no restart authority, service mutation or substitute DB is assumed.
+
+Extend only the existing failure observer with every completed stage's duration in order.
+History has no truncation and is emitted only with the cancellation capture; normal input/callbacks/assertions,
+fixture content, concurrency and ordinary15s budget remain unchanged. Existing real50ms setup
+and connected-input deadlines now require that ordered history and nonnegative finite timing.
+Old observer99061 fails all four new native observation assertions (52 existing checks pass,
+four expected deadlines); corrected22099 passes56 plus those same four expected deadlines,
+2.96s. Healthy/disposed observations stay silent. Types95221 have zero errors/warnings; Node
+80540 executes one pure helper check and explicitly skips29 browser cases, not player evidence.
+
+The full ordinary red run remains red; no subsequent full-run green replaces it. This is a
+diagnostic correction, not a repaired input latency, new acceptance bound or1.0 milestone.
+Diff checked; all named handles terminal. Docs/owning plan/RP-526 now carry the actionable
+boundary. Review by: Codex (test implementer first filter). Recorded by: Codex. Exact complete
+diagnostic/tests/docs/records range after `213ad5f6` through this containing commit needs Claude
+designated review, consolidatable with the existing native-lifetime/observer range. No product,
+schema, kernel, balance, copy, CI workflow, archival, push or deployment change. Next: use the
+completed-stage capture on recurrence to distinguish setup, native dispatch and engine/render
+cost before proposing any optimization; other accepted construction continues independently.

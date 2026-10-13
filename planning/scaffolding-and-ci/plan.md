@@ -5,9 +5,17 @@
 - **Started:** 2026-07-28
 - **Status:** fast/maintenance split implemented locally; hosted acceptance pending
 
-## Current checkpoint — 2026-10-13
+## Current checkpoint — 2026-10-14
 
-RP-553 closes a diagnostic gap: Typer's phase observer now arms before the first journey await,
+New native recurrence, 2026-10-14 at `213ad5f6`: complete Chromium/WebKit functional execution
+fails the unchanged Typer15s deadline in `submit-prompt-4`, with a focused connected input,
+pending false and native delivery in flight. The capture records only1.04s in that current
+stage, so earlier-stage costs need the existing observer's ordered timing history, now verified
+with real framework-deadline controls. This is
+new failure localization, not a proved player bug or an input/deadline/concurrency correction.
+The owning log retains the complete red result, raw artifact digest and diagnostic verification.
+
+Preceding checkpoint (2026-10-13): RP-553 closes a diagnostic gap: Typer's phase observer arms before the first journey await,
 not after content/engine setup. A real pre-initialization deadline in the same journey fails
 the old placement in both native projects, then passes after the correction. Full final native
 Chromium/WebKit functional population passes23,706 with ten expected deadlines/16 skips; this

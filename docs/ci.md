@@ -215,6 +215,10 @@ fixtures, not live-server/Postgres proof.
 If Typer's complete native journey reaches its deadline, its test-only observer prints
 `typer-native-journey-deadline` before teardown: current stage/elapsed time, engine phase,
 prompt/revision/command count, pending state, input length and native-RPC flight state.
+It also retains every completed stage's elapsed time in order, without truncation, so a
+deadline during a short final stage does not conceal where earlier time was spent. This
+history is emitted only with the cancellation capture; healthy/disposed observers remain silent. It contains
+stage names and durations, not key sequences, prompt text or credentials.
 It arms when the journey body starts, before its first await, so driver loading, content identity,
 engine creation and fixture mount are also distinguishable. Until the fixture exists, context
 explicitly reports `fixture_ready: false` rather than reading uninitialized engine/DOM variables;

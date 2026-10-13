@@ -22,13 +22,19 @@ function observeTyperDeadline(signal: AbortSignal, read: () => Record<string, un
   report: (value: Record<string, unknown>) => void) {
   const began = performance.now();
   let stage = "setup", stageBegan = began;
+  const completedStages: { stage: string; elapsed_ms: number }[] = [];
   const capture = () => {
     const now = performance.now();
-    report({ stage, elapsed_ms: now - began, stage_elapsed_ms: now - stageBegan, context: read() });
+    report({ stage, elapsed_ms: now - began, stage_elapsed_ms: now - stageBegan,
+      completed_stages: completedStages.map((value) => ({ ...value })), context: read() });
   };
   signal.addEventListener("abort", capture, { once: true });
   return {
-    enter(next: string) { stage = next; stageBegan = performance.now(); },
+    enter(next: string) {
+      const now = performance.now();
+      completedStages.push({ stage, elapsed_ms: now - stageBegan });
+      stage = next; stageBegan = now;
+    },
     dispose() { signal.removeEventListener("abort", capture); },
   };
 }
@@ -58,6 +64,9 @@ describe("native keyboard timeout isolation", () => {
       expect(setupObservations).toHaveLength(1);
       expect(setupObservations[0]).toMatchObject({ stage: "import-native-driver",
         context: { fixture_ready: false, fixture_connected: false } });
+      expect(setupObservations[0]!.completed_stages).toEqual([
+        { stage: "setup", elapsed_ms: expect.any(Number) },
+      ]);
       expect(setupObservations[0]!.elapsed_ms).toBeGreaterThanOrEqual(0);
     } finally {
       releaseSetup();
@@ -77,6 +86,8 @@ describe("native keyboard timeout isolation", () => {
     const observation = observeTyperDeadline(signal,
       () => ({ fixture_connected: input.isConnected, input_length: input.value.length }),
       (value) => { deadlineObservation = value; });
+    observation.enter("before-input-gate");
+    await Promise.resolve();
     observation.enter("waiting-input-gate");
     onTestFinished(() => { observation.dispose(); input.remove(); });
     const keyboard = lifetimeKeyboard(signal, async (keys) => {
@@ -97,6 +108,14 @@ describe("native keyboard timeout isolation", () => {
     expect(expiredSignal.reason.message).toContain("Test timed out in 50ms");
     expect(deadlineObservation).toMatchObject({ stage: "waiting-input-gate",
       context: { fixture_connected: true, input_length: 7 } });
+    expect(deadlineObservation.completed_stages).toEqual([
+      { stage: "setup", elapsed_ms: expect.any(Number) },
+      { stage: "before-input-gate", elapsed_ms: expect.any(Number) },
+    ]);
+    for (const stage of deadlineObservation.completed_stages as { elapsed_ms: number }[]) {
+      expect(Number.isFinite(stage.elapsed_ms)).toBe(true);
+      expect(stage.elapsed_ms).toBeGreaterThanOrEqual(0);
+    }
     expect(deadlineObservation.elapsed_ms).toBeGreaterThanOrEqual(0);
     expect(deadlineObservation.stage_elapsed_ms).toBeGreaterThanOrEqual(0);
     const input = document.createElement("input");
