@@ -93,24 +93,57 @@ const guardIntroduction = git("log", "--diff-filter=A", "--format=%H", "--", "ke
 const correctionsAt = (ref, label) => {
   try { return parseCorrections(git("show", `${ref}:${correctionsPath}`), label); } catch { return emptyCorrections(); }
 };
+// A completed ledger record is not a quoted example or a request to create one.
+// Keep the existing range/correction rules; recognize visible metadata, not
+// incidental appearances of its labels anywhere in the surrounding prose.
+const visibleReviewText = (content) => {
+  let fence = null;
+  return content.replace(/<!--[\s\S]*?(?:-->|$)/g, "").split(/\r?\n/).map((line) => {
+    const marker = /^ {0,3}(`{3,}|~{3,})/.exec(line);
+    if (fence !== null) {
+      if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length && line.slice(marker[0].length).trim() === "") fence = null;
+      return "";
+    }
+    if (marker) { fence = marker[1]; return ""; }
+    return /^(?: {0,3}>| {4}|\t)/.test(line) ? "" : line;
+  }).join("\n");
+};
+const completedReviewMetadata = (section) => {
+  const fields = new Map();
+  for (const paragraph of section.split(/\n\s*\n/)) {
+    if (!/^ {0,3}(?:[-*] )?\*\*(?:Review by|Recorded by|Decision|Reviewed range):\*\*/.test(paragraph)) continue;
+    const markers = [...paragraph.matchAll(/\*\*([^*\n:]+):\*\*/g)];
+    for (const [index, marker] of markers.entries()) {
+      const label = marker[1];
+      if (label !== "Review by" && label !== "Decision") continue;
+      if (fields.has(label)) return false;
+      fields.set(label, paragraph.slice(marker.index + marker[0].length, markers[index + 1]?.index ?? paragraph.length).replace(/\*\*|`/g, "").trim());
+    }
+  }
+  const reviewer = fields.get("Review by") ?? "";
+  const decision = fields.get("Decision") ?? "";
+  if (reviewer === "" || /\b(?:pending|requested|TBD|implementer|self[- ]review|first[- ]filter)\b/i.test(reviewer)) return false;
+  if (!/^(?:APPROVED|APPROVE|ACCEPTED|REJECTED|CHANGES REQUIRED|NOT APPROVED|UNCHANGED)(?=$|[\s,.;:—–-])/i.test(decision)) return false;
+  if (/\bas first[- ]filter\b|\bthis is (?:the )?implementer['’]s first[- ]filter\b|\bnot independent\b/i.test(decision.replace(/\s+/g, " "))) return false;
+  return true;
+};
 const reviewRecordsCorrection = (correction) => {
   const filename = reviewLogPath(correction.review_log);
   if (!existsSync(filename)) return false;
-  const content = readFileSync(filename, "utf8");
+  const sections = visibleReviewText(readFileSync(filename, "utf8")).split(/\n(?=#{2,6} )/);
   const ranges = /\(`([0-9a-f]{7,40})\^\.\.([0-9a-f]{7,40})`\)/g;
-  for (const match of content.matchAll(ranges)) {
-    let left;
-    let right;
-    try {
-      left = git("rev-parse", "--verify", `${match[1]}^{commit}`);
-      right = git("rev-parse", "--verify", `${match[2]}^{commit}`);
-    } catch { continue; }
-    if (left !== correction.offending_commit || right !== correction.offending_commit) continue;
-    const heading = content.lastIndexOf("\n## ", match.index);
-    const sectionStart = heading < 0 ? 0 : heading + 1;
-    const nextHeading = content.indexOf("\n## ", match.index + match[0].length);
-    const section = content.slice(sectionStart, nextHeading < 0 ? content.length : nextHeading);
-    if (section.includes("**Review by:**") && section.includes("**Decision:**")) return true;
+  for (const section of sections) {
+    if (!completedReviewMetadata(section)) continue;
+    for (const match of section.matchAll(ranges)) {
+      let left;
+      let right;
+      try {
+        left = git("rev-parse", "--verify", `${match[1]}^{commit}`);
+        right = git("rev-parse", "--verify", `${match[2]}^{commit}`);
+      } catch { continue; }
+      if (left !== correction.offending_commit || right !== correction.offending_commit) continue;
+      return true;
+    }
   }
   return false;
 };

@@ -41,6 +41,51 @@ try {
   versionFiles(root, "0.1.2"); commit(root, "kernel: fix forward reviewed history");
   run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
 
+  // RP-131: review instructions/examples are not completed independent verdicts.
+  // Exercise the actual CLI against the same otherwise-valid corrected history.
+  const honestReview = readFileSync(path.join(root, "planning/kernel-fix/log.md"), "utf8");
+  const reviewRange = `(${"`"}${offending.slice(0, 7)}^..${offending.slice(0, 7)}${"`"})`;
+  const reviewExamples = [
+    ["future-request", `# Fixture ledger\n\n## Requested review ${reviewRange}\n\nCodex must later record **Review by:** and **Decision:** after executing the review.\n`],
+    ["fenced-example", ["# Fixture ledger", "", "## Example", "```markdown", `## Independent review ${reviewRange}`, "- **Review by:** Fixture Reviewer", "- **Decision:** APPROVED", "```", ""].join("\n")],
+    ["quoted-example", `# Fixture ledger\n\n> ## Independent review ${reviewRange}\n> - **Review by:** Fixture Reviewer\n> - **Decision:** APPROVED\n`],
+    ["commented-example", `# Fixture ledger\n\n<!--\n## Independent review ${reviewRange}\n- **Review by:** Fixture Reviewer\n- **Decision:** APPROVED\n-->\n`],
+    ["empty-fields", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:**\n- **Decision:**\n`],
+    ["pending-decision", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** pending; approval must be obtained later.\n`],
+    ["first-filter", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer (implementer first filter)\n- **Decision:** APPROVED as first filter, not independent.\n`],
+    ["future-approval-prose", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** the future reviewer should report APPROVED.\n`],
+    ["pending-reviewer", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** pending Fixture Reviewer\n- **Decision:** APPROVED\n`],
+    ["conflicting-decisions", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** APPROVED\n\n- **Decision:** CHANGES REQUIRED\n`],
+    ["indented-code", `# Fixture ledger\n\n    ## Independent review ${reviewRange}\n    - **Review by:** Fixture Reviewer\n    - **Decision:** APPROVED\n`],
+    ["nested-example-range", `# Fixture ledger\n\n## Completed review of another change\n\n- **Review by:** Fixture Reviewer\n- **Decision:** APPROVED\n\n### Future example ${reviewRange}\n\nNo completed verdict in this subsection.\n`],
+  ];
+  const admittedExamples = [];
+  for (const [name, text] of reviewExamples) {
+    write(root, "planning/kernel-fix/log.md", text);
+    try {
+      run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+      admittedExamples.push(name);
+    } catch (error) {
+      if (!String(error.stderr).includes("is not bound to its independent review range")) throw error;
+    }
+  }
+  write(root, "planning/kernel-fix/log.md", honestReview);
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+  if (admittedExamples.length !== 0) throw new Error(`kernel guard accepted non-verdict review evidence: ${admittedExamples.join(", ")}`);
+
+  // Preserve the completed record forms used by real legacy review/remap logs.
+  const completedReviews = [
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n**Review by:** Fixture Reviewer. **Recorded by:** Fixture Recorder. **Decision:** **APPROVED for this scope.**\n`,
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** CHANGES REQUIRED — completed inspection found the missed bump.\n`,
+    `# Ledger\n\n## Approved hash remap\n\nExact unchanged reviewed target ${reviewRange}.\n\n**Review by:** the original independent reviewer (remap recorded by Fixture Recorder).\n**Decision:** unchanged — the reviewed correction remains bound to its remapped hash.\n`,
+  ];
+  for (const text of completedReviews) {
+    write(root, "planning/kernel-fix/log.md", text);
+    run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+  }
+  write(root, "planning/kernel-fix/log.md", honestReview);
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+
   // KRM-F1 adversarial fixtures: correction remaps must be BIJECTIVE and bound to the approved map.
   const reviewSection = (hash, title) => `\n## Independent review (\`${hash}^..${hash}\`) — ${title}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** not approved until the missed bump is corrected.\n`;
   write(root, "client/src/replay.ts", "export const replay = 41;\n"); commit(root, "test: twin miss one");

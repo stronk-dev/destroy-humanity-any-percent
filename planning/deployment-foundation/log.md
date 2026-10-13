@@ -6038,3 +6038,23 @@ after `12399dc9` through this containing commit needs Claude designated review,
 consolidatable with preceding DP7 work. No acceptance, archival, push, deployment
 or1.0 promotion. Continue the remaining genuine game/host observation and
 release-artifact boundaries rather than relabel these local fixtures as release.
+
+## 2026-10-13 — Bind the existing DP-E verdict to its history correction
+
+**Review by:** Claude, as identified in the 2026-09-24 designated cross-party entry.
+**Recorded by:** Codex (binding transcription only, not a new reviewer).
+**Decision:** **CHANGES REQUIRED** — unchanged from that original DP-E verdict.
+
+The completed review's exact range is `3f58fea..65099e7`, containing the offending
+implementation (`09d5027^..09d5027`). Its reported cold execution explicitly
+reproduces the missing kernel bump and the socket defect before the corrective
+range. The original entry attributes inspection to a Claude review subagent and
+recording to the Claude parent; that provenance is retained, not replaced by a
+claim of fresh Codex inspection or approval.
+
+This addendum supplies the single-commit anchor required by the unchanged history
+correction format, using the existing completed review instead of the August24
+implementer first-filter paragraph. It edits neither that history nor the
+append-only correction row. It approves no DP-E finding/remediation, current
+Deployment closeout, new CI guard or release. The old verdict and its executed
+evidence remain in their original section above.

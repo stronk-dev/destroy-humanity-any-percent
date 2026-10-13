@@ -928,3 +928,46 @@ historical candidate audit and measured latency work; accepted lanes continue.
 Review by: Codex (executed evidence reconciliation). Recorded by: Codex.
 Not designated implementation approval,
 feature closeout or shrinking the complete nine-tier1.0 goal.
+
+## 2026-10-13 — RP-131 distinguish completed correction evidence from requests
+
+Outcome under existing KV-1/correction governance and independent-review rules:
+metadata label names in a request/example cannot stand in for a completed verdict.
+Old actual CLI42457 accepts all8 initial non-verdict controls. Reuse its isolated
+Git-history fixture and replace only the review log, with healthy history before/
+after; no new runner, framework or real-repository rewrite. Corrected55368 rejects
+all12 instruction/fence/quote/comment/empty/pending/self-filter/conflict/indented/
+nested-example cases at the specific review-binding failure. Completed approved,
+negative and mechanical-remap records remain valid; the full existing miss/remap/
+immutability/ancestry/archive/shallow/merge populations pass. Extra four negatives
+are final controls, not a claim they were run in the initial old-tool baseline.
+
+Recognize visible metadata paragraphs in the same heading section as the unchanged
+exact offending anchor. Ignore example/code/comment text, reject missing/duplicate/
+pending decisions and explicitly labelled first filters. Keep version bumps,
+correction schemas/rows, archive fallback, ancestry and append-only rules unchanged.
+This parses declared evidence; it does not authenticate execution or make any
+historical-path exception proposal accepted.
+
+Actual root initially refuses `09d5027`: its exact anchor cites the implementer
+first filter. Source inspection finds Claude's completed2026-09-24 designated
+review of `3f58fea..65099e7`; actual `git rev-list` contains09d5027 and the two
+surrounding commits. Append only a binding transcription in Deployment's log,
+retaining Claude's attributed subagent inspection/parent recording and original
+CHANGES REQUIRED decision. Codex is only recorder, never a new reviewer. Neither
+the original verdict nor correction row is rewritten/promoted. Actual94658 then
+passes existing correction bindings and fails at the original `50a3a514` miss.
+
+Both tool syntax checks and `make verify-ci-topology` pass with its13 negative
+controls; all named handles terminal and final diff checked. Kernel0.3.188,
+runtime, correction/path registries, workflows, job populations and bounds stay
+byte-unchanged. No Go/browser/DB/hosted or whole-CI pass is claimed for this CLI-only
+change; existing RP-307 and five-minute failures remain. RP-540 records the source-
+observed noncanonical review-path admission for the next isolated CLI experiment,
+not an executed external-file read or permission to touch secrets.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Full range after
+`a7e33b73` through this containing tools/tests/docs/binding/record commit needs
+designated Claude review. The transcribed old DP-E verdict approves none of it.
+Continue safe accepted engineering and pending policy/contract closure; no push,
+archival, release or reduction of the full nine-tier1.0 objective.

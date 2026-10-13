@@ -7,6 +7,16 @@
 
 ## Current checkpoint — 2026-10-13
 
+RP-131's non-verdict parser loophole is locally corrected independently of the
+unadopted historical-exception proposal. Actual CLI regressions retain the old
+eight admissions; twelve invalid evidence forms now refuse while completed
+findings/remap records pass. The existing `09d5027` binding is transcribed from
+Claude's completed September24 enclosing-range verdict, not a new review or
+approval. The real root gate still fails `50a3a514`; topology/fixtures pass.
+The owning log records the exact pending designated range. Next safe engineering
+follow-up: RP-540's canonical correction citation boundary with isolated genuine
+new-correction histories, not more repetitions of the completed parser population.
+
 Published [CI38381138075](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38381138075)
 at `4eaed0c9` is completed **failure**: browser/composed/schema/harness pass;
 client fails the history guard at `50a3a514` (RP-131); server fails 27 Clout
@@ -21,7 +31,7 @@ reliability, attribute every earlier stall/input failure or provide designated
 approval. RP-525/527/528/530/531 corrective ranges still need review; RP-526
 retains the ordinary local failure and investigation in the [owning log](log.md).
 
-Next: obtain explicit adoption/review of the history-guard policy, close the
+Independent holds: obtain explicit adoption/review of the history-guard policy, close the
 conservation accounting contract and repair its arithmetic without tolerances,
 and measure latency before proposing changes. Preserve all functional coverage
 and budgets. Host space is externally freed, but Docker restart permission is

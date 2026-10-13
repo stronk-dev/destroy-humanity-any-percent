@@ -97,6 +97,19 @@ make verify-push
 broader developer aggregate, `make verify`, retains the exhaustive server harness but does not
 stand in for the composed browser job and must not be cited as push-workflow parity.
 
+### Kernel correction review evidence
+
+Existing kernel history corrections must bind to a completed independent review
+record, not instructions to obtain one. The guard reads visible reviewer/decision
+metadata in the same section as the exact offending-commit anchor; examples in
+code fences, blockquotes, indented code or comments do not count. Empty/pending
+fields, conflicting decisions and explicitly labelled first filters refuse.
+Completed negative findings and approved mechanical hash-remap bindings remain
+valid: correcting a missed version signal is not approval of the original feature.
+Review execution and authorship still require the project's independent process;
+parsing metadata is not authentication. No new historical exception class, version
+waiver or history rewrite is authorized by this conformance repair (RP-131).
+
 ### Research provenance versus regression results
 
 The Clout activation, action/buff/mode and Postgres anchor observers execute current code and
