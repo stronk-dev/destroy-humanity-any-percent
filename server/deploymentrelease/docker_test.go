@@ -198,6 +198,21 @@ func (runner *commandFixture) Run(_ context.Context, _ string, name string, args
 }
 
 func TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest(t *testing.T) {
+	// Bind the fixture's command invocation around its declared backup times.
+	// Leave room for the one-second header discrepancy below so freshness
+	// cannot mask that independent host/report equality oracle.
+	backupRuntime := func(runner CommandRunner, target, identity string) DockerRuntime {
+		runtime := dockerFixtureRuntime(runner, target, identity)
+		reads := 0
+		runtime.Now = func() time.Time {
+			reads++
+			if reads%2 == 1 {
+				return time.Date(2026, 8, 22, 17, 59, 0, 0, time.UTC)
+			}
+			return time.Date(2026, 8, 22, 18, 2, 0, 0, time.UTC)
+		}
+		return runtime
+	}
 	bundle := dockerFixtureBundle(t)
 	target := t.TempDir()
 	identity := filepath.Join(t.TempDir(), "identity")
@@ -234,7 +249,7 @@ func TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest(t *testing.T) {
 		}
 		return nil, errors.New("unexpected command")
 	}
-	runtime := dockerFixtureRuntime(runner, target, identity)
+	runtime := backupRuntime(runner, target, identity)
 	backup, err := runtime.CreatePreUpgradeBackup(context.Background(), bundle)
 	if err != nil || backup.ID != header.BackupID || backup.Path != hostBackup {
 		t.Fatalf("backup=%+v err=%v", backup, err)
@@ -273,7 +288,7 @@ func TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest(t *testing.T) {
 	severed.output = func(call []string) ([]byte, error) {
 		return json.Marshal(map[string]any{"status": "completed", "backup": "/backups/" + filepath.Base(hostBackup), "header": badHeader})
 	}
-	badRuntime := dockerFixtureRuntime(&severed, target, identity)
+	badRuntime := backupRuntime(&severed, target, identity)
 	if _, err := badRuntime.CreatePreUpgradeBackup(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("wrong-manifest backup output accepted: %v", err)
 	}
@@ -291,7 +306,7 @@ func TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest(t *testing.T) {
 		}
 		return json.Marshal(map[string]any{"status": "completed", "backup": "/backups/" + filepath.Base(hostBackup), "header": header})
 	}
-	badRuntime = dockerFixtureRuntime(&severed, target, identity)
+	badRuntime = backupRuntime(&severed, target, identity)
 	if _, err := badRuntime.CreateRecoveryBackup(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("pre-upgrade backup accepted as scheduled recovery backup: %v", err)
 	}
@@ -305,7 +320,7 @@ func TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest(t *testing.T) {
 		runner := &commandFixture{output: func([]string) ([]byte, error) {
 			return json.Marshal(map[string]any{"status": "completed", "backup": "/backups/" + filepath.Base(hostBackup), "header": reported})
 		}}
-		_, err := dockerFixtureRuntime(runner, target, identity).CreatePreUpgradeBackup(context.Background(), bundle)
+		_, err := backupRuntime(runner, target, identity).CreatePreUpgradeBackup(context.Background(), bundle)
 		return err
 	}
 	if err := reportThenCreate(header); err != nil {

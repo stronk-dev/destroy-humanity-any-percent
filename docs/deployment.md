@@ -736,6 +736,14 @@ preflight. Rollback performs its own authenticated pre-destructive check, and cl
 rehearsal remains required. Whether every release also needs a pre-drain isolated restore proof
 is an unresolved owner decision (D-019), not a property already supplied by this check.
 
+Both newly created pre-upgrade and recovery backups also bind their reported start/completion
+times to the helper's UTC samples before/after this create command. Old/future reports, a zero
+clock or a backwards invocation interval refuse; exact interval edges remain valid. No fixed
+age allowance or minimum duration is introduced. This checks timestamp claims on the supported
+same-host clock, not an authenticated database snapshot: editable metadata, key-recipient match,
+logical restore and RPO/RTO still need their separate proofs. Restoring an older retained backup
+does not use the creation-window check; retention and backup format are unchanged.
+
 Every successful release row binds the candidate version, manifest SHA-256, all six image
 digests, exact pre-upgrade backup, exact previous version/manifest and a seven-day rollback
 deadline. Rollback accepts only those recorded values. Before it stops anything it loads and

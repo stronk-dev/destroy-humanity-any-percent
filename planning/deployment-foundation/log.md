@@ -6324,3 +6324,55 @@ range starts after `de0ca191` through this containing commit; designated Claude 
 consolidatable with the RP-138/RP-546 observer corrections. Original R9 remains CHANGES REQUIRED;
 no feature/archival/CI/full nine-tier1.0 or release promotion and no push/deploy. All named handles
 terminal; continue remaining accepted implementation/reviews and the exact-artifact gates.
+
+## 2026-10-13 — Complete original Claude R10 diff-review disposition
+
+Review by: Codex (designated original-Claude reviewer). Recorded by: Codex. Exact range
+`1f376ccc^..1f376ccc`, all four paths: runtime, runtime tests, canonical docs and owning log.
+**Decision: CHANGES REQUIRED**, retaining RP-139; no approval of later corrections.
+
+Inspected the host-path/type and header-equality addition, real age-envelope fixtures,
+wrong-manifest/class/symlink and new header/payload negatives, recorded severing and the
+documentation's irreversible/working-rollback claim. The checksum/equality improvement is
+real; it cannot prove key-recipient match or logical Postgres restore (D-019 remains unruled).
+The original positive preserves an invalid restore identity and synthetic command replies;
+it is not a restored release. Current inherited creation also lacks invocation timestamp
+binding, executed below as RP-548, not historical-tree execution. Existing wrong-image and
+pre-destructive restore-input routes remain separately evidenced/reviewed; no prior verdict
+is expanded or relabeled by this full original diff disposition.
+
+## 2026-10-13 — RP-548 bind created-backup timestamp claims to invocation
+
+Under DP5's immediately-before-upgrade backup and DP6 creation path, sample UTC before/after
+the create command, refuse zero/backwards clocks, and require its reported start/completion
+inside that interval. Header validity still enforces start≤completion and exact host agreement.
+No arbitrary age tolerance, minimum duration, key mount, format/retention, restore behavior,
+schema, kernel, CI or timestamp-model change. Older retained backups remain restorable.
+
+Initial76469 on `dac25388` fails twelve bad reports and passes four controls. Added zero-finish
+and same-instant cases; isolated old-source overlay50491 reruns the complete20: fourteen bad
+reports accepted, six fresh/exact-edge/same-instant controls pass. Every case first creates,
+checksums and authenticates/restores a real age envelope, so bad ciphertext cannot mask temporal
+admission. Both pre-upgrade and recovery paths execute; zero-start refuses before any command.
+Command results and invocation clock are controlled, not real Docker/Postgres or elapsed-time
+measurements. The fixture's one-minute window is input data, not a new operating budget.
+
+Corrected5155 passes initial scope plus existing host binding. Final59384 passes complete cold
+deploymentrelease, deploymentbackup, deploymentrehearsal and both release/rehearsal CLI packages,
+with vet. Final50902 passes all20 and existing host-binding under race. Root Linux-amd64 helper
+build passes into ignored `.cache/bin/deployment-release-linux-amd64`; no Linux runtime claim.
+Formatting/diff checked. Original header test now supplies its own invocation clock, deliberately
+wide enough that its one-second mismatch remains temporally legal. Isolated host-read-bypass
+overlay50314 fails that unchanged oracle: `reported header differing from the host envelope
+accepted: <nil>`. It proves freshness did not mask the retained equality discrimination.
+Overlays live in owned `/tmp/cloud-clicker-backup-window.bG1cX3`; no live-file probe mutation.
+
+Limits: temporal report consistency, not trusted snapshot time, authenticated editable-header
+protection, recipient match, SQL restorability or exact-host/RPO/RTO. Existing metadata/snapshot
+author holds and D-019 remain; no new policy inferred from this safety check. Docker remains
+unverified from its last no-server-reply probe; no daemon/container action, push or deployment.
+
+Review by: Codex (new repair implementer first filter). Recorded by: Codex. Exact new source/
+tests/docs/records span starts after `dac25388` through this containing commit; designated
+Claude review pending, consolidatable with the earlier host-byte correction. Original R10,
+full Deployment and full nine-tier1.0 remain open. All execution handles are terminal.

@@ -191,9 +191,17 @@ func (runtime DockerRuntime) createBackup(ctx context.Context, bundle Bundle, pr
 	if preUpgrade {
 		args = append(args, "--pre-upgrade")
 	}
+	invocationStarted := runtime.Now().UTC()
+	if invocationStarted.IsZero() {
+		return BackupReference{}, ErrInvalid
+	}
 	output, err := runtime.Runner.Run(ctx, bundle.Root, "docker", args...)
+	invocationCompleted := runtime.Now().UTC()
 	if err != nil {
 		return BackupReference{}, err
+	}
+	if invocationCompleted.IsZero() || invocationCompleted.Before(invocationStarted) {
+		return BackupReference{}, ErrInvalid
 	}
 	var result struct {
 		Status string                  `json:"status"`
@@ -201,7 +209,8 @@ func (runtime DockerRuntime) createBackup(ctx context.Context, bundle Bundle, pr
 		Header deploymentbackup.Header `json:"header"`
 	}
 	if decodeExact(output, &result) != nil || result.Status != "completed" || !validBackupHeader(result.Header, bundle, runtime.ServerID, preUpgrade) ||
-		result.Header.ReleaseManifestSHA256 != bundle.ManifestSHA256 || result.Backup != "/backups/"+result.Header.BackupID+".ccbackup" {
+		result.Header.ReleaseManifestSHA256 != bundle.ManifestSHA256 || result.Backup != "/backups/"+result.Header.BackupID+".ccbackup" ||
+		result.Header.StartedAt.Before(invocationStarted) || result.Header.CompletedAt.After(invocationCompleted) {
 		return BackupReference{}, ErrInvalid
 	}
 	hostPath := filepath.Join(runtime.BackupTarget, result.Header.BackupID+".ccbackup")

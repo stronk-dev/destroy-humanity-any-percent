@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP5/DP6 creation correction, 2026-10-13 (RP-548):** newly created backup reports must
+place start/completion inside their command invocation; invalid clocks refuse. Old-source20-case
+population admits14 bad reports while six legal controls pass. Corrected actual encrypted
+envelopes, cold affected packages/vet, race and Linux-amd64 helper build pass; existing host/header
+oracle still rejects its isolated bypass. The range after `dac25388` needs Claude review. Original
+R10's full four-path disposition remains CHANGES REQUIRED; D-019, authenticated metadata/snapshot
+meaning, logical restore, clean-host/RPO/RTO and exact-artifact gates are not resolved by this check.
+
 **Current DP3/DP5 correction, 2026-10-13 (RP-546):** invalid receiver/readiness request syntax
 now refuses rather than panics; configured receiver construction is checked before runtime
 commands. Old-source eight failures, ordinary receiver/ready/drain/identity controls, affected
