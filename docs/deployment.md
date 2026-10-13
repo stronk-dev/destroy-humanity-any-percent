@@ -955,6 +955,29 @@ separate. This does not wait for the next six-hour slot, prove an off-host durab
 measure RPO/RTO, adopt the pending metadata-authentication proposal or replace R-006/full AC7.
 Host storage/journal signals remain controls here, and the local services are mixed-architecture.
 
+`make test-deployment-ingress-profile` exercises the actual proxy-outage arm in its own private
+project, also included in manual operations verification outside push CI. The shipped Caddyfile
+first proxies a fixture health response successfully; its scrape and the upstream registry must
+be healthy. The native owner validates exact project/service labels and physically stops that
+Caddy container. The proxy route must become unreachable, its real `up` series must become zero,
+and the upstream scrape/readiness controls must remain one. No proxy metric is written by the test.
+
+The child records Prometheus's actual pending timestamp, requires no firing through 4m45s of
+that pending interval, and rejects an observed firing before five minutes. The unchanged rule
+must then reach the receiver with the Caddy target identity. Only after delivery does the native
+owner restart the same container; actual route/scrape recovery and resolution of the same alert
+are required. The controller accepts only two fixed stop/start requests, rejects wrong order,
+checks the actual process state, and requires the named child test's explicit PASS. Collection
+errors/oversized lines fail, not truncate. Unique-project/one-off cleanup is shared with the
+other private journeys. Twelve-minute parent/child guards and a fourteen-minute Go cleanup
+timeout do not change the five-minute rule or notification interval.
+
+The upstream health response and registry readiness are controls, not the actual gameserver's
+readiness implementation. This proves a real private Caddy process/route/scrape outage and
+receiver recovery, not public DNS/TLS, a browser game session, supported-host permissions,
+host journald/retention, exact release artifacts or full AC7/R-006. The local cached services
+retain their disclosed mixed-architecture boundary.
+
 `make test-deployment-storage-profile` focuses a separate named population in that same private
 fixture. The default `test-deployment-operations-profile` runs both populations. Two distinct,
 empty 20 MiB tmpfs subjects bound the test's writes; no host filesystem is filled. The production

@@ -7,6 +7,7 @@
 .PHONY: test-deployment-restart-observer
 .PHONY: test-deployment-restart-profile
 .PHONY: test-deployment-backup-profile
+.PHONY: test-deployment-ingress-profile
 .PHONY: verify-combat-go-boundary
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
@@ -135,6 +136,7 @@ test-deployment-operations:
 	$(MAKE) test-deployment-cleanup-runtime
 	$(MAKE) test-deployment-restart-profile
 	$(MAKE) test-deployment-backup-profile
+	$(MAKE) test-deployment-ingress-profile
 	$(MAKE) test-deployment-operations-profile
 
 # Real one-minute job timing belongs to manual Deployment acceptance, not push
@@ -167,6 +169,14 @@ test-deployment-backup-profile:
 	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ../.cache/bin/deployment-backup ./cmd/deployment-backup
 	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
 	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS='-run TestActualBackupWorkerPrivateProfileIntegration -v -count=1 -timeout=14m'
+
+# Actual isolated proxy stop/start with the unchanged five-minute alert bound.
+test-deployment-ingress-profile: export CLOUD_CLICKER_INGRESS_PROFILE_TEST = 1
+test-deployment-ingress-profile: export CLOUD_CLICKER_OPERATIONS_ROOT = $(CURDIR)
+test-deployment-ingress-profile:
+	mkdir -p $(REPO_CACHE_DIR)/bin
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
+	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS='-run TestActualCaddyOutagePrivateProfileIntegration -v -count=1 -timeout=14m'
 
 # Focus the existing real-service fixture without skipping or changing the
 # aggregate above. This is not the full operations or clean-host release gate.

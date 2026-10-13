@@ -6004,3 +6004,37 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Entire new rang
 after `c4279b66` through this containing commit needs Claude designated review;
 consolidate with the preceding DP7 work. No acceptance, archival, push, deployment
 or1.0 promotion. Continue the remaining real game/host and release-artifact gates.
+
+## 2026-10-13 — Physical Caddy outage fires and resolves through the receiver (DP7)
+
+**Outcome:** reuse the private fixture with the shipped Caddyfile. Start with a
+successful proxied health response and healthy scrapes. Validate the exact owned
+project/service labels, physically stop Caddy, require an unreachable proxy route
+and real caddy-up0 while upstream scrape/readiness remain1. Record real Prometheus
+pending time, observe no firing through4m45s and reject an observed firing before
+5m; require the actual receiver's Caddy-labelled firing. Only then restart the
+same container and require route/scrape recovery plus matching alert resolution.
+No injected proxy metric, changed rule, shortened interval or forced resolution.
+
+**Checks:** root `make test-deployment-ingress-profile`72356 passes406.67s, with
+child403.37s, exit0. Native controller executes both physical actions in order
+and verifies process state; direct intermediate inspection confirms stopped/
+exited Caddy. Named child PASS is required, not an empty/skipped selection.
+Shared collection guard retains its invalid cases. Cold native11867 passes
+operations1.838s/command5.479s and vet; declared Linux-amd64/Postgres5075 passes
+5.003s/5.556s. Ordinary private opt-in skips are not integration credit. All
+handles terminal; final owned-project container/network/volume censuses are
+empty and diff checks pass. Other projects/orphans remain untouched.
+
+**Coverage / handoff:** actual Caddy process/config/route/scrape, shipped rule,
+real private Prometheus/Alertmanager/receiver, lower-duration control and matched
+recovery. Upstream health204/readiness1 are fixture controls, not game-server
+readiness, public DNS/TLS, browser gameplay or clean-host/release-artifact proof.
+Cached Caddy's amd64-on-ARM warning remains disclosed. No production, schema,
+content, policy, CI, budget or notification changes. Manual aggregate selects
+the new lane; its other populations/whole aggregate were not rerun here.
+Review by: Codex (implementer first filter). Recorded by: Codex. Entire new range
+after `12399dc9` through this containing commit needs Claude designated review,
+consolidatable with preceding DP7 work. No acceptance, archival, push, deployment
+or1.0 promotion. Continue the remaining genuine game/host observation and
+release-artifact boundaries rather than relabel these local fixtures as release.

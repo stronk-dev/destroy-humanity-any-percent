@@ -40,8 +40,12 @@ func TestActualBackupWorkerPrivateProfileIntegration(t *testing.T) {
 }
 
 func backupProfileExecuted(output string) bool {
+	return privateProfileExecuted(output, "TestPrivateOperationsBackupExecutionIntegration")
+}
+
+func privateProfileExecuted(output, name string) bool {
 	for _, line := range strings.Split(output, "\n") {
-		if strings.HasPrefix(line, "--- PASS: TestPrivateOperationsBackupExecutionIntegration (") && strings.HasSuffix(line, "s)") {
+		if strings.HasPrefix(line, "--- PASS: "+name+" (") && strings.HasSuffix(line, "s)") {
 			return true
 		}
 	}

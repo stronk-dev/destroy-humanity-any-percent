@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest DP7 actual proxy outage, 2026-10-13:** the shipped Caddyfile's private
+route/scrape now has a physical stop→real pending five-minute rule→receiver
+firing→same-container restart→matching resolution witness. Upstream readiness is
+an explicit control, not a gameserver proof. Root lane passes406.67s, cold affected
+native/vet and Linux-amd64/Postgres checks pass. The log owns the range after
+`12399dc9`, pending designated review. Continue actual game/host observation,
+journal/retention, older restart history and exact-artifact evidence; no full AC7.
+
 **Latest DP6/DP7 actual backup execution, 2026-10-13:** the production CLI now
 has a joined actual Postgres dump→scheduled target refusal→receiver firing→real
 five-minute retry→matching resolution→fresh-database restore witness. The retry
