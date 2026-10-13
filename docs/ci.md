@@ -165,7 +165,18 @@ the 2026-08-22 Game UI archival record preserves its latest passing environment 
 `make test-browser-ci` runs the same functional-matrix-then-isolated-performance sequence with
 `CI=true` in the pinned Linux Playwright image, using fresh anonymous `node_modules` and
 pnpm-store volumes on every invocation. Actions installs the same pinned browser versions
-explicitly on its ordinary Ubuntu runner. `make verify-server-ci` runs the complete server gate on
+explicitly on its ordinary Ubuntu runner. Full-population concurrency controls and their failures
+are recorded in the [CI log](../planning/scaffolding-and-ci/log.md); a focused or overridden run
+does not establish success of this ordinary target, hosted reliability or the five-minute
+acceptance floor.
+
+Two Node-side fixtures, `css-dependency-graph.test.mjs` and
+`opportunity-composed-proof.test.mjs`, are excluded by exact path from browser collection because
+their helpers require Node APIs. Both remain in the mandatory client Node suite; other test
+formats are collected by default. This is execution in the correct runtime, not an exemption
+from testing the composed driver or its proof oracles.
+
+`make verify-server-ci` runs the complete server gate on
 linux/amd64 against the repository's Postgres test service. `test-go-core` and therefore
 `verify-server-core` always pass an explicit `-count=$(CORE_TEST_COUNT)` (default `1`), so restored
 compiler/module caches cannot restore test results; increase `CORE_TEST_COUNT` for focused stress

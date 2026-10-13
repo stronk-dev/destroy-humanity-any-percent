@@ -5,6 +5,19 @@
 - **Started:** 2026-07-28
 - **Status:** fast/maintenance split implemented locally; hosted acceptance pending
 
+## Current checkpoint — 2026-10-13
+
+RP-525's exact Node-only fixture exclusion is locally verified in its actual Node/browser
+consumers and awaits designated review. The complete job audit still fails: native client
+hits RP-131; Linux-amd64/Postgres server hits RP-307; full browser input/runner evidence is
+RP-526. Its proposed single-file config was withdrawn after the ordinary target stalled,
+despite an earlier successful CLI control. Do not claim browser or whole CI green.
+
+Next: diagnose Chromium's four unreported files and make the ordinary full browser job
+complete repeatably, with the existing hosted deadline also enforced locally. The owning
+log preserves the exact commands and incomplete run. Historical guard/accrual contracts,
+hosted acceptance and designated reviews remain separate; no deadline/budget increase.
+
 ## Work
 
 1. [x] Split the Makefile into server, client, browser, schema, and aggregate verification targets.

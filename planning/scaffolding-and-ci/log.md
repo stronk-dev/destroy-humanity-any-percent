@@ -557,3 +557,68 @@ Native Firefox's prior terminal session-timeout evidence is not a fresh test pas
 RP-451 remains open; its next step is the unchanged native-input test in a usable
 Firefox environment. Independent accepted Combat C2 construction continues in
 its own plan/log. No whole-CI, hosted repair, acceptance or archival claim.
+
+## 2026-10-13 — Full job audit; keep composed proof oracles in Node (RP-525/RP-526)
+
+Outcome under CI D2: the full Linux browser population exposed an actual collection
+defect missed by focused selections. `opportunity-composed-proof.test.mjs` imports
+the composed driver's `node:util` oracle; all three browser suites fail at import.
+Exclude exactly that path, alongside the existing Node-only CSS fixture. Its 65
+success/refusal cases remain mandatory in Node. No tests, assertions, player code,
+copy, numeric/replay bytes, workflow topology or acceptance bounds changed.
+
+Executed whole-job evidence at baseline `d618b0b4` and during this correction:
+
+| Population | Actual result |
+|---|---|
+| `make verify-client` | Types/build pass; Node10,611 pass/1,012 existing skips. Job exits2 on historical RP-131 (`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444`). Later client boundaries are not reached. |
+| `make verify-server-ci` | Cold Linux-amd64/Postgres vet/package population completes; production's 27 RP-307 partition cases fail. Job exits2; later generation/boundary targets are not reached. Optional/manual prerequisites are not credited merely from package results. |
+| Original `make test-browser-ci` | Three Node-only suite-import failures plus36 native-input failures;34,602 passes/24 existing skips,480.04s functional. Performance never runs. |
+| Unchanged Typer/Garden files alone | 183/183 pass across the three Linux engines,10.68s; does not erase full-population faults. |
+| Node exclusion + full `--maxWorkers=4` control | 423 suites collected without Node-import failures; two Firefox activation/focus failures,34,636 passes/24 skips,249.87s. Performance never runs. |
+| Full `--no-file-parallelism` CLI control | All423 suites/34,638 functional cases pass,24 existing skips,290.81s; then all five performance cases pass,105 intentionally deselected cases,7.81s. This is an override control, not the ordinary job's verdict. |
+
+The pinned browser image is **Linux ARM64**, Node24.18.0, and reports14 available
+CPUs. Installed Vitest4.1.10 creates independent engine pools: default up to12
+pages per engine, explicit four workers up to12 pages total. Sampled memory is
+11.33GiB in the original run and3.62GiB in the serial control. These are diagnostic
+samples, not a controlled benchmark: early runs overlap the server/client jobs,
+so timings do not establish a hosted hardware/latency bound or each fault's cause.
+
+A proposed config `fileParallelism:false` was then tested through **ordinary**
+`make test-browser-ci`, not a substituted command. It stalled beyond the hosted
+ten-minute ceiling without a terminal summary. The corrected raw-log census
+reports141/141 files for Firefox/WebKit but137/141 for Chromium: missing
+`axis-factor-format.test.ts`, `minigame-resolution.test.ts`, `pet-combat-inputs.test.ts`
+and `ui/amount-format.test.ts`. A sandbox-denied first log pipe/directory-based
+census and unavailable headless UI-RPC diagnostic are excluded, not interpreted
+as product data. Actual container/process state remained live. After more than
+twenty minutes, stop only owned `cloud-clicker-browser-run-784e8d68dbaa`; stop exits0,
+Make returns2/Error137, and the container is absent. No other service or cache is
+removed. Withdraw the concurrency config instead of committing it as verified.
+RP-526 remains OPEN; the local wrapper has no equivalent of Actions' job deadline.
+
+Finished-source verification for the retained **collection fix only**:
+
+- `client/node_modules/.bin/vitest run --root client test/opportunity-composed-proof.test.mjs`:
+  all65 cases pass,318ms, no skip.
+- Declared frozen-install Linux browser selection requests both
+  `test/opportunity-composed-proof.test.mjs test/generated-api.test.ts` under the
+  ordinary browser config, without concurrency overrides: the Node fixture is
+  not imported, all174 generated-client cases pass in Chromium/Firefox/WebKit,
+  2.20s, terminal exit0. Use `compose.browser-test.yml`'s install recipe, replace
+  the functional Vitest arguments with this selection and omit the unrelated
+  performance command for this focused reproduction.
+- `make typecheck verify-ci-topology`: zero errors/warnings; topology and all13
+  existing negative controls pass. Final retained config differs from baseline
+  only in the exact fixture exclusion/comment; no concurrency setting remains.
+- Read-only `gh run list --workflow ci.yml --limit 3` still returns CI38222406320
+  at `e0cb9187` as latest, completed/failure. Nothing here is hosted green.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new
+range starts **after `d618b0b4` through this containing config/docs/record commit**;
+Claude's designated review remains pending, as do all earlier ranges. No feature
+acceptance, archival, push or release. Next: reproduce/diagnose the four missing
+Chromium file completions, enforce the existing local job deadline without raising
+it, then establish a repeatable ordinary full job. Do not retry until a last green
+conceals these failures; history/accrual contracts remain separate prerequisites.

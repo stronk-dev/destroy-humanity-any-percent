@@ -56,9 +56,10 @@ export default defineConfig({
   optimizeDeps: { include: ["svelte", "@antimatter-dimensions/notations"] },
   ssr: { noExternal: ["@antimatter-dimensions/notations"] },
   test: {
-    // This CSS provenance fixture runs nested Vite builds and uses node:fs.
-    // Keep other future test formats in browser collection by default.
-    exclude: [...configDefaults.exclude, "test/css-dependency-graph.test.mjs"],
+    // These Node-side proof fixtures use node:fs/nested Vite builds and
+    // node:util respectively. They still execute in the client Node suite;
+    // keep other future test formats in browser collection by default.
+    exclude: [...configDefaults.exclude, "test/css-dependency-graph.test.mjs", "test/opportunity-composed-proof.test.mjs"],
     setupFiles: ["./test/browser-error-guard.ts"],
     testNamePattern: performanceOnly
       ? /observable 20 Hz \/ 10 Hz screen budget/u
