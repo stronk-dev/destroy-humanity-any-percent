@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -49,7 +50,11 @@ func TestNativePrometheusCleanupIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	registry.SetReady(true)
-	metrics := httptest.NewServer(registry.Handler())
+	// This native fixture has no node-exporter. Serve the production journal
+	// textfile alongside its registry so the independent host path is explicitly
+	// healthy; it is not evidence of a real journal or exporter.
+	textfiles := t.TempDir()
+	metrics := httptest.NewServer(nativeCleanupMetricsHandler(t, registry, textfiles))
 	t.Cleanup(metrics.Close)
 	// These two services are deliberately unavailable, not simulated healthy
 	// Caddy/node-exporter targets. Their network/privacy acceptance stays open.
@@ -93,6 +98,50 @@ func TestNativePrometheusCleanupIntegration(t *testing.T) {
 		t.Fatalf("resolution changed the monotonic process counter: %q found=%v", value, found)
 	}
 	t.Logf("actual rule's resolution received with failure counter still one after %s", time.Since(started).Round(time.Millisecond))
+}
+
+func nativeCleanupMetricsHandler(t *testing.T, registry *Registry, textfiles string) http.Handler {
+	t.Helper()
+	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		if err := RecordCleanupJournal(textfiles, "", time.Now()); err != nil {
+			t.Error(err)
+			response.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+		data, err := os.ReadFile(filepath.Join(textfiles, "cleanup.prom"))
+		if err != nil {
+			t.Error(err)
+			response.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+		// The fixture appends a production textfile to the registry exposition.
+		// Keep that combined response plaintext; appending to promhttp's gzip
+		// stream would corrupt the response. Production has separate targets.
+		plain := request.Clone(request.Context())
+		plain.Header.Del("Accept-Encoding")
+		registry.Handler().ServeHTTP(response, plain)
+		_, _ = response.Write(data)
+	})
+}
+
+func TestNativeCleanupFixtureAcceptsCompressedScrapeRequests(t *testing.T) {
+	registry, err := NewRegistry(fakeDatabase{ping: errors.New("unused")})
+	if err != nil {
+		t.Fatal(err)
+	}
+	server := httptest.NewServer(nativeCleanupMetricsHandler(t, registry, t.TempDir()))
+	defer server.Close()
+	// The default client requests gzip and decodes it. This catches appending
+	// plain text after promhttp's compressed member, as real Prometheus did.
+	response, err := server.Client().Get(server.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer response.Body.Close()
+	data, err := io.ReadAll(response.Body)
+	if err != nil || response.StatusCode != http.StatusOK || !strings.Contains(string(data), "cloud_clicker_cleanup_journal_observed_timestamp_seconds") {
+		t.Fatalf("invalid combined fixture scrape: HTTP=%d error=%v", response.StatusCode, err)
+	}
 }
 
 func startNativePrometheus(t *testing.T, ctx context.Context, binary, metricsURL, alertmanagerURL, unavailableURL string) string {

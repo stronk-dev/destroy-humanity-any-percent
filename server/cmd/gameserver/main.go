@@ -52,7 +52,7 @@ func run(logger *slog.Logger) error {
 	}
 	defer db.Close()
 	signingKeys, bootstrapKeys := compositionKeys(runtime)
-	operationRegistry, err := operations.NewRegistry(db)
+	operationRegistry, err := operations.NewRegistryWithLogger(db, logger)
 	if err != nil {
 		return err
 	}

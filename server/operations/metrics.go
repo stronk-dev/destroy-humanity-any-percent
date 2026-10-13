@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net"
 	"net/http"
 	"strings"
@@ -23,6 +24,7 @@ type Database interface {
 }
 
 type Registry struct {
+	logger         *slog.Logger
 	registry       *prometheus.Registry
 	ready          prometheus.Gauge
 	httpRequests   *prometheus.CounterVec
@@ -33,11 +35,16 @@ type Registry struct {
 }
 
 func NewRegistry(database Database) (*Registry, error) {
-	if database == nil {
+	return NewRegistryWithLogger(database, slog.New(slog.DiscardHandler))
+}
+
+func NewRegistryWithLogger(database Database, logger *slog.Logger) (*Registry, error) {
+	if database == nil || logger == nil {
 		return nil, ErrInvalid
 	}
 	registry := prometheus.NewRegistry()
 	result := &Registry{
+		logger:   logger,
 		registry: registry,
 		ready: prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace: "cloud_clicker", Name: "ready", Help: "Whether the gameserver is accepting new player work.",
@@ -69,8 +76,8 @@ func NewRegistry(database Database) (*Registry, error) {
 			return nil, errors.Join(ErrInvalid, err)
 		}
 	}
-	// Every closed-set job starts with explicit zero success/failure series so
-	// the first failure after a process start is an observable increase().
+	// Precreate closed-set series. This alone does not make startup or rapid-
+	// exit failures scrapeable; the independent journal path covers those.
 	for name := range jobNames {
 		result.jobRuns.WithLabelValues(name, "success")
 		result.jobRuns.WithLabelValues(name, "failure")
@@ -124,6 +131,10 @@ func (registry *Registry) ObserveJob(name string, now time.Time, run func() erro
 	registry.jobRuns.WithLabelValues(name, result).Inc()
 	if err == nil {
 		registry.jobLastSuccess.WithLabelValues(name).Set(float64(now.UTC().Unix()))
+	} else {
+		// Synchronous, bounded fields only: no underlying error, credentials,
+		// player identifiers or payloads. Emit before fatal job handling returns.
+		registry.logger.Error("composed job failed", "event_class", "composed_job_failure", "job_name", name)
 	}
 	return err
 }

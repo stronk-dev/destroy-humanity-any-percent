@@ -5,13 +5,16 @@ import (
 	"context"
 	"crypto/rand"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
@@ -34,7 +37,8 @@ func TestComposedCredentialCleanupFailureAndRecoveryIntegration(t *testing.T) {
 			database := newCredentialCleanupDatabase(t, ctx)
 			defer database.Close()
 			clock := &mutableClock{now: time.Date(2026, 10, 13, 0, 0, 0, 0, time.UTC)}
-			registry, composition := newCredentialCleanupComposition(t, ctx, database, clock)
+			var failureLog bytes.Buffer
+			registry, composition := newCredentialCleanupComposition(t, ctx, database, clock, &failureLog)
 			httpServer := httptest.NewServer(composition.Server.Handler())
 			defer httpServer.Close()
 			response := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/bootstrap", "",
@@ -57,6 +61,9 @@ func TestComposedCredentialCleanupFailureAndRecoveryIntegration(t *testing.T) {
 				}
 				requireCredentialCleanupMetric(t, registry, "success", 1)
 				requireCredentialCleanupMetric(t, registry, "failure", 0)
+				if failureLog.Len() != 0 {
+					t.Fatal("healthy startup emitted a cleanup failure")
+				}
 				if counts := credentialCleanupCounts(t, ctx, database); counts != [4]int{} {
 					t.Fatalf("healthy composed prime did not collect credentials: %v", counts)
 				}
@@ -104,17 +111,41 @@ func TestComposedCredentialCleanupFailureAndRecoveryIntegration(t *testing.T) {
 				t.Fatal(err)
 			}
 			requireCredentialCleanupMetric(t, freshRegistry, "failure", 0)
+			message := strings.TrimSpace(failureLog.String())
+			if strings.Count(message, `"event_class":"composed_job_failure"`) != 1 || strings.Contains(message, "operations_cleanup_fixture") {
+				t.Fatal("actual startup did not emit one bounded failure before returning")
+			}
+			// Model only the documented journal envelope, not a host journal or
+			// Docker driver. Its MESSAGE comes from the actual failed SQL job.
+			row, _ := json.Marshal(map[string]string{"CONTAINER_TAG": "cloud-clicker-gameserver", "__CURSOR": "fixture-" + subject,
+				"__REALTIME_TIMESTAMP": "1", "MESSAGE": message})
+			cursor, err := operations.CleanupFailureFromJournal(bytes.NewReader(row))
+			if err != nil || cursor == "" {
+				t.Fatal("actual startup failure did not reach the journal consumer")
+			}
+			metricsDirectory := t.TempDir()
+			if err := operations.RecordCleanupJournal(metricsDirectory, cursor, clock.Time()); err != nil {
+				t.Fatal(err)
+			}
+			metric, err := os.ReadFile(filepath.Join(metricsDirectory, "cleanup.prom"))
+			if err != nil || !strings.Contains(string(metric), fmt.Sprintf("cloud_clicker_cleanup_failure_detected_timestamp_seconds %d\n", clock.Time().Unix())) {
+				t.Fatal("failure disappeared after the old registry was replaced")
+			}
 			t.Log("actual composed cleanup failed before readiness; the observed in-process failure counter resets to zero in a fresh registry")
 
 			if _, err := database.ExecContext(ctx, "DROP TRIGGER operations_cleanup_fault ON "+subject); err != nil {
 				t.Fatal(err)
 			}
-			recoveredRegistry, recovered := newCredentialCleanupComposition(t, ctx, database, clock)
+			var recoveredLog bytes.Buffer
+			recoveredRegistry, recovered := newCredentialCleanupComposition(t, ctx, database, clock, &recoveredLog)
 			if err := recovered.Server.Start(ctx); err != nil {
 				t.Fatalf("removing the actual SQL fault did not restore startup: %v", err)
 			}
 			requireCredentialCleanupMetric(t, recoveredRegistry, "success", 1)
 			requireCredentialCleanupMetric(t, recoveredRegistry, "failure", 0)
+			if recoveredLog.Len() != 0 {
+				t.Fatal("recovered startup emitted a failure")
+			}
 			if counts := credentialCleanupCounts(t, ctx, database); counts != [4]int{} {
 				t.Fatalf("real startup recovery left expired credentials: %v", counts)
 			}
@@ -166,9 +197,9 @@ func newCredentialCleanupDatabase(t *testing.T, ctx context.Context) *sql.DB {
 	return database
 }
 
-func newCredentialCleanupComposition(t *testing.T, ctx context.Context, database *sql.DB, clock *mutableClock) (*operations.Registry, *Composition) {
+func newCredentialCleanupComposition(t *testing.T, ctx context.Context, database *sql.DB, clock *mutableClock, logs *bytes.Buffer) (*operations.Registry, *Composition) {
 	t.Helper()
-	registry, err := operations.NewRegistry(database)
+	registry, err := operations.NewRegistryWithLogger(database, slog.New(slog.NewJSONHandler(logs, nil)))
 	if err != nil {
 		t.Fatal(err)
 	}

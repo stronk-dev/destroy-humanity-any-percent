@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -113,6 +115,13 @@ func TestHostObservationWritesExactRestartAndStorageSignals(t *testing.T) {
 		t.Fatal(err)
 	}
 	original := commandOutput
+	originalJournal := cleanupJournalCursor
+	cleanupJournalCursor = func(path string, _ time.Time) (string, error) {
+		if path != filepath.Join(base, "journal") {
+			t.Fatal("collector did not read the configured journal subject")
+		}
+		return strings.Repeat("a", 64), nil
+	}
 	commandOutput = func(_ string, args ...string) ([]byte, error) {
 		for _, value := range args {
 			if value == "inspect" {
@@ -121,7 +130,7 @@ func TestHostObservationWritesExactRestartAndStorageSignals(t *testing.T) {
 		}
 		return []byte("container-id\n"), nil
 	}
-	defer func() { commandOutput = original }()
+	defer func() { commandOutput = original; cleanupJournalCursor = originalJournal }()
 	if err := runHostObserve([]string{"--bundle=" + filepath.Join(base, "bundle"), "--metrics-dir=" + filepath.Join(base, "metrics"),
 		"--persistent-path=" + filepath.Join(base, "persistent"), "--backup-path=" + filepath.Join(base, "backup"),
 		"--journal-path=" + filepath.Join(base, "journal"), "--journal-budget-bytes-file=" + budget}); err != nil {
@@ -131,4 +140,66 @@ func TestHostObservationWritesExactRestartAndStorageSignals(t *testing.T) {
 	if !strings.Contains(string(data), "cloud_clicker_gameserver_restart_count 3") || !strings.Contains(string(data), "cloud_clicker_journal_usage_bytes 7") {
 		t.Fatalf("host observation missing: %s", data)
 	}
+	data, err := os.ReadFile(filepath.Join(base, "metrics", "cleanup.prom"))
+	if err != nil || !strings.Contains(string(data), "cloud_clicker_cleanup_failure_detected_timestamp_seconds ") {
+		t.Fatal("host observer did not publish the durable cleanup failure")
+	}
+	cleanupJournalCursor = func(string, time.Time) (string, error) { return "", errors.New("journal unavailable") }
+	before := string(data)
+	if err := runHostObserve([]string{"--bundle=" + filepath.Join(base, "bundle"), "--metrics-dir=" + filepath.Join(base, "metrics"),
+		"--persistent-path=" + filepath.Join(base, "persistent"), "--backup-path=" + filepath.Join(base, "backup"),
+		"--journal-path=" + filepath.Join(base, "journal"), "--journal-budget-bytes-file=" + budget}); err == nil {
+		t.Fatal("failed journal command reported successful host observation")
+	}
+	data, _ = os.ReadFile(filepath.Join(base, "metrics", "cleanup.prom"))
+	if string(data) != before {
+		t.Fatal("failed journal command refreshed its heartbeat")
+	}
+}
+
+func TestCleanupJournalCommandConsumesCompleteOutputAndExitStatus(t *testing.T) {
+	before := journalCommandContext
+	defer func() { journalCommandContext = before }()
+	at := time.Date(2026, 10, 13, 0, 0, 0, 0, time.UTC)
+	for _, mode := range []string{"valid", "empty", "truncated", "failed", "warning"} {
+		t.Run(mode, func(t *testing.T) {
+			journalCommandContext = func(ctx context.Context, name string, args ...string) *exec.Cmd {
+				joined := strings.Join(args, " ")
+				if name != "journalctl" || !strings.Contains(joined, "--directory=/fixture/journal") ||
+					!strings.Contains(joined, fmt.Sprintf("--since=@%d", at.Add(-14*24*time.Hour).Unix())) ||
+					!strings.Contains(joined, "CONTAINER_TAG=cloud-clicker-gameserver") ||
+					!strings.Contains(joined, "--quiet") || strings.Contains(joined, "--grep") || strings.Contains(joined, "--lines") {
+					t.Fatal("journal command omitted its subject, full retained window or JSON/no-entry contract")
+				}
+				return exec.CommandContext(ctx, os.Args[0], "-test.run=^TestCleanupJournalCommandProcess$", "--", mode)
+			}
+			cursor, err := readCleanupJournal("/fixture/journal", at)
+			if mode == "valid" && (err != nil || len(cursor) != 64) ||
+				mode == "empty" && (err != nil || cursor != "") ||
+				(mode == "truncated" || mode == "failed" || mode == "warning") && err == nil {
+				t.Fatalf("command output/exit did not discriminate mode=%s cursor=%q error=%v", mode, cursor, err)
+			}
+		})
+	}
+}
+
+// A controlled subprocess, not a systemd or Docker-driver claim.
+func TestCleanupJournalCommandProcess(t *testing.T) {
+	if len(os.Args) < 2 || os.Args[len(os.Args)-2] != "--" {
+		return
+	}
+	mode := os.Args[len(os.Args)-1]
+	if mode != "empty" {
+		fmt.Println(`{"CONTAINER_TAG":"cloud-clicker-gameserver","__CURSOR":"fixture","__REALTIME_TIMESTAMP":"1","MESSAGE":"{\"event_class\":\"composed_job_failure\",\"job_name\":\"credential_cleanup\"}"}`)
+	}
+	if mode == "truncated" {
+		fmt.Print(`{"MESSAGE":`)
+	}
+	if mode == "failed" {
+		os.Exit(1)
+	}
+	if mode == "warning" {
+		fmt.Fprintln(os.Stderr, "fixture exclusion")
+	}
+	os.Exit(0)
 }

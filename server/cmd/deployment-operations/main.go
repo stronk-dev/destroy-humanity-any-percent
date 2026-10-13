@@ -93,6 +93,42 @@ func runAlertObserve(args []string) error {
 
 var commandOutput = func(name string, args ...string) ([]byte, error) { return exec.Command(name, args...).Output() }
 
+var cleanupJournalCursor = readCleanupJournal
+var journalCommandContext = exec.CommandContext
+
+func readCleanupJournal(directory string, at time.Time) (string, error) {
+	if !filepath.IsAbs(directory) || at.IsZero() {
+		return "", operations.ErrInvalid
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	// Read the retained failure population, not only failures newer than the
+	// last timer invocation. This also catches up after an observer outage.
+	command := journalCommandContext(ctx, "journalctl", "--directory="+directory, "--since=@"+strconv.FormatInt(at.Add(-operations.JournalRetention).Unix(), 10),
+		"--until=@"+strconv.FormatInt(at.Unix(), 10), "--output=json", "--all", "--no-pager", "--quiet",
+		"CONTAINER_TAG=cloud-clicker-gameserver")
+	// journalctl can warn and skip corrupt/inaccessible entries with exit0.
+	// Treat diagnostics as incomplete collection; never copy their text into logs.
+	var diagnostics bytes.Buffer
+	command.Stderr = &diagnostics
+	output, err := command.StdoutPipe()
+	if err != nil {
+		return "", err
+	}
+	if err := command.Start(); err != nil {
+		return "", err
+	}
+	cursor, parseErr := operations.CleanupFailureFromJournal(output)
+	if parseErr != nil {
+		_ = command.Process.Kill()
+	}
+	waitErr := command.Wait()
+	if diagnostics.Len() != 0 {
+		waitErr = errors.Join(waitErr, operations.ErrInvalid)
+	}
+	return cursor, errors.Join(parseErr, waitErr, ctx.Err())
+}
+
 func runHostObserve(args []string) error {
 	set := flag.NewFlagSet("host-observe", flag.ContinueOnError)
 	bundle := set.String("bundle", "", "exact current release bundle")
@@ -109,7 +145,16 @@ func runHostObserve(args []string) error {
 			return operations.ErrInvalid
 		}
 	}
-	container, err := commandOutput("docker", "compose", "--project-name", "cloud-clicker", "-f", filepath.Join(*bundle, "compose.yml"), "ps", "--quiet", "gameserver")
+	// Journal delivery must work even if the gameserver has already stopped.
+	at := time.Now().UTC()
+	cursor, err := cleanupJournalCursor(*journalPath, at)
+	if err != nil {
+		return err
+	}
+	if err := operations.RecordCleanupJournal(*metricsDirectory, cursor, at); err != nil {
+		return err
+	}
+	container, err := commandOutput("docker", "compose", "--project-name", "cloud-clicker", "-f", filepath.Join(*bundle, "compose.yml"), "ps", "--all", "--quiet", "gameserver")
 	containerID := strings.TrimSpace(string(container))
 	if err != nil || containerID == "" || strings.ContainsAny(containerID, " \t\r\n") {
 		return operations.ErrInvalid

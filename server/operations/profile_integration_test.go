@@ -1,11 +1,13 @@
 package operations
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"os"
@@ -28,6 +30,7 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Minute)
 	defer cancel()
 	received := make(chan []byte, 32)
+	cleanupReceived := make(chan []byte, 32)
 	var servers []*http.Server
 	start := func(address string, handler http.Handler) {
 		server := &http.Server{Addr: address, Handler: handler, ReadHeaderTimeout: 2 * time.Second}
@@ -64,6 +67,30 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	if err := RecordOperation("/textfile", "backup", "success", backupAt); err != nil {
 		t.Fatal(err)
 	}
+	if err := RecordCleanupJournal("/textfile", "", time.Now()); err != nil {
+		t.Fatal(err)
+	}
+	// Model the declared one-minute host observation using the actual writer.
+	// This is not a Docker journald fixture: that release-host gate stays open.
+	observerCtx, stopObserver := context.WithCancel(ctx)
+	observerDone := make(chan struct{})
+	go func() {
+		defer close(observerDone)
+		ticker := time.NewTicker(time.Minute)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-observerCtx.Done():
+				return
+			case at := <-ticker.C:
+				if err := RecordCleanupJournal("/textfile", "", at); err != nil {
+					t.Error(err)
+					return
+				}
+			}
+		}
+	}()
+	defer func() { stopObserver(); <-observerDone }()
 	metrics := http.NewServeMux()
 	metrics.Handle("/metrics", registry.Handler())
 	start(":8080", metrics)
@@ -80,6 +107,15 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 		if rejecting.Load() {
 			response.WriteHeader(http.StatusInternalServerError)
 			return
+		}
+		if strings.Contains(string(data), "CloudClickerCleanupJobFailed") {
+			select {
+			case cleanupReceived <- append([]byte(nil), data...):
+			default:
+				t.Error("cleanup notification observation overflow")
+				response.WriteHeader(http.StatusInternalServerError)
+				return
+			}
 		}
 		select {
 		case received <- data:
@@ -133,18 +169,41 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 		}
 	}
 
-	// A controlled failing callback must reach a firing rule through the
-	// shipped scrape config: the zero series is scraped first, then one failure.
+	// The ephemeral failed process is not the scrape target. Its actual bounded
+	// logger event enters the journal decoder and persistent textfile; the fresh
+	// registry's counter remains zero throughout. Real SQL production of this
+	// event is separately tested by the gameserver integration population.
 	failureQuery := `cloud_clicker_job_runs_total{job_name="credential_cleanup",result="failure"}`
-	if !waitForQueryValue(ctx, client, failureQuery, "0") {
+	if !waitForQueryValue(ctx, client, failureQuery, "0") ||
+		!waitForAlertState(ctx, client, "CloudClickerCleanupJobFailed", "inactive") {
 		t.Fatal("Prometheus never scraped the pre-created cleanup failure series")
 	}
-	if err := registry.ObserveJob("credential_cleanup", time.Now(), func() error { return errors.New("fixture cleanup failure") }); err == nil {
+	var jobLog bytes.Buffer
+	failedRegistry, err := NewRegistryWithLogger(database, slog.New(slog.NewJSONHandler(&jobLog, nil)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := failedRegistry.ObserveJob("credential_cleanup", time.Now(), func() error { return errors.New("fixture cleanup failure") }); err == nil {
 		t.Fatal("failed cleanup reported success")
 	}
-	if !waitForAlertState(ctx, client, "CloudClickerCleanupJobFailed", "firing") {
-		t.Fatal("real cleanup failure never fired CloudClickerCleanupJobFailed")
+	row, _ := json.Marshal(map[string]string{"CONTAINER_TAG": "cloud-clicker-gameserver", "__CURSOR": "private-cleanup-fixture",
+		"__REALTIME_TIMESTAMP": "1", "MESSAGE": strings.TrimSpace(jobLog.String())})
+	cursor, err := CleanupFailureFromJournal(bytes.NewReader(row))
+	if err != nil || cursor == "" {
+		t.Fatal("failed process event did not reach the journal consumer")
 	}
+	cleanupDetectedAt := time.Now().UTC().Truncate(time.Second)
+	if err := RecordCleanupJournal("/textfile", cursor, cleanupDetectedAt); err != nil {
+		t.Fatal(err)
+	}
+	if !waitForAlertState(ctx, client, "CloudClickerCleanupJobFailed", "firing") {
+		t.Fatal("persistent cleanup failure never fired CloudClickerCleanupJobFailed")
+	}
+	cleanupFiringStart := waitForOperationsNotification(t, ctx, cleanupReceived, "CloudClickerCleanupJobFailed", "node-exporter", "firing", cleanupDetectedAt, time.Time{})
+	if !waitForQueryValue(ctx, client, failureQuery, "0") {
+		t.Fatal("journal proof relied on the fresh process failure counter")
+	}
+	t.Log("retained failure reached the configured receiver while the fresh process counter stayed zero")
 
 	// First prove a scraped healthy backup and no active backup alert. A prior
 	// missing-metric notification from service startup cannot count as this
@@ -301,6 +360,14 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 		t.Fatal("dead-letter resolution erased historical rows or healthy delivery added failures")
 	}
 	t.Log("growth stopped and the same alert resolved without deleting dead letters; valid delivery continued")
+	if !waitForAlertState(ctx, client, "CloudClickerCleanupJobFailed", "inactive") {
+		t.Fatal("re-reading retained failure kept the cleanup alert alive")
+	}
+	waitForOperationsNotification(t, ctx, cleanupReceived, "CloudClickerCleanupJobFailed", "node-exporter", "resolved", cleanupDetectedAt.Add(5*time.Minute), cleanupFiringStart)
+	if !waitForQueryValue(ctx, client, failureQuery, "0") {
+		t.Fatal("cleanup resolution depended on a process counter")
+	}
+	t.Log("that exact journal-driven cleanup alert resolved naturally; its persisted failure was not erased")
 
 	// A receiver that rejects every notification must fail the delivery proof
 	// on recorded failures, not merely time out.

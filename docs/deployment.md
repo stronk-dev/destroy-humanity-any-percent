@@ -814,10 +814,11 @@ discriminating: it pins the lower duration bounds (no public alert at 4m45s, no 
 any-failure clause, sub-threshold storage (0.79) and restart (two in ten minutes) populations, the
 journal clause, the `cloud_clicker_ready` clause, single-interval dead-letter growth, both stale
 host-observation clauses, and fire-then-clear resolution for the public-readiness and cleanup
-alerts. Thirteen single-clause/threshold mutations each fail it. The
-private-network integration scrapes the real gameserver registry: after one controlled
-failing `ObserveJob("credential_cleanup", ...)` callback, Prometheus must report `CloudClickerCleanupJobFailed` firing through
-the shipped scrape and rule configuration. Release preflight also sends a fresh nonce-bearing
+alerts. Thirteen historical single-clause/threshold mutations each failed that population.
+The private-network cleanup fixture now takes a controlled callback's actual bounded log
+event through the journal decoder and persistent textfile to real node-exporter, Prometheus
+and Alertmanager. The separately scraped fresh registry's failure counter must remain zero.
+Release preflight also sends a fresh nonce-bearing
 synthetic alert and requires a healthy configured receiver plus successful delivery, measured as
 the rise in Alertmanager's `notification_requests_total` minus `notification_requests_failed_total`.
 Any rise in failed requests during the window fails the proof; the notification-level
@@ -826,13 +827,28 @@ The integration proves the exact nonce reaches the receiver and that a receiver 
 fails the proof on recorded failures. Alertmanager metrics cannot attribute a delivery to one alert
 family or nonce, so the runtime seven-family delivery record is count-derived, not per-family proof.
 
-RP-519: the actual composed startup cleanup now has a separate current-schema Postgres witness.
-Both a session-delete fault and a bootstrap-tombstone fault abort startup, keep readiness down,
-and increment the cleanup failure counter; removing the SQL fault permits real cleanup and startup.
-A fresh registry resets that counter to zero. The command starts its listener only after startup
-prime succeeds, so the current counter-only alert cannot observe a startup cleanup failure.
-Runtime shutdown can also outrun scraping; that timing arm has not been executed. Durable failure
-delivery remains an engineering repair under DP7, not an owner-policy choice or completed AC7.
+RP-519's repair preserves fail-closed cleanup startup and runtime policy. The command binds its
+operations registry to the existing structured logger. Before returning any composed job error,
+the registry emits only the fixed `composed_job_failure` class and a closed-set job name, never
+the underlying error, credentials, player identifiers or payloads. The independent host observer
+streams the configured journal directory's retained 14-day gameserver-tag population. It rejects
+incomplete/partial or malformed records, command diagnostics (including exit-zero exclusions),
+and failed/timed-out commands rather than refreshing health.
+New credential-cleanup failures become an atomic `cleanup.prom` observation; `cleanup-state.json`
+holds only the last cursor hash and host detection time, surviving gameserver/observer restarts.
+Re-reading a seen failure does not extend its five-minute alert window. Late discovery after an
+observer outage gets that window from detection, not the original process time. Failed metric
+publication does not consume the cursor. The declared systemd oneshot owns collection; do not run
+concurrent manual collectors against the same directory.
+
+The cleanup alert retains its existing process-counter arm and also fires on a newly detected
+journal failure, absent collection, or a collection heartbeat older than five minutes. Successful
+startup/recovery does not erase the retained observation. Current-schema Postgres tests exercise
+both real composed SQL failure arms, transaction boundaries, readiness refusal and recovery, plus
+the command's real development-profile startup/logger wiring. Their journal envelopes are modelled;
+they are not Docker-driver or release-process tests. The private receiver fixture likewise models
+the envelope and host timer, not an actual Linux journal. Exact release-host journal/command delivery,
+runtime rapid-exit timing, retention and the full AC7 population remain open.
 
 Use `make test-deployment-operations-profile` to run that existing isolated Compose fixture
 directly: real private scrapes, cleanup-rule firing, nonce delivery, rejecting receiver and
@@ -941,7 +957,9 @@ journal, metrics and measured-budget paths. Provision the metrics directory so t
 operator and the backup container's numeric `70:70` user can both write it while node-exporter can
 only read it; release and backup preflight fail instead of dropping an observation when that
 boundary is wrong. The one-minute observer records filesystem use,
-gameserver restart count and journal consumption through atomic textfiles. Build and exercise the
+gameserver restart count, journal consumption and independent cleanup-failure observation through
+atomic textfiles. Keep the metrics directory across observer/gameserver restarts; do not remove
+`cleanup-state.json` to clear an alert. Build and exercise the
 operations helper with:
 
 ```sh

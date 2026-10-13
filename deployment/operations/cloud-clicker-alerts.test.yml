@@ -96,12 +96,14 @@ tests:
     input_series:
       - series: 'cloud_clicker_job_runs_total{job_name="credential_cleanup",result="failure"}'
         values: '0 0 1 1'
+      - series: 'cloud_clicker_cleanup_journal_observed_timestamp_seconds'
+        values: '0+60x3'
     alert_rule_test:
       - eval_time: 3m
         alertname: CloudClickerCleanupJobFailed
         exp_alerts:
           - exp_labels: {job_name: credential_cleanup, result: failure, severity: page}
-            exp_annotations: {summary: The composed expired-credential cleanup job failed.}
+            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
 
   - interval: 15s
     input_series:
@@ -142,6 +144,8 @@ tests:
         values: '0x22'
       - series: 'cloud_clicker_job_runs_total{job_name="credential_cleanup",result="failure"}'
         values: '0x22'
+      - series: 'cloud_clicker_cleanup_journal_observed_timestamp_seconds'
+        values: '0+15x22'
       - series: 'cloud_clicker_dead_letters{queue="transport"}'
         values: '0x22'
       - series: 'node_textfile_mtime_seconds{file="/textfile/host.prom"}'
@@ -366,12 +370,14 @@ tests:
     input_series:
       - series: 'cloud_clicker_job_runs_total{job_name="credential_cleanup",result="failure"}'
         values: '0 1 1 1 1 1 1 1 1'
+      - series: 'cloud_clicker_cleanup_journal_observed_timestamp_seconds'
+        values: '0+60x8'
     alert_rule_test:
       - eval_time: 2m
         alertname: CloudClickerCleanupJobFailed
         exp_alerts:
           - exp_labels: {job_name: credential_cleanup, result: failure, severity: page}
-            exp_annotations: {summary: The composed expired-credential cleanup job failed.}
+            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
       - eval_time: 8m
         alertname: CloudClickerCleanupJobFailed
         exp_alerts: []
@@ -384,3 +390,52 @@ tests:
       - eval_time: 30s
         alertname: CloudClickerDeadLetterGrowth
         exp_alerts: []
+
+  # The process has never been scraped: a newly discovered retained journal
+  # failure fires independently, stays active for five minutes, then resolves.
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_cleanup_failure_detected_timestamp_seconds'
+        values: '0 15x24'
+      - series: 'cloud_clicker_cleanup_journal_observed_timestamp_seconds'
+        values: '0+15x25'
+    alert_rule_test:
+      - eval_time: 0s
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts: []
+      - eval_time: 15s
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
+      - eval_time: 5m
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
+      - eval_time: 5m15s
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts: []
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_cleanup_journal_observed_timestamp_seconds'
+        values: '0x24'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts: []
+      - eval_time: 5m15s
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
+
+  - interval: 15s
+    input_series: []
+    alert_rule_test:
+      - eval_time: 15s
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}

@@ -5698,3 +5698,81 @@ journal/Prometheus/receiver and exact release-host proof remain open. Review by:
 Codex (implementer first filter). Recorded by: Codex. Entire range after `f0009bfc`
 through this containing commit needs Claude designated review, consolidatable with
 preceding DP7 work. No feature acceptance, archival, publication or deployment.
+
+## 2026-10-13 — Preserve cleanup failure observation after endpoint loss (RP-519, DP7)
+
+**Outcome / authority:** repair DP7/AC7's startup observation gap without changing
+cleanup, readiness or fatal-job policy. The real command uses the bounded logger
+registry; errors emit fixed class/job fields before returning, never underlying
+errors or player/credential material. The existing host observer streams its exact
+journal directory over the retained14-day population, persists a newly discovered
+cursor hash/detection time, and publishes an independent atomic textfile. Seen
+failures do not extend the5m alert window; late catch-up is observable. Metrics
+publish before the cursor is consumed. Missing/stale collection pages; truncated,
+partial, malformed, nonzero-exit, timeout or exit-zero diagnostics cannot refresh
+health. The operator's existing serialized oneshot remains the collector owner.
+
+**Regression / executed evidence:**
+
+- Actual composed session-delete/bootstrap-tombstone SQL faults now also require
+  the bounded event before startup returns; healthy/recovered startup emits none.
+  Focused declared Linux-amd64/Postgres28041 passes2.03s, and full affected53684
+  passes gameserver88.236s/operations4.856s/command0.077s/operations-command5.250s/
+  releasepackage1.283s. All real SQL cases execute; optional-service skips are explicit.
+- Removing just the log emission in a compiler overlay makes the actual session
+  startup oracle fail0.75s. Reverting only command construction to its old discard
+  registry makes the actual command-startup oracle fail0.85s. Main sources never
+  changed for these probes; temporary copies/overlays were removed.
+- The actual development-command startup test first failed before its SQL subject:
+  my fixture's port0 was correctly refused. A reserved valid loopback address fixes
+  setup and prevents accidental serving. Focused90801 passes0.74s; final whole
+  command23977 passes0.967s with the new case0.88s. This is `run`, not an OCI process.
+- The pinned rule population passes. A scratch old counter-only rule fails the new
+  startup-without-counter and absent/stale collection cases. Forced Linux-amd64
+  evaluation first fails before tests because Docker cannot overwrite the cached
+  manifest's ARM64 image. The explicitly disclosed cached ARM64 evaluator passes,
+  including the final summary clarification; no supported-amd64 rule claim from it.
+- Full private stack84031 passes700.28s, exit0, within the unchanged12m guard:
+  actual logger event→modelled envelope→decoder/textfile→real node-exporter→shipped
+  rule→receiver firing and matching resolution, while the fresh process counter0
+  remains0. The backup, both database-failure/recovery, dead-letter, nonce, receiver500
+  and admin-isolation populations still execute. Its dedicated services/volume are
+  removed; post-run inspection is empty. Envelope/timer are modelled, not journald.
+- Affected native/vet82340 passes all five packages. Final command-observer49876
+  passes5.551s on Linux-amd64, native/vet26622 passes, including a controlled child
+  emitting valid output then exit-zero exclusion diagnostics. No healthy refresh.
+- Updating the optional native fixture exposed my gzip/plaintext concatenation bug.
+  A read-only live Prometheus target query reports `gzip: invalid header`; that owned
+  run73078 is stopped as invalid, not credited. Retained ordinary HTTP regression57069
+  fails with the same error; the corrected fixture serves a complete plaintext
+  response when combining its two producers. Native/vet55375 passes; final cold
+  Linux-amd64 operations52107 passes4.909s including that regression and all SQL tests.
+  The earlier direct test-binary invocation4493 could not find package-relative config
+  and ran no journey. Corrected package-selector19688 passes321.51s within the unchanged
+  8m guard: zero at6.403s, failure1/firing at21.522s, natural resolution at5m21.358s with
+  counter still1. It uses Linux-amd64 tests plus cached pinned ARM64 service executables,
+  not native macOS/all-amd64 release proof. Extracted program SHA256s: Prometheus
+  `9016b054ba86f89ad32880084fefb2ca34a457ed4e0e586e1ebb032e6ed5931e`, Alertmanager
+  `15c74ada5a4677236016a13f24d430dd3126a14a940c071a2c70799fa1e30f03`.
+- Final diff inspection extends the invalid-state cases: preinitialized schema1
+  accidentally admitted `{}` without a version. Regression88959 fails at that input;
+  decode now starts present files from zero state and refuses missing versions. This
+  changes only invalid-state handling, not the valid private/native journeys above.
+  Final native/vet94695 passes all five affected packages; final cold Linux-amd64
+  operations42286 passes6.073s, including invalid-state/compression controls and
+  all four actual-SQL functions. Optional-service skips there are explicit.
+
+**Coverage / handoff:** Docker's documented tag/partial fields were checked against
+[the driver documentation](https://docs.docker.com/engine/logging/drivers/journald/) and
+[primary source](https://github.com/moby/moby/blob/master/daemon/logger/journald/journald.go).
+[journalctl source](https://github.com/systemd/systemd/blob/main/src/journal/journalctl-show.c)
+confirms no-match grep is nonzero and corrupt-record exclusions can warn; the collector
+uses quiet complete JSON without grep and rejects diagnostics. These are source checks,
+not host execution. Current-schema SQL, command wiring and private receiver behavior
+are locally proved; actual release-process/Docker-journal delivery, rapid-exit timing,
+retention, remaining alert producers, rebuilt exact release pair/R-006, hosted CI and
+earlier review debt remain open. No new owner policy, retry, threshold, kernel, migration
+or CI change. Review by: Codex (implementer first filter). Recorded by: Codex. Entire
+repair range after `a38bcb9c` through this containing commit needs Claude designated
+review; consolidate with the diagnosis after `f0009bfc` and earlier DP7 ranges. No
+feature acceptance, archival, push, deployment or full1.0 claim.
