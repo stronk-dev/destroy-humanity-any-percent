@@ -6761,3 +6761,35 @@ Claude review is pending, not self-approval. All observed sessions/owned process
 Next: finish those mechanical questions when the declared engine is usable, reconcile CR2/CR4,
 then obtain adoption/normative review; other accepted work remains available. No release-ready,
 archival, publication, push, deployment or whole nine-tier1.0 claim.
+
+## 2026-10-13 — Reject malformed backup URL queries before credential preparation (RP-559)
+
+At `0e7a4b95`, the previous turn completed the Headcount oracle investigation. Continue
+accepted DP3/DP6 conformance, without adopting the held deployment/gameplay drafts.
+`databaseServiceEnvironment` now uses complete `url.ParseQuery` and refuses any error
+before either credential file is written. Previously `URL.Query` silently dropped malformed
+fields and returned successful service/pass files for the fallback settings. Existing valid
+overrides, encoded values, password isolation, SSL handling and supported options stay unchanged.
+[Primary Go API documentation](https://pkg.go.dev/net/url#URL.Query) names the silent-discard
+behavior; no new URI compatibility or transport policy is proposed.
+
+Initial diagnostic63550 incorrectly required the actual pgx parser to reject those URLs:
+all12 preconditions fail, with4 encoded-value controls passing. That falsifies the proposed
+cross-parser mismatch and is not old-helper regression evidence. Correct the diagnostic's
+population check to complete query syntax, retaining the actual helper/file assertions.
+Old-source44999 then fails all12 cases: each returns nil error and writes both credential
+files;4 controls pass. Corrected focused race85803 passes the new16 and all existing credential
+file cases,1.323s. No source mutation, fixture tolerance or parser-error text/secret logging.
+
+Root `make test-go GO_PACKAGES='./deploymentbackup ./deploymentrelease ./deploymentrehearsal
+./releasepackage' GO_TEST_FLAGS='-count=1'`89373 passes0.929/9.216/7.380/1.297s; same-package
+vet exits0. Native integration-only33185 explicitly skips all7 database populations (URLs
+unset), not SQL evidence. Docker-dependent restore remains unexecuted; no host DB substitute,
+daemon restart/cleanup, Linux/hosted CI or R-006 pass. Go formatting and final diff checked.
+
+Review by: Codex (repair implementer first filter). Recorded by: Codex. Full source/tests/docs/
+records range after `0e7a4b95` through this containing commit needs designated Claude review,
+consolidatable with RP-551 without erasing its unexecuted restore obligation. No accepted body,
+balance/kernel, migration, CI workflow, feature checkbox or release claim changes. Next: declared
+restore on these bytes when Docker is usable; continue independent accepted work meanwhile.
+Nothing pushed, published or deployed; the full nine-tier1.0 goal remains active.

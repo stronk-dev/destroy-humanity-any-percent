@@ -522,7 +522,8 @@ after all of the following succeed:
 Database URL query overrides for `host`, `port`, `user`, `password` and `dbname` (also `database`)
 take precedence over URI authority/path fields when constructing the service/pass files, matching
 the Go driver's precedence. Existing name/control-character checks apply to the effective values;
-invalid ports, empty/whitespace-adjusted hosts and conflicting database aliases refuse before
+invalid ports, empty/whitespace-adjusted hosts, malformed query escapes/unescaped semicolons
+and conflicting database aliases refuse before
 credential files are written. The password stays only in the mode-0600 pass file, not service
 text, environment values or arguments. Existing SSL-mode handling is unchanged. This is an
 endpoint-field correction, not a general PostgreSQL URI/transport-option compatibility claim.

@@ -305,7 +305,12 @@ func databaseServiceEnvironment(secretPath, workspace string) ([]string, error) 
 	if !hasPassword {
 		return nil, ErrInvalid
 	}
-	query := parsed.Query()
+	query, err := url.ParseQuery(parsed.RawQuery)
+	if err != nil {
+		// URL.Query silently discards malformed fields. Never turn a broken
+		// override into successful credential files for its fallback endpoint.
+		return nil, ErrInvalid
+	}
 	queryValue := func(name, fallback string) string {
 		if values, present := query[name]; present {
 			return values[0]

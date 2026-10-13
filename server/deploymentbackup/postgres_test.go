@@ -3,6 +3,7 @@ package deploymentbackup
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -128,6 +129,71 @@ func TestDatabaseServiceFilesRejectUnsafeOrAmbiguousEndpointOverrides(t *testing
 			entries, err := os.ReadDir(workspace)
 			if err != nil || len(entries) != 0 {
 				t.Fatalf("unsafe connection wrote credential files: count=%d err=%v", len(entries), err)
+			}
+		})
+	}
+}
+
+func TestDatabaseServiceFilesRejectMalformedQueryBeforeWriting(t *testing.T) {
+	for _, query := range []string{
+		"host=other%zz", "port=65%zz", "user=other%zz",
+		"dbname=other%zz", "database=other%zz", "password=other%zz",
+		"sslmode=verify%zz", "application_name=backup%zz",
+		"host=other;port=6543", "dbname=other;database=another",
+		"password=other;sslmode=disable", "%zz=value",
+	} {
+		t.Run(query, func(t *testing.T) {
+			connection := "postgres://cloud_clicker:original_password@postgres:5432/cloud_clicker?sslmode=disable&" + query
+			parsed, err := url.Parse(connection)
+			if err != nil {
+				t.Fatal(err)
+			}
+			// URL.Query (also used by the inspection driver) silently drops
+			// malformed fields. Require the complete query parser's refusal,
+			// not a claimed disagreement between the two lenient consumers.
+			if _, err := url.ParseQuery(parsed.RawQuery); err == nil {
+				t.Fatal("diagnostic query has no syntax error")
+			}
+			workspace := t.TempDir()
+			secret := filepath.Join(t.TempDir(), "database-url")
+			if err := os.WriteFile(secret, []byte(connection+"\n"), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			if environment, err := databaseServiceEnvironment(secret, workspace); !errors.Is(err, ErrInvalid) || environment != nil {
+				t.Errorf("malformed query produced fallback credentials: environment=%v err=%v", environment, err)
+			}
+			if entries, err := os.ReadDir(workspace); err != nil || len(entries) != 0 {
+				t.Errorf("malformed query wrote credential files: count=%d err=%v", len(entries), err)
+			}
+		})
+	}
+}
+
+func TestDatabaseServiceFilesRetainEncodedQueryValues(t *testing.T) {
+	for _, query := range []string{
+		"password=colon%3Abackslash%5Csemicolon%3Bpercent%25",
+		"password=literal%2520value",
+		"application_name=backup%3Bordinary",
+		"host=other_postgres&dbname=other_database&password=other%26password",
+	} {
+		t.Run(query, func(t *testing.T) {
+			connection := "postgres://cloud_clicker:original_password@postgres:5432/cloud_clicker?sslmode=disable&" + query
+			config, err := pgx.ParseConfig(connection)
+			if err != nil {
+				t.Fatal(err)
+			}
+			workspace := t.TempDir()
+			secret := filepath.Join(t.TempDir(), "database-url")
+			if err := os.WriteFile(secret, []byte(connection+"\n"), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := databaseServiceEnvironment(secret, workspace); err != nil {
+				t.Fatal(err)
+			}
+			data, err := os.ReadFile(filepath.Join(workspace, "pgpass"))
+			want := strings.Join([]string{pgpassEscape(config.Host), fmt.Sprint(config.Port), pgpassEscape(config.Database), pgpassEscape(config.User), pgpassEscape(config.Password)}, ":") + "\n"
+			if err != nil || string(data) != want {
+				t.Fatalf("encoded query changed endpoint/password binding: err=%v", err)
 			}
 		})
 	}

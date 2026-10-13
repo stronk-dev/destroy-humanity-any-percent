@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current backup-input correction, 2026-10-13 (RP-559):** malformed URL queries now
+refuse before service/pass file creation, rather than silently dropping invalid fields
+and preparing fallback credentials. Twelve actual old-helper failures and four encoded-value
+controls precede the correction; all credential-file checks/race, four cold affected packages
+and vet pass. The log records the initially falsified cross-parser hypothesis and exact range
+after `0e7a4b95`, pending Claude review. This does not extend supported URI options or establish
+SQL restore, Docker/Linux/hosted or exact-artifact acceptance; those boundaries remain open.
+
 **Current contract work, 2026-10-13 (RP-558 / DESIGN-GAP10):** the
 [Current Release Authority draft](../../rfc/deployment-current-release-authority.md) specifies
 live image/mounted-byte identity, one ledger with durable release/rollback events and explicit
