@@ -6,6 +6,65 @@ evaluation_interval: 15s
 tests:
   - interval: 15s
     input_series:
+      - series: 'cloud_clicker_gameserver_restart_count'
+        values: '3x4'
+      - series: 'cloud_clicker_gameserver_container_created_timestamp_seconds'
+        values: '0x4'
+    alert_rule_test:
+      - eval_time: 30s
+        alertname: CloudClickerGameserverRestartLoop
+        exp_alerts: []
+
+  # No zero baseline was scraped. Container birth still proves that all three
+  # cumulative restarts occurred within the last ten minutes.
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_gameserver_restart_count'
+        values: '3x44'
+      - series: 'cloud_clicker_gameserver_container_created_timestamp_seconds'
+        values: '15x44'
+    alert_rule_test:
+      - eval_time: 0s
+        alertname: CloudClickerGameserverRestartLoop
+        exp_alerts: []
+      - eval_time: 30s
+        alertname: CloudClickerGameserverRestartLoop
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: The gameserver restarted at least three times inside ten minutes.}
+      - eval_time: 10m15s
+        alertname: CloudClickerGameserverRestartLoop
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: The gameserver restarted at least three times inside ten minutes.}
+      - eval_time: 10m30s
+        alertname: CloudClickerGameserverRestartLoop
+        exp_alerts: []
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_gameserver_restart_count'
+        values: '2x44'
+      - series: 'cloud_clicker_gameserver_container_created_timestamp_seconds'
+        values: '15x44'
+    alert_rule_test:
+      - eval_time: 30s
+        alertname: CloudClickerGameserverRestartLoop
+        exp_alerts: []
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_gameserver_restart_count'
+        values: '3x44'
+      - series: 'cloud_clicker_gameserver_container_created_timestamp_seconds'
+        values: '900x44'
+    alert_rule_test:
+      - eval_time: 30s
+        alertname: CloudClickerGameserverRestartLoop
+        exp_alerts: []
+
+  - interval: 15s
+    input_series:
       - series: 'up{job="caddy"}'
         values: '0x22'
       - series: 'up{job="gameserver"}'

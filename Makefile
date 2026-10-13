@@ -4,6 +4,7 @@
 .PHONY: test-operations-alertmanager-native test-operations-native test-browser-focused test-deployment-operations-profile
 .PHONY: test-deployment-cleanup-runtime
 .PHONY: test-deployment-storage-profile
+.PHONY: test-deployment-restart-observer
 .PHONY: verify-combat-go-boundary
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
@@ -130,12 +131,20 @@ test-deployment-operations:
 	docker run --rm --platform linux/amd64 --entrypoint promtool -v "$(CURDIR)/deployment/operations:/work:ro" "$(PROMETHEUS_RULE_IMAGE)" test rules /work/cloud-clicker-alerts.test.yml
 	$(MAKE) test-go GO_PACKAGES='./operations ./cmd/deployment-operations ./cmd/deployment-backup ./cmd/deployment-release ./gameserver ./transport ./production ./save ./releasepackage ./deploymentbackup ./deploymentrelease' GO_TEST_FLAGS='-count=1'
 	$(MAKE) test-deployment-cleanup-runtime
+	$(MAKE) test-deployment-restart-observer
 	$(MAKE) test-deployment-operations-profile
 
 # Real one-minute job timing belongs to manual Deployment acceptance, not push
 # CI. Reuse the declared Linux-amd64/Postgres service; no shortened job interval.
 test-deployment-cleanup-runtime:
 	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm -e CLOUD_CLICKER_CLEANUP_RUNTIME_TEST=1 test go test -p 1 -run '^TestComposedCredentialCleanupRuntimeAndDrainIntegration$$' -v ./gameserver -count=1
+
+# Optional real Docker-engine producer witness, outside push CI. The test owns
+# one networkless, read-only, restart-capped container and validates ownership
+# before deleting it. It does not deploy or inspect the official gameserver.
+test-deployment-restart-observer: export CLOUD_CLICKER_RESTART_OBSERVER_TEST = 1
+test-deployment-restart-observer:
+	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS='-run TestHostObservationActualDockerRestartIntegration -v -count=1'
 
 # Focus the existing real-service fixture without skipping or changing the
 # aggregate above. This is not the full operations or clean-host release gate.

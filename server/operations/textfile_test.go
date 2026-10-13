@@ -177,3 +177,26 @@ func TestRecordHostUsesOnlyBoundedStorageLabels(t *testing.T) {
 		t.Fatalf("over-budget journal pressure absent: %s", data)
 	}
 }
+
+func TestContainerHostBindsBirthAndRejectsUnknownBirth(t *testing.T) {
+	directory := t.TempDir()
+	created := time.Unix(1_700_000_000, 0)
+	if err := RecordContainerHost(directory, 0.25, 0.5, 3, 0, 1000, created); err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(directory, "host.prom")
+	original, err := os.ReadFile(path)
+	if err != nil || !strings.Contains(string(original), "cloud_clicker_gameserver_restart_count 3\n") ||
+		!strings.Contains(string(original), "cloud_clicker_gameserver_container_created_timestamp_seconds 1700000000\n") {
+		t.Fatal("restart count lost its bound container birth")
+	}
+	for _, invalid := range []time.Time{{}, time.Unix(0, 0), time.Unix(-1, 0)} {
+		if err := RecordContainerHost(directory, 0.25, 0.5, 3, 0, 1000, invalid); !errors.Is(err, ErrInvalid) {
+			t.Fatal("unknown/invalid container birth accepted")
+		}
+		data, err := os.ReadFile(path)
+		if err != nil || string(data) != string(original) {
+			t.Fatal("invalid birth replaced the last valid observation")
+		}
+	}
+}

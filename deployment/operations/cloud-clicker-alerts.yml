@@ -33,7 +33,7 @@ groups:
           summary: Persistent, backup, or journal storage crossed the release-floor threshold, or its host observation is stale.
 
       - alert: CloudClickerGameserverRestartLoop
-        expr: increase(cloud_clicker_gameserver_restart_count[10m]) >= 3
+        expr: increase(cloud_clicker_gameserver_restart_count[10m]) >= 3 or (cloud_clicker_gameserver_restart_count >= 3 and cloud_clicker_gameserver_container_created_timestamp_seconds > 0 and time() - cloud_clicker_gameserver_container_created_timestamp_seconds >= 0 and time() - cloud_clicker_gameserver_container_created_timestamp_seconds <= 600)
         labels:
           severity: page
         annotations:

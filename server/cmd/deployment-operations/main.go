@@ -159,10 +159,13 @@ func runHostObserve(args []string) error {
 	if err != nil || containerID == "" || strings.ContainsAny(containerID, " \t\r\n") {
 		return operations.ErrInvalid
 	}
-	restarts, err := commandOutput("docker", "inspect", "--format={{.RestartCount}}", containerID)
-	restartCount, parseErr := strconv.ParseUint(strings.TrimSpace(string(restarts)), 10, 64)
-	if err != nil || parseErr != nil {
-		return errors.Join(operations.ErrInvalid, err, parseErr)
+	metadata, err := commandOutput("docker", "inspect", "--format={{.RestartCount}} {{.Created}}", containerID)
+	if err != nil {
+		return errors.Join(operations.ErrInvalid, err)
+	}
+	restartCount, created, err := parseRestartObservation(metadata, at)
+	if err != nil {
+		return err
 	}
 	persistentUsage, err := operations.FilesystemUsage(*persistentPath)
 	if err != nil {
@@ -184,7 +187,20 @@ func runHostObserve(args []string) error {
 	if err != nil {
 		return operations.ErrInvalid
 	}
-	return operations.RecordHost(*metricsDirectory, persistentUsage, backupUsage, restartCount, journalBytes, journalBudget)
+	return operations.RecordContainerHost(*metricsDirectory, persistentUsage, backupUsage, restartCount, journalBytes, journalBudget, created)
+}
+
+func parseRestartObservation(data []byte, observedAt time.Time) (uint64, time.Time, error) {
+	fields := strings.Fields(string(data))
+	if len(fields) != 2 || observedAt.IsZero() {
+		return 0, time.Time{}, operations.ErrInvalid
+	}
+	count, err := strconv.ParseUint(fields[0], 10, 64)
+	created, timeErr := time.Parse(time.RFC3339Nano, fields[1])
+	if err != nil || timeErr != nil || created.Unix() <= 0 || created.After(observedAt) {
+		return 0, time.Time{}, operations.ErrInvalid
+	}
+	return count, created.UTC(), nil
 }
 
 func directoryUsage(root string) (uint64, error) {

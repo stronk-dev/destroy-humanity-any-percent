@@ -49,6 +49,19 @@ func RecordOperation(directory, operation, result string, at time.Time) error {
 }
 
 func RecordHost(directory string, persistentUsage, backupUsage float64, restartCount, journalBytes, journalBudget uint64) error {
+	return recordHost(directory, persistentUsage, backupUsage, restartCount, journalBytes, journalBudget, 0)
+}
+
+// RecordContainerHost binds the cumulative restart count to this container's
+// actual birth. No container identifier becomes a metric or persisted label.
+func RecordContainerHost(directory string, persistentUsage, backupUsage float64, restartCount, journalBytes, journalBudget uint64, created time.Time) error {
+	if created.IsZero() || created.Unix() <= 0 {
+		return ErrInvalid
+	}
+	return recordHost(directory, persistentUsage, backupUsage, restartCount, journalBytes, journalBudget, created.Unix())
+}
+
+func recordHost(directory string, persistentUsage, backupUsage float64, restartCount, journalBytes, journalBudget uint64, created int64) error {
 	if !filepath.IsAbs(directory) || strings.ContainsAny(directory, "\r\n") || math.IsNaN(persistentUsage) || math.IsNaN(backupUsage) || persistentUsage < 0 || persistentUsage > 1 || backupUsage < 0 || backupUsage > 1 || journalBudget < 1 {
 		return ErrInvalid
 	}
@@ -59,13 +72,16 @@ cloud_clicker_filesystem_usage_ratio{storage="persistent"} %.9g
 # HELP cloud_clicker_gameserver_restart_count Docker restart count for the current gameserver container.
 # TYPE cloud_clicker_gameserver_restart_count counter
 cloud_clicker_gameserver_restart_count %d
+# HELP cloud_clicker_gameserver_container_created_timestamp_seconds Docker creation time of the observed gameserver container; zero means unknown.
+# TYPE cloud_clicker_gameserver_container_created_timestamp_seconds gauge
+cloud_clicker_gameserver_container_created_timestamp_seconds %d
 # HELP cloud_clicker_journal_usage_bytes Current persistent journal bytes for the Cloud Clicker workload.
 # TYPE cloud_clicker_journal_usage_bytes gauge
 cloud_clicker_journal_usage_bytes %d
 # HELP cloud_clicker_journal_budget_bytes Measured reserved journal budget.
 # TYPE cloud_clicker_journal_budget_bytes gauge
 cloud_clicker_journal_budget_bytes %d
-`, backupUsage, persistentUsage, restartCount, journalBytes, journalBudget))
+`, backupUsage, persistentUsage, restartCount, created, journalBytes, journalBudget))
 	return writeMetricFile(directory, "host.prom", data)
 }
 

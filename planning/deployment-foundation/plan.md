@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest DP7 restart correction, 2026-10-13 (RP-522):** actual Docker count and
+container birth now reach the host textfile together. A new-container lifetime
+arm catches three restarts before the first scrape, preserving the original
+counter-increase rule and ten-minute threshold. Old rule regression fails;
+corrected pinned rules and actual automatic-restart/observer witness pass.
+The log owns checks and the range after `db752b0a`, pending designated review.
+Continue live producer-to-receiver restart proof, actual journal/retention and
+exact release-artifact construction; no full AC7/clean-host/1.0 completion.
+
 **Latest DP7 storage construction, 2026-10-13 (RP-521):** two distinct20MiB
 filesystems feed the actual shared production usage reader/textfile writer.
 Exactly80% stays quiet;85% fires through node-exporter and reaches the receiver;

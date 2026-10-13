@@ -824,6 +824,16 @@ any-failure clause, sub-threshold storage (0.79) and restart (two in ten minutes
 journal clause, the `cloud_clicker_ready` clause, single-interval dead-letter growth, both stale
 host-observation clauses, and fire-then-clear resolution for the public-readiness and cleanup
 alerts. Thirteen historical single-clause/threshold mutations each failed that population.
+The host observer reads Docker's restart count and container creation time together, refusing
+malformed, missing or future creation times. The creation timestamp is a gauge, not a container
+identifier. Alongside the existing ten-minute counter-increase arm, the restart rule fires for
+a count of at least three when this known container is no more than ten minutes old. This covers
+three restarts before the first scrape: their containing lifetime proves the time window even
+when every scraped count is already three. Unknown, future and older creation times cannot
+satisfy that supplementary arm; neither can two restarts. It expires after ten minutes of
+container age. A cumulative count alone cannot reconstruct an older container's pre-scrape
+restart history. The generic `RecordHost` helper publishes unknown birth as zero; the production
+host command uses `RecordContainerHost` with the inspected birth.
 The private-network cleanup fixture now takes a controlled callback's actual bounded log
 event through the journal decoder and persistent textfile to real node-exporter, Prometheus
 and Alertmanager. The separately scraped fresh registry's failure counter must remain zero.
@@ -869,6 +879,16 @@ records cancellation without a failure alarm. The production timer and callback 
 the wrapper forwards the context and records their returned outcome unchanged. This timed lane is included in manual Deployment
 operations verification, not push CI. It proves server/SQL lifecycle behavior, not OCI process
 exit, host journald collection or clean-host release acceptance.
+
+`make test-deployment-restart-observer`, also included in manual operations verification,
+creates one labelled, networkless, read-only container with automatic restarts capped at three.
+It observes Docker's actual count move from zero to three and runs the production host-observer
+inspection, parser, filesystem reader and atomic textfile publication against that container.
+Only the official Compose-project lookup and journal source are controlled. Cleanup verifies
+the exact ownership label before removing the fixture. This is a scripted exiting process,
+not the gameserver binary or a release-host deployment. Together with the pinned rule population
+it verifies the new producer and first-scrape rule boundary, not live receiver delivery of this
+arm, actual journald, retention or full AC7/R-006. The timed test stays outside push CI.
 
 Use `make test-deployment-operations-profile` to run that existing isolated Compose fixture
 directly: real private scrapes, cleanup-rule firing, nonce delivery, rejecting receiver and

@@ -5865,3 +5865,40 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Entire range
 after `82c8e57b` through this containing commit needs Claude designated review;
 consolidate with preceding DP7 work. No acceptance, archive, push, deployment
 or1.0 claim. Continue accepted operations/release construction.
+
+## 2026-10-13 — DP7 first-scrape restart detection (RP-522)
+
+**Outcome / regression:** DP7 requires three restarts inside ten minutes. The
+committed counter-increase rule misses a new container already at three on its
+first scrape. The full retained population against `db752b0a`'s rule in an
+isolated scratch fixture fails80601 at30s/10m15s (expected firing, got none).
+The production observer now inspects count and creation time together, rejects
+invalid/missing/future metadata, and publishes a bounded birth gauge without
+container IDs. Preserve the increase arm; add only count>=3 with known nonfuture
+container age<=600s. Lower counts, unknown/future birth and age>600s stay quiet.
+Older pre-scrape history cannot be reconstructed from cumulative count alone.
+No threshold, cadence, journal policy, migration, kernel or CI-workflow change.
+
+**Checks:** pinned complete promtool population9683 passes; cached exact-index
+image is Linux/arm64, not an amd64 rule-evaluator claim. Native46810 passes
+operations1.598s/command5.487s and vet passes. Declared Linux-amd64/Postgres50634
+passes5.023s/5.744s. Ordinary lanes explicitly skip the opt-in Docker-engine
+test; separately executed `make test-deployment-restart-observer`75344 passes
+46.34s: real automatic restart count0→3, actual inspected birth, production
+parser/filesystem/textfile publication and no emitted container identity.
+The earlier fixture lookup adapter matched the wrong argument positions and
+failed before the restart objective (22417); it was corrected, not counted as
+evidence. Lost earlier process handles have no inferred result; the final checks
+above were executed fresh. Exact owned-container census is empty after cleanup.
+Formatting/diff checks pass; Make dry-run confirms the observer lane is included
+in manual operations verification, not push CI. Aggregate is not newly rerun.
+
+**Coverage / handoff:** the real engine fixture is a scripted exiting process,
+not gameserver. Official-project lookup and journal source are controlled;
+Docker inspection, filesystem reads and publication are real. This and the
+rule regression do not prove live receiver delivery of the new arm, actual
+journald/retention, older pre-scrape history, release-host/R-006 or full AC7.
+Review by: Codex (implementer first filter). Recorded by: Codex. Entire range
+after `db752b0a` through this containing commit needs Claude designated review,
+consolidatable with the preceding DP7 batches. Continue accepted operations and
+release-artifact construction; no acceptance, archive, push or1.0 promotion.

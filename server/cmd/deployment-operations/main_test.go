@@ -125,7 +125,7 @@ func TestHostObservationWritesExactRestartAndStorageSignals(t *testing.T) {
 	commandOutput = func(_ string, args ...string) ([]byte, error) {
 		for _, value := range args {
 			if value == "inspect" {
-				return []byte("3\n"), nil
+				return []byte("3 2026-08-22T12:00:00Z\n"), nil
 			}
 		}
 		return []byte("container-id\n"), nil
@@ -137,7 +137,8 @@ func TestHostObservationWritesExactRestartAndStorageSignals(t *testing.T) {
 		t.Fatal(err)
 	}
 	data, _ := os.ReadFile(filepath.Join(base, "metrics", "host.prom"))
-	if !strings.Contains(string(data), "cloud_clicker_gameserver_restart_count 3") || !strings.Contains(string(data), "cloud_clicker_journal_usage_bytes 7") {
+	wantCreated := fmt.Sprintf("cloud_clicker_gameserver_container_created_timestamp_seconds %d", time.Date(2026, 8, 22, 12, 0, 0, 0, time.UTC).Unix())
+	if !strings.Contains(string(data), "cloud_clicker_gameserver_restart_count 3") || !strings.Contains(string(data), wantCreated) || !strings.Contains(string(data), "cloud_clicker_journal_usage_bytes 7") {
 		t.Fatalf("host observation missing: %s", data)
 	}
 	data, err := os.ReadFile(filepath.Join(base, "metrics", "cleanup.prom"))
@@ -154,6 +155,27 @@ func TestHostObservationWritesExactRestartAndStorageSignals(t *testing.T) {
 	data, _ = os.ReadFile(filepath.Join(base, "metrics", "cleanup.prom"))
 	if string(data) != before {
 		t.Fatal("failed journal command refreshed its heartbeat")
+	}
+}
+
+func TestRestartObservationRequiresExactNonfutureBirthAndCount(t *testing.T) {
+	at := time.Date(2026, 10, 13, 0, 0, 0, 0, time.UTC)
+	for _, input := range []string{
+		"3", "3 unknown", "-1 2026-10-12T23:59:00Z", "3.0 2026-10-12T23:59:00Z",
+		"18446744073709551616 2026-10-12T23:59:00Z", "3 0001-01-01T00:00:00Z",
+		"3 1970-01-01T00:00:00Z", "3 2026-10-13T00:00:01Z", "3 2026-10-12T23:59:00Z extra",
+	} {
+		if _, _, err := parseRestartObservation([]byte(input), at); err == nil {
+			t.Fatalf("invalid restart observation accepted: %q", input)
+		}
+	}
+	created := at.Add(-time.Minute)
+	count, birth, err := parseRestartObservation([]byte("3 "+created.Format(time.RFC3339Nano)+"\n"), at)
+	if err != nil || count != 3 || !birth.Equal(created) {
+		t.Fatal("valid restart count lost its actual container birth")
+	}
+	if _, _, err := parseRestartObservation([]byte("3 "+created.Format(time.RFC3339Nano)), time.Time{}); err == nil {
+		t.Fatal("missing collection time accepted")
 	}
 }
 
