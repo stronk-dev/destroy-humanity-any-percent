@@ -9,8 +9,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"reflect"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 var ErrInvalidToken = errors.New("invalid access token")
@@ -108,10 +110,49 @@ func verifyAccessToken(keys SigningKeys, token string, now time.Time) (Claims, e
 }
 
 func decodeExactJSON(data []byte, target any) error {
+	// The private JWT DTO's JSON tags own the field set. Inspect original
+	// members before struct decoding can discard duplicates or fold key case.
+	shape := reflect.TypeOf(target)
+	if !utf8.Valid(data) || shape == nil || shape.Kind() != reflect.Pointer || shape.Elem().Kind() != reflect.Struct {
+		return ErrInvalidToken
+	}
+	shape = shape.Elem()
+	fields := make(map[string]bool, shape.NumField())
+	for index := 0; index < shape.NumField(); index++ {
+		field := shape.Field(index)
+		name := strings.Split(field.Tag.Get("json"), ",")[0]
+		if field.PkgPath != "" || name == "" || name == "-" {
+			return ErrInvalidToken
+		}
+		if _, duplicate := fields[name]; duplicate {
+			return ErrInvalidToken
+		}
+		fields[name] = false
+	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(target); err != nil {
-		return err
+	if opening, err := decoder.Token(); err != nil || opening != json.Delim('{') {
+		return ErrInvalidToken
+	}
+	for decoder.More() {
+		token, err := decoder.Token()
+		name, isName := token.(string)
+		seen, declared := fields[name]
+		if err != nil || !isName || !declared || seen {
+			return ErrInvalidToken
+		}
+		var value json.RawMessage
+		if err := decoder.Decode(&value); err != nil || bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return ErrInvalidToken
+		}
+		fields[name] = true
+	}
+	if closing, err := decoder.Token(); err != nil || closing != json.Delim('}') {
+		return ErrInvalidToken
+	}
+	for _, seen := range fields {
+		if !seen {
+			return ErrInvalidToken
+		}
 	}
 	var trailing any
 	if err := decoder.Decode(&trailing); !errors.Is(err, io.EOF) {
@@ -120,5 +161,5 @@ func decodeExactJSON(data []byte, target any) error {
 		}
 		return err
 	}
-	return nil
+	return json.Unmarshal(data, target)
 }

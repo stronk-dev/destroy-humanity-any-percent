@@ -52,6 +52,14 @@ Successful recovery authentication issues:
 - a 15-minute HS256 access token whose claims are exactly `sub`, `fid`, `exp`, `iat`, and `jti`;
 - a random 256-bit opaque refresh token, stored only as a SHA-256 hash and expiring after 30 days.
 
+The verifier checks the original JWT header and claims objects before assigning their fields.
+Member names are case-sensitive after JSON escape decoding; every declared field is required
+and non-null. Extra members, duplicate members (including escaped aliases) and invalid raw UTF-8
+bytes refuse. Field order, whitespace and equivalent member-name escapes remain legal. The
+private DTO's JSON tags define the field set; there is no second claims registry. HMAC still
+binds the original encoded segments, not reserialized JSON. This is input conformance, not a
+signature-bypass finding; valid claims still require the database authorization below.
+
 The verifier accepts one current signing key and one previous key for operations-managed rotation.
 In production both are file-backed Compose secrets with distinct IDs and values; a missing half of
 the optional previous pair fails before startup. Bootstrap-receipt encryption follows the same

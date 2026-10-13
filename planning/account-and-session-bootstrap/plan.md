@@ -4,6 +4,13 @@
 - **RFC:** `rfc/account-and-session-bootstrap.md`
 - **Started:** 2026-07-29
 
+Current D2/AC4 correction (2026-10-13, RP-542): private JWT decoding validates original
+object members against its DTO tags before Go can merge duplicates or fold key case.
+Signed old-source regressions, legal rotation/encoding controls and mounted HTTP pre-DB
+tripwires discriminate; cold affected packages/vet, race and API generation pass. The
+owning log holds the exact range needing Claude review. Issuance/signature/TTL/rotation,
+authorization, public schema and kernel bytes are unchanged; no SQL/whole Account acceptance.
+
 Current bounded witness correction (2026-10-08, RP-474): a real Linux/Postgres run exposed
 the raw peer's missing application-level pong, closing3012 before the expected auth denial.
 Both raw read helpers now acknowledge protocol pings; forced ping/batched-reply regressions

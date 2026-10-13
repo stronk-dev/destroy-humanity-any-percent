@@ -1080,3 +1080,37 @@ existing API implementation and research ranges still require designated review.
 The actual remaining renewal boundaries are policy adoption, production consumer
 bindings, lifecycle/storage evidence and player recovery/copy, not re-registering
 the completed operation. No milestone, archive, publication or release promotion.
+
+## 2026-10-13 — RP-542 exact private JWT objects before struct decoding
+
+Under existing D2/AC4, validate the original header/claims against their owning DTO JSON tags:
+exact decoded names, complete non-null fields, no duplicates/unknown names, valid raw UTF-8.
+Then perform typed decoding. Preserve whitespace/order/escaped-name encodings; HMAC still uses
+original encoded segments. Issuer, signature, TTL/expiry, key selection/rotation, database
+authorization, public registry/generated artifacts and kernel0.3.188 are unchanged. No new
+auth policy or owner choice. Only malformed-object admission changes.
+
+Old-source54068 fails27 of49 signed malformed-object cases (22 existing refusals pass), while
+six legal current/previous-key controls pass. Six real net/http-over-pipe mounted Founder
+requests also reach the controlled DB connector instead of failing at JWT admission. That
+tripwire cannot authorize a player: its explicit connection refusal returns the same401, so
+the assertion observes connection count, not merely status. These examples require synthetic
+signing keys; they are not an unsigned-token or signature-bypass exploit.
+
+Corrected60533 passes all cases and the existing expiry/key-removal test. Final controls add
+valid UTF-8 U+FFFD in a configured key ID (not replacement of invalid bytes), and six wrong-MAC
+refusals under the legal encoding/rotation population. Cold Account/Transport/Gameserver plus
+vet76844 pass; JWT race78115/23735 pass, and final65147 passes with every added control.
+Seven legal cases,49 malformed cases and six mounted-HTTP subcases execute; each HTTP case
+also requires the canonical token to reach exactly one controlled DB check. api-check passes
+byte-unchanged. Format/diff/whitespace checked; all handles terminal.
+
+Coverage is private parser/signature/expiry and actual HTTP routing to a controlled failed
+DB boundary. Native DB-dependent tests are not Postgres credit; Docker remains unavailable.
+No real SQL authorization/rotation, WebSocket revocation, browser, Linux/hosted CI, full Account
+or release gate is re-proved by this batch. Existing approved witnesses remain dated evidence.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete new source/tests/docs/
+records range starts after `ca418956` through this containing commit and needs designated Claude
+review, consolidatable with related Account corrections. No checkbox, archival or publication.
+Continue accepted construction and contract closure; do not relabel this repair1.0 readiness.
