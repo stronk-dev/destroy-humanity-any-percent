@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C18 representation proposal (2026-10-14, RP-566):
+`rfc/api-integer-token-encoding.md` specifies opt-in exact-safe numeric tokens without globally
+widening current integers. Six additional shared boundary controls execute in Go/Node/native
+Chromium/WebKit. The draft covers construction, unchanged URI/default behavior, exact
+validation, immutable exports, generated metadata and compatibility; adoption/designated review
+remain open, and no production DSL or owner descriptor is implemented. Owning log records
+the new proposal/test-only range after `f900340d`; API-only kernel scope and full C18 remain.
+
 Current C18 readiness/correction (2026-10-14, RP-566/RP-567): actual relevance-policy
 admission preserves exact integral decimal/exponent tokens that the existing registry
 integer validator refuses. A complete descriptor needs a representation-contract proposal,

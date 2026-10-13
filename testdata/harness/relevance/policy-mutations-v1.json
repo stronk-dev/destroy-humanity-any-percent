@@ -20,6 +20,12 @@
     { "id": "integral_exponent_group_epsilon", "operation": "replace_number", "path": ["groups", "0", "epsilon_ms"], "value_json": "1e3", "swap_index": null, "accepted": true },
     { "id": "maximum_exponent_epsilon", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "9.007199254740991e15", "swap_index": null, "accepted": true },
     { "id": "fraction_rounded_by_ieee754", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "1.0000000000000000000000001", "swap_index": null, "accepted": false },
+    { "id": "exact_integer_token_64_bytes", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "1.00000000000000000000000000000000000000000000000000000000000000", "swap_index": null, "accepted": true },
+    { "id": "exact_integer_token_65_bytes", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "1.000000000000000000000000000000000000000000000000000000000000000", "swap_index": null, "accepted": false },
+    { "id": "exact_integer_positive_exponent_32", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "0.00000000000000000000000000000001e+32", "swap_index": null, "accepted": true },
+    { "id": "exact_integer_positive_exponent_33", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "0.000000000000000000000000000000001e+33", "swap_index": null, "accepted": false },
+    { "id": "exact_integer_negative_exponent_32", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "100000000000000000000000000000000e-32", "swap_index": null, "accepted": true },
+    { "id": "exact_integer_negative_exponent_33", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "1000000000000000000000000000000000e-33", "swap_index": null, "accepted": false },
     { "id": "hostile_huge_exponent", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "1e9007199254740991", "swap_index": null, "accepted": false }
   ]
 }

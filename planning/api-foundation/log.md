@@ -2083,3 +2083,33 @@ filter). Recorded by: Codex. Exact entire code/tests/kernel/probe/docs/records r
 related catalog corrections. No archival, push, deployment, draft adoption or tier promotion.
 Next: specify the complete C18 integer representation without redefining historical admission;
 all other accepted integration work and outstanding owner/author/review gates remain.
+
+## 2026-10-14 — Buildable integer-token representation proposal (RP-566)
+
+Resume clean `f900340d`; the previous goal turn made progress by correcting actual relevance
+field kinds and preserving historical admission. Source-check current schema validation,
+cloning, OpenAPI/TS generation, URI scalar admission and recursive pins before proposing any
+extension. Formula owner tests explicitly refuse1.0 and preserve signed int64: globally widening
+SchemaInteger would be wrong. Official JSON Schema numeric documentation confirms integer is a
+mathematical value; OpenAPI's extension mechanism can carry the separate lexical contract.
+
+Draft `rfc/api-integer-token-encoding.md` specifies one opt-in exact-safe mode with explicit
+nonnegative safe bounds, unchanged default/URI behavior, original-token validation, immutable
+exports, generated annotation and recursive mode-sensitive compatibility. It does not introduce
+a new SDK decoder or claim that static TS types validate raw tokens. C18 owner descriptors,
+API-only kernel scope and the complete public-byte/consumer loop stay explicit prerequisites.
+No new gameplay choice, arbitrary parser budget or production implementation is made.
+
+Before specifying limits, extend the existing shared corpus with six boundary cases. Each
+represents exactly1: lengths64/65 and exponents±32/±33 isolate lexical limits from numeric
+overflow. Actual Go60892 executes all26 shared cases cold, exits0 (0.286s). Node66967 passes28
+tests; native Chromium/WebKit7263 passes56, terminal exit0 (3.19s). No source/parser change, full
+client/CI, SQL, Firefox, generated DSL/compatibility or hypothetical-mode execution is claimed.
+The earlier seven-case owner-versus-descriptor measurement remains the actual gap evidence.
+
+Diff/paths checked; index, canonical limitation note, owning plan and RP-566 link the proposal.
+All handles terminal. Review by: Codex (author first filter). Recorded by: Codex. Exact complete
+draft/test-only/docs/records range after `f900340d` through this containing commit needs Claude
+designated review and normative adoption; it does not approve the preceding behavior range.
+No archival, kernel bump, push, deployment or milestone promotion. Next: continue accepted
+construction while this recommendation and the other named authority gates await resolution.

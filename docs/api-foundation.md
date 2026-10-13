@@ -492,3 +492,5 @@ unimplemented until the representation contract preserves those historical bytes
 and admissible tokens; rejecting them merely to fit the current DSL is not a fix.
 Quoted numbers are not part of that dialect and now refuse in the Go owner, matching
 the client. No descriptor extension, catalog union or public route is implied.
+The [integer token encoding draft](../rfc/api-integer-token-encoding.md) now specifies an
+opt-in exact-safe mode while preserving default integer behavior. It is not adopted or implemented.
