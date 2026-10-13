@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"net/url"
+	"reflect"
 )
 
 var ErrInvalidPolicy = errors.New("invalid transport policy")
@@ -26,6 +27,9 @@ type Policy struct {
 }
 
 func LoadPolicy(data []byte) (*Policy, error) {
+	if err := validatePolicyMembers(data); err != nil {
+		return nil, ErrInvalidPolicy
+	}
 	var policy Policy
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
@@ -36,6 +40,39 @@ func LoadPolicy(data []byte) (*Policy, error) {
 		return nil, ErrInvalidPolicy
 	}
 	return &policy, nil
+}
+
+// Check the original JSON members before struct decoding folds key case or
+// overwrites duplicates. The DTO tags remain the sole field-name authority.
+func validatePolicyMembers(data []byte) error {
+	shape := reflect.TypeOf(Policy{})
+	allowed := make(map[string]bool, shape.NumField())
+	for index := 0; index < shape.NumField(); index++ {
+		allowed[shape.Field(index).Tag.Get("json")] = true
+	}
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	start, err := decoder.Token()
+	if err != nil || start != json.Delim('{') {
+		return ErrInvalidPolicy
+	}
+	seen := make(map[string]bool, len(allowed))
+	for decoder.More() {
+		token, err := decoder.Token()
+		name, ok := token.(string)
+		if err != nil || !ok || !allowed[name] || seen[name] {
+			return ErrInvalidPolicy
+		}
+		seen[name] = true
+		var value json.RawMessage
+		if err := decoder.Decode(&value); err != nil {
+			return ErrInvalidPolicy
+		}
+	}
+	end, err := decoder.Token()
+	if err != nil || end != json.Delim('}') || len(seen) != len(allowed) {
+		return ErrInvalidPolicy
+	}
+	return ensureEnd(decoder)
 }
 
 func (policy Policy) valid() bool {

@@ -4,6 +4,13 @@
 - **RFC:** `rfc/websocket-transport-and-fanout.md`
 - **Started:** 2026-07-29
 
+Current bounded correction (2026-10-13, RP-560): policy loading validates exact original
+JSON members against the existing DTO tags before struct decoding. Case aliases and raw/
+escaped duplicate members now refuse; canonical escaping and the declared limits/origins
+are unchanged. All48 old-source failures and corrected cold/race/consumer checks are in
+the owning log. The range after `95d390fc` needs Claude review; no recovery/authentication
+policy, balance/kernel, whole Transport acceptance or archival is changed.
+
 1. [x] Add strict Phase-0 transport policy and closed Go/TypeScript wire envelopes.
 2. [x] Embed Centrifuge with the implemented channel authorization, history, and backpressure policy.
 3. [x] Map committed production receipts/events into one transaction-owned private-player outbox;

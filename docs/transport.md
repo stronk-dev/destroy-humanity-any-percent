@@ -8,7 +8,10 @@ Phase-0 limits live in [`balance/transport/phase0.json`](../balance/transport/ph
 snapshots at 4 Hz, feed history 50, player history 512 messages for 10 minutes, player queues at 256
 messages/1 MiB, individual messages at 64 KiB, 16 subscriptions per connection, three connections
 per account, and a 15-second drain timeout. Origins are an explicit HTTP(S) allowlist. Go and JSON
-Schema reject unknown fields and unsafe/out-of-range policy values.
+Schema reject unknown fields and unsafe/out-of-range policy values. The Go loader checks
+the raw object's required member set against its DTO tags before struct decoding: case
+aliases and raw/escaped duplicate names refuse rather than being merged. Escaped canonical
+names remain valid, and the numeric/origin validation and configured limits are unchanged.
 
 Outbound envelopes carry version, channel, kind, authoritative revision, constants hash, server
 timestamp, and payload. Known kinds are receipt, snapshot, event, presence, and system. The

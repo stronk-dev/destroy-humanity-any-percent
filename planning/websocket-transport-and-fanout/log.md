@@ -679,3 +679,35 @@ under one exact disposable-test access-row expiry and an explicit manual HTTP
 rotation control; do not change production callbacks, timing, origin, close
 codes, stream positions or revocation. A new draft, not Q-003, must specify any
 automatic browser renewal policy. No designated approval/archival is claimed.
+
+## 2026-10-13 — Strict Transport policy member admission (RP-560)
+
+At `95d390fc`, the previous goal turn constructed Combat's common lane row. Fresh read-only
+Docker ping71399 exits28 after5003ms/zero bytes, so the pending declared backup/restore proof
+does not run; no restart authority, cleanup or host-DB substitute is inferred. Continue accepted
+Transport D5/T5 conformance. The raw policy reader now uses its DTO tags as the sole field-name
+authority, refusing case aliases and raw/escaped duplicates before Go can merge them. Every
+required member is present once; typed numeric/origin validation is unchanged. No limits,
+origins, policy/artifact bytes, wire schema, queue/recovery behavior or credentials are changed.
+
+Old-loader65430 fails48 cases across all12 fields, returning complete policies with nil errors.
+Its twelve escaped-canonical-name controls still execute and pass. Corrected focused42292
+passes all cases plus the existing unsafe-origin/unknown-field checks,0.285s; race26561
+passes1.348s. Root cold `make test-go GO_PACKAGES='./transport ./account ./gameserver'
+GO_TEST_FLAGS='-count=1'`92031 passes13.233/0.490/0.370s; affected vet98701 exits0.
+The actual HTTP/WebSocket origin/authentication/member-subscribe/no-client-publish check59828
+explicitly passes0.172s. Its `testhttp` uses net.Pipe and controlled identity/membership resolvers:
+real protocol framing, not TCP, real Account/Postgres authorization or a deployed player journey.
+The larger package population retains recovery/queue/drain checks; no new browser claim.
+
+Native integration selector71359 shows the Account/Gameserver DB-dependent cases skipping
+because TEST_DATABASE_URL is absent, and the one-minute cleanup lane not requested. Package
+exit0 and a parent with only skipped children are not SQL evidence. No Linux/hosted CI, R-006,
+full feature acceptance or release-floor promotion. Go formatting/source/diff checked; all
+named handles terminal. Docs/plan and RP-560 updated together, without redundant board rewrites.
+
+Review by: Codex (repair implementer first filter). Recorded by: Codex. Complete source/tests/
+docs/records range after `95d390fc` through this containing commit requires designated Claude
+review, consolidatable with related conformance fixes while preserving their own ranges.
+Earlier Q-003 approval is unchanged and does not approve this correction. Continue accepted
+work and actual declared service evidence when available; no push, publication or deployment.
