@@ -1,14 +1,16 @@
 import { flushSync, mount, tick, unmount } from "svelte";
-import { expect, it } from "vitest";
+import { beforeEach, describe, expect, it, type TestContext } from "vitest";
 
 import type { GameUISnapshot } from "../src/api/generated/types";
 import { t, type CopyEra, type CopyKey } from "../src/copy";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import { createBrowserGameUIRuntime, type RuntimeStorage } from "../src/game-ui/runtime";
+import { assertNativeInputDrained, lifetimeKeyboard } from "./native-keyboard-lifetime";
 
 // R9 host diagnostic: real runtime/parser/host/DOM, controlled network boundary.
 // These are NOT live server, real socket, Postgres or minted-content witnesses.
 const browser = typeof document !== "undefined";
+beforeEach(assertNativeInputDrained);
 const ids = ["reputation.unlock.p05", "reputation.starter.cash_small"] as const;
 const rawDetail = "must_not_render_mechanical_details";
 const categories = ["not_eligible", "unknown_id", "unaffordable", "invalid", "revision_conflict"] as const;
@@ -134,16 +136,74 @@ function controlledBoundary(tier: number, windDownEligible = false, options: { h
   };
 }
 
+function mountedHost(testContext: TestContext, boundary: ReturnType<typeof controlledBoundary>) {
+  testContext.signal.throwIfAborted();
+  const keyboard = lifetimeKeyboard(testContext.signal, async (keys) => {
+    const { userEvent } = await import("vitest/browser");
+    testContext.signal.throwIfAborted();
+    await userEvent.keyboard(keys);
+  });
+  const target = document.createElement("main"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+  let disposal: Promise<void> | undefined;
+  const dispose = () => disposal ??= (async () => {
+    try { await keyboard.closeAndDrain(); }
+    finally {
+      boundary.cleanup();
+      try { await settle(); await unmount(app); }
+      finally { target.remove(); }
+    }
+  })();
+  testContext.onTestFinished(dispose);
+  return { target, boundary, press: keyboard.press,
+    checkActive: () => testContext.signal.throwIfAborted(), dispose };
+}
+type HostFixture = ReturnType<typeof mountedHost>;
+
+describe("Reputation host deadline cleanup", () => {
+  let expiredSignal: AbortSignal;
+  let oldTarget: HTMLElement;
+  let oldBoundary: ReturnType<typeof controlledBoundary>;
+  let release: () => void;
+  let continued: Promise<void>;
+
+  it.skipIf(!browser).fails("expires while its mounted host producer is waiting", async (testContext) => {
+    expiredSignal = testContext.signal;
+    const boundary = controlledBoundary(0);
+    const host = mountedHost(testContext, boundary);
+    const { target } = host;
+    oldTarget = target; oldBoundary = boundary;
+    try {
+      await expect.poll(() => boundary.sockets[0]?.commands.length).toBe(3);
+      const gate = new Promise<void>((resolve) => { release = resolve; });
+      continued = (async () => { await gate; await enterTree(host, "era_1995"); })();
+      await continued;
+    } finally { await host.dispose(); }
+  }, 50);
+
+  it.skipIf(!browser)("tears down its expired host and refuses late navigation", async () => {
+    expect(expiredSignal.aborted).toBe(true);
+    expect(expiredSignal.reason.message).toContain("Test timed out in 50ms");
+    try {
+      expect(oldBoundary.sockets).toHaveLength(1);
+      expect({ mounted: oldTarget.isConnected, socketClosed: oldBoundary.sockets[0]!.closed })
+        .toEqual({ mounted: false, socketClosed: true });
+      release();
+      await expect(continued).rejects.toBe(expiredSignal.reason);
+      expect(oldBoundary.requests).toEqual([]);
+    } finally { release(); await continued.catch(() => {}); }
+  });
+});
+
 // R6/R9 consistency diagnostic, not a new plan-persistence policy: the
 // existing remounted panel starts empty, so its outgoing Exit must be empty.
 for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
   for (const key of ["{Enter}", " "]) {
     for (const flow of ["desk-empty", "desk-selected", "desk-remount", "offer-replaced", "offer-selected"] as const) {
-      it.skipIf(!browser)(`R9 host plan matches visible selection: ${era}, ${key === " " ? "Space" : "Enter"}, ${flow}`, async () => {
-        const { userEvent } = await import("vitest/browser");
+      it.skipIf(!browser)(`R9 host plan matches visible selection: ${era}, ${key === " " ? "Space" : "Enter"}, ${flow}`, async (testContext) => {
         const boundary = controlledBoundary(tier, true);
-        const target = document.createElement("main"); document.body.append(target);
-        const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+        const host = mountedHost(testContext, boundary);
+        const { target } = host;
         const namedButton = (selector: string, text: string): HTMLButtonElement => {
           const button = [...target.querySelectorAll<HTMLButtonElement>(selector)].find((row) => row.textContent === text);
           expect(button, `native control ${text} is mounted`).toBeTruthy(); return button!;
@@ -155,16 +215,18 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
           expect(target.querySelector(".plan [role=status]")?.textContent).toBe(t("reputation_tree.plan.projected", { amount: projected }, era));
         };
         const openPlan = async () => {
+          host.checkActive();
           const details = target.querySelector<HTMLDetailsElement>("details.plan")!;
           expect(details).toBeTruthy(); expect(details.open).toBe(false);
           const summary = details.querySelector<HTMLElement>("summary")!;
-          summary.focus(); await userEvent.keyboard(key); await settle(); expect(details.open).toBe(true);
+          summary.focus(); await host.press(key); await settle(); expect(details.open).toBe(true);
         };
         const selectBoth = async () => {
+          host.checkActive();
           expect(boxes().map((box) => box.disabled)).toEqual([false, false]);
           // Select in reverse order; the emitted plan must still use tree order.
-          boxes()[1]!.focus(); await userEvent.keyboard(" "); await settle();
-          boxes()[0]!.focus(); await userEvent.keyboard(" "); await settle();
+          boxes()[1]!.focus(); await host.press(" "); await settle();
+          host.checkActive(); boxes()[0]!.focus(); await host.press(" "); await settle();
           expect(boundary.requests).toEqual([]);
         };
         try {
@@ -175,10 +237,10 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
           if (flow !== "desk-empty" && flow !== "offer-selected") { await selectBoth(); planState(true, 1); }
           if (flow === "desk-remount") {
             const settings = namedButton("nav button", t("surface.settings.title", {}, era));
-            settings.focus(); await userEvent.keyboard(key); await settle();
+            host.checkActive(); settings.focus(); await host.press(key); await settle();
             expect(target.querySelector("details.plan")).toBeNull();
             const desk = namedButton("nav button", t("surface.desk.title", {}, era));
-            desk.focus(); await userEvent.keyboard(key); await settle();
+            host.checkActive(); desk.focus(); await host.press(key); await settle();
             await openPlan(); planState(false, 4);
           }
           const offerFlow = flow.startsWith("offer-");
@@ -195,7 +257,7 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
           const selected = flow === "desk-selected" || flow === "offer-selected";
           expect(boundary.requests).toEqual([]);
           const exit = namedButton("button", t(offerFlow ? "screen.offer_sheet.accept" : "desk.wind_down", {}, era));
-          expect(exit.disabled).toBe(false); exit.focus(); await userEvent.keyboard(key); await settle();
+          expect(exit.disabled).toBe(false); host.checkActive(); exit.focus(); await host.press(key); await settle();
           expect(boundary.requests).toHaveLength(1);
           const request = boundary.requests[0]!;
           expect(request).toMatchObject({ kind: offerFlow ? "accept_exit_offer" : "wind_down", expected_revision: offerFlow ? 14 : 13, expected_founder_revision: 7 });
@@ -210,7 +272,7 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
           expect(document.activeElement).toBe(exit);
           expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
           expect(target.querySelector(offerFlow ? "#offer-pending" : "#desk-pending")?.textContent).toBe(t("common.pending", {}, era));
-          await userEvent.keyboard(key); await settle();
+          await host.press(key); await settle();
           expect(boundary.requests).toEqual([request]);
           expect(document.activeElement).toBe(exit);
           boundary.deliverIntent(rejection(request.intent_id, "invalid", rawDetail, offerFlow ? 14 : 13));
@@ -220,7 +282,7 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
           expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
           // Fresh native consent after rejection must still dispatch the
           // selected plan, with a new intent identity rather than a retry.
-          await userEvent.keyboard(key); await settle();
+          await host.press(key); await settle();
           expect(boundary.requests).toHaveLength(2);
           const fresh = boundary.requests[1]!;
           expect(fresh.intent_id).not.toBe(request.intent_id);
@@ -231,27 +293,29 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
           expect(boundary.headers.every((header) => header === "Bearer controlled-access")).toBe(true);
           expect(target.textContent).not.toContain(rawDetail);
           for (const id of ids) expect(target.textContent).not.toContain(id);
-        } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+        } finally { await host.dispose(); }
       });
     }
   }
 }
 async function settle(): Promise<void> { for (let index = 0; index < 4; index += 1) { await tick(); flushSync(); } }
-async function enterTree(target: HTMLElement, era: CopyEra, boundary: ReturnType<typeof controlledBoundary>): Promise<void> {
+async function enterTree(host: HostFixture, era: CopyEra): Promise<void> {
+  host.checkActive();
+  const { target, boundary } = host;
   await expect.poll(() => [...target.querySelectorAll<HTMLButtonElement>("nav button")].find((button) => button.textContent === t("reputation_tree.title", {}, era)), { timeout: 5000 }).toBeTruthy();
   await expect.poll(() => boundary.sockets[0]?.commands.length).toBe(3);
-  const { userEvent } = await import("vitest/browser");
+  host.checkActive();
   const tab = [...target.querySelectorAll<HTMLButtonElement>("nav button")].find((button) => button.textContent === t("reputation_tree.title", {}, era))!;
-  tab.focus(); await userEvent.keyboard("{Enter}"); await settle();
+  tab.focus(); await host.press("{Enter}"); await settle();
   expect(target.querySelectorAll(".reputation li")).toHaveLength(2);
   expect(boundary.snapshotCalls).toBe(1);
 }
-async function submit(row: HTMLLIElement, key: string): Promise<void> {
-  const { userEvent } = await import("vitest/browser");
+async function submit(host: HostFixture, row: HTMLLIElement, key: string): Promise<void> {
+  host.checkActive();
   row.querySelector<HTMLButtonElement>("button")!.focus();
-  await userEvent.keyboard(key); await settle();
+  await host.press(key); await settle();
   expect(document.activeElement).toBe(row.querySelector("button"));
-  await userEvent.keyboard(key); await settle();
+  await host.press(key); await settle();
 }
 function rejection(intentID: unknown, category: Category, detail = rawDetail, currentRevision = 7) {
   return { current_revision: currentRevision, intent_id: intentID, outcome: "rejected", rejection: { category, detail } };
@@ -273,14 +337,14 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
   for (const key of ["{Enter}", " "]) {
     for (const category of categories) {
       for (const status of category === "revision_conflict" ? [200, 409] : [200]) {
-        it.skipIf(!browser)(`R9 host row rejection ${category} HTTP${status}, ${era}, ${key === " " ? "Space" : "Enter"}`, async () => {
+        it.skipIf(!browser)(`R9 host row rejection ${category} HTTP${status}, ${era}, ${key === " " ? "Space" : "Enter"}`, async (testContext) => {
           const boundary = controlledBoundary(tier);
-          const target = document.createElement("main"); document.body.append(target);
-          const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+          const host = mountedHost(testContext, boundary);
+          const { target } = host;
           try {
-            await enterTree(target, era, boundary);
+            await enterTree(host, era);
             const rows = [...target.querySelectorAll<HTMLLIElement>(".reputation li")];
-            await submit(rows[0]!, key);
+            await submit(host, rows[0]!, key);
             expect(boundary.requests).toHaveLength(1);
             expect(boundary.requests[0]).toMatchObject({ kind: "purchase_reputation_node", node_id: ids[0], expected_revision: 7 });
             expect(boundary.requests[0]!.intent_id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
@@ -304,7 +368,7 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
             for (const id of ids) expect(target.textContent).not.toContain(id);
             // A second native submission must clear the first row, use the new
             // authoritative Founder revision, and attribute its own rejection.
-            await submit(rows[1]!, key);
+            await submit(host, rows[1]!, key);
             silent(rows[0]!); silent(rows[1]!);
             expect(boundary.requests).toHaveLength(2);
             expect(boundary.requests[1]).toMatchObject({ kind: "purchase_reputation_node", node_id: ids[1], expected_revision: category === "revision_conflict" ? 8 : 7 });
@@ -315,18 +379,18 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
             expect(document.activeElement).toBe(rows[1]);
             expect(boundary.headers.every((header) => header === "Bearer controlled-access")).toBe(true);
             expect(boundary.unexpected).toEqual([]);
-          } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+          } finally { await host.dispose(); }
         });
       }
     }
-    it.skipIf(!browser)(`R9 host applied refresh remains authoritative, ${era}, ${key === " " ? "Space" : "Enter"}`, async () => {
+    it.skipIf(!browser)(`R9 host applied refresh remains authoritative, ${era}, ${key === " " ? "Space" : "Enter"}`, async (testContext) => {
       const boundary = controlledBoundary(tier);
-      const target = document.createElement("main"); document.body.append(target);
-      const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+      const host = mountedHost(testContext, boundary);
+      const { target } = host;
       try {
-        await enterTree(target, era, boundary);
+        await enterTree(host, era);
         const row = target.querySelector<HTMLLIElement>(".reputation li")!;
-        await submit(row, key);
+        await submit(host, row, key);
         boundary.deliverIntent({ outcome: "applied", intent_id: boundary.requests[0]!.intent_id });
         await expect.poll(() => boundary.snapshotCalls).toBe(2);
         await settle(); controls(target, true); expect(row.dataset.state).toBe("available");
@@ -341,15 +405,16 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
         expect(document.activeElement).toBe(row); silent(row);
         expect(boundary.snapshotCalls).toBe(2); expect(boundary.requests).toHaveLength(1);
         expect(boundary.unexpected).toEqual([]);
-      } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+      } finally { await host.dispose(); }
     });
   }
 }
 
 // Hold actual runtime subscription replies, not a fabricated host state.
 // Snapshot freshness alone must never imply recovered transport (R9).
-async function enterHeldTree(target: HTMLElement, era: CopyEra, boundary: ReturnType<typeof controlledBoundary>): Promise<void> {
-  await enterTree(target, era, boundary);
+async function enterHeldTree(host: HostFixture, era: CopyEra): Promise<void> {
+  await enterTree(host, era);
+  const { boundary } = host;
   expect(boundary.requests).toEqual([]);
 }
 function offlineNotice(target: HTMLElement, era: CopyEra, present: boolean): void {
@@ -363,10 +428,12 @@ function readyRows(target: HTMLElement): HTMLLIElement[] {
   expect(rows.every((row) => !row.hasAttribute("aria-busy"))).toBe(true);
   return rows;
 }
-async function rejectNativePurchase(target: HTMLElement, era: CopyEra, key: string, boundary: ReturnType<typeof controlledBoundary>, revision = 7): Promise<void> {
+async function rejectNativePurchase(host: HostFixture, era: CopyEra, key: string, revision = 7): Promise<void> {
+  host.checkActive();
+  const { target, boundary } = host;
   const rows = readyRows(target);
   controls(target, false); offlineNotice(target, era, false);
-  await submit(rows[0]!, key);
+  await submit(host, rows[0]!, key);
   expect(boundary.requests).toHaveLength(1);
   expect(boundary.requests[0]).toMatchObject({ kind: "purchase_reputation_node", node_id: ids[0], expected_revision: revision });
   controls(target, true);
@@ -382,12 +449,12 @@ async function rejectNativePurchase(target: HTMLElement, era: CopyEra, key: stri
 for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
   for (const key of ["{Enter}", " "]) {
     for (const phase of ["startup", "drain", "overflow", "invalid-frame", "network-drop"] as const) {
-      it.skipIf(!browser)(`R9 host waits for both recovered channels: ${era}, ${key === " " ? "Space" : "Enter"}, ${phase}`, async () => {
+      it.skipIf(!browser)(`R9 host waits for both recovered channels: ${era}, ${key === " " ? "Space" : "Enter"}, ${phase}`, async (testContext) => {
         const boundary = controlledBoundary(tier, false, { holdSubscriptions: true });
-        const target = document.createElement("main"); document.body.append(target);
-        const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+        const host = mountedHost(testContext, boundary);
+        const { target } = host;
         try {
-          await enterHeldTree(target, era, boundary);
+          await enterHeldTree(host, era);
           let socket = boundary.sockets[0]!;
           if (phase !== "startup") {
             socket.acknowledge(2); socket.acknowledge(3); await settle(); controls(target, false);
@@ -419,49 +486,47 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
           const player = socket.commands[1]!.subscribe as Record<string, unknown>;
           if (phase === "network-drop" || phase === "drain") expect(player).toMatchObject({ recover: true, epoch: "controlled", offset: 0 });
           else expect(Object.hasOwn(player, "recover")).toBe(false);
-          await rejectNativePurchase(target, era, key, boundary, synced ? 8 : 7);
+          await rejectNativePurchase(host, era, key, synced ? 8 : 7);
           expect(boundary.snapshotCalls).toBe(synced ? 2 : 1);
-        } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+        } finally { await host.dispose(); }
       });
     }
 
     for (const code of [4001, 4002]) {
-      it.skipIf(!browser)(`R9 host explains terminal socket closure without reauthentication: ${era}, ${key === " " ? "Space" : "Enter"}, ${code}`, async () => {
+      it.skipIf(!browser)(`R9 host explains terminal socket closure without reauthentication: ${era}, ${key === " " ? "Space" : "Enter"}, ${code}`, async (testContext) => {
         const boundary = controlledBoundary(tier);
-        const target = document.createElement("main"); document.body.append(target);
-        const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+        const host = mountedHost(testContext, boundary);
+        const { target } = host;
         try {
-          await enterTree(target, era, boundary);
+          await enterTree(host, era);
           const row = readyRows(target)[0]!;
-          row.querySelector<HTMLButtonElement>("button")!.focus();
-          const { userEvent } = await import("vitest/browser");
-          await userEvent.keyboard(key); await settle();
+          host.checkActive(); row.querySelector<HTMLButtonElement>("button")!.focus();
+          await host.press(key); await settle();
           const confirm = row.querySelector<HTMLButtonElement>("button")!;
           expect(confirm.textContent).toBe(t("reputation_tree.action.confirm", {}, era));
           boundary.sockets[0]!.networkClose(code); await settle();
           expect(confirm.disabled).toBe(true); expect(readyRows(target)).toContain(row);
           offlineNotice(target, era, true);
           // Native activation of the now disabled confirmation cannot spend.
-          confirm.focus(); await userEvent.keyboard(key); await settle();
+          host.checkActive(); confirm.focus(); await host.press(key); await settle();
           expect(boundary.requests).toEqual([]); expect(boundary.snapshotCalls).toBe(1);
           expect(boundary.sockets).toHaveLength(1); expect(boundary.unexpected).toEqual([]);
           expect(boundary.storage.getItem("cloud-clicker.credentials.v1")).toContain("controlled-access");
-        } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+        } finally { await host.dispose(); }
       });
     }
 
     for (const refresh of ["success", "failure"] as const) {
-      it.skipIf(!browser)(`R9 host pending purchase and ${refresh} refresh remain authoritative: ${era}, ${key === " " ? "Space" : "Enter"}`, async () => {
+      it.skipIf(!browser)(`R9 host pending purchase and ${refresh} refresh remain authoritative: ${era}, ${key === " " ? "Space" : "Enter"}`, async (testContext) => {
         const boundary = controlledBoundary(tier);
-        const target = document.createElement("main"); document.body.append(target);
-        const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+        const host = mountedHost(testContext, boundary);
+        const { target } = host;
         try {
-          await enterTree(target, era, boundary);
+          await enterTree(host, era);
           const rows = readyRows(target);
-          await submit(rows[0]!, key); controls(target, true);
+          await submit(host, rows[0]!, key); controls(target, true);
           expect(rows.map((row) => row.getAttribute("aria-busy"))).toEqual(["true", null]);
-          const { userEvent } = await import("vitest/browser");
-          rows[1]!.querySelector<HTMLButtonElement>("button")!.focus(); await userEvent.keyboard(key); await settle();
+          host.checkActive(); rows[1]!.querySelector<HTMLButtonElement>("button")!.focus(); await host.press(key); await settle();
           expect(boundary.requests).toHaveLength(1);
           boundary.deliverIntent({ outcome: "applied", intent_id: boundary.requests[0]!.intent_id });
           await expect.poll(() => boundary.snapshotCalls).toBe(2);
@@ -469,7 +534,7 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
           expect(rows.map((row) => row.dataset.state)).toEqual(["available", "available"]);
           expect(target.textContent).toContain(t("reputation_tree.balance.available", { amount: 4 }, era));
           expect(rows[0]!.getAttribute("aria-busy")).toBe("true");
-          rows[1]!.querySelector<HTMLButtonElement>("button")!.focus(); await userEvent.keyboard(key); await settle();
+          host.checkActive(); rows[1]!.querySelector<HTMLButtonElement>("button")!.focus(); await host.press(key); await settle();
           expect(boundary.requests).toHaveLength(1);
           if (refresh === "failure") boundary.deliverSnapshot({ error: "controlled_read_failure" }, 500);
           else {
@@ -489,7 +554,7 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
             expect(rows[1]!.querySelector<HTMLButtonElement>("button")!.disabled).toBe(false);
             offlineNotice(target, era, false);
             expect(target.textContent).toContain(t("reputation_tree.balance.available", { amount: 3 }, era));
-            await submit(rows[1]!, key);
+            await submit(host, rows[1]!, key);
             expect(boundary.requests).toHaveLength(2);
             expect(boundary.requests[1]).toMatchObject({ kind: "purchase_reputation_node", node_id: ids[1], expected_revision: 8 });
             boundary.deliverIntent(rejection(boundary.requests[1]!.intent_id, "invalid", rawDetail, 8));
@@ -498,21 +563,21 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
           }
           expect(boundary.snapshotCalls).toBe(2); expect(boundary.unexpected).toEqual([]);
           for (const id of ids) expect(target.textContent).not.toContain(id);
-        } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+        } finally { await host.dispose(); }
       });
     }
   }
 
   for (const inactive of ["initial", "after-refresh"] as const) {
-    it.skipIf(!browser)(`R9 host inactive tree is never mounted: ${era}, ${inactive}`, async () => {
+    it.skipIf(!browser)(`R9 host inactive tree is never mounted: ${era}, ${inactive}`, async (testContext) => {
       const boundary = controlledBoundary(tier, false, { inactive: inactive === "initial" });
-      const target = document.createElement("main"); document.body.append(target);
-      const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+      const host = mountedHost(testContext, boundary);
+      const { target } = host;
       try {
         await expect.poll(() => boundary.sockets[0]?.commands.length).toBe(3);
         if (inactive === "after-refresh") {
-          await enterTree(target, era, boundary);
-          await submit(readyRows(target)[0]!, "{Enter}");
+          await enterTree(host, era);
+          await submit(host, readyRows(target)[0]!, "{Enter}");
           boundary.deliverIntent(rejection(boundary.requests[0]!.intent_id, "revision_conflict", rawDetail, 8));
           await expect.poll(() => boundary.snapshotCalls).toBe(2);
           const next = wireSnapshot(tier, 8); next.features.reputation = null; next.facts[1]!.value = false;
@@ -523,7 +588,7 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
         expect([...target.querySelectorAll("nav button")].some((button) => button.textContent === t("reputation_tree.title", {}, era))).toBe(false);
         expect(boundary.requests).toHaveLength(inactive === "initial" ? 0 : 1);
         expect(boundary.unexpected).toEqual([]);
-      } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+      } finally { await host.dispose(); }
     });
   }
 }

@@ -37,6 +37,11 @@ locally corrects the fixture with Typer's shared lifetime guard. Both full nativ
 with unchanged journeys/deadlines; Linux/Firefox/full CI and remaining host-driver diagnosis
 stay open. Docker remains unavailable; no cleanup permission or green full-job claim inferred.
 
+RP-531 independently reproduces the Reputation host remaining mounted with an open controlled
+socket after its test deadline. Test-context disposal and guarded late navigation now pass
+with all original host populations intact. The host/plan/Typer native batch passes270 checks
+plus six deliberate deadlines; retain Linux full-job attribution and designated review as open.
+
 ## Work
 
 1. [x] Split the Makefile into server, client, browser, schema, and aggregate verification targets.

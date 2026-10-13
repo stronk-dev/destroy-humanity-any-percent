@@ -832,3 +832,50 @@ designated Claude review pending, consolidatable with related CI driver ranges.
 Next: diagnose the host driver's lifetime/focus boundary and execute all corrected
 drivers in the actual Linux full population once the declared service is usable.
 Keep the whole nine-tier1.0 goal, existing contracts and release/review gates open.
+
+## 2026-10-13 — Dispose Reputation host fixtures at the original test boundary (RP-531)
+
+CI D2 outcome: a timed-out suspended host producer must not leave its mounted
+UI/runtime/socket alive or navigate after cancellation. The original isolated
+host file6189 passes176 native Chromium/WebKit checks,25.30s; that does not test
+its timeout teardown. New real50ms framework-deadline regression75228 fails in
+both engines because the old target is still connected. Combined observation
+14129 confirms `{mounted:true,socketClosed:false}` instead of the required
+detached/closed state. Release the held continuation in the diagnostic's finally
+so even the old-failure run cleans up its owned subject.
+
+Test-only correction: centralize the existing mount/cleanup in a small fixture
+bound to the actual TestContext. One idempotent dispose runs in caller finally
+and onTestFinished, drains the existing native-keyboard guard, releases controlled
+network promises and unmounts/removes the owned UI. Expired navigation refuses
+before polling/DOM focus; native input also rechecks its signal after tooling
+loads. Every original88 host population and its native inputs, exact request/
+receipt, rejection, pending/focus, subscription/recovery and remount checks remain.
+No product, API, schema, copy, recovery policy, timeout or concurrency change.
+
+Executed corrected controls39399:two positive native checks/two deliberate
+deadline failures,1.69s; the successor independently observes the exact timeout
+reason, detached target, closed controlled socket, canceled continuation and no
+intents. Entire affected root `make test-browser-focused
+BROWSER_TEST_FLAGS='test/reputation-host-browser.test.ts test/reputation-plan-browser.test.ts
+test/typer-table-browser.test.ts --project=chromium --project=webkit'`21146:
+270 passes/six expected diagnostic deadlines, all276 cases/no deselection,25.94s.
+`make typecheck`80051:zero errors/warnings. Node56442 collects/skips all90 host
+cases with no executed test; no browser credit. Diff checked. These use actual
+native browser/host/runtime/parser with controlled network/storage, not a real
+gameserver/Postgres/minted-content journey. No shipped build/Go/API/performance
+change warrants those unrelated suites. A controlled cleanup failure does not
+attribute every RP-526 focus/activation failure to this fixture.
+
+Docker version72574 stays live/unresponsive on re-poll; cancel only that owned
+read-only TTY client, terminal130. Host has2.6GiB free/100%; no cleanup approval,
+cache/evidence deletion, container/service cleanup or daemon restart. Linux/
+Firefox/ordinary full job and hosted CI remain unavailable/unverified/red.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new
+range starts **after `6a6a996d` through this containing test/docs/record commit**;
+designated Claude review pending, consolidatable with related CI repairs.
+Next: execute corrected drivers in the actual Linux population when usable and
+retain remaining input/runner failures rather than declare RP-526 closed. Other
+accepted product work and technical draft closure can proceed without Docker;
+full nine-tier1.0 and review/release gates remain open.
