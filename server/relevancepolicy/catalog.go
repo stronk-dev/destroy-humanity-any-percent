@@ -53,7 +53,7 @@ type RelevancePolicy struct {
 }
 
 type rawRelevancePolicy struct {
-	SchemaVersion *json.Number              `json:"schema_version"`
+	SchemaVersion *relevanceJSONNumber      `json:"schema_version"`
 	Items         []rawRelevancePolicyItem  `json:"items"`
 	Groups        []rawRelevancePolicyGroup `json:"groups"`
 }
@@ -64,19 +64,36 @@ type rawRelevanceWindow struct {
 }
 
 type rawRelevancePolicyItem struct {
-	PurchasableID    *string             `json:"purchasable_id"`
-	Availability     *rawRelevanceWindow `json:"availability_window"`
-	EpsilonMS        *json.Number        `json:"epsilon_ms"`
-	TrapExempt       *bool               `json:"trap_exempt"`
-	JustificationKey json.RawMessage     `json:"justification_key"`
-	GroupIDs         []string            `json:"group_ids"`
+	PurchasableID    *string              `json:"purchasable_id"`
+	Availability     *rawRelevanceWindow  `json:"availability_window"`
+	EpsilonMS        *relevanceJSONNumber `json:"epsilon_ms"`
+	TrapExempt       *bool                `json:"trap_exempt"`
+	JustificationKey json.RawMessage      `json:"justification_key"`
+	GroupIDs         []string             `json:"group_ids"`
 }
 
 type rawRelevancePolicyGroup struct {
-	GroupID   *string      `json:"group_id"`
-	Axis      *string      `json:"axis"`
-	MemberIDs []string     `json:"member_ids"`
-	EpsilonMS *json.Number `json:"epsilon_ms"`
+	GroupID   *string              `json:"group_id"`
+	Axis      *string              `json:"axis"`
+	MemberIDs []string             `json:"member_ids"`
+	EpsilonMS *relevanceJSONNumber `json:"epsilon_ms"`
+}
+
+// json.Number alone accepts quoted numeric strings. Keep the JSON kind as well
+// as its exact lexical form; integral decimal/exponent tokens remain valid.
+type relevanceJSONNumber json.Number
+
+func (number *relevanceJSONNumber) UnmarshalJSON(data []byte) error {
+	token := bytes.TrimSpace(data)
+	if len(token) == 0 || token[0] != '-' && (token[0] < '0' || token[0] > '9') {
+		return errors.New("expected JSON number")
+	}
+	var value json.Number
+	if err := json.Unmarshal(token, &value); err != nil {
+		return err
+	}
+	*number = relevanceJSONNumber(value)
+	return nil
 }
 
 func LoadRelevancePolicy(data []byte, catalog *economy.Catalog, routeCatalog *routes.Catalog) (*RelevancePolicy, error) {
@@ -163,11 +180,11 @@ func parseRelevanceGroup(source rawRelevancePolicyGroup) (RelevancePolicyGroup, 
 		MemberIDs: append([]string(nil), source.MemberIDs...), EpsilonMS: epsilon}, nil
 }
 
-func relevanceSafeInteger(value *json.Number) (int64, error) {
+func relevanceSafeInteger(value *relevanceJSONNumber) (int64, error) {
 	if value == nil {
 		return 0, errors.New("missing integer")
 	}
-	lexical := value.String()
+	lexical := string(*value)
 	if len(lexical) > 64 {
 		return 0, errors.New("integer lexical form is too long")
 	}

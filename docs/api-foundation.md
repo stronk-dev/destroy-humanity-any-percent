@@ -483,3 +483,12 @@ nineteen currently pinned artifact families; the other eighteen and the composed
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.
+
+The relevance-policy owner accepts exact integral decimal/exponent JSON tokens
+within its safe-integer domain, while the registry's existing `SchemaInteger`
+validator accepts only plain integer tokens. An actual owner/descriptor readiness
+probe records this mismatch (RP-566). A complete C18 relevance descriptor remains
+unimplemented until the representation contract preserves those historical bytes
+and admissible tokens; rejecting them merely to fit the current DSL is not a fix.
+Quoted numbers are not part of that dialect and now refuse in the Go owner, matching
+the client. No descriptor extension, catalog union or public route is implied.

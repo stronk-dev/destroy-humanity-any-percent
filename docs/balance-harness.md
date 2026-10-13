@@ -74,6 +74,15 @@ production arithmetic. Its hash-pinned `relevance_policy` artifact owns windows,
 trap exemptions, and tier/category/declared groups without adding harness metadata to the economy
 catalog.
 
+Relevance-policy version and item/group epsilon fields must be JSON numbers, not
+quoted numeric strings. Both runtimes accept bounded decimal/exponent spellings
+only when they represent an exact safe integer (for example `1000.0` or `1e3`);
+fractional values, rounded fractions and unsafe integers refuse. Group axes must
+be actual strings from `tier|category|declared`, never coerced arrays. These checks
+also run when replay loads a pinned relevance artifact, without rewriting its
+original bytes or constants identity. The corrected admission boundary is kernel
+`0.3.190`; both relevance owners now belong to the kernel affecting-path guard.
+
 The simulation-only `SimulateResourceRateWithContributions` seam accepts frozen
 external contributions and uses the canonical validated, masked assembly;
 `SimulateResourceRate` retains its original nil-input contract by delegation.

@@ -1,6 +1,10 @@
 {
   "schema_version": 1,
   "cases": [
+    { "id": "array_group_axis", "operation": "replace", "path": ["groups", "0", "axis"], "value_json": "[\"category\"]", "swap_index": null, "accepted": false },
+    { "id": "quoted_schema_version", "operation": "replace", "path": ["schema_version"], "value_json": "\"1\"", "swap_index": null, "accepted": false },
+    { "id": "quoted_item_epsilon", "operation": "replace", "path": ["items", "0", "epsilon_ms"], "value_json": "\"1000\"", "swap_index": null, "accepted": false },
+    { "id": "quoted_group_epsilon", "operation": "replace", "path": ["groups", "0", "epsilon_ms"], "value_json": "\"1000\"", "swap_index": null, "accepted": false },
     { "id": "missing_item_epsilon", "operation": "delete", "path": ["items", "0", "epsilon_ms"], "value_json": null, "swap_index": null, "accepted": false },
     { "id": "unsorted_items", "operation": "swap", "path": ["items", "0"], "value_json": null, "swap_index": 1, "accepted": false },
     { "id": "duplicate_item", "operation": "copy", "path": ["items", "0"], "value_json": null, "swap_index": 1, "accepted": false },
@@ -11,6 +15,10 @@
     { "id": "unknown_gate", "operation": "replace", "path": ["items", "0", "availability_window", "from_gate"], "value_json": "\"gate.unknown\"", "swap_index": null, "accepted": false },
     { "id": "integral_decimal_epsilon", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "1000.0", "swap_index": null, "accepted": true },
     { "id": "integral_decimal_schema", "operation": "replace_number", "path": ["schema_version"], "value_json": "1.0", "swap_index": null, "accepted": true },
+    { "id": "integral_exponent_schema", "operation": "replace_number", "path": ["schema_version"], "value_json": "1e0", "swap_index": null, "accepted": true },
+    { "id": "integral_exponent_item_epsilon", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "1e3", "swap_index": null, "accepted": true },
+    { "id": "integral_exponent_group_epsilon", "operation": "replace_number", "path": ["groups", "0", "epsilon_ms"], "value_json": "1e3", "swap_index": null, "accepted": true },
+    { "id": "maximum_exponent_epsilon", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "9.007199254740991e15", "swap_index": null, "accepted": true },
     { "id": "fraction_rounded_by_ieee754", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "1.0000000000000000000000001", "swap_index": null, "accepted": false },
     { "id": "hostile_huge_exponent", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "1e9007199254740991", "swap_index": null, "accepted": false }
   ]

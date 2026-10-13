@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"cloud-clicker/server/epochseed"
@@ -62,6 +63,51 @@ func TestFirstHourPayoffMintPromotesRatifiedCurriculumAndPreservesEpochSeven(t *
 	}
 	if _, err := Load(epoch6Hash, epoch6Artifacts); err != nil {
 		t.Fatalf("historical epoch-6 bundle no longer loads: %v", err)
+	}
+}
+
+func TestPinnedRelevanceNumericKindsAndOriginalBytes(t *testing.T) {
+	seed, err := epochseed.Load(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, test := range []struct {
+		name, find, replacement string
+		accepted                bool
+	}{
+		{"quoted version", `"schema_version": 2`, `"schema_version": "2"`, false},
+		{"quoted epsilon", `"epsilon_ms": 1000`, `"epsilon_ms": "1000"`, false},
+		{"decimal version", `"schema_version": 2`, `"schema_version": 2.0`, true},
+		{"exponent epsilon", `"epsilon_ms": 1000`, `"epsilon_ms": 1e3`, true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			artifacts := make(map[string][]byte, len(seed.Artifacts))
+			for name, data := range seed.Artifacts {
+				artifacts[name] = bytes.Clone(data)
+			}
+			original := string(artifacts["relevance"])
+			if !strings.Contains(original, test.find) {
+				t.Fatal("mutation did not bind relevance numeric field")
+			}
+			artifacts["relevance"] = []byte(strings.Replace(original, test.find, test.replacement, 1))
+			before := bytes.Clone(artifacts["relevance"])
+			hash, err := save.ConstantsHashArtifacts(artifacts)
+			if err != nil {
+				t.Fatal(err)
+			}
+			loaded, loadErr := Load(hash, artifacts)
+			if (loadErr == nil) != test.accepted {
+				t.Fatalf("admitted=%t err=%v", loadErr == nil, loadErr)
+			}
+			if !bytes.Equal(before, artifacts["relevance"]) {
+				t.Fatal("loader rewrote input bytes")
+			}
+			if test.accepted && (loaded.ConstantsHash != hash || loaded.Relevance == nil ||
+				loaded.Relevance.SchemaVersion != 2 || loaded.Relevance.Items[0].EpsilonMS != 1000 ||
+				!bytes.Equal(before, loaded.Artifacts["relevance"])) {
+				t.Fatal("loader lost the pinned identity, numeric value or original bytes")
+			}
+		})
 	}
 }
 

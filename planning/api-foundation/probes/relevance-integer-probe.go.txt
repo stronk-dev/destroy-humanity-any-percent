@@ -1,0 +1,83 @@
+package relevancepolicy
+
+import (
+	"bytes"
+	"os"
+	"strings"
+	"testing"
+
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/publicapi"
+	"cloud-clicker/server/routes"
+)
+
+// Manual C18 readiness measurement, executed at bd0c9b97 before RP-567.
+// Copy to server/relevancepolicy/catalog_numeric_probe_test.go to reproduce via
+// make test-go GO_PACKAGES='./relevancepolicy' GO_TEST_FLAGS='-count=1 -run TestPolicyIntegerDescriptorReadinessProbe -v'
+// Keep outside CI: the descriptor mismatch is a finding, not a desired invariant.
+func TestPolicyIntegerDescriptorReadinessProbe(t *testing.T) {
+	read := func(path string) []byte {
+		t.Helper()
+		data, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+	catalog, err := economy.LoadCatalog(read("../../testdata/harness/relevance/economy-v4.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	routeCatalog, err := routes.LoadCatalog(read("../../testdata/harness/relevance/routes-v1.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	base := read("../../testdata/harness/relevance/fixture-policy-v1.json")
+	if _, err := Load(base, catalog, routeCatalog, true); err != nil {
+		t.Fatal(err)
+	}
+	minimum, maximum := int64(1), relevanceMaxSafeInteger
+	definitions, err := publicapi.ValidateSchemaDefinitions([]publicapi.NamedSchema{{Name: "MeasuredInteger", Schema: &publicapi.Schema{
+		Kind: publicapi.SchemaInteger, Minimum: &minimum, Maximum: &maximum,
+	}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, test := range []struct {
+		name, token string
+		owner, wire bool
+	}{
+		{"plain", "1", true, true},
+		{"decimal_integer", "1.0", true, false},
+		{"exponent_integer", "1e0", true, false},
+		{"maximum_plain", "9007199254740991", true, true},
+		{"maximum_exponent", "9.007199254740991e15", true, false},
+		{"rounded_fraction", "1.0000000000000001", false, false},
+		{"unsafe_integer", "9007199254740992", false, false},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			raw := strings.Replace(string(base), `"epsilon_ms": 1`, `"epsilon_ms": `+test.token, 1)
+			if raw == string(base) && test.token != "1" {
+				t.Fatal("mutation did not bind a numeric field")
+			}
+			before := bytes.Clone([]byte(raw))
+			policy, ownerErr := Load([]byte(raw), catalog, routeCatalog, true)
+			wireErr := publicapi.ValidateJSON("MeasuredInteger", []byte(test.token), definitions)
+			if (ownerErr == nil) != test.owner || (wireErr == nil) != test.wire {
+				t.Fatalf("owner=%v wire=%v", ownerErr, wireErr)
+			}
+			if test.owner && (policy.Items[0].EpsilonMS < 1 || policy.Hash == "") {
+				t.Fatal("no admitted owner value/hash")
+			}
+			if !bytes.Equal(before, []byte(raw)) {
+				t.Fatal("measurement rewrote policy bytes")
+			}
+			t.Logf("owner_admits=%t wire_admits=%t", ownerErr == nil, wireErr == nil)
+		})
+	}
+	for _, target := range []string{`"schema_version": 1`, `"epsilon_ms": 1`} {
+		raw := strings.Replace(string(base), target, strings.TrimSuffix(target, "1")+`"1"`, 1)
+		policy, err := Load([]byte(raw), catalog, routeCatalog, true)
+		t.Logf("quoted numeric field %s owner_admits=%t has_policy=%t", strings.Split(target, ":")[0], err == nil, policy != nil)
+	}
+}

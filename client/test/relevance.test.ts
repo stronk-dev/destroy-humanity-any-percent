@@ -55,18 +55,16 @@ function applyMutation(test: MutationCase): string {
 
 describe("relevance policy parity", () => {
   it("loads the shared complete policy", () => {
+    expect(mutationFixture.schema_version).toBe(1);
     const policy = parseRelevancePolicy(JSON.stringify(policyFixture), catalog, gates);
     expect(policy.items.map((row) => row.purchasable_id)).toEqual(["generator.high", "generator.low", "upgrade.click"]);
     expect(policy.groups).toHaveLength(4);
   });
 
-  it("applies the shared Go/TypeScript mutation corpus", () => {
-    expect(mutationFixture.schema_version).toBe(1);
-    for (const test of mutationFixture.cases) {
-      const value = applyMutation(test);
-      if (test.accepted) expect(() => parseRelevancePolicy(value, catalog, gates), test.id).not.toThrow();
-      else expect(() => parseRelevancePolicy(value, catalog, gates), test.id).toThrow();
-    }
+  it.each(mutationFixture.cases)("applies shared mutation $id", (test) => {
+    const value = applyMutation(test);
+    if (test.accepted) expect(() => parseRelevancePolicy(value, catalog, gates), test.id).not.toThrow();
+    else expect(() => parseRelevancePolicy(value, catalog, gates), test.id).toThrow();
   });
 
   it("accepts run genesis only in schema v2", () => {

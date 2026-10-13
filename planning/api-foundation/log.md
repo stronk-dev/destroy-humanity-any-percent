@@ -2035,3 +2035,51 @@ Recorded by: Codex. Exact entire correction/generated/tests/docs/records range a
 through this containing commit needs Claude designated review, consolidatable with related
 SDK repairs. Next: finish the successor's descriptors/generated guard and metadata compatibility
 contracts without pretending this pair check implements them.
+
+## 2026-10-14 — C18 numeric readiness and relevance type conformance (RP-566/RP-567)
+
+Resume at `bd0c9b97`; the preceding answer clarified decisions but made no implementation
+progress. Actual C18 readiness probe first: `TestPolicyIntegerDescriptorReadinessProbe`
+executes the owner loader with real economy/routes fixtures and the current publicapi integer
+validator. Plain1 and maximum-safe plain tokens pass both;1.0,1e0 and maximum-safe exponent
+pass the owner but fail the descriptor; fractional and unsafe controls fail both. Root command
+exits0 (0.179s). This is a measured representation prerequisite, not authority to narrow the
+owner or invent a completed descriptor. Retain reproducible source outside CI at
+`probes/relevance-integer-probe.go.txt`; its comments identify the pre-correction coordinate.
+
+The same probe observes Go admitting quoted version/epsilon fields. Under archived Relevance
+Harness R12's accepted numeric and closed-string grammar, add four shared refusal cases before
+repair: Go cold39370 exits2 with all3 quoted fields admitted; Node exits1 with the array-valued
+category axis admitted (21 other tests pass). Parameterize the existing client corpus so every
+case executes independently. Add integral-exponent controls, including the exact safe maximum;
+do not change existing decimal/fraction/exponent expectations. Preserve raw numeric kind before
+Go json.Number conversion and require a real TS axis string; no formula, epsilon value,
+scenario helper or historical artifact is edited. Genuine replay-admission change advances the
+mirrored kernel189→190 and registers both actual relevance owners as affecting paths, not an
+API-only false bump or a path evasion.
+
+Finished shared corpus: all20 cases pass in Go and TS. Actual replay loaders additionally
+load freshly hashed complete19-artifact populations: quoted version/epsilon refuse, decimal
+version and exponent epsilon retain parsed values, full constants identity and original bytes.
+Go70911 executes all4 named controls, exits0 (0.174s); historical/current/candidate replay
+checks remain in the cold package population. These are real parser/replay boundaries, not
+HTTP/SQL, a product mint, a browser player journey or a full C18 descriptor.
+
+Root package28871 passes relevancepolicy (no standalone tests), replaycatalog0.619s and
+kernel0.142s; focused harness policy checks and affected vet pass. Final Node80729 passes162
+selected tests; native Chromium/WebKit14564 passes324. Initial native sandbox startup runs
+zero tests; permitted localhost execution succeeds. Initial typecheck10366 catches an undefined
+artifact assumption in the new test; explicit fixture guard corrects it, with final types/Svelte/
+build96472 green (zero diagnostics). Full client74349 passes11250 with1040 existing explicit
+skips,7.09s; shell boundary passes. No Firefox/Linux/Docker/DB run is claimed.
+
+Root `make verify-kernel-version`62637 remains RED, terminal exit2 at historical50a3a514;
+its checkout/adversarial CI topology checks pass, but the historical failure stops the larger
+guard before current-worktree validation. No history exception, rewritten commit, relaxed
+assertion, whole-CI or release-readiness claim. All handles terminal; format/diff checked.
+Canonical docs/plan and RP-566/RP-567 reconcile this batch. Review by: Codex (implementer first
+filter). Recorded by: Codex. Exact entire code/tests/kernel/probe/docs/records range after
+`bd0c9b97` through this containing commit needs designated Claude review, consolidatable with
+related catalog corrections. No archival, push, deployment, draft adoption or tier promotion.
+Next: specify the complete C18 integer representation without redefining historical admission;
+all other accepted integration work and outstanding owner/author/review gates remain.

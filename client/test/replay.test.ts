@@ -748,6 +748,30 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(transition.companyEndedEvents.some((value) => value.kind === "achievement_earned.v1")).toBe(true);
   });
 
+  it.each([
+    { name: "quoted version", find: '"schema_version": 2', replacement: '"schema_version": "2"', accepted: false },
+    { name: "quoted epsilon", find: '"epsilon_ms": 1000', replacement: '"epsilon_ms": "1000"', accepted: false },
+    { name: "decimal version", find: '"schema_version": 2', replacement: '"schema_version": 2.0', accepted: true },
+    { name: "exponent epsilon", find: '"epsilon_ms": 1000', replacement: '"epsilon_ms": 1e3', accepted: true },
+  ])("preserves pinned relevance numeric kinds and bytes: $name", async (test) => {
+    const artifacts = { ...fixture.first_content_exit.artifacts };
+    if (artifacts.relevance === undefined) throw new Error("fixture omitted its relevance artifact");
+    expect(artifacts.relevance).toContain(test.find);
+    artifacts.relevance = artifacts.relevance.replace(test.find, test.replacement);
+    const original = artifacts.relevance;
+    const hash = await artifactHash(artifacts);
+    const result = loadReplayCatalogBundle(hash, artifacts);
+    if (!test.accepted) await expect(result).rejects.toThrow(SyntaxError);
+    else {
+      const bundle = await result;
+      expect(bundle.constantsHash).toBe(hash);
+      expect(bundle.relevance?.schema_version).toBe(2);
+      expect(bundle.relevance?.items[0]?.epsilon_ms).toBe(1000);
+      expect(bundle.artifacts.relevance).toBe(original);
+    }
+    expect(artifacts.relevance).toBe(original);
+  });
+
   it("replays a same-epoch First Content Exit with complete Founder v21 carry", async () => {
     const fixtureExit = fixture.first_content_exit;
     const bundle = await loadReplayCatalogBundle(fixtureExit.constants_hash, fixtureExit.artifacts);

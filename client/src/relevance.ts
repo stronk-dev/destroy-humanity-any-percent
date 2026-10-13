@@ -78,7 +78,8 @@ function parseRelevancePolicyObject(source: unknown, catalog: RelevanceCatalogVi
   const groups = root.groups.map((raw): RelevancePolicyGroup => {
     const row = exactObject(raw, ["group_id", "axis", "member_ids", "epsilon_ms"], "relevance group");
     const id = mechanicalString(row.group_id, "group id");
-    if (prior !== "" && byteCompare(prior, id) >= 0 || !new Set(["tier", "category", "declared"]).has(String(row.axis))) throw new SyntaxError("invalid relevance group");
+    if (prior !== "" && byteCompare(prior, id) >= 0 || typeof row.axis !== "string" ||
+      !new Set(["tier", "category", "declared"]).has(row.axis)) throw new SyntaxError("invalid relevance group");
     prior = id;
     const members = sortedMechanical(row.member_ids, "group members");
     if (members.length === 0 || members.some((member) => !itemById.get(member)?.group_ids.includes(id))) throw new SyntaxError("dangling/asymmetric group member");

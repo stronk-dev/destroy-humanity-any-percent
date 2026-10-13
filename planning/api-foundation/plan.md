@@ -2,6 +2,16 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C18 readiness/correction (2026-10-14, RP-566/RP-567): actual relevance-policy
+admission preserves exact integral decimal/exponent tokens that the existing registry
+integer validator refuses. A complete descriptor needs a representation-contract proposal,
+not a product arithmetic ruling or a historical-byte rewrite. Separately, the accepted R12
+grammar now refuses Go quoted numeric fields and TS array axes; shared old-source regressions
+and freshly hashed replay-bundle checks execute in both runtimes. Kernel0.3.190 records this
+real admission correction and registers both relevance owners as affecting paths. The owning
+log records final checks, the existing red history guard and the complete range after
+`bd0c9b97`, pending Claude review. This does not finish C18, public catalog serving or1.0.
+
 Current bounded correction (2026-10-14, RP-564): generated response metadata now preserves
 the registry's existing ExactJSON literals, and the shared minigame operation port uses them
 to bind typed category/detail errors to the selected operation/status. Wrong pairs fail as
@@ -155,8 +165,8 @@ remaining route/client registration, third-party verification, 304 metadata and 
 reviews stay open; not full API acceptance or green hosted CI. Latest log owns exact evidence.
 Public reads now use the shared error descriptor from `publicapi` instead of importing Account;
 the direct private-repository import regression and affected packages pass. This does not close
-transitive/runtime privacy. Seventeen of the remaining eighteen artifact-owner packages fall
-under kernel-watched prefixes: API-only additions require an explicit scope resolution or a
+transitive/runtime privacy. All eighteen remaining artifact-owner packages now fall
+under kernel-watched prefixes after relevance-owner registration: API-only additions require an explicit scope resolution or a
 genuine accepted semantic change, never a false version bump or file move to evade the guard.
 
 Existing session creation/refresh now mount from the registry and generate explicit calls, with
