@@ -1,0 +1,15 @@
+# Used only by the native owned-container restart journey. No Docker socket is
+# mounted into the private stack. Existing textfile mounts are replaced by the
+# native host observer's per-test directory at the same target path.
+services:
+  node-exporter:
+    volumes:
+      - type: bind
+        source: ${CLOUD_CLICKER_RESTART_OBSERVATION_DIR:?native restart fixture required}
+        target: /textfile
+        read_only: true
+  operations-test:
+    volumes:
+      - type: bind
+        source: ${CLOUD_CLICKER_RESTART_OBSERVATION_DIR:?native restart fixture required}
+        target: /textfile

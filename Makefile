@@ -5,6 +5,7 @@
 .PHONY: test-deployment-cleanup-runtime
 .PHONY: test-deployment-storage-profile
 .PHONY: test-deployment-restart-observer
+.PHONY: test-deployment-restart-profile
 .PHONY: verify-combat-go-boundary
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
@@ -131,7 +132,7 @@ test-deployment-operations:
 	docker run --rm --platform linux/amd64 --entrypoint promtool -v "$(CURDIR)/deployment/operations:/work:ro" "$(PROMETHEUS_RULE_IMAGE)" test rules /work/cloud-clicker-alerts.test.yml
 	$(MAKE) test-go GO_PACKAGES='./operations ./cmd/deployment-operations ./cmd/deployment-backup ./cmd/deployment-release ./gameserver ./transport ./production ./save ./releasepackage ./deploymentbackup ./deploymentrelease' GO_TEST_FLAGS='-count=1'
 	$(MAKE) test-deployment-cleanup-runtime
-	$(MAKE) test-deployment-restart-observer
+	$(MAKE) test-deployment-restart-profile
 	$(MAKE) test-deployment-operations-profile
 
 # Real one-minute job timing belongs to manual Deployment acceptance, not push
@@ -145,6 +146,15 @@ test-deployment-cleanup-runtime:
 test-deployment-restart-observer: export CLOUD_CLICKER_RESTART_OBSERVER_TEST = 1
 test-deployment-restart-observer:
 	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS='-run TestHostObservationActualDockerRestartIntegration -v -count=1'
+
+# Same actual producer, now through the private pinned services and receiver.
+# Native owner controls only its labelled containers and unique Compose project.
+test-deployment-restart-profile: export CLOUD_CLICKER_RESTART_OBSERVER_TEST = 1
+test-deployment-restart-profile: export CLOUD_CLICKER_OPERATIONS_ROOT = $(CURDIR)
+test-deployment-restart-profile:
+	mkdir -p $(REPO_CACHE_DIR)/bin
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
+	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS="-run 'TestHostObservationActualDockerRestartProfileIntegration|TestPrivateRestartStackCancellationCleanupIntegration' -v -count=1 -timeout=12m"
 
 # Focus the existing real-service fixture without skipping or changing the
 # aggregate above. This is not the full operations or clean-host release gate.

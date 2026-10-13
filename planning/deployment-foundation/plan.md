@@ -7,6 +7,16 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest DP7 restart receiver construction, 2026-10-13:** the actual Docker
+observer's first-scrape count3/increase0 now fires through the private services
+and reaches the receiver; an actual replacement count0 resolves the same alert.
+The final root lane also proves canceled-CLI one-off cleanup. Its early-notification
+loss finding (RP-523), failed attempt, final checks and range after `cdc78050`
+live in the log, pending designated review. No production bytes or alert policies
+change in this supplement. Continue remaining actual backup/game-process/host
+journal/retention, older-container restart history and exact release-artifact
+evidence; full AC7/R-006 remain open.
+
 **Latest DP7 restart correction, 2026-10-13 (RP-522):** actual Docker count and
 container birth now reach the host textfile together. A new-container lifetime
 arm catches three restarts before the first scrape, preserving the original

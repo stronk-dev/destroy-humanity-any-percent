@@ -5902,3 +5902,57 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Entire range
 after `db752b0a` through this containing commit needs Claude designated review,
 consolidatable with the preceding DP7 batches. Continue accepted operations and
 release-artifact construction; no acceptance, archive, push or1.0 promotion.
+
+## 2026-10-13 — Actual restart observation reaches the private receiver (DP7/AC7)
+
+**Outcome:** extend the existing native Docker producer into the existing private
+operations fixture. Start monitoring only after real automatic count3 publication;
+require at least two scraped samples, minimum3/increase0, shipped-rule firing and
+the actual receiver payload. Only after delivery, create a new stable container
+and run the production observer again: real count0/later birth, a fresh atomic
+file, inactive rule and resolution with the exact original alert start. No typed
+restart metric, synthetic family notification, monitoring reset or forced resolve.
+A per-test bind overlay replaces only the textfile mount; no Docker socket enters
+the private stack. Production/rules/intervals/CI bytes are unchanged.
+
+**Regression / correction:** first actual attempt31033 fails600.53s at its original
+ten-minute parent guard. Live queries prove count3/minimum3/increase0 and firing;
+the preflight loop consumed the earlier restart notification while seeking its
+nonce (RP-523). Retain unrelated notifications within the existing capacity32,
+refusing private fields, closed/canceled observation and backlog overflow. Unit
+preservation/failure/overflow cases pass72115. Do not shorten the four-hour repeat
+interval or manufacture another firing. That failed attempt also exposed our new
+runner cleanup omission: killing the Compose CLI leaves its one-off alive; down
+leaves the occupied network. The runner self-exited before manual removal, and
+only its subsequently verified empty project network was removed. Cleanup now
+validates exact project/service/one-off labels before removing that runner and
+its anonymous volumes, then downs only the unique project. Other projects remain.
+
+**Finished checks:** corrected first delivery66916 passes126.04s (child76.52s).
+Final root `make test-deployment-restart-profile`13739 exits0 after helper extraction:
+canceled-CLI negative7.70s, complete delivery134.44s (child82.28s), package142.485s.
+The negative actually leaves its sleep runner live after CLI cancellation, then
+requires zero project containers/networks after cleanup. Final cold native19517
+passes operations2.137s/command5.528s and vet; declared Linux-amd64/Postgres6772
+passes5.193s/6.482s, including bounded notification regressions. Those ordinary
+lanes skip the opt-in real-Docker populations; the separate root run is their
+evidence. An intermediate cleanup extraction had a stray closure caught by
+gofmt before any run; repaired, not hidden as a passing attempt. Final fixture
+container/project/network censuses are empty and diff checks pass.
+No budget/capacity/threshold increase.
+
+**Coverage / handoff:** actual Docker, host-command inspect/parser/syscalls/writer,
+private node-exporter/Prometheus/Alertmanager, real SQL-backed metrics and receiver;
+scripted exiting process with controlled project lookup/journal, not the game
+binary, actual host driver/timer/retention, older pre-scrape restart history or
+exact release artifact. Cached Caddy's amd64-on-ARM warning remains disclosed;
+not an all-amd64/clean-host proof. The developer filesystem's actual high usage
+also produced unrelated storage alerts; receiver matching is family/start-specific,
+not an allocation or supported-host storage claim. Existing full/storage profile
+populations and the whole manual aggregate were not newly rerun; their literal
+selectors remain, with unchanged tests/intervals. The manual aggregate now selects
+the combined restart journey, retaining the producer-only focused selector.
+Review by: Codex (implementer first filter). Recorded by: Codex. Entire range after
+`cdc78050` through this containing commit needs Claude designated review; consolidate
+with preceding DP7 work. No acceptance, archival, push, deployment or1.0 promotion.
+Continue the remaining genuine producer and release-host boundaries.

@@ -21,14 +21,23 @@ import (
 )
 
 func TestPrivateOperationsProfileIntegration(t *testing.T) {
-	runPrivateOperationsProfile(t, false)
+	runPrivateOperationsProfile(t, "full")
 }
 
 func TestPrivateOperationsStorageIntegration(t *testing.T) {
-	runPrivateOperationsProfile(t, true)
+	runPrivateOperationsProfile(t, "storage")
 }
 
-func runPrivateOperationsProfile(t *testing.T, storageOnly bool) {
+func TestPrivateOperationsRestartIntegration(t *testing.T) {
+	runPrivateOperationsProfile(t, "restart")
+}
+
+func runPrivateOperationsProfile(t *testing.T, population string) {
+	switch population {
+	case "full", "storage", "restart":
+	default:
+		t.Fatal("unknown private operations population")
+	}
 	if os.Getenv("CLOUD_CLICKER_OPERATIONS_INTEGRATION") != "1" {
 		t.Skip("requires isolated operations Compose profile")
 	}
@@ -161,23 +170,15 @@ func runPrivateOperationsProfile(t *testing.T, storageOnly bool) {
 	if err != nil {
 		t.Fatalf("receiver delivery proof failed: %v", err)
 	}
-	delivered := false
-	for !delivered {
-		select {
-		case body := <-received:
-			text := strings.ToLower(string(body))
-			for _, forbidden := range []string{"account_id", "founder_id", "recovery_code", "client_ip"} {
-				if strings.Contains(text, forbidden) {
-					t.Fatalf("private field delivered: %s", forbidden)
-				}
-			}
-			delivered = strings.Contains(text, "cloudclickerreceivertest") && strings.Contains(text, nonce)
-		case <-ctx.Done():
-			t.Fatal("Alertmanager accepted but did not deliver the synthetic alert")
-		}
+	if err := waitForReceiverNonce(ctx, received, nonce); err != nil {
+		t.Fatalf("receiver preflight observation failed: %v", err)
 	}
-	if storageOnly {
+	if population == "storage" {
 		runStoragePressureProfile(t, ctx, client, received)
+		return
+	}
+	if population == "restart" {
+		runRestartProfile(t, ctx, client, received)
 		return
 	}
 
@@ -389,6 +390,46 @@ func runPrivateOperationsProfile(t *testing.T, storageOnly bool) {
 	if _, err := VerifyAlertDelivery(rejectCtx, client, "http://alertmanager:9093", "http://localhost:8090/healthz"); err == nil ||
 		!strings.Contains(err.Error(), "failed notification") {
 		t.Fatalf("rejecting receiver was not detected as failed delivery: %v", err)
+	}
+}
+
+// The preflight can follow a real firing at startup. Retain those unrelated
+// observations within the same bounded queue instead of consuming their only
+// notification (the configured repeat interval is four hours).
+func waitForReceiverNonce(ctx context.Context, received chan []byte, nonce string) error {
+	if nonce == "" || cap(received) == 0 {
+		return ErrInvalid
+	}
+	var pending [][]byte
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case body, open := <-received:
+			if !open {
+				return ErrInvalid
+			}
+			text := strings.ToLower(string(body))
+			for _, forbidden := range []string{"account_id", "founder_id", "recovery_code", "client_ip"} {
+				if strings.Contains(text, forbidden) {
+					return fmt.Errorf("private field delivered: %s", forbidden)
+				}
+			}
+			if strings.Contains(text, "cloudclickerreceivertest") && strings.Contains(text, nonce) {
+				for _, earlier := range pending {
+					select {
+					case received <- earlier:
+					default:
+						return errors.New("receiver observation backlog overflow")
+					}
+				}
+				return nil
+			}
+			if len(pending) == cap(received) {
+				return errors.New("receiver observation backlog overflow")
+			}
+			pending = append(pending, body)
+		}
 	}
 }
 

@@ -880,15 +880,40 @@ the wrapper forwards the context and records their returned outcome unchanged. T
 operations verification, not push CI. It proves server/SQL lifecycle behavior, not OCI process
 exit, host journald collection or clean-host release acceptance.
 
-`make test-deployment-restart-observer`, also included in manual operations verification,
+`make test-deployment-restart-observer` is the focused producer-only population. It
 creates one labelled, networkless, read-only container with automatic restarts capped at three.
 It observes Docker's actual count move from zero to three and runs the production host-observer
 inspection, parser, filesystem reader and atomic textfile publication against that container.
 Only the official Compose-project lookup and journal source are controlled. Cleanup verifies
 the exact ownership label before removing the fixture. This is a scripted exiting process,
 not the gameserver binary or a release-host deployment. Together with the pinned rule population
-it verifies the new producer and first-scrape rule boundary, not live receiver delivery of this
+it verifies the new producer and first-scrape rule boundary, not receiver delivery of this
 arm, actual journald, retention or full AC7/R-006. The timed test stays outside push CI.
+
+Manual operations verification now invokes `make test-deployment-restart-profile`, the combined
+producer/receiver population. It reuses that actual Docker/host-command producer, but starts a
+unique private Compose project only after three restarts have already been published. A scoped
+overlay mounts the observer's temporary textfile directory into the existing node-exporter and
+test receiver; no Docker socket is mounted. The child requires at least two scraped samples,
+minimum count three and increase zero, then the real shipped rule and a matching receiver
+firing. Only then does it request recovery. The native owner creates a new stable container,
+inspects its real zero count and later birth, and publishes through the same production command.
+The child requires that fresh file, rule resolution and the receiver's exact original alert
+start time. It never writes a restart metric, resets monitoring or fabricates a resolution.
+
+Receiver preflight retains unrelated early notifications in a bounded observation backlog.
+It must not consume the only restart firing while waiting for the nonce: the configured repeat
+interval is four hours. Forbidden fields, closed/canceled streams and observation overflow fail
+instead of producing incomplete evidence. The combined journey's ten-minute parent context
+includes actual restart generation and private-stack execution; the twelve-minute Go test
+timeout permits cleanup after that guard, not a wider alert window. Existing child guard and
+all service/rule/notification intervals remain unchanged. Cleanup owns only the labelled
+fixture containers and randomly named Compose project. This is still a scripted exiting
+process, controlled official-project lookup/journal input and mixed-architecture local fixture,
+not gameserver crash recovery, journald/retention or exact-release-host AC7/R-006 acceptance.
+The same lane cancels a real Compose CLI while its no-dependency one-off runner remains live,
+then exercises exact project/service/one-off-label validation, runner removal and network cleanup.
+It does not prune other projects or leave a timed-out runner occupying the private network.
 
 Use `make test-deployment-operations-profile` to run that existing isolated Compose fixture
 directly: real private scrapes, cleanup-rule firing, nonce delivery, rejecting receiver and
