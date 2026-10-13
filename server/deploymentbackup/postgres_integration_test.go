@@ -268,6 +268,22 @@ func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T)
 	manifest := fixtureReleaseManifestForMigration(t, epoch, migration)
 	manifestPath := writeRegular(t, workspace, "release-manifest.json", manifest)
 	epochPath := writeRegular(t, workspace, "epoch.json", epoch)
+	withDatabaseOverride := func(connection, primaryDatabase string) string {
+		t.Helper()
+		parsed, err := url.Parse(connection)
+		if err != nil {
+			t.Fatal(err)
+		}
+		query := parsed.Query()
+		query.Set("dbname", strings.TrimPrefix(parsed.Path, "/"))
+		parsed.Path = "/" + primaryDatabase
+		parsed.RawQuery = query.Encode()
+		return parsed.String()
+	}
+	// Deliberately put the other database in the URI path. The query must
+	// select the same source/target for Go admission and real libpq execution.
+	querySourceSecret := writeSecret(t, workspace, "query-source-url", withDatabaseOverride(sourceURL, "cloud_clicker_restore"))
+	queryTargetSecret := writeSecret(t, workspace, "query-target-url", withDatabaseOverride(targetURL, "cloud_clicker_source"))
 	manifestHash := digest(manifest)
 	seedBackupEpoch(t, source)
 	wrongManifest := fixtureReleaseManifestForMigration(t, epoch, migration-1)
@@ -279,13 +295,25 @@ func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T)
 		t.Fatalf("live database/release migration mismatch accepted: %v", err)
 	}
 
+	seeded := false
 	for _, population := range []struct {
-		name string
-		seed bool
-	}{{name: "empty"}, {name: "populated", seed: true}} {
+		name     string
+		seed     bool
+		override bool
+	}{
+		{name: "empty"},
+		{name: "empty_database_query_override", override: true},
+		{name: "populated", seed: true},
+		{name: "populated_database_query_override", seed: true, override: true},
+	} {
 		t.Run(population.name, func(t *testing.T) {
-			if population.seed {
+			if population.seed && !seeded {
 				seedBackupPopulation(t, source)
+				seeded = true
+			}
+			sourceSecret, targetSecret := sourceSecret, targetSecret
+			if population.override {
+				sourceSecret, targetSecret = querySourceSecret, queryTargetSecret
 			}
 			before := readBackupIdentity(t, source)
 			beforeRecovery, err := InspectRecoveryIdentity(ctx, RecoveryIdentityInput{DatabaseURLFile: sourceSecret})

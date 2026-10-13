@@ -6475,3 +6475,38 @@ kernel mint, lifecycle promotion or owner choice inferred from the new passing c
 Review by: Codex (new test implementer first filter). Recorded by: Codex. Exact test/docs/records
 range starts after `5d70f673` through this containing commit; designated Claude review pending,
 consolidatable with the prior RP-141/R15 supplements. All execution handles are terminal.
+
+## 2026-10-13 — RP-551 bind backup service files to endpoint query overrides
+
+During current restore-path inspection, found that pgx honors host/port/user/password/database
+query overrides but the libpq service/pass writer uses only URI authority/path fields. Under DP6's
+exact-target backup/restore contract, apply those overrides before the existing field checks and
+write the effective tuple to both files. `database` aliases `dbname`; contradictory aliases
+cannot name a stable target and refuse. Invalid port, empty/adjusted host and injected field
+values refuse before files are written. No new credential location, SSL policy, backup format,
+retention, dump/snapshot/key policy, schema or kernel change. Other URI/transport options are not
+covered by this endpoint-field correction or its proof.
+
+Initial46921 fails seven override cases on `a7501ac1`, with its ordinary control green. The final
+old-source compiler overlay89724 (owned `/tmp/cloud-clicker-backup-endpoint.5dq3AC`) fails18 of20:
+eight endpoint overrides and ten unsafe/ambiguous inputs; ordinary and password-isolation controls
+pass. Corrected86036 passes the initial19; final race37421 passes all20 after the host-whitespace
+case is added. Expectations come from pinned pgx5.10.0's actual parser plus literal service/pass
+checks; no database is connected, and credentials are synthetic test data. No production probe
+mutation. One patch-context mismatch made no edit and was corrected before tooling.
+
+43023 passes six cold backup/release/rehearsal/CLI packages plus vet. Root Linux-amd64 backup-helper
+build passes into ignored `.cache/bin/deployment-backup-linux-amd64`, not a runtime proof. Extend
+the existing Postgres empty/populated test with swapped URI paths and explicit `dbname` overrides,
+retaining all original restore/corruption/identity checks. A misplaced test-helper insertion was
+caught by diff inspection and moved before compilation. Final60055 cold backup/vet pass; all seven
+DB integration functions explicitly skip, including the new populations. Docker's last owned
+probe has no server reply; no restart/cleanup or host-DB workaround. The declared
+`make test-deployment-backup` execution remains mandatory before DB/AC4 acceptance.
+
+Review by: Codex (repair implementer first filter). Recorded by: Codex. Exact source/tests/docs/
+records range starts after `a7501ac1` through this containing commit; designated Claude review
+pending. This is a verified parser/file correction, not an executed logical restore or full R20,
+Deployment/R-006/1.0 closeout. Existing author/owner and exact-artifact gates remain; no push/deploy.
+All execution handles are terminal. Continue complete original R20 inspection and accepted work
+while retaining this named integration gate rather than substituting native green for Postgres.

@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -304,16 +305,40 @@ func databaseServiceEnvironment(secretPath, workspace string) ([]string, error) 
 	if !hasPassword {
 		return nil, ErrInvalid
 	}
-	database := strings.TrimPrefix(parsed.Path, "/")
-	if !databaseName.MatchString(database) || !databaseName.MatchString(parsed.User.Username()) {
+	query := parsed.Query()
+	queryValue := func(name, fallback string) string {
+		if values, present := query[name]; present {
+			return values[0]
+		}
+		return fallback
+	}
+	// Respect endpoint query overrides as pgx does, rather than inspecting
+	// the overridden database and dumping/restoring the authority/path target.
+	host := queryValue("host", parsed.Hostname())
+	port := queryValue("port", defaultPort(parsed.Port()))
+	user := queryValue("user", parsed.User.Username())
+	password = queryValue("password", password)
+	database := queryValue("dbname", strings.TrimPrefix(parsed.Path, "/"))
+	if values, present := query["database"]; present {
+		if aliases, alsoPresent := query["dbname"]; alsoPresent && aliases[0] != values[0] {
+			// These aliases collapse to one pgx setting in map iteration order;
+			// contradictory values cannot name a stable restore target.
+			return nil, ErrInvalid
+		}
+		database = values[0]
+	}
+	if host == "" || strings.TrimSpace(host) != host || !databaseName.MatchString(database) || !databaseName.MatchString(user) {
 		return nil, ErrInvalid
 	}
-	for _, value := range []string{parsed.Hostname(), parsed.Port(), parsed.User.Username(), password, database} {
+	if _, err := strconv.ParseUint(port, 10, 16); err != nil {
+		return nil, ErrInvalid
+	}
+	for _, value := range []string{host, port, user, password, database} {
 		if strings.ContainsAny(value, "\x00\r\n") {
 			return nil, ErrInvalid
 		}
 	}
-	sslMode := parsed.Query().Get("sslmode")
+	sslMode := query.Get("sslmode")
 	if sslMode == "" {
 		sslMode = "require"
 	}
@@ -322,12 +347,12 @@ func databaseServiceEnvironment(secretPath, workspace string) ([]string, error) 
 	}
 	servicePath := filepath.Join(workspace, "pg_service.conf")
 	service := fmt.Sprintf("[cloud_clicker]\nhost=%s\nport=%s\ndbname=%s\nuser=%s\nsslmode=%s\n",
-		parsed.Hostname(), defaultPort(parsed.Port()), database, parsed.User.Username(), sslMode)
+		host, port, database, user, sslMode)
 	if err := os.WriteFile(servicePath, []byte(service), 0o600); err != nil {
 		return nil, err
 	}
 	passPath := filepath.Join(workspace, "pgpass")
-	pass := strings.Join([]string{pgpassEscape(parsed.Hostname()), pgpassEscape(defaultPort(parsed.Port())), pgpassEscape(database), pgpassEscape(parsed.User.Username()), pgpassEscape(password)}, ":") + "\n"
+	pass := strings.Join([]string{pgpassEscape(host), pgpassEscape(port), pgpassEscape(database), pgpassEscape(user), pgpassEscape(password)}, ":") + "\n"
 	if err := os.WriteFile(passPath, []byte(pass), 0o600); err != nil {
 		return nil, err
 	}

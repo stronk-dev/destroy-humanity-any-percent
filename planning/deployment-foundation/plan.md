@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP6 endpoint correction, 2026-10-13 (RP-551):** service/pass files now honor the
+database URL's endpoint query overrides instead of targeting its unoverridden URI fields.
+Old-source20-case population fails18, retaining ordinary/password-isolation controls; corrected
+focused/race, affected cold packages/vet and Linux helper build pass. The existing actual-Postgres
+empty/populated restore test now includes swapped URI paths with database-query overrides; it
+only compiles/skips locally. Run `make test-deployment-backup` when the declared Docker service
+is usable before claiming DB integration. New range after `a7501ac1` needs Claude review. This
+does not close DP-C/AC4, general URI options, original R20 review or exact-host/R-006.
+
 **Current DP-F producer evidence, 2026-10-13 (RP-550):** all nine packaged-artifact mutations now
 execute against the actual assembled-bundle validator, with18 invalid-baseline controls. The
 content-identity omission fails the new epoch witness while the prior fake-validator test passes.
