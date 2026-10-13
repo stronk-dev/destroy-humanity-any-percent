@@ -3,7 +3,38 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Current action — 2026-10-08
+## Current action — 2026-10-13
+
+Coordinate: local source `a713137e`; published CI source `4eaed0c9`. Whole-product status lives
+in [CURRENT-STATE](../CURRENT-STATE.md), not the dated routing tables below. Full nine-tier1.0
+remains the goal; Garage hardening and standalone Combat records do not complete another tier.
+
+- **READY — accepted construction and conformance work:** use the current owning RFC plans.
+  Continue the remaining later API/consumer implementation reviews and native-input failure
+  diagnosis (RP-526) from its existing first-failure phase capture. Do not change deadlines,
+  retries or mechanics without their required authority, or restart completed original reviews.
+- **READY — consolidated independent reviews:** related Codex corrections/proofs may share
+  exact feature-owned review ranges. Deployment R3/R6/R8/R9/R10/R12/R18/R20 now have full
+  original CHANGES REQUIRED dispositions; corrected descendants still need Claude. Owning logs
+  contain ranges; no per-paperwork-commit ceremony, self-approval or archival promotion.
+- **BLOCKED — declared Docker/Postgres execution:** fresh direct socket ping times out; no
+  daemon reply or restart authority. RP-551's empty/populated database-query restore extension
+  compiles/skips, not passes. Run the declared backup/restore and affected Linux/server/browser
+  lanes once the service is usable; do not launch another hanging job or substitute a host DB.
+- **OPEN — correctness and release prerequisites:** current local production fails27 RP-307
+  partition cases, and the real history guard rejects50a3a514. Latest published CI38381138075
+  remains failed. Current source needs reviewed, rebuilt exact bundles and a floor-compliant
+  predecessor before authorized R-006; historical builds or native unit green are not substitutes.
+- **HELD — specific contracts, not all work:** the [decision/engineering distinction](../CURRENT-STATE.md#decisions-versus-engineering-work)
+  names the draft proposals. Headcount, attendance, minigame public wires, content, rights and
+  accessibility have additional named boundaries. Owner choices need explicit adoption; author
+  contract closure, implementation and failing arithmetic remain agent work, not generic approval
+  requests. No draft becomes authority merely because its dependencies exist.
+
+This is routing only, not a new implementation contract, review verdict or publication permission.
+Preserve all earlier evidence and pending review obligations. No push/deploy/archival is authorized.
+
+## Historical current-action snapshot — 2026-10-08
 
 RP-365's backwards-clock failure route is diagnosed; D-024/draft Monotonic Founder Attendance
 must settle the shared boundary before repair (Cosmetic log/reproducer). GS1 shared-decode

@@ -5312,3 +5312,24 @@ or implementation is inferred. Conservation's exact contract/arithmetic and
 Docker restart authority remain separate. No source/gate/budget/topology or
 publication change. Next: explicit contract closure and accepted construction,
 plus measured latency work; keep the whole nine-tier1.0 goal active.
+
+## 2026-10-13 — Live board after local safety construction; no new gameplay milestone
+
+Reconciled at `a713137e`, clean main28 commits after origin/main4eaed0c9. Account admission,
+Combat species records and Deployment backup/protocol/attribution/rehearsal repairs now have
+named local evidence and outstanding feature-owned review ranges. They complete no new tier,
+content mint, whole feature, clean-host rehearsal or release. Full original Deployment reviews
+and corrected descendants remain different populations; the owning logs hold exact dispositions.
+
+Fresh GitHub metadata confirms the same failed CI38381138075. Current root checks again expose
+27 Clout partition divergences and historical50a3a514; bounded Docker ping still gets no reply.
+The [CI log](scaffolding-and-ci/log.md) owns commands, job timings and current capacity observation.
+RP-551's extended real-Postgres restore population remains unexecuted. No daemon restart/cleanup,
+push, threshold relaxation, draft adoption, review waiver or smaller release objective.
+
+The live queue head now routes accepted construction/native-input diagnosis, consolidated review,
+environment-blocked declared integration and specifically held contracts; its October8 snapshot
+is explicitly historical. This is editorial reconciliation, not another implementation authority.
+The whole-product overview still places us at Garage integration/hardening, with substantial
+world/combat/Tier3–8/final-ending construction and rights/recovery/accessibility/deployment ahead.
+Continue the full nine-tier1.0 program; do not confuse more safety proofs with more playable game.

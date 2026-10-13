@@ -7,11 +7,11 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-13):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-12)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Inspected source `bd91a9a6`: Garage integration/hardening, incomplete v0.1, and substantial
+Current local checkpoint `a713137e`: Garage integration/hardening, incomplete v0.1, and substantial
 unbuilt world/combat/Tier 3–8/final-ending scope. New published source
 `4eaed0c9` has completed red CI: browser/composed/schema/harness pass; client fails
 the historical guard and server fails27 Clout partition cases, both reproduced locally.
-The browser/server jobs exceed the five-minute floor. Earlier red CI remains evidence;
+The browser/server/composed jobs exceed the five-minute floor. Earlier red CI remains evidence;
 recent repairs are published, not designated-approved. Subsequent local repairs and complete original API review dispositions do not
 advance a gameplay milestone or establish release readiness. Subsequent actual operations
 producer/receiver, public replay-verifier, queued Claim and minigame admission/Exit evidence
@@ -27,12 +27,20 @@ and API/formula/UI contracts (RP-529). [Owning readiness log](commons-onboarding
 distinguishes that engineering/author closure from genuine owner semantics and adoption;
 the old “UNBLOCKED” label is not construction authority or a completed MMO milestone.
 
-2026-10-13 checkpoint: original Garage GS0.2/GS0.1 receive full-path CHANGES REQUIRED
+Preceding 2026-10-13 checkpoint: original Garage GS0.2/GS0.1 receive full-path CHANGES REQUIRED
 dispositions, not approval of later corrections. The actual hoard-preview overflow is locally
 guarded without retuning; kernel-owned derivation/larger-value representation remains RP-533.
 Combat's six-runtime identity library is constructed and locally tested, still no battle engine.
 Host space is externally freed, but Docker is still unavailable and restart authority is pending.
 These changes advance safety/review truth, not a gameplay milestone or the nine-tier release floor.
+
+Latest bounded checkpoint:28 local commits after published `4eaed0c9` include stronger Account,
+Combat and Deployment foundations/proofs, not another playable milestone. Fresh GitHub queries
+confirm the same completed red CI; current production again fails27 partitions and the root
+history guard rejects50a3a514. Direct Docker ping times out; host has124GiB available, not the
+earlier174GiB. RP-551's extended real restore population remains unexecuted. The owning logs
+hold details and exact review ranges; [current action](platform-alignment/execution-queue.md#current-action--2026-10-13)
+now replaces the stale October8 queue head without deleting its evidence.
 
 ## Historical rollup checkpoints
 
@@ -2042,7 +2050,7 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Reconciled at source `bd91a9a6` (2026-10-13). The intervening API, input, Recovery and
+Reconciled at source `a713137e` (2026-10-13). The intervening API, input, Recovery and
 Deployment repairs improve existing paths/proofs; no additional playable tier or milestone
 is completed. The five original query/epoch/board/route/router API reviews now have complete
 CHANGES REQUIRED dispositions; later corrections and implementation ranges still need review.

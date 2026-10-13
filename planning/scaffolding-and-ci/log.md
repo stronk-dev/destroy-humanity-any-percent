@@ -1046,3 +1046,30 @@ designated review, consolidatable with the existing native-input containment cor
 All handles terminal; diff/whitespace checked. No product, schema, kernel, balance, CI workflow,
 acceptance, archival, publication or deployment change. Next: retain the phase capture on an
 actual recurrence; continue authorized construction/review without claiming the timeout solved.
+
+## 2026-10-13 — Fresh current-source blockers and published-state reconciliation
+
+At clean local `a713137e`, main has28 commits after cached origin/main `4eaed0c9`; no agent push.
+Read-only `gh run list` and `gh run view` still return completed failed CI38381138075 on that
+published source. Client/server fail; schema/browser/composed/harness pass. Observed job times:
+server6m40s, browser6m38s, composed5m37s; all three exceed the existing five-minute floor. This
+refreshes metadata for the same run, not a new hosted execution or new cause-log analysis.
+
+Fresh root `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1'`8341 exits2:
+the full package executes37.942s and TestAxisAccrualPartitionProperty reports27 divergent encoded
+state subcases (RP-307). Root `make verify-kernel-version`46629 exits2 after both checkout
+controls pass, rejecting historical50a3a514 (RP-131). No bound/history/source/version alteration.
+The two failures are still locally reproducible; this is not `verify-push` or full server/CI proof.
+
+Direct read-only Docker socket curl53483 is bounded to5s and exits28 after5006ms with zero bytes.
+Fresh `df` reports124GiB available/86% used. Do not rerun a hanging integration target, restart or
+clean up the daemon without authority, or substitute host Postgres. RP-551's declared integration
+extension remains compiled but unexecuted. No Docker service/process mutation or secret read.
+
+Updated the existing whole-product board and stale October8 queue head, preserving historical
+evidence and feature-owned review ranges. The recent Account/Combat/Deployment repairs improve
+foundations and falsifiers, not another tier or an accepted release. Review by: Codex (editorial
+fact-check, not designated implementation approval). Recorded by: Codex. No new specification,
+code, acceptance/archival waiver or publication authority. All named handles are terminal.
+Next: native RP-526 first-failure diagnosis/remaining accepted reviews and construction; explicit
+held-contract closure, then declared Linux/Postgres and exact-artifact proof when authorized.
