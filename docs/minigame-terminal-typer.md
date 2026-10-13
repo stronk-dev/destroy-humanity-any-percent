@@ -101,6 +101,10 @@ freshly hashed complete artifact chain; valid escaped-key controls remain loadab
   `engine_ref: typer` and `engine_version: 1.0.0`; matching only its `minigame_id` is insufficient.
 - **Starting a session.** The start coordinator requires the requested tenant's own content rather
   than Pitch's.
+- **Availability.** The Game UI feature projection applies the same pinned Company-tier and
+  optional Founder-Exit predicate as start, without modifying either state. Passing only one
+  required clause does not report an unlock. This is checked with complete candidate bundles;
+  no production Typer registration or default player path follows from the projection.
 - **Registration.** `gameserver.Compose` registers `typer.NewTenant()` beside Pitch.
 
 The TT1 row fixture is `testdata/minigame/pitch-typer-v3.json`, with the two-tenant API fixture

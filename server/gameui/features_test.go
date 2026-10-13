@@ -221,10 +221,10 @@ func TestFiscalArmSweepPreviewMatchesTheNextHarvest(t *testing.T) {
 
 func TestMinigamesArmRestatesTheCreateGates(t *testing.T) {
 	bundle := pinnedBundle(t)
-	_, founder := featureStates(bundle)
+	company, founder := featureStates(bundle)
 	definition, _ := bundle.Minigames.Definition("pitch")
 	founder.FiscalUnlocks[definition.Unlock.UnlockID] = true
-	arm, err := projectMinigames(bundle, founder, true)
+	arm, err := projectMinigames(bundle, company, founder, true)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -233,10 +233,118 @@ func TestMinigamesArmRestatesTheCreateGates(t *testing.T) {
 	}
 	if definition.SoulGate == "human_hobby" {
 		founder.Soul = 0
-		arm, err = projectMinigames(bundle, founder, false)
+		arm, err = projectMinigames(bundle, company, founder, false)
 		if err != nil || !arm.Rows[0].HumanContentLocked {
 			t.Fatalf("near-zero Soul row=%+v err=%v", arm, err)
 		}
+	}
+}
+
+func TestMinigamesAvailabilityUsesPinnedTierAndCurriculumGates(t *testing.T) {
+	encodeState := func(t *testing.T, state *save.State) string {
+		t.Helper()
+		data, err := json.Marshal(state)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return string(data)
+	}
+	base := pinnedBundle(t)
+	artifacts := maps.Clone(base.Artifacts)
+	for name, path := range map[string]string{
+		"minigames":    "../../testdata/minigame/pitch-typer-v3.json",
+		"minigame_api": "../../balance/testdata/minigame-api-typer-candidate-v1.json",
+		"typer":        "../../balance/testdata/typer-v1.json",
+	} {
+		data, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		artifacts[name] = data
+	}
+	for _, vector := range []struct {
+		name         string
+		unlock       string
+		tier         int64
+		exits        int
+		wantUnlocked bool
+	}{
+		{"below_both", `{"kind":"tier_at_least","tier":1,"exit_history_at_least":1}`, 0, 0, false},
+		{"below_tier_only", `{"kind":"tier_at_least","tier":1,"exit_history_at_least":1}`, 0, 1, false},
+		{"below_curriculum_only", `{"kind":"tier_at_least","tier":1,"exit_history_at_least":1}`, 1, 0, false},
+		{"at_both_boundaries", `{"kind":"tier_at_least","tier":1,"exit_history_at_least":1}`, 1, 1, true},
+		{"above_both", `{"kind":"tier_at_least","tier":1,"exit_history_at_least":1}`, 9, 2, true},
+		{"no_curriculum_clause", `{"kind":"tier_at_least","tier":1}`, 1, 0, true},
+		{"zero_curriculum_clause", `{"kind":"tier_at_least","tier":1,"exit_history_at_least":0}`, 1, 0, true},
+		{"different_pinned_tier_refuses", `{"kind":"tier_at_least","tier":3,"exit_history_at_least":1}`, 2, 4, false},
+		{"different_pinned_tier_allows", `{"kind":"tier_at_least","tier":3,"exit_history_at_least":1}`, 3, 4, true},
+		{"different_pinned_curriculum_refuses", `{"kind":"tier_at_least","tier":1,"exit_history_at_least":3}`, 1, 2, false},
+		{"different_pinned_curriculum_allows", `{"kind":"tier_at_least","tier":1,"exit_history_at_least":3}`, 1, 3, true},
+		{"last_tier_refuses", `{"kind":"tier_at_least","tier":9}`, 8, 0, false},
+		{"last_tier_allows", `{"kind":"tier_at_least","tier":9}`, 9, 0, true},
+	} {
+		t.Run(vector.name, func(t *testing.T) {
+			// Only the discarded fixture changes. Rehash and load the whole
+			// artifact chain, not a hand-built or mutated Catalog pointer.
+			var root map[string]json.RawMessage
+			var definitions []map[string]json.RawMessage
+			if err := json.Unmarshal(artifacts["minigames"], &root); err != nil {
+				t.Fatal(err)
+			}
+			if err := json.Unmarshal(root["minigames"], &definitions); err != nil {
+				t.Fatal(err)
+			}
+			found := false
+			for _, definition := range definitions {
+				if string(definition["minigame_id"]) == `"typer"` {
+					definition["unlock_condition"] = json.RawMessage(vector.unlock)
+					found = true
+				}
+			}
+			if !found {
+				t.Fatal("fixture lacks Typer")
+			}
+			encoded, err := json.Marshal(definitions)
+			if err != nil {
+				t.Fatal(err)
+			}
+			root["minigames"] = encoded
+			encoded, err = json.Marshal(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			candidate := maps.Clone(artifacts)
+			candidate["minigames"] = encoded
+			hash, err := save.ConstantsHashArtifacts(candidate)
+			if err != nil {
+				t.Fatal(err)
+			}
+			bundle, err := replaycatalog.Load(hash, candidate)
+			if err != nil {
+				t.Fatalf("complete candidate chain refused: %v", err)
+			}
+			for _, active := range []bool{false, true} {
+				company, founder := featureStates(bundle)
+				company.Tier = vector.tier
+				founder.ExitHistory = make([]save.ExitRecord, vector.exits)
+				companyBefore := encodeState(t, company)
+				founderBefore := encodeState(t, founder)
+				features, err := projectFeatures(bundle, company, founder, time.UnixMilli(founder.FiscalPeriodOpenedWallMS), active, 0)
+				if err != nil || features.Minigames == nil || len(features.Minigames.Rows) != 2 {
+					t.Fatalf("availability missing: %+v, err=%v", features.Minigames, err)
+				}
+				pitch, typer := features.Minigames.Rows[0], features.Minigames.Rows[1]
+				if pitch.MinigameID != "pitch" || pitch.Unlocked || pitch.ActiveSession != active {
+					t.Fatalf("Pitch's Fiscal gate or activity changed: %+v", pitch)
+				}
+				if typer.MinigameID != "typer" || typer.Unlocked != vector.wantUnlocked || typer.HumanContentLocked || typer.ActiveSession != active {
+					t.Errorf("Typer availability=%+v, want unlocked=%t active=%t", typer, vector.wantUnlocked, active)
+				}
+				if companyBefore != encodeState(t, company) || founderBefore != encodeState(t, founder) {
+					t.Fatal("availability projection mutated its inputs")
+				}
+			}
+		})
 	}
 }
 

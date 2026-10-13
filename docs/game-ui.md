@@ -467,8 +467,11 @@ save predates the version that activates it:
   harvest's auto-sweep reports. `next_level_cost` comes from `GeneratorLevelCost`, and
   `hoard.preview_ppm` is the published `min(credit_after, cap_credits) × ppm_per_credit`.
 - **`minigames`:** Founder v21 with `minigame_api`. It restates the create gates read-only: the
-  `fiscal_unlock` rule, the `human_hobby` Soul gate, and the active-session predicate for every
-  supported tenant.
+  `fiscal_unlock` rule, the pinned `tier_at_least` Company-tier and optional Founder-Exit
+  requirements, the `human_hobby` Soul gate, and the active-session predicate for every
+  supported tenant. Tier/curriculum eligibility uses the same `TierUnlockFailure` derivation
+  as session creation; it never grants an unlock or changes either save. Typer remains
+  fixture-first and publicly unbound; correct availability is not a playable Typer workflow.
 
 `active_play` and `pets` stay null-only on the wire, because the compatibility gate rejects widening
 a registered null-only property. Their projections land as the optional sibling arms

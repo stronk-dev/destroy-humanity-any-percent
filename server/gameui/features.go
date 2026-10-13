@@ -365,7 +365,7 @@ func projectFeatures(bundle production.CatalogBundle, state, founder *save.State
 		result.Fiscal = arm
 	}
 	if bundle.MinigameAPI != nil && bundle.Minigames != nil && save.VersionForState(founder) >= 21 {
-		arm, err := projectMinigames(bundle, founder, minigameActive)
+		arm, err := projectMinigames(bundle, state, founder, minigameActive)
 		if err != nil {
 			return featureRows{}, err
 		}
@@ -493,10 +493,10 @@ func projectFiscal(catalog *fiscal.Catalog, founder *save.State, nowWallMS int64
 }
 
 // projectMinigames restates, read-only, the create gates that
-// production.StartMinigameAPISession evaluates (fiscal_unlock rule and
-// human_hobby Soul gate) for every tenant the pinned minigame_api supports.
-// The composed parity test pins the restatement to the server's answer.
-func projectMinigames(bundle production.CatalogBundle, founder *save.State, active bool) (*minigamesArm, error) {
+// production.StartMinigameAPISession evaluates (Fiscal, tier/curriculum and
+// human_hobby Soul gates) for every tenant the pinned minigame_api supports.
+// Tier/curriculum checks share the start coordinator's derivation.
+func projectMinigames(bundle production.CatalogBundle, company, founder *save.State, active bool) (*minigamesArm, error) {
 	rows := []minigameAvailability{}
 	for _, id := range bundle.Minigames.MinigameIDs() {
 		definition, ok := bundle.Minigames.Definition(id)
@@ -513,6 +513,9 @@ func projectMinigames(bundle production.CatalogBundle, founder *save.State, acti
 			}
 			_, declared := bundle.Fiscal.Unlock(definition.Unlock.UnlockID)
 			unlocked = declared && founder.FiscalUnlocks[definition.Unlock.UnlockID]
+		}
+		if definition.Unlock.TierUnlockFailure(company.Tier, int64(len(founder.ExitHistory))) != "" {
+			unlocked = false
 		}
 		locked := false
 		if definition.SoulGate == "human_hobby" {

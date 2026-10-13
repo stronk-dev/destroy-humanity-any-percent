@@ -11,6 +11,11 @@ exact descriptors/generated guards and metadata loader/version-floor details,
 parent-body reconciliation, owner adoption/designated review and RP-162/RP-460 remain.
 Do not treat this draft as permission to implement B5/B6, refresh a pin or expose Typer.
 
+2026-10-14 bounded TT-PA2 correction: RP-563's availability projection now reads the same
+pinned tier/Founder-Exit predicate as session creation. Complete candidate-bundle projection
+regressions and affected cold package checks pass; no public binding or feature completion.
+The owning log records the correction range after `573b0c9c`, pending Claude review.
+
 ## Batches
 
 - [ ] B1 — PARTIAL (full original `345dc0b9^..345dc0b9` designated Codex review is now CHANGES REQUIRED, recorded in the 2026-10-08 log; Codex's separate corrective ranges still await Claude. RP-162 result bounds and RP-460 timing arithmetic remain author-contract gaps) — Content + engine (TT3/TT4): `balance/testdata/typer-v1.json` fixture (placeholder

@@ -968,3 +968,42 @@ review remains required, independently of earlier corrective ranges. No whole-CI
 acceptance, archival, kernel bump, owner copy, cleanup or push. Original B6/B7
 review work is finished; continue accepted integration without repeating it or
 inventing the still-held public-wire/timing/result contracts.
+
+## 2026-10-14 — RP-563 availability matches the accepted tier/Exit gates
+
+Baseline `573b0c9c`, separate from the unaccepted HTTP-binding draft. Outcome under TT-PA2:
+the read-only Game UI availability must not mark Typer unlocked when its pinned Company-tier
+or optional Founder-Exit clause fails. The start coordinator already uses TierUnlockFailure;
+projectMinigames previously checked only Fiscal/Soul and had no Company input.
+
+Add TestMinigamesAvailabilityUsesPinnedTierAndCurriculumGates through projectFeatures, using
+complete freshly hashed Pitch/Typer candidate bundles loaded by the real replay-catalog loader.
+Thirteen rows cover each failing clause, exact/above thresholds, absent/zero Exit clauses and
+different pinned thresholds including Tier9. Each runs with/without an active session, checks
+Pitch's unchanged Fiscal gate and Typer's independent Soul/activity flags, and compares both
+input states before/after. These are controlled in-memory projections, not persisted player
+histories, session starts, DOM controls or public Typer replies.
+
+Old projection plus the new regression fails cold (handle90052, terminal Make exit2): six
+blocked rows incorrectly report unlocked in both activity states, twelve wrong results; seven
+allowed controls pass. Pass Company state into projectMinigames and reuse the exact existing
+TierUnlockFailure derivation. No second predicate, catalog retune, wire/schema/version change,
+input mutation or unaccepted namespace implementation. The corrected named regression passes
+all13 rows/26 activity populations cold; the final affected package run/vet also passes:
+
+`make test-go vet GO_PACKAGES='./gameui ./minigame ./account ./gameserver' GO_TEST_FLAGS='-count=1'`
+
+Final handle89626 terminates exit0: Game UI0.390s, Minigame0.129s, Account0.413s,
+Gameserver0.282s, vet clean. Initial corrected package run also passed; no failure concealed.
+Formatting/diff checked. Client/generated DTOs and API descriptors are untouched, so no unrelated
+browser/build/API-generation suite was run. Actual Docker context points at the Desktop socket;
+direct ping13641 still terminates exit28 after5011ms with zero bytes. No restart/cleanup,
+declared Postgres/composed/Linux/hosted run or larger integration claim. Existing public-wire,
+timing/result, adopted-content, AT and full1.0 gates remain open.
+
+Update canonical Game UI/Typer docs, plan and RP-563 in this same batch. Review by: Codex
+(implementer first filter). Recorded by: Codex. Exact correction/tests/docs/records range after
+`573b0c9c` through this containing commit needs Claude designated review; no feature checkbox,
+archival, release approval or push. Continue the public-binding draft's descriptors/generated
+guards and metadata compatibility work alongside other accepted construction, without asking
+Marco to supply engineering details.
