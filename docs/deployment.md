@@ -342,7 +342,12 @@ gameserver archive and an exclusive result path. It scans the real Git-tracked p
 image. The image scan opens every outer archive member, gunzips compressed layers, walks plain tar
 layers (including valid magic-less V7 headers) and nested gzip/tar files inside them (to a fixed
 depth and a 1 GiB decompressed bound),
-and matches each file's bytes and tar entry names once, at the innermost readable form. A zstd
+and matches file payloads at the innermost readable form. It also scans decoded tar metadata
+(names/links, owner/group, PAX and xattr keys/values, including directories) and gzip
+name/comment/extra bytes. Finding paths and recursive member error labels containing a recognized
+secret are replaced as whole paths, never printed with the secret intact. Ordinary locations
+remain visible. This uses the same recognized-pattern rules and bounds; it is not a detector
+for every possible credential encoding. A zstd
 member, corrupt gzip, truncated tar or depth/size overflow fails the scan closed instead of being
 skipped. It derives the source commit from Git, and writes a strict mode-0600 result containing counts
 and identities but no paths or content. Final evidence rejects a source-only scan, findings,

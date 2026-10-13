@@ -104,6 +104,7 @@ func ScanDockerArchive(path string) ([]SecretFinding, error) {
 		if err != nil || header.Size < 0 || header.Size > maximumSecretScanMember {
 			return nil, ErrInvalidContent
 		}
+		findings = append(findings, scanTarMetadata("images/gameserver.docker.tar:"+header.Name, header)...)
 		if header.Typeflag != tar.TypeReg && header.Typeflag != tar.TypeRegA {
 			continue
 		}
@@ -137,6 +138,7 @@ var (
 )
 
 func scanArchiveMember(path string, data []byte, depth int) ([]SecretFinding, error) {
+	path = secretSafeScanPath(path)
 	if depth > maximumSecretScanDepth {
 		return nil, fmt.Errorf("%w: secret scan nesting exceeds %d at %s", ErrInvalidContent, maximumSecretScanDepth, path)
 	}
@@ -151,11 +153,17 @@ func scanArchiveMember(path string, data []byte, depth int) ([]SecretFinding, er
 		if err != nil {
 			return nil, fmt.Errorf("%w: unreadable gzip member %s", ErrInvalidContent, path)
 		}
+		metadata := append([]byte(decompressor.Name+"\x00"+decompressor.Comment+"\x00"), decompressor.Extra...)
+		findings = append(findings, scanSecretBytes(path+"#gzip-metadata", metadata)...)
 		plain, err := io.ReadAll(io.LimitReader(decompressor, maximumSecretScanDecompressed+1))
 		if err != nil || len(plain) > maximumSecretScanDecompressed || decompressor.Close() != nil {
 			return nil, fmt.Errorf("%w: gzip member %s is corrupt or exceeds the scan bound", ErrInvalidContent, path)
 		}
-		return scanArchiveMember(path+"!gunzip", plain, depth+1)
+		nested, err := scanArchiveMember(path+"!gunzip", plain, depth+1)
+		if err != nil {
+			return nil, err
+		}
+		return append(findings, nested...), nil
 	case isTarStream(data):
 		reader := tar.NewReader(bytes.NewReader(data))
 		for {
@@ -166,7 +174,7 @@ func scanArchiveMember(path string, data []byte, depth int) ([]SecretFinding, er
 			if err != nil || header.Size < 0 || header.Size > maximumSecretScanDecompressed {
 				return nil, fmt.Errorf("%w: unreadable tar member in %s", ErrInvalidContent, path)
 			}
-			findings = append(findings, scanSecretBytes(path+"!"+header.Name+"#name", []byte(header.Name+"\x00"+header.Linkname))...)
+			findings = append(findings, scanTarMetadata(path+"!"+header.Name, header)...)
 			if header.Typeflag != tar.TypeReg && header.Typeflag != tar.TypeRegA {
 				continue
 			}
@@ -183,6 +191,39 @@ func scanArchiveMember(path string, data []byte, depth int) ([]SecretFinding, er
 	default:
 		return scanSecretBytes(path, data), nil
 	}
+}
+
+func scanTarMetadata(path string, header *tar.Header) []SecretFinding {
+	var metadata bytes.Buffer
+	appendString := func(value string) { metadata.WriteString(value); metadata.WriteByte(0) }
+	for _, value := range []string{header.Name, header.Linkname, header.Uname, header.Gname} {
+		appendString(value)
+	}
+	// PAX holds arbitrary extension records. Xattrs may repeat a PAX record;
+	// one combined representation yields one finding per rule per header.
+	for _, fields := range []map[string]string{header.PAXRecords, header.Xattrs} {
+		keys := make([]string, 0, len(fields))
+		for key := range fields {
+			keys = append(keys, key)
+		}
+		sort.Strings(keys)
+		for _, key := range keys {
+			appendString(key)
+			appendString(fields[key])
+		}
+	}
+	return scanSecretBytes(path+"#tar-metadata", metadata.Bytes())
+}
+
+func secretSafeScanPath(path string) string {
+	for _, rule := range secretRules {
+		if rule.pattern.MatchString(path) {
+			// Redact the whole path: stripping only a PEM marker could leave
+			// its key material, and metadata keys themselves can carry secrets.
+			return "redacted-secret-bearing-path"
+		}
+	}
+	return path
 }
 
 func isTarStream(data []byte) bool {
@@ -203,14 +244,14 @@ func RequireNoSecrets(findings []SecretFinding) error {
 	if len(findings) == 0 {
 		return nil
 	}
-	return fmt.Errorf("%w: secret material rule=%s path=%s", ErrInvalidContent, findings[0].Rule, findings[0].Path)
+	return fmt.Errorf("%w: secret material rule=%s path=%s", ErrInvalidContent, findings[0].Rule, secretSafeScanPath(findings[0].Path))
 }
 
 func scanSecretBytes(path string, data []byte) []SecretFinding {
 	findings := []SecretFinding{}
 	for _, rule := range secretRules {
 		if rule.pattern.Match(data) {
-			findings = append(findings, SecretFinding{Path: path, Rule: rule.name})
+			findings = append(findings, SecretFinding{Path: secretSafeScanPath(path), Rule: rule.name})
 		}
 	}
 	return findings

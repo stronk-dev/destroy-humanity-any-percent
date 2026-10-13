@@ -6058,3 +6058,62 @@ implementer first-filter paragraph. It edits neither that history nor the
 append-only correction row. It approves no DP-E finding/remediation, current
 Deployment closeout, new CI guard or release. The old verdict and its executed
 evidence remain in their original section above.
+
+## 2026-10-13 — Complete original Claude R3 diff-review disposition
+
+**Review by:** Codex (designated cross-party reviewer of the original Claude range).
+**Recorded by:** Codex. **Range:** `2b6c0cb4^..2b6c0cb4`, all five changed paths:
+scanner, scanner tests, rehearsal secret producer, canonical Deployment docs and owning log.
+**Decision:** **CHANGES REQUIRED**, retaining the earlier RP-135 finding; no descendant approval.
+
+Inspected the complete recursive gzip/tar opener, errors/guards, payload/name assertions,
+exclusive synthetic probe-file lifecycle, accompanying coverage claims and historical process
+disclosure. The body/gzip correction is real, but the original recognizer misses valid V7 tar
+(the earlier executed RP-135 record), and the inherited scan branches omit owner/group/PAX/xattr
+and gzip-header metadata. Its scanner-path rendering can also include recognized secret names.
+Current digest-valid RP-543 regressions below execute that surviving omission; they are NOT
+relabeled execution of the complete historical tree. This completes the original diff
+disposition, not all original acceptance experiments, current-image safety, DP-B or R-006.
+Later Codex repairs remain separately subject to Claude review; other bounded approvals stand.
+
+## 2026-10-13 — RP-543 archive metadata scanning and secret-safe diagnostics
+
+Outcome under DP3/AC2: inspect outer/nested tar names/links, owner/group, PAX/xattr keys/values
+before non-file skipping, and gzip name/comment/extra before recursion. Use existing patterns,
+types and bounds. Redact entire secret-bearing finding/member-error paths, not just a marker
+that could leave key material. Preserve ordinary locations, payload detection and named probe
+results. No public result schema, credential, kernel, workflow, limit or archive-byte change.
+
+Regression95601 on `cf8c6f08` production scanner:31 metadata-only sentinels are missed,
+two finding paths and two unreadable-compression errors expose the synthetic name; six controls
+pass. Each image fixture first passes actual Docker archive/config/layer-digest validation, so
+parser refusal cannot masquerade as secret detection. Initial82679 predates the extra outer-
+directory and separate error cases; final95601 is the complete old-source population.
+
+Corrected8039 passes that population. Final supplement adds direct-gate path redaction;
+91004 passes all42 metadata/image/error subcases plus the complete cold releasepackage,
+deploymentrehearsal and both scanner/rehearsal CLI packages, with vet. 63466 was the preceding
+passed package union, not the added direct-gate result. Existing gzip/V7/body/malformed and
+named seeded-source/image producer checks remain. Diff/format/whitespace checked.
+
+Both retained102face6 archive copies still hash to
+`0ffddcec5503ff6b20691a4a1039057e7eb3ad502e13b65cebc77033fc2e0d4b`, matching its committed build
+record. Ordinary root command:
+`make release-secret-scan GAMESERVER_IMAGE_ARCHIVE='.cache/release-current-102face6/bundle-a/images/gameserver.docker.tar'`
+passes2163 tracked/indexed working files and that actual historical image with no findings.
+New tests are staged so the source population
+includes them. This dirty-worktree developer mode writes no R-006 artifact and does not pair a
+current source claim with an old image. The final same command also passes2163/no findings
+after the remaining record edits; neither run produces a structured release evidence artifact.
+
+Limits: recognized-pattern/component and historical-image evidence, not every credential
+encoding, current rebuilt package, clean-host install/restore, Docker runtime, SQL, hosted CI,
+full Deployment or1.0. Historical bundle bytes/tools are unchanged and lack this new scanner;
+rebuild/re-scan the final reviewed artifact. No secrets accessed outside repository/artifact
+scope or printed; no daemon, container, publication or deployment operation.
+
+**Review by:** Codex (new repair's implementer first filter). **Recorded by:** Codex.
+Exact new correction range starts after `cf8c6f08` through this containing source/tests/docs/
+records commit and needs designated Claude review, consolidatable with RP-135. The original
+R3 verdict approves none of this repair. All named handles terminal; no acceptance or archival.
+Continue the remaining original reviews and authorized product/operations/artifact construction.

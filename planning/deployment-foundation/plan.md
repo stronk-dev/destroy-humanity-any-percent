@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP3/AC2 correction, 2026-10-13 (RP-543):** archive secret scanning now
+includes decoded tar owner/group/PAX/xattr fields and gzip header metadata; recognized
+secret-bearing finding/error paths are redacted. Digest-valid old-source negatives and
+clean controls discriminate; cold packages/vet and an ordinary scan of the retained
+102face6 image pass. Its bytes remain historical and its embedded tool lacks this fix.
+The log records the complete original R3 five-path CHANGES REQUIRED disposition and the
+new correction range after `cf8c6f08`, pending designated review. Rebuild/re-scan the final
+reviewed artifact; no new scanner rule/limit, R-006, full Deployment or1.0 acceptance.
+
 **Latest DP7 actual proxy outage, 2026-10-13:** the shipped Caddyfile's private
 route/scrape now has a physical stop→real pending five-minute rule→receiver
 firing→same-container restart→matching resolution witness. Upstream readiness is
