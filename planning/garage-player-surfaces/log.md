@@ -6912,3 +6912,59 @@ review as `7fd2549b` exclusive through this commit. Earlier debt, including RP-4
 remains separate. All handles terminal; diff checked. No draft adoption, archive or push.
 Next: continue accepted remaining integration/acceptance while these changes await review;
 the four proposed contract choices remain unadopted, not a blanket work stop.
+
+## 2026-10-13 — Designated review of original GS0.2 commit `66ae01f9`
+
+Review by: Codex (designated independent reviewer of Claude's original batch).
+Recorded by: Codex. **Verdict: CHANGES REQUIRED** for exact range
+`66ae01f9^..66ae01f9`, all fourteen changed paths. Provenance is the original
+Claude implementation log plus its co-author trailer, not the Git author name
+alone. This is a complete disposition of that original commit, not a union
+verdict for later Garage/API implementation, records or Codex corrections.
+
+Inspected every changed path: GameUIApp/intent-outcome/runtime; both changed
+test files; the candidate catalog, generated catalog/hash/types/orphans and
+Go key list; deployment manifest; owning plan/log. Re-read accepted GS0.2
+receipt/error/revision and GS0.7 copy rules. Findings reuse existing rows:
+
+- **RP-147:** the original host only reads after applied cross-gate/decline;
+  an ordinary applied Founder action does not await a new authoritative state.
+  Its added test covers refusal/conflict but no applied-read/pending boundary.
+  The earlier 2026-10-04 recorded actual Fiscal→Pitch failure and browser
+  counterexample remain evidence, not a newly executed historical server run.
+- **RP-322:** original429 and exclusive-activity mapping returns `effect:none`,
+  permitting reactivation without the next snapshot required by GS0.2.
+  Execute the ACTUAL committed historical `intent-outcome.ts` from `git show
+  66ae01f9:client/src/game-ui/intent-outcome.ts`, TypeScript-transpiled in memory
+  and imported as ESM (no source mutation/current-module substitution). Twelve
+  assertion controls execute: ten healthy/refusal cases pass; both named
+  `effect === "refresh"` requirements fail with `none !== refresh`, exit1.
+- **RP-317:** the original host never consumes either mapper's invariant flag.
+  Historical controls confirm the flag for an unknown pair/invalid400; source
+  trace shows no reporting arm. Existing failing-first/native diagnosis and
+  later repair remain separately recorded; no historical DOM execution claimed.
+
+Readonly historical output checks pass: all eleven candidate entries equal
+their generated rows;278 generated keys agree in the TS and Go key lists;
+copy-hash references agree between file/types/deployment manifest. This checks
+output consistency, not a fresh compiler rebuild/hash derivation, prose adoption
+or release eligibility. Candidate wording stays pending owner editorial action.
+
+Current source `cfeed5d2` verification, not retrospective approval of old code:
+Node `game-ui-intent-outcome`/`game-ui-runtime`28344 pass81 cases. Native root
+`make test-browser-focused` selector over `garage-surfaces-browser.test.ts`
+for applied/shared Fiscal reads and `HTTP-error ownership fiscal/429`22728
+passes12 Chromium/WebKit cases (836 deliberately deselected),2.60s. The
+Fiscal400 ownership selector43886 passes4 (844 deselected),1.90s. These observe
+native inputs, held authoritative reads, revision binding, pending/explicit
+consent and fixed diagnostics; their runtime/network doubles are not fresh
+SQL, real429/active-session or historical integrated proof. No Firefox/Linux,
+full browser/performance/composed/CI or whole-Garage claim. All handles terminal.
+
+No product, test, copy, RFC body, kernel or generated file changes in this
+record batch; no duplicate defects or further code repair is needed for these
+already corrected findings. Original negative review and later correction
+approval are distinct: Claude must independently review those Codex ranges,
+and all remaining original Garage batches still need their own disposition.
+Update the owning plan and existing ledger rows, check the diff, keep
+acceptance/archival/publication and the full nine-tier1.0 floor open.

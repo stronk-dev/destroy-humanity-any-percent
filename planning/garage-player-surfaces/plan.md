@@ -477,6 +477,9 @@ must succeed before another container population. No lifecycle promotion.
 
 - [x] GS0.2 runtime: `intent()` returns the typed outcome; non-2xx throws `GameUIRequestError`;
   `act()` scopes `expected_revision` (Company vs Founder); rejected intents render their reason.
+  Original `66ae01f9^..66ae01f9`, all fourteen changed paths, now has a designated Codex
+  CHANGES REQUIRED disposition for RP-147/317/322 in the 2026-10-13 owning log.
+  This is not approval of Codex's later corrections or full GS0.2 acceptance.
 - [x] GS0.1 projection: Game UI snapshot v4 (`features` arms + `generators[].provision_cap` +
   feature facts), registered schema, generated types, client parser; live sync requires v4.
 - [x] GS3 Meters arm + surface.
