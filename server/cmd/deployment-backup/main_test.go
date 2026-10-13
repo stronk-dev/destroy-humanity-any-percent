@@ -8,6 +8,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
+	"syscall"
 	"testing"
 	"time"
 
@@ -17,6 +19,129 @@ import (
 	"github.com/prometheus/common/expfmt"
 	"github.com/prometheus/common/model"
 )
+
+type scheduleDumpRead func([]byte) (int, error)
+
+func (read scheduleDumpRead) Read(data []byte) (int, error) { return read(data) }
+
+func TestScheduleDefersWithoutFailureWhileAgedWriterOwnsTarget(t *testing.T) {
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Now().UTC()
+	target, metrics := t.TempDir(), t.TempDir()
+	manifest := "sha256:" + strings.Repeat("a", 64)
+	input := deploymentbackup.CreateInput{Directory: target, BackupID: now.Format("20060102T150405Z") + "-abcdef123456",
+		ServerID: "fixture-server", ReleaseManifestSHA256: manifest, EpochID: 8,
+		StartedAt: now, Now: func() time.Time { return now }, Recipient: identity.Recipient().String()}
+	entered, release := make(chan struct{}), make(chan struct{})
+	var readOnce, releaseOnce sync.Once
+	dump := []byte("PGDMP\x01live scheduled fixture")
+	reader := bytes.NewReader(dump)
+	input.Dump = scheduleDumpRead(func(data []byte) (int, error) {
+		readOnce.Do(func() { close(entered); <-release })
+		return reader.Read(data)
+	})
+	completed := make(chan error, 1)
+	go func() {
+		_, path, err := deploymentbackup.Create(input)
+		if err == nil {
+			var restored bytes.Buffer
+			_, err = deploymentbackup.Restore(path, manifest, identity, &restored)
+			if err == nil && !bytes.Equal(restored.Bytes(), dump) {
+				err = errors.New("live writer bytes changed")
+			}
+		}
+		completed <- err
+	}()
+	var result error
+	finished := false
+	finish := func() error {
+		releaseOnce.Do(func() { close(release) })
+		if !finished {
+			result, finished = <-completed, true
+		}
+		return result
+	}
+	t.Cleanup(func() { finish() })
+	select {
+	case <-entered:
+	case result = <-completed:
+		finished = true
+		t.Fatal("creator failed before its paused dump read")
+	case <-t.Context().Done():
+		t.Fatal("creator never reached its dump read")
+	}
+	state, err := deploymentbackup.InspectTarget(target, now)
+	if err != nil || len(state.ActiveTemporaries) != 1 {
+		t.Fatal("missing actual live temporary")
+	}
+	old := now.Add(-deploymentbackup.StaleTemporaryAge - time.Second)
+	if err := os.Chtimes(state.ActiveTemporaries[0], old, old); err != nil {
+		t.Fatal(err)
+	}
+	creates := 0
+	var emitted map[string]any
+	round := scheduleRound{target: target, metricsDirectory: metrics, now: func() time.Time { return now },
+		emit: func(value any) error { emitted = value.(map[string]any); return nil },
+		create: func(started time.Time) (deploymentbackup.Header, string, error) {
+			creates++
+			retryInput := input
+			retryInput.BackupID = now.Format("20060102T150405Z") + "-abcdef123457"
+			retryInput.StartedAt, retryInput.Dump = started, bytes.NewReader([]byte("PGDMP\x01scheduled retry"))
+			return deploymentbackup.Create(retryInput)
+		}}
+	if outcome, err := round.run(); outcome != scheduleDeferred || err != nil || creates != 0 || emitted["reason"] != "target_in_use" {
+		t.Fatalf("live target not honestly deferred: outcome=%s creates=%d error=%v", outcome, creates, err)
+	}
+	if entries, err := os.ReadDir(metrics); err != nil || len(entries) != 0 {
+		t.Fatal("deferral falsely recorded a backup result")
+	}
+	if err := finish(); err != nil {
+		t.Fatal("deferred cleanup broke live encrypted backup completion/restore")
+	}
+	if outcome, err := round.run(); outcome != scheduleCreated || err != nil || creates != 1 {
+		t.Fatalf("round could not retry after ownership release: outcome=%s creates=%d error=%v", outcome, creates, err)
+	}
+}
+
+func TestScheduleDefersWhenCleanupOwnsTarget(t *testing.T) {
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	target, metrics := t.TempDir(), t.TempDir()
+	ownership, err := os.Open(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ownership.Close()
+	if err := syscall.Flock(int(ownership.Fd()), syscall.LOCK_EX|syscall.LOCK_NB); err != nil {
+		t.Fatal(err)
+	}
+	now := time.Now().UTC()
+	var emitted map[string]any
+	creates := 0
+	round := scheduleRound{target: target, metricsDirectory: metrics, now: func() time.Time { return now },
+		emit: func(value any) error { emitted = value.(map[string]any); return nil },
+		create: func(started time.Time) (deploymentbackup.Header, string, error) {
+			creates++
+			return deploymentbackup.Create(deploymentbackup.CreateInput{Directory: target,
+				BackupID: now.Format("20060102T150405Z") + "-abcdef123456", ServerID: "fixture-server",
+				ReleaseManifestSHA256: "sha256:" + strings.Repeat("a", 64), EpochID: 8, StartedAt: started,
+				Now: func() time.Time { return now }, Recipient: identity.Recipient().String(), Dump: bytes.NewReader([]byte("PGDMP\x01blocked"))})
+		}}
+	if outcome, err := round.run(); outcome != scheduleDeferred || err != nil || creates != 1 || emitted["reason"] != "target_in_use" {
+		t.Fatalf("cleanup-owned target not deferred: outcome=%s creates=%d error=%v", outcome, creates, err)
+	}
+	if entries, err := os.ReadDir(metrics); err != nil || len(entries) != 0 {
+		t.Fatal("ownership contention falsely recorded a backup result")
+	}
+	if entries, err := os.ReadDir(target); err != nil || len(entries) != 0 {
+		t.Fatal("blocked creator left a partial file")
+	}
+}
 
 func TestRecoveryIdentityRequiresDatabaseSecretPath(t *testing.T) {
 	if err := runRecoveryIdentity(context.Background(), nil); err == nil {

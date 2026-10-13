@@ -281,6 +281,15 @@ designated review remain open; the owning log holds the bounded result.
 
 ## Delivery sequence
 
+**Current bounded R6 correction, 2026-10-13 (RP-544):** live backup writers own shared directory
+locks; aged-temporary cleanup requires exclusive ownership and rechecks the inspected target.
+Busy ownership defers scheduled rounds without false result metrics. The actual second-process
+regression, encrypted restore, orphan cleanup, scheduler retry and concurrent no-overwrite cases
+pass locally, with cold affected packages/vet/race and a Linux-amd64 build. This is not Linux
+runtime, Postgres or clean-host evidence. Original R6's full six-path disposition remains CHANGES
+REQUIRED (RP-136/RP-544); the new repair after `ca447daa` and older checksum corrections need
+designated Claude review before R6 closes. See the owning log; no age, cadence or retention change.
+
 The release package is the integration boundary. Work is split so each batch has one authority,
 its own executable failure cases and a bounded review range. No batch may claim a later criterion.
 

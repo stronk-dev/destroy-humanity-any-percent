@@ -6117,3 +6117,63 @@ Exact new correction range starts after `cf8c6f08` through this containing sourc
 records commit and needs designated Claude review, consolidatable with RP-135. The original
 R3 verdict approves none of this repair. All named handles terminal; no acceptance or archival.
 Continue the remaining original reviews and authorized product/operations/artifact construction.
+
+## 2026-10-13 — Complete original Claude R6 diff-review disposition
+
+**Review by:** Codex (designated cross-party reviewer of the original Claude implementation).
+**Recorded by:** Codex. **Range:** `1833882c^..1833882c`, all six changed paths: target classifier,
+scheduler, both test files, canonical docs and owning log. **Decision: CHANGES REQUIRED.**
+
+Inspected the entire target classifier/type/name/age checks, blocked/deferred/created scheduler,
+five-minute retry and six-hour success cadence, checksum witnesses and associated claims.
+Retain the previously executed RP-136 finding: unequal-length payloads did not isolate SHA-256
+checking. RP-544 adds a production safety gap: age alone admits deletion of a still-live creator's
+temporary. The unchanged original target logic is also present at `ca447daa`; the current-source
+regression below executes it there, not the full historical tree. Existing foreign/corrupt
+refusal and active deferral are real improvements, not blanket R6 acceptance. No new checksum
+severing is needed; the older equal-length correction and its separate probes retain their own
+pending Claude review. This original negative verdict approves none of the later Codex repairs.
+
+## 2026-10-13 — RP-544 exclude live writers from stale backup cleanup
+
+Outcome under DP6/R6: age remains eligibility, not writer-death evidence. Create acquires a shared
+nonblocking directory lock before any temporary and holds it through final cleanup. Stale cleanup
+binds paths to the inspected directory and acquires exclusive ownership before the existing
+name/type/age rechecks. No lockfile, backup-format/JSON-list change or retuned limit. Shared
+ownership preserves concurrent creators and their existing atomic no-replacement contract.
+Busy cleanup/creation produces a deferred `target_in_use` scheduler result, no false success/
+failure metric and the unchanged retry cadence. Other lock errors fail, never degrade quietly.
+
+Old-source regression62878 (`ca447daa`) uses an actual age-encrypted writer paused at its dump
+read, controlled mtime older than one hour, and a second OS process invoking the real cleanup.
+It fails: `refused=false remains=false`, then the real writer cannot finish. The prior41613
+handle was absent on resume and its final result unavailable; it is not claimed as evidence.
+The corrected child requires the exact busy error, not just any failure. Corrected99161 passes
+the cross-process case, actual authenticated bytes/header restore, subsequent genuine orphan
+removal and the unchanged nested/concurrent no-overwrite population.
+
+Final62181: complete cold deploymentbackup, backup CLI, deploymentrelease and deploymentrehearsal
+packages pass; corresponding vet passes. 13090 passes focused race execution of cross-process
+cleanup, six inspected-target refusals, creator exclusion/failed-dump ownership release,
+concurrent no-overwrite and both scheduler ownership directions. The live-writer scheduler
+test checks no new creation/no metrics while deferred, restores its exact encrypted bytes, then
+executes a successful real encrypted scheduled retry. Six rechecks retain freshened, symlink,
+directory, foreign-name, outside-target and unbound-state entries. All fixture deletions are
+narrow test-owned paths; no real backup/container cleanup or restart occurred.
+
+The actual CreatePackage tar-producer/pipe boundary also returns the precise ownership refusal
+without blocked writer completion or partial files, then retries and authenticates/extracts
+the complete dump successfully. These final runs supersede earlier83703/71856 package and
+79589 race passes for the added package case. Formatting/diff/whitespace checks pass.
+
+75934 root Linux-amd64 helper build passes into ignored `.cache/bin/deployment-backup-linux-amd64`.
+Cross-compilation is not Linux filesystem/runtime evidence. Native integration-only execution
+explicitly skips all seven Postgres tests for missing declared DB URLs; no DB restore or R-006
+claim. Locks coordinate supported helpers, not privileged uncoordinated writers; validate the
+actual supported filesystem and release artifact in the Linux/clean-host population.
+
+**Review by:** Codex (repair implementer first filter). **Recorded by:** Codex.
+New source/tests/docs/record range starts after `ca447daa` through this containing commit and
+needs designated Claude review, consolidatable with the earlier RP-136 corrections. R6, full
+Deployment, hosted CI and full nine-tier1.0 remain open. No owner choice, version, acceptance,
+archival, push or deployment implied. All named execution handles above are terminal.

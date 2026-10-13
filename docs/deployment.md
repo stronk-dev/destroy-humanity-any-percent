@@ -517,8 +517,9 @@ target on that refusal, then restore the intact backup and compare its recovery 
 Every scheduled round classifies the complete target *before* writing anything:
 - **Completed backups:** regular `*.ccbackup` files.
 - **The helper's own temporaries** (`.backup-payload-*.tmp` / `.backup-envelope-*.tmp`):
-  - *Stale:* unmodified for more than one hour. These are crash debris; the round removes them and
-    reports the count.
+  - *Stale:* unmodified for more than one hour. They are eligible for crash-debris cleanup, not
+    proof that a writer has died. The round removes them only after excluding live helpers,
+    rechecking the inspected target, regular-file type, own name and age; it reports the count.
   - *Active:* possibly a concurrent pre-upgrade backup. The round defers, records no failure, and
     retries in five minutes.
 - **Foreign entries:** anything else. A foreign entry or an invalid/corrupt backup records a
@@ -529,6 +530,16 @@ The worker never exits for a blocked target, so a blocked target cannot fill wit
 or drive a restart loop. The backup target must therefore be a dedicated directory; a filesystem
 root containing `lost+found` blocks backups until the operator points the target at a
 subdirectory.
+
+Supported creators hold shared advisory locks on the target directory through their temporary
+cleanup and completed rename; stale cleanup requires an exclusive nonblocking lock on that same
+directory. No extra lockfile is added. Live ownership, even of an aged temporary, defers the round
+with `target_in_use`, records no success/failure and retries at the existing five-minute interval.
+Scheduled creation also defers if cleanup currently owns the target; a one-off create returns
+the busy error to its caller. Concurrent creators remain permitted, with the existing
+no-replacement commit protecting a completed destination.
+Locks release on handle/process exit; unsupported filesystem locking fails rather than silently
+degrading. This coordinates supported helpers, not arbitrary privileged filesystem mutations.
 
 The plaintext header's payload length and SHA-256 are verified on every read. A truncated or
 substituted payload is invalid for schedule, retention and restore, even when age authentication

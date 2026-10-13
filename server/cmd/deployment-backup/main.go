@@ -134,6 +134,9 @@ func (round scheduleRound) run() (scheduleOutcome, error) {
 		return fail("target_unreadable", map[string]any{}, err)
 	}
 	if err := deploymentbackup.RemoveStaleTemporaries(state, started); err != nil {
+		if errors.Is(err, deploymentbackup.ErrTargetBusy) {
+			return scheduleDeferred, round.emit(map[string]any{"status": string(scheduleDeferred), "reason": "target_in_use"})
+		}
 		return fail("stale_temporary_cleanup", map[string]any{"stale_temporaries": len(state.StaleTemporaries)}, err)
 	}
 	if len(state.ActiveTemporaries) != 0 {
@@ -154,6 +157,9 @@ func (round scheduleRound) run() (scheduleOutcome, error) {
 	}
 	header, path, err := round.create(started)
 	if err != nil {
+		if errors.Is(err, deploymentbackup.ErrTargetBusy) {
+			return scheduleDeferred, round.emit(map[string]any{"status": string(scheduleDeferred), "reason": "target_in_use"})
+		}
 		return fail("create_failed", map[string]any{}, err)
 	}
 	if err := operations.RecordOperation(round.metricsDirectory, "backup", "success", header.CompletedAt); err != nil {

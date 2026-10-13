@@ -79,6 +79,11 @@ func Create(input CreateInput) (Header, string, error) {
 	if err != nil || !info.IsDir() || info.Mode()&0o022 != 0 {
 		return Header{}, "", ErrInvalid
 	}
+	ownership, err := lockTarget(input.Directory, false)
+	if err != nil {
+		return Header{}, "", err
+	}
+	defer ownership.Close()
 	header := Header{SchemaVersion: 1, BackupID: input.BackupID, ServerID: input.ServerID,
 		ReleaseManifestSHA256: input.ReleaseManifestSHA256, EpochID: input.EpochID,
 		StartedAt: input.StartedAt.UTC(), CompletedAt: input.Now().UTC(), PreUpgrade: input.PreUpgrade}
