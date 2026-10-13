@@ -5292,3 +5292,23 @@ cleanup/restart, review-debt waiver, tier completion or release promotion.
 Next: reconcile the actual CI outcome, restore the declared verification service
 only with authority, close engineering contracts and continue accepted construction.
 Full nine-tier1.0 remains active, not narrowed to a safe Garage preview.
+
+## 2026-10-13 — Final published CI outcome and local blocker reproduction
+
+Published4eaed0c9 CI38381138075 completes failure. Browser/composed/schema/harness
+pass; client rejects historical50a3a514 and server fails27 Clout partition cases.
+Fresh local61b145af root commands reproduce both exact blockers, so these are
+known local defects/authority holds, not uncaught Linux-only surprises. Hosted
+functional browsers finish426 files/34,704 passes/twelve deliberate deadline
+controls/24 skips; five isolated performance cases also pass. The browser/server/
+composed job durations exceed the five-minute workflow floor. This advances hosted
+verification, not reliability, independent review, full CI or a gameplay milestone.
+
+[CI log](scaffolding-and-ci/log.md) holds completed job IDs, actual causes,
+scoped local commands and the incomplete/truncated-log boundaries. Latest hoard
+fix61b145af is not in that run. Existing failed local history and review debt
+remain. Kernel policy adoption is explicitly requested; no answer/exception row
+or implementation is inferred. Conservation's exact contract/arithmetic and
+Docker restart authority remain separate. No source/gate/budget/topology or
+publication change. Next: explicit contract closure and accepted construction,
+plus measured latency work; keep the whole nine-tier1.0 goal active.

@@ -7,40 +7,27 @@
 
 ## Current checkpoint — 2026-10-13
 
-RP-525's exact Node-only fixture exclusion is locally verified in its actual Node/browser
-consumers and awaits designated review. The complete job audit still fails: native client
-hits RP-131; Linux-amd64/Postgres server hits RP-307; full browser input/runner evidence is
-RP-526. Its proposed single-file config was withdrawn after the ordinary target stalled,
-despite an earlier successful CLI control. Do not claim browser or whole CI green.
+Published [CI38381138075](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38381138075)
+at `4eaed0c9` is completed **failure**: browser/composed/schema/harness pass;
+client fails the history guard at `50a3a514` (RP-131); server fails 27 Clout
+partition cases (RP-307). Both reproduce locally at `61b145af` through existing
+root selectors. The later local hoard fix is not in this run.
 
-The local container now enforces the existing ten-minute ceiling and passively observes
-the four unreported module URLs. The subsequent ordinary job completes in316.27s but still
-has15 native-input failures; those modules fetch successfully and pass123 isolated cases.
-This diagnoses a boundary, not the original stall or input defects. Next: investigate
-post-timeout native-input continuation and make the full job complete repeatably. Docker
-subsequently becomes unresponsive with only1.8GiB host space free; compiler-cache cleanup
-approval is requested, not assumed. The owning log preserves commands, capacity and outcomes.
-RP-527 now reproduces and locally corrects Typer's post-timeout input-producer lifetime
-in native Chromium/WebKit, including the unchanged complete native journey. The CI log owns
-the controlled old failure and corrected passes; this does not close RP-526 or prove Linux/
-Firefox/full-job reliability. Resume that population when Docker/capacity is available;
-cleanup approval remains pending. Historical guard/accrual contracts, hosted acceptance and
-reviews remain separate; no deadline/budget increase or CPU/concurrency setting retained.
+Hosted three-engine browser coverage executes 34,704 passes, twelve deliberately
+expected timeout controls and 24 skips; five Chromium performance cases pass.
+Functional duration is 305.18s and total browser job 6m38s; server is 6m40s.
+The five-minute blocking floor remains failed. One complete run does not prove
+reliability, attribute every earlier stall/input failure or provide designated
+approval. RP-525/527/528/530/531 corrective ranges still need review; RP-526
+retains the ordinary local failure and investigation in the [owning log](log.md).
 
-RP-528 also locally corrects the Garden host's premature socket precondition and initialization
-cleanup in native Chromium/WebKit. The original full file still executes its handshake, recovery,
-intent and focus population; an intermediate shadowed-context candidate is excluded by strict
-types. This does not close RP-526. The owning log records exact results and next Linux verification.
-
-RP-530 reproduces Reputation plan's expired keyboard producer typing into its successor and
-locally corrects the fixture with Typer's shared lifetime guard. Both full native files pass
-with unchanged journeys/deadlines; Linux/Firefox/full CI and remaining host-driver diagnosis
-stay open. Docker remains unavailable; no cleanup permission or green full-job claim inferred.
-
-RP-531 independently reproduces the Reputation host remaining mounted with an open controlled
-socket after its test deadline. Test-context disposal and guarded late navigation now pass
-with all original host populations intact. The host/plan/Typer native batch passes270 checks
-plus six deliberate deadlines; retain Linux full-job attribution and designated review as open.
+Next: obtain explicit adoption/review of the history-guard policy, close the
+conservation accounting contract and repair its arithmetic without tolerances,
+and measure latency before proposing changes. Preserve all functional coverage
+and budgets. Host space is externally freed, but Docker restart permission is
+pending; no agent cleanup/restart or CI topology change. Full workflow, maintenance,
+feature and release acceptance remain open. Historical details stay in the log,
+not a duplicated stale execution queue.
 
 ## Work
 

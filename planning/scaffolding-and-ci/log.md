@@ -879,3 +879,52 @@ Next: execute corrected drivers in the actual Linux population when usable and
 retain remaining input/runner failures rather than declare RP-526 closed. Other
 accepted product work and technical draft closure can proceed without Docker;
 full nine-tier1.0 and review/release gates remain open.
+
+## 2026-10-13 — Reconcile finished hosted CI and reproduce both blockers locally
+
+Previous goal turn was progress: original GS0.1 disposition and the actual hoard
+overflow refusal at61b145af. Read the confirmed live CI38381138075 handle rather
+than restart when logs initially refuse access. It is now terminal failure on
+published4eaed0c9; schema/harness/browser/composed pass, client/server fail.
+
+Finished client job115241567501 executes10,627 Node passes/1,022 reported skips,
+then the full-history gate rejects50a3a514 against0cf9f7a6, naming all six watched
+minigame UI/adapter paths. The server job115241567727 fails exactly27 original
+Clout partition subcases; the first reports1.00035846811e4 versus1.00035846812e4
+with different full encoded states. No fixture weakening or ambiguity about cause.
+
+Fresh local existing commands at61b145af reproduce both, terminal Make exit2:
+92226 `make verify-kernel-version` rejects the exact same historical SHA/parent/
+paths after its checkout/adversarial fixtures pass.79061 `make test-go
+GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run TestAxisAccrualPartitionProperty -v'`
+fails the same27 seeded cases. These are real known local failures, not a Linux-
+only defect or a newly green tree. No DB operation claimed by the selected test.
+
+Successful browser job115241568120 reports426 files/34,704 passes/twelve expected
+deadline diagnostics/24 skips,305.18s, across Chromium/Firefox/WebKit. Isolated
+performance reports5 passes/105 explicitly deselected,10.57s. Populated observation
+exclusions remain simulated duration, manual4x profile, AT, SQL/default players,
+other runtime ports and later tiers; no whole-AC7 claim. HTTP summary shows
+1,998 finished/started requests and0 pending on this completed run. Browser logs
+are very large and returned excerpt is truncated (539,996 estimated original
+tokens); retain exact terminal job/status and complete final census, not a claim
+to inspect every log line. Browser job6m38s, server6m40s and composed5m37s exceed
+the strict five-minute workflow floor; do not relabel budget failure as green.
+
+This supplies hosted ordinary three-engine coverage for the recent corrections,
+not general reliability, attribution of every RP-526 local stall/input failure,
+independent review or a release. Current local61b145af's hoard fix is not in the
+published run. No code, timeout, retry, fixture, version, CI topology or publication
+changes in this checkpoint. Reconcile the living plan/overview rather than keep
+its obsolete pending-job list; older evidence stays append-only in the logs.
+
+Owner question presented: adopt the draft exact-path/commit, independently proved
+historical-scope exception policy without approving any candidate or waiving
+review. No answer is recorded, so no implementation/exception row follows.
+Conservation's accounting/origin contract and arithmetic remain separate work;
+approval cannot repair the27 failures. Docker restart question is still unanswered,
+no restart/cleanup performed. Next: explicit policy/contract closure, independent
+historical candidate audit and measured latency work; accepted lanes continue.
+Review by: Codex (executed evidence reconciliation). Recorded by: Codex.
+Not designated implementation approval,
+feature closeout or shrinking the complete nine-tier1.0 goal.

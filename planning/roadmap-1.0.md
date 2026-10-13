@@ -9,8 +9,9 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
 Inspected source `bd91a9a6`: Garage integration/hardening, incomplete v0.1, and substantial
 unbuilt world/combat/Tier 3–8/final-ending scope. New published source
-`4eaed0c9` has an in-progress CI run (10:09 UTC snapshot: client fails;
-schema/harness pass; other jobs pending). Earlier completed red CI remains evidence;
+`4eaed0c9` has completed red CI: browser/composed/schema/harness pass; client fails
+the historical guard and server fails27 Clout partition cases, both reproduced locally.
+The browser/server jobs exceed the five-minute floor. Earlier red CI remains evidence;
 recent repairs are published, not designated-approved. Subsequent local repairs and complete original API review dispositions do not
 advance a gameplay milestone or establish release readiness. Subsequent actual operations
 producer/receiver, public replay-verifier, queued Claim and minigame admission/Exit evidence
