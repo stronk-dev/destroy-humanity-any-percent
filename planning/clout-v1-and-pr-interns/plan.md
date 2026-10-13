@@ -37,6 +37,27 @@ The next accounting step is the [Production Accrual Conservation draft](../../rf
 resolve episode/settlement meaning, origin lifetime and the exact accounting/compatibility contract, rather than
 repeat completed fidelity studies. It is a proposal, not implementation authority or AC6 completion.
 
+2026-10-13 next compatibility experiment, baseline `5bc0e222`: extend the existing
+42-cell temporal-context measurement to actual TypeScript `applyLogged`. Keep its
+three buff profiles, both modes and seven offsets unchanged. Record the actual Go
+pre-state, retained input, full post-state, receipt and ordered events after all
+existing Go controls pass; reuse the existing deterministic research artifact helper.
+The TS replay loader must admit every hash-bound bundle/pre-state, reproduce all
+three outputs exactly and restore the complete result unchanged. Both existing
+forged-attended/missing-schedule variants must refuse without input-state mutation
+in every cell; no successful subset or output restamping. Preserve the Go frozen/
+omitted controls and all27 original partition failures. A mismatch is a finding,
+not permission to change replay/accounting semantics. This is bounded compatibility
+research, not a new origin codec, conservation algorithm, SQL/buff acquisition,
+absence-policy adoption, content mint or AC6/1.0 completion.
+
+Completed locally: all42 full canonical Go/TS transitions and84 refusals per
+runtime agree; actual result restoration, lifetime/buff/absence observations pass.
+The original27 partition failures remain. The owning log records initial instrument
+mistakes, deterministic generation and the exact review range. Next: viable accounting
+and compatibility specification under the pending interval/authorized-head authority,
+not another repetition of this temporal population.
+
 RP-412 bounded UI follow-up: CV9.4's native `?` help mechanism now opens/closes
 `codex.axis_stack`, preserves open state across snapshot replacement and submits no gameplay.
 Affected Chromium/WebKit20 and the production-built real-service Clout journey pass.

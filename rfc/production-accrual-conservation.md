@@ -176,6 +176,18 @@ context/compatibility explicitly, not infer absence solely from evaluation mode 
 silently freeze active contributions. This is not adoption of the shared attendance
 policy, durable origin, a new numeric algorithm, SQL/TS proof or AC6 completion.
 
+The subsequent shared `temporal-replay-research-v1.json` observation extends
+these same42 cells to the actual TypeScript `applyLogged`, not a scalar prototype.
+The hash-bound bundle and admitted pre-state reproduce complete canonical Company,
+receipt and ordered-event bytes in Go/TS; restoring each result preserves it.
+Positive lifetime accrual, exact surviving buff identities and the existing long-
+absence span are retained. Both runtimes refuse the42 forged attended coordinates
+and42 omitted schedules without state mutation. This closes bounded temporal replay
+compatibility for this population only. General workloads, external/Guild context
+parity, SQL/live capture, origin lifetime and a viable conservation algorithm remain
+unproved; the original27 partition failures are unchanged. No runtime semantics or
+new accounting format is adopted by this observation.
+
 `TestAxisOriginDeferredGuildSettlementResearch` adds six admitted Go cells: one clearing,
 two ordered clearings and a nonzero existing watermark, each online/offline at2001ms.
 The actual input resolver applies pending clearing before the actual stock-consumption
@@ -397,3 +409,5 @@ implied save field and needs its own complete contract.
   cash. Preserve the unresolved lifetime/compatibility and production accounting obligations.
 - 2026-10-12: record bounded temporal producer/replay evidence and distinguish current endpoint
   selection from prorated window integration. No runtime semantics or pending owner choice changed.
+- 2026-10-13: add actual42-cell Go/TypeScript temporal replay compatibility and84 refusal
+  controls per runtime. Still no conservation repair, interval/lifetime adoption or SQL proof.

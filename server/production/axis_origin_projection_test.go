@@ -732,10 +732,41 @@ func originRequestInputs(t *testing.T, bundle CatalogBundle, state *save.State, 
 
 type originGuildMember struct{}
 
+type originTemporalReplayRow struct {
+	ID             string             `json:"id"`
+	Profile        string             `json:"profile"`
+	Mode           EvaluationMode     `json:"mode"`
+	OffsetMS       int64              `json:"offset_ms"`
+	AttendedMS     int64              `json:"attended_ms"`
+	FrozenChanged  bool               `json:"frozen_changed"`
+	OmittedChanged bool               `json:"omitted_changed"`
+	Action         axisSequenceAction `json:"action"`
+}
+
+type originTemporalReplayReport struct {
+	Version    int                       `json:"version"`
+	Acceptance string                    `json:"acceptance_status"`
+	Sources    map[string]string         `json:"source_sha256"`
+	Bundle     reputationCorpusBundle    `json:"bundle"`
+	Rows       []originTemporalReplayRow `json:"rows"`
+	Negatives  int                       `json:"invalid_cases"`
+}
+
 // A controlled, already-active history, not a claim that these buffs were
 // acquired naturally. The pinned duration and target remain authoritative.
 func TestAxisOriginDeferredTemporalContextResearch(t *testing.T) {
 	bundle := axisContentBundle(t)
+	report := originTemporalReplayReport{
+		Version: 1, Acceptance: "NOT_PROVEN: bounded temporal replay compatibility; production AC6 remains red",
+		Bundle: reputationCorpusBundle{ConstantsHash: bundle.ConstantsHash, Artifacts: stringArtifacts(bundle.Artifacts)},
+		Sources: sourceResearchHashes(t, []string{
+			"server/production/axis_origin_projection_test.go", "client/test/axis-temporal-replay.test.ts",
+			"server/production/axis_timing_test.go", "server/production/axis_stack_test.go",
+			"server/production/replay.go", "server/production/active_play.go", "server/production/engine.go",
+			"server/save/state.go", "client/src/replay.ts", "client/src/economy.ts",
+			"balance/testdata/axis-stack/economy-v5-fixture.json", "balance/opportunities/t0-t1.json",
+		}),
+	}
 	start := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
 	founderID := "01986666-2000-7000-8000-000000000001"
 	completed, frozenDifferences, omittedDifferences := 0, 0, 0
@@ -905,7 +936,17 @@ func TestAxisOriginDeferredTemporalContextResearch(t *testing.T) {
 						if _, err := ApplyLogged(refused, request.CanonicalPayload, bundle, badInputs); err == nil || !bytes.Equal(origin, mustEncodeState(t, refused)) {
 							t.Fatalf("forged/missing schedule did not refuse unchanged (missing=%v): %v", missing, err)
 						}
+						report.Negatives++
 					}
+					id := fmt.Sprintf("%s/%s/%d", profile.name, mode, offset)
+					report.Rows = append(report.Rows, originTemporalReplayRow{
+						ID: id, Profile: profile.name, Mode: mode, OffsetMS: offset, AttendedMS: attended,
+						FrozenChanged: frozenChanged, OmittedChanged: omittedChanged,
+						Action: axisSequenceAction{Name: id + "/perform_manual_batch", PreStateJSON: canonicalFixtureJSON(t, origin),
+							Payload: request.CanonicalPayload, Inputs: retained, Outcome: string(settled.Outcome),
+							ReceiptJSON: canonicalFixtureJSON(t, settled.Receipt), EventsJSON: canonicalFixtureValue(t, fixtureEvents(settled.Events)),
+							PostStateJSON: canonicalFixtureJSON(t, mustEncodeState(t, deferred))},
+					})
 					if frozenChanged {
 						frozenDifferences++
 					}
@@ -920,6 +961,10 @@ func TestAxisOriginDeferredTemporalContextResearch(t *testing.T) {
 	if completed != 42 || frozenDifferences != 24 || omittedDifferences != 24 {
 		t.Fatalf("incomplete temporal population: cells %d/42 frozen %d/24 omitted %d/24", completed, frozenDifferences, omittedDifferences)
 	}
+	if len(report.Rows) != 42 || report.Negatives != 84 {
+		t.Fatalf("incomplete temporal replay corpus: %d/42, negatives %d/84", len(report.Rows), report.Negatives)
+	}
+	sourceResearchRegressionArtifact(t, "../../testdata/axis-stack/temporal-replay-research-v1.json", "UPDATE_TEMPORAL_REPLAY_RESEARCH", &report, &report.Sources)
 	t.Log("42 temporal cells: closed state/receipt/events retained, 24 frozen and 24 omitted cash differences, forged/missing schedule refused; AC6 NOT_PROVEN")
 }
 

@@ -2851,3 +2851,50 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact full
 test/plan/draft/log range after `b9dabdc4` through this containing commit needs
 Claude designated review; earlier review debt remains. No adoption, acceptance,
 archival, push, deployment or release call. Full nine-tier 1.0 goal stays active.
+
+## 2026-10-13 — R-012 temporal replay compatibility across runtimes
+
+Predeclared in the owning plan at baseline `5bc0e222`. Extend the existing42 Go
+temporal cells, not the accounting policy or the population: three controlled buff
+histories, both modes, seven offsets. Record their actual retained inputs and complete
+canonical state/receipt/ordered-event outputs through the existing artifact helper.
+TypeScript's actual pinned-bundle loader, Company codec and `applyLogged` reproduce
+all42 outputs and restored results. Positive lifetime accrual, exact kept buffs and
+the literal absence span match; both runtimes refuse all84 forged-attended/missing-
+schedule variants without state mutation. Existing Go24 frozen/24 omitted differences
+remain. No scalar prototype, direct ledger overwrite or successful-subset comparison.
+
+Initial Node93121 fails43 checks through two instrument mistakes: the metadata
+expects null where Go's existing codec omits the schedule, and the positive checks
+compare lifetime against the already-mutated successful input. All42 canonical output
+comparisons had passed before that latter assertion;84 refusal checks passed, but the
+run is not counted as completed research. Correct to actual omission and captured
+pre-action lifetime/buffs, retaining full output equality and refusal nonmutation.
+Do not turn those errors into production findings. The first uncommitted generated
+artifact duplicated84 invalid contexts; regenerate once with an actually counted
+84-refusal census and construct those two exact variants independently in TS.
+The completed artifact is719594 bytes,42 rows,12 selected current source hashes;
+SHA256 `eb4194d330f17243189f683f82b231d5cfd34d1a549c364e6d09c714b48001c2`.
+This is bounded evidence size/provenance, not a production storage budget or full
+transitive/release identity. No historical committed artifact is restamped.
+
+Executed root checks: generation31487/64267 passes every Go control; ordinary
+origin regression/vet80299 and final48377 (also the existing artifact-comparison
+negative controls) pass without regeneration. Node75691 passes230 affected temporal/
+sequence/migration/receipt cases; native16847 passes254 temporal Chromium/WebKit
+executions,2.90s. Types54992 has zero errors/warnings. Full Node35971 passes10795,
+with1022 explicit existing skips,8.82s. Original timing/partition run67492 remains
+RED with exactly27 partition failures; no criterion/tolerance/skips changed.
+All handles terminal; formatting/diff checked. Normal existing CI collection owns
+these tests; no workflow/job/timeout/concurrency change or new CI lane.
+
+Only tests, the new observation and planning/own Codex-authored draft evidence
+change. This is not a conservation implementation, SQL/live buff acquisition,
+Linux/Firefox/hosted-CI or release-artifact proof. C1/C1a interval/authorized-head
+meaning and the viable C2/C3 ledger algorithm remain unresolved; general external/
+Guild/temporal compatibility is not claimed. Do not repeat this bounded population
+as the next repair step. Review by: Codex (implementer first filter). Recorded by:
+Codex. Full range after `5bc0e222` through this containing commit needs designated
+Claude review. No adoption, acceptance/archival, mint, push, deployment or1.0
+promotion; next is the complete viable accounting/compatibility contract under
+the pending interval/lifetime authority.
