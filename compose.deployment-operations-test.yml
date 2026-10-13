@@ -63,8 +63,10 @@ services:
       CLOUD_CLICKER_OPERATIONS_INTEGRATION: "1"
       TEST_DATABASE_URL: postgres://cloud_clicker:operations_test_only@postgres:5432/cloud_clicker_operations_test?sslmode=disable
       TEST_ADMIN_DATABASE_URL: postgres://cloud_clicker:operations_test_only@postgres:5432/postgres?sslmode=disable
+      TEST_TRANSPORT_POLICY_PATH: /test/transport.json
     volumes:
       - ./.cache/bin/operations.test:/test/operations.test:ro
+      - ./balance/transport/phase0.json:/test/transport.json:ro
       - operations-textfile:/textfile
     networks:
       operations:

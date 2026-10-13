@@ -7,6 +7,16 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest DP7 acceptance construction, 2026-10-13:** real transport dead-letter
+growth now reaches the private fixture's configured receiver. Current SQL event
+trigger → real Node encoder refusal → five relay retries → actual collector →
+shipped rule → receiver firing/matching resolution; isolated growth stays quiet
+and stopping growth retains history. The full fixture passed in 643.69 seconds
+within its unchanged 12-minute guard; affected native/vet and Linux-amd64/Postgres checks pass.
+A collector-zero compiler fault fails the focused real-SQL oracle. The owning
+log holds the new range after `7d0aa087`, pending designated review. Continue
+remaining producer/retention/release-host evidence; no full AC7/archival claim.
+
 **Latest DP7 acceptance construction, 2026-10-13:** the private fixture now also
 tests actual connection refusal, distinct from the preceding blocked-query arm.
 A separate maintenance database disables access to only the disposable subject
@@ -207,7 +217,7 @@ its own executable failure cases and a bounded review range. No batch may claim 
 
 ## Batch protocol
 
-**Current reconciliation (2026-10-07):** use the individual verdicts and the
+**Historical reconciliation (2026-10-07):** use the individual verdicts and the
 Deployment rows in `planning/platform-alignment/execution-queue.md`, not the
 September handoff's original claim that every finding is closed. Codex repairs
 and record edges still require Claude's exact-range designated review. R11 now
@@ -217,13 +227,17 @@ current result. Pinned amd64 composed lanes have not executed on the current
 arm64 host. DP-F identity/operator decisions, fresh exact bundles and clean-host
 R-006 remain separate gates. No acceptance checkbox is changed here.
 
-For every batch:
+For coherent batches, follow RFC-0000's adopted risk-based delivery procedure:
 
-1. predeclare the exact paths, positive population, negative/severing fixtures and claims in the
-   append-only log before changing product behavior;
+1. identify the accepted outcome, changed boundary and meaningful regression/failure case in
+   the existing plan or work update; routine repairs and acceptance construction do not need
+   a separate predeclaration commit or research program;
 2. update canonical `docs/` in the same commit as behavior;
-3. run cold (`-count=1`) focused tests and the smallest relevant root verification target;
-4. record the implementation range and Codex first-filter without calling it the designated pass;
+3. iterate focused, then run cold (`-count=1`) affected boundary checks; retain explicit feature
+   acceptance and empirical-research gates, rather than repeating them for every edit;
+4. record one concise outcome, coverage/limitations and review range in the owning log; update
+   other boards only when their status or next action changes, and never call a first-filter
+   the designated pass;
 5. hand the exact range to Claude for the cross-party designated review before treating the batch
    as approved; and
 6. keep clean-host/destructive/release lanes outside push CI unless measured D-014 headroom and a

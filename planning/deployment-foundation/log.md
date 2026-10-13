@@ -5615,3 +5615,51 @@ Review by: Codex (implementer first filter). Recorded by: Codex. The full new
 test/fixture/docs/plan/log range after `391ae4a5` through this containing commit
 needs Claude designated review, consolidatable with the preceding operations
 ranges. No feature-completion checkbox, archival, push or deployment.
+
+## 2026-10-13 — Real transport dead-letter growth and resolution (DP7)
+
+**Outcome / authority:** construct Deployment DP7/AC7's transport-queue alert
+journey without injecting metric values or alerts. Controlled compensation events
+enter the current SQL trigger; the real Node, loaded with the current transport
+policy, rejects oversized envelopes. The actual Store/player relay retries five
+times and persists dead letters while preserving authoritative payloads. Valid
+publication is required before and after failures. No production, migration,
+rule, threshold, kernel, provider or CI-workflow bytes change.
+
+**Discrimination:** the focused SQL test checks every persisted retry, fifth-
+attempt dead-letter transition, no published/held claim, exact collector counts
+and no seeded private material in metrics. A compiler overlay changes only the
+transport collector value to 0; the test fails in 0.78 seconds at the first actual dead letter
+with `actual outbox population not reported`. Production source never changed;
+the one-line copy diff was verified and the task-owned overlay/copy removed.
+The private fixture separately requires one isolated increase to stay quiet for 45 seconds,
+then grows populations across distinct actual scrapes, receives the firing, and
+receives resolution with the same start time after growth stops. All four rows
+remain and later valid publication must still succeed.
+
+Executed checks:
+
+- Focused declared Linux-amd64/Postgres SQL run passes in 1.09 seconds. Final
+  `make test-go-ci CI_TEST_PACKAGES='./operations ./transport ./releasepackage'
+  CI_TEST_FLAGS='-v'` passes: operations 4.987s, transport 14.188s, releasepackage 1.818s. All four operations SQL
+  functions run; optional native-service/private-profile skips are explicit.
+- `make test-go vet GO_PACKAGES='./operations ./transport ./releasepackage'
+  GO_TEST_FLAGS='-count=1'` passes the affected native packages and vet; native
+  DB skips are not SQL evidence. A read-only query confirms zero generated
+  dead-letter fixture databases remain after passes and the fault probe.
+- `make test-deployment-operations-profile` passes in 643.69 seconds, exit 0, within the
+  unchanged 12-minute guard. Earlier backup and both database fire/clear arms, cleanup
+  firing, nonce, receiver HTTP-500 refusal and Caddy-admin isolation still execute.
+  The target removes only its own disposable project/textfile volume.
+
+**Coverage / handoff:** this is the real transport trigger/encoder/relay/SQL/
+rule/receiver path with controlled upstream events, not authenticated gameplay,
+socket-client delivery, verification/poison producers or a release gameserver.
+Mixed service architectures, remaining producer/retention evidence, exact
+release pair/R-006, current hosted CI and earlier corrective reviews remain open.
+The owning plan's stale per-edit instruction is reconciled to Marco's already
+adopted RFC-0000 procedure; feature acceptance and designated review are retained.
+Review by: Codex (implementer first filter). Recorded by: Codex. The entire new
+test/fixture/docs/plan/log range after `7d0aa087` through this containing commit
+needs Claude designated review, consolidatable with the preceding operations
+batches. No acceptance checkbox, archival, publication or deployment promotion.

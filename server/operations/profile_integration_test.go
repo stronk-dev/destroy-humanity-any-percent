@@ -22,8 +22,8 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	if os.Getenv("CLOUD_CLICKER_OPERATIONS_INTEGRATION") != "1" {
 		t.Skip("requires isolated operations Compose profile")
 	}
-	// The preceding population measured 330.07s. This adds a second real
-	// two-minute database failure plus the unchanged notification intervals.
+	// The preceding population measured 511.42s. The dead-letter arm adds
+	// a quiet control, consecutive scrapes and unchanged notification intervals.
 	// The twelve-minute completion guard is not an alert/latency bound.
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Minute)
 	defer cancel()
@@ -260,6 +260,48 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 	waitForOperationsNotification(t, ctx, received, "CloudClickerPostgresUnreachable", "gameserver", "resolved", restoredAt, connectionFiringStart)
 	t.Log("automatic pool reconnection delivered resolution of that exact connection-failure alert")
 
+	// Grow the actual transport dead-letter population through the current SQL
+	// trigger, real Node encoder refusal and relay retry policy. An isolated
+	// increase is insufficient; two consecutive scraped increases must page.
+	deadLetters := newOperationsDeadLetterFixture(t, ctx, database, registry)
+	deadLetters.publishHealthy(t, ctx)
+	deadQuery := `cloud_clicker_dead_letters{queue="transport"}`
+	if !waitForQueryValue(ctx, client, deadQuery, "0") ||
+		!waitForAlertState(ctx, client, "CloudClickerDeadLetterGrowth", "inactive") {
+		t.Fatal("actual transport dead letters did not establish a healthy baseline")
+	}
+	deadLetters.failOversized(t, ctx)
+	if !waitForQueryValue(ctx, client, deadQuery, "1") {
+		t.Fatal("first actual transport dead letter never reached Prometheus")
+	}
+	requireNoDeadLetterGrowthAlert(t, ctx, client, 45*time.Second)
+	t.Log("one actual dead-letter increase stayed quiet over three evaluation intervals")
+	growthAt := time.Now().UTC()
+	for want := 2; want <= 4; want++ {
+		deadLetters.failOversized(t, ctx)
+		// Each new population must actually be scraped before producing the
+		// next increase. A single batch of four rows cannot count as sustained
+		// growth across the rule's consecutive collection intervals.
+		if !waitForQueryValue(ctx, client, deadQuery, fmt.Sprint(want)) {
+			t.Fatalf("transport dead-letter population %d never reached Prometheus", want)
+		}
+	}
+	stoppedGrowingAt := time.Now().UTC()
+	if !waitForAlertState(ctx, client, "CloudClickerDeadLetterGrowth", "firing") {
+		t.Fatal("actual consecutive dead-letter growth never fired its rule")
+	}
+	deadLetterFiringStart := waitForOperationsNotification(t, ctx, received, "CloudClickerDeadLetterGrowth", "gameserver", "firing", growthAt, time.Time{}, map[string]string{"queue": "transport"})
+	t.Log("actual relay-produced transport dead-letter growth reached the configured receiver")
+	if !waitForAlertState(ctx, client, "CloudClickerDeadLetterGrowth", "inactive") {
+		t.Fatal("stopping population growth did not resolve the dead-letter rule")
+	}
+	waitForOperationsNotification(t, ctx, received, "CloudClickerDeadLetterGrowth", "gameserver", "resolved", stoppedGrowingAt, deadLetterFiringStart, map[string]string{"queue": "transport"})
+	deadLetters.publishHealthy(t, ctx)
+	if !waitForQueryValue(ctx, client, deadQuery, "4") {
+		t.Fatal("dead-letter resolution erased historical rows or healthy delivery added failures")
+	}
+	t.Log("growth stopped and the same alert resolved without deleting dead letters; valid delivery continued")
+
 	// A receiver that rejects every notification must fail the delivery proof
 	// on recorded failures, not merely time out.
 	rejecting.Store(true)
@@ -276,7 +318,7 @@ func waitForBackupNotification(t *testing.T, ctx context.Context, received <-cha
 	return waitForOperationsNotification(t, ctx, received, "CloudClickerBackupMissingOrFailed", "node-exporter", status, after, firingStart)
 }
 
-func waitForOperationsNotification(t *testing.T, ctx context.Context, received <-chan []byte, name, job, status string, after, firingStart time.Time) time.Time {
+func waitForOperationsNotification(t *testing.T, ctx context.Context, received <-chan []byte, name, job, status string, after, firingStart time.Time, wantLabels ...map[string]string) time.Time {
 	t.Helper()
 	for {
 		select {
@@ -308,8 +350,47 @@ func waitForOperationsNotification(t *testing.T, ctx context.Context, received <
 					alert.Labels["severity"] != "page" || alert.Labels["proof_nonce"] != "" {
 					t.Fatalf("%s notification lost its actual producer identity: %+v", name, alert)
 				}
+				for _, labels := range wantLabels {
+					for key, want := range labels {
+						if alert.Labels[key] != want {
+							t.Fatalf("%s notification label %s=%q, want %q", name, key, alert.Labels[key], want)
+						}
+					}
+				}
 				return alert.StartsAt
 			}
+		}
+	}
+}
+
+func requireNoDeadLetterGrowthAlert(t *testing.T, ctx context.Context, client *http.Client, duration time.Duration) {
+	t.Helper()
+	end := time.Now().Add(duration)
+	for time.Now().Before(end) {
+		query := `ALERTS{alertname="CloudClickerDeadLetterGrowth",queue="transport"}`
+		request, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://prometheus:9090/api/v1/query?query="+url.QueryEscape(query), nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		response, err := client.Do(request)
+		if err != nil {
+			t.Fatalf("quiet-interval observation unavailable: %v", err)
+		}
+		var payload struct {
+			Status string `json:"status"`
+			Data   struct {
+				Result []json.RawMessage `json:"result"`
+			} `json:"data"`
+		}
+		decodeErr := json.NewDecoder(response.Body).Decode(&payload)
+		_ = response.Body.Close()
+		if decodeErr != nil || response.StatusCode != http.StatusOK || payload.Status != "success" || len(payload.Data.Result) != 0 {
+			t.Fatalf("single-interval growth was not demonstrably quiet: HTTP=%d status=%q rows=%d error=%v", response.StatusCode, payload.Status, len(payload.Data.Result), decodeErr)
+		}
+		select {
+		case <-ctx.Done():
+			t.Fatalf("quiet-interval observation incomplete: %v", ctx.Err())
+		case <-time.After(time.Second):
 		}
 	}
 }

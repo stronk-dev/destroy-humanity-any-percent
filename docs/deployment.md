@@ -824,7 +824,7 @@ Any rise in failed requests during the window fails the proof; the notification-
 `notifications_failed_total` is not used because it moves only after all retries are exhausted.
 The integration proves the exact nonce reaches the receiver and that a receiver answering 500
 fails the proof on recorded failures. Alertmanager metrics cannot attribute a delivery to one alert
-family or nonce, so the seven-family delivery record is count-derived, not per-family proof.
+family or nonce, so the runtime seven-family delivery record is count-derived, not per-family proof.
 
 Use `make test-deployment-operations-profile` to run that existing isolated Compose fixture
 directly: real private scrapes, cleanup-rule firing, nonce delivery, rejecting receiver and
@@ -861,6 +861,20 @@ failure. The focused SQL test creates/migrates/drops only its own newly named da
 This proves actual connection refusal and reconnection, not a Postgres process restart or
 network partition. Production code, migrations, deployment credentials and alert timings
 are not altered by these fixtures.
+
+The fixture now also loads the current transport policy and inserts controlled compensation
+events into the actual migrated database. The current event trigger enqueues them; the real
+transport Node refuses oversized envelopes, and the player relay's five failed attempts
+produce actual dead-letter rows. The production collector, shipped Prometheus rule and configured
+Alertmanager receiver must observe sustained transport-queue growth firing and matching resolution.
+One isolated increase stays quiet for 45 seconds (three evaluation intervals); subsequent
+increases are produced only after each preceding population is scraped. Stopping growth resolves
+the same alert without deleting the four dead-letter rows, and another valid event still publishes.
+The focused SQL test uses a newly created disposable database and verifies each retry transition,
+preserved event payloads, exact population counts and absence of seeded private material in metrics.
+These are controlled upstream events, not authenticated gameplay intents or socket-client delivery.
+This covers the transport queue, not the verification/poison producers, all seven alert families,
+retention acceptance or the exact release-host rehearsal. No production policy or rule changed.
 
 The target compiles the Linux/amd64 test binary and removes only the fixture's
 dedicated project after execution. Compose resolves service architectures from the pinned images
