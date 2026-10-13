@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "runtimes": ["container", "vm", "bare_metal", "serverless", "edge", "mainframe"],
+  "invalid": [
+    {"name":"unknown_temperament","temperament":"unknown","runtime":"container"},
+    {"name":"empty_temperament","temperament":"","runtime":"container"},
+    {"name":"case_temperament","temperament":"Lazy","runtime":"container"},
+    {"name":"spaced_temperament","temperament":"lazy ","runtime":"container"},
+    {"name":"unknown_runtime","temperament":"lazy","runtime":"unknown"},
+    {"name":"empty_runtime","temperament":"lazy","runtime":""},
+    {"name":"case_runtime","temperament":"lazy","runtime":"VM"},
+    {"name":"spaced_runtime","temperament":"lazy","runtime":" vm"},
+    {"name":"runtime_alias","temperament":"lazy","runtime":"bare-metal"},
+    {"name":"nul_runtime","temperament":"lazy","runtime":"container\u0000"},
+    {"name":"nul_temperament","temperament":"lazy\u0000","runtime":"vm"},
+    {"name":"both_unknown","temperament":"unknown","runtime":"unknown"}
+  ]
+}

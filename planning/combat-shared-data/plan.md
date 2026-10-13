@@ -6,6 +6,10 @@
 
 1. [x] Extract one shared SplitMix64/rejection-sampling authority and add labeled substreams.
 2. [x] Implement exact int32/int64 combat arithmetic and Temperament chart in Go and TypeScript.
+   - C1's six runtime values and36 temperament/runtime identities now have pure Go/TS
+     constructors and revalidated chart lookup. All1,296 directed pairs match the existing
+     literal temperament chart; twelve shared invalid pairs refuse in both slots.
+     This does not populate tags/species/sprites, supply a battle consumer or close C2/C5.
 3. [ ] Add the strict combat catalog/schema and the complete Phase-0 fixture.
    - C2's independent team/deck reference envelopes are now implemented in Go/TS:
      exact three/eight slots, ordered declared references, strict wire refusal and

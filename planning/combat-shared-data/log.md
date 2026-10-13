@@ -265,3 +265,45 @@ and these functions have no live/replay consumer. Authoritative engine integrati
 must register those paths and make the genuine semantic bump, not evade identity.
 C2's effect/spell catalog and full fixture, C5's Trust/Soul tables and child-engine
 acceptance remain open. No full item-3, combat gameplay, archival or release claim.
+
+## 2026-10-13 — Construct accepted C1's runtime identity axis
+
+Baseline `7f8e3126`. Add the missing six-value Runtime axis and36 temperament/
+runtime pairs in Go/TS under accepted C1, without waiting for or inventing C2's
+effect catalog and C5's external-input tables. Pure constructors fail on unknown,
+empty, case/whitespace/alias/NUL values; TS additionally rejects non-string axes
+and owns fresh frozen output. Go refusal returns a zero value plus explicit error.
+Caller-built chart inputs are revalidated in both slots. They delegate to the
+existing temperament chart, never introduce runtime advantages or duplicate damage
+arithmetic. No new wire envelope, balance values, stats, tags, content or sprite
+consumer. This is new library construction, not a corrected old implementation.
+
+The shared fixture lists the exact six runtimes and twelve refusals. Both consumers
+exercise all36 identities/all1,296 directed pairs against existing literal chart
+rows, requiring12 wins/12 losses/12 neutral per identity; every invalid pair fails
+in constructors and either chart slot. Existing arithmetic/RNG/reference vectors
+remain unchanged and execute with the new module. Finished root results:
+
+- `make test-go vet verify-combat-go-boundary verify-combat-boundary
+  GO_PACKAGES='./combat ./integer ./determinism' GO_TEST_FLAGS='-count=1'`85707:
+  complete cold combat/integer tests, vet and both source boundaries pass.
+  Determinism has no own test files; combat exercises its existing RNG vectors.
+- Node selector for combat identity/arithmetic/references:103 checks pass.
+- `make test-browser-focused BROWSER_TEST_FLAGS='test/combat-identity.test.ts
+  test/combat-arithmetic.test.ts test/combat-references.test.ts
+  --project=chromium --project=webkit'`7039:206 native checks pass,2.05s.
+- `make typecheck`68794:zero errors/warnings. Formatting and diff checked.
+
+Source search confirms no other live/replay consumer imports the new identity
+layer. Kernel identity/catalog/save/CI topology are untouched; authoritative
+activation must register both combat prefixes and perform the genuine semantic
+bump with replay evidence. No DB, shipped bundle or performance boundary changed.
+Native Firefox is unavailable and Docker's last bounded probe72574 was unresponsive,
+so no Linux/Firefox/full CI or battle integration is claimed. Capacity/cleanup
+authorization stays separate; no cleanup, push, deploy, acceptance or archival.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
+starts **after `7f8e3126` through this containing source/tests/docs/record commit**;
+designated Claude review pending, consolidatable with prior Combat construction.
+C2's effect/spell/catalog closure, C5's literal tables and engine/player/bot proof
+remain on the full nine-tier1.0 program; this increment completes none of those.

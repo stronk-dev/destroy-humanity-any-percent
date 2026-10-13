@@ -1,8 +1,25 @@
 # Combat Shared Kernel
 
-The implemented combat foundation currently owns exact arithmetic, deterministic random streams
-and structural team/deck reference decoding. It does not yet claim a content catalog or either
-battle engine.
+The implemented combat foundation currently owns exact arithmetic, deterministic random streams,
+temperament/runtime identities and structural team/deck reference decoding. It does not yet claim
+a content catalog or either battle engine.
+
+## Temperament and runtime identities
+
+`NewIdentity` / `identity` admit the six Temperaments paired with exactly `container`, `vm`,
+`bare_metal`, `serverless`, `edge` or `mainframe`. Unknown, empty, case-adjusted, aliased or
+whitespace-adjusted values refuse instead of being repaired. TypeScript also refuses non-string
+axes and returns fresh frozen identity storage; Go returns a value and no partial identity on
+refusal. These are internal pairs, not a new serialized envelope, species catalog or ownership rule.
+
+`ChartIdentities` / `chartIdentities` revalidate both caller-built pairs and delegate to the
+existing temperament chart. Runtime is a future catalog tag carrier, not a second Phase-0 type
+chart: all 1,296 directed matchups across the 36 identities match the existing shared literal
+chart rows. Every identity has 12 advantaged, 12 disadvantaged and 12 neutral opponents. Both
+runtimes consume `testdata/combat/identity-vectors.json` plus the existing arithmetic vectors.
+No stats, tags, sprites, effects, Trust/Soul tables, live engine, replay or HTTP consumer is added.
+As with the reference library, authoritative integration must register combat's runtime paths
+and perform the genuine kernel version change before activation.
 
 ## Team and deck references
 
