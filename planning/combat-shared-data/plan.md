@@ -11,6 +11,12 @@
      literal temperament chart; twelve shared invalid pairs refuse in both slots.
      This does not populate tags/species/sprites, supply a battle consumer or close C2/C5.
 3. [ ] Add the strict combat catalog/schema and the complete Phase-0 fixture.
+   - C2's species row is now structurally decoded in Go/TS: exact root/stat keys,
+     signed-int32 fields, existing temperament/runtime axes, four ordered declared
+     moves and ordered tags. `TestSpeciesRecordVectors` and
+     `client/test/combat-species.test.ts` cover the shared accepted/refusal population,
+     all36 identity pairs and independent storage. This does not choose stat minima,
+     effects, tags or balance, construct the blocked full catalog, or close item3/AC1.
    - C2's independent team/deck reference envelopes are now implemented in Go/TS:
      exact three/eight slots, ordered declared references, strict wire refusal and
      isolated output storage. `TestLoadoutReferenceVectors` and

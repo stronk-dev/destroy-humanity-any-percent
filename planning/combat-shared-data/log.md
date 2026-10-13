@@ -307,3 +307,39 @@ starts **after `7f8e3126` through this containing source/tests/docs/record commi
 designated Claude review pending, consolidatable with prior Combat construction.
 C2's effect/spell/catalog closure, C5's literal tables and engine/player/bot proof
 remain on the full nine-tier1.0 program; this increment completes none of those.
+
+## 2026-10-13 — Construct accepted C2's structural species record
+
+Baseline `fad86116`. Implement the existing species row in Go/TS: exact root/nested-stat
+keys, non-null signed-int32 stats, C1 identity validation, four ordered catalog-declared
+move references and ordered string tags. Reuse the existing Unicode/identity authorities;
+do not choose missing effects, stat minima, namespaces, tag semantics or balance values.
+This is new library construction, not a repair of an old species reader. No production
+fixture, battle consumer, catalog-version envelope, schema/epoch mint or player copy added.
+
+Shared `species-vectors.json`: eight accepted forms/67 refusals. Both readers preserve source,
+move/tag order and duplicates, escaped keys and paired Unicode, and round-trip every accepted
+row. Refusals include raw/escaped duplicate keys, absent/null/case-alias fields, all five int32
+overflows, noninteger tokens, malformed strings and undeclared moves. Full36 identity pairs
+and storage/declaration-removal controls also execute; Go rejects actual malformed UTF-8.
+These are structural representation tests, not evidence that negative stats or arbitrary IDs
+are legal for battles. Full catalog/engine admission remains separate and unimplemented.
+
+Finished affected checks: cold Go combat/integer/determinism, vet and both source-division
+boundaries pass38492 (determinism has no standalone tests; existing Combat vectors exercise
+it). Node's four Combat files pass181 checks. `make typecheck`18004 has zero errors/warnings.
+Native Chromium/WebKit91119 executes362 checks across the same four files via root
+`test-browser-focused` in2.04s. The initial sandbox run refuses localhost before any test;
+the narrowly authorized execution passes. No Firefox/Linux/hosted-runtime proof claimed.
+Formatting/diff checked. No rendering/performance or DB behavior changes; no unrelated full-suite rerun.
+
+No live/replay consumer imports the new library; kernel watched paths/version188 remain
+unchanged, consistent with prior standalone Combat construction. Register both prefixes and
+perform a genuine version bump with replay/activation evidence at authoritative integration.
+Full C2 fixture/effect catalog, C5 tables, child engines, bot backfill and player journeys remain
+on the full nine-tier1.0 program. No full AC1, feature acceptance, archival, CI or release claim.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact source/tests/docs/record
+range starts after `fad86116` through this containing commit; designated Claude review pending,
+consolidatable with prior Combat construction. Continue the complete accepted parent and obtain
+the author's literal effect/table closure before constructing a battle under its child RFC.

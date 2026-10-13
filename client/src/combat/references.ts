@@ -20,13 +20,13 @@ function decodeReferences(source: string, declarations: ReadonlySet<string>, cou
   }
   const ids: string[] = [];
   for (const id of fields.ids) {
-    if (typeof id !== "string" || !wellFormedReference(id) || !declarations.has(id)) throw new SyntaxError("invalid combat loadout references");
+    if (typeof id !== "string" || !wellFormedCombatString(id) || !declarations.has(id)) throw new SyntaxError("invalid combat loadout references");
     ids.push(id);
   }
   return Object.freeze(ids);
 }
 
-function wellFormedReference(value: string): boolean {
+export function wellFormedCombatString(value: string): boolean {
   for (let index = 0; index < value.length; index++) {
     const point = value.codePointAt(index)!;
     if (point >= 0xd800 && point <= 0xdfff) return false;

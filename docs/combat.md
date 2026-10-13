@@ -1,7 +1,7 @@
 # Combat Shared Kernel
 
 The implemented combat foundation currently owns exact arithmetic, deterministic random streams,
-temperament/runtime identities and structural team/deck reference decoding. It does not yet claim
+temperament/runtime identities and structural species/team/deck record decoding. It does not yet claim
 a content catalog or either battle engine.
 
 ## Temperament and runtime identities
@@ -39,6 +39,32 @@ no partial references returned on refusal. Both runtimes consume
 catalog. No live/replay/HTTP consumer imports this new layer yet. Combat's authoritative
 integration must register its runtime paths with the kernel identity guard and perform the
 genuine semantic version change; this standalone library is not a replay activation or mint.
+
+## Species records
+
+`DecodeSpeciesRecord` / `decodeSpeciesRecord` implement C2's exact species row:
+`{id, temperament, runtime, stats: {hp, atk, def, spd, stamina_max}, moves, tags}`.
+Both identity axes use the existing C1 authority; all five stat fields require integer tokens
+in signed-int32 range. Every field is present/non-null, object keys are exact and unique, and
+the four ordered moves must occur in the caller's declared move set. Tags are an ordered string
+array. Duplicates in moves/tags are preserved: this reader does not invent a selection rule or
+synergy vocabulary. Valid escaping/Unicode and empty tag arrays survive; missing/extra/case-
+aliased/duplicate keys, malformed surrogate text, wrong types and undeclared moves refuse.
+Go additionally rejects malformed UTF-8 before its JSON decoder can replace bytes.
+
+This is structural row decoding, not the complete catalog loader. Its signed-int32 representation
+does not decide battle-legal stat minima, ID namespace, effect compatibility, species ownership,
+runtime tag inheritance or balance values. Those remain the complete catalog/engine contracts.
+The decoder returns no partial Go record on refusal and does not rewrite source bytes. Go results
+own their four slots and tag slice; TypeScript freezes the record, stats, moves and tags.
+
+Both runtimes consume `testdata/combat/species-vectors.json`, with eight accepted row forms and
+67 refusals, plus every existing temperament/runtime pair and storage/declaration controls.
+The ordinary row values are synthetic test data, not a production species fixture. No live
+engine, save/replay or HTTP consumer imports this layer. Its eventual authoritative integration
+must register combat's runtime prefixes and make the genuine kernel version change before
+activation. Full C2's versioned catalog, effect union, cross-row policies and Phase-0 population,
+C5's Trust/Soul tables and both battle engines remain unimplemented.
 
 ## Arithmetic and deterministic streams
 

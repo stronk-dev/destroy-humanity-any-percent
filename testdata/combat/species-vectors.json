@@ -1,0 +1,539 @@
+{
+  "version": 1,
+  "declarations": [
+    "alpha",
+    "beta",
+    "gamma",
+    "delta",
+    "�"
+  ],
+  "cases": [
+    {
+      "name": "ordinary species",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": {
+        "id": "species_alpha",
+        "temperament": "lazy",
+        "runtime": "container",
+        "stats": {
+          "hp": 100,
+          "atk": 64,
+          "def": 20,
+          "spd": 10,
+          "stamina_max": 8
+        },
+        "moves": [
+          "alpha",
+          "beta",
+          "gamma",
+          "delta"
+        ],
+        "tags": []
+      }
+    },
+    {
+      "name": "signed int32 representation boundaries",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":-2147483648,\"atk\":2147483647,\"def\":0,\"spd\":1,\"stamina_max\":0},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": {
+        "id": "species_alpha",
+        "temperament": "lazy",
+        "runtime": "container",
+        "stats": {
+          "hp": -2147483648,
+          "atk": 2147483647,
+          "def": 0,
+          "spd": 1,
+          "stamina_max": 0
+        },
+        "moves": [
+          "alpha",
+          "beta",
+          "gamma",
+          "delta"
+        ],
+        "tags": []
+      }
+    },
+    {
+      "name": "ordered repeated references and tags",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"delta\",\"beta\",\"beta\",\"alpha\"],\"tags\":[\"tag_b\",\"tag_a\",\"tag_b\"]}",
+      "expected": {
+        "id": "species_alpha",
+        "temperament": "lazy",
+        "runtime": "container",
+        "stats": {
+          "hp": 100,
+          "atk": 64,
+          "def": 20,
+          "spd": 10,
+          "stamina_max": 8
+        },
+        "moves": [
+          "delta",
+          "beta",
+          "beta",
+          "alpha"
+        ],
+        "tags": [
+          "tag_b",
+          "tag_a",
+          "tag_b"
+        ]
+      }
+    },
+    {
+      "name": "escaped exact keys",
+      "source": "{\"i\\u0064\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_\\u006dax\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": {
+        "id": "species_alpha",
+        "temperament": "lazy",
+        "runtime": "container",
+        "stats": {
+          "hp": 100,
+          "atk": 64,
+          "def": 20,
+          "spd": 10,
+          "stamina_max": 8
+        },
+        "moves": [
+          "alpha",
+          "beta",
+          "gamma",
+          "delta"
+        ],
+        "tags": []
+      }
+    },
+    {
+      "name": "whitespace and reordered fields",
+      "source": " \n{\"tags\":[\"tag\"],\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"runtime\":\"container\",\"temperament\":\"lazy\",\"id\":\"other_species\"}\t",
+      "expected": {
+        "id": "other_species",
+        "temperament": "lazy",
+        "runtime": "container",
+        "stats": {
+          "hp": 100,
+          "atk": 64,
+          "def": 20,
+          "spd": 10,
+          "stamina_max": 8
+        },
+        "moves": [
+          "alpha",
+          "beta",
+          "gamma",
+          "delta"
+        ],
+        "tags": [
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "paired Unicode strings",
+      "source": "{\"id\":\"species_\\ud83d\\ude00\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[\"tag_\\ud83c\\udf3f\"]}",
+      "expected": {
+        "id": "species_😀",
+        "temperament": "lazy",
+        "runtime": "container",
+        "stats": {
+          "hp": 100,
+          "atk": 64,
+          "def": 20,
+          "spd": 10,
+          "stamina_max": 8
+        },
+        "moves": [
+          "alpha",
+          "beta",
+          "gamma",
+          "delta"
+        ],
+        "tags": [
+          "tag_🌿"
+        ]
+      }
+    },
+    {
+      "name": "literal replacement character remains legal",
+      "source": "{\"id\":\"species_�\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"�\"],\"tags\":[]}",
+      "expected": {
+        "id": "species_�",
+        "temperament": "lazy",
+        "runtime": "container",
+        "stats": {
+          "hp": 100,
+          "atk": 64,
+          "def": 20,
+          "spd": 10,
+          "stamina_max": 8
+        },
+        "moves": [
+          "alpha",
+          "beta",
+          "gamma",
+          "�"
+        ],
+        "tags": []
+      }
+    },
+    {
+      "name": "integer negative zero",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":-0,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": {
+        "id": "species_alpha",
+        "temperament": "lazy",
+        "runtime": "container",
+        "stats": {
+          "hp": 100,
+          "atk": 64,
+          "def": 0,
+          "spd": 10,
+          "stamina_max": 8
+        },
+        "moves": [
+          "alpha",
+          "beta",
+          "gamma",
+          "delta"
+        ],
+        "tags": []
+      }
+    },
+    {
+      "name": "missing id",
+      "source": "{\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "missing temperament",
+      "source": "{\"id\":\"species_alpha\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "missing runtime",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "missing stats",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "missing moves",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "missing tags",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"]}",
+      "expected": null
+    },
+    {
+      "name": "unknown root field",
+      "source": "{\"extra\":null,\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "root case alias",
+      "source": "{\"ID\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "duplicate root field",
+      "source": "{\"id\":\"first\",\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "escaped duplicate root field",
+      "source": "{\"i\\u0064\":\"first\",\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null identity",
+      "source": "{\"id\":null,\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "non-string identity",
+      "source": "{\"id\":12,\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "unpaired high surrogate identity",
+      "source": "{\"id\":\"\\ud800\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "unpaired low surrogate identity",
+      "source": "{\"id\":\"\\udc00\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "two high surrogate identity",
+      "source": "{\"id\":\"\\ud800\\ud800\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "unknown temperament",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"balanced\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "case adjusted temperament",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"Lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "non-string temperament",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":false,\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "unknown runtime",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"containers\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null runtime",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":null,\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null stats",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":null,\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "array stats",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":[],\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "missing stat",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "unknown stat",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"luck\":1,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "stat case alias",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"HP\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "duplicate stat",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":1,\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "escaped duplicate stat",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"h\\u0070\":1,\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null hp",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":null,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "int32 upper overflow hp",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":2147483648,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "int32 lower overflow hp",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":-2147483649,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null atk",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":null,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "int32 upper overflow atk",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":2147483648,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "int32 lower overflow atk",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":-2147483649,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null def",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":null,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "int32 upper overflow def",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":2147483648,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "int32 lower overflow def",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":-2147483649,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null spd",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":null,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "int32 upper overflow spd",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":2147483648,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "int32 lower overflow spd",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":-2147483649,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null stamina_max",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":null},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "int32 upper overflow stamina_max",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":2147483648},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "int32 lower overflow stamina_max",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":-2147483649},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "fractional stat",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100.5,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "decimal integer token",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100.0,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "exponent integer token",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":1e2,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "string stat",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":\"100\",\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "nonfinite stat",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":NaN,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "too few move slots",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "too many move slots",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\",\"alpha\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "undeclared move",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"unknown\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null moves",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":null,\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "object moves",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":{},\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null move member",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",null],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "numeric move member",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",7],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "surrogate move member",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"\\ud800\"],\"tags\":[]}",
+      "expected": null
+    },
+    {
+      "name": "null tags",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":null}",
+      "expected": null
+    },
+    {
+      "name": "object tags",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":{}}",
+      "expected": null
+    },
+    {
+      "name": "null tag member",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[null]}",
+      "expected": null
+    },
+    {
+      "name": "numeric tag member",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[7]}",
+      "expected": null
+    },
+    {
+      "name": "object tag member",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[{}]}",
+      "expected": null
+    },
+    {
+      "name": "surrogate tag member",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[\"\\udc00\"]}",
+      "expected": null
+    },
+    {
+      "name": "root null",
+      "source": "null",
+      "expected": null
+    },
+    {
+      "name": "root array",
+      "source": "[]",
+      "expected": null
+    },
+    {
+      "name": "root string",
+      "source": "\"species\"",
+      "expected": null
+    },
+    {
+      "name": "trailing object",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}{}",
+      "expected": null
+    },
+    {
+      "name": "trailing garbage",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]}x",
+      "expected": null
+    },
+    {
+      "name": "malformed nesting",
+      "source": "{\"id\":\"species_alpha\",\"temperament\":\"lazy\",\"runtime\":\"container\",\"stats\":{\"hp\":100,\"atk\":64,\"def\":20,\"spd\":10,\"stamina_max\":8},\"moves\":[\"alpha\",\"beta\",\"gamma\",\"delta\"],\"tags\":[]",
+      "expected": null
+    }
+  ]
+}
