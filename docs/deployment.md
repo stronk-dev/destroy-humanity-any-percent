@@ -719,6 +719,13 @@ does not race this sequence: the helper uses `docker compose stop`, not a raw co
 Normal release is strictly forward by semantic release version and database migration; an older
 version can enter service only through the governed rollback command.
 
+`TestDockerRuntimeDrainCurrentObservesProtocolAndCommandBoundaries` now invokes the actual
+drain method through localhost HTTP/WebSocket exchanges and a recording command runner. It
+checks smoke/stop/inspection ordering, exact drain observations, identity refusal before
+runtime commands and damaged-input cases. Bootstrap/state/protocol replies and process exit
+are synthetic; no Docker, Caddy, account authorization or Postgres runs in this test. It
+supplements the helper's unit coverage, not its exact-release/clean-host drain acceptance.
+
 The pre-upgrade backup is checked as host bytes: after the backup container reports completion,
 the release helper re-reads the host envelope, verifies its encrypted payload length and SHA-256,
 and requires its header to equal the reported header (manifest, epoch, server, pre-upgrade class).

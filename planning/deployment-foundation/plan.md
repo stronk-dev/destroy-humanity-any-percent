@@ -12,9 +12,12 @@ now refuses rather than panics; configured receiver construction is checked befo
 commands. Old-source eight failures, ordinary receiver/ready/drain/identity controls, affected
 cold packages/vet/race and Linux-amd64 helper build pass. Original R9's complete five-path
 disposition remains CHANGES REQUIRED; this correction after `39019517` needs Claude review.
-Next accepted R9 evidence work: call the real `DockerRuntime.DrainCurrent` through native HTTP/
-WebSocket and recording-command boundaries (RP-547), rather than only testing its derivation.
-Keep exact Caddy/Postgres/Linux and clean-host/R-006 gates separate; no policy or bounds changed.
+RP-547 now adds actual `DockerRuntime.DrainCurrent` coverage through native HTTP/WebSocket and
+recording commands: eleven success/failure cases, two caller-level falsification overlays,
+affected cold packages/vet and race pass. Its test/docs/record range after `de0ca191` needs Claude
+review. No production behavior or drain bound changed; synthetic identity/exit replies are not
+real process, Caddy/Postgres/Linux or clean-host/R-006 proof. Continue remaining accepted original
+reviews and exact-artifact construction while those environment/review gates stay explicit.
 
 **Current DP1/AC8 correction, 2026-10-13 (RP-545):** every shipped npm copy's license/notice is
 validated before name/version deduplication, including CSS-derived copies. Matching attribution

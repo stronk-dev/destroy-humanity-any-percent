@@ -6284,3 +6284,43 @@ record range starts after `39019517` through this containing commit; designated 
 pending, consolidatable with the preceding RP-138 correction. R9/full Deployment/full nine-tier1.0
 remain open. Next: build RP-547's actual outer-method protocol population, preserving R-006's
 real Linux/Caddy/Postgres/release-artifact requirements and outstanding cross-party review.
+
+## 2026-10-13 — RP-547 actual drain-method protocol coverage
+
+Under DP5/AC3, invoke the real `DockerRuntime.DrainCurrent`, not a fixture implementation or
+just its evidence derivation. Physical localhost HTTP handles bootstrap/state/ready reads;
+physical WebSocket handles correlated connect/world-subscribe acknowledgements, the actual
+restart publication and closure. Docker commands are recorded, never executed. Check bootstrap
+credential propagation, exact smoke→container→stop→readiness→inspection ordering, observed
+container identity and the unchanged default20s stop argument.
+
+Eleven cases: complete control; unmarked/wrong readiness; missing courtesy; wrong close code;
+unclosed socket; stop/inspection failure; nonzero exit; bootstrap/state constants mismatch.
+The latter two must return no evidence and issue no runtime command. Each observable and the
+three exit-attested fields must match its actual fixture inputs; invalid evidence must return
+ErrInvalid. Every upgraded peer is cancelled/closed/waited for, including refusal paths.
+Initial28500 passes all11 in6.02s. Added exact protocol IDs and complete boundary ordering;
+final12665 passes cold deploymentrelease/config/rehearsal and both release/rehearsal CLI packages
+plus vet. Final92365 runs all11 under race detection in6.05s and passes. Format/diff checked.
+
+Discrimination uses isolated Go compiler overlays in `/tmp/cloud-clicker-drain-probe.oE0JFE`,
+copying committed `de0ca191`'s Docker runtime and forcing one caller evidence bit after derivation.
+No production file is edited. 49767: the three existing R9 derivation/readiness/identity tests
+pass with ReadinessDown forced true. 80742: the new unmarked-readiness case fails with a forged
+all-true drain. Independent99824: CourtesyFrame forced true fails the missing-courtesy case,
+also exposing all-true evidence. Production `git diff --exit-code` remains clean. The subsequent
+correlation/order assertions strengthen the same fixture; the two bit oracles remain unchanged.
+
+Scope: protocol/outer-method unit integration, not a real Account authentication, gameserver,
+Docker stop, Postgres, Caddy or release artifact. Bootstrap/state/protocol and exit status are
+synthetic. The default20s production bound is NOT shortened: two-second caller-context
+cancellation makes deliberately withheld observations finite, and is not a measurement of
+release latency or admitted-work/job completion. Those three flags remain process-contract
+attestations; actual process and exact clean-host/R-006 evidence remain required. No new schema,
+runtime behavior, timeout, retry, accepted policy, image or kernel version.
+
+Review by: Codex (test implementer first filter). Recorded by: Codex. Exact test/docs/records
+range starts after `de0ca191` through this containing commit; designated Claude review pending,
+consolidatable with the RP-138/RP-546 observer corrections. Original R9 remains CHANGES REQUIRED;
+no feature/archival/CI/full nine-tier1.0 or release promotion and no push/deploy. All named handles
+terminal; continue remaining accepted implementation/reviews and the exact-artifact gates.
