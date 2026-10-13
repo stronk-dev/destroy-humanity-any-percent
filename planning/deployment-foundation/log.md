@@ -6177,3 +6177,57 @@ New source/tests/docs/record range starts after `ca447daa` through this containi
 needs designated Claude review, consolidatable with the earlier RP-136 corrections. R6, full
 Deployment, hosted CI and full nine-tier1.0 remain open. No owner choice, version, acceptance,
 archival, push or deployment implied. All named execution handles above are terminal.
+
+## 2026-10-13 — Complete original Claude R8 diff-review disposition
+
+Review by: Codex (designated reviewer of original Claude implementation). Recorded by: Codex.
+Range `1f048de9^..1f048de9`, all seven paths: metadata command/tests, metadata model/tests,
+bundle-test formatting, canonical docs and owning log. **Decision: CHANGES REQUIRED.**
+
+Inspected full map discovery, exact package-root resolution, installed identity/license reads,
+deduplication, 0BSD/ISC classification and whitespace normalization, SPDX allowlist change,
+fixture assertions and recorded limits. Keep RP-137's missing-map finding and later CSS/URL/
+worker gaps (RP-164–166); their repairs are separately pending review. The original command's
+deduplication also skips later copies' attribution; unchanged logic at `fa2bec58` is executed
+below as RP-545, not relabeled a historical-tree run. R8 replaced the existing real Go-graph
+guard with client fixtures; this batch restores that test without claiming its two assertions
+prove each binary independently. Editorial bundle-test gofmt does not change behavior.
+Original improvements are real, but neither the original range nor corrected descendants are
+approved by this negative disposition. No new license-policy or legal determination is made.
+
+## 2026-10-13 — RP-545 validate every shipped package copy
+
+Under accepted DP1/AC8, move each resolved npm directory's existing license/metadata validation
+before identity deduplication. Permit one output row only for matching detected license and
+extracted notice text. Refuse ambiguous attribution for the same name/version rather than drop
+another copyright notice. Distinct versions retain separate notices. Preserve classifier,
+allowlist, package URLs, output schema and source-map/CSS graph semantics; no kernel/CI change.
+
+Old-source40287 (`fa2bec58`) fails twelve bad second-copy cases across actual Go JavaScript-map
+and CSS-graph consumers: missing, empty, unknown, metadata-mismatched, different same-license
+notice and different valid license. All four identical-copy/distinct-version controls pass.
+Corrected3503 passes the full affected metadata/release packages and vet. Final23616 repeats
+those cold checks with all16 cases and the restored real Go `list -deps` helper-only age/
+chromedp guard; all pass. The controls invoke the actual delivered-notice generator, asserting
+one identical row or both distinct-version notices. Tests use owned temporary package trees,
+not installed dependency mutations. Formatting/diff checked; no extra mutation needed for
+this old-behavior regression.
+
+Fresh root `make build-client` passes217 modules. Actual root metadata generation from that
+working build passes53 dependencies; parsed SBOM and generated notices contain exactly
+notations1.6.0, break_infinity.js2.2.0, pad-end1.0.2, svelte5.56.8 and tslib2.8.1 with their
+existing MIT/0BSD labels. Diagnostic output `/tmp/cloud-clicker-metadata.AXLs2X` uses version0.1.0,
+base source `fa2bec58c323b9e85bbad419981566a0b319457b` and fixed creation time
+`2026-10-13T00:00:00Z`; the generator correction is uncommitted during execution. It is not a
+release artifact/source-manifest claim. SHA256 SBOM
+`55bdd505894439cc2fcea8bcbd0b0cae77608e0d42644af0db4d8ca5af84710e`; notices
+`7765454957ce365749015dbbf0ec2493abaaa5aa8b181d553b5a56be520be553`.
+
+Docker version90680 receives no server reply; only that owned diagnostic client is interrupted
+(exit130, client28.4.0 metadata). No daemon/container restart, cleanup, Linux/Postgres execution
+or clean-host gate is claimed. Existing backup runtime/R-006 and full AC8/release gates remain.
+
+Review by: Codex (new repair implementer first filter). Recorded by: Codex. New source/tests/docs/
+records range starts after `fa2bec58` through this containing commit; designated Claude review
+pending, consolidatable with prior R8 map/CSS corrections. No original/corrective acceptance,
+archival, publication or full nine-tier1.0 completion. All named handles are terminal.

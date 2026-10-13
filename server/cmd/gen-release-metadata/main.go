@@ -222,7 +222,7 @@ func discoverClientDependencies(root string) ([]releasepackage.Dependency, error
 	}
 	sort.Strings(directories)
 	result := make([]releasepackage.Dependency, 0, len(directories))
-	seen := map[string]bool{}
+	seen := map[string]releasepackage.Dependency{}
 	for _, directory := range directories {
 		packageBytes, err := os.ReadFile(filepath.Join(directory, "package.json"))
 		if err != nil {
@@ -233,18 +233,25 @@ func discoverClientDependencies(root string) ([]releasepackage.Dependency, error
 			return nil, fmt.Errorf("%w: shipped package manifest %s", releasepackage.ErrInvalidContent, directory)
 		}
 		identity := installed.Name + "@" + installed.Version
-		if seen[identity] {
-			continue
-		}
-		seen[identity] = true
 		text, detected, err := licenseAt(directory)
 		if err != nil || installed.License != detected {
-			return nil, fmt.Errorf("%s: package license mismatch declared=%q detected=%q: %w", identity, installed.License, detected, err)
+			return nil, fmt.Errorf("%w: %s: package license mismatch declared=%q detected=%q: %v", releasepackage.ErrInvalidContent, identity, installed.License, detected, err)
+		}
+		// A peer-resolution path can ship another physical copy of the same
+		// package. Its identity is not evidence that its notice was inspected.
+		// One output row is safe only when every copy has matching attribution.
+		if previous, duplicate := seen[identity]; duplicate {
+			if previous.License != detected || previous.LicenseText != text {
+				return nil, fmt.Errorf("%w: conflicting shipped attribution for %s", releasepackage.ErrInvalidContent, identity)
+			}
+			continue
 		}
 		escaped := strings.ReplaceAll(installed.Name, "/", "%2f")
 		archive := strings.TrimPrefix(installed.Name[strings.LastIndex(installed.Name, "/")+1:], "@") + "-" + installed.Version + ".tgz"
-		result = append(result, releasepackage.Dependency{Name: installed.Name, Version: installed.Version, Kind: "npm", License: detected, LicenseText: text,
-			Download: "https://registry.npmjs.org/" + escaped + "/-/" + archive, PackageURL: "pkg:npm/" + installed.Name + "@" + installed.Version})
+		dependency := releasepackage.Dependency{Name: installed.Name, Version: installed.Version, Kind: "npm", License: detected, LicenseText: text,
+			Download: "https://registry.npmjs.org/" + escaped + "/-/" + archive, PackageURL: "pkg:npm/" + installed.Name + "@" + installed.Version}
+		seen[identity] = dependency
+		result = append(result, dependency)
 	}
 	if len(result) == 0 {
 		return nil, fmt.Errorf("%w: built client ships no npm package", releasepackage.ErrInvalidContent)

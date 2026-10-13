@@ -105,6 +105,14 @@ proof, not a clean-host bundle or completed AC8 verdict. A missing build fails. 
 Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license modules as SPDX `AND`
 expressions, and fails on missing, ambiguous, unknown or metadata-mismatched licenses.
 
+Every physical npm package directory reached through JavaScript or CSS is inspected before
+deduplicating `name@version`. Repeated copies may share one output row only when their detected
+license and extracted notice text match. A missing/empty/unknown/mismatched license or conflicting
+notice in any copy fails the inventory rather than choosing the first directory's attribution.
+Distinct versions keep separate package rows and delivered notices. This preserves the existing
+license allowlist and output format; it does not authenticate npm package contents or replace the
+final image/bundle supply-chain checks.
+
 The outputs are `third-party-licenses.txt` and an SPDX-2.3 JSON document with package-manager purls,
 download locations and root `DEPENDS_ON` relationships. On the current graph the generator finds 47
 linked third-party Go modules, the Go standard library and five browser dependencies (53

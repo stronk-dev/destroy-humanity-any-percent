@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP1/AC8 correction, 2026-10-13 (RP-545):** every shipped npm copy's license/notice is
+validated before name/version deduplication, including CSS-derived copies. Matching attribution
+merges; conflicting/missing evidence refuses without partial inventory. Two-route old-source
+negatives, delivered-notice controls, cold affected packages/vet and the freshly built client's
+actual53-dependency metadata pass locally. The original Go helper-dependency guard is restored.
+Original R8's full seven-path disposition remains CHANGES REQUIRED; this new correction after
+`fa2bec58` and prior map/CSS repairs need designated Claude review. No classifier/policy/schema,
+image provenance, clean-host, Docker/Linux-runtime, full AC8 or release promotion.
+
 **Current DP3/AC2 correction, 2026-10-13 (RP-543):** archive secret scanning now
 includes decoded tar owner/group/PAX/xattr fields and gzip header metadata; recognized
 secret-bearing finding/error paths are redacted. Digest-valid old-source negatives and
