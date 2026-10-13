@@ -5,13 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current product rollup (2026-10-12):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-12)
+**Current product rollup (2026-10-13):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-12)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Inspected source `2fbd246b`: Garage integration/hardening, incomplete v0.1, and substantial
+Inspected source `bd91a9a6`: Garage integration/hardening, incomplete v0.1, and substantial
 unbuilt world/combat/Tier 3–8/final-ending scope. Latest published CI remains red at
 `e0cb9187`; subsequent local repairs and complete original API review dispositions do not
-advance a gameplay milestone or establish release readiness. Use [current next moves](#current-next-moves)
-and the owning accepted RFC plans for execution. The four highlighted contract proposals
+advance a gameplay milestone or establish release readiness. Subsequent actual operations
+producer/receiver, public replay-verifier, queued Claim and minigame admission/Exit evidence
+is summarized in current verification, with owning logs retaining its limits and review debt.
+Use [current next moves](#current-next-moves)
+and the owning accepted RFC plans for execution. The five highlighted contract proposals
 remain drafts; unresolved arithmetic and integration are engineering work, not owner approval
 items. Neither decision holds nor pending review halt all accepted work.
 
@@ -2023,7 +2026,7 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Reconciled at source `2fbd246b` (2026-10-12). The intervening API, input, Recovery and
+Reconciled at source `bd91a9a6` (2026-10-13). The intervening API, input, Recovery and
 Deployment repairs improve existing paths/proofs; no additional playable tier or milestone
 is completed. The five original query/epoch/board/route/router API reviews now have complete
 CHANGES REQUIRED dispositions; later corrections and implementation ranges still need review.

@@ -5234,3 +5234,25 @@ pair/rollback and authorized clean-host proof. Artifact availability is no longe
 blocker; do not weaken validators or promote reconstruction into release support. No tier,
 acceptance, draft adoption, hosted CI or release advancement. The new checkpoint range needs
 Claude alongside existing packaging reviews; accepted construction elsewhere continues.
+
+## 2026-10-13 — Whole-product rollup after bounded integration and operations construction
+
+Reconciled at product source `bd91a9a6`, clean main,61 ahead of local origin/main.
+The current-state overview now distinguishes the retained whole-product baseline
+from subsequent queued-Claim/SQL, actual public-download/TypeScript replay, minigame
+claim/Exit and admission, and operations producer/receiver evidence. Owning logs
+remain the single detailed record; no duplicated command census or new tracker.
+Read-only GitHub run list/view still returns CI38222406320 at `e0cb9187` as newest:
+schema/harness/composed pass, client/server/browser fail. No local batch is labelled
+hosted green. Current source still refuses client eras beyond Tier2.
+
+These changes strengthen the existing early-game paths and deployment tools;
+they do not finish Garage, mint epoch9, add another tier, resolve owner/author
+choices or complete any release gate. The recent Codex ranges need consolidated
+designated review. Full nine-tier gameplay, rights/recovery/accessibility, natural
+balance, supported predecessor and exact-artifact clean-host proof remain.
+Next: continue accepted construction, including live restart producer-to-receiver
+and remaining host operations evidence; specific held contracts do not stop all
+work. This editorial checkpoint was checked against source, owning logs and the
+actual hosted state, not a fresh whole-product acceptance run. No acceptance,
+archive, push or release authority is inferred.

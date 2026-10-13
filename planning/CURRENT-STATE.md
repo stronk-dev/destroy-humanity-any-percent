@@ -1,6 +1,6 @@
 # Current repository state
 
-Reconciled 2026-10-12. Cloud Clicker remains a **development snapshot**, not a released or
+Reconciled 2026-10-13 at source `bd91a9a6`. Cloud Clicker remains a **development snapshot**, not a released or
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
@@ -15,6 +15,8 @@ justified by the number of commits, tests or archived RFCs.
 
 This is a synthesis of the active RFC index, canonical docs, owning plans/logs, live decision
 queue and current verification, not a claim to have rerun every acceptance criterion at HEAD.
+The whole-product classification below retains the 2026-10-12 baseline. Subsequent bounded
+construction is summarized in current verification; it has not completed another tier or milestone.
 “Fixture-first” means code exercised with controlled candidate data, not adopted release content.
 “Locally verified” does not mean designated-approved, shipped or verified on a clean release host.
 
@@ -49,18 +51,20 @@ operations remain required alongside that construction, not optional end-stage p
 
 ### Current verification and closeout
 
-Source inspected: `2fbd246b`, clean `main`, 19 commits ahead of the locally recorded
+Source inspected: `bd91a9a6`, clean `main`, 61 commits ahead of the locally recorded
 `origin/main` before this editorial checkpoint. These are different evidence populations:
 
 | Evidence | Result and limit |
 |---|---|
-| Latest published CI | Read-only `gh run list` / `gh run view` confirms [CI38222406320](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38222406320) on `e0cb9187`: schema, harness and composed pass; client, server and browser fail. No newer published CI run was returned. |
+| Latest published CI | Read-only `gh run list` / `gh run view`, rechecked 2026-10-13, confirms [CI38222406320](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38222406320) on `e0cb9187`: schema, harness and composed pass; client, server and browser fail. No newer CI run was returned. |
 | Published failures | Historical kernel guard (RP-131), 27 Clout accrual-partition cases (RP-307), and Fiscal whitespace in the populated performance census (RP-484). The blocking run also exceeds the five-minute floor. Do not suppress or reinterpret these failures as green. |
 | Later local repairs | Performance census, feedback/input, backup metadata/snapshot consistency and API admission/evidence corrections have scoped executed results in their owning logs. They remain unpushed and need designated review; they do not establish whole-CI success. |
-| Latest router repair | RP-496 refuses either incomplete previous cursor-key pair. Old-source regression fails; corrected affected cold Go/vet, unchanged API generation and selected real Linux-amd64/Postgres composition checks pass. `36f81dae..2fbd246b` needs Claude review. |
+| Router configuration repair | RP-496 refuses either incomplete previous cursor-key pair. Old-source regression fails; corrected affected cold Go/vet, unchanged API generation and selected real Linux-amd64/Postgres composition checks pass. `36f81dae..2fbd246b` needs Claude review. |
+| Subsequent player/API construction | Native queued Claim binds actual purchase/read delivery to refreshed revisions and consecutive SQL receipts. Public downloaded manifest/genesis/archive bytes now feed the actual TypeScript replay verifier while the real HTTP/SQL service is alive, with specific corruption refusals. Real Pitch processing claims block all three public Exit arms and release correctly; Go/TS Pitch/scaling admission repairs retain matching negatives. Owning logs hold executed scope and review ranges. These do not complete generated migration, held public minigame wires, natural pacing or a new gameplay milestone. |
 | Original API reviews | Query `32560c4b`, epochs `e63796d5`, boards `4c316c4c`, routes `09d12987` and router `731bb3e7` now have complete original-range **CHANGES REQUIRED** dispositions. Do not restart those reviews or treat later repairs as approved. Later implementation ranges remain separate. |
 | Release artifact | No current-candidate clean-host R-006 install/restore/rollback proof. The executed local Caddy/Postgres release fixture is useful bounded evidence, not that rehearsal or approval of the complete Deployment range. |
 | Private operations review | Original Claude R5 `78ec39a7^..78ec39a7` now has bounded Codex approval after actual private scrapes, cleanup-rule firing, nonce delivery, receiver rejection and Caddy admin isolation. The fixture is mixed-architecture, not clean-host release evidence. Exact-index amd64 rules and affected Linux-amd64/Postgres startup/job checks pass; the new focused Make extraction after `ffc8bc25` separately needs Claude. Full DP-E/AC7 and aggregate/hosted CI remain open. |
+| Subsequent operations construction | Actual locked SQL collection, connection refusal/reconnection, relay dead-letter growth and bounded filesystem allocation reach the private receiver with matching resolution. Same-second backup failure, startup-loss cleanup observation and ordinary drain cancellation have reproduced corrections. A real Docker restart-capped process now feeds the production host observer; the first-scrape rule regression passes after correction, but that new arm has no live receiver proof yet. These Codex batches need consolidated designated review; actual host journald/retention, complete AC7 and exact-artifact R-006 remain open. |
 
 The [API log](api-foundation/log.md), [Garage log](garage-player-surfaces/log.md),
 [Minigame API log](minigame-api-and-surface/log.md), [Account log](account-and-session-bootstrap/log.md)
