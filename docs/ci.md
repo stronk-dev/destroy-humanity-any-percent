@@ -212,6 +212,14 @@ producer cannot keep its old UI/socket alive. Its expired navigation helper refu
 polling or focusing disposed controls. Network/storage in these host tests remain controlled
 fixtures, not live-server/Postgres proof.
 
+If Typer's complete native journey reaches its deadline, its test-only observer prints
+`typer-native-journey-deadline` before teardown: current stage/elapsed time, engine phase,
+prompt/revision/command count, pending state, input length and native-RPC flight state.
+It does not record typed text or change input delivery, assertions, timers or concurrency.
+The real-timeout control requires a connected fixture's state to be sampled before removal;
+healthy/disposed observers stay silent. This is diagnostic context, not a latency correction:
+a later passing population does not resolve an earlier unexplained deadline.
+
 The Garden host fixture waits for its actual socket-factory callback before asserting the exact
 URL; elapsed event-loop turns do not establish startup completion. Construction does not imply
 transport readiness: the existing protocol-frame checks remain. Owned-fixture cleanup belongs

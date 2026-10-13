@@ -7,6 +7,14 @@
 
 ## Current checkpoint — 2026-10-13
 
+Current native cross-surface verification retains an RP-526 recurrence: at `b8eca33c`,
+the complete Chromium/WebKit functional population fails Typer's unchanged15s whole-game
+deadline. A new failure-only phase observer is locally verified, including a real deadline
+sampling DOM state before teardown. One instrumented complete population passes afterward;
+that is not attribution or repair of the original failure. The log owns both outcomes,
+source/range and limits. Preserve the observer on recurrence; do not extend the timeout,
+substitute synthetic input, rerun for green or credit native results as hosted/Linux proof.
+
 RP-540's citation boundary is locally corrected: old genuine-new-row CLI controls
 admit four aliases, and a controlled exterior-review read is reproduced without
 leaving the owned temporary fixture. Canonical active/archive citations and all

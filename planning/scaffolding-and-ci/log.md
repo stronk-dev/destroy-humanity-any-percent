@@ -1005,3 +1005,44 @@ needs designated Claude review, consolidatable with RP-131 after `a7e33b73`.
 No history-exception adoption, new correction, false bump, archival or push.
 Next: genuine accepted engineering and pending contract/policy closure, without
 repeating these completed fixture populations or reducing the full1.0 goal.
+
+## 2026-10-13 — Current-client full population exposes another RP-526 deadline
+
+At `b8eca33c`, `make test-client`19155 passes10,817 with1,038 explicitly skipped.
+Complete native functional `make test-browser-focused BROWSER_TEST_FLAGS='--project=chromium
+--project=webkit'`76642 fails Typer's whole-game native journey at its unchanged15s deadline:
+23,547 pass, one failure, eight expected diagnostic failures and16 skips;165.14s, Make exit2.
+The runner subsequently terminates; no timeout is treated as process death. Its failure
+screenshot is blank after fixture disposal, so neither the blocked stage nor latency cause is
+known. Large passive HTTP output is truncated by tool delivery; the final verdict/counts and
+specific failure are retained, not claims of a complete raw first-run recording.
+
+Add only passive test observation before deadline teardown: stage/elapsed time, engine phase,
+prompt/revision/command count, pending/input-length/focus and native-RPC flight state. Preserve
+every original key sequence, operation, assertion, timeout, cleanup/drain and concurrency setting.
+The existing real50ms deadline control now requires the observer to sample a still-connected
+input; healthy/disposed controls require silence. It records no typed text or credentials.
+Affected file68457 passes54 plus two explicitly expected deadlines in Chromium/WebKit; types
+45861 pass with zero diagnostics. Node executes its one pure helper test and skips27 browser
+cases, not player evidence.
+
+One instrumented complete diagnostic population79633 terminates exit0:286 files/23,548 pass,
+eight expected deadlines/16 skips,147.22s. No actual whole-game deadline occurs, so it yields
+no original-failure phase attribution and is NOT a latency/reliability repair or erased red run.
+Full output remains ignored at `.cache/typer-native-observation.log`, SHA-256
+`0de5759bbd572cc31c9c221cd67e42856e1c228f5e3459daa890a0bda7751251`.
+HTTP observation finishes1,361/1,361 requests, none pending; that is its module population,
+not all HTTP, SQL, player journeys or a performance measurement.
+
+Actual remaining client-guard union7037 uses `make -k` to retain all outcomes: history still
+fails50a3a514, while topology/13 negatives, combat/meter/achievement/cosmetic/no-payment
+boundaries and copy/content generation pass. Aggregate exit2 remains failure. No Firefox,
+Linux/SQL/composed, isolated performance, current hosted run or `verify-push` pass is claimed.
+Existing RP-307, strict hosted latency and full nine-tier release requirements remain open.
+
+Review by: Codex (test implementer first filter). Recorded by: Codex. New diagnostic
+tests/docs/records range starts after `b8eca33c` through this containing commit and needs Claude
+designated review, consolidatable with the existing native-input containment corrections.
+All handles terminal; diff/whitespace checked. No product, schema, kernel, balance, CI workflow,
+acceptance, archival, publication or deployment change. Next: retain the phase capture on an
+actual recurrence; continue authorized construction/review without claiming the timeout solved.

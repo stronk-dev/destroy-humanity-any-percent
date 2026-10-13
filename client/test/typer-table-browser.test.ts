@@ -16,15 +16,41 @@ const HASH = `sha256:${"a".repeat(64)}`;
 
 beforeEach(assertNativeInputDrained);
 
+// Failure-only observation: keep native input, assertions and deadlines intact.
+// Capture before timeout cleanup removes the DOM (the ordinary screenshot can be blank).
+function observeTyperDeadline(signal: AbortSignal, read: () => Record<string, unknown>,
+  report: (value: Record<string, unknown>) => void) {
+  const began = performance.now();
+  let stage = "setup", stageBegan = began;
+  const capture = () => {
+    const now = performance.now();
+    report({ stage, elapsed_ms: now - began, stage_elapsed_ms: now - stageBegan, context: read() });
+  };
+  signal.addEventListener("abort", capture, { once: true });
+  return {
+    enter(next: string) { stage = next; stageBegan = performance.now(); },
+    dispose() { signal.removeEventListener("abort", capture); },
+  };
+}
+
 describe("native keyboard timeout isolation", () => {
   let expiredSignal: AbortSignal;
   let release: () => void;
   let continued: Promise<void>;
+  let deadlineObservation: Record<string, unknown>;
 
   // A fired framework deadline is the deliberate negative population, not an
   // acceptance pass. Its successor independently requires that exact reason.
   it.skipIf(!browser).fails("fires a real test deadline while its async input producer is waiting", async ({ signal, onTestFinished }) => {
     expiredSignal = signal;
+    const input = document.createElement("input");
+    input.value = "WAITING";
+    document.body.append(input);
+    const observation = observeTyperDeadline(signal,
+      () => ({ fixture_connected: input.isConnected, input_length: input.value.length }),
+      (value) => { deadlineObservation = value; });
+    observation.enter("waiting-input-gate");
+    onTestFinished(() => { observation.dispose(); input.remove(); });
     const keyboard = lifetimeKeyboard(signal, async (keys) => {
       const { userEvent } = await import("vitest/browser");
       await userEvent.keyboard(keys);
@@ -41,6 +67,10 @@ describe("native keyboard timeout isolation", () => {
   it.skipIf(!browser)("refuses the expired producer instead of typing into its successor", async () => {
     expect(expiredSignal.aborted).toBe(true);
     expect(expiredSignal.reason.message).toContain("Test timed out in 50ms");
+    expect(deadlineObservation).toMatchObject({ stage: "waiting-input-gate",
+      context: { fixture_connected: true, input_length: 7 } });
+    expect(deadlineObservation.elapsed_ms).toBeGreaterThanOrEqual(0);
+    expect(deadlineObservation.stage_elapsed_ms).toBeGreaterThanOrEqual(0);
     const input = document.createElement("input");
     input.setAttribute("aria-label", "Timeout isolation successor");
     document.body.append(input);
@@ -105,6 +135,14 @@ describe("native keyboard timeout isolation", () => {
     await expect(failing.press("bad")).rejects.toBe(reason);
     await failing.closeAndDrain();
     assertNativeInputDrained();
+    const observations: Record<string, unknown>[] = [];
+    const healthy = new AbortController();
+    const observation = observeTyperDeadline(healthy.signal, () => ({ untouched: true }), (value) => observations.push(value));
+    observation.enter("healthy-input");
+    expect(observations).toEqual([]);
+    observation.dispose();
+    healthy.abort(new Error("after test disposal"));
+    expect(observations).toEqual([]);
   });
 });
 
@@ -262,6 +300,7 @@ it.skipIf(!browser)("Typer native keyboard untimed run completes through the rea
   let serverTime = 1_000;
   let exits = 0;
   const commands: TyperCommand[] = [];
+  let nativeInputInFlight = false;
   signal.throwIfAborted();
   const view = controlled(state, (command) => {
     commands.push(command);
@@ -276,10 +315,29 @@ it.skipIf(!browser)("Typer native keyboard untimed run completes through the rea
   }, () => { exits++; });
   const sentinel = document.createElement("button");
   view.target.before(sentinel);
+  const observation = observeTyperDeadline(signal, () => ({ phase: state.phase,
+    prompt_index: state.prompt_index, revision: state.revision, commands: commands.length,
+    last_command: commands.at(-1)?.kind ?? null, native_input_in_flight: nativeInputInFlight,
+    pending: view.target.querySelector(".typer")?.getAttribute("aria-busy") ?? null,
+    input_length: view.target.querySelector<HTMLInputElement>("input")?.value.length ?? null,
+    focused_input: document.activeElement === view.target.querySelector("input"),
+    fixture_connected: view.target.isConnected,
+  }), (value) => console.error("typer-native-journey-deadline", JSON.stringify(value)));
+  const press = async (stage: string, keys: string) => {
+    observation.enter(stage);
+    nativeInputInFlight = true;
+    try { await keyboard.press(keys); }
+    finally { nativeInputInFlight = false; }
+  };
+  const receive = async (stage: string) => {
+    observation.enter(stage);
+    await operation; await settle();
+  };
   let disposed = false;
   const dispose = () => {
     if (disposed) return;
     disposed = true;
+    observation.dispose();
     view.dispose(); sentinel.remove();
   };
   const finish = async () => {
@@ -288,31 +346,32 @@ it.skipIf(!browser)("Typer native keyboard untimed run completes through the rea
   };
   onTestFinished(finish);
   try {
+    observation.enter("initial-render");
     await settle();
     signal.throwIfAborted();
     sentinel.focus();
-    await keyboard.press("{Tab}");
+    await press("tab-timed-choice", "{Tab}");
     expect(document.activeElement, "native Tab reaches timed choice").toBe(button(view.target, "Timed run"));
-    await keyboard.press("{Tab}");
+    await press("tab-untimed-choice", "{Tab}");
     expect(document.activeElement, "native Tab reaches untimed choice").toBe(button(view.target, "Untimed run"));
-    await keyboard.press("{Enter}");
-    await operation; await settle();
+    await press("begin-untimed", "{Enter}");
+    await receive("begin-response");
     const input = view.target.querySelector<HTMLInputElement>("input")!;
     expect(document.activeElement).toBe(input);
-    await keyboard.press("WRONG{Enter}");
-    await operation; await settle();
+    await press("submit-miss", "WRONG{Enter}");
+    await receive("miss-response");
     expect(state.misses).toBe(1);
     expect(input.value).toBe("WRONG");
     expect(view.target.querySelector(".feedback")?.textContent).toBe(t("typer.feedback.miss", { index: 1 }, "era_2000"));
-    await keyboard.press("{Backspace}".repeat(5));
+    await press("clear-miss", "{Backspace}".repeat(5));
     const total = state.prompts_total;
     for (let index = 0; index < total; index++) {
       const prompt = view.target.querySelector(".prompt")?.textContent;
       expect(prompt, `current prompt ${index}`).toBe(state.current_prompt_text);
       expect(document.activeElement, `prompt ${index} input focus`).toBe(input);
       expect(input.value, `prompt ${index} input cleared`).toBe("");
-      await keyboard.press(`${prompt}{Enter}`);
-      await operation; await settle();
+      await press(`submit-prompt-${index}`, `${prompt}{Enter}`);
+      await receive(`prompt-${index}-response`);
       expect(state.lines_cleared).toBe(index + 1);
     }
     expect(state.phase).toBe("terminal");
@@ -322,8 +381,9 @@ it.skipIf(!browser)("Typer native keyboard untimed run completes through the rea
     ] });
     expect(commands).toHaveLength(total + 2);
     expect(document.activeElement, "completion retains a reachable host exit").toBe(button(view.target, "Leave the table"));
+    observation.enter("terminal-axe");
     await assertAxe(view.target, "terminal");
-    await keyboard.press(" ");
+    await press("leave-table", " ");
     expect(exits).toBe(1);
   } finally { await finish(); }
 });
