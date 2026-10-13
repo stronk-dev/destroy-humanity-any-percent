@@ -10,7 +10,7 @@ const dependencyPath = (relative: string) => decodeURIComponent(new URL(relative
 const performanceOnly = process.env.VITE_GAME_UI_PERFORMANCE === "1";
 const requestAudits = new Map<string, { page: Page; urls: string[]; request: (value: Request) => void; socket: (value: PlaywrightWebSocket) => void }>();
 
-// CI D2 / RP-235: passive module observation, not request interception or retry.
+// CI D2 / RP-235/RP-526: passive module observation, not interception or retry.
 function observeModuleHTTP(): Plugin {
   return {
     name: "cloud-clicker-browser-module-observation",
@@ -20,7 +20,10 @@ function observeModuleHTTP(): Plugin {
       const log = (value: Record<string, unknown>) => console.info("browser-module-http", JSON.stringify(value));
       server.middlewares.use((request, response, next) => {
         const url = new URL(request.url ?? "/", "http://test.invalid");
-        if (!url.pathname.includes("/balance/routes-testdata/") && !url.pathname.includes("/src/shell/prediction.worker.ts")) { next(); return; }
+        const stalledModules = ["/test/axis-factor-format.test.ts", "/test/minigame-resolution.test.ts",
+          "/test/pet-combat-inputs.test.ts", "/test/ui/amount-format.test.ts"];
+        if (!url.pathname.includes("/balance/routes-testdata/") && !url.pathname.includes("/src/shell/prediction.worker.ts") &&
+          !stalledModules.some((path) => url.pathname.endsWith(path))) { next(); return; }
         const id = ++started, began = performance.now();
         const identity = { id, path: url.pathname, method: request.method, user_agent: request.headers["user-agent"] ?? null,
           import: url.searchParams.has("import"), worker_file: url.searchParams.has("worker_file") };

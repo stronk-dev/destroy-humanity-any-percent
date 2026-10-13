@@ -170,6 +170,17 @@ are recorded in the [CI log](../planning/scaffolding-and-ci/log.md); a focused o
 does not establish success of this ordinary target, hosted reliability or the five-minute
 acceptance floor.
 
+The normal container command wraps the frozen installation and both browser lanes in GNU
+`timeout --verbose --signal=KILL 10m`, matching the hosted browser job's existing containment
+ceiling. A stuck test process group cannot keep the local job alive indefinitely. A deadline
+prints the timeout's signal message and fails the command; partial pass counts are not a verdict.
+Exit137 without that message is not enough to diagnose a deadline rather than another kill.
+This is containment, not a larger test timeout or permission to exceed the sub-five-minute
+hosted acceptance target. Explicit Compose command overrides replace this wrapper too.
+The timer starts when the container command starts; it does not bound a stuck Docker client
+before startup. Require the CLI's terminal result as well as test results, and report an
+unavailable daemon as unavailable verification, never as a passing job.
+
 Two Node-side fixtures, `css-dependency-graph.test.mjs` and
 `opportunity-composed-proof.test.mjs`, are excluded by exact path from browser collection because
 their helpers require Node APIs. Both remain in the mandatory client Node suite; other test
@@ -196,8 +207,9 @@ separately require bounded native readiness before their two-second measurement,
 cannot silently invalidate the comparison. R-010's dossier retains the fired initial control and
 the original unresolved full-lane failure; local repeat passes are not hosted reliability proof.
 
-The browser configuration also emits passive `browser-module-http` JSON for Route fixtures
-and native prediction-worker modules: request start, HTTP finish/premature close, and a server
+The browser configuration also emits passive `browser-module-http` JSON for Route fixtures,
+native prediction-worker modules and RP-526's four unreported test modules: request start,
+HTTP finish/premature close, and a server
 close-summary including pending requests. Native witness logs now identify per-test worker
 command/output/error/termination ordering before and after cleanup. Neither observer retries,
 intercepts or suppresses failures. IDs are scoped to each server/test observer, not global.

@@ -12,6 +12,12 @@ services:
       - /workspace/client/node_modules
       - /workspace/.pnpm-store
     command:
+      # Match the hosted browser job's existing ten-minute containment ceiling.
+      # Kill the disposable test process group even if a runner ignores TERM.
+      - timeout
+      - --verbose
+      - --signal=KILL
+      - 10m
       - bash
       - -lc
       - >-

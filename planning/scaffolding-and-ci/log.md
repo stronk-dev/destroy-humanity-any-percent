@@ -622,3 +622,60 @@ acceptance, archival, push or release. Next: reproduce/diagnose the four missing
 Chromium file completions, enforce the existing local job deadline without raising
 it, then establish a repeatable ordinary full job. Do not retry until a last green
 conceals these failures; history/accrual contracts remain separate prerequisites.
+
+## 2026-10-13 — Bound the local browser process; expose the missing-module boundary
+
+Outcome under CI D2: `compose.browser-test.yml` now wraps the frozen install and
+both unchanged browser lanes in `timeout --verbose --signal=KILL 10m`, matching
+the existing hosted containment ceiling, not raising individual test/performance
+or sub-five-minute acceptance bounds. Kill targets the disposable process group;
+stderr distinguishes a fired deadline from other exit137 causes. This cannot
+bound an unavailable Docker control plane before the container starts.
+
+Reuse the existing passive Vite observer for the four RP-526 module URLs; no
+request interception, retry, test exclusion, concurrency or player behavior change.
+The raw trace differentiates HTTP loading from later test execution/reporting.
+
+Executed after `e2efdebf`:
+
+- Read the actual Compose-rendered argv and reuse its wrapper in the declared
+  service. Healthy child exits0; deliberate child failure preserves23; a
+  TERM-ignoring sleeping child with only the diagnostic duration shortened to
+  0.2s exits137 with `timeout: sending signal KILL to command`. Normal configured duration
+  stays10m. All controls finish; no host daemon/service is stopped by them.
+- Frozen-install four-file selection (`axis-factor-format`, `minigame-resolution`,
+  `pet-combat-inputs`, `ui/amount-format`) passes all123 cases in three engines,
+  3.00s. Observer records12 starts/12 successful finishes, pending0, valid=true.
+  These isolated cases do not dispose the previous full-job stall.
+- Ordinary `make test-browser-ci` completes functional collection:423 files,
+  34,623 passes/15 failures/24 existing skips,316.27s, terminal Make2. Performance
+  never runs after red functional results. Chromium fetches all four suspect
+  modules with200/text/javascript; no recurrence of the four-file stall in this
+  run. Keep the red native-input result, not a full-CI or latency pass.
+- Typer's whole native journey times out; subsequent composition checks receive
+  `ls -lap` and `ls -lal` instead of `ls -la`. Post-timeout keyboard continuation
+  is a concrete next hypothesis, not a proven product/cancellation diagnosis.
+- `make typecheck verify-ci-topology`: zero errors/warnings; topology plus all13
+  existing negative controls pass. Diff checked; no test/assertion bytes changed.
+
+Then Docker stops answering stats/listing and a proposed four-CPU diagnostic.
+Read-only host `df -h .` reports1.8GiB available/100%; do not infer its cause.
+The CPU-quota proposal yields no result and is withdrawn. Exact task-owned client
+commands/PIDs are verified via process metadata before terminating8132,10158,
+17584/17586 and18774; these are probes/Compose clients, not Docker Desktop or
+game services. Probe sessions terminate130/143. Server-side probe/container state
+cannot be verified while the daemon is unavailable; no cleanup-success claim.
+The first sandbox-denied process inspection is excluded, then repeated with
+read-only approval. No daemon restart, image/volume deletion or broad cleanup.
+
+Scoped disk inventory: `.cache/go-build`2.8GiB is regenerable compiler cache;
+`.cache` also contains release evidence that must NOT be swept with it. Approval
+to clear only that compiler cache is requested and remains ungranted at this
+checkpoint. No cache bytes are removed. Release artifacts and research stay intact.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. New range
+starts **after `e2efdebf` through this containing Compose/observer/docs/record commit**;
+designated Claude review remains pending and may consolidate with the prior CI
+range after `d618b0b4`. No archive, publication or release. Resume Docker-based
+diagnosis after capacity/control-plane recovery; investigate late input and the
+original unfinished-file condition without raising bounds or retrying away red.
