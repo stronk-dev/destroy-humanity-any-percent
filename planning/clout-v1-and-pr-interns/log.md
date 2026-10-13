@@ -3093,3 +3093,81 @@ range after `e4054647` through this containing commit, including these records,
 needs designated Claude review, consolidatable with related CV1 fixes. Original
 P1's negative verdict is not approval of this range. Continue accepted work and
 remaining original P2/P3 reviews; the full nine-tier1.0 goal remains active.
+
+## 2026-10-13 — Full original P2/P3 formula and save review
+
+Review by: Codex (designated independent reviewer of Claude). Recorded by: Codex.
+**CHANGES REQUIRED**, exact `f256b235^..f256b235`, all28 changed paths. Claude
+provenance is explicit in the original record and co-author trailer. Inspect the
+entire Go/TS attainment/formula/serialization path, activation and Exit boundaries,
+active-play and Soul/recovery consumers, eligibility/read projection, event
+registry/migration, release migration pin, tests/vectors, version markers and log.
+
+Existing acceptance gaps remain: RP-307's absent original timing/partition proof
+and actual27 divergences; RP-309/310's missed TypeScript v19 active-play predicates;
+RP-311's absent derived receipt axis object. The original log's "every Go/TS v18
+check is inclusive" claim is false at its own source. Retain its openly reported
+surviving float-division probe and AC3 receipt-equivalence contradiction as author
+reconciliation, not accepted waivers or permission to change legitimate earnings.
+Unselected score-input fixtures do not prove production compatibility for that
+alternative; the ruled release input remains attainment.
+
+RP-539 newly reproduces the original/current encoder's misplaced guard: v14/v16/
+v17 return before its pre-v19 prohibition, so9 field-presence/score refusals fail.
+V18's3 negatives and4 healthy legacy controls pass; Go's16 matching cases pass.
+This is fresh execution of the current unchanged control-flow boundary, not a
+full historical compiler/service run. The correction below is a separate scope.
+
+Readonly original artifact checks: eight formula and nine attainment vectors
+have unique names; both files and applied00081 remain byte-unchanged. Migration
+Up adds exactly re-attainment to the preceding kind set; Down restores that set.
+Prior schema constraints keep this kind atv1; no applied migration is edited.
+All three original kernel markers agree at127 after126. This is source/artifact
+consistency, not a fresh SQL migration/constraint proof. Current cold11486 passes
+activation, derivation, both vector generators without regeneration, carry contrast,
+v19 codec and new legacy cases, plus release migration contiguity. The actual
+Postgres test explicitly SKIPS for missing TEST_DATABASE_URL. Existing source
+search finds no generic events UPDATE trigger masking its kind/version checks;
+no such defect is asserted without evidence. Original reported SQL/severing remains
+Claude's historical evidence, not a fresh Codex execution.
+
+Original P1–P5 implementation dispositions are complete. Later Codex corrections,
+compatibility research, migration corpus and service/browser supplements require
+their own designated reviews; this negative verdict approves none. P6/harness,
+accounting, author/copy/mint and full feature/release gates remain open.
+
+## 2026-10-13 — RP-539 refuse attainment before every legacy encoding return
+
+Outcome under CV4: non-null attainment (even an empty set) or nonzero attainment
+score must refuse before encoding any pre-v19 Company, not disappear from its
+wire output. Move the existing TypeScript guard to the function entry. No Go
+runtime codec, serialized healthy bytes, replay chronology, arithmetic, field
+schema, artifacts or balance changes. Kernel187→188 and both generated markers
+record the real refusal change. No raw observation is regenerated/restamped.
+
+Old TypeScript14017 fails9 regressions,7 controls pass; Go's first attempt fails
+compilation because my test omitted fmt, not a product finding. Add that import;
+cold38065 passes all16 matching Go cases. Fixtures shape earlier-version wire
+controls from the unchanged activation observation; they are codec-boundary
+inputs, not a claim of real historic migrations or a server persistence exploit.
+Existing v19 migration/Exit/receipt cases retain their exact bytes and behavior.
+
+Executed root checks: Node40270 passes6608 including shared decimal vectors and
+full replay/attainment/migration/receipt cases; native46760 passes146 in Chromium/
+WebKit,13.20s. Full `make test-client`52599 passes10817,1030 explicit existing/
+browser skips. Cold save/kernel/decimal51440 and affected vet56352 pass; selected
+production/save/release11486 passes with its SQL skip explicit. Type/build/client
+boundary/formulas40079 succeed; its following migration target fails on sandbox
+socket permission before a DB check. Authorized retry61903 produces no test output
+and remains live after82seconds: verified make20820→docker20828→compose20830.
+Deliberately interrupt only that owned Compose client, then observe terminal
+Make exit2 / child130. No Docker restart, daemon shutdown or unrelated cleanup.
+Migration/DB acceptance is unverified, never promoted from that attempt.
+
+All named handles are terminal; diff checked. RP-131/RP-307, Docker availability,
+Linux/Firefox, hosted/whole CI, AT and exact-release evidence remain separate.
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete correction
+after `ed129ec5` through this containing commit, including tests/records, needs
+designated Claude review, consolidatable with related CV4 fixes. The original
+P2/P3 verdict is not approval of this range. Next: RP-537's guard boundary and
+remaining accepted construction; no archival, mint, push or1.0 promotion.

@@ -3,6 +3,7 @@ package save
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -1280,5 +1281,61 @@ func TestCompanyV19AttainmentRoundTripAndRejections(t *testing.T) {
 	negative.AttainmentScoreRun = -1
 	if _, err := EncodeState(negative); !errors.Is(err, ErrInvalidState) {
 		t.Fatalf("negative attainment score accepted: %v", err)
+	}
+}
+
+// CV4's field-before-version rule applies to every preceding Company format,
+// including an empty but present set. This mirrors the TypeScript RP-539 cases.
+func TestCompanyAttainmentRefusedBeforeV19(t *testing.T) {
+	for _, version := range []int{14, 16, 17, 18} {
+		legacy := func() *State {
+			state := testState(t)
+			state.WireVersion = version
+			if version >= 16 {
+				state.MeterValues = map[string]int{}
+				state.MeterDecayRemainders = map[string]int64{}
+				state.MeterInputRemainders = map[string]int64{}
+				state.AchievementsEarnedRun = map[string]bool{}
+				state.AchievementsEarnedLifetime = map[string]bool{}
+			}
+			if version >= 18 {
+				state.ActiveBuffs = []ActiveBuff{}
+			}
+			return state
+		}
+		t.Run(fmt.Sprintf("v%d/legal", version), func(t *testing.T) {
+			encoded, err := EncodeState(legacy())
+			if err != nil {
+				t.Fatal(err)
+			}
+			state, err := RestoreState(encoded, version, stateCatalog(t), economy.ScopeCompany, time.Time{})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if state.AchievementsAttainedRun != nil || state.AttainmentScoreRun != 0 {
+				t.Fatal("legacy control has attainment")
+			}
+			actual, err := EncodeState(state)
+			if err != nil || string(actual) != string(encoded) {
+				t.Fatalf("legacy bytes changed: %v", err)
+			}
+		})
+		for _, fault := range []string{"empty-set", "attained-set", "score-only"} {
+			t.Run(fmt.Sprintf("v%d/%s", version, fault), func(t *testing.T) {
+				state := legacy()
+				switch fault {
+				case "empty-set":
+					state.AchievementsAttainedRun = map[string]bool{}
+				case "attained-set":
+					state.AchievementsAttainedRun = map[string]bool{"achievement.generators_purchased_1": true}
+					state.AttainmentScoreRun = 2
+				case "score-only":
+					state.AttainmentScoreRun = 2
+				}
+				if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+					t.Fatalf("legacy %s must refuse, got %v", fault, err)
+				}
+			})
+		}
 	}
 }

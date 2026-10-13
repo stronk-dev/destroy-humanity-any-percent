@@ -566,6 +566,7 @@ export function encodeReplayStateV14(state: ReplayState): unknown {
 }
 
 export function encodeReplayState(state: ReplayState): unknown {
+  if (state.wireVersion < 19 && (state.achievementsAttainedRun !== null || state.attainmentScoreRun !== 0)) throw new RangeError("attainment state before Company v19");
   const base = encodeReplayStateV14(state) as Record<string, unknown>;
   if (state.wireVersion === 14) {
     if (state.computeBurstRemainingMs !== 0) throw new RangeError("inactive compute burst state");
@@ -582,7 +583,6 @@ export function encodeReplayState(state: ReplayState): unknown {
     if (state.opportunitySpawnSeq !== 0 || state.nextOpportunityAttendedMs !== 0 || state.pendingOpportunity !== null || state.activeBuffs.length !== 0) throw new RangeError("inactive active-play state");
     return doctrinal;
   }
-  if (state.wireVersion < 19 && (state.achievementsAttainedRun !== null || state.attainmentScoreRun !== 0)) throw new RangeError("attainment state before Company v19");
   const activePlay = { ...doctrinal, opportunity_spawn_seq: state.opportunitySpawnSeq, next_opportunity_attended_ms: state.nextOpportunityAttendedMs,
     pending_opportunity: state.pendingOpportunity === null ? null : { opportunity_id: state.pendingOpportunity.opportunityId, spawned_attended_ms: state.pendingOpportunity.spawnedAttendedMs,
       expires_attended_ms: state.pendingOpportunity.expiresAttendedMs, effect_row_id: state.pendingOpportunity.effectRowId, selected_generator_id: state.pendingOpportunity.selectedGeneratorId },

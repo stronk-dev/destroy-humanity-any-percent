@@ -122,3 +122,35 @@ describe("CV4 exact Company migration corpus at real load/Exit boundaries", () =
     }
   });
 });
+
+describe("CV4 attainment is refused before Company v19 encoding (RP-539)", () => {
+  function legacyWire(version: 14 | 16 | 17 | 18) {
+    const row = corpus.rows.find(row => row.id === "veteran/online/3114");
+    if (!row) throw new Error("legacy source row missing");
+    const raw = structuredClone(row.old.pre_state) as Record<string, unknown>;
+    if (version < 18) for (const key of ["opportunity_spawn_seq", "next_opportunity_attended_ms", "pending_opportunity", "active_buffs"]) delete raw[key];
+    if (version < 17) delete raw.compute_burst_remaining_ms;
+    if (version === 14) {
+      for (const key of ["meter_values", "meter_decay_remainders", "meter_input_remainders", "achievements_earned_run", "achievement_score_run", "achievements_earned_lifetime", "achievement_score_lifetime"]) delete raw[key];
+      raw.meter_bands = {};
+    }
+    return raw;
+  }
+  for (const version of [14, 16, 17, 18] as const) {
+    it(`preserves legal v${version} encoding bytes`, async () => {
+      const state = admitted(legacyWire(version), version, await currentPromise);
+      expect(state.achievementsAttainedRun).toBeNull(); expect(state.attainmentScoreRun).toBe(0);
+    });
+    for (const fault of ["empty-set", "attained-set", "score-only"] as const) {
+      it(`refuses ${fault} in v${version} before encoding`, async () => {
+        const state = admitted(legacyWire(version), version, await currentPromise);
+        state.achievementsAttainedRun = fault === "score-only" ? null : new Set(fault === "attained-set" ? ["achievement.generators_purchased_1"] : []);
+        state.attainmentScoreRun = fault === "empty-set" ? 0 : 2;
+        const attained = state.achievementsAttainedRun;
+        expect(() => encodeReplayState(state)).toThrow(/attainment state before Company v19/u);
+        expect(state.wireVersion).toBe(version); expect(state.achievementsAttainedRun).toBe(attained);
+        expect(state.attainmentScoreRun).toBe(fault === "empty-set" ? 0 : 2);
+      });
+    }
+  }
+});

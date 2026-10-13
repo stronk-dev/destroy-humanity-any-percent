@@ -34,6 +34,11 @@ proposals awaiting owner SHA ratification. `pr_intern_3` is absent until Tier 2 
 
 ## Company v19 attainment
 
+- **Encoding boundary:** both codecs reject a non-null attainment set (including
+  an empty set) or nonzero attainment score at every earlier Company version.
+  The TypeScript encoder checks before its v14/v16/v17 early returns, rather than
+  silently omitting the forbidden state. Legal legacy bytes and v19 fields stay
+  unchanged; kernel0.3.188 records this refusal correction (RP-539).
 - **Fields:** Company v19 carries `achievements_attained_run`, a sorted-unique set of run-scoped
   achievement IDs, and the derived `attainment_score_run`.
 - **Activation:** v19 exists exactly when the pinned economy declares `axis_stack`, and such a

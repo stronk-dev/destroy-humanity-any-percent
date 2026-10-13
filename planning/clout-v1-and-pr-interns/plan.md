@@ -6,6 +6,17 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+2026-10-13 P2/P3/RP-539 checkpoint: original `f256b235^..f256b235`, all28 paths,
+now has full designated CHANGES REQUIRED, retaining RP-307/309/310/311 and the
+author-owned AC2/AC3 gaps. The newly reproduced early-return serialization gap
+is locally fixed at kernel0.3.188: all pre-v19 encoders reject forbidden
+attainment without altering legal bytes. Paired/native/replay checks pass;
+no fresh SQL evidence is available from the interrupted Docker attempt.
+Original P1–P5 implementation dispositions are now complete, not corrective
+approval or whole-feature acceptance. Next: accepted construction, RP-537's
+guard repair and consolidated corrective review; do not restart those originals.
+Accounting/author/content/P6/full-release obligations remain independently open.
+
 2026-10-13 P1/RP-538 checkpoint: original `ace4e67e^..ace4e67e`, all17 paths,
 now has full designated CHANGES REQUIRED for mandatory-role admission (RP-304)
 and source ownership (RP-538). Both current loaders locally refuse cross-upgrade
@@ -13,8 +24,8 @@ source collisions with unchanged distinct/equal-factor controls; kernel0.3.187
 records that real acceptance-set correction. Affected checks pass while broader
 production retains27 partition failures and the historical version guard stays
 red. The owning log separates original review from pending Claude review of the
-correction. Continue original P2/P3 review and accepted construction; P1/P4/P5
-original dispositions are now complete, not full-feature acceptance.
+correction. Its original disposition is complete, not approval of later fixes
+or full-feature acceptance; the latest P2/P3 checkpoint above owns the next step.
 
 2026-10-13 RP-536 checkpoint: the shared axis readout now contains missing or
 parameter-incompatible cap-copy rows instead of crashing the Desk or silently
@@ -256,7 +267,7 @@ episode/origin lifetime remain; the owning log records checks and the initial in
   `axis_stack` block, the axis upgrade-effect arm, the upgrade-only `axis_at_least` requirement,
   the `axis_stack` multiplier slot (after `milestones`), provider/declaration pairing, and
   cross-artifact validation against `achievements`. Shared loader corpus. AC1.
-- [x] P2 (`f256b235`, formulas `63aa0b62`) — CV3 formula: axis contributions from Company state, the clamp, `saturated`; shared
+- [x] P2 (`f256b235`, formulas `63aa0b62`) — implementation present, not full AC2 approval; original all28-path P2/P3 review CHANGES REQUIRED. CV3 formula: axis contributions from Company state, the clamp, `saturated`; shared
   Go-authored vectors reproduced by TS. AC2. Formulas artifact regenerated in its own commit
   (AC10).
 - [x] P3 (`f256b235`) — implementation presence, not full acceptance: CV2/CV4/CV5 Company save v19 (next free) attainment set + derived score, second hook
@@ -264,6 +275,8 @@ episode/origin lifetime remain; the owning log records checks and the initial in
   migration corpus. ACs 3, 5, 6, 7, 8.
   RP-307: AC6's seeded timing/partition property and retroactive-factor failing case
   are absent from the original population; formula/helper parity is not that proof.
+  Original all28-path review is CHANGES REQUIRED; RP-309/310/311/539 repairs and
+  later migration/replay supplements retain separate designated review debt.
 - [x] P4 (`4c089f00`) — structural test present, not full AC4 proof: direct seeded writers fail; two independent write forms escape (RP-537). Original full review CHANGES REQUIRED; strengthen the inventory/codec boundary before acceptance.
 - [x] P5 (`2f2c5a04`) — CV9 snapshot producer (optional v4 field) + Desk PR row progress: implementation presence, not full AC11/default composed journey acceptance. RP-303 locally corrects native progress associations; its Codex span independently needs Claude.
   Original all30-path review is CHANGES REQUIRED (2026-10-13); owning log names
