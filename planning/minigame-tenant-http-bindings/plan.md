@@ -8,20 +8,23 @@ chi dispatch in six cases. Both static same-method variants shadow the old admit
 disjoint prefix and different-method controls preserve it. Source is the manual
 `../api-foundation/probes/tenant-route-probe.go.txt`, outside ordinary test collection.
 
-Next engineering work before adoption/review (owned by Codex, not owner design questions):
+Engineering specification now ready for normative review, not implementation:
 
-1. Complete the literal Typer/directory descriptors and exact operation error subsets,
-   using current snapshot/receipt ownership rather than another public schema table.
-2. Specify the generated client guard mechanism from the same Go descriptors; bind trusted
-   host time/claimed-session read behavior without adding mutation retries or polling.
-3. TB4 now names the create new/replay admission callbacks, one-transaction command
-   replay/claim, account-scoped locks and read-only snapshot interfaces. Implement and prove
-   them against real Postgres only after adoption; source-derived placement is not atomicity
-   evidence. Preserve the stored inner-resolution versus full-command-response distinction.
-4. Close schema2's Go/TS/version-floor/replay representation and exact compiled role bindings;
-   preserve all schema1 historical bytes. Reconcile TT-PA4/MA-C9/MA-C15 through their authors.
-5. Obtain adoption and designated normative review. Do not infer either from dependency
-   availability or from the routing probe. RP-460/RP-162 remain separate author obligations.
+- TB2 names every new request/success descriptor, all eighteen snapshot fields, exact error
+  subsets and an explicit registered drain binding. Today's main-intent guard does not cover
+  minigame routes; the new drain DTO does not widen old APIError/Pitch schemas.
+- TB3 specifies retained operation metadata, exact role maps, both runtime models/accessors,
+  raw admission, historical normalization, unchanged save floors and genuine loader identity.
+- TB4 names before-write create/new/replay admission, one-transaction command replay/claim,
+  account-scoped locks and read-only snapshot interfaces. Stored inner-resolution and full
+  command response receipts are distinct. Atomicity still needs real Postgres proof.
+- TB5 specifies a generated bounded descriptor closure and guarded schema-byte decoder,
+  preserving raw UTF-8/BOM/literal identity. Existing SDK/pair checks are not full guards.
+
+Next: obtain proposal adoption, author-body reconciliation and designated normative review.
+Do not treat this draft's readiness for review as acceptance or mutate parents in another
+author's name. RP-460/RP-162 remain separate author obligations. Review may require corrections;
+none of the specified new endpoints, codecs, guards, drain bindings or client registration exists.
 
 After those gates, the RFC's staged acceptance requires genuine catalog/integration identity,
 real Postgres, native generated-client play/reload/failure paths, preserved Pitch dispatch and

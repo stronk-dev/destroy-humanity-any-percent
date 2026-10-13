@@ -33,7 +33,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
 | [Minigame & Recovery API + Surface](minigame-api-and-surface.md) | accepted — MA-C1–C15 ruled; implementing | API Foundation / Minigame Platform (accepted, implementing) / Soul / UI Foundation |
-| [Minigame Tenant HTTP Bindings](minigame-tenant-http-bindings.md) | draft — disjoint Typer routes/versioned binding proposal; transaction seam specified, descriptors/guards/version floor/body adoption/review pending; not acceptance-ready | API Foundation C2 / Minigame API / Terminal Typer TT-PA4 |
+| [Minigame Tenant HTTP Bindings](minigame-tenant-http-bindings.md) | draft — engineering specification ready for normative review; adoption/parent bodies/review and Typer author holds remain; not implementation authority | API Foundation C2 / Minigame API / Terminal Typer TT-PA4 / Deployment DP5 |
 | [Permits & the T3→T4 Gate](permits-and-t3-gate.md) | promoted in reviewed epoch 6; archival pending | Economy Kernel / Route Registry / First Content Epoch |
 | [First Content Epoch](first-content-epoch.md) | epoch 6 minted and designated-approved; dependent archival in progress | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | implementing — accepted at `cd102d7` | Gameserver / Client / Account / API / CI / operations |

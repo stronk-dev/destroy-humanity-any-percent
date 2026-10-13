@@ -6,9 +6,10 @@ Fixture-first (OD-11): no production epoch is minted by this plan.
 2026-10-14 public-wire preparation: `rfc/minigame-tenant-http-bindings.md` is the new draft
 home for the TT-PA4/C2 reconciliation, not adoption. Its disjoint prefix avoids RP-562's
 executed static-route shadowing; versioned metadata/directory avoids silently remapping
-the v1 artifact's four operation IDs. TB4 now specifies the transaction/admission seam;
-exact descriptors/generated guards and metadata loader/version-floor details,
-parent-body reconciliation, owner adoption/designated review and RP-162/RP-460 remain.
+the v1 artifact's four operation IDs. The draft now specifies exact descriptors/guards,
+metadata/version floors, transactions and explicit drain binding. Engineering proposal
+is ready for normative review; parent-body reconciliation, adoption/designated review and
+RP-162/RP-460 remain.
 Do not treat this draft as permission to implement B5/B6, refresh a pin or expose Typer.
 
 2026-10-14 bounded TT-PA2 correction: RP-563's availability projection now reads the same
