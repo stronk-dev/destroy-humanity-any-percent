@@ -7041,3 +7041,44 @@ on re-poll. Interrupt only that owned client, terminal130. Ask explicit permissi
 to restart Docker Desktop because it interrupts all containers; no approval has
 arrived and no restart/cleanup is performed. Current-State/roadmap point to the
 new published observation without calling running jobs green or erasing history.
+
+## 2026-10-13 — Original Garage surface batch review
+
+Review by: Codex (designated independent reviewer of Claude). Recorded by: Codex.
+**CHANGES REQUIRED**, exact `acf43132^..acf43132`, all22 paths. Provenance is the
+Claude owning implementation record and co-author trailer. Inspect all three
+components, host/navigation/registry, presentation data/parser, phase helper,
+three test changes, candidate/generated copy, manifest, docs and plan/log.
+
+Existing findings apply directly: RP-323 pending native disabling and incomplete
+readiness; RP-324 missing projected row-cap refusal; RP-330 CSS-restyled table
+instead of the accepted narrow semantic list; RP-332 uncontained unavailable
+achievement-copy/declared-band rendering. The original throwing `title`/`band`
+functions byte-equal the actual executed red baseline `532855fe`, independently
+checked in-memory against both Git blobs. Reuse that retained failure evidence,
+not a claim to have mounted historical Svelte today. RP-336's Fiscal prop/body
+correspondence also remains author-owned. New RP-534 names the disclosed separate
+presentation family versus GS0.7's still-normative v4 catalog; disclosure is not
+adoption. No new mechanics, format migration or somebody else's body edit here.
+
+Execute actual historical `fiscal-phase.ts` in-memory: all four exact edges pass.
+Readonly output checks:70 candidate rows equal generated entries;59 added rows,
+all316 preceding rows preserved;375 TS/Go/catalog keys agree;328 orphan entries
+are unique/sorted/known; hash references agree in file/types/deployment manifest.
+Initial checker incorrectly scanned Go constants as well as `All()`, causing a
+false mismatch; scope to the actual key-list function and rerun successfully.
+This checks consistency, not fresh compilation/hash derivation or prose adoption.
+
+Current `b7f8d9a2` checks, separate from the original verdict: root Node15292
+passes103 game-ui/garage-surfaces cases. Native58360 passes28 Chromium/WebKit
+executions (820 explicitly deselected),5.64s: error containment/recovery,
+semantic resizing, pending Fiscal focus, exact cap reason, Trophy text and Desk
+provisioning. Runtime doubles/native DOM, not SQL/persisted acquisition, historical
+execution, Firefox/AT, full acceptance, performance or release-host proof.
+No source/test change; no unrelated software gate rerun for this record batch.
+
+Later Codex fixes retain their own pending designated review; this original
+negative verdict approves none of them. Continue accepted integration and author
+closure, consolidate corrective ranges, and execute DB/player boundaries once
+Docker is usable with lawful service authority. No feature/lifecycle/publication
+or full-nine-tier milestone promotion. All check handles terminal.

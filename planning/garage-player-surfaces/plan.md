@@ -488,6 +488,10 @@ must succeed before another container population. No lifecycle promotion.
   independently approved or full GS0.1 acceptance. Actual SQL/composed verification remains
   pending while Docker is unavailable; kernel-owner/greater-value closure stays open.
 - [x] GS3 Meters arm + surface.
+  Original surface batch `acf43132^..acf43132`, all22 paths, has designated Codex
+  CHANGES REQUIRED (2026-10-13): RP-323/324/330/332 and catalog correspondence RP-534.
+  This covers the GS1/GS2/GS3/GS6/GS7 changes below, not approval of subsequent Codex
+  corrections. The owning log retains executed evidence and separate review ranges.
 - [x] GS2 Achievements arm + surface.
 - [x] GS1 Fiscal arm + surface.
   Narrow pending/readiness/row-reason correction `891aee10` is locally verified,
