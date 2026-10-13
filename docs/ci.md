@@ -181,6 +181,13 @@ The timer starts when the container command starts; it does not bound a stuck Do
 before startup. Require the CLI's terminal result as well as test results, and report an
 unavailable daemon as unavailable verification, never as a passing job.
 
+The Typer whole-game native-input witness also binds its keyboard producer to Vitest's test
+signal. A fired deadline remains a failed journey: future input is refused, an already-started
+native RPC drains before owned-fixture teardown, and a successor fails its precondition if
+input is still pending. The keyboard path and existing journey deadline are unchanged.
+Its isolation controls deliberately fire a framework deadline and independently check the
+reason and untouched successor; those expected failures are not player-acceptance passes.
+
 Two Node-side fixtures, `css-dependency-graph.test.mjs` and
 `opportunity-composed-proof.test.mjs`, are excluded by exact path from browser collection because
 their helpers require Node APIs. Both remain in the mandatory client Node suite; other test

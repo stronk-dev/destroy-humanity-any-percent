@@ -1,6 +1,6 @@
 import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
-import { expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import content from "../../balance/testdata/typer-v1.json?raw";
 import { t } from "../src/copy";
@@ -12,6 +12,128 @@ import TyperTableHarness from "./TyperTableHarness.svelte";
 
 const browser = typeof document !== "undefined";
 const HASH = `sha256:${"a".repeat(64)}`;
+
+const pendingNativeInput = new Set<Promise<unknown>>();
+function assertNativeInputDrained(): void {
+  if (pendingNativeInput.size !== 0) throw new Error("previous test's native keyboard input has not drained");
+}
+beforeEach(assertNativeInputDrained);
+
+// Native RPC cannot cancel a key sequence already being delivered. Drain that
+// sequence before teardown, and refuse every subsequent action after timeout.
+function lifetimeKeyboard(signal: AbortSignal, send: (keys: string) => PromiseLike<unknown>) {
+  let closed = false;
+  let flight: Promise<unknown> | undefined;
+  return {
+    async press(keys: string): Promise<void> {
+      signal.throwIfAborted();
+      if (closed) throw new Error("native keyboard fixture is closed");
+      if (flight) throw new Error("overlapping native keyboard fixture actions");
+      const work = Promise.resolve().then(() => {
+        signal.throwIfAborted();
+        if (closed) throw new Error("native keyboard fixture is closed");
+        return send(keys);
+      });
+      flight = work;
+      pendingNativeInput.add(work);
+      try { await work; signal.throwIfAborted(); }
+      finally { flight = undefined; pendingNativeInput.delete(work); }
+    },
+    async closeAndDrain(): Promise<void> { closed = true; await flight; },
+  };
+}
+
+describe("native keyboard timeout isolation", () => {
+  let expiredSignal: AbortSignal;
+  let release: () => void;
+  let continued: Promise<void>;
+
+  // A fired framework deadline is the deliberate negative population, not an
+  // acceptance pass. Its successor independently requires that exact reason.
+  it.skipIf(!browser).fails("fires a real test deadline while its async input producer is waiting", async ({ signal, onTestFinished }) => {
+    expiredSignal = signal;
+    const keyboard = lifetimeKeyboard(signal, async (keys) => {
+      const { userEvent } = await import("vitest/browser");
+      await userEvent.keyboard(keys);
+    });
+    onTestFinished(() => keyboard.closeAndDrain());
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    continued = (async () => {
+      await gate;
+      await keyboard.press("OLD");
+    })();
+    await continued;
+  }, 50);
+
+  it.skipIf(!browser)("refuses the expired producer instead of typing into its successor", async () => {
+    expect(expiredSignal.aborted).toBe(true);
+    expect(expiredSignal.reason.message).toContain("Test timed out in 50ms");
+    const input = document.createElement("input");
+    input.setAttribute("aria-label", "Timeout isolation successor");
+    document.body.append(input);
+    input.focus();
+    expect(document.activeElement).toBe(input);
+    try {
+      release();
+      const outcome = await continued.then(() => "completed", (error) => {
+        expect(error).toBe(expiredSignal.reason);
+        return "refused";
+      });
+      expect({ outcome, value: input.value }).toEqual({ outcome: "refused", value: "" });
+    } finally { input.remove(); }
+  });
+
+  it.skipIf(!browser)("drains in-flight native delivery before permitting a successor", async () => {
+    const { userEvent } = await import("vitest/browser");
+    const oldInput = document.createElement("input"), successor = document.createElement("input");
+    oldInput.setAttribute("aria-label", "Draining old input");
+    successor.setAttribute("aria-label", "Draining successor input");
+    document.body.append(oldInput, successor);
+    oldInput.focus();
+    const controller = new AbortController(), reason = new Error("controlled input cancellation");
+    let releaseDelivery!: () => void, started!: () => void;
+    const gate = new Promise<void>((resolve) => { releaseDelivery = resolve; });
+    const began = new Promise<void>((resolve) => { started = resolve; });
+    const keyboard = lifetimeKeyboard(controller.signal, async (keys) => {
+      started(); await gate; await userEvent.keyboard(keys);
+    });
+    const operation = keyboard.press("OLD");
+    const outcome = operation.then(() => null, (error) => error);
+    await began;
+    controller.abort(reason);
+    let drained = false;
+    const cleanup = keyboard.closeAndDrain().then(() => { drained = true; });
+    try {
+      await Promise.resolve();
+      expect(drained).toBe(false);
+      expect(assertNativeInputDrained).toThrow(/has not drained/u);
+      releaseDelivery();
+      expect(await outcome).toBe(reason);
+      await cleanup;
+      expect(oldInput.value).toBe("OLD");
+      assertNativeInputDrained();
+      successor.focus();
+      await expect(keyboard.press("LEAK")).rejects.toBe(reason);
+      expect(successor.value).toBe("");
+    } finally {
+      releaseDelivery(); await outcome; await cleanup;
+      oldInput.remove(); successor.remove();
+    }
+  });
+
+  it("preserves native delivery failures and healthy completion", async () => {
+    const controller = new AbortController(), sent: string[] = [];
+    const keyboard = lifetimeKeyboard(controller.signal, async (keys) => { sent.push(keys); });
+    await keyboard.press("first"); await keyboard.press("second"); await keyboard.closeAndDrain();
+    expect(sent).toEqual(["first", "second"]);
+    await expect(keyboard.press("closed")).rejects.toThrow(/fixture is closed/u);
+    const reason = new Error("native delivery failed");
+    const failing = lifetimeKeyboard(controller.signal, async () => { throw reason; });
+    await expect(failing.press("bad")).rejects.toBe(reason);
+    await failing.closeAndDrain();
+    assertNativeInputDrained();
+  });
+});
 
 function snapshot(overrides: Partial<TyperSnapshot> = {}): TyperSnapshot {
   return { assist_level: null, clean_lines: 0, current_prompt_id: null, current_prompt_misses: 0, current_prompt_text: null, deadline_server_ms: null,
@@ -155,8 +277,9 @@ for (const phase of ["ready", "typing"] as const) {
   });
 }
 
-it.skipIf(!browser)("Typer native keyboard untimed run completes through the real pure engine and leaves the table", async () => {
+it.skipIf(!browser)("Typer native keyboard untimed run completes through the real pure engine and leaves the table", async ({ signal, onTestFinished }) => {
   const { userEvent } = await import("vitest/browser");
+  const keyboard = lifetimeKeyboard(signal, (keys) => userEvent.keyboard(keys));
   const identity = { content, content_hash: await typerContentHash(content), content_schema_version: 1,
     seed: 42n, mode: "solo" as const, scaling_inputs: { "typer.era_tier": 1 } };
   let encoded = await createTyper(identity);
@@ -166,6 +289,7 @@ it.skipIf(!browser)("Typer native keyboard untimed run completes through the rea
   let serverTime = 1_000;
   let exits = 0;
   const commands: TyperCommand[] = [];
+  signal.throwIfAborted();
   const view = controlled(state, (command) => {
     commands.push(command);
     flushSync(() => view.app.setPending(true));
@@ -179,30 +303,42 @@ it.skipIf(!browser)("Typer native keyboard untimed run completes through the rea
   }, () => { exits++; });
   const sentinel = document.createElement("button");
   view.target.before(sentinel);
+  let disposed = false;
+  const dispose = () => {
+    if (disposed) return;
+    disposed = true;
+    view.dispose(); sentinel.remove();
+  };
+  const finish = async () => {
+    try { await keyboard.closeAndDrain(); await operation; }
+    finally { dispose(); }
+  };
+  onTestFinished(finish);
   try {
     await settle();
+    signal.throwIfAborted();
     sentinel.focus();
-    await userEvent.keyboard("{Tab}");
+    await keyboard.press("{Tab}");
     expect(document.activeElement, "native Tab reaches timed choice").toBe(button(view.target, "Timed run"));
-    await userEvent.keyboard("{Tab}");
+    await keyboard.press("{Tab}");
     expect(document.activeElement, "native Tab reaches untimed choice").toBe(button(view.target, "Untimed run"));
-    await userEvent.keyboard("{Enter}");
+    await keyboard.press("{Enter}");
     await operation; await settle();
     const input = view.target.querySelector<HTMLInputElement>("input")!;
     expect(document.activeElement).toBe(input);
-    await userEvent.keyboard("WRONG{Enter}");
+    await keyboard.press("WRONG{Enter}");
     await operation; await settle();
     expect(state.misses).toBe(1);
     expect(input.value).toBe("WRONG");
     expect(view.target.querySelector(".feedback")?.textContent).toBe(t("typer.feedback.miss", { index: 1 }, "era_2000"));
-    await userEvent.keyboard("{Backspace}".repeat(5));
+    await keyboard.press("{Backspace}".repeat(5));
     const total = state.prompts_total;
     for (let index = 0; index < total; index++) {
       const prompt = view.target.querySelector(".prompt")?.textContent;
       expect(prompt, `current prompt ${index}`).toBe(state.current_prompt_text);
       expect(document.activeElement, `prompt ${index} input focus`).toBe(input);
       expect(input.value, `prompt ${index} input cleared`).toBe("");
-      await userEvent.keyboard(`${prompt}{Enter}`);
+      await keyboard.press(`${prompt}{Enter}`);
       await operation; await settle();
       expect(state.lines_cleared).toBe(index + 1);
     }
@@ -214,9 +350,9 @@ it.skipIf(!browser)("Typer native keyboard untimed run completes through the rea
     expect(commands).toHaveLength(total + 2);
     expect(document.activeElement, "completion retains a reachable host exit").toBe(button(view.target, "Leave the table"));
     await assertAxe(view.target, "terminal");
-    await userEvent.keyboard(" ");
+    await keyboard.press(" ");
     expect(exits).toBe(1);
-  } finally { await operation; view.dispose(); sentinel.remove(); }
+  } finally { await finish(); }
 });
 
 it.skipIf(!browser)("samples an increasing monotonic clock without reactive feedback across server revisions", async () => {

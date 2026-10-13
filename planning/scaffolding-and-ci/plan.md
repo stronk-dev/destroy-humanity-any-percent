@@ -20,8 +20,12 @@ This diagnoses a boundary, not the original stall or input defects. Next: invest
 post-timeout native-input continuation and make the full job complete repeatably. Docker
 subsequently becomes unresponsive with only1.8GiB host space free; compiler-cache cleanup
 approval is requested, not assumed. The owning log preserves commands, capacity and outcomes.
-Historical guard/accrual contracts, hosted acceptance and reviews remain separate; no
-deadline/budget increase and no unverified CPU/concurrency setting retained.
+RP-527 now reproduces and locally corrects Typer's post-timeout input-producer lifetime
+in native Chromium/WebKit, including the unchanged complete native journey. The CI log owns
+the controlled old failure and corrected passes; this does not close RP-526 or prove Linux/
+Firefox/full-job reliability. Resume that population when Docker/capacity is available;
+cleanup approval remains pending. Historical guard/accrual contracts, hosted acceptance and
+reviews remain separate; no deadline/budget increase or CPU/concurrency setting retained.
 
 ## Work
 

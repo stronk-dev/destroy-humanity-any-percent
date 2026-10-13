@@ -679,3 +679,59 @@ designated Claude review remains pending and may consolidate with the prior CI
 range after `d618b0b4`. No archive, publication or release. Resume Docker-based
 diagnosis after capacity/control-plane recovery; investigate late input and the
 original unfinished-file condition without raising bounds or retrying away red.
+
+## 2026-10-13 — Stop expired Typer witness input contaminating its successor (RP-527)
+
+Outcome under CI D2/evidence discipline: reproduce the actual framework lifetime
+boundary before changing the driver. Vitest aborts the test signal on timeout but
+does not cancel its async function; native RPC loops can continue. A deliberately
+held producer fires the real50ms diagnostic deadline. The successor independently
+checks that exact reason, focuses a real input and releases the old producer.
+Old behavior writes `OLD` and completes instead of refusing: both Chromium/WebKit
+fail the exact `{outcome:"refused",value:""}` assertion. Startup listen EPERM ran
+no tests; repeated the root target with its narrowly approved localhost listener.
+
+Correction is test-only: lifetime-bound keyboard actions preserve real native
+delivery and fail on cancellation/closed or overlapping use. Track in-flight RPC;
+cleanup drains it, and the next test fails before mounting if prior input has not
+drained. The whole Typer journey uses that guard and idempotent finally/finish
+cleanup, including its engine operation. No original assertion, input, prompt,
+score/terminal outcome,15s journey deadline or hook timeout is removed/raised.
+No product, kernel, schema, copy, CI topology or concurrency change.
+
+Executed finished-source results:
+
+- Focused timeout-isolation controls11610: native Chromium/WebKit, six positive
+  passes/two deliberately expected timeout failures,1.63s. Actual expired-producer
+  refusal leaves the successor empty. Active delivery completes into the old
+  input before drain; another action cannot affect the successor. Pending-input
+  refusal and callback failure/healthy completion also execute. The expected
+  deadlines are negative controls, not independent acceptance passes.
+- Entire affected file28203 through root `make test-browser-focused
+  BROWSER_TEST_FLAGS='test/typer-table-browser.test.ts --project=chromium --project=webkit'`:
+  54 passes/two expected diagnostic failures, no deselection,2.48s. All original24
+  cases execute per engine, including the full real-pure-engine untimed keyboard
+  journey, native focus, composition, terminal exit and axe checks.
+- Final-source repeat30564 after adding cancellation checks before late mounting
+  and direct focus: the same entire native population passes54/two expected
+  diagnostic failures,2.46s. Final strict types63969 again report zero errors/
+  warnings. No native input replacement or revised assertion.
+- Root Node selector33704: one helper case passes/27 browser cases explicitly
+  skip,581ms. This is not credited as native browser coverage.
+- Root `make typecheck`57082: zero Svelte errors/warnings. Diff checked; no runtime
+  build, Go, API, performance or database suite needed for this test-only change.
+
+Current read-only checks: host free space is2.6GiB/100%; no cache deletion approval
+arrived and no bytes are removed. Docker version probe15896 remains unresponsive;
+cancel only its own TTY client with Ctrl-C, terminal130. Do not restart Docker or
+substitute native-only checks for Linux/Firefox/ordinary full-CI acceptance.
+The source regression proves the cancellation/isolation mechanism, not attribution
+of every previous15 full-job failure or a repair of their workload timeouts.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new
+range starts **after `71682ad0` through this containing test/docs/record commit**;
+designated Claude review pending, consolidatable with the preceding CI ranges.
+RP-526/full CI, historical guard/accrual contracts and whole-product1.0 remain
+open. Next: validate the guarded driver in the actual Linux full population after
+capacity/daemon recovery, retaining failures; diagnose other input producers and
+the unfinished-file condition rather than assuming they share this correction.
