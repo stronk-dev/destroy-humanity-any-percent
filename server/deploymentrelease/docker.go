@@ -604,18 +604,29 @@ func IsNonCleanRestoreRefusal(err error) bool {
 	if !errors.As(err, &failure) || failure.Command != "docker" || failure.ExitCode != 1 || failure.Cause == nil {
 		return false
 	}
-	var record struct {
-		Time       string `json:"time"`
-		Level      string `json:"level"`
-		Message    string `json:"msg"`
-		Command    string `json:"command"`
-		ErrorClass string `json:"error_class"`
-	}
+	expected := map[string]string{"time": "", "level": "ERROR", "msg": "deployment backup command failed",
+		"command": "restore", "error_class": "non_clean_target"}
 	decoder := json.NewDecoder(strings.NewReader(failure.Stderr))
-	decoder.DisallowUnknownFields()
-	return decoder.Decode(&record) == nil && decoder.Decode(&struct{}{}) == io.EOF &&
-		record.Time != "" && record.Level == "ERROR" && record.Message == "deployment backup command failed" &&
-		record.Command == "restore" && record.ErrorClass == "non_clean_target"
+	start, err := decoder.Token()
+	if err != nil || start != json.Delim('{') {
+		return false
+	}
+	seen := make(map[string]bool, len(expected))
+	for decoder.More() {
+		member, err := decoder.Token()
+		key, stringKey := member.(string)
+		want, known := expected[key]
+		if err != nil || !stringKey || !known || seen[key] {
+			return false
+		}
+		var value string
+		if decoder.Decode(&value) != nil || value == "" || key != "time" && value != want {
+			return false
+		}
+		seen[key] = true
+	}
+	end, err := decoder.Token()
+	return err == nil && end == json.Delim('}') && len(seen) == len(expected) && decoder.Decode(&struct{}{}) == io.EOF
 }
 
 // KillGameserver observes an ungraceful gameserver restart during admitted

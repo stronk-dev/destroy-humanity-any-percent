@@ -300,6 +300,11 @@ then does the row exit `3`. An accepted restore exits `0`; any other failure (in
 for another reason or a changed identity) exits `2`. The probe removes its own recovery backup.
 The refusal classifier requires a failed Docker command and the exact structured backup-CLI
 `restore` error record; an echoed class fragment in an unrelated error is not evidence.
+The record must have exactly one of each decoded member name: `time`, `level`, `msg`, `command`
+and `error_class`, all strings. Duplicate/escaped-duplicate members and case aliases refuse,
+including an earlier different class overwritten by a later valid-looking one. Field order,
+whitespace and valid escaped spellings of the exact names remain accepted. Existing value,
+nonempty-time, command/exit/cause and single-record checks are unchanged; this adds no clock policy.
 
 `restart-admitted-work` SIGKILLs the installed gameserver instead of the governed stop, observes
 readiness and the exit code, and feeds them through the same drain derivation the release helper

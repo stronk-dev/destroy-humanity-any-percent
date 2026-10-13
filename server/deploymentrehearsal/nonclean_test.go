@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"cloud-clicker/server/deploymentbackup"
@@ -66,6 +67,22 @@ func TestNonCleanRestoreProducerRequiresTheCleanTargetRefusal(t *testing.T) {
 	}
 	if outcome, err := run(t, &nonCleanFake{restoreErr: realRefusal("operation_failed")}, true); err == nil || outcome == ProbeRejected {
 		t.Fatalf("unrelated restore failure counted as rejection: outcome=%d err=%v", outcome, err)
+	}
+	for name, malformed := range map[string]func(string) string{
+		"case-aliased class": func(record string) string {
+			return strings.Replace(record, `"error_class":`, `"ERROR_CLASS":`, 1)
+		},
+		"conflicting duplicate class": func(record string) string {
+			return `{"error_class":"operation_failed",` + strings.TrimPrefix(record, "{")
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			failure := realRefusal("non_clean_target").(*deploymentrelease.CommandFailure)
+			failure.Stderr = malformed(failure.Stderr)
+			if outcome, err := run(t, &nonCleanFake{restoreErr: failure}, true); err == nil || outcome == ProbeRejected {
+				t.Fatalf("malformed command log counted as non-clean-target proof: outcome=%d err=%v", outcome, err)
+			}
+		})
 	}
 	if outcome, err := run(t, &nonCleanFake{restoreErr: realRefusal("non_clean_target"), changeOnFail: true}, true); err == nil || outcome == ProbeRejected {
 		t.Fatalf("refusal that changed the live database counted as rejection: outcome=%d err=%v", outcome, err)

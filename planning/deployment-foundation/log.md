@@ -6510,3 +6510,49 @@ pending. This is a verified parser/file correction, not an executed logical rest
 Deployment/R-006/1.0 closeout. Existing author/owner and exact-artifact gates remain; no push/deploy.
 All execution handles are terminal. Continue complete original R20 inspection and accepted work
 while retaining this named integration gate rather than substituting native green for Postgres.
+
+## 2026-10-13 — Complete original Claude R20 diff-review disposition
+
+Review by: Codex (designated original-Claude reviewer). Recorded by: Codex. Exact range
+`680b7bb1^..680b7bb1`, all eleven paths: CLI dispatch/classification/tests, backup clean-target
+class/DB assertion, rehearsal producer/tests/binding, runtime classification, docs and log.
+**Decision: CHANGES REQUIRED**, retaining RP-142; no approval of corrected descendants.
+
+The dedicated error class preserves query/setup failures as generic invalid input. The producer
+requires the exact install, compares before/after recovery identity and removes its own backup;
+its original class test uses a synthetic runtime and error rendering, not a composed Docker CLI.
+Original substring classification remains the blocking flaw, already corrected in its separate
+Codex range. The original relations-only cleanliness census also lacks later RP-423's nonrelational
+coverage; those existing repairs are not approved here. Current record parsing has a distinct
+member-admission gap, executed below as RP-552, not as a historical R20-tree run. Original DB/
+severing records are retained, not reclassified as current clean-host proof.
+
+## 2026-10-13 — RP-552 exact non-clean restore refusal members
+
+Under DP-F's attributable prepared-refusal rule, inspect the raw record's decoded member names
+before matching values. Require the existing five exact unique string fields; reject duplicate,
+escaped-duplicate and case-aliased members, including a conflicting earlier class. Preserve valid
+field order/whitespace/escaping and all existing typed-command, exit/cause, value, nonempty-time
+and one-record conditions. No generic JSON framework, broader ledger parser, new timestamp rule,
+backup/restore behavior, policy, schema, kernel or CI change.
+
+Old2007 at `fc04db24` admits all16 bad records, while four formatting controls pass. Corrected
+13780 passes that population, existing attribution negatives, the producer and CLI class control.
+Extend the existing producer fixture with a Slog-rendered case alias and conflicting class;
+isolated committed-source overlay3842 gives false ProbeRejected/nil for both. Overlay resides in
+owned `/tmp/cloud-clicker-refusal-record.MVTS5i`; no production file is probed or restored.
+Final50364 passes all six cold release/rehearsal/backup/CLI packages and vet, including both new
+producer cases. Final2401 passes the complete focused NonClean population under race. Root
+Linux-amd64 release-helper build passes into ignored `.cache/bin/deployment-release-linux-amd64`.
+Formatting/diff checked; the regression cases discriminate without another source mutation.
+
+Boundary: actual parser, typed failure records, physical fixture files and real probe orchestration
+with synthetic backup/identity/runtime inputs; no Docker/SQL/clean-host execution. Native DB skips
+and unavailable declared service remain, including RP-551's unexecuted extension. No current
+composed CLI stderr, R-006, full Deployment or nine-tier1.0 promotion; no push/deploy or cleanup.
+
+Review by: Codex (new repair implementer first filter). Recorded by: Codex. Exact new source/tests/
+docs/records range starts after `fc04db24` through this containing commit; designated Claude review
+pending, consolidatable with RP-142's earlier attribution correction. Original R20 is now fully
+dispositioned, not approved. All execution handles are terminal; remaining author/owner, producer,
+artifact and full-range review gates stay open while safe accepted work continues.

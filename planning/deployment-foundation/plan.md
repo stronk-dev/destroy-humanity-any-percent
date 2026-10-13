@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP-F refusal-record correction, 2026-10-13 (RP-552):** the non-clean restore classifier
+now rejects duplicate and case-aliased members rather than allowing Go's overwrite/case-fold
+semantics to create valid-looking evidence. Sixteen old-parser regressions and two actual-probe
+orchestration counterexamples fail; corrected cold affected packages/vet, race and Linux helper
+build pass. Full original R20's eleven-path disposition is CHANGES REQUIRED (RP-142), not approval
+of its corrective descendants. New range after `fc04db24` needs Claude review. Actual Postgres,
+composed CLI stderr and exact-host/R-006 gates remain; unchanged valid records stay admissible.
+
 **Current DP6 endpoint correction, 2026-10-13 (RP-551):** service/pass files now honor the
 database URL's endpoint query overrides instead of targeting its unoverridden URI fields.
 Old-source20-case population fails18, retaining ordinary/password-isolation controls; corrected
