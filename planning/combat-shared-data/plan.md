@@ -23,6 +23,13 @@
      `client/test/combat-references.test.ts` pass, including current native
      Chromium/WebKit. This does not provide the blocked catalog/effect schemas,
      engine legality or a live player consumer; full item 3 remains open.
+   - C2's common lane unit/building/spell row now decodes in Go/TS: exact required
+     fields, signed-int32 numeric representation, existing temperament axis, three
+     target values, ordered tags and optional bypass marker. `TestLaneRecordVectors`
+     and `client/test/combat-lane-record.test.ts` consume100 shared accepted/refusal
+     cases; all54 axis/marker combinations and storage controls pass. This does not
+     supply effects, battle-legal minima, cheap-cycle/bypass coverage, full catalog
+     or a live engine. Item3/AC1 remain open; the new range needs designated review.
 4. [ ] Add fixture-only Trust/Soul tables and cross-runtime golden vectors.
 5. [ ] Add source lint and full parent acceptance/property coverage. Both Go and TypeScript
    division boundaries now execute locally; `TestRepositoryCombatDivisionBoundary` and its

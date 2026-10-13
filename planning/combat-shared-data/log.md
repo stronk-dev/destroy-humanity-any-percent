@@ -343,3 +343,39 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact source/te
 range starts after `fad86116` through this containing commit; designated Claude review pending,
 consolidatable with prior Combat construction. Continue the complete accepted parent and obtain
 the author's literal effect/table closure before constructing a battle under its child RFC.
+
+## 2026-10-13 — Construct C2's common lane record
+
+Baseline `4966e296`; prior goal turn delivered the backup malformed-query repair. Continue
+accepted gameplay-foundation construction, not another repeat of the Headcount investigation.
+Add Go/TS common lane unit/building/spell row decoding under C2/C3, reusing existing raw-key,
+Unicode and temperament authorities. Required keys and signed-int32 tokens are exact; the
+targets union is closed. Ordered tags and absent/false/true boolean bypass markers retain
+their source meaning. Go owns its result slice/marker and returns zero on refusal; TS freezes
+fresh records/tags. No balance values, effect execution or battle-legal minima are chosen.
+
+One shared literal corpus has8 accepted forms and92 refusals: missing/null/case aliases,
+duplicate/escaped keys, each numeric boundary/type/token, target/temperament domain, malformed
+Unicode and trailing syntax. Both readers round-trip accepted rows and exercise all54
+temperament/target/marker combinations, storage independence and source preservation; Go also
+refuses actual malformed UTF-8. These are new-behavior success/negative cases, not an old bug
+regression or a production fixture. No separately duplicated mutant population is needed.
+
+Finished root checks: cold `make test-go GO_PACKAGES='./combat ./integer ./determinism'
+GO_TEST_FLAGS='-count=1'` passes0.078/0.154s (determinism has no standalone tests; combat exercises
+its vectors). Same-package vet and both `verify-combat-go-boundary`/`verify-combat-boundary`
+pass85048. All five Combat Node files pass284 checks; actual Chromium/WebKit73791 execute
+568 checks,2.42s. Typecheck/Svelte25882 reports zero errors/warnings. Formatting, paths and
+diff checked; all handles terminal. No Docker/SQL/Linux/Firefox/hosted or whole-CI claim.
+
+Canonical docs/plan now describe the new decoder. No live/replay consumer imports it; existing
+watched paths/kernel188 are unchanged. Before authoritative activation, register both Combat
+prefixes and perform the genuine semantic bump with replay/activation evidence. Full C2
+catalog/effects/bypass-presence/cheap-cycle policy and fixture, C5 Trust/Soul tables, child engines,
+bots and player journeys remain required for nine-tier1.0. No parent acceptance or archival.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Full source/fixture/tests/docs/
+records range after `4966e296` through this containing commit needs designated Claude review,
+consolidatable with earlier Combat construction without erasing its debt. No player copy,
+schema/epoch mint, publication, push or deployment. Continue complete accepted parent work;
+its named effect/table author closure remains separate, not inferred by this row decoder.

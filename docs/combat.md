@@ -1,7 +1,7 @@
 # Combat Shared Kernel
 
 The implemented combat foundation currently owns exact arithmetic, deterministic random streams,
-temperament/runtime identities and structural species/team/deck record decoding. It does not yet claim
+temperament/runtime identities and structural species/lane/team/deck record decoding. It does not yet claim
 a content catalog or either battle engine.
 
 ## Temperament and runtime identities
@@ -65,6 +65,28 @@ engine, save/replay or HTTP consumer imports this layer. Its eventual authoritat
 must register combat's runtime prefixes and make the genuine kernel version change before
 activation. Full C2's versioned catalog, effect union, cross-row policies and Phase-0 population,
 C5's Trust/Soul tables and both battle engines remain unimplemented.
+
+## Lane records
+
+`DecodeLaneRecord` / `decodeLaneRecord` decode C2's common lane unit/building/spell
+row: `{id, temperament, cost, hp, atk, spd, range, targets, tags}` with an optional
+boolean `bypass` marker. The existing temperament authority is reused; targets are
+exactly `units`, `buildings` or `any`. All five numeric fields require signed-int32
+integer tokens. Every required field is non-null; duplicate, extra, case-aliased,
+missing or wrong-type fields refuse. Ordered string tags and valid Unicode survive;
+malformed surrogate text refuses, and Go also rejects malformed UTF-8 bytes.
+Absence, explicit false and true bypass markers retain their distinct serialized
+forms. Go returns no partial record and owns its tag slice/marker; TypeScript
+returns fresh frozen records and tags. Source bytes remain untouched.
+
+This is structural representation, not battle-legal stat/cost minima, a cheap-cycle
+threshold, effect execution, a cross-row bypass-coverage check or a complete catalog.
+The shared `testdata/combat/lane-record-vectors.json` supplies eight accepted forms
+and92 refusals; tests also cover all54 temperament/target/marker combinations and
+independent storage. These synthetic values are not production balance or content.
+No live/replay/HTTP consumer imports the decoder. Full catalog construction still
+needs the effect/table contracts and complete Phase-0 population; authoritative
+integration must register Combat's prefixes and make the genuine kernel version change.
 
 ## Arithmetic and deterministic streams
 
