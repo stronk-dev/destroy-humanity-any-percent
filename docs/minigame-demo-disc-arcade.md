@@ -282,6 +282,13 @@ command in flight, and freezes at `max_ticks_per_advance` while unacknowledged. 
 mismatched flush resyncs from `current()`. It auto-pauses on hidden, blur and board-focus loss, pauses
 on `P`/`Esc`, starts paused, steers by arrows, WASD or a D-pad, and has no decorative animation.
 
+Both children's custom key handlers leave Control/Meta/Alt chords and composing key events
+uncancelled and do not treat them as gameplay. Ordinary arrows and letter controls, including
+Shift/uppercase letters, retain their behavior. RP-541's mounted checks observe event
+cancellation, Mine Grid dispatch/focus and Snake's real-engine movement/commands while paused
+and playing. These controlled events are not proof that an OS shortcut or actual IME session
+works end to end; the ordinary native-key gameplay witnesses remain separate.
+
 RP-208/RP-209 correct delayed-acknowledgement sequencing in this child. Flush callers share
 the actual outstanding promise, rather than treating an in-flight request as completed. Quit
 pauses local movement, drains any pending/partial lead and then submits exactly one Quit;

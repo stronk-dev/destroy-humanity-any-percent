@@ -150,6 +150,7 @@
   }
 
   function keydown(event: KeyboardEvent): void {
+    if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing) return;
     const map: Record<string, SnakeDirection> = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", w: "up", s: "down", a: "left", d: "right", W: "up", S: "down", A: "left", D: "right" };
     if (event.key in map) { event.preventDefault(); steer(map[event.key]!); return; }
     if (event.key === "p" || event.key === "P" || event.key === "Escape") { event.preventDefault(); if (paused) resume(); else pause(); }

@@ -120,6 +120,41 @@ async function snakeIdentity(content: string) {
     scaling_inputs: { [SNAKE_SCALING_DESTINATION]: 1 } };
 }
 
+const nonGameplayKeys = [
+  ["Control", { ctrlKey: true }],
+  ["Meta", { metaKey: true }],
+  ["Alt", { altKey: true }],
+  ["composition", { isComposing: true }],
+] as const;
+
+for (const [boundary, modifiers] of nonGameplayKeys) {
+  it.skipIf(!browser)(`mine_grid: ${boundary} keys neither cancel host input nor issue gameplay (AR6.2)`, async () => {
+    const game = await new MineHost(await mineIdentity()).init();
+    await game.apply({ kind: "choose_board", preset_id: "small" });
+    const target = host(), sent: MineGridCommand[] = [];
+    const app = mountMine(target, game, (command) => sent.push(command));
+    try {
+      await settle();
+      const cells = [...target.querySelectorAll<HTMLButtonElement>("[role=gridcell]")];
+      cells[0]!.focus();
+      for (const key of ["f", "F", "c", "ArrowRight"]) {
+        const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true, ...modifiers });
+        cells[0]!.dispatchEvent(event);
+        expect(event.defaultPrevented, `${boundary}+${key} must remain available to the host`).toBe(false);
+        expect(sent, `${boundary}+${key} must not dispatch a command`).toEqual([]);
+        expect(document.activeElement, `${boundary}+${key} must not move the grid focus`).toBe(cells[0]);
+      }
+      // Ordinary navigation and shifted letter controls remain gameplay keys.
+      cells[0]!.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, cancelable: true }));
+      await settle();
+      expect(document.activeElement).toBe(cells[1]);
+      cells[1]!.dispatchEvent(new KeyboardEvent("keydown", { key: "F", shiftKey: true, bubbles: true, cancelable: true }));
+      cells[1]!.dispatchEvent(new KeyboardEvent("keydown", { key: "c", bubbles: true, cancelable: true }));
+      expect(sent).toEqual([{ kind: "toggle_flag", cell: 1 }, { kind: "chord", cell: 1 }]);
+    } finally { await unmount(app); target.remove(); }
+  });
+}
+
 it.skipIf(!browser)("mine_grid: native keyboard completes the corpus game in one mount (AR6.2, AC12)", async () => {
   const { userEvent } = await import("vitest/browser");
   const scenario = corpus.scenarios.find((row) => row.name === "mine_grid_clear_small")!;
@@ -201,6 +236,53 @@ async function deliverSnakeTimers(ms: number): Promise<void> {
   await vi.advanceTimersByTimeAsync(ms);
   await tick();
   flushSync();
+}
+
+for (const [boundary, modifiers] of nonGameplayKeys) {
+  it.skipIf(!browser)(`snake: ${boundary} keys neither cancel host input nor change delivered gameplay (AR6.3)`, async () => {
+    const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
+    const target = host();
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    const app = mountSnake(target, server, catalog.snake, { flushEvery: 1 });
+    try {
+      await tick(); flushSync();
+      const board = target.querySelector<HTMLElement>("[role=application]")!;
+      board.focus();
+      const initialHead = snakeHead(target);
+      const deliverNonGameplay = () => {
+        for (const key of ["w", "ArrowUp", "p", "Escape"]) {
+          const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true, ...modifiers });
+          board.dispatchEvent(event);
+          expect(event.defaultPrevented, `${boundary}+${key} must remain available to the host`).toBe(false);
+        }
+      };
+      deliverNonGameplay();
+      await deliverSnakeTimers(40);
+      expect(snakeHead(target)).toBe(initialHead);
+      expect(server.submitted).toEqual([]);
+      expect(button(target, "Play")).toBeTruthy();
+
+      button(target, "Play").click();
+      deliverNonGameplay();
+      await deliverSnakeTimers(20); await server.lastResponse; await tick(); flushSync();
+      expect(server.parsed().tick).toBe(1);
+      expect(server.parsed().direction).toBe("right");
+      expect(snakeHead(target)).toBe(initialHead + 1);
+      expect(server.submitted).toEqual([{ kind: "advance", through_tick: 1, turns: [] }]);
+
+      // Shifted P still pauses, and ordinary W resumes and steers through the engine.
+      board.dispatchEvent(new KeyboardEvent("keydown", { key: "P", shiftKey: true, bubbles: true, cancelable: true }));
+      await deliverSnakeTimers(40);
+      expect(server.parsed().tick).toBe(1);
+      expect(button(target, "Resume")).toBeTruthy();
+      board.dispatchEvent(new KeyboardEvent("keydown", { key: "W", shiftKey: true, bubbles: true, cancelable: true }));
+      await deliverSnakeTimers(20); await server.lastResponse; await tick(); flushSync();
+      expect(server.parsed().tick).toBe(2);
+      expect(server.parsed().direction).toBe("up");
+      expect(snakeHead(target)).toBe(initialHead + 1 - server.parsed().width);
+      expect(server.submitted[1]).toEqual({ kind: "advance", through_tick: 2, turns: [{ tick: 2, direction: "up" }] });
+    } finally { await unmount(app); target.remove(); vi.useRealTimers(); }
+  });
 }
 
 // Delay acknowledgement, not engine behavior: every delivered command still

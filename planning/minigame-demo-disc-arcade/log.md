@@ -2348,3 +2348,38 @@ Claude's designated review, preferably consolidated with exact coverage. The
 historical kernel guard RP-131, public-wire decision, author/copy/content holds
 and remaining full-feature acceptance criteria are not waived. Next construction
 is the public tenant contract/host once authorized, not repeating original reviews.
+
+## 2026-10-13 — RP-541: leave modified/composing keys outside gameplay
+
+Under accepted AR6.2/AR6.3, the two child key handlers now ignore Control/Meta/Alt chords
+and composing events. Previously key-only matching cancelled these inputs and dispatched
+Mine Grid flag/chord/navigation or Snake steering/pause/resume. Shift/uppercase gameplay
+keys remain accepted. This is an input conformance correction, not new mechanics, timing,
+wire, content or copy. Shared engines and kernel0.3.188 are unchanged.
+
+Regression: before the two one-line source corrections, focused mounted execution27511
+fails all16 new cases in Chromium/WebKit (Make exit2), specifically cancelled Control/Meta/
+Alt/composition events. The corrected intermediate70248 passes the input boundary but fails
+eight Snake positive-control assertions: the new test mistakenly called the turn field
+`at_tick` instead of the existing `tick`. Corrected that test-only typo to the actual contract;
+no production workaround or gameplay assertion was removed.
+
+Final coverage: `make test-browser-focused BROWSER_TEST_FLAGS='test/arcade-boards-browser.test.ts
+--project=chromium --project=webkit'`78931 passes54/54, including the ordinary native-key
+complete game/quit, pending acknowledgement/drain/recovery, focus-pause and reduced-motion
+populations. New controlled events assert no cancellation/command/focus move; Snake's paused/
+playing controls observe real shared-engine state and exact submitted commands, and ordinary
+Shift-P/Shift-W still pause/resume/steer. Selected Node Arcade catalog/snapshot/atomicity
+files97085 pass216 tests. `make typecheck build-client verify-client-boundary`83369 passes
+(zero Svelte errors/warnings); final whitespace/diff checks pass.
+
+Limits: no native OS shortcut execution, OS IME, Firefox/Linux, public HTTP/host, SQL,
+performance or hosted-CI result is claimed. No changed persistence/engine/rendering boundary
+requires those for this local handler fix. Existing public-wire, semantic mine-name/copy,
+mint/full acceptance and historical CI failures remain open.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range:
+`fce6c3d9` exclusive through this source/tests/docs/record commit, ready for Claude designated
+review and consolidatable with the older A6 corrective ranges. No acceptance/archival/push.
+Next: continue accepted construction/integration; public tenant/host construction still needs
+the previously named wire contract, not another original-range review.

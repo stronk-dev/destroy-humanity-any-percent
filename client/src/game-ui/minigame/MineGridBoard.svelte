@@ -52,6 +52,7 @@
   }
 
   function keydown(event: KeyboardEvent, cell: number): void {
+    if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing) return;
     const width = snapshot.width;
     const moves: Record<string, number> = { ArrowLeft: cell % width === 0 ? cell : cell - 1, ArrowRight: cell % width === width - 1 ? cell : cell + 1,
       ArrowUp: cell - width >= 0 ? cell - width : cell, ArrowDown: cell + width < cellCount ? cell + width : cell };
