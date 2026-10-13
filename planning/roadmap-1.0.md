@@ -8,8 +8,10 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 **Current product rollup (2026-10-13):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-12)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
 Inspected source `bd91a9a6`: Garage integration/hardening, incomplete v0.1, and substantial
-unbuilt world/combat/Tier 3–8/final-ending scope. Latest published CI remains red at
-`e0cb9187`; subsequent local repairs and complete original API review dispositions do not
+unbuilt world/combat/Tier 3–8/final-ending scope. New published source
+`4eaed0c9` has an in-progress CI run (10:09 UTC snapshot: client fails;
+schema/harness pass; other jobs pending). Earlier completed red CI remains evidence;
+recent repairs are published, not designated-approved. Subsequent local repairs and complete original API review dispositions do not
 advance a gameplay milestone or establish release readiness. Subsequent actual operations
 producer/receiver, public replay-verifier, queued Claim and minigame admission/Exit evidence
 is summarized in current verification, with owning logs retaining its limits and review debt.
@@ -23,6 +25,13 @@ player/governance draft still needs literal ballot, cohort producer/DTO, mutable
 and API/formula/UI contracts (RP-529). [Owning readiness log](commons-onboarding-and-governance/log.md)
 distinguishes that engineering/author closure from genuine owner semantics and adoption;
 the old “UNBLOCKED” label is not construction authority or a completed MMO milestone.
+
+2026-10-13 checkpoint: original Garage GS0.2/GS0.1 receive full-path CHANGES REQUIRED
+dispositions, not approval of later corrections. The actual hoard-preview overflow is locally
+guarded without retuning; kernel-owned derivation/larger-value representation remains RP-533.
+Combat's six-runtime identity library is constructed and locally tested, still no battle engine.
+Host space is externally freed, but Docker is still unavailable and restart authority is pending.
+These changes advance safety/review truth, not a gameplay milestone or the nine-tier release floor.
 
 ## Historical rollup checkpoints
 

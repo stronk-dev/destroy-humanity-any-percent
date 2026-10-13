@@ -482,6 +482,11 @@ must succeed before another container population. No lifecycle promotion.
   This is not approval of Codex's later corrections or full GS0.2 acceptance.
 - [x] GS0.1 projection: Game UI snapshot v4 (`features` arms + `generators[].provision_cap` +
   feature facts), registered schema, generated types, client parser; live sync requires v4.
+  Original `5165abcf^..5165abcf`, all21 paths, now has designated Codex CHANGES REQUIRED
+  (2026-10-13): RP-329 partial-meter admission, RP-532 hoard overflow and RP-533 kernel
+  derivation/representation gap. The new overflow refusal is locally verified, not
+  independently approved or full GS0.1 acceptance. Actual SQL/composed verification remains
+  pending while Docker is unavailable; kernel-owner/greater-value closure stays open.
 - [x] GS3 Meters arm + surface.
 - [x] GS2 Achievements arm + surface.
 - [x] GS1 Fiscal arm + surface.

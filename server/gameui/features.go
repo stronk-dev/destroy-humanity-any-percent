@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/achievements"
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/pet"
@@ -474,6 +475,12 @@ func projectFiscal(catalog *fiscal.Catalog, founder *save.State, nowWallMS int64
 	hoardCredits := preview.CreditAfter
 	if hoardCredits > catalog.Hoard.CapCredits {
 		hoardCredits = catalog.Hoard.CapCredits
+	}
+	// The wire arm is an exact integer, not a Decimal. Check before the
+	// multiplication: int64 overflow can wrap into an apparently safe value.
+	// Refuse an unrepresentable preview; never clamp or change the hoard rule.
+	if catalog.Hoard.PPMPerCredit <= 0 || hoardCredits > decimal.MaxExactInteger/catalog.Hoard.PPMPerCredit {
+		return nil, ErrInvalidProjection
 	}
 	return &fiscalArm{
 		Credit: founder.FiscalCredit, CreditCap: intCap{Amount: catalog.Credit.Hardcap, ReasonKey: catalog.Credit.HardcapReasonKey},

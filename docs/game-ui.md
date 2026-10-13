@@ -760,3 +760,17 @@ UI does not duplicate that two-hour/full-script proof in Chromium. Its remaining
 deliberately narrower: server-authorized Gate and Wind Down controls, both terminal surfaces, and
 Run-End continuation into the already-created next run, with discriminating disconnect and
 suppression failures.
+
+## Fiscal hoard preview safety
+
+The Fiscal hoard `preview_ppm` field remains an exact safe integer. After applying the
+existing hoard cap to the discarded sweep preview, the server checks representability
+before multiplication. A product above `decimal.MaxExactInteger` refuses the projection
+with `ErrInvalidProjection`; it is never clamped, rounded or allowed to wrap into a
+small-looking value. Existing representable values, balances and sweep semantics are
+unchanged. The client independently rejects out-of-domain numeric fields but cannot
+recognize a wrapped value that already looks like a valid integer.
+
+This safety check does not provide a kernel-owned hoard preview getter or a larger-value
+wire representation. Those remain specification/integration work (RP-533), not a promise
+that every kernel-admitted future catalog has a renderable Fiscal arm.

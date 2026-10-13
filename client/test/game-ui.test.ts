@@ -301,6 +301,24 @@ describe("Game UI snapshot v4 features (GS0.1)", () => {
     expect(() => parseGameUISnapshot({ ...v4, schema_version: 3 })).toThrow(/exact/);
   });
 
+  it("keeps the Fiscal hoard preview inside its exact-integer wire domain", () => {
+    // Wire-domain checks only; the client cannot recover an overflowed formula
+    // from a small-looking integer. The server must refuse before multiplying.
+    const preview = (ppm: unknown) => ({ ...v4, features: { ...features, fiscal: {
+      ...features.fiscal,
+      credit: Number.MAX_SAFE_INTEGER,
+      credit_cap: { ...features.fiscal.credit_cap, amount: Number.MAX_SAFE_INTEGER },
+      sweep_preview: { ...features.fiscal.sweep_preview, credit_after: Number.MAX_SAFE_INTEGER },
+      hoard: { ...features.fiscal.hoard, cap_credits: Number.MAX_SAFE_INTEGER, preview_ppm: ppm },
+    } } });
+    for (const ppm of [0, 100_000_000, 9_007_199_254_000_000, Number.MAX_SAFE_INTEGER]) {
+      expect(parseGameUISnapshot(preview(ppm))).toHaveProperty("features.fiscal.hoard.preview_ppm", ppm);
+    }
+    for (const ppm of [Number.MAX_SAFE_INTEGER + 1, 9_007_199_255_000_000, -1, 0.5, NaN, Infinity, "9007199254740991"]) {
+      expect(() => parseGameUISnapshot(preview(ppm))).toThrow(/safe integer/);
+    }
+  });
+
   it("fails closed on malformed arms", () => {
     const bad = (patch: Record<string, unknown>) => ({ ...v4, features: { ...features, ...patch } });
     expect(() => parseGameUISnapshot(bad({ active_play: {} }))).toThrow(/null/);

@@ -5269,3 +5269,26 @@ ruling or mechanics. Codex author-side first filter, not designated independent
 approval. No runtime test or gameplay milestone; no acceptance/archival/publication.
 Next: author/lane contract closure, separate any genuinely unruled semantics, then
 normative review/adoption before constructing this remaining1.0 player/MMO surface.
+
+## 2026-10-13 — Projection safety, original review and new published CI
+
+Original Garage GS0.2/GS0.1 now have full-path independent CHANGES REQUIRED
+dispositions; later Codex corrections still need their own designated review.
+The actual strict-loader hoard population exposes an int64 wrap into448,384.
+The new local guard/consumer checks pass under existing exact-integer bounds;
+kernel-owned derivation and larger-value representation remain RP-533, not
+solved by refusal. [Garage log](garage-player-surfaces/log.md) owns source,
+old failure, final checks,17 explicit SQL skips and corrective range after4eaed0c9.
+Combat's validated36-identity library passes both runtimes/native consumers but
+does not supply the still-unbuilt catalog, engines or player/bot workflows.
+
+An external push advances origin/main to4eaed0c9. At10:09 UTC,
+[CI38381138075](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38381138075)
+is active: client fails, schema/harness pass and other jobs remain running;
+final/cause reconciliation waits for available evidence. The new local hoard
+fix is not in that run. Host space is externally freed to174GiB; Docker remains
+unresponsive, and restart permission is requested, not inferred. No agent push,
+cleanup/restart, review-debt waiver, tier completion or release promotion.
+Next: reconcile the actual CI outcome, restore the declared verification service
+only with authority, close engineering contracts and continue accepted construction.
+Full nine-tier1.0 remains active, not narrowed to a safe Garage preview.

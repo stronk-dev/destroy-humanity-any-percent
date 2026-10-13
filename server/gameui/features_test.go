@@ -3,10 +3,15 @@ package gameui
 import (
 	"encoding/json"
 	"errors"
+	"maps"
 	"os"
+	"reflect"
+	"strconv"
 	"testing"
 	"time"
 
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/save"
@@ -46,6 +51,76 @@ func pinnedBundle(t *testing.T) production.CatalogBundle {
 		t.Fatal(err)
 	}
 	return bundle
+}
+
+func TestFiscalHoardPreviewRefusesUnrepresentablePPM(t *testing.T) {
+	bundle := pinnedBundle(t)
+	for _, vector := range []struct {
+		name                                                string
+		credit, capCredits, ppmPerCredit, periods, expected int64
+		refuse                                              bool
+	}{
+		{"last_exact_product", 9_007_199_254, decimal.MaxExactInteger, 1_000_000, 0, 9_007_199_254_000_000, false},
+		{"next_product_is_not_exact_on_wire", 9_007_199_255, decimal.MaxExactInteger, 1_000_000, 0, 0, true},
+		{"int64_wrap_looks_like_valid_small_ppm", 18_446_744_073_710, decimal.MaxExactInteger, 1_000_000, 0, 0, true},
+		{"exact_integer_ceiling", decimal.MaxExactInteger, decimal.MaxExactInteger, 1, 0, decimal.MaxExactInteger, false},
+		{"cap_before_multiplication", 18_446_744_073_710, 100, 1_000_000, 0, 100_000_000, false},
+		{"zero_credit_large_catalog", 0, decimal.MaxExactInteger, 1_000_000, 0, 0, false},
+		{"discarded_sweep_crosses_wire_limit", 9_007_199_254, decimal.MaxExactInteger, 1_000_000, 1, 0, true},
+	} {
+		t.Run(vector.name, func(t *testing.T) {
+			// Modify only this discarded fixture, then prove the actual strict
+			// Fiscal loader admits it. No catalog or gameplay constant is changed.
+			var root, credit, hoard map[string]json.RawMessage
+			if err := json.Unmarshal(bundle.Artifacts["fiscal"], &root); err != nil {
+				t.Fatal(err)
+			}
+			if err := json.Unmarshal(root["credit_policy"], &credit); err != nil {
+				t.Fatal(err)
+			}
+			if err := json.Unmarshal(root["hoard_policy"], &hoard); err != nil {
+				t.Fatal(err)
+			}
+			credit["hardcap"] = json.RawMessage(strconv.FormatInt(decimal.MaxExactInteger, 10))
+			hoard["cap_credits"] = json.RawMessage(strconv.FormatInt(vector.capCredits, 10))
+			hoard["ppm_per_credit"] = json.RawMessage(strconv.FormatInt(vector.ppmPerCredit, 10))
+			for key, value := range map[string]map[string]json.RawMessage{"credit_policy": credit, "hoard_policy": hoard} {
+				encoded, err := json.Marshal(value)
+				if err != nil {
+					t.Fatal(err)
+				}
+				root[key] = encoded
+			}
+			encoded, err := json.Marshal(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			catalog, err := fiscal.LoadCatalog(encoded, bundle.Economy)
+			if err != nil {
+				t.Fatalf("valid fixture rejected: %v", err)
+			}
+			_, founder := featureStates(bundle)
+			founder.FiscalCredit = vector.credit
+			if _, err := catalog.HoardFactor(founder.FiscalCredit); err != nil {
+				t.Fatalf("kernel rejected valid credit: %v", err)
+			}
+			before := *founder
+			before.FiscalGeneratorLevels = maps.Clone(founder.FiscalGeneratorLevels)
+			before.FiscalUnlocks = maps.Clone(founder.FiscalUnlocks)
+			now := founder.FiscalPeriodOpenedWallMS + vector.periods*catalog.Clock.AutoMS
+			arm, err := projectFiscal(catalog, founder, now)
+			if !reflect.DeepEqual(*founder, before) {
+				t.Fatal("projection changed its Founder input")
+			}
+			if vector.refuse {
+				if !errors.Is(err, ErrInvalidProjection) || arm != nil {
+					t.Fatalf("unrepresentable preview admitted: arm=%+v, err=%v", arm, err)
+				}
+			} else if err != nil || arm == nil || arm.Hoard.PreviewPPM != vector.expected {
+				t.Fatalf("preview=%+v, want ppm=%d, err=%v", arm, vector.expected, err)
+			}
+		})
+	}
 }
 
 func featureStates(bundle production.CatalogBundle) (*save.State, *save.State) {

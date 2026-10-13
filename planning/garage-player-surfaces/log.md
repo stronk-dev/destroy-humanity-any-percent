@@ -6968,3 +6968,76 @@ approval are distinct: Claude must independently review those Codex ranges,
 and all remaining original Garage batches still need their own disposition.
 Update the owning plan and existing ledger rows, check the diff, keep
 acceptance/archival/publication and the full nine-tier1.0 floor open.
+
+## 2026-10-13 — Original GS0.1 review and hoard-preview refusal (RP-532/533)
+
+**Original review:** Review by: Codex (designated independent reviewer of Claude).
+Recorded by: Codex. **CHANGES REQUIRED**, exact `5165abcf^..5165abcf`, all21 paths.
+Inspect producer/features/projector, schemas/bootstrap, decoder/runtime/host,
+generated types/OpenAPI/pin, seven test/driver changes, both canonical docs and
+owning plan/log. Provenance is the Claude owning record and co-author trailer.
+This original verdict does not approve later Codex corrections or whole Garage.
+
+The original decoder's positive v4 fixture contains only doom, and `parseFeatures`
+checks sorted rows/domains without enforcing the required eleven IDs (existing
+RP-329, already locally repaired). Original active-play/pet null-only blockers
+are honestly disclosed, not evidence of complete rule1 implementation. Historical
+JSON checks confirm all paths/operation pins unchanged,14 added schema/pin names,
+only BootstrapResponse/GameUISnapshot changed, and exact old v1/v2/generator
+preservation plus old v3 retained as GameUISnapshotV3. The pin refresh cites
+accepted GS0.1; no independent permission to change copy or future wire policy.
+
+**New executed defect RP-532:** the original and current `projectFiscal` copy
+the hoard formula into int64. Current unchanged source `4eaed0c9` with the actual
+strict Fiscal loader and existing kernel accepts all seven diagnostic catalogs/
+credits. Root cold regression99523 fails three expected refusals:9,007,199,255
+credits produce unsafe9,007,199,255,000,000PPM;18,446,744,073,710 credits at
+1,000,000PPM wrap to448,384; a discarded sweep crosses the safe wire limit.
+Four exact-ceiling/last-safe/capped/zero controls pass. Historical Go/DB code was
+not rebuilt: the identical multiplication is source evidence at the original
+review boundary, while the newly executed failure is explicitly current source.
+
+**Codex correction, not designated approval:** enforce the existing
+`decimal.MaxExactInteger` domain BEFORE multiplication, after the existing hoard
+cap, returning nil/ErrInvalidProjection rather than wrapping/clamping/rounding.
+No cap, catalog, kernel, balance, save, wire/schema/pin or formula change.
+Seven actual-loader/kernel/clone cases now pass; independent copies verify no
+Founder mutation, including refusal after a discarded sweep. Client checks
+admit exact boundaries and refuse out-of-domain PPM; a small wrapped value
+cannot be diagnosed by the client, which is why the producer check is necessary.
+
+Finished results:81842 complete cold `make test-go vet
+GO_PACKAGES='./gameui ./account ./fiscal' GO_TEST_FLAGS='-count=1 -v'` passes
+non-DB tests/vet;17 named SQL tests explicitly skip, not integration evidence.
+19175 `make api-check` regenerates byte-unchanged API/types/pin. Node72508
+game-ui/runtime/surfaces/Fiscal passes161; native75432 game-ui/surfaces contracts
+pass206 Chromium/WebKit cases,4.91s;31077 types/Svelte have zero errors/warnings.
+No component/bundling/performance change; no full browser or hosted-CI claim.
+Actual SQL/composed/release-artifact validation remains pending; Docker's last
+bounded probe was unavailable. No agent cache/service deletion, restart or publication.
+
+**RP-533 stays open:** the projection still duplicates kernel arithmetic under
+rule2, and valid larger kernel values lack a representation in this integer arm.
+The guard is safety, not full representability/acceptance. The owning authors
+must close the read-only getter and any larger-value wire amendment; no normative
+body or owner values are rewritten here, no bogus kernel bump or narrowed catalog.
+
+Correction Review by: Codex (implementer first filter). Recorded by: Codex.
+Exact new source/tests/docs/records range starts **after `4eaed0c9` through this
+containing commit** and needs designated Claude review. Keep original/corrective
+verdicts separate. Next: finish remaining original surface review and RP-533
+technical closure; execute the actual DB/player boundary once usable. No feature
+checkbox/acceptance/archival, owner adoption or nine-tier1.0 milestone is advanced.
+
+External-state supplement: tracking origin/main advances to the unchanged local
+HEAD `4eaed0c9` via an external push at12:06:54 CEST. Read-only Actions observation
+at10:09 UTC confirms new CI38381138075 in progress: schema/harness pass, client
+fails verify-client, server/composed/browser still run. The completed client's
+logs are unavailable through `gh run view --job115241567501 --log-failed` while
+the overall run is active (explicit exit1), so its exact cause is not inferred
+from the older run. The hoard correction is not yet published. Host space is
+now174GiB/80% after external cleanup; Docker version88051 remains unresponsive
+on re-poll. Interrupt only that owned client, terminal130. Ask explicit permission
+to restart Docker Desktop because it interrupts all containers; no approval has
+arrived and no restart/cleanup is performed. Current-State/roadmap point to the
+new published observation without calling running jobs green or erasing history.
