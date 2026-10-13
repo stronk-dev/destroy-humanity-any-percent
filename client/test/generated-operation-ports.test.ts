@@ -24,7 +24,7 @@ describe.each(cases)("generated operation port $id", ({ id, invoke }) => {
   it.each([401, 429])("preserves typed rejection %s and reads auth once without retry", async (status) => {
     const category = status === 401 ? "unauthorized" : "rate_limited";
     const detail = status === 401 ? "access_token" : "account";
-    const fetcher = vi.fn(async () => new Response(JSON.stringify({ category, detail }), { status }));
+    const fetcher = vi.fn(async () => Response.json({ category, detail }, { status }));
     const token = vi.fn(() => "port-token");
     await expect(invoke(ports(fetcher, token))).rejects.toMatchObject({ status, category, detail });
     expect(fetcher).toHaveBeenCalledTimes(1);
@@ -38,10 +38,10 @@ describe.each(cases)("generated operation port $id", ({ id, invoke }) => {
   it.each(["network", "invalid JSON", "extra error field", "unknown category", "undeclared status"])("classifies %s as transport failure once", async (fault) => {
     const fetcher = vi.fn(async () => {
       if (fault === "network") throw new TypeError("offline");
-      if (fault === "invalid JSON") return new Response("fictional-private-body-marker", { status: 200 });
+      if (fault === "invalid JSON") return new Response("fictional-private-body-marker", { status: 200, headers: { "Content-Type": "application/json" } });
       const body = fault === "unknown category" ? { category: "unknown_category", detail: "body" }
         : fault === "extra error field" ? { category: "invalid", detail: "body", extra: "x" } : { category: "invalid", detail: "body" };
-      return new Response(JSON.stringify(body), { status: fault === "undeclared status" ? 418 : 400 });
+      return Response.json(body, { status: fault === "undeclared status" ? 418 : 400 });
     });
     await expect(invoke(ports(fetcher))).rejects.toBeInstanceOf(MinigameTransportError);
     expect(fetcher).toHaveBeenCalledTimes(1);
@@ -51,7 +51,7 @@ describe.each(cases)("generated operation port $id", ({ id, invoke }) => {
 it("reads a rotated token on the next explicit port call and keeps JSON diagnostics body-free", async () => {
   let token = "old";
   const calls: RequestInit[] = [];
-  const fetcher = vi.fn(async (_input: string, init?: RequestInit) => { calls.push(init ?? {}); return new Response("fictional-private-body-marker", { status: 200 }); });
+  const fetcher = vi.fn(async (_input: string, init?: RequestInit) => { calls.push(init ?? {}); return new Response("fictional-private-body-marker", { status: 200, headers: { "Content-Type": "application/json" } }); });
   const port = ports(fetcher, () => token);
   await expect(port.minigame.current()).rejects.toThrow("response was not JSON (200)");
   token = "new";
@@ -62,7 +62,7 @@ it("reads a rotated token on the next explicit port call and keeps JSON diagnost
 });
 
 it("preserves the API-error class for surface rejection mapping", async () => {
-  const port = ports(async () => new Response('{"category":"conflict","detail":"recovery_session"}', { status: 409 }));
+  const port = ports(async () => new Response('{"category":"conflict","detail":"recovery_session"}', { status: 409, headers: { "Content-Type": "application/json" } }));
   await expect(port.soul.progress("s1", "t1")).rejects.toBeInstanceOf(MinigameAPIError);
 });
 

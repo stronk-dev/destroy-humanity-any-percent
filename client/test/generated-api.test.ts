@@ -9,9 +9,42 @@ async function hash(bytes: Uint8Array): Promise<string> {
 }
 
 describe("registry-generated HTTP client", () => {
+  const schemaCases = [
+    { id: "get_public_run_verdict", status: 200, body: { catalog_url: "/api/public/v1/catalogs/fixture", constants_hash: `sha256:${"a".repeat(64)}`,
+      engine_version: "0.1.0", genesis_sha256: `sha256:${"b".repeat(64)}`, genesis_url: "/genesis", replay_log_sha256: `sha256:${"c".repeat(64)}`,
+      replay_log_url: "/replay-log", run_id: `${stream}:1`, verdict: "verified" }, input: { path: { stream, seq: 1 }, request: null } },
+    { id: "get_public_run_verdict", status: 404, body: { category: "unknown_id", detail: "run" }, input: { path: { stream, seq: 1 }, request: null } },
+    { id: "refresh_session", status: 200, body: { access_token: "fixture-access", refresh_token: "fixture-refresh" }, input: { path: {}, request: { refresh_token: "fixture-parent" } } },
+    { id: "refresh_session", status: 401, body: { category: "unauthorized", detail: "refresh_token" }, input: { path: {}, request: { refresh_token: "fixture-parent" } } },
+  ] as const;
+
+  it.each(schemaCases.flatMap((entry) => [null, "text/plain", "application/gzip"].map((contentType) => ({ ...entry, contentType }))))(
+    "refuses single-schema $id/$status with media $contentType before reading the body", async ({ id, status, body, input, contentType }) => {
+      const headers = new Headers();
+      if (contentType !== null) headers.set("Content-Type", contentType);
+      // Bytes avoid Response's automatic text/plain default in the absent case.
+      const response = new Response(new TextEncoder().encode(JSON.stringify(body)), { status, headers });
+      const read = vi.spyOn(response, "text");
+      const fetcher = vi.fn(async () => response);
+      await expect(createAPIClient(fetcher).call(id, input as OperationInput<typeof id>)).rejects.toThrow("invalid schema API content type");
+      expect(read).not.toHaveBeenCalled();
+      expect(fetcher).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it.each(schemaCases.flatMap((entry) => ["application/json", "application/json; charset=utf-8"].map((contentType) => ({ ...entry, contentType }))))(
+    "preserves single-schema $id/$status with declared JSON media $contentType", async ({ id, status, body, input, contentType }) => {
+      const fetcher = vi.fn(async () => Response.json(body, { status, headers: { "Content-Type": contentType } }));
+      const result = await createAPIClient(fetcher).call(id, input as OperationInput<typeof id>);
+      expect(result.status).toBe(status);
+      expect(result.body).toEqual(body);
+      expect(fetcher).toHaveBeenCalledTimes(1);
+    },
+  );
+
   it("creates an account once without forwarding an access token", async () => {
     const account = { account_id: stream, created_at: "2026-10-08T00:00:00Z", recovery_code: "fixture-recovery" };
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(account), { status: 201, headers: { "Cache-Control": "no-store" } }));
+    const fetcher = vi.fn(async () => Response.json(account, { status: 201, headers: { "Cache-Control": "no-store" } }));
     const input = { path: {}, request: {}, accessToken: "must-not-leak" };
     const result = await createAPIClient(fetcher).call("create_account", input as unknown as OperationInput<"create_account">);
     expect(result.status).toBe(201);
@@ -29,7 +62,7 @@ describe("registry-generated HTTP client", () => {
     ["create_founder", "POST", 201, { id: stream, created_at: "2026-10-08T00:00:00.12Z", imported: false }],
     ["get_founder", "GET", 200, { id: stream, created_at: "2026-10-08T00:00:00.12Z", display: {} }],
   ] as const)("dispatches %s with the current explicit credential and unchanged timestamp", async (id, method, status, founder) => {
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(founder), { status }));
+    const fetcher = vi.fn(async () => Response.json(founder, { status }));
     const request = id === "create_founder" ? {} : null;
     const result = await createAPIClient(fetcher).call(id, { path: {}, request, accessToken: "fixture-access" } as OperationInput<typeof id>);
     expect(result.status).toBe(status);
@@ -47,7 +80,7 @@ describe("registry-generated HTTP client", () => {
     ["create_founder", "founder_create"],
   ] as const)("preserves %s failure without repeating a non-idempotent creation", async (id, detail) => {
     const body: APIError = { category: "internal_invariant", detail };
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(body), { status: 500 }));
+    const fetcher = vi.fn(async () => Response.json(body, { status: 500 }));
     const input = id === "create_account" ? { path: {}, request: {} } : { path: {}, request: {}, accessToken: "fixture-access" };
     const result = await createAPIClient(fetcher).call(id, input as OperationInput<typeof id>);
     expect(result.status).toBe(500);
@@ -61,7 +94,7 @@ describe("registry-generated HTTP client", () => {
     ["refresh_session", "/api/v1/session/refresh", { refresh_token: "fixture-refresh" }],
   ] as const)("dispatches existing %s without an access token or automatic renewal", async (id, path, request) => {
     const pair = { access_token: "fixture-access", refresh_token: "fixture-descendant" };
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(pair), { status: 200 }));
+    const fetcher = vi.fn(async () => Response.json(pair, { status: 200 }));
     // Invalid runtime callers cannot accidentally forward an unrelated access token
     // to a credential-issuing operation declared AuthNone.
     const input = { path: {}, request, accessToken: "must-not-leak" };
@@ -84,7 +117,7 @@ describe("registry-generated HTTP client", () => {
     [429, "rate_limited", "ip"],
   ] as const)("preserves refresh %s %s/%s without retrying a consumed credential", async (status, category, detail) => {
     const body: APIError = { category, detail };
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(body), { status }));
+    const fetcher = vi.fn(async () => Response.json(body, { status }));
     const result = await createAPIClient(fetcher).call("refresh_session", { path: {}, request: { refresh_token: "fixture-refresh" } });
     expect(result.status).toBe(status);
     expect(result.ok).toBe(false);
@@ -93,7 +126,7 @@ describe("registry-generated HTTP client", () => {
   });
 
   it("uses registered paths, encodes path/query values, and omits undeclared credentials on public reads", async () => {
-    const fetcher = vi.fn(async () => new Response(JSON.stringify({ category: "invalid", detail: "variables" }), { status: 400 }));
+    const fetcher = vi.fn(async () => Response.json({ category: "invalid", detail: "variables" }, { status: 400 }));
     const client = createAPIClient(fetcher, "https://example.test/");
     const input = { path: { category: "name/with?reserved" }, request: null,
       query: { epoch: 8, mandate: 0, variables: "a+b/=", limit: 50, cursor: undefined }, accessToken: "must-not-leak", requestID: "sdk-test" };
@@ -111,7 +144,7 @@ describe("registry-generated HTTP client", () => {
   });
 
   it("serializes a registered POST once and reads the current access token per call", async () => {
-    const fetcher = vi.fn(async () => new Response(JSON.stringify({ category: "not_eligible", detail: "tier_required" }), { status: 409 }));
+    const fetcher = vi.fn(async () => Response.json({ category: "not_eligible", detail: "tier_required" }, { status: 409 }));
     const client = createAPIClient(fetcher);
     const request = { idempotency_key: "a".repeat(64) };
     for (const accessToken of ["old", "rotated"]) await client.call("create_minigame_session", { path: { minigame_id: "pitch" }, request, accessToken });
@@ -158,7 +191,7 @@ describe("registry-generated HTTP client", () => {
       expect(parsed.pathname).toBe(`/api/public/v1/boards/${encoded}`);
       expect(parsed.searchParams.get("cursor")).toBe("..");
       expect(actual.headers.get("Authorization")).toBeNull();
-      return new Response(JSON.stringify(body), { status: 400 });
+      return Response.json(body, { status: 400 });
     });
     const response = await createAPIClient(fetcher, "https://example.test").call("list_public_board", {
       path: { category: value }, request: null, query: { epoch: 8, mandate: 0, variables: "fixture", cursor: ".." },
@@ -236,7 +269,7 @@ describe("registry-generated HTTP client", () => {
   });
 
   it("decodes a raw operation's registered error as JSON, not bytes", async () => {
-    const fetcher = vi.fn(async () => new Response('{"category":"unknown_id","detail":"run"}', { status: 404 }));
+    const fetcher = vi.fn(async () => new Response('{"category":"unknown_id","detail":"run"}', { status: 404, headers: { "Content-Type": "application/json" } }));
     const response = await createAPIClient(fetcher).call("get_public_run_genesis", { path: { stream, seq: 1 }, request: null });
     expect(response.status).toBe(404);
     if (response.status !== 404) throw new Error("error status missing");
@@ -253,21 +286,21 @@ describe("registry-generated HTTP client", () => {
   });
 
   it.each([[418, "{}"], [200, "not JSON"]] as const)("rejects undeclared status or malformed JSON (%s)", async (status, body) => {
-    const fetcher = vi.fn(async () => new Response(body, { status }));
+    const fetcher = vi.fn(async () => new Response(body, { status, headers: { "Content-Type": "application/json" } }));
     await expect(createAPIClient(fetcher).call("list_public_epochs", { path: {}, request: null, query: {} })).rejects.toThrow();
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
   it("does not echo a malformed response body in its JSON diagnostic", async () => {
     const marker = "fictional-private-body-marker";
-    const fetcher = vi.fn(async () => new Response(marker, { status: 200 }));
+    const fetcher = vi.fn(async () => new Response(marker, { status: 200, headers: { "Content-Type": "application/json" } }));
     await expect(createAPIClient(fetcher).call("list_public_epochs", { path: {}, request: null, query: {} })).rejects.toThrow("response was not JSON (200)");
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
   it("preserves an injected body-read failure without retrying or relabelling it as invalid JSON", async () => {
     const failure = new DOMException("aborted", "AbortError");
-    const response = new Response("", { status: 200 });
+    const response = new Response("", { status: 200, headers: { "Content-Type": "application/json" } });
     // Isolate the SDK's propagation boundary: Chromium may normalize errors
     // from a genuinely errored Response stream before the SDK sees them.
     const read = vi.spyOn(response, "text").mockRejectedValueOnce(failure);

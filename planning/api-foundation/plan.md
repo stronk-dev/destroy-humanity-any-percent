@@ -2,6 +2,15 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current bounded correction (2026-10-13, RP-524): the generated SDK now requires
+single-schema replies to carry the declared JSON media before reading their body,
+matching A5/C9/C19. Twelve old-client refusals fail; eight declared-JSON controls
+pass. Corrected Node/native-browser/Linux-three-engine, types/build/generation and
+the whole real-service composed lane pass. Reply doubles now use JSON media without
+changing payloads or assertions. The log owns the range after `9b48c9c6`, pending
+Claude designated review; this is not independent approval of Codex's earlier
+download/client code, adoption of drafts or complete API/public-catalog acceptance.
+
 Current integration supplement (2026-10-12): the existing root composed lane now requires
 the generated SDK to download a real queue-verified Exit fixture's immutable evidence from
 its live Go HTTP server, then runs the actual TypeScript verifier with DB-pinned catalog bytes.

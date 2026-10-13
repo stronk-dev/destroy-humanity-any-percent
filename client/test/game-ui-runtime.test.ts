@@ -98,10 +98,10 @@ describe("browser Game UI runtime", () => {
     const requests: Array<{ input: string; init?: RequestInit }> = [];
     const fetcher = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
       requests.push({ input: String(input), init });
-      return new Response(JSON.stringify({
+      return Response.json({
         account: { account_id: "account", created_at: "2026-08-10T12:00:00.000Z", recovery_code: "recover" },
         session: { access_token: "access", refresh_token: "refresh" }, game_ui_snapshot: snapshot,
-      }), { status: 201, headers: { "Content-Type": "application/json" } });
+      }, { status: 201, headers: { "Content-Type": "application/json" } });
     };
     const cryptoSource = { getRandomValues(value: Uint8Array) { value.fill(0xab); return value; }, randomUUID: () => "01985555-1111-7111-8111-111111111119" } as unknown as Crypto;
     const runtime = createBrowserGameUIRuntime(storage, fetcher as typeof fetch, cryptoSource);
@@ -119,7 +119,7 @@ describe("browser Game UI runtime", () => {
     const requests: RequestInit[] = [];
     const fetcher = async (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
       requests.push(init ?? {});
-      return new Response(JSON.stringify(requests.length === 1 ? currentSnapshot : { outcome: "applied", new_revision: 2 }), { status: 200, headers: { "Content-Type": "application/json" } });
+      return Response.json(requests.length === 1 ? currentSnapshot : { outcome: "applied", new_revision: 2 }, { status: 200, headers: { "Content-Type": "application/json" } });
     };
     const runtime = createBrowserGameUIRuntime(storage, fetcher as typeof fetch);
     expect((await runtime.snapshot()).revision).toBe(1);
@@ -135,7 +135,7 @@ describe("browser Game UI runtime", () => {
     malformed.interns[1].owned = true;
     malformed.contributions.push({ ...malformed.contributions[0], source_id: "upgrade.pr_intern_2.axis" });
     let body = { ...currentSnapshot, features: { ...currentSnapshot.features, axis_stack: axisArm } };
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(body), { status: 200, headers: { "Content-Type": "application/json" } }));
+    const fetcher = vi.fn(async () => Response.json(body, { status: 200, headers: { "Content-Type": "application/json" } }));
     const runtime = createBrowserGameUIRuntime(storage, fetcher as typeof fetch);
     const retained = await runtime.snapshot();
     body = { ...body, revision: 2, features: { ...body.features, axis_stack: malformed } };
@@ -154,10 +154,10 @@ describe("browser Game UI runtime", () => {
     const failure = new Error("lost bootstrap reply");
     const fetcher = vi.fn()
       .mockRejectedValueOnce(failure)
-      .mockResolvedValueOnce(new Response(JSON.stringify({
+      .mockResolvedValueOnce(Response.json({
         account: { account_id: "account", created_at: "2026-08-10T12:00:00.000Z", recovery_code: "recover" },
         session: { access_token: "access", refresh_token: "refresh" }, game_ui_snapshot: currentSnapshot,
-      }), { status: 201 }));
+      }, { status: 201 }));
     const runtime = createBrowserGameUIRuntime(storage, fetcher);
     await expect(runtime.bootstrap()).rejects.toBe(failure);
     expect(fetcher).toHaveBeenCalledTimes(1);
@@ -179,7 +179,7 @@ describe("browser Game UI runtime", () => {
     const storage = new MemoryStorage();
     const pending = "b".repeat(64);
     storage.setItem("cloud-clicker.bootstrap-key.v1", pending);
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(body), { status }));
+    const fetcher = vi.fn(async () => Response.json(body, { status }));
     await expect(createBrowserGameUIRuntime(storage, fetcher).bootstrap()).rejects.toThrow();
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(storage.getItem("cloud-clicker.bootstrap-key.v1")).toBe(pending);
@@ -193,9 +193,9 @@ describe("browser Game UI runtime", () => {
     const runtime = createBrowserGameUIRuntime(storage, () => new Promise<Response>((resolve) => responses.push(resolve)));
     const older = runtime.snapshot();
     const newer = runtime.snapshot();
-    responses[1](new Response(JSON.stringify({ ...currentSnapshot, founder_revision: 2, revision: 2 }), { status: 200 }));
+    responses[1](Response.json({ ...currentSnapshot, founder_revision: 2, revision: 2 }, { status: 200 }));
     expect((await newer).revision).toBe(2);
-    responses[0](new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    responses[0](Response.json(currentSnapshot, { status: 200 }));
     expect(await older).toMatchObject({ founder_revision: 2, revision: 2 });
   });
 
@@ -204,7 +204,7 @@ describe("browser Game UI runtime", () => {
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
     let response = { ...currentSnapshot, revision: 8, run: { ...currentSnapshot.run, run_seq: 2, tier: 1 } };
     const socket = new FakeSocket();
-    const runtime = createBrowserGameUIRuntime(storage, async () => new Response(JSON.stringify(response), { status: 200 }), crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+    const runtime = createBrowserGameUIRuntime(storage, async () => Response.json(response, { status: 200 }), crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
     await runtime.snapshot();
     const received: unknown[] = [];
     runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
@@ -218,10 +218,10 @@ describe("browser Game UI runtime", () => {
   it("rejects a legacy receipt snapshot on the live sync operation", async () => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
-    const runtime = createBrowserGameUIRuntime(storage, async () => new Response(JSON.stringify(snapshot), { status: 200 }));
+    const runtime = createBrowserGameUIRuntime(storage, async () => Response.json(snapshot, { status: 200 }));
     await expect(runtime.snapshot()).rejects.toThrow(/schema v4/);
     const { features: _features, ...v3 } = currentSnapshot;
-    const retained = createBrowserGameUIRuntime(storage, async () => new Response(JSON.stringify({ ...v3, schema_version: 3 }), { status: 200 }));
+    const retained = createBrowserGameUIRuntime(storage, async () => Response.json({ ...v3, schema_version: 3 }, { status: 200 }));
     await expect(retained.snapshot()).rejects.toThrow(/schema v4/);
   });
 
@@ -306,7 +306,7 @@ describe("browser Game UI runtime", () => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
     const sockets: FakeSocket[] = [];
-    const runtime = createBrowserGameUIRuntime(storage, async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }), crypto, () => {
+    const runtime = createBrowserGameUIRuntime(storage, async () => Response.json(currentSnapshot, { status: 200 }), crypto, () => {
       const socket = new FakeSocket(); sockets.push(socket); return socket as unknown as WebSocket;
     }, { protocol: "http:", host: "localhost" });
     await runtime.snapshot();
@@ -336,7 +336,7 @@ describe("browser Game UI runtime", () => {
     const sockets: FakeSocket[] = [];
     const runtime = createBrowserGameUIRuntime(storage, async (input) => {
       requests.push(String(input));
-      return new Response(JSON.stringify(requests.length === 1 ? currentSnapshot : { ...currentSnapshot, revision: 3 }), { status: 200 });
+      return Response.json(requests.length === 1 ? currentSnapshot : { ...currentSnapshot, revision: 3 }, { status: 200 });
     }, crypto, () => {
       const socket = new FakeSocket(); sockets.push(socket); return socket as unknown as WebSocket;
     }, { protocol: "http:", host: "localhost" });
@@ -374,7 +374,7 @@ describe("browser Game UI runtime", () => {
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
     const sockets: FakeSocket[] = [];
     let snapshots = 0;
-    const runtime = createBrowserGameUIRuntime(storage, async () => { snapshots += 1; return new Response(JSON.stringify(currentSnapshot), { status: 200 }); }, crypto, () => {
+    const runtime = createBrowserGameUIRuntime(storage, async () => { snapshots += 1; return Response.json(currentSnapshot, { status: 200 }); }, crypto, () => {
       const socket = new FakeSocket(); sockets.push(socket); return socket as unknown as WebSocket;
     }, { protocol: "http:", host: "localhost" });
     const received: unknown[] = [];
@@ -450,7 +450,7 @@ describe("GS0.3 announcement decoders", () => {
       payload: { ...payload, achievement_id: "achievement.generators_purchased_1" } } };
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    const fetcher = vi.fn(async () => Response.json(currentSnapshot, { status: 200 }));
     const socket = new FakeSocket();
     const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
     await runtime.snapshot(); fetcher.mockClear();
@@ -490,7 +490,7 @@ describe("GS0.3 announcement decoders", () => {
   it("resyncs malformed pet status and delivers a legal Founder event once through the socket (RP-318)", async () => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    const fetcher = vi.fn(async () => Response.json(currentSnapshot, { status: 200 }));
     const socket = new FakeSocket();
     const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
     await runtime.snapshot(); fetcher.mockClear();
@@ -526,7 +526,7 @@ describe("GS0.3 announcement decoders", () => {
   it.each(contradictoryDirections)("resyncs instead of announcing meter $direction/$before/$after through the socket (RP-312)", async ({ direction, before, after }) => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    const fetcher = vi.fn(async () => Response.json(currentSnapshot, { status: 200 }));
     const socket = new FakeSocket();
     const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
     // Prime revision 1: revision 2 is a legal successor, NOT a gap that could
@@ -556,7 +556,7 @@ describe("GS0.3 announcement decoders", () => {
   ])("delivers legal boundary meter $direction/$before/$after without resync (RP-312 control)", async ({ direction, before, after }) => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    const fetcher = vi.fn(async () => Response.json(currentSnapshot, { status: 200 }));
     const socket = new FakeSocket();
     const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
     await runtime.snapshot(); fetcher.mockClear();
@@ -613,7 +613,7 @@ describe("GS0.3 announcement decoders", () => {
     vi.useFakeTimers();
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    const fetcher = vi.fn(async () => Response.json(currentSnapshot, { status: 200 }));
     const sockets: FakeSocket[] = [];
     const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => {
       const socket = new FakeSocket(); sockets.push(socket); return socket as unknown as WebSocket;

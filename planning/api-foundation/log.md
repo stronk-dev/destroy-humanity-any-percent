@@ -1918,3 +1918,42 @@ pending and may consolidate with the earlier C14/generated-consumer ranges. No a
 archival, draft adoption, push or deployment. Next: exact owner catalog descriptors/public
 catalog composition and remaining generated consumers under their accepted authority;
 dictionary/bodiless prerequisites and the full nine-tier release floor remain open.
+
+## 2026-10-13 — Single-schema generated replies enforce their declared media (RP-524)
+
+Under accepted A5/C9/C19, add the existing schema descriptor's media check before
+body reading in the embedded generator template and regenerate its client. Raw
+and multi-format handling stay unchanged. Missing/plain/gzip media must refuse
+even when bytes are JSON; declared JSON and charset controls retain exact status/
+body. No HTTP handler, operation/schema/pin, auth, retry, balance, kernel or copy
+changes. The earlier verification/download implementation is Codex-owned, so
+this is conformance work/first filter, never designated independent review.
+
+Old source `9b48c9c6` fails all12 new single-schema negatives across public verdict
+and refresh success/error;8 positive JSON controls pass. Their first rejection
+assertions fail, so subsequent spy checks are not claimed old execution. Final
+negatives also require no body read and exactly one request. Existing reply doubles
+implicitly used text/plain: switch their JSON values to Response.json and give
+malformed/read-error fixtures declared JSON media. Keep their original assertions,
+error mapping, cancellation, credential rotation and private-diagnostic checks.
+Intermediate21264 fails five such doubles; full55052 finds the last Soul double;
+both failures are retained, not fixed by allowing undeclared media.
+
+Finished checks: full `make test-client`34759 passes10611, with1012 existing skips
+reported, not credit. Native affected Chromium/WebKit20067 passes246; cold declared
+Linux browser1712 passes369 in Chromium/Firefox/WebKit with frozen-lockfile install.
+Types/Svelte/build33130 pass with zero diagnostics. Cold generator/registry64620
+and vet pass; `make api-check` passes after staging the intended generated module,
+with OpenAPI/compatibility-pin bytes unchanged. Whole `make test-game-ui-composed`
+33334 exits0: actual refresh/schema/SQL parents and public SDK→TypeScript replay,
+main built-client/Pitch/process-crash/recovery, Cosmetic/Reputation/Clout, Garden
+and Tier2 populations complete. Their existing cash/maturity/budget controls and
+DB-supplied catalog limitation remain; not natural pacing or public catalog serving.
+
+All handles terminal; diff checked. These checks do not prove actual AT, full API
+acceptance, hosted Actions, clean-host release or the unresolved rights/clock/numeric
+contracts. Review by: Codex (implementer first filter). Recorded by: Codex. Entire
+new range after `9b48c9c6` through this containing commit needs Claude designated
+review, consolidatable with earlier generated-client corrections without erasing
+their debt. No draft adoption, archival, push, deployment or1.0 promotion. Continue
+remaining accepted construction; catalog/dictionary/bodiless prerequisites stay open.

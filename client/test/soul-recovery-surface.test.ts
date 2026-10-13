@@ -24,7 +24,7 @@ describe("soul recovery surface content", () => {
 describe("soul recovery port", () => {
   it("binds the generated recovery operations with exact bodies", async () => {
     const calls: string[] = [];
-    const port = createBrowserSoulRecoveryPort(() => "tok", async (input, init) => { calls.push(`${init?.method} ${input} ${init?.body}`); return new Response("{}", { status: 200 }); });
+    const port = createBrowserSoulRecoveryPort(() => "tok", async (input, init) => { calls.push(`${init?.method} ${input} ${init?.body}`); return Response.json({}, { status: 200 }); });
     await port.start("defrag");
     await port.progress("s1", "t1");
     await port.resolve("s1");

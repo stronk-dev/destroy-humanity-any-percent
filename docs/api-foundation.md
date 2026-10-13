@@ -166,7 +166,10 @@ these TypeScript types are not runtime schema validation. Wrappers retain their 
 application decoders. When a status declares multiple representations, the client selects
 the descriptor by the response's media type (ignoring parameters such as charset) before
 choosing its decoder; a missing or undeclared type refuses before reading the body.
-Single-representation schema decoding is unchanged. Raw successes are `Uint8Array`, not an omitted success type or parsed
+Single-representation schema responses also require their registered JSON media type before
+reading the body. Missing/undeclared media raises a body-free transport error, even when the
+bytes happen to be valid JSON. Existing JSON charset handling and status/error payloads are
+unchanged; this is media conformance, not runtime DTO validation. Raw successes are `Uint8Array`, not an omitted success type or parsed
 JSON. They require the registered media type and content-hash header, checked against SHA256
 over downloaded bytes. Error statuses on raw operations remain JSON. Undeclared status,
 malformed JSON, raw type/hash failure and network/abort errors are surfaced, never retried.

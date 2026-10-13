@@ -357,6 +357,7 @@ export function createAPIClient(fetcher: APIFetcher = fetch, baseURL = "") {
         if (response.headers.get(descriptor.contentHashHeader) !== hash) throw new TypeError("invalid raw API content hash");
         body = bytes;
       } else {
+        if (contentType !== descriptor.contentType) throw new TypeError("invalid schema API content type");
         // Keep body-read/network errors intact, but do not echo potentially
         // private reply bytes in JSON.parse's native error message.
         const text = await response.text();
