@@ -6,6 +6,11 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+2026-10-13 review checkpoint: original P5 `2f2c5a04^..2f2c5a04`, all30 changed
+paths, now has designated Codex CHANGES REQUIRED for RP-303/387/426/509. Its later
+Codex corrections and real-service supplements retain separate review debt;
+do not restart the original P5 review or treat this as full CV9/AC11 approval.
+
 2026-10-12 RP-509 checkpoint: bounded review of original Claude P5's decoder
 finds that counting contributions does not establish one contribution per owned
 upgrade. The local repair rejects repeated upgrade identities, retaining legal
@@ -236,6 +241,8 @@ episode/origin lifetime remain; the owning log records checks and the initial in
   are absent from the original population; formula/helper parity is not that proof.
 - [x] P4 (`4c089f00`) — AC4 Gaia-law structural test (empty writer set under A; seeded writer fails).
 - [x] P5 (`2f2c5a04`) — CV9 snapshot producer (optional v4 field) + Desk PR row progress: implementation presence, not full AC11/default composed journey acceptance. RP-303 locally corrects native progress associations; its Codex span independently needs Claude.
+  Original all30-path review is CHANGES REQUIRED (2026-10-13); owning log names
+  executed historical/current checks and excludes later corrective approval.
   AC11 service/DOM/SQL fixture proof now runs through `make test-clout-composed` and composed CI; full
   CV9 obligations, served content and all related exact-range reviews remain open.
 - [ ] P6 — PARTIAL (see log P6; blocked on harness attainment evaluation) — CV10 harness: scenario bundle rejection without achievements, relevance mask, dead-row

@@ -2898,3 +2898,51 @@ Codex. Full range after `5bc0e222` through this containing commit needs designat
 Claude review. No adoption, acceptance/archival, mint, push, deployment or1.0
 promotion; next is the complete viable accounting/compatibility contract under
 the pending interval/lifetime authority.
+
+## 2026-10-13 — Full original P5 integration review
+
+Review by: Codex (designated independent reviewer of Claude). Recorded by: Codex.
+**CHANGES REQUIRED**, exact `2f2c5a04^..2f2c5a04`, all30 changed paths. Provenance:
+Claude's owning implementation record and co-author trailer. Inspect producer/
+read helpers/projector, registered schemas, decoder/host/panel/presentation, tests/
+golden/composed-driver addition, generated API/copy, three version markers,
+content manifest and owning records. Canonical docs at that coordinate still
+list CV9 rendering as undelivered; the original checkbox does not prove full AC11.
+The current plan already distinguishes presence from full acceptance.
+
+Existing findings directly block original approval: RP-303 unnamed native progress
+bars, RP-387 resource formatting concealing fractional factors, RP-426 progress/
+factors outside their purchase cards, RP-509 duplicate owned-intern identities.
+Fresh in-memory execution uses the actual historical decoder/helpers and numeric
+parser: both duplicate directions escape refusal; eleven original/healthy controls
+pass. No production mutation or current decoder substitution. Original panel/
+Amount/formatter source traces the rounding path; retained65716 native red evidence
+owns its executed failure. A direct historical formatter probe here cannot load
+the notation package's legacy CommonJS dependency and is excluded, not a browser
+or product failure. No dependency installation/patch. Projector source is byte-
+unchanged from the original, but the checks below run current dependencies.
+
+Readonly original generated checks: four new schema names plus one optional
+Features property, with every preceding API field/path/definition preserved;
+compatibility pin byte-unchanged. All13 candidate rows equal generated entries,
+all496 preceding copy rows preserved;509 TS/catalog/Go-All keys agree,462 orphan
+keys unique/sorted/known, hash references agree and constants hash unchanged.
+All three version markers move127→128 consistently. Initial checker counted the
+following34 companion keys as part of `All()`; scope its actual function and
+rerun successfully. This is consistency, not a fresh historical compiler/hash
+derivation or prose adoption. Candidate copy remains pending owner action.
+
+Current source `59974458`: cold root72639 producer/registered-envelope tests and
+gameui/account vet pass; the stored-projection SQL test explicitly skips for
+missing TEST_DATABASE_URL. Node59957 passes86 decoder/factor/runtime cases;
+native54013 passes36 current Clout cases in Chromium/WebKit,3.59s, including
+purchase-card bindings, exact factors, progress names and current help/notices.
+Native log is tool-truncated; terminal census is present, not a full trace claim.
+No historical Svelte execution, fresh SQL/composed, Firefox/AT/performance/full
+CI or whole-feature approval. All handles terminal; no product/test/copy changes.
+
+Later Codex repairs retain their own designated-review ranges; this original
+negative verdict approves none of them. Projected-factor/contextual-hint meaning,
+content adoption/mint, full acceptance, arithmetic and the complete nine-tier
+goal remain open. Continue remaining original reviews and accepted construction;
+do not rerun this completed original P5 review or silently close corrective debt.
