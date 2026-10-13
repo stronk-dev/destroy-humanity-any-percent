@@ -7,6 +7,17 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current contract work, 2026-10-13 (RP-558 / DESIGN-GAP10):** the
+[Current Release Authority draft](../../rfc/deployment-current-release-authority.md) specifies
+live image/mounted-byte identity, one ledger with durable release/rollback events and explicit
+interruption recovery. It is not accepted/acceptance-ready; CR2/CR4 require the two named pinned-
+engine experiments before mechanical closure and adoption/review. Native actual ExecRunner/lock
+evidence confirms child continuation after killed-parent lock release, with normal completion
+control and both children observed terminal; preserved manual source is outside CI. Fresh Docker
+socket ping still times out, so no Linux/daemon/container-copy result is claimed. No product byte
+changed. Next: execute/reconcile the mechanical questions when the declared engine is usable;
+continue other accepted work meanwhile. D-019, other DESIGN-GAPs and full nine-tier floor remain.
+
 **Current operator-state admission, 2026-10-13 (RP-556/RP-557):** lifecycle commands now
 reject existing inadmissible history/start times before runtime operations; lock/append paths
 reject final directory symlinks before changing their targets. Old regressions and all30

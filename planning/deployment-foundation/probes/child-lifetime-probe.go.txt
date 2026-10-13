@@ -1,0 +1,159 @@
+package deploymentrelease
+
+import (
+	"context"
+	"errors"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strconv"
+	"syscall"
+	"testing"
+	"time"
+)
+
+// Manual diagnostic source, outside normal CI. It does not prescribe child survival as
+// correct behavior or claim Docker-daemon request completion.
+func TestExecChildLifetimeDiagnostic(t *testing.T) {
+	const roleKey = "CLOUD_CLICKER_CHILD_LIFETIME_ROLE"
+	const rootKey = "CLOUD_CLICKER_CHILD_LIFETIME_ROOT"
+	role := os.Getenv(roleKey)
+	root := os.Getenv(rootKey)
+	waitFile := func(t *testing.T, path string) {
+		t.Helper()
+		guard := time.Now().Add(5 * time.Second)
+		for {
+			if _, err := os.Stat(path); err == nil {
+				return
+			} else if !errors.Is(err, os.ErrNotExist) {
+				t.Fatal(err)
+			}
+			if time.Now().After(guard) {
+				t.Fatal("diagnostic guard exhausted before handshake; invalid observation")
+			}
+			time.Sleep(5 * time.Millisecond)
+		}
+	}
+	if role == "child" {
+		if err := os.WriteFile(filepath.Join(root, "ready"), []byte(strconv.Itoa(os.Getpid())), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		waitFile(t, filepath.Join(root, "gate"))
+		if err := os.WriteFile(filepath.Join(root, "finished"), []byte("finished"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		return
+	}
+	if role == "parent" {
+		lock, err := AcquireOperatorStateLock(root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer lock.Close()
+		executable, err := os.Executable()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := os.Setenv(roleKey, "child"); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := (ExecRunner{}).Run(context.Background(), root, executable,
+			"-test.run=^TestExecChildLifetimeDiagnostic$", "-test.timeout=15s"); err != nil {
+			t.Fatal(err)
+		}
+		return
+	}
+	for _, kill := range []bool{false, true} {
+		name := "normal completion"
+		if kill {
+			name = "parent killed"
+		}
+		t.Run(name, func(t *testing.T) {
+			root := t.TempDir()
+			t.Setenv(roleKey, "parent")
+			t.Setenv(rootKey, root)
+			executable, err := os.Executable()
+			if err != nil {
+				t.Fatal(err)
+			}
+			parent := exec.Command(executable, "-test.run=^TestExecChildLifetimeDiagnostic$", "-test.timeout=15s")
+			if err := parent.Start(); err != nil {
+				t.Fatal(err)
+			}
+			waited := false
+			defer func() {
+				_ = os.WriteFile(filepath.Join(root, "gate"), []byte("open"), 0o600)
+				if !waited {
+					_ = parent.Process.Kill() // Only this directly spawned owned helper.
+					_ = parent.Wait()
+				}
+			}()
+			waitFile(t, filepath.Join(root, "ready"))
+			pidBytes, err := os.ReadFile(filepath.Join(root, "ready"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			pid, err := strconv.Atoi(string(pidBytes))
+			if err != nil || pid <= 0 || pid == parent.Process.Pid {
+				t.Fatal("invalid owned child identity")
+			}
+			child, err := os.FindProcess(pid)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer child.Release()
+			lock, err := AcquireOperatorStateLock(root)
+			if err == nil {
+				_ = lock.Close()
+				t.Fatal("parent did not hold its operator lock; invalid population")
+			}
+			if !errors.Is(err, ErrInvalid) {
+				t.Fatal(err)
+			}
+			if kill {
+				if err := parent.Process.Kill(); err != nil {
+					t.Fatal(err)
+				}
+				err = parent.Wait()
+				waited = true
+				if err == nil {
+					t.Fatal("owned parent unexpectedly exited successfully")
+				}
+				lock, err := AcquireOperatorStateLock(root)
+				if err != nil {
+					t.Fatalf("dead parent still holds lock: %v", err)
+				}
+				if err := lock.Close(); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if _, err := os.Stat(filepath.Join(root, "finished")); !errors.Is(err, os.ErrNotExist) {
+				t.Fatal("child passed the closed gate; invalid population")
+			}
+			if err := os.WriteFile(filepath.Join(root, "gate"), []byte("open"), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			waitFile(t, filepath.Join(root, "finished"))
+			if !kill {
+				err = parent.Wait()
+				waited = true
+				if err != nil {
+					t.Fatalf("normal helper failed: %v", err)
+				}
+			}
+			guard := time.Now().Add(5 * time.Second)
+			for {
+				err := child.Signal(syscall.Signal(0)) // Read-only liveness of the owned child.
+				if errors.Is(err, os.ErrProcessDone) || errors.Is(err, syscall.ESRCH) {
+					break
+				}
+				if err != nil || time.Now().After(guard) {
+					t.Fatalf("owned child did not reach observed terminal state: %v", err)
+				}
+				time.Sleep(5 * time.Millisecond)
+			}
+			t.Logf("%s/%s: killed=%t; child completed after gate; parent lock released before gate=%t", runtime.GOOS, runtime.GOARCH, kill, kill)
+		})
+	}
+}

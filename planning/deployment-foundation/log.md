@@ -6709,3 +6709,55 @@ versions, infer the current host from a supplied path, or silently invent a new 
 policy. This is a technical contract to prepare, not a newly delegated product choice. Canonical
 docs now limit the implementation claim; the accepted forward-only floor stays unchanged.
 Next: prepare that bounded authority contract and continue accepted work; no full1.0 promotion.
+
+## 2026-10-13 — Current-release proposal and actual child-lifetime precursor (RP-558)
+
+Prepared `rfc/deployment-current-release-authority.md` under the existing RFC template, linked
+from the active index. It proposes exact recorded/live image and mounted-byte binding, removal
+of history-less ordinary release, explicit v2 release/rollback start/checkpoint/finish records,
+and governed manual interruption recovery. The existing initial-install v1 path and completed-
+release seven-day window remain. These are explicit proposed operational changes, not authority
+for an implementation or a Marco ruling. Parent acceptance/body reconciliation and cross-party
+normative review remain required. It is **not acceptance-ready**: pinned-engine mounted-reader
+and prior-request quiescence questions must be executed and reconciled, not left to an implementer
+to invent. Existing D-019, protection metadata, DESIGN-GAPs1–9, code review and full1.0 holds stay.
+
+Source checked against the accepted Deployment body, current seven-service Compose templates,
+six-image manifest/validator, actual Prepare/image-ID behavior, controller/ledger and lifecycle
+readers. The backup service shares Postgres's image; nine mounted roots need original byte/set
+checks. Docker's primary copy/inspection/label/export docs provide partial instrument support,
+not runtime proof. The old721-line `cd3235a7` proposal is confirmed unmerged/non-ancestral and its
+existing CHANGES REQUIRED verdict remains; this new scoped draft does not import its options.
+No claim that all R-006 populations have producers. My first body-refinement patch refused a
+stale context atomically; corrected it before source/diff checks, not an executed product failure.
+
+Mechanical precursor: current ExecRunner has no parent-death supervision. Predeclared native
+population is intact parent versus killed owned helper while its real child waits on an explicit
+gate, with the real operator lock held.74635 completes both handshakes on darwin/arm64. Refined
+72139 also checks the actual owned child PID becomes terminal: before kill the parent holds the
+lock; after kill the lock is reacquirable while the child has not completed; opening the gate then
+makes that child write its completion marker. Normal completion is the control. Both owned child
+processes are observed exited. This disproves lock-only quiescence; it proves neither a Linux
+supervision solution nor that a Docker daemon request stops when its client dies. The fixture's
+five-second handshake/termination guards invalidate an incomplete run, not an operating budget.
+
+Preserved the verbatim executable diagnostic outside normal CI as
+`probes/child-lifetime-probe.go.txt`. Reproduction: use apply_patch to temporarily move it to
+`server/deploymentrelease/child_lifetime_probe_test.go`, run root
+`make test-go GO_PACKAGES='./deploymentrelease'
+GO_TEST_FLAGS='-count=1 -run TestExecChildLifetimeDiagnostic -v'`, await its terminal result,
+then move it back. Do not turn the observed unsafe survival into a normal correctness assertion;
+the file is mechanical evidence for this draft, not feature acceptance. Its source is gofmt-clean.
+
+Fresh direct Docker socket ping19065 terminates exit28 after5006ms with zero bytes. No daemon
+restart/cleanup or hanging test launched. Requested explicit restart permission asynchronously;
+no approval is inferred from its suggested options. The supported Linux/container experiments
+remain unexecuted. No product/schema/balance/CI-workflow or authored player-copy bytes changed.
+Documents/index/paths/diff checked; no unrelated software suite for this normative draft/records.
+
+Review by: Codex (draft/research author first filter). Recorded by: Codex. Exact new proposal/
+source/evidence/record range starts after `b29fc293` through this containing commit; independent
+Claude review is pending, not self-approval. All observed sessions/owned processes terminal.
+Next: finish those mechanical questions when the declared engine is usable, reconcile CR2/CR4,
+then obtain adoption/normative review; other accepted work remains available. No release-ready,
+archival, publication, push, deployment or whole nine-tier1.0 claim.

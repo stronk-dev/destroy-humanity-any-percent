@@ -5,7 +5,8 @@ their independent review obligations remain live.
 
 ## Current action — 2026-10-13
 
-Coordinate: local source `a713137e`; published CI source `4eaed0c9`. Whole-product status lives
+Coordinate: latest product source `b29fc293`; last recorded full production/history checks at
+`a713137e`, published CI source `4eaed0c9`. Whole-product status lives
 in [CURRENT-STATE](../CURRENT-STATE.md), not the dated routing tables below. Full nine-tier1.0
 remains the goal; Garage hardening and standalone Combat records do not complete another tier.
 
@@ -21,15 +22,18 @@ remains the goal; Garage hardening and standalone Combat records do not complete
   daemon reply or restart authority. RP-551's empty/populated database-query restore extension
   compiles/skips, not passes. Run the declared backup/restore and affected Linux/server/browser
   lanes once the service is usable; do not launch another hanging job or substitute a host DB.
-- **OPEN — correctness and release prerequisites:** current local production fails27 RP-307
-  partition cases, and the real history guard rejects50a3a514. Latest published CI38381138075
-  remains failed. Current source needs reviewed, rebuilt exact bundles and a floor-compliant
+- **OPEN — correctness and release prerequisites:** the last recorded local production run fails27
+  RP-307 partition cases, and the real history guard rejects50a3a514. Last retrieved published
+  CI38381138075 is failed. Current source needs reviewed, rebuilt exact bundles and a floor-compliant
   predecessor before authorized R-006; historical builds or native unit green are not substitutes.
 - **HELD — specific contracts, not all work:** the [decision/engineering distinction](../CURRENT-STATE.md#decisions-versus-engineering-work)
   names the draft proposals. Headcount, attendance, minigame public wires, content, rights and
   accessibility have additional named boundaries. Owner choices need explicit adoption; author
   contract closure, implementation and failing arithmetic remain agent work, not generic approval
   requests. No draft becomes authority merely because its dependencies exist.
+  RP-558's [current-release authority proposal](../../rfc/deployment-current-release-authority.md)
+  now has a native child/lock precursor, but pinned-engine mounted-byte and request-quiescence
+  experiments remain before mechanical closure/adoption; it is not acceptance-ready.
 
 This is routing only, not a new implementation contract, review verdict or publication permission.
 Preserve all earlier evidence and pending review obligations. No push/deploy/archival is authorized.
