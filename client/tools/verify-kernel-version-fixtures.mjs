@@ -19,7 +19,9 @@ for (const required of ["client/src/achievements/", "client/src/meters/", "serve
   if (!productionGuard.paths.includes(required)) throw new Error(`kernel registry omits active mechanic package ${required}`);
 }
 
-const root = mkdtempSync(path.join(tmpdir(), "cloud-clicker-kernel-guard-"));
+const fixtureRoot = mkdtempSync(path.join(tmpdir(), "cloud-clicker-kernel-guard-"));
+const root = path.join(fixtureRoot, "repo");
+mkdirSync(root);
 try {
   run(root, "git", ["init", "-q"]); run(root, "git", ["config", "user.email", "guard@example.invalid"]); run(root, "git", ["config", "user.name", "Guard Test"]);
   mkdirSync(path.join(root, "client/tools"), { recursive: true });
@@ -37,8 +39,74 @@ try {
   if (!historicalFailed) throw new Error("kernel guard accepted an uncorrected historical miss");
   const offending = run(root, "git", ["rev-parse", "HEAD"]).trim();
   write(root, "planning/kernel-fix/log.md", `# Fixture review ledger\n\n## Independent review (\`${offending.slice(0, 7)}^..${offending.slice(0, 7)}\`)\n\n- **Review by:** Fixture Reviewer\n- **Decision:** not approved until the missed bump is corrected.\n`);
-  write(root, "kernel/history-corrections.json", `${JSON.stringify({ schema_version: 1, corrections: [{ offending_commit: offending, corrected_in_version: "0.1.2", reason: "Reviewed fixture violation corrected without rewriting cited history.", review_log: "planning/kernel-fix/log.md" }] }, null, 2)}\n`);
-  versionFiles(root, "0.1.2"); commit(root, "kernel: fix forward reviewed history");
+  const initialCorrection = { offending_commit: offending, corrected_in_version: "0.1.2", reason: "Reviewed fixture violation corrected without rewriting cited history.", review_log: "planning/kernel-fix/log.md" };
+  const writeInitialCorrection = (reviewLog) => write(root, "kernel/history-corrections.json", `${JSON.stringify({ schema_version: 1, corrections: [{ ...initialCorrection, review_log: reviewLog }] }, null, 2)}\n`);
+  writeInitialCorrection(initialCorrection.review_log);
+  versionFiles(root, "0.1.2");
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+  // RP-540: this is a NEW row before commit, so append-only row mutation cannot
+  // mask path admission. Every alias resolves to an owned, valid fixture log.
+  const pathAliases = ["planning/./kernel-fix/log.md", "planning/../planning/kernel-fix/log.md", "planning//kernel-fix/log.md", "planning/alias\\segment/log.md"];
+  write(root, pathAliases[3], readFileSync(path.join(root, initialCorrection.review_log), "utf8"));
+  const admittedPaths = [];
+  for (const reviewLog of pathAliases) {
+    writeInitialCorrection(reviewLog);
+    try {
+      run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+      admittedPaths.push(reviewLog);
+    } catch (error) {
+      if (!String(error.stderr).includes("invalid history correction entry")) throw error;
+    }
+  }
+  writeInitialCorrection(initialCorrection.review_log);
+  rmSync(path.join(root, "planning/alias\\segment"), { recursive: true, force: true });
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+  if (admittedPaths.length !== 0) throw new Error(`kernel guard accepted noncanonical review citations: ${admittedPaths.join(", ")}`);
+  // The sibling ledger is outside the fixture Git repo but inside our owned
+  // temporary directory. Never read a host/private file for an escape probe.
+  const outsideReview = path.join(fixtureRoot, "external-review/log.md");
+  mkdirSync(path.dirname(outsideReview), { recursive: true });
+  const healthyOutsideReview = readFileSync(path.join(root, initialCorrection.review_log), "utf8");
+  writeFileSync(outsideReview, healthyOutsideReview);
+  writeInitialCorrection("planning/../../external-review/log.md");
+  const guardFilename = "client/tools/verify-kernel-version.mjs";
+  const currentGuard = readFileSync(path.join(root, guardFilename), "utf8");
+  const oldGuard = execFileSync("git", ["show", "611273b5:client/tools/verify-kernel-version.mjs"], { cwd: sourceRoot, encoding: "utf8", stdio: "pipe" });
+  write(root, guardFilename, oldGuard);
+  run(root, "node", [guardFilename]);
+  writeFileSync(outsideReview, "# No completed review here\n");
+  let outsideContentFailed = false;
+  try { run(root, "node", [guardFilename]); }
+  catch (error) {
+    if (!String(error.stderr).includes("is not bound to its independent review range")) throw error;
+    outsideContentFailed = true;
+  }
+  if (!outsideContentFailed) throw new Error("old-guard exterior control did not depend on the sibling review contents");
+  writeFileSync(outsideReview, healthyOutsideReview);
+  write(root, guardFilename, currentGuard);
+  let outsidePathFailed = false;
+  try { run(root, "node", [guardFilename]); }
+  catch (error) {
+    if (!String(error.stderr).includes("invalid history correction entry")) throw error;
+    outsidePathFailed = true;
+  }
+  if (!outsidePathFailed) throw new Error("kernel guard accepted an exterior citation instead of refusing its entry");
+  writeInitialCorrection("planning/kernel-fix/\0/log.md");
+  let nulPathFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); }
+  catch (error) {
+    if (!String(error.stderr).includes("invalid history correction entry")) throw error;
+    nulPathFailed = true;
+  }
+  if (!nulPathFailed) throw new Error("kernel guard accepted a NUL citation instead of refusing its entry");
+  const archivedCitation = "planning/archive/kernel-fix/log.md";
+  write(root, archivedCitation, readFileSync(path.join(root, initialCorrection.review_log), "utf8"));
+  writeInitialCorrection(archivedCitation);
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+  writeInitialCorrection(initialCorrection.review_log);
+  rmSync(path.join(root, "planning/archive/kernel-fix"), { recursive: true, force: true });
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+  commit(root, "kernel: fix forward reviewed history");
   run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
 
   // RP-131: review instructions/examples are not completed independent verdicts.
@@ -259,5 +327,5 @@ try {
 
   console.log("kernel history guard adversarial fixtures ok");
 } finally {
-  rmSync(root, { recursive: true, force: true });
+  rmSync(fixtureRoot, { recursive: true, force: true });
 }

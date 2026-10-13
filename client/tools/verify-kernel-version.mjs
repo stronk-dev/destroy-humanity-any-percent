@@ -39,7 +39,8 @@ const validateCorrections = (value, label) => {
   for (const entry of value.corrections) {
     if (typeof entry !== "object" || entry === null || Object.keys(entry).sort().join("\0") !== "corrected_in_version\0offending_commit\0reason\0review_log" ||
         !/^[0-9a-f]{40}$/.test(entry.offending_commit) || entry.offending_commit <= previous || !/^0\.[0-9]+\.[0-9]+$/.test(entry.corrected_in_version) ||
-        typeof entry.reason !== "string" || entry.reason.length < 20 || typeof entry.review_log !== "string" || !entry.review_log.startsWith("planning/") || !entry.review_log.endsWith("/log.md")) {
+        typeof entry.reason !== "string" || entry.reason.length < 20 || typeof entry.review_log !== "string" || !entry.review_log.startsWith("planning/") || !entry.review_log.endsWith("/log.md") ||
+        entry.review_log.includes("\\") || entry.review_log.includes("\0") || entry.review_log.split("/").some((segment) => segment === "" || segment === "." || segment === "..")) {
       throw new Error(`${label} has invalid history correction entry`);
     }
     previous = entry.offending_commit;

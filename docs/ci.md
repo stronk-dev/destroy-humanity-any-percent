@@ -104,6 +104,10 @@ record, not instructions to obtain one. The guard reads visible reviewer/decisio
 metadata in the same section as the exact offending-commit anchor; examples in
 code fences, blockquotes, indented code or comments do not count. Empty/pending
 fields, conflicting decisions and explicitly labelled first filters refuse.
+Correction citations must use canonical forward-slash `planning/.../log.md`
+paths: empty, dot/parent segments, backslashes and NUL refuse before lookup.
+Canonical active and archive citations, including the existing archive fallback,
+remain valid. This is citation grammar, not filesystem identity or authentication.
 Completed negative findings and approved mechanical hash-remap bindings remain
 valid: correcting a missed version signal is not approval of the original feature.
 Review execution and authorship still require the project's independent process;

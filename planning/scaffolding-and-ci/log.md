@@ -971,3 +971,37 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Full range afte
 designated Claude review. The transcribed old DP-E verdict approves none of it.
 Continue safe accepted engineering and pending policy/contract closure; no push,
 archival, release or reduction of the full nine-tier1.0 objective.
+
+## 2026-10-13 — RP-540 canonical correction citations before lookup
+
+Outcome under existing repository-citation authority: prefix/suffix matching is
+not enough to admit a review path. The actual old CLI79706 admits four dot,
+parent, empty-segment and backslash aliases, using genuine new-correction rows
+before commit. Healthy canonical review/version controls pass before/after; the
+later immutable-row comparison therefore cannot mask this admission experiment.
+Refuse those segments, backslashes and NUL before filesystem lookup. Preserve
+canonical active/archive paths, normal archive fallback and all immutable rows.
+
+Retained historical tool611273b5 executes in the same isolated Git fixture with
+`planning/../../external-review/log.md`: a valid sibling review passes, but
+replacing that sibling's content removes binding. The corrected tool refuses
+the path at entry validation regardless of its valid content. Both repo and
+sibling live beneath one newly created, owned temporary directory; no host-private
+file is read. Only the fixture's guard copy is switched to historical bytes;
+real source/history is never rewritten. This is an exterior-citation proof,
+not a live correction exploit, symlink/inode guarantee or review authentication.
+
+Final actual fixture1448 passes aliases/exterior/NUL refusals, both canonical
+controls and the full prior review/miss/remap/archive/ancestry/merge population.
+Earlier23258 covers aliases/NUL/archive but precedes the final exterior control,
+so it is not the full final result. Both syntax checks and topology pass; actual
+root32541 still fails50a3a514 after its checkout controls pass. All handles terminal,
+diff checked. Current rows/path registry, kernel0.3.188, runtime, workflows and
+bounds stay byte-unchanged. No Go/browser/DB/hosted or whole-CI pass is claimed.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Full corrective
+range after `611273b5` through this containing tools/tests/docs/record commit
+needs designated Claude review, consolidatable with RP-131 after `a7e33b73`.
+No history-exception adoption, new correction, false bump, archival or push.
+Next: genuine accepted engineering and pending contract/policy closure, without
+repeating these completed fixture populations or reducing the full1.0 goal.

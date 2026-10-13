@@ -7,15 +7,22 @@
 
 ## Current checkpoint — 2026-10-13
 
+RP-540's citation boundary is locally corrected: old genuine-new-row CLI controls
+admit four aliases, and a controlled exterior-review read is reproduced without
+leaving the owned temporary fixture. Canonical active/archive citations and all
+existing guard populations pass after entry-level refusal; the real root still
+fails `50a3a514`. The log owns verification and pending consolidated review.
+Do not repeat this completed population or credit it as authentication/whole CI.
+
 RP-131's non-verdict parser loophole is locally corrected independently of the
 unadopted historical-exception proposal. Actual CLI regressions retain the old
 eight admissions; twelve invalid evidence forms now refuse while completed
 findings/remap records pass. The existing `09d5027` binding is transcribed from
 Claude's completed September24 enclosing-range verdict, not a new review or
 approval. The real root gate still fails `50a3a514`; topology/fixtures pass.
-The owning log records the exact pending designated range. Next safe engineering
-follow-up: RP-540's canonical correction citation boundary with isolated genuine
-new-correction histories, not more repetitions of the completed parser population.
+The owning log records the exact pending designated ranges. The citation follow-up
+is complete locally as above; continue genuine accepted work and policy closure,
+not more repetitions of these completed guard populations.
 
 Published [CI38381138075](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38381138075)
 at `4eaed0c9` is completed **failure**: browser/composed/schema/harness pass;
