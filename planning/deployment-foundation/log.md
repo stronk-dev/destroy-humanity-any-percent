@@ -5663,3 +5663,38 @@ Review by: Codex (implementer first filter). Recorded by: Codex. The entire new
 test/fixture/docs/plan/log range after `7d0aa087` through this containing commit
 needs Claude designated review, consolidatable with the preceding operations
 batches. No acceptance checkbox, archival, publication or deployment promotion.
+
+## 2026-10-13 — Actual cleanup startup faults expose volatile alert observation (RP-519)
+
+**Outcome / authority:** test the real composed credential cleanup under DP7/AC7,
+not a substituted failing callback. Each healthy/session/bootstrap arm owns a
+generated, current-schema Postgres database and uses real account bootstrap and
+startup prime. SQL trigger faults propagate their exact error, refuse readiness,
+and report failure once; removing each trigger permits startup and clears the
+expired credentials. Session pruning is atomic; the bootstrap failure happens
+after session pruning commits, which the test checks explicitly.
+
+**Regression / evidence:** the old registry reports failure1 but a fresh registry
+reports0. Command source opens HTTP only after prime succeeds. Thus the counter-only
+rule cannot observe startup failure; runtime scrape-versus-exit timing is still
+unexecuted, not silently promoted. A temporary compiler overlay changing only the
+composed job label to `guild_sweep` fails the named SQL oracle in0.73s. Production
+source stayed byte-unchanged and the task-owned overlay was removed.
+
+**Coverage:** focused declared Linux-amd64/Postgres run passes all three cases
+in2.51s. Final `make test-go-ci CI_TEST_PACKAGES='./gameserver ./operations
+./cmd/gameserver' CI_TEST_FLAGS='-v'`55367 exits0; the new population executes
+in2.27s, operations4.825s, command0.076s. Optional native-service/private-profile
+skips are explicit. `make test-go vet GO_PACKAGES='./gameserver ./operations
+./cmd/gameserver' GO_TEST_FLAGS='-count=1'`9249 passes the native packages and vet;
+native DB skips are not SQL proof. Post-run SQL census confirms no generated cleanup
+databases remain. Corrected docs/test commentary distinguish the previous callback
+fixture from actual composed cleanup. No production/migration/rule/CI bytes changed.
+
+**Handoff:** RP-519 remains OPEN. Preserve fail-closed startup and job shutdown;
+failure delivery must survive loss of the gameserver endpoint/process. This is
+accepted engineering work, not a new owner decision. Actual command-process,
+journal/Prometheus/receiver and exact release-host proof remain open. Review by:
+Codex (implementer first filter). Recorded by: Codex. Entire range after `f0009bfc`
+through this containing commit needs Claude designated review, consolidatable with
+preceding DP7 work. No feature acceptance, archival, publication or deployment.

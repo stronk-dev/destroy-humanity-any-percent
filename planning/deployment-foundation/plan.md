@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP7 repair, 2026-10-13 (RP-519):** real composed session-delete and
+bootstrap-tombstone failures abort startup before the command opens its listener.
+The failure counter increments but resets in a fresh registry. The retained SQL
+test proves readiness refusal, actual transaction boundaries and recovery after
+removing each fault; cold Linux/Postgres and affected native/vet checks pass.
+Preserve fail-closed behavior and build failure delivery independent of the
+gameserver endpoint. The earlier callback fixture is rule wiring only. The new
+range after `f0009bfc` needs designated review; no AC7 completion claimed.
+
 **Latest DP7 acceptance construction, 2026-10-13:** real transport dead-letter
 growth now reaches the private fixture's configured receiver. Current SQL event
 trigger → real Node encoder refusal → five relay retries → actual collector →

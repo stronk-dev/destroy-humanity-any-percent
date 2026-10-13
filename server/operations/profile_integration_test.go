@@ -133,7 +133,7 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 		}
 	}
 
-	// A real composed cleanup failure must reach a firing rule through the
+	// A controlled failing callback must reach a firing rule through the
 	// shipped scrape config: the zero series is scraped first, then one failure.
 	failureQuery := `cloud_clicker_job_runs_total{job_name="credential_cleanup",result="failure"}`
 	if !waitForQueryValue(ctx, client, failureQuery, "0") {
