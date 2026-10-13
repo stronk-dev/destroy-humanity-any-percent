@@ -1,8 +1,9 @@
 import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 
 import axisArm from "../../testdata/axis-stack/game-ui-arm-v1.json";
+import { applicationCopyCatalog, t } from "../src/copy";
 import type { GameUIAxisStackArm, GameUISnapshot } from "../src/api/generated/types";
 import { parseGameUISnapshot } from "../src/game-ui/contracts";
 import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
@@ -97,6 +98,94 @@ function withAxis(arm: GameUIAxisStackArm | null): GameUISnapshot {
     { cost_amount: "5e7", cost_resource_id: "company.cash", eligible: false, owned: arm.interns[1].owned, upgrade_id: "upgrade.pr_intern_2" }];
   const facts = [...v4.facts, { fact_id: "feature.axis_stack", value: arm !== null }].sort((a, b) => a.fact_id < b.fact_id ? -1 : 1);
   return parseGameUISnapshot({ ...v4, facts, features, upgrades, run: { ...v4.run, tier: 1 } }) as GameUISnapshot;
+}
+
+// The schema admits mechanical copy IDs; unavailable presentation must be
+// contained by the read-only region, not turn a legal snapshot into a Desk
+// render crash. These are wire fixtures, not actual minted producer states.
+for (const saturated of [false, true]) for (const unavailable of ["missing", "parameterized"] as const) {
+  for (const delivery of ["first-open", "mounted-refresh"] as const) {
+    it.skipIf(!browser)(`contains unavailable axis cap presentation ${unavailable}/${saturated ? "saturated" : "below-cap"}/${delivery}`, async ({ onTestFinished }) => {
+      const { page, userEvent } = await import("vitest/browser");
+      await page.viewport(320, 720);
+      const healthyArm = structuredClone(axisArm) as GameUIAxisStackArm;
+      if (saturated) {
+        healthyArm.input_value = 60; healthyArm.saturated = true; healthyArm.product = "2.1e0";
+        healthyArm.contributions[0].factor = "2.1e0";
+        healthyArm.interns[0].factor = "2.1e0"; healthyArm.interns[1].factor = "1.88e0";
+      }
+      const missingKey = unavailable === "missing" ? "cap.axis_stack_unregistered" : "axis_stack.input_frame";
+      if (unavailable === "missing") expect(applicationCopyCatalog.byKey.has(missingKey)).toBe(false);
+      else expect(applicationCopyCatalog.byKey.get(missingKey)?.params.length).toBeGreaterThan(0);
+      const healthy = parseGameUISnapshot(withAxis(healthyArm));
+      const broken = parseGameUISnapshot(withAxis({ ...healthyArm, cap_reason_key: missingKey }));
+      const renderErrors: string[] = [];
+      const observeError = (event: ErrorEvent) => { renderErrors.push(event.message); event.preventDefault(); };
+      window.addEventListener("error", observeError);
+      const diagnostic = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runtime = new Runtime(); runtime.current = delivery === "first-open" ? broken : healthy;
+      const target = document.createElement("div"); document.body.append(target);
+      const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+      let disposed = false;
+      const dispose = async () => {
+        if (disposed) return;
+        disposed = true;
+        try { await unmount(app as never); }
+        finally {
+          target.remove(); diagnostic.mockRestore(); window.removeEventListener("error", observeError);
+          await page.viewport(1280, 720);
+        }
+      };
+      onTestFinished(dispose);
+      const settleObserved = async () => { try { await settle(); } catch (error) { renderErrors.push(String(error)); } };
+      const bind = async (snapshot: ParsedGameUISnapshot) => {
+        try { app.fixtureSnapshot(snapshot); } catch (error) { renderErrors.push(String(error)); }
+        await settleObserved();
+      };
+      const assertHealthy = () => {
+        const panel = target.querySelector<HTMLElement>("section.axis")!;
+        expect(panel).not.toBeNull(); expect(panel.querySelector('[role="alert"]')).toBeNull();
+        expect(panel.querySelector("output")?.textContent).toBe(saturated ? "2.1" : "1.2");
+        expect(panel.querySelector("summary")).not.toBeNull();
+        if (saturated) expect(panel.textContent).toContain(t("cap.axis_stack_input", {}, "era_2000"));
+      };
+      const assertContained = (episodes: number) => {
+        expect(renderErrors, "decoder-admitted arm must not throw a render error").toEqual([]);
+        const panel = target.querySelector<HTMLElement>("section.axis")!;
+        expect(panel).not.toBeNull();
+        expect(panel.querySelectorAll("h2")).toHaveLength(1);
+        expect(panel.querySelector("h2")?.textContent).toBe(t("axis_stack.panel.title", {}, "era_2000"));
+        expect(panel.querySelectorAll('[role="alert"]')).toHaveLength(1);
+        expect(panel.querySelector('[role="alert"]')?.textContent).toBe(t("common.surface_error", {}, "era_2000"));
+        expect(panel.querySelectorAll("output, summary, details, progress, button, input")).toHaveLength(0);
+        expect(target.textContent).not.toContain(missingKey);
+        expect(diagnostic.mock.calls).toEqual(Array.from({ length: episodes }, () => ["game UI invariant: axis stack presentation unavailable"]));
+        expect(runtime.requests).toEqual([]);
+        expect(button(target, t("manual.click.title", {}, "era_2000")).disabled).toBe(false);
+        expect(target.querySelectorAll('section[aria-labelledby="upgrades-heading"] article')).toHaveLength(3);
+        expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth + 1);
+      };
+      try {
+        await settleObserved();
+        if (delivery === "mounted-refresh") {
+          assertHealthy(); expect(diagnostic).not.toHaveBeenCalled();
+          await bind({ ...broken, revision: 2 });
+        }
+        assertContained(1);
+        await bind({ ...structuredClone(broken), revision: 3 });
+        app.fixtureMonotonicElapsed(3000); await settleObserved(); assertContained(1);
+        await bind({ ...healthy, revision: 4 }); assertHealthy();
+        await bind({ ...broken, revision: 5 }); assertContained(2);
+        await assertAxe(target, "contained axis presentation error");
+        await userEvent.click(button(target, t("surface.settings.title", {}, "era_2000"))); await settleObserved();
+        expect(target.querySelector("main")?.dataset.surface).toBe("settings");
+        await bind({ ...healthy, revision: 6 });
+        await userEvent.click(button(target, t("surface.desk.title", {}, "era_2000"))); await settleObserved();
+        expect(target.querySelector("main")?.dataset.surface).toBe("desk"); assertHealthy();
+        expect(renderErrors).toEqual([]); expect(runtime.requests).toEqual([]);
+      } finally { await dispose(); }
+    });
+  }
 }
 
 for (const tier of [0, 1, 2]) for (const width of [320, 1280]) {

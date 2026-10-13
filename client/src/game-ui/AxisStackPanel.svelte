@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { GameUIAxisStackArm } from "../api/generated/types";
-  import { t, type CopyEra, type CopyKey } from "../copy";
+  import { applicationCopyCatalog, t, type CopyEra, type CopyKey } from "../copy";
   import { formatAxisFactor } from "./axis-factor-format";
 
   // Clout v1 CV9: the one axis-stack readout (product, formula, visible cap)
@@ -8,10 +8,26 @@
   // to its purchase control; this panel owns only the shared stack readout.
   // Every number is server-derived; nothing is computed here.
   let { arm, era }: { arm: GameUIAxisStackArm; era: CopyEra } = $props();
+
+  // Cap reasons are resolved without parameters. Reject an unavailable or
+  // incompatible row before rendering, without changing snapshot data.
+  const presentationUnavailable = $derived(applicationCopyCatalog.byKey.get(arm.cap_reason_key)?.params.length !== 0);
+  let presentationErrorReported = false;
+  $effect(() => {
+    if (!presentationUnavailable) { presentationErrorReported = false; return; }
+    if (!presentationErrorReported) {
+      console.error("game UI invariant: axis stack presentation unavailable");
+      presentationErrorReported = true;
+    }
+  });
 </script>
 
 <section class="axis card" aria-labelledby="axis-heading">
   <h2 id="axis-heading">{t("axis_stack.panel.title", {}, era)}</h2>
+  {#if presentationUnavailable}
+    <!-- Purchase-card descriptions retain their shared explanation target. -->
+    <p id="axis-why" role="alert">{t("common.surface_error", {}, era)}</p>
+  {:else}
   <details class="axis-help">
     <summary tabindex="0" aria-label={t("axis_stack.help.label", {}, era)}>{t("axis_stack.help.symbol", {}, era)}</summary>
     <p class="codex">{t("codex.axis_stack", {}, era)}</p>
@@ -24,6 +40,7 @@
        below 1000 to integers, which would conceal the effect of a PR Intern.
        Display the supplied factor without computing or rounding its value. -->
   <p>{t("axis_stack.product_label", {}, era)} <output>{formatAxisFactor(arm.product)}</output></p>
+  {/if}
 </section>
 
 <style>

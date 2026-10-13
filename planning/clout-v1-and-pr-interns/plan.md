@@ -6,6 +6,15 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+2026-10-13 RP-536 checkpoint: the shared axis readout now contains missing or
+parameter-incompatible cap-copy rows instead of crashing the Desk or silently
+ignoring unavailable presentation. Old-behavior regressions fail; startup,
+refresh, recovery, once-per-episode reporting and unaffected Desk/navigation
+checks pass. The owning log holds the commands and exact pending review range.
+This is a CV9/GS0.5 conformance fix, not full Clout acceptance or a numeric repair.
+Continue accepted work and remaining original reviews; do not repeat P5 or the
+completed temporal accounting population while its specification is unresolved.
+
 2026-10-13 review checkpoint: original P5 `2f2c5a04^..2f2c5a04`, all30 changed
 paths, now has designated Codex CHANGES REQUIRED for RP-303/387/426/509. Its later
 Codex corrections and real-service supplements retain separate review debt;

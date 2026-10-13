@@ -2946,3 +2946,42 @@ negative verdict approves none of them. Projected-factor/contextual-hint meaning
 content adoption/mint, full acceptance, arithmetic and the complete nine-tier
 goal remain open. Continue remaining original reviews and accepted construction;
 do not rerun this completed original P5 review or silently close corrective debt.
+
+## 2026-10-13 — RP-536 contained Clout presentation failure
+
+Outcome under accepted CV9/GS0.5: a missing or parameter-incompatible cap-reason
+copy row must produce the existing region-level error, not crash Desk or render
+as if required presentation exists. Preflight the row's zero-parameter signature;
+retain the heading and `axis-why` description target, hide the unavailable readout/
+Help, report one fixed invariant per mounted error episode and recover on healthy
+data. Other Desk controls and navigation remain usable. No copy, factors, caps,
+decoder admission, server requests, schema, kernel or CI semantics change.
+
+Old source `30050a93`: typed-clean initial59103 fails8 missing-key executions;
+extended76058 fails all16 missing/parameterized × below-cap/saturated × first-open/
+mounted-refresh executions, including uncontained RangeError/TypeError. These are
+actual decoder-admitted wire fixtures, not proof of a valid minted producer state
+or a public exploit. Retain healthy controls, zero uncaught errors, exact alert/
+diagnostic, unchanged-tick deduplication, recovery/new-error episodes, native tab
+navigation, enabled Manual/three upgrade cards, no intents,320px reflow and axe.
+
+Executed root commands: `make test-browser-focused` with axis-stack and game-ui-
+screens files in Chromium/WebKit passes262 functional cases (10 performance cases
+excluded by the existing lane),17.28s. After adding the independent-controls
+assertions, final axis-stack file32192 passes all52 executions,5.01s. Node axis-
+stack-arm/axis-factor-format/game-ui-runtime35512 passes86. Final `make typecheck`
+1391 has zero errors/warnings; `make build-client`88137 and `make verify-client-
+boundary` pass. `make test-game-ui-performance`58035 runs alone and passes the
+existing5 render-budget cases,105 deselected,5.84s. First passing51917 overlapped
+other checks and is not counted as the isolated measurement. No bound is changed.
+Final diff checked; all named handles terminal. Large browser tool output is
+clipped; terminal results are retained, not a complete raw-trace claim.
+
+Coverage is mounted UI/runtime and the existing local performance population,
+not fresh Postgres/composed, Linux/Firefox, assistive technology, pinned manual
+profile, hosted/full CI, CV9/AC11 or release proof. RP-131/RP-307 and all earlier
+corrective reviews remain open. Review by: Codex (implementer first filter).
+Recorded by: Codex. Full range after `30050a93` through this containing commit
+needs designated Claude review, consolidatable with related CV9 repairs. Original
+P5's negative verdict does not approve this fix. Next: remaining original reviews
+and accepted construction; no archival, content mint, push or1.0 promotion.

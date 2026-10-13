@@ -112,6 +112,14 @@ The general Amount component's ruled integer/Standard notation remains unchanged
 RP-387's browser regression observes literal product/factor values at attainment
 8, 12 and 44; the previous panel displayed the fractional values as `1`.
 
+The shared panel preflights its required cap-reason copy row, including its
+zero-parameter signature. An unavailable/incompatible row renders the existing
+contained error alert instead of values or Help, with one fixed invariant per
+mounted error episode. A healthy snapshot restores the readout and resets that
+diagnostic. The shared description ID remains bound to the alert so purchase-card
+references do not dangle; other Desk regions and navigation remain operational.
+This does not change factors, caps, snapshot admission or gameplay requests.
+
 PR Intern progress and current factors render on the actual Desk upgrade cards,
 next to their price and Buy control, not as a second set of rows in the shared
 axis panel. Native progress bars reference the card's translated heading as their
