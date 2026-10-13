@@ -20,6 +20,12 @@ paths, now has designated Codex CHANGES REQUIRED for RP-303/387/426/509. Its lat
 Codex corrections and real-service supplements retain separate review debt;
 do not restart the original P5 review or treat this as full CV9/AC11 approval.
 
+Original P4 `4c089f00^..4c089f00`, both paths, is also CHANGES REQUIRED:
+RP-537's independently type-checked writer probes escape the unchanged AST
+inventory despite the ordinary test passing. Strengthen the mutation/codec
+boundary with retained negative cases; no current mint or mechanic change is
+inferred. The log owns the complete review, not full AC4 approval.
+
 2026-10-12 RP-509 checkpoint: bounded review of original Claude P5's decoder
 finds that counting contributions does not establish one contribution per owned
 upgrade. The local repair rejects repeated upgrade identities, retaining legal
@@ -248,7 +254,7 @@ episode/origin lifetime remain; the owning log records checks and the initial in
   migration corpus. ACs 3, 5, 6, 7, 8.
   RP-307: AC6's seeded timing/partition property and retroactive-factor failing case
   are absent from the original population; formula/helper parity is not that proof.
-- [x] P4 (`4c089f00`) — AC4 Gaia-law structural test (empty writer set under A; seeded writer fails).
+- [x] P4 (`4c089f00`) — structural test present, not full AC4 proof: direct seeded writers fail; two independent write forms escape (RP-537). Original full review CHANGES REQUIRED; strengthen the inventory/codec boundary before acceptance.
 - [x] P5 (`2f2c5a04`) — CV9 snapshot producer (optional v4 field) + Desk PR row progress: implementation presence, not full AC11/default composed journey acceptance. RP-303 locally corrects native progress associations; its Codex span independently needs Claude.
   Original all30-path review is CHANGES REQUIRED (2026-10-13); owning log names
   executed historical/current checks and excludes later corrective approval.

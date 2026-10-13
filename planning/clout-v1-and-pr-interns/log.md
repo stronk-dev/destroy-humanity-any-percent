@@ -2985,3 +2985,46 @@ Recorded by: Codex. Full range after `30050a93` through this containing commit
 needs designated Claude review, consolidatable with related CV9 repairs. Original
 P5's negative verdict does not approve this fix. Next: remaining original reviews
 and accepted construction; no archival, content mint, push or1.0 promotion.
+
+## 2026-10-13 — Full original P4 Gaia-law review
+
+Review by: Codex (designated independent reviewer of Claude). Recorded by: Codex.
+**CHANGES REQUIRED**, exact `4c089f00^..4c089f00`, both changed paths:
+`server/production/gaia_law_test.go` and this log's original P4 entry. Claude
+provenance is explicit in that entry and the commit's co-author trailer. Inspect
+the whole test/collector, its three direct seeded writes, two catalog checks and
+the original reported source/formula severing. The helper/test remains byte-
+identical today; historical execution is not claimed for current dependencies.
+
+RP-537: the AST visitor only matches a direct SelectorExpr on assignment/inc-dec
+and named literal keys. An independent temporary test type-checks three source
+fixtures through Go's actual parser and go/types before invoking that unchanged
+helper: `founder.CloutLifetime += 2` is found, but
+`(founder.CloutLifetime) += 2` and
+`p := &founder.CloutLifetime; *p += 2` each return an empty writer inventory.
+Cold root `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run
+TestGaiaWriterReviewProbe -v'`91754 exits2: two failed probes, one passing direct
+control. These are type-checked source fixtures, not executed production mints.
+Remove only that own temporary test after the terminal result; no runtime bytes
+are mutated and no failing acceptance check is disabled. Its exact bodies above
+retain the bounded reproduction against `cloutWriters`.
+
+Existing `TestGaiaLawNoCloutWriterUnderOptionA`28063 passes cold despite these
+escapes. The entire `save/state.go` exclusion is a separate source finding:
+the collector cannot enforce its claimed round-trip-only exception. No codec
+mutation is executed or credited. Current source search finds lifetime storage/
+round-trip/validation references, not a demonstrated live mint. The recursive
+import/source ownership and closed-union requirements are not established merely
+by finding no matching field writes or no Clout resource in two catalogs.
+
+After probe removal, cold26463 reruns the unchanged Gaia test successfully;
+`make vet GO_PACKAGES='./production'` passes. All handles are terminal and the
+diff contains only records, not tests or production changes. These green checks
+do not close the demonstrated oracle gap.
+
+The original formula-check anecdote is retained as Claude's executed evidence,
+not a fresh Codex AC10 review in this two-path range. This verdict approves none
+of the later Codex corrections/research. Next: repair the guard's mutation/codec
+boundary and retained discriminating negatives under accepted AC4, then review
+that corrective range; remaining original P1/P2/P3 and full feature gates remain.
+No product, numeric, reward, copy, version, CI, mint, archival or release change.
