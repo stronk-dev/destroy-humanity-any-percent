@@ -330,6 +330,15 @@ hash), so the release gate can reject only on meaning: a missing required artifa
 longer derives the manifest's closure, or an SBOM whose subject no longer names the image's config
 identity. A mutation caught only by a stale byte hash therefore no longer counts.
 
+`TestBundleMutationProbesReachActualReleaseGate` executes all nine registered mutation rows
+through `RunProbe` and the real bundle validator, including the wrong-epoch row. Each has an
+intact control plus missing-manifest and unbound-client baselines; a broken baseline must be a
+content/setup error, not a named rejection. The retained candidate's manifest/target bytes and
+both valid bundle identities survive successful probes, and temporary work is removed. These
+assembled fixtures contain synthetic executable, image and client bytes: they prove local
+probe/gate integration, not installed release behavior. Missing-image refusal and wrong-config-ID
+refusal have different tests; the former does not prove the latter.
+
 The seeded-source and seeded-image probes first scan corresponding clean fixtures and require
 the no-secrets gate to accept their empty findings. An always-rejecting gate is a setup error,
 not secret-detection evidence. The seeded-source probe then scans a tracked-file fixture;

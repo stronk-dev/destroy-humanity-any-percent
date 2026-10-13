@@ -6428,3 +6428,50 @@ docs/records range starts after `88868d34` through this containing commit; desig
 review pending, consolidatable with the earlier DP-F validator corrections. Original R12 remains
 CHANGES REQUIRED. All named processes are terminal; continue accepted construction and review,
 without treating owner holds or pending review as a global implementation stop.
+
+## 2026-10-13 — Complete original Claude R18 diff-review disposition
+
+Review by: Codex (designated original-Claude reviewer). Recorded by: Codex. Exact range
+`82a78b53^..82a78b53`, all five paths: probe dispatch, release-negative producers, unit tests,
+canonical docs and original log. **Decision: CHANGES REQUIRED**, retaining RP-141. Full-path
+inspection does not approve Codex's later witness supplements.
+
+The controller's forward-compatible control reaches the guard runtime before its migration
+negative; the backup/image producer accepts intact inputs first. Existing59258 cold TestR18
+population executes both real producers and their invalid-bundle/non-forward controls at current
+`5d70f673`; deploymentrelease has no matches in that selection, not a package-wide result.
+The original wrong-epoch unit uses an injected validator, supplemented below as RP-550. Earlier
+diagnostic bundles are still unavailable; no historical command replay or clean-host claim.
+
+The original log's image-ID-comparison severing claim cannot be inferred from the missing-image
+mechanism. At current source, isolated image-comparison omission65583 leaves both TestR18 probes
+green: the absent-image runner error still rejects. Independent48645 fails the existing actual
+Prepare wrong-ID oracle. This is different-property coverage, not a broken production comparison
+or permission to discard either test. No historical record is rewritten.
+
+## 2026-10-13 — RP-550 exercise all packaged mutations against the real release gate
+
+Under DP-F/AC1/AC8, extend the existing validated-bundle fixture and RunProbe population, not a
+new harness. All nine mutation rows execute against actual AssembleBundle/ValidateBundle inputs;
+each has an intact subject and missing-manifest/unbound-client baselines. Require named rejection
+only for the prepared subject, typed content error for bad baselines, preserved manifest/target
+bytes, both retained bundle validations and empty temporary work. No production or limit change.
+
+Initial97448 passes all27 cases. Compiler overlays in owned
+`/tmp/cloud-clicker-rehearsal-gates.oQjse6` remove only content identity or image-ID comparison
+from copied committed source, never edit production files.14720 leaves the old fake wrong-epoch
+case green;94251 fails the new actual epoch subject with outcome0/nil. The final typed-error
+assertion strengthens invalid-baseline checks without changing that oracle. Final55350 passes
+six cold affected packages and vet (rehearsal/release/backup/releasepackage/both CLIs); focused
+race76508 passes all27. Formatting/diff and unchanged production files checked. Native backup
+tests with unavailable Postgres are not DB evidence; no Docker/CI/clean-host run.
+
+These are actual local assembly/file/gate operations with synthetic ELF/image/client inputs,
+not executable release artifacts or logical dump restores. The existing R18 envelope is real age
+crypto but its dump and runtime/image runner remain synthetic. RP-140, admitted-work producer,
+fresh supported bundle-pair provenance and R-006/whole nine-tier1.0 remain open. No push/deploy,
+kernel mint, lifecycle promotion or owner choice inferred from the new passing checks.
+
+Review by: Codex (new test implementer first filter). Recorded by: Codex. Exact test/docs/records
+range starts after `5d70f673` through this containing commit; designated Claude review pending,
+consolidatable with the prior RP-141/R15 supplements. All execution handles are terminal.

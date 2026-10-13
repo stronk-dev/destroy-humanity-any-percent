@@ -86,6 +86,45 @@ func TestR18MigrationProbeRequiresForwardCompatibleControl(t *testing.T) {
 	}
 }
 
+func TestBundleMutationProbesReachActualReleaseGate(t *testing.T) {
+	for population, mutation := range bundleMutations {
+		for _, baseline := range []string{"intact", "missing_manifest", "tampered_client"} {
+			t.Run(population+"/"+baseline, func(t *testing.T) {
+				request := releaseProbeFixture(t, "0.1.0-preview.2", "0.1.0-preview.1")
+				request.Population = population
+				manifestPath := filepath.Join(request.CandidateBundle, releasepackage.ReleaseManifestPath)
+				targetPath := filepath.Join(request.CandidateBundle, filepath.FromSlash(mutation.path))
+				manifest, target := readProbeInput(t, manifestPath), readProbeInput(t, targetPath)
+				if baseline == "missing_manifest" {
+					if err := os.Remove(manifestPath); err != nil {
+						t.Fatal(err)
+					}
+				} else if baseline == "tampered_client" {
+					writeProbeInput(t, filepath.Join(request.CandidateBundle, "site", "index.html"), []byte("unbound client bytes\n"), 0o644)
+				}
+				outcome, err := RunProbe(request)
+				if baseline == "intact" {
+					if err != nil || outcome != ProbeRejected {
+						t.Fatalf("actual named mutation did not reject: outcome=%d err=%v", outcome, err)
+					}
+					if !bytes.Equal(manifest, readProbeInput(t, manifestPath)) || !bytes.Equal(target, readProbeInput(t, targetPath)) {
+						t.Fatal("probe changed the retained candidate")
+					}
+					if _, err := deploymentrelease.LoadBundle(request.CandidateBundle); err != nil {
+						t.Fatalf("retained candidate no longer validates: %v", err)
+					}
+				} else if !errors.Is(err, releasepackage.ErrInvalidContent) || outcome == ProbeRejected {
+					t.Fatalf("invalid baseline counted as named mutation evidence: outcome=%d err=%v", outcome, err)
+				}
+				assertProbeWorkEmpty(t, request.WorkDirectory)
+				if _, err := deploymentrelease.LoadBundle(request.PreviousBundle); err != nil {
+					t.Fatalf("probe damaged the previous release fixture: %v", err)
+				}
+			})
+		}
+	}
+}
+
 func TestPublicMetricsProbeRequiresIntactCandidateBeforeRouteMutation(t *testing.T) {
 	for _, kind := range []string{"intact", "tampered_client", "missing_manifest"} {
 		t.Run(kind, func(t *testing.T) {

@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP-F producer evidence, 2026-10-13 (RP-550):** all nine packaged-artifact mutations now
+execute against the actual assembled-bundle validator, with18 invalid-baseline controls. The
+content-identity omission fails the new epoch witness while the prior fake-validator test passes.
+Cold affected packages/vet and focused race pass. This test-only range after `5d70f673` needs
+Claude review; original R18's complete five-path disposition remains CHANGES REQUIRED (RP-141),
+not approval of Codex's later witnesses. Synthetic image/client/dump inputs and recorded runtime
+commands are not exact-artifact/clean-host R-006, or permission to execute external deployment.
+
 **Current DP-F chronology correction, 2026-10-13 (RP-549):** sequential command results must not
 overlap or run backwards, even inside one lifecycle step. The executor now refuses before the
 next producer launches; base/final validators reject rehashed overlapping results. Ten focused
