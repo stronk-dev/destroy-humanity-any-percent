@@ -197,7 +197,7 @@ func newCredentialCleanupDatabase(t *testing.T, ctx context.Context) *sql.DB {
 	return database
 }
 
-func newCredentialCleanupComposition(t *testing.T, ctx context.Context, database *sql.DB, clock *mutableClock, logs *bytes.Buffer) (*operations.Registry, *Composition) {
+func newCredentialCleanupComposition(t *testing.T, ctx context.Context, database *sql.DB, clock *mutableClock, logs io.Writer) (*operations.Registry, *Composition) {
 	t.Helper()
 	registry, err := operations.NewRegistryWithLogger(database, slog.New(slog.NewJSONHandler(logs, nil)))
 	if err != nil {

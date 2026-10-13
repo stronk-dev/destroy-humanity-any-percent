@@ -81,6 +81,7 @@ func NewRegistryWithLogger(database Database, logger *slog.Logger) (*Registry, e
 	for name := range jobNames {
 		result.jobRuns.WithLabelValues(name, "success")
 		result.jobRuns.WithLabelValues(name, "failure")
+		result.jobRuns.WithLabelValues(name, "canceled")
 	}
 	return result, nil
 }
@@ -117,7 +118,14 @@ var jobNames = map[string]struct{}{
 }
 
 func (registry *Registry) ObserveJob(name string, now time.Time, run func() error) error {
-	if registry == nil || run == nil || now.IsZero() {
+	return registry.ObserveJobContext(context.Background(), name, now, run)
+}
+
+// ObserveJobContext preserves the callback's error. Cancellation of the supplied
+// job context is an unfinished execution, not success or a failure alarm. Other
+// errors remain failures even when they coincide with context cancellation.
+func (registry *Registry) ObserveJobContext(ctx context.Context, name string, now time.Time, run func() error) error {
+	if registry == nil || ctx == nil || run == nil || now.IsZero() {
 		return ErrInvalid
 	}
 	if _, ok := jobNames[name]; !ok {
@@ -127,16 +135,44 @@ func (registry *Registry) ObserveJob(name string, now time.Time, run func() erro
 	result := "success"
 	if err != nil {
 		result = "failure"
+		if canceled := ctx.Err(); canceled != nil && onlyJobCancellation(err, canceled) {
+			result = "canceled"
+		}
 	}
 	registry.jobRuns.WithLabelValues(name, result).Inc()
 	if err == nil {
 		registry.jobLastSuccess.WithLabelValues(name).Set(float64(now.UTC().Unix()))
-	} else {
+	} else if result == "failure" {
 		// Synchronous, bounded fields only: no underlying error, credentials,
 		// player identifiers or payloads. Emit before fatal job handling returns.
 		registry.logger.Error("composed job failed", "event_class", "composed_job_failure", "job_name", name)
 	}
 	return err
+}
+
+// Inspect every cause, not just errors.Is: a joined cancellation and SQL failure
+// must still alarm. Unrecognized errors fail closed; messages are never matched.
+func onlyJobCancellation(err, canceled error) bool {
+	if err == canceled {
+		return true
+	}
+	switch cause := err.(type) {
+	case interface{ Unwrap() []error }:
+		children := cause.Unwrap()
+		if len(children) == 0 {
+			return false
+		}
+		for _, child := range children {
+			if !onlyJobCancellation(child, canceled) {
+				return false
+			}
+		}
+		return true
+	case interface{ Unwrap() error }:
+		return onlyJobCancellation(cause.Unwrap(), canceled)
+	default:
+		return false
+	}
 }
 
 var invariantKinds = map[string]struct{}{

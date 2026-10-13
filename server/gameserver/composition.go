@@ -461,7 +461,7 @@ func observeOperation(registry *operations.Registry, name string, clock func() t
 		return run
 	}
 	return func(ctx context.Context) error {
-		return registry.ObserveJob(name, clock(), func() error { return run(ctx) })
+		return registry.ObserveJobContext(ctx, name, clock(), func() error { return run(ctx) })
 	}
 }
 

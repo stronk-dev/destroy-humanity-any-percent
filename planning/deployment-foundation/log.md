@@ -5776,3 +5776,48 @@ or CI change. Review by: Codex (implementer first filter). Recorded by: Codex. E
 repair range after `a38bcb9c` through this containing commit needs Claude designated
 review; consolidate with the diagnosis after `f0009bfc` and earlier DP7 ranges. No
 feature acceptance, archival, push, deployment or full1.0 claim.
+
+## 2026-10-13 — RP-520: distinguish orderly job cancellation from cleanup failure
+
+**Outcome / authority:** DP5's normal drain and DP7's genuine failure alert must
+coexist. The composition now supplies the job-lifetime context to observation.
+An error caused solely by that context ending increments the closed `canceled`
+result, preserving the error and last success without a failure log. SQL/other
+errors still fail, including joined cancellation plus a real error. Existing
+context-free observers keep their failure semantics. No drain, cleanup, migration,
+timer, retry, threshold, kernel or CI-workflow change.
+
+**Regression / checks:** old source `5fcb5353` with the new observer-adapter test
+fails the false failure counter (39504). The actual one-minute Postgres timer lane
+(31179) passes runtime SQL failure but fails orderly drain in121.63s: the scheduled
+DELETE entered its real table-lock wait and returned `context.Canceled` after drain,
+yet failure count became1. Corrected33117 passes both arms in121.85s: runtime
+P0001→failure channel/readiness503/bounded log; fault removal→fresh successful
+cleanup; drain cancellation→canceled1/failure0/no alarm/unchanged credential rows.
+The spy forwards the real context/error; interval remains60s. Shutdown after a
+reported job error is tested as completion of shutdown, not replay of that error;
+the failure channel is its actual error authority.
+
+Focused44618 passes the adapter and ten observation cases, including wrapped/joined
+cancellation, deadline, real/joined SQL error, live-context cancellation, mismatched
+error, same-message impostor and completed success. An initial Make selector22741
+ran no tests because `$` was expanded; it is not evidence and was corrected before
+the recorded old-source failure. Full cold native33451 passes operations1.561s,
+gameserver0.371s, command0.305s, operations-command5.469s; native DB/service skips
+are not credited as integration. Vet passes. Full declared Linux-amd64/Postgres17528
+passes4.917s/105.575s/0.968s/5.595s respectively, including actual startup SQL and
+command witnesses. The manual timed case explicitly skips in that ordinary lane;
+its separately executed33117 is the timing evidence. Disposable cleanup DB census0.
+`git diff --check` passes.
+
+**Coverage / handoff:** fast regression stays in ordinary package/CI execution;
+new `make test-deployment-cleanup-runtime` is included in manual Deployment
+operations verification, not push CI. Existing private receiver/rules/journal
+fixtures are not rerun or newly credited here; this verifies observation and real
+server/SQL lifetime, not OCI exit, host journald, release-host timing/retention,
+rebuilt exact release pair/R-006, hosted CI or full AC7. Review by: Codex
+(implementer first filter). Recorded by: Codex. Entire range after `5fcb5353`
+through this containing commit needs Claude designated review; consolidate with
+preceding DP7 ranges. No feature acceptance, archive, push or1.0 claim. Continue
+remaining accepted deployment evidence and construction; owner-policy questions
+do not block that work.

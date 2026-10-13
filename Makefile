@@ -2,6 +2,7 @@
 .PHONY: test-deployment-release test-deployment-operations test-deployment-rehearsal deployment-rehearsal-probe deployment-rehearsal-observe-host deployment-rehearsal-install-candidate deployment-rehearsal-run-browser deployment-rehearsal-recover-empty deployment-rehearsal-recover-populated deployment-rehearsal-lifecycle-release deployment-rehearsal-lifecycle-rollback deployment-rehearsal-supply-chain deployment-rehearsal-forge-proof build-deployment-rehearsal build-deployment-browser-linux-amd64 build-deployment-operations-linux-amd64 build-deployment-rehearsal-linux-amd64 generate-image-sbom
 .PHONY: reputation-activation-corpus reputation-input-shape-corpus reputation-offer-corpus reputation-boundary-corpus
 .PHONY: test-operations-alertmanager-native test-operations-native test-browser-focused test-deployment-operations-profile
+.PHONY: test-deployment-cleanup-runtime
 .PHONY: verify-combat-go-boundary
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
@@ -127,7 +128,13 @@ test-deployment-release:
 test-deployment-operations:
 	docker run --rm --platform linux/amd64 --entrypoint promtool -v "$(CURDIR)/deployment/operations:/work:ro" "$(PROMETHEUS_RULE_IMAGE)" test rules /work/cloud-clicker-alerts.test.yml
 	$(MAKE) test-go GO_PACKAGES='./operations ./cmd/deployment-operations ./cmd/deployment-backup ./cmd/deployment-release ./gameserver ./transport ./production ./save ./releasepackage ./deploymentbackup ./deploymentrelease' GO_TEST_FLAGS='-count=1'
+	$(MAKE) test-deployment-cleanup-runtime
 	$(MAKE) test-deployment-operations-profile
+
+# Real one-minute job timing belongs to manual Deployment acceptance, not push
+# CI. Reuse the declared Linux-amd64/Postgres service; no shortened job interval.
+test-deployment-cleanup-runtime:
+	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm -e CLOUD_CLICKER_CLEANUP_RUNTIME_TEST=1 test go test -p 1 -run '^TestComposedCredentialCleanupRuntimeAndDrainIntegration$$' -v ./gameserver -count=1
 
 # Focus the existing real-service fixture without skipping or changing the
 # aggregate above. This is not the full operations or clean-host release gate.

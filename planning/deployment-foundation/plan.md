@@ -7,6 +7,18 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current bounded DP5/DP7 correction, 2026-10-13 (RP-520):** the real one-minute
+cleanup timer exposed a false failure event when normal drain cancels its waiting
+SQL. Observation now retains the original error and records canceled execution
+without advancing success or emitting an alarm. Real SQL errors still withdraw
+readiness and emit failure; a joined SQL/cancellation error is not suppressed.
+The old real-Postgres drain arm fails; the corrected two-arm timed lane passes
+121.85s, including runtime-error recovery. Cold affected native/vet and declared
+Linux-amd64/Postgres packages pass. This timed lane is manual, outside push CI;
+the fast adapter regression remains in ordinary tests. The log owns evidence and
+the range after `5fcb5353`, pending designated review. Continue remaining actual
+release-host observation/retention and AC7/R-006 construction; no new owner policy.
+
 **Current bounded DP7 correction, 2026-10-13 (RP-519):** fail-closed cleanup remains
 unchanged, but the command now emits a bounded failure event before returning the
 job error. The existing host observer consumes the retained journal and persists

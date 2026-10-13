@@ -1,9 +1,12 @@
 package operations
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -11,6 +14,91 @@ import (
 	"testing"
 	"time"
 )
+
+func TestJobObservationSeparatesCancellationWithoutHidingFailures(t *testing.T) {
+	now := time.Unix(1_700_000_000, 0)
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	deadline, stop := context.WithDeadline(context.Background(), time.Unix(1, 0))
+	defer stop()
+	failure := errors.New("private SQL failure")
+	for _, subject := range []struct {
+		name   string
+		ctx    context.Context
+		err    error
+		result string
+	}{
+		{"cancel", ctx, context.Canceled, "canceled"},
+		{"wrapped_cancel", ctx, fmt.Errorf("query: %w", context.Canceled), "canceled"},
+		{"joined_cancellations", ctx, errors.Join(context.Canceled, fmt.Errorf("rollback: %w", context.Canceled)), "canceled"},
+		{"deadline", deadline, fmt.Errorf("query: %w", context.DeadlineExceeded), "canceled"},
+		{"sql_during_drain", ctx, failure, "failure"},
+		{"joined_sql_during_drain", ctx, errors.Join(context.Canceled, failure), "failure"},
+		{"cancel_without_context_end", context.Background(), context.Canceled, "failure"},
+		{"different_context_error", ctx, context.DeadlineExceeded, "failure"},
+		{"matching_message_is_not_cancellation", ctx, errors.New("context canceled"), "failure"},
+		{"completed_despite_cancel", ctx, nil, "success"},
+	} {
+		t.Run(subject.name, func(t *testing.T) {
+			var logs bytes.Buffer
+			registry, err := NewRegistryWithLogger(fakeDatabase{ping: errors.New("offline")}, slog.New(slog.NewJSONHandler(&logs, nil)))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := registry.ObserveJob("credential_cleanup", now, func() error { return nil }); err != nil {
+				t.Fatal(err)
+			}
+			calls := 0
+			returned := registry.ObserveJobContext(subject.ctx, "credential_cleanup", now.Add(time.Hour), func() error {
+				calls++
+				return subject.err
+			})
+			if calls != 1 || returned != subject.err {
+				t.Fatal("observer changed execution or error identity")
+			}
+			text := gatheredText(t, registry)
+			for _, result := range []string{"success", "failure", "canceled"} {
+				want := 0
+				if result == "success" {
+					want++ // Completed prime before the subject execution.
+				}
+				if result == subject.result {
+					want++
+				}
+				metric := fmt.Sprintf(`cloud_clicker_job_runs_total{job_name="credential_cleanup",result=%q} %d`, result, want)
+				if !strings.Contains(text, metric+"\n") {
+					t.Fatalf("result changed: missing %s", metric)
+				}
+			}
+			last := now
+			if subject.result == "success" {
+				last = now.Add(time.Hour)
+			}
+			if !strings.Contains(text, `cloud_clicker_job_last_success_timestamp_seconds{job_name="credential_cleanup"} `+fmtFloat(float64(last.Unix()))+"\n") {
+				t.Fatal("unfinished execution advanced last success")
+			}
+			logged := strings.Count(logs.String(), `"event_class":"composed_job_failure"`)
+			wantLogs := 0
+			if subject.result == "failure" {
+				wantLogs = 1
+			}
+			if logged != wantLogs || strings.Contains(logs.String(), "private SQL failure") {
+				t.Fatal("failure alarm missing, spurious or contains raw error")
+			}
+		})
+	}
+}
+
+func TestJobObservationRejectsInvalidContextBeforeExecution(t *testing.T) {
+	registry, err := NewRegistry(fakeDatabase{ping: errors.New("offline")})
+	if err != nil {
+		t.Fatal(err)
+	}
+	called := false
+	if err := registry.ObserveJobContext(nil, "credential_cleanup", time.Now(), func() error { called = true; return nil }); !errors.Is(err, ErrInvalid) || called {
+		t.Fatal("invalid context executed callback")
+	}
+}
 
 type fakeDatabase struct {
 	ping error

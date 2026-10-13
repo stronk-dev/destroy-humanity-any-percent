@@ -785,8 +785,15 @@ classes. Metric labels and ordinary structured logs exclude credentials, recover
 payloads and account/founder/stream/intent identifiers. No application label is named `job` or
 `instance`: Prometheus owns those target labels and would rename a colliding application label to
 `exported_*`, silently detaching it from rules. Background jobs therefore use `job_name`, and every
-closed-set job's success and failure series is created at zero at startup so the first failure is
-an observable `increase()`. Backup, restore and release helpers write
+closed-set job's success, failure and canceled series is created at zero at startup so the first
+failure is an observable `increase()`. The composition passes the actual job-lifetime context
+to observation. An error caused solely by that context ending records `result="canceled"`,
+preserves the callback's error and last successful timestamp, and emits no failure event.
+An unrelated error, including a SQL error joined with cancellation, still records failure and
+emits the bounded event. A cancellation error while the supplied context is still live is not
+suppressed.
+This changes observation only; fatal-job supervision and bounded drain remain unchanged.
+Backup, restore and release helpers write
 atomic node-exporter textfiles; a later failure does not erase the last successful timestamp.
 Each helper also atomically replaces its bounded `<operation>-result.prom` file, exposing
 `cloud_clicker_<operation>_last_result` as `1` for the most recently recorded success and `0`
@@ -849,6 +856,16 @@ the command's real development-profile startup/logger wiring. Their journal enve
 they are not Docker-driver or release-process tests. The private receiver fixture likewise models
 the envelope and host timer, not an actual Linux journal. Exact release-host journal/command delivery,
 runtime rapid-exit timing, retention and the full AC7 population remain open.
+
+`make test-deployment-cleanup-runtime` exercises the actual one-minute composed job against
+disposable current-schema Postgres databases. It observes a real session-delete SQL failure,
+readiness withdrawal, bounded logging and a fresh composition's successful cleanup after the
+fault is removed. A separate arm holds the session table until the real scheduled DELETE is
+waiting, then drains the server: that canceled transaction leaves credentials unchanged and
+records cancellation without a failure alarm. The production timer and callback are retained;
+the wrapper forwards the context and records their returned outcome unchanged. This timed lane is included in manual Deployment
+operations verification, not push CI. It proves server/SQL lifecycle behavior, not OCI process
+exit, host journald collection or clean-host release acceptance.
 
 Use `make test-deployment-operations-profile` to run that existing isolated Compose fixture
 directly: real private scrapes, cleanup-rule firing, nonce delivery, rejecting receiver and
