@@ -668,7 +668,11 @@ evidence only during the exact-manifest R-006 rehearsal.
 `deployment-release` is the manifest-bound operator entry point. It is deliberately not an
 automatic deployment service: an operator invokes it with the exact install, current or candidate bundle,
 the separately mounted backup and operator-state directories, the canonical Caddy origin and the
-private alert-receiver health URL. Database sizing and identity checks run through one-off backup
+private alert-receiver health URL. Request construction for that configured health URL is
+checked before any runtime command; malformed URL syntax returns invalid configuration instead
+of a nil-request panic. Readiness observation likewise refuses an unconstructable endpoint rather
+than reporting drain success. These checks do not change receiver/origin policy or retry bounds.
+Database sizing and identity checks run through one-off backup
 helper containers on the private database network; Postgres remains unpublished to the host. The operator-state directory is
 mode-0700 storage outside either bundle and holds two mode-0600 append-only JSONL records:
 `release-ledger.jsonl` and `rotation-ledger.jsonl`. Records contain identifiers, timestamps,

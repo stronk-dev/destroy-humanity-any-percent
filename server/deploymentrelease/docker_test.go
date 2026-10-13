@@ -855,6 +855,15 @@ func TestReadinessDownRequiresTheGameserverDrainingAnswer(t *testing.T) {
 	if !wait() {
 		t.Fatal("gameserver draining 503 not observed")
 	}
+	lock.Lock()
+	status = http.StatusNoContent
+	markedDrain = false
+	lock.Unlock()
+	readyCtx, readyCancel := context.WithTimeout(context.Background(), 300*time.Millisecond)
+	defer readyCancel()
+	if !waitHTTPState(readyCtx, server.Client(), server.URL+"/readyz", true) {
+		t.Fatal("ordinary ready 204 not observed")
+	}
 	url := server.URL
 	server.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), 300*time.Millisecond)

@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP3/DP5 correction, 2026-10-13 (RP-546):** invalid receiver/readiness request syntax
+now refuses rather than panics; configured receiver construction is checked before runtime
+commands. Old-source eight failures, ordinary receiver/ready/drain/identity controls, affected
+cold packages/vet/race and Linux-amd64 helper build pass. Original R9's complete five-path
+disposition remains CHANGES REQUIRED; this correction after `39019517` needs Claude review.
+Next accepted R9 evidence work: call the real `DockerRuntime.DrainCurrent` through native HTTP/
+WebSocket and recording-command boundaries (RP-547), rather than only testing its derivation.
+Keep exact Caddy/Postgres/Linux and clean-host/R-006 gates separate; no policy or bounds changed.
+
 **Current DP1/AC8 correction, 2026-10-13 (RP-545):** every shipped npm copy's license/notice is
 validated before name/version deduplication, including CSS-derived copies. Matching attribution
 merges; conflicting/missing evidence refuses without partial inventory. Two-route old-source

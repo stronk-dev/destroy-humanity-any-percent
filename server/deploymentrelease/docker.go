@@ -58,6 +58,11 @@ func (runtime DockerRuntime) normalized() (DockerRuntime, error) {
 		runtime.DrainTimeout < time.Second || runtime.DrainTimeout > time.Minute {
 		return DockerRuntime{}, ErrInvalid
 	}
+	// Check construction before any Compose/image/database operation. A bad
+	// configured URL must not turn the later health probe into a nil request.
+	if _, err := http.NewRequest(http.MethodGet, runtime.ReceiverHealthURL, nil); err != nil {
+		return DockerRuntime{}, ErrInvalid
+	}
 	if info, err := os.Lstat(runtime.BackupTarget); err != nil || !info.IsDir() {
 		return DockerRuntime{}, ErrInvalid
 	}
@@ -137,7 +142,10 @@ func (runtime DockerRuntime) preflightCommon(ctx context.Context, bundle Bundle)
 	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "run", "--rm", "--no-deps", "--entrypoint=amtool", "alertmanager", "check-config", "/run/secrets/alertmanager-config")...); err != nil {
 		return 0, "", err
 	}
-	request, _ := http.NewRequestWithContext(ctx, http.MethodGet, runtime.ReceiverHealthURL, nil)
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, runtime.ReceiverHealthURL, nil)
+	if err != nil {
+		return 0, "", ErrInvalid
+	}
 	response, err := runtime.Client.Do(request)
 	if err != nil {
 		return 0, "", err

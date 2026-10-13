@@ -6231,3 +6231,56 @@ Review by: Codex (new repair implementer first filter). Recorded by: Codex. New 
 records range starts after `fa2bec58` through this containing commit; designated Claude review
 pending, consolidatable with prior R8 map/CSS corrections. No original/corrective acceptance,
 archival, publication or full nine-tier1.0 completion. All named handles are terminal.
+
+## 2026-10-13 — Complete original Claude R9 diff-review disposition
+
+Review by: Codex (designated reviewer of original Claude implementation). Recorded by: Codex.
+Range `8ff555f0^..8ff555f0`, all five paths: Docker runtime/tests, smoke observer, canonical
+docs and owning log. **Decision: CHANGES REQUIRED**, retaining RP-138; no descendant approval.
+
+Inspected the complete readiness poll, drain derivation and its production caller, staged
+identity comparisons, eight derivation negatives, HTTP controls and accompanying evidence
+claims. Its pure derivation/identity tests are useful, and the documentation honestly separates
+process-contract attestation from direct observations. An unmarked503 still cannot prove orderly
+drain in the original range (the earlier executed RP-138 finding). The unchecked request
+construction also survives at current baseline, reproduced below as RP-546, not historical-tree
+execution. Test call-site search finds no actual `DockerRuntime.DrainCurrent` invocation: only
+interface-fixture implementations, with the Caddy test separately testing server draining.
+RP-547 retains this outer-orchestration evidence gap; pure derivation cannot cover disconnected
+caller wiring. Current corrections, native checks and old Caddy evidence are not original-range
+approval or exact release-artifact/clean-host proof. No accepted ruling is edited.
+
+## 2026-10-13 — RP-546 fail malformed HTTP endpoints before observation/commands
+
+Under DP3/DP5, check the configured receiver's request construction in runtime normalization;
+handle contextual construction errors in preflight and readiness polling. Invalid input yields
+ErrInvalid or no readiness evidence, never a nil-request panic. Preserve all constructable URL,
+receiver/origin, timeout/poll, status/marker and error policies. No player/schema/kernel/CI change.
+
+Old-source51933 (`39019517`) fails all eight malformed URL cases: bad escape, IPv6 bracket,
+port and control character in each receiver/readiness path. The old receiver path reaches the
+unchecked request after its three preflight commands; the correction asserts zero runner calls.
+Corrected92711 executes all new negatives, the ordinary receiver preflight, staged identity,
+drain-evidence table, real-localhost marked/unmarked/proxy/vanished readiness and gameserver
+admission/committed-work/job/socket ordering controls. Its deploymentconfig selector executes
+zero tests, explicitly not a configuration-suite result.
+
+64306 passes all six affected cold packages/vet: deploymentrelease, deploymentconfig,
+deploymentrehearsal, both release/rehearsal CLI packages and gameserver. 56567 focused race
+passes the eight new negatives and readiness HTTP matrix. Supplemented the existing matrix
+with a genuine ready204 success; final38709 repeats the full cold six-package/vet population
+and passes with that control. Focused27166 also passes the supplemented HTTP matrix under
+the race detector. Linux-amd64 root helper build passes into ignored
+`.cache/bin/deployment-release-linux-amd64`; cross-compilation is not Linux runtime evidence.
+Formatting/diff checked. Old-behavior negatives discriminate without another source mutation.
+
+Boundary: live localhost HTTP for readiness; controlled receiver and command runner;
+gameserver unit doubles, not actual Compose/process exits, SQL or clean-host recovery. Native
+DB/declared-integration prerequisites do not execute here. Docker's last owned probe ended
+with no server reply; no repeated stalled command, daemon restart, cleanup, push or deployment.
+
+Review by: Codex (repair implementer first filter). Recorded by: Codex. New source/tests/docs/
+record range starts after `39019517` through this containing commit; designated Claude review
+pending, consolidatable with the preceding RP-138 correction. R9/full Deployment/full nine-tier1.0
+remain open. Next: build RP-547's actual outer-method protocol population, preserving R-006's
+real Linux/Caddy/Postgres/release-artifact requirements and outstanding cross-party review.

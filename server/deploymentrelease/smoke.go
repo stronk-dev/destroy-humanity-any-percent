@@ -206,7 +206,10 @@ func waitHTTPState(ctx context.Context, client *http.Client, endpoint string, re
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 	for {
-		request, _ := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
+		request, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
+		if err != nil {
+			return false
+		}
 		response, err := client.Do(request)
 		if err == nil {
 			_ = response.Body.Close()
