@@ -93,6 +93,9 @@ func ActivateRotation(path string, family KeyFamily, currentID, previousID, oper
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return err
 	}
+	if len(records) > 0 && now.UTC().Before(records[len(records)-1].OccurredAt) {
+		return ErrInvalid
+	}
 	latest := -1
 	for index := range records {
 		if records[index].Family != family {
@@ -127,6 +130,9 @@ func RemovePrevious(path string, family KeyFamily, currentID, previousID, operat
 	records, err := ReadRotationLedger(path)
 	if err != nil {
 		return err
+	}
+	if len(records) > 0 && now.UTC().Before(records[len(records)-1].OccurredAt) {
+		return ErrInvalid
 	}
 	var activation *RotationRecord
 	for index := len(records) - 1; index >= 0; index-- {

@@ -6603,3 +6603,50 @@ review remains pending and may consolidate with the prior RP-134/lifecycle corre
 R2 is fully dispositioned, not approved. Actual failed-install Docker cleanup, clean-host R-006,
 author decisions, full range review and nine-tier1.0 remain open. All handles terminal; no push,
 deployment or operator cleanup performed. Continue accepted construction and remaining reviews.
+
+## 2026-10-13 — Complete original Claude R1 disposition
+
+Review by: Codex. Recorded by: Codex. Exact original range `1978660^..1978660`, all six changed
+paths: Deployment docs, controller/interface/tests, Docker runtime/test and failure-stage ledger.
+Decision: **CHANGES REQUIRED (RP-133)**, completing rather than replacing the earlier targeted
+review. The image-load-before-in-image-preflight sequence, rollback input ordering and failure
+stage records are coherent; tests require preflight/input failures to precede stop/reset. But the
+original host preflight's length/checksum/file-permission checks do not establish decryption, as
+the earlier executed wrong-but-valid identity regression proved. Its docs/interface overstate
+that assurance. Current code uses the later Codex authenticated extraction correction;79587 cold
+focused check passes its retained wrong-key/package/hash/refusal cases. That is current first-filter
+evidence, not designated approval of Codex's changes or a real logical Postgres restore/RTO.
+The exact RP-133 and later package/preflight corrective ranges remain owed to Claude; no archival.
+
+## 2026-10-13 — RP-555 rotation commands cannot poison ledger chronology
+
+Accepted DP4's append-only governed ledger already rejects backwards chronology on read. Both
+mutation commands could nevertheless append a backdated row and return success. A legitimate
+clock rollback across key families then leaves all later readers/commands unable to use the file.
+Require `now` not precede the latest global row while the existing shared/ledger locks are held;
+reject before append. Equal timestamps, family-specific overlaps and continuous never-reused IDs
+stay unchanged. No history rewrite, new clock policy, cursor alias solution or gameplay attendance
+decision. This is writer/reader conformance, not another owner ruling.
+
+Old `3964194b` cold13329 fails six of18 actual file/command cases: earlier activation/removal
+for each JWT/bootstrap/cursor returns nil, changes bytes and makes ReadRotationLedger fail.
+The12 equal/later controls pass. Each earlier removal still exceeds its own governed minimum,
+so the finding is specifically global chronology. Corrected77250 passes all18 and confirms a
+refused command leaves identical/readable bytes and can be retried successfully at a later time.
+25688 passes the population under race.18960 cold four-package deploymentrelease/rehearsal/
+both-command tests pass; matching vet exits0. Linux-amd64 release-helper build succeeds at
+`/tmp/cloud-clicker-abort-install.g2Zh3G/deployment-release-chronology`. The initial output-less
+build invocation refused at its Make guard before compiling; supplied the required output path.
+Formatting/diff checked; ordinary old-behavior regressions discriminate without another mutation.
+
+CI routing inspected: `.github/workflows/ci.yml` runs `make verify-server-core`, whose
+`test-go-core` selects every Go package except harness with cold count1. This package/test is
+included without a workflow change; that source check is not an executed hosted/Linux CI verdict.
+
+Physical supported-command/ledger proof, not Docker/Postgres, deployed credential/cursor rotation,
+release-sized recovery or exact-artifact R-006. No real-service integration executed; existing
+environment limits, full nine-tier floor, owner/author holds and independent review remain open.
+Review by: Codex (repair implementer first filter). Recorded by: Codex. Exact new code/tests/docs/
+records range starts after `3964194b` through this containing commit; Claude designated review
+pending, consolidatable with prior rotation/lifecycle fixes. All handles terminal. No acceptance,
+archival, push, deployment or operator cleanup; continue safe accepted construction/reviews.

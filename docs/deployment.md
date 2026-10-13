@@ -715,6 +715,12 @@ lock. A concurrent rotation refuses before changing overlap state, so a rollback
 service under one Compose overlay and resume under another. These locks coordinate supported
 helper commands, not manual edits to operator-state files.
 
+Rotation mutations enforce the same chronological order as the ledger reader across all key
+families. A command timestamp earlier than the latest row refuses before appending, even when
+that family's minimum overlap has elapsed. Equal timestamps remain valid. The existing ledger
+stays readable and byte-unchanged after refusal, so the operator can retry at a valid time;
+the helper does not rewrite history or shorten any overlap to compensate for a clock rollback.
+
 Initial installation is a separate fail-closed operation, not a release with a fictional current
 version. It loads and verifies all six manifest-bound image/config identities without starting a
 service, then checks twice—around candidate configuration preflight—that the exact Compose project

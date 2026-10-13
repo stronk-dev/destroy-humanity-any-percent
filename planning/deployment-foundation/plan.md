@@ -7,7 +7,16 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Current failed-install correction, 2026-10-13 (RP-554):** `AbortInstall` now retains its
+**Current rotation chronology correction, 2026-10-13 (RP-555):** activation/removal refuse
+before appending a timestamp the existing reader would reject. Six old-source poisoned-ledger
+cases and12 equal/later controls establish the regression; all18 corrected cases preserve
+readability and valid retry, across all three key families. Cold four-package tests/vet,
+focused race and Linux-amd64 helper build pass. New range after `3964194b` needs Claude review;
+overlap minima, cursor contract holds and exact-host rotation proof remain unchanged. Original
+R1's full six-path CHANGES REQUIRED disposition is now recorded; its Codex descendants still
+need independent review. Continue accepted construction without relabelling native proof R-006.
+
+**Preceding failed-install correction, 2026-10-13 (RP-554):** `AbortInstall` now retains its
 normalized runtime rather than dropping the default command runner and rotation overlay.
 Three old-source failures and five controls precede the correction; all eight now pass,
 including actual ExecRunner subprocess failures through an owned recording executable.
