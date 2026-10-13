@@ -795,7 +795,9 @@ suppressed.
 This changes observation only; fatal-job supervision and bounded drain remain unchanged.
 Backup, restore and release helpers write
 atomic node-exporter textfiles; a later failure does not erase the last successful timestamp.
-Each helper also atomically replaces its bounded `<operation>-result.prom` file, exposing
+Host storage observation rejects nonfinite usage before publishing: `NaN` cannot replace a
+valid `host.prom` or refresh its modification time while making threshold comparisons false.
+Each backup, restore or release helper also atomically replaces its bounded `<operation>-result.prom` file, exposing
 `cloud_clicker_<operation>_last_result` as `1` for the most recently recorded success and `0`
 for failure. Publishing this outcome is part of `RecordOperation`: an invalid/unwritable
 outcome target returns an error, never a successful observation. The backup rule includes
@@ -835,7 +837,8 @@ fails the proof on recorded failures. Alertmanager metrics cannot attribute a de
 family or nonce, so the runtime seven-family delivery record is count-derived, not per-family proof.
 
 RP-519's repair preserves fail-closed cleanup startup and runtime policy. The command binds its
-operations registry to the existing structured logger. Before returning any composed job error,
+operations registry to the existing structured logger. Before returning a composed-job failure
+(not orderly context cancellation),
 the registry emits only the fixed `composed_job_failure` class and a closed-set job name, never
 the underlying error, credentials, player identifiers or payloads. The independent host observer
 streams the configured journal directory's retained 14-day gameserver-tag population. It rejects
@@ -879,6 +882,18 @@ test input to the real textfile producer, not actual Postgres backup executions.
 scheduler regression runs the real encrypted-target admission, blocks on a foreign entry and
 recovers after its removal with a synthetic dump. Neither proof replaces real dump/restore,
 all seven producer journeys or the exact release-host rehearsal.
+
+`make test-deployment-storage-profile` focuses a separate named population in that same private
+fixture. The default `test-deployment-operations-profile` runs both populations. Two distinct,
+empty 20 MiB tmpfs subjects bound the test's writes; no host filesystem is filled. The production
+host command and fixture share the same `FilesystemUsage` syscall producer. On each subject,
+actual writes bring use to exactly 80%, which must remain quiet through two rule evaluations,
+then 85%, which must reach the configured receiver through `RecordHost`→node-exporter→the shipped
+rule. Removing only the fixture's file must deliver resolution with the same alert start time
+and storage label. Filesystem thresholds and service intervals are unchanged. Restart count
+and journal budget/usage are controls in this population; it does not execute Docker inspection,
+the host-observer process, actual journald, retention or the clean-host release artifact. Both
+timed populations remain manual Deployment checks, outside push CI.
 
 The private fixture also owns a disposable Postgres16 service, with no published port,
 and migrates it using the current embedded migration chain. Its production registry now

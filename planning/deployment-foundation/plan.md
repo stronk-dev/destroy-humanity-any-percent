@@ -7,6 +7,19 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest DP7 storage construction, 2026-10-13 (RP-521):** two distinct20MiB
+filesystems feed the actual shared production usage reader/textfile writer.
+Exactly80% stays quiet;85% fires through node-exporter and reaches the receiver;
+freeing the owned file delivers matching resolution on each storage subject.
+The focused population passes286.35s. Final default profile selects both named
+populations and passes681.05s/644.86s respectively, each within its unchanged12m
+guard; longer combined storage setup is recorded without attributing its cause.
+Old NaN writer-input cases fail; all six corrected nonfinite cases preserve the
+last valid file/mtime. Cold native/vet and declared Linux-amd64/Postgres packages
+pass. The log owns the range after `82c8e57b`, pending designated review. Continue
+actual host-command/journal/restart/retention and exact release-artifact/R-006
+construction; no CI change, new owner policy or full AC7/1.0 completion.
+
 **Current bounded DP5/DP7 correction, 2026-10-13 (RP-520):** the real one-minute
 cleanup timer exposed a false failure event when normal drain cancels its waiting
 SQL. Observation now retains the original error and records canceled execution

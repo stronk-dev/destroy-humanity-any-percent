@@ -3,6 +3,7 @@
 .PHONY: reputation-activation-corpus reputation-input-shape-corpus reputation-offer-corpus reputation-boundary-corpus
 .PHONY: test-operations-alertmanager-native test-operations-native test-browser-focused test-deployment-operations-profile
 .PHONY: test-deployment-cleanup-runtime
+.PHONY: test-deployment-storage-profile
 .PHONY: verify-combat-go-boundary
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
@@ -143,6 +144,16 @@ test-deployment-operations-profile:
 	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
 	@status=0; \
 	docker compose --project-name cloud-clicker-operations-test -f compose.deployment-operations-test.yml run --rm --use-aliases operations-test || status=$$?; \
+	docker compose --project-name cloud-clicker-operations-test -f compose.deployment-operations-test.yml down --volumes; \
+	exit $$status
+
+# Focused real bounded-filesystem producer and private receiver path. Its test
+# name is distinct from the full profile; it cannot claim that larger population.
+test-deployment-storage-profile:
+	mkdir -p $(REPO_CACHE_DIR)/bin
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
+	@status=0; \
+	docker compose --project-name cloud-clicker-operations-test -f compose.deployment-operations-test.yml run --rm --use-aliases operations-test -test.run '^TestPrivateOperationsStorageIntegration$$' -test.v -test.count=1 || status=$$?; \
 	docker compose --project-name cloud-clicker-operations-test -f compose.deployment-operations-test.yml down --volumes; \
 	exit $$status
 

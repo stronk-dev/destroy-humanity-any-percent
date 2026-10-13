@@ -2,6 +2,7 @@ package operations
 
 import (
 	"errors"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,6 +12,45 @@ import (
 	"github.com/prometheus/common/expfmt"
 	"github.com/prometheus/common/model"
 )
+
+func TestRecordHostRejectsNonfiniteUsageWithoutRefreshingObservation(t *testing.T) {
+	for _, usage := range []float64{math.NaN(), math.Inf(1), math.Inf(-1)} {
+		for _, subject := range []string{"persistent", "backup"} {
+			t.Run(subject+"/"+fmtFloat(usage), func(t *testing.T) {
+				directory := t.TempDir()
+				if err := RecordHost(directory, 0.25, 0.5, 0, 0, 1000); err != nil {
+					t.Fatal(err)
+				}
+				path := filepath.Join(directory, "host.prom")
+				before, err := os.Stat(path)
+				if err != nil {
+					t.Fatal(err)
+				}
+				original, err := os.ReadFile(path)
+				if err != nil {
+					t.Fatal(err)
+				}
+				persistent, backup := 0.25, 0.5
+				if subject == "persistent" {
+					persistent = usage
+				} else {
+					backup = usage
+				}
+				if err := RecordHost(directory, persistent, backup, 1, 0, 1000); !errors.Is(err, ErrInvalid) {
+					t.Fatalf("nonfinite %s observation reported success: %v", subject, err)
+				}
+				after, err := os.Stat(path)
+				if err != nil {
+					t.Fatal(err)
+				}
+				data, err := os.ReadFile(path)
+				if err != nil || string(data) != string(original) || !after.ModTime().Equal(before.ModTime()) {
+					t.Fatal("invalid observation replaced or refreshed last valid metrics")
+				}
+			})
+		}
+	}
+}
 
 func TestRecordOperationPreservesSuccessAcrossLaterFailure(t *testing.T) {
 	directory := t.TempDir()

@@ -164,11 +164,11 @@ func runHostObserve(args []string) error {
 	if err != nil || parseErr != nil {
 		return errors.Join(operations.ErrInvalid, err, parseErr)
 	}
-	persistentUsage, err := filesystemUsage(*persistentPath)
+	persistentUsage, err := operations.FilesystemUsage(*persistentPath)
 	if err != nil {
 		return err
 	}
-	backupUsage, err := filesystemUsage(*backupPath)
+	backupUsage, err := operations.FilesystemUsage(*backupPath)
 	if err != nil {
 		return err
 	}
@@ -185,14 +185,6 @@ func runHostObserve(args []string) error {
 		return operations.ErrInvalid
 	}
 	return operations.RecordHost(*metricsDirectory, persistentUsage, backupUsage, restartCount, journalBytes, journalBudget)
-}
-
-func filesystemUsage(path string) (float64, error) {
-	var state syscall.Statfs_t
-	if syscall.Statfs(path, &state) != nil || state.Blocks == 0 || state.Bavail > state.Blocks {
-		return 0, operations.ErrInvalid
-	}
-	return float64(state.Blocks-state.Bavail) / float64(state.Blocks), nil
 }
 
 func directoryUsage(root string) (uint64, error) {

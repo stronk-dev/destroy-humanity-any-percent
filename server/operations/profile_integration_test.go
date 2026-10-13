@@ -21,6 +21,14 @@ import (
 )
 
 func TestPrivateOperationsProfileIntegration(t *testing.T) {
+	runPrivateOperationsProfile(t, false)
+}
+
+func TestPrivateOperationsStorageIntegration(t *testing.T) {
+	runPrivateOperationsProfile(t, true)
+}
+
+func runPrivateOperationsProfile(t *testing.T, storageOnly bool) {
 	if os.Getenv("CLOUD_CLICKER_OPERATIONS_INTEGRATION") != "1" {
 		t.Skip("requires isolated operations Compose profile")
 	}
@@ -167,6 +175,10 @@ func TestPrivateOperationsProfileIntegration(t *testing.T) {
 		case <-ctx.Done():
 			t.Fatal("Alertmanager accepted but did not deliver the synthetic alert")
 		}
+	}
+	if storageOnly {
+		runStoragePressureProfile(t, ctx, client, received)
+		return
 	}
 
 	// The ephemeral failed process is not the scrape target. Its actual bounded
@@ -432,9 +444,13 @@ func waitForOperationsNotification(t *testing.T, ctx context.Context, received <
 
 func requireNoDeadLetterGrowthAlert(t *testing.T, ctx context.Context, client *http.Client, duration time.Duration) {
 	t.Helper()
+	requireNoOperationsAlert(t, ctx, client, `ALERTS{alertname="CloudClickerDeadLetterGrowth",queue="transport"}`, duration)
+}
+
+func requireNoOperationsAlert(t *testing.T, ctx context.Context, client *http.Client, query string, duration time.Duration) {
+	t.Helper()
 	end := time.Now().Add(duration)
 	for time.Now().Before(end) {
-		query := `ALERTS{alertname="CloudClickerDeadLetterGrowth",queue="transport"}`
 		request, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://prometheus:9090/api/v1/query?query="+url.QueryEscape(query), nil)
 		if err != nil {
 			t.Fatal(err)
@@ -452,7 +468,7 @@ func requireNoDeadLetterGrowthAlert(t *testing.T, ctx context.Context, client *h
 		decodeErr := json.NewDecoder(response.Body).Decode(&payload)
 		_ = response.Body.Close()
 		if decodeErr != nil || response.StatusCode != http.StatusOK || payload.Status != "success" || len(payload.Data.Result) != 0 {
-			t.Fatalf("single-interval growth was not demonstrably quiet: HTTP=%d status=%q rows=%d error=%v", response.StatusCode, payload.Status, len(payload.Data.Result), decodeErr)
+			t.Fatalf("%s was not demonstrably quiet: HTTP=%d status=%q rows=%d error=%v", query, response.StatusCode, payload.Status, len(payload.Data.Result), decodeErr)
 		}
 		select {
 		case <-ctx.Done():

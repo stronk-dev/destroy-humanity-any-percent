@@ -3,6 +3,7 @@ package operations
 import (
 	"errors"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -48,7 +49,7 @@ func RecordOperation(directory, operation, result string, at time.Time) error {
 }
 
 func RecordHost(directory string, persistentUsage, backupUsage float64, restartCount, journalBytes, journalBudget uint64) error {
-	if !filepath.IsAbs(directory) || strings.ContainsAny(directory, "\r\n") || persistentUsage < 0 || persistentUsage > 1 || backupUsage < 0 || backupUsage > 1 || journalBudget < 1 {
+	if !filepath.IsAbs(directory) || strings.ContainsAny(directory, "\r\n") || math.IsNaN(persistentUsage) || math.IsNaN(backupUsage) || persistentUsage < 0 || persistentUsage > 1 || backupUsage < 0 || backupUsage > 1 || journalBudget < 1 {
 		return ErrInvalid
 	}
 	data := []byte(fmt.Sprintf(`# HELP cloud_clicker_filesystem_usage_ratio Used fraction of the bounded storage subject.

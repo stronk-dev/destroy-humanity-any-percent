@@ -5821,3 +5821,47 @@ through this containing commit needs Claude designated review; consolidate with
 preceding DP7 ranges. No feature acceptance, archive, push or1.0 claim. Continue
 remaining accepted deployment evidence and construction; owner-policy questions
 do not block that work.
+
+## 2026-10-13 — DP7 actual bounded-filesystem alert delivery; RP-521 input repair
+
+**Outcome / authority:** build DP7/AC7 storage producer→receiver evidence with
+actual allocation, not typed usage constants. The original host-observer syscall
+reader moves verbatim to `operations.FilesystemUsage`, shared by the command and
+private fixture. Distinct empty20MiB tmpfs subjects limit all writes. Each actual
+16MiB allocation produces exactly80% and stays quiet through two evaluations;
+17MiB produces85% and reaches the configured receiver. Removing only the owned
+file recovers0 and delivers resolution of the exact alert/start/storage label.
+No threshold, interval, retention, gameplay, migration, kernel or CI change.
+
+**Regression / checks:** while inspecting that writer, both old NaN-input cases
+fail7475 (0.09s test), while infinities already refuse. Explicit NaN rejection
+now preserves the previous valid `host.prom` bytes and mtime. This is an input
+validation defect, not a reproduced nonfinite filesystem syscall result.
+Native99220 passes operations1.595s/command5.464s and vet passes; cold declared
+Linux-amd64/Postgres80738 passes4.964s/5.555s. Final native26014 passes1.694s/
+5.476s and vet passes; final Linux-amd64/Postgres65070 passes4.874s/5.600s,
+including actual SQL collectors and command-journal negatives. All six nonfinite
+cases pass. Optional private/native-service skips there are not integration credit.
+
+Focused private storage24913 passes286.35s (subjects119.64s/119.99s). After a
+test-diagnostic adjustment directs errors to the current subtest, final default
+46290 passes both named populations: existing profile681.05s, storage644.86s
+(subjects119.86s/150.01s), exit0. Existing backup, query lock, connection refusal,
+dead-letter, cleanup, nonce, receiver-rejection and admin-isolation assertions
+remain and execute. The shared run's storage setup is substantially longer than
+the standalone run; setup sub-phases are not timestamped, so no cause, latency
+claim or budget adjustment is inferred. Each population's12m guard is unchanged.
+The private fixture uses cached pinned services and an amd64 Go binary; its Caddy
+platform warning is disclosed, not an all-amd64/clean-host claim. Make removes
+only its own services/network/textfile volume. `git diff --check` passes.
+
+**Coverage / handoff:** default manual profile runs both distinct test names;
+`make test-deployment-storage-profile` focuses only storage, never masquerading
+as the full population. Fast invalid-input/reader checks remain ordinary tests.
+Restart/journal fields are controls here; actual host-observer process, Docker
+inspection/journald, journal pressure/retention, remaining producer journeys,
+rebuilt exact release pair/R-006, hosted CI and prior review debt remain open.
+Review by: Codex (implementer first filter). Recorded by: Codex. Entire range
+after `82c8e57b` through this containing commit needs Claude designated review;
+consolidate with preceding DP7 work. No acceptance, archive, push, deployment
+or1.0 claim. Continue accepted operations/release construction.
