@@ -48,3 +48,29 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Full new range
 designated cross-party review. No feature checkbox, archival, mint, push, complete
 CI/release claim or narrowing of the nine-tier objective. Next: resolve the held
 integration contract; other accepted lanes may continue in parallel with that hold.
+
+## 2026-10-13 — Make the full Headcount integration choice explicit
+
+At `769b26a2`, reread the complete Headcount contract and Tier 2 H/P boundaries. RP-414 is
+not resolved by a hiring answer: the siblings also disagree on direct resource production
+versus target multipliers, accumulating versus display-only Decks, catalog/save/command/event
+ownership and harness masks/gates. The owning plan now pairs the two gameplay questions with
+those exact reconciliation sites. Questions are presented to Marco, not answered/adopted.
+Recommend the standalone engine's separate-hiring/direct-production pair; do not infer that
+recommendation from the earlier batch acceptance or edit the ruling author's bodies.
+
+Read-only source checks confirm current economy schema5/axis_stack, Company19/Clout attainment,
+Founder25 and replay12. Old v5/v19/v9 numbers cannot be reused. Keep RP-413 and all pacing,
+content, copy, full integration and review gates. No schema, mechanic, balance, version, test
+or feature status changes in this editorial clarification; no software suite was run for it.
+Links/sections/source claims and final diff are checked.
+
+Separately, the actual declared integration environment is still unavailable: owned read-only
+Docker probe29326 gives no daemon reply while live. `pgrep` identifies only its75273 client;
+explicit SIGINT ends that probe with130 and client metadata only. No daemon restart, cleanup,
+container mutation, secret access or SQL pass is inferred. Platform public solo/async fixture
+construction also retains its already-recorded closed-wire hold; no test-only bypass is created.
+
+Recorded by: Codex. Editorial decision preparation, not an owner ruling, normative amendment,
+designated approval or release call. Next: record actual gameplay answers and obtain the
+author's coherent body reconciliation before the complete Headcount integration chain.

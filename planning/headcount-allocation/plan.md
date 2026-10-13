@@ -20,6 +20,46 @@ workflow or full AC3/AC5 completion. Cross-party review remains required.
 
 ## Remaining construction
 
+### Current reconciliation boundary — 2026-10-13
+
+There are two player-facing choices, not merely a missing version number:
+
+- **Hiring:** a separate paid Hire action, or seats granted by purchased office generators.
+- **Output:** staff directly produce resources, or staff multiply existing generator/manual
+  output while Slide Decks remain a displayed allocation count rather than stored production.
+
+Both questions have been presented to Marco; neither delivery nor a preselected answer is a
+ruling. The recommended pair is separate hiring plus direct resource production, following
+the standalone engine's division of responsibility. This is a proposal, not authority to
+replace Tier 2's previously ruled role effects. A mixed choice needs its own explicit
+reconciliation; answering only hiring does not select the output economy.
+
+| Boundary | Headcount S0–S10 | Tier 2 H1–H5 | Required before integration |
+|---|---|---|---|
+| Seats | Purchased by `hire_headcount`; persisted per pool | Derived from purchased generator units; no hire action | Adopt the hiring model and reconcile both bodies |
+| Roles | `produce` / `convert` / `pool_feed`; resource rates | Per-effective-head multipliers on generators/clicks | Adopt the output model; define any selected extension explicitly |
+| Slide Decks | Converter resource output accumulates over time | Derived `slide_decks` count produces nothing | Fix its meaning in the chosen output model, not just its label |
+| Catalog | `headcount_pools` with price/cap/window/effect rows | `headcount` plus `headcount_seats` generator roles | One canonical engine-owned schema; Tier 2 consumes it |
+| Saved state | `headcount_seats` and `headcount_assigned` | `headcount_assignments` with derived budget | One activation/codec/migration contract, no duplicate state authorities |
+| Commands/events | `hire_headcount`, `reallocate_headcount`; hired/reallocated events | `set_headcount_allocation`; allocated event | One closed wire and replay union, with matching rejection/receipt rules |
+| Harness | Hiring relevance; role masks/reporting pending the allocation-aware persona | Generator-seat masks; allocation-aware P1/P5 gate | Reconcile the selected model without dropping either required measurement |
+
+The ruling author must reconcile the accepted bodies before implementation. Provisional
+prices/rates, copy adoption, measured pacing/relevance and the mint remain separate gates;
+choosing a model does not ratify data or loosen acceptance. RP-413's invalid overflow fixture
+and required-but-unproved mutant outcome also remain with the author.
+
+Version evidence at `769b26a2`: economy schema5 already owns Clout `axis_stack`; Company19
+already owns Clout attainment; Founder latest25 and replay-inputs latest12. The old v5/v19/v9
+Headcount literals are not available reservations. Recheck and assign next-free identities at
+the actual implementation boundary, with exact activation/history compatibility; do not
+reinterpret existing versions or edit applied migrations.
+
+After those bodies are reconciled and reviewed, build the complete selected chain: catalog →
+saved seats/assignments → logged commands → production/replay → authoritative projection →
+mounted allocation panel → real purchase/reallocation/Exit/reload proof. The existing S2
+library is only one prerequisite, not a substitute for that chain.
+
 - Resolve OD-1 with Tier 2's author/owner before seat-source-dependent work.
 - Reconcile the siblings' conflicting catalog/state/intent/output contracts
   (RP-414), not only the seat source. No integration branch is chosen here.

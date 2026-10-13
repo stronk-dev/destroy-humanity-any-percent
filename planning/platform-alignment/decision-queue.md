@@ -2,6 +2,18 @@
 
 Implementation agents may gather evidence and frame options; they may not infer these choices.
 
+## Current Headcount choice — OD-1 / RP-414
+
+The [Headcount plan](../headcount-allocation/plan.md#current-reconciliation-boundary--2026-10-13)
+now lays out both gameplay choices and the exact sibling boundary. Hiring can be a separate
+purchase or granted by office-generator purchases; staff can directly produce resources or
+boost existing output with display-only Slide Decks. The recommended pair is separate hiring
+and direct resource production, matching the standalone engine contract, **not adopted**.
+Questions presented2026-10-13 have no recorded answer. A seat answer alone cannot resolve
+the output/schema/state/command/harness contradictions or authorize integration. Marco/ruling
+author must reconcile both bodies; data measurement/adoption, RP-413 and review remain separate.
+No existing accepted ruling, deferred feature or full nine-tier requirement is superseded here.
+
 | ID | Owner choice | Evidence required first | Canonical home | Blocks |
 |---|---|---|---|---|
 | **D-001** | **RULED 2026-08-21:** current claim is repository development snapshot; next target is **Cloud Clicker Phase-0 Playable Preview**, not roadmap v0.1 or 1.0. Public hosting remains blocked on the complete release floor. | R-002 baseline and capability map complete; exact release manifest remains a release-RFC input. | `planning/platform-alignment/owner-ruling-packet.md`; later `design/07-roadmap.md`/release RFC reconciliation by the owner. | Exact preview manifest and every “release-ready” claim. |
