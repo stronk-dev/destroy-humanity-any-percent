@@ -32,6 +32,11 @@ cleanup in native Chromium/WebKit. The original full file still executes its han
 intent and focus population; an intermediate shadowed-context candidate is excluded by strict
 types. This does not close RP-526. The owning log records exact results and next Linux verification.
 
+RP-530 reproduces Reputation plan's expired keyboard producer typing into its successor and
+locally corrects the fixture with Typer's shared lifetime guard. Both full native files pass
+with unchanged journeys/deadlines; Linux/Firefox/full CI and remaining host-driver diagnosis
+stay open. Docker remains unavailable; no cleanup permission or green full-job claim inferred.
+
 ## Work
 
 1. [x] Split the Makefile into server, client, browser, schema, and aggregate verification targets.

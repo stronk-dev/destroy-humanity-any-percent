@@ -181,12 +181,15 @@ The timer starts when the container command starts; it does not bound a stuck Do
 before startup. Require the CLI's terminal result as well as test results, and report an
 unavailable daemon as unavailable verification, never as a passing job.
 
-The Typer whole-game native-input witness also binds its keyboard producer to Vitest's test
-signal. A fired deadline remains a failed journey: future input is refused, an already-started
+The Typer whole-game and Reputation plan native-input witnesses bind their keyboard producers
+to Vitest's test signal through the shared test-only `native-keyboard-lifetime` helper.
+A fired deadline remains a failed journey: future input is refused, an already-started
 native RPC drains before owned-fixture teardown, and a successor fails its precondition if
 input is still pending. The keyboard path and existing journey deadline are unchanged.
-Its isolation controls deliberately fire a framework deadline and independently check the
+Their isolation controls deliberately fire a framework deadline and independently check the
 reason and untouched successor; those expected failures are not player-acceptance passes.
+Reputation also refuses expired disclosure/selection helpers before accessing or focusing
+disposed DOM. Fixture teardown is idempotent and registered on the original test context.
 
 The Garden host fixture waits for its actual socket-factory callback before asserting the exact
 URL; elapsed event-loop turns do not establish startup completion. Construction does not imply

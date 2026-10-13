@@ -788,3 +788,47 @@ Claude review pending; recent related CI repairs may be consolidated. No feature
 acceptance/archival or publication. Next: execute the corrected Garden/Typer drivers
 in the declared Linux full population after recovery, retain any failures, and
 separate genuine readiness/input faults from invalid fixture timing assumptions.
+
+## 2026-10-13 — Isolate Reputation plan input after a test deadline (RP-530)
+
+Under CI D2, extend the proved input-lifetime correction to the Reputation plan
+fixture, preserving all original18 cases, native Tab/Shift-Tab/Enter/Space inputs,
+budget/cascade/focus/callback/axe assertions and existing deadlines. Reuse Typer's
+unchanged guard in a shared test-only helper rather than duplicate its implementation.
+Bind every plan fixture to its actual TestContext, drain native RPC before
+idempotent finish/finally disposal, and refuse expired selection/disclosure helpers
+before DOM lookup/focus. Recheck cancellation after loading native input tooling.
+No production, schema, kernel, authored copy, concurrency or budget change.
+
+Regression: initial99229 resumes `choose` after disposal and fails on a stale-DOM
+TypeError in both engines. That is not proof of keyboard contamination. Corrected
+diagnostic58625 holds the actual native keyboard producer across a real50ms test
+deadline, then releases it with a successor input focused. Unguarded delivery
+completes and inserts a space in both native engines, failing the exact refused/
+empty assertion. This proves the lifetime mechanism, not attribution of every
+previous RP-526 failure. Retain the deliberately fired deadline as a negative
+control; its successor independently checks the exact reason, canceled helper
+calls, disconnected fixture, retained successor focus and empty input.
+
+Executed final-source root `make test-browser-focused
+BROWSER_TEST_FLAGS='test/reputation-plan-browser.test.ts test/typer-table-browser.test.ts
+--project=chromium --project=webkit'`63018:92 passes/four expected diagnostic
+timeouts, all96 cases/no deselection,2.66s. Earlier whole affected33852/18735 also
+pass; final guards are covered by63018. Typer retains all original24 cases and
+its existing drain/failure/healthy controls. `make typecheck`4835:zero errors/
+warnings. Node60089 executes one helper test and explicitly skips47 browser
+cases; no native acceptance credit. Diff checked; no shipped build/Go/API/DB or
+performance boundary changed, so those suites are not rerun for this test fix.
+
+Read-only Docker version17832 remains live/unresponsive on re-poll; stop only
+that TTY client, terminal130. Host reports2.7GiB free/100%. No cleanup answer
+arrived, no cache/evidence/container/service removed and no daemon restarted.
+Linux/Firefox/ordinary full job and hosted CI remain unverified/red; RP-526 is
+not closed and the Reputation host driver is not claimed repaired by this batch.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
+starts **after `dcb561c5` through this containing test/docs/record commit**;
+designated Claude review pending, consolidatable with related CI driver ranges.
+Next: diagnose the host driver's lifetime/focus boundary and execute all corrected
+drivers in the actual Linux full population once the declared service is usable.
+Keep the whole nine-tier1.0 goal, existing contracts and release/review gates open.

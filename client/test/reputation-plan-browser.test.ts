@@ -1,16 +1,18 @@
 import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
-import { expect, it } from "vitest";
+import { beforeEach, describe, expect, it, type TestContext } from "vitest";
 
 import declaration from "../../balance/testdata/reputation-tree/fixture-v1.json";
 import type { GameUIReputationArm } from "../src/api/generated/types";
 import { t, type CopyEra, type CopyKey } from "../src/copy";
 import ReputationPlanPanel from "../src/game-ui/ReputationPlanPanel.svelte";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
+import { assertNativeInputDrained, lifetimeKeyboard } from "./native-keyboard-lifetime";
 
 // Full declared proposal, not an adopted epoch or a live-server payout. The
 // component receives an explicit authoritative-preview diagnostic input.
 const browser = typeof document !== "undefined";
+beforeEach(assertNativeInputDrained);
 const ids = declaration.nodes.map((node) => node.node_id);
 const [unlock, cash, tower, unlock25, upgrade, large] = ids;
 function profile(available: number, ownsFirst = false): GameUIReputationArm {
@@ -27,7 +29,13 @@ function profile(available: number, ownsFirst = false): GameUIReputationArm {
   };
 }
 async function settle(): Promise<void> { await tick(); flushSync(); }
-function fixture(era: CopyEra, available: number, preview: number, ownsFirst = false) {
+function fixture(testContext: TestContext, era: CopyEra, available: number, preview: number, ownsFirst = false) {
+  testContext.signal.throwIfAborted();
+  const keyboard = lifetimeKeyboard(testContext.signal, async (keys) => {
+    const { userEvent } = await import("vitest/browser");
+    testContext.signal.throwIfAborted();
+    await userEvent.keyboard(keys);
+  });
   const wrapper = document.createElement("main"); document.body.append(wrapper);
   const before = document.createElement("button"); before.textContent = "Before plan diagnostic"; before.tabIndex = 0;
   const target = document.createElement("div");
@@ -44,10 +52,18 @@ function fixture(era: CopyEra, available: number, preview: number, ownsFirst = f
   const box = (id: string) => {
     const index = visibleIDs.indexOf(id); expect(index).toBeGreaterThanOrEqual(0); return boxes()[index]!;
   };
+  let disposal: Promise<void> | undefined;
+  const dispose = () => disposal ??= (async () => {
+    try { await keyboard.closeAndDrain(); }
+    finally { await unmount(app); wrapper.remove(); }
+  })();
+  testContext.onTestFinished(dispose);
   return { wrapper, target, before, after, arm, plans, details, boxes, box,
     summary: () => details().querySelector<HTMLElement>("summary")!,
     clear: () => target.querySelector<HTMLButtonElement>("button")!,
-    async dispose() { await unmount(app); wrapper.remove(); },
+    checkActive: () => testContext.signal.throwIfAborted(),
+    press: keyboard.press,
+    dispose,
   };
 }
 function state(b: ReturnType<typeof fixture>, era: CopyEra, expected: readonly string[], budget: number) {
@@ -59,19 +75,59 @@ function state(b: ReturnType<typeof fixture>, era: CopyEra, expected: readonly s
   for (const id of ids) expect(b.target.textContent).not.toContain(id);
 }
 async function choose(b: ReturnType<typeof fixture>, id: string) {
-  const { userEvent } = await import("vitest/browser");
+  b.checkActive();
   expect(b.box(id).disabled, `declared node ${id} is selectable`).toBe(false);
-  b.box(id).focus(); await userEvent.keyboard(" "); await settle();
+  b.box(id).focus(); await b.press(" "); await settle();
 }
 async function open(b: ReturnType<typeof fixture>, key = "{Enter}") {
-  const { userEvent } = await import("vitest/browser");
+  b.checkActive();
   expect(b.details().open).toBe(false);
-  b.summary().focus(); await userEvent.keyboard(key); await settle(); expect(b.details().open).toBe(true);
+  b.summary().focus(); await b.press(key); await settle(); expect(b.details().open).toBe(true);
 }
 
+describe("Reputation plan input lifetime", () => {
+  let expiredSignal: AbortSignal;
+  let expiredFixture: ReturnType<typeof fixture>;
+  let release: () => void;
+  let continued: Promise<void>;
+
+  it.skipIf(!browser).fails("expires while a plan action is waiting", async (testContext) => {
+    expiredSignal = testContext.signal;
+    const b = fixture(testContext, "era_1995", 3, 0);
+    expiredFixture = b;
+    await settle();
+    b.details().open = true;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    continued = (async () => { await gate; await b.press(" "); })();
+    await continued;
+  }, 50);
+
+  it.skipIf(!browser)("refuses an expired plan action without typing into its successor", async () => {
+    expect(expiredSignal.aborted).toBe(true);
+    expect(expiredSignal.reason.message).toContain("Test timed out in 50ms");
+    const input = document.createElement("input");
+    input.setAttribute("aria-label", "Plan timeout successor");
+    document.body.append(input); input.focus();
+    expect(document.activeElement).toBe(input);
+    try {
+      release();
+      const outcome = await continued.then(() => "completed", (error) => {
+        expect(error).toBe(expiredSignal.reason);
+        return "refused";
+      });
+      expect({ outcome, value: input.value }).toEqual({ outcome: "refused", value: "" });
+      expect(expiredFixture.wrapper.isConnected).toBe(false);
+      await expect(choose(expiredFixture, cash!)).rejects.toBe(expiredSignal.reason);
+      await expect(open(expiredFixture)).rejects.toBe(expiredSignal.reason);
+      expect(document.activeElement).toBe(input);
+      expect(input.value).toBe("");
+    } finally { input.remove(); }
+  });
+});
+
 for (const era of ["era_1995", "era_2000"] as const) {
-  it.skipIf(!browser)(`R9 full-tree plan defaults empty, renders registered rows and passes axe: ${era}`, async () => {
-    const b = fixture(era, 3, 0);
+  it.skipIf(!browser)(`R9 full-tree plan defaults empty, renders registered rows and passes axe: ${era}`, async (testContext) => {
+    const b = fixture(testContext, era, 3, 0);
     try {
       await settle();
       expect(declaration.nodes.map((node) => node.cost)).toEqual([1, 2, 3, 5, 4, 12, 25, 100, 400]);
@@ -90,8 +146,8 @@ for (const era of ["era_1995", "era_2000"] as const) {
   });
 
   for (const preview of [0, 2, 3]) {
-    it.skipIf(!browser)(`R9 plan uses the supplied preview budget without enabling an over-budget node: ${era}, preview${preview}`, async () => {
-      const b = fixture(era, 0, preview);
+    it.skipIf(!browser)(`R9 plan uses the supplied preview budget without enabling an over-budget node: ${era}, preview${preview}`, async (testContext) => {
+      const b = fixture(testContext, era, 0, preview);
       try {
         await settle(); await open(b); state(b, era, [], preview);
         expect(b.boxes().map((box) => box.disabled)).toEqual([preview < 1, preview < 2, true, true, true, true, true, true, true]);
@@ -102,16 +158,15 @@ for (const era of ["era_1995", "era_2000"] as const) {
         expect(b.box(unlock!).disabled).toBe(preview < 3);
         expect(b.box(tower!).disabled).toBe(true);
         if (preview === 3) { await choose(b, unlock!); state(b, era, [unlock!, cash!], 0); }
-        const clear = b.clear(); clear.focus();
-        const { userEvent } = await import("vitest/browser");
-        await userEvent.keyboard("{Enter}"); await settle(); state(b, era, [], preview);
+        b.checkActive(); const clear = b.clear(); clear.focus();
+        await b.press("{Enter}"); await settle(); state(b, era, [], preview);
       } finally { await b.dispose(); }
     });
   }
 
   for (const removed of ["cash-root", "unlock-root"] as const) {
-    it.skipIf(!browser)(`R9 full-tree plan drops transitive dependants, not the independent branch: ${era}, ${removed}`, async () => {
-      const b = fixture(era, 12, 2, true);
+    it.skipIf(!browser)(`R9 full-tree plan drops transitive dependants, not the independent branch: ${era}, ${removed}`, async (testContext) => {
+      const b = fixture(testContext, era, 12, 2, true);
       try {
         await settle(); await open(b); state(b, era, [], 14);
         expect(b.boxes()).toHaveLength(8); expect(b.target.textContent).not.toContain(t("reputation_tree.node.unlock_p05.title", {}, era));
@@ -131,8 +186,8 @@ for (const era of ["era_1995", "era_2000"] as const) {
     });
   }
 
-  it.skipIf(!browser)(`R9 all nine plan nodes fit the exact supplied budget and cascade across both prerequisite branches: ${era}`, async () => {
-    const b = fixture(era, 1, 551);
+  it.skipIf(!browser)(`R9 all nine plan nodes fit the exact supplied budget and cascade across both prerequisite branches: ${era}`, async (testContext) => {
+    const b = fixture(testContext, era, 1, 551);
     try {
       await settle(); await open(b); state(b, era, [], 552);
       const budgets = [551, 549, 546, 541, 537, 525, 500, 400, 0];
@@ -140,36 +195,34 @@ for (const era of ["era_1995", "era_2000"] as const) {
       expect(b.plans).toEqual([[], ...ids.map((_id, index) => ids.slice(0, index + 1))]);
       await choose(b, unlock!); state(b, era, [cash!, tower!, upgrade!], 543);
       expect(b.boxes().map((box) => box.disabled)).toEqual([false, false, false, true, false, true, true, true, true]);
-      const { userEvent } = await import("vitest/browser");
-      b.clear().focus(); await userEvent.keyboard(" "); await settle(); state(b, era, [], 552);
+      b.checkActive(); b.clear().focus(); await b.press(" "); await settle(); state(b, era, [], 552);
       expect(b.boxes().map((box) => box.disabled)).toEqual([false, false, true, true, true, true, true, true, true]);
     } finally { await b.dispose(); }
   });
 
   for (const key of ["{Enter}", " "]) {
-    it.skipIf(!browser)(`R9 native sequential plan path reaches disclosure, enabled boxes and Clear: ${era}, ${key === " " ? "Space" : "Enter"}`, async () => {
-      const { userEvent } = await import("vitest/browser");
-      const b = fixture(era, 3, 0);
+    it.skipIf(!browser)(`R9 native sequential plan path reaches disclosure, enabled boxes and Clear: ${era}, ${key === " " ? "Space" : "Enter"}`, async (testContext) => {
+      const b = fixture(testContext, era, 3, 0);
       try {
         await settle(); state(b, era, [], 3);
         // Only sentinel gets direct focus. Browser Tab/Space must reach and
         // operate every plan control; forced focus would mask missing stops.
-        b.before.focus(); expect(document.activeElement).toBe(b.before);
-        await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(b.summary());
-        await userEvent.keyboard(key); await settle(); expect(b.details().open).toBe(true);
-        await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(b.box(unlock!));
-        await userEvent.keyboard(" "); await settle(); state(b, era, [unlock!], 2);
-        await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(b.box(cash!));
-        await userEvent.keyboard(" "); await settle(); state(b, era, [unlock!, cash!], 0);
-        await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(b.clear());
-        await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(b.after);
+        b.checkActive(); b.before.focus(); expect(document.activeElement).toBe(b.before);
+        await b.press("{Tab}"); await settle(); expect(document.activeElement).toBe(b.summary());
+        await b.press(key); await settle(); expect(b.details().open).toBe(true);
+        await b.press("{Tab}"); await settle(); expect(document.activeElement).toBe(b.box(unlock!));
+        await b.press(" "); await settle(); state(b, era, [unlock!], 2);
+        await b.press("{Tab}"); await settle(); expect(document.activeElement).toBe(b.box(cash!));
+        await b.press(" "); await settle(); state(b, era, [unlock!, cash!], 0);
+        await b.press("{Tab}"); await settle(); expect(document.activeElement).toBe(b.clear());
+        await b.press("{Tab}"); await settle(); expect(document.activeElement).toBe(b.after);
         for (const expected of [b.clear(), b.box(cash!), b.box(unlock!), b.summary(), b.before]) {
-          await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); await settle(); expect(document.activeElement).toBe(expected);
+          await b.press("{Shift>}{Tab}{/Shift}"); await settle(); expect(document.activeElement).toBe(expected);
         }
         for (const expected of [b.summary(), b.box(unlock!), b.box(cash!), b.clear()]) {
-          await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(expected);
+          await b.press("{Tab}"); await settle(); expect(document.activeElement).toBe(expected);
         }
-        await userEvent.keyboard(key); await settle(); state(b, era, [], 3);
+        await b.press(key); await settle(); state(b, era, [], 3);
         expect(b.plans).toEqual([[], [unlock!], [unlock!, cash!], []]);
       } finally { await b.dispose(); }
     });
