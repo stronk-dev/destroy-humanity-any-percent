@@ -18,7 +18,7 @@ describe("registry-generated HTTP client", () => {
     { id: "refresh_session", status: 401, body: { category: "unauthorized", detail: "refresh_token" }, input: { path: {}, request: { refresh_token: "fixture-parent" } } },
   ] as const;
 
-  it.each(schemaCases.flatMap((entry) => [null, "text/plain", "application/gzip"].map((contentType) => ({ ...entry, contentType }))))(
+  it.each(schemaCases.flatMap((entry) => [null, "text/plain", "application/gzip", "APPLICATION/JSONP", "APPLICATION/PROBLEM+JSON"].map((contentType) => ({ ...entry, contentType }))))(
     "refuses single-schema $id/$status with media $contentType before reading the body", async ({ id, status, body, input, contentType }) => {
       const headers = new Headers();
       if (contentType !== null) headers.set("Content-Type", contentType);
@@ -32,7 +32,7 @@ describe("registry-generated HTTP client", () => {
     },
   );
 
-  it.each(schemaCases.flatMap((entry) => ["application/json", "application/json; charset=utf-8"].map((contentType) => ({ ...entry, contentType }))))(
+  it.each(schemaCases.flatMap((entry) => ["application/json", "application/json; charset=utf-8", "Application/JSON", "APPLICATION/JSON; Charset=UTF-8"].map((contentType) => ({ ...entry, contentType }))))(
     "preserves single-schema $id/$status with declared JSON media $contentType", async ({ id, status, body, input, contentType }) => {
       const fetcher = vi.fn(async () => Response.json(body, { status, headers: { "Content-Type": contentType } }));
       const result = await createAPIClient(fetcher).call(id, input as OperationInput<typeof id>);
@@ -201,19 +201,35 @@ describe("registry-generated HTTP client", () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
-  it.each([
-    ["get_public_run_genesis", "application/json", new TextEncoder().encode('{ "z": 1, "a": "<>&" }')],
+  const rawCases = [
+    ["get_public_run_genesis", "application/json", "Application/JSON", new TextEncoder().encode('{ "z": 1, "a": "<>&" }')],
     // Opaque byte fixture: this transport checks identity, not gzip validity/replay.
-    ["get_public_run_replay_log", "application/gzip", new Uint8Array([31, 139, 8, 0, 1, 2, 3, 255])],
-  ] as const)("preserves raw bytes for %s and checks its registered digest", async (id, contentType, bytes) => {
-    const digest = await hash(bytes);
-    const fetcher = vi.fn(async () => new Response(new Uint8Array(bytes), { status: 200, headers: { "Content-Type": contentType, "X-Content-SHA256": digest } }));
-    const response = await createAPIClient(fetcher).call(id, { path: { stream, seq: 1 }, request: null });
-    expect(response.status).toBe(200);
-    if (response.status !== 200) throw new Error("raw success missing");
-    expect(response.body).toEqual(bytes);
-    expect(fetcher).toHaveBeenCalledTimes(1);
-  });
+    ["get_public_run_replay_log", "application/gzip", "Application/GZip", new Uint8Array([31, 139, 8, 0, 1, 2, 3, 255])],
+  ] as const;
+  it.each(rawCases.flatMap(([id, canonical, mixed, bytes]) => [canonical, mixed].map((contentType) => ({ id, contentType, bytes }))))(
+    "preserves raw bytes for $id with media $contentType and checks its registered digest", async ({ id, contentType, bytes }) => {
+      const digest = await hash(bytes);
+      const fetcher = vi.fn(async () => new Response(new Uint8Array(bytes), { status: 200, headers: { "Content-Type": contentType, "X-Content-SHA256": digest } }));
+      const response = await createAPIClient(fetcher).call(id, { path: { stream, seq: 1 }, request: null });
+      expect(response.status).toBe(200);
+      if (response.status !== 200) throw new Error("raw success missing");
+      expect(response.body).toEqual(bytes);
+      expect(fetcher).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it.each(rawCases.flatMap(([id, , contentType, bytes]) => [null, "0".repeat(64)].map((contentHash) => ({ id, contentType, bytes, contentHash }))))(
+    "refuses $id mixed-case media with missing or wrong evidence hash $contentHash", async ({ id, contentType, bytes, contentHash }) => {
+      const headers = new Headers({ "Content-Type": contentType });
+      if (contentHash !== null) headers.set("X-Content-SHA256", contentHash);
+      const response = new Response(new Uint8Array(bytes), { status: 200, headers });
+      const read = vi.spyOn(response, "arrayBuffer");
+      const fetcher = vi.fn(async () => response);
+      await expect(createAPIClient(fetcher).call(id, { path: { stream, seq: 1 }, request: null })).rejects.toThrow("invalid raw API content hash");
+      expect(read).toHaveBeenCalledTimes(1);
+      expect(fetcher).toHaveBeenCalledTimes(1);
+    },
+  );
 
   it.each(["missing hash", "wrong hash", "changed bytes", "wrong content type"])("rejects raw evidence with %s", async (fault) => {
     const original = new TextEncoder().encode("original");
@@ -238,12 +254,15 @@ describe("registry-generated HTTP client", () => {
     const digest = await hash(bytes);
     Object.defineProperty(operation, "responses", { value: [raw, json, ...original.filter((descriptor) => descriptor.status !== 200)] });
     try {
-      for (const contentType of ["application/gzip", "application/json; charset=utf-8"]) {
+      for (const [contentType, isJSON] of [
+        ["application/gzip", false], ["Application/GZip", false],
+        ["application/json; charset=utf-8", true], ["APPLICATION/JSON; Charset=UTF-8", true],
+      ] as const) {
         const fetcher = vi.fn(async () => new Response(bytes, { status: 200, headers: {
           "Content-Type": contentType, "X-Content-SHA256": digest,
         } }));
         const response = await createAPIClient(fetcher).call("get_public_run_replay_log", { path: { stream, seq: 1 }, request: null });
-        expect(response.body).toEqual(kind === "schema" && contentType.startsWith("application/json") ? JSON.parse(text) : bytes);
+        expect(response.body).toEqual(kind === "schema" && isJSON ? JSON.parse(text) : bytes);
         expect(fetcher).toHaveBeenCalledTimes(1);
       }
       if (kind === "raw") {
@@ -255,7 +274,7 @@ describe("registry-generated HTTP client", () => {
           )).rejects.toThrow("invalid raw API content hash");
         }
       }
-      for (const contentType of ["text/plain", null]) {
+      for (const contentType of ["text/plain", "APPLICATION/JSONP", "APPLICATION/PROBLEM+JSON", null]) {
         const headers = new Headers({ "X-Content-SHA256": digest });
         if (contentType !== null) headers.set("Content-Type", contentType);
         const response = new Response(bytes, { status: 200, headers });

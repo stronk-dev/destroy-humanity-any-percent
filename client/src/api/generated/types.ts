@@ -343,7 +343,9 @@ export function createAPIClient(fetcher: APIFetcher = fetch, baseURL = "") {
       });
       const descriptors = operation.responses.filter((candidate) => candidate.status === response.status);
       if (descriptors.length === 0) throw new TypeError(`undeclared API response status (${response.status})`);
-      const contentType = response.headers.get("Content-Type")?.split(";")[0].trim();
+      // HTTP media type/subtype identity is case-insensitive (RFC 9110 §8.3.1).
+      // Do not fold parameters, evidence bytes or their case-sensitive digest.
+      const contentType = response.headers.get("Content-Type")?.split(";")[0].trim().toLowerCase();
       // C19 permits several representations at one status. Select the declared
       // media type before choosing JSON decoding versus opaque-byte verification.
       const descriptor = descriptors.length === 1 ? descriptors[0] : descriptors.find((candidate) => candidate.contentType === contentType);

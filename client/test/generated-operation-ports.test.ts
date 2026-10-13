@@ -21,19 +21,21 @@ const cases = [
 ] as const;
 
 describe.each(cases)("generated operation port $id", ({ id, invoke }) => {
-  it.each([401, 429])("preserves typed rejection %s and reads auth once without retry", async (status) => {
-    const category = status === 401 ? "unauthorized" : "rate_limited";
-    const detail = status === 401 ? "access_token" : "account";
-    const fetcher = vi.fn(async () => Response.json({ category, detail }, { status }));
-    const token = vi.fn(() => "port-token");
-    await expect(invoke(ports(fetcher, token))).rejects.toMatchObject({ status, category, detail });
-    expect(fetcher).toHaveBeenCalledTimes(1);
-    expect(token).toHaveBeenCalledTimes(1);
-    const [path, init] = fetcher.mock.calls[0] as unknown as [string, RequestInit];
-    expect(path).toBe(operations[id].path.replace("{minigame_id}", "pitch").replace("{session_id}", "s1"));
-    expect(init.method).toBe(operations[id].method);
-    expect(new Headers(init.headers).get("Authorization")).toBe("Bearer port-token");
-  });
+  it.each([401, 429].flatMap((status) => ["application/json", "Application/JSON; Charset=UTF-8"].map((contentType) => ({ status, contentType }))))(
+    "preserves typed rejection $status with media $contentType and reads auth once without retry", async ({ status, contentType }) => {
+      const category = status === 401 ? "unauthorized" : "rate_limited";
+      const detail = status === 401 ? "access_token" : "account";
+      const fetcher = vi.fn(async () => Response.json({ category, detail }, { status, headers: { "Content-Type": contentType } }));
+      const token = vi.fn(() => "port-token");
+      await expect(invoke(ports(fetcher, token))).rejects.toMatchObject({ status, category, detail });
+      expect(fetcher).toHaveBeenCalledTimes(1);
+      expect(token).toHaveBeenCalledTimes(1);
+      const [path, init] = fetcher.mock.calls[0] as unknown as [string, RequestInit];
+      expect(path).toBe(operations[id].path.replace("{minigame_id}", "pitch").replace("{session_id}", "s1"));
+      expect(init.method).toBe(operations[id].method);
+      expect(new Headers(init.headers).get("Authorization")).toBe("Bearer port-token");
+    },
+  );
 
   it.each(["network", "invalid JSON", "extra error field", "unknown category", "undeclared status"])("classifies %s as transport failure once", async (fault) => {
     const fetcher = vi.fn(async () => {

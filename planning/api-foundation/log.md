@@ -1957,3 +1957,39 @@ new range after `9b48c9c6` through this containing commit needs Claude designate
 review, consolidatable with earlier generated-client corrections without erasing
 their debt. No draft adoption, archival, push, deployment or1.0 promotion. Continue
 remaining accepted construction; catalog/dictionary/bodiless prerequisites stay open.
+
+## 2026-10-13 — Declared response media identity (RP-535)
+
+Routine A5/C9/C19 conformance repair, baseline `15bf18b2`. The generated client
+rejects valid mixed-case JSON/gzip headers in all three selection paths. HTTP
+[RFC9110 §8.3.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-8.3.1)
+defines type/subtype identity as case-insensitive; no new media arm is proposed.
+Actual old-client Node20244 fails16/80 cases (64 controls pass); typed-clean
+native67965 fails the same32/160 in Chromium/WebKit (128 controls pass).
+
+Normalize only the observed type/subtype in the embedded template, then regenerate
+the client. Do not fold parameters, payloads or hashes. Retain strict wrong/absent
+media refusal before reading, exact raw bytes/digest checking, status associations,
+body-free errors and once-only dispatch. Existing same-status cases now use explicit
+expected representation flags instead of a case-sensitive expected-value shortcut.
+Nine operation ports also prove ordinary401/429 error classification survives the
+equivalent header without extra requests or token reads. No gameplay, handler,
+schema/operation/pin, balance, kernel, copy, limiter or CI-workflow changes.
+
+Finished root checks: Node69839 passes217 SDK/runtime/port cases; native3615
+passes434 corresponding Chromium/WebKit executions,2.34s. Cold publicapi tests/vet
+24806 pass. Types/Svelte/build/boundary88319 pass (217 modules; zero diagnostics);
+final types59245 pass after the port supplement. Full `make test-client`95924
+passes10668, with1022 explicit existing skips,12.75s. All handles terminal.
+`make api-check` passes against the intentionally staged new generated client;
+OpenAPI/pin remain byte-unchanged, and a second generation preserves all three
+observed hashes. The generated client changes only its normalization/comment lines.
+
+These are SDK/native-Response and injected-port checks, not a new HTTP/Postgres
+journey, Linux/Firefox/hosted-CI or release-artifact claim. The Docker lane remains
+unavailable without restart authority; prior real-service evidence is not relabelled
+as a run on these bytes. The known historical guard and Clout CI failures remain.
+Review by: Codex (implementer first filter). Recorded by: Codex. Exact complete
+range starts after `15bf18b2` through this containing commit and needs designated
+Claude review, consolidatable with the preceding SDK corrections. No acceptance,
+archival, draft adoption, publication or nine-tier milestone promotion.

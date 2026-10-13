@@ -166,6 +166,10 @@ these TypeScript types are not runtime schema validation. Wrappers retain their 
 application decoders. When a status declares multiple representations, the client selects
 the descriptor by the response's media type (ignoring parameters such as charset) before
 choosing its decoder; a missing or undeclared type refuses before reading the body.
+Media type/subtype matching is case-insensitive, as required by
+[HTTP semantics §8.3.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-8.3.1);
+`Application/JSON` is the same declared type as `application/json`, not a new representation.
+Raw response bytes and their digest header remain exact and are never case-folded.
 Single-representation schema responses also require their registered JSON media type before
 reading the body. Missing/undeclared media raises a body-free transport error, even when the
 bytes happen to be valid JSON. Existing JSON charset handling and status/error payloads are
