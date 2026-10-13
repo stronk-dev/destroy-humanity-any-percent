@@ -21,12 +21,23 @@ export class MinigameTransportError extends Error {}
 
 const categories = new Set<string>(apiErrorCategories);
 
-function apiError(status: number, body: unknown): MinigameAPIError | undefined {
+function apiError(id: AuthenticatedOperationID, status: number, body: unknown): MinigameAPIError | undefined {
   if (body === null || typeof body !== "object" || Array.isArray(body)) return undefined;
   const row = body as Record<string, unknown>;
   const keys = Object.keys(row).sort();
   if (keys.length !== 2 || keys[0] !== "category" || keys[1] !== "detail") return undefined;
   if (typeof row.category !== "string" || !categories.has(row.category) || typeof row.detail !== "string" || row.detail === "") return undefined;
+  const responses: readonly { status: number; kind: "schema" | "raw"; contentType: string; exactJSON?: readonly string[] }[] = operations[id].responses;
+  const descriptor = responses.find((response) => response.status === status && response.kind === "schema" && response.contentType === "application/json");
+  if (!descriptor) return undefined;
+  if (descriptor?.exactJSON !== undefined && !descriptor.exactJSON.some((text) => {
+    // The validated Go registry owns these literals. Compare their semantic
+    // pair, not object-key order/whitespace erased by the SDK's JSON decoder.
+    const expected: unknown = JSON.parse(text);
+    if (expected === null || typeof expected !== "object" || Array.isArray(expected)) return false;
+    const pair = expected as Record<string, unknown>;
+    return pair.category === row.category && pair.detail === row.detail;
+  })) return undefined;
   return new MinigameAPIError(status, row.category as APIError["category"], row.detail as APIError["detail"]);
 }
 
@@ -50,7 +61,7 @@ export function createOperationCall(accessToken: () => string, fetcher: Fetcher 
     } catch (error) {
       throw new MinigameTransportError(error instanceof Error ? error.message : "request failed");
     }
-    if (!response.ok) throw apiError(response.status, response.body) ?? new MinigameTransportError(`request failed (${response.status})`);
+    if (!response.ok) throw apiError(id, response.status, response.body) ?? new MinigameTransportError(`request failed (${response.status})`);
     return response.body as PortSuccess<K>;
   };
 }

@@ -208,9 +208,15 @@ The Minigame, Soul Recovery and Garden ports dispatch by generated operation ID 
 path/request inputs. Their shared adapter reads the current access token once per explicit
 call and preserves the existing MinigameAPIError/MinigameTransportError classes and surface
 rejection mappings. Error categories come from the generated registry, not a second list.
-Undeclared HTTP statuses are transport failures; declared errors retain the previous exact
-two-field, known-category/nonempty-detail guard. This is not per-operation error-literal or
-success-body schema validation. Existing wire-binding/error tests cover all nine port calls;
+Undeclared HTTP statuses are transport failures. Error bodies require exactly two fields,
+a known category and a nonempty detail. Where a response declares `ExactJSON`, generated
+`operations[].responses[].exactJSON` metadata carries those same literals, and the adapter
+also requires the category/detail pair to belong to that operation and status. Wrong-family,
+wrong-status and undeclared details become body-free transport failures, not typed gameplay
+refusals. This compares semantic pairs after JSON decoding, not original whitespace/member
+order or raw duplicate keys. Garden/Soul rows currently have no literal narrowing and retain
+the previous guard; neither they nor success bodies gain runtime schema validation here.
+Existing wire-binding/error tests cover all nine port calls;
 the real composed journey covers Pitch and default locked-Garden reads, not a complete
 persisted Soul Recovery or active-Garden workflow.
 

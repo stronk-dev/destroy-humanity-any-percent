@@ -1993,3 +1993,45 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact complete
 range starts after `15bf18b2` through this containing commit and needs designated
 Claude review, consolidatable with the preceding SDK corrections. No acceptance,
 archival, draft adoption, publication or nine-tier milestone promotion.
+
+## 2026-10-14 — RP-564 registry-bound typed error classification
+
+Resume at clean `5cd7119f`. Previous goal turn made progress: corrected actual availability
+and specified, but did not adopt/implement, the tenant HTTP transaction seam. Continue the
+generated boundary under A5/C9/C17 and MA-C7, not the unaccepted successor. The SDK explicitly
+JSON-decodes rather than schema-validates success bodies. Its shared operation port additionally
+accepts any known category/nonempty detail, so wrong status/family pairs become typed gameplay
+refusals; a controlled unknown detail also enters that diagnostic. No real secret leak claimed.
+
+Regression first: generated-operation-ports Node run exits1 with16 failures across four
+minigame operations;87 controls pass. Actual Go generator test64524 independently exits2 for
+missing registered literal metadata. Emit each existing Response.ExactJSON string array into
+generated response metadata using JSON encoding; the port selects the operation/status JSON
+descriptor and compares semantic category/detail pairs before constructing MinigameAPIError.
+Wrong pairs become the existing body-free transport error, without retry or another auth read.
+No manual error table, new server refusal, SDK success guard or raw duplicate/whitespace check.
+Garden/Soul descriptors have no literal narrowing and retain their existing guard.
+
+Corrected focused Node187 pass, including cross-operation idempotency controls. Full client
+26829 exits0:11197 pass/1040 explicit skips,12.52s. Cold Go/vet92586 exits0 for publicapi0.219s,
+Account0.518s and Gameserver0.385s. Typecheck/build27639 exits0, zero Svelte diagnostics;
+client boundary check passes. Generator regression checks byte preservation of two literals
+including newline/Unicode/HTML characters and no leakage to another operation/status.
+
+Native browser startup20116 first fails sandbox listen with zero executions. Permitted run65075
+executes374 selected Chromium/WebKit checks successfully, but Firefox never connects and runs
+zero tests; the aggregate is NOT green. Retain its60s session error and180s launch/teardown
+timeout with sandbox-extension/framebuffer diagnostics. Send Ctrl-C only after its failed
+summary; the same handle eventually terminates130. Process inspection performs no kill or
+cleanup of other runners. No timeout/bound/CI change or replacement green claim.
+
+`make api-check` passes against the intentionally staged generated client; OpenAPI and v1
+compatibility pin are byte-unchanged. Format/diff and all changed paths checked. These are
+generator/native-Response/injected-fetch consumer checks, not current Go HTTP/Postgres,
+Linux/Firefox, hosted CI or a release artifact. No Docker restart or publication. Canonical
+docs/owning plan/RP-564 reconcile this correction; full API, public Typer, outstanding author
+decisions and full nine-tier1.0 remain open. Review by: Codex (implementer first filter).
+Recorded by: Codex. Exact entire correction/generated/tests/docs/records range after `5cd7119f`
+through this containing commit needs Claude designated review, consolidatable with related
+SDK repairs. Next: finish the successor's descriptors/generated guard and metadata compatibility
+contracts without pretending this pair check implements them.

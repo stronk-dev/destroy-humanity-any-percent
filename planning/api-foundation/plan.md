@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current bounded correction (2026-10-14, RP-564): generated response metadata now preserves
+the registry's existing ExactJSON literals, and the shared minigame operation port uses them
+to bind typed category/detail errors to the selected operation/status. Wrong pairs fail as
+body-free transport errors; server outputs, DTOs, OpenAPI and compatibility pins are unchanged.
+The owning log records executed regression/generator/consumer checks and the Firefox startup
+limitation. The new range after `5cd7119f` needs Claude review; this is not general SDK shape
+validation, adoption of the tenant-binding draft or full API/CI acceptance.
+
 Current bounded correction (2026-10-13, RP-535): the generated SDK now compares
 declared response media type/subtype case-insensitively, retaining exact evidence
 bytes/digests and wrong-media refusal. Old-client Node/native failures and corrected

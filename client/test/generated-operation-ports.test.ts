@@ -68,6 +68,40 @@ it("preserves the API-error class for surface rejection mapping", async () => {
   await expect(port.soul.progress("s1", "t1")).rejects.toBeInstanceOf(MinigameAPIError);
 });
 
+describe.each(cases.slice(0, 4))("minigame registry rejection binding $id", ({ id, invoke }) => {
+  it.each([
+    [401, "unauthorized", "minigame_session"],
+    [409, "unauthorized", "access_token"],
+    [409, "conflict", "recovery_session"],
+    [409, "not_eligible", "fictional-private-body-marker"],
+  ] as const)("refuses undeclared %s %s/%s without retry or reply-detail disclosure", async (status, category, detail) => {
+    const fetcher = vi.fn(async () => Response.json({ category, detail }, { status }));
+    let failure: unknown;
+    try { await invoke(ports(fetcher)); } catch (error) { failure = error; }
+    expect(failure).toBeInstanceOf(MinigameTransportError);
+    expect(failure).not.toBeInstanceOf(MinigameAPIError);
+    expect((failure as Error).message).toBe(`request failed (${status})`);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("preserves a declared session conflict as a typed refusal", async () => {
+    const fetcher = vi.fn(async () => Response.json({ category: "conflict", detail: "minigame_session" }, { status: 409 }));
+    await expect(invoke(ports(fetcher))).rejects.toMatchObject({ status: 409, category: "conflict", detail: "minigame_session" });
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("binds idempotency details to this operation rather than the global error enum", async () => {
+    const declared = id === "create_minigame_session" ? "minigame_session" : "minigame_command";
+    const wrong = id === "create_minigame_session" ? "minigame_command" : "minigame_session";
+    const fetcher = vi.fn(async () => Response.json({ category: "idempotency_conflict", detail: wrong }, { status: 409 }));
+    await expect(invoke(ports(fetcher))).rejects.toBeInstanceOf(MinigameTransportError);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    const valid = vi.fn(async () => Response.json({ category: "idempotency_conflict", detail: declared }, { status: 409 }));
+    await expect(invoke(ports(valid))).rejects.toMatchObject({ status: 409, category: "idempotency_conflict", detail: declared });
+    expect(valid).toHaveBeenCalledTimes(1);
+  });
+});
+
 function compileContract(call: ReturnType<typeof createOperationCall>): void {
   // @ts-expect-error callers cannot supply a handwritten method/path instead of an operation ID
   void call("POST", "/api/v1/invented");

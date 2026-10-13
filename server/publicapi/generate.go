@@ -233,8 +233,20 @@ func GenerateTypeScript(registry *Registry) ([]byte, error) {
 			if index != 0 {
 				output.WriteString(", ")
 			}
-			fmt.Fprintf(&output, "{ status: %d, kind: %q, contentType: %q, contentHashHeader: %q }",
+			fmt.Fprintf(&output, "{ status: %d, kind: %q, contentType: %q, contentHashHeader: %q",
 				response.Status, response.Kind, response.ContentType, response.ContentHashHeader)
+			if len(response.ExactJSON) != 0 {
+				literals := make([]string, len(response.ExactJSON))
+				for index, literal := range response.ExactJSON {
+					literals[index] = string(literal)
+				}
+				encoded, err := json.Marshal(literals)
+				if err != nil {
+					return nil, err
+				}
+				fmt.Fprintf(&output, ", exactJSON: %s", encoded)
+			}
+			output.WriteString(" }")
 		}
 		output.WriteString("] },\n")
 	}

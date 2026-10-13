@@ -150,6 +150,46 @@ func TestGeneratedClientPreservesRawSuccessAndStatusDescriptors(t *testing.T) {
 	}
 }
 
+func TestGeneratedResponseMetadataPreservesRegisteredExactJSON(t *testing.T) {
+	operations := testOperations()
+	literals := [][]byte{
+		[]byte("{\"category\":\"invalid\",\"detail\":\"body\"}\n"),
+		[]byte("{\"category\":\"unknown_id\",\"detail\":\"a<>&🙂\"}\n"),
+	}
+	operations[1].Responses[1].ExactJSON = literals
+	registry, err := NewRegistry(testSchemas(), operations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	generated, err := GenerateTypeScript(registry)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// These are generated JS strings, not raw JSON inserted into JS syntax.
+	// Decode the JSON-compatible string array and compare every literal byte.
+	marker := []byte("exactJSON: ")
+	start := bytes.Index(generated, marker)
+	if start < 0 {
+		t.Fatal("generated metadata omitted registered response literals")
+	}
+	var got []string
+	decoder := json.NewDecoder(bytes.NewReader(generated[start+len(marker):]))
+	if err := decoder.Decode(&got); err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != len(literals) {
+		t.Fatalf("generated %d literals, want %d", len(got), len(literals))
+	}
+	for index, literal := range literals {
+		if got[index] != string(literal) {
+			t.Fatalf("literal %d changed during generation", index)
+		}
+	}
+	if bytes.Count(generated, marker) != 1 {
+		t.Fatal("response literals leaked into unrelated operation/status metadata")
+	}
+}
+
 func TestGeneratedClientSameStatusRepresentations(t *testing.T) {
 	for _, kind := range []ResponseKind{ResponseRaw, ResponseSchema} {
 		t.Run(string(kind), func(t *testing.T) {
