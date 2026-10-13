@@ -28,7 +28,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
-| [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft — UNBLOCKED, blockers answered | Commons Compact |
+| [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft — dependency foundations available; ballot/cohort contracts still unclosed (RP-529; [readiness](../planning/commons-onboarding-and-governance/log.md)) | Commons Compact |
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |

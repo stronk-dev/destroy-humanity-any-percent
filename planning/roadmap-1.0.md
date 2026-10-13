@@ -18,6 +18,12 @@ and the owning accepted RFC plans for execution. The five highlighted contract p
 remain drafts; unresolved arithmetic and integration are engineering work, not owner approval
 items. Neither decision holds nor pending review halt all accepted work.
 
+Commons readiness checkpoint at `0073094e`: dependency foundations exist, but the
+player/governance draft still needs literal ballot, cohort producer/DTO, mutable-tithe
+and API/formula/UI contracts (RP-529). [Owning readiness log](commons-onboarding-and-governance/log.md)
+distinguishes that engineering/author closure from genuine owner semantics and adoption;
+the old “UNBLOCKED” label is not construction authority or a completed MMO milestone.
+
 ## Historical rollup checkpoints
 
 The following dated narratives retain their original source/evidence boundaries. They are
@@ -2059,7 +2065,9 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
 5. **Construct the rest of the game.** Progress through the cumulative v0.2–v1.0 milestones:
    world/social/events, combat and fair bots, Tier 3–8 content, categories/challenges and all
    final endings. Each needs accepted specifications, real content, balance and integrated
-   player proof. Completing Garage or publishing a preview does not complete this 1.0 goal.
+   player proof. Close Commons' literal producer/governance/effect contracts (RP-529)
+   before promoting its dependency availability into an implementable spec. Completing
+   Garage or publishing a preview does not complete this 1.0 goal.
 
 ## Update protocol
 
