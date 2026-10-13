@@ -1,0 +1,96 @@
+package publicapi
+
+import (
+	"bytes"
+	"net/http"
+	"net/http/httptest"
+	"sort"
+	"strings"
+	"testing"
+
+	"github.com/go-chi/chi/v5"
+)
+
+// Manual proposal evidence, not a CI assertion that route shadowing must stay
+// admitted. Preserve outside the normal test tree after the terminal run.
+func TestTenantNamespaceRouteProbe(t *testing.T) {
+	for _, addedID := range []string{"added_a", "new_z"} {
+		for _, topology := range []struct {
+			name, method, path string
+			shadow             bool
+		}{
+			{"old suggested prefix", http.MethodPost, "/api/v1/minigames/typer/sessions", true},
+			{"disjoint tenant prefix", http.MethodPost, "/api/v1/typer/sessions", false},
+			{"different method", http.MethodGet, "/api/v1/minigames/typer/sessions", false},
+		} {
+			t.Run(addedID+"/"+topology.name, func(t *testing.T) {
+				shape := func(value string) *Schema {
+					return &Schema{Kind: SchemaObject, Fields: []Field{{Name: "wire", Required: true,
+						Schema: &Schema{Kind: SchemaString, Enum: []string{value}}}}}
+				}
+				schemas := []NamedSchema{
+					{Name: "LegacyReply", Schema: shape("legacy")},
+					{Name: "MinigameID", Schema: &Schema{Kind: SchemaString, Format: "mechanical-id"}},
+					{Name: "NewReply", Schema: shape("new")},
+				}
+				response := func(name string) []Response {
+					return []Response{{Kind: ResponseSchema, Status: http.StatusOK, ContentType: ContentJSON, SchemaRef: name}}
+				}
+				legacy := Operation{ID: "legacy", Method: http.MethodPost, Path: "/api/v1/minigames/{minigame_id}/sessions",
+					Surface: SurfacePrivateV1, Auth: AuthNone, Responses: response("LegacyReply"),
+					Parameters: []Parameter{{Name: "minigame_id", Schema: &Schema{Kind: SchemaRef, Ref: "MinigameID"}}}}
+				before, err := NewRegistry(schemas, []Operation{legacy})
+				if err != nil {
+					t.Fatal(err)
+				}
+				pin, err := CanonicalOperationPins(before)
+				if err != nil || ValidateJSON("MinigameID", []byte(`"typer"`), before.schemas) != nil {
+					t.Fatalf("legacy request/pin precondition invalid: %v", err)
+				}
+				operations := []Operation{legacy, {ID: addedID, Method: topology.method, Path: topology.path,
+					Surface: SurfacePrivateV1, Auth: AuthNone, Responses: response("NewReply")}}
+				sort.Slice(operations, func(i, j int) bool { return operations[i].ID < operations[j].ID })
+				after, err := NewRegistry(schemas, operations)
+				if err != nil || CheckCompatibilityPin(pin, after) != nil {
+					t.Fatalf("metadata-compatible addition refused: %v", err)
+				}
+				mount := func(registry *Registry) chi.Router {
+					router := chi.NewRouter()
+					bindings := []Binding{}
+					for _, operation := range registry.Operations() {
+						body := `{"wire":"new"}`
+						if operation.ID == "legacy" {
+							body = `{"wire":"legacy"}`
+						}
+						bindings = append(bindings, Binding{OperationID: operation.ID, Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+							w.Header().Set("Content-Type", ContentJSON)
+							_, _ = w.Write([]byte(body))
+						})})
+					}
+					if err := registry.Mount(router, bindings, nil); err != nil {
+						t.Fatal(err)
+					}
+					return router
+				}
+				legacyURL := strings.Replace(legacy.Path, "{minigame_id}", "typer", 1)
+				oldReply := httptest.NewRecorder()
+				mount(before).ServeHTTP(oldReply, httptest.NewRequest(legacy.Method, legacyURL, nil))
+				newReply := httptest.NewRecorder()
+				mount(after).ServeHTTP(newReply, httptest.NewRequest(legacy.Method, legacyURL, nil))
+				if oldReply.Code != http.StatusOK || before.ValidateResponse("legacy", oldReply.Code, oldReply.Body.Bytes()) != nil {
+					t.Fatal("original registry did not serve its declared legacy body")
+				}
+				changed := !bytes.Equal(newReply.Body.Bytes(), oldReply.Body.Bytes())
+				if changed != topology.shadow || (after.ValidateResponse("legacy", newReply.Code, newReply.Body.Bytes()) != nil) != topology.shadow {
+					t.Fatalf("unexpected legacy dispatch: changed=%v body=%s", changed, newReply.Body.String())
+				}
+				addedReply := httptest.NewRecorder()
+				mount(after).ServeHTTP(addedReply, httptest.NewRequest(topology.method, topology.path, nil))
+				if addedReply.Code != http.StatusOK || after.ValidateResponse(addedID, addedReply.Code, addedReply.Body.Bytes()) != nil {
+					t.Fatal("new registered operation did not serve its declared body")
+				}
+				t.Logf("compatibility_pass=true legacy_response_changed=%t original_matches=%t", changed, !topology.shadow)
+			})
+		}
+	}
+}
