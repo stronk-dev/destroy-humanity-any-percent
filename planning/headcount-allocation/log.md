@@ -74,3 +74,37 @@ construction also retains its already-recorded closed-wire hold; no test-only by
 Recorded by: Codex. Editorial decision preparation, not an owner ruling, normative amendment,
 designated approval or release call. Next: record actual gameplay answers and obtain the
 author's coherent body reconciliation before the complete Headcount integration chain.
+
+## 2026-10-13 — Resolve RP-413's empirical question, not its ruling
+
+At `bd46e71e`, the previous goal work made concrete Deployment authority/native-process
+progress; the intervening answer clarified owner versus engineering responsibility but did
+not itself change product state. Continue the already-started Headcount oracle investigation.
+
+`overflow-oracle-audit.md` records the bounded question, exact mutation boundaries, primary
+Number semantics, derivation and reproduction. The illegal S8 example remains rejected.
+Within admitted integer counts, TS multiply-before-clamp cannot yield the specified overflow
+output fault; samples alone were not used as the universal proof. Signed-zero representations
+are outside that overflow claim. The existing independent exact-model tests discriminate
+other real faults: ignoring `k` produces eight Node and sixteen Chromium/WebKit failures,
+including the actual k3 literal. Go's analogous int64 capacity mutation fails cold on an
+admitted maximum-domain assignment with negative diversion. No assertions were weakened.
+
+Executed: naive TS comparison Node84/Chromium-WebKit168 pass; wrong-ratio comparison exits
+1/Make2 with8/16 mutant failures and all actual implementation checks passing; Go overlay
+`TestExactMaximumDomain -count=1` exitsMake2. Actual full Headcount Go passes0.121s/vet0;
+after deleting only our temporary clone files, Node42 and native Chromium/WebKit84 pass
+(0.247s/1.43s). Root commands, outcomes and limitations are in the audit. Initial browser
+EPERM ran no tests; lost tool results are excluded, and matching test processes were absent
+before replacement runs. No production file was mutated or leftover mutant added to CI.
+
+RP-413 stays OPEN for its author's S8/AC3 reconciliation; its next action is now explicit,
+not another hunt for an impossible overflow output failure. Accepted body, guarded algorithm,
+fixtures, versions, balance, hiring/output decisions and feature checkboxes are untouched.
+No Firefox/Linux/hosted/full CI, live integration, AC3/AC5 completion or release claim.
+
+Review by: Codex (research/implementer first filter). Recorded by: Codex. This research-only
+range after `bd46e71e` through the containing checkpoint needs independent review before it
+can support a normative amendment; earlier implementation review debt remains separate.
+Next: author reconciles the criterion against this evidence; continue accepted independent
+construction without inferring the held gameplay model or making a release call. No push.
