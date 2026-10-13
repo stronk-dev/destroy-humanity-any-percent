@@ -2,6 +2,8 @@ import fixtureJSON from "../../testdata/replay/apply-logged-v1.json";
 import typerV1Raw from "../../balance/testdata/typer-v1.json?raw";
 import typerRawJSON from "../../testdata/typer/raw-json-v1.json";
 import tierUnlockRaw from "../../testdata/minigame/tier-unlock-raw-v1.json";
+import apiCatalogRaw from "../../testdata/minigame/api-catalog-raw-v1.json";
+import minigameAPICandidate from "../../balance/testdata/minigame-api-candidate-v1.json";
 import arcadeV1Raw from "../../balance/testdata/arcade-v1.json?raw";
 import arcadeMinigamesRaw from "../../testdata/minigame/pitch-typer-arcade-v3.json?raw";
 import arcadeAPIRaw from "../../balance/testdata/minigame-api-arcade-candidate-v1.json?raw";
@@ -532,6 +534,17 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		expect(encodeFounderReplayState(state)).toMatchObject({ minigame_session_seq: 41 });
 		expect(() => restoreFounderReplayState(source, 20, { ...bundle, minigameAPI: undefined })).toThrow(/fields are not exact|inactive/);
 		expect(() => restoreFounderReplayState(source, 21, { ...bundle, minigameAPI: undefined })).toThrow(/requires minigame API/);
+	});
+
+	it.each(apiCatalogRaw.cases)("uses raw minigame API admission in the actual replay bundle: $name", async (test) => {
+		const artifacts = structuredClone(fixture.soul_artifacts) as unknown as Record<string, string>;
+		artifacts.pitch = JSON.stringify((await import("../../balance/testdata/pitch-v1.json")).default);
+		const base = JSON.stringify(minigameAPICandidate);
+		expect(base.split(test.find)).toHaveLength(2);
+		artifacts.minigame_api = base.replace(test.find, test.replace);
+		const result = loadReplayCatalogBundle(await artifactHash(artifacts as unknown as ReplayArtifacts), artifacts as unknown as ReplayArtifacts);
+		if (test.valid) expect((await result).minigameAPI?.tenants).toEqual([{ engineRef: "pitch", engineVersion: "1.0.0", minigameId: "pitch" }]);
+		else await expect(result.then(() => "admitted invalid minigame API policy")).rejects.toThrow(SyntaxError);
 	});
 
 	it.each(tierUnlockRaw.cases)("preserves raw tier unlock admission in the actual replay bundle: $name", async (test) => {

@@ -76,6 +76,22 @@ before tenant creation with `ErrMinigameTierRequired` or `ErrMinigameCurriculumE
 public error details `not_eligible/tier_required` and `not_eligible/curriculum_exit_required` are
 mapped in the API batch (TT-PA4).
 
+## Pinned API artifact admission (MA-C15)
+
+The existing `minigame_api` schema1 has exact required `schema_version`, `operations` and
+`tenants` fields. Operation rows require exactly `operation_id`/`version`; tenant rows require
+exactly `engine_ref`/`engine_version`/`minigame_id`. Both runtime loaders reject case aliases,
+unknown/missing/null members, duplicate keys including escaped duplicates, and fractional or
+exponent spellings of integer versions before those forms can be normalized. Canonical escaped
+keys/values remain valid. Go derives field spelling from the existing DTO tags; TypeScript
+uses the shared raw integer parser only for this artifact, not all replay JSON.
+
+The four legacy operation IDs, tenant ordering, Pitch/content dependencies, artifact bytes and
+Founder21 presence-based activation floor are unchanged. Shared raw vectors exercise the Go
+loader and actual freshly hashed TypeScript replay bundles, alongside historical replay tests.
+Kernel `0.3.189` identifies this admission correction. The separate tenant-binding/schema2
+proposal is still unaccepted and unimplemented; this correction does not activate new routes.
+
 ## Server-sampled command time (TT-PA1)
 
 The claim transaction samples the database clock once, as

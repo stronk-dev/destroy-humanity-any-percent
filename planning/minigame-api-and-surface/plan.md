@@ -1,5 +1,13 @@
 # Minigame API & Surface implementation plan
 
+Current bounded correction (2026-10-14, RP-565): existing schema1 raw admission now matches
+across Go/TS: exact DTO key spelling, unique raw members and integer version tokens. Old Go
+accepts8 case aliases; old TS accepts17 duplicate/token forms. All30 shared cases and existing
+replay tests pass after correction; the owning log records full checks and remaining limits.
+Kernel identity genuinely advances to0.3.189; the historical guard remains red at50a3a514.
+The new range after `3a182e1c` needs Claude review. No schema2, namespace/guard/drain proposal
+adoption, artifact mint or feature/release completion follows.
+
 Current tenant-conformance correction (2026-10-13, RP-515): Go now requires the exact decoded
 command/snapshot/offer keys, non-null mandatory snapshot/offer values and canonical lowercase
 content hashes already required by TP-C12/TP-C14 and the TypeScript tenant. The shared malformed

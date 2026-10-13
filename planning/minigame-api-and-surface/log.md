@@ -1729,3 +1729,43 @@ after `6849005f` through this containing commit and needs Claude designated revi
 with related MA corrections without erasing prior range debt. No acceptance checkbox, archival,
 owner adoption, publication or deployment. Continue accepted construction while true contract
 choices and the full nine-tier 1.0 objective remain open.
+
+## 2026-10-14 — RP-565 shared raw artifact admission
+
+Resume clean at `3a182e1c`. Previous turn progressed the integration proposal to review-ready,
+not adopted; no owner answer inferred. Under existing MA-C15, execute the recorded schema1
+conformance finding separately from unaccepted schema2. Thirty shared transformations bind
+exactly one occurrence in the real candidate, with canonical and escaped-key/value controls.
+Go invokes LoadCatalog; TS loads freshly hashed complete Pitch/replay bundles, not just a
+standalone JSON parser or already-decoded object.
+
+Old Go cold run fails8 uppercase root/operation/tenant keys, with22 cases already correct.
+Old TS fails17 duplicate/escaped-duplicate and fractional/exponent/rounded-to-one token cases;
+13 controls already agree. Its initial failure output dumps whole resolved bundles and is
+truncated, so map unexpected success to a fixed diagnostic string and rerun the same old
+implementation80643: terminal exit1, all17 failures/13 passes reproduced with complete output.
+Do not count the initial truncated diagnostic as a full raw recording.
+
+Correct Go raw shape checks derive mandatory spelling from the original Catalog/Operation/
+Tenant DTO tags; duplicate scanning, typed decoding, ordering/version/tenant validation remain.
+This is admission, not reflected API schema generation. TS invokes parseIntegerCatalogJSON
+before the existing policy parser only for minigame_api. No general replay JSON policy, data
+bytes, field/version/operation/tenant identities, save floors or existing good histories change.
+Kernel0.3.188→0.3.189 is a genuine watched loader change, with all three version sources updated.
+
+Final Go/vet13555 exits0: minigameapi0.167s, replaycatalog0.444s, kernel0.169s, Account0.476s,
+Gameserver0.371s. Node's complete affected replay suite81258 passes134. Native37800 explicitly
+selects Chromium/WebKit and passes268, including the30-case vectors and full historical suite;
+Firefox is not selected/retried and its preceding zero-execution launch failure remains open.
+Type/build/full client/boundary65790 exits0: zero diagnostics,11227 pass/1040 explicit skips.
+Whole-history guard38213 terminates2 at the existing50a3a514 RP-131 violation after its checkout
+and adversarial fixture checks pass. It stops before evaluating this worktree's changed-prefix
+bump: do not claim the whole guard or hosted CI green, bypass it or rewrite that history.
+
+Update canonical platform docs, owning plan, RP-565 and the draft's now-stale prerequisite
+sentence in the same batch. Format/diff/source reviewed. No SQL/persisted activation/public
+player journey/Linux/artifact-release proof or new metadata2 behavior; Docker/review/author
+holds and the full nine-tier1.0 remain open. Review by: Codex (implementer first filter).
+Recorded by: Codex. Exact full correction/tests/vectors/version/docs/records range after
+`3a182e1c` through this containing commit needs Claude designated review, not approval inferred
+from earlier ranges. No acceptance checkbox, archival, draft adoption, mint, push or deployment.

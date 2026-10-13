@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"reflect"
 	"regexp"
 )
 
@@ -43,7 +44,7 @@ var requiredOperations = [...]string{
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
-	if !uniqueJSONKeys(data) {
+	if !uniqueJSONKeys(data) || !matchesCatalogShape(data, reflect.TypeOf(Catalog{})) {
 		return nil, ErrInvalidCatalog
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
@@ -72,6 +73,39 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		prior = key
 	}
 	return &catalog, nil
+}
+
+// The existing DTO tags own key spelling. This is raw input admission, not
+// reflected API schema generation; domain/version checks still follow decode.
+func matchesCatalogShape(data json.RawMessage, shape reflect.Type) bool {
+	if bytes.Equal(bytes.TrimSpace(data), []byte("null")) {
+		return false
+	}
+	switch shape.Kind() {
+	case reflect.Struct:
+		var fields map[string]json.RawMessage
+		if json.Unmarshal(data, &fields) != nil || len(fields) != shape.NumField() {
+			return false
+		}
+		for index := 0; index < shape.NumField(); index++ {
+			field := shape.Field(index)
+			value, present := fields[field.Tag.Get("json")]
+			if !present || !matchesCatalogShape(value, field.Type) {
+				return false
+			}
+		}
+	case reflect.Slice:
+		var values []json.RawMessage
+		if json.Unmarshal(data, &values) != nil {
+			return false
+		}
+		for _, value := range values {
+			if !matchesCatalogShape(value, shape.Elem()) {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func (catalog *Catalog) SupportsTenant(minigameID, engineRef, version string) bool {

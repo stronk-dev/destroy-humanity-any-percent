@@ -5,6 +5,7 @@ import { activePlayBuffId, activePlayLuckyRequested, activePlayOpportunityId, lo
 import { achievementScore, newlyAttained, newlyEarned, type AchievementObservation } from "./achievements/evaluate";
 import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./commons";
 import { applicationCopyCatalog, COPY_KEYS } from "./copy";
+import { parseIntegerCatalogJSON } from "./catalog-json";
 import { parseCurriculumCatalog, type CurriculumBranch, type CurriculumCatalog, type CurriculumStarter } from "./curriculum";
 import { loadDoctrineCatalog, validateDoctrineRoutes, type DoctrineCatalog } from "./doctrines";
 import { ladderSourceId, manualRoleSourceId, parseCatalog, validateAxisInputs, subProgressValue, validateCatalogGateReferences, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
@@ -206,7 +207,7 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
 	const soul = artifacts.soul === undefined ? undefined : parseSoulCatalog(parseJSON(artifacts.soul), { copyKeys: new Set(COPY_KEYS), epochSeeded: true, catchupCeilingMs: prestige.catchupCeilingMs });
 	if (soul && (!minigames || !minigameCatalogSupportsSoul(minigames) || !pets || !petCatalogSupportsSoul(pets))) throw new SyntaxError("Soul requires bumped minigame and pet artifacts");
   const pitch = artifacts.pitch === undefined ? undefined : parsePitchCatalog(parseJSON(artifacts.pitch), new Set(COPY_KEYS));
-  const minigameAPI = artifacts.minigame_api === undefined ? undefined : parseMinigameAPIPolicy(parseJSON(artifacts.minigame_api));
+  const minigameAPI = artifacts.minigame_api === undefined ? undefined : parseMinigameAPIPolicy(parseIntegerCatalogJSON(artifacts.minigame_api, "minigame API policy"));
   if (minigameAPI && (!pitch || !minigames || !minigameAPI.tenants.some((row) => row.minigameId === "pitch" && row.engineRef === "pitch" && row.engineVersion === "1.0.0"))) throw new SyntaxError("minigame API requires the Pitch content chain");
   // TT-PA3 loader chain: the typer definition row, the pinned typer artifact,
   // and the minigame_api typer tenant exist together or not at all.

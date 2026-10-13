@@ -250,10 +250,10 @@ artifact bytes or historical replay policy. Schema2 tenant roles are required, n
 four-field objects; operation IDs use `^[a-z][a-z0-9_]*$`, engine versions retain the catalog's
 positive-major grammar, arrays are byte-sorted/unique and root operations are the exact role
 union plus directory. Refuse unknown/aliased/missing/duplicate keys and noninteger version
-tokens before ordinary parsing. Current TS's generic JSON.parse cannot establish raw
-duplicate/numeric-token admission; Go already rejects those but its struct decoder does not
-by itself prove exact key spelling. Close both sides' raw/shape conformance (RP-565), not a
-re-encoded legacy artifact. Preserve canonical historical artifacts and test noncanonical refusals.
+tokens before ordinary parsing. Schema1's RP-565 correction now supplies raw/shape admission
+in both runtimes; preserve it in the new version loader, not a re-encoded legacy artifact.
+Canonical historical artifacts and noncanonical refusals need mixed-version coverage. That
+schema1 correction is not implementation or acceptance of schema2/roles/guards.
 
 Go uses private owned catalog slices and value/copy-returning schema/operations/tenant/roles
 accessors; the TS model deep-freezes the corresponding arrays/rows/role objects. Replay checks
