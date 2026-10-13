@@ -3171,3 +3171,40 @@ after `ed129ec5` through this containing commit, including tests/records, needs
 designated Claude review, consolidatable with related CV4 fixes. The original
 P2/P3 verdict is not approval of this range. Next: RP-537's guard boundary and
 remaining accepted construction; no archival, mint, push or1.0 promotion.
+
+## 2026-10-13 — RP-537 checked mutation routes and codec exceptions
+
+Outcome under accepted AC4: close the demonstrated parenthesis/field-alias gaps
+and stop exempting the whole codec file. Old guard67617 misses six type-checked
+write forms; three direct-write and two value-read controls pass. Unwrap LHS
+parentheses and report field-address escapes as mutation-capable routes, without
+claiming each address is an executed mint. Ordinary value reads stay allowed.
+
+The actual repository collector now includes `save/state.go`. Its only exceptions
+are exactly one `normalized.CloutLifetime` copy in `EncodeStateVersion` and one
+`source.CloutLifetime` copy in `RestoreState`. Changed values, missing/extra copies,
+other codec writers and aliases refuse. Eight typed codec cases retain a healthy
+baseline; three in-memory additions to the actual collected codec each produce
+one specific violation. No production source is mutated for these probes.
+The existing Founder v17/v18 test additionally round-trips 1, 999 and MaxExactInteger
+through the real encoder/restorer with identical bytes; the zero control remains.
+This tests actual permitted persistence, not only an AST shape or field census.
+
+Final root84779 `make test-go GO_PACKAGES='./production ./save'` with cold
+`Test(Gaia|FounderV17AndV18RoundTripWhileCompanyRejectsThem)` passes: all four Gaia
+tests (314 current non-test server files, including both copies) and real codec
+controls. Affected production/save vet passes. Initial corrected48883 preceded
+the final codec cases and is not complete-batch credit; final45597/84779 cover
+them. Gofmt/diff checked, all handles terminal. Runtime/source markers, fixtures,
+schema, balance and kernel0.3.188 are byte-unchanged. Only tests, canonical guard
+description and owning records change; no CI lane or new framework.
+
+This remains a conservative explicit-write/field-address guard, not whole-program
+alias/reflection/external-library proof. Its two catalog absence checks do not
+establish every reward/effect union. Full AC4, original P4 acceptance, Docker/SQL,
+hosted CI, accounting and the full nine-tier goal remain open. Review by: Codex
+(implementer first filter). Recorded by: Codex. Full range after `e7ad3591`
+through this containing commit needs designated Claude review; consolidate with
+the related corrective range after `30050a93` instead of reviewing each record
+separately. Original negative verdicts approve none of these fixes. Next: remaining
+accepted ownership/reward boundaries and construction, with no archival or push.

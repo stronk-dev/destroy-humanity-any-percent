@@ -92,9 +92,21 @@ accrual.
 
 ## Gaia law
 
-`server/production/gaia_law_test.go` proves that nothing outside the save codec writes
-`CloutLifetime`; under Option A the allowed writer set is empty. No economy resource is a Clout
-resource.
+`server/production/gaia_law_test.go` scans non-test server Go sources for explicit
+`CloutLifetime` writes and mutable field-address escapes, including parenthesized
+forms. Ordinary value reads are allowed. The save codec is included: only one
+same-field copy in `EncodeStateVersion` and one in `RestoreState` are exempt;
+changed values, extra/missing copies and other codec writers fail the guard.
+Typed negative fixtures and in-memory mutations of the actual codec inventory
+exercise that boundary (RP-537), without changing production source. The existing
+Founder codec test also round-trips nonzero lifetime values through the real
+encoder/restorer, including the exact-integer maximum, preserving wire bytes.
+
+This is a conservative source-ownership guard, not a whole-program alias,
+reflection or external-library proof. Its resource checks cover the current
+pinned and fixture catalogs, neither of which declares Clout; they do not prove
+every future reward/effect union. Full AC4 and independent acceptance remain
+separate from this locally corrected guard. Option A still authorizes no mint.
 
 ## Axis upgrade roles
 

@@ -377,6 +377,24 @@ func TestFounderV17AndV18RoundTripWhileCompanyRejectsThem(t *testing.T) {
 	if _, err := RestoreState(encoded, 17, catalog, economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
 		t.Fatalf("Company accepted v17: %v", err)
 	}
+	// The Gaia guard's two codec exceptions must preserve real, nonzero
+	// lifetime values; permitted source shapes alone are not round-trip proof.
+	for _, clout := range []int64{1, 999, decimal.MaxExactInteger} {
+		state.CloutLifetime = clout
+		wire, encodeErr := EncodeState(state)
+		if encodeErr != nil {
+			t.Fatal(encodeErr)
+		}
+		actual, restoreErr := RestoreState(wire, 17, catalog, economy.ScopeFounder, time.Time{})
+		if restoreErr != nil || actual.CloutLifetime != clout {
+			t.Fatalf("Clout round trip: want=%d state=%+v err=%v", clout, actual, restoreErr)
+		}
+		again, encodeErr := EncodeState(actual)
+		if encodeErr != nil || string(again) != string(wire) {
+			t.Fatalf("Clout round-trip bytes changed: %v", encodeErr)
+		}
+	}
+	state.CloutLifetime = 0
 	state.WireVersion = 18
 	state.Pets = map[string]pet.CareState{"018f6b7c-9abc-7def-8abc-0123456789ac": {
 		StatsPPM:                map[pet.StatID]int64{pet.StatHunger: 600_000, pet.StatEnergy: 700_000, pet.StatCleanliness: 800_000, pet.StatAffection: 900_000},

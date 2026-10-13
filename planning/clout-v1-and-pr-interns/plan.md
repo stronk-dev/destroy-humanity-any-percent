@@ -6,6 +6,15 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+2026-10-13 RP-537 guard checkpoint: the test-only repair now catches the six
+typed syntax/alias forms missed by the original scanner, retains value-read
+controls, and scans the save codec with exactly two checked copy exceptions.
+Typed codec negatives, in-memory mutations of its actual collected source and
+real nonzero Founder round trips pass cold. Runtime/kernel188 are unchanged.
+The owning log records the pending Claude range, consolidatable with CV1/CV4/CV9
+corrections. Original P4's negative disposition stands; full AC4's remaining
+ownership/reward coverage and all feature/release gates are not waived.
+
 2026-10-13 P2/P3/RP-539 checkpoint: original `f256b235^..f256b235`, all28 paths,
 now has full designated CHANGES REQUIRED, retaining RP-307/309/310/311 and the
 author-owned AC2/AC3 gaps. The newly reproduced early-return serialization gap
@@ -13,8 +22,9 @@ is locally fixed at kernel0.3.188: all pre-v19 encoders reject forbidden
 attainment without altering legal bytes. Paired/native/replay checks pass;
 no fresh SQL evidence is available from the interrupted Docker attempt.
 Original P1–P5 implementation dispositions are now complete, not corrective
-approval or whole-feature acceptance. Next: accepted construction, RP-537's
-guard repair and consolidated corrective review; do not restart those originals.
+approval or whole-feature acceptance. The latest RP-537 checkpoint above owns
+the guard repair; continue accepted construction and consolidated corrective
+review, without restarting those originals.
 Accounting/author/content/P6/full-release obligations remain independently open.
 
 2026-10-13 P1/RP-538 checkpoint: original `ace4e67e^..ace4e67e`, all17 paths,
