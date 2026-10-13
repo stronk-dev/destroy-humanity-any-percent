@@ -109,7 +109,7 @@ func (controller Controller) Install(ctx context.Context, request InstallRequest
 		return controller.fail(rejectedInputRecord("install", request.Bundle, controller.Operator, started), "bundle", err)
 	}
 	base := controller.baseRecord("install", bundle, Bundle{}, started)
-	records, ledgerErr := ReadReleaseLedger(controller.LedgerPath)
+	records, ledgerErr := readReleaseLedgerForOperation(controller.LedgerPath, started)
 	if ledgerErr == nil {
 		for _, record := range records {
 			if record.Action != "install" || record.Result != "failed" {
@@ -185,6 +185,9 @@ func (controller Controller) Release(ctx context.Context, request ReleaseRequest
 	if versionErr != nil || versionOrder <= 0 || candidate.Manifest.DatabaseMigration < current.Manifest.DatabaseMigration {
 		return controller.fail(base, "compatibility", ErrInvalid)
 	}
+	if _, ledgerErr := readReleaseLedgerForOperation(controller.LedgerPath, started); ledgerErr != nil && !errors.Is(ledgerErr, os.ErrNotExist) {
+		return errors.Join(ErrInvalid, ledgerErr)
+	}
 	// The candidate config preflight runs inside the candidate image, which a
 	// bare config-ID reference can only resolve after the bundle archive loads.
 	if err := controller.Runtime.Prepare(ctx, candidate); err != nil {
@@ -239,7 +242,7 @@ func (controller Controller) Rollback(ctx context.Context, request RollbackReque
 	}
 	base := controller.baseRecord("rollback", previous, failed, started)
 	base.BackupID = request.Backup.ID
-	records, err := ReadReleaseLedger(controller.LedgerPath)
+	records, err := readReleaseLedgerForOperation(controller.LedgerPath, started)
 	if err != nil {
 		return err
 	}

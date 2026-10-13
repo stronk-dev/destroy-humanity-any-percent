@@ -7,7 +7,18 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Current rotation chronology correction, 2026-10-13 (RP-555):** activation/removal refuse
+**Current operator-state admission, 2026-10-13 (RP-556/RP-557):** lifecycle commands now
+reject existing inadmissible history/start times before runtime operations; lock/append paths
+reject final directory symlinks before changing their targets. Old regressions and all30
+corrected physical-file/recording-runtime cases, focused race, four cold packages/vet and Linux
+helper build pass. New range after `b448069b` needs Claude review; not real Docker/SQL/R-006.
+**Next engineering contract: RP-558 / DESIGN-GAP10**—define the actual current-release identity
+binding, including missing history and failed transitions, before claiming forward-only live
+upgrades. The current controller admits a contradictory install-history diagnostic; no live-host
+downgrade is proved. Preserve existing accepted behavior until its contract closure is adopted;
+this is agent specification work, not a request that Marco design a technical parameter.
+
+**Preceding rotation chronology correction, 2026-10-13 (RP-555):** activation/removal refuse
 before appending a timestamp the existing reader would reject. Six old-source poisoned-ledger
 cases and12 equal/later controls establish the regression; all18 corrected cases preserve
 readability and valid retry, across all three key families. Cold four-package tests/vet,

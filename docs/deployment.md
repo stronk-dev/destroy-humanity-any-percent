@@ -715,6 +715,19 @@ lock. A concurrent rotation refuses before changing overlap state, so a rollback
 service under one Compose overlay and resume under another. These locks coordinate supported
 helper commands, not manual edits to operator-state files.
 
+Before runtime preparation, backup, startup or destructive rollback steps, lifecycle commands
+admit existing release history using the writer's rules: a regular mode-0600 file, valid ordered
+records, and a command start strictly after the last completion. Known-invalid history or an
+inadmissible start refuses without appending a record or calling the runtime. Missing-history
+behavior is unchanged: initial install and the current release implementation allow an absent
+file; rollback requires its recorded authority. This precheck does not guarantee a later write
+cannot fail or that the clock cannot change during execution.
+
+Final operator-state directory symlinks are rejected before permission changes, by both the lock
+and append paths. Refusal does not chmod the linked target or create files there. A real directory
+still receives the existing mode-0700 initialization. This is not a new filesystem sandbox or a
+guarantee against external/manual replacement races.
+
 Rotation mutations enforce the same chronological order as the ledger reader across all key
 families. A command timestamp earlier than the latest row refuses before appending, even when
 that family's minimum overlap has elapsed. Equal timestamps remain valid. The existing ledger
@@ -754,8 +767,11 @@ gameserver exits zero only after admission closed and admitted requests, backgro
 relay/outbox flush and transport shutdown completed. The real Caddy population separately
 witnesses the exact intent refusal during drain. `restart: unless-stopped`
 does not race this sequence: the helper uses `docker compose stop`, not a raw container kill.
-Normal release is strictly forward by semantic release version and database migration; an older
-version can enter service only through the governed rollback command.
+Normal release compares candidate semantic version and database migration with the supplied
+current bundle and rejects a downgrade relative to it. That supplied identity is not yet bound
+to the recorded installation or actual running release (RP-558 / DESIGN-GAP10); the helper cannot
+yet substantiate the broader claim that an older-than-live version enters only through rollback.
+The accepted forward-only release requirement remains a gate, not a promise waived by this gap.
 
 `TestDockerRuntimeDrainCurrentObservesProtocolAndCommandBoundaries` now invokes the actual
 drain method through localhost HTTP/WebSocket exchanges and a recording command runner. It

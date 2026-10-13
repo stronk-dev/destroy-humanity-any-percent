@@ -274,6 +274,27 @@ func ReadReleaseLedger(path string) ([]ReleaseRecord, error) {
 	return decodeReleaseLedger(file)
 }
 
+// readReleaseLedgerForOperation rejects existing history that the final
+// append cannot accept before the caller changes any runtime state. Supported
+// callers hold the shared operator lock while checking and using this history.
+func readReleaseLedgerForOperation(path string, started time.Time) ([]ReleaseRecord, error) {
+	info, err := os.Lstat(path)
+	if err != nil {
+		return nil, err
+	}
+	if !info.Mode().IsRegular() || info.Mode().Perm() != 0o600 {
+		return nil, ErrInvalid
+	}
+	records, err := ReadReleaseLedger(path)
+	if err != nil {
+		return nil, err
+	}
+	if !started.After(records[len(records)-1].CompletedAt) {
+		return nil, ErrInvalid
+	}
+	return records, nil
+}
+
 func DecodeReleaseLedger(data []byte) ([]ReleaseRecord, error) {
 	return decodeReleaseLedger(bytes.NewReader(data))
 }
@@ -377,6 +398,9 @@ func appendJSONLine(path string, value any) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
 		return err
 	}
+	if directory, err := os.Lstat(filepath.Dir(path)); err != nil || !directory.IsDir() {
+		return ErrInvalid
+	}
 	if err := os.Chmod(filepath.Dir(path), 0o700); err != nil {
 		return err
 	}
@@ -422,6 +446,9 @@ func acquireOperatorLock(path string) (*os.File, error) {
 	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
 		return nil, err
+	}
+	if directory, err := os.Lstat(filepath.Dir(path)); err != nil || !directory.IsDir() {
+		return nil, ErrInvalid
 	}
 	if err := os.Chmod(filepath.Dir(path), 0o700); err != nil {
 		return nil, err

@@ -6650,3 +6650,62 @@ Review by: Codex (repair implementer first filter). Recorded by: Codex. Exact ne
 records range starts after `3964194b` through this containing commit; Claude designated review
 pending, consolidatable with prior rotation/lifecycle fixes. All handles terminal. No acceptance,
 archival, push, deployment or operator cleanup; continue safe accepted construction/reviews.
+
+## 2026-10-13 — Operator-state admission before lifecycle effects (RP-556/RP-557)
+
+Under accepted DP4/DP5 and existing private/append-only ledger rules, admit existing release
+history before runtime operations. Install/rollback already read it, but only final append
+enforced its type/mode and new start chronology; release did not read it until after its runtime
+sequence. Shared-lock-held admission now requires a regular0600 file, valid ordered history and
+start strictly after the latest completion. Preserve missing-history behavior and rollback's
+exact authority/retry chain. Refusals cannot honestly append a row to inadmissible history.
+No new ledger schema, cutoff, retrospective adoption or failed-transition policy.
+
+Old `b448069b`52857 fails15 of24 cases: existing malformed/empty/directory release history,
+symlink/public-mode history and earlier/equal starts reach runtime before final append refuses.
+The rollback arms record stop/reset/restore and the install arms also cleanup; this is why merely
+checking the final error would be vacuous. Nine controls pass. Corrected11880 passes all24,
+requiring zero runtime calls and unchanged history on refusal plus exact success records on
+the three valid sequences. Runtime is the existing recording fixture, not a real database/host.
+
+The same operator-state boundary exposed chmod-before-final-directory-validation. Two old
+lock/append cases in58411 refuse but change owned symlink-target permissions0775→0700; four
+private-target/real-directory controls pass. Check final directory type before chmod in both
+paths. Corrected20001 passes all six: link/target remain untouched on refusal and a real directory
+still initializes privately.27597 originally also closed the error result's typed-nil closer;
+fixed that test bookkeeping before58411, without changing the observed permission regression.
+No new ancestor-link/race sandbox, user-data deletion or external permission change is claimed.
+
+Finished checks after removing the temporary authority diagnostic below:70141 cold four-package
+deploymentrelease/rehearsal/both-command tests pass; matching vet exits0.89731 passes all30
+cases under race. Linux-amd64 helper build succeeds at
+`/tmp/cloud-clicker-abort-install.g2Zh3G/deployment-release-admission`. Formatting/diff checked.
+The tests live in the existing server CI population; no workflow change or hosted CI verdict.
+No actual Docker/Postgres lifecycle, R-006, future-write durability or mid-operation-clock proof.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Entire new source/tests/docs/
+records range starts after `b448069b` through this containing commit; designated Claude review
+pending, consolidatable with preceding operator/lifecycle fixes. All handles terminal. No
+acceptance, archival, push, deployment, daemon restart or operator cleanup.
+
+## 2026-10-13 — Current release identity gap, not another generic owner decision (RP-558)
+
+Source audit finds no current-bundle/installed-release binding in Controller.Release. Compare
+checks caller bundles; the new history admission above checks admissibility, not their identities.
+Temporary two-case `TestCurrentReleaseAuthorityDiagnostic`58696 uses existing fixtureBundles,
+validRuntime and physical Append/ReadReleaseLedger. Seed a successful install at12:00–12:01,
+then release at12:02 from supplied1.0.0 to1.1.0. Matching recorded1.0.0 and contradictory2.0.0
+(different manifest SHA256) both execute `[prepare preflight backup drain start identity smoke]`
+and append succeeded1.1.0. The runtime/loader are doubles, so this does not prove a real-host
+downgrade bypasses image/database gates. It proves the controller cannot establish the claimed
+live-release ordering from its current inputs. Removed the temporary probe exactly before the
+final package/race checks; do not retain an unsafe outcome as a normal acceptance assertion.
+
+**DESIGN-GAP10, engineering/author closure:** specify the authoritative current-release tuple
+and actual running-artifact binding; define absent history and failed/partially executed
+transition handling. Then adopt/review that contract and implement a stale-identity refusal
+through the real helper/host before backup/drain. Do not merely compare two caller-selected
+versions, infer the current host from a supplied path, or silently invent a new retry/adoption
+policy. This is a technical contract to prepare, not a newly delegated product choice. Canonical
+docs now limit the implementation claim; the accepted forward-only floor stays unchanged.
+Next: prepare that bounded authority contract and continue accepted work; no full1.0 promotion.
