@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current failed-install correction, 2026-10-13 (RP-554):** `AbortInstall` now retains its
+normalized runtime rather than dropping the default command runner and rotation overlay.
+Three old-source failures and five controls precede the correction; all eight now pass,
+including actual ExecRunner subprocess failures through an owned recording executable.
+Cold four-package tests/vet, focused race and Linux-amd64 helper build pass. Original R2's
+complete nine-path disposition is CHANGES REQUIRED (RP-134/RP-554), not approval of Codex
+corrections. New range after `b868cd2c` needs Claude review; Docker/SQL failed-install and
+exact-artifact clean-host proof remain open. No change to rotation timing or cleanup targets.
+
 **Current DP-F refusal-record correction, 2026-10-13 (RP-552):** the non-clean restore classifier
 now rejects duplicate and case-aliased members rather than allowing Go's overwrite/case-fold
 semantics to create valid-looking evidence. Sixteen old-parser regressions and two actual-probe

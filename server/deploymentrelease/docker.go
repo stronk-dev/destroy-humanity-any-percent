@@ -383,10 +383,11 @@ func (runtime DockerRuntime) StartInstall(ctx context.Context, bundle Bundle) er
 }
 
 func (runtime DockerRuntime) AbortInstall(ctx context.Context, bundle Bundle) error {
-	if _, err := runtime.normalized(); err != nil {
+	runtime, err := runtime.normalized()
+	if err != nil {
 		return err
 	}
-	_, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "down", "--volumes", "--remove-orphans")...)
+	_, err = runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "down", "--volumes", "--remove-orphans")...)
 	return err
 }
 

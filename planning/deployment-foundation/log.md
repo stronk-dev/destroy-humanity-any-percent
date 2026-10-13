@@ -6556,3 +6556,50 @@ docs/records range starts after `fc04db24` through this containing commit; desig
 pending, consolidatable with RP-142's earlier attribution correction. Original R20 is now fully
 dispositioned, not approved. All execution handles are terminal; remaining author/owner, producer,
 artifact and full-range review gates stay open while safe accepted work continues.
+
+## 2026-10-13 — Complete original Claude R2 disposition; failed-install regression (RP-554)
+
+Review by: Codex. Recorded by: Codex. Exact original range `92fab705^..92fab705`, all nine
+changed paths: docs/log, release CLI, rehearsal install/recovery constructors, command builder,
+DockerRuntime, its test and rotation ledger. Decision: **CHANGES REQUIRED**, extending rather
+than replacing the earlier targeted RP-134 verdict. This is not approval of any later Codex code.
+
+The constructor wiring and static paired-overlay classifier match the submitted bounded scope;
+single-family composition remains DESIGN-GAP4, not a decision made by this review. RP-134 already
+proved the original command-lock interleaving. Complete invocation tracing exposes a second
+omission: `AbortInstall` validates `normalized()` but discards the returned value. Its cleanup
+Compose command therefore loses the overlay R2 adds, while the production CLI's unset Runner
+panics. The nil-runner error predates R2; R2's overlay change leaves the same mistake unresolved.
+The current controller calls this method after failed install startup/identity/smoke and joins
+returned cleanup errors; a panic bypasses that failure-record path.
+
+New tests run against unchanged `b868cd2c`: corrected fixture run4869 fails three of eight
+cases—both-open overlay omitted and both production-shaped default-runner calls panic—while
+five ordinary/refusal controls pass. Initial58955 additionally failed my removed-pair fixture
+because its append order went backwards; repaired the fixture chronology, not production or
+assertions, before4869. No new rotation policy, predeclaration requirement or host action.
+
+## 2026-10-13 — RP-554 preserve failed-install runtime defaults and rotation state
+
+Under accepted DP4/DP5 and the existing cleanup contract, retain `normalized()`'s returned runtime
+in `AbortInstall`. Same `down --volumes --remove-orphans` target and existing clean-install guard;
+no other lifecycle, key timing, retention, schema, balance, kernel or CI-policy change. Tests
+require exact base/overlay arguments, refusal before commands for single-open/malformed ledgers,
+and propagation of the actual default ExecRunner's exit23 failure. That process runs an owned
+recording executable as `docker` on a test-only PATH, never Docker or a daemon.
+
+Finished root checks: focused4939 passes all eight cases;94188 passes them under race.
+23067 cold `make test-go GO_PACKAGES='./deploymentrelease ./deploymentrehearsal
+./cmd/deployment-release ./cmd/deployment-rehearsal' GO_TEST_FLAGS='-count=1'` passes all four
+packages; matching vet exits0. The selected Integration run14155 explicitly skips the Caddy/
+Postgres release witness (environment absent); rehearsal reports no tests for that selector,
+not integration success. Linux-amd64 release-helper build succeeds at
+`/tmp/cloud-clicker-abort-install.g2Zh3G/deployment-release`; not a released bundle/runtime proof.
+Formatting and diff checked. Old-behavior regressions discriminate without another mutation.
+
+Review by: Codex (repair implementer first filter). Recorded by: Codex. Exact new correction/
+tests/docs/records range starts after `b868cd2c` through this containing commit; Claude designated
+review remains pending and may consolidate with the prior RP-134/lifecycle corrections. Original
+R2 is fully dispositioned, not approved. Actual failed-install Docker cleanup, clean-host R-006,
+author decisions, full range review and nine-tier1.0 remain open. All handles terminal; no push,
+deployment or operator cleanup performed. Continue accepted construction and remaining reviews.

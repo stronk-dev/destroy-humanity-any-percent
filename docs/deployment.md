@@ -819,6 +819,14 @@ rotate JWT and bootstrap keys together or wait for the single open overlap to be
 per-family overlay is a recorded follow-up, not current behavior. The ledger path must be absolute;
 a missing ledger means no open overlap.
 
+Failed-install cleanup uses that same normalized runtime: the CLI's default command runner
+executes `down --volumes --remove-orphans`, including the previous-key overlay when both
+overlaps are open. Invalid rotation state refuses before cleanup; command failures return to
+the controller instead of panicking on an unset runner. Cleanup does not alter rotation timing
+or authorize deleting pre-existing project state; initial-install clean-host preflight remains
+mandatory. Native tests exercise exact arguments and the default runner through an owned
+recording executable, not Docker or a real failed-install recovery.
+
 Build the release helper with:
 
 ```sh
