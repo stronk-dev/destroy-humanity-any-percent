@@ -928,6 +928,33 @@ scheduler regression runs the real encrypted-target admission, blocks on a forei
 recovers after its removal with a synthetic dump. Neither proof replaces real dump/restore,
 all seven producer journeys or the exact release-host rehearsal.
 
+`make test-deployment-backup-profile` is a distinct actual-execution population, included in
+manual operations verification and outside push CI. It mounts the freshly built production
+backup executable into the existing Postgres16/private monitoring fixture. This population
+does not seed a synthetic backup-success metric. The CLI first creates a real custom-format
+Postgres dump and encrypted baseline; its completion timestamp must reach Prometheus.
+A foreign entry then makes the actual scheduled worker refuse the dedicated target. The
+completed baseline bytes and the obstruction must remain untouched, and the worker's own
+failure textfile must fire through node-exporter and reach the receiver.
+
+After delivery, the fixture updates one seeded account row and removes only its obstruction.
+The same worker stays alive through its unchanged five-minute retry; no direct scheduler-round
+call, injected clock or shortened timer is used. The retry must produce a new package,
+publish its actual completion, resolve the exact same receiver alert, and restore the updated
+row into a fresh disposable Postgres database through the production restore implementation
+and actual `pg_restore`16. An old dump or a fake dump signature cannot satisfy that row check.
+The native supervisor requires the named child test's explicit PASS, not exit0 alone, and
+reuses exact unique-project/one-off cleanup. Existing twelve-minute fixture and parent guards
+remain; the fourteen-minute Go timeout permits cleanup, not a wider job or notification bound.
+
+The shared `internal/backupfixture` builders retain the existing backup tests' synthetic
+manifest/epoch values while using the actual applied migration number. They are fixture
+metadata, not authenticated built-release artifacts. Only the seeded row is checked in this
+joined retry/receiver population; the existing populated backup/restore suite remains
+separate. This does not wait for the next six-hour slot, prove an off-host durable target,
+measure RPO/RTO, adopt the pending metadata-authentication proposal or replace R-006/full AC7.
+Host storage/journal signals remain controls here, and the local services are mixed-architecture.
+
 `make test-deployment-storage-profile` focuses a separate named population in that same private
 fixture. The default `test-deployment-operations-profile` runs both populations. Two distinct,
 empty 20 MiB tmpfs subjects bound the test's writes; no host filesystem is filled. The production

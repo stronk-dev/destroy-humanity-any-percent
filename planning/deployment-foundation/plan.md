@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Latest DP6/DP7 actual backup execution, 2026-10-13:** the production CLI now
+has a joined actual Postgres dump→scheduled target refusal→receiver firing→real
+five-minute retry→matching resolution→fresh-database restore witness. The retry
+restores a deliberately updated account row, not the old dump. No direct backup
+metric or fake dump is used in this population. Shared fixture metadata remains
+synthetic, and the log owns final checks/range after `c4279b66`, pending designated
+review. Continue actual game/host observation, retention, older-container restart
+history and exact-artifact evidence; this is not off-host/RPO/RTO or full AC7/R-006.
+
 **Latest DP7 restart receiver construction, 2026-10-13:** the actual Docker
 observer's first-scrape count3/increase0 now fires through the private services
 and reaches the receiver; an actual replacement count0 resolves the same alert.

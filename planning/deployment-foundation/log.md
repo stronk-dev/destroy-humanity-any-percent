@@ -5956,3 +5956,51 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Entire range af
 `cdc78050` through this containing commit needs Claude designated review; consolidate
 with preceding DP7 work. No acceptance, archival, push, deployment or1.0 promotion.
 Continue the remaining genuine producer and release-host boundaries.
+
+## 2026-10-13 — Actual scheduled backup reaches the receiver and restores fresh data
+
+**Outcome / authority:** DP6/DP7 actual execution, reusing the private fixture and
+production CLI. No injected backup metric, clock or dump in this named population.
+Create a real encrypted Postgres16 baseline; observe its actual completion; add an
+owned foreign entry; run the real schedule command. Its target refusal must reach
+the receiver without changing baseline/obstruction bytes. After delivery, update
+one seeded account row and remove only the obstruction. The same worker waits its
+unchanged five-minute retry, creates a new encrypted package, resolves the exact
+receiver alert and restores the updated row into a newly created database using
+real pg_restore16. No round callback, forced resolution or faster retry. Existing
+12m child/parent guards remain; 14m Go timeout allows supervisor cleanup only.
+
+**Checks:** first execution11372 passes376.07s (child373.04s). Final root execution
+21704, with explicit obstruction-preservation and named-PASS collection guards,
+passes374.04s (child370.10s), exit0. Empty, skipped, wrong-population and log-only
+PASS inputs are refused by the cold unit guard. Existing real Postgres backup/
+restore population8984 passes all seven top-level tests, including populated
+identity, wrong/trailing package, clean-target and snapshot-consistency cases.
+Backup metadata builders moved unchanged into `internal/backupfixture` for reuse;
+the current migration is read from actual SQL, not a stale fixture version.
+
+Final affected cold native/vet72114 passes operations1.637s, operations-command
+5.455s, backup-command0.398s and backup0.607s. Declared Linux-amd64/Postgres51681
+passes5.166s/5.569s/0.149s/4.022s; private opt-in skips there are not joined proof.
+Initial17614/57698 compile attempts failed on my confusing PackageMetadata's dump
+hash with Header's payload hash and a moved unused import; no private execution
+ran. Corrected field checks the package, while actual restore owns the stronger
+new-data assertion. An initial apply-patch hunk-order failure changed no files.
+The final post-run cleanup diagnostic wording edit does not change execution.
+All handles are terminal; the final project container/network/volume censuses
+are empty, target database cleanup passed before the child verdict, and diff
+checks pass. Existing warned Game UI orphan remains untouched.
+
+**Coverage / handoff:** actual production backup CLI, pg_dump16, encrypted package,
+scheduled refusal and physical five-minute retry, real private exporter/rules/
+Alertmanager/receiver and actual pg_restore with selected SQL data. Manifest/image
+hashes are the existing synthetic fixture metadata, not a built-release bundle;
+the local stack is mixed-architecture (cached Caddy warning disclosed). No next
+six-hour slot, off-host durability, RPO/RTO, metadata-authentication adoption,
+host journal/retention, whole manual aggregate or hosted CI/clean-host proof.
+Production code, schema, policy, cadence, bounds, content and CI remain unchanged.
+Manual aggregate includes the new focus lane; other selectors remain unchanged.
+Review by: Codex (implementer first filter). Recorded by: Codex. Entire new range
+after `c4279b66` through this containing commit needs Claude designated review;
+consolidate with the preceding DP7 work. No acceptance, archival, push, deployment
+or1.0 promotion. Continue the remaining real game/host and release-artifact gates.

@@ -23,7 +23,7 @@ func TestPrivateRestartStackCancellationCleanupIntegration(t *testing.T) {
 	composeArgs := []string{"compose", "--project-name", project, "-f", filepath.Join(root, "compose.deployment-operations-test.yml"),
 		"-f", filepath.Join(root, "compose.deployment-restart-test.yml")}
 	environment := append(os.Environ(), "CLOUD_CLICKER_RESTART_OBSERVATION_DIR="+t.TempDir())
-	t.Cleanup(func() { cleanupRestartProfile(t, composeArgs, environment, project) })
+	t.Cleanup(func() { cleanupPrivateOperationsProfile(t, composeArgs, environment, project) })
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	command := exec.CommandContext(ctx, "docker", append(append([]string{}, composeArgs...), "run", "--rm", "--no-deps",
@@ -62,7 +62,7 @@ func TestPrivateRestartStackCancellationCleanupIntegration(t *testing.T) {
 	if err != nil || strings.TrimSpace(string(running)) != "true" {
 		t.Fatal("negative did not reproduce a live runner after CLI cancellation")
 	}
-	cleanupRestartProfile(t, composeArgs, environment, project)
+	cleanupPrivateOperationsProfile(t, composeArgs, environment, project)
 	for _, args := range [][]string{
 		{"ps", "--all", "--quiet", "--filter", filter},
 		{"network", "ls", "--quiet", "--filter", filter},

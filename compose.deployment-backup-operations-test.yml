@@ -1,0 +1,6 @@
+# The private monitoring fixture's Postgres16 image supplies actual dump/restore
+# tools. Only this population mounts the current production backup executable.
+services:
+  operations-test:
+    volumes:
+      - ./.cache/bin/deployment-backup:/test/deployment-backup:ro

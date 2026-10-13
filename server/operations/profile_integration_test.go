@@ -32,9 +32,13 @@ func TestPrivateOperationsRestartIntegration(t *testing.T) {
 	runPrivateOperationsProfile(t, "restart")
 }
 
+func TestPrivateOperationsBackupExecutionIntegration(t *testing.T) {
+	runPrivateOperationsProfile(t, "backup")
+}
+
 func runPrivateOperationsProfile(t *testing.T, population string) {
 	switch population {
-	case "full", "storage", "restart":
+	case "full", "storage", "restart", "backup":
 	default:
 		t.Fatal("unknown private operations population")
 	}
@@ -81,8 +85,10 @@ func runPrivateOperationsProfile(t *testing.T, population string) {
 	// on the private network. The fixed clock intentionally makes success and
 	// failure indistinguishable in the old whole-second timestamp comparison.
 	backupAt := time.Now().UTC().Truncate(time.Second).Add(100 * time.Millisecond)
-	if err := RecordOperation("/textfile", "backup", "success", backupAt); err != nil {
-		t.Fatal(err)
+	if population != "backup" {
+		if err := RecordOperation("/textfile", "backup", "success", backupAt); err != nil {
+			t.Fatal(err)
+		}
 	}
 	if err := RecordCleanupJournal("/textfile", "", time.Now()); err != nil {
 		t.Fatal(err)
@@ -179,6 +185,10 @@ func runPrivateOperationsProfile(t *testing.T, population string) {
 	}
 	if population == "restart" {
 		runRestartProfile(t, ctx, client, received)
+		return
+	}
+	if population == "backup" {
+		runBackupExecutionProfile(t, ctx, client, received, database)
 		return
 	}
 

@@ -138,7 +138,7 @@ func runActualDockerRestart(t *testing.T, profile bool) {
 			"-f", filepath.Join(root, "compose.deployment-restart-test.yml")}
 		metrics := filepath.Join(base, "metrics")
 		environment := append(os.Environ(), "CLOUD_CLICKER_RESTART_OBSERVATION_DIR="+metrics)
-		t.Cleanup(func() { cleanupRestartProfile(t, composeArgs, environment, project) })
+		t.Cleanup(func() { cleanupPrivateOperationsProfile(t, composeArgs, environment, project) })
 		command := exec.CommandContext(ctx, "docker", append(append([]string{}, composeArgs...), "run", "--rm", "--use-aliases", "operations-test",
 			"-test.run", "^TestPrivateOperationsRestartIntegration$", "-test.v", "-test.count=1")...)
 		command.Env = environment
@@ -187,7 +187,7 @@ func runActualDockerRestart(t *testing.T, profile bool) {
 	}
 }
 
-func cleanupRestartProfile(t *testing.T, composeArgs, environment []string, project string) {
+func cleanupPrivateOperationsProfile(t *testing.T, composeArgs, environment []string, project string) {
 	t.Helper()
 	cleanup, stop := context.WithTimeout(context.Background(), time.Minute)
 	defer stop()
@@ -221,6 +221,6 @@ func cleanupRestartProfile(t *testing.T, composeArgs, environment []string, proj
 	command.Dir = filepath.Dir(composeArgs[4])
 	command.Stdout, command.Stderr = os.Stdout, os.Stderr
 	if err := command.Run(); err != nil {
-		t.Errorf("owned private restart stack cleanup: %v", err)
+		t.Errorf("owned private operations stack cleanup: %v", err)
 	}
 }

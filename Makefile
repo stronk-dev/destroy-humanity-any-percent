@@ -6,6 +6,7 @@
 .PHONY: test-deployment-storage-profile
 .PHONY: test-deployment-restart-observer
 .PHONY: test-deployment-restart-profile
+.PHONY: test-deployment-backup-profile
 .PHONY: verify-combat-go-boundary
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
@@ -133,6 +134,7 @@ test-deployment-operations:
 	$(MAKE) test-go GO_PACKAGES='./operations ./cmd/deployment-operations ./cmd/deployment-backup ./cmd/deployment-release ./gameserver ./transport ./production ./save ./releasepackage ./deploymentbackup ./deploymentrelease' GO_TEST_FLAGS='-count=1'
 	$(MAKE) test-deployment-cleanup-runtime
 	$(MAKE) test-deployment-restart-profile
+	$(MAKE) test-deployment-backup-profile
 	$(MAKE) test-deployment-operations-profile
 
 # Real one-minute job timing belongs to manual Deployment acceptance, not push
@@ -155,6 +157,16 @@ test-deployment-restart-profile:
 	mkdir -p $(REPO_CACHE_DIR)/bin
 	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
 	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS="-run 'TestHostObservationActualDockerRestartProfileIntegration|TestPrivateRestartStackCancellationCleanupIntegration' -v -count=1 -timeout=12m"
+
+# Actual backup CLI, pg_dump/pg_restore and unshortened scheduled retry, through
+# the existing private stack. The native supervisor owns one unique project.
+test-deployment-backup-profile: export CLOUD_CLICKER_BACKUP_PROFILE_TEST = 1
+test-deployment-backup-profile: export CLOUD_CLICKER_OPERATIONS_ROOT = $(CURDIR)
+test-deployment-backup-profile:
+	mkdir -p $(REPO_CACHE_DIR)/bin
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ../.cache/bin/deployment-backup ./cmd/deployment-backup
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
+	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS='-run TestActualBackupWorkerPrivateProfileIntegration -v -count=1 -timeout=14m'
 
 # Focus the existing real-service fixture without skipping or changing the
 # aggregate above. This is not the full operations or clean-host release gate.
