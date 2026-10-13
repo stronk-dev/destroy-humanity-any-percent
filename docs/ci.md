@@ -188,6 +188,12 @@ input is still pending. The keyboard path and existing journey deadline are unch
 Its isolation controls deliberately fire a framework deadline and independently check the
 reason and untouched successor; those expected failures are not player-acceptance passes.
 
+The Garden host fixture waits for its actual socket-factory callback before asserting the exact
+URL; elapsed event-loop turns do not establish startup completion. Construction does not imply
+transport readiness: the existing protocol-frame checks remain. Owned-fixture cleanup belongs
+to the caller's explicit test context and runs on failed initialization or test completion, with
+an independent timed-out-startup teardown control. No startup retry policy or deadline is changed.
+
 Two Node-side fixtures, `css-dependency-graph.test.mjs` and
 `opportunity-composed-proof.test.mjs`, are excluded by exact path from browser collection because
 their helpers require Node APIs. Both remain in the mandatory client Node suite; other test

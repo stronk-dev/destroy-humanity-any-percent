@@ -735,3 +735,56 @@ RP-526/full CI, historical guard/accrual contracts and whole-product1.0 remain
 open. Next: validate the guarded driver in the actual Linux full population after
 capacity/daemon recovery, retaining failures; diagnose other input producers and
 the unfinished-file condition rather than assuming they share this correction.
+
+## 2026-10-13 — Await Garden's actual startup boundary and own its teardown (RP-528)
+
+Under CI D2, investigate the full-job `urls=[]` failure at the fixture's initial
+socket check. Existing helper waits five event-loop turns before asserting a
+constructor dependent on asynchronous snapshot read/parse/bind. A held first
+snapshot reproduces its premature rejection in both native engines92994: the
+helper settles before release where the regression requires it to remain pending.
+Keep that old failure, not attribution of every overloaded full-job result.
+
+Test-only correction: wait for the actual socket factory; retain exact URL and
+sent protocol frames, including the not-ready and recovering/resync cases. No
+fake readiness, reactivation, input substitution, retries or larger deadline.
+Use explicit caller `TestContext`, refuse canceled initialization and own one
+idempotent cleanup on failure/finish. That cleanup rejects an unfinished startup
+wait and unmounts the owned target; release/close assertions remain. All original
+thirty test populations and their conditions/assertions stay intact.
+
+Executed:
+
+- Controlled delayed-read regression99195 passes2 native cases,1.91s. Before
+  release it remains pending; after the real constructor it remains unready until
+  the actual injected protocol handshake. No intent is manufactured.
+- Startup-disposal/held-read controls61084 pass4 positive cases and two deliberately
+  expected50ms framework deadlines,1.89s. Successor independently checks the exact
+  timeout reason, disconnected owned target and explicit canceled-startup result.
+  Expected deadlines are negative controls, not player acceptance passes.
+- Initial complete corrected file41339 passes64/two expected deadlines,10.35s.
+  Node88461 collects/skips all33 browser cases,0 executions: no positive evidence.
+- Making cleanup ownership explicit briefly introduced a callback parameter
+  `context` that shadowed the founder/constants loop variable. Strict types80309
+  reject TS2367. Although native candidate96170 passes, that pass is EXCLUDED:
+  its loop populations are wrong. Rename the callback/fixture parameter to
+  `testContext`, preserving the domain loop and its real branches.
+- Finished-source entire file75358: root `make test-browser-focused
+  BROWSER_TEST_FLAGS='test/garden-host-browser.test.ts --project=chromium --project=webkit'`
+  passes64/two expected diagnostic deadlines, no deselection,10.54s. Exact HTTP
+  methods/auth, actual runtime/frame decoder, native recovery/intent/focus and
+  all original lifecycle populations execute; transport/network and DB are fixture
+  boundaries, not a real gameserver/Postgres journey. Strict types60382 pass with
+  zero errors/warnings. Diff checked; no shipped build/Go/schema/performance change.
+
+Read-only capacity check reports2.7GiB free/100%; cleanup permission has not arrived
+and no cache/release/research byte is removed. Docker version79368 remains
+unresponsive; interrupt only its own TTY client, terminal130. No daemon restart,
+service/container cleanup or Linux/Firefox/full-CI substitute claim.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Range starts
+**after `a181b935` through this containing test/docs/record commit**, designated
+Claude review pending; recent related CI repairs may be consolidated. No feature
+acceptance/archival or publication. Next: execute the corrected Garden/Typer drivers
+in the declared Linux full population after recovery, retain any failures, and
+separate genuine readiness/input faults from invalid fixture timing assumptions.

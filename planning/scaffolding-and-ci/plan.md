@@ -27,6 +27,11 @@ Firefox/full-job reliability. Resume that population when Docker/capacity is ava
 cleanup approval remains pending. Historical guard/accrual contracts, hosted acceptance and
 reviews remain separate; no deadline/budget increase or CPU/concurrency setting retained.
 
+RP-528 also locally corrects the Garden host's premature socket precondition and initialization
+cleanup in native Chromium/WebKit. The original full file still executes its handshake, recovery,
+intent and focus population; an intermediate shadowed-context candidate is excluded by strict
+types. This does not close RP-526. The owning log records exact results and next Linux verification.
+
 ## Work
 
 1. [x] Split the Makefile into server, client, browser, schema, and aggregate verification targets.

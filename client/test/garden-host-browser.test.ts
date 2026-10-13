@@ -1,5 +1,5 @@
 import { flushSync, mount, tick, unmount } from "svelte";
-import { expect, it } from "vitest";
+import { describe, expect, it, type TestContext } from "vitest";
 
 import views from "../../testdata/garden/view-fixtures-v1.json";
 import type { GardenCurrentResponse, GameUISnapshot } from "../src/api/generated/types";
@@ -87,7 +87,12 @@ async function openGarden(target: HTMLElement): Promise<void> {
   await settle();
 }
 
-async function mounted(initial: GardenCurrentResponse = active(), connected = true, options: { holdInitialGarden?: boolean } = {}) {
+async function mounted(testContext: TestContext, initial: GardenCurrentResponse = active(), connected = true, options: {
+  holdInitialGarden?: boolean;
+  initialSnapshot?: { gate: Promise<void>; reached(): void };
+  observeTarget?(target: HTMLElement): void;
+} = {}) {
+  testContext.signal.throwIfAborted();
   let currentSnapshot = snapshot(7), currentGarden = initial;
   const data = new Map([["cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "garden-host-token", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" })]]);
   const storage: RuntimeStorage = { getItem: (key) => data.get(key) ?? null, setItem: (key, value) => { data.set(key, value); }, removeItem: (key) => { data.delete(key); } };
@@ -97,12 +102,19 @@ async function mounted(initial: GardenCurrentResponse = active(), connected = tr
   let releaseGarden: ((value: GardenCurrentResponse) => void) | undefined;
   const sockets: Socket[] = [];
   const urls: string[] = [];
+  let observeSocket!: () => void, refuseStartup!: (error: Error) => void;
+  const socketCreated = new Promise<void>((resolve, reject) => { observeSocket = resolve; refuseStartup = reject; });
+  let initialSnapshot = options.initialSnapshot;
   const runtime = createBrowserGameUIRuntime(storage, async (input, init) => {
     const path = String(input), method = init?.method ?? "GET";
     const body = init?.body === undefined ? undefined : JSON.parse(String(init.body));
     requests.push({ path, method, auth: new Headers(init?.headers).get("Authorization"), body });
     let response: unknown;
-    if (path === "/api/v1/founder/state" && method === "GET") response = currentSnapshot;
+    if (path === "/api/v1/founder/state" && method === "GET") {
+      const held = initialSnapshot; initialSnapshot = undefined;
+      if (held) { held.reached(); await held.gate; }
+      response = currentSnapshot;
+    }
     else if (path === "/api/v1/garden/current" && method === "GET") {
       if (holdGardenRead) {
         holdGardenRead = false;
@@ -112,15 +124,29 @@ async function mounted(initial: GardenCurrentResponse = active(), connected = tr
     else if (path === "/api/v1/intents" && method === "POST") response = await new Promise((resolve) => { release = resolve; });
     else throw new Error(`unexpected HTTP ${method} ${path}`);
     return new Response(JSON.stringify(response), { status: 200, headers: { "Content-Type": "application/json" } });
-  }, crypto, (url) => { urls.push(url); const socket = new Socket(); sockets.push(socket); return socket as unknown as WebSocket; }, { protocol: "https:", host: "garden.example.invalid" });
+  }, crypto, (url) => { urls.push(url); const socket = new Socket(); sockets.push(socket); observeSocket(); return socket as unknown as WebSocket; }, { protocol: "https:", host: "garden.example.invalid" });
   const target = document.createElement("div"); document.body.append(target);
+  options.observeTarget?.(target);
   const app = mount(GameUIApp, { target, props: { runtime } });
-  await settle();
-  expect(urls).toEqual(["wss://garden.example.invalid/connection/websocket"]);
-  if (connected) {
-    sockets[0]!.connect(); await settle();
-    expect(sockets[0]!.sent).toEqual([{ id: 1, connect: { token: "garden-host-token" } }, { id: 2, subscribe: { channel: `player:${founderID}` } }, { id: 3, subscribe: { channel: "world" } }]);
-  }
+  let cleaning: Promise<void> | undefined;
+  const dispose = (): Promise<void> => cleaning ??= (async () => {
+    refuseStartup(new Error("Garden fixture disposed before startup completed"));
+    releaseGarden?.({ kind: "inactive" }); releaseGarden = undefined;
+    release?.({ outcome: "rejected", intent_id: "cleanup", current_revision: 8, rejection: { category: "not_eligible", detail: "plot_occupied" } });
+    await settle(); await unmount(app); target.remove();
+    if (sockets.length !== 0) expect(sockets.at(-1)!.closed).toBe(true);
+  })();
+  testContext.onTestFinished(dispose);
+  try {
+    await socketCreated;
+    await settle();
+    testContext.signal.throwIfAborted();
+    expect(urls).toEqual(["wss://garden.example.invalid/connection/websocket"]);
+    if (connected) {
+      sockets[0]!.connect(); await settle();
+      expect(sockets[0]!.sent).toEqual([{ id: 1, connect: { token: "garden-host-token" } }, { id: 2, subscribe: { channel: `player:${founderID}` } }, { id: 3, subscribe: { channel: "world" } }]);
+    }
+  } catch (error) { await dispose(); throw error; }
   return {
     target, requests, sockets,
     get socket() { return sockets.at(-1)!; },
@@ -129,11 +155,7 @@ async function mounted(initial: GardenCurrentResponse = active(), connected = tr
     holdGarden() { if (releaseGarden) throw new Error("Garden read already held"); holdGardenRead = true; },
     resolveGarden(value: GardenCurrentResponse) { if (!releaseGarden) throw new Error("no held Garden read"); const resolve = releaseGarden; releaseGarden = undefined; resolve(value); },
     acknowledge(value: unknown) { if (!release) throw new Error("no pending intent"); const resolve = release; release = undefined; resolve(value); },
-    async dispose() {
-      releaseGarden?.({ kind: "inactive" }); releaseGarden = undefined;
-      release?.({ outcome: "rejected", intent_id: "cleanup", current_revision: 8, rejection: { category: "not_eligible", detail: "plot_occupied" } });
-      await settle(); await unmount(app); target.remove(); expect(sockets.at(-1)!.closed).toBe(true);
-    },
+    dispose,
     reads() { return requests.filter((row) => row.path === "/api/v1/garden/current").length; },
     intents() { return requests.filter((row) => row.path === "/api/v1/intents").map((row) => row.body as Record<string, unknown>); },
     assertHTTP() {
@@ -162,8 +184,8 @@ const cases = [
 ] as const;
 
 for (const newerNavigation of [false, true]) {
-  it.skipIf(!browser)(`Garden lifecycle inactive read ${newerNavigation ? "preserves newer navigation" : "returns to Desk"}`, async () => {
-    const host = await mounted();
+  it.skipIf(!browser)(`Garden lifecycle inactive read ${newerNavigation ? "preserves newer navigation" : "returns to Desk"}`, async (testContext) => {
+    const host = await mounted(testContext);
     try {
       button(host.target, "Server Garden").click(); await settle();
       button(host.target, "Harvest all mature").focus();
@@ -182,8 +204,8 @@ for (const newerNavigation of [false, true]) {
 }
 
 for (const context of ["founder", "content"] as const) {
-  it.skipIf(!browser)(`Garden lifecycle ${context} change replaces the old grid and ignores its late read`, async () => {
-    const host = await mounted();
+  it.skipIf(!browser)(`Garden lifecycle ${context} change replaces the old grid and ignores its late read`, async (testContext) => {
+    const host = await mounted(testContext);
     try {
       host.holdGarden(); button(host.target, "Server Garden").click(); await settle();
       expect(host.target.querySelector(".garden .grid")).toBeNull();
@@ -208,8 +230,8 @@ for (const context of ["founder", "content"] as const) {
   });
 }
 
-it.skipIf(!browser)("Garden lifecycle late previous-Founder startup probe cannot revive the new Founder's inactive tab", async () => {
-  const host = await mounted(active(), true, { holdInitialGarden: true });
+it.skipIf(!browser)("Garden lifecycle late previous-Founder startup probe cannot revive the new Founder's inactive tab", async (testContext) => {
+  const host = await mounted(testContext, active(), true, { holdInitialGarden: true });
   try {
     const next = snapshot(8); next.run.founder_id = "01985555-2222-7222-8222-222222222222";
     host.context({ kind: "inactive" }, next); host.socket.resync(); await settle();
@@ -222,8 +244,8 @@ it.skipIf(!browser)("Garden lifecycle late previous-Founder startup probe cannot
   } finally { await host.dispose(); }
 });
 
-it.skipIf(!browser)("Garden lifecycle Company change retains its Founder-owned grid and open menu", async () => {
-  const host = await mounted();
+it.skipIf(!browser)("Garden lifecycle Company change retains its Founder-owned grid and open menu", async (testContext) => {
+  const host = await mounted(testContext);
   try {
     button(host.target, "Server Garden").click(); await settle();
     const plot = cell(host.target, 1, 0);
@@ -245,8 +267,8 @@ it.skipIf(!browser)("Garden lifecycle Company change retains its Founder-owned g
   } finally { await host.dispose(); }
 });
 
-it.skipIf(!browser)("Garden lifecycle new content discovers a previously inactive Garden", async () => {
-  const host = await mounted({ kind: "inactive" });
+it.skipIf(!browser)("Garden lifecycle new content discovers a previously inactive Garden", async (testContext) => {
+  const host = await mounted(testContext, { kind: "inactive" });
   try {
     const next = snapshot(8); next.constants_hash = `sha256:${"b".repeat(64)}`;
     host.context(active(8), next); host.socket.resync(); await settle();
@@ -259,8 +281,8 @@ it.skipIf(!browser)("Garden lifecycle new content discovers a previously inactiv
   } finally { await host.dispose(); }
 });
 
-it.skipIf(!browser)("Garden lifecycle older same-context probe cannot revive a newer inactive surface", async () => {
-  const host = await mounted();
+it.skipIf(!browser)("Garden lifecycle older same-context probe cannot revive a newer inactive surface", async (testContext) => {
+  const host = await mounted(testContext);
   try {
     button(host.target, "Server Garden").click(); await settle();
     const next = snapshot(8); next.constants_hash = `sha256:${"b".repeat(64)}`;
@@ -276,8 +298,8 @@ it.skipIf(!browser)("Garden lifecycle older same-context probe cannot revive a n
   } finally { await host.dispose(); }
 });
 
-for (const focus of ["harvest", "navigation"] as const) it.skipIf(!browser)(`Garden lifecycle replaced ${focus} focus stays usable`, async () => {
-  const host = await mounted();
+for (const focus of ["harvest", "navigation"] as const) it.skipIf(!browser)(`Garden lifecycle replaced ${focus} focus stays usable`, async (testContext) => {
+  const host = await mounted(testContext);
   try {
     button(host.target, "Server Garden").click(); await settle();
     const origin = button(host.target, focus === "harvest" ? "Harvest all mature" : "Server Garden"); origin.focus();
@@ -289,8 +311,71 @@ for (const focus of ["harvest", "navigation"] as const) it.skipIf(!browser)(`Gar
   } finally { await host.dispose(); }
 });
 
-it.skipIf(!browser)("Garden connection test waits for a delayed startup read without manufacturing readiness", async () => {
-  const host = await mounted(active(), false, { holdInitialGarden: true });
+describe("Garden pending startup disposal", () => {
+  let expiredSignal: AbortSignal, target: HTMLElement;
+  let release!: () => void;
+  let result: Promise<{ kind: "mounted"; host: Awaited<ReturnType<typeof mounted>> } | { kind: "failed"; error: unknown }>;
+  it.skipIf(!browser).fails("fires an actual deadline with its first snapshot still held", async (testContext) => {
+    expiredSignal = testContext.signal;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    result = mounted(testContext, active(), false, { initialSnapshot: { gate, reached() {} }, observeTarget(value) { target = value; } }).then(
+      (host) => ({ kind: "mounted" as const, host }), (error: unknown) => ({ kind: "failed" as const, error }),
+    );
+    const outcome = await result;
+    if (outcome.kind === "failed") throw outcome.error;
+  }, 50);
+  it.skipIf(!browser)("removes the owned startup fixture before a successor can mount", async (testContext) => {
+    try {
+      expect(expiredSignal.aborted).toBe(true);
+      expect(expiredSignal.reason.message).toContain("Test timed out in 50ms");
+      expect(target.isConnected).toBe(false);
+      const outcome = await result;
+      expect(outcome.kind).toBe("failed");
+      if (outcome.kind === "failed") {
+        expect(outcome.error).toBeInstanceOf(Error);
+        expect((outcome.error as Error).message).toBe("Garden fixture disposed before startup completed");
+      }
+    } finally {
+      release();
+      const outcome = await result;
+      if (outcome.kind === "mounted") await outcome.host.dispose();
+      await settle();
+    }
+  });
+});
+
+it.skipIf(!browser)("Garden host awaits the actual socket boundary after a delayed initial snapshot", async (testContext) => {
+  let release!: () => void, reached!: () => void;
+  const gate = new Promise<void>((resolve) => { release = resolve; });
+  const started = new Promise<void>((resolve) => { reached = resolve; });
+  let settled = false;
+  const mounting = mounted(testContext, active(), false, { initialSnapshot: { gate, reached } }).then(
+    (host) => { settled = true; return { kind: "mounted" as const, host }; },
+    (error: unknown) => { settled = true; return { kind: "failed" as const, error }; },
+  );
+  try {
+    await started; await settle();
+    expect(settled, "event-loop turns are not a completed initial snapshot/socket binding").toBe(false);
+    release();
+    const outcome = await mounting;
+    if (outcome.kind === "failed") throw outcome.error;
+    const host = outcome.host;
+    expect(host.socket.sent).toEqual([]);
+    expect(host.intents()).toEqual([]);
+    await openGarden(host.target);
+    expect(button(host.target, "Harvest all mature").disabled).toBe(true);
+    host.socket.connect(); await settle();
+    expect(button(host.target, "Harvest all mature").disabled).toBe(false);
+    host.assertHTTP();
+  } finally {
+    release();
+    const outcome = await mounting;
+    if (outcome.kind === "mounted") await outcome.host.dispose();
+  }
+});
+
+it.skipIf(!browser)("Garden connection test waits for a delayed startup read without manufacturing readiness", async (testContext) => {
+  const host = await mounted(testContext, active(), false, { holdInitialGarden: true });
   try {
     await settle();
     expect(host.reads()).toBe(1);
@@ -313,9 +398,9 @@ it.skipIf(!browser)("Garden connection test waits for a delayed startup read wit
 });
 
 for (const state of ["not-ready", "recovering", "resync"] as const) {
-  it.skipIf(!browser)(`Garden connection ${state} visibly disables commands until the real handshake recovers`, async () => {
+  it.skipIf(!browser)(`Garden connection ${state} visibly disables commands until the real handshake recovers`, async (testContext) => {
     const { userEvent } = await import("vitest/browser");
-    const host = await mounted(active(), state !== "not-ready");
+    const host = await mounted(testContext, active(), state !== "not-ready");
     try {
       await openGarden(host.target);
       if (state !== "not-ready") {
@@ -359,9 +444,9 @@ for (const state of ["not-ready", "recovering", "resync"] as const) {
 
 for (const action of ["harvest-all", "substrate", "menu-harvest"] as const) {
   for (const newerChoice of [false, true]) {
-    it.skipIf(!browser)(`Garden response focus ${action} ${newerChoice ? "preserves newer navigation" : "recovers usable control"}`, async () => {
+    it.skipIf(!browser)(`Garden response focus ${action} ${newerChoice ? "preserves newer navigation" : "recovers usable control"}`, async (testContext) => {
       const { userEvent } = await import("vitest/browser");
-      const host = await mounted();
+      const host = await mounted(testContext);
       try {
         button(host.target, "Server Garden").click();
         await settle();
@@ -409,8 +494,8 @@ for (const action of ["harvest-all", "substrate", "menu-harvest"] as const) {
   }
 }
 
-for (const row of cases) it.skipIf(!browser)(`Garden host ${row.name} binds Founder revision and refreshes after receipt`, async () => {
-  const host = await mounted();
+for (const row of cases) it.skipIf(!browser)(`Garden host ${row.name} binds Founder revision and refreshes after receipt`, async (testContext) => {
+  const host = await mounted(testContext);
   try {
     button(host.target, "Server Garden").click(); await settle();
     expect(host.reads()).toBe(2); // Visibility probe, then mounted Garden read.
@@ -451,8 +536,8 @@ for (const row of cases) it.skipIf(!browser)(`Garden host ${row.name} binds Foun
   } finally { await host.dispose(); }
 });
 
-it.skipIf(!browser)("Garden host rejection displays Garden detail and refreshes without optimistic changes", async () => {
-  const host = await mounted();
+it.skipIf(!browser)("Garden host rejection displays Garden detail and refreshes without optimistic changes", async (testContext) => {
+  const host = await mounted(testContext);
   try {
     button(host.target, "Server Garden").click(); await settle();
     cell(host.target, 0, 0).click(); await settle(); button(host.target, "Harvest").click(); await settle();
@@ -466,8 +551,8 @@ it.skipIf(!browser)("Garden host rejection displays Garden detail and refreshes 
   } finally { await host.dispose(); }
 });
 
-it.skipIf(!browser)("Garden host keeps advisory invalidation when a late receipt's main read is already covered", async () => {
-  const host = await mounted();
+it.skipIf(!browser)("Garden host keeps advisory invalidation when a late receipt's main read is already covered", async (testContext) => {
+  const host = await mounted(testContext);
   try {
     button(host.target, "Server Garden").click(); await settle();
     button(host.target, "Mainframe").click(); await settle();
@@ -487,8 +572,8 @@ it.skipIf(!browser)("Garden host keeps advisory invalidation when a late receipt
   } finally { await host.dispose(); }
 });
 
-it.skipIf(!browser)("Garden host streamed receipt re-reads mounted advisory state", async () => {
-  const host = await mounted();
+it.skipIf(!browser)("Garden host streamed receipt re-reads mounted advisory state", async (testContext) => {
+  const host = await mounted(testContext);
   try {
     button(host.target, "Server Garden").click(); await settle();
     expect(host.reads()).toBe(2);
@@ -501,8 +586,8 @@ it.skipIf(!browser)("Garden host streamed receipt re-reads mounted advisory stat
   } finally { await host.dispose(); }
 });
 
-for (const kind of ["inactive", "locked"] as const) it.skipIf(!browser)(`Garden host ${kind} visibility follows its actual read`, async () => {
-  const host = await mounted(views[kind] as GardenCurrentResponse);
+for (const kind of ["inactive", "locked"] as const) it.skipIf(!browser)(`Garden host ${kind} visibility follows its actual read`, async (testContext) => {
+  const host = await mounted(testContext, views[kind] as GardenCurrentResponse);
   try {
     const tabs = [...host.target.querySelectorAll<HTMLButtonElement>("nav button")].filter((node) => node.textContent?.trim() === "Server Garden");
     expect(tabs).toHaveLength(kind === "inactive" ? 0 : 1);
