@@ -56,6 +56,124 @@ func TestBaseRunValidationAcceptsOnlyTheFortyTwoCompletedInputs(t *testing.T) {
 	}
 }
 
+func TestRunValidationChecksSequentialResultTimesAfterRebinding(t *testing.T) {
+	for _, test := range []struct {
+		name      string
+		interval  string
+		wantValid bool
+	}{
+		{"same step overlap", "overlap", false},
+		{"same step earlier completion", "earlier", false},
+		{"exact boundary", "boundary", true},
+		{"forward gap", "gap", true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			fixture := boundRunFixture(t)
+			readResult := func(index int) CheckResult {
+				t.Helper()
+				data, err := os.ReadFile(filepath.Join(fixture.resultsDirectory, fixture.plan.Checks[index].Name+".json"))
+				if err != nil {
+					t.Fatal(err)
+				}
+				result, err := decodeCheckResult(data)
+				if err != nil {
+					t.Fatal(err)
+				}
+				return result
+			}
+			first, second := readResult(0), readResult(1)
+			switch test.interval {
+			case "overlap":
+				second.StartedAt = first.StartedAt.Add(time.Nanosecond)
+			case "earlier":
+				second.StartedAt = first.StartedAt.Add(time.Nanosecond)
+				second.CompletedAt = first.CompletedAt.Add(-time.Nanosecond)
+			case "boundary":
+				second.StartedAt = first.CompletedAt
+			}
+			if !second.CompletedAt.After(second.StartedAt) {
+				t.Fatal("fixture must preserve each command's valid local interval")
+			}
+			data, err := json.Marshal(second)
+			if err != nil {
+				t.Fatal(err)
+			}
+			data = append(data, '\n')
+			if err := os.WriteFile(filepath.Join(fixture.resultsDirectory, second.Name+".json"), data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setPopulationDigest(&fixture.evidence, second.Name, hashBytes(data))
+			// Rebind all changed hashes, not just the result. Both commands stay
+			// inside the original host-preflight summary interval, so step-level
+			// chronology cannot detect these internally inconsistent results.
+			var resultHashes []string
+			for _, check := range fixture.plan.Checks {
+				if check.Step == second.Step {
+					bytes, err := os.ReadFile(filepath.Join(fixture.resultsDirectory, check.Name+".json"))
+					if err != nil {
+						t.Fatal(err)
+					}
+					resultHashes = append(resultHashes, hashBytes(bytes))
+				}
+			}
+			fixture.evidence.Steps[0].OutputSHA256 = hashJSON(resultHashes)
+			basePath := filepath.Join(fixture.sealDirectory, "base-evidence.json")
+			baseBytes, err := os.ReadFile(basePath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			base, err := decodeBaseEvidence(baseBytes)
+			if err != nil {
+				t.Fatal(err)
+			}
+			base.Steps = fixture.evidence.Steps
+			base.Populations = removePopulation(fixture.evidence.Populations, "forged_successful_evidence")
+			writeEvidenceFixture(t, basePath, base)
+			baseBytes, err = os.ReadFile(basePath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			proofPath := filepath.Join(fixture.sealDirectory, "forgery-proof.json")
+			proofBytes, err := os.ReadFile(proofPath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			proof, err := DecodeForgeryProof(proofBytes)
+			if err != nil {
+				t.Fatal(err)
+			}
+			proof.BaseEvidenceSHA256 = hashBytes(baseBytes)
+			proofBytes, err = json.Marshal(proof)
+			if err != nil {
+				t.Fatal(err)
+			}
+			proofBytes = append(proofBytes, '\n')
+			if err := os.WriteFile(proofPath, proofBytes, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setArtifactDigest(&fixture.evidence, "base_evidence", hashBytes(baseBytes))
+			setArtifactDigest(&fixture.evidence, "forgery_proof", hashBytes(proofBytes))
+			setPopulationDigest(&fixture.evidence, "forged_successful_evidence", hashBytes(proofBytes))
+			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
+			for _, final := range []bool{false, true} {
+				var err error
+				if final {
+					_, err = LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory,
+						fixture.artifactsDirectory, fixture.candidateBundleDirectory, fixture.sealDirectory)
+				} else {
+					_, err = LoadAndValidateBaseRun(basePath, fixture.planPath, fixture.resultsDirectory,
+						fixture.artifactsDirectory, fixture.candidateBundleDirectory)
+				}
+				if test.wantValid && err != nil {
+					t.Errorf("valid result chronology rejected (final=%v): %v", final, err)
+				} else if !test.wantValid && !errors.Is(err, ErrInvalid) {
+					t.Errorf("rehashed non-monotonic results accepted (final=%v): %v", final, err)
+				}
+			}
+		})
+	}
+}
+
 func TestRunValidationRejectsRewrittenMissingAndUnsafeResults(t *testing.T) {
 	for name, mutate := range map[string]func(*testing.T, boundFixture){
 		"rewritten result": func(t *testing.T, fixture boundFixture) {

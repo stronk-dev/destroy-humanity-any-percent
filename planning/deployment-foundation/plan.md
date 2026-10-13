@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP-F chronology correction, 2026-10-13 (RP-549):** sequential command results must not
+overlap or run backwards, even inside one lifecycle step. The executor now refuses before the
+next producer launches; base/final validators reject rehashed overlapping results. Ten focused
+cases preserve exact adjacent boundaries and forward gaps; old-source failures and corrected
+cold/race checks are recorded in the owning log. New range after `88868d34` needs Claude review.
+Original R12's full five-path disposition remains CHANGES REQUIRED (RP-140); basename/command
+shape is not executable identity, and no synthetic result or seal closes R-006.
+
 **Current DP5/DP6 creation correction, 2026-10-13 (RP-548):** newly created backup reports must
 place start/completion inside their command invocation; invalid clocks refuse. Old-source20-case
 population admits14 bad reports while six legal controls pass. Corrected actual encrypted

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -32,6 +33,79 @@ func TestExecutionPlanRunsEveryExactPositiveAndNegativeCheck(t *testing.T) {
 	}
 	if err := ExecutePlan(context.Background(), plan, output, now); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("driver overlaid prior results: %v", err)
+	}
+}
+
+func TestExecutionPlanChecksSequentialObservationTimes(t *testing.T) {
+	for _, test := range []struct {
+		name      string
+		next      int
+		interval  string
+		wantValid bool
+	}{
+		{"same step overlap", 1, "overlap", false},
+		{"same step reversed", 1, "reversed", false},
+		{"next step overlap", 4, "overlap", false},
+		{"same step exact boundary", 1, "boundary", true},
+		{"next step exact boundary", 4, "boundary", true},
+		{"forward gap", 1, "gap", true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			plan := validExecutionPlan()
+			base := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+			times := make([]time.Time, 2*len(plan.Checks))
+			for index := range times {
+				times[index] = base.Add(time.Duration(index+1) * time.Millisecond)
+			}
+			previousStart, previousEnd := times[2*test.next-2], times[2*test.next-1]
+			switch test.interval {
+			case "overlap":
+				times[2*test.next] = previousStart.Add(time.Microsecond)
+			case "reversed":
+				times[2*test.next] = previousStart.Add(-time.Millisecond)
+				times[2*test.next+1] = previousStart.Add(-time.Microsecond)
+			case "boundary":
+				times[2*test.next] = previousEnd
+			}
+			// Observe whether the next producer was launched, independently of
+			// whether its result was written. This is only an executor fixture.
+			tool := filepath.Join(t.TempDir(), "deployment-rehearsal")
+			script := "#!/bin/sh\nprintf invoked > \"$0.invoked\"\nexit " + strconv.Itoa(plan.Checks[test.next].ExpectedExit) + "\n"
+			if err := os.WriteFile(tool, []byte(script), 0o755); err != nil {
+				t.Fatal(err)
+			}
+			plan.Checks[test.next].Command[0] = tool
+			calls := 0
+			now := func() time.Time {
+				value := times[calls]
+				calls++
+				return value
+			}
+			output := t.TempDir()
+			err := ExecutePlan(context.Background(), plan, output, now)
+			if test.wantValid {
+				if err != nil || calls != len(times) {
+					t.Fatalf("valid chronology rejected: err=%v samples=%d", err, calls)
+				}
+				if _, err := os.Stat(tool + ".invoked"); err != nil {
+					t.Fatalf("valid next producer did not run: %v", err)
+				}
+				return
+			}
+			if !errors.Is(err, ErrInvalid) {
+				t.Fatalf("non-monotonic command chronology accepted: %v", err)
+			}
+			if calls != 2*test.next+1 {
+				t.Fatalf("executor did not stop at invalid start: samples=%d", calls)
+			}
+			if _, err := os.Stat(tool + ".invoked"); !errors.Is(err, os.ErrNotExist) {
+				t.Fatalf("producer launched after invalid start: %v", err)
+			}
+			entries, err := os.ReadDir(output)
+			if err != nil || len(entries) != test.next {
+				t.Fatalf("invalid/later result was emitted: count=%d err=%v", len(entries), err)
+			}
+		})
 	}
 }
 

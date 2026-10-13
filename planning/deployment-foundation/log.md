@@ -6376,3 +6376,55 @@ Review by: Codex (new repair implementer first filter). Recorded by: Codex. Exac
 tests/docs/records span starts after `dac25388` through this containing commit; designated
 Claude review pending, consolidatable with the earlier host-byte correction. Original R10,
 full Deployment and full nine-tier1.0 remain open. All execution handles are terminal.
+
+## 2026-10-13 — Complete original Claude R12 diff-review disposition
+
+Review by: Codex (designated original-Claude reviewer). Recorded by: Codex. Exact range
+`4a6c8f27^..4a6c8f27`, all five paths: CLI, execution-plan source/tests, canonical docs and owning
+log. **Decision: CHANGES REQUIRED**, retaining RP-140. No descendant repair approval.
+
+Inspected the dedicated fixture-rejected exit3, absolute basename/subcommand/population binding,
+the negative-exit and unsafe-command controls, and the replacement fixture executor. Exit3
+correctly distinguishes a prepared refusal from usage/setup failure. The basename check remains
+insufficient to prove execution of shipped bytes: its own shell stand-in passes every canonical
+row. Final candidate-tool hashing is not a binding to the plan executable. That existing author
+contract hold is not resolved here. Current docs now state this limitation without adopting a
+new identity policy. The inherited sequential-time gap is executed at current `88868d34` below,
+not claimed as an execution of historical R12. Existing verdicts and evidence remain intact.
+
+## 2026-10-13 — RP-549 enforce sequential rehearsal observation times
+
+Under DP-F/AC10's completed non-monotonic-observation refusal, require each command's start
+at or after the prior completion. Check before launching the next producer and independently
+when base/final validation reads results in canonical plan order. Local intervals still require
+completion strictly after start. Exact adjacent boundaries and forward gaps remain valid; no
+minimum gap, tolerance, timeout, clock model, result schema or producer identity policy added.
+
+Regression24975 on `88868d34` accepts all three invalid executor sequences: same-step overlap,
+same-step reversal and next-step overlap. Both invalid same-step result populations pass the
+base and final loaders after all population/step/base/proof hashes are rebound. Every local
+interval stays valid and the step's min/max remain unchanged, so these are chronology failures,
+not bad-hash refusals. Three executor and two loader controls pass on that old source.
+Initial command selection failed shell parsing before any test; the simple ChecksSequential
+selector is used for all actual runs. No probe edits production code.
+
+Corrected87321 passes all ten cases, including a marker proving the invalid next producer never
+launches, stopped clock sampling and no invalid/later result files. Four cold affected packages
+pass in54006; vet passes. Focused race7489 passes all ten. Linux-amd64 rehearsal helper build23310
+passes into ignored `.cache/bin/deployment-rehearsal-linux-amd64`; that is not Linux execution.
+Full root `make test-deployment-rehearsal`1601 initially fails a sandbox localhost-listen denial
+in the existing readiness HTTP test before record validation. Authorized exact rerun53187 passes
+all four cold packages and both retained-build-record validators. These validate historical
+records, not newly rebuilt or floor-compliant release artifacts. Format and diff checked.
+
+Boundary: real local subprocess/file execution and actual evidence loaders with controlled clock,
+stand-in producers and synthetic artifacts/seals; not Docker/Postgres/Caddy, admitted-work recovery,
+clean-host install, RPO/RTO or R-006. Existing RP-140/DG8 executable-identity hold, unsupported
+producer rows and full exact-artifact gates remain. No daemon/container action, push, deployment,
+kernel/CI change or full-nine-tier1.0 promotion.
+
+Review by: Codex (new repair implementer first filter). Recorded by: Codex. Exact new source/tests/
+docs/records range starts after `88868d34` through this containing commit; designated Claude
+review pending, consolidatable with the earlier DP-F validator corrections. Original R12 remains
+CHANGES REQUIRED. All named processes are terminal; continue accepted construction and review,
+without treating owner holds or pending review as a global implementation stop.

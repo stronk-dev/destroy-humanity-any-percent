@@ -39,8 +39,8 @@ var populationProducers = map[string]string{
 	// outcome check. Leave that R-006 row on the unsupported probe route.
 }
 
-// boundToProducer requires the row to invoke the rehearsal tool itself with
-// the population's producer, so a constant command cannot stand in for proof.
+// boundToProducer checks the rehearsal basename and producer command shape.
+// It does not authenticate the executable bytes (RP-140 remains open).
 func boundToProducer(check PlannedCheck) bool {
 	if len(check.Command) < 2 || !filepath.IsAbs(check.Command[0]) || filepath.Base(check.Command[0]) != "deployment-rehearsal" {
 		return false
@@ -194,9 +194,10 @@ func ExecutePlan(ctx context.Context, plan ExecutionPlan, outputDirectory string
 	if entries, err := os.ReadDir(outputDirectory); err != nil || len(entries) != 0 {
 		return errors.Join(ErrInvalid, err)
 	}
+	var previousCompleted time.Time
 	for _, check := range plan.Checks {
 		started := now().UTC()
-		if started.IsZero() {
+		if started.IsZero() || started.Before(previousCompleted) {
 			return ErrInvalid
 		}
 		checkCtx, cancel := context.WithTimeout(ctx, time.Duration(check.TimeoutSeconds)*time.Second)
@@ -228,6 +229,7 @@ func ExecutePlan(ctx context.Context, plan ExecutionPlan, outputDirectory string
 		if writeNewEvidence(path, append(encoded, '\n')) != nil || result != "passed" {
 			return ErrInvalid
 		}
+		previousCompleted = completed
 	}
 	return nil
 }

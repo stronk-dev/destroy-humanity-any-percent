@@ -202,19 +202,24 @@ evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan d
 shell—into a new empty result directory. The plan must enumerate the 42 non-forgery positive and
 negative populations in canonical lifecycle order, require exit zero for positive checks and exact
 exit three for severing checks, and give every command a one-second to four-hour guard. Every row
-is bound to its producer: the command must be an absolute path to the `deployment-rehearsal` tool
-itself running the population's own subcommand (`install-candidate`, `run-browser`,
+has a producer command-shape constraint: the command must be an absolute path with basename
+`deployment-rehearsal` running the population's own subcommand (`install-candidate`, `run-browser`,
 `recover-empty`, `recover-populated`, `lifecycle-release`, `lifecycle-rollback` for their positives,
-`restore-non-clean` and `restart-admitted-work` for those runtime negatives; `probe --population=<row>`
-for every
-other population). A constant command such as `/usr/bin/true` or `/usr/bin/false`, a probe for a
-different population, or a generic failure exit therefore cannot stand in for proof. Populations
-that no producer can exercise yet (currently the release-drain, rollback, rotation, alert-delivery,
-journal-budget, provider-off and non-clean-target runtime rows among others) are bound to `probe`,
-which exits `2` for them, so a real run fails loudly until each gains a producer. Output is capped at
+`restore-non-clean` for that runtime negative; `probe --population=<row>` for every other population).
+A constant command such as `/usr/bin/true` or `/usr/bin/false`, a probe for a different population,
+or a generic failure exit therefore cannot stand in for proof. Populations that no producer can
+exercise yet, including restart during admitted work, remain bound to `probe`, which exits `2`
+for unsupported rows, so a real run fails loudly until each gains a producer. Output is capped at
 one MiB per check; timeout, truncation, wrong exit, unsafe shell/sudo invocation, secret-shaped
-argument, prior result byte or non-monotonic observation fails the lane. The final evidence binds
+argument, prior result byte or non-monotonic observation fails the lane. Each command's start must
+be at or after the previous command's completion, including within the same lifecycle step;
+an invalid start refuses before launching that command. Exact adjacent boundaries are allowed,
+but each command's completion must still be after its own start. The final evidence binds
 the reviewed plan hash, so an operator cannot silently substitute a shorter command list.
+The command-shape constraint does not authenticate the executable: a substitute with the same
+basename can still pass it (RP-140). Candidate-bundle tool hashes checked later do not establish
+that those bytes were the executables launched by the plan. The producer-identity contract
+remains unresolved; executor fixtures are not evidence of a real R-006 rehearsal.
 
 Canonical order follows the real state dependencies: host preflight, initial install, browser,
 empty and populated restore, incident recovery, release, rollback, rotation, operations and
@@ -389,6 +394,9 @@ plan hash must match the `rehearsal_plan` artifact; run and both manifest identi
 the result directory must contain exactly one mode-0600 result for every canonical plan row and no
 extra entry. Each result's name, kind, step, command hash, expected exit, completed/non-guarded
 state, observation interval and raw file hash must agree with the plan and its evidence population.
+Both base and final validation also compare every result interval in canonical plan order:
+the next start cannot precede the previous completion. Rehashing overlapping results and their
+step/evidence/seal summaries does not make that chronology admissible.
 
 The artifact directory contains exactly fifteen mode-0600 retained inputs/outputs: candidate and
 previous manifests, their independent-build records, separate candidate-install and lifecycle

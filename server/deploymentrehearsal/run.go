@@ -115,6 +115,7 @@ func validateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte
 	stepResultHashes := map[string][]string{}
 	stepStarts := map[string]time.Time{}
 	stepEnds := map[string]time.Time{}
+	var previousCompleted time.Time
 	for _, check := range plan.Checks {
 		entry, ok := resultEntries[check.Name+".json"]
 		if !ok || entry.Type()&os.ModeSymlink != 0 {
@@ -133,9 +134,11 @@ func validateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte
 		if err != nil || result.SchemaVersion != 1 || result.Name != check.Name || result.Kind != check.Kind || result.Step != check.Step ||
 			result.CommandSHA256 != hashJSON(check.Command) || result.ExitCode != check.ExpectedExit || result.Result != "passed" || result.GuardExhausted ||
 			result.StartedAt.Before(evidence.StartedAt) || result.CompletedAt.After(evidence.CompletedAt) || !result.CompletedAt.After(result.StartedAt) ||
+			result.StartedAt.Before(previousCompleted) ||
 			populations[check.Name].EvidenceSHA256 != resultHash {
 			return ErrInvalid
 		}
+		previousCompleted = result.CompletedAt
 		stepCommandHashes[check.Step] = append(stepCommandHashes[check.Step], result.CommandSHA256)
 		stepResultHashes[check.Step] = append(stepResultHashes[check.Step], resultHash)
 		if stepStarts[check.Step].IsZero() || result.StartedAt.Before(stepStarts[check.Step]) {
