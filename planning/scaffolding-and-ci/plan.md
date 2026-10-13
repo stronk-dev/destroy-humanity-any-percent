@@ -7,6 +7,13 @@
 
 ## Current checkpoint — 2026-10-13
 
+RP-553 closes a diagnostic gap: Typer's phase observer now arms before the first journey await,
+not after content/engine setup. A real pre-initialization deadline in the same journey fails
+the old placement in both native projects, then passes after the correction. Full final native
+Chromium/WebKit functional population passes23,706 with ten expected deadlines/16 skips; this
+is not cause attribution or an RP-526 repair. The log owns exact results/range and raw-output
+truncation limits. Keep input, ordinary15s bound, concurrency, data and assertions unchanged.
+
 Current native cross-surface verification retains an RP-526 recurrence: at `b8eca33c`,
 the complete Chromium/WebKit functional population fails Typer's unchanged15s whole-game
 deadline. A new failure-only phase observer is locally verified, including a real deadline

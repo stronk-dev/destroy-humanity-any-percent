@@ -215,9 +215,16 @@ fixtures, not live-server/Postgres proof.
 If Typer's complete native journey reaches its deadline, its test-only observer prints
 `typer-native-journey-deadline` before teardown: current stage/elapsed time, engine phase,
 prompt/revision/command count, pending state, input length and native-RPC flight state.
+It arms when the journey body starts, before its first await, so driver loading, content identity,
+engine creation and fixture mount are also distinguishable. Until the fixture exists, context
+explicitly reports `fixture_ready: false` rather than reading uninitialized engine/DOM variables;
+elapsed time includes initialization. An early-disposal hook covers setup failures as well.
 It does not record typed text or change input delivery, assertions, timers or concurrency.
-The real-timeout control requires a connected fixture's state to be sampled before removal;
-healthy/disposed observers stay silent. This is diagnostic context, not a latency correction:
+One real-timeout control requires a connected fixture's state to be sampled before removal;
+another pauses the same journey before initialization and requires an early phase record plus
+refusal/drain of the expired continuation. Both use controlled50ms deadlines, not the ordinary
+journey's15s bound. The ordinary sequence is unchanged and has no setup gate.
+Healthy/disposed observers stay silent. This is diagnostic context, not a latency correction:
 a later passing population does not resolve an earlier unexplained deadline.
 
 The Garden host fixture waits for its actual socket-factory callback before asserting the exact

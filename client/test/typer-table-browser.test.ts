@@ -1,6 +1,6 @@
 import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, type TestContext } from "vitest";
 
 import content from "../../balance/testdata/typer-v1.json?raw";
 import { t } from "../src/copy";
@@ -38,6 +38,34 @@ describe("native keyboard timeout isolation", () => {
   let release: () => void;
   let continued: Promise<void>;
   let deadlineObservation: Record<string, unknown>;
+
+  let setupSignal: AbortSignal;
+  let releaseSetup: () => void;
+  let setupJourney: Promise<void>;
+  const setupObservations: Record<string, unknown>[] = [];
+
+  it.skipIf(!browser).fails("fires a real journey deadline before fixture initialization", async (context) => {
+    setupSignal = context.signal;
+    setupJourney = runNativeTyperJourney(context, (value) => setupObservations.push(value),
+      () => new Promise<void>((resolve) => { releaseSetup = resolve; }));
+    await setupJourney;
+  }, 50);
+
+  it.skipIf(!browser)("captures early journey setup and refuses its expired continuation", async () => {
+    try {
+      expect(setupSignal.aborted).toBe(true);
+      expect(setupSignal.reason.message).toContain("Test timed out in 50ms");
+      expect(setupObservations).toHaveLength(1);
+      expect(setupObservations[0]).toMatchObject({ stage: "import-native-driver",
+        context: { fixture_ready: false, fixture_connected: false } });
+      expect(setupObservations[0]!.elapsed_ms).toBeGreaterThanOrEqual(0);
+    } finally {
+      releaseSetup();
+      const outcome = await setupJourney.then(() => null, (error: unknown) => error);
+      expect(outcome).toBe(setupSignal.reason);
+      assertNativeInputDrained();
+    }
+  });
 
   // A fired framework deadline is the deliberate negative population, not an
   // acceptance pass. Its successor independently requires that exact reason.
@@ -288,11 +316,20 @@ for (const phase of ["ready", "typing"] as const) {
   });
 }
 
-it.skipIf(!browser)("Typer native keyboard untimed run completes through the real pure engine and leaves the table", async ({ signal, onTestFinished }) => {
+async function runNativeTyperJourney({ signal, onTestFinished }: Pick<TestContext, "signal" | "onTestFinished">,
+  report: (value: Record<string, unknown>) => void = (value) => console.error("typer-native-journey-deadline", JSON.stringify(value)),
+  beforeSetup?: () => Promise<void>) {
+  let readContext: () => Record<string, unknown> = () => ({ fixture_ready: false, fixture_connected: false });
+  const observation = observeTyperDeadline(signal, () => readContext(), report);
+  onTestFinished(() => observation.dispose());
+  observation.enter("import-native-driver");
+  if (beforeSetup) await beforeSetup();
   const { userEvent } = await import("vitest/browser");
   const keyboard = lifetimeKeyboard(signal, (keys) => userEvent.keyboard(keys));
+  observation.enter("content-identity");
   const identity = { content, content_hash: await typerContentHash(content), content_schema_version: 1,
     seed: 42n, mode: "solo" as const, scaling_inputs: { "typer.era_tier": 1 } };
+  observation.enter("create-engine");
   let encoded = await createTyper(identity);
   let state = JSON.parse(encoded) as TyperSnapshot;
   let result: TyperResult | null = null;
@@ -302,6 +339,7 @@ it.skipIf(!browser)("Typer native keyboard untimed run completes through the rea
   const commands: TyperCommand[] = [];
   let nativeInputInFlight = false;
   signal.throwIfAborted();
+  observation.enter("mount-fixture");
   const view = controlled(state, (command) => {
     commands.push(command);
     flushSync(() => view.app.setPending(true));
@@ -315,14 +353,14 @@ it.skipIf(!browser)("Typer native keyboard untimed run completes through the rea
   }, () => { exits++; });
   const sentinel = document.createElement("button");
   view.target.before(sentinel);
-  const observation = observeTyperDeadline(signal, () => ({ phase: state.phase,
+  readContext = () => ({ fixture_ready: true, phase: state.phase,
     prompt_index: state.prompt_index, revision: state.revision, commands: commands.length,
     last_command: commands.at(-1)?.kind ?? null, native_input_in_flight: nativeInputInFlight,
     pending: view.target.querySelector(".typer")?.getAttribute("aria-busy") ?? null,
     input_length: view.target.querySelector<HTMLInputElement>("input")?.value.length ?? null,
     focused_input: document.activeElement === view.target.querySelector("input"),
     fixture_connected: view.target.isConnected,
-  }), (value) => console.error("typer-native-journey-deadline", JSON.stringify(value)));
+  });
   const press = async (stage: string, keys: string) => {
     observation.enter(stage);
     nativeInputInFlight = true;
@@ -386,7 +424,10 @@ it.skipIf(!browser)("Typer native keyboard untimed run completes through the rea
     await press("leave-table", " ");
     expect(exits).toBe(1);
   } finally { await finish(); }
-});
+}
+
+it.skipIf(!browser)("Typer native keyboard untimed run completes through the real pure engine and leaves the table",
+  (context) => runNativeTyperJourney(context));
 
 it.skipIf(!browser)("samples an increasing monotonic clock without reactive feedback across server revisions", async () => {
   const target = document.createElement("main"); document.body.append(target);

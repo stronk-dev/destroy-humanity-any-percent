@@ -1073,3 +1073,41 @@ fact-check, not designated implementation approval). Recorded by: Codex. No new 
 code, acceptance/archival waiver or publication authority. All named handles are terminal.
 Next: native RP-526 first-failure diagnosis/remaining accepted reviews and construction; explicit
 held-contract closure, then declared Linux/Postgres and exact-artifact proof when authorized.
+
+## 2026-10-13 — RP-553 capture Typer deadlines before fixture initialization
+
+At `ed3d802e`, unchanged focused Typer30417 passes54 plus two expected deadline controls.
+One unchanged full native Chromium/WebKit population39990 passes288 files/23,704 checks,
+eight expected deadlines/16 skips in152.46s; no RP-526 recurrence or cause attribution.
+Its final observed module summaries have0/0 and1,364/1,364 terminal requests. Tool delivery
+truncates the large passive output; these are observed final counts/exit, not a complete transcript.
+
+Source exposes a distinct diagnostic gap: the observer is armed after async content identity,
+engine creation and mount. Reuse the actual journey as a function with a test-only optional
+pre-setup gate; its normal invocation has no gate or added await. Controlled50ms framework
+deadline/successor tests require a phase record and the exact expired-continuation refusal.
+Initial58233 and refined21895 both fail the two native observation assertions with zero records;
+54 existing checks and four expected deadlines remain. Refinement puts the controlled barrier
+before driver import so dependency loading cannot delay barrier creation. It is not a claim that
+the original15s failure happened there, and the negative deadlines are not player acceptance.
+
+Arm the same observer before the first await, record driver/content/engine/mount phases, and
+use safe `fixture_ready:false` context until the existing fixture is assigned. Register disposal
+at entry as well as ordinary teardown. Existing mounted-input sampling, native-input drain,
+seed/content, server-time fixtures, gameplay sequence/assertions,15s budget and concurrency stay.
+Only diagnostic/test code changes; no component, engine, wire, balance, kernel or CI topology.
+
+Corrected focused47474 passes56 plus four expected deadlines in3.01s. Typecheck10214 reports
+zero errors/warnings. Node executes one pure helper check and skips29 browser cases, not native
+evidence. Final unchanged full native population39806 passes288 files/23,706 checks, ten expected
+deadlines/16 skips in149.29s; observed module summaries0/0 and1,362/1,362 have no pending requests.
+Its raw passive output is also tool-truncated. No ordinary deadline fires, so RP-526 remains
+unattributed/open; these passes are neither a reliability fix nor erased older failures.
+
+Review by: Codex (diagnostic implementer first filter). Recorded by: Codex. Exact test/docs/
+records range starts after `ed3d802e` through this containing commit; designated Claude review
+pending, consolidatable with the earlier native-input/phase-observer range. Formatting/diff
+checked; all named handles terminal. No full `verify-push`, Firefox/Linux, performance, SQL,
+composed/player or release claim; known RP-131/RP-307, environment and full nine-tier1.0 gates
+remain. No push/deploy, timeout/retry changes or production content. Retain the complete phase
+capture on a real recurrence and continue accepted construction/review, not reruns for green.
