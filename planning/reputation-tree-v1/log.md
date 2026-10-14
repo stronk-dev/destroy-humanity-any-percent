@@ -9431,3 +9431,69 @@ batch after `1f533983` through the containing commit. Review by: Codex
 pending for the entire corrective range; the original verdicts above approve
 none of it. All earlier review, author-body, content/mint and release gates
 remain. No acceptance checkbox, RFC archival, publication or deployment.
+
+## 2026-10-14 — Original B5a frozen-row producer review
+
+Review by: Codex (designated independent reviewer of Claude's original work).
+Recorded by: Codex. Exact range: `7ea6b942^..7ea6b942`, all11 changed paths:
+complete frozen producer, initializer/Exit bindings, producer/SQL tests, migration
+00076, three kernel mirrors, docs and log. **CHANGES REQUIRED**, RP-628.
+
+The producer derives the post-credit earned-level bonus and includes its unit
+row, sorts the complete set, and is wired into Exit and new/import initialization.
+Original kernel mirrors agree at0.3.112. Isolated source at `078b205e` passes
+cold Production, Save, Reputation and Releasepackage packages using today's root
+Make runner; this native execution does not execute DB-dependent tests or
+approve the separate B5b producer. The original migration00076 is unchanged
+through current source before this correction. Its real-Postgres baseline
+rejects missing/extra counts but commits all three same-count replacements:
+wrong Reputation source, slot and target. It therefore does not prove the row
+exists with the required identity. These controlled internal persistence probes
+are not a player-facing exploit. The B5 witness `7d130b89` retains its previously
+bounded approval; full B5b/B6/B7/B8 review and complete acceptance remain open.
+
+## 2026-10-14 — Bind new frozen Reputation rows to their pinned declaration
+
+Outcome: fix RP-628 under accepted R3/R7/AC6 with append-only migration00085.
+Keep the existing count check, then require the Reputation source/slot/target
+from the actual pinned tree's bonus declaration. No literal second authority,
+formula/balance/copy, client/runtime, historical pin or applied-migration edit.
+Down exactly restores00076's Up body (executed byte comparison), not a live
+rollback rehearsal. The release migration-head guard advances84→85. Kernel
+stays0.3.214: no guarded runtime/arithmetic source changes in this batch.
+
+Regression: three same-count substitutions commit on the old trigger while
+missing/extra controls refuse. With00085, all five refuse; queried run_epochs
+and run_frozen_contributions contain zero rows for every rejected stream.
+The valid pin still commits, then actual purchase, original-receipt retry,
+unchanged current frozen rows, changed next factor and Founder-history
+verification execute successfully. This checks row identity, not full factor
+derivation, every Fiscal identity or retrospective historical repair.
+
+Coverage: full cold native Save/Reputation/Releasepackage and affected vet pass.
+Declared Linux-amd64/Postgres selected Reputation Production/Save population
+passes; verbose capture truncates, so no full per-subcase census is claimed.
+Complete focused five-case SQL regression is then captured passing in0.370s.
+Serial `make validate-migrations` passes the full Save Integration/Migration
+selection in1.831s; the Linux release migration-head guard passes separately.
+No client/browser suite for unchanged client bytes, full Production/hosted CI,
+clean-host deployment or complete Reputation/release/1.0 claim.
+
+Execution slip disclosed: migration validation was initially started alongside
+the Reputation SQL runner, sharing a resettable database. Cancelled the
+migration invocation (exit130), confirmed its container disappeared, and ran
+migration validation serially plus the final focused regression afterward.
+The interrupted attempt supplies no verification evidence. A scoped stop check
+found that already-removed container; no unrelated service was stopped.
+
+Cleanup: all check handles are terminal. Removed only this batch's temporary
+tmpfs Postgres service; its Compose list is empty. Reused historical review
+checkout stays clean at `078b205e`; retain it under the already-reported pinned
+workspace protection, without another archival attempt or manual deletion.
+
+Handoff: migration, regression, release guard, canonical docs and plan/backlog/
+this record form the batch after `23a8490f` through the containing commit.
+Review by: Codex (implementer first-filter); Recorded by: Codex. Claude's
+designated review is pending for this complete corrective range independently
+of the original rejection above and all earlier corrective ranges. No box flip,
+RFC archival, mint, push or deployment. Continue B5b's remaining original review.

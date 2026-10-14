@@ -295,9 +295,13 @@ after the Exit's Reputation credit. The earned level is used, not the available 
 mismatched unlock mirror is refused. Exit (`prestige.go`) and New-Founder initialization
 (`FounderInitializer`, which account import also uses) both call it.
 
-Migration 00076 replaces `require_fiscal_frozen_contributions()`. A run pin now expects the Fiscal
-rows plus one extra row when the pin's bundle has a `reputation_tree` artifact. A missing or extra
-row fails the commit.
+Migration 00076 established the frozen-row count in `require_fiscal_frozen_contributions()`:
+Fiscal rows plus one extra row when the pin's bundle has a `reputation_tree` artifact.
+Append-only migration 00085 also requires that Reputation row's source, slot and target to
+match the pinned tree's `bonus` declaration. A missing/extra row or same-count substitution
+with the wrong Reputation identity fails commit and rolls back both pin and frozen rows.
+This guards new pins; it does not rewrite historical rows or establish complete factor/history
+verification. Existing Fiscal count semantics remain unchanged.
 
 Production reads a run's bonus only from the stored rows, so a mid-run purchase leaves the current
 run's contributions byte-identical and changes only the next run's frozen factor.

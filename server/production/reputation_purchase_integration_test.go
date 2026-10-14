@@ -106,26 +106,52 @@ func TestReputationPurchaseIntegrationRecordsReplayableFounderLog(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
-	for name, rows := range map[string][]save.FrozenContribution{
-		"missing reputation row": fiscalOnly,
-		"extra row":              append(append([]save.FrozenContribution{}, frozen...), save.FrozenContribution{SourceID: "reputation.extra", Slot: frozen[0].Slot, Target: "all", Factor: "1e0"}),
-	} {
-		otherFounder := "01986666-5f09-4000-8000-00000000000" + map[string]string{"missing reputation row": "1", "extra row": "2"}[name]
-		otherAccount := "01986666-5f08-4000-8000-00000000000" + map[string]string{"missing reputation row": "1", "extra row": "2"}[name]
-		if _, execErr := db.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash) VALUES($1,'test')`, otherAccount); execErr != nil {
-			t.Fatal(execErr)
+	alterBonus := func(change func(*save.FrozenContribution)) []save.FrozenContribution {
+		rows := append([]save.FrozenContribution(nil), frozen...)
+		for index := range rows {
+			if rows[index].SourceID == bundle.ReputationTree.Bonus.SourceID {
+				change(&rows[index])
+				return rows
+			}
 		}
-		if _, execErr := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id) VALUES($1,$2)`, otherAccount, otherFounder); execErr != nil {
-			t.Fatal(execErr)
-		}
-		other, createErr := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: otherFounder, Scope: economy.ScopeCompany},
-			bundle.ConstantsHash, company, save.WriteContext{Cause: "reputation.integration"})
-		if createErr != nil {
-			t.Fatal(createErr)
-		}
-		if err := pin(other.StreamID, otherFounder, rows); err == nil || !strings.Contains(err.Error(), "complete frozen Founder contributions") {
-			t.Fatalf("%s pin committed: %v", name, err)
-		}
+		t.Fatal("complete frozen set has no Reputation row")
+		return nil
+	}
+	cases := []struct {
+		name, suffix string
+		rows         []save.FrozenContribution
+	}{
+		{"missing reputation row", "1", fiscalOnly},
+		{"extra row", "2", append(append([]save.FrozenContribution{}, frozen...), save.FrozenContribution{SourceID: "reputation.extra", Slot: frozen[0].Slot, Target: "all", Factor: "1e0"})},
+		{"same count wrong source", "3", alterBonus(func(row *save.FrozenContribution) { row.SourceID = "reputation.extra" })},
+		{"same count wrong slot", "4", alterBonus(func(row *save.FrozenContribution) { row.Slot = "upgrades" })},
+		{"same count wrong target", "5", alterBonus(func(row *save.FrozenContribution) { row.Target = "company.cash" })},
+	}
+	for _, test := range cases {
+		t.Run(test.name, func(t *testing.T) {
+			otherFounder := "01986666-5f09-4000-8000-00000000000" + test.suffix
+			otherAccount := "01986666-5f08-4000-8000-00000000000" + test.suffix
+			if _, execErr := db.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash) VALUES($1,'test')`, otherAccount); execErr != nil {
+				t.Fatal(execErr)
+			}
+			if _, execErr := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id) VALUES($1,$2)`, otherAccount, otherFounder); execErr != nil {
+				t.Fatal(execErr)
+			}
+			other, createErr := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: otherFounder, Scope: economy.ScopeCompany},
+				bundle.ConstantsHash, company, save.WriteContext{Cause: "reputation.integration"})
+			if createErr != nil {
+				t.Fatal(createErr)
+			}
+			if err := pin(other.StreamID, otherFounder, test.rows); err == nil || !strings.Contains(err.Error(), "complete frozen Founder contributions") {
+				t.Fatalf("%s pin committed: %v", test.name, err)
+			}
+			for _, table := range []string{"run_epochs", "run_frozen_contributions"} {
+				var count int
+				if err := db.QueryRowContext(ctx, "SELECT count(*) FROM "+table+" WHERE company_stream_id=$1", other.StreamID).Scan(&count); err != nil || count != 0 {
+					t.Fatalf("rejected pin retained %d rows in %s: %v", count, table, err)
+				}
+			}
+		})
 	}
 	if err := pin(companyRevision.StreamID, founderID, frozen); err != nil {
 		t.Fatalf("complete pin: %v", err)

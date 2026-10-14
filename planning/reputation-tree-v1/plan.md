@@ -4,6 +4,14 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
+Current R3/AC6 database correction (2026-10-14): RP-628 demonstrates that the
+old count-only trigger commits same-count wrong-source/slot/target substitutions.
+Append-only migration00085 binds the required row to the pinned tree's bonus
+declaration; all five missing/extra/wrong-identity cases now refuse with complete
+pin/row rollback. The original B5a eleven-path range has a CHANGES REQUIRED
+disposition; this corrective batch after `23a8490f` needs Claude independently.
+This is new-pin admission, not historical repair or complete B5/AC6 acceptance.
+
 Current R3 correction (2026-10-14): RP-627 rejects positive sub-unit Reputation
 factors in the Go frozen resolver and TypeScript replay consumer. Existing R3
 requires state-valid factors >=1; no new mechanic, ceiling, content or owner
@@ -470,6 +478,11 @@ author/harness/browser/mint/release holds remain, no full RFC closure.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),
   `run_started` v2. ACs 6, 7, 8, 11.
+  Full original B5a (`7ea6b942^..7ea6b942`) eleven-path review: **CHANGES
+  REQUIRED**, RP-628 count-only completeness. The original four-path witness
+  `7d130b89` retains its bounded approval; B5b's complete fourteen-path producer
+  review remains outstanding. Neither that witness nor this local correction
+  approves the full producer/acceptance span.
 - [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
 - [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
   RP-285/RP-286 under2b2536a9 adds explicit native header/button Tab stops.
