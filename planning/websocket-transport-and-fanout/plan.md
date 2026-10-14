@@ -4,6 +4,12 @@
 - **RFC:** `rfc/websocket-transport-and-fanout.md`
 - **Started:** 2026-07-29
 
+2026-10-15 composition reconciliation: the old Commons-resolver/binary blocker is resolved.
+`gameserver.New` wires the real Commons projector and Guild settlement service; the current
+built-client aggregate at `6201bef8` executes the persisted socket/clearing/readiness/drain
+test twice successfully. Item4 records implementation presence, not complete Transport review
+or archival. The owning log retains the exact witness and remaining review obligations.
+
 Current known-payload conformance correction (2026-10-13, RP-561): Go validates exact
 DTO-owned fields/nullability and safe wire integers; the client requires actual string
 enums instead of coercing arrays. The shared174-case corpus, connected publisher/history
@@ -22,10 +28,12 @@ policy, balance/kernel, whole Transport acceptance or archival is changed.
 2. [x] Embed Centrifuge with the implemented channel authorization, history, and backpressure policy.
 3. [x] Map committed production receipts/events into one transaction-owned private-player outbox;
    each scope is revision-ordered and snapshot recovery uses the authoritative full-state endpoint.
-4. [ ] Compose `cmd/gameserver`, readiness, HTTP intents, and bounded drain lifecycle. (lifecycle
-   complete; binary blocked on the Commons owner resolver recorded in the log). This item owns
-   wiring the real `guild.Service.PendingSettlements`; account integration uses an explicitly
-   empty constructor fixture and is not production composition.
+4. [x] Compose `cmd/gameserver`, readiness, HTTP intents, and bounded drain lifecycle. The real
+   composer wires `production.WithCommonsWeightResolver(commonsProjector)` and
+   `production.WithGuildSettlements(guildService)`, not the empty account constructor fixture.
+   `TestComposedGameserverPostgresSocketClearingAndGCIntegration` passes on actual Postgres
+   at `6201bef8`, including three real clearing settlements consumed by an HTTP intent,
+   persisted boundary3, member authorization, readiness and bounded drain. Full review remains.
 5. [x] Add recovery, overflow, authz, drain, and 5k-connection soak coverage.
 6. [x] Update canonical docs and run full verification.
 7. [ ] Record independent review before archival.

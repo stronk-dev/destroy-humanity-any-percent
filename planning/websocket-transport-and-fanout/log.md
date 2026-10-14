@@ -750,3 +750,23 @@ review, consolidatable with RP-560 without absorbing older review debt. Canonica
 plan and RP-561 updated together; no feature checkbox, body/ruling change, archival, mint,
 push, publication or deployment. Continue accepted work; public Typer/API and other named
 contract choices remain explicit, and the full nine-tier1.0 objective remains active.
+
+## 2026-10-15 — Remove the stale server-composition blocker
+
+The plan's unchecked item4 still said the binary was blocked by the Commons owner
+resolver. The preserved2026-07-30 ruling already authorized composition, and current
+`gameserver.New` constructs the Commons projector and real Guild service, wiring
+both into Production. No resolver, subscriber policy or runtime was changed here.
+
+Existing executed witness: current built-player aggregate22749 at `6201bef8`
+passes `TestComposedGameserverPostgresSocketClearingAndGCIntegration` in both
+main/Tier2 populations. Source inspection confirms actual member/Commons authorization,
+three clearing-produced settlements, an HTTP intent consuming them and persisted
+watermark3; readiness becomes unavailable after a bounded drain. This is not the
+empty account-service settlement fixture. The Garage log owns the full execution,
+architecture/setup limits and cleanup. No duplicate test or checkbox-only software run.
+
+Verification by: Codex. Recorded by: Codex. Item4 now records implemented composition
+with its named passing witness. Complete feature acceptance, RP-560/561 and earlier
+corrective designated reviews remain open; no archival or approval is inferred.
+Two-path editorial plan/append-only-log change; factual references/diff checked.
