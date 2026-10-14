@@ -560,7 +560,8 @@ Every scheduled round classifies the complete target *before* writing anything:
 - **The helper's own temporaries** (`.backup-payload-*.tmp` / `.backup-envelope-*.tmp`):
   - *Stale:* unmodified for more than one hour. They are eligible for crash-debris cleanup, not
     proof that a writer has died. The round removes them only after excluding live helpers,
-    rechecking the inspected target, regular-file type, own name and age; it reports the count.
+    rechecking the inspected directory/file identities, regular-file type, own name and age;
+    it reports the count. Matching names and ages in a replaced directory or file are insufficient.
   - *Active:* possibly a concurrent pre-upgrade backup. The round defers, records no failure, and
     retries in five minutes.
 - **Foreign entries:** anything else. A foreign entry or an invalid/corrupt backup records a
@@ -579,8 +580,14 @@ with `target_in_use`, records no success/failure and retries at the existing fiv
 Scheduled creation also defers if cleanup currently owns the target; a one-off create returns
 the busy error to its caller. Concurrent creators remain permitted, with the existing
 no-replacement commit protecting a completed destination.
+Inspection records directory and stale-file identities without changing the JSON classification.
+Cleanup requires the locked directory and its directory-bound filesystem handle to match that
+inspection. Reads and removals use the bound handle, so a later directory rename or alias retarget
+cannot redirect removal to another directory. An unchanged directory alias remains supported;
+a replaced inspected file is refused even if its name, type and age match.
 Locks release on handle/process exit; unsupported filesystem locking fails rather than silently
-degrading. This coordinates supported helpers, not arbitrary privileged filesystem mutations.
+degrading. This coordinates supported helpers, not arbitrary privileged filesystem mutations
+between a file's final identity check and removal.
 
 The plaintext header's payload length and SHA-256 are verified on every read. A truncated or
 substituted payload is invalid for schedule, retention and restore, even when age authentication

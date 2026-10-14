@@ -9,11 +9,11 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
 Current product checkpoint `8a5dcebf`: Garage integration/hardening, incomplete v0.1, and substantial
 unbuilt world/combat/Tier 3–8/final-ending scope. Latest published source
-`4eaed0c9` has completed red CI: browser/composed/schema/harness pass; client fails
-the historical guard and server fails27 Clout partition cases, both reproduced locally.
-The browser/server/composed jobs exceed the five-minute floor. Earlier red CI remains evidence;
-repairs through that remote source are published, not designated-approved. The75 later local
-commits at this product checkpoint are not in that run. Subsequent local repairs and complete original API review dispositions do not
+`be66902b` has completed red CI38560135778: browser/composed/schema/harness pass; client fails
+the historical guard and server fails27 Clout partition cases, confirmed in finished logs.
+Browser5m21s/server8m11s/composed6m07s exceed the five-minute floor. Earlier red CI remains evidence;
+publication is not designated approval. The later local work is not in that run.
+Subsequent local repairs and complete original API review dispositions do not
 advance a gameplay milestone or establish release readiness. Subsequent actual operations
 producer/receiver, public replay-verifier, queued Claim and minigame admission/Exit evidence
 is summarized in current verification, with owning logs retaining its limits and review debt.
@@ -43,10 +43,18 @@ standard pacing completes300 runs in45.19 minutes, then the50-minute wrapper int
 at85/107; the complete measurement is invalid. Career/relevance comparisons also fail; numeric
 maintenance passes. Do not raise budgets or regenerate reports to hide these results.
 Last full local production/history checks at `a713137e` remain red; this checkpoint does not
-claim reruns of every feature at the newer source. Latest Docker ping still times out and fresh
-host observation has71GiB available/92% used. The [CI log](scaffolding-and-ci/log.md) owns the
+claim reruns of every feature at the newer source. Earlier Docker pings timed out; the subsequent
+environment checkpoint below records recovery. The last host-capacity observation is71GiB
+available/92% used, not a new measurement. The [CI log](scaffolding-and-ci/log.md) owns the
 artifact, executed validator refusal and next diagnosis. [Current action](platform-alignment/execution-queue.md#current-action--2026-10-14)
 routes accepted construction, consolidated review, held contracts and unavailable integration.
+
+Current environment/backup checkpoint (2026-10-14): Docker now responds, and the declared
+Linux-amd64/Postgres backup lane passes all seven integration functions, including RP-551's
+query-override restore populations. RP-611's cleanup identity/anchored-directory correction
+passes native and actual Linux filesystem/second-process tests. The Deployment log owns
+the exact source and review boundary. Other local lanes can now be attempted under their
+existing prerequisites; clean-host R-006, artifact/author and review gates remain open.
 
 Current additional privacy hold (2026-10-14): [RP-606](platform-alignment/data-rights-current-content.md)
 connects protected Garden salt in private replay to original-byte public evidence. Controlled

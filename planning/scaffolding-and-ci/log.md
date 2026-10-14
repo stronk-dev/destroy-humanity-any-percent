@@ -1496,3 +1496,18 @@ needs designated Claude review, consolidatable with CI diagnostics. Existing gua
 adoption and exact-path identity review precede runtime landing; full affected parity and
 measured gain precede closeout. No claimed
 speedup, kernel bump/exception, archival, mint, push or narrowed nine-tier1.0 floor.
+
+## 2026-10-14 — Published CI38560135778, not the old remote-source result
+
+Read-only gh run list/view identifies completed failure at published `be66902b`.
+Finished failure markers confirm client RP-131 at50a3a514 and all27 server
+TestAxisAccrualPartitionProperty failures (RP-307). Schema/harness/browser/
+game-ui-composed jobs succeed. Job metadata gives browser5m21s/composed6m07s/
+server8m11s, each above D-014's five-minute floor. Current local changes are
+not included. CI38381138075 and maintenance38507071157 remain earlier evidence.
+No workflow, budget, assertion, report, guard or authority changed; these are
+executed external-state reads, not a new diagnosis or repaired CI claim.
+
+Docker subsequently responds and the declared local Linux-amd64/Postgres backup
+lane passes; the Deployment log owns that separate result. Do not generalize
+daemon recovery or scoped backup success to whole server/browser/hosted CI.

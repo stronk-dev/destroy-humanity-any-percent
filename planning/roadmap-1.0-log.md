@@ -5355,3 +5355,19 @@ boundaries: accepted complete-set API composition that refuses missing owners, m
 standard-pacing cost, consolidated reviews and other accepted work. Owner/draft/environment
 holds apply to their specific work, not the entire repo. This checkpoint is editorial/evidence
 reconciliation, not a new implementation contract, approval, push or smaller release objective.
+
+## 2026-10-14 — Docker verification resumes; backup cleanup and real restores
+
+RP-611 cleanup now binds inspected directory/file identities and anchored removals;
+old replacement cases delete uninspected test data, corrected native/Linux cases
+preserve it. Docker responds and all seven declared Linux-amd64/Postgres backup
+integration functions pass, including RP-551's previously unexecuted query-override
+restores. [Deployment log](deployment-foundation/log.md) owns commands, limits and
+the range after68eee56b needing Claude. No clean-host/off-host/RPO/RTO approval.
+
+Latest retrieved published CI38560135778 at be66902b remains red: kernel-history
+guard and27 Clout partitions; browser/composed/server durations exceed five minutes.
+[CI log](scaffolding-and-ci/log.md) owns metadata/failure-marker reads. Other local
+integration lanes are now runnable subject to their own prerequisites, not passed
+by association. Full nine-tier/platform1.0 scope and all owner/review/artifact gates
+remain. No push, deployment, archival or release claim.

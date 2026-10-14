@@ -25,9 +25,13 @@ nine-tier goal remains active; no new playable tier or release was completed.
   logs identify complete corrective ranges. Pending review prevents acceptance/archival,
   not other authorized work. Do not restart completed original reviews or call self-review
   designated approval.
-- **BLOCKED — declared Docker/SQL/Linux and clean-host witnesses:** latest direct ping does
-  not answer. No restart/cleanup or host-DB substitution is authorized. Current-source hosted
-  verification is also absent: published CI/maintenance still run `4eaed0c9`, not local work.
+- **READY — declared local Docker/SQL/Linux verification:** daemon ping now answers and the
+  declared Linux-amd64/Postgres backup lane passes all seven integration tests. Cleanup's actual
+  Linux filesystem/second-process population also passes. Other lanes still need their own
+  execution; daemon availability does not close them. No restart or host-DB substitution was used.
+- **HELD — clean-host artifact/release and current-source hosted gates:** exact bundles, author
+  contracts, independent review and target authority remain prerequisites for R-006. Latest
+  published CI38560135778 at `be66902b` is completed failure; later local work is not in that run.
 - **HELD — named contracts and owner choices:** use the current distinction and linked option
   sheets. Headcount has hiring AND output choices. API engineering proposals, Typer/attendance/
   body reconciliation, rights/retention, accessibility, content and release-artifact work have

@@ -7,6 +7,16 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP6 cleanup correction and restored test environment, 2026-10-14:**
+RP-611 binds cleanup to inspected directory/file identities and a directory-rooted handle.
+Three old physical-file regressions delete an uninspected replacement; corrected native and
+Linux-amd64 populations preserve it, including unchanged aliases and second-process writer
+exclusion. Cold affected packages/vet/race and Linux helper build pass. Docker now responds;
+`make test-deployment-backup` executes all seven real Postgres integration tests, including
+RP-551's empty/populated query-override restores. Exact evidence/range after `68eee56b` is in
+the owning log, pending Claude. Other previously unavailable lanes must run individually;
+no daemon intervention, current-release proposal adoption or clean-host/R-006 pass is inferred.
+
 **Current backup-input correction, 2026-10-13 (RP-559):** malformed URL queries now
 refuse before service/pass file creation, rather than silently dropping invalid fields
 and preparing fallback credentials. Twelve actual old-helper failures and four encoded-value
@@ -68,8 +78,9 @@ database URL's endpoint query overrides instead of targeting its unoverridden UR
 Old-source20-case population fails18, retaining ordinary/password-isolation controls; corrected
 focused/race, affected cold packages/vet and Linux helper build pass. The existing actual-Postgres
 empty/populated restore test now includes swapped URI paths with database-query overrides; it
-only compiles/skips locally. Run `make test-deployment-backup` when the declared Docker service
-is usable before claiming DB integration. New range after `a7501ac1` needs Claude review. This
+initially only compiled/skipped locally. The 2026-10-14 declared Linux/Postgres run now passes
+both empty/populated override populations; the latest owning log records it. New range after
+`a7501ac1` still needs Claude review. This
 does not close DP-C/AC4, general URI options, original R20 review or exact-host/R-006.
 
 **Current DP-F producer evidence, 2026-10-13 (RP-550):** all nine packaged-artifact mutations now

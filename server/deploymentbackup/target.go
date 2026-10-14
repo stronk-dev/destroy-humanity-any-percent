@@ -2,6 +2,7 @@ package deploymentbackup
 
 import (
 	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -52,6 +53,8 @@ func lockTarget(directory string, exclusive bool) (*os.File, error) {
 // an entry is a backup, one of Create's own temporaries, or foreign.
 type TargetState struct {
 	directory         string
+	directoryIdentity os.FileInfo
+	staleIdentities   map[string]os.FileInfo
 	Backups           []string `json:"backups"`
 	StaleTemporaries  []string `json:"stale_temporaries"`
 	ActiveTemporaries []string `json:"active_temporaries"`
@@ -59,14 +62,24 @@ type TargetState struct {
 }
 
 func InspectTarget(directory string, now time.Time) (TargetState, error) {
-	entries, err := os.ReadDir(directory)
+	root, err := os.OpenRoot(directory)
 	if err != nil {
 		return TargetState{}, err
 	}
-	state := TargetState{directory: filepath.Clean(directory), Backups: []string{}, StaleTemporaries: []string{}, ActiveTemporaries: []string{}, Foreign: []string{}}
+	defer root.Close()
+	identity, err := root.Stat(".")
+	if err != nil {
+		return TargetState{}, err
+	}
+	entries, err := fs.ReadDir(root.FS(), ".")
+	if err != nil {
+		return TargetState{}, err
+	}
+	state := TargetState{directory: filepath.Clean(directory), directoryIdentity: identity, staleIdentities: map[string]os.FileInfo{},
+		Backups: []string{}, StaleTemporaries: []string{}, ActiveTemporaries: []string{}, Foreign: []string{}}
 	for _, entry := range entries {
 		path := filepath.Join(directory, entry.Name())
-		info, err := entry.Info()
+		info, err := root.Lstat(entry.Name())
 		if err != nil {
 			return TargetState{}, err
 		}
@@ -76,6 +89,7 @@ func InspectTarget(directory string, now time.Time) (TargetState, error) {
 			state.Backups = append(state.Backups, path)
 		case regular && ownTemporary.MatchString(entry.Name()) && now.Sub(info.ModTime()) > StaleTemporaryAge:
 			state.StaleTemporaries = append(state.StaleTemporaries, path)
+			state.staleIdentities[path] = info
 		case regular && ownTemporary.MatchString(entry.Name()):
 			state.ActiveTemporaries = append(state.ActiveTemporaries, path)
 		default:
@@ -95,11 +109,11 @@ func RemoveStaleTemporaries(state TargetState, now time.Time) error {
 	if len(state.StaleTemporaries) == 0 {
 		return nil
 	}
-	if state.directory == "" {
+	if state.directory == "" || state.directoryIdentity == nil {
 		return ErrInvalid
 	}
 	for _, path := range state.StaleTemporaries {
-		if filepath.Dir(path) != state.directory {
+		if filepath.Dir(path) != state.directory || state.staleIdentities[path] == nil {
 			return ErrInvalid
 		}
 	}
@@ -108,12 +122,33 @@ func RemoveStaleTemporaries(state TargetState, now time.Time) error {
 		return err
 	}
 	defer ownership.Close()
+	lockedIdentity, err := ownership.Stat()
+	if err != nil || !os.SameFile(state.directoryIdentity, lockedIdentity) {
+		return errors.Join(ErrInvalid, err)
+	}
+	root, err := os.OpenRoot(state.directory)
+	if err != nil {
+		return err
+	}
+	defer root.Close()
+	rootIdentity, err := root.Stat(".")
+	if err != nil || !os.SameFile(lockedIdentity, rootIdentity) {
+		return errors.Join(ErrInvalid, err)
+	}
+	return removeStaleTemporariesInRoot(root, state, now)
+}
+
+// Keep all destructive lookups on the same directory handle as the inspected,
+// locked target; a later path/alias retarget cannot redirect these removals.
+func removeStaleTemporariesInRoot(root *os.Root, state TargetState, now time.Time) error {
 	for _, path := range state.StaleTemporaries {
-		info, err := os.Lstat(path)
-		if err != nil || !info.Mode().IsRegular() || !ownTemporary.MatchString(filepath.Base(path)) || now.Sub(info.ModTime()) <= StaleTemporaryAge {
+		name := filepath.Base(path)
+		info, err := root.Lstat(name)
+		if err != nil || state.staleIdentities[path] == nil || !os.SameFile(state.staleIdentities[path], info) ||
+			!info.Mode().IsRegular() || !ownTemporary.MatchString(name) || now.Sub(info.ModTime()) <= StaleTemporaryAge {
 			return errors.Join(ErrInvalid, err)
 		}
-		if err := os.Remove(path); err != nil {
+		if err := root.Remove(name); err != nil {
 			return err
 		}
 	}

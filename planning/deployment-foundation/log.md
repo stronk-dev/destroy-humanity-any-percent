@@ -6793,3 +6793,57 @@ consolidatable with RP-551 without erasing its unexecuted restore obligation. No
 balance/kernel, migration, CI workflow, feature checkbox or release claim changes. Next: declared
 restore on these bytes when Docker is usable; continue independent accepted work meanwhile.
 Nothing pushed, published or deployed; the full nine-tier1.0 goal remains active.
+
+## 2026-10-14 — DP6 binds stale cleanup to inspected identities; Linux/Postgres is available
+
+Outcome: repair cleanup's existing inspected-target boundary at `68eee56b`.
+Three old physical-file cases delete uninspected data: renamed/replaced directory,
+retargeted directory alias and replaced file with identical name/age. Capture
+directory/file identities through os.Root; require the exclusive directory lock
+and reopened root to match inspection. Recheck each stale inode/type/name/age
+and remove through the bound root, not the mutable pathname. Snapshot JSON,
+one-hour stale threshold, locks, retention and encryption formats are unchanged.
+This is not a general arbitrary-privileged-file-mutation sandbox.
+
+Regression and coverage: old TestCleanupRejectsReplacement population fails all3
+with actual removal of test-owned replacement bytes. Corrected native TestCleanup
+passes, including unchanged real/alias directories, deterministic bound-root
+rename and existing actual second-process live-writer exclusion/orphan cleanup.
+The bound-root test exercises the production destructive helper after binding,
+not a timed race or the entry point's lock (the separate lock witness covers it).
+Focused race passes2.417s. Cold deploymentbackup/deploymentrelease/
+deploymentrehearsal/cmd/deployment-backup and affected vet pass; Linux-amd64 helper
+build passes with RELEASE_BACKUP_OUTPUT=.cache/bin/deployment-backup. The first
+build call omitted that required output and refused before compiling; no product
+failure inferred. The compiled helper is development output, not a release bundle.
+
+Environment changed: read-only Docker ping returns OK/HTTP200 in0.003226s; no
+agent restart/daemon cleanup was performed. Inspect the declared backup-test
+project as empty before execution. `make test-deployment-backup`77791 exits0
+on actual Linux-amd64/Postgres16: all7 integration functions run, including the
+empty/populated ordinary and database-query-override restores (RP-551), clean-
+target refusals, same-count mutation and snapshot consistency. Existing pre-
+deletion restore still reproduces retained/deleted data behavior, not a rights
+policy fix. Trailing authenticated data refuses before DB mutation; positioned
+real pg_dump packages restore with exact semantic recovery identity.
+
+Then run the compiled test binary in the same declared service with TestCleanup,
+count1 and verbose:55144 exits0. New replacement/anchored-root/alias populations
+and real second-process ownership/orphan cases execute on Linux, not merely
+cross-compile. Both test rounds' owned containers/network/tmpfs are removed;
+final project ps is empty. No production database, host DB substitute, external
+deployment, off-host durability/RPO/RTO, Caddy/clean-host or full R-006 proof.
+
+Fresh gh metadata also identifies failed published CI38560135778 at be66902b;
+failure markers confirm RP-131/RP-307. The CI log owns this separate read-only
+checkpoint; local backup success is not whole-CI success. Update current routing
+to local Docker verification READY, keeping exact-artifact/author/review/target
+gates intact. Historical unavailable executions remain historical, not passes.
+
+Handoff: source/test/docs plus RP-611/RP-551 and material environment/status
+reconciliation. Review by: Codex (implementer first filter); Recorded by: Codex.
+Full range after68eee56b through this containing commit needs designated Claude
+review; earlier exact corrective ranges remain owed. No accepted body, owner
+choice, feature checkbox, archival, mint, publication or push. Next: execute the
+other declared integration lanes individually and the pinned-engine engineering
+experiments under their actual prerequisites; daemon recovery alone closes none.
