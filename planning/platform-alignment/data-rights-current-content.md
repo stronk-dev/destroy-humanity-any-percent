@@ -111,6 +111,58 @@ itself repair an unauthenticated raw download or reopen the existing exclusion.
 
 ## Other checks and limits
 
+### RP-606 replay-dependency follow-up at d6ea5884
+
+The [predeclared comparison](data-rights-payload-core-plan.md#2026-10-14-rp-606-replay-dependency-follow-up)
+now runs the actual Go and TypeScript transitions, rather than treating an
+HTTP byte-preservation test as proof of replay necessity. Three populations,
+six arms each, execute in each runtime. This is a selected pure-replay population,
+not natural play, SQL, public authorization/compaction or the full public verifier.
+
+| Population | Original control | Three other valid salts | Missing member / null |
+|---|---|---|---|
+| Populated retained-Garden Company Exit | Applies; normal unmodified activation separately matches committed receipt/new-Company state. Retained arm reuses the existing literal permanent-Garden witness. | All apply with identical final/new Company state, receipt and all three event sets. Full Founder carry changes and preserves each replacement salt. | Missing `salt_hex` refuses at carry decoding. Explicit null **applies**, with identical Company outputs and a changed, null-salted Founder carry. This is codec admission, not lawful redaction/carry behavior. |
+| Founder initialization (`plants-and-anchors`) | Applies and matches committed receipt, events and full post-state. | All apply with identical receipts/events, but persist their respective different salts. No growth tick has yet drawn. | Missing resolved `garden_salt_hex` and explicit null both refuse. TS rejects explicit null at its string decoder; Go rejects absent initialization material during advance. No error-text parity claimed. |
+| Founder growth (`switches-substrate-after-growth`) | Applies and matches committed receipt, events and full post-state. | All three refuse because the recomputed advance differs from the recorded advance. | Missing saved salt member refuses restore; explicit null restores but refuses advance because initialization material was not supplied. |
+
+The negative controls establish **real Garden recomputation dependence**, not
+merely that a parser requires a key. Conversely, a strict-key refusal in Company
+carry is not evidence that Company arithmetic consumed the salt. The sampled Exit
+does not exercise every ordinary Company command, contribution or replay verdict.
+Its surviving null/substituted carry must not be called a valid public format:
+it changes Founder evidence, violates original-byte identity and does not satisfy
+SG2's unchanged carry or the later private Garden computation.
+
+Engineering consequence: the next contract work must distinguish public Company
+verification inputs from protected Founder/Garden replay, with explicit proof
+scope, schema/version/hash binding and privacy negatives. This is a direction for
+author reconciliation, **not adoption of a particular split or permission to weaken
+independent verification**. The evidence rules out a blanket "remove the seed and
+re-run existing replay" remedy; it does not establish a complete alternative.
+The existing OD-12 exclusion remains settled, and RP-606 remains OPEN.
+
+Exact manual observers are retained as
+[Go](probes/garden-salt-dependency.go.txt) and
+[TypeScript](probes/garden-salt-dependency.ts.txt). Temporarily install them with
+normal patch tools at `server/production/garden_salt_dependency_observation_test.go`
+and `client/test/garden-salt-dependency-observation.test.ts`. Commands:
+
+```sh
+make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run TestGardenSaltDependencyObservation -v'
+client/node_modules/.bin/vitest run --root client test/garden-salt-dependency-observation.test.ts --disableConsoleIntercept
+```
+
+Final Go observer passes cold (0.672s); Node runs three declarations and prints all
+18 comparisons (1.19s total). PASS means the controls and observations completed,
+not that the unsafe public disclosure was repaired. The native probe's first run
+failed an unchanged control because it supplied an indented fixture command;
+normal canonical-command encoding fixed the instrument. Its second run stopped
+on the observer's dereference of an admitted null salt, not a product panic; the
+null-safe observer records that admission explicitly. Both failed observations
+are excluded as complete populations. No expectation/corpus was regenerated.
+The temporary test-tree files were removed; these research snippets are outside
+ordinary CI and do not institutionalize unsafe disclosure as a passing gate.
+
 Cold existing save tests pass: `TestFounderV2` executes six version 20–25 codec
 cases; `TestFounderReputationMigrationCorpus` and `TestCompanyAxisMigrationCorpus`
 execute their populated codec/refusal corpora. These are not SQL migrations,

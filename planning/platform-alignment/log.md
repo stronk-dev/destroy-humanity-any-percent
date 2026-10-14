@@ -3289,3 +3289,40 @@ or release. Garden/API authors must reconcile OD-12/SG8/AC10 with C14 while
 preserving privacy and independent verification; no silent stripping, carried-salt
 rotation, weaker proof or blanket feature suppression. Broader owner rights choices,
 remaining nested-field/SQL/delete/restore proof and full nine-tier construction stay open.
+
+## 2026-10-14 — RP-606 actual replay dependency, not a parser inference
+
+Resume clean `d6ea5884`; the preceding question/status clarification changed no
+authority. Extend the existing payload plan before measuring. Temporary Go/TS
+observers use actual pinned loaders and replay transitions: populated retained
+Company Exit, Founder initialization and Founder growth, each with original,
+three replacement salts, missing-member and null arms. Unchanged activation and
+Founder controls match their committed outputs. No fixture regeneration.
+
+Both runtimes agree: all three valid substitutes leave sampled Exit Company
+state/receipt/event sets unchanged but change full Founder carry. Missing member
+refuses; explicit null applies there. Initialization accepts the three seeds
+with identical visible outputs and persists the selected seed; missing/null
+resolved material refuses. Growth refuses all three alternate seeds because
+its advance differs; missing state member fails restore, null fails advance.
+This demonstrates real private Garden replay dependence, not universal Company
+independence or safe redaction. The next engineering contract must separate
+proof scope and protected input, not simply remove salt from immutable bytes.
+
+Final cold Go selector passes in0.672s; Node passes3 declarations/18 printed
+comparisons in1.19s with --disableConsoleIntercept. The initial Go control failed
+on indented rather than canonical command bytes; the next instrument panicked
+by dereferencing admitted null. Correct both observer mistakes, retain both
+failed attempts as excluded complete populations, and rerun final controls.
+No product panic or privacy pass is inferred. Missing/null initialization error
+wording differs across runtimes; admission outcome agrees, not error-text parity.
+
+Retain exact manual snippets under probes/garden-salt-dependency.{go,ts}.txt,
+remove temporary tests from the normal trees, and update the existing dossier
+and RP-606 only. Pure replay/Node observations are not mounted HTTP, SQL
+authorization/compaction, natural board play, native browsers, hosted CI or
+release proof. No product, schema, migration, accepted body, hash, copy or policy
+change. RP-606 stays OPEN; no particular public format is adopted. Research
+boundary after d6ea5884 through this containing commit is factual/editorial,
+not designated implementation approval. No push. Continue accepted work and
+prepare authored engineering reconciliation without reopening OD-12 privacy.

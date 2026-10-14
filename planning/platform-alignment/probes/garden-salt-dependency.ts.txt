@@ -1,0 +1,83 @@
+import { describe, expect, it } from "vitest";
+import corpus from "../../testdata/replay/garden-v1.json";
+import { applyFounderLogged, applyLoggedExit, canonicalJSONString, encodeFounderReplayState, encodeReplayState,
+  loadReplayCatalogBundle, restoreFounderReplayState, restoreReplayState, withNextReplayCatalogBundle, type ReplayArtifacts } from "../src/replay";
+
+// Temporary RP-606 observer: PASS is execution, not a privacy/acceptance verdict.
+const retained = { salt_hex: "0123456789abcdef", tick_anchor_wall_ms: 1000000, tick_seq: 7, substrate_id: "containerized", substrate_set_wall_ms: 999999,
+  plots: [{ row: 0, col: 0, species_id: "strain_a", age_ticks: 1, matured_effect_ppm: null },
+    { row: 1, col: 1, species_id: "strain_b", age_ticks: 4, matured_effect_ppm: 1234567 },
+    { row: 5, col: 5, species_id: "strain_c", age_ticks: 6, matured_effect_ppm: 7654321 }], seed_collection: ["strain_a", "strain_b", "strain_c"] };
+function saltField(source: unknown, arm: string): Record<string, unknown> {
+  const result = structuredClone(source) as Record<string, unknown>;
+  if (arm === "missing") delete result.salt_hex;
+  else if (arm !== "original") result.salt_hex = arm === "null" ? null : arm;
+  return result;
+}
+
+describe("RP-606 Garden replay dependency observation", () => {
+  it("separates Company Exit outputs from private Founder carry", async () => {
+    expect(corpus.exit_cases).toHaveLength(1);
+    const source = corpus.exit_cases[0]!.company;
+    const row = source.case;
+    const current = await loadReplayCatalogBundle(source.constants_hash, source.artifacts as unknown as ReplayArtifacts);
+    const grown = await loadReplayCatalogBundle(source.next_constants_hash, source.next_artifacts as unknown as ReplayArtifacts);
+    const foundations = { meters: grown.meters!, achievements: grown.achievements!, doctrines: grown.doctrines, opportunities: grown.opportunities };
+    const control = await applyLoggedExit(restoreReplayState(row.pre_state, 18, grown.economy, foundations),
+      canonicalJSONString(row.canonical_payload), withNextReplayCatalogBundle(current, grown), row.replay_inputs);
+    expect(control.outcome).toBe("applied");
+    expect(canonicalJSONString(control.receipt)).toBe(row.receipt_json);
+    expect(canonicalJSONString(encodeReplayState(control.newCompany!))).toBe(row.new_company_json);
+    let baselineCompany = "", baselineFounder = "";
+    for (const arm of ["original", "0000000000000000", "ffffffffffffffff", "5eed5eed5eed5eed", "missing", "null"]) {
+      const inputs = structuredClone(row.replay_inputs);
+      inputs.resolved.founder_carry.founder_constants_hash = grown.constantsHash;
+      (inputs.resolved.founder_carry.founder_extensions as unknown as Record<string, unknown>).server_garden = saltField(retained, arm);
+      const state = restoreReplayState(row.pre_state, 18, grown.economy, foundations);
+      let result;
+      try { result = await applyLoggedExit(state, canonicalJSONString(row.canonical_payload), grown, inputs); }
+      catch (error) { if (arm === "original") throw error; console.info(`exit arm=${arm} refused=${String(error)}`); continue; }
+      expect(result.outcome).toBe("applied");
+      const companyBytes = canonicalJSONString({ receipt: result.receipt, final_company: encodeReplayState(result.finalCompany),
+        new_company: encodeReplayState(result.newCompany!), founder_events: result.founderEvents,
+        ended_events: result.companyEndedEvents, started_events: result.companyStartedEvents });
+      const founderBytes = canonicalJSONString(result.founder);
+      if (arm === "original") { baselineCompany = companyBytes; baselineFounder = founderBytes; }
+      const garden = (result.founder as unknown as { founder_extensions: { server_garden: Record<string, unknown> } }).founder_extensions.server_garden;
+      console.info(`exit arm=${arm} applied=true company_receipt_events_equal=${companyBytes === baselineCompany} full_founder_equal=${founderBytes === baselineFounder} carried_salt=${String(garden.salt_hex)}`);
+    }
+  });
+
+  it.each(["plants-and-anchors", "switches-substrate-after-growth"])("observes Founder %s", async (name) => {
+    const row = corpus.cases.find((entry) => entry.name === name)!;
+    expect(row).toBeDefined();
+    const source = corpus.bundles.grown;
+    const grown = await loadReplayCatalogBundle(source.constants_hash, source.artifacts as unknown as ReplayArtifacts);
+    let baselinePublic = "";
+    for (const arm of ["original", "0000000000000000", "ffffffffffffffff", "0123456789abcdef", "missing", "null"]) {
+      const pre = structuredClone(row.pre_state) as Record<string, unknown>;
+      const inputs = structuredClone(row.replay_inputs);
+      if (name === "plants-and-anchors") {
+        const resolved = inputs.resolved as Record<string, unknown>;
+        if (arm === "missing") delete resolved.garden_salt_hex;
+        else if (arm !== "original") resolved.garden_salt_hex = arm === "null" ? null : arm;
+      } else pre.server_garden = saltField(pre.server_garden, arm);
+      let state;
+      try { state = restoreFounderReplayState(pre, row.state_version, grown); }
+      catch (error) { if (arm === "original") throw error; console.info(`founder=${name} arm=${arm} refused_at_restore=${String(error)}`); continue; }
+      let result;
+      try { result = await applyFounderLogged(state, canonicalJSONString(row.canonical_payload), grown, inputs); }
+      catch (error) { if (arm === "original") throw error; console.info(`founder=${name} arm=${arm} refused_at_transition=${String(error)}`); continue; }
+      expect(result.outcome).toBe("applied");
+      const post = encodeFounderReplayState(result.state) as Record<string, unknown>;
+      if (arm === "original") {
+        expect(canonicalJSONString(result.receipt)).toBe(row.receipt_json);
+        expect(canonicalJSONString(result.events)).toBe(row.events_json);
+        expect(canonicalJSONString(post)).toBe(row.post_state_json);
+      }
+      const publicBytes = canonicalJSONString({ receipt: result.receipt, events: result.events });
+      if (arm === "original") baselinePublic = publicBytes;
+      console.info(`founder=${name} arm=${arm} applied=true receipt_events_equal=${publicBytes === baselinePublic} saved_salt=${String((post.server_garden as Record<string, unknown>).salt_hex)}`);
+    }
+  });
+});

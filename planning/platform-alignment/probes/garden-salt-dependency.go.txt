@@ -1,0 +1,201 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"os"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+// Temporary RP-606 research observer. PASS means controls and observation ran,
+// not that privacy passes or that a replacement public format is authorized.
+func TestGardenSaltDependencyObservation(t *testing.T) {
+	data, err := os.ReadFile(gardenCorpusPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var corpus gardenCorpus
+	if err := json.Unmarshal(data, &corpus); err != nil {
+		t.Fatal(err)
+	}
+	grown := gardenContentBundle(t)
+	if len(corpus.ExitCases) != 1 {
+		t.Fatal("unexpected Exit population")
+	}
+	activation := corpus.ExitCases[0].Company.Case
+	activation.CanonicalPayload, err = normalizeReplayJSON(activation.CanonicalPayload)
+	if err != nil {
+		t.Fatal(err)
+	}
+	shop := cosmeticsContentBundle(t)
+	shop.Next = &grown
+	company := replayFixtureStateFromEncoded(t, shop, activation.PreState)
+	control, err := ApplyLoggedExit(company, activation.CanonicalPayload, shop, activation.ReplayInputs)
+	if err != nil || control.Decision.Outcome != save.IntentApplied ||
+		!canonicalJSONEqual(control.Decision.Receipt, []byte(activation.ReceiptJSON)) ||
+		!canonicalJSONEqual(mustEncodeState(t, control.Decision.NewCompanyState), []byte(activation.NewCompanyJSON)) {
+		t.Fatalf("unaltered activation control failed: %v", err)
+	}
+
+	var wire replayInputsWire
+	if err := json.Unmarshal(activation.ReplayInputs, &wire); err != nil {
+		t.Fatal(err)
+	}
+	var resolved replayExitResolved
+	if err := json.Unmarshal(wire.Resolved, &resolved); err != nil {
+		t.Fatal(err)
+	}
+	resolved.FounderCarry.FounderConstantsHash = grown.ConstantsHash
+	resolved.FounderCarry.FounderExtensions.ServerGarden = json.RawMessage(retainedGardenJSON)
+	var baselineCompany, baselineFounder string
+	for _, arm := range []string{"original", "0000000000000000", "ffffffffffffffff", "5eed5eed5eed5eed", "missing", "null"} {
+		value := resolved
+		carry := normalizedFounderCarry(resolved.FounderCarry)
+		carry.FounderExtensions.ServerGarden = saltDependencyField(t, carry.FounderExtensions.ServerGarden, arm)
+		value.FounderCarry = carry
+		wire.Resolved = mustJSON(value)
+		state := replayFixtureStateFromEncoded(t, grown, activation.PreState)
+		transition, err := ApplyLoggedExit(state, activation.CanonicalPayload, grown, mustJSON(wire))
+		if err != nil {
+			if arm == "original" {
+				t.Fatalf("retained control: %v", err)
+			}
+			t.Logf("exit arm=%s refused=%v", arm, err)
+			continue
+		}
+		if transition.Decision.Outcome != save.IntentApplied {
+			t.Fatalf("Exit arm=%s rejected", arm)
+		}
+		companyBytes := canonicalFixtureValue(t, map[string]any{
+			"receipt":        transition.Decision.Receipt,
+			"final_company":  mustEncodeState(t, transition.Company),
+			"new_company":    mustEncodeState(t, transition.Decision.NewCompanyState),
+			"founder_events": fixtureEvents(transition.Decision.FounderEvents),
+			"ended_events":   fixtureEvents(transition.Decision.CompanyEndedEvents),
+			"started_events": fixtureEvents(transition.Decision.CompanyStartedEvents),
+		})
+		founderBytes := canonicalFixtureValue(t, replayFounderOutput(transition.Founder, carry))
+		if arm == "original" {
+			baselineCompany, baselineFounder = companyBytes, founderBytes
+		}
+		carriedSalt := "<null>"
+		if transition.Founder.ServerGarden.SaltHex != nil {
+			carriedSalt = *transition.Founder.ServerGarden.SaltHex
+		}
+		t.Logf("exit arm=%s applied=true company_receipt_events_equal=%t full_founder_equal=%t carried_salt=%s",
+			arm, companyBytes == baselineCompany, founderBytes == baselineFounder, carriedSalt)
+	}
+
+	for _, name := range []string{"plants-and-anchors", "switches-substrate-after-growth"} {
+		var selected *reputationCorpusCase
+		for i := range corpus.Cases {
+			if corpus.Cases[i].Name == name {
+				selected = &corpus.Cases[i]
+			}
+		}
+		if selected == nil {
+			t.Fatal("missing Founder control")
+		}
+		row := *selected
+		row.CanonicalPayload, err = normalizeReplayJSON(row.CanonicalPayload)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var baselinePublic string
+		for _, arm := range []string{"original", "0000000000000000", "ffffffffffffffff", "0123456789abcdef", "missing", "null"} {
+			stateBytes, inputs := append([]byte(nil), row.PreState...), append([]byte(nil), row.ReplayInputs...)
+			if name == "plants-and-anchors" {
+				var object map[string]json.RawMessage
+				if err := json.Unmarshal(inputs, &object); err != nil {
+					t.Fatal(err)
+				}
+				var fields map[string]json.RawMessage
+				if err := json.Unmarshal(object["resolved"], &fields); err != nil {
+					t.Fatal(err)
+				}
+				if arm == "missing" {
+					delete(fields, "garden_salt_hex")
+				} else if arm == "null" {
+					fields["garden_salt_hex"] = json.RawMessage(`null`)
+				} else if arm != "original" {
+					fields["garden_salt_hex"] = mustJSON(arm)
+				}
+				object["resolved"] = mustJSON(fields)
+				inputs = mustJSON(object)
+				// There is no persisted salt yet: this alters initialization
+				// material, not a saved-state salt.
+			} else {
+				var object map[string]json.RawMessage
+				if err := json.Unmarshal(stateBytes, &object); err != nil {
+					t.Fatal(err)
+				}
+				object["server_garden"] = saltDependencyField(t, object["server_garden"], arm)
+				stateBytes = mustJSON(object)
+			}
+			state, err := save.RestoreState(stateBytes, row.StateVersion, grown.Economy, economy.ScopeFounder, time.Time{})
+			if err != nil {
+				if arm == "original" {
+					t.Fatal(err)
+				}
+				t.Logf("founder=%s arm=%s refused_at_restore=%v", name, arm, err)
+				continue
+			}
+			transition, err := ApplyFounderLogged(state, row.CanonicalPayload, grown, inputs)
+			if err != nil {
+				if arm == "original" {
+					t.Fatal(err)
+				}
+				t.Logf("founder=%s arm=%s refused_at_transition=%v", name, arm, err)
+				continue
+			}
+			if transition.Outcome != save.IntentApplied {
+				t.Fatal("Founder control/variant rejected")
+			}
+			if arm == "original" && (!canonicalJSONEqual(transition.Receipt, []byte(row.ReceiptJSON)) ||
+				!canonicalJSONEqual(marshalReplayEvents(transition.Events), []byte(row.EventsJSON)) ||
+				!canonicalJSONEqual(mustEncodeState(t, transition.State), []byte(row.PostStateJSON))) {
+				t.Fatal("unaltered Founder control diverged")
+			}
+			publicBytes := canonicalFixtureValue(t, map[string]any{"receipt": transition.Receipt, "events": fixtureEvents(transition.Events)})
+			if arm == "original" {
+				baselinePublic = publicBytes
+			}
+			t.Logf("founder=%s arm=%s applied=true receipt_events_equal=%t saved_salt=%s", name, arm,
+				publicBytes == baselinePublic, *transition.State.ServerGarden.SaltHex)
+		}
+	}
+	if !bytes.Equal(data, mustReadSaltDependencyCorpus(t)) {
+		t.Fatal("observer modified committed corpus")
+	}
+}
+
+func saltDependencyField(t *testing.T, data json.RawMessage, arm string) json.RawMessage {
+	t.Helper()
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &fields); err != nil {
+		t.Fatal(err)
+	}
+	switch arm {
+	case "original":
+	case "missing":
+		delete(fields, "salt_hex")
+	case "null":
+		fields["salt_hex"] = json.RawMessage(`null`)
+	default:
+		fields["salt_hex"] = mustJSON(arm)
+	}
+	return mustJSON(fields)
+}
+
+func mustReadSaltDependencyCorpus(t *testing.T) []byte {
+	t.Helper()
+	data, err := os.ReadFile(gardenCorpusPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}
