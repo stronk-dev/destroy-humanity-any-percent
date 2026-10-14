@@ -3,12 +3,14 @@ import typerV1Raw from "../../balance/testdata/typer-v1.json?raw";
 import typerRawJSON from "../../testdata/typer/raw-json-v1.json";
 import tierUnlockRaw from "../../testdata/minigame/tier-unlock-raw-v1.json";
 import apiCatalogRaw from "../../testdata/minigame/api-catalog-raw-v1.json";
+import startModeReplay from "../../testdata/minigame/start-mode-replay-v1.json";
 import minigameAPICandidate from "../../balance/testdata/minigame-api-candidate-v1.json";
 import arcadeV1Raw from "../../balance/testdata/arcade-v1.json?raw";
 import arcadeMinigamesRaw from "../../testdata/minigame/pitch-typer-arcade-v3.json?raw";
 import arcadeAPIRaw from "../../balance/testdata/minigame-api-arcade-candidate-v1.json?raw";
 import attendanceFixtureJSON from "../../testdata/founder-attendance-v1.json";
 import { describe, expect, it } from "vitest";
+import { sweepFiscal } from "../src/fiscal";
 
 import {
   applyFounderLogged,
@@ -310,6 +312,62 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
 		expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
 		expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(testCase.post_state_json);
+	});
+
+	it.each(startModeReplay.cases)("minigame start replay requires solo policy: $name", async (row) => {
+		expect(startModeReplay.schema_version).toBe(1);
+		expect(startModeReplay.cases).toHaveLength(4);
+		const artifacts = { ...fixture.minigame_start_artifacts };
+		const policy = JSON.parse(artifacts.minigames!);
+		expect(policy.minigames).toHaveLength(1);
+		expect(policy.minigames[0].minigame_id).toBe("pitch");
+		policy.minigames[0].modes = row.modes;
+		artifacts.minigames = JSON.stringify(policy);
+		const hash = await artifactHash(artifacts);
+		const bundle = await loadReplayCatalogBundle(hash, artifacts);
+		const testCase = fixture.minigame_start_founder_case;
+		const founder = restoreFounderReplayState(testCase.pre_state, testCase.state_version, bundle);
+		const before = canonicalJSONString(encodeFounderReplayState(founder));
+		const inputs = structuredClone(testCase.replay_inputs) as {
+			command: { intent_id: string; founder_stream_id: string; founder_id: string; revision: number; founder_log_seq: number; server_ts_ms: number };
+			evaluated_at_ms: number;
+		};
+		if (row.fiscal_due) {
+			if (!bundle.fiscal) throw new Error("mode fixture lacks Fiscal");
+			inputs.command.server_ts_ms = founder.fiscalPeriodOpenedWallMs + bundle.fiscal.clock.autoMs;
+			inputs.evaluated_at_ms = inputs.command.server_ts_ms;
+			const probe = { credit: founder.fiscalCredit, periodOpenedWallMs: founder.fiscalPeriodOpenedWallMs,
+				periodSequence: founder.fiscalPeriodSequence, generatorLevels: { ...founder.fiscalGeneratorLevels }, unlocks: [...founder.fiscalUnlocks] };
+			const swept = sweepFiscal(bundle.fiscal, probe, inputs.command.server_ts_ms);
+			if (!swept) throw new Error("due-sweep control produced no Fiscal sweep");
+			expect(swept.periods).toBeGreaterThan(0);
+			expect(probe.credit).not.toBe(founder.fiscalCredit);
+		}
+		let failure: unknown, transition: Awaited<ReturnType<typeof applyFounderLogged>> | undefined;
+		try { transition = await applyFounderLogged(founder, canonicalJSONString(testCase.canonical_payload), bundle, inputs); }
+		catch (error) { failure = error; }
+		if (row.accepted) {
+			expect(failure).toBeUndefined();
+			if (!transition) throw new Error("accepted mode has no transition");
+			expect(transition.outcome).toBe("applied");
+			expect(transition.resultConstantsHash).toBe(hash);
+			expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+			expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
+			expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(testCase.post_state_json);
+		} else {
+			expect.soft(failure).toBeInstanceOf(RangeError);
+			expect.soft(canonicalJSONString(encodeFounderReplayState(founder))).toBe(before);
+		}
+		if (row.fiscal_due) return; // This clock variant is not the committed golden history.
+		expect(testCase.events_json).toBe("[]");
+		const command = inputs.command;
+		await expect(verifyFounderReplayHistory(testCase.pre_state, command.revision, testCase.state_version, hash,
+			command.founder_stream_id, command.founder_id, [{ seq: command.founder_log_seq, intentId: command.intent_id,
+				constantsHash: hash, canonicalPayload: canonicalJSONString(testCase.canonical_payload), replayInputs: inputs,
+				receiptJSON: testCase.receipt_json, eventsJSON: testCase.events_json,
+				appliedRevision: command.revision + 1, serverTSMS: command.server_ts_ms, source: null }],
+			{ revision: command.revision + 1, version: testCase.state_version, constantsHash: hash, state: testCase.post_state },
+			[bundle])).resolves.toBe(row.accepted ? "verified" : "state_divergence");
 	});
 
 	it("resets the Founder-owned minigame session sequence at Exit", async () => {

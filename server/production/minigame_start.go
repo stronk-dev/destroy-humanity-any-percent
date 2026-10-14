@@ -73,7 +73,8 @@ func applyFounderStartMinigameSession(state *save.State, canonicalPayload []byte
 		return FounderLoggedTransition{}, fmt.Errorf("%w: minigame start inputs", ErrInvalidReplayInputs)
 	}
 	definition, ok := catalogs.Minigames.Definition(payload.MinigameID)
-	if !ok || !catalogs.MinigameAPI.SupportsTenant(payload.MinigameID, definition.EngineRef, definition.EngineVersion) {
+	if !ok || !catalogs.MinigameAPI.SupportsTenant(payload.MinigameID, definition.EngineRef, definition.EngineVersion) ||
+		!slices.Contains(definition.Modes, minigame.ModeSolo) {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: minigame start tenant", ErrInvalidReplayInputs)
 	}
 	wantSeed := minigameSessionSeed(wire.Command.FounderID, resolved.RunSeq, resolved.SequenceAfter)

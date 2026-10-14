@@ -126,6 +126,13 @@ before creating a session/receipt or changing Founder/Company saves. Kernel0.3.2
 selection without adding mode selection to the request or an async public wire. The diagnostic
 Pitch mode lists are not adopted production content or an implemented async Pitch engine.
 
+Go and TypeScript Founder replay enforce the same solo-policy membership before advancing the
+start sequence. An async-only policy produces replay state divergence, rather than a verified
+solo-start history. Refusal restores the entire Founder state, including any lazy Fiscal sweep
+performed before the start arm. Kernel0.3.211 records this replay-admission repair. Existing
+solo/dual-mode receipts, events and post-state goldens remain byte-identical; no stored artifact
+or original replay fixture is rewritten.
+
 The composed server mounts the generated private-v1 registry as the only route authority for
 minigame create, current, command, and resolve requests and for Soul-Recovery start, progress,
 cancel, and resolve requests. Founder identity always comes from the access token. Request schemas

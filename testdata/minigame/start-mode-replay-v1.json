@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "cases": [
+    { "name": "solo", "modes": ["solo"], "accepted": true, "fiscal_due": false },
+    { "name": "dual_mode", "modes": ["async_snapshot", "solo"], "accepted": true, "fiscal_due": false },
+    { "name": "async_only", "modes": ["async_snapshot"], "accepted": false, "fiscal_due": false },
+    { "name": "async_only_after_fiscal_due", "modes": ["async_snapshot"], "accepted": false, "fiscal_due": true }
+  ]
+}

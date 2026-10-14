@@ -1975,3 +1975,49 @@ The preceding actual kernel-history check remains red at50a3a514; no full-CI cla
 history rewrite, budget change, push or deployment. After terminal checks, remove only this
 turn's fresh declared `postgres` service; final inventory is empty. Disposable tmpfs rows are
 discarded, with no durable volume/cache/network/unrelated service or user data removed.
+
+## 2026-10-14 — RP-622 replay rejects a solo start under async-only policy
+
+Accepted MA1/MA-C11's recorded start is server-selected solo. Both Founder replay arms now
+require solo membership, matching the live coordinator; invalid policy returns the existing
+replay error and its enclosing transition restores the entire state. Kernel210→211 records
+the genuine Go/TS replay-admission change. No request schema, engine/mode extension, authored
+content, rating/payout formula or historical artifact is changed.
+
+Use the committed start fixture and one new four-case shared population: healthy solo/dual
+lists, async-only, and async-only after a due automatic Fiscal sweep. Rehash altered diagnostic
+artifacts normally; Go checks the typed Pitch context matches every original stored component.
+Healthy controls compare literal original receipt/event/post-state goldens. Refusals compare
+the complete pre-state, and the due arm first proves an isolated sweep would credit3. Complete
+Founder-history readers test the same non-clock-variant history and exact head/receipt.
+Old Go63088 and corrected-test old TS execution both fail the two invalid cases: sequence7→8,
+due credit0→3, and each full-history verifier returns verified for async-only. Actual ordinary
+regressions establish discrimination; no additional mutation ceremony or golden rewrite.
+
+Test-author errors are not product findings:21479 used a full-First-Content loader for a Pitch
+fixture without Doctrines;65840 omitted TypeScript's mandatory source:null history coordinate,
+making healthy histories fail. Correct those prerequisites before claiming the old baseline.
+Typecheck68725 then catches the nullable sweep-control return; explicitly refuse a missing
+sweep and rerun the finished client population. No assertion/bound is loosened.
+
+Finished verification by: Codex. Recorded by: Codex.
+
+- Cold selected Production/Minigame replay checks and vet52861 pass. Kernel's name selection
+  runs no tests; the separate full Kernel/Minigame run39489 passes their actual populations.
+  Native DB skips are not persistence evidence.
+- Final four-file Node32270 passes6526; final full replay Chromium/WebKit79980 passes284 with
+  no selected skips. Typecheck25350 has zero errors/warnings. Normal replay-fixture-check
+  passes without regeneration; its command lacks count1, so explicit cold root counterpart
+  6825 reruns TestApplyLoggedCrossRuntimeFixture successfully. Formula/API outputs remain identical.
+- Declared Linux-amd64/Postgres62622 passes selected Production2.391s/Gameserver35.296s,
+  including new replay cases, actual solo/dual starts and async-only refusal, solo/async atomic
+  resolution/replay/faults and both public HTTP lifecycle arms. No skipped selected prerequisite.
+
+Designated Claude review remains pending for the single commit containing this entry, parent
+`ca186f94`, all twelve source/test/fixture/version/docs/record paths; earlier review debt stays.
+This is controlled rehashed-fixture verification, not a naturally persisted/public/deployed
+forgery, async Pitch capability, actual AT, full platform, whole CI or release proof. RP-131's
+historical red guard, RP-614 and all owner/author/content/clock/full-nine-tier holds remain.
+No mint, archival, push or deployment. After terminal runs, remove only this turn's fresh
+declared postgres test service; final inventory is empty. Disposable tmpfs rows are discarded,
+with no durable volume/cache/network/unrelated service or user data removed.

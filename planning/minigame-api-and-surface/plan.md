@@ -1,5 +1,11 @@
 # Minigame API & Surface implementation plan
 
+2026-10-14 replay-mode correction (RP-622): both Founder replay arms now enforce the live solo
+policy. The shared four-case population exposes old acceptance, sequence/Fiscal mutation and
+complete-history false verification under an async-only policy, with healthy solo/dual controls.
+The owning log records final Go/TS/browser/SQL checks and the single-commit range after
+`ca186f94`, pending Claude. Existing goldens remain unchanged; no async engine/wire or mint.
+
 2026-10-14 mode-selection correction (RP-621): the solo start coordinator now checks membership,
 not the first sorted catalog mode. The old real-Postgres dual-mode fixture refuses an otherwise
 valid solo start; solo-only and async-only controls discriminate. Final existing transaction

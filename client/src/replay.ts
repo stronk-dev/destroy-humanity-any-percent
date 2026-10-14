@@ -919,7 +919,8 @@ async function applyFounderStartMinigameSession(state: FounderReplayState, canon
 	if (resolved.kind !== "start_minigame_session" || after !== before + 1 || state.minigameSessionSeq !== before) throw new RangeError("minigame start sequence mismatch");
 	const definition = catalogs.minigames.minigames.find((row) => row.minigame_id === minigameId);
 	const tenant = catalogs.minigameAPI.tenants.find((row) => row.minigameId === minigameId);
-	if (!definition || !tenant || tenant.engineRef !== definition.engine_ref || tenant.engineVersion !== definition.engine_version) throw new RangeError("minigame start tenant mismatch");
+	if (!definition || !tenant || tenant.engineRef !== definition.engine_ref || tenant.engineVersion !== definition.engine_version ||
+		!definition.modes.includes("solo")) throw new RangeError("minigame start tenant mismatch");
 	const seed = substream((await founderSeed(wire.command.founder_id, runSeq)) ^ BigInt(after), "minigame.session.v1").next().toString();
 	if (string(resolved.seed) !== seed) throw new RangeError("minigame start seed mismatch");
 	state.minigameSessionSeq = after;
