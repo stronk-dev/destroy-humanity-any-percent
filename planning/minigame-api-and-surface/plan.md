@@ -1,5 +1,13 @@
 # Minigame API & Surface implementation plan
 
+2026-10-14 replay-coordinate correction (RP-625): the shared fourteen-case population reproduces
+eleven old-Go and three old-TS invalid starts/history verifications. Start replay now applies the
+live session UUIDv7/distinct-intent rule and Company UUID version/variant grammar. Original and
+version1/version8 Company controls preserve outputs; these are syntax controls, not Company
+ownership/existence proofs. Owning log records final checks and the single-commit review range
+after `4228d038`, pending Claude. Kernel0.3.213 is genuine admission; public/live wire and original
+goldens are unchanged. Complete feature review and named integration/contract holds remain.
+
 2026-10-14 Founder-gate replay correction (RP-624): replay now checks the existing Fiscal unlock
 and human-hobby Soul policy before advancing the start sequence. Old Go/TS accept four locked
 cases and falsely verify both non-clock-variant histories. The expanded shared nine-case population

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "cases": [
+    { "name": "original", "session_id": "01986666-2b00-7000-8000-000000000001", "company_stream_id": "01986666-1b00-4000-8000-000000000001", "accepted": true },
+    { "name": "empty_session", "session_id": "", "company_stream_id": "01986666-1b00-4000-8000-000000000001", "accepted": false },
+    { "name": "non_uuid_session", "session_id": "session", "company_stream_id": "01986666-1b00-4000-8000-000000000001", "accepted": false },
+    { "name": "v4_session", "session_id": "01986666-2b00-4000-8000-000000000001", "company_stream_id": "01986666-1b00-4000-8000-000000000001", "accepted": false },
+    { "name": "uppercase_session", "session_id": "01986666-2B00-7000-8000-000000000001", "company_stream_id": "01986666-1b00-4000-8000-000000000001", "accepted": false },
+    { "name": "wrong_session_variant", "session_id": "01986666-2b00-7000-7000-000000000001", "company_stream_id": "01986666-1b00-4000-8000-000000000001", "accepted": false },
+    { "name": "session_is_intent", "session_id": "intent_id", "company_stream_id": "01986666-1b00-4000-8000-000000000001", "accepted": false },
+    { "name": "non_uuid_company", "session_id": "01986666-2b00-7000-8000-000000000001", "company_stream_id": "company", "accepted": false },
+    { "name": "v0_company", "session_id": "01986666-2b00-7000-8000-000000000001", "company_stream_id": "01986666-1b00-0000-8000-000000000001", "accepted": false },
+    { "name": "v9_company", "session_id": "01986666-2b00-7000-8000-000000000001", "company_stream_id": "01986666-1b00-9000-8000-000000000001", "accepted": false },
+    { "name": "wrong_company_variant", "session_id": "01986666-2b00-7000-8000-000000000001", "company_stream_id": "01986666-1b00-4000-7000-000000000001", "accepted": false },
+    { "name": "uppercase_company", "session_id": "01986666-2b00-7000-8000-000000000001", "company_stream_id": "01986666-1B00-4000-8000-000000000001", "accepted": false },
+    { "name": "v1_company", "session_id": "01986666-2b00-7000-8000-000000000001", "company_stream_id": "01986666-1b00-1000-8000-000000000001", "accepted": true },
+    { "name": "v8_company", "session_id": "01986666-2b00-7000-8000-000000000001", "company_stream_id": "01986666-1b00-8000-8000-000000000001", "accepted": true }
+  ]
+}

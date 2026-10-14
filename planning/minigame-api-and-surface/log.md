@@ -2064,3 +2064,44 @@ version/docs/record changes. Prior review debt, RP-131/RP-307/current CI and rel
 no feature acceptance, archival, mint, push or deployment. After terminal tests, removed only the
 fresh declared Postgres test container and its disposable tmpfs rows. Final service inventory is
 empty; no durable volume, cache, network, unrelated service or user data was removed.
+
+## 2026-10-14 — Start replay validates live identity grammar (RP-625)
+
+Outcome: MA-C11's replay-owned start follows the live Store/Platform C2 identity contract:
+lowercase UUIDv7 session ID, distinct logged intent ID, and Company stream UUID version1–8
+with the RFC variant. Reuse Go's existing identity patterns; constrain only the TS start arm,
+not unrelated UUID consumers. Kernel0.3.212→0.3.213 records changed replay admission.
+Live creation, public wire, seed, receipt/event semantics and original goldens are unchanged.
+
+Regression: shared fourteen-case coordinate population uses the actual committed Pitch bundle,
+pre/head state, seed, command and literal receipts. Only the named session or frozen Company
+coordinate changes; counterfeit receipts carry that same session so head/receipt mismatch cannot
+fake a refusal. Old Go7357e3 admits all eleven invalid cases, changes state and verifies each
+history. Old TS58098 admits session=intent and Company UUID versions0/9 and verifies all three.
+Original and version1/version8 Company controls remain accepted. These are syntax controls,
+not proof of Company ownership/existence or a persisted/public/deployed exploit.
+
+Initial Go test setup was invalid: byte-valued resolved input and a missing typed API/catalog
+artifact made healthy controls refuse. Correct both and prove the old behavior before relying
+on the result. Typecheck separately caught unknown input/receipt types; corrected the test types
+without weakening outcomes. All source probes restored before final verification.
+
+Verification by: Codex. Recorded by: Codex. Finished root checks:
+- Cold selected Production64633 passes0.335s; native SQL cases explicitly skip. Full
+  Kernel/Minigame/Decimal packages pass in82876; that earlier command's Production failure is
+  the disclosed fixture setup, not a green whole command. Final affected vet passes.
+- Four-file Node53470 passes6545. Full replay Chromium/WebKit73679 passes322, no selected skips.
+  Typecheck/replay-fixture-check/formulas-check/api-check/build17678 passes, zero type warnings,
+  cold original fixture comparison and unchanged generated contract/formula bytes.
+- Declared Linux-amd64/Postgres53304 passes Production3.261s and Gameserver35.824s: six real
+  start cases, all shared admission/coordinate cases, solo/async resolution/faults/retry/replay,
+  and both public HTTP lifecycle arms. No selected SQL prerequisite skips. This is amd64
+  emulation on ARM64 Docker, not native hosted hardware, whole CI or release-artifact proof.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Complete single-commit range
+after `4228d038`, including tests/version/docs/records, needs designated Claude review; related
+start corrections may be consolidated with exact coverage. Do not restart completed original
+Pitch/Recovery reviews. Company input/ownership contracts, earlier review debt, numeric/CI,
+content and full-nine-tier release obligations remain. No acceptance, archival, push or deployment.
+After terminal checks, removed only this turn's test Postgres container and disposable tmpfs
+rows; final service inventory is empty. No durable volumes, caches or unrelated data removed.

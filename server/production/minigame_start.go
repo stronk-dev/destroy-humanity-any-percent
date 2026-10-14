@@ -64,8 +64,8 @@ func applyFounderStartMinigameSession(state *save.State, canonicalPayload []byte
 	var payload startMinigameSessionPayload
 	var resolved startMinigameSessionResolved
 	if decodeReplayStrict(canonicalPayload, &payload) != nil || decodeReplayStrict(wire.Resolved, &resolved) != nil ||
-		payload.Kind != startMinigameSessionKind ||
-		resolved.Kind != startMinigameSessionKind || resolved.CompanyStreamID == "" || resolved.RunSeq < 1 ||
+		payload.Kind != startMinigameSessionKind || !intentUUIDV7Pattern.MatchString(payload.SessionID) || payload.SessionID == wire.Command.IntentID ||
+		resolved.Kind != startMinigameSessionKind || !founderAttendanceStreamPattern.MatchString(resolved.CompanyStreamID) || resolved.RunSeq < 1 ||
 		resolved.RunSeq > decimal.MaxExactInteger || resolved.SequenceBefore < 0 ||
 		resolved.SequenceBefore >= decimal.MaxExactInteger || resolved.SequenceAfter != resolved.SequenceBefore+1 ||
 		state.MinigameSessionSeq != resolved.SequenceBefore || save.VersionForState(state) < 21 ||

@@ -4,6 +4,7 @@ import typerRawJSON from "../../testdata/typer/raw-json-v1.json";
 import tierUnlockRaw from "../../testdata/minigame/tier-unlock-raw-v1.json";
 import apiCatalogRaw from "../../testdata/minigame/api-catalog-raw-v1.json";
 import startModeReplay from "../../testdata/minigame/start-mode-replay-v1.json";
+import startCoordinateReplay from "../../testdata/minigame/start-coordinate-replay-v1.json";
 import minigameAPICandidate from "../../balance/testdata/minigame-api-candidate-v1.json";
 import arcadeV1Raw from "../../balance/testdata/arcade-v1.json?raw";
 import arcadeMinigamesRaw from "../../testdata/minigame/pitch-typer-arcade-v3.json?raw";
@@ -383,6 +384,45 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 				receiptJSON: testCase.receipt_json, eventsJSON: testCase.events_json,
 				appliedRevision: command.revision + 1, serverTSMS: command.server_ts_ms, source: null }],
 			{ revision: command.revision + 1, version: testCase.state_version, constantsHash: hash, state: expectedHead },
+			[bundle])).resolves.toBe(row.accepted ? "verified" : "state_divergence");
+	});
+
+	it.each(startCoordinateReplay.cases)("minigame start replay requires live coordinates: $name", async (row) => {
+		expect(startCoordinateReplay.schema_version).toBe(1);
+		expect(startCoordinateReplay.cases).toHaveLength(14);
+		const bundle = await loadReplayCatalogBundle(fixture.minigame_start_constants_hash, fixture.minigame_start_artifacts);
+		const testCase = fixture.minigame_start_founder_case;
+		const founder = restoreFounderReplayState(testCase.pre_state, testCase.state_version, bundle);
+		const before = canonicalJSONString(encodeFounderReplayState(founder));
+		const inputs = structuredClone(testCase.replay_inputs) as {
+			command: { intent_id: string; founder_stream_id: string; founder_id: string; revision: number; founder_log_seq: number; server_ts_ms: number };
+			resolved: { company_stream_id: string };
+		};
+		const sessionId = row.session_id === "intent_id" ? inputs.command.intent_id : row.session_id;
+		inputs.resolved.company_stream_id = row.company_stream_id;
+		const canonical = canonicalJSONString({ ...testCase.canonical_payload, session_id: sessionId });
+		const receiptJSON = canonicalJSONString({ ...JSON.parse(testCase.receipt_json), session_id: sessionId });
+		let failure: unknown, transition: Awaited<ReturnType<typeof applyFounderLogged>> | undefined;
+		try { transition = await applyFounderLogged(founder, canonical, bundle, inputs); }
+		catch (error) { failure = error; }
+		if (row.accepted) {
+			expect(failure).toBeUndefined();
+			if (!transition) throw new Error("valid coordinates have no transition");
+			expect(transition.outcome).toBe("applied");
+			expect(canonicalJSONString(transition.receipt)).toBe(receiptJSON);
+			expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
+			expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(testCase.post_state_json);
+		} else {
+			expect.soft(failure).toBeInstanceOf(Error);
+			expect.soft(canonicalJSONString(encodeFounderReplayState(founder))).toBe(before);
+		}
+		const command = inputs.command;
+		await expect(verifyFounderReplayHistory(testCase.pre_state, command.revision, testCase.state_version, fixture.minigame_start_constants_hash,
+			command.founder_stream_id, command.founder_id, [{ seq: command.founder_log_seq, intentId: command.intent_id,
+				constantsHash: fixture.minigame_start_constants_hash, canonicalPayload: canonical, replayInputs: inputs,
+				receiptJSON, eventsJSON: testCase.events_json, appliedRevision: command.revision + 1,
+				serverTSMS: command.server_ts_ms, source: null }],
+			{ revision: command.revision + 1, version: testCase.state_version, constantsHash: fixture.minigame_start_constants_hash, state: testCase.post_state },
 			[bundle])).resolves.toBe(row.accepted ? "verified" : "state_divergence");
 	});
 

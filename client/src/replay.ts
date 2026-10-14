@@ -915,6 +915,8 @@ async function applyFounderStartMinigameSession(state: FounderReplayState, canon
 	if (payload.kind !== "start_minigame_session" || canonicalJSONString(payload) !== canonicalPayload) throw new RangeError("minigame start command mismatch");
 	const resolved = exactObject(wire.resolved, ["kind", "company_stream_id", "run_seq", "sequence_before", "sequence_after", "seed"], "minigame start inputs");
 	const companyStreamId = uuidString(resolved.company_stream_id), runSeq = safeInteger(resolved.run_seq, 1, MAX_EXACT_INTEGER);
+	// Match the live Store's versioned stream UUID and distinct intent/session identities.
+	if (!/^[1-8]$/.test(companyStreamId.charAt(14)) || sessionId === wire.command.intent_id) throw new RangeError("minigame start identity mismatch");
 	const before = safeInteger(resolved.sequence_before, 0, MAX_EXACT_INTEGER - 1), after = safeInteger(resolved.sequence_after, 1, MAX_EXACT_INTEGER);
 	if (resolved.kind !== "start_minigame_session" || after !== before + 1 || state.minigameSessionSeq !== before) throw new RangeError("minigame start sequence mismatch");
 	const definition = catalogs.minigames.minigames.find((row) => row.minigame_id === minigameId);

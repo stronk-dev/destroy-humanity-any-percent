@@ -140,6 +140,12 @@ without retaining a sequence increment or due Fiscal sweep. The first unlocked S
 starts and verifies. This repair does not add frozen Company tier/scaling inputs to Founder replay
 or change the live coordinator's refusal order or public response bytes.
 
+Kernel0.3.213 brings start replay's identity admission into line with live creation: session IDs
+are lowercase UUIDv7 and distinct from the logged intent ID; the frozen Company stream ID is a
+lowercase UUID with version1–8 and the RFC variant. Both readers reject malformed coordinates
+without changing Founder state and mark their histories divergent. This is identity grammar,
+not proof that an arbitrary syntactically valid Company stream exists or belongs to the Founder.
+
 The composed server mounts the generated private-v1 registry as the only route authority for
 minigame create, current, command, and resolve requests and for Soul-Recovery start, progress,
 cancel, and resolve requests. Founder identity always comes from the access token. Request schemas
