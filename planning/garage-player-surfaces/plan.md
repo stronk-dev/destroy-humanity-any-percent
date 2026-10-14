@@ -13,14 +13,16 @@ names on the old component; final affected Chromium/WebKit846, types/build/bound
 The owning log records the single-commit range after `8f698279` needing Claude review.
 Actual assistive-technology testing and full Garage acceptance remain separate.
 
-Current checkpoint (2026-10-14): at `a28748ad` (kernel0.3.213), `make test-game-ui-composed`
-completes with exit0 after a fresh server/client build. Its sequential population includes
-the main player journey, ordinary Cosmetic/Reputation, Clout axis-stack, negative checkout,
-Garden harvest and Tier-2 candidate journeys. Real Postgres and socket recovery execute;
-the main journey includes committed-reply loss across a gameserver SIGKILL/restart.
-This refreshes integrated evidence after the newer replay/API/CI corrections, not outstanding review,
-natural pacing, accessibility, release-artifact or full-feature acceptance. The owning log
-records the environment and fixture limits. Continue accepted construction and consolidate review.
+Current checkpoint (2026-10-15): at `6201bef8` (kernel0.3.216), the complete
+`make test-game-ui-composed` target passes after the newer replay/frozen-row corrections.
+Actual disposable Postgres reports migration85 applied. Main, Cosmetic/Reputation, Clout,
+payment negatives, Garden harvest and Tier-2 candidate journeys execute sequentially with
+fresh builds, exact loaded assets/Worker, real sockets and committed-reply-loss recovery.
+Both driver populations require and execute8/8 refresh cases, ten persisted parents and
+public-SDK/TS replay checks; captured test headers have no skips or failures.
+The owning log retains setup/architecture limits and previous-source evidence. This refresh
+does not close independent review, natural pacing, Headcount, accessibility, public Arcade/
+Typer integration, content/mint or exact-release proof. Continue accepted construction.
 
 Preceding checkpoint (2026-10-12): the production-built real-service main journey now exercises
 GS0.8's fresh Claim behind an actual purchase and held authoritative read, with exact consecutive

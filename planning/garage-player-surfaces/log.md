@@ -7210,3 +7210,30 @@ Records only, no designated-review or release promotion, archival, mint, push or
 After the terminal run, remove only the freshly created `game-ui-postgres` service and its
 disposable tmpfs test rows. Final service inventory is empty; no durable volume, cache, network
 or unrelated service/data was removed. The final diff is record-only and append-only in this log.
+
+## 2026-10-15 — Built-player aggregate at 6201bef8
+
+`make test-game-ui-composed` (22749) passes end to end at committed source `6201bef8`,
+kernel 0.3.216. No source/test/assertion/population/budget changes during execution.
+The existing drivers freshly build server/client, bind exact loaded HTML/JS/CSS/Worker
+and require the bundled worker. The completed disposable database directly reports
+applied migration 85, not merely a source-file inventory.
+
+All populations execute: initial 35 proof controls; main player flow; ordinary
+Cosmetic/Reputation; Clout; both no-payment negatives; controlled-maturity Garden;
+cash-fixture Tier 2. Both main/Tier 2 drivers pass 8/8 actual Postgres refresh cases,
+all ten required persisted parents and the public-SDK→TypeScript replay marker.
+Complete captured selected output has zero skipped/failed headers; not whole-package
+coverage. Native gameplay, Fiscal refusals/reconsent, queued Claim, both early Company
+terminal states/continuation and real socket/process-kill recovery pass. Reputation
+reaches run 3 with controlled budget; Clout ownership/stack and Garden/Tier 2 reload
+checks pass without treating fixture maturity/cash as earned progression.
+
+Verification by: Codex. Recorded by: Codex. Native Chromium/Go with the declared
+Postgres 16 service (amd64 image on ARM64 warning), not hosted/Linux-browser parity,
+natural pacing, Headcount, public Arcade/Typer, full catalogs, actual AT/privacy or
+clean-host release proof. Earlier intermittents, RP-131/RP-307 and independent-review/
+owner/content/mint gates remain. No milestone, archival, push or release promotion.
+After terminal completion, remove only the fresh `game-ui-postgres` container and
+discard its regenerable tmpfs fixtures; inventory is empty. No durable/user data,
+volume, cache or network removed. Record-only diff/links/whitespace checked.
