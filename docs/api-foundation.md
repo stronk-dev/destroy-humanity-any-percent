@@ -184,8 +184,14 @@ unchanged; this is media conformance, not runtime DTO validation. Raw successes 
 JSON. They require the registered media type and content-hash header, checked against SHA256
 over downloaded bytes. Error statuses on raw operations remain JSON. Undeclared status,
 malformed JSON, raw type/hash failure and network/abort errors are surfaced, never retried.
-Malformed JSON reports its HTTP status without echoing reply bytes. Body-read failures
-propagate unchanged rather than being relabelled as JSON errors.
+Schema replies are decoded from bytes with fatal UTF-8 validation before JSON parsing, matching
+[JSON's network encoding requirement](https://www.rfc-editor.org/rfc/rfc8259.html#section-8.1).
+Corrupt encoding cannot be silently repaired into replacement characters. Existing BOM tolerance,
+valid Unicode (including an explicitly encoded replacement character), and JSON escape handling
+are preserved; this is encoding validation, not runtime DTO or credential validation. Raw evidence
+continues to be returned byte-exact after hash verification, not UTF-8/JSON-decoded by the transport.
+Malformed encoding/JSON reports its HTTP status without echoing reply bytes. Body-read failures
+propagate unchanged rather than being relabelled as encoding/JSON errors.
 The undeclared 304 arm remains open; this client does not invent an alternative for it.
 
 OpenAPI retains every raw hash header across same-status representations, combining header

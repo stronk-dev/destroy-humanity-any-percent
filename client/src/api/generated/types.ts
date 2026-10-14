@@ -360,10 +360,11 @@ export function createAPIClient(fetcher: APIFetcher = fetch, baseURL = "") {
         body = bytes;
       } else {
         if (contentType !== descriptor.contentType) throw new TypeError("invalid schema API content type");
-        // Keep body-read/network errors intact, but do not echo potentially
-        // private reply bytes in JSON.parse's native error message.
-        const text = await response.text();
-        try { body = JSON.parse(text); }
+        // Keep body-read/network errors intact. Schema JSON must be UTF-8;
+        // Response.text() silently repairs corrupt bytes into replacement characters.
+        // Retain its BOM tolerance, but never echo decoder/parser reply bytes.
+        const bytes = await response.arrayBuffer();
+        try { body = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)); }
         catch { throw new SyntaxError(`response was not JSON (${response.status})`); }
       }
       const result: unknown = { status: response.status, ok: response.ok, headers: response.headers, body };

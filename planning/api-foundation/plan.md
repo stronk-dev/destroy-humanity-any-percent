@@ -2,6 +2,15 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current bounded correction (2026-10-14, RP-568): generated schema-response decoding now refuses
+malformed UTF-8 rather than repairing reply bytes. All36 old-client refusals reproduce; final
+Node289/native Chromium-WebKit578, cold generator packages/vet, types/build and deterministic
+generation checks pass. Valid Unicode/JSON escapes/BOM tolerance, body-read failures and raw
+byte/hash identity remain unchanged. The owning log records exact evidence and the whole range
+after `5872b66e`, pending Claude review. This is encoding conformance, not runtime DTO validation,
+draft adoption, real-server/SQL or full API/CI acceptance. Continue accepted API construction;
+the existing owner-schema/wire/dictionary/bodiless boundaries remain explicit below.
+
 Current C18 representation proposal (2026-10-14, RP-566):
 `rfc/api-integer-token-encoding.md` specifies opt-in exact-safe numeric tokens without globally
 widening current integers. Six additional shared boundary controls execute in Go/Node/native

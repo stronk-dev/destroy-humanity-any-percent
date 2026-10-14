@@ -2113,3 +2113,44 @@ draft/test-only/docs/records range after `f900340d` through this containing comm
 designated review and normative adoption; it does not approve the preceding behavior range.
 No archival, kernel bump, push, deployment or milestone promotion. Next: continue accepted
 construction while this recommendation and the other named authority gates await resolution.
+
+## 2026-10-14 — Refuse malformed UTF-8 in generated schema replies (RP-568)
+
+Resume clean `5872b66e`; previous goal turn completes the browser execution-organization batch.
+Under accepted A5/C9/C19 JSON decoding, the generated client's `Response.text()` silently
+repairs malformed UTF-8 inside JSON strings. Execute36 old-client refusals (nine byte faults
+across public/private success/error operations): all fail because corrupt replies are admitted;
+92 existing/positive/raw controls pass. Record RP-568 immediately. JSON network encoding and
+BOM tolerance are checked against RFC8259§8.1; do not implement the unadopted Typer draft's
+stricter BOM/DTO policy.
+
+Change only the generator template and regenerated transport: read bytes outside the error
+sanitizer, fatal UTF-8 decode then parse JSON inside it. Invalid encoding uses the existing
+body-free status diagnostic; body-read failures still propagate unchanged. Raw evidence/hash
+handling remains byte-identical. Controls preserve valid2/3/4-byte characters, Unicode maximum,
+literal U+FFFD, existing JSON-escaped surrogate handling and optional BOM. Nine deliberately
+corrupt raw bodies still return exact digest-verified bytes; this is identity, not valid genesis.
+
+Final Node88456 passes289 affected SDK/operation-port/runtime checks; actual Chromium/WebKit
+83713 passes578. Cold Go15864 passes `./publicapi ./cmd/gen-api`; affected vet passes.
+Final typecheck89673 has zero errors/warnings; build41820 succeeds. Initial helper annotation
+`Uint8Array<ArrayBufferLike>` fails two Response BodyInit type checks despite runtime passes;
+correct it to its actual ArrayBuffer-backed return and execute final checks again. An earlier
+incorrect CLIENT_BIN override fails before Vitest starts and supplies no test evidence.
+Stage the intentionally changed generated transport, then `make api-check` re-emits identical
+candidate bytes; OpenAPI/compatibility pins remain unchanged against HEAD. Diff checks pass.
+
+Retained old failure `.cache/api-utf8-old-5872b66e.log` SHA256
+`2d2d77c327fd92e0259904ca913afe715b993620b6b9505adb7148a4dfedb10a`;
+final native `.cache/api-utf8-native-final-5872b66e.log` SHA256
+`dd536d8996ce9d744cb1709c51912421c5352a1a62cd8dc1e0e359d7a05656f2`.
+No new evidence framework, gameplay/schema/kernel/balance/copy, retries, routes or workflow
+change. Tests exercise actual Response decoding with injected fetchers, not a composed server,
+Postgres, Firefox/Linux, hosted CI or full public verification/download loop.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete implementation,
+test/docs/records range after `5872b66e` through this containing commit needs designated Claude
+review, consolidatable with related API corrections. RP-568 is locally corrected, not designated
+approved. Existing draft/owner/author/review/CI and full nine-tier1.0 gates remain. No archival,
+push or deployment. Next: accepted API construction and outstanding consumer/owner contracts;
+do not repeat these completed focused checks as progress or infer proposal adoption.

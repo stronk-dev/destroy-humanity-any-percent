@@ -18,13 +18,74 @@ describe("registry-generated HTTP client", () => {
     { id: "refresh_session", status: 401, body: { category: "unauthorized", detail: "refresh_token" }, input: { path: {}, request: { refresh_token: "fixture-parent" } } },
   ] as const;
 
+  const invalidUTF8 = [
+    ["orphan continuation", [0x80]],
+    ["truncated two-byte", [0xc2]],
+    ["truncated three-byte", [0xe2, 0x82]],
+    ["truncated four-byte", [0xf0, 0x9f, 0x99]],
+    ["overlong two-byte", [0xc0, 0xaf]],
+    ["overlong three-byte", [0xe0, 0x80, 0xaf]],
+    ["overlong four-byte", [0xf0, 0x80, 0x80, 0xaf]],
+    ["surrogate", [0xed, 0xa0, 0x80]],
+    ["above Unicode maximum", [0xf4, 0x90, 0x80, 0x80]],
+  ] as const;
+  const encoder = new TextEncoder();
+  function invalidReply(body: object, field: string, corrupt: readonly number[]): Uint8Array<ArrayBuffer> {
+    const marker = "fictional-private-byte-marker";
+    const text = JSON.stringify({ ...body, [field]: marker });
+    const offset = text.indexOf(marker);
+    return new Uint8Array([...encoder.encode(text.slice(0, offset)), ...encoder.encode(marker),
+      ...corrupt, ...encoder.encode(text.slice(offset + marker.length))]);
+  }
+  const encodingCases = schemaCases.map((entry, index) => ({ ...entry,
+    field: ["catalog_url", "detail", "access_token", "detail"][index],
+  }));
+
+  it.each(encodingCases.flatMap((entry) => invalidUTF8.map(([fault, bytes]) => ({ ...entry, fault, bytes }))))(
+    "rejects malformed UTF-8 $fault in schema $id/$status without repairing or exposing reply bytes", async ({ id, status, body, input, field, bytes }) => {
+      const fetcher = vi.fn(async () => new Response(invalidReply(body, field, bytes), {
+        status, headers: { "Content-Type": "application/json" },
+      }));
+      await expect(createAPIClient(fetcher).call(id, input as OperationInput<typeof id>))
+        .rejects.toThrow(new SyntaxError(`response was not JSON (${status})`));
+      expect(fetcher).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it.each(["aé中🙂\u{10ffff}", "literal replacement \ufffd", "escaped surrogate \ud800"])(
+    "preserves JSON UTF-8 string content %s with and without the previously tolerated BOM", async (catalogURL) => {
+      const entry = schemaCases[0];
+      const body = { ...entry.body, catalog_url: catalogURL };
+      for (const prefix of [[], [0xef, 0xbb, 0xbf]]) {
+        const fetcher = vi.fn(async () => new Response(new Uint8Array([...prefix, ...encoder.encode(JSON.stringify(body))]), {
+          status: entry.status, headers: { "Content-Type": "application/json" },
+        }));
+        const reply = await createAPIClient(fetcher).call(entry.id, entry.input);
+        expect(reply.body).toEqual(body);
+        expect(fetcher).toHaveBeenCalledTimes(1);
+      }
+    },
+  );
+
+  it.each(invalidUTF8)("preserves raw evidence bytes containing %s instead of JSON-decoding them", async (_fault, corrupt) => {
+    const bytes = invalidReply(schemaCases[0].body, "catalog_url", corrupt);
+    const digest = await hash(bytes);
+    const fetcher = vi.fn(async () => new Response(bytes, {
+      status: 200, headers: { "Content-Type": "application/json", "X-Content-SHA256": digest },
+    }));
+    const reply = await createAPIClient(fetcher).call("get_public_run_genesis", { path: { stream, seq: 1 }, request: null });
+    // Transport proves identity, not that these deliberately corrupt bytes are valid genesis.
+    expect(reply.body).toEqual(bytes);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
   it.each(schemaCases.flatMap((entry) => [null, "text/plain", "application/gzip", "APPLICATION/JSONP", "APPLICATION/PROBLEM+JSON"].map((contentType) => ({ ...entry, contentType }))))(
     "refuses single-schema $id/$status with media $contentType before reading the body", async ({ id, status, body, input, contentType }) => {
       const headers = new Headers();
       if (contentType !== null) headers.set("Content-Type", contentType);
       // Bytes avoid Response's automatic text/plain default in the absent case.
       const response = new Response(new TextEncoder().encode(JSON.stringify(body)), { status, headers });
-      const read = vi.spyOn(response, "text");
+      const read = vi.spyOn(response, "arrayBuffer");
       const fetcher = vi.fn(async () => response);
       await expect(createAPIClient(fetcher).call(id, input as OperationInput<typeof id>)).rejects.toThrow("invalid schema API content type");
       expect(read).not.toHaveBeenCalled();
@@ -322,7 +383,7 @@ describe("registry-generated HTTP client", () => {
     const response = new Response("", { status: 200, headers: { "Content-Type": "application/json" } });
     // Isolate the SDK's propagation boundary: Chromium may normalize errors
     // from a genuinely errored Response stream before the SDK sees them.
-    const read = vi.spyOn(response, "text").mockRejectedValueOnce(failure);
+    const read = vi.spyOn(response, "arrayBuffer").mockRejectedValueOnce(failure);
     const fetcher = vi.fn(async () => response);
     await expect(createAPIClient(fetcher).call("list_public_epochs", { path: {}, request: null, query: {} })).rejects.toBe(failure);
     expect(fetcher).toHaveBeenCalledTimes(1);
