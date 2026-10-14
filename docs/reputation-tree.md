@@ -393,6 +393,17 @@ The Founder log records an Exit with an applied non-empty plan under the append-
 purchases and refuses any mismatch. Migration 00078 admits `exit.v2` as a Company-linked Founder-log
 arm.
 
+Both Founder replay consumers require `reputation_purchases` only on `exit.v2` and exactly
+the decoded `node_id`/`resolved_cost` keys in each item. Wrong-case aliases reject, and `exit.v1`
+must omit the field even when its value would be null. Order, costs and purchase results still
+come from replay derivation, not the recorded array. This is parsed-shape validation; it does
+not introduce new raw duplicate-name or number-token rules.
+
+The five shared Exit cases compare ordered Founder, ended-Company and started-Company events.
+Rejected cases require empty event arrays, no new Company and unchanged encoded Company state.
+Corrupting the ended-event expectation now fails the client consumer without changing runtime
+or fixture bytes permanently.
+
 When the live Exit is checked against its replay (parity), the expected Founder state now copies
 the v22 tree fields. Without that, a live Exit with a plan, or one activating v22, diverged.
 

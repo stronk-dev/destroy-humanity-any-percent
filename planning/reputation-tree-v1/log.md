@@ -9574,3 +9574,79 @@ Codex. Claude designated review remains pending for this entire corrective batch
 and earlier ranges. Original B5b disposition approves none of this work. No
 acceptance checkbox, RFC archival, mint, push or deployment; continue original
 B6 review without restarting B5's previously bounded witness review.
+
+## 2026-10-14 — Complete original B6 Exit-plan review dispositions
+
+Review by: Codex (designated independent reviewer of Claude's original work).
+Recorded by: Codex. **CHANGES REQUIRED** for both exact original ranges:
+`ac8a9a65^..ac8a9a65` (all14 Go/binding/SQL/docs/log/kernel paths) and
+`cf57e956^..cf57e956` (all8 TS/test/corpus/log/kernel paths). Neither verdict
+approves later Codex corrections or completes the feature/AC9/archival union.
+
+Inspected plan parsing, credited-level dry run, ordered application, Founder
+audit/history linking and replay derivation, v22 expected-state copying,
+migration00078, release-head guard, TS activation/plan ports and all witnesses.
+Kernel mirrors agree at114 then115; migration guard77→78. The original TS/corpus
+addition leaves every prior root field unchanged and adds exactly five Exit
+cases, three paired Founder arms. The earlier RP-254 result-pin and RP-297/
+RP-298 parser/offered-plan supplements remain distinct, not fresh findings here.
+
+Historical checkout `cf57e956` passes cold Production/Save/Reputation/Replaycatalog/
+Releasepackage and35 tests across the original three client files. Native DB
+skips are not persistence proof. A temporary test-only probe then reproduces
+all five RP-630 malformed admissions at that original revision: array/item
+case aliases and unexpected null purchase fields on unplanned arms. Both valid
+arms pass; the malformed calls apply and mutate their Founder state. The same
+five fail current pre-correction tests; TS already refuses them without mutation.
+The original Go struct decoder loses presence/case distinctions which R6's
+two-field arm and exact TS consumer retain. Probe removed; checkout clean.
+
+RP-631: the original five-case TS loop omits the ended-Company event comparison.
+Replacing one applied case's company_ended_events_json with[] leaves the current
+old comparison green (36 tests, including the new shape controls). Adding the
+missing comparison makes precisely that case fail, with35 other tests passing.
+Restored the exact source corpus and digest
+`f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782`.
+This is an oracle finding, not proof that the event producer is broken.
+
+## 2026-10-14 — R6 parsed purchase fields and R8 ended-event parity
+
+Outcome: RP-630 adds a parsed-shape check before Founder Exit application:
+require the purchase field on exit.v2 only, reject case aliases, require exactly
+node_id/resolved_cost per item. Existing derivation still checks order/costs;
+no new raw-duplicate or number-token policy. RP-631 compares all three ordered
+event sets on applied cases and empty arrays/no new Company/complete unchanged
+Company state on rejections. No client runtime, producer/corpus, balance/copy,
+request/schema/pin/migration or historical rewrite. Kernel215→216 in all3 mirrors
+records genuine replay admission. Canonical docs, plan and ledger updated.
+
+Regression: five old Go admissions now refuse with full encoded Founder state
+preserved; planned and unplanned positive controls still apply. TS retains its
+own five refusal/state controls. Ended-event corruption discriminates as above;
+all fixture bytes restore exactly. An initial first-filter compile failure used
+a nonexistent discriminator variable; the check now uses the actually decoded
+resolved.Kind, and final tests execute. No evidence credited to that failed build.
+
+Coverage: cold full Save/Reputation/Replaycatalog/Kernel and affected vet pass;
+strict types report0 errors/warnings; four reader/Company/Founder replay files
+pass172 tests; unchanged replay-fixture check passes. Declared Linux-amd64/
+Postgres selected Reputation Production completes8.511s: all14 named write faults
+fire their exact sentinel and preserve complete rows/heads, then normal Handle
+commits/replays once and performs retention. Valid/failing plan, offered-payout,
+career and new shape controls also pass. Full22912-token capture is inspected
+without truncation and contains zero SKIP headers for this selected population.
+Not full Production/hosted CI, natural pacing, real-browser gameplay, complete
+replay grammar, AC9/R8/Reputation acceptance, clean-host or release/1.0 proof.
+
+Cleanup: all handles are terminal; removed only this batch's tmpfs Postgres and
+confirmed an empty Compose list. The deliberately corrupted corpus is restored
+byte-exact and excluded from the diff; the historical checkout is clean after
+its temporary probe removal. No unrelated worktree, volume or service removed.
+
+Handoff: implementation, related regression/oracle tests, kernel mirrors and
+docs/plan/backlog/this record form one range after `3c26372b` through the containing
+commit. Review by: Codex (implementer first-filter); Recorded by: Codex. Claude
+designated review remains pending for this entire corrective batch and all prior
+ranges. Original verdicts above approve none of it. No acceptance checkbox,
+archival, mint, push or deployment; continue original B7 UI review, preserving
+its separate author/body/copy/mint and existing corrective review boundaries.

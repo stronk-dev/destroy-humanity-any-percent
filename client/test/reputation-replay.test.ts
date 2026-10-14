@@ -121,7 +121,14 @@ describe("Reputation Exit plan and v22 activation (R6, B3)", () => {
       expect(canonicalJSONString(transition.founder)).toBe(testCase.founder_output_json);
       expect(canonicalJSONString(encodeReplayState(transition.newCompany!))).toBe(testCase.new_company_json);
       expect(canonicalJSONString(transition.founderEvents)).toBe(testCase.founder_events_json);
+      expect(canonicalJSONString(transition.companyEndedEvents)).toBe(testCase.company_ended_events_json);
       expect(canonicalJSONString(transition.companyStartedEvents)).toBe(testCase.company_started_events_json);
+    } else {
+      expect(transition.founderEvents).toEqual([]);
+      expect(transition.companyEndedEvents).toEqual([]);
+      expect(transition.companyStartedEvents).toEqual([]);
+      expect(transition.newCompany).toBeNull();
+      expect(canonicalJSONString(encodeReplayState(transition.finalCompany))).toBe(canonicalJSONString(testCase.pre_state));
     }
     const founderCase = exitCase.founder;
     if (!founderCase) return;
@@ -142,5 +149,27 @@ describe("Reputation Exit plan and v22 activation (R6, B3)", () => {
     inputs.resolved.reputation_purchases[0]!.resolved_cost += 1;
     const state = restoreFounderReplayState(founderCase.pre_state, founderCase.state_version, bundle);
     await expect(applyFounderLogged(state, canonicalJSONString(founderCase.canonical_payload), bundle, inputs)).rejects.toThrow();
+  });
+
+  it("refuses wrong-case purchase fields and any purchase field on an unplanned arm", async () => {
+    for (const test of [
+      { name: "alias-array", unplanned: false, change: (fields: Record<string, unknown>) => { fields.REPUTATION_PURCHASES = fields.reputation_purchases; delete fields.reputation_purchases; } },
+      { name: "alias-node", unplanned: false, change: (fields: Record<string, unknown>) => { const row = (fields.reputation_purchases as Record<string, unknown>[])[0]!; row.NODE_ID = row.node_id; delete row.node_id; } },
+      { name: "alias-cost", unplanned: false, change: (fields: Record<string, unknown>) => { const row = (fields.reputation_purchases as Record<string, unknown>[])[0]!; row.RESOLVED_COST = row.resolved_cost; delete row.resolved_cost; } },
+      { name: "unplanned-null", unplanned: true, change: (fields: Record<string, unknown>) => { fields.reputation_purchases = null; } },
+      { name: "unplanned-null-alias", unplanned: true, change: (fields: Record<string, unknown>) => { fields.REPUTATION_PURCHASES = null; } },
+    ]) {
+      const exit = corpus.exit_cases.find((row) => row.name === (test.unplanned ? "exit-activates-founder-v22" : "plan-applies-with-in-plan-prerequisite"))!;
+      const current = await loadReplayCatalogBundle(exit.company.constants_hash, exit.company.artifacts as unknown as ReplayArtifacts);
+      const next = exit.company.next_constants_hash === exit.company.constants_hash ? current : await loadReplayCatalogBundle(exit.company.next_constants_hash, exit.company.next_artifacts as unknown as ReplayArtifacts);
+      const bundle = next === current ? current : withNextReplayCatalogBundle(current, next);
+      const source = exit.founder!;
+      const inputs = structuredClone(source.replay_inputs) as { resolved: Record<string, unknown> };
+      test.change(inputs.resolved);
+      const state = restoreFounderReplayState(source.pre_state, source.state_version, bundle);
+      const before = canonicalJSONString(encodeFounderReplayState(state));
+      await expect(applyFounderLogged(state, canonicalJSONString(source.canonical_payload), bundle, inputs), test.name).rejects.toThrow();
+      expect(canonicalJSONString(encodeFounderReplayState(state)), test.name).toBe(before);
+    }
   });
 });

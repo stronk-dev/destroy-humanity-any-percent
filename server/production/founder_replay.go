@@ -227,6 +227,9 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil {
 			return FounderLoggedTransition{}, fmt.Errorf("%w: Exit Founder facts", ErrInvalidReplayInputs)
 		}
+		if !validReputationExitPurchaseFields(wire.Resolved, resolved.Kind == founderExitPlanResolvedKind) {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: Exit Reputation purchase fields", ErrInvalidReplayInputs)
+		}
 		return applyFounderExitResolved(state, wire.Command, request, catalogs, resolved)
 	default:
 		return FounderLoggedTransition{}, fmt.Errorf("%w: unknown Founder resolved arm", ErrInvalidReplayInputs)

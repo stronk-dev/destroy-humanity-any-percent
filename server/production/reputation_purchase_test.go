@@ -723,3 +723,68 @@ func TestReputationExitV2RefusesTamperedPurchases(t *testing.T) {
 		t.Fatal("a planned Exit replayed under exit.v1")
 	}
 }
+
+func TestReputationExitPurchaseFieldShapes(t *testing.T) {
+	tree := reputationContentBundle(t)
+	now := time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC)
+	plan := []string{"reputation.starter.cash_small", "reputation.starter.generated_beige_tower", "reputation.unlock.p05"}
+	for _, test := range []struct {
+		name      string
+		unplanned bool
+		change    func(map[string]any)
+	}{
+		{"planned-control", false, func(map[string]any) {}},
+		{"unplanned-control", true, func(map[string]any) {}},
+		{"alias-array", false, func(fields map[string]any) {
+			fields["REPUTATION_PURCHASES"] = fields["reputation_purchases"]
+			delete(fields, "reputation_purchases")
+		}},
+		{"alias-node", false, func(fields map[string]any) {
+			row := fields["reputation_purchases"].([]any)[0].(map[string]any)
+			row["NODE_ID"] = row["node_id"]
+			delete(row, "node_id")
+		}},
+		{"alias-cost", false, func(fields map[string]any) {
+			row := fields["reputation_purchases"].([]any)[0].(map[string]any)
+			row["RESOLVED_COST"] = row["resolved_cost"]
+			delete(row, "resolved_cost")
+		}},
+		{"unplanned-null", true, func(fields map[string]any) { fields["reputation_purchases"] = nil }},
+		{"unplanned-null-alias", true, func(fields map[string]any) { fields["REPUTATION_PURCHASES"] = nil }},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			selected := plan
+			if test.unplanned {
+				selected = nil
+			}
+			exit := makeReputationPlanExitCase(t, test.name, tree, tree, 22, 6, selected, now)
+			var inputs map[string]any
+			if err := json.Unmarshal(exit.Founder.ReplayInputs, &inputs); err != nil {
+				t.Fatal(err)
+			}
+			test.change(inputs["resolved"].(map[string]any))
+			raw, err := json.Marshal(inputs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state, err := save.RestoreState(exit.Founder.PreState, 22, tree.Economy, economy.ScopeFounder, time.Time{})
+			if err != nil {
+				t.Fatal(err)
+			}
+			before := mustEncodeState(t, state)
+			transition, err := ApplyFounderLogged(state, exit.Founder.CanonicalPayload, tree, raw)
+			if test.name == "planned-control" || test.name == "unplanned-control" {
+				if err != nil || transition.Outcome != save.IntentApplied {
+					t.Fatalf("valid control failed: %v", err)
+				}
+				return
+			}
+			if err == nil {
+				t.Error("malformed Exit purchase fields replayed")
+			}
+			if !bytes.Equal(before, mustEncodeState(t, state)) {
+				t.Error("malformed replay mutated Founder state")
+			}
+		})
+	}
+}

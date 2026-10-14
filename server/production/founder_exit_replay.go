@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strings"
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/save"
@@ -16,6 +17,39 @@ const founderExitResolvedKind = "exit.v1"
 // v1 R6): identical to exit.v1 plus the applied reputation_purchases. It is
 // written exactly when the Exit request carries a non-empty reputation_plan.
 const founderExitPlanResolvedKind = "exit.v2"
+
+// R6's purchases field is present only on exit.v2, and each item has exactly
+// the two decoded field names the TypeScript replay consumer requires. Struct
+// decoding alone accepts case aliases and treats an unexpected null as absent.
+// This is parsed shape validation, not a new duplicate/number-token policy.
+func validReputationExitPurchaseFields(data json.RawMessage, planned bool) bool {
+	var fields map[string]json.RawMessage
+	if json.Unmarshal(data, &fields) != nil || fields == nil {
+		return false
+	}
+	for key := range fields {
+		if key != "reputation_purchases" && strings.EqualFold(key, "reputation_purchases") {
+			return false
+		}
+	}
+	raw, present := fields["reputation_purchases"]
+	if present != planned {
+		return false
+	}
+	if !present {
+		return true
+	}
+	var purchases []map[string]json.RawMessage
+	if json.Unmarshal(raw, &purchases) != nil || purchases == nil {
+		return false
+	}
+	for _, purchase := range purchases {
+		if !hasExactKeys(purchase, "node_id", "resolved_cost") {
+			return false
+		}
+	}
+	return true
+}
 
 type founderExitRecordWire struct {
 	RunID           int64  `json:"run_id"`

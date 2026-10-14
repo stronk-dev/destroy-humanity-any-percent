@@ -4,6 +4,15 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
+Current R6/R8 correction (2026-10-14): RP-630 closes five Go/TS replay-shape
+mismatches (wrong-case purchase fields and unexpected null on unplanned Exits),
+preserving both valid arms and full-state rollback. RP-631 adds missing ordered
+Company-ended-event parity and complete rejected-Company observations to the
+five-case client consumer. Old shape failures and a vacuous old oracle are
+executed; kernel0.3.216, affected tests and all14 real-SQL plan faults pass.
+Both original B6 ranges now have CHANGES REQUIRED dispositions. New corrective
+batch after `3c26372b` needs Claude; this does not complete AC9/R8 or mint.
+
 Current R7 event correction (2026-10-14): RP-629 rejects case aliases and
 duplicate raw names in run_started v2's nested Reputation summary. Shared14-case
 Go/client controls, nine real-SQL malformed-Exit refusals and affected legitimate
@@ -491,6 +500,10 @@ author/harness/browser/mint/release holds remain, no full RFC closure.
   review is **CHANGES REQUIRED**, RP-629 nested event admission. Neither that
   witness nor these local corrections approves the full producer/acceptance span.
 - [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
+  Full original Go14-path and TS/corpus8-path reviews are **CHANGES REQUIRED**:
+  RP-630 parsed purchase admission, RP-631 ended-event parity. Prior parser,
+  offered-plan and14-write-fault supplements retain separate corrective review
+  ranges; this review does not approve them or the new fixes above.
 - [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
   RP-285/RP-286 under2b2536a9 adds explicit native header/button Tab stops.
   Original44 failures/10 controls pass; three compiling probes fail36/52/12;
