@@ -2978,3 +2978,40 @@ docs/plan/ledger/log range after `ae0af284` through this containing commit needs
 review, consolidatable with C18. No draft adoption, archival, mint, publication or release claim.
 Continue accepted byte-preserving construction and other authorized work while owner-specific
 schema/representation and review boundaries remain explicit.
+
+## 2026-10-14 — Original-source verifier and lexical transport conflict (C12/C18, RP-598)
+
+Resume `8f9b5296` with this unfinished source/test batch; the preceding user-question turn
+clarified decisions but made no implementation progress. Finish the accepted C12/C18 internal
+bundle verifier: reuse existing artifact framing/JSON/UTF-8 validation, check every advertised
+child digest and return detached sorted original bytes or no result. No endpoint, DB query,
+owner admission, arithmetic, source data, kernel version or shipped generated client changes.
+The helper is a construction primitive; there is no production HTTP consumer yet.
+
+Eight misbinding controls refuse missing/wrong/bare child hashes, wrong bundle hash, changed,
+missing, extra and duplicate sources; three hash-matching malformed JSON/UTF-8 controls refuse.
+Valid surrounding whitespace, detached buffers and existing last-value members survive.
+The actual epoch manifest supplies all19 original sources, not the incomplete15 schema set:
+all verify; every19 compaction and every19 relabelled-child variant refuse against the unchanged
+complete hash. The focused verbose runs execute, not skip.
+
+RP-598 uses the actual Category loader/Route bindings and duplicate-version candidate. Original
+control passes owner, structural descriptor and registry; candidate passes owner/descriptor but
+fails registry's recursive duplicate-key rule. This is not a stored/deployed duplicate claim.
+Draft/index `api-artifact-byte-transport.md`: closed owner reference/member policy, exact source
+framing and generated local byte recovery. No generic JSON escape, global uniqueness relaxation,
+source normalization or draft implementation. Adoption and normative review precede that change;
+it is engineering authority, not another user gameplay question. RP-597 remains open.
+
+Final cold `make test-go GO_PACKAGES='./leaderboard ./publicread ./publicapi' GO_TEST_FLAGS='-count=1'`
+passes; focused `TestVerifyPublicCatalogBundle` and `TestCatalogOwnerMemberPolicy` runs pass
+verbosely. Affected vet and byte-unchanged `make api-check` pass; diff whitespace checked. No
+Postgres, browser, private-data, full public re-verification, hosted CI or release proof claimed
+for the unchanged DB/HTTP/client boundaries. Existing service/CI/full-nine-tier obligations remain.
+
+Review by: Codex (implementer first filter and proposal author). Recorded by: Codex. Complete
+source/tests/docs/draft/index/plan/ledger/log range after `8f9b5296` through this containing commit
+needs designated Claude review, consolidatable with C18; no self-acceptance or archival.
+Next: review/adopt the bounded transport and existing schema/representation proposals, then
+implement the complete real catalog/SDK/re-verification path; continue unrelated accepted work
+without treating these holds as a project-wide stop. No push, mint or release claim.

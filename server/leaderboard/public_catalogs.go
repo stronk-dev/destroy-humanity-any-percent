@@ -30,6 +30,30 @@ type PublicCatalogBundle struct {
 	Artifacts     []PublicCatalogArtifact
 }
 
+// VerifyPublicCatalogBundle checks an internal reader result before a consumer
+// uses it: each advertised digest binds its original bytes, and the complete
+// set binds ConstantsHash through the existing framing authority. It returns
+// an independently owned, name-sorted snapshot, never reserialized JSON.
+// It does not establish epoch acceptance or artifact semantic validity.
+func VerifyPublicCatalogBundle(bundle PublicCatalogBundle) (PublicCatalogBundle, error) {
+	artifacts := make([]Artifact, 0, len(bundle.Artifacts))
+	claimed := make(map[string]string, len(bundle.Artifacts))
+	for _, artifact := range bundle.Artifacts {
+		artifacts = append(artifacts, Artifact{Name: artifact.Name, Bytes: artifact.Bytes})
+		claimed[artifact.Name] = artifact.SHA256
+	}
+	verified, err := publicCatalogBundle(bundle.ConstantsHash, artifacts)
+	if err != nil {
+		return PublicCatalogBundle{}, err
+	}
+	for _, artifact := range verified.Artifacts {
+		if claimed[artifact.Name] != artifact.SHA256 {
+			return PublicCatalogBundle{}, ErrInvalidPublicCatalog
+		}
+	}
+	return verified, nil
+}
+
 // PublicCatalog reads only constants hashes accepted by an epoch, including
 // historical epochs. Authorization and artifacts share one statement snapshot;
 // an orphan catalog set is not public. Missing or corrupt accepted bytes are an

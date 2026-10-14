@@ -152,3 +152,79 @@ func TestPublicCatalogRejectsInvalidCompositionAndHash(t *testing.T) {
 		}
 	}
 }
+
+func TestVerifyPublicCatalogBundleBindsAdvertisedDigestsAndOwnsOriginalBytes(t *testing.T) {
+	input := []Artifact{{Name: "z", Bytes: []byte(" \n{\n  \"value\": 1\n}\n\t")}, {Name: "a", Bytes: []byte(`[1,2]`)}}
+	hash, err := save.ConstantsHashArtifacts(map[string][]byte{"a": input[1].Bytes, "z": input[0].Bytes})
+	if err != nil {
+		t.Fatal(err)
+	}
+	original, err := publicCatalogBundle(hash, input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	original.Artifacts[0], original.Artifacts[1] = original.Artifacts[1], original.Artifacts[0]
+	verified, err := VerifyPublicCatalogBundle(original)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if verified.Artifacts[0].Name != "a" || verified.Artifacts[1].Name != "z" || !bytes.Equal(verified.Artifacts[1].Bytes, input[0].Bytes) {
+		t.Fatal("lost exact bytes/order")
+	}
+	verified.Artifacts[1].Bytes[0] = '!'
+	if !bytes.Equal(original.Artifacts[0].Bytes, input[0].Bytes) {
+		t.Fatal("verification snapshot aliases caller")
+	}
+	clone := func() PublicCatalogBundle {
+		value, err := publicCatalogBundle(hash, input)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return value
+	}
+	for name, edit := range map[string]func(*PublicCatalogBundle){
+		"missing digest": func(v *PublicCatalogBundle) { v.Artifacts[0].SHA256 = "" },
+		"wrong digest":   func(v *PublicCatalogBundle) { v.Artifacts[0].SHA256 = "sha256:" + strings.Repeat("0", 64) },
+		"bare digest": func(v *PublicCatalogBundle) {
+			v.Artifacts[0].SHA256 = strings.TrimPrefix(v.Artifacts[0].SHA256, "sha256:")
+		},
+		"wrong constants":  func(v *PublicCatalogBundle) { v.ConstantsHash = "sha256:" + strings.Repeat("0", 64) },
+		"changed bytes":    func(v *PublicCatalogBundle) { v.Artifacts[0].Bytes = []byte(`[1,3]`) },
+		"missing artifact": func(v *PublicCatalogBundle) { v.Artifacts = v.Artifacts[:1] },
+		"extra artifact": func(v *PublicCatalogBundle) {
+			v.Artifacts = append(v.Artifacts, PublicCatalogArtifact{Name: "extra", Bytes: []byte(`{}`), SHA256: save.ConstantsHash([]byte(`{}`))})
+		},
+		"duplicate artifact": func(v *PublicCatalogBundle) { v.Artifacts = append(v.Artifacts, v.Artifacts[0]) },
+	} {
+		t.Run(name, func(t *testing.T) {
+			value := clone()
+			edit(&value)
+			result, err := VerifyPublicCatalogBundle(value)
+			if !errors.Is(err, ErrInvalidPublicCatalog) || !reflect.DeepEqual(result, PublicCatalogBundle{}) {
+				t.Fatal("partial/misbound result", result, err)
+			}
+		})
+	}
+	// Invalid JSON/UTF-8 remains invalid even if every provided digest matches.
+	for _, data := range [][]byte{[]byte(`{`), []byte(`{} {}`), {'"', 0xff, '"'}} {
+		hash, err := save.ConstantsHashArtifacts(map[string][]byte{"a": data})
+		if err != nil {
+			t.Fatal(err)
+		}
+		value := PublicCatalogBundle{ConstantsHash: hash, Artifacts: []PublicCatalogArtifact{{Name: "a", SHA256: save.ConstantsHash(data), Bytes: data}}}
+		if result, err := VerifyPublicCatalogBundle(value); !errors.Is(err, ErrInvalidPublicCatalog) || !reflect.DeepEqual(result, PublicCatalogBundle{}) {
+			t.Fatal("hash-matching malformed source", result, err)
+		}
+	}
+	// This source layer preserves the existing last-value JSON domain. C18's
+	// enclosing HTTP admission conflict is recorded separately, never silently fixed here.
+	duplicate := []byte(`{"value":0,"value":1}`)
+	hash, err = save.ConstantsHashArtifacts(map[string][]byte{"a": duplicate})
+	if err != nil {
+		t.Fatal(err)
+	}
+	value := PublicCatalogBundle{ConstantsHash: hash, Artifacts: []PublicCatalogArtifact{{Name: "a", SHA256: save.ConstantsHash(duplicate), Bytes: duplicate}}}
+	if result, err := VerifyPublicCatalogBundle(value); err != nil || !bytes.Equal(result.Artifacts[0].Bytes, duplicate) {
+		t.Fatal("source member policy changed", err)
+	}
+}

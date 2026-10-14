@@ -450,6 +450,15 @@ and interrupted-row errors propagate without returning partial evidence. Returne
 not alias the source. The reader neither consults current filesystem catalogs nor generates
 formulas. A historical set lacking formulas remains exactly that set.
 
+`leaderboard.VerifyPublicCatalogBundle` also verifies an already assembled internal bundle:
+every advertised child digest must match its exact bytes, and the complete artifact set must
+match the existing length-framed constants hash. It reuses the same source validator, returning
+a detached, name-sorted snapshot or no result. It preserves surrounding whitespace and existing
+last-value JSON semantics; hash-matching malformed JSON/UTF-8 still refuses. This is a consumer
+construction primitive, not epoch authorization, owner semantic validation or a mounted HTTP
+consumer. The current manifest's complete nineteen-source population verifies unchanged;
+compacting any formatted source refuses even if its child digest is relabelled.
+
 These are internal byte sources, not registered wire DTOs. The real-Postgres test retrieves
 the committed artifact set, mints a test-only newer formula-bearing set through the epoch
 repository, and retrieves both identities without substituting newer bytes into the older one.
@@ -481,6 +490,14 @@ category-source diagnostic also proves that `json.Marshal` over `json.RawMessage
 embedded bytes: the envelope passes its exact descriptor while the received value's digest no
 longer matches the claimed original-source digest (RP-597). The complete public writer/consumer
 must preserve/recover original bytes; object reserialization is not third-party verification.
+
+A second diagnostic uses the actual category loader and a duplicate-member candidate. Both the
+loader and C18 structural descriptor accept it; registry HTTP admission rejects it (RP-598).
+This is a construction conflict, not evidence of duplicate members in a deployed catalog. The
+[artifact-byte transport amendment](../rfc/api-artifact-byte-transport.md) proposes a narrow,
+owner-declared lexical boundary plus exact-byte recovery. It is draft, not implemented: the
+current global HTTP uniqueness rule, schema language, generated SDK and endpoint set are
+unchanged. Neither a generic raw-JSON escape nor owner-grammar narrowing is authorized.
 
 `server/formulas` owns the extracted version-14 production-formula model and exports its
 closed `ProductionFormulasV14` descriptor through `Schemas()`. The actual generator consumes

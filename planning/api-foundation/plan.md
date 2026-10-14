@@ -2,6 +2,15 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C18 byte boundary (2026-10-14): `VerifyPublicCatalogBundle` verifies advertised child
+digests and complete framed identity while preserving detached original sources. Current
+manifest19 and corruption controls execute; this internal primitive is not mounted transport.
+RP-598's real category-loader candidate additionally proves owner last-value admission conflicts
+with HTTP's recursive uniqueness check. The bounded `rfc/api-artifact-byte-transport.md` proposal
+specifies owner-scoped lexical validation and byte recovery; it remains draft. Do not implement
+an encoder that silently narrows valid owner artifacts or claim JSON.parse recovers original
+bytes. Adoption/review of that engineering boundary is separate from gameplay choices.
+
 Current C18 composition (2026-10-14): `ComposeCatalogSchemas` constructs the closed family-to-
 owner union/bundle and refuses incomplete or ambiguous input. Actual epoch8 manifest19 plus
 real exports15 returns only the four missing owners, with no partial schemas. Existing exports
@@ -9,7 +18,8 @@ compose/validate together; fixture contexts exercise closed payloads, references
 exports and the actual generators. No endpoint/production registry is mounted or family count
 promoted. RP-597 additionally executes a real formatted-artifact diagnostic: schema-valid
 RawMessage marshaling destroys original-byte identity. Implement a byte-preserving writer/
-consumer under C12/C18 rather than canonicalizing stored sources or calling parsed JSON proof.
+consumer after reconciling RP-598, rather than canonicalizing stored sources or calling parsed
+JSON proof. Ordinary source-verification construction remains authorized under C12/C18.
 The latest owning log holds the complete new range after `ae0af284`, pending designated review.
 
 Current C18 construction (2026-10-14): Categories, Achievements, Meters, Opportunities,
