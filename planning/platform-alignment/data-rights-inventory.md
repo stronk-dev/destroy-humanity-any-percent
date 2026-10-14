@@ -1,6 +1,6 @@
 # D-008/D-009/D-015 — current persisted-data inventory
 
-Research checkpoint: 2026-09-23. Product source: `7e8aa708ff9e002e7ec4b46242d7d889f76b7fdd`;
+Original research checkpoint: 2026-09-23. Product source: `7e8aa708ff9e002e7ec4b46242d7d889f76b7fdd`;
 the later commits through `70784af` are planning-only. Method and limits were predeclared in
 [`data-rights-inventory-plan.md`](data-rights-inventory-plan.md). This is a source/runtime
 inventory for decisions, **not** a retention policy, privacy notice, legal opinion, export
@@ -8,7 +8,26 @@ schema, or authorization to delete replay history. `[V]` means directly observed
 source or an executed Postgres test; `[P]` means a configured operator mechanism not yet proved
 on the supported clean host; `unknown` means no verified production bound.
 
-## Denominator and controls
+## Bounded current-source revalidation — 2026-10-14 at 089849ad
+
+An ordered Up source fold through 00084 confirms 61 table creates/one drop and
+the same exact 60-table set named in the eleven groups below. Migrations 00075–00084
+add no tables or SQL columns, so the dated 60/60 column maps retain their relation/
+column population. This is **not** a fresh installed-schema inspection, a sweep
+of every current writer/cleanup/browser/operator behavior, or complete nested-data
+classification. The family rows and runtime observations below remain dated
+2026-09-23 unless separately refreshed.
+
+The [event refresh](data-rights-events.md#current-sourcenative-refresh--2026-10-14-at-089849ad)
+now covers the current 60-kind registry, 65 SQL-source pairs and 64 native
+write-version-admissible pairs, twelve new event kinds and selected Reputation/
+Garden history variants. Exact SQL-source/Go kind equality was executed. The
+old 48/52/51 figures below are historical. No new joined delete/restore run was
+possible while the validated Docker socket remained unresponsive. More nested
+saved-state, receipts, historical encoders and non-DB classification is still
+required for D-008/D-009/D-015; a stable table count does not close that work.
+
+## Original denominator and controls — 2026-09-23
 
 The ordered `server/save/migrations/00001`–`00074` Up chain creates 61 tables and drops the
 historical `transport_receipt_outbox`, leaving **60 game tables**. A cold migration in the

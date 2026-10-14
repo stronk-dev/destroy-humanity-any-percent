@@ -3,6 +3,19 @@
 Status: predeclared research only. Product source `7e8aa70`; planning after
 `eeb2a3f`. No export/deletion policy or product edit is authorized here.
 
+## 2026-10-14 source refresh — declared at 089849ad
+
+Re-derive the current ordered Up migration relation/kind/version population through 00084,
+compare the actual Go AllEventKinds and version predicate, and trace the twelve added event
+kinds plus run_started v2/Founder exit.v2/reputation frozen data. No policy or emitted payload
+change. A temporary read-only Go test observer may log the native registry/version population;
+remove it after execution without changing existing assertions. Keep a small source census and
+exact command/result in the owning log, not a new tracking validator. Source SQL constraints
+are not live installed-schema evidence: the validated Docker socket currently times out after
+5.002526s with zero bytes, so no new Postgres/delete/restore run or integration claim follows.
+Confirm that 00075–00084 add no table/column before retaining 60/60's narrow SQL-column claim;
+nested new state/receipt/event bodies are separate coverage, never inferred from that count.
+
 ## Question and population
 
 For the single core `events` table, enumerate the current accepted kind/version

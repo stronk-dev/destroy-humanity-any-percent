@@ -3204,3 +3204,47 @@ work: RP-333 populated Desk performance under unchanged budgets, then exact
 guards. RP-331 real persisted/DOM proof awaits capacity repair/recheck;
 no new Docker run/cleanup. All author/body/engine/AT/privacy/platform/
 numeric/review/full-nine-tier 1.0 gates remain active.
+
+## 2026-10-14 — refresh the rights event denominator, not the policy
+
+Outcome: RP-602 reconciles D-008/D-009/D-015's dated source inventory with
+product `089849ad`. Ordered Up source through 00084 confirms 61 creates/one drop,
+the exact same 60-table group set and no post-00074 table/column additions.
+Latest kind constraint 00082 has 60 kinds; version constraint 00077 has 65 source
+pairs. Executed native registry/version census gives 60/64 and exact sorted
+SQL-source/Go kind equality; historical run_ended v1 is SQL-only admission.
+Map twelve added event kinds plus run_started v2, Founder exit.v2, frozen
+Reputation and Garden multi-stream history. Keep September's SQL/Soul/delete
+observations dated; 60/60 columns is not full nested-field coverage.
+
+Verification: temporary read-only TestRightsEventCensusObservation passed
+via `make test-go GO_PACKAGES='./save' GO_TEST_FLAGS='-count=1 -run TestRightsEventCensusObservation -v'`.
+Its source reads 00082 and compares actual sorted registry names; versions −1
+through 4 are enumerated, with the predicate inspected. Temporary test removed
+after measurement; no product, test assertion, schema or migration bytes retained.
+Inline Node census folds ordered Up bodies, checks relation/kind sets and version
+exception grammar. First extraction failed unknown-fallback on literal spacing;
+corrected extraction passes without weakening source constraints. Read-only path
+lookup misses yielded no evidence and changed no files.
+
+Existing cold ./save checks all pass with separate root Make selectors:
+`-run TestReputationPurchase`, `-run TestCosmeticEvent`, `-run TestGarden`,
+`-run TestValidate`, `-run TestFounderReputationMigrationCorpus`,
+`-run TestCompanyAxisMigrationCorpus`, each `-count=1 -v`. Some verbose output
+is tool-truncated; inspected terminal exit 0/PASS and named tests, not a claimed
+complete retained subcase transcript. Producer/validator controls are native;
+codec migration corpora are not live SQL. No new complete payload-union or
+joined populated deletion/restore claim. Docker context resolves the declared
+Unix socket; its earlier bounded /_ping timed out after 5.002526s/zero bytes.
+Fresh configured-context recheck also returns exit 28, HTTP 000/zero bytes,
+5.003793s. Neither observation proves Docker stopped.
+No restart, cleanup or database substitute is authorized/performed.
+
+Handoff: research-only files are the event plan/dossier, parent inventory,
+decision evidence pointer, RP-602 and this log, after `089849ad` through this
+checkpoint. Factual/editorial inspection only; no accepted contract change,
+designated implementation approval, archival, release promotion or push.
+Next rights work is remaining nested-state/receipt/history classification and
+joined delete/restore when the declared DB service responds, then the explicit
+owner policy; do not infer those from today's registry census. Other accepted
+construction and consolidated review remain available independently.

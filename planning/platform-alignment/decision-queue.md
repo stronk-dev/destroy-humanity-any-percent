@@ -23,6 +23,15 @@ the output/schema/state/command/harness contradictions or authorize integration.
 author must reconcile both bodies; data measurement/adoption, RP-413 and review remain separate.
 No existing accepted ruling, deferred feature or full nine-tier requirement is superseded here.
 
+## Data-rights evidence freshness — D-008/D-009/D-015
+
+The [2026-10-14 event refresh](data-rights-events.md#current-sourcenative-refresh--2026-10-14-at-089849ad)
+at `089849ad` supersedes the September event denominator only. It accounts for the added
+Pet/Cosmetic/Reputation/Clout/Garden event families and selected history variants while
+preserving dated database observations. The unchanged table/column census does not establish
+complete nested-data coverage, joined deletion/restore or an adopted policy. RP-602 owns
+the coverage correction; no export, deletion or retention option is selected.
+
 | ID | Owner choice | Evidence required first | Canonical home | Blocks |
 |---|---|---|---|---|
 | **D-001** | **RULED 2026-08-21:** current claim is repository development snapshot; next target is **Cloud Clicker Phase-0 Playable Preview**, not roadmap v0.1 or 1.0. Public hosting remains blocked on the complete release floor. | R-002 baseline and capability map complete; exact release manifest remains a release-RFC input. | `planning/platform-alignment/owner-ruling-packet.md`; later `design/07-roadmap.md`/release RFC reconciliation by the owner. | Exact preview manifest and every “release-ready” claim. |
