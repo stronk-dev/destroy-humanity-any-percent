@@ -94,8 +94,8 @@ type Catalog struct {
 }
 
 type rawCatalog struct {
-	SchemaVersion int             `json:"schema_version"`
-	Achievements  []rawDefinition `json:"achievements"`
+	SchemaVersion int               `json:"schema_version"`
+	Achievements  []json.RawMessage `json:"achievements"`
 }
 
 type rawDefinition struct {
@@ -131,12 +131,16 @@ func LoadCatalog(data []byte, registry Registry) (*Catalog, error) {
 		return nil, ErrInvalidCatalog
 	}
 	var raw rawCatalog
-	if err := decodeStrict(data, &raw); err != nil || raw.SchemaVersion != CatalogSchemaVersion || raw.Achievements == nil {
+	if err := decodeStrict(data, &raw); err != nil || !hasExactKeys(data, []string{"schema_version", "achievements"}) || raw.SchemaVersion != CatalogSchemaVersion || raw.Achievements == nil {
 		return nil, fmt.Errorf("%w: root", ErrInvalidCatalog)
 	}
 	catalog := &Catalog{Definitions: make([]Definition, 0, len(raw.Achievements)), byID: map[string]Definition{}}
 	lastID := ""
-	for index, source := range raw.Achievements {
+	for index, row := range raw.Achievements {
+		var source rawDefinition
+		if !hasExactKeys(row, []string{"id", "condition_scope", "condition", "proof", "score_grant", "copy_key"}) || decodeStrict(row, &source) != nil {
+			return nil, fmt.Errorf("%w: achievements[%d]", ErrInvalidCatalog, index)
+		}
 		if !mechanicalID.MatchString(source.ID) || source.ID <= lastID || (source.ConditionScope != ScopeRun && source.ConditionScope != ScopeCareer) ||
 			source.ScoreGrant < 1 || source.ScoreGrant > decimal.MaxExactInteger || !registry.CopyKeys[source.CopyKey] {
 			return nil, fmt.Errorf("%w: achievements[%d]", ErrInvalidCatalog, index)

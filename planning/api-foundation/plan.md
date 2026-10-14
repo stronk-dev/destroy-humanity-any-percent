@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C18 construction (2026-10-14, RP-572): Achievements now exports its closed v1 structural
+owner descriptor. Current/stored bytes, every condition/proof arm, depth/refusal/fresh-export
+checks pass. Go's actual16 case-alias admissions are corrected under CA1/C6, carrying genuine
+kernel0.3.191 alongside this owner addition; no API-only false bump. Existing duplicate behavior,
+TS numeric domains, balance and source bytes are preserved. Owning log records final evidence,
+historical red guard and full range after `10ca8fbf`, pending Claude review. Two of nineteen
+pinned families now have descriptors; complete union/public catalog/re-verification remain open.
+
 Current generator correction (2026-10-14, RP-570): APIError enum exports now follow validated
 named references in the envelope and scalar fields. Two sorted actual-registry regressions
 lose metadata before correction; declared/unknown runtime responses discriminate independently.
@@ -190,14 +198,15 @@ formulas with exact integer grammar/identity; real Postgres proves old/new coexi
 malformed-version refusal. This does not mount the catalog
 HTTP reader or mint product formulas. Categories now exports the first descriptor for the
 nineteen pinned families; five actual current/historical/candidate fixtures and malformed-input
-controls pass. Its existing loader retains semantic-policy validation. The other eighteen
+controls pass. Its existing loader retains semantic-policy validation. Achievements now provides
+the second descriptor under the newer checkpoint above. The other seventeen
 owner descriptors and complete union remain open. RP-383/RP-384 compatibility corrections pass
 locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Remaining owner descriptors,
 remaining route/client registration, third-party verification, 304 metadata and designated
 reviews stay open; not full API acceptance or green hosted CI. Latest log owns exact evidence.
 Public reads now use the shared error descriptor from `publicapi` instead of importing Account;
 the direct private-repository import regression and affected packages pass. This does not close
-transitive/runtime privacy. All eighteen remaining artifact-owner packages now fall
+transitive/runtime privacy. The seventeen remaining artifact-owner packages now fall
 under kernel-watched prefixes after relevance-owner registration: API-only additions require an explicit scope resolution or a
 genuine accepted semantic change, never a false version bump or file move to evade the guard.
 
@@ -215,6 +224,11 @@ is implemented; its draft decisions and full API acceptance remain open.
   - [x] Resolve C20's limiter/proxy/key-ID/request-ID literals.
 - [ ] Register public DTOs/readers and raw verification evidence endpoints.
   - [ ] Export and compose C18's ruled owner artifact descriptors.
+    - [x] Export the existing Achievements v1 closed structural descriptor, with finite
+      depth-specific conditions and all proof arms; current/stored source bytes pass
+      (`TestAchievementOwnerSchemaAdmitsExistingArtifactsAndFixtureWithoutChangingBytes`,
+      `TestAchievementOwnerSchemaAllConditionAndProofArms`). Semantic loader stays mandatory;
+      no full union, public HTTP, minted content or designated approval claim.
     - [x] Export the existing category catalog's closed v1 descriptor, with all five canonical
       row bindings; actual historical/current/candidate catalogs and 26 negative cases pass
       (`TestCategoryOwnerSchemaAdmitsStoredAndCandidateCatalogsWithoutChangingBytes`,

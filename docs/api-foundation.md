@@ -497,9 +497,17 @@ replace `LoadCategoryCatalog`: array cardinality/order, gate correspondence, fac
 and canonical policy values remain loader checks. A grammar-valid count of 41 is still refused
 by that loader's existing Phase-0 policy. No balance rule or historical bytes changed.
 
+`achievements.AchievementSchemas()` additionally exports the existing v1 owner descriptor.
+Its five condition arms are unrolled through the owner's depth-four limit, avoiding a recursive
+schema; all three proof arms and the root/row keys are closed. The current catalog and two stored
+copies validate unchanged. Copy/provenance/scope compatibility, order, cardinality and total-node
+limits still belong to `LoadCatalog`, not the structural descriptor. The accompanying exact-key
+admission correction is real kernel behavior and carries version0.3.191; no metadata-only bump,
+balance change, duplicate/numeric policy rewrite or artifact mint is claimed.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. Categories is the first owner descriptor for the
-nineteen currently pinned artifact families; the other eighteen and the composed C18 catalog
+TypeScript verification loop remain open. Categories and Achievements provide two owner descriptors
+for the nineteen currently pinned artifact families; the other seventeen and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.

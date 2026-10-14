@@ -44,6 +44,27 @@ function parityRegistry(value: typeof achievementCatalogParityCorpus.registry): 
 }
 
 describe("achievement catalog", () => {
+  it.each(["schema_version", "achievements", "id", "condition_scope", "condition", "proof", "score_grant", "copy_key"].flatMap((key) =>
+    [...new Set([key.toUpperCase(), key[0].toUpperCase() + key.slice(1)])].map((alias) => ({ key, alias }))))(
+    "rejects case-aliased $key/$alias without normalizing source", ({ key, alias }) => {
+      const source = JSON.stringify(validCatalog());
+      const candidate = source.replace(`"${key}":`, `"${alias}":`);
+      expect(candidate).not.toBe(source);
+      expect(() => loadAchievementCatalog(candidate, registry)).toThrow();
+    },
+  );
+  it("preserves escaped canonical names and existing last-value numeric/member semantics", () => {
+    const source = JSON.stringify(validCatalog());
+    for (const candidate of [
+      source.replace('"id":', '"i\\u0064":'),
+      source.replace('"schema_version":1', '"schema_version":0,"schema_version":1'),
+      source.replace('"score_grant":4', '"score_grant":0,"score_grant":4'),
+      source.replace('"score_grant":4', '"score_grant":4.0'),
+    ]) {
+      expect(candidate).not.toBe(source);
+      expect(loadAchievementCatalog(candidate, registry).definitions.map((row) => row.scoreGrant)).toEqual([4,8]);
+    }
+  });
   it("loads the closed proof union, evaluates byte order, and derives score", () => {
     const catalog = loadAchievementCatalog(JSON.stringify(validCatalog()), registry);
     const empty = { facts: new Set<string>(), counters: {}, exitCount: 0, generators: {} };

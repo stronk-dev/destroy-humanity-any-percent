@@ -22,17 +22,29 @@ Proof rows are closed:
   transition;
 - possession requires a generator-ownership predicate and an explicit justification copy key.
 
-Go and TypeScript loaders enforce the same shape and registry bindings. Both runtimes expose pure
+Go and TypeScript loaders enforce the same shape and registry bindings.
+Root and row member names are exact in both loaders; Go checks the original row object before
+case-insensitive struct decoding. Escaped canonical names and existing last-value duplicate
+semantics are preserved. No TypeScript numeric-token policy was changed by this correction.
+Kernel 0.3.191 records the genuine admission change, not an achievement grant or balance retune.
+
+`achievements.AchievementSchemas()` exports API C18's structural v1 owner descriptor, with a
+closed proof union and finite depth-specific condition definitions. It validates current and
+stored artifact bytes without normalization. Registry/copy/proof bindings, row order, array
+cardinality and the 64-node condition bound remain mandatory semantic-loader checks. Exported
+definitions are fresh; this does not register public catalogs or replace the complete replay loop.
+
+Both runtimes expose pure
 condition evaluation, lifetime/run latching, and score derivation. Save v16 persists run IDs/score
 on Company and lifetime IDs/score on Founder. Exit settles the run set exactly once, re-derives the
 lifetime score under the next pinned catalog, and resets the new run.
 
 Replay-inputs v4 freezes the Founder lifetime set and score on every active-run command, so career
 conditions never read mutable Founder state during replay. Historical active v3 rows remain
-replayable under their pinned semantics, and seven-artifact runs retain v2 compatibility. Both
-replay loaders accept only the exact
-legacy seven-artifact bundle or the paired nine-artifact bundle containing both Meters and
-Achievements. The shared Go-authored corpus covers non-empty carry, unknown-ID and score-mismatch
+replayable under their pinned semantics, and seven-artifact runs retain v2 compatibility. The
+foundation activation requires the paired Meters/Achievements artifacts; later accepted
+foundations extend the complete bundle rather than permitting one half of that pair.
+The shared Go-authored corpus covers non-empty carry, unknown-ID and score-mismatch
 rejection, active-state preservation, active Exit, and a next-catalog score-grant retune.
 
 A package gate prevents the foundation from importing ledger spending, production/persistence

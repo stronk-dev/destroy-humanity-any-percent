@@ -2223,3 +2223,50 @@ DTO validation claim. No owner/draft adoption, kernel/balance, archival, push or
 Combat, other authored/owner contracts, actual Linux/SQL/hosted, review and nine-tier1.0 obligations
 remain. Next: close the named foundational contracts and continue accepted construction, not
 repeat these finished generator checks as progress.
+
+## 2026-10-14 — Construct the Achievements artifact-owner schema with a real admission correction
+
+Resume clean `10ca8fbf`; previous turn completes the Headcount ID repair. Read API C18,
+the archived Achievements CA1/C6 contract, both owners and existing category-export pattern.
+Go root/row struct decoding admits16 case aliases; TypeScript's exact objects already reject
+them. Actual cold old-loader cases fail16/16, not a hypothetical metadata-only version premise.
+RP-572 names the discrepancy. Preserve raw row bytes long enough to check exact member names
+before struct decoding; reuse the owner's existing key semantics. Escaped canonical names and
+last-value duplicate behavior remain; TS numeric-token behavior is explicitly unchanged.
+
+`AchievementSchemas` exports seven fresh named definitions: root/row, proof oneOf and four
+finite condition-depth definitions. All five condition and three proof arms are closed; no
+recursive/open JSON escape. The current catalog and two checked-in stored copies validate
+byte-unchanged. Existing fixture plus run/career counter, Exit, burn, possession, bounded allOf,
+sixteen malformed shapes, depth4/5 boundary, semantic-copy refusal and fresh-export controls
+pass. This is structural metadata; loader bindings, order, cardinality and total-node bounds
+remain mandatory. No union/HTTP registration or new content is claimed.
+
+Kernel0.3.190→0.3.191 records the actual Go admission change in the same range as the owner
+export; no false API-only bump or namespace escape. Final cold full achievements/publicapi/kernel
+packages pass; affected production selection passes. The initial combined selector also
+matches existing SQL tests without a DB, so it is not integration evidence. Separate verbose
+36233 executes all nine pure TestFoundation top-level cases (including settlement/next-catalog,
+hook order, debit/event failure paths, offline ledger and carry/clone), no skips, terminal0.
+Affected vet and achievement source/transitive/copy boundaries pass. Node90929 passes158
+Achievement/replay checks; native88642 passes316 in Chromium/WebKit, terminal0/2.45s. Types90529
+have zero errors/warnings, production client build and deterministic `make api-check` pass.
+Generated API/pins, current catalog and materialized stored bytes remain unchanged.
+
+Full kernel guard46946 remains RED at historical50a3a514; it does not reach a current-tree green
+verdict. Keep RP-131 and known production/hosted failures open. No Docker/SQL/Firefox/Linux,
+clean-host, public catalog loop or complete API/1.0 acceptance claim. Raw evidence stays ignored:
+old `.cache/achievements-alias-old-10ca8fbf.log` SHA256
+`765fd8dab589d4dfc60a346fec9d0d7492f4c0979b6c8907eacda9a1357ad0a9`;
+native `.cache/achievements-owner-native-10ca8fbf.log` SHA256
+`ae33fb28a3a8d3a540829d8aff4f30415043b60f687739f1445e3ebe7a474da2`;
+pure production `.cache/achievements-owner-foundations-10ca8fbf.log` SHA256
+`1d35890d6e07e2e5364901855f29281fd5c740005886ac16125d2c77e41faeae`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Full owner-code/schema/tests/
+version/docs/records range after `10ca8fbf` through this containing commit needs designated
+Claude review, consolidatable with API/owner corrections. RP-572 is locally corrected, not
+approved. Two of nineteen pinned-family descriptors exist; seventeen and complete C18/third-party
+verification remain. No archival, push, deployment or owner/draft adoption. Next: other owner
+descriptors within lawful scope, then the complete union/HTTP loop; do not ratify the unadopted
+integer representation mode or substitute metadata for semantic loading/release proof.

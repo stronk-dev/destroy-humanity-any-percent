@@ -1,10 +1,32 @@
 package achievements
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
+	"strings"
 	"testing"
 )
+
+func TestLoadCatalogRejectsCaseAliasedRootAndRowKeys(t *testing.T) {
+	for _, key := range []string{"schema_version", "achievements", "id", "condition_scope", "condition", "proof", "score_grant", "copy_key"} {
+		for _, alias := range []string{strings.ToUpper(key), strings.ToUpper(key[:1]) + key[1:]} {
+			if alias == key {
+				continue
+			}
+			t.Run(key+"/"+alias, func(t *testing.T) {
+				before := validCatalogBytes(t)
+				candidate := bytes.Replace(before, []byte(`"`+key+`":`), []byte(`"`+alias+`":`), 1)
+				if bytes.Equal(before, candidate) {
+					t.Fatal("alias mutation did not change the source")
+				}
+				if _, err := LoadCatalog(candidate, testRegistry()); err == nil {
+					t.Fatal("case-aliased catalog admitted")
+				}
+			})
+		}
+	}
+}
 
 type catalogParityCorpus struct {
 	Version  int             `json:"version"`
