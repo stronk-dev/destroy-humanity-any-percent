@@ -472,6 +472,9 @@ type rawCurve struct {
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
+	if err := validateResourceShapes(data); err != nil {
+		return nil, err
+	}
 	if err := validateCostCurveShapes(data); err != nil {
 		return nil, err
 	}

@@ -591,6 +591,11 @@ Kernel0.3.205 rejects aliases/wrong-arm nulls without changing price queries or 
 step/ratio semantics remain owner checks. This component does not yet describe the complete
 Economy artifact and is not counted as a completed catalog-owner export.
 
+`economy.ResourceSchemas()` adds the K1 row/cap component with the existing four scopes and
+explicit nullable cap. Kernel0.3.206 fixes Go's literal-key admission without changing resource
+values, cap/ledger semantics or stored bytes. Relationships remain owner checks; the complete
+Economy artifact is still unexported and uncounted.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
 TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities,
 Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions, Guilds, Commons and Minigames provide fifteen owner descriptors

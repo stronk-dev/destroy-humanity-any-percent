@@ -90,6 +90,14 @@ Catalog rules:
 - Loading from bytes/objects is implemented. Disk watching, `go:embed`, and content hot-reload
   orchestration belong to later server/client-shell work.
 
+`economy.ResourceSchemas()` exports the shared K1 `EconomyResourceV1` component with four
+closed scopes, canonical Decimal fields and an explicitly nullable typed cap. Original resource
+and cap keys are checked before Go's case-insensitive decoding; escaped keys and complete
+last-value behavior remain. Kernel0.3.206 records the alias-admission correction. Missing caps
+were already refused. State Decimal semantics and minimum/initial/cap relationships remain
+mandatory loader/ledger checks. No resource value, scope rule, cap, ledger or storage behavior
+changes, and this component does not complete the versioned Economy artifact descriptor.
+
 ## Cost curves
 
 Curve types are code and their parameters are data. The initial closed set is:
