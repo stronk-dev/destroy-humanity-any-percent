@@ -1,11 +1,12 @@
 package publicapi
 
 import (
+	"sort"
 	"strings"
 	"testing"
 )
 
-func compatibilityPayloadRegistry(t *testing.T, payload *Schema, shape string) *Registry {
+func compatibilityPayloadRegistry(t *testing.T, payload *Schema, shape string, extra ...NamedSchema) *Registry {
 	t.Helper()
 	response := &Schema{Kind: SchemaRef, Ref: "Payload"}
 	if shape == "array" {
@@ -16,6 +17,8 @@ func compatibilityPayloadRegistry(t *testing.T, payload *Schema, shape string) *
 	schemas := []NamedSchema{{Name: "Envelope", Schema: &Schema{Kind: SchemaObject, Fields: []Field{
 		{Name: "payload", Schema: response, Required: true},
 	}}}, {Name: "Payload", Schema: payload}}
+	schemas = append(schemas, extra...)
+	sort.Slice(schemas, func(i, j int) bool { return schemas[i].Name < schemas[j].Name })
 	operation := Operation{ID: "get_payload", Method: "GET", Path: "/api/public/v1/payload",
 		Surface: SurfacePublicV1, Auth: AuthNone, Public: true,
 		Responses: []Response{{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "Envelope"}}}

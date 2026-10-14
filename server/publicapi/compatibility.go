@@ -165,6 +165,20 @@ func compareCompatibilitySchema(oldSchema, nextSchema map[string]any, mode compa
 				return fmt.Errorf("oneOf[%d]: %w", index, err)
 			}
 		}
+		// oneOf is exclusive, not an ordinary set union. An appended arm
+		// must not add a second match for any previously admitted response.
+		for index, extra := range nextOne[len(oldOne):] {
+			extraMap, ok := extra.(map[string]any)
+			if !ok {
+				return ErrInvalidSchema
+			}
+			for _, oldArm := range oldOne {
+				oldMap, ok := oldArm.(map[string]any)
+				if !ok || !disjointCompatibilitySchemas(oldMap, extraMap, oldDefinitions, nextDefinitions, 0) {
+					return fmt.Errorf("oneOf[%d] overlaps or cannot be proved disjoint from an old response arm: %w", len(oldOne)+index, ErrInvalidSchema)
+				}
+			}
+		}
 		return nil
 	}
 	if oldType == "array" {
@@ -204,6 +218,119 @@ func compareCompatibilitySchema(oldSchema, nextSchema map[string]any, mode compa
 		}
 	}
 	return nil
+}
+
+func resolveCompatibilitySchema(schema map[string]any, definitions map[string]json.RawMessage) (map[string]any, bool) {
+	seen := map[string]bool{}
+	for {
+		ref, ok := schema["$ref"].(string)
+		if !ok {
+			return schema, schema != nil
+		}
+		const prefix = "#/components/schemas/"
+		if !strings.HasPrefix(ref, prefix) || seen[ref] {
+			return nil, false
+		}
+		seen[ref] = true
+		raw, ok := definitions[strings.TrimPrefix(ref, prefix)]
+		if !ok {
+			return nil, false
+		}
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		decoder.UseNumber()
+		var resolved map[string]any
+		if decoder.Decode(&resolved) != nil || resolved == nil {
+			return nil, false
+		}
+		schema = resolved
+	}
+}
+
+// A sufficient, bounded disjointness proof over the existing C17 grammar.
+// Arrays can both admit [], and unknown string-format intersections are not
+// assumed disjoint. References use each side's own definitions and exact bounds.
+func disjointCompatibilitySchemas(left, right map[string]any, leftDefinitions, rightDefinitions map[string]json.RawMessage, depth int) bool {
+	if depth > maximumRuntimeSchemaDepth {
+		return false
+	}
+	left, leftOK := resolveCompatibilitySchema(left, leftDefinitions)
+	right, rightOK := resolveCompatibilitySchema(right, rightDefinitions)
+	if !leftOK || !rightOK {
+		return false
+	}
+	for side, schema := range []map[string]any{left, right} {
+		if alternatives, ok := schema["oneOf"].([]any); ok {
+			if len(alternatives) < 2 {
+				return false
+			}
+			for _, alternative := range alternatives {
+				arm, ok := alternative.(map[string]any)
+				if !ok || side == 0 && !disjointCompatibilitySchemas(arm, right, leftDefinitions, rightDefinitions, depth+1) ||
+					side == 1 && !disjointCompatibilitySchemas(left, arm, leftDefinitions, rightDefinitions, depth+1) {
+					return false
+				}
+			}
+			return true
+		}
+	}
+	leftType, rightType := stringValue(left["type"]), stringValue(right["type"])
+	if leftType == "" || rightType == "" {
+		return false
+	}
+	if leftType != rightType {
+		return true
+	}
+	if leftType == "string" {
+		leftEnum, leftOK := left["enum"].([]any)
+		rightEnum, rightOK := right["enum"].([]any)
+		if !leftOK || !rightOK || len(leftEnum) == 0 || len(rightEnum) == 0 {
+			return false
+		}
+		for _, before := range leftEnum {
+			for _, after := range rightEnum {
+				if before == after {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	if leftType == "integer" {
+		for _, pair := range [][2]map[string]any{{left, right}, {right, left}} {
+			maximum, maxOK := pair[0]["maximum"].(json.Number)
+			minimum, minOK := pair[1]["minimum"].(json.Number)
+			if maxOK && minOK {
+				maxValue, maxErr := maximum.Int64()
+				minValue, minErr := minimum.Int64()
+				if maxErr == nil && minErr == nil && maxValue < minValue {
+					return true
+				}
+			}
+		}
+	}
+	if leftType != "object" {
+		return false
+	}
+	if disjointClosedCompatibilityObjects(left, right) {
+		return true
+	}
+	leftProperties, leftOK := left["properties"].(map[string]any)
+	rightProperties, rightOK := right["properties"].(map[string]any)
+	if !leftOK || !rightOK {
+		return false
+	}
+	required := stringSet(left["required"])
+	for name := range stringSet(right["required"]) {
+		required[name] = true
+	}
+	for name := range required {
+		leftField, leftOK := leftProperties[name].(map[string]any)
+		rightField, rightOK := rightProperties[name].(map[string]any)
+		if leftOK && rightOK && disjointCompatibilitySchemas(leftField, rightField, leftDefinitions, rightDefinitions, depth+1) {
+			return true
+		}
+	}
+	return false
 }
 
 func disjointClosedCompatibilityObjects(left, right map[string]any) bool {

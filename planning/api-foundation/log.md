@@ -3049,3 +3049,38 @@ plan/log. Diff checked. Review by: Codex (implementer first filter); Recorded by
 Codex. Whole coherent range after `3c1da2b0` through this containing commit needs
 designated Claude review, consolidatable with API conformance; earlier ranges
 remain owed. No feature/1.0 acceptance, archival, mint, publication or push.
+
+## 2026-10-14 — RP-616 appended response-union compatibility
+
+At clean `ea194d8d`, C2's existing-union comparison validates preserved prefixes
+but never checks whether appended alternatives make old valid replies match
+twice. Six actual old-registry/next-registry byte witnesses (direct, array and
+nullable wrapper; duplicate/broader string additions) fail the old checker41315:
+old ValidateResponse passes, next refuses, but CheckCompatibilityPin returns nil.
+
+Require appended arms to be provably disjoint from old arms. The sufficient
+proof resolves named references with detached UseNumber maps, distinguishes
+JSON kinds/enums/exact integer intervals, and uses object required keys and
+discriminators. Retain the existing runtime-depth bound and conservative unknown
+intersections; never infer array disjointness from item type (empty array is a
+shared witness). Request/shared growth stays refused. No production descriptors,
+handlers, URI grammar, generated client, baseline pin, schema DSL or kernel change.
+
+Controls include legal primitive/tagged/reference growth, one-unit integer
+separation above2^53 and empty-array overlap. Initial new reference fixtures
+32982/82775 fail construction because definitions are unsorted; sort test-only
+inputs to honor, not relax, the constructor. A later fixture76055 fails compile
+on an invented pointer helper; use actual local bound addresses. Both are agent
+fixture errors, not product defects. Final cold publicapi/publicread/account82659
+pass0.210/.170/.399s; affected vet passes. Focused compatibility controls26091
+and final boundary/reference/tagged/array76688 pass. `make api-check` regenerates
+all three outputs byte-identical. No changed client/HTTP path requires a browser,
+Postgres or full player journey for this offline compatibility-checker change.
+
+Scope is appended-arm ambiguity, not exhaustive semantic inclusion or every
+cross-arm interaction of changed existing alternatives; follow that separate
+audit without declaring full C2/C18/API done. Source/tests/canonical docs/plan/
+ledger/log form the range after `ea194d8d` through this containing commit,
+pending designated Claude review. Review by: Codex (implementer first filter);
+Recorded by: Codex. Earlier ranges, privacy/wire/owner/numeric/CI/release and
+full-nine-tier obligations remain; no feature promotion, archival, mint or push.

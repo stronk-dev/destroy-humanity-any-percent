@@ -2,6 +2,15 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C2 correction (2026-10-14, RP-616): appended response-union arms now require a
+disjointness proof against the old arms. Six old-checker regressions pass metadata compatibility
+while making actual formerly valid replies fail runtime validation. Corrected refusals and
+disjoint kind/enum/reference/tagged-object/exact-boundary controls pass, including empty-array
+overlap. Cold affected packages/vet and unchanged generated artifacts are recorded in the
+owning log; the range after `ea194d8d` needs Claude review. No endpoints, DTOs, pins, schema DSL,
+kernel or owner proposal is changed/adopted. Follow up the distinct cross-arm interaction when
+existing alternatives themselves widen; this batch is not complete C2/API acceptance.
+
 Current A5/C17 admission correction (2026-10-14): path parameters now require
 unique names and resolve named-reference chains before enforcing their existing
 scalar kind boundary. Ten old-source refusals fail; corrected refusals, valid

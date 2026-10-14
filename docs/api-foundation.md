@@ -109,6 +109,14 @@ from it through required-key exclusion. Overlapping arms could invalidate old by
 `oneOf` and are refused, as are request/shared widening and cases whose disjointness this
 bounded check cannot prove. Recovery uses this for its already-shipped watchdog terminal on
 the heartbeat route; ordinary progress and other response descriptors are unchanged.
+For an existing response union, appended arms must likewise be provably disjoint from the old
+arms; otherwise `oneOf` could reject formerly valid bytes by matching them twice. This check
+resolves each side's named references and recognizes distinct JSON kinds, disjoint string enums,
+exact integer ranges and object required-key/discriminator exclusions. Arrays are not assumed
+disjoint merely because their item types differ: both can admit `[]`. Unproven intersections
+remain conservative. This covers appended-arm growth, not a general proof of all cross-arm
+interactions when existing arms themselves change; compatibility and full API acceptance remain
+separate from routing, runtime fixture and complete consumer proofs.
 Existing optional fields cannot become required in requests, responses or shared definitions,
 including through array/reference/union nesting; failures identify the affected field. Numeric
 bounds compare as exact signed int64 values, not float64 projections, so a one-unit narrowing
