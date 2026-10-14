@@ -18,6 +18,11 @@ Both functions reject an incomplete/unknown/negative/over-budget assignment,
 invalid count or ratio, invalid/duplicate role, unknown kind, missing source,
 conversion chain, or two converters for one source. Inputs are never modified.
 Go returns `ErrInvalidAllocation`; TypeScript throws `RangeError`.
+Role IDs must be primitive strings before lexical ordering or assignment lookup. TypeScript
+does not coerce booleans, null, arrays or boxed strings into mechanical names, and ordering
+does not execute their coercion hooks. Valid string names such as `false`, `null` and
+`constructor` are not reserved or rewritten. This is an arithmetic-input check, not a new
+catalog/public-wire codec or a change to allocation formulas.
 
 Outputs are fresh maps `producing_heads` (produce and pool-feed roles),
 `diverted` and `idle_converters` (converter roles), plus `unassigned` seats.

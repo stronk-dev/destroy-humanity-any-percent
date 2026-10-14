@@ -108,3 +108,35 @@ range after `bd46e71e` through the containing checkpoint needs independent revie
 can support a normative amendment; earlier implementation review debt remains separate.
 Next: author reconciles the criterion against this evidence; continue accepted independent
 construction without inferring the held gameplay model or making a release call. No push.
+
+## 2026-10-14 — Refuse non-string IDs before allocation ordering (RP-571)
+
+Resume clean `4c216b69`; previous turn completes the API reference-metadata repair. Re-read
+Headcount S1–S3 and the owning plan: S2 is already overflow-safe; RP-413 concerns the author's
+invalid required test, not an unfixed multiply-before-clamp path. Re-present the separate hiring
+and output choices through the async question interface; delivery/preselection is not adoption.
+
+Under S1's mechanical string IDs/S2's validated inputs, actual TypeScript Project admits false,
+true, null, undefined, single/nested arrays and boxed strings as coerced names. A two-role input
+also executes an object's coercion hook in sorting. Eight old-source refusals fail; 48 existing/
+literal-string controls pass. File RP-571 immediately. The trailing-line-ending hypothesis is
+falsified: all five native regex probes reject; leave that regex unchanged. Prevalidate primitive
+string/grammar before ordering/lookup, keep duplicate/key checks and all arithmetic unchanged.
+
+Final Node passes56; native91498 executes112 in Chromium/WebKit, terminal0/1.56s. Cold Go
+`make test-go GO_PACKAGES='./headcount' GO_TEST_FLAGS='-count=1'` passes0.182s; same-package vet
+passes. Typecheck66597 reports zero errors/warnings. Input-preservation, literal primitive-name/
+constructor IDs, no coercion before rejection and all existing exact-model/boundary cases pass.
+Source import search finds no live/replay consumer; no watched path or kernel identity change.
+No shipped rendering, rate, save, catalog, intent, seat/output mechanics or player copy change.
+
+Raw old `.cache/headcount-id-old-4c216b69.log` SHA256
+`6e498fdef94edb3f099e606a7df62060979b9432851a069dbff3b74a74cedf1a`;
+native `.cache/headcount-id-native-4c216b69.log` SHA256
+`d90f79ac6a6087232ea4852451544341bcb33884003b5dc152e1bac1fa7de6d9`.
+Diff checked. Review by: Codex (implementer first filter). Recorded by: Codex. Whole source/test/
+docs/records range after `4c216b69` through this containing commit needs designated Claude review,
+consolidatable with existing Headcount construction. RP-571 is locally corrected, not approved.
+No live player/SQL/Linux/Firefox/hosted/AC3–AC5 or1.0 milestone claim, archival, push or deployment.
+Next: actual hiring/output ruling and author reconciliation before the complete integration
+chain; RP-413, version ownership, data/pacing/copy and independent review remain separate gates.

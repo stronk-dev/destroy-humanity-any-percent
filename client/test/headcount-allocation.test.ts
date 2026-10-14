@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import fixtureJSON from "../../testdata/headcount-allocation.json";
 import { project, type Allocation, type Role } from "../src/headcount/allocation";
 
@@ -23,6 +23,34 @@ function exactModel(e: number, m: number, f: number, k: number, seats: number): 
 }
 
 describe("headcount source-independent allocation", () => {
+  it.each([
+    ["false", false], ["true", true], ["null", null], ["undefined", undefined],
+    ["array", ["role.source"]], ["nested array", [["role.source"]]],
+    ["boxed string", new String("role.source")],
+  ] as const)("refuses a non-string %s role ID rather than coercing it", (_name, id) => {
+    const role = { id, kind: "produce" } as unknown as Role;
+    const assigned = { [String(id)]: 1 };
+    expect(() => project(1, 1, [role], assigned)).toThrow(new RangeError("invalid headcount allocation"));
+    expect(role.id).toBe(id);
+    expect(assigned).toEqual({ [String(id)]: 1 });
+  });
+  it.each(["false", "true", "null", "undefined", "constructor", "role.source"])(
+    "preserves the literal string ID %s without reserving primitive/prototype spellings", (id) => {
+      const result = project(1, 1, [{ id, kind: "produce" }], { [id]: 1 });
+      expect(Object.keys(result.producing_heads)).toEqual([id]);
+      expect(result.producing_heads[id]).toBe(1);
+      expect(result.unassigned).toBe(0);
+    },
+  );
+  it("rejects a coercible role ID before the ordering comparator can execute it", () => {
+    const coerce = vi.fn(() => "role.bad");
+    const id = { [Symbol.toPrimitive]: coerce };
+    const roles = [{ id, kind: "produce" }, { id: "role.good", kind: "produce" }] as unknown as Role[];
+    expect(() => project(2, 2, roles, { "role.bad": 1, "role.good": 1 }))
+      .toThrow(new RangeError("invalid headcount allocation"));
+    expect(coerce).not.toHaveBeenCalled();
+    expect(roles[0].id).toBe(id);
+  });
   it("loads the bounded shared corpus", () => {
     expect(fixture.schema_version).toBe(1);
     expect(fixture.hardcap).toBe(Number.MAX_SAFE_INTEGER);

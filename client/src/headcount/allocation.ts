@@ -20,11 +20,14 @@ const count = (value: number): boolean => Number.isSafeInteger(value) && value >
 export function project(hardcap: number, seats: number, roles: readonly Role[], assigned: Readonly<Record<string, number>>): Allocation {
   const invalid = (): never => { throw new RangeError("invalid headcount allocation"); };
   if (!count(hardcap) || hardcap === 0 || !count(seats) || seats > hardcap || roles.length === 0 || Object.keys(assigned).length !== roles.length) invalid();
+  // Regexes/property keys coerce values, and sorting would invoke coercion too.
+  // Validate the declared primitive-string domain before any of those operations.
+  if (roles.some((role) => typeof role.id !== "string" || !mechanicalID.test(role.id))) invalid();
   const ordered = [...roles].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
   const byID = new Map<string, Role>();
   let remaining = seats;
   for (const role of ordered) {
-    if (!mechanicalID.test(role.id) || byID.has(role.id) || !Object.hasOwn(assigned, role.id)) invalid();
+    if (byID.has(role.id) || !Object.hasOwn(assigned, role.id)) invalid();
     const heads = assigned[role.id];
     // Reject before adding/subtracting can leave the safe-integer domain.
     if (!count(heads) || heads > remaining) invalid();
