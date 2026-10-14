@@ -7,94 +7,31 @@
 
 ## Current checkpoint — 2026-10-14
 
-GS5-A2 test-only separation at baseline `93b94980`: the idle body is byte-identical, all other
-interaction bytes are unchanged apart from fixture extraction/imports, and both files share
-the original fixture authority. Types pass; the complete native run executes all24,456 mapped
-cases in103.77s. Both real-minute cases and846 remaining Garage checks pass; the aggregate
-is RED on WebKit normal Typer and Chromium's controlled-delay journey. Record that red result,
-not a full CI/performance repair. The ordinary failure has eight completed callbacks totaling
-36ms/no active command, while native input remains in flight. Capsule/log retain exact limits.
-New source/tests/docs range after `93b94980` needs designated review. Next: isolate the native
-input/event/automation wait through accepted CI D2 execution organization without replacing
-input or expanding deadlines; keep complete ordinary collection and full-job parity explicit.
+At baseline `f6ab6ab6`, the full functional target now runs broad collection then the complete
+Typer native-input file in fresh browser processes. The default Chromium/Firefox/WebKit
+population, inputs, assertions, deadlines and workers are unchanged; focused selection remains
+one invocation. Isolated performance remains after functional success. Separate JSON reports
+prevent phase overwrite; a first-phase failure leaves later phases unexecuted.
 
-Completed local concurrency comparison: both full arms pass the identical24,456-case/skip
-multiset, but four workers do not reduce total wall time (159.62s versus156.85s). The retained
-`native-concurrency-8352f1c2.json` records raw digests, source hashes and missing per-engine JSON
-identity; no causal or hosted inference. Garage's424-case file spans150–157s in both engines,
-including its required real-minute idle observation. Keep default concurrency. Next accepted
-CI D2 work: move that unchanged GS5-A2 case into its own normally collected file with shared
-fixture authority, preserve60s/70s bounds and every assertion, then prove the mapped complete
-population. No reduced acceptance, fake clock or skipped/minute maintenance replacement.
+Executed native Chromium/WebKit gate: broad93.93s plus native2.40s, all24,456 case/title/skip
+tuples identical to the preceding full run.24,430 ordinary passes, ten expected deadlines,
+16 skips, no unexpected failures; both normal Typer journeys finish178/191ms. The unchanged
+isolated Chromium performance target passes five cases in5.55s (105 selector skips).
+Topology rejects16 invalid states; actual Make expansion verifies focused selection,
+two-phase/report separation and performance ordering. The log owns raw paths/digests.
 
-Bounded local concurrency comparison at `8352f1c2` (diagnostic, not a configuration ruling):
-run exactly one complete native Chromium/WebKit functional population with default workers,
-then exactly one with `--maxWorkers=4`; no retry or third arm (both now terminal). Source, selected tests, inputs,
-assertions and existing deadlines stay fixed. Add the same default+JSON reporters to both and
-retain ignored results/logs so actual case identity/outcomes, not only counts, can be compared.
-Both arms must terminate with complete reports and unchanged source; incomplete/failed arms
-remain visible, and a population mismatch invalidates comparison. Compare unexpected native
-failures, whole duration and any failure callback timings. A default-red/control-green pair
-would support workload sensitivity, not prove exclusive causation or authorize a default change;
-both green is inconclusive about the intermittent failure. Host load/order are uncontrolled.
-Installed Vitest caps default pools separately per engine (12 each on this14-CPU Mac); four
-means4 per engine,8 total here. Hosted4-CPU defaults differ, so this is not a hosted-five-minute
-measurement or a recommendation to force4 everywhere. CI config/topology and bounds stay unchanged.
+This is a locally verified execution-organization change, not proof the intermittent RP-526
+failure is eliminated or the hosted five-minute gate is met. Firefox/Linux/SQL/current hosted
+remain unverified. The preceding red full run stays evidence; no test source, product, schema,
+kernel, balance, workflow job, timeout or acceptance criterion changes. Complete range after
+`f6ab6ab6` through the containing commit needs designated Claude review, consolidatable
+with existing CI diagnostics. Next: execute the unchanged Linux three-engine job when its
+declared Docker service is usable; then reconcile actual hosted results when publication is
+authorized. Continue other accepted implementation meanwhile; do not repeatedly rerun native
+green, loosen deadlines or treat review/owner holds as a global development stop.
 
-At `3c6d5acc`, a second complete native functional run again fires WebKit's unchanged15s
-Typer deadline, now at `submit-prompt-6`. The committed small observation capsule retains every
-stage:13,337ms completed plus1,663ms active account for15,000ms. Setup is4ms; most time is in
-native-command promise intervals, which include triggered engine/render callbacks and cannot
-be called exclusive provider cost. The owning log retains source/digest and complete red result.
-
-Per-command pending render, input/engine wait and result-decode/render timing now supplements
-that observer. The actual native journey verifies all ten records; a controlled real-engine
-delay is independently timed and false zero records fail both browsers. One whole instrumented
-population passes without a new failure capture; that is not attribution or repair. Final
-affected-file/types checks pass; no inputs, normal deadline, default concurrency or CI workflow
-change. The complete new range after `3c6d5acc` needs designated review. Next: obtain exclusive
-callback-versus-dispatch evidence on recurrence or through a bounded workload control before
-proposing optimization; the numerical/history and release/owner gates remain separate.
-
-New native recurrence, 2026-10-14 at `213ad5f6`: complete Chromium/WebKit functional execution
-fails the unchanged Typer15s deadline in `submit-prompt-4`, with a focused connected input,
-pending false and native delivery in flight. The capture records only1.04s in that current
-stage, so earlier-stage costs need the existing observer's ordered timing history, now verified
-with real framework-deadline controls. This is new failure localization, not a proved player
-bug or an input/deadline/concurrency correction.
-The owning log retains the complete red result, raw artifact digest and diagnostic verification.
-
-Preceding checkpoint (2026-10-13): RP-553 closes a diagnostic gap: Typer's phase observer arms before the first journey await,
-not after content/engine setup. A real pre-initialization deadline in the same journey fails
-the old placement in both native projects, then passes after the correction. Full final native
-Chromium/WebKit functional population passes23,706 with ten expected deadlines/16 skips; this
-is not cause attribution or an RP-526 repair. The log owns exact results/range and raw-output
-truncation limits. Keep input, ordinary15s bound, concurrency, data and assertions unchanged.
-
-Current native cross-surface verification retains an RP-526 recurrence: at `b8eca33c`,
-the complete Chromium/WebKit functional population fails Typer's unchanged15s whole-game
-deadline. A new failure-only phase observer is locally verified, including a real deadline
-sampling DOM state before teardown. One instrumented complete population passes afterward;
-that is not attribution or repair of the original failure. The log owns both outcomes,
-source/range and limits. Preserve the observer on recurrence; do not extend the timeout,
-substitute synthetic input, rerun for green or credit native results as hosted/Linux proof.
-
-RP-540's citation boundary is locally corrected: old genuine-new-row CLI controls
-admit four aliases, and a controlled exterior-review read is reproduced without
-leaving the owned temporary fixture. Canonical active/archive citations and all
-existing guard populations pass after entry-level refusal; the real root still
-fails `50a3a514`. The log owns verification and pending consolidated review.
-Do not repeat this completed population or credit it as authentication/whole CI.
-
-RP-131's non-verdict parser loophole is locally corrected independently of the
-unadopted historical-exception proposal. Actual CLI regressions retain the old
-eight admissions; twelve invalid evidence forms now refuse while completed
-findings/remap records pass. The existing `09d5027` binding is transcribed from
-Claude's completed September24 enclosing-range verdict, not a new review or
-approval. The real root gate still fails `50a3a514`; topology/fixtures pass.
-The owning log records the exact pending designated ranges. The citation follow-up
-is complete locally as above; continue genuine accepted work and policy closure,
-not more repetitions of these completed guard populations.
+Earlier completed diagnostic/extraction/concurrency checkpoints and failed controls remain
+in the append-only owning log and their named evidence capsules, not stale next-action plans.
 
 Published [CI38381138075](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38381138075)
 at `4eaed0c9` is completed **failure**: browser/composed/schema/harness pass;

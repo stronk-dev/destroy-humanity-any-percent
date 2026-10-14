@@ -173,11 +173,26 @@ host-libm rounding differences from surfacing only in scheduled Actions runs.
 `make test-game-ui-performance` owns the browser job's deterministic sixty-second Game UI
 cadence simulation: 1,200 snapshot inputs (20 Hz) are grouped through 600 shared formatter flush
 windows (10 Hz) in a 1280×720 Chromium viewport, with the commit count and 200 ms long-task ceiling
-enforced. `make test-browser` first runs the functional three-engine matrix with this one
-wall-clock-sensitive test disabled, then invokes the focused target in a fresh Chromium process.
+enforced. `make test-browser` first runs `make test-browser-functional` with this one
+wall-clock-sensitive test disabled, then invokes the performance target in a fresh Chromium process.
 This keeps Firefox/WebKit contention and unrelated test files out of the measurement without
 changing any budget. The real-time 4× CPU / dropped-frame profile remains a manual release check;
 the 2026-08-22 Game UI archival record preserves its latest passing environment and measurements.
+
+The functional target runs the broad Chromium/Firefox/WebKit population excluding only
+`test/typer-table-browser.test.ts`, then runs that complete file in a fresh three-engine
+invocation. This keeps its native keyboard journeys out of the broad workload without changing
+inputs, assertions, deadlines, worker defaults or engine coverage. The required Garage real-minute
+idle observation remains in the broad blocking population. A broad-phase failure stops Make:
+later phases are unexecuted, not passed. `make test-browser-focused` remains a single invocation
+with the caller's original file/test selectors; it does not automatically append Typer.
+
+For retained full-functional JSON results, set `BROWSER_REPORT_DIR=.cache/browser-results`.
+The target writes separate `functional-broad.json` and `functional-native.json`; compare their
+union when checking full coverage. A shared `--outputFile` in `BROWSER_TEST_FLAGS` is rejected
+because the second phase would overwrite the first. Focused invocations still support their
+ordinary Vitest reporter/output flags. Explicit project/file/test overrides narrow verification
+and are not evidence of the default three-engine gate.
 
 `make test-browser-ci` runs the same functional-matrix-then-isolated-performance sequence with
 `CI=true` in the pinned Linux Playwright image, using fresh anonymous `node_modules` and

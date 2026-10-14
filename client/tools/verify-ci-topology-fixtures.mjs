@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { verifyCITopology } from "./ci-topology.mjs";
 
 const root = new URL("../../", import.meta.url);
@@ -20,6 +21,9 @@ const mutations = [
   ["blocking build-cache restoration", ci.replace("          cache: false", "          cache: true"), maintenance, makefile],
   ["maintenance build-cache restoration", ci, maintenance.replaceAll("          cache: false", "          cache: true"), makefile],
   ["push-triggered maintenance", ci, maintenance.replace("  workflow_dispatch:\n", "  workflow_dispatch:\n  push:\n"), makefile],
+  ["missing native functional phase", ci, maintenance, makefile.replace(/^\tcd client .*vitest\.browser\.config\.ts test\/typer-table-browser\.test\.ts .*\n/m, "")],
+  ["missing broad functional phase", ci, maintenance, makefile.replace(/^\tcd client .*--exclude test\/typer-table-browser\.test\.ts .*\n/m, "")],
+  ["missing isolated performance", ci, maintenance, makefile.replace("\t$(MAKE) test-game-ui-performance\n", "")],
 ];
 
 for (const [name, mutatedCI, mutatedMaintenance, mutatedMakefile] of mutations) {
@@ -33,3 +37,25 @@ for (const [name, mutatedCI, mutatedMaintenance, mutatedMakefile] of mutations) 
 }
 
 console.log(`CI topology negative controls rejected: ${mutations.length}`);
+
+// Exercise actual Make expansion, including focused selection and report safety.
+function dryRun(target, ...flags) {
+  return spawnSync("make", ["-n", target, ...flags], { cwd: root, encoding: "utf8" });
+}
+const focused = dryRun("test-browser-focused", "BROWSER_TEST_FLAGS=test/amount-format.test.ts --project chromium");
+if (focused.status !== 0 || !focused.stdout.includes("test/amount-format.test.ts --project chromium") ||
+    focused.stdout.includes("typer-table-browser.test.ts")) throw new Error("focused browser selector was expanded into a full/native population");
+const full = dryRun("test-browser-functional", "BROWSER_TEST_FLAGS=--project chromium --project webkit", "BROWSER_REPORT_DIR=.cache/browser-fixture");
+if (full.status !== 0 || !full.stdout.includes("--exclude test/typer-table-browser.test.ts") ||
+    !full.stdout.includes("vitest.browser.config.ts test/typer-table-browser.test.ts") ||
+    !full.stdout.includes("functional-broad.json") || !full.stdout.includes("functional-native.json") ||
+    (full.stdout.match(/--project chromium --project webkit/g) ?? []).length !== 2) throw new Error("full functional phase/report expansion is incomplete");
+const aggregate = dryRun("test-browser", "BROWSER_TEST_FLAGS=--project chromium --project webkit");
+if (aggregate.status !== 0 || aggregate.stdout.indexOf("--exclude test/typer-table-browser.test.ts") < 0 ||
+    aggregate.stdout.indexOf("vitest.browser.config.ts test/typer-table-browser.test.ts") < 0 ||
+    aggregate.stdout.indexOf("VITE_GAME_UI_PERFORMANCE=1") <= aggregate.stdout.indexOf("vitest.browser.config.ts test/typer-table-browser.test.ts")) {
+  throw new Error("full browser Make target did not preserve functional-before-performance ordering");
+}
+const overwrite = dryRun("test-browser-functional", "BROWSER_TEST_FLAGS=--outputFile.json=shared.json");
+if (overwrite.status === 0 || !overwrite.stderr.includes("use BROWSER_REPORT_DIR")) throw new Error("full functional phases accepted an overwritten shared report");
+console.log("Browser Make selectors and separate report controls passed");

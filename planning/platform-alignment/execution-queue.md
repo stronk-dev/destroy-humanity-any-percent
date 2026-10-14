@@ -11,8 +11,9 @@ in [CURRENT-STATE](../CURRENT-STATE.md), not the dated routing tables below. Ful
 remains the goal; Garage hardening and standalone Combat records do not complete another tier.
 
 - **READY — accepted construction and conformance work:** use the current owning RFC plans.
-  Continue the remaining later API/consumer implementation reviews and native-input failure
-  diagnosis (RP-526) from its existing first-failure phase capture. Do not change deadlines,
+  Continue the remaining later API/consumer implementation reviews. RP-526's complete two-phase
+  functional organization is locally verified; the owning CI plan names remaining Linux/hosted
+  proof and retains the preceding red captures. Do not change deadlines,
   retries or mechanics without their required authority, or restart completed original reviews.
 - **READY — consolidated independent reviews:** related Codex corrections/proofs may share
   exact feature-owned review ranges. Deployment R3/R6/R8/R9/R10/R12/R18/R20 now have full

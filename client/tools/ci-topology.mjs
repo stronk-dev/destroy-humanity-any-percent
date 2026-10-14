@@ -81,6 +81,19 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource) {
   for (const [job, target] of blocking) requireExactMakeCommand(ciSource, job, target);
   requireExactMakeDependencies(makeSource, "verify-push", blocking.map(([, target]) => target));
 
+  // D2 retains every functional case and the independent performance lane.
+  const browserTarget = section(makeSource, /^test-browser:/, /^[^\s#].*:/);
+  requireLine(browserTarget, /^test-browser: test-browser-functional$/, "full browser gate must own both functional phases");
+  requireLine(browserTarget, /^\t\$\(MAKE\) test-game-ui-performance$/, "full browser gate must retain isolated performance");
+  const functional = section(makeSource, /^test-browser-functional:/, /^[^\s#].*:/);
+  const browserCommand = "\tcd client && VITE_GAME_UI_PERFORMANCE=0 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts ";
+  const commands = functional.filter((line) => line.startsWith(browserCommand));
+  if (commands.length !== 2 ||
+      !commands[0].startsWith(`${browserCommand}--exclude test/typer-table-browser.test.ts $(BROWSER_TEST_FLAGS) `) ||
+      !commands[1].startsWith(`${browserCommand}test/typer-table-browser.test.ts $(BROWSER_TEST_FLAGS) `)) {
+    throw new Error("functional browser gate must run broad collection then the complete native Typer file");
+  }
+
   const harness = jobSection(ciSource, "harness");
   requireLine(harness, /^    timeout-minutes: 5\s*$/, "blocking harness must retain the five-minute budget");
   requireLine(harness, /^      - run: make verify-harness-fast\s*$/, "blocking harness must run the fast gate");

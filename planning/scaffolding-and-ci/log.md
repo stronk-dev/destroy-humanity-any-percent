@@ -1300,3 +1300,42 @@ case/capsule/docs/records range after `93b94980` through this containing commit 
 Claude review, consolidatable with the existing CI diagnostics. Next accepted work: arrange
 native journey execution to test the input-path workload hypothesis while preserving the full
 functional population and all original bounds; do not call this test organization CI completion.
+
+## 2026-10-14 — Run the full native keyboard population after broad collection
+
+Resume clean `f6ab6ab6`; previous goal turn clarifies owner choices but makes no implementation
+progress. Under accepted CI D2, add `test-browser-functional`: broad collection excludes only
+the complete Typer file, which runs second; `test-browser` then retains isolated performance.
+Focused selection is byte-unchanged. No test/input/assertion/timeout/worker/browser config,
+product/schema/kernel/balance or workflow-job changes. A broad failure stops later phases;
+unexecuted is not passed. Separate optional report paths avoid overwriting first-phase evidence.
+
+Actual functional13101 terminates exit0: broad292 files/24,372 ordinary passes/six expected
+deadlines/16 skips in93.93s; native two files/58 ordinary passes/four expected deadlines in2.40s.
+Compare the union against the retained preceding RED full-run JSON: all24,456 repository-relative
+file/fullName/skip tuples match, no omissions/additions/reclassification. JSON still omits engine
+IDs; no per-engine ordering inference. Normal native journeys finish178/191ms, controlled
+engine-wait cases399.7/400ms. Typer source SHA remains
+`a3d81bcbb9a7ab1974b27f3cb6adea713e754dd701e90616f8f89731af40a182`.
+Unchanged isolated Chromium performance45491 terminates exit0: five passes/105 selector skips,
+5.55s. These separate executions cover the changed functional aggregate and performance lane;
+not a default three-engine `make test-browser` or full CI run.
+
+Topology/fixture gate passes16 invalid-state controls and actual Make dry-run selectors/report
+safety/full ordering. Execute the original topology function from `f6ab6ab6` against genuinely
+removed broad/native/performance commands: all three are admitted before, rejected by the new
+function. Node syntax and diff checks pass. No software type/build run for unchanged TS/product.
+
+Raw retained evidence (ignored, not duplicated into a new dossier):
+- `.cache/browser-phases-f6ab6ab6.log` SHA256 `1bfefcdbff50da1397e3de340a9350fc819c5c6b3ae3492e9efa2872065886ee`.
+- `.cache/browser-phases-f6ab6ab6/functional-broad.json` SHA256 `76861d1f54cca8a95d2af014df0d63e3ff61c9ee2b4299f659d22c5f7c7eb951`.
+- `.cache/browser-phases-f6ab6ab6/functional-native.json` SHA256 `9dde8851ab2a24949256ae2c196d7a37239c1e0884e6608b6252ba23e26935b0`.
+- `.cache/browser-phases-performance-f6ab6ab6.log` SHA256 `886053efe9b559b05a97124f451c5d6c433ace37da250ab12738a72a067c8dba`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete range after
+`f6ab6ab6` through this containing commit needs designated Claude review, consolidatable.
+RP-526 stays open: one native pass is not intermittent/hosted reliability or exclusive cause
+proof. Prior red populations remain evidence. Firefox/Linux/SQL/hosted sub-five-minute,
+historical guard, conservation, feature/release acceptance and nine-tier1.0 remain open.
+No push, deployment or archival. Next: declared Linux job when usable, actual hosted reconciliation
+when authorized; do not rerun native for green or infer new owner approval.
