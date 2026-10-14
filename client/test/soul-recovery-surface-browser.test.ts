@@ -88,6 +88,100 @@ function mountSurface(port: FakePort, visibility: FakeVisibility, clock: { now: 
   return { target, app };
 }
 
+for (const replacement of [false, true]) {
+  for (const lateReply of ["watchdog", "resolve", "gone"] as const) {
+    it.skipIf(!browser)(`retired Recovery heartbeat cannot affect replacement (${replacement}, ${lateReply})`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const clock = { now: 1_000 };
+      const visibility = new FakeVisibility();
+      const recoveryContent = content();
+      const nextSession = replacement ? OTHER_SESSION : SESSION;
+      const activity = recoveryContent.catalog.recovery_activities.find((row) => row.activity_id === (replacement ? "repot" : "defrag"))!;
+      const requests: { operation: string; body: Record<string, unknown> }[] = [];
+      const terminals: SoulRecoveryTerminalResponse[] = [];
+      let starts = 0;
+      let release!: (response: Response) => void;
+      const pendingBeat = new Promise<Response>((resolve) => { release = resolve; });
+      const response = terminal(lateReply === "resolve" ? "resolve" : "cancel", lateReply === "watchdog" ? "watchdog" : undefined);
+      const port = createBrowserSoulRecoveryPort(() => "fixture-access-token", async (input, init) => {
+        expect(init?.method).toBe("POST");
+        const operation = String(input).split("/").at(-1)!;
+        const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+        requests.push({ operation, body });
+        if (operation === "start") {
+          starts += 1;
+          return Response.json(starts === 1 ? started() : {
+            ...started(nextSession, TOKEN_2, 1_234), activity_id: activity.activity_id,
+            required_duration_attended_ms: activity.duration_attended_ms,
+          });
+        }
+        expect(operation).toBe("progress");
+        if (body.progress_token === TOKEN_1) {
+          expect(body.session_id).toBe(SESSION);
+          return pendingBeat;
+        }
+        expect(body).toEqual({ session_id: nextSession, progress_token: TOKEN_2 });
+        return Response.json({ ...progressed(1_234, nextSession), required_duration_attended_ms: activity.duration_attended_ms });
+      });
+      const target = host();
+      const app = mount(SoulRecoverySurface, { target, props: { port, content: recoveryContent, era: "era_1995", visibility,
+        now: () => clock.now, toySeed: 7, onExitToHost: () => {}, onTerminal: (receipt: SoulRecoveryTerminalResponse) => terminals.push(receipt) } });
+      try {
+        await settle();
+        target.querySelector<HTMLElement>("#recovery-heading")!.focus();
+        await userEvent.keyboard("{Tab}{Enter}");
+        await expect.poll(() => requests.filter((request) => request.operation === "progress").length).toBe(1);
+        // Sleep past the unchanged ceiling while the old request is outstanding.
+        // Foreground requires an explicit reconnect, not a fabricated network error.
+        visibility.emit(false);
+        clock.now += 100;
+        visibility.emit(true);
+        await settle();
+        button(target, "Reconnect").focus();
+        await userEvent.keyboard("{Enter}");
+        await expect.poll(() => starts).toBe(2);
+        await expect.poll(() => target.querySelector<HTMLProgressElement>("progress")?.value).toBe(1_234);
+        visibility.emit(false);
+
+        release(lateReply === "gone"
+          ? Response.json({ category: "unknown_id", detail: "recovery_session" }, { status: 404 })
+          : Response.json(response));
+        await settle();
+        if (!replacement) {
+          // Rotation retains the same scheduler/session: an authoritative late
+          // terminal or gone reply must still end that session, not be discarded.
+          if (lateReply === "gone") {
+            await expect.poll(() => target.querySelector("[role=alert]")?.textContent).toBe(t("soul.recovery_surface.gone", {}, "era_1995"));
+            expect(terminals).toEqual([]);
+          } else {
+            await expect.poll(() => terminals).toEqual([response]);
+          }
+          expect(target.querySelector("progress")).toBeNull();
+          expect(visibility.listener).toBeUndefined();
+          return;
+        }
+
+        expect(terminals).toEqual([]);
+        expect(target.querySelector<HTMLProgressElement>("progress")?.value).toBe(1_234);
+        expect(target.querySelector("h2")?.textContent).toBe(t(activity.title_copy_key as CopyKey, {}, "era_1995"));
+        // A retired 404 must not poison the new scheduler's later pause reason.
+        clock.now += 100;
+        visibility.emit(true);
+        await settle();
+        expect(button(target, "Reconnect").disabled).toBe(false);
+        button(target, "Reconnect").focus();
+        await userEvent.keyboard("{Enter}");
+        await expect.poll(() => requests.some((request) => request.operation === "progress" && request.body.progress_token === TOKEN_2)).toBe(true);
+        expect(terminals).toEqual([]);
+        expect(target.querySelector<HTMLProgressElement>("progress")?.value).toBe(1_234);
+        expect(requests.filter((request) => request.operation === "progress" && request.body.progress_token === TOKEN_1)).toHaveLength(1);
+      } finally {
+        await unmount(app); target.remove();
+      }
+    });
+  }
+}
+
 for (const mounted of [true, false]) {
   it.skipIf(!browser)(`consumes watchdog heartbeat through the generated port only while mounted (${mounted})`, async () => {
     const { userEvent } = await import("vitest/browser");

@@ -298,6 +298,9 @@ bundled with the client.
   traversal remain unchanged. This is mounted DOM behavior, not new server/retry/DTO policy.
 - **Rejections:** `RECOVERY_REJECTIONS` maps exact recovery-handler pairs. A unit test checks that
   every mapped pair is written by `server/account/api.go`.
+- **Replacement-session replies:** a retired Recovery heartbeat cannot end the replacement
+  session or poison its pause error. Same-session rotation and terminal-versus-Finish-error
+  handling remain intact; [Recovery lifecycle](soul-recovery.md#heartbeat-lifecycle) owns the details.
 - **Toy:** `RecoveryToy.svelte` is decorative only (`aria-hidden`, no animation). Its cells follow a
   client-local seed that is generated on mount and never sent.
 

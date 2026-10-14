@@ -1,5 +1,12 @@
 # Minigame API & Surface implementation plan
 
+Current delayed-heartbeat correction (2026-10-14, RP-603): reply/error ownership follows the
+bound Recovery scheduler across replacement and unmount, not just its running flag. Retired
+terminal/gone replies cannot end a new session; same-session rotation and a terminal after a
+Finish error still work. Six old-component native failures and final 330 affected browser/126
+unit passes belong in the latest log. No server, cadence, retry, DTO, copy or kernel change.
+Complete range after `a12cc529` needs designated Claude review, consolidatable with MA3 repairs.
+
 Current reconnect correction (2026-10-14, RP-601): Recovery uses the returned activity's owner
 row on reconnect, matching Begin, instead of rendering the old requested activity over a new
 session. Two known replacement activities and an unknown-row refusal execute through generated

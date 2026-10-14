@@ -31,11 +31,12 @@
   let notice = $state<CopyKey | null>(null);
   let busy = $state(false);
   let scheduler: RecoveryScheduler | undefined;
+  let heartbeatOwner: object | undefined;
   let destroyed = false;
   let lastProgressError: unknown;
   let heading: HTMLElement | undefined;
 
-  onDestroy(() => { destroyed = true; scheduler?.stop(); scheduler = undefined; });
+  onDestroy(() => { destroyed = true; scheduler?.stop(); scheduler = undefined; heartbeatOwner = undefined; });
 
   function documentVisibility(): RecoveryVisibility {
     return { subscribe(callback) {
@@ -55,11 +56,16 @@
   function bindScheduler(session: Session, token: string): void {
     scheduler?.stop();
     lastProgressError = undefined;
-    scheduler = new RecoveryScheduler({
+    const owner = {};
+    const boundScheduler = new RecoveryScheduler({
       session_id: session.sessionID, progress_token: token, beat_interval_ms: content.beatIntervalMS, now, visibility,
       transport: { progress: async (sessionID, progressToken) => {
         try {
           const response = await port.progress(sessionID, progressToken);
+          // Reconnect may replace this scheduler while its old heartbeat is
+          // still in flight. Neither a terminal receipt nor its error belongs
+          // to the replacement surface/session.
+          if (heartbeatOwner !== owner) throw new DOMException("Recovery session replaced", "AbortError");
           if ("action" in response) {
             await showTerminal(response);
             // The scheduler consumes progress updates, not terminal receipts.
@@ -69,7 +75,7 @@
           }
           return response;
         }
-        catch (error) { lastProgressError = error; throw error; }
+        catch (error) { if (heartbeatOwner === owner) lastProgressError = error; throw error; }
       } },
     }, {
       on_progress: (response) => {
@@ -89,7 +95,11 @@
       on_token_rotated: () => {},
       on_terminal: () => {},
     });
-    scheduler.start();
+    scheduler = boundScheduler;
+    // Ownership survives a same-session stop/error so its terminal receipt can
+    // still win that race. Only replacement or unmount retires the owner.
+    heartbeatOwner = owner;
+    boundScheduler.start();
   }
 
   function endSession(message: CopyKey): void {

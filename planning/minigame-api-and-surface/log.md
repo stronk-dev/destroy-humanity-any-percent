@@ -1843,3 +1843,48 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Complete compon
 plan/ledger/log range after `40f6df43` through this containing commit needs designated Claude
 review, consolidatable with MA3 corrections. No independent approval, archival, mint, publish,
 push, deployment or whole Minigame/API/nine-tier1.0 completion claimed.
+
+## 2026-10-14 — Retire old Recovery heartbeat effects on replacement (RP-603)
+
+Outcome under MA3/SR-C6: at baseline `a12cc529`, a held old-session heartbeat
+can survive a visibility/clock missed-ceiling reconnect to a replacement session.
+Terminal processing runs inside the surface transport wrapper before the stopped
+scheduler's guard; a late terminal ends the new session. A late 404 also writes
+shared lastProgressError, so the new scheduler's next missed-ceiling pause wrongly
+declares it gone. No production backend race or corrupt DTO is needed in this
+controlled generated-port/browser reproduction; server concurrency is not proved.
+
+Regression: six cases (watchdog terminal, resolve terminal, gone error, each for
+same-session rotation versus replacement) run in Chromium/WebKit. The old
+component fails all six replacement executions and passes all six same-session
+controls. Real mounted input/visibility callbacks plus the injected monotonic clock
+create the pause; HTTP replies are controlled JSON, not a real Postgres service.
+Replacement retains its returned Repot identity/progress, reconnects and dispatches
+only its own session/token; the retired token dispatches exactly once. Same-session
+terminal/gone still ends the session, and ordinary terminal/error races remain.
+
+Correction: a local opaque owner token follows each bound scheduler. Replacement
+and unmount retire that owner before asynchronous response/error effects; merely
+stopping on a same-session error does not. The first implementation checked the
+current running scheduler pointer instead: the new 12 executions passed, but the full
+surface caught two failures in the existing conflict-first Finish/watchdog race.
+That over-broad guard was rejected, not the assertions; final ownership preserves
+the accepted terminal precedence. No request cancellation/retry, new network
+traffic, cadence/reward/timing policy, DTO, player copy or framework scheduler edit.
+
+Finished checks: root `make test-browser-focused` selects
+`test/soul-recovery-surface-browser.test.ts test/soul-recovery-surface.test.ts
+test/soul-recovery-scheduler.test.ts test/generated-operation-ports.test.ts
+--project chromium --project webkit`: 330 pass, no selected skips, 11.00s.
+Node's surface/scheduler/generated-port files: 126 pass; `make typecheck` reports
+zero errors/warnings; `make build-client` and `make verify-client-boundary` pass.
+Diff checked. No affected server/generation/kernel path changes; no false version
+bump. Docker remains unavailable from the preceding bounded socket check, so no
+SQL/composed/Linux/Firefox/AT/full CI or natural cross-device race claim.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete component/
+test/canonical docs/plan/ledger/log span after `a12cc529` through this containing
+commit requires designated Claude review, consolidatable with MA3 corrections.
+No self-approval, archival, content mint, push, deploy or release promotion. The
+full nine-tier 1.0 objective and its remaining accepted construction/owner/platform
+requirements remain; this fixes one real lifecycle defect, not the whole feature.

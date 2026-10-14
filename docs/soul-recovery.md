@@ -54,6 +54,12 @@ server's duration/progress and replacement session/token. The requested old acti
 display authority. Unknown returned activities show the existing error and dispatch no new
 heartbeat, matching Begin's existing owner lookup; no automatic replacement/cancel is added.
 
+A replaced scheduler's already-pending heartbeat cannot terminate the new session or supply
+the error used for its next pause. Its reply remains a result for the retired session; it is
+not replayed or applied to the replacement. Same-session token rotation retains reply ownership,
+and stopping on an ordinary Finish error does not suppress a later authoritative terminal
+receipt for that same session. Unmount retires ownership as well as stopping future beats.
+
 The Recovery surface declares zero Tab indices for Begin, Reconnect, Finish, Stop and Back,
 preserving document-order keyboard traversal even when a browser omits implicit button stops.
 Disabled controls retain their native disabled behavior. Terminal receipts restore the heading
