@@ -1,6 +1,7 @@
 import Decimal from "break_infinity.js";
 
 import { canonicalString, isStateValue, parseCanonical, quantize } from "./numeric";
+import type { MultiplierSlot } from "./economy-kernel";
 
 export const COMMONS_SCHEMA_VERSION = 1;
 export const PPM = 1_000_000;
@@ -17,7 +18,7 @@ export interface CommonsCatalog {
 }
 
 const idPattern = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
-const slots = new Set(["upgrades", "milestones", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige"]);
+const slots = new Set<MultiplierSlot>(["upgrades", "milestones", "axis_stack", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige"]);
 const keys = ["schema_version", "source_weights", "default_tithe_ppm", "minimum_tithe_ppm", "maximum_tithe_ppm", "guild_health_weight_ppm", "cohort_health_weight_ppm", "server_health_weight_ppm", "collective_weight_ppm", "collective_exponent_ppm", "collapse_health_ppm", "healthy_health_ppm", "maximum_bonus", "health_recovery_ppm_per_hour", "health_decay_ppm_per_hour", "solidarity_window_ms", "cohort_target_size", "cohort_merge_floor", "npc_population_floor", "npc_weight_ppm", "npc_compliance_ppm", "population_tolerance_ppm"] as const;
 
 export function parseCommonsCatalog(source: unknown): CommonsCatalog {
@@ -27,7 +28,7 @@ export function parseCommonsCatalog(source: unknown): CommonsCatalog {
   const positive = (key: string): number => boundedInteger(raw[key], key, 1, Number.MAX_SAFE_INTEGER);
   const weights = raw.source_weights.map((item, index) => {
     const value = exactObject(item, ["source_id", "slot", "weight_ppm", "forsworn"], `source_weights[${index}]`);
-    if (typeof value.source_id !== "string" || !idPattern.test(value.source_id) || typeof value.slot !== "string" || !slots.has(value.slot) || value.slot === "commons" || typeof value.forsworn !== "boolean") throw new SyntaxError("invalid commons source weight");
+    if (typeof value.source_id !== "string" || !idPattern.test(value.source_id) || typeof value.slot !== "string" || !slots.has(value.slot as MultiplierSlot) || value.slot === "commons" || typeof value.forsworn !== "boolean") throw new SyntaxError("invalid commons source weight");
     return Object.freeze({ sourceId: value.source_id, slot: value.slot, weightPpm: boundedInteger(value.weight_ppm, "weight_ppm", 1, PPM), forsworn: value.forsworn });
   });
   if (new Set(weights.map((item) => item.sourceId)).size !== weights.length) throw new SyntaxError("duplicate commons source weight");

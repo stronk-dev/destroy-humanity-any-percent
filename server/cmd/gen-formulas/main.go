@@ -164,7 +164,7 @@ func main() {
 			Modifier:                 "1 + maximum_bonus * (collective_weight * max(0, ((health - collapse_health) / (1 - collapse_health))^collective_exponent) + (1 - collective_weight) * solidarity)",
 			Solidarity:               "sum(hourly_compliance_ppm * covered_ms) / 2592000000",
 			EntryParticipationWeight: "clamp(floor(tithe_ppm * 1000000 / default_tithe_ppm), floor(minimum_tithe_ppm * 1000000 / default_tithe_ppm), min(1000000, floor(maximum_tithe_ppm * 1000000 / default_tithe_ppm)))",
-			SourceWeights:            append([]commons.SourceWeight{}, commonsCatalog.SourceWeights...),
+			SourceWeights:            commonsSourceWeights(commonsCatalog.SourceWeights),
 			DefaultTithePPM:          commonsCatalog.DefaultTithePPM,
 			MinimumTithePPM:          commonsCatalog.MinimumTithePPM,
 			MaximumTithePPM:          commonsCatalog.MaximumTithePPM,

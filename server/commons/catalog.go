@@ -89,6 +89,9 @@ type rawSourceWeight struct {
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
+	if !commonsCatalogHasExactShape(data) {
+		return nil, ErrInvalidCatalog
+	}
 	var raw rawCatalog
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
@@ -112,9 +115,10 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		!validRatio(raw.CollectiveWeightPPM) || raw.CollectiveExponentPPM < PPM || raw.CollectiveExponentPPM > 10*PPM || !validRatio(raw.CollapseHealthPPM) ||
 		!validRatio(raw.HealthyHealthPPM) || raw.HealthyHealthPPM <= raw.CollapseHealthPPM ||
 		!validRatio(raw.HealthRecoveryPPMPerHour) || !validRatio(raw.HealthDecayPPMPerHour) ||
-		raw.HealthRecoveryPPMPerHour <= raw.HealthDecayPPMPerHour || raw.SolidarityWindowMS <= 0 ||
-		raw.CohortTargetSize <= 0 || raw.CohortMergeFloor <= 0 || raw.CohortMergeFloor > raw.CohortTargetSize ||
-		raw.NPCPopulationFloor < raw.CohortMergeFloor || !validRatio(raw.NPCWeightPPM) || !validRatio(raw.NPCCompliancePPM) ||
+		raw.HealthRecoveryPPMPerHour <= raw.HealthDecayPPMPerHour || raw.SolidarityWindowMS <= 0 || raw.SolidarityWindowMS > decimal.MaxExactInteger ||
+		raw.CohortTargetSize <= 0 || int64(raw.CohortTargetSize) > decimal.MaxExactInteger || raw.CohortMergeFloor <= 0 ||
+		int64(raw.CohortMergeFloor) > decimal.MaxExactInteger || raw.CohortMergeFloor > raw.CohortTargetSize ||
+		raw.NPCPopulationFloor < raw.CohortMergeFloor || int64(raw.NPCPopulationFloor) > decimal.MaxExactInteger || !validRatio(raw.NPCWeightPPM) || !validRatio(raw.NPCCompliancePPM) ||
 		raw.PopulationTolerancePPM < 0 || raw.PopulationTolerancePPM > PPM {
 		return nil, ErrInvalidCatalog
 	}
@@ -141,6 +145,41 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		catalog.weightBySource[weight.SourceID] = weight
 	}
 	return catalog, nil
+}
+
+func commonsCatalogHasExactShape(data []byte) bool {
+	var root map[string]json.RawMessage
+	if json.Unmarshal(data, &root) != nil || !exactCommonsKeys(root,
+		"schema_version", "source_weights", "default_tithe_ppm", "minimum_tithe_ppm", "maximum_tithe_ppm",
+		"guild_health_weight_ppm", "cohort_health_weight_ppm", "server_health_weight_ppm", "collective_weight_ppm",
+		"collective_exponent_ppm", "collapse_health_ppm", "healthy_health_ppm", "maximum_bonus", "health_recovery_ppm_per_hour",
+		"health_decay_ppm_per_hour", "solidarity_window_ms", "cohort_target_size", "cohort_merge_floor", "npc_population_floor",
+		"npc_weight_ppm", "npc_compliance_ppm", "population_tolerance_ppm") {
+		return false
+	}
+	var weights []map[string]json.RawMessage
+	if json.Unmarshal(root["source_weights"], &weights) != nil || weights == nil {
+		return false
+	}
+	for _, weight := range weights {
+		if !exactCommonsKeys(weight, "source_id", "slot", "weight_ppm", "forsworn") {
+			return false
+		}
+	}
+	return true
+}
+
+func exactCommonsKeys(fields map[string]json.RawMessage, expected ...string) bool {
+	if len(fields) != len(expected) {
+		return false
+	}
+	for _, key := range expected {
+		value, exists := fields[key]
+		if !exists || bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return false
+		}
+	}
+	return true
 }
 
 func (catalog *Catalog) SourceWeight(id string) (SourceWeight, bool) {

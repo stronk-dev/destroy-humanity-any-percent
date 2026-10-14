@@ -30,9 +30,10 @@ the production modifier.
 - 30-day Solidarity window, 150-Founder cohort target, merge floor 40;
 - below 40 real samples, each missing member adds labeled NPC weight 0.5 at compliance 0.75.
 
-Only cohort and server scopes exist today. With no shipped guild model, every member takes the
-specified guildless fallback, so effective Health is cohort 80% / server 20%. The future governance
-layer may add the guild 50% term without changing the current projection contract.
+The gameserver attaches the Guild Health reader to the Commons projector. Guild members use
+the configured guild/cohort/server blend; guildless members substitute cohort Health for the
+guild term, giving the current 80% cohort / 20% server fallback. The governance UI remains
+separate unfinished work, not a prerequisite for the already implemented Guild Health input.
 
 Both the live projection and population harness resolve the Commons catalog by the authoritative
 revision's `constants_hash` and call the same `EffectiveHealthPPM` function. There is no hardcoded
@@ -50,6 +51,21 @@ source, the accepted factor is raised to its slot weight; `d = clamp(1-clean/all
 names, hints, votes, and player declarations are not inputs. The Phase-0 forsworn-source table is
 empty because no shipped T0–T3 multiplier has yet been classified as a dark/externality source;
 future balance catalogs add rows alongside their economy source declarations.
+
+Catalog admission requires all22 exact decoded root keys and complete four-key source rows.
+Required numeric/boolean values cannot be null or silently default; explicit legal zero/false
+remain valid. Counts and Solidarity milliseconds share the client's existing exact-safe integer
+domain, not a new operating budget. Source slots use the current multiplier registry, including
+`axis_stack` and excluding recursive `commons` weights. Kernel0.3.203 records these admission
+corrections without retuning source weights, smoothing, tithes, thresholds or population policy.
+
+`commons.CommonsSchemas()` exports `CommonsCatalogV1` for API C18. Positive bonus semantics,
+weight sums, threshold/rate/count relations, unique source IDs and declared Economy source/slot
+bindings remain mandatory loader/composition checks; source-slot admission is not a new source
+declaration or active bonus. Current/stored catalog bytes and generated formula artifacts remain
+unchanged. The formula document uses neutral source-weight DTOs, copied by its generator rather
+than importing Commons runtime types; the production/Commons dependency guard remains enforced.
+Complete catalog HTTP serving and public re-verification are still unfinished.
 
 Compliance is `clamp(tithe/target,0,1) × (1-d)`. Solidarity is the sum of hourly
 `compliance_ppm × covered_ms` over the fixed 2,592,000,000-ms window divided by that complete

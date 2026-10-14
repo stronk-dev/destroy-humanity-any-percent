@@ -3,12 +3,12 @@
 RFC: `rfc/api-foundation.md`
 
 Current C18 construction (2026-10-14): Categories, Achievements, Meters, Opportunities,
-Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions and Guilds export thirteen of nineteen pinned-family descriptors. Six, the complete response
+Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions, Guilds and Commons export fourteen of nineteen pinned-family descriptors. Five, the complete response
 union/catalog HTTP reader and public re-verification remain open. All semantic loaders remain
 mandatory; no open JSON escape, content mint or false metadata-only kernel bump. Catalog
-admission repairs carry genuine versions0.3.191–0.3.202 and remain pending designated review.
+admission repairs carry genuine versions0.3.191–0.3.203 and remain pending designated review.
 The append-only owning log holds each old failure, final checks, limits and exact review range;
-latest Guild range is after `c172f039` through its containing source/test/docs/record commit.
+latest Commons range is after `c7f9383f` through its containing source/test/docs/record commit.
 Continue other owners within lawful scope; unchanged metadata-only additions still need explicit
 scope resolution, and the integer-representation proposal remains unadopted.
 

@@ -4,7 +4,6 @@
 package formulas
 
 import (
-	"cloud-clicker/server/commons"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/multiplier"
 )
@@ -112,33 +111,42 @@ type GuildFormula struct {
 	ClearingIntervalMS         int64  `json:"clearing_interval_ms"`
 }
 
+// CommonsSourceWeight is document data, not a Commons runtime dependency. The
+// generator copies the producer's fields; production only validates the artifact.
+type CommonsSourceWeight struct {
+	SourceID  string          `json:"source_id"`
+	Slot      multiplier.Slot `json:"slot"`
+	WeightPPM int64           `json:"weight_ppm"`
+	Forsworn  bool            `json:"forsworn"`
+}
+
 type CommonsFormula struct {
-	Enclosure                string                 `json:"enclosure"`
-	Compliance               string                 `json:"compliance"`
-	Health                   string                 `json:"health"`
-	EffectiveHealth          string                 `json:"effective_health"`
-	Modifier                 string                 `json:"modifier"`
-	Solidarity               string                 `json:"solidarity"`
-	EntryParticipationWeight string                 `json:"entry_participation_weight"`
-	SourceWeights            []commons.SourceWeight `json:"source_weights"`
-	DefaultTithePPM          int64                  `json:"default_tithe_ppm"`
-	MinimumTithePPM          int64                  `json:"minimum_tithe_ppm"`
-	MaximumTithePPM          int64                  `json:"maximum_tithe_ppm"`
-	GuildHealthWeightPPM     int64                  `json:"guild_health_weight_ppm"`
-	CohortHealthWeightPPM    int64                  `json:"cohort_health_weight_ppm"`
-	ServerHealthWeightPPM    int64                  `json:"server_health_weight_ppm"`
-	CollectiveWeightPPM      int64                  `json:"collective_weight_ppm"`
-	CollectiveExponentPPM    int64                  `json:"collective_exponent_ppm"`
-	CollapseHealthPPM        int64                  `json:"collapse_health_ppm"`
-	HealthyHealthPPM         int64                  `json:"healthy_health_ppm"`
-	MaximumBonus             string                 `json:"maximum_bonus"`
-	HealthRecoveryPPMPerHour int64                  `json:"health_recovery_ppm_per_hour"`
-	HealthDecayPPMPerHour    int64                  `json:"health_decay_ppm_per_hour"`
-	SolidarityWindowMS       int64                  `json:"solidarity_window_ms"`
-	CohortTargetSize         int                    `json:"cohort_target_size"`
-	CohortMergeFloor         int                    `json:"cohort_merge_floor"`
-	NPCPopulationFloor       int                    `json:"npc_population_floor"`
-	NPCWeightPPM             int64                  `json:"npc_weight_ppm"`
-	NPCCompliancePPM         int64                  `json:"npc_compliance_ppm"`
-	PopulationTolerancePPM   int64                  `json:"population_tolerance_ppm"`
+	Enclosure                string                `json:"enclosure"`
+	Compliance               string                `json:"compliance"`
+	Health                   string                `json:"health"`
+	EffectiveHealth          string                `json:"effective_health"`
+	Modifier                 string                `json:"modifier"`
+	Solidarity               string                `json:"solidarity"`
+	EntryParticipationWeight string                `json:"entry_participation_weight"`
+	SourceWeights            []CommonsSourceWeight `json:"source_weights"`
+	DefaultTithePPM          int64                 `json:"default_tithe_ppm"`
+	MinimumTithePPM          int64                 `json:"minimum_tithe_ppm"`
+	MaximumTithePPM          int64                 `json:"maximum_tithe_ppm"`
+	GuildHealthWeightPPM     int64                 `json:"guild_health_weight_ppm"`
+	CohortHealthWeightPPM    int64                 `json:"cohort_health_weight_ppm"`
+	ServerHealthWeightPPM    int64                 `json:"server_health_weight_ppm"`
+	CollectiveWeightPPM      int64                 `json:"collective_weight_ppm"`
+	CollectiveExponentPPM    int64                 `json:"collective_exponent_ppm"`
+	CollapseHealthPPM        int64                 `json:"collapse_health_ppm"`
+	HealthyHealthPPM         int64                 `json:"healthy_health_ppm"`
+	MaximumBonus             string                `json:"maximum_bonus"`
+	HealthRecoveryPPMPerHour int64                 `json:"health_recovery_ppm_per_hour"`
+	HealthDecayPPMPerHour    int64                 `json:"health_decay_ppm_per_hour"`
+	SolidarityWindowMS       int64                 `json:"solidarity_window_ms"`
+	CohortTargetSize         int                   `json:"cohort_target_size"`
+	CohortMergeFloor         int                   `json:"cohort_merge_floor"`
+	NPCPopulationFloor       int                   `json:"npc_population_floor"`
+	NPCWeightPPM             int64                 `json:"npc_weight_ppm"`
+	NPCCompliancePPM         int64                 `json:"npc_compliance_ppm"`
+	PopulationTolerancePPM   int64                 `json:"population_tolerance_ppm"`
 }

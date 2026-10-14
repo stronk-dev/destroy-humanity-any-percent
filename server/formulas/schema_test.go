@@ -9,7 +9,6 @@ import (
 	"reflect"
 	"testing"
 
-	"cloud-clicker/server/commons"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/publicapi"
@@ -54,7 +53,7 @@ func TestFormulaDescriptorCoversNullableAndPopulatedOwnerArms(t *testing.T) {
 	if artifact.AxisStack.Pinned != nil {
 		t.Fatal("expected the current null pin fixture; retain separate null/populated coverage")
 	}
-	artifact.Commons.SourceWeights = []commons.SourceWeight{{SourceID: "upgrade.fixture", Slot: multiplier.SlotUpgrades, WeightPPM: 100_000, Forsworn: false}}
+	artifact.Commons.SourceWeights = []CommonsSourceWeight{{SourceID: "upgrade.fixture", Slot: multiplier.SlotUpgrades, WeightPPM: 100_000, Forsworn: false}}
 	for _, input := range []economy.AxisInput{economy.AxisInputAttainmentRun, economy.AxisInputScoreRun, economy.AxisInputCloutRun} {
 		t.Run(string(input), func(t *testing.T) {
 			artifact.AxisStack.Pinned = &AxisStackPinning{Input: string(input), InputCap: 100, CapReasonKey: "axis.fixture.cap", MaximumAtCapPPM: "1e2"}
