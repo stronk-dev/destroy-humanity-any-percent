@@ -7,6 +7,13 @@
 
 ## Current checkpoint — 2026-10-14
 
+RP-633 Reputation routing correction: the old topology checker accepts a missing Make target,
+removed exhaustive opt-in or a one-study selector. Bind the actual unchanged recipe and reject
+six corruptions (including empty selection, warm execution and lost timeout). Current real-source
+topology, 26 negative controls and existing Make/browser controls pass. The owning log holds
+scope/results and the corrective range after `c05a196a`, pending Claude review. No workflow,
+population, timeout, report, product/kernel or whole-CI status change.
+
 RP-623 local false-green correction: the old replay fixture target returns cached success
 after its actual corpus version changes. Force fresh comparisons in Replay/Pitch/Typer gates
 and a cold default in `test-go`, preserving focused flags and explicit repetition. Actual

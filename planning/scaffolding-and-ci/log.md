@@ -1659,3 +1659,33 @@ Designated Claude review is pending for the single commit containing this entry,
 deployment or full release promotion. After terminal checks, remove only the fresh declared
 postgres test service; inventory is empty. Disposable tmpfs is discarded; no durable volume,
 compiler/module cache, network, unrelated service or user data is removed.
+
+## 2026-10-14 — RP-633 Reputation maintenance recipe guard
+
+Under CI D2/D3/AC5 and RFC-0000, bind the actual `reputation-harness-check`
+recipe, not just the workflow's invocation. The existing target still opts in
+to both named studies with count1 and its unchanged60-minute timeout. No Make,
+workflow, study, balance/report, kernel or production bytes change.
+
+Regression executed against real current workflow/Make/browser sources: load
+the old verifier from `c05a196a` without modifying either checkout. Three
+independent string corruptions (remove opt-in, select only one study, rename
+the target) each pass the old guard and fail the correction. Both verifiers
+accept the healthy sources. The missing opt-in could skip both tests while Go
+returns success; this is a validation blind spot, not an observed hosted skip
+or attribution of an existing CI failure.
+
+Finished checks: `make verify-ci-topology` exits0, rejecting26 permanent
+mutations, six of them covering this recipe. Existing Linux-browser and actual
+Make selector/repetition/report controls also pass. Both changed scripts pass
+`node --check`; diff/whitespace checked. The separate historical complete
+Reputation run remains active and is not a passing result for this checkpoint.
+No unrelated package/build/browser/SQL suite or fresh hosted result is claimed.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. The coherent
+six-path corrective range after `c05a196a` through the containing commit needs
+designated Claude review, consolidatable with prior CI corrections. Independent
+original maintenance-range review and study results belong to the Reputation
+log; this fix does not approve that range or complete CI/feature/1.0 acceptance.
+No new owner decision, RFC, deadline, archival, push or deployment is needed or
+performed for this conformance repair.

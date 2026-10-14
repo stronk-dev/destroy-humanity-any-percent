@@ -33,6 +33,21 @@ const coldGoCommands = [
   ["pitch-corpus-check", "\tcd server && go test ./pitch -run '^TestPitchContentGate$$' -count=1"],
   ["typer-corpus-check", "\tcd server && go test ./typer -run '^TestTyperContentGate$$' -count=1"],
 ];
+const reputationCommand = "\tcd server && CLOUD_CLICKER_REPUTATION_EXHAUSTIVE=1 go test -p 1 -count=1 -timeout 60m ./harness -run '^(TestReputationTreeRelevance|TestReputationCareerStartersShortenRunThree)$$' -v";
+for (const [name, replacement] of [
+  ["missing Reputation opt-in", reputationCommand.replace("CLOUD_CLICKER_REPUTATION_EXHAUSTIVE=1 ", "")],
+  ["missing Reputation study", reputationCommand.replace("TestReputationTreeRelevance|", "")],
+  ["empty Reputation selector", reputationCommand.replace("TestReputationTreeRelevance|TestReputationCareerStartersShortenRunThree", "TestNonexistentReputationPopulation")],
+  ["cached Reputation evidence", reputationCommand.replace(" -count=1", "")],
+  ["unbounded Reputation evidence", reputationCommand.replace(" -timeout 60m", "")],
+]) {
+  const changed = makefile.replace(reputationCommand, replacement);
+  if (changed === makefile) throw new Error(`Reputation mutation did not fire: ${name}`);
+  mutations.push([name, ci, maintenance, changed]);
+}
+const missingReputationTarget = makefile.replace("reputation-harness-check:", "other-harness-check:");
+if (missingReputationTarget === makefile) throw new Error("Reputation target mutation did not fire");
+mutations.push(["missing Reputation target", ci, maintenance, missingReputationTarget]);
 for (const [target, command] of coldGoCommands) {
   const changed = makefile.replace(command, command.replace(" -count=1", ""));
   if (changed === makefile) throw new Error(`cold Go mutation did not fire: ${target}`);

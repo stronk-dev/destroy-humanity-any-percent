@@ -307,7 +307,11 @@ maintenance, unbounded/missing observations, success-only uploads, build-cache r
 missing observation validation. It also binds the exact job populations and observation path; the
 cache check covers both workflows. The same guard binds every blocking job to its one Make leaf and
 binds those six leaves, in order, to `make verify-push`; removing, adding, or substituting either
-side fails a permanent negative fixture. Use these targets when host-platform success could mask
+side fails a permanent negative fixture. Reputation maintenance also binds its actual Make recipe:
+the explicit exhaustive opt-in, both named studies, cold execution and existing 60-minute timeout
+must remain present. Missing targets, skipped/empty/narrowed populations and lost cold/bounded flags
+fail permanent negative controls. This guard validates routing, not the studies' results or hosted
+completion. Use these targets when host-platform success could mask
 scheduling, architecture, or cold-run behavior.
 
 The Game UI worker witness uses the real native Worker and consistent initial/refresh fixture

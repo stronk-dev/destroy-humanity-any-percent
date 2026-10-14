@@ -163,6 +163,14 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource, browse
   const reputation = jobSection(maintenanceSource, "reputation-evidence");
   requireLine(reputation, /^    timeout-minutes: 60\s*$/, "exhaustive Reputation evidence must have its bounded 60-minute budget");
   requireLine(reputation, /^      - run: make reputation-harness-check\s*$/, "maintenance must run the exhaustive Reputation harness evidence");
+  const reputationTarget = "reputation-harness-check";
+  const reputationRecipe = section(makeSource, /^reputation-harness-check:/, /^[^\s#].*:/)
+    .filter((line) => line.startsWith("\t") && !line.trim().startsWith("#"));
+  const reputationCommand = "\tcd server && CLOUD_CLICKER_REPUTATION_EXHAUSTIVE=1 go test -p 1 -count=1 -timeout 60m ./harness -run '^(TestReputationTreeRelevance|TestReputationCareerStartersShortenRunThree)$$' -v";
+  if (lines(makeSource).filter((line) => line.startsWith(`${reputationTarget}:`)).length !== 1 ||
+      reputationRecipe.length !== 1 || reputationRecipe[0] !== reputationCommand) {
+    throw new Error("Reputation maintenance target must opt in to both complete studies cold within its existing budget");
+  }
 
   const setupGoCount = lines(maintenanceSource).filter((line) => /^      - uses: actions\/setup-go@v6\s*$/.test(line)).length;
   const cacheDisabledCount = lines(maintenanceSource).filter((line) => /^          cache: false\s*$/.test(line)).length;
