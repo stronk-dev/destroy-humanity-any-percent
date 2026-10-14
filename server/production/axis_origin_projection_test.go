@@ -532,6 +532,14 @@ func TestAxisOriginDeferredLoggedPurchaseResearch(t *testing.T) {
 // come from outside it. Use existing replay-owned context, not rounded rates
 // or a proposed save field, to test the next bounded composition requirement.
 func TestAxisOriginDeferredExternalContextResearch(t *testing.T) {
+	if len(originExternalReplayActions(t)) != 6 {
+		t.Fatal("external replay action census incomplete")
+	}
+}
+
+func originExternalReplayActions(t *testing.T) []axisSequenceAction {
+	t.Helper()
+	var actions []axisSequenceAction
 	bundle := axisContentBundle(t)
 	start := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
 	at := start.Add(2001 * time.Millisecond)
@@ -631,7 +639,7 @@ func TestAxisOriginDeferredExternalContextResearch(t *testing.T) {
 					}
 				}
 				baseline := activationRestore(t, bundle, origin, 19, start)
-				ordinary := originLoggedManual(t, bundle, baseline, at, mode, accrual)
+				ordinary, request, inputs := originLoggedManualEvidence(t, bundle, baseline, at, mode, accrual)
 				if !baseline.LifetimeValue.Gt(initial.LifetimeValue) ||
 					profile.member && (!hasEventKind(ordinary.Events, save.EventCompactSampled) || len(baseline.CompactSamples) == 0) ||
 					profile.guild && (!hasEventKind(ordinary.Events, save.EventGuildTitheAccrued) || baseline.GuildTitheCarryPPM == initial.GuildTitheCarryPPM) {
@@ -672,6 +680,7 @@ func TestAxisOriginDeferredExternalContextResearch(t *testing.T) {
 					profile.guild && (hasEventKind(wrong.Events, save.EventGuildTitheAccrued) || complete.GuildTitheCarryPPM != initial.GuildTitheCarryPPM) {
 					t.Fatal("pre-advanced control failed to expose lost hooks despite equal cash")
 				}
+				actions = append(actions, originReplayAction(t, profile.name+"/"+string(mode), origin, request, inputs, baseline, ordinary))
 				cells++
 			})
 		}
@@ -680,16 +689,63 @@ func TestAxisOriginDeferredExternalContextResearch(t *testing.T) {
 		t.Fatalf("external-context census incomplete: %d", cells)
 	}
 	t.Log("6 external-context/manual cells preserve complete transitions; omission loses rates and pre-advance loses hooks; AC6 NOT_PROVEN")
+	return actions
 }
 
 func originLoggedManual(t *testing.T, bundle CatalogBundle, state *save.State, now time.Time, mode EvaluationMode, accrual replayAccrual) LoggedTransition {
+	transition, _, _ := originLoggedManualEvidence(t, bundle, state, now, mode, accrual)
+	return transition
+}
+
+func originLoggedManualEvidence(t *testing.T, bundle CatalogBundle, state *save.State, now time.Time, mode EvaluationMode, accrual replayAccrual) (LoggedTransition, IntentRequest, []byte) {
 	t.Helper()
 	request, inputs := originManualInputs(t, bundle, state, now, mode, accrual, "manual.click")
 	transition, err := ApplyLogged(state, request.CanonicalPayload, bundle, inputs)
 	if err != nil || transition.Outcome != save.IntentApplied {
 		t.Fatalf("external-origin manual action outcome=%s error=%v", transition.Outcome, err)
 	}
-	return transition
+	return transition, request, inputs
+}
+
+func originReplayAction(t *testing.T, name string, before []byte, request IntentRequest, inputs []byte, state *save.State, transition LoggedTransition) axisSequenceAction {
+	t.Helper()
+	return axisSequenceAction{Name: name, PreStateJSON: canonicalFixtureJSON(t, before),
+		Payload: request.CanonicalPayload, Inputs: json.RawMessage(inputs), Outcome: string(transition.Outcome),
+		ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, fixtureEvents(transition.Events)),
+		PostStateJSON: canonicalFixtureJSON(t, mustEncodeState(t, state))}
+}
+
+func TestAxisExternalReplayEvidenceCapture(t *testing.T) {
+	bundle := axisContentBundle(t)
+	start := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
+	actions := append(originExternalReplayActions(t), originGuildReplayActions(t)...)
+	expected := []string{}
+	for _, profile := range []string{"commons", "fiscal", "commons_fiscal_guild", "single", "ordered", "nonzero_base"} {
+		for _, mode := range []string{"online", "offline"} {
+			expected = append(expected, profile+"/"+mode)
+		}
+	}
+	if len(actions) != len(expected) {
+		t.Fatal("external/Guild capture is not the complete twelve-cell population")
+	}
+	for index, action := range actions {
+		t.Run("captured/"+action.Name, func(t *testing.T) {
+			if action.Name != expected[index] || action.Outcome != string(save.IntentApplied) {
+				t.Fatal("captured action identity/outcome mismatch")
+			}
+			state := activationRestore(t, bundle, []byte(action.PreStateJSON), 19, start)
+			if canonicalFixtureJSON(t, mustEncodeState(t, state)) != action.PreStateJSON {
+				t.Fatal("capture lost complete admitted pre-state")
+			}
+			result, err := ApplyLogged(state, action.Payload, bundle, action.Inputs)
+			if err != nil || result.Outcome != save.IntentApplied ||
+				canonicalFixtureJSON(t, result.Receipt) != action.ReceiptJSON ||
+				canonicalFixtureValue(t, fixtureEvents(result.Events)) != action.EventsJSON ||
+				canonicalFixtureJSON(t, mustEncodeState(t, state)) != action.PostStateJSON {
+				t.Fatalf("captured complete transition does not replay: %v", err)
+			}
+		})
+	}
 }
 
 func originManualInputs(t *testing.T, bundle CatalogBundle, state *save.State, now time.Time, mode EvaluationMode, accrual replayAccrual, actionID string) (IntentRequest, []byte) {
@@ -986,6 +1042,14 @@ func (provider *originSettlementProvider) Contributions(ctx context.Context, sta
 }
 
 func TestAxisOriginDeferredGuildSettlementResearch(t *testing.T) {
+	if len(originGuildReplayActions(t)) != 6 {
+		t.Fatal("Guild replay action census incomplete")
+	}
+}
+
+func originGuildReplayActions(t *testing.T) []axisSequenceAction {
+	t.Helper()
+	var actions []axisSequenceAction
 	bundle := axisContentBundle(t)
 	start := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
 	at := start.Add(2001 * time.Millisecond)
@@ -1048,7 +1112,7 @@ func TestAxisOriginDeferredGuildSettlementResearch(t *testing.T) {
 					t.Fatal(err)
 				}
 				ordinaryState := activationRestore(t, bundle, origin, 19, start)
-				ordinary := originLoggedManual(t, bundle, ordinaryState, at, mode, accrual)
+				ordinary, ordinaryRequest, ordinaryInputs := originLoggedManualEvidence(t, bundle, ordinaryState, at, mode, accrual)
 				if ordinaryState.StockUnits != expectedSettled.StockUnits || ordinaryState.ConsumedStockUnits != expectedSettled.ConsumedStockUnits ||
 					ordinaryState.GuildBoundarySeq != profile.rows[len(profile.rows)-1].BoundarySeq || ordinaryState.GuildBoundaryGuildID != guildID ||
 					ordinaryState.GuildConsumedWindow != expectedSettled.GuildConsumedWindow || !ordinaryState.LifetimeValue.Gt(initial.LifetimeValue) ||
@@ -1104,6 +1168,7 @@ func TestAxisOriginDeferredGuildSettlementResearch(t *testing.T) {
 					t.Fatalf("rollback control did not reach the post-accrual affordability decision: %s", rejected.Receipt)
 				}
 				assertTransition(rejectedState, originLoggedManual(t, bundle, rejectedState, at, mode, retained))
+				actions = append(actions, originReplayAction(t, profile.name+"/"+string(mode), origin, ordinaryRequest, ordinaryInputs, ordinaryState, ordinary))
 				completed++
 			})
 		}
@@ -1112,4 +1177,5 @@ func TestAxisOriginDeferredGuildSettlementResearch(t *testing.T) {
 		t.Fatalf("settlement population incomplete: %d/6", completed)
 	}
 	t.Log("6 nonempty Guild-context cells: exact closed transitions, settled producer inputs, omission/duplicate/rollback controls; AC6 NOT_PROVEN")
+	return actions
 }

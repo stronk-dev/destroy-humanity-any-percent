@@ -6,6 +6,37 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+## R-012 external replay compatibility — declared 2026-10-15
+
+Question: do actual TypeScript logged transitions preserve the complete Go results
+for the existing external and nonempty Guild contexts? Reuse their two six-cell
+populations unchanged: Commons, Fiscal, combined Commons/Fiscal/Guild, and single,
+ordered, nonzero-base settlements, each online/offline at2001ms. Preserve all existing
+Go omission, pre-advance, duplicate-clearing and post-accrual rollback controls.
+
+Retain each actual request/input, complete pre/post Company, receipt and ordered events
+from the existing Go producers. Reuse the existing research-artifact helpers, one
+hash-bound bundle and current replay loader; no duplicated source of expected values.
+All twelve admitted TS transitions must reproduce those three outputs exactly and
+round-trip the resulting state. For the six settlement cells, omitting the batch must
+change settlement state despite unchanged neutral-rate cash; duplicate batches must
+refuse unchanged; late unaffordable purchases must reject with complete rollback.
+Each negative's Go behavior is the reference, not an invented rejection rule.
+
+Capture all twelve or fail; no successful subset, fixture restamp, tolerance or new
+numeric/absence/origin contract. A mismatch is a finding to route under the existing
+authority. This can prove bounded compatibility only, not a conservation algorithm,
+live provider/SQL capture, actual acquisition, AC6, content mint or full1.0 acceptance.
+First extract observation-only Go capture from the existing tests; execute their
+unchanged controls before generating the shared consumer artifact.
+
+Capture preparation executes at the2026-10-15 checkpoint: the existing Go producers
+now return their actual request/input and complete transition observations; all twelve
+records replay to identical Go state/receipt/events. Existing lower-domain,128 purchase,
+42 temporal and external/Guild controls still pass. No artifact is generated yet and no
+TypeScript comparison is claimed. Next share this bounded capture with the existing TS
+replay harness and carry the declared six settlement refusal/rollback controls across.
+
 2026-10-13 RP-537 guard checkpoint: the test-only repair now catches the six
 typed syntax/alias forms missed by the original scanner, retains value-read
 controls, and scans the save codec with exactly two checked copy exceptions.

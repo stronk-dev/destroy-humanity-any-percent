@@ -3208,3 +3208,25 @@ through this containing commit needs designated Claude review; consolidate with
 the related corrective range after `30050a93` instead of reviewing each record
 separately. Original negative verdicts approve none of these fixes. Next: remaining
 accepted ownership/reward boundaries and construction, with no archival or push.
+
+## 2026-10-15 — Prepare actual external/Guild replay observations
+
+The old serialization/SQL studies are complete; do not repeat them as new progress.
+Declare the missing12-cell Go/TS compatibility question in the owning plan before
+measurement. Extract observation-only returns from the existing two Go producers,
+capturing the actual request/input rather than rebuilding it after the action.
+Keep all omission, pre-advance, duplicate-clearing and late-purchase rollback checks.
+
+`TestAxisExternalReplayEvidenceCapture` verifies the exact twelve names and replays
+each capture through actual Go ApplyLogged, comparing full state, receipt and ordered
+events. Cold67241 also passes the existing20 lower-domain,128 purchase,42 temporal
+and6+6 external/Guild populations; production vet passes. Verbose capture is truncated,
+so only retained parent verdicts/census assertions, not a complete per-child transcript,
+are claimed. Old temporal results match with historical source differences disclosed;
+no corpus or recorded digest is overwritten. Formatting/diff checked.
+
+Review by: Codex (test implementer first filter). Recorded by: Codex. Preparation
+after `12208257` starts the related research range; consolidate its later Go/TS capture,
+controls and results into one designated review. No runtime/kernel/save/wire/balance,
+policy, content, CI or author body changes. TS comparison and new artifact generation
+remain next, not completed; original27 failures and all1.0 gates remain open.
