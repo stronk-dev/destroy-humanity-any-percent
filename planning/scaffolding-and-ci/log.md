@@ -1782,3 +1782,21 @@ Current plan/status link there; previous successful `8e4d0877` is historical, no
 the current-source verdict. No CI topology, budget, assertion weakening, hosted
 success, reliability closure or release claim. RP-637 remains agent diagnosis,
 not a pending owner decision; the full server/history failures remain independent.
+
+## 2026-10-15 — Complete browser gate at fc398997
+
+Clean `fc398997` `make test-browser-ci`75582 terminates exit0 with the committed
+final diagnostic controls: broad477 files/39804 ordinary passes,9 expected failures,
+24 skips in184.54s; native3 files/87 ordinary and6 expected failures in3.93s;
+Chromium performance5 pass/105 selector skips in6.66s. Same declared cold install,
+root Make phases, Linux/ARM64 image and unchanged ten-minute containment. Source
+stays unchanged during execution. Full stdout is partly truncated; terminal summary
+and these phase results are retained, not a complete individual-case transcript.
+
+The attempted parent-focus probe was fully withdrawn before this run; its negative
+result belongs to the Clout log. RP-637 does not recur here and remains unattributed,
+not repaired. This is current local browser evidence, not hosted AMD64/runner timing,
+full push aggregate, feature/release acceptance or independent approval. Previous
+browser failures and server/history failures remain. The runner auto-removes; final
+service inventory is empty. Record-only checkpoint; prior corrective review debt
+persists, with no product change, archival or push.

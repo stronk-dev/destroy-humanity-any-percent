@@ -7,12 +7,13 @@
 
 ## Current checkpoint — 2026-10-15
 
-Current browser diagnosis at product `b248d26a`: two full Linux/ARM64 populations
-fail the same Firefox Tier2 Enter Codex case, at Close then Open. A later test-only
-instrumented population completes all phases, not a product repair or RP-637
-closure. The [Clout log](../clout-v1-and-pr-interns/log.md#2026-10-15--rp-637-full-linux-native-disclosure-failure-and-diagnostics)
-owns failure text, diagnostic controls and the final affected-file verification.
-Preserve the red observations and investigate recurrence; do not retry for approval.
+Current clean-source browser gate at `fc398997` completes all three Linux/ARM64
+phases, including the final diagnostic controls. The [CI checkpoint](log.md#2026-10-15--complete-browser-gate-at-fc398997)
+owns exact counts/limits. Earlier full populations fail the same Firefox Tier2
+Enter Codex case at Close then Open; RP-637 is not repaired or attributed by later
+passes. The [Clout log](../clout-v1-and-pr-interns/log.md#2026-10-15--rp-637-full-linux-native-disclosure-failure-and-diagnostics)
+owns failure diagnostics and the refuted parent-focus model. Preserve the failures;
+investigate actual recurrence, not unchanged reruns for approval.
 
 Current full server-gate execution at `3bde51b5`: `make verify-server-ci` runs cold
 in the declared Linux-amd64/Postgres composition and exits2. Vet passes;64 test

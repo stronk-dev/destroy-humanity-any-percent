@@ -3319,3 +3319,21 @@ open; no product/copy/schema/kernel/budget/worker/policy/CI-topology change, own
 decision, archive, push or1.0 promotion. Next: use retained final-error evidence on
 recurrence to distinguish actual key delivery/default-toggle delay and frame focus;
 do not rerun this unchanged population for another green or reopen completed studies.
+
+## 2026-10-15 — RP-637 parent-focus control refuted
+
+Controlled probe asks whether focusing a real parent-frame control leaves the
+child summary as activeElement while native input misses it. Native Chromium/
+WebKit90034 and same-image Linux Firefox72480 all fail that premise: child
+activeElement is BODY immediately after parent focus, not the retained summary.
+No keyboard action or later recovery arm executes. Typecheck25953 passes, but
+that is not behavioral proof. Withdraw the entire uncommitted probe with an exact
+empty source diff; do not restate its premise as a browser/provider defect or
+land a focus workaround. Other routes to frame-focus loss remain untested.
+
+Clean-source full Linux gate75582 at `fc398997` subsequently completes all phases;
+the CI log owns results. No natural failure recurs, so there is no new diagnostic
+causation evidence or RP-637 repair. Existing final-error diagnostics and original
+failures remain. Next use actual recurrence evidence, not repeated unchanged runs
+for reassurance. Record-only outcome; no new software review range or product
+claim. Previous diagnostic implementation still needs its designated review.
