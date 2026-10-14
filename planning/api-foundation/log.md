@@ -2768,3 +2768,42 @@ generator/tests/version/docs/records range after `c7f9383f` through this contain
 designated Claude review, consolidatable with C18. Fourteen of nineteen pinned owners export;
 five, complete union/catalog serving and public re-verification remain. No draft/owner adoption,
 archival/publication or narrower nine-tier1.0 goal. Continue accepted construction.
+
+## 2026-10-14 — Minigame artifact schemas and exact policy admission (RP-589)
+
+Resume clean `c6e46f5a`. Recheck C27-C34/Soul SB22, the catalog and all policy-helper callers;
+the exact-key helper is used only for catalog policies, not nullable session/result DTOs.
+Old Go fails19 malformed candidates: seven null numeric policies, six incomplete/nonliteral
+curve fields and six fallback identity/reduction cases. The explicit-zero control passes;
+TS already passes the matching20 checks. Require non-null policy fields, exact curve rows
+and exact bot/NPC identity rows before struct decoding. Keep raw unique-member admission.
+Genuine kernel0.3.203→0.3.204; no faucet, quality, rating, scaling, clock or fallback value change.
+
+`MinigameSchemas` exports the v2/v3 catalog union and named ranked-scaling, payout, fallback,
+offline-quality, rating and unlock schemas. Historical v2/current v3, both stored bundles and
+nonempty Pitch/Typer/Arcade fixtures load/validate byte-unchanged. All three fallback arms ×
+seven unlock/scalar cases pass. Seventeen malformed policy cases plus three v3 Soul-gate
+refusals and ten schema-valid semantic counterexamples retain owner checks for ordering,
+identity/relations, conditional scaling, resource/fact/copy/automation and Soul bindings.
+Escaped names, raw-duplicate refusal, legal zeros and fresh-export isolation remain; ranked
+power remains structurally refused. This is catalog construction, not an activated tenant.
+
+Final cold minigame/publicapi/kernel/replaycatalog/decimal/formulas/cmd-gen-formulas and
+affected vet (also production) pass. Node affected policy/catalog/quality/resolution/replay/
+numeric6544 and native Chromium/WebKit13088 pass. Pure
+`TestMinigameActivationSeedsPinnedDefinitionState` and
+`TestCompanyMinigameResolutionReplaysZeroCredit` actually execute, no skips. Types zero errors/
+warnings, build, byte-unchanged `make api-check` and Commons boundary guard pass.
+`make formulas-check` initially reports expected current source-fingerprint drift from the
+loader fixes. Regenerate/stage that one JSON field; final check passes. Expressions, policy
+values, artifact schema, client formula schema, balance/testdata/historical bytes are unchanged.
+No historical regeneration, content mint, SQL/composed player, Firefox/Linux/hosted/full CI
+or release claim. Docker's preceding bounded timeout remains the latest service observation;
+no restart/host DB. Historical guard/Clout and broader acceptance/review debt stay open.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Entire policy/schema/tests/
+version/generated-fingerprint/docs/records range after `c6e46f5a` through this containing commit
+needs designated Claude review, consolidatable with C18. Fifteen of nineteen pinned owners
+export; Economy, Routes, Minigame API and Relevance, the complete union/catalog HTTP and public
+re-verification remain. Metadata-only scope and integer-encoding drafts remain unadopted; no
+owner inference, archival/publication or narrowed nine-tier1.0 floor. Continue accepted work.

@@ -6,6 +6,21 @@ tenant certifies the result, and the platform resolves its payout and Founder ef
 
 ## Authoritative sessions
 
+The API C18 artifact export `minigame.MinigameSchemas()` defines a closed `MinigameCatalog`
+union of historical v2 and Soul-aware v3, with exact scaling, payout, fallback, offline-quality,
+rating and unlock schemas. v3 requires a declared Soul gate; v2 keeps its original row shape.
+Scaling remains ranked breadth/presentation only, and fact-unlock values are the existing
+boolean/string/signed-integer union—not arbitrary JSON.
+
+Required catalog-policy values cannot be null or become implicit zeros. Offline grade rows
+and bot/NPC identities require their exact decoded keys. Legal explicit zeros remain valid;
+session/result nullability, raw-member uniqueness, payouts, clocks and Fairness mechanics are
+unchanged. Kernel0.3.204 records this admission correction. Ordering, uniqueness, conditional
+scaling references/operands, policy relations, declared facts/resources/copy/automation and
+Soul bundle eligibility remain mandatory owner/composition checks. The current generated formula
+document updates only its source fingerprint; historical artifact bytes are not rewritten.
+This export does not complete catalog serving, public re-verification or platform acceptance.
+
 `minigame_sessions` is the Postgres authority for Phase-A `solo` and `async_snapshot` sessions.
 `live_pvp` is deliberately rejected until its separate service owns realtime lifecycle rules.
 Every row freezes the Founder/Company run identity, pinned constants hash, minigame and engine

@@ -76,6 +76,9 @@ func LoadFallbackPolicy(data []byte) (FallbackPolicy, error) {
 		if !hasExactJSONKeys(data, "bot_ref", "kind", "rate_reduction_ppm") {
 			return FallbackPolicy{}, ErrInvalidFallbackPolicy
 		}
+		if !hasExactJSONKeys(raw["bot_ref"], "policy_id", "version") {
+			return FallbackPolicy{}, ErrInvalidFallbackPolicy
+		}
 		var wire fallbackBotWire
 		if decodeExact(data, &wire) != nil || !validPolicyIdentity(wire.BotRef.PolicyID, wire.BotRef.Version) || !validReduction(wire.RateReductionPPM) {
 			return FallbackPolicy{}, ErrInvalidFallbackPolicy
@@ -83,6 +86,9 @@ func LoadFallbackPolicy(data []byte) (FallbackPolicy, error) {
 		return FallbackPolicy{Kind: FallbackBot, BotRef: &PolicyIdentity{ID: wire.BotRef.PolicyID, Version: wire.BotRef.Version}, RateReductionPPM: wire.RateReductionPPM}, nil
 	case FallbackNPCPartner:
 		if !hasExactJSONKeys(data, "kind", "npc_profile", "rate_reduction_ppm") {
+			return FallbackPolicy{}, ErrInvalidFallbackPolicy
+		}
+		if !hasExactJSONKeys(raw["npc_profile"], "profile_id", "version") {
 			return FallbackPolicy{}, ErrInvalidFallbackPolicy
 		}
 		var wire fallbackNPCWire
@@ -109,7 +115,10 @@ func hasExactJSONKeys(data []byte, expected ...string) bool {
 		return false
 	}
 	actual := make([]string, 0, len(raw))
-	for key := range raw {
+	for key, value := range raw {
+		if bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return false
+		}
 		actual = append(actual, key)
 	}
 	sort.Strings(actual)

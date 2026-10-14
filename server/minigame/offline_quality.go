@@ -37,6 +37,17 @@ func LoadOfflineQualityPolicy(data []byte, declarations OfflineQualityDeclaratio
 		declarations.ScoreFactIDs == nil || declarations.AutomationDestinations == nil {
 		return OfflineQualityPolicy{}, ErrInvalidOfflineQualityPolicy
 	}
+	var rows struct {
+		Curve []json.RawMessage `json:"grade_curve"`
+	}
+	if json.Unmarshal(data, &rows) != nil {
+		return OfflineQualityPolicy{}, ErrInvalidOfflineQualityPolicy
+	}
+	for _, row := range rows.Curve {
+		if !hasExactJSONKeys(row, "score_threshold", "grade_ppm") {
+			return OfflineQualityPolicy{}, ErrInvalidOfflineQualityPolicy
+		}
+	}
 	var policy OfflineQualityPolicy
 	if decodeExact(data, &policy) != nil || !mechanicalPattern.MatchString(policy.ScoreFact) ||
 		!mechanicalPattern.MatchString(policy.AutomationDestination) || policy.DecayGridMS <= 0 ||
