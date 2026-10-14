@@ -209,6 +209,13 @@ The topology check also verifies that the Linux container delegates to the unmod
 target; copied, functional-only, focused or project-narrowed commands are rejected. This guards
 execution parity, not browser behavior or hosted timing; the actual lane must still execute.
 
+Reputation host tests emit `reputation-host-deadline` on an actual test abort, before teardown
+removes the mounted evidence. The payload identifies the case/user agent, import/native-RPC/
+drain/unmount stage, outstanding input, settled-command timing and controlled UI/network state.
+These are native-command promise observations, not proof of delivered gameplay or a timeout
+cause. The intentional 50 ms control uses `reputation-host-expected-deadline`; successful ordinary
+cases emit neither marker. The observer does not cancel input or bypass the existing drain rule.
+
 The normal container command wraps the frozen installation and both browser lanes in GNU
 `timeout --verbose --signal=KILL 10m`, matching the hosted browser job's existing containment
 ceiling. A stuck test process group cannot keep the local job alive indefinitely. A deadline

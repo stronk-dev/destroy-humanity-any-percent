@@ -1555,3 +1555,38 @@ after `81107554` through this containing commit needs designated Claude review,
 consolidatable with prior CI work. Both runs use automatically removed disposable
 containers/anonymous dependency volumes; final declared inventory is empty. No
 push, archival, changed guard authority or full-nine-tier acceptance follows.
+
+## 2026-10-14 — RP-526 Reputation host deadline observation
+
+At clean `a57b7fd8`, the prior default Linux timeout remains red; isolated
+success does not explain it. Under CI D2/RFC-0000, add test-only failure
+observation to the mounted host: case/user-agent, elapsed stage, active input,
+native calls started/settled and timing, focus/mount/busy, snapshot/intent and
+controlled socket state. Capture before teardown; preserve native RPC, lifetime
+guards and drain order. No player, worker, assertion, timeout, balance or CI
+population removal. One additional ordinary control exercises actual native
+navigation and silent success; the existing deliberate deadline stays50ms.
+
+First candidate13697 fails two observer assertions because Vitest's reason
+includes help text. Next12451 fails two stage assertions because the deadline
+fires while subscription readiness is awaited, before the producer gate exists.
+Compare the actual reason and independently captured continuation-at-deadline;
+do not lengthen50ms or falsely label initialization as a producer wait.
+
+Final full mounted population36323:180 ordinary/2 expected failures in native
+Chromium/WebKit,24.97s. Actual Linux/ARM64 Firefox94144:90 ordinary/1 expected,
+26.03s, frozen disposable Compose preparation and root focused leaf. Neither
+is a whole Linux/hosted gate. Disconnected-observer41455 fails both negative
+controls with empty evidence; restore registration exactly. Final selected
+controls91264 pass4 ordinary/2 expected (176 explicitly deselected),1.54s.
+Both expected payloads reach actual Vite error output with user-agent/stage and
+still-mounted state. Initial console.info delivery yielded no visible marker;
+use the demonstrated error channel, clearly label deliberate failures. Types/
+Svelte27556 pass with zero errors/warnings; diff checked. No client rebuild for
+unchanged shipped code. All named checks are terminal; disposable inventory empty.
+
+Next: run the ordinary full Linux job with these passive observations; no
+unchanged green-seeking retry or cause/reliability claim. Review by: Codex
+(implementer first filter). Recorded by: Codex. Exact range after `a57b7fd8`
+through this containing commit needs designated Claude review, consolidatable
+with CI work. RP-526, hosted latency, other CI failures and full1.0 remain open.

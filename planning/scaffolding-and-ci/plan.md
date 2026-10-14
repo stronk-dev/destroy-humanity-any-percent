@@ -7,6 +7,16 @@
 
 ## Current checkpoint — 2026-10-14
 
+Current RP-526 diagnostic: the mounted Reputation host now captures failure-only case/user-agent,
+input-import/native-RPC/drain/unmount stage and actual command-promise/host state before cleanup.
+The existing 50 ms deadline control validates early initialization versus producer-gate timing;
+one added real-native-action control checks nonzero counters and silent successful teardown.
+Removing abort registration makes the negative fail. Native Chromium/WebKit and isolated Linux
+Firefox populations pass; final selected controls prove actual error-output delivery and types
+pass. This is tested observation, not a repair or full-population success. Next run the unchanged
+default Linux job with this observer to localize any recurrence. Preserve the preceding timeout,
+all deadlines, workers and original player assertions; the owning log holds limits and review.
+
 Current local/Actions parity correction (RP-613): the Linux Playwright container now installs
 GNU Make and delegates to the same root `make test-browser` as Actions, instead of bypassing
 the broad/native/performance split with copied Vitest commands. The old verifier admits the

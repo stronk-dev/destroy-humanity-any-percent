@@ -136,27 +136,65 @@ function controlledBoundary(tier: number, windDownEligible = false, options: { h
   };
 }
 
-function mountedHost(testContext: TestContext, boundary: ReturnType<typeof controlledBoundary>) {
+function mountedHost(testContext: TestContext, boundary: ReturnType<typeof controlledBoundary>,
+  report: (value: Record<string, unknown>) => void = (value) => console.error("reputation-host-deadline", JSON.stringify(value))) {
   testContext.signal.throwIfAborted();
-  const keyboard = lifetimeKeyboard(testContext.signal, async (keys) => {
-    const { userEvent } = await import("vitest/browser");
-    testContext.signal.throwIfAborted();
-    await userEvent.keyboard(keys);
-  });
+  const began = performance.now();
+  let stage = "mount", stageBegan = began;
+  let activeInput: { keys: string; began_ms: number } | null = null;
+  let nativeStarted = 0, nativeSettled = 0, nativeElapsedMS = 0;
+  let draining = false;
+  const enter = (next: string) => { stage = next; stageBegan = performance.now(); };
   const target = document.createElement("main"); document.body.append(target);
+  // Observe the real deadline before cleanup can remove its evidence. This does
+  // not race, cancel or release a native RPC, nor change its lifetime/drain rule.
+  const readObservation = () => {
+    const now = performance.now();
+    const focus = document.activeElement;
+    return { test: testContext.task.name, user_agent: navigator.userAgent, stage, elapsed_ms: now - began,
+      stage_elapsed_ms: now - stageBegan, aborted: testContext.signal.aborted,
+      reason: !testContext.signal.aborted ? null : testContext.signal.reason instanceof Error ? testContext.signal.reason.message : String(testContext.signal.reason),
+      active_input: activeInput ? { keys: activeInput.keys, elapsed_ms: now - activeInput.began_ms } : null,
+      native_started: nativeStarted, native_settled: nativeSettled, native_elapsed_ms: nativeElapsedMS,
+      mounted: target.isConnected, snapshot_calls: boundary.snapshotCalls, intents: boundary.requests.length,
+      sockets: boundary.sockets.map((socket) => ({ closed: socket.closed, commands: socket.commands.length })),
+      focused: focus ? { tag: focus.tagName, id: focus.id, role: focus.getAttribute("role"), inside_host: target.contains(focus) } : null,
+      host_busy: target.querySelector("main")?.getAttribute("aria-busy") ?? null };
+  };
+  const capture = () => report(readObservation());
+  testContext.signal.addEventListener("abort", capture, { once: true });
+  const keyboard = lifetimeKeyboard(testContext.signal, async (keys) => {
+    activeInput = { keys, began_ms: performance.now() };
+    enter("import-native-driver");
+    let nativeBegan: number | undefined;
+    try {
+      const { userEvent } = await import("vitest/browser");
+      testContext.signal.throwIfAborted();
+      enter("native-keyboard-rpc"); nativeBegan = performance.now(); nativeStarted++;
+      await userEvent.keyboard(keys);
+    } finally {
+      if (nativeBegan !== undefined) { nativeSettled++; nativeElapsedMS += performance.now() - nativeBegan; }
+      activeInput = null; enter(draining ? "drain-native-input" : "test-body");
+    }
+  });
   const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+  enter("test-body");
   let disposal: Promise<void> | undefined;
   const dispose = () => disposal ??= (async () => {
+    draining = true;
+    enter("drain-native-input");
     try { await keyboard.closeAndDrain(); }
     finally {
+      enter("release-controlled-replies");
       boundary.cleanup();
+      enter("unmount");
       try { await settle(); await unmount(app); }
-      finally { target.remove(); }
+      finally { target.remove(); testContext.signal.removeEventListener("abort", capture); }
     }
   })();
   testContext.onTestFinished(dispose);
   return { target, boundary, press: keyboard.press,
-    checkActive: () => testContext.signal.throwIfAborted(), dispose };
+    checkActive: () => testContext.signal.throwIfAborted(), observeStage: enter, readObservation, dispose };
 }
 type HostFixture = ReturnType<typeof mountedHost>;
 
@@ -166,17 +204,27 @@ describe("Reputation host deadline cleanup", () => {
   let oldBoundary: ReturnType<typeof controlledBoundary>;
   let release: () => void;
   let continued: Promise<void>;
+  const deadlineObservations: Record<string, unknown>[] = [];
+  let continuationAtDeadline: Promise<void> | undefined;
 
   it.skipIf(!browser).fails("expires while its mounted host producer is waiting", async (testContext) => {
     expiredSignal = testContext.signal;
     const boundary = controlledBoundary(0);
-    const host = mountedHost(testContext, boundary);
+    const host = mountedHost(testContext, boundary, (value) => {
+      deadlineObservations.push(value);
+      // Retain this deliberate timeout too: a stall in its cleanup must not
+      // disappear merely because the test is expected to fail.
+      console.error("reputation-host-expected-deadline", JSON.stringify(value));
+    });
+    testContext.signal.addEventListener("abort", () => { continuationAtDeadline = continued; }, { once: true });
     const { target } = host;
     oldTarget = target; oldBoundary = boundary;
     try {
+      host.observeStage("waiting-subscription-ready");
       await expect.poll(() => boundary.sockets[0]?.commands.length).toBe(3);
       const gate = new Promise<void>((resolve) => { release = resolve; });
       continued = (async () => { await gate; await enterTree(host, "era_1995"); })();
+      host.observeStage("waiting-producer-gate");
       await continued;
     } finally { await host.dispose(); }
   }, 50);
@@ -188,10 +236,43 @@ describe("Reputation host deadline cleanup", () => {
       expect(oldBoundary.sockets).toHaveLength(1);
       expect({ mounted: oldTarget.isConnected, socketClosed: oldBoundary.sockets[0]!.closed })
         .toEqual({ mounted: false, socketClosed: true });
+      expect(deadlineObservations).toHaveLength(1);
+      expect(deadlineObservations[0]).toMatchObject({ aborted: true,
+        mounted: true, active_input: null,
+        native_started: 0, native_settled: 0, native_elapsed_ms: 0, snapshot_calls: 1, intents: 0,
+        sockets: [{ closed: false, commands: 3 }] });
+      expect(deadlineObservations[0]!.reason).toBe(expiredSignal.reason.message);
+      // The unchanged 50 ms deadline can fire during initialization. Compare
+      // the recorded stage with whether the actual producer had been created,
+      // rather than pretending every timeout reached that producer's gate.
+      expect(deadlineObservations[0]!.stage).toBe(continuationAtDeadline
+        ? "waiting-producer-gate" : "waiting-subscription-ready");
+      for (const key of ["elapsed_ms", "stage_elapsed_ms"] as const) {
+        expect(Number.isFinite(deadlineObservations[0]![key])).toBe(true);
+        expect(deadlineObservations[0]![key]).toBeGreaterThanOrEqual(0);
+      }
       release();
       await expect(continued).rejects.toBe(expiredSignal.reason);
       expect(oldBoundary.requests).toEqual([]);
     } finally { release(); await continued.catch(() => {}); }
+  });
+
+  it.skipIf(!browser)("observes a real native action without reporting a successful host as failed", async (testContext) => {
+    const reports: Record<string, unknown>[] = [];
+    const host = mountedHost(testContext, controlledBoundary(0), (value) => reports.push(value));
+    try {
+      await enterTree(host, "era_1995");
+      const value = host.readObservation();
+      expect(value.user_agent).toBe(navigator.userAgent);
+      expect(value).toMatchObject({ stage: "test-body", aborted: false, reason: null,
+        active_input: null, native_started: 1, native_settled: 1, mounted: true, intents: 0 });
+      expect(Number.isFinite(value.native_elapsed_ms)).toBe(true);
+      expect(value.native_elapsed_ms).toBeGreaterThanOrEqual(0);
+      expect(reports).toEqual([]);
+    } finally { await host.dispose(); }
+    expect(host.readObservation()).toMatchObject({ stage: "unmount", mounted: false,
+      active_input: null, native_started: 1, native_settled: 1, sockets: [{ closed: true, commands: 3 }] });
+    expect(reports).toEqual([]);
   });
 });
 
