@@ -1937,3 +1937,41 @@ context/seed/clock cause or reliability. RP-614 stays open; no more identical
 green-seeking repetitions. Final removal uses only the declared `postgres`
 selector after terminal checks, discarding test tmpfs; inventory is verified
 empty. No durable volume/cache/network/unrelated service or user data removed.
+
+## 2026-10-14 — RP-621 solo membership in a sorted mode list
+
+Accepted MA1/MA-C10 keeps public create server-selected `solo`; Platform MP1 and its catalog
+allow both Phase-A modes. The catalog requires byte sorting, so a dual-mode row lists
+`async_snapshot` before `solo`. The coordinator incorrectly required modes[0]=solo. Check
+membership instead; no request-mode field, async HTTP tenant binding, engine extension, content
+adoption or new fallback policy. Kernel209→210 in all three mirrors records the real admission
+change, not an attempt to repair historical RP-131.
+
+Extend the existing real-Postgres atomic-start test with solo-only, dual-mode and async-only
+diagnostic catalog populations. Rehash/store each bundle normally. The actual Pitch tenant
+still executes only solo; the diagnostic extra mode is not a shipped async Pitch engine.
+Old source31598 fails only dual-mode with `invalid production intent`; the ordinary solo and
+async-only controls pass. Corrected32365 executes all three successfully, package0.925s.
+Both admitted lists retain the original five rollback faults, once-only sequence/seed, exact
+create receipt/retry, exclusivity, active-session Exit guard and verified Founder history.
+Async-only refuses with complete unchanged Founder/Company loads and zero session/create rows.
+
+Finished verification by: Codex. Recorded by: Codex.
+
+- Declared Linux-amd64/Postgres `make test-go-ci CI_TEST_PACKAGES='./production ./gameserver'
+  CI_TEST_FLAGS='-run Minigame -v'`91119 passes2.323s/36.111s, including the new three start
+  populations, solo/async resolution/replay/fault/retry and both real public HTTP lifecycle arms.
+  All selected DB prerequisites execute. This is selected integration, not the full server job,
+  native hosted hardware, a browser journey or closure of intermittent RP-614.
+- Cold native Minigame/Kernel/Gameserver tests and vet67743 pass; Production vet also passes.
+  Native DB skips remain explicit, not SQL proof. Client replay/catalog/resolution/Decimal
+  checks18435 pass6522 across four files. Typecheck/formulas/API77930 pass, zero Svelte
+  diagnostics and byte-identical generated outputs. Formatting/whitespace checks pass.
+
+Single-commit source/test/version/docs/plan/ledger/log range after `a83d590d` needs designated
+Claude review; no self-approval or acceptance/archival checkbox change. Prior review ranges,
+author holds, C18/wire/privacy/clock/content and full nine-tier 1.0 requirements stay open.
+The preceding actual kernel-history check remains red at50a3a514; no full-CI claim, workaround,
+history rewrite, budget change, push or deployment. After terminal checks, remove only this
+turn's fresh declared `postgres` service; final inventory is empty. Disposable tmpfs rows are
+discarded, with no durable volume/cache/network/unrelated service or user data removed.

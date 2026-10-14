@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 	"strconv"
 	"time"
 
@@ -140,7 +141,7 @@ func (s *Service) StartMinigameAPISession(ctx context.Context, platform *minigam
 		}
 		definition, ok := bundle.Minigames.Definition(request.MinigameID)
 		if !ok || !bundle.MinigameAPI.SupportsTenant(request.MinigameID, definition.EngineRef, definition.EngineVersion) ||
-			len(definition.Modes) == 0 || definition.Modes[0] != minigame.ModeSolo {
+			!slices.Contains(definition.Modes, minigame.ModeSolo) {
 			return save.MinigameStartDecision{}, ErrInvalidIntent
 		}
 		// TT-PA3: the start requires pinned content for the requested tenant,

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
@@ -22,6 +23,20 @@ import (
 )
 
 func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplayIntegration(t *testing.T) {
+	for _, row := range []struct {
+		name  string
+		modes []minigame.Mode
+	}{
+		{"solo", []minigame.Mode{minigame.ModeSolo}},
+		{"dual_mode", []minigame.Mode{minigame.ModeAsyncSnapshot, minigame.ModeSolo}},
+		{"async_only", []minigame.Mode{minigame.ModeAsyncSnapshot}},
+	} {
+		t.Run(row.name, func(t *testing.T) { testStartMinigameAPISession(t, row.modes) })
+	}
+}
+
+func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode) {
+	t.Helper()
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")
@@ -45,6 +60,33 @@ func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplayIntegration(t 
 		t.Fatal(err)
 	}
 	bundle.Artifacts = cloneArtifactMap(bundle.Artifacts)
+	// Diagnostic metadata only: this attempts the existing solo operation with
+	// the real solo Pitch engine. It does not implement an async Pitch engine or
+	// make the public request select a mode. Both-mode lists are byte-sorted.
+	var minigames map[string]json.RawMessage
+	if err := json.Unmarshal(bundle.Artifacts["minigames"], &minigames); err != nil {
+		t.Fatal(err)
+	}
+	var rows []map[string]json.RawMessage
+	if err := json.Unmarshal(minigames["minigames"], &rows); err != nil || len(rows) != 1 || string(rows[0]["minigame_id"]) != `"pitch"` {
+		t.Fatalf("expected exactly the Pitch policy: %v", err)
+	}
+	rows[0]["modes"], err = json.Marshal(modes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	minigames["minigames"], err = json.Marshal(rows)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle.Artifacts["minigames"], err = json.Marshal(minigames)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle.Minigames, err = minigame.LoadCatalog(bundle.Artifacts["minigames"])
+	if err != nil {
+		t.Fatal(err)
+	}
 	bundle.Artifacts["minigame_api"] = apiBytes
 	bundle.MinigameAPI, err = minigameapi.LoadCatalog(apiBytes)
 	if err != nil {
@@ -149,6 +191,39 @@ func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplayIntegration(t 
 		WithMinigameActivity(repository))
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if len(modes) == 1 && modes[0] == minigame.ModeAsyncSnapshot {
+		beforeFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		beforeCompany, err := store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = production.StartMinigameAPISession(ctx, platform, StartMinigameAPIRequest{
+			SessionID: "01986666-ca01-7000-8000-000000000010", IntentID: "01986666-ca02-7000-8000-000000000010",
+			FounderID: founderID, CompanyStreamID: companyRevision.StreamID, MinigameID: "pitch", IdempotencyKey: "async-only-refusal",
+		}, now, nil)
+		if !errors.Is(err, ErrInvalidIntent) {
+			t.Fatalf("solo operation admitted async-only policy: %v", err)
+		}
+		afterFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
+		if err != nil || !reflect.DeepEqual(afterFounder, beforeFounder) {
+			t.Fatalf("mode refusal changed Founder: %v", err)
+		}
+		afterCompany, err := store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil || !reflect.DeepEqual(afterCompany, beforeCompany) {
+			t.Fatalf("mode refusal changed Company: %v", err)
+		}
+		for _, table := range []string{"minigame_sessions", "minigame_create_receipts"} {
+			var count int
+			if err := db.QueryRowContext(ctx, "SELECT count(*) FROM "+table+" WHERE founder_id=$1", founderID).Scan(&count); err != nil || count != 0 {
+				t.Fatalf("mode refusal left %s rows=%d err=%v", table, count, err)
+			}
+		}
+		return
 	}
 
 	for index, step := range []string{"founder_genesis", "founder_revision", "founder_events", "founder_log", "retention"} {

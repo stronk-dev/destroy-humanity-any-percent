@@ -1,5 +1,12 @@
 # Minigame API & Surface implementation plan
 
+2026-10-14 mode-selection correction (RP-621): the solo start coordinator now checks membership,
+not the first sorted catalog mode. The old real-Postgres dual-mode fixture refuses an otherwise
+valid solo start; solo-only and async-only controls discriminate. Final existing transaction
+population verifies faults, sequencing, retry, Exit guard and Founder replay for both admitted
+lists, and unchanged saves/zero session/create rows for async-only. Owning log holds final checks
+and the single-commit range after `a83d590d`, pending Claude. No async request/engine or mint.
+
 Current Linux observation (2026-10-14, RP-614): the cold Linux-amd64/Postgres API-consumer
 wave at `8e4d0877` fails the composed lifecycle's literal_scaling branch; its assertion message
 is lost to the agent's too-small output budget. The focused same branch passes18.108s;

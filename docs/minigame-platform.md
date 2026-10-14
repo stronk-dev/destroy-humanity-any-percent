@@ -119,6 +119,13 @@ field. No tenant reads a clock, and no API accepts a client time.
 
 ## Authenticated composed API
 
+The create coordinator starts only the existing `solo` operation. It requires `solo` to be a
+member of the pinned definition's allowed modes, not its first entry: the catalog's required
+byte order puts `async_snapshot` before `solo` in a dual-mode row. Async-only rows still refuse
+before creating a session/receipt or changing Founder/Company saves. Kernel0.3.210 repairs this
+selection without adding mode selection to the request or an async public wire. The diagnostic
+Pitch mode lists are not adopted production content or an implemented async Pitch engine.
+
 The composed server mounts the generated private-v1 registry as the only route authority for
 minigame create, current, command, and resolve requests and for Soul-Recovery start, progress,
 cancel, and resolve requests. Founder identity always comes from the access token. Request schemas
