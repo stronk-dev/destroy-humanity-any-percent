@@ -379,3 +379,41 @@ records range after `4966e296` through this containing commit needs designated C
 consolidatable with earlier Combat construction without erasing its debt. No player copy,
 schema/epoch mint, publication, push or deployment. Continue complete accepted parent work;
 its named effect/table author closure remains separate, not inferred by this row decoder.
+
+## 2026-10-14 — Enforce C3's primitive TypeScript arithmetic inputs (RP-604)
+
+Outcome at `d1fb8d57`: saturateInt32/clamp accept native numbers, fractions,
+NaN, null/undefined, numeric strings, boxed BigInts and booleans through JS
+comparison/Number coercion. The declared BigInt input is only compile-time.
+Damage also silently selects a crit branch from non-boolean truthiness and skips
+that input entirely for zero base power. Correct these existing C3 arithmetic
+boundaries, not the missing C2 effects/catalog or C5 Trust/Soul mechanics.
+
+Regression: add 16 malformed store cases, a no-caller-coercion control and 14
+crit flag cases at zero/nonzero power. Before source edits, Node fails all 31
+new refusals while its existing 54 cases pass. Actual Chromium/WebKit likewise
+fail all 62 new executions and pass 108 existing controls. Verbose failure
+details are tool-truncated; terminal totals and representative failure text
+were inspected. No typed Go call can supply these JS primitive mismatches;
+the shared valid/invalid arithmetic vectors remain the cross-runtime authority.
+
+Correction only adds primitive BigInt/boolean checks before comparisons and
+zero-power return. Valid signed-int32 bounds, BigInt intermediates, late-only
+saturation, staged floor/crit order, RNG and shared fixture bytes are unchanged.
+No production/live/replay consumer imports Combat yet; watched prefixes and
+kernel identity are unchanged. This is not a persisted NaN or public exploit
+finding. Register Combat and genuinely bump/test activation when integration lands.
+
+Finished root checks: all five Combat Node files pass 315 cases; the same five
+files in Chromium/WebKit via make test-browser-focused pass 630 in 1.85s,
+no selected skips. Cold make test-go for ./combat ./integer ./determinism with
+-count=1, same-package vet, both verify-combat-boundary and verify-combat-go-boundary
+pass. Determinism has no standalone tests; Combat exercises its existing vectors.
+Typecheck reports zero errors/warnings; diff checked. No shipped bundle/render,
+SQL/HTTP, Firefox/Linux/CI or battle journey changed or claimed.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete source/
+test/canonical docs/plan/ledger/log range after `d1fb8d57` through this containing
+commit needs designated Claude review, consolidatable with Combat construction.
+No feature completion, archive, mint, push or deployment. Full catalog/effects,
+care tables, engine/bot/player workflows and nine-tier 1.0 remain required.

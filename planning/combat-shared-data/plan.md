@@ -4,6 +4,12 @@
 - **RFC:** `rfc/combat-data-model.md`
 - **Started:** 2026-07-29
 
+2026-10-14 C3 correction (RP-604): TypeScript integer stores reject non-BigInt inputs before
+coercion; damage rejects non-boolean crit flags before the zero-power return. All 31 old-source
+refusals fail in Node and Chromium/WebKit; final 315 Node/630 native checks, cold Go/vet,
+both division gates and typecheck pass. No valid arithmetic, data, kernel activation or battle
+consumer changes. The owning log holds the range after `d1fb8d57`, pending designated review.
+
 1. [x] Extract one shared SplitMix64/rejection-sampling authority and add labeled substreams.
 2. [x] Implement exact int32/int64 combat arithmetic and Temperament chart in Go and TypeScript.
    - C1's six runtime values and36 temperament/runtime identities now have pure Go/TS

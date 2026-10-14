@@ -22,6 +22,42 @@ const fixture = fixtureJson as {
 const temperaments: readonly Temperament[] = ["lazy", "playful", "curious", "sassy", "shy", "chaotic"];
 
 describe("combat shared arithmetic", () => {
+  const invalidIntegers = [
+    { name: "native integer", value: 1 },
+    { name: "fraction", value: 0.5 },
+    { name: "NaN", value: Number.NaN },
+    { name: "null", value: null },
+    { name: "undefined", value: undefined },
+    { name: "numeric string", value: "1" },
+    { name: "boxed bigint", value: Object(1n) },
+    { name: "boolean", value: true },
+  ];
+  const stores = [
+    { name: "saturation", store: (value: unknown) => saturateInt32(value as bigint) },
+    { name: "clamp", store: (value: unknown) => clamp(value as bigint, 0, 100) },
+  ];
+  it.each(stores.flatMap(store => invalidIntegers.map(value => ({ ...value, store: store.store, operation: store.name }))))(
+    "rejects $name at the $operation integer boundary", ({ value, store }) => {
+      expect(() => store(value)).toThrow(RangeError);
+    },
+  );
+  it("does not invoke caller coercion at either integer store boundary", () => {
+    let coercions = 0;
+    const value = { valueOf() { coercions += 1; return 1n; } };
+    for (const { store } of stores) expect(() => store(value)).toThrow(RangeError);
+    expect(coercions).toBe(0);
+  });
+  const invalidCritical = [
+    { name: "zero", value: 0 }, { name: "one", value: 1 },
+    { name: "false string", value: "false" }, { name: "true string", value: "true" },
+    { name: "null", value: null }, { name: "undefined", value: undefined },
+    { name: "boxed boolean", value: Object(false) },
+  ];
+  it.each([0, 64].flatMap(base => invalidCritical.map(entry => ({ ...entry, base }))))(
+    "rejects non-boolean critical $name even with base power $base", ({ value, base }) => {
+      expect(() => damage(base, 64, 0, value as boolean)).toThrow(RangeError);
+    },
+  );
   it("uses vector schema 1", () => expect(fixture.version).toBe(1));
   it.each(fixture.damage)("$name", (vector) => {
     expect(damage(vector.base_power, vector.attacker_atk, vector.chart, vector.critical)).toBe(vector.expected);

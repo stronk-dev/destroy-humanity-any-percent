@@ -19,7 +19,7 @@ export function chart(attacker: Temperament, defender: Temperament): ChartResult
 
 export function damage(basePower: number, attackerAtk: number, result: ChartResult, critical: boolean): number {
   int32(basePower, "base power"); int32(attackerAtk, "attacker atk");
-  if (basePower < 0 || attackerAtk < 0 || (result !== -1 && result !== 0 && result !== 1)) throw new RangeError("invalid damage input");
+  if (basePower < 0 || attackerAtk < 0 || (result !== -1 && result !== 0 && result !== 1) || typeof critical !== "boolean") throw new RangeError("invalid damage input");
   if (basePower === 0) return 0;
   let value = idiv(BigInt(basePower) * BigInt(attackerAtk), 64n);
   if (result === 1) value = idiv(value * 13n, 10n);
@@ -30,12 +30,14 @@ export function damage(basePower: number, attackerAtk: number, result: ChartResu
 }
 
 export function saturateInt32(value: bigint): number {
+  if (typeof value !== "bigint") throw new RangeError("combat integer must be bigint");
   if (value > INT32_MAX) return Number(INT32_MAX);
   if (value < INT32_MIN) return Number(INT32_MIN);
   return Number(value);
 }
 
 export function clamp(value: bigint, minimum: number, maximum: number): number {
+  if (typeof value !== "bigint") throw new RangeError("combat integer must be bigint");
   int32(minimum, "minimum"); int32(maximum, "maximum");
   if (minimum < 0 || maximum < minimum) throw new RangeError("invalid clamp bounds");
   if (value < BigInt(minimum)) value = BigInt(minimum);

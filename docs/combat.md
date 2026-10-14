@@ -102,8 +102,15 @@ Damage is calculated identically in Go and TypeScript using integer stages:
 4. positive base power receives minimum damage 1;
 5. storage saturates to signed int32.
 
-Every intermediate is int64/BigInt. HP and stamina use explicit integer clamp operations. Native
-division is absent from `server/combat` and `client/src/combat`; the shared Go
+Every intermediate is int64/BigInt. HP and stamina use explicit integer clamp operations.
+
+TypeScript integer-store inputs must be primitive BigInts, and the damage critical flag must
+be a primitive boolean, even for zero base power. Runtime numbers (including fractions/NaN),
+numeric strings, boxed primitives and caller coercion cannot pass those boundaries. Damage's
+base power/ATK and clamp bounds remain signed-int32 numbers; valid results are unchanged.
+These are standalone library checks, not a new wire grammar or a battle consumer.
+
+Native division is absent from `server/combat` and `client/src/combat`; the shared Go
 `integer.DivideFloor` and TypeScript `idiv` helpers live outside those directories. Both accept
 nonnegative dividends and positive divisors, with invalid inputs rejected. The Go helper leaves
 the existing staged damage calculation and int32 saturation unchanged.
