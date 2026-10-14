@@ -3235,3 +3235,40 @@ consolidatable with the existing C14 implementation/review debt. No acceptance,
 archival, push or1.0 promotion. Next: complete the public catalog/consumer contract
 under its explicit adoption boundaries and continue accepted construction/reviews;
 do not repeat this historical-download population as new progress.
+
+## 2026-10-15 — RP-638 existing array alternatives preserve old reply bytes
+
+Accepted A1/C2: old-checker87787 fails ten regressions after each verifies actual
+old reply admission and new refusal. Existing array alternatives grow their item
+enum, integer range or optional object fields through direct/array/nullable
+wrappers. The tenth case has three array arms: empty and singleton arrays were
+already invalid, but the mixed array was uniquely admitted and loses that match.
+Checking scalar values or assuming all overlapping arrays are old-invalid misses it.
+
+Extend the existing object intersection proof to array arms, renaming its internal
+selector accordingly. Its existing array rule checks whole-array item intersection
+coverage; another old array must cover the intersection, not several unrelated
+singleton samples. Preserve side-specific named definitions, unchanged/safe growth,
+new-only ambiguity, empty-array and third-old-arm overlap. No new solver, schema
+type, bound or runtime response-validation rule is introduced. Unknown proofs
+remain conservative; this does not claim complete inclusion over all C17 schemas.
+
+Focused39615 passes; final cold root
+`make test-go vet GO_PACKAGES='./publicapi ./publicread ./account'`54667 passes
+all three packages0.291/.252/.507s and vet. The final population includes named-
+array/ref controls and162 three-arm comparisons against actual ValidateResponse.
+The two-literal language's membership depends only on its element set; seven
+representatives cover all sets plus order/duplicate controls. This is a bounded
+exact language, not all possible arrays or a public HTTP population. Native DB
+skips are not persistence evidence. `make api-check`35306 regenerates all three
+production artifacts byte-identically and passes the actual committed pin.
+Formatting and diff checks pass. No unrelated browser/SQL/whole-CI rerun is needed
+for this offline checker boundary; none is claimed.
+
+Source/tests/canonical docs/ledger/plan/log form the complete range after
+`4f29ee55` through this containing commit, pending designated Claude review and
+consolidatable with prior C2 corrections. Review by: Codex (implementer first
+filter). Recorded by: Codex. No endpoint, DTO, baseline, kernel, gameplay/balance,
+owner text or proposal adoption; no acceptance, archival, mint, push or1.0 promotion.
+Next continue accepted API construction/review within its held export/transport
+boundaries; the general and full-feature obligations are not waived by this repair.

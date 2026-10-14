@@ -129,12 +129,16 @@ int64. Membership is constant inside each region, so this covers the whole integ
 including missing bounds and both int64 limits, without floating-point conversion or exhaustive
 value iteration. Old-invalid and new-only overlaps do not invalidate compatibility by themselves.
 Object cross-arm changes remain separate from these scalar-domain checks.
-Existing object arms now receive an intersection proof as well: for each current arm and
+Existing object and array arms now receive an intersection proof as well: for each current arm and
 different old arm, their shared domain must be provably covered by another old arm. Such
 values already matched at least twice and were not old valid replies. Otherwise growth
 is refused; an optional property or required-field demotion is not automatically safe inside
 an exclusive union. The proof follows side-specific named definitions, closed object field
-presence/domains, nested unions/arrays, runtime string formats and exact integer intervals.
+presence/domains, homogeneous array item domains, nested unions/arrays, runtime string formats
+and exact integer intervals. Whole-array coverage matters: a mixed-element array can have
+one old match even when every singleton and the empty array were already ambiguous.
+Scalar membership checks alone do not cover growth of array alternatives. Empty-array
+overlap is retained rather than treated as proof that no old valid arrays exist.
 Unchanged arms and provably safe growth remain allowed, including already-invalid overlap
 covered by a third old arm. Unknown intersections fail closed; this is a sufficient proof,
 not a general inclusion solver or full C2/API/consumer acceptance.

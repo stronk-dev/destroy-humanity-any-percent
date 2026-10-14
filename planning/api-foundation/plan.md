@@ -2,6 +2,16 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C2 array-arm correction (2026-10-15, RP-638): ten old-checker regressions
+approve changes that invalidate actual old replies, including mixed-element loss
+hidden by invalid empty/singleton inputs. Reuse the existing structured intersection
+proof for array arms, with side-specific references and whole-array coverage.
+Safe growth, existing/third-arm overlap and162 finite-language comparisons agree
+with runtime validation. Cold affected packages/vet and byte-identical generation
+pass; the owning log records the range after `4f29ee55`, pending Claude review.
+No schema DSL, endpoint/DTO/pin, kernel or held proposal changed/adopted; full API
+construction, general inclusion and prior review debt remain open.
+
 Current C2 object-domain correction (2026-10-14, RP-626): twelve old-checker actual-byte
 regressions reproduce optional-field, required-demotion, enum and integer growth invalidating
 exclusive object replies. A side-specific intersection-coverage proof now refuses those while

@@ -6,17 +6,17 @@ import (
 	"reflect"
 )
 
-// Growth must not steal a previously exclusive object from another old arm.
+// Growth must not steal a previously exclusive object or array from another old arm.
 // Prove that every new-arm/old-other intersection was already in another old arm:
 // such values previously matched at least twice and were never valid replies.
 // Unknown intersections fail closed, as for appended union alternatives.
-func preserveCompatibilityObjectUnion(oldArms, nextArms []any, oldDefinitions, nextDefinitions map[string]json.RawMessage) error {
+func preserveCompatibilityStructuredUnion(oldArms, nextArms []any, oldDefinitions, nextDefinitions map[string]json.RawMessage) error {
 	for index, arm := range oldArms {
 		old, ok := resolveCompatibilitySchema(arm.(map[string]any), oldDefinitions)
 		if !ok {
 			return ErrInvalidSchema
 		}
-		if !compatibilityContainsObject(old, oldDefinitions, 0) {
+		if !compatibilityContainsStructured(old, oldDefinitions, 0) {
 			continue
 		}
 		next := nextArms[index].(map[string]any)
@@ -32,14 +32,14 @@ func preserveCompatibilityObjectUnion(oldArms, nextArms []any, oldDefinitions, n
 				}
 			}
 			if !covered {
-				return fmt.Errorf("%w: oneOf object arm %d growth overlaps old arm %d", ErrInvalidSchema, index, otherIndex)
+				return fmt.Errorf("%w: oneOf structured arm %d growth overlaps old arm %d", ErrInvalidSchema, index, otherIndex)
 			}
 		}
 	}
 	return nil
 }
 
-func compatibilityContainsObject(schema map[string]any, definitions map[string]json.RawMessage, depth int) bool {
+func compatibilityContainsStructured(schema map[string]any, definitions map[string]json.RawMessage, depth int) bool {
 	if depth > maximumRuntimeSchemaDepth {
 		return false
 	}
@@ -47,12 +47,12 @@ func compatibilityContainsObject(schema map[string]any, definitions map[string]j
 	if !ok {
 		return false
 	}
-	if stringValue(resolved["type"]) == "object" {
+	if kind := stringValue(resolved["type"]); kind == "object" || kind == "array" {
 		return true
 	}
 	if arms, ok := resolved["oneOf"].([]any); ok {
 		for _, arm := range arms {
-			if branch, ok := arm.(map[string]any); ok && compatibilityContainsObject(branch, definitions, depth+1) {
+			if branch, ok := arm.(map[string]any); ok && compatibilityContainsStructured(branch, definitions, depth+1) {
 				return true
 			}
 		}
