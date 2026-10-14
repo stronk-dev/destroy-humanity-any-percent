@@ -123,6 +123,12 @@ the runtime string-format validator and named references, including an old unbou
 arm. Newly ambiguous values that were never admitted previously do not themselves break
 backward compatibility; safe response enum growth remains allowed. This is the string-domain
 check, not a general inclusion solver for numeric/object cross-arm changes.
+Integer arms receive an exact interval check: collect minima and guarded `maximum + 1`
+cut points from both schema versions, then compare exclusive matches at each region's first
+int64. Membership is constant inside each region, so this covers the whole integer domain,
+including missing bounds and both int64 limits, without floating-point conversion or exhaustive
+value iteration. Old-invalid and new-only overlaps do not invalidate compatibility by themselves.
+Object cross-arm changes remain separate from these scalar-domain checks.
 Existing optional fields cannot become required in requests, responses or shared definitions,
 including through array/reference/union nesting; failures identify the affected field. Numeric
 bounds compare as exact signed int64 values, not float64 projections, so a one-unit narrowing

@@ -3115,3 +3115,33 @@ plan/log form the range after `dca0bafd` through this containing commit,
 pending Claude review, consolidatable with RP-616. Review by: Codex
 (implementer first filter); Recorded by: Codex. Full API/1.0, prior reviews,
 owner/platform/numeric/privacy/release gates remain; no archive/mint/push.
+
+## 2026-10-14 — RP-618 exact integer-union compatibility
+
+Resume clean `a5b4749c` under C2. Fifteen old-checker11804 failures show
+range growth invalidates actual old reply bytes through direct/array/nullable
+wrappers: both bound directions, >2^53 precision and both int64 endpoints.
+Per-arm widening is insufficient when exclusive matching becomes ambiguous.
+
+Add a scalar integer partition proof. Resolve each side's references, collect
+all minima and max+1 cut points with an explicit MaxInt64 overflow guard, and
+compare old/current match counts at sorted region starts. Every integer in a
+region has the same membership, so this is exhaustive over int64, not sampled
+extremes or a numeric tolerance. Keep named/nested unions, unbounded ranges,
+old-invalid/new-only overlap and the existing runtime-depth boundary. No new
+DSL, wire representation, schema baseline, type domain or product arithmetic.
+
+Controls compare all16 growth configurations with the complete small old
+runtime population [-2,2], plus real named/unbounded byte witnesses and legal
+growth at both extremes. Final cold publicapi/publicread/account97108 pass
+0.246/.147/.384s; affected vet passes. Earlier31060 and api-check51957 pass;
+generated artifacts stay byte-identical. Formatting/diff checked. This offline
+metadata-checker boundary needs no unrelated browser/SQL or shared-gameplay
+vector rerun; none is claimed. Object interactions remain a distinct audit,
+not silently labelled solved or substituted by this scalar proof.
+
+Source/tests/canonical docs/ledger/plan/log range after `a5b4749c` through this
+containing commit needs designated Claude review, consolidatable with the
+other C2 corrections. Review by: Codex (implementer first filter); Recorded by:
+Codex. No shipped-handler failure, full C2/API acceptance, owner adoption,
+kernel bump, feature/1.0 promotion, archival, mint or publication/push claim.

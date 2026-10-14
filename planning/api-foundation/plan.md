@@ -2,13 +2,21 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C2 integer-domain correction (2026-10-14, RP-618): widening existing integer ranges
+can invalidate old replies under exclusive union matching. Fifteen old-checker byte failures
+reproduce across both bound directions, wrappers, >2^53 and int64 extremes. Compare exact
+old/current interval partitions; no floats, new budget or value-space brute force. Safe growth,
+old-invalid/new-only overlap, named/unbounded domains and a complete small runtime population
+agree. Cold affected packages/vet and unchanged generation pass; the log owns the range after
+`a5b4749c`, pending Claude review. Object cross-arm/full C2/API/release remain open.
+
 Current C2 string-domain correction (2026-10-14, RP-617): widening an existing enum arm can
 invalidate an old reply without adding any alternative. Six old-checker byte regressions
 reproduce; the corrected check counts actual exclusive matches for old/new enum literals,
 following references and the runtime format grammar. Old unbounded strings are included.
 Safe growth, previously invalid overlaps and format-inapplicable literals remain accepted.
 Affected packages/vet and byte-identical generation pass; the log owns the range after
-`dca0bafd`, pending Claude review. Numeric/object cross-arm interactions and full C2/API
+`dca0bafd`, pending Claude review. RP-618 now covers integer cross-arm interactions; object/full C2/API
 acceptance remain separate; no wire, baseline, owner, kernel or release promotion.
 
 Current C2 correction (2026-10-14, RP-616): appended response-union arms now require a
