@@ -31,7 +31,7 @@ func LoadCatalogGrammar(data []byte) (CatalogGrammar, error) {
 		return CatalogGrammar{}, ErrInvalidCatalogGrammar
 	}
 	var raw map[string]json.RawMessage
-	if json.Unmarshal(data, &raw) != nil || !hasRawKeys(raw, []string{"mood_thresholds", "behavior_candidates"}) {
+	if json.Unmarshal(data, &raw) != nil || !hasNonNullCatalogKeys(raw, []string{"mood_thresholds", "behavior_candidates"}) {
 		return CatalogGrammar{}, ErrInvalidCatalogGrammar
 	}
 	if !exactCatalogRows(raw["mood_thresholds"], []string{"mood_member", "floor_ppm"}) ||
@@ -59,7 +59,21 @@ func exactCatalogRows(data []byte, keys []string) bool {
 		return false
 	}
 	for _, row := range rows {
-		if !hasRawKeys(row, keys) {
+		if !hasNonNullCatalogKeys(row, keys) {
+			return false
+		}
+	}
+	return true
+}
+
+// Catalog values are required and non-null. Keep this separate from the mutable
+// state key helper so tightening catalog admission cannot reinterpret saves.
+func hasNonNullCatalogKeys(value map[string]json.RawMessage, expected []string) bool {
+	if !hasRawKeys(value, expected) {
+		return false
+	}
+	for _, key := range expected {
+		if bytes.Equal(bytes.TrimSpace(value[key]), []byte("null")) {
 			return false
 		}
 	}

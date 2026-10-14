@@ -74,15 +74,15 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 
 func exactFullCatalogKeys(data []byte, schemaVersion int) bool {
 	var root map[string]json.RawMessage
-	if json.Unmarshal(data, &root) != nil || !hasRawKeys(root, []string{
+	if json.Unmarshal(data, &root) != nil || !hasNonNullCatalogKeys(root, []string{
 		"schema_version", "stat_policy", "actions", "trust_policy", "mood_policy", "behavior_policy",
 	}) {
 		return false
 	}
 	var statPolicy, trustPolicy map[string]json.RawMessage
-	if json.Unmarshal(root["stat_policy"], &statPolicy) != nil || !hasRawKeys(statPolicy, []string{
+	if json.Unmarshal(root["stat_policy"], &statPolicy) != nil || !hasNonNullCatalogKeys(statPolicy, []string{
 		"grid_ms", "stats", "diminishing_threshold_ppm", "diminishing_factor_ppm",
-	}) || json.Unmarshal(root["trust_policy"], &trustPolicy) != nil || !hasRawKeys(trustPolicy, []string{
+	}) || json.Unmarshal(root["trust_policy"], &trustPolicy) != nil || !hasNonNullCatalogKeys(trustPolicy, []string{
 		"initial_ppm", "neutral_ppm", "floor_ppm", "cap_ppm", "gain_ppm_per_effective_action", "decay_ppm_per_grid",
 	}) {
 		return false

@@ -72,6 +72,23 @@ Founder state and bundle. Near-zero Soul rejects ordinary care but never essenti
 actions. Historical pet artifacts keep their old grammar and remain valid only in Soul-less
 bundles.
 
+## Catalog admission and public schema
+
+All required catalog values are non-null. In particular, explicit zero numeric policy values
+remain legal where the existing domain permits them, but `null` cannot silently become zero
+decay, Trust gain, eligibility or cooldown. This applies to the complete catalog and standalone
+mood/behavior grammar, without changing mutable-state codecs or raw-member uniqueness.
+
+`pet.PetSchemas()` exports the closed `PetCatalog` union of `PetCatalogV1` and `PetCatalogV2`
+for API C18. The version discriminator binds legacy action rows without `soul_gate` and v2 rows
+with the required `essential|ordinary|recovery` member. Stat/mood/behavior enums come from the
+owner's closed vocabulary; PPM and safe-integer bounds retain their existing domains. Stat/mood
+cardinality, row order, floor/initial/Trust relations, recovery eligibility, deterministic
+transition uniqueness and Soul bundle restrictions remain mandatory owner/composition checks.
+The descriptor is not yet a complete served catalog response or public re-verification path.
+Kernel0.3.200 records the null-admission correction; care arithmetic and artifact bytes are
+unchanged.
+
 ## Combat input seam
 
 The foundation exports the exact-safe pair `{pet_trust_ppm,soul}` as a pure Go/TypeScript producer.

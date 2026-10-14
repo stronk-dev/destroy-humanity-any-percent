@@ -554,10 +554,17 @@ bytes validate unchanged; cardinality/order, positive Decimal values, copy bindi
 partners and raw-member uniqueness remain owner checks. Kernel0.3.199 corrects Go's null-price
 admission without forbidding explicit free prices or changing shop/scoring/payout mechanics.
 
+`pet.PetSchemas()` exports the closed v1/v2 care-policy union, including the version-bound
+presence of each action's Soul gate, owner vocabulary and existing integer/PPM domains.
+Required null numeric values no longer default to zero in Go (kernel0.3.200). Current,
+historical and valid-zero controls remain; policy relations, eligibility, deterministic FSM
+uniqueness and Soul context still require owner/composition validation. Mutable-state codecs,
+care/attendance arithmetic and content bytes are unchanged.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
 TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities,
-Doctrines, Fiscal, Soul, Curriculum, Prestige and Pitch provide ten owner descriptors
-for the nineteen currently pinned artifact families; the other nine and the composed C18 catalog
+Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch and Pets provide eleven owner descriptors
+for the nineteen currently pinned artifact families; the other eight and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.
