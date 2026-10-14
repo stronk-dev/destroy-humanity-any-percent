@@ -9720,3 +9720,71 @@ checks suffice for the record; no new per-paperwork independent-review gate.
 Existing corrective implementation ranges still need Claude before acceptance/
 archival, including current UI and integrated proofs. Continue original B8
 harness review without rerunning its known negative studies merely for progress.
+
+## 2026-10-14 — Complete original B8 measurement review dispositions
+
+Review by: Codex (designated independent reviewer of Claude's original work).
+Recorded by: Codex. **CHANGES REQUIRED** for all three exact ranges:
+`b522c577^..b522c577` (6 paths), `293c3ac7^..293c3ac7` (10 paths), and
+`6d821bab^..6d821bab` (4 paths). These are the declared B8 implementation
+ranges, not the later fast-harness/CI closeout or Codex corrective approval.
+
+Inspected H1 runner/hook/Exit recording, threshold calculation/admission/tests,
+career configuration/purchase/next-run/frozen-input flow, strict gate and report
+composition, relevance mask/classifier/estimator, served starter export, kernel
+mirrors, original reports and logs. Original B8b's guarded export advances the
+three mirrors to0.3.116; other harness-only additions do not change kernel paths.
+All report data were read via their consumers/complete parsed blobs, not inferred
+from file size or summary. Stored H1 has97 completed rows/two Exits each; H2 has30
+thresholds with four proposal candidates, not adopted balance.
+
+B8a: retain RP-269's source/Exit-sequence failures and RP-262's missing executed
+H3 multiplier control. B8b: retain RP-261/RP-263's input/artifact binding,
+RP-264's false exclusions, RP-265/RP-267's Reference input/hook gaps and
+RP-273/RP-274's summary/attribution limits. B8c: retain RP-272/RP-275's conditional
+denominator/raw-observation gaps, plus explicit RT-DG-F epsilon/run-4 omissions.
+RP-268/RP-271 still need declared career-data/each-Exit author reconciliation.
+Do not file duplicates, reimplement existing repairs or call their later source
+freshness/provenance approval of these original ranges.
+
+Historical source `6d821bab`: cold threshold recomputation/refusal, H4 strict
+tie/missing-treatment controls, H5 classifier controls and the H1 actual simulated
+two-Exit witness pass. H1 executes one Chaos run in1.63s, not all97 fresh careers.
+The H3 retained-report equality check also passes; that is static comparison,
+not a runtime unit/nonunit-factor sensitivity study. A temporary test then
+reproduces three existing failures: wrong H2 scripted sequence99 is measured;
+an invented H4 exclusion hides an actual measured tie; the career helper has
+a parsed tree but omits its bytes from the claimed artifact set. All three
+refusal assertions fail. Initial probe referenced a nonexistent historical
+Decimal constructor and failed compilation; corrected to its existing exact
+1e6 FromFloat64 constructor before decisive execution. No finding or H5 evidence
+credited to that compile failure. Probe removed; historical checkout clean.
+
+Independent parsed original-H4 census confirms97 rows,93 gated/3 excluded and
+the six recorded Casual ties (seeds1/6/8/11/24/25), with h4_gate_passed=false.
+All-finite Casual minimum is0, whereas its stored faster-only summary starts
+at15000ms: RP-273, not a new result or evidence of a fresh study. Original H5
+has9 nodes, epsilon1ms, three relevant starters/two OD-5 exemptions/four
+unreachable exclusions; it still lacks the first-elective-Exit dimension and
+complete observed-pair denominators. Negative research remains useful evidence,
+not permission to waive criteria, strengthen starters or choose a new policy.
+
+Current bounded correction checks execute on main: Exit admission18 children,
+H4 gate/exclusion28 children, complete career fixture/hash/run-key7 children and
+H5 raw recomposition18 corrupt-input/retained-report children pass. The H4 verbose
+capture truncates a small section; its completed parent/summary is retained,
+not a claimed complete per-child raw census. Dated artifact validators pass for
+their own declared producers: da512cd3's97 H1 runs/679 clocks and6bd24e8d's97
+career pairs/970 H5 arms. They explicitly say retained validation, not new
+execution at current HEAD. No exhaustive study rerun or historical report overwrite.
+Earlier fully executed fired H3/H4 results and corrective independent review
+remain in their owning entries; no fresh full harness/CI/release acceptance here.
+
+Handoff: record-only batch after `9fa52c9f`: this append-only review plus current
+plan. No code, tests, generated/balance/copy/report bytes, kernel, normative RFC,
+acceptance box, mint or publication changed. No DB or service started. Main diff
+and factual claims checked; no extra per-paperwork review ceremony. Original
+B1–B8 now have complete declared-range dispositions, not complete archival
+coverage or approval of corrections. Next the separately committed original
+fast-harness/maintenance closeout; preserve all remaining owner/data/author,
+corrective review, natural pacing and full nine-tier/platform1.0 requirements.

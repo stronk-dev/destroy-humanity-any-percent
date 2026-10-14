@@ -4,6 +4,14 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
+Current original harness review (2026-10-14): all6/10/4 paths in B8a/B8b/B8c
+have CHANGES REQUIRED dispositions. Historical probes reproduce already-filed
+Exit-sequence, forged-exclusion and artifact-binding defects; bounded original
+controls and current corrective/retained-artifact checks execute. Six H4 ties,
+fired H3 and H5/career-data/author gates remain; no measurement restamp or retune.
+No product change in this review-record batch. Next audit the separate original
+fast-harness/maintenance closeout range, then consolidate corrective reviews.
+
 Current original UI review (2026-10-14): B7a's full9-path and B7b's full16-path
 ranges are CHANGES REQUIRED, not approval of later fixes. Historical execution
 reproduces RP-258's48 factor admissions and RP-276's lost row focus; original
@@ -578,6 +586,10 @@ author/harness/browser/mint/release holds remain, no full RFC closure.
   span after4030c895 needs Claude. Original B7, author body reconciliation,
   minted purchase-through-UI and whole AC12 remain; no box flipped here.
 - [x] B8 (`b522c577`, `293c3ac7`, `6d821bab`; H4 verdict FAIL recorded as owner input, not loosened) — R10 harness H1–H5 and the OD-2 threshold measurement report. AC13.
+  Full original6-path B8a,10-path B8b and4-path B8c reviews are **CHANGES
+  REQUIRED** for the existing measurement/source/consumer and author gaps.
+  Later corrections/provenance remain separate unapproved ranges; green
+  measurement checks do not pass H3/H4/H5 or close AC13.
   RP-261's bounded input correction under9337f4b8 now refuses six malformed
   career configurations after four baseline admissions. Four legal careers
   pass; two guard omissions discriminate and restore exactly. Cold fast/core/
@@ -683,8 +695,8 @@ author/harness/browser/mint/release holds remain, no full RFC closure.
   fresh H1/H2/report provenance/reproduction remained separate; no retuning or
   report-regeneration authority here. No checkbox flipped.
   Complete new span after7da200f0 needs Claude. No checkbox flipped here.
-- [ ] B9 — BLOCKED on the owner-gated mint (no epoch pins a tree; formulas-check clean) — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
-- [ ] Canonical docs, designated Codex review, archival (Codex).
+- [ ] B9 — Production formula regeneration remains BLOCKED on owner-gated mint. Controlled SQL/built-client career proof exists; natural earning/full AC15 and production activation remain separate. ACs 14, 15.
+- [ ] Canonical docs, complete designated review and archival: original B1–B8 dispositions are recorded, mostly CHANGES REQUIRED; corrective implementations need Claude, and remaining closeout edges/explicit gates still require coverage.
 
 Kernel protocol: every commit touching a `kernel/affecting-paths.json` prefix bumps
 `kernel/VERSION` (+ Go/TS constants) in the same commit; `server/reputation/` and
