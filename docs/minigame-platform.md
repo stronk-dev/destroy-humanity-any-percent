@@ -493,6 +493,14 @@ Founder→Company locks and the session claim in the same transaction; the token
 session update is the exactly-once authority. Rolling the transaction back removes the window,
 payout, rating/quality changes, both log arms, both events, and all save revisions.
 
+Before replay validation or quota mutation, `PrepareResolutionTx` binds the supplied definition's
+minigame ID, engine reference and engine version to the certified session identity. Sharing an
+engine does not authorize charging another minigame's window. A mismatch returns
+`ErrInvalidSession` without changing any window or releasing the valid claim; the original
+certification remains usable with its own definition. Kernel0.3.209 records this binding repair.
+The composition coordinator remains responsible for selecting that definition from the session's
+pinned catalog; this identity check does not authenticate arbitrary same-ID policy replacements.
+
 The Company replay arm independently recomputes the certified-result hash, selected score, faucet
 conversion, configured forfeit, and saturating Decimal credit from the pinned policy. The Founder
 arm independently recomputes attended-grid quality decay followed by grade replacement and applies

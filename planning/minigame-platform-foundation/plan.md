@@ -2,6 +2,13 @@
 
 RFC: `rfc/minigame-platform-foundation.md`
 
+2026-10-14 C13/C33/C39 binding correction (RP-620): payout preparation now requires the
+definition's minigame ID to match the certified session, not only its engine. Four old-source
+Postgres failures show foreign-window creation or quota4→5 in both modes. Final full Minigame
+SQL and selected Linux-amd64 Production/Gameserver lifecycle checks pass; kernel0.3.209 records
+the real acceptance change. The owning log holds scope and the single-commit range after
+`33815f04`, pending Claude. Historical RP-131, full integration/acceptance and other holds remain.
+
 Current C24/C28 conformance repair (2026-10-13, RP-516/RP-517): Go scaling admission now
 requires the exact envelope and all non-null row fields, while TypeScript enforces actual
 string enums and the existing closed/canonical source-reference domains. Shared vectors and

@@ -312,7 +312,7 @@ func (service *Service) PrepareResolutionTx(ctx context.Context, tx *sql.Tx, res
 	if err != nil || !bytes.Equal(canonicalResult, resolution.bytes) {
 		return PreparedResolution{}, ErrInvalidSession
 	}
-	if definition.MinigameID == "" || definition.EngineRef != resolution.identity.engineRef ||
+	if definition.MinigameID != resolution.identity.minigameID || definition.EngineRef != resolution.identity.engineRef ||
 		definition.EngineVersion != resolution.identity.engineVersion {
 		return PreparedResolution{}, ErrInvalidSession
 	}

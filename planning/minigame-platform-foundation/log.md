@@ -955,3 +955,43 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new sourc
 fixture/generated-fingerprint/record range starts after `9cbf33f0` through this containing commit;
 Claude designated review remains pending, consolidatable with related corrections without
 erasing earlier range debt. No push, deployment, operator secrets or unrelated cleanup.
+
+## 2026-10-14 — RP-620 certified minigame/payout-policy binding
+
+Under accepted C13/C33/C39, `PrepareResolutionTx` now matches the definition's minigame ID
+as well as engine reference/version to the certified identity before replay or quota mutation.
+Previously any nonempty ID sharing the engine passed; a valid certification could charge
+another game's window. The production coordinator already selects the pinned definition by
+certified ID; this finding is an internal boundary defect, not a demonstrated public exploit.
+The coordinator still owns pinned-policy selection; same-ID arbitrary policy authentication
+is not added here. Existing valid payout arithmetic, content, wire and receipts are unchanged.
+
+Regression (9788, Make2): four actual Postgres old-source failures, solo/async × empty/existing
+foreign window. Each returns nil error and either creates quota1 or advances quota4→5. Compare
+complete window JSON inside the transaction, including its timestamps/remainder; rollback
+and compare the complete retained session. The same certification then successfully prepares
+with its own policy and commits its quota plus token-owned terminal state. This is the platform
+boundary, not a fabricated Company/Founder credit or a second approval authority.
+
+Finished verification by: Codex. Recorded by: Codex.
+
+- `make test-save-integration SAVE_TEST_PACKAGES='./minigame' SAVE_TEST_FLAGS='-v'`73724:
+  full package PASS3.171s, including the four new cases and all DB populations; no skips.
+- `make test-go-ci CI_TEST_PACKAGES='./production ./gameserver' CI_TEST_FLAGS='-run Minigame -v'`
+  50695: PASS2.106s/35.956s. Real Linux-amd64/Postgres solo/async atomic resolution, faults,
+  cancellation, retry, sequencing/replay, plus both complete public Pitch HTTP lifecycle arms
+  execute. Complete output retained; this pass does not diagnose or close intermittent RP-614.
+- Cold native four-package tests/vet11117 pass; native DB skips are not SQL proof. Go Decimal
+  vectors pass separately; client Minigame-resolution/Decimal population6310 passes (90172).
+  Typecheck3636 has zero Svelte errors/warnings. Formulas/API generation91430 pass byte-unchanged.
+- `make verify-kernel-version`54472: checkout contract and adversarial controls pass, then the
+  actual history guard still rejects `50a3a514`, exit2. No exception, rewrite or false green.
+
+Kernel208→209 in all three mirrors records this genuine guarded acceptance change. Formatting
+and whitespace checks are clean. Designated Claude review is pending for the single commit
+containing this entry, parent `33815f04`, covering source, tests, version mirrors, docs and records.
+Earlier review debt and the full nine-tier/platform/release floor remain; no mint, draft
+adoption, browser/clean-host/whole-CI proof, acceptance, archival, push or deployment.
+After terminal checks, remove only the freshly created declared `postgres` test service with
+its scoped `rm -sf postgres` command. Final service inventory is empty. Disposable tmpfs test
+rows are discarded; no durable volume, cache, network or unrelated service is removed.
