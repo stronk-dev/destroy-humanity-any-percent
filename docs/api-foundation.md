@@ -524,9 +524,15 @@ corresponding Routes catalogs. Boundary agreement, branching/order and cross-art
 remain loader checks. Real case-alias/implicit-zero/final-null admissions are corrected with
 kernel0.3.194; no doctrine effects, choices, burst arithmetic or content mint is added.
 
+`fiscal.FiscalSchemas()` exports the existing v1 root/policy/row shapes with safe-integer/PPM
+bounds, IDs and slot enums derived from the shared registered authority. Current/stored bytes
+validate with their matching Economy catalogs; relationships, sequence horizon, nonempty/order
+and declaration binding remain loader checks. Exact-name/non-null admission corrections carry
+kernel0.3.195; no harvest/risk/cost/production policy or content mint changes.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities and Doctrines provide five owner descriptors
-for the nineteen currently pinned artifact families; the other fourteen and the composed C18 catalog
+TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities, Doctrines and Fiscal provide six owner descriptors
+for the nineteen currently pinned artifact families; the other thirteen and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.

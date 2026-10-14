@@ -127,7 +127,7 @@ type rawUnlockRow struct {
 }
 
 func LoadCatalog(data []byte, economyCatalog *economy.Catalog) (*Catalog, error) {
-	if economyCatalog == nil {
+	if economyCatalog == nil || !fiscalCatalogHasExactShape(data) {
 		return nil, ErrInvalidCatalog
 	}
 	var raw rawCatalog
@@ -174,6 +174,60 @@ func LoadCatalog(data []byte, economyCatalog *economy.Catalog) (*Catalog, error)
 		catalog.unlockByID[row.UnlockID] = row
 	}
 	return catalog, nil
+}
+
+// Check final decoded object names and nullability before struct decoding can
+// case-fold aliases or inherit fields from an earlier duplicate policy. Complete
+// duplicate controls remain valid; this is not global duplicate-name rejection.
+func fiscalCatalogHasExactShape(data []byte) bool {
+	root, ok := fiscalCatalogObject(data, "schema_version", "clock_policy", "credit_policy", "hoard_policy", "generator_level_rows", "unlock_rows")
+	if !ok {
+		return false
+	}
+	for _, policy := range []struct {
+		name string
+		keys []string
+	}{
+		{"clock_policy", []string{"early_ms", "guaranteed_ms", "auto_ms", "early_success_ppm"}},
+		{"credit_policy", []string{"credit_per_period", "hardcap", "hardcap_reason_key"}},
+		{"hoard_policy", []string{"ppm_per_credit", "cap_credits", "slot", "source_id", "target"}},
+	} {
+		if _, ok := fiscalCatalogObject(root[policy.name], policy.keys...); !ok {
+			return false
+		}
+	}
+	for _, family := range []struct {
+		name string
+		keys []string
+	}{
+		{"generator_level_rows", []string{"generator_id", "ppm_per_level", "level_hardcap", "hardcap_reason_key", "slot", "source_id"}},
+		{"unlock_rows", []string{"unlock_id", "cost"}},
+	} {
+		var rows []json.RawMessage
+		if json.Unmarshal(root[family.name], &rows) != nil || rows == nil {
+			return false
+		}
+		for _, row := range rows {
+			if _, ok := fiscalCatalogObject(row, family.keys...); !ok {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func fiscalCatalogObject(data []byte, keys ...string) (map[string]json.RawMessage, bool) {
+	var object map[string]json.RawMessage
+	if json.Unmarshal(data, &object) != nil || len(object) != len(keys) {
+		return nil, false
+	}
+	for _, key := range keys {
+		value, ok := object[key]
+		if !ok || bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return nil, false
+		}
+	}
+	return object, true
 }
 
 func validClock(clock ClockPolicy) bool {

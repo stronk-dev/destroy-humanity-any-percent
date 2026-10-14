@@ -2408,3 +2408,47 @@ Claude review, consolidatable with related C18 corrections. Five of nineteen pin
 descriptors exist; fourteen, the complete union/HTTP and public re-verification remain. No
 archival/push/deployment, owner/draft adoption or full nine-tier1.0 promotion. Continue accepted
 construction without inventing missing contracts or calling these scoped checks full CI.
+
+## 2026-10-14 — Construct Fiscal's owner descriptor and enforce exact final policies (RP-577)
+
+Resume clean `108706a6`; Doctrine is preceding concrete progress. Read the full archived Fiscal
+F5/F9 contract and both current readers. Actual old Go admits26 case aliases across root,
+policies and both row families, six final partial/null policy objects and one final null reason
+key. Unchanged TS rejects the same candidates (six tests pass). File RP-577. Check final original
+object shapes and non-null members before typed decoding can fold names or inherit earlier fields.
+Complete last-value controls and escaped canonical keys remain valid; no global duplicate-member
+rejection. Genuine kernel0.3.194→0.3.195 accompanies the real admission correction.
+
+`FiscalSchemas` exports F9's closed root/policy/row shapes, safe-integer/PPM bounds, IDs and slots
+derived from multiplier.Order. Current catalog, two stored artifacts and the shared fixture pass
+byte-unchanged; every stored catalog also loads with its corresponding Economy artifact. Twenty-eight
+structural refusals, probability/credit endpoints, all nine descriptor slots and matched/mismatched
+pinned declarations, five schema-valid semantic refusals and fresh-export/member controls pass.
+Clock/credit relationships, sequence horizon, row cardinality/order and declarations remain loader
+checks. No thresholds, harvest risk, costs, factors, frozen contributions, state/replay encoding,
+mint, public union or HTTP activation changes. Clarify canonical docs' ambiguous “duplicate” claim
+as duplicate row IDs, not a falsely claimed global JSON-member policy.
+
+Final cold fiscal/publicapi/kernel/replaycatalog19542 passes; affected vet passes. Node85799
+passes144; actual Chromium/WebKit93389 passes288. Verbose production12642 executes five pure
+top-level Fiscal cases and the Founder-clock offset controls, no skips: activation, frozen
+contributions, provisional sweep rollback, clock regression and independent save axes. Types72929
+have zero errors/warnings, production build and byte-unchanged `make api-check` pass. Revalidate
+Docker with one bounded read-only ping: curl42258 returns no bytes, terminal28 after5010ms.
+This proves only an unresponsive endpoint, not a stopped daemon; no restart/substitute DB or SQL
+claim. No native Firefox/Linux/hosted, complete API/CI or release proof. Historical RP-131 guard
+remains known-red from preceding execution; no rerun/current-tree green verdict.
+
+Ignored old `.cache/fiscal-admission-old-108706a6.log` SHA256
+`eddc0ad7c1aea38885d338bb77ff0f6c830f32db5a945c70cef98a2f845f6b4b`;
+native `.cache/fiscal-owner-native-108706a6.log` SHA256
+`1fe97c083e072b87f8cf0a8d1d95c63877742ddbad16d959441536625fe77e03`;
+production `.cache/fiscal-owner-production-108706a6.log` SHA256
+`d357fcdac372933ebc419363b6d64f22813d43d1dd713b318dd23051c31223b9`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete source/schema/tests/
+version/docs/records range after `108706a6` through this containing commit needs designated Claude
+review, consolidatable with related C18 corrections. Six of nineteen pinned-family descriptors
+exist; thirteen, full response union/catalog HTTP and public re-verification remain. No archival,
+push/deployment, new content or owner/draft adoption. Continue accepted construction; review,
+services, author/owner contracts, full CI and the entire nine-tier1.0 release remain open.

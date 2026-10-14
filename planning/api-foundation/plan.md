@@ -2,13 +2,13 @@
 
 RFC: `rfc/api-foundation.md`
 
-Current C18 construction (2026-10-14): Categories, Achievements, Meters, Opportunities and
-Doctrines export five of nineteen pinned-family descriptors. Fourteen, the complete response
+Current C18 construction (2026-10-14): Categories, Achievements, Meters, Opportunities,
+Doctrines and Fiscal export six of nineteen pinned-family descriptors. Thirteen, the complete response
 union/catalog HTTP reader and public re-verification remain open. All semantic loaders remain
-mandatory; no open JSON escape, content mint or false metadata-only kernel bump. RP-572–RP-576
-admission repairs carry genuine versions0.3.191–0.3.194 and remain pending designated review.
+mandatory; no open JSON escape, content mint or false metadata-only kernel bump. RP-572–RP-577
+admission repairs carry genuine versions0.3.191–0.3.195 and remain pending designated review.
 The append-only owning log holds each old failure, final checks, limits and exact review range;
-latest Doctrine range is after `e670cd1a` through its containing source/test/docs/record commit.
+latest Fiscal range is after `108706a6` through its containing source/test/docs/record commit.
 Continue other owners within lawful scope; unchanged metadata-only additions still need explicit
 scope resolution, and the integer-representation proposal remains unadopted.
 
@@ -201,7 +201,7 @@ malformed-version refusal. This does not mount the catalog
 HTTP reader or mint product formulas. Categories now exports the first descriptor for the
 nineteen pinned families; five actual current/historical/candidate fixtures and malformed-input
 controls pass. Its existing loader retains semantic-policy validation. The newer checkpoints
-above add Achievements, Meters, Opportunities and Doctrines. The other fourteen
+above add Achievements, Meters, Opportunities, Doctrines and Fiscal. The other thirteen
 owner descriptors and complete union remain open. RP-383/RP-384 compatibility corrections pass
 locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Remaining owner descriptors,
 remaining route/client registration, third-party verification, 304 metadata and designated
@@ -209,7 +209,7 @@ reviews stay open; not full API acceptance or green hosted CI. Latest log owns e
 Public reads now use the shared error descriptor from `publicapi` instead of importing Account;
 the direct private-repository import regression and affected packages pass. This does not close
 transitive/runtime privacy. The seventeen remaining artifact-owner packages now fall
-under kernel-watched prefixes at that checkpoint; the remaining count is now fourteen after the
+under kernel-watched prefixes at that checkpoint; the remaining count is now thirteen after the
 newer owner exports above. Scope remains constrained:
 API-only additions require an explicit scope resolution or a
 genuine accepted semantic change, never a false version bump or file move to evade the guard.
@@ -228,6 +228,10 @@ is implemented; its draft decisions and full API acceptance remain open.
   - [x] Resolve C20's limiter/proxy/key-ID/request-ID literals.
 - [ ] Register public DTOs/readers and raw verification evidence endpoints.
   - [ ] Export and compose C18's ruled owner artifact descriptors.
+    - [x] Export Fiscal's existing v1 policy/row descriptor; current/stored bytes and corresponding
+      Economy bindings pass (`TestFiscalOwnerSchemaAdmitsCurrentStoredAndFixtureWithoutChangingBytes`).
+      Exact-name/non-null admission repair does not retune clocks, costs or factors. Semantic loader
+      stays mandatory; no complete union/public endpoint or designated approval claim.
     - [x] Export the existing Doctrine identity-only v1 descriptor; current/stored bytes and
       corresponding Route bindings pass
       (`TestDoctrineOwnerSchemaAdmitsCurrentStoredAndFixtureWithoutChangingBytes`). Exact-key/

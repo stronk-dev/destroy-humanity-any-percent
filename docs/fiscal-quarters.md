@@ -8,8 +8,22 @@ the current epoch-8 bundle.
 
 The strict schema-v1 `fiscal` artifact owns the ripening windows, early-harvest probability,
 credit and level hardcaps, hoard policy, generator-level rows, and unlock rows. Go and TypeScript
-reject unknown, missing, duplicate, unsorted, unsafe-integer, and cross-artifact-invalid values.
+reject unknown/missing fields, duplicate row IDs, unsorted rows, unsafe integers and
+cross-artifact-invalid values.
 The artifact bytes participate in the catalog-bundle hash and constants identity.
+
+Go validates exact original root, policy and row member names and non-null fields before
+struct decoding. Case aliases refuse, and a final partial/null policy or null reason key
+cannot inherit values from an earlier duplicate. Escaped canonical names and complete
+last-value controls remain valid; this is not global duplicate-member rejection. These
+admission corrections advance the shared kernel to `0.3.195` without retuning clock thresholds,
+harvest probability, credit/level costs, hoard factors or frozen contributions.
+
+`fiscal.FiscalSchemas()` exports F9's closed structural v1 descriptor for API Foundation C18.
+Current and stored artifact bytes validate with their corresponding Economy catalogs. Numeric
+bounds and registered slot values are structural; clock/credit relationships, sequence horizon,
+row order/cardinality and pinned declaration binding still require `LoadCatalog`. The public
+catalog response union and endpoint are not activated by this owner export.
 
 The artifact activates Founder save v19 only at a new-run boundary. It requires the pinned
 minigame and pet artifacts that own Founder v17 and v18; the Company save axis remains unchanged.

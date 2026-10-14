@@ -22,6 +22,30 @@ function mutate(root: any, operation: { op: string; path: Array<string | number>
 
 describe("fiscal foundation", () => {
   const economy = economyWithFiscalSources();
+  it("requires exact member names across the root, policies and both row families", () => {
+    const objects = (root: any): Array<Record<string, unknown>> => [root, root.clock_policy, root.credit_policy, root.hoard_policy, ...root.generator_level_rows, ...root.unlock_rows];
+    for (const [index, object] of objects(fixture.baseline).entries()) {
+      for (const key of Object.keys(object)) {
+        const candidate = structuredClone(fixture.baseline);
+        const changed = objects(candidate)[index];
+        changed[key.toUpperCase()] = changed[key];
+        delete changed[key];
+        expect(() => loadFiscalCatalog(candidate, economy), `${index}.${key}`).toThrow(SyntaxError);
+      }
+    }
+  });
+  it("refuses final partial/null policies rather than inheriting earlier fields", () => {
+    const source = JSON.stringify(fixture.baseline);
+    for (const [family, field] of [["clock_policy", "early_ms"], ["credit_policy", "credit_per_period"], ["hoard_policy", "ppm_per_credit"]]) {
+      const original = (fixture.baseline as unknown as Record<string, Record<string, unknown>>)[family];
+      for (const override of [null, { [field]: original[field] }]) {
+        const candidate = `${source.slice(0, -1)},"${family}":${JSON.stringify(override)}}`;
+        expect(() => loadFiscalCatalog(JSON.parse(candidate), economy), family).toThrow(SyntaxError);
+      }
+    }
+    const credit = { ...fixture.baseline.credit_policy, hardcap_reason_key: null };
+    expect(() => loadFiscalCatalog(JSON.parse(`${source.slice(0, -1)},"credit_policy":${JSON.stringify(credit)}}`), economy)).toThrow(SyntaxError);
+  });
   it("matches the shared mutation corpus", () => {
     expect(fixture.version).toBe(1); expect(() => loadFiscalCatalog(fixture.baseline, economy)).not.toThrow();
     for (const vector of fixture.invalid_mutations) { const candidate = structuredClone(fixture.baseline); mutate(candidate, vector); expect(() => loadFiscalCatalog(candidate, economy), vector.name).toThrow(); }
