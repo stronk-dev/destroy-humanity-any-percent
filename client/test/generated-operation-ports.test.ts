@@ -37,15 +37,22 @@ describe.each(cases)("generated operation port $id", ({ id, invoke }) => {
     },
   );
 
-  it.each(["network", "invalid JSON", "extra error field", "unknown category", "undeclared status"])("classifies %s as transport failure once", async (fault) => {
+  it.each(["network", "invalid JSON", "extra error field", "unknown category", "unknown detail", "undeclared status"])("classifies %s as transport failure once", async (fault) => {
     const fetcher = vi.fn(async () => {
       if (fault === "network") throw new TypeError("offline");
       if (fault === "invalid JSON") return new Response("fictional-private-body-marker", { status: 200, headers: { "Content-Type": "application/json" } });
       const body = fault === "unknown category" ? { category: "unknown_category", detail: "body" }
+        : fault === "unknown detail" ? { category: "invalid", detail: "fictional-private-body-marker" }
         : fault === "extra error field" ? { category: "invalid", detail: "body", extra: "x" } : { category: "invalid", detail: "body" };
       return Response.json(body, { status: fault === "undeclared status" ? 418 : 400 });
     });
-    await expect(invoke(ports(fetcher))).rejects.toBeInstanceOf(MinigameTransportError);
+    let failure: unknown;
+    try { await invoke(ports(fetcher)); } catch (error) { failure = error; }
+    expect(failure).toBeInstanceOf(MinigameTransportError);
+    if (fault === "unknown detail") {
+      expect(failure).not.toBeInstanceOf(MinigameAPIError);
+      expect((failure as Error).message).toBe("request failed (400)");
+    }
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 });

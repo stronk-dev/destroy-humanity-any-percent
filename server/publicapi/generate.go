@@ -198,13 +198,25 @@ func GenerateTypeScript(registry *Registry) ([]byte, error) {
 		fmt.Fprintf(&output, "export type %s = %s;\n\n", definition.Name, typeScriptSchema(definition.Schema))
 		if definition.Name == "APIError" {
 			for _, field := range definition.Schema.Fields {
-				if field.Name == "category" {
-					values := make([]string, len(field.Schema.Enum))
-					for index, value := range field.Schema.Enum {
-						values[index] = strconv.Quote(value)
-					}
-					fmt.Fprintf(&output, "export const apiErrorCategories = [%s] as const;\n\n", strings.Join(values, ", "))
+				name := ""
+				switch field.Name {
+				case "category":
+					name = "apiErrorCategories"
+				case "detail":
+					name = "apiErrorDetails"
+				default:
+					continue
 				}
+				// No enum means the schema's string domain is unbounded, not empty.
+				if field.Name == "detail" && len(field.Schema.Enum) == 0 {
+					fmt.Fprintf(&output, "export const %s = null;\n\n", name)
+					continue
+				}
+				values := make([]string, len(field.Schema.Enum))
+				for index, value := range field.Schema.Enum {
+					values[index] = strconv.Quote(value)
+				}
+				fmt.Fprintf(&output, "export const %s = [%s] as const;\n\n", name, strings.Join(values, ", "))
 			}
 		}
 	}

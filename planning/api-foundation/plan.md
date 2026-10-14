@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current bounded correction (2026-10-14, RP-569): generated detail-enum metadata now binds the
+shared operation adapter to the existing APIError descriptor. Five old Garden/Soul refusals
+fail; the corrected affected units312/native Chromium-WebKit702, cold generator packages/vet,
+types/build and deterministic generation pass. Existing valid typed rejections, minigame
+ExactJSON checks, server bytes and retry/recovery policies remain unchanged. Owning log records
+the whole range after `e56da0ec`, pending Claude review. This is global error-shape conformance,
+not complete per-operation error-pair coverage, real server/SQL or whole API/CI acceptance.
+
 Current bounded correction (2026-10-14, RP-568): generated schema-response decoding now refuses
 malformed UTF-8 rather than repairing reply bytes. All36 old-client refusals reproduce; final
 Node289/native Chromium-WebKit578, cold generator packages/vet, types/build and deterministic

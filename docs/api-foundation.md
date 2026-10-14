@@ -68,6 +68,15 @@ and `company_stream` (start without an active Company), matching existing handle
 are additive descriptor corrections, not handler or error-mapping changes. Real authenticated
 Postgres-backed replies are checked against this same registry; invented details still fail.
 
+The generator exports `apiErrorCategories` and `apiErrorDetails` from those descriptor fields.
+The shared Minigame/Soul/Garden operation adapter requires both registered enum memberships
+before constructing a typed API rejection. Unknown details produce the existing body-free
+transport error instead of copying reply text into the typed exception. An enum-free detail
+schema generates `null` metadata rather than falsely declaring an empty string domain; the
+current production descriptor has a closed enum. Minigame's operation/status-specific ExactJSON
+bindings remain the stronger additional check. Global enum membership alone does not prove
+operation/status/pair conformance for other operations or validate successful DTOs.
+
 `make api-schema` regenerates canonical OpenAPI 3.1 at `docs/generated/api.json` and exact client
 DTO/operation metadata at `client/src/api/generated/types.ts`. `make api-check` regenerates and
 byte-compares both outputs as part of `make verify-server`. The committed

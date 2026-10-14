@@ -1,4 +1,4 @@
-import { apiErrorCategories, createAPIClient, operations, type APIFetcher, type APIError, type OperationID, type OperationInput, type OperationTypes, type MinigameCommandRequest, type MinigameCurrentResponse, type MinigameSessionResponse, type MinigameSessionResponseActive, type MinigameSessionResponseTerminal } from "../../api/generated/types";
+import { apiErrorCategories, apiErrorDetails, createAPIClient, operations, type APIFetcher, type APIError, type OperationID, type OperationInput, type OperationTypes, type MinigameCommandRequest, type MinigameCurrentResponse, type MinigameSessionResponse, type MinigameSessionResponseActive, type MinigameSessionResponseTerminal } from "../../api/generated/types";
 
 // MinigameSessionPort is the only transport seam the minigame_session surface
 // sees (MA-C9). Components never call fetch; every shape is the generated DTO.
@@ -20,13 +20,15 @@ export class MinigameAPIError extends Error {
 export class MinigameTransportError extends Error {}
 
 const categories = new Set<string>(apiErrorCategories);
+const details = apiErrorDetails === null ? undefined : new Set<string>(apiErrorDetails);
 
 function apiError(id: AuthenticatedOperationID, status: number, body: unknown): MinigameAPIError | undefined {
   if (body === null || typeof body !== "object" || Array.isArray(body)) return undefined;
   const row = body as Record<string, unknown>;
   const keys = Object.keys(row).sort();
   if (keys.length !== 2 || keys[0] !== "category" || keys[1] !== "detail") return undefined;
-  if (typeof row.category !== "string" || !categories.has(row.category) || typeof row.detail !== "string" || row.detail === "") return undefined;
+  if (typeof row.category !== "string" || !categories.has(row.category) || typeof row.detail !== "string" || row.detail === "" ||
+    (details !== undefined && !details.has(row.detail))) return undefined;
   const responses: readonly { status: number; kind: "schema" | "raw"; contentType: string; exactJSON?: readonly string[] }[] = operations[id].responses;
   const descriptor = responses.find((response) => response.status === status && response.kind === "schema" && response.contentType === "application/json");
   if (!descriptor) return undefined;

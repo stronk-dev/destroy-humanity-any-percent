@@ -2154,3 +2154,43 @@ review, consolidatable with related API corrections. RP-568 is locally corrected
 approved. Existing draft/owner/author/review/CI and full nine-tier1.0 gates remain. No archival,
 push or deployment. Next: accepted API construction and outstanding consumer/owner contracts;
 do not repeat these completed focused checks as progress or infer proposal adoption.
+
+## 2026-10-14 — Bind typed operation errors to the existing detail enum (RP-569)
+
+Resume clean `e56da0ec`; previous turn completes the encoding correction. Read the accepted
+Garage/minigame plans, then trace their shared generated-operation boundary. Docker21312 still
+returns no bytes and terminal28 after5002ms; no daemon restart or substitute DB. The adapter
+checks category but accepts any nonempty detail when ExactJSON metadata is absent. Actual old
+port regressions admit a fictional unknown detail for Garden and four Soul operations (five
+failures/111 passes); the existing four minigame literal bindings reject it. File RP-569.
+
+Under API A4/A5/C9/C17, generate detail metadata from the existing descriptor, not a handwritten
+consumer table; the adapter checks it before constructing MinigameAPIError. Four old-generator
+checks fail: bounded enum, changed owner values, enum-free string and Unicode enum. Corrected
+metadata tracks all four cases; enum-free is null, not an empty allowed set. No descriptor,
+server handler/error bytes, status, retry/recovery policy, schema/pin, kernel or balance change.
+Existing minigame per-operation/status literal checks remain. This does not close other
+operations' stronger pair-conformance gaps or provide runtime successful-DTO validation.
+
+Cold Go13165 passes `./publicapi ./cmd/gen-api`; affected vet passes. Node74290 passes312 SDK,
+operation/runtime and surface checks. Native42823 terminates0 with702 checks/14 files across
+Chromium/WebKit, including mounted Soul Recovery and Garden refresh populations. Types82047
+have zero errors/warnings; build60248 succeeds. OpenAPI and compatibility pins are unchanged.
+Stage the new generated metadata and run `make api-check` against the candidate index to prove
+deterministic regeneration. These are controlled Response/port/mounted-runtime tests, not
+real Go HTTP/Postgres or public-server recovery, Firefox/Linux or hosted CI evidence.
+
+Ignored raw evidence: `.cache/port-detail-old-e56da0ec.log` SHA256
+`119e52190002e1d4a2b9a44b8d9fed436c8ebc2e7df44f85668924faa1c0a52e`;
+`.cache/port-detail-generator-old-e56da0ec.log` SHA256
+`0a77fcdae9b520e82254f256cef4a13c7a006b28156e32744998d6371d1358f7`;
+`.cache/port-detail-native-e56da0ec.log` SHA256
+`f69817d84754e9cec1df2b3c1ca9078d8e2326e55a235ca54d9bc91894eea5d1`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Whole implementation/test/
+docs/records range after `e56da0ec` through this containing commit needs designated Claude
+review, consolidatable with the API corrections. RP-569 is locally corrected, not approved.
+The marker is fictional; no real secret leak claim. Existing owner/author, Docker, CI, review,
+feature and full nine-tier1.0 gates remain. No archival, push or deployment. Next: remaining
+accepted construction and real integration when its declared services are usable, not reruns
+of these completed focused populations or inferred adoption of the pending drafts.

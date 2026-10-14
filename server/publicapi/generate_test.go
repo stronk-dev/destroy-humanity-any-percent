@@ -150,6 +150,43 @@ func TestGeneratedClientPreservesRawSuccessAndStatusDescriptors(t *testing.T) {
 	}
 }
 
+func TestGeneratedErrorDetailMetadataComesFromSchema(t *testing.T) {
+	for _, test := range []struct {
+		name string
+		enum []string
+		want string
+	}{
+		{"bounded", []string{"body", "cursor"}, `export const apiErrorDetails = ["body", "cursor"] as const;`},
+		{"changed owner", []string{"limit", "next"}, `export const apiErrorDetails = ["limit", "next"] as const;`},
+		{"unbounded owner", nil, `export const apiErrorDetails = null;`},
+		{"Unicode owner", []string{"a<>&🙂"}, `export const apiErrorDetails = ["a<>&🙂"] as const;`},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			schemas := testSchemas()
+			for _, definition := range schemas {
+				if definition.Name == "APIError" {
+					for _, field := range definition.Schema.Fields {
+						if field.Name == "detail" {
+							field.Schema.Enum = test.enum
+						}
+					}
+				}
+			}
+			registry, err := NewRegistry(schemas, testOperations())
+			if err != nil {
+				t.Fatal(err)
+			}
+			generated, err := GenerateTypeScript(registry)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Contains(generated, []byte(test.want)) {
+				t.Fatalf("generated detail metadata does not match its owner: want %q", test.want)
+			}
+		})
+	}
+}
+
 func TestGeneratedResponseMetadataPreservesRegisteredExactJSON(t *testing.T) {
 	operations := testOperations()
 	literals := [][]byte{
