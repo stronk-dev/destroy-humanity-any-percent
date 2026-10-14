@@ -142,13 +142,17 @@
     // A scheduled heartbeat and an explicit Stop may return the same stored
     // terminal. Commit the surface/host transition once, in either reply order.
     if (destroyed || view.kind === "terminal") return;
+    const previousFocus = document.activeElement;
+    const restoreFocus = previousFocus === document.body || heading?.closest("section")?.contains(previousFocus) === true;
     scheduler?.stop(response.action === "resolve" ? "resolved" : response.cancelled_by === "watchdog" ? "watchdog" : "cancelled");
     scheduler = undefined;
     notice = null;
     view = { kind: "terminal", response };
     onTerminal(response);
     await tick();
-    if (!destroyed) heading?.focus();
+    // A late reply cannot override a player's newer host-control choice or
+    // focus assigned by onTerminal while the DOM update was pending.
+    if (!destroyed && restoreFocus && (document.activeElement === previousFocus || document.activeElement === document.body)) heading?.focus();
   }
 
   function fail(error: unknown): void {

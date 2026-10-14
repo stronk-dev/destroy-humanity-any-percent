@@ -284,10 +284,15 @@ bundled with the client.
   known, those same failures still display their ordinary error or not-ready notice.
 - **Finish and Stop:** Finish appears once the session is eligible. "Stop early" states that
   nothing is restored. The terminal message shows the Soul before/after or the watchdog
-  cancellation, focus moves to the heading, and the mounted host refreshes once. If the
+  cancellation, focus ordinarily returns to the heading, and the mounted host refreshes once. If the
   surface unmounts while Finish/Stop is pending, its late response cannot notify the former
   host or move focus. The submitted command is not cancelled or retried; server state stays
   authoritative and the next visit uses the existing reconnect path.
+- **Terminal focus in both hosts:** Pitch and Recovery restore their heading only when the
+  surface owned focus or it was unclaimed. A newer surviving host-control choice while a reply
+  is pending, or focus assigned by the terminal callback before the DOM update finishes, is not
+  overwritten. Receipt rendering, once-only host notification and ordinary heading/Return
+  traversal remain unchanged. This is mounted DOM behavior, not new server/retry/DTO policy.
 - **Rejections:** `RECOVERY_REJECTIONS` maps exact recovery-handler pairs. A unit test checks that
   every mapped pair is written by `server/account/api.go`.
 - **Toy:** `RecoveryToy.svelte` is decorative only (`aria-hidden`, no animation). Its cells follow a
@@ -301,7 +306,10 @@ It also starts with the document already hidden and verifies that the first beat
 visible event, and defers both start and reconnect responses across unmount to prove that no
 heartbeat survives the surface. Delayed Finish/Stop cases also require no terminal callback
 after unmount, no focus movement or surviving heartbeat, and exactly one submitted action;
-still-mounted controls require the ordinary receipt, terminal text and heading focus.
+still-mounted controls require the ordinary receipt, terminal text and ordinary heading focus.
+Additional native cases move to another host control while Finish/Stop or Pitch's shop-close
+command is pending; callback cases assign focus from the terminal host notification. Both hosts
+must retain that newer surviving target while rendering the same receipt once.
 The keyboard-only component case activates Begin and Stop early with Enter (no click helper),
 checks the cancellation receipt and terminal focus, and runs axe in both active and terminal
 states. This does not substitute for a real assistive-technology task study.

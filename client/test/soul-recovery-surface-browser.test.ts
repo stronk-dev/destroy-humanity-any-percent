@@ -619,3 +619,55 @@ for (const action of ["resolve", "cancel"] as const) {
     });
   }
 }
+for (const action of ["resolve", "cancel"] as const) {
+  for (const newerFocus of ["pending", "host-callback"] as const) {
+    it.skipIf(!browser)(`Recovery terminal preserves newer focus (${action}, ${newerFocus})`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const port = new FakePort();
+      const visibility = new FakeVisibility();
+      const terminals: SoulRecoveryTerminalResponse[] = [];
+      const response = terminal(action, action === "cancel" ? "player" : undefined);
+      port.startReplies.push(() => started(SESSION, TOKEN_1, REQUIRED));
+      port.steady = progressed(REQUIRED);
+      let releaseTerminal!: (value: SoulRecoveryTerminalResponse) => void;
+      port.terminalReply = () => new Promise((resolve) => { releaseTerminal = resolve; });
+      const newer = document.createElement("button");
+      newer.type = "button"; newer.tabIndex = 0; newer.textContent = "Another host control";
+      const target = host();
+      const app = mount(SoulRecoverySurface, { target, props: { port, content: content(), era: "era_1995", visibility,
+        now: () => 1_000, toySeed: 7, onExitToHost: () => {}, onTerminal: (receipt: SoulRecoveryTerminalResponse) => {
+          terminals.push(receipt);
+          if (newerFocus === "host-callback") newer.focus();
+        } } });
+      document.body.append(newer);
+      try {
+        await settle();
+        target.querySelector<HTMLElement>("#recovery-heading")!.focus();
+        await userEvent.keyboard("{Tab}");
+        expect(document.activeElement).toBe(target.querySelector("li button"));
+        await userEvent.keyboard("{Enter}");
+        await expect.poll(() => target.querySelector("progress") !== null).toBe(true);
+        const origin = button(target, action === "resolve" ? "Finish" : "Stop early");
+        origin.focus();
+        await userEvent.keyboard("{Enter}");
+        await expect.poll(() => port.terminalCalls).toEqual([action]);
+        await expect.poll(() => origin.disabled).toBe(true);
+        if (newerFocus === "pending") {
+          await userEvent.keyboard("{Tab}");
+          expect(document.activeElement).toBe(newer);
+        }
+        releaseTerminal(response);
+        await expect.poll(() => terminals).toEqual([response]);
+        await expect.poll(() => target.querySelector("progress")).toBeNull();
+        await settle();
+        expect(document.activeElement).toBe(newer);
+        expect(target.querySelector("[role=status]")?.textContent).toBe(action === "resolve" ? "Done. Soul went from 40 to 52." : "Stopped. Nothing was restored.");
+        expect(port.terminalCalls).toEqual([action]);
+        expect(visibility.listener).toBeUndefined();
+      } finally {
+        releaseTerminal?.(response);
+        await unmount(app); target.remove(); newer.remove();
+      }
+    });
+  }
+}

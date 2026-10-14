@@ -249,3 +249,51 @@ it.skipIf(!browser).each(["revision conflict", "unknown session", "terminal rece
     expect(target.childElementCount).toBe(0);
   } finally { if (!left) await unmount(app); target.remove(); }
 });
+for (const newerFocus of ["pending", "host-callback"] as const) {
+  it.skipIf(!browser)(`Pitch terminal preserves newer focus (${newerFocus})`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const snapshot = await pitchSnapshot({ phase: "shop", hand: [], shop_offers: [] });
+    const port = new FakePort();
+    port.currentValue = { kind: "active", session: { ...descriptor, revision: 1, status: "active" }, snapshot };
+    let complete!: (value: MinigameSessionResponse) => void;
+    const reply = new Promise<MinigameSessionResponse>((resolve) => { complete = resolve; });
+    port.command = async (_sessionID, request) => { port.commands.push(request); return reply; };
+    const response: MinigameSessionResponseTerminal = { ...descriptor, revision: 2,
+      snapshot: { ...snapshot, phase: "terminal", hand: [], revision: 2 }, status: "resolved", resolution_receipt: receipt };
+    const terminals: MinigameResolutionReceipt[] = [];
+    const newer = document.createElement("button");
+    newer.type = "button"; newer.tabIndex = 0; newer.textContent = "Another host control";
+    const target = host();
+    const app = mount(MinigameSessionSurface, { target, props: { port, minigameID: "pitch", era: "era_1995", newCommandID: nextID,
+      onExitToHost: () => {}, onTerminal: (value: MinigameResolutionReceipt) => {
+        terminals.push(value);
+        if (newerFocus === "host-callback") newer.focus();
+      } } });
+    document.body.append(newer);
+    try {
+      await expect.poll(() => target.querySelector(".pitch") !== null).toBe(true);
+      const origin = buttonNamed(target, "Close the shop");
+      origin.focus();
+      await userEvent.keyboard("{Enter}");
+      await expect.poll(() => port.commands.length).toBe(1);
+      await expect.poll(() => origin.disabled).toBe(true);
+      expect(port.commands[0]).toMatchObject({ expected_revision: 1, command: { kind: "end_shop" } });
+      if (newerFocus === "pending") {
+        await userEvent.keyboard("{Tab}");
+        expect(document.activeElement).toBe(buttonNamed(target, "Leave the table"));
+        await userEvent.keyboard("{Tab}");
+        expect(document.activeElement).toBe(newer);
+      }
+      complete(response);
+      await expect.poll(() => terminals).toEqual([receipt]);
+      await expect.poll(() => target.querySelector(".pitch")).toBeNull();
+      await settle();
+      expect(document.activeElement).toBe(newer);
+      expect(target.textContent).toContain("Credited to the company");
+      expect(port.commands).toHaveLength(1);
+    } finally {
+      complete(response);
+      await unmount(app); target.remove(); newer.remove();
+    }
+  });
+}

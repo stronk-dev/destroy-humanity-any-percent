@@ -1769,3 +1769,42 @@ holds and the full nine-tier1.0 remain open. Review by: Codex (implementer first
 Recorded by: Codex. Exact full correction/tests/vectors/version/docs/records range after
 `3a182e1c` through this containing commit needs Claude designated review, not approval inferred
 from earlier ranges. No acceptance checkbox, archival, draft adoption, mint, push or deployment.
+
+## 2026-10-14 — Preserve newer focus on terminal replies in both hosts (RP-600)
+
+Resume clean `a909db44`; preceding turn made scoped rate-proof progress. Continue accepted
+MA3/SR-C3 mounted behavior and the integrated GS0.6 focus floor, not the held performance/API
+amendments. Recovery's unconditional post-terminal heading.focus steals a native newer host
+control while Finish/Stop is pending, and overwrites focus assigned by its terminal callback.
+Four declarations ×Chromium/WebKit fail the old component exactly at that focus assertion,
+after the command, outside-control Tab and terminal rendering actually execute.
+
+Inspect the sibling Pitch host before closeout: it has the same unconditional focus. Initial
+candidate uses nonexistent .pitch-table and fails four mount assertions; exclude that invalid
+instrument run, fix only its selector to actual .pitch, retain assertions/deadlines and rerun
+with production unchanged. The valid two declarations ×two engines then fail exactly at newer
+focus after the pending shop-close reply/callback. No guessed selector failure is product proof.
+
+Both hosts now snapshot focus before committing the terminal and restore only surface-owned
+or unclaimed focus, checking again after tick so a newer surviving target wins. Normal terminal
+heading/Return behavior, receipt rendering, one host callback, duplicate/race/unmount guards and
+scheduler stop remain unchanged. No new listener/framework, user copy, DTO, server, retry,
+heartbeat, policy, schema, balance, version or RFC change. These presentation paths are not
+kernel-watched; no path move or cosmetic version bump. Canonical platform/Recovery docs and
+owning plan/backlog reconcile the correction in the same batch.
+
+Final root `make test-browser-focused` selects the complete four affected minigame/Recovery
+browser/helper files in Chromium/WebKit:106 pass, no deselections/skips in that population.
+Exact selector: `BROWSER_TEST_FLAGS='test/minigame-surface-browser.test.ts test/minigame-surface.test.ts test/soul-recovery-surface-browser.test.ts test/soul-recovery-surface.test.ts --project chromium --project webkit'`.
+All twelve new regression executions pass alongside ordinary keyboard/terminal/race/unmount
+controls. Node minigame-surface/Soul surface/scheduler19 pass; root typecheck zero errors/warnings,
+build-client and verify-client-boundary pass. Native deferred port replies prove real mounted
+DOM focus/state/callback ordering, not server SQL, authentic payout or whole-player workflows.
+No Firefox/Linux/actual-AT/performance/full CI rerun or broader acceptance claim. Existing
+Docker/history/Clout/rights/content/release and full-nine-tier obligations remain unchanged.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete two-component/tests/
+docs/plan/ledger/log range after `a909db44` through this containing commit needs designated Claude
+review, consolidatable with MA3 corrective ranges; no self-acceptance/archival or owner adoption.
+Continue accepted player conformance work while unrelated named holds remain. Nothing pushed,
+published or deployed; no full Minigame/API/1.0 completion.

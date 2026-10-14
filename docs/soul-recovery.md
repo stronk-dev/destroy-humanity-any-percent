@@ -50,8 +50,11 @@ token. An under-ceiling hidden interval may resume immediately, and queued beats
 
 The Recovery surface declares zero Tab indices for Begin, Reconnect, Finish, Stop and Back,
 preserving document-order keyboard traversal even when a browser omits implicit button stops.
-Disabled controls retain their native disabled behavior. Terminal receipts still focus the
-heading; Tab from there reaches Back. Mounted Chromium/WebKit checks exercise actual Tab/
+Disabled controls retain their native disabled behavior. Terminal receipts restore the heading
+when focus belonged to Recovery or was unclaimed, unless a newer surviving control receives
+focus before the DOM update finishes. A player who tabs to another host control while Finish/
+Stop is pending keeps that focus; terminal text and the once-only host notification still arrive.
+Tab from the ordinarily restored heading reaches Back. Mounted Chromium/WebKit checks exercise actual Tab/
 Shift-Tab and Enter/Space with controlled coordinator replies, not direct button focus or clicks.
 They do not establish real assistive-technology or whole-player accessibility acceptance.
 

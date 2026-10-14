@@ -56,12 +56,15 @@
       automaticRetries = 0;
     }
     const wasTerminal = view.kind === "required_terminal";
+    const previousFocus = document.activeElement;
+    const restoreFocus = next.kind === "required_terminal" && !wasTerminal
+      && (previousFocus === document.body || heading?.closest("section")?.contains(previousFocus) === true);
     view = next;
     if (next.kind === "paused_reconnect") scheduleRetry();
     if (next.kind === "required_terminal" && !wasTerminal) {
       onTerminal(next.response.resolution_receipt);
       await tick();
-      if (!destroyed) heading?.focus();
+      if (!destroyed && restoreFocus && (document.activeElement === previousFocus || document.activeElement === document.body)) heading?.focus();
     }
   }
 

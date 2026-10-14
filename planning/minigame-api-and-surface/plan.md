@@ -1,5 +1,12 @@
 # Minigame API & Surface implementation plan
 
+Current terminal-focus correction (2026-10-14, RP-600): both Recovery and Pitch preserve newer
+surviving host-control focus when a terminal reply arrives or its callback assigns focus before
+the DOM update finishes. The ordinary terminal-heading/Return and unmount behavior remains.
+Native old-component failures and final affected checks belong in the latest owning log; no
+DTO, heartbeat/retry, server, copy, version, new RFC or whole-feature/release change. The complete
+range after `a909db44` needs designated Claude review, consolidatable with MA3 corrections.
+
 Current bounded correction (2026-10-14, RP-565): existing schema1 raw admission now matches
 across Go/TS: exact DTO key spelling, unique raw members and integer version tokens. Old Go
 accepts8 case aliases; old TS accepts17 duplicate/token forms. All30 shared cases and existing
