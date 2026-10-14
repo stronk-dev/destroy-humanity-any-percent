@@ -788,6 +788,13 @@ runtime commands and damaged-input cases. Bootstrap/state/protocol replies and p
 are synthetic; no Docker, Caddy, account authorization or Postgres runs in this test. It
 supplements the helper's unit coverage, not its exact-release/clean-host drain acceptance.
 
+Smoke HTTP JSON replies retain the existing 4 MiB ceiling and require real end-of-body,
+not EOF manufactured by the size limiter. One extra sentinel byte detects overflow;
+it is never admitted as a larger response budget. Hidden trailing data or an endless
+whitespace tail refuses before a bootstrap reply can authorize the subsequent state read.
+Complete replies at the ceiling and normal authenticated Caddy/socket paths still work.
+This is body-completeness validation, not full DTO validation or live-release identity proof.
+
 The pre-upgrade backup is checked as host bytes: after the backup container reports completion,
 the release helper re-reads the host envelope, verifies its encrypted payload length and SHA-256,
 and requires its header to equal the reported header (manifest, epoch, server, pre-upgrade class).

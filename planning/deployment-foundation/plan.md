@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP5 smoke correction and release-lane evidence, 2026-10-14:** RP-612 rejects
+size-limiter EOF as completion, preserving the existing 4 MiB ceiling. Four old decoder/caller
+regressions fail; corrected native/race and the actual declared Caddy/Postgres/WebSocket lane
+pass, including admitted work, courtesy/drain, restart and restored-account smoke. The log
+records the range after `7644aed4` pending Claude, and the lane's checkout-backed/emulated limits.
+Current Docker28.4.0/Compose2.39.4-desktop.1 matches the recorded development pair but its
+daemon is Linux/aarch64; CR2/CR4 native supported-host experiments remain unexecuted.
+
 **Current DP6 cleanup correction and restored test environment, 2026-10-14:**
 RP-611 binds cleanup to inspected directory/file identities and a directory-rooted handle.
 Three old physical-file regressions delete an uninspected replacement; corrected native and
@@ -31,8 +39,9 @@ live image/mounted-byte identity, one ledger with durable release/rollback event
 interruption recovery. It is not accepted/acceptance-ready; CR2/CR4 require the two named pinned-
 engine experiments before mechanical closure and adoption/review. Native actual ExecRunner/lock
 evidence confirms child continuation after killed-parent lock release, with normal completion
-control and both children observed terminal; preserved manual source is outside CI. Fresh Docker
-socket ping still times out, so no Linux/daemon/container-copy result is claimed. No product byte
+control and both children observed terminal; preserved manual source is outside CI. The initial Docker
+socket ping timed out; it now responds, but the daemon is Linux/aarch64 and no supported-host
+mounted-reader/quiescence experiment is claimed. No product byte
 changed. Next: execute/reconcile the mechanical questions when the declared engine is usable;
 continue other accepted work meanwhile. D-019, other DESIGN-GAPs and full nine-tier floor remain.
 

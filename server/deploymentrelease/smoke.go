@@ -185,11 +185,17 @@ func (session *SmokeSession) command(ctx context.Context, value map[string]any) 
 }
 
 func decodeResponse(reader io.Reader, target any) error {
-	decoder := json.NewDecoder(io.LimitReader(reader, 4<<20))
+	// One sentinel byte distinguishes the reader's real EOF from reaching the
+	// existing response ceiling. The extra byte is detection, not admitted data.
+	limited := &io.LimitedReader{R: reader, N: (4 << 20) + 1}
+	decoder := json.NewDecoder(limited)
 	if err := decoder.Decode(target); err != nil {
 		return err
 	}
 	if err := decoder.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
+		return ErrInvalid
+	}
+	if limited.N == 0 {
 		return ErrInvalid
 	}
 	return nil

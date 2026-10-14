@@ -6847,3 +6847,49 @@ review; earlier exact corrective ranges remain owed. No accepted body, owner
 choice, feature checkbox, archival, mint, publication or push. Next: execute the
 other declared integration lanes individually and the pinned-engine engineering
 experiments under their actual prerequisites; daemon recovery alone closes none.
+
+## 2026-10-14 — DP5 real Caddy release lane and complete smoke-response reads
+
+Start clean7644aed4. Read the entire current-release proposal and inspect the
+actual daemon: Linux/aarch64, Engine28.4.0, Compose2.39.4-desktop.1. The versions
+match the recorded development pair, but this is not the supported native
+Linux/amd64 host. Do not substitute emulation for CR2/CR4's required population
+or call that draft acceptance-ready. No mounted-byte/quiescence experiment or
+new supervisor/recovery mechanism is implemented/adopted.
+
+Accepted DP5 lane: inspect the declared release-test project as empty, then
+run make test-deployment-release.82532 exits0, actual test2.29s: Caddy HTTPS
+with its integration-only internal CA/test client, Postgres16, authenticated
+bootstrap/state/socket; readiness withdrawal with the
+server marker, exact new-intent refusal, completion of an admitted DB-blocked
+intent, courtesy+4003 closure, restarted composition and restored-account smoke.
+Real encrypted-package preflight accepts the intact dump and rejects authenticated
+trailing data before recording runtime commands. Changed catalog bytes refuse.
+The test runs the Go composition in its compiled test process with a read-only
+checkout mount. Its restore starts the same current composition, not a different
+previous release image; the preflight command runner is a double. This is not
+controller/CLI identity binding, exact-bundle/previous-manifest or clean-host R-006.
+
+RP-612: the smoke decoder's io.LimitReader creates false EOF at4MiB. Three cold
+old-reader negatives accept oversized whitespace, hidden garbage and hidden second
+JSON; a real HTTP caller also sends authenticated state after an invalid bootstrap
+body. Valid short/at-boundary and deliberately stopped healthy HTTP controls pass.
+Read one sentinel byte and refuse overflow without increasing the admitted ceiling.
+Do not expose reply bytes. Add an endless-tail control proving the actual reader
+consumes only the existing ceiling plus detection byte; no timing-budget claim.
+
+Corrected focused, cold deploymentrelease/deploymentrehearsal (9.478/7.931s),
+affected vet and focused race1.665s pass. Atomic counters keep HTTP fixture
+observations race-free. Final make test-deployment-release67398 exits0, actual
+test2.53s, on corrected helper bytes with all original journey assertions intact.
+Both runs remove only their owned test containers/network/tmpfs; final project
+ps is empty. No public deployment, operator secret access, full API DTO validation,
+native-amd64 host, journal/retention/RPO/RTO, full AC3/AC5 or release approval.
+
+Handoff: helper, regressions, canonical docs, RP-612 and this plan/log; current
+verification gets the new real-lane result, not a gameplay milestone. Review by:
+Codex (implementer first filter); Recorded by: Codex. Whole coherent range after
+7644aed4 through this containing commit needs Claude designated review; earlier
+corrective spans remain owed. No archived body, owner choice, feature checkbox,
+mint, publication or push. Native-host CR2/CR4 and the full nine-tier/platform floor
+remain open; continue the other declared integration populations independently.
