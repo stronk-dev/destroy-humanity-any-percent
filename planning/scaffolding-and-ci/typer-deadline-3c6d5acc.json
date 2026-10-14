@@ -1,0 +1,150 @@
+{
+  "source_commit": "3c6d5accfd6af45bf662e1d0045e9ae7bede8a94",
+  "command": "make test-browser-focused BROWSER_TEST_FLAGS='--project chromium --project webkit'",
+  "population": "Complete native Chromium/WebKit functional population; no Firefox/performance/SQL/hosted proof",
+  "result": {
+    "exit_code": 2,
+    "files": 292,
+    "failed_tests": 1,
+    "passed_tests": 24427,
+    "expected_deadline_controls": 10,
+    "skipped_tests": 16,
+    "duration_seconds": 157.9
+  },
+  "raw_record": {
+    "path": ".cache/native-stage-history-3c6d5acc.log",
+    "sha256": "ee0d3b579e9e478853347f7231ba5d22b52593123594b20dffa626a84e8249d6"
+  },
+  "capture_emissions": 2,
+  "unique_captures": 1,
+  "accounting": {
+    "completed_stage_ms": 13337,
+    "active_stage_ms": 1663,
+    "total_ms": 15000
+  },
+  "limits": [
+    "Input-command promise intervals include callbacks triggered by native input; they are not exclusive native-provider cost.",
+    "Response waits occur after the native input promise and can be zero even when engine/render callbacks ran during it.",
+    "The machine is not claimed isolated. This is failure localization, not a product or latency fix."
+  ],
+  "capture": {
+    "stage": "submit-prompt-6",
+    "elapsed_ms": 15000,
+    "stage_elapsed_ms": 1663,
+    "completed_stages": [
+      {
+        "stage": "setup",
+        "elapsed_ms": 0
+      },
+      {
+        "stage": "import-native-driver",
+        "elapsed_ms": 0
+      },
+      {
+        "stage": "content-identity",
+        "elapsed_ms": 1
+      },
+      {
+        "stage": "create-engine",
+        "elapsed_ms": 1
+      },
+      {
+        "stage": "mount-fixture",
+        "elapsed_ms": 1
+      },
+      {
+        "stage": "initial-render",
+        "elapsed_ms": 1
+      },
+      {
+        "stage": "tab-timed-choice",
+        "elapsed_ms": 53
+      },
+      {
+        "stage": "tab-untimed-choice",
+        "elapsed_ms": 46
+      },
+      {
+        "stage": "begin-untimed",
+        "elapsed_ms": 63
+      },
+      {
+        "stage": "begin-response",
+        "elapsed_ms": 0
+      },
+      {
+        "stage": "submit-miss",
+        "elapsed_ms": 179
+      },
+      {
+        "stage": "miss-response",
+        "elapsed_ms": 0
+      },
+      {
+        "stage": "clear-miss",
+        "elapsed_ms": 113
+      },
+      {
+        "stage": "submit-prompt-0",
+        "elapsed_ms": 1603
+      },
+      {
+        "stage": "prompt-0-response",
+        "elapsed_ms": 0
+      },
+      {
+        "stage": "submit-prompt-1",
+        "elapsed_ms": 1251
+      },
+      {
+        "stage": "prompt-1-response",
+        "elapsed_ms": 0
+      },
+      {
+        "stage": "submit-prompt-2",
+        "elapsed_ms": 785
+      },
+      {
+        "stage": "prompt-2-response",
+        "elapsed_ms": 0
+      },
+      {
+        "stage": "submit-prompt-3",
+        "elapsed_ms": 4294
+      },
+      {
+        "stage": "prompt-3-response",
+        "elapsed_ms": 1
+      },
+      {
+        "stage": "submit-prompt-4",
+        "elapsed_ms": 3480
+      },
+      {
+        "stage": "prompt-4-response",
+        "elapsed_ms": 0
+      },
+      {
+        "stage": "submit-prompt-5",
+        "elapsed_ms": 1465
+      },
+      {
+        "stage": "prompt-5-response",
+        "elapsed_ms": 0
+      }
+    ],
+    "context": {
+      "fixture_ready": true,
+      "phase": "typing",
+      "prompt_index": 6,
+      "revision": 9,
+      "commands": 8,
+      "last_command": "submit_line",
+      "native_input_in_flight": true,
+      "pending": "false",
+      "input_length": 11,
+      "focused_input": true,
+      "fixture_connected": true
+    }
+  }
+}

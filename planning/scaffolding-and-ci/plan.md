@@ -7,12 +7,27 @@
 
 ## Current checkpoint — 2026-10-14
 
+At `3c6d5acc`, a second complete native functional run again fires WebKit's unchanged15s
+Typer deadline, now at `submit-prompt-6`. The committed small observation capsule retains every
+stage:13,337ms completed plus1,663ms active account for15,000ms. Setup is4ms; most time is in
+native-command promise intervals, which include triggered engine/render callbacks and cannot
+be called exclusive provider cost. The owning log retains source/digest and complete red result.
+
+Per-command pending render, input/engine wait and result-decode/render timing now supplements
+that observer. The actual native journey verifies all ten records; a controlled real-engine
+delay is independently timed and false zero records fail both browsers. One whole instrumented
+population passes without a new failure capture; that is not attribution or repair. Final
+affected-file/types checks pass; no inputs, normal deadline, default concurrency or CI workflow
+change. The complete new range after `3c6d5acc` needs designated review. Next: obtain exclusive
+callback-versus-dispatch evidence on recurrence or through a bounded workload control before
+proposing optimization; the numerical/history and release/owner gates remain separate.
+
 New native recurrence, 2026-10-14 at `213ad5f6`: complete Chromium/WebKit functional execution
 fails the unchanged Typer15s deadline in `submit-prompt-4`, with a focused connected input,
 pending false and native delivery in flight. The capture records only1.04s in that current
 stage, so earlier-stage costs need the existing observer's ordered timing history, now verified
-with real framework-deadline controls. This is
-new failure localization, not a proved player bug or an input/deadline/concurrency correction.
+with real framework-deadline controls. This is new failure localization, not a proved player
+bug or an input/deadline/concurrency correction.
 The owning log retains the complete red result, raw artifact digest and diagnostic verification.
 
 Preceding checkpoint (2026-10-13): RP-553 closes a diagnostic gap: Typer's phase observer arms before the first journey await,

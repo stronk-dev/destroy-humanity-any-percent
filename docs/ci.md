@@ -219,6 +219,16 @@ It also retains every completed stage's elapsed time in order, without truncatio
 deadline during a short final stage does not conceal where earlier time was spent. This
 history is emitted only with the cancellation capture; healthy/disposed observers remain silent. It contains
 stage names and durations, not key sequences, prompt text or credentials.
+Command callbacks additionally record pending-state render, pure-engine call/wait and
+result-decode/snapshot-render elapsed intervals, plus any active callback phase. These are
+elapsed wall-clock intervals, including scheduling waits—not isolated CPU measurements.
+They can run inside a native keyboard promise, so a later zero-length response wait does
+not prove that engine/render work cost zero. Completed records contain command kinds and
+durations only. The ordinary successful journey verifies all ten callback records without
+printing a healthy observation; no native action or deadline is replaced.
+A separate diagnostic invokes the same actual pure engine behind a timed asynchronous
+hold. Its independently observed hold duration must appear in the apply interval; deliberately
+reporting zero fails in both browsers. The normal invocation still calls the engine directly.
 It arms when the journey body starts, before its first await, so driver loading, content identity,
 engine creation and fixture mount are also distinguishable. Until the fixture exists, context
 explicitly reports `fixture_ready: false` rather than reading uninitialized engine/DOM variables;

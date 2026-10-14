@@ -1156,3 +1156,61 @@ designated review, consolidatable with the existing native-lifetime/observer ran
 schema, kernel, balance, copy, CI workflow, archival, push or deployment change. Next: use the
 completed-stage capture on recurrence to distinguish setup, native dispatch and engine/render
 cost before proposing any optimization; other accepted construction continues independently.
+
+## 2026-10-14 — RP-526 accumulated input waits and overlapping callback measurement
+
+Resume clean `3c6d5acc`; the preceding goal turn made progress with actual deadline capture and
+a discriminating stage observer. One complete unchanged native Chromium/WebKit population91456
+again exits2:292 files/24,427 passes/one WebKit Typer15s deadline/ten expected deadlines/16 skips,
+157.90s. All selected files finish; passive module summaries0/0 and1,363/1,363 have none pending.
+The real capture at prompt6 is retained verbatim in `typer-deadline-3c6d5acc.json`, verified
+against both equal console emissions and the original raw digest. Complete ignored raw record:
+`.cache/native-stage-history-3c6d5acc.log`, SHA256
+`ee0d3b579e9e478853347f7231ba5d22b52593123594b20dffa626a84e8249d6`.
+
+All15,000ms are accounted: completed13,337 plus active1,663. Initialization/initial render4ms;
+completed input-command promise intervals13,332ms, including submit3 at4,294 and submit4 at3,480.
+The input stays focused/connected, pending false, revision9/commands8 and an outstanding native
+RPC. These intervals INCLUDE callbacks triggered by Enter: the pure-engine/snapshot work can
+finish before the native promise resolves, so later0ms response waits do not prove0ms engine cost.
+This changes the next measurement, not the attribution. Machine isolation, CPU cost, current
+hosted CI and the cause of every earlier failure remain unproved. No dependency/source optimization.
+
+Extend the existing fixture's failure-only context with completed command-kind/duration records
+and any active callback phase. Measure pending-state render, input/engine call+wait and result
+decode/render inside the actual callback; these are elapsed intervals including scheduling, not
+isolated CPU. Native input, seed, snapshot semantics, assertions and ordinary15s deadline remain.
+The ordinary journey now also requires ten records. Old producer84543 completes actual gameplay
+then fails both new record assertions (54 other checks/four expected deadlines pass). Corrected
+89762 passes56/four expected deadlines; type7277 and pure-helper/29-skip Node33215 pass.
+
+One full instrumented population73374 exits0:292 files/24,428 passes/ten expected deadlines/16
+skips,156.21s, with no ordinary failure capture. Module summaries0/0 and1,362/1,362 complete.
+Retain `.cache/native-callback-timings-3c6d5acc.log`, SHA256
+`cc1806ccecf3f4af4da5369661bbe9f727419bc41c1ebf723dd48f4489de7adf`.
+At that execution, the only source delta is test producer SHA256
+`b0fc6351cd93bef5a199e23ba9414954475f8c01006447f41d0da0f06050b6ee`.
+This pass yields no callback profile on recurrence, is not a latency repair, and does not erase
+the two preceding real full-run failures. No further full rerun for a green status.
+
+Strengthen the new measurement with one diagnostic-only apply seam: normal calls still use the
+real engine directly; the control adds an asynchronous hold then invokes that same engine and
+all original native gameplay. Independently measure the hold and require each recorded apply
+interval to include it, without assuming25ms timers fire exactly on schedule. Unconnected hook
+33095 fails both controls with zero invocations. Connected full-file32562 passes58/four expected
+deadlines; types43176 are clean and Node96869 executes one helper/30 explicit browser skips.
+Because this timing could inform a future operating change, explicitly force reported apply
+durations to0 once:96575 fails both native controls (held26.400000095ms/27ms), then restore exact
+source hash `a3d81bcbb9a7ab1974b27f3cb6adea713e754dd701e90616f8f89731af40a182`.
+Final restored affected-file97461 passes58/four expected deadlines,2.73s. The added controlled
+case/optional hook are not in the earlier full73374 population; affected final file/types are the
+verification for that refinement. Controlled delays are explicitly diagnostic, not real failure
+attribution; ordinary journey input/deadline stays unchanged. No product byte was mutated.
+
+Diff/record checked; all handles terminal. Review by: Codex (diagnostic implementer first filter).
+Recorded by: Codex. Exact entire test/capsule/docs/records range after `3c6d5acc` through this
+containing commit needs designated Claude review, consolidatable with existing lifetime/observer
+corrections. No policy/budget, concurrency, framework upgrade, CI workflow, kernel, balance, copy,
+SQL/Firefox/performance/hosted proof, archival, publication or nine-tier milestone change. Next:
+separate callback and dispatch intervals on recurrence, or predeclare a bounded workload control;
+do not optimize based on the zero post-input response waits or count this local pass as CI repair.

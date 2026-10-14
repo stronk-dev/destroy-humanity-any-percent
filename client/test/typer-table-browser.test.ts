@@ -47,7 +47,7 @@ describe("native keyboard timeout isolation", () => {
 
   let setupSignal: AbortSignal;
   let releaseSetup: () => void;
-  let setupJourney: Promise<void>;
+  let setupJourney: ReturnType<typeof runNativeTyperJourney>;
   const setupObservations: Record<string, unknown>[] = [];
 
   it.skipIf(!browser).fails("fires a real journey deadline before fixture initialization", async (context) => {
@@ -337,7 +337,7 @@ for (const phase of ["ready", "typing"] as const) {
 
 async function runNativeTyperJourney({ signal, onTestFinished }: Pick<TestContext, "signal" | "onTestFinished">,
   report: (value: Record<string, unknown>) => void = (value) => console.error("typer-native-journey-deadline", JSON.stringify(value)),
-  beforeSetup?: () => Promise<void>) {
+  beforeSetup?: () => Promise<void>, apply = applyTyper) {
   let readContext: () => Record<string, unknown> = () => ({ fixture_ready: false, fixture_connected: false });
   const observation = observeTyperDeadline(signal, () => readContext(), report);
   onTestFinished(() => observation.dispose());
@@ -356,19 +356,30 @@ async function runNativeTyperJourney({ signal, onTestFinished }: Pick<TestContex
   let serverTime = 1_000;
   let exits = 0;
   const commands: TyperCommand[] = [];
+  const completedCommands: { kind: TyperCommand["kind"]; set_pending_ms: number; apply_elapsed_ms: number; decode_render_elapsed_ms: number }[] = [];
+  let activeCommand: { kind: TyperCommand["kind"]; phase: "set_pending" | "apply" | "decode_render"; began_ms: number } | null = null;
   let nativeInputInFlight = false;
   signal.throwIfAborted();
   observation.enter("mount-fixture");
   const view = controlled(state, (command) => {
     commands.push(command);
+    const pendingBegan = performance.now();
+    activeCommand = { kind: command.kind, phase: "set_pending", began_ms: pendingBegan };
     flushSync(() => view.app.setPending(true));
-    operation = applyTyper({ ...identity, snapshot: encoded, revision: state.revision,
+    const applyBegan = performance.now();
+    activeCommand = { kind: command.kind, phase: "apply", began_ms: applyBegan };
+    operation = apply({ ...identity, snapshot: encoded, revision: state.revision,
       command: JSON.stringify(command), server_time_ms: serverTime++ }).then((output) => {
+      const renderBegan = performance.now();
+      activeCommand = { kind: command.kind, phase: "decode_render", began_ms: renderBegan };
       encoded = output.snapshot;
       state = JSON.parse(encoded) as TyperSnapshot;
       result = output.result;
       flushSync(() => { view.app.advance(state); view.app.setPending(false); });
-    });
+      completedCommands.push({ kind: command.kind, set_pending_ms: applyBegan - pendingBegan,
+        apply_elapsed_ms: renderBegan - applyBegan, decode_render_elapsed_ms: performance.now() - renderBegan });
+      activeCommand = null;
+    }, (error: unknown) => { activeCommand = null; throw error; });
   }, () => { exits++; });
   const sentinel = document.createElement("button");
   view.target.before(sentinel);
@@ -379,6 +390,9 @@ async function runNativeTyperJourney({ signal, onTestFinished }: Pick<TestContex
     input_length: view.target.querySelector<HTMLInputElement>("input")?.value.length ?? null,
     focused_input: document.activeElement === view.target.querySelector("input"),
     fixture_connected: view.target.isConnected,
+    completed_commands: completedCommands.map((command) => ({ ...command })),
+    active_command: activeCommand === null ? null : { kind: activeCommand.kind, phase: activeCommand.phase,
+      elapsed_ms: performance.now() - activeCommand.began_ms },
   });
   const press = async (stage: string, keys: string) => {
     observation.enter(stage);
@@ -443,10 +457,42 @@ async function runNativeTyperJourney({ signal, onTestFinished }: Pick<TestContex
     await press("leave-table", " ");
     expect(exits).toBe(1);
   } finally { await finish(); }
+  return { completed_commands: completedCommands.map((command) => ({ ...command })) };
 }
 
 it.skipIf(!browser)("Typer native keyboard untimed run completes through the real pure engine and leaves the table",
-  (context) => runNativeTyperJourney(context));
+  async (context) => {
+    const measured: unknown = await runNativeTyperJourney(context);
+    expect(measured).toEqual({ completed_commands: [
+      { kind: "begin", set_pending_ms: expect.any(Number), apply_elapsed_ms: expect.any(Number), decode_render_elapsed_ms: expect.any(Number) },
+      ...Array.from({ length: 9 }, () => ({ kind: "submit_line", set_pending_ms: expect.any(Number), apply_elapsed_ms: expect.any(Number), decode_render_elapsed_ms: expect.any(Number) })),
+    ] });
+    const trace = measured as { completed_commands: { set_pending_ms: number; apply_elapsed_ms: number; decode_render_elapsed_ms: number }[] };
+    for (const command of trace.completed_commands) {
+      for (const elapsed of [command.set_pending_ms, command.apply_elapsed_ms, command.decode_render_elapsed_ms]) {
+        expect(Number.isFinite(elapsed)).toBe(true);
+        expect(elapsed).toBeGreaterThanOrEqual(0);
+      }
+    }
+  });
+
+it.skipIf(!browser)("measures a controlled engine wait through the unchanged native journey", async (context) => {
+  const held: number[] = [];
+  const measured = await runNativeTyperJourney(context,
+    (value) => console.error("typer-command-timing-control", JSON.stringify(value)), undefined,
+    async (input) => {
+      const began = performance.now();
+      await new Promise<void>((resolve) => setTimeout(resolve, 25));
+      held.push(performance.now() - began);
+      return applyTyper(input);
+    });
+  expect(held).toHaveLength(10);
+  expect(measured.completed_commands).toHaveLength(held.length);
+  for (let index = 0; index < held.length; index++) {
+    expect(held[index]).toBeGreaterThan(0);
+    expect(measured.completed_commands[index]!.apply_elapsed_ms).toBeGreaterThanOrEqual(held[index]!);
+  }
+});
 
 it.skipIf(!browser)("samples an increasing monotonic clock without reactive feedback across server revisions", async () => {
   const target = document.createElement("main"); document.body.append(target);
