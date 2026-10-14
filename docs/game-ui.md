@@ -199,9 +199,10 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   band text. Below 30rem it renders actual `<dl>` / `<dt>` / `<dd>` rows: each
   trust term contains both its constituency and axis, and the separate p(doom)
   row retains its own title and pressure-meter explanation. Each narrow native
-  meter is named by its term with `aria-labelledby`. At/above 30rem the table
-  remains; only one population is rendered, not a hidden duplicate. A
-  mount-owned media-query listener changes layout on resize and is removed on
+  meter is named by its term with `aria-labelledby`. At/above 30rem each trust
+  meter is named by its visible constituency and axis headers, and p(doom) by
+  its visible heading. The table remains; only one population is rendered, not
+  a hidden duplicate. A mount-owned media-query listener changes layout on resize and is removed on
   unmount. Numeric and band text always use the current authoritative arm,
   including a refresh followed by resizing. The curtain and "as of last update"
   note remain. Native viewport/DOM evidence is not actual zoom or AT proof.

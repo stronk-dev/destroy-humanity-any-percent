@@ -463,10 +463,23 @@ async function settleMeterLayout(): Promise<void> {
 }
 
 async function assertSemanticMeters(target: HTMLElement, rows: typeof semanticMeterRows, narrow: boolean): Promise<void> {
+  const { page } = await import("vitest/browser");
   const surface = target.querySelector(".meters")!;
+  const name = (row: (typeof rows)[number]) => {
+    const presentation = FEATURES_PRESENTATION.trustMeters.get(row.meter_id);
+    return presentation
+      ? `${t(presentation.constituency_key, {}, "era_1995")} ${t(presentation.axis_key, {}, "era_1995")}`
+      : t(FEATURES_PRESENTATION.doomMeter.title_key, {}, "era_1995");
+  };
+  // Collect every name before asserting so one missing label cannot hide the others.
+  expect(rows.map((row) => ({ name: name(row), count: page.getByRole("meter", { name: name(row), exact: true }).elements().length })))
+    .toEqual(rows.map((row) => ({ name: name(row), count: 1 })));
   const value = (element: Element, row: (typeof rows)[number]) => {
     const meter = element.querySelector("meter")!;
     expect(meter).not.toBeNull();
+    // Table-header context does not supply a native meter's accessible name.
+    // Find this exact value by role/name in both layouts, including after resize.
+    expect(page.getByRole("meter", { name: name(row), exact: true }).element()).toBe(meter);
     expect([meter.min, meter.max, meter.value]).toEqual([row.min, row.max, row.value]);
     expect([...element.querySelectorAll("span")].map((node) => node.textContent)).toEqual([
       t("meters.value_frame", { value: row.value, max: row.max }, "era_1995"),

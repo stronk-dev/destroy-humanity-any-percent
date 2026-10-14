@@ -7139,3 +7139,35 @@ After both terminal runs, remove only `postgres` and `game-ui-postgres` with
 their declared Compose files' `rm -sf` service selectors. Their disposable tmpfs
 test data is discarded; no durable volume, cache, network or unrelated service
 is removed. Final declared service inventory is empty.
+
+## 2026-10-14 — RP-619 wide meter accessible names
+
+Outcome: under accepted GS0.6/GS3, each wide-layout native meter must identify the
+same constituency/axis or p(doom) as its visible labels. Table-header context alone
+left all eleven accessible names empty. Link trust meters to their existing row
+and column headers, and p(doom) to its existing heading; narrow term links, copy,
+numeric/band values, layout and authoritative inputs remain unchanged.
+
+Regression: extend the existing semantic helper with exact role/name lookup for
+every meter and identity comparison to the value-bearing element. The old component
+fails four native Chromium/WebKit resize/refresh executions, reporting all eleven
+missing names; the two initial-narrow controls pass (42525, Make exit2). The earlier
+version of the assertion also fails four cases (11596), stopping at p(doom); the
+final assertion collects every name before failing rather than hiding later rows.
+Initial sandbox invocation fails before collection with loopback EPERM; the same
+root command executes after narrowly scoped escalation. No bound/selection is changed.
+
+Verification by: Codex. Recorded by: Codex. Corrected `make test-browser-focused
+BROWSER_TEST_FLAGS='test/garage-surfaces-browser.test.ts --project chromium --project
+webkit -t GS3-A3'` passes6 (27698). Finish with the entire affected file, omitting
+only that `-t` selector:846 pass, no skips,73.13s, exit0 (52510). Its verbose worker
+HTTP chunks partially truncate, but the same live handle returns the terminal summary
+and exit0; no rerun or inferred per-assertion transcript. `make typecheck build-client
+verify-client-boundary` exits0 (71732), including zero Svelte errors/warnings and an
+actual production build. `git diff --check` passes.
+
+Handoff: designated Claude review pending for the single commit containing this
+entry, parent `8f698279`, all six source/test/docs/record paths. Browser role/name
+semantics with a mounted controlled snapshot are not actual screen-reader, Firefox,
+SQL/service, hosted-CI, whole Garage or accessibility-release proof. No acceptance,
+archival, owner choice, new copy, schema/kernel change or publication is claimed.

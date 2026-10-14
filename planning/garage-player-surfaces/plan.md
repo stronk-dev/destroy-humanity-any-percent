@@ -7,6 +7,12 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+2026-10-14 bounded correction (RP-619): wide-layout native meters now reference their visible
+constituency/axis headers or p(doom) heading. Mounted regressions identify all eleven missing
+names on the old component; final affected Chromium/WebKit846, types/build/boundaries pass.
+The owning log records the single-commit range after `8f698279` needing Claude review.
+Actual assistive-technology testing and full Garage acceptance remain separate.
+
 Current checkpoint (2026-10-14): at `cc256422`, `make test-game-ui-composed`
 completes with exit0 after a fresh server/client build. Its sequential population includes
 the main player journey, ordinary Cosmetic/Reputation, Clout axis-stack, negative checkout,

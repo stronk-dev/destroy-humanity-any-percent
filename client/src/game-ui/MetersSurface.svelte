@@ -56,10 +56,10 @@
   <span>{band(row)}</span>
 {/snippet}
 
-{#snippet cell(row: Row | undefined, label: string)}
+{#snippet cell(row: Row | undefined, label: string, labelledBy: string)}
   {#if row}
     <td data-label={label}>
-      {@render value(row)}
+      {@render value(row, labelledBy)}
     </td>
   {:else}
     <td data-label={label}></td>
@@ -86,16 +86,16 @@
     <thead>
       <tr>
         <th scope="col">{t("meters.constituency_label", {}, era)}</th>
-        <th scope="col">{t("meters.axis.standing", {}, era)}</th>
-        <th scope="col">{t("meters.axis.grievance", {}, era)}</th>
+        <th id="meter-axis-standing" scope="col">{t("meters.axis.standing", {}, era)}</th>
+        <th id="meter-axis-grievance" scope="col">{t("meters.axis.grievance", {}, era)}</th>
       </tr>
     </thead>
     <tbody>
       {#each constituencies as [constituency, group] (constituency)}
         <tr>
-          <th scope="row">{t(constituency, {}, era)}</th>
-          {@render cell(group.standing, t("meters.axis.standing", {}, era))}
-          {@render cell(group.grievance, t("meters.axis.grievance", {}, era))}
+          <th id={`meter-constituency-${constituency}`} scope="row">{t(constituency, {}, era)}</th>
+          {@render cell(group.standing, t("meters.axis.standing", {}, era), `meter-constituency-${constituency} meter-axis-standing`)}
+          {@render cell(group.grievance, t("meters.axis.grievance", {}, era), `meter-constituency-${constituency} meter-axis-grievance`)}
         </tr>
       {/each}
     </tbody>
@@ -116,7 +116,7 @@
       {:else}
       <h2 id="doom-heading" title={t(FEATURES_PRESENTATION.doomMeter.tooltip_key, {}, era)}>{t(FEATURES_PRESENTATION.doomMeter.title_key, {}, era)}</h2>
       <p>{t(FEATURES_PRESENTATION.doomMeter.tooltip_key, {}, era)}</p>
-      {@render value(doom)}
+      {@render value(doom, "doom-heading")}
       {/if}
     </section>
   {/if}
