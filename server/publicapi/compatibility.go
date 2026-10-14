@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -165,6 +166,9 @@ func compareCompatibilitySchema(oldSchema, nextSchema map[string]any, mode compa
 				return fmt.Errorf("oneOf[%d]: %w", index, err)
 			}
 		}
+		if err := preserveCompatibilityStringUnion(oldOne, nextOne, oldDefinitions, nextDefinitions); err != nil {
+			return err
+		}
 		// oneOf is exclusive, not an ordinary set union. An appended arm
 		// must not add a second match for any previously admitted response.
 		for index, extra := range nextOne[len(oldOne):] {
@@ -218,6 +222,98 @@ func compareCompatibilitySchema(oldSchema, nextSchema map[string]any, mode compa
 		}
 	}
 	return nil
+}
+
+// Existing string arms can grow only by explicit enum members: format/type
+// changes and enum removal are already rejected above. Check both old and new
+// literals so a newly added member cannot steal an old unbounded string value.
+func preserveCompatibilityStringUnion(oldArms, nextArms []any, oldDefinitions, nextDefinitions map[string]json.RawMessage) error {
+	values := map[string]bool{}
+	var collect func(map[string]any, map[string]json.RawMessage, int)
+	collect = func(schema map[string]any, definitions map[string]json.RawMessage, depth int) {
+		if depth > maximumRuntimeSchemaDepth {
+			return
+		}
+		resolved, ok := resolveCompatibilitySchema(schema, definitions)
+		if !ok {
+			return
+		}
+		if alternatives, ok := resolved["oneOf"].([]any); ok {
+			for _, alternative := range alternatives {
+				if arm, ok := alternative.(map[string]any); ok {
+					collect(arm, definitions, depth+1)
+				}
+			}
+		} else if stringValue(resolved["type"]) == "string" {
+			if members, ok := resolved["enum"].([]any); ok {
+				for _, member := range members {
+					if text, ok := member.(string); ok {
+						values[text] = true
+					}
+				}
+			}
+		}
+	}
+	for side, arms := range [][]any{oldArms, nextArms} {
+		definitions := oldDefinitions
+		if side == 1 {
+			definitions = nextDefinitions
+		}
+		for _, arm := range arms {
+			if schema, ok := arm.(map[string]any); ok {
+				collect(schema, definitions, 0)
+			}
+		}
+	}
+	ordered := make([]string, 0, len(values))
+	for value := range values {
+		ordered = append(ordered, value)
+	}
+	sort.Strings(ordered)
+	for _, value := range ordered {
+		if compatibilityStringUnionMatches(oldArms, value, oldDefinitions, 0) == 1 &&
+			compatibilityStringUnionMatches(nextArms, value, nextDefinitions, 0) != 1 {
+			return fmt.Errorf("%w: oneOf enum growth invalidates old string %q", ErrInvalidSchema, value)
+		}
+	}
+	return nil
+}
+
+func compatibilityStringUnionMatches(arms []any, value string, definitions map[string]json.RawMessage, depth int) int {
+	if depth > maximumRuntimeSchemaDepth {
+		return 0
+	}
+	matches := 0
+	for _, arm := range arms {
+		schema, ok := arm.(map[string]any)
+		if !ok {
+			continue
+		}
+		schema, ok = resolveCompatibilitySchema(schema, definitions)
+		if !ok {
+			continue
+		}
+		if nested, ok := schema["oneOf"].([]any); ok {
+			if compatibilityStringUnionMatches(nested, value, definitions, depth+1) == 1 {
+				matches++
+			}
+			continue
+		}
+		if stringValue(schema["type"]) != "string" || !matchesFormat(stringValue(schema["format"]), value) {
+			continue
+		}
+		if members, restricted := schema["enum"].([]any); restricted {
+			for _, member := range members {
+				if text, ok := member.(string); ok && text == value {
+					matches++
+					break
+				}
+			}
+		} else {
+			matches++
+		}
+	}
+	return matches
 }
 
 func resolveCompatibilitySchema(schema map[string]any, definitions map[string]json.RawMessage) (map[string]any, bool) {

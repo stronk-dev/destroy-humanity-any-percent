@@ -117,6 +117,12 @@ disjoint merely because their item types differ: both can admit `[]`. Unproven i
 remain conservative. This covers appended-arm growth, not a general proof of all cross-arm
 interactions when existing arms themselves change; compatibility and full API acceptance remain
 separate from routing, runtime fixture and complete consumer proofs.
+Existing string-enum arms are also checked together: every old uniquely admitted literal must
+still match exactly one current arm. Both old and newly declared literals are examined using
+the runtime string-format validator and named references, including an old unbounded-string
+arm. Newly ambiguous values that were never admitted previously do not themselves break
+backward compatibility; safe response enum growth remains allowed. This is the string-domain
+check, not a general inclusion solver for numeric/object cross-arm changes.
 Existing optional fields cannot become required in requests, responses or shared definitions,
 including through array/reference/union nesting; failures identify the affected field. Numeric
 bounds compare as exact signed int64 values, not float64 projections, so a one-unit narrowing

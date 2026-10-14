@@ -3084,3 +3084,34 @@ ledger/log form the range after `ea194d8d` through this containing commit,
 pending designated Claude review. Review by: Codex (implementer first filter);
 Recorded by: Codex. Earlier ranges, privacy/wire/owner/numeric/CI/release and
 full-nine-tier obligations remain; no feature promotion, archival, mint or push.
+
+## 2026-10-14 — RP-617 existing response string-enum interactions
+
+Resume clean `dca0bafd` under C2. Six old-checker43523 failures show each
+existing string arm can grow over the other's old value through direct/array/
+nullable wrappers: old actual ValidateResponse passes, next rejects the same
+bytes, while CheckCompatibilityPin incorrectly accepts. No appended arm is
+needed, so RP-616 alone did not cover this class.
+
+Check the exclusive string domain across old/current arms, not each arm alone.
+Collect both old/new enum literals, resolve each side's own references and use
+the existing runtime string-format function. Any formerly unique old match
+must remain unique. New literals are needed when growth steals a formerly
+valid unbounded-string reply. Stable type/format and no-enum-removal rules
+remain; no independent format grammar or new request/response descriptor.
+
+Controls preserve safe growth even with old invalid overlap and new-only
+ambiguity; references, unbounded strings and UUID-format positive/negative
+cases use actual registry validation to verify their populations. This is a
+string-domain comparison, not generic object/numeric inclusion or full C2.
+No endpoint, wire byte, pin reset, schema DSL, kernel or authored copy changed.
+
+Cold publicapi/publicread/account30980 pass0.200/.248/.487s; final36188 also
+passes all three packages and vet after the format control. api-check17359
+regenerates byte-identically. Existing/request/shared/additive controls2734
+pass. Go fixtures and offline generation are the changed boundary; no unrelated
+browser/SQL job is claimed or needed. Diff checked. Source/tests/docs/ledger/
+plan/log form the range after `dca0bafd` through this containing commit,
+pending Claude review, consolidatable with RP-616. Review by: Codex
+(implementer first filter); Recorded by: Codex. Full API/1.0, prior reviews,
+owner/platform/numeric/privacy/release gates remain; no archive/mint/push.

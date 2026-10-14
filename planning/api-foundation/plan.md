@@ -2,14 +2,23 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C2 string-domain correction (2026-10-14, RP-617): widening an existing enum arm can
+invalidate an old reply without adding any alternative. Six old-checker byte regressions
+reproduce; the corrected check counts actual exclusive matches for old/new enum literals,
+following references and the runtime format grammar. Old unbounded strings are included.
+Safe growth, previously invalid overlaps and format-inapplicable literals remain accepted.
+Affected packages/vet and byte-identical generation pass; the log owns the range after
+`dca0bafd`, pending Claude review. Numeric/object cross-arm interactions and full C2/API
+acceptance remain separate; no wire, baseline, owner, kernel or release promotion.
+
 Current C2 correction (2026-10-14, RP-616): appended response-union arms now require a
 disjointness proof against the old arms. Six old-checker regressions pass metadata compatibility
 while making actual formerly valid replies fail runtime validation. Corrected refusals and
 disjoint kind/enum/reference/tagged-object/exact-boundary controls pass, including empty-array
 overlap. Cold affected packages/vet and unchanged generated artifacts are recorded in the
 owning log; the range after `ea194d8d` needs Claude review. No endpoints, DTOs, pins, schema DSL,
-kernel or owner proposal is changed/adopted. Follow up the distinct cross-arm interaction when
-existing alternatives themselves widen; this batch is not complete C2/API acceptance.
+kernel or owner proposal is changed/adopted. RP-617 now covers existing string-enum interactions;
+other cross-arm domains remain work. This batch is not complete C2/API acceptance.
 
 Current A5/C17 admission correction (2026-10-14): path parameters now require
 unique names and resolve named-reference chains before enforcing their existing
