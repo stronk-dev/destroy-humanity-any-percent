@@ -30,12 +30,19 @@ live provider/SQL capture, actual acquisition, AC6, content mint or full1.0 acce
 First extract observation-only Go capture from the existing tests; execute their
 unchanged controls before generating the shared consumer artifact.
 
-Capture preparation executes at the2026-10-15 checkpoint: the existing Go producers
-now return their actual request/input and complete transition observations; all twelve
-records replay to identical Go state/receipt/events. Existing lower-domain,128 purchase,
-42 temporal and external/Guild controls still pass. No artifact is generated yet and no
-TypeScript comparison is claimed. Next share this bounded capture with the existing TS
-replay harness and carry the declared six settlement refusal/rollback controls across.
+Completed locally at the2026-10-15 checkpoint: the existing Go producers return
+their actual request/input and complete observations. The shared
+`testdata/axis-stack/external-replay-research-v1.json` retains all twelve primary
+transitions and six settlement control sets. Actual TypeScript replay reproduces
+complete state, receipt and ordered events, including restored results, in Node,
+Chromium and WebKit. Omission changes noncash settlement state despite equal cash;
+duplicates refuse unchanged; late unaffordable purchases roll back. Three forged
+expected outputs are caught. Existing Go lower-domain,128 purchase,42 temporal and
+external/Guild controls still pass; the artifact's eight selected source digests
+match the final tests. These are bounded compatibility results, not live Guild/SQL
+capture or conservation. Next resolve the viable accounting/interval/origin-lifetime
+contract, not repeat this completed population. Designated review remains pending
+for the coherent range after `12208257` through the result-recording commit.
 
 2026-10-13 RP-537 guard checkpoint: the test-only repair now catches the six
 typed syntax/alias forms missed by the original scanner, retains value-read

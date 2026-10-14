@@ -3230,3 +3230,42 @@ after `12208257` starts the related research range; consolidate its later Go/TS 
 controls and results into one designated review. No runtime/kernel/save/wire/balance,
 policy, content, CI or author body changes. TS comparison and new artifact generation
 remain next, not completed; original27 failures and all1.0 gates remain open.
+
+## 2026-10-15 — Complete bounded external/Guild Go–TypeScript replay comparison
+
+Outcome: all twelve declared actual Go transitions reproduce complete Company,
+receipt and ordered events through TypeScript replay and restoration. Each of the
+six nonempty Guild cells also carries omission, duplicate-refusal and late-purchase
+rollback controls. Omission preserves neutral-rate cash but changes settlement
+state, so cash-only comparisons cannot pass this requirement. Three forged expected
+outputs (state, receipt, events) are caught without mutating the fixture.
+
+Reuse existing producers/research helpers and one hash-bound bundle; the new shared
+fixture is397164bytes with twelve actions, six control sets and eight selected source
+digests, all checked against final source bytes. It is a replay fixture, not a runtime
+storage bound or complete dependency manifest. Generation uses root
+`make test-go GO_PACKAGES=./production GO_TEST_FLAGS='-run TestAxisExternalReplayCompatibilityResearch' UPDATE_EXTERNAL_REPLAY_RESEARCH=1`.
+The earlier writer handle21049 is now missing and its final output was lost; do not
+credit that terminal result. Fresh cold43851 regenerates and compares all result
+bytes without writing, passes in0.927s, and production vet passes. It includes the
+existing lower-domain,128 purchase,42 temporal and external/Guild controls.
+
+Current Node comparison passes161 cases (34 new,127 unchanged temporal). Native
+Chromium/WebKit56689 passes68 executions in1.21s, no selected skips. Typecheck12222
+reports zero errors/warnings. The first browser attempt cannot bind localhost under
+the sandbox and runs no tests; permitted retry produces the native result above.
+Earlier instrumentation errors are retained: parsing a canonical replay payload as
+a complete incoming intent failed six Go controls; use existing parseLoggedIntent
+with its captured command ID. Typecheck caught a test callback returning replay
+state; the async callback now awaits the comparison without returning that value.
+Neither correction changes production behavior or weakens assertions.
+
+No runtime, kernel, save/replay schema, arithmetic, balance, CI or owner-authored body
+changes. The Codex draft's evidence is updated, not adopted. This is bounded existing
+compatibility, not conservation, live provider/SQL acquisition or a browser-to-server
+player journey. Original27 partition failures remain evidenced by the current full
+server checkpoint, not rerun or waived here. Review by: Codex (implementer first
+filter). Recorded by: Codex. The whole research range after `12208257` through this
+containing commit, including preparation `6ed5ac79`, needs designated Claude review;
+no archival or feature/release promotion. Next: viable accounting/interval/origin
+contract and remaining accepted construction, not another replay of this study.

@@ -152,7 +152,7 @@ This is a constraint on the pending design, not a new origin/save wire, adoption
 origin lifetime or a production fix. The initial120001ms population refused before action
 on the existing active-play due-transition ceiling; the successful shorter population
 does not establish that longer boundary. Live provider/SQL state capture, general Guild
-settlement workloads, general temporal workloads, Go/TS parity and full-domain conservation remain owed.
+settlement workloads, general temporal workloads, general Go/TS parity and full-domain conservation remain owed.
 
 `TestAxisOriginDeferredTemporalContextResearch` adds42 admitted Go cells over
 production frenzy, building special and their combination, at seven offsets in
@@ -183,7 +183,7 @@ receipt and ordered-event bytes in Go/TS; restoring each result preserves it.
 Positive lifetime accrual, exact surviving buff identities and the existing long-
 absence span are retained. Both runtimes refuse the42 forged attended coordinates
 and42 omitted schedules without state mutation. This closes bounded temporal replay
-compatibility for this population only. General workloads, external/Guild context
+compatibility for this population only. General workloads, general external/Guild context
 parity, SQL/live capture, origin lifetime and a viable conservation algorithm remain
 unproved; the original27 partition failures are unchanged. No runtime semantics or
 new accounting format is adopted by this observation.
@@ -205,6 +205,17 @@ but loses stock/consumption/watermark state in all six cells. Cash equality cann
 clearing delivery, even with a membership contribution present. This constrains C2/C3's
 once-only boundary and failure atomicity; it is not adoption of origin lifetime, an absence
 policy, an arbitrary batch algorithm, temporal buff semantics or a conservation repair.
+
+The shared `external-replay-research-v1.json` observation now carries all twelve
+external/Guild cells above through actual Go and TypeScript logged replay. Complete
+canonical Company, receipt and ordered events match, and restored results round-trip
+in Node, Chromium and WebKit. The six nonempty settlement cells additionally retain
+omission with equal cash but different state, duplicate refusal without mutation,
+and late unaffordable-purchase rollback. Three forged expected outputs are rejected
+by the consumer comparison. This closes that bounded compatibility question only;
+fixed membership/batch lookup is not live provider/SQL evidence. General workloads,
+origin lifetime, absence semantics and the viable accounting algorithm remain open;
+the original27 partition failures are not repaired or redefined.
 
 #### Bounded executable algorithm and write set
 
@@ -411,3 +422,6 @@ implied save field and needs its own complete contract.
   selection from prorated window integration. No runtime semantics or pending owner choice changed.
 - 2026-10-13: add actual42-cell Go/TypeScript temporal replay compatibility and84 refusal
   controls per runtime. Still no conservation repair, interval/lifetime adoption or SQL proof.
+- 2026-10-15: record actual twelve-cell external/Guild Go/TypeScript replay compatibility
+  and six omission/duplicate/rollback control sets. Draft evidence only; no accepted
+  contract, accounting implementation, origin lifetime or SQL/live-provider claim changed.
