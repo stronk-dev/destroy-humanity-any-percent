@@ -4,6 +4,13 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
+Current R9 correction (2026-10-14): authoritative removal of focused Buy/Confirm
+preserves the stable row; a node losing availability dismisses its hidden
+confirmation rather than resurrecting it on a later read. RP-607/RP-608 and the
+owning log retain old failures, finished native component/host checks and the
+range after `c84cc421` awaiting Claude. This is a UI conformance repair, not
+new purchase semantics, full R9 acceptance, server/SQL proof or content mint.
+
 Current integration checkpoint (2026-10-08): native Reputation purchases, Escape cancellation,
 next-run-only effect, Exit plan and third-Company starter/bonus carry execute in the existing
 normal composed lane using its already-active tree fixture and a separate fresh account.

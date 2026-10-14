@@ -30,6 +30,26 @@
   const buyButtons = new Map<string, HTMLButtonElement>();
   const rows = new Map<string, HTMLLIElement>();
 
+  $effect.pre(() => {
+    const nextNodes = arm.nodes;
+    // A removed confirmation is no longer an open purchase step. A later
+    // available snapshot must render Buy again, not resurrect stale consent.
+    if (confirming !== null && nextNodes.find((node) => node.node_id === confirming)?.state !== "available") confirming = null;
+    const action = document.activeElement;
+    if (!(action instanceof HTMLButtonElement)) return;
+    for (const [id, row] of rows) {
+      if (!row.contains(action)) continue;
+      if (nextNodes.find((node) => node.node_id === id)?.state === "available") return;
+      // Capture the focused control before the authoritative DOM replacement.
+      // R9's stable row remains the context; a newer focus choice takes priority.
+      void tick().then(() => {
+        if (row.isConnected && !action.isConnected &&
+            (document.activeElement === action || document.activeElement === document.body)) row.focus();
+      });
+      return;
+    }
+  });
+
   const titles = $derived(new Map(arm.nodes.map((node) => [node.node_id, t(node.title_key as CopyKey, {}, era)])));
   const STATE_KEYS: Readonly<Record<string, CopyKey>> = {
     available: "reputation_tree.state.available", locked: "reputation_tree.state.locked",

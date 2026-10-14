@@ -9308,3 +9308,40 @@ box, archive, copy/balance adoption, mint, deployment or push. This is not earni
 replay verification of seeded history or complete AC12/AC15. RP-283/RP-284/H4/H5 remain open.
 Next: diagnose RP-438's explicit navigation/read-completion boundary without suppressing it;
 Headcount choice/body reconciliation has been asked of Marco, with no answer assumed.
+
+## 2026-10-14 — R9 availability refresh retains context and dismisses stale confirmation
+
+Outcome: repair authoritative Reputation row replacement under accepted R9's
+server-derived availability, explicit Buy→Confirm and stable row focus contracts.
+The interrupted preceding turn was read-only: no edits/tests or live process
+to resume. Start this batch at clean `c84cc421`. Reuse the existing mounted
+ReputationFocusHarness and native-input tests, not a new RFC/research framework.
+
+Regression first: selected R9.refresh old-component population fails32 executions
+in Chromium/WebKit:24 lose focused Buy/Confirm to body after owned/locked/
+unaffordable replacement;8 resurrect the hidden confirmation after locked/
+unaffordable→available. Both eras execute. Initial sandbox listen EPERM starts
+no browser tests; the narrowly permitted native-server run reaches those failures.
+The corrected component captures the soon-removed focused button before DOM
+replacement, preserves the surviving row only while its focus still belongs to
+that context, and dismisses confirmation when availability is lost. An unchanged
+available read retains Confirm; renewed availability after interruption shows Buy.
+No eligibility, price, request, receipt, balance, copy, retry or server change.
+
+Coverage: same selected32 regressions pass. Finished four-file population
+(reputation-surface-browser, reputation-cost-browser, reputation-header-browser,
+reputation-host-browser) passes406 checks with2 existing expected host-lifetime
+failures, no selection skips, in25.75s. Added unchanged-available, actual native
+Tab away, and deferred/newer-focus controls pass alongside all prior purchase/
+pending/Escape/header/cost and controlled-runtime/Worker checks. Final
+make typecheck reports0 errors/warnings; make build-client and
+make verify-client-boundary pass. No full CPU/performance rerun for unchanged
+worker/render cadence; no Postgres/migrations, real cross-device/server journey,
+Firefox/Linux, manual AT, hosted CI or full feature/release proof claimed.
+
+Handoff: one component plus regression tests, canonical game-ui docs, RP-607/
+RP-608 and this plan/log. Diff checked. Review by: Codex (implementer first
+filter); Recorded by: Codex. Entire coherent range after `c84cc421` through this
+containing commit needs designated Claude review; earlier ranges remain owed.
+No acceptance checkbox, archival, mint, push or owner/specification adoption.
+Continue other accepted construction and consolidate this with Reputation review.

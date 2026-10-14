@@ -91,6 +91,132 @@ for (const era of ["era_1995", "era_2000"] as const) {
 
 async function settle(): Promise<void> { for (let index = 0; index < 4; index += 1) { await tick(); flushSync(); } }
 
+for (const era of ["era_1995", "era_2000"] as const) {
+  for (const origin of ["buy", "confirm"] as const) {
+    for (const state of ["owned", "locked", "unaffordable"] as const) {
+      it.skipIf(!browser)(`R9 refresh removing focused ${origin} retains its Reputation row: ${era}, ${state}`, async () => {
+        const { userEvent } = await import("vitest/browser");
+        const target = document.createElement("main"); document.body.append(target);
+        const purchases: string[] = [];
+        const app = mount(ReputationFocusHarness, { target, props: {
+          initialArm: structuredClone(arm), era, onPurchase: (id: string) => { purchases.push(id); },
+        } });
+        try {
+          await settle();
+          const row = target.querySelectorAll<HTMLLIElement>("li")[1]!;
+          const buy = row.querySelector<HTMLButtonElement>("button")!;
+          buy.focus();
+          if (origin === "confirm") { await userEvent.keyboard("{Enter}"); await settle(); }
+          expect(document.activeElement).toBe(row.querySelector("button"));
+          const next = structuredClone(arm); next.nodes[1]!.state = state;
+          app.deliverArm(next); await settle();
+          expect(row.dataset.state).toBe(state);
+          expect(row.querySelectorAll("button")).toHaveLength(0);
+          expect(document.activeElement, "authoritative removal must not strand the player on body").toBe(row);
+          expect(purchases).toEqual([]);
+          // A later real keyboard step must leave this row normally, not trap it.
+          await userEvent.keyboard("{Tab}"); await settle();
+          expect(document.activeElement).not.toBe(row);
+        } finally { await unmount(app); target.remove(); }
+      });
+    }
+  }
+  for (const state of ["locked", "unaffordable"] as const) {
+    it.skipIf(!browser)(`R9 refreshed ${state} confirmation requires a new Buy before spending: ${era}`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      const target = document.createElement("main"); document.body.append(target);
+      const purchases: string[] = [];
+      const app = mount(ReputationFocusHarness, { target, props: {
+        initialArm: structuredClone(arm), era, onPurchase: (id: string) => { purchases.push(id); },
+      } });
+      try {
+        await settle();
+        const row = target.querySelectorAll<HTMLLIElement>("li")[1]!;
+        row.querySelector<HTMLButtonElement>("button")!.focus();
+        await userEvent.keyboard("{Enter}"); await settle();
+        expect(row.querySelector("[role=group]")).not.toBeNull();
+        const next = structuredClone(arm); next.nodes[1]!.state = state;
+        app.deliverArm(next); await settle();
+        expect(row.querySelectorAll("button")).toHaveLength(0);
+        app.deliverArm(structuredClone(arm)); await settle();
+        expect(row.querySelector("[role=group]"), "unavailable confirmation must not resurrect on a later read").toBeNull();
+        expect(row.querySelectorAll("button")).toHaveLength(1);
+        expect(purchases).toEqual([]);
+        row.querySelector<HTMLButtonElement>("button")!.focus();
+        await userEvent.keyboard("{Enter}"); await settle();
+        expect(row.querySelector("[role=group]")).not.toBeNull();
+        expect(purchases).toEqual([]);
+        await userEvent.keyboard("{Enter}"); await settle();
+        expect(purchases).toEqual(["reputation.starter.cash_small"]);
+      } finally { await unmount(app); target.remove(); }
+    });
+  }
+  it.skipIf(!browser)(`R9 unchanged available read preserves the open confirmation: ${era}`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const target = document.createElement("main"); document.body.append(target);
+    const purchases: string[] = [];
+    const app = mount(ReputationFocusHarness, { target, props: {
+      initialArm: structuredClone(arm), era, onPurchase: (id: string) => { purchases.push(id); },
+    } });
+    try {
+      await settle();
+      const row = target.querySelectorAll<HTMLLIElement>("li")[1]!;
+      row.querySelector<HTMLButtonElement>("button")!.focus();
+      await userEvent.keyboard("{Enter}"); await settle();
+      const confirm = row.querySelector<HTMLButtonElement>("button")!;
+      app.deliverArm(structuredClone(arm)); await settle();
+      expect(row.querySelector("button")).toBe(confirm);
+      expect(row.querySelectorAll("button")).toHaveLength(2);
+      expect(document.activeElement).toBe(confirm);
+      expect(purchases).toEqual([]);
+      await userEvent.keyboard("{Enter}"); await settle();
+      expect(purchases).toEqual(["reputation.starter.cash_small"]);
+    } finally { await unmount(app); target.remove(); }
+  });
+  it.skipIf(!browser)(`R9 deferred removal handoff preserves a newer focus choice: ${era}`, async () => {
+    const target = document.createElement("main"); document.body.append(target);
+    const after = document.createElement("button"); after.textContent = "Newer focus diagnostic"; after.tabIndex = 0;
+    const app = mount(ReputationFocusHarness, { target, props: {
+      initialArm: structuredClone(arm), era, onPurchase: () => { throw new Error("unexpected purchase"); },
+    } });
+    target.append(after);
+    try {
+      await settle();
+      const row = target.querySelectorAll<HTMLLIElement>("li")[1]!;
+      row.querySelector<HTMLButtonElement>("button")!.focus();
+      const next = structuredClone(arm); next.nodes[1]!.state = "owned";
+      app.deliverArm(next); flushSync();
+      expect(row.querySelectorAll("button")).toHaveLength(0);
+      // The row's after-render handoff is queued, but another context owns focus.
+      after.focus(); await settle();
+      expect(document.activeElement).toBe(after);
+    } finally { await unmount(app); target.remove(); }
+  });
+  it.skipIf(!browser)(`R9 background read preserves a newer focus choice: ${era}`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const target = document.createElement("main"); document.body.append(target);
+    const after = document.createElement("button"); after.textContent = "After Reputation diagnostic"; after.tabIndex = 0;
+    const purchases: string[] = [];
+    const app = mount(ReputationFocusHarness, { target, props: {
+      initialArm: structuredClone(arm), era, onPurchase: (id: string) => { purchases.push(id); },
+    } });
+    target.append(after);
+    try {
+      await settle();
+      const row = target.querySelectorAll<HTMLLIElement>("li")[1]!;
+      row.querySelector<HTMLButtonElement>("button")!.focus();
+      await userEvent.keyboard("{Enter}"); await settle();
+      await userEvent.keyboard("{Tab}"); await settle(); // Cancel.
+      await userEvent.keyboard("{Tab}"); await settle(); // Outside the tree.
+      expect(document.activeElement).toBe(after);
+      const next = structuredClone(arm); next.nodes[1]!.state = "owned";
+      app.deliverArm(next); await settle();
+      expect(document.activeElement).toBe(after);
+      expect(purchases).toEqual([]);
+    } finally { await unmount(app); target.remove(); }
+  });
+}
+
 it.skipIf(!browser)("R9 native Tab diagnostic sentinel control", async () => {
   const { userEvent } = await import("vitest/browser");
   const wrapper = document.createElement("main"); document.body.append(wrapper);
