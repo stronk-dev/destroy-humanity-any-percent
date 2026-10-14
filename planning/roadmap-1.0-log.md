@@ -5333,3 +5333,25 @@ is explicitly historical. This is editorial reconciliation, not another implemen
 The whole-product overview still places us at Garage integration/hardening, with substantial
 world/combat/Tier3–8/final-ending construction and rights/recovery/accessibility/deployment ahead.
 Continue the full nine-tier1.0 program; do not confuse more safety proofs with more playable game.
+
+## 2026-10-14 — Whole-product overview and hosted maintenance gap
+
+Product checkpoint `8a5dcebf`, kernel0.3.208, unchanged epoch8:75 local commits after published
+4eaed0c9. Fifteen full C18 family descriptors plus partial Economy components and admission/UI
+repairs advance foundations, not a playable tier or release. Current-state/roadmap/queue now name
+the real source and distinguish fixture-first journeys, unbuilt world/combat/Tiers3–8/endings,
+engineering amendments, owner choices and outstanding designated reviews. Earlier whole-feature
+proofs keep their original source/population; no fresh universal acceptance is claimed.
+
+Fresh GitHub queries confirm failed CI38381138075 and maintenance38507071157, both on4eaed0c9.
+The complete harness observation is interrupted at50 minutes: standard pacing300/300 takes45.19
+minutes; first relevance85/107 and the second unstarted leave incomplete evidence. The exact
+small artifact is retained, and the actual validator refuses it. Career/relevance comparisons
+also drift; numeric maintenance passes. [CI log](scaffolding-and-ci/log.md) owns all provenance,
+commands and limits. No changed ceiling, dropped row, golden regeneration or cause speculation.
+
+Fresh host space is71GiB/92% used; the declared Docker service still does not answer. Next safe
+boundaries: accepted complete-set API composition that refuses missing owners, measurement of
+standard-pacing cost, consolidated reviews and other accepted work. Owner/draft/environment
+holds apply to their specific work, not the entire repo. This checkpoint is editorial/evidence
+reconciliation, not a new implementation contract, approval, push or smaller release objective.

@@ -7,6 +7,21 @@
 
 ## Current checkpoint — 2026-10-14
 
+Fresh hosted reconciliation at local product source `8a5dcebf`: remote CI remains38381138075
+on `4eaed0c9`, failed;75 local commits are outside it. Maintenance38507071157 also completes
+failure. Numeric maintenance passes; Reputation career/relevance report comparisons drift.
+RP-596's complete harness observation exits124 at the unchanged50-minute limit: standard
+pacing completes300/300 in45.19 minutes, first relevance row stops at85/107 and second never
+starts. The small exact artifact is retained in `observations/38507071157-harness.json`; the
+actual root observation validator rejects it. Log owns hash, timings and commands.
+
+Next measurement: profile the completed standard-pacing population on a declared environment;
+distinguish simulator work from observation overhead before proposing an optimization. This
+incomplete full run cannot set a larger budget or authorize dropping rows, retries, golden
+regeneration, CI changes or optimization under the archived measurement-only RFC. Linux/SQL
+execution remains unavailable with the unresponsive declared Docker service. Latest host read
+has71GiB available/92% used; no cleanup/restart or publication authority is inferred.
+
 At baseline `f6ab6ab6`, the full functional target now runs broad collection then the complete
 Typer native-input file in fresh browser processes. The default Chromium/Firefox/WebKit
 population, inputs, assertions, deadlines and workers are unchanged; focused selection remains

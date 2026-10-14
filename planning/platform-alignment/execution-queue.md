@@ -3,7 +3,38 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Current action — 2026-10-13
+## Current action — 2026-10-14
+
+Product coordinate `8a5dcebf`, kernel0.3.208, epoch8. Whole-product status and evidence limits
+live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview--2026-10-14). The full
+nine-tier goal remains active; no new playable tier or release was completed.
+
+- **READY — accepted API construction:** C18's full-set union construction/registration guard
+  can require every served family and reject incomplete coverage. Do not mount a partial
+  catalog endpoint or invent the four remaining owners' descriptors. Their shared-ownership,
+  representation and neutral-delivery prerequisites remain explicit in the API plan.
+- **READY — CI measurement:** RP-596's hosted standard-pacing phase consumes45.19 minutes for
+  all300 runs; complete maintenance still fails. Profile that actual population and separate
+  simulator/observer costs before proposing optimization. No budget increase from partial
+  evidence, population deletion or snapshot regeneration to make the job green.
+- **READY — consolidated designated review and accepted conformance work:** feature-owned
+  logs identify complete corrective ranges. Pending review prevents acceptance/archival,
+  not other authorized work. Do not restart completed original reviews or call self-review
+  designated approval.
+- **BLOCKED — declared Docker/SQL/Linux and clean-host witnesses:** latest direct ping does
+  not answer. No restart/cleanup or host-DB substitution is authorized. Current-source hosted
+  verification is also absent: published CI/maintenance still run `4eaed0c9`, not local work.
+- **HELD — named contracts and owner choices:** use the current distinction and linked option
+  sheets. Headcount has hiring AND output choices. API engineering proposals, Typer/attendance/
+  body reconciliation, rights/retention, accessibility, content and release-artifact work have
+  separate boundaries; a generic approval cannot substitute for their actual contracts/proofs.
+
+This is routing under existing accepted RFCs, not new mechanics, draft adoption, an independent
+verdict or permission to push/publish/deploy. Historical checkpoints and review debt remain.
+
+<a id="current-action--2026-10-13"></a>
+
+## Historical current-action snapshot — 2026-10-13
 
 Coordinate: latest product source `b29fc293`; last recorded full production/history checks at
 `a713137e`, published CI source `4eaed0c9`. Whole-product status lives

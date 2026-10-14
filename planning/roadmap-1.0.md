@@ -5,19 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current product rollup (2026-10-13):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-12)
+**Current product rollup (2026-10-14):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-14)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Current local checkpoint `a713137e`: Garage integration/hardening, incomplete v0.1, and substantial
-unbuilt world/combat/Tier 3–8/final-ending scope. New published source
+Current product checkpoint `8a5dcebf`: Garage integration/hardening, incomplete v0.1, and substantial
+unbuilt world/combat/Tier 3–8/final-ending scope. Latest published source
 `4eaed0c9` has completed red CI: browser/composed/schema/harness pass; client fails
 the historical guard and server fails27 Clout partition cases, both reproduced locally.
 The browser/server/composed jobs exceed the five-minute floor. Earlier red CI remains evidence;
-recent repairs are published, not designated-approved. Subsequent local repairs and complete original API review dispositions do not
+repairs through that remote source are published, not designated-approved. The75 later local
+commits at this product checkpoint are not in that run. Subsequent local repairs and complete original API review dispositions do not
 advance a gameplay milestone or establish release readiness. Subsequent actual operations
 producer/receiver, public replay-verifier, queued Claim and minigame admission/Exit evidence
 is summarized in current verification, with owning logs retaining its limits and review debt.
 Use [current next moves](#current-next-moves)
-and the owning accepted RFC plans for execution. The five highlighted contract proposals
+and the owning accepted RFC plans for execution. The seven highlighted engineering proposals
 remain drafts; unresolved arithmetic and integration are engineering work, not owner approval
 items. Neither decision holds nor pending review halt all accepted work.
 
@@ -34,13 +35,18 @@ Combat's six-runtime identity library is constructed and locally tested, still n
 Host space is externally freed, but Docker is still unavailable and restart authority is pending.
 These changes advance safety/review truth, not a gameplay milestone or the nine-tier release floor.
 
-Latest bounded checkpoint:28 local commits after published `4eaed0c9` include stronger Account,
-Combat and Deployment foundations/proofs, not another playable milestone. Fresh GitHub queries
-confirm the same completed red CI; current production again fails27 partitions and the root
-history guard rejects50a3a514. Direct Docker ping times out; host has124GiB available, not the
-earlier174GiB. RP-551's extended real restore population remains unexecuted. The owning logs
-hold details and exact review ranges; [current action](platform-alignment/execution-queue.md#current-action--2026-10-13)
-now replaces the stale October8 queue head without deleting its evidence.
+Latest checkpoint: complete C18 descriptors exist for15/19 pinned families; Economy has component
+exports and corrected versioned admission, not a complete public artifact. Shared Route grammar
+and Garden read failures are locally repaired, pending designated review. These add no tier or
+release. Fresh GitHub metadata confirms the same red CI plus failed maintenance38507071157:
+standard pacing completes300 runs in45.19 minutes, then the50-minute wrapper interrupts relevance
+at85/107; the complete measurement is invalid. Career/relevance comparisons also fail; numeric
+maintenance passes. Do not raise budgets or regenerate reports to hide these results.
+Last full local production/history checks at `a713137e` remain red; this checkpoint does not
+claim reruns of every feature at the newer source. Latest Docker ping still times out and fresh
+host observation has71GiB available/92% used. The [CI log](scaffolding-and-ci/log.md) owns the
+artifact, executed validator refusal and next diagnosis. [Current action](platform-alignment/execution-queue.md#current-action--2026-10-14)
+routes accepted construction, consolidated review, held contracts and unavailable integration.
 
 ## Historical rollup checkpoints
 
@@ -2050,7 +2056,7 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Reconciled at source `a713137e` (2026-10-13). The intervening API, input, Recovery and
+Reconciled at product source `8a5dcebf` (2026-10-14). The intervening API, input, Recovery and
 Deployment repairs improve existing paths/proofs; no additional playable tier or milestone
 is completed. The five original query/epoch/board/route/router API reviews now have complete
 CHANGES REQUIRED dispositions; later corrections and implementation ranges still need review.
@@ -2061,11 +2067,13 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
 1. **Finish Garage's actual player integrations.** Complete Typer/Arcade public API and host
    integration, generated-client migration, Headcount and the missing world/feed surfaces
    under accepted contracts. The typed-receipt dictionary choice, Typer arithmetic/public-wire
-   reconciliation and Headcount seat source are specific prerequisites, not permission to
+   reconciliation and Headcount hiring/output choices are specific prerequisites, not permission to
    invent wire formats or mechanics. Continue independent accepted work while they are held.
 2. **Repair correctness and balance without hiding failures.** Resolve Clout partition/offline
    semantics, the shared attendance-clock contract and historical kernel guard. Finish the
-   natural pacing/relevance and candidate-copy/content gates; controlled cash/maturity fixtures
+   natural pacing/relevance and candidate-copy/content gates. Diagnose the hosted standard-pacing
+   cost and incomplete maintenance population before proposing optimization or budget changes;
+   controlled cash/maturity fixtures
    are integration proof, not evidence that the economy or progression is ready to ship.
 3. **Consolidate review rather than restart original reviews.** Original Cosmetic, Pet, Garden,
    Arcade, reviewed Typer and the five original early API batches retain their recorded dispositions.

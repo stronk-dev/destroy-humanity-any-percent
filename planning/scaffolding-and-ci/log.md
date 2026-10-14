@@ -1339,3 +1339,42 @@ proof. Prior red populations remain evidence. Firefox/Linux/SQL/hosted sub-five-
 historical guard, conservation, feature/release acceptance and nine-tier1.0 remain open.
 No push, deployment or archival. Next: declared Linux job when usable, actual hosted reconciliation
 when authorized; do not rerun native for green or infer new owner approval.
+
+## 2026-10-14 — Hosted maintenance timeout and whole-product status reconciliation (RP-596)
+
+Resume clean product `8a5dcebf` (kernel0.3.208/epoch8),75 commits after origin/main4eaed0c9.
+Previous goal turn committed Garden correction. Fresh `gh run list` plus both run/job queries
+confirm latest CI38381138075 still failed at4eaed0c9: client/server fail, four other jobs pass.
+Finished times retain browser6m38s/server6m40s/composed5m37s, not the five-minute floor.
+No hosted verdict exists for the75 local commits. Maintenance38507071157 at the same source
+finishes failure: numeric passes; Reputation career332.70s and relevance1471.92s fail report
+comparison. These log excerpts do not establish a new unique cause or authorize regeneration.
+
+Actual failed logs show the unchanged50-minute harness wrapper exits124. Artifact11869564730
+has state incomplete/termination signal, repository guards19,759ms, standard pacing300/300
+in2,711,416ms, and first relevance85/107 with1,271,801 transitions in267,687ms. Second declared
+relevance never starts; partial guard/exclusion/truncation fields remain unknown, not clear.
+Root elapsed2,998,875ms. Completed phase timing is useful cost evidence, not complete harness
+acceptance or a measured new full-run ceiling. Next: profile the real standard-pacing population
+and distinguish simulator/observer work before a separately authorized optimization proposal.
+
+Read public artifact with `gh run download ... --name harness-observation-38507071157` into
+owned temporary storage. Preserve the small exact JSON at
+`planning/scaffolding-and-ci/observations/38507071157-harness.json`; `cmp` confirms identical
+bytes. SHA256 `5b733fa065bd512d3b4c975081a90bf4c8e1c667ebba6b2fb038777ee6ed6a19`.
+Actual `make harness-observation-check HARNESS_OBSERVATION=/private/tmp/cloud-clicker-maintenance.C4Juns/harness-observation.json`
+refuses with "incomplete harness observation" (CLI1/Make2), as required. Initial un-escalated
+log retrieval had a connection error; subsequent read-only retrieval succeeds. No job rerun,
+timeout/retry/population/golden/source change or product telemetry is performed.
+
+Fresh `df -h .` reads71GiB available/92% used; last bounded Docker ping remains unresponsive
+at5008ms/zero bytes, not proof the daemon stopped. No cleanup/restart or integration proof.
+Update current-state/roadmap/queue using actual source and distinguish fifteen C18 exports,
+fixture-first player work, substantial unbuilt scope, technical amendments and owner policy.
+Historical evidence is retained; no every-feature acceptance rerun or new milestone inferred.
+
+Editorial/provenance diff, links and artifact identity checked; no unrelated software suite for
+Markdown. Review by: Codex (evidence/status reconciliation). Recorded by: Codex. This editorial
+checkpoint does not independently approve any outstanding implementation range. All existing
+reviews, draft adoption, arithmetic/privacy/accessibility/deployment and full-nine-tier1.0
+obligations remain. Continue accepted work; no push, archival or release promotion.
