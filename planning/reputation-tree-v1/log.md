@@ -9345,3 +9345,89 @@ filter); Recorded by: Codex. Entire coherent range after `c84cc421` through this
 containing commit needs designated Claude review; earlier ranges remain owed.
 No acceptance checkbox, archival, mint, push or owner/specification adoption.
 Continue other accepted construction and consolidate this with Reputation review.
+
+## 2026-10-14 — Complete original B1/B2 review dispositions
+
+Review by: Codex (designated independent reviewer of Claude's original work).
+Recorded by: Codex. Decisions: **CHANGES REQUIRED** for each range below;
+neither decision approves later Codex corrections or completes Reputation.
+
+**B1: `a522fdf1^..a522fdf1`**, all21 changed paths. Inspected loaders,
+accounting/bonus arithmetic, curriculum wrapper, shared fixtures, copy sources/
+generated outputs, manifest, kernel mirrors/guard paths and docs/log. Existing
+bounded R1/R3/R2 reviews do not substitute for this full-range disposition.
+RP-243 remains the finding: all20 cross-arm zero/empty/null starter fields are
+accepted by the original Go loader. Re-executed the committed public twenty-case
+population against original code at `c62afe47`; the three legal starter kinds
+first load successfully, then all20 refusal assertions fail. Relevant B1
+loader/test/curriculum sources are byte-unchanged between the two revisions.
+The temporary probe changes no loader semantics and is removed afterward.
+Current RP-243 repair is already recorded separately and still needs Claude.
+Original RT-DG-A's copy-path/schema and production-mint limitations were openly
+disclosed; ordinary generated copy keys do not complete R2 rule8/AC1 or mint.
+
+**B2: `c62afe47^..c62afe47`**, all12 changed paths. Inspected Go/TS artifact
+chain/declaration pairing, frozen resolver, bundle validity, tests, docs/log
+and all three kernel mirrors. Complete and missing/mismatched bundle controls
+pass, but R3's >=1 floor is absent from the frozen consumer. Original Go accepts
+`5e-1` when the existing positive resolver test uses that value. Original TS
+also fails a sub-unit refusal while `1e0` and `1.0005e0` controls pass. Its private
+helper was temporarily exported only for direct observation; no predicate or
+arithmetic was changed, and the original line was restored exactly. The generic
+TS validator predates B2; enabling this provider without its required floor is
+the B2 integration finding, now RP-627. These are internal/corrupt-input probes,
+not a demonstrated public exploit. B3's later Founder-floor work is outside B2.
+
+Original checks executed in the isolated `c62afe47` checkout: cold Reputation,
+Curriculum, Replaycatalog and Production packages pass;12 DB-dependent tests
+skip without Postgres, so this is not persistence evidence. Both original client
+files pass6 tests. Affected vet and typecheck pass; copy verification reports
+397 keys with350 explicitly reported orphan warnings and hash
+`sha256:697e5391d65b81357ac76e685e7388c68aa7c92a6246a7d90dd54647dec26d03`.
+Used today's root Make runner/selectors against historical source and locked
+historical dependencies, not a source overlay. Initial TS probe used noncanonical
+Decimal display strings for positive assertions; corrected to canonicalString
+before the decisive one-negative/two-positive result. Every tracked temporary
+edit is restored; scratch probes removed and historical checkout clean.
+
+## 2026-10-14 — R3 frozen-factor domain conformance (RP-627)
+
+Outcome: both frozen consumers refuse positive Reputation factors below1 under
+accepted R3, preserving the unit and legitimate bonus. Provider-specific guards
+only; no formula/rounding, upper cap, other-provider, balance/copy/pin, schema,
+history rewrite or owner contract change. Kernel0.3.213→0.3.214 in all3 mirrors
+records the actual admission change. Canonical docs and plan reflect its scope.
+
+Regression: current pre-fix Go and TS tests admit `5e-1` and `9e-1`; corrected
+tests refuse both and preserve `1e0`/`1.0005e0`. Historical B2 reproductions are
+above. Tests exercise the actual resolver and loaded TS bundle rather than a
+parallel implementation. This is a domain check, not complete factor derivation
+or independent Founder-history verification.
+
+Coverage: cold selected Production/Reputation consumer tests and full Kernel,
+Decimal, Reputation and Replaycatalog packages pass. Node replay/reputation/
+bundle/decimal population passes6475 tests; strict types, affected vet, client
+build, replay-fixture and formula/API generation checks pass without generated
+contract drift. Declared Linux-amd64/Postgres selected Production and GameUI
+Reputation populations pass (8.201s/0.648s), including actual purchases, Exit,
+career/frozen rows and public projection. Verbose native/SQL captures were
+truncated; terminal statuses and final summaries are retained, not a complete
+per-subcase/skip census. Native DB skips are not promoted into executed SQL proof.
+No matching repository browser process remained after rollover; its result and
+the last Go control result were unrecoverable. One disclosed recapture passes
+342 Chromium/WebKit executions across replay/reputation/bundle files and the
+focused cold Go unit-factor control. No full production/hosted CI, natural
+pacing, manual AT, complete Reputation, release or nine-tier1.0 claim.
+
+Cleanup: this batch's temporary tmpfs Postgres container is removed and its
+Compose service list is empty. Historical tracked sources are clean and probe
+files removed. Managed worktree archival was refused because the checkout is
+protected by a pinned task/workspace; leave it intact, without unpinning or
+manual deletion. The unrelated previous-release worktree is untouched.
+
+Handoff: code/tests/docs, RP-627 and this plan/log form one coherent corrective
+batch after `1f533983` through the containing commit. Review by: Codex
+(implementer first-filter); Recorded by: Codex. Claude designated review remains
+pending for the entire corrective range; the original verdicts above approve
+none of it. All earlier review, author-body, content/mint and release gates
+remain. No acceptance checkbox, RFC archival, publication or deployment.

@@ -302,6 +302,12 @@ row fails the commit.
 Production reads a run's bonus only from the stored rows, so a mid-run purchase leaves the current
 run's contributions byte-identical and changes only the next run's frozen factor.
 
+Both the Go frozen-contribution resolver and the TypeScript replay contribution validator
+require a Reputation factor to be state-valid and at least `1e0`. They refuse positive sub-unit
+values such as `5e-1` and `9e-1`; the unit factor and legitimate bonuses remain accepted.
+This checks the R3 domain, not whether an arbitrary admitted factor matches its complete
+Founder history. Other contribution providers retain their existing validation contracts.
+
 ## Starters, run_started v2, and the v9 carry (R4, R6 carry half, R7)
 
 **Replay inputs.** Reputation introduced the v9 carry; the current

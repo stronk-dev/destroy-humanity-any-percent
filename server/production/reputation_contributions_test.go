@@ -37,9 +37,22 @@ func TestResolveFrozenContributionsAcceptsTheReputationProvider(t *testing.T) {
 	if err != nil || len(resolved) != 2 || resolved[1].Factor.String() != "1.0005e0" {
 		t.Fatalf("reputation contribution not resolved: %v %+v", err, resolved)
 	}
+	unit, err := ResolveFrozenContributions(catalog, []save.FrozenContribution{
+		{SourceID: "reputation.founder_bonus", Slot: multiplier.Slot("prestige"), Target: "all", Factor: "1e0"},
+	})
+	if err != nil || len(unit) != 1 || unit[0].Factor.String() != "1e0" {
+		t.Fatalf("unit Reputation contribution refused: %v", err)
+	}
 	if _, err := ResolveFrozenContributions(catalog, []save.FrozenContribution{
 		{SourceID: "other.founder_bonus", Slot: multiplier.Slot("prestige"), Target: "all", Factor: "1e0"},
 	}); !errors.Is(err, ErrInvalidEngineState) {
 		t.Fatalf("undeclared provider resolved: %v", err)
+	}
+	for _, factor := range []string{"5e-1", "9e-1"} {
+		if _, err := ResolveFrozenContributions(catalog, []save.FrozenContribution{
+			{SourceID: "reputation.founder_bonus", Slot: multiplier.Slot("prestige"), Target: "all", Factor: factor},
+		}); !errors.Is(err, ErrInvalidEngineState) {
+			t.Errorf("sub-unit Reputation factor %s resolved: %v", factor, err)
+		}
 	}
 }

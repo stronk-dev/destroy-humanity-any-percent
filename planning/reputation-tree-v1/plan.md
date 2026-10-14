@@ -4,6 +4,13 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
+Current R3 correction (2026-10-14): RP-627 rejects positive sub-unit Reputation
+factors in the Go frozen resolver and TypeScript replay consumer. Existing R3
+requires state-valid factors >=1; no new mechanic, ceiling, content or owner
+choice is introduced. Old/current regression and affected runtime/SQL results
+are in the owning log. Kernel0.3.214; the coherent range after `1f533983` needs
+Claude's designated review, independently of the original B1/B2 dispositions.
+
 Current R9 correction (2026-10-14): authoritative removal of focused Buy/Confirm
 preserves the stable row; a node losing availability dismisses its hidden
 confirmation rather than resurrecting it on a later read. RP-607/RP-608 and the
@@ -379,9 +386,15 @@ author/harness/browser/mint/release holds remain, no full RFC closure.
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1
   accounting helpers, R3 bonus arithmetic; shared rejection-fixture corpus and bonus vectors.
   ACs 1 (loader half), 5.
+  Full original 21-path review: **CHANGES REQUIRED**, retaining RP-243's
+  reproduced cross-arm starter admission. Later Codex corrections need Claude;
+  previously disclosed RT-DG-A/copy and production-mint gates remain separate.
 - [x] B2 (`c62afe47`) — Bundle wiring: `reputation_tree` optional artifact in the Go/TS bundle loaders, economy
   declaration pairing rule (tree ⇔ `reputation.founder_bonus` row), frozen-contribution resolver
   accepts provider `reputation_tree`. AC1 (bundle half).
+  Full original 12-path review: **CHANGES REQUIRED** for RP-627's sub-unit
+  frozen-factor admission. The R3 conformance repair above is locally verified,
+  not independently approved or complete feature acceptance.
 - [x] B3 (`fb0ab3b1`; TS activation witness in `cf57e956`) — Founder save v22 fields,
   boundary activation and codec/activation unit tests. **Not complete AC2/AC10:**
   RP-248's TS encoder correction needs designated review. RP-249's four required

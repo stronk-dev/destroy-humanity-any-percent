@@ -20,7 +20,8 @@ import relevance from "../../balance/relevance/t0-t1.json?raw";
 import routes from "../../balance/routes/phase0.json?raw";
 import soul from "../../balance/soul/first-content.json?raw";
 import tree from "../../balance/testdata/reputation-tree/fixture-v1.json?raw";
-import { loadReplayCatalogBundle, type ReplayArtifacts } from "../src/replay";
+import { contributionFactorForTarget, loadReplayCatalogBundle, type ReplayArtifacts } from "../src/replay";
+import { canonicalString } from "../src/numeric";
 
 // The epoch-8 live artifact set (balance/epochs/phase0.json) plus the fixture tree.
 const live: ReplayArtifacts = { achievements, categories, commons, curriculum, doctrines, economy, factions, fiscal, guilds, meters,
@@ -32,6 +33,13 @@ const declaredEconomy = (() => {
 })();
 
 describe("reputation_tree bundle wiring", () => {
+  it("rejects sub-unit Reputation contributions while preserving legitimate factors", async () => {
+    const complete = { ...live, economy: declaredEconomy, reputation_tree: tree };
+    const bundle = await loadReplayCatalogBundle(await constantsHashArtifacts(complete), complete);
+    const contribution = (factor: string) => [{ source_id: "reputation.founder_bonus", slot: "prestige" as const, target: "all", factor }];
+    for (const factor of ["1e0", "1.0005e0"]) expect(canonicalString(contributionFactorForTarget(bundle.economy, "all", contribution(factor)))).toBe(factor);
+    for (const factor of ["5e-1", "9e-1"]) expect.soft(() => contributionFactorForTarget(bundle.economy, "all", contribution(factor))).toThrow(RangeError);
+  });
   it("loads a tree paired with its declaration on the minigame_api chain", async () => {
     const complete = { ...live, economy: declaredEconomy, reputation_tree: tree };
     const bundle = await loadReplayCatalogBundle(await constantsHashArtifacts(complete), complete);

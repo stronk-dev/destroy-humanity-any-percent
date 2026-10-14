@@ -84,7 +84,8 @@ func ResolveFrozenContributions(catalog *economy.Catalog, values []save.FrozenCo
 			return nil, fmt.Errorf("%w: frozen Founder contribution declaration", ErrInvalidEngineState)
 		}
 		factor, err := decimal.ParseCanonical(value.Factor)
-		if err != nil || !factor.IsStateValue() || !factor.Gt(decimal.Zero) {
+		if err != nil || !factor.IsStateValue() || !factor.Gt(decimal.Zero) ||
+			declaration.Provider == reputation.Provider && factor.Lt(decimal.One) {
 			return nil, ErrInvalidEngineState
 		}
 		seen[value.SourceID] = true
