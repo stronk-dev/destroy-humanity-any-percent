@@ -11,6 +11,12 @@ both division gates and typecheck pass. No valid arithmetic, data, kernel activa
 consumer changes. The owning log holds the range after `d1fb8d57`, pending designated review.
 
 1. [x] Extract one shared SplitMix64/rejection-sampling authority and add labeled substreams.
+   - C4/AC3's sequence supplement now pins 72 draws across three fixture labels and
+     three seeds, retains an independent closed-form fixture generator and exercises
+     overlapping stream lifetimes with interleaved/reversed/chunked/new-consumer draws.
+     A shared/resettable factory passes the old first-draw pattern but fails the new
+     sequence comparison. This is test evidence, not new RNG behavior or battle logs;
+     owning log records the range after `18fd6c06`, pending designated review.
 2. [x] Implement exact int32/int64 combat arithmetic and Temperament chart in Go and TypeScript.
    - C4's lane ordering projection now compares `(tick, player_slot, placement_seq)`
      identically in Go/TS without signed-int32 subtraction overflow. Shared vectors,

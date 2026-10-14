@@ -157,6 +157,16 @@ critical path, battle seed, all three registered Phase-0 substream labels, and b
 The bounded corpus records the number of draws consumed and includes a case that rejects four
 successive draws before accepting, so a modulo-biased implementation cannot pass accidentally.
 
+`testdata/combat/substream-sequences.json` additionally pins eight draws for each of the
+three fixture labels at match seeds 0, 42 and uint64 maximum. The retained Python reference
+prints these values using direct nth-state arithmetic without importing production code;
+its seed-42 first draws agree with the original vectors. Go/TS keep all stream instances
+alive together and compare complete sequences under round-robin, reversed and chunked
+consumption, including a new consumer making bounded draws. A controlled shared/resettable
+factory passes the earlier first-draw/recreation pattern but fails the sequence comparison.
+This tests factory/state ownership, not a demonstrated production alias, threaded battle,
+full catalog label population or golden battle log. Production RNG code is unchanged.
+
 The same shared fixture also pins all 36 directed temperament pairs, nine signed-int32
 saturation boundaries, thirteen clamp results and invalid clamp/damage domains in both
 runtimes. Its high-ATK disadvantage case exceeds int32 between stages but finishes below it,

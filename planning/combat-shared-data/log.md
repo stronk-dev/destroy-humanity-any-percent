@@ -455,3 +455,41 @@ C2 effects/full catalog/fixture, C5 care tables, both engines, bots and integrat
 player journeys remain required for the nine-tier 1.0 goal. No archival, content
 mint, push or deployment. Continue the full parent; this primitive does not
 bypass its authored contract gaps or authorize draft child-engine implementation.
+
+## 2026-10-14 — Add C4/AC3's multi-draw substream regression fixture (RP-605)
+
+Outcome at `18fd6c06`: supplement first-draw/recreated-stream checks with overlapping
+stream instances and complete sequences. Retain 72 decimal-string uint64 values:
+three fixture labels × eight draws × match seeds 0/42/uint64 maximum. The Python
+reference computes nth state directly as seed+n*increment with exact 64-bit masks;
+it imports no production implementation and writes no files. Its seed-42 battle/
+first-draw controls match the original arithmetic vectors. The executed root Node
+comparison parses reference stdout and the retained JSON and deep-compares them;
+regeneration matches. This fixture is neither balance data nor a combat catalog.
+
+Actual Go/TS factories pass four schedules per seed: plain/growth round-robin,
+reverse-label order and chunked draws. Growth creates an additional consumer and
+makes bounded draws at 1, 7, 2^63+1 between retained draws, exercising variable PRNG
+consumption without shifting any pinned sequence. No schedule result is used as
+its own golden. Complete seed/label/draw counts refuse truncated populations.
+Controlled bad factories reset one shared instance on construction: they pass
+each label's first draw and the exact old crit→new consumer→recreated crit check,
+but fail the new sequence comparison in all three seeds. This discriminates the
+ownership property; it is not a production source mutation or actual alias finding.
+
+Executed: cold root Go combat/integer/determinism with -count=1 passes (the
+determinism package has no standalone tests; Combat exercises it). Seven Combat
+Node files: 380 pass; Chromium/WebKit: 760 pass, with no selected skips. After adding
+the exact old isolation-pattern premise to the negative controls, final focused
+Node 16/native 32 and cold full Go pass again; untouched cases retain their preceding
+results. Final same-package vet, both source division gates and typecheck pass.
+Python reference execution and parsed-fixture regeneration check pass; formatting/
+diff checked. No production RNG, schema/kernel/version, catalog/value or CLI/CI
+lane change. No SQL, live engine, battle-log, Firefox/Linux/hosted or full parent
+acceptance claim. C2/C5 and engine/bot/player construction remain on nine-tier 1.0.
+
+Review by: Codex (test implementer first filter). Recorded by: Codex. Exact test/
+fixture/reference/docs/plan/ledger/log range after `18fd6c06` through this containing
+commit needs designated Claude review, consolidatable with Combat construction.
+No self-acceptance, archival, content mint, push or deployment. Continue the full
+accepted parent and obtain its authored effect/table closure before child engines.
