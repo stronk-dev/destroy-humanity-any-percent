@@ -1590,3 +1590,31 @@ unchanged green-seeking retry or cause/reliability claim. Review by: Codex
 (implementer first filter). Recorded by: Codex. Exact range after `a57b7fd8`
 through this containing commit needs designated Claude review, consolidatable
 with CI work. RP-526, hosted latency, other CI failures and full1.0 remain open.
+
+## 2026-10-14 — Complete default Linux browser gate at 8e4d0877
+
+Continue the same live `make test-browser-ci`88376, not a restarted job.
+At committed `8e4d0877`, terminal exit0; Linux/ARM64 pinned Playwright image,
+fresh frozen dependencies and shared Make target, no selection override.
+Broad474 files:39,615 ordinary passes/9 expected failures/24 reported skips,
+149.32s. Separate native-keyboard3 files:87 ordinary/6 expected,3.81s.
+Isolated Chromium performance:5 passes/105 pattern skips,6.58s. All three
+required phases actually execute. No aggregate count substitutes for their
+individual outcomes or claims every acceptance population ran.
+
+Expected Reputation deadline records from Chromium/Firefox/WebKit reach the
+live container log with still-mounted context and zero native calls during
+subscription readiness. No ordinary Reputation deadline record appears in the
+filtered log before completion. The earlier Firefox missing-file timeout does
+not recur here; neither its cause nor elimination is demonstrated. Keep52310's
+full failure and isolated71583/94144 outcomes. No assertion, input, worker,
+deadline, population or performance floor was loosened for this pass.
+
+Large module traces truncate tool chunks; read the live container's specific
+deadline lines before removal, then recover final summaries/exit from the same
+session. No reconstructed raw transcript or title-union claim. Automatic
+disposable cleanup completes; final declared inventory empty. This closes the
+previously unexecuted current default Linux gate, not native-amd64 hosted parity,
+five-minute Actions timing, other CI failures, independent review or full1.0.
+Verification by: Codex; Recorded by: Codex. Editorial evidence checkpoint;
+underlying source/review ranges remain open and may include this closeout.

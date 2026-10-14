@@ -1888,3 +1888,52 @@ commit requires designated Claude review, consolidatable with MA3 corrections.
 No self-approval, archival, content mint, push, deploy or release promotion. The
 full nine-tier 1.0 objective and its remaining accepted construction/owner/platform
 requirements remain; this fixes one real lifecycle defect, not the whole feature.
+
+## 2026-10-14 — RP-614 Linux API-consumer wave fails; focused branch passes
+
+At committed `8e4d0877`, execute root `make test-go-ci
+CI_TEST_PACKAGES='./publicapi ./publicread ./account ./gameserver'
+CI_TEST_FLAGS='-v'` (32379, count1, terminal Make2). Declared Compose forces
+the Go process to Linux/amd64 with its existing QEMU AVX2 workaround and real
+Postgres16. The project was empty before this test-owned tmpfs service started.
+
+The actual wave fails `TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration`
+(44.23s), specifically `literal_scaling` (26.95s); gameserver ends failed at
+115.233s. Tool output truncates21,687 tokens in the middle, losing the assertion
+message. Preserve that limitation; neither cause nor complete green results for
+the other packages are inferred from a truncated transcript. This is not the
+full server job or a new diagnosis of the known Clout/history failures.
+
+Focused diagnostic90874: root `make test-go-ci CI_TEST_PACKAGES='./gameserver'
+CI_TEST_FLAGS='-run TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration/literal_scaling -v'`,
+unchanged source/assertions, same declared environment/count1. Terminal exit0,
+18.108s, no skips; whole output retained within the tool budget. This narrower
+population is diagnosis, not an unchanged full-wave retry or repaired feature.
+RP-614 remains open and unattributed, distinct from RP-459's already corrected
+bootstrap-receipt isolation. Do not infer clock/auth/replay or API causation.
+
+Next: retain adequate output on any recurrence and localize its actual assertion
+before changing source. No candidate production/test fix, tolerance, deadline,
+authentication exception, content mint or acceptance promotion. Verification by:
+Codex; Recorded by: Codex. Editorial observation only; existing exact source
+review ranges remain open. Remove only the test-owned tmpfs Postgres service
+after terminal runs, preserving caches/networks/unrelated services.
+
+Same-context diagnostic supplement51197, explicitly for missing-assertion
+capture rather than a fix: repeat the original four-package command once with
+adequate per-poll output budget at the same product source. Terminal exit0:
+publicapi0.145s, publicread0.238s, account9.798s, gameserver81.922s. Complete
+Both test-output chunks retained without middle truncation.
+`TestComposedCredentialCleanupRuntimeAndDrainIntegration` explicitly
+skips its separate real-minute lane; TypeScript public verifier invocation is
+not requested by this Go-only wave and is owned by the root composed journey.
+Other selected SQL tests actually run. This is neither the full server job nor
+native hosted hardware; the declared emulation workaround stays disclosed.
+
+The original assertion was lost because Codex chose a6,500-token observation
+budget, not because Go failed to emit it. That evidence loss is the agent's
+error. The later full pass does not recover it or prove a fix, exclusive
+context/seed/clock cause or reliability. RP-614 stays open; no more identical
+green-seeking repetitions. Final removal uses only the declared `postgres`
+selector after terminal checks, discarding test tmpfs; inventory is verified
+empty. No durable volume/cache/network/unrelated service or user data removed.

@@ -7,14 +7,24 @@
 
 ## Current checkpoint — 2026-10-14
 
+Latest default Linux execution at `8e4d0877`: `make test-browser-ci` completes exit0 through
+all three phases on Linux/ARM64. Broad474 files pass39,615 ordinary/9 expected failures with
+24 reported skips (149.32s); native3 files pass87 ordinary/6 expected (3.81s); isolated
+Chromium performance passes5 with105 selector skips (6.58s). The verified observer's deliberate
+deadline records reach the actual full run from all three engines. No ordinary Reputation abort
+or prior missing-file stall recurs in this run; that does not establish its cause or elimination.
+The previous default10-minute failure remains evidence. Do not rerun for a reliability claim;
+continue accepted construction and consolidate review, investigating recurrence if it happens.
+The owning log records this complete local gate, not hosted AMD64/latency or all CI acceptance.
+
 Current RP-526 diagnostic: the mounted Reputation host now captures failure-only case/user-agent,
 input-import/native-RPC/drain/unmount stage and actual command-promise/host state before cleanup.
 The existing 50 ms deadline control validates early initialization versus producer-gate timing;
 one added real-native-action control checks nonzero counters and silent successful teardown.
 Removing abort registration makes the negative fail. Native Chromium/WebKit and isolated Linux
 Firefox populations pass; final selected controls prove actual error-output delivery and types
-pass. This is tested observation, not a repair or full-population success. Next run the unchanged
-default Linux job with this observer to localize any recurrence. Preserve the preceding timeout,
+pass. The subsequent default Linux execution above completes; this is observation, not a repair
+or proof of intermittent reliability. Preserve the preceding timeout,
 all deadlines, workers and original player assertions; the owning log holds limits and review.
 
 Current local/Actions parity correction (RP-613): the Linux Playwright container now installs

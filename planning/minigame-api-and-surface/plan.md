@@ -1,5 +1,14 @@
 # Minigame API & Surface implementation plan
 
+Current Linux observation (2026-10-14, RP-614): the cold Linux-amd64/Postgres API-consumer
+wave at `8e4d0877` fails the composed lifecycle's literal_scaling branch; its assertion message
+is lost to the agent's too-small output budget. The focused same branch passes18.108s;
+one same-context diagnostic with complete capture then passes all four packages, with one
+explicit manual-runtime skip. This is an open, unattributed failure, not a correction or
+reliability/full-server-job proof. The owning log records all outcomes; retain sufficient
+failure output on recurrence before changing source.
+No clock/auth/replay or latest-API causation is inferred; other accepted work may continue.
+
 Current delayed-heartbeat correction (2026-10-14, RP-603): reply/error ownership follows the
 bound Recovery scheduler across replacement and unmount, not just its running flag. Retired
 terminal/gone replies cannot end a new session; same-session rotation and a terminal after a
