@@ -332,6 +332,13 @@ bundle's tree is applied additively, in tree array order:
 **run_started v2.** When the new run's bundle has a tree, `run_started` is emitted at schema 2 with
 `reputation_tree: {bonus_factor, applied_starter_node_ids}`; otherwise v1 stays byte-identical.
 `save.validateEvent` checks the arm, and migration 00077 admits schema 2.
+The non-null Reputation summary requires both exact decoded field names, once each,
+with non-null values. Wrong-case aliases and duplicate raw names refuse before persistence;
+JSON whitespace and escaped spellings of the same decoded keys remain valid. The null arm,
+unit bonus and producer's starter order are unchanged. The shared raw-input population is
+`testdata/reputation/run-started-fields-v1.json`; its client checks explicitly distinguish
+raw duplicate names from already-parsed objects, where JSON.parse has discarded duplicates.
+This correction is scoped to the nested summary, not all base event-field admission.
 
 **Executed fixture evidence.** The original AC8 corpus proves ten curriculum
 units plus five Reputation units, with zero purchased units and canonical

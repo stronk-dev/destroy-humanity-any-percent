@@ -9497,3 +9497,80 @@ Review by: Codex (implementer first-filter); Recorded by: Codex. Claude's
 designated review is pending for this complete corrective range independently
 of the original rejection above and all earlier corrective ranges. No box flip,
 RFC archival, mint, push or deployment. Continue B5b's remaining original review.
+
+## 2026-10-14 — Complete original B5b starter/carry producer review
+
+Review by: Codex (designated independent reviewer of Claude's original work).
+Recorded by: Codex. Exact range: `078b205e^..078b205e`, all14 changed paths.
+**CHANGES REQUIRED**, RP-629. This is not approval of Codex's later corrections.
+
+Inspected both runtime starter/Exit/carry changes, OwnedStarters, event admission,
+run-log version, migration00077, migration-head guard, three kernel mirrors,
+docs/log and shared fixture. Assembly preserves curriculum→additive starters→
+active-play order, generated/purchased separation, hardcap refusal and tree order.
+Carry fields are versioned atv9 with Founder22 activation; old versions remain
+readable. Kernel mirrors agree at0.3.113; the release guard advances74→77 as the
+original log disclosed. Parsed original corpus comparison finds exactly131 leaf
+changes, all replay_inputs.v8→v9, not receipt/state/event changes. The previous
+bounded `7d130b89` witness verdict and later corrective evidence remain separate.
+
+Historical checkout at `078b205e`: the preceding cold Go Production/Save/
+Reputation/Releasepackage checks pass without DB proof; this turn's three client
+replay/reputation/bundle files pass92 tests. First Vitest attempt cannot write
+its normal worktree cache (EPERM), executes no tests; narrow permitted execution
+then passes. Dependencies/lock are unchanged from the earlier historical review.
+An initially truncated full-JSON command capture is not comparison evidence;
+the successful comparison reads complete Git blobs directly and reports131.
+
+The original validRunStartedReputation function is byte-identical to current
+pre-correction source. Executed current decision validation admits two wrong-case
+fields and two duplicate raw names, while ten healthy/already-refused controls
+pass. The exact client reader already refuses wrong-case fields. Duplicate names
+are lost by JSON.parse/JSONB, so parsed-object behavior cannot establish raw-token
+refusal. This is internal event admission, not a demonstrated public request exploit
+or evidence that the current legitimate producer emits malformed summaries.
+
+## 2026-10-14 — R7 nested summary admission conformance (RP-629)
+
+Outcome: share the existing Reputation purchase token guard with the two-field
+run-start summary. Require exact decoded names once each and non-null values
+before struct decoding. Existing purchase admission is unchanged; the null arm,
+unit factor, artifact starter order, whitespace and equivalent escaped keys stay
+valid. No base-event policy widening/narrowing, client runtime, schema/migration,
+copy/balance/pin or historical rewrite. Kernel214→215 records the guarded Save
+admission change in all three mirrors; canonical docs and plan updated.
+
+Regression: shared14 raw rows produce four old-Go failures (aliases/duplicates)
+and now all pass. The client consumes the same corpus: wrong-case/missing/null/
+extra fields reject; two parsed-duplicate cases are honestly positive controls.
+Actual logged Exit store rejects all nine malformed summary rows with
+ErrInvalidStream and unchanged Founder/Company heads. Existing checks still
+find zero pre-commit pin/genesis/log/outbox rows, then valid v1 Exit, durable
+history and retry execute. Legitimate tree-producing purchase/Exit/career/public
+projection populations also pass against actual Postgres, rather than treating
+the controlled malformed mutation as a natural tree producer.
+
+Coverage: cold full Save/Kernel/Reputation and affected Save/Production vet pass;
+four client reader/replay files pass171 tests; strict types report0 errors/warnings;
+unchanged replay-fixture check passes. Declared Linux-amd64/Postgres atomic Exit
+test passes0.675s with all nine named refusals; selected Reputation Production/
+GameUI packages pass7.758s/0.564s. Native DB skips are not SQL proof. The initial
+SQL/native test adapter used the wrong LoggedExitMutation signature and failed
+compilation; corrected to preserve both replay commands and returned inputs,
+then reran after both failed handles were terminal. No production bug or executed
+SQL evidence inferred from that compile failure. No browser suite for unchanged
+client runtime/DOM; no full Production/hosted CI, natural pacing, complete event
+schema, full Reputation or release/1.0 claim.
+
+Cleanup: all check handles are terminal; removed this batch's temporary tmpfs
+Postgres service and confirmed an empty Compose list. The protected historical
+checkout remains clean at `078b205e`; no tracked source mutation or scratch probe
+persists there. Other worktrees, durable volumes and services are untouched.
+
+Handoff: runtime guard, shared corpus/consumers, atomic-store regression, kernel
+mirrors and docs/plan/backlog/this record form the range after `0c81cacb` through
+the containing commit. Review by: Codex (implementer first-filter); Recorded by:
+Codex. Claude designated review remains pending for this entire corrective batch
+and earlier ranges. Original B5b disposition approves none of this work. No
+acceptance checkbox, RFC archival, mint, push or deployment; continue original
+B6 review without restarting B5's previously bounded witness review.

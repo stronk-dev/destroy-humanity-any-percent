@@ -82,6 +82,46 @@ func TestApplyExitTransactionAtomicFaultsAndReplayIntegration(t *testing.T) {
 	loggedPayload := []byte(`{"expected_founder_revision":1,"expected_revision":1,"kind":"wind_down"}`)
 	loggedDigest := sha256.Sum256(loggedPayload)
 	loggedHash := "sha256:" + hex.EncodeToString(loggedDigest[:])
+	// R7 summary-field refusals must hold at the actual atomic Exit store
+	// boundary too, before JSONB can erase duplicate token names. This uses
+	// controlled mutation output, not a player request or a natural producer.
+	for index, row := range runStartedReputationFieldCases(t) {
+		if row.Valid {
+			continue
+		}
+		t.Run("invalid-run-start-summary/"+row.Name, func(t *testing.T) {
+			intentID := fmt.Sprintf("01985555-00a0-7000-8000-%012d", index+1)
+			baseMutation := loggedExitTestMutation(t, ownerID, companyRevision.StreamID, intentID, hash, now)
+			mutation := func(founder *State, founderRevision Revision, company *State, companyRevision Revision, command ReplayCommand, founderCommand FounderReplayCommand) (ExitDecision, json.RawMessage, error) {
+				decision, inputs, err := baseMutation(founder, founderRevision, company, companyRevision, command, founderCommand)
+				if err != nil {
+					return decision, inputs, err
+				}
+				for index := range decision.CompanyStartedEvents {
+					event := &decision.CompanyStartedEvents[index]
+					if event.Kind != EventRunStarted {
+						continue
+					}
+					var payload map[string]json.RawMessage
+					if err := json.Unmarshal(event.Payload, &payload); err != nil {
+						return ExitDecision{}, nil, err
+					}
+					payload["reputation_tree"] = json.RawMessage(row.Raw)
+					event.Payload, err = json.Marshal(payload)
+					event.SchemaVersion = 2
+					if err != nil {
+						return ExitDecision{}, nil, err
+					}
+				}
+				return decision, inputs, nil
+			}
+			if _, err := store.ApplyExitTransactionLogged(ctx, companyRevision.StreamID, 1, 1, intentID, loggedHash, loggedPayload, mutation, nil); !errors.Is(err, ErrInvalidStream) {
+				t.Fatalf("malformed summary committed or failed elsewhere: %v", err)
+			}
+			assertLatestRevision(t, ctx, store, founderRevision.StreamID, 1)
+			assertLatestRevision(t, ctx, store, companyRevision.StreamID, 1)
+		})
+	}
 	for index, failStep := range []string{"founder_genesis", "run_epoch", "run_genesis", "run_log", "founder_log"} {
 		loggedIntentID := fmt.Sprintf("01985555-009%d-7000-8000-00000000000%d", index, index)
 		_, err = store.ApplyExitTransactionLogged(ctx, companyRevision.StreamID, 1, 1, loggedIntentID, loggedHash, loggedPayload,

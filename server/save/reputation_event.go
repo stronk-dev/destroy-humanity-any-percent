@@ -9,21 +9,28 @@ import (
 // inspection also rejects duplicate keys, which struct/map decoding would lose.
 // This applies only to this event; other payload contracts remain unchanged.
 func validReputationPurchaseEventFields(data []byte) bool {
+	return validReputationEventFields(data, "node_id", "node_kind", "cost", "reputation_level",
+		"reputation_spent_before", "reputation_spent_after", "unlock_ppm_after", "source")
+}
+
+// Both Reputation purchase and run-start summary objects have required,
+// non-null fields. Check decoded token names before Go's struct decoder can
+// accept case aliases or discard duplicate keys.
+func validReputationEventFields(data []byte, keys ...string) bool {
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	first, err := decoder.Token()
 	if err != nil || first != json.Delim('{') {
 		return false
 	}
+	allowed := make(map[string]bool, len(keys))
+	for _, key := range keys {
+		allowed[key] = true
+	}
 	seen := map[string]bool{}
 	for decoder.More() {
 		token, err := decoder.Token()
 		key, ok := token.(string)
-		if err != nil || !ok || seen[key] {
-			return false
-		}
-		switch key {
-		case "node_id", "node_kind", "cost", "reputation_level", "reputation_spent_before", "reputation_spent_after", "unlock_ppm_after", "source":
-		default:
+		if err != nil || !ok || !allowed[key] || seen[key] {
 			return false
 		}
 		var raw json.RawMessage
@@ -33,5 +40,5 @@ func validReputationPurchaseEventFields(data []byte) bool {
 		seen[key] = true
 	}
 	last, err := decoder.Token()
-	return err == nil && last == json.Delim('}') && len(seen) == 8 && ensureJSONEnd(decoder) == nil
+	return err == nil && last == json.Delim('}') && len(seen) == len(keys) && ensureJSONEnd(decoder) == nil
 }

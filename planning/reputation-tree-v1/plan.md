@@ -4,6 +4,13 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
+Current R7 event correction (2026-10-14): RP-629 rejects case aliases and
+duplicate raw names in run_started v2's nested Reputation summary. Shared14-case
+Go/client controls, nine real-SQL malformed-Exit refusals and affected legitimate
+Reputation workflows pass. Kernel0.3.215; the correction after `0c81cacb` needs
+Claude. Full original B5b fourteen-path review is CHANGES REQUIRED; original B5
+producer dispositions are now recorded, not acceptance of corrective descendants.
+
 Current R3/AC6 database correction (2026-10-14): RP-628 demonstrates that the
 old count-only trigger commits same-count wrong-source/slot/target substitutions.
 Append-only migration00085 binds the required row to the pinned tree's bonus
@@ -481,8 +488,8 @@ author/harness/browser/mint/release holds remain, no full RFC closure.
   Full original B5a (`7ea6b942^..7ea6b942`) eleven-path review: **CHANGES
   REQUIRED**, RP-628 count-only completeness. The original four-path witness
   `7d130b89` retains its bounded approval; B5b's complete fourteen-path producer
-  review remains outstanding. Neither that witness nor this local correction
-  approves the full producer/acceptance span.
+  review is **CHANGES REQUIRED**, RP-629 nested event admission. Neither that
+  witness nor these local corrections approves the full producer/acceptance span.
 - [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
 - [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
   RP-285/RP-286 under2b2536a9 adds explicit native header/button Tab stops.

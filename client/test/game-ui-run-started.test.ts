@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import fieldFixture from "../../testdata/reputation/run-started-fields-v1.json";
+
 import { decodeGameUIEvent } from "../src/game-ui/events";
 import { parseGameUISnapshot } from "../src/game-ui/contracts";
 import { createBrowserGameUIRuntime, type RuntimeStorage } from "../src/game-ui/runtime";
@@ -25,6 +27,15 @@ function decode(value: Record<string, unknown>) {
 }
 
 describe("R7 next-run event reader (not Run End UI acceptance)", () => {
+  it("checks the shared raw-field corpus without claiming parsed duplicate rejection", () => {
+    expect(fieldFixture.version).toBe(1);
+    expect(fieldFixture.cases).toHaveLength(14);
+    for (const row of fieldFixture.cases) {
+      const tree: unknown = JSON.parse(row.raw);
+      if (row.parsed_valid) expect(decode(payload(tree))?.payload).toEqual(payload(tree));
+      else expect(() => decode(payload(tree)), row.name).toThrow();
+    }
+  });
   it("retains the v1 absent-tree arm without inventing a tree", () => {
     const { reputation_tree: _tree, ...legacy } = payload();
     expect(decode(legacy)).toEqual({ cursor: 2, kind: "run_started", occurred_at_ms: now, payload: legacy });

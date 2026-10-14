@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "cases": [
+    {"name":"canonical-order","raw":"{\"bonus_factor\":\"1.003e0\",\"applied_starter_node_ids\":[\"reputation.starter.z\",\"reputation.starter.a\"]}","valid":true,"parsed_valid":true},
+    {"name":"unit-empty","raw":"{\"bonus_factor\":\"1e0\",\"applied_starter_node_ids\":[]}","valid":true,"parsed_valid":true},
+    {"name":"null-arm","raw":"null","valid":true,"parsed_valid":true},
+    {"name":"whitespace","raw":" { \"bonus_factor\" : \"1e0\", \"applied_starter_node_ids\" : [] } ","valid":true,"parsed_valid":true},
+    {"name":"escaped-keys","raw":"{\"bonus\\u005ffactor\":\"1e0\",\"applied\\u005fstarter_node_ids\":[]}","valid":true,"parsed_valid":true},
+    {"name":"alias-factor","raw":"{\"BONUS_FACTOR\":\"1e0\",\"applied_starter_node_ids\":[]}","valid":false,"parsed_valid":false},
+    {"name":"alias-starters","raw":"{\"bonus_factor\":\"1e0\",\"APPLIED_STARTER_NODE_IDS\":[]}","valid":false,"parsed_valid":false},
+    {"name":"duplicate-factor","raw":"{\"bonus_factor\":\"1e0\",\"bonus_factor\":\"1.003e0\",\"applied_starter_node_ids\":[]}","valid":false,"parsed_valid":true},
+    {"name":"duplicate-starters","raw":"{\"bonus_factor\":\"1e0\",\"applied_starter_node_ids\":[],\"applied_starter_node_ids\":[\"reputation.starter.z\"]}","valid":false,"parsed_valid":true},
+    {"name":"missing-factor","raw":"{\"applied_starter_node_ids\":[]}","valid":false,"parsed_valid":false},
+    {"name":"missing-starters","raw":"{\"bonus_factor\":\"1e0\"}","valid":false,"parsed_valid":false},
+    {"name":"null-factor","raw":"{\"bonus_factor\":null,\"applied_starter_node_ids\":[]}","valid":false,"parsed_valid":false},
+    {"name":"null-starters","raw":"{\"bonus_factor\":\"1e0\",\"applied_starter_node_ids\":null}","valid":false,"parsed_valid":false},
+    {"name":"extra-field","raw":"{\"bonus_factor\":\"1e0\",\"applied_starter_node_ids\":[],\"extra\":null}","valid":false,"parsed_valid":false}
+  ]
+}

@@ -597,6 +597,9 @@ func validRunStartedReputation(raw json.RawMessage) bool {
 	if string(raw) == "null" {
 		return true
 	}
+	if !validReputationEventFields(raw, "bonus_factor", "applied_starter_node_ids") {
+		return false
+	}
 	var value struct {
 		BonusFactor           string   `json:"bonus_factor"`
 		AppliedStarterNodeIDs []string `json:"applied_starter_node_ids"`
