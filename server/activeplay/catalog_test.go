@@ -4,10 +4,91 @@ import (
 	"encoding/json"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/publicapi"
 )
+
+func editActiveFixture(t *testing.T, edit func(map[string]any)) []byte {
+	t.Helper()
+	var root map[string]any
+	if err := json.Unmarshal(activeFixture(t), &root); err != nil {
+		t.Fatal(err)
+	}
+	edit(root)
+	data, err := json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}
+
+func activeShapeObjects(root map[string]any) []map[string]any {
+	objects := []map[string]any{root, root["schedule_policy"].(map[string]any), root["combo_policy"].(map[string]any)}
+	for _, row := range root["effects"].([]any) {
+		objects = append(objects, row.(map[string]any))
+	}
+	return objects
+}
+
+func TestCatalogRejectsCaseAliasedObjectMembers(t *testing.T) {
+	definitions := activePlaySchemaDefinitions(t)
+	var root map[string]any
+	if err := json.Unmarshal(activeFixture(t), &root); err != nil {
+		t.Fatal(err)
+	}
+	for index, object := range activeShapeObjects(root) {
+		for key := range object {
+			t.Run(key+"/"+string(rune('0'+index)), func(t *testing.T) {
+				data := editActiveFixture(t, func(candidate map[string]any) {
+					row := activeShapeObjects(candidate)[index]
+					row[strings.ToUpper(key)] = row[key]
+					delete(row, key)
+				})
+				if _, err := LoadCatalog(data, activeEconomy(t)); err == nil {
+					t.Fatal("case alias admitted")
+				}
+				if err := publicapi.ValidateJSON(ActivePlayCatalogSchemaName, data, definitions); err == nil {
+					t.Fatal("descriptor admitted case alias")
+				}
+			})
+		}
+	}
+}
+
+func TestCatalogRejectsNullFieldsFromOtherEffectArms(t *testing.T) {
+	definitions := activePlaySchemaDefinitions(t)
+	for index, key := range []string{"factor", "targets", "duration_ms", "action_ids"} {
+		t.Run(key, func(t *testing.T) {
+			data := editActiveFixture(t, func(root map[string]any) {
+				root["effects"].([]any)[index].(map[string]any)[key] = nil
+			})
+			if _, err := LoadCatalog(data, activeEconomy(t)); err == nil {
+				t.Fatal("null field from another effect arm admitted")
+			}
+			if err := publicapi.ValidateJSON(ActivePlayCatalogSchemaName, data, definitions); err == nil {
+				t.Fatal("descriptor admitted wrong-arm null")
+			}
+		})
+	}
+}
+
+func TestCatalogRejectsUnsafeEffectDurations(t *testing.T) {
+	definitions := activePlaySchemaDefinitions(t)
+	for _, index := range []int{0, 1, 3} {
+		data := editActiveFixture(t, func(root map[string]any) {
+			root["effects"].([]any)[index].(map[string]any)["duration_ms"] = json.Number("9007199254740992")
+		})
+		if _, err := LoadCatalog(data, activeEconomy(t)); err == nil {
+			t.Errorf("effect %d admitted duration outside shared exact domain", index)
+		}
+		if err := publicapi.ValidateJSON(ActivePlayCatalogSchemaName, data, definitions); err == nil {
+			t.Errorf("descriptor admitted unsafe duration on effect %d", index)
+		}
+	}
+}
 
 func activeEconomy(t *testing.T) *economy.Catalog {
 	t.Helper()

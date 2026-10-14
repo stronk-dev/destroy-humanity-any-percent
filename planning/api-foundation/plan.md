@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C18 construction (2026-10-14, RP-575): Opportunities now exports its existing four-arm
+closed v1 structural descriptor. Actual old Go admits38 case aliases, four wrong-arm nulls and
+three unsafe duration values that TS refuses. The A9 correction carries genuine kernel0.3.193,
+without a data mint or spawn/payout/buff/click retune. Current/stored catalogs and matched Economy
+bindings, negative/boundary/freshness controls, replay/production/native consumers pass; the
+owning log records limits and full range after `11efb691`, pending Claude review. Four of nineteen
+pinned-family descriptors exist; fifteen and the full union/public verification loop remain open.
+
 Current C18 construction (2026-10-14, RP-573/RP-574): Meters exports its closed v1 structural
 owner descriptor, with current/stored bytes, signed input/slot/decay domains, closed shapes,
 semantic-loader separation and fresh-export controls. Go exact-key admissions and TS's omitted
@@ -206,8 +214,8 @@ formulas with exact integer grammar/identity; real Postgres proves old/new coexi
 malformed-version refusal. This does not mount the catalog
 HTTP reader or mint product formulas. Categories now exports the first descriptor for the
 nineteen pinned families; five actual current/historical/candidate fixtures and malformed-input
-controls pass. Its existing loader retains semantic-policy validation. Achievements now provides
-the second descriptor under the newer checkpoint above. The other seventeen
+controls pass. Its existing loader retains semantic-policy validation. The newer checkpoints
+above add Achievements, Meters and Opportunities. The other fifteen
 owner descriptors and complete union remain open. RP-383/RP-384 compatibility corrections pass
 locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Remaining owner descriptors,
 remaining route/client registration, third-party verification, 304 metadata and designated
@@ -215,7 +223,9 @@ reviews stay open; not full API acceptance or green hosted CI. Latest log owns e
 Public reads now use the shared error descriptor from `publicapi` instead of importing Account;
 the direct private-repository import regression and affected packages pass. This does not close
 transitive/runtime privacy. The seventeen remaining artifact-owner packages now fall
-under kernel-watched prefixes after relevance-owner registration: API-only additions require an explicit scope resolution or a
+under kernel-watched prefixes at that checkpoint; the remaining count is now fifteen after the
+newer owner exports above. Scope remains constrained:
+API-only additions require an explicit scope resolution or a
 genuine accepted semantic change, never a false version bump or file move to evade the guard.
 
 Existing session creation/refresh now mount from the registry and generate explicit calls, with
@@ -232,6 +242,15 @@ is implemented; its draft decisions and full API acceptance remain open.
   - [x] Resolve C20's limiter/proxy/key-ID/request-ID literals.
 - [ ] Register public DTOs/readers and raw verification evidence endpoints.
   - [ ] Export and compose C18's ruled owner artifact descriptors.
+    - [x] Export the existing Opportunities v1 descriptor with four closed effect arms;
+      actual current/stored catalogs and their corresponding Economy bindings pass
+      (`TestActivePlayOwnerSchemaAdmitsCurrentStoredAndAllEffectArms`). A9 admission correction
+      and explicit semantic-loader separation accompany it; no union/public serving or review approval.
+    - [x] Export the existing Meters v1 descriptor with closed input and decay arms;
+      current/stored bytes and registered signed/slot domains pass
+      (`TestMeterOwnerSchemaAdmitsExistingArtifactsWithoutChangingBytes`,
+      `TestMeterOwnerSchemaInputAndDecayDomains`). Semantic loader stays mandatory;
+      no complete union/public HTTP or designated approval claim.
     - [x] Export the existing Achievements v1 closed structural descriptor, with finite
       depth-specific conditions and all proof arms; current/stored source bytes pass
       (`TestAchievementOwnerSchemaAdmitsExistingArtifactsAndFixtureWithoutChangingBytes`,

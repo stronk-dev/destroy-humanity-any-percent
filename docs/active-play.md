@@ -5,6 +5,22 @@ pinned to an `opportunities` artifact and Company save version 18; older runs fi
 mechanic. Pending opportunities, active buffs, the schedule cursor, and the spawn sequence are
 replay-owned Company state and reset on Exit.
 
+## Catalog boundary
+
+Both readers enforce schema-v1 exact root/policy keys and the four closed effect shapes.
+Go checks original object names before struct decoding: case aliases and explicit null fields
+from another arm refuse, rather than being treated as compatible/absent fields. All duration
+arms use the existing positive safe-integer domain, through 9,007,199,254,740,991 inclusive.
+These admission corrections carry shared kernel `0.3.193`; no spawn cadence, payout, buff
+strength, click clamp or catalog data is retuned.
+
+`activeplay.ActivePlaySchemas()` exports the owner-controlled structural descriptor for API
+Foundation C18. It validates current and stored artifact shapes without rewriting their bytes.
+The loader still checks Economy bindings, Decimal relationships, cardinality, ordering and
+weight totals; production composition retains its scheduler-horizon check. The public catalog
+union/HTTP reader is not activated by this export. Canonical escaped names and the tested
+last-value duplicate behavior remain; no global duplicate-name rejection is introduced.
+
 ## Deterministic scheduler
 
 The server derives each opportunity from the run identity and the declared SplitMix64 substream.

@@ -110,7 +110,7 @@ type rawComboPolicy struct {
 }
 
 func LoadCatalog(data []byte, economyCatalog *economy.Catalog) (*Catalog, error) {
-	if economyCatalog == nil {
+	if economyCatalog == nil || !activeCatalogHasExactShape(data) {
 		return nil, ErrInvalidCatalog
 	}
 	var raw rawCatalog
@@ -163,7 +163,7 @@ func parseEffect(out *Effect, raw rawEffect, catalog *economy.Catalog) error {
 			return ErrInvalidCatalog
 		}
 		factor, err := decimal.ParseCanonical(*raw.Factor)
-		if err != nil || !factor.Gt(decimal.One) || *raw.DurationMS <= 0 || !sortedUnique(raw.Targets) || len(raw.Targets) == 0 {
+		if err != nil || !factor.Gt(decimal.One) || *raw.DurationMS <= 0 || *raw.DurationMS > decimal.MaxExactInteger || !sortedUnique(raw.Targets) || len(raw.Targets) == 0 {
 			return ErrInvalidCatalog
 		}
 		for _, target := range raw.Targets {
@@ -180,7 +180,7 @@ func parseEffect(out *Effect, raw rawEffect, catalog *economy.Catalog) error {
 			return ErrInvalidCatalog
 		}
 		factor, err := decimal.ParseCanonical(*raw.Factor)
-		if err != nil || !factor.Gt(decimal.One) || *raw.DurationMS <= 0 || !sortedUnique(raw.ActionIDs) || len(raw.ActionIDs) == 0 {
+		if err != nil || !factor.Gt(decimal.One) || *raw.DurationMS <= 0 || *raw.DurationMS > decimal.MaxExactInteger || !sortedUnique(raw.ActionIDs) || len(raw.ActionIDs) == 0 {
 			return ErrInvalidCatalog
 		}
 		for _, action := range raw.ActionIDs {
@@ -191,7 +191,7 @@ func parseEffect(out *Effect, raw rawEffect, catalog *economy.Catalog) error {
 		out.Factor, out.DurationMS, out.ActionIDs = factor, *raw.DurationMS, append([]string(nil), raw.ActionIDs...)
 	case "building_special":
 		if raw.PerOwnedPPM == nil || raw.DurationMS == nil || !only(raw, "ppm", "duration", "generators") || *raw.PerOwnedPPM <= 0 ||
-			*raw.PerOwnedPPM > 1_000_000 || *raw.DurationMS <= 0 || !sortedUnique(raw.EligibleGeneratorIDs) || len(raw.EligibleGeneratorIDs) == 0 {
+			*raw.PerOwnedPPM > 1_000_000 || *raw.DurationMS <= 0 || *raw.DurationMS > decimal.MaxExactInteger || !sortedUnique(raw.EligibleGeneratorIDs) || len(raw.EligibleGeneratorIDs) == 0 {
 			return ErrInvalidCatalog
 		}
 		for _, generator := range raw.EligibleGeneratorIDs {
@@ -217,6 +217,65 @@ func parseEffect(out *Effect, raw rawEffect, catalog *economy.Catalog) error {
 		return ErrInvalidCatalog
 	}
 	return nil
+}
+
+// Exact original names prevent struct case-folding and wrong-arm null fields.
+// This does not introduce a global duplicate-name rejection policy.
+func activeCatalogHasExactShape(data []byte) bool {
+	root, ok := activeCatalogObject(data, "schema_version", "schedule_policy", "effects", "combo_policy")
+	if !ok {
+		return false
+	}
+	if _, ok := activeCatalogObject(root["schedule_policy"], "sampler_version", "substream_label", "minimum_interval_ms", "scale_ms", "lifetime_ms", "max_due_transitions"); !ok {
+		return false
+	}
+	if _, ok := activeCatalogObject(root["combo_policy"], "combo_cap", "hardcap_reason_key"); !ok {
+		return false
+	}
+	var effects []json.RawMessage
+	if json.Unmarshal(root["effects"], &effects) != nil || effects == nil {
+		return false
+	}
+	for _, effect := range effects {
+		var members map[string]json.RawMessage
+		if json.Unmarshal(effect, &members) != nil {
+			return false
+		}
+		var kind string
+		if json.Unmarshal(members["kind"], &kind) != nil {
+			return false
+		}
+		keys := []string{"effect_row_id", "kind", "weight"}
+		switch kind {
+		case "production_frenzy":
+			keys = append(keys, "factor", "duration_ms", "targets")
+		case "click_frenzy":
+			keys = append(keys, "factor", "duration_ms", "action_ids")
+		case "building_special":
+			keys = append(keys, "per_owned_ppm", "duration_ms", "eligible_generator_ids")
+		case "lucky_payout":
+			keys = append(keys, "lucky_bank_frac", "lucky_rate_cap", "epsilon", "resource_id", "hardcap_reason_key")
+		default:
+			return false
+		}
+		if _, ok := activeCatalogObject(effect, keys...); !ok {
+			return false
+		}
+	}
+	return true
+}
+
+func activeCatalogObject(data []byte, keys ...string) (map[string]json.RawMessage, bool) {
+	var object map[string]json.RawMessage
+	if json.Unmarshal(data, &object) != nil || len(object) != len(keys) {
+		return nil, false
+	}
+	for _, key := range keys {
+		if _, ok := object[key]; !ok {
+			return nil, false
+		}
+	}
+	return object, true
 }
 
 func only(raw rawEffect, mode ...string) bool {

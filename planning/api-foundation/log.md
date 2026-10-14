@@ -2316,3 +2316,48 @@ exist; sixteen, complete catalog union and public re-verification remain unfinis
 push/deployment, new content or draft/owner adoption. Continue accepted construction without
 silently choosing Headcount's conflicting hiring/output models or treating proposal delivery as
 owner approval. Those decisions do not block this completed Meters batch.
+
+## 2026-10-14 — Construct Opportunities' owner descriptor with the A9 admission repair (RP-575)
+
+Resume clean `11efb691`; preceding Meters construction is concrete progress. C18's remaining
+owners require lawful scope, not a metadata-only kernel bump. Read the complete archived
+Active-Play contract and current readers; A9 already requires exact keys/closed arms and safe
+integer durations. Actual old Go admits38 root/policy/effect case aliases, four wrong-arm null
+members and three unsafe duration candidates; unchanged TS rejects them (five tests pass).
+File RP-575, check original object shapes before struct decoding, and bound all three duration
+arms by the existing shared maximum. No mechanics, cadence, payouts, buffs, click clamp or data
+retune. Genuine kernel0.3.192→0.3.193 accompanies the owner addition.
+
+`ActivePlaySchemas` exports closed root/policy/four-effect shapes, existing sampler/substream
+literals, canonical Decimal strings and numeric/ID bounds. Current and two stored catalogs
+validate byte-unchanged and load with their corresponding Economy catalogs. The shared fixture
+contains all four arms; duration1/S controls, twenty-one structural refusals, old discrepancy
+populations and freshness/escaped-name/duplicate controls pass. Four semantic counterexamples
+still require the loader (bindings, factor relationships, nonempty/order). No union/public HTTP
+activation, fixture rewritten into adopted content, open JSON or metadata-only version signal.
+
+Final cold activeplay/publicapi/kernel packages and affected vet pass. Node28453 passes146 and
+actual Chromium/WebKit61263 passes292 across active-play, opportunity-arm and replay files.
+Typecheck41918 has zero errors/warnings; production build and unchanged `make api-check` pass.
+Cold replaycatalog59130 also passes the affected catalog-consumer package; no SQL evidence is
+inferred from its package exit.
+Verbose pure production executes five existing top-level active-play cases and all five Lucky
+boundary vectors, no skips. The first broad selector also selects the SQL event test, which
+skips without Docker/Postgres; it supplies no DB evidence. An initially unquoted parenthesized
+Make regex fails at the shell before Go runs; quote it and execute the final pure selector.
+No native Firefox/Linux/SQL, hosted, complete API/CI or release claim. Historical RP-131 guard
+remains known-red from prior execution; no rerun/current-tree green claim or history rewrite.
+
+Ignored raw old `.cache/opportunities-admission-old-11efb691.log` SHA256
+`79516685e02aa30e037348dda619d2d7654c848d4846404ad70b0761273fcedc`;
+native `.cache/opportunities-owner-native-11efb691.log` SHA256
+`eb7ce073a09af1777931ec02466141f607c86c25e55ce6c0dc4080bc30a63266`;
+final pure `.cache/opportunities-owner-pure-production-11efb691.log` SHA256
+`83e1a68863a559156d487ebf82cc188c8c25dbcc87c193c54234aea67d6decfe`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete owner/schema/tests/
+version/docs/records range after `11efb691` through this containing commit needs designated
+Claude review, consolidatable with related C18 corrections. Four of nineteen pinned-family
+descriptors exist; fifteen, full response union/catalog HTTP and public re-verification remain.
+No archival/push/deployment, owner/draft adoption or full nine-tier1.0 promotion. Continue accepted
+construction; live intent/dictionary, bodiless replies and other authored contracts remain held.

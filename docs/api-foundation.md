@@ -511,9 +511,16 @@ Loader-only order/cardinality/uniqueness/reseed relationships remain explicit. E
 admission and the omitted TS `axis_stack` slot are corrected under existing contracts, carrying
 the genuine kernel version0.3.192; no balance retune or metadata-only bump.
 
+`activeplay.ActivePlaySchemas()` exports the v1 opportunities grammar with four closed effect
+arms, declared sampler/substream literals, canonical Decimal strings and bounded positive
+integers. Current/stored artifacts load with their corresponding Economy catalogs. Semantic
+binding, cardinality/order, Decimal relationships and production horizon checks remain mandatory.
+Actual A9 case-alias/wrong-arm-null/unsafe-duration admissions are corrected with kernel0.3.193;
+no balance, scheduling, payout or buff semantics are retuned.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. Categories, Achievements and Meters provide three owner descriptors
-for the nineteen currently pinned artifact families; the other sixteen and the composed C18 catalog
+TypeScript verification loop remain open. Categories, Achievements, Meters and Opportunities provide four owner descriptors
+for the nineteen currently pinned artifact families; the other fifteen and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.
