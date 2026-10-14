@@ -2543,3 +2543,47 @@ Claude review, consolidatable with C18 corrections. Eight of nineteen pinned-fam
 exist; eleven, complete response union/catalog HTTP and public re-verification remain. No archival,
 push/deployment, owner/draft adoption or full nine-tier1.0 promotion. Continue accepted construction;
 service, review/author/owner, full CI, content/pacing and the entire release remain open.
+
+## 2026-10-14 — Construct Prestige's owner policy schema and align admission/expiry bounds (RP-580)
+
+Resume clean `65ee6a8e`; Curriculum is preceding concrete progress. Read the complete accepted
+Prestige contract and actual Go/TS policy/expiry paths. Old Go admits35 malformed candidates:
+eleven case aliases, eight absent/null zero fields, five null payouts, ten null spawn entries
+and one final incomplete modifier map merged with earlier keys. TS already refuses those but
+admits the first duration above Go's existing int64-nanosecond representation. Actual old TS
+duration regression fails (15 other checks pass); Go's maximum/first-invalid control passes.
+File RP-580. Enforce exact original non-null shapes; name the unchanged Go duration bound and
+mirror its arithmetic in TS. No convenience limit, raised ceiling or new gameplay policy.
+Genuine kernel0.3.197→0.3.198 accompanies the admission correction.
+
+`PrestigeSchemas` exports closed policy fields, a finite five-key payout object, numeric bounds
+and existing duration representation. Current and two stored policies validate/load byte-
+unchanged. Eighteen structural refusals, threshold/table semantic counterexamples, maximum-
+domain/zero/retune and fresh/escaped/complete-duplicate controls pass. Positive state threshold,
+table cardinality and composition's Economy resource binding remain mandatory. No formula,
+payout/threshold data, offer/preview/expiry mechanics, Advisor activation, mint or public union/HTTP
+change. Generated API/pins and balance/testdata bytes stay unchanged.
+
+Final cold prestige/publicapi/kernel/replaycatalog13226 and affected vet pass. Node35480
+passes154; actual Chromium/WebKit78842 passes308 including shared Prestige vectors/replay.
+Verbose production9575 executes the offer replay corpus and copied-evidence refusals with
+all payout/promise controls, no skips. Types53653 report zero errors/warnings, build and
+byte-unchanged `make api-check` pass. No SQL/composed player, native Firefox/Linux/hosted,
+full API/CI or release claim. Docker remains unresponsive under the preceding verified ping,
+no restart/substitute DB; historical RP-131 guard remains known-red, not current-tree green.
+
+Ignored old-Go `.cache/prestige-admission-old-65ee6a8e.log` SHA256
+`2e64b27d2fb24784b446da7eefcd28e8ccae69a558ee9ebc055c6c0bf5adb424`;
+old-TS `.cache/prestige-duration-old-65ee6a8e.log` SHA256
+`6d956ff67c0077b0bb3e9a91aaacb9671388bb620add589390abb56819ca78bc`;
+native `.cache/prestige-owner-native-65ee6a8e.log` SHA256
+`f11789d33f05daabc73b7eec3c437fc47cf4369d8739053a9572ec999f4036b3`;
+production `.cache/prestige-owner-production-65ee6a8e.log` SHA256
+`60236362302cae4fa169555d38af80706645a80272c3767cb0fcdbc755ef79a5`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete code/schema/tests/
+version/docs/records range after `65ee6a8e` through this containing commit needs designated
+Claude review, consolidatable with C18 corrections. Nine of nineteen pinned-family descriptors
+exist; ten, complete union/catalog HTTP and public re-verification remain. No archival/push/
+deployment, new content or owner/draft adoption. Continue accepted construction; services,
+review/author/owner, full CI, content/pacing and full nine-tier1.0 remain open.

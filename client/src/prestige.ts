@@ -8,6 +8,10 @@ export interface PrestigePolicy {
   readonly declineDriftPpm: number; readonly spawnGatePpm: readonly number[]; readonly advisorPerRunPpm: number; readonly advisorCapPpm: number;
 }
 
+// Mirror the existing Go expiry representation (int64 nanoseconds). This is
+// not a gameplay ceiling or a new policy value.
+const maximumOfferDurationMs = Number(((1n << 63n) - 1n) / 1_000_000n);
+
 export function parsePrestigePolicy(source: unknown): PrestigePolicy {
   if (typeof source !== "object" || source === null || Array.isArray(source)) throw new SyntaxError("prestige policy must be an object");
   const raw = source as Record<string, unknown>;
@@ -15,7 +19,7 @@ export function parsePrestigePolicy(source: unknown): PrestigePolicy {
   if (Object.keys(raw).sort().join("\0") !== keys.join("\0") || raw.schema_version !== 1 || typeof raw.value_resource_id !== "string" ||
       !/^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/.test(raw.value_resource_id) || typeof raw.threshold !== "string" || !parseCanonical(raw.threshold).gt(0) ||
       !safe(raw.collapse_route_knowledge, 0, MAX_EXACT_INTEGER) || !safe(raw.catchup_ceiling_ms, 1, 86_400_000) ||
-      !safe(raw.offer_duration_ms, 1, MAX_EXACT_INTEGER) || !safe(raw.decline_drift_ppm, 0, 1_000_000) ||
+      !safe(raw.offer_duration_ms, 1, maximumOfferDurationMs) || !safe(raw.decline_drift_ppm, 0, 1_000_000) ||
       !safe(raw.advisor_per_run_ppm, 0, 1_000_000) || !safe(raw.advisor_cap_ppm, 0, 1_000_000) || !Array.isArray(raw.spawn_gate_ppm) ||
       raw.spawn_gate_ppm.length !== 10 || raw.spawn_gate_ppm.some((value) => !safe(value, 0, 1_000_000)) ||
       typeof raw.exit_modifiers_ppm !== "object" || raw.exit_modifiers_ppm === null || Array.isArray(raw.exit_modifiers_ppm)) throw new SyntaxError("invalid prestige policy");

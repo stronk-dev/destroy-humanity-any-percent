@@ -542,9 +542,15 @@ Economy/Routes and tracked copy declarations; order/cardinality, binding and pos
 relations remain loader checks. Case-alias/default-zero/wrong-arm admissions are corrected with
 kernel0.3.197. Generic Reputation starter validation and payoff literals remain unchanged.
 
+`prestige.PrestigeSchemas()` exports the existing policy grammar, including a closed five-key
+payout object, bounded spawn entries and the Go expiry representation bound. Current/stored bytes
+and valid retunes pass; positive threshold semantics, table cardinality and Economy resource
+binding remain owner/composition checks. Go exact-name/non-null admissions and the TS duration
+mirror are corrected with kernel0.3.198; no payout formula, configured value or offer policy changes.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities, Doctrines, Fiscal, Soul and Curriculum provide eight owner descriptors
-for the nineteen currently pinned artifact families; the other eleven and the composed C18 catalog
+TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities, Doctrines, Fiscal, Soul, Curriculum and Prestige provide nine owner descriptors
+for the nineteen currently pinned artifact families; the other ten and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.

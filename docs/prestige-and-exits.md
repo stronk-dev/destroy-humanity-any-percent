@@ -25,6 +25,21 @@ authoritative Company resource whose positive accrual advances lifetime value. I
 accounting and faction stock accrual. Offer duration, spawn gates, decline drift, payout modifiers,
 collapse Route Knowledge, and the deferred Advisor seam's constants are data, never code constants.
 
+Go now enforces exact original policy/payout-map keys and non-null values, including spawn-table
+entries. Missing/null values do not silently select zero, and a final incomplete payout map does
+not inherit earlier keys. Explicit zero, escaped canonical names and complete last-value controls
+remain valid; no global duplicate-member rejection is introduced. Both runtimes also enforce
+the existing offer-duration representation limit: signed int64 nanoseconds divided by one million,
+or 9,223,372,036,854 milliseconds. This is not a newly selected gameplay ceiling; Go's expiry path
+already required it. The corrections carry shared kernel `0.3.198` without changing formulas,
+configured thresholds, payouts, offer mechanics or Advisor activation.
+
+`prestige.PrestigeSchemas()` exports the closed v1 structural descriptor for API Foundation C18.
+The five payout-map keys are a finite object, not an open dictionary. Current and stored policies
+validate byte-unchanged, and valid policy retunes remain data. Positive state-valued threshold
+semantics, spawn-table cardinality and Economy resource binding retain their owner/composition
+checks. The export does not activate the public catalog response union or endpoint.
+
 ## Exact arithmetic
 
 The new Reputation level is `floor(cuberoot(lifetime_value / threshold))`. Both Go and TypeScript
