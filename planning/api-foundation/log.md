@@ -2194,3 +2194,32 @@ The marker is fictional; no real secret leak claim. Existing owner/author, Docke
 feature and full nine-tier1.0 gates remain. No archival, push or deployment. Next: remaining
 accepted construction and real integration when its declared services are usable, not reruns
 of these completed focused populations or inferred adoption of the pending drafts.
+
+## 2026-10-14 — Preserve error enum metadata through named references (RP-570)
+
+Resume clean `180f25e2`; previous turn completes the shared error-detail repair. Re-read Combat's
+accepted parent, child ruling, implemented records and design references: RP-072's effect/input
+tables still need author closure and DU-C1 forbids battle construction before them. No guessed
+mechanics or new battle work. During the generator follow-up, valid C17 reference chains reveal
+lost category/detail exports, including an aliased error envelope.
+
+First fixture is unsorted and correctly fails registry admission; exclude it as generator evidence.
+Sort the declared schemas and rerun unchanged production: both inline/aliased envelope cases
+admit the declared error, reject the unknown detail through actual ValidateResponse, then fail
+the generated metadata oracle. File RP-570. Resolve the envelope and fields through the registry's
+already-validated acyclic reference graph; do not rewrite aliases, schemas, pins or caller input.
+
+Final cold Go78452 passes `./publicapi ./cmd/gen-api` with all new/existing tests; affected vet
+passes. `make api-check`15102 terminates0: OpenAPI, compatibility pins and production generated
+TypeScript are byte-identical to HEAD. Existing inline/unbounded/Unicode metadata controls pass.
+No changed shipped TS/browser code or DB behavior: no unrelated client/browser/composed rerun.
+Formatting/diff checked. Valid old regression output `.cache/error-enum-alias-old-valid-180f25e2.log`
+SHA256 `a63d0abd505ba52a6aed934cb77656700731bad4c2548c56516b66801dd51f81`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Whole generator/test/docs/records
+range after `180f25e2` through this containing commit needs designated Claude review, consolidatable
+with RP-569. RP-570 is locally corrected, not a current default-handler defect or whole-DSL/runtime
+DTO validation claim. No owner/draft adoption, kernel/balance, archival, push or deployment.
+Combat, other authored/owner contracts, actual Linux/SQL/hosted, review and nine-tier1.0 obligations
+remain. Next: close the named foundational contracts and continue accepted construction, not
+repeat these finished generator checks as progress.

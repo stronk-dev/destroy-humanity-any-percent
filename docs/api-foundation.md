@@ -69,6 +69,11 @@ are additive descriptor corrections, not handler or error-mapping changes. Real 
 Postgres-backed replies are checked against this same registry; invented details still fail.
 
 The generator exports `apiErrorCategories` and `apiErrorDetails` from those descriptor fields.
+It follows validated named-reference chains for the error envelope and scalar enum fields;
+referencing the same declared enum cannot erase its metadata or make it unbounded. The emitted
+TypeScript aliases and OpenAPI reference graph are preserved, not flattened. This does not
+authorize a compatibility-breaking change to the production descriptor or imply general runtime
+DTO/union validation.
 The shared Minigame/Soul/Garden operation adapter requires both registered enum memberships
 before constructing a typed API rejection. Unknown details produce the existing body-free
 transport error instead of copying reply text into the typed exception. An enum-free detail

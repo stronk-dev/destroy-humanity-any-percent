@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"reflect"
+	"sort"
 	"strings"
 	"testing"
 )
@@ -182,6 +183,60 @@ func TestGeneratedErrorDetailMetadataComesFromSchema(t *testing.T) {
 			}
 			if !bytes.Contains(generated, []byte(test.want)) {
 				t.Fatalf("generated detail metadata does not match its owner: want %q", test.want)
+			}
+		})
+	}
+}
+
+func TestGeneratedErrorEnumsFollowNamedSchemaReferences(t *testing.T) {
+	for _, rootAlias := range []bool{false, true} {
+		t.Run(map[bool]string{false: "inline error", true: "aliased error"}[rootAlias], func(t *testing.T) {
+			schemas := testSchemas()
+			for index := range schemas {
+				if schemas[index].Name != "APIError" {
+					continue
+				}
+				for _, field := range schemas[index].Schema.Fields {
+					field.Schema.Kind = SchemaRef
+					field.Schema.Ref = map[string]string{"category": "ErrorCategoryAlias", "detail": "ErrorDetailAlias"}[field.Name]
+					field.Schema.Enum = nil
+				}
+				if rootAlias {
+					definition := schemas[index]
+					definition.Name = "ErrorEnvelope"
+					schemas = append(schemas, definition)
+					schemas[index].Schema = &Schema{Kind: SchemaRef, Ref: "ErrorEnvelope"}
+				}
+				break
+			}
+			schemas = append(schemas,
+				NamedSchema{Name: "ErrorCategoryAlias", Schema: &Schema{Kind: SchemaRef, Ref: "ErrorCategoryValues"}},
+				NamedSchema{Name: "ErrorCategoryValues", Schema: &Schema{Kind: SchemaString, Enum: []string{"invalid", "unknown_id"}}},
+				NamedSchema{Name: "ErrorDetailAlias", Schema: &Schema{Kind: SchemaRef, Ref: "ErrorDetailValues"}},
+				NamedSchema{Name: "ErrorDetailValues", Schema: &Schema{Kind: SchemaString, Enum: []string{"body", "cursor"}}},
+			)
+			sort.Slice(schemas, func(left, right int) bool { return schemas[left].Name < schemas[right].Name })
+			registry, err := NewRegistry(schemas, testOperations())
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := registry.ValidateResponse("get_board", 400, []byte(`{"category":"invalid","detail":"body"}`)); err != nil {
+				t.Fatalf("aliased owner rejects its declared error: %v", err)
+			}
+			if err := registry.ValidateResponse("get_board", 400, []byte(`{"category":"invalid","detail":"invented"}`)); err == nil {
+				t.Fatal("aliased owner admits an undeclared detail")
+			}
+			generated, err := GenerateTypeScript(registry)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, want := range []string{
+				`export const apiErrorCategories = ["invalid", "unknown_id"] as const;`,
+				`export const apiErrorDetails = ["body", "cursor"] as const;`,
+			} {
+				if !bytes.Contains(generated, []byte(want)) {
+					t.Fatalf("generated error metadata lost referenced owner values: want %q", want)
+				}
 			}
 		})
 	}
