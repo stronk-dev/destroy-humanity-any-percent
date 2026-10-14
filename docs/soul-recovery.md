@@ -48,6 +48,12 @@ interval from the pinned catalog ceiling. An elapsed gap greater than
 failure, enters a reconnect-required pause. No further beat is sent until reconnect rotates the
 token. An under-ceiling hidden interval may resume immediately, and queued beats are never replayed.
 
+Reconnect can return a replacement/existing session with another activity. The surface binds
+its returned activity ID to the mounted catalog for title, toy and disclosure, retaining the
+server's duration/progress and replacement session/token. The requested old activity is not
+display authority. Unknown returned activities show the existing error and dispatch no new
+heartbeat, matching Begin's existing owner lookup; no automatic replacement/cancel is added.
+
 The Recovery surface declares zero Tab indices for Begin, Reconnect, Finish, Stop and Back,
 preserving document-order keyboard traversal even when a browser omits implicit button stops.
 Disabled controls retain their native disabled behavior. Terminal receipts restore the heading

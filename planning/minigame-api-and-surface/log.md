@@ -1808,3 +1808,38 @@ docs/plan/ledger/log range after `a909db44` through this containing commit needs
 review, consolidatable with MA3 corrective ranges; no self-acceptance/archival or owner adoption.
 Continue accepted player conformance work while unrelated named holds remain. Nothing pushed,
 published or deployed; no full Minigame/API/1.0 completion.
+
+## 2026-10-14 — Bind reconnect presentation to the returned activity (RP-601)
+
+Resume clean `40f6df43`; preceding goal turn corrected terminal focus in both hosts. Ground
+MA2/MA3 and archived SB25: Start returns the Founder’s existing session with a rotated token.
+Actual repository Start selects/returns that active row regardless of the requested activity,
+and production serializes its activity/duration. A replacement peer-created session therefore
+need not match the old requested activity. This source trace is not a newly executed SQL race.
+
+Begin already resolves response.activity_id through recoveryActivity; reconnect instead reuses
+current.activity. Three real mounted/generated-port cases ×Chromium/WebKit fail before correction:
+Repot/server-room replacements still display Defrag, and unknown returned activity stays active.
+The same JSON/operation decoder emits the exact existing start/progress requests and rejections.
+Fix only the owner lookup in reconnect, preserving requested-ID semantics, response-owned
+session/token/duration/progress, same-ID rotation and different-ID scheduler rebinding. An
+unknown row now takes Begin’s existing generic error and stops beats, not a fabricated old row.
+No new global DTO validator, retry/cancel, server, authored copy, cadence or wire/RFC/version change.
+
+Regression success checks replacement title/toy/disclosure, max/value, exact new-session/token
+progress body, exactly one old-session beat, two start requests still for Defrag, and no terminal
+callback. Unknown control checks error/no toy or progress/no new-session beat/unsubscribed
+visibility. This is controlled response/DOM evidence, not naturally reproduced cross-device
+server timing, SQL, authentic credit or a full player journey.
+
+Final root `make test-browser-focused BROWSER_TEST_FLAGS='test/soul-recovery-surface-browser.test.ts test/soul-recovery-surface.test.ts test/generated-operation-ports.test.ts --project chromium --project webkit'`
+passes308 across the complete selected files, no skipped cases. The six new regressions and
+existing same-session, hidden/network/reconnect, terminal/race/focus/unmount controls execute.
+Node surface/scheduler/generated-port126 pass; typecheck zero errors/warnings, build-client
+and verify-client-boundary pass. Diff checked. No unrelated Go/performance/full CI or
+Firefox/Linux/AT/server rerun for this one presentation binding; those larger proofs stay open.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete component/tests/docs/
+plan/ledger/log range after `40f6df43` through this containing commit needs designated Claude
+review, consolidatable with MA3 corrections. No independent approval, archival, mint, publish,
+push, deployment or whole Minigame/API/nine-tier1.0 completion claimed.

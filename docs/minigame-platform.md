@@ -269,7 +269,10 @@ bundled with the client.
 - **Pauses:** a hidden tab pauses the session. A transport failure or a gap longer than the
   ceiling requires reconnecting. A required reconnect stays visible across a background/foreground
   cycle. Reconnect calls start again, which rotates the token for the same session. A different
-  session ID rebinds the scheduler.
+  session ID rebinds the scheduler. Begin and reconnect both resolve the returned `activity_id`
+  against the mounted catalog, using that row's title, disclosure and toy rather than the old
+  requested activity. Required duration/progress remain response-owned. An unknown returned
+  activity uses the existing error view, stops scheduling and does not invent a display row.
 - **Session gone:** a `404 unknown_id/recovery_session` ends the surface without a reconnect-start,
   so a watchdog-ended session is never silently replaced.
 - **Watchdog heartbeat:** progress can instead return the existing exact watchdog cancellation

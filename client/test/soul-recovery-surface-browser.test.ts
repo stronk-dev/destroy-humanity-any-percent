@@ -3,6 +3,7 @@ import { flushSync, mount, tick, unmount } from "svelte";
 import { expect, it } from "vitest";
 
 import type { SoulRecoveryProgressResponse, SoulRecoveryStartResponse, SoulRecoveryTerminalResponse } from "../src/api/generated/types";
+import { t, type CopyKey } from "../src/copy";
 import { MinigameAPIError, MinigameTransportError } from "../src/game-ui/minigame/session-port";
 import type { RecoveryVisibility } from "../src/soul/recovery-scheduler";
 import { createBrowserSoulRecoveryPort, loadSoulRecoveryContent, type SoulRecoveryContent, type SoulRecoveryPort } from "../src/game-ui/soul/recovery-surface";
@@ -670,4 +671,67 @@ for (const action of ["resolve", "cancel"] as const) {
       }
     });
   }
+}
+for (const returnedActivity of ["repot", "server_room", "unknown_activity"] as const) {
+  it.skipIf(!browser)(`Recovery reconnect binds returned activity (${returnedActivity})`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const recoveryContent = content();
+    const activity = recoveryContent.catalog.recovery_activities.find((row) => row.activity_id === returnedActivity);
+    const required = activity?.duration_attended_ms ?? REQUIRED;
+    const requests: { operation: string; body: Record<string, unknown> }[] = [];
+    const terminals: SoulRecoveryTerminalResponse[] = [];
+    const visibility = new FakeVisibility();
+    let starts = 0;
+    const port = createBrowserSoulRecoveryPort(() => "fixture-access-token", async (input, init) => {
+      expect(init?.method).toBe("POST");
+      const operation = String(input).split("/").at(-1)!;
+      const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+      requests.push({ operation, body });
+      if (operation === "start") {
+        starts += 1;
+        expect(body).toEqual({ activity_id: "defrag" });
+        return Response.json(starts === 1 ? started() : {
+          ...started(OTHER_SESSION, TOKEN_2, 1_234), activity_id: returnedActivity,
+          required_duration_attended_ms: required,
+        });
+      }
+      expect(operation).toBe("progress");
+      if (body.session_id === SESSION) {
+        expect(body.progress_token).toBe(TOKEN_1);
+        return Response.json({ category: "not_eligible", detail: "recovery_token" }, { status: 400 });
+      }
+      expect(body).toEqual({ session_id: OTHER_SESSION, progress_token: TOKEN_2 });
+      return Response.json({ ...progressed(1_234, OTHER_SESSION), required_duration_attended_ms: required, eligible: false });
+    });
+    const target = host();
+    const app = mount(SoulRecoverySurface, { target, props: { port, content: recoveryContent, era: "era_1995", visibility,
+      now: () => 1_000, toySeed: 7, onExitToHost: () => {}, onTerminal: (response: SoulRecoveryTerminalResponse) => terminals.push(response) } });
+    try {
+      await settle();
+      target.querySelector<HTMLElement>("#recovery-heading")!.focus();
+      await userEvent.keyboard("{Tab}{Enter}");
+      await expect.poll(() => [...target.querySelectorAll("button")].some((control) => control.textContent?.trim() === "Reconnect")).toBe(true);
+      button(target, "Reconnect").focus();
+      await userEvent.keyboard("{Enter}");
+      await expect.poll(() => starts).toBe(2);
+      if (activity) {
+        await expect.poll(() => requests.some((request) => request.operation === "progress" && request.body.session_id === OTHER_SESSION)).toBe(true);
+        expect(target.querySelector("h2")?.textContent).toBe(t(activity.title_copy_key as CopyKey, {}, "era_1995"));
+        expect(target.querySelector("[data-toy]")?.getAttribute("data-toy")).toBe(activity.toy_kind);
+        expect(target.querySelector<HTMLProgressElement>("progress")?.max).toBe(required);
+        expect(target.querySelector<HTMLProgressElement>("progress")?.value).toBe(1_234);
+        expect(target.textContent).toContain(t(activity.disclosure_copy_key as CopyKey, {}, "era_1995"));
+      } else {
+        await expect.poll(() => target.querySelector("[role=alert]")?.textContent).toBe(t("minigame.error.generic", {}, "era_1995"));
+        expect(target.querySelector("progress")).toBeNull();
+        expect(target.querySelector("[data-toy]")).toBeNull();
+        expect(visibility.listener).toBeUndefined();
+        expect(requests.some((request) => request.operation === "progress" && request.body.session_id === OTHER_SESSION)).toBe(false);
+      }
+      expect(requests.filter((request) => request.operation === "progress" && request.body.session_id === SESSION)).toHaveLength(1);
+      expect(terminals).toEqual([]);
+    } finally {
+      await unmount(app); target.remove();
+    }
+  });
 }

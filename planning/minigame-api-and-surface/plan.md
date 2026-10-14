@@ -1,5 +1,12 @@
 # Minigame API & Surface implementation plan
 
+Current reconnect correction (2026-10-14, RP-601): Recovery uses the returned activity's owner
+row on reconnect, matching Begin, instead of rendering the old requested activity over a new
+session. Two known replacement activities and an unknown-row refusal execute through generated
+dispatch; old/final results and exact range live in the latest log. Token/session/progress and
+ordinary same-session behavior remain. No new wire/SDK grammar, server/copy/version/RFC change
+or full-feature acceptance. Complete range after `40f6df43` needs designated Claude review.
+
 Current terminal-focus correction (2026-10-14, RP-600): both Recovery and Pitch preserve newer
 surviving host-control focus when a terminal reply arrives or its callback assigns focus before
 the DOM update finishes. The ordinary terminal-heading/Return and unmount behavior remains.

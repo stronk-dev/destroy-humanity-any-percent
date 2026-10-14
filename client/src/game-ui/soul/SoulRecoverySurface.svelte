@@ -120,7 +120,7 @@
     try {
       const response = await port.start(current.activity.activity_id);
       if (destroyed) return;
-      const session = sessionFrom(current.activity, response, response.attended_progress_ms >= response.required_duration_attended_ms);
+      const session = sessionFrom(recoveryActivity(content, response.activity_id), response, response.attended_progress_ms >= response.required_duration_attended_ms);
       view = { kind: "active", session, paused: null };
       if (response.session_id === current.sessionID && scheduler) { lastProgressError = undefined; scheduler.reconnect(response.progress_token); }
       else bindScheduler(session, response.progress_token);
