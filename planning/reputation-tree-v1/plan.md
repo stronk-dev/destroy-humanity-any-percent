@@ -4,6 +4,14 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
+Current original UI review (2026-10-14): B7a's full9-path and B7b's full16-path
+ranges are CHANGES REQUIRED, not approval of later fixes. Historical execution
+reproduces RP-258's48 factor admissions and RP-276's lost row focus; original
+basic native tests and API/copy generation pass within their limited populations.
+RP-632 now names the unreconciled R9 snapshot/fact body. Existing later fixes,
+controlled composed proof, author/copy/mint holds and corrective review ranges
+remain distinct. No product change in this review-record batch; next B8 review.
+
 Current R6/R8 correction (2026-10-14): RP-630 closes five Go/TS replay-shape
 mismatches (wrong-case purchase fields and unexpected null on unplanned Exits),
 preserving both valid arms and full-state rollback. RP-631 adds missing ordered
@@ -504,7 +512,11 @@ author/harness/browser/mint/release holds remain, no full RFC closure.
   RP-630 parsed purchase admission, RP-631 ended-event parity. Prior parser,
   offered-plan and14-write-fault supplements retain separate corrective review
   ranges; this review does not approve them or the new fixes above.
-- [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
+- [x] B7 (`1e9b3a9b`, `1edc1c37`; controlled composed proof exists, production mint/default-earned acceptance remains) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
+  Full original9-path B7a and16-path B7b reviews are **CHANGES REQUIRED**:
+  RP-258 parser, RP-276–280/RP-282–286/RP-290–293 UI/author gaps and RP-632
+  wire/body reconciliation.
+  Current corrective evidence below is not approval of those descendants.
   RP-285/RP-286 under2b2536a9 adds explicit native header/button Tab stops.
   Original44 failures/10 controls pass; three compiling probes fail36/52/12;
   final248 selected Chromium/WebKit pass after exact restoration. Types/build/

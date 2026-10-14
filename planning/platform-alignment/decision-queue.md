@@ -11,6 +11,19 @@ false gameplay bumps. Its scope-guard prerequisite is explicit. This is engineer
 not a gameplay/balance choice. No reply, acceptance, companion or exception is inferred.
 It gates complete shared-condition catalog export, not unrelated accepted construction.
 
+## Reputation R9 wire/body reconciliation — RP-632
+
+This is author/specification closure, not a new gameplay choice. R9 still names
+a required top-level v4 object/tree_active and founder.reputation_tree_active,
+while the implementation and C2-compatible schema use optional nullable
+features.reputation and feature.reputation_tree. The original log's disclosed
+deviation does not amend the accepted body. Recommended direction: preserve
+the existing wire/pin, describe the null/absent legacy arm and per_level_ppm,
+and reconcile R9's snapshot and surface-unlock sections. The ruling author must
+make the normative edit; no implementer adoption, re-pin or new version is inferred.
+Evidence and full original B7 dispositions: Reputation plan/log, RP-632.
+This gates B7 closeout, not other accepted construction or conformance fixes.
+
 ## Current Headcount choice — OD-1 / RP-414
 
 The [Headcount plan](../headcount-allocation/plan.md#current-reconciliation-boundary--2026-10-13)
