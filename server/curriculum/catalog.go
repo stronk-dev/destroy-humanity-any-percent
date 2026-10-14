@@ -65,6 +65,9 @@ type Declarations struct {
 }
 
 func Load(data []byte, declarations Declarations) (*Catalog, error) {
+	if !curriculumHasExactShape(data) {
+		return nil, ErrInvalidCatalog
+	}
 	var catalog Catalog
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
@@ -100,16 +103,16 @@ func (catalog *Catalog) validate(declarations Declarations) error {
 		}
 		switch branch.Branch {
 		case "acquihire":
-			if branch.MinimumPurchasedGenerators < 1 || branch.MinimumPurchasedGenerators > decimal.MaxExactInteger || branch.MinimumOwnedUpgrades < 1 || branch.MinimumOwnedUpgrades > decimal.MaxExactInteger || branch.CheapestPriceFactor != "" {
+			if branch.StarterPackage.Kind != "resource_grant" || branch.MinimumPurchasedGenerators < 1 || branch.MinimumPurchasedGenerators > decimal.MaxExactInteger || branch.MinimumOwnedUpgrades < 1 || branch.MinimumOwnedUpgrades > decimal.MaxExactInteger || branch.CheapestPriceFactor != "" {
 				return ErrInvalidCatalog
 			}
 		case "burnout":
 			factor, err := decimal.ParseCanonical(branch.CheapestPriceFactor)
-			if err != nil || !factor.Gt(decimal.Zero) || !factor.IsStateValue() || branch.MinimumPurchasedGenerators != 0 || branch.MinimumOwnedUpgrades != 0 {
+			if branch.StarterPackage.Kind != "generated_generators" || err != nil || !factor.Gt(decimal.Zero) || !factor.IsStateValue() || branch.MinimumPurchasedGenerators != 0 || branch.MinimumOwnedUpgrades != 0 {
 				return ErrInvalidCatalog
 			}
 		case "pivot":
-			if branch.MinimumPurchasedGenerators != 0 || branch.MinimumOwnedUpgrades != 0 || branch.CheapestPriceFactor != "" {
+			if branch.StarterPackage.Kind != "preowned_upgrade" || branch.MinimumPurchasedGenerators != 0 || branch.MinimumOwnedUpgrades != 0 || branch.CheapestPriceFactor != "" {
 				return ErrInvalidCatalog
 			}
 		}
@@ -118,6 +121,66 @@ func (catalog *Catalog) validate(declarations Declarations) error {
 		}
 	}
 	return nil
+}
+
+// Original exact non-null shapes prevent struct case folding, defaulted zero
+// fields and empty wrong-arm values. Generic ValidateStarter remains separate.
+func curriculumHasExactShape(data []byte) bool {
+	root, ok := curriculumObject(data, "schema_version", "first_failure")
+	if !ok {
+		return false
+	}
+	failure, ok := curriculumObject(root["first_failure"], "run_seq", "founder_exit_count", "attended_ms", "gate_id", "exit_type", "evaluation", "requested_command_effect", "next_run_key", "branches")
+	if !ok {
+		return false
+	}
+	var branches []json.RawMessage
+	if json.Unmarshal(failure["branches"], &branches) != nil || branches == nil {
+		return false
+	}
+	for _, source := range branches {
+		var members map[string]json.RawMessage
+		var kind string
+		if json.Unmarshal(source, &members) != nil || json.Unmarshal(members["branch"], &kind) != nil {
+			return false
+		}
+		keys := []string{"branch", "route_knowledge_bonus", "starter_package", "title_key", "body_key"}
+		var starterKeys []string
+		switch kind {
+		case "acquihire":
+			keys = append(keys, "minimum_purchased_generators", "minimum_owned_upgrades")
+			starterKeys = []string{"kind", "resource_id", "amount"}
+		case "burnout":
+			keys = append(keys, "cheapest_price_factor")
+			starterKeys = []string{"kind", "generator_id", "count"}
+		case "pivot":
+			starterKeys = []string{"kind", "upgrade_id"}
+		default:
+			return false
+		}
+		row, ok := curriculumObject(source, keys...)
+		if !ok {
+			return false
+		}
+		if _, ok := curriculumObject(row["starter_package"], starterKeys...); !ok {
+			return false
+		}
+	}
+	return true
+}
+
+func curriculumObject(data []byte, keys ...string) (map[string]json.RawMessage, bool) {
+	var object map[string]json.RawMessage
+	if json.Unmarshal(data, &object) != nil || len(object) != len(keys) {
+		return nil, false
+	}
+	for _, key := range keys {
+		value, ok := object[key]
+		if !ok || bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return nil, false
+		}
+	}
+	return object, true
 }
 
 // ValidateStarter applies the starter-package grammar to a starter owned by

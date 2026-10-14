@@ -2499,3 +2499,47 @@ review, consolidatable with related C18 corrections. Seven of nineteen pinned-fa
 exist; twelve, complete response union/catalog HTTP and public re-verification remain. No archival,
 push/deployment, new content or owner/draft adoption. Continue accepted construction; services,
 review/author/owner, full CI and the entire nine-tier1.0 release remain open.
+
+## 2026-10-14 — Construct Curriculum's owner descriptor and bind the ruled starter branches (RP-579)
+
+Resume clean `4c068540`; Soul is preceding concrete progress. Read the current curriculum
+owner/TS parser and ruled First-Hour Payoff mechanism resolving T01-C31/C35/C36. Starter TYPE
+is fixed by ending; the generic starter union reused by Reputation is a different authority.
+Actual old Go admits37 case aliases, six missing/null/wrong-arm default fields and three valid
+generic starters swapped onto the wrong branches. TS refuses all46 candidates; explicit zeros
+remain valid. File RP-579, check original exact non-null shapes and enforce branch/starter kinds
+in the curriculum-only validator. Generic ValidateStarter stays byte-unchanged. Genuine kernel
+0.3.196→0.3.197 records the correction; no payoff/copy/mint or terminal-behavior policy change.
+
+`CurriculumSchemas` exports the closed root/failure and three branch/starter pairs. Current,
+epoch8 stored and candidate-v2 bytes validate/load with their corresponding Economy/Routes and
+tracked copy declarations. Epoch7 has no curriculum artifact; do not fabricate one. Eighteen
+shape refusals, all three wrong-pair refusals, five schema-valid semantic failures, all generic
+starters, valid A/B/R/S/G retunes and fresh/escaped/complete-duplicate controls pass. Loader
+binding, positive Decimal relations and branch order/cardinality stay mandatory. No public
+catalog union/HTTP activation or hardcoded candidate balance literals.
+
+Final cold curriculum/publicapi/kernel/replaycatalog95781 and affected vet pass. Paired-route
+fixture first uses the wire field name as a Go field and fails compilation/vet; inspect Gate.ID,
+correct it and execute final checks. Node31880 passes142; Chromium/WebKit94622 passes284.
+Verbose production63019 executes six pure/replay cases with all branch/gate/session controls:
+due cross-gate, pre-gate refusal, neutral Reputation plus all starters, accrued branch preview,
+legacy Reputation starter replay and generic starter effects; no skips. Types24775 report zero
+errors/warnings, build82956 and byte-unchanged `make api-check` pass. No SQL/composed player,
+natural pacing, native Firefox/Linux/hosted or whole API/CI claim. Docker remains unavailable
+under the preceding verified ping; no restart/substitute DB. Historical RP-131 remains known-red,
+not a current-tree green guard verdict. Balance, stored/testdata and generated API files unchanged.
+
+Ignored old `.cache/curriculum-admission-old-4c068540.log` SHA256
+`adf13340f0f48bf73da340ce18e2a8fecd4d9b2aef403544f46f88fce7337e82`;
+native `.cache/curriculum-owner-native-4c068540.log` SHA256
+`e609575b919ac8ea9435e92e3f31bca2e7f2aa7d2a492ec82574611ad79b856c`;
+production `.cache/curriculum-owner-production-4c068540.log` SHA256
+`ff84426893400c35b7c0abc675eb2d9efdc3d992e36da704f75138c13abddba6`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Whole owner/schema/tests/
+version/docs/records range after `4c068540` through this containing commit needs designated
+Claude review, consolidatable with C18 corrections. Eight of nineteen pinned-family descriptors
+exist; eleven, complete response union/catalog HTTP and public re-verification remain. No archival,
+push/deployment, owner/draft adoption or full nine-tier1.0 promotion. Continue accepted construction;
+service, review/author/owner, full CI, content/pacing and the entire release remain open.

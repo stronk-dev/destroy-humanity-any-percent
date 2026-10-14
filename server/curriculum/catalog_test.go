@@ -2,8 +2,10 @@ package curriculum
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -13,6 +15,111 @@ import (
 	"cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
 )
+
+func curriculumFixture(t *testing.T) []byte {
+	t.Helper()
+	data, err := os.ReadFile("../../balance/testdata/t0-t1/curriculum-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}
+
+func curriculumDeclarations(t *testing.T) Declarations {
+	t.Helper()
+	_, economyCatalog := loadCandidate(t)
+	keys := map[string]struct{}{}
+	for _, key := range copykeys.All() {
+		keys[key] = struct{}{}
+	}
+	return Declarations{Economy: economyCatalog, CopyKeys: keys, GateIDs: map[string]struct{}{"gate.t0_to_t1": {}}}
+}
+
+func editCurriculumFixture(t *testing.T, edit func(map[string]any)) []byte {
+	t.Helper()
+	var root map[string]any
+	if err := json.Unmarshal(curriculumFixture(t), &root); err != nil {
+		t.Fatal(err)
+	}
+	edit(root)
+	data, err := json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}
+
+func curriculumObjects(root map[string]any) []map[string]any {
+	failure := root["first_failure"].(map[string]any)
+	objects := []map[string]any{root, failure}
+	for _, source := range failure["branches"].([]any) {
+		branch := source.(map[string]any)
+		objects = append(objects, branch, branch["starter_package"].(map[string]any))
+	}
+	return objects
+}
+
+func TestLoadRejectsCaseAliasedObjectMembers(t *testing.T) {
+	declarations := curriculumDeclarations(t)
+	var root map[string]any
+	if err := json.Unmarshal(curriculumFixture(t), &root); err != nil {
+		t.Fatal(err)
+	}
+	for index, object := range curriculumObjects(root) {
+		for key := range object {
+			t.Run(fmt.Sprintf("%d/%s", index, key), func(t *testing.T) {
+				data := editCurriculumFixture(t, func(v map[string]any) {
+					row := curriculumObjects(v)[index]
+					row[strings.ToUpper(key)] = row[key]
+					delete(row, key)
+				})
+				if _, err := Load(data, declarations); err == nil {
+					t.Fatal("case alias admitted")
+				}
+			})
+		}
+	}
+}
+
+func TestLoadRequiresExplicitZeroFieldsAndClosedBranchStarterShapes(t *testing.T) {
+	declarations := curriculumDeclarations(t)
+	for name, edit := range map[string]func(map[string]any){
+		"missing exit count": func(v map[string]any) { delete(v["first_failure"].(map[string]any), "founder_exit_count") },
+		"null exit count":    func(v map[string]any) { v["first_failure"].(map[string]any)["founder_exit_count"] = nil },
+		"missing bonus": func(v map[string]any) {
+			delete(v["first_failure"].(map[string]any)["branches"].([]any)[0].(map[string]any), "route_knowledge_bonus")
+		},
+		"null bonus": func(v map[string]any) {
+			v["first_failure"].(map[string]any)["branches"].([]any)[0].(map[string]any)["route_knowledge_bonus"] = nil
+		},
+		"wrong branch field": func(v map[string]any) {
+			v["first_failure"].(map[string]any)["branches"].([]any)[1].(map[string]any)["minimum_owned_upgrades"] = 0
+		},
+		"wrong starter field": func(v map[string]any) {
+			v["first_failure"].(map[string]any)["branches"].([]any)[0].(map[string]any)["starter_package"].(map[string]any)["count"] = 0
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			if _, err := Load(editCurriculumFixture(t, edit), declarations); err == nil {
+				t.Fatal("missing/null/wrong-arm field admitted")
+			}
+		})
+	}
+	for index := range 3 {
+		t.Run(fmt.Sprintf("wrong starter kind/%d", index), func(t *testing.T) {
+			data := editCurriculumFixture(t, func(v map[string]any) {
+				rows := v["first_failure"].(map[string]any)["branches"].([]any)
+				rows[index].(map[string]any)["starter_package"] = rows[(index+1)%3].(map[string]any)["starter_package"]
+			})
+			if _, err := Load(data, declarations); err == nil {
+				t.Fatal("starter kind admitted on the wrong ruled branch")
+			}
+		})
+	}
+	if catalog, err := Load(curriculumFixture(t), declarations); err != nil || catalog.FirstFailure.FounderExitCount != 0 || catalog.FirstFailure.Branches[0].RouteKnowledgeBonus != 0 {
+		t.Fatalf("explicit zero controls refused or changed: %v", err)
+	}
+}
 
 func TestCandidateSelectsEveryBranchAndAppliesStarter(t *testing.T) {
 	catalog, economyCatalog := loadCandidate(t)

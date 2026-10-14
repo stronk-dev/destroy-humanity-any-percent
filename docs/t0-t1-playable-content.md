@@ -7,6 +7,23 @@ Epoch 8 (`First-Hour Payoff`) adds the curriculum artifact and pins the complete
 bundle at `sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`.
 Earlier epoch identities remain immutable.
 
+## Curriculum catalog boundary
+
+Both runtimes enforce exact, non-null root/failure/branch/starter fields. Go now refuses case
+aliases, absent/null zero-valued fields and empty wrong-arm fields rather than accepting struct
+defaults. The ruled branch types bind Acquihire to a resource grant, Burnout to generated
+generators and Pivot to a pre-owned upgrade. This constraint belongs to the curriculum catalog;
+the generic starter validator reused by Reputation still accepts all three starter kinds.
+The correction carries shared kernel `0.3.197`, without retuning `A/B/R/S/G`, copy, terminal
+timing or published epoch bytes. Explicit zero, escaped canonical names and complete last-value
+controls remain; no global duplicate-member policy is introduced.
+
+`curriculum.CurriculumSchemas()` exports the current closed v1 structural descriptor for API
+Foundation C18. Current, epoch-8 stored and candidate catalogs validate with their matching
+Economy/Routes and tracked copy declarations. Branch order/cardinality, copy/gate/asset binding
+and positive Decimal relationships remain loader checks. Prices, thresholds, counts and bonuses
+remain data; the export does not activate the public catalog union or HTTP endpoint.
+
 ## First-hour progression
 
 The canonical scenario is `balance/testdata/t0-t1/harness-scenario-v1.json`; its policy authority is

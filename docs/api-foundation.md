@@ -536,9 +536,15 @@ Partition, copy/value/catch-up/watchdog relationships, epoch-versus-fixture rule
 uniqueness remain loader checks. Null-to-zero/false admissions are corrected with kernel0.3.196;
 no drain/recovery/ending policy or source mint changes.
 
+`curriculum.CurriculumSchemas()` exports the current first-hour v1 grammar with three closed
+branch/starter pairings. Current, epoch-8 stored and candidate data validate against matching
+Economy/Routes and tracked copy declarations; order/cardinality, binding and positive Decimal
+relations remain loader checks. Case-alias/default-zero/wrong-arm admissions are corrected with
+kernel0.3.197. Generic Reputation starter validation and payoff literals remain unchanged.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities, Doctrines, Fiscal and Soul provide seven owner descriptors
-for the nineteen currently pinned artifact families; the other twelve and the composed C18 catalog
+TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities, Doctrines, Fiscal, Soul and Curriculum provide eight owner descriptors
+for the nineteen currently pinned artifact families; the other eleven and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.
