@@ -7,6 +7,14 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current DP7 timed-observation correction, 2026-10-14 (RP-615):** the real-minute test's
+startup/failure/drain callback waits now obey its existing95-second context and refuse missing
+or late observations. Three factored-old receive regressions fail; corrected cold/vet/race
+controls and the actual Linux-amd64/Postgres timer population pass, retaining real60-second
+callbacks, SQL failure/recovery and orderly drain. This changes tests only, not credential
+retention, timer, runtime or alert policy. The log owns the range after `21734b10`, pending
+Claude review; current-head manual evidence is not full AC7 or exact-artifact/clean-host proof.
+
 **Current DP5 smoke correction and release-lane evidence, 2026-10-14:** RP-612 rejects
 size-limiter EOF as completion, preserving the existing 4 MiB ceiling. Four old decoder/caller
 regressions fail; corrected native/race and the actual declared Caddy/Postgres/WebSocket lane

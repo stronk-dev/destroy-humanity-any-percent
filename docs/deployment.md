@@ -999,6 +999,9 @@ records cancellation without a failure alarm. The production timer and callback 
 the wrapper forwards the context and records their returned outcome unchanged. This timed lane is included in manual Deployment
 operations verification, not push CI. It proves server/SQL lifecycle behavior, not OCI process
 exit, host journald collection or clean-host release acceptance.
+The observation waits obey each arm's existing 95-second context: an expired context refuses
+even a buffered late callback, and a closed channel cannot impersonate healthy success.
+Timely callback errors/cancellation remain unchanged; this does not shorten the real job interval.
 
 `make test-deployment-restart-observer` is the focused producer-only population. It
 creates one labelled, networkless, read-only container with automatic restarts capped at three.

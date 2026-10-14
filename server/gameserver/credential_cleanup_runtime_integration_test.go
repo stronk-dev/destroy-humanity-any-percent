@@ -42,16 +42,12 @@ func TestComposedCredentialCleanupRuntimeAndDrainIntegration(t *testing.T) {
 			if !ok || job.interval != time.Minute {
 				t.Fatal("test must retain the actual composed one-minute cleanup job")
 			}
-			type outcome struct {
-				err      error
-				canceled bool
-			}
-			observed := make(chan outcome, 3)
+			observed := make(chan cleanupRuntimeOutcome, 3)
 			original := job.run
 			job.run = func(ctx context.Context) error {
 				err := original(ctx)
 				select {
-				case observed <- outcome{err, ctx.Err() != nil}:
+				case observed <- cleanupRuntimeOutcome{err, ctx.Err() != nil}:
 				default:
 					t.Error("cleanup callback observation overflow")
 				}
@@ -70,7 +66,10 @@ func TestComposedCredentialCleanupRuntimeAndDrainIntegration(t *testing.T) {
 			if err := composition.Server.Start(ctx); err != nil {
 				t.Fatal(err)
 			}
-			prime := <-observed
+			prime, err := waitCleanupRuntimeOutcome(ctx, observed)
+			if err != nil {
+				t.Fatalf("startup cleanup observation unavailable: %v", err)
+			}
 			if prime.err != nil || prime.canceled {
 				t.Fatal("healthy startup callback was not observed")
 			}
@@ -97,7 +96,10 @@ func TestComposedCredentialCleanupRuntimeAndDrainIntegration(t *testing.T) {
 				case <-ctx.Done():
 					t.Fatal("actual one-minute cleanup failure did not reach runtime supervision")
 				}
-				result := <-observed
+				result, err := waitCleanupRuntimeOutcome(ctx, observed)
+				if err != nil {
+					t.Fatalf("runtime SQL failure observation unavailable: %v", err)
+				}
 				if result.err == nil || result.canceled {
 					t.Fatal("runtime SQL failure was mistaken for orderly cancellation")
 				}
@@ -168,7 +170,10 @@ func TestComposedCredentialCleanupRuntimeAndDrainIntegration(t *testing.T) {
 			if err := composition.Server.Drain(drainCtx, clock.Time()); err != nil {
 				t.Fatal("orderly drain failed")
 			}
-			result := <-observed
+			result, err := waitCleanupRuntimeOutcome(ctx, observed)
+			if err != nil {
+				t.Fatalf("drain cancellation observation unavailable: %v", err)
+			}
 			t.Logf("actual scheduled SQL canceled by drain: context_ended=%t cancellation_error=%t", result.canceled, errors.Is(result.err, context.Canceled))
 			if !result.canceled || !errors.Is(result.err, context.Canceled) {
 				t.Fatal("drain did not cancel the actual cleanup SQL")
@@ -192,6 +197,73 @@ func TestComposedCredentialCleanupRuntimeAndDrainIntegration(t *testing.T) {
 				t.Fatal("canceled cleanup committed partial credentials")
 			}
 		})
+	}
+}
+
+type cleanupRuntimeOutcome struct {
+	err      error
+	canceled bool
+}
+
+func waitCleanupRuntimeOutcome(ctx context.Context, observed <-chan cleanupRuntimeOutcome) (cleanupRuntimeOutcome, error) {
+	if err := ctx.Err(); err != nil {
+		return cleanupRuntimeOutcome{}, err
+	}
+	select {
+	case outcome, ok := <-observed:
+		if !ok {
+			return cleanupRuntimeOutcome{}, errors.New("cleanup callback observation channel closed")
+		}
+		if err := ctx.Err(); err != nil {
+			return cleanupRuntimeOutcome{}, err
+		}
+		return outcome, nil
+	case <-ctx.Done():
+		return cleanupRuntimeOutcome{}, ctx.Err()
+	}
+}
+
+func TestCleanupRuntimeOutcomeRejectsExpiredObservation(t *testing.T) {
+	for _, subject := range []string{"canceled", "deadline"} {
+		t.Run(subject, func(t *testing.T) {
+			var ctx context.Context
+			if subject == "canceled" {
+				var cancel context.CancelFunc
+				ctx, cancel = context.WithCancel(context.Background())
+				cancel()
+			} else {
+				var cancel context.CancelFunc
+				ctx, cancel = context.WithDeadline(context.Background(), time.Unix(0, 0))
+				defer cancel()
+			}
+			observed := make(chan cleanupRuntimeOutcome, 1)
+			observed <- cleanupRuntimeOutcome{errors.New("late callback"), true}
+			outcome, err := waitCleanupRuntimeOutcome(ctx, observed)
+			if !errors.Is(err, ctx.Err()) || outcome.err != nil || outcome.canceled || len(observed) != 1 {
+				t.Fatalf("expired observation admitted a late callback: outcome=%+v err=%v remaining=%d", outcome, err, len(observed))
+			}
+		})
+	}
+}
+
+func TestCleanupRuntimeOutcomeRejectsMissingCallback(t *testing.T) {
+	observed := make(chan cleanupRuntimeOutcome)
+	close(observed)
+	outcome, err := waitCleanupRuntimeOutcome(context.Background(), observed)
+	if err == nil || outcome.err != nil || outcome.canceled {
+		t.Fatalf("closed observation channel admitted a missing callback: outcome=%+v err=%v", outcome, err)
+	}
+}
+
+func TestCleanupRuntimeOutcomePreservesActualCallback(t *testing.T) {
+	for _, callbackError := range []error{nil, errors.New("actual SQL failure"), context.Canceled} {
+		observed := make(chan cleanupRuntimeOutcome, 1)
+		want := cleanupRuntimeOutcome{callbackError, errors.Is(callbackError, context.Canceled)}
+		observed <- want
+		outcome, err := waitCleanupRuntimeOutcome(context.Background(), observed)
+		if err != nil || outcome != want || len(observed) != 0 {
+			t.Fatalf("changed timely callback: outcome=%+v want=%+v err=%v", outcome, want, err)
+		}
 	}
 }
 

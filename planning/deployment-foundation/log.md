@@ -6893,3 +6893,41 @@ Codex (implementer first filter); Recorded by: Codex. Whole coherent range after
 corrective spans remain owed. No archived body, owner choice, feature checkbox,
 mint, publication or push. Native-host CR2/CR4 and the full nine-tier/platform floor
 remain open; continue the other declared integration populations independently.
+
+## 2026-10-14 — RP-615 bounded minute-timer callback observation
+
+Resume clean `21734b10` under DP7/AC7 and RFC-0000. The manually selected
+real-minute test has three bare channel receives that ignore its existing
+95-second context and treat a closed channel's zero value as healthy. Factor
+those exact old receive semantics for regression:85538 fails two expired
+context cases;9709 also fails a closed-channel case. Timely success, SQL error
+and child cancellation controls pass unchanged. No production bug is inferred.
+
+Correct the test-only helper: check expiry before receive, select context
+cancellation while waiting, reject closed/missing callbacks and check expiry
+again before returning an outcome. All three callers use it without changing
+actual job/timer, callback forwarding, SQL/readiness/metric assertions, parent
+95-second budgets or cadence. Final native cold/vet65272 and race37430 pass
+(0.348/1.438s). Formatting/diff checked; final diagnostic wording is editorial.
+Cold helper/vet37919 also passes on the final formatted source after that wording edit.
+
+Actual `make test-deployment-cleanup-runtime`52076 exits0 on declared
+Linux-amd64/Postgres16: runtime SQL failure60.86s and orderly drain60.52s,
+whole121.448s. Both actual60-second ticks execute, not skipped or accelerated.
+The trigger failure is supervised, readiness withdraws, credentials remain
+transactionally intact and fresh composition recovers after fault removal.
+Drain cancels the actual session-table lock wait with unchanged credentials,
+canceled=1/failure=0 and no fatal supervision/log alarm. This refreshes the
+named current-source manual population skipped by the ordinary Go wave.
+
+Scope is the compiled test composition/private registry and SQL, not OCI
+process, receiver delivery, host journald/retention or clean-host R-006/fullAC7.
+Test-owned tmpfs Postgres was absent before setup; remove only its service
+after terminal checks, preserving volumes/caches/network/unrelated services.
+Only that service is removed; final inventory is empty and its disposable test
+data is discarded. No durable or user data is removed.
+No kernel bump, production byte, new runtime/retention/clock policy, owner
+adoption, archival, publish/push or whole1.0 claim. Review by: Codex
+(implementer first filter); Recorded by: Codex. Whole test/docs/plan/ledger/log
+range after `21734b10` through this containing commit needs designated Claude
+review, consolidatable with the previous DP7 corrections. Earlier debt remains.
