@@ -389,9 +389,12 @@ func sortedUniqueObservationStrings(values []string) bool {
 func validateObservationIdentity(objective HarnessObservationObjective, activeConstantsHash string) error {
 	switch objective.Kind {
 	case "repository_guards":
+		if objective.ID != "repository-guards" {
+			return errors.New("invalid repository guards objective ID")
+		}
 		return nil
 	case "standard_pacing":
-		if objective.Identity.ScenarioPath == "" || !relevanceHashPattern.MatchString(objective.Identity.ScenarioHash) ||
+		if objective.ID != "standard-pacing" || objective.Identity.ScenarioPath == "" || !relevanceHashPattern.MatchString(objective.Identity.ScenarioHash) ||
 			objective.Identity.ConstantsHash != activeConstantsHash {
 			return errors.New("invalid standard pacing identity")
 		}
@@ -402,6 +405,9 @@ func validateObservationIdentity(objective HarnessObservationObjective, activeCo
 			!relevanceHashPattern.MatchString(identity.ScenarioHash) || !relevanceHashPattern.MatchString(identity.RelevancePolicyHash) ||
 			!relevanceHashPattern.MatchString(identity.ConstantsHash) || identity.Active == nil || *identity.Active && identity.ConstantsHash != activeConstantsHash {
 			return errors.New("invalid registered relevance identity")
+		}
+		if objective.ID != fmt.Sprintf("relevance:%d:%s", *identity.RegistryIndex, identity.ScenarioPath) {
+			return errors.New("invalid registered relevance objective ID")
 		}
 	default:
 		return errors.New("unknown harness observation objective kind")

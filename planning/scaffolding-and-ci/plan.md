@@ -5,7 +5,14 @@
 - **Started:** 2026-07-28
 - **Status:** fast/maintenance split implemented locally; hosted acceptance pending
 
-## Current checkpoint — 2026-10-14
+## Current checkpoint — 2026-10-15
+
+RP-635 observation identity correction: six old-validator cases admit invented objective names
+or relevance IDs inconsistent with their declared row coordinates. Bind the existing stable
+names independently of declaration equality. Focused recorder/identity/registered-row/signal
+and cold affected-package/vet checks pass; final results belong to the owning log. This changes no
+artifact shape, allowed mode/objective, study, CI job or kernel. New corrective range after
+`a201a7e8` needs Claude; RP-634's separate objective extension is not implemented/adopted.
 
 RP-634 remains an engineering conformance gap in the additional Reputation maintenance job:
 unlike CI D3's50/55-minute fail-loud artifact floor, it has a60-minute test/job budget and no

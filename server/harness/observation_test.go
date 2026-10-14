@@ -151,6 +151,72 @@ func TestHarnessObservationFailureAndMissingArtifactAreNotComplete(t *testing.T)
 	}
 }
 
+func TestHarnessObservationObjectiveIDsBindIdentity(t *testing.T) {
+	for _, mode := range []string{"check", "relevance-registered"} {
+		t.Run(mode+" valid", func(t *testing.T) {
+			if err := ValidateCompleteHarnessObservation(observationIdentityFixture(mode)); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+	t.Run("inactive selected row", func(t *testing.T) {
+		candidate := observationIdentityFixture("relevance-registered")
+		index, active := 1, false
+		candidate.Objectives[0].Identity.RegistryIndex = &index
+		candidate.Objectives[0].Identity.Active = &active
+		candidate.Objectives[0].Identity.ConstantsHash = "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+		candidate.Objectives[0].ID = "relevance:1:scenario.json"
+		candidate.DeclaredObjectiveIDs[0] = candidate.Objectives[0].ID
+		if err := ValidateCompleteHarnessObservation(candidate); err != nil {
+			t.Fatal(err)
+		}
+	})
+	tests := []struct {
+		name  string
+		mode  string
+		index int
+		id    string
+	}{
+		{"renamed guards", "check", 0, "other-guards"},
+		{"renamed pacing", "check", 1, "other-pacing"},
+		{"renamed complete row", "check", 2, "reputation:h4"},
+		{"renamed selected row", "relevance-registered", 0, "reputation:h5"},
+		{"wrong row index", "relevance-registered", 0, "relevance:1:scenario.json"},
+		{"wrong scenario path", "relevance-registered", 0, "relevance:0:other.json"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			candidate := observationIdentityFixture(test.mode)
+			// Forging both copies bypasses declaration equality; the identity must
+			// independently bind the stable objective name.
+			candidate.Objectives[test.index].ID = test.id
+			candidate.DeclaredObjectiveIDs[test.index] = test.id
+			if err := ValidateCompleteHarnessObservation(candidate); err == nil {
+				t.Fatalf("accepted objective %q for kind %q and identity %+v", test.id,
+					candidate.Objectives[test.index].Kind, candidate.Objectives[test.index].Identity)
+			}
+		})
+	}
+}
+
+func observationIdentityFixture(mode string) HarnessObservation {
+	value := validHarnessObservationFixture()
+	if mode == "relevance-registered" {
+		return value
+	}
+	guards := value.Objectives[0]
+	guards.ID, guards.Kind = "repository-guards", "repository_guards"
+	guards.Identity, guards.Work = HarnessObservationIdentity{}, HarnessObservationWork{}
+	pacing := value.Objectives[0]
+	pacing.ID, pacing.Kind = "standard-pacing", "standard_pacing"
+	pacing.Identity = HarnessObservationIdentity{ScenarioPath: "pacing.json",
+		ScenarioHash: observationTestHash, ConstantsHash: observationTestHash}
+	value.Mode = "check"
+	value.DeclaredObjectiveIDs = []string{guards.ID, pacing.ID, value.Objectives[0].ID}
+	value.Objectives = []HarnessObservationObjective{guards, pacing, value.Objectives[0]}
+	return value
+}
+
 func validHarnessObservationFixture() HarnessObservation {
 	finished, termination := "2026-08-21T10:00:01Z", "objective"
 	epochID, index, active := int64(8), 0, true

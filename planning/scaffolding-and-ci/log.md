@@ -1689,3 +1689,39 @@ original maintenance-range review and study results belong to the Reputation
 log; this fix does not approve that range or complete CI/feature/1.0 acceptance.
 No new owner decision, RFC, deadline, archival, push or deployment is needed or
 performed for this conformance repair.
+
+## 2026-10-15 — RP-635 observation IDs bind to their existing identity
+
+Verification began2026-10-14; this closeout crosses midnight. Under archived
+Harness Observability H1 and RFC-0000, require the existing stable
+names for repository guards, standard pacing and registered relevance's row
+index/scenario path. Declaration equality alone was not enough: six executable
+old-validator cases rename both copies and still validate, including invented
+Reputation names and wrong row coordinates. Two healthy controls pass at that
+same old revision. The correction rejects those six cases; a valid inactive
+selected row retains its noncurrent constants identity.
+
+Verification by: Codex. Recorded by: Codex. Focused recorder/identity/registered
+selector/signal tests pass, including an actual registered23-run row with exact
+golden bytes and a real SIGTERM subprocess leaving incomplete evidence. Selected
+research-observation tests explicitly skip; they are not fresh Reputation studies.
+Cold full affected packages pass: harness73.091s and balance-harness CLI0.596s,
+then same-package vet passes. After adding the inactive-row positive control,
+the final focused nine-case identity population and harness vet pass0.288s;
+unchanged production/other cases retain the preceding full-package result.
+`make verify-ci-topology` passes26 negative controls and existing Make/browser
+controls. Formatting/diff checks pass. No exhaustive study, SQL/player journey,
+full hosted workflow, artifact authenticity or new objective acceptance claimed.
+
+This changes only observation validation, not its shape/producer, allowed modes,
+simulation, balance/report bytes, CI population/budget or kernel identity. Canonical
+docs describe the self-consistency boundary. RP-634 still requires a bounded
+objective amendment and the missing D3 hosted interruption/upload proof; do not
+silently extend/relabel the v1 schema. No owner decision or new RFC was required
+for this existing-name conformance correction.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete six-path
+range after `a201a7e8` through the containing commit requires designated Claude
+review, consolidatable with the prior CI corrections. No self-approval, archival,
+push, deployment or release promotion. Continue accepted construction and the
+bounded RP-634 proposal without narrowing the complete nine-tier1.0 objective.
