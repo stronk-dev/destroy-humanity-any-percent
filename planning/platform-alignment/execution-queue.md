@@ -14,10 +14,12 @@ nine-tier goal remains active; no new playable tier or release was completed.
   mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member
   policy conflict have concrete unadopted engineering proposals in the API plan. Do not mount
   a partial endpoint, invent descriptors, normalize sources or infer draft acceptance.
-- **READY — bounded CI performance proposal:** RP-596's full native standard-phase profile now
+- **READY — bounded CI performance proposal review:** RP-596's full native standard-phase profile now
   completes all300 keys and points to production rate traversal; its owning CI log distinguishes
   sampled CPU from wall time and retains the still-failed hosted45.19-minute/full-maintenance
-  evidence. Scope/review the performance change separately; no optimization under measurement
+  evidence. The existing CI plan scopes the equivalent Production C2 refactor; executed exact-
+  order/activation/refusal controls prepare it without an extra routine-change RFC. Existing
+  runtime-neutral guard authority/eligibility and designated review remain; no optimization under measurement
   authority, budget increase, deleted population or snapshot regeneration to make the job green.
 - **READY — consolidated designated review and accepted conformance work:** feature-owned
   logs identify complete corrective ranges. Pending review prevents acceptance/archival,

@@ -23,10 +23,45 @@ source attribution points to its repeated contribution-map iteration. Runtime me
 samples are also substantial. These are overlapping sampled stacks, not a predicted wall-time
 saving or proved hosted cause. The root manual `harness-profile-report` reader executes and
 rejects missing/malformed inputs; ordinary16 topology negatives and dispatch controls still pass.
-Next: scope a separately authorized rate-traversal performance proposal, preserving every
+The concrete Production C2 refactor proposal now scopes per-call canonical buckets,
+unchanged input/refusal/activation and multiplier arithmetic. Exact raw-bit/all-slot/target
+controls execute on the unchanged production function, including12 invalid unused-factor cases;
+the initial v3/axis fixture refusal is retained in the log and corrected with the real v5 fixture.
+It is an equivalent internal refactor under existing Production C2/RFC-0000, not a new mechanics
+or API contract requiring another RFC. Measurement authority does not authorize changing its
+semantics. Existing exact-path kernel-scope authority and independent runtime-neutral eligibility
+remain unresolved; no production optimization is implemented. Next: resolve that existing guard
+boundary and review the scoped implementation under Production C2, preserving every
 multiplier's canonical order, validation and activation semantics; retain whole300-run report
 identity/acceptance and representative negative/runtime parity evidence. Do not change production
 under measurement authority. Linux/hosted attribution and full maintenance remain open.
+
+### Proposed equivalent rate traversal — existing Production C2
+
+- Keep complete declaration/slot/target/factor/dynamic-identity/duplicate validation first,
+  including factors unused by zero or masked generators; no activation escapes failed preflight.
+- Build per-call slot buckets from validated contributions. Sort each bucket once by the
+  existing raw-byte source-target identity; iterate slots in their existing nine-slot order,
+  filtering only `all` and the exact generator target. Filtering a sorted bucket must preserve
+  today's filter-then-sort multiplication sequence. No global-first concatenation, preproduct,
+  reassociation, tolerance or quantization change.
+- Preserve generator/count/provision validation, base-rate/count arithmetic, resource slice
+  order, ablation/zero behavior and activation at actual factor application. No input mutation,
+  cross-call/epoch cache, shared mutable catalog state or source/provider shortcut.
+- Compare exact output/refusal/activation with the old traversal and representative performance
+  cases. Keep existing active-play identities, maximum-count/nonfinite, projection and simulation
+  coverage. Re-run the unchanged complete300 population with matched inputs; require exact
+  report/golden identity, not restamped snapshots. Actual affected replay/vector/composed gates
+  remain necessary before runtime closeout; known Clout failures cannot be hidden by tolerances.
+- Keep source-fingerprint coverage and the existing reviewed regeneration protocol if executable
+  source identity changes. No historical artifact rewrite, balance mint, clock/grid/clamp/bank,
+  worker/seed/horizon/CI limit or dispatch change. Native CPU attribution predicts no fixed gain.
+- Production is kernel-watched: the descriptor-only proposal is not runtime-refactor authority.
+  Resolve the existing exact-path guard mechanism and eligibility before landing a bit-identical
+  runtime edit; every changed guarded path needs its actual independent identity verdict. No
+  false version bump, file move or self-reviewed exception. If a semantic change is found, stop
+  the refactor route and explicitly specify/version that real change. This plan does not adopt
+  a new guard policy or waive designated review, current CI or the full nine-tier floor.
 
 Fresh hosted reconciliation at local product source `8a5dcebf`: remote CI remains38381138075
 on `4eaed0c9`, failed;75 local commits are outside it. Maintenance38507071157 also completes

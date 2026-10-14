@@ -1449,3 +1449,50 @@ separately authorized rate-traversal optimization that preserves exact multiplie
 validation/activation and report identity; prove actual gain and full affected runtime parity
 before adoption/closeout. Existing neutral-delivery/kernel authority, Linux/hosted/full-maintenance
 and unrelated numeric/history/release holds are not waived. No cleanup, publication or archival.
+
+## 2026-10-14 — Scoped rate-traversal proposal and executed exactness controls (RP-596/RP-599)
+
+Resume clean `a114b972`; preceding turn completed the full native CPU measurement. Translate
+the measured repeated-map scan into the existing plan's Production C2 refactor proposal: validate the whole set
+first, prepare sorted per-slot buckets once per call, filter matching targets without changing
+factor sequence, and activate only at existing application points. No cross-call cache,
+reassociation, arithmetic/quantization/seed/worker/budget/CI change. Runtime-neutral eligibility
+and the exact-path history-scope mechanism are separately unadopted; the descriptor-only lane
+cannot authorize this runtime refactor. No production algorithm is implemented in this batch.
+Initially created an extra performance RFC, then removed that uncommitted agent-authored draft
+and its new index row: RFC-0000/Marco's current procedure authorizes equivalent routine refactors
+under the existing owner contract, not another specification gate. Keep the substantive scope
+and tests in the existing plan; no historical/user work is removed. The discarded text remains
+in this task's edit history if needed. Measurement-only authority is not repurposed to change
+Production C2; the actual unresolved guard-policy/identity-review boundary remains explicit.
+
+New test-only fixture first failed legitimately: epoch5's v3 cannot declare an axis_stack source.
+Do not loosen the loader. Use the actual existing v5 axis fixture, retain its real rows/effect
+bindings and reuse its Axis/Commons sources; add only controlled declarations for other factors.
+This is admitted synthetic data, not minted content, natural producer factors or player pacing.
+Literal expected traversal covers all nine slots and interleaved global/specific upgrade IDs.
+Five purchased/provisioned/zero/masked states ×three input rotations check exact mantissa bits/
+exponents, contribution order/resource slices, activation set and caller-input immutability.
+Rejected reversed multiplication and global-first-within-slot alternatives really differ;
+neither can be waved through by a generic multiplication/product argument. Twelve invalid
+unused-factor populations (six corruptions ×zero/masked) refuse before any activation/output.
+
+Executed cold TestRateTraversal, existing TestRates, both simulation synergy-application tests,
+frozen-rate valid/refusal population and the complete multiplier package; all pass. The first
+mixed-package TestRates selector ran no multiplier tests, so it was not claimed as that proof;
+the later complete multiplier run executes its two named tests. Affected vet passes. Root
+`make formulas-check` is byte-unchanged. New snapshot assertions are included in the final
+TestRateTraversal rerun. No unrelated full production/harness/browser/SQL/hosted gate rerun for
+test-only proof; known Clout partitions/history/service/full-maintenance/release holds remain.
+
+RP-599 corrects canonical Production prose: its rate subsection omitted axis_stack, while its
+opening section, actual multiplier registry and accepted Clout CV3/OD-6 include that slot.
+This is editorial reconciliation, not an accepted-body/ruling change, retune or formula rewrite.
+The current CI plan/queue/backlog now agree on the next authority/proof boundary.
+
+Review by: Codex (test implementer first filter and refactor-proposal author). Recorded by: Codex. Full
+test/docs/plan/queue/ledger/log range after `a114b972` through this containing commit
+needs designated Claude review, consolidatable with CI diagnostics. Existing guard-policy
+adoption and exact-path identity review precede runtime landing; full affected parity and
+measured gain precede closeout. No claimed
+speedup, kernel bump/exception, archival, mint, push or narrowed nine-tier1.0 floor.

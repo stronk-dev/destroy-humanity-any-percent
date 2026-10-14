@@ -30,10 +30,10 @@ rate(resource) = sum over generators (
 )
 ```
 
-Slots apply in this order: upgrades, milestones, faction, doctrine, commons, trust, event buffs,
-prestige. Contributions within one slot apply by source id in raw-byte ascending order. Every
-runtime contribution must match a catalog declaration's source, slot, and target and carry a
-positive canonical Decimal factor. Commons and Trust are single-provider slots. Providers share
+Slots apply in this order: upgrades, milestones, axis stack, faction, doctrine, commons, trust,
+event buffs, prestige. Contributions within one slot apply by source id in raw-byte ascending
+order. Every runtime contribution must match a catalog declaration's source, slot, and target
+and carry a positive canonical Decimal factor. Commons and Trust are single-provider slots. Providers share
 only the neutral `server/multiplier` package; production does not import feature packages.
 
 `make formulas-check` regenerates the published artifact and fails on executable drift. Formatting
