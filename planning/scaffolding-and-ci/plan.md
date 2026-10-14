@@ -7,6 +7,20 @@
 
 ## Current checkpoint — 2026-10-14
 
+Current local/Actions parity correction (RP-613): the Linux Playwright container now installs
+GNU Make and delegates to the same root `make test-browser` as Actions, instead of bypassing
+the broad/native/performance split with copied Vitest commands. The old verifier admits the
+copied command; the new check rejects the original Compose command and four copied/incomplete/
+narrowed controls. The actual default Linux/ARM64 run then fires the existing ten-minute guard
+during broad collection (exit137), so later native/performance phases are unexecuted. Compared
+with the retained146-file native reference, only Firefox's Reputation host file lacks a terminal
+result; this is file-level localization, not a complete current case inventory or cause proof.
+That exact unchanged file passes in an isolated Linux Firefox run (89 ordinary + one expected
+failure,26.55s). Preserve the full failure; next investigate full-population native-input/cleanup
+completion for that file without changing assertions, deadlines, workers or populations. The
+owning log records commands, observations and the range after `81107554`, pending Claude review.
+Hosted latency, RP-526 reliability and the other CI failures remain open.
+
 RP-596 standard-phase measurement declared at clean `0411ef34` and now completed: all300 keys,
 12 workers, native macOS/ARM64/M3 Max,783.821s wall time. Full population/outcome/invariant checks
 pass. The manual-only `BenchmarkStandardPacingProfile` loads the same suite and calls the

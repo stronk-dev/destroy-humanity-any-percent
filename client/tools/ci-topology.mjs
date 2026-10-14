@@ -62,7 +62,7 @@ function requireExactMakeDependencies(source, target, expected) {
   }
 }
 
-export function verifyCITopology(ciSource, maintenanceSource, makeSource) {
+export function verifyCITopology(ciSource, maintenanceSource, makeSource, browserSource) {
   const ciTriggers = triggerSection(ciSource);
   requireLine(ciTriggers, /^  push:\s*$/, "CI must run on push");
   requireLine(ciTriggers, /^  pull_request:\s*$/, "CI must run on pull requests");
@@ -92,6 +92,17 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource) {
       !commands[0].startsWith(`${browserCommand}--exclude test/typer-table-browser.test.ts $(BROWSER_TEST_FLAGS) `) ||
       !commands[1].startsWith(`${browserCommand}test/typer-table-browser.test.ts $(BROWSER_TEST_FLAGS) `)) {
     throw new Error("functional browser gate must run broad collection then the complete native Typer file");
+  }
+
+  // The Linux reproduction must share Actions' Make authority. A copied Vitest
+  // invocation can silently miss a new phase while the hosted job remains correct.
+  const container = section(browserSource, /^  browser:\s*$/, /^  [A-Za-z0-9_-]+:\s*$/);
+  const foldedStart = container.findIndex((line) => /^      - >-\s*$/.test(line));
+  const script = foldedStart < 0 ? "" : container.slice(foldedStart + 1)
+    .filter((line) => !/^\s*#/.test(line)).map((line) => line.trim()).join(" ").replace(/\s+/g, " ").trim();
+  if (!script.includes("pnpm --dir client install --frozen-lockfile && ") ||
+      !script.endsWith(" && make test-browser") || /\bvitest\b|BROWSER_TEST_FLAGS|--project/.test(script)) {
+    throw new Error("Linux browser container must install frozen dependencies then run the unmodified shared make test-browser target");
   }
 
   const harness = jobSection(ciSource, "harness");

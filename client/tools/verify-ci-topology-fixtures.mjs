@@ -6,6 +6,7 @@ const root = new URL("../../", import.meta.url);
 const ci = readFileSync(new URL(".github/workflows/ci.yml", root), "utf8");
 const maintenance = readFileSync(new URL(".github/workflows/maintenance.yml", root), "utf8");
 const makefile = readFileSync(new URL("Makefile", root), "utf8");
+const browser = readFileSync(new URL("compose.browser-test.yml", root), "utf8");
 
 const mutations = [
   ["exhaustive push gate", ci.replace("make verify-harness-fast", "make verify-harness"), maintenance, makefile],
@@ -29,7 +30,7 @@ const mutations = [
 for (const [name, mutatedCI, mutatedMaintenance, mutatedMakefile] of mutations) {
   let rejected = false;
   try {
-    verifyCITopology(mutatedCI, mutatedMaintenance, mutatedMakefile);
+    verifyCITopology(mutatedCI, mutatedMaintenance, mutatedMakefile, browser);
   } catch {
     rejected = true;
   }
@@ -37,6 +38,26 @@ for (const [name, mutatedCI, mutatedMaintenance, mutatedMakefile] of mutations) 
 }
 
 console.log(`CI topology negative controls rejected: ${mutations.length}`);
+
+// A local Linux run must execute the shared target, not a copied or narrowed lane.
+// Construct the valid command independently so this also catches the old container.
+const sharedBrowser = browser.replace(/        cd client &&[\s\S]*$/, "        make test-browser\n");
+for (const command of [
+  "cd client && node_modules/.bin/vitest run --config vitest.browser.config.ts",
+  "make test-browser-functional",
+  "make test-browser BROWSER_TEST_FLAGS='--project chromium'",
+  "make test-browser-focused",
+]) {
+  let rejected = false;
+  try {
+    verifyCITopology(ci, maintenance, makefile, sharedBrowser.replace("make test-browser\n", `${command}\n`));
+  } catch {
+    rejected = true;
+  }
+  if (!rejected) throw new Error(`CI topology accepted local browser drift: ${command}`);
+}
+verifyCITopology(ci, maintenance, makefile, sharedBrowser);
+console.log("Linux browser container rejects copied, incomplete and narrowed lanes");
 
 // Exercise actual Make expansion, including focused selection and report safety.
 function dryRun(target, ...flags) {

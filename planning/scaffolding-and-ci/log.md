@@ -1511,3 +1511,47 @@ executed external-state reads, not a new diagnosis or repaired CI claim.
 Docker subsequently responds and the declared local Linux-amd64/Postgres backup
 lane passes; the Deployment log owns that separate result. Do not generalize
 daemon recovery or scoped backup success to whole server/browser/hosted CI.
+
+## 2026-10-14 — Linux browser command parity and retained full-population timeout
+
+Resume clean `81107554` after completed player/SQL verification. Under CI D2,
+correct RP-613: Compose's copied Vitest command bypassed the shared broad/native/
+performance phases. Delegate to root `make test-browser`; no workflow, test,
+assertion, project, worker, timeout, gameplay or kernel change. Prepare GNU Make
+in the disposable pinned Playwright image, preserving frozen pnpm installation.
+
+Regression: new negative fixture against the original verifier exits1 for its
+admitted copied browser command. The corrected verifier also rejects the actual
+unchanged old Compose command. After correction, `make verify-ci-topology`
+passes the original16 negatives plus four copied/incomplete/narrowed container
+controls and actual Make selector/report checks. Node syntax and diff checks pass.
+
+Actual `make test-browser-ci`67706 exits2/Error127 after frozen install: the
+image lacks Make, no browser test ran. After adding that prerequisite, full
+52310 is terminal Make2/child137 with GNU timeout's explicit KILL message at
+the unchanged10-minute ceiling. The broad phase runs; native and performance
+never execute. Do not call partial file results a completed gate. Image metadata
+is Linux/ARM64, not hosted AMD64. A live resource sample at14:42:44 UTC reads
+CPU105.22%, memory11.36GiB/15.6GiB and1610 PIDs; not a cause or hardware benchmark.
+
+Read-only live-log comparison with retained
+`.cache/browser-phases-f6ab6ab6/functional-broad.json` (146 distinct paths):
+all reference paths have terminal file lines in Chromium/WebKit; Firefox lacks
+`test/reputation-host-browser.test.ts`. Current completed-file counts158/157/158
+also include newer files; this is not a current title/skip/coverage-union proof.
+No output for the missing file is inferred from truncated tool chunks.
+
+Focused diagnostic71583: declared Compose run with the same preparation and
+containment, overriding only the leaf to `make test-browser-focused
+BROWSER_TEST_FLAGS="test/reputation-host-browser.test.ts --project firefox"`.
+Terminal exit0: one file,89 ordinary passes/one deliberate expected failure,
+23.757s tests/26.55s total. This changed diagnostic population is not an unchanged
+full-run retry, full success, hosted evidence or explanation of the timeout.
+RP-526 remains open; next instrument that file's full-population input/cleanup
+completion, preserving the original failure and all semantic/latency bounds.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete range
+after `81107554` through this containing commit needs designated Claude review,
+consolidatable with prior CI work. Both runs use automatically removed disposable
+containers/anonymous dependency volumes; final declared inventory is empty. No
+push, archival, changed guard authority or full-nine-tier acceptance follows.

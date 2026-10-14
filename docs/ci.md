@@ -194,13 +194,20 @@ because the second phase would overwrite the first. Focused invocations still su
 ordinary Vitest reporter/output flags. Explicit project/file/test overrides narrow verification
 and are not evidence of the default three-engine gate.
 
-`make test-browser-ci` runs the same functional-matrix-then-isolated-performance sequence with
+`make test-browser-ci` prepares GNU Make in the disposable Playwright container, installs
+frozen dependencies and calls the same root `make test-browser`
+target as Actions, rather than maintaining a second Vitest command in Compose. It runs the
+same broad-functional → native-keyboard → isolated-performance sequence with
 `CI=true` in the pinned Linux Playwright image, using fresh anonymous `node_modules` and
 pnpm-store volumes on every invocation. Actions installs the same pinned browser versions
 explicitly on its ordinary Ubuntu runner. Full-population concurrency controls and their failures
 are recorded in the [CI log](../planning/scaffolding-and-ci/log.md); a focused or overridden run
 does not establish success of this ordinary target, hosted reliability or the five-minute
 acceptance floor.
+
+The topology check also verifies that the Linux container delegates to the unmodified shared
+target; copied, functional-only, focused or project-narrowed commands are rejected. This guards
+execution parity, not browser behavior or hosted timing; the actual lane must still execute.
 
 The normal container command wraps the frozen installation and both browser lanes in GNU
 `timeout --verbose --signal=KILL 10m`, matching the hosted browser job's existing containment
