@@ -26,16 +26,20 @@ func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplayIntegration(t 
 	for _, row := range []struct {
 		name  string
 		modes []minigame.Mode
+		gate  string
 	}{
-		{"solo", []minigame.Mode{minigame.ModeSolo}},
-		{"dual_mode", []minigame.Mode{minigame.ModeAsyncSnapshot, minigame.ModeSolo}},
-		{"async_only", []minigame.Mode{minigame.ModeAsyncSnapshot}},
+		{"solo", []minigame.Mode{minigame.ModeSolo}, "unchanged"},
+		{"dual_mode", []minigame.Mode{minigame.ModeAsyncSnapshot, minigame.ModeSolo}, "unchanged"},
+		{"async_only", []minigame.Mode{minigame.ModeAsyncSnapshot}, "unchanged"},
+		{"missing_fiscal_unlock", []minigame.Mode{minigame.ModeSolo}, "fiscal_locked"},
+		{"human_hobby_locked", []minigame.Mode{minigame.ModeSolo}, "soul_locked"},
+		{"human_hobby_first_unlocked_value", []minigame.Mode{minigame.ModeSolo}, "soul_unlocked"},
 	} {
-		t.Run(row.name, func(t *testing.T) { testStartMinigameAPISession(t, row.modes) })
+		t.Run(row.name, func(t *testing.T) { testStartMinigameAPISession(t, row.modes, row.gate) })
 	}
 }
 
-func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode) {
+func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode, gate string) {
 	t.Helper()
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
@@ -143,6 +147,29 @@ func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode) {
 	}
 	founder.FiscalUnlocks = map[string]bool{"minigame.pitch": true}
 	founder.Soul, founder.SoulExhaustedSourceIDs = 50, []string{}
+	var admissionErr error
+	if len(modes) == 1 && modes[0] == minigame.ModeAsyncSnapshot {
+		admissionErr = ErrInvalidIntent
+	}
+	switch gate {
+	case "unchanged":
+	case "fiscal_locked":
+		delete(founder.FiscalUnlocks, "minigame.pitch")
+		admissionErr = ErrMinigameFiscalUnlockRequired
+	case "soul_locked", "soul_unlocked":
+		founder.Soul = bundle.Soul.Bands[0].MaxInclusive
+		if gate == "soul_unlocked" {
+			founder.Soul++
+		} else {
+			admissionErr = ErrMinigameHumanContentLocked
+		}
+		locked, err := bundle.Soul.HumanContentLocked(founder.Soul)
+		if err != nil || locked != (gate == "soul_locked") {
+			t.Fatalf("invalid live Soul boundary: %v", err)
+		}
+	default:
+		t.Fatal("unknown live admission gate")
+	}
 	founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeFounder},
 		bundle.ConstantsHash, founder, save.WriteContext{Cause: "minigame-api-start.integration"})
 	if err != nil {
@@ -193,7 +220,7 @@ func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode) {
 		t.Fatal(err)
 	}
 
-	if len(modes) == 1 && modes[0] == minigame.ModeAsyncSnapshot {
+	if admissionErr != nil {
 		beforeFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
 		if err != nil {
 			t.Fatal(err)
@@ -206,21 +233,21 @@ func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode) {
 			SessionID: "01986666-ca01-7000-8000-000000000010", IntentID: "01986666-ca02-7000-8000-000000000010",
 			FounderID: founderID, CompanyStreamID: companyRevision.StreamID, MinigameID: "pitch", IdempotencyKey: "async-only-refusal",
 		}, now, nil)
-		if !errors.Is(err, ErrInvalidIntent) {
-			t.Fatalf("solo operation admitted async-only policy: %v", err)
+		if !errors.Is(err, admissionErr) || !errors.Is(err, ErrInvalidIntent) {
+			t.Fatalf("ineligible solo start: err=%v want=%v", err, admissionErr)
 		}
 		afterFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
 		if err != nil || !reflect.DeepEqual(afterFounder, beforeFounder) {
-			t.Fatalf("mode refusal changed Founder: %v", err)
+			t.Fatalf("admission refusal changed Founder: %v", err)
 		}
 		afterCompany, err := store.LoadLatest(ctx, companyRevision.StreamID)
 		if err != nil || !reflect.DeepEqual(afterCompany, beforeCompany) {
-			t.Fatalf("mode refusal changed Company: %v", err)
+			t.Fatalf("admission refusal changed Company: %v", err)
 		}
 		for _, table := range []string{"minigame_sessions", "minigame_create_receipts"} {
 			var count int
 			if err := db.QueryRowContext(ctx, "SELECT count(*) FROM "+table+" WHERE founder_id=$1", founderID).Scan(&count); err != nil || count != 0 {
-				t.Fatalf("mode refusal left %s rows=%d err=%v", table, count, err)
+				t.Fatalf("admission refusal left %s rows=%d err=%v", table, count, err)
 			}
 		}
 		return

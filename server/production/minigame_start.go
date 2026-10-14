@@ -77,6 +77,23 @@ func applyFounderStartMinigameSession(state *save.State, canonicalPayload []byte
 		!slices.Contains(definition.Modes, minigame.ModeSolo) {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: minigame start tenant", ErrInvalidReplayInputs)
 	}
+	if definition.Unlock.Kind == "fiscal_unlock" {
+		if catalogs.Fiscal == nil {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: minigame start Fiscal catalog", ErrInvalidReplayInputs)
+		}
+		if _, declared := catalogs.Fiscal.Unlock(definition.Unlock.UnlockID); !declared || !state.FiscalUnlocks[definition.Unlock.UnlockID] {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: minigame start Fiscal unlock", ErrInvalidReplayInputs)
+		}
+	}
+	if definition.SoulGate == "human_hobby" {
+		if catalogs.Soul == nil {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: minigame start Soul catalog", ErrInvalidReplayInputs)
+		}
+		locked, err := catalogs.Soul.HumanContentLocked(state.Soul)
+		if err != nil || locked {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: minigame start Soul gate", ErrInvalidReplayInputs)
+		}
+	}
 	wantSeed := minigameSessionSeed(wire.Command.FounderID, resolved.RunSeq, resolved.SequenceAfter)
 	if resolved.Seed != wantSeed {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: minigame start seed", ErrInvalidReplayInputs)

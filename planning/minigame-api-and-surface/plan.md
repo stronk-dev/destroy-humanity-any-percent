@@ -1,5 +1,14 @@
 # Minigame API & Surface implementation plan
 
+2026-10-14 Founder-gate replay correction (RP-624): replay now checks the existing Fiscal unlock
+and human-hobby Soul policy before advancing the start sequence. Old Go/TS accept four locked
+cases and falsely verify both non-clock-variant histories. The expanded shared nine-case population
+checks complete rollback and the first unlocked Soul value; the real-Postgres start population
+now checks the same eligibility boundaries, faults, retries and saved-history verification.
+The owning log holds final checks and the single-commit range after `ac88de36`, pending Claude.
+Kernel0.3.212 is genuine replay admission; original goldens, public wire and live refusal order
+are unchanged. Company-owned tier/scaling replay inputs and other existing holds are not resolved.
+
 2026-10-14 replay-mode correction (RP-622): both Founder replay arms now enforce the live solo
 policy. The shared four-case population exposes old acceptance, sequence/Fiscal mutation and
 complete-history false verification under an async-only policy, with healthy solo/dual controls.

@@ -1,9 +1,14 @@
 {
   "schema_version": 1,
   "cases": [
-    { "name": "solo", "modes": ["solo"], "accepted": true, "fiscal_due": false },
-    { "name": "dual_mode", "modes": ["async_snapshot", "solo"], "accepted": true, "fiscal_due": false },
-    { "name": "async_only", "modes": ["async_snapshot"], "accepted": false, "fiscal_due": false },
-    { "name": "async_only_after_fiscal_due", "modes": ["async_snapshot"], "accepted": false, "fiscal_due": true }
+    { "name": "solo", "modes": ["solo"], "accepted": true, "fiscal_due": false, "fiscal_locked": false, "soul_boundary": "unchanged" },
+    { "name": "dual_mode", "modes": ["async_snapshot", "solo"], "accepted": true, "fiscal_due": false, "fiscal_locked": false, "soul_boundary": "unchanged" },
+    { "name": "async_only", "modes": ["async_snapshot"], "accepted": false, "fiscal_due": false, "fiscal_locked": false, "soul_boundary": "unchanged" },
+    { "name": "async_only_after_fiscal_due", "modes": ["async_snapshot"], "accepted": false, "fiscal_due": true, "fiscal_locked": false, "soul_boundary": "unchanged" },
+    { "name": "missing_fiscal_unlock", "modes": ["solo"], "accepted": false, "fiscal_due": false, "fiscal_locked": true, "soul_boundary": "unchanged" },
+    { "name": "missing_fiscal_unlock_after_fiscal_due", "modes": ["solo"], "accepted": false, "fiscal_due": true, "fiscal_locked": true, "soul_boundary": "unchanged" },
+    { "name": "human_hobby_locked", "modes": ["solo"], "accepted": false, "fiscal_due": false, "fiscal_locked": false, "soul_boundary": "locked" },
+    { "name": "human_hobby_locked_after_fiscal_due", "modes": ["solo"], "accepted": false, "fiscal_due": true, "fiscal_locked": false, "soul_boundary": "locked" },
+    { "name": "human_hobby_first_unlocked_value", "modes": ["solo"], "accepted": true, "fiscal_due": false, "fiscal_locked": false, "soul_boundary": "unlocked" }
   ]
 }

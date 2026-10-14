@@ -133,6 +133,13 @@ performed before the start arm. Kernel0.3.211 records this replay-admission repa
 solo/dual-mode receipts, events and post-state goldens remain byte-identical; no stored artifact
 or original replay fixture is rewritten.
 
+Kernel0.3.212 also binds replay admission to the Founder-owned Fiscal unlock and Soul gates:
+the declared Fiscal unlock must be held, and `human_hobby` starts require an unlocked Soul band.
+Both runtimes use the pinned policy rather than a new threshold. Ineligible histories diverge
+without retaining a sequence increment or due Fiscal sweep. The first unlocked Soul value still
+starts and verifies. This repair does not add frozen Company tier/scaling inputs to Founder replay
+or change the live coordinator's refusal order or public response bytes.
+
 The composed server mounts the generated private-v1 registry as the only route authority for
 minigame create, current, command, and resolve requests and for Soul-Recovery start, progress,
 cancel, and resolve requests. Founder identity always comes from the access token. Request schemas

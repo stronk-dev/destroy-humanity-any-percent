@@ -2021,3 +2021,46 @@ historical red guard, RP-614 and all owner/author/content/clock/full-nine-tier h
 No mint, archival, push or deployment. After terminal runs, remove only this turn's fresh
 declared postgres test service; final inventory is empty. Disposable tmpfs rows are discarded,
 with no durable volume/cache/network/unrelated service or user data removed.
+
+## 2026-10-14 — Founder start replay honors Fiscal and Soul admission (RP-624)
+
+Outcome: MA1 requires the pinned Fiscal unlock and Soul gate; MA-C11 owns the logged Founder
+sequence. Go/TS replay now checks those Founder-owned inputs before incrementing the sequence,
+using the existing catalog policies. Live admission, error precedence, public wire, seed, payout,
+receipt and event semantics are unchanged. Kernel0.3.211→0.3.212 is a genuine replay acceptance
+change, not a workaround for RP-131. Company tier/scaling frozen-input gaps are not invented away.
+
+Regression: expand the existing shared mode population from four to nine cases. Keep the original
+controls, remove the held Fiscal unlock or set Soul to the pinned locked band's last value, and
+repeat each refusal with a proved due Fiscal sweep. The first unlocked Soul value is admitted.
+Both pre-state and counterfeit head carry the same eligibility change, so full-history refusals
+cannot pass merely because of mismatched heads. Original receipt/event goldens remain literal;
+unchanged controls pin the original post-state golden. No original fixture/artifact is rewritten.
+Old Go29150 and Node95319 fail all four newly locked cases: sequence7→8, due credit0→3, and both
+non-clock history readers return verified. This is a controlled fixture finding, not a reproduced
+public exploit or naturally persisted forgery. Ordinary regressions establish discrimination.
+
+Finished verification by: Codex. Recorded by: Codex.
+
+- `make test-go GO_PACKAGES='./production ./minigame' GO_TEST_FLAGS='-run Minigame -v'` passes
+  cold; native SQL skips are explicit, not integration evidence. Full Kernel/Minigame/Decimal
+  packages and affected vet pass. Four-file Node run passes6531; typecheck has zero errors/warnings.
+- Full replay Chromium/WebKit passes294 (147 each), no selected skips. Initial sandbox loopback
+  denial runs no tests; the permitted same command executes. Production client build passes.
+- `make typecheck replay-fixture-check formulas-check api-check` passes; the replay fixture runs
+  count1 and all generated contract/formula bytes remain unchanged.
+- Declared Linux-amd64/Postgres52703 passes Production2.696s and Gameserver38.520s, including
+  solo/async resolution/faults and both literal/purchased-scaling public HTTP lifecycles. The
+  subsequent test-only extension reuses the live start population for six cases: missing unlock,
+  locked and first-unlocked Soul alongside original modes. Final selected Production73170 passes
+  2.938s, with all SQL cases executing. Refusals preserve complete saved Founder/Company state and
+  zero sessions/create receipts; the admitted boundary retains fault/retry/history/Exit checks.
+  Vet/build24484 passes after that extension. This is declared amd64 emulation on an ARM64 Docker
+  daemon, not native hosted hardware, whole server CI, natural player pacing or release-artifact proof.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Designated Claude review remains
+pending for the single commit containing this entry, parent `ac88de36`, all source/test/fixture/
+version/docs/record changes. Prior review debt, RP-131/RP-307/current CI and release holds remain;
+no feature acceptance, archival, mint, push or deployment. After terminal tests, removed only the
+fresh declared Postgres test container and its disposable tmpfs rows. Final service inventory is
+empty; no durable volume, cache, network, unrelated service or user data was removed.

@@ -314,9 +314,9 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(testCase.post_state_json);
 	});
 
-	it.each(startModeReplay.cases)("minigame start replay requires solo policy: $name", async (row) => {
+	it.each(startModeReplay.cases)("minigame start replay requires admission policy: $name", async (row) => {
 		expect(startModeReplay.schema_version).toBe(1);
-		expect(startModeReplay.cases).toHaveLength(4);
+		expect(startModeReplay.cases).toHaveLength(9);
 		const artifacts = { ...fixture.minigame_start_artifacts };
 		const policy = JSON.parse(artifacts.minigames!);
 		expect(policy.minigames).toHaveLength(1);
@@ -327,7 +327,23 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		const bundle = await loadReplayCatalogBundle(hash, artifacts);
 		const testCase = fixture.minigame_start_founder_case;
 		const founder = restoreFounderReplayState(testCase.pre_state, testCase.state_version, bundle);
+		const head = restoreFounderReplayState(testCase.post_state, testCase.state_version, bundle);
+		const definition = bundle.minigames?.minigames[0];
+		if (!definition || definition.unlock_condition.kind !== "fiscal_unlock" || typeof definition.unlock_condition.unlock_id !== "string" || definition.soul_gate !== "human_hobby" || !bundle.soul) {
+			throw new Error("admission fixture must exercise both declared gates");
+		}
+		for (const snapshot of [founder, head]) {
+			if (row.fiscal_locked) snapshot.fiscalUnlocks.delete(definition.unlock_condition.unlock_id);
+			if (row.soul_boundary !== "unchanged") {
+				const lockedBand = bundle.soul.bands[0]!;
+				expect(lockedBand.human_content_locked).toBe(true);
+				snapshot.soul = lockedBand.max_inclusive + (row.soul_boundary === "unlocked" ? 1 : 0);
+				expect(["locked", "unlocked"]).toContain(row.soul_boundary);
+			}
+		}
 		const before = canonicalJSONString(encodeFounderReplayState(founder));
+		const expectedHead = encodeFounderReplayState(head);
+		if (!row.fiscal_locked && row.soul_boundary === "unchanged") expect(canonicalJSONString(expectedHead)).toBe(testCase.post_state_json);
 		const inputs = structuredClone(testCase.replay_inputs) as {
 			command: { intent_id: string; founder_stream_id: string; founder_id: string; revision: number; founder_log_seq: number; server_ts_ms: number };
 			evaluated_at_ms: number;
@@ -353,7 +369,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 			expect(transition.resultConstantsHash).toBe(hash);
 			expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
 			expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
-			expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(testCase.post_state_json);
+			expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(canonicalJSONString(expectedHead));
 		} else {
 			expect.soft(failure).toBeInstanceOf(RangeError);
 			expect.soft(canonicalJSONString(encodeFounderReplayState(founder))).toBe(before);
@@ -361,12 +377,12 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		if (row.fiscal_due) return; // This clock variant is not the committed golden history.
 		expect(testCase.events_json).toBe("[]");
 		const command = inputs.command;
-		await expect(verifyFounderReplayHistory(testCase.pre_state, command.revision, testCase.state_version, hash,
+		await expect(verifyFounderReplayHistory(JSON.parse(before), command.revision, testCase.state_version, hash,
 			command.founder_stream_id, command.founder_id, [{ seq: command.founder_log_seq, intentId: command.intent_id,
 				constantsHash: hash, canonicalPayload: canonicalJSONString(testCase.canonical_payload), replayInputs: inputs,
 				receiptJSON: testCase.receipt_json, eventsJSON: testCase.events_json,
 				appliedRevision: command.revision + 1, serverTSMS: command.server_ts_ms, source: null }],
-			{ revision: command.revision + 1, version: testCase.state_version, constantsHash: hash, state: testCase.post_state },
+			{ revision: command.revision + 1, version: testCase.state_version, constantsHash: hash, state: expectedHead },
 			[bundle])).resolves.toBe(row.accepted ? "verified" : "state_divergence");
 	});
 

@@ -921,6 +921,15 @@ async function applyFounderStartMinigameSession(state: FounderReplayState, canon
 	const tenant = catalogs.minigameAPI.tenants.find((row) => row.minigameId === minigameId);
 	if (!definition || !tenant || tenant.engineRef !== definition.engine_ref || tenant.engineVersion !== definition.engine_version ||
 		!definition.modes.includes("solo")) throw new RangeError("minigame start tenant mismatch");
+	if (definition.unlock_condition.kind === "fiscal_unlock") {
+		const unlockId = mechanicalString(definition.unlock_condition.unlock_id);
+		if (!catalogs.fiscal?.unlockRows.some((row) => row.unlockId === unlockId) || !state.fiscalUnlocks.has(unlockId)) {
+			throw new RangeError("minigame start Fiscal unlock");
+		}
+	}
+	if (definition.soul_gate === "human_hobby" && (!catalogs.soul || humanContentLocked(catalogs.soul, state.soul))) {
+		throw new RangeError("minigame start Soul gate");
+	}
 	const seed = substream((await founderSeed(wire.command.founder_id, runSeq)) ^ BigInt(after), "minigame.session.v1").next().toString();
 	if (string(resolved.seed) !== seed) throw new RangeError("minigame start seed mismatch");
 	state.minigameSessionSeq = after;

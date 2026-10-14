@@ -14,7 +14,7 @@ import (
 	"cloud-clicker/server/save"
 )
 
-func TestMinigameStartReplayRequiresSoloPolicy(t *testing.T) {
+func TestMinigameStartReplayRequiresAdmissionPolicy(t *testing.T) {
 	data, err := os.ReadFile("../../testdata/replay/apply-logged-v1.json")
 	if err != nil {
 		t.Fatal(err)
@@ -30,13 +30,15 @@ func TestMinigameStartReplayRequiresSoloPolicy(t *testing.T) {
 	var population struct {
 		Version int `json:"schema_version"`
 		Cases   []struct {
-			Name      string   `json:"name"`
-			Modes     []string `json:"modes"`
-			Accepted  bool     `json:"accepted"`
-			FiscalDue bool     `json:"fiscal_due"`
+			Name         string   `json:"name"`
+			Modes        []string `json:"modes"`
+			Accepted     bool     `json:"accepted"`
+			FiscalDue    bool     `json:"fiscal_due"`
+			FiscalLocked bool     `json:"fiscal_locked"`
+			SoulBoundary string   `json:"soul_boundary"`
 		} `json:"cases"`
 	}
-	if err := json.Unmarshal(data, &population); err != nil || population.Version != 1 || len(population.Cases) != 4 {
+	if err := json.Unmarshal(data, &population); err != nil || population.Version != 1 || len(population.Cases) != 9 {
 		t.Fatalf("incomplete mode population: %v", err)
 	}
 	for _, row := range population.Cases {
@@ -89,7 +91,40 @@ func TestMinigameStartReplayRequiresSoloPolicy(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			head, err := save.RestoreState(original.PostState, original.StateVersion, bundle.Economy, economy.ScopeFounder, time.Time{})
+			if err != nil {
+				t.Fatal(err)
+			}
+			definition, ok := bundle.Minigames.Definition("pitch")
+			if !ok || definition.Unlock.Kind != "fiscal_unlock" || definition.SoulGate != "human_hobby" {
+				t.Fatal("admission fixture must exercise both declared gates")
+			}
+			for _, snapshot := range []*save.State{state, head} {
+				if row.FiscalLocked {
+					delete(snapshot.FiscalUnlocks, definition.Unlock.UnlockID)
+				}
+				if row.SoulBoundary != "unchanged" {
+					lockedBand := bundle.Soul.Bands[0]
+					if !lockedBand.HumanContentLocked {
+						t.Fatal("expected the first Soul band to lock human content")
+					}
+					snapshot.Soul = lockedBand.MaxInclusive
+					if row.SoulBoundary == "unlocked" {
+						snapshot.Soul++
+					} else if row.SoulBoundary != "locked" {
+						t.Fatal("unknown Soul boundary")
+					}
+					locked, err := bundle.Soul.HumanContentLocked(snapshot.Soul)
+					if err != nil || locked != (row.SoulBoundary == "locked") {
+						t.Fatalf("invalid Soul boundary control: %v", err)
+					}
+				}
+			}
 			before := mustEncodeState(t, state)
+			expectedHead := mustEncodeState(t, head)
+			if !row.FiscalLocked && row.SoulBoundary == "unchanged" && canonicalFixtureJSON(t, expectedHead) != original.PostStateJSON {
+				t.Fatal("unchanged admission control differs from the original literal golden")
+			}
 			wire, err := parseFounderReplayInputs(original.ReplayInputs)
 			if err != nil {
 				t.Fatal(err)
@@ -112,15 +147,15 @@ func TestMinigameStartReplayRequiresSoloPolicy(t *testing.T) {
 				if replayErr != nil || transition.Outcome != save.IntentApplied || transition.ResultConstantsHash != hash ||
 					canonicalFixtureJSON(t, transition.Receipt) != original.ReceiptJSON ||
 					canonicalFixtureValue(t, fixtureEvents(transition.Events)) != original.EventsJSON ||
-					canonicalFixtureJSON(t, mustEncodeState(t, state)) != original.PostStateJSON {
+					!jsonSemanticallyEqual(mustEncodeState(t, state), expectedHead) {
 					t.Fatalf("accepted mode changed the committed golden: err=%v", replayErr)
 				}
 			} else {
 				if !errors.Is(replayErr, ErrInvalidReplayInputs) {
-					t.Errorf("async-only policy admitted a solo start: outcome=%s err=%v", transition.Outcome, replayErr)
+					t.Errorf("ineligible policy/state admitted a solo start: outcome=%s err=%v", transition.Outcome, replayErr)
 				}
 				if !jsonSemanticallyEqual(before, mustEncodeState(t, state)) {
-					t.Errorf("invalid mode changed sequence or lazy Fiscal state: sequence=%d credit=%d", state.MinigameSessionSeq, state.FiscalCredit)
+					t.Errorf("ineligible start changed sequence or lazy Fiscal state: sequence=%d credit=%d", state.MinigameSessionSeq, state.FiscalCredit)
 				}
 			}
 			if row.FiscalDue {
@@ -132,11 +167,11 @@ func TestMinigameStartReplayRequiresSoloPolicy(t *testing.T) {
 			appliedRevision := wire.Command.Revision + 1
 			history := save.FounderHistory{FounderStreamID: wire.Command.FounderStreamID, FounderID: wire.Command.FounderID,
 				Genesis: save.FounderGenesis{FounderStreamID: wire.Command.FounderStreamID, Revision: wire.Command.Revision,
-					State: original.PreState, Version: original.StateVersion, ConstantsHash: hash},
+					State: before, Version: original.StateVersion, ConstantsHash: hash},
 				Entries: []save.FounderHistoryEntry{{Sequence: wire.Command.FounderLogSeq, IntentID: wire.Command.IntentID,
 					CanonicalPayload: original.CanonicalPayload, ReplayInputs: inputs, Receipt: original.Receipt,
 					AppliedRevision: &appliedRevision, ConstantsHash: hash, ServerTSMS: wire.Command.ServerTSMS, Events: []save.EventWrite{}}},
-				HeadRevision: appliedRevision, HeadVersion: original.StateVersion, HeadConstants: hash, HeadState: original.PostState}
+				HeadRevision: appliedRevision, HeadVersion: original.StateVersion, HeadConstants: hash, HeadState: expectedHead}
 			want := ReplayStateDivergence
 			if row.Accepted {
 				want = ReplayVerified
