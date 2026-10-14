@@ -100,6 +100,18 @@ linear:    price(n) = base + step × n       step ≥ 0
 geometric: price(n) = base × ratio^n        ratio ≥ 1
 ```
 
+Curve objects have exact decoded arm keys: `{kind:"constant"}`, `{kind:"linear",step}` or
+`{kind:"geometric",ratio}`. Aliases and wrong-arm fields—including `null` parameters—are
+refused before pointer decoding can make them look absent. Explicit zero step and unit ratio
+remain valid; escaped canonical keys and complete last-value member behavior are unchanged.
+Kernel0.3.205 records this admission repair, not a price/formula or configured-data change.
+
+`economy.CostCurveSchemas()` exports the closed `EconomyCostCurveV1` component for API C18.
+The owner still validates state-valued Decimals, nonnegative step and ratio at least one.
+This is only the pricing component: the full versioned Economy artifact schema, catalog HTTP
+serving and public re-verification remain unfinished. Version1 is exercised by a derived
+compatibility control, not an invented historical artifact; current/stored bytes stay unchanged.
+
 `base` must be positive. `owned` and purchase `count` must be non-negative exact integers, and
 their sum may not exceed JavaScript's maximum safe integer.
 

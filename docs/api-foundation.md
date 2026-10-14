@@ -586,6 +586,11 @@ values, result nullability and payout/quality/clock mechanics remain; ordering, 
 composition bindings still require the owner. Formula generation changes only the current
 source fingerprint, not expressions or historical artifacts.
 
+Economy's `CostCurveSchemas()` exports the closed K2 pricing component with original arm keys.
+Kernel0.3.205 rejects aliases/wrong-arm nulls without changing price queries or data. State and
+step/ratio semantics remain owner checks. This component does not yet describe the complete
+Economy artifact and is not counted as a completed catalog-owner export.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
 TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities,
 Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions, Guilds, Commons and Minigames provide fifteen owner descriptors
