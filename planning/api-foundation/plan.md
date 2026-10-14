@@ -2,6 +2,15 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C2 object-domain correction (2026-10-14, RP-626): twelve old-checker actual-byte
+regressions reproduce optional-field, required-demotion, enum and integer growth invalidating
+exclusive object replies. A side-specific intersection-coverage proof now refuses those while
+preserving unchanged/safe growth and already-invalid overlap, including third-arm coverage.
+242 complete finite-domain comparisons agree with actual runtime validation; named/nested and
+exact integer controls execute. Owning log holds final checks and the range after `5210d561`,
+pending Claude. Unknown intersections fail closed; no general inclusion/full C2/API claim,
+DTO/pin/DSL/kernel change or owner-draft adoption follows. History-exception ruling remains held.
+
 Current C2 integer-domain correction (2026-10-14, RP-618): widening existing integer ranges
 can invalidate old replies under exclusive union matching. Fifteen old-checker byte failures
 reproduce across both bound directions, wrappers, >2^53 and int64 extremes. Compare exact

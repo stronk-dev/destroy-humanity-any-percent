@@ -3145,3 +3145,47 @@ containing commit needs designated Claude review, consolidatable with the
 other C2 corrections. Review by: Codex (implementer first filter); Recorded by:
 Codex. No shipped-handler failure, full C2/API acceptance, owner adoption,
 kernel bump, feature/1.0 promotion, archival, mint or publication/push claim.
+
+## 2026-10-14 — C2 preserves exclusive object replies during arm growth (RP-626)
+
+Outcome: accepted A1/C2 must preserve previously admitted v1 replies. Twelve ordinary old-checker
+regressions demonstrate metadata compatibility passing while actual response bytes fail after
+optional-property addition, required demotion, enum or integer widening (direct/array/union).
+The corrected proof checks every object-bearing current arm against each different old arm:
+their intersection must already be covered by another old arm, so it contains no old uniquely
+admitted reply. This preserves existing ambiguity rather than pretending old-invalid values
+were part of the contract. No new metadata/DSL, DTO, pin, handler or kernel semantics.
+
+References resolve against each side's own definitions, including nested fields. Closed field
+presence/domains, nested union/array intersections, runtime string formats and exact integer
+ranges supply a sufficient proof within the existing depth bound. Unknown intersections refuse;
+this is not a complete general inclusion solver or full C2/API acceptance. Initial pair coverage
+was expanded to third-old-arm coverage before final checks, preventing an unnecessary refusal
+of values already invalid through two other old arms.
+
+Regression/controls: old source fails twelve byte witnesses; each first verifies old admission
+and new runtime refusal. Final controls preserve safe/unchanged growth, own definitions, nested
+object/union arms, legacy overlap, third-arm coverage and int64/>2^53 boundaries. The eleven
+finite old objects × eleven counterparts × two changes give242 comparisons over all seven
+admitted value-domain classes; pin verdicts agree with actual runtime loss in every combination.
+This finite population is exhaustive for its declared old domains, not all possible schemas.
+Initial undefined test helpers and unsorted added fields were test-author setup errors, corrected
+without loosening assertions; initial native Gameserver listener denial was environmental.
+
+Verification by: Codex. Recorded by: Codex. Final cold four-package native29918 passes
+PublicAPI/PublicRead/Account/Gameserver; native DB skips are not SQL evidence. Final affected
+vet and `make api-check`14944 pass with byte-identical OpenAPI/TypeScript/pin outputs.
+Declared Linux-amd64/Postgres1663 exits0 through all four packages (Gameserver77.783s), with the
+manual credential-cleanup runtime test explicitly skipped. Early stdout capture was truncated,
+so no complete per-test/skip census is claimed. After the final third-arm/source supplement,
+full Linux PublicAPI47440 passes0.198s with complete capture; consumer wire/handlers are unchanged.
+This is amd64 emulation on ARM64 Docker, not native hosted hardware, whole CI or release proof.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Complete single-commit range
+after `5210d561`, source/tests/docs/records, needs designated Claude review, consolidatable with
+other C2 corrections. No owner response adopts the history-scope exception mechanism; no row or
+draft implementation was added. RP-131/RP-307, remaining API and full-nine-tier/release obligations
+remain open. No acceptance, archival, false version bump, mint, push or deployment.
+The final test-helper-only rename recompiles/passes full native PublicAPI86368. After terminal
+Linux runs, removed only this turn's Postgres test container and disposable tmpfs rows; final
+service inventory is empty. No durable volumes, caches, network or unrelated data removed.

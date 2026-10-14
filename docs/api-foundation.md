@@ -129,6 +129,15 @@ int64. Membership is constant inside each region, so this covers the whole integ
 including missing bounds and both int64 limits, without floating-point conversion or exhaustive
 value iteration. Old-invalid and new-only overlaps do not invalidate compatibility by themselves.
 Object cross-arm changes remain separate from these scalar-domain checks.
+Existing object arms now receive an intersection proof as well: for each current arm and
+different old arm, their shared domain must be provably covered by another old arm. Such
+values already matched at least twice and were not old valid replies. Otherwise growth
+is refused; an optional property or required-field demotion is not automatically safe inside
+an exclusive union. The proof follows side-specific named definitions, closed object field
+presence/domains, nested unions/arrays, runtime string formats and exact integer intervals.
+Unchanged arms and provably safe growth remain allowed, including already-invalid overlap
+covered by a third old arm. Unknown intersections fail closed; this is a sufficient proof,
+not a general inclusion solver or full C2/API/consumer acceptance.
 Existing optional fields cannot become required in requests, responses or shared definitions,
 including through array/reference/union nesting; failures identify the affected field. Numeric
 bounds compare as exact signed int64 values, not float64 projections, so a one-unit narrowing

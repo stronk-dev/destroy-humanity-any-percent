@@ -172,6 +172,9 @@ func compareCompatibilitySchema(oldSchema, nextSchema map[string]any, mode compa
 		if err := preserveCompatibilityIntegerUnion(oldOne, nextOne, oldDefinitions, nextDefinitions); err != nil {
 			return err
 		}
+		if err := preserveCompatibilityObjectUnion(oldOne, nextOne, oldDefinitions, nextDefinitions); err != nil {
+			return err
+		}
 		// oneOf is exclusive, not an ordinary set union. An appended arm
 		// must not add a second match for any previously admitted response.
 		for index, extra := range nextOne[len(oldOne):] {
