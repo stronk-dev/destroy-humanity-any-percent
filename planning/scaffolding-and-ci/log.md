@@ -1214,3 +1214,44 @@ corrections. No policy/budget, concurrency, framework upgrade, CI workflow, kern
 SQL/Firefox/performance/hosted proof, archival, publication or nine-tier milestone change. Next:
 separate callback and dispatch intervals on recurrence, or predeclare a bounded workload control;
 do not optimize based on the zero post-input response waits or count this local pass as CI repair.
+
+## 2026-10-14 — Bounded worker comparison and real-minute critical path
+
+Resume clean `8352f1c2`; previous goal turn made progress with failure timing/callback controls.
+Predeclare exactly two diagnostic arms in the existing plan, not a new program: complete native
+Chromium/WebKit functional population, default workers then four per engine, same default+JSON
+reporters, no retry. All input, deadlines, assertions, selected files and runtime/test source stay
+fixed. Source inspection: installed Vitest4.1.10 creates independent pools capped at12 each on
+this14-CPU Mac; the override means4 each,8 total. Hosted4-CPU defaults differ; forcing4 globally
+would not even be the same direction of change. No config, environment budget or workflow edit.
+
+Default15139 exits0,292 files/24,430 ordinary passes/ten expected deadlines/16 skips,156.85s.
+Four-worker40219 exits0 with the same counts,159.62s. Both passive module populations finish
+with no pending/early-closed requests (1,362 and1,361 respectively; other summaries0/0). No
+ordinary/controlled Typer deadline fires, so exclusive cause and reliability remain unresolved.
+The JSON reporter groups expected-deadline controls into24,440 passed; preserve the separate
+ordinary/negative counts rather than inflate positive acceptance. Both reports have exactly
+24,456 matching file/title/skip tuples; source hashes remain unchanged. JSON omits engine IDs,
+so this is a complete duplicated-case multiset comparison, NOT per-engine identity proof.
+
+Retain concise summary/digests in `native-concurrency-8352f1c2.json`; large raw JSON/logs stay
+ignored under the four named `.cache/concurrency-*-8352f1c2.*` paths. Case identity/outcomes
+are compared, not merely totals. The retained fingerprint is repository-relative; the initial
+absolute-path diagnostic fingerprint is not a second corpus. Single ordered pair/cache/host
+load are uncontrolled: shorter Typer durations (2.676/5.629s versus0.672/0.695s) support no
+default change or causal/hosted-floor claim, and whole duration does not improve.
+
+The actual cost census changes the next action: Garage's424-case file spans150.546/151.318s
+in the default arm and151.621/156.935s in the control, close to both complete runs. Inspect the
+actual longest case and accepted GS5-A2: one full native minute without any submitted intent,
+checking every250ms, with its unchanged70s test deadline. The observed case lasts60.141–60.204s
+across these populations. Do not shorten it, use fake time, move it out of blocking collection
+or call4 workers a release fix. Safely separate that independent minute case from the interaction
+file, reuse the same fixtures and prove all mapped case identities plus the full native lane.
+That is accepted CI D2 test organization, not a changed player or acceptance contract.
+
+All handles terminal; diff checked. Review by: Codex (experiment recorder/first filter).
+Recorded by: Codex. No product/test source, CI config, kernel, balance, copy, acceptance,
+archival, push or deployment change. These planning/evidence records after `8352f1c2` do not
+approve its diagnostic implementation; its full designated review debt remains. No Firefox,
+Linux/SQL, isolated performance, full `verify-push`, current hosted or1.0 milestone claim.

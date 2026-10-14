@@ -1,0 +1,100 @@
+{
+  "source_commit": "8352f1c2",
+  "context": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v26.11.1",
+    "available_parallelism": 14,
+    "vitest": "4.1.10",
+    "selected_projects": [
+      "chromium",
+      "webkit"
+    ],
+    "default_ceiling_per_engine": 12,
+    "control_ceiling_per_engine": 4
+  },
+  "source_sha256": {
+    "client/test/typer-table-browser.test.ts": "a3d81bcbb9a7ab1974b27f3cb6adea713e754dd701e90616f8f89731af40a182",
+    "client/vitest.browser.config.ts": "3e03cdac4fcdc834cde7a9fef211e5973c50d4ef393c10f9b418e04cdb078afb"
+  },
+  "protocol": "One default arm followed by one four-worker-per-engine arm. Same full functional population, reporters, inputs and deadlines; no retry. No config or CI change.",
+  "same_case_and_skip_multiset": true,
+  "arms": [
+    {
+      "name": "default",
+      "json": ".cache/concurrency-default-8352f1c2.json",
+      "log": ".cache/concurrency-default-8352f1c2.log",
+      "duration_seconds": 156.85,
+      "json_sha256": "e27de9cac3819e0d0feb1264743888bd9bef84c663af2ce318d708915181de3c",
+      "log_sha256": "5c87057a19fdfd49ad729af33f8fceeddc9c63f06529e77b26d0f6e0f89dfadb",
+      "exit_code": 0,
+      "files": 292,
+      "total_cases": 24456,
+      "ordinary_passes": 24430,
+      "expected_deadlines": 10,
+      "skipped": 16,
+      "json_passes_including_expected_deadlines": 24440,
+      "case_and_skip_fingerprint": "836493158ba26c4b3015d6938ae0769dc9c248d28fe948e305bf7a33ef205210",
+      "normal_typer_durations_ms": [
+        2676,
+        5629.200000047684
+      ],
+      "garage": [
+        {
+          "cases": 424,
+          "span_ms": 151318,
+          "idle_observation_ms": 60162.700000047684
+        },
+        {
+          "cases": 424,
+          "span_ms": 150546,
+          "idle_observation_ms": 60204
+        }
+      ]
+    },
+    {
+      "name": "four_per_engine",
+      "json": ".cache/concurrency-four-8352f1c2.json",
+      "log": ".cache/concurrency-four-8352f1c2.log",
+      "duration_seconds": 159.62,
+      "json_sha256": "ff876acd8696eba61b5b432a918b41429ce2e03dc51e9c833971103fc5dfe931",
+      "log_sha256": "415964ecd91daf63ee4a82634b060f3657be0a45cc9b997786ef6d760a3ba386",
+      "exit_code": 0,
+      "files": 292,
+      "total_cases": 24456,
+      "ordinary_passes": 24430,
+      "expected_deadlines": 10,
+      "skipped": 16,
+      "json_passes_including_expected_deadlines": 24440,
+      "case_and_skip_fingerprint": "836493158ba26c4b3015d6938ae0769dc9c248d28fe948e305bf7a33ef205210",
+      "normal_typer_durations_ms": [
+        671.7000000476837,
+        695
+      ],
+      "garage": [
+        {
+          "cases": 424,
+          "span_ms": 151621.19995117188,
+          "idle_observation_ms": 60174.199999809265
+        },
+        {
+          "cases": 424,
+          "span_ms": 156935,
+          "idle_observation_ms": 60141
+        }
+      ]
+    }
+  ],
+  "conclusions": [
+    "Both arms pass; intermittent timeout cause is inconclusive.",
+    "Four-worker whole duration is not lower in this pair, despite shorter normal Typer durations.",
+    "Garage file spans dominate both results. One accepted real-minute idle observation per engine runs serially inside that file; do not shorten or fake it."
+  ],
+  "limits": [
+    "Single ordered pair; cache/order/host load are uncontrolled. Not a causal benchmark.",
+    "JSON reporter omits engine identity; fingerprints compare the complete duplicated file/title/skip multiset, not per-engine assignments.",
+    "Native two-engine functional results are not hosted latency, Firefox, performance, SQL or complete CI proof.",
+    "JSON reporter counts the ten expected-deadline controls as passed; ordinary pass counts are separately retained from the default reporter."
+  ],
+  "next_action": "Keep default concurrency. Separate the unchanged real-minute observation into its own normally collected test file, preserve shared fixture authority and prove the mapped full case population."
+}

@@ -7,6 +7,29 @@
 
 ## Current checkpoint — 2026-10-14
 
+Completed local concurrency comparison: both full arms pass the identical24,456-case/skip
+multiset, but four workers do not reduce total wall time (159.62s versus156.85s). The retained
+`native-concurrency-8352f1c2.json` records raw digests, source hashes and missing per-engine JSON
+identity; no causal or hosted inference. Garage's424-case file spans150–157s in both engines,
+including its required real-minute idle observation. Keep default concurrency. Next accepted
+CI D2 work: move that unchanged GS5-A2 case into its own normally collected file with shared
+fixture authority, preserve60s/70s bounds and every assertion, then prove the mapped complete
+population. No reduced acceptance, fake clock or skipped/minute maintenance replacement.
+
+Bounded local concurrency comparison at `8352f1c2` (diagnostic, not a configuration ruling):
+run exactly one complete native Chromium/WebKit functional population with default workers,
+then exactly one with `--maxWorkers=4`; no retry or third arm (both now terminal). Source, selected tests, inputs,
+assertions and existing deadlines stay fixed. Add the same default+JSON reporters to both and
+retain ignored results/logs so actual case identity/outcomes, not only counts, can be compared.
+Both arms must terminate with complete reports and unchanged source; incomplete/failed arms
+remain visible, and a population mismatch invalidates comparison. Compare unexpected native
+failures, whole duration and any failure callback timings. A default-red/control-green pair
+would support workload sensitivity, not prove exclusive causation or authorize a default change;
+both green is inconclusive about the intermittent failure. Host load/order are uncontrolled.
+Installed Vitest caps default pools separately per engine (12 each on this14-CPU Mac); four
+means4 per engine,8 total here. Hosted4-CPU defaults differ, so this is not a hosted-five-minute
+measurement or a recommendation to force4 everywhere. CI config/topology and bounds stay unchanged.
+
 At `3c6d5acc`, a second complete native functional run again fires WebKit's unchanged15s
 Typer deadline, now at `submit-prompt-6`. The committed small observation capsule retains every
 stage:13,337ms completed plus1,663ms active account for15,000ms. Setup is4ms; most time is in
