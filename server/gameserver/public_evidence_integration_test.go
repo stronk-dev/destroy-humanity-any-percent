@@ -13,11 +13,14 @@ import (
 	"net/http/httptest"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"testing"
 	"time"
 
+	"cloud-clicker/server/leaderboard"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/publicread"
+	"cloud-clicker/server/replaycatalog"
 )
 
 // Uses a real queue-verified/archived run from the composed Exit witness. Catalogs
@@ -181,6 +184,73 @@ func assertPublicVerifiedEvidence(t *testing.T, db *sql.DB, server *httptest.Ser
 		t.Fatal("corrupt downloaded receipt was accepted by the replay check")
 	}
 	t.Log("public verification downloads match immutable storage and reverify; corrupted receipt refuses; pinned catalogs supplied from DB")
+}
+
+// Advance only this disposable database through the real epoch writer. The
+// running composition is not restarted and no deployable content is minted.
+// Historical evidence must remain pinned even when the active epoch excludes it.
+func assertHistoricalPublicVerifiedEvidence(t *testing.T, db *sql.DB, server *httptest.Server, stream string, genesis []byte, bundle production.CatalogBundle, privateValues map[string]string) {
+	t.Helper()
+	ctx := context.Background()
+	root := t.TempDir()
+	repository, err := leaderboard.NewRepository(db, root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	previous, err := repository.Current(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	nextID := previous.ID + 1
+	reference := fmt.Sprintf("changelog/epoch-%d.md", nextID)
+	if err := os.Mkdir(filepath.Join(root, "changelog"), 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, reference), []byte("Test-only historical evidence rollover; no product mint.\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	artifacts := make([]leaderboard.Artifact, 0, len(bundle.Artifacts))
+	for name, raw := range bundle.Artifacts {
+		data := bytes.Clone(raw)
+		if name == "economy" {
+			// Whitespace changes original-byte identity, not gameplay policy.
+			data = append(data, '\n')
+		}
+		artifacts = append(artifacts, leaderboard.Artifact{Name: name, Bytes: data})
+	}
+	next, err := repository.MintEpoch(ctx, "Historical public evidence fixture", previous.StartedAt.Add(time.Hour), reference, artifacts)
+	if err != nil || next.ID != nextID || len(next.Hashes) != 1 || next.Hashes[0] == bundle.ConstantsHash {
+		t.Fatalf("rollover did not create a distinct fixture identity: %+v err=%v", next, err)
+	}
+	current, err := repository.Current(ctx)
+	if err != nil || current.ID != next.ID || len(current.Hashes) != 1 || current.Hashes[0] != next.Hashes[0] {
+		t.Fatalf("active database epoch did not change: %+v err=%v", current, err)
+	}
+	var pinnedEpoch int64
+	var pinnedHash string
+	var closed bool
+	if err := db.QueryRowContext(ctx, `SELECT p.epoch_id,p.constants_hash,e.ended_at IS NOT NULL
+FROM run_epochs p JOIN epochs e ON e.epoch_id=p.epoch_id
+WHERE p.company_stream_id=$1 AND p.run_seq=1`, stream).Scan(&pinnedEpoch, &pinnedHash, &closed); err != nil ||
+		pinnedEpoch >= current.ID || pinnedHash != bundle.ConstantsHash || !closed {
+		t.Fatalf("verified run is not pinned to a closed historical epoch: epoch=%d hash=%s closed=%t err=%v", pinnedEpoch, pinnedHash, closed, err)
+	}
+	// Resolve again from storage after rollover, not the pre-rollover in-memory bundle.
+	stored, err := replaycatalog.LoadDatabase(ctx, db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	historical, ok := stored.ResolveReplayCatalogs(bundle.ConstantsHash)
+	if !ok || historical.ConstantsHash != bundle.ConstantsHash || len(historical.Artifacts) != len(bundle.Artifacts) {
+		t.Fatal("historical pinned replay bundle unavailable after rollover")
+	}
+	for name, raw := range bundle.Artifacts {
+		if !bytes.Equal(historical.Artifacts[name], raw) {
+			t.Fatalf("rollover replaced historical artifact %s", name)
+		}
+	}
+	assertPublicVerifiedEvidence(t, db, server, stream, genesis, historical, privateValues)
+	t.Log("historical verified HTTP evidence survives distinct active epoch/hash; DB-pinned replay and corruption refusal: PASS")
 }
 
 // The root browser-composition driver enables this seam and requires its PASS

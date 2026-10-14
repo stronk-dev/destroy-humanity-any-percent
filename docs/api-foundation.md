@@ -459,6 +459,15 @@ rejected. Embedded genesis JSON is compared with whitespace-only compaction beca
 existing archive encoder embeds the stored JSON value compactly; endpoint/storage equality
 remains byte-exact.
 
+The same witness also advances its disposable database through the real epoch writer
+to a distinct active constants hash, closing the run's original epoch without accepting
+its hash in the new one. It reloads the historical bundle from Postgres and repeats the
+HTTP byte/hash/cache checks and replay refusal controls. The composed lane additionally
+repeats generated-SDK/TypeScript replay after that rollover. This proves historical
+evidence retrieval under changed database epoch state; the running composition is not
+restarted, no deployed content is minted, and catalogs still come from the DB fixture,
+not public HTTP. It is not an upgrade/release-artifact or complete public catalog proof.
+
 The root composed lane additionally requires `public-replay-composed.mjs` to execute while
 that Go fixture's HTTP server remains alive. It loads the actual generated SDK and TypeScript
 verifier with the existing Vite SSR mechanism, downloads manifest/genesis/archive without

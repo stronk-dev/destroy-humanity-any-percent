@@ -3189,3 +3189,49 @@ remain open. No acceptance, archival, false version bump, mint, push or deployme
 The final test-helper-only rename recompiles/passes full native PublicAPI86368. After terminal
 Linux runs, removed only this turn's Postgres test container and disposable tmpfs rows; final
 service inventory is empty. No durable volumes, caches, network or unrelated data removed.
+
+## 2026-10-15 — Historical verified evidence across database epoch rollover
+
+Accepted C4/C14/C19: extend the existing real queue-verified Exit/board witness,
+not the runtime or a new measurement framework. After its original checks/actions,
+use the real epoch writer in the disposable database to close the run's epoch and
+activate a distinct constants hash that excludes the old one. The fixture changes
+only original Economy JSON whitespace, not gameplay policy or repository content.
+Require the historical run pin, fresh Postgres bundle resolution and exact original
+artifact bytes. Reuse HTTP manifest/genesis/archive/hash/cache/private-value checks
+and Go replay with corrupted-receipt refusal. The existing root composed driver also
+requires the historical marker and repeats generated-SDK/TypeScript replay/refusals.
+
+Executed: declared Postgres9698 passes the actual
+`TestComposedGameserverExitVerificationAndBoardIntegration` in1.52s, including both
+download checks and the historical marker; this Go-only lane explicitly does not run
+the Node seam. Initial92377 selects no tests because Make consumes the regex dollar
+before `-v`; it earns no credit. Correct root command:
+`make test-save-integration SAVE_TEST_PACKAGES=./gameserver SAVE_TEST_FLAGS='-run TestComposedGameserverExitVerificationAndBoardIntegration -v'`.
+Cold full PublicAPI/PublicRead passes0.113/.136s; affected PublicAPI/PublicRead/
+Gameserver vet passes. Node driver syntax and diff checks pass. Native selector68848
+compiles but skips DB work; its PublicAPI selection has no tests, not API proof.
+
+Full `make test-game-ui-composed`46888 terminates exit0: both driver populations
+execute8/8 refresh cases, the ten mandatory persisted parents and original/historical
+SDK/TS checks. Main gameplay/recovery, Cosmetic/Reputation, Clout, payment negatives,
+controlled-maturity Garden and candidate Tier2 pass. Some first-population output was
+truncated; required parent/marker gates and the fully captured second population are
+retained, not a complete per-child skip census. Vite connection-reset/refused diagnostics
+occur around the exercised server loss/restart paths; the run reaches all final gates.
+Postgres16's amd64 image runs on the ARM64 host; no hosted/native-amd64 timing claim.
+
+The running composition is not restarted for the epoch change. This proves changed
+database-history retrieval, not a deployed upgrade, public catalog transport or the
+complete third-party loop. No product defect was reproduced and no production/schema/
+kernel/balance/CI workflow/owner text changed. Canonical evidence and owning checklist
+are reconciled without completing API or any release. Removed only this turn's two
+validated tmpfs Postgres containers and disposable test rows after terminal runs;
+no durable volumes, caches, network or unrelated data removed.
+
+Review by: Codex (test implementer first filter). Recorded by: Codex. Complete range
+after `de5a3864` through this containing commit needs designated Claude review,
+consolidatable with the existing C14 implementation/review debt. No acceptance,
+archival, push or1.0 promotion. Next: complete the public catalog/consumer contract
+under its explicit adoption boundaries and continue accepted construction/reviews;
+do not repeat this historical-download population as new progress.

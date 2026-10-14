@@ -1077,6 +1077,9 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 				tokens.AccessToken, founderRevision.StreamID, founderID,
 				companyRevision.StreamID, now)
 			proveImportedFounderExitExcludedFromBoard(t, ctx, db, composition, httpServer, store, now)
+			assertHistoricalPublicVerifiedEvidence(t, db, httpServer, companyRevision.StreamID, pinnedGenesis, pinnedReplayBundle, map[string]string{
+				"account_id": created.AccountID, "recovery_code": created.RecoveryCode, "access_token": tokens.AccessToken, "refresh_token": tokens.RefreshToken,
+			})
 			drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)
 			defer cancelDrain()
 			if err := composition.Server.Drain(drainContext, now.Add(2*time.Second)); err != nil {

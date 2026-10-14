@@ -138,6 +138,9 @@ for (const name of persistedTests) {
 if (!persistedChecks.stdout?.includes("public SDK HTTP downloads → TypeScript replay: verified + receipt/event/gap/constants refusal; DB-pinned catalogs supplied: PASS")) {
   throw new Error("public SDK/TypeScript replay integration did not execute and pass");
 }
+if (!persistedChecks.stdout?.includes("historical verified HTTP evidence survives distinct active epoch/hash; DB-pinned replay and corruption refusal: PASS")) {
+  throw new Error("historical public evidence rollover integration did not execute and pass");
+}
 // Diagnostic streams/catalogs must not become the browser journey's epoch.
 resetTestDatabase();
 

@@ -360,8 +360,13 @@ is implemented; its draft decisions and full API acceptance remain open.
     hash consistency and real-Postgres refusal tests.
   - [x] C14 HTTP handlers/manifest descriptors and a real verified-run download round trip
     (TestComposedGameserverExitVerificationAndBoardIntegration; pinned catalogs supplied from DB).
+  - [x] Historical C14 evidence after a distinct database epoch/hash rollover: the same
+    verified run downloads/reverifies with freshly loaded original DB artifacts, retaining
+    receipt-corruption refusal (TestComposedGameserverExitVerificationAndBoardIntegration).
+    Existing composed lane requires the rollover and repeats generated-SDK/TS checks.
+    No process upgrade, public catalog serving, release artifact or designated approval claim.
   - [ ] Complete the third-party loop using public catalogs and the TypeScript verifier;
-    same-epoch Go download proof does not close this requirement.
+    same/historical-epoch downloads with DB-supplied catalogs do not close this requirement.
 - [x] Generate OpenAPI 3.1 and TypeScript from the registry; add compatibility pins/gate.
   - [x] Register existing session creation/refresh, preserve middleware and exact replies, and
     generate explicit typed calls (`TestSessionOperationRegistryIntegration`, persisted refresh
