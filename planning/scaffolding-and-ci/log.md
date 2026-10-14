@@ -1746,3 +1746,27 @@ range after `ab3442dc` requires adoption and designated normative review before
 implementation. The archived parent and all product/tool/workflow/data bytes are
 unchanged. RP-634 remains open; prior corrective reviews remain separate.
 Scope adoption requested2026-10-15; no answer or independent approval is inferred.
+
+## 2026-10-15 — Current full Linux server gate remains red
+
+Run `make verify-server-ci`8001 at product source `3bde51b5` (kernel0.3.216),
+using the existing Linux-amd64/Postgres composition and its unchanged emulation
+CPU setting. Vet succeeds;64 test packages pass. Production alone fails107.387s
+with exactly27 `TestAxisAccrualPartitionProperty` children (RP-307); all named
+one/split decimal differences are captured, not a truncated census. Overall
+Make exits2. The subsequent Pitch/formula/API generation and boundary leaves
+do not run after `test-go-core` fails. Quiet package output does not enumerate
+skips, and a passing package is not full feature acceptance.
+
+Gameserver88.533s, Arcade48.594s, Save1.996s and Transport13.964s pass. This
+refreshes current-source Linux/SQL consumer evidence, not RP-614 cause/reliability,
+hosted native-amd64/five-minute timing, the full push aggregate, natural balance
+or 1.0 acceptance. No source/test/limit/population changes, assertion relaxation,
+retry-until-green or golden rewrite. An editorial Transport reconciliation lands
+while this run lives; server/client/kernel/balance diff from its start is empty.
+
+Verification by: Codex. Recorded by: Codex. The fresh declared test runner
+terminates and auto-removes; remove only its owned postgres container afterward,
+discarding regenerable tmpfs fixtures. Final composition inventory is empty;
+no durable/user data, cache, volume or network removed. Record-only checkpoint,
+diff/links checked; prior reviews and named conservation/author holds remain.

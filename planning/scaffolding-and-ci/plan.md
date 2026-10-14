@@ -7,6 +7,14 @@
 
 ## Current checkpoint — 2026-10-15
 
+Current full server-gate execution at `3bde51b5`: `make verify-server-ci` runs cold
+in the declared Linux-amd64/Postgres composition and exits2. Vet passes;64 test
+packages pass and Production alone fails with exactly27 existing RP-307 partition
+cases. Later generation/boundary leaves do not run after that failure. Quiet Go
+output is not an individual skip census. The owning log records capture and cleanup;
+no hosted/latency/full-CI promotion. Continue the existing conservation research/
+author boundary and other accepted work; do not soften assertions or hide the red gate.
+
 RP-635 observation identity correction: six old-validator cases admit invented objective names
 or relevance IDs inconsistent with their declared row coordinates. Bind the existing stable
 names independently of declaration equality. Focused recorder/identity/registered-row/signal
