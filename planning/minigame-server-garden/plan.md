@@ -5,6 +5,14 @@ Fixture-first: no production mint (SG13). Numbering is landing-order: the RFC's 
 means next-free, and at landing that is **Founder v25** (v22 Reputation, v23 Pet, v24 Cosmetics).
 Replay inputs take the next free wire version, and the event migration takes the next free number.
 
+**Current bounded repair, 2026-10-14 (RP-595):** unknown Garden read kinds now fail into the
+existing error/stale path; deadline setup finishes before a first view is published. Mounted
+generated-port regressions reproduce six old-browser failures, while the later missing-data
+control already passed. Final affected native checks, types/build and UI boundaries pass;
+owning log records the exact new range after `661ba498`, pending designated review. This is
+not general nested DTO validation, SQL/default-server integration, new retry policy or Garden
+acceptance. Earlier author, content, renewal, accessibility and review holds remain.
+
 **Current execution, 2026-10-08:** all original G1–G7 batches now have complete designated
 CHANGES REQUIRED dispositions; their exact ranges and evidence are in the latest [log](log.md).
 Do not restart those reviews or mistake them for approval of corrected descendants. Consolidate

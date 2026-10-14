@@ -275,6 +275,12 @@ payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release cl
 - Only the latest-started read may replace the view/status/announcement or schedule the
   next read. Older success and failure completions are ignored, including a response that
   arrives after a newer receipt refresh. Unmount still discards late completions.
+- Unknown read-response kinds are failures, not active views. Deadline setup finishes before
+  the new view or tick announcement becomes reactive, so a first active response missing its
+  Garden data falls back to the existing error/Refresh state instead of poisoning rendering.
+  A later failed read retains the last good view as stale; explicit refresh/receipt reads can
+  recover without a retry or gameplay callback. RP-595's mounted generated-port checks cover
+  these two failures, not general runtime validation of every nested DTO field.
 - The grid fits 320 CSS px with at least 24 px targets.
 - Commands go through the Game UI's Founder-scoped `act()`.
 - Nonterminal streamed receipts invalidate the Garden read as well as refreshing the

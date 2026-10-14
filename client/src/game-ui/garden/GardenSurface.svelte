@@ -85,10 +85,13 @@
       if (destroyed || generation !== readGeneration) return;
       if (next.kind === "inactive") { viewState = { kind: "error" }; return; }
       if (next.kind === "locked") { viewState = { kind: "locked" }; return; }
+      if (next.kind !== "active") throw new SyntaxError("invalid garden response kind");
       const delta = tickDelta(viewState, next);
+      // Finish the potentially failing read setup before making this view
+      // reactive. A failed first read must not poison the render/catch path.
+      schedule(next);
       if (delta.matured > 0 || delta.spawned > 0) announcement = t("garden.announce.tick", { matured: delta.matured, spawned: delta.spawned }, era);
       viewState = { kind: "active", view: next };
-      schedule(next);
     } catch {
       if (!destroyed && generation === readGeneration) viewState = active ? { kind: "stale", view: active } : { kind: "error" };
     }

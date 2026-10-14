@@ -3407,3 +3407,30 @@ ranges for Claude, continue independent work authorized by accepted contracts, a
 RP-222/RP-229/RP-471 author reconciliations. Renewal, natural growth, adopted copy/content,
 SG13 production activation and AC13 remain open. No behavior checkbox, archival, push or release
 promotion. This documentation-only closeout adds no implementation range or new acceptance test.
+
+## 2026-10-14 — Garden read kind and safe publication (RP-595)
+
+Resume clean `661ba498`; previous goal turn committed implementation progress. API SDK deliberately
+does not perform generic DTO validation; inspect its application consumer under accepted SG9/SG10.
+Real browser Garden port + controlled HTTP replies reproduce six failures: unknown kind becomes
+active on initial/later reads, and a first active reply missing Garden data causes uncaught rendering.
+Two later missing-data controls already preserve the last good stale view; do not count them as
+defects. Refuse unknown kinds and finish deadline setup before publishing the view/announcement.
+No handwritten DTO/schema authority, new SDK behavior, copy, retry, growth, server or kernel change.
+
+`make test-browser-focused` for the complete refresh file passes34 Chromium/WebKit executions,
+including explicit native Refresh recovery, retained growing state and later maturation, no
+automatic re-fetch or gameplay callback. Final five affected Garden browser files pass196;
+the two existing intentional startup-deadline failure controls are separate, not extra successes.
+Types zero errors/warnings, production build and UI boundary guard pass. No new Go suite for a
+local component edit. These are mounted/port/controlled-reply boundaries, not real SQL/server,
+natural growth, Firefox/Linux, assistive-technology, hosted/full CI or feature acceptance.
+
+The bounded Docker `_ping` check remains terminal exit28 after5008ms with zero bytes; it does
+not prove the daemon stopped or authorize a restart/cleanup. No unavailable composed proof is
+claimed. Existing author/renewal/content/AC13, CI and other full-nine-tier obligations remain.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete component/test/docs/
+plan/ledger/log range after `661ba498` through this containing commit needs designated Claude
+review, consolidatable with earlier Garden corrections. No prior review is relabeled, no
+acceptance checkbox/archival/mint/push changes. Continue accepted work; goal remains full1.0.

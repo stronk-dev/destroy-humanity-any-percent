@@ -5,6 +5,7 @@ import views from "../../testdata/garden/view-fixtures-v1.json";
 import type { GardenCurrentResponse } from "../src/api/generated/types";
 import GardenSurface from "../src/game-ui/garden/GardenSurface.svelte";
 import { createBrowserGardenPort } from "../src/game-ui/garden/garden-port";
+import { t } from "../src/copy";
 import GardenSurfaceHarness from "./GardenSurfaceHarness.svelte";
 
 const browser = typeof document !== "undefined";
@@ -39,12 +40,12 @@ async function settle(): Promise<void> {
   await tick(); flushSync();
 }
 
-function mounted(response: Active) {
+function mounted(response: unknown) {
   vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
   let visibility: DocumentVisibilityState = "visible";
   const visibilitySpy = vi.spyOn(document, "visibilityState", "get").mockImplementation(() => visibility);
   const requests: { input: string; method: string | undefined; headers: Headers; body: BodyInit | null | undefined }[] = [];
-  let next: GardenCurrentResponse | Error = response;
+  let next: unknown = response;
   const commands: string[] = [];
   const port = createBrowserGardenPort(() => "garden-refresh-token", async (input, init) => {
     requests.push({ input, method: init?.method, headers: new Headers(init?.headers), body: init?.body });
@@ -71,7 +72,7 @@ function mounted(response: Active) {
   let destroyed = false;
   return {
     target, app, requests, commands,
-    respond(value: GardenCurrentResponse | Error) { next = value; },
+    respond(value: unknown) { next = value; },
     visibility(value: DocumentVisibilityState) {
       visibility = value;
       document.dispatchEvent(new Event("visibilitychange"));
@@ -92,6 +93,50 @@ function mounted(response: Active) {
       expect(commands).toEqual([]);
     },
   };
+}
+
+for (const fault of ["unknown kind", "missing garden"] as const) {
+  function invalidReply(): unknown {
+    const reply = matured();
+    if (fault === "unknown kind") return { ...reply, kind: "fictional-private-kind" };
+    const { garden: _garden, ...incomplete } = reply;
+    return incomplete;
+  }
+
+  it.skipIf(!browser)(`Garden initial ${fault} reply stays error and explicit refresh recovers`, async () => {
+    const host = mounted(invalidReply());
+    try {
+      await settle(); host.assertReads(1);
+      expect(host.target.querySelector("[role=alert]")?.textContent).toBe(t("garden.state.error", {}, "era_1995"));
+      expect(host.target.querySelector("[role=grid]")).toBeNull();
+      expect(host.target.textContent).not.toContain("fictional-private-kind");
+      await vi.advanceTimersByTimeAsync(60_000); await settle(); host.assertReads(1);
+      host.respond(growing(null));
+      const refresh = [...host.target.querySelectorAll<HTMLButtonElement>("button")]
+        .find((button) => button.textContent === t("garden.action.refresh", {}, "era_1995"))!;
+      refresh.click(); await settle(); host.assertReads(2);
+      expect(host.target.querySelectorAll("button.cell")).toHaveLength(36);
+      expect(host.target.querySelector("[role=alert]")).toBeNull();
+    } finally { await host.cleanup(); }
+  });
+
+  it.skipIf(!browser)(`Garden later ${fault} reply preserves the last good view as stale`, async () => {
+    const host = mounted(growing(null));
+    try {
+      await settle(); host.assertReads(1);
+      expect([...host.target.querySelectorAll<HTMLButtonElement>("button.cell")][7]?.dataset.stage).toBe("growing");
+      host.respond(invalidReply()); host.app.update({ refreshKey: 1 });
+      await settle(); host.assertReads(2);
+      expect(host.target.textContent).toContain(t("garden.state.stale", {}, "era_1995"));
+      expect([...host.target.querySelectorAll<HTMLButtonElement>("button.cell")][7]?.dataset.stage).toBe("growing");
+      expect(host.target.textContent).not.toContain("fictional-private-kind");
+      await vi.advanceTimersByTimeAsync(60_000); await settle(); host.assertReads(2);
+      host.respond(matured()); host.app.update({ refreshKey: 2 });
+      await settle(); host.assertReads(3);
+      expect(host.target.textContent).not.toContain(t("garden.state.stale", {}, "era_1995"));
+      expect([...host.target.querySelectorAll<HTMLButtonElement>("button.cell")][7]?.dataset.stage).toBe("mature");
+    } finally { await host.cleanup(); }
+  });
 }
 
 for (const wait of [60_000, 137]) {
