@@ -518,9 +518,15 @@ binding, cardinality/order, Decimal relationships and production horizon checks 
 Actual A9 case-alias/wrong-arm-null/unsafe-duration admissions are corrected with kernel0.3.193;
 no balance, scheduling, payout or buff semantics are retuned.
 
+`doctrine.DoctrineSchemas()` exports the existing identity-only v1 grammar: exact root/row keys,
+mechanical IDs and bounded integer source tiers. Current and stored catalogs validate with their
+corresponding Routes catalogs. Boundary agreement, branching/order and cross-artifact binding
+remain loader checks. Real case-alias/implicit-zero/final-null admissions are corrected with
+kernel0.3.194; no doctrine effects, choices, burst arithmetic or content mint is added.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. Categories, Achievements, Meters and Opportunities provide four owner descriptors
-for the nineteen currently pinned artifact families; the other fifteen and the composed C18 catalog
+TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities and Doctrines provide five owner descriptors
+for the nineteen currently pinned artifact families; the other fourteen and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.

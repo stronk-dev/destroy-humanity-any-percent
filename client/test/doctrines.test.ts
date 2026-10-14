@@ -11,6 +11,35 @@ function mutate(root: any, operation: { op: string; path: Array<string | number>
 }
 
 describe("doctrine catalog", () => {
+  it("requires exact member names without case aliases", () => {
+    for (const key of ["schema_version", "transitions", "transition_id", "source_tier", "gate_id", "doctrine_ids"]) {
+      for (const alias of [key.toUpperCase(), key[0].toUpperCase() + key.slice(1)]) {
+        const source = structuredClone(corpus.baseline);
+        const object = (key === "schema_version" || key === "transitions" ? source : source.transitions[0]) as unknown as Record<string, unknown>;
+        object[alias] = object[key];
+        delete object[key];
+        expect(() => loadDoctrineCatalog(source), alias).toThrow(SyntaxError);
+      }
+    }
+  });
+  it("distinguishes explicit zero from an absent or null source tier", () => {
+    const source = structuredClone(corpus.baseline);
+    const row = source.transitions[0];
+    row.transition_id = "transition.t0_to_t1";
+    row.gate_id = "gate.t0_to_t1";
+    row.source_tier = 0;
+    expect(loadDoctrineCatalog(source).transitions[0].sourceTier).toBe(0);
+    for (const missing of [false, true]) {
+      const candidate = structuredClone(source);
+      const changed = candidate.transitions[0] as unknown as Record<string, unknown>;
+      changed.source_tier = null;
+      if (missing) delete changed.source_tier;
+      expect(() => loadDoctrineCatalog(candidate)).toThrow(SyntaxError);
+    }
+    const sourceBytes = JSON.stringify(source);
+    const finalNullVersion = `${sourceBytes.slice(0, -1)},"schema_version":null}`;
+    expect(() => loadDoctrineCatalog(finalNullVersion)).toThrow(SyntaxError);
+  });
   it("matches the shared Go/TypeScript parity corpus", () => {
     expect(corpus.version).toBe(1);
     for (const vector of corpus.cases) {

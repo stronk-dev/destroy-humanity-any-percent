@@ -39,28 +39,35 @@ type Catalog struct {
 }
 
 type rawCatalog struct {
-	SchemaVersion int             `json:"schema_version"`
-	Transitions   []rawTransition `json:"transitions"`
+	SchemaVersion *int              `json:"schema_version"`
+	Transitions   []json.RawMessage `json:"transitions"`
 }
 
 type rawTransition struct {
 	TransitionID string   `json:"transition_id"`
-	SourceTier   int64    `json:"source_tier"`
+	SourceTier   *int64   `json:"source_tier"`
 	GateID       string   `json:"gate_id"`
 	DoctrineIDs  []string `json:"doctrine_ids"`
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
+	if !exactDoctrineKeys(data, "schema_version", "transitions") {
+		return nil, ErrInvalidCatalog
+	}
 	var raw rawCatalog
 	if err := decodeStrict(data, &raw); err != nil {
 		return nil, fmt.Errorf("%w: decode: %v", ErrInvalidCatalog, err)
 	}
-	if raw.SchemaVersion != CatalogSchemaVersion || len(raw.Transitions) == 0 {
+	if raw.SchemaVersion == nil || *raw.SchemaVersion != CatalogSchemaVersion || len(raw.Transitions) == 0 {
 		return nil, fmt.Errorf("%w: unsupported schema or empty transitions", ErrInvalidCatalog)
 	}
 	catalog := &Catalog{byID: make(map[string]Transition, len(raw.Transitions))}
 	previous := ""
-	for index, source := range raw.Transitions {
+	for index, row := range raw.Transitions {
+		var source rawTransition
+		if !exactDoctrineKeys(row, "transition_id", "source_tier", "gate_id", "doctrine_ids") || decodeStrict(row, &source) != nil {
+			return nil, fmt.Errorf("%w: transitions[%d] shape", ErrInvalidCatalog, index)
+		}
 		transition, err := parseTransition(source)
 		if err != nil {
 			return nil, fmt.Errorf("%w: transitions[%d]: %v", ErrInvalidCatalog, index, err)
@@ -76,10 +83,14 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 }
 
 func parseTransition(source rawTransition) (Transition, error) {
+	if source.SourceTier == nil {
+		return Transition{}, errors.New("source_tier must be explicit and non-null")
+	}
+	sourceTier := *source.SourceTier
 	transitionTier, ok := adjacentBoundary(transitionPattern, source.TransitionID)
 	gateTier, gateOK := adjacentBoundary(gatePattern, source.GateID)
-	if !ok || !gateOK || transitionTier != source.SourceTier || gateTier != source.SourceTier ||
-		source.SourceTier < 0 || source.SourceTier > 8 || len(source.DoctrineIDs) < 2 {
+	if !ok || !gateOK || transitionTier != sourceTier || gateTier != sourceTier ||
+		sourceTier < 0 || sourceTier > 8 || len(source.DoctrineIDs) < 2 {
 		return Transition{}, errors.New("transition, source tier, gate, and branching doctrine set must describe one adjacent boundary")
 	}
 	doctrineIDs := append([]string(nil), source.DoctrineIDs...)
@@ -88,7 +99,7 @@ func parseTransition(source rawTransition) (Transition, error) {
 			return Transition{}, errors.New("doctrine_ids must be byte-sorted, unique mechanical IDs")
 		}
 	}
-	return Transition{ID: source.TransitionID, SourceTier: source.SourceTier, GateID: source.GateID, DoctrineIDs: doctrineIDs}, nil
+	return Transition{ID: source.TransitionID, SourceTier: sourceTier, GateID: source.GateID, DoctrineIDs: doctrineIDs}, nil
 }
 
 func adjacentBoundary(pattern *regexp.Regexp, value string) (int64, bool) {
@@ -156,6 +167,19 @@ func (catalog *Catalog) ValidateRoutes(routeCatalog *routes.Catalog) error {
 		}
 	}
 	return nil
+}
+
+func exactDoctrineKeys(data []byte, keys ...string) bool {
+	var object map[string]json.RawMessage
+	if json.Unmarshal(data, &object) != nil || len(object) != len(keys) {
+		return false
+	}
+	for _, key := range keys {
+		if _, ok := object[key]; !ok {
+			return false
+		}
+	}
+	return true
 }
 
 func decodeStrict(data []byte, destination any) error {

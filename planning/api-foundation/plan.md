@@ -2,29 +2,15 @@
 
 RFC: `rfc/api-foundation.md`
 
-Current C18 construction (2026-10-14, RP-575): Opportunities now exports its existing four-arm
-closed v1 structural descriptor. Actual old Go admits38 case aliases, four wrong-arm nulls and
-three unsafe duration values that TS refuses. The A9 correction carries genuine kernel0.3.193,
-without a data mint or spawn/payout/buff/click retune. Current/stored catalogs and matched Economy
-bindings, negative/boundary/freshness controls, replay/production/native consumers pass; the
-owning log records limits and full range after `11efb691`, pending Claude review. Four of nineteen
-pinned-family descriptors exist; fifteen and the full union/public verification loop remain open.
-
-Current C18 construction (2026-10-14, RP-573/RP-574): Meters exports its closed v1 structural
-owner descriptor, with current/stored bytes, signed input/slot/decay domains, closed shapes,
-semantic-loader separation and fresh-export controls. Go exact-key admissions and TS's omitted
-existing axis_stack slot are corrected under M1/C6/CV3; genuine kernel0.3.192 accompanies the
-owner addition. No retuned content or global duplicate rejection. The owning log records checks
-and full range after `c7c4e561`, pending Claude review. Three of nineteen pinned-family descriptors
-exist; sixteen and the composed union/public verification loop remain unfinished.
-
-Current C18 construction (2026-10-14, RP-572): Achievements now exports its closed v1 structural
-owner descriptor. Current/stored bytes, every condition/proof arm, depth/refusal/fresh-export
-checks pass. Go's actual16 case-alias admissions are corrected under CA1/C6, carrying genuine
-kernel0.3.191 alongside this owner addition; no API-only false bump. Existing duplicate behavior,
-TS numeric domains, balance and source bytes are preserved. Owning log records final evidence,
-historical red guard and full range after `10ca8fbf`, pending Claude review. Two of nineteen
-pinned families had descriptors at that checkpoint; complete union/public catalog/re-verification remain open.
+Current C18 construction (2026-10-14): Categories, Achievements, Meters, Opportunities and
+Doctrines export five of nineteen pinned-family descriptors. Fourteen, the complete response
+union/catalog HTTP reader and public re-verification remain open. All semantic loaders remain
+mandatory; no open JSON escape, content mint or false metadata-only kernel bump. RP-572–RP-576
+admission repairs carry genuine versions0.3.191–0.3.194 and remain pending designated review.
+The append-only owning log holds each old failure, final checks, limits and exact review range;
+latest Doctrine range is after `e670cd1a` through its containing source/test/docs/record commit.
+Continue other owners within lawful scope; unchanged metadata-only additions still need explicit
+scope resolution, and the integer-representation proposal remains unadopted.
 
 Current generator correction (2026-10-14, RP-570): APIError enum exports now follow validated
 named references in the envelope and scalar fields. Two sorted actual-registry regressions
@@ -215,7 +201,7 @@ malformed-version refusal. This does not mount the catalog
 HTTP reader or mint product formulas. Categories now exports the first descriptor for the
 nineteen pinned families; five actual current/historical/candidate fixtures and malformed-input
 controls pass. Its existing loader retains semantic-policy validation. The newer checkpoints
-above add Achievements, Meters and Opportunities. The other fifteen
+above add Achievements, Meters, Opportunities and Doctrines. The other fourteen
 owner descriptors and complete union remain open. RP-383/RP-384 compatibility corrections pass
 locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Remaining owner descriptors,
 remaining route/client registration, third-party verification, 304 metadata and designated
@@ -223,7 +209,7 @@ reviews stay open; not full API acceptance or green hosted CI. Latest log owns e
 Public reads now use the shared error descriptor from `publicapi` instead of importing Account;
 the direct private-repository import regression and affected packages pass. This does not close
 transitive/runtime privacy. The seventeen remaining artifact-owner packages now fall
-under kernel-watched prefixes at that checkpoint; the remaining count is now fifteen after the
+under kernel-watched prefixes at that checkpoint; the remaining count is now fourteen after the
 newer owner exports above. Scope remains constrained:
 API-only additions require an explicit scope resolution or a
 genuine accepted semantic change, never a false version bump or file move to evade the guard.
@@ -242,6 +228,11 @@ is implemented; its draft decisions and full API acceptance remain open.
   - [x] Resolve C20's limiter/proxy/key-ID/request-ID literals.
 - [ ] Register public DTOs/readers and raw verification evidence endpoints.
   - [ ] Export and compose C18's ruled owner artifact descriptors.
+    - [x] Export the existing Doctrine identity-only v1 descriptor; current/stored bytes and
+      corresponding Route bindings pass
+      (`TestDoctrineOwnerSchemaAdmitsCurrentStoredAndFixtureWithoutChangingBytes`). Exact-key/
+      non-null admission repair preserves explicit zero; semantic loader remains mandatory.
+      No new choices/effects/content or complete C18/public HTTP/designated approval claim.
     - [x] Export the existing Opportunities v1 descriptor with four closed effect arms;
       actual current/stored catalogs and their corresponding Economy bindings pass
       (`TestActivePlayOwnerSchemaAdmitsCurrentStoredAndAllEffectArms`). A9 admission correction

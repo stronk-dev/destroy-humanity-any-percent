@@ -10,6 +10,19 @@ tier transition, its exact source tier and gate, and at least two sorted mechani
 Go and TypeScript validate identical shared vectors and close every doctrine reference against the
 pinned Routes artifact.
 
+Go checks the exact original root and row names before struct decoding; case aliases refuse.
+`schema_version` and `source_tier` must be explicit, non-null integers. An explicit source tier
+zero remains valid in a matching structural fixture; omission/null does not silently become zero,
+and a final null version does not inherit an earlier duplicate's value. These admission corrections
+advance the shared kernel to `0.3.194`, without changing choice eligibility or burst arithmetic.
+Escaped canonical names and complete last-value controls remain; no global duplicate-name
+rejection is introduced.
+
+`doctrine.DoctrineSchemas()` exports the closed v1 structural descriptor for API Foundation C18.
+Current and stored catalogs validate with their corresponding Routes artifacts without byte changes.
+Adjacent transition/gate/tier agreement, branching/order and cross-artifact Route bindings still
+require the loader and `ValidateRoutes`. The public catalog response union is not activated here.
+
 `pick_doctrine` is a Company command with exact fields `transition_id` and `doctrine_id`. It is
 legal only at the declared source tier, before the declared gate is crossed, and while that
 transition has no choice. A new command for an already-chosen transition rejects; ordinary intent-
@@ -18,8 +31,9 @@ until the choice is committed. The applied event is `doctrine_picked`.
 
 Doctrine effects are not part of this implementation. Choices immediately satisfy existing Route
 predicates, while production contributions, tree unlocks, and faction combinations require a
-successor content RFC. The production epoch has no doctrine artifact yet; the shared fixture uses
-`transition.t3_to_t4` solely to prove the mechanism.
+successor content RFC. Epoch 6 already minted the identity-only Doctrine artifact alongside the
+Meters/Achievements chain and the T3→T4 permit gate; the current epoch-8 manifest still pins it.
+The shared diagnostic fixture is not a new content mint or proof of natural player progression.
 
 ## Compute Credit burst
 

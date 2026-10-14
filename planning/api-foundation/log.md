@@ -2361,3 +2361,50 @@ Claude review, consolidatable with related C18 corrections. Four of nineteen pin
 descriptors exist; fifteen, full response union/catalog HTTP and public re-verification remain.
 No archival/push/deployment, owner/draft adoption or full nine-tier1.0 promotion. Continue accepted
 construction; live intent/dictionary, bodiless replies and other authored contracts remain held.
+
+## 2026-10-14 — Construct Doctrine's owner schema and reject implicit catalog values (RP-576)
+
+Resume clean `e670cd1a`; Opportunities is the previous concrete progress. Read the complete
+archived Doctrine D1–D10 contract, current owner/TS parser and C18 plan. The actual old Go reader
+admits12 case aliases, absent/null source_tier as zero on a matching boundary, and a final null
+schema_version inheriting the earlier value. TS rejects all those candidates; explicit zero
+loads in both. First unquoted Make alternation is a shell/tool selection failure, not evidence;
+execute the entire cold package to retain the valid old failures. File RP-576.
+
+Preserve original transition object bytes for exact names before typed decoding; pointer-backed
+numeric fields require explicit non-null values. `DoctrineSchemas` exports D1's closed root/row
+grammar, mechanical IDs and0..8 bounds. Current and two stored catalogs validate/load and bind
+to their corresponding Routes artifacts byte-unchanged. Sixteen structural refusals, zero/eight
+boundaries, four schema-valid semantic refusals, fresh exports, escaped keys and complete
+last-value controls pass. No doctrine effects/choices, Compute Credit arithmetic, mint, replay
+encoding, route policy or global duplicate rejection is introduced. Genuine kernel193→194
+records the actual admission correction, not a metadata-only version signal.
+
+Final cold doctrine/publicapi/kernel/replaycatalog packages29115 pass; affected vet passes.
+The initial new schema test file has an unused import, so that compilation/vet run is invalid;
+remove it and execute final checks. Node77450 passes142; Chromium/WebKit61341 passes284.
+Verbose production97041 executes four top-level cases: intent grammar, pick/spend transitions,
+partition/offline burst bounds and Permits/Doctrine composition; no skips. Types65528 report
+zero errors/warnings, production build and unchanged `make api-check` pass. No SQL/player
+HTTP, native Firefox/Linux, hosted CI, complete C18 or release claim. Historical RP-131 guard
+remains known-red from previous execution; no rerun/current-tree green verdict.
+
+Canonical Doctrine docs also carried RP-029's stale pre-mint premise. Current epoch8 manifest
+pins doctrines; the existing First Content record and actual catalog/Route pair show epoch6
+minted the identity-only row with its gate/activation chain. Correct docs, not frozen historical
+RFC text or content. Consolidate the plan's three duplicated recent C18 narratives into one
+current5/19 checkpoint; detailed evidence/history remain in this append-only log.
+
+Ignored raw old `.cache/doctrines-admission-old-final-e670cd1a.log` SHA256
+`0cc074f22ceb62215a416a282ff747394a9023b6c91c6f6f08b00de8790a2758`;
+native `.cache/doctrines-owner-native-e670cd1a.log` SHA256
+`615ac4f25cd0476215996a7942d72a6a065b21eeb9d5ff24565e27d628548ca2`;
+production `.cache/doctrines-owner-production-e670cd1a.log` SHA256
+`d6e2a03e0fc77ba08bcbe6d460c481e85867bceaec406d43fcbf8ce5790a5561`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete owner/schema/tests/
+version/docs/records range after `e670cd1a` through this containing commit needs designated
+Claude review, consolidatable with related C18 corrections. Five of nineteen pinned-family
+descriptors exist; fourteen, the complete union/HTTP and public re-verification remain. No
+archival/push/deployment, owner/draft adoption or full nine-tier1.0 promotion. Continue accepted
+construction without inventing missing contracts or calling these scoped checks full CI.

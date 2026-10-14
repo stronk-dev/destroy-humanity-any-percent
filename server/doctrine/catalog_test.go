@@ -1,12 +1,91 @@
 package doctrine
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
+	"strings"
 	"testing"
 
 	"cloud-clicker/server/routes"
 )
+
+func doctrineFixture(t *testing.T) []byte {
+	t.Helper()
+	data, err := os.ReadFile("../../balance/testdata/doctrines-catalog-parity-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var corpus parityCorpus
+	if err := json.Unmarshal(data, &corpus); err != nil || corpus.Version != 1 || len(corpus.Baseline) == 0 {
+		t.Fatalf("invalid fixture: %v", err)
+	}
+	return corpus.Baseline
+}
+
+func editDoctrineFixture(t *testing.T, edit func(map[string]any)) []byte {
+	t.Helper()
+	var root map[string]any
+	if err := json.Unmarshal(doctrineFixture(t), &root); err != nil {
+		t.Fatal(err)
+	}
+	edit(root)
+	data, err := json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}
+
+func TestLoadCatalogRejectsCaseAliasedMembers(t *testing.T) {
+	for _, key := range []string{"schema_version", "transitions", "transition_id", "source_tier", "gate_id", "doctrine_ids"} {
+		for _, alias := range []string{strings.ToUpper(key), strings.ToUpper(key[:1]) + key[1:]} {
+			t.Run(alias, func(t *testing.T) {
+				data := editDoctrineFixture(t, func(root map[string]any) {
+					object := root
+					if key != "schema_version" && key != "transitions" {
+						object = root["transitions"].([]any)[0].(map[string]any)
+					}
+					object[alias] = object[key]
+					delete(object, key)
+				})
+				if _, err := LoadCatalog(data); err == nil {
+					t.Fatal("case alias admitted")
+				}
+			})
+		}
+	}
+}
+
+func TestLoadCatalogRequiresExplicitNonNullZeroSourceTier(t *testing.T) {
+	for _, missing := range []bool{false, true} {
+		data := editDoctrineFixture(t, func(root map[string]any) {
+			row := root["transitions"].([]any)[0].(map[string]any)
+			row["transition_id"], row["gate_id"], row["source_tier"] = "transition.t0_to_t1", "gate.t0_to_t1", nil
+			if missing {
+				delete(row, "source_tier")
+			}
+		})
+		if _, err := LoadCatalog(data); err == nil {
+			t.Errorf("missing=%t: absent/null source_tier silently became zero", missing)
+		}
+	}
+	data := editDoctrineFixture(t, func(root map[string]any) {
+		row := root["transitions"].([]any)[0].(map[string]any)
+		row["transition_id"], row["gate_id"], row["source_tier"] = "transition.t0_to_t1", "gate.t0_to_t1", 0
+	})
+	if _, err := LoadCatalog(data); err != nil {
+		t.Fatalf("explicit zero refused: %v", err)
+	}
+}
+
+func TestLoadCatalogRejectsFinalNullSchemaVersion(t *testing.T) {
+	source := bytes.TrimSpace(doctrineFixture(t))
+	data := append(bytes.Clone(source[:len(source)-1]), []byte(`,"schema_version":null}`)...)
+	if _, err := LoadCatalog(data); err == nil {
+		t.Fatal("final null version inherited the earlier schema version")
+	}
+}
 
 type parityCorpus struct {
 	Version  int             `json:"version"`
