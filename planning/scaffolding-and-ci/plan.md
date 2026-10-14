@@ -18,8 +18,9 @@ RP-634 remains an engineering conformance gap in the additional Reputation maint
 unlike CI D3's50/55-minute fail-loud artifact floor, it has a60-minute test/job budget and no
 observation validation/always-uploaded artifact. Original full command execution succeeds;
 interruption/hosted evidence is unproved. The Reputation log owns that original range review.
-Next prepare the bounded extension required by archived Harness Observability H1 for the
-additional objectives, then implement the existing CI floor under accepted authority. Do not
+The draft `rfc/reputation-harness-observability.md` now specifies the bounded extension
+required by archived Harness Observability H1. Adoption/designated normative review are
+required before implementing its fixture profile and existing CI floor. Do not
 invent a second recorder, relabel the standard-check artifact, raise budgets or narrow studies.
 
 RP-633 Reputation routing correction: the old topology checker accepts a missing Make target,

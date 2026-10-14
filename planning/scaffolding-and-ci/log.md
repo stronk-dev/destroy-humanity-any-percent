@@ -1725,3 +1725,24 @@ range after `a201a7e8` through the containing commit requires designated Claude
 review, consolidatable with the prior CI corrections. No self-approval, archival,
 push, deployment or release promotion. Continue accepted construction and the
 bounded RP-634 proposal without narrowing the complete nine-tier1.0 objective.
+
+## 2026-10-15 — RP-634 bounded observation amendment drafted
+
+`rfc/reputation-harness-observability.md` proposes a typed fixture profile using
+the shared recorder, leaving v1 untouched and applying CI D3's existing50/55-minute
+floor. Complete measurement is distinct from H4/H5 acceptance; failed criteria,
+reasoned domain exclusions, report drift and all admitted arms remain visible.
+There is no new gameplay, balance, optimization or population choice.
+
+Checked against recorder/validator, actual test producers, source/lineage helpers,
+report paths and maintenance workflow. A read-only current-fixture census confirms
+64/32/1 seeds and9 nodes:194 H4 arms,970 H5 arms. Signal propagation through the
+actual root target, dirty/source/report refusals and unchanged-domain comparisons
+are explicit future acceptance checks, not executed results. Draft/index links
+and diff/whitespace checked; no software suite for this proposal-only batch.
+
+Review by: Codex (author first filter). Recorded by: Codex. Five-path draft/records
+range after `ab3442dc` requires adoption and designated normative review before
+implementation. The archived parent and all product/tool/workflow/data bytes are
+unchanged. RP-634 remains open; prior corrective reviews remain separate.
+Scope adoption requested2026-10-15; no answer or independent approval is inferred.

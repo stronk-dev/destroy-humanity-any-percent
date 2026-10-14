@@ -10,6 +10,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [Balance Harness Dispatch Integrity](balance-harness-dispatch-integrity.md) | withdrawn — premise refuted | Balance Harness Foundation |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
+| [Reputation Harness Observability](reputation-harness-observability.md) | draft — RP-634 fixture profile and existing CI artifact floor; not implementation authority | Harness Observability / CI Baseline / Reputation Tree v1 |
 | [Kernel History Guard Integrity](kernel-history-guard-integrity.md) | draft — RP-131, owner choice pending; not implementation authority | Run Genesis & Replay KV-1 / CI Baseline |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
 | [Account Recovery Player Flow](account-recovery-player-flow.md) | draft — D-005 posture ruled; player flow, local credential migration and copy proposed, not implementation authority | Account / archived Game UI / API Foundation |
