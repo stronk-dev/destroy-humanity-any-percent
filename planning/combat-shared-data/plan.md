@@ -12,6 +12,11 @@ consumer changes. The owning log holds the range after `d1fb8d57`, pending desig
 
 1. [x] Extract one shared SplitMix64/rejection-sampling authority and add labeled substreams.
 2. [x] Implement exact int32/int64 combat arithmetic and Temperament chart in Go and TypeScript.
+   - C4's lane ordering projection now compares `(tick, player_slot, placement_seq)`
+     identically in Go/TS without signed-int32 subtraction overflow. Shared vectors,
+     independent 324-pair ranks and actual reversed-rotation sorting pass. This does not
+     choose placement legality, duplicate policy or construct a battle log/engine;
+     full C4/parent acceptance remains open. Owning log records the range after `efeae834`.
    - C1's six runtime values and36 temperament/runtime identities now have pure Go/TS
      constructors and revalidated chart lookup. All1,296 directed pairs match the existing
      literal temperament chart; twelve shared invalid pairs refuse in both slots.

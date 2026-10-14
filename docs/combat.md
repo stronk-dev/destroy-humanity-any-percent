@@ -90,6 +90,25 @@ integration must register Combat's prefixes and make the genuine kernel version 
 
 ## Arithmetic and deterministic streams
 
+### Lane placement order
+
+`CompareLaneOrder` / `compareLaneOrder` compare C4's `(tick, player_slot,
+placement_seq)` keys lexicographically, returning exactly −1, 0 or 1. Earlier
+fields always outrank later ones; equal coordinates compare equal. Comparisons
+do not subtract signed-int32 components, so representation-edge differences cannot wrap.
+Go keys have int32 fields; TypeScript validates all three signed-int32 components
+in both keys before comparing, refusing missing/non-numeric/coercible inputs.
+The helper does not serialize a command, mutate keys or inspect unrelated payload fields.
+
+This is an ordering projection, not battle-input admission: legal ticks, slots,
+sequences, ownership and duplicate-placement handling remain the engine's contract.
+Signed edge fixtures exercise representation, not playable slot/tick values.
+Both runtimes consume `testdata/combat/lane-order-vectors.json`; independently
+enumerated ranks and reversed rotations also exercise the actual standard sort consumers.
+There is no live engine/replay consumer, complete battle log or C4 acceptance claim.
+
+### Exact arithmetic and random streams
+
 The six Temperaments are ordered lazy, playful, curious, sassy, shy, chaotic. An attacker has
 advantage over the next two entries, disadvantage against the previous two, and a neutral result
 against itself and the opposite entry. The chart result is an enum, never a floating multiplier.

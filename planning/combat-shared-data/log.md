@@ -417,3 +417,41 @@ test/canonical docs/plan/ledger/log range after `d1fb8d57` through this containi
 commit needs designated Claude review, consolidatable with Combat construction.
 No feature completion, archive, mint, push or deployment. Full catalog/effects,
 care tables, engine/bot/player workflows and nine-tier 1.0 remain required.
+
+## 2026-10-14 — Construct C4's canonical lane-order comparison
+
+Outcome at `efeae834`: implement the accepted parent rule that lane placements
+sort by tick, then player_slot, then placement_seq. New Go/TS comparison helpers
+return −1/0/1, validate the TS signed-int32 representation before comparison and
+avoid Go int32 subtraction overflow. No placement wire, effect, stat minimum,
+legal slot/tick/sequence range, duplicate-command policy or engine is invented.
+Equal keys compare equal; the caller's other payload fields are not ordering inputs.
+
+Verification: one shared ten-row fixture covers field precedence, reverse/equal
+keys and signed representation edges. Both runtimes independently enumerate 18
+keys in known rank order, compare all 324 pairs and use their actual standard
+sorting consumer on 18 reversed rotations; expected order is never derived by
+sorting with the tested comparator. Source storage is preserved. TS 36 malformed
+key cases exercise both argument slots, including a bad later component where
+an earlier component differs; caller valueOf is not invoked. These are new
+success/refusal/property tests, not a repair of an existing ordering function
+or proof of legal battle inputs.
+
+Finished root checks: cold make test-go for ./combat ./integer ./determinism
+with -count=1 and same-package vet pass; Combat exercises the shared PRNG vectors
+although determinism has no standalone tests. All six Combat Node files: 364 pass.
+Root make test-browser-focused selects combat-lane-order, arithmetic, identity,
+references, species and lane-record test files in Chromium/WebKit: 728 pass,
+no selected skips, 3.23s. Typecheck zero errors/warnings and both source division
+gates pass. Formatting and diff checked. No live/imported production/replay
+consumer or watched-prefix/version change; register Combat and genuinely bump
+kernel/replay activation before authoritative integration. No SQL/HTTP, shipped
+bundle, Firefox/Linux/full CI, byte-identical battle log or parent acceptance claim.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete new
+Go/TS/fixture/tests/docs/plan/log range after `efeae834` through this containing
+commit needs designated Claude review, consolidatable with Combat construction.
+C2 effects/full catalog/fixture, C5 care tables, both engines, bots and integrated
+player journeys remain required for the nine-tier 1.0 goal. No archival, content
+mint, push or deployment. Continue the full parent; this primitive does not
+bypass its authored contract gaps or authorize draft child-engine implementation.

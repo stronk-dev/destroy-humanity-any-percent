@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "comparisons": [
+    {"name":"tick precedes other fields","left":[1,1,9],"right":[2,0,0],"expected":-1},
+    {"name":"slot precedes sequence","left":[2,0,9],"right":[2,1,0],"expected":-1},
+    {"name":"sequence breaks the final tie","left":[2,1,8],"right":[2,1,9],"expected":-1},
+    {"name":"equal coordinates","left":[2,1,9],"right":[2,1,9],"expected":0},
+    {"name":"reverse tick","left":[2,0,0],"right":[1,1,9],"expected":1},
+    {"name":"reverse sequence","left":[2,1,9],"right":[2,1,8],"expected":1},
+    {"name":"signed tick edges do not wrap","left":[-2147483648,1,9],"right":[2147483647,0,0],"expected":-1},
+    {"name":"signed slot edges do not wrap","left":[2,2147483647,0],"right":[2,-2147483648,9],"expected":1},
+    {"name":"signed sequence edges do not wrap","left":[2,1,-2147483648],"right":[2,1,2147483647],"expected":-1},
+    {"name":"negative representation stays ordered","left":[0,0,-1],"right":[0,0,0],"expected":-1}
+  ]
+}
