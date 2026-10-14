@@ -21,6 +21,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Leaderboard Readers & Player Surface](leaderboard-readers-and-player-surface.md) | draft — not implementation authority | Leaderboards / API Foundation / Game UI / Route Registry |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 | [API Foundation](api-foundation.md) | accepted — C1–C20 ruled; implementing | Account API / Transport / Gameserver Composition |
+| [Artifact Schema Ownership & Kernel-neutral Delivery](api-artifact-schema-ownership.md) | draft — Route companion and exact reviewed descriptor-only scope proposed; not implementation authority | API C17/C18 / Route C2 / Kernel History Guard Integrity |
 | [Typed Dictionaries in API Schemas](api-typed-dictionaries.md) | draft — RP-391, preserve-receipt option proposed; owner choice/review pending | API Foundation C17 / existing intent receipts |
 | [Explicit Integer Token Encoding in API Schemas](api-integer-token-encoding.md) | draft — RP-566; measured representation proposal, adoption/review pending; not implementation authority | API Foundation C17/C18 / relevance owner grammar |
 | [Bodiless Responses in the API Registry](api-bodiless-responses.md) | draft — RP-483, existing204/304 representation proposed; owner adoption/review pending | API Foundation C19 / Account lifecycle / public caching |

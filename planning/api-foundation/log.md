@@ -2904,3 +2904,40 @@ Claude review, consolidatable with C18. Complete family count remains15/19. Econ
 root/remaining rows/conditions, Routes, Minigame API, Relevance, public union/catalog serving
 and public client verification remain. No pending draft/owner adoption inferred; continue
 accepted construction without narrowing the full nine-tier1.0 objective or publishing.
+
+## 2026-10-14 — Remaining Economy grammar and shared Route raw admission (RP-593/RP-594)
+
+Resume clean `c0b71434`; prior turn made implementation progress. Trace the remaining full
+catalog grammar rather than count another component as a completed family. Old Go admits
+literal-member aliases across root/manual/multiplier/progress/upgrade/synergy/axis objects,
+all15 zero/null/version-presence regressions, and22 aliases plus66 wrong-arm nulls across
+the eight shared Route condition kinds. Valid v2/v4/v5 and zero/min/max controls pass.
+Initial combined Make selector had an unquoted pipe and ran no valid selected population;
+rerun three plain selectors cold to establish the actual failures before correction.
+
+Check Economy's original versioned root/remaining rows/active arms before typed defaults;
+Route-owned raw-condition decoding now governs both ParseConditions and Route catalogs,
+without copied grammar or a new evaluator import. Kernel0.3.207→0.3.208 is genuine admission
+change. Valid nullable windows, weighted/composite progress, static/axis arms, decoded escapes
+and complete last-value controls remain. Existing current/stored/versioned compatibility
+tests execute unchanged. No content, balance, formula, wire/storage or arithmetic rewrite.
+
+Cold economy/routes/replaycatalog/publicapi/kernel/decimal and affected vet pass. Existing
+production purchase/cost/ownership/event and post-accrual rejection tests (2), progress tests
+(2), route-reference binding (1) and foundation activation/Exit/replay/negative tests (9) pass
+verbosely, not skipped. Affected Node636/native Chromium-WebKit1272 pass; types zero errors/
+warnings, build, unchanged API/formula generation and Route/Commons import guards pass.
+These are loader and pure-engine boundaries, not SQL/current-server player journeys,
+Firefox/Linux, full Clout/history-guard CI, hosted or release evidence.
+
+Full export exposes the actual pure-Route→API-DSL authority conflict. Draft/index the concrete
+`api-artifact-schema-ownership.md` amendment: one owner-controlled companion, unchanged pure
+evaluator imports and reviewed neutral descriptor delivery with explicit history-scope guard
+prerequisite. No implementation/adoption under that draft. Integer/dictionary/bodiless proposals
+remain independent. Family count stays15/19; full Economy/Routes/Minigame API/Relevance,
+complete HTTP union/catalog/public verification and nine-tier product/platform remain open.
+
+Review by: Codex (implementer first filter and draft author). Recorded by: Codex. The complete
+source/tests/version/docs/draft/index/records range after `c0b71434` through this containing
+commit needs designated Claude review, consolidatable with C18; drafting is not acceptance.
+No owner inference, guard exemption, package relocation, archival, mint or publication.

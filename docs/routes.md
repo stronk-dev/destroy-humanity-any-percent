@@ -48,6 +48,13 @@ Shared fixtures in `testdata/routes/predicate-vectors.json` exercise every condi
 meter boundaries in Go and TypeScript. Client evaluation is disclosure/presentation only; the
 server result is authoritative.
 
+All original condition objects require literal non-null active-arm members before typed
+decoding, both in Route catalogs and through shared `ParseConditions` consumers. Case aliases
+and wrong-arm nulls refuse; zero meter bounds and canonical zero resource thresholds remain
+valid. Escaped spellings of the correct decoded name and existing last-value JSON behavior
+remain. Kernel0.3.208 records this admission correction without changing evaluator arithmetic,
+context rules, gate effects or the import boundary.
+
 The shipped catalog contains all seven house-seeded routes. `Nonprofit Wrapper Zip`,
 `IPO Sequence Break`, and `Acquihire Out-of-Bounds` are active at context v1. The other four are
 declared inactive, context-v2 conjectures until constituency meters and region traits exist.

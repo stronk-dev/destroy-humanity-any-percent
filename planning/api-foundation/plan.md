@@ -6,9 +6,9 @@ Current C18 construction (2026-10-14): Categories, Achievements, Meters, Opportu
 Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions, Guilds, Commons and Minigames export fifteen of nineteen pinned-family descriptors. Four, the complete response
 union/catalog HTTP reader and public re-verification remain open. All semantic loaders remain
 mandatory; no open JSON escape, content mint or false metadata-only kernel bump. Catalog
-admission repairs carry genuine versions0.3.191–0.3.207 and remain pending designated review.
+admission repairs carry genuine versions0.3.191–0.3.208 and remain pending designated review.
 The append-only owning log holds each old failure, final checks, limits and exact review range;
-latest generator/policy-component range is after `33289642` through its containing source/test/docs/record
+latest remaining-Economy/shared-condition repair range is after `c0b71434` through its containing source/test/docs/record
 commit. Economy's closed cost-curve, resource/cap, generator/role and manual/offline components are constructed; its full versioned artifact,
 including the reused condition grammar and other row families, is still unexported and uncounted.
 Continue other owners within lawful scope; unchanged metadata-only additions still need explicit
@@ -17,6 +17,12 @@ scope resolution, and the integer-representation proposal remains unadopted.
 The narrowly verified descriptor-only/kernel-neutral lane and owner schema companions were
 presented to Marco on2026-10-14; no reply/adoption has been received. Presentation/preselection
 does not authorize a guard exemption, namespace relocation or new package boundary.
+
+The concrete `rfc/api-artifact-schema-ownership.md` draft now specifies the single Route-owned
+companion and narrow independently reviewed neutral delivery lane, with the history-scope
+guard draft as an explicit prerequisite. It is not adopted authority. RP-593/RP-594 correct
+the remaining Economy original root/row/arm admission and shared Route condition admission;
+they do not count either complete schema family or implement the proposed package boundary.
 
 Current generator correction (2026-10-14, RP-570): APIError enum exports now follow validated
 named references in the envelope and scalar fields. Two sorted actual-registry regressions

@@ -109,6 +109,15 @@ Positive rates/prices, ordered non-neutral ladders, bindings, efficiency and ban
 remain mandatory owner checks. No prices, provision rates, offline rules or balance bytes change;
 the complete Economy artifact descriptor remains unfinished.
 
+Kernel0.3.208 extends original-key checks to the five-version root and the remaining manual,
+multiplier, progress, upgrade, synergy and axis objects. Missing/null tier zero is not a valid
+default; inactive progress/effect fields and later-version fields are forbidden even when their
+value is null or zero. Weighted progress terms use only their active kind's fields. Upgrade
+windows retain explicit nullable gate bounds. Shared Route conditions are checked by their
+owner before pointer decoding, rather than by a copied Economy grammar. Escaped decoded member
+names and complete last-value behavior remain valid. These are strict-admission corrections;
+catalog values, math, topology and loader-owned semantic relationships remain unchanged.
+
 ## Cost curves
 
 Curve types are code and their parameters are data. The initial closed set is:

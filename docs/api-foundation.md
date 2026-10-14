@@ -602,6 +602,13 @@ wrong-arm/optional-object null admission. Current/stored rows and legacy compati
 validate without rewriting bytes; relationships and version selection remain owner requirements.
 These are components, not a full Economy descriptor or a registered public response arm.
 
+Kernel0.3.208 repairs the remaining Economy version/root/row admission and the Route owner's
+shared condition admission. It does not export a full Economy or Route descriptor. The draft
+[`Artifact Schema Ownership`](../rfc/api-artifact-schema-ownership.md) now proposes one
+Route-owned companion and reviewed kernel-neutral descriptor delivery without changing the
+pure evaluator's imports. No adoption, companion, guard exception or new public arm follows
+from that proposal. The existing integer/dictionary/bodiless amendments remain separate.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
 TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities,
 Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions, Guilds, Commons and Minigames provide fifteen owner descriptors

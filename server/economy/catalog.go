@@ -472,6 +472,9 @@ type rawCurve struct {
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
+	if err := validateRemainingCatalogShapes(data); err != nil {
+		return nil, err
+	}
 	if err := validateGeneratorPolicyShapes(data); err != nil {
 		return nil, err
 	}

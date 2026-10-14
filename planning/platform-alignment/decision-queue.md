@@ -2,6 +2,15 @@
 
 Implementation agents may gather evidence and frame options; they may not infer these choices.
 
+## C18 engineering ownership — proposal ready, not adopted
+
+The [artifact-schema ownership amendment](../../rfc/api-artifact-schema-ownership.md) makes
+the2026-10-14 question concrete: one Route-owned schema companion preserves the evaluator's
+current import guard; a narrowly independently reviewed exact-path descriptor-only lane avoids
+false gameplay bumps. Its scope-guard prerequisite is explicit. This is engineering authority,
+not a gameplay/balance choice. No reply, acceptance, companion or exception is inferred.
+It gates complete shared-condition catalog export, not unrelated accepted construction.
+
 ## Current Headcount choice — OD-1 / RP-414
 
 The [Headcount plan](../headcount-allocation/plan.md#current-reconciliation-boundary--2026-10-13)
