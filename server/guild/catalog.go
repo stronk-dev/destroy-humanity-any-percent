@@ -42,6 +42,9 @@ type rawCatalog struct {
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
+	if !guildCatalogHasExactShape(data) {
+		return nil, ErrInvalidCatalog
+	}
 	var raw rawCatalog
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
@@ -67,4 +70,21 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		MaxMembers:                 raw.MaxMembers, MinMembers: raw.MinMembers, GraceDays: raw.GraceDays,
 		GuildXPTargetPerFounder: raw.GuildXPTargetPerFounder, ClearingIntervalMS: raw.ClearingIntervalMS,
 	}, nil
+}
+
+func guildCatalogHasExactShape(data []byte) bool {
+	var fields map[string]json.RawMessage
+	if json.Unmarshal(data, &fields) != nil || len(fields) != 11 {
+		return false
+	}
+	for _, key := range []string{
+		"schema_version", "guild_tithe_ppm", "clearing_rate_ppm", "npc_exchange_ppm", "stock_intake_cap",
+		"consumption_bonus_ppm_per_unit", "max_members", "min_members", "grace_days", "guild_xp_target_per_founder", "clearing_interval_ms",
+	} {
+		value, exists := fields[key]
+		if !exists || bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return false
+		}
+	}
+	return true
 }

@@ -567,10 +567,15 @@ nullable fields in Go. The complete cycle, copy/Compact relationships, declared 
 band and empty modifier lists remain mandatory loader/composition checks; no incorporation,
 stock, tithe or content values change.
 
+`guild.GuildSchemas()` exports the current closed Phase-0 literal policy. Kernel0.3.202 fixes
+Go's case aliases and absent/null bonus defaults while preserving explicit zero and complete
+last-value controls. All eleven declared policy values and current/stored bytes remain unchanged;
+this metadata does not widen policy admission or substitute for Guild lifecycle/clearing proof.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
 TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities,
-Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets and Factions provide twelve owner descriptors
-for the nineteen currently pinned artifact families; the other seven and the composed C18 catalog
+Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions and Guilds provide thirteen owner descriptors
+for the nineteen currently pinned artifact families; the other six and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.

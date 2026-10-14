@@ -50,6 +50,18 @@ only until the durable outbox item is published, then is cleared.
 - full per-capita Guild Health target: 250,000 tier-progress XP per active founder;
 - clearing interval: 300,000 ms.
 
+The current v1 loader admits this literal Phase-0 policy. Every one of its eleven numeric fields
+must be explicitly present under its exact decoded key and non-null; the zero consumption bonus
+cannot be supplied implicitly by omission or `null`. Escaped canonical keys and complete
+last-value member controls retain their existing behavior. Kernel0.3.202 records the admission
+correction, not a retune or membership/clearing change.
+
+`guild.GuildSchemas()` exports the closed `GuildCatalogV1` descriptor for API C18, including
+the same literal domains. Current and stored artifact bytes remain unchanged. This export
+does not widen the loader's current policy domain, activate a new Guild mechanic, or complete
+catalog HTTP serving/public re-verification; lifecycle, database, Health, clearing and replay
+acceptance remain separate boundaries.
+
 Production converts the increase in the current tier's shipped progress coordinate to integer ppm.
 The two-percent tithe uses integer division with a persisted per-company remainder; only active
 members contribute. A company-stream event projects XP into the account's guild, saturating only
@@ -61,7 +73,7 @@ The pure clearing kernel sorts producers and consumers by raw `account_id`. A pr
 each consumer receives at most its share, remaining boundary intake, and persisted stock headroom.
 Unused capacity is not redistributed in that boundary and stays with the producer. Missing-faction
 links therefore remain inert. The solo path runs the same cap rules against one labeled NPC
-counterparty at the lower rate and credits the founder's consumed-stock counter.
+counterparty at the lower rate and credits the Company's consumed-stock counter.
 
 Committed boundaries are idempotent rows keyed by guild and sequence. A SHA-256 identity over the
 ordered member-stock-and-run-identity snapshot and stock cap makes an exact retry a no-op and
