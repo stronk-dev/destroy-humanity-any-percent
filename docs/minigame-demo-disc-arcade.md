@@ -272,7 +272,8 @@ inert quality, neutral rating, `always`, `human_hobby`.
 - a `role="grid"` of buttons with roving tabindex;
 - arrows move, Enter/Space act in the visible Reveal/Flag mode, `F` flags, `C` chords;
 - cell names come from copy keys, with glyph text rather than colour;
-- one polite live-region message per response;
+- one polite live-region update per applied snapshot revision, including flag/unflag responses
+  whose revealed count is unchanged; re-delivering a revision does not repeat the message;
 - a quit confirmation;
 - no timer.
 

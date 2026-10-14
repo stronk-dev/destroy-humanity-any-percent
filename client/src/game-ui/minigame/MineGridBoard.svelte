@@ -64,7 +64,7 @@
 
 <section class="mine-grid" aria-labelledby="mine-grid-heading">
   <h2 id="mine-grid-heading">{t("arcade.toy.mine_grid.title", {}, era)}</h2>
-  <p class="live" role="status" aria-live="polite">{announcement}</p>
+  <p class="live" role="status" aria-live="polite">{#key snapshot.revision}<span>{announcement}</span>{/key}</p>
 
   {#if snapshot.phase === "setup"}
     <p>{t("arcade.toy.mine_grid.description", {}, era)}</p>

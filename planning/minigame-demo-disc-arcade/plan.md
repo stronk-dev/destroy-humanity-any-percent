@@ -5,6 +5,13 @@ no production mint (AR8). Original Claude A1–A7 ranges now have complete Codex
 CHANGES REQUIRED dispositions (2026-10-08 log). Later Codex repairs await Claude review;
 neither the original implementation checkboxes nor those repairs constitute acceptance.
 
+2026-10-15 AR6.2 correction (RP-636): flag/unflag responses previously changed the real cell
+state without updating the live region. Bind its existing message to the authoritative revision,
+preserving grid focus and silence on duplicate delivery. Old native cases fail in Chromium/WebKit;
+the corrected focused cases and full affected58-case browser population pass, along with
+types/build/boundaries. The owning log records results and the range after
+`5fb68009`, pending Claude review. No new copy, engine/wire/kernel, public host or AT acceptance.
+
 **Current checkpoint, 2026-10-08:** complete the original-range reviews, not another round of
 the same bounded findings. The log consolidates A1–A3, A4/A5 and A6/A7 coverage and distinguishes
 current-source checks from historical verdicts. RP-431's raw-admission repair and RP-472's

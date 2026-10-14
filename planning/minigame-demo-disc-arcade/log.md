@@ -2383,3 +2383,24 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Exact new range
 review and consolidatable with the older A6 corrective ranges. No acceptance/archival/push.
 Next: continue accepted construction/integration; public tenant/host construction still needs
 the previously named wire contract, not another original-range review.
+
+## 2026-10-15 — RP-636 flag responses update the live region
+
+Under AR6.2, key the existing polite message to the authoritative snapshot
+revision. Flag/unflag change cell state but not the revealed-count string;
+previously both produced no live-region mutation. No copy, command, shared
+engine, snapshot/wire, timing, theme or kernel behavior changes.
+
+Old-component native Chromium/WebKit execution78344 fails all four new cases
+with zero updates after real TS-engine flag/unflag commands. Corrected cases
+observe one update, one submitted command and retained cell focus. Re-delivering
+the same revision is silent. Final complete affected file38469 passes58/58,
+including native game completion/quit, axe, pending/drain/recovery and pause/input
+controls. Types/Svelte check63796 pass with zero errors/warnings; build and shell
+boundaries58479 pass. Diff/whitespace checked. No public HTTP/SQL, Firefox/Linux,
+actual screen-reader speech, manual AT or full Arcade/CI acceptance claimed.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete six-path
+range after `5fb68009` through the containing commit needs designated Claude
+review, consolidatable with prior A6 repairs. No new RFC/owner copy needed for
+this conformance fix; RP-211/copy, public wire/host, mint and full acceptance remain.

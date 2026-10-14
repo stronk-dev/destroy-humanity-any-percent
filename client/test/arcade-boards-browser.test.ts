@@ -198,6 +198,54 @@ it.skipIf(!browser)("mine_grid: native keyboard completes the corpus game in one
   } finally { await unmount(app as never); target.remove(); }
 });
 
+for (const flagged of [false, true]) {
+  it.skipIf(!browser)(`mine_grid: ${flagged ? "unflag" : "flag"} response announces once without changing the revealed count (AR6.2)`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const game = await new MineHost(await mineIdentity()).init();
+    await game.apply({ kind: "choose_board", preset_id: "small" });
+    if (flagged) await game.apply({ kind: "toggle_flag", cell: 0 });
+    const commandCount = game.commands.length;
+    const target = host();
+    let response: Promise<void> | undefined;
+    const app = mount(MineGridBoardHarness, { target, props: {
+      initial: game.parsed(), presets: catalog.mine_grid.presets,
+      onCommand: (command: MineGridCommand) => {
+        response = game.apply(command).then(() => flushSync(() => app.advance(game.parsed())));
+      },
+    } }) as unknown as { advance(next: MineGridSnapshot): void };
+    let observer: MutationObserver | undefined;
+    try {
+      await settle();
+      const status = target.querySelector<HTMLElement>(".live[role=status]")!;
+      const message = status.textContent!.trim();
+      const announcements: string[] = [];
+      observer = new MutationObserver((records) => {
+        const changed = records.some((record) => record.type === "characterData" && record.target.nodeType === Node.TEXT_NODE
+          || record.type === "childList" && [...record.addedNodes].some((node) =>
+            (node.nodeType === Node.TEXT_NODE || node.nodeType === Node.ELEMENT_NODE) && node.textContent?.trim()));
+        if (changed) announcements.push(status.textContent!.trim());
+      });
+      observer.observe(status, { childList: true, characterData: true, subtree: true });
+      const cell = target.querySelector<HTMLButtonElement>("[role=gridcell]")!;
+      cell.focus();
+      await userEvent.keyboard("f");
+      expect(response).toBeDefined();
+      await response; await settle();
+      expect(game.commands.slice(commandCount)).toEqual([{ kind: "toggle_flag", cell: 0 }]);
+      expect(game.parsed().flags.includes(0)).toBe(!flagged);
+      expect(game.parsed().revealed).toEqual([]);
+      expect(document.activeElement).toBe(cell);
+      expect(status.textContent!.trim()).toBe(message);
+      expect(announcements).toEqual([message]);
+      // Re-delivering the same authoritative revision is not another action.
+      flushSync(() => app.advance(game.parsed()));
+      await settle();
+      expect(announcements).toEqual([message]);
+      expect(target.querySelectorAll(".live[role=status]")).toHaveLength(1);
+    } finally { observer?.disconnect(); await unmount(app as never); target.remove(); }
+  });
+}
+
 class SnakeServer {
   snapshot = "";
   revision = 1;
