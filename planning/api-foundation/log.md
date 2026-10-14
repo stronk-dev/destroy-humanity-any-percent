@@ -2655,3 +2655,38 @@ tests/version/docs/records range after `293a05e4` through this containing commit
 designated Claude review, consolidatable with C18 work. Eleven of nineteen pinned owners now
 export; eight, the complete union/catalog HTTP and public re-verification remain. No draft/
 owner adoption, archival, publication or narrower1.0 floor. Continue accepted construction.
+
+## 2026-10-14 — Faction catalog schema and original-member admission (RP-583/584)
+
+Resume clean `3d9f621f`; read the complete archived Faction contract and actual Go/TS loaders.
+F1/FC require literal root/row/Compact members, including present nullable `compact` on all
+four rows. Old Go admits30 aliases and three missing null bindings: all33 new refusals fail
+against the old reader while TS34 and canonical null controls pass. Enforce exact original
+decoded shapes before struct decoding; require non-null fields except explicitly nullable
+Compact. Preserve escaped names and complete last-value controls, not a new duplicate ban.
+Genuine kernel0.3.200→0.3.201; no stock/incorporation/tithe or artifact changes.
+
+`FactionSchemas` exports the closed F1/FC root, faction/resource enums, stock domains, typed
+nullable Compact and reserved modifier-row grammar over the existing slot registry. Current
+and two stored catalogs load/schema-validate against their matching Commons bands, without
+byte changes. Valid maximum-domain retunes,18 structural refusals and ten semantic
+counterexamples pass. Hamiltonian cycle/cardinality, copy/Compact relationships, declared
+tithe band and empty modifier lists remain mandatory owner/composition checks. Fresh bounds
+and enum mutations do not affect the owner. Full catalog union/HTTP/public verification remain.
+
+Final cold faction/publicapi/kernel/replaycatalog/decimal packages and affected vet (including
+production) pass. Node catalog/replay/numeric6476 and native Chromium/WebKit12952 pass; types
+report zero errors/warnings, build and byte-unchanged `make api-check` pass. Two pure production
+tests execute: `TestIncorporateAndOpenSourceBinding` and
+`TestApplyLoggedDerivesFactionStockResourceInsideBoundary`, no skips. The first attempted
+combined selector failed shell parsing before any tests; separate selectors actually ran.
+RP-584 reconciles stale canonical docs against existing Guild settlement/provider and
+leaderboard projector code, not new runtime implementation or acceptance. Balance/testdata/
+generated API bytes remain unchanged. No DB/composed player, Firefox/Linux/hosted/full CI or
+release claim; known history-guard/Clout/service limitations are not waived.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete code/schema/tests/
+version/docs/records range after `3d9f621f` through this containing commit needs designated
+Claude review, consolidatable with C18. Twelve of nineteen pinned owners export; seven,
+complete union/catalog serving and public re-verification remain. No owner/draft adoption,
+archival/publication or narrower1.0 floor. Continue the accepted construction.

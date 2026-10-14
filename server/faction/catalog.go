@@ -80,7 +80,7 @@ type rawModifier struct {
 }
 
 func LoadCatalog(data []byte, compactBand CompactTitheBand) (*Catalog, error) {
-	if compactBand.MinimumPPM < 0 || compactBand.DefaultPPM < compactBand.MinimumPPM ||
+	if !factionCatalogHasExactShape(data) || compactBand.MinimumPPM < 0 || compactBand.DefaultPPM < compactBand.MinimumPPM ||
 		compactBand.MaximumPPM < compactBand.DefaultPPM {
 		return nil, ErrInvalidCatalog
 	}
@@ -125,6 +125,44 @@ func LoadCatalog(data []byte, compactBand CompactTitheBand) (*Catalog, error) {
 	}
 	sort.Slice(catalog.Factions, func(left, right int) bool { return catalog.Factions[left].ID < catalog.Factions[right].ID })
 	return catalog, nil
+}
+
+// Inspect original decoded members before Go's case-insensitive struct matching
+// and null/default behavior. Compact alone is explicitly nullable in F1/FC.
+func factionCatalogHasExactShape(data []byte) bool {
+	var root map[string]json.RawMessage
+	if json.Unmarshal(data, &root) != nil || !exactFactionKeys(root, "schema_version", "stock_cap", "stock_interval_ms", "factions") {
+		return false
+	}
+	var rows []map[string]json.RawMessage
+	if json.Unmarshal(root["factions"], &rows) != nil || rows == nil {
+		return false
+	}
+	for _, row := range rows {
+		if !exactFactionKeys(row, "id", "produces", "consumes", "compact", "modifier_slots", "incorporation_copy_key") {
+			return false
+		}
+		if !bytes.Equal(bytes.TrimSpace(row["compact"]), []byte("null")) {
+			var compact map[string]json.RawMessage
+			if json.Unmarshal(row["compact"], &compact) != nil || !exactFactionKeys(compact, "auto_sign", "tithe_ppm") {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func exactFactionKeys(object map[string]json.RawMessage, expected ...string) bool {
+	if len(object) != len(expected) {
+		return false
+	}
+	for _, key := range expected {
+		value, exists := object[key]
+		if !exists || key != "compact" && bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return false
+		}
+	}
+	return true
 }
 
 func (catalog *Catalog) Faction(id string) (Faction, bool) {
