@@ -9,14 +9,16 @@ Product coordinate `8a5dcebf`, kernel0.3.208, epoch8. Whole-product status and e
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview--2026-10-14). The full
 nine-tier goal remains active; no new playable tier or release was completed.
 
-- **READY — accepted API construction:** C18's full-set union construction/registration guard
-  can require every served family and reject incomplete coverage. Do not mount a partial
-  catalog endpoint or invent the four remaining owners' descriptors. Their shared-ownership,
-  representation and neutral-delivery prerequisites remain explicit in the API plan.
-- **READY — CI measurement:** RP-596's hosted standard-pacing phase consumes45.19 minutes for
-  all300 runs; complete maintenance still fails. Profile that actual population and separate
-  simulator/observer costs before proposing optimization. No budget increase from partial
-  evidence, population deletion or snapshot regeneration to make the job green.
+- **READY — accepted API conformance work:** C18's union constructor and internal original-byte
+  verifier are locally constructed through `0411ef34`; do not repeat or promote them to a
+  mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member
+  policy conflict have concrete unadopted engineering proposals in the API plan. Do not mount
+  a partial endpoint, invent descriptors, normalize sources or infer draft acceptance.
+- **READY — bounded CI performance proposal:** RP-596's full native standard-phase profile now
+  completes all300 keys and points to production rate traversal; its owning CI log distinguishes
+  sampled CPU from wall time and retains the still-failed hosted45.19-minute/full-maintenance
+  evidence. Scope/review the performance change separately; no optimization under measurement
+  authority, budget increase, deleted population or snapshot regeneration to make the job green.
 - **READY — consolidated designated review and accepted conformance work:** feature-owned
   logs identify complete corrective ranges. Pending review prevents acceptance/archival,
   not other authorized work. Do not restart completed original reviews or call self-review

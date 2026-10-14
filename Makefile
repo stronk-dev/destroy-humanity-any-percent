@@ -25,6 +25,8 @@ CORE_TEST_COUNT ?= 1
 HARNESS_TEST_COUNT ?= 1
 HARNESS_WORKERS ?= 4
 HARNESS_OBSERVATION ?=
+HARNESS_CPU_PROFILE ?=
+HARNESS_PROFILE_FLAGS ?= -top -nodecount=25
 REGISTERED_RELEVANCE_ENTRY ?=
 REGISTERED_RELEVANCE_OUTPUT ?=
 SAVE_TEST_PACKAGES ?= ./...
@@ -625,6 +627,14 @@ harness-observation-check:
 	@test -n "$(HARNESS_OBSERVATION)" || (echo "HARNESS_OBSERVATION is required" >&2; exit 1)
 	cd server && go run ./cmd/balance-harness -mode=observation-validate \
 		-observation-input="$(if $(filter /%,$(HARNESS_OBSERVATION)),$(HARNESS_OBSERVATION),../$(HARNESS_OBSERVATION))"
+
+# Read-only manual diagnostic. Build the bundled reader in the same repository
+# cache even on toolchains that ship cmd/pprof source but no prebuilt tool.
+.PHONY: harness-profile-report
+harness-profile-report:
+	@test -n "$(HARNESS_CPU_PROFILE)" || (echo "HARNESS_CPU_PROFILE is required" >&2; exit 1)
+	cd server && go run cmd/pprof $(HARNESS_PROFILE_FLAGS) \
+		"$(if $(filter /%,$(HARNESS_CPU_PROFILE)),$(HARNESS_CPU_PROFILE),../$(HARNESS_CPU_PROFILE))"
 
 relevance-registered-observe:
 	@test -n "$(HARNESS_OBSERVATION)" -a -n "$(REGISTERED_RELEVANCE_ENTRY)" \

@@ -7,6 +7,27 @@
 
 ## Current checkpoint — 2026-10-14
 
+RP-596 standard-phase measurement declared at clean `0411ef34` and now completed: all300 keys,
+12 workers, native macOS/ARM64/M3 Max,783.821s wall time. Full population/outcome/invariant checks
+pass. The manual-only `BenchmarkStandardPacingProfile` loads the same suite and calls the
+same `RunAllWithWorkers` as the CLI; it refuses missing/repeated/failed keys and aggregate
+failures, reporting source identities and canonical report digest. Run with `-benchtime=1x`.
+No population/algorithm/observer/CI/budget changes. The measured phase excludes CLI guards and
+registered relevance and cannot be labelled a complete check. CPU samples include process
+setup; the benchmark's wall metric brackets only RunAll. No fixed improvement threshold or
+optimization adoption is inferred. Compare hotspots with CLI observation placement, not native
+wall time as proof of hosted timing. Raw profile/binary stay in an owned temporary directory;
+the owning log retains exact commands, identities, report/profile/binary digests and limits.
+The executed profile attributes39.05% cumulative sampled CPU to production rate calculation;
+source attribution points to its repeated contribution-map iteration. Runtime memory-management
+samples are also substantial. These are overlapping sampled stacks, not a predicted wall-time
+saving or proved hosted cause. The root manual `harness-profile-report` reader executes and
+rejects missing/malformed inputs; ordinary16 topology negatives and dispatch controls still pass.
+Next: scope a separately authorized rate-traversal performance proposal, preserving every
+multiplier's canonical order, validation and activation semantics; retain whole300-run report
+identity/acceptance and representative negative/runtime parity evidence. Do not change production
+under measurement authority. Linux/hosted attribution and full maintenance remain open.
+
 Fresh hosted reconciliation at local product source `8a5dcebf`: remote CI remains38381138075
 on `4eaed0c9`, failed;75 local commits are outside it. Maintenance38507071157 also completes
 failure. Numeric maintenance passes; Reputation career/relevance report comparisons drift.
@@ -15,8 +36,9 @@ pacing completes300/300 in45.19 minutes, first relevance row stops at85/107 and 
 starts. The small exact artifact is retained in `observations/38507071157-harness.json`; the
 actual root observation validator rejects it. Log owns hash, timings and commands.
 
-Next measurement: profile the completed standard-pacing population on a declared environment;
-distinguish simulator work from observation overhead before proposing an optimization. This
+The native profile above now completes the standard-pacing measurement step. CLI inspection
+confirms only start/finish recorder calls bracket RunAll, not per-action writes; no quantitative
+observer-overhead timing comparison was performed. This
 incomplete full run cannot set a larger budget or authorize dropping rows, retries, golden
 regeneration, CI changes or optimization under the archived measurement-only RFC. Linux/SQL
 execution remains unavailable with the unresponsive declared Docker service. Latest host read

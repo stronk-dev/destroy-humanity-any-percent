@@ -219,6 +219,23 @@ fixture baseline rather than being relabelled as production evidence.
 
 ## Non-authoritative run observations
 
+The manual `BenchmarkStandardPacingProfile` in `server/harness` profiles the actual complete
+standard-pacing phase only: all300 scenario-declared keys,12 workers, no reduced seed/horizon
+population. Invoke it through root `make test-go` with `GO_PACKAGES='./harness'` and
+`GO_TEST_FLAGS='-count=1 -run NoTests -bench BenchmarkStandardPacingProfile -benchtime=1x -timeout=60m -cpuprofile=/absolute/measurement/cpu.pprof -o=/absolute/measurement/harness.test -v'`.
+Use an existing owned measurement directory, not a new Go cache. Ordinary tests/CI do not run
+benchmarks. The benchmark rejects incomplete/repeated/failed runs and aggregate failures,
+and logs identities plus the canonical full-phase report digest. Its wall metric brackets
+`RunAllWithWorkers`; the CPU profile also includes the process's setup/validation work.
+This is not a complete harness check or a hosted timing claim: repository guards, registered
+relevance, golden/baseline comparisons and ordinary acceptance remain their existing lanes.
+Profile binaries/recordings are local evidence, not new balance inputs or committed goldens.
+`make harness-profile-report HARNESS_CPU_PROFILE=/absolute/measurement/cpu.pprof` reads that
+recording with the Go toolchain's bundled `cmd/pprof`, using the repository's normal build cache.
+`HARNESS_PROFILE_FLAGS='-top -cum -nodecount=30'` selects cumulative samples; `-list functionName`
+shows source attribution. Missing input or malformed recordings fail. This reader is a manual
+diagnostic, not a CI dependency, profile validator for release or optimization authority.
+
 R-001 measurements can attach an explicit `harness_observation.v1` checkpoint to the complete
 check. The checkpoint is operational evidence only: it is always marked `authoritative: false` and
 cannot replace a golden report, baseline, epoch artifact, or harness verdict.

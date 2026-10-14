@@ -1378,3 +1378,74 @@ Markdown. Review by: Codex (evidence/status reconciliation). Recorded by: Codex.
 checkpoint does not independently approve any outstanding implementation range. All existing
 reviews, draft adoption, arithmetic/privacy/accessibility/deployment and full-nine-tier1.0
 obligations remain. Continue accepted work; no push, archival or release promotion.
+## 2026-10-14 — RP-596 standard-phase CPU profile started, not yet completed
+
+Prior goal turn made source/test progress at `0411ef34`; resume clean main,78 commits ahead.
+The current CI plan declares the measurement before execution. Add a manual-only benchmark
+that loads the exact standard suite and executes all300 keys through the same
+`RunAllWithWorkers(12)` as maintenance; no horizon/seed/dispatch/algorithm/observer or CI change.
+It checks complete unique keys, completed outcomes/invariants/aggregate and logs a full-phase
+canonical digest. It does not run ordinary tests automatically or replace the complete check.
+
+Executed root command (still live at this checkpoint):
+`make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -run NoTests -bench BenchmarkStandardPacingProfile -benchtime=1x -timeout=60m -cpuprofile=/private/tmp/cloud-clicker-standard-profile.Y4bce9/cpu.pprof -o=/private/tmp/cloud-clicker-standard-profile.Y4bce9/harness.test -v'`.
+Actual runtime identifies Go1.27.2, darwin/arm64, Apple M3 Max,14 logical CPUs; hardware read
+confirms Mac15,10,14 physical/logical CPUs and38,654,705,664 memory bytes. Initial sandbox
+hardware read refused; permitted read succeeded. Scenario SHA10aa5c8a2dd8a5c79a5902e74f4e55a1ca3ab46a2d35c9bf3dd25fc729dbb07a
+and constants SHAbaa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6
+match the published observation's standard phase. Other heavy tests are not started concurrently.
+
+**No completed measurement, pass, profile digest or hotspot conclusion yet.** Execution session
+`9106` is confirmed live by its latest poll; resume that handle, do not restart because a poll
+has no new text. Raw profile/test binary stay in the named owned temporary directory. On actual
+completion inspect the exit, complete-population checks, reported elapsed/digest and CPU samples;
+record failure honestly if it fails. Source inspection confirms standard-phase recorder calls
+bracket RunAll rather than every transition, but does not quantify their I/O overhead or prove
+the hosted cause. Native samples/timing are not Linux/hosted timing, a full-check verdict or
+optimization/CI/timeout authority. Future completed batch still requires designated Claude
+review; no self-acceptance, cleanup, push or release claim. Current benchmark/docs/plan are
+uncommitted work in progress pending that executed result, not a finished delivery.
+
+## 2026-10-14 — RP-596 complete native standard-phase profile and reproducible reader
+
+Resume the same live9106 session from the preceding turn; do not restart. It terminates exit0:
+all300 unique governed keys complete, aggregate/individual invariant checks pass. Benchmark wall
+783,821,386,125ns (13m3.821s); whole Go command784.387s. Canonical complete phase report SHA256
+`1ffa47cfd4f85f6daf1b340cf6e43cfa7d534cb39308cdf80e955c9d28be826d`.
+The previously declared native hardware, Go1.27.2,12 workers and input identities apply; no
+production/balance/epoch/golden/scenario/horizon/workflow/dispatch/acceptance bytes change.
+
+Raw files remain `/private/tmp/cloud-clicker-standard-profile.Y4bce9/`:
+CPU profile SHA256`aebcd0a56767a41a7066bfc2cbc1d1b70a218e1fe09a801e140c31efd3e86219`;
+compiled test binary SHA256`d7594c1006507c66dd40ef05dd7ee652f4c2611b5d3ec38d95dcabe5acce1486`;
+executed benchmark source SHA256`218991f980444a817a94cbc24adc24e5be4dfc61f208accfe79ab8c669f2d83c`.
+No binary/raw profile is added to Git. The shell's prebuilt `go tool pprof` is absent; source is
+present in the same toolchain. Add manual root `harness-profile-report` using `go run cmd/pprof`
+and the existing Make-owned cache, not an installation/custom cache/new simulation instrument.
+
+Executed the reader on the actual profile with default top25, `-top -cum -nodecount=30`,
+`-list ratesWithProvisionedAndPolicy -nodefraction=0` and focused cumulative view. Profile spans
+784.02s,5854.30s aggregate sampled CPU across threads. Production rate calculation contributes
+2285.94s/39.05% cumulative sampled CPU. Source attribution at engine.go333's repeated bySource
+map iteration is1531.81s cumulative; this is inside the former subtotal, not an additional
+disjoint saving. Map iteration/write-barrier/runtime allocation paths are prominent. Flat runtime
+madvise23.04% and usleep15.42% are also reported; do not infer a Linux cause from Darwin samples.
+These CPU attributions overlap, are not wall-time percentages and predict no guaranteed speedup.
+Source inspection shows standard observation writes only before/after RunAll; no timed observed
+versus unobserved pair or quantitative recorder I/O cost is measured by this profile.
+
+Reader missing-input and malformed-text controls both refuse (Make2); real profile reads pass.
+Cold dispatch tests execute three cases, including mismatched-key refusal and worker-count byte
+stability; affected `make vet GO_PACKAGES='./harness'` passes. `make verify-ci-topology` passes
+its actual topology and16 negatives; new reader has no CI/release dependency. Formatting/diff
+checked. Do not run unrelated broad suites to decorate an instrumentation result. This is a full
+standard population measurement, NOT the complete check: guards, relevance and golden/baseline
+comparison stay outside it. No Linux/SQL/hosted-green, performance improvement or1.0 claim.
+
+Review by: Codex (diagnostic implementer first filter). Recorded by: Codex. Complete benchmark/
+Make/docs/plan/queue/ledger/start-and-result-log range after `0411ef34` through this containing
+commit needs designated Claude review, consolidatable with CI diagnostics. Next: propose a
+separately authorized rate-traversal optimization that preserves exact multiplier order,
+validation/activation and report identity; prove actual gain and full affected runtime parity
+before adoption/closeout. Existing neutral-delivery/kernel authority, Linux/hosted/full-maintenance
+and unrelated numeric/history/release holds are not waived. No cleanup, publication or archival.
