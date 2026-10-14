@@ -530,9 +530,15 @@ validate with their matching Economy catalogs; relationships, sequence horizon, 
 and declaration binding remain loader checks. Exact-name/non-null admission corrections carry
 kernel0.3.195; no harvest/risk/cost/production policy or content mint changes.
 
+`soul.SoulSchemas()` exports the v1 policy/band/debit/activity/ending grammar, including heartbeat
+and presentation fields. Current/stored artifacts resolve against the tracked copy registry.
+Partition, copy/value/catch-up/watchdog relationships, epoch-versus-fixture rules and original-byte
+uniqueness remain loader checks. Null-to-zero/false admissions are corrected with kernel0.3.196;
+no drain/recovery/ending policy or source mint changes.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities, Doctrines and Fiscal provide six owner descriptors
-for the nineteen currently pinned artifact families; the other thirteen and the composed C18 catalog
+TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities, Doctrines, Fiscal and Soul provide seven owner descriptors
+for the nineteen currently pinned artifact families; the other twelve and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.

@@ -2452,3 +2452,50 @@ review, consolidatable with related C18 corrections. Six of nineteen pinned-fami
 exist; thirteen, full response union/catalog HTTP and public re-verification remain. No archival,
 push/deployment, new content or owner/draft adoption. Continue accepted construction; review,
 services, author/owner contracts, full CI and the entire nine-tier1.0 release remain open.
+
+## 2026-10-14 — Construct Soul's owner descriptor and refuse null defaults (RP-578)
+
+Resume clean `d87bffdc`; Fiscal is preceding concrete progress. Read the accepted SB10/SB17/
+SB27 and SR-C2 catalog/enum/presentation contracts and actual Go/TS readers. Old Go admits
+eight null policy/band/flag candidates, including initial Soul silently becoming zero; TS refuses
+all eight. Explicit zero/false remains legal. File RP-578 and add non-null checking to the
+catalog-only exact-key helper (all call sites checked). Existing uniqueJSONKeys stays unchanged.
+Genuine kernel0.3.195→0.3.196 records this correction; no arithmetic/cadence/content retune.
+
+`SoulSchemas` exports closed v1 policy/band/debit/activity/ending shapes, exact enums and numeric
+domains. Current and two stored artifacts plus recovery fixture validate byte-unchanged and load
+against the tracked generated copy registry. Twenty-five shape/refusal controls, all four owner
+kinds × three toy kinds, six schema-valid semantic failures, empty production-versus-fixture
+rules, fresh exports and escaped/duplicate controls pass. Descriptor map validation admits a
+duplicate control that Soul's original-byte uniqueness correctly refuses; shared artifact
+validator semantics are not changed. Bindings, partition, ordering, context and value relations
+still require the loader. No source mint, catalog union or public HTTP activation.
+
+Final cold soul/publicapi/kernel/replaycatalog26554 and affected vet pass. Node18174 passes149;
+actual Chromium/WebKit37966 passes298 catalog/replay/scheduler cases, plus mounted Recovery80346
+passes52. Verbose production92509 executes all three activation/suppression/coordinate-refusal
+cases, no skips. Types1538 have zero errors/warnings; build and byte-unchanged `make api-check`
+pass. No SQL/real-server recovery, native Firefox/Linux/hosted, accessibility or whole API/CI
+claim. Docker's preceding bounded ping remains unresponsive; no restart/host-DB substitution.
+Historical RP-131 guard remains known-red; no rerun/current-tree green verdict.
+
+Soul overview also had a stale “no mounted surface” claim. Actual GameUIApp host mounts
+SoulRecoverySurface; the component renders RecoveryToy and tracked disclosure keys. Reconcile
+canonical docs to that construction, keeping the successor's player/review/AT gates separate.
+No frozen RFC, player-facing copy, schema/body ruling or acceptance status is changed.
+
+Ignored old `.cache/soul-null-old-d87bffdc.log` SHA256
+`89df364849b28a99d423aff1fd92d741768eba539e98fc0805c68e728708ed2e`;
+native `.cache/soul-owner-native-d87bffdc.log` SHA256
+`8fff577b7ad97bafaee37fc42faeea4092fbe21b5ac815bab018b5e1589f56e6`;
+mounted `.cache/soul-owner-mounted-d87bffdc.log` SHA256
+`ed20547ad34bf2ed4aa17e3f4957bff5311ccaee3c1cab572961874fa7159862`;
+production `.cache/soul-owner-production-d87bffdc.log` SHA256
+`ca1438d9b9f0fdf10a08d1b68524b748dfaa1e6718c5ee00271254c74a247916`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete source/schema/tests/
+version/docs/records range after `d87bffdc` through this containing commit needs designated Claude
+review, consolidatable with related C18 corrections. Seven of nineteen pinned-family descriptors
+exist; twelve, complete response union/catalog HTTP and public re-verification remain. No archival,
+push/deployment, new content or owner/draft adoption. Continue accepted construction; services,
+review/author/owner, full CI and the entire nine-tier1.0 release remain open.

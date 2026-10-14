@@ -7,6 +7,53 @@ import (
 	"testing"
 )
 
+func editSoulFixture(t *testing.T, edit func(map[string]any)) []byte {
+	t.Helper()
+	var root map[string]any
+	if err := json.Unmarshal(fixtureCatalogBytes(t), &root); err != nil {
+		t.Fatal(err)
+	}
+	edit(root)
+	data, err := json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}
+
+func TestLoadCatalogRejectsNullZeroAndFalseMembers(t *testing.T) {
+	for name, edit := range map[string]func(map[string]any){
+		"floor":        func(v map[string]any) { v["policy"].(map[string]any)["soul_floor"] = nil },
+		"initial":      func(v map[string]any) { v["policy"].(map[string]any)["soul_initial"] = nil },
+		"band minimum": func(v map[string]any) { v["bands"].([]any)[0].(map[string]any)["min_inclusive"] = nil },
+		"hollow lock":  func(v map[string]any) { v["bands"].([]any)[1].(map[string]any)["human_content_locked"] = nil },
+		"dimming lock": func(v map[string]any) { v["bands"].([]any)[2].(map[string]any)["human_content_locked"] = nil },
+		"whole lock":   func(v map[string]any) { v["bands"].([]any)[3].(map[string]any)["human_content_locked"] = nil },
+		"exhaust flag": func(v map[string]any) {
+			row := v["debit_sources"].([]any)[0].(map[string]any)
+			row["may_exhaust"], row["single_use"] = nil, false
+		},
+		"single-use flag": func(v map[string]any) {
+			row := v["debit_sources"].([]any)[0].(map[string]any)
+			row["may_exhaust"], row["single_use"] = false, nil
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			if _, err := LoadCatalog(editSoulFixture(t, edit), fixtureDeclarations(false)); err == nil {
+				t.Fatal("null member silently became zero/false")
+			}
+		})
+	}
+	data := editSoulFixture(t, func(v map[string]any) {
+		v["policy"].(map[string]any)["soul_initial"] = 0
+		row := v["debit_sources"].([]any)[0].(map[string]any)
+		row["may_exhaust"], row["single_use"] = false, false
+	})
+	if catalog, err := LoadCatalog(data, fixtureDeclarations(false)); err != nil || catalog.Policy.Initial != 0 || catalog.DebitSources[0].MayExhaust {
+		t.Fatalf("explicit zero/false refused or changed: %v", err)
+	}
+}
+
 func fixtureCatalogBytes(t *testing.T) []byte {
 	t.Helper()
 	value := map[string]any{

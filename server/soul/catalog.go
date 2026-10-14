@@ -251,7 +251,8 @@ func exactKeys(data []byte, keys ...string) bool {
 		return false
 	}
 	for _, key := range keys {
-		if _, ok := object[key]; !ok {
+		value, ok := object[key]
+		if !ok || bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
 			return false
 		}
 	}

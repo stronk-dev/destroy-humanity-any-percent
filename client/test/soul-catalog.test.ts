@@ -17,6 +17,27 @@ recovery_activities: [{ activity_id: "touch_grass.fixture", duration_attended_ms
 ending_policy: { whole_variant: "earnest_ascension", depleted_variant: "training_data" } });
 
 describe("Soul catalog", () => {
+  it("refuses null rather than defaulting policy/band integers and flags to zero/false", () => {
+    const paths: Array<Array<string | number>> = [
+      ["policy", "soul_floor"], ["policy", "soul_initial"], ["bands", 0, "min_inclusive"],
+      ["bands", 1, "human_content_locked"], ["bands", 2, "human_content_locked"], ["bands", 3, "human_content_locked"],
+      ["debit_sources", 0, "may_exhaust"], ["debit_sources", 0, "single_use"],
+    ];
+    for (const path of paths) {
+      const source = fixture();
+      source.debit_sources[0].may_exhaust = false;
+      source.debit_sources[0].single_use = false;
+      let object: any = source;
+      for (const component of path.slice(0, -1)) object = object[component];
+      object[path.at(-1)!] = null;
+      expect(() => parseSoulCatalog(source, declarations), path.join(".")).toThrow(SyntaxError);
+    }
+    const valid = fixture();
+    valid.policy.soul_initial = 0;
+    valid.debit_sources[0].may_exhaust = false;
+    valid.debit_sources[0].single_use = false;
+    expect(parseSoulCatalog(valid, declarations)).toMatchObject({ policy: { soul_floor: 0, soul_initial: 0 }, debit_sources: [{ may_exhaust: false, single_use: false }] });
+  });
   it("matches every inclusive band boundary", () => {
     const catalog = parseSoulCatalog(fixture(), declarations);
     expect([0, 9, 10, 39, 40, 74, 75, 100].map((value) => soulBand(catalog, value).band_member)).toEqual(["near_zero", "near_zero", "hollow", "hollow", "dimming", "dimming", "whole", "whole"]);

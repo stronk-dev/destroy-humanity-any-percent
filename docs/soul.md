@@ -4,8 +4,10 @@ Soul is a Founder-scoped exact-integer axis that remains mechanically independen
 runtime foundation is implemented. The current epoch pins `balance/soul/first-content.json`, first
 minted in epoch 6, with the three live recovery activities documented in
 [`soul-recovery.md`](soul-recovery.md). The artifact still declares no production debit sources.
-The authenticated recovery lifecycle is available at the server boundary, while its interactive
-toys and final disclosure rendering remain UI-successor work rather than a mounted player surface.
+The authenticated recovery lifecycle is available at the server boundary. The UI successor now
+mounts the Recovery surface, interactive toys and disclosure in the Game UI host; its bounded
+player verification, designated review and accessibility acceptance remain separate from this
+foundation. See [`soul-recovery.md`](soul-recovery.md) for current evidence and limits.
 
 ## Artifact, state, and activation
 
@@ -14,6 +16,19 @@ ordered bands, debit sources, recovery activities, and ending variants. Go and T
 enums, ordering, interval coverage, safe-integer domains, copy-key references, and fixture-versus-
 epoch row rules. The artifact participates in constants identity and requires the bumped minigame
 and pet artifacts plus Fiscal v19.
+
+Catalog members are non-null. Go now refuses null policy/band integers and Boolean flags rather
+than letting struct decoding silently replace them with zero/false; explicit zero and false
+remain valid. This admission correction carries shared kernel `0.3.196` without changing drain,
+recovery, attendance, suppression, bands or ending policy. Soul's existing original-byte
+duplicate-member refusal remains unchanged.
+
+`soul.SoulSchemas()` exports the closed v1 structural descriptor for API Foundation C18, including
+the heartbeat/watchdog fields and all three recovery toy kinds. Current/stored bytes and the
+recovery fixture validate unchanged. Copy binding, full band partition, source/activity ordering,
+epoch-versus-fixture restrictions, value relationships and original-byte uniqueness still require
+`LoadCatalog`; descriptor map validation alone is not that gate. No public catalog union/HTTP
+activation or new content is introduced.
 
 Founder save v20 activates only at a new-run boundary under a pinned Soul artifact. It retains the
 existing `soul` field, bounds it by the pinned policy, and adds exactly one persisted collection:
