@@ -389,13 +389,25 @@ func validPathParameters(path string, parameters []Parameter, definitions map[st
 	if len(want) != len(parameters) {
 		return false
 	}
+	seen := make(map[string]bool, len(parameters))
 	for index, parameter := range parameters {
-		if parameter.Name != want[index] || parameter.Schema == nil || validateSchema(parameter.Schema, definitions, 0) != nil ||
-			parameter.Schema.Kind == SchemaObject || parameter.Schema.Kind == SchemaArray || parameter.Schema.Kind == SchemaOneOf || parameter.Schema.Kind == SchemaNull {
+		if parameter.Name != want[index] || seen[parameter.Name] || parameter.Schema == nil ||
+			validateSchema(parameter.Schema, definitions, 0) != nil || !scalarPathParameterSchema(parameter.Schema, definitions) {
 			return false
 		}
+		seen[parameter.Name] = true
 	}
 	return true
+}
+
+func scalarPathParameterSchema(schema *Schema, definitions map[string]*Schema) bool {
+	// Reference graphs were validated before operation admission. A named type
+	// must obey the same scalar rule as its inline definition, not hide an object
+	// or union that the generated client's URI scalar writer cannot represent.
+	for schema != nil && schema.Kind == SchemaRef {
+		schema = definitions[schema.Ref]
+	}
+	return schema != nil && scalarQuerySchema(schema)
 }
 
 func SortedResponseStatuses(operation Operation) []int {

@@ -13,6 +13,13 @@ registry. Mounting checks the entire binding set and every required auth middlew
 wrapping handlers or registering routes. Missing, extra, unsorted, or nil runtime bindings,
 or absent required auth middleware, fail without changing the caller's existing router.
 
+Path-parameter descriptors have unique names in template order (not lexical order),
+and their resolved kind must be string, integer or boolean. Named-reference chains
+preserve their declared type and bounds but cannot conceal an object, array, null
+or union. Invalid descriptors fail with `ErrInvalidOperation` before generation or
+mounting. This is descriptor admission, not new URI-value validation middleware or
+a change to the separate static/parameter route-overlap policy below.
+
 Raw-response hash headers use the same admission rule at registry construction and
 cached emission: their existing name grammar applies, and they cannot equal `ETag`,
 `Cache-Control`, `Content-Type`, `Content-Length` or `X-Request-ID` case-insensitively.

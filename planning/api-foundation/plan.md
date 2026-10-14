@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current A5/C17 admission correction (2026-10-14): path parameters now require
+unique names and resolve named-reference chains before enforcing their existing
+scalar kind boundary. Ten old-source refusals fail; corrected refusals, valid
+reference/generator/mounted-dispatch controls and four affected native packages
+pass, with unchanged production API artifacts. The owning log records the exact
+range after `3c1da2b0`, pending designated review. No endpoint, URI-value grammar,
+RP-562 overlap policy, C18 family count or held proposal is changed/adopted.
+
 Current C18 byte boundary (2026-10-14): `VerifyPublicCatalogBundle` verifies advertised child
 digests and complete framed identity while preserving detached original sources. Current
 manifest19 and corruption controls execute; this internal primitive is not mounted transport.

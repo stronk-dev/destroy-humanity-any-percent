@@ -3015,3 +3015,37 @@ needs designated Claude review, consolidatable with C18; no self-acceptance or a
 Next: review/adopt the bounded transport and existing schema/representation proposals, then
 implement the complete real catalog/SDK/re-verification path; continue unrelated accepted work
 without treating these holds as a project-wide stop. No push, mint or release claim.
+
+## 2026-10-14 — A5/C17 path descriptors cannot hide non-scalars or repeat names
+
+Outcome: at clean `3c1da2b0`, enforce the existing scalar, exact-name path
+parameter boundary during registry construction. A named type must satisfy the
+same kind rule as its inline definition; one generated input field cannot
+represent two distinct URI positions under a repeated name. This does not
+change the separate RP-562 route-overlap policy or adopt a held API proposal.
+
+Regression: ten cold old-constructor refusals fail: object/array/null/union through
+direct and chained references (8), adjacent/separated repeated names (2).
+Six valid string/integer/boolean reference controls already generate and dispatch
+through actual mounted chi handlers; distinct equal-schema parameters retain
+nonlexical template order and both URI values. Resolve only the previously
+validated reference graph and reject repeated names before generation/mounting.
+The first test attempt did not compile because its GenerateOpenAPI call omitted
+the title argument; correct that instrument before recording product failures.
+
+Coverage: corrected `make test-go GO_PACKAGES='./publicapi' GO_TEST_FLAGS='-count=1 -run TestRegistryPathParameters -v'`
+passes all four tests and their negative/positive populations. Finished cold
+publicapi/publicread/account/gameserver packages and affected vet pass.
+`make api-check` regenerates production OpenAPI, TypeScript and compatibility
+artifacts byte-identically. Ordinary package runs are native; no fresh declared
+Postgres, live-network/server authorization, generated SDK invocation, browser,
+Linux/hosted CI or full public catalog/re-verification claim. No shipped client,
+handler, URI-value grammar, path, response, compatibility pin, kernel or content
+change. Generation controls inspect the actual generator; they are not a new
+TypeScript compiler population.
+
+Handoff: registry code, one test file, canonical API docs, RP-609/RP-610 and this
+plan/log. Diff checked. Review by: Codex (implementer first filter); Recorded by:
+Codex. Whole coherent range after `3c1da2b0` through this containing commit needs
+designated Claude review, consolidatable with API conformance; earlier ranges
+remain owed. No feature/1.0 acceptance, archival, mint, publication or push.
