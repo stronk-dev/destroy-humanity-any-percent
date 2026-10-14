@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import meterCatalogParityCorpus from "../../balance/testdata/meters-catalog-parity-v1.json";
 import meterTransitionCorpus from "../../balance/testdata/meters-transition-v1.json";
+import { MULTIPLIER_SLOT_ORDER } from "../src/economy-kernel";
 
 import { loadMeterCatalog, REQUIRED_METER_IDS, validateMeterResourceSeparation } from "../src/meters/catalog";
 import { advanceMeters, contributionKey, MILLIS_PER_HOUR, newMeterState, validateMeterState } from "../src/meters/transition";
@@ -32,6 +33,47 @@ function applyParityOperation(root: any, operation: { op: string; path: Array<st
 }
 
 describe("meter catalog", () => {
+  it("accepts the existing axis_stack contribution slot owned by Clout CV3", () => {
+    const source = validCatalog() as { meters: Array<{ inputs: Array<Record<string, unknown>> }> };
+    source.meters[0].inputs[1].slot = "axis_stack";
+    expect(loadMeterCatalog(JSON.stringify(source)).meters[0].inputs[1]).toMatchObject({ slot: "axis_stack" });
+  });
+  it.each(MULTIPLIER_SLOT_ORDER)("shares the registered contribution domain: %s", (slot) => {
+    const source = validCatalog() as { meters: Array<{ inputs: Array<Record<string, unknown>> }> };
+    source.meters[0].inputs[1].slot = slot;
+    expect(loadMeterCatalog(JSON.stringify(source)).meters[0].inputs[1]).toMatchObject({ slot });
+  });
+  it("keeps exact member names at every catalog object boundary", () => {
+    const paths: Array<Array<string | number>> = [
+      ["schema_version"], ["trust_reseed"], ["meters"],
+      ...["base_value", "notoriety_numerator", "notoriety_denominator", "floor_value", "ceiling_value"]
+        .map((key) => ["trust_reseed", key]),
+      ...["id", "scope", "min_value", "max_value", "initial_value", "bands", "inputs", "decay"]
+        .map((key) => ["meters", 0, key]),
+      ["meters", 0, "bands", 0, "id"], ["meters", 0, "bands", 0, "floor_value"],
+      ["meters", 0, "decay", "toward_value"], ["meters", 0, "decay", "rate_per_attended_hour"],
+    ];
+    for (const path of paths) {
+      const source = validCatalog();
+      let object: any = source;
+      for (const key of path.slice(0, -1)) object = object[key];
+      const key = path.at(-1) as string;
+      object[key.toUpperCase()] = object[key];
+      delete object[key];
+      expect(() => loadMeterCatalog(JSON.stringify(source)), path.join(".")).toThrow(SyntaxError);
+    }
+  });
+  it("preserves canonical escaped names and existing last-value duplicate semantics", () => {
+    const source = JSON.stringify(validCatalog());
+    const escaped = source.replace('"schema_version"', '"schema_versi\\u006fn"');
+    expect(escaped).not.toBe(source);
+    expect(loadMeterCatalog(escaped).schemaVersion).toBe(1);
+    const duplicate = source.replace('"schema_version":1', '"schema_version":2,"schema_version":1');
+    expect(duplicate).not.toBe(source);
+    expect(loadMeterCatalog(duplicate).schemaVersion).toBe(1);
+    const incompleteFinalReseed = `${source.slice(0, -1)},"trust_reseed":{"base_value":90}}`;
+    expect(() => loadMeterCatalog(incompleteFinalReseed)).toThrow(SyntaxError);
+  });
   it("loads the exact Phase-A set and closed input union", () => {
     const catalog = loadMeterCatalog(JSON.stringify(validCatalog()));
     expect(catalog.meters.map((meter) => meter.id)).toEqual([...REQUIRED_METER_IDS]);

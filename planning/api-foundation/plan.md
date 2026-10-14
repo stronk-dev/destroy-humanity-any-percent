@@ -2,13 +2,21 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C18 construction (2026-10-14, RP-573/RP-574): Meters exports its closed v1 structural
+owner descriptor, with current/stored bytes, signed input/slot/decay domains, closed shapes,
+semantic-loader separation and fresh-export controls. Go exact-key admissions and TS's omitted
+existing axis_stack slot are corrected under M1/C6/CV3; genuine kernel0.3.192 accompanies the
+owner addition. No retuned content or global duplicate rejection. The owning log records checks
+and full range after `c7c4e561`, pending Claude review. Three of nineteen pinned-family descriptors
+exist; sixteen and the composed union/public verification loop remain unfinished.
+
 Current C18 construction (2026-10-14, RP-572): Achievements now exports its closed v1 structural
 owner descriptor. Current/stored bytes, every condition/proof arm, depth/refusal/fresh-export
 checks pass. Go's actual16 case-alias admissions are corrected under CA1/C6, carrying genuine
 kernel0.3.191 alongside this owner addition; no API-only false bump. Existing duplicate behavior,
 TS numeric domains, balance and source bytes are preserved. Owning log records final evidence,
 historical red guard and full range after `10ca8fbf`, pending Claude review. Two of nineteen
-pinned families now have descriptors; complete union/public catalog/re-verification remain open.
+pinned families had descriptors at that checkpoint; complete union/public catalog/re-verification remain open.
 
 Current generator correction (2026-10-14, RP-570): APIError enum exports now follow validated
 named references in the envelope and scalar fields. Two sorted actual-registry regressions

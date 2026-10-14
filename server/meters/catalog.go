@@ -83,9 +83,9 @@ type Catalog struct {
 }
 
 type rawCatalog struct {
-	SchemaVersion int            `json:"schema_version"`
-	TrustReseed   rawTrustReseed `json:"trust_reseed"`
-	Meters        []rawMeter     `json:"meters"`
+	SchemaVersion int               `json:"schema_version"`
+	TrustReseed   json.RawMessage   `json:"trust_reseed"`
+	Meters        []json.RawMessage `json:"meters"`
 }
 
 type rawTrustReseed struct {
@@ -102,7 +102,7 @@ type rawMeter struct {
 	MinValue     *int              `json:"min_value"`
 	MaxValue     *int              `json:"max_value"`
 	InitialValue *int              `json:"initial_value"`
-	Bands        []rawBand         `json:"bands"`
+	Bands        []json.RawMessage `json:"bands"`
 	Inputs       []json.RawMessage `json:"inputs"`
 	Decay        json.RawMessage   `json:"decay"`
 }
@@ -137,18 +137,25 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	if err := decoder.Decode(&trailing); err != io.EOF {
 		return nil, fmt.Errorf("%w: trailing JSON", ErrInvalidCatalog)
 	}
-	if raw.SchemaVersion != CatalogSchemaVersion || len(raw.Meters) != len(requiredMeterIDs) || !validReseed(raw.TrustReseed) {
+	var reseed rawTrustReseed
+	if !hasExactJSONKeys(data, []string{"schema_version", "trust_reseed", "meters"}) ||
+		!hasExactJSONKeys(raw.TrustReseed, []string{"base_value", "notoriety_numerator", "notoriety_denominator", "floor_value", "ceiling_value"}) ||
+		decodeCatalogStrict(raw.TrustReseed, &reseed) != nil || raw.SchemaVersion != CatalogSchemaVersion || len(raw.Meters) != len(requiredMeterIDs) || !validReseed(reseed) {
 		return nil, ErrInvalidCatalog
 	}
 	catalog := &Catalog{
 		TrustReseed: TrustReseed{
-			BaseValue: *raw.TrustReseed.BaseValue, NotorietyNumerator: *raw.TrustReseed.NotorietyNumerator,
-			NotorietyDenominator: *raw.TrustReseed.NotorietyDenominator, FloorValue: *raw.TrustReseed.FloorValue,
-			CeilingValue: *raw.TrustReseed.CeilingValue,
+			BaseValue: *reseed.BaseValue, NotorietyNumerator: *reseed.NotorietyNumerator,
+			NotorietyDenominator: *reseed.NotorietyDenominator, FloorValue: *reseed.FloorValue,
+			CeilingValue: *reseed.CeilingValue,
 		},
 		Meters: make([]Meter, 0, len(raw.Meters)), byID: map[string]Meter{},
 	}
-	for index, source := range raw.Meters {
+	for index, row := range raw.Meters {
+		var source rawMeter
+		if !hasExactJSONKeys(row, []string{"id", "scope", "min_value", "max_value", "initial_value", "bands", "inputs", "decay"}) || decodeCatalogStrict(row, &source) != nil {
+			return nil, fmt.Errorf("%w: meters[%d]", ErrInvalidCatalog, index)
+		}
 		if source.ID != requiredMeterIDs[index] || source.Scope != "company" || source.MinValue == nil || *source.MinValue != MinimumValue ||
 			source.MaxValue == nil || *source.MaxValue != MaximumValue || source.InitialValue == nil || *source.InitialValue < MinimumValue || *source.InitialValue > MaximumValue ||
 			len(source.Bands) == 0 || source.Inputs == nil || len(source.Decay) == 0 || catalog.byID[source.ID].ID != "" {
@@ -157,7 +164,11 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		meter := Meter{ID: source.ID, InitialValue: *source.InitialValue, Bands: make([]Band, 0, len(source.Bands)), Inputs: make([]Input, 0, len(source.Inputs))}
 		previousFloor := -1
 		seenBands := map[string]bool{}
-		for bandIndex, band := range source.Bands {
+		for bandIndex, row := range source.Bands {
+			var band rawBand
+			if !hasExactJSONKeys(row, []string{"id", "floor_value"}) || decodeCatalogStrict(row, &band) != nil {
+				return nil, fmt.Errorf("%w: meters[%d].bands[%d]", ErrInvalidCatalog, index, bandIndex)
+			}
 			if !idPattern.MatchString(band.ID) || seenBands[band.ID] || band.FloorValue == nil || *band.FloorValue < MinimumValue || *band.FloorValue > MaximumValue ||
 				*band.FloorValue <= previousFloor || bandIndex == 0 && *band.FloorValue != MinimumValue {
 				return nil, fmt.Errorf("%w: meters[%d].bands[%d]", ErrInvalidCatalog, index, bandIndex)
@@ -176,7 +187,7 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		}
 		if !bytes.Equal(bytes.TrimSpace(source.Decay), []byte("null")) {
 			var decay rawDecay
-			if decodeCatalogStrict(source.Decay, &decay) != nil || decay.TowardValue == nil || decay.RatePerHour == nil || *decay.TowardValue < MinimumValue || *decay.TowardValue > MaximumValue || *decay.RatePerHour < 1 || *decay.RatePerHour > MaximumValue {
+			if !hasExactJSONKeys(source.Decay, []string{"toward_value", "rate_per_attended_hour"}) || decodeCatalogStrict(source.Decay, &decay) != nil || decay.TowardValue == nil || decay.RatePerHour == nil || *decay.TowardValue < MinimumValue || *decay.TowardValue > MaximumValue || *decay.RatePerHour < 1 || *decay.RatePerHour > MaximumValue {
 				return nil, fmt.Errorf("%w: meters[%d].decay", ErrInvalidCatalog, index)
 			}
 			meter.Decay = &Decay{TowardValue: *decay.TowardValue, RatePerHour: *decay.RatePerHour}

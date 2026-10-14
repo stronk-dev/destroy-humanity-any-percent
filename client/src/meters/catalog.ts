@@ -1,3 +1,5 @@
+import type { MultiplierSlot } from "../economy-kernel";
+
 export const METER_CATALOG_SCHEMA_VERSION = 1 as const;
 export const METER_MIN_VALUE = 0 as const;
 export const METER_MAX_VALUE = 100 as const;
@@ -6,7 +8,7 @@ export type MeterInput =
   | Readonly<{ kind: "ledger_fact"; factKind: string; delta: number }>
   | Readonly<{ kind: "contribution_slot"; slot: MeterSlot; sourceId: string; deltaPerAttendedHour: number }>;
 
-export type MeterSlot = "upgrades" | "milestones" | "faction" | "doctrine" | "commons" | "trust" | "event_buffs" | "prestige";
+export type MeterSlot = MultiplierSlot;
 
 export interface MeterBand { readonly id: string; readonly floorValue: number }
 export interface MeterDecay { readonly towardValue: number; readonly ratePerHour: number }
@@ -32,7 +34,7 @@ export interface MeterCatalog {
 }
 
 const mechanicalId = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
-const slots = new Set<MeterSlot>(["upgrades", "milestones", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige"]);
+const slots = new Set<MeterSlot>(["upgrades", "milestones", "axis_stack", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige"]);
 export const REQUIRED_METER_IDS = Object.freeze([
   "doom.probability",
   "trust.employees.grievance", "trust.employees.standing",

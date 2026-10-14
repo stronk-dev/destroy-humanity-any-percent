@@ -27,7 +27,19 @@ partitioning, band changes, target-phase reset, and saturation.
 
 Go and TypeScript loaders enforce the same closed eleven-ID set, input shapes, numeric bounds,
 unique source bindings, and band ordering. `balance/meters.schema.json` is wired into the root
-schema gate. The epoch-6 artifact starts Standing at 50, Grievance at 0, and p(doom) at 50; every
+schema gate. Exact member names are checked at the root, reseed, row, band, input and decay
+boundaries before Go struct decoding can accept case aliases. Escaped canonical names and
+complete last-value duplicate controls remain valid; the final selected reseed object must be
+complete, not merged with an earlier partial duplicate. The contribution-slot domain includes
+the existing Clout `axis_stack` slot in both runtimes. These admission corrections advance the
+shared kernel to `0.3.192`; no meter values, decay or reseed formula are retuned.
+
+`meters.MeterSchemas()` exports the closed v1 structural descriptor for API Foundation C18,
+with both input arms, null/active decay, fixed 0–100 bounds and registered slot/meter enums.
+Eleven-row membership/order, band ordering, source uniqueness and reseed relationships still
+require `LoadCatalog`; the descriptor is not yet registered in the public catalog union.
+
+The epoch-6 artifact starts Standing at 50, Grievance at 0, and p(doom) at 50; every
 row exposes `low` at 0 and `high` at 70. Standing and p(doom) decay toward 50, while Grievance
 decays toward 0. The live causal bindings are `externality.emitted` → p(doom) +3 and active
 `commons.member` → users' Standing +1 per attended hour. These remain declarative balance rows,

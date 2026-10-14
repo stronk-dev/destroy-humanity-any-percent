@@ -505,9 +505,15 @@ limits still belong to `LoadCatalog`, not the structural descriptor. The accompa
 admission correction is real kernel behavior and carries version0.3.191; no metadata-only bump,
 balance change, duplicate/numeric policy rewrite or artifact mint is claimed.
 
+`meters.MeterSchemas()` exports the existing v1 closed structural descriptor. Current and stored
+bytes, both signed input arms, all registered contribution slots and null/active decay validate.
+Loader-only order/cardinality/uniqueness/reseed relationships remain explicit. Exact-name Go
+admission and the omitted TS `axis_stack` slot are corrected under existing contracts, carrying
+the genuine kernel version0.3.192; no balance retune or metadata-only bump.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. Categories and Achievements provide two owner descriptors
-for the nineteen currently pinned artifact families; the other seventeen and the composed C18 catalog
+TypeScript verification loop remain open. Categories, Achievements and Meters provide three owner descriptors
+for the nineteen currently pinned artifact families; the other sixteen and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.

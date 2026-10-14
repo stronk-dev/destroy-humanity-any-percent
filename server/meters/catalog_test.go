@@ -1,10 +1,68 @@
 package meters
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
+	"strings"
 	"testing"
 )
+
+func TestLoadCatalogRejectsCaseAliasedMembers(t *testing.T) {
+	keys := []string{"schema_version", "trust_reseed", "meters", "base_value", "notoriety_numerator", "notoriety_denominator", "floor_value", "ceiling_value", "id", "scope", "min_value", "max_value", "initial_value", "bands", "inputs", "decay", "toward_value", "rate_per_attended_hour"}
+	for _, key := range keys {
+		for _, alias := range []string{strings.ToUpper(key), strings.ToUpper(key[:1]) + key[1:]} {
+			t.Run(key+"/"+alias, func(t *testing.T) {
+				before := validCatalogBytes(t)
+				candidate := bytes.Replace(before, []byte(`"`+key+`":`), []byte(`"`+alias+`":`), 1)
+				if bytes.Equal(before, candidate) {
+					t.Fatal("alias did not change source")
+				}
+				if _, err := LoadCatalog(candidate); err == nil {
+					t.Fatal("case alias admitted")
+				}
+			})
+		}
+	}
+	// Select band fields explicitly instead of depending on root serialization order.
+	for _, key := range []string{"id", "floor_value"} {
+		t.Run("band/"+key, func(t *testing.T) {
+			var root map[string]json.RawMessage
+			if err := json.Unmarshal(validCatalogBytes(t), &root); err != nil {
+				t.Fatal(err)
+			}
+			var rows []map[string]json.RawMessage
+			if err := json.Unmarshal(root["meters"], &rows); err != nil {
+				t.Fatal(err)
+			}
+			rows[0]["bands"] = bytes.Replace(rows[0]["bands"], []byte(`"`+key+`":`), []byte(`"`+strings.ToUpper(key)+`":`), 1)
+			var err error
+			root["meters"], err = json.Marshal(rows)
+			if err != nil {
+				t.Fatal(err)
+			}
+			data, err := json.Marshal(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := LoadCatalog(data); err == nil {
+				t.Fatal("band case alias admitted")
+			}
+		})
+	}
+	for _, alias := range []string{"FLOOR_VALUE", "Floor_value"} {
+		t.Run("reseed/"+alias, func(t *testing.T) {
+			data := mutateCatalog(t, func(root map[string]any) {
+				reseed := root["trust_reseed"].(map[string]any)
+				reseed[alias] = reseed["floor_value"]
+				delete(reseed, "floor_value")
+			})
+			if _, err := LoadCatalog(data); err == nil {
+				t.Fatal("reseed floor case alias admitted")
+			}
+		})
+	}
+}
 
 type catalogParityCorpus struct {
 	Version  int             `json:"version"`
@@ -77,6 +135,13 @@ func TestLoadCatalogRequiresClosedPhaseASetAndInputs(t *testing.T) {
 	}
 	if err := catalog.ValidateResourceSeparation([]string{"company.cash", "trust.users.standing"}); err == nil {
 		t.Fatal("meter/economy ID collision accepted")
+	}
+}
+
+func TestLoadCatalogAcceptsRegisteredAxisStackContribution(t *testing.T) {
+	data := bytes.Replace(validCatalogBytes(t), []byte(`"slot":"upgrades"`), []byte(`"slot":"axis_stack"`), 1)
+	if _, err := LoadCatalog(data); err != nil {
+		t.Fatal(err)
 	}
 }
 

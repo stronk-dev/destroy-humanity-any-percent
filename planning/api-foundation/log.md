@@ -2270,3 +2270,49 @@ approved. Two of nineteen pinned-family descriptors exist; seventeen and complet
 verification remain. No archival, push, deployment or owner/draft adoption. Next: other owner
 descriptors within lawful scope, then the complete union/HTTP loop; do not ratify the unadopted
 integer representation mode or substitute metadata for semantic loading/release proof.
+
+## 2026-10-14 — Construct the Meters owner descriptor and repair existing admission contracts
+
+Resume `c7c4e561` with the Meters batch in progress. Under API C18, Meters M1/C6 and Clout
+CV3, export `MeterSchemas` from the owner: closed root/reseed/row/band/input/decay shapes,
+both input arms, bounded signed deltas, null/active decay, registered meter IDs and slots.
+Current catalog, two stored artifacts and existing fixtures validate byte-unchanged. Thirty-six
+wrong-shape controls refuse in descriptor and loader; all nine slots × four signed boundary
+deltas × two decay forms pass. Order/cardinality/source uniqueness/reseed relationships remain
+mandatory loader checks, demonstrated by four structurally valid but semantically invalid cases.
+Fresh-export and escaped-name/last-value controls pass; no union/public HTTP activation or mint.
+
+Actual old Go loader admits38 case-alias controls; actual old TS refuses the registered axis_stack
+candidate (one failure/seven passes), while Go accepts it. RP-573/RP-574 name these defects.
+Check original object keys before typed Go decoding, including reseed/bands/decay; restore TS's
+existing slot domain and use a type-only canonical slot alias. No runtime economy dependency.
+Exact final reseed objects must be complete, not inherit missing fields from an earlier duplicate;
+no global duplicate-name rejection is introduced. Existing numeric-token behavior, balances,
+decay/reseed arithmetic and replay encodings remain. Genuine kernel0.3.191→0.3.192 accompanies
+these admission corrections, not a metadata-only bump.
+
+Final cold full meters/publicapi/kernel packages pass; affected vet, Meters source/transitive
+boundary, typecheck (zero errors/warnings), production build and unchanged `make api-check` pass.
+Node78551 passes157; actual Chromium/WebKit28004 passes314, terminal0. Separate verbose production
+13923 executes all nine pure TestFoundation cases and relevant negative subcases, no skips.
+These prove owner/replay and pure composed-hook behavior, not Postgres/HTTP player workflows,
+Firefox/Linux, hosted CI, full C18 or1.0. Historical kernel guard remains known-red at50a3a514
+from the preceding checkpoint; no rerun or current-tree/full-CI green claim. Docker and other
+owner/author/review/release gates remain unchanged.
+
+Ignored raw old-Go `.cache/meters-alias-old-c7c4e561.log` SHA256
+`59c12d6ec3f9da3d594b882e8582627f3302d0b2e846faa09020dc89c1a3d524`;
+old-TS `.cache/meters-slot-old-c7c4e561.log` SHA256
+`9f9634ba51da8f9ad3190733b4054210e0fcecf4a8a3c38fb7ee1d59afe57c8d`;
+final-native `.cache/meters-owner-native-final-c7c4e561.log` SHA256
+`dda91cd143a0bf8a8e70066b85111da08c690f391eb44ca3e4e8303156d3f8cc`;
+pure-production `.cache/meters-owner-foundations-c7c4e561.log` SHA256
+`4ac4e6815bab134c7d77f84924f8d8a27a0ee6659315934a99b66dd7c292ac18`.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete source/schema/tests/
+version/docs/records range after `c7c4e561` through this containing commit needs designated Claude
+review, consolidatable with related C18 corrections. Three of nineteen pinned-family descriptors
+exist; sixteen, complete catalog union and public re-verification remain unfinished. No archival,
+push/deployment, new content or draft/owner adoption. Continue accepted construction without
+silently choosing Headcount's conflicting hiring/output models or treating proposal delivery as
+owner approval. Those decisions do not block this completed Meters batch.
