@@ -2,6 +2,16 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C18 composition (2026-10-14): `ComposeCatalogSchemas` constructs the closed family-to-
+owner union/bundle and refuses incomplete or ambiguous input. Actual epoch8 manifest19 plus
+real exports15 returns only the four missing owners, with no partial schemas. Existing exports
+compose/validate together; fixture contexts exercise closed payloads, references, immutable
+exports and the actual generators. No endpoint/production registry is mounted or family count
+promoted. RP-597 additionally executes a real formatted-artifact diagnostic: schema-valid
+RawMessage marshaling destroys original-byte identity. Implement a byte-preserving writer/
+consumer under C12/C18 rather than canonicalizing stored sources or calling parsed JSON proof.
+The latest owning log holds the complete new range after `ae0af284`, pending designated review.
+
 Current C18 construction (2026-10-14): Categories, Achievements, Meters, Opportunities,
 Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions, Guilds, Commons and Minigames export fifteen of nineteen pinned-family descriptors. Four, the complete response
 union/catalog HTTP reader and public re-verification remain open. All semantic loaders remain

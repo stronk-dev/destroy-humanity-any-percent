@@ -458,6 +458,30 @@ mint does not modify the product manifest or authorize a release mint; it does n
 the complete public HTTP/TypeScript verification loop. The separate replay integration below
 now covers loading that kind of stored set.
 
+### Catalog schema composition (constructed, not mounted)
+
+`publicread.ComposeCatalogSchemas(servedFamilies, owners)` builds C12/C18's closed
+`PublicCatalogArtifact` name-discriminated union and `PublicCatalogBundle {artifacts, constants_hash}`
+from explicit owner definitions. The composition root must supply the complete authoritative
+current/historical served-family set; the helper checks coverage of that input, not its inventory
+provenance. Every owner must declare its root. Missing/extra/repeated owners, reserved or repeated
+definitions (including identical redeclarations), unknown references, cycles and unsupported
+schema kinds refuse with no partial result. Shared dependencies are defined once and may be
+referenced across owner groups. Arms/definitions are sorted; returned trees do not alias inputs.
+
+The actual epoch8 nineteen-family manifest with fifteen real exports produces a named coverage
+error for `economy`, `minigame_api`, `relevance` and `routes`. The existing fifteen exports share
+one validated namespace and accept their original current source bytes. Successful two-family
+unit contexts prove constructor/generator behavior, not a completed real nineteen-family union.
+Historical bundles may contain fewer artifacts than the full union; exact ordering, membership,
+hash identity and owner semantics still require their existing readers/loaders.
+
+No production registry/router/generated-wire change or catalog endpoint is added yet. A real
+category-source diagnostic also proves that `json.Marshal` over `json.RawMessage` compacts the
+embedded bytes: the envelope passes its exact descriptor while the received value's digest no
+longer matches the claimed original-source digest (RP-597). The complete public writer/consumer
+must preserve/recover original bytes; object reserialization is not third-party verification.
+
 `server/formulas` owns the extracted version-14 production-formula model and exports its
 closed `ProductionFormulasV14` descriptor through `Schemas()`. The actual generator consumes
 that model and validates its output before writing; the published artifact remains byte-identical.

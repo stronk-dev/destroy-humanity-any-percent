@@ -2941,3 +2941,40 @@ Review by: Codex (implementer first filter and draft author). Recorded by: Codex
 source/tests/version/docs/draft/index/records range after `c0b71434` through this containing
 commit needs designated Claude review, consolidatable with C18; drafting is not acceptance.
 No owner inference, guard exemption, package relocation, archival, mint or publication.
+
+## 2026-10-14 — Closed catalog composition and byte-identity precondition (C12/C18, RP-597)
+
+Resume clean `ae0af284`; prior goal turn reconciled authoritative status/hosted evidence.
+Implement the accepted family-to-owner union constructor in the existing publicread package,
+with no private-owner production imports, reflection, generic JSON escape or watched-owner edit.
+Its served-name input must come from complete authoritative inventory at composition; the helper
+cannot authenticate that input or owner provenance. Declare roots in their own groups, define
+shared helpers once, validate the whole reference graph, and return only detached sorted snapshots.
+Missing/extra/repeated ownership, namespace collisions, invalid names/roots/references/cycles/
+kinds fail with no schemas. Historical bundle membership remains reader semantics, not all arms
+required in every response. Kernel/version/content/values and runtime registry remain unchanged.
+
+Actual epoch8 manifest19 plus fifteen existing owner exports returns exactly economy/minigame_api/
+relevance/routes as missing. All real15 definitions coexist and validate their current source
+bytes unchanged; no fake four-provider completion. Explicit small unit contexts exercise twelve
+payload refusals, fourteen invalid compositions, correct zero/false/subset/shared-ref controls,
+input order/isolation and actual OpenAPI/TS/registry consumers of the same descriptor. Existing
+runtime public router, privacy and cache tests continue to run; no catalog endpoint is mounted.
+
+RP-597's actual formatted category bytes expose another necessary link: RawMessage+json.Marshal
+compacts embedded content. The envelope passes the descriptor but its recovered JSON token's
+SHA differs from the claimed source SHA. This diagnostic is not a production codec or a new
+HTTP defect; require original-byte writer/consumer proof before C18 closure. No source/digest
+rewrite, new wire field or reserialization-as-verification shortcut is implemented.
+
+Final cold `make test-go GO_PACKAGES='./publicread ./publicapi' GO_TEST_FLAGS='-count=1'`,
+affected vet and byte-unchanged `make api-check` pass. New JSON/type fixture generation executes
+inside Go tests. No TS build/browser/SQL suite for unchanged shipped TS/HTTP/DB behavior; those
+future boundaries still need their real integration checks. Known Docker/CI/rights/author and
+full-nine-tier1.0 obligations remain; family count15/19 and full public serving stay unfinished.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete constructor/tests/
+docs/plan/ledger/log range after `ae0af284` through this containing commit needs designated Claude
+review, consolidatable with C18. No draft adoption, archival, mint, publication or release claim.
+Continue accepted byte-preserving construction and other authorized work while owner-specific
+schema/representation and review boundaries remain explicit.
