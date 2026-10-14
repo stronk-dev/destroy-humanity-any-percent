@@ -7082,3 +7082,60 @@ negative verdict approves none of them. Continue accepted integration and author
 closure, consolidate corrective ranges, and execute DB/player boundaries once
 Docker is usable with lawful service authority. No feature/lifecycle/publication
 or full-nine-tier milestone promotion. All check handles terminal.
+
+## 2026-10-14 — Current-source composed aggregate verification
+
+At `cc256422`, clean main, execute `make build-gameserver build-client`
+(58702, exit0), then `make test-game-ui-composed` (14132, terminal exit0).
+The existing target completes sequentially: fixture validators35 pass with no
+skips; main production-browser journey; ordinary Cosmetic/Reputation and Clout
+axis-stack; negative checkout; Garden harvest; Tier-2 candidate journey and its
+required real-Postgres tenant-resolver population. No source/assertion, budget,
+seed, retry or population change; no rerun to replace a failed result.
+
+Visible main evidence includes native purchases/Claim with consecutive SQL
+receipts, both early endings/next Company, Pitch committed-reply loss across
+actual server SIGKILL/restart, and attended Soul Recovery with the same crash
+boundary. Expected proxy connection refusals appear during deliberate process
+loss; final witnesses pass. Tier-2 completes both gates, three generators/three
+upgrades, incorporation and persisted reload using explicitly granted fixture
+cash, not earned-cash or natural-pacing proof. The driver verifies exact built
+HTML/JS/CSS/worker loads. Driver-owned builds produce the final asset names;
+this is checkout composition, not a Caddy/image/clean-host release manifest.
+
+The full tool output exceeded the conversation window; re-polling the same
+confirmed session recovered authoritative exit0 rather than restarting the
+run. Do not infer an additional per-assertion transcript from the truncated
+middle. The declared Postgres16 image emits an amd64-on-arm64 warning; no
+architecture override was applied. The dedicated tmpfs database started empty
+on127.0.0.1:55433. No unrelated container cleanup or daemon restart.
+
+This adds the previously missing current-source aggregate execution, not
+designated approval of outstanding source ranges, actual AT/Firefox/hosted CI,
+natural Garden growth, Headcount gameplay, mint, full Garage/Tier-2 acceptance
+or release readiness. Verification by: Codex; Recorded by: Codex. Editorial
+checkpoint only; earlier exact designated-review ranges remain open.
+
+Postgres supplement: `make test-save-integration
+SAVE_TEST_PACKAGES='./gameui ./account ./fiscal'
+SAVE_TEST_FLAGS='-run Integration -v'` (21956, exit0, count1) executes all17
+named integration tests, with no skips: three gameui and fourteen account.
+Fiscal has no Integration-selected test of its own; its proof is
+`TestFiscalProjectionMatchesPersistedHarvestIntegration` in gameui. All four
+real-clock arms pass (normal, overdue-low, one-below-cap, at-cap), comparing
+preview to actual recorded command time, receipt and reloaded Founder/Company,
+including unchanged stored rows on read. Snapshot v4/rates and actual Reputation
+purchase/Exit current-versus-next projection pass. Account covers lifecycle,
+limiters, atomic bootstrap, rotation/reuse/revocation, failed and lost replies,
+request admission and registered Soul errors. Package times1.262s/10.028s/.052s.
+
+This removes the earlier unavailable-Postgres limitation for those named current
+tests, not their source-range review requirements. It does not put RP-532's
+oversized hoard catalogs into SQL, resolve RP-533's duplicated derivation/wider
+representation, test the native recovery UI or complete account/privacy policy.
+The declared separate tmpfs database on127.0.0.1:55432 was newly created; the
+existing game-ui test service was reported as an orphan, not removed or reused.
+After both terminal runs, remove only `postgres` and `game-ui-postgres` with
+their declared Compose files' `rm -sf` service selectors. Their disposable tmpfs
+test data is discarded; no durable volume, cache, network or unrelated service
+is removed. Final declared service inventory is empty.

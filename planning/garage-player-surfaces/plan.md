@@ -7,7 +7,16 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint (2026-10-12): the production-built real-service main journey now exercises
+Current checkpoint (2026-10-14): at `cc256422`, `make test-game-ui-composed`
+completes with exit0 after a fresh server/client build. Its sequential population includes
+the main player journey, ordinary Cosmetic/Reputation, Clout axis-stack, negative checkout,
+Garden harvest and Tier-2 candidate journeys. Real Postgres and socket recovery execute;
+the main journey includes committed-reply loss across a gameserver SIGKILL/restart.
+This closes the earlier unexecuted current-source aggregate check, not outstanding review,
+natural pacing, accessibility, release-artifact or full-feature acceptance. The owning log
+records the environment and fixture limits. Continue accepted construction and consolidate review.
+
+Preceding checkpoint (2026-10-12): the production-built real-service main journey now exercises
 GS0.8's fresh Claim behind an actual purchase and held authoritative read, with exact consecutive
 Postgres payloads/receipts/state and the observed building buff in its successor snapshot.
 RP-501's stale Fiscal refusal selector is locally repaired; both real refusal/recovery arms pass.
