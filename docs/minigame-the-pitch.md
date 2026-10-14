@@ -2,8 +2,8 @@
 
 The Pitch is the first real tenant of the minigame platform: a deterministic solo card game where
 metric cards and growth hacks produce an exact Decimal valuation against eight funding rounds. The
-implementation is fixture-first. Its engine, catalog, copy, policy row, and verification corpus
-ship, but no production epoch pins the content until the owner-gated First Content Epoch.
+engine, catalog, copy, policy row and verification corpus exist, and current epoch 8 pins its
+artifact. That pin and fixture-backed evidence are not proof of a complete Tier-5 player release.
 
 ## Pinned identity and session boundary
 
@@ -62,6 +62,17 @@ Live Founder mutation routes through `ApplyFounderLogged`, so Fiscal auto-sweep,
 and replay execute one transition boundary.
 
 ## Content and verification
+
+Catalog admission requires an exact v1 root, policy, card/hack/funding rows and four closed
+effect arms. Hack prices are explicitly present, non-null, nonnegative safe integers: `null`
+is refused instead of becoming a free item; an explicit zero remains legal. Raw duplicate JSON
+members remain refused by Pitch's existing owner gate; escaped canonical keys remain valid.
+`pitch.PitchSchemas()` exports `PitchCatalogV1` under API C18 with the existing policy literals,
+safe-integer bounds, canonical Decimal fields and exact effect union. Cardinality/order,
+positive Decimal semantics, copy bindings and chain-partner relationships remain mandatory
+loader checks. This descriptor is not yet a served complete catalog response or public
+re-verification workflow. Admission/schema validation never rewrites artifact bytes or retunes
+deck/scoring/shop data.
 
 The launch fixture contains exactly twelve two-copy metric cards, eight growth hacks, eight funding
 targets, and visible reason keys for every hardcap. The versioned content-gate corpus covers every

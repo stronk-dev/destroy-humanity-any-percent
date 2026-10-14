@@ -113,8 +113,9 @@ func LoadCatalog(data []byte, declarations Declarations) (*Catalog, error) {
 		}
 		var effect struct {
 			Effect json.RawMessage `json:"effect"`
+			Price  *int64          `json:"price"`
 		}
-		if json.Unmarshal(row, &effect) != nil || !validEffectKeys(effect.Effect) {
+		if json.Unmarshal(row, &effect) != nil || effect.Price == nil || !validEffectKeys(effect.Effect) {
 			return nil, ErrInvalidCatalog
 		}
 	}

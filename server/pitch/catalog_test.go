@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"cloud-clicker/server/copykeys"
+	"cloud-clicker/server/minigame"
 )
 
 func loadFixture(t *testing.T) ([]byte, *Catalog) {
@@ -74,5 +75,48 @@ func TestLoadCatalogRejectsMissingAndAmbiguousRows(t *testing.T) {
 				t.Fatalf("err=%v", err)
 			}
 		})
+	}
+}
+
+func TestLoadCatalogRejectsNullHackPricesButPreservesExplicitZero(t *testing.T) {
+	data, catalog := loadFixture(t)
+	keys := make(map[string]struct{})
+	for _, key := range copykeys.All() {
+		keys[key] = struct{}{}
+	}
+	for index, hack := range catalog.GrowthHacks {
+		for _, null := range []bool{true, false} {
+			name := hack.HackID + "/zero"
+			if null {
+				name = hack.HackID + "/null"
+			}
+			t.Run(name, func(t *testing.T) {
+				var root map[string]any
+				if err := json.Unmarshal(data, &root); err != nil {
+					t.Fatal(err)
+				}
+				row := root["growth_hacks"].([]any)[index].(map[string]any)
+				row["price"] = 0
+				if null {
+					row["price"] = nil
+				}
+				candidate := mustPitchJSON(t, root)
+				loaded, err := LoadCatalog(candidate, Declarations{CopyKeys: keys})
+				_, createErr := NewTenant().Create(minigame.CreateInput{
+					Mode: minigame.ModeSolo, Seed: 2, ScalingInputs: map[string]int64{ScalingDestination: 1},
+					Content: candidate, ContentHash: ContentHash(candidate), ContentSchemaVersion: SchemaVersion,
+				})
+				if null {
+					if !errors.Is(err, ErrInvalidCatalog) {
+						t.Fatalf("null price admitted as a free hack: %v", err)
+					}
+					if createErr == nil {
+						t.Fatal("malformed price reached tenant creation")
+					}
+				} else if err != nil || loaded.GrowthHacks[index].Price != 0 || createErr != nil {
+					t.Fatalf("explicit free price rejected: %v", err)
+				}
+			})
+		}
 	}
 }

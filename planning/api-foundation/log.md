@@ -2587,3 +2587,37 @@ Claude review, consolidatable with C18 corrections. Nine of nineteen pinned-fami
 exist; ten, complete union/catalog HTTP and public re-verification remain. No archival/push/
 deployment, new content or owner/draft adoption. Continue accepted construction; services,
 review/author/owner, full CI, content/pacing and full nine-tier1.0 remain open.
+
+## 2026-10-14 — Pitch catalog descriptor and required-price admission (RP-581)
+
+Resume clean `307725e4`. Under API C17/C18 and Pitch TP-C13/TP-C21/TP-C22, export
+`PitchCatalogV1`: exact root/policy/card/hack/funding objects, four closed effect arms,
+existing literal policy and safe-integer/Decimal domains. Current epoch8, fixture and two
+stored artifacts validate/load byte-unchanged. Twenty-one structural refusals and nine
+semantic counterexamples demonstrate the boundary: row count/order, positive values,
+copy declarations/bindings and chain partners still require owner validation. Escaped
+canonical members pass; raw duplicates still fail Pitch's existing unique-member gate,
+not the shared map-based descriptor validator. Fresh exports cannot mutate the owner.
+
+The actual Go reader admitted all eight null hack prices as zero; the old-source regression
+fails eight refusal arms while eight explicit-zero controls pass. TS's sixteen corresponding
+checks already pass. Require a non-null price before typed admission; preserve legal zero.
+Final regressions also exercise tenant creation with each malformed/legal candidate.
+Genuine kernel0.3.198→0.3.199; no content, shop/scoring/payout or duplicate-policy change.
+Correct docs' stale pre-mint claim against the current epoch manifest. Complete schema
+union/HTTP serving and public re-verification remain unfinished, now ten of nineteen owners.
+
+Final cold pitch/publicapi/kernel/replaycatalog/decimal packages and affected vet (including
+production) pass. Node Pitch/economy169 and numeric vectors6304; native Chromium/WebKit338
+and numeric vectors12608 pass. Pure production `TestPitchBundleResolvesImmutableTenantContent`
+executes, with no skips. Types report zero errors/warnings; build and byte-unchanged
+`make api-check` pass. Initial fresh-export test dereferenced a bound on the wrong field and
+panicked; replace positional assumption with named schema_version selection and rerun the
+finished packages successfully. No DB/composed player, Firefox/Linux/hosted or full CI claim;
+known historical guard/Clout failures are not waived. Balance/testdata/generated API bytes
+remain unchanged. No new owner decision, draft adoption, publication or release promotion.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. The complete source/schema/
+tests/version/docs/records range after `307725e4` through this containing commit requires
+designated Claude review, consolidatable with the related C18 batches. Continue the nine
+remaining owners and full catalog integration within accepted authority; no archival claim.

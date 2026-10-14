@@ -548,9 +548,16 @@ and valid retunes pass; positive threshold semantics, table cardinality and Econ
 binding remain owner/composition checks. Go exact-name/non-null admissions and the TS duration
 mirror are corrected with kernel0.3.198; no payout formula, configured value or offer policy changes.
 
+`pitch.PitchSchemas()` exports the current v1 card/hack/funding grammar and four closed effect
+arms with the existing policy literals and safe-integer domains. Current, fixture and stored
+bytes validate unchanged; cardinality/order, positive Decimal values, copy bindings, chain
+partners and raw-member uniqueness remain owner checks. Kernel0.3.199 corrects Go's null-price
+admission without forbidding explicit free prices or changing shop/scoring/payout mechanics.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities, Doctrines, Fiscal, Soul, Curriculum and Prestige provide nine owner descriptors
-for the nineteen currently pinned artifact families; the other ten and the composed C18 catalog
+TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities,
+Doctrines, Fiscal, Soul, Curriculum, Prestige and Pitch provide ten owner descriptors
+for the nineteen currently pinned artifact families; the other nine and the composed C18 catalog
 union remain unfinished. The separately exported formula artifact needs a
 protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.
