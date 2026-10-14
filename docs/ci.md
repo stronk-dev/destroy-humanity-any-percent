@@ -247,6 +247,14 @@ transport readiness: the existing protocol-frame checks remain. Owned-fixture cl
 to the caller's explicit test context and runs on failed initialization or test completion, with
 an independent timed-out-startup teardown control. No startup retry policy or deadline is changed.
 
+Garage's mandatory GS5-A2 real-minute idle observation lives in
+`test/garage-idle-opportunity-browser.test.ts`, alongside the interaction file
+`test/garage-surfaces-browser.test.ts`. Both consume `garage-surfaces-fixture.ts` and stay
+in ordinary blocking browser collection. The observation still runs real native timers for
+at least60s, checks every250ms for zero intents and keeps its70s deadline. Selecting only
+the interaction file no longer covers that acceptance criterion; select both for a focused
+whole-Garage check. No maintenance-only move, fake clock or shortened acceptance is introduced.
+
 Two Node-side fixtures, `css-dependency-graph.test.mjs` and
 `opportunity-composed-proof.test.mjs`, are excluded by exact path from browser collection because
 their helpers require Node APIs. Both remain in the mandatory client Node suite; other test

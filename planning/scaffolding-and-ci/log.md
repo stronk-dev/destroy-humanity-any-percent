@@ -1255,3 +1255,48 @@ Recorded by: Codex. No product/test source, CI config, kernel, balance, copy, ac
 archival, push or deployment change. These planning/evidence records after `8352f1c2` do not
 approve its diagnostic implementation; its full designated review debt remains. No Firefox,
 Linux/SQL, isolated performance, full `verify-push`, current hosted or1.0 milestone claim.
+
+## 2026-10-14 — Preserve and independently schedule the real-minute GS5-A2 observation
+
+Resume clean `93b94980`; previous goal turn completes the bounded worker comparison and names
+the actual serialized minute in the critical-path Garage file. Under CI D2 and accepted Garage
+GS5-A2, move that exact case to `garage-idle-opportunity-browser.test.ts`. Extract its existing
+Runtime/base data/mount/settle/opportunity helpers into one `garage-surfaces-fixture.ts` used
+by both files; no duplicate fixture, changed callback, player/data/copy or test assertion.
+The original60s real-timer loop/250ms zero-intent checks/70s deadline remain byte-identical,
+body SHA256 `bea3e1d6d8e846a258b25f11d0ecb202982e64185a0f6ca1d9c9f04ecbf80a59`.
+
+Mechanical source checks: remaining interaction source equals the original with only declared
+extractions/import edits; shared bodies equal the originals except export declarations. Initial
+raw TypeScript-token check falsely reports drift because it lacks template-literal rescanning
+and treats following declarations as template text. Inspect the first mismatch and replace that
+invalid check with exact source-prefix normalization; do not credit its failed token comparison.
+Both actual typechecks40047/55589 have zero errors/warnings. Node63412 collects and explicitly
+skips all424 browser cases, not positive execution proof.
+
+Whole native31866 terminates exit2:294 files,24,428 ordinary passes/two unexpected Typer
+deadlines/ten expected deadline controls/16 skips,103.77s. Both independent real-minute cases
+pass at60.145/60.177s; all423 remaining Garage cases pass in each engine (spans94.121/94.608s).
+Map ONLY the named GS5-A2 file relocation back to its old path: all24,456 file/title/skip tuples
+exactly match the complete baseline; no case dropped, added or reclassified. JSON omits engine
+IDs as before. Modules finish1,362/1,362 with none pending; other summary0/0. The single elapsed
+observation is not a causal/hosted-floor benchmark or a completed browser/CI gate.
+
+The unchanged RP-526 class recurs with useful callback evidence: ordinary WebKit timeout at
+submit6/15,002ms, eight completed commands total36ms, no active command, focused connected input,
+pending false and native RPC outstanding. Chromium's separately labelled controlled-delay
+population also times out at submit4; do not relabel it ordinary player latency. These are
+aborted prefixes, not finished-journey measurements. Input/event/automation waits and per-key
+handling remain; the complete engine/render callbacks are not the dominant elapsed cost in
+this ordinary failure. No default concurrency or timeout/input substitution is made.
+
+Retain concise `garage-idle-shard-93b94980.json` with mapped fingerprint, outcomes and raw
+digests; large JSON/logs stay ignored in its named `.cache` paths. All affected Garage
+populations pass, but the whole gate stays RED. No rerun to conceal it, new metadata validator,
+kernel bump, product/schema/CI-workflow change, archive, push or deployment. Firefox/Linux/SQL,
+isolated performance, current hosted and proper nine-tier1.0 remain unproved.
+Review by: Codex (test implementer first filter). Recorded by: Codex. Exact complete extraction/
+case/capsule/docs/records range after `93b94980` through this containing commit needs designated
+Claude review, consolidatable with the existing CI diagnostics. Next accepted work: arrange
+native journey execution to test the input-path workload hypothesis while preserving the full
+functional population and all original bounds; do not call this test organization CI completion.

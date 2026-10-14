@@ -7,6 +7,17 @@
 
 ## Current checkpoint — 2026-10-14
 
+GS5-A2 test-only separation at baseline `93b94980`: the idle body is byte-identical, all other
+interaction bytes are unchanged apart from fixture extraction/imports, and both files share
+the original fixture authority. Types pass; the complete native run executes all24,456 mapped
+cases in103.77s. Both real-minute cases and846 remaining Garage checks pass; the aggregate
+is RED on WebKit normal Typer and Chromium's controlled-delay journey. Record that red result,
+not a full CI/performance repair. The ordinary failure has eight completed callbacks totaling
+36ms/no active command, while native input remains in flight. Capsule/log retain exact limits.
+New source/tests/docs range after `93b94980` needs designated review. Next: isolate the native
+input/event/automation wait through accepted CI D2 execution organization without replacing
+input or expanding deadlines; keep complete ordinary collection and full-job parity explicit.
+
 Completed local concurrency comparison: both full arms pass the identical24,456-case/skip
 multiset, but four workers do not reduce total wall time (159.62s versus156.85s). The retained
 `native-concurrency-8352f1c2.json` records raw digests, source hashes and missing per-engine JSON

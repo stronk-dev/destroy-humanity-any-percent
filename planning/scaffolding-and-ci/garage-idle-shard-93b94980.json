@@ -1,0 +1,86 @@
+{
+  "baseline_commit": "93b94980",
+  "change": "Exact GS5-A2 case moved to a normally collected file; unchanged shared fixture bodies except export declarations.",
+  "verification": {
+    "idle_body_sha256": "bea3e1d6d8e846a258b25f11d0ecb202982e64185a0f6ca1d9c9f04ecbf80a59",
+    "mapped_case_multiset_equal": true,
+    "case_fingerprint": "836493158ba26c4b3015d6938ae0769dc9c248d28fe948e305bf7a33ef205210",
+    "mapping": "Only GS5-A2 maps garage-idle-opportunity-browser.test.ts back to garage-surfaces-browser.test.ts.",
+    "per_engine_json_identity_available": false,
+    "types": "zero diagnostics",
+    "node": "all424 affected cases skipped; no positive execution proof"
+  },
+  "full_result": {
+    "exit_code": 2,
+    "files": 294,
+    "total_cases": 24456,
+    "ordinary_passes": 24428,
+    "unexpected_failures": 2,
+    "expected_deadlines": 10,
+    "skipped": 16,
+    "duration_seconds": 103.77
+  },
+  "affected_files": [
+    {
+      "name": "client/test/garage-idle-opportunity-browser.test.ts",
+      "status": "passed",
+      "cases": 1,
+      "span_ms": 60176.800048828125
+    },
+    {
+      "name": "client/test/garage-surfaces-browser.test.ts",
+      "status": "passed",
+      "cases": 423,
+      "span_ms": 94120.89990234375
+    },
+    {
+      "name": "client/test/garage-idle-opportunity-browser.test.ts",
+      "status": "passed",
+      "cases": 1,
+      "span_ms": 60144
+    },
+    {
+      "name": "client/test/garage-surfaces-browser.test.ts",
+      "status": "passed",
+      "cases": 423,
+      "span_ms": 94608
+    }
+  ],
+  "raw": {
+    "json_path": ".cache/garage-idle-shard-93b94980.json",
+    "json_sha256": "94025bdd1746f4b4a1c4e0937b3549dd8a7241ae7556bb2d30f0ef64dd9c044e",
+    "log_path": ".cache/garage-idle-shard-93b94980.log",
+    "log_sha256": "d1e69e3183de6fbdb8c34436e47c32ae61cae18f6de37892ef05478e914635fb"
+  },
+  "ordinary_failure": {
+    "engine": "webkit",
+    "case": "normal Typer journey",
+    "stage": "submit-prompt-6",
+    "elapsed_ms": 15002,
+    "current_stage_ms": 1814,
+    "completed_commands": 8,
+    "command_callback_ms": 36,
+    "active_command": null,
+    "input_in_flight": true,
+    "input_length": 8,
+    "focused_input": true,
+    "pending": "false",
+    "journey_completed": false
+  },
+  "controlled_failure": {
+    "engine": "chromium",
+    "case": "controlled-delay diagnostic, not ordinary player latency",
+    "stage": "submit-prompt-4",
+    "elapsed_ms": 15001.299999952316,
+    "completed_commands": 6,
+    "command_callback_ms": 170.79999995231628,
+    "active_command": null,
+    "journey_completed": false
+  },
+  "limits": [
+    "Whole run is RED. Both captures contain completed prefixes, not finished-journey measurements.",
+    "The elapsed reduction is one native observation, not a causal benchmark or hosted floor proof.",
+    "Callback intervals include scheduling; per-keystroke handling/rendering remains unmeasured inside native input waits.",
+    "No Firefox/Linux/SQL/performance/current-hosted or full CI claim."
+  ]
+}
