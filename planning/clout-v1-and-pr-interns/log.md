@@ -3269,3 +3269,53 @@ filter). Recorded by: Codex. The whole research range after `12208257` through t
 containing commit, including preparation `6ed5ac79`, needs designated Claude review;
 no archival or feature/release promotion. Next: viable accounting/interval/origin
 contract and remaining accepted construction, not another replay of this study.
+
+## 2026-10-15 — RP-637 full Linux native disclosure failure and diagnostics
+
+Accepted CV9.4: native Enter/Space must operate the PR Codex and preserve help/focus
+through authoritative refresh. Clean product `b248d26a` `make test-browser-ci`14637
+exits2: Firefox Tier2 Enter leaves details.open=true at Close (old line422).
+Broad477 files:476 pass/one fail;39800 ordinary pass,9 expected failures,24 skips,
+141.34s. Later native/performance phases do not execute. Final assertion/diff/text
+is retained; inspected screenshot is blank after teardown, not cause evidence.
+
+Add passive stage/mounted/focus/trusted key/click observations and intermediate
+focus assertions, preserving native input and every old outcome assertion. Focused
+Chromium/WebKit62408 passes12 cases (40 selector skips); same-image Linux Firefox
+50613 passes6 (20 selector skips). Full diagnostic46034 still exits2: same Firefox
+Tier2 Enter now leaves details.open=false at Open (new line422), with the same
+broad result counts in140.67s. Its live diagnostic is lost in truncated stdout.
+This is an observation-delivery defect, not authority to blame axe, relax the
+assertion, refocus the summary, increase a timeout or add gameplay retries.
+
+Bind the diagnostic to the final thrown Error with its original cause. Capture
+state immediately and after one existing settle cycle **only after failure**, always
+rethrowing it. Full16929 then exits0: broad477 files/39801 ordinary passes,9 expected
+failures,24 skips in137.97s; native3 files/87 ordinary and6 expected in3.34s;
+Chromium performance5 pass/105 selector skips in6.29s. Test-file SHA256 at this
+observation:01f2f27568f1eaa61c3b7510d2a3360e2189b552562af246e18bcae3a4ff8eb2.
+No production byte changed between these runs; that pass does not explain or repair
+the failures. No repeated full run is used to manufacture a reliability claim.
+
+Final controlled negative prevents only the native Close key's default action.
+It must fail at Close with connected/current/focused elements, two trusted Enter
+keydowns, open state before/after settle, and original assertion/error provenance.
+A failure at any other stage cannot satisfy it; ordinary cases still require exact
+open/close, preserved focus and zero gameplay requests. Final same-image cold
+Linux Chromium/Firefox/WebKit62785 passes the whole affected file:81/81,7.31s,
+no selected skips. Typecheck67227 reports zero errors/warnings; diff checked.
+These final controls follow the full observation, not a new complete-job pass.
+
+Playwright image inspection proves Linux/ARM64, not hosted AMD64 or exact runner
+timing. Native keyboard provider's conditional frame-focus code is a hypothesis,
+not cause evidence; no frame-focus workaround lands. Other suites/features are not
+closed by these browser counts. All handles terminate and declared browser runners
+auto-remove; final inventory is empty, no durable data/cache/network removed.
+
+Review by: Codex (test implementer first filter). Recorded by: Codex. Full test/
+ledger/linked status/record range after `b248d26a` through this containing commit
+needs designated Claude review, consolidatable with CV9 corrections. RP-637 stays
+open; no product/copy/schema/kernel/budget/worker/policy/CI-topology change, owner
+decision, archive, push or1.0 promotion. Next: use retained final-error evidence on
+recurrence to distinguish actual key delivery/default-toggle delay and frame focus;
+do not rerun this unchanged population for another green or reopen completed studies.

@@ -6,6 +6,17 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+## Current keyboard CI diagnosis — RP-637, 2026-10-15
+
+Clean `b248d26a` full Linux browser execution fails Firefox's Tier2 Enter Codex
+Close. A diagnostic full run fails the same case at Open; focused cases pass.
+Later instrumented full execution passes without a product repair. Cause remains
+open, not a new owner choice. Failure-only mounted/focus/native-event observations
+now travel in the final error with the original cause; a blocked native Close
+control validates them in all three Linux engines. The owning log has exact runs
+and limits. Preserve both failures; investigate delivered/default-toggle timing or
+native-frame focus on recurrence before changing product code or assertions.
+
 ## R-012 external replay compatibility — declared 2026-10-15
 
 Question: do actual TypeScript logged transitions preserve the complete Go results

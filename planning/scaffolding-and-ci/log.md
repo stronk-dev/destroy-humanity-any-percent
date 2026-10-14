@@ -1770,3 +1770,15 @@ terminates and auto-removes; remove only its owned postgres container afterward,
 discarding regenerable tmpfs fixtures. Final composition inventory is empty;
 no durable/user data, cache, volume or network removed. Record-only checkpoint,
 diff/links checked; prior reviews and named conservation/author holds remain.
+
+## 2026-10-15 — Current browser gate exposes RP-637
+
+Clean `b248d26a` full Linux/ARM64 browser execution exits2 at Firefox Codex Close;
+diagnostic execution fails the same case at Open. Later instrumented full execution
+passes all phases without a production fix. Detailed commands/counts, retained failure
+text, final81-case diagnostic control and exact review boundary belong to the
+[Clout log](../clout-v1-and-pr-interns/log.md#2026-10-15--rp-637-full-linux-native-disclosure-failure-and-diagnostics).
+Current plan/status link there; previous successful `8e4d0877` is historical, not
+the current-source verdict. No CI topology, budget, assertion weakening, hosted
+success, reliability closure or release claim. RP-637 remains agent diagnosis,
+not a pending owner decision; the full server/history failures remain independent.

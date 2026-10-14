@@ -382,20 +382,32 @@ it.skipIf(!browser)("associates native PR progress with the correct intern befor
 // CV9.4: opening the Codex is an actual keyboard action, not merely a
 // registered copy key. The current candidate text remains explicitly unadopted.
 for (const tier of [0, 1, 2]) {
-  for (const activation of ["{Enter}", " "]) {
-    it.skipIf(!browser)(`opens and closes PR Codex with native keyboard: tier ${tier}, ${JSON.stringify(activation)}`, async () => {
+  for (const { activation, blockClose } of [
+    { activation: "{Enter}", blockClose: false }, { activation: " ", blockClose: false },
+    ...(tier === 2 ? [{ activation: "{Enter}", blockClose: true }] : []),
+  ]) {
+    it.skipIf(!browser)(`${blockClose ? "records a blocked native PR Codex Close" : "opens and closes PR Codex with native keyboard"}: tier ${tier}, ${JSON.stringify(activation)}`, async () => {
       const { page, userEvent } = await import("vitest/browser");
       await page.viewport(320, 720);
       const runtime = new Runtime();
       const current = withAxis(axisArm as GameUIAxisStackArm);
       runtime.current = parseGameUISnapshot({ ...current, run: { ...current.run, tier } });
       let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+      let stage = "mount";
+      let details: HTMLDetailsElement | null = null;
+      let summary: HTMLElement | null = null;
+      const nativeEvents: { type: string; key: string | null; trusted: boolean; onSummary: boolean; open: boolean | null }[] = [];
+      const observeInput = (event: Event) => {
+        nativeEvents.push({ type: event.type, key: event instanceof KeyboardEvent ? event.key : null,
+          trusted: event.isTrusted, onSummary: event.target === summary, open: details?.open ?? null });
+      };
       try {
         fixture = await mounted(runtime);
         const { target, app } = fixture;
-        const details = target.querySelector<HTMLDetailsElement>("section.axis details");
+        details = target.querySelector<HTMLDetailsElement>("section.axis details");
         expect(details, "CV9 requires an operable PR Codex disclosure").not.toBeNull();
-        const summary = details!.querySelector<HTMLElement>("summary")!;
+        summary = details!.querySelector<HTMLElement>("summary")!;
+        for (const type of ["keydown", "keyup", "click"]) target.addEventListener(type, observeInput, true);
         const content = details!.querySelector<HTMLElement>(".codex")!;
         expect(summary.textContent?.trim()).toBe("?");
         expect(summary.getAttribute("aria-label")).toBe("PENDING OWNER COPY: PR Intern help");
@@ -405,26 +417,71 @@ for (const tier of [0, 1, 2]) {
         expect(content.textContent?.trim()).toBe("PENDING OWNER COPY: axis-stack Codex");
         expect(details!.open).toBe(false);
         const prior = [...target.querySelectorAll<HTMLButtonElement>('section[aria-labelledby="generators-heading"] button')].at(-1)!;
+        stage = "tab-to-summary";
         prior.focus(); await userEvent.keyboard("{Tab}");
         expect(document.activeElement).toBe(summary);
+        stage = "open";
         await userEvent.keyboard(activation); await settle();
         expect(details!.open).toBe(true);
         expect(content.getBoundingClientRect().height).toBeGreaterThan(0);
         expect(document.activeElement).toBe(summary);
         // A normal authoritative update must not close the player's help.
         const refreshed = structuredClone(runtime.current);
+        stage = "authoritative-refresh";
         app.fixtureSnapshot(parseGameUISnapshot({ ...refreshed, revision: refreshed.revision + 1 })); await settle();
         expect(details!.open).toBe(true);
+        expect(summary!.isConnected).toBe(true);
+        expect(document.activeElement).toBe(summary);
         expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth + 1);
         expect(target.textContent).not.toContain("codex.axis_stack");
+        stage = "axe";
         await assertAxe(target, "open PR Codex");
+        stage = "before-close";
+        expect(summary!.isConnected).toBe(true);
+        expect(document.activeElement).toBe(summary);
+        stage = "close";
+        if (blockClose) summary!.addEventListener("keydown", event => event.preventDefault(), { once: true });
         await userEvent.keyboard(activation); await settle();
         expect(details!.open).toBe(false);
         expect(document.activeElement).toBe(summary);
+        const summaryKeys = nativeEvents.filter(event => event.type === "keydown" && event.onSummary);
+        expect(summaryKeys.map(event => event.key)).toEqual(activation === "{Enter}" ? ["Enter", "Enter"] : [" ", " "]);
+        expect(summaryKeys.every(event => event.trusted)).toBe(true);
         await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
         expect(document.activeElement).toBe(prior);
         expect(runtime.requests).toEqual([]);
+        if (blockClose) throw new Error("blocked Close unexpectedly passed the keyboard witness");
+      } catch (error) {
+        const observeFailure = () => ({ visibility: document.visibilityState, document_focused: document.hasFocus(),
+          summary_connected: summary?.isConnected ?? false, details_connected: details?.isConnected ?? false,
+          same_details: fixture?.target.querySelector("section.axis details") === details,
+          open: details?.open ?? null, focused_summary: document.activeElement === summary,
+          focused_tag: document.activeElement?.tagName ?? null, native_events: [...nativeEvents] });
+        const failedState = observeFailure();
+        // Observe another ordinary settle only after failure; never turn it into
+        // a pass. Include evidence in the final error, not only noisy live output.
+        await settle();
+        const diagnostic = `axis-codex-keyboard-failure ${JSON.stringify({ tier, activation, stage,
+          failed_state: failedState, after_settle: observeFailure() })}`;
+        const reported = new Error(`${error instanceof Error ? error.message : "keyboard witness failed"}\n${diagnostic}`, { cause: error });
+        if (blockClose) {
+          expect(stage).toBe("close");
+          expect(error).toBeInstanceOf(Error);
+          expect((error as Error).message).toContain("expected true to be false");
+          expect(failedState.open).toBe(true);
+          expect(failedState.summary_connected && failedState.details_connected && failedState.same_details && failedState.focused_summary).toBe(true);
+          expect(observeFailure().open).toBe(true);
+          const keys = failedState.native_events.filter(event => event.type === "keydown" && event.onSummary);
+          expect(keys.map(event => event.key)).toEqual(["Enter", "Enter"]);
+          expect(keys.every(event => event.trusted)).toBe(true);
+          expect(reported.message).toContain(diagnostic);
+          expect(reported.cause).toBe(error);
+          return;
+        }
+        console.error(diagnostic);
+        throw reported;
       } finally {
+        if (fixture) for (const type of ["keydown", "keyup", "click"]) fixture.target.removeEventListener(type, observeInput, true);
         try { if (fixture) await fixture.dispose(); }
         finally { await page.viewport(1280, 720); }
       }
