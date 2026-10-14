@@ -62,6 +62,25 @@ function requireExactMakeDependencies(source, target, expected) {
   }
 }
 
+function requireColdGoRecipes(source) {
+  const expected = [
+    ["test-go", "\tcd server && go test -p 1 -count=1 $(GO_TEST_FLAGS) $(GO_PACKAGES)"],
+    ["replay-fixture-check", "\tcd server && go test ./production -run '^TestApplyLoggedCrossRuntimeFixture$$' -count=1"],
+    ["pitch-corpus-check", "\tcd server && go test ./pitch -run '^TestPitchContentGate$$' -count=1"],
+    ["typer-corpus-check", "\tcd server && go test ./typer -run '^TestTyperContentGate$$' -count=1"],
+  ];
+  for (const [target, command] of expected) {
+    if (lines(source).filter((line) => line.startsWith(`${target}:`)).length !== 1) {
+      throw new Error(`Makefile must define ${target} exactly once`);
+    }
+    const recipe = section(source, new RegExp(`^${target}:`), /^[^\s#].*:/)
+      .filter((line) => line.startsWith("\t") && !line.trim().startsWith("#"));
+    if (recipe.length !== 1 || recipe[0] !== command) {
+      throw new Error(`${target} must execute its complete Go population with a cold default`);
+    }
+  }
+}
+
 export function verifyCITopology(ciSource, maintenanceSource, makeSource, browserSource) {
   const ciTriggers = triggerSection(ciSource);
   requireLine(ciTriggers, /^  push:\s*$/, "CI must run on push");
@@ -80,6 +99,7 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource, browse
   ];
   for (const [job, target] of blocking) requireExactMakeCommand(ciSource, job, target);
   requireExactMakeDependencies(makeSource, "verify-push", blocking.map(([, target]) => target));
+  requireColdGoRecipes(makeSource);
 
   // D2 retains every functional case and the independent performance lane.
   const browserTarget = section(makeSource, /^test-browser:/, /^[^\s#].*:/);

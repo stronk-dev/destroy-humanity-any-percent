@@ -27,6 +27,18 @@ const mutations = [
   ["missing isolated performance", ci, maintenance, makefile.replace("\t$(MAKE) test-game-ui-performance\n", "")],
 ];
 
+const coldGoCommands = [
+  ["test-go", "\tcd server && go test -p 1 -count=1 $(GO_TEST_FLAGS) $(GO_PACKAGES)"],
+  ["replay-fixture-check", "\tcd server && go test ./production -run '^TestApplyLoggedCrossRuntimeFixture$$' -count=1"],
+  ["pitch-corpus-check", "\tcd server && go test ./pitch -run '^TestPitchContentGate$$' -count=1"],
+  ["typer-corpus-check", "\tcd server && go test ./typer -run '^TestTyperContentGate$$' -count=1"],
+];
+for (const [target, command] of coldGoCommands) {
+  const changed = makefile.replace(command, command.replace(" -count=1", ""));
+  if (changed === makefile) throw new Error(`cold Go mutation did not fire: ${target}`);
+  mutations.push([`cached ${target}`, ci, maintenance, changed]);
+}
+
 for (const [name, mutatedCI, mutatedMaintenance, mutatedMakefile] of mutations) {
   let rejected = false;
   try {
@@ -63,6 +75,15 @@ console.log("Linux browser container rejects copied, incomplete and narrowed lan
 function dryRun(target, ...flags) {
   return spawnSync("make", ["-n", target, ...flags], { cwd: root, encoding: "utf8" });
 }
+const goDefault = dryRun("test-go", "GO_PACKAGES=./production", "GO_TEST_FLAGS=-run TestApplyLoggedCrossRuntimeFixture");
+if (goDefault.status !== 0 || !goDefault.stdout.includes("go test -p 1 -count=1 -run TestApplyLoggedCrossRuntimeFixture ./production")) {
+  throw new Error("focused Go flags erased the cold test default or package selector");
+}
+const goRepeated = dryRun("test-go", "GO_PACKAGES=./production", "GO_TEST_FLAGS=-run TestApplyLoggedCrossRuntimeFixture -count=2");
+if (goRepeated.status !== 0 || !goRepeated.stdout.includes("go test -p 1 -count=1 -run TestApplyLoggedCrossRuntimeFixture -count=2 ./production")) {
+  throw new Error("explicit developer repetition was overridden by the cold Go default");
+}
+console.log("Go Make cold default, focused selection and explicit repetition controls passed");
 const focused = dryRun("test-browser-focused", "BROWSER_TEST_FLAGS=test/amount-format.test.ts --project chromium");
 if (focused.status !== 0 || !focused.stdout.includes("test/amount-format.test.ts --project chromium") ||
     focused.stdout.includes("typer-table-browser.test.ts")) throw new Error("focused browser selector was expanded into a full/native population");

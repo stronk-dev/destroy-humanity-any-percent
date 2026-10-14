@@ -7,6 +7,13 @@
 
 ## Current checkpoint — 2026-10-14
 
+RP-623 local false-green correction: the old replay fixture target returns cached success
+after its actual corpus version changes. Force fresh comparisons in Replay/Pitch/Typer gates
+and a cold default in `test-go`, preserving focused flags and explicit repetition. Actual
+corruption controls now fail in all three gates and restore exact original bytes; the owning
+log holds final native/Linux execution and the range after `1f1a5481`, pending Claude review.
+No workflow topology, population, deadline, kernel/gameplay or full-CI status changes.
+
 Latest default Linux execution at `8e4d0877`: `make test-browser-ci` completes exit0 through
 all three phases on Linux/ARM64. Broad474 files pass39,615 ordinary/9 expected failures with
 24 reported skips (149.32s); native3 files pass87 ordinary/6 expected (3.81s); isolated

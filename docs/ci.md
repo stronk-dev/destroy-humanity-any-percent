@@ -44,6 +44,13 @@ target exists so automation always terminates.
 
 - Go reads its version from `server/go.mod`. Only the module-download directory is cached; the Go
   build cache is not.
+- Local `make test-go` retains its repository compiler cache but defaults to `-count=1`, even
+  when `GO_TEST_FLAGS` selects a focused test. An explicit count in those flags still overrides
+  the default for deliberate repetition. `replay-fixture-check`, `pitch-corpus-check` and
+  `typer-corpus-check` also execute fresh comparisons; Arcade/Garden checks already did so.
+  A cached success cannot establish that a changed repository-level corpus still matches its
+  generator. The topology guard rejects removal of these cold recipe defaults; actual corrupted
+  corpus checks remain the behavioral proof, not the guard's string comparison alone.
 - Node is version 24. pnpm reads the exact version from `client/package.json`, installs from the
   frozen lockfile, and caches only the pnpm dependency store.
 - The browser job runs on the ordinary Ubuntu runner and installs Chromium, Firefox, and WebKit

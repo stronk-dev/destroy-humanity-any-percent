@@ -69,7 +69,7 @@ install-browsers-ci:
 test: test-go test-client test-browser
 
 test-go:
-	cd server && go test -p 1 $(GO_TEST_FLAGS) $(GO_PACKAGES)
+	cd server && go test -p 1 -count=1 $(GO_TEST_FLAGS) $(GO_PACKAGES)
 
 # The relevance content matrix is intentionally long-running. Keep it in the
 # harness lane while allowing hosted CI to run the remaining server suite in
@@ -546,7 +546,7 @@ replay-fixture:
 	cd server && go test ./production -run '^TestApplyLoggedCrossRuntimeFixture$$' -update-replay-fixture
 
 replay-fixture-check:
-	cd server && go test ./production -run '^TestApplyLoggedCrossRuntimeFixture$$'
+	cd server && go test ./production -run '^TestApplyLoggedCrossRuntimeFixture$$' -count=1
 
 # Fixture authoring only; normal test/CI runs compare, never regenerate.
 reputation-activation-corpus:
@@ -565,13 +565,13 @@ pitch-corpus:
 	cd server && go test ./pitch -run '^TestPitchContentGate$$' -update-pitch-corpus
 
 pitch-corpus-check:
-	cd server && go test ./pitch -run '^TestPitchContentGate$$'
+	cd server && go test ./pitch -run '^TestPitchContentGate$$' -count=1
 
 typer-corpus:
 	cd server && go test ./typer -run '^TestTyperContentGate$$' -update-typer-corpus
 
 typer-corpus-check:
-	cd server && go test ./typer -run '^TestTyperContentGate$$'
+	cd server && go test ./typer -run '^TestTyperContentGate$$' -count=1
 
 arcade-corpus:
 	cd server && go test ./arcade -run '^(TestArcadeContentGate|TestSnakeOddBoardContentGate|TestMineGridRejectionSamplingContentGate)$$' -update-arcade-corpus -update-arcade-odd-corpus -update-arcade-sampling-corpus -count=1

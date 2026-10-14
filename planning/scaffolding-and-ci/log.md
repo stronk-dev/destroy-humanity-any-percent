@@ -1618,3 +1618,44 @@ previously unexecuted current default Linux gate, not native-amd64 hosted parity
 five-minute Actions timing, other CI failures, independent review or full1.0.
 Verification by: Codex; Recorded by: Codex. Editorial evidence checkpoint;
 underlying source/review ranges remain open and may include this closeout.
+
+## 2026-10-14 — RP-623 cold defaults reject real corpus drift
+
+Under CI D2/RFC-0000, make Replay/Pitch/Typer corpus checks explicitly count1. Generic
+`test-go` places its cold default before GO_TEST_FLAGS, preserving focused selection and an
+explicit developer repetition count. Compiler/module caches remain; no job topology, test
+population, retry, deadline, numeric/balance/kernel/product behavior or golden is changed.
+
+Actual old failure: healthy `make replay-fixture-check` returns cached success. Temporarily
+change only the committed fixture's root version1→2, rerun the identical old target, and it
+still exits0 with `(cached)` (ee0b8c). Restore in finally; Git confirms exact original bytes.
+This demonstrates a local false green, not the cause of every hosted failure. Inspection also
+finds the same omitted cold flag in Pitch/Typer checks and the generic target; their old corrupt
+behavior is not inferred from the one executed replay case.
+
+Actual corrected negative controls: mutate each original corpus's version separately and run
+its real Make checker. All three exit2 with their own generator/byte-comparison assertion:
+shared ApplyLogged fixture stale; Pitch content corpus drifted; checked-in Typer corpus stale.
+Each finally restores the original bytes; `git diff --exit-code` across all three is clean.
+No generated replacement or intentionally bad corpus remains in the tree.
+
+Finished verification by: Codex. Recorded by: Codex.
+
+- Native healthy three-target batch93872 passes0.515s/.217s/.100s. Declared Linux-amd64
+  execution98524 runs those exact root Make targets inside the existing test container,
+  passes1.008s/.459s/.123s, exit0. The standard emulation CPU setting remains. Its disposable
+  Postgres dependency starts, but these three gates are pure corpus checks, not SQL journeys.
+- Generic focused root execution33887 runs the actual test once, passes. Explicit count2
+  execution42948 visibly runs it twice and passes; neither result is cached.
+- Existing topology fixtures initially fail because the old validator admits cached test-go
+  (2c617c). The corrected verifier rejects all20 mutations, including four dropped defaults;
+  browser controls and actual Make expansion/selector/repetition controls remain green.
+  These recipe checks supplement the real corrupted-corpus proof, never substitute for it.
+- Diff/whitespace checks pass. No software build/whole browser/full server job is claimed for
+  this Make/diagnostic-only change. RP-131, RP-307, D-014 latency and other CI holds remain.
+
+Designated Claude review is pending for the single commit containing this entry, parent
+`1f1a5481`, all seven Make/tool/docs/plan/ledger/log paths. No self-approval, archival, push,
+deployment or full release promotion. After terminal checks, remove only the fresh declared
+postgres test service; inventory is empty. Disposable tmpfs is discarded; no durable volume,
+compiler/module cache, network, unrelated service or user data is removed.
