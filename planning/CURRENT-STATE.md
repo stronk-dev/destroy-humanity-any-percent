@@ -154,6 +154,11 @@ are engineering/author closure; do not relabel them as a need for generic owner 
    progression, challenges and all final endings. Follow the cumulative
    [milestone roadmap](roadmap-1.0.md#milestone-path); a preview never narrows 1.0.
 
+New privacy/verification hold (2026-10-14): [RP-606 and the newer-content map](platform-alignment/data-rights-current-content.md)
+trace hidden Garden salt into current replay carry and a controlled original-byte public
+download. No deployed/SQL leak is proved. An authored resolution must preserve both hidden
+information and independent verification before Garden publication/full acceptance.
+
 ## Historical checkpoints
 
 Everything below preserves earlier evidence and then-current claims/next actions. In

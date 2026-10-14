@@ -5,6 +5,14 @@ Fixture-first: no production mint (SG13). Numbering is landing-order: the RFC's 
 means next-free, and at landing that is **Founder v25** (v22 Reputation, v23 Pet, v24 Cosmetics).
 Replay inputs take the next free wire version, and the event migration takes the next free number.
 
+**Current privacy hold, 2026-10-14 (RP-606):** the [rights payload tranche](../platform-alignment/data-rights-current-content.md)
+finds the hidden salt inside current Company replay carry, copied by the archive source
+and served unchanged by C14's raw HTTP handler in an executed controlled observation.
+No real board authorization/SQL compaction/deployed leak is claimed. OD-12/SG8/AC10
+and API C14 require authored reconciliation preserving privacy and independent verification
+before publication/full acceptance. Existing authenticated API/event/receipt salt checks
+do not cover this raw archive boundary; no stripping, rotation or suppression is adopted.
+
 **Current bounded repair, 2026-10-14 (RP-595):** unknown Garden read kinds now fail into the
 existing error/stale path; deadline setup finishes before a first view is published. Mounted
 generated-port regressions reproduce six old-browser failures, while the later missing-data

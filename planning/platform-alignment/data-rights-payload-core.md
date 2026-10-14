@@ -1,11 +1,22 @@
 # D-008/D-009/D-015 — retained core-payload lineage
 
-Research checkpoint: 2026-09-23. Product source `7e8aa70`, planning after
+Original research checkpoint: 2026-09-23. Product source `7e8aa70`, planning after
 `f09ba51`. Method and controls:
 [`data-rights-payload-core-plan.md`](data-rights-payload-core-plan.md). This
 traces the selected save/replay/transport payload lane, **not** all JSON,
 bytea or free-text fields in the 60-table schema. It is not an export schema,
 privacy notice, retention policy or authorization to rewrite history.
+
+## Current-content extension — 2026-10-14
+
+The [newer-content map](data-rights-current-content.md) at `be66902b` covers selected
+Company19/Founder22–25 fields and applied receipts. Current supported scope ceilings
+are Company19/Founder25; Company replay-inputs12 adds the Garden carry. Actual
+revisions still pin their own versions, not automatic upgrades to those ceilings.
+The original table and SQL observations below retain their September coordinate.
+RP-606 adds an executed controlled transport finding: hidden Garden salt survives
+the actual private replay builder and a constructed raw public evidence response.
+No fresh SQL authorization/compaction/deletion or full historic-payload claim.
 
 ## Producer → representation → consumer
 

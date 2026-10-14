@@ -3,6 +3,23 @@
 Status: predeclared research only; no rights policy or product edit.
 Coordinate: current product source `7e8aa70`, planning through `f09ba51`.
 
+## 2026-10-14 focused extension at be66902b
+
+Map the newer nested state and applied receipt families: Company v19 attainment;
+Founder v22 Reputation, v23 pet identities, v24 cosmetics and v25 Garden. Trace
+their actual encoder, producer, replay/receipt/history/outbox copies and identity
+or hidden-state fields. Distinguish supported version ceilings from the pinned
+versions of live revisions; a codec sample is not a default-player population.
+Reuse existing cold codec/producer checks for populated examples. No new product,
+test assertion, schema, policy or historical rewriting. SQL/delete/restore claims
+require the declared live Postgres service; source and native tests are separate.
+This extends only the selected payload lane, not every historical nested field.
+A temporary read-only package-local observer may encode a populated existing Garden
+fixture through the actual Founder/replay builders and pass a constructed archive
+through the registry-mounted public evidence handler. Retain a replayable probe,
+then remove it from the ordinary test tree. Explicitly label its controlled reader/
+archive versus real database authorization, compaction and public-board production.
+
 ## Question and selected population
 
 Trace the exact format, producer, reader, identity-bearing fields and deletion

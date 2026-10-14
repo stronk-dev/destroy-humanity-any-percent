@@ -28,10 +28,16 @@ still required before any adopted policy becomes public copy.
 
 ## D-008 — what a player can export
 
+2026-10-14 constraint refresh: [newer content / RP-606](data-rights-current-content.md)
+shows protected Garden salt in saved state and private replay inputs. Garden OD-12's
+client/export exclusion is already adopted. The options below therefore require a
+specified player-safe representation, not a wholesale echo of canonical private bytes;
+portable import/private-input handling and the separate public-proof conflict remain open.
+
 | Option | Contents | Cost and consequence |
 |---|---|---|
-| **A — current state** | Account identifiers the player already holds, the active Founder and Company canonical state (versioned save JSON + constants hash), personal-best history from this device, and a human-readable summary. | Smallest schema; mirrors data the client already renders. Does **not** satisfy a request for history. Re-import would still hit the pristine-only import rule. |
-| **B — state plus own history** | A plus the player's own revisions (latest five retained), run/Founder logs and archives, intent receipts, verified-board rows, Minigame/Soul sessions and receipts, and Commons/Guild rows **filtered to the player's own contributions**. | Needs per-family filters so other members' Guild/Commons data never leaks; archived Founders must be reachable from the account before deletion. Largest review surface (nested payload classification is still incomplete). |
+| **A — current state** | Account identifiers the player already holds, a versioned player-export projection of active Founder/Company state plus constants hash (excluding protected private fields), personal-best history from this device, and a human-readable summary. | Needs its exact export schema; rendering does not expose all persisted state. Does **not** satisfy a request for history. Re-import would still hit the pristine-only import rule. |
+| **B — state plus own history** | A plus the player's own revisions (latest five retained), run/Founder logs and archives, intent receipts, verified-board rows, Minigame/Soul sessions and receipts, and Commons/Guild rows **filtered to the player's own contributions**, with protected private inputs handled by an explicit contract. | Needs per-family filters so other members' Guild/Commons data never leaks, and an integrity-preserving representation for protected history; archived Founders must be reachable from the account before deletion. Largest review surface (nested payload classification is still incomplete). |
 | **C — portable self-host bundle** | B, signed and versioned, importable into a self-hosted instance with provenance retained and boards excluding imported history. | Requires a new import contract (played accounts, signature trust, replay under the source epoch/catalogs). Interacts with D-003's deferred self-host covenant; do not promise before the supported bundle exists. |
 
 Also state: whether export is available after deletion is requested (a grace window) or only

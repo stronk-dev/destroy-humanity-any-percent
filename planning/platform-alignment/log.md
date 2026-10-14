@@ -3248,3 +3248,44 @@ Next rights work is remaining nested-state/receipt/history classification and
 joined delete/restore when the declared DB service responds, then the explicit
 owner policy; do not infer those from today's registry census. Other accepted
 construction and consolidated review remain available independently.
+
+## 2026-10-14 — Map newer nested content and identify RP-606
+
+Source `be66902b`. The selected rights payload map now covers Company 19 attainment
+and Founder 22–25 Reputation/pet/cosmetic/Garden state and applied receipts.
+Supported maxima and replay-inputs 12 are not every live revision's version; old
+September state/replay claims retain their coordinate. Follow current writer/
+codec/receipt/log/outbox/archive sources, not just the unchanged 60-table count.
+
+New finding RP-606: Garden OD-12(b) hides its per-Founder salt from clients/exports,
+but actual founderCarry/buildReplayInputs include it in private Company replay.
+Archive source preserves replay_inputs; C14's public reader/handler preserves
+opaque archive bytes. A temporary native observer uses a valid existing Founder 25
+codec fixture and actual serializers, then a constructed archive/controlled reader
+through the real registry-mounted raw handler. Salted output: three salt-presence
+checks true, HTTP 200, exact gzip bytes, public,max-age=31536000,immutable. Dormant
+unsalted format control: all three checks false with the same version/status/cache.
+The control resets Garden to its activation state, not only its salt field.
+
+Executed `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run TestRightsGardenPayloadObservation -v'`
+passes in 0.506s: observation completed, privacy did not pass. The evidence reader
+supplies bytes without SQL authorization and the wrapper is not actual compaction;
+no natural verified Garden board row, full public verifier loop or deployed leak
+is proved. Retain exact probe in probes/garden-public-replay.go.txt, remove the
+temporary production test, and retain the explicit replay command/limits in the
+dossier. No existing product/test assertion, migration, schema or policy changed.
+
+Cold existing save selectors -count=1 -v pass: TestFounderV2 executes six codec
+cases 20–25; FounderReputationMigrationCorpus and CompanyAxisMigrationCorpus run
+their populated/refusal cases. These are not live DDL or rights workflows.
+Fresh bounded Docker socket ping exits 28/HTTP 000/zero bytes after 5.001443s;
+unresponsive is not stopped. No cleanup, restart or database workaround.
+
+Research boundary after `be66902b` through this checkpoint: dossier/manual probe,
+parent payload plan/map/inventory, RP-606, owner-evidence pointer and current
+Garden/1.0 hold links. Diff checked, production tree unchanged. This supplies
+evidence, not designated implementation approval, normative amendment, archival
+or release. Garden/API authors must reconcile OD-12/SG8/AC10 with C14 while
+preserving privacy and independent verification; no silent stripping, carried-salt
+rotation, weaker proof or blanket feature suppression. Broader owner rights choices,
+remaining nested-field/SQL/delete/restore proof and full nine-tier construction stay open.

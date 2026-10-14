@@ -48,6 +48,11 @@ host observation has71GiB available/92% used. The [CI log](scaffolding-and-ci/lo
 artifact, executed validator refusal and next diagnosis. [Current action](platform-alignment/execution-queue.md#current-action--2026-10-14)
 routes accepted construction, consolidated review, held contracts and unavailable integration.
 
+Current additional privacy hold (2026-10-14): [RP-606](platform-alignment/data-rights-current-content.md)
+connects protected Garden salt in private replay to original-byte public evidence. Controlled
+producer/HTTP observation confirms the conflict, not a deployed/SQL leak. Preserve privacy and
+independent verification in the authored resolution; do not omit either from the full 1.0 floor.
+
 ## Historical rollup checkpoints
 
 The following dated narratives retain their original source/evidence boundaries. They are

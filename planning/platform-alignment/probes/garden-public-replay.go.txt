@@ -1,0 +1,123 @@
+package production
+
+import (
+	"bytes"
+	"compress/gzip"
+	"context"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/garden"
+	"cloud-clicker/server/httpapi"
+	"cloud-clicker/server/leaderboard"
+	"cloud-clicker/server/publicapi"
+	"cloud-clicker/server/publicread"
+	"cloud-clicker/server/save"
+	"github.com/go-chi/chi/v5"
+)
+
+type rightsEvidenceObserver struct{ value leaderboard.PublicRunEvidence }
+
+func (reader rightsEvidenceObserver) PublicRunEvidence(context.Context, string, int64) (leaderboard.PublicRunEvidence, error) {
+	return reader.value, nil
+}
+
+func TestRightsGardenPayloadObservation(t *testing.T) {
+	now := time.Date(2026, 10, 14, 12, 0, 0, 0, time.UTC)
+	bundle := gardenContentBundle(t)
+	policyBytes, err := os.ReadFile("../../balance/api/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	policy, err := publicapi.LoadPolicy(policyBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ids, err := httpapi.NewRequestIDs(policy.RequestID.Pattern, policy.RequestID.MaxBytes, rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	runtime, err := publicapi.NewRuntime(policy, func() time.Time { return now }, ids)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var operation publicapi.Operation
+	for _, candidate := range publicread.Operations() {
+		if candidate.ID == publicread.GetRunReplayLogOperation {
+			operation = candidate
+		}
+	}
+	registry, err := publicapi.NewRegistry(publicread.Schemas(), []publicapi.Operation{operation})
+	if err != nil {
+		t.Fatal(err)
+	}
+	const stream = "01986666-0000-4000-8000-000000000001"
+	for _, salted := range []bool{false, true} {
+		state := gardenViewFounder(t, bundle, now)
+		if !salted {
+			state.ServerGarden = garden.NewState(bundle.Garden)
+		}
+		encoded, err := save.EncodeState(state)
+		if err != nil {
+			t.Fatal(err)
+		}
+		carry := founderCarry(state)
+		carry.FounderRevision, carry.FounderConstantsHash = 1, bundle.ConstantsHash
+		inputs, err := buildReplayInputs(replayBuild{Command: save.ReplayCommand{IntentID: "01986666-0000-7000-8000-00000000000a", CompanyStreamID: stream,
+			FounderID: "01986666-0000-4000-8000-000000000002", Revision: 1, RunSeq: 1, RunLogSeq: 1}, Mode: ModeOnline, Now: now,
+			IntentKind: IntentPerformManualBatch, RouteContextVersion: bundle.Routes.ContextVersion(), FounderCarry: &carry})
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Constructed archive envelope, not archiveVerifiedRun or SQL rows.
+		body, err := json.Marshal(map[string]any{"schema_version": 1, "company_stream_id": stream, "run_seq": 1,
+			"entries": []any{map[string]any{"replay_inputs": inputs}}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		var compressed bytes.Buffer
+		zipper := gzip.NewWriter(&compressed)
+		if _, err := zipper.Write(body); err != nil {
+			t.Fatal(err)
+		}
+		if err := zipper.Close(); err != nil {
+			t.Fatal(err)
+		}
+		evidence := leaderboard.PublicRunEvidence{RunID: stream + ":1", ReplayLog: compressed.Bytes(), ReplayLogSHA256: fmt.Sprintf("sha256:%x", sha256.Sum256(compressed.Bytes()))}
+		router := chi.NewRouter()
+		if err := registry.Mount(router, []publicapi.Binding{{OperationID: operation.ID, Handler: publicread.EvidenceHandler{OperationID: operation.ID,
+			Registry: registry, Runtime: runtime, Evidence: rightsEvidenceObserver{evidence}}}}, nil); err != nil {
+			t.Fatal(err)
+		}
+		response := httptest.NewRecorder()
+		request := httptest.NewRequest(http.MethodGet, "/api/public/v1/runs/"+stream+"/1/replay-log", nil)
+		request.RemoteAddr = "192.0.2.7:4000"
+		runtime.WithRequestID(router).ServeHTTP(response, request)
+		if response.Code != http.StatusOK {
+			t.Fatalf("response=%d %s", response.Code, response.Body.String())
+		}
+		reader, err := gzip.NewReader(bytes.NewReader(response.Body.Bytes()))
+		if err != nil {
+			t.Fatal(err)
+		}
+		received, err := io.ReadAll(reader)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := reader.Close(); err != nil {
+			t.Fatal(err)
+		}
+		marker := []byte("0123456789abcdef") // existing fixture salt, never a real credential
+		t.Logf("salted=%t founder_version=%d codec_contains_salt=%t replay_inputs_contains_salt=%t HTTP=%d exact_archive=%t decoded_response_contains_salt=%t cache=%s",
+			salted, save.VersionForState(state), bytes.Contains(encoded, marker), bytes.Contains(inputs, marker), response.Code,
+			bytes.Equal(response.Body.Bytes(), compressed.Bytes()), bytes.Contains(received, marker), response.Header().Get("Cache-Control"))
+	}
+}

@@ -27,6 +27,13 @@ possible while the validated Docker socket remained unresponsive. More nested
 saved-state, receipts, historical encoders and non-DB classification is still
 required for D-008/D-009/D-015; a stable table count does not close that work.
 
+The [newer-content tranche](data-rights-current-content.md) separately maps selected
+Company19/Founder22–25 state, receipt and private replay fields. RP-606 identifies
+the hidden Garden salt/original-byte public-evidence conflict; its executed
+producer/HTTP observation uses a controlled archive/reader, not live SQL or a
+deployed disclosure. Rights options must respect Garden's already-adopted salt
+exclusion, and public verification needs its own authored contract reconciliation.
+
 ## Original denominator and controls — 2026-09-23
 
 The ordered `server/save/migrations/00001`–`00074` Up chain creates 61 tables and drops the
