@@ -6,10 +6,10 @@ Current C18 construction (2026-10-14): Categories, Achievements, Meters, Opportu
 Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions, Guilds, Commons and Minigames export fifteen of nineteen pinned-family descriptors. Four, the complete response
 union/catalog HTTP reader and public re-verification remain open. All semantic loaders remain
 mandatory; no open JSON escape, content mint or false metadata-only kernel bump. Catalog
-admission repairs carry genuine versions0.3.191–0.3.206 and remain pending designated review.
+admission repairs carry genuine versions0.3.191–0.3.207 and remain pending designated review.
 The append-only owning log holds each old failure, final checks, limits and exact review range;
-latest resource-component range is after `ebb47bae` through its containing source/test/docs/record
-commit. Economy's closed cost-curve and resource/cap components are constructed; its full versioned artifact,
+latest generator/policy-component range is after `33289642` through its containing source/test/docs/record
+commit. Economy's closed cost-curve, resource/cap, generator/role and manual/offline components are constructed; its full versioned artifact,
 including the reused condition grammar and other row families, is still unexported and uncounted.
 Continue other owners within lawful scope; unchanged metadata-only additions still need explicit
 scope resolution, and the integer-representation proposal remains unadopted.

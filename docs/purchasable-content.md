@@ -33,6 +33,12 @@ Duplicate role bindings, roleless generator classes, dangling role targets, unma
 sources, invalid tier topology, and undeclared multiplier sources reject the entire catalog. Roles
 describe executed mechanics; they are not free-form labels.
 
+The loader checks each role's original decoded member names and exact active arm before
+pointer decoding: a wrong-arm field with `null` is not treated as absent. Optional generator
+`provisions` and `provisioned_hardcap` may be omitted but must be complete non-null objects when
+present. The corresponding closed generator schema components preserve these distinctions;
+role bindings, one-tier-down topology and non-neutral ordered ladders still require the loader.
+
 ## Purchased and provisioned counts
 
 Save version 14 keeps purchased counts in `generators` and adds complete-key maps for

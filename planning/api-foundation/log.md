@@ -2875,3 +2875,32 @@ version/docs/records range after `ebb47bae` through this containing commit needs
 Claude review, consolidatable with C18. Fifteen full owners export; complete Economy/Routes/
 Minigame API/Relevance and public union/catalog/client verification remain. No owner/draft
 adoption, archival/publication or narrowed nine-tier1.0 objective. Continue full construction.
+
+## 2026-10-14 — Versioned generator/role and operating-policy components (RP-592)
+
+Resume `33289642`, finish the interrupted batch. Recorded old-source Go regression run admits
+50 aliases and13 wrong-arm/optional-object nulls; matching TS64 checks already pass. Original
+decoded objects now require version-selected, literal non-null members before pointer/struct
+decoding. Preserve omitted optional objects and all four role arms. Kernel0.3.206→0.3.207
+records actual admission change, not descriptor metadata alone. No balance/content/math changes.
+
+`GeneratorSchemas` and `OperatingPolicySchemas` supply components, not a full C18 Economy
+artifact. Current, both stored, v3/v5 candidates and the shared v2 fixture validate unchanged;
+derived v1 is a compatibility control, not historical evidence. Tests bind the actual version,
+exercise all63 refusal cases against loader and descriptor, retain13 other structural refusals
+and seven schema-valid owner-semantic refusals, and check fresh exports/escaped keys/complete
+last-value behavior. Initial combined-definition test forgot the DSL's global sort requirement;
+it failed construction, was corrected in the test helper and rerun. No guard/DSL relaxation.
+
+Final cold economy/publicapi/kernel/decimal/replaycatalog and affected vet (also production)
+pass. Affected Node140 and actual Chromium/WebKit280 pass; types zero errors/warnings, build,
+API/formula generation byte-unchanged and Commons import guard pass. This checks catalog
+admission and existing economy queries, not a new purchase/SQL/player journey, Firefox/Linux,
+hosted/full CI or release proof. Known history-guard/Clout/service limitations remain open.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Full implementation/tests/
+version/docs/records range after `33289642` through this containing commit needs designated
+Claude review, consolidatable with C18. Complete family count remains15/19. Economy's full
+root/remaining rows/conditions, Routes, Minigame API, Relevance, public union/catalog serving
+and public client verification remain. No pending draft/owner adoption inferred; continue
+accepted construction without narrowing the full nine-tier1.0 objective or publishing.

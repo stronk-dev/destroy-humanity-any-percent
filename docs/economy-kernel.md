@@ -98,6 +98,17 @@ were already refused. State Decimal semantics and minimum/initial/cap relationsh
 mandatory loader/ledger checks. No resource value, scope rule, cap, ledger or storage behavior
 changes, and this component does not complete the versioned Economy artifact descriptor.
 
+`GeneratorSchemas()` exports version-selected generator components: V1 has price only,
+V2 also has production, and V4 (used by catalog versions4/5) adds typed content. The complete
+artifact must select the matching row descriptor, not use the standalone shape union to admit
+fields from another version. `OperatingPolicySchemas()` exports the manual/offline components
+required from catalog version3. Kernel0.3.207 checks literal non-null generator, nested price/
+production, ladder, role and operating-policy keys before struct decoding. Optional provisions
+and provisioned caps remain absent-or-object, never explicit null. All four role arms are closed.
+Positive rates/prices, ordered non-neutral ladders, bindings, efficiency and bank-ratio relations
+remain mandatory owner checks. No prices, provision rates, offline rules or balance bytes change;
+the complete Economy artifact descriptor remains unfinished.
+
 ## Cost curves
 
 Curve types are code and their parameters are data. The initial closed set is:

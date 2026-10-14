@@ -596,6 +596,12 @@ explicit nullable cap. Kernel0.3.206 fixes Go's literal-key admission without ch
 values, cap/ledger semantics or stored bytes. Relationships remain owner checks; the complete
 Economy artifact is still unexported and uncounted.
 
+`economy.GeneratorSchemas()` and `OperatingPolicySchemas()` add version-bound generator rows,
+four closed role arms and manual/offline policy components. Kernel0.3.207 fixes original-key and
+wrong-arm/optional-object null admission. Current/stored rows and legacy compatibility controls
+validate without rewriting bytes; relationships and version selection remain owner requirements.
+These are components, not a full Economy descriptor or a registered public response arm.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
 TypeScript verification loop remain open. Categories, Achievements, Meters, Opportunities,
 Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions, Guilds, Commons and Minigames provide fifteen owner descriptors
