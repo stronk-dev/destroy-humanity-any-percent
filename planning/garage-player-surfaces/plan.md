@@ -13,12 +13,12 @@ names on the old component; final affected Chromium/WebKit846, types/build/bound
 The owning log records the single-commit range after `8f698279` needing Claude review.
 Actual assistive-technology testing and full Garage acceptance remain separate.
 
-Current checkpoint (2026-10-14): at `cc256422`, `make test-game-ui-composed`
+Current checkpoint (2026-10-14): at `a28748ad` (kernel0.3.213), `make test-game-ui-composed`
 completes with exit0 after a fresh server/client build. Its sequential population includes
 the main player journey, ordinary Cosmetic/Reputation, Clout axis-stack, negative checkout,
 Garden harvest and Tier-2 candidate journeys. Real Postgres and socket recovery execute;
 the main journey includes committed-reply loss across a gameserver SIGKILL/restart.
-This closes the earlier unexecuted current-source aggregate check, not outstanding review,
+This refreshes integrated evidence after the newer replay/API/CI corrections, not outstanding review,
 natural pacing, accessibility, release-artifact or full-feature acceptance. The owning log
 records the environment and fixture limits. Continue accepted construction and consolidate review.
 

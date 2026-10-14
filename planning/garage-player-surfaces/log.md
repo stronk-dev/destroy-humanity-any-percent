@@ -7171,3 +7171,42 @@ entry, parent `8f698279`, all six source/test/docs/record paths. Browser role/na
 semantics with a mounted controlled snapshot are not actual screen-reader, Firefox,
 SQL/service, hosted-CI, whole Garage or accessibility-release proof. No acceptance,
 archival, owner choice, new copy, schema/kernel change or publication is claimed.
+
+## 2026-10-14 — Built-player aggregate at a28748ad
+
+At clean `a28748ad`, kernel0.3.213, execute the complete root `make test-game-ui-composed`
+(21188, terminal exit0). This refreshes integrated player evidence after later minigame admission,
+API compatibility and cold-gate corrections; it is not another per-edit acceptance ceremony.
+No source, test, assertion, retry, deadline, catalog, clock or population change was made.
+The existing drivers rebuild the server and production client before their journeys, bind
+browser-loaded HTML/JS/CSS/Worker bytes and require the bundled worker to start.
+
+Completed population:35 fixture checks, then main, ordinary Cosmetic/Reputation, Clout,
+checkout/PaymentRequest negatives, Garden harvest and Tier-2 candidate journeys. The main
+and Tier-2 drivers each require8/8 real-Postgres refresh cases, ten selected persisted parent
+tests and the actual public-SDK HTTP → TypeScript verifier marker (valid history plus receipt/
+event/gap/constants refusals, with DB-supplied pinned catalogs). Both execute. Captured selected
+output contains no failed or skipped test headers; this is not a census of whole packages.
+
+Main witnesses cover native purchases, server-bound achievement event/announcement, queued
+Claim and consecutive SQL receipts, actual Fiscal refusal/reconsent/unlock and Pitch payout,
+both early terminal states, next Company and WebSocket recovery. Pitch and Soul Recovery each
+survive a real gameserver SIGKILL after commit/reply loss; unchanged persisted state, same-ID
+retry or native token rotation, and continued play/attendance execute. Connection reset/refusal
+diagnostics occur during those deliberate process-loss cases; final assertions pass.
+Cosmetics retain trusted Enter/Space, persisted ownership, pet adoption/equip/feed/status/reload,
+overlay/reduced-motion/unequip and specific no-payment refusals. Clout proves the controlled
+1.3 and1.612 purchase projections, not conservation/partition correctness. Garden performs
+native planting/harvest/substrate/retry/reload with explicitly prepared maturity. Tier-2 performs
+both gates, three generators/upgrades, incorporation, history/reload with explicit1e5/9e8 cash.
+
+Verification by: Codex; Recorded by: Codex. This is native Chromium/Go with the declared
+Postgres16 test service (amd64 image on ARM64 Docker warning), not hosted/Linux browser parity,
+natural growth/pacing, Headcount, full-duration Recovery, manual AT, full public catalog serving,
+Garden public-proof privacy or exact-image/Caddy/clean-host R-006. It does not close RP-131,
+RP-307, RP-365, RP-368/RP-378/RP-614 reliability, content/owner contracts, review debt, feature
+acceptance or the nine-tier1.0 goal. Earlier failures remain evidence; this pass replaces none.
+Records only, no designated-review or release promotion, archival, mint, push or deployment.
+After the terminal run, remove only the freshly created `game-ui-postgres` service and its
+disposable tmpfs test rows. Final service inventory is empty; no durable volume, cache, network
+or unrelated service/data was removed. The final diff is record-only and append-only in this log.
