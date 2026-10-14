@@ -9,8 +9,14 @@ have CHANGES REQUIRED dispositions. Historical probes reproduce already-filed
 Exit-sequence, forged-exclusion and artifact-binding defects; bounded original
 controls and current corrective/retained-artifact checks execute. Six H4 ties,
 fired H3 and H5/career-data/author gates remain; no measurement restamp or retune.
-No product change in this review-record batch. Next audit the separate original
-fast-harness/maintenance closeout range, then consolidate corrective reviews.
+No product change in this review-record batch. The separate original maintenance
+closeout `2215fc2a..68777ab8` now also has a CHANGES REQUIRED disposition: cold
+full routing and fast execution pass, but RP-633's recipe-validation gap and
+RP-634's missing D3 fail-loud observation floor remain distinct. RP-633 is
+locally corrected at `15e82e38`, pending Claude; CI owns the RP-634 follow-up.
+Original declared B1–B8/maintenance ranges are dispositioned, not approved.
+Next consolidate corrective reviews and continue accepted construction without
+waiving the remaining balance/data/author/copy/mint and integrated gates.
 
 Current original UI review (2026-10-14): B7a's full9-path and B7b's full16-path
 ranges are CHANGES REQUIRED, not approval of later fixes. Historical execution

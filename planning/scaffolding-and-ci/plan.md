@@ -7,6 +7,14 @@
 
 ## Current checkpoint — 2026-10-14
 
+RP-634 remains an engineering conformance gap in the additional Reputation maintenance job:
+unlike CI D3's50/55-minute fail-loud artifact floor, it has a60-minute test/job budget and no
+observation validation/always-uploaded artifact. Original full command execution succeeds;
+interruption/hosted evidence is unproved. The Reputation log owns that original range review.
+Next prepare the bounded extension required by archived Harness Observability H1 for the
+additional objectives, then implement the existing CI floor under accepted authority. Do not
+invent a second recorder, relabel the standard-check artifact, raise budgets or narrow studies.
+
 RP-633 Reputation routing correction: the old topology checker accepts a missing Make target,
 removed exhaustive opt-in or a one-study selector. Bind the actual unchanged recipe and reject
 six corruptions (including empty selection, warm execution and lost timeout). Current real-source

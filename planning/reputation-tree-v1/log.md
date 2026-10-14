@@ -9788,3 +9788,43 @@ B1–B8 now have complete declared-range dispositions, not complete archival
 coverage or approval of corrections. Next the separately committed original
 fast-harness/maintenance closeout; preserve all remaining owner/data/author,
 corrective review, natural pacing and full nine-tier/platform1.0 requirements.
+
+## 2026-10-14 — Original maintenance closeout review (RP-633/634)
+
+Review by: Codex. Recorded by: Codex. Designated original range:
+`2215fc2a79fd9cf640fe136b2f1b74aaad2389af..68777ab8267afce2be120b9e05588649985236c0`,
+all seven paths inspected (workflow, Make, topology guard, three test files and
+the original log). Decision: CHANGES REQUIRED, not approval of later corrections.
+
+Executed on the exact detached historical source: `make reputation-harness-check`
+opts in cold to the unchanged two-study population and exits0 in845.002s.
+The retained terminal chunk includes `TestReputationTreeRelevance` PASS663.70s.
+An earlier tool response was lost/truncated; a complete per-test transcript and
+fresh per-seed census are not claimed. The existing career test still records
+H4 violations instead of treating report reproducibility as balance acceptance;
+its source/report and the earlier six-tie finding remain unchanged. No report
+regeneration, current-HEAD study or fulfilled R10/AC13 claim.
+
+Cold `make test-harness` passes35.797s. A separate focused cold control without
+opt-in explicitly SKIPs both long tests with their named maintenance instructions,
+passes0.261s; those skips are not study execution. Its first attempted shell/Make
+selector was misquoted and failed before Go ran; corrected before the control.
+Historical `make verify-ci-topology` passes13 negative controls. Independently
+removing the job invocation fails the guard. However three exact historical-source
+string corruptions (missing target, missing opt-in, one-study selection) all pass
+that guard: RP-633, locally repaired in `15e82e38`, pending Claude's review.
+
+RP-634 additionally names the unchanged current/original maintenance job's D3
+conformance gap:60-minute test/job limits, no timeout-flush margin, no observation
+validation or always-uploaded artifact. Local completed studies cannot establish
+interruption behavior. CI owns that engineering follow-up; archived observation
+H1 requires an amendment for additional objectives, not a relabelled complete-check
+artifact or a second measurement system. No owner gameplay/balance choice is
+inferred or reopened; no budget increase, exemption or future RFC acceptance.
+
+Historical checkout is clean, no temporary source probes or DB/services remain.
+Main changes in this review-record batch are records only; factual/range/whitespace
+checks performed, no software suite rerun for Markdown. All original declared
+B1–B8 and this closeout now have dispositions. Corrective implementation reviews,
+H3/H4/H5, career-data/author policy, natural earning, copy/mint and complete player/
+release proofs remain required. No archival, status promotion, push or deployment.
