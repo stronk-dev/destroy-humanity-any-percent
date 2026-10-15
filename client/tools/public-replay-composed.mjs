@@ -1,6 +1,6 @@
-// Called while the existing Go/Postgres Exit fixture's HTTP server is alive.
-// Only pinned catalog bytes and expected public bytes arrive on stdin. Catalog
-// download is still absent: this is not the complete third-party public loop.
+// Existing Go/Postgres replay witnesses pass pinned inputs on stdin, never disk.
+// The explicit Guild-transition mode has no HTTP/publication claim. The default
+// mode downloads public evidence but not catalogs: the full public loop is open.
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import path from "node:path";
@@ -17,6 +17,44 @@ const vite = await createServer({
   server: { middlewareMode: true }, appType: "custom",
 });
 try {
+  if (fixture.kind === "stored_guild_transition") {
+    let stage = "load";
+    try {
+      const { loadReplayCatalogBundle, restoreReplayState, encodeReplayState, applyLogged, canonicalJSONString } = await vite.ssrLoadModule("/src/replay.ts");
+      const artifacts = Object.fromEntries(Object.entries(fixture.artifacts)
+        .map(([name, bytes]) => [name, Buffer.from(bytes, "base64").toString("utf8")]));
+      const catalogs = await loadReplayCatalogBundle(fixture.constants_hash, artifacts);
+      const restore = (raw) => restoreReplayState(raw, fixture.version, catalogs.economy, {
+        meters: catalogs.meters, achievements: catalogs.achievements,
+        doctrines: catalogs.doctrines, opportunities: catalogs.opportunities,
+      });
+      stage = "positive";
+      const state = restore(fixture.Before);
+      assert.equal(canonicalJSONString(encodeReplayState(state)), canonicalJSONString(fixture.Before));
+      const result = await applyLogged(state, canonicalJSONString(fixture.Payload), catalogs, fixture.Inputs);
+      assert.equal(result.outcome, "applied");
+      for (const [actual, expected] of [[encodeReplayState(result.state), fixture.After], [result.receipt, fixture.Receipt], [result.events, fixture.Events]]) {
+        assert.equal(canonicalJSONString(actual), canonicalJSONString(expected));
+      }
+      assert.equal(canonicalJSONString(encodeReplayState(restore(fixture.After))), canonicalJSONString(fixture.After));
+      stage = "omission";
+      const omitted = await applyLogged(restore(fixture.Before), canonicalJSONString(fixture.Payload), catalogs, fixture.Omitted);
+      assert.equal(omitted.outcome, "applied");
+      assert.equal(omitted.state.guildBoundarySeq, 0);
+      assert.notEqual(omitted.state.consumedStockUnits, result.state.consumedStockUnits);
+      assert.notEqual(canonicalJSONString(encodeReplayState(omitted.state)), canonicalJSONString(fixture.After));
+      stage = "duplicate";
+      const refused = restore(fixture.Before);
+      const before = canonicalJSONString(encodeReplayState(refused));
+      await assert.rejects(applyLogged(refused, canonicalJSONString(fixture.Payload), catalogs, fixture.Duplicate));
+      assert.equal(canonicalJSONString(encodeReplayState(refused)), before);
+      console.log("stored live Guild inputs → TypeScript replay: complete state/receipt/events + omission/duplicate controls: PASS");
+    } catch {
+      // Node assertion diagnostics include compared values. Never print private
+      // saved heads/replay payloads, even when this observation fails.
+      throw new Error(`stored Guild replay failed at ${stage}`);
+    }
+  } else if (fixture.kind === undefined) {
   const { createAPIClient } = await vite.ssrLoadModule("/src/api/generated/types.ts");
   const { loadReplayCatalogBundle, verifyReplayRun, canonicalJSONString } = await vite.ssrLoadModule("/src/replay.ts");
   const { KERNEL_VERSION } = await vite.ssrLoadModule("/src/kernel/version.ts");
@@ -87,6 +125,7 @@ try {
   assert.equal(await verifyReplayRun(genesis, catalogs, changedEvents, identity), "state_divergence");
   assert.equal(await verifyReplayRun(genesis, catalogs, entries, { ...identity, constantsHash: `sha256:${"0".repeat(64)}` }), "constants_mismatch");
   console.log("public SDK HTTP downloads → TypeScript replay: verified + receipt/event/gap/constants refusal; DB-pinned catalogs supplied: PASS");
+  } else { throw new Error("unknown composed replay observation"); }
 } finally {
   await vite.close();
 }

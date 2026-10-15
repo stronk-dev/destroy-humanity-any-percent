@@ -552,6 +552,10 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil || afterProducer.GuildID != guildReceipt.GuildID || len(afterProducer.Settlements) != 3 || reservedDebit <= 0 || reservedDebit > 10 {
 		t.Fatalf("post-clearing producer batch=%+v err=%v", afterProducer, err)
 	}
+	clearingReplayOrigin, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
 	clock.Set(clock.Time().Add(time.Second))
 	secondIntent := `{"intent_id":"01985555-1113-7111-8111-111111111113","kind":"perform_manual_batch","expected_revision":4,"action_id":"manual.click","count":1,"window_ms":1}`
 	secondResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, secondIntent)
@@ -574,6 +578,10 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Run("stored_guild_settlement_replay", func(t *testing.T) {
+		observeComposedGuildSettlementReplay(t, db, composition.Catalogs, clearingReplayOrigin, state,
+			"01985555-1113-7111-8111-111111111113", secondIntent)
+	})
 	var persisted struct {
 		GuildID  *string `json:"guild_boundary_guild_id"`
 		Boundary int64   `json:"guild_boundary_seq"`

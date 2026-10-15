@@ -217,6 +217,27 @@ fixed membership/batch lookup is not live provider/SQL evidence. General workloa
 origin lifetime, absence semantics and the viable accounting algorithm remain open;
 the original27 partition failures are not repaired or redefined.
 
+#### Live Guild capture complements the fixed-input populations
+
+The2026-10-15 `stored_guild_settlement_replay` supplement in the existing
+composed Postgres/socket/clearing test captures one actual online transition.
+HTTP account/Guild creation and membership feed three worker clearings; an
+authenticated manual action consumes the real nonempty batch. The fixture's
+faction/stock arrangement remains controlled, not naturally acquired gameplay.
+The committed pre-head, original canonical command, replay inputs, receipt and
+ordered Company events are read from SQL. With only those frozen inputs and the
+original pinned catalog, actual Go and TypeScript logged replay reproduce the
+complete saved Company, receipt and events. TS also restores its complete result.
+Omitting the batch loses settlement state; duplicating a clearing refuses without
+mutation in both runtimes. Private captures travel in memory, not public artifacts.
+
+This closes live-provider/SQL capture and cross-runtime fidelity for that one
+current-content online Guild profile only. It does not cover the twelve earlier
+profiles or positive idle-production fidelity (this consumer buys no generators),
+Clout-v19 activation, arbitrary external/temporal producers, independent
+process/host restart, or the accounting algorithm. The Clout owning log records
+execution and review; C1/C1a and the lower-domain write-set conflict remain open.
+
 #### Bounded executable algorithm and write set
 
 `server/production/axis_origin_projection_test.go` exercises the following candidate:
@@ -425,3 +446,6 @@ implied save field and needs its own complete contract.
 - 2026-10-15: record actual twelve-cell external/Guild Go/TypeScript replay compatibility
   and six omission/duplicate/rollback control sets. Draft evidence only; no accepted
   contract, accounting implementation, origin lifetime or SQL/live-provider claim changed.
+- 2026-10-15: add one real composed Guild/SQL input capture with complete Go/TS replay
+  and omission/duplicate controls. This complements rather than relabels the fixed-input
+  populations; no accounting/lifetime adoption or conservation completion follows.

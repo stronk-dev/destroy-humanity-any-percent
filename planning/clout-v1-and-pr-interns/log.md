@@ -3337,3 +3337,49 @@ causation evidence or RP-637 repair. Existing final-error diagnostics and origin
 failures remain. Next use actual recurrence evidence, not repeated unchanged runs
 for reassurance. Record-only outcome; no new software review range or product
 claim. Previous diagnostic implementation still needs its designated review.
+
+## 2026-10-15 — R-012 live Guild/SQL input capture and actual Go/TS replay
+
+Execute the bounded declaration in the owning plan at `639edf19`. Reuse the existing
+HTTP/Postgres/socket/Guild worker parent: real account/Guild creation and membership,
+three clearing ticks and its existing authenticated manual action. Faction/stock are
+still controlled fixture setup. Capture its committed pre-head and read the actual
+canonical command, resolved replay inputs, applied revision, receipt and ordered
+Company events from SQL after commit. Require exactly three ordered clearings with
+positive credit. Pure Go replay receives only that pre-head, the pinned bundle and
+stored inputs; complete Company/receipt/events match. Omission loses settlement
+state and duplication refuses with unchanged state/no output. JSON comparisons are
+typed logical/jsonb equality, not a claim to preserve SQL formatting; the command
+is separately byte-bound to the actual HTTP request's canonical form.
+
+Direct declared Postgres20072 passes the whole parent1.962s. Reuse the existing
+stdin/Vite replay runner with one explicit private-observation mode, not a new
+framework. The same actual capture passes through TS restore/apply, complete output
+comparison, restored result and omission/duplicate controls. No live provider is
+passed to replay and no private payload/artifact is printed or persisted. The root
+composed driver requires the exact new marker; ordinary Go explicitly gives no TS
+credit without the existing opt-in seam. Default public-download mode is unchanged.
+
+Final full `make test-game-ui-composed`61907 exits0:35 driver controls pass; both
+persisted populations execute8/8 refresh leaves and ten required parents with no
+captured test-header skips/failures, plus the new Guild/TS marker twice. Main
+transitions/endings/recovery, Cosmetic/Reputation, Clout, both payment negatives,
+Garden harvest and Tier-2 candidate journeys pass with their existing controlled
+cash/maturity/content limits and exact built assets/Worker. Expected proxy errors
+occur during deliberate SIGKILL/restart; both recovery objectives pass. Actions
+ci.yml calls this same root target, not a new CI job or a hosted verdict. Final
+cold Gameserver/vet84470 passes0.431s. Formatting/diff checked; removed only both
+inspected owned tmpfs Postgres services, preserving networks/caches/durable data.
+
+The earlier twenty lower-domain settlement cells revalidate38521 in0.390s while
+tracing the candidate; that is not new research or conservation progress. This new
+one-profile capture closes only its live-input/SQL/cross-runtime question. It does
+not establish positive idle-production fidelity: the reused consumer buys no
+generators. It does not cover Clout-v19 activation, every external/buff/offline population, a SQL fault/
+restart protocol, the numerical write algorithm or C1/C1a. Original27 partition
+failures remain untouched, as do the known under-floor write-set conflict and
+release/owner/author gates. Research/tests only; no product/kernel/schema/balance,
+source-pinned research artifact, policy, acceptance or archival change. Review by:
+Codex (implementer first filter). Recorded by: Codex. Complete seven-path test/
+driver/plan/log/draft-evidence range after `639edf19` through this containing commit
+needs designated Claude review, consolidatable with R-012. No push or deployment.

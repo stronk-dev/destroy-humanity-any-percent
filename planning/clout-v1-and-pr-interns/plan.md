@@ -6,6 +6,42 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+## R-012 live Guild-input capture — declared2026-10-15 at `639edf19`
+
+Question: does a real composed Guild clearing produce replay-owned inputs that
+reproduce the complete committed Company transition without consulting live providers?
+Reuse the existing Postgres/socket/clearing parent: HTTP-created/joined Guild, its
+three worker clearings and the existing authenticated post-clearing manual action.
+Its controlled faction/stock setup stays disclosed; this is one actual current-epoch
+online profile, not the earlier twelve synthetic profiles or a natural acquisition study.
+Capture the committed pre-head before dispatch and read the actual canonical command,
+replay inputs, receipt, applied revision and ordered Company events from SQL afterward.
+Require the batch to contain all three real clearings and positive consumer credit;
+replay from the captured pre-head with only the pinned catalog and stored inputs.
+Complete Company, receipt and ordered events must equal the committed outputs.
+Omitting the nonempty batch must lose settlement state, even if cash is unchanged;
+duplicating a settlement must refuse without mutation/output. An incomplete or refused
+positive invalidates the observation. No new numeric/origin wire or production change,
+no conservation/absence adoption, TypeScript claim, content mint or AC6 completion.
+Record actual results/limits in the existing Clout log and retain independent review.
+
+Go phase20072 passes the complete parent and the declared capture/controls. Next
+cross-runtime phase: reuse the existing stdin/Vite replay runner and its opt-in
+root-composed seam. Pass the actual SQL pre/post state, pinned original artifacts,
+canonical command, stored inputs/receipt/events and those two altered batches only
+in memory. Actual TS restore/apply must match all three outputs, round-trip the
+post-state, lose settlement on omission and refuse duplication without mutation.
+No raw private payload enters logs/artifacts; a stage-only failure diagnostic is
+sufficient. The existing root driver must require the exact new PASS marker;
+ordinary Go lanes neither acquire Node nor get TS credit. Execute the whole root
+composed target after wiring, without narrowing its existing population.
+
+Completed locally: direct Postgres20072 and the full composed target61907 pass.
+Both required persisted populations execute the actual SQL→Go/TS replay and controls;
+all existing player journeys remain green. The owning log holds exact coverage and
+review range after `639edf19`. This is one live current-content online Guild profile,
+not a new conservation algorithm, Clout-v19 activation or full external-domain proof.
+
 ## Current keyboard CI diagnosis — RP-637, 2026-10-15
 
 Clean `b248d26a` full Linux browser execution fails Firefox's Tier2 Enter Codex
