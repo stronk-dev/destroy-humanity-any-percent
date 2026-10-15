@@ -371,7 +371,10 @@ layers (including valid magic-less V7 headers) and nested gzip/tar files inside 
 depth and a 1 GiB decompressed bound),
 and matches file payloads at the innermost readable form. It also scans decoded tar metadata
 (names/links, owner/group, PAX and xattr keys/values, including directories) and gzip
-name/comment/extra bytes. Finding paths and recursive member error labels containing a recognized
+name/comment/extra bytes from every member of a concatenated gzip stream. The combined decoded
+payload is scanned once, including tar or secret bytes split across member boundaries; all
+members share the same 1 GiB ceiling. Corrupt later members and trailing junk still refuse.
+Finding paths and recursive member error labels containing a recognized
 secret are replaced as whole paths, never printed with the secret intact. Ordinary locations
 remain visible. This uses the same recognized-pattern rules and bounds; it is not a detector
 for every possible credential encoding. A zstd

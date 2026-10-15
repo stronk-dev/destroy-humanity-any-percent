@@ -149,21 +149,15 @@ func scanArchiveMember(path string, data []byte, depth int) ([]SecretFinding, er
 	case bytes.HasPrefix(data, zstdMagic):
 		return nil, fmt.Errorf("%w: zstd-compressed member cannot be secret-scanned: %s", ErrInvalidContent, path)
 	case bytes.HasPrefix(data, gzipMagic):
-		decompressor, err := gzip.NewReader(bytes.NewReader(data))
+		plain, metadata, err := readSecretScanGzip(path, data, maximumSecretScanDecompressed)
 		if err != nil {
-			return nil, fmt.Errorf("%w: unreadable gzip member %s", ErrInvalidContent, path)
-		}
-		metadata := append([]byte(decompressor.Name+"\x00"+decompressor.Comment+"\x00"), decompressor.Extra...)
-		findings = append(findings, scanSecretBytes(path+"#gzip-metadata", metadata)...)
-		plain, err := io.ReadAll(io.LimitReader(decompressor, maximumSecretScanDecompressed+1))
-		if err != nil || len(plain) > maximumSecretScanDecompressed || decompressor.Close() != nil {
-			return nil, fmt.Errorf("%w: gzip member %s is corrupt or exceeds the scan bound", ErrInvalidContent, path)
+			return nil, err
 		}
 		nested, err := scanArchiveMember(path+"!gunzip", plain, depth+1)
 		if err != nil {
 			return nil, err
 		}
-		return append(findings, nested...), nil
+		return append(metadata, nested...), nil
 	case isTarStream(data):
 		reader := tar.NewReader(bytes.NewReader(data))
 		for {
@@ -190,6 +184,36 @@ func scanArchiveMember(path string, data []byte, depth int) ([]SecretFinding, er
 		}
 	default:
 		return scanSecretBytes(path, data), nil
+	}
+}
+
+// Read every gzip member header, but recurse into the concatenated payload only
+// once: member boundaries may split a tar header or a recognized secret. The
+// existing decompressed ceiling applies to their combined bytes, not each member.
+func readSecretScanGzip(path string, data []byte, limit int) ([]byte, []SecretFinding, error) {
+	path = secretSafeScanPath(path)
+	input := bytes.NewReader(data) // ByteReader prevents read-ahead across a member.
+	decompressor, err := gzip.NewReader(input)
+	if err != nil || limit < 0 {
+		return nil, nil, fmt.Errorf("%w: unreadable gzip member %s", ErrInvalidContent, path)
+	}
+	var plain bytes.Buffer
+	findings := []SecretFinding{}
+	for {
+		decompressor.Multistream(false) // Reset restores the default; apply each time.
+		metadata := append([]byte(decompressor.Name+"\x00"+decompressor.Comment+"\x00"), decompressor.Extra...)
+		findings = append(findings, scanSecretBytes(path+"#gzip-metadata", metadata)...)
+		_, readErr := io.Copy(&plain, io.LimitReader(decompressor, int64(limit-plain.Len())+1))
+		closeErr := decompressor.Close()
+		if readErr != nil || plain.Len() > limit || closeErr != nil {
+			return nil, nil, fmt.Errorf("%w: gzip member %s is corrupt or exceeds the scan bound", ErrInvalidContent, path)
+		}
+		if input.Len() == 0 {
+			return plain.Bytes(), findings, nil
+		}
+		if err := decompressor.Reset(input); err != nil {
+			return nil, nil, fmt.Errorf("%w: unreadable gzip member %s", ErrInvalidContent, path)
+		}
 	}
 }
 

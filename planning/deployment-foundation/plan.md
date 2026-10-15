@@ -153,11 +153,12 @@ meaning, logical restore, clean-host/RPO/RTO and exact-artifact gates are not re
 now refuses rather than panics; configured receiver construction is checked before runtime
 commands. Old-source eight failures, ordinary receiver/ready/drain/identity controls, affected
 cold packages/vet/race and Linux-amd64 helper build pass. Original R9's complete five-path
-disposition remains CHANGES REQUIRED; this correction after `39019517` needs Claude review.
+disposition remains CHANGES REQUIRED; independent corrective review APPROVES complete
+39019517..de0ca191, with exact provenance/executed evidence in the log.
 RP-547 now adds actual `DockerRuntime.DrainCurrent` coverage through native HTTP/WebSocket and
 recording commands: eleven success/failure cases, two caller-level falsification overlays,
-affected cold packages/vet and race pass. Its test/docs/record range after `de0ca191` needs Claude
-review. No production behavior or drain bound changed; synthetic identity/exit replies are not
+affected cold packages/vet and race pass. Independent corrective review APPROVES complete
+de0ca191..dac25388. No production behavior or drain bound changed; synthetic identity/exit replies are not
 real process, Caddy/Postgres/Linux or clean-host/R-006 proof. Continue remaining accepted original
 reviews and exact-artifact construction while those environment/review gates stay explicit.
 
@@ -176,7 +177,11 @@ secret-bearing finding/error paths are redacted. Digest-valid old-source negativ
 clean controls discriminate; cold packages/vet and an ordinary scan of the retained
 102face6 image pass. Its bytes remain historical and its embedded tool lacks this fix.
 The log records the complete original R3 five-path CHANGES REQUIRED disposition and the
-new correction range after `cf8c6f08`, pending designated review. Rebuild/re-scan the final
+new correction completecf8c6f08..ca447daa now has independent CHANGES REQUIRED: later gzip
+member headers are missed (RP-675). The correction afterbdf5add1 scans every header while
+joining payloads under the unchanged combined ceiling; old six misses/four controls,
+corrected affected native/race/Linux and ordinary historical-image scan belong in the log.
+New corrective review remains required. Rebuild/re-scan the final
 reviewed artifact; no new scanner rule/limit, R-006, full Deployment or1.0 acceptance.
 
 **Latest DP7 actual proxy outage, 2026-10-13:** the shipped Caddyfile's private

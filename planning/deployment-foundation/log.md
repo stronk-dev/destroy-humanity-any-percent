@@ -7432,3 +7432,84 @@ evidence without claiming mechanism closure. Review by: Codex root (research/dra
 first filter). Recorded by: Codex root. Complete new rangee140405d-exclusive through this
 containing commit needs research/normative review outside corrective-only delegation.
 Next: settle the actual operation-specific lifetime fence, not another stable-snapshot rule.
+
+## 2026-10-16 — RP-543 review: CHANGES REQUIRED, later gzip metadata missed (RP-675)
+
+Review by: /root/archive_metadata_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing its verdict. Complete6-path
+cf8c6f08a349daae43263cc75ccfced5d80457d2-exclusive..ca447daabeb7ae9ae703d9d982542a8fca814706-inclusive.
+Decision: CHANGES REQUIRED. All scanner/test/docs/backlog/plan/log paths inspected. Default
+gzip multistream consumes later headers without exposing them through the first Reader.Header.
+Independent digest-valid image fixtures miss all3 second-member name/comment/extra sentinels;
+ordinary multistream control passes, ignored overlay0bd212/0.218s/Make2. No real secrets emitted.
+Original metadata omissions/unsafe paths also independently reproduced on historical scanner.
+Current original42-case/cold Releasepackage/Rehearsal/two CLIs86632 pass1.621/7.936/.109/.166s,
+vet passes, race68756 passes1.514s. Those passes do not rebut the new finding. Whitespace passes.
+Executioninitiale140405d, exact scanner/test endpoint bytes; Go1.27.2/Darwinarm64. No Linux,
+Docker/SQL, repeated historical-image scan, current artifact, R-006 or release acceptance.
+Reviewer has no tracked edits/commits; original R3 negative stays. No delegated normative review.
+
+Root corrective outcome under SAME DP3/AC2: scan every gzip member's header, concatenate
+all uncompressed bytes before nested parsing and retain ONE unchanged decompressed ceiling.
+Use bytes.Reader's ByteReader boundary with Multistream(false)/Reset; malformed/truncated
+later members and trailing junk still refuse, including aggregate-bound crossing. Add actual
+digest-valid second/third-member metadata and split-payload controls plus small-limit helper
+tests of the same production bound accounting, not a reduced runtime limit. Corrective range
+starts afterbdf5add1; no secret pattern, image/artifact, kernel, workflow or accepted policy change.
+
+## 2026-10-16 — RP-546/RP-547 independent corrective approval
+
+Review by: /root/deployment_drain_orchestration_corrective_review (fresh independent Codex
+under Marco's corrective-code delegation). Recorded by: Codex root, transcribing its verdict.
+Decision: APPROVED, no findings, two complete base-exclusive/tip-inclusive ranges:
+
+- RP-546 39019517b7314e12db478e4ec363301521a3431b..de0ca191ba34dbf2272a581567bc22250821166a (8paths).
+- RP-547 de0ca191ba34dbf2272a581567bc22250821166a..dac25388d3cfbba54037a04e9e518b41c42739fd (5paths).
+
+All source/tests/docs/plan/log/backlog inspected. Historical request overlay61154 reproduces
+all8 endpoint panics. Compiling ReadinessDown forgery84065 leaves3 old R9 tests green but
+fails new unmarked-readiness51103; CourtesyFrame forgery22425 fails missing-courtesy case.
+Intact cold six affected packages31659/vet pass; race13006 executes all11 real outer-method
+HTTP/WebSocket cases,8malformed cases and readiness matrix,8.945s. Native19067 explicitly
+confirms Caddy/DB-backed children/real-minute cleanup skip; parent PASS is not DB credit.
+Three initial terminal-dollar regexes are consumed by Make and execute nothing; corrected
+selectors supply the counted evidence. Exact-range whitespace passes.
+
+Executione140405d: relevant drain/readiness/new tests endpoint-identical; later backup/
+response-decoder changes outside verdict. No tracked edits/main mutation/commits/Docker
+resources. Protocol observation/recording-runner coverage, not actual Docker stop/Caddy/SQL/
+auth/work completion/job flush/exact artifact/clean host. Original R9 CHANGES REQUIRED,
+full AC3/R-006/feature/archival/release gates remain. Other new scanner correction separate.
+
+## 2026-10-16 — RP-675 every gzip header, one unchanged concatenated payload/bound
+
+Root correction: use a ByteReader-backed member reader with Multistream(false) re-applied
+after every Reset. Scan every Name/Comment/Extra, accumulate decoded bodies under the SAME
+1GiB combined ceiling, then recurse once. Preserve compressed member/depth limits, ordinary
+finding paths and redaction/rules; later CRC/truncation/trailing errors still fail closed.
+The internal helper takes a bound to test identical accounting with small physical inputs;
+the only runtime call supplies the original maximumSecretScanDecompressed constant.
+
+Independent original reviewer repro now passes69741/0.305s. Root baseline20313 uses the exact
+bdf5add1 gzip caller branch in current source; the new helper remains unreferenced solely to
+compile its tests. This is a historical-caller overlay, NOT a full historical checkout.
+All6 second/third-header metadata cases miss, all4 ordinary/split/nested-secret controls pass,
+Make2/0.223s. No tracked-source mutation or synthetic parser error. Corrected32628 passes
+all20 new metadata/payload/combined-bound/integrity cases,0.272s. Every image fixture first
+passes actual Docker archive/config/uncompressed-layer-digest validation. No secret emitted.
+
+Cold affected Releasepackage/Rehearsal/scanner CLI/rehearsal CLI72535 pass
+1.446/7.682/.413/.270s, matching vet passes. Race52896 executes SecretScan population1.423s.
+Declared Linux-amd64 full Releasepackage5091 executes without skips1.139s, including existing
+archive/layer/bundle/metadata tests and all added cases. Its otherwise-unused SQL fixture is
+NOT DB coverage. Ordinary make release-secret-scan with retained102face6 bundle-a image69736
+passes2366 tracked working files/no findings; this dirty-tree developer scan creates no
+structured release result and does not label the historical image current or rebuilt.
+
+Only twice-inspected owned tmpfsfe9e4ae1… stopped/removed after terminal; disposable data
+unrecoverable, durable data/caches/two existing builders preserved. Gofmt/diff checked, all
+handles terminal. Review by: Codex root (implementer first filter). Recorded by: Codex root.
+Complete new source/test/docs/backlog/plan/log rangebdf5add1-exclusive through this containing
+commit requires independent corrective re-review. The original RP-543/R3 negatives remain
+historical, not relabelled approval. No kernel/gameplay, secret pattern, limit, policy, budget,
+workflow, artifact regeneration, full Deployment/CI/clean-host/archival/release approval.
