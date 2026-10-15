@@ -821,3 +821,36 @@ Recorded by: Codex. Complete seven-path implementation/test/docs/plan/ledger/log
 range after `54f352f6` through this containing commit needs designated Claude review,
 consolidatable with Transport/Gameserver repairs. No self-approval, archival,
 push/deployment or full nine-tier1.0/whole-CI promotion; existing holds remain.
+
+## 2026-10-15 — Retained history does not bypass current membership
+
+Follow RP-651 under existing D1/T1/T4, without another product change. The pinned
+Centrifuge client refuses direct history RPCs when no handler is installed; normal
+recovery calls the existing subscribe authorization. Execute that boundary rather
+than treating source inspection or empty history as proof.
+
+`TestActualWebsocketRecoveryRechecksCurrentMembership` uses actual embedded-node
+WebSocket protocol over testhttp, with controlled identity/membership resolvers.
+For Guild/cohort/match, require a real retained envelope and exact recovery while
+authorized; remove membership, require103 with no subscribe result and refusal of
+direct history; restore membership on the same connection and recover the same
+bytes/position. A dead socket, missing history, invalid position or deny-all cannot
+satisfy the population. Match authorization here is a fixture, not a live combat tenant.
+
+Initial58281 fails the cohort observer, not authorization: a valid reply and presence
+join share one WebSocket message. The test's bounded command-ID reader now decodes
+the complete JSON message and ignores unrelated pushes; malformed JSON, duplicate
+command replies or a missing reply fail within the existing one-second guard.
+Do not change runtime framing. Focused29536 PASS0.322s; after the reader's complete-
+message check, final cold `make test-go vet GO_PACKAGES=./transport`95394 PASS13.320s
+plus vet. Final focused `-race -count=20`20497 PASS1.878s (all three namespaces per
+repetition). No production defect/bypass is found and no source mutation is claimed.
+
+Test/helper/docs/plan/log only; no runtime, policy, API, kernel, data or workflow
+change. The preceding completed Postgres/built-player proof remains separately scoped;
+do not rerun it for this controlled wire test or infer new DB/browser/hosted/release
+coverage. All handles terminal; no Docker services or durable resources touched. Diff and
+formatting checked. Review by: Codex (test implementer first filter). Recorded by: Codex.
+Entire four-path range after `c8ed9421` through this containing commit needs designated
+Claude review, consolidatable with the preceding Transport repair. No acceptance,
+archival, publication/deployment or full1.0 claim; continue other accepted work/review.

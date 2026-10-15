@@ -5,8 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -32,10 +34,15 @@ func (auth staticAuthenticator) Authenticate(_ context.Context, token string) (a
 
 func testNode(t *testing.T) *Node {
 	t.Helper()
+	return testNodeWithMemberships(t, testMemberships{})
+}
+
+func testNodeWithMemberships(t *testing.T, memberships Memberships) *Node {
+	t.Helper()
 	now := time.Now().UTC()
 	node, err := NewNode(phase0Policy(t), staticAuthenticator{claims: account.Claims{
 		Subject: "account", FounderID: "founder", IssuedAt: now.Add(-time.Minute).Unix(), ExpiresAt: now.Add(time.Hour).Unix(), TokenID: "token",
-	}}, testMemberships{})
+	}}, memberships)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -212,6 +219,128 @@ func TestActualWebsocketRecoveryReplaysPrivateReceiptsAndLatestWorld(t *testing.
 	if !recoveredWorld.Recovered || !recoveredWorld.WasRecovering || len(recoveredWorld.Publications) != 1 ||
 		envelopeRevision(t, recoveredWorld.Publications[0].Data) != 20 {
 		t.Fatalf("world recovery=%+v", recoveredWorld)
+	}
+}
+
+type changingChannelMemberships struct{ allowed atomic.Bool }
+
+func (memberships *changingChannelMemberships) GuildMember(accountID, id string) bool {
+	return accountID == "account" && id == "guild.allowed" && memberships.allowed.Load()
+}
+
+func (memberships *changingChannelMemberships) CohortMember(founderID, id string) bool {
+	return founderID == "founder" && id == "cohort.allowed" && memberships.allowed.Load()
+}
+
+func (memberships *changingChannelMemberships) MatchParticipant(founderID, id string) bool {
+	return founderID == "founder" && id == "match.allowed" && memberships.allowed.Load()
+}
+
+func TestActualWebsocketRecoveryRechecksCurrentMembership(t *testing.T) {
+	// A subscription reply and presence join may share one WebSocket message.
+	// Select the requested command reply without mistaking an unrelated push for it.
+	readCommandReply := func(t *testing.T, connection *websocket.Conn, id uint32) protocolReply {
+		t.Helper()
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		for {
+			_, data, err := connection.Read(ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			decoder := json.NewDecoder(bytes.NewReader(data))
+			var result *protocolReply
+			for {
+				var reply protocolReply
+				err := decoder.Decode(&reply)
+				if errors.Is(err, io.EOF) {
+					break
+				}
+				if err != nil {
+					t.Fatalf("decode command reply: %v", err)
+				}
+				if reply.ID == id {
+					if result != nil {
+						t.Fatal("duplicate command reply")
+					}
+					result = &reply
+				}
+			}
+			if result != nil {
+				return *result
+			}
+		}
+	}
+	for _, channel := range []string{"guild:guild.allowed", "cohort:cohort.allowed", "match:match.allowed"} {
+		t.Run(channel, func(t *testing.T) {
+			memberships := &changingChannelMemberships{}
+			memberships.allowed.Store(true)
+			node := testNodeWithMemberships(t, memberships)
+			server := testhttp.New(node.Handler())
+			defer server.Close()
+			endpoint := "ws" + strings.TrimPrefix(server.URL, "http")
+			initial := dialAuthenticated(t, endpoint, server.Client)
+			defer initial.CloseNow()
+			writeCommand(t, initial, map[string]any{"id": 2, "subscribe": map[string]any{"channel": channel}})
+			reply := readCommandReply(t, initial, 2)
+			if reply.ID != 2 || reply.Error != nil {
+				t.Fatalf("initial member subscription: %+v", reply)
+			}
+			position := decodeSubscribe(t, reply.Subscribe)
+			if !position.Recoverable || !position.Positioned || position.Epoch == "" {
+				t.Fatalf("missing recovery position: %+v", position)
+			}
+			_ = initial.CloseNow()
+
+			envelope := Envelope{Version: WireVersion, Channel: channel, Kind: "presence", Revision: 1,
+				ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+				Timestamp:     time.Now().UTC(), Payload: json.RawMessage(`{"joined":[],"left":[],"count":1}`)}
+			want, err := Encode(envelope, node.policy.MessageBytes)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := node.Publish(envelope); err != nil {
+				t.Fatal(err)
+			}
+			history, err := node.node.History(channel, centrifuge.WithLimit(1))
+			if err != nil || len(history.Publications) != 1 || !bytes.Equal(history.Publications[0].Data, want) {
+				t.Fatalf("nonempty retained history control: err=%v history=%+v", err, history)
+			}
+			recoverRequest := map[string]any{"channel": channel, "recover": true, "epoch": position.Epoch, "offset": position.Offset}
+			assertRecovered := func(reply protocolReply) {
+				t.Helper()
+				if reply.Error != nil {
+					t.Fatalf("member recovery refused: %+v", reply.Error)
+				}
+				recovered := decodeSubscribe(t, reply.Subscribe)
+				if !recovered.Recovered || !recovered.WasRecovering || len(recovered.Publications) != 1 ||
+					!bytes.Equal(recovered.Publications[0].Data, want) || recovered.Publications[0].Offset <= position.Offset {
+					t.Fatalf("member did not recover exact retained message: %+v", recovered)
+				}
+			}
+			member := dialAuthenticated(t, endpoint, server.Client)
+			defer member.CloseNow()
+			writeCommand(t, member, map[string]any{"id": 2, "subscribe": recoverRequest})
+			assertRecovered(readCommandReply(t, member, 2))
+			_ = member.CloseNow()
+
+			memberships.allowed.Store(false)
+			formerMember := dialAuthenticated(t, endpoint, server.Client)
+			defer formerMember.CloseNow()
+			writeCommand(t, formerMember, map[string]any{"id": 2, "subscribe": recoverRequest})
+			if denied := readCommandReply(t, formerMember, 2); denied.Error == nil || denied.Error.Code != 103 || len(denied.Subscribe) != 0 {
+				t.Fatalf("retained position bypassed current membership: %+v", denied)
+			}
+			writeCommand(t, formerMember, map[string]any{"id": 3, "history": map[string]any{"channel": channel, "limit": 1}})
+			if denied := readCommandReply(t, formerMember, 3); denied.Error == nil || len(denied.History) != 0 {
+				t.Fatalf("direct history RPC exposed retained messages: %+v", denied)
+			}
+			// Same connection and recovery position must work again. A dead socket,
+			// missing history or invalid position cannot explain the refusal above.
+			memberships.allowed.Store(true)
+			writeCommand(t, formerMember, map[string]any{"id": 4, "subscribe": recoverRequest})
+			assertRecovered(readCommandReply(t, formerMember, 4))
+		})
 	}
 }
 
@@ -421,6 +550,7 @@ type protocolReply struct {
 	Error     *protocolError  `json:"error"`
 	Connect   json.RawMessage `json:"connect"`
 	Subscribe json.RawMessage `json:"subscribe"`
+	History   json.RawMessage `json:"history"`
 }
 
 type protocolSubscribeResult struct {

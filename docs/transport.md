@@ -77,6 +77,9 @@ The Commons resolver binds projected membership to the latest non-archived Compa
 run and member flag. Persistent cohort assignment or a past signature alone cannot authorize
 a new subscription after Exit or leave. This is subscribe-time authorization, not automatic
 eviction from an already established subscription.
+Recovery subscriptions use the same current authorization check before returning retained
+messages; knowing a channel's epoch/offset does not grant access. Direct client `history`
+RPCs are currently unavailable (no handler is registered); reconnect recovery is the supported path.
 
 The server embeds Centrifuge behind an origin-checked WebSocket handler. Its connect command consumes
 the account service's access token, uses the opaque account ID for the per-account connection limit,

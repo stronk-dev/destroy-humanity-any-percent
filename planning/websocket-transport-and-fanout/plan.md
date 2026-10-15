@@ -12,6 +12,12 @@ re-sign and leave. The owning log records final execution and the range after `5
 needing Claude review. No governance, Health/retention or established-subscription eviction
 policy changes; complete Transport acceptance/archival remain open.
 
+RP-651's history follow-up now executes nonempty-history recovery with membership removed and
+restored in all three gated namespaces, plus direct-history refusal. This is a test-only proof
+of existing behavior with controlled resolvers, not another product fix or live DB/tenant proof.
+The owning log records full package/vet and repeated race checks; range after `c8ed9421` needs
+designated review and may join the preceding repair's range. Do not repeat these completed checks.
+
 2026-10-15 composition reconciliation: the old Commons-resolver/binary blocker is resolved.
 `gameserver.New` wires the real Commons projector and Guild settlement service; the current
 built-client aggregate at `6201bef8` executes the persisted socket/clearing/readiness/drain
