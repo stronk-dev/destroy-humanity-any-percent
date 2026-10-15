@@ -13,6 +13,10 @@ restore-refusal fields. Full hashes/provenance and executed cold/race/Linux/real
 results are in the owning log. These scopes no longer wait on Claude. They do not close
 original R18/R20, backup metadata authority (RP-505), current-release identity, exact-artifact/
 clean-host R-006/R-007, or full Deployment acceptance. Continue remaining accepted work.
+Further fresh independent approvals cover complete RP-507 authenticated-stream/deadlock,
+RP-548 create-report invocation and RP-549 sequential-observation scopes. The owning log
+records actual clean-target SQL refuses/restores, local producers/loaders and exact limits;
+original author/artifact/feature holds are unchanged.
 
 **Current DP7 timed-observation correction, 2026-10-14 (RP-615):** the real-minute test's
 startup/failure/drain callback waits now obey its existing95-second context and refuse missing
@@ -124,7 +128,7 @@ commands are not exact-artifact/clean-host R-006, or permission to execute exter
 overlap or run backwards, even inside one lifecycle step. The executor now refuses before the
 next producer launches; base/final validators reject rehashed overlapping results. Ten focused
 cases preserve exact adjacent boundaries and forward gaps; old-source failures and corrected
-cold/race checks are recorded in the owning log. New range after `88868d34` needs Claude review.
+cold/race checks are recorded in the owning log. Complete `88868d34..5d70f673` is independently approved.
 Original R12's full five-path disposition remains CHANGES REQUIRED (RP-140); basename/command
 shape is not executable identity, and no synthetic result or seal closes R-006.
 
@@ -132,7 +136,7 @@ shape is not executable identity, and no synthetic result or seal closes R-006.
 place start/completion inside their command invocation; invalid clocks refuse. Old-source20-case
 population admits14 bad reports while six legal controls pass. Corrected actual encrypted
 envelopes, cold affected packages/vet, race and Linux-amd64 helper build pass; existing host/header
-oracle still rejects its isolated bypass. The range after `dac25388` needs Claude review. Original
+oracle still rejects its isolated bypass. Complete `dac25388..88868d34` is independently approved. Original
 R10's full four-path disposition remains CHANGES REQUIRED; D-019, authenticated metadata/snapshot
 meaning, logical restore, clean-host/RPO/RTO and exact-artifact gates are not resolved by this check.
 
@@ -346,7 +350,7 @@ authenticated stream after tar EOF and refuses any remaining bytes before return
 dump. The old implementation stalls for one extra byte, a zero block and a second archive;
 the exact-package control passes. The existing empty/populated Postgres restore population
 also proves refusal leaves its target clean before the intact backup restores with matching
-identities. The owning log records affected checks and the pending designated range. No
+identities. The owning log records independent approval of complete `4627861a..cd609d07`. No
 metadata-binding draft adoption, retention/format change or clean-host acceptance follows.
 
 **Latest bounded correction, 2026-10-12 (RP-504):** populated recovery records its

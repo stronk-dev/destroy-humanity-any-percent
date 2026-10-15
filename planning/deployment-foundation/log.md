@@ -7134,3 +7134,55 @@ execution. All handles terminal, no edits/mutations/worktrees/resources/cleanup 
 These actual local file/gate/parser/probe checks use synthetic bundle/runtime inputs, not
 executable release artifacts, Docker/SQL, clean-host R-006, full Deployment or release proof.
 Original R18/R20 dispositions remain CHANGES REQUIRED; normative/archival gates unwaived.
+
+## 2026-10-15 — Authenticated stream framing independently approved
+
+Review by: fresh independent Codex `/root/backup_stream_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, no findings,
+all seven paths of `4627861a0df1dce9a84c88d56fee80b4b8cec9e1..cd609d0711eea9a46be0b43fa2ab2ca5bf5b93e2`.
+RP-507 drains after tar EOF before joining the decryptor, refuses any plaintext remainder
+and closes the reader on failure. Exact-package success remains; no usable dump escapes a
+failed extraction, and caller refuses before restore/removes temporary work. No format,
+retention, key, timeout or policy change.
+
+Actual descendant38dfc002/product77fe2275/kernel221: four affected packages/vet14023 pass
+cold. Focused race1387 executes all7 TestPackage parents including4 authenticated-tail cases;
+other selected packages have no matching tests, not additional race coverage. Declared real
+Linux-amd64/Postgres backup31073 passes all8 current integration parents, no skips. All4 empty/
+populated/direct/query-override populations reject authenticated tails while target remains
+clean, then intact restores match recovery identities. Formatting/full-range whitespace pass.
+Current extraction/tail hunks retained; later creation/query/fixture changes inspected as
+execution context only. Original3 deadlock failures inspected, not independently reproduced.
+
+All handles terminal. Initial inventory only2 existing BuildKit containers; target creates/
+removes identified tmpfs7d10afbd… plus its new network. Final service inventory empty; builders
+preserved, only disposable SQL data discarded. Reviewer edits/mutates/commits nothing; root's
+separate research preserved. No metadata proposal/rights adoption, exact-release/clean-host/
+R-006/whole-Deployment/hosted-CI/archival/release approval. RP-505 and other holds remain.
+
+## 2026-10-15 — Creation and rehearsal chronology independently approved
+
+Review by: fresh independent Codex `/root/deployment_chronology_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, no findings,
+all paths in both complete baseline-exclusive ranges:
+
+- RP-548,7 paths: `dac25388d3cfbba54037a04e9e518b41c42739fd..88868d347d384d42dc22c6159f992c7a0c132cef`.
+- RP-549,8 paths: `88868d347d384d42dc22c6159f992c7a0c132cef..5d70f673388a981a75d4dd2bb74e6096635fac6a`.
+
+New-create report bracketing preserves old-backup restores, host/header equality and lack of
+minimum duration. Executor refuses invalid chronology before launching the next producer;
+base/final loaders independently check canonical per-command intervals after hash rebinding.
+Actual descendant38dfc002: five cold packages55065 pass (release9.257s,backup.778s,rehearsal
+7.230s,both CLIs.270/.263s), matching vet pass. Focused cold race19516 executes all20 creation
+timestamp cases/retained header binding,6 executor and4 rehashed result sequences through
+both loaders (1.700/3.019s). Actual authorized make test-deployment-rehearsal54874 passes4 cold
+packages and both retained-build-record validators. Formatting/both full-range checks pass.
+
+Initial unquoted race selector parses no tests; corrected quoted selection supplies evidence.
+Initial local rehearsal23056 hits localhost EPERM; exact authorized target passes, not a product
+failure. Chronology source/tests and RP-548 timestamp hunks unchanged; later AbortInstall and
+classifier changes in shared docker.go are context only. Historical failures/severings inspected,
+not rerun. All handles terminal, no edits/mutations/resources/cleanup by reviewer. Actual age/
+local subprocess/file/loaders use controlled clocks/synthetic producers, not Docker/SQL or
+trusted snapshot/RPO/RTO/clean-host/current-release-artifact proof. RP-140 executable identity,
+original R10/R12 CHANGES REQUIRED and normative/full-feature/archival/release gates remain.
