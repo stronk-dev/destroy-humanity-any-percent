@@ -14,6 +14,14 @@ privacy, accessibility, rights, operations and preservation. A Phase-0 preview d
 
 ## Whole-product overview — 2026-10-15
 
+Corrective-review follow-up: Marco delegates independent Codex corrective-code review,
+not specification adoption or release approval. RP-659 query decoding, RP-654 simulation
+save-version restoration and RP-651 cohort authorization/recovery now have independently
+executed approvals in their owning logs. Browser-runner review catches RP-665's broken
+manual consumer; the repair and original runner range subsequently pass re-review.
+This reduces those specific review debts, not the remaining accounting/history failures,
+other review ranges or the unbuilt product scope below.
+
 **Bottom line:** substantial server/client foundations and an executable early-game loop exist.
 The current stage is **Garage integration and hardening**, not completion of the full game or
 release readiness. Much of Tier 2 is fixture-first; Tiers 3–8 and the final Transcendence paths

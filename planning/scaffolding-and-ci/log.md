@@ -2343,3 +2343,29 @@ runner range above. Review by: Codex (repair implementer first filter). Recorded
 Codex. No product, workflow, arithmetic/kernel or acceptance changes; no whole-CI,
 hosted, renewal, release, archival or publication claim. Browser container is disposable;
 the other reviewer's Postgres service is untouched. Existing red gates remain.
+
+## 2026-10-15 — RP-665 and shared browser runner re-review: APPROVED
+
+Review by: independent Codex sub-agent `/root/linux_browser_runner_corrective_review`.
+Recorded by: Codex parent, transcribing its returned re-review under Marco's delegation.
+Reviewed complete ranges (base exclusive, tip inclusive): original eleven-path
+`72fb7849bf6e5630d4b76bba2dfbb7199d9cb663..d81713b5ff4f589e3413a07daab9c0bee2e14871`
+and eight-path supplement
+`6d2f42ebbf5db83f40e429aa600b79791a4884fc..3f8ed26e80d09e114a58f08fd8d7ffb619ab75a1`.
+Verdict: **APPROVED**, RP-665 resolved, no remaining actionable findings in these
+ranges. The preceding negative verdict remains the record of the caught regression.
+
+Independent actual repaired manual target PASS on Linux/arm64: all three engines,
+120 interval cases/30 page terminations, no exclusions/runtime errors/guard firing;
+historical tracked report unchanged. Ignored report SHA256
+`feba8ab5187525f1549e111c6ba7ddefe0448a3a0532d5daacdc0e12675ddcc4`, source `3f8ed26e`.
+Actual topology PASS27 negatives including restored broken command, executable
+setup/error controls and Make selectors. Instrument syntax, range diff and actual
+Make routing PASS; full/default/shared-runner bytes unchanged. Earlier independent
+19212-test Linux focused pass and missing-file failure remain applicable, not
+relabelled as a second/full execution. No full-browser repeat for this caller repair.
+
+Reviewer changes no source/tests/records, cleans its fixtures, verifies no browser
+containers remain and touches no other services. Later unrelated review records
+are outside the verdict. No hosted timing, renewal, full CI, feature, archival or
+release acceptance; unrelated review debt and historical/arithmetic red gates remain.

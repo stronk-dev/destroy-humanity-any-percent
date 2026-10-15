@@ -16,7 +16,9 @@ range after `72fb7849`. Independent review finds RP-665: the new entrypoint brea
 the existing manual browser-coordination target. Its explicit shell override and
 regression now pass the actual complete research population; fresh observations
 write to ignored cache, preserving the tracked historical evidence. The original
-verdict is CHANGES REQUIRED; supplemental review remains pending in the owning log.
+CHANGES REQUIRED verdict is retained; independent re-review now APPROVES both
+`72fb7849..d81713b5` and repair `6d2f42eb..3f8ed26e`. The owning log records exact
+ranges, executed evidence and limits; other CI corrective reviews remain separate.
 This does not repair RP-637, Production arithmetic, historical
 kernel gating, hosted timing or full CI; existing blockers and review debt remain.
 
