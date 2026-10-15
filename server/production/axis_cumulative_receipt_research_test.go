@@ -238,3 +238,124 @@ func TestAxisCumulativeReceiptCapDebitReanchorsResearch(t *testing.T) {
 		})
 	}
 }
+
+// These are alternative projections of one origin, not two player settlements.
+// Their ordering constrains any proposed cumulative saved-head mutation protocol.
+func TestAxisCumulativeTemporalHeadMonotonicityResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	start := time.Date(2026, 10, 15, 12, 0, 0, 0, time.UTC)
+	const founderID = "01986666-2000-7000-8000-000000000001"
+	cells, decreases, controls := 0, 0, 0
+	for _, profile := range []struct {
+		name                 string
+		production, building bool
+		edgeMS               int64
+		beforeFactor         string
+		afterFactor          string
+	}{
+		{"production", true, false, 1000, "7e0", "1e0"},
+		{"building", false, true, 1500, "1.1e0", "1e0"},
+		{"combined_production_edge", true, true, 1000, "7.7e0", "1.1e0"},
+		{"combined_building_edge", true, true, 1500, "1.1e0", "1e0"},
+	} {
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			t.Run(profile.name+"/"+string(mode), func(t *testing.T) {
+				initial := axisTimingState(t, bundle, start)
+				initial.RunStartedAt = start.Add(-4000 * time.Millisecond)
+				if profile.production {
+					effect, ok := bundle.Opportunities.Effect("active.production")
+					if !ok || effect.DurationMS != 5000 || effect.Factor.String() != "7e0" {
+						t.Fatal("pinned production policy changed")
+					}
+					initial.ActiveBuffs = append(initial.ActiveBuffs, save.ActiveBuff{
+						BuffInstanceID: "01985555-0000-7000-8000-000000000001", EffectRowID: effect.ID,
+						ActivatedAttendedMS: 0, ExpiresAttendedMS: effect.DurationMS})
+				}
+				if profile.building {
+					effect, ok := bundle.Opportunities.Effect("active.building")
+					if !ok || effect.DurationMS != 2000 || effect.PerOwnedPPM != 100000 {
+						t.Fatal("pinned building policy changed")
+					}
+					target := "generator.beige_tower"
+					initial.ActiveBuffs = append(initial.ActiveBuffs, save.ActiveBuff{
+						BuffInstanceID: "01985555-0000-7000-8000-000000000002", EffectRowID: effect.ID, SelectedTarget: &target,
+						ActivatedAttendedMS: 3500, ExpiresAttendedMS: 3500 + effect.DurationMS})
+				}
+				if err := bundle.ValidateFoundationState(initial); err != nil {
+					t.Fatal(err)
+				}
+				origin := mustEncodeState(t, initial)
+				project := func(encoded []byte, offsetMS int64, factor string) *save.State {
+					t.Helper()
+					at := start.Add(time.Duration(offsetMS) * time.Millisecond)
+					state := activationRestore(t, bundle, encoded, 19, start)
+					schedule, err := resolveActivePlaySchedule(state, bundle.Opportunities, bundle.Prestige, founderID, at)
+					if err != nil || schedule.AttendedNowMS != 4000+offsetMS {
+						t.Fatalf("scheduled projection: %v", err)
+					}
+					if _, err := applyActivePlaySchedule(state, bundle.Opportunities, bundle.Prestige, founderID, at, schedule); err != nil {
+						t.Fatal(err)
+					}
+					active, err := activePlayContributions(state, bundle.Opportunities, schedule.AttendedNowMS)
+					if err != nil {
+						t.Fatal(err)
+					}
+					contributions, err := assembleContributions(state, bundle.Economy, active)
+					if err != nil {
+						t.Fatal(err)
+					}
+					result, err := Evaluate(state, bundle.Economy, at, mode, contributions)
+					if err != nil || result.ElapsedMS != offsetMS || result.ProductionMS != offsetMS {
+						t.Fatalf("endpoint evaluation: %v", err)
+					}
+					efficiency := decimal.One
+					if mode == ModeOffline {
+						efficiency = mustDecimal(t, "9e-1")
+					}
+					// Independent fixture arithmetic: one tower, pool1.001,
+					// axis1.15, and the declared endpoint effect factors above.
+					want := mustDecimal(t, "1e4").Add(mustDecimal(t, "1.15115e0").Mul(mustDecimal(t, factor)).
+						Mul(decimal.FromFloat64(float64(offsetMS))).Div(mustDecimal(t, "1e3")).Mul(efficiency)).Quantize(decimal.CanonicalSignificantDigits)
+					if got := state.Ledger.Snapshot()["company.cash"]; got != want.String() {
+						t.Fatalf("endpoint payout: got%s want%s", got, want)
+					}
+					assertCumulativeResearchReceipt(t, initial, state, result)
+					return state
+				}
+				before := project(origin, profile.edgeMS-1, profile.beforeFactor)
+				after := project(origin, profile.edgeMS, profile.afterFactor)
+				oldCash := mustDecimal(t, before.Ledger.Snapshot()["company.cash"])
+				newCash := mustDecimal(t, after.Ledger.Snapshot()["company.cash"])
+				cells++
+				if !newCash.Lt(oldCash) {
+					t.Fatal("temporal decreasing-target hypothesis did not reproduce")
+				}
+				decreases++
+				prior := mustEncodeState(t, before)
+				delta := newCash.Sub(oldCash).Quantize(decimal.CanonicalSignificantDigits)
+				if !delta.IsStateValue() || !delta.Lt(decimal.Zero) {
+					t.Fatal("decrease is not a representable negative delta")
+				}
+				if _, err := before.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: delta}}}); !errors.Is(err, economy.ErrInvalidTransaction) || !bytes.Equal(prior, mustEncodeState(t, before)) {
+					t.Fatalf("negative accrual did not refuse atomically: %v", err)
+				}
+				plain := activationRestore(t, bundle, origin, 19, start)
+				plain.ActiveBuffs = []save.ActiveBuff{}
+				plainOrigin := mustEncodeState(t, plain)
+				plainBefore := project(plainOrigin, profile.edgeMS-1, "1e0")
+				plainAfter := project(plainOrigin, profile.edgeMS, "1e0")
+				if !mustDecimal(t, plainAfter.Ledger.Snapshot()["company.cash"]).Gt(mustDecimal(t, plainBefore.Ledger.Snapshot()["company.cash"])) {
+					t.Fatal("matched no-buff control did not increase")
+				}
+				controls++
+				if !bytes.Equal(origin, mustEncodeState(t, initial)) || !bytes.Equal(plainOrigin, mustEncodeState(t, plain)) {
+					t.Fatal("projection consumed an origin")
+				}
+				t.Logf("endpoint projections %s -> %s; negative accrual refuses; not two saved payments", oldCash, newCash)
+			})
+		}
+	}
+	if cells != 8 || decreases != 8 || controls != 8 {
+		t.Fatalf("incomplete temporal population: cells%d decreases%d controls%d", cells, decreases, controls)
+	}
+}

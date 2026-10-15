@@ -3457,3 +3457,43 @@ filter). Recorded by: Codex. Complete five-path range after `fe1fa51d` through t
 containing commit needs designated Claude review; no acceptance, archival, push or
 deployment. Next specify the selected complete accounting contract, not repeat this
 completed feasibility population or report the research green as server/CI green.
+
+## 2026-10-15 — RP-652 temporal cumulative targets can decrease
+
+Predeclare at `aa2f97df` in the owning plan before measurement: four unchanged
+production/building expiry profiles ×online/offline, edge−1ms versus edge, plus
+matched no-buff controls. Use real schedule resolution/application and Evaluate;
+independently calculate literal payouts from the pinned factors and base rate.
+No retune, debit, cap, new claims or origin mutation may explain the difference.
+
+Focused45418 PASS0.295s: all eight buffed pairs decrease, all eight controls
+increase. Online production projects `1.0008049992e4` at999ms then
+`1.000115115e4` at1000ms. Every origin-relative receipt is nonnegative and
+reproduces its own target; all eight representable negative previous-head deltas
+refuse through actual ApplyAccrual with complete state rollback. The first
+attempt compared a Decimal field to a string and did not compile; the corrected
+accessor precedes the actual measurement. No production code changed.
+
+This falsifies naive monotone **saved-payment** installation under these changing
+endpoint contexts, not fixed-context conservation or valid one-shot behavior.
+Fresh scratch copies are not two real player payments. The earlier constant-
+context proof verifier is not extended/admitted as a temporal mutation API.
+Reanchoring at expiry would change existing payout semantics, not just rounding.
+Reconcile my draft's C3 with this constraint, leaving C1/C1a and full algorithm/
+context/hook/activation closure open; no approval or author delegation is inferred.
+
+Existing `TestAxisCumulative` population passes three shuffled uncached runs88645
+in0.464s, retaining lower-floor refusals, proof alterations and cap/debit controls.
+Cold full `make test-go GO_PACKAGES='./production ./economy ./decimal'`21606
+fails only the unchanged27 TestAxisAccrualPartitionProperty leaves: Production
+56.449s; Economy11.643s and Decimal0.215s pass. All failure output retained and
+counted; no other failure headers. Affected vet passes. No SQL/TS/browser/Linux/
+hosted or full-CI proof is claimed for this Go-only candidate constraint.
+
+All handles terminal; no Docker services or durable resources touched. Existing
+artifacts, accepted Clout body, runtime, kernel/version and original criteria stay
+unchanged. Formatting/diff checked. Review by: Codex (research implementer/draft
+author first filter). Recorded by: Codex. Complete five-path test/draft/plan/ledger/
+log range after `aa2f97df` through this containing commit needs designated Claude
+review. No adoption, acceptance, archival, push/deployment or1.0 completion.
+Next close the selected context/settlement protocol, not repeat this population.

@@ -6,6 +6,33 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+## R-012 temporal cumulative-head feasibility — declared2026-10-15 at `aa2f97df`
+
+Question: can installing successive origin-relative projections preserve the existing
+one-shot endpoint-selected buff payouts and the nonnegative accrual rule at expiry?
+Use unchanged axis timing content and the existing active-play schedule/evaluator.
+Population: production expiry1000ms, building expiry1500ms, and both edges with both
+buffs present, each online/offline. Compare edge−1ms to edge from one unchanged origin:
+eight buffed pairs and eight matched no-buff control pairs. Preserve pinned durations,
+factor7, per-owned0.1 and one owned tower; independently calculate expected cash from
+base1.15115/second, endpoint factors and existing offline efficiency. Require complete
+population/admission, reproducing origin-relative receipts and unchanged origins.
+If a later target decreases, require the actual positive-accrual ledger to refuse its
+negative difference atomically. No-buff controls must increase; no caps/debits/new
+claims may explain a decrease. A missing case or wrong literal payout invalidates the
+measurement. This may falsify monotone saved-head installation for this temporal
+population, not establish a conservation algorithm, player loss, full hooks, SQL/TS,
+an adopted interval/origin lifetime, prorated buffs or authority to change production.
+Keep the original27 failures and existing cumulative/lower-domain results unchanged.
+
+Executed: all eight buffed pairs decrease, all eight no-buff controls increase,
+literal payouts agree and every negative accrual refuses atomically. Origin-relative
+receipts remain positive and reproduce each independent target. This rules out naive
+monotone saved-payment installation across these changing endpoint contexts, not
+fixed-context conservation or current player behavior. The draft's C3 records the
+constraint; no interval/lifetime or proration choice is adopted. Next close the actual
+context/settlement protocol and C1/C1a, not repeat this completed population.
+
 ## R-012 cumulative receipt feasibility — declared2026-10-15 at `fe1fa51d`
 
 Question: can origin-relative receipts express the retained lower-domain targets

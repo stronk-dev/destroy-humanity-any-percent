@@ -420,6 +420,40 @@ The scalar prototype's 512-byte envelope is not a production storage/CPU bound. 
 bounds from the actual proposed field set and measured full-state workloads; guard
 exhaustion must invalidate the operation, not truncate history or reset rounding.
 
+#### Temporal projections need not be monotone — RP-652
+
+`TestAxisCumulativeTemporalHeadMonotonicityResearch` executes eight pairs around
+the unchanged production/building buff expiry boundaries, online/offline, using
+the real active-play schedule and evaluator. Every origin-relative receipt is a
+valid positive accrual from its own origin. Nevertheless every later target is
+lower than the preceding target: for the online production case, cash projects
+from `1.0008049992e4` at999ms to `1.000115115e4` at1000ms. All eight matched no-buff
+controls increase, independent literal payout calculations agree, and the actual
+ledger refuses each representable negative difference without mutation.
+
+This follows the existing endpoint-selection behavior described in C2: when a
+buff expires, the endpoint no longer supplies it to that one-shot calculation.
+The producer's temporal context therefore changes. This is not a counterexample
+to conservation under an unchanged producer context, a defect in those one-shot
+payouts, or evidence that live players received and then lost these two payments.
+The test projects fresh copies; it neither persists cuts nor invokes the earlier
+constant-context reference verifier as a temporal mutation API.
+
+It does rule out naively promising all three of the following for this population:
+every intermediate **saved payment** matches its independent endpoint one-shot
+projection; subsequent positive accrual never debits that balance; the existing
+endpoint payout semantics remain unchanged. A cumulative receipt's positive Delta
+from the origin does not imply a positive increment from the previous saved head.
+This is separate from the lower-domain unrepresentable-positive-increment finding.
+
+The selected protocol must define semantic context/settlement boundaries before
+installing cumulative targets. Automatically settling/reanchoring at buff expiry
+would change existing one-shot payout behavior; it is not an authorized rounding
+repair. Noncommitting internal projections do not make two payments and are not
+excluded by this result, but their complete closed-boundary contract/proof and
+C1/C1a adoption remain owed. No ledger overwrite, proration, negative production,
+criterion weakening, origin lifetime or production implementation is adopted here.
+
 ### C4 — Compatibility, and versioned persistence if required
 
 Do not assign save/replay/kernel version numbers until the contract and landing order
@@ -519,3 +553,6 @@ contract, explicit adoption and independent normative review before production w
   cap/debit modes pass the reference proof checks, including alteration/stale-origin
   refusals. This is an unadopted receipt-contract alternative, not a production
   ledger mutation, full conservation implementation or permission to alter AC6.
+- 2026-10-15: retain eight temporal decreasing-target counterexamples plus eight
+  no-buff controls. Separate independent endpoint projections from monotone saved
+  payments and fixed-context conservation; no live-loss claim or policy adoption.
