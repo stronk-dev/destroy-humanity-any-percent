@@ -2423,3 +2423,88 @@ Old failures assessed from records/preimages, not re-mutated. Initial invalid se
 and sandbox-listen attempts execute no tests; corrected narrow escalation exits0.
 No actual AT speech, Firefox/Linux, public HTTP/SQL integration, original feature,
 archival or release acceptance. Existing wire/copy/mint/full-feature holds remain.
+
+## 2026-10-15 — Fifteen independent Arcade corrective approvals
+
+All verdicts below are **APPROVED**, no actionable findings, under Marco's corrective-code
+delegation. Each covers both complete commits, including predeclaration/source/tests/fixtures/
+kernel/docs/backlog/plan/log/roadmap records where changed. Recorded by: Codex parent,
+transcribing the three independent reviewers, not supplying implementer self-approval.
+
+### Admission and loader corrections
+
+Review by: fresh independent Codex sub-agent `/root/arcade_admission_corrective_review`.
+
+- RP-192: `424d81f834c86ba2ad7e80e129692a203f22b5e7..9288d1cc02d4091034dd84778478832ee3ec3509`.
+- RP-193: `1e0b9aa7be310b4f2e327210ba773ee6b619bd4d..45c35800db26ee27743c6908b2d7507ddec880b9`.
+- RP-195: `85c18535cd00b1cdc0ee49d7c564a9817ec15cae..45fcf3ae39c5f21cd4b03d677cecb49a3545a6a9`.
+- RP-199: `9707d48efb548a394927e91a682fe0ae2234800a..3b9fd0d8de6744df6dd8ac887e99297d4b7beec3`.
+- RP-200: `3b9fd0d8de6744df6dd8ac887e99297d4b7beec3..6f5715dc6a8d37abeb3faf377f26e446b08043bb`.
+
+Independent cold Decimal/Arcade/Kernel/Minigame/Replaycatalog and matching vet pass.
+Node grammar/content/replay364 and supplemental vectors/Economy/raw/hash/atomicity/corpus6434
+pass; two nonexistent supplied filters add no coverage. Types zero diagnostics; build/UI/
+Cosmetic/no-payment boundaries and read-only three-artifact corpus-check pass. All range diff/
+format checks pass. Legal spelling, null/duplicate/safe-integer/depth controls and actual
+multi-stage/wrong-engine chains execute. No unrelated implementation in the ranges.
+Later RP-431 raw-entry and RP-472 hash changes were inspected, not approved here; original
+snapshot grammar fixtures/guards and Go null-tier source remain intact.
+
+### Corpus and replay evidence corrections
+
+Review by: fresh independent Codex sub-agent `/root/arcade_replay_evidence_corrective_review`.
+
+- RP-190: `ecc501050b23edc647261705e388daf94053ea17..bcdee28d3ccee26134d6a8aeecda54a863f80c0c`.
+- RP-191: `faf208cf7bfbb9d2f36d2dbd5f13efee79b9b86d..fe49c4080584db5d7224fe257dbc2ca5407ca489`.
+- RP-194: `bfea1aabbbc5d21a2c793f4aa72b793c3d57a9f9..92ed5e680a4e5e4ff9a37de8accd2e0ea62beab9`.
+- RP-196: `8bfb32d9c3d0fcfa0c5294b52f0f84a24513419d..25906f01810c4e473f9bd93988a8502d2b61d47f`.
+- RP-198: `5176f978eba47330a3b756b1b2655dafc23680cd..859f5216459a7b249ea5de67e6df86162abe8e2d`.
+
+Independent full cold Arcade passes17.913s; `make arcade-corpus-check` generates/compares
+all three artifacts in memory, PASS17.768s. Eight non-browser Arcade TS files pass278;
+types zero diagnostics and Arcade vet/range diff checks pass. Read-only fixture audit confirms
+RP-190's original budget-only change and RP-194's exact v1 preservation:60 attempts/43 applied/
+17 rejected,76 states. Actual complete1024-seed 5x5 strategy population reproduces one clear,
+1023 explicit failures, zero crashes, max tick209/selected455. Its26 attempts and sampling
+seed's four attempts match literal Go/TS states. Hidden-state, intermediate ownership, terminal,
+population/body/outcome and rejection-sampling controls execute; no tracked regeneration.
+RP-194 generator/fixture and RP-196/RP-198 test sources/fixtures are unchanged; later catalog
+controls/v2 consumption and engine admission corrections qualify descendant results.
+
+### Native scheduling, keyboard and lifecycle corrections
+
+Review by: fresh independent Codex sub-agent `/root/arcade_native_corrective_review`.
+
+- RP-188: `019971eb85bf703aa13a6cf569922aba73498446..894347115a5a73c0e499d8619182a1778acb0b75`.
+- RP-189: `ea89c124b20501348c2ec9d08028ff2245f9f554..2762288513b8aa11316883a11075e72cd5f8f3d1`.
+- RP-208/RP-209: `5b87688620b66c5e59f3c504e1c3349d2e22e252..4e529ee97650925cd3f0203874b7d0fc0c3d7a58`.
+- RP-210: `24c781f78600cb7b9d1accd331758cc1925527ae..a9a39446382ab1e9ea898f28efd1cd6ed94c9474`.
+- AR6.4 motion / RP-211 routing only: `0b1ddfda89fb8514824eab69d51efe616a39e360..044a786974d9c7bad8e2bd4834943842a0843e10`.
+
+`make test-browser-focused BROWSER_TEST_FLAGS='test/arcade-boards-browser.test.ts
+--project=chromium --project=webkit'` passes58, no skips, valid zero-pending module summaries.
+Initial sandbox listener denial runs no tests; the narrow authorized invocation passes.
+Selected Node Arcade cases pass28 with29 browser-only skips (all29 execute in each native
+engine above). Types zero diagnostics, client build and boundary checks pass, including10 Go/
+15 Svelte negative fixtures. Actual callback batching/blur/resync/lead, native terminal games,
+delayed/repeated Quit/terminal draining, recovery/unmount, focus/pause/resume and actual motion
+preferences execute. Real injected CSS animation/transition negatives are refused. Later
+modifier/composition/live-region/corpus changes are inspected, not approved by these ranges.
+RP-211's terminal mine-name/copy gap remains unresolved; motion/routing is not its repair.
+
+### Shared limits and handoff
+
+All three reviewers execute current descendant `9d320493f2904363c82cfc3cbc2606ff63981bbe`,
+kernel219, not untouched historical checkouts. Historical old-source and severing evidence was
+inspected, not independently rerun under these no-mutation/no-overlay reviews. Earlier corrected
+RP-194 whole-suite claim and RP-196 no-test selector remain disclosed in their original records.
+Each reviewer inspects every changed path; no source mutation, tracked edit, worktree, custom
+cache, commit, Docker/SQL or publication is performed. Native slot is released.
+
+These fifteen scopes leave the pending corrective queue only. Other five indexed ranges and
+later repairs remain separate, as do original A1–A7 CHANGES REQUIRED dispositions, RP-201/
+RP-211, public HTTP/host, author/owner content, AT/accessibility, mint, full feature/archival/
+release acceptance. No Firefox/Linux or DB evidence is supplied by these reviews; parent's
+separate Linux Firefox Garage run is not Arcade coverage. Known27 Production failures and
+historical kernel-history red gate are not rerun or waived. Continue remaining accepted work;
+do not restart the approved ranges or infer new contract adoption.
