@@ -7,6 +7,12 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+2026-10-15 fresh independent corrective review APPROVES complete RP-318/RP-419,
+RP-440/RP-441 and RP-442 ranges. Full hashes and executed native/Linux/Node and real
+Postgres/WebSocket journeys are in the owning log. Only these corrective scopes leave the
+pending-review queue. Candidate copy still needs owner adoption; shared-clock repair,
+manual AT, natural Garden growth/renewal and full Garage acceptance remain separate.
+
 2026-10-15 fresh independent corrective review also APPROVES complete RP-407 host-disposal
 range0fd146e0..b7f351cb. The owning log records full hashes, six mounted late-completion races,
 actual native/Linux consumers and focused real-service driver execution. This closes that
@@ -93,7 +99,7 @@ announcement, request or timer/payout policy changed. The harvested-event acknow
 remains separate; new copy is visibly pending owner adoption. Exact-edge native regressions
 fail the old UI; affected browser, type/build/copy checks and the production-built
 real-service target pass within their recorded populations. See the latest owning log for
-commands, intermediate failures and the pending designated-review range. This is not
+commands, intermediate failures and the independently approved corrective range. This is not
 whole Garage acceptance or a repair of the separate shared-clock defect.
 
 Preceding checkpoint (2026-10-08): RP-440/RP-441 native pointer/read defects are locally corrected.

@@ -7412,3 +7412,45 @@ Initial listen denial runs no tests; authorized native execution supplies eviden
 output partly truncated; terminal verdicts retained. All handles terminal, only identified
 reviewer-created tmpfs/no-mount game-ui Postgres removed after ports free, caches/volumes intact.
 No first-read/renewal/manual AT/performance/full-CI, original Garage, archival or release approval.
+
+## 2026-10-15 — Pet status, care consent and Fiscal navigation corrections approved
+
+Review by: fresh independent Codex `/root/garage_care_fiscal_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, every changed
+path inspected, no actionable findings, for these complete baseline-exclusive ranges:
+
+- RP-318/RP-419,18 paths: `c557a027bb840765bdc38eece5d178bb3ce9a194..267dbf55387f00e4a7ab1404b9fd7ad28c803038`.
+- RP-440/RP-441,10 paths: `c977ad36a15b60fbab15d2f994a941f0895271f1..8eb2eb702539ff431b4a2d100173309eac975a73`.
+- RP-442,15 paths: `727c783ae455ef2e4daf064d4bb8bdc3ed81171c..7cd232c5543db4dbfdaf0d3c7eb9affd440243ab`.
+
+Accepted GS0.3/GS4 status/snapshot authority, GS0.8 native consent and GS1/OD-3 Fiscal indication
+are retained. Generated copy/Go keys and historical manifest deltas checked: constants hashes
+unchanged, generated hashes exact, existing owner text untouched. Added prose remains explicitly
+PENDING OWNER COPY; this approves wiring, NOT wording or publication. Natural Garden driver's
+sole navigation-locator delta matches the actually executed locator;15-minute journey not rerun.
+
+At source874d8d17/kernel221, initially HEAD16219ad9 through records-onlycc37b6d3:
+four affected native Chromium/WebKit files1120 pass/10 explicit performance exclusions
+(74.22s). Trusted pointerdown/click and stable layout lead to refreshed Founder revision;
+same-kind, failed-read and unmount refusals remain. Mounted-only speech, event replay/same-
+revision identity, exact Fiscal edges/reset/absence and separate acknowledgement execute.
+Declared Linux ARM64 Playwright1.62.0 same NEW regressions63 pass,21/engine,1206 intentionally
+deselected (5.37s), not all four complete files. Four actual Node files216 distinct tests pass;
+earlier guessed nonexistent selectors add no evidence. Types0/0, build, UI boundaries and
+copy-check669 keys/622 advisory orphans, append-only history and deployment manifest pass.
+Cold generated Go package compilation/vet pass; package has no tests.
+
+Actual main composed driver session54516 exits0:8/8 refresh cases, ten persisted parents,
+public SDK→TS replay, production-built Fiscal/Pitch/refusal/fresh consent, both endings and
+continuation, socket and committed-reply-loss recovery. Exact loaded assets/Worker verified.
+Actual make test-clout-composed session90742 exits0,12.19s: adopted low pet→DOM Feed→exact
+stored low/high event at Founder revision6→real WebSocket→visible polite status, persisted
+reload and Feed ineligibility. This is actual Postgres/server integration, not a runtime double.
+
+Historical old failures/severing evidence inspected, not rerun. Initial native EPERM and
+malformed nested Linux selector run no tests; corrected invocations supply evidence. Routine
+output partly truncated; terminal verdicts/outcome markers retained, not raw measurement.
+All handles terminal; only newly created identified tmpfs game-ui Postgres removed (disposable
+test data unrecoverable), Compose inventories empty and ports18081/18082/5173/55433 free.
+Caches/volumes/builders preserved; reviewer makes no edits. No original-feature/PA7/shared-
+clock/adopted-content/manual-AT/performance/full-CI/natural-Garden/renewal/archival/release approval.
