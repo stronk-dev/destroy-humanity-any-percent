@@ -18,7 +18,9 @@ and limits. Adjacent construction and full parent acceptance remain separately o
      overlapping stream lifetimes with interleaved/reversed/chunked/new-consumer draws.
      A shared/resettable factory passes the old first-draw pattern but fails the new
      sequence comparison. This is test evidence, not new RNG behavior or battle logs;
-     owning log records the range after `18fd6c06`, pending designated review.
+     fresh independent corrective review APPROVES complete18fd6c06..be66902b, test-only.
+     The owning log records independent fixture regeneration and Go/TS execution; this
+     does not approve adjacent Combat construction or the full parent feature.
 2. [x] Implement exact int32/int64 combat arithmetic and Temperament chart in Go and TypeScript.
    - C4's lane ordering projection now compares `(tick, player_slot, placement_seq)`
      identically in Go/TS without signed-int32 subtraction overflow. Shared vectors,

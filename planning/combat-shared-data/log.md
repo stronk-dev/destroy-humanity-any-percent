@@ -515,3 +515,28 @@ journey is unnecessary for the unused pure library and not claimed. Adjacent C4
 ordering/substream work, C2/C5 catalog/effect/care contracts, live engines/bots/player
 workflows, full Combat acceptance, kernel activation, archival and release remain
 open under their existing authorities. No publication or gameplay milestone change.
+
+## 2026-10-16 — Multi-draw substream oracle independently approved (RP-605)
+
+Review by: /root/combat_substream_oracle_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing its verdict.
+Decision: APPROVED, no findings, complete8-path single-commit range
+18fd6c06bb32a9cad63b9cbb04e7958b6fb49467-exclusive..be66902b659d59a5572037a9b6431d2ac02fb731-inclusive.
+All Go/TS tests, independent fixture/reference, canonical docs and backlog/plan/log inspected.
+Test-evidence correction under C4/AC3, no RNG/catalog/mechanic/schema/kernel/CI change.
+
+Retained Python generator stdout parsed/deep-compared: all72values identical, three seeds×
+three labels×eight draws. Fixture SHA256a83b50079d8f1dfbdcdf10152c7e10462e33ffc2d529a7ddfa0f979a8b76042e.
+Twelve actual-factory schedules per language pass; controlled shared/resettable factories
+pass the exact old recreated-first-draw premise but fail full equality for all3seeds.
+No production mutation needed. Cold Go Combat/Integer pass0.183/0.167s; Determinism has no
+standalone tests, actual factories execute through Combat. Seven Node files380 pass/no skips,
+focused verbose16 pass; affected vet, both division boundaries, types0/0 and exact diff pass.
+
+Execution0c8ff6c1; tests/fixture/generator/actual RNG match endpoint bytes. RNG SHA256:
+Go327e043bac3ab779fbd15af611cd49520a555e2d1a802de739e24d4c04e310ad,
+TSb7470a2ce53a68c96ebb2f13d19f96f57e30ec8ce36bfd86e1c4e44960ee3659.
+Historical native-browser output inspected, not independently re-executed. No browser/SQL/
+Linux/hosted/threaded battle/log parity/catalog-label completeness/full Combat acceptance.
+Adjacent construction/specification is outside this verdict. No tracked edits/mutations/
+commits/services; corrective evidence debt closes, not feature/archival/release gates.

@@ -2256,3 +2256,37 @@ All handles terminal. Ignored overlay files removed; only twice-inspected owned 
 DB76aa21a6… stopped/removed, synthetic data unrecoverable; same two builders/cache/volumes
 preserved. No tracked edits/commits by reviewer. Corrective review closes; no normative
 adoption, archival, feature or release approval and no historical guard waiver.
+
+## 2026-10-16 — Schema1 raw artifact admission independently approved (RP-565)
+
+Review by: /root/minigame_catalog_admission_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing its verdict.
+Decision: APPROVED, no findings, complete13-path single-commit range
+3a182e1c9d16ef6970ec0a4503b8a9815039c9e1-exclusive..bd0c9b9787cda419cf7ec6183d36760107040166-inclusive.
+All source/test/shared-fixture/three-version/docs/plan/log/backlog and draft-prerequisite
+paths inspected. Existing MA-C15 schema1 conformance, genuine original188→189; unaccepted
+draft edit is factual reconciliation, not schema2 adoption/new role/route authority.
+
+Exact historical Go ignored overlay independently reproduces8 alias admissions with22
+controls passing, package0.172s/Make2. Reviewer final text does not identify a reliable old-Go
+session number; none is invented here. Old TS Vite shim84685 reproduces17 admissions/13
+controls (161 deselected), actual freshly hashed complete bundles. Both shims removed.
+Current cold five Go owners45106 pass, affected vet passes; Node replay86490 passes191.
+Initially named nonexistent decimal.test.ts contributes nothing; discovered decimal-vectors
+33843 separately passes6304. Native Chromium/WebKit78596 passes382 after initial sandbox
+listener denial runs0. Types57767 zero diagnostics, build/boundary45812 and formatting/range
+whitespace pass. No Firefox/AT or whole browser/CI reliability claim.
+
+Declared Linux-amd64/Postgres69326 executes selected raw-admission/load/golden/version and
+actual HTTP/Pitch/Soul lifecycle without selected prerequisite skips: MinigameAPI0.050s,
+Replaycatalog0.970s, Kernel0.034s, Decimal0.453s, lifecycle36.26s(literal18.88/purchased17.37).
+Persisted history/retry/reconnect/refusals execute. Verbose golden subcase output truncates,
+not a complete raw recording; terminal package success/later lifecycle completion observed.
+Both deletion observations retain6selected families+2Soul tokens, not rights completion.
+
+Execution0c8ff6c1: Go admission/scanner/raw fixture endpoint-identical; replay has later
+unrelated changes but exact admission call/population retained. Current kernel is not
+retrospectively189. No full Production/27-partition repair/history waiver/full CI/hosted
+hardware/performance/feature/archival/release approval. All handles terminal; only owned
+twice-inspected tmpfs8681caf8… stopped/removed, disposable rows unrecoverable. Durable data,
+caches/networks/two existing builders preserved; no tracked edits/commits/publication.
