@@ -7279,3 +7279,27 @@ validation, natural pacing, Clout accounting, whole Garage/API acceptance, clean
 release or the nine-tier1.0 floor. No feature status promotion, archival or push.
 After terminal completion, remove only this run's disposable game-ui-postgres
 container/tmpfs fixtures; no durable volume, cache, network or user data removed.
+
+## 2026-10-15 — RP-667 independent corrective review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/intent_encoding_corrective_review`.
+Recorded by: Codex parent, transcribing its verdict under Marco's corrective-review
+delegation. Reviewed complete ten-path range (base exclusive, tip inclusive)
+`b3d1fb40..11478e9d95ba45b533b51e4a1b1de35f74a6fd0d`.
+Verdict: **APPROVED**, no actionable findings.
+
+Independently executed affected Node348 pass, typecheck zero errors/warnings,
+cold publicapi tests, vet, api-check and diff checks pass. Native Chromium/WebKit
+pass696 across eight files; Firefox session connection times out before collection.
+The initial sandbox attempt fails before testing (EPERM); the admitted retry
+executes, then requires interruption during teardown (terminal130). This native
+lane is not green. Parent's Linux696 and composed39981 passes and old twelve-case
+reproduction are parent evidence, not relabelled independent executions.
+
+Reviewer confirms the shared decoder preserves native body-read failures and
+sanitizes encoding/parser diagnostics. The two syntax-test amendments retain
+offline/no-retry/exact-request assertions; stream tests compare the native reader's
+actual error instead of an engine-specific source-error assumption. The twelve
+malformed-byte assertions remain intact. No source/test/record changes by reviewer.
+This approval closes only RP-667's corrective range, not held schema/dispatch
+decisions, full Garage/API acceptance, hosted CI, archival or release gates.

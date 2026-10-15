@@ -13,7 +13,10 @@ admit repaired applied/rejected replies or typed409 conflicts; those now refuse
 before outcome mapping. Valid Unicode/BOM/JSON escapes, single request, credentials
 and actual body-read/network error propagation remain. Receipt schemas, media
 policy, retries and held generated-dispatch decisions are unchanged. The owning
-log records real-byte tests, initial fixture assumptions, final checks and review.
+log records real-byte tests, initial fixture assumptions and final checks. Fresh
+independent corrective review APPROVES all ten paths of b3d1fb40..11478e9d;
+its native Firefox collection failure remains explicit, separate from the parent's
+successful Linux three-engine run. This is not whole GS0.2/Garage acceptance.
 
 2026-10-14 bounded correction (RP-619): wide-layout native meters now reference their visible
 constituency/axis headers or p(doom) heading. Mounted regressions identify all eleven missing
