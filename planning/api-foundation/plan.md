@@ -37,7 +37,7 @@ the backend proof and this driver do not complete that larger workflow.
 existing gzip500 representation and separately binds JSON500. Three old-constructor
 regressions fail; mounted opaque/identity-failure replies, compatibility/idempotency,
 OpenAPI/TS metadata, affected cold packages/vet and unchanged generation pass. The owning
-log records the range after `ddf6ecf0` needing Claude review. No current route gains a
+log records the independently APPROVED range `ddf6ecf0..639edf19`. No current route gains a
 representation, no held contract is adopted, and full API/release acceptance stays open.
 
 Current A4/C7/C16 drain correction (2026-10-15, RP-646): private identity/logging
@@ -45,15 +45,15 @@ now precedes Server's intent admission. Old real-Postgres drain regressions fail
 four echo/log cases and the existing identity-failure refusal. Preserve the503
 bytes, admitted-work/gate sequence, permitted reads and public budget ownership;
 no broader mutation gate or tenant-draft adoption. Owning log records final checks
-and the complete range after `b45dcd1d` needing designated Claude review.
+and the independently APPROVED complete range `b45dcd1d..144865df`.
 
 Current A4/C7/C16 construction (2026-10-15, RP-644): supply the existing structured
 logger inside private/public request-ID assignment. One bounded context ID per
 handled request, no request metadata/credentials/payload or new metrics dimensions.
 Extend the existing real-Postgres budget/cache/auth/creation population and add
 generated-ID/privacy controls; keep standalone embedded sinks optional. Owning log
-records old failure, final checks and the range after `61df4c51` needing Claude
-review. This closes the emission gap, not journal retention or full API acceptance.
+records old failure, final checks and independently APPROVED range
+`61df4c51..728508de`. This closes the emission gap, not journal retention or full API acceptance.
 
 Current A4/C7/C16 correction (2026-10-15, RP-643): request-ID failure now has
 one typed byte/status declaration shared by API middleware and all22 registered
@@ -61,7 +61,7 @@ operations. Old descriptor and actual public-writer regressions fail. Preserve
 existing exact/broad500 domains, no credential issuance and separate limiters;
 public identity errors still consume the same budget, with authorized304 free.
 Actual HTTP/Postgres fault controls and SDK/generation checks live in the owning
-log, with the full range after `83ef3392` needing Claude review. The additive pin
+log; the complete correction is independently APPROVED in `61fa96cf..6a6a32b9`. The additive pin
 also protects two already-generated schema additions, not new product behavior.
 Request-ID log emission is covered by RP-644 above; native Firefox launch and
 full API/release acceptance remain separate.
@@ -73,7 +73,7 @@ the resolved ID, while rate buckets/authentication/bodies stay separate. Extend
 the existing composed parent with actual private/unknown SQL reads, exact public
 burst/cache/IP controls, authenticated success/errors and durable same-peer account
 creation after public exhaustion. Owning log holds final checks and the complete
-review range after `5a88bf04`. The newer RP-643 entry above supersedes the retained
+independently APPROVED range `61fa96cf..6a6a32b9`. The newer RP-643 entry above supersedes the retained
 plain-text infrastructure fallback at API boundaries. RP-644 covers log emission;
 full acceptance remains open.
 
@@ -81,8 +81,9 @@ Current A3/C6/C16 correction (2026-10-15, RP-641): public errors now share the
 existing per-IP response budget instead of bypassing WriteCached. Twenty-one
 old mounted-router cases reproduce the gap. Cached and uncached writers share
 one admission decision; authorized304 remains free, with limits/proxy attribution
-unchanged. The owning log records final affected checks and the review range after
-`61fa96cf`. This is not a pre-reader work bound, complete API acceptance or a
+unchanged. The owning log records final checks and independently APPROVED range
+`61fa96cf..6a6a32b9`. All six approvals use Marco's corrective-review delegation,
+not new-feature/specification adoption. This is not a pre-reader work bound, complete API acceptance or a
 resolution of held contracts. Continue accepted construction and consolidated review.
 
 Current C14 raw-source correction (2026-10-15, RP-640): the actual repository now
