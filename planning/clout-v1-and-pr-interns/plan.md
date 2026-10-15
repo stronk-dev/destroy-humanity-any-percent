@@ -25,8 +25,12 @@ RP-663's bounded conformance correction now preserves finite lower-domain arithm
 diagnostics instead of valid zero, under accepted Numeric Core Boundary Hardening
 §3/§4 and RFC-0000's repair route. Shared raw-field vectors, actual accrual and atomic
 ledger refusal regressions fail against old behavior. Kernel0.3.218 records the
-behavior change; affected complete numeric/consumer checks and fresh independent
-corrective review remain required before closing it. This does not adopt either draft.
+behavior change; fresh independent corrective review approves the complete range
+through3c521cab (exact verdict in log). This does not adopt either draft or close
+broader power/exp fallback conformance. Next reproduce those separate fallback paths
+cold in Go: pinned Node retains(1,-9000000000000002) for
+`1e-4500000000000001` squared, while the unchanged Go fallback source clamps to zero.
+That source-predicted residual is outside the approved shared-result-path correction.
 Current re-observation of the unchanged20 lower-domain profiles now gives19 cumulative
 proofs plus one refused one-shot projection, and18 complete deferred work-cut sequences
 plus two refusal sequences; every new refusal asserts full unchanged state/no receipt.

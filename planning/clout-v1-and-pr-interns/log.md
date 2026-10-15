@@ -4295,3 +4295,32 @@ commit is submitted to fresh independent `/root/numeric_lower_domain_corrective_
 under Marco's delegation. Independent verdict pending; no self-approval or archival.
 Next retain that verdict and continue accepted construction; RP-664, AC6/27 partitions,
 draft adoption, full-nine-tier scope, hosted CI and exact-release proof remain open.
+
+## 2026-10-15 — RP-663 scoped independent approval; fallback follow-up remains
+
+Review by: fresh independent Codex sub-agent `/root/numeric_lower_domain_corrective_review`.
+Recorded by: Codex parent transcribing its returned verdict under Marco's corrective-code
+delegation. **APPROVED**, no actionable findings, complete21-path exact range
+`9d49e0bd842fcf7044555fc2e715511474b43bb9..3c521cab1bda8b008ac5c07d6ad1212cfa4bab49`.
+
+Reviewer independently executes full cold Decimal/Economy/Kernel and focused actual
+accrual/lower-domain/partition/anchor/rate parents, affected vet, types/Svelte0/0,
+Node7908 tests, vectors-check6296 byte-identical and exact-range whitespace. Full cold
+Production45.252s is RED only on27 original partition divergences. Kernel guard's
+checkout/adversarial fixtures pass; historical scan remains RED at50a3a514. Initial
+unmatched Node filename selections are corrected with actual vector/Economy files;
+no claim of tests from absent files. Tested Decimal hash58190097 matches committed
+source/report bindings; final record edits are inspected. Old failures remain parent
+transcript evidence; reviewer verifies identical old preimages, does not reexecute
+them. No independent browser/Postgres/fuzz/build/full-consumer/hosted execution is
+claimed; parent evidence above retains its own provenance and boundary.
+
+This approves the shared arithmeticResult fix and maintenance, not every underflow
+path. A subsequent parent pinned-Node check actually returns raw(1,-9000000000000002)
+for `1e-4500000000000001` squared and(1,-17999999999999998) for minimum-exponent
+input squared. Untouched Go Pow/pow10 fallback source predicts valid zero there;
+no cold Go reproduction of those two fallback paths has yet run. Keep RP-663 OPEN
+for that follow-up rather than claiming blanket parity. Next add/execute its bounded
+regression under the same accepted diagnostic contract and determine the correction;
+no owner policy is inferred. No accounting/sparse candidate adoption, partition
+repair, original-feature acceptance, archival, push or release approval follows.
