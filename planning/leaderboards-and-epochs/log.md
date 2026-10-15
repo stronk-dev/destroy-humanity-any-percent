@@ -433,3 +433,34 @@ hash correctness can no longer disguise invalid category semantics.
   **Severing probe (mine):** removing the `compact_signed` derivation fails the leaderboard
   integration population immediately. The join→leave→Exit membership witness discriminates.
   **No findings. APPROVED.**
+
+## 2026-10-15 — RP-124 populated archive-compaction witness
+
+Under accepted L1 and archived Run Genesis R3, extend the existing real-Postgres
+compactor test rather than add another archival system. Directly seed nested
+genesis/command/replay/receipt JSON, two reverse-inserted log entries with applied
+and NULL revisions, four distinct matched Company/Founder events and two excluded
+other-owner/other-intent events. Expected JSON keys are independent of production
+archive structs; UseNumber avoids hiding integer corruption above2^53. Assert the
+entire envelope/order, unchanged canonical command bytes, stored SHA-256 over gzip
+bytes, terminal sequence, rollback's preserved logs/absent archive, immutable commit
+and byte-identical retry. Seven content alterations and four omitted evidence fields
+are valid-JSON negative controls, not source mutations or discovered runtime defects.
+
+Initial focused Postgres52170 passes0.487s. After adding omitted-field, terminal,
+canonical-byte and retry-content checks, final `make test-save-integration
+SAVE_TEST_PACKAGES='./replayverify' SAVE_TEST_FLAGS='-run Integration -shuffle=20261015
+-v' SAVE_TEST_COUNT=2`94446 passes all ten parents twice,2.887s, with no selected
+skip. Final `make test-go vet GO_PACKAGES='./replayverify'`50246 passes cold0.434s
+and vet; native DB skips are not integration credit. Formatting/diff checked.
+
+Test/records only: no production, migration, schema, kernel, balance, copy or policy
+change. Fixtures intentionally exercise opaque stored-content preservation, not
+valid Company state/replay-input/event semantics, the actual verifier/mark path,
+Founder-log-referenced retention, player export/deletion, public delivery or release
+recovery. RP-124's old empty-fixture evidence remains historical; other rights gaps
+stay open. Removed only this batch's inspected owned tmpfs Postgres; preserved caches,
+network and durable data. Review by: Codex (implementer first filter). Recorded by:
+Codex. Complete five-path test/ledger/dossier-pointer/plan/log range after `b976110b`
+through this containing commit needs designated Claude review; no acceptance,
+archival, push or deployment. Continue accepted construction and consolidated review.

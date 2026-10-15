@@ -4,10 +4,15 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
@@ -365,10 +370,85 @@ func TestVerifiedArchiveCompactionIsDeterministicAtomicAndImmutableIntegration(t
 	db := replayIntegrationDB(t)
 	ctx := context.Background()
 	streamID := "1ccccccc-cccc-4ccc-8ccc-cccccccccccc"
-	seedVerificationRun(t, db, streamID, "2ccccccc-cccc-4ccc-8ccc-cccccccccccc", 1, kernel.Version)
+	ownerID := "2ccccccc-cccc-4ccc-8ccc-cccccccccccc"
+	founderID := "3ccccccc-cccc-4ccc-8ccc-cccccccccccc"
+	genesis := json.RawMessage(`{"v":1,"resources":{"company.cash":"1e6"},"nested":{"ids":["original",null],"exact":9007199254740993}}`)
+	seedVerificationRunWithGenesis(t, db, streamID, ownerID, 1, kernel.Version, genesis)
+	if _, err := db.ExecContext(ctx, `INSERT INTO save_streams(id,owner_kind,owner_id,scope) VALUES($1,'founder',$2,'founder')`, founderID, ownerID); err != nil {
+		t.Fatal(err)
+	}
+	otherCompany := "1ddddddd-dddd-4ddd-8ddd-dddddddddddd"
+	seedVerificationRun(t, db, otherCompany, "2ddddddd-dddd-4ddd-8ddd-dddddddddddd", 1, kernel.Version)
 	intentID := "01989999-0003-7000-8000-000000000003"
-	if _, err := db.ExecContext(ctx, `INSERT INTO run_log(company_stream_id,run_seq,seq,intent_id,canonical_payload,replay_inputs,receipt,applied_revision,server_ts_ms)
-		VALUES($1,1,1,$2,'{}','{}','{}',1,100)`, streamID, intentID); err != nil {
+	secondIntentID := "01989999-0004-7000-8000-000000000004"
+	command := json.RawMessage(`{"count":2,"generator":"garage_pc","kind":"buy_generator"}`)
+	inputs := json.RawMessage(`{"v":1,"resolved":{"price":"2e3","nested":[true,null,"<source> Ω"]}}`)
+	receipt := json.RawMessage(`{"outcome":"applied","snapshot":{"balances":{"company.cash":"9.98e5"},"exact":9007199254740993}}`)
+	secondCommand := json.RawMessage(`{"count":3,"generator":"garage_pc","kind":"buy_generator"}`)
+	secondInputs := json.RawMessage(`{"v":1,"resolved":{"price":"3e3","nested":[false,{"reason":"unaffordable"}]}}`)
+	secondReceipt := json.RawMessage(`{"outcome":"rejected","error":{"code":"unaffordable","detail":{"required":"3e3"}}}`)
+	// Reverse insertion order so preservation includes the declared log sequence,
+	// an applied revision and a rejected command's SQL NULL revision.
+	for _, row := range []struct {
+		seq                      int64
+		intent                   string
+		command, inputs, receipt json.RawMessage
+		revision                 any
+		stamp                    int64
+	}{
+		{2, secondIntentID, secondCommand, secondInputs, secondReceipt, nil, 200},
+		{1, intentID, command, inputs, receipt, int64(7), 100},
+	} {
+		if _, err := db.ExecContext(ctx, `INSERT INTO run_log(company_stream_id,run_seq,seq,intent_id,canonical_payload,replay_inputs,receipt,applied_revision,server_ts_ms)
+			VALUES($1,1,$2,$3,$4,$5,$6,$7,$8)`, streamID, row.seq, row.intent, []byte(row.command), string(row.inputs), string(row.receipt), row.revision, row.stamp); err != nil {
+			t.Fatal(err)
+		}
+	}
+	companyPayload := json.RawMessage(`{"generator":"garage_pc","count":2,"nested":{"owner":"original","exact":9007199254740993}}`)
+	founderPayload := json.RawMessage(`{"founder_id":"2ccccccc-cccc-4ccc-8ccc-cccccccccccc","soul":5,"history":["α",null]}`)
+	for _, row := range []struct {
+		id, stream, intent, kind string
+		seq                      int64
+		payload                  json.RawMessage
+	}{
+		{"4ccccccc-cccc-4ccc-8ccc-ccccccccccc1", streamID, intentID, "generator_purchased", 120, companyPayload},
+		{"4ccccccc-cccc-4ccc-8ccc-ccccccccccc2", founderID, intentID, "founder_advanced", 100, founderPayload},
+		{"4ccccccc-cccc-4ccc-8ccc-ccccccccccc3", streamID, secondIntentID, "generator_purchased", 220, secondReceipt},
+		{"4ccccccc-cccc-4ccc-8ccc-ccccccccccc4", founderID, secondIntentID, "founder_advanced", 200, secondInputs},
+		// Same intent on another Company's stream and another intent on this
+		// pair must not become evidence for either archived command.
+		{"4ddddddd-dddd-4ddd-8ddd-ddddddddddd1", otherCompany, intentID, "generator_purchased", 95, json.RawMessage(`{"exclude":"other-owner"}`)},
+		{"4ddddddd-dddd-4ddd-8ddd-ddddddddddd2", founderID, "01989999-0005-7000-8000-000000000005", "founder_advanced", 90, json.RawMessage(`{"exclude":"other-intent"}`)},
+	} {
+		if _, err := db.ExecContext(ctx, `INSERT INTO events(event_id,stream_id,revision,schema_version,kind,intent_id,constants_hash,payload,event_seq)
+			VALUES($1,$2,1,1,$3,$4,$5,$6,$7)`, row.id, row.stream, row.kind, row.intent, integrationHash, string(row.payload), row.seq); err != nil {
+			t.Fatal(err)
+		}
+	}
+	var epochID int64
+	if err := db.QueryRowContext(ctx, `SELECT epoch_id FROM run_epochs WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&epochID); err != nil {
+		t.Fatal(err)
+	}
+	// Explicit JSON keys, not runArchive's production marshal/unmarshal types:
+	// dropping a field/tag on both production sides must not erase the oracle.
+	want, err := json.Marshal(map[string]any{
+		"schema_version": 1, "company_stream_id": streamID, "run_seq": 1,
+		"pin":     map[string]any{"epoch_id": epochID, "constants_hash": integrationHash, "engine_version": kernel.Version, "build_vcs_hash": "integration", "seed": "1"},
+		"genesis": map[string]any{"version": 1, "state": genesis},
+		"entries": []any{
+			map[string]any{"seq": 1, "intent_id": intentID, "canonical_payload": command, "replay_inputs": inputs, "receipt": receipt, "applied_revision": 7, "server_ts_ms": 100,
+				"events": []any{
+					map[string]any{"event_id": "4ccccccc-cccc-4ccc-8ccc-ccccccccccc2", "stream_id": founderID, "event_seq": 100, "kind": "founder_advanced", "schema_version": 1, "intent_id": intentID, "payload": founderPayload},
+					map[string]any{"event_id": "4ccccccc-cccc-4ccc-8ccc-ccccccccccc1", "stream_id": streamID, "event_seq": 120, "kind": "generator_purchased", "schema_version": 1, "intent_id": intentID, "payload": companyPayload},
+				}},
+			map[string]any{"seq": 2, "intent_id": secondIntentID, "canonical_payload": secondCommand, "replay_inputs": secondInputs, "receipt": secondReceipt, "applied_revision": nil, "server_ts_ms": 200,
+				"events": []any{
+					map[string]any{"event_id": "4ccccccc-cccc-4ccc-8ccc-ccccccccccc4", "stream_id": founderID, "event_seq": 200, "kind": "founder_advanced", "schema_version": 1, "intent_id": secondIntentID, "payload": secondInputs},
+					map[string]any{"event_id": "4ccccccc-cccc-4ccc-8ccc-ccccccccccc3", "stream_id": streamID, "event_seq": 220, "kind": "generator_purchased", "schema_version": 1, "intent_id": secondIntentID, "payload": secondReceipt},
+				}},
+		},
+	})
+	if err != nil {
 		t.Fatal(err)
 	}
 	if _, err := db.ExecContext(ctx, `DELETE FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, streamID); err == nil {
@@ -391,8 +471,12 @@ func TestVerifiedArchiveCompactionIsDeterministicAtomicAndImmutableIntegration(t
 		t.Fatal(err)
 	}
 	var live int
-	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&live); err != nil || live != 1 {
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&live); err != nil || live != 2 {
 		t.Fatalf("rollback live=%d err=%v", live, err)
+	}
+	var rolledBackArchives int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log_archive WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&rolledBackArchives); err != nil || rolledBackArchives != 0 {
+		t.Fatalf("rollback archives=%d err=%v", rolledBackArchives, err)
 	}
 
 	secondTx, err := db.BeginTx(ctx, nil)
@@ -407,23 +491,79 @@ func TestVerifiedArchiveCompactionIsDeterministicAtomicAndImmutableIntegration(t
 	}
 	var secondBytes []byte
 	var secondHash, encoding string
-	if err := db.QueryRowContext(ctx, `SELECT bytes,sha256,encoding FROM run_log_archive WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&secondBytes, &secondHash, &encoding); err != nil {
+	var terminalSeq int64
+	if err := db.QueryRowContext(ctx, `SELECT bytes,sha256,encoding,terminal_seq FROM run_log_archive WHERE run_id=$1`, streamID+":1").Scan(&secondBytes, &secondHash, &encoding, &terminalSeq); err != nil {
 		t.Fatal(err)
 	}
-	if !bytes.Equal(firstBytes, secondBytes) || firstHash != secondHash || encoding != "gzip+json.v1" {
-		t.Fatalf("archive drift first=%s second=%s encoding=%s", firstHash, secondHash, encoding)
+	if !bytes.Equal(firstBytes, secondBytes) || firstHash != secondHash || encoding != "gzip+json.v1" || terminalSeq != 2 {
+		t.Fatalf("archive drift first=%s second=%s encoding=%s terminal=%d", firstHash, secondHash, encoding, terminalSeq)
+	}
+	digest := sha256.Sum256(secondBytes)
+	if secondHash != "sha256:"+hex.EncodeToString(digest[:]) {
+		t.Fatal("stored archive digest does not cover stored bytes")
 	}
 	reader, err := gzip.NewReader(bytes.NewReader(secondBytes))
 	if err != nil {
 		t.Fatal(err)
 	}
-	var archive runArchive
-	if err := json.NewDecoder(reader).Decode(&archive); err != nil {
+	encoded, err := io.ReadAll(reader) // Consume the trailer too: verify the gzip checksum.
+	if err != nil {
 		t.Fatal(err)
 	}
 	_ = reader.Close()
-	if archive.SchemaVersion != 1 || archive.CompanyStreamID != streamID || archive.RunSeq != 1 || len(archive.Entries) != 1 || len(archive.Entries[0].Events) != 0 {
-		t.Fatalf("archive=%+v", archive)
+	if err := compareArchiveJSON(encoded, want); err != nil {
+		t.Fatal(err)
+	}
+	for _, canonical := range []json.RawMessage{command, secondCommand} {
+		if !bytes.Contains(encoded, canonical) {
+			t.Fatal("canonical command bytes changed")
+		}
+	}
+	for _, corruption := range []struct{ name, before, after string }{
+		{"command", `"count":2`, `"count":9`},
+		{"replay", `"price":"2e3"`, `"price":"9e3"`},
+		{"receipt", `"company.cash":"9.98e5"`, `"company.cash":"0e0"`},
+		{"exact integer", `9007199254740993`, `9007199254740992`},
+		{"founder event", `4ccccccc-cccc-4ccc-8ccc-ccccccccccc2`, `4ccccccc-cccc-4ccc-8ccc-ccccccccccc9`},
+		{"company event", `"owner":"original"`, `"owner":"lost"`},
+		{"rejected revision", `"applied_revision":null`, `"applied_revision":1`},
+	} {
+		t.Run("reject corrupted "+corruption.name, func(t *testing.T) {
+			if !bytes.Contains(encoded, []byte(corruption.before)) {
+				t.Fatal("corruption target absent")
+			}
+			corrupted := bytes.Replace(encoded, []byte(corruption.before), []byte(corruption.after), 1)
+			if !json.Valid(corrupted) {
+				t.Fatal("corruption is not valid JSON")
+			}
+			if err := compareArchiveJSON(corrupted, want); err == nil {
+				t.Fatal("archive content loss escaped comparison")
+			}
+		})
+	}
+	for _, field := range []string{"canonical_payload", "replay_inputs", "receipt", "events"} {
+		t.Run("reject omitted "+field, func(t *testing.T) {
+			var altered map[string]json.RawMessage
+			if err := json.Unmarshal(encoded, &altered); err != nil {
+				t.Fatal(err)
+			}
+			var entries []map[string]json.RawMessage
+			if err := json.Unmarshal(altered["entries"], &entries); err != nil {
+				t.Fatal(err)
+			}
+			delete(entries[0], field)
+			altered["entries"], err = json.Marshal(entries)
+			if err != nil {
+				t.Fatal(err)
+			}
+			corrupted, err := json.Marshal(altered)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := compareArchiveJSON(corrupted, want); err == nil {
+				t.Fatal("omitted evidence escaped comparison")
+			}
+		})
 	}
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&live); err != nil || live != 0 {
 		t.Fatalf("compacted live=%d err=%v", live, err)
@@ -441,6 +581,41 @@ func TestVerifiedArchiveCompactionIsDeterministicAtomicAndImmutableIntegration(t
 	if err := retryTx.Commit(); err != nil {
 		t.Fatal(err)
 	}
+	var retryBytes []byte
+	var retryHash string
+	if err := db.QueryRowContext(ctx, `SELECT bytes,sha256 FROM run_log_archive WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&retryBytes, &retryHash); err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(retryBytes, secondBytes) || retryHash != secondHash {
+		t.Fatal("idempotent retry changed the archive")
+	}
+}
+
+func compareArchiveJSON(actual, expected []byte) error {
+	decode := func(encoded []byte) (any, error) {
+		decoder := json.NewDecoder(bytes.NewReader(encoded))
+		decoder.UseNumber() // Do not hide corruption above 2^53 through float rounding.
+		var value any
+		if err := decoder.Decode(&value); err != nil {
+			return nil, err
+		}
+		if err := decoder.Decode(new(any)); err != io.EOF {
+			return nil, fmt.Errorf("archive trailing data: %v", err)
+		}
+		return value, nil
+	}
+	got, err := decode(actual)
+	if err != nil {
+		return err
+	}
+	want, err := decode(expected)
+	if err != nil {
+		return err
+	}
+	if !reflect.DeepEqual(got, want) {
+		return errors.New("archive JSON does not preserve the complete fixture")
+	}
+	return nil
 }
 
 func replayIntegrationDB(t *testing.T) *sql.DB {
@@ -465,6 +640,11 @@ func replayIntegrationDB(t *testing.T) *sql.DB {
 }
 
 func seedVerificationRun(t *testing.T, db *sql.DB, streamID, ownerID string, runSeq int64, engineVersion string) {
+	t.Helper()
+	seedVerificationRunWithGenesis(t, db, streamID, ownerID, runSeq, engineVersion, json.RawMessage(`{}`))
+}
+
+func seedVerificationRunWithGenesis(t *testing.T, db *sql.DB, streamID, ownerID string, runSeq int64, engineVersion string, genesis json.RawMessage) {
 	t.Helper()
 	ctx := context.Background()
 	tx, err := db.BeginTx(ctx, nil)
@@ -494,7 +674,7 @@ func seedVerificationRun(t *testing.T, db *sql.DB, streamID, ownerID string, run
 		t.Fatal(err)
 	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO run_genesis(company_stream_id,run_seq,state,version,constants_hash)
-		VALUES($1,$2,'{}',1,$3)`, streamID, runSeq, integrationHash); err != nil {
+		VALUES($1,$2,$4,1,$3)`, streamID, runSeq, integrationHash, []byte(genesis)); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO verification_queue(company_stream_id,run_seq) VALUES($1,$2)`, streamID, runSeq); err != nil {

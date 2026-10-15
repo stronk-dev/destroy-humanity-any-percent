@@ -37,6 +37,21 @@ intent/event payloads are secret-free, nor classify browser credential storage
 
 ## Executed evidence and limits
 
+Current RP-124 supplement (2026-10-15, after `b976110b`): the same archive
+integration test now supplies nested genesis/command/replay/receipt content, two
+ordered commands with applied/NULL revisions, four matched Company/Founder events,
+and same-intent/other-owner plus same-owner/other-intent exclusions. Its independent
+JSON-key oracle preserves integers above2^53 and rejects11 content corruptions/
+omissions. Actual stored gzip/digest, rollback, compaction, ordering and idempotent
+retry checks pass; all ten replay-verification Integration parents pass twice in
+shuffled order on real Postgres. The Leaderboards owning log records exact commands,
+results and pending review. These are directly seeded compactor fixtures, not
+semantically verified gameplay, deletion/export, Founder-log reference retention,
+public delivery or clean-host recovery. The original empty-fixture finding below
+is historical; no retention policy or rights capability is inferred from this repair.
+
+### Historical execution — 2026-09-23
+
 Cold real-Postgres `TestVerifiedArchiveCompactionIsDeterministicAtomicAndImmutableIntegration`
 (`./replayverify`) and `TestPlayerOutboxOrderingDeadLetterAndSizeIntegration`
 (`./save`) passed with `-count=1 -v`. The non-DB

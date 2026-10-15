@@ -7,6 +7,12 @@
   accepted foundation already authorizes AC5 and AC1/AC3/AC6 remediation; only the absent
   reader/player capability remains behind the draft successor's explicit acceptance gate.
 
+2026-10-15 RP-124: the existing real-Postgres archive test now preserves a populated
+two-command/four-event fixture, with independent complete-content and corruption/omission
+checks. Repeated shuffled database and cold package/vet checks pass; the owning log records
+the range after `b976110b` needing Claude review. This is compactor coverage, not complete
+feature acceptance, a naturally verified player run or a rights/retention ruling.
+
 1. [x] Add the atomic per-run intent log and bind Prestige terminal sequences.
 2. [x] Add immutable catalog artifacts, kernel identity, epoch mint/hotfix storage, and run pinning.
 3. **Superseded/closed by the archived Run Genesis & Replay RFC and its archived remediation
