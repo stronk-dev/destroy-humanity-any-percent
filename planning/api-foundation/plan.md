@@ -92,7 +92,7 @@ real-Postgres source returns corrupt bytes with nil error; corrected14-case sour
 population and valid-Unicode byte/hash controls pass. Existing mounted error/refusal
 tests and cold affected packages/vet pass. Raw transport/archives are not decoded or
 normalized; no synthetic seed is claimed as a naturally verified public run. The
-owning log holds the range after `a0029bd5`, pending designated review; no public
+owning log holds independent corrective APPROVAL of `a0029bd5..61fa96cf`; no public
 catalog/complete-loop, kernel, schema or release promotion follows.
 
 Current HTTP encoding correction (2026-10-15, RP-639): Go wire admission now
@@ -102,7 +102,7 @@ refusals reproduce the gap. Corrected mounted routes return exact400 invalid/bod
 preserve state/credentials and subsequently issue authentic sessions. Valid Unicode/
 escapes, shared owner decoding and raw byte identity remain; cold affected Go/vet,
 selected real-DB routes, client encoding and unchanged generation pass. Owning log
-holds the range after `455b7108`, pending Claude. No schema/pin/kernel, recovery
+holds independent corrective APPROVAL of `455b7108..a0029bd5`. No schema/pin/kernel, recovery
 policy, owner proposal or full API/CI acceptance change.
 
 Current C2 array-arm correction (2026-10-15, RP-638): ten old-checker regressions

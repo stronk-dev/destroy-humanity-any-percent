@@ -3863,3 +3863,36 @@ closed-object intersections and whole-array coverage conform to accepted A1/C2
 within these scopes. Conservative refusal remains; no relaxed policy, general C2
 completion, new feature/specification adoption, SQL/browser/server/hosted evidence,
 archival or release approval. Intervening/other API work remains outside verdict.
+
+## 2026-10-15 — HTTP/source encoding corrective review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/api_encoding_corrective_review`.
+Recorded by: Codex parent, transcribing its verdict under Marco's corrective-review
+delegation. Complete ranges (base exclusive, tip inclusive):
+
+- RP-639: `455b7108f5d8359c2be0452f87618f5099c29773..a0029bd591741d5956173668f9a95c2a80b81ccd`.
+- RP-640: `a0029bd591741d5956173668f9a95c2a80b81ccd..61fa96cf348cb7553eeca677402bee06ef4338cf`.
+
+Verdict: **APPROVED**, no actionable findings; every source/test/docs/plan/log/
+backlog path inspected against A5/C17/C14. Encoding code/tests unchanged through
+d3cdf8eb; the later route-key normalization is unrelated and not approved here.
+
+Independent cold publicapi/publicread/account/gameserver/leaderboard tests/vet
+pass. Historical registry overlay reproduces all36 malformed-wire/literal
+failures while Unicode/shared-owner/raw/BOM controls pass. Historical real-DB
+mounted-session overlay returns401 for both corrupt bodies; corrected routes
+execute their exact400/unchanged-state/authentic-session controls. Old evidence
+source returns synthetic corrupt genesis/archive with nil error in one of14 cases,
+other13 controls pass. Corrected declared Postgres41764 passes Account6.585s
+(lifecycle/session/all20 admission/Soul), Leaderboard0.289s (all14 source cases)
+and PublicRead0.137s (controlled HTTP hash/byte/refusals). Generated-client132,
+formatting and both range diffs pass. Initial selector quoting error returns127
+before a reliable population; it supplies no evidence or successful gate claim.
+
+SQL work starts only after the payout review's confirmed terminal run and explicit
+service release. Reviewer removes only its own freshly created tmpfs Postgres
+3f0c37609c62/disposable rows afterward; final Compose inventory empty, parent
+editorial changes preserved. No repository edits by reviewer. Synthetic source
+and controlled HTTP populations do not close the full SQL→HTTP/reverification loop.
+No BOM/surrogate-policy, owner-artifact narrowing, archive rewriting, RP-667 review,
+full API acceptance, normative adoption, archival or release approval is inferred.
