@@ -131,8 +131,11 @@ remains the goal; Garage hardening and standalone Combat records do not complete
   contract closure, implementation and failing arithmetic remain agent work, not generic approval
   requests. No draft becomes authority merely because its dependencies exist.
   RP-558's [current-release authority proposal](../../rfc/deployment-current-release-authority.md)
-  now has a native child/lock precursor, but pinned-engine mounted-byte and request-quiescence
-  experiments remain before mechanical closure/adoption; it is not acceptance-ready.
+  now has bounded Desktop nine-root mounted-byte checks and an actual daemon-lifetime negative:
+  daemon work survives helper AND CLI death/released lock. Establish a safe daemon-side
+  quiescence mechanism, then native supported-host coverage before closure/adoption;
+  cancellation or the local sample cannot make it acceptance-ready. Owning Deployment log
+  records the exact experimental boundary; no production observer/recovery was implemented.
 
 This is routing only, not a new implementation contract, review verdict or publication permission.
 Preserve all earlier evidence and pending review obligations. No push/deploy/archival is authorized.

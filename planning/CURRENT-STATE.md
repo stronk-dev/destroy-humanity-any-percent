@@ -1,13 +1,14 @@
 # Current repository state
 
 Reconciled 2026-10-15: latest bounded production correction `137f7a8d` (kernel0.3.222,
-epoch8); research checkpoint `f7ca2b96`. The whole-product classification retains its
+epoch8); numeric research checkpoint `f7ca2b96`, Deployment mechanical checkpoint `23fcf989`.
+The whole-product classification retains its
 `77fe2275` base and the explicit follow-ups below, not a fresh complete acceptance sweep.
 Independent-review records and their exact bounded scopes live in the owning logs. The last inspected
 publication coordinate is `be66902b`, with failed CI38560135778 and maintenance38677066823.
 Read-only GitHub queries reconfirm that publication coordinate and both failed runs; no new
 hosted execution or publication is claimed for the later local work.
-Those remote observations were not repeated during this numeric/review follow-up.
+Those remote observations were not repeated during these local research/review follow-ups.
 Local commit volume is not a product-completion measure.
 Cloud Clicker remains a **development snapshot**, not a released or
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
@@ -61,6 +62,12 @@ origin shows raw decrease but equal ledger payments. Actual decreasing time-sear
 behavior is not established, and its proof plus27 accounting failures remain open.
 Deployment image-layer identity, Pitch tenant admission and scaling admission also have
 bounded independent corrective approvals; their owning logs preserve all exclusions.
+Same-second backup-alert correction now has independent approval, including actual controlled
+failure/recovery through Prometheus/Alertmanager/receiver. Bounded Desktop research reads all
+nine proposed release-mounted roots and rejects changed/missing/link/interrupted inputs.
+It also proves daemon-side work can complete after helper AND Docker-client death/released
+lock. Safe interruption recovery therefore still needs a mechanism, not a cancellation check;
+the current-release draft remains unaccepted and native clean-host/release proof remains open.
 Review reproduces historical failures where actually executed and checks affected behavior; these
 approvals cover their named ranges, not adjacent feature construction or the remaining
 accounting/history failures. The unbuilt product scope below remains unchanged.
