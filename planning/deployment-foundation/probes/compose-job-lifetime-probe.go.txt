@@ -1,0 +1,173 @@
+package deploymentrelease
+
+import (
+	"bytes"
+	"context"
+	"crypto/rand"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"syscall"
+	"testing"
+	"time"
+)
+
+// Manual research using the production runner's Compose one-off command shape.
+// No actual backup, deployment, secret, network, database or persistent volume.
+func TestManualComposeJobLifetimeResearch(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	docker, err := exec.LookPath("docker")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, killed := range []bool{false, true} {
+		t.Run(fmt.Sprintf("kill-entire-cli-group=%t", killed), func(t *testing.T) {
+			root := t.TempDir()
+			var nonce [12]byte
+			if _, err := rand.Read(nonce[:]); err != nil {
+				t.Fatal(err)
+			}
+			project := "cc-job-research-" + hex.EncodeToString(nonce[:])
+			name := project + "-worker"
+			const image = "sha256:af555904a0961945f16bb323a501457b13a4f7e9bde969b145b97da80b38ecbe"
+			rootJSON, _ := json.Marshal(root)
+			compose := "services:\n  worker:\n    image: " + image + "\n    platform: linux/amd64\n    read_only: true\n    network_mode: none\n    entrypoint: [/bin/sh, -c]\n    command: [\"printf entered > /probe/entered; while [ ! -f /probe/gate ]; do sleep 0.05; done; printf completed > /probe/finished\"]\n    volumes:\n      - type: bind\n        source: " + string(rootJSON) + "\n        target: /probe\n"
+			file := filepath.Join(root, "compose.yml")
+			if err := os.WriteFile(file, []byte(compose), 0600); err != nil {
+				t.Fatal(err)
+			}
+			waitFor := func(check func() bool) {
+				t.Helper()
+				deadline := time.Now().Add(10 * time.Second)
+				for !check() {
+					if time.Now().After(deadline) || ctx.Err() != nil {
+						t.Fatal("handshake guard exhausted: invalid measurement")
+					}
+					time.Sleep(10 * time.Millisecond)
+				}
+			}
+			exists := func(name string) bool {
+				_, err := os.Stat(filepath.Join(root, name))
+				if err != nil && !errors.Is(err, os.ErrNotExist) {
+					t.Fatal(err)
+				}
+				return err == nil
+			}
+			inspect := func(target, format string) string {
+				t.Helper()
+				out, err := exec.CommandContext(ctx, docker, "inspect", "--format", format, target).CombinedOutput()
+				if err != nil {
+					t.Fatal("owned fixture inspection failed", err)
+				}
+				return strings.TrimSpace(string(out))
+			}
+			args := []string{"compose", "--project-name", project, "--file", file, "run", "--rm", "--no-deps", "--name", name, "worker"}
+			command := exec.CommandContext(ctx, docker, args...)
+			command.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+			var stdout, stderr bytes.Buffer
+			command.Stdout, command.Stderr = &stdout, &stderr
+			if err := command.Start(); err != nil {
+				t.Fatal(err)
+			}
+			group := command.Process.Pid
+			waited := false
+			ownedID := ""
+			defer func() {
+				cleanup, done := context.WithTimeout(context.Background(), 15*time.Second)
+				defer done()
+				_ = os.WriteFile(filepath.Join(root, "gate"), []byte("open"), 0600)
+				if !waited {
+					// This process group was created exclusively for this command.
+					_ = syscall.Kill(-group, syscall.SIGKILL)
+					_ = command.Wait()
+				}
+				if ownedID == "" {
+					out, err := exec.CommandContext(cleanup, docker, "ps", "--all", "--quiet", "--no-trunc", "--filter", "name=^/"+name+"$").Output()
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					ownedID = strings.TrimSpace(string(out))
+				}
+				if ownedID == "" {
+					return // --rm already removed the owned one-off.
+				}
+				// List rather than accepting arbitrary inspection errors as absence.
+				out, err := exec.CommandContext(cleanup, docker, "ps", "--all", "--quiet", "--no-trunc", "--filter", "id="+ownedID).Output()
+				if err != nil {
+					t.Error(err)
+					return
+				}
+				if strings.TrimSpace(string(out)) == "" {
+					return
+				}
+				if len(ownedID) != 64 || strings.Trim(ownedID, "0123456789abcdef") != "" {
+					t.Error("invalid owned cleanup ID")
+					return
+				}
+				for range 2 {
+					out, err := exec.CommandContext(cleanup, docker, "inspect", "--format", "{{.Id}} {{index .Config.Labels \"com.docker.compose.project\"}} {{index .Config.Labels \"com.docker.compose.service\"}} {{index .Config.Labels \"com.docker.compose.oneoff\"}}", ownedID).CombinedOutput()
+					if err != nil || strings.TrimSpace(string(out)) != ownedID+" "+project+" worker True" {
+						t.Error("refuse unowned cleanup", err)
+						return
+					}
+				}
+				// Normally auto-removal wins; only a still-owned failed fixture is forced.
+				if err := exec.CommandContext(cleanup, docker, "rm", "--force", "--volumes", ownedID).Run(); err != nil {
+					t.Error(err)
+				}
+			}()
+			waitFor(func() bool { return exists("entered") })
+			ownedID = inspect(name, "{{.Id}}")
+			if len(ownedID) != 64 || strings.Trim(ownedID, "0123456789abcdef") != "" {
+				t.Fatal("invalid actual one-off ID")
+			}
+			if inspect(ownedID, "{{index .Config.Labels \"com.docker.compose.project\"}} {{index .Config.Labels \"com.docker.compose.service\"}} {{index .Config.Labels \"com.docker.compose.oneoff\"}}") != project+" worker True" {
+				t.Fatal("one-off ownership mismatch")
+			}
+			if actual, err := syscall.Getpgid(group); err != nil || actual != group || group == syscall.Getpgrp() {
+				t.Fatal("CLI group is not exclusively owned", actual, err)
+			}
+			if exists("finished") || exists("gate") || inspect(ownedID, "{{.State.Running}}") != "true" {
+				t.Fatal("closed-gate baseline failed")
+			}
+			if killed {
+				if err := syscall.Kill(-group, syscall.SIGKILL); err != nil {
+					t.Fatal(err)
+				}
+				if err := command.Wait(); err == nil {
+					t.Fatal("CLI termination missing")
+				}
+				waited = true
+				if inspect(ownedID, "{{.State.Running}}") != "true" || exists("finished") {
+					t.Fatal("job did not survive complete CLI-group termination")
+				}
+			}
+			if err := os.WriteFile(filepath.Join(root, "gate"), []byte("open"), 0600); err != nil {
+				t.Fatal(err)
+			}
+			waitFor(func() bool { return exists("finished") })
+			if !killed {
+				if err := command.Wait(); err != nil {
+					t.Fatal("ordinary Compose completion failed", err)
+				}
+				waited = true
+			}
+			waitFor(func() bool {
+				out, err := exec.CommandContext(ctx, docker, "ps", "--all", "--quiet", "--no-trunc", "--filter", "id="+ownedID).Output()
+				if err != nil {
+					t.Fatal(err)
+				}
+				return strings.TrimSpace(string(out)) == ""
+			})
+			t.Log("actual Compose run --rm: killed-cli-group=" + strconv.FormatBool(killed) + "; daemon job completed only after explicit gate; auto-removed afterward")
+		})
+	}
+}

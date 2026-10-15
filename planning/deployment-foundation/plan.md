@@ -74,7 +74,10 @@ experiments read all nine mounted roots from four stopped exact-image containers
 changed/missing/link/interrupted inputs; actual daemon exec also completes after BOTH helper
 and CLI death/released lock. Sources are preserved outside CI. The daemon is Linux/arm64,
 not native supported-host closure. No production reader/recovery mechanism or product byte
-changed. Next: settle daemon-side quiescence before the draft can be accepted, and retain
+changed. The 2026-10-16 actual Compose one-off experiment also observes job completion after
+the entire exclusively owned local CLI process group is killed. Process-group cancellation
+alone is insufficient; the controlled shell is not a backup/restore or delayed-request proof.
+Next: settle daemon-side quiescence before the draft can be accepted, and retain
 native-host seven-service/metadata coverage rather than calling the Desktop sample acceptance;
 continue other accepted work meanwhile. D-019, other DESIGN-GAPs and full nine-tier floor remain.
 

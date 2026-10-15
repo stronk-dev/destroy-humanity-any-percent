@@ -7538,3 +7538,50 @@ historical-image executions remain separately attributed, not independent repeat
 Linux/image/Docker/SQL resources, edits, commits or publication by reviewer; all handles
 terminal/tree clean. No current-artifact/R-006/clean-host/full Deployment/CI/normative/
 archival/release approval. Rebuild/re-scan the actual future artifact under its release gates.
+
+## 2026-10-16 — Actual Compose one-off lifetime (before execution)
+
+CR4 next question follows the actual runtime, not arbitrary exec recipes: docker.go uses
+Compose run --rm --no-deps for config validation, backup create/inspect/restore, recovery
+identity and alert tests. It has no production Docker exec invocation. The earlier exec/child
+negatives reject generic completion assumptions, not an observed leaked backup or full
+current-command failure. Does killing the ENTIRE owned local Docker/Compose process group
+stop a real one-off job already inside the daemon? Same pinned Engine28.4.0/API1.51/Compose
+2.39.4 Desktop pair and exact amd64 Caddy image, Linuxarm64 daemon/Darwinarm64 client.
+
+Two populations: ordinary completion and SIGKILL of a new, exclusively owned CLI process
+group after the daemon job enters a closed file gate. Actual temporary Compose project,
+network_mode none, read-only rootfs, no ports/credentials/database/persistent volume, one
+writable disposable handshake bind. Explicit unique name aids observation; production today
+does not assign that name. Require complete parent Wait, actual identified one-off still
+running/no completion before release, then explicit gate→completion→automatic removal.
+The ordinary control must exit0. Poll every10ms;10s handshake/1min whole-experiment limits
+are invalidation guards, not operating bounds or arbitrary no-write sleeps. Runtime payload
+is controlled shell, not pg_dump/restore, and cannot authorize backup/release acceptance.
+Manual probes/compose-job-lifetime-probe.go.txt remains outside CI; no process-runner fix,
+supervisor/protocol adoption, secret access, daemon restart, deployment or publication.
+
+## 2026-10-16 — Actual Compose one-off lifetime: both populations executed
+
+Outcome: process-group cancellation is not sufficient for CR4. Root executed
+`make test-go GO_PACKAGES='./deploymentrelease' GO_TEST_FLAGS='-overlay=/Users/stronk/repos/cloud-clicker/.cache/compose-job-lifetime-overlay.json -run TestManualComposeJobLifetimeResearch -v -count=1'`.
+Session93532 terminal exit0; ordinary case0.48s, killed-group case0.39s, test0.87s,
+package1.250s. Both actual identified one-offs remain behind the closed gate until explicit
+release; in the killed case the whole exclusively owned local CLI group has been SIGKILLed
+and parent Wait is terminal first. The daemon job is still running, then writes only after
+the gate opens. Both containers auto-remove; successful daemon lists confirm absence.
+
+This follows actual `docker.go` one-off commands, unlike earlier generic exec diagnostics.
+Explicit unique name is observation plumbing, not existing production identity. Exact image
+sha256:af555904a0961945f16bb323a501457b13a4f7e9bde969b145b97da80b38ecbe,
+Engine28.4.0/API1.51/Compose2.39.4 Desktop, amd64 image on Linuxarm64 daemon with Darwinarm64
+client. Guards did not fire; no skipped population. Post-run complete container inventory
+contains only the two pre-existing buildx builders bb56ca0ca798 and17c2013f1491, preserved.
+Disposable temp handshakes are removed by the test; no durable data was touched.
+
+Draft CR4/body/evidence/owning plan now exclude process-group-only cancellation. No safe
+replacement, delayed-request/whole lifecycle fence, real pg_dump/restore, native-host or
+R-006 proof follows. No product code, CI lane, adoption, archival, push or deployment.
+Review by: Codex root (research author/first filter). Recorded by: Codex root. Complete range
+bda1b086-exclusive through this containing research commit still needs research/normative
+review under existing authority; corrective-code delegation does not approve that scope.

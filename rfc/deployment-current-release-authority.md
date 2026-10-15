@@ -226,6 +226,11 @@ acceptance. No PID/lock-file heuristic or two stable metadata samples may substi
 Killing the helper and its Docker CLI is also insufficient: the bounded daemon experiment below
 observes an already-started command completing afterward. Recovery must account for daemon-side
 work, not merely prove the local processes exited. The actual quiescence mechanism remains open.
+This also holds for the shipped one-off command shape: killing an exclusively owned local
+Docker/Compose process group does not stop an already-running `compose run --rm --no-deps`
+container. The controlled job below completes only after its gate is opened after CLI death.
+Process-group cancellation alone therefore cannot authorize recovery. This is not a real
+backup/restore interruption or proof about every lifecycle command.
 An observed terminal Docker ExecID alone is also insufficient as a general fence: the bounded
 diagnostic below observes successful parent completion/restart refusal before an explicitly
 gated descendant later writes. A proposed mechanism must account for the actual operation's
@@ -344,6 +349,17 @@ Docker's documented [create/start/inspect endpoints](https://docs.docker.com/ref
 and pinned [exec implementation](https://github.com/moby/moby/blob/v28.4.0/daemon/exec.go)
 are partial source support, not substitutes for the runtime observation.
 
+The [actual Compose one-off diagnostic](../planning/deployment-foundation/probes/compose-job-lifetime-probe.go.txt)
+uses the runtime's `compose run --rm --no-deps` shape, with an explicit unique observation
+name, on the same pinned Desktop Engine/Compose pair. Both ordinary completion and killing
+the entire exclusively owned CLI process group execute. In the killed case, parent Wait is
+terminal while the identified daemon job remains running behind a closed gate. Opening that
+gate then produces its completion; both populations automatically remove their containers.
+The source inventory matters: current backup/validation/identity/alert jobs use Compose one-offs,
+not Docker exec. This is a controlled shell payload, not pg_dump/restore, native supported-host
+proof, a delayed-request fence or evidence of a complete safe recovery mechanism. It excludes
+process-group cancellation as the sole solution without inventing an accepted replacement.
+
 ## Changelog
 
 - 2026-10-13: source-grounded RP-558/DESIGN-GAP10 proposal. No product implementation, owner
@@ -352,3 +368,5 @@ are partial source support, not substitutes for the runtime observation.
   rejects helper/CLI cancellation as proof. Native-host mechanism/adoption remain open.
 - 2026-10-16: actual ExecID parent completion still permits a gated descendant write. Reject
   generic ExecID-only quiescence; actual-operation/native-host proof and adoption remain open.
+- 2026-10-16: actual Compose one-off survives whole local CLI process-group termination;
+  reject process-group-only recovery fencing. Controlled Desktop result, not backup acceptance.
