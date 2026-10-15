@@ -323,7 +323,10 @@ compression-error refusals pass. Affected cold native/vet and Linux packages and
 Postgres/Caddy integration pass. Both retained source102face6 candidate bundles still
 validate under the corrected native helper, but their bundled helpers do not contain this
 later repair. Rebuild at the final reviewed source; do not relabel those immutable artifacts.
-The owning log records the corrective range needing designated review and remaining gates.
+Fresh independent Codex review APPROVES the complete13621c7d..c7071178 corrective range,
+including independently reproduced old accepts and actual retained archive validation.
+Native SQL/Caddy skip is not integration evidence. The owning log holds exact provenance
+and limits; supported predecessor, current-source rebuild and clean-host gates stay open.
 
 **Latest bounded correction (RP-511):** malformed gameserver archive headers now return
 invalid content rather than panicking in the validator/assembler. Eight old-source failures

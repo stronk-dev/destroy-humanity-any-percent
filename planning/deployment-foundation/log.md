@@ -7255,3 +7255,34 @@ inspected tmpfs testc6b19024…; disposable SQL data unrecoverable, persistent s
 builders preserved. Reviewer edits/mutates/commits nothing. No snapshot/metadata/D-019 adoption,
 R-006/full Deployment/hosted-CI/normative/archival/release approval. These corrections leave
 the pending-review queue; current artifact, authored and full feature gates remain open.
+
+## 2026-10-15 — Ordered image-layer identity corrective review approved (RP-513)
+
+Review by: /root/image_layer_identity_corrective_review (fresh independent Codex reviewer,
+Marco-delegated corrective code). Recorded by: Codex (root, transcription). APPROVED full
+13621c7de429b0bc5764cea6cb0061563df40fa4-exclusive through
+c7071178c5e2a70b5272f09c47940f638f0596cd-inclusive: one commit/eight paths, including
+all production/tests/docs/ledger/plan/log, under accepted DP1/AC1/AC8. Initial source
+4d847020/product77fe2275/kernel221, Go1.27.2 Darwinarm64. No new contract adopted.
+
+Independent old-validator overlay reproduces ten changed/reordered/missing-DiffID accepts;
+two intact plain/gzip controls pass. Initial overlay extra-brace compile failure is not
+regression evidence; corrected substantive run71fb66 establishes the failures without
+tracked mutations. Corrected focused77939a passes12 ordered-layer,5 codec/read and6
+malformed-assembly cases. Cold six-package70352 passes (assembler CLI no separate tests);
+same vet passes. Race73040 passes releasepackage/deploymentrehearsal and27 downstream
+bundle mutations/controls; the descendant consumer is supporting evidence, not an enlarged
+review scope. Commands use root make test-go/vet, cold selectors and ignored overlays.
+
+Actual retained archive→current ValidateBundle integration3157 independently passes both
+74-artifact source102face6f2aeadc8aaa0ff19af0d4d5bd0f63ef1 candidates,0.26/0.27s.
+Release0.1.0-preview.2; manifest061375c80401d5aaaac172c894837cb4e3ca082a59250e7ad40b635338a46073,
+archive0ffddcec5503ff6b20691a4a1039057e7eb3ad502e13b65cebc77033fc2e0d4b,
+8526848bytes; config0a6a731624aabc87cf0fb4df42afa8f35ba36b7c50e9455689dc1e48494a9677.
+These helpers predate the correction; final-source rebuild is still required. Native
+Caddy/SQL integration explicitly SKIPS (72299), not credited. No new Linux, Docker loading,
+runnable synthetic-image, supported predecessor-pair, clean-host R-006, CI or release proof.
+
+Full range whitespace passes. All handles terminal; four ignored review overlay/source
+files only, no tracked edits, commits, Docker resources or unrelated cleanup by reviewer.
+This closes only RP-513's corrective review; original feature/author gates remain open.
