@@ -226,6 +226,11 @@ acceptance. No PID/lock-file heuristic or two stable metadata samples may substi
 Killing the helper and its Docker CLI is also insufficient: the bounded daemon experiment below
 observes an already-started command completing afterward. Recovery must account for daemon-side
 work, not merely prove the local processes exited. The actual quiescence mechanism remains open.
+An observed terminal Docker ExecID alone is also insufficient as a general fence: the bounded
+diagnostic below observes successful parent completion/restart refusal before an explicitly
+gated descendant later writes. A proposed mechanism must account for the actual operation's
+descendant/process and outstanding-request lifetimes, not silently equate parent exit with
+that guarantee. This diagnostic does not show a shipped backup command leaking descendants.
 No new backup decryption placement, protection-metadata resolution or deletion policy is adopted.
 
 ### CR5 — Consumers and compatibility
@@ -325,9 +330,25 @@ client cancellation as a quiescence proof, including stable pre-gate observation
 establish a safe Linux supervisor/recovery mechanism. The proposal remains not acceptance-ready;
 do not substitute restart/retry or an operator assertion. Exact commands/limits are in the log.
 
+Further bounded evidence, 2026-10-16: the [manual ExecID diagnostic](../planning/deployment-foundation/probes/exec-terminal-probe.go.txt)
+uses the same exact-image/no-network Desktop fixture and actual versioned Engine API1.51.
+An ordinary direct command completes normally. A shell that forks one deliberately gated child
+also reaches Running=false/ExitCode0, and restarting that same ExecID refuses409, yet opening
+the child's gate afterward produces its write. The created-but-not-started state also reports
+Running=false/ExitCode0, with Pid0 rather than the terminal parent's retained nonzero PID.
+Those states must not be conflated. No helper-death/request-queue experiment or actual
+pg_dump/Compose descendant claim is made by this narrower diagnostic; it rejects the generic
+ExecID-only inference, not every operation-specific mechanism. No supported native-host,
+complete lifecycle fence, production recovery implementation or adoption follows.
+Docker's documented [create/start/inspect endpoints](https://docs.docker.com/reference/api/engine/version/v1.51/)
+and pinned [exec implementation](https://github.com/moby/moby/blob/v28.4.0/daemon/exec.go)
+are partial source support, not substitutes for the runtime observation.
+
 ## Changelog
 
 - 2026-10-13: source-grounded RP-558/DESIGN-GAP10 proposal. No product implementation, owner
   adoption, acceptance, archival, push or deployment.
 - 2026-10-15: retain bounded Desktop mounted-reader and daemon-lifetime evidence; CR4 explicitly
   rejects helper/CLI cancellation as proof. Native-host mechanism/adoption remain open.
+- 2026-10-16: actual ExecID parent completion still permits a gated descendant write. Reject
+  generic ExecID-only quiescence; actual-operation/native-host proof and adoption remain open.

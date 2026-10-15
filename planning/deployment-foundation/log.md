@@ -7389,3 +7389,46 @@ the two preexisting BuildKit containers. Temp fixture data is disposable/unrecov
 retained release bundles, caches, builders and ignored review evidence remain. No deployment,
 publication or push. Next: specify/prove a mechanism that accounts for daemon-side outstanding
 work before accepting the recovery contract; continue independent corrective reviews meanwhile.
+
+## 2026-10-16 — ExecID completion candidate falsification (before execution)
+
+CR4 mechanical question, not implementation: can a persisted Docker ExecID's terminal
+Running=false/ExitCode0 establish that no descendant can mutate the project afterward?
+One owned exact Caddy-image/no-network/read-only container, disposable handshake bind only.
+Actual local Docker28.4.0/API1.51/Compose2.39.4 Desktop pair, Linuxarm64 daemon/Darwinarm64
+client with pinned amd64 image; still NOT native supported clean-host closure.
+
+Run ordinary direct completion and a parent shell that forks one gated child then exits0.
+Inspect only ID/ContainerID/Running/ExitCode/Pid through the actual versioned Engine API;
+check created/not-started state, terminal parent, and restart409. For the forked arm require
+parent terminal before explicit gate opening, absent completion before gate, then actual
+child mutation afterward. No arbitrary wait decides success;10s handshake/1min global guards
+fail the experiment on exhaustion. This may reject ExecID-only recovery, never approve a
+supervisor from sampled metadata. No secrets, daemon restart, privileged container, deployment,
+data/service alteration or automatic-CI assertion that unsafe survival is desirable.
+Manual probes/exec-terminal-probe.go.txt is exposed only by ignored compiler overlay.
+
+Result74156 terminal0/package2.918s: ordinary control and forked-parent negative execute actual
+API create/start/inspect. Both created states return Runningfalse/ExitCode0/Pid0. Ordinary
+terminal retainsPid49123; forked parent terminal retainsPid49144, both Runningfalse/ExitCode0.
+Both repeat-start requests refuse409. In forked arm the child has entered with gate closed,
+parent is terminal and completion absent; explicitly opening gate THEN produces its completion.
+Thus a completed exec parent is not a generic no-future-descendant-mutation fence. It does not
+show actual pg_dump/Compose recipes leaving descendants or a queued original-start request.
+
+Root command: make test-go GO_PACKAGES='./deploymentrelease'
+GO_TEST_FLAGS='-overlay=/Users/stronk/repos/cloud-clicker/.cache/exec-terminal-probe-overlay.json
+-run TestManualExecTerminalResearch -v -count=1'. Manual source outside CI; actual API1.51
+and Docker28.4.0 arm64 metadata independently read. First metadata format uses wrong ApiVersion
+capitalization and partially fails; corrected APIVersion returns28.4.0/1.51/arm64. No failed
+format is passed engine evidence. Context discovery reads only the local socket endpoint.
+No whole environment/secret configuration/output, daemon restart or privilege change.
+
+Owned fixture opens its gates on cleanup, verifies exact full ID/label twice, observes PID1
+terminal0 then removes only it/its disposable anonymous volumes. Disposable fixture data is
+unrecoverable; retained bundles/two existing builders/caches preserved. No production, accepted
+RFC, CI/kernel/balance, deployment or publication change. Draft author reconciles CR4 and
+evidence without claiming mechanism closure. Review by: Codex root (research/draft author
+first filter). Recorded by: Codex root. Complete new rangee140405d-exclusive through this
+containing commit needs research/normative review outside corrective-only delegation.
+Next: settle the actual operation-specific lifetime fence, not another stable-snapshot rule.

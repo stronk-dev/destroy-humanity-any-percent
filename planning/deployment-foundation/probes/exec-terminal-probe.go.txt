@@ -1,0 +1,184 @@
+package deploymentrelease
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"net/url"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
+)
+
+// Manual Docker ExecID candidate falsification, not a recovery implementation.
+// A compiler overlay exposes this as a deploymentrelease _test.go file.
+func TestManualExecTerminalResearch(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	docker, err := exec.LookPath("docker")
+	if err != nil {
+		t.Fatal(err)
+	}
+	run := func(args ...string) string {
+		t.Helper()
+		out, err := exec.CommandContext(ctx, docker, args...).CombinedOutput()
+		if err != nil {
+			t.Fatalf("Docker diagnostic command failed: %v", err)
+		}
+		return strings.TrimSpace(string(out))
+	}
+	endpoint, err := url.Parse(run("context", "inspect", "--format", "{{(index .Endpoints \"docker\").Host}}"))
+	if err != nil || endpoint.Scheme != "unix" || endpoint.Path == "" {
+		t.Fatal("diagnostic requires the selected local Unix Docker endpoint")
+	}
+	transport := &http.Transport{DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
+		return (&net.Dialer{}).DialContext(ctx, "unix", endpoint.Path)
+	}}
+	defer transport.CloseIdleConnections()
+	client := &http.Client{Transport: transport}
+	api := func(method, path string, input, output any, wantStatus int) {
+		t.Helper()
+		var body io.Reader
+		if input != nil {
+			data, err := json.Marshal(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			body = bytes.NewReader(data)
+		}
+		request, err := http.NewRequestWithContext(ctx, method, "http://docker/v1.51"+path, body)
+		if err != nil {
+			t.Fatal(err)
+		}
+		request.Header.Set("Content-Type", "application/json")
+		response, err := client.Do(request)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer response.Body.Close()
+		if response.StatusCode != wantStatus {
+			t.Fatalf("Docker API %s %s status%d, want%d", method, path, response.StatusCode, wantStatus)
+		}
+		if output != nil {
+			if err := json.NewDecoder(response.Body).Decode(output); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	root := t.TempDir()
+	const label = "exec-terminal-research"
+	const image = "sha256:af555904a0961945f16bb323a501457b13a4f7e9bde969b145b97da80b38ecbe"
+	id := run("run", "-d", "--platform", "linux/amd64", "--read-only", "--network", "none", "--label", "cloud-clicker.manual="+label,
+		"--mount", "type=bind,src="+root+",dst=/probe", "--entrypoint", "/bin/sh", image,
+		"-c", "while [ ! -f /probe/stop ]; do sleep 0.05; done")
+	if len(id) != 64 || strings.Trim(id, "0123456789abcdef") != "" {
+		t.Fatal("invalid owned container ID")
+	}
+	defer func() {
+		cleanup, done := context.WithTimeout(context.Background(), 15*time.Second)
+		defer done()
+		for _, name := range []string{"gate", "stop"} {
+			if err := os.WriteFile(filepath.Join(root, name), []byte("open"), 0600); err != nil {
+				t.Error(err)
+			}
+		}
+		for range 2 {
+			out, err := exec.CommandContext(cleanup, docker, "inspect", "--format", "{{.Id}} {{index .Config.Labels \"cloud-clicker.manual\"}}", id).CombinedOutput()
+			if err != nil || strings.TrimSpace(string(out)) != id+" "+label {
+				t.Errorf("refuse unowned cleanup: %v", err)
+				return
+			}
+		}
+		out, err := exec.CommandContext(cleanup, docker, "wait", id).CombinedOutput()
+		if err != nil || strings.TrimSpace(string(out)) != "0" {
+			t.Errorf("owned PID1 not terminal0: %v", err)
+			return
+		}
+		if err := exec.CommandContext(cleanup, docker, "rm", "-v", id).Run(); err != nil {
+			t.Error(err)
+		}
+	}()
+	waitFor := func(check func() bool) {
+		t.Helper()
+		deadline := time.Now().Add(10 * time.Second)
+		for !check() {
+			if time.Now().After(deadline) || ctx.Err() != nil {
+				t.Fatal("handshake guard exhausted: invalid experiment")
+			}
+			time.Sleep(10 * time.Millisecond)
+		}
+	}
+	exists := func(name string) bool {
+		_, err := os.Stat(filepath.Join(root, name))
+		if err != nil && !errors.Is(err, os.ErrNotExist) {
+			t.Fatal(err)
+		}
+		return err == nil
+	}
+	type observation struct {
+		ID, ContainerID string
+		Running         bool
+		ExitCode, Pid   int
+	}
+	create := func(command string) string {
+		t.Helper()
+		var result struct{ ID string }
+		api("POST", "/containers/"+id+"/exec", map[string]any{"Cmd": []string{"/bin/sh", "-c", command}}, &result, 201)
+		if len(result.ID) != 64 || strings.Trim(result.ID, "0123456789abcdef") != "" {
+			t.Fatal("invalid created ExecID")
+		}
+		return result.ID
+	}
+	observe := func(execID string) observation {
+		t.Helper()
+		var result observation
+		api("GET", "/exec/"+execID+"/json", nil, &result, 200)
+		if result.ID != execID || result.ContainerID != id {
+			t.Fatal("exec/container identity mismatch")
+		}
+		return result
+	}
+	start := func(execID string) { api("POST", "/exec/"+execID+"/start", map[string]any{"Detach": true}, nil, 200) }
+	for _, forked := range []bool{false, true} {
+		t.Run(fmt.Sprintf("forked=%t", forked), func(t *testing.T) {
+			command := "printf completed > /probe/ordinary"
+			if forked {
+				command = `/bin/sh -c 'printf entered > /probe/entered; while [ ! -f /probe/gate ]; do sleep 0.05; done; printf completed > /probe/finished' & exit 0`
+			}
+			execID := create(command)
+			before := observe(execID)
+			if before.Running || before.ExitCode != 0 || before.Pid != 0 {
+				t.Fatal("created-state premise differs", before)
+			}
+			start(execID)
+			waitFor(func() bool { return !observe(execID).Running })
+			after := observe(execID)
+			if after.ExitCode != 0 {
+				t.Fatal("parent did not finish successfully", after)
+			}
+			// A terminal exec cannot be started again, unlike the created state.
+			api("POST", "/exec/"+execID+"/start", map[string]any{"Detach": true}, nil, 409)
+			if forked {
+				waitFor(func() bool { return exists("entered") })
+				if exists("finished") || exists("gate") {
+					t.Fatal("closed gate bypassed")
+				}
+				if err := os.WriteFile(filepath.Join(root, "gate"), []byte("open"), 0600); err != nil {
+					t.Fatal(err)
+				}
+				waitFor(func() bool { return exists("finished") })
+			} else if !exists("ordinary") {
+				t.Fatal("ordinary completion missing")
+			}
+			t.Logf("created Running=%t ExitCode=%d Pid=%d; terminal Running=%t ExitCode=%d Pid=%d; restart409; later gated descendant mutation=%t", before.Running, before.ExitCode, before.Pid, after.Running, after.ExitCode, after.Pid, forked)
+		})
+	}
+}
