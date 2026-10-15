@@ -17,12 +17,16 @@ if (!/^0\.[0-9]+\.[0-9]+$/.test(source) || source !== goVersion || source !== cl
   throw new Error(`kernel version drift: source=${source} go=${goVersion} client=${clientVersion}`);
 }
 
-const git = (...args) => execFileSync("git", args, {
+const gitRaw = (...args) => execFileSync("git", args, {
   cwd: repositoryRoot,
   encoding: "utf8",
   stdio: ["ignore", "pipe", "pipe"],
-}).trim();
-const gitStatus = () => execFileSync("git", ["status", "--porcelain=v1", "--untracked-files=all"], { cwd: repositoryRoot, encoding: "utf8" }).trimEnd();
+});
+const git = (...args) => gitRaw(...args).trim();
+// Display quoting, line separators and porcelain rename arrows are not a
+// filename protocol. Keep literal names, including both sides of a move.
+const gitNames = (...args) => gitRaw(...args).split("\0").filter(Boolean);
+const changedFiles = (before, after) => gitNames("diff", "--name-only", "--no-renames", "-z", before, after, "--");
 const validateGuard = (value, label) => {
   if (value.schema_version !== 1 || !Array.isArray(value.paths) || value.paths.length === 0 ||
       value.paths.some((entry) => typeof entry !== "string" || entry === "" || entry.startsWith("/") || entry.includes("..")) ||
@@ -81,7 +85,7 @@ const assertBump = (label, commit, files, paths, before, after, corrections, hea
       const head = versionTuple(headVersion, "current corrected version");
       if (tupleGreater(corrected, left) && (head[0] > corrected[0] || head[0] === corrected[0] && head[1] >= corrected[1]) && existsSync(reviewLogPath(correction.review_log))) return;
     }
-    throw new Error(`${label} changes kernel semantics without a real kernel/VERSION bump: ${changed.join(", ")}`);
+    throw new Error(`${label} changes kernel semantics without a real kernel/VERSION bump: ${changed.map((filename) => JSON.stringify(filename)).join(", ")}`);
   }
 };
 validateGuard(guard, "worktree");
@@ -168,7 +172,7 @@ const correctionTargetsMissedBump = (correction) => {
     parents = git("rev-list", "--parents", "-n", "1", correction.offending_commit).split(" ").slice(1);
   } catch { return false; }
   return parents.length > 0 && parents.some((parent) => {
-    const files = git("diff", "--name-only", parent, correction.offending_commit).split("\n").filter(Boolean);
+    const files = changedFiles(parent, correction.offending_commit);
     if (!files.some((filename) => affecting(filename, guard.paths))) return false;
     const before = git("show", `${parent}:kernel/VERSION`).trim();
     const after = git("show", `${correction.offending_commit}:kernel/VERSION`).trim();
@@ -243,7 +247,7 @@ if (guardIntroduction) {
     const parents = git("rev-list", "--parents", "-n", "1", commit).split(" ").slice(1);
     const childGuard = parseGuard(git("show", `${commit}:${guardPath}`), `commit ${commit}`);
     for (const parent of parents) {
-      const files = git("diff", "--name-only", parent, commit).split("\n").filter(Boolean);
+      const files = changedFiles(parent, commit);
       const parentGuard = commit === guardIntroduction ? childGuard : parseGuard(git("show", `${parent}:${guardPath}`), `parent ${parent} of ${commit}`);
       const removed = parentGuard.paths.filter((entry) => !childGuard.paths.includes(entry));
       if (removed.length !== 0) throw new Error(`commit ${commit} removes kernel-affecting paths from parent ${parent}: ${removed.join(", ")}`);
@@ -270,10 +274,11 @@ if (guardIntroduction) {
   }
 }
 
-const worktreeFiles = gitStatus().split("\n").filter(Boolean).flatMap((line) => {
-  const filename = line.slice(3);
-  return filename.includes(" -> ") ? filename.split(" -> ") : [filename];
-});
+const worktreeFiles = [...new Set([
+  ...gitNames("diff", "--name-only", "--no-renames", "-z", "--"),
+  ...gitNames("diff", "--cached", "--name-only", "--no-renames", "-z", "--"),
+  ...gitNames("ls-files", "--others", "--exclude-standard", "-z", "--"),
+])].sort();
 const headGuard = parseGuard(git("show", `HEAD:${guardPath}`), "HEAD");
 const removedFromWorktree = headGuard.paths.filter((entry) => !guard.paths.includes(entry));
 if (removedFromWorktree.length !== 0) throw new Error(`worktree removes kernel-affecting paths: ${removedFromWorktree.join(", ")}`);

@@ -92,6 +92,18 @@ changelog. A hardcap reduction additionally requires an explicit `Cap migration:
 Both guards reject shallow history and uncommitted governed artifacts, so local and hosted checks
 apply the same rules. CI checks out complete history for the server job.
 
+## Kernel version boundary
+
+`make verify-kernel-version` checks generated version parity and the registered paths on
+reachable parent edges since registry introduction, plus staged, unstaged and untracked work. It reads Git's
+NUL-delimited literal names rather than display quoting or porcelain rename arrows.
+Diffs disable rename collapsing so both the old and new paths are checked when a file moves;
+spaces, Unicode, quotes, tabs, newlines and literal arrows do not hide a watched path.
+Diagnostics JSON-escape filenames so control characters cannot masquerade as extra lines.
+Isolated real-Git fixtures check refusals and legitimate versioned/correction/rename controls.
+This enforces existing KV-1; it does not approve historical misses or implement the proposed
+scope-exception policy. The owning CI log records the actual root-gate result separately.
+
 ## Local use
 
 Run the exact blocking push aggregate from the repository root:

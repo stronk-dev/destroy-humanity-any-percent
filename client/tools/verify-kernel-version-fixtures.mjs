@@ -14,6 +14,91 @@ const versionFiles = (root, version) => {
   write(root, "client/src/kernel/version.ts", `export const KERNEL_VERSION = "${version}";\n`);
 };
 
+const testLiteralGitPaths = (fixtureRoot) => {
+  const admitted = [];
+  let refused = 0;
+  for (const scope of ["prefix", "exact"]) {
+    const root = path.join(fixtureRoot, `literal-paths-${scope}`);
+    mkdirSync(root);
+    run(root, "git", ["init", "-q"]);
+    run(root, "git", ["config", "user.email", "guard@example.invalid"]);
+    run(root, "git", ["config", "user.name", "Guard Test"]);
+    run(root, "git", ["config", "core.quotePath", "true"]);
+    const tool = "client/tools/verify-kernel-version.mjs";
+    write(root, tool, readFileSync(path.join(sourceRoot, tool), "utf8"));
+    const names = ["plain.ts", "space name.ts", "café.ts", 'quote"name.ts', "tab\tname.ts", "line\nname.ts", "back\\name.ts", "literal -> name.ts"];
+    const files = names.map((name) => `client/src/guarded/${name}`);
+    const future = names.map((name) => `client/src/guarded/future/${name}`);
+    const paths = scope === "prefix" ? ["client/src/guarded/"] : [...files, ...future].sort();
+    versionFiles(root, "0.1.0");
+    write(root, "kernel/affecting-paths.json", JSON.stringify({ schema_version: 1, paths }));
+    for (const filename of files) write(root, filename, "export const value = 1;\n");
+    commit(root, "fixture: introduce literal path guard");
+    run(root, "node", [tool]);
+    const expectBlocked = (stage, filename) => {
+      try {
+        run(root, "node", [tool]);
+        admitted.push({ scope, stage, filename });
+      } catch (error) {
+        if (!String(error.stderr).includes("changes kernel semantics without a real kernel/VERSION bump")) throw error;
+        refused++;
+      }
+    };
+    const worktreeCase = (index, label) => {
+      write(root, files[index], "export const value = 2;\n");
+      expectBlocked(`${label}/unstaged`, files[index]);
+      run(root, "git", ["add", "--", files[index]]);
+      expectBlocked(`${label}/staged`, files[index]);
+      run(root, "git", ["restore", "--source=HEAD", "--staged", "--worktree", "--", files[index]]);
+      write(root, future[index], "export const future = 1;\n");
+      expectBlocked(`${label}/untracked`, future[index]);
+      rmSync(path.join(root, future[index]));
+    };
+    names.forEach((_, index) => worktreeCase(index, "quoted"));
+    run(root, "git", ["config", "core.quotePath", "false"]);
+    worktreeCase(2, "unquoted-unicode");
+    run(root, "git", ["config", "core.quotePath", "true"]);
+    run(root, "node", [tool]);
+    if (admitted.length !== 0) continue;
+
+    // Matching, real version signals remain valid for every literal name.
+    for (const filename of files) write(root, filename, "export const value = 2;\n");
+    versionFiles(root, "0.1.1");
+    commit(root, "fixture: version literal paths");
+    run(root, "node", [tool]);
+
+    write(root, files[2], "export const value = 3;\n");
+    commit(root, "fixture: quoted historical miss");
+    expectBlocked("history", files[2]);
+    const target = run(root, "git", ["rev-parse", "HEAD"]).trim();
+    write(root, "planning/path-fix/log.md", `# Fixture ledger\n\n## Independent review (\`${target}^..${target}\`)\n\n- **Review by:** Fixture Reviewer\n- **Decision:** CHANGES REQUIRED\n`);
+    write(root, "kernel/history-corrections.json", JSON.stringify({ schema_version: 1, corrections: [{
+      offending_commit: target, corrected_in_version: "0.1.2", reason: "Fixture correction for the actual literal-path miss.", review_log: "planning/path-fix/log.md",
+    }] }));
+    versionFiles(root, "0.1.2");
+    commit(root, "fixture: correct literal-path history");
+    run(root, "node", [tool]);
+
+    const beforeRename = run(root, "git", ["rev-parse", "HEAD"]).trim();
+    const destination = "outside/plain.ts";
+    mkdirSync(path.dirname(path.join(root, destination)), { recursive: true });
+    renameSync(path.join(root, files[0]), path.join(root, destination));
+    run(root, "git", ["add", "-A"]);
+    expectBlocked("staged-rename-out", files[0]);
+    commit(root, "fixture: unversioned rename out of guard");
+    expectBlocked("history-rename-out", files[0]);
+    // A fresh sibling branch is a valid control, not rewriting the bad history.
+    run(root, "git", ["switch", "-c", "versioned-rename", beforeRename]);
+    mkdirSync(path.dirname(path.join(root, destination)), { recursive: true });
+    renameSync(path.join(root, files[0]), path.join(root, destination));
+    versionFiles(root, "0.1.3");
+    commit(root, "fixture: versioned rename out of guard");
+    run(root, "node", [tool]);
+  }
+  if (admitted.length !== 0) throw new Error(`kernel guard accepted literal Git paths: ${JSON.stringify(admitted)}`);
+  console.log(`kernel literal Git paths refused=${refused}; versioned/correction/rename controls ok`);
+};
+
 const productionGuard = JSON.parse(readFileSync(path.join(sourceRoot, "kernel/affecting-paths.json"), "utf8"));
 for (const required of ["client/src/achievements/", "client/src/meters/", "server/achievements/", "server/meters/"]) {
   if (!productionGuard.paths.includes(required)) throw new Error(`kernel registry omits active mechanic package ${required}`);
@@ -29,6 +114,8 @@ try {
   versionFiles(root, "0.1.0"); write(root, "client/src/replay.ts", "export const replay = 1;\n");
   write(root, "kernel/affecting-paths.json", `${JSON.stringify({ schema_version: 1, paths: ["client/src/replay.ts"] }, null, 2)}\n`);
   commit(root, "kernel: introduce guard"); run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+
+  testLiteralGitPaths(fixtureRoot);
 
   write(root, "client/src/replay.ts", "export const replay = 2;\n"); versionFiles(root, "0.1.1"); commit(root, "kernel: bump replay");
   run(root, "node", ["client/tools/verify-kernel-version.mjs"]);

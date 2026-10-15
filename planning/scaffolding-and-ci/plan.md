@@ -7,6 +7,14 @@
 
 ## Current checkpoint — 2026-10-15
 
+RP-649 correction: preserve literal Git filenames across working-tree, history and correction-
+target checks. The old CLI admits42/54 worktree cases; NUL-delimited lists and disabled rename
+collapsing now refuse60 cases while legitimate version/correction/move controls and the full
+legacy adversarial suite pass. The actual root gate still stops at50a3a514; its trailing fixture
+leaf is covered by the separate full execution, not credited as reached. The owning log records
+the new range after `f667bce0` needing designated Claude review. No exception policy, version,
+watched prefix, correction row, workflow or production behavior changes.
+
 RP-648 correction: honor an explicit Reviewed range when binding an existing history
 correction. Four old CLI examples admit wrong/empty/malformed/conflicting scopes;
 the repaired guard rejects them and additional exclusive-start/unresolved controls,

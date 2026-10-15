@@ -2142,3 +2142,42 @@ Separate next safe check: actual CLI source still parses Git's display-quoted pa
 and porcelain arrow text. Record RP-649 as unverified before probing the existing isolated
 fixture. A confirmed filename blind spot would be ordinary KV-1 conformance work; it neither
 needs this proposed exception authority nor establishes a current unversioned product change.
+
+## 2026-10-15 — RP-649 preserve actual Git filenames in the existing version guard
+
+Outcome under existing KV-1 at `f667bce0`: replace display-quoted/newline-split path handling
+with NUL-delimited Git names. One shared diff helper disables rename collapsing for both the
+history walk and actual-correction-target check; working changes union explicit unstaged,
+staged and nonignored untracked lists. A move out of a watched prefix retains its old path.
+Error diagnostics JSON-escape names rather than emitting literal control characters. No new
+scope policy, semantic exemption, registry/correction mutation or version change.
+
+Regression10309 runs the new isolated real-Git fixture against the unchanged old CLI and
+fails:42/54 working-state cases are incorrectly accepted. Eight literal names ×prefix/exact
+registration ×unstaged/staged/untracked, plus Unicode with quotePath disabled, retain plain
+and unquoted controls. Quoted spaces, Unicode, quotes, tabs, newline, backslash and arrow
+names account for the admissions; no actual unversioned product change is inferred.
+
+Corrected full fixture35749 passes60 refusal cases, legitimate matching-version controls,
+quoted historical miss→real forward correction, staged/committed move-out refusals and a
+versioned sibling-branch move. It then passes the complete prior review-provenance, remap,
+ancestry, archive, immutable-row, shallow and merge controls. The first corrected attempt99183
+legitimately refused my fixture's plain review labels; use the existing bold metadata grammar
+in that fixture, never relax the parser. No original-history-bypass execution is claimed from
+the initial working-state failure; the later history/correction/move checks are new controls.
+
+Both Node syntax checks pass. Root `make verify-ci-topology` passes26 negatives plus real
+Make cold/focused/repetition/browser-dispatch checks. Actual `make verify-kernel-version`67846
+passes checkout contract/fixtures, accepts the existing correction bindings, then still fails
+the real50a3a514 six-path miss. Its trailing fixture leaf does not execute; the separate full
+fixture result above covers that population, not a green aggregate. No full client/server,
+Node24/Linux/hosted or release claim for this tool-only fix. The separate27 arithmetic failures
+and unadopted history policy remain unchanged.
+
+All handles terminal. The fixture owns/removes only its temporary Git histories; no main
+history rewrite, services, user data or cleanup outside those existing fixture boundaries.
+Update canonical CI behavior, the existing plan and RP-649; diff/whitespace checked.
+Review by: Codex (implementer first filter). Recorded by: Codex. Entire source/test/docs/
+plan/ledger/log range after `f667bce0` through this containing commit needs designated Claude
+review, consolidatable with existing CI conformance repairs. The preceding draft proposal
+keeps its separate normative/adoption gate; no self-approval, archive, push or deployment.
