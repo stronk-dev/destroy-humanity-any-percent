@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "cases": [
+    { "name": "zero-equal", "lower": "0", "upper": "0", "addend": "0", "scale": "1", "terms": ["0"], "equal": true },
+    { "name": "positive-strict", "lower": "1", "upper": "2", "addend": "3", "scale": "7", "terms": ["1", "0.2", "0.03"], "strict": true },
+    { "name": "negative-strict", "lower": "-2", "upper": "-1", "addend": "3", "scale": "7", "terms": ["1", "0.2", "0.03"], "strict": true },
+    { "name": "cross-zero", "lower": "-1", "upper": "1", "addend": "2", "scale": "2", "terms": ["1e3", "-1e3", "1e-6"], "strict": true },
+    { "name": "fraction-equal", "lower": "1.25e-3", "upper": "1.25e-3", "addend": "3e-3", "scale": "2", "terms": ["9e-4"], "equal": true },
+    { "name": "canonical-carry", "lower": "9.99999999999", "upper": "1e1", "addend": "1e-12", "scale": "7", "terms": ["0.1", "1e-12", "4"] },
+    { "name": "raw-carry", "lower": "9.999999999999998e-1", "upper": "1", "addend": "1e-8", "scale": "7", "terms": ["4e-2", "3e-4"] },
+    { "name": "positive-half-even", "lower": "1.234567890125", "upper": "1.234567890135", "addend": "0", "scale": "2", "terms": ["0"] },
+    { "name": "negative-half-even", "lower": "-1.234567890135", "upper": "-1.234567890125", "addend": "2", "scale": "2", "terms": ["2"] },
+    { "name": "dominated-addition", "lower": "1e20", "upper": "1.00000000001e20", "addend": "1e40", "scale": "2", "terms": ["1e40", "1e-20"] },
+    { "name": "far-exponents", "lower": "1e-300", "upper": "2e-300", "addend": "1e300", "scale": "2", "terms": ["1e300", "1e-300"] },
+    { "name": "minimum-domain", "lower": "2e-8999999999999999", "upper": "4e-8999999999999999", "addend": "1e-8999999999999999", "scale": "2", "terms": ["1e-8999999999999999"] },
+    { "name": "maximum-domain", "lower": "1e8999999999999999", "upper": "2e8999999999999999", "addend": "1e8999999999999999", "scale": "2", "terms": ["1e8999999999999999"], "strict": true },
+    { "name": "negative-maximum-domain", "lower": "-2e8999999999999999", "upper": "-1e8999999999999999", "addend": "3e8999999999999999", "scale": "2", "terms": ["3e8999999999999999"], "strict": true },
+    { "name": "mixed-magnitude", "lower": "1", "upper": "9.99999999999", "addend": "1e14", "scale": "1e-10", "terms": ["9", "10", "1e-14", "1e14"] },
+    { "name": "group-crossing", "lower": "9.99999999999", "upper": "10", "addend": "9.99999999999", "scale": "1", "terms": ["9.99999999999", "10", "1e8", "1e-8"] },
+    { "name": "raw-group-crossing", "lower": "9.999999999999998", "upper": "10", "addend": "1", "scale": "1", "terms": ["1.23456789012", "9.87654321098", "1.000000000005e4"] },
+    { "name": "high-exponent-carry", "lower": "9.99999999999e4500000000000000", "upper": "1e4500000000000001", "addend": "1e4499999999999998", "scale": "1", "terms": ["1e4500000000000000", "3e4499999999999999"] }
+  ]
+}

@@ -19,6 +19,11 @@ temporal predicate/boundary proof and compatibility/landing closure, not another
 fixture census or owner approval in place of a technical answer. Go/TS, SQL/retry,
 all128 exact cases, complete workloads, CI and designated review remain required.
 
+Numeric conformance supplement RP-662 adds bounded shared ordered-transform tests
+under accepted RFC-0001, not a new monotonicity assumption for those drafts.
+RP-663 separately retains the lower-edge Go-zero/client-invalid underflow mismatch.
+Neither finding closes general payout/search correctness or authorizes accounting.
+
 ### Completed readiness studies and earlier draft steps
 
 The dated/hashed notes below preserve their original declarations and outcomes.

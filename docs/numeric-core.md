@@ -143,6 +143,23 @@ This runs Go tests and static analysis, strict TypeScript checking, the Node/V8 
 same TypeScript vectors in Chromium, Firefox, and WebKit. First-time setup is documented in the
 root README.
 
+`testdata/numeric-monotonicity-v1.json` adds eighteen shared literal ordered-input
+cases. Go and TypeScript check addition, positive scaling/division, quantization
+and deterministic aggregation before and after state quantization, without an
+ordering tolerance. Cases include negative/equal values, precision plateaus,
+exponent carries, grouping boundaries and representable domain edges. Strict-order
+controls reject a constant-result shortcut; other controls reject reversed results
+(including below canonical resolution), NaN, infinity and unnormalized values.
+These are bounded arithmetic checks, not proof that a complete production payout
+or search predicate is monotone over its entire domain.
+
+An explicit retained boundary check distinguishes an out-of-domain quotient:
+`1e-8999999999999999 / 2` underflows to zero in Go, whereas pinned JavaScript
+retains raw mantissa `5`, exponent `-9000000000000000`. The client rejects that
+diagnostic as state and canonical serialization throws. The ordered-input corpus
+does not count it as a representable output or claim cross-runtime equivalence
+for this case; RP-663 tracks the discrepancy separately. No arithmetic changed.
+
 The committed `testdata/decimal-vectors.json` uses schema 3 and contains 6,296 cases produced
 with a seeded RNG and the real pinned JavaScript library. It includes recomputed
 operation/classification counts, 23 mandatory named domain edges, and an assertion that random

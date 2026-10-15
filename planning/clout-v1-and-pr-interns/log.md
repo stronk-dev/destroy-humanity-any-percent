@@ -3914,3 +3914,49 @@ partition claim. Review by: Codex (research implementer/draft author first filte
 Recorded by: Codex. Entire range after `42e54cfe` through this containing commit
 needs designated Claude review, consolidatable with the calculation lane. No
 services or resources touched, adoption, acceptance, archival, push or deployment.
+
+## 2026-10-15 — Numeric ordered-transform conformance, not a search proof
+
+At `5c69475d`, inspect RFC-0001's accepted property table and the actual dedicated
+Go/TS suites. Round-trip/invalid-domain properties exist, but ordered arithmetic
+transforms are absent. RP-662 adds eighteen shared literal input pairs across
+addition, positive multiplication/division, Quantize12 and deterministic sum.
+Require exact raw and committed order, declared equal inputs, strict ordinary
+controls, state validity and TS input immutability. Invalid/reversed results,
+including a reversal hidden by canonical rounding, must fail the order oracle;
+legitimate equal-result plateaus must pass. No production or golden output changes.
+
+First Go compile fails on the new test's int versus float64 comparison; correct
+the test type before execution. Initial Node runs98 cases:97 pass, minimum-domain
+division fails because my proposed representable-output population included a
+quotient below the allowed domain. Preserve that original input as an explicit
+separate characterization: Go returns canonical zero; pinned JS returns raw
+mantissa5/exponent-9000000000000000, rejected by isStateValue/canonicalString.
+RP-663 remains OPEN: this is a real cross-runtime discrepancy, not agreement or
+a repaired arithmetic defect. For the representable minimum-domain order pair,
+use2e-min/4e-min divided by2; do not silently discard the initial failing input.
+No assertion is relaxed with a tolerance or a new gameplay numeric policy.
+
+Final cold `make test-go GO_PACKAGES='./decimal' GO_TEST_FLAGS='-count=1'` passes
+0.236s, including all existing numeric goldens. Affected decimal vet passes.
+Node `client/node_modules/.bin/vitest run --root client
+test/decimal-vectors.test.ts test/numeric-monotonicity.test.ts` passes6404 tests
+(100 new),0.663s. Typecheck/Svelte diagnostics pass with zero errors/warnings.
+Native all-engine startup first fails sandbox localhost binding; approved local
+server execution then passes Chromium/WebKit12806 tests at the earlier revision
+but reports Firefox connection timeout (4/6 files, not whole-browser green).
+Interrupt its lingering teardown, exit130. After the final extra reversal control,
+`make test-browser-focused BROWSER_TEST_FLAGS='test/decimal-vectors.test.ts
+test/numeric-monotonicity.test.ts --project=chromium --project=webkit'` passes
+12808 tests/4 files in2.26s. Firefox has no passing result for this batch.
+
+This is bounded arithmetic conformance, not whole-domain monotonicity, producer/
+search proof, new accounting, Clout AC6 or a repair of the original27 failures.
+No production/kernel/version/old vectors/balance/CI changes; no unrelated full
+journey, DB, performance, Linux or hosted run is needed or claimed. Archived RFC/
+planning remain frozen. Diff/formatting checked. Seven-path test/fixture/docs/
+plan/ledger/log range after `5c69475d` through this containing commit needs
+designated review, consolidatable with the calculation lane. Review by: Codex
+(implementer first filter). Recorded by: Codex. No acceptance, archival, services,
+resource deletion, push or deployment. Next continue actual caller/predicate and
+landing closure; do not cite these eighteen pairs as a general algorithm proof.
