@@ -240,7 +240,9 @@ func (d Decimal) Add(other Decimal) Decimal {
 	if other.exponent > d.exponent {
 		bigger, smaller = other, d
 	}
-	if bigger.exponent-smaller.exponent > 17 {
+	// Diagnostics can reach int64's lower edge. Compare the gap without
+	// overflowing a subtraction and incorrectly including an invisible term.
+	if bigger.exponent > math.MinInt64+17 && smaller.exponent < bigger.exponent-17 {
 		return bigger
 	}
 	aligned := 1e14*bigger.mantissa + 1e14*smaller.mantissa*math.Pow10(int(smaller.exponent-bigger.exponent))
@@ -257,11 +259,15 @@ func (d Decimal) Mul(other Decimal) Decimal {
 	if d.IsNaN() || other.IsNaN() {
 		return NaN
 	}
-	if (math.IsInf(d.mantissa, 0) && other.mantissa == 0) || (d.mantissa == 0 && math.IsInf(other.mantissa, 0)) {
+	if d.mantissa == 0 || other.mantissa == 0 {
 		return Zero
 	}
 	if math.IsInf(d.mantissa, 0) || math.IsInf(other.mantissa, 0) {
 		return Decimal{mantissa: math.Copysign(math.Inf(1), d.mantissa*other.mantissa)}
+	}
+	if other.exponent > 0 && d.exponent > math.MaxInt64-other.exponent ||
+		other.exponent < 0 && d.exponent < math.MinInt64-other.exponent {
+		return NaN
 	}
 	return arithmeticResult(d.mantissa*other.mantissa, d.exponent+other.exponent)
 }
@@ -272,11 +278,15 @@ func (d Decimal) Div(other Decimal) Decimal {
 	if d.IsNaN() || other.IsNaN() {
 		return NaN
 	}
-	if other.mantissa == 0 || math.IsInf(other.mantissa, 0) {
+	if d.mantissa == 0 || other.mantissa == 0 || math.IsInf(other.mantissa, 0) {
 		return Zero
 	}
 	if math.IsInf(d.mantissa, 0) {
 		return Decimal{mantissa: math.Copysign(math.Inf(1), d.mantissa*other.mantissa)}
+	}
+	if other.exponent > 0 && d.exponent < math.MinInt64+other.exponent ||
+		other.exponent < 0 && d.exponent > math.MaxInt64+other.exponent {
+		return NaN
 	}
 	return arithmeticResult(d.mantissa/other.mantissa, d.exponent-other.exponent)
 }
@@ -329,6 +339,25 @@ func (d Decimal) Ln() Decimal {
 	return FromFloat64(2.302585092994045 * (float64(d.exponent) + math.Log10(d.mantissa)))
 }
 
+// lowerPowerDiagnostic retains the pinned library's finite lower-domain result
+// when its exponent fits the Go representation. Do not convert such a result to
+// valid zero or reroute it through another logarithmic approximation. In-domain
+// arithmetic keeps its existing path; this does not widen the gameplay domain.
+func lowerPowerDiagnostic(mantissa, exponent float64) (Decimal, bool) {
+	if math.IsNaN(exponent) || math.IsInf(exponent, 0) || exponent >= -float64(maxExponent) ||
+		math.IsNaN(mantissa) || math.IsInf(mantissa, 0) || mantissa == 0 {
+		return NaN, false
+	}
+	normalized := New(mantissa, 0)
+	// JS normalizes the coefficient and adds its shift to a Number exponent.
+	// Preserve that addition's rounding before converting the diagnostic to int64.
+	exponent += float64(normalized.exponent)
+	if exponent < float64(math.MinInt64) || exponent >= -float64(math.MinInt64) {
+		return NaN, false
+	}
+	return arithmeticResult(normalized.mantissa, int64(exponent)), true
+}
+
 func pow10(value float64) Decimal {
 	if math.IsNaN(value) {
 		return NaN
@@ -337,6 +366,9 @@ func pow10(value float64) Decimal {
 		return Inf
 	}
 	if math.IsInf(value, -1) || value < -float64(maxExponent) {
+		if result, ok := lowerPowerDiagnostic(math.Pow(10, math.Mod(value, 1)), math.Trunc(value)); ok {
+			return result
+		}
 		return Zero
 	}
 	if math.Trunc(value) == value {
@@ -369,16 +401,26 @@ func (d Decimal) Pow(power float64) Decimal {
 	exponentProduct := float64(d.exponent) * power
 	if math.Trunc(exponentProduct) == exponentProduct && math.Abs(exponentProduct) <= jsMaxInteger {
 		mantissa := math.Pow(d.mantissa, power)
-		if !math.IsNaN(mantissa) && !math.IsInf(mantissa, 0) && mantissa != 0 && math.Abs(exponentProduct) <= float64(maxExponent) {
-			return New(mantissa, int64(exponentProduct))
+		if !math.IsNaN(mantissa) && !math.IsInf(mantissa, 0) && mantissa != 0 {
+			if math.Abs(exponentProduct) <= float64(maxExponent) {
+				return New(mantissa, int64(exponentProduct))
+			}
+			if result, ok := lowerPowerDiagnostic(mantissa, exponentProduct); ok {
+				return result
+			}
 		}
 	}
 
 	integerPart := math.Trunc(exponentProduct)
 	fractionalPart := exponentProduct - integerPart
 	mantissa := math.Pow(10, power*math.Log10(d.mantissa)+fractionalPart)
-	if !math.IsNaN(mantissa) && !math.IsInf(mantissa, 0) && mantissa != 0 && math.Abs(integerPart) <= float64(maxExponent) {
-		return New(mantissa, int64(integerPart))
+	if !math.IsNaN(mantissa) && !math.IsInf(mantissa, 0) && mantissa != 0 {
+		if math.Abs(integerPart) <= float64(maxExponent) {
+			return New(mantissa, int64(integerPart))
+		}
+		if result, ok := lowerPowerDiagnostic(mantissa, integerPart); ok {
+			return result
+		}
 	}
 
 	result := pow10(power * (float64(d.exponent) + math.Log10(math.Abs(d.mantissa))))

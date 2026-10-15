@@ -116,28 +116,38 @@ func TestLedgerRejectsHardcapUnknownAndNonFinite(t *testing.T) {
 }
 
 func TestLedgerRejectsArithmeticUnderflowAtomically(t *testing.T) {
-	for _, accrue := range []bool{false, true} {
-		t.Run(map[bool]string{false: "transaction", true: "accrual"}[accrue], func(t *testing.T) {
-			ledger := newTestLedger(t)
-			before := ledger.Snapshot()
-			transaction := Transaction{Entries: []Entry{
-				{ResourceID: "company.users", Delta: decimal.One},
-				{ResourceID: "company.cash", Delta: decimal.FromString("1e-8999999999999999").Div(decimal.FromFloat64(2))},
-			}}
-			apply := ledger.Apply
-			if accrue {
-				apply = ledger.ApplyAccrual
-			}
-			if _, err := apply(transaction); !errors.Is(err, ErrInvalidTransaction) {
-				t.Fatalf("error = %v, want invalid transaction, not a zero payment", err)
-			}
-			after := ledger.Snapshot()
-			for resourceID, balance := range before {
-				if after[resourceID] != balance {
-					t.Fatalf("%s changed after rejection", resourceID)
+	for _, producer := range []struct {
+		name  string
+		delta decimal.Decimal
+	}{
+		{"division", decimal.FromString("1e-8999999999999999").Div(decimal.FromFloat64(2))},
+		{"integer-power", decimal.FromString("1e-4500000000000001").Pow(2)},
+		{"fractional-power", decimal.FromString("4e-6000000000000000").Pow(1.5)},
+		{"exp", decimal.FromString("-1e18").Exp()},
+	} {
+		for _, accrue := range []bool{false, true} {
+			t.Run(producer.name+"/"+map[bool]string{false: "transaction", true: "accrual"}[accrue], func(t *testing.T) {
+				ledger := newTestLedger(t)
+				before := ledger.Snapshot()
+				transaction := Transaction{Entries: []Entry{
+					{ResourceID: "company.users", Delta: decimal.One},
+					{ResourceID: "company.cash", Delta: producer.delta},
+				}}
+				apply := ledger.Apply
+				if accrue {
+					apply = ledger.ApplyAccrual
 				}
-			}
-		})
+				if _, err := apply(transaction); !errors.Is(err, ErrInvalidTransaction) {
+					t.Fatalf("error = %v, want invalid transaction for non-state arithmetic result", err)
+				}
+				after := ledger.Snapshot()
+				for resourceID, balance := range before {
+					if after[resourceID] != balance {
+						t.Fatalf("%s changed after rejection", resourceID)
+					}
+				}
+			})
+		}
 	}
 }
 

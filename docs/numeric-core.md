@@ -124,7 +124,12 @@ Multiplication, division, and integer powers normalize their final arithmetic re
 exponent edge. This preserves a mantissa carry that rescues a valid lower-bound value, avoids a
 transient reciprocal overflow during division, and retains finite, invalid lower-domain
 diagnostics from these result paths rather than making them valid zero payments. This does
-not expand the constructor/state domain or establish parity for every power/exp fallback.
+not expand the constructor/state domain. Lower-domain power/exp fallbacks also retain
+finite diagnostics when the normalized exponent fits Go's int64 representation,
+instead of replacing them with zero or recomputing them through another logarithm.
+Arithmetic with those diagnostics checks exponent overflow before multiplication/division;
+addition compares its exponent gap without overflowing. Genuine zero operations and
+representable results recovered from intermediate diagnostics remain supported.
 A geometric ratio whose representable difference from one is zero uses
 the constant-price limit rather than dividing by zero.
 
@@ -185,15 +190,24 @@ tests retain the existing result; no minigame semantics have changed.
 
 RP-663's corrected boundary retains the pinned client's raw mantissa `5`, exponent
 `-9000000000000000` for `1e-8999999999999999 / 2`, not valid zero. The shared
-`numeric-lower-domain-v1.json` population covers positive/negative multiplication
-and division, farther lower-domain results, the integer-power result path, and
-valid carry/zero controls. Raw fields and finite-but-invalid classification are
-checked in both runtimes; library display text is not a wire oracle. Client
+`numeric-lower-domain-v1.json` population covers24 cases: positive/negative multiplication
+and division, integer/fractional powers and exp fallbacks, and valid carry/zero controls.
+Twenty cases check literal raw fields; four transcendental diagnostic cases check exact
+finite/nonzero/sign/normalized/invalid-state classification, not raw transcendental bits.
+No valid arithmetic tolerance changes. Library display text is not a wire oracle. Client
 canonical serialization throws; Go's diagnostic string also fails canonical
 parsing. Existing accrual and atomic ledger guards now refuse those invalid
 results instead of accepting zero. `production-lower-domain-v1.json` includes three
 such refusals and valid carry/zero controls. No new payout or quantization policy
 is adopted, and RP-664/partition correctness remains separate.
+
+RP-663 remains open beyond Go's exponent representation: minimum-exponent input
+raised to2048 and `exp(-1e20)` still become valid zero in Go, while pinned JavaScript
+retains finite invalid diagnostic exponents below int64's minimum. These are executed
+counterexamples, not covered by the correction or a blanket parity claim. The current
+contract has not adopted a representation/diagnostic-classification rule for that
+discrepancy; resolve it before claiming complete lower-domain conformance. No domain
+expansion, tetration, sentinel substitution or client-library change is adopted here.
 
 The committed `testdata/decimal-vectors.json` uses schema 3 and contains 6,296 cases produced
 with a seeded RNG and the real pinned JavaScript library. It includes recomputed

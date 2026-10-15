@@ -4324,3 +4324,64 @@ for that follow-up rather than claiming blanket parity. Next add/execute its bou
 regression under the same accepted diagnostic contract and determine the correction;
 no owner policy is inferred. No accounting/sparse candidate adoption, partition
 repair, original-feature acceptance, archival, push or release approval follows.
+
+## 2026-10-15 — RP-663 representable power/exp fallback correction
+
+Resume cleanf4158b6c; prior turn made implementation/review progress. Accepted Numeric
+Core/Boundary Hardening §3/§4 governs this repair, not either accounting draft. Before
+runtime edits, root cold regressions38338 expose11 new numeric failures and six new
+actual Ledger.Apply/ApplyAccrual mistaken accepts; original division controls pass.
+`(4e-6000000000000000)^1.5` is not merely lost to zero: old Go returns valid
+`1e-8999999999999998`, while pinned Node returns invalid raw(8,-9000000000000000).
+Other retained safe/unsafe-integer exponent, sign, fractional, pow10 and exp cases
+return old Go zero. Node25 passes before correction. Failures are root-executed
+tool-transcript evidence, not a claimed independent historical reproduction.
+
+Preserve the lower fallback result when its normalized exponent fits int64, using
+JS Number exponent-shift addition before the conversion. Existing in-domain paths
+stay unchanged. Reached diagnostics require safe Add gap comparison and checked
+Mul/Div exponent arithmetic: no wrap back into valid state; genuine zero and valid
+quotient/Add/Sub recovery still work. Kernel0.3.219 records genuine numeric change.
+The24-case shared fixture has20 literal raw checks and four explicitly classified
+transcendental diagnostics (finite/nonzero/sign/normalized/invalid state+wire), not a
+loosened valid-value tolerance or replacement for6296 goldens. Initial int64-edge
+test assumes coefficient1; actual normalized coefficient1.298... disproves that
+instrument premise. The final test checks the required normalized diagnostic and
+its actual arithmetic, not invented bit equality for a transcendental intermediate.
+
+Reexecute existing partition/rate then anchor instruments with their UPDATE switches
+on root make test-go. All numerical report outputs stay identical; only source and
+partition-dependency hashes change. Current lower-domain refusal populations and
+all original27 partition failures remain; no research/balance/accounting adoption.
+
+Verification: final cold Decimal/Economy/Kernel pass; broad affected consumer run
+passes Pitch/Commons/Kernel/Save/Replayverify/Faction/Guild/Commonsbinding, Production
+RED only at27 partition failures64.553s. That broad run precedes only the final Add
+diagnostic-gap guard; final Decimal/Economy/Kernel and affected vet pass after it,
+and fresh reviewer separately executes the full final Production population. Final
+root Node nine numeric/Economy/replay/report files7920 pass; same selection23760
+passes in declared Linux Chromium/Firefox/WebKit. Final source-bound report checks
+use Decimal0f20973d. Linux-amd64 selected raw diagnostics, diagnostic arithmetic,
+actual ledger refusals and accrual controls pass. This is native ledger/Company math,
+not underflow-through-SQL; selected Kernel has no matching tests, its full native
+suite passes. Declared Compose starts disposable Postgres even though these selected
+cases do not use it. Full types/Svelte0/0, build/UI boundaries and whitespace pass.
+Vectors-check6296 byte-identical; fuzz-ci6188653 executions/30.341s passes (before
+final Add guard, unchanged normalization/round-trip boundary). No whole CI green,
+hosted hardware, pacing, deployed/user loss or release proof is claimed.
+
+**DESIGN-GAP remains beyond int64.** A temporary observation file, removed after its
+cold execution, runs minimum-exponent input.Pow(2048) and FromString(-1e20).Exp:
+Go raw(0,e0), finite=true/state=true for both. Pinned Node instead returns finite
+raw(1,-18431999999999997952) and(1,-43429448190325178368), invalid state. The
+observation asserted current outputs, not conformance; do not count its pass as
+correctness. No private diagnostic representation, guessed sentinel, NaN policy or
+domain expansion is adopted. RP-663 stays open for an explicit follow-up contract;
+the scoped code correction cannot resolve a representation/classification choice.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete range
+afterf4158b6c through this containing code/test/fixture/version/docs/record commit
+is submitted to fresh independent `/root/power_fallback_corrective_review` under
+Marco's corrective-code delegation. Final verdict pending; no self-approval,
+archival, content mint, push or deployment. Next record that verdict and propose
+the small exponent-limit follow-up while continuing other accepted1.0 work.

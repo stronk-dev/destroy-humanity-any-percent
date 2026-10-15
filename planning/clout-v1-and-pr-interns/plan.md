@@ -27,10 +27,18 @@ diagnostics instead of valid zero, under accepted Numeric Core Boundary Hardenin
 ledger refusal regressions fail against old behavior. Kernel0.3.218 records the
 behavior change; fresh independent corrective review approves the complete range
 through3c521cab (exact verdict in log). This does not adopt either draft or close
-broader power/exp fallback conformance. Next reproduce those separate fallback paths
-cold in Go: pinned Node retains(1,-9000000000000002) for
-`1e-4500000000000001` squared, while the unchanged Go fallback source clamps to zero.
-That source-predicted residual is outside the approved shared-result-path correction.
+broader power/exp fallback conformance. Follow-up Kernel0.3.219 now locally corrects
+the int64-representable lower fallback paths, with24 shared cases and actual ledger
+refusals. Eleven old raw/domain failures include a fractional power wrongly becoming
+valid state, not only zero; six extra old ledger accepts reproduce. New diagnostic
+arithmetic tests guard exponent wrap and valid zero/quotient/Add/Sub recovery. This
+follow-up needs its own fresh corrective verdict;3c521cab did not approve it.
+RP-663 remains OPEN beyond int64: actual Go minimum-exponent^2048 and exp(-1e20)
+return valid zero, pinned Node retains finite invalid exponents. DESIGN-GAP: resolve
+that diagnostic representation/classification contract before further implementation,
+not a hidden clamp, guessed sentinel or claiming full conformance. No new product
+decision or accounting adoption follows from the bounded fixes. Existing valid
+arithmetic paths, numeric goldens and original research outputs stay unchanged.
 Current re-observation of the unchanged20 lower-domain profiles now gives19 cumulative
 proofs plus one refused one-shot projection, and18 complete deferred work-cut sequences
 plus two refusal sequences; every new refusal asserts full unchanged state/no receipt.
