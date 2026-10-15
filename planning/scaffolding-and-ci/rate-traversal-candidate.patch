@@ -1,0 +1,54 @@
+diff --git a/server/production/engine.go b/server/production/engine.go
+index 7560ea6b..e0a5490a 100644
+--- a/server/production/engine.go
++++ b/server/production/engine.go
+@@ -307,6 +307,8 @@ func ratesWithProvisionedAndPolicy(catalog *economy.Catalog, counts, provisioned
+ 		return nil, fmt.Errorf("%w: generator count set does not match catalog", ErrInvalidEngineState)
+ 	}
+ 	rates := make(map[string][]decimal.Decimal)
++	var bySlot [len(multiplier.Order)][]string
++	slotsPrepared := false
+ 	for _, generator := range generators {
+ 		count, exists := counts[generator.ID]
+ 		if !exists || count < 0 || count > decimal.MaxExactInteger || generator.Production == nil {
+@@ -326,18 +328,31 @@ func ratesWithProvisionedAndPolicy(catalog *economy.Catalog, counts, provisioned
+ 		if policy.masksGenerator(generator.ID) {
+ 			continue
+ 		}
+-		total := new(big.Int).Add(big.NewInt(count), big.NewInt(generated))
+-		rate := generator.Production.BaseRate.Mul(decimal.FromString(total.String()))
+-		for _, slot := range multiplier.Order {
+-			sources := make([]string, 0)
++		if !slotsPrepared && len(bySource) != 0 {
++			// Sort each validated slot once, only when an active generator
++			// needs it. Filtering this order preserves filter-then-sort.
+ 			for identity, contribution := range bySource {
+-				if contribution.Slot == slot && (contribution.Target == "all" || contribution.Target == generator.ID) {
+-					sources = append(sources, identity)
++				for index, slot := range multiplier.Order {
++					if contribution.Slot == slot {
++						bySlot[index] = append(bySlot[index], identity)
++						break
++					}
+ 				}
+ 			}
+-			for _, identity := range multiplier.OrderedSourceIDs(sources) {
+-				rate = rate.Mul(bySource[identity].Factor)
+-				policy.activateSynergySource(bySource[identity].SourceID)
++			for _, identities := range bySlot {
++				sort.Strings(identities)
++			}
++			slotsPrepared = true
++		}
++		total := new(big.Int).Add(big.NewInt(count), big.NewInt(generated))
++		rate := generator.Production.BaseRate.Mul(decimal.FromString(total.String()))
++		for _, identities := range bySlot {
++			for _, identity := range identities {
++				contribution := bySource[identity]
++				if contribution.Target == "all" || contribution.Target == generator.ID {
++					rate = rate.Mul(contribution.Factor)
++					policy.activateSynergySource(contribution.SourceID)
++				}
+ 			}
+ 		}
+ 		if !rate.IsStateValue() || rate.Lt(decimal.Zero) {

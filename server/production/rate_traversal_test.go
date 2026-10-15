@@ -221,3 +221,39 @@ func TestRateTraversalPreservesExactOrderTargetsAndActivation(t *testing.T) {
 		t.Fatal("ordering fixture cannot distinguish the rejected traversal alternatives")
 	}
 }
+
+// Manual equivalent-refactor measurement, not a pacing or acceptance gate.
+// The same benchmark can run on the active traversal and a compiler overlay;
+// no alternative implementation is selected by production or ordinary tests.
+func BenchmarkRateTraversal(b *testing.B) {
+	catalog, contributions := rateTraversalFixture(b)
+	for _, profile := range []struct {
+		name   string
+		owned  int64
+		inputs []multiplier.Contribution
+		mask   bool
+	}{
+		{"no_contributions", 8, nil, false},
+		{"all_slots", 8, contributions, false},
+		{"inactive", 0, contributions, false},
+		{"masked", 8, contributions, true},
+	} {
+		b.Run(profile.name, func(b *testing.B) {
+			counts := map[string]int64{}
+			masks := map[string]bool{}
+			for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
+				counts[generator.ID] = profile.owned
+				masks[generator.ID] = profile.mask
+			}
+			policy := &simulationPolicy{generators: masks}
+			b.ReportAllocs()
+			b.ResetTimer()
+			for range b.N {
+				rates, err := ratesWithProvisionedAndPolicy(catalog, counts, nil, profile.inputs, policy)
+				if err != nil || profile.owned > 0 && !profile.mask && len(rates) == 0 {
+					b.Fatalf("rate traversal failed: rates=%v err=%v", rates, err)
+				}
+			}
+		})
+	}
+}

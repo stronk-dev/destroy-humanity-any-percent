@@ -136,6 +136,19 @@ under measurement authority. Linux/hosted attribution and full maintenance remai
 
 ### Proposed equivalent rate traversal — existing Production C2
 
+2026-10-15 isolated engineering checkpoint at `9bdf9c29`: the retained
+`rate-traversal-candidate.patch` implements lazy per-call canonical slot buckets in a
+temporary compiler overlay, **not active production**. Existing exact-bit/order/activation/
+refusal and simulation checks pass; full native Production retains the27 known partition
+failures. Manual microbenchmarks reduce populated-case work/allocations, but do not prove
+whole-harness/hosted improvement or a full equivalence domain. The first eager prototype
+regressed inactive/masked work and was replaced; the log preserves those observations.
+Complete300-key standard-phase measurement is in progress (owning log/session51264),
+with the unchanged scenario, worker count and report identity check. Do not restart a
+live run or call an incomplete measurement a gain. Active engine/kernel/history and CI
+remain unchanged; existing guard authority, exact-path independent identity review and
+remaining affected runtime proofs still precede landing/closeout.
+
 - Keep complete declaration/slot/target/factor/dynamic-identity/duplicate validation first,
   including factors unused by zero or masked generators; no activation escapes failed preflight.
 - Build per-call slot buckets from validated contributions. Sort each bucket once by the

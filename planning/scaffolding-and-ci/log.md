@@ -1928,3 +1928,70 @@ Review by: Codex (implementer/draft-author first filter). Recorded by: Codex. En
 seven-path CLI/tests/docs/plan/log/ledger/draft range after `691e9bac` through this
 containing commit needs designated Claude review. No feature acceptance, archival,
 push/deployment or release; Headcount answers and the other named holds remain open.
+
+## 2026-10-15 — RP-596 isolated rate-traversal candidate; complete measurement running
+
+Outcome at clean baseline `9bdf9c29`: construct an experimental implementation of the
+existing Production C2 proposal without landing a watched runtime edit or inventing a version
+signal. `rate-traversal-candidate.patch` applies cleanly to the active engine, but remains
+unapplied. A temporary copy at `/private/tmp/cloud-clicker-rate-candidate.2kNxJt/engine.go`
+is compiled only through that directory's explicit Go overlay. Full contribution validation
+stays first. For the first active/unmasked generator, construct per-call buckets indexed by
+the existing multiplier order, sort each by the unchanged full source/target identity and
+filter its targets without reassociating any multiplication. No shared cache or changed
+generator/resource order, count arithmetic, activation point or persisted/wire behavior.
+
+Source SHA256s: active engine `b872d4746779a097f68f88475cef66214a2a7f8970817298f788ffad515ae875`;
+final candidate `d9b789badba9585010ecd332170ffe559f77c9ceb3665984fc81e1236bbb52ea`;
+retained patch `300f496d23148c542f4972878b592fe292145cec44d1bc718c8f0f0c74a49025`;
+new benchmark source `8be15a70af591a9eb085b95ff07d58e3c0ba00dfee023be4ff54de8f41d04849`.
+The patch's original/new Git blobs also match the actual two engine files. `git apply --check`
+passes; no patch is applied to the checkout. An overlay is experimental source replacement,
+not a governed artifact or a kernel/history exception. Historical reports stay untouched.
+
+Manual benchmark added to the existing ordering-fixture test file; no new measurement framework
+or CI lane. Root `make test-go GO_PACKAGES=./production
+GO_TEST_FLAGS='-run NoTests -bench BenchmarkRateTraversal -benchtime=200ms -count=3'`
+and the same command with `-overlay=/private/tmp/cloud-clicker-rate-candidate.2kNxJt/overlay.json`
+run sequentially on Go1.27.2/darwin/arm64/Apple M3 Max. Three-sample medians below are
+microbench observations, not statistical or whole-harness/hosted improvement claims:
+
+| Controlled profile | Active ns/op | Final candidate ns/op | Active→candidate allocations/op |
+|---|---:|---:|---:|
+| no contributions | 4,016 | 3,169 | 58→58 |
+| all nine slots | 20,567 | 6,535 | 341→84 |
+| inactive | 2,554 | 2,774 | 49→49 |
+| masked | 2,592 | 2,836 | 49→49 |
+
+The final empty-input samples include a5,154ns outlier; inactive/masked timing is still worse
+in this small sample, despite equal allocations. Do not erase either. The first eager-map
+prototype used63 allocations and roughly3.8–4.4µs for inactive/masked versus49 and roughly2.6µs
+active; avoid that unused preparation in the final candidate. An intermediate lazy-map edit
+failed compilation on an unused loop variable; corrected before successful execution. Neither
+that build failure nor discarded prototypes are credited as completed candidate evidence.
+
+Final overlay: cold focused `TestRate` and `TestSimulation` pass, including exact mantissa bits/
+exponents, all nine slots, interleaved global/target order, activation/input preservation,
+12 unused invalid-factor refusals, projection and frozen-rate controls. Cold full native
+Production executes in37.813s and fails exactly the original27 partition cases; no new failure
+or arithmetic repair is claimed. Database-dependent tests have no real Postgres prerequisite
+here and receive no integration credit. Active-source Production/Multiplier vet passes;
+candidate-specific full vet remains owed. No independent verdict or full-domain equivalence.
+
+**Live full-population measurement:** session51264, same existing benchmark, exact root command:
+`make test-go GO_PACKAGES=./harness
+GO_TEST_FLAGS='-overlay=/private/tmp/cloud-clicker-rate-candidate.2kNxJt/overlay.json -run NoTests -bench BenchmarkStandardPacingProfile -benchtime=1x -timeout=60m -cpuprofile=/private/tmp/cloud-clicker-rate-candidate.2kNxJt/cpu.pprof -o=/private/tmp/cloud-clicker-rate-candidate.2kNxJt/harness.test -v'`.
+Its startup identifies12 workers,14 logical CPUs, scenario `10aa5c8a…bb07a` and epoch8
+`baa89050…128f6`, matching the earlier complete standard-phase profile. The last poll confirms
+the same handle live, with no result yet. Resume it; do not restart on silence. No concurrent
+heavy benchmark/test is launched after it. On completion inspect all300 governed keys,
+failures, wall time and canonical report digest against historical `1ffa47cf…e826d`; disclose
+any mismatch. This phase excludes registered relevance, CLI guards and full maintenance.
+The earlier783.821s profile is historical, not a matched current-source timing control.
+
+Review by: Codex (candidate/test implementer first filter). Recorded by: Codex. The new
+benchmark/patch/docs/plan/ledger/log range after `9bdf9c29` needs designated Claude review;
+this checkpoint is not an optimization adoption or a landing-ready full-runtime verdict.
+Existing exact-path guard authority/independent eligibility and remaining parity/replay/player
+proofs precede active runtime landing/closeout. No kernel/balance/golden/workflow/budget change,
+new mechanics, shortened population, publication, deployment, archive or1.0 promotion.

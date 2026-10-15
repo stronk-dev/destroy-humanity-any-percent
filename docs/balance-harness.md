@@ -236,6 +236,17 @@ recording with the Go toolchain's bundled `cmd/pprof`, using the repository's no
 shows source attribution. Missing input or malformed recordings fail. This reader is a manual
 diagnostic, not a CI dependency, profile validator for release or optimization authority.
 
+`make test-go GO_PACKAGES=./production GO_TEST_FLAGS='-run NoTests -bench BenchmarkRateTraversal -benchtime=200ms -count=3'`
+measures four small controlled rate-traversal profiles: empty contributions, all nine slots,
+inactive generators and masked generators. It reuses the admitted ordering fixture, reports
+allocations and is manual-only. These timings do not establish whole-harness or hosted gains.
+The CI plan retains an **unapplied**
+[candidate patch](../planning/scaffolding-and-ci/rate-traversal-candidate.patch).
+Experiments compile its temporary copy with Go's `-overlay`; active production, historical
+reports, kernel identity and ordinary dispatch remain unchanged. A compiler overlay is an
+experimental source replacement, not a governed release artifact or scope-exception approval.
+The owning log binds exact source hashes, executed populations and unresolved landing gates.
+
 R-001 measurements can attach an explicit `harness_observation.v1` checkpoint to the complete
 check. The checkpoint is operational evidence only: it is always marked `authoritative: false` and
 cannot replace a golden report, baseline, epoch artifact, or harness verdict.
