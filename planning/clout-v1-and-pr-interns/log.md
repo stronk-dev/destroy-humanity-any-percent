@@ -4385,3 +4385,35 @@ is submitted to fresh independent `/root/power_fallback_corrective_review` under
 Marco's corrective-code delegation. Final verdict pending; no self-approval,
 archival, content mint, push or deployment. Next record that verdict and propose
 the small exponent-limit follow-up while continuing other accepted1.0 work.
+
+## 2026-10-15 — power correction independently approved; representation draft only
+
+Review by: fresh independent Codex sub-agent `/root/power_fallback_corrective_review`.
+Recorded by: Codex parent transcribing its returned verdict under Marco's narrow
+corrective-code delegation. **APPROVED**, no actionable findings, every changed path
+in exact15-path range
+`f4158b6c5521b59c3deeb966f9c590558d21a15d..1d1b244a82ff14fe141e95af632cbf79c404a265`.
+
+Reviewer inspects complete final code/tests/fixture/version/docs/report/records
+against pinned source and accepted numeric contracts. Independently cold full
+Decimal/Economy/Kernel and affected vet pass; final-source full Production50.457s
+is RED only at original27 partition cases. Eleven selected Node files7767 pass;
+types/Svelte0/0,6296-vector byte-identical regeneration, final ledger regression and
+range whitespace pass. Kernel checkout/adversarial tests pass, historical scan
+still RED at50a3a514. Final Decimal source0f20973d matches refreshed report bindings.
+Old failures remain root transcript evidence; reviewer does not reexecute them.
+No independent browser/DB/fuzz/build/hosted result is claimed. Approval is only the
+int64-representable correction, not fullRP-663, accounting, RP-664, AC6, release or
+any future normative exception. Parent records and preserves these boundaries.
+
+Separately draft `rfc/numeric-diagnostic-exponent-limits.md` and index its real status.
+Recommend an explicit NaN diagnostic exception for lower results beyond Go's exponent
+representation, preserving exact rejection/state/wire and all representable-result
+rules. Alternative is an expanded representation with measured compatibility/cost;
+neither is silently chosen. The draft names the two executed counterexamples,
+conversion/normalization/zero/atomicity/cross-runtime acceptance and existing holds.
+No runtime, version or research output changes in this record/proposal commit.
+Review by: Codex (draft author, NOT designated normative review). Recorded by: Codex.
+Normative review/adoption remain required before implementation; the independent
+corrective verdict above does not cover/adopt this subsequent draft. RP-663 remains
+open. Continue accepted work; no whole1.0, archival, push or deployment claim.

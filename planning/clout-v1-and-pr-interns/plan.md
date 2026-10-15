@@ -32,13 +32,18 @@ the int64-representable lower fallback paths, with24 shared cases and actual led
 refusals. Eleven old raw/domain failures include a fractional power wrongly becoming
 valid state, not only zero; six extra old ledger accepts reproduce. New diagnostic
 arithmetic tests guard exponent wrap and valid zero/quotient/Add/Sub recovery. This
-follow-up needs its own fresh corrective verdict;3c521cab did not approve it.
+follow-up is independently approved through1d1b244a (exact verdict in log);
+3c521cab did not approve it.
 RP-663 remains OPEN beyond int64: actual Go minimum-exponent^2048 and exp(-1e20)
 return valid zero, pinned Node retains finite invalid exponents. DESIGN-GAP: resolve
 that diagnostic representation/classification contract before further implementation,
 not a hidden clamp, guessed sentinel or claiming full conformance. No new product
 decision or accounting adoption follows from the bounded fixes. Existing valid
 arithmetic paths, numeric goldens and original research outputs stay unchanged.
+[Numeric Diagnostic Exponent Limits](../../rfc/numeric-diagnostic-exponent-limits.md)
+now proposes the explicit fail-closed exception and its tests; it remains a draft,
+outside corrective-code approval, requiring normative review/adoption. Continue
+other accepted work without inferring this proposal or either accounting draft accepted.
 Current re-observation of the unchanged20 lower-domain profiles now gives19 cumulative
 proofs plus one refused one-shot projection, and18 complete deferred work-cut sequences
 plus two refusal sequences; every new refusal asserts full unchanged state/no receipt.
