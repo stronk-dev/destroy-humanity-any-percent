@@ -181,7 +181,8 @@ new correction completecf8c6f08..ca447daa now has independent CHANGES REQUIRED: 
 member headers are missed (RP-675). The correction afterbdf5add1 scans every header while
 joining payloads under the unchanged combined ceiling; old six misses/four controls,
 corrected affected native/race/Linux and ordinary historical-image scan belong in the log.
-New corrective review remains required. Rebuild/re-scan the final
+Fresh independent corrective review APPROVES completebdf5add1..76cba7bc, resolving RP-675
+without relabelling the original negative verdict. Rebuild/re-scan the final
 reviewed artifact; no new scanner rule/limit, R-006, full Deployment or1.0 acceptance.
 
 **Latest DP7 actual proxy outage, 2026-10-13:** the shipped Caddyfile's private

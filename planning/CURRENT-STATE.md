@@ -1,7 +1,8 @@
 # Current repository state
 
 Reconciled 2026-10-16: latest bounded production correction `137f7a8d` (kernel0.3.222,
-epoch8); numeric research checkpoint `f7ca2b96`, Deployment mechanical checkpoint `23fcf989`.
+epoch8); numeric research checkpoint `f7ca2b96`, Deployment mechanical checkpoint `bdf5add1`
+and independently approved scanner correction `76cba7bc` (no gameplay/kernel change).
 The whole-product classification retains its
 `77fe2275` base and the explicit follow-ups below, not a fresh complete acceptance sweep.
 Independent-review records and their exact bounded scopes live in the owning logs. The last inspected
@@ -77,6 +78,10 @@ failure/recovery through Prometheus/Alertmanager/receiver. Bounded Desktop resea
 nine proposed release-mounted roots and rejects changed/missing/link/interrupted inputs.
 It also proves daemon-side work can complete after helper AND Docker-client death/released
 lock. Safe interruption recovery therefore still needs a mechanism, not a cancellation check;
+the later actual ExecID diagnostic also rejects generic parent-completion as a descendant
+fence, without claiming a shipped backup command leaks children. Independent review catches
+and closes RP-675's later-gzip-header secret-scan omission with old failures and affected
+native/Linux checks; no new pattern, bound or current-release artifact is inferred.
 the current-release draft remains unaccepted and native clean-host/release proof remains open.
 Review reproduces historical failures where actually executed and checks affected behavior; these
 approvals cover their named ranges, not adjacent feature construction or the remaining

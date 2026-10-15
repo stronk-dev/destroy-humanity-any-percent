@@ -7513,3 +7513,28 @@ Complete new source/test/docs/backlog/plan/log rangebdf5add1-exclusive through t
 commit requires independent corrective re-review. The original RP-543/R3 negatives remain
 historical, not relabelled approval. No kernel/gameplay, secret pattern, limit, policy, budget,
 workflow, artifact regeneration, full Deployment/CI/clean-host/archival/release approval.
+
+## 2026-10-16 — RP-675 corrective re-review: APPROVED
+
+Review by: /root/archive_metadata_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing its terminal verdict.
+Decision: APPROVED, no findings, complete6-path single-commit range
+bdf5add19e43eddaac18afd3d45109f79f44e5a7-exclusive..76cba7bcbe30b646e1ca11101abfbc367f915d91-inclusive.
+All scanner/tests/canonical docs/backlog/owning plan/log inspected at exact reviewed endpoint.
+Runtime1GiB and other patterns/depth/policy preserved, every member header scanned, joined
+payload parsed once; corrupt later streams/refusal return no usable partial output.
+
+Independent historical-caller97355f misses all6 later-header cases,4 payload controls pass;
+unused new helper compiles tests only, not a historical checkout. Original independent
+three-negative/one-control reproff74c9 now passes0.095s. Cold affected4packages52194 pass
+1.493/7.701/.082/.162s, matching vet passes, race90591 passes1.515s including20 additions
+and old metadata/redaction/body/V7 tests. Full-range whitespace passes. Scanner SHA256
+55e965cea0a9950d9dc02254218b9568acb7f0a130f87566c3f32600f944b788;
+test4e1a9f11f14161841fd343765a6086bb17709119a739238c1e438496cccb75db.
+
+RP-546/RP-547 record attributions/ranges/limits inspected, no enlarged runtime verdict.
+Original RP-543/R3 CHANGES REQUIRED stays historical; RP-675 defect closes. Root's Linux/
+historical-image executions remain separately attributed, not independent repeats. No new
+Linux/image/Docker/SQL resources, edits, commits or publication by reviewer; all handles
+terminal/tree clean. No current-artifact/R-006/clean-host/full Deployment/CI/normative/
+archival/release approval. Rebuild/re-scan the actual future artifact under its release gates.
