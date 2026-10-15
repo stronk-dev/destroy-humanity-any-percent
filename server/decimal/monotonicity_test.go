@@ -111,11 +111,10 @@ func TestOrderedPairControls(t *testing.T) {
 }
 
 func TestOrderedArithmeticUnderflowBoundary(t *testing.T) {
-	// This first attempted ordered-input case leaves the gameplay domain. Keep
-	// it explicit, outside the representable-output population. The pinned JS
-	// library instead retains an invalid e=-9e15 diagnostic (tested there).
+	// Outside the representable-output population, but not zero. Preserve the
+	// pinned client's finite diagnostic so callers reject it as gameplay state.
 	got := FromString("1e-8999999999999999").Div(FromFloat64(2))
-	if !got.Eq(Zero) || !got.IsStateValue() {
-		t.Fatalf("Go underflow = (%g,e%d), want canonical zero", got.Mantissa(), got.Exponent())
+	if got.Mantissa() != 5 || got.Exponent() != -9_000_000_000_000_000 || got.IsStateValue() {
+		t.Fatalf("Go underflow = (%g,e%d), want invalid finite diagnostic", got.Mantissa(), got.Exponent())
 	}
 }

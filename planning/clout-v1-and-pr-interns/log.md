@@ -4228,3 +4228,70 @@ Codex. Both drafts remain unaccepted. This bounded attack is complete, not a
 reason to repeat or enlarge a positive census; next establish the actual canonical
 partial-prefix/ledger order argument or specify a correct alternative with its
 work/compatibility proof. No new owner product ruling, archival, push or deployment.
+
+## 2026-10-15 — RP-663 lower-domain arithmetic conformance correction
+
+Accepted Numeric Core Boundary Hardening §3/§4 makes the pinned client the diagnostic
+oracle and excludes lower-domain results from state/wire. Under RFC-0000's repair
+route, preserve finite invalid diagnostics in arithmeticResult instead of returning
+valid zero. Normalize its coefficient independently, preserving canonical zero and
+later scaling that rescues a representable final result. Constructor/state domains,
+quantization, aggregate algorithm, balance, saves and minigame identities do not change.
+Kernel0.3.218 records this genuine arithmetic behavior correction; no accounting draft,
+origin/receipt protocol, sparse candidate or general power/exp fallback is adopted.
+
+Parent first runs the new regressions at015ae5e4, whose runtime matches the9d49e0bd
+review base (tool session51794): nine raw diagnostic rows and the original ordered-boundary case fail
+with Go(0,e0); both actual Ledger.Apply/ApplyAccrual arms wrongly return nil; three
+actual AccrueConstant refusals report got0/want error. Controls pass. Node already
+passes the same raw/accrual cases. These are executed parent failures, transcribed
+here; no separate raw on-disk artifact or independent reproduction is claimed.
+Final seven-case accrual supplement also checks later scaling back into domain;
+that extra control was not in the initial old-code run. Reuse existing Go/TS accrual
+runner; keep the original16 primitive vectors and6296 numeric goldens byte-unchanged.
+The initial three failures run under TestAccrualVectors before the supplement is
+separated into TestAccrualLowerDomainVectors, preserving the old16-case corpus.
+
+Full affected checks expose real consequences, not just a green narrow suite:
+the original lower-domain research had counted silent-zero projections as successes.
+Keep all20 cells and explicitly assert new refusals/no receipt/unchanged complete
+Company state:19 cumulative proofs plus one refused projection;18 complete deferred
+work-cut sequences plus two refusal sequences. The additive census is now one refused
+projection, nine invalid additive deltas and ten exact commits, no wrong target.
+Historical success entries remain evidence for their old kernel, not current claims.
+The initial full run is RED on these stale assumptions, original27 partitions and
+three source-bound report identities; no claim of only27 failures for that run.
+
+Re-execute existing instruments using required UPDATE_PARTITION_RESEARCH/UPDATE_RATE_RESEARCH
+switches on root make test-go, then UPDATE_ANCHOR_RESEARCH. All original report results
+are identical; JSON diffs change only Decimal source hashes and anchor's dependency hash.
+The original16 accrual corpus remains unchanged rather than expanding its historical
+research population. This is conformance-test maintenance, not new research adoption.
+
+Verification (cold Go count1, repository-root commands):
+
+- Full Decimal/Economy/Pitch/Commons/Kernel/Save/Replayverify/Faction/Guild/Commonsbinding
+  pass; full Production42.273s remains RED only on the original27 partition cases after
+  the explicit correction/re-observation. Affected vet passes. No weakened bound or
+  repeated unchanged partition run to seek a last green. Focused corrected regressions
+  and complete20-cell refusal populations pass natively and in declared Linux-amd64.
+- Node nine files7908 pass; same numeric, ordered/lower-domain, accrual, Economy, replay
+  and three research files pass23724 across Chromium/Firefox/WebKit in declared Linux
+  browser container. Initial sandbox Docker denial runs no tests; narrow escalation
+  supplies actual evidence. Containers approximate Linux, not hosted hardware/full CI.
+- make vectors-check regenerates6296 byte-identically; make fuzz-ci passes4875945
+  executions/31.208s. Types/Svelte zero errors/warnings, build/UI boundaries pass.
+- Declared Linux-amd64/Postgres scoped Minigame start/resolution/history/rollback/retry
+  population also passes on corrected Decimal. This is an affected consumer check,
+  not a new underflow-through-SQL witness. Selected Pitch has no matching test in that
+  narrow run; its full native suite above supplies Pitch coverage.
+- make verify-kernel-version remains RED at historical50a3a514/RP-131 after checkout
+  contract/adversarial fixtures pass. Current version mirrors agree; no guard exemption,
+  rewrite, historical fix, whole CI or release claim. Final diff/whitespace checked.
+
+Review by: Codex (implementation first filter). Recorded by: Codex. Complete corrective
+range after9d49e0bd through this containing code/tests/fixtures/version/docs/record
+commit is submitted to fresh independent `/root/numeric_lower_domain_corrective_review`
+under Marco's delegation. Independent verdict pending; no self-approval or archival.
+Next retain that verdict and continue accepted construction; RP-664, AC6/27 partitions,
+draft adoption, full-nine-tier scope, hosted CI and exact-release proof remain open.

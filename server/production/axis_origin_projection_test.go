@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
+	"strings"
 	"testing"
 	"time"
 
@@ -288,9 +289,20 @@ func TestAxisOriginProjectionCapDebitResetsOrigin(t *testing.T) {
 
 // Representation research only: an admitted one-shot target is not proof that
 // subtracting the previous projection yields an admitted incremental ledger delta.
+// RP-663 also makes below-domain one-shot accrual refuse, rather than return zero.
+func assertOriginLowerDomainRefusal(t *testing.T, bundle CatalogBundle, origin []byte, now time.Time, mode EvaluationMode) {
+	t.Helper()
+	state, result, err := cumulativeResearchProjection(bundle, origin, now, mode)
+	if !errors.Is(err, ErrInvalidEngineState) || !strings.Contains(err.Error(), "accrue company.cash: "+ErrInvalidAccrual.Error()) ||
+		state == nil || len(result.Receipt.Changes) != 0 ||
+		!bytes.Equal(origin, mustEncodeState(t, state)) {
+		t.Fatalf("lower-domain projection must refuse without state/receipt changes: %v", err)
+	}
+}
+
 func TestAxisOriginProjectionLowerDomainResearch(t *testing.T) {
 	start := time.Date(2026, 10, 12, 12, 0, 0, 0, time.UTC)
-	cells, unchanged, invalid, refused, exact, wrong := 0, 0, 0, 0, 0, 0
+	cells, projectionRefused, unchanged, invalid, refused, exact, wrong := 0, 0, 0, 0, 0, 0, 0
 	for _, exponent := range []int64{-8999999999999999, -8999999999999998, -8999999999999996, -8999999999999987, 0} {
 		bundle := axisContentBundle(t)
 		bundle.Artifacts = cloneArtifactMap(bundle.Artifacts)
@@ -323,6 +335,13 @@ func TestAxisOriginProjectionLowerDomainResearch(t *testing.T) {
 		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
 			for _, cut := range []int64{1000, 2000} {
 				cells++
+				if exponent == -8999999999999999 && mode == ModeOffline && cut == 1000 {
+					for _, offset := range []int64{cut, cut + 1} {
+						assertOriginLowerDomainRefusal(t, bundle, origin, start.Add(time.Duration(offset)*time.Millisecond), mode)
+					}
+					projectionRefused++
+					continue
+				}
 				visible := originProjectionState(t, bundle, origin, start.Add(time.Duration(cut)*time.Millisecond), mode)
 				projected := originProjectionState(t, bundle, origin, start.Add(time.Duration(cut+1)*time.Millisecond), mode)
 				beforeWire, targetWire := visible.Ledger.Snapshot()["company.cash"], projected.Ledger.Snapshot()["company.cash"]
@@ -369,15 +388,15 @@ func TestAxisOriginProjectionLowerDomainResearch(t *testing.T) {
 			}
 		}
 	}
-	if cells != 20 || unchanged+refused+exact+wrong != cells {
+	if cells != 20 || projectionRefused+unchanged+refused+exact+wrong != cells {
 		t.Fatal("incomplete lower-domain research census")
 	}
 	// Retain both the negative finding and exact positive controls. Refusing all
 	// transactions or silently committing a wrong target must not pass this census.
-	if unchanged != 1 || invalid != 9 || refused != 9 || exact != 10 || wrong != 0 {
-		t.Fatalf("lower-domain observation changed: unchanged=%d invalid=%d refused=%d exact=%d wrong=%d", unchanged, invalid, refused, exact, wrong)
+	if projectionRefused != 1 || unchanged != 0 || invalid != 9 || refused != 9 || exact != 10 || wrong != 0 {
+		t.Fatalf("lower-domain observation changed: projection-refused=%d unchanged=%d invalid=%d refused=%d exact=%d wrong=%d", projectionRefused, unchanged, invalid, refused, exact, wrong)
 	}
-	t.Logf("cells=%d unchanged=%d invalid-delta=%d refused=%d exact=%d wrong-target=%d; production conservation NOT_PROVEN", cells, unchanged, invalid, refused, exact, wrong)
+	t.Logf("cells=%d projection-refused=%d unchanged=%d invalid-delta=%d refused=%d exact=%d wrong-target=%d; production conservation NOT_PROVEN", cells, projectionRefused, unchanged, invalid, refused, exact, wrong)
 }
 
 // The numeric domain has a minimum positive value, not merely a subtraction
@@ -460,7 +479,7 @@ func originLowerDomainFixture(t *testing.T, exponent int64) (CatalogBundle, *sav
 }
 
 func TestAxisOriginDeferredLowerDomainSettlementResearch(t *testing.T) {
-	cells := 0
+	cells, refusedSequences := 0, 0
 	for _, exponent := range []int64{-8999999999999999, -8999999999999998, -8999999999999996, -8999999999999987, 0} {
 		bundle, initial := originLowerDomainFixture(t, exponent)
 		origin := mustEncodeState(t, initial)
@@ -469,8 +488,13 @@ func TestAxisOriginDeferredLowerDomainSettlementResearch(t *testing.T) {
 			for _, cut := range []int64{1000, 2000} {
 				t.Run(fmt.Sprintf("exponent%d_%s_cut%d", exponent, mode, cut), func(t *testing.T) {
 					cells++
+					refusedWork := exponent == -8999999999999999 && cut == 1000
 					// Work cuts are scratch projections, not extra saved heads.
 					for _, offset := range []int64{cut - 1, cut} {
+						if refusedWork && (mode == ModeOffline || offset == 999) {
+							assertOriginLowerDomainRefusal(t, bundle, origin, start.Add(time.Duration(offset)*time.Millisecond), mode)
+							continue
+						}
 						projection := originProjectionState(t, bundle, origin, start.Add(time.Duration(offset)*time.Millisecond), mode)
 						if err := bundle.ValidateFoundationState(projection); err != nil {
 							t.Fatal(err)
@@ -478,6 +502,15 @@ func TestAxisOriginDeferredLowerDomainSettlementResearch(t *testing.T) {
 						if !bytes.Equal(origin, mustEncodeState(t, initial)) {
 							t.Fatal("scratch projection mutated the committed origin")
 						}
+					}
+					if refusedWork {
+						refusedSequences++
+						if mode == ModeOffline {
+							assertOriginLowerDomainRefusal(t, bundle, origin, start.Add(time.Duration(cut+1)*time.Millisecond), mode)
+						} else {
+							_ = originProjectionState(t, bundle, origin, start.Add(time.Duration(cut+1)*time.Millisecond), mode)
+						}
+						return // This complete work-cut sequence is NOT proved viable.
 					}
 					projected := originProjectionState(t, bundle, origin, start.Add(time.Duration(cut+1)*time.Millisecond), mode)
 					settled, err := save.RestoreState(origin, 19, bundle.Economy, economy.ScopeCompany, start)
@@ -495,10 +528,10 @@ func TestAxisOriginDeferredLowerDomainSettlementResearch(t *testing.T) {
 			}
 		}
 	}
-	if cells != 20 {
-		t.Fatalf("incomplete deferred-settlement population: got %d want20", cells)
+	if cells != 20 || refusedSequences != 2 {
+		t.Fatalf("incomplete deferred-settlement population: got %d/refused%d want20/2", cells, refusedSequences)
 	}
-	t.Log("20 deferred settlements match actual one-shot Company projections; ApplyLogged/hooks/episode authority NOT_PROVEN")
+	t.Log("18 complete deferred settlements; two work-cut sequences refuse lower-domain accrual after RP-663; ApplyLogged/hooks/episode authority NOT_PROVEN")
 }
 
 // Research of the closed transition boundary, not an implementation of AC6.

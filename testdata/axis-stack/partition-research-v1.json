@@ -10,7 +10,7 @@
     "client/src/production.ts": "3e892bdcf8b3ebdea12720d4dffb347d5f6e085e65007051ca2acc755dfbaad3",
     "client/test/partition-research.test.ts": "4f9f559e48f4abf6356ea88945eecd0bd7bc3aa404461dfe7a551ef3e17a2ef3",
     "server/decimal/canonical.go": "8fe0f4ab3c635b0f2d2072b2862c0725d94240af6b382e399ac97738ba91c687",
-    "server/decimal/decimal.go": "8bd0c1f032b293984d776fb7c0f3bee667369133a06a1d4d5b4eedaec1165eca",
+    "server/decimal/decimal.go": "5819009722106e65853cfc1baa95abb28a04241193452e3232a9730d8e8e3d26",
     "server/economy/ledger.go": "5c073aaecf35554170f3af02c48bfa60c558cea559b02a3366a2aa8d737430df",
     "server/production/accrual.go": "a64e59595febe489722de584dd9692b73dd0825b6cc3cca7244246047b2337c7",
     "server/production/axis_partition_research_test.go": "675e73ad6b1fb0df4742b98f28616f125633e0f54c27b10f104a99e89aca66a3",

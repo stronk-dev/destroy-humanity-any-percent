@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "vectors": [
+    {"name":"lower-domain millisecond refusal","rates":["1e-8999999999999999"],"elapsed_ms":1,"efficiency":"1e0","expect_error":true},
+    {"name":"lower-domain efficiency refusal","rates":["1e-8999999999999999"],"elapsed_ms":1000,"efficiency":"9e-1","expect_error":true},
+    {"name":"lower-domain partial second refusal","rates":["9e-8999999999999999"],"elapsed_ms":100,"efficiency":"1e0","expect_error":true},
+    {"name":"lower-domain carry valid","rates":["9e-8999999999999999"],"elapsed_ms":200,"efficiency":"1e0","expect":"1.8e-8999999999999999"},
+    {"name":"lower-domain zero elapsed valid","rates":["1e-8999999999999999"],"elapsed_ms":0,"efficiency":"1e0","expect":"0"},
+    {"name":"later scaling rescues intermediate diagnostic","rates":["1e-8999999999999999"],"elapsed_ms":1,"efficiency":"1e3","expect":"1e-8999999999999999"},
+    {"name":"lower-domain zero efficiency valid","rates":["1e-8999999999999999"],"elapsed_ms":1,"efficiency":"0","expect":"0"}
+  ]
+}

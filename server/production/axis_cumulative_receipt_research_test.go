@@ -107,7 +107,7 @@ func assertCumulativeResearchReceipt(t *testing.T, origin, projected *save.State
 }
 
 func TestAxisCumulativeReceiptLowerDomainResearch(t *testing.T) {
-	cells, additiveRefusals := 0, 0
+	cells, projectionRefusals, additiveRefusals := 0, 0, 0
 	for _, exponent := range []int64{-8999999999999999, -8999999999999998, -8999999999999996, -8999999999999987, 0} {
 		bundle, initial := originLowerDomainFixture(t, exponent)
 		origin := mustEncodeState(t, initial)
@@ -115,6 +115,13 @@ func TestAxisCumulativeReceiptLowerDomainResearch(t *testing.T) {
 			for _, cut := range []int64{1000, 2000} {
 				t.Run(fmt.Sprintf("exponent%d_%s_cut%d", exponent, mode, cut), func(t *testing.T) {
 					cells++
+					if exponent == -8999999999999999 && mode == ModeOffline && cut == 1000 {
+						for _, offset := range []int64{cut, cut + 1} {
+							assertOriginLowerDomainRefusal(t, bundle, origin, initial.EvaluatedThrough.Add(time.Duration(offset)*time.Millisecond), mode)
+						}
+						projectionRefusals++
+						return // No cumulative receipt exists for the refused projection.
+					}
 					before := originProjectionState(t, bundle, origin, initial.EvaluatedThrough.Add(time.Duration(cut)*time.Millisecond), mode)
 					through := before.EvaluatedThrough.Add(time.Millisecond)
 					beforeBytes := mustEncodeState(t, before)
@@ -143,10 +150,10 @@ func TestAxisCumulativeReceiptLowerDomainResearch(t *testing.T) {
 			}
 		}
 	}
-	if cells != 20 || additiveRefusals != 9 {
-		t.Fatalf("incomplete cumulative experiment: cells=%d additive-refusals=%d", cells, additiveRefusals)
+	if cells != 20 || projectionRefusals != 1 || additiveRefusals != 9 {
+		t.Fatalf("incomplete cumulative experiment: cells=%d projection-refusals=%d additive-refusals=%d", cells, projectionRefusals, additiveRefusals)
 	}
-	t.Log("20 origin-relative proofs express exact targets; nine previous-head additive deltas remain inadmissible; ledger mutation/AC6 NOT_PROVEN")
+	t.Log("19 origin-relative proofs; one lower-domain projection refuses after RP-663; nine previous-head additive deltas remain inadmissible; ledger mutation/AC6 NOT_PROVEN")
 }
 
 func TestAxisCumulativeReceiptRejectsForgeriesResearch(t *testing.T) {

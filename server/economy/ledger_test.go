@@ -115,6 +115,32 @@ func TestLedgerRejectsHardcapUnknownAndNonFinite(t *testing.T) {
 	}
 }
 
+func TestLedgerRejectsArithmeticUnderflowAtomically(t *testing.T) {
+	for _, accrue := range []bool{false, true} {
+		t.Run(map[bool]string{false: "transaction", true: "accrual"}[accrue], func(t *testing.T) {
+			ledger := newTestLedger(t)
+			before := ledger.Snapshot()
+			transaction := Transaction{Entries: []Entry{
+				{ResourceID: "company.users", Delta: decimal.One},
+				{ResourceID: "company.cash", Delta: decimal.FromString("1e-8999999999999999").Div(decimal.FromFloat64(2))},
+			}}
+			apply := ledger.Apply
+			if accrue {
+				apply = ledger.ApplyAccrual
+			}
+			if _, err := apply(transaction); !errors.Is(err, ErrInvalidTransaction) {
+				t.Fatalf("error = %v, want invalid transaction, not a zero payment", err)
+			}
+			after := ledger.Snapshot()
+			for resourceID, balance := range before {
+				if after[resourceID] != balance {
+					t.Fatalf("%s changed after rejection", resourceID)
+				}
+			}
+		})
+	}
+}
+
 func TestLedgerAccrualSaturatesWithReapplicableDelta(t *testing.T) {
 	const catalogJSON = `{
       "schema_version": 1,

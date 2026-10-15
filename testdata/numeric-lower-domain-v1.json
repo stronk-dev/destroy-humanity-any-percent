@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "cases": [
+    {"name":"division at excluded boundary","op":"div","a":"1e-8999999999999999","b":"2","mantissa":5,"exponent":"-9000000000000000","state":false},
+    {"name":"negative division at excluded boundary","op":"div","a":"-1e-8999999999999999","b":"2","mantissa":-5,"exponent":"-9000000000000000","state":false},
+    {"name":"multiplication at excluded boundary","op":"mul","a":"1e-8999999999999999","b":"1e-1","mantissa":1,"exponent":"-9000000000000000","state":false},
+    {"name":"negative multiplication at excluded boundary","op":"mul","a":"-1e-8999999999999999","b":"1e-1","mantissa":-1,"exponent":"-9000000000000000","state":false},
+    {"name":"division below excluded boundary","op":"div","a":"1e-8999999999999999","b":"2e1","mantissa":5,"exponent":"-9000000000000001","state":false},
+    {"name":"multiplication below excluded boundary","op":"mul","a":"1e-8999999999999999","b":"1e-2","mantissa":1,"exponent":"-9000000000000001","state":false},
+    {"name":"multiplication of minimum exponents","op":"mul","a":"1e-8999999999999999","b":"1e-8999999999999999","mantissa":1,"exponent":"-17999999999999998","state":false},
+    {"name":"division across complete exponent range","op":"div","a":"1e-8999999999999999","b":"1e8999999999999999","mantissa":1,"exponent":"-17999999999999998","state":false},
+    {"name":"integer power at excluded boundary","op":"pow","a":"1e-4500000000000000","b":"2","mantissa":1,"exponent":"-9000000000000000","state":false},
+    {"name":"division remains valid","op":"div","a":"2e-8999999999999999","b":"2","mantissa":1,"exponent":"-8999999999999999","state":true},
+    {"name":"multiplication carry rescues lower bound","op":"mul","a":"9e-8999999999999999","b":"2e-1","mantissa":1.8,"exponent":"-8999999999999999","state":true},
+    {"name":"zero remains valid","op":"mul","a":"0","b":"1e-8999999999999999","mantissa":0,"exponent":"0","state":true}
+  ]
+}

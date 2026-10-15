@@ -23,7 +23,16 @@ type accrualVector struct {
 }
 
 func TestAccrualVectors(t *testing.T) {
-	data, err := os.ReadFile("../../testdata/production-accrual.json")
+	testAccrualFixture(t, "production-accrual.json", 16)
+}
+
+func TestAccrualLowerDomainVectors(t *testing.T) {
+	testAccrualFixture(t, "production-lower-domain-v1.json", 7)
+}
+
+func testAccrualFixture(t *testing.T, filename string, count int) {
+	t.Helper()
+	data, err := os.ReadFile("../../testdata/" + filename)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,8 +40,8 @@ func TestAccrualVectors(t *testing.T) {
 	if err := json.Unmarshal(data, &fixture); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.Version != 1 {
-		t.Fatalf("version = %d", fixture.Version)
+	if fixture.Version != 1 || len(fixture.Vectors) != count {
+		t.Fatalf("version = %d, population = %d, want version1/%d", fixture.Version, len(fixture.Vectors), count)
 	}
 	for _, vector := range fixture.Vectors {
 		t.Run(vector.Name, func(t *testing.T) {

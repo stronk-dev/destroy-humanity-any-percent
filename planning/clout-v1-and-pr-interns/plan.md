@@ -21,7 +21,19 @@ all128 exact cases, complete workloads, CI and designated review remain required
 
 Numeric conformance supplement RP-662 adds bounded shared ordered-transform tests
 under accepted RFC-0001, not a new monotonicity assumption for those drafts.
-RP-663 separately retains the lower-edge Go-zero/client-invalid underflow mismatch.
+RP-663's bounded conformance correction now preserves finite lower-domain arithmetic
+diagnostics instead of valid zero, under accepted Numeric Core Boundary Hardening
+§3/§4 and RFC-0000's repair route. Shared raw-field vectors, actual accrual and atomic
+ledger refusal regressions fail against old behavior. Kernel0.3.218 records the
+behavior change; affected complete numeric/consumer checks and fresh independent
+corrective review remain required before closing it. This does not adopt either draft.
+Current re-observation of the unchanged20 lower-domain profiles now gives19 cumulative
+proofs plus one refused one-shot projection, and18 complete deferred work-cut sequences
+plus two refusal sequences; every new refusal asserts full unchanged state/no receipt.
+The dated20-success checkpoints below describe their pre-correction kernel, not current
+algorithm feasibility. Nine inadmissible additive deltas and all27 partition failures
+remain. Existing partition/rate/anchor report outputs stay identical; only their source
+identity hashes change after execution on corrected code. No draft acceptance follows.
 Neither finding closes general payout/search correctness or authorizes accounting.
 RP-664 now supplies an actual Rates/Evaluate aggregation counterexample from
 different ownership contexts. H3c distinguishes that open numeric repair from

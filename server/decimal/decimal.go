@@ -294,7 +294,15 @@ func arithmeticResult(mantissa float64, exponent int64) Decimal {
 		return Decimal{mantissa: math.Copysign(math.Inf(1), mantissa)}
 	}
 	if exponent < -maxExponent {
-		return Zero
+		// The pinned library retains a finite, out-of-domain diagnostic here.
+		// Turning it into zero would let state/transaction guards accept it.
+		// Normalize the coefficient independently: integer powers can require
+		// more than the single carry above, and true zero must stay canonical.
+		normalized := New(mantissa, 0)
+		if normalized.mantissa == 0 {
+			return Zero
+		}
+		return Decimal{mantissa: normalized.mantissa, exponent: exponent + normalized.exponent}
 	}
 	return New(mantissa, exponent)
 }
