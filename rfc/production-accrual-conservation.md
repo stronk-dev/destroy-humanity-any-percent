@@ -56,16 +56,19 @@ provider formulas, hardcaps, authored copy or the full nine-tier release objecti
 
 ### C1 — Define the interval before changing arithmetic
 
-Recommended, pending RP-308 owner/author reconciliation: internal chunks of one
-continuous absence share one production allowance and banking calculation. Genuinely
-different reconnect histories remain different absence episodes under existing policy.
+Marco explicitly delegated RP-308 wording reconciliation on 2026-10-15, preserving
+the 24-hour offline cap, 90% rate, banking and separate-return-visit behavior.
+Clout CV3/AC6 now distinguish internal chunks of one continuous absence, which share
+one production allowance and banking calculation, from genuinely different return
+histories. Display reads and internal calculations create no extra saved payments.
 The 48-hour one-call/two-call observations cannot be declared equal by a rounding fix.
+That normative wording amendment awaits designated review; this draft remains unaccepted.
 
 The accepted contract must name the server-owned episode start/end and their persisted
 replay evidence. The client supplies neither mode nor time. Equal-partition comparisons
 keep real action chronology, content, producer inputs and episode identity unchanged;
-they do not invent additional reconnects or intents. This question has been delivered
-to Marco; delivery is not adoption or permission to edit another author's ruled body.
+they do not invent additional reconnects or intents. The delegation authorizes wording
+reconciliation only, not an accounting algorithm, new episode state or origin lifetime.
 
 ### C1a — Decide origin lifetime before adding save fields
 
@@ -95,9 +98,9 @@ Two lifetime designs therefore remain explicit:
   exact context, its consistency validation and versioned replay/restore semantics.
   A durable format cannot be justified merely by the scalar partition failure.
 
-The Clout author must resolve the interval/settlement meaning before selecting either.
-Neither choice may delete the original property, redefine cuts as actions to avoid failures,
-or waive accepted behavior. The earlier assertion that durable state was necessarily
+The reconciled Clout wording does not select either lifetime or specify the exact
+settlement protocol. Neither choice may delete the original property, redefine cuts
+as actions to avoid failures, or waive accepted behavior. The earlier assertion that durable state was necessarily
 required was stronger than the evidence; it is corrected here, not implemented as fact.
 
 ### C2 — Preserve a producer origin, not a rounded-rate cache
@@ -493,8 +496,9 @@ the red population with a convenient new one or alter its monetary expectations.
 
 ## Open questions before acceptance
 
-- **C1/C1a:** owner/author adoption of absence-episode/settlement meaning, exact identity
-  boundaries and whether an unsettled interval can span authorized committed heads.
+- **C1/C1a:** designated review of the delegated Clout wording amendment, then the complete
+  exact episode/settlement identity boundaries and whether an unsettled interval can span
+  authorized committed heads. Wording reconciliation alone does not select an origin lifetime.
 - **C2/C3:** complete field set, boundary integration and a viable ledger/receipt algorithm,
   demonstrated with actual Company producers and the retained lower-domain counterexample.
   The current difference-write candidate fails; this is technical work, not a choice for the
@@ -520,6 +524,9 @@ contract, explicit adoption and independent normative review before production w
 
 ## Changelog
 
+- 2026-10-15: record Marco's explicit narrow wording delegation and reconcile C1/C1a
+  with the Clout body. Accounting, exact identity/settlement, origin lifetime, acceptance
+  and independent review remain required; no production authority follows.
 - 2026-10-08: decision draft from completed R-012 evidence and current cold regressions.
 - 2026-10-08: add actual evaluator/ledger origin projection feasibility and the explicit
   closed-hook/persistence integration boundary. Still draft; no runtime authority.

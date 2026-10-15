@@ -12,6 +12,12 @@ owning logs below. Whole-product status and evidence limits
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
 nine-tier goal remains active; no new playable tier or release was completed.
 
+- **DELEGATED WORDING RECONCILED — Clout RP-308:** Marco's explicit 2026-10-15 answer
+  permits CV3/AC6 reconciliation preserving offline cap/rate/banking and separate return
+  visits; internal calculations/display reads create no extra saved payments. The owning
+  Clout plan/log identifies the pending normative review range. Complete the conservation
+  draft's context/settlement/accounting/compatibility contract next; no origin lifetime,
+  new save/receipt format, repaired arithmetic or implementation authority is inferred.
 - **HELD — complete catalog serving and generated intent migration:** C18's union constructor and internal original-byte
   verifier are locally constructed through `0411ef34`; do not repeat or promote them to a
   mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member

@@ -363,15 +363,17 @@ this evidence authorizes changing. A pure computational split of one absence
 and multiple capped catch-up histories are distinct questions; clients never
 select server time or evaluation mode.
 
-Required author action: reconcile CV3/AC6's unqualified "any interval" with
-the intended catch-up episode boundary while preserving the existing24h cap,
-90% efficiency, banking and separate-reconnect behavior. The owner was asked
-whether to delegate that wording reconciliation; no response or authority is
-inferred from preselection/automatic goal continuation. If the owner chooses
-different behavior, it requires its own explicit design/contract change, not
-an implementer convenience. Canonical home:Clout CV3/AC6 and its author-reconciled
-body, with linkage to any later accumulation/persistence RFC. This cannot waive
-RP-307's numeric failures, invent episode state, restamp evidence or retune data.
+Marco explicitly selected "Delegate that reconciliation (recommended)" on
+2026-10-15, answering the question preserving the existing24h cap,90% rate,
+banking and separate-return-visit behavior and excluding extra saved payments
+from internal calculations/display reads. Codex reconciles CV3/AC6 under that
+narrow author delegation; designated normative review remains pending. This
+resolves permission to reconcile the wording, not the accounting algorithm,
+exact episode identity, origin lifetime or any new save/receipt contract.
+Canonical home:Clout CV3/AC6 and its owning plan/log, linked to the still-draft
+Production Accrual Conservation C1/C1a. Different gameplay behavior needs its
+own explicit adoption. This cannot waive RP-307's numeric failures, invent
+episode state, restamp evidence or retune data.
 Evidence:planning/clout-v1-and-pr-interns/policy-boundary-research.md and log.
 
 ## Garage active-play projection body reconciliation — RP-313

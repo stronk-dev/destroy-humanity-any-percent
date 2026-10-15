@@ -6,6 +6,19 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+## Current step — delegated interval wording, 2026-10-15
+
+Marco explicitly delegates CV3/AC6 wording reconciliation, preserving the 24-hour
+offline cap, 90% rate, banking and separate-return-visit behavior. The reconciled
+body distinguishes internal calculation/display reads from extra saved payments;
+one absence does not gain allowances from internal cuts. This is wording authority
+only, not adoption of the conservation draft or an operation-local/durable origin.
+The normative documentation batch after `fdb9a79d` needs designated Claude review.
+Next complete the accounting draft's exact context/settlement/ledger/hook and
+compatibility contract under these preserved semantics, then obtain acceptance
+before implementation. RP-307's original 27/128 failures and RP-488/RP-652 constraints
+remain open. Historical experiment notes below retain their original scope.
+
 ## R-012 temporal cumulative-head feasibility — declared2026-10-15 at `aa2f97df`
 
 Question: can installing successive origin-relative projections preserve the existing

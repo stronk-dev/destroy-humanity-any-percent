@@ -3497,3 +3497,30 @@ author first filter). Recorded by: Codex. Complete five-path test/draft/plan/led
 log range after `aa2f97df` through this containing commit needs designated Claude
 review. No adoption, acceptance, archival, push/deployment or1.0 completion.
 Next close the selected context/settlement protocol, not repeat this population.
+
+## 2026-10-15 — RP-308 explicit author delegation and wording reconciliation
+
+Marco directly answers the pending question with "Delegate that reconciliation
+(recommended)". The question expressly preserves the 24-hour offline cap, 90% rate,
+banking and separate-return-visit behavior, excludes extra saved payments from
+internal calculations/display reads, and delegates wording only. This is a received
+human answer, not a preselected option or inferred approval.
+
+Reconcile Clout CV3 and AC6 in the body: computational cuts of the same absence do
+not renew its allowance, introduce player actions or create saved payments; genuine
+separate return histories retain their existing policy. Preserve the original128
+seeded cases, exact equality and all27 known failures. Reconcile my draft's C1/C1a
+and the live decision/queue/ledger status with the actual delegation. No origin
+lifetime, episode identifier, ledger/receipt algorithm, save version, buff proration
+or implementation authority is adopted. RP-307/RP-488/RP-652 remain technical work.
+
+Verification: inspect the seven-path documentation-only diff and factual policy
+bindings against `docs/production-engine.md`; `git diff --check` passes. No software
+suite is run for wording-only changes under RFC-0000. No runtime, test, kernel,
+balance, CI or artifact bytes change; no services started or resources removed.
+Review by: Codex (delegated reconciler/draft author, implementer first filter).
+Recorded by: Codex. Complete range `fdb9a79d` through this containing commit needs
+designated Claude normative review; this entry is not that verdict or acceptance
+of the conservation draft. No push, archival, deployment or release promotion.
+Next complete the exact accounting/context/settlement/hook/compatibility contract,
+then obtain its acceptance and independent review before production implementation.

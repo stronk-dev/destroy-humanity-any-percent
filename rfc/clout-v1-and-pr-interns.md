@@ -307,8 +307,15 @@ axis_stack_product = Π_i factor_i                           // applied per cont
 - **Timing.** The input changes only in the achievement hook (or the CV6 mint), and that hook runs
   after accrual. The rate is therefore piecewise constant between applied transitions. A new input
   value takes effect from the **next** accrual interval, exactly like a newly bought generator.
-  Offline catch-up uses the constant input frozen at the cursor. Splitting one interval across
-  evaluations cannot change the result (AC6).
+  Offline catch-up uses the constant input frozen at the cursor. Splitting an otherwise
+  identical interval into internal computational evaluations cannot change the result (AC6).
+  Such cuts and display reads are not additional saved payments or return visits. Internal
+  chunks of one continuous absence share its existing 24-hour offline production cap,
+  90% efficiency and excess-time banking calculation; they cannot renew that allowance.
+  Genuinely separate return visits retain their existing separate catch-up behavior. A single
+  48-hour absence is therefore not required to pay the same as two genuinely separate
+  24-hour absences. These distinctions do not change the current per-call evaluator policy;
+  the accounting repair must specify how authorized internal cuts preserve that policy.
 - **Visibility and publication.** `docs/generated/production-formulas.json` is regenerated in a
   separate reviewed commit. It shows:
   - the slot and its position;
@@ -589,9 +596,16 @@ Each criterion names the failing case that must be demonstrated (discipline 1). 
    *Failing case:* a mutant that includes career definitions, or reads the Founder lifetime set,
    changes at least one vector.
 6. **Timing and partition invariance.** A property test over seeded intent policies shows that
-   splitting any interval across evaluations yields identical state. It also shows that an input
-   change affects only intervals after the transition that caused it. *Failing case:* a mutant
-   that applies the new factor retroactively to the triggering interval fails.
+   splitting the same interval into internal computational evaluations yields identical state,
+   with the same actual action chronology, producer context and offline absence/allowance.
+   Cuts do not introduce return visits, reset the offline allowance or create extra saved
+   payments; display reads do not settle production. Distinct real return-visit histories are
+   not equivalent partitions. Retain the original 128 seeded cases and exact comparisons:
+   this clarification neither waives the 27 recorded arithmetic failures nor permits a
+   tolerance, exclusions or relabelling internal cuts as player actions. The property also
+   shows that an input change affects only intervals after the transition that caused it.
+   *Failing case:* a mutant that applies the new factor retroactively to the triggering
+   interval fails.
 7. **Save v19.** The CV4 corpus cases all pass. Old runs replay through Exit on pinned semantics.
    New-run assembly is atomic. *Failing case:* a v18 state carrying `achievements_attained_run`,
    and a v19 state with a tampered `attainment_score_run`, must each reject.
@@ -658,6 +672,11 @@ ruling deleted. OD-5's literal bytes are ratified at mint review, not at accepta
 
 ## Changelog
 
+- 2026-10-15: Marco explicitly delegates CV3/AC6 wording reconciliation while preserving
+  offline cap, rate, banking and separate-return-visit behavior. Codex reconciles the body;
+  no accounting algorithm, origin lifetime, save/receipt change or production implementation
+  is adopted. This normative amendment still requires designated cross-party review;
+  the implementation plan/log records the review range.
 - 2026-09-25: created (draft — not implementation authority) from a static trace at `c2d9bbc`,
   for the v0.1 manifest's G09 / OQ-5.
 
