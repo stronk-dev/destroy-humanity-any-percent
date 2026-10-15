@@ -3454,3 +3454,75 @@ historical builds. Old failures assessed from records/preimages, not re-mutated.
 Initial invalid selector and sandbox-listen attempts run no tests; corrected narrow
 escalation exits0. No SQL, Firefox/Linux, AT speech, public integration, full feature,
 archival or release approval. Other author/renewal/content/SG13/AC13 holds remain.
+
+## 2026-10-15 — Four Garden admission corrective ranges independently approved
+
+Review by: fresh independent Codex `/root/garden_engine_admission_corrective_review`.
+Recorded by: Codex parent, transcribing completed verdicts under Marco's corrective-code delegation.
+All APPROVED, no actionable findings; complete source/test/fixture/version/docs/record paths:
+
+- RP-212–214,15 paths: `9c412f3894d0a2ba66e846232c5126487e695157..166a23d7866bba0b6b2513ccd60254cb34b1edf7`.
+- RP-215,14 paths: `0ac4d1fead999248be31c20ab3b7f4e8600fe157..ad2980fd88e98d7b80fefe434168bd84765d24c1`.
+- RP-469,12 paths: `ebbb465ceb2d04e2e266507b443519c048f9aa98..c67f22e5722a25941002adbace77c10f6688c14e`.
+- RP-470,9 paths: `c67f22e5722a25941002adbace77c10f6688c14e..8fd83b402cc2081a659bb8114901d3ffd921966a`.
+
+At descendant312f6e02/kernel221, independently executed cold Garden/Save/Replaycatalog/
+Kernel/Decimal packages, Production72-case coordinate matrix, all current TestGarden functions
+(native DB skips explicit, not SQL proof), affected vet, garden-corpus-check, types zero
+diagnostics and client build: pass. Eleven actual Garden/Decimal Node files6548 pass, three
+browser-only skips; protected malformed-string subprocesses, startup/nontermination diagnostic
+controls, state/engine/commands/replay/clock/harvest/activation and6304 vectors execute.
+Exact-range whitespace checks pass. Initial Make single-dollar anchor selected no tests;
+unanchored correction executes all72. Two nonexistent initial Node files are not credited.
+
+Original-byte spelling survives before parsing; catalog null checks remain distinct from
+nullable saves; scoped codec fields prevent integer defaults. All coordinate consumers share
+the corrected parser. SG8 checks original field names/nullability/duplicates and all three
+nested plot shapes before typed decoding. Current shared-parser extraction inspected to
+reconcile historical versus executed source. Old-source failures and historic browser/SQL
+proofs are inspected, not repeated. No source edits, mutation, overlays, regeneration, Docker,
+browser, commits or cleanup. These are corrective approvals, not original G1–G7 or whole-feature
+acceptance. RP-222/RP-229/RP-471, SG13/content/renewal/accessibility/privacy/release remain;
+the retained288/288-versus576/288 diagnostic does not adopt AC6 or reconcile its author.
+
+## 2026-10-15 — Seven Garden input/lifecycle corrective ranges independently approved
+
+Review by: fresh independent Codex `/root/garden_input_lifecycle_corrective_review`.
+Recorded by: Codex parent, transcribing the completed verdict. All seven APPROVED, no blocking
+findings, every changed source/test/generated-copy/docs/planning/ledger path inspected:
+
+- RP-409: `073ec7ad99e83cc5d8648a572cfb45e273af7ca2..0fc31e465e834dc5339ea66fe6349c6dfc10c646`.
+- RP-410: `0fc31e465e834dc5339ea66fe6349c6dfc10c646..32850174a5f840feb3ed4587492bd3dcf00d0000`.
+- RP-420: `bbcf734981d3a03522ae6f4f69a1af5d9a1d8705..eb475bd0a85a9919b05838f1d7178b8a7b6ebe6f`.
+- RP-421: `eb475bd0a85a9919b05838f1d7178b8a7b6ebe6f..261d3d9487bba443bc243d8c2e34aa62613af173`.
+- RP-422: `261d3d9487bba443bc243d8c2e34aa62613af173..ed48bea26902eb35140a8bb03fe82b4faf0d9ca9`.
+- RP-467: `a257faaa21e3612faada7d2bd4d89b2cb2b50702..c54c6846cf0341eb27442635a07bb183e942847a`.
+- RP-468 test-only: `c54c6846cf0341eb27442635a07bb183e942847a..aca464ac036d3fdc7d6fde47922fb147bc0a37d2`.
+
+Independent actual execution at pinned312f6e02/kernel221: five native Garden functional files
+in Chromium/WebKit196 passes plus2 deliberately expected deadline failures (11.81s); declared
+cold Linux same five files Chromium/Firefox/WebKit294 passes plus3 expected deadline failures,
+15 file populations/zero skips/13.23s. Those failures exercise the timed-out-startup cleanup
+control; not ordinary passing gameplay cases. Shared-host native Garage/screens1056 passes/
+10 separate-performance skips,74.01s; ten Node Garden/runtime files280 pass; all3 cold
+TestGardenView projector tests and Production vet pass. Types/build/UI boundaries pass,
+zero diagnostics. copy-check passes669 keys/622 advisory orphan warnings and deployment
+content identity; historical generated Go diff is exactly its copy hash/two help keys.
+All exact-range whitespace checks pass. The live copy-check process is observed to terminal,
+not restarted merely for full-history latency. All reviewer processes finish.
+
+Controls genuinely refuse duplicate/predispatched actions, preserve newer focus, disable
+commands across missing handshake/recovery, discard late Founder/content reads, and retain
+same-Founder Company context. Native help does not trigger commands/extra reads. Lockout
+reread uses the earlier server deadline and retains stale lock on failure. RP-468 waits for
+rendered startup and activates once; no invented handshake, higher deadline or action retry.
+Candidate help prose remains unadopted, not authored by this review.
+
+Initial loopback/Docker sandbox refusals run zero browser tests; authorized runs supply final
+evidence. Browser module output is partly truncated, not a complete raw observation dataset;
+terminal verdicts are available. Linux uses declared ARM64 container, not hosted runner hardware.
+Old failures/mutations inspected, not rerun. No SQL/composed/natural growth/renewal/performance/
+manual-AT claim. RP-430 remains OPEN: focused Firefox green does not explain its hosted missing
+uproot callback or prove reliability; its separate diagnostic range is not implicitly approved.
+No source/fixture/overlay/worktree/commit/resource changes. Original G1–G7, RP-222/RP-229/
+RP-471, privacy/publication, copy/SG13 and full feature/archival/release gates remain.

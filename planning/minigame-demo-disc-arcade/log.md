@@ -2751,3 +2751,35 @@ typecheck caught it and the corrected strict run passes. Neither authoring error
 Fresh independent corrective-code review of the complete batch is next; do not self-close
 RP-668, promote the original RP-205/207 verdict, accept a feature or archive on these checks.
 RP-201/RP-211/public-wire/adopted content/full AC9 and the nine-tier release floor remain.
+
+## 2026-10-15 — RP-668 broader correction independently approved
+
+Review by: fresh independent Codex `/root/curriculum_command_preflight_corrective_review`.
+Recorded by: Codex parent, transcribing the reviewer's completed verdict.
+APPROVED complete24-path range
+`09f3f7e103ef8eb3192deb04b8f3ec7db4f6c785..312f6e02bbd638376364b9b64d809efad4b38deb`.
+No blocking findings. Nine Go extractions preserve existing checks/order/ordinary callers;
+replacement reuses them without requested mutation. TS shares its helper. Terminal eligibility,
+malformed-input and Founder-only admission corrections conform to existing ownership/contracts.
+
+Independent actual execution: cold due-gate and all21 command replay rows; Production/Save vet;
+declared Linux-amd64/Postgres all35 Arcade Exit populations, automatic curriculum, both Prestige
+parents and Company migration corpus (Production3.714s/Save0.192s, no selected skips); ordinary
+command regressions plus all six source-bound research producers (3.323s); Go vectors/kernel
+source parity; nine Node replay/vector/research/migration files6813 passes; types zero diagnostics,
+client build and actual verify-client-boundary pass. All report source hashes/results and
+dependent migration digest independently verified unchanged/current as applicable. Historical
+old-failing runs are inspected, not rerun or called reviewer mutations. Reviewer's nonexistent
+check-client-boundaries selector ran no such check; the actual existing selector subsequently
+passes. No edits/overlays/commits/cleanup by reviewer.
+
+Close RP-668's reproduced defect under this corrective approval plus the earlier approved
+gate-only range. Do not relabel the original RP-205/207 bad tip APPROVED: its historical verdict
+remains, and these exact later corrections supply the repair. No original-feature acceptance,
+normative adoption, public-wire/content, archival or release claim. Known27 Clout failures and
+historical kernel guard remain open; reviewer does not claim independent browser/full Production/
+full CI execution. Root owns separately recorded555-browser/full-Node evidence and red broad Go.
+
+After all SQL/review processes finish, root verifies exact Compose labels/empty mounts/tmpfs
+and stops/removes only owned cloud-clicker-postgres-1. Disposable SQL fixtures are lost as
+intended; no durable/user data, caches, networks or other services are removed.

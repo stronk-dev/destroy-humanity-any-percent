@@ -15,7 +15,8 @@ Go/TS/live Postgres at kernel220, preserving replacement/atomicity, and independ
 in complete `be79f4a7..3a43cd13` range. The broader kernel221 correction after `09f3f7e1`
 now reuses ordinary Company preflight, preserves IPO/Wind Down guards and refuses malformed/
 Founder-only terminal replay. Shared Go/TS21 rows and actual SQL35 Exit populations pass;
-independent corrective review is next. RP-201/RP-211/public-wire/content/
+fresh independent approval covers complete `09f3f7e1..312f6e02`; RP-668 closes as a
+reproduced defect, not original-feature acceptance. RP-201/RP-211/public-wire/content/
 feature acceptance are not closed; the owning log records exact verdicts and evidence.
 
 2026-10-15 AR6.2 correction (RP-636): flag/unflag responses previously changed the real cell

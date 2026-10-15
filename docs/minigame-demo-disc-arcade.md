@@ -144,7 +144,7 @@ semantic refusals, five valid replacements with no requested mutation, one malfo
 command and two forged Founder-only terminal commands. The latter two are replay-only,
 not live Company commands; all other19 execute against actual Postgres, including identical
 retry, rejected state/audit checks and positive persisted terminal-state/both-history checks.
-The broader repair awaits independent corrective review. Full AC9 remains open; this
+The broader repair has independent corrective approval. Full AC9 remains open; this
 later-tier diagnostic is not default first-hour or public-browser acceptance.
 
 RP-207 repairs only the test reader's event scope. A full Founder Exit may prepend an

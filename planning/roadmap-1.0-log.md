@@ -5480,3 +5480,33 @@ exponent-exhaustion/aggregation amendments or repaired accounting. Update overvi
 queue to this concrete coordinate without claiming new full-CI, remote or milestone evidence.
 No new tier, release acceptance, publication or reduction of the full nine-tier goal.
 Editorial rollup checked against owning logs and diff; no software rerun solely for this record.
+
+## 2026-10-15 — Ending validation repaired; eleven Garden corrective approvals
+
+Product source `312f6e02`, kernel0.3.221/epoch8. RP-668 closes under fresh independent
+corrective approval of complete `09f3f7e1..312f6e02`, supplementing the earlier approved gate
+repair. Ordinary Company preflight is shared with ending replacement; IPO/Tier-0 eligibility
+and malformed/Founder-only terminal admission no longer disappear behind the scripted branch.
+The Arcade log owns old-failing evidence,21 shared rows,35 actual SQL Exit populations and
+555 actual Linux browser checks. Independent review re-executes relevant Go/TS/SQL/research
+consumers, not merely the tracker. Valid replacement remains atomic and does not execute the
+requested action. Historical original bad-tip verdicts are not relabelled approved.
+
+Two other fresh reviewers approve eleven exact Garden corrective ranges: catalog/state/
+coordinate/event admission, pending/response focus, connection/context, native help, expiry
+and test startup readiness. The Garden log owns full hashes and actual execution: decoder/
+engine/corpus consumers, native/Linux mounted input, shared-host consumers and explicit
+expected deadline controls. These are not normative, content or whole-feature approvals.
+RP-430's hosted missing callback remains unexplained; focused Firefox success is not its fix.
+
+Current full Node12481 passes/1088 explicit skips, types/build/boundaries/vet pass. Full final
+native Production remains red on exactly27 Clout partitions, Save passes. Historical kernel
+guard remains unwaived; no hosted/full-CI or release-artifact rerun is inferred. Temporary
+owned tmpfs SQL service is explicitly inspected/stopped/removed; no durable/user data or
+other services/caches removed. All reviewer processes finish without source edits.
+
+Overview/roadmap/queue reconcile that coordinate and bounded approvals. Remaining Garden
+corrections, privacy/renewal/copy/acceptance, numeric/accounting/history contracts, actual
+world/combat/later tiers/endings and complete release obligations remain. No new tier or
+release milestone, push, shortened goal or new authority. Editorial diff/claims checked
+against owning verdicts; no redundant software suite for records alone.

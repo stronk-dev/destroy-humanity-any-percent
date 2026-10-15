@@ -7,23 +7,19 @@ their independent review obligations remain live.
 
 ## Current action — 2026-10-15
 
-Whole-product implementation coordinate `3a43cd13`, kernel0.3.220, epoch8; later review
+Whole-product implementation coordinate `312f6e02`, kernel0.3.221, epoch8; later review
 records and bounded work are in the
 owning logs below. Whole-product status and evidence limits
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
 nine-tier goal remains active; no new playable tier or release was completed.
 
-- **READY — review RP-668 correction before further Arcade closeout:** independent review finds due
-  curriculum CrossGate accepts nonexistent/already-crossed gates without ordinary preflight.
-  The [Arcade plan/log](../minigame-demo-disc-arcade/plan.md) owns exact CHANGES REQUIRED scope
-  and reproduction. Gate-only correction at kernel220 passes matched old-failing Go/TS and
-  live-Postgres regressions, including atomic refusal/retry; complete `be79f4a7..3a43cd13`
-  range has independent corrective approval.
-  Broader kernel221 correction after `09f3f7e1` now reuses ordinary Company preflight and
-  preserves terminal eligibility;21 Go/TS rows and35 actual SQL Exit populations pass.
-  Fresh independent corrective review remains; no replaced mutation or post-accrual action
-  predicate is executed. This is an
-  existing-contract correction, not an owner-policy question or draft implementation.
+- **CLOSED — RP-668 ending preflight defect:** independent corrective approvals cover the
+  gate repair `be79f4a7..3a43cd13` and broader Company/terminal admission repair
+  `09f3f7e1..312f6e02`. The [Arcade plan/log](../minigame-demo-disc-arcade/plan.md) owns actual
+  old-failing regressions,21 Go/TS rows,35 live SQL Exit populations,555 Linux browser
+  executions and all limits. Valid endings replace—not execute—the requested action;
+  invalid requests retain refusal. Original bad-tip verdicts remain historical, not
+  promoted to feature acceptance. Continue remaining accepted work and corrective review.
 - **DELEGATED WORDING RECONCILED — Clout RP-308:** Marco's explicit 2026-10-15 answer
   permits CV3/AC6 reconciliation preserving offline cap/rate/banking and separate return
   visits; internal calculations/display reads create no extra saved payments. The owning

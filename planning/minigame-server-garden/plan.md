@@ -22,7 +22,16 @@ Codex reviewer under Marco's corrective-code delegation (2026-10-15). This is
 not general nested DTO validation, SQL/default-server integration, new retry policy or Garden
 acceptance. Earlier author, content, renewal, accessibility and review holds remain.
 
-**Current execution, 2026-10-08:** all original G1–G7 batches now have complete designated
+**Current corrective review, 2026-10-15:** fresh independent Codex approves complete RP-212–214,
+RP-215, RP-469 and RP-470 ranges under Marco's narrow delegation. The owning log records exact
+hashes, descendant-source checks, executed decoder/corpus populations and explicit browser/SQL
+exclusions. These scopes leave the pending corrective queue, not original feature acceptance.
+Separate fresh independent review approves RP-409/RP-410/RP-420/RP-421/RP-422 and RP-467/
+RP-468, including actual native/Linux input and shared-host consumers. RP-430's hosted failure
+is still unexplained; author/privacy/renewal/content and full acceptance holds remain. Do not
+restart approved ranges or infer approval of the other outstanding corrective scopes.
+
+**Prior execution, 2026-10-08:** all original G1–G7 batches now have complete designated
 CHANGES REQUIRED dispositions; their exact ranges and evidence are in the latest [log](log.md).
 Do not restart those reviews or mistake them for approval of corrected descendants. Consolidate
 the existing corrective ranges for Claude while continuing safe work under accepted contracts.
@@ -30,8 +39,8 @@ RP-222/RP-229/RP-471 author reconciliation, renewal/natural growth, adopted cont
 AC13 remain open. The following dated checkpoints retain their earlier evidence, not a new queue.
 
 Pending/response-focus, connection-state and current-context
-read/visibility and native help corrections are locally verified (RP-409/RP-410/RP-420/RP-421/RP-422); designated
-review remains open. The latest [owning log](log.md) records exact ranges and checks. Continue
+read/visibility and native help corrections (RP-409/RP-410/RP-420/RP-421/RP-422) now have scoped
+independent corrective approval. The latest [owning log](log.md) records exact ranges and checks. Continue
 remaining accepted feature gates and consolidated review. Fresh hosted Firefox failure RP-430
 is open: pending-menu re-consent records no uproot callback. The unchanged Linux focused case
 passes, so passive input/focus diagnostics are added without claiming a product fix. Do not
@@ -40,8 +49,9 @@ separate holds; G1–G7 below still mean implementation presence, not feature ac
 
 RP-467 now locally corrects substrate expiry scheduling: reread at the earlier server growth/
 lockout deadline, keep the old lock on read failure, and never unlock from client time. The
-real-service harvest journey passes. RP-468's startup lookup now has a controlled reproduction
-and test-only readiness correction; final bounded Linux population passes270 across three
+real-service harvest journey passes. RP-467 and RP-468 now have independent corrective approval.
+RP-468's startup lookup has a controlled reproduction and test-only readiness correction;
+its earlier bounded Linux population passes270 across three
 engines, not whole CI or proof of the original failure's unique cause. Continue remaining
 accepted feature work without repeating the held natural-growth journey. Original G1–G7 now
 have complete designated CHANGES REQUIRED dispositions; consolidate the separate corrective

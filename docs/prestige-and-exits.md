@@ -117,7 +117,7 @@ doctrine eligibility, burst duration, Compact membership/tithe, incorporation an
 Invalid commands cannot become an ending merely because the curriculum is due. A scripted
 branch also retains the existing unavailable-IPO and Tier ≥ 1 Wind Down guards. Terminal
 replay refuses malformed or Founder-only commands instead of accepting a forged ending.
-This broader RP-668 correction is locally verified and awaits independent review.
+This broader RP-668 correction has independent corrective-code approval.
 It does not execute replaced costs, effects or post-accrual action eligibility.
 Its current-curriculum real-Postgres before-threshold control crosses normally; due controls
 end the run, replay both histories and retry identically. Both Arcade toys block that action
