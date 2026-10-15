@@ -2440,3 +2440,26 @@ latest CI38560135778 and maintenance38677066823 remain completed failures. CI br
 schema/harness succeeded; client/server failed. New local work is not hosted evidence. Parent
 asks Marco about the proposed exact-commit/path exception class while accepted work continues;
 no answer or adoption inferred, no exception implemented, guard weakened, rewrite or push.
+
+## 2026-10-15 — RP-121 reused-database fixture correction approved
+
+Review by: fresh independent Codex `/root/ci_guild_fixture_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, all5 paths
+of `604f2a826b652a39f2fa6d96d7a3fae19f4af40a..b976110b751969702a17b4fddaebeb21cc0b47af` inspected.
+The fixture requires actual current_database()=cloud_clicker_test before migration/TRUNCATE,
+and registered cleanup precedes connection closure. Existing lifecycle/concurrency/history/
+deletion/Health/clearing assertions are unchanged, with no shared-service t.Parallel. The
+maintenance-database negative only connects/pings/SELECTs and requires the exact refusal
+sentinel, not an arbitrary connection/query failure. No runtime/retention-policy change.
+
+Actual descendant16219ad9/product874d8d17/kernel221: declared Linux-amd64/Postgres four
+integration parents pass count2 (2.091s), then a separate shuffled12345/count2 process on
+the SAME live service passes (1.975s). Ordering actually changes; all3 original populations
+execute4 times, plus4 exact-sentinel refusals, no skips or service/DB reset. Container ID
+7e4d5f61067a remains identical across both invocations. Cold native Guild .274s and vet pass;
+native DB skips excluded. Range diff-check passes; test blob776e06f00463d4ab5058624d48e00a64625e2545
+matches its reviewed tip. Old failure inspected, not re-manufactured; no edits/mutations.
+Initial denied Docker inventory runs no tests. All processes terminal; only created Compose-
+labelled no-volume/tmpfs service removed after inspection. Network/caches/volumes/BuildKit
+preserved, final declared inventory empty. No browser/player/full-server/hosted-CI, erasure,
+normative, feature, archival or release approval; RP-120 stays separate.

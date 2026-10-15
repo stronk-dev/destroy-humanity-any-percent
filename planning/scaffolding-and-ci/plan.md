@@ -62,11 +62,12 @@ policy remains draft; no correction/registry/version or workflow change. The own
 log records the executed fixture/root/topology results and range after `691e9bac`
 now independently approved. This is scope conformance, not a historical waiver or CI green.
 
-RP-121 Guild fixture isolation is locally corrected: all three original real-DB
+RP-121 Guild fixture isolation has fresh independent corrective APPROVED for complete
+604f2a82..b976110b; full hashes/evidence are in the owning log. All three original real-DB
 populations retain their assertions and pass repeated/shuffled runs on the same
 service. Cleanup is confined to the declared test database, with an explicit
 other-database refusal control. Owning log records evidence/range after `604f2a82`,
-pending Claude review; no Guild runtime, privacy policy or full-server promotion.
+now independently approved; no Guild runtime, privacy policy or full-server promotion.
 
 Current browser revalidation at product `728508de` plus the two test-only changes
 in this batch completes all three Linux/ARM64 phases. RP-645's full-run failure
