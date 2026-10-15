@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "vectors": [
+    {"name":"upper-domain elapsed overflow refuses later efficiency rescue","rates":["1e8999999999999999"],"elapsed_ms":60000,"efficiency":"1e-6","expect_error":true},
+    {"name":"upper-domain larger elapsed overflow refuses later efficiency rescue","rates":["1e8999999999999999"],"elapsed_ms":1000000,"efficiency":"1e-6","expect_error":true},
+    {"name":"upper-domain final overflow refusal","rates":["1e8999999999999999"],"elapsed_ms":60000,"efficiency":"1e0","expect_error":true},
+    {"name":"upper-domain valid intermediate can scale down","rates":["1e8999999999999998"],"elapsed_ms":60000,"efficiency":"1e-6","expect":"6e8999999999999993"},
+    {"name":"upper-domain zero efficiency remains zero","rates":["1e8999999999999999"],"elapsed_ms":60000,"efficiency":"0","expect":"0"},
+    {"name":"upper-domain zero elapsed remains zero","rates":["1e8999999999999999"],"elapsed_ms":0,"efficiency":"1e0","expect":"0"}
+  ]
+}

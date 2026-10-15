@@ -1,6 +1,6 @@
 import Decimal from "break_infinity.js";
 
-import { isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
+import { classify, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
 
 export function accrueConstant(
   rateSources: readonly string[],
@@ -23,8 +23,13 @@ export function accrueConstant(
   }
   const totalRate = sumDeterministic(rates);
   if (!isStateValue(totalRate)) throw new RangeError("rate sum is outside the Decimal domain");
+  if (efficiency.eq(0)) return new Decimal(0);
   const seconds = new Decimal(elapsedMilliseconds).div(1000);
-  const delta = quantize(totalRate.mul(seconds).mul(efficiency));
+  const accrued = totalRate.mul(seconds);
+  // The pinned library can scale its infinity-class sentinel back into range.
+  // Go refuses that intermediate; finite lower-domain recovery remains valid.
+  if (classify(accrued) !== "finite") throw new RangeError("accrual intermediate is non-finite");
+  const delta = quantize(accrued.mul(efficiency));
   if (!isStateValue(delta)) throw new RangeError("accrual result is outside the Decimal domain");
   return delta;
 }

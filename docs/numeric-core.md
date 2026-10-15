@@ -112,6 +112,12 @@ shared vectors; the implemented [production engine](production-engine.md) owns o
 the server clock, caps, and ledger commit. Invalid inputs or non-finite intermediates fail and
 cannot become state.
 
+The constant-rate helper rejects an infinity-class rate×seconds intermediate even if
+a subsequent nonzero efficiency would bring its raw exponent back into range. The
+pinned client library can otherwise recover that sentinel, unlike the Go server.
+Finite lower-domain diagnostics may still recover through later scaling; they are not
+infinity. Zero efficiency remains canonical zero after the input/rate-sum checks.
+
 ### Arithmetic domain edges
 
 The Go port mirrors pinned `break_infinity.js` behavior, including its unconventional finite

@@ -3,14 +3,14 @@
   "acceptance_status": "NOT_PROVEN: production AC6 remains red",
   "source_sha256": {
     "client/src/numeric.ts": "40c33bd394b71e2c436f90fc5c995cbe595a8feaed3d298d9a2533aa35055ead",
-    "client/src/production.ts": "3e892bdcf8b3ebdea12720d4dffb347d5f6e085e65007051ca2acc755dfbaad3",
+    "client/src/production.ts": "194087b307e90a352379f31eea52cd1d88d6d95501e1910095f83ca491a22a7f",
     "client/test/anchor-research.test.ts": "1bcb9a1b1415b59b40b24020ffa9ab80354c99c5bef013a061355e6166e3702d",
     "server/decimal/canonical.go": "8fe0f4ab3c635b0f2d2072b2862c0725d94240af6b382e399ac97738ba91c687",
     "server/decimal/decimal.go": "0f20973d76fa607003bd72dc51a6fc7f6cc738f9eccd920ba7e5965deea02138",
     "server/production/accrual.go": "a64e59595febe489722de584dd9692b73dd0825b6cc3cca7244246047b2337c7",
     "server/production/axis_anchor_research_test.go": "86dd7588b35393eb947ba977125787177f85f42754b0d19534677da0141900d2",
     "server/production/axis_partition_research_test.go": "675e73ad6b1fb0df4742b98f28616f125633e0f54c27b10f104a99e89aca66a3",
-    "testdata/axis-stack/partition-research-v1.json": "d89fdd1bda09cd1f92547978948092f11b9342e054f3b893df81e035a898f8d4",
+    "testdata/axis-stack/partition-research-v1.json": "1253c4eb61e1310f98988cdc36ad1160f4b4493895ccfb060f023adcbdf397e5",
     "testdata/production-accrual.json": "79070dd67c0730164e1562fcd7fbf6405c01a8555ff348d60fe207a669bf7a02"
   },
   "cases": [

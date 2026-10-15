@@ -30,6 +30,10 @@ func TestAccrualLowerDomainVectors(t *testing.T) {
 	testAccrualFixture(t, "production-lower-domain-v1.json", 7)
 }
 
+func TestAccrualUpperDomainVectors(t *testing.T) {
+	testAccrualFixture(t, "production-upper-domain-v1.json", 6)
+}
+
 func testAccrualFixture(t *testing.T, filename string, count int) {
 	t.Helper()
 	data, err := os.ReadFile("../../testdata/" + filename)

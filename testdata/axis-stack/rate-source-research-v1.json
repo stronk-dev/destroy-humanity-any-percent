@@ -5,7 +5,7 @@
   "source_sha256": {
     "balance/testdata/axis-stack/economy-v5-fixture.json": "f8c67aed784ceaae1335bb40c0e0487cc0d9b78a50b9e63a73569270df7511d7",
     "client/src/numeric.ts": "40c33bd394b71e2c436f90fc5c995cbe595a8feaed3d298d9a2533aa35055ead",
-    "client/src/production.ts": "3e892bdcf8b3ebdea12720d4dffb347d5f6e085e65007051ca2acc755dfbaad3",
+    "client/src/production.ts": "194087b307e90a352379f31eea52cd1d88d6d95501e1910095f83ca491a22a7f",
     "client/test/rate-source-research.test.ts": "2673e6469ea22332a06cb8251973068a344ee0efd69b8183217dba6eb3a0550f",
     "server/decimal/canonical.go": "8fe0f4ab3c635b0f2d2072b2862c0725d94240af6b382e399ac97738ba91c687",
     "server/decimal/decimal.go": "0f20973d76fa607003bd72dc51a6fc7f6cc738f9eccd920ba7e5965deea02138",

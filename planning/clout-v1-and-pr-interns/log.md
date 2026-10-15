@@ -4605,3 +4605,49 @@ deployment/publication change. Exact eight-path draft/record/index range begins3
 exclusive through this containing commit; designated normative review/adoption PENDING.
 No material gameplay/release milestone or new implementation authority. Next pursue the
 still-missing real temporal proof and normative review, not more positive sample censuses.
+
+## 2026-10-15 — Refuse infinity-class constant-accrual recovery (RP-671)
+
+Outcome: align the client constant-rate helper with accepted Production Accrual Math's
+non-finite-intermediate refusal and Numeric Boundary Hardening's pinned classification.
+Six new shared upper-bound vectors first pass unchanged Go; two fail unchanged TS
+(c0937a, expected throw but accepted). Maximum valid rate×60/1000 seconds reaches
+the positive-infinity class, then nonzero1e-6 efficiency incorrectly recovers client
+state. Existing Go refuses. Correct only the client primitive: preserve validated zero
+efficiency, check the accrued intermediate's classification before scaling. Do not
+reject finite lower-domain intermediates or change pinned Decimal arithmetic.
+
+The earlier suspected ordinary burst operation-order discrepancy did NOT reproduce:
+4096 seed671 profiles at default speed, then the same4096×six speeds, have no raw
+effective-seconds difference. Division by1000 shifts the exponent in the representable
+range; no rounding defect or general proof follows. Initial malformed generated rate
+and direct Node extensionless-import failures were instrument failures, not product
+evidence. Burst replay's upper-bound caller is NOT yet reproduced/adjudicated here.
+This helper feeds prediction (efficiency1); current replay owns a separate formula.
+No receipt/event/persisted encoding or watched path changes, so no kernel bump, registry
+extension, golden restamp, balance retune or historical-guard exception is introduced.
+
+Executed final checks, cold Go via root Make:
+- Native Go six upper vectors pass (3729); all29 production vectors and existing
+  exponent-boundary controls pass (34811). Full Decimal passes0.315s; Decimal/production
+  vet passes. No production Go arithmetic changed. Full production's known AC6 failures
+  are not rerun or claimed repaired.
+- Node seven affected files, including shell prediction, all numeric goldens, lower
+  diagnostics and existing partition/anchor/rate consumers:7628 pass (60218).
+- Native Chromium/WebKit six suites/12718 executions pass (5555). Initial sandbox
+  port EPERM ran no tests; permitted local-server run above succeeded. No native
+  Firefox or Linux/browser/performance/full-journey/hosted-CI claim.
+- make typecheck build-client passes (68015): zero diagnostics and actual worker/client
+  build. Initial focused Node run exposes three stale source identities (1321 other
+  assertions pass); re-execute existing Go partition/rate then anchor generators via
+  UPDATE_PARTITION_RESEARCH/UPDATE_RATE_RESEARCH/UPDATE_ANCHOR_RESEARCH Make variables.
+  All complete, preserving542/64/615 populations and every result. Independent parsed
+  comparison removes ONLY source_sha256 and requires deep equality against HEAD:
+  unchanged observations; only production.ts and dependent partition-artifact identity
+  change. These are new-source re-observations, not relabelled old raw measurements.
+
+Review by: Codex (implementer first filter, NOT designated review). Recorded by: Codex.
+Complete correction range begins4d847020-exclusive through this containing commit;
+source, shared vectors, tests, three re-observations, docs and records remain pending
+fresh independent corrective-code review. RP-663, RP-664, H3c and27 partition failures
+remain separate. No feature acceptance, normative adoption, deployment or publication.
