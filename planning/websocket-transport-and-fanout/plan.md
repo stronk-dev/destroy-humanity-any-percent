@@ -8,15 +8,16 @@
 projected membership to match the current non-archived Company head's run and member flag.
 The old real HTTP/Postgres/socket witness admits a new non-member subscription after Exit;
 the expanded existing Exit witness also checks legitimate pre-Exit access, stable assignment,
-re-sign and leave. The owning log records final execution and the range after `54f352f6`
-needing Claude review. No governance, Health/retention or established-subscription eviction
+re-sign and leave. The complete corrective range `54f352f6..aa2f97df` is independently
+APPROVED under Marco's corrective-review delegation; the owning log records the verdict.
+No governance, Health/retention or established-subscription eviction
 policy changes; complete Transport acceptance/archival remain open.
 
 RP-651's history follow-up now executes nonempty-history recovery with membership removed and
 restored in all three gated namespaces, plus direct-history refusal. This is a test-only proof
 of existing behavior with controlled resolvers, not another product fix or live DB/tenant proof.
-The owning log records full package/vet and repeated race checks; range after `c8ed9421` needs
-designated review and may join the preceding repair's range. Do not repeat these completed checks.
+The history supplement is included in that approval, with independent full package/vet,
+actual Postgres and repeated race checks. Do not repeat these completed checks for reassurance.
 
 2026-10-15 composition reconciliation: the old Commons-resolver/binary blocker is resolved.
 `gameserver.New` wires the real Commons projector and Guild settlement service; the current

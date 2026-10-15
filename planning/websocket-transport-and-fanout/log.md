@@ -854,3 +854,30 @@ formatting checked. Review by: Codex (test implementer first filter). Recorded b
 Entire four-path range after `c8ed9421` through this containing commit needs designated
 Claude review, consolidatable with the preceding Transport repair. No acceptance,
 archival, publication/deployment or full1.0 claim; continue other accepted work/review.
+
+## 2026-10-15 — RP-651 designated corrective-code review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/cohort_authorization_corrective_review`.
+Recorded by: Codex parent, transcribing its verdict under Marco's corrective-review delegation.
+Reviewed complete eight-path range:
+`54f352f62759a4ac7aa49fbf48e9f18e1c242b60..aa2f97dfc441dde924156849cbab549b75a5dd23`
+(base exclusive, tip inclusive), commits `c8ed9421` and `aa2f97df`.
+Verdict: **APPROVED**, no actionable findings.
+
+Independent cold Commons/Transport/Gameserver checks and vet PASS0.292/13.432/0.391s.
+Actual declared Postgres integration PASS Commons0.631s/Gameserver58.687s,
+including the expanded sign/Exit/re-sign/leave socket witness. Only the opt-in
+one-minute cleanup test skips. The controlled nonempty-history recovery population
+passes `-race -count=20`, all three namespaces,1.954s. Exact old projector source
+through a temporary Go overlay fails0.91s with "previous-run signature authorized
+new non-member subscription"; the same corrected-source DB test passes1.45s.
+An initial malformed Make selector executes zero tests and receives no credit.
+Gofmt/range whitespace are clean; reviewed production/test bytes match the tip.
+
+The reviewer edits no tracked files, removes its temporary overlay and its owned
+disposable Postgres container, and verifies absence; shared caches/network and
+unrelated work remain. Native DB skips receive no SQL credit; the actual run above
+provides it. Recovery resolvers, including match authorization, are controlled.
+No independent built-browser or hosted rerun, broader Transport acceptance,
+specification adoption, archival or release approval. Current plan and RP-651 now
+point here; preceding review debt remains separate.
