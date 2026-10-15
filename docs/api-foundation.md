@@ -406,18 +406,31 @@ cannot silently select zero. Explicit zero remains valid for a direct deployment
 canonical JSON member names remain equivalent. Configured values and proxy/limiter semantics
 are otherwise unchanged.
 Unknown public paths and non-GET methods return `404 unknown_id/route` and never fall through to
-the account router. The gameserver mounts it at `/api/public/v1/`, and composition fails closed
-without a valid policy or cursor pair. The composed-server Postgres witness checks all of this:
+the account router, subject to the same IP budget as registered operations. The gameserver
+mounts it at `/api/public/v1/`, and composition fails closed without a valid policy or cursor
+pair. The composed-server Postgres witness checks all of this:
 the served epoch page, request-ID echo, cache headers, a 304 on a matching ETag, the unknown-route
 404, and fail-closed composition. The composed Game UI lane also fetches the page through the Vite
 proxy.
+
+The public runtime charges one token per non-304 response, including malformed queries,
+private/unknown identities, router refusals and operational failures. Before exhaustion their
+existing statuses and exact error bytes are unchanged; after exhaustion the response is the
+same uncached `429 rate_limited/ip` used for successful uncached reads. Request IDs remain
+present; rejected response bodies and stale cache/length/encoding metadata are discarded.
+The cached writer and outer response writer share one admission decision, not two tokens.
+Authorized matching 304s remain free even after errors exhaust the bucket. IP attribution,
+burst/refill/entry limits and authentication policy are unchanged. This is response-budget
+enforcement: representation authorization/reader work still happens before the response
+decision, so it is not a pre-reader database-work bound. Mounted error/cache regressions use
+controlled readers; the existing composed Postgres checks separately exercise the live server.
 
 ### Public verification evidence
 
 The registry mounts three unauthenticated GETs at
 `/api/public/v1/runs/{stream}/{seq}/{genesis,replay-log,verdict}`. The stream is a canonical
 Company UUID; the sequence is an exact positive integer without signs or leading zeros.
-Private/unverified, unknown and invalid run identities return exactly
+Within the shared IP budget, private/unverified, unknown and invalid run identities return exactly
 `404 {"category":"unknown_id","detail":"run"}`; corrupt authorized evidence or operational
 failures return `500 internal_invariant/public_api`. Neither response exposes evidence or
 carries cache/content-hash metadata.
@@ -441,7 +454,8 @@ and a lone `*` match an authorized current representation. Quoted commas stay in
 opaque tag; malformed conditions and nonmatching tags take the ordinary rate-limited path.
 The entire combined field is validated, so a matching first field cannot hide a malformed
 second field. Authorization/evidence validation still precedes caching: private or unknown
-run requests with `*` return the same non-cacheable 404. See
+run requests with `*` return the same non-cacheable 404 while within budget, and the shared
+429 when exhausted, never a 304 or evidence. See
 [RFC 9110 §13.1.2](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.2).
 This runtime conformance repair does not declare the still-held generated-client 304 arm.
 

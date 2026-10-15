@@ -224,7 +224,78 @@ func NewRuntime(policy Policy, clock func() time.Time, requestIDs *httpapi.Reque
 }
 
 type requestIDContextKey struct{}
+type responseBudgetContextKey struct{}
 
+// One decision per response: cached emission and uncached/error emission share
+// the same bucket, without charging an already admitted success twice.
+type responseBudget struct {
+	runtime          *Runtime
+	checked, allowed bool
+}
+
+func (runtime *Runtime) allowResponse(request *http.Request) bool {
+	budget, _ := request.Context().Value(responseBudgetContextKey{}).(*responseBudget)
+	if budget != nil && budget.runtime == runtime {
+		if !budget.checked {
+			budget.checked = true
+			budget.allowed = runtime.limiter.Allow(httpapi.ClientIP(request, runtime.policy.TrustedProxyHops), runtime.clock())
+		}
+		return budget.allowed
+	}
+	return runtime.limiter.Allow(httpapi.ClientIP(request, runtime.policy.TrustedProxyHops), runtime.clock())
+}
+
+var rateLimitedIP = []byte(`{"category":"rate_limited","detail":"ip"}` + "\n")
+
+func writeRateLimited(response http.ResponseWriter) {
+	response.Header().Del("Cache-Control")
+	response.Header().Del("ETag")
+	response.Header().Del("Content-Length")
+	response.Header().Del("Content-Encoding")
+	response.Header().Set("Content-Type", ContentJSON)
+	response.WriteHeader(http.StatusTooManyRequests)
+	_, _ = response.Write(rateLimitedIP)
+}
+
+type budgetResponseWriter struct {
+	http.ResponseWriter
+	runtime                 *Runtime
+	request                 *http.Request
+	wroteHeader, suppressed bool
+}
+
+func (writer *budgetResponseWriter) WriteHeader(status int) {
+	if writer.wroteHeader {
+		return
+	}
+	if status >= 100 && status < 200 && status != http.StatusSwitchingProtocols {
+		writer.ResponseWriter.WriteHeader(status)
+		return
+	}
+	writer.wroteHeader = true
+	if status != http.StatusNotModified && !writer.runtime.allowResponse(writer.request) {
+		writer.suppressed = true
+		writeRateLimited(writer.ResponseWriter)
+		return
+	}
+	writer.ResponseWriter.WriteHeader(status)
+}
+
+func (writer *budgetResponseWriter) Write(body []byte) (int, error) {
+	if !writer.wroteHeader {
+		writer.WriteHeader(http.StatusOK)
+	}
+	if writer.suppressed {
+		return len(body), nil // The typed 429 was already written; discard the denied body.
+	}
+	return writer.ResponseWriter.Write(body)
+}
+
+func (writer *budgetResponseWriter) Unwrap() http.ResponseWriter { return writer.ResponseWriter }
+
+// WithRequestID establishes the shared public request context and enforces its
+// response budget, including router/handler errors. Only authorized 304s are
+// free; representation validation remains the handler's responsibility.
 func (runtime *Runtime) WithRequestID(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		if runtime == nil || next == nil || request == nil {
@@ -237,7 +308,10 @@ func (runtime *Runtime) WithRequestID(next http.Handler) http.Handler {
 			return
 		}
 		response.Header().Set("X-Request-ID", requestID)
-		next.ServeHTTP(response, request.WithContext(context.WithValue(request.Context(), requestIDContextKey{}, requestID)))
+		ctx := context.WithValue(request.Context(), requestIDContextKey{}, requestID)
+		ctx = context.WithValue(ctx, responseBudgetContextKey{}, &responseBudget{runtime: runtime})
+		request = request.WithContext(ctx)
+		next.ServeHTTP(&budgetResponseWriter{ResponseWriter: response, runtime: runtime, request: request}, request)
 	})
 }
 
@@ -276,13 +350,8 @@ func (runtime *Runtime) WriteCached(response http.ResponseWriter, request *http.
 		response.WriteHeader(http.StatusNotModified)
 		return nil
 	}
-	clientIP := httpapi.ClientIP(request, runtime.policy.TrustedProxyHops)
-	if !runtime.limiter.Allow(clientIP, runtime.clock()) {
-		response.Header().Del("Cache-Control")
-		response.Header().Del("ETag")
-		response.Header().Set("Content-Type", ContentJSON)
-		response.WriteHeader(http.StatusTooManyRequests)
-		_, _ = response.Write([]byte(`{"category":"rate_limited","detail":"ip"}` + "\n"))
+	if !runtime.allowResponse(request) {
+		writeRateLimited(response)
 		return nil
 	}
 	response.Header().Set("Content-Type", contentType)

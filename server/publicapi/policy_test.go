@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -35,6 +36,66 @@ func TestCachedRawHashHeaderCannotOverwriteProtocolHeaders(t *testing.T) {
 			})).ServeHTTP(response, request)
 			if response.Body.Len() != 0 || response.Header().Get("X-Request-ID") != "reserved-header-test" || len(response.Header()) != 1 {
 				t.Fatalf("invalid hash header wrote body/protocol metadata: %v %q", response.Header(), response.Body.String())
+			}
+		})
+	}
+}
+
+func TestPublicBudgetDiscardsDeniedBodiesAndEntityHeaders(t *testing.T) {
+	for _, explicitStatus := range []bool{false, true} {
+		t.Run(fmt.Sprint("explicit status=", explicitStatus), func(t *testing.T) {
+			policy := phase0Policy(t)
+			policy.PublicLimiter.Burst = 1
+			ids, err := httpapi.NewRequestIDs(requestIDPatternLiteral, 64, bytes.NewReader(bytes.Repeat([]byte{0xbb}, 64)))
+			if err != nil {
+				t.Fatal(err)
+			}
+			now := time.Date(2026, 10, 15, 12, 0, 0, 0, time.UTC)
+			runtime, err := NewRuntime(policy, func() time.Time { return now }, ids)
+			if err != nil {
+				t.Fatal(err)
+			}
+			handler := runtime.WithRequestID(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+				if request.URL.Path == "/seed" {
+					if err := runtime.WriteCached(response, request, CacheCatalogEpoch, ContentJSON, []byte(`{"seed":true}`)); err != nil {
+						t.Fatal(err)
+					}
+					return
+				}
+				response.Header().Set("Content-Type", ContentGzip)
+				response.Header().Set("Content-Length", "999")
+				response.Header().Set("Content-Encoding", "gzip")
+				response.Header().Set("Cache-Control", "public,max-age=3600")
+				response.Header().Set("ETag", `"denied"`)
+				if explicitStatus {
+					response.WriteHeader(http.StatusInternalServerError)
+				}
+				for _, body := range []string{"denied body", "second denied chunk"} {
+					if n, err := response.Write([]byte(body)); n != len(body) || err != nil {
+						t.Fatalf("denied write=%d err=%v", n, err)
+					}
+				}
+			}))
+			request := func(path string) *httptest.ResponseRecorder {
+				r := httptest.NewRequest(http.MethodGet, path, nil)
+				r.RemoteAddr = "192.0.2.1:4000"
+				r.Header.Set("X-Request-ID", "response-budget-check")
+				response := httptest.NewRecorder()
+				handler.ServeHTTP(response, r)
+				return response
+			}
+			if seed := request("/seed"); seed.Code != http.StatusOK {
+				t.Fatalf("seed status=%d body=%q", seed.Code, seed.Body.String())
+			}
+			denied := request("/denied")
+			if denied.Code != http.StatusTooManyRequests || denied.Body.String() != "{\"category\":\"rate_limited\",\"detail\":\"ip\"}\n" ||
+				denied.Header().Get("Content-Type") != ContentJSON || denied.Header().Get("X-Request-ID") != "response-budget-check" {
+				t.Fatalf("denied status=%d headers=%v body=%q", denied.Code, denied.Header(), denied.Body.String())
+			}
+			for _, header := range []string{"Content-Length", "Content-Encoding", "Cache-Control", "ETag"} {
+				if denied.Header().Get(header) != "" {
+					t.Fatalf("denied response retained %s: %v", header, denied.Header())
+				}
 			}
 		})
 	}

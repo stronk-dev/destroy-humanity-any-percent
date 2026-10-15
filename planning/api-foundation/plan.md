@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current A3/C6/C16 correction (2026-10-15, RP-641): public errors now share the
+existing per-IP response budget instead of bypassing WriteCached. Twenty-one
+old mounted-router cases reproduce the gap. Cached and uncached writers share
+one admission decision; authorized304 remains free, with limits/proxy attribution
+unchanged. The owning log records final affected checks and the review range after
+`61fa96cf`. This is not a pre-reader work bound, complete API acceptance or a
+resolution of held contracts. Continue accepted construction and consolidated review.
+
 Current C14 raw-source correction (2026-10-15, RP-640): the actual repository now
 refuses invalid UTF-8 genesis instead of admitting it through json.Valid. The old
 real-Postgres source returns corrupt bytes with nil error; corrected14-case source

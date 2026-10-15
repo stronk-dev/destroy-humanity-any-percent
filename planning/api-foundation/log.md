@@ -3340,3 +3340,37 @@ test/docs/ledger/plan/log range after `a0029bd5` through this containing commit
 needs designated Claude review, consolidatable with C14. Prior review debt,
 public catalog/rights/author and nine-tier release obligations remain. No feature
 acceptance, archival, content mint, push or deployment follows from this repair.
+
+## 2026-10-15 — RP-641 public errors use the existing response budget
+
+Under A3/C6/C16, charge public errors to the same IP bucket as uncached success,
+without changing budget/proxy literals or free authorized304. Old mounted-router
+66725 fails all21 cases after the configured burst: invalid query, unknown board/
+epoch/run, private run, wrong method/path and reader500 still return their original
+errors. Initial28512 had four incomplete board queries; correct their required
+mandate/variables before counting the intended regressions.
+
+The request context now shares one admission decision between cached emission and
+the outer response writer. Errors charge once; an exhausted response writes the
+existing exact429 and discards denied body/cache/length/encoding metadata. Matching
+authorized304 remains free, including after error exhaustion. The21 regressions
+also exercise cross-operation success exhaustion, independent IPs and exact refill;
+two writer controls cover implicit/explicit status and multiple denied body chunks.
+This remains a response bound, not a pre-reader database-work bound.
+
+Final native22738 passes PublicAPI/PublicRead/Gameserver0.286/.281/.405s and vet;
+race28821 passes the first two1.885/1.837s. Final declared Postgres83201 passes
+the existing composed socket/clearing/GC and Exit/board/public evidence populations
+1.25/1.04s, plus mounted cache/error/refusal and writer controls. The new limiter
+population uses controlled readers; the SQL/server populations are existing
+integration checks, not a newly combined SQL abuse-budget oracle. Earlier87106
+also passes, but final83201 covers the finished source and added writer controls.
+API generation is byte-unchanged; format/diff checked. Native DB skips are not SQL
+proof. No gameplay/kernel/schema/pin, client, budget, draft adoption or full-CI claim.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Whole code/tests/
+docs/ledger/plan/log range after `61fa96cf` through this containing commit needs
+designated Claude review, consolidatable with related API work. After terminal
+checks remove only this turn's inspected tmpfs Postgres test service/rows; preserve
+durable data/cache/network. Prior numeric/CI, author/owner and nine-tier gates stay
+open. No acceptance, archival, content mint, push or deployment.
