@@ -3835,3 +3835,34 @@ Four-path range after `d0947b4b` through this containing commit needs designated
 normative review. Review by: Codex (draft author first filter). Recorded by: Codex.
 No acceptance, archival, publication or release. Next resolve real-caller search
 correctness rather than repeat completed fixture measurements or expand the codec.
+
+## 2026-10-15 — RP-660 distinguish actual attendance and catchup boundaries
+
+At `c4303ceb`, trace actual candidateCost/gateRequirementsMet, active-play schedule,
+RecordOfflineSpan and buildOfflineCatchup. Current affordability uses pinned unit
+prices; gates use resource-at-least conjunctions, not an invented dynamic-discount
+system. Attendance's5000ms threshold is not automatic catchup's24h threshold.
+Declare18 actual logged buffed profiles at the exact expiry/attendance/cap edges,
+both modes. Initial50413 passes0.472s. Then prospectively add18 same-offset no-buff
+controls, preserving the original18 and every expectation.
+
+Final36-cell population plus existing long-absence and temporal-search parents
+passes three shuffled cold runs67626 in9.064s; production vet passes. All payouts
+match exact integer nanocash then existing canonical quantization. The forwarding
+last hook leaves complete final state/receipt/events unchanged. At5001ms attendance
+freezes but no automatic catchup occurs. At24h+1 online catchup changes pre-action
+payout even without buffs; direct-offline cash stays equal. Both bank1ms atcap+2;
+origins stay unchanged. These independent transitions are not consecutive saved
+payments, a live-loss finding or a proposal to change either current policy.
+
+Draft successor H3a binds actual predicate/clock owners; keep fixed-external and
+diagnostic callers separate. This establishes a mandatory extra search boundary,
+not a complete enumerator, general numeric monotonicity proof, actual migrated
+search, Go/TS/SQL integration, conservation implementation or repaired27 cases.
+No runtime/kernel/data/artifact/CI bytes change; no whole package/server/hosted
+green claimed. Diff/formatting checked. Review by: Codex (research implementer/
+draft author first filter). Recorded by: Codex. Entire five-path test/draft/plan/
+ledger/log range after `c4303ceb` through this containing commit needs designated
+Claude review, consolidatable with calculation work. No services/resources touched,
+adoption, acceptance, archival, push or deployment. Next close the remaining actual
+enumerator/numeric/work proof, not repeat these completed clock-edge profiles.

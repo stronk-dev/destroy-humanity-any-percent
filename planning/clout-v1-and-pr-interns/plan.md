@@ -8,6 +8,32 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+Boundary check declared at `c4303ceb`: existing Company19/tower/PR origin, attended
+4000ms, production buff expiring at5000 attended milliseconds. Execute actual
+ApplyLogged at offsets999/1000,4999/5000/5001,86399999/86400000/86400001/86400002ms,
+each online/offline:18 cells, no per-ms scan or new API. Reuse the forwarding last-hook
+observer; require full final state/receipt/events equal to unobserved execution,
+one observed nonzero stage, exact existing catchup envelope, attended coordinate,
+cap/banking and independent integer payout. Current policy is5000ms attendance
+ceiling versus86400000ms production cap, with online catchup strictly beyond the
+latter. The fresh origin must remain unchanged. Require an online payout drop at
+cap+1 and a direct-offline equal-payout control; do not infer current live player
+loss, mode equivalence, a correct general search or a repaired partition property.
+
+Initial18 cells pass50413. Before the next measurement, add18 matched no-buff cells
+at the same offsets/modes, preserving the original18 unchanged. Require the same
+online drop at24h+1 even without a buff, versus direct-offline equal cash and bank1
+atcap+2. This distinguishes the production-cap/mode boundary from buff-only search
+edges; it still does not prove a whole-domain predicate or current harness defect.
+
+Final36-cell population plus the existing long-absence and1502-endpoint search
+parents passes three shuffled cold runs67626 (9.064s); vet passes. No-buff online
+still drops across24h→24h+1, while direct offline cash remains equal and cap+2 banks
+1ms. Successor H3a now binds both thresholds and the actual fixed-price/resource
+predicates; no timed purchase-discount system exists in those current callers.
+This supplies a required search boundary, not a complete enumerator/predicate proof,
+new API, SQL/TS integration, policy adoption or repair of the original27 failures.
+
 The proposed private origin JSON/hash protocol is withdrawn: no identified consumer
 persists or transmits these handles. Parent C1e now proposes opaque typed run-local
 ownership using existing save/replay validators, with forks sharing identity and

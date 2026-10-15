@@ -120,8 +120,44 @@ This is a Go-only algorithm feasibility result over observed endpoint values, no
 execution of `RelevanceSuite.earliestAffordable`, a migrated harness, an adopted
 search-policy amendment or proof that current reports are incorrect. The current
 harness does not use this proposed temporal projection path. Full real-caller
-boundary enumeration, hook/dynamic-quote predicate proof, work measurements and R10/R11 normative
+boundary enumeration, actual hook/resource predicate proof, work measurements and R10/R11 normative
 review remain required; a per-ms exhaustive production scan is not authorized.
+
+#### H3a — Actual predicate and clock bindings (RP-660)
+
+Current `candidateCost` is one pinned `BulkCost(id, purchased,1)` for a generator
+or the upgrade's pinned resource/amount. Current `gateRequirementsMet` is a
+conjunction of resource-at-least checks. Waits do not buy generators or upgrades.
+There is no timed purchase-discount contract in these callers; do not invent one
+or require a proof over arbitrary future predicates. A new predicate family still
+needs explicit support before adoption, not a default monotonicity assumption.
+
+The proposed modern endpoint recipe must distinguish these existing mechanisms:
+
+| Mechanism | Actual owner and boundary |
+|---|---|
+| Active buff expiry | `activePlayContributions` excludes a buff when its attended expiry is reached. Pending opportunity spawn/expiry alone does not claim an effect. |
+| Attendance freeze | `prestige.RecordOfflineSpan` records the whole gap only when elapsed is strictly greater than `Prestige.CatchupCeilingMS` (currently5000ms). Resolve attended time through the actual history, not elapsed wall time alone. |
+| Automatic online catchup | `buildOfflineCatchup` selects the offline stage only when online elapsed is strictly greater than `Economy.OfflinePolicy.AccrualCapMS` (currently86400000ms), not at the attendance ceiling. Catchup uses base contributions before the ordinary schedule/evaluation. |
+| Production shape | `Evaluate` still owns the provision grid, burst duration, offline production cap and banking. Search ranges never reset these or turn their internal steps into payments. |
+
+`TestAxisCalculationClockBoundariesResearch` executes actual logged transitions
+at999/1000,4999/5000/5001 and24h−1/24h/24h+1/24h+2 milliseconds, both modes,
+with the existing production buff and matched no-buff origins:36 cells. All exact
+pre-action payouts agree with independent integer arithmetic followed by existing
+state quantization; the forwarding hook observer preserves complete final
+state/receipt/events. Attendance freezes at5001ms while automatic online catchup
+remains absent through24h. At24h+1 the online pre-action payout is lower than at24h
+even in the no-buff control; direct offline cash stays equal, banking1ms at24h+2.
+
+These are independent operations from the same unchanged origin, not consecutive
+saved payments or evidence of live balance loss. They require a separate cap+1
+search boundary even without buffs. The original18 buffed cells passed before
+the18 no-buff controls were declared; the owning plan/log retain that provenance.
+This is bounded Go evidence and source binding, not an implemented enumerator,
+whole-domain numeric/predicate proof, migrated harness, SQL/TS proof or AC6 repair.
+The fixed-external and diagnostic profiles retain their distinct C1h policies;
+do not add logged scheduling/catchup to those callers by association.
 
 
 ### H4 — Compatibility, work and evidence
@@ -230,6 +266,10 @@ numeric tolerance, authored content or narrowed1.0 scope.
 
 ## Changelog
 
+- 2026-10-15: bind actual fixed-price/resource predicates and distinguish the5000ms
+  attendance edge from the24h automatic catchup edge. Execute36 exact logged profiles,
+  including declared no-buff controls; retain general proof/work/adoption gates.
+  No production, policy, search algorithm, report or authority change.
 - 2026-10-15: align reuse with opaque typed run-local origins, not a new canonical
   origin codec/hash protocol. Preserve deterministic output, all reuse paths and
   full workload/budget gates; no implementation or adoption.
