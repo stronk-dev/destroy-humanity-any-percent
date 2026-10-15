@@ -2,6 +2,15 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current C14 raw-source correction (2026-10-15, RP-640): the actual repository now
+refuses invalid UTF-8 genesis instead of admitting it through json.Valid. The old
+real-Postgres source returns corrupt bytes with nil error; corrected14-case source
+population and valid-Unicode byte/hash controls pass. Existing mounted error/refusal
+tests and cold affected packages/vet pass. Raw transport/archives are not decoded or
+normalized; no synthetic seed is claimed as a naturally verified public run. The
+owning log holds the range after `a0029bd5`, pending designated review; no public
+catalog/complete-loop, kernel, schema or release promotion follows.
+
 Current HTTP encoding correction (2026-10-15, RP-639): Go wire admission now
 refuses malformed UTF-8 before decoding, matching the existing client boundary.
 Thirty-six old schema/literal failures and two real Postgres/session-route401

@@ -3310,3 +3310,33 @@ tests/docs/ledger/plan/log range after `455b7108` through this containing commit
 needs designated Claude review, consolidatable with related API admission work.
 Original numeric/CI, owner/author and full-nine-tier gates remain. No acceptance,
 archival, mint, push or deployment; continue accepted construction and review.
+
+## 2026-10-15 — RP-640 raw genesis source refuses corrupt encoding
+
+C14's raw transport verifies identity, not JSON semantics. Its repository source
+checks json.Valid, which still admits malformed UTF-8 strings. Cold actual-Postgres
+57005 reproduces one corrupt-source acceptance: nil error plus malformed genesis,
+metadata and archive. Thirteen other cases, including new exact Unicode/hash
+control, pass. These are synthetic authorized records, not an actual verification
+producer, naturally boardable corrupt run or deployed privacy/security finding.
+
+Require utf8.Valid at the repository's existing genesis-validity branch. Preserve
+stored bytes and hashes; do not normalize/re-encode genesis, inspect/recompress raw
+archives or silently tighten shared artifact decoding. Corruption now returns
+ErrInvalidPublicRunEvidence with zero evidence; unknown/private semantics remain.
+Only this public-reader source changes, outside the kernel-affecting paths.
+
+Final declared Postgres18920 passes all14 source cases,0.22s, and the existing
+mounted PublicRead hash/refusal cases0.098s. Those HTTP cases use controlled readers;
+they are not a new SQL→HTTP combined witness. Cold native93964 passes complete
+Leaderboard/PublicRead/PublicAPI0.286/.256/.245s and vet, with native DB skips not
+claimed as SQL evidence. Format/diff checked. No descriptor/generated/client or
+API-version change; no unrelated browser/whole-CI/replay-loop claim. After terminal
+tests, remove only this turn's inspected tmpfs Postgres service/rows; no durable
+volume, cache, network or unrelated data removed.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Whole source/
+test/docs/ledger/plan/log range after `a0029bd5` through this containing commit
+needs designated Claude review, consolidatable with C14. Prior review debt,
+public catalog/rights/author and nine-tier release obligations remain. No feature
+acceptance, archival, content mint, push or deployment follows from this repair.

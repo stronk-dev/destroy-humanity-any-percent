@@ -452,7 +452,11 @@ verdict, run pin or archive alone does not. Invalid/unknown run identities retur
 run returns `ErrInvalidPublicRunEvidence`; database errors propagate as operational errors.
 
 The source returns the original genesis JSON bytes/version, the original `gzip+json.v1` replay
-archive, engine version and constants hash. It verifies that genesis uses the pinned constants
+archive, engine version and constants hash. Genesis must be valid UTF-8 as well as JSON;
+`json.Valid` alone would admit corrupt string encoding. Invalid encoding is corrupt public
+evidence, not normalized/repaired output. Valid Unicode, including literal U+FFFD, retains
+its original bytes and digest. This source check is separate from opaque raw transport.
+It verifies that genesis uses the pinned constants
 hash and that archive bytes match the stored SHA256, and computes the genesis SHA256 over the
 stored bytes. It does not re-encode JSON, recompress gzip, substitute current engine/constants,
 or expose account/session metadata. Caller mutation does not rewrite stored evidence.

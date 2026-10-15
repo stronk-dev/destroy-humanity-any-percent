@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"unicode/utf8"
 
 	"cloud-clicker/server/decimal"
 )
@@ -60,7 +61,7 @@ LEFT JOIN run_log_archive a ON a.company_stream_id=$2 AND a.run_seq=$3
 		return PublicRunEvidence{}, err
 	}
 	if !engine.Valid || !constantsHash.Valid || !genesisHash.Valid || constantsHash.String != genesisHash.String ||
-		!version.Valid || version.Int64 < 1 || !json.Valid(genesis) ||
+		!version.Valid || version.Int64 < 1 || !utf8.Valid(genesis) || !json.Valid(genesis) ||
 		!encoding.Valid || encoding.String != "gzip+json.v1" || len(archive) == 0 ||
 		!archiveHash.Valid || archiveHash.String != publicEvidenceSHA256(archive) {
 		return PublicRunEvidence{}, ErrInvalidPublicRunEvidence

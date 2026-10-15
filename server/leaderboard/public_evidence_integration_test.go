@@ -16,6 +16,8 @@ import (
 	"cloud-clicker/server/save"
 )
 
+const publicUnicodeGenesis = "{\"v\":1,\"label\":\"é中🙂\ufffd\"}"
+
 // This is a repository/authorization witness with synthetic immutable evidence,
 // not a replay-verifier verdict or a public HTTP download acceptance test.
 func TestPublicRunEvidenceIntegration(t *testing.T) {
@@ -62,7 +64,7 @@ func TestPublicRunEvidenceIntegration(t *testing.T) {
 	}
 	archive := compressed.Bytes()
 	archiveHash := fmt.Sprintf("sha256:%x", sha256.Sum256(archive))
-	for seq := int64(1); seq <= 7; seq++ {
+	for _, seq := range []int64{1, 2, 3, 4, 5, 6, 7, 10, 11} {
 		tx, err := db.BeginTx(ctx, nil)
 		if err != nil {
 			t.Fatal(err)
@@ -107,6 +109,14 @@ SELECT run_id,event_id,founder_id,'ethical_percent',variables,epoch_id,mandate_l
 			t.Fatal("caller mutation changed stored evidence")
 		}
 	})
+	t.Run("valid Unicode stays byte-exact", func(t *testing.T) {
+		evidence, err := repository.PublicRunEvidence(ctx, streamID, 11)
+		want := []byte(publicUnicodeGenesis)
+		if err != nil || evidence.RunID != streamID+":11" || !bytes.Equal(evidence.Genesis, want) ||
+			evidence.GenesisSHA256 != fmt.Sprintf("sha256:%x", sha256.Sum256(want)) || !bytes.Equal(evidence.ReplayLog, archive) {
+			t.Fatalf("Unicode genesis was refused or normalized: err=%v", err)
+		}
+	})
 	for _, test := range []struct {
 		name string
 		seq  int64
@@ -119,6 +129,7 @@ SELECT run_id,event_id,founder_id,'ethical_percent',variables,epoch_id,mandate_l
 		{"genesis differs from pinned constants", 6, ErrInvalidPublicRunEvidence},
 		{"public run with invalid genesis JSON", 7, ErrInvalidPublicRunEvidence},
 		{"public record with missing pin", 8, ErrInvalidPublicRunEvidence},
+		{"public run with malformed UTF-8 genesis", 10, ErrInvalidPublicRunEvidence},
 		{"unknown run", 9, ErrUnknownPublicRun},
 		{"invalid sequence", 0, ErrUnknownPublicRun},
 		{"inexact sequence", decimal.MaxExactInteger + 1, ErrUnknownPublicRun},
@@ -154,6 +165,12 @@ VALUES($1,$2,1,$3,'0.1.0','evidence-test','1')`, streamID, seq, hash); err != ni
 	}
 	if seq == 7 {
 		genesis = []byte("not JSON")
+	}
+	if seq == 10 {
+		genesis = []byte("{\"v\":1,\"label\":\"\xff\"}")
+	}
+	if seq == 11 {
+		genesis = []byte(publicUnicodeGenesis)
 	}
 	if _, err := tx.Exec(`INSERT INTO run_genesis(company_stream_id,run_seq,state,version,constants_hash) VALUES($1,$2,$3,1,$4)`, streamID, seq, genesis, genesisHash); err != nil {
 		t.Fatal(err)
