@@ -2771,3 +2771,32 @@ review; no background test workload remains. Review by: Codex root (repair imple
 filter). Recorded by: Codex root. Complete12769925-exclusive through the containing repair
 commit requires fresh independent corrective review; cursor approval is not this repair's
 approval. No unrelated dirty work existed or was changed.
+
+## 2026-10-16 — Archive-phase fixture repair independently approved (RP-677)
+
+Review by: /root/composed_archive_phase_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete four-path single-commit range
+127699253f13a99896f0a5a9681e9b1be6e244de-exclusive..aed11047c200fe2fab1692543698b8d7abe36f77-inclusive.
+All changed integration-test/CI plan/log/backlog paths inspected against CI D2 and the
+existing transactional verification/archive contract. Committed SQL phase is observed in
+one snapshot; malformed verified/dead states fail, existing3s/25ms readiness values remain.
+Served-byte/hash binding, real Go replay/corrupt receipt, historical epoch, Founder witness,
+socket/privacy and imported-board exclusion assertions remain, not a tracker-only substitute.
+
+Independent old diagnostic93622 fails as required: real archive1/live1/non-null seq3 then
+log_gap (test0.920s/package0.999s). Diagnostic hashes match; only the real-archive handshake/
+scalar logging precede the unchanged old assertion. Full actual declared LinuxAMD64/Postgres
+gameserver/replayverify60907 passes89.860/1.668s; both terminal3/2 checkpoints/unreferenced0,
+public/historical replays, corrupt receipt and queue failure/rollback/compaction/immutable/
+corrupt-content/omitted-field negatives execute. Native affected vet, complete-range diff
+and changed Go formatting pass. Opt-in one-minute cleanup skips and unrequested TS seam
+are explicitly not credited; retained-rights observations remain negative evidence.
+
+Execution code atb58473af matches the reviewed endpoint; intervening changes are Markdown
+only. All handles terminal/slot released; reviewer inspects then removes only disposable
+tmpfs Postgres4ea2b0326940 (ephemeral test data gone), preserving both BuildKit builders and
+cache volumes. No tracked reviewer edits/commits/main-tree mutation/publication. Docker
+Desktop LinuxAMD64 emulation is not native hosted hardware. Only this fixture correction
+is approved; no neighboring cursor, full CI/history/arithmetic, feature/archival/release or
+1.0 promotion. Root records the bounded debt closed; remaining whole-product gates stand.

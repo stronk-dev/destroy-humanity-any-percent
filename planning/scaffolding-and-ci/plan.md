@@ -14,8 +14,11 @@ a duplicate live-log verification. Selected Linux-amd64/Postgres reproduction po
 passes after correction; full affected Linux-amd64/Postgres gameserver83.660s and
 replayverify1.629s plus native vet pass. The opt-in one-minute cleanup test is explicitly
 skipped, not credited; archive corruption/rollback cases actually execute.
-The owning log retains old/current controlled failures and exact corrective-review boundary;
-this is not a production verifier change, whole-CI acceptance or a timeout/budget increase.
+Fresh independent Codex corrective review APPROVES complete four-path
+`12769925..aed11047` after independently reproducing the old forced-archive failure and
+executing full affected real Postgres packages/vet. The owning log retains exact range,
+provenance and limits. This is not a production verifier change, whole-CI acceptance or
+a timeout/budget increase.
 
 RP-596 candidate review finds RP-674: local sort bypasses the neutral ordering authority
 required by implemented Production Contract Integrity D1/D3. Complete original9bdf9c29..d6e092e8
