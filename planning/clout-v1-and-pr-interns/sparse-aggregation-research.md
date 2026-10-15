@@ -58,6 +58,13 @@ than pretending two seeds cover the other298. Same60m diagnostic guard and stric
 completion checks; no candidate restart/enlarged population or additional repetitions.
 A single ordered pair is not a statistically established speedup or hosted estimate.
 
+Candidate result: session98864 completed all300 unique governed runs with no invariant
+failures, aggregate failures or warnings;770.707897625s benchmark/771.156s package.
+Full retained canonical report SHA256c4254dd5f1213031deb0bb98246782ad96bd331295adc69190d39e9872b39426;
+the owning log binds its profile/binary/source identities. The single active-code control
+is now live as77856, using the same instrument without aggregate.go replacement. No
+before/after equivalence or speedup conclusion until its terminal complete report is compared.
+
 ## Representation and proposed arithmetic
 
 Every valid nonzero normalized binary64 mantissa has unbiased binary exponent0..3.

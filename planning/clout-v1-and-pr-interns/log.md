@@ -5170,3 +5170,41 @@ toolchain/current runtime dependencies/12workers/strict300 checks/60m guard, no 
 overlay. Retain its complete JSON for actual300-key field comparisons. No repeated candidate,
 extra seeds, report regeneration or inference from only the two golden rows. A single
 sequential pair is bounded local evidence, not statistical/hosted timing or full acceptance.
+
+## 2026-10-16 — Exact standard candidate completes; full active control starts
+
+Session98864 is terminal0: benchmark770707897625ns/op (770.707897625s timed),
+package771.156s, actual300 runs/op. Instrument checks passed: every governed key once,
+every outcome completed, no invariant or aggregate failures. Independent retained-JSON
+inspection confirms300 distinct keys/all300 completed/zero invariant failures and aggregate
+run_count300/no warnings or failures. This is the full standard phase, not registered
+relevance, the complete check, caller compatibility, accounting repair or adoption.
+
+Retained ignored artifacts beside the declared overlay, SHA256:
+- exact-standard-35cde078-candidate-cpu.pprof.report.json:
+  c4254dd5f1213031deb0bb98246782ad96bd331295adc69190d39e9872b39426
+- exact-standard-35cde078-candidate-cpu.pprof:
+  f47df34d915f899788ec56c67e9d39834f8c1b831b0b50564abc329f2ef046f1
+- exact-standard-35cde078-candidate.test:
+  124056fa405738d2f1f2a06758c8e2c3ef4ee84bddc83017add48b8161466a18
+Candidate source remains4b9e897a9c79a1b38fda998f06a240e0c5596e56e85aaa525c3b255110849304;
+manual instrument1090d8124b0e9cbca42bc62323c51b9107c47ad66fa86c6f083536126a7addd3.
+No candidate restart or competing heavy workload was launched.
+
+After that terminal result, start the predeclared SINGLE active-source control as
+session77856, currently LIVE, not a pass/result. Ignored active overlay maps ONLY the
+existing standard_pacing_profile_test.go to the same committed manual instrument; active
+aggregate.go SHA256270578489486b6dbd43fce0b53d51dbd3cffb088dd3f18308b6cb5978ae24f52.
+Exact root command (source HEAD37a70479; no changed product/runtime bytes since35cde078):
+`make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-overlay=/Users/stronk/repos/cloud-clicker/.cache/exact-standard-35cde078-active-overlay.json -run NoTests -bench BenchmarkStandardPacingProfile -benchtime=1x -timeout=60m -cpuprofile=/Users/stronk/repos/cloud-clicker/.cache/exact-standard-35cde078-active-cpu.pprof -o=/Users/stronk/repos/cloud-clicker/.cache/exact-standard-35cde078-active.test -v'`.
+Same12 workers, declared population/guards, no arithmetic or traversal overlay. Full
+report will be CPU profile path plus.report.json. Resume77856; never restart from empty
+output. Corrective media-identity reviewer still holds heavy execution until this control
+is terminal. Read-only inspection/editorial work only while measurement runs.
+
+Next: validate the control's entire population and retain its artifact identities, then
+compare all300 per-run fields and aggregate against the candidate. No equivalence/speedup
+claim yet. Existing compatibility and normative-review holds remain; live math/kernel222,
+goldens, balance data and CI budgets are unchanged. Review by: Codex root (measurement
+author/first filter). Recorded by: Codex root. This is a factual research checkpoint,
+not designated approval or a release milestone.
