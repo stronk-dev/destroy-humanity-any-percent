@@ -4023,3 +4023,32 @@ first filter). Recorded by: Codex. Diff/formatting checked. No runtime, kernel,
 version, active catalog, authored balance, historical artifact, settlement or receipt
 contract changes; no natural-player-loss, complete replay/SQL/full-CI/AC6, new owner
 ruling, archival, push or deployment claim. Original27 partition failures remain.
+
+## 2026-10-15 — RP-654 designated corrective-code review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/simulation_version_corrective_review`.
+Recorded by: Codex parent, transcribing the returned verdict under Marco's explicit
+corrective-review delegation (`1b00f8ab`); not a relabelled implementer review.
+Reviewed complete nine-path range:
+`94b8af8dacc8d6c06b5384bda95239a0204ff933..f03cd9346dc8052b913ab2d6612096101f9ce5b8`
+(base exclusive, tip inclusive). Verdict: **APPROVED**, no actionable findings.
+
+The reviewer independently inspects the whole diff, source-version restoration,
+real faction/role regression, controls, version mirrors and records. Five focused
+cold leaves PASS; a temporary overlay with exact pre-fix simulation source fails
+only Company19 `real_stock_role` with unknown `achievement_score_lifetime`.
+Masked/no-hook and legacy controls still pass; no repository source/test mutation.
+Full cold Production/Save/Kernel/Faction/Decimal retains exactly the original27
+Production partition failures; the other four packages PASS. Cold fast harness
+PASS (harness86.635s, role0.178s, Commons0.372s, actual repository guard included).
+Affected vet, formulas, gofmt and range diff checks PASS. Full client12398 PASS/
+1088 explicit skips; typecheck has zero errors/warnings. These current-tree checks
+include subsequent test-only research outside the reviewed range; affected source,
+regression, version mirrors and original legacy/timing controls match `f03cd934`.
+Actual `make verify-kernel-version` remains FAIL at historical `50a3a514`.
+
+This closes only RP-654's corrective review. It does not waive either existing red
+gate, adopt accounting/specification proposals, enable axis scenarios, approve
+new features or other ranges, establish SQL/browser/hosted evidence, or authorize
+archival, release, publication or deployment. The current plan/ledger now point
+to this verdict; no product bytes change in this record update.

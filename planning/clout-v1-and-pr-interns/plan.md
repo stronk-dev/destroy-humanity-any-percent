@@ -223,13 +223,15 @@ now proposes exact recipe factories, private-event versus real-settlement owners
 and strict context fields/identity, including operation pre-state and policy-owned
 absence history. These are proposals, not implemented codec/API or SQL delivery proof.
 
-RP-654 is locally corrected after `94b8af8d`: the stock-rate simulation counterfactual
+RP-654's corrective range `94b8af8d..f03cd934` is independently APPROVED under
+Marco's 2026-10-15 corrective-review delegation. The stock-rate simulation counterfactual
 captures the source save version before the hook and restores its pre-hook encoding
 at that version. An admitted Company19 with a real faction hook failed previously;
 the corrected role/stock outcome, masked/no-hook and existing legacy controls pass.
 Kernel216→217 records the genuine admission correction. The new regression has its
 own file; the original fingerprinted timing instrument and research artifacts remain
-byte-identical. The owning log records affected checks and pending designated review.
+byte-identical. The owning log records the exact designated verdict and executed checks;
+the original27 partition failures and historical kernel guard failure remain open.
 This does not enable held axis scenario constructors, change accounting or adopt the
 conservation draft. Continue the exact API/simulation ownership specification below.
 
