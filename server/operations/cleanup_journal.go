@@ -52,7 +52,7 @@ func CleanupFailureFromJournal(input io.Reader) (string, error) {
 		if _, known := jobNames[message.Job]; !known {
 			return "", ErrInvalid
 		}
-		if message.Job == "credential_cleanup" {
+		if message.Job == "credential_cleanup" || message.Job == "route_name_expiry" {
 			latest = fmt.Sprintf("%x", sha256.Sum256([]byte(row.Cursor)))
 		}
 	}
@@ -102,7 +102,7 @@ func RecordCleanupJournal(directory, cursorHash string, at time.Time) error {
 	if changed {
 		state.CursorHash, state.DetectedAt = cursorHash, at.UTC().Unix()
 	}
-	data := []byte(fmt.Sprintf(`# HELP cloud_clicker_cleanup_failure_detected_timestamp_seconds Host detection time of the latest journal credential-cleanup failure.
+	data := []byte(fmt.Sprintf(`# HELP cloud_clicker_cleanup_failure_detected_timestamp_seconds Host detection time of the latest journal cleanup failure.
 # TYPE cloud_clicker_cleanup_failure_detected_timestamp_seconds gauge
 cloud_clicker_cleanup_failure_detected_timestamp_seconds %d
 # HELP cloud_clicker_cleanup_journal_observed_timestamp_seconds Last complete host cleanup-journal collection.

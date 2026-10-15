@@ -786,7 +786,7 @@ func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(
 	metricsResponse := httptest.NewRecorder()
 	composition.Server.Handler().ServeHTTP(metricsResponse, httptest.NewRequest(http.MethodGet, "/metrics", nil))
 	metricsText := metricsResponse.Body.String()
-	for _, job := range []string{"verification", "presence", "clearing", "guild_sweep", "credential_cleanup"} {
+	for _, job := range []string{"verification", "presence", "clearing", "guild_sweep", "credential_cleanup", "route_name_expiry"} {
 		if !strings.Contains(metricsText, `cloud_clicker_job_runs_total{job_name="`+job+`",result="success"} 1`) {
 			t.Fatalf("composed job %s was not observed after prime:\n%s", job, metricsText)
 		}

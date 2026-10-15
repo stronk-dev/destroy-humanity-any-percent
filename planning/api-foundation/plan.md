@@ -2,13 +2,15 @@
 
 RFC: `rfc/api-foundation.md`
 
-2026-10-15 C12/Route C5 proof (RP-104): existing callable naming expiry now has real
-Postgres tests for all four states, strict72h boundary, cancellation/idempotency and
-preserved executor/Knowledge/history. Repeated shuffled package integration and affected
-cold Go/vet pass. No production expiry driver or player naming/moderation route exists;
-docs now state that explicitly, including stored public naming_status after deadline.
-The owning log records the range after `01025747` needing review. Next specify/accept
-and compose the bounded driver; this is backend proof, not automatic lifecycle completion.
+2026-10-15 C12/Route C5 + Gameserver GC3 correction (RP-104): the existing expiry method
+now has a composed owned driver, primed before readiness and repeated on the existing
+one-minute maintenance cadence. Exact submission eligibility remains 72 hours; stored status
+changes on the next successful pass. This reuses PeriodicJob's clock/failure/drain and
+DP7 cleanup observation, not a new mechanic or scheduler architecture. The preceding
+request for a separate driver RFC was overly broad under RFC-0000's conformance-fix
+procedure; C5 and GC3 already authorize this assembly. The log preserves that correction
+and exact executed evidence/review range. Player naming/moderation routes remain absent;
+the backend proof and this driver do not complete that larger workflow.
 
 2026-10-15 A4/A5/C19 correction (RP-647): request-ID failure binding now preserves an
 existing gzip500 representation and separately binds JSON500. Three old-constructor

@@ -108,8 +108,11 @@ approval publishes it and failure restores the house name. `SubmitName` refuses 
 at or after the deadline. The callable `ExpireNames` method changes an unused `reserved` row
 to `house` at the deadline; it preserves pending/published moderation outcomes, executor credit,
 execution history and Knowledge. Its Postgres tests cover that boundary, cancellation and retry.
-**There is no production caller or automatic expiry job yet (RP-104).** These backend methods
-are not a mounted player naming/moderation workflow, and the automatic lifecycle is incomplete.
+The composed gameserver primes this expiry before readiness, then runs it once per minute
+with the server clock. An unused reservation's stored status changes on the next successful
+pass; that housekeeping delay never extends the submission deadline. The job shares the
+existing failure supervision, private cleanup observation and drain cancellation. These
+backend methods still have no mounted player naming/moderation workflow.
 
 The Registry stores a plain execution count. Its existing public read API serves credit,
 naming status/deadline and that count; see [API Foundation](api-foundation.md). Variants, time

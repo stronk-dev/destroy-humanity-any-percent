@@ -35,7 +35,7 @@ func TestComposedCredentialCleanupRuntimeAndDrainIntegration(t *testing.T) {
 			clock := &mutableClock{now: time.Date(2026, 10, 13, 0, 0, 0, 0, time.UTC)}
 			var logs cleanupRuntimeLog
 			registry, composition := newCredentialCleanupComposition(t, ctx, database, clock, &logs)
-			if len(composition.Server.jobs) != 6 {
+			if len(composition.Server.jobs) != 7 {
 				t.Fatal("composed job population changed; observation must be reconciled")
 			}
 			job, ok := composition.Server.jobs[5].(*PeriodicJob)
@@ -52,6 +52,27 @@ func TestComposedCredentialCleanupRuntimeAndDrainIntegration(t *testing.T) {
 					t.Error("cleanup callback observation overflow")
 				}
 				return err
+			}
+			var routeObserved chan cleanupRuntimeOutcome
+			if subject == "orderly_drain" {
+				// Observe the added housekeeping job during the SAME real-minute
+				// wait, without shortening either production timer or extending95s.
+				seedRouteExpiryReservation(t, ctx, database, composition, clock.Time().Add(time.Millisecond))
+				routeJob, ok := composition.Server.jobs[6].(*PeriodicJob)
+				if !ok || routeJob.interval != time.Minute {
+					t.Fatal("test must retain the actual route-name maintenance cadence")
+				}
+				routeObserved = make(chan cleanupRuntimeOutcome, 3)
+				run := routeJob.run
+				routeJob.run = func(ctx context.Context) error {
+					err := run(ctx)
+					select {
+					case routeObserved <- cleanupRuntimeOutcome{err, ctx.Err() != nil}:
+					default:
+						t.Error("route-expiry callback observation overflow")
+					}
+					return err
+				}
 			}
 			httpServer := httptest.NewServer(composition.Server.Handler())
 			defer httpServer.Close()
@@ -76,6 +97,14 @@ func TestComposedCredentialCleanupRuntimeAndDrainIntegration(t *testing.T) {
 			requireCleanupRuntimeHTTP(t, httpServer, "/readyz", http.StatusNoContent)
 			requireCredentialCleanupMetric(t, registry, "success", 1)
 			requireCredentialCleanupMetric(t, registry, "failure", 0)
+			if routeObserved != nil {
+				prime, err := waitCleanupRuntimeOutcome(ctx, routeObserved)
+				if err != nil || prime.err != nil || prime.canceled {
+					t.Fatalf("route-expiry prime observation missing: %+v %v", prime, err)
+				}
+				requireRouteExpiryState(t, ctx, database, composition.Server, "reserved")
+				requireRouteExpiryMetric(t, registry, "success", 1)
+			}
 			clock.Set(clock.Time().Add(31 * 24 * time.Hour))
 			if counts := credentialCleanupCounts(t, ctx, database); counts != [4]int{1, 1, 1, 1} {
 				t.Fatal("expired actual credential population missing")
@@ -165,12 +194,19 @@ func TestComposedCredentialCleanupRuntimeAndDrainIntegration(t *testing.T) {
 				case <-ticker.C:
 				}
 			}
+			result, err := waitCleanupRuntimeOutcome(ctx, routeObserved)
+			if err != nil || result.err != nil || result.canceled {
+				t.Fatalf("actual one-minute route expiry did not complete: %+v %v", result, err)
+			}
+			requireRouteExpiryState(t, ctx, database, composition.Server, "house")
+			requireRouteExpiryMetric(t, registry, "success", 2)
+			requireRouteExpiryMetric(t, registry, "failure", 0)
 			drainCtx, stop := context.WithTimeout(context.Background(), composition.Node.DrainTimeout())
 			defer stop()
 			if err := composition.Server.Drain(drainCtx, clock.Time()); err != nil {
 				t.Fatal("orderly drain failed")
 			}
-			result, err := waitCleanupRuntimeOutcome(ctx, observed)
+			result, err = waitCleanupRuntimeOutcome(ctx, observed)
 			if err != nil {
 				t.Fatalf("drain cancellation observation unavailable: %v", err)
 			}

@@ -15,31 +15,35 @@ import (
 )
 
 func TestCleanupJournalConsumesActualBoundedJobFailure(t *testing.T) {
-	var logs bytes.Buffer
-	registry, err := NewRegistryWithLogger(fakeDatabase{ping: errors.New("unused")}, slog.New(slog.NewJSONHandler(&logs, nil)))
-	if err != nil {
-		t.Fatal(err)
-	}
-	private := errors.New("recovery_code=private database_url=private account_id=private")
-	if err := registry.ObserveJob("credential_cleanup", time.Now(), func() error { return private }); !errors.Is(err, private) {
-		t.Fatal("logging changed the job error")
-	}
-	message := strings.TrimSpace(logs.String())
-	if strings.Contains(message, "private") || !strings.Contains(message, `"event_class":"composed_job_failure"`) {
-		t.Fatal("failure event absent or includes underlying private error")
-	}
-	row := map[string]string{"CONTAINER_TAG": "cloud-clicker-gameserver", "__CURSOR": "fixture-cursor", "__REALTIME_TIMESTAMP": "1", "MESSAGE": message}
-	data, _ := json.Marshal(row)
-	cursor, err := CleanupFailureFromJournal(bytes.NewReader(data))
-	want := fmt.Sprintf("%x", sha256.Sum256([]byte("fixture-cursor")))
-	if err != nil || cursor != want {
-		t.Fatalf("actual logger event did not reach journal consumer: cursor=%q error=%v", cursor, err)
-	}
-	if err := registry.ObserveJob("credential_cleanup", time.Now(), func() error { return nil }); err != nil || strings.TrimSpace(logs.String()) != message {
-		t.Fatal("successful cleanup emitted a failure")
-	}
-	if err := registry.ObserveJob("unknown", time.Now(), func() error { return private }); err == nil || strings.TrimSpace(logs.String()) != message {
-		t.Fatal("unknown job escaped closed-set logging")
+	for _, job := range []string{"credential_cleanup", "route_name_expiry"} {
+		t.Run(job, func(t *testing.T) {
+			var logs bytes.Buffer
+			registry, err := NewRegistryWithLogger(fakeDatabase{ping: errors.New("unused")}, slog.New(slog.NewJSONHandler(&logs, nil)))
+			if err != nil {
+				t.Fatal(err)
+			}
+			private := errors.New("recovery_code=private database_url=private account_id=private")
+			if err := registry.ObserveJob(job, time.Now(), func() error { return private }); !errors.Is(err, private) {
+				t.Fatal("logging changed the job error")
+			}
+			message := strings.TrimSpace(logs.String())
+			if strings.Contains(message, "private") || !strings.Contains(message, `"event_class":"composed_job_failure"`) {
+				t.Fatal("failure event absent or includes underlying private error")
+			}
+			row := map[string]string{"CONTAINER_TAG": "cloud-clicker-gameserver", "__CURSOR": "fixture-cursor", "__REALTIME_TIMESTAMP": "1", "MESSAGE": message}
+			data, _ := json.Marshal(row)
+			cursor, err := CleanupFailureFromJournal(bytes.NewReader(data))
+			want := fmt.Sprintf("%x", sha256.Sum256([]byte("fixture-cursor")))
+			if err != nil || cursor != want {
+				t.Fatalf("actual logger event did not reach journal consumer: cursor=%q error=%v", cursor, err)
+			}
+			if err := registry.ObserveJob(job, time.Now(), func() error { return nil }); err != nil || strings.TrimSpace(logs.String()) != message {
+				t.Fatal("successful cleanup emitted a failure")
+			}
+			if err := registry.ObserveJob("unknown", time.Now(), func() error { return private }); err == nil || strings.TrimSpace(logs.String()) != message {
+				t.Fatal("unknown job escaped closed-set logging")
+			}
+		})
 	}
 }
 

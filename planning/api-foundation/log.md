@@ -3627,3 +3627,55 @@ Diff/formatting checked; removed only the inspected owned tmpfs Postgres, preser
 cache/network/durable data. Review by: Codex (test implementer first filter).
 Recorded by: Codex. Entire six-path test/docs/plan/ledger/log range after `01025747`
 through this containing commit needs designated Claude review; no push/deployment.
+
+## 2026-10-15 — RP-104 composed Route naming-expiry driver
+
+Correct my preceding routing: a new scheduler RFC is not required for this assembly.
+Route C5 already defines the72-hour unused-name lifecycle; Gameserver GC3 explicitly
+drives parked jobs. Under current RFC-0000, reuse the existing PeriodicJob, server
+clock, pre-readiness Prime, fatal-job supervision and drain context. Use the existing
+one-minute maintenance cadence; exact SubmitName eligibility is unchanged and stored
+public status follows the next successful pass. No new mechanics, retention choice,
+player tick, source schema, limits, kernel version or normative body amendment.
+
+Old real-Postgres28059 fails both new composed cases: startup leaves reserved state
+at its deadline, and the expiry SQL trigger never fires. Old Operations21761 also
+refuses the new fixed job identity. Attach the existing method as route_name_expiry;
+include its failure in the existing private counter, bounded journal collector and
+DP7 cleanup alert rather than leave a failure before the first scrape unobservable.
+The query touches the global Registry, not per-account production. It does not add
+player naming/moderation routes or alter pending/published names and executor rights.
+
+Corrected focused SQL79467 passes1.497s. Full declared Postgres65706 passes all four
+RouteProjection parents1.246s and ten Gameserver parents60.758s; the real-minute opt-in
+alone skips in this ordinary lane, and Node/TS replay seams are not requested or
+credited. Controlled discovery events enter the actual projector; startup/public
+status, unchanged names/credit/Knowledge/history, actual P0001 failure, non-readiness
+and subsequent recovery are checked. These are not naturally earned late-game routes.
+
+Actual `make test-deployment-cleanup-runtime`56036 passes on Linux-amd64/Postgres
+in121.743s: original runtime SQL failure60.92s and orderly drain60.74s. Extend the
+same real-minute wait with Route expiry: prime before the deadline preserves reserved,
+the unchanged scheduled callback expires it, stored/mounted public status and success
+counter agree, then common drain succeeds. No shortened interval or raised95s guard.
+This is not a route-table lock-wait cancellation or exact-release/host rehearsal.
+
+Cold `make test-go vet GO_PACKAGES='./gameserver ./operations ./routeprojection
+./publicread'`29628 passes0.423/1.610/0.230/0.276s plus vet; observer CLI77265 passes
+5.490s plus vet. Pinned Linux-amd64 promtool89470 passes the full declared rule file,
+including the new fixed-name firing/resolution and similarly named non-cleanup
+negative. Existing credential/journal-health alert arms remain. No fresh host journal,
+Prometheus/receiver delivery, browser, full server/history CI or release is claimed.
+One attempted focused Make selector lost shell quoting around its regex alternation
+and exited127 before relevant checks; the subsequent complete package checks replace
+that invalid invocation. The first manual-lane attempt lacked Docker sandbox access;
+the reusable narrow approval enabled the actual passing run, not a daemon restart.
+
+Canonical Route/API/Gameserver/Deployment docs, live plan and RP-104 reconcile now;
+historical audit and the earlier over-broad hold remain dated evidence. Diff/formatting
+checked. All handles terminal; remove only this turn's inspected owned tmpfs Postgres,
+preserving network/cache/durable data. Review by: Codex (implementer first filter).
+Recorded by: Codex. Complete16-path implementation/test/alert/docs/plan/ledger/log range
+after `73318b2d` through this containing commit needs designated Claude review, which
+may consolidate the preceding backend witness. No feature acceptance, archival, push
+or deployment; full nine-tier1.0, CI arithmetic/history and other owner/author gates remain.

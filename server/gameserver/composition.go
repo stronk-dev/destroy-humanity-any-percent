@@ -468,7 +468,17 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err != nil {
 		return nil, err
 	}
-	if err := server.AttachJobs(world, verificationJob, presenceJob, clearingJob, sweepJob, sessionGCJob); err != nil {
+	// This is projection housekeeping, not an extension of the 72-hour right:
+	// SubmitName already enforces the exact deadline. Reuse the maintenance
+	// cadence and the same prime/failure/drain ownership as the other jobs.
+	routeNameExpiryJob, err := NewPeriodicJob(time.Minute, observeOperation(config.Operations, "route_name_expiry", config.Clock, func(ctx context.Context) error {
+		_, err := routeProjector.ExpireNames(ctx, config.Clock())
+		return err
+	}))
+	if err != nil {
+		return nil, err
+	}
+	if err := server.AttachJobs(world, verificationJob, presenceJob, clearingJob, sweepJob, sessionGCJob, routeNameExpiryJob); err != nil {
 		return nil, err
 	}
 	return &Composition{CurrentHash: seed.Hash, Server: server, Node: node, Accounts: accounts, Production: productionService, Guilds: guildService, Minigames: minigameService,

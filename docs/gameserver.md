@@ -102,6 +102,15 @@ socket drain. Session and bootstrap-receipt expiry share one ordered credential-
 transient session-prune failure prevents the receipt pass and fails the job instead of reporting a
 partial success.
 
+Route naming expiry is a separate `route_name_expiry` job over the global Registry,
+not a per-player production tick. It uses the server clock, primes before readiness and
+runs once per minute, converting only overdue unused reservations to the house state.
+Submission already refuses at the exact 72-hour boundary; stored public naming status
+follows the next successful maintenance pass. Pending moderation, published names,
+executor credit, Knowledge and history are not changed. SQL failure follows the existing
+fatal-job/readiness policy and emits the bounded cleanup failure observation; cancellation
+uses the shared drain context. No naming/moderation player route is added by this job.
+
 The world aggregator samples existing projection tables at the transport catalog's 4 Hz cadence.
 It owns `world_rev`, publishes only closed integer version-1 snapshots, and increments the revision
 only after publication succeeds. The counter is monotonic only for one gameserver process
@@ -127,6 +136,11 @@ credential-GC jobs themselves perform their prime passes, including destruction 
 bootstrap ciphertext into its permanent tombstone; the socket/settlement fixture independently
 proves pagination beyond the first Guild. `make test-save-integration` runs these inside the
 repository's standard Postgres test topology.
+A Route-expiry startup fixture additionally projects a controlled discovery event, verifies
+the stored and mounted public naming status, preserves credit/history and proves real SQL
+failure blocks readiness and recovery succeeds after removing the fixture fault. The manual
+`make test-deployment-cleanup-runtime` population also observes the production one-minute
+Route timer alongside credential cleanup and drain; it is outside push CI.
 The same composed graph also runs a progressed fixture through authoritative play and Exit, the
 background shared-kernel verifier, immutable archive, and `any_percent` board projection. The
 fixture seeds only the otherwise-unshipped T0→T2 content progression; every transition from the

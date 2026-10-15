@@ -115,6 +115,7 @@ func (registry *Registry) SetReady(ready bool) {
 
 var jobNames = map[string]struct{}{
 	"verification": {}, "presence": {}, "clearing": {}, "guild_sweep": {}, "credential_cleanup": {},
+	"route_name_expiry": {},
 }
 
 func (registry *Registry) ObserveJob(name string, now time.Time, run func() error) error {

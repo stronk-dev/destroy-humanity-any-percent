@@ -4,6 +4,24 @@ rule_files:
 evaluation_interval: 15s
 
 tests:
+  - interval: 1m
+    input_series:
+      - series: 'cloud_clicker_job_runs_total{job_name="route_name_expiry",result="failure"}'
+        values: '0 0 1 1 1 1 1 1 1 1'
+      - series: 'cloud_clicker_job_runs_total{job_name="route_name_expiry_extra",result="failure"}'
+        values: '0 0 1 1 1 1 1 1 1 1'
+      - series: 'cloud_clicker_cleanup_journal_observed_timestamp_seconds'
+        values: '0+60x9'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts:
+          - exp_labels: {job_name: route_name_expiry, result: failure, severity: page}
+            exp_annotations: {summary: "A composed cleanup job failed, or its journal observation is unavailable."}
+      - eval_time: 9m
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts: []
+
   - interval: 15s
     input_series:
       - series: 'cloud_clicker_gameserver_restart_count'
@@ -162,7 +180,7 @@ tests:
         alertname: CloudClickerCleanupJobFailed
         exp_alerts:
           - exp_labels: {job_name: credential_cleanup, result: failure, severity: page}
-            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
+            exp_annotations: {summary: "A composed cleanup job failed, or its journal observation is unavailable."}
 
   - interval: 15s
     input_series:
@@ -436,7 +454,7 @@ tests:
         alertname: CloudClickerCleanupJobFailed
         exp_alerts:
           - exp_labels: {job_name: credential_cleanup, result: failure, severity: page}
-            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
+            exp_annotations: {summary: "A composed cleanup job failed, or its journal observation is unavailable."}
       - eval_time: 8m
         alertname: CloudClickerCleanupJobFailed
         exp_alerts: []
@@ -466,12 +484,12 @@ tests:
         alertname: CloudClickerCleanupJobFailed
         exp_alerts:
           - exp_labels: {severity: page}
-            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
+            exp_annotations: {summary: "A composed cleanup job failed, or its journal observation is unavailable."}
       - eval_time: 5m
         alertname: CloudClickerCleanupJobFailed
         exp_alerts:
           - exp_labels: {severity: page}
-            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
+            exp_annotations: {summary: "A composed cleanup job failed, or its journal observation is unavailable."}
       - eval_time: 5m15s
         alertname: CloudClickerCleanupJobFailed
         exp_alerts: []
@@ -488,7 +506,7 @@ tests:
         alertname: CloudClickerCleanupJobFailed
         exp_alerts:
           - exp_labels: {severity: page}
-            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
+            exp_annotations: {summary: "A composed cleanup job failed, or its journal observation is unavailable."}
 
   - interval: 15s
     input_series: []
@@ -497,4 +515,4 @@ tests:
         alertname: CloudClickerCleanupJobFailed
         exp_alerts:
           - exp_labels: {severity: page}
-            exp_annotations: {summary: "The composed expired-credential cleanup job failed, or its journal observation is unavailable."}
+            exp_annotations: {summary: "A composed cleanup job failed, or its journal observation is unavailable."}

@@ -933,8 +933,8 @@ HTTP instrumentation cannot silently disable the realtime path.
 
 The seven blocking alert families cover five-minute ingress/readiness loss, missing/late/failed
 six-hour backups, two-minute Postgres or collector failure, storage pressure above 80%, three
-gameserver restarts in ten minutes, credential-cleanup failure and dead-letter growth across two
-15-second intervals. Storage pressure also fires when the host observation behind it is stale:
+gameserver restarts in ten minutes, credential/Route-name cleanup failure and dead-letter growth
+across two 15-second intervals. Storage pressure also fires when the host observation behind it is stale:
 node-exporter's `host.prom` textfile older than five minutes (the observer runs every minute), a
 textfile scrape error, or an absent host textfile, so a broken observer cannot keep serving its
 last healthy values. The checked-in `promtool` population exercises each firing path and is
@@ -974,8 +974,8 @@ the underlying error, credentials, player identifiers or payloads. The independe
 streams the configured journal directory's retained 14-day gameserver-tag population. It rejects
 incomplete/partial or malformed records, command diagnostics (including exit-zero exclusions),
 and failed/timed-out commands rather than refreshing health.
-New credential-cleanup failures become an atomic `cleanup.prom` observation; `cleanup-state.json`
-holds only the last cursor hash and host detection time, surviving gameserver/observer restarts.
+New credential-cleanup or Route-name-expiry failures become an atomic `cleanup.prom` observation;
+`cleanup-state.json` holds only the last cursor hash and host detection time, surviving gameserver/observer restarts.
 Re-reading a seen failure does not extend its five-minute alert window. Late discovery after an
 observer outage gets that window from detection, not the original process time. Failed metric
 publication does not consume the cursor. The declared systemd oneshot owns collection; do not run

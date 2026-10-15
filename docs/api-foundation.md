@@ -371,10 +371,11 @@ byte-identical generated OpenAPI, TypeScript and compatibility pins.
   - `first_executor_founder_id` is `null` once that Founder's account is anonymized (or no
     ownership row exists).
   - Moderation state beyond the status enum and all account identity are absent.
-  - `naming_status` is the stored projection state. The deadline already prevents a late
-    backend name submission, but no production job invokes `ExpireNames`; an unused row
-    can therefore still report `reserved` after its deadline (RP-104). The public house-name
-    fallback is not proof that automatic expiry or a player naming workflow is implemented.
+  - `naming_status` is the stored projection state. The composed server primes unused-name
+    expiry before readiness and repeats it once per minute; an unused row can report
+    `reserved` until the next successful pass. The exact deadline already prevents a late
+    backend name submission. The public house-name fallback and expiry driver do not
+    supply a player naming/moderation workflow.
 - **Order and paging:** ordered by the immutable `route_id`; `credited_at` can move when an
   earlier execution re-credits a route. The keyset cursor is bound to `{"limit":N}`, and `limit`
   is 1..100 (default 50).
