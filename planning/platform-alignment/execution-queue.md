@@ -7,8 +7,8 @@ their independent review obligations remain live.
 
 ## Current action — 2026-10-15
 
-Whole-product implementation coordinate `77fe2275`, kernel0.3.221, epoch8; later review
-records and bounded work are in the
+Whole-product base `77fe2275`; latest bounded production correction `137f7a8d`,
+kernel0.3.222, epoch8, research `f7ca2b96`. Later review records and bounded work are in the
 owning logs below. Whole-product status and evidence limits
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
 nine-tier goal remains active; no new playable tier or release was completed.
@@ -29,6 +29,10 @@ nine-tier goal remains active; no new playable tier or release was completed.
   withdrawn in favor of typed in-memory ownership; no new save/receipt format, repaired
   arithmetic, architecture adoption or implementation authority is inferred. Do not
   repeat completed fixture studies or build an unused live ApplyLogged wrapper.
+  New canonical-input counterexample `f7ca2b96` rules out a generic canonicalization
+  shortcut too. Its synthetic decreasing sum is not proved a reachable temporal
+  ledger defect; the admitted equal-prefix control pays equally. Complete the
+  actual reachable-prefix/quantization proof, not another passing census.
 - **HELD — complete catalog serving and generated intent migration:** C18's union constructor and internal original-byte
   verifier are locally constructed through `0411ef34`; do not repeat or promote them to a
   mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member

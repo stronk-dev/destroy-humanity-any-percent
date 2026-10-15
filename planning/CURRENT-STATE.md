@@ -1,10 +1,13 @@
 # Current repository state
 
-Reconciled 2026-10-15: implementation checkpoint `77fe2275` (kernel0.3.221, epoch8),
-with independent-review records and their exact bounded scopes in the owning logs. The last inspected
+Reconciled 2026-10-15: latest bounded production correction `137f7a8d` (kernel0.3.222,
+epoch8); research checkpoint `f7ca2b96`. The whole-product classification retains its
+`77fe2275` base and the explicit follow-ups below, not a fresh complete acceptance sweep.
+Independent-review records and their exact bounded scopes live in the owning logs. The last inspected
 publication coordinate is `be66902b`, with failed CI38560135778 and maintenance38677066823.
 Read-only GitHub queries reconfirm that publication coordinate and both failed runs; no new
 hosted execution or publication is claimed for the later local work.
+Those remote observations were not repeated during this numeric/review follow-up.
 Local commit volume is not a product-completion measure.
 Cloud Clicker remains a **development snapshot**, not a released or
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
@@ -50,6 +53,14 @@ Numeric power repairs preserve
 representable lower-domain diagnostics; exponent-exhaustion and aggregation contracts remain
 drafts, not adopted repairs. The [Arcade](minigame-demo-disc-arcade/log.md) and
 [Clout](clout-v1-and-pr-interns/log.md) logs own the exact evidence and review boundaries.
+Constant accrual and burst replay now refuse infinity-class intermediates consistently
+with the server (RP-671/RP-672, independently approved), without changing balance or the
+Decimal representation. New cross-runtime research also refutes a canonical-input
+summation shortcut: a synthetic prefix decreases after rounding; an admitted related
+origin shows raw decrease but equal ledger payments. Actual decreasing time-search
+behavior is not established, and its proof plus27 accounting failures remain open.
+Deployment image-layer identity, Pitch tenant admission and scaling admission also have
+bounded independent corrective approvals; their owning logs preserve all exclusions.
 Review reproduces historical failures where actually executed and checks affected behavior; these
 approvals cover their named ranges, not adjacent feature construction or the remaining
 accounting/history failures. The unbuilt product scope below remains unchanged.

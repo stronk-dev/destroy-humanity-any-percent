@@ -7,9 +7,15 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-15):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Implementation checkpoint `77fe2275`, kernel0.3.221, epoch8: still Garage integration/hardening,
+Latest bounded production correction `137f7a8d`, kernel0.3.222, epoch8; research `f7ca2b96`.
+The whole-product classification retains its `77fe2275` base plus named follow-ups:
+still Garage integration/hardening,
 incomplete v0.1, with substantial world/combat/Tier3–8/final-ending construction ahead. At this
-coordinate, local corrective-review records continue in the owning logs. Last inspected
+coordinate, local corrective-review records continue in the owning logs. RP-671/RP-672
+close two client/server refusal mismatches; no new tier or accounting repair follows.
+Canonical-input summation also has a retained counterexample, but actual decreasing
+ledger/time-search behavior is not proved. The Clout log owns that distinction and the
+remaining reachable-prefix/quantization proof. Last inspected
 publication is `be66902b`, failed CI38560135778 and maintenance38677066823. Read-only queries
 reconfirm that same remote coordinate and both failures. No new
 hosted execution is claimed; later local work is not in either run.
@@ -2103,8 +2109,8 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Reconciled at implementation source `77fe2275` (2026-10-15), with subsequent bounded
-independent-review records in the owning logs. API, transport, simulation and Deployment
+Whole-product base `77fe2275` (2026-10-15), latest bounded correction `137f7a8d` and
+research `f7ca2b96`, with exact independent-review records in the owning logs. API, transport, simulation and Deployment
 repairs improve existing paths/proofs; no additional playable tier or milestone
 is completed. The five original query/epoch/board/route/router API reviews now have complete
 CHANGES REQUIRED dispositions; later corrections and implementation ranges still need review.

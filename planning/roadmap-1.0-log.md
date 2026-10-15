@@ -5578,3 +5578,17 @@ privacy/renewal/content decisions and full later-game construction remain. No ne
 hosted pass, push or shortened goal. All checks/review handles terminal, temporary browser
 containers auto-removed; no persistent data/caches removed in this fix. Full nine-tier goal active;
 continue remaining corrective reviews and accepted construction without restarting approved work.
+
+## 2026-10-15 — Numeric refusal parity and canonical proof boundary
+
+Production137f7a8d/kernel222/epoch8: constant and burst client/server refusal corrections
+have independent corrective approval, with old failures and affected Go/Node/browser proof.
+Image-layer integrity, Pitch and scaling admission review debt also closes at exact owning-log
+ranges. Researchf7ca2b96 disproves a generic CANONICAL-input aggregation lemma across runtimes;
+an admitted related origin has raw reversal but equal ledger payments. Synthetic committed-
+reversal reachability is unproved; no live-loss/search bug, AC6 repair or draft adoption claimed.
+Whole-product base77fe2275 and later-tier/release floor unchanged. No new hosted query/pass,
+publication, content mint or tier completion. Current-state/board/queue coordinate reconciled;
+next prove actual reachable prefix/quantization constraints, continue accepted construction and
+remaining reviews. Author/product/rights gates,27 accounting failures and historical CI guard
+remain open. Full nine-tier1.0 goal active; complete evidence lives in feature-owned logs.
