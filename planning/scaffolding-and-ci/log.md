@@ -2566,3 +2566,23 @@ schema/math/copy/workflow or deadline change; unrelated lanes not rerun. Review 
 Next consume genuine recurrence evidence, not unchanged green repetitions; continue other
 accepted construction. All handles terminal; Docker is declared ARM64 Desktop, not hosted
 nativeamd64. No real SQL/service/clean-host/full-CI/feature/archival/publication proof.
+
+## 2026-10-15 — RP-673 diagnostic fidelity independently approved; incident remains open
+
+Review by: /root/late_completion_diagnostic_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcription. APPROVED complete
+5afbedcdc99b71a3e964c4fb3d54239f7d95a351-exclusive through
+9a551e61113ccbb8cecbf1fe97966ccb854fad62-inclusive, one commit/all5 paths. Original four
+native journeys/actions/settles/assertions/deadlines preserved. Canceled actual native Enter
+on an enabled focused control reaches original request assertion with zero requests, observes
+trusted delivered cancellation after dispatch and preserves AssertionError cause. Ordinary
+failures rethrow with diagnostics; listeners and original fixture lifetime clean up in finally.
+
+Independent make typecheck90117 passes0/0. Declared make test-browser-ci-focused with both
+screens/axis files14041 exits0,20.12s: all6 engine/file populations,393 ordinary+6 diagnostic
+controls (3 canceled Enter/3 blocked Codex Close),15 existing performance exclusions. Complete
+range whitespace passes. No retries/source edits/mutations/commits by reviewer; both handles
+terminal, disposable service absent and clean source at9a551e61. Docker LinuxARM64 Desktop,
+not hostedAMD64; runtime doubles, not SQL/real WebSocket gameplay. Original Firefox failure
+does not recur; RP-673 stays unexplained and OPEN. Approval covers diagnostic fidelity only,
+not reliability/full CI/new policy/feature/archival/release acceptance.

@@ -12,7 +12,8 @@ adds passive failure context and an actual canceled-Enter diagnostic control; or
 assertions and deadlines remain. Focused three-engine12 ordinary+3 diagnostic and complete
 affected393 ordinary+6 diagnostic controls pass; the unknown original cause is NOT corrected.
 Next consume a genuine recurrence's input/readiness evidence, not repeat unchanged green runs.
-The owning log records this new diagnostic range, still pending independent corrective review.
+The owning log records fresh independent corrective APPROVAL of complete5afbedcd..9a551e61,
+with a separate actual full affected Linux run; this closes diagnostic review, not RP-673.
 
 Fresh independent review also APPROVES original RP-531 Reputation host lifetime correction,
 6a6a996d..7f8e3126. Its original flawed readiness fixture is explicitly qualified by the
