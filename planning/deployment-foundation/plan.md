@@ -69,11 +69,13 @@ hosted or exact-artifact acceptance; those boundaries remain open.
 live image/mounted-byte identity, one ledger with durable release/rollback events and explicit
 interruption recovery. It is not accepted/acceptance-ready; CR2/CR4 require the two named pinned-
 engine experiments before mechanical closure and adoption/review. Native actual ExecRunner/lock
-evidence confirms child continuation after killed-parent lock release, with normal completion
-control and both children observed terminal; preserved manual source is outside CI. The initial Docker
-socket ping timed out; it now responds, but the daemon is Linux/aarch64 and no supported-host
-mounted-reader/quiescence experiment is claimed. No product byte
-changed. Next: execute/reconcile the mechanical questions when the declared engine is usable;
+evidence confirms child continuation after killed-parent lock release. New bounded Desktop
+experiments read all nine mounted roots from four stopped exact-image containers and reject
+changed/missing/link/interrupted inputs; actual daemon exec also completes after BOTH helper
+and CLI death/released lock. Sources are preserved outside CI. The daemon is Linux/arm64,
+not native supported-host closure. No production reader/recovery mechanism or product byte
+changed. Next: settle daemon-side quiescence before the draft can be accepted, and retain
+native-host seven-service/metadata coverage rather than calling the Desktop sample acceptance;
 continue other accepted work meanwhile. D-019, other DESIGN-GAPs and full nine-tier floor remain.
 
 **Current operator-state admission, 2026-10-13 (RP-556/RP-557):** lifecycle commands now

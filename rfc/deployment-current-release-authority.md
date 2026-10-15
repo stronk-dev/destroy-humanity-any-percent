@@ -223,6 +223,9 @@ two live recovery attempts. Its new attempt keeps the same tuple and receives a 
 Before any abort/retry/rollback, prove prior helper/client actions quiescent; shared lock acquisition
 alone is insufficient. The supported-engine experiment below must settle this mechanism before
 acceptance. No PID/lock-file heuristic or two stable metadata samples may substitute for that proof.
+Killing the helper and its Docker CLI is also insufficient: the bounded daemon experiment below
+observes an already-started command completing afterward. Recovery must account for daemon-side
+work, not merely prove the local processes exited. The actual quiescence mechanism remains open.
 No new backup decryption placement, protection-metadata resolution or deletion policy is adopted.
 
 ### CR5 — Consumers and compatibility
@@ -302,7 +305,29 @@ control completes normally. Both owned child processes are observed terminal. Th
 rejects lock-only quiescence, but supplies neither a Linux supervision mechanism nor a daemon
 request witness. It is not a normal CI assertion that child survival is desirable.
 
+Bounded Docker evidence, 2026-10-15 (not native supported-host closure): Engine28.4.0,
+Compose2.39.4-desktop.1, Darwin/arm64 CLI and Linux/arm64 Desktop daemon. Exact pinned
+linux/amd64 image configurations and validated retained source102face6 bundle, NOT a current
+release build. The [mounted archive diagnostic](../planning/deployment-foundation/probes/mounted-archive-probe.go.txt)
+reads all nine roots from four isolated stopped containers. Intact sets/lengths/hashes pass;
+changed site/helper/manifest, missing child, symlink and actual killed-copy unexpected EOF
+refuse. Host copies only supply mounts/expectations; observations come from real container
+archive streams. This supports the reader approach, not complete seven-container ownership,
+command/start-identity/secret exclusion or native clean-host acceptance. No production reader
+is implemented; missing/extra/duplicate/traversal and framing admission remain production gates.
+
+The separate [daemon lifetime diagnostic](../planning/deployment-foundation/probes/daemon-lifetime-probe.go.txt)
+uses actual ExecRunner/operator lock and a real daemon-side exec in an owned no-network
+fixture. Intact helper completes normally. In the killed case, both helper and owned CLI are
+observed terminal and the lock reacquired while the work gate is still closed; opening it then
+produces the daemon-side completion. That process is separately observed terminal. This rejects
+client cancellation as a quiescence proof, including stable pre-gate observations, but does not
+establish a safe Linux supervisor/recovery mechanism. The proposal remains not acceptance-ready;
+do not substitute restart/retry or an operator assertion. Exact commands/limits are in the log.
+
 ## Changelog
 
 - 2026-10-13: source-grounded RP-558/DESIGN-GAP10 proposal. No product implementation, owner
   adoption, acceptance, archival, push or deployment.
+- 2026-10-15: retain bounded Desktop mounted-reader and daemon-lifetime evidence; CR4 explicitly
+  rejects helper/CLI cancellation as proof. Native-host mechanism/adoption remain open.

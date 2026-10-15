@@ -1,0 +1,306 @@
+package deploymentrelease
+
+// Manual research only. Temporarily place in server/deploymentrelease as an _test.go file.
+// It does not implement the unaccepted Current Release Authority draft.
+
+import (
+	"archive/tar"
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"io"
+	"io/fs"
+	"os"
+	"os/exec"
+	"path"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/releasepackage"
+)
+
+type mountedArchiveWant struct {
+	kind byte
+	size int64
+	hash string
+}
+
+func TestManualMountedArchiveResearch(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+	bundle, err := filepath.Abs("../../.cache/release-current-102face6/bundle-a")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := releasepackage.ValidateBundle(bundle); err != nil {
+		t.Fatal(err)
+	}
+	manifest, _, err := releasepackage.LoadReleaseManifest(bundle)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("validated retained source=%s platform=%s artifacts=%d", manifest.SourceCommit, manifest.Platform, len(manifest.Artifacts))
+	images := map[string]string{}
+	for _, image := range manifest.Images {
+		images[image.Name] = image.RuntimeConfigSHA256
+	}
+	type root struct {
+		service, source, destination string
+		want                         map[string]mountedArchiveWant
+	}
+	roots := []root{
+		{"caddy", "Caddyfile", "/etc/caddy/Caddyfile", nil},
+		{"caddy", "site", "/srv", nil},
+		{"backup", "deployment-backup", "/opt/cloud-clicker/deployment-backup", nil},
+		{"backup", "release-manifest.json", "/opt/cloud-clicker/release-manifest.json", nil},
+		{"backup", "content", "/opt/cloud-clicker/content", nil},
+		{"prometheus", "operations/prometheus.yml", "/etc/prometheus/prometheus.yml", nil},
+		{"prometheus", "operations/cloud-clicker-alerts.yml", "/etc/prometheus/cloud-clicker-alerts.yml", nil},
+		{"prometheus", "deployment-operations", "/opt/cloud-clicker/deployment-operations", nil},
+		{"alertmanager", "deployment-operations", "/opt/cloud-clicker/deployment-operations", nil},
+	}
+	fixture := t.TempDir()
+	for i := range roots {
+		r := &roots[i]
+		source := filepath.Join(bundle, r.source)
+		r.want = map[string]mountedArchiveWant{}
+		err := filepath.WalkDir(source, func(filename string, entry fs.DirEntry, walkErr error) error {
+			if walkErr != nil {
+				return walkErr
+			}
+			rel, err := filepath.Rel(source, filename)
+			if err != nil {
+				return err
+			}
+			name := path.Base(r.destination)
+			if rel != "." {
+				name += "/" + filepath.ToSlash(rel)
+			}
+			info, err := entry.Info()
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				r.want[name] = mountedArchiveWant{kind: tar.TypeDir}
+				return nil
+			}
+			if !info.Mode().IsRegular() {
+				return fmt.Errorf("source not regular: %s", filename)
+			}
+			f, err := os.Open(filename)
+			if err != nil {
+				return err
+			}
+			h := sha256.New()
+			n, err := io.Copy(h, f)
+			closeErr := f.Close()
+			if err != nil {
+				return err
+			}
+			if closeErr != nil {
+				return closeErr
+			}
+			r.want[name] = mountedArchiveWant{kind: tar.TypeReg, size: n, hash: hex.EncodeToString(h.Sum(nil))}
+			return nil
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Shared source files are copied once and mounted into both consumers.
+		target := filepath.Join(fixture, r.source)
+		if _, err := os.Stat(target); err == nil {
+			continue
+		}
+		err = filepath.WalkDir(source, func(filename string, entry fs.DirEntry, walkErr error) error {
+			if walkErr != nil {
+				return walkErr
+			}
+			rel, err := filepath.Rel(bundle, filename)
+			if err != nil {
+				return err
+			}
+			destination := filepath.Join(fixture, rel)
+			if entry.IsDir() {
+				return os.MkdirAll(destination, 0700)
+			}
+			if err := os.MkdirAll(filepath.Dir(destination), 0700); err != nil {
+				return err
+			}
+			data, err := os.ReadFile(filename)
+			if err != nil {
+				return err
+			}
+			return os.WriteFile(destination, data, 0600)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	containers := map[string]string{}
+	for _, service := range []string{"caddy", "backup", "prometheus", "alertmanager"} {
+		imageName := service
+		if service == "backup" {
+			imageName = "postgres"
+		}
+		image := images[imageName]
+		metadata, err := exec.CommandContext(ctx, "docker", "image", "inspect", image, "--format", "{{.Id}} {{.Os}}/{{.Architecture}}").CombinedOutput()
+		if err != nil || strings.TrimSpace(string(metadata)) != image+" linux/amd64" {
+			t.Fatalf("image %s identity/platform: %s %v", service, metadata, err)
+		}
+		args := []string{"create", "--platform", "linux/amd64", "--read-only", "--network", "none", "--label", "cloud-clicker.manual=mounted-archive-research"}
+		for _, r := range roots {
+			if r.service == service {
+				args = append(args, "--mount", "type=bind,src="+filepath.Join(fixture, r.source)+",dst="+r.destination+",readonly")
+			}
+		}
+		args = append(args, image)
+		out, err := exec.CommandContext(ctx, "docker", args...).CombinedOutput()
+		id := strings.TrimSpace(string(out))
+		if err != nil || len(id) != 64 || strings.Trim(id, "0123456789abcdef") != "" {
+			t.Fatalf("create %s: %s %v", service, out, err)
+		}
+		containers[service] = id
+		t.Cleanup(func() {
+			cleanupCtx, done := context.WithTimeout(context.Background(), 15*time.Second)
+			defer done()
+			out, err := exec.CommandContext(cleanupCtx, "docker", "inspect", "--format", "{{.Id}} {{.State.Status}} {{index .Config.Labels \"cloud-clicker.manual\"}}", id).CombinedOutput()
+			if err != nil || strings.TrimSpace(string(out)) != id+" created mounted-archive-research" {
+				t.Errorf("refuse unowned/non-stopped cleanup: %s %v", out, err)
+				return
+			}
+			if out, err := exec.CommandContext(cleanupCtx, "docker", "rm", "-v", id).CombinedOutput(); err != nil {
+				t.Errorf("cleanup: %s %v", out, err)
+			}
+		})
+	}
+	read := func(index int, interrupt bool) error {
+		r := roots[index]
+		command := exec.CommandContext(ctx, "docker", "cp", containers[r.service]+":"+r.destination, "-")
+		stdout, err := command.StdoutPipe()
+		if err != nil {
+			return err
+		}
+		// Errors are reported as command status; never emit arbitrary daemon output.
+		if err := command.Start(); err != nil {
+			return err
+		}
+		reader := tar.NewReader(stdout)
+		seen := map[string]bool{}
+		var readErr error
+		for {
+			header, err := reader.Next()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				readErr = err
+				break
+			}
+			if interrupt {
+				_ = command.Process.Kill()
+				interrupt = false
+			}
+			name := strings.TrimSuffix(header.Name, "/")
+			want, ok := r.want[name]
+			if !ok || seen[name] || path.Clean(name) != name || strings.HasPrefix(name, "/") || header.Typeflag != want.kind || header.Linkname != "" || header.Size != want.size {
+				readErr = fmt.Errorf("unexpected archive entry %q type=%d size=%d", header.Name, header.Typeflag, header.Size)
+				break
+			}
+			seen[name] = true
+			if want.kind == tar.TypeReg {
+				h := sha256.New()
+				n, err := io.Copy(h, reader)
+				if err != nil || n != want.size || hex.EncodeToString(h.Sum(nil)) != want.hash {
+					readErr = fmt.Errorf("content mismatch %q bytes=%d: %v", name, n, err)
+					break
+				}
+			}
+		}
+		if readErr != nil {
+			_ = stdout.Close()
+			_ = command.Process.Kill()
+		}
+		waitErr := command.Wait()
+		if readErr != nil {
+			return fmt.Errorf("archive: %v; command: %v", readErr, waitErr)
+		}
+		if waitErr != nil {
+			return waitErr
+		}
+		if len(seen) != len(r.want) {
+			return fmt.Errorf("file set missing: got %d want %d", len(seen), len(r.want))
+		}
+		return nil
+	}
+	for i, r := range roots {
+		if err := read(i, false); err != nil {
+			t.Fatalf("intact %s:%s: %v", r.service, r.destination, err)
+		}
+		t.Logf("intact %s:%s entries=%d PASS", r.service, r.destination, len(r.want))
+	}
+	for _, index := range []int{1, 2, 3} {
+		r := roots[index]
+		filename := filepath.Join(fixture, r.source)
+		if index == 1 {
+			filename = filepath.Join(filename, "index.html")
+		}
+		original, err := os.ReadFile(filename)
+		if err != nil || len(original) == 0 {
+			t.Fatal("mutation input", err)
+		}
+		changed := append([]byte(nil), original...)
+		changed[0] ^= 1
+		if err := os.WriteFile(filename, changed, 0600); err != nil {
+			t.Fatal(err)
+		}
+		if err := read(index, false); err == nil {
+			t.Fatal("changed bytes accepted", r.source)
+		} else {
+			t.Logf("changed %s refused: %v", r.source, err)
+		}
+		if err := os.WriteFile(filename, original, 0600); err != nil {
+			t.Fatal(err)
+		}
+		if err := read(index, false); err != nil {
+			t.Fatal("restore", err)
+		}
+	}
+	indexFile := filepath.Join(fixture, "site", "index.html")
+	original, err := os.ReadFile(indexFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Remove(indexFile); err != nil {
+		t.Fatal(err)
+	}
+	if err := read(1, false); err == nil {
+		t.Fatal("missing child accepted")
+	} else {
+		t.Log("missing child refused:", err)
+	}
+	if err := os.Symlink("third-party-licenses.txt", indexFile); err != nil {
+		t.Fatal(err)
+	}
+	if err := read(1, false); err == nil {
+		t.Fatal("symlink accepted")
+	} else {
+		t.Log("symlink refused:", err)
+	}
+	if err := os.Remove(indexFile); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(indexFile, original, 0600); err != nil {
+		t.Fatal(err)
+	}
+	if err := read(2, true); err == nil {
+		t.Fatal("interruption accepted")
+	} else {
+		t.Log("actual archive interruption refused:", err)
+	}
+	if err := read(2, false); err != nil {
+		t.Fatal("post-interruption intact", err)
+	}
+}

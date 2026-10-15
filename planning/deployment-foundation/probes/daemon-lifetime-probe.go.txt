@@ -1,0 +1,208 @@
+package deploymentrelease
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strconv"
+	"strings"
+	"syscall"
+	"testing"
+	"time"
+)
+
+// Manual mechanical research, not an automatic test or production recovery policy.
+// Temporarily place in server/deploymentrelease as an _test.go file to execute.
+func TestManualDaemonLifetimeResearch(t *testing.T) {
+	const roleKey = "CLOUD_CLICKER_DAEMON_PROBE_ROLE"
+	const rootKey = "CLOUD_CLICKER_DAEMON_PROBE_ROOT"
+	const containerKey = "CLOUD_CLICKER_DAEMON_PROBE_CONTAINER"
+	if os.Getenv(roleKey) == "helper" {
+		root := os.Getenv(rootKey)
+		lock, err := AcquireOperatorStateLock(root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer lock.Close()
+		_, err = (ExecRunner{}).Run(context.Background(), root, filepath.Join(root, "observed-docker"), "exec", os.Getenv(containerKey), "/bin/sh", "-c",
+			`echo $$ > /probe/daemon-pid; printf entered > /probe/entered; while [ ! -f /probe/gate ]; do sleep 0.05; done; printf completed > /probe/finished`)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	docker, err := exec.LookPath("docker")
+	if err != nil {
+		t.Fatal(err)
+	}
+	image := "sha256:af555904a0961945f16bb323a501457b13a4f7e9bde969b145b97da80b38ecbe"
+	for _, killed := range []bool{false, true} {
+		t.Run(fmt.Sprintf("killed-helper-and-client=%t", killed), func(t *testing.T) {
+			root := t.TempDir()
+			out, err := exec.CommandContext(ctx, docker, "run", "-d", "--platform", "linux/amd64", "--read-only", "--network", "none", "--label", "cloud-clicker.manual=daemon-lifetime-research", "--mount", "type=bind,src="+root+",dst=/probe", "--entrypoint", "/bin/sh", image, "-c", "while [ ! -f /probe/stop ]; do sleep 0.05; done").CombinedOutput()
+			id := strings.TrimSpace(string(out))
+			if err != nil || len(id) != 64 || strings.Trim(id, "0123456789abcdef") != "" {
+				t.Fatalf("create owned fixture: %s %v", out, err)
+			}
+			defer func() {
+				cleanupCtx, done := context.WithTimeout(context.Background(), 15*time.Second)
+				defer done()
+				_ = os.WriteFile(filepath.Join(root, "gate"), []byte("open"), 0600)
+				_ = os.WriteFile(filepath.Join(root, "stop"), []byte("stop"), 0600)
+				out, err := exec.CommandContext(cleanupCtx, docker, "inspect", "--format", "{{.Id}} {{index .Config.Labels \"cloud-clicker.manual\"}}", id).CombinedOutput()
+				if err != nil || strings.TrimSpace(string(out)) != id+" daemon-lifetime-research" {
+					t.Errorf("refuse unowned cleanup: %s %v", out, err)
+					return
+				}
+				if out, err := exec.CommandContext(cleanupCtx, docker, "wait", id).CombinedOutput(); err != nil || strings.TrimSpace(string(out)) != "0" {
+					t.Errorf("owned PID1 terminal: %s %v", out, err)
+					return
+				}
+				if out, err := exec.CommandContext(cleanupCtx, docker, "rm", "-v", id).CombinedOutput(); err != nil {
+					t.Errorf("owned cleanup: %s %v", out, err)
+				}
+			}()
+			// This transparent fixture wrapper records its own PID then execs the real CLI.
+			// No cancellation/daemon semantics are changed by the observation plumbing.
+			wrapper := "#!/bin/sh\nprintf '%s' \"$$\" > \"" + filepath.Join(root, "client-pid") + "\"\nexec \"" + docker + "\" \"$@\"\n"
+			if err := os.WriteFile(filepath.Join(root, "observed-docker"), []byte(wrapper), 0700); err != nil {
+				t.Fatal(err)
+			}
+			executable, err := os.Executable()
+			if err != nil {
+				t.Fatal(err)
+			}
+			helper := exec.Command(executable, "-test.run=^TestManualDaemonLifetimeResearch$", "-test.timeout=30s")
+			helper.Env = append(os.Environ(), roleKey+"=helper", rootKey+"="+root, containerKey+"="+id)
+			if err := helper.Start(); err != nil {
+				t.Fatal(err)
+			}
+			waited := false
+			defer func() {
+				_ = os.WriteFile(filepath.Join(root, "gate"), []byte("open"), 0600)
+				if !waited {
+					_ = helper.Process.Kill()
+					_ = helper.Wait()
+				}
+			}()
+			waitFor := func(check func() (bool, error)) {
+				t.Helper()
+				deadline := time.Now().Add(10 * time.Second)
+				for {
+					ready, err := check()
+					if err != nil {
+						t.Fatal(err)
+					}
+					if ready {
+						return
+					}
+					if time.Now().After(deadline) {
+						t.Fatal("handshake guard exhausted: invalid experiment")
+					}
+					time.Sleep(10 * time.Millisecond)
+				}
+			}
+			waitFor(func() (bool, error) {
+				_, err := os.Stat(filepath.Join(root, "entered"))
+				if errors.Is(err, os.ErrNotExist) {
+					return false, nil
+				}
+				return err == nil, err
+			})
+			pidBytes, err := os.ReadFile(filepath.Join(root, "client-pid"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			pid, err := strconv.Atoi(string(pidBytes))
+			if err != nil || pid <= 1 || pid == helper.Process.Pid {
+				t.Fatal("invalid owned CLI identity", err)
+			}
+			client, err := os.FindProcess(pid)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer client.Release()
+			daemonBytes, err := os.ReadFile(filepath.Join(root, "daemon-pid"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			daemonPID, err := strconv.Atoi(strings.TrimSpace(string(daemonBytes)))
+			if err != nil || daemonPID <= 1 {
+				t.Fatal("invalid daemon PID", err)
+			}
+			lock, err := AcquireOperatorStateLock(root)
+			if err == nil {
+				_ = lock.Close()
+				t.Fatal("helper did not hold lock")
+			}
+			if !errors.Is(err, ErrInvalid) {
+				t.Fatal(err)
+			}
+			if _, err := os.Stat(filepath.Join(root, "finished")); !errors.Is(err, os.ErrNotExist) {
+				t.Fatal("closed gate bypassed")
+			}
+			if killed {
+				if err := helper.Process.Kill(); err != nil {
+					t.Fatal(err)
+				}
+				if err := helper.Wait(); err == nil {
+					t.Fatal("helper death missing")
+				}
+				waited = true
+				if err := client.Kill(); err != nil {
+					t.Fatal("owned client death", err)
+				}
+				waitFor(func() (bool, error) {
+					err := client.Signal(syscall.Signal(0))
+					if errors.Is(err, os.ErrProcessDone) || errors.Is(err, syscall.ESRCH) {
+						return true, nil
+					}
+					return false, err
+				})
+				lock, err := AcquireOperatorStateLock(root)
+				if err != nil {
+					t.Fatal("lock not released", err)
+				}
+				if err := lock.Close(); err != nil {
+					t.Fatal(err)
+				}
+				if _, err := os.Stat(filepath.Join(root, "finished")); !errors.Is(err, os.ErrNotExist) {
+					t.Fatal("work completed before explicit gate")
+				}
+			}
+			if err := os.WriteFile(filepath.Join(root, "gate"), []byte("open"), 0600); err != nil {
+				t.Fatal(err)
+			}
+			waitFor(func() (bool, error) {
+				data, err := os.ReadFile(filepath.Join(root, "finished"))
+				if errors.Is(err, os.ErrNotExist) {
+					return false, nil
+				}
+				return string(data) == "completed", err
+			})
+			if !killed {
+				if err := helper.Wait(); err != nil {
+					t.Fatal(err)
+				}
+				waited = true
+			}
+			waitFor(func() (bool, error) {
+				err := exec.CommandContext(ctx, docker, "exec", id, "/bin/sh", "-c", "test ! -d /proc/"+strconv.Itoa(daemonPID)).Run()
+				if err == nil {
+					return true, nil
+				}
+				if exit, ok := err.(*exec.ExitError); ok && exit.ExitCode() == 1 {
+					return false, nil
+				}
+				return false, err
+			})
+			t.Logf("%s/%s client → Linux daemon: killed=%t; daemon exec completed after gate; lock reacquired and both helper/CLI terminal before gate=%t; daemon exec observed terminal", runtime.GOOS, runtime.GOARCH, killed, killed)
+		})
+	}
+}

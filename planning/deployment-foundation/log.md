@@ -7315,3 +7315,77 @@ host, independent full SQL/restore, seven-family AC7, R-006, CI or feature/relea
 Initial sandbox denial and unmatched metadata glob ran no tests. Reviewer changed no tracked
 files/commits. All handles terminal; removed only inspected isolated services/network/volumes;
 final inventory is original two BuildKit containers. Images/ignored reproductions retained.
+
+## 2026-10-15 — Mounted archive reader mechanical experiment (before execution)
+
+Question: can actual Docker archive reads identify all nine CR2 proposed release-owned
+mounted roots, rather than trusting host source paths? Manual diagnostic only, no production
+observer/CI lane or draft adoption. Validate retained source102face6 bundle-a first; mount
+copies of its nine roots into four isolated STOPPED containers using exact manifest image
+configuration IDs. Read tar streams via docker cp without following links; compare regular
+file sets, lengths and SHA256 plus directory/type admission, and require process completion.
+Intact roots must pass; changed site/helper/manifest, missing child, symlink and interrupted
+archive must refuse. Derive expectations before mutations; never change retained originals.
+No services start, ports, network or credentials. Inspect exact owned IDs before removal.
+Docker28.4.0/Compose2.39.4-desktop.1 match retained metadata, daemon linux/arm64 with
+linux/amd64 images. This is a bounded Desktop mechanism check, NOT supported native clean-host
+CR2 closure, seven-service observation, current-source release evidence, CR4 quiescence or R-006.
+
+Separate lifetime question (before execution): after an actual ExecRunner helper acquires
+the operator lock and starts Docker exec, do helper death AND owned CLI death terminate
+the already-started daemon-side process? Use one isolated no-network/read-only Caddy-image
+container with a writable disposable handshake directory, no game/services/credentials.
+Normal completion control plus killed-helper/client case; require closed gate before deaths,
+released lock before gate, then explicit release and observe completion/process disappearance.
+This tests cancellation as a proposed quiescence mechanism, not an adopted recovery policy.
+Same ARM64-daemon/Darwin-client limit; no daemon restart, privileged container or deployment.
+
+## 2026-10-15 — Mounted-byte approach works; Docker-client death is not quiescence
+
+Outcome under unaccepted RP-558 draft: bounded mechanical evidence only. All nine actual
+mounted archive roots pass exact expected sets/lengths/hashes using four stopped read-only,
+no-network exact-image fixtures. ValidateBundle first accepts retained source
+102face6f2aeadc8aaa0ff19af0d4d5bd0f63ef1/74 artifacts. Caddy configaf555904…,
+Postgres75f5a969…, Prometheusd2f7aaa3… and Alertmanager6519630d… independently inspect
+as linux/amd64. Test expectations derive from the validated original; only disposable copies
+are changed. Same-length changed site/helper/original-manifest bytes refuse; restoring each
+passes. Missing site child and symlink refuse. Kill actual docker-cp after its first helper
+header:32,256/15,298,684 body bytes followed by unexpected EOF and killed process, not a
+manufactured test error; subsequent intact read passes. Root make test-go
+GO_PACKAGES='./deploymentrelease' GO_TEST_FLAGS='-run TestManualMountedArchiveResearch -v
+-count=1', session63811, PASS2.18s. Initial73569 fails before subject execution because Go's
+package test cwd makes the initial bundle path wrong; correct to ../../.cache, no oracle change.
+
+Separate real daemon lifetime experiment75927 PASS1.28s: same root selector with
+TestManualDaemonLifetimeResearch. Actual ExecRunner under operator lock launches the real
+Docker CLI (transparent PID-recording fixture wrapper). Real daemon exec writes entered and
+blocks on explicit file gate. Normal completion control passes. Killed case confirms held
+lock and absent completion, kills helper AND owned CLI, observes both terminal, reacquires
+lock and still sees no completion. Opening the gate THEN produces completion; independent
+daemon /proc check observes exec process gone. Thus killing local clients cannot establish
+no future daemon mutation, even with stable pre-gate observations. No arbitrary sleep decides
+the result; polling guards fail the experiment if exhausted. This is not an adopted supervisor
+or recovery mechanism and must not become an automatic test demanding unsafe survival.
+
+Manual sources preserved as probes/mounted-archive-probe.go.txt and
+probes/daemon-lifetime-probe.go.txt, outside automatic CI. Temporarily place as *_test.go in
+server/deploymentrelease to run the named root Make selectors. All test-only Go sources were
+gofmt'd. Draft author reconciles CR4 and evidence section; no production, accepted mechanics,
+workflow, thresholds, artifacts, secrets, copy or kernel change. Review by: Codex (instrument
+author first filter). Recorded by: Codex. Research/draft amendments are NOT approved by the
+corrective-code delegation; designated normative/adoption gate stays open.
+
+Docker28.4.0/Compose2.39.4-desktop.1, Darwinarm64 client/Linuxarm64 Desktop daemon; amd64
+images do not turn it into a native clean Linuxamd64 host. No seven-service observer,
+command/start-identity/secret-leak matrix, production archive framing/duplicate/traversal
+admission, true release request drain/start interruption, CR2/CR4 closure, R-006 or whole CI
+claim. Engine metadata/copy/exec documentation are partial support only. Index pulls for
+Postgres/Alertmanager report existing digest overwrite errors after layer download; exact
+config objects nevertheless inspect correctly. No image/cache deletion or daemon intervention.
+
+All owned fixtures' IDs/labels inspect before removal; lifetime PID1 exits0 normally; only
+their disposable anonymous volumes are removed. Final docker ps inventory returns exactly
+the two preexisting BuildKit containers. Temp fixture data is disposable/unrecoverable;
+retained release bundles, caches, builders and ignored review evidence remain. No deployment,
+publication or push. Next: specify/prove a mechanism that accounts for daemon-side outstanding
+work before accepting the recovery contract; continue independent corrective reviews meanwhile.
