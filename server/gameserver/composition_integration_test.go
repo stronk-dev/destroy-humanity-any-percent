@@ -510,6 +510,9 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	}
 	loadedCompany.State.FactionID = "vc_funded"
 	loadedCompany.State.IncorporatedAt = clock.Time()
+	// Controlled owned producer, not a purchased/earned progression claim.
+	// The post-clearing HTTP action must settle a nonzero idle interval.
+	loadedCompany.State.GeneratorCounts["generator.beige_tower"] = 1
 	if _, err := testStore.Write(ctx, loadedCompany.Revision.StreamID, loadedCompany.Revision.Number, loadedCompany.Revision.ConstantsHash,
 		loadedCompany.State, save.WriteContext{Cause: "gameserver.outstanding-reservation.integration"}); err != nil {
 		t.Fatal(err)

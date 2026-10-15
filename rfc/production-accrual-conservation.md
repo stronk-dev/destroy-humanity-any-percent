@@ -219,7 +219,7 @@ the original27 partition failures are not repaired or redefined.
 
 #### Live Guild capture complements the fixed-input populations
 
-The2026-10-15 `stored_guild_settlement_replay` supplement in the existing
+The initial2026-10-15 `b2d77add` `stored_guild_settlement_replay` supplement in the existing
 composed Postgres/socket/clearing test captures one actual online transition.
 HTTP account/Guild creation and membership feed three worker clearings; an
 authenticated manual action consumes the real nonempty batch. The fixture's
@@ -237,6 +237,17 @@ profiles or positive idle-production fidelity (this consumer buys no generators)
 Clout-v19 activation, arbitrary external/temporal producers, independent
 process/host restart, or the accounting algorithm. The Clout owning log records
 execution and review; C1/C1a and the lower-domain write-set conflict remain open.
+
+The following positive-producer extension retains that same current-content
+online profile but adds exactly one controlled owned beige tower in the existing
+setup write. The old zero-generator population fails the new idle/lifetime check.
+The actual post-clearing HTTP action now settles idle production through the
+Prestige hook; complete SQL state, receipt and ordered events match Go/TS replay.
+Removing only that producer in a fresh replay origin preserves clearing consumption
+but removes the lifetime increase in both runtimes. Omission/duplicate controls
+remain. This proves positive idle/hook fidelity for this one admitted profile,
+not purchase/earning provenance, Clout-v19 behavior, a general context algorithm
+or conservation. The owning log retains the old population and final gates.
 
 #### Bounded executable algorithm and write set
 
@@ -449,3 +460,6 @@ implied save field and needs its own complete contract.
 - 2026-10-15: add one real composed Guild/SQL input capture with complete Go/TS replay
   and omission/duplicate controls. This complements rather than relabels the fixed-input
   populations; no accounting/lifetime adoption or conservation completion follows.
+- 2026-10-15: extend the live profile with one controlled producer and an executed
+  zero-producer counterfactual to distinguish idle lifetime accrual from clearing.
+  Original zero-generator evidence stays bounded; no production accounting change.

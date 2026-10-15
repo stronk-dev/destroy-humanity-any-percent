@@ -3383,3 +3383,34 @@ source-pinned research artifact, policy, acceptance or archival change. Review b
 Codex (implementer first filter). Recorded by: Codex. Complete seven-path test/
 driver/plan/log/draft-evidence range after `639edf19` through this containing commit
 needs designated Claude review, consolidatable with R-012. No push or deployment.
+
+## 2026-10-15 — R-012 positive idle producer in the live Guild capture
+
+Under the bounded follow-up declared at `b2d77add`, strengthen the same profile,
+not its conclusion. Old zero-generator88127 fails the new positive idle/lifetime
+assertion while the original parent checks still pass. Add exactly one controlled
+owned beige tower to the existing faction/stock setup write; no purchase event,
+earned budget, data retune or natural progression is fabricated. The real HTTP
+manual action now settles idle production and increases Prestige lifetime value.
+Complete saved Company/receipt/ordered events still match actual Go and TS replay.
+In fresh replay origins, remove only that producer: clearing/consumed units remain
+but lifetime no longer increases. This separates idle-hook coverage from manual
+output and clearing. Existing batch omission/duplicate controls remain mandatory.
+
+Declared Postgres34835 passes the full parent1.684s. Final `make
+test-game-ui-composed`55690 exits0:35 driver controls; both8/8 refresh populations,
+all ten persisted parents twice, zero captured test-header skips/failures and two
+stronger Guild/TS markers. Main/endings/recovery, Cosmetic/Reputation, Clout,
+payment negatives, Garden and Tier-2 journeys pass with their prior fixture limits.
+Cold `make test-go vet GO_PACKAGES='./gameserver'`42052 passes0.459s and vet.
+Formatting/diff checked; removed only the two inspected owned tmpfs Postgres
+services, preserving networks/caches/durable data. No raw private capture stored.
+
+This proves one current-content online positive-producer profile, not Clout-v19,
+natural acquisition/pacing, general provider/temporal fidelity or conservation.
+Original27 partition failures and the floor/interval/lifetime/compatibility
+contracts remain unchanged. Test/research records only; no runtime/kernel/schema,
+balance, content mint, owner choice or acceptance/archival/push/deployment change.
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete seven-path
+test/driver/plan/log/draft-evidence range after `b2d77add` through this containing
+commit needs designated Claude review, consolidatable with the earlier capture.

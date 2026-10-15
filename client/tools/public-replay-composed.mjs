@@ -30,13 +30,27 @@ try {
       });
       stage = "positive";
       const state = restore(fixture.Before);
+      const priorLifetime = state.lifetimeValue;
+      assert.equal(state.generators["generator.beige_tower"], 1);
+      assert.equal(Object.values(state.generators).reduce((sum, count) => sum + count, 0), 1);
       assert.equal(canonicalJSONString(encodeReplayState(state)), canonicalJSONString(fixture.Before));
       const result = await applyLogged(state, canonicalJSONString(fixture.Payload), catalogs, fixture.Inputs);
       assert.equal(result.outcome, "applied");
+      assert.notEqual(result.state.lifetimeValue, priorLifetime);
       for (const [actual, expected] of [[encodeReplayState(result.state), fixture.After], [result.receipt, fixture.Receipt], [result.events, fixture.Events]]) {
         assert.equal(canonicalJSONString(actual), canonicalJSONString(expected));
       }
       assert.equal(canonicalJSONString(encodeReplayState(restore(fixture.After))), canonicalJSONString(fixture.After));
+      stage = "zero-producer";
+      const zeroProducer = restore(fixture.Before);
+      zeroProducer.generators["generator.beige_tower"] = 0;
+      const zeroLifetime = zeroProducer.lifetimeValue;
+      const zeroResult = await applyLogged(zeroProducer, canonicalJSONString(fixture.Payload), catalogs, fixture.Inputs);
+      assert.equal(zeroResult.outcome, "applied");
+      assert.equal(zeroResult.state.lifetimeValue, zeroLifetime);
+      assert.equal(zeroResult.state.guildBoundarySeq, result.state.guildBoundarySeq);
+      assert.equal(zeroResult.state.consumedStockUnits, result.state.consumedStockUnits);
+      assert.notEqual(canonicalJSONString(encodeReplayState(zeroResult.state)), canonicalJSONString(fixture.After));
       stage = "omission";
       const omitted = await applyLogged(restore(fixture.Before), canonicalJSONString(fixture.Payload), catalogs, fixture.Omitted);
       assert.equal(omitted.outcome, "applied");
@@ -48,7 +62,7 @@ try {
       const before = canonicalJSONString(encodeReplayState(refused));
       await assert.rejects(applyLogged(refused, canonicalJSONString(fixture.Payload), catalogs, fixture.Duplicate));
       assert.equal(canonicalJSONString(encodeReplayState(refused)), before);
-      console.log("stored live Guild inputs → TypeScript replay: complete state/receipt/events + omission/duplicate controls: PASS");
+      console.log("stored live Guild inputs → TypeScript replay: complete state/receipt/events + positive idle/zero-producer + omission/duplicate controls: PASS");
     } catch {
       // Node assertion diagnostics include compared values. Never print private
       // saved heads/replay payloads, even when this observation fails.

@@ -141,7 +141,7 @@ if (!persistedChecks.stdout?.includes("public SDK HTTP downloads → TypeScript 
 if (!persistedChecks.stdout?.includes("historical verified HTTP evidence survives distinct active epoch/hash; DB-pinned replay and corruption refusal: PASS")) {
   throw new Error("historical public evidence rollover integration did not execute and pass");
 }
-if (!persistedChecks.stdout?.includes("stored live Guild inputs → TypeScript replay: complete state/receipt/events + omission/duplicate controls: PASS")) {
+if (!persistedChecks.stdout?.includes("stored live Guild inputs → TypeScript replay: complete state/receipt/events + positive idle/zero-producer + omission/duplicate controls: PASS")) {
   throw new Error("stored live Guild/TypeScript replay integration did not execute and pass");
 }
 // Diagnostic streams/catalogs must not become the browser journey's epoch.

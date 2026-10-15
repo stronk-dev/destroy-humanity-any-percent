@@ -42,6 +42,27 @@ all existing player journeys remain green. The owning log holds exact coverage a
 review range after `639edf19`. This is one live current-content online Guild profile,
 not a new conservation algorithm, Clout-v19 activation or full external-domain proof.
 
+## R-012 positive-producer follow-up — declared2026-10-15 at `b2d77add`
+
+The initial live clearing capture has no purchased generator, so it cannot establish
+idle-production/hook fidelity. Strengthen that same one online profile with exactly
+one controlled beige tower in its existing faction/stock setup write; no synthetic
+purchase event or natural-earning claim. Before the setup change, the new positive
+idle/lifetime assertion must reject the old zero-producer population. The real HTTP
+manual action must then settle the nonzero idle interval and increase Prestige
+lifetime value, while preserving the full SQL→Go/TS state/receipt/events comparisons.
+As a counterfactual, remove only that tower from a fresh captured origin and replay
+the same stored inputs: clearings still apply, but idle lifetime must not increase.
+Both runtimes must distinguish it. Keep batch omission/duplicate controls and all
+existing player populations; require the stronger marker in the existing composed
+driver and execute the whole root target. Do not retune data, change arithmetic or
+claim Clout-v19/conservation/general external-domain or natural progression proof.
+
+Completed locally: old zero-producer88127 fails the new idle/lifetime condition;
+controlled producer34835 and full root55690 pass, including both actual TS checks.
+The log owns the evidence and range after `b2d77add` needing designated review.
+The accounting/interval/origin-lifetime contract and original27 failures remain open.
+
 ## Current keyboard CI diagnosis — RP-637, 2026-10-15
 
 Clean `b248d26a` full Linux browser execution fails Firefox's Tier2 Enter Codex

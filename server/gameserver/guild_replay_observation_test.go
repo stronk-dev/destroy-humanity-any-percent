@@ -99,9 +99,20 @@ func observeComposedGuildSettlementReplay(t *testing.T, db *sql.DB, catalogs *ru
 		return encoded
 	}
 	state := restore()
+	originState := restore()
+	owned := int64(0)
+	for _, count := range originState.GeneratorCounts {
+		owned += count
+	}
+	if owned != 1 || originState.GeneratorCounts["generator.beige_tower"] != 1 {
+		t.Fatal("controlled single-producer population absent")
+	}
 	transition, err := production.ApplyLogged(state, payload, bundle, inputs)
 	if err != nil || transition.Outcome != save.IntentApplied {
 		t.Fatal("stored live input cannot replay", err)
+	}
+	if !state.LifetimeValue.Gt(originState.LifetimeValue) {
+		t.Fatal("capture did not settle positive idle production through the Prestige accrual hook")
 	}
 	if !reflect.DeepEqual(guildReplayJSON(t, encode(state)), guildReplayJSON(t, after.State)) ||
 		!reflect.DeepEqual(guildReplayJSON(t, transition.Receipt), guildReplayJSON(t, receipt)) {
@@ -126,6 +137,15 @@ func observeComposedGuildSettlementReplay(t *testing.T, db *sql.DB, catalogs *ru
 	}
 	if state.GuildBoundarySeq != 3 || state.ConsumedStockUnits < credit {
 		t.Fatal("positive replay did not apply actual clearing")
+	}
+	zeroProducer := restore()
+	zeroProducer.GeneratorCounts["generator.beige_tower"] = 0
+	zeroLifetime := zeroProducer.LifetimeValue
+	zeroResult, err := production.ApplyLogged(zeroProducer, payload, bundle, inputs)
+	if err != nil || zeroResult.Outcome != save.IntentApplied || !zeroProducer.LifetimeValue.Eq(zeroLifetime) ||
+		zeroProducer.GuildBoundarySeq != state.GuildBoundarySeq || zeroProducer.ConsumedStockUnits != state.ConsumedStockUnits ||
+		reflect.DeepEqual(guildReplayJSON(t, encode(zeroProducer)), guildReplayJSON(t, after.State)) {
+		t.Fatal("zero-producer control did not isolate idle accrual from clearing", err)
 	}
 
 	// Alter only the retained batch. Keep every other captured input unchanged.
@@ -190,7 +210,7 @@ func observeComposedGuildSettlementReplay(t *testing.T, db *sql.DB, catalogs *ru
 	if !errors.Is(err, production.ErrInvalidReplayInputs) || !bytes.Equal(refusedBefore, encode(refused)) || result.Outcome != "" || len(result.Receipt) != 0 || len(result.Events) != 0 {
 		t.Fatal("duplicate clearing did not refuse atomically", err)
 	}
-	t.Log("one live online Guild profile: three clearings; complete SQL state/receipt/events replay; omission loses settlement and duplicate refuses; conservation NOT_PROVEN")
+	t.Log("one live online Guild profile: three clearings, positive idle lifetime and zero-producer control; complete SQL state/receipt/events replay; omission loses settlement and duplicate refuses; conservation NOT_PROVEN")
 	if os.Getenv("TEST_PUBLIC_REPLAY_CLIENT") != "1" {
 		t.Log("TypeScript Guild capture seam not requested (root composed lane owns it)")
 		return
@@ -214,7 +234,7 @@ func observeComposedGuildSettlementReplay(t *testing.T, db *sql.DB, catalogs *ru
 	command.Dir = filepathRoot(t)
 	command.Stdin = bytes.NewReader(clientInput)
 	output, err := command.CombinedOutput()
-	const passed = "stored live Guild inputs → TypeScript replay: complete state/receipt/events + omission/duplicate controls: PASS"
+	const passed = "stored live Guild inputs → TypeScript replay: complete state/receipt/events + positive idle/zero-producer + omission/duplicate controls: PASS"
 	if err != nil || !bytes.Contains(output, []byte(passed)) {
 		t.Fatalf("TypeScript Guild replay seam failed: %v (private capture/output withheld)", err)
 	}
