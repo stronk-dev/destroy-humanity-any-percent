@@ -799,3 +799,44 @@ This finishes original-batch review work, not Pet acceptance. Next: consolidate 
 corrections for the other party's designated review, resolve PA7/C2 and shared attendance under
 their authors' authority, and complete adopted-content/accessibility/rights gates. Firefox's
 failed run above remains a failure; no whole-CI, archival, mint, release or push claim.
+
+## 2026-10-15 — Four independent Pet admission corrective approvals
+
+Review by: fresh independent Codex sub-agent `/root/pet_admission_corrective_review`,
+under Marco's corrective-code delegation. Recorded by: Codex parent transcribing its verdict.
+**APPROVED**, no findings, each complete source/test/docs/kernel/record range separately:
+
+- RP-403: `8dc5b7b4d1b84860cebe25c1c27feaa2f59a0a26..9c3b49c18114fcdc4b062ef75643ddcb347ff3fa`.
+- RP-404: `9c3b49c18114fcdc4b062ef75643ddcb347ff3fa..9ba37f9bcdcbe9b33bbabc3d3f055f598c18072a`.
+- RP-406: `35849d9ad8514fc5f2db19beae788a0220973241..7b4bc0013535281859c0e10c1b4f05c1601b771a`.
+- RP-463: `0084a1bb83825293025d80c62e007ae5951543ab..ff5275fc8a4b8548a2e9b4345f1869f72984836c`.
+
+Independent cold Pet/Save/Replaycatalog/Garden/Kernel/Decimal and affected seven-package vet
+pass; changed Go files are formatted. Selected Production activation/adoption/history,
+identity/Exit/refusal, unchanged corpora and cross-runtime ApplyLogged pass. The source-bound
+rate observation actually reruns64 profiles, preserving AC6 NOT_PROVEN. Relevant Node population
+passes6704, three explicit browser-only skips, including Decimal vectors, raw/save/replay,
+Cosmetic/copy/observation and actual Garden child/startup/nontermination controls. Types/build
+pass with zero diagnostics. Full copy-check passes669 keys, unchanged current hash
+`sha256:5214783a8fdec8997a1ea0d6a7eb0db0e3b65ca5b1af0b3b145b3927a9493364`,
+622 visible orphan warnings and deployment-manifest checks.
+
+`make test-save-integration SAVE_TEST_PACKAGES='./save ./production'
+SAVE_TEST_FLAGS='-run "TestFounderPetIdentitiesRequireExactCaseKeys|TestPetAdoptionIntegrationPersistsReplayableFounderLog|TestCosmeticExitCarryIntegration" -v'`
+passes against actual Postgres, no selected skips:56 saved-key refusals/valid controls,
+nine persisted-history corruptions and both persisted Exit arms. Kernel adversarial fixtures
+pass; actual history guard remains RED exit2 at50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444
+against0cf9f7a6aba4038fadcdf35e5b94f56986164af7, not waived by these approvals.
+
+Execution begins atf60ec0d7 and ends at records-only928d1fc7. Identity/save production paths
+are unchanged since their corrections; later raw-scanner factoring retains the integer path.
+Retained old failures were inspected, not independently reproduced. Current Garden controls
+do not erase historical startup failures. Full Production/known27 failures were not rerun or
+resolved. No browser, original-feature/whole Pet acceptance, owner-copy/mint, normative
+adoption, archival or release approval. Other corrective ranges and PA7/shared-attendance/
+rights/accessibility gates remain open.
+
+Reviewer removes only its inspected disposable Postgres container and the explicitly handed-off
+Garage service, discarding temporary fixture rows; no caches/volumes removed. Final Docker
+inspection has no project containers. No tracked edits by reviewer; parent records provenance
+and only the four approved correction statuses. No publication/deployment/push.

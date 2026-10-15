@@ -2,13 +2,19 @@
 
 RFC: `rfc/pet-adoption-v1.md` (accepted 2026-09-25; every OD at its recommended default).
 Original implementation by: Claude. P1–P7 now have complete original-batch Codex review
-dispositions: CHANGES REQUIRED. Corrective descendants still need their own designated review;
+dispositions: CHANGES REQUIRED. Corrective descendants need their own designated review;
 the original verdicts do not approve them. No archival or production mint (OD-4/PA8.6).
+
+2026-10-15 fresh independent Codex corrective review APPROVES RP-403
+(`9c3b49c1^..9c3b49c1`), RP-404 (`9ba37f9b^..9ba37f9b`), RP-406
+(`7b4bc001^..7b4bc001`) and RP-463 (`ff5275fc^..ff5275fc`) under Marco's
+delegation. The owning log records complete exact ranges, actual cross-runtime/SQL
+checks, provenance and limits. Other corrections and feature acceptance remain separate.
 
 2026-10-08 review checkpoint: complete original P1 (RP-403) and P2/P3 (RP-404) reviews
 retain CHANGES REQUIRED for phrase and raw species admission. Codex's
-corrections and executed evidence are in the latest log entries and need Claude's exact-range
-review. Complete original P5 review is now CHANGES REQUIRED for the missing final-history
+corrections now have independent approval and executed evidence in the latest log entry.
+Complete original P5 review is still CHANGES REQUIRED for the missing final-history
 AC7 refusal checks (RP-405). Those are locally corrected; the selected real-Postgres
 corruption population passes, and independent review of the correction remains.
 Existing checkboxes describe
@@ -28,7 +34,7 @@ P4's complete original range `b29e70c0^..b29e70c0` now has a designated Codex re
 CHANGES REQUIRED. In addition to RP-406's missing/null Company carry coordinates, RP-463
 finds case-aliased saved identity keys accepted by Go but refused by TypeScript. Both are
 locally corrected with refusal and valid-encoding controls; affected real-Postgres checks
-pass. Codex's corrections still need the other party's exact-range review. This verdict
+pass. Both corrections now have independent exact-range approval in the latest log. This original verdict
 does not approve corrected descendants, other original batches or full Pet acceptance.
 
 Numbering, ruled by landing order: the RFC's "Founder v22" maps to the **next free Founder version
