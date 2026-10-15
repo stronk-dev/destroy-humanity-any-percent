@@ -165,6 +165,57 @@ func TestAxisOriginProjectionOriginalCuts(t *testing.T) {
 	t.Log("128 original profiles project exactly through the ledger; ordinary rebasing differs in 27")
 }
 
+// This constrains an origin-carrying search proposal; the current beam does not
+// carry these origins. It is not an execution of the beam or a live-player loss.
+func TestAxisOriginProjectionSearchIdentityResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	start := time.Date(2026, 10, 7, 12, 0, 0, 0, time.UTC)
+	for _, tc := range []struct {
+		name                    string
+		endMS, cutMS            int64
+		wantOriginal, wantReset string
+		wantEqual               bool
+	}{
+		{"retained_rounding_counterexample", 3114, 1553, "1.00035846811e4", "1.00035846812e4", false},
+		{"whole_second_control", 2000, 1000, "1.00023023e4", "1.00023023e4", true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			original := mustEncodeState(t, axisTimingState(t, bundle, start))
+			originalBefore := bytes.Clone(original)
+			cut := start.Add(time.Duration(tc.cutMS) * time.Millisecond)
+			visible := originProjectionState(t, bundle, original, cut, ModeOnline)
+			reset := mustEncodeState(t, visible)
+			resetBefore := bytes.Clone(reset)
+			if bytes.Equal(original, reset) {
+				t.Fatal("population does not contain two distinct origins")
+			}
+			resetVisible := originProjectionState(t, bundle, reset, cut, ModeOnline)
+			if !bytes.Equal(mustEncodeState(t, visible), mustEncodeState(t, resetVisible)) ||
+				!visible.EvaluatedThrough.Equal(cut) || !resetVisible.EvaluatedThrough.Equal(cut) {
+				t.Fatal("origins do not project to the same complete visible state and time")
+			}
+			end := start.Add(time.Duration(tc.endMS) * time.Millisecond)
+			fromOriginal := originProjectionState(t, bundle, original, end, ModeOnline)
+			fromReset := originProjectionState(t, bundle, reset, end, ModeOnline)
+			if got := fromOriginal.Ledger.Snapshot()["company.cash"]; got != tc.wantOriginal {
+				t.Fatalf("original-origin cash=%s want=%s", got, tc.wantOriginal)
+			}
+			if got := fromReset.Ledger.Snapshot()["company.cash"]; got != tc.wantReset {
+				t.Fatalf("reset-origin cash=%s want=%s", got, tc.wantReset)
+			}
+			equal := bytes.Equal(mustEncodeState(t, fromOriginal), mustEncodeState(t, fromReset))
+			if equal != tc.wantEqual {
+				t.Fatalf("future full-state equality=%t want=%t", equal, tc.wantEqual)
+			}
+			if !bytes.Equal(original, originalBefore) || !bytes.Equal(reset, resetBefore) {
+				t.Fatal("projection mutated an origin")
+			}
+			t.Logf("same visible state/time, distinct origins: future cash %s versus %s; equal=%t",
+				tc.wantOriginal, tc.wantReset, equal)
+		})
+	}
+}
+
 func TestAxisOriginProjectionPolicyIntersections(t *testing.T) {
 	bundle := researchBundleCap(t, axisContentBundle(t), "1e100")
 	start := time.Date(2026, 10, 7, 12, 0, 0, 0, time.UTC)

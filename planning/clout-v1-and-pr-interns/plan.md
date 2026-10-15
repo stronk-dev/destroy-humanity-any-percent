@@ -14,10 +14,34 @@ body distinguishes internal calculation/display reads from extra saved payments;
 one absence does not gain allowances from internal cuts. This is wording authority
 only, not adoption of the conservation draft or an operation-local/durable origin.
 The normative documentation batch after `fdb9a79d` needs designated Claude review.
-Next complete the accounting draft's exact context/settlement/ledger/hook and
-compatibility contract under these preserved semantics, then obtain acceptance
-before implementation. RP-307's original 27/128 failures and RP-488/RP-652 constraints
-remain open. Historical experiment notes below retain their original scope.
+The draft now proposes a concrete operation-local command identity, existing
+catchup/action stage order and private origin/context ownership. Static caller tracing
+also identifies real `SimulateAdvance` wait edges and the content-dynamics partition
+check: a command-only origin does not repair those boundaries. Next specify the actual
+calculation/settlement API and simulation branch/context/hook ownership, complete
+compatibility and obtain acceptance before implementation. Do not substitute clone-only
+proofs or rebaseline reports. RP-307's original 27/128 failures and RP-488/RP-652
+constraints remain open. Historical experiment notes below retain their original scope.
+
+### Bounded search-identity check at `7eb64e37`
+
+Use the existing origin/evaluator helpers, unchanged axis content and online mode.
+Retained counterexample: end3114ms/cut1553ms; equal control: end2000ms/cut1000ms.
+An original origin and a new origin encoded at its projected cut must admit exactly
+the same complete visible Company at the same virtual time. Project both to the
+same endpoint: require the recorded literal unequal cash pair for the counterexample
+and literal equal cash for the control; retain complete equality/inequality and
+unchanged origin bytes. This checks whether an origin-carrying candidate can rely
+on visible-state/time alone. It is not an executed beam collision or current harness
+bug: that harness does not yet carry these candidate origins. Do not alter R11,
+reports, original cases, content or runtime to make the check pass.
+
+Executed: both complete visible heads are equal at the cut. The counterexample's
+future cash is `1.00035846811e4` versus `1.00035846812e4`; the control's full future
+states match at cash `1.00023023e4`. Origins remain unchanged. New check and existing
+128-profile origin reference pass three shuffled uncached runs; the original raw
+partition property still reports27 failures/101 passes. Draft C1b/RP-653 record the
+constraint, not a beam fix, accounting implementation or report invalidation.
 
 ## R-012 temporal cumulative-head feasibility — declared2026-10-15 at `aa2f97df`
 

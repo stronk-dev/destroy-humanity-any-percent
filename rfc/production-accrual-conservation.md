@@ -103,6 +103,131 @@ settlement protocol. Neither choice may delete the original property, redefine c
 as actions to avoid failures, or waive accepted behavior. The earlier assertion that durable state was necessarily
 required was stronger than the evidence; it is corrected here, not implemented as fact.
 
+### C1b — Concrete operation-local proposal (unadopted)
+
+Engineering recommendation: keep the origin private to one existing logged operation
+and keep its existing settlement stages. Do not introduce an additional durable origin,
+periodic payment, public proof API or background player tick. This is a proposed
+architecture, not an inference that Marco's wording delegation adopted it.
+
+**Ownership and identity.** Bind an operation to the existing `ReplayCommand` tuple
+`{company_stream_id, founder_id, revision, run_seq, run_log_seq, intent_id}`, the
+pinned `ConstantsHash`, canonical payload and validated replay-input envelope.
+The server resolves that envelope before applying the command; replay consumes the
+recorded envelope, never a second live provider lookup. These are existing authorities,
+not proposed client fields. A private stage discriminator distinguishes offline catchup
+from ordinary accrual in the same command. Do not mint a new persisted episode ID:
+the existing `offline_catchup.opened_at_ms` and `offline_span.{from_ms,to_ms}` remain
+the catchup coordinates and must still match `buildOfflineCatchup` exactly.
+
+**Origin and context.** Capture the complete admitted Company pre-stage state, not
+just cash, using the existing versioned Company codec and its pinned economy. Retain
+the derived `FactionStockResource` as `cloneReplayState` does; do not add it to saves.
+Retain the complete already-validated replay envelope and pinned bundle, including
+the external contribution rows, Commons weight, Guild batch, route context version,
+Founder carry and active-play evidence described in C2. No raw computed-rate cache
+or partial ad-hoc state schema replaces these inputs. Private snapshots must own
+their mutable maps/slices; mutating or discarding a scratch result cannot alter the
+origin, another result or the pending real command.
+
+**Stage boundaries remain semantic, not arbitrary cuts.** The ordinary `ApplyLogged`
+path currently applies Guild clearing, assembles catchup contributions, performs
+the validated offline catchup and its hooks, applies the active-play schedule, then
+assembles ordinary contributions and executes the intent's accrual/hooks/action.
+Preserve that order. If internal projection is needed inside a stage, capture its
+origin after that stage's preceding real mutations, not once before the whole
+command and then replay Guild clearing on an already-cleared state. Offline and
+ordinary stages are not merged into one new policy interval. An ordinary stage
+at the catchup timestamp can have zero elapsed time; preserve its existing behavior.
+
+| Existing boundary | Proposed treatment |
+|---|---|
+| Ordinary intent and opportunity claim | One accrual settlement per existing stage, then existing hooks and action; a new factor only affects the next interval. |
+| Exit and scripted-branch preview | Keep their respective existing pipelines; a preview owns a clone and cannot settle the real Company or consume the real origin. |
+| Recovery suppression | Keep its existing consume-time/restore-output contract; do not route suppressed time through an earning origin. |
+| Snapshot/rate read | No settlement or saved head; do not add a payment-capable origin to the read API. |
+| Simulation wait edge/content diagnostics | Separate non-live ownership is required as described below; preserving live transactions does not repair these callers. |
+
+**Internal projection and final settlement.** Every permitted fixed-context scratch
+projection starts from a fresh copy of its stage origin and evaluates the total
+origin-to-requested-time interval. It never starts from the previous rounded scratch
+result. Returned projected state and `EvaluationResult` are diagnostic values, not
+incremental payments or resource authority. Do not pass their receipts to the live
+ledger, run external hooks for a cut, or pre-advance the real cursor. The existing
+closed transition settles once from its actual pre-stage state and supplies that
+single evaluation result to the existing hook chain. On refusal, discard all scratch
+work and retain the existing complete rollback. SQL commits, identical retries and
+crash recovery remain owned by the existing Store transaction/run-log boundary.
+No operation-local object survives that operation or a process restart.
+
+This deliberately recomputes from the origin rather than accumulating rounded
+deltas. It addresses the lower-floor receipt constraint without admitting cumulative
+receipts or promising monotone scratch targets. Endpoint-selected buffs remain
+endpoint-selected: different scheduled endpoint contexts are not one fixed-context
+projection session. The RP-652 decreasing targets cannot be installed as payments
+or silently converted to prorated buff windows. Any more efficient accumulator must
+prove equivalent full-state results before replacing this reference computation.
+
+**The remaining call-contract gap must not be hidden.** The current
+`TestAxisAccrualPartitionProperty` calls the mutating `Evaluate` twice on the same
+state. Its first cut really advances the ledger and cursor. An operation-local
+projection cannot make those unchanged calls equal while also declaring the first
+call noncommitting. Retain that diagnostic and its 27 failures; neither clone-only
+feasibility tests nor this proposal repairs the existing API. Acceptance must specify
+the actual calculation/settlement API and its real caller, and exercise the same
+128 seed/end/cut/mode profiles through it with complete exact state comparisons.
+Changing that call boundary requires an explicit reviewed contract, not quietly
+rewriting the test, excluding cases or calling the old failures legacy-green.
+Do not add an unused production abstraction solely to obtain a passing test.
+
+#### Real simulation callers are not covered by a command-only origin
+
+Source tracing at `7eb64e37` identifies real non-test consumers, not just the
+standalone AC6 diagnostic:
+
+- `production.SimulateAdvance` mutates its supplied harness state, returns an
+  evaluation and runs the supplied simulation hook. It refuses emitted events on
+  that action-free edge; it does not promise that hook-owned state is unchanged.
+- `harness.RelevanceSuite.advanceMode` uses that function for search wait edges.
+  `firstHourRuntime.step` and its bank-wait branch use it too. Search branches and
+  session boundaries must not be conflated with live persisted command identities.
+- `contentDynamicsAccrueWindow` explicitly compares a one-step buff window with
+  two successive mutating evaluations and refuses a differing result. The resulting
+  check is a real content diagnostic, not an independent saved player payment.
+
+These observations are static caller evidence, not executed new harness failures
+or proof that any particular published report is invalid. The operation-local
+proposal above must not claim to repair those boundaries by changing only
+`ApplyLogged`, or quietly exempt them from conservation.
+
+A simulation extension must define branch-owned origin/context lifetime across
+action-free waits, clone/ablation ownership, changes to producer context, offline
+session boundaries, and the complete hook-owned state. A later projected wait must
+not add the same lifetime accrual twice, omit legitimate Guild/Commons updates or
+consume a sibling search branch's origin. A real simulated action closes the old
+interval according to the adopted chronology; a search observation does not invent
+an action merely to reset rounding. This is still an engineering gap, not a new
+product decision for the owner to approve away. Preserve current report bytes and
+the original red population while specifying and proving the actual caller route.
+
+There is also a concrete search-identity dependency: archived Relevance R11 keys a
+node by `{canonical_state_hash, virtual_ms}`. If two equal visible projections retain
+different origins that can produce different later payouts, that key is insufficient.
+A candidate origin-carrying simulation design must either prove future equivalence
+for every merged node or explicitly propose an R11 amendment binding origin and
+producer-context identity in deduplication (with branch-private ablation state).
+Changing the key can change search populations, budgets and reports; do not silently
+alter the accepted search contract or regenerate its goldens as part of a ledger fix.
+
+The bounded `TestAxisOriginProjectionSearchIdentityResearch` executes this constraint
+with the original online3114ms/cut1553ms counterexample: one origin and a second
+origin encoded at its cut project to byte-identical complete visible Company state
+at that cut. Their future cash is respectively `1.00035846811e4` and
+`1.00035846812e4`. The2000ms/cut1000ms control has the same visible-head equality
+and equal future state/cash `1.00023023e4`. Both origins remain unchanged. This
+verifies non-equivalence for an origin-carrying candidate (RP-653), not an actual
+collision in today's origin-free beam or proof that its published reports are wrong.
+
 ### C2 — Preserve a producer origin, not a rounded-rate cache
 
 Candidate direction, with lifetime subject to C1/C1a: retain a canonical initial balance,
@@ -499,6 +624,10 @@ the red population with a convenient new one or alter its monetary expectations.
 - **C1/C1a:** designated review of the delegated Clout wording amendment, then the complete
   exact episode/settlement identity boundaries and whether an unsettled interval can span
   authorized committed heads. Wording reconciliation alone does not select an origin lifetime.
+  C1b now supplies a concrete operation-local ownership/stage proposal, but its actual
+  API/caller and the retained mutating-`Evaluate` diagnostic must be reconciled before
+  acceptance. Its real harness wait/content-diagnostic callers also need a complete
+  simulation ownership/hook contract. A scratch-only green population cannot close that gap.
 - **C2/C3:** complete field set, boundary integration and a viable ledger/receipt algorithm,
   demonstrated with actual Company producers and the retained lower-domain counterexample.
   The current difference-write candidate fails; this is technical work, not a choice for the
@@ -524,6 +653,11 @@ contract, explicit adoption and independent normative review before production w
 
 ## Changelog
 
+- 2026-10-15: propose concrete operation-local command/context ownership, existing
+  catchup/action stage ordering and settlement/rollback boundaries. Explicitly retain
+  the mismatch between the original mutating-`Evaluate` partition diagnostic and a
+  noncommitting projection API. No test rewrite, receipt change, lifetime adoption
+  or production implementation; acceptance and designated review remain outstanding.
 - 2026-10-15: record Marco's explicit narrow wording delegation and reconcile C1/C1a
   with the Clout body. Accounting, exact identity/settlement, origin lifetime, acceptance
   and independent review remain required; no production authority follows.

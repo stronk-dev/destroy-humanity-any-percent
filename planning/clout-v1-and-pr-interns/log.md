@@ -3524,3 +3524,45 @@ designated Claude normative review; this entry is not that verdict or acceptance
 of the conservation draft. No push, archival, deployment or release promotion.
 Next complete the exact accounting/context/settlement/hook/compatibility contract,
 then obtain its acceptance and independent review before production implementation.
+
+## 2026-10-15 — specify the operation-local candidate and real caller gap
+
+After `7eb64e37`, trace actual Evaluate/ApplyLogged/Exit/catchup/claim/suppression,
+the replay envelope and Company clone, and the TypeScript evaluator. Add draft C1b:
+existing command tuple and pinned inputs own private context; retain Guild→catchup→
+active-play→ordinary-stage order, original receipts, once-only hooks and Store rollback.
+No persistent episode ID, intermediate payment, cumulative receipt or buff proration.
+
+Explicitly retain the call-contract mismatch: the original test's cut mutates its
+ledger/cursor, unlike a pure projection. A clone-only green test does not repair it.
+Static tracing finds actual action-free `SimulateAdvance` callers in relevance and
+first-hour waits, plus the real `contentDynamicsAccrueWindow` split check. A live
+command-only design cannot claim those solved. Specify simulation branch/context/
+hook ownership and the real API/caller route before acceptance; do not change reports.
+Archived Relevance R10/R11 confirms the action-free wait authority and current
+`{canonical_state_hash, virtual_ms}` node key. An origin-carrying branch needs future-
+equivalence proof for merged nodes or an explicit reviewed key-contract amendment;
+do not silently change search identity, population or goldens to land accounting.
+
+The bounded two-profile check declared in the plan before measurement verifies this
+candidate constraint through actual Company encode/restore/Evaluate. Both origin
+pairs give the same complete visible state/time at the cut. Original3114/cut1553
+future cash differs `1.00035846811e4` versus `1.00035846812e4`; whole-second control
+2000/cut1000 retains equal full future state and cash `1.00023023e4`. All origins
+remain unchanged. Record RP-653; no actual beam collision, published-report failure
+or served-player loss is claimed for the current origin-free implementation.
+
+Focused82238 passes0.310s. New identity check plus existing128-profile origin
+reference pass three shuffled uncached runs54533 in0.753s; affected vet passes.
+One repeat command failed shell parsing because its Make-passed regex lacked inner
+quotes; corrected before the actual repeated measurement. Original partition check
+remains red: complete untruncated recheck reports27 failures/101 passes in0.199s.
+No broader Go/SQL/TS/browser/CI pass is claimed; no fixture, report, population,
+arithmetic, runtime or version changes. Inspect the five-path test/draft/plan/ledger/
+log diff; `git diff --check` passes. No services started or resources removed.
+Review by: Codex (research implementer/draft author first filter). Recorded by:
+Codex. Complete range after `7eb64e37` through this containing commit needs designated
+Claude review, consolidatable with the preceding wording amendment. Draft remains
+unaccepted; original27 failures and full1.0 obligations remain. No push, archival
+or deployment. Next specify the actual API and simulation context/hook ownership,
+not repeat this identity counterexample or implement the unaccepted proposal.
