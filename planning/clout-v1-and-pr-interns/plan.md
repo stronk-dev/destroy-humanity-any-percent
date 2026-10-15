@@ -66,6 +66,13 @@ commands, medians and failed-selection disclosures; not active arithmetic or an 
 Continue explicit caller/version dispositions, complete workloads and the separate general H3c proof, not another
 positive monotonicity census or a version/golden change to conceal incompatibility.
 
+2026-10-16 adjacent-exponent-run variant retains the exact witness digest and bounds long
+run digit-splitting work, but the actual eight-source caller adds2 allocations and the single
+short round does not establish speedup. No default replacement: the existing research helper
+is restored byte-identically; only a manual patch and concise negative result are retained
+in the sparse dossier/log, outside ordinary CI. Do not repeat this short benchmark or infer
+whole-workload feasibility, accounting/H3c repair or numeric adoption from this experiment.
+
 The proposed private origin JSON/hash protocol is withdrawn: no identified consumer
 persists or transmits these handles. Parent C1e now proposes opaque typed run-local
 ownership using existing save/replay validators, with forks sharing identity and

@@ -383,6 +383,58 @@ harness dispositions. Those, full affected workloads and independent normative a
 still required before activation. Active source, TS prototype, golden/report/kernel/CI and
 acceptance bounds stay unchanged. H3c and27 accounting failures remain unresolved.
 
+## Adjacent-exponent-run prototype study — 2026-10-16
+
+After the concrete A1–A6 caller/cutover proposal was written (still unadopted),
+test one exact optimization for long production-delta lists: adjacent equal-exponent
+inputs share one signed arbitrary-precision significand sum before digit splitting.
+Each normalized mantissa times2^52 is an exact signed integer; distributivity permits
+this grouping without Decimal rounding. Validate every input, retain all exponents/signs,
+then use the unchanged sparse normalization/subtraction/final rounding. Runs, not global
+caches or reordered floating additions. Invalid later inputs must still refuse.
+
+Retain old reuse overlay4b9e897a…9304/source5ec45ccb…abd4d. Existing identity/edge/2048
+rational/reverse/ownership/original-pair/caller-incompatibility tests must retain raw
+witness digest; add literal long-run/cancellation/invalid-tail controls. No production,
+TS, numeric contract, kernel, golden/report/CI change. This does not discharge H3c.
+Before measurement, finish all reviewer/browser/SQL work. Compare the existing actual-caller
+five-row benchmark on old reuse/new run-grouped/active source,100ms,count3, one sequential
+round only; preserve all15 rows per arm. Long-list operation counts can establish removed
+work, not whole-harness speed or a new operating budget. No repeated tuning census.
+
+Result: no default replacement is justified. The experimental helper retains the exact
+2048-case raw witness digest, all identity/14edge/reverse/ownership/original-pair controls,
+and new long-run positive/cancellation/full-exponent/invalid-tail controls. A65537-input
+positive run and same-length signed cancellation require at most3 digit splits. Native
+full Decimal0.472s, focused0.269s, vet and Linux-amd64 focused0.250s pass. These are correctness
+and operation-count results, not a long-list wall-time measurement or a general proof.
+
+All45 actual-caller benchmark rows complete sequentially after reviewer/SQL work terminates,
+Darwinarm64/Go1.27.2/M3Max. Single-round medians, not confidence intervals:
+
+| Actual call | Old reuse ns/op | Run-grouped ns/op | Active ns/op | Old→run allocations/op |
+|---|---:|---:|---:|---:|
+| Eight-source accrual |1780|1722|345.4|41→43|
+| One-source accrual,1s |57.51|54.43|94.53|0→0|
+| One-source accrual,24h |60.36|60.88|96.07|0→0|
+| Restore + Evaluate,1s |4781|5003|5140|76→76|
+| Restore + Evaluate,24h |4899|4902|5174|76→76|
+
+Eight-source bytes rise1160→1216; the small elapsed difference is not established speedup.
+Do not continue tuning this short population or replace the current prototype on that basis.
+Restore the ordinary research helper byte-for-byte to5ec45ccbb841e346cdb25f6d09e6bda73a43a6ab08aba9b0ea230fdcb51abd4d;
+retain only probes/sparse-runs-candidate.patch as a manually applied variant outside CI.
+It applies to the helper at0c8ff6c1, including its new specific correctness tests.
+The separately generated ignored aggregate overlay94837f76fd64b91003539b7ae7e71294d266d7047fc0690522879661253d7c7a
+contains the exact experimental helpers after Research→Overlay renaming, not active math.
+
+Actual Company/Pitch compatibility tests on that overlay still FAIL with the same earlier
+payout/funding differences: Company1.01245957117e1 vs current1.01245957116e1, Pitch
+5.97255552033e3/playing vs5.97255552034e3/shop. Cost work cannot authorize that migration.
+No TS change/new parity claim, full workload/hosted budget, production/kernel/golden/report/
+CI change, accounting/H3c repair, adoption or designated research review. The owning log
+records reproducible commands, raw-artifact digest, exact range and temporary-service cleanup.
+
 ## Proposed caller/activation disposition — 2026-10-15
 
 The [Exact Represented Aggregation draft](../../rfc/exact-represented-aggregation.md)

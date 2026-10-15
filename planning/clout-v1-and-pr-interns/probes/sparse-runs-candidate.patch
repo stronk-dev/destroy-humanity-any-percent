@@ -1,0 +1,121 @@
+diff --git a/server/decimal/sparse_aggregation_research_test.go b/server/decimal/sparse_aggregation_research_test.go
+index 77acbe68..99e4788b 100644
+--- a/server/decimal/sparse_aggregation_research_test.go
++++ b/server/decimal/sparse_aggregation_research_test.go
+@@ -175,23 +175,42 @@ func sparseSumResearch(values []Decimal) (Decimal, sparseWorkResearch, error) {
+ 	positive, negative := map[int64]*big.Int{}, map[int64]*big.Int{}
+ 	// Scratch storage is call-local. Map entries still own distinct Ints;
+ 	// Add copies each digit before the next in-place QuoRem overwrites it.
+-	var coefficient, digit, scale big.Int
++	var coefficient, digit, scale, run big.Int
+ 	base := big.NewInt(sparseBaseResearch)
+-	for _, value := range values {
+-		if !value.IsStateValue() {
+-			return NaN, work, nil
++	for start := 0; start < len(values); {
++		exponent := values[start].exponent
++		run.SetInt64(0)
++		end := start
++		for end < len(values) && values[end].exponent == exponent {
++			value := values[end]
++			if !value.IsStateValue() {
++				return NaN, work, nil
++			}
++			end++
++			if value.mantissa == 0 {
++				continue
++			}
++			bits := math.Float64bits(value.mantissa)
++			binaryExponent := int((bits>>52)&2047) - 1023
++			if binaryExponent < 0 || binaryExponent > 3 {
++				return NaN, work, fmt.Errorf("invalid normalized significand")
++			}
++			coefficient.SetUint64((bits & ((1 << 52) - 1)) | (1 << 52))
++			coefficient.Lsh(&coefficient, uint(binaryExponent))
++			if value.mantissa < 0 {
++				run.Sub(&run, &coefficient)
++			} else {
++				run.Add(&run, &coefficient)
++			}
+ 		}
+-		if value.mantissa == 0 {
++		start = end
++		if run.Sign() == 0 {
+ 			continue
+ 		}
+-		bits := math.Float64bits(value.mantissa)
+-		binaryExponent := int((bits>>52)&2047) - 1023
+-		if binaryExponent < 0 || binaryExponent > 3 {
+-			return NaN, work, fmt.Errorf("invalid normalized significand")
+-		}
+-		coefficient.SetUint64((bits & ((1 << 52) - 1)) | (1 << 52))
+-		coefficient.Lsh(&coefficient, uint(binaryExponent))
+-		index, remainder := sparsePositionResearch(value.exponent)
++		// Sum exact signed binary significands before splitting this run.
++		// No Decimal operation or normalization occurs at the run boundary.
++		coefficient.Abs(&run)
++		index, remainder := sparsePositionResearch(exponent)
+ 		// Euclidean remainder is0..8, so this exact power is at most1e8
+ 		// and fits int64 independently of the input count/exponent distance.
+ 		power := int64(1)
+@@ -200,7 +219,7 @@ func sparseSumResearch(values []Decimal) (Decimal, sparseWorkResearch, error) {
+ 		}
+ 		coefficient.Mul(&coefficient, scale.SetInt64(power))
+ 		target := positive
+-		if value.mantissa < 0 {
++		if run.Sign() < 0 {
+ 			target = negative
+ 		}
+ 		for coefficient.Sign() != 0 {
+@@ -271,6 +290,51 @@ func sparseSumResearch(values []Decimal) (Decimal, sparseWorkResearch, error) {
+ 	return result, work, nil
+ }
+ 
++func TestSparseAggregationResearchEqualExponentRuns(t *testing.T) {
++	positive := make([]Decimal, 65_537)
++	for index := range positive {
++		positive[index] = New(3.003003003, 0)
++	}
++	// Independent exact rational for the repeated represented value. Its
++	// magnitude is between1e5 and1e6, so normalize once before binary rounding.
++	reference := new(big.Rat).SetFloat64(positive[0].mantissa)
++	reference.Mul(reference, big.NewRat(int64(len(positive)), 100_000))
++	wantMantissa, _ := reference.Float64()
++	got, work, err := sparseSumResearch(positive)
++	if err != nil || !got.Eq(New(wantMantissa, 5)) || work.chunks > 3 {
++		t.Fatal("long positive run differs from exact rational/work bound", got, work, err)
++	}
++	for _, exponent := range []int64{-maxExponent, -32, 0, 32, maxExponent} {
++		values := make([]Decimal, 65_537)
++		for index := range values {
++			values[index] = New(3.003003003, exponent)
++		}
++		// A complete signed cancellation inside a run must retain the final
++		// literal value even at both full-domain exponent endpoints.
++		for index := 0; index < len(values)-1; index += 2 {
++			values[index+1] = values[index].Neg()
++		}
++		got, work, err := sparseSumResearch(values)
++		want := values[len(values)-1]
++		if err != nil || !got.Eq(want) || work.chunks > 3 {
++			t.Fatal("long exact cancellation/run work differs", exponent, got, want, work, err)
++		}
++		values[len(values)-1] = NaN
++		got, _, err = sparseSumResearch(values)
++		if err != nil || !got.IsNaN() {
++			t.Fatal("completed cancellation hides invalid tail", exponent, got, err)
++		}
++	}
++	for _, exponent := range []int64{-32, 0, 32} {
++		values := []Decimal{New(1, exponent), New(math.Nextafter(1, 2), exponent), New(-1, exponent), New(4, exponent)}
++		want := sparseRationalOracleResearch(t, values)
++		got, _, err := sparseSumResearch(values)
++		if err != nil || !got.Eq(want) {
++			t.Fatal("same-exponent round/tie differs from rational", exponent, got, want, err)
++		}
++	}
++}
++
+ func TestSparseAggregationResearchIdentityPaths(t *testing.T) {
+ 	got, _, err := sparseSumResearch(nil)
+ 	if err != nil || math.Float64bits(got.mantissa) != 0 || got.exponent != 0 {

@@ -4961,3 +4961,45 @@ projections again execute. This exact reference explains the selected inputs, no
 engine arithmetic or a further population. Reproduction uses a Go overlay mapping virtual
 server/production/calculation_offset_carry_probe_test.go to the retained manual source, then
 make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-overlay=/Users/stronk/repos/cloud-clicker/.cache/offset-carry-probe-overlay.json -run TestCalculationOffsetCarryResearch -v -count=1'.
+
+## 2026-10-16 — Exact-run prototype study: retain patch, do not replace the reference
+
+Sparse dossier declares the one bounded optimization/method before execution: coalesce
+adjacent equal-exponent signed binary significands exactly, then unchanged digit/rounding
+algorithm. No Decimal intermediate or cache. Full native Decimal0.472s and vet pass;
+focused existing/new tests0.269s retain identity/14edge/2048 rational/reverse/ownership,
+original pair and profile384 consumer mismatch. Raw witness still
+ef6cdc7626f91ff237961488f84f07a022b5ac746542d53dfb68fb258768047f.
+New65537-input positive/cancellation/invalid-tail and full-domain controls pass, ≤3 digit
+splits. Declared Linux-amd6495819 repeats actual focused checks0.250s, terminal0.
+This is not SQL evidence; its otherwise-unused service creates only owned tmpfs data.
+
+New ignored aggregate overlay94837f76fd64b91003539b7ae7e71294d266d7047fc0690522879661253d7c7a
+mechanically copies experimental declarations with suffix renaming/unchanged panic wrapper.
+Affected overlay vet passes. Actual Company/Pitch48132 intentionally FAIL at the same retained
+payout/funding differences; no compatibility repair or activation. Original compatibility
+tests/goldens/production are not edited. A first filename glob fails before execution and
+a guessed-file search fails; neither supplies test evidence. All credited selectors execute.
+
+Only after reviewer/heavy work terminates, execute existing BenchmarkAggregationCallerResearch
+via root Make, NoTests/100ms/count3/benchmem, sequential old reuse→new runs→active, all45 rows.
+Raw artifact .cache/sparse-aggregation-runs-bench-0c8ff6c1.json SHA256
+205b555d33e632b613b27951332ed748ed586c1620e2cdbf5bf498308043ef7f retains commands/all rows,
+all3 terminal0 and derived medians. Sparse dossier holds table/limitations: eight-source
+41→43allocations,1160→1216bytes;1780→1722ns is not a statistically established speedup.
+No long-list wall-time/full-workload/hosted estimate. No further short tuning census.
+
+Do not adopt this variant by default. Restore ordinary test-prototype source exactly to
+5ec45ccbb841e346cdb25f6d09e6bda73a43a6ab08aba9b0ea230fdcb51abd4d; actual production and TS
+stay unchanged. Preserve manually applicable probes/sparse-runs-candidate.patch SHA256
+292a74432338d797cd7a0670fdf6afb3848db310b972a2f839fe07526a533ca1, based on0c8ff6c1.
+git apply --check passes; compiler-overlay candidate/raw evidence retained ignored. The patch
+is outside ordinary test collection, not a new CI population. No kernel222, balance, report,
+golden, architecture/adoption, H3c/27-partition or release promotion. Only root-owned twice-
+inspected tmpfs1eb1d24b… stopped/removed after terminal; its disposable data is unrecoverable,
+two existing builders and durable data/caches preserved. All handles terminal.
+
+Review by: Codex root (research author first filter). Recorded by: Codex root. Complete
+research range8597577d-exclusive through this containing commit needs research review outside
+the corrective-only delegation; no self-approval. Continue actual caller/workload/compatibility
+closure, not more short microbenchmarks. Independent arithmetic/contract adoption remains held.
