@@ -54,6 +54,10 @@ nine-tier goal remains active; no new playable tier or release was completed.
   gates. Feature-owned logs identify the remaining complete ranges, including
   archive/fixture and R-012 live-input work. Implementer checks are not designated
   verdicts; review prevents acceptance/archival, not other accepted work.
+  Garden's latest twelve arithmetic/persistence/diagnostic approvals are recorded with complete
+  ranges and actual SQL/Linux checks. Continue RP-224/RP-230/RP-231/RP-232 and remaining
+  composed-driver corrective review, not already approved ranges. RP-430 diagnostics are
+  approved, but the unexplained incident remains OPEN; no speculative runtime repair/retry.
 - **LOCALLY EXECUTED — affected Docker/SQL/browser/player checks:** RP-667 whole composed
   run39981, correction committed at11478e9d, passes with fresh production builds;
   its affected three-engine Linux browser population also passes. Prior whole Linux phases,

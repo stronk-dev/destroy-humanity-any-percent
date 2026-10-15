@@ -31,6 +31,22 @@ RP-468, including actual native/Linux input and shared-host consumers. RP-430's 
 is still unexplained; author/privacy/renewal/content and full acceptance holds remain. Do not
 restart approved ranges or infer approval of the other outstanding corrective scopes.
 
+Fresh independent review also approves RP-216 harvest literals, RP-219 counter guards,
+RP-220 tick/PRNG witnesses and RP-348's observation-only correction. The owning log records
+full ranges, independently reconstructed arithmetic and executed cold Go/TS/child controls.
+RP-348's historical cause remains open; this does not approve its later cwd correction,
+the original G1–G7 feature, or authored starter/carry/resource-event/trigger changes.
+
+Seven further persistence scopes are independently approved: RP-217/RP-223 clock repairs,
+RP-221 commands/refusals, RP-222's test-only bundle/carry supplement, and RP-226/RP-227/
+RP-228 HTTP/rollback/replay evidence. Actual Linux-amd64/Postgres executes, including adjacent
+ordinary Minigame transactions; exact ranges/limits live in the log. RP-222's authored
+contradiction remains. RP-430's separate observation-only range is independently approved
+after111 Linux browser executions; the incident remains OPEN without a reproduced cause.
+Next corrective-review scopes: RP-224 response ordering, RP-230 timer/visibility, RP-231
+host receipt refresh and RP-232 Fiscal purchase surface, then remaining composed-driver
+corrections. Do not restart approved ranges or substitute these for remaining feature gates.
+
 **Prior execution, 2026-10-08:** all original G1–G7 batches now have complete designated
 CHANGES REQUIRED dispositions; their exact ranges and evidence are in the latest [log](log.md).
 Do not restart those reviews or mistake them for approval of corrected descendants. Consolidate

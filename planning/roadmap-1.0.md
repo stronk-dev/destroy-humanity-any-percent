@@ -31,6 +31,10 @@ gate and broader Company/terminal preflight repairs are independently approved; 
 that reproduced defect, not Arcade or an original bad-tip verdict. Eleven Garden admission/
 codec/input/lifecycle corrective ranges are independently approved; RP-430 reliability,
 remaining corrections and feature gates are separate.
+Twelve further bounded Garden arithmetic/persistence/diagnostic scopes now have independent
+corrective approval with actual Go/TS/SQL/HTTP/Linux input checks. Exact ranges and exclusions
+are in the owning log; observation approval does not resolve either historical failure cause
+or the starter/carry/resource-event/trigger authored conflicts. No feature milestone advances.
 Numeric representable-result repairs do not adopt the exponent-exhaustion or
 aggregation proposals. Current affected replay/browser/SQL checks pass; full Production's
 27 accounting failures and the historical guard remain red. The overview and owning logs

@@ -5510,3 +5510,26 @@ corrections, privacy/renewal/copy/acceptance, numeric/accounting/history contrac
 world/combat/later tiers/endings and complete release obligations remain. No new tier or
 release milestone, push, shortened goal or new authority. Editorial diff/claims checked
 against owning verdicts; no redundant software suite for records alone.
+
+## 2026-10-15 — Twelve further Garden corrective scopes independently reviewed
+
+Product source remains312f6e02/kernel0.3.221/epoch8. Three fresh independent Codex reviewers
+approve four arithmetic/observation ranges, seven persistence ranges and RP-430's separate
+diagnostic-only range under Marco's explicit corrective-code delegation. The Garden log holds
+complete source/test/docs/record hashes, actual execution and provenance. Independently derived
+harvest arithmetic and FNV/SplitMix literals agree; counter guards preserve the existing domain.
+Real Linux-amd64/Postgres checks exercise harvest/read clocks, both retained Exits, due-growth
+refusals, ten rollback checkpoints with actual retention pruning, replay/hash corruption,
+authenticated HTTP and adjacent ordinary Minigame transactions. Declared Linux ARM64 native
+input111 passes across all3 engines, zero skips; types and affected Go/TS/corpus checks pass.
+
+RP-430 remains OPEN: parent re-reads original hosted failure, and diagnostics are independently
+approved, but focused green does not explain its cause. RP-348 likewise approves observation,
+not historical reliability. Starter/carry, resource-event, trigger and raw-archive privacy holds
+remain; no original Garden feature/new content/normative/release acceptance. Known27 Clout
+failures and historical guard remain unwaived, with no new whole-CI/remote publication claim.
+Only reviewer-created disposable tmpfs SQL service removed after terminal checks; final
+inventory retains preexisting BuildKit containers, caches/volumes untouched. No product edits
+or version bump for these review records. Next Garden corrective scopes: response ordering,
+timer/visibility, host receipt refresh, Fiscal purchase surface and remaining composed driver.
+The full nine-tier goal remains active; this checkpoint closes review debt, not another tier.

@@ -28,7 +28,12 @@ and broader Company/terminal admission repairs; RP-668's reproduced defect is cl
 Arcade or the original bad-tip verdict. Eleven Garden admission/codec and player-input/lifecycle
 corrective ranges also have scoped independent approval, with actual native/Linux affected
 populations executed. RP-430's hosted callback failure remains unexplained, not closed by
-focused Firefox success. Numeric power repairs preserve
+focused Firefox success. Further scoped independent approvals cover Garden harvest/tick literals,
+counter and DB-clock repairs, command/carry/HTTP/rollback/replay supplements, and observation-only
+failure diagnostics. Actual Linux-amd64/Postgres transaction checks and Linux three-engine
+input checks execute; the Garden log owns complete ranges and exclusions. Starter/carry,
+resource-event and trigger contracts, privacy and full feature gates remain unresolved.
+Numeric power repairs preserve
 representable lower-domain diagnostics; exponent-exhaustion and aggregation contracts remain
 drafts, not adopted repairs. The [Arcade](minigame-demo-disc-arcade/log.md) and
 [Clout](clout-v1-and-pr-interns/log.md) logs own the exact evidence and review boundaries.

@@ -3526,3 +3526,101 @@ manual-AT claim. RP-430 remains OPEN: focused Firefox green does not explain its
 uproot callback or prove reliability; its separate diagnostic range is not implicitly approved.
 No source/fixture/overlay/worktree/commit/resource changes. Original G1–G7, RP-222/RP-229/
 RP-471, privacy/publication, copy/SG13 and full feature/archival/release gates remain.
+
+## 2026-10-15 — Four Garden arithmetic/observation corrective approvals
+
+Review by: fresh independent Codex `/root/garden_clock_math_witness_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. All four **APPROVED**,
+no new blocking finding; every source/test/fixture/version/docs/planning path inspected:
+
+- RP-216: `ffb338e08fe94feb972eb9658b7364b1cb7c9f78..0db678953debb12c1d42592788f3e1f1f5ff4baf`.
+- RP-219: `29444315b7f9d65c73f7c769373c69c24bc98878..8413f112f79d202c044bcdedb4fa89aefb09ef39`.
+- RP-220: `4ade679be65dcee80f39275cd1c46cba1066e63a..da75a837478ee12b92cb4a039a4c8f2875f90adf`.
+- RP-348 observation correction only: `4b44a56338e6bb83e77d222a7f39d2e5b1bb29c9..c24b8f6d65524a57bd523bcf69792ce80ffd7dc2`.
+
+At descendant `c1902a994ecf518d65df2af931bac606f51bc416` / kernel0.3.221 the reviewer
+actually executes cold Go Garden/Decimal/Kernel, four-package vet and garden-corpus-check;
+determinism explicitly has no tests. Six focused Garden Node files171 pass/3 intentional
+browser-only skips, including actual child startup-exception/entered-hang controls. Client
+Decimal vectors6304 pass; types zero errors/warnings; all four range diff-checks pass.
+Without importing game code, independent exact arithmetic/SHA binding/full-state construction
+matches all18 harvest literals, and documented FNV/SplitMix arithmetic matches the founder
+base and all16 draw literals. Both49-case clock populations execute. Guards precede mutation;
+the valid frontier remains admitted. RP-220's cumulative-clamp limitation stays explicit.
+
+RP-348 preserves all six admission predicates, loader program and1000ms guard; this approval
+repairs hidden diagnostic output, not the historical failure's cause or reliability. Historical
+mutation/red-baseline evidence is inspected, not rerun. Relevant endpoint bytes remain exact
+except the separately landed child-process cwd correction, not newly approved here. No source
+edits, regeneration, Docker/browser/SQL/full-CI or cleanup; no original G1–G7, feature, normative,
+archival or release approval. RP-218/RP-225/RP-348 causes and RP-222/RP-229/RP-471 authored
+holds remain. These named ranges leave the corrective review queue; other scopes do not.
+
+## 2026-10-15 — Seven Garden persistence corrective approvals
+
+Review by: fresh independent Codex `/root/garden_persistence_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. All seven **APPROVED**,
+no blocking finding; all source/test/fixture/version/docs/record paths inspected:
+
+- RP-217 locked harvest clock: `64d9ccab2618754ace07f8bb606449a3038295b1..b678dd3c8c1ea1b07460394a068609ade03f8baa`.
+- RP-221 command/refusal witnesses: `1dbeafbd45bd4a826ff1b46ed4e93ca0542fd493..ca94668c7f0b242ff8a10cb43b62e8a98e3c4807`.
+- RP-222 test-only bundle/initialization/carry supplement: `ea160ac9b1ae265f7922ec7e2e38b106d62c9e89..cc69925a4cc9a5817064676b05b71a97532d38ac`.
+- RP-223 DB-time read: `5746952d8e8c0b76f198a50c97fe164739fb7e1f..6effbffb065bd97ae2d98340fdbddbffa1fdb852`.
+- RP-226 authenticated HTTP supplement: `20ea7b9c93f672866e28fabda4d4d537fa25514b..4793effaaaf055e867901cc70475912539c1df68`.
+- RP-227 rollback/retention supplement: `f736e73b56dd46c186ab8644bda8011f431decf8..11f182cd95735999c775976c71193284a3af94a2`.
+- RP-228 saved-head/hash supplement, including citation edge: `3f3bb03cada9420e4ee9037bf4cd6280117eff61..fe178721403bd5f9afc608c361ee4e4082c6dafe`.
+
+Actual descendant-source checks at c1902a99/product312f6e02/kernel221: cold Go full Garden/
+Save/Replaycatalog/Kernel/Decimal, selected Production/Gameserver and affected vet pass;
+native DB skips are not integration evidence. Targeted Node224 pass, expanded five-file
+Garden/Decimal6387 pass (including6304 vectors); types zero diagnostics, build217 modules
+and unchanged garden-corpus-check pass. Declared Linux-amd64/Postgres authenticated HTTP
+actually executes two HTTP-created accounts, automatic Fiscal funding, owned commands,
+retries/refusals, both histories and55 public payloads. Separate fully observable eight-function
+SQL run passes, Production8.865s: six harvest skew arms, both populated Exits, harvest/history,
+two copied Founder hash corruptions, ten independent rollback checkpoints with actual retention
+frontier3→4, six due-growth refusal/applied arms, six read clock arms and read-failure controls.
+Adjacent ordinary Minigame solo/async replay, rollback/retry/cancellation/postcommit handling
+passes (Production1.431s), plus four policy-identity cases (Minigame0.790s); no selected DB skips.
+
+The harvest samples DB time under canonical locks; the advisory read binds actual same-Founder
+head and DB clock without mutation/fallback. Other timestamp policy is unchanged. Grouped
+rollback hooks are not injection after every SQL statement; honest nonterminal replay remains
+log_gap, tampering state_divergence. RP-222 still demonstrates the admitted starter-retune/carry
+contradiction: its test-only approval does not resolve/adopt that contract. Historical red/mutation
+evidence inspected, not rerun. Initial unquoted Docker regex became shell pipes (no usable
+population); corrected quoted runs supply evidence. Nonexistent initial decimal.test.ts is not
+credited; numeric evidence comes from actual decimal-vectors.test.ts.
+
+No source edits, mutations, worktrees or commits by reviewer; all processes terminal. Initial
+DB inventory empty; reviewer explicitly stops/removes only its created disposable tmpfs service,
+leaving final inventory empty and caches/volumes intact. Parent editorial reconciliation is
+separate. No browser/player/performance/full Production/history/hosted-CI, normative, original
+G1–G7, feature, archival or release approval. RP-222/RP-229/RP-471, raw archive/privacy,
+renewal/publication/SG13/content/accessibility and27 Clout/historical guard holds remain.
+
+## 2026-10-15 — RP-430 diagnostics independently approved, incident still open
+
+Review by: fresh independent Codex `/root/garden_reconsent_diagnostic_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED** diagnostic-only
+complete five-path range `20a57019258119e5bcf244713de0f1698fa0f99c..b277d62089a39da524d3fd60ea13a8a9f2d9e793`.
+No production, retry, timeout, settling or CI change; original callback/menu/focus assertions
+remain. Added checks observe reenabled control/focus; passive listeners are removed in finally,
+and the diagnostic wrapper preserves the original cause. Reviewer inspects every changed path.
+
+Actual descendant c1902a99/product312f6e02/kernel221, declared cold-install Linux ARM64
+Playwright1.62.0: complete changed browser file111 passes across Chromium/Firefox/WebKit,
+three file populations/zero skips/5.63s, including all9 instrumented menu executions. Types
+zero errors/warnings and exact-range diff-check pass. Test/Harness remain byte-identical to
+the reviewed tip; later component edits concern read/scheduling, not this native input path.
+Historical severing summary inspected, not raw trace or a newly executed mutation. Routine
+browser stdout partly truncated; terminal counts retained. First sandbox denial runs zero
+tests; authorized command supplies evidence. Final browser process terminal; authorized Docker
+inventory has only two preexisting BuildKit containers. No files/resources changed by reviewer.
+
+Parent also independently retrieves the original hosted CI37763502364 failure text: missing
+uproot callback at the old assertion is confirmed, but this predates the diagnostics and adds
+no attribution. RP-430 remains OPEN; passing focused execution does not repair or establish
+reliability. On recurrence preserve the first input/focus/control/callback evidence rather
+than retrying away the failure. No SQL/composed/performance/AT/full-CI, feature, normative,
+archival or release approval. No speculative production fix.

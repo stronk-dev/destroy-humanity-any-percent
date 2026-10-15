@@ -49,8 +49,8 @@ currently admitted by catalog/transition validation but invalidates unchanged ca
 under the next catalog. Ordinary numeric retunes pass. The author/owner must reconcile
 starter-set evolution with SG2's starter-superset and byte-identical carry rules before such
 an epoch can ship. No grant/migration exception or starter-set restriction is implied here.
-These bounded G2/G3 witnesses await designated review; they are not public mint, full Garden
-acceptance, a complete epoch-migration proof or release readiness.
+These bounded G2/G3 witnesses have independent corrective approval; they are not public mint,
+full Garden acceptance, a complete epoch-migration proof or release readiness.
 
 - `save.State.ServerGarden` (Founder v25) holds the hidden salt, the tick anchor and sequence, the
   substrate, the lockout stamp, the plots and the seed collection. The stage is derived: mature
@@ -80,7 +80,8 @@ acceptance, a complete epoch-migration proof or release readiness.
   arithmetic for 49 cases across every substrate's tick/cap boundaries, maximum server stamp,
   locked/initializing state and counter frontier. These codec-valid synthetic frontiers are
   not evidence of reachable-player exploitation or full Garden acceptance. RP-219's scoped
-  repair awaits designated review; save/replay schemas and clock/payout policies are unchanged.
+  repair has fresh independent corrective approval; save/replay schemas and clock/payout policies
+  are unchanged. The owning log records its exact reviewed range and current-source checks.
 - The hidden salt is drawn by the server when the first unlocked advance runs, frozen in that row's
   resolved inputs, and never projected.
 
@@ -96,9 +97,9 @@ frozen effect, lowered maturation threshold and next-tick newborn growth. Litera
 base and eight bounded draws at each of ticks 1/2 bind both production PRNG implementations.
 
 Actual source mutations of diagonals, threshold, tick key and recipe ordering fail the new
-population and are restored exactly. This is bounded pure-transition evidence, pending
-designated review, not a statistical RNG, exhaustive rejection-sampling, full SG4/Garden,
-coordinator, public-flow or mint claim. Cumulative saturation is exercised, but removal of
+population and are restored exactly. Fresh independent corrective review approves this
+bounded pure-transition evidence, not a statistical RNG, exhaustive rejection-sampling,
+full SG4/Garden, coordinator, public-flow or mint claim. Cumulative saturation is exercised, but removal of
 that upper clamp alone is observationally equivalent for nonnegative probabilities and
 draws below one million; it is not claimed to be separately discriminated.
 
@@ -147,15 +148,15 @@ Founder log/intent/receipt outbox, no events/Company-log/faucet writes, unchange
 hash conflicts and continuation. Replaying the actual stored row separately checks in-memory
 rollback; Store's persisted refusal boundary does not substitute for it. Disabling transition
 restoration fails all five replay-refusal checks while persisted state remains protected and
-the applied control still works. These bounded tests await designated review; they do not
-establish full Garden/public activation or exhaustively prove all transaction fault boundaries.
+the applied control still works. These bounded tests have independent corrective approval;
+they do not establish full Garden/public activation or exhaustively prove all transaction fault boundaries.
 
 The bounded clock repair (RP-217) preserves other minigame-resolution timestamp policies and
 Founder attendance/faucet arithmetic. Six real-Postgres mature/immature cases cover matched,
 ten-second-lagged and twenty-four-hour-ahead handler clocks, stored-receipt retries, hash conflicts
 and ordinary-command continuation; those injected server-clock disagreements are not client
-time fields or a measured normal-host skew population. The repair awaits designated review;
-it neither migrates existing history nor establishes public activation or release readiness.
+time fields or a measured normal-host skew population. The repair has independent corrective
+approval; it neither migrates existing history nor establishes public activation or release readiness.
 
 The pure harvest arithmetic uses bounded int64 in Go and BigInt for the product in TS, before
 converting the safe quotient to a number. `testdata/garden/harvest-boundaries-v1.json` supplies
@@ -163,8 +164,8 @@ converting the safe quotient to a number. `testdata/garden/harvest-boundaries-v1
 and a mixed frozen/zero-seed/dormant harvest retaining an unharvested growing plot. Expected
 quotients use independent exact arithmetic, not production harvest output. The matrix includes
 one demonstrated floating-product off-by-one. This is pure-engine evidence; it does not replace
-the Postgres transaction, faucet, public player workflow or release checks. Its new test range
-awaits designated review, with production and balance bytes unchanged.
+the Postgres transaction, faucet, public player workflow or release checks. Its bounded test
+range has independent corrective approval, with production and balance bytes unchanged.
 
 The RP-227 rollback supplement compares complete rows across ten affected persistence
 populations at all ten exposed coordinator fault checkpoints, including Founder genesis,
@@ -175,8 +176,8 @@ Each checkpoint uses an independent fixture and a clean-success control. Tempora
 committing on fault exit makes all ten cases fail; restored code passes twenty repetitions
 (200 fault cases). The mature plants are seeded only before fixture stream creation, not
 public player progression. The Service fixture has no live dispatcher, so every outbox
-column is compared. Designated review remains pending. These grouped checkpoints are not
-separate hooks after every individual SQL statement and do not establish full AC8/G5.
+column is compared. The bounded supplement has independent corrective approval. These grouped
+checkpoints are not separate hooks after every individual SQL statement and do not establish full AC8/G5.
 
 RP-228 strengthens the real-Postgres Company replay helper: its complete replayed state
 must equal the actual saved Company head after zero, one or ten recorded credits, not just
@@ -187,8 +188,8 @@ resolved hashes report `state_divergence`. Actual persisted Founder harvest rece
 hashes are also poisoned in copied evidence, without changing DB rows or the verified
 original history. Independent receipt/event checks survive different disabled hash guards
 in Go and TS; both guard removals still fail the new population. Twenty repeated actual
-harvest/history populations pass. Designated review remains pending; this is not complete
-terminal cross-runtime history, mature HTTP/default-player progression or full AC9/G5.
+harvest/history populations pass. The bounded supplement has independent corrective approval;
+this is not complete terminal cross-runtime history, mature HTTP/default-player progression or full AC9/G5.
 
 SG8's separate "ordinary resource event" has no named existing kind in the closed registry
 (RP-229). Current live/replay emits `garden_harvest_credited.v1`; specification-author
@@ -208,7 +209,8 @@ RP-223's bounded correction has six real-Postgres salted/unsalted normal/±24-ho
 arms, full persisted non-mutation and loaded-head checks, and cancelled/missing-source refusals.
 Restoring handler-time projection fails the skewed-clock cases; removing the discarded clone
 fails the full-Founder non-mutation oracle. Kernel 0.3.153 records this runtime correction.
-Designated review remains pending; this does not establish full G6/Garden or public activation.
+The bounded repair has independent corrective approval; this does not establish full G6/Garden
+or public activation.
 
 RP-226 adds a fixture-only composed HTTP witness, rather than treating the inactive response
 as proof of active integration. Two actual HTTP-created accounts use the real token/registry/
@@ -221,8 +223,8 @@ histories replay, and served views/receipts plus scoped event/outbox payloads ex
 keys and the actual salt. A schema-valid planted salt leak fires the enumerator, not just the
 schema firewall; detaching the composed producer also fails. Private Founder replay inputs
 are intentionally excluded from public enumeration. Twenty final repetitions pass against
-real Postgres; new test range requires Claude. No runtime/epoch/content change, mature HTTP
-payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release claim follows.
+real Postgres; the bounded test range has independent corrective approval. No runtime/epoch/content
+change, mature HTTP payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release claim follows.
 
 ## Client surface
 
