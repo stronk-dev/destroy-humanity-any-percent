@@ -169,6 +169,7 @@ make verify-schema
 make formulas-check
 make test-browser
 make test-browser-ci
+make test-browser-ci-focused BROWSER_TEST_FLAGS='test/numeric-monotonicity.test.ts'
 make test-game-ui-performance
 make verify-server-ci
 make verify-harness-ci HARNESS_WORKERS=12
@@ -234,8 +235,17 @@ are recorded in the [CI log](../planning/scaffolding-and-ci/log.md); a focused o
 does not establish success of this ordinary target, hosted reliability or the five-minute
 acceptance floor.
 
-The topology check also verifies that the Linux container delegates to the unmodified shared
-target; copied, functional-only, focused or project-narrowed commands are rejected. This guards
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/game-ui-screens-browser.test.ts --project firefox'`
+uses that same image, cold dependency volumes, frozen install and ten-minute containment,
+then invokes the existing `test-browser-focused` target. Use it for an affected Linux
+file/test/engine without running the full population. It does not run the separate
+performance lane or substitute for full CI. Both commands share
+`client/tools/test-browser-ci.sh`; setup or test failures propagate, and a missing
+file selection exits nonzero. Omit engine selectors to run all three engines.
+
+The topology check also verifies that the full Linux command defaults to the unmodified shared
+target; copied, functional-only, focused or project-narrowed defaults are rejected. It binds
+the shared setup/containment separately from the explicit focused command. This guards
 execution parity, not browser behavior or hosted timing; the actual lane must still execute.
 
 Reputation host tests emit `reputation-host-deadline` on an actual test abort, before teardown

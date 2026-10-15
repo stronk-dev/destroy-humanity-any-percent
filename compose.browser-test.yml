@@ -11,7 +11,7 @@ services:
       # keep Linux pnpm metadata out of the host worktree.
       - /workspace/client/node_modules
       - /workspace/.pnpm-store
-    command:
+    entrypoint:
       # Match the hosted browser job's existing ten-minute containment ceiling.
       # Kill the disposable test process group even if a runner ignores TERM.
       - timeout
@@ -19,11 +19,5 @@ services:
       - --signal=KILL
       - 10m
       - bash
-      - -lc
-      - >-
-        apt-get update &&
-        apt-get install -y --no-install-recommends make &&
-        corepack enable &&
-        corepack prepare pnpm@11.15.1 --activate &&
-        pnpm --dir client install --frozen-lockfile &&
-        make test-browser
+      - /workspace/client/tools/test-browser-ci.sh
+    command: ["test-browser"]

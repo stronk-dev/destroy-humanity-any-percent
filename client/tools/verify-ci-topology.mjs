@@ -6,5 +6,6 @@ const ci = readFileSync(new URL(".github/workflows/ci.yml", root), "utf8");
 const maintenance = readFileSync(new URL(".github/workflows/maintenance.yml", root), "utf8");
 const makefile = readFileSync(new URL("Makefile", root), "utf8");
 const browser = readFileSync(new URL("compose.browser-test.yml", root), "utf8");
-verifyCITopology(ci, maintenance, makefile, browser);
+const browserEntrypoint = readFileSync(new URL("client/tools/test-browser-ci.sh", root), "utf8");
+verifyCITopology(ci, maintenance, makefile, browser, browserEntrypoint);
 console.log("CI fast/maintenance topology ok");

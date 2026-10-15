@@ -7,6 +7,14 @@
 
 ## Current checkpoint — 2026-10-15
 
+Focused Linux browser verification now has a root command:
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/numeric-monotonicity.test.ts'`.
+It shares the full command's cold image/setup/containment, not a copied Vitest lane.
+Actual selected three-engine execution and the complete default broad/native/performance
+lane pass; missing-file selection refuses. The owning log records scope and review
+range after `72fb7849`. This does not repair RP-637, Production arithmetic, historical
+kernel gating, hosted timing or full CI; existing blockers and review debt remain.
+
 New published maintenance38677066823 at unchanged `be66902b` is completed failure.
 The exact retained observation records300/300 standard runs in2,750,518ms, then
 relevance0 at80/107 when the unchanged50-minute wrapper interrupts; row1 is unstarted.

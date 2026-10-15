@@ -81,7 +81,7 @@ function requireColdGoRecipes(source) {
   }
 }
 
-export function verifyCITopology(ciSource, maintenanceSource, makeSource, browserSource) {
+export function verifyCITopology(ciSource, maintenanceSource, makeSource, browserSource, browserEntrypoint) {
   const ciTriggers = triggerSection(ciSource);
   requireLine(ciTriggers, /^  push:\s*$/, "CI must run on push");
   requireLine(ciTriggers, /^  pull_request:\s*$/, "CI must run on pull requests");
@@ -117,12 +117,21 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource, browse
   // The Linux reproduction must share Actions' Make authority. A copied Vitest
   // invocation can silently miss a new phase while the hosted job remains correct.
   const container = section(browserSource, /^  browser:\s*$/, /^  [A-Za-z0-9_-]+:\s*$/);
-  const foldedStart = container.findIndex((line) => /^      - >-\s*$/.test(line));
-  const script = foldedStart < 0 ? "" : container.slice(foldedStart + 1)
-    .filter((line) => !/^\s*#/.test(line)).map((line) => line.trim()).join(" ").replace(/\s+/g, " ").trim();
-  if (!script.includes("pnpm --dir client install --frozen-lockfile && ") ||
-      !script.endsWith(" && make test-browser") || /\bvitest\b|BROWSER_TEST_FLAGS|--project/.test(script)) {
-    throw new Error("Linux browser container must install frozen dependencies then run the unmodified shared make test-browser target");
+  const entrypoint = section(browserSource, /^    entrypoint:\s*$/, /^    [A-Za-z0-9_-]+:/)
+    .filter((line) => !/^\s*#/.test(line)).join("\n");
+  const expectedEntrypoint = ["    entrypoint:", "      - timeout", "      - --verbose", "      - --signal=KILL",
+    "      - 10m", "      - bash", "      - /workspace/client/tools/test-browser-ci.sh"].join("\n");
+  const setupCommands = lines(browserEntrypoint ?? "").filter((line) => line.trim() && !/^\s*#/.test(line)).join("\n");
+  const expectedSetup = ["set -euo pipefail", 'case "${1:-}" in', "  test-browser|test-browser-focused) ;;",
+    "  *) printf '%s\\n' 'expected test-browser or test-browser-focused' >&2; exit 2 ;;", "esac",
+    "apt-get update", "apt-get install -y --no-install-recommends make", "corepack enable",
+    "corepack prepare pnpm@11.15.1 --activate", "pnpm --dir client install --frozen-lockfile", 'exec make "$@"'].join("\n");
+  const fullContainerRecipe = section(makeSource, /^test-browser-ci:/, /^[^\s#].*:/)
+    .filter((line) => line.startsWith("\t") && !line.trim().startsWith("#"));
+  if (entrypoint !== expectedEntrypoint || setupCommands !== expectedSetup ||
+      container.filter((line) => line.startsWith("    command:")).join("\n") !== '    command: ["test-browser"]' ||
+      fullContainerRecipe.length !== 1 || fullContainerRecipe[0] !== "\tdocker compose -f compose.browser-test.yml run --rm browser") {
+    throw new Error("Linux browser container must retain containment, frozen setup and the unmodified default make test-browser target");
   }
 
   const harness = jobSection(ciSource, "harness");

@@ -1,5 +1,8 @@
-import { readFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { verifyCITopology } from "./ci-topology.mjs";
 
 const root = new URL("../../", import.meta.url);
@@ -7,6 +10,7 @@ const ci = readFileSync(new URL(".github/workflows/ci.yml", root), "utf8");
 const maintenance = readFileSync(new URL(".github/workflows/maintenance.yml", root), "utf8");
 const makefile = readFileSync(new URL("Makefile", root), "utf8");
 const browser = readFileSync(new URL("compose.browser-test.yml", root), "utf8");
+const browserEntrypoint = readFileSync(new URL("client/tools/test-browser-ci.sh", root), "utf8");
 
 const mutations = [
   ["exhaustive push gate", ci.replace("make verify-harness-fast", "make verify-harness"), maintenance, makefile],
@@ -57,7 +61,7 @@ for (const [target, command] of coldGoCommands) {
 for (const [name, mutatedCI, mutatedMaintenance, mutatedMakefile] of mutations) {
   let rejected = false;
   try {
-    verifyCITopology(mutatedCI, mutatedMaintenance, mutatedMakefile, browser);
+    verifyCITopology(mutatedCI, mutatedMaintenance, mutatedMakefile, browser, browserEntrypoint);
   } catch {
     rejected = true;
   }
@@ -67,8 +71,6 @@ for (const [name, mutatedCI, mutatedMaintenance, mutatedMakefile] of mutations) 
 console.log(`CI topology negative controls rejected: ${mutations.length}`);
 
 // A local Linux run must execute the shared target, not a copied or narrowed lane.
-// Construct the valid command independently so this also catches the old container.
-const sharedBrowser = browser.replace(/        cd client &&[\s\S]*$/, "        make test-browser\n");
 for (const command of [
   "cd client && node_modules/.bin/vitest run --config vitest.browser.config.ts",
   "make test-browser-functional",
@@ -77,14 +79,74 @@ for (const command of [
 ]) {
   let rejected = false;
   try {
-    verifyCITopology(ci, maintenance, makefile, sharedBrowser.replace("make test-browser\n", `${command}\n`));
+    verifyCITopology(ci, maintenance, makefile, browser.replace('command: ["test-browser"]', `command: [${JSON.stringify(command)}]`), browserEntrypoint);
   } catch {
     rejected = true;
   }
   if (!rejected) throw new Error(`CI topology accepted local browser drift: ${command}`);
 }
-verifyCITopology(ci, maintenance, makefile, sharedBrowser);
+verifyCITopology(ci, maintenance, makefile, browser, browserEntrypoint);
 console.log("Linux browser container rejects copied, incomplete and narrowed lanes");
+
+for (const [name, changedMake, changedBrowser, changedSetup] of [
+  ["full command narrowed", makefile.replace("run --rm browser\n", "run --rm browser test-browser-focused\n"), browser, browserEntrypoint],
+  ["containment removed", makefile, browser.replace("      - 10m\n", ""), browserEntrypoint],
+  ["unfrozen install", makefile, browser, browserEntrypoint.replace(" --frozen-lockfile", "")],
+  ["setup ignores failure", makefile, browser, browserEntrypoint.replace("set -euo pipefail", "set -uo pipefail")],
+  ["setup narrows selector", makefile, browser, browserEntrypoint.replace('exec make "$@"', 'exec make "$@" BROWSER_TEST_FLAGS=--project=chromium')],
+]) {
+  if (changedMake === makefile && changedBrowser === browser && changedSetup === browserEntrypoint) throw new Error(`setup mutation did not fire: ${name}`);
+  let rejected = false;
+  try { verifyCITopology(ci, maintenance, changedMake, changedBrowser, changedSetup); } catch { rejected = true; }
+  if (!rejected) throw new Error(`CI topology accepted setup drift: ${name}`);
+}
+
+// Execute the actual shared script with disposable tool doubles: verify argument
+// boundaries and failure propagation without apt/pnpm touching the host.
+const setupRoot = mkdtempSync(join(tmpdir(), "cloud-clicker-browser-setup-"));
+try {
+  const bin = join(setupRoot, "bin"), trace = join(setupRoot, "trace.jsonl");
+  mkdirSync(bin);
+  const tool = `#!/usr/bin/env node
+const fs = require('node:fs'), path = require('node:path');
+const command = path.basename(process.argv[1]);
+fs.appendFileSync(process.env.BROWSER_SETUP_TRACE, JSON.stringify([command, ...process.argv.slice(2)]) + '\\n');
+process.exit(command === process.env.BROWSER_SETUP_FAIL ? 37 : 0);
+`;
+  for (const name of ["apt-get", "corepack", "pnpm", "make"]) writeFileSync(join(bin, name), tool, { mode: 0o700 });
+  const setup = (args, fail = "") => {
+    writeFileSync(trace, "");
+    const result = spawnSync("bash", [fileURLToPath(new URL("client/tools/test-browser-ci.sh", root)), ...args], {
+      cwd: root, encoding: "utf8", env: { ...process.env, PATH: `${bin}:${process.env.PATH}`,
+        BROWSER_SETUP_TRACE: trace, BROWSER_SETUP_FAIL: fail },
+    });
+    const calls = readFileSync(trace, "utf8").trim().split("\n").filter(Boolean).map((line) => JSON.parse(line));
+    return { ...result, calls };
+  };
+  const prelude = [["apt-get", "update"], ["apt-get", "install", "-y", "--no-install-recommends", "make"],
+    ["corepack", "enable"], ["corepack", "prepare", "pnpm@11.15.1", "--activate"],
+    ["pnpm", "--dir", "client", "install", "--frozen-lockfile"]];
+  const selector = "BROWSER_TEST_FLAGS=test/numeric-monotonicity.test.ts -t 'positive strict'";
+  for (const args of [["test-browser"], ["test-browser-focused", selector]]) {
+    const result = setup(args);
+    if (result.status !== 0 || JSON.stringify(result.calls) !== JSON.stringify([...prelude, ["make", ...args]])) {
+      throw new Error(`browser setup changed commands/argument boundaries: ${JSON.stringify(result)}`);
+    }
+  }
+  for (const args of [[], ["unknown-target"]]) {
+    const result = setup(args);
+    if (result.status !== 2 || result.calls.length !== 0) throw new Error("invalid browser setup target reached host tools");
+  }
+  for (const fail of ["apt-get", "make"]) {
+    const result = setup(["test-browser-focused", selector], fail);
+    if (result.status !== 37 || result.calls.at(-1)?.[0] !== fail || (fail === "apt-get" && result.calls.length !== 1)) {
+      throw new Error("browser setup hid failure or continued after failed setup");
+    }
+  }
+} finally {
+  rmSync(setupRoot, { recursive: true, force: true });
+}
+console.log("Shared Linux browser setup preserves commands/arguments and propagates setup/test failures");
 
 // Exercise actual Make expansion, including focused selection and report safety.
 function dryRun(target, ...flags) {
@@ -102,6 +164,10 @@ console.log("Go Make cold default, focused selection and explicit repetition con
 const focused = dryRun("test-browser-focused", "BROWSER_TEST_FLAGS=test/amount-format.test.ts --project chromium");
 if (focused.status !== 0 || !focused.stdout.includes("test/amount-format.test.ts --project chromium") ||
     focused.stdout.includes("typer-table-browser.test.ts")) throw new Error("focused browser selector was expanded into a full/native population");
+const linuxFocused = dryRun("test-browser-ci-focused", "BROWSER_TEST_FLAGS=test/numeric-monotonicity.test.ts --project firefox");
+if (linuxFocused.status !== 0 || !linuxFocused.stdout.includes('browser test-browser-focused "BROWSER_TEST_FLAGS=test/numeric-monotonicity.test.ts --project firefox"')) {
+  throw new Error("focused Linux browser selector lost its single Make assignment");
+}
 const full = dryRun("test-browser-functional", "BROWSER_TEST_FLAGS=--project chromium --project webkit", "BROWSER_REPORT_DIR=.cache/browser-fixture");
 if (full.status !== 0 || !full.stdout.includes("--exclude test/typer-table-browser.test.ts") ||
     !full.stdout.includes("vitest.browser.config.ts test/typer-table-browser.test.ts") ||

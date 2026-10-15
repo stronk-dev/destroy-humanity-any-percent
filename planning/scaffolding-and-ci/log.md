@@ -2251,3 +2251,45 @@ Editorial/source checks and the real artifact consumer above are the verificatio
 no unrelated software suite, services or durable-resource removal. Existing owning
 implementation ranges remain pending designated review. Review by: Codex (evidence/
 editorial first filter). Recorded by: Codex. Goal remains full nine-tier1.0.
+
+## 2026-10-15 — Shared full/focused Linux browser execution
+
+At `72fb7849`, native Firefox cannot connect for the new numeric tests; the existing
+Linux browser command has no focused selector. Under RFC-0000's affected-boundary
+procedure and CI D2, extract its unchanged apt/Make/Corepack/pnpm-frozen prelude into
+`client/tools/test-browser-ci.sh`. Keep the same image, CI environment, fresh anonymous
+dependency volumes and ten-minute KILL containment. The default command still invokes
+the complete root `test-browser`; new `test-browser-ci-focused` forwards one Make
+selector assignment to existing `test-browser-focused`. No workflow, browser version,
+population, worker, assertion, deadline or performance budget changes.
+
+Execute the real commands against Docker28.4.0 linux/arm64, Compose2.39.4-desktop.1,
+cached Playwright1.62.0 image config5e63ffc997394026acb443c255703c7278f97d43cdc3d49cf51bc8fdce7d5383:
+
+- Focused numeric vectors + ordered transforms: all three engines,19212 tests/6 files,
+  PASS7.36s after cold setup. This supplies RP-662's missing Firefox execution, not
+  a fix of the native launch or RP-663's retained underflow discrepancy.
+- Deliberate nonexistent file selector: actual Vitest reports no files and exits1;
+  inner/outer Make return nonzero (outer2). No pass-with-no-tests behavior.
+- Full `make test-browser-ci`: PASS exit0. Broad480 files pass40119 ordinary tests,
+  with12 expected failures/24 skips,196.06s; native Typer3 files pass87 ordinary/
+  6 expected,3.89s; isolated Chromium performance passes5 with105 selector skips,
+  6.24s. No retry, dropped case or changed deadline. These phase times exclude setup
+  and are not a hosted/five-minute estimate or proof RP-637's recurrence is repaired.
+- `make verify-ci-topology`: PASS, including existing26 negatives, four wrong full
+  defaults, five setup/containment/drift controls, actual script execution with owned
+  tool doubles (full/focused argv, invalid/missing targets, setup/test error propagation),
+  and actual Make selector/report expansion. `bash -n` and diff checks pass.
+
+The topology consumer now reads the shared script and keeps the full default bound;
+a focused command cannot silently replace CI. Test doubles prove command forwarding,
+not browser execution; the real runs above supply that evidence. Root Docker socket
+access is separately approved; no daemon mutation, publication, deployment or secrets.
+Compose confirms no browser containers remain. Only owned disposable fixture files
+are removed. No Go/product/kernel/balance bytes change or unrelated SQL/server check.
+
+Canonical CI docs, current plan and the overview's local-browser row reconcile once.
+All eleven changed paths after `72fb7849` through this containing commit need designated
+review, consolidatable with the CI lane. Review by: Codex (implementer first filter).
+Recorded by: Codex. No acceptance/archival or full-CI/1.0 claim. Accounting/search,
+historical kernel failure, rights/accessibility and the full nine-tier build remain.

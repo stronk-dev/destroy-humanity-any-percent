@@ -3960,3 +3960,11 @@ designated review, consolidatable with the calculation lane. Review by: Codex
 (implementer first filter). Recorded by: Codex. No acceptance, archival, services,
 resource deletion, push or deployment. Next continue actual caller/predicate and
 landing closure; do not cite these eighteen pairs as a general algorithm proof.
+
+## 2026-10-15 — RP-662 Firefox execution follow-up
+
+The [CI-owned shared Linux runner batch](../scaffolding-and-ci/log.md#2026-10-15--shared-fullfocused-linux-browser-execution)
+now executes the unchanged numeric vectors/ordered-transform files in all three engines,
+including Firefox, and the complete default browser population. Native Firefox's earlier
+connection failure and RP-663 remain; no arithmetic/accounting or general search proof changes.
+The CI log owns commands, results, limits and the separate designated-review range.
