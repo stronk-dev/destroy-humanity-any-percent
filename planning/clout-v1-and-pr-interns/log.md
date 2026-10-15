@@ -3627,3 +3627,36 @@ runtime/data/test/kernel bytes touched. Review by: Codex (draft author first fil
 Recorded by: Codex. Complete range after `f03cd934` through this containing commit
 needs designated normative review, consolidatable with earlier accounting-draft work.
 No adoption, feature completion, archival, push, deployment or1.0 promotion.
+
+## 2026-10-15 — RP-655 event ownership and exact adapter/context proposal
+
+Declare the two-mode Company19/Compact/Guild population in the plan at `cc626b20`
+before measurement. Actual Evaluate plus the closed replay chain returns ordered
+guild_tithe_accrued/compact_sampled values, positive lifetime/progress/sample state,
+schema1 payloads and no invented intent. Actual SimulateAdvance on separate clones
+refuses with ErrInvalidEngineState; no-hook controls advance but lack hook effects.
+Origin bytes remain unchanged. This verifies the legacy wait/API mismatch, not a
+current bug, new projection API, actual event delivery or repaired conservation.
+
+Focused40590 passes0.280s. After that measurement, strengthen the positive oracle
+to require positive progress and the exact Guild-tithe event instead of permitting
+the zero-XP activity arm. This tightens the original ordered-event/lifetime/sample
+population; it was not an extra criterion predeclared before the first run.
+Final36785 runs this test, the existing six external-context profiles and RP-654
+controls three shuffled uncached times: PASS0.471s. Affected vet and diff check pass.
+No full Go/SQL/TS/browser/hosted rerun is claimed; unchanged runtime still has the
+original27 partition failures and known historical kernel guard hold.
+
+Own draft C1d/C1e proposes closed production-owned hook recipes, private event values
+versus once-only real settlement, and strict private context/identity encoding.
+Bind original operation pre-state as well as stage entry, full needed state versions,
+artifacts, actual policy/seed/absence history, existing replay inputs and ablation.
+No callback labels as authenticity, discarded events, rounded rates, partial commits
+or changed old receipt law. Reconcile C1c/C3 wording in the body with these proposals.
+Strict codec/adapter reconstruction, real Store delivery/retry, temporal search,
+compatibility and measured bounds remain; no adoption or production implementation.
+
+Five-path test/draft/plan/ledger/log range after `cc626b20` through this containing
+commit needs designated review. Review by: Codex (research implementer/draft author
+first filter). Recorded by: Codex. No source-pin/artifact restamp, runtime/kernel/
+balance/CI changes, services or removed resources. No push, archival or deployment.

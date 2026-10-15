@@ -8,6 +8,23 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — delegated interval wording, 2026-10-15
 
+Bounded event check at `cc626b20`: admitted Company19 with real Compact/Guild
+membership inputs, both evaluation modes,2001ms. Run actual Evaluate then the closed
+replay hook on fresh private state; require ordered Guild and Commons events and
+positive lifetime/sample state, leaving the original bytes unchanged. The current
+SimulateAdvance on another clone must refuse those events with ErrInvalidEngineState;
+no-hook control must advance. This verifies the API mismatch, not a current bug,
+private-event protocol implementation, live publication or conservation completion.
+Use the result to specify owned event values and exact adapters/context identity;
+do not change the legacy wait API or regenerate evidence.
+
+Executed: both modes return exactly `guild_tithe_accrued` then `compact_sampled`
+as private values, with positive progress/lifetime/sample state and unchanged origin.
+Legacy waits refuse; no-hook controls advance without those effects. Draft C1d/C1e
+now proposes exact recipe factories, private-event versus real-settlement ownership
+and strict context fields/identity, including operation pre-state and policy-owned
+absence history. These are proposals, not implemented codec/API or SQL delivery proof.
+
 RP-654 is locally corrected after `94b8af8d`: the stock-rate simulation counterfactual
 captures the source save version before the hook and restores its pre-hook encoding
 at that version. An admitted Company19 with a real faction hook failed previously;
@@ -29,9 +46,10 @@ catchup/action stage order and private origin/context ownership. Static caller t
 also identifies real `SimulateAdvance` wait edges and the content-dynamics partition
 check: a command-only origin does not repair those boundaries. Draft C1c now specifies
 the proposed begin/fork/project/real-action lifecycle, fresh hook-state ownership and
-origin-aware beam/cache/dominance rules. Next enumerate exact production hook adapters
-and canonical context encoding, establish temporal-search validity, complete compatibility
-and obtain acceptance before implementation. Do not substitute clone-only
+origin-aware beam/cache/dominance rules. C1d/C1e supplies adapter/context proposals;
+next establish strict reconstruction and real event/settlement proof, temporal-search
+validity, compatibility and measured bounds before acceptance/implementation.
+Do not substitute clone-only
 proofs or rebaseline reports. RP-307's original 27/128 failures and RP-488/RP-652
 constraints remain open. Historical experiment notes below retain their original scope.
 

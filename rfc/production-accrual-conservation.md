@@ -239,7 +239,7 @@ handle rather than an extra field quietly attached to a persisted `save.State`.
 |---|---|---|
 | `BeginCalculation` | Complete admitted base state, its source save version, pinned bundle, mode and validated producer/hook/ablation context → opaque origin. | Copies/owns mutable inputs; cannot begin from a projected view merely to discard rounding history. |
 | `ForkCalculation` | Origin → independent branch handle with the same origin/context identity. | No accrual, hooks, action, clock change or revision; branch work cannot mutate siblings. |
-| `ProjectCalculation` | Origin plus a canonical server/simulation endpoint → detached full state, evaluation and role observations. | Fresh restoration from the origin, then actual evaluation and the permitted simulation hooks on scratch state; no new origin, saved payment or action. |
+| `ProjectCalculation` | Origin plus a canonical server/simulation endpoint → detached full state, evaluation, ordered private event values and role observations. | Fresh restoration from the origin, then actual evaluation and the permitted simulation hooks on scratch state; no new origin, saved payment or action. |
 | `ApplyCalculationIntent` | Origin plus an actual intent, endpoint and expected revision → ordinary decision and, only if applied, the next origin. | Run the existing semantic transition from the origin, not from a prior projection. A refusal returns no child and leaves the parent unchanged. |
 
 Projection endpoints must not precede the origin. Search may probe endpoints out of
@@ -264,7 +264,8 @@ No partial-work handle survives a live Store commit or crash.
 restore all hook-owned state from the origin, allocate fresh role/mask collectors,
 and run the permitted chain exactly once for the complete origin-to-endpoint
 evaluation. Never append its cumulative lifetime/stock result onto an earlier view.
-Keep action-free event emission refusal. Returned role observations are cumulative
+The existing wait API retains its event refusal; C1d separately proposes ownership
+of returned private values for the new API. Returned role observations are cumulative
 for that view, not repeated events to add every time a search probe runs. Actual
 computation/probe counters still count every performed evaluation and refusal;
 conservation must not hide search work from budgets or reporting.
@@ -280,11 +281,14 @@ adapter populations, not proof for every future hook. RP-654's source-version
 correction is implemented independently; it does not implement this protocol.
 
 The actual closed replay chain can return Guild/Commons events without a player
-action. Today's `SimulateAdvance` refuses such events. A general projection adapter
-therefore still needs an explicit event-ownership/settlement contract; filtering
-those events, sharing a live outbox or calling their refusal full-hook coverage is
-not a solution. Retain the existing refusal until that amendment is specified and
-adopted, with once-only real delivery and no delivery from discarded projections.
+action. Today's `SimulateAdvance` refuses such events. The bounded online/offline
+`TestAxisCalculationEventOwnershipResearch` executes both sides: a fresh private
+Company19 evaluation plus the real chain yields ordered `guild_tithe_accrued` and
+`compact_sampled` values, positive lifetime/progress/sample state and unchanged
+origin bytes. Actual `SimulateAdvance` refuses; no-hook controls advance but lose
+the hook effects. This is RP-655's two-profile API constraint, not a new production
+API, event publisher, live bug or whole-domain proof. C1d proposes the distinct
+ownership contract; the current refusal is not removed or filtered away.
 
 **Search identity must cover every reuse path.** Proposed identity is the canonical
 complete origin plus source save version, constants identity, evaluation mode and
@@ -309,6 +313,116 @@ for earliest affordability needs its own valid monotonic population or a reviewe
 boundary-aware algorithm, not the assumption that every origin projection grows.
 Keep current report bytes, guards and original failing cases intact until those
 contracts and the full real-caller acceptance population have been reviewed/adopted.
+
+### C1d — Proposed closed hook adapters and private events (unadopted)
+
+The new API takes a closed recipe selected by a production-owned factory, not an
+arbitrary `AccrualHook` and a caller-asserted identity. Exact proposed recipe tags:
+
+| Tag | Existing implementation and bound inputs | Scope |
+|---|---|---|
+| `none` | No hook. | Only a caller whose accepted simulation contract requires none; not a neutral substitute for required work. |
+| `first_hour_lifetime` | Existing Prestige `AccumulateLifetimeValue` helper with the pinned value resource, matching `firstHourLifetimeHook`. | Preserve the first-hour runner's separate attendance/session handling; this is not the full Prestige hook. |
+| `faction_stock` | Existing `faction.AccrualHook`; faction catalog and catchup ceiling resolved from the pinned bundle. | The stock-role simulation primitive, not full gameplay-hook parity. |
+| `closed_replay` | Existing `closedReplayAccrualHook`: Prestige → Faction → Guild → resolved Commons. | Complete existing replay chain; freeze Commons weight and the replay-owned external context, never a live weight resolver. |
+
+Reject unknown recipes, unavailable catalog dependencies or inconsistent captured
+inputs. The factory owns dispatch to these exact implementations; a raw callback
+cannot impersonate one by supplying a matching string. Existing legacy simulation
+functions retain their current interface and failure semantics until their explicit
+caller migration is accepted. Unit fault hooks on those functions are not a recipe
+registration mechanism. Adding a future hook requires a reviewed recipe amendment.
+Build catalog resolvers through the existing loaders from the bound artifact bytes;
+do not accept an arbitrary caller-supplied implementation of the Commons policy
+interface as proof of the recipe. Production can call the Prestige helper directly;
+it must not import the harness package to construct the lifetime-only adapter.
+
+For the new `ProjectCalculation` only, hook-returned `EventWrite` objects are ordered
+private **values**, attached to that detached projection and its origin/context/
+endpoint identity. Preserve kind, schema and complete payload without filtering.
+They have no newly invented intent, event ID, revision or outbox write. Copy payload
+buffers so a caller cannot alter the origin or a sibling result. The hook factories
+must not carry a Store, publisher, network resolver or mutable external observer.
+Never publish or persist a projection's events, including when its resources look
+identical to a later settlement. Discarding a projection discards only these values,
+not any real transaction's required events.
+
+The real applied action recomputes from the origin through its existing closed
+transition, binds that transition's actual intent identity and writes only its own
+ordered events atomically with its receipt/state. Do not concatenate earlier
+projection events or use their payloads as a substitute for the transition result.
+Conflicting retry or refused action cannot leave an event fragment. Preserve current
+service/Store idempotency; this proposal does not add a second settlement table.
+Acceptance must compare full projected/settled hook effects and event payloads,
+and prove no projection delivery plus once-only actual commit/retry on real SQL.
+The two-profile RP-655 test does not supply that Store/outbox proof.
+
+### C1e — Proposed private context encoding and identity (unadopted)
+
+Use a strict, versioned internal value, not a new Company/Founder field or public
+artifact. Exact proposed root fields are `v`, `company_version`, `company`, `operation_company`,
+`founder_version`, `founder`, `constants_hash`, `next_constants_hash`, `owner`,
+`stage`, `mode`, `replay_inputs`, `simulation`. `v` is1. Company is the complete
+typed state at its admitted source version. Founder and its version are both null
+when not an input; otherwise retain its complete admitted typed state, not just a
+partial counter list. Exit/continuation context binds the actual next bundle hash;
+otherwise `next_constants_hash` is null. Each non-null hash must resolve to the
+already validated pinned artifacts; a digest does not authenticate arbitrary bytes.
+
+- `owner.kind == logged`: `owner` contains exactly `kind` and the existing complete
+  `command` tuple; `replay_inputs` is the existing complete admitted versioned
+  envelope, `operation_company` is the complete original command pre-state at the
+  same Company version, and `simulation` is null. Reconstruct the requested stage
+  entry from that pre-state through its actual preceding Guild/catchup/schedule
+  steps and require exact equality with `company`. Command, mode, constants and
+  recorded catchup coordinates must agree at their respective boundaries, not by
+  incorrectly comparing a post-catchup cursor to the old absence start. Retain
+  Founder carry and active-play evidence; no live lookups during reconstruction.
+- `owner.kind == simulation`: `owner` contains exactly `kind`, `scenario_id`,
+  `scenario_version`, `scenario_hash`, `policy_id`, `policy_version`, `policy_hash`,
+  `seed`, `session_index`, `revision`. Bind the existing loaded scenario/policy
+  identities and selected run seed, not IDs/versions alone. Seed is the existing
+  canonical unsigned-decimal seed string; session index is null before assignment
+  and otherwise an exact nonnegative integer. `replay_inputs` is
+  null and `operation_company` is null. `simulation` contains exactly `external_contributions`, `commons_weight_ppm`,
+  `guild_settlement_batch`, `route_context_version`, `absence_span`, `mask`, `hook_recipe`.
+  Reuse the existing replay-accrual grammar/validation for the first four fields.
+  `mask` contains exactly `generator_ids`, `upgrade_ids`, `removed_generator_ids`,
+  `removed_upgrade_ids`, `removed_action_ids`: sorted unique valid IDs with the
+  existing ablation semantics. `hook_recipe` is one C1d tag, not arbitrary code.
+  `absence_span` is null online; offline it contains exactly `from_ms`, `to_ms`,
+  the actual policy-owned absence start and return boundary. Its start matches the
+  stage origin, endpoints lie within it, and internal probes cannot change the span
+  or allocate another allowance. Validate it from the selected session history,
+  not from a client-supplied mode or a convenient cut.
+- `stage` is exactly `offline_catchup`, `ordinary` or `simulation_wait`; `mode` uses
+  the existing online/offline union. Simulation owners use `simulation_wait`; logged
+  owners use one of the other two under the existing replay envelope rules. A stage
+  origin is captured after preceding semantic mutations as
+  C1b requires: retained clearing evidence does not mean applying that batch again
+  to an already-cleared origin. A caller cannot change stage/mode to renew a cap.
+
+Unknown/extra fields, invalid null combinations, unsupported versions, invalid
+state/context or disagreement with pinned inputs refuse before constructing a
+handle. Byte decoders also refuse duplicate keys and trailing/multiple JSON values
+before canonicalization; do not let last-key-wins parsing choose the identity.
+No raw computed rate, function pointer or ambient clock is encoded. Restore
+the original source versions; rederive catalog-owned runtime facts such as
+`FactionStockResource` from state plus pinned catalogs and reject disagreement,
+rather than persisting a second authority. Artifact/Company/Founder maps and input
+buffers must not alias caller-owned mutable data.
+
+Encode the validated logical value to match `canonicalJSONString` in
+`client/src/replay.ts`: canonical state Decimal strings, exact integer coordinates,
+byte-sorted object keys and semantically ordered arrays, without report indentation,
+HTML-escape differences or a trailing newline. Hash the bytes with SHA-256 prefixed by the
+UTF-8 domain separator `cloud-clicker/accrual-origin/v1` followed by one zero byte.
+That private origin/context digest is independent of a projection's endpoint; reuse
+keys add endpoint/visible-state/revision/budget coordinates as C1c specifies. Input
+spelling or JSONB key order is not identity; an actual field/order change is.
+This memory-only encoding is not approved for saving, public export or publication
+of private state. Runtime/size bounds and strict codec/refusal/parity tests remain
+mandatory before acceptance; no new limit is invented from this schema proposal.
 
 ### C2 — Preserve a producer origin, not a rounded-rate cache
 
@@ -556,8 +670,9 @@ Do not implement this by pre-projecting the live state before calling the unchan
 `ApplyLogged`. The existing transition evaluates and then passes its `EvaluationResult`
 to the closed Prestige → Faction → Guild → Commons hook chain. Pre-advancing the cursor
 would make that evaluation report zero elapsed time and omit legitimate hooks. Conversely,
-running those hooks for every internal projection would turn cuts into additional semantic
-events. The accepted repair must bind elapsed/production/banking/progress and resource
+publishing hook outputs from every internal projection would turn cuts into additional
+semantic events. C1d's unadopted private-value computation is distinct from publication.
+The accepted repair must bind elapsed/production/banking/progress and resource
 receipts to the logical settlement interval, preserving event order and once-only hooks.
 Internal work cuts do not authorize unlogged persisted Company writes, new commands or
 extra revisions. Any durable partial-work protocol must be specified explicitly rather
@@ -574,8 +689,10 @@ bounded Go evidence for leaving the closed transition in charge, not a new accou
 implementation, all-hook/Go–TS/SQL proof, lower-floor purchase proof or AC6 repair.
 
 The ledger remains the atomic resource authority. Under the unchanged receipt
-contract, a projected balance must have a canonical nonnegative accrual receipt
-whose delta re-adds to that exact balance from its immediately previous head.
+contract, every committed balance must have a canonical nonnegative accrual receipt
+whose delta re-adds to that exact balance from its immediately previous committed head.
+Detached views are not commits and their origin-relative diagnostics cannot be
+applied as incremental grants to the live ledger.
 No direct balance overwrite may bypass minimum/hardcap/transaction checks. Saturation
 must not bank hidden overflow that becomes spendable after a later debit. Below-cap
 quantities that round visibly to the cap require an explicit, compatible rule.
@@ -711,7 +828,9 @@ the red population with a convenient new one or alter its monetary expectations.
   acceptance. Its real harness wait/content-diagnostic callers also need a complete
   simulation ownership/hook contract. A scratch-only green population cannot close that gap.
   C1c defines the proposed operation/lifetime and reuse rules; exact production hook
-  adapters/context encoding and temporal-search validity still require engineering closure.
+  recipes/private event ownership and context encoding are proposed in C1d/C1e.
+  Their strict construction/reconstruction and real settlement proof, plus temporal-
+  search validity, compatibility and measured bounds remain required before acceptance.
 - **C2/C3:** complete field set, boundary integration and a viable ledger/receipt algorithm,
   demonstrated with actual Company producers and the retained lower-domain counterexample.
   The current difference-write candidate fails; this is technical work, not a choice for the
@@ -737,6 +856,10 @@ contract, explicit adoption and independent normative review before production w
 
 ## Changelog
 
+- 2026-10-15: execute the two-mode event-bearing chain/wait constraint; specify
+  proposed closed adapter recipes, private event values versus once-only real
+  settlement, and a complete versioned private context/identity shape. Legacy APIs,
+  events, persistence and reports stay unchanged; draft is not implementation authority.
 - 2026-10-15: specify the proposed calculation/fork/projection/action lifecycle and
   complete-state hook ownership. Include completion-cache and dominance reuse, not
   beam deduplication alone; name exact adapter/encoding/temporal-search work still
