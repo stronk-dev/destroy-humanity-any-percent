@@ -2,12 +2,68 @@ package production
 
 import (
 	"bytes"
+	"reflect"
+	"sort"
 	"testing"
 	"time"
 
 	"cloud-clicker/server/decimal"
+	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
 )
+
+// Candidate modern-endpoint regimes only. Legacy fixed-external waits and the
+// content diagnostic have different policies; this is not a production factory.
+func calculationEndpointStartsResearch(t *testing.T, bundle CatalogBundle, origin *save.State, mode EvaluationMode, horizonMS int64) []int64 {
+	t.Helper()
+	attended, err := prestigecore.AttendedMS(origin, origin.EvaluatedThrough)
+	if err != nil {
+		t.Fatal(err)
+	}
+	starts := []int64{0}
+	add := func(value int64) {
+		if value > 0 && value <= horizonMS {
+			starts = append(starts, value)
+		}
+	}
+	ceiling := bundle.Prestige.CatchupCeilingMS
+	if ceiling < horizonMS {
+		add(ceiling + 1)
+	}
+	capMS := bundle.Economy.OfflinePolicy().AccrualCapMS
+	if mode == ModeOnline && capMS < horizonMS {
+		add(capMS + 1)
+	}
+	for _, buff := range origin.ActiveBuffs {
+		// Before the absence threshold attendance advances with wall time;
+		// beyond it the original attended coordinate is frozen, not continued.
+		offset := buff.ExpiresAttendedMS - attended
+		if offset <= ceiling {
+			add(offset)
+		}
+	}
+	sort.Slice(starts, func(i, j int) bool { return starts[i] < starts[j] })
+	unique := starts[:0]
+	for _, value := range starts {
+		if len(unique) == 0 || unique[len(unique)-1] != value {
+			unique = append(unique, value)
+		}
+	}
+	return unique
+}
+
+func calculationRegimeSearchResearch(qualifies func(int64) bool, starts []int64, horizonMS int64) (int64, bool) {
+	for index, from := range starts {
+		to := horizonMS
+		if index+1 < len(starts) {
+			to = starts[index+1] - 1
+		}
+		if at, found := calculationMonotoneSearchResearch(qualifies, from, to); found {
+			return at, true
+		}
+	}
+	return 0, false
+}
 
 // A reference on observed endpoint values, not the production harness search.
 // This is valid only on an interval whose predicate is already known monotone.
@@ -145,18 +201,22 @@ func TestAxisCalculationTemporalSearchResearch(t *testing.T) {
 					}
 				}
 				candidateAt, candidateFound := int64(0), false
-				from := int64(0)
-				for _, end := range append(append([]int64{}, profile.cuts...), horizon+1) {
-					for atMS := from + 1; atMS < end; atMS++ {
+				starts := calculationEndpointStartsResearch(t, bundle, initial, mode, horizon)
+				if !reflect.DeepEqual(starts, append([]int64{0}, profile.cuts...)) {
+					t.Fatalf("derived starts%v differ from independent fixture boundaries%v", starts, profile.cuts)
+				}
+				for index, from := range starts {
+					end := horizon
+					if index+1 < len(starts) {
+						end = starts[index+1] - 1
+					}
+					for atMS := from + 1; atMS <= end; atMS++ {
 						if cash[atMS].Lt(cash[atMS-1]) {
-							t.Fatalf("regime [%d,%d) is not monotone at%d", from, end, atMS)
+							t.Fatalf("regime [%d,%d] is not monotone at%d", from, end, atMS)
 						}
 					}
-					if !candidateFound {
-						candidateAt, candidateFound = calculationMonotoneSearchResearch(predicate, from, end-1)
-					}
-					from = end
 				}
+				candidateAt, candidateFound = calculationRegimeSearchResearch(predicate, starts, horizon)
 				if candidateFound != found || found && candidateAt != earliest || !bytes.Equal(origin, mustEncodeState(t, initial)) {
 					t.Fatal("boundary-aware result differs from exhaustive earliest endpoint or mutates origin")
 				}

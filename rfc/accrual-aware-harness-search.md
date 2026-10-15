@@ -90,9 +90,9 @@ controls retain their separate provenance in the owning plan/log.
 Proposed algorithm for the real caller:
 
 1. Enumerate all relevant semantic endpoint-context boundaries from the actual pinned
-   producer/schedule/absence inputs over the requested horizon. The reference knows
-   only its two fixture expiry offsets1000/1500ms; it is not a production enumerator
-   or proof of completeness for Guild, attendance, provision or future content.
+   producer/schedule/absence inputs over the requested horizon. RP-656 originally
+   declared only its fixture expiry offsets1000/1500ms; H3b adds a derived test-only
+   clock/buff reference. Neither is the production factory or complete producer proof.
 2. Partition the canonical integer-ms endpoint domain into chronological regimes.
    A context change at `b` belongs to the right regime; the left ends at `b-1`.
    These are **search ranges**, not payout segments, settlements or origin resets.
@@ -158,6 +158,59 @@ This is bounded Go evidence and source binding, not an implemented enumerator,
 whole-domain numeric/predicate proof, migrated harness, SQL/TS proof or AC6 repair.
 The fixed-external and diagnostic profiles retain their distinct C1h policies;
 do not add logged scheduling/catchup to those callers by association.
+
+#### H3b — Concrete modern clock-regime candidate and rejected shortcut
+
+For an immutable modern endpoint origin, measure offsets from its actual production
+cursor, not the latest visible scratch time. Obtain original attended time `a` from
+the actual history helper, attendance ceiling `C` from Prestige and production cap
+`A` from Economy. For a requested horizon `h`, construct regime starts as follows:
+
+1. Start with0. Add `C+1` when within the horizon, in either mode.
+2. In online mode add `A+1` when within the horizon; offline mode has no automatic
+   online-catchup switch. Do not confuse its ordinary production plateau with a
+   new settlement or another allowance.
+3. For every existing active buff, add `expires_attended_ms-a` when positive,
+   at most `C` and within the horizon. Before the absence threshold attendance
+   advances with elapsed time; beyond it the original attended coordinate is frozen.
+   An unclaimed pending opportunity does not grant another buff or payout.
+4. Sort and deduplicate starts. Each range ends at the next start minus1; the last
+   ends at `h`, without computing `h+1`. For a later search lower bound, intersect
+   these original-coordinate ranges with that bound; do not rebase the origin.
+
+This candidate enumerates the identified clock/buff context switches. Production
+still evaluates its whole original interval with actual provision, burst, caps,
+hooks and quantization. The fixed-external profile does not gain logged scheduling;
+the diagnostic retains its frozen window-start policy. Unsupported context, a
+producer refusal or exhausted work is an error, never proof of unreachability.
+The general producer/predicate and work obligations in H3 remain open.
+The offset formula is not permission to bypass source-state admission, actual
+attendance/history validation, canonical clock checks or overflow handling. Its
+bounded tests do not establish those contracts for every admitted timestamp/history.
+
+The test-only enumerator now reproduces RP-656's independent literal cuts and
+unchanged12/18024 population. A separate real-logged-probe reference uses horizon24h+2
+and a hypothetical fixed100000-cash target. It finds the independently calculated
+first qualifying millisecond11168956 (online buffed),78182687 (online plain) and
+12409951 (offline buffed); plain offline is unreachable. Actual neighboring probes
+confirm each found threshold. Whole-horizon search and omission of only `A+1` miss
+both online windows; offline positive/unreachable controls remain correct.
+
+That experiment also rejects a tempting arithmetic shortcut (RP-661). Its original
+flat integer rate×duration cash oracle fails three actual probes by one canonical
+unit. Direct existing `AccrueConstant`+ledger reproduces the ideal in two buffed
+cases but not the actual `Evaluate`; in the plain case it agrees with `Evaluate`
+and not the scaled reference. That reference converts integer nanocash through
+`Decimal.New(...,-9).Quantize(12)`; it is not an exact-rational rounding oracle.
+Provisioned counts stay unchanged. Preserve those exact negative
+pairs; do not replace integration, change payouts or add tolerance. The prospectively
+revised search check requires exact qualification/earliest/neighbor outcomes and
+reports all cash-model disagreements separately. It does not claim the rejected
+cash oracle passed or prove monotonicity of arbitrary unseen production states.
+
+This executes a bounded reference over actual closed transitions, not a migrated
+Relevance caller, new calculation factory, cross-runtime/SQL proof or repaired AC6.
+All original partition, compatibility, full-workload and designated-review gates remain.
 
 
 ### H4 — Compatibility, work and evidence
@@ -266,6 +319,10 @@ numeric tolerance, authored content or narrowed1.0 scope.
 
 ## Changelog
 
+- 2026-10-15: supply the concrete clock/buff start-set candidate and execute actual
+  logged long-horizon probes, retaining the original expiry census. Reject the flat
+  payout shortcut explicitly; exact search results are not exact-integer payout proof.
+  Full producer/predicate/work and adoption gates remain open; no production change.
 - 2026-10-15: bind actual fixed-price/resource predicates and distinguish the5000ms
   attendance edge from the24h automatic catchup edge. Execute36 exact logged profiles,
   including declared no-buff controls; retain general proof/work/adoption gates.

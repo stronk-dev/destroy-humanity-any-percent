@@ -8,6 +8,75 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+The proposed private origin JSON/hash protocol is withdrawn: no identified consumer
+persists or transmits these handles. Parent C1e now proposes opaque typed run-local
+ownership using existing save/replay validators, with forks sharing identity and
+real actions/context boundaries creating new origins. Keep actual live ApplyLogged
+unchanged as the compatibility reference; do not build an unused wrapper. Consumer
+reuse remains conservative and must still meet unchanged budgets/determinism.
+Both drafts remain unaccepted. Next engineering work is the actual admitted-caller
+temporal predicate/boundary proof and compatibility/landing closure, not another
+fixture census or owner approval in place of a technical answer. Go/TS, SQL/retry,
+all128 exact cases, complete workloads, CI and designated review remain required.
+
+### Completed readiness studies and earlier draft steps
+
+The dated/hashed notes below preserve their original declarations and outcomes.
+References to a new private origin codec describe the superseded proposal, not
+the current implementation plan. The append-only log holds exact review ranges.
+
+#### Latest search and clock findings
+
+Search-reference check declared at `42e54cfe`: derive actual expiry/attendance/cap
+regime starts from the pinned origin/policies, not hardcoded expiry rows. Retain
+RP-656's exact12/18024 population and its independent literal boundary list. Add
+four actual logged-probe searches: buffed/no-buff ×online/offline, horizon24h+2ms,
+hypothetical fixed target100000 cash. Independent integer ceilings require first
+qualifying11168956ms online buffed,78182687ms online plain,12409951ms offline buffed;
+plain offline is unreachable. Require both online horizon-only controls to miss,
+and omitting only cap+1 to miss them too; preserve offline positive/unreachable
+controls. Every probe checks literal payout/context from a fresh origin through
+the real closed transition and existing forwarding observer; count all probes.
+This is test-only algorithm feasibility, not an actual Relevance migration, complete
+general monotonicity proof, new factory, price/content change or AC6 repair.
+
+First37823 rejects the flat payout premise at three probes (one canonical
+unit each); the unchanged12/18024 expiry population passes. Before changing that
+premise, diagnose the three exact points using actual schedule/contributions,
+Evaluate versus AccrueConstant plus the real ledger from the same initial state.
+Retain the three recorded literal actual/ideal pairs and unchanged origins. This
+separates existing integration order from the search algorithm; no tolerance,
+changed payout or claim the rejected ideal is the accepted engine contract.
+
+Diagnostic1236 confirms two distinct mismatches: in the two buffed cases,
+AccrueConstant+ledger matches the ideal but not Evaluate; in the plain case both
+actual primitives differ from the integer ideal. Retain all three exact pairs and
+the whole-rate contrast as negative evidence, not a reason to change production.
+Here the scaled-integer reference itself uses Decimal.New/Quantize; neither it
+nor the term "ideal" establishes exact-real rounding correctness.
+Prospective revised question: does regime search return the declared earliest
+thresholds using actual logged payouts? Require exact qualification equality at
+every probe against the independent integer predicate, exact earliest/neighbor
+results and the original missing-cap/whole-horizon controls. Record every canonical
+payout mismatch separately; do not claim the rejected cash model passed. No tolerance
+or changed target is introduced. This is search feasibility, not a new arithmetic
+oracle, general proof or permission to replace existing one-shot integration.
+
+Revised54130 passes3.791s: candidate derived cuts retain12/18024 and all four long
+search profiles finish. Exact earliest11168956/78182687/12409951 plus unreachable
+and actual neighbors agree; both online whole-horizon/missing-cap controls miss.
+186 total predicate calls include13 flat cash-model disagreements (repeated points
+count separately), with exact qualification equality throughout. The rejected cash
+model is not green; its three literal negative pairs and whole-rate contrasts pass
+as retained findings. H3b specifies the candidate; general producer/numeric/work
+proof, actual consumer migration and adoption remain separate gates.
+
+Final70993 repeats the new search/model-negatives, unchanged12/18024 parent,
+36 clock edges and long-absence stage parent three times shuffled/cold: PASS11.260s;
+production vet passes. The original27 partition failures are neither rerun nor
+repaired by these research checks. Source/instrument coverage and review range
+are in the owning log; no runtime/kernel/report/CI behavior changes.
+
 Boundary check declared at `c4303ceb`: existing Company19/tower/PR origin, attended
 4000ms, production buff expiring at5000 attended milliseconds. Execute actual
 ApplyLogged at offsets999/1000,4999/5000/5001,86399999/86400000/86400001/86400002ms,
@@ -33,23 +102,6 @@ still drops across24h→24h+1, while direct offline cash remains equal and cap+2
 predicates; no timed purchase-discount system exists in those current callers.
 This supplies a required search boundary, not a complete enumerator/predicate proof,
 new API, SQL/TS integration, policy adoption or repair of the original27 failures.
-
-The proposed private origin JSON/hash protocol is withdrawn: no identified consumer
-persists or transmits these handles. Parent C1e now proposes opaque typed run-local
-ownership using existing save/replay validators, with forks sharing identity and
-real actions/context boundaries creating new origins. Keep actual live ApplyLogged
-unchanged as the compatibility reference; do not build an unused wrapper. Consumer
-reuse remains conservative and must still meet unchanged budgets/determinism.
-Both drafts remain unaccepted. Next engineering work is the actual admitted-caller
-temporal predicate/boundary proof and compatibility/landing closure, not another
-fixture census or owner approval in place of a technical answer. Go/TS, SQL/retry,
-all128 exact cases, complete workloads, CI and designated review remain required.
-
-### Completed readiness studies and earlier draft steps
-
-The dated/hashed notes below preserve their original declarations and outcomes.
-References to a new private origin codec describe the superseded proposal, not
-the current implementation plan. The append-only log holds exact review ranges.
 
 Long-absence reconstruction first declaration at `2c9f8833`: two actual logged-mode profiles over48h,
 Company19, one tower/PR row, one active production buff at attended4000ms, Compact

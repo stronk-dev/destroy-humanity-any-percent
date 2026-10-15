@@ -3866,3 +3866,51 @@ ledger/log range after `c4303ceb` through this containing commit needs designate
 Claude review, consolidatable with calculation work. No services/resources touched,
 adoption, acceptance, archival, push or deployment. Next close the remaining actual
 enumerator/numeric/work proof, not repeat these completed clock-edge profiles.
+
+## 2026-10-15 — Derived clock-regime reference; reject the flat payout shortcut
+
+At `42e54cfe`, declare four real-logged-probe searches with a fixed hypothetical
+100000-cash threshold and24h+2ms horizon. Derive starts from original attended time,
+buff expiries and the two actual policy thresholds; preserve the existing12/18024
+expiry population and independently declared literal cuts. No price/content change,
+production API or per-ms long-horizon scan. The independent integer ceilings are
+11168956ms online buffed,78182687ms online plain,12409951ms offline buffed and
+unreachable plain offline, with actual adjacent probes required.
+
+Initial37823 stops three search arms on exact payout differences; the12/18024
+parent passes. Those are valid counterexamples to my flat payout premise, not a
+production repair or successful complete search. Before revising the question,
+diagnostic1236 runs three retained literal pairs through actual schedule/Evaluate
+versus existing AccrueConstant+ledger. Two buffed whole-rate results match the ideal
+but not Evaluate; the plain whole-rate matches Evaluate and not the ideal. Counts
+are unchanged. RP-661 retains all three exact negative pairs/contrasts; do not
+replace the production integrator, alter payouts or add a tolerance.
+The scaled-integer reference uses Decimal.New/Quantize, not exact-rational rounding;
+the earlier "ideal" label is not a claim of mathematical ground truth.
+
+Prospectively revise only the research claim: exact threshold-search results and
+qualification at every probe, not a false claim that every canonical cash amount
+equals the rejected ideal. Retain/report cash-model disagreement separately.
+Revised54130 PASS3.791s: all four outcomes/neighbors match, both whole-horizon and
+missing-cap online controls miss, both offline controls hold.186 predicate calls
+include13 cash-model mismatches (repeated points count), all with identical exact
+qualification. The rejected cash model has not become successful arithmetic proof.
+Original12/18024 profile/payoff/census assertions remain; the new derived boundaries
+also match their independent literal set. No original test population is removed.
+
+Final70993 repeats these plus36 actual clock-edge and long-absence parents three
+times shuffled/cold: PASS11.260s; production vet passes. Inspect save admission's
+past/nonoverlapping spans and total-offline-duration checks; do not generalize the
+offset reference past actual admitted history/canonical-clock/overflow proof.
+H3b supplies the concrete candidate and both bounded positive/negative findings;
+general producer/numeric/work proof and actual consumer migration remain open.
+After clarifying the reference terminology, final95972 reruns all five selected
+parents cold: PASS3.916s plus vet. The plan now leads with the actual next action;
+completed declarations/results are retained under their history heading.
+
+Six-path tests/draft/plan/ledger/log diff/formatting checked. Runtime/kernel/data/
+artifacts/CI unchanged; no full Production/SQL/TS/browser/hosted rerun or repaired27
+partition claim. Review by: Codex (research implementer/draft author first filter).
+Recorded by: Codex. Entire range after `42e54cfe` through this containing commit
+needs designated Claude review, consolidatable with the calculation lane. No
+services or resources touched, adoption, acceptance, archival, push or deployment.
