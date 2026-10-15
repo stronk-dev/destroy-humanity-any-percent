@@ -73,6 +73,10 @@ forward compatibility cannot create an infinite replay loop.
 Channel authorization is closed: world/feed are public to authenticated sessions, a player channel
 must match the Founder identity, and guild/cohort/match channels delegate to server-side membership
 lookups. Identity never grants membership through token claims.
+The Commons resolver binds projected membership to the latest non-archived Company head's
+run and member flag. Persistent cohort assignment or a past signature alone cannot authorize
+a new subscription after Exit or leave. This is subscribe-time authorization, not automatic
+eviction from an already established subscription.
 
 The server embeds Centrifuge behind an origin-checked WebSocket handler. Its connect command consumes
 the account service's access token, uses the opaque account ID for the per-account connection limit,

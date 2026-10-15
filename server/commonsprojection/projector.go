@@ -683,11 +683,22 @@ func (p *Projector) CohortMember(founderID, cohortID string) bool {
 	if p == nil || founderID == "" || cohortID == "" {
 		return false
 	}
+	// Assignment persists across runs; permission does not. A delayed projection
+	// must agree with the current, non-archived Company's authoritative head.
 	var member bool
 	err := p.db.QueryRow(`SELECT EXISTS(
 		SELECT 1 FROM founder_commons_assignments assignment
 		JOIN company_compact_memberships membership ON membership.founder_id=assignment.founder_id
-		WHERE assignment.founder_id::text=$1 AND assignment.cohort_id::text=$2 AND membership.member=true
+		JOIN save_streams company ON company.id=membership.company_stream_id
+			AND company.owner_kind='founder' AND company.owner_id=assignment.founder_id
+			AND company.scope='company' AND company.archived_at IS NULL
+		JOIN LATERAL (
+			SELECT state FROM save_revisions WHERE stream_id=company.id ORDER BY revision DESC LIMIT 1
+		) head ON true
+		WHERE assignment.founder_id::text=$1 AND assignment.cohort_id::text=$2
+			AND membership.cohort_id=assignment.cohort_id AND membership.member=true
+			AND head.state->'compact_member'='true'::jsonb
+			AND head.state->'run_seq'=to_jsonb(membership.run_seq)
 	)`, founderID, cohortID).Scan(&member)
 	return err == nil && member
 }

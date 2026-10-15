@@ -111,6 +111,11 @@ The first `compact_signed` event assigns the Founder to the oldest open cohort i
 server/activity bracket below its 150 target. A server/bracket advisory transaction lock makes
 concurrent first-sign order an actual database decision. Assignment is non-elective and reused by
 later runs and re-signs. Membership and sample projections are idempotent by event ID.
+Transport subscription permission is separate from that persistent assignment. It requires a
+projected membership for the same cohort and current run, owned by the Founder's non-archived
+Company, whose latest saved state still says `compact_member: true`. A previous run's signature
+or a delayed projection cannot authorize a new subscription after Exit or leave. Re-signing
+restores permission after its projection catches up; no historical record is deleted.
 `compact_tithe_raised` preserves that assignment and membership while advancing the projected
 tithe at the same Company revision as Open Source incorporation.
 After strict payload validation, each projection transaction claims its event ID before resolving

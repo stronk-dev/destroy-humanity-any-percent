@@ -770,3 +770,54 @@ Verification by: Codex. Recorded by: Codex. Item4 now records implemented compos
 with its named passing witness. Complete feature acceptance, RP-560/561 and earlier
 corrective designated reviews remain open; no archival or approval is inferred.
 Two-path editorial plan/append-only-log change; factual references/diff checked.
+
+## 2026-10-15 — RP-651 bind cohort permission to the current run
+
+Under Commons D1/C3 and Transport D1/T1, separate persistent cohort assignment from
+current Compact permission. The resolver now checks one SQL snapshot: projected
+cohort/run membership plus its owned, non-archived Company's latest run/member flag.
+No Health/sample/count changes, retention choice, governance implementation or new
+eviction protocol for already established subscriptions. No kernel/replay, balance,
+catalog, schema, migration, workflow, copy or version bytes change.
+
+Old-source real-Postgres session2731 fails0.824s: actual HTTP sign authorizes the
+member socket, Exit saves run2/non-member, then a fresh socket's cohort subscription
+is wrongly accepted. Extend the existing Exit/board witness, not a new fake resolver:
+retain pre-Exit access, reject the new non-member, preserve assignment, re-sign for
+successful access, leave and reject another subscription. Existing live verification,
+immutable HTTP downloads, corruption refusal, historical rollover and carry checks stay.
+
+Fixture corrections are explicit: initial34123 wrongly used the replaced Founder's
+credential and failed the positive control; issue the session after replacement and
+anchor its clock to today for real socket expiry. Two Loaded.Number accesses were
+compile errors, not tests. Additional socket/new-run work put the old live-log check
+beyond possible background compaction; move that check before the extra work, retaining
+archive checks. Current-clock execution then exposes Fiscal14 rather than its expected
+cap: seed the capped-carry condition explicitly from the pinned policy instead of
+depending on months of application/DB clock skew. Preserve the original cap assertion;
+no game policy is changed and no replay defect is inferred from these fixture attempts.
+
+Final focused44297 PASS1.390s. Full declared `make test-save-integration
+SAVE_TEST_PACKAGES='./commonsprojection ./gameserver' SAVE_TEST_FLAGS='-run Integration -v'`
+1754 PASS: Commons0.343s and Gameserver60.615s, all ten ordinary Gameserver parents;
+the separate opt-in real-minute cleanup test alone skips. Linux-amd64 Go image
+`sha256:3343c3656871925d896336b9194aa2e3191e0a96868a9d2952a3696e86af94d0`
+runs under this arm64 Docker host, not native hosted hardware. Final cold
+`make test-go vet GO_PACKAGES='./commonsprojection ./transport ./gameserver'`75587
+passes0.153/13.308/0.407s plus vet; native DB skips are not integration credit.
+
+Complete root `make test-game-ui-composed`82461 exits0: both driver populations
+require8/8 refresh cases and ten persisted parents, actual generated-SDK/TS current/
+historical replay and corrupt receipt/event/gap/constants refusals; main transitions,
+both endings/continuation/recovery, Cosmetic/Reputation/Clout, both payment negatives,
+controlled Garden harvest and Tier2 candidate all pass with built assets/Worker and
+real Postgres. This is native browser/Go plus container Postgres, not hosted CI,
+natural growth/earnings, Headcount, actual AT or a complete release artifact.
+
+All handles terminal; inspect/remove only the two owned disposable tmpfs Postgres
+services, preserving cache/network/durable data. Diff/formatting checked. Update
+canonical docs, owning plan and RP-651. Review by: Codex (implementer first filter).
+Recorded by: Codex. Complete seven-path implementation/test/docs/plan/ledger/log
+range after `54f352f6` through this containing commit needs designated Claude review,
+consolidatable with Transport/Gameserver repairs. No self-approval, archival,
+push/deployment or full nine-tier1.0/whole-CI promotion; existing holds remain.

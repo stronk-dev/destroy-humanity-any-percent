@@ -4,6 +4,14 @@
 - **RFC:** `rfc/websocket-transport-and-fanout.md`
 - **Started:** 2026-07-29
 
+2026-10-15 current-run cohort correction (RP-651): subscribe-time permission now requires the
+projected membership to match the current non-archived Company head's run and member flag.
+The old real HTTP/Postgres/socket witness admits a new non-member subscription after Exit;
+the expanded existing Exit witness also checks legitimate pre-Exit access, stable assignment,
+re-sign and leave. The owning log records final execution and the range after `54f352f6`
+needing Claude review. No governance, Health/retention or established-subscription eviction
+policy changes; complete Transport acceptance/archival remain open.
+
 2026-10-15 composition reconciliation: the old Commons-resolver/binary blocker is resolved.
 `gameserver.New` wires the real Commons projector and Guild settlement service; the current
 built-client aggregate at `6201bef8` executes the persisted socket/clearing/readiness/drain

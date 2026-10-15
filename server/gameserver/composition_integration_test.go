@@ -972,7 +972,9 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 		}
 	})
 
-	now := time.Date(2026, 8, 2, 14, 0, 0, 0, time.UTC)
+	// Real sockets validate token expiry against wall time, independently of the
+	// injected application clock. Keep this run anchored to the current clock.
+	now := time.Now().UTC().Truncate(time.Second)
 	composition, err := Compose(ctx, CompositionConfig{
 		PublicCursorKeys: testPublicCursorKeys(),
 		DB:               db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000302",
@@ -996,13 +998,6 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	}
 	var created account.CreatedAccount
 	decodeCompositionResponse(t, createdResponse, &created)
-	sessionResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
-		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
-	if sessionResponse.StatusCode != http.StatusOK {
-		t.Fatalf("session status=%d body=%s", sessionResponse.StatusCode, responseBody(sessionResponse))
-	}
-	var tokens account.TokenPair
-	decodeCompositionResponse(t, sessionResponse, &tokens)
 
 	founderID := "018f0000-0000-4000-8000-000000000502"
 	initialFounder, err := composition.Accounts.ActiveFounder(ctx, created.AccountID)
@@ -1020,6 +1015,14 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	founderState, companyState, frozen := progressedCompositionStates(t, composition.Catalogs, composition.CurrentHash, now)
+	// This fixture also checks capped Fiscal carry after Exit. Seed that condition
+	// explicitly rather than relying on a past application clock and today's DB
+	// clock to auto-harvest enough elapsed periods to fill it incidentally.
+	initialBundle, ok := composition.Catalogs.ResolveReplayCatalogs(composition.CurrentHash)
+	if !ok || initialBundle.Fiscal == nil {
+		t.Fatal("Fiscal policy unavailable for capped carry fixture")
+	}
+	founderState.FiscalCredit = initialBundle.Fiscal.Credit.Hardcap
 	founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeFounder},
 		composition.CurrentHash, founderState, save.WriteContext{Cause: "gameserver.composition.integration"})
 	if err != nil {
@@ -1053,6 +1056,15 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	if err := pinTx.Commit(); err != nil {
 		t.Fatal(err)
 	}
+	// This fixture replaces the initial Founder before play. Issue the socket's
+	// credential afterward so its fid names the actual participant, not the archive.
+	sessionResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
+		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
+	if sessionResponse.StatusCode != http.StatusOK {
+		t.Fatalf("session status=%d body=%s", sessionResponse.StatusCode, responseBody(sessionResponse))
+	}
+	var tokens account.TokenPair
+	decodeCompositionResponse(t, sessionResponse, &tokens)
 
 	manual := `{"intent_id":"01985555-5001-7000-8000-000000000501","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`
 	manualResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, manual)
@@ -1071,12 +1083,90 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	if companyVersion, founderVersion := save.VersionForState(loadedCompany.State), save.VersionForState(loadedFounder.State); companyVersion != 18 || founderVersion != 21 {
 		t.Fatalf("pre-Exit activation versions company=%d founder=%d", companyVersion, founderVersion)
 	}
-	exit := `{"intent_id":"01985555-5002-7000-8000-000000000502","kind":"wind_down","expected_revision":2,"expected_founder_revision":1}`
+	sign := `{"intent_id":"01985555-5003-7000-8000-000000000503","kind":"sign_compact","expected_revision":2,"tithe_ppm":100000}`
+	signResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, sign)
+	if signResponse.StatusCode != http.StatusOK {
+		t.Fatalf("pre-Exit sign status=%d body=%s", signResponse.StatusCode, responseBody(signResponse))
+	}
+	_ = responseBody(signResponse)
+	var cohortID string
+	cohortDeadline := time.Now().Add(3 * time.Second)
+	for time.Now().Before(cohortDeadline) {
+		cohortID, err = composition.Commons.FounderCohort(ctx, founderID)
+		if err == nil && composition.Commons.CohortMember(founderID, cohortID) {
+			break
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+	if err != nil || !composition.Commons.CohortMember(founderID, cohortID) {
+		t.Fatalf("pre-Exit Compact projection unavailable: %v", err)
+	}
+	websocketURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/connection/websocket"
+	memberSocket := dialCompositionSocket(t, websocketURL, httpServer.Client(), tokens.AccessToken)
+	t.Cleanup(func() { _ = memberSocket.connection.CloseNow() })
+	writeWS(t, memberSocket, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "cohort:" + cohortID}})
+	if reply := readWSID(t, memberSocket, 2); reply.Error != nil || reply.Subscribe == nil {
+		t.Fatalf("pre-Exit member subscription refused: reply=%+v error=%+v", reply, reply.Error)
+	}
+	_ = memberSocket.connection.CloseNow()
+
+	exit := `{"intent_id":"01985555-5002-7000-8000-000000000502","kind":"wind_down","expected_revision":3,"expected_founder_revision":1}`
 	exitResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, exit)
 	if exitResponse.StatusCode != http.StatusOK {
 		t.Fatalf("exit status=%d body=%s", exitResponse.StatusCode, responseBody(exitResponse))
 	}
 	_ = responseBody(exitResponse)
+	// Verify the complete live log before the additional socket/new-run work;
+	// successful background verification may compact it into the archive meanwhile.
+	if verdict, err := composition.Verification.VerifyStoredRun(ctx, companyRevision.StreamID, 1); err != nil || verdict != production.ReplayVerified {
+		t.Fatalf("stored run verdict=%s err=%v", verdict, err)
+	}
+	postExit, err := store.LoadLatest(ctx, companyRevision.StreamID)
+	if err != nil || postExit.State.RunSeq != 2 || postExit.State.CompactMember {
+		t.Fatalf("Exit did not reset Compact membership: err=%v", err)
+	}
+	formerMember := dialCompositionSocket(t, websocketURL, httpServer.Client(), tokens.AccessToken)
+	t.Cleanup(func() { _ = formerMember.connection.CloseNow() })
+	writeWS(t, formerMember, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "cohort:" + cohortID}})
+	if reply := readWSID(t, formerMember, 2); reply.Error == nil || reply.Error.Code != 103 {
+		t.Fatalf("previous-run signature authorized new non-member subscription: reply=%+v error=%+v", reply, reply.Error)
+	}
+	if stableCohort, err := composition.Commons.FounderCohort(ctx, founderID); err != nil || stableCohort != cohortID {
+		t.Fatalf("Exit changed persistent cohort assignment: err=%v", err)
+	}
+	resign := fmt.Sprintf(`{"intent_id":"01985555-5004-7000-8000-000000000504","kind":"sign_compact","expected_revision":%d,"tithe_ppm":100000}`, postExit.Revision.Number)
+	resignResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, resign)
+	if resignResponse.StatusCode != http.StatusOK {
+		t.Fatalf("new-run re-sign status=%d body=%s", resignResponse.StatusCode, responseBody(resignResponse))
+	}
+	_ = responseBody(resignResponse)
+	cohortDeadline = time.Now().Add(3 * time.Second)
+	for time.Now().Before(cohortDeadline) && !composition.Commons.CohortMember(founderID, cohortID) {
+		time.Sleep(25 * time.Millisecond)
+	}
+	writeWS(t, formerMember, map[string]any{"id": 3, "subscribe": map[string]any{"channel": "cohort:" + cohortID}})
+	if reply := readWSID(t, formerMember, 3); reply.Error != nil || reply.Subscribe == nil {
+		t.Fatalf("new-run member subscription refused: reply=%+v error=%+v", reply, reply.Error)
+	}
+	resigned, err := store.LoadLatest(ctx, companyRevision.StreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	leave := fmt.Sprintf(`{"intent_id":"01985555-5005-7000-8000-000000000505","kind":"leave_compact","expected_revision":%d}`, resigned.Revision.Number)
+	leaveResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, leave)
+	if leaveResponse.StatusCode != http.StatusOK {
+		t.Fatalf("leave status=%d body=%s", leaveResponse.StatusCode, responseBody(leaveResponse))
+	}
+	_ = responseBody(leaveResponse)
+	writeWS(t, formerMember, map[string]any{"id": 4, "unsubscribe": map[string]any{"channel": "cohort:" + cohortID}})
+	if reply := readWSID(t, formerMember, 4); reply.Error != nil {
+		t.Fatalf("unsubscribe after leave refused: %+v", reply.Error)
+	}
+	writeWS(t, formerMember, map[string]any{"id": 5, "subscribe": map[string]any{"channel": "cohort:" + cohortID}})
+	if reply := readWSID(t, formerMember, 5); reply.Error == nil || reply.Error.Code != 103 {
+		t.Fatalf("departed member subscription admitted: reply=%+v error=%+v", reply, reply.Error)
+	}
+	_ = formerMember.connection.CloseNow()
 	var pinnedGenesis []byte
 	var pinnedVersion int
 	if err := db.QueryRowContext(ctx, `SELECT state,version FROM run_genesis WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&pinnedGenesis, &pinnedVersion); err != nil {
@@ -1106,10 +1196,6 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	if err := db.QueryRowContext(ctx, `SELECT constants_hash FROM run_epochs WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&runHash); err != nil || runHash != composition.CurrentHash {
 		t.Fatalf("run pin hash=%s want=%s err=%v", runHash, composition.CurrentHash, err)
 	}
-	if verdict, err := composition.Verification.VerifyStoredRun(ctx, companyRevision.StreamID, 1); err != nil || verdict != production.ReplayVerified {
-		t.Fatalf("stored run verdict=%s err=%v", verdict, err)
-	}
-
 	deadline := time.Now().Add(3 * time.Second)
 	for time.Now().Before(deadline) {
 		var status string
