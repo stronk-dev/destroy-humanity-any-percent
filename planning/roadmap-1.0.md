@@ -7,7 +7,7 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-15):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Implementation checkpoint `874d8d17`, kernel0.3.221, epoch8: still Garage integration/hardening,
+Implementation checkpoint `77fe2275`, kernel0.3.221, epoch8: still Garage integration/hardening,
 incomplete v0.1, with substantial world/combat/Tier3–8/final-ending construction ahead. At this
 coordinate, local corrective-review records continue in the owning logs. Last inspected
 publication is `be66902b`, failed CI38560135778 and maintenance38677066823. Read-only queries
@@ -39,6 +39,10 @@ or the starter/carry/resource-event/trigger authored conflicts. No feature miles
 Further Pet/host/CI scoped approvals and actual97 paired economy checks close review debt.
 The independent review finds RP-669's focus race; its separate renderer repair is reproduced,
 verified and independently approved at874d8d17. No new tier, original-feature or release acceptance.
+Garden's equivalent removed-newer-focus defect RP-670 is reproduced, repaired at77fe2275 and
+independently approved after affected native/Linux consumer checks. Pet care/status/Fiscal and
+Guild/deadline fixture ranges also receive bounded approval; full hashes/limits are in owning
+logs. No copy adoption, full-feature acceptance or CI/release promotion follows.
 Numeric representable-result repairs do not adopt the exponent-exhaustion or
 aggregation proposals. Current affected replay/browser/SQL checks pass; full Production's
 27 accounting failures and the historical guard remain red. The overview and owning logs
@@ -2099,7 +2103,7 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Reconciled at implementation source `11478e9d` (2026-10-15), with subsequent bounded
+Reconciled at implementation source `77fe2275` (2026-10-15), with subsequent bounded
 independent-review records in the owning logs. API, transport, simulation and Deployment
 repairs improve existing paths/proofs; no additional playable tier or milestone
 is completed. The five original query/epoch/board/route/router API reviews now have complete

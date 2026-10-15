@@ -5556,3 +5556,25 @@ as a waiver. No push, version fiction, new tier, authored copy or release approv
 Garage/CI corrections, normative/privacy/renewal/content gates and full later-game construction
 continue under their actual contracts. All review/test processes terminal, owned disposable
 resources removed without touching persistent data/caches; full nine-tier1.0 goal stays active.
+
+## 2026-10-15 — Garden focus defect and remaining care/fixture reviews closed
+
+Product checkpoint77fe2275991df8c144c6e91211128bce9ee9bd9e, unchanged kernel0.3.221/epoch8.
+RP-670 reproduces six old native failures: Garden menu completion/Close steals plot focus when
+a newer outside target is removed before tick. The bounded observer repair retains supersession
+and exception cleanup. Fresh independent Codex approves completecc37b6d3..77fe2275 after actual
+four-file native200/Linux300 ordinary passes plus2/3 expected-deadline controls, types/build/UI
+boundaries. Owning Garden log records full provenance, root failing-first and review limitations.
+
+Three other independent reviews close exact Garage status/care/Fiscal and CI Guild/deadline
+fixture ranges. Actual native/Linux, repeated/shuffled same-service SQL and production-client
+Feed/status/Fiscal journeys execute; full hashes/evidence/limits are in owning logs. Candidate
+copy remains unadopted. Review of cleanup/diagnostics does not resolve RP-637/RP-430 causes.
+Clout's draft temporal proof gains only a fixed-exponent coefficient-fold sublemma; it is not
+the full proof, normative adoption or an arithmetic repair. No new tier/feature/release milestone.
+
+Known27 accounting failures, historical guard/unaccepted exception mechanism, normative/
+privacy/renewal/content decisions and full later-game construction remain. No new remote query,
+hosted pass, push or shortened goal. All checks/review handles terminal, temporary browser
+containers auto-removed; no persistent data/caches removed in this fix. Full nine-tier goal active;
+continue remaining corrective reviews and accepted construction without restarting approved work.

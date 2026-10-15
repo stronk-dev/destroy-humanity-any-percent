@@ -3749,3 +3749,24 @@ manual AT or whole-CI claim. Render-only files
 are outside kernel watch paths; version remains0.3.221. Baselinecc37b6d3-exclusive through this
 coherent fix is awaiting fresh independent Codex review under Marco's corrective delegation;
 not full Garden acceptance, normative adoption, archival or release approval.
+
+## 2026-10-15 — RP-670 independently approved
+
+Review by: fresh independent Codex `/root/garden_menu_focus_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED** complete
+six-path `cc37b6d324f95aa6f99fad5794012e5666590214..77fe2275991df8c144c6e91211128bce9ee9bd9e`.
+Every component/test/backlog/docs/owning-record path inspected, no corrective findings.
+Observer spans the command callback/render handoff, retains supersession after removal,
+and cleans up on synchronous exceptions without newly closing the menu. Ordinary plot return,
+pending guards, cardinality and destroyed-component behavior remain intact.
+
+Actual four affected surface/witness/refresh/host files: native Chromium/WebKit200 ordinary
+passes plus2 deliberately expected deadline failures (session5760,11.19s); declared Linux
+ARM64 all3 engines300 ordinary plus3 expected failures (session33813,12.59s). These deadline
+controls prove cleanup, not ordinary gameplay successes. Typecheck/build/UI boundaries pass0/0
+(session3604); exact-range whitespace check passes. Tested sources remain byte-identical
+through records-onlyf8ff1e82. Initial sandbox native EPERM runs no tests; authorized run passes.
+Routine output partly truncated, terminal totals retained. Old6 failures/6 companions inspected,
+not independently re-manufactured. All handles terminal, browser Compose empty, port51204 free,
+reviewer edits/commits/removes nothing. RP-670 closes, not SG13/content/authored/privacy/
+renewal/natural-maturation/manual-AT/performance/SQL/hosted-CI/full-Garden/archival/release gates.

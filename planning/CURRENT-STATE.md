@@ -1,6 +1,6 @@
 # Current repository state
 
-Reconciled 2026-10-15: implementation checkpoint `874d8d17` (kernel0.3.221, epoch8),
+Reconciled 2026-10-15: implementation checkpoint `77fe2275` (kernel0.3.221, epoch8),
 with independent-review records and their exact bounded scopes in the owning logs. The last inspected
 publication coordinate is `be66902b`, with failed CI38560135778 and maintenance38677066823.
 Read-only GitHub queries reconfirm that publication coordinate and both failed runs; no new
@@ -38,6 +38,11 @@ Pet replay/economy/welcome and Garage disposal corrections also have bounded ind
 approval, including actual97 paired economy runs and real persisted/adoption journeys. Review
 finds RP-669's newer-focus race and the parent reproduces it; the renderer correction at874d8d17
 is independently approved after native/Linux host checks, not original Pet acceptance.
+The same removed-newer-focus race is reproduced and corrected in Garden menu handoff (RP-670).
+Fresh independent review approves completecc37b6d3..77fe2275 after actual affected native/Linux
+consumers. Pet status/care/Fiscal navigation and Guild/deadline fixture corrections also have
+complete bounded approvals; owning logs retain exact ranges, candidate-copy holds and evidence
+limits. These close defects/review debt, not full Garden/Garage or another playable tier.
 Four CI verification corrections have scoped approval, but the actual historical guard still
 refuses50a3a514. The proposed exact-commit/path exception mechanism is unaccepted; Marco's
 decision is requested, not inferred, and normative review remains separate.

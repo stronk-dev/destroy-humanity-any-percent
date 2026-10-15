@@ -9,8 +9,10 @@ Replay inputs take the next free wire version, and the event migration takes the
 newer focus choice even when its element disappears before the render tick. Six old-component
 native failures establish the regression; retained-focus companions pass. The observer starts
 before command callbacks and cleans up after rendering or synchronous callback failure.
-Affected native82/Linux123 checks and types/build/UI boundaries pass; fresh
-independent corrective review is pending. This changes no commands, timing, copy or kernel;
+Affected native82/Linux123 checks and types/build/UI boundaries pass. Fresh independent
+corrective review APPROVES completecc37b6d3..77fe2275 after actual four-file native/Linux
+consumer checks; exact verdict and expected-deadline exclusions are in the owning log.
+This changes no commands, timing, copy or kernel;
 SG13, authored/privacy/renewal/content and full Garden acceptance remain open.
 
 **Current privacy hold, 2026-10-14 (RP-606):** the [rights payload tranche](../platform-alignment/data-rights-current-content.md)
