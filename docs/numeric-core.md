@@ -170,6 +170,14 @@ without repairing the27 partition failures. The
 [candidate dossier](../planning/clout-v1-and-pr-interns/aggregation-candidate-research.md)
 records evidence and limits. No production algorithm or quantization policy changes.
 
+A successor [sparse exact-input prototype](../planning/clout-v1-and-pr-interns/sparse-aggregation-research.md)
+retains cancellation tails and remote rounding ties. Bounded independent-oracle
+checks agree at raw-bit level across Go/Node/three Linux browsers, but the prototype
+is unapplied. Its caller overlay still changes old payout observations and retains
+the27 partition failures. Full-domain work/correctness review, caller/version
+compatibility and an explicit follow-up contract remain required. Its proposed
+net-underflow refusal is research, not a change to current arithmetic or RP-663.
+
 An explicit retained boundary check distinguishes an out-of-domain quotient:
 `1e-8999999999999999 / 2` underflows to zero in Go, whereas pinned JavaScript
 retains raw mantissa `5`, exponent `-9000000000000000`. The client rejects that

@@ -41,6 +41,18 @@ census or infer an accepted algorithm from this negative experiment.
 The actual caller-specific temporal proof remains separate; this does not impose
 a false global summation lemma on H3c's fixed-origin search analysis.
 
+The successor [sparse exact-input study](sparse-aggregation-research.md) preserves
+those cancellation tails and remote rounding ties without walking exponent gaps.
+Fourteen edge cases,2048 independent-oracle profiles and the original pair pass;
+raw witness digests agree across native/Linux Go, Node and all three Linux browsers.
+This is an unapplied prototype, not an adopted replacement or a full-domain proof.
+Its actual Go caller overlay still changes retained payouts and leaves27 partitions
+red. Next close the caller/version/activation packet and actual workload cost before
+the explicit aggregation follow-up. Existing Company run-drift/verification-deferral
+policy is the compatibility baseline; do not invent perpetual per-run arithmetic
+forks. Separately pinned minigame engines, catalog admission and harness baselines
+need their own dispositions. H3c's temporal proof and AC6 remain independently open.
+
 ### Completed readiness studies and earlier draft steps
 
 The dated/hashed notes below preserve their original declarations and outcomes.

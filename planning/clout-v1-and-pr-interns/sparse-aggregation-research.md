@@ -1,0 +1,165 @@
+# RP-664: sparse exact-input aggregation candidate
+
+Status: unapplied arithmetic prototype, **not adoption-ready**. Baseline35011479.
+Production still uses the accepted grouped algorithm. This does not repair AC6.
+
+## Representation and proposed arithmetic
+
+Every valid nonzero normalized binary64 mantissa has unbiased binary exponent0..3.
+Therefore `q = abs(mantissa) * 2^52` is an exact integer, at most56 bits. The
+prototype decodes those bits, rather than rounding a decimal rendering of the
+mantissa. An input's exact represented value is `sign * q * 10^e / 2^52`.
+This is private arithmetic, not a new save, wire, receipt or origin protocol.
+
+Use radix `B = 10^9`. Euclidean division gives `e = 9k + r`, `0 <= r < 9`.
+Split `q * 10^r` into at most three integer radix digits starting at indexk.
+Keep positive and negative contributions in separate sparse maps, then normalize
+their nonnegative carries in ascending occupied-index order. If carry becomes
+zero, jump to the next occupied index; never walk an empty exponent gap.
+
+Compare the normalized maps from their highest digit to determine sign. Subtract
+the smaller from the larger exactly. A borrow through an empty interval yields
+one run descriptor `{first,last,digit:B-1}`, not one allocation per missing digit.
+This preserves low-order terms until cancellation is complete, including across
+different exponent groups. Exact zero returns canonical zero.
+
+### Final conversion, not intermediate float addition
+
+Let `M` be the positive sparse magnitude before division by `D=2^52`, and let
+`E_M` be its leading decimal exponent. The exact sum's normalized exponentE is
+either `E_M-15` or `E_M-16`. Decide using the integer floor of `M/10^E` againstD.
+The normalized mantissa's binary exponentk is0..3, determined by thresholds
+`D * 2^k`. Neither decision needs a dense exponent-sized integer.
+
+For rounding, extract `J=floor(M/10^(E-1))` and a sticky flag indicating a nonzero
+remainder below that decimal cut. Each query intersects at most three radix
+chunks: `E` differs from `E_M` by15 or16, so the final cut is at most17 decimal
+places below the leading digit. DivideJ by `10 * 2^k`. Compare twice its integer
+remainder with that denominator. Exact equality rounds upward when sticky is set;
+otherwise round to an even quotient. Because the denominator is even and the
+discarded fraction is less than1, no other comparison can change sign.
+
+The resulting integer significand lies in `[2^52,2^53]`; converting it to binary64
+and multiplying by `2^(k-52)` is exact. Normalize a possible decimal carry and
+apply the existing state-domain check. Existing Quantize12 is unchanged.
+No transcendental operation is used to choose the significand.
+
+Proposed domain semantics: invalid inputs, an exact nonzero sum whose normalized
+exponent is outside the state domain, or a final rounded representation leaving
+that domain returns diagnostic NaN. Recoverable intermediate overflow is allowed
+inside the integer calculation. This explicitly includes net-underflow refusal;
+it does not change or resolve the separate RP-663 division policy by implication.
+These candidate semantics and their compatibility still require normative review.
+
+### Work argument to be reviewed
+
+Forn inputs, initial digit contributions are at most3n. An accumulated digit plus
+incoming carry is below `n*B`, so outgoing carry is at mostn. Each occupied key
+therefore creates at most `digits_B(n)` extra adjacent carry positions before
+either reaching another key or exhausting carry. Sorting costsO(n log n); carry
+work and coefficient widths depend on input count, not exponent distance.
+Subtraction visits only emitted digits and adds at most one borrow-run per gap.
+The two or three rounding queries read at most three chunks each, found by binary
+search over those pieces. These are representation-derived invariants, not new
+operating budgets. An invariant failure invalidates the experiment; it is not an
+unreachable result, silent exclusion or zero payout.
+
+Exact accumulation is monotone in each input. Correctly rounding its normalized
+mantissa is monotone within each exponent interval; a carry reaches the next
+interval's lower endpoint rather than reversing order. Existing Quantize12 is
+likewise monotone. This is the proposed mathematical argument, not independently
+reviewed proof that the implementation covers every valid input or temporal
+producer regime. H3c's actual fixed-origin caller proof remains separate.
+
+## Executed evidence
+
+Declare before measurement: original RP-664 pair; fourteen empty/signed/full-range/
+tie/domain controls;2048 uint64-xorshift seed664 profiles,0..16 terms at exponents
+−32..32 with signed15-digit mantissas, adding a cancelling first-term partner
+every fourth nonempty profile. Compare raw output exactly, reverse inputs and
+verify input ownership. Check the derived digit/carry/query invariants; no sampled
+success substitutes for their general argument. No production input domain is narrowed.
+
+Independent oracles:
+
+- Go: dense big.Rat from the binary64 inputs, exact decimal normalization and
+  native correctly rounded Float64 conversion; no sparse algorithm is reused.
+- TS: bounded dense integer sum, multiplied by5^52 to form an exact finite decimal
+  expansion, then native Number parses its exact normalized text. It reuses no
+  sparse borrow, sticky-bit or significand-rounding code.
+
+Both original pair outputs become1.01245957117e1 and match the independent models.
+The candidate retains the rejected aligned reducer's tiny cancellation tail.
+Literal full-domain cases also cover a cross-exponent cancellation and long borrow,
+even/odd ties with positive/negative far-away tails, recoverable overflow and exact
+net overflow/underflow. The remote-above-half case would round differently if its
+sticky information were lost; these checks compare raw mantissa bits, not only
+canonical strings that would hide the difference.
+
+All2048 complete input/output witnesses have SHA256:
+`ef6cdc7626f91ff237961488f84f07a022b5ac746542d53dfb68fb258768047f`.
+Native Darwin/arm64 Go1.27.2, declared Linux-amd64 Go, Node, and Linux Chromium,
+Firefox and WebKit agree on that digest. Each language also passes its own dense
+oracle. Full-domain borrow uses five digit events, one run and nine rounding reads;
+the largest normalized-work sampled row has34 input chunks/20 normalized positions.
+These observed counts confirm the examples, not a new measured production budget.
+
+Cold active Decimal/vet passes0.449s. Full declared Linux-amd64 Decimal package
+passes0.751s, including named prototype populations; verbose old vectors truncate
+in tool output, so no complete per-vector skip census is claimed. Its accompanying
+Postgres exists only because the standard test target starts it; no SQL behavior
+is tested here. Node affected6412 and Linux browsers19236/15 files pass, as do
+strict types/Svelte diagnostics. Native and Linux original grouped raw census
+differs876 versus875 in the preceding aligned study; this candidate's full witness
+digest agrees. No cause is assigned to the old raw-count difference.
+
+## Actual Go caller impact, not a global patch
+
+An ignored compiler overlay substitutes only `server/decimal/aggregate.go`.
+All helper declarations match the retained test prototype after nominal
+Research→Overlay suffix substitution; its wrapper panics on internal invariant
+failure so measurement cannot silently relabel a bug as ordinary invalid data.
+Overlay SHA256:
+`f83a37cfbf80d52ad22a20db64f062b53be5a40c1c27e3b845bdc8787feba9fb`.
+
+Actual Decimal/Economy packages pass0.835/9.655s. Full Production45.140s is red:
+27 partition cases remain, the44-profile policy observer reports result drift,
+three retained clock-reference payouts change and RP-664's actual upper evaluator
+payout changes. No panic or rounding-width guard fires. No report/golden/hash is
+refreshed. Those timings are not a controlled performance comparison. This proves
+impact beyond the new helper tests, not an accepted kernel or end-to-end repair.
+
+## Current caller boundary — engineering closure still needed
+
+At35011479 there are13 direct Go and7 direct TS product calls, excluding declarations
+and imports. A global replacement reaches more than accrual:
+
+| Consumer | Current direct owner/counterpart | Compatibility question |
+|---|---|---|
+| Signed ledger net | `server/economy/ledger.go`; client replay applyLedger | Atomic refusal/receipts and restored ledgers; constructors currently have no engine/profile parameter |
+| Constant accrual | `server/production/accrual.go`; `client/src/production.ts` | Published primitive results and actual producer arithmetic |
+| Segment rate/delta | `server/production/engine.go`; client replay advance | One-shot/segmented receipts and saved transitions |
+| Lucky payout | `server/production/active_play.go`; client replay claim | Rate-derived request/cap outcomes |
+| Progress coordinates | `server/production/progress.go`; `client/src/economy-kernel.ts` | Gate/progress predicates and rounding |
+| Rate reads/simulation | `server/production/rate_projection.go`, `simulation.go` | Display/context/simulation policy consistency |
+| Catalog weight validation | `server/economy/catalog.go` | Existing stored/retuned artifact admission, not just saved balances |
+| Commons capacity | `server/commons/health.go` | Shared world aggregate and its own identity/compatibility boundary |
+| Pitch metric | `server/pitch/engine.go`; `client/src/pitch/engine.ts` | Separately pinned tenant engine1.0.0, including hack-produced fractional terms |
+| Harness reports | `server/harness/harness.go` | Report identity, retained workloads and baseline protocol |
+
+Do not invent a global compatibility fork merely because old outputs change.
+Existing Company policy already allows continuing play on a new kernel while
+recording immutable run_version_drift and excluding ranking; unmatched pinned
+verification defers. See `server/save/runepoch.go`,
+`server/replayverify/repository.go` and Run Genesis R2/R3. A genuine new kernel
+must use that actual policy, not a silent version signal or rewritten records.
+Conversely, that Company policy does not automatically dispose of separately
+pinned minigame engines, catalog admission or harness reports. Each needs its
+named compatibility disposition/proof; a kernel bump alone is not evidence.
+
+Next: close this caller/version/activation packet, measure actual workload cost,
+obtain the explicit aggregation follow-up and independent review, then implement
+and prove the affected actual Go/TS, SQL/retry and player/replay boundaries. The
+current accepted grouping recipe and production source remain unchanged. No
+new save field, domain restriction, content mint, accounting/search adoption,
+RP-663/AC6 repair, feature completion or release approval follows from this study.

@@ -4096,3 +4096,50 @@ change, numeric repair, full monotonicity/search/AC6/SQL/replay/hosted or releas
 claim. RP-664 and the original27 remain open. Next viable candidate must retain
 cancellation tails, justify full-domain work and establish lawful replay/version
 compatibility; do not repeat this rejected candidate or its positive census.
+
+## 2026-10-15 — RP-664 sparse exact-input successor, unapplied
+
+At35011479 construct a private Go/TS sparse radix prototype over exact binary64
+input coefficients. Preserve cancellation before rounding; compress long borrow
+gaps rather than visiting exponent distance. The [dossier](sparse-aggregation-research.md)
+contains the proposed domain semantics, rounding/work argument, predeclared
+population, independent dense oracles and actual caller census. This does not
+adopt arithmetic or conflate an across-ownership counterexample with time search.
+
+Fourteen literal controls cover empty/signed/full-domain cancellation and borrow,
+remote tails around even/odd rounding ties, intermediate overflow and final-domain
+refusal. All2048 seed664 bounded profiles match independent Go rational/TS exact
+decimal models at raw precision, with reversal/input-ownership/work controls.
+Original RP-664 pair matches both oracles at1.01245957117e1. Complete input/output
+witness SHA256 ef6cdc7626f91ff237961488f84f07a022b5ac746542d53dfb68fb258768047f
+agrees in native Darwin/arm64 Go1.27.2, declared Linux-amd64 Go, Node and Linux
+Chromium/Firefox/WebKit. This finite evidence does not prove every admitted input.
+
+Final `make test-go vet GO_PACKAGES='./decimal' GO_TEST_FLAGS='-count=1'` passes
+0.449s; `make test-go-ci CI_TEST_PACKAGES='./decimal' CI_TEST_FLAGS='-v'` passes
+0.751s. Verbose legacy vectors exceed tool output; named new populations, digest
+and terminal package pass are retained, not a full per-vector skip census. Node
+five affected files6412 PASS; declared focused Linux browsers19236 PASS/15 engine-
+file executions6.01s. `make typecheck` has zero errors/warnings. No hosted claim.
+
+Actual compiler overlay replaces only aggregate.go, using the same prototype
+helpers after nominal suffix renaming (byte-compared). Ignored overlay source
+SHA256 f83a37cfbf80d52ad22a20db64f062b53be5a40c1c27e3b845bdc8787feba9fb.
+`make test-go GO_PACKAGES='./decimal ./economy ./production'
+GOFLAGS='-overlay=/Users/stronk/repos/cloud-clicker/.cache/sparse-aggregation-go-overlay.json'
+GO_TEST_FLAGS='-count=1'` exits Make2: Decimal0.835s/Economy9.655s PASS,
+Production45.140s RED. Original27 partitions remain; the44-profile observer,
+three retained clock-reference pairs and the RP-664 upper payout change. No
+internal guard fires, golden/report is refreshed or performance improvement claimed.
+This unversioned overlay is an experiment, not an accepted manifest/kernel.
+
+Declared Compose inventories end empty. Only this run's tmpfs Postgres container
+is removed with the declared service command; no durable DB volume/user data is
+removed. Ignored compiler-overlay files remain. Seven-path test/dossier/docs/plan/
+ledger/log range after35011479 through this containing commit needs designated
+research review, outside Marco's corrective-code delegation. Review by: Codex
+(research implementer first filter). Recorded by: Codex. Production/kernel/vector/
+balance/CI/RFC bytes remain unchanged. RP-664, RP-663,27 partitions, H3c and AC6
+stay open. Next actual caller/version/activation and workload closure, respecting
+existing Company drift/deferral rather than inventing a legacy arithmetic fork;
+separate minigame/catalog/report identities still need their own disposition.
