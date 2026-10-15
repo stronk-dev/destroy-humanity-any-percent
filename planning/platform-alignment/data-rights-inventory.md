@@ -41,8 +41,15 @@ now joins actual HTTP producers to Account DELETE on Postgres, in both existing
 Pitch fixture populations. Account removal/access revocation succeeds, while all
 15 selected rows across six session/command/receipt/window families retain their
 SQL contents; both terminal Soul tokens remain stored. This advances the old
-seeded-only evidence for terminal sessions, not active/claimed deletion or the
+seeded-only evidence for terminal sessions, not active Soul/claimed deletion or the
 other families. It adopts no erasure/retention/export policy.
+
+The [active Pitch supplement](data-rights-minigame-soul-delete.md#current-producer-backed-active-pitch-observation--2026-10-15)
+now also deletes after one real nonterminal command, in both scaling populations.
+Session/command/create-receipt/command-receipt each remain1 → 1 identically;
+unproduced faucet/Soul rows remain absent. Access, refresh and actual command retry
+return401. This advances active Pitch evidence only, not active Soul, claimed/
+concurrent deletion, desired retention, other histories or restore.
 
 The [Guild consumer supplement](data-rights-fields-guild.md#current-producer-backed-consumer-deletion--2026-10-15)
 also joins actual composed Guild create/join/clearing to Account DELETE: the

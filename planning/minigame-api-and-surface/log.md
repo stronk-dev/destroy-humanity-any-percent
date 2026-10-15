@@ -2137,3 +2137,36 @@ this containing commit needs designated Claude review; consolidate with related
 real-service evidence. No feature acceptance, archival, release, push or deployment.
 After terminal checks remove only this turn's inspected disposable tmpfs Postgres
 service/rows; preserve durable data/cache/network. Full nine-tier goal remains.
+
+## 2026-10-15 — RP-122 active Pitch producer→deletion supplement
+
+Reuse the existing HTTP Account/Fiscal/Pitch preparation in both scaling modes,
+play one real nonterminal command, then authenticate DELETE and observe the same
+captured session/Founder identities. Keep both original terminal lifecycles intact.
+Method/results and limits live in the existing rights plan/dossier; no direct
+session/receipt/Founder-unlock seed or new product/privacy policy.
+
+Both active cases delete204/account absent/Founder archived-unlinked. Four produced
+families (session, immutable command, create receipt, command receipt) remain1→1
+SQL-content-identical. Faucet/Soul remain0→0 absent. Current active read succeeds
+before deletion; access/refresh and retry of the actual earlier command become401.
+The observer permits future erasure/modification, not a retention requirement.
+Fix absent→absent classification: exact old branch22160 falsely says removed and
+fails the new unit case; restore correction. Initial actual Postgres3186 passes.
+
+Final cold declared Postgres71788 runs both original terminal populations36.12s,
+both active populations1.32s and classifier controls, package37.526s, no selected
+skip. Command selector:
+`make test-save-integration SAVE_TEST_PACKAGES='./gameserver' SAVE_TEST_FLAGS='-run "Test(ComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration|ComposedActiveMinigameAccountDeletionIntegration|RightsRowObservation)" -v'`.
+Native Gameserver/vet84116 pass cold. Diff checked; all handles terminal. Remove
+only inspected owned tmpfs Postgres; preserve caches/network/durable data.
+
+No product, schema, migration, kernel, content, client or CI changes. Controlled
+catalog/clock evidence is not natural pacing, claimed/concurrent deletion, active
+Soul, other tenants, browser/export, retention/expiry or restore proof. RP-122
+stays open for D-008/D-009/D-015 and accepted implementation. Review by: Codex
+(test/research implementer first filter). Recorded by: Codex. Whole eight-path
+test/research/ledger/decision-evidence/log range after `144865df` through this
+containing commit needs designated Claude review with the earlier rights ranges.
+No acceptance, archival, release, push or deployment. Do not repeat these now-
+executed active/terminal populations as missing research.

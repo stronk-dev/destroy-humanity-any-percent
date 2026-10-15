@@ -1,5 +1,28 @@
 # RP-122 — Minigame, Soul and Transport rows after account deletion
 
+## Active Pitch supplement — declared 2026-10-15 at 144865df
+
+Reuse the complete existing HTTP create/Fiscal-unlock/Pitch-start preparation in
+both fixture scaling populations, then play one real nonterminal command and
+delete that account instead of continuing the terminal journey. The original
+two terminal populations remain unchanged and must still execute. No seeded
+session, receipt or direct Founder-unlock mutation may substitute for producers.
+
+Require active current-session read and populated session/create/command/command-
+receipt families before DELETE; capture all six existing family identities.
+Faucet/Soul may be empty at this earlier stage: report absent→absent as absent,
+not erasure, and never claim an active Soul population. Compare the same ordered
+SQL values and visible counts/dispositions after authenticated DELETE; do not
+assert retention or cleanup as the chosen policy. Require account removal,
+revoked access/refresh and401 for retry of the real pre-delete command. Missing-ID
+controls and the neutral classifier remain; no raw payload/token/ID/hash output.
+
+This proves a bounded active Pitch producer boundary, not claimed/concurrent
+deletion, active Soul, every tenant/history, browser rights, export, retention,
+backup restore or natural pacing. No product, migration, schema, CI, policy or
+owner choice changes. Use the existing real-Postgres lifecycle selector and
+affected package checks; update the existing dossier/ledger and owning log.
+
 ## Producer-backed supplement — declared 2026-10-15 at 6a6a32b9
 
 Extend the existing composed Pitch/Soul lifecycle after all its original outcomes,

@@ -40,12 +40,25 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 			name = "purchased_generator_scaling"
 		}
 		t.Run(name, func(t *testing.T) {
-			testComposedMinigameAPILifecycle(t, liveScaling)
+			testComposedMinigameAPILifecycle(t, liveScaling, false)
 		})
 	}
 }
 
-func testComposedMinigameAPILifecycle(t *testing.T, liveScaling bool) {
+func TestComposedActiveMinigameAccountDeletionIntegration(t *testing.T) {
+	if os.Getenv("TEST_DATABASE_URL") == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	for _, liveScaling := range []bool{false, true} {
+		name := "literal_scaling"
+		if liveScaling {
+			name = "purchased_generator_scaling"
+		}
+		t.Run(name, func(t *testing.T) { testComposedMinigameAPILifecycle(t, liveScaling, true) })
+	}
+}
+
+func testComposedMinigameAPILifecycle(t *testing.T, liveScaling, deleteWhileActive bool) {
 	t.Helper()
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
@@ -243,6 +256,39 @@ func testComposedMinigameAPILifecycle(t *testing.T, liveScaling bool) {
 			!bytes.Equal(unchanged.State, persistedStart.State) || unchanged.Revision != persistedStart.Revision {
 			t.Fatalf("Company purchase changed the active session: session=%+v err=%v", unchanged, err)
 		}
+	}
+
+	if deleteWhileActive {
+		if current.Snapshot.Phase != "playing" || len(current.Snapshot.Hand) < 4 {
+			t.Fatal("active deletion population has no playable hand")
+		}
+		requestBytes, err := json.Marshal(map[string]any{
+			"command_id": "active-delete-command", "expected_revision": current.Revision,
+			"command": map[string]any{"kind": "play_hand", "card_ids": current.Snapshot.Hand[:4]},
+		})
+		if err != nil || registry.ValidateRequest("play_minigame_command", requestBytes) != nil {
+			t.Fatal("active deletion command is not schema-valid")
+		}
+		path := httpServer.URL + "/api/v1/minigames/sessions/" + current.SessionID + "/commands"
+		played := compositionRequest(t, httpServer.Client(), http.MethodPost, path, tokens.AccessToken, string(requestBytes))
+		playedBytes := readCompositionBytes(t, played)
+		var active minigameAPIEnvelope
+		if played.StatusCode != http.StatusOK || json.Unmarshal(playedBytes, &active) != nil ||
+			active.SessionID != current.SessionID || active.Status != "active" || active.Revision != current.Revision+1 {
+			t.Fatalf("active deletion command did not produce a nonterminal session: status=%d", played.StatusCode)
+		}
+		observeComposedSessionAccountDeletion(t, db, httpServer, created.AccountID, companyIdentity.FounderID, current.SessionID, tokens, true)
+		retry := compositionRequest(t, httpServer.Client(), http.MethodPost, path, tokens.AccessToken, string(requestBytes))
+		_ = readCompositionBytes(t, retry)
+		if retry.StatusCode != http.StatusUnauthorized {
+			t.Fatal("deleted credentials can replay a retained active command receipt")
+		}
+		drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancelDrain()
+		if err := composition.Server.Drain(drainContext, clock.Time()); err != nil {
+			t.Fatal(err)
+		}
+		return
 	}
 
 	// MA-C12 is a live HTTP boundary, not only a pure replay predicate. An
@@ -918,7 +964,7 @@ func testComposedMinigameAPILifecycle(t *testing.T, liveScaling bool) {
 	}
 
 	t.Run("account_delete_observation", func(t *testing.T) {
-		observeComposedSessionAccountDeletion(t, db, httpServer, created.AccountID, companyIdentity.FounderID, current.SessionID, tokens)
+		observeComposedSessionAccountDeletion(t, db, httpServer, created.AccountID, companyIdentity.FounderID, current.SessionID, tokens, false)
 	})
 
 	drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)

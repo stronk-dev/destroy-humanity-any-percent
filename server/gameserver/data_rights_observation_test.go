@@ -22,6 +22,9 @@ type rightsRowObservation struct {
 func rightsRowDisposition(before, after rightsRowObservation) string {
 	switch {
 	case after.count == 0:
+		if before.count == 0 {
+			return "absent"
+		}
 		return "removed"
 	case after.count < before.count:
 		return "partially_removed"
@@ -50,12 +53,15 @@ func TestRightsRowObservationDistinguishesErasureFromModification(t *testing.T) 
 			t.Fatalf("disposition=%s want=%s", got, test.want)
 		}
 	}
+	if got := rightsRowDisposition(rightsRowObservation{}, rightsRowObservation{}); got != "absent" {
+		t.Fatalf("empty unproduced family falsely labelled %s", got)
+	}
 }
 
-// RP-122: actual terminal producers, current backend deletion and revoked access.
+// RP-122: actual producers, current backend deletion and revoked access.
 // All payloads stay in memory. Only counts/dispositions enter logs; SQL row JSON
 // equality is not an original HTTP-byte proof or a complete field/privacy map.
-func observeComposedSessionAccountDeletion(t *testing.T, db *sql.DB, server *httptest.Server, accountID, founderID, sessionID string, tokens account.TokenPair) {
+func observeComposedSessionAccountDeletion(t *testing.T, db *sql.DB, server *httptest.Server, accountID, founderID, sessionID string, tokens account.TokenPair, active bool) {
 	t.Helper()
 	ctx := context.Background()
 	type family struct{ name, predicate, order, id string }
@@ -92,7 +98,8 @@ func observeComposedSessionAccountDeletion(t *testing.T, db *sql.DB, server *htt
 	}
 	for index, f := range families {
 		before[index] = read(f, f.id)
-		if before[index].count == 0 {
+		mayBeAbsent := active && (f.name == "minigame_faucet_window" || f.name == "soul_recovery_sessions")
+		if before[index].count == 0 && !mayBeAbsent {
 			t.Fatalf("invalid rights population: real producer left %s empty", f.name)
 		}
 		if missing := read(f, "01986666-ffff-7000-8000-ffffffffffff"); missing.count != 0 {
@@ -101,19 +108,33 @@ func observeComposedSessionAccountDeletion(t *testing.T, db *sql.DB, server *htt
 	}
 	tokensBefore := terminalTokens()
 	live := compositionRequest(t, server.Client(), http.MethodGet, server.URL+"/api/v1/minigames/sessions/current", tokens.AccessToken, "")
-	_ = readCompositionBytes(t, live)
+	liveBytes := readCompositionBytes(t, live)
 	if live.StatusCode != http.StatusOK {
 		t.Fatal("deletion probe begins with invalid/expired access")
 	}
+	phase := "terminal"
+	if active {
+		phase = "active"
+		var current struct {
+			Kind    string `json:"kind"`
+			Session struct {
+				SessionID string `json:"session_id"`
+				Status    string `json:"status"`
+			} `json:"session"`
+		}
+		if json.Unmarshal(liveBytes, &current) != nil || current.Kind != "active" || current.Session.SessionID != sessionID || current.Session.Status != "active" {
+			t.Fatal("active deletion observation has no matching live active session")
+		}
+	}
 	deleted := compositionRequest(t, server.Client(), http.MethodDelete, server.URL+"/api/v1/account", tokens.AccessToken, "")
 	_ = readCompositionBytes(t, deleted)
-	t.Logf("RP-122 produced delete status=%d", deleted.StatusCode)
+	t.Logf("RP-122 produced phase=%s delete status=%d", phase, deleted.StatusCode)
 	if deleted.StatusCode != http.StatusNoContent {
 		t.Fatal("actual account deletion failed")
 	}
 	for index, f := range families {
 		after := read(f, f.id)
-		t.Logf("RP-122 produced family=%s before=%d after=%d disposition=%s", f.name, before[index].count, after.count, rightsRowDisposition(before[index], after))
+		t.Logf("RP-122 produced phase=%s family=%s before=%d after=%d disposition=%s", phase, f.name, before[index].count, after.count, rightsRowDisposition(before[index], after))
 	}
 	t.Logf("RP-122 produced terminal_soul_tokens before=%d after=%d", tokensBefore, terminalTokens())
 	var remaining int

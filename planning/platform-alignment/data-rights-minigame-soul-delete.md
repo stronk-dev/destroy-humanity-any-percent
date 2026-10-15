@@ -1,5 +1,36 @@
 # Minigame, Soul and Transport rows after account deletion — bounded result
 
+## Current producer-backed active Pitch observation — 2026-10-15
+
+Baseline `144865df`; method in the active supplement of the existing plan.
+`TestComposedActiveMinigameAccountDeletionIntegration` reuses the real Account,
+Fiscal unlock, Pitch create and (for the purchased-generator population) actual
+manual-earn/purchase preparation. One real play command advances the session
+nonterminally before authenticated deletion. No session/receipt or Founder unlock
+is directly seeded. The catalogs, short Fiscal timing and injected clock remain
+controlled fixtures, not natural pacing or a default browser journey.
+
+In both scaling populations, DELETE returns204 and removes the account; the
+Founder remains archived/unlinked. The active session, its one immutable command,
+one create receipt and one command receipt each remain **1 → 1 with identical SQL
+contents**, including the active status. The faucet window and Soul population
+are **0 → 0, absent**, not erased. Access/refresh and retry of the actual earlier
+command return401: retained receipt bytes do not bypass credential revocation.
+
+Use the same captured identities, ordered SQL-content comparison, missing-ID
+controls and neutral dispositions as the terminal witness. Require populated
+session/create/command/command-receipt families and an actual matching active
+current-session read; the two explicitly earlier-stage families may be absent.
+Native22160 demonstrates the old classifier mislabels absent→absent as removed;
+the corrected classifier and initial real-Postgres3186 pass both active cases.
+The owning Minigame API log records the final combined active/terminal population,
+checks and pending review range. No product/schema/migration/policy/CI changes.
+
+This closes only the active Pitch producer observation gap. Claimed/concurrent
+deletion, active Soul, other tenants, full histories, browser rights, expiry,
+export and backup restore remain unproved. D-008/D-009/D-015 still choose policy;
+the test accepts future removal or modification instead of requiring retention.
+
 ## Current producer-backed terminal observation — 2026-10-15
 
 Source baseline `6a6a32b9`; method declared in the current supplement of
@@ -42,7 +73,8 @@ the pending review range. Earlier99229 also passes before the explicit token-cou
 supplement. No production/schema/migration, content, privacy policy or CI change.
 
 This replaces the old *terminal producer* blind spot below, not the seeded active-
-session evidence. Active/claimed deletion, other tenants/modes, Guild, Transport,
+session evidence. Active Pitch is separately covered above; claimed deletion,
+active Soul, other tenants/modes, Guild, Transport,
 all nested field/history variants, browser deletion, export, expiry and backup
 restore remain separate. D-008/D-009/D-015 still decide the permitted outcome and
 disclosure. Denied access cannot honestly be described as erasure of these records.
