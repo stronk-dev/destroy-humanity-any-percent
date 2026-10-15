@@ -59,6 +59,13 @@ UUID references per family. Access is revoked; nested identity is not erased.
 This closes that source-only observation gap, not RP-120's policy/repair. Other
 Guild/shared-party payloads, fuller histories and delete/restore remain open.
 
+The [HTTP credential restore supplement](data-rights-restore-resurrection.md#current-http-credential-observation--2026-10-15)
+now joins real Account HTTP producers/deletion to encrypted full-dump restore:
+only B_pre revives the subject's original access, refresh and recovery credentials,
+all bound to the original Founder. B_post preserves denial; a bystander remains
+healthy in both targets. This uses fixture initialization, unchanged keys and a
+frozen valid-token clock, not expiry/rotation or full gameserver/clean-host proof.
+
 ## Original denominator and controls — 2026-09-23
 
 The ordered `server/save/migrations/00001`–`00074` Up chain creates 61 tables and drops the
@@ -129,7 +136,7 @@ game tables' SQL columns. Nested JSON/binary/text payloads and non-DB stores are
 | Surface | Current behavior and evidence boundary |
 |---|---|
 | Browser `localStorage` | Four exact key families are mapped in [`data-rights-browser.md`](data-rights-browser.md): bootstrap retry key, credential document, per-Founder transport positions and per-Founder personal-best/split history. `GameUIRuntime` persists the one-time recovery code alongside access/refresh tokens without a current display/copy/download consumer (RP-123); no player delete/export action or local account-deletion cleanup exists. No other production client storage API was found in source. This is device-local state, not a Postgres cascade. [V for source/unit test] |
-| Encrypted off-host backups | The exact fields/sinks are in [`data-rights-operator.md`](data-rights-operator.md). Six-hour and pre-upgrade encrypted full-DB backups retain every six-hour object seven days and one daily through day 30, but newest valid/unresolved pre-upgrade copies are protected beyond that; 30 days is not a hard maximum. Full pre-deletion restore can recreate an account without a deletion replay (RP-125, source-derived). Local real-Postgres empty/populated backup→restore passes, not a deletion/restore or supported-host R-006 witness. [V for code/tests, P for host] |
+| Encrypted off-host backups | The exact fields/sinks are in [`data-rights-operator.md`](data-rights-operator.md). Six-hour and pre-upgrade encrypted full-DB backups retain every six-hour object seven days and one daily through day 30, but newest valid/unresolved pre-upgrade copies are protected beyond that; 30 days is not a hard maximum. RP-125's2026-10-15 local HTTP→DELETE→encrypted restore now revives original credentials only from B_pre, with selected SQL identity and healthy-bystander controls; no post-restore deletion replay exists. Fixture initialization, unchanged keys/frozen valid-token clock and Linux-amd64 component tests are not supported-host R-006 or complete gameserver rights proof. [V for code/tests, P for host] |
 | Application/security journal | All seven services use tagged journald; gameserver structured calls inspected are bounded, with a 14-day measurement/budget contract that must alert before pressure can evict evidence early. No raw-IP producer is shipped. Actual host retention/purge and every container's message fields remain unobserved; incident extracts need an access/disclosure rule. [V for source, P for host] |
 | Private metrics/alerts | Prometheus is private with explicit 30-day TSDB retention; Alertmanager's persistent volume has no explicit retention flag in the template. Inspected gameserver/host metric labels are bounded, not a proof about every scraped collector or receiver. Alert/metrics volumes remain operator data and clean-host validation is pending. [V for source, P for host] |
 | Release/operator artifacts | Release/rotation JSONL ledgers store identifiers, digests, times, outcomes and a caller-supplied `operator` identifier; R-006/recovery artifacts contain host/tool/version/timing and population hashes rather than full rows. The operator field lacks an adopted lifecycle (RP-126). Exact retention/access/disclosure and clean-host R-006 evidence remain open. [V for code, P for host] |

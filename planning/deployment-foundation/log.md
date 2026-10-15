@@ -6931,3 +6931,38 @@ adoption, archival, publish/push or whole1.0 claim. Review by: Codex
 (implementer first filter); Recorded by: Codex. Whole test/docs/plan/ledger/log
 range after `21734b10` through this containing commit needs designated Claude
 review, consolidatable with the previous DP7 corrections. Earlier debt remains.
+
+## 2026-10-15 — RP-125 HTTP credential revival after full-dump restore
+
+Research under the existing rights inventory plan, not a retention/deletion ruling.
+The new backup integration test creates subject/bystander and credential pairs via
+actual Account HTTP, takes encrypted B_pre, HTTP-deletes the subject, proves account
+absence/credential denial, takes B_post and restores each into a fresh test target.
+Before token rotation/login can mutate the target, five selected credential SQL
+families must match the actual chosen pre/post snapshot. Healthy bystander and
+wrong-code/invalid-token refusals prevent dead-server/always-authorize observations.
+Every revived credential must read the original Founder. Payloads/keys/IDs/tokens
+stay private; the existing dossier holds the counts/status table and all limits.
+
+Final root `make test-deployment-backup`95335 passes all eight integration functions
+cold, no skips, using its declared Linux-amd64/Postgres16 image/toolchain and real
+pg_dump/age/pg_restore. New function2.50s; all seven existing tests remain intact.
+Initial36645 passed before adding credential-row binding. Source after DELETE:
+old access/refresh/recovery401; B_pre restores all three to200 for the original
+Founder; B_post retains401. Bystander200 in all states. Final native package/vet
+78814 pass; native DB skips are not integration credit. Diff/whitespace checked.
+
+The fixture uses the existing constructor-only catalog, fixture epoch/manifest,
+unchanged synthetic keys and frozen valid-token clock. It is not the gameserver's
+foundation/Guild initializer, gameplay, bootstrap retry, expiry/rotation, Caddy,
+off-host storage, RPO/RTO or exact-release clean-host proof. No production, policy,
+schema, migration, kernel, CI or content bytes change. RP-125 stays open for
+D-009/D-015 and an accepted reconciliation contract; revival is observed, not
+required as future policy or described as a public authentication bypass.
+
+All handles terminate; the initially empty backup-test project automatically
+removes its owned tmpfs databases and network. No durable/user data or Go caches
+removed. Review by: Codex (test/research author first filter). Recorded by: Codex.
+Whole seven-path test/plan/dossier/inventory/decision-evidence/ledger/log range
+after `42ce00f0` through this containing commit needs designated Claude review.
+No feature acceptance, archival, publication, deployment or release promotion.

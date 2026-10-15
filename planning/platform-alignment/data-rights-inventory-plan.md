@@ -1,5 +1,26 @@
 # D-008/D-009/D-015 — current data-rights inventory plan
 
+## HTTP credential restore supplement — 2026-10-15 at 42ce00f0
+
+Extend RP-125 with actual Account HTTP create/session/delete and real encrypted
+pg_dump/pg_restore. Use the backup package's constructor-only catalog and fixture
+manifest/epoch, synthetic unchanged signing keys and a frozen valid-token clock;
+do not claim the gameserver's foundation initializer, Guild participation, real
+gameplay, key rotation/expiry, Caddy or an exact clean-host release artifact.
+
+Create a subject and healthy bystander through HTTP, retain credentials privately,
+take B_pre, DELETE the subject through HTTP, verify its account is gone and old
+access/refresh/recovery are refused, then take B_post. Restore each into the
+declared fresh test target and rebuild its Account API. Observe old subject
+access/refresh/recovery outcomes and account presence; preserve a successful
+bystander read in both arms and reject wrong credentials. Any revived credential
+must reach the original Founder, not merely return200. Admit only actual200/401
+observations; other statuses invalidate the measurement. Report counts/statuses,
+never IDs, credentials, raw bodies, URLs or keys. This records behavior, not a
+requirement that old credentials should revive or a retention/deletion ruling.
+Bind the restored account/Founder/session-family/session/access-token SQL rows
+to the actual pre/post snapshot before HTTP observations can rotate/create tokens.
+
 Predeclared 2026-09-23. This is desk research for owner decisions, not an accepted retention
 policy, implementation authority, privacy notice or legal conclusion. The product coordinate and
 exact migration endpoint must be recorded in the result before any current-state claim.

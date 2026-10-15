@@ -1,5 +1,46 @@
 # RP-125 — retained current-HEAD backup/delete/restore witness
 
+## Current HTTP credential observation — 2026-10-15
+
+Baseline `42ce00f0`; method in the HTTP credential supplement of
+[`data-rights-inventory-plan.md`](data-rights-inventory-plan.md).
+`TestHTTPDeletionBackupRestoresCredentialAccessIntegration` creates the subject,
+bystander and both credential pairs through actual Account HTTP routes. It takes
+encrypted B_pre, deletes the subject through HTTP, verifies account removal and
+credential denial, then takes B_post. Real pg_dump/age/pg_restore restores each
+into the declared fresh test target; a newly constructed Account API reads it.
+
+| Observation | Subject account | Original access | Original refresh | Original recovery code | Bystander access |
+|---|---:|---:|---:|---:|---:|
+| Source after HTTP DELETE204 | 0 | 401 | 401 | 401 | 200 |
+| Restore B_pre | 1 | **200** | **200** | **200** | 200 |
+| Restore B_post | 0 | 401 | 401 | 401 | 200 |
+
+Every revived credential reaches the original Founder; a200 alone is insufficient.
+Wrong recovery/access credentials refuse in every observed state. Before restored
+HTTP can rotate/create tokens, five ordered SQL populations (accounts, Founder
+links, session families, sessions and access tokens) must match the actual selected
+pre/post snapshot exactly. Private rows/keys/codes/tokens stay in memory or owned
+secret fixtures; logs contain counts/statuses only. The observation permits future
+denial of restored credentials rather than requiring revival as desired policy.
+
+Final `make test-deployment-backup`95335 passes all eight integration functions
+cold on the declared Linux-amd64/Postgres16 service, no skips; new HTTP observation
+2.50s. Initial36645 also passes before adding exact credential-row binding. Final
+native package/vet78814 pass; the owning Deployment log holds review/cleanup.
+The seven original integration functions remain intact.
+
+The catalog is the backup fixture's constructor-only resolver, the epoch/manifest
+are fixtures, signing/bootstrap keys are synthetic and unchanged, and the clock is
+frozen within token validity. This does not prove revival after expiry/key rotation,
+the real gameserver foundation/Guild initializer, gameplay, Caddy, off-host storage
+or a supported clean-host release. No production/policy/migration/schema changes.
+It does establish current HTTP credential revival after restoring an older full
+dump, not merely account-row resurrection. Deletion reconciliation after restore
+remains absent and D-009/D-015 remain unruled; no legal conclusion is inferred.
+
+## Historical repository-level observation — 2026-10-04
+
 **Coordinate:** product source `54ba0124`, 2026-10-04. **Status:** executed repository-level
 behavior observation, not a retention ruling or clean-host release proof. The retained test is
 `TestPreDeletionBackupRestoresDeletedAccountIntegration` in
