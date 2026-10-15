@@ -14,6 +14,9 @@ and `aaf78306^..aaf78306` (RP-501/real-boundary queued-Claim regression).
 The owning log records fresh Codex provenance, actual native/SQL journey and the initial
 Firefox harness failure. Only these corrections leave the pending-review queue; original
 feature acceptance, other review debt and held contracts remain separate.
+Parent verification also executes the same two affected files in declared Linux Firefox:
+528 pass/five performance exclusions. This supplements execution coverage, not the designated
+review scope, native startup repair, intermittent-failure closure or full CI acceptance.
 
 2026-10-15 GS0.2 correction (RP-667): the legacy intent response now uses the
 generated transport's existing fatal UTF-8 JSON decoder. Twelve old-source cases

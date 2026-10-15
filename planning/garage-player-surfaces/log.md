@@ -7368,3 +7368,23 @@ archival or release approval. Other review debt and held contracts remain separa
 Native/DB slots released after terminal cleanup and zero other DB sessions/runners. Exact
 disposable game-ui-postgres service with main fixture rows is handed to the Pet reviewer
 for coordinated cleanup; no durable volumes/caches removed by this reviewer. No publication.
+
+## 2026-10-15 — Linux Firefox supplement for the approved Garage corrections
+
+Verification by: Codex parent (executed check, not additional designated approval).
+Recorded by: Codex. At clean `9d320493f2904363c82cfc3cbc2606ff63981bbe`, run
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/garage-surfaces-browser.test.ts
+test/game-ui-screens-browser.test.ts --project=firefox'`. Initial Docker socket denial executes
+no tests; authorized declared command36697 terminates exit0: two files,528 pass/five
+performance-only exclusions,99.27s runner duration, including queue/read/focus/feedback controls.
+Cold image/setup, pinned Playwright1.62.0-noble, CI=true and ten-minute KILL containment remain
+unchanged. Apt installs arm64 packages; this is the declared Linux/ARM64 environment, not a
+native supported-release host or hosted AMD64 performance estimate. Concurrent review work
+also ran on the machine. No test, assertion, retry, timeout, workflow or source changes.
+
+The preceding native Firefox connection failure remains failed/unavailable; this does not
+repair that launch environment or attribute the earlier RP-637 intermittent failure. Bounded
+Linux execution supplies the missing selected Firefox coverage, not a full browser/performance,
+SQL/player journey, CI, feature or release pass. Tool stdout is partly truncated; terminal
+two-file/count/exit summary is retained, not a full individual-case transcript. The completed
+--rm container is absent in actual declared Compose ps; no manual cache/volume cleanup.
