@@ -7,21 +7,24 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-15):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Implementation checkpoint `7ad33db8`, kernel0.3.217, epoch8: still Garage integration/hardening,
+Implementation checkpoint `11478e9d`, kernel0.3.217, epoch8: still Garage integration/hardening,
 incomplete v0.1, with substantial world/combat/Tier3–8/final-ending construction ahead. At this
-coordinate89 local commits follow published `be66902b`; fresh GitHub metadata confirms the
-same failed CI38560135778 and newer failed maintenance38677066823. Later local work is not
-in either run. The new retained maintenance artifact is incomplete and actually rejected by
+coordinate, local corrective-review records continue in the owning logs. Last inspected
+publication is `be66902b`, failed CI38560135778 and maintenance38677066823; no remote-main
+requery or new hosted execution is claimed here. Later local work is not in either run.
+The retained maintenance artifact is incomplete and actually rejected by
 the validator; the CI log owns exact phase results. The historical
 guard and27 partition failures remain blockers; local composed/browser passes are not full CI.
 
-The last full composed player/Postgres target at `c8ed9421` passes, requiring actual live Guild-input
-Go/TS replay with positive idle/lifetime and zero-producer/omission/duplicate controls. Scoped
+The full composed player/Postgres target in RP-667 (39981), source committed at11478e9d,
+passes main/Cosmetic/Reputation/Clout/Garden/Tier2 and socket/process-loss recovery with fresh
+production builds; the owning Garage log distinguishes controlled data and output limits. Scoped
 API behavior, repeated DB fixtures, populated archives and data-rights observations advance
 correctness/evidence, not another playable tier or release. Current-run cohort authorization,
 Route expiry, query decoding and source-version-safe simulation are newer bounded repairs.
-Owning logs hold exact ranges and
-review debt; the current-state overview distinguishes those proofs from natural progression,
+Fresh independent corrective reviews close only their named API/transport/CI, input and
+Deployment safety ranges, not new-feature or normative acceptance. Owning logs hold exact
+ranges and remaining debt; the overview distinguishes those proofs from natural progression,
 full feature acceptance and clean-host release evidence.
 Use [current next moves](#current-next-moves)
 and the owning accepted RFC plans for execution. The highlighted engineering proposals
@@ -2079,8 +2082,9 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Reconciled at implementation source `7ad33db8` (2026-10-15). The intervening API, transport, simulation and
-Deployment repairs improve existing paths/proofs; no additional playable tier or milestone
+Reconciled at implementation source `11478e9d` (2026-10-15), with subsequent bounded
+independent-review records in the owning logs. API, transport, simulation and Deployment
+repairs improve existing paths/proofs; no additional playable tier or milestone
 is completed. The five original query/epoch/board/route/router API reviews now have complete
 CHANGES REQUIRED dispositions; later corrections and implementation ranges still need review.
 Combat's structural decoding remains an isolated foundation increment.

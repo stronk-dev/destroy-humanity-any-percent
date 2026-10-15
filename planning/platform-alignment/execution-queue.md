@@ -7,7 +7,8 @@ their independent review obligations remain live.
 
 ## Current action — 2026-10-15
 
-Whole-product rollup coordinate `7ad33db8`, kernel0.3.217, epoch8; bounded work is in the
+Whole-product implementation coordinate `11478e9d`, kernel0.3.217, epoch8; later review
+records and bounded work are in the
 owning logs below. Whole-product status and evidence limits
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
 nine-tier goal remains active; no new playable tier or release was completed.
@@ -39,15 +40,17 @@ nine-tier goal remains active; no new playable tier or release was completed.
 - **READY FOR DESIGNATED REVIEW — consolidate the remaining exact ranges:** Marco's
   2026-10-15 delegation permits fresh independent Codex reviewers for outstanding
   corrective-code reviews only. The owning logs now record bounded API/transport/CI,
-  intent-decoding, Combat-input and Deployment backup/operator corrective approvals;
+  intent/HTTP/source decoding, compatibility, Combat/Headcount inputs, certified payout
+  identity and Deployment backup/operator corrective approvals;
   do not restart them or extend them to adjacent work. New-feature acceptance,
   research/normative specification review and product choices retain their existing
   gates. Feature-owned logs identify the remaining complete ranges, including
   archive/fixture and R-012 live-input work. Implementer checks are not designated
   verdicts; review prevents acceptance/archival, not other accepted work.
-- **LOCALLY EXECUTED — affected Docker/SQL/browser/player checks:** latest whole composed batch
-  `c8ed9421` passes the target, including positive idle/lifetime and actual SQL→Go/TS
-  Guild replay; `b45dcd1d` completes the Linux browser phases. Backup/restore, populated archive
+- **LOCALLY EXECUTED — affected Docker/SQL/browser/player checks:** RP-667 whole composed
+  run39981, correction committed at11478e9d, passes with fresh production builds;
+  its affected three-engine Linux browser population also passes. Prior whole Linux phases,
+  positive idle/lifetime SQL→Go/TS Guild replay, backup/restore and populated archive
   and reused-Guild-fixture checks have their own scope in the owning logs. Do not repeat completed
   populations for reassurance or infer that the full server/history/hosted gates passed.
 - **HELD — clean-host artifact/release and current-source hosted gates:** exact bundles, author

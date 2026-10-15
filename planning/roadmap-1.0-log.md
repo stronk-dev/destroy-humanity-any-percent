@@ -5429,3 +5429,29 @@ normative-specification acceptance, archival waiver or release/publication autho
 Each verdict must still name actual reviewer/recorder, exact complete range,
 executed evidence and limits. Existing debt is not silently approved. No product
 or tests change in this policy record; verify the diff against the received ruling.
+
+## 2026-10-15 — Consolidated corrective reviews and current verification
+
+At review-record checkpoint `6b8bcb8a`, implementation remains `11478e9d`,
+kernel0.3.217/epoch8: incomplete Garage, no new playable tier or release. Fresh
+independent reviewers approve nine further exact corrective scopes: five API
+exclusive-union cases, two HTTP/evidence encoding cases, certified minigame payout
+identity and Headcount role-ID validation. Owning API/Platform/Headcount logs name
+full ranges, historical-source regressions, actual SQL/race checks and limitations.
+Prior intent/CI/transport/Deployment/Combat approvals remain separately bounded;
+feature construction, research/normative adoption and other debt are not approved.
+
+Reconcile current overview/roadmap/queue once: latest full Node and composed
+evidence now points to RP-667, not older runs; remove stale awaiting-Claude claims
+only for approved scopes. Published-job evidence retains its last-inspected source,
+not a fresh remote-main/latest-run claim. The real broad Production run still has
+27 partitions failing; kernel50a3a514 remains red. No push, assertion/budget change,
+release promotion or shortened objective. Next arithmetic work must respect both
+Numeric Core and Deterministic Aggregation's explicit contracts before changing
+RP-664's confirmed algorithm; accounting/search drafts remain unaccepted.
+
+Verification of this editorial checkpoint: compare status claims with exact owning
+verdicts and executed populations, inspect diff/anchors/paths and whitespace. No
+software rerun solely for Markdown. All test resources reported removed are only
+review-owned disposable containers/rows; no durable/user data or other services
+removed. Full nine-tier1.0 scope and all remaining release criteria stay active.
