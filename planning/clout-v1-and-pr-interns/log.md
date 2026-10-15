@@ -4885,3 +4885,41 @@ balance, fixture/golden, algorithm/adoption or normative text changed. Review by
 research commit awaits research review outside the corrective-only delegation. Next remains
 the general reachable-prefix/quantization/ledger argument or separately adopted arithmetic
 route, not a larger midpoint census. All handles terminal; no Docker resources for this probe.
+
+## 2026-10-15 — Source ownership, legacy encoding and writer guard corrections approved
+
+Review by: /root/clout_admission_guard_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcription. APPROVED all3
+bounded corrections, complete contiguous e4054647746af3a09683252851a3027dea1d3407-exclusive
+through a7e33b73a39a435157c7049a8d13abdd68a63c4d-inclusive, all16 changed paths:
+ed129ec5ec08c2835758919c18385198ce127a21/RP-538/CV1,
+e7ad35910cd027faf365b38911330a12ede4471a/RP-539/CV4,
+a7e33b73a39a435157c7049a8d13abdd68a63c4d/RP-537/AC4. All code/tests/docs/records and
+3 markers inspected: real admission changes187/188; guard-only batch no bump. No balance,
+schema/migration/workflow/authored-copy change, new mechanic or original feature approval.
+
+Independent old Go loader overlay reproduces4 collision refusals with2 distinct-ID controls.
+Old TS shim bound to e4054647 reproduces4 ownership+9 legacy refusals,9 selected controls pass.
+Old Gaia helper fails6 parenthesis/address cases;3 direct-write/2 ordinary-read controls pass.
+Its failure on new codec baseline is NOT further old-regression evidence: old collector
+excluded the codec. Corrected typed codec cases and actual collected-source mutations test
+the new boundary. No tracked mutation; ignored read-only shims/overlays retained.
+
+Actual current source9a551e61: cold economy/save/decimal/kernel81444 and full multiplier/
+achievements/replaycatalog/routes28225 pass, Decimal vectors included. Cold four Gaia/16legacy/
+real Founder codec8790 passes; scanner345 non-test sources, nonzero v17 values1/999/
+MaxExactInteger retain bytes and existing v18 control passes. Actual activation/derivation/
+formula-attainment/carry/receipt3019 passes. Initial dependency selectors ran0: only full28225
+gets credit there. Node74054 passes6617 across8 actual files; nonexistent initial axis-stack-
+vectors selector gets no credit, corrected axis-formula-vectors executes. Declared Linux
+ARM64 browser82813 passes327/15engine-file populations, all3engines. Vet/types0/0/build/API/
+formulas/client boundary/gofmt/complete-range whitespace pass. Wrong first old-TS config path
+and sandbox-denied browser attempt execute no tests; corrected invocations supply evidence.
+
+Regression/guard files and TS ownership loader remain endpoint-identical. Later Go admission
+and TS replay changes retain these exact guards; activation discloses historical replay-source
+drift, not a fresh historical checkout. No fresh SQL/composed player/hostedAMD64/full CI,
+whole-program alias/reflection/complete reward-union/AC4/full Clout/archival/release approval.
+Original P1–P5 negatives,27 accounting failures, history guard and research/adoption holds
+stay untouched. All handles terminal; reviewer edits/commits no tracked bytes, disposable
+browser gone, original2BuildKit preserved. These three bounded ranges leave corrective debt.

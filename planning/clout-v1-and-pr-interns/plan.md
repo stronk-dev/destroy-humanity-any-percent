@@ -8,6 +8,12 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+Fresh independent Codex APPROVES complete contiguous e4054647..a7e33b73, all16 paths:
+RP-538 source ownership, RP-539 legacy encoding refusal and RP-537 writer/codec guard.
+Owning log records actual old-source failures, cold Go/Node/Linux checks and exact limits;
+this closes those corrective reviews, not the original P1–P4 negative feature dispositions,
+whole-program/reward proof,27 accounting failures or full Clout/content acceptance.
+
 RP-536 contained cap-presentation correction is independently approved across complete
 30050a93..373396d4. Old-panel16 failures and corrected Linux24 correction cases execute;
 owning log records actual complete axis/consumer checks. Combined screens run retains separate
