@@ -43,7 +43,11 @@ composition that bypasses environment decoding. Any other ID set fails startup.
 Composition loads the policy from the content root
 (the runtime content closure stages `balance/api/phase0.json`). It mounts every public registry
 operation under `/api/public/v1/` beside the account routes, behind the shared request-ID
-middleware, and fails composition on a missing or invalid policy or cursor pair. The development
+middleware, and fails composition on a missing or invalid policy or cursor pair. That middleware
+wraps both API surfaces, including authenticated success/authentication/router errors, using
+the API policy's request-ID grammar and bounds. Nested public handlers reuse the resolved ID;
+the wrapper does not merge public and Account limiters or alter JSON bodies. Request/access
+logging is not implemented by this header/context wrapper. The development
 profile requires an inline `CLOUD_CLICKER_CURSOR_KEY`, bound to `k1`, which is rejected in
 production. Secret paths must be absolute, normalized and
 under `/run/secrets`; files may have one final newline but no surrounding or embedded whitespace.

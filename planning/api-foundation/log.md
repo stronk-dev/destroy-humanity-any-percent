@@ -3374,3 +3374,48 @@ designated Claude review, consolidatable with related API work. After terminal
 checks remove only this turn's inspected tmpfs Postgres test service/rows; preserve
 durable data/cache/network. Prior numeric/CI, author/owner and nine-tier gates stay
 open. No acceptance, archival, content mint, push or deployment.
+
+## 2026-10-15 — RP-642 shared API request IDs and real error-budget isolation
+
+A4/C16/C20 require request-ID echo across the API, not only PublicRead. The new
+actual HTTP/Postgres probe first fails4607; diagnostic30329 isolates a successful
+get_founder200 with no header. Public error/cache checks already pass. Extract the
+existing resolution/context into httpapi and wrap both composed surfaces with the
+same operational policy. Public nesting reuses the resolved context; no new limiter,
+authentication/body, schema/pin, gameplay/kernel or balance authority is introduced.
+After that repair41531 exposes my fixture's incorrect founder_id expectation;
+the actual owned profile uses id. Correct that field, not the production response.
+
+Extend the existing composed socket/clearing/GC parent, not a second service
+framework. Real private/unknown run reads and invalid queries consume an exact
+fresh forwarded-IP burst; exhausted errors/uncached success return429, authorized
+304 and a second IP remain valid. Authenticated Founder success,401 and router404
+echo IDs. The development Account proxy setting is zero: separately exhaust the
+actual unforwarded HTTP peer's public budget before a201 Account creation and
+SQL Account→Founder linkage check, retaining no-store. Earlier requests already
+spent part of that peer bucket; only the fresh-IP loop asserts the exact burst.
+
+Final native3570 passes HttpAPI/PublicAPI/PublicRead/Gameserver/Account plus vet;
+race79043 passes the first three. API generation is byte-unchanged. Declared
+Postgres97933 passes14 Account parents12.213s and8 Gameserver parents63.150s,
+including socket revocation, historical public evidence, proxy/origin, Garden and
+both Pitch lifecycle populations. One explicit one-minute cleanup-runtime skip
+remains its separate lane; the three HTTP-only packages select no Integration
+tests and are not counted as SQL proof. Shared-ID units cover six status classes,
+64-byte IDs, invalid/missing/overlong generation, one entropy draw across nesting,
+trusted-context reuse and fail-before-handler entropy refusal. RP-643 records that
+last control's retained plain-text500, not complete typed-error/logging conformance.
+
+Critical oracle control71784 uses a Go compile overlay to remove only error
+response admission; no checked-out production byte changes. The real new subtest
+fails immediately at a private-run404 where429 is required (Make2). Remove the
+owned two-file overlay; normal cold Postgres14484 then passes the whole parent
+1.68s and its new subtest0.08s. Format/diff checked. After terminal checks remove
+only this turn's inspected tmpfs Postgres service/rows; preserve durable data,
+networks/caches. No Caddy/clean-host, pre-reader work bound, browser/whole-CI claim.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete source/
+tests/docs/ledger/plan/log range after `5a88bf04` through this containing commit
+needs designated Claude review, consolidatable with RP-641. Logging/RP-643,
+earlier review, numeric/CI, author/owner and full-nine-tier gates remain. No
+feature acceptance, archival, mint, push or deployment.

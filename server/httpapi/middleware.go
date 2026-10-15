@@ -3,6 +3,7 @@ package httpapi
 
 import (
 	"container/list"
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"errors"
@@ -173,6 +174,41 @@ func NewRequestIDs(pattern string, maxBytes int, random io.Reader) (*RequestIDs,
 
 func Phase0RequestIDs(pattern string, maxBytes int) (*RequestIDs, error) {
 	return NewRequestIDs(pattern, maxBytes, rand.Reader)
+}
+
+type requestIDContextKey struct{}
+
+// RequestID is the already resolved HTTP identity, never a raw caller header.
+func RequestID(request *http.Request) string {
+	if request == nil {
+		return ""
+	}
+	id, _ := request.Context().Value(requestIDContextKey{}).(string)
+	return id
+}
+
+// WithRequestID is independent of authentication, caching and rate limiting.
+// Nested mounts reuse the resolved context, avoiding a second random draw or
+// different ID for one response. Grammar/bounds remain supplied by the owner.
+func (ids *RequestIDs) WithRequestID(next http.Handler, clock func() time.Time) http.Handler {
+	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		if ids == nil || next == nil || clock == nil || request == nil {
+			http.Error(response, "internal invariant", http.StatusInternalServerError)
+			return
+		}
+		id := RequestID(request)
+		if id == "" {
+			var err error
+			id, err = ids.Resolve(request.Header.Get("X-Request-ID"), clock())
+			if err != nil {
+				http.Error(response, "internal invariant", http.StatusInternalServerError)
+				return
+			}
+			request = request.WithContext(context.WithValue(request.Context(), requestIDContextKey{}, id))
+		}
+		response.Header().Set("X-Request-ID", id)
+		next.ServeHTTP(response, request)
+	})
 }
 
 func (ids *RequestIDs) Resolve(candidate string, now time.Time) (string, error) {

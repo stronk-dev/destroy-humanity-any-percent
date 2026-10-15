@@ -246,6 +246,9 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		"account_id": created.AccountID, "recovery_code": created.RecoveryCode, "access_token": tokens.AccessToken,
 		"refresh_token": tokens.RefreshToken, "founder_id": founder.ID, "company_stream_id": company.StreamID,
 	})
+	t.Run("public_error_budget", func(t *testing.T) {
+		assertComposedPublicErrorBudget(t, db, httpServer, tokens.AccessToken, founder.ID, company.StreamID)
+	})
 	if uiSnapshot.ConstantsHash != composition.CurrentHash || uiSnapshot.EvaluatedThrough != clock.Time().UnixMilli() ||
 		uiSnapshot.Revision != 1 || uiSnapshot.Run.FounderID != founder.ID || uiSnapshot.Run.RunSeq != 1 ||
 		uiSnapshot.ManualAction.ID != "manual.click" || !reflect.DeepEqual(generatorIDs(uiSnapshot.Generators), []string{
@@ -1706,6 +1709,143 @@ func assertComposedPublicEpochs(t *testing.T, server *httptest.Server) {
 	unknown := compositionRequest(t, server.Client(), http.MethodGet, server.URL+"/api/public/v1/account", "", "")
 	if unknown.StatusCode != http.StatusNotFound || responseBody(unknown) != "{\"category\":\"unknown_id\",\"detail\":\"route\"}\n" {
 		t.Fatalf("unknown public route status=%d", unknown.StatusCode)
+	}
+}
+
+// Same real HTTP peer, distinct forwarded identities under the declared one-hop
+// policy. The parent clock is frozen: neither network speed nor sleeps refill
+// the bucket. Private-run refusals use the actual repository, not a reader stub.
+func assertComposedPublicErrorBudget(t *testing.T, db *sql.DB, server *httptest.Server, token, founderID, companyID string) {
+	t.Helper()
+	policyJSON, err := os.ReadFile(filepath.Join(filepathRoot(t), "balance/api/phase0.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	policy, err := publicapi.LoadPolicy(policyJSON)
+	if err != nil {
+		t.Fatal(err)
+	}
+	const exhaustedIP, otherIP = "198.51.100.70", "198.51.100.71"
+	get := func(path, ip, etag, accessToken string) (*http.Response, []byte) {
+		t.Helper()
+		request, err := http.NewRequest(http.MethodGet, server.URL+path, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		request.Header.Set("X-Forwarded-For", ip)
+		request.Header.Set("X-Request-ID", "composed-public-budget")
+		if etag != "" {
+			request.Header.Set("If-None-Match", etag)
+		}
+		if accessToken != "" {
+			request.Header.Set("Authorization", "Bearer "+accessToken)
+		}
+		response, err := server.Client().Do(request)
+		if err != nil {
+			t.Fatal(err)
+		}
+		body := readCompositionBytes(t, response)
+		if response.Header.Get("X-Request-ID") != "composed-public-budget" {
+			t.Fatalf("composed %s status=%d request ID=%q", path, response.StatusCode, response.Header.Get("X-Request-ID"))
+		}
+		return response, body
+	}
+	epochs, _ := get("/api/public/v1/epochs", otherIP, "", "")
+	etag := epochs.Header.Get("ETag")
+	if epochs.StatusCode != http.StatusOK || etag == "" {
+		t.Fatal("valid epoch representation unavailable for cache control")
+	}
+	privateRun := "/api/public/v1/runs/" + companyID + "/1/genesis"
+	unknownRun := "/api/public/v1/runs/" + companyID + "/999/genesis"
+	cases := []struct {
+		path string
+		code int
+		body string
+	}{
+		{privateRun, 404, "{\"category\":\"unknown_id\",\"detail\":\"run\"}\n"},
+		{unknownRun, 404, "{\"category\":\"unknown_id\",\"detail\":\"run\"}\n"},
+		{"/api/public/v1/epochs?limit=0", 400, "{\"category\":\"invalid\",\"detail\":\"limit\"}\n"},
+	}
+	assertError := func(response *http.Response, body []byte, code int, want string) {
+		t.Helper()
+		if response.StatusCode != code || string(body) != want || response.Header.Get("Content-Type") != publicapi.ContentJSON ||
+			response.Header.Get("ETag") != "" || response.Header.Get("Cache-Control") != "" || response.Header.Get(publicread.EvidenceHashHeader) != "" {
+			t.Fatalf("public error status=%d headers=%v body=%q; want %d %q", response.StatusCode, response.Header, body, code, want)
+		}
+	}
+	for index := 0; index < policy.PublicLimiter.Burst; index++ {
+		test := cases[index%len(cases)]
+		response, body := get(test.path, exhaustedIP, "*", "")
+		assertError(response, body, test.code, test.body)
+	}
+	for _, path := range []string{privateRun, unknownRun, "/api/public/v1/epochs?limit=0", "/api/public/v1/epochs"} {
+		// An unknown/private wildcard must not escape as a free 304. A valid
+		// representation with no conditional tag must use the same spent budget.
+		condition := "*"
+		if path == "/api/public/v1/epochs" {
+			condition = ""
+		}
+		response, body := get(path, exhaustedIP, condition, "")
+		assertError(response, body, 429, "{\"category\":\"rate_limited\",\"detail\":\"ip\"}\n")
+	}
+	cached, body := get("/api/public/v1/epochs", exhaustedIP, etag, "")
+	if cached.StatusCode != http.StatusNotModified || len(body) != 0 || cached.Header.Get("ETag") != etag ||
+		cached.Header.Get("Cache-Control") != epochs.Header.Get("Cache-Control") || cached.Header.Get("Content-Type") != "" {
+		t.Fatalf("authorized exhausted-cache status=%d headers=%v body=%q", cached.StatusCode, cached.Header, body)
+	}
+	independent, body := get(privateRun, otherIP, "*", "")
+	assertError(independent, body, 404, cases[0].body)
+	// Authenticated reads still reach the account-owned Founder, not a public
+	// projection or unauthenticated fallback.
+	profile, body := get("/api/v1/founder", exhaustedIP, "", token)
+	var decoded struct {
+		FounderID string `json:"id"`
+	}
+	if profile.StatusCode != http.StatusOK || json.Unmarshal(body, &decoded) != nil || decoded.FounderID != founderID {
+		t.Fatalf("public exhaustion blocked authenticated Founder read: status=%d", profile.StatusCode)
+	}
+	unauthorized, body := get("/api/v1/founder", exhaustedIP, "", "invalid-token")
+	assertError(unauthorized, body, 401, "{\"category\":\"unauthorized\",\"detail\":\"access_token\"}\n")
+	missing, body := get("/api/v1/missing", exhaustedIP, "", "")
+	assertError(missing, body, 404, "{\"category\":\"unknown_id\",\"detail\":\"route\"}\n")
+	// The development composition's Account proxy setting is zero, whereas
+	// PublicRead uses its declared one-hop policy. Exhaust the actual HTTP peer
+	// (no forwarded header) before proving same-IP unauthenticated isolation.
+	// Earlier public observations have spent an unknown portion of this bucket;
+	// the fresh forwarded-IP loop above, not this loop, proves exact burst size.
+	limited := false
+	for attempt := 0; attempt <= policy.PublicLimiter.Burst; attempt++ {
+		response, body := get(privateRun, "", "*", "")
+		if response.StatusCode == http.StatusTooManyRequests {
+			assertError(response, body, 429, "{\"category\":\"rate_limited\",\"detail\":\"ip\"}\n")
+			limited = true
+			break
+		}
+		assertError(response, body, 404, cases[0].body)
+	}
+	if !limited {
+		t.Fatal("public errors did not exhaust the real HTTP peer's budget")
+	}
+	request, err := http.NewRequest(http.MethodPost, server.URL+"/api/v1/account", strings.NewReader(`{}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.Header.Set("Content-Type", publicapi.ContentJSON)
+	request.Header.Set("X-Request-ID", "composed-public-budget")
+	created, err := server.Client().Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	createdBytes := readCompositionBytes(t, created)
+	var accountRecord account.CreatedAccount
+	if created.StatusCode != http.StatusCreated || created.Header.Get("X-Request-ID") != "composed-public-budget" ||
+		created.Header.Get("Cache-Control") != "no-store" || json.Unmarshal(createdBytes, &accountRecord) != nil ||
+		accountRecord.AccountID == "" || accountRecord.RecoveryCode == "" {
+		t.Fatalf("public peer exhaustion blocked account creation: status=%d", created.StatusCode)
+	}
+	var persisted int
+	if err := db.QueryRowContext(context.Background(), `SELECT count(*) FROM accounts a JOIN account_founders f USING(account_id) WHERE a.account_id=$1`, accountRecord.AccountID).Scan(&persisted); err != nil || persisted != 1 {
+		t.Fatalf("independent account creation was not durable: rows=%d err=%v", persisted, err)
 	}
 }
 

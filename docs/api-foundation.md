@@ -425,6 +425,25 @@ enforcement: representation authorization/reader work still happens before the r
 decision, so it is not a pre-reader database-work bound. Mounted error/cache regressions use
 controlled readers; the existing composed Postgres checks separately exercise the live server.
 
+Gameserver composition wraps both API surfaces in `httpapi.RequestIDs.WithRequestID`, using
+the same C20 policy grammar/bounds as the public runtime. Valid caller IDs echo unchanged;
+invalid/missing IDs become UUIDv7, never truncated. The resolved ID is available through
+`httpapi.RequestID` (and the compatibility `publicapi.RequestID` accessor), without adding
+it to response JSON. Nested public middleware reuses that context rather than generating
+another ID. This wrapper has no limiter: public, unauthenticated Account and authenticated
+Account budgets remain separately owned. Standalone Account router callers must supply this
+HTTP composition themselves. This implements response/context correlation, not access logging.
+Entropy failure refuses before calling the handler, retaining the pre-existing plain-text500
+fallback. RP-643 tracks its missing typed-error/status binding; it is not full A4/C7 conformance.
+
+The composed Postgres/HTTP error-budget check exhausts an exact fresh forwarded-IP burst
+with real private/unknown run reads and invalid queries, retains authorized304 and a second
+IP's404, and reads the authenticated account-owned Founder. It also exhausts the actual
+unforwarded peer's public budget before creating and reading the SQL linkage for a new
+Account, with credential `no-store` retained. That second loop accounts for earlier spent
+tokens rather than claiming another fresh-burst measurement. No pre-reader work bound,
+production Caddy/clean-host, logging or whole-API acceptance follows.
+
 ### Public verification evidence
 
 The registry mounts three unauthenticated GETs at

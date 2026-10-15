@@ -26,12 +26,14 @@ import (
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/gameui"
 	"cloud-clicker/server/guild"
+	"cloud-clicker/server/httpapi"
 	"cloud-clicker/server/leaderboard"
 	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/operations"
 	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/publicapi"
 	"cloud-clicker/server/publicread"
 	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/replayverify"
@@ -406,7 +408,16 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err != nil {
 		return nil, err
 	}
-	server, err := New(config.DB, mountPublicRead(api.Router(), publicRouter), node, playerRelay, synchronizer, seed.Hash)
+	apiPolicy, err := publicapi.LoadPolicy(publicPolicy)
+	if err != nil {
+		return nil, err
+	}
+	requestIDs, err := httpapi.NewRequestIDs(apiPolicy.RequestID.Pattern, apiPolicy.RequestID.MaxBytes, random)
+	if err != nil {
+		return nil, err
+	}
+	apiHandler := requestIDs.WithRequestID(mountPublicRead(api.Router(), publicRouter), config.Clock)
+	server, err := New(config.DB, apiHandler, node, playerRelay, synchronizer, seed.Hash)
 	if err != nil {
 		return nil, err
 	}

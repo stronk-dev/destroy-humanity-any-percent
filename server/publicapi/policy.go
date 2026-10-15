@@ -223,7 +223,6 @@ func NewRuntime(policy Policy, clock func() time.Time, requestIDs *httpapi.Reque
 	return &Runtime{policy: policy, limiter: limiter, requestIDs: requestIDs, clock: clock}, nil
 }
 
-type requestIDContextKey struct{}
 type responseBudgetContextKey struct{}
 
 // One decision per response: cached emission and uncached/error emission share
@@ -297,30 +296,20 @@ func (writer *budgetResponseWriter) Unwrap() http.ResponseWriter { return writer
 // response budget, including router/handler errors. Only authorized 304s are
 // free; representation validation remains the handler's responsibility.
 func (runtime *Runtime) WithRequestID(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
-		if runtime == nil || next == nil || request == nil {
+	if runtime == nil || next == nil {
+		return http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
 			http.Error(response, "internal invariant", http.StatusInternalServerError)
-			return
-		}
-		requestID, err := runtime.requestIDs.Resolve(request.Header.Get("X-Request-ID"), runtime.clock())
-		if err != nil {
-			http.Error(response, "internal invariant", http.StatusInternalServerError)
-			return
-		}
-		response.Header().Set("X-Request-ID", requestID)
-		ctx := context.WithValue(request.Context(), requestIDContextKey{}, requestID)
-		ctx = context.WithValue(ctx, responseBudgetContextKey{}, &responseBudget{runtime: runtime})
+		})
+	}
+	return runtime.requestIDs.WithRequestID(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		ctx := context.WithValue(request.Context(), responseBudgetContextKey{}, &responseBudget{runtime: runtime})
 		request = request.WithContext(ctx)
 		next.ServeHTTP(&budgetResponseWriter{ResponseWriter: response, runtime: runtime, request: request}, request)
-	})
+	}), runtime.clock)
 }
 
 func RequestID(request *http.Request) string {
-	if request == nil {
-		return ""
-	}
-	value, _ := request.Context().Value(requestIDContextKey{}).(string)
-	return value
+	return httpapi.RequestID(request)
 }
 
 // contentHashHeader optionally supplies a raw response's registry-declared C19
