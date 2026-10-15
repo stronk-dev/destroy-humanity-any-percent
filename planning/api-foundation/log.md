@@ -4106,3 +4106,88 @@ resources. This approves only RP-535: not adjacent fixes, original generated-cli
 new descriptor/representation/DTO validation, real Go HTTP/SQL journey, Linux/Firefox/hosted,
 release artifact, normative adoption, archival or1.0 acceptance. The bounded defect/review
 status changes; API feature and release gates remain open.
+
+## 2026-10-16 — Schema-media enforcement independently approved (RP-524)
+
+Review by: /root/api_schema_media_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete ten-path single-commit range
+9b48c9c603ae66d84deb05351c017e4e02342ac0-exclusive..d618b0b4ebbc46c5cfc660d1ffc637e2ea61462c-inclusive.
+All SDK/template, generatedAPI/ports/runtime/Soul tests, docs, backlog and own plan/log
+inspected. A5/C9/C19 schema media refuses before body read; JSON response doubles retain
+payloads/assertions. Raw/status/token/retry behavior stays unchanged.
+
+Independent exact-old SDK/endpoint tests:12 intended failures/8 controls,38 deselected;
+failures stop at first rejection assertion, not proof of subsequent spies. Corrected exact
+endpoint58/58 and current affected four Node files326/326 pass. Native sandbox EPERM first
+executes0; permitted16546 executes652 Chromium/WebKit passes but Firefox fails connection
+and cleanup stalls, terminal2/NOT GREEN. Exact owned Firefox46067 and Vitest parent46045
+identified; only46067 receives TERM, normal cleanup finishes and46045/46067/46084 are absent.
+Firefox logs show sandbox-extension/framebuffer failure. No unrelated process killed.
+Declared disposable Linux browser82418 then passes978/978 in all12 file/engine executions,
+cold frozen-lockfile install, unchanged selector/config/bounds; actual LinuxARM64, not hosted
+AMD64. Native failure is retained, not converted to green by this separate population.
+
+Cold publicapi/gen-api88974 pass0.212/0.132s, vet passes; types/Svelte0 diagnostics, production
+build99881 and api-check pass, all three artifact hashes unchanged. Initial execution code
+HEADad40b0f007885204f09e8fafe09cfece27667535; root's later Markdown commits do not change it.
+Ignored Vite endpoint overlays isolate actual historical SDK/test sources; displayed failure
+frames use current disk snippets and are not historical-source evidence. Reviewer made no
+tracked edits/commits; all handles terminal, disposable container removed, only the two
+preserved builders remain. Slot released before RP-502. No independent SQL/composed journey,
+original generated-download/new-feature acceptance, adjacent correction approval, normative
+adoption, hosted CI, archival or1.0 claim.
+
+## 2026-10-16 — Conditional-cache correction independently approved (RP-502)
+
+Review by: /root/api_conditional_cache_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete nine-path single-commit range
+aaf78306b0e1506bbe4f8b01e24e1975f842f041-exclusive..3d8672cee12b5a4e2f3e6e1436c372f091e1e6fb-inclusive.
+All parser, policy/mounted/integration tests, docs, backlog and own plan/log inspected;
+accepted A8/C6/C16/RFC9110 conditional semantics, authorization/validation before cache.
+
+Independent exact-old policy/endpoint-test overlay57932 fails nine policy cases and all
+six mounted operations;14 policy controls pass. Same endpoint assertions/corrected policy
+77814 pass23 policy/six mounted cases: weak tags, quoted commas, repeated/empty list fields,
+wildcard, malformed refusal, token exemption/exhaustion/refill and changed-byte invalidation.
+Current code base77a0d39c459d603f235234a37ef97877376f7e89: cold full publicapi/publicread/
+gameserver72559 pass0.248/0.298/0.370s; vet/api-check pass with no generated changes.
+Declared LinuxAMD64/Postgres23896 actually executes all four selected functions/no dependency
+skips (gameserver3.440s): authorized immutable downloads, conditional headers, private/unknown
+wildcard404, stored bytes/hashes, replay/corrupt-receipt refusal and historical evidence.
+
+Endpoint overlays are not a full historical checkout. Native package checks are not DB
+proof; the declared container population supplies it. TS public-replay seam was explicitly
+not requested, so no TS/public-catalog loop credit. No adjacent correction, normative304
+schema adoption, whole API/hosted CI/archival/release approval. All handles terminal; slot
+released before RP-506. Created one-off auto-removed and created ephemeral Postgres stopped
+cleanly. No tracked reviewer edits/commits/main-tree mutation or unrelated-resource cleanup;
+root Markdown edits preserved. Existing feature/release and original-review gates remain.
+
+## 2026-10-16 — Generated path-segment correction independently approved (RP-506)
+
+Review by: /root/api_path_segments_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete seven-path single-commit range
+ce61b82a5a87f3c6f4989f05b17a369396b0b652-exclusive..492f37ca182d5d47b6ef9b813e8724da5c1796c7-inclusive.
+All template/generated SDK, API test, docs, backlog and own plan/log inspected. A5/C1/C9
+reject exact dot segments before headers/auth/fetch; normal dotted/escaped/query values stay.
+
+Independent ignored endpoint overlays: old SDK causes four actual Request URL-path failures
+with34 Node controls; Chromium/WebKit reproduce eight failures/68 controls. Corrected exact
+endpoint38 Node/76 native pass. Current consumers321 Node/496 native pass; cold publicapi/
+gen-api0.194/0.269s and vet pass. Types/Svelte0 diagnostics, build/api-check pass; generated
+outputs have no residual diff. Current code baseline77a0d39c459d603f235234a37ef97877376f7e89.
+Initial sandbox listen denial executes0. Old failing browser also reports screenshot-write
+denial, distinct from its visible semantic failures; corrected runs have neither. Historical
+overlay error snippets show current disk lines, not proof of historical source. Native
+Firefox is not retried after preceding review's proved environment hang; no independent
+Firefox/Linux/hosted result claimed. Actual browser URL parsing/controlled fetch is not
+server mutation, SQL, credential leakage/exploitability or a whole player journey.
+
+All handles4069/21016/56550/94960/99312 terminal with normal runner shutdown; no Docker
+resources. Process-list inspection unavailable, so no broad machine-clean claim. No reviewer
+tracked edits/commits/main-tree mutation; root Markdown preserved, execution slot released.
+Only RP-506 corrective approval; no earlier generated-client feature, adjacent fix, normative
+adoption, archival or release acceptance. Original Linux evidence remains its own first filter.

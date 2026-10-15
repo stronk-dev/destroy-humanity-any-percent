@@ -275,8 +275,10 @@ single-schema replies to carry the declared JSON media before reading their body
 matching A5/C9/C19. Twelve old-client refusals fail; eight declared-JSON controls
 pass. Corrected Node/native-browser/Linux-three-engine, types/build/generation and
 the whole real-service composed lane pass. Reply doubles now use JSON media without
-changing payloads or assertions. The log owns the range after `9b48c9c6`, pending
-Claude designated review; this is not independent approval of Codex's earlier
+changing payloads or assertions. Fresh independent Codex corrective review APPROVES complete
+ten-path `9b48c9c6..d618b0b4` after12 old-client failures, corrected endpoint58/current326
+and Linux-arm64 three-engine978 checks. Native Firefox failure/cleanup remains disclosed
+in the owning log. This is not independent approval of Codex's earlier
 download/client code, adoption of drafts or complete API/public-catalog acceptance.
 
 Current integration supplement (2026-10-12): the existing root composed lane now requires
@@ -291,8 +293,11 @@ path components before fetch; ordinary dotted/escaped names and dot-valued queri
 unchanged. Four old-source regressions fail in Node/Chromium/WebKit; final affected
 Node/native-browser and Linux three-engine consumers, cold generator/vet, types/build
 and deterministic regeneration pass with unchanged OpenAPI/compatibility pins.
-This is A5/C1/C9 conformance, not a schema/HTTP contract amendment or independent approval
-of Codex's earlier download/client work. The owning log records the finished outcome.
+Fresh independent Codex corrective review APPROVES complete seven-path `ce61b82a..492f37ca`
+after actual old Request-parser failures, corrected endpoint/current Node and Chromium/WebKit
+checks plus Go/vet/types/build/api-check. The owning log retains exact range and native Firefox
+limitation. This is A5/C1/C9 conformance, not a schema/HTTP contract amendment or independent
+approval of Codex's earlier download/client work.
 
 Current runtime correction (2026-10-12, RP-502): shared conditional caching now parses the
 complete If-None-Match field and uses HTTP weak comparison for strong/weak tags, lists,
@@ -300,7 +305,9 @@ repeated lines and wildcard. Nine old-source policy cases and all six mounted op
 corrected affected packages and actual Linux-amd64/Postgres public download/privacy checks
 pass without changing limiter values, evidence bytes, registry or generated artifacts.
 Malformed conditions cannot obtain a cache hit; wildcard private/unknown runs still404.
-The owning log records the test-fixture correction, exact checks and pending Claude review.
+Fresh independent Codex corrective review APPROVES complete nine-path `aaf78306..3d8672ce`
+after old-source policy/mounted failures, corrected cases and real Linux-amd64/Postgres
+HTTP/privacy checks. The owning log records exact range, provenance and limits.
 RP-483 remains an unadopted schema/SDK prerequisite; no full API/CI acceptance follows.
 
 Current specification review (2026-10-12): Claude's A6/AC4 body correction
