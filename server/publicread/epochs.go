@@ -163,7 +163,7 @@ func (handler EpochsHandler) ServeHTTP(response http.ResponseWriter, request *ht
 		writeExact(response, http.StatusInternalServerError, internalPublic)
 		return
 	}
-	query, err := handler.Registry.ParseQuery(ListEpochsOperation, request.URL.Query())
+	query, err := handler.Registry.ParseRawQuery(ListEpochsOperation, request.URL.RawQuery)
 	if err != nil {
 		var invalid *publicapi.InvalidQueryError
 		if errors.As(err, &invalid) && invalid.Parameter == "cursor" {

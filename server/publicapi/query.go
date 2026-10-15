@@ -58,6 +58,34 @@ func cloneQueryParameters(source []QueryParameter) []QueryParameter {
 	return result
 }
 
+// ParseRawQuery retains decoding errors for declared parameters. URL.Query drops
+// malformed pairs, which would turn an invalid optional cursor/limit into absence
+// or hide a duplicate. Undeclared names remain ignored, as in ParseQuery.
+func (registry *Registry) ParseRawQuery(operationID, rawQuery string) (map[string]any, error) {
+	operation, ok := registry.Operation(operationID)
+	if !ok {
+		return nil, ErrInvalidOperation
+	}
+	declared := make(map[string]bool, len(operation.Query))
+	for _, parameter := range operation.Query {
+		declared[parameter.Name] = true
+	}
+	values := url.Values{}
+	for _, pair := range strings.Split(rawQuery, "&") {
+		rawName, _, _ := strings.Cut(pair, "=")
+		name, err := url.QueryUnescape(rawName)
+		if err != nil || !declared[name] {
+			continue
+		}
+		decoded, err := url.ParseQuery(pair)
+		if err != nil {
+			return nil, &InvalidQueryError{Parameter: name}
+		}
+		values[name] = append(values[name], decoded[name]...)
+	}
+	return registry.ParseQuery(operationID, values)
+}
+
 // ParseQuery decodes the operation's declared query parameters: each appears at
 // most once, integers are strict base-10 (no sign, padding, or leading zero),
 // and every value satisfies its descriptor. Undeclared parameters are ignored.

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/url"
+	"reflect"
 	"testing"
 )
 
@@ -114,6 +115,47 @@ func TestParseQueryValidatesDeclaredParametersExactly(t *testing.T) {
 	}
 	if _, err := registry.ParseQuery("unknown", url.Values{}); err == nil {
 		t.Fatal("unknown operation query accepted")
+	}
+}
+
+func TestParseRawQueryPreservesDeclaredEncodingErrorsAndValidValues(t *testing.T) {
+	registry, err := NewRegistry(testSchemas(), queryOperations())
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, raw := range []string{
+		"", "&unknown=%GG&bad%name=ignored&",
+		"limit=25&cursor=a%3Bb%26c%3Dd%2Be+f", "%6cimit=25&%63ursor=a%3Bb%26c%3Dd%2Be+f&unknown=%",
+		"cursor=%EF%BF%BD", "cursor=%E2%98%83", "cursor=a%00b",
+	} {
+		t.Run(raw, func(t *testing.T) {
+			values, err := registry.ParseRawQuery("get_board", raw)
+			// The old typed validator remains authoritative for valid declared
+			// values; errors in unrelated fields must not narrow its domain.
+			decoded, _ := url.ParseQuery(raw)
+			want, wantErr := registry.ParseQuery("get_board", decoded)
+			if err != nil || wantErr != nil || !reflect.DeepEqual(values, want) {
+				t.Fatalf("valid raw query changed: got=%v error=%v want=%v error=%v", values, err, want, wantErr)
+			}
+		})
+	}
+	for _, row := range []struct{ raw, parameter string }{
+		{"cursor=%", "cursor"}, {"cursor=%GG", "cursor"}, {"%63ursor=%GG", "cursor"},
+		{"cursor=abc;other=1", "cursor"}, {"cursor=abc&cursor=%GG", "cursor"},
+		{"limit=%GG", "limit"}, {"%6cimit=%GG", "limit"}, {"limit=1;2", "limit"},
+		{"limit=%GG&limit=1", "limit"}, {"limit=1&%6cimit=2", "limit"},
+		{"cursor=%FF", "cursor"}, {"limit=%2B1", "limit"},
+	} {
+		t.Run(row.raw, func(t *testing.T) {
+			values, err := registry.ParseRawQuery("get_board", row.raw)
+			var invalid *InvalidQueryError
+			if values != nil || !errors.As(err, &invalid) || invalid.Parameter != row.parameter {
+				t.Fatalf("invalid raw query accepted/untyped: %v %v", values, err)
+			}
+		})
+	}
+	if _, err := registry.ParseRawQuery("unknown", "limit=1"); !errors.Is(err, ErrInvalidOperation) {
+		t.Fatalf("unknown operation: %v", err)
 	}
 }
 

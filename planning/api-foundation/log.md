@@ -3679,3 +3679,28 @@ Recorded by: Codex. Complete16-path implementation/test/alert/docs/plan/ledger/l
 after `73318b2d` through this containing commit needs designated Claude review, which
 may consolidate the preceding backend witness. No feature acceptance, archival, push
 or deployment; full nine-tier1.0, CI arithmetic/history and other owner/author gates remain.
+
+## 2026-10-15 — RP-659 preserve public query decoding failures
+
+Under accepted A5/A6/C12/C13, old mounted run27924 fails30 malformed conditional
+queries across Epochs/Routes/Boards: URL.Query discards the bad pair and the handler
+returns304 for a default/remaining-valid page. A malformed duplicate beside a valid
+signed cursor returns200 and calls the reader. This is a real handler admission
+defect, not a database, browser or deployed-exploit finding.
+
+ParseRawQuery now retains decoding errors for declared names before the existing
+typed validator. All three handlers use original RawQuery. Preserve exact invalid
+pairs, valid percent-encoded names/values, duplicate refusal and ignored undeclared
+fields; no new query policy/schema. Final tests cover the30 bad queries with/without
+conditional headers, actual valid cursor continuation, malformed duplicate refusal
+without another page read, valid Unicode/control values and existing IP budgets.
+
+Focused83386 passes. Final root `make test-go vet api-check
+GO_PACKAGES='./publicapi ./publicread ./account ./gameserver' GO_TEST_FLAGS='-count=1'`
+67497 passes cold0.146/0.290/0.444/0.282s, vet and byte-identical OpenAPI/pin/TS
+generation. Native conditional DB skips are not SQL credit; no DB code changed.
+Diff/formatting checked. No browser/full CI, kernel, balance, copy, held-draft or
+release claim. Review by: Codex (implementer first filter). Recorded by: Codex.
+Complete11-path source/tests/docs/plan/ledger/log range after `2631a30c` through
+this containing commit needs designated Claude review, consolidatable with API
+conformance. No services/resources touched, acceptance, archival, push or deployment.

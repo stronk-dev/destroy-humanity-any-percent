@@ -97,7 +97,7 @@ func (handler RoutesHandler) ServeHTTP(response http.ResponseWriter, request *ht
 		writeExact(response, http.StatusInternalServerError, internalPublic)
 		return
 	}
-	query, err := handler.Registry.ParseQuery(ListRoutesOperation, request.URL.Query())
+	query, err := handler.Registry.ParseRawQuery(ListRoutesOperation, request.URL.RawQuery)
 	if err != nil {
 		var invalid *publicapi.InvalidQueryError
 		switch {

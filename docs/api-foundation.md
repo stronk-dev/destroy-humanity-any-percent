@@ -60,6 +60,13 @@ non-required string, and it is present exactly when the operation declares a cur
 integers are strict base-10 (no sign, padding, or leading zero), and every value is checked by the
 same descriptor validator as response bodies. A failure returns `InvalidQueryError` naming the
 parameter; undeclared parameters are ignored.
+HTTP paged readers use `Registry.ParseRawQuery` on the original query string before
+descriptor validation. Malformed percent escapes or unescaped semicolons in a
+declared field return its existing typed invalid error; they cannot disappear into
+a default page, conceal a duplicate or produce a conditional304. Valid escaped
+names/values and ignored undeclared fields retain their existing behavior. The
+decoded-values `ParseQuery` helper remains available to callers that already own
+successful form decoding.
 String values retain their exact valid UTF-8 content through JSON encoding before descriptor
 validation, including JSON-escaped control characters. Empty and malformed UTF-8 query strings
 are rejected; a literal Unicode replacement character is valid, not a malformed-byte substitute.

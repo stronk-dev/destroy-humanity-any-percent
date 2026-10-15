@@ -2,6 +2,13 @@
 
 RFC: `rfc/api-foundation.md`
 
+2026-10-15 A5/A6/C12/C13 correction (RP-659): public paged readers retain raw-query
+decoding failures before descriptor validation. Existing cursor/filter errors cannot
+be discarded into defaults, valid-only duplicates or conditional304 replies. Mounted
+old-behavior failures, valid encoded continuation and ignored-field controls are in
+the owning log with final checks/review range; no endpoint/schema/kernel change or
+full API acceptance follows.
+
 2026-10-15 C12/Route C5 + Gameserver GC3 correction (RP-104): the existing expiry method
 now has a composed owned driver, primed before readiness and repeated on the existing
 one-minute maintenance cadence. Exact submission eligibility remains 72 hours; stored status

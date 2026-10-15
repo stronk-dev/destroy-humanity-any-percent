@@ -31,6 +31,9 @@ func TestMountedPublicErrorsSpendTheSharedIPBudget(t *testing.T) {
 	}
 	variables := variablesParam(t, publicapi.BoardVariables{})
 	cases := []errorCase{
+		{"encoded epoch cursor", "GET", "/api/public/v1/epochs?cursor=%GG", 400, invalidCursor, nil},
+		{"encoded route limit", "GET", "/api/public/v1/registry/routes?limit=1;2", 400, invalidLimit, nil},
+		{"encoded board limit", "GET", boardPath("any_percent", "8", variables) + "&limit=%GG", 400, invalidLimit, nil},
 		{"epoch limit", "GET", "/api/public/v1/epochs?limit=0", 400, invalidLimit, nil},
 		{"epoch cursor", "GET", "/api/public/v1/epochs?cursor=bad", 400, invalidCursor, nil},
 		{"epoch reader", "GET", "/api/public/v1/epochs", 500, internalPublic, func(f *publicCacheFixture) { f.epochs.err = errors.New("private database detail") }},

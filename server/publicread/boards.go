@@ -138,7 +138,7 @@ func (handler BoardHandler) ServeHTTP(response http.ResponseWriter, request *htt
 		writeExact(response, http.StatusInternalServerError, internalPublic)
 		return
 	}
-	query, err := handler.Registry.ParseQuery(ListBoardOperation, request.URL.Query())
+	query, err := handler.Registry.ParseRawQuery(ListBoardOperation, request.URL.RawQuery)
 	if err != nil {
 		var invalid *publicapi.InvalidQueryError
 		if !errors.As(err, &invalid) {
