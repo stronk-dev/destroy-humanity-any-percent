@@ -995,3 +995,35 @@ adoption, browser/clean-host/whole-CI proof, acceptance, archival, push or deplo
 After terminal checks, remove only the freshly created declared `postgres` test service with
 its scoped `rm -sf postgres` command. Final service inventory is empty. Disposable tmpfs test
 rows are discarded; no durable volume, cache, network or unrelated service is removed.
+
+## 2026-10-15 — RP-620 independent corrective review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/minigame_payout_identity_corrective_review`.
+Recorded by: Codex parent, transcribing its verdict under Marco's corrective-review
+delegation. Complete nine-path range (base exclusive, tip inclusive)
+`33815f04ecc59ebfdc44969bef00462920ddc074..a83d590d25bdef54c9d7cb428d8798a79ea76589`.
+Verdict: **APPROVED**, no actionable findings; service/regression, three version
+mirrors, canonical docs and all records inspected. Definition ID, engine and version
+must match certification before replay/quota mutation; pinned-policy selection
+remains with the coordinator. Kernel208→209 mirrors agree; unchanged formulas are
+appropriate because their authority excludes this service guard.
+
+Independent actual Postgres full Minigame passes3.428s, no skips. Old service-source
+overlay from33815f04 fails all four cases0.762s: solo/async foreign windows become
+quota1 or4→5 with nil error. Linux-amd64/Postgres race/count1 Minigame selector
+passes Minigame2.171s/Production6.209s/Gameserver42.779s, no skips/race reports:
+atomic resolution, faults/cancellation/retry/replay and both complete public Pitch
+lifecycle arms execute. Four-package vet, cold formula/generator, formatting/range
+diff checks pass. Original live race session90030 is observed through terminal;
+quiet compilation is not treated as failure or restarted.
+
+Tests use14761616 with reviewed Minigame source/tests unchanged. Broad native cold
+run is RED solely on Production's27 original partition cases; other three packages
+pass, with native missing-DB skips not SQL credit. Actual kernel guard still rejects
+50a3a514 after passing checkout/adversarial controls. Neither failure is concealed
+by the selected passing run. Later consumer/schema changes are outside approval.
+No full Platform/feature, rights, normative adoption, browser/hosted CI or release
+acceptance. Reviewer removes only its own temporary Postgres and overlay files,
+leaves two preexisting BuildKit containers intact and verifies empty Compose
+inventory before releasing the service to the encoding reviewer. No tracked edits;
+the concurrent CURRENT-STATE diff is parent work, not attributed to reviewer.
