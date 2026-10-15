@@ -28,7 +28,7 @@ func requireFounderCatalogCoherence(founder, company save.Revision) error {
 	return nil
 }
 
-func (s *Service) declineExitOffer(request IntentRequest, state *save.State, catalog *economy.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+func declineExitOfferPreflight(request IntentRequest, state *save.State, revision save.Revision, now time.Time) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany {
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
@@ -37,6 +37,13 @@ func (s *Service) declineExitOffer(request IntentRequest, state *save.State, cat
 	}
 	if !state.OfferState.ExpiresAt.After(save.CanonicalServerTime(now)) {
 		return rejectedDecision(request, revision.Number, "offer_expired", request.OfferID)
+	}
+	return save.IntentDecision{}, nil
+}
+
+func (s *Service) declineExitOffer(request IntentRequest, state *save.State, catalog *economy.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if decision, err := declineExitOfferPreflight(request, state, revision, now); err != nil || decision.Outcome == save.IntentRejected {
+		return decision, err
 	}
 	before := state.Ledger.Snapshot()
 	result, err := s.evaluate(state, catalog, now, mode, contributions)

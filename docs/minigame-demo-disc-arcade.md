@@ -129,17 +129,23 @@ original canonical action, without executing the gate or its cost, in live Go an
 Go/TS replay (original kernel 0.3.148). RP-668 restores shared ordinary gate preflight at
 kernel 0.3.220: unknown gates/routes and already-crossed gates refuse before terminal accrual.
 The same gate/cash/history crosses normally before the threshold.
-The actual DB population now has sixteen cases: three invalid due-gate preflight refusals,
-that before-threshold control, three due no-session controls, and three actions across
-Mine Grid setup/playing and Snake playing. The new refusals preserve gameplay rows and
+The actual DB population now has thirty-five cases: three invalid due-gate preflight refusals,
+nineteen other command cases, that before-threshold control, three due no-session controls,
+and three actions across Mine Grid setup/playing and Snake playing. The new refusals preserve gameplay rows and
 record the ordinary once-only rejection audit; identical retries add nothing.
 All nine session cases exercise both active and claimed refusal, then real quit/resolution,
 released Exit, identical retry and both histories. A Go-generated literal current-curriculum
 fixture checks every terminal receipt/state/Founder/event batch in TS; all old fixtures remain
 unchanged. Independent live/replay/guard probes fail. The original RP-205/207 range received
-CHANGES REQUIRED; the scoped gate-preflight repair is independently approved. Other
-automatic-command preflight bypasses and full AC9 remain open; this later-tier diagnostic
-is not default first-hour or public-browser acceptance.
+CHANGES REQUIRED; the scoped gate-preflight repair is independently approved. The broader
+kernel 0.3.221 correction reuses ordinary preflight for the other Company mutations and
+retains IPO/Wind Down eligibility. The shared21-row Go/TS population includes thirteen
+semantic refusals, five valid replacements with no requested mutation, one malformed
+command and two forged Founder-only terminal commands. The latter two are replay-only,
+not live Company commands; all other19 execute against actual Postgres, including identical
+retry, rejected state/audit checks and positive persisted terminal-state/both-history checks.
+The broader repair awaits independent corrective review. Full AC9 remains open; this
+later-tier diagnostic is not default first-hour or public-browser acceptance.
 
 RP-207 repairs only the test reader's event scope. A full Founder Exit may prepend an
 automatic Fiscal harvest, which Company replay does not own. The test verifies the complete

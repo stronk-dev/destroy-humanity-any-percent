@@ -1641,6 +1641,116 @@ func TestCurriculumDueCrossGateReplayRequiresOrdinaryPreflight(t *testing.T) {
 	}
 }
 
+type curriculumCommandPreflightCase struct {
+	Name             string
+	Payload          map[string]json.RawMessage
+	Category, Detail string
+	Tier             *int64
+	ReplayError      bool `json:"replay_error"`
+	ReplayOnly       bool `json:"replay_only"`
+}
+
+func curriculumCommandPreflightCases(t *testing.T) []curriculumCommandPreflightCase {
+	t.Helper()
+	data, err := os.ReadFile("../../testdata/replay/curriculum-command-preflight-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var rows []curriculumCommandPreflightCase
+	if err := json.Unmarshal(data, &rows); err != nil {
+		t.Fatal(err)
+	}
+	if len(rows) != 21 {
+		t.Fatalf("incomplete command-preflight population: %d", len(rows))
+	}
+	return rows
+}
+
+func assertCurriculumRequestedMutationReplaced(t *testing.T, before, terminal []byte) {
+	t.Helper()
+	var oldState, terminalState map[string]json.RawMessage
+	if json.Unmarshal(before, &oldState) != nil || json.Unmarshal(terminal, &terminalState) != nil {
+		t.Fatal("invalid compared Company state")
+	}
+	for _, key := range []string{"generators", "generators_purchased_total", "upgrades_owned", "manual_token_milli", "compact_member", "compact_tithe_ppm", "faction_id"} {
+		if len(oldState[key]) == 0 || len(terminalState[key]) == 0 || canonicalFixtureJSON(t, oldState[key]) != canonicalFixtureJSON(t, terminalState[key]) {
+			t.Fatalf("replaced command changed %s", key)
+		}
+	}
+}
+
+func TestCurriculumDueCommandReplayRequiresOrdinaryPreflight(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/replay/apply-logged-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture crossRuntimeFixture
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	row := fixture.CurriculumGateExit
+	bundle := loadCompleteReplayTestBundle(t, row.ConstantsHash, artifactBytes(row.Artifacts))
+	for _, tc := range curriculumCommandPreflightCases(t) {
+		t.Run(tc.Name, func(t *testing.T) {
+			state := replayFixtureStateFromEncoded(t, bundle, row.Case.PreState)
+			if tc.Tier != nil {
+				state.Tier = *tc.Tier
+			}
+			before := mustEncodeState(t, state)
+			tc.Payload["expected_revision"] = json.RawMessage(`1`)
+			canonical, err := json.Marshal(tc.Payload)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var wire replayInputsWire
+			var resolved replayExitResolved
+			if json.Unmarshal(row.Case.ReplayInputs, &wire) != nil || json.Unmarshal(wire.Resolved, &resolved) != nil {
+				t.Fatal("invalid terminal fixture")
+			}
+			if err := json.Unmarshal(tc.Payload["kind"], &resolved.IntentKind); err != nil {
+				t.Fatal(err)
+			}
+			wire.Resolved, err = json.Marshal(resolved)
+			if err != nil {
+				t.Fatal(err)
+			}
+			inputs, err := json.Marshal(wire)
+			if err != nil {
+				t.Fatal(err)
+			}
+			transition, err := ApplyLoggedExit(state, canonical, bundle, inputs)
+			if tc.ReplayError {
+				if !errors.Is(err, ErrInvalidReplayInputs) || !bytes.Equal(before, mustEncodeState(t, state)) {
+					t.Fatalf("invalid terminal command admitted or mutated state: outcome=%s err=%v", transition.Decision.Outcome, err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if tc.Category == "" {
+				if transition.Decision.Outcome != save.IntentApplied || transition.Decision.NewCompanyState == nil || transition.Decision.NewCompanyState.RunSeq != 2 {
+					t.Fatalf("valid preflight did not end run: %s", transition.Decision.Receipt)
+				}
+				assertCurriculumRequestedMutationReplaced(t, before, mustEncodeState(t, state))
+				return
+			}
+			var receipt struct {
+				Rejection struct{ Category, Detail string }
+			}
+			if err := json.Unmarshal(transition.Decision.Receipt, &receipt); err != nil {
+				t.Fatal(err)
+			}
+			if transition.Decision.Outcome != save.IntentRejected || receipt.Rejection.Category != tc.Category || receipt.Rejection.Detail != tc.Detail {
+				t.Fatalf("due command preflight=%s, want %s/%s", transition.Decision.Receipt, tc.Category, tc.Detail)
+			}
+			if !bytes.Equal(before, mustEncodeState(t, state)) || transition.Decision.NewCompanyState != nil || len(transition.Decision.CompanyEndedEvents) != 0 {
+				t.Fatal("rejected command mutated state or produced an ending")
+			}
+		})
+	}
+}
+
 func makeCurriculumExitFixtureForIntent(t *testing.T, now time.Time, crossGate bool) crossRuntimeActiveExit {
 	t.Helper()
 	current := activeContentBundle(t)

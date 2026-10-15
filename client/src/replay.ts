@@ -1307,6 +1307,7 @@ async function applySuppressedLogged(state: ReplayState, canonicalPayload: strin
 export async function applyLoggedExit(company: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedExitTransition> {
   const wire = parseReplayWire(replayInputs, company, catalogs);
   const request = parseIntent(canonicalPayload, wire.command.intent_id);
+  if (request.invalid || !COMPANY_INTENT_KINDS.has(request.kind)) throw new RangeError("invalid terminal command");
   if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== company.runSeq) throw new RangeError("terminal command/state mismatch");
   const resolved = wire.resolved;
   const hasActive="active_play" in resolved,hasNextActive="next_active_play" in resolved,hasMinigameActivity="minigame_session_active" in resolved,hasBranch="selected_branch" in resolved;onlyKeys(resolved, ["kind", "intent_kind", "accrual", "founder_carry", "executed_route_ids", "selected_exit_type", "selected_terms", "next_constants_hash",...(hasBranch?["selected_branch"]:[]),...(hasActive?["active_play"]:[]),...(hasNextActive?["next_active_play"]:[]),...(hasMinigameActivity?["minigame_session_active"]:[])], "terminal resolved inputs");
@@ -1344,7 +1345,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   let terms: ExitTerms;
   const rejectState = (category: string, detail: string): LoggedExitTransition => { restoreReplaySnapshot(company, companyBefore); return rejectedExit(company, founder, request.intent_id, revision, category, detail); };
   if (minigameSessionActive) return rejectState("not_eligible", "minigame_session_active");
-  if (hasBranch && request.kind === "cross_gate") {
+  if (hasBranch && request.kind !== "wind_down" && request.kind !== "file_ipo" && request.kind !== "accept_exit_offer") {
     const preflight = preflightRejection(company, catalogs, request, wire.evaluated_at_ms);
     if (preflight !== null) return rejectState(preflight[0], preflight[1]);
   }
@@ -1374,8 +1375,8 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
     terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
   } else {
     const scripted = hasBranch;
-    if (request.kind === "file_ipo" && !scripted) return rejectState("not_eligible", "ipo_chain");
-    if (request.kind === "wind_down" && company.tier < 1 && !scripted) return rejectState("not_eligible", "tier");
+    if (request.kind === "file_ipo") return rejectState("not_eligible", "ipo_chain");
+    if (request.kind === "wind_down" && company.tier < 1) return rejectState("not_eligible", "tier");
     exitType = scripted || request.kind === "wind_down" && founder.exit_history_count === 0 ? "scripted_first" : "collapse";
     let promised: { payout_preview: ExitTerms; market_modifier_ppm: number } | null = null;
     if (request.kind === "accept_exit_offer") {
@@ -1413,6 +1414,12 @@ function restoreReplaySnapshot(target: ReplayState, snapshot: ReplayState): void
 }
 
 type Intent = Record<string, any> & { intent_id: string; kind: string; expected_revision: number; invalid?: string; cost?: string; costResource?: string };
+// Founder-only commands use their own replay owner, never the Company Exit arm.
+const COMPANY_INTENT_KINDS: ReadonlySet<string> = new Set([
+  "buy_generator", "buy_upgrade", "perform_manual_batch", "cross_gate", "pick_doctrine",
+  "spend_compute_credit", "claim_opportunity", "sign_compact", "leave_compact", "incorporate",
+  "decline_exit_offer", "wind_down", "file_ipo", "accept_exit_offer",
+]);
 interface Evaluation { changes: ReplayChange[]; elapsedMs: number; productionMs: number; bankedMs: number; progressDeltaPpm: number }
 
 function preflightRejection(state: ReplayState, catalogs: ReplayCatalogBundle, request: Intent, nowMs: number): [string, string] | null {

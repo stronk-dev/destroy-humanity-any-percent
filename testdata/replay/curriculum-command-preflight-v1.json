@@ -1,0 +1,23 @@
+[
+  {"name":"unknown_generator","payload":{"kind":"buy_generator","generator_id":"generator.does_not_exist","count":{"mode":"exact","value":1}},"category":"unknown_id","detail":"generator.does_not_exist"},
+  {"name":"unknown_upgrade","payload":{"kind":"buy_upgrade","upgrade_id":"upgrade.does_not_exist"},"category":"unknown_id","detail":"upgrade.does_not_exist"},
+  {"name":"unknown_manual","payload":{"kind":"perform_manual_batch","action_id":"manual.does_not_exist","count":1,"window_ms":1},"category":"unknown_id","detail":"manual.does_not_exist"},
+  {"name":"unknown_transition","payload":{"kind":"pick_doctrine","transition_id":"transition.does_not_exist","doctrine_id":"doctrine.ethical"},"category":"unknown_id","detail":"transition.does_not_exist"},
+  {"name":"unknown_doctrine","payload":{"kind":"pick_doctrine","transition_id":"transition.t3_to_t4","doctrine_id":"doctrine.does_not_exist"},"category":"unknown_id","detail":"doctrine.does_not_exist"},
+  {"name":"doctrine_wrong_tier","payload":{"kind":"pick_doctrine","transition_id":"transition.t3_to_t4","doctrine_id":"doctrine.ethical"},"category":"not_eligible","detail":"tier"},
+  {"name":"credit_duration","payload":{"kind":"spend_compute_credit","amount_ms":14400001,"target":"accelerate"},"category":"not_eligible","detail":"burst_duration"},
+  {"name":"compact_tithe","payload":{"kind":"sign_compact","tithe_ppm":0},"category":"invalid","detail":"tithe_ppm"},
+  {"name":"compact_nonmember","payload":{"kind":"leave_compact"},"category":"not_member","detail":"compact"},
+  {"name":"unknown_faction","payload":{"kind":"incorporate","faction_id":"faction.does_not_exist"},"category":"unknown_id","detail":"faction.does_not_exist"},
+  {"name":"missing_offer","payload":{"kind":"decline_exit_offer","offer_id":"01986666-aa01-7000-8000-999999999999"},"category":"not_eligible","detail":"exit_offer"},
+  {"name":"unavailable_ipo","payload":{"kind":"file_ipo","expected_founder_revision":1},"category":"not_eligible","detail":"ipo_chain"},
+  {"name":"wind_down_tier_zero","tier":0,"payload":{"kind":"wind_down","expected_founder_revision":1},"category":"not_eligible","detail":"tier"},
+  {"name":"valid_generator","payload":{"kind":"buy_generator","generator_id":"generator.beige_tower","count":{"mode":"exact","value":1}},"category":"","detail":""},
+  {"name":"valid_upgrade","payload":{"kind":"buy_upgrade","upgrade_id":"upgrade.reply_all_macro"},"category":"","detail":""},
+  {"name":"valid_manual","payload":{"kind":"perform_manual_batch","action_id":"manual.click","count":1,"window_ms":1},"category":"","detail":""},
+  {"name":"valid_compact","payload":{"kind":"sign_compact","tithe_ppm":100000},"category":"","detail":""},
+  {"name":"valid_incorporation","tier":2,"payload":{"kind":"incorporate","faction_id":"bootstrapper"},"category":"","detail":""},
+  {"name":"malformed_generator_count","replay_error":true,"payload":{"kind":"buy_generator","generator_id":"generator.beige_tower","count":1},"category":"invalid","detail":"count"},
+  {"name":"founder_fiscal_not_terminal","replay_error":true,"replay_only":true,"payload":{"kind":"harvest_fiscal_period"},"category":"invalid","detail":"founder_scope"},
+  {"name":"founder_hint_not_terminal","replay_error":true,"replay_only":true,"payload":{"kind":"buy_route_hint","route_id":"route.ethical"},"category":"invalid","detail":"founder_scope"}
+]

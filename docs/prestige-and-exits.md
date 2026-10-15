@@ -111,8 +111,14 @@ Ordinary gate preflight still runs before that replacement: unknown gates/routes
 already-crossed gates reject without accruing or creating a successor Company. Gate effects,
 costs and post-accrual gate predicates remain replaced, not executed. This RP-668 gate
 correction carries kernel 0.3.220 and has independent corrective-code approval; the original
-RP-205/207 range received CHANGES REQUIRED. Other automatic-command preflight bypasses
-remain open under RP-668; this is not a claim that every due command is correctly validated.
+RP-205/207 range received CHANGES REQUIRED. At kernel 0.3.221, other Company mutations
+also reuse their ordinary pre-accrual checks: generator/upgrade/manual IDs and ownership,
+doctrine eligibility, burst duration, Compact membership/tithe, incorporation and offer decline.
+Invalid commands cannot become an ending merely because the curriculum is due. A scripted
+branch also retains the existing unavailable-IPO and Tier ≥ 1 Wind Down guards. Terminal
+replay refuses malformed or Founder-only commands instead of accepting a forged ending.
+This broader RP-668 correction is locally verified and awaits independent review.
+It does not execute replaced costs, effects or post-accrual action eligibility.
 Its current-curriculum real-Postgres before-threshold control crosses normally; due controls
 end the run, replay both histories and retry identically. Both Arcade toys block that action
 while active or claimed and release it only after actual quit/resolution. The later-tier

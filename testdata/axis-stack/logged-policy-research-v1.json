@@ -4,7 +4,7 @@
   "source_sha256": {
     "balance/testdata/axis-stack/economy-v5-fixture.json": "f8c67aed784ceaae1335bb40c0e0487cc0d9b78a50b9e63a73569270df7511d7",
     "client/src/economy.ts": "433377eb916a70f55c4b72a67a33c588e96b0bfd86ac62baf1423b031a9fa318",
-    "client/src/replay.ts": "1051e249bac7d7fd5ce5809806010ad33888b904173dd9e54d0485084707a07f",
+    "client/src/replay.ts": "380147f1675aab4a6125d818fccfaa59902b03cb31cd7242135c8d91f51b467a",
     "client/test/logged-policy-research.test.ts": "c562de1dc19d424e13f03365e68d7d08f2cf278851d525b1fa53c150ceb0289e",
     "server/production/accrual.go": "a64e59595febe489722de584dd9692b73dd0825b6cc3cca7244246047b2337c7",
     "server/production/axis_logged_policy_research_test.go": "3662b9cc822bbac0c227aaa297c328a7803df0ab065458c54f66588eeef21111",
@@ -14,7 +14,7 @@
     "server/production/axis_timing_test.go": "0fa4ffc7eff37646c77edc0bfee12165bd32067bf5c9198391dfd7d875ed9435",
     "server/production/content.go": "08114e4957506f53fefd1c574c37c45df3a34f93e7b1d2246f9150f940788181",
     "server/production/engine.go": "b872d4746779a097f68f88475cef66214a2a7f8970817298f788ffad515ae875",
-    "server/production/replay.go": "0b0e9a08808c628abc68dc7365a7ff006c81afaf867bb116f97230e6a55b56d2",
+    "server/production/replay.go": "7a18270952d33c4f441a0bcb45e0b95b5024c55081666b2a447dd12ce22e9f37",
     "server/save/state.go": "a78c38276ad92c0dcfda414f16286a04f493fc837b22a12ae2fda8ae537d80d4"
   },
   "bundle": {

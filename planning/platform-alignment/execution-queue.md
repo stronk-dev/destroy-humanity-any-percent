@@ -13,14 +13,16 @@ owning logs below. Whole-product status and evidence limits
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
 nine-tier goal remains active; no new playable tier or release was completed.
 
-- **READY — repair RP-668 before further Arcade closeout:** independent review finds due
+- **READY — review RP-668 correction before further Arcade closeout:** independent review finds due
   curriculum CrossGate accepts nonexistent/already-crossed gates without ordinary preflight.
   The [Arcade plan/log](../minigame-demo-disc-arcade/plan.md) owns exact CHANGES REQUIRED scope
   and reproduction. Gate-only correction at kernel220 passes matched old-failing Go/TS and
   live-Postgres regressions, including atomic refusal/retry; complete `be79f4a7..3a43cd13`
   range has independent corrective approval.
-  Other command preflights remain broken: actual TS unknown generator/manual IDs still
-  create an ending. Correct those shared preflights without executing replaced effects. This is an
+  Broader kernel221 correction after `09f3f7e1` now reuses ordinary Company preflight and
+  preserves terminal eligibility;21 Go/TS rows and35 actual SQL Exit populations pass.
+  Fresh independent corrective review remains; no replaced mutation or post-accrual action
+  predicate is executed. This is an
   existing-contract correction, not an owner-policy question or draft implementation.
 - **DELEGATED WORDING RECONCILED — Clout RP-308:** Marco's explicit 2026-10-15 answer
   permits CV3/AC6 reconciliation preserving offline cap/rate/banking and separate return

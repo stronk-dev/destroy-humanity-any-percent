@@ -118,7 +118,7 @@ func seedCurrentArcadeExitFounder(t *testing.T, ctx context.Context, db *sql.DB,
 	return seedCurrentArcadeExitFounderForGate(t, ctx, db, store, bundle, now, index, true, false)
 }
 
-func seedCurrentArcadeExitFounderForGate(t *testing.T, ctx context.Context, db *sql.DB, store *save.Store, bundle CatalogBundle, now time.Time, index int, due, crossGate bool) typerFounder {
+func seedCurrentArcadeExitFounderForGate(t *testing.T, ctx context.Context, db *sql.DB, store *save.Store, bundle CatalogBundle, now time.Time, index int, due, crossGate bool, prepare ...func(*save.State)) typerFounder {
 	t.Helper()
 	accountID := fmt.Sprintf("01986666-aa00-4000-8000-%012d", 2*index+1)
 	founderID := fmt.Sprintf("01986666-aa00-4000-8000-%012d", 2*index+2)
@@ -168,6 +168,9 @@ func seedCurrentArcadeExitFounderForGate(t *testing.T, ctx context.Context, db *
 	}
 	advanceActivePlayFixtureAttendance(t, company, bundle.Opportunities, bundle.Prestige, founderID, now)
 	company.ManualTokenRefilledAt = now
+	for _, prepareCompany := range prepare {
+		prepareCompany(company)
+	}
 	founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeFounder}, bundle.ConstantsHash, founder, save.WriteContext{Cause: "arcade.exit.integration"})
 	if err != nil {
 		t.Fatal(err)
@@ -271,7 +274,7 @@ func TestArcadeCurrentCurriculumExitIntegration(t *testing.T) {
 		intentIndex++
 		payload := map[string]any{"intent_id": fmt.Sprintf("01986666-aa01-7000-8000-%012d", intentIndex), "kind": kind, "expected_revision": company.Revision.Number}
 		switch kind {
-		case IntentWindDown:
+		case IntentWindDown, IntentFileIPO:
 			payload["expected_founder_revision"] = owner.Revision.Number
 		case IntentPerformManualBatch:
 			payload["action_id"], payload["count"], payload["window_ms"] = "manual.click", 1, 1
@@ -357,6 +360,39 @@ ORDER BY CASE WHEN stream_id=$1 THEN 1 ELSE 0 END,event_seq,event_id`, founder.c
 		}
 		return genesis, version, entries
 	}
+	assertDuePreflightRefusal := func(t *testing.T, founder typerFounder, encoded []byte, category, detail string) {
+		t.Helper()
+		request, err := ParseIntent(encoded)
+		if err != nil || request.InvalidDetail != "" && (category != "invalid" || detail != request.InvalidDetail) {
+			t.Fatalf("invalid regression input: %v, %s", err, request.InvalidDetail)
+		}
+		before := reputationPlanDBSnapshot(t, ctx, db)
+		result, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, encoded)
+		if err != nil || !receiptMatches(result.Receipt, "rejected", category, detail) {
+			t.Fatalf("due preflight not refused: receipt=%s err=%v", result.Receipt, err)
+		}
+		after := reputationPlanDBSnapshot(t, ctx, db)
+		for _, table := range []string{"save_streams", "save_revisions", "events", "run_epochs", "run_frozen_contributions", "verification_queue"} {
+			if after[table] != before[table] {
+				t.Fatalf("rejected due command changed %s", table)
+			}
+		}
+		// Rejected commands retain their ordinary once-only audit, not an ending.
+		var rejected, applied int
+		if err := db.QueryRowContext(ctx, `SELECT COUNT(*),COUNT(*) FILTER(WHERE applied_revision IS NOT NULL) FROM run_log WHERE company_stream_id=$1 AND intent_id=$2`, founder.companyStreamID, request.IntentID).Scan(&rejected, &applied); err != nil || rejected != 1 || applied != 0 {
+			t.Fatalf("rejection audit rows=%d applied=%d err=%v", rejected, applied, err)
+		}
+		retry, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, encoded)
+		if err != nil || !retry.Replay || !bytes.Equal(result.Receipt, retry.Receipt) {
+			t.Fatalf("rejected retry changed receipt: %v", err)
+		}
+		retried := reputationPlanDBSnapshot(t, ctx, db)
+		for table, rows := range after {
+			if retried[table] != rows {
+				t.Fatalf("rejected retry changed %s", table)
+			}
+		}
+	}
 	for _, tc := range []struct{ name, gate, route, category, detail string }{
 		{"unknown_gate", "gate.does_not_exist", "", "unknown_id", "gate.does_not_exist"},
 		{"crossed_gate", "gate.t0_to_t1", "", "gate_already_crossed", "gate.t0_to_t1"},
@@ -376,32 +412,79 @@ ORDER BY CASE WHEN stream_id=$1 THEN 1 ELSE 0 END,event_seq,event_id`, founder.c
 			if err != nil {
 				t.Fatal(err)
 			}
-			before := reputationPlanDBSnapshot(t, ctx, db)
-			result, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, encoded)
-			if err != nil || !receiptMatches(result.Receipt, "rejected", tc.category, tc.detail) {
-				t.Fatalf("due preflight not refused: receipt=%s err=%v", result.Receipt, err)
+			assertDuePreflightRefusal(t, founder, encoded, tc.category, tc.detail)
+		})
+	}
+	for _, tc := range curriculumCommandPreflightCases(t) {
+		// Founder commands never enter this live coordinator. The shared corpus
+		// tests their forged terminal envelopes only in Go/TS replay.
+		if tc.ReplayOnly {
+			continue
+		}
+		t.Run("due_command_preflight/"+tc.Name, func(t *testing.T) {
+			var kind string
+			if err := json.Unmarshal(tc.Payload["kind"], &kind); err != nil {
+				t.Fatal(err)
 			}
-			after := reputationPlanDBSnapshot(t, ctx, db)
-			for _, table := range []string{"save_streams", "save_revisions", "events", "run_epochs", "run_frozen_contributions", "verification_queue"} {
-				if after[table] != before[table] {
-					t.Fatalf("rejected due command changed %s", table)
+			index++
+			founder := seedCurrentArcadeExitFounderForGate(t, ctx, db, store, bundle, now, index, true, false, func(company *save.State) {
+				if tc.Tier != nil {
+					company.Tier = *tc.Tier
+					if *tc.Tier == 0 {
+						delete(company.GatesCrossed, bundle.Curriculum.FirstFailure.GateID)
+					}
 				}
+			})
+			var base map[string]json.RawMessage
+			if err := json.Unmarshal(intent(t, founder, kind), &base); err != nil {
+				t.Fatal(err)
 			}
-			// Rejected commands retain their ordinary once-only audit, not an ending.
-			var rejected, applied int
-			if err := db.QueryRowContext(ctx, `SELECT COUNT(*),COUNT(*) FILTER(WHERE applied_revision IS NOT NULL) FROM run_log WHERE company_stream_id=$1 AND intent_id=$2`, founder.companyStreamID, payload["intent_id"]).Scan(&rejected, &applied); err != nil || rejected != 1 || applied != 0 {
-				t.Fatalf("rejection audit rows=%d applied=%d err=%v", rejected, applied, err)
+			for key, value := range tc.Payload {
+				base[key] = value
 			}
-			retry, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, encoded)
-			if err != nil || !retry.Replay || !bytes.Equal(result.Receipt, retry.Receipt) {
-				t.Fatalf("rejected retry changed receipt: %v", err)
+			encoded, err := json.Marshal(base)
+			if err != nil {
+				t.Fatal(err)
 			}
-			retried := reputationPlanDBSnapshot(t, ctx, db)
-			for table, rows := range after {
-				if retried[table] != rows {
-					t.Fatalf("rejected retry changed %s", table)
+			if tc.Category == "" {
+				prior, err := store.LoadLatest(ctx, founder.companyStreamID)
+				if err != nil {
+					t.Fatal(err)
 				}
+				result, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, encoded)
+				if err != nil || !receiptMatches(result.Receipt, "applied", "", "") {
+					t.Fatalf("valid preflight did not Exit: %s, %v", result.Receipt, err)
+				}
+				current, err := store.LoadLatest(ctx, founder.companyStreamID)
+				if err != nil || current.State.RunSeq != 2 {
+					t.Fatalf("successor Company missing: %v", err)
+				}
+				var terminal []byte
+				if err := db.QueryRowContext(ctx, `SELECT state FROM save_revisions WHERE stream_id=$1 AND revision=$2`, founder.companyStreamID, prior.Revision.Number+1).Scan(&terminal); err != nil {
+					t.Fatal(err)
+				}
+				assertCurriculumRequestedMutationReplaced(t, mustEncodeState(t, prior.State), terminal)
+				genesis, version, entries := companyReplay(t, founder)
+				if VerifyReplayRun(genesis, version, bundle, entries, bundle.ConstantsHash, false) != ReplayVerified {
+					t.Fatal("valid-preflight Company history diverged")
+				}
+				history, err := store.LoadFounderHistory(ctx, founder.founderStreamID)
+				if err != nil || VerifyFounderHistory(history, set) != ReplayVerified {
+					t.Fatalf("valid-preflight Founder history diverged: %v", err)
+				}
+				after := reputationPlanDBSnapshot(t, ctx, db)
+				retry, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, encoded)
+				if err != nil || !retry.Replay || !bytes.Equal(result.Receipt, retry.Receipt) {
+					t.Fatalf("valid-preflight retry changed result: %v", err)
+				}
+				for table, rows := range reputationPlanDBSnapshot(t, ctx, db) {
+					if rows != after[table] {
+						t.Fatalf("valid-preflight retry changed %s", table)
+					}
+				}
+				return
 			}
+			assertDuePreflightRefusal(t, founder, encoded, tc.Category, tc.Detail)
 		})
 	}
 	t.Run("eligible_before_threshold/cross_gate", func(t *testing.T) {

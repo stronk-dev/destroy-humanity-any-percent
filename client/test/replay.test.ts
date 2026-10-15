@@ -1,4 +1,5 @@
 import fixtureJSON from "../../testdata/replay/apply-logged-v1.json";
+import curriculumPreflightCases from "../../testdata/replay/curriculum-command-preflight-v1.json";
 import typerV1Raw from "../../balance/testdata/typer-v1.json?raw";
 import typerRawJSON from "../../testdata/typer/raw-json-v1.json";
 import tierUnlockRaw from "../../testdata/minigame/tier-unlock-raw-v1.json";
@@ -988,6 +989,38 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
       expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
       expect(result.newCompany).toBeNull();
       expect(result.companyEndedEvents).toEqual([]);
+  });
+
+  it.each(curriculumPreflightCases)("retains ordinary command preflight before a due replacement: $name", async ({ payload, category, detail, tier, replay_error }) => {
+    const row = fixture.curriculum_cross_gate_exit;
+    const bundle = await loadReplayCatalogBundle(row.constants_hash, row.artifacts);
+    const state = restoreReplayState(row.case.pre_state, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+    if (tier !== undefined) state.tier = tier;
+    const before = canonicalJSONString(encodeReplayState(state));
+    const request = { ...payload, expected_revision: row.case.canonical_payload.expected_revision };
+    const inputs = structuredClone(row.case.replay_inputs) as { resolved: { intent_kind: string } };
+    inputs.resolved.intent_kind = payload.kind;
+    if (replay_error) {
+      await expect(applyLoggedExit(state, canonicalJSONString(request), bundle, inputs)).rejects.toThrow();
+      expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
+      return;
+    }
+    const result = await applyLoggedExit(state, canonicalJSONString(request), bundle, inputs);
+    if (category === "") {
+      expect(result.outcome).toBe("applied");
+      expect(result.newCompany?.runSeq).toBe(2);
+      const oldState = JSON.parse(before) as Record<string, unknown>;
+      const terminal = encodeReplayState(state) as Record<string, unknown>;
+      for (const key of ["generators", "generators_purchased_total", "upgrades_owned", "manual_token_milli", "compact_member", "compact_tithe_ppm", "faction_id"]) {
+        expect(terminal[key], `replaced command changed ${key}`).toEqual(oldState[key]);
+      }
+      return;
+    }
+    expect(result.outcome).toBe("rejected");
+    expect(result.receipt).toMatchObject({ rejection: { category, detail } });
+    expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
+    expect(result.newCompany).toBeNull();
+    expect(result.companyEndedEvents).toEqual([]);
   });
 
   it("keeps curriculum Reputation neutral while each branch applies its own Route Knowledge and starter", async () => {

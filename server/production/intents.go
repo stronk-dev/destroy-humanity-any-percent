@@ -1112,17 +1112,25 @@ func (s *Service) evaluate(state *save.State, catalog *economy.Catalog, now time
 	return evaluateWithSimulationPolicy(state, catalog, now, mode, contributions, s.simulation)
 }
 
-func (s *Service) buyUpgrade(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+func buyUpgradePreflight(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || routeCatalog == nil || state.UpgradesOwned == nil {
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
-	upgrade, exists := catalog.Upgrade(request.UpgradeID)
+	_, exists := catalog.Upgrade(request.UpgradeID)
 	if !exists {
 		return rejectedDecision(request, revision.Number, "unknown_id", request.UpgradeID)
 	}
 	if state.UpgradesOwned[request.UpgradeID] {
 		return rejectedDecision(request, revision.Number, "not_eligible", "owned")
 	}
+	return save.IntentDecision{}, nil
+}
+
+func (s *Service) buyUpgrade(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if decision, err := buyUpgradePreflight(request, state, catalog, routeCatalog, revision); err != nil || decision.Outcome == save.IntentRejected {
+		return decision, err
+	}
+	upgrade, _ := catalog.Upgrade(request.UpgradeID)
 	before := state.Ledger.Snapshot()
 	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
@@ -1172,7 +1180,7 @@ func (s *Service) buyUpgrade(request IntentRequest, state *save.State, catalog *
 	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
-func (s *Service) signCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+func signCompactPreflight(request IntentRequest, state *save.State, band *CompactTitheBand, revision save.Revision) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || band == nil || band.MinimumPPM < 0 || band.MaximumPPM > 1_000_000 || band.MinimumPPM > band.MaximumPPM || revision.OwnerID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
@@ -1181,6 +1189,13 @@ func (s *Service) signCompact(request IntentRequest, state *save.State, catalog 
 	}
 	if request.TithePPM < band.MinimumPPM || request.TithePPM > band.MaximumPPM {
 		return rejectedDecision(request, revision.Number, "invalid", "tithe_ppm")
+	}
+	return save.IntentDecision{}, nil
+}
+
+func (s *Service) signCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if decision, err := signCompactPreflight(request, state, band, revision); err != nil || decision.Outcome == save.IntentRejected {
+		return decision, err
 	}
 	before := state.Ledger.Snapshot()
 	result, err := s.evaluate(state, catalog, now, mode, contributions)
@@ -1199,7 +1214,7 @@ func (s *Service) signCompact(request IntentRequest, state *save.State, catalog 
 	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
-func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+func leaveCompactPreflight(request IntentRequest, state *save.State, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || band == nil || revision.OwnerID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
@@ -1217,6 +1232,13 @@ func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog
 	}
 	if !state.CompactMember {
 		return rejectedDecision(request, revision.Number, "not_member", "compact")
+	}
+	return save.IntentDecision{}, nil
+}
+
+func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if decision, err := leaveCompactPreflight(request, state, band, factionCatalog, revision); err != nil || decision.Outcome == save.IntentRejected {
+		return decision, err
 	}
 	before := state.Ledger.Snapshot()
 	result, err := s.evaluate(state, catalog, now, mode, contributions)
@@ -1236,7 +1258,7 @@ func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog
 	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
-func (s *Service) incorporate(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+func incorporatePreflight(request IntentRequest, state *save.State, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || factionCatalog == nil || revision.OwnerID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
@@ -1255,6 +1277,14 @@ func (s *Service) incorporate(request IntentRequest, state *save.State, catalog 
 			return save.IntentDecision{}, ErrInvalidEngineState
 		}
 	}
+	return save.IntentDecision{}, nil
+}
+
+func (s *Service) incorporate(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if decision, err := incorporatePreflight(request, state, band, factionCatalog, revision); err != nil || decision.Outcome == save.IntentRejected {
+		return decision, err
+	}
+	chosen, _ := factionCatalog.Faction(request.FactionID)
 	before := state.Ledger.Snapshot()
 	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
@@ -1330,6 +1360,37 @@ func (chain accrualHookChain) AfterAccrual(state *save.State, catalog *economy.C
 		events = append(events, produced...)
 	}
 	return events, nil
+}
+
+// scriptedCommandPreflight reuses ordinary pre-accrual validation. It never
+// executes the command that the curriculum ending replaces. Terminal Exit and
+// opportunity-claim checks have no ordinary pre-accrual mutation arm here.
+func scriptedCommandPreflight(request IntentRequest, state *save.State, catalogs CatalogBundle, revision save.Revision, now time.Time) (save.IntentDecision, error) {
+	band := &CompactTitheBand{MinimumPPM: catalogs.Commons.MinimumTithePPM(), MaximumPPM: catalogs.Commons.MaximumTithePPM()}
+	switch request.Kind {
+	case IntentBuyGenerator:
+		return buyGeneratorPreflight(request, state, catalogs.Economy, revision)
+	case IntentBuyUpgrade:
+		return buyUpgradePreflight(request, state, catalogs.Economy, catalogs.Routes, revision)
+	case IntentPerformManualBatch:
+		return performManualBatchPreflight(request, catalogs.Economy, revision)
+	case IntentCrossGate:
+		return crossGatePreflight(request, state, catalogs.Routes, catalogs.Doctrines, revision)
+	case IntentPickDoctrine:
+		return pickDoctrinePreflight(request, state, catalogs.Doctrines, revision)
+	case IntentSpendComputeCredit:
+		return spendComputeCreditPreflight(request, state, catalogs.Economy, catalogs.Doctrines, revision)
+	case IntentSignCompact:
+		return signCompactPreflight(request, state, band, revision)
+	case IntentLeaveCompact:
+		return leaveCompactPreflight(request, state, band, catalogs.Faction, revision)
+	case IntentIncorporate:
+		return incorporatePreflight(request, state, band, catalogs.Faction, revision)
+	case IntentDeclineExitOffer:
+		return declineExitOfferPreflight(request, state, revision, now)
+	default:
+		return save.IntentDecision{}, nil
+	}
 }
 
 // crossGatePreflight is shared by ordinary gates and curriculum replacements.
@@ -1415,7 +1476,7 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
-func (s *Service) pickDoctrine(request IntentRequest, state *save.State, catalog *economy.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+func pickDoctrinePreflight(request IntentRequest, state *save.State, doctrineCatalog *doctrine.Catalog, revision save.Revision) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || doctrineCatalog == nil ||
 		save.VersionForState(state) < 17 || revision.OwnerID == "" || revision.StreamID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
@@ -1435,6 +1496,13 @@ func (s *Service) pickDoctrine(request IntentRequest, state *save.State, catalog
 	}
 	if state.DoctrinesByTransition[request.TransitionID] != "" {
 		return rejectedDecision(request, revision.Number, "not_eligible", "doctrine_already_picked")
+	}
+	return save.IntentDecision{}, nil
+}
+
+func (s *Service) pickDoctrine(request IntentRequest, state *save.State, catalog *economy.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if decision, err := pickDoctrinePreflight(request, state, doctrineCatalog, revision); err != nil || decision.Outcome == save.IntentRejected {
+		return decision, err
 	}
 	before := state.Ledger.Snapshot()
 	result, err := s.evaluate(state, catalog, now, mode, contributions)
@@ -1459,7 +1527,7 @@ func (s *Service) pickDoctrine(request IntentRequest, state *save.State, catalog
 	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
-func (s *Service) spendComputeCredit(request IntentRequest, state *save.State, catalog *economy.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+func spendComputeCreditPreflight(request IntentRequest, state *save.State, catalog *economy.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || doctrineCatalog == nil ||
 		save.VersionForState(state) < 17 || revision.OwnerID == "" || revision.StreamID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
@@ -1471,6 +1539,14 @@ func (s *Service) spendComputeCredit(request IntentRequest, state *save.State, c
 	if request.AmountMS > policy.BurstMaxDurationMS {
 		return rejectedDecision(request, revision.Number, "not_eligible", "burst_duration")
 	}
+	return save.IntentDecision{}, nil
+}
+
+func (s *Service) spendComputeCredit(request IntentRequest, state *save.State, catalog *economy.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if decision, err := spendComputeCreditPreflight(request, state, catalog, doctrineCatalog, revision); err != nil || decision.Outcome == save.IntentRejected {
+		return decision, err
+	}
+	policy := catalog.OfflinePolicy()
 	before := state.Ledger.Snapshot()
 	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
@@ -1538,6 +1614,18 @@ func (s *Service) buyRouteHint(request IntentRequest, state *save.State, routeCa
 	return appliedDecision(request, state, nil, revision.Number+1, 1, state.Ledger.Snapshot(), []save.EventWrite{{Kind: save.EventRouteHintPurchased, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload}}, nil)
 }
 
+func buyGeneratorPreflight(request IntentRequest, state *save.State, catalog *economy.Catalog, revision save.Revision) (save.IntentDecision, error) {
+	generator, exists := catalog.GeneratorClass(request.GeneratorID)
+	if !exists || generator.Production == nil {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.GeneratorID)
+	}
+	_, exists = state.GeneratorCounts[request.GeneratorID]
+	if !exists {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	return save.IntentDecision{}, nil
+}
+
 func (s *Service) buyGenerator(
 	request IntentRequest,
 	state *save.State,
@@ -1549,14 +1637,11 @@ func (s *Service) buyGenerator(
 	sink InvariantSink,
 	hook AccrualHook,
 ) (save.IntentDecision, error) {
-	generator, exists := catalog.GeneratorClass(request.GeneratorID)
-	if !exists || generator.Production == nil {
-		return rejectedDecision(request, revision.Number, "unknown_id", request.GeneratorID)
+	if decision, err := buyGeneratorPreflight(request, state, catalog, revision); err != nil || decision.Outcome == save.IntentRejected {
+		return decision, err
 	}
-	owned, exists := state.GeneratorCounts[request.GeneratorID]
-	if !exists {
-		return save.IntentDecision{}, ErrInvalidEngineState
-	}
+	generator, _ := catalog.GeneratorClass(request.GeneratorID)
+	owned := state.GeneratorCounts[request.GeneratorID]
 	before := state.Ledger.Snapshot()
 	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
@@ -1620,6 +1705,14 @@ func (s *Service) buyGenerator(
 	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, count, before, postAccrual, accrualEvents, collectorReports(sink))
 }
 
+func performManualBatchPreflight(request IntentRequest, catalog *economy.Catalog, revision save.Revision) (save.IntentDecision, error) {
+	_, exists := catalog.ManualAction(request.ActionID)
+	if !exists {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.ActionID)
+	}
+	return save.IntentDecision{}, nil
+}
+
 func (s *Service) performManualBatch(
 	request IntentRequest,
 	state *save.State,
@@ -1630,10 +1723,10 @@ func (s *Service) performManualBatch(
 	contributions []multiplier.Contribution,
 	hook AccrualHook,
 ) (save.IntentDecision, error) {
-	action, exists := catalog.ManualAction(request.ActionID)
-	if !exists {
-		return rejectedDecision(request, revision.Number, "unknown_id", request.ActionID)
+	if decision, err := performManualBatchPreflight(request, catalog, revision); err != nil || decision.Outcome == save.IntentRejected {
+		return decision, err
 	}
+	action, _ := catalog.ManualAction(request.ActionID)
 	before := state.Ledger.Snapshot()
 	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {

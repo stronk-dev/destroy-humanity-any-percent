@@ -2685,3 +2685,69 @@ mount list and tmpfs data identity, then stops/removes only owned cloud-clicker-
 Disposable test SQL rows are lost as intended; no durable/user data, caches or other services
 are removed. Global overview/roadmap reconcile the new coordinate and separate scoped
 approval from unfinished product/release work; editorial diff checked, no redundant suite.
+
+## 2026-10-15 — RP-668 ordinary Company preflight and terminal admission correction
+
+Review by: Codex implementer first filter, not independent approval. Recorded by: Codex.
+Complete batch starts after `09f3f7e1`; kernel220→221, no epoch/balance/content/schema/CI change.
+Authority: Prestige D1/D4/P5 and accepted T01-C31. Extract nine existing ordinary pre-accrual
+checks into shared helpers, retaining their original order and ordinary callers; terminal
+curriculum replacement dispatches those same helpers. TS reuses preflightRejection. Keep
+gate/activity compatibility, replaced costs/effects/post-accrual predicates unexecuted, and
+existing terminal eligibility: scripted branches cannot enable an unavailable IPO or Tier-0
+Wind Down. Terminal replay refuses malformed and Founder-only commands before mutating state;
+Go reuses live isCompanyIntent, TS names the corresponding closed Company command set.
+
+The new shared21-row test population has13 semantic refusals,5 valid replacements,1 malformed
+command and2 forged Founder-only terminal commands. All11 original non-gate semantic cases
+fail on unchanged09f3f7e1 runtime in actual Go/TS/SQL, returning applied endings. Two further
+IPO/Tier-0 cases fail in all three runtimes before their unchanged guards are corrected, at
+the intermediate source containing the nine-helper repair. Malformed generator count and
+both Founder envelopes separately fail Go/TS before their admission guards are added.
+Those three private replay failures are not claimed as live deployed exploits. Live malformed
+input already follows the ordinary rejected-command arm; Founder commands never enter this
+Company coordinator. The two replay-only rows are explicitly excluded from the SQL population.
+
+All corrected21 Go/TS rows pass. Negative replay cases require exact refusal or invalid-input
+error, unchanged encoded Company, and no successor/ending. Five positive controls (generator,
+upgrade, manual, Compact and incorporation) require run2 while their requested ownership/
+purchase-count/token/membership/tithe/faction facts remain unchanged in the terminal Company.
+SQL reads the actual saved terminal revision, verifies both persisted histories and identical
+retry with no new rows. All refusals preserve gameplay tables and the once-only rejection
+audit; reuse the existing12-table snapshot, not a second assertion framework. Existing gate
+and active/claimed→quit/resolution→released Exit controls remain unchanged in meaning.
+
+Final-source execution:
+- Cold `TestCurriculumDueCommandReplayRequiresOrdinaryPreflight` plus prior due-gate replay
+  controls pass; complete Node replay185 passes. `make test-client`:12481 pass/1088 explicit
+  skips,145 files pass/23 skipped. Types zero diagnostics, build/client-boundary including
+  10 Go/15 Svelte negative fixtures, and separate affected Production/Save vet pass.
+- `make test-go-ci CI_TEST_PACKAGES='./production ./save'` with the exact named selector
+  TestArcadeCurrentCurriculumExitIntegration, TestCurriculumAutomaticFailurePersistsAndReplaysIntegration,
+  TestPrestigeWindDownAndScriptedExitIntegration, TestPrestigeWindDownEligibleStateMatrixIntegration
+  and TestCompanyAxisMigrationCorpus, -count=1 -v: all execute/pass, no selected skips;
+  Production4.441s/Save0.188s. Arcade has35 populations, including19 live rows from the new
+  shared corpus and all prior16. This is actual declared Linux-amd64/Postgres.
+- `make test-browser-ci-focused BROWSER_TEST_FLAGS='test/replay.test.ts'`:555 actual Linux
+  Chromium/Firefox/WebKit executions pass, no skips,5.59s; zero pending module observations.
+  Initial socket denial executes nothing; authorized exact declared command supplies evidence.
+- Cold Decimal/Economy/Kernel/Prestige/Replaycatalog and vet pass. Full final native
+  Production remains red only on the known27 Clout partitions (48.239s), Save passes0.346s.
+  Separate vet passes; the failed aggregate does not falsely claim its chained vet ran.
+  Historical kernel-history50a3a514 remains unwaived; no full CI/performance/feature acceptance.
+
+Re-executed the six existing opted-in research producers after final runtime changes (1.034s
+pass), then verified every current source hash and every non-source report field unchanged.
+Only source_sha256 values and the dependent migration company_source.sha256 change; final
+activation digest c3873a7d59e5e7cf6abb6d1c01ea17c90cacea1fccc2514b7cc52f03c0c2eec3.
+All20 migration populations and NOT_PROVEN results remain unchanged, with Go/TS consumers
+executed. A concurrent intermediate SQL run caught the briefly stale dependent migration
+pin; it is retained as a failed run, followed by the stable complete final selector above.
+Initial generator test input used numeric count instead of the required exact-count object;
+the live parser caught it before the intended bug. Corrected input reproduces all11 real
+old-source failures. Initial positive TS assertion needed an explicit unknown-record type;
+typecheck caught it and the corrected strict run passes. Neither authoring error is a baseline.
+
+Fresh independent corrective-code review of the complete batch is next; do not self-close
+RP-668, promote the original RP-205/207 verdict, accept a feature or archive on these checks.
+RP-201/RP-211/public-wire/adopted content/full AC9 and the nine-tier release floor remain.

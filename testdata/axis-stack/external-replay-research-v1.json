@@ -2,13 +2,13 @@
   "version": 1,
   "acceptance_status": "NOT_PROVEN: bounded external/Guild replay compatibility; production AC6 remains red",
   "source_sha256": {
-    "client/src/replay.ts": "1051e249bac7d7fd5ce5809806010ad33888b904173dd9e54d0485084707a07f",
+    "client/src/replay.ts": "380147f1675aab4a6125d818fccfaa59902b03cb31cd7242135c8d91f51b467a",
     "client/test/axis-external-replay.test.ts": "82e4fa81e1c9e64f9999c3fc6e7554bd9f558cedb343cb3e392380094f45f276",
     "server/production/axis_external_replay_research_test.go": "c33fdbb04d848f7feba9c821161fd32ca89fc8547959b658eda5609dac29b85c",
     "server/production/axis_origin_projection_test.go": "5161fec79f57d63bb5609c25c268847db0f026ab05cc43ec1d1050ad185d6a75",
     "server/production/axis_stack_test.go": "a014c6046ce356a2927c1d3d58ad3eaa518252b78724543ec19176588be26e0c",
     "server/production/axis_timing_test.go": "0fa4ffc7eff37646c77edc0bfee12165bd32067bf5c9198391dfd7d875ed9435",
-    "server/production/replay.go": "0b0e9a08808c628abc68dc7365a7ff006c81afaf867bb116f97230e6a55b56d2",
+    "server/production/replay.go": "7a18270952d33c4f441a0bcb45e0b95b5024c55081666b2a447dd12ce22e9f37",
     "server/save/state.go": "a78c38276ad92c0dcfda414f16286a04f493fc837b22a12ae2fda8ae537d80d4"
   },
   "bundle": {

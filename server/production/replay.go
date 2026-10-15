@@ -656,7 +656,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		return LoggedExitTransition{}, fmt.Errorf("%w: active foundations require replay inputs v3+", ErrInvalidReplayInputs)
 	}
 	request, err := parseLoggedIntent(canonicalPayload, wire.Command.IntentID)
-	if err != nil || request.ExpectedRevision != wire.Command.Revision || wire.Command.RunSeq != company.RunSeq || !bytes.Equal(request.CanonicalPayload, canonicalPayload) {
+	if err != nil || request.InvalidDetail != "" || !isCompanyIntent(request.Kind) || request.ExpectedRevision != wire.Command.Revision || wire.Command.RunSeq != company.RunSeq || !bytes.Equal(request.CanonicalPayload, canonicalPayload) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal command envelope", ErrInvalidReplayInputs)
 	}
 	var resolved replayExitResolved
@@ -706,9 +706,9 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	}
 	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
 		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
-	if request.Kind == IntentCrossGate && resolved.SelectedBranch != nil &&
+	if resolved.SelectedBranch != nil &&
 		!(resolved.MinigameSessionActive != nil && *resolved.MinigameSessionActive) {
-		decision, err := crossGatePreflight(request, company, catalogs.Routes, catalogs.Doctrines, revision)
+		decision, err := scriptedCommandPreflight(request, company, catalogs, revision, now)
 		if err != nil {
 			return LoggedExitTransition{}, err
 		}
@@ -786,11 +786,11 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		terms, err = prestigecore.ComputeTerms(company, founder, catalogs.Prestige, exitType)
 	} else {
 		scripted := resolved.SelectedBranch != nil
-		if request.Kind == IntentFileIPO && !scripted {
+		if request.Kind == IntentFileIPO {
 			decision := rejectedExitDecision(request, revision.Number, "not_eligible", "ipo_chain")
 			return LoggedExitTransition{Founder: founder, Company: company, Decision: decision}, nil
 		}
-		if request.Kind == IntentWindDown && company.Tier < 1 && !scripted {
+		if request.Kind == IntentWindDown && company.Tier < 1 {
 			decision := rejectedExitDecision(request, revision.Number, "not_eligible", "tier")
 			return LoggedExitTransition{Founder: founder, Company: company, Decision: decision}, nil
 		}
