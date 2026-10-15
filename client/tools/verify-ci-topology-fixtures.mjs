@@ -29,6 +29,7 @@ const mutations = [
   ["missing native functional phase", ci, maintenance, makefile.replace(/^\tcd client .*vitest\.browser\.config\.ts test\/typer-table-browser\.test\.ts .*\n/m, "")],
   ["missing broad functional phase", ci, maintenance, makefile.replace(/^\tcd client .*--exclude test\/typer-table-browser\.test\.ts .*\n/m, "")],
   ["missing isolated performance", ci, maintenance, makefile.replace("\t$(MAKE) test-game-ui-performance\n", "")],
+  ["manual browser shell routed through test entrypoint", ci, maintenance, makefile.replace("run --rm --entrypoint bash browser -lc", "run --rm browser bash -lc")],
 ];
 
 const coldGoCommands = [

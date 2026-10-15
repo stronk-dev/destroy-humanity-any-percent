@@ -364,7 +364,7 @@ diagnose-browser-session-coordination: build-gameserver
 .PHONY: research-browser-coordination
 # R-011 primitive observation only; no default CI/release dependency or product auth.
 research-browser-coordination:
-	docker compose -f compose.browser-test.yml run --rm browser bash -lc 'corepack enable && corepack prepare pnpm@11.15.1 --activate && pnpm --dir client install --frozen-lockfile && node client/tools/research-browser-coordination.mjs $(shell git rev-parse HEAD)'
+	docker compose -f compose.browser-test.yml run --rm --entrypoint bash browser -lc 'corepack enable && corepack prepare pnpm@11.15.1 --activate && pnpm --dir client install --frozen-lockfile && node client/tools/research-browser-coordination.mjs $(shell git rev-parse HEAD)'
 
 .PHONY: research-browser-refresh-dispatch
 # Manual R-011 native primitive research, never a renewal or full CI gate.

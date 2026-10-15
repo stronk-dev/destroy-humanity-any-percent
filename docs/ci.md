@@ -261,7 +261,13 @@ ceiling. A stuck test process group cannot keep the local job alive indefinitely
 prints the timeout's signal message and fails the command; partial pass counts are not a verdict.
 Exit137 without that message is not enough to diagnose a deadline rather than another kill.
 This is containment, not a larger test timeout or permission to exceed the sub-five-minute
-hosted acceptance target. Explicit Compose command overrides replace this wrapper too.
+hosted acceptance target. Compose command overrides remain inside this entrypoint:
+they select a supported Make target, not an arbitrary shell command. The existing
+manual `make research-browser-coordination` explicitly selects the shell entrypoint,
+as its pre-existing research path did, and is not a CI or release gate. Its new
+observation goes to ignored `.cache/browser-coordination-observation.v1.json`;
+the tracked historical observation remains unchanged. This manual override does
+not inherit the test runner's setup or timeout wrapper.
 The timer starts when the container command starts; it does not bound a stuck Docker client
 before startup. Require the CLI's terminal result as well as test results, and report an
 unavailable daemon as unavailable verification, never as a passing job.

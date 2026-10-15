@@ -134,6 +134,15 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource, browse
     throw new Error("Linux browser container must retain containment, frozen setup and the unmodified default make test-browser target");
   }
 
+  // This existing manual consumer supplies a shell command, not a test target.
+  // A command override alone now reaches the restrictive test entrypoint.
+  const coordination = section(makeSource, /^research-browser-coordination:/, /^[^\s#].*:/)
+    .filter((line) => line.startsWith("\t") && !line.trim().startsWith("#"));
+  if (coordination.length !== 1 || !coordination[0].startsWith("\tdocker compose -f compose.browser-test.yml run --rm --entrypoint bash browser -lc '") ||
+      !coordination[0].includes("node client/tools/research-browser-coordination.mjs $(shell git rev-parse HEAD)")) {
+    throw new Error("manual browser coordination research must explicitly select its shell entrypoint");
+  }
+
   const harness = jobSection(ciSource, "harness");
   requireLine(harness, /^    timeout-minutes: 5\s*$/, "blocking harness must retain the five-minute budget");
   requireLine(harness, /^      - run: make verify-harness-fast\s*$/, "blocking harness must run the fast gate");

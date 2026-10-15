@@ -2293,3 +2293,53 @@ All eleven changed paths after `72fb7849` through this containing commit need de
 review, consolidatable with the CI lane. Review by: Codex (implementer first filter).
 Recorded by: Codex. No acceptance/archival or full-CI/1.0 claim. Accounting/search,
 historical kernel failure, rights/accessibility and the full nine-tier build remain.
+
+## 2026-10-15 — Shared browser runner designated review: CHANGES REQUIRED
+
+Review by: fresh independent Codex sub-agent `/root/linux_browser_runner_corrective_review`.
+Recorded by: Codex parent, transcribing its verdict under Marco's corrective-review delegation.
+Reviewed complete eleven-path range:
+`72fb7849bf6e5630d4b76bba2dfbb7199d9cb663..d81713b5ff4f589e3413a07daab9c0bee2e14871`
+(exclusive/inclusive). Verdict: **CHANGES REQUIRED**, RP-665/P2.
+
+The reviewer executes the existing `make research-browser-coordination`: its shell
+override now reaches the persistent restricted test entrypoint and exits2 before
+research, printing "expected test-browser or test-browser-focused". The docs also
+incorrectly claim command overrides replace the timeout wrapper. This real consumer
+was absent from the previously passing topology fixtures.
+
+Independent topology/setup controls PASS; actual selected Linux numeric vectors/
+ordered tests PASS19212/6 engine-file executions,4.69s; nonexistent-file selection
+correctly fails Vitest1/outerMake2. Bash syntax, Compose config, range whitespace
+and actual full Make routing PASS. Reviewed implementation bytes remain unchanged.
+No full browser rerun or hosted/timing/feature acceptance claim. Reviewer changes
+no repository files; its owned temporary fixtures and browser containers are gone,
+and it preserves the other reviewer's Postgres resources. The repair below is not
+silently absorbed into this verdict.
+
+## 2026-10-15 — RP-665 restore the manual browser research consumer
+
+Under existing CI D2/RFC-0000, explicitly select the shell entrypoint in the existing
+manual Make target, preserving its pre-extraction non-CI setup/timeout semantics.
+The full/focused CI entrypoint, default population and containment remain unchanged.
+Add a topology negative restoring the broken command and reconcile the docs. Move
+new instrument output to ignored `.cache/browser-coordination-observation.v1.json`
+so this real rerun cannot replace the tracked historical observation; population,
+assertions, guards and source/instrument identity fields stay unchanged.
+
+Initial sandbox Docker access refuses before execution. The narrowly approved actual
+root target then completes exit0: Chromium/Firefox/WebKit each40 interval cases and
+10 actual page terminations, total120/30; no runtime errors, exclusions or guard firing.
+This is Linux/arm64 primitive research, not renewal/product/timing acceptance. Source
+coordinate is `6d2f42eb` plus this working diff; instrument SHA256
+`ce78dad29a60a1fa1beb1341a8dc75227886c7b37b85354b61edd44662478791`.
+Ignored report SHA256 is `07585030a6234f41c7cceabcdebbe585c4cddef9abe26ab4f58a68b250a1e221`.
+Historical tracked report is byte-unchanged. Actual topology/negative/setup/Make
+fixtures PASS (27 topology negatives), instrument syntax and diff checks PASS.
+
+Eight-path Make/tool/test/docs/plan/ledger/log supplement after `6d2f42eb` through
+this containing commit needs designated corrective review, together with the original
+runner range above. Review by: Codex (repair implementer first filter). Recorded by:
+Codex. No product, workflow, arithmetic/kernel or acceptance changes; no whole-CI,
+hosted, renewal, release, archival or publication claim. Browser container is disposable;
+the other reviewer's Postgres service is untouched. Existing red gates remain.

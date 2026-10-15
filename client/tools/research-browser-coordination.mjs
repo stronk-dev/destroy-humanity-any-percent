@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
 import os from "node:os";
 import path from "node:path";
@@ -176,7 +176,9 @@ try {
   assert.equal(report.runtime_errors.length, 0, JSON.stringify(report.runtime_errors));
   assert.equal(report.guard_exhausted, false);
   report.status = "complete";
-  writeFileSync(path.join(root, "planning/platform-alignment/browser-coordination-observation.v1.json"), `${JSON.stringify(report, null, 2)}\n`);
+  // Rerunning this manual instrument must not replace the tracked historical evidence.
+  mkdirSync(path.join(root, ".cache"), { recursive: true });
+  writeFileSync(path.join(root, ".cache/browser-coordination-observation.v1.json"), `${JSON.stringify(report, null, 2)}\n`);
   console.log("R-011 primitive observation complete: 120 interval cases / 30 page terminations; NOT automatic-renewal, process-crash or production timing acceptance");
 } catch (error) {
   report.status = "invalid";

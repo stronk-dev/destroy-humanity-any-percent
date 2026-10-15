@@ -12,7 +12,12 @@ Focused Linux browser verification now has a root command:
 It shares the full command's cold image/setup/containment, not a copied Vitest lane.
 Actual selected three-engine execution and the complete default broad/native/performance
 lane pass; missing-file selection refuses. The owning log records scope and review
-range after `72fb7849`. This does not repair RP-637, Production arithmetic, historical
+range after `72fb7849`. Independent review finds RP-665: the new entrypoint breaks
+the existing manual browser-coordination target. Its explicit shell override and
+regression now pass the actual complete research population; fresh observations
+write to ignored cache, preserving the tracked historical evidence. The original
+verdict is CHANGES REQUIRED; supplemental review remains pending in the owning log.
+This does not repair RP-637, Production arithmetic, historical
 kernel gating, hosted timing or full CI; existing blockers and review debt remain.
 
 New published maintenance38677066823 at unchanged `be66902b` is completed failure.
