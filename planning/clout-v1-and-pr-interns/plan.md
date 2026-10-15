@@ -8,6 +8,24 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+Diagnostic-owner check at `0f4e0f16`: use the actual epoch8 registered first-draw
+input and unchanged SimulateContentDynamicsActivePlay. Reconstruct its real natural
+spawn/claim prefix, preserving pre-claim control and post-claim origin. Require its
+existing5000ms claimed/control/bonus literals35.035/5.005/30.03 and matching current
+window helper. On separate clones, actual endpoint schedule/contribution/evaluation
+at expiry must instead give5.005 in both branches, without changing either origin.
+This tests distinct sampling policies, not a current payout bug or permission to
+change the diagnostic, buff math, golden report or served game behavior.
+
+Executed: the real current diagnostic retains35.035/5.005/30.03; actual endpoint
+sampling gives5.005 for both claimed/control. Origins stay unchanged. Parent C1g
+now defines the exact private diagnostic owner, natural constructor/claim branch,
+fixed window-start contribution policy and strict reconstruction/refusal bindings.
+The harness successor reconciles its previously incorrect endpoint-sampling wording
+in H1; no current code/report behavior is changed. Next complete actual producer
+caller/context compatibility and the remaining temporal/dispatch contract, not
+repeat this distinction or enable axis scenarios from the diagnostic profile.
+
 RFC-0000 scope reconciliation after `8bef2695`: the producer draft owns private
 origin/context/events/settlement; new draft `rfc/accrual-aware-harness-search.md`
 owns R10/R11 search/reuse and actual consumer migration. It retains the full

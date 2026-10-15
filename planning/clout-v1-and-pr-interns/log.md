@@ -3720,3 +3720,35 @@ Five-path documentation diff, links and moved-section coverage checked;
 Review by: Codex (draft author first filter). Recorded by: Codex. Complete range
 after `8bef2695` through this containing commit needs designated normative review;
 prior review debt remains. No resources/services touched, push, archival or deployment.
+
+## 2026-10-15 — RP-657 actual diagnostic-owner sampling and binding
+
+At `0f4e0f16`, inspect the real ContentDynamicsActivePlayInput and natural
+spawn/claim/window path. It samples contributions at each subinterval's start,
+not the logged path's endpoint. Declare the registered epoch8 production draw,
+real pre/post-claim branches and the5000ms literal comparison before executing.
+Focused70645 PASS0.314s: the actual public diagnostic and private window helper
+retain claimed35.035/control5.005/bonus30.03; actual endpoint scheduling/Evaluate
+on separate copies gives5.005 in both branches. Complete origins remain unchanged.
+An endpoint adapter would erase this diagnostic's bonus, not repair rounding.
+
+Draft C1g supplies exact diagnostic owner/input/branch/window/source bindings and
+window-start contribution sampling, without a fake harness scenario identity.
+Reuse the existing production-owned constructor/claim prefix during implementation,
+not a second authority. Reconcile C1e union/stage fields and the harness H1 body,
+which had incorrectly promised endpoint sampling for this caller. Logged semantics
+stay endpoint-selected. Profile1 does not enable unsupported axis mechanics.
+
+Final focused50080 repeats this/temporal-search/event-ownership parents three times,
+shuffled and uncached: PASS8.904s. Production/harness vet passes. `make content-harness`
+executes both registered populations through the immutable baseline writer: existing
+bytes match and none change; a differing result would refuse, not overwrite. No
+new source-pin/golden/epoch bytes. No full server, SQL, TS/browser, hosted CI or
+repaired27-case arithmetic claim; the owner factory and strict codec remain unbuilt.
+
+Six-path test/draft/plan/ledger/log diff checked; `git diff --check` passes. Review
+by: Codex (research implementer/draft author first filter). Recorded by: Codex.
+Complete range after `0f4e0f16` through this containing commit needs designated review.
+No runtime/kernel/CI changes, services or removed resources. No adoption, feature
+completion, archival, push or deployment. Next caller compatibility and temporal/
+dispatch closure; do not repeat this completed sampling-profile comparison.

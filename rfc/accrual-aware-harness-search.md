@@ -35,11 +35,11 @@ Use the parent's begin/fork/project/action contract, not a second arithmetic eng
 | `rankCandidate`, bootstrap/manual/gate actions | Execute the real semantic action from its retained pre-action origin. Do not pre-advance and thereby omit its accrual hooks. |
 | Beam children, rollouts and clone helpers | Fork complete origin/context ownership, not merely the visible `save.State`; mutations and role collectors cannot leak to siblings. |
 | `firstHourRuntime.step`, bank waits and reference-candidate adoption | Preserve origin across observations, actual session chronology and the lifetime adapter; applied actions/real policy boundaries close the old interval. |
-| `contentDynamicsAccrueWindow` | Use owned projections for its computational cuts, preserving endpoint buff semantics and the complete original interval. |
+| `contentDynamicsAccrueWindow` | Use owned projections with the parent's C1g diagnostic owner, preserving its window-start contribution sampling and complete original interval, not logged endpoint sampling. |
 
-The last caller needs an explicit diagnostic-owner adapter to the parent's context
-schema. It must not fabricate a harness scenario/policy identity to satisfy a
-constructor. Complete that binding before this RFC is acceptance-ready. Preserve
+Parent C1g now proposes the last caller's explicit diagnostic-owner adapter; it must
+not fabricate a harness scenario/policy identity to satisfy a constructor. Review
+that binding and prove its actual factory/consumer during implementation. Preserve
 old legacy-only constructors and the independent DG-D/D-021 axis holds; introducing
 an origin is not permission to enable unsupported mechanics or remove their guards.
 
@@ -153,8 +153,8 @@ per-player ticks or per-ms scans are not authorized by the exhaustive test oracl
 
 ## Open engineering and authority gates
 
-Before RFC acceptance, complete the diagnostic-owner binding, actual complete
-temporal-boundary algorithm/predicate justification and exact versioned caller/report
+Before RFC acceptance, review parent C1g's diagnostic-owner binding and complete the
+actual temporal-boundary algorithm/predicate justification and exact versioned caller/report
 dispatch. The fixture reference is not a substitute. These are engineering gaps,
 not owner choices to approve away.
 

@@ -353,7 +353,7 @@ The two-profile RP-655 test does not supply that Store/outbox proof.
 Use a strict, versioned internal value, not a new Company/Founder field or public
 artifact. Exact proposed root fields are `v`, `company_version`, `company`, `operation_company`,
 `founder_version`, `founder`, `constants_hash`, `next_constants_hash`, `owner`,
-`stage`, `mode`, `replay_inputs`, `simulation`. `v` is1. Company is the complete
+`stage`, `mode`, `replay_inputs`, `simulation`, `diagnostic`. `v` is1. Company is the complete
 typed state at its admitted source version. Founder and its version are both null
 when not an input; otherwise retain its complete admitted typed state, not just a
 partial counter list. Exit/continuation context binds the actual next bundle hash;
@@ -363,7 +363,7 @@ already validated pinned artifacts; a digest does not authenticate arbitrary byt
 - `owner.kind == logged`: `owner` contains exactly `kind` and the existing complete
   `command` tuple; `replay_inputs` is the existing complete admitted versioned
   envelope, `operation_company` is the complete original command pre-state at the
-  same Company version, and `simulation` is null. Reconstruct the requested stage
+  same Company version, and `simulation`/`diagnostic` are null. Reconstruct the requested stage
   entry from that pre-state through its actual preceding Guild/catchup/schedule
   steps and require exact equality with `company`. Command, mode, constants and
   recorded catchup coordinates must agree at their respective boundaries, not by
@@ -375,7 +375,7 @@ already validated pinned artifacts; a digest does not authenticate arbitrary byt
   identities and selected run seed, not IDs/versions alone. Seed is the existing
   canonical unsigned-decimal seed string; session index is null before assignment
   and otherwise an exact nonnegative integer. `replay_inputs` is
-  null and `operation_company` is null. `simulation` contains exactly `external_contributions`, `commons_weight_ppm`,
+  null and `operation_company`/`diagnostic` are null. `simulation` contains exactly `external_contributions`, `commons_weight_ppm`,
   `guild_settlement_batch`, `route_context_version`, `absence_span`, `mask`, `hook_recipe`.
   Reuse the existing replay-accrual grammar/validation for the first four fields.
   `mask` contains exactly `generator_ids`, `upgrade_ids`, `removed_generator_ids`,
@@ -386,9 +386,14 @@ already validated pinned artifacts; a digest does not authenticate arbitrary byt
   stage origin, endpoints lie within it, and internal probes cannot change the span
   or allocate another allowance. Validate it from the selected session history,
   not from a client-supplied mode or a convenient cut.
-- `stage` is exactly `offline_catchup`, `ordinary` or `simulation_wait`; `mode` uses
+- `owner.kind == diagnostic`: the exact C1g profile requires a non-null diagnostic payload;
+  `operation_company`, `founder_version`, `founder`, `next_constants_hash`,
+  `replay_inputs` and `simulation` are null. This is not a synthetic harness run.
+- `stage` is exactly `offline_catchup`, `ordinary`, `simulation_wait` or
+  `diagnostic_window`; `mode` uses
   the existing online/offline union. Simulation owners use `simulation_wait`; logged
-  owners use one of the other two under the existing replay envelope rules. A stage
+  owners use one of the first two under the existing replay envelope rules.
+  Diagnostic owners use only `diagnostic_window`/online under C1g. A stage
   origin is captured after preceding semantic mutations as
   C1b requires: retained clearing evidence does not mean applying that batch again
   to an already-cleared origin. A caller cannot change stage/mode to renew a cap.
@@ -422,6 +427,56 @@ The proposed temporal-search algorithm and RP-656 evidence now live in
 That successor owns Relevance R10/R11 reuse/search and affected consumer migration.
 Both drafts remain unaccepted; the full AC6/accounting closeout still requires the
 applicable consumer proof. This split does not waive any original criterion.
+
+### C1g — Proposed content-dynamics diagnostic owner (unadopted)
+
+Do not force this real caller into a fake scenario/policy owner. Exact proposed
+owner is `{kind: diagnostic, profile: content_dynamics_active_play,
+profile_version: 1}`. Its `diagnostic` object contains exactly `input`, `branch`,
+`window_start_attended_ms`, `duration_ms`, `target_resource_id`,
+`contribution_sampling`, `contributions`, `hook_recipe`.
+
+- `input` has exactly `founder_id`, `run_seq`, `effect_row_id`, `target_generator_id`,
+  matching the existing `ContentDynamicsActivePlayInput` and its actual validation.
+- `branch` is `claimed` or `control`. `contribution_sampling` is exactly
+  `window_start`; `hook_recipe` is exactly `none`, matching the current diagnostic.
+  Neither tag permits omission of hooks in a different caller's contract.
+- Reconstruct the actual `newContentDynamicsCompany` v18 seed, one owned target,
+  natural first draw and real scheduled pending opportunity from input plus pinned
+  artifacts. Refuse a changed expected effect/selected target as the current caller
+  does. The control is its pre-claim copy; the claimed branch executes the existing
+  opportunity claim with the caller's fixed diagnostic intent
+  `018f6b7c-9abc-7def-8abc-0123456789ab` and expected revision1.
+  Extract/reuse that production-owned prefix during implementation rather than
+  maintain a second constructor or hand-author a pending opportunity.
+- Require exact complete `company` equality with the selected reconstructed branch.
+  Window start is the actual spawn's attended coordinate; duration is the pinned
+  effect's existing duration; target resource is the actual generator production
+  resource. `contributions` uses the existing ordered replay-contribution grammar
+  and must exactly reproduce `activePlayContributions` at that window start followed
+  by ordinary contribution assembly. A forged factor, missing row or later sampled
+  context cannot pass simply because a digest was recomputed.
+- Projection endpoints lie within the original diagnostic window. Recompute the
+  whole origin-to-endpoint interval using this fixed validated contribution context;
+  do not sample the expired buff at the endpoint, reset the origin at a cut or
+  prorate a new window. Only scratch state changes. Profile1 preserves the actual
+  Company18 diagnostic; it does not enable held axis mechanics or a new schema floor.
+
+This preserves a measured distinction, not a gameplay exception. RP-657's registered
+epoch8 natural production draw/claim yields the existing5000ms diagnostic amounts:
+claimed35.035, control5.005, bonus30.03. Running the real endpoint schedule/evaluator
+on fresh copies instead yields5.005 in both branches because the buff expires at
+that endpoint. Both origins remain unchanged. The current diagnostic intentionally
+samples its window start; replacing it with logged endpoint selection would erase
+the measured bonus, not fix rounding. Logged callers retain their existing endpoint
+policy. Neither policy is silently changed or generalized by this proposal.
+
+The bounded test reconstructs the current prefix and checks actual caller outputs;
+it is not an implemented private owner factory/codec. Implementation acceptance
+must include both branches, all admitted window-effect kinds, wrong
+input/branch/window/contribution refusals and actual registered
+content-dynamics comparison without restamping its historical golden. Keep profile
+construction private; no public schema, replay event or saved payment is introduced.
 
 ### C2 — Preserve a producer origin, not a rounded-rate cache
 
@@ -839,7 +894,7 @@ exists before RFC acceptance.
 ## RFC readiness versus implementation gates
 
 Before RFC acceptance, agree the operation-local recommendation, complete exact
-production caller bindings and diagnostic-owner/context compatibility, and obtain
+production caller bindings/context compatibility, review C1g's diagnostic binding, and obtain
 designated normative review plus Marco's acceptance. The wording delegation alone
 does not do that. The failed difference-write/durable/cumulative alternatives are
 not silently adopted; no reviewer or owner can approve away their counterexamples.
