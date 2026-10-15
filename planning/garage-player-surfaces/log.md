@@ -7327,3 +7327,44 @@ This closes RP-619's corrective review only, not original Garage ranges, actual
 screen-reader/AT, Firefox/Linux, SQL/service, performance, hosted/full-CI or feature/
 release acceptance. Reviewer makes no tracked edit; parent records provenance and
 updates current plan/ledger. No archival, content mint, push or deployment.
+
+## 2026-10-15 — Independent purchase-read and queued-Claim corrective approvals
+
+Review by: fresh independent Codex sub-agent `/root/garage_read_claim_corrective_review`,
+under Marco's corrective-code delegation. Recorded by: Codex parent transcribing its verdict.
+**APPROVED**, no findings, separately for each complete source/test/docs/record range:
+
+- RP-447: `429a5aa99d975101284aa7361d50aba4677aa96e..04acc7758afb328499e250e222bce3097b7b963a`.
+- RP-448: `04acc7758afb328499e250e222bce3097b7b963a..c0809cab9de02aaff8702988fc491c4099df4ac7`.
+- RP-498: `7fd2549b424b04dade192ae72f9c564e44d3bbce..2db7b03dd5cb96801384071945889f15b623eda0`.
+- RP-499/RP-500: `2db7b03dd5cb96801384071945889f15b623eda0..e8353edaa50867d81a9d2084cc42132c7c51b418`.
+- RP-501/queued-Claim regression: `e8353edaa50867d81a9d2084cc42132c7c51b418..aaf78306b0e1506bbe4f8b01e24e1975f842f041`.
+
+Independent Node opportunity-composed-proof passes65. `make test-browser-focused
+BROWSER_TEST_FLAGS='test/garage-surfaces-browser.test.ts test/game-ui-screens-browser.test.ts
+--project=chromium --project=webkit'`81635 passes1056, four project-files, ten explicit
+performance exclusions,74.19s. Types/client-boundary, all five range diff checks and
+driver syntax pass. Initial sandbox listener denial runs no tests. Initial default browser
+run97767 remains RED/invalid: Firefox session connection timeout before its population
+completed, requiring termination of the identified owned stalled runner/child. The explicit
+Chromium/WebKit pass is not Firefox coverage; no timeout or retry budget changed.
+
+Actual `node client/tools/test-game-ui-composed.mjs`23325 exits0: cold8/8 refresh and ten
+required Postgres integration parents execute. Both Fiscal refusal arms require the sole
+surface notice, no retry/state change and fresh-consent recovery. Fourteen earned manual
+actions lead to native Buy/queued Claim across held real purchase/read responses; consecutive
+SQL payloads/receipts bind the applied result to `active.click` at Company revision36.
+Exact built assets/Worker, terminals/next-run continuation and Pitch/Soul real-process-loss
+recovery also pass. This is the main driver, not the full composed aggregate or hosted CI.
+
+Observed coordinates: initial inspection/Node/default browser801d2fee; explicit native run
+finishes atf60ec0d7, then main launches and finishes after observed records-only928d1fc7.
+No atomic HEAD capture inside launch commands. Relevant corrective bodies are unchanged;
+later fixture extraction/prerequisite replay checks were inspected. Historical old-source
+failures were read, not independently rerun. Reviewer makes no tracked edits/mutations.
+No intervening-range, original-feature, normative adoption, full accessibility/performance,
+archival or release approval. Other review debt and held contracts remain separate.
+
+Native/DB slots released after terminal cleanup and zero other DB sessions/runners. Exact
+disposable game-ui-postgres service with main fixture rows is handed to the Pet reviewer
+for coordinated cleanup; no durable volumes/caches removed by this reviewer. No publication.

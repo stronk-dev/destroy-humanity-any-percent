@@ -7,6 +7,14 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+2026-10-15 independent corrective review APPROVES the complete single-commit ranges
+`04acc775^..04acc775` (RP-447), `c0809cab^..c0809cab` (RP-448),
+`2db7b03d^..2db7b03d` (RP-498), `e8353eda^..e8353eda` (RP-499/RP-500)
+and `aaf78306^..aaf78306` (RP-501/real-boundary queued-Claim regression).
+The owning log records fresh Codex provenance, actual native/SQL journey and the initial
+Firefox harness failure. Only these corrections leave the pending-review queue; original
+feature acceptance, other review debt and held contracts remain separate.
+
 2026-10-15 GS0.2 correction (RP-667): the legacy intent response now uses the
 generated transport's existing fatal UTF-8 JSON decoder. Twelve old-source cases
 admit repaired applied/rejected replies or typed409 conflicts; those now refuse
@@ -39,7 +47,7 @@ Typer integration, content/mint or exact-release proof. Continue accepted constr
 Preceding checkpoint (2026-10-12): the production-built real-service main journey now exercises
 GS0.8's fresh Claim behind an actual purchase and held authoritative read, with exact consecutive
 Postgres payloads/receipts/state and the observed building buff in its successor snapshot.
-RP-501's stale Fiscal refusal selector is locally repaired; both real refusal/recovery arms pass.
+RP-501's stale Fiscal refusal selector is independently approved; both real refusal/recovery arms pass.
 The latest log owns failed/final runs, boundaries and the consolidated Claim review range.
 No full composed aggregate, hosted CI, actual-AT, all-effect or Garage/release promotion follows.
 Continue accepted integration/acceptance work and consolidate outstanding designated review.
@@ -48,13 +56,13 @@ Preceding checkpoint (2026-10-12): RP-499's mounted Claim feedback is locally re
 GS0.6/GS5. The existing Desk status region owns pending and outcomes; Claim describes that
 visible pending text without adding a child live region. RP-500 retains an explicit separator
 between unchanged messages. The latest log owns old-source failures, final verification and
-the related Claim review range. No actual-AT, whole Garage, CI or release promotion follows;
+the now independently approved Claim review range. No actual-AT, whole Garage, CI or release promotion follows;
 continue the owning plan's remaining integrated acceptance and consolidate outstanding reviews.
 
 Preceding checkpoint (2026-10-12): RP-498's Claim guard now identifies only Claim's own flight,
 not another purchase or a background read. Native input reaches the existing GS0.8 queue,
 waits for the authoritative Company revision and stays single-flight; failed-read/unmount
-controls prevent submission. The latest log owns verification and the pending review range.
+controls prevent submission. The latest log owns verification and the independently approved range.
 No new retry, Manual-input policy, server mechanics or whole-Garage acceptance. Its RP-499
 follow-up is recorded in the newer checkpoint rather than reopening this input repair.
 
@@ -62,13 +70,13 @@ Preceding checkpoint (2026-10-08): RP-448 extends the existing applied-read hand
 actions under GS0.2/GS1-A6. A shared pre-harvest read must be refreshed against the actual
 snapshot Founder revision before pending clears, including across Company changes. Failed
 fresh reads preserve offline handling and never retry the intent. The owning log records
-old-host failures, current-read/Company controls, final verification and pending review.
+old-host failures, current-read/Company controls, final verification and independent approval.
 
 Preceding checkpoint (2026-10-08): RP-447's ordinary Company purchase/read handoff is repaired
 under GS0.2. A reused pre-commit read requires a post-response refresh before pending clears;
 same-Founder/run comparison keeps successor-Company genesis separate. Deterministic native
 purchase regressions fail the old host in Chromium/WebKit. Final affected and real-service
-results, exact range and pending designated review belong in the owning log. No input retry,
+results, exact range and independent corrective approval belong in the owning log. No input retry,
 new gameplay/schema/clock/limiter policy or whole Garage acceptance follows.
 
 Preceding checkpoint (2026-10-08): RP-442's GS1/OD-3 ready-quarter navigation suffix is
