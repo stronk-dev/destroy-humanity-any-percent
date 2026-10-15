@@ -228,6 +228,88 @@ and equal future state/cash `1.00023023e4`. Both origins remain unchanged. This
 verifies non-equivalence for an origin-carrying candidate (RP-653), not an actual
 collision in today's origin-free beam or proof that its published reports are wrong.
 
+### C1c — Proposed calculation/action API and branch lifecycle (unadopted)
+
+The following names describe a proposed internal interface, not existing exported
+functions or permission to replace their callers. Live logged operations retain
+C1b's transaction ownership. Harness branches need a separate, immutable calculation
+handle rather than an extra field quietly attached to a persisted `save.State`.
+
+| Operation | Required input and result | Mutation and lifetime |
+|---|---|---|
+| `BeginCalculation` | Complete admitted base state, its source save version, pinned bundle, mode and validated producer/hook/ablation context → opaque origin. | Copies/owns mutable inputs; cannot begin from a projected view merely to discard rounding history. |
+| `ForkCalculation` | Origin → independent branch handle with the same origin/context identity. | No accrual, hooks, action, clock change or revision; branch work cannot mutate siblings. |
+| `ProjectCalculation` | Origin plus a canonical server/simulation endpoint → detached full state, evaluation and role observations. | Fresh restoration from the origin, then actual evaluation and the permitted simulation hooks on scratch state; no new origin, saved payment or action. |
+| `ApplyCalculationIntent` | Origin plus an actual intent, endpoint and expected revision → ordinary decision and, only if applied, the next origin. | Run the existing semantic transition from the origin, not from a prior projection. A refusal returns no child and leaves the parent unchanged. |
+
+Projection endpoints must not precede the origin. Search may probe endpoints out of
+order on independent scratch state; probing an earlier time after a later probe is
+not a rollback of the origin. The detached result includes its origin/context
+identity and endpoint. It is not an input to `BeginCalculation` or an incremental
+receipt. Ordinary rate/quote reads may inspect its copy but cannot promote it into
+settlement authority. Private implementation fields and caller boundaries must
+enforce this distinction; a test-only convention is insufficient.
+
+For a real intent at `t`, restore the origin and execute its normal accrual, hooks
+and action at `t` once, even if search already inspected a projection at `t`.
+Do not first install that projection and call `SimulateTransition` at the same
+timestamp: its zero-elapsed evaluation would omit the interval's lifetime/stock
+work. The resulting applied full state, including post-action attainment and debit,
+becomes the next origin. Existing authoritative return/mode boundaries close their
+old stage using the existing offline allowance/banking rules; arbitrary probe times,
+provision ticks, rounding changes or failed purchases do not create such boundaries.
+No partial-work handle survives a live Store commit or crash.
+
+**Hook ownership is part of the API, not caller folklore.** For each projection,
+restore all hook-owned state from the origin, allocate fresh role/mask collectors,
+and run the permitted chain exactly once for the complete origin-to-endpoint
+evaluation. Never append its cumulative lifetime/stock result onto an earlier view.
+Keep action-free event emission refusal. Returned role observations are cumulative
+for that view, not repeated events to add every time a search probe runs. Actual
+computation/probe counters still count every performed evaluation and refusal;
+conservation must not hide search work from budgets or reporting.
+
+The existing generic `AccrualHook` interface does not establish purity or identity
+of arbitrary callbacks. Before this API is buildable, its production adapters must
+enumerate their exact hook recipes, pinned catalog dependencies and captured inputs,
+and establish that all gameplay mutations stay in the supplied scratch state.
+Do not hash a function pointer, accept a caller-provided label as proof, share a
+mutable closure between branches, or silently omit Guild/Commons/Prestige work.
+Current `firstHourLifetimeHook` and the real stock-role counterfactual are concrete
+adapter populations, not proof for every future hook. RP-654's source-version
+correction is implemented independently; it does not implement this protocol.
+
+The actual closed replay chain can return Guild/Commons events without a player
+action. Today's `SimulateAdvance` refuses such events. A general projection adapter
+therefore still needs an explicit event-ownership/settlement contract; filtering
+those events, sharing a live outbox or calling their refusal full-hook coverage is
+not a solution. Retain the existing refusal until that amendment is specified and
+adopted, with once-only real delivery and no delivery from discarded projections.
+
+**Search identity must cover every reuse path.** Proposed identity is the canonical
+complete origin plus source save version, constants identity, evaluation mode and
+the validated producer/hook/ablation context. Derived digests are private lookup
+keys for trusted values, not proof that a producer is authentic. No rounded-rate
+cache, mutable callback address or search path substitutes for that identity.
+
+- Beam equality includes origin/context identity alongside complete projected state
+  and virtual time. Path remains only its existing tie-break.
+- Ranked-completion cache identity includes the same context, current revision and
+  remaining decision allowance; `relevanceCompletionCacheKey` currently has no
+  origin. Updating only beam deduplication would leave another unsafe reuse path.
+- Dominance pruning may compare branches only when their accounting contexts have
+  established future equivalence. Componentwise superiority of visible balances
+  is not that proof when origins differ. Never prune a branch on an unproved relation.
+
+These are proposed amendments to Relevance R10/R11, not accepted changes to search
+population, scoring or cache policy. Exact hook adapters, context serialization,
+temporal-search validity, compatibility and measured work bounds remain closure
+items. In particular RP-652's endpoint projections can decrease: a binary search
+for earliest affordability needs its own valid monotonic population or a reviewed
+boundary-aware algorithm, not the assumption that every origin projection grows.
+Keep current report bytes, guards and original failing cases intact until those
+contracts and the full real-caller acceptance population have been reviewed/adopted.
+
 ### C2 — Preserve a producer origin, not a rounded-rate cache
 
 Candidate direction, with lifetime subject to C1/C1a: retain a canonical initial balance,
@@ -628,6 +710,8 @@ the red population with a convenient new one or alter its monetary expectations.
   API/caller and the retained mutating-`Evaluate` diagnostic must be reconciled before
   acceptance. Its real harness wait/content-diagnostic callers also need a complete
   simulation ownership/hook contract. A scratch-only green population cannot close that gap.
+  C1c defines the proposed operation/lifetime and reuse rules; exact production hook
+  adapters/context encoding and temporal-search validity still require engineering closure.
 - **C2/C3:** complete field set, boundary integration and a viable ledger/receipt algorithm,
   demonstrated with actual Company producers and the retained lower-domain counterexample.
   The current difference-write candidate fails; this is technical work, not a choice for the
@@ -653,6 +737,10 @@ contract, explicit adoption and independent normative review before production w
 
 ## Changelog
 
+- 2026-10-15: specify the proposed calculation/fork/projection/action lifecycle and
+  complete-state hook ownership. Include completion-cache and dominance reuse, not
+  beam deduplication alone; name exact adapter/encoding/temporal-search work still
+  needed. Draft only; no existing API, R10/R11 rule, test or report is changed.
 - 2026-10-15: propose concrete operation-local command/context ownership, existing
   catchup/action stage ordering and settlement/rollback boundaries. Explicitly retain
   the mismatch between the original mutating-`Evaluate` partition diagnostic and a

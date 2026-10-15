@@ -27,9 +27,11 @@ The normative documentation batch after `fdb9a79d` needs designated Claude revie
 The draft now proposes a concrete operation-local command identity, existing
 catchup/action stage order and private origin/context ownership. Static caller tracing
 also identifies real `SimulateAdvance` wait edges and the content-dynamics partition
-check: a command-only origin does not repair those boundaries. Next specify the actual
-calculation/settlement API and simulation branch/context/hook ownership, complete
-compatibility and obtain acceptance before implementation. Do not substitute clone-only
+check: a command-only origin does not repair those boundaries. Draft C1c now specifies
+the proposed begin/fork/project/real-action lifecycle, fresh hook-state ownership and
+origin-aware beam/cache/dominance rules. Next enumerate exact production hook adapters
+and canonical context encoding, establish temporal-search validity, complete compatibility
+and obtain acceptance before implementation. Do not substitute clone-only
 proofs or rebaseline reports. RP-307's original 27/128 failures and RP-488/RP-652
 constraints remain open. Historical experiment notes below retain their original scope.
 

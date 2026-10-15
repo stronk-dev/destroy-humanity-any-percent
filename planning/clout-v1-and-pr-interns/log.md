@@ -3600,3 +3600,30 @@ Codex (implementer first filter). Recorded by: Codex. Complete nine-path range a
 `94b8af8d` through this containing commit needs designated Claude review; no feature
 acceptance, archival, push or deployment. The conservation draft remains unadopted;
 next finish its actual API and simulation context/hook ownership contract.
+
+## 2026-10-15 — define the candidate calculation/branch lifecycle
+
+At `f03cd934`, inspect actual SimulateTransition/SimulateAdvance, simulation hooks,
+first-hour lifetime adapter, candidate purchase path, beam and completion cache.
+Own draft C1c now specifies begin/fork/project/real-action ownership: detached views
+cannot become new origins; real intents execute from the original pre-state and
+run normal hooks once; refusal leaves the parent reusable. Full hook-owned state
+and fresh role collectors belong to each scratch evaluation, not shared closures.
+
+Cover all source-observed reuse paths: proposed origin/context identity accompanies
+beam equality, ranked-completion cache and dominance, not beam alone. Do not hash
+opaque callbacks or assume decreasing endpoint payouts support monotone affordability
+search. The actual Guild/Commons chain returns events that the legacy wait seam
+refuses: event ownership and once-only real delivery need an explicit contract,
+not dropped events or a live outbox from a discarded projection.
+Exact typed hook adapters/context encoding, temporal-search correctness and
+compatibility/work bounds still require engineering closure; this is not acceptance-
+ready or permission to implement. R10/R11 bodies, current APIs, report bytes, numeric
+domain and original27 failures remain unchanged.
+
+Three-path draft/plan/log diff and source bindings checked; `git diff --check` passes.
+No software suite rerun for prose-only work under RFC-0000. No services/resources or
+runtime/data/test/kernel bytes touched. Review by: Codex (draft author first filter).
+Recorded by: Codex. Complete range after `f03cd934` through this containing commit
+needs designated normative review, consolidatable with earlier accounting-draft work.
+No adoption, feature completion, archival, push, deployment or1.0 promotion.
