@@ -6,6 +6,34 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+## R-012 cumulative receipt feasibility — declared2026-10-15 at `fe1fa51d`
+
+Question: can origin-relative receipts express the retained lower-domain targets
+without inventing a below-floor Decimal or pretending they are additive receipts
+from the previous projection? Test-only reference producer/verifier: replay both
+previous and requested projections from one unchanged encoded Company origin and
+the pinned catalog; bind their full states, time, mode and actual Evaluate receipt.
+Use the existing20 lower-domain cells unchanged plus both cap/debit modes. Require
+exact one-shot states and reproducing origin-relative receipt changes, preserving
+the known nine additive-delta refusals. Reject forged origin/catalog/mode/time,
+previous head, projected head and cumulative receipt, atomically and before any
+candidate is returned. A debit must start a new origin; an old proof must not
+restore capped overflow afterward. Any missing positive/negative invalidates this
+bounded experiment. This may establish a candidate proof representation, not a
+production ledger mutation, saved-head protocol, hooks, SQL/TS, C1/C1a adoption or
+AC6 repair. A cumulative receipt is a contract change, not an existing Delta.
+
+Completed locally: all20 cells produce exact origin-relative receipts; the nine
+old additive deltas still refuse. Both cap/debit modes reject the stale origin and
+retain literal post-debit payouts after reanchoring. Fourteen altered proofs and a
+non-forward interval return no candidate; repeated shuffled execution passes. Full
+affected native Go remains red only at the original27 partition cases, with Economy,
+Decimal and vet passing. No ledger mutation, SQL/TS, hook or AC6 completion follows.
+The draft now explicitly distinguishes the candidate receipt amendment from the
+unchanged additive contract. Next close C1/C1a and the selected ledger/receipt/hook/
+activation specification, not repeat this expressive-feasibility population.
+The owning log records the range after `fe1fa51d` needing designated review.
+
 ## R-012 live Guild-input capture — declared2026-10-15 at `639edf19`
 
 Question: does a real composed Guild clearing produce replay-owned inputs that

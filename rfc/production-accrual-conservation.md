@@ -363,11 +363,58 @@ accrual. Resource equality alone therefore cannot validate this integration. Thi
 bounded Go evidence for leaving the closed transition in charge, not a new accounting
 implementation, all-hook/Go–TS/SQL proof, lower-floor purchase proof or AC6 repair.
 
-The ledger remains the atomic resource authority. A projected balance must have a
-canonical nonnegative accrual receipt whose delta re-adds to that exact balance.
+The ledger remains the atomic resource authority. Under the unchanged receipt
+contract, a projected balance must have a canonical nonnegative accrual receipt
+whose delta re-adds to that exact balance from its immediately previous head.
 No direct balance overwrite may bypass minimum/hardcap/transaction checks. Saturation
 must not bank hidden overflow that becomes spendable after a later debit. Below-cap
 quantities that round visibly to the cap require an explicit, compatible rule.
+The optional cumulative representation below would explicitly amend that incremental
+receipt requirement, not claim to satisfy it simultaneously.
+
+#### A cumulative receipt is an explicit alternative, not an additive-delta fix
+
+`axis_cumulative_receipt_research_test.go` tests a distinct representation against
+the same20 lower-domain cells and both cap/debit modes. Restore the trusted encoded
+origin, reconstruct contributions with the pinned catalog and call actual Evaluate
+from that origin to each requested time. Its existing ledger receipt is relative
+to the **origin**, not the preceding visible projection. All20 cumulative receipts
+reproduce their one-shot targets, including the nine cells whose previous-head
+additive deltas remain inadmissible. Neither the floor nor those refusals changed.
+
+The reference object binds origin/catalog identity, previous/full projected Company
+identities, expected server time/mode and the complete EvaluationResult. Verification
+reconstructs both prior and requested states from the origin; equality of balances
+alone is insufficient. Fourteen altered-field cases plus a non-forward interval
+return no candidate. Both cap/debit profiles reject an old-origin proof even when
+its previous-head hash is recomputed to match the post-debit state. Starting a new
+origin after the debit gives the existing literal payouts, not reclaimed overflow.
+The hashes identify already trusted inputs; they do not authenticate a producer or
+establish persisted provenance. There is no proposed public proof endpoint or wire
+codec in this experiment, and no candidate is installed into a live caller state.
+
+This result narrows the engineering options:
+
+- If the ruled cuts are internal work only, defer settlement to the existing closed
+  transition. Do not introduce saved intermediate heads or new receipts just because
+  a reference projection exists. C1/C1a and full closed-boundary proof remain required.
+- If the ruled cuts must be saved, the demonstrated pair cannot retain the requirement
+  that every receipt's Delta adds to its immediately previous head. A separately
+  adopted **origin-relative cumulative receipt** is a candidate amendment: keep
+  ordinary action/debit receipts unchanged; bind the origin, before image, projected
+  result and once-only settlement context explicitly. Never label its cumulative
+  Delta an incremental grant or apply it to the current visible balance.
+
+For that second option, the production ledger must own an atomic, expected-head-bound
+projection operation which independently verifies the trusted origin calculation and
+all resource scope/minimum/hardcap constraints before installing any result. A caller
+assigning a projected ledger or abusing RestoreLedger as a mutation shortcut would
+not satisfy it. The complete new receipt grammar, origin/context codec, replay identity,
+reset points, hook protocol, corruption refusal and historical activation still need
+specification and actual Go/TS/SQL proof. This Go-only reference verifies expressive
+sufficiency for its22 profiles, not that production mutation protocol or a general
+conservation algorithm. It does not resolve arbitrary origins/external/temporal contexts,
+propose raw-float persistence, authorize a receipt change or repair the original27 cases.
 
 The scalar prototype's 512-byte envelope is not a production storage/CPU bound. Establish
 bounds from the actual proposed field set and measured full-state workloads; guard
@@ -418,9 +465,11 @@ the red population with a convenient new one or alter its monetary expectations.
   demonstrated with actual Company producers and the retained lower-domain counterexample.
   The current difference-write candidate fails; this is technical work, not a choice for the
   owner to approve away. Operation-local deferred settlement now has bounded lower-domain
-  evidence, not full integration. If intermediate saved heads are required, reconcile the
-  demonstrated unrepresentable-increment conflict rather than demand another subtraction
-  algorithm or waive the original failures. This draft does not invent those missing details.
+  evidence, not full integration. The22-profile cumulative-receipt experiment supplies an
+  expressible alternative if intermediate saved heads are required, not an implementation
+  of the unchanged incremental receipt rule. Explicitly reconcile that contract and the
+  complete ledger/hook/persistence protocol rather than demand another subtraction algorithm
+  or waive the original failures. Neither representation is adopted by this draft.
 - **C4:** activation/migration compatibility and assigned versions after the representation is fixed.
 - **Operating limits:** actual full-state size/work evidence, not the scalar prototype's bound.
 
@@ -429,9 +478,11 @@ questions in the body and obtain acceptance/designated review before production 
 
 ## Deviations from design
 
-No reward or numeric-law deviation proposed. Explicit interval/origin lifetime extends the
-implementation contract. A durable conservation format, if selected, is not an already
-implied save field and needs its own complete contract.
+No reward or numeric-law deviation is adopted or implemented. Explicit interval/origin lifetime
+extends the implementation contract. A durable conservation format, if selected, is not an
+already implied save field. The optional cumulative-receipt direction would amend the existing
+incremental receipt law; it is not behavior-compatible with that law and requires a complete
+contract, explicit adoption and independent normative review before production work.
 
 ## Changelog
 
@@ -463,3 +514,8 @@ implied save field and needs its own complete contract.
 - 2026-10-15: extend the live profile with one controlled producer and an executed
   zero-producer counterfactual to distinguish idle lifetime accrual from clearing.
   Original zero-generator evidence stays bounded; no production accounting change.
+- 2026-10-15: distinguish an executed origin-relative cumulative receipt alternative
+  from the impossible lower-floor incremental delta. All20 retained cells and both
+  cap/debit modes pass the reference proof checks, including alteration/stale-origin
+  refusals. This is an unadopted receipt-contract alternative, not a production
+  ledger mutation, full conservation implementation or permission to alter AC6.

@@ -3414,3 +3414,46 @@ balance, content mint, owner choice or acceptance/archival/push/deployment chang
 Review by: Codex (implementer first filter). Recorded by: Codex. Complete seven-path
 test/driver/plan/log/draft-evidence range after `b2d77add` through this containing
 commit needs designated Claude review, consolidatable with the earlier capture.
+
+## 2026-10-15 — R-012 origin-relative cumulative receipt feasibility
+
+Predeclared in the existing plan at `fe1fa51d`: test a different receipt
+representation, not another subtraction implementation. The test-only reference
+restores one trusted encoded origin, runs actual Evaluate and retains its receipt
+relative to that origin. Before returning a candidate, reconstruct both complete
+previous/projected Company states and bind origin/catalog identity, expected time/
+mode and every EvaluationResult field. Hashes identify trusted inputs; they do not
+authenticate their provenance. No live state or ledger is replaced by the verifier.
+
+All20 existing lower-domain cells produce exact one-shot candidates and reproducing
+origin-relative receipts. All nine previous-head additive deltas still refuse with
+unchanged state. Fourteen altered-field cases and a non-forward interval return no
+candidate. Both cap/debit modes reject reuse of the old origin even with a rehashed
+post-debit before image; a new origin gives the existing literal payout without
+recovering discarded overflow. These are22 bounded Go profiles, not a full mutation
+algorithm, Company wire, hook protocol, SQL/TS integration or new valid incremental
+receipt. The trusted pinned bundle is an input, not a verified download/release.
+
+Focused `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-run
+TestAxisCumulativeReceipt -v'`77167 passes0.377s. Final repeated/shuffled reference
+run33823 with `-count=2 -shuffle=20261015` passes0.439s. Full affected cold
+`make test-go GO_PACKAGES='./production ./economy ./decimal'`95139 remains red:
+Production36.781s reports exactly the original27 partition failures; Economy6.197s
+and Decimal0.226s pass. Same-package vet passes separately. Native DB skips are not
+integration credit. No unchanged browser, Docker or hosted run is claimed.
+
+Reconcile this author-owned draft's C3/body/deviation: cumulative Delta is relative
+to the origin, not the preceding head. If saved intermediate heads are required,
+that is an explicit alternative receipt contract needing adoption, an atomic
+ledger-owned checked mutation and complete replay/hook/activation specification.
+If cuts are internal only, retain the closed settlement route; C1/C1a still require
+author/owner resolution. No generic approval can make the unchanged additive rule
+express the retained floor increment. No new production authority or repaired AC6.
+
+Formatting/diff checked; no services started or resources removed. Test/draft/plan/
+ledger/log only; product, numeric domain, kernel, balances, content and accepted
+criteria unchanged. Review by: Codex (research implementer/draft author first
+filter). Recorded by: Codex. Complete five-path range after `fe1fa51d` through this
+containing commit needs designated Claude review; no acceptance, archival, push or
+deployment. Next specify the selected complete accounting contract, not repeat this
+completed feasibility population or report the research green as server/CI green.
