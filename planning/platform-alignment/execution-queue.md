@@ -3,13 +3,15 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Current action — 2026-10-14
+<a id="current-action--2026-10-14"></a>
 
-Product coordinate `8a5dcebf`, kernel0.3.208, epoch8. Whole-product status and evidence limits
-live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview--2026-10-14). The full
+## Current action — 2026-10-15
+
+Implementation coordinate `654523c7`, kernel0.3.216, epoch8. Whole-product status and evidence limits
+live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
 nine-tier goal remains active; no new playable tier or release was completed.
 
-- **READY — accepted API conformance work:** C18's union constructor and internal original-byte
+- **HELD — complete catalog serving and generated intent migration:** C18's union constructor and internal original-byte
   verifier are locally constructed through `0411ef34`; do not repeat or promote them to a
   mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member
   policy conflict have concrete unadopted engineering proposals in the API plan. Do not mount
@@ -21,14 +23,16 @@ nine-tier goal remains active; no new playable tier or release was completed.
   order/activation/refusal controls prepare it without an extra routine-change RFC. Existing
   runtime-neutral guard authority/eligibility and designated review remain; no optimization under measurement
   authority, budget increase, deleted population or snapshot regeneration to make the job green.
-- **READY — consolidated designated review and accepted conformance work:** feature-owned
-  logs identify complete corrective ranges. Pending review prevents acceptance/archival,
+- **READY FOR CLAUDE — consolidated designated review of Codex ranges:** feature-owned
+  logs identify complete corrective ranges, including newer API, archive/fixture and R-012
+  live-input work. Their implementer checks are not designated verdicts. Review prevents acceptance/archival,
   not other authorized work. Do not restart completed original reviews or call self-review
   designated approval.
-- **READY — declared local Docker/SQL/Linux verification:** daemon ping now answers and the
-  declared Linux-amd64/Postgres backup lane passes all seven integration tests. Cleanup's actual
-  Linux filesystem/second-process population also passes. Other lanes still need their own
-  execution; daemon availability does not close them. No restart or host-DB substitution was used.
+- **LOCALLY EXECUTED — affected Docker/SQL/browser/player checks:** latest composed source
+  `654523c7` passes the whole target, including positive idle/lifetime and actual SQL→Go/TS
+  Guild replay; `b45dcd1d` completes the Linux browser phases. Backup/restore, populated archive
+  and reused-Guild-fixture checks have their own scope in the owning logs. Do not repeat completed
+  populations for reassurance or infer that the full server/history/hosted gates passed.
 - **HELD — clean-host artifact/release and current-source hosted gates:** exact bundles, author
   contracts, independent review and target authority remain prerequisites for R-006. Latest
   published CI38560135778 at `be66902b` is completed failure; later local work is not in that run.
@@ -36,6 +40,12 @@ nine-tier goal remains active; no new playable tier or release was completed.
   sheets. Headcount has hiring AND output choices. API engineering proposals, Typer/attendance/
   body reconciliation, rights/retention, accessibility, content and release-artifact work have
   separate boundaries; a generic approval cannot substitute for their actual contracts/proofs.
+
+The numeric next step remains a viable C2/C3 accounting/receipt design and C1/C1a interval
+reconciliation, not more copies of the completed context studies. Headcount's live hiring/output,
+Typer/Arcade HTTP bindings, recovery/renewal and later-game construction retain their named
+acceptance/specification prerequisites. These are not a claim that all remaining work is
+paperwork or that generic owner approval would finish the engineering.
 
 This is routing under existing accepted RFCs, not new mechanics, draft adoption, an independent
 verdict or permission to push/publish/deploy. Historical checkpoints and review debt remain.

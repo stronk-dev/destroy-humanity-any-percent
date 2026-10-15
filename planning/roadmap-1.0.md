@@ -5,22 +5,31 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current product rollup (2026-10-14):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-14)
+**Current product rollup (2026-10-15):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Current product checkpoint `8a5dcebf`: Garage integration/hardening, incomplete v0.1, and substantial
-unbuilt world/combat/Tier 3–8/final-ending scope. Latest published source
-`be66902b` has completed red CI38560135778: browser/composed/schema/harness pass; client fails
-the historical guard and server fails27 Clout partition cases, confirmed in finished logs.
-Browser5m21s/server8m11s/composed6m07s exceed the five-minute floor. Earlier red CI remains evidence;
-publication is not designated approval. The later local work is not in that run.
-Subsequent local repairs and complete original API review dispositions do not
-advance a gameplay milestone or establish release readiness. Subsequent actual operations
-producer/receiver, public replay-verifier, queued Claim and minigame admission/Exit evidence
-is summarized in current verification, with owning logs retaining its limits and review debt.
+Implementation checkpoint `654523c7`, kernel0.3.216, epoch8: still Garage integration/hardening,
+incomplete v0.1, with substantial world/combat/Tier3–8/final-ending construction ahead. At this
+coordinate61 local commits follow published `be66902b`; fresh GitHub branch/run/job metadata
+confirms the same failed CI38560135778. Later local work is not in that run. The historical
+guard and27 partition failures remain blockers; local composed/browser passes are not full CI.
+
+The latest full composed player/Postgres target passes, now requiring actual live Guild-input
+Go/TS replay with positive idle/lifetime and zero-producer/omission/duplicate controls. Scoped
+API behavior, repeated DB fixtures, populated archives and data-rights observations advance
+correctness/evidence, not another playable tier or release. Owning logs hold exact ranges and
+review debt; the current-state overview distinguishes those proofs from natural progression,
+full feature acceptance and clean-host release evidence.
 Use [current next moves](#current-next-moves)
 and the owning accepted RFC plans for execution. The seven highlighted engineering proposals
 remain drafts; unresolved arithmetic and integration are engineering work, not owner approval
 items. Neither decision holds nor pending review halt all accepted work.
+
+## Historical rollup checkpoints
+
+The following dated narratives retain their original source/evidence boundaries. They are
+not the current execution queue, even where an old entry uses “latest” or “current”.
+
+### October13–14 baseline details
 
 Commons readiness checkpoint at `0073094e`: dependency foundations exist, but the
 player/governance draft still needs literal ballot, cohort producer/DTO, mutable-tithe
@@ -61,10 +70,7 @@ connects protected Garden salt in private replay to original-byte public evidenc
 producer/HTTP observation confirms the conflict, not a deployed/SQL leak. Preserve privacy and
 independent verification in the authored resolution; do not omit either from the full 1.0 floor.
 
-## Historical rollup checkpoints
-
-The following dated narratives retain their original source/evidence boundaries. They are
-not the current execution queue, even where an old entry uses “latest” or “current”.
+### Earlier rollup checkpoints
 
 Published source `e0cb9187` now has hosted CI38222406320: schema/harness/composed pass;
 client/server/browser fail, and the blocking run exceeds five minutes. The browser's
@@ -2069,7 +2075,7 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Reconciled at product source `8a5dcebf` (2026-10-14). The intervening API, input, Recovery and
+Reconciled at implementation source `654523c7` (2026-10-15). The intervening API, input, Recovery and
 Deployment repairs improve existing paths/proofs; no additional playable tier or milestone
 is completed. The five original query/epoch/board/route/router API reviews now have complete
 CHANGES REQUIRED dispositions; later corrections and implementation ranges still need review.

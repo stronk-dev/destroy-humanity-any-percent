@@ -5371,3 +5371,33 @@ guard and27 Clout partitions; browser/composed/server durations exceed five minu
 integration lanes are now runnable subject to their own prerequisites, not passed
 by association. Full nine-tier/platform1.0 scope and all owner/review/artifact gates
 remain. No push, deployment, archival or release claim.
+
+## 2026-10-15 — Reconcile the whole-product board at `654523c7`
+
+Implementation source `654523c7`, kernel0.3.216, epoch8, clean main61 commits after
+`be66902b`. Fresh read-only GitHub main/run/job metadata confirms that same remote
+SHA and completed failed CI38560135778: client/server fail, browser/composed/schema/
+harness pass. Metadata is a recheck, not another execution or fresh failure-log
+analysis. Maintenance38507071157 remains completed failure on4eaed0c9. No push,
+workflow retry or external mutation was made.
+
+Refresh README's bootstrap-only/absent-tooling impression and current-state/roadmap/
+queue coordinates. The latest full composed target at654523c7, Linux-browser result
+atb45dcd1d, API identity/budget/representation repairs, reused Guild fixtures,
+populated archives and produced-data/deletion/credential-restore findings have
+named bounded evidence in their owning logs. None adds a completed tier, adopted
+content, full feature/review acceptance or clean-host release proof. Update current
+verification rows rather than treating prior passes as current; retain historical
+paragraphs and old heading anchors. Move the preceding roadmap details beneath its
+existing historical boundary so old environment/next-step language cannot govern.
+
+The board still places us at incomplete Garage integration/hardening, with major
+world/combat/Tier3–8/endings and platform/rights/accessibility/recovery work ahead.
+Distinguish engineering design/implementation, author reconciliation, independent
+review and actual owner product/policy choices. In particular, completed context
+studies do not fix the27 partition failures or decide C1/C1a/C2/C3. Correct the queue's
+misleading READY catalog label: its remaining draft prerequisites are still held.
+Editorial reconciliation only: inspect diffs/paths/citations/anchors and whitespace;
+no software acceptance rerun, draft adoption, review waiver or release promotion.
+The full nine-tier goal stays active; this checkpoint does not declare a narrower
+preview to be1.0. Owning implementation review ranges remain unchanged.

@@ -28,19 +28,21 @@ selling the systems it mocks.
 
 ## Project status
 
-Cloud Clicker is pre-1.0 and under active development. The repository contains a tested T0–T1
-vertical slice and substantial server foundations, including:
+Cloud Clicker is pre-1.0, currently integrating and hardening the Garage. The repository has
+an executable early-game loop and substantial server foundations, including:
 
 - deterministic big-number arithmetic shared between Go and TypeScript;
 - server-authoritative economy, production, offline progress, saves, and replay;
 - account/session and WebSocket transport backends;
 - declarative content, routes, achievements, guild, pet-care, and minigame infrastructure; and
-- a Svelte client that completes a real Chromium bootstrap through PostgreSQL and WebSocket into
-  the Desk screen.
+- a production-built Svelte client tested through purchases, early endings, next-run continuation
+  and recovery against real PostgreSQL and WebSocket services.
 
-The complete first-hour browser workflow, tiers 2–8, most minigames, player-facing MMO and world
-systems, production packaging, backup and restore, and the designed endings are not complete.
-APIs, schemas, and content may change before 1.0.
+Tier 2 has candidate content and integration tests, not a completed release. Much of the
+world/MMO layer, combat, Tiers 3–8 and the final endings still needs construction. Natural
+pacing, account recovery/export/deletion workflows, accessibility, consolidated reviews and
+clean-host deployment proof also remain unfinished. Deployment and backup tooling exists;
+that is not yet a supported release. APIs, schemas, and content may change before 1.0.
 
 Current status is maintained in the checked project artifacts rather than copied into this README:
 
@@ -77,10 +79,11 @@ make build-client
 
 Build artifacts are written beneath `.cache/` and `client/dist/`.
 
-The repository does not yet provide a supported production Docker/Caddy bundle or a one-command
-self-host deployment. The Compose files at the repository root are test infrastructure. The
-current backend's required environment, startup, readiness, and shutdown behavior is documented in
-[Gameserver Composition](docs/gameserver.md).
+Deployment tooling and Compose/Caddy templates live in `deployment/`, but a supported release
+has not yet passed its required clean-host install, restore and rollback rehearsal. The Compose
+files at the repository root are test infrastructure. See [Deployment](docs/deployment.md) for
+the implemented tooling and its limits, and [Gameserver Composition](docs/gameserver.md) for
+the backend's environment, startup, readiness and shutdown behavior.
 
 ## Verification
 
