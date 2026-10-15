@@ -7,6 +7,16 @@
 
 ## Current checkpoint — 2026-10-16
 
+RP-677: independent cursor review discovers an actual composed Exit/board test race with
+successful background archive compaction. The test now awaits that real committed phase,
+retaining public archive replay/corruption and board/privacy assertions rather than racing
+a duplicate live-log verification. Selected Linux-amd64/Postgres reproduction population
+passes after correction; full affected Linux-amd64/Postgres gameserver83.660s and
+replayverify1.629s plus native vet pass. The opt-in one-minute cleanup test is explicitly
+skipped, not credited; archive corruption/rollback cases actually execute.
+The owning log retains old/current controlled failures and exact corrective-review boundary;
+this is not a production verifier change, whole-CI acceptance or a timeout/budget increase.
+
 RP-596 candidate review finds RP-674: local sort bypasses the neutral ordering authority
 required by implemented Production Contract Integrity D1/D3. Complete original9bdf9c29..d6e092e8
 is CHANGES REQUIRED, not approved. UNAPPLIED correctione973fcb1 restores the helper;

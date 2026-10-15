@@ -2723,3 +2723,51 @@ approval, complete CI/maintenance, hosted timing, accounting repair, feature/arc
 approval. Desktop emulation is not native hosted hardware. Reviewer handles terminal; only its
 owned twice-inspected tmpfsd4360f17… removed, both preexisting builders preserved; no tracked
 edits/commits. RP-674 candidate defect leaves corrective debt; remaining authority gates stay.
+
+## 2026-10-16 — Observe completed archive phase in composed verification (RP-677)
+
+Independent cursor reviewer /root/api_cursor_pairs_corrective_review discovers an actual
+RED in current Linux-amd64/Postgres population81956: composed Exit/board's duplicate
+VerifyStoredRun call returns log_gap. That method reads live rows; the real100ms worker
+already verifies, archives and compacts in one transaction. A test trying to beat that
+commit is not a valid phase boundary. This is a fixture race, not a proved lost archive
+or a cursor-admission defect.
+
+Reviewer-controlled ignored overlay waits for the REAL archive before the unchanged old
+assertion: current resolver40146 fails1.046s, pre-RP-496 resolver61634 fails0.856s, each
+archive_rows1/live_rows1/null_inputs0/live min=max seq3. An isolated old-resolver pass does
+not prove stability; initial trailing-$ Make selector runs zero and is excluded. Diagnostic
+source.cache/cursor-pair-review-exit-archive-diag_test.go SHA256
+82fe32b94310ded45be2100029f7c2ff665aa3905c2fe8dbad219d7d87b39c78;
+overlay JSON a6fe8df89d6f520ed88f77f2439f1788e9644a9a230ff4b21e7ec35f33539e94.
+Exact root reproduction:
+`make test-go-ci CI_TEST_PACKAGES='./gameserver' CI_TEST_FLAGS='-overlay=/workspace/.cache/cursor-pair-review-exit-archive-diag.json -run ^TestComposedGameserverExitVerificationAndBoardIntegration -v'`.
+The old resolver control uses.cache/cursor-pair-review-exit-archive-old.json; both are
+function/source overlays against current dependencies, not complete historical checkouts.
+
+Under CI D2 and Leaderboards' transactional archive contract, change only the integration
+test: require queue verified/verdict verified, exact archive terminal3 (ranked) or2 (imported),
+and zero unreferenced live rows in ONE SQL snapshot before continuing. Use the existing
+three-second readiness bound/25ms observation interval, never an arbitrary delay or enlarged
+budget. Remove the two duplicate live-log replays after that phase. The actual worker's
+verification remains mandatory; existing served-archive/storage/hash checks, actual Go replay
+and corrupt-receipt refusal remain unchanged, as do imported-board exclusion, historical
+epoch, real socket/privacy and projection assertions. No replacement of replay with a mere
+status assertion, production/schema/policy/kernel changes or assertion-to-wrong-result fix.
+
+Root reuses the independently executed forced old failures above, then runs the exact
+previously red selected population as81902: terminal0, publicread0.168s/gameserver3.780s/
+deploymentconfig0.056s. Both actual queue/compaction checkpoints execute (terminal3/2,
+unreferenced_live0); public and historical archives reverify and corrupt receipts refuse.
+cmd/gameserver selects no tests, not credited. TS seam explicitly not requested, no TS/browser
+claim. Full affected Linux-amd64/Postgres gameserver/replayverify plus native vet65352
+terminates0:83.660/1.629s. Both changed checkpoints/public replay/corruption and all replay
+queue/claim/retry/version/atomic-compaction/corrupted-archive populations actually execute.
+The opt-in one-minute credential-cleanup timer is explicitly skipped, not credited. Existing
+retained-rights observations are not privacy success or changed by this fixture repair.
+No full hosted-CI, root history/arithmetic repair, feature acceptance or release claim.
+Root-created disposable Postgres service remains available for the ensuing independent
+review; no background test workload remains. Review by: Codex root (repair implementer/first
+filter). Recorded by: Codex root. Complete12769925-exclusive through the containing repair
+commit requires fresh independent corrective review; cursor approval is not this repair's
+approval. No unrelated dirty work existed or was changed.

@@ -1116,11 +1116,10 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 		t.Fatalf("exit status=%d body=%s", exitResponse.StatusCode, responseBody(exitResponse))
 	}
 	_ = responseBody(exitResponse)
-	// Verify the complete live log before the additional socket/new-run work;
-	// successful background verification may compact it into the archive meanwhile.
-	if verdict, err := composition.Verification.VerifyStoredRun(ctx, companyRevision.StreamID, 1); err != nil || verdict != production.ReplayVerified {
-		t.Fatalf("stored run verdict=%s err=%v", verdict, err)
-	}
+	// The real worker verifies and compacts atomically. Observe that completed
+	// phase instead of racing its deletion with a second live-log replay. Below,
+	// the public archive must still reverify and reject a corrupt receipt.
+	awaitComposedRunArchive(t, ctx, db, companyRevision.StreamID, 3)
 	postExit, err := store.LoadLatest(ctx, companyRevision.StreamID)
 	if err != nil || postExit.State.RunSeq != 2 || postExit.State.CompactMember {
 		t.Fatalf("Exit did not reset Compact membership: err=%v", err)
@@ -1260,6 +1259,39 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	default:
 	}
 	t.Fatalf("terminal run did not reach board: status=%s verdict=%s rows=%d background=%v", status, verdict, boardRows, backgroundErr)
+}
+
+func awaitComposedRunArchive(t *testing.T, ctx context.Context, db *sql.DB, stream string, terminalSeq int64) {
+	t.Helper()
+	deadline := time.Now().Add(3 * time.Second)
+	var status, verdict string
+	var archivedTerminal, unreferencedLive int64
+	for {
+		err := db.QueryRowContext(ctx, `SELECT queue.status,COALESCE(queue.verdict,''),COALESCE(archive.terminal_seq,0),
+			(SELECT count(*) FROM run_log log WHERE log.company_stream_id=queue.company_stream_id AND log.run_seq=queue.run_seq
+			 AND NOT EXISTS (SELECT 1 FROM founder_log founder
+				WHERE founder.source_company_stream_id=log.company_stream_id
+				  AND founder.source_run_seq=log.run_seq AND founder.source_run_log_seq=log.seq))
+			FROM verification_queue queue LEFT JOIN run_log_archive archive USING(company_stream_id,run_seq)
+			WHERE queue.company_stream_id=$1 AND queue.run_seq=1`, stream).
+			Scan(&status, &verdict, &archivedTerminal, &unreferencedLive)
+		if err != nil {
+			t.Fatalf("read composed verification phase: %v", err)
+		}
+		if status == "verified" {
+			if verdict != string(production.ReplayVerified) || archivedTerminal != terminalSeq || unreferencedLive != 0 {
+				t.Fatalf("incomplete verified archive: verdict=%s terminal=%d want=%d unreferenced_live=%d",
+					verdict, archivedTerminal, terminalSeq, unreferencedLive)
+			}
+			t.Logf("real worker verified and compacted run: terminal=%d unreferenced_live=%d", archivedTerminal, unreferencedLive)
+			return
+		}
+		if status == "dead" || time.Now().After(deadline) {
+			t.Fatalf("composed run did not archive: status=%s verdict=%s terminal=%d unreferenced_live=%d",
+				status, verdict, archivedTerminal, unreferencedLive)
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
 }
 
 func proveFreshFounderReceivesOwnScriptedExit(t *testing.T, ctx context.Context, composition *Composition,
@@ -1417,9 +1449,7 @@ func proveImportedFounderExitExcludedFromBoard(t *testing.T, ctx context.Context
 		t.Fatalf("imported Exit status=%d body=%s", exitResponse.StatusCode, responseBody(exitResponse))
 	}
 	_ = responseBody(exitResponse)
-	if verdict, err := composition.Verification.VerifyStoredRun(ctx, company.StreamID, 1); err != nil || verdict != production.ReplayVerified {
-		t.Fatalf("imported stored run verdict=%s err=%v", verdict, err)
-	}
+	awaitComposedRunArchive(t, ctx, db, company.StreamID, 2)
 
 	deadline := time.Now().Add(3 * time.Second)
 	for time.Now().Before(deadline) {
