@@ -8,6 +8,35 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+Long-absence reconstruction first declaration at `2c9f8833`: two actual logged-mode profiles over48h,
+Company19, one tower/PR row, one active production buff at attended4000ms, Compact
+weight and one Guild clearing. Observe actual ApplyLogged's post-closed-hook state
+without changing the hook's result, and compare a fresh private stage reconstruction.
+Require bank43,200,000ms, production86,400,000ms, stock17/consumed10/window7/seq1;
+online auto-catchup plus zero-elapsed ordinary versus direct-offline ordinary.
+Initially declared (incorrect) pre-action hook cash99,511.744 versus636,582.208 under existing distinct
+policies. Omitted-clearing control must retain cash but differ in full state. Compare
+ordered prefix events and complete stage state/result/contributions; observer
+forwarding must preserve full final state/receipt/events versus unobserved ApplyLogged.
+No snapshot/API/receipt/clock change, new codec, real SQL or claim the modes are equivalent.
+
+Initial72228 is an invalid measurement: the short-interval input helper omits
+required catchup metadata at48h, and the declared hand multiplication was wrong.
+Before rerunning, use actual buildOfflineCatchup and independent exact integer
+rate115115/100000 ×86400s ×9/10 (×7 for direct offline) plus initial10000:
+expected pre-action cash99,513.424/636,593.968. Preserve the original population,
+cap/bank/clearing/state/event oracles and production bytes; do not fit a tolerance
+or change the current clock policy to repair the instrument.
+
+Corrected64550 passes: online has two evaluations/one hook call and cash99,513.424;
+direct offline has one evaluation/hook call and cash636,593.968. Every full observed
+post-hook state/result/contribution matches reconstruction, ordered prefix events
+match, and observer forwarding preserves complete command state/receipt/events.
+Both bank43,200,000ms with24h production; missing clearing preserves cash but loses
+the expected stock/watermark state. Repeated24629 plus existing Guild/temporal
+parents passes three shuffled cold runs; vet passes. This is not a new factory,
+codec, SQL/TS integration, clock-policy adoption or repair of the original27 cases.
+
 Caller/dispatch proposal at `57906e5d`: parent C1h distinguishes fixed logged-command,
 fixed-external simulation, explicit modern endpoint and diagnostic window-start
 sampling; C1e binds actual simulation revision identities and recipe. Preserve

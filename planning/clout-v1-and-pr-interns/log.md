@@ -3783,3 +3783,33 @@ bindings still need engineering closure, not owner approval as a substitute.
 Review by: Codex (draft author first filter). Recorded by: Codex. Complete range
 after `57906e5d` through this containing commit needs designated normative review.
 No services/resources touched, adoption, feature completion, push or deployment.
+
+## 2026-10-15 — RP-658 long-absence stage reconstruction
+
+Declare two48h Company19 profiles at `2c9f8833`: owned tower/PR, active production
+buff, Compact weight and one controlled Guild clearing, online/direct offline.
+First72228 is invalid: the short-interval input helper omits required catchup
+metadata, and my hand-calculated cash literals are wrong. Before the next run,
+use actual buildOfflineCatchup and exact integer rate115115/100000 ×86400 ×9/10
+(×7 direct offline) plus initial10000. No population, factor, cap, banking,
+clock or production bytes change. The original declaration/correction stay in plan.
+
+Corrected64550 PASS0.408s. A forwarding Commons-last observer leaves actual
+ApplyLogged's whole final state/receipt/events unchanged. Fresh prefix reconstruction
+matches complete observed post-hook state/result/contributions and ordered prefix
+events. Online has two evaluations (ordinary zero) and one full hook call; direct
+offline one. Both produce24h and bank43,200,000ms, with distinct current-context
+cash99,513.424/636,593.968. Clearing literals stock17/consumed10/window7/seq1 hold.
+Omitting clearing keeps cash but loses full state; neither scratch path consumes
+the original. This is not a mode-equivalence or served-player-loss finding.
+
+Final24629 repeats this plus existing six Guild and42 temporal profiles three
+times, shuffled/uncached: PASS1.244s. Affected vet and diff check pass. No full
+server/CI, real Guild worker/SQL/TS/browser or new owner/codec proof is claimed;
+runtime and original27 arithmetic failures are unchanged. Draft C1i and RP-658
+record exact scope, including the invalid first attempt and omitted-clearing control.
+
+Five-path test/draft/plan/ledger/log range after `2c9f8833` through this containing
+commit needs designated review. Review by: Codex (research implementer/draft author
+first filter). Recorded by: Codex. No artifact/source-pin restamp, runtime/kernel/
+CI changes, services or removed resources; no adoption, archival, push or deployment.

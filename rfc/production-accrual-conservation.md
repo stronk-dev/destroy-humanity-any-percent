@@ -552,6 +552,33 @@ RP-652/RP-657 explain why the distinction matters; they do not prove the modern
 factory or all-stage reconstruction. Acceptance needs recipe-mismatch refusals,
 complete stage/event comparisons and original-policy compatibility in both runtimes.
 
+### C1i — Bounded long-absence reconstruction evidence (RP-658)
+
+The unminted Company19 fixture combines a48h interval, active production buff,
+Compact weight and a nonempty Guild clearing in both actual logged evaluation modes.
+A forwarding last-hook observer preserves the complete original ApplyLogged state,
+receipt and ordered events. Fresh private reconstruction matches its full canonical
+post-hook state, evaluation result and contribution list, plus ordered prefix events.
+
+Online late-command handling has an offline catchup followed by a zero-elapsed
+ordinary evaluation; direct offline handling has one ordinary evaluation. Both
+produce86,400,000ms and bank43,200,000ms. Their pre-action hook cash is99,513.424
+and636,593.968 respectively under the existing different buff contexts. Independent
+integer arithmetic uses rate115115/100000 ×86400s ×9/10, with factor7 only in the
+direct-offline case, plus initial10000. There is no claim that the modes should pay
+equally or that a client may choose them.
+
+Clearing leaves stock17, consumed10, consumed-window7 and boundary sequence1.
+Omitting it preserves cash in this pinned zero-bonus Guild context but changes the
+full state. The original source remains unchanged. The initial instrument lacked
+required catchup metadata and used incorrect hand arithmetic; the plan/log retain
+those failures and the independent correction before the successful measurement.
+
+This verifies two controlled Go reconstruction profiles, not live Guild generation,
+the proposed owner factory/codec, general contexts, SQL/TS, full-domain conservation
+or repaired AC6. Keep final real command/receipt/hook ownership intact; do not treat
+cash equality, one hook call or a matched scratch prefix as those broader proofs.
+
 ### C2 — Preserve a producer origin, not a rounded-rate cache
 
 Candidate direction, with lifetime subject to C1/C1a: retain a canonical initial balance,
