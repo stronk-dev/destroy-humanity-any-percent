@@ -2524,3 +2524,18 @@ RP-637 reliability, feature/adoption/archival/release approval. All handles term
 --rm container absent, declared browser Compose inventory empty; no manual resource removal,
 tracked edits or commits by reviewer. Complete RP-531 range leaves corrective review debt;
 RP-526/RP-637 original causes, other ranges and release/whole-product gates remain.
+
+## 2026-10-15 — Retain independent Firefox screens setup failure (RP-673)
+
+During fresh /root/clout_cap_presentation_corrective_review's RP-536 check, declared
+Linux ARM64 three-engine axis/screens54143 finishes RED:395pass/1fail/15 existing performance
+exclusions. Axis file's81 executions pass. Firefox screens `late http-conflict completion
+cannot refresh an unmounted host`, line235, observes runtime.requests length0 instead of1
+immediately after native Enter/setup, BEFORE the late response/unmount property. Root reads
+the actual fixture: it has no axis_stack, so the changed cap preflight is not invoked. This
+separates the observed failing boundary; it does not establish why dispatch failed or approve
+the screens file/late-completion claim. Product remains137f7a8d; no source mutation/rerun/fix
+or input/deadline substitution by root. Original red is retained, not erased by a later pass.
+CI D2 next action: inspect the actual native dispatch/readiness/lifetime evidence, then add
+a meaningful regression only once the mechanism is known. Full CI and earlier failures remain
+open. The RP-536 review retains its own exact scoped verdict and other evidence in Clout log.
