@@ -4923,3 +4923,41 @@ whole-program alias/reflection/complete reward-union/AC4/full Clout/archival/rel
 Original P1–P5 negatives,27 accounting failures, history guard and research/adoption holds
 stay untouched. All handles terminal; reviewer edits/commits no tracked bytes, disposable
 browser gone, original2BuildKit preserved. These three bounded ranges leave corrective debt.
+
+## 2026-10-16 — One analytically selected nonaligned-origin carry (before measurement)
+
+H3c next bounded question: can a reachable initial partial grid segment expose a committed
+decrease hidden by the equal-full-prefix control? One profile only, not a larger positive
+census: unchanged rate3.003003003e-11/speed1e12/tick1000, start cursor667ms after run start,
+first333ms fully boosted,65500 full buckets, then adjacent499/500ms with333ms boosted.
+First and lower final segments both canonicalize to9.99999999999; full buckets30.03003003.
+The exact decimal sum lies at the Q12 midpoint neighborhood because65500≡500(mod1000).
+This targets a nonuniform prefix admitted by actual grid alignment, not an arbitrary list.
+
+Manual probes/offset-carry-probe.go.txt stays outside normal CI and is added through an
+ignored compiler overlay. Require valid retuned v4 catalog, encoded/restored v17 origin,
+both actual Evaluate results/receipt cash equal the declared grouped/quantized sequence,
+unchanged source origin and no invalid/guard cases. Count both projections even if no
+decrease. A decrease is bounded admitted-origin evidence, not natural acquisition or a
+current harness miss; equality is not a proof. No further profiles authorized by a positive
+result. No active math/kernel/balance/golden/CI change or draft adoption.
+
+Result61491: the declared root Make/ignored overlay selector executes one profile and TWO
+actual admitted/restored v17 Evaluate/receipt projections, terminal exit0/package0.849s.
+Raw totals equal(1.96698696696338,e6); both committed cash amounts1.96698696696e6. Thus no
+committed decrease in this analytically selected initial-offset control. Complete source
+origin remains unchanged; no guards/exclusions. Stop, do not extend the passing population.
+Native Go/Darwinarm64 only; no TS/Linux/SQL/natural acquisition/current-search/universal proof.
+This does not establish that the earlier unequal-prefix reversal is reachable or repair any
+of27 partition failures. Manual source is gofmt-clean/outside CI; no active production/kernel222,
+balance/golden/protocol or normative text changes. Review by: Codex root, research author first
+filter. Recorded by: Codex root. Complete new research range8f4b50d0-exclusive through its
+containing commit requires research review outside the corrective-code delegation.
+
+Final source61973 additionally executes an independent math/big.Rat decimal-literal reference:
+1966986.96696499998→1966986.96696499999, both immediately below midpoint1966986.966965.
+Actual grouped raw totals/committed payouts remain equal; package0.906s, two actual Evaluate
+projections again execute. This exact reference explains the selected inputs, not accepted
+engine arithmetic or a further population. Reproduction uses a Go overlay mapping virtual
+server/production/calculation_offset_carry_probe_test.go to the retained manual source, then
+make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-overlay=/Users/stronk/repos/cloud-clicker/.cache/offset-carry-probe-overlay.json -run TestCalculationOffsetCarryResearch -v -count=1'.

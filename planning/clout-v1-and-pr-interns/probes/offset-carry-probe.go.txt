@@ -1,0 +1,128 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"math/big"
+	"os"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+// Manual one-profile falsification, not a passing acceptance test or census.
+// A compiler overlay supplies this file as an additional production _test.go.
+func TestCalculationOffsetCarryResearch(t *testing.T) {
+	const tick, prefix, firstMS, burstMS int64 = 1000, 65500, 333, 333
+	rate, speed := mustDecimal(t, "3.003003003e-11"), mustDecimal(t, "1e12")
+	segment := func(ms, boosted int64) decimal.Decimal {
+		t.Helper()
+		value, err := accrueBoostedConstant([]decimal.Decimal{rate}, ms, boosted, decimal.One, speed.Sub(decimal.One))
+		if err != nil {
+			t.Fatal(err)
+		}
+		return value
+	}
+	full, first := segment(tick, tick), segment(firstMS, firstMS)
+	a, b := segment(499, burstMS), segment(500, burstMS)
+	if full.String() != "3.003003003e1" || first.String() != "9.99999999999e0" || !first.Eq(a) || b.String() != "1e1" {
+		t.Fatal("declared offset/bucket/partial inputs differ", full, first, a, b)
+	}
+	terms := make([]decimal.Decimal, prefix+2)
+	terms[0] = first
+	for index := int64(1); index <= prefix; index++ {
+		terms[index] = full
+	}
+	terms[prefix+1] = a
+	lowerRaw := decimal.SumDeterministic(terms)
+	terms[prefix+1] = b
+	upperRaw := decimal.SumDeterministic(terms)
+	lower, upper := lowerRaw.Quantize(decimal.CanonicalSignificantDigits), upperRaw.Quantize(decimal.CanonicalSignificantDigits)
+	if !lower.IsStateValue() || !upper.IsStateValue() {
+		t.Fatal("invalid declared aggregation", lower, upper)
+	}
+	// Independent exact decimal-literal reference, not the engine's arithmetic.
+	exactFull, ok := new(big.Rat).SetString("30.03003003")
+	if !ok {
+		t.Fatal("invalid exact full literal")
+	}
+	exactPartial, ok := new(big.Rat).SetString("9.99999999999")
+	if !ok {
+		t.Fatal("invalid exact partial literal")
+	}
+	exactPrefix := new(big.Rat).Mul(exactFull, new(big.Rat).SetInt64(prefix))
+	exactPrefix.Add(exactPrefix, exactPartial)
+	exactLower := new(big.Rat).Add(exactPrefix, exactPartial)
+	exactUpper := new(big.Rat).Add(exactPrefix, big.NewRat(10, 1))
+	if exactLower.FloatString(11) != "1966986.96696499998" || exactUpper.FloatString(11) != "1966986.96696499999" {
+		t.Fatal("exact midpoint derivation differs", exactLower, exactUpper)
+	}
+	t.Logf("independent exact literal sums%s->%s; Q12 midpoint1966986.966965", exactLower.FloatString(11), exactUpper.FloatString(11))
+
+	data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(data, &root); err != nil {
+		t.Fatal(err)
+	}
+	root["provision_tick_ms"] = tick
+	policy := root["offline_policy"].(map[string]any)
+	policy["burst_speed"], policy["burst_max_duration_ms"] = "1e12", firstMS+prefix*tick+burstMS
+	found := false
+	for _, value := range root["generator_classes"].([]any) {
+		generator := value.(map[string]any)
+		if generator["id"] == "generator.beige_tower" {
+			generator["production"].(map[string]any)["base_rate"] = rate.String()
+			found = true
+		}
+	}
+	if !found {
+		t.Fatal("missing controlled producer")
+	}
+	data, err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal("retuned catalog not admitted", err)
+	}
+	state, err := save.RestoreState([]byte(`{"balances":{"company.cash":"0","company.permits":"0"}}`), 1, catalog, economy.ScopeCompany, engineCursor)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.WireVersion, state.ComputeBurstRemainingMS = 17, firstMS+prefix*tick+burstMS
+	state.AchievementsEarnedRun = map[string]bool{}
+	state.GeneratorCounts["generator.beige_tower"], state.GeneratorPurchasedTotal = 1, 1
+	state.EvaluatedThrough = engineCursor.Add(time.Duration(tick-firstMS) * time.Millisecond)
+	origin, err := save.EncodeState(state)
+	if err != nil {
+		t.Fatal("origin not encodable", err)
+	}
+	for index, partial := range []int64{499, 500} {
+		current, err := save.RestoreState(origin, 17, catalog, economy.ScopeCompany, state.EvaluatedThrough)
+		if err != nil {
+			t.Fatal("origin not admitted", err)
+		}
+		elapsed := firstMS + prefix*tick + partial
+		result, err := Evaluate(current, catalog, state.EvaluatedThrough.Add(time.Duration(elapsed)*time.Millisecond), ModeOnline, nil)
+		want := lower
+		if index == 1 {
+			want = upper
+		}
+		cash, ok := current.Ledger.Balance("company.cash")
+		if err != nil || !ok || !cash.Eq(want) || result.ProductionMS != elapsed || len(result.Receipt.Changes) != 1 || result.Receipt.Changes[0].After != want.String() {
+			t.Fatal("actual admitted Evaluate differs from declared prefix", index, cash, want, result, err)
+		}
+		unchanged, err := save.EncodeState(state)
+		if err != nil || !bytes.Equal(unchanged, origin) {
+			t.Fatal("projection consumed origin", err)
+		}
+	}
+	t.Logf("one nonaligned origin,2 actual Evaluate projections: raw(%g,e%d)->(%g,e%d), ledger%s->%s, committed_decrease=%t; no universal monotonicity claim", lowerRaw.Mantissa(), lowerRaw.Exponent(), upperRaw.Mantissa(), upperRaw.Exponent(), lower, upper, lower.Gt(upper))
+}
