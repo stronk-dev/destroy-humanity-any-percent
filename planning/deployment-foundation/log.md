@@ -7080,3 +7080,57 @@ newly created tmpfs Postgres container, discarding disposable test data; shared 
 volumes and two pre-existing BuildKit containers remain. No publication/deployment/push.
 Continue remaining accepted implementation and current-release contract work; these two
 corrective ranges no longer wait on Claude, without closing the original feature.
+
+## 2026-10-15 — Exact recovery objectives independently approved
+
+Review by: fresh independent Codex `/root/deployment_recovery_objectives_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, all eight
+paths in `ad54b2587f2fcd9fbc19ea3d5fd851710562f1b1..09cf45e5539437b581b9318443632a23a995977e`.
+No findings. RP-503 applies full-duration bounds before seconds conversion; RP-504 includes
+stop/reset and refuses a clock preceding the incident before destructive calls. Actual Docker
+callers/final validator agree; existing6h RPO/4h RTO, clock/report semantics remain unchanged.
+
+At descendant69c84ad4/product77fe2275/kernel221: affected five-package cold tests/vet76325,
+backup/rehearsal cold race26990 and declared Linux-amd64 full packages8432 pass. Explicit
+Linux72962 executes all12 duration-boundary and four recovery-phase regressions, no skips.
+Generic Linux service lacks restore/admin URLs, so its seven restore functions SKIP and are
+not restore evidence. Separate actual make test-deployment-backup63275 passes ALL8 current
+integration parents with no skips: encrypted empty/populated/query-override restores, clean-
+target refusals, identity mutations and snapshot checks. The eighth restored-HTTP-credentials
+observation executes as context, NOT rights-policy approval or an expansion of this verdict.
+First verbose output partly truncated; explicit regression/prerequisite check supplies totals.
+
+Recovery source/tests byte-identical endpoint; later backup framing/credential/fixture changes
+inspected as execution context only. Historical old failures inspected, not independently
+reproduced. No reviewer edits/commits. All handles terminal; both Compose inventories empty.
+Only newly created inspected tmpfs test Postgres removed; backup target removes its
+services/new network. Disposable SQL data lost; persistent volumes/caches/builders preserved.
+No actual Docker stop/reset timing, host incident, clean-host R-006/R-007, normative adoption,
+full Deployment/hosted-CI/archival/release approval. Remaining authored/artifact/review gates stay.
+
+## 2026-10-15 — Bundle-gate and refusal evidence corrections independently approved
+
+Review by: fresh independent Codex `/root/deployment_refusal_gate_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, no findings,
+every changed path inspected, separately for complete scopes:
+
+- RP-550, five paths: `5d70f673388a981a75d4dd2bb74e6096635fac6a..a7501ac1bac149d1fb87949b75b308ef58073479`.
+- RP-552, seven paths: `fc04db242303e3d873b213d2b5a2e597ca809db3..a713137e59cbdb8a70d9cda75552e1cea0c5aa16`.
+
+At descendant69c84ad4/product77fe2275/kernel221: six affected packages and vet97540 pass
+cold; additional backup CLI5652 passes nine parents including the dedicated refusal-class
+control. Focused cold race76714 passes27 real bundle-gate subjects/baselines, malformed-
+record producer cases, classifier/format controls and actual ExecRunner provenance.
+Formatting/both full-range whitespace checks pass. Nine intact mutation subjects reach actual
+assembler/validator;18 invalid baselines must be typed content errors, not successful negative
+evidence. Retained candidate/previous bundles remain valid and temporary work empties.
+Exact decoded-member validation rejects duplicate/escaped-duplicate and case aliases before
+values; four valid formatting controls and outer Docker/exit1/cause/value/time/single-record
+requirements remain. Actual probe orchestration rejects malformed Slog-derived records.
+
+Reviewed classifier/tests unchanged from endpoints; unrelated later AbortInstall change is
+outside these verdicts. Historical overlays inspected, not rerun or relabelled as independent
+execution. All handles terminal, no edits/mutations/worktrees/resources/cleanup by reviewer.
+These actual local file/gate/parser/probe checks use synthetic bundle/runtime inputs, not
+executable release artifacts, Docker/SQL, clean-host R-006, full Deployment or release proof.
+Original R18/R20 dispositions remain CHANGES REQUIRED; normative/archival gates unwaived.

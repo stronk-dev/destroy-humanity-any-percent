@@ -7,6 +7,13 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current corrective reviews, 2026-10-15:** fresh independent Codex approves complete
+RP-503/RP-504 duration/recovery-clock range, RP-550 real bundle-gate tests and RP-552 exact
+restore-refusal fields. Full hashes/provenance and executed cold/race/Linux/real-Postgres
+results are in the owning log. These scopes no longer wait on Claude. They do not close
+original R18/R20, backup metadata authority (RP-505), current-release identity, exact-artifact/
+clean-host R-006/R-007, or full Deployment acceptance. Continue remaining accepted work.
+
 **Current DP7 timed-observation correction, 2026-10-14 (RP-615):** the real-minute test's
 startup/failure/drain callback waits now obey its existing95-second context and refuse missing
 or late observations. Three factored-old receive regressions fail; corrected cold/vet/race
@@ -92,8 +99,8 @@ now rejects duplicate and case-aliased members rather than allowing Go's overwri
 semantics to create valid-looking evidence. Sixteen old-parser regressions and two actual-probe
 orchestration counterexamples fail; corrected cold affected packages/vet, race and Linux helper
 build pass. Full original R20's eleven-path disposition is CHANGES REQUIRED (RP-142), not approval
-of its corrective descendants. New range after `fc04db24` needs Claude review. Actual Postgres,
-composed CLI stderr and exact-host/R-006 gates remain; unchanged valid records stay admissible.
+of its corrective descendants. Complete `fc04db24..a713137e` is independently approved.
+Actual composed CLI stderr and exact-host/R-006 gates remain; valid records stay admissible.
 
 **Current DP6 endpoint correction, 2026-10-13 (RP-551):** service/pass files now honor the
 database URL's endpoint query overrides instead of targeting its unoverridden URI fields.
@@ -108,8 +115,8 @@ does not close DP-C/AC4, general URI options, original R20 review or exact-host/
 **Current DP-F producer evidence, 2026-10-13 (RP-550):** all nine packaged-artifact mutations now
 execute against the actual assembled-bundle validator, with18 invalid-baseline controls. The
 content-identity omission fails the new epoch witness while the prior fake-validator test passes.
-Cold affected packages/vet and focused race pass. This test-only range after `5d70f673` needs
-Claude review; original R18's complete five-path disposition remains CHANGES REQUIRED (RP-141),
+Cold affected packages/vet and focused race pass. Complete test-only range
+`5d70f673..a7501ac1` is independently approved; original R18's complete five-path disposition remains CHANGES REQUIRED (RP-141),
 not approval of Codex's later witnesses. Synthetic image/client/dump inputs and recorded runtime
 commands are not exact-artifact/clean-host R-006, or permission to execute external deployment.
 
@@ -348,7 +355,7 @@ resetting/restarting Postgres. Those required phases now count toward the existi
 RTO. Four old-source failures become passes: complete elapsed time, stop/reset overruns,
 and invalid-clock refusal before destructive work. Affected cold packages/vet and declared
 Linux-amd64 recovery tests pass. Controlled runtime evidence, not an actual clean-host
-restore; the owning log holds the new pending review range, combinable with RP-503.
+restore; the owning log holds independent approval of complete `ad54b258..09cf45e5` with RP-503.
 
 2026-10-12 bounded retention integrity diagnostic at `09cf45e5`: two independent real
 encrypted backup populations, each with a recent normal backup and31-day unresolved
@@ -373,7 +380,8 @@ DP6/AC4's exact six-hour/four-hour bounds before whole-second report conversion.
 12-case regression exposes four old-source subsecond-overrun false passes and passes
 after repair, including zero/below/exact/whole-second-over controls. Affected cold native
 packages/vet, declared Linux-amd64 objective tests and all seven real-Postgres backup
-integration functions pass. The owning log holds the exact range requiring Claude review.
+integration functions pass. The owning log holds independent approval of complete
+`ad54b258..09cf45e5` with RP-504, including current actual declared backup execution.
 Report fields and clock origins are unchanged; no full Deployment, CI or clean-host claim.
 
 **Latest bounded checkpoint, 2026-10-12:** original Claude R5
