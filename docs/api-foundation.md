@@ -434,7 +434,20 @@ another ID. The private API uses `publicapi.WithRequestID`; PublicRead resolves 
 runtime so identity failures still use its existing public response bucket. Public,
 unauthenticated Account and authenticated Account budgets remain separately owned. Standalone
 Account router callers must supply this HTTP composition themselves. This implements
-response/context correlation, not access logging.
+response/context correlation. Composition also supplies its existing structured logger
+to both API surfaces. After successful identity assignment, one `api request` entry
+records the resolved `request_id` before application handling, including cache hits,
+typed errors and limiter refusals. The entry adds no method, URL/query, body, headers,
+IP, account/Founder identity or credentials. The ID is caller-controlled correlation
+material, not an authenticated identity. It is not a new metrics label or gameplay
+telemetry stream.
+
+`httpapi.LogRequestID` reads only the shared context, never a raw caller header;
+downstream header replacement cannot change the logged authority. Failed identity
+assignment does not fabricate an ID or a correlated request entry. Embedded public
+router callers can omit the optional logger; embedded Compose's existing nil-logger
+default is a discard sink. The production gameserver supplies its JSON stdout logger.
+This proves emission, not supported-host journal retention, delivery or capacity.
 
 Identity-generation failure refuses before application work with uncached
 `500 {"category":"internal_invariant","detail":"request_id"}`. It fabricates no request ID
@@ -457,7 +470,7 @@ IP's404, and reads the authenticated account-owned Founder. It also exhausts the
 unforwarded peer's public budget before creating and reading the SQL linkage for a new
 Account, with credential `no-store` retained. That second loop accounts for earlier spent
 tokens rather than claiming another fresh-burst measurement. No pre-reader work bound,
-production Caddy/clean-host, logging or whole-API acceptance follows.
+production Caddy/clean-host, supported-host log retention or whole-API acceptance follows.
 
 Its entropy-failure supplement checks real Account/bootstrap/public responses, unchanged
 account/save/credential row counts, declared error bytes, the actual public failure budget,

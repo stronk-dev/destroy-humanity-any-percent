@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -163,6 +164,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		}
 	}
 	entropy := &composedRequestIDEntropy{}
+	requestLogs := &requestLogBuffer{}
 	composition, err := Compose(ctx, CompositionConfig{
 		PublicCursorKeys: testPublicCursorKeys(),
 		DB:               db,
@@ -176,6 +178,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-integration", Current: bytes.Repeat([]byte{0x43}, 32)},
 		Clock:         clock.Time,
 		Random:        entropy,
+		Logger:        slog.New(slog.NewJSONHandler(requestLogs, nil)),
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -273,7 +276,10 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		"refresh_token": tokens.RefreshToken, "founder_id": founder.ID, "company_stream_id": company.StreamID,
 	})
 	t.Run("public_error_budget", func(t *testing.T) {
-		assertComposedPublicErrorBudget(t, db, httpServer, tokens.AccessToken, founder.ID, company.StreamID)
+		assertComposedPublicErrorBudget(t, db, httpServer, tokens.AccessToken, founder.ID, company.StreamID, requestLogs)
+	})
+	t.Run("request_id_logging", func(t *testing.T) {
+		assertComposedGeneratedRequestIDLogs(t, httpServer, requestLogs, tokens)
 	})
 	if uiSnapshot.ConstantsHash != composition.CurrentHash || uiSnapshot.EvaluatedThrough != clock.Time().UnixMilli() ||
 		uiSnapshot.Revision != 1 || uiSnapshot.Run.FounderID != founder.ID || uiSnapshot.Run.RunSeq != 1 ||
@@ -1744,7 +1750,7 @@ func assertComposedPublicEpochs(t *testing.T, server *httptest.Server) {
 // Same real HTTP peer, distinct forwarded identities under the declared one-hop
 // policy. The parent clock is frozen: neither network speed nor sleeps refill
 // the bucket. Private-run refusals use the actual repository, not a reader stub.
-func assertComposedPublicErrorBudget(t *testing.T, db *sql.DB, server *httptest.Server, token, founderID, companyID string) {
+func assertComposedPublicErrorBudget(t *testing.T, db *sql.DB, server *httptest.Server, token, founderID, companyID string, logs *requestLogBuffer) {
 	t.Helper()
 	policyJSON, err := os.ReadFile(filepath.Join(filepathRoot(t), "balance/api/phase0.json"))
 	if err != nil {
@@ -1757,6 +1763,7 @@ func assertComposedPublicErrorBudget(t *testing.T, db *sql.DB, server *httptest.
 	const exhaustedIP, otherIP = "198.51.100.70", "198.51.100.71"
 	get := func(path, ip, etag, accessToken string) (*http.Response, []byte) {
 		t.Helper()
+		loggedBefore := logs.count(t, "composed-public-budget")
 		request, err := http.NewRequest(http.MethodGet, server.URL+path, nil)
 		if err != nil {
 			t.Fatal(err)
@@ -1774,6 +1781,9 @@ func assertComposedPublicErrorBudget(t *testing.T, db *sql.DB, server *httptest.
 			t.Fatal(err)
 		}
 		body := readCompositionBytes(t, response)
+		if logs.count(t, "composed-public-budget") != loggedBefore+1 {
+			t.Fatalf("missing or duplicate composed request log: status=%d", response.StatusCode)
+		}
 		if response.Header.Get("X-Request-ID") != "composed-public-budget" {
 			t.Fatalf("composed %s status=%d request ID=%q", path, response.StatusCode, response.Header.Get("X-Request-ID"))
 		}
@@ -1861,11 +1871,15 @@ func assertComposedPublicErrorBudget(t *testing.T, db *sql.DB, server *httptest.
 	}
 	request.Header.Set("Content-Type", publicapi.ContentJSON)
 	request.Header.Set("X-Request-ID", "composed-public-budget")
+	loggedBefore := logs.count(t, "composed-public-budget")
 	created, err := server.Client().Do(request)
 	if err != nil {
 		t.Fatal(err)
 	}
 	createdBytes := readCompositionBytes(t, created)
+	if logs.count(t, "composed-public-budget") != loggedBefore+1 {
+		t.Fatal("credential-issuing response lacks exactly one request log")
+	}
 	var accountRecord account.CreatedAccount
 	if created.StatusCode != http.StatusCreated || created.Header.Get("X-Request-ID") != "composed-public-budget" ||
 		created.Header.Get("Cache-Control") != "no-store" || json.Unmarshal(createdBytes, &accountRecord) != nil ||

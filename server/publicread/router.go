@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"io"
+	"log/slog"
 	"net/http"
 	"sort"
 	"time"
@@ -70,6 +71,7 @@ type Dependencies struct {
 	Evidence   EvidenceReader
 	Clock      func() time.Time
 	Random     io.Reader
+	Logger     *slog.Logger
 }
 
 var notFound = []byte(`{"category":"unknown_id","detail":"route"}` + "\n")
@@ -119,5 +121,5 @@ func NewRouter(dependencies Dependencies) (http.Handler, error) {
 	if err := registry.Mount(router, bindings, nil); err != nil {
 		return nil, errors.Join(ErrComposition, err)
 	}
-	return runtime.WithRequestID(router), nil
+	return runtime.WithRequestID(httpapi.LogRequestID(router, dependencies.Logger)), nil
 }

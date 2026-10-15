@@ -3485,3 +3485,41 @@ failure and broader coverage limits remain. Review by: Codex (test implementer
 first filter). Recorded by: Codex. The complete test/log range after `97fae05c`
 needs Claude review with RP-643; this correction is not independent approval or a
 feature/release promotion. Disposable test DB cleanup remains scoped to owned rows.
+
+## 2026-10-15 — RP-644 emit the accepted request-ID correlation log
+
+Under A4/C7/C16, wire the existing structured logger inside successful identity
+assignment on both API surfaces. Shared `httpapi.LogRequestID` emits one `api
+request`/`request_id` entry before application handling. Only the resolved context
+ID is read; no URL/query, body, headers, credentials, actor IDs or IP. No new
+analytics, logger-retention policy, metrics label, API schema/pin or kernel change.
+The production main already supplies JSON stdout; embedded callers retain optional
+or discard sinks. Identity-generation failure invents no ID/log entry.
+
+Real HTTP/Postgres47798 fails on old production with missing correlation logs on
+both surfaces. Extend the existing burst/error/cache/private-auth/account-creation
+checks to require one new log per response, retaining exact bodies, durable SQL
+and free304/refusal assertions. Six extra real requests cover missing/invalid/
+overlong caller IDs on both surfaces, with sensitive query/body/header markers;
+the actual JSON sink admits only time/level/message/resolved-ID fields. Native
+unit controls cover32 status/candidate combinations, altered raw headers, unchanged
+responses, unresolved/failed identity and explicitly omitted embedded sink.
+
+First corrected30206 still fails because my test assumes the epoch reader rejects
+an extra query parameter; it actually ignores it. Correct that instrument's status
+expectation, not the endpoint. Final cold Postgres47844 passes the entire parent
+1.73s, both budget/logging supplements, existing entropy refusals and Guild deletion.
+Native four-package tests/vet6369 pass; final race80663 passes HTTPAPI/PublicRead/
+Gameserver. Final cold26928 passes those four packages plus the gameserver command
+and vet. `make api-check` passes with generated/pin bytes unchanged; the production
+binary builds via `make build-gameserver`61890. Diff/whitespace checked; all handles
+terminal. Remove only inspected owned tmpfs Postgres, preserving caches/network.
+No browser/hosted
+CI, supported-host journal retention/capacity or complete API/release gate claimed.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Full implementation/
+tests/docs/records range after `61df4c51` through this containing commit needs
+designated Claude review with the request-ID lane. Prior reviews and the existing
+server numeric/history failures remain independent. No acceptance, archival, owner
+ruling, push or deployment. Continue accepted contracts; do not make request IDs
+security identities or infer that emission proves the fourteen-day host log floor.

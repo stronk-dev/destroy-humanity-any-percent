@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current A4/C7/C16 construction (2026-10-15, RP-644): supply the existing structured
+logger inside private/public request-ID assignment. One bounded context ID per
+handled request, no request metadata/credentials/payload or new metrics dimensions.
+Extend the existing real-Postgres budget/cache/auth/creation population and add
+generated-ID/privacy controls; keep standalone embedded sinks optional. Owning log
+records old failure, final checks and the range after `61df4c51` needing Claude
+review. This closes the emission gap, not journal retention or full API acceptance.
+
 Current A4/C7/C16 correction (2026-10-15, RP-643): request-ID failure now has
 one typed byte/status declaration shared by API middleware and all22 registered
 operations. Old descriptor and actual public-writer regressions fail. Preserve
@@ -10,7 +18,8 @@ public identity errors still consume the same budget, with authorized304 free.
 Actual HTTP/Postgres fault controls and SDK/generation checks live in the owning
 log, with the full range after `83ef3392` needing Claude review. The additive pin
 also protects two already-generated schema additions, not new product behavior.
-Logging, native Firefox launch and full API/release acceptance remain separate.
+Request-ID log emission is covered by RP-644 above; native Firefox launch and
+full API/release acceptance remain separate.
 
 Current A4/C16/C20 integration (2026-10-15, RP-642): actual HTTP/Postgres
 get_founder returns200 without request-ID echo on the old composition. Share the
@@ -20,7 +29,8 @@ the existing composed parent with actual private/unknown SQL reads, exact public
 burst/cache/IP controls, authenticated success/errors and durable same-peer account
 creation after public exhaustion. Owning log holds final checks and the complete
 review range after `5a88bf04`. The newer RP-643 entry above supersedes the retained
-plain-text infrastructure fallback at API boundaries; logging/full acceptance remain open.
+plain-text infrastructure fallback at API boundaries. RP-644 covers log emission;
+full acceptance remains open.
 
 Current A3/C6/C16 correction (2026-10-15, RP-641): public errors now share the
 existing per-IP response budget instead of bypassing WriteCached. Twenty-one

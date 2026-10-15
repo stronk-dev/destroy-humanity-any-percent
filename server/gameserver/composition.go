@@ -404,7 +404,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 		random = rand.Reader
 	}
 	publicRouter, err := publicread.NewRouter(publicread.Dependencies{PolicyJSON: publicPolicy, CursorKeys: config.PublicCursorKeys,
-		Epochs: epochRepository, Boards: epochRepository, Routes: routeProjector, Evidence: epochRepository, Clock: config.Clock, Random: random})
+		Epochs: epochRepository, Boards: epochRepository, Routes: routeProjector, Evidence: epochRepository, Clock: config.Clock, Random: random, Logger: config.Logger})
 	if err != nil {
 		return nil, err
 	}
@@ -419,7 +419,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	// Resolve private identities here; PublicRead resolves through its runtime
 	// so even identity failures use its own public response bucket. Both use
 	// the same configured HTTP mechanics and declared failure authority.
-	privateHandler := publicapi.WithRequestID(api.Router(), requestIDs, config.Clock)
+	privateHandler := publicapi.WithRequestID(httpapi.LogRequestID(api.Router(), config.Logger), requestIDs, config.Clock)
 	apiHandler := mountPublicRead(privateHandler, publicRouter)
 	server, err := New(config.DB, apiHandler, node, playerRelay, synchronizer, seed.Hash)
 	if err != nil {
