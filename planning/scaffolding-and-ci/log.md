@@ -1995,3 +1995,10 @@ this checkpoint is not an optimization adoption or a landing-ready full-runtime 
 Existing exact-path guard authority/independent eligibility and remaining parity/replay/player
 proofs precede active runtime landing/closeout. No kernel/balance/golden/workflow/budget change,
 new mechanics, shortened population, publication, deployment, archive or1.0 promotion.
+
+Packaging follow-up: `git diff --cached --check` flags unified-patch context lines' required
+space before existing Go tabs. The checkpoint commit was made despite that failed packaging
+check; do not record it green. A file-exact `.gitattributes` rule identifies this patch-data
+format only; source whitespace and other patch checks retain their defaults. This does not
+alter the candidate or runtime, and belongs to the same pending review range. Recheck the
+whole range and the patch's applicability before handoff; do not rewrite the checkpoint.

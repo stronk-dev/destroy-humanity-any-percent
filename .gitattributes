@@ -1,0 +1,2 @@
+# Unified-diff context adds a space before existing Go tab indentation.
+planning/scaffolding-and-ci/rate-traversal-candidate.patch whitespace=-space-before-tab
