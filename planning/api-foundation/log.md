@@ -3523,3 +3523,39 @@ designated Claude review with the request-ID lane. Prior reviews and the existin
 server numeric/history failures remain independent. No acceptance, archival, owner
 ruling, push or deployment. Continue accepted contracts; do not make request IDs
 security identities or infer that emission proves the fourteen-day host log floor.
+
+## 2026-10-15 — RP-646 private request identity before drain admission
+
+Under A4/C7/C16 and Transport D5, move composition's private identity/logger
+boundary outside Server's intent gate. Reuse mountPublicRead for dispatch; public
+assignment/errors remain inside its own budgeted runtime. Bare Server callers
+retain their existing unconfigured HTTP behavior. No gate/timeout, auth, limiter,
+schema/pin, kernel, content or retry-policy change. Healthy-ID drain retains exact
+503 server_draining/retry_same_intent_id; failed identity assignment uses the
+existing typed500/no fabricated ID before admission. No other mutator is newly
+gated and the tenant-binding draft is not adopted.
+
+Old real-Postgres49911 fails all four drain ID cases (valid64/missing/invalid/
+overlong) and the entropy-failure case. The existing composed fixture now issues
+a real fresh session after its original31-day GC assertions, checks healthy
+authenticated access, completes actual Server.Drain, then probes refused intents.
+Require exact503 body, echoed/context-logged ID once, typed entropy refusal and
+byte-identical private snapshots of21 selected application tables. Ordinary
+private/public reads still return200. No payload/token/ID snapshot is printed.
+Focused corrected37055 passes whole parent1.70s and all prior identity/budget checks.
+
+Final cold declared Postgres76478 (`make test-save-integration
+SAVE_TEST_PACKAGES='./account ./gameserver' SAVE_TEST_FLAGS='-run Integration -v'`)
+passes Account14 parents9.644s and Gameserver8 parents55.783s, including both
+Pitch populations. The separate opt-in real-minute cleanup-runtime test explicitly
+skips; no credit claimed for it. Six affected native packages/vet16489 pass;
+Gameserver/HTTPAPI/PublicRead race56533 pass; api-check is byte-unchanged and
+production binary build78176 passes. Diff/whitespace checked, all handles terminal.
+Remove only inspected owned tmpfs Postgres; caches/network/durable data preserved.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Full eight-path
+source/tests/docs/records range after `b45dcd1d` through this containing commit
+needs designated Claude review, consolidatable with the request-ID lane. This is
+actual HTTP/SQL in-process drain evidence, not Caddy/process-release/clean-host,
+browser/hosted CI, complete API or1.0 acceptance. Existing numeric/history,
+artifact/owner/author and review gates remain; no archival, push or deployment.

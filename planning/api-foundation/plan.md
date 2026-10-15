@@ -2,6 +2,13 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current A4/C7/C16 drain correction (2026-10-15, RP-646): private identity/logging
+now precedes Server's intent admission. Old real-Postgres drain regressions fail
+four echo/log cases and the existing identity-failure refusal. Preserve the503
+bytes, admitted-work/gate sequence, permitted reads and public budget ownership;
+no broader mutation gate or tenant-draft adoption. Owning log records final checks
+and the complete range after `b45dcd1d` needing designated Claude review.
+
 Current A4/C7/C16 construction (2026-10-15, RP-644): supply the existing structured
 logger inside private/public request-ID assignment. One bounded context ID per
 handled request, no request metadata/credentials/payload or new metrics dimensions.

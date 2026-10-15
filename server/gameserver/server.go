@@ -53,8 +53,11 @@ type Operations interface {
 }
 
 type Server struct {
-	database      Database
-	api           http.Handler
+	database Database
+	api      http.Handler
+	// Composition installs API identity handling outside admission so a
+	// pre-handler drain refusal keeps the same support/logging boundary.
+	apiBoundary   func(http.Handler) http.Handler
 	realtime      Realtime
 	relay         PlayerRelay
 	epochs        EpochSynchronizer
@@ -173,7 +176,11 @@ func (server *Server) Handler() http.Handler {
 		router.Handle("/metrics", server.operations.Handler())
 	}
 	router.Handle("/connection/websocket", server.realtime.Handler())
-	router.Mount("/", server.intentAdmission(server.api))
+	api := server.intentAdmission(server.api)
+	if server.apiBoundary != nil {
+		api = server.apiBoundary(api)
+	}
+	router.Mount("/", api)
 	if server.operations != nil {
 		return server.operations.HTTP(router)
 	}

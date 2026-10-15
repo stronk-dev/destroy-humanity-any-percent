@@ -666,6 +666,21 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	t.Run("guild_consumer_delete_observation", func(t *testing.T) {
 		observeComposedGuildConsumerDeletion(t, db, httpServer, guildReceipt.GuildID, thirdCreated.AccountID, created)
 	})
+	// The original GC population is complete. Refresh the surviving producer
+	// through the real API, rather than using its now-expired access token.
+	drainSession := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
+		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, thirdCreated.AccountID, thirdCreated.RecoveryCode))
+	if drainSession.StatusCode != http.StatusOK {
+		_ = readCompositionBytes(t, drainSession)
+		t.Fatal("drain witness could not obtain a live session")
+	}
+	var drainTokens account.TokenPair
+	decodeCompositionResponse(t, drainSession, &drainTokens)
+	liveBeforeDrain := compositionRequest(t, httpServer.Client(), http.MethodGet, httpServer.URL+"/api/v1/founder", drainTokens.AccessToken, "")
+	_ = readCompositionBytes(t, liveBeforeDrain)
+	if liveBeforeDrain.StatusCode != http.StatusOK {
+		t.Fatal("drain witness has no healthy authenticated control")
+	}
 
 	_ = player.connection.Close(websocket.StatusNormalClosure, "test complete")
 	_ = world.connection.Close(websocket.StatusNormalClosure, "test complete")
@@ -675,6 +690,9 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		t.Fatal(err)
 	}
 	waitHTTPStatus(t, httpServer.Client(), httpServer.URL+"/readyz", http.StatusServiceUnavailable)
+	t.Run("drain_request_id", func(t *testing.T) {
+		assertComposedDrainRequestIDs(t, db, httpServer, requestLogs, entropy, drainTokens.AccessToken, firstIntent)
+	})
 }
 
 func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(t *testing.T) {

@@ -430,7 +430,9 @@ the same C20 policy grammar/bounds. Valid caller IDs echo unchanged;
 invalid/missing IDs become UUIDv7, never truncated. The resolved ID is available through
 `httpapi.RequestID` (and the compatibility `publicapi.RequestID` accessor), without adding
 it to response JSON. Nested public middleware reuses that context rather than generating
-another ID. The private API uses `publicapi.WithRequestID`; PublicRead resolves through its
+another ID. Composition installs private `publicapi.WithRequestID` and logging at
+Server's outer API boundary, before intent admission, so the existing drain503
+also echoes/logs a valid or generated ID. PublicRead resolves through its
 runtime so identity failures still use its existing public response bucket. Public,
 unauthenticated Account and authenticated Account budgets remain separately owned. Standalone
 Account router callers must supply this HTTP composition themselves. This implements
@@ -459,6 +461,14 @@ same IP bucket and become429 at exhaustion; valid-ID authorized304s remain free 
 entropy is unavailable. A broken clock cannot truthfully classify a caller as rate-limited.
 Raw HTTP mechanics retain their generic failure callback for non-API users; production API
 composition supplies the typed owner response.
+
+The drain boundary still rejects only the existing `POST /api/v1/intents` path,
+with unchanged503 `server_draining/retry_same_intent_id` bytes. This request-ID
+correction does not broaden admission to other mutators or implement the draft
+tenant-binding contract. If private identity assignment itself fails, its existing
+typed500/no-ID refusal occurs before admission. Ordinary private/public reads
+remain available during drain; the request-ID regression observes no changes to
+the selected persisted application rows after refused intents.
 
 The intentional C2-compatible pin refresh adds the request-ID error and three missing500
 statuses. It also captures the already-generated optional upgrade `ineligible_reason` and

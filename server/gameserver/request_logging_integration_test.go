@@ -2,6 +2,7 @@ package gameserver
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -83,6 +84,60 @@ func assertComposedGeneratedRequestIDLogs(t *testing.T, server *httptest.Server,
 			if response.StatusCode != http.StatusOK || len(id) != 36 || id[14] != '7' || logged != 1 {
 				t.Fatalf("generated request-ID logging failed: surface=%s candidate_bytes=%d status=%d logged=%d", path, len(candidate), response.StatusCode, logged)
 			}
+		}
+	}
+}
+
+func assertComposedDrainRequestIDs(t *testing.T, db *sql.DB, server *httptest.Server, logs *requestLogBuffer, entropy *composedRequestIDEntropy, token, intent string) {
+	t.Helper()
+	before := composedAdmissionRows(t, db)
+	for _, test := range []struct{ name, candidate string }{
+		{"valid", strings.Repeat("d", 64)}, {"missing", ""}, {"invalid", "invalid id"}, {"overlong", strings.Repeat("d", 65)},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			request, err := http.NewRequest(http.MethodPost, server.URL+"/api/v1/intents", strings.NewReader(intent))
+			if err != nil {
+				t.Fatal(err)
+			}
+			request.Header.Set("Content-Type", "application/json")
+			request.Header.Set("Authorization", "Bearer "+token)
+			request.Header.Set("X-Request-ID", test.candidate)
+			response, err := server.Client().Do(request)
+			if err != nil {
+				t.Fatal(err)
+			}
+			body := readCompositionBytes(t, response)
+			if response.StatusCode != 503 || string(body) != "{\"category\":\"server_draining\",\"detail\":\"retry_same_intent_id\"}\n" {
+				t.Fatalf("drain lost its existing refusal: status=%d", response.StatusCode)
+			}
+			id := response.Header.Get("X-Request-ID")
+			valid := id == test.candidate && test.name == "valid"
+			if test.name != "valid" {
+				valid = len(id) == 36 && id[14] == '7'
+			}
+			if !valid || logs.count(t, id) != 1 {
+				t.Fatal("drain bypassed resolved request-ID echo/logging")
+			}
+		})
+	}
+	t.Run("entropy_failure", func(t *testing.T) {
+		entropy.setFailure(true)
+		defer entropy.setFailure(false)
+		response := compositionRequest(t, server.Client(), http.MethodPost, server.URL+"/api/v1/intents", token, intent)
+		body := readCompositionBytes(t, response)
+		if response.StatusCode != 500 || string(body) != "{\"category\":\"internal_invariant\",\"detail\":\"request_id\"}\n" || response.Header.Get("X-Request-ID") != "" {
+			t.Fatal("failed identity assignment reached drain admission or fabricated an ID")
+		}
+	})
+	if !bytes.Equal(before, composedAdmissionRows(t, db)) {
+		t.Fatal("unadmitted draining requests changed persisted application data")
+	}
+	// The existing stop-intent contract does not stop ordinary reads.
+	for _, path := range []string{"/api/v1/founder", "/api/public/v1/epochs"} {
+		response := compositionRequest(t, server.Client(), http.MethodGet, server.URL+path, token, "")
+		_ = readCompositionBytes(t, response)
+		if response.StatusCode != 200 || logs.count(t, response.Header.Get("X-Request-ID")) != 1 {
+			t.Fatalf("drain changed a permitted read: status=%d", response.StatusCode)
 		}
 	}
 }

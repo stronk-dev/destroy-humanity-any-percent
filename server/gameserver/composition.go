@@ -416,14 +416,18 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err != nil {
 		return nil, err
 	}
-	// Resolve private identities here; PublicRead resolves through its runtime
-	// so even identity failures use its own public response bucket. Both use
-	// the same configured HTTP mechanics and declared failure authority.
-	privateHandler := publicapi.WithRequestID(httpapi.LogRequestID(api.Router(), config.Logger), requestIDs, config.Clock)
-	apiHandler := mountPublicRead(privateHandler, publicRouter)
+	apiHandler := mountPublicRead(api.Router(), publicRouter)
 	server, err := New(config.DB, apiHandler, node, playerRelay, synchronizer, seed.Hash)
 	if err != nil {
 		return nil, err
+	}
+	// Private identities/logging precede Server's drain refusal. PublicRead
+	// still resolves through its own runtime so identity failures spend only
+	// its public response budget. Reuse the same route boundary, not a second
+	// handwritten public-prefix policy or another identity assignment.
+	server.apiBoundary = func(next http.Handler) http.Handler {
+		private := publicapi.WithRequestID(httpapi.LogRequestID(next, config.Logger), requestIDs, config.Clock)
+		return mountPublicRead(private, next)
 	}
 	if config.Operations != nil {
 		if err := server.AttachOperations(config.Operations); err != nil {
