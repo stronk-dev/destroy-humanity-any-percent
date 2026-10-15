@@ -6,6 +6,7 @@
 - **Design refs:** `design/06-tech.md` lazy/server-authoritative idle math; `design/02-economy-balancing.md` production and hardcaps
 - **Depends on:** Clout v1 CV3/AC6; Numeric Core; Production Engine; Save Layer
 - **Parent / amends:** Production Engine & Intent API; Clout v1 CV3/AC6; prospective Company save/replay contract
+- **Consumer follow-up:** [Accrual-aware Harness Search](accrual-aware-harness-search.md); required consumer proof remains part of full AC6 closeout
 - **Planning:** existing `planning/clout-v1-and-pr-interns/` R-012 evidence; implementation plan after acceptance
 
 ## Summary
@@ -13,10 +14,11 @@
 Extra internal evaluations must not change the resources earned over an otherwise
 identical production interval. Current per-evaluation rounding violates that requirement.
 Repair requires preserving enough accounting information across the authorized cuts, not a
-tolerance, new balance numbers or a different rounding rule. Whether that origin must
-be persisted is unresolved: the current read path does not commit production, and logged
-transitions are the mutation boundary. This draft proposes an origin-based direction and
-identifies the decisions and exact contracts still needed before it is buildable.
+tolerance, new balance numbers or a different rounding rule. The recommended proposal
+keeps origins operation-local and retains existing saved-settlement/receipt semantics:
+the current read path does not commit production, and logged transitions own mutation.
+This is not yet adopted. The linked harness successor separately owns origin-aware
+search/reuse; neither specification can claim the complete repair from primitive proof alone.
 
 ## Evidence and scope
 
@@ -88,7 +90,8 @@ display times before the same later Exit. The display clock advances, while comp
 committed resource/generator views and all twelve watched table populations stay unchanged.
 This is bounded evidence for that real Postgres projector path, not every HTTP/read caller.
 
-Two lifetime designs therefore remain explicit:
+The operation-local design is this draft's recommended proposal. The durable
+alternative remains explicit research, not an implementer-selectable fallback:
 
 - **Operation-local origin:** retain the origin through internal chunks of one logged
   operation; crash/retry replays from its committed pre-state. Do not invent partial commits.
@@ -98,7 +101,7 @@ Two lifetime designs therefore remain explicit:
   exact context, its consistency validation and versioned replay/restore semantics.
   A durable format cannot be justified merely by the scalar partition failure.
 
-The reconciled Clout wording does not select either lifetime or specify the exact
+The reconciled Clout wording alone does not adopt that recommendation or specify the
 settlement protocol. Neither choice may delete the original property, redefine cuts
 as actions to avoid failures, or waive accepted behavior. The earlier assertion that durable state was necessarily
 required was stronger than the evidence; it is corrected here, not implemented as fact.
@@ -173,7 +176,7 @@ prove equivalent full-state results before replacing this reference computation.
 state. Its first cut really advances the ledger and cursor. An operation-local
 projection cannot make those unchanged calls equal while also declaring the first
 call noncommitting. Retain that diagnostic and its 27 failures; neither clone-only
-feasibility tests nor this proposal repairs the existing API. Acceptance must specify
+feasibility tests nor this proposal repairs the existing API. RFC acceptance must specify
 the actual calculation/settlement API and its real caller, and exercise the same
 128 seed/end/cut/mode profiles through it with complete exact state comparisons.
 Changing that call boundary requires an explicit reviewed contract, not quietly
@@ -296,23 +299,11 @@ the validated producer/hook/ablation context. Derived digests are private lookup
 keys for trusted values, not proof that a producer is authentic. No rounded-rate
 cache, mutable callback address or search path substitutes for that identity.
 
-- Beam equality includes origin/context identity alongside complete projected state
-  and virtual time. Path remains only its existing tie-break.
-- Ranked-completion cache identity includes the same context, current revision and
-  remaining decision allowance; `relevanceCompletionCacheKey` currently has no
-  origin. Updating only beam deduplication would leave another unsafe reuse path.
-- Dominance pruning may compare branches only when their accounting contexts have
-  established future equivalence. Componentwise superiority of visible balances
-  is not that proof when origins differ. Never prune a branch on an unproved relation.
-
-These are proposed amendments to Relevance R10/R11, not accepted changes to search
-population, scoring or cache policy. Exact hook adapters, context serialization,
-temporal-search validity, compatibility and measured work bounds remain closure
-items. In particular RP-652's endpoint projections can decrease: a binary search
-for earliest affordability needs its own valid monotonic population or a reviewed
-boundary-aware algorithm, not the assumption that every origin projection grows.
-Keep current report bytes, guards and original failing cases intact until those
-contracts and the full real-caller acceptance population have been reviewed/adopted.
+The canonical consumer rules for beam equality, completion-cache keys, dominance
+and temporal search live in [Accrual-aware Harness Search](accrual-aware-harness-search.md).
+That draft proposes the Relevance R10/R11 amendments; this primitive RFC does not
+silently adopt or implement them. Keep current reports/guards and original failing
+cases intact until the corresponding accepted contracts authorize their migration.
 
 ### C1d — Proposed closed hook adapters and private events (unadopted)
 
@@ -353,7 +344,7 @@ ordered events atomically with its receipt/state. Do not concatenate earlier
 projection events or use their payloads as a substitute for the transition result.
 Conflicting retry or refused action cannot leave an event fragment. Preserve current
 service/Store idempotency; this proposal does not add a second settlement table.
-Acceptance must compare full projected/settled hook effects and event payloads,
+Implementation acceptance must compare full projected/settled hook effects and event payloads,
 and prove no projection delivery plus once-only actual commit/retry on real SQL.
 The two-profile RP-655 test does not supply that Store/outbox proof.
 
@@ -422,59 +413,15 @@ keys add endpoint/visible-state/revision/budget coordinates as C1c specifies. In
 spelling or JSONB key order is not identity; an actual field/order change is.
 This memory-only encoding is not approved for saving, public export or publication
 of private state. Runtime/size bounds and strict codec/refusal/parity tests remain
-mandatory before acceptance; no new limit is invented from this schema proposal.
+mandatory for implementation acceptance; no new limit is invented from this schema proposal.
 
-### C1f — Proposed temporal affordability search (unadopted)
+### C1f — Harness search follow-up (split; unadopted)
 
-An endpoint-selected buff can make a later origin-relative projection smaller.
-Do not carry the current whole-horizon monotone-search assumption into the new
-projection API. RP-656's bounded reference uses real schedule/application/Evaluate
-at every integer endpoint0..1501ms: twelve online/offline profiles,18024 complete
-evaluations, with every cash amount checked against independent literal fixture
-factors. It covers production/building/combined expiry, ordinary reachability,
-already-affordable time0 and unreachable targets. Six buffed profiles have early
-qualifying windows but an unaffordable horizon. Unsplit monotone search misses them;
-the boundary-aware reference matches the exhaustive earliest-time oracle exactly.
-Targets are hypothetical fixed cash thresholds, not actual catalog purchases or
-retuned prices; the reference does not execute the full hook-bearing C1c projector.
-Original prospective ten-profile evidence and the two later declared unreachable
-controls retain their separate provenance in the owning plan/log.
-
-Proposed algorithm for the real caller:
-
-1. Enumerate all relevant semantic endpoint-context boundaries from the actual pinned
-   producer/schedule/absence inputs over the requested horizon. The reference knows
-   only its two fixture expiry offsets1000/1500ms; it is not a production enumerator
-   or proof of completeness for Guild, attendance, provision or future content.
-2. Partition the canonical integer-ms endpoint domain into chronological regimes.
-   A context change at `b` belongs to the right regime; the left ends at `b-1`.
-   These are **search ranges**, not payout segments, settlements or origin resets.
-   Every predicate still reconstructs the complete origin-to-endpoint projection
-   with the correct context and original offline allowance.
-3. Establish monotonicity of the actual affordability predicate inside each regime.
-   A constant label, a single end sample or sampled increasing values are not a
-   whole-domain proof. Account for numeric quantization, caps, provision, burst,
-   hook-owned state and the actual resource/quote contract. If that proof does not
-   hold, specify a correct alternative; do not skip the interval or declare no result.
-4. Search regimes in order. Test the first endpoint, including the original time0.
-   Only in a proven monotone regime may an unaffordable last endpoint exclude that
-   regime. Otherwise use integer lower-bound search within that regime. The first
-   qualifying result is the earliest over all earlier exhausted regimes.
-5. Return a tagged unreachable result only after every required regime is exhausted.
-   A valid solution at0 is not absence. Charge actual boundary work and predicate
-   evaluations to the existing counters; exhausted work/size bounds are invalid
-   measurements, not an unreachable item or an excluded population.
-
-The reference finds production497ms, building1422ms, combined452ms and unbuffed869ms
-in both modes, plus the two already-affordable0ms and two unreachable controls.
-All known regimes are exhaustively checked monotone in this bounded population;
-removing the expiry cuts gives the six missed-window controls. No origin is consumed.
-This is a Go-only algorithm feasibility result over observed endpoint values, not
-execution of `RelevanceSuite.earliestAffordable`, a migrated harness, an adopted
-search-policy amendment or proof that current reports are incorrect. The current
-harness does not use this proposed temporal projection path. Full real-caller
-boundary enumeration, hook/dynamic-quote predicate proof, work measurements and R10/R11 normative
-review remain required; a per-ms exhaustive production scan is not authorized.
+The proposed temporal-search algorithm and RP-656 evidence now live in
+[Accrual-aware Harness Search](accrual-aware-harness-search.md#h3--temporal-affordability-search-proposed).
+That successor owns Relevance R10/R11 reuse/search and affected consumer migration.
+Both drafts remain unaccepted; the full AC6/accounting closeout still requires the
+applicable consumer proof. This split does not waive any original criterion.
 
 ### C2 — Preserve a producer origin, not a rounded-rate cache
 
@@ -649,8 +596,9 @@ require literal post-debit payouts rather than recovery of earlier capped overfl
 
 This experiment freezes the entire existing Company only to avoid guessing a partial
 schema. It uses no external/active-buff contributions, SQL or new versioned fields. It
-does not establish a production storage bound. The exact minimal context remains an
-acceptance blocker, not an implicit conclusion of these 146 profiles.
+does not establish a production storage bound. The complete-context reconstruction
+and cost proof remain implementation gates. These146 profiles do not authorize an
+optimized minimal-context schema in place of the explicit C1e proposal.
 
 #### Lower-domain counterexample: the candidate write set is insufficient
 
@@ -670,8 +618,11 @@ and near-floor/ordinary successes; they are not TS Company or SQL integration ev
 See `planning/clout-v1-and-pr-interns/log.md` and RP-488 for commands and limits.
 
 Consequently step2 cannot satisfy the unchanged numeric/receipt contract across the
-admitted domain. A viable accounting/ledger algorithm is required before acceptance;
-choosing an origin lifetime alone does not resolve it. Do not silently restrict the domain,
+admitted domain. A proposal committing those intermediate heads needs a viable
+accounting/ledger algorithm before RFC acceptance; an origin lifetime alone does
+not resolve it. The recommended operation-local route instead makes no such
+intermediate commits, retaining the counterexample and final-settlement proofs.
+Do not silently restrict the domain,
 change rounding/receipt semantics, overwrite balances or substitute a tolerance. This
 finding concerns a test-only candidate; it neither proves current served content reaches
 these synthetic rates nor attributes the original27 partition failures to this edge.
@@ -849,7 +800,20 @@ Keep the original 128 seeds/cuts and failure evidence. Any versioned fixture evo
 must be explicit and retain old-semantics compatibility tests; it cannot silently replace
 the red population with a convenient new one or alter its monetary expectations.
 
-## Proposed acceptance criteria
+Under the recommended operation-local route, no new Company/Founder field, save
+migration or replay-envelope field is proposed. Existing persisted `Evaluate`,
+`ApplyLogged` and Exit histories retain their pinned one-shot behavior; the private
+C1e encoding must not be slipped into those schemas. A new calculation interface
+and changed consumer dispatch need their own reviewed caller bindings. The harness
+successor owns new scenario/policy/report dispatch, not a hidden switch on an old
+identity. Actual runtime changes still obey kernel-version rules; do not invent a
+false version bump or assign future version numbers before the landing order exists.
+
+## Proposed implementation acceptance criteria
+
+These prove feature completion after an accepted specification is implemented;
+they are not claims of existing passes or requirements to pretend the code already
+exists before RFC acceptance.
 
 1. Original 128 partition cases pass exactly on the accepted new semantics, with complete
    final-state equality and unchanged prior-interval timing proof. No tolerance or skips.
@@ -869,36 +833,29 @@ the red population with a convenient new one or alter its monetary expectations.
    hidden truncation. Actual affected CI lanes pass; research artifacts are not CI success.
 7. Canonical numeric/production/save/replay docs, exact-range designated review and all feature
    gates reconcile before archival. This repair alone does not establish 1.0 readiness.
+8. All affected harness consumers complete the accepted linked successor's criteria.
+   Splitting specifications does not allow primitive closeout to masquerade as full AC6.
 
-## Open questions before acceptance
+## RFC readiness versus implementation gates
 
-- **C1/C1a:** designated review of the delegated Clout wording amendment, then the complete
-  exact episode/settlement identity boundaries and whether an unsettled interval can span
-  authorized committed heads. Wording reconciliation alone does not select an origin lifetime.
-  C1b now supplies a concrete operation-local ownership/stage proposal, but its actual
-  API/caller and the retained mutating-`Evaluate` diagnostic must be reconciled before
-  acceptance. Its real harness wait/content-diagnostic callers also need a complete
-  simulation ownership/hook contract. A scratch-only green population cannot close that gap.
-  C1c defines the proposed operation/lifetime and reuse rules; exact production hook
-  recipes/private event ownership and context encoding are proposed in C1d/C1e.
-  Their strict construction/reconstruction and real settlement proof, plus temporal-
-  search validity, compatibility and measured bounds remain required before acceptance.
-  C1f supplies a bounded boundary-aware search reference, not the complete production
-  boundary enumerator or a general monotonicity proof.
-- **C2/C3:** complete field set, boundary integration and a viable ledger/receipt algorithm,
-  demonstrated with actual Company producers and the retained lower-domain counterexample.
-  The current difference-write candidate fails; this is technical work, not a choice for the
-  owner to approve away. Operation-local deferred settlement now has bounded lower-domain
-  evidence, not full integration. The22-profile cumulative-receipt experiment supplies an
-  expressible alternative if intermediate saved heads are required, not an implementation
-  of the unchanged incremental receipt rule. Explicitly reconcile that contract and the
-  complete ledger/hook/persistence protocol rather than demand another subtraction algorithm
-  or waive the original failures. Neither representation is adopted by this draft.
-- **C4:** activation/migration compatibility and assigned versions after the representation is fixed.
-- **Operating limits:** actual full-state size/work evidence, not the scalar prototype's bound.
+Before RFC acceptance, agree the operation-local recommendation, complete exact
+production caller bindings and diagnostic-owner/context compatibility, and obtain
+designated normative review plus Marco's acceptance. The wording delegation alone
+does not do that. The failed difference-write/durable/cumulative alternatives are
+not silently adopted; no reviewer or owner can approve away their counterexamples.
 
-No implementation is authorized by choosing the candidate direction alone. Resolve these
-questions in the body and obtain acceptance/designated review before production changes.
+The linked harness draft separately owns its complete boundary/predicate algorithm,
+diagnostic owner and versioned caller/report dispatch. Those engineering gaps must
+close before that specification is accepted; accepting this primitive would not
+accept the successor, remove current constructor holds or finish AC6.
+
+Strict codec/adapter reconstruction, Go/TS parity, full admitted-domain contexts,
+real Store commit/rollback/retry, actual workload/storage measurements and affected
+CI are executable implementation gates above. Do not demand a completed new codec
+or SQL path as proof an unimplemented RFC is already shipped. Equally, do not defer
+an unspecified algorithm to implementation or substitute owner approval for any
+required proof. Keep full-state bounds measurable and fail-loud; no ceiling increase
+or population reduction is authorized here. No implementation begins from draft status.
 
 ## Deviations from design
 
@@ -910,6 +867,9 @@ contract, explicit adoption and independent normative review before production w
 
 ## Changelog
 
+- 2026-10-15: split harness search/reuse/caller migration into its own linked draft
+  under RFC-0000. Recommend the operation-local route without adopting it; distinguish
+  RFC readiness from executable implementation gates and retain full AC6 dependencies.
 - 2026-10-15: execute18024 actual temporal endpoints over twelve profiles; a boundary-
   aware reference agrees with exhaustive search while unsplit search misses six
   early windows. Specify the proposed chronological-regime algorithm and outstanding

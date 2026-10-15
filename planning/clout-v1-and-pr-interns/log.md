@@ -3693,3 +3693,30 @@ Review by: Codex (research implementer/draft author first filter). Recorded by:
 Codex. Complete five-path test/draft/plan/ledger/log range after `374e1899` through
 this containing commit needs designated review. No runtime/kernel/artifact/CI
 change, services or removed resources; no push, acceptance, archival or deployment.
+
+## 2026-10-15 — separate producer and search specifications/readiness gates
+
+At `8bef2695`, RFC-0000's scope/lifecycle rules show that the growing proposal now
+amends two distinct contracts. Split search/reuse/caller migration into draft
+`accrual-aware-harness-search.md`, linked from producer/index/plan. Move C1f's complete
+temporal algorithm/evidence there and retain the old anchor as a redirect; move
+canonical beam/cache/dominance rules into its H2. No study, result or consumer gate
+is dropped. Archived Relevance R10/R11 stays byte-untouched, not silently amended.
+
+The producer recommends operation-local origins without adoption, preserves old
+saved/receipt semantics and states the proposed no-new-save-field compatibility
+route. Distinguish exact caller/owner/compatibility engineering and owner/designated
+RFC acceptance from later codec/SQL/Go–TS/workload implementation acceptance. Neither
+an unbuilt codec nor an imaginary SQL pass can prove a draft already implemented;
+neither owner approval nor the scope split waives that actual proof. The failed
+intermediate-commit arithmetic remains refused; no domain restriction or tolerance.
+
+Successor still needs the complete temporal enumerator/predicate justification,
+diagnostic-owner binding and exact scenario/report dispatch before acceptance.
+Full AC6/accounting closeout retains the successor's affected-consumer proof.
+No accepted architecture, feature checkbox, numeric/report/runtime/CI bytes change.
+Five-path documentation diff, links and moved-section coverage checked;
+`git diff --check` passes. No software rerun for this documentation-only batch.
+Review by: Codex (draft author first filter). Recorded by: Codex. Complete range
+after `8bef2695` through this containing commit needs designated normative review;
+prior review debt remains. No resources/services touched, push, archival or deployment.

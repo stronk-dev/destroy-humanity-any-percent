@@ -6,7 +6,17 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
-## Current step — delegated interval wording, 2026-10-15
+## Current step — accounting/RFC readiness, 2026-10-15
+
+RFC-0000 scope reconciliation after `8bef2695`: the producer draft owns private
+origin/context/events/settlement; new draft `rfc/accrual-aware-harness-search.md`
+owns R10/R11 search/reuse and actual consumer migration. It retains the full
+RP-653/RP-656 evidence and obligations. Both remain unaccepted; this split cannot
+close AC6 or waive a consumer. Next complete actual producer caller/diagnostic-owner
+bindings and compatibility, plus the successor's complete boundary/predicate and
+versioned-dispatch contracts. Strict new-codec, SQL and workload tests prove the
+implemented feature after accepted specifications; do not demand imaginary completed
+code as RFC-readiness evidence or turn design acceptance into a false test pass.
 
 Bounded temporal-search study at `374e1899`: reuse RP-652's unchanged one-tower,
 attended4000ms production expiry1000/building expiry1500 fixture. Five profiles
@@ -31,7 +41,7 @@ must distinguish an absent solution from a valid earliest time0.
 Final12-profile study passes, including all18024 endpoint checks, six missed-window
 controls, four ordinary/time0 successes and two unreachable results. Repeat/shuffle
 also retains RP-652's expiry constraints and RP-655's event ownership checks. Draft
-C1f specifies the candidate regime algorithm; complete real-caller boundary
+C1f links the successor's candidate regime algorithm; complete real-caller boundary
 enumeration/monotonicity/work proof remains, not another run of this bounded census.
 
 Bounded event check at `cc626b20`: admitted Company19 with real Compact/Guild
