@@ -4446,3 +4446,20 @@ Routine output is complete. No source/fixture/test/report/kernel edits, Go/Evalu
 or workload claim. Close this bounded diagnostic without expanding it; it does not supply the
 still-required actual caller proof or alternative search algorithm. Both drafts remain
 unaccepted;27 partition failures and all compatibility/budget/review gates remain.
+
+## 2026-10-15 — Narrow the temporal arithmetic proof without another census
+
+Inspect actual Go aggregate.go and TS numeric.ts coefficient folds. H3c now gives a
+source-level sublemma: for positive finite coefficients staying in one exponent group,
+the sorted ordinary-addition fold is nondecreasing in one variable. Fixed-position
+composition is monotone; at a crossed fixed coefficient both orderings coincide exactly,
+so the inequalities join. This proof does not rely on the sampled287-bucket limit and
+allows plateaus; it proves neither exact summation nor complete payout monotonicity.
+Normalization, Decimal alignment/addition, group/zero/grid transitions, scalar integration
+and the final ledger/caller still need their actual argument or a correct alternative.
+RP-664's cross-group counterexample and all27 accounting failures remain. This is an
+unreviewed engineering refinement to the unaccepted draft, not implemented search,
+normative adoption or a new empirical study. No production/test/fixture/report/version
+bytes change and no software rerun is warranted solely for this prose. Review by:
+Codex (draft author, NOT designated normative review). Recorded by: Codex. Next is the
+remaining actual normalization/group-boundary proof, not expansion of positive samples.

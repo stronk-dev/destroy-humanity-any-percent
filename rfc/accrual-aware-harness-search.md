@@ -258,6 +258,34 @@ negation. Exponent carries, sorted-group membership and normalization remain par
 of this argument; do not assert that positive inputs alone prove them or introduce
 extra search cuts without an actual algorithm/justification.
 
+**A limited source-level sublemma, not the missing payout proof.** In both actual
+`SumDeterministic` implementations, one fixed-exponent group's positive coefficients
+are sorted ascending and accumulated with ordinary binary floating addition before
+normalization. While the variable term stays in that same exponent group, that
+coefficient fold is nondecreasing in its coefficient. This statement permits
+rounding plateaus and assumes no invalid/non-finite intermediate; it is not exact
+summation or a claim about the complete Decimal output.
+
+Proof: rounding a nonnegative real sum to the ordered representable floating
+values is nondecreasing, including ties, so a fixed sequence of additions is
+nondecreasing in any one operand. Between adjacent fixed coefficients the
+variable's sorted position is fixed. When it crosses a fixed coefficient `c`,
+the two orderings coincide at the representable value `x=c`: swapping two equal
+operands leaves the entire fold unchanged. Monotonicity on either side therefore
+joins through that same value. Repeat for the finite list of crossed coefficients;
+equal runs require no special ordering identity. All remaining fixed suffix
+additions preserve the inequality. This argument does not require the empirical
+287-bucket bound or turn passing profiles into a universal numeric lemma.
+
+Consequently, moving within a coefficient group's sort order is not by itself
+the unresolved step. The full caller argument still owes the actual scalar
+integration and canonicalization, normalization of that group's total, subsequent
+Decimal alignment/addition and ledger quantization/cap/refusal, and **changes of
+exponent-group membership** (including grid/zero transitions). RP-664 crosses such
+a group boundary and is not contradicted by this sublemma. No monotone regime,
+additional search cut, alternative algorithm, work bound or RFC acceptance follows
+until those remaining operations and actual caller boundaries are justified.
+
 `TestCalculationBurstTemporalOrderResearch` attacks one difficult subfamily: a
 large burst's fixed bonus makes the last bucket almost flat after its boosted
 portion, allowing an adjacent-ms canonical delta exponent carry. All20000 seed666
@@ -376,6 +404,10 @@ current implementation. No new balance values, caps, prices, grants, proration,
 numeric tolerance, authored content or narrowed1.0 scope.
 
 ## Changelog
+
+- 2026-10-15: supply the fixed-exponent coefficient-fold sublemma by composition
+  and a sort-position crossing argument. Keep normalization, group reclassification,
+  ledger and temporal caller obligations open; no new census, algorithm or adoption.
 
 - 2026-10-15: reduce the actual resource predicate to frozen quotes, completed
   bucket prefixes, the varying canonical partial delta and ledger behavior.
