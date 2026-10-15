@@ -7286,3 +7286,32 @@ runnable synthetic-image, supported predecessor-pair, clean-host R-006, CI or re
 Full range whitespace passes. All handles terminal; four ignored review overlay/source
 files only, no tracked edits, commits, Docker resources or unrelated cleanup by reviewer.
 This closes only RP-513's corrective review; original feature/author gates remain open.
+
+## 2026-10-15 — Same-second backup alert corrective review approved (RP-518)
+
+Review by: /root/backup_alert_outcome_corrective_review (fresh independent Codex, Marco's
+corrective-code delegation). Recorded by: Codex (root, transcription). APPROVED complete
+24a343b80e2913225aeafc27548833a3265f6e6a-exclusive through
+b4013e99c613c31888ecf4ecdca4a68f38ba553a-inclusive, one commit/all11 paths. Source
+54eec084cbae491aed4007254ffe0abedc304a61; accepted DP7/AC7, no new operations contract.
+
+Cold six affected packages/vet30831 and race outcome/scheduler17771 pass. Actual old
+RecordOperation overlay92331 fails all9 operation/time-order rows, publication-failure and
+equal-timestamp scheduler regressions; recovery assertions after failure are not credited.
+Original package snapshot68199 passes. Original pinned Promtool84289 passes; old rule24649
+fails exactly both15-second failure assertions. Independently rederived amd64 child
+dd4bced05dfaddf23a7ec50f87334993a4149f7fcfbf58456d1c8bafce91cd13 from index69f52414….
+
+Original b401 Compose/config/package receiver population44602 passes130.89s in isolated
+cloud-clicker-rp518-review: real node-exporter→Prometheus→Alertmanager→HTTP receiver,
+equal-timestamp failure and successful retry resolution matched to that firing's start,
+rejecting receiver, five targets and Caddy-admin peer refusal. Unrelated startup alerts
+cannot satisfy the backup-specific oracle. Outcomes/clock are controlled, not real pg_dump;
+scheduler uses actual encrypted-target admission with synthetic dump. Legacy timestamps,
+newer-failure and deadline arms remain. Publication is individually atomic, not transactional.
+
+Docker28.4.0 ARM64/Compose2.39.4-desktop.1, mixed service architectures; no all-amd64 clean
+host, independent full SQL/restore, seven-family AC7, R-006, CI or feature/release approval.
+Initial sandbox denial and unmatched metadata glob ran no tests. Reviewer changed no tracked
+files/commits. All handles terminal; removed only inspected isolated services/network/volumes;
+final inventory is original two BuildKit containers. Images/ignored reproductions retained.

@@ -21,6 +21,9 @@ original author/artifact/feature holds are unchanged.
 Complete RP-510 dump-creation and RP-511 archive-parser ranges also have fresh independent
 approval; actual positioned Postgres restores and declared Caddy release checks execute.
 The owning log records exact source contexts/limits, not installed-release acceptance.
+RP-518 same-second backup outcome/rule correction is also independently approved across
+its complete range. Original real-service firing, matching recovery and receiver refusal
+execute; this is controlled-outcome evidence, not a scheduled Postgres backup or full AC7.
 
 **Current DP7 timed-observation correction, 2026-10-14 (RP-615):** the real-minute test's
 startup/failure/drain callback waits now obey its existing95-second context and refuse missing
