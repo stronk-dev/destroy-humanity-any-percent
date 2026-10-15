@@ -1,0 +1,59 @@
+package production
+
+import (
+	"testing"
+
+	"cloud-clicker/server/decimal"
+)
+
+// Manual bounded falsification of the unaccepted H3c monotonicity lemma.
+// Temporarily place as an _test.go file in server/production to execute.
+func TestCalculationHalfwayCarryResearch(t *testing.T) {
+	const tick, burst int64 = 1000, 333
+	rate, speed := mustDecimal(t, "3.003003003e-11"), mustDecimal(t, "1e12")
+	bonus := speed.Sub(decimal.One)
+	full, err := accrueBoostedConstant([]decimal.Decimal{rate}, tick, tick, decimal.One, bonus)
+	if err != nil || full.String() != "3.003003003e1" {
+		t.Fatal("invalid declared full bucket", full, err)
+	}
+	partial := func(ms int64) decimal.Decimal {
+		t.Helper()
+		value, err := accrueBoostedConstant([]decimal.Decimal{rate}, ms, burst, decimal.One, bonus)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return value
+	}
+	a, b := partial(499), partial(500)
+	if a.String() != "9.99999999999e0" || b.String() != "1e1" || !b.Gt(a) {
+		t.Fatal("declared adjacent inputs differ", a, b)
+	}
+	profiles, rawReversals, committedReversals := 0, 0, 0
+	for prefix := int64(33500); prefix <= 85500; prefix += 1000 {
+		values := make([]decimal.Decimal, prefix+1)
+		for index := range values {
+			values[index] = full
+		}
+		values[prefix] = a
+		lower := decimal.SumDeterministic(values)
+		values[prefix] = b
+		upper := decimal.SumDeterministic(values)
+		if !lower.IsStateValue() || !upper.IsStateValue() || lower.Exponent() != 6 || upper.Exponent() != 6 {
+			t.Fatal("invalid midpoint population", prefix, lower, upper)
+		}
+		profiles++
+		if lower.Gt(upper) {
+			rawReversals++
+		}
+		low, high := lower.Quantize(decimal.CanonicalSignificantDigits), upper.Quantize(decimal.CanonicalSignificantDigits)
+		if low.Gt(high) {
+			committedReversals++
+			confirmBurstTemporalPairResearch(t, "1e12", tick, burst, prefix, rate, 500, low, high)
+			t.Logf("ACTUAL CALLER prefix%d raw(%g,e%d)→(%g,e%d) ledger%s→%s", prefix, lower.Mantissa(), lower.Exponent(), upper.Mantissa(), upper.Exponent(), low, high)
+		}
+	}
+	if profiles != 53 {
+		t.Fatal("incomplete midpoint population", profiles)
+	}
+	t.Logf("complete53 midpoint profiles: raw reversals%d, admitted-Evaluate committed reversals%d; no positive census is a monotonicity proof", rawReversals, committedReversals)
+}

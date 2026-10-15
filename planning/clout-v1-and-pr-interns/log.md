@@ -4855,3 +4855,33 @@ not native hostedamd64. No full CI, authored content, numeric/accounting adoptio
 repair, whole Clout, archival or release approval. All handles terminal; reviewer changes
 no tracked bytes/commits/source; ignored reproduction retained. Final Docker inventory is the
 same two preexisting builders. This closes only RP-536 corrective review; full1.0 remains open.
+
+## 2026-10-15 — Target exact decimal midpoints in the actual equal-prefix carry (before measurement)
+
+H3c/RP-664 question: does the admitted equal-prefix burst caller's known raw decrease cross
+a committed Q12 boundary at analytically selected prefixes? Keep rate3.003003003e-11,
+speed1e12, tick1000,333boosted partial ms and adjacent499/500ms from the retained control.
+For nominal full bucket30.03003003, at sum exponent6 the Q12 unit is1e-5. Literal
+N*30.03003003+10 is exactly halfway when3N≡500(mod1000), hence N≡500(mod1000).
+Execute exactly53 prefixes33500..85500 step1000, all inside the existing24h horizon.
+Use actual accrueBoostedConstant/grouped reducer; count raw reversals and committed differences,
+no excluded cases. A committed decrease must then reproduce via real admitted v17
+catalog/save/Evaluate/ledger and immutable origin before any caller claim. Positive/equal
+results do NOT establish monotonicity; stop this bounded falsification instead of extending
+a passing census. Research only, no active algorithm, accounting adoption, balance or golden change.
+
+Result65465: root make test-go GO_PACKAGES='./production'
+GO_TEST_FLAGS='-run TestCalculationHalfwayCarryResearch -v -count=1' exits0;
+all53 selected profiles execute0.10s,19 raw reversals, ZERO committed reversals.
+Thus this midpoint selection does not expose a committed decrease. The conditional real
+Evaluate confirmation runs ZERO times; no new admitted-origin/ledger proof is claimed.
+This is native Go1.27.2/Darwinarm64 only, no TS/Linux/SQL/cross-runtime claim and no
+general monotonicity conclusion. Stop the population here: further positive prefixes would
+not supply H3c's missing actual-caller proof. Existing canonical negative and equal-ledger
+origin stay unchanged. Preserved manual source probes/halfway-carry-probe.go.txt is outside
+normal CI, gofmt-clean; not a new passing acceptance test. No product, math, kernel222,
+balance, fixture/golden, algorithm/adoption or normative text changed. Review by: Codex
+(research author first filter). Recorded by: Codex. Range9a551e61-exclusive through this
+research commit awaits research review outside the corrective-only delegation. Next remains
+the general reachable-prefix/quantization/ledger argument or separately adopted arithmetic
+route, not a larger midpoint census. All handles terminal; no Docker resources for this probe.
