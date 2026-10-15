@@ -1332,7 +1332,9 @@ func (chain accrualHookChain) AfterAccrual(state *save.State, catalog *economy.C
 	return events, nil
 }
 
-func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+// crossGatePreflight is shared by ordinary gates and curriculum replacements.
+// It validates the request before accrual, without executing the gate effects.
+func crossGatePreflight(request IntentRequest, state *save.State, routeCatalog *routes.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision) (save.IntentDecision, error) {
 	if routeCatalog == nil || state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || revision.OwnerID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
@@ -1354,6 +1356,13 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 		if _, exists := routeCatalog.Route(request.RouteID); !exists {
 			return rejectedDecision(request, revision.Number, "unknown_id", request.RouteID)
 		}
+	}
+	return save.IntentDecision{}, nil
+}
+
+func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if decision, err := crossGatePreflight(request, state, routeCatalog, doctrineCatalog, revision); err != nil || decision.Outcome == save.IntentRejected {
+		return decision, err
 	}
 	before := state.Ledger.Snapshot()
 	result, err := s.evaluate(state, catalog, now, mode, contributions)

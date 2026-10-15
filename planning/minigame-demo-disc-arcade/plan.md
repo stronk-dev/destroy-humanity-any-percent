@@ -10,8 +10,11 @@ narrow delegation: admission/loader corrections, replay/corpus witnesses and nat
 keyboard/lifecycle/motion corrections. The owning log records three fresh reviewers, exact
 complete ranges, executed checks and descendant-source limits. Follow-up review approves
 four other indexed ranges plus RP-431/RP-472/RP-541; RP-205/207 is CHANGES REQUIRED
-for RP-668's due-command preflight bypass. Next: reproduce/fix ordinary preflight in
-Go/TS/live Postgres, preserving replacement/atomicity. RP-201/RP-211/public-wire/content/
+for RP-668's due-command preflight bypass. Its gate-only correction is locally verified in
+Go/TS/live Postgres at kernel220, preserving replacement/atomicity, and awaits independent
+corrective review. Other command preflights remain broken (actual unknown generator/manual
+IDs still produce an ending in TS); next implement matched Go/TS/live regressions and their
+shared ordinary preflight correction. RP-201/RP-211/public-wire/content/
 feature acceptance are not closed; the owning log records exact verdicts and evidence.
 
 2026-10-15 AR6.2 correction (RP-636): flag/unflag responses previously changed the real cell

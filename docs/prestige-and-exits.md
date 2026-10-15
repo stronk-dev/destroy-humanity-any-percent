@@ -107,7 +107,12 @@ intent remains in the immutable command log, but the requested gate, resource de
 gate/route events do not occur before the ending. Live execution freezes the selected
 curriculum branch; Go and TS replay use it to execute terminal accrual instead of the gate
 action. Historical no-curriculum gate-Exit fixtures retain their original pinned behavior.
-The RP-205 correction carries kernel 0.3.148 and requires Claude's designated review.
+Ordinary gate preflight still runs before that replacement: unknown gates/routes and
+already-crossed gates reject without accruing or creating a successor Company. Gate effects,
+costs and post-accrual gate predicates remain replaced, not executed. This RP-668 gate
+correction carries kernel 0.3.220 and awaits independent corrective-code review; the original
+RP-205/207 range received CHANGES REQUIRED. Other automatic-command preflight bypasses
+remain open under RP-668; this is not a claim that every due command is correctly validated.
 Its current-curriculum real-Postgres before-threshold control crosses normally; due controls
 end the run, replay both histories and retry identically. Both Arcade toys block that action
 while active or claimed and release it only after actual quit/resolution. The later-tier

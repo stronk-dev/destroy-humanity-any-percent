@@ -704,11 +704,25 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash || !sortedUniqueMechanical(resolved.ExecutedRouteIDs) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal frozen inputs", ErrInvalidReplayInputs)
 	}
+	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
+		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
+	if request.Kind == IntentCrossGate && resolved.SelectedBranch != nil &&
+		!(resolved.MinigameSessionActive != nil && *resolved.MinigameSessionActive) {
+		decision, err := crossGatePreflight(request, company, catalogs.Routes, catalogs.Doctrines, revision)
+		if err != nil {
+			return LoggedExitTransition{}, err
+		}
+		if decision.Outcome == save.IntentRejected {
+			founder, err := stateFromFounderCarry(resolved.FounderCarry, catalogs)
+			if err != nil {
+				return LoggedExitTransition{}, err
+			}
+			return LoggedExitTransition{Founder: founder, Company: company, Decision: save.ExitDecision{Outcome: decision.Outcome, Receipt: decision.Receipt}}, nil
+		}
+	}
 	if err := applyReplayGuildSettlements(company, resolved.Accrual.GuildSettlementBatch, catalogs.Faction.StockCap); err != nil {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal guild settlement inputs", ErrInvalidReplayInputs)
 	}
-	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
-		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
 	baseContributions, err := assembleContributions(company, catalogs.Economy, externalContributions)
 	if err != nil {
 		return LoggedExitTransition{}, err

@@ -2577,3 +2577,77 @@ Next engineering action is RP-668: matched old-failing Go/TS and actual live/Pos
 preflight refusals, preserving valid replacement, activity block, rejected state/history,
 retry and replay. Inspect other automatic-trigger preflights too. Do not count this rejected
 range as review completion/acceptance or turn the bug into another owner-choice request.
+
+## 2026-10-15 — RP-668 gate preflight correction, remaining command bypasses open
+
+Review by: Codex implementer first filter, not independent approval. Recorded by: Codex.
+Batch starts after `be79f4a7`; kernel219→220, no epoch/balance/content/CI/schema change.
+Authority: Prestige D4/P5 and accepted T01-C31 ordinary preflight/accrual before replacing
+the requested Company mutation. This repairs the demonstrated CrossGate bypass, not all
+automatic-command validation or full Arcade AC9.
+
+Extract the existing Go gate preflight into one helper shared by ordinary gates and terminal
+replacement. Selected curriculum branches now invoke that helper before settlement/accrual;
+TS invokes its existing preflightRejection. Preserve active-minigame rejection precedence,
+valid ending replacement, historical no-curriculum behavior and all requested gate effects/
+costs/post-accrual predicates remaining unexecuted. No duplicate test-side gate authority.
+
+Retained old-source regressions: unknown gate, already-crossed gate and unknown route each
+produce an applied ending on unchanged source in Go replay, TS replay and actual declared
+Postgres Service.Handle. Three real failures in each population, not skipped prerequisites.
+Corrected Go `TestCurriculumDueCrossGateReplay` selection passes existing valid/first-gate/
+prior-Exit/branch/activity controls and all three new refusals. TS focused selection passes4.
+Both replay regressions require exact rejection, unchanged encoded Company and no successor/
+ending events. SQL checks unchanged streams/revisions/events/epoch/contributions/verification
+rows and an ordinary once-only rejected-command audit, then identical receipt replay and no
+additional rows across the complete12-table snapshot. Refusal is not falsely claimed to
+leave no audit. Before the real Go baseline, an initial test compile used a nonexistent
+NewCompany field, corrected to NewCompanyState; before executing the corrected SQL audit,
+schema inspection corrected an initially drafted nonexistent terminal column to applied_revision.
+Neither authoring error is counted as the old-behavior regression.
+
+Finished-source checks actually executed:
+- Declared Linux-amd64/Postgres `make test-go-ci CI_TEST_PACKAGES='./production ./save'
+  CI_TEST_FLAGS="-count=1 -run 'TestArcadeCurrentCurriculumExitIntegration|TestCompanyAxisMigrationCorpus' -v"`
+  passes all16 Exit populations (1.546s package) and all5 Company migration cases (0.185s),
+  no selected skips. Valid before-threshold,3 due controls and9 active/claimed/quit/released/
+  retry/both-history populations remain green. Initial unquoted regex pipe ran no selected
+  test (shell command-not-found/no Go files); the correctly quoted command supplies evidence.
+- `make validate-migrations` passes actual Postgres Save integration/migration population1.924s.
+- `make test-browser-ci-focused BROWSER_TEST_FLAGS='test/replay.test.ts'` passes492 actual
+  Chromium/Firefox/WebKit executions, no skips,4.58s in declared Linux Playwright container.
+  Initial sandbox socket denial runs nothing; authorized exact Make command passes. No
+  performance/full browser/default player journey/hosted CI claim.
+- Full `make test-client` passes12460, skips1088 (browser-only/dependency populations),145
+  files pass/23 skipped. Client build, typecheck (zero errors/warnings), client-boundary
+  check (including10 Go/15 Svelte negatives) and separate affected Production/Save vet pass.
+  Initial full client run exposed the dependent migration-source digest; corrected only after
+  actual producer re-execution below. A nonexistent check-client-boundaries selector after
+  successful client tests/build ran no boundary check; real verify-client-boundary supplies it.
+- Cold Decimal/Economy/Kernel/Arcade/Minigame/Replaycatalog/Prestige and vet pass; selected
+  Node Replay/Decimal/Arcade6746 pass,29 browser-only skips. Full cold Production/Save finishes
+  with exactly the existing27 AC6 partition divergences (Production46.233s, Save0.371s pass).
+  No additional failure or whole-package green claimed. Historical kernel-history red gate
+  remains separate; no bound/assertion or unavailable contract is weakened.
+
+Replay/intents/test source hashes invalidate six research observations. Re-executed all six
+existing opted-in producers together with -count=1: AxisActivationReplayResearch,
+AxisExternalReplayCompatibilityResearch, AxisLoggedPolicyReplayResearch,
+AxisActionBuffModeReplayResearch, AxisTerminalReplayResearch and
+AxisOriginDeferredTemporalContextResearch (1.598s pass). Every non-source_sha256 report field
+is byte-structurally unchanged; NOT_PROVEN results remain. Some previously stale source
+bindings also refresh to the actually observed current source, not just this batch's files.
+The migration corpus changes only company_source.sha256 to the regenerated activation report's
+417972e92516556bb043fda5fec384f4867a84eb0f882dfa812da228e96dd2b4;
+all20 populations/content unchanged and actual Go/TS consumers pass. No manual report restamp
+or migration body edits. Initial read-only comparison hit Node execFileSync's default buffer
+on the large sequence report; explicit64MiB buffer verifies all six rather than truncating.
+
+Remaining RP-668 evidence: a read-only actual Vite SSR replay of the same due curriculum
+fixture, setting resolved.intent_kind and canonical payload consistently, still applies endings
+for buy_generator generator.does_not_exist and perform_manual_batch manual.does_not_exist;
+valid generator.beige_tower is the applied control. Go terminal composition has the same
+non-gate bypass by inspection, not yet an executed Go/live counterexample. Keep RP-668 OPEN:
+next add matched Go/TS/live ordinary-command regressions and reuse ordinary preflight without
+executing the requested action or post-accrual eligibility. Gate-only repair needs fresh
+independent corrective-code review; original RP-205/207 CHANGES REQUIRED is not overwritten.

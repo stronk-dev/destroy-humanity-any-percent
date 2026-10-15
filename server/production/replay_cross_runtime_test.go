@@ -1590,6 +1590,57 @@ func TestCurriculumDueCrossGateReplay(t *testing.T) {
 	}
 }
 
+func TestCurriculumDueCrossGateReplayRequiresOrdinaryPreflight(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/replay/apply-logged-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture crossRuntimeFixture
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	row := fixture.CurriculumGateExit
+	bundle := loadCompleteReplayTestBundle(t, row.ConstantsHash, artifactBytes(row.Artifacts))
+	for _, tc := range []struct{ name, gate, route, category, detail string }{
+		{"unknown_gate", "gate.does_not_exist", "", "unknown_id", "gate.does_not_exist"},
+		{"crossed_gate", "gate.t0_to_t1", "", "gate_already_crossed", "gate.t0_to_t1"},
+		{"unknown_route", "gate.t2_to_t3", "route.does_not_exist", "unknown_id", "route.does_not_exist"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			state := replayFixtureStateFromEncoded(t, bundle, row.Case.PreState)
+			before := mustEncodeState(t, state)
+			var payload map[string]any
+			if err := json.Unmarshal(row.Case.CanonicalPayload, &payload); err != nil {
+				t.Fatal(err)
+			}
+			payload["gate_id"] = tc.gate
+			if tc.route != "" {
+				payload["route_id"] = tc.route
+			}
+			canonical, err := json.Marshal(payload)
+			if err != nil {
+				t.Fatal(err)
+			}
+			transition, err := ApplyLoggedExit(state, canonical, bundle, row.Case.ReplayInputs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var receipt struct {
+				Rejection struct{ Category, Detail string }
+			}
+			if err := json.Unmarshal(transition.Decision.Receipt, &receipt); err != nil {
+				t.Fatal(err)
+			}
+			if transition.Decision.Outcome != save.IntentRejected || receipt.Rejection.Category != tc.category || receipt.Rejection.Detail != tc.detail {
+				t.Fatalf("due preflight refusal=%s, want %s/%s", transition.Decision.Receipt, tc.category, tc.detail)
+			}
+			if !bytes.Equal(before, mustEncodeState(t, state)) || transition.Decision.NewCompanyState != nil || len(transition.Decision.CompanyEndedEvents) != 0 {
+				t.Fatal("rejected due command changed state or produced an ending")
+			}
+		})
+	}
+}
+
 func makeCurriculumExitFixtureForIntent(t *testing.T, now time.Time, crossGate bool) crossRuntimeActiveExit {
 	t.Helper()
 	current := activeContentBundle(t)

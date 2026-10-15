@@ -121,19 +121,25 @@ actual active and claimed sessions reject with exact minigame_session_active and
 full stream/session state, revisions and SQL command history. Real quit plus resolution
 releases the first ending/run 2; retry matches and both persisted histories verify. Removing
 the Exit guard, hiding claimed status, or removing either toy's quit fails the named cases.
-This RP-206 test-only correction requires Claude review; full AC9 stays open.
+This RP-206 test-only correction is independently approved (2026-10-15); full AC9 stays open.
 
 RP-205's separately predeclared runtime correction now replaces a genuinely eligible due
 cross_gate with the first ending rather than returning an engine error. It preserves the
 original canonical action, without executing the gate or its cost, in live Go and shared
-Go/TS replay (kernel 0.3.148). The same gate/cash/history crosses normally before the threshold.
-The actual DB population now has thirteen cases: that before-threshold control, three due
-no-session controls, and three actions across Mine Grid setup/playing and Snake playing.
+Go/TS replay (original kernel 0.3.148). RP-668 restores shared ordinary gate preflight at
+kernel 0.3.220: unknown gates/routes and already-crossed gates refuse before terminal accrual.
+The same gate/cash/history crosses normally before the threshold.
+The actual DB population now has sixteen cases: three invalid due-gate preflight refusals,
+that before-threshold control, three due no-session controls, and three actions across
+Mine Grid setup/playing and Snake playing. The new refusals preserve gameplay rows and
+record the ordinary once-only rejection audit; identical retries add nothing.
 All nine session cases exercise both active and claimed refusal, then real quit/resolution,
 released Exit, identical retry and both histories. A Go-generated literal current-curriculum
 fixture checks every terminal receipt/state/Founder/event batch in TS; all old fixtures remain
-unchanged. Independent live/replay/guard probes fail. Claude review and full AC9 remain open;
-this later-tier diagnostic is not default first-hour or public-browser acceptance.
+unchanged. Independent live/replay/guard probes fail. The original RP-205/207 range received
+CHANGES REQUIRED; the scoped gate-preflight repair awaits independent review. Other
+automatic-command preflight bypasses and full AC9 remain open; this later-tier diagnostic
+is not default first-hour or public-browser acceptance.
 
 RP-207 repairs only the test reader's event scope. A full Founder Exit may prepend an
 automatic Fiscal harvest, which Company replay does not own. The test verifies the complete

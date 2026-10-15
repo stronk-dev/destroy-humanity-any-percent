@@ -16,8 +16,10 @@ nine-tier goal remains active; no new playable tier or release was completed.
 - **READY — repair RP-668 before further Arcade closeout:** independent review finds due
   curriculum CrossGate accepts nonexistent/already-crossed gates without ordinary preflight.
   The [Arcade plan/log](../minigame-demo-disc-arcade/plan.md) owns exact CHANGES REQUIRED scope
-  and reproduction. Add matched Go/TS/live-Postgres regressions, preserve replaced effects,
-  atomic refusal/retry/replay, and inspect other automatic-command preflights. This is an
+  and reproduction. Gate-only correction at kernel220 passes matched old-failing Go/TS and
+  live-Postgres regressions, including atomic refusal/retry; independent review is pending.
+  Other command preflights remain broken: actual TS unknown generator/manual IDs still
+  create an ending. Correct those shared preflights without executing replaced effects. This is an
   existing-contract correction, not an owner-policy question or draft implementation.
 - **DELEGATED WORDING RECONCILED — Clout RP-308:** Marco's explicit 2026-10-15 answer
   permits CV3/AC6 reconciliation preserving offline cap/rate/banking and separate return

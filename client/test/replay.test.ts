@@ -972,6 +972,24 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
   });
 
+  it.each([
+      ["gate.does_not_exist", null, "unknown_id", "gate.does_not_exist"],
+      ["gate.t0_to_t1", null, "gate_already_crossed", "gate.t0_to_t1"],
+      ["gate.t2_to_t3", "route.does_not_exist", "unknown_id", "route.does_not_exist"],
+    ] as const)("retains ordinary preflight refusals before a due cross-gate replacement %s/%s", async (gate, route, category, detail) => {
+      const row = fixture.curriculum_cross_gate_exit;
+      const bundle = await loadReplayCatalogBundle(row.constants_hash, row.artifacts);
+      const state = restoreReplayState(row.case.pre_state, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+      const before = canonicalJSONString(encodeReplayState(state));
+      const payload = { ...row.case.canonical_payload, gate_id: gate, route_id: route };
+      const result = await applyLoggedExit(state, canonicalJSONString(payload), bundle, row.case.replay_inputs);
+      expect(result.outcome, `${gate}/${route}`).toBe("rejected");
+      expect(result.receipt).toMatchObject({ rejection: { category, detail } });
+      expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
+      expect(result.newCompany).toBeNull();
+      expect(result.companyEndedEvents).toEqual([]);
+  });
+
   it("keeps curriculum Reputation neutral while each branch applies its own Route Knowledge and starter", async () => {
     const fixtureExit = fixture.curriculum_exit;
     const current = await loadReplayCatalogBundle(fixtureExit.constants_hash, fixtureExit.artifacts);

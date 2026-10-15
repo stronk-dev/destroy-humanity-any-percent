@@ -357,6 +357,53 @@ ORDER BY CASE WHEN stream_id=$1 THEN 1 ELSE 0 END,event_seq,event_id`, founder.c
 		}
 		return genesis, version, entries
 	}
+	for _, tc := range []struct{ name, gate, route, category, detail string }{
+		{"unknown_gate", "gate.does_not_exist", "", "unknown_id", "gate.does_not_exist"},
+		{"crossed_gate", "gate.t0_to_t1", "", "gate_already_crossed", "gate.t0_to_t1"},
+		{"unknown_route", "gate.t2_to_t3", "route.does_not_exist", "unknown_id", "route.does_not_exist"},
+	} {
+		t.Run("due_preflight/"+tc.name, func(t *testing.T) {
+			founder := seed(t, IntentCrossGate)
+			var payload map[string]any
+			if err := json.Unmarshal(intent(t, founder, IntentCrossGate), &payload); err != nil {
+				t.Fatal(err)
+			}
+			payload["gate_id"] = tc.gate
+			if tc.route != "" {
+				payload["route_id"] = tc.route
+			}
+			encoded, err := json.Marshal(payload)
+			if err != nil {
+				t.Fatal(err)
+			}
+			before := reputationPlanDBSnapshot(t, ctx, db)
+			result, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, encoded)
+			if err != nil || !receiptMatches(result.Receipt, "rejected", tc.category, tc.detail) {
+				t.Fatalf("due preflight not refused: receipt=%s err=%v", result.Receipt, err)
+			}
+			after := reputationPlanDBSnapshot(t, ctx, db)
+			for _, table := range []string{"save_streams", "save_revisions", "events", "run_epochs", "run_frozen_contributions", "verification_queue"} {
+				if after[table] != before[table] {
+					t.Fatalf("rejected due command changed %s", table)
+				}
+			}
+			// Rejected commands retain their ordinary once-only audit, not an ending.
+			var rejected, applied int
+			if err := db.QueryRowContext(ctx, `SELECT COUNT(*),COUNT(*) FILTER(WHERE applied_revision IS NOT NULL) FROM run_log WHERE company_stream_id=$1 AND intent_id=$2`, founder.companyStreamID, payload["intent_id"]).Scan(&rejected, &applied); err != nil || rejected != 1 || applied != 0 {
+				t.Fatalf("rejection audit rows=%d applied=%d err=%v", rejected, applied, err)
+			}
+			retry, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, encoded)
+			if err != nil || !retry.Replay || !bytes.Equal(result.Receipt, retry.Receipt) {
+				t.Fatalf("rejected retry changed receipt: %v", err)
+			}
+			retried := reputationPlanDBSnapshot(t, ctx, db)
+			for table, rows := range after {
+				if retried[table] != rows {
+					t.Fatalf("rejected retry changed %s", table)
+				}
+			}
+		})
+	}
 	t.Run("eligible_before_threshold/cross_gate", func(t *testing.T) {
 		index++
 		founder := seedCurrentArcadeExitFounderForGate(t, ctx, db, store, bundle, now, index, false, true)

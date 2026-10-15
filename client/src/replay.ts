@@ -1344,6 +1344,10 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   let terms: ExitTerms;
   const rejectState = (category: string, detail: string): LoggedExitTransition => { restoreReplaySnapshot(company, companyBefore); return rejectedExit(company, founder, request.intent_id, revision, category, detail); };
   if (minigameSessionActive) return rejectState("not_eligible", "minigame_session_active");
+  if (hasBranch && request.kind === "cross_gate") {
+    const preflight = preflightRejection(company, catalogs, request, wire.evaluated_at_ms);
+    if (preflight !== null) return rejectState(preflight[0], preflight[1]);
+  }
   try {
   applyGuildSettlements(company, accrual.guild_settlement_batch, catalogs.factions.stockCap);
   const baseContributions = assembleContributions(company, catalogs.economy, accrual.contributions);
