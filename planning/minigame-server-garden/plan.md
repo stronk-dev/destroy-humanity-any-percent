@@ -43,9 +43,16 @@ RP-228 HTTP/rollback/replay evidence. Actual Linux-amd64/Postgres executes, incl
 ordinary Minigame transactions; exact ranges/limits live in the log. RP-222's authored
 contradiction remains. RP-430's separate observation-only range is independently approved
 after111 Linux browser executions; the incident remains OPEN without a reproduced cause.
-Next corrective-review scopes: RP-224 response ordering, RP-230 timer/visibility, RP-231
-host receipt refresh and RP-232 Fiscal purchase surface, then remaining composed-driver
-corrections. Do not restart approved ranges or substitute these for remaining feature gates.
+Further fresh independent review approves complete RP-224/RP-225 response-ordering/test-method,
+RP-230 timer/visibility, RP-231 host receipt refresh and RP-398 native-tabstop ranges.
+RP-232 approval is limited to its Fiscal presentation/test correction, NOT its new composed
+driver/Make construction. Complete RP-438/RP-445 observer corrections are approved after
+actual12 observer controls and real server/Postgres harvest/retry/reload execution. RP-434/
+RP-435 approve only the identified intent-column/proxy-byte corrections inside their mixed
+new-journey range, not new construction/Make/CI or full-feature acceptance. Exact ranges and
+per-path limitations are in the owning log. Keep remaining new-feature and child-cwd review,
+RP-233/RP-430 incidents, authored/privacy/renewal/content/AC13 gates separate. Continue other
+accepted work and outstanding corrective reviews; do not restart these approved ranges.
 
 **Prior execution, 2026-10-08:** all original G1–G7 batches now have complete designated
 CHANGES REQUIRED dispositions; their exact ranges and evidence are in the latest [log](log.md).
@@ -83,8 +90,8 @@ fifteen-minute journey or its renewal hold, replay the seeded setup, or complete
 RP-438's reload observer now binds cancelled Founder/Garden GETs to their actual old
 document via Referer and distinct navigation URLs; it does not exempt commands,
 new-page reads or incomplete upstream data. The latest owning log records actual
-execution, RP-434/RP-435/RP-438 driver corrections and the
-designated-review handoff; earlier pending ranges remain independent.
+execution and bounded corrective approvals for RP-434/RP-435/RP-438/RP-445. Mixed new-journey
+construction still needs its existing feature review; earlier pending ranges remain independent.
 
 **Historical bounded instrument work, 2026-10-07:** RP-348 under `a9fadedd` adds
 full child-result/elapsed diagnostics without changing any raw input, admission

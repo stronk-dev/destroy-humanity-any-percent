@@ -299,7 +299,7 @@ Harvest, exactly-once callback and focus return, and pending-control refusal. Re
 either response guard or arrow navigation breaks its corresponding witness. This is
 component-level native-browser evidence, not real HTTP/Postgres/default-host command
 integration, timer/Page Visibility proof or full accessibility acceptance. AC13 remains
-blocked on its successor; designated review of the new correction is pending.
+blocked on its successor; this bounded correction has independent corrective approval.
 The native input witnesses separate independently observed navigation walks from Enter/Space
 action paths, retaining every intermediate focus and roving-tabstop assertion. This replaces
 the long duplicated test traversal after recorded deadline failures (RP-225), without changing
@@ -314,7 +314,7 @@ only after injected DTO JSON, and no command callback fires. Tests join actual a
 completion, not just fetch invocation. Timer-dispatch and visibility-guard severing each
 fail their own populations. Virtual timers/emulated visibility and an injected fetcher
 are explicitly not native wall-clock/OS-hide, real HTTP/Postgres or default-host receipt
-proof. No AC13/Garden/public activation claim; the correction awaits Claude review.
+proof. The bounded correction has independent corrective approval, not AC13/Garden/public activation.
 
 RP-231's host supplement mounts the actual GameUIApp with the actual browser runtime,
 generated authenticated Garden adapter, JSON response parsing and socket frame decoder.
@@ -326,8 +326,8 @@ before the repair, that arm failed in all three native engines despite the main 
 refreshing. Actual plant-callback and receipt-key severing each break their populations.
 Responses and socket frames remain injected boundary fixtures, not real Go/Postgres/
 WebSocket, native input, mature gameplay progression or default public activation proof.
-No fixture exports or replacement runtime are used. This separate correction still
-requires Claude's designated review; no full G7/AC13/Garden acceptance follows.
+No fixture exports or replacement runtime are used. This separate correction has
+independent corrective approval; no full G7/AC13/Garden acceptance follows.
 
 ## Verification
 
@@ -335,6 +335,8 @@ Independent corrective approvals cover catalog/state/coordinate/event admission 
 pending-focus/response-focus/connection/context/help/expiry/startup-readiness scopes. Exact
 ranges and native/Linux boundary limits are in the owning plan/log. These do not adopt
 candidate copy, explain RP-430's hosted input failure or complete Garden acceptance.
+Separate approvals cover response ordering, native tabstops, timer/visibility and host receipt
+refresh, with component/host boundaries distinguished from the real-service journey below.
 
 The Fiscal presentation map includes `minigame.server_garden`, using the existing
 Garden title and explanation keys. A pinned catalog that offers this unlock now
@@ -344,6 +346,8 @@ The normal browser CI population includes `garden-fiscal-browser.test.ts`:
 purchase callback/ID, unchanged copy, no optimistic ownership, and absent/owned/
 unaffordable controls. Removing the actual presentation row fails both cases in
 all three engines. These component fixtures do not establish real maturation.
+The Fiscal presentation/test correction has independent corrective approval; the mixed
+range's newly constructed composed driver/Make target does not inherit that approval.
 
 `make test-garden-composed` is a manual fixture-only built-client/real
 server/Postgres/WebSocket journey, outside push CI. It uses the exact existing
@@ -396,7 +400,8 @@ from natural-growth completed-read checks. A controlled real-browser/HTTP regres
 and negative cases run with the harvest target. Its Founder log
 binding uses the separate `intent_id` column, not
 a nonexistent canonical-payload field (RP-434/RP-435). The owning log records run
-results and pending designated review. This is bounded controlled-state harvest
+results and correction-specific approvals; the mixed ranges' new journey/Make/CI construction
+still requires its existing feature review. This is bounded controlled-state harvest
 integration, not production activation, full Garden/accessibility acceptance or
 hosted-CI/release proof.
 

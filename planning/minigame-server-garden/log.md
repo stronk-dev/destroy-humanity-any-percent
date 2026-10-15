@@ -3624,3 +3624,102 @@ no attribution. RP-430 remains OPEN; passing focused execution does not repair o
 reliability. On recurrence preserve the first input/focus/control/callback evidence rather
 than retrying away the failure. No SQL/composed/performance/AT/full-CI, feature, normative,
 archival or release approval. No speculative production fix.
+
+## 2026-10-15 — Remaining surface corrections independently reviewed
+
+Review by: fresh independent Codex `/root/garden_remaining_surface_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. Three complete ranges
+**APPROVED**, all changed source/test/docs/planning paths inspected:
+
+- RP-224 response ordering / RP-225 test-method correction,7 commits/11 paths:
+  `f5d2c323bd101d880efed8d436566dfa7c10f5d7..539456826d0da4f70d096cab674c3e25d3bd5b48`.
+- RP-230 timer/visibility,4 commits/10 paths:
+  `adb5521029e55dd0b04b42b1b446c9cc92bd77f4..537b1f5016af66adfc7e5824f6067bf111013b9c`.
+- RP-231 streamed receipt refresh,4 commits/10 paths:
+  `3c3af1dea41aaca2c2e6cae63e640d4f32bb2a90..99eedfe0f38f25d069204174282abab9da916ae4`.
+
+RP-232 is **APPROVED ONLY FOR THE CORRECTIVE PORTION** of
+`b58277cbfbef6d5eaecacd709bbf618269f6995f..bff05b5e8d3f18fd1f92bc0691d4f44f5d2b83a6`:
+entire features-presentation.json change, entire garden-fiscal-browser.test.ts addition and
+associated factual Fiscal-repair records/docs. The existing SG7 unlock ID consumes existing
+title/explanation keys; tests check callback identity, no optimistic ownership and absent/
+owned/unaffordable controls. The range's new Make target/test-garden-composed.mjs journey
+construction is inspected but NOT approved under corrective-only delegation. Do not cite
+this as full twelve-path RP-232/new-feature approval or a successful natural-maturity run.
+
+At descendant9a443cec/product312f6e02/kernel221, four affected native Chromium/WebKit files
+176 pass plus2 deliberately expected startup-deadline failures (10.67s); declared Linux ARM64
+Playwright1.62.0 same files264 pass plus3 expected failures (12 populations/12.51s), no unexpected
+skips. Expected failures are cleanup controls, not gameplay successes. Separate terminal/
+trailing-receipt witness passes native2 (218 excluded) and Linux3 (327 excluded,2.54s).
+Runtime/Fiscal Node79 pass; types0/0, build and UI boundary checker including10 Go/15 Svelte
+negative controls pass. Four exact-range whitespace checks pass. Guards protect success and
+failure before publication/announcement/timers; native decomposition retains directional/
+edge/tabstop and Enter/Space checks. Timer uses positive server-relative remainder, receipt
+refresh preserves the terminal guard. These renderer/host edits are not kernel-watched.
+
+Old failures/probes inspected, not repeated. Initial loopback/socket denials execute no tests.
+First Linux terminal command passes its3 tests but malformed nested quoting then makes Make
+reject a stray immutable target; corrected single-word selector actually exits0. Routine output
+partly truncated; terminal totals retained, not a complete timing dataset. All processes terminal;
+reviewer makes no source/test/fixture/resource edits. No SQL/live composed/natural maturation/
+renewal/performance/hosted-amd64/manual-AT claim. RP-218/RP-225 causes, RP-430 and authored/
+privacy/content holds remain; no original G1–G7, feature, normative, archival or release approval.
+
+## 2026-10-15 — Composed observer corrections independently approved
+
+Review by: fresh independent Codex `/root/garden_composed_driver_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED** complete
+RP-438 `8e7e442793dc331f288da0c69df2a05c17c893f2..84acb3929fde63c678d80231b402e427c73700e6`
+(11 paths) and RP-445 `ef10238f7443a327beb1a53301441982ba58732c..cbd2069f095fafc14cfb0a48d89d976e869d04a5`
+(7 paths). Every changed path inspected; syntax/range whitespace/topology checks pass,
+including27 negative topology controls and Linux selector/failure propagation.
+
+RP-434/RP-435 are **APPROVED ONLY FOR THE CORRECTIVE PORTIONS** of mixed nine-path
+`4b2c72a0727453018b8765cf0db867a72b6a782c..205e0c7d2e432aba2c92bacf3b30e6d49217f108`:
+separate Founder intent_id column plus exact canonical-envelope binding; complete proxy API-byte
+observation instead of passive Chromium body-cache reads; retained browser receipt/mounted
+outcomes; completed-read distinction/failure diagnostics. NOT full-range approval of the new
+harvest journey, controlled maturity, new byte-proof population or Make/CI inclusion. Initial
+RP-232 wall-clock driver inspected as dependency, not accepted; no15-minute rerun.
+
+Actual descendant9a443cec/product312f6e02/kernel221, authorized existing
+make test-garden-harvest-composed exits0:12/12 observer controls, zero skips. Real Chromium/HTTP
+navigation reproduces old guard's false refusal; stream controls cover before-header/body
+cancellation and still refuse absent upstream bytes, unfinished commands, new-document/
+unrelated/outside-window reads. Actual native Go server/production client→HTTP/WebSocket→
+declared Linux-amd64 Postgres journey6.712s passes native Fiscal unlock/plant/uproot, single/
+batched harvest, both SQL histories/events/canonical intents, exactly15 cash/two sends,
+identical retry, changed-body refusal with unchanged heads/window/rows, and rendered reload.
+Exact built HTML/JS/CSS/prediction Worker identity passes;69 complete upstream responses and
+2 explicitly counted cancelled old-document reads (not claimed consumed). Observer/control
+bytes match cbd2069f exactly. This executes the real subject of the corrective observer, not
+new-feature acceptance by implication.
+
+Initial supposed nonbrowser selection unexpectedly includes navigation and hits EPERM after11
+controls; initial unprivileged whole target likewise stops after11 controls/before Docker.
+Correct authorized target supplies complete evidence. Old red/severing records inspected, not
+new mutations. All processes terminal; only created Compose-labelled tmpfs/no-mount
+cloud-clicker-game-ui-postgres-1 removed after ports5173/18083 free. Preexisting BuildKit/caches/
+volumes preserved; reviewer edits/commits nothing. No natural growth/renewal/general reliability,
+raw-archive privacy, new feature/SG13/content/AT/full Garden/archival/release approval.
+
+## 2026-10-15 — RP-398 native tabstops independently approved
+
+Review by: independent Codex `/root/garden_remaining_surface_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED** complete
+one-commit/six-path `c4ccd742fd776cb221f9610ec5b5fde14d55a561..e2b391e7a8ab23214cb3f1c78bdaa0a19ac83374`.
+All component/test/backlog/docs/CURRENT-STATE/log paths inspected. The endpoint is e2b391e7,
+not073ec7ad, which would include fourteen unrelated commits. Seven native tabindex0 additions
+preserve callbacks/roving grid/disabled states/mechanics. Actual native forward/backward traversal,
+both seeds, menu actions, Harvest-all, substrates and failed-read Refresh check callbacks/focus.
+
+Actual current descendant093d5d4e: complete affected action file74/74 Chromium/WebKit passes,
+two populations/zero skips/3.34s. Earlier same-review Linux three-engine four-file264 passes
+plus3 expected startup-deadline controls includes this entire file. No product/Make/kernel
+bytes change between those tested descendants; prior types/build/UI boundaries remain applicable.
+Exact range diff-check passes; all7 attributes survive current source. Old corrected baseline's
+12 WebKit failures/16 companions inspected, not rerun; initial mistaken labels stay excluded.
+All processes terminal, no reviewer edits/resources. Not approval of surrounding R9 or child-cwd
+correction, original feature/full-app entry/manual-AT/SQL/maturation/release. RP-399 provider
+and RP-218/RP-225/RP-430 reliability remain open.
