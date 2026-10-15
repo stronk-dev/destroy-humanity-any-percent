@@ -5416,3 +5416,16 @@ No budget increase, report restamp, local-candidate landing or hosted improvemen
 is inferred. Full nine-tier/world/combat/endings and platform/rights/accessibility/
 release-artifact obligations remain; owner choices, technical closure and review
 are distinct. This is status/evidence reconciliation, not a release or new authority.
+
+## 2026-10-15 — Owner delegates outstanding corrective-code review
+
+At `d81713b5`, Marco answers the explicit question about replacing Claude with a
+fresh independent Codex sub-agent for outstanding corrective-code reviews:
+"Delegate corrective-code reviews to independent Codex". The question explicitly
+preserves every release criterion and existing product/specification approval,
+and discloses loss of cross-model diversity. Reconcile AGENTS' reviewer clause
+with that narrow exception; do not reinterpret it as self-review, new-feature or
+normative-specification acceptance, archival waiver or release/publication authority.
+Each verdict must still name actual reviewer/recorder, exact complete range,
+executed evidence and limits. Existing debt is not silently approved. No product
+or tests change in this policy record; verify the diff against the received ruling.
