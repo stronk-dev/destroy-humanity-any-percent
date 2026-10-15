@@ -76,7 +76,7 @@ func TestCalculationBurstTemporalOrderResearch(t *testing.T) {
 			t.Fatal("invalid or zero aggregate in the declared positive profile", profile, lower, upper)
 		}
 		if profile == 0 || profile == 19_999 || upper.Lt(lower) {
-			confirmBurstTemporalPairResearch(t, tick, burst, prefix, rate, low, lower, upper)
+			confirmBurstTemporalPairResearch(t, "1e10", tick, burst, prefix, rate, low, lower, upper)
 			confirmations++
 		}
 		if upper.Lt(lower) {
@@ -89,7 +89,56 @@ func TestCalculationBurstTemporalOrderResearch(t *testing.T) {
 	t.Log("declared20000 profiles complete, uncrossed0; two real-Evaluate adjacent pairs: no decrease found, not a general monotonicity proof")
 }
 
-func confirmBurstTemporalPairResearch(t *testing.T, tick, burst, prefix int64, rate decimal.Decimal, atMS int64, lower, upper decimal.Decimal) {
+func TestCalculationCanonicalGroupCarryReachabilityResearch(t *testing.T) {
+	const tick, burst, prefix int64 = 1000, 333, 65536
+	rate, speed := mustDecimal(t, "3.003003003e-11"), mustDecimal(t, "1e12")
+	partial := func(ms int64) decimal.Decimal {
+		t.Helper()
+		value, err := accrueBoostedConstant([]decimal.Decimal{rate}, ms, burst, decimal.One, speed.Sub(decimal.One))
+		if err != nil {
+			t.Fatal(err)
+		}
+		return value
+	}
+	threshold := decimal.FromString("1e1")
+	low, high := burst, tick
+	if !partial(low).Lt(threshold) || partial(high).Lt(threshold) {
+		t.Fatal("missing declared partial carry")
+	}
+	for low < high {
+		middle := low + (high-low)/2
+		if partial(middle).Lt(threshold) {
+			low = middle + 1
+		} else {
+			high = middle
+		}
+	}
+	a, b := partial(low-1), partial(low)
+	if a.String() != "9.99999999999e0" || b.String() != "1e1" {
+		t.Fatal("wrong adjacent partials", low, a, b)
+	}
+	full, err := accrueBoostedConstant([]decimal.Decimal{rate}, tick, tick, decimal.One, speed.Sub(decimal.One))
+	if err != nil || full.String() != "3.003003003e1" {
+		t.Fatal("wrong full bucket", full, err)
+	}
+	values := make([]decimal.Decimal, prefix+1)
+	for index := range values {
+		values[index] = full
+	}
+	values[prefix] = a
+	lower := decimal.SumDeterministic(values)
+	values[prefix] = b
+	upper := decimal.SumDeterministic(values)
+	if !lower.Gt(upper) || lower.String() != "1.96805804804e6" || upper.String() != lower.String() {
+		t.Fatal("lost raw reversal/equal committed control", lower.Mantissa(), upper.Mantissa(), lower, upper)
+	}
+	confirmBurstTemporalPairResearch(t, "1e12", tick, burst, prefix, rate, low,
+		lower.Quantize(decimal.CanonicalSignificantDigits), upper.Quantize(decimal.CanonicalSignificantDigits))
+	t.Logf("one admitted origin: adjacent%d/%dms partial%s→%s; raw(%g,e%d)→(%g,e%d); equal ledger%s; synthetic unequal-prefix Q12 reversal reachability NOT proved",
+		low-1, low, a, b, lower.Mantissa(), lower.Exponent(), upper.Mantissa(), upper.Exponent(), lower)
+}
+
+func confirmBurstTemporalPairResearch(t *testing.T, speed string, tick, burst, prefix int64, rate decimal.Decimal, atMS int64, lower, upper decimal.Decimal) {
 	t.Helper()
 	data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
 	if err != nil {
@@ -101,7 +150,7 @@ func confirmBurstTemporalPairResearch(t *testing.T, tick, burst, prefix int64, r
 	}
 	root["provision_tick_ms"] = tick
 	policy := root["offline_policy"].(map[string]any)
-	policy["burst_speed"] = "1e10"
+	policy["burst_speed"] = speed
 	policy["burst_max_duration_ms"] = prefix*tick + burst
 	found := false
 	for _, value := range root["generator_classes"].([]any) {

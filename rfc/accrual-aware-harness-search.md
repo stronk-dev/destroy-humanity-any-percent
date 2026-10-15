@@ -258,6 +258,25 @@ negation. Exponent carries, sorted-group membership and normalization remain par
 of this argument; do not assert that positive inputs alone prove them or introduce
 extra search cuts without an actual algorithm/justification.
 
+**Canonicalization alone does not discharge the group-carry step.** The shared
+`numeric-canonical-group-carry-v1.json` retains65535 canonical3.003003003e1 terms,
+one fixed3.003004057e1 term and a partial9.99999999999e0→1e1. Increasing that
+canonical partial makes current grouped Q12 output fall1.96805804806e6→1.96805804805e6.
+Go native/Linux-amd64, Node and all three Linux browsers reproduce the result,
+including reversed source order. Independent exact decimal-literal sums increase
+by1e-11. This refutes a general canonical-input summation lemma, not just a raw-rate one.
+It does NOT establish that the unequal fixed-bucket prefix is reachable from one
+admitted production origin or that an actual affordability predicate decreases.
+
+One admitted v17 origin does reach the related equal-prefix RAW reversal: rate
+3.003003003e-11, speed1e12,1000ms grid,65536 completed buckets and333 boosted
+milliseconds in the partial bucket. Adjacent499/500ms produce exactly the canonical
+partial pair above; actual Evaluate/ledger at both endpoints still commits the SAME
+1.96805804804e6. These are unminted controlled inputs, not published balance or a new
+loss finding. The remaining proof must use actual reachable prefix constraints and
+the entire quantization/ledger path, or a separately adopted numeric contract with
+its own proof; neither sampled equality nor canonical inputs imply monotonicity.
+
 **A limited source-level sublemma, not the missing payout proof.** In both actual
 `SumDeterministic` implementations, one fixed-exponent group's positive coefficients
 are sorted ascending and accumulated with ordinary binary floating addition before
@@ -448,3 +467,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
 - 2026-10-15: distinguish accounting/wait protocol from the separately proposed numeric
   producer identity. Preserve exact old formats and historical-source reproduction; new
   kernel-aware reports/guard rules require their own acceptance. No numeric adoption.
+- 2026-10-15: retain the canonical-input group-carry counterexample and distinguish
+  its synthetic unequal prefix from an admitted equal-prefix raw reversal with equal
+  ledger payments. Canonicalization does not supply the missing temporal proof;
+  no new algorithm, bound, arithmetic or RFC acceptance follows.

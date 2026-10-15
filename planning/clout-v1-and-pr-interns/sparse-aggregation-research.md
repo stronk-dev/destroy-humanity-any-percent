@@ -3,6 +3,15 @@
 Status: unapplied arithmetic prototype, **not adoption-ready**. Baseline35011479.
 Production still uses the accepted grouped algorithm. This does not repair AC6.
 
+2026-10-15 proof-boundary supplement: the shared
+`testdata/numeric-canonical-group-carry-v1.json` also disproves monotonic grouped
+Q12 summation when EVERY input is canonical. The Go/TS retained-negative tests
+bind65537 terms and1.96805804806e6→1.96805804805e6 after a larger partial input.
+An admitted equal-prefix production origin exhibits raw reversal but equal
+ledger payments; the committed unequal-prefix case is not proved reachable.
+This does not activate or newly benchmark this prototype. H3c/owning log hold
+the precise evidence and remaining actual-caller proof obligation.
+
 ## Representation and proposed arithmetic
 
 Every valid nonzero normalized binary64 mantissa has unbiased binary exponent0..3.

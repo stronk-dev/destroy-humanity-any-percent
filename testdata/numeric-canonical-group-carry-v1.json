@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "repeat_count": 65535,
+  "repeat_value": "3.003003003e1",
+  "fixed_last": "3.003004057e1",
+  "variable_lower": "9.99999999999e0",
+  "variable_upper": "1e1",
+  "lower_payout": "1.96805804806e6",
+  "upper_payout": "1.96805804805e6",
+  "literal_sum_denominator": "100000000000",
+  "literal_lower_numerator": "196805804805661999",
+  "literal_upper_numerator": "196805804805662000"
+}

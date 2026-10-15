@@ -4749,3 +4749,73 @@ retry passed. Full history guard stays RED at50a3a514; its checkout/adversarial 
 All reviewer commands terminal; ignored diagnostic config only, no tracked edits/commits/Docker.
 No independent Firefox/Linux/SQL/default-player/natural-loss/AC6/normative/feature/archival/
 release approval. RP-672 corrective review closes; other accounting/1.0 gates remain.
+
+## 2026-10-15 — Check the remaining canonical group-carry proof boundary
+
+H3c's fixed-exponent sublemma does not cover a canonical partial term crossing9.99999999999→10
+into the next exponent group. Diagnose that specific boundary, not repeat seed666's positive
+burst census: five canonical full-bucket coefficients from burst fractions250/333/500/667/750
+of1000ms, with equal prefixes2^16−1/2^16/2^16+1. Compare actual grouped sums before/after,
+raw and Quantize12, with input-order controls. A reversal would refute the proposed proof
+step; it becomes a temporal finding only after actual same-origin admitted Evaluate confirms
+reachable partial terms. No-find is no general proof and does not authorize search or arithmetic.
+
+Initial Node diagnosis completes15/15: six raw reversals, zero committed reversals.
+For coefficient3.003003003e1/prefix65536, raw coefficients at exponent6 fall
+1.96805804804446→1.9680580480444572; both commit1.96805804804e6. Thus raw monotonicity
+is already false with canonical inputs, though the player predicate is not disproved.
+Next isolate the quantization seam at that pair with one fixed positive shim near5.4e-7
+(the gap to its next Q12 midpoint), fixed literals5.38/5.39/5.40/5.41/5.42e-7. This
+changes the proof question, not a substitute larger temporal census: confirm any committed
+counterexample through the actual aggregator, then determine whether real bucket histories
+can produce that prefix. A synthetic prefix is not itself a reachable gameplay history.
+
+All five small-shim cases align to the same raw1.968058048045e6 in both arms: the extra
+Decimal Add removes the normalization-path distinction. Instead perturb one EXISTING
+full-bucket term in the same exponent group, retaining65536 prefix entries and the same
+partial pair. Target3.003003057e1 and its two adjacent canonical values each side
+(±1/2 units of1e-10 in value), derived from the same midpoint gap. This directly tests
+whether that already-observed raw reversal can survive Q12 without an additional alignment.
+
+Those five cases retain raw reversal but Q12 rounds the exact lower endpoint tie toward
+even…04, so both still agree. Test the SINGLE predicted next midpoint by adding1e-5 to
+that modified prefix bucket (3.003004057e1): the tie should now round toward…06 while
+the smaller raw arm remains below it. This is a literal rounding-parity prediction,
+not a wider search population; retain the outcome whichever direction it takes.
+
+The predicted odd-tie case DOES reverse Q12:1.96805804806e6→1.96805804805e6.
+Retain it in one compact shared fixture and actual Go/TS tests with reversed-order,
+input-ownership, positive/equal and independent decimal-literal rational controls.
+Reachability check is ONE derived profile, not a census: rate3.003003003e-11,
+speed1e12,1000ms ticks,65536 full buckets,333ms burst portion in the partial bucket.
+Find its adjacent partial canonical9.99999999999→10 pair, compare actual raw sums,
+then reuse admitted v17 Evaluate/ledger controls at both endpoints. Expect raw reversal
+but equal committed payments for the unmodified prefix. The synthetic odd-tie case's
+extra unequal fixed bucket is NOT silently assumed reachable from this origin.
+
+## 2026-10-15 — Canonical group-carry proof shortcut refuted; real boundary retained
+
+Shared65537-term fixture repeats65535×3.003003003e1, fixed3.003004057e1 and partial
+9.99999999999→10. Actual Go/TS grouped Q12 falls1.96805804806e6→1.96805804805e6.
+Independent exact decimal-literal sums196805804805661999/1e11→196805804805662000/1e11
+increase; reversed-order/immutable-input and positive/equal controls pass. Native raw
+upper coefficient differs from Node by one representational step; no raw byte-parity claim.
+One DERIVED actual admitted v17 origin with equal full buckets reaches raw reversal at
+adjacent499/500ms; fresh Evaluate/ledger projections both pay1.96805804804e6, origin
+unchanged. The synthetic unequal prefix's reachability and actual decreasing resource
+predicate remain UNPROVED. H3c/plan now reject the generic canonical-input proof shortcut,
+not the still-required actual caller proof. Sparse candidate is not activated or benchmarked.
+
+Executed: full native Decimal0.479s/vet; native two Production research tests0.932s, including
+unchanged20000 population solely because the shared admission helper gained a speed argument.
+Node6306/50950 and types7342 pass. Linux-amd6495886 executes both new cases0.158/1.322s;
+Linux Chromium/Firefox/WebKit85245 executes both retained research tests,6 passes. No selected
+skip. New witness is research/test-only: no numeric golden, source math, report, CI, balance,
+kernel222, owner copy or accounting implementation change. No full Production/27-partition,
+closed modern replay/hook, SQL, natural-player loss, H3c or feature-completion claim.
+Review by: Codex (research/draft author first filter). Recorded by: Codex. Complete research/
+test/draft/record range startsda38175d-exclusive through this containing commit; designated
+research/normative review/adoption remains outside corrective-review delegation and pending.
+All handles terminal. Only root-owned twice-inspected tmpfs72cd9ece… stopped/removed after
+tests; unused disposable SQL data unrecoverable. Initial/final Compose empty, same two
+builders, caches/volumes preserved. No publication, deployment, archival or release approval.

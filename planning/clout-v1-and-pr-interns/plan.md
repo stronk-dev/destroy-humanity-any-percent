@@ -8,6 +8,15 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+RP-664/H3c: canonical-input aggregation also has a retained Q12 group-carry
+counterexample (65537 terms). Go/native/Linux, Node and Linux three-engine checks
+reproduce it. A derived admitted equal-prefix origin reaches the raw reversal at
+adjacent499/500ms but pays equal ledger amounts. The unequal-prefix committed
+counterexample's reachability is NOT established. H3c now excludes a generic
+canonical-input summation lemma as well as the earlier raw-rate lemma. Next prove
+actual prefix/quantization/ledger constraints or a separately adopted numeric route;
+do not expand passing temporal censuses or infer a live affordability-search defect.
+
 RP-672 separately reproduces the upper-domain mismatch through admitted v17 inputs
 and actual Go/TS ApplyLogged, not a formula reconstruction. TS now uses Go's seconds-
 first order and refuses infinity-class seconds/payment; kernel222 reflects real replay
