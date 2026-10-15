@@ -4463,3 +4463,61 @@ normative adoption or a new empirical study. No production/test/fixture/report/v
 bytes change and no software rerun is warranted solely for this prose. Review by:
 Codex (draft author, NOT designated normative review). Recorded by: Codex. Next is the
 remaining actual normalization/group-boundary proof, not expansion of positive samples.
+
+## 2026-10-15 — Declare bounded sparse-candidate identity-path optimization
+
+RP-664's unapplied candidate has measured48 allocations for one-source accrual; its exact
+zero/single-input identity needs no sparse integer accumulator. Test a Go-only fast path for
+length0/1, validating before return and preserving canonical positive zero. Multiple inputs
+and the entire arithmetic/rounding fallback remain unchanged. Preserve the original overlay
+and its hash as the comparison arm, not overwrite historical evidence. This is prototype
+engineering, not activation, a new numeric contract or progress on H3c's missing caller proof.
+
+Before measurement: require existing14 edge controls,2048 independent-rational/raw profiles
+with unchanged witness digest, original RP-664 pair and Pitch compatibility counterexample.
+Add raw identity/invalid/signed-zero/full-exponent controls against zero-padded general sum;
+no payout tolerance or input exclusion. If these pass, use the existing five actual-caller
+benchmark rows,100ms/sample,count3, two sequential rounds of old candidate→optimized candidate
+→active implementation. Wait for other owned Go/browser/SQL work to finish before timing;
+record complete rows, medians and allocation counts, machine/source identities and limitations.
+No complete-workload, hosted or adoption claim from short native measurements. No repeated
+positive census or hidden production/CI/budget/golden/kernel change is authorized.
+
+## 2026-10-15 — Sparse identity-path result: cheaper, still unadopted
+
+The Go test-only prototype now short-circuits length0/1 with validation/canonical positive
+zero; all multi-input arithmetic stays byte-unchanged. Exact identity supplies the proof of
+this transformation. Raw tests compare a forced-general zero-padded sum and literal input,
+including signed zero, invalid/unnormalized/diagnostic values and full-domain endpoints.
+Focused sparse native passes0.260s; full cold Decimal0.337s/vet pass. Declared Linux-amd64
+30477 passes0.234s: identity/14edges/2048 rational+reverse+ownership/original pair/retained Pitch
+counterexample, unchanged ef6cdc7626… raw witness digest. No new TS/browser/runtime behavior.
+
+Original ignored overlay f83a37cf… is untouched; mechanically copied optimized overlay SHA256
+60dbfd2966571baa51a38054160c278fe24e494d05104849eb42d84b6679842a replaces only aggregate.go
+in manual builds. Both actual Company/Pitch witness pairs30036/55358 fail IDENTICALLY on old/
+optimized overlays, preserving known incompatibilities; active87195 passes both. A mistaken
+whole sparse-test overlay run makes the current/candidate comparison identical and correctly
+refuses a missing disagreement; it is invalid comparison evidence. First narrowed dollar
+regex fails shell parsing before tests; corrected four-parent overlay selection passes0.163s.
+
+After all reviewers explicitly release Go/SQL/browser work, six sequential benchmark arms
+complete (two old→optimized→active rounds,5rows×3samples×6arms=90), no omitted/failed row.
+Actual Darwinarm64/Go1.27.2/AppleM3Max metadata from benchmark; hardware sysctl denied.
+One-source candidate48→0 allocations,1s median1021–1028→57.47–57.97ns,24h1030–1041→62.01–62.54ns.
+Restore/Evaluate220/242→76 allocations,4853–5004/4912–4975ns optimized medians. Eight-source
+157 allocations stays157 and medians3048–3199ns versus active356.9–360.9ns: major remaining
+cost, not adoption readiness. Dossier retains full table/recipe; ignored raw artifact SHA256
+19026d95da52dfd9a21e14deb0ba847f111a28745b0b9ead63f37eec588a868d retains every output/command.
+Short sequential samples are not confidence intervals, hosted timing or complete workloads.
+
+Review by: Codex (prototype/test implementer first filter, NOT designated review).
+Recorded by: Codex. Full research/test/record range begins38dfc002-exclusive through this
+containing commit. No product/canonical-doc/kernel/CI/golden/owner-copy changes; actual
+27 partitions/history failures stay open, not rerun or fixed by these measurements. Caller/
+version/catalog/Commons/harness dispositions, independent review/adoption and actual full
+workloads remain before activation; H3c's general temporal proof remains separate. All test/
+benchmark handles terminal. Initial service inventory empty; after all checks, inspected
+95c2085e… has this checkout's exact Compose labels, no mounts and tmpfs-only DB. Stop/remove
+only that created service; final inventory empty. Disposable test data is unrecoverable,
+no SQL used in this experiment; caches/volumes/networks/preexisting builders preserved.

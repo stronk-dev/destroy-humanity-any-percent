@@ -265,3 +265,62 @@ is independent of exponent distance. Consider proven-equivalent zero/single-inpu
 fast paths and allocation reduction before adoption, then run the actual complete
 producer/search workloads. These short native measurements are neither a production
 budget, hosted-runner benchmark, full offline-axis test nor final performance proof.
+
+## Bounded Go identity-path optimization — 2026-10-15
+
+At baseline38dfc002, add only the exact length0/1 identities to the Go test prototype.
+No inputs gives canonical positive zero. One input is first checked with IsStateValue;
+invalid/diagnostic/unnormalized values still give NaN, either signed zero becomes canonical
+positive zero, and other valid inputs return their unchanged represented value. The exact
+represented sum of one such input is the input, so no rounding/normalization is needed.
+Two or more inputs still use the unchanged full sparse algorithm, including zero padding
+and invalid inputs. This is not a one-nonzero-term filter, changed quantizer or domain restriction.
+
+The new raw-bit identity controls compare against a deliberately zero-padded general sum,
+literal input identities and invalid/signed-zero/full-exponent boundaries. Cold full native
+Decimal/vet pass. Existing14 edge controls,2048 independent-rational profiles, original pair
+and retained Pitch disagreement pass in native Go and declared Linux-amd64 Go. Witness SHA256
+remains `ef6cdc7626f91ff237961488f84f07a022b5ac746542d53dfb68fb258768047f`.
+TS prototype is untouched; this is Go execution/equivalence evidence, not new browser proof.
+
+Preserve the original overlay SHA f83a37cf… as the old arm. The separate optimized ignored
+overlay `.cache/sparse-aggregation-single-candidate.go` mechanically copies all current helper
+declarations with Research→Overlay suffixes and the same fail-loud wrapper. Its SHA256 is
+`60dbfd2966571baa51a38054160c278fe24e494d05104849eb42d84b6679842a`.
+The corresponding `.cache/sparse-aggregation-single-go-overlay.json` replaces only aggregate.go
+for manual research builds, never tracked production. Actual Company/Pitch compatibility
+tests fail identically on BOTH overlays: Company upper payout1.01245957117e1 instead of the
+current1.01245957116e1; Pitch5.97255552033e3/playing instead of5.97255552034e3/shop. The same
+two tests pass on active source. Cost reduction does not repair these incompatibilities.
+
+Predeclared measurement: existing five actual-caller rows,100ms per sample,count3; two
+sequential old→optimized→active rounds. All owned reviewer Go/browser/SQL work is terminal
+before timing starts. All six arms/90 result rows complete on Darwin arm64, Go1.27.2,
+Apple M3 Max. Ranges below are two per-round medians, NOT confidence intervals:
+
+| Actual call | Old candidate ns/op | Optimized candidate ns/op | Active ns/op | Old→optimized allocations/op |
+|---|---:|---:|---:|---:|
+| Eight-source accrual |3034–3159|3048–3199|356.9–360.9|157→157|
+| One-source accrual,1s |1021–1028|57.47–57.97|97.87–98.10|48→0|
+| One-source accrual,24h |1030–1041|62.01–62.54|99.44–101.6|48→0|
+| Restore + Evaluate,1s |8343–8441|4853–5004|5081–5216|220→76|
+| Restore + Evaluate,24h |9137–9341|4912–4975|5035–5146|242→76|
+
+Single-source accumulator cost is removed, not merely hidden by shorter work. Full interval/
+receipt credit and fresh restoration checks remain in every benchmark iteration. Eight-source
+cost/allocation remains substantial; the one3888ns sample remains in the raw record, not dropped.
+Raw commands/outputs are ignored `.cache/sparse-aggregation-identity-bench-38dfc002.json`, SHA256
+`19026d95da52dfd9a21e14deb0ba847f111a28745b0b9ead63f37eec588a868d`.
+Run the existing benchmark command above with that second overlay for the optimized arm;
+the tracked helper and baseline38dfc002 retain both code versions independently of cached files.
+
+Disclosures: an initial overlay selection wrongly ran the current-versus-candidate search with
+both arms replaced, so its no-disagreement refusal is preserved, not correctness evidence.
+A first narrowed regex loses its dollar through Make and runs no tests; corrected selector
+passes. Hardware sysctl is sandbox-refused; actual Go benchmark output supplies CPU identity.
+The declared Go service starts an otherwise unused disposable Postgres; no SQL is tested here.
+No thresholds, population, golden, report, CI, active arithmetic or kernel version changes.
+This is author-verified prototype work, NOT designated review, adoption or AC6 repair.
+Next is proven-equivalent multi-input allocation reduction and full affected workloads, plus
+the still-required caller/version/baseline dispositions and normative review. H3c's fixed-origin
+proof,27 accounting failures, RP-663 and full1.0 obligations remain separate and unresolved.

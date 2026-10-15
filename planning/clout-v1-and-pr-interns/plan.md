@@ -8,6 +8,14 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+RP-664 candidate cost reduction: Go-only exact length0/1 identities now preserve the existing
+raw witness digest and invalid/signed-zero/full-exponent controls. Two isolated matched
+actual-caller rounds remove one-source candidate48 allocations→0; eight-source157 remains.
+Both overlays still change Company/Pitch results identically. The sparse dossier/log owns
+commands, medians and failed-selection disclosures; not active arithmetic or an adopted repair.
+Continue multi-input cost/caller dispositions and the separate general H3c proof, not another
+positive monotonicity census or a version/golden change to conceal incompatibility.
+
 The proposed private origin JSON/hash protocol is withdrawn: no identified consumer
 persists or transmits these handles. Parent C1e now proposes opaque typed run-local
 ownership using existing save/replay validators, with forks sharing identity and

@@ -158,6 +158,22 @@ func sparseFloorResearch(pieces []sparsePieceResearch, exponent int64, work *spa
 
 func sparseSumResearch(values []Decimal) (Decimal, sparseWorkResearch, error) {
 	work := sparseWorkResearch{}
+	// The exact sum of no inputs is canonical zero; one valid input is
+	// already its exactly represented sum. Preserve canonical positive zero
+	// and validate before returning, including diagnostic/unnormalized inputs.
+	if len(values) == 0 {
+		return Zero, work, nil
+	}
+	if len(values) == 1 {
+		value := values[0]
+		if !value.IsStateValue() {
+			return NaN, work, nil
+		}
+		if value.mantissa == 0 {
+			return Zero, work, nil
+		}
+		return value, work, nil
+	}
 	positive, negative := map[int64]*big.Int{}, map[int64]*big.Int{}
 	for _, value := range values {
 		if !value.IsStateValue() {
@@ -246,6 +262,42 @@ func sparseSumResearch(values []Decimal) (Decimal, sparseWorkResearch, error) {
 		return NaN, work, nil
 	}
 	return result, work, nil
+}
+
+func TestSparseAggregationResearchIdentityPaths(t *testing.T) {
+	got, _, err := sparseSumResearch(nil)
+	if err != nil || math.Float64bits(got.mantissa) != 0 || got.exponent != 0 {
+		t.Fatal("empty sum is not canonical positive zero", got, err)
+	}
+	for _, value := range []Decimal{
+		Zero, {mantissa: math.Copysign(0, -1)}, One, One.Neg(),
+		New(math.Nextafter(1, 2), 0), New(math.Nextafter(10, 0), maxExponent),
+		New(-math.Nextafter(10, 0), -maxExponent), New(1, -maxExponent),
+		NaN, Inf, NegInf, {mantissa: 10}, {mantissa: 1, exponent: maxExponent + 1},
+		{mantissa: 1, exponent: -maxExponent - 1}, {exponent: 1},
+	} {
+		// Zero padding deliberately forces the unchanged general accumulator.
+		// At full-domain endpoints the literal identity is also checked; the
+		// existing bounded rational population remains the independent oracle.
+		want, _, generalErr := sparseSumResearch([]Decimal{value, Zero})
+		got, _, err := sparseSumResearch([]Decimal{value})
+		if err != nil || generalErr != nil || value.IsStateValue() &&
+			(math.Float64bits(got.mantissa) != math.Float64bits(want.mantissa) || got.exponent != want.exponent) ||
+			!value.IsStateValue() && (!got.IsNaN() || !want.IsNaN()) {
+			t.Fatalf("identity differs from general sum: input(%g,e%d) got(%g,e%d) want(%g,e%d) errors%v/%v",
+				value.mantissa, value.exponent, got.mantissa, got.exponent, want.mantissa, want.exponent, err, generalErr)
+		}
+		if value.IsStateValue() && value.mantissa != 0 &&
+			(math.Float64bits(got.mantissa) != math.Float64bits(value.mantissa) || got.exponent != value.exponent) {
+			t.Fatal("single valid input is not its exact represented value", value, got)
+		}
+		for _, inputs := range [][]Decimal{{value, Zero}, {Zero, value}} {
+			result, _, err := sparseSumResearch(inputs)
+			if err != nil || !value.IsStateValue() && !result.IsNaN() {
+				t.Fatal("zero padding hides invalid input", value, result, err)
+			}
+		}
+	}
 }
 
 func TestSparseAggregationResearchEdges(t *testing.T) {
