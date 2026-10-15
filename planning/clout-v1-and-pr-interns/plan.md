@@ -8,6 +8,11 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+RP-536 contained cap-presentation correction is independently approved across complete
+30050a93..373396d4. Old-panel16 failures and corrected Linux24 correction cases execute;
+owning log records actual complete axis/consumer checks. Combined screens run retains separate
+Firefox setup failure RP-673, not a claimed green CI or Clout/accounting/content completion.
+
 RP-664/H3c: canonical-input aggregation also has a retained Q12 group-carry
 counterexample (65537 terms). Go/native/Linux, Node and Linux three-engine checks
 reproduce it. A derived admitted equal-prefix origin reaches the raw reversal at

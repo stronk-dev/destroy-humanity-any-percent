@@ -4819,3 +4819,39 @@ research/normative review/adoption remains outside corrective-review delegation 
 All handles terminal. Only root-owned twice-inspected tmpfs72cd9ece… stopped/removed after
 tests; unused disposable SQL data unrecoverable. Initial/final Compose empty, same two
 builders, caches/volumes preserved. No publication, deployment, archival or release approval.
+
+## 2026-10-15 — Clout cap-presentation containment independently approved (RP-536)
+
+Review by: /root/clout_cap_presentation_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcription. APPROVED complete
+30050a9364209feadfecf2a7877405eef176077a-exclusive through
+373396d439fdf6eaa2d28cb36e85e30a24cb03d6-inclusive, one commit/all6 paths. Accepted
+CV9/GS0.5: actual zero-parameter copy signature, existing contained alert/descriptions,
+once-per-error reporting/healthy recovery and operational independent Desk controls. No new
+copy, numeric, decoder, request or policy. Current panel/host/copy resolver match endpoint;
+later keyboard diagnostics in test are inspected context, not enlarged approval.
+
+Independent ignored Vite overlay loads exact original panel via git show without tracked
+mutation: all16 native Chromium/WebKit correction executions fail, saturated RangeError/
+TypeError and below-cap missing alerts. Initial config/import errors and sandbox listener
+refusal run no tests. Old completed run's ancillary screenshot filesystem denial is not
+the behavioral failure cause. Corrected Linux ARM64 axis/screens54143 includes all24 new
+three-engine correction cases; axis81 CLI passes split78 ordinary+3 expected blocked-Close
+controls (NOT deadlines). Node105, types0/0, shipped client build and boundary verification
+pass. Isolated native render budget16788 passes5,105 unrelated deselected,5.58s.
+
+Retained RED: combined Linux54143 exits unsuccessfully,392 ordinary+3 expected controls
+pass, one ordinary Firefox failure and15 performance exclusions. Screens `late http-conflict
+completion cannot refresh an unmounted host`, line235, sees requests0 rather than1 before
+unmount/late-completion assertions. No axis_stack means the corrected panel is unmounted;
+failure cause remains unknown. No reassurance rerun/assertion adjustment. Root records RP-673
+in backlog/CI log; it is not a passed consumer file or full CI. Native Enter/readiness/lifetime
+must be diagnosed rather than inferred from absent dispatch. Exact census clarified from
+definitions/terminal summaries, no rerun.
+
+Real browsers/DOM/runtime with synthetic decoder-admitted wire arms, not actual minted
+producer state/public exploit, SQL/composed or assistive technology. Linux daemon ARM64,
+not native hostedamd64. No full CI, authored content, numeric/accounting adoption,27-partition
+repair, whole Clout, archival or release approval. All handles terminal; reviewer changes
+no tracked bytes/commits/source; ignored reproduction retained. Final Docker inventory is the
+same two preexisting builders. This closes only RP-536 corrective review; full1.0 remains open.
