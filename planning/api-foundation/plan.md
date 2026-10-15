@@ -215,7 +215,8 @@ shared operation adapter to the existing APIError descriptor. Five old Garden/So
 fail; the corrected affected units312/native Chromium-WebKit702, cold generator packages/vet,
 types/build and deterministic generation pass. Existing valid typed rejections, minigame
 ExactJSON checks, server bytes and retry/recovery policies remain unchanged. Owning log records
-the whole range after `e56da0ec`, pending Claude review. This is global error-shape conformance,
+independent Codex corrective approval for the complete nine-path `e56da0ec..180f25e2` range.
+This is global error-shape conformance,
 not complete per-operation error-pair coverage, real server/SQL or whole API/CI acceptance.
 
 Current bounded correction (2026-10-14, RP-568): generated schema-response decoding now refuses
@@ -223,7 +224,8 @@ malformed UTF-8 rather than repairing reply bytes. All36 old-client refusals rep
 Node289/native Chromium-WebKit578, cold generator packages/vet, types/build and deterministic
 generation checks pass. Valid Unicode/JSON escapes/BOM tolerance, body-read failures and raw
 byte/hash identity remain unchanged. The owning log records exact evidence and the whole range
-after `5872b66e`, pending Claude review. This is encoding conformance, not runtime DTO validation,
+and independent Codex corrective approval for the complete seven-path `5872b66e..e56da0ec` range.
+This is encoding conformance, not runtime DTO validation,
 draft adoption, real-server/SQL or full API/CI acceptance. Continue accepted API construction;
 the existing owner-schema/wire/dictionary/bodiless boundaries remain explicit below.
 
@@ -242,8 +244,10 @@ not a product arithmetic ruling or a historical-byte rewrite. Separately, the ac
 grammar now refuses Go quoted numeric fields and TS array axes; shared old-source regressions
 and freshly hashed replay-bundle checks execute in both runtimes. Kernel0.3.190 records this
 real admission correction and registers both relevance owners as affecting paths. The owning
-log records final checks, the existing red history guard and the complete range after
-`bd0c9b97`, pending Claude review. This does not finish C18, public catalog serving or1.0.
+log records final checks and fresh independent Codex corrective approval of the complete
+16-path `bd0c9b97..f900340d` range. Independent old-source failures, corrected Go/TS/replay
+checks and still-red historical guard are retained with their limits. This does not adopt
+the representation proposal or finish C18, public catalog serving or1.0.
 
 Current bounded correction (2026-10-14, RP-564): generated response metadata now preserves
 the registry's existing ExactJSON literals, and the shared minigame operation port uses them

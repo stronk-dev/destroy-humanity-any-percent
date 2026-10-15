@@ -3955,3 +3955,94 @@ Reviewer made no tracked edits, commits, Docker resources or publication. Its ow
 was clean; root's subsequent Compose research is separate. RP-570 corrective review closes,
 not full DTO/union validation, current default-handler coverage, Linux/browser/SQL/hosted CI,
 new generated-surface adoption, whole API acceptance, archival or release approval.
+
+## 2026-10-16 — Schema-reply encoding correction independently approved (RP-568)
+
+Review by: /root/api_schema_reply_encoding_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete seven-path single-commit range
+5872b66e7ca82f44cae8d80574599c52941a7a84-exclusive..e56da0ec4022d96e85f3a178cd262c3aff9e16b9-inclusive.
+Generator template/generated transport, generated-API test, canonical docs/backlog/plan/log
+all inspected. Accepted A5/C9/C19: fatal UTF8/JSON parsing stays in sanitized-error boundary,
+body read outside it. Unicode/escapes/BOM and raw evidence handling remain; no new DTO/policy.
+
+Independent historical transport plus exact endpoint tests through ignored Vite aliases:
+all36 corrupt replies admitted/fail;12 selected Unicode/raw controls pass,80 deselected.
+Corrected exact endpoint128 pass. Current affected Node321, native Chromium/WebKit264 pass;
+cold PublicAPI/GenAPI0.354/0.247s, vet/types(0 errors/warnings)/build/api-check pass, generated
+bytes unchanged. Whole-range whitespace clean. Current decoder is later extracted into a
+helper; exact endpoint alias runs independently prove this correction, not a mixed snapshot.
+
+Execution8de961e41239813ec63a039bfd3059c911295987. Initial browser localhost EPERM runs zero;
+narrow escalated same population executes. Two guessed config/pin diagnostic reads do not
+exist/provide evidence. No tracked edits/commits/Docker resources/servers remain; ignored
+snapshots/configs retained. Reviewer's final tracked tree clean. No real Go HTTP, SQL,
+Firefox/Linux, hosted CI, full API/normative adoption/archival/release approval follows.
+
+## 2026-10-16 — Typed-error detail correction independently approved (RP-569)
+
+Review by: /root/api_typed_detail_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete nine-path single-commit range
+e56da0ec4022d96e85f3a178cd262c3aff9e16b9-exclusive..180f25e2c0c0d8129457587dae75449f7195dd47-inclusive.
+Generated TS/session port/port test/Go generator+test/docs/backlog/plan/log inspected.
+Accepted A4/A5/C9/C17: descriptor-owned detail membership gates typed API errors, unknowns
+become body-free transport errors; enum-free null means unrestricted, not empty set.
+Existing per-operation/status ExactJSON checks remain additional constraints. Server literals,
+statuses, retry/recovery and successful-DTO validation unchanged.
+
+Independent old port+endpoint generated source: five Garden/Soul failures,111 controls pass,
+minigame literal refusals hold. Old generator fails all4 bounded/changed/unbounded/Unicode
+metadata cases. Corrected endpoint port116 pass; exact endpoint generator/test overlay full
+cold PublicAPI/GenAPI0.271/0.238s pass. Current affected Node331/5files, native Chromium/WebKit
+344/6file-executions pass. Affected vet/types(0 errors/warnings)/build/api-check pass.
+OpenAPI bb8f9de6747486b4779219eef0cf7e895e0f81718a537602159b015116f1bd40,
+compatibility dc3c959959613bcd247fe86316db0ad75cbceb42389062a4d842f70b8b4afb85,
+generated TS ff48cdbcc73637b70aecd23d5d2788164b069d2fc8bb113bbdef84fe13649eae
+unchanged before/after. Source formatting/range whitespace clean.
+
+Excluded mixed snapshot has22 failures: old generated source lacks later decodeJSONResponse/
+request-ID fields needed by current consumers. Exact endpoint and current checks then separated,
+no assertion weakened. Invalid browser selector and sandbox EPERM each run zero cases;
+corrected narrow elevated selection passes. Browser51989 overlaps relevance review briefly
+(00:45:13–18); occupied63315 auto-selects another port. Neither fails/no unowned process killed;
+root coordinated only two of three reviewers, causing the oversight. Functional evidence only,
+not performance/timing. Execution8de961e41239813ec63a039bfd3059c911295987; no tracked mutations,
+commits, Docker resources or publication; reviewer tree clean. Adjacent RP-570 separately
+approved, not re-adjudicated. No real Go HTTP/SQL/Firefox/Linux/hosted/full API/adoption/
+archival/release evidence. Full original feature/review gates remain.
+
+## 2026-10-16 — Relevance input-kind correction independently approved (RP-567)
+
+Review by: /root/api_relevance_kinds_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete16-path single-commit range
+bd0c9b9787cda419cf7ec6183d36760107040166-exclusive..f900340d41007ade6f69ad622f272e8047573559-inclusive.
+Inventory:3 mirrored kernel versions, affecting-path registry, Go relevance owner, TS relevance,
+relevance/replay client tests, Go replay test, shared mutation corpus, manual integer probe,
+API/balance-harness docs, backlog and owning plan/log. Go preserves numeric kind before lexical
+validation; TS requires actual closed string. Exact integral decimal/exponent admission stays.
+Genuine189→190 and both affecting owners, not a balance/math/CI/artifact rewrite.
+
+Independent old Go compiler overlay fails all3 quoted shared cases and2 freshly hashed replay
+admissions; decimal/exponent controls pass, Make exit2. Old TS resolver overlay fails array axis,
+27 other current cases pass/exit1. Corrected current26 shared cases pass: original20 plus6 later
+controls, latter not approved as part of this range. Cold RelevancePolicy(no standalone tests)/
+ReplayCatalog0.538s/Kernel0.161s pass; harness policy0.250s and4-owner vet pass. Node relevance/
+replay219, Go Decimal0.477s and Node6304 numeric vectors pass. Native Chromium/WebKit6files/
+13046 executions pass/no reported skips; types/Svelte0errors/warnings, client build/api-check
+pass with generated bytes unchanged. Seven manual actual-owner/registry integer populations
+match declared mismatches/controls; quoted fields now refuse. RP-566 proposal remains unadopted.
+
+Independent actual history guard exits2 at historical50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444
+versus0cf9f7a6aba4038fadcdf35e5b94f56986164af7; checkout/adversarial topology controls pass,
+full guard not green. No exception/relaxation/rewrite. Initial relative Vite config fails before
+tests; absolute overlay executes28 with import-meta bundling warning. Invalid browser selector
+and sandbox EPERM run zero; corrected narrow localhost run executes. Its00:44:44–00:45:18
+browser interval overlaps RP-569 for5s; root's incomplete three-reviewer coordination is the
+cause. Both functional populations pass, no timing/performance inference.
+
+Execution8de961e41239813ec63a039bfd3059c911295987, relevant sources endpoint-identical;
+range whitespace/current formatting clean. Reviewer made no tracked edits/commits; all handles
+terminal/tree clean. No Firefox/Linux/SQL/HTTP/player journey/full pacing/C18/API/normative/
+research adoption, archival or release approval. Broader27 Clout failures remain separate.
