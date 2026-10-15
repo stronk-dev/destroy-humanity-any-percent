@@ -4046,3 +4046,36 @@ Execution8de961e41239813ec63a039bfd3059c911295987, relevant sources endpoint-ide
 range whitespace/current formatting clean. Reviewer made no tracked edits/commits; all handles
 terminal/tree clean. No Firefox/Linux/SQL/HTTP/player journey/full pacing/C18/API/normative/
 research adoption, archival or release approval. Broader27 Clout failures remain separate.
+
+## 2026-10-16 — Registered-literal client refusal correction independently approved (RP-564)
+
+Review by: /root/api_registered_literal_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete nine-path single-commit range
+5cd7119f0df6139d070e12bcad09cdfdb8407fc7-exclusive..6bd399446ca2baf2eadf86ac659b3e9f1223d440-inclusive.
+Inventory: generated TS, session port, port test, Go generator/test, API docs, backlog,
+owning plan/log. All inspected under accepted A5/C9/C17/MA-C7. Existing response literals
+remain the authority; selected operation/status semantic category/detail must match before
+typed refusal. No handwritten table or server-contract amendment.
+
+Independent old-generator/exact-endpoint-test overlay37047 FAILS missing literal metadata,
+Make2/package1; corrected endpoint46303 passes0.206s. Exact endpoint test/generated module
+plus old port97289 fails20/107:16 pair refusals and4 cross-operation idempotency checks,
+87 controls pass. Corrected same endpoint107/107 pass, no assertions changed. Current ports
+116/116 and generatedAPI/minigame/Soul surfaces146/146 pass. Current cold PublicAPI/GenAPI
+0.158/0.142s, matching vet, types/build(0 Svelte diagnostics), api-check pass. API/pin/generated
+identities unchanged before/after. Native Chromium/WebKit55577 executes612/612 in5files×2,
+terminal0/8.63s, including mounted minigame/Soul/Garden consumers. Browser slot released.
+Decoded exact endpoint metadata:15 operations/64 rows/155 literals; removing only exactJSON
+leaves other metadata parent-identical; every literal is a category/detail two-field object.
+
+Execution56f8a27851a4592455ff885a2a8c70b4840a23b5. Initial browser sandbox bindEPERM runs0;
+narrow permitted rerun executes. Firefox not run, not credited. Ignored Vite import-meta/CJS
+warnings do not prevent both overlay outcomes. Initial Node selector names one nonexistent
+extra file and executes only existing ports; correct other-file selection then executes146.
+Overlays isolate endpoint behavior, not a complete historical checkout. Complete-range
+whitespace/current tracked tree clean at reviewer finish; root's subsequent RP-676 research
+is separate. No tracked reviewer edits/commits/Docker/DB/resources except ignored snapshots.
+Adjacent RP-568/569/570 verdicts not restarted/relabelled. No real current Go HTTP/SQL,
+Linux/Firefox/hosted/full persisted journey, raw-byte/duplicate-key or general success-DTO
+validation, normative adoption, full feature/archival/release approval. No publication.

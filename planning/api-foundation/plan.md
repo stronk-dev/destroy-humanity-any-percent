@@ -223,8 +223,8 @@ Current bounded correction (2026-10-14, RP-568): generated schema-response decod
 malformed UTF-8 rather than repairing reply bytes. All36 old-client refusals reproduce; final
 Node289/native Chromium-WebKit578, cold generator packages/vet, types/build and deterministic
 generation checks pass. Valid Unicode/JSON escapes/BOM tolerance, body-read failures and raw
-byte/hash identity remain unchanged. The owning log records exact evidence and the whole range
-and independent Codex corrective approval for the complete seven-path `5872b66e..e56da0ec` range.
+byte/hash identity remain unchanged. The owning log records exact evidence and independent
+Codex corrective approval for the complete seven-path `5872b66e..e56da0ec` range.
 This is encoding conformance, not runtime DTO validation,
 draft adoption, real-server/SQL or full API/CI acceptance. Continue accepted API construction;
 the existing owner-schema/wire/dictionary/bodiless boundaries remain explicit below.
@@ -254,8 +254,10 @@ the registry's existing ExactJSON literals, and the shared minigame operation po
 to bind typed category/detail errors to the selected operation/status. Wrong pairs fail as
 body-free transport errors; server outputs, DTOs, OpenAPI and compatibility pins are unchanged.
 The owning log records executed regression/generator/consumer checks and the Firefox startup
-limitation. The new range after `5cd7119f` needs Claude review; this is not general SDK shape
-validation, adoption of the tenant-binding draft or full API/CI acceptance.
+limitation. Fresh independent Codex corrective review APPROVES the complete nine-path
+`5cd7119f..6bd39944` range after old generator/port failures, corrected exact endpoint and
+current affected checks. This is not general SDK shape validation, adoption of the
+tenant-binding draft or full API/CI acceptance.
 
 Current bounded correction (2026-10-13, RP-535): the generated SDK now compares
 declared response media type/subtype case-insensitively, retaining exact evidence
