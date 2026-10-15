@@ -36,11 +36,15 @@ nine-tier goal remains active; no new playable tier or release was completed.
   for this candidate; resolve exact-path runtime-neutral guard authority/eligibility and
   designated review before active landing. No new routine-change RFC, false version bump,
   budget increase, deleted population, restamped golden, whole-CI or release promotion.
-- **READY FOR CLAUDE — consolidated designated review of Codex ranges:** feature-owned
-  logs identify complete corrective ranges, including newer API, archive/fixture and R-012
-  live-input work. Their implementer checks are not designated verdicts. Review prevents acceptance/archival,
-  not other authorized work. Do not restart completed original reviews or call self-review
-  designated approval.
+- **READY FOR DESIGNATED REVIEW — consolidate the remaining exact ranges:** Marco's
+  2026-10-15 delegation permits fresh independent Codex reviewers for outstanding
+  corrective-code reviews only. The owning logs now record bounded API/transport/CI,
+  intent-decoding, Combat-input and Deployment backup/operator corrective approvals;
+  do not restart them or extend them to adjacent work. New-feature acceptance,
+  research/normative specification review and product choices retain their existing
+  gates. Feature-owned logs identify the remaining complete ranges, including
+  archive/fixture and R-012 live-input work. Implementer checks are not designated
+  verdicts; review prevents acceptance/archival, not other accepted work.
 - **LOCALLY EXECUTED — affected Docker/SQL/browser/player checks:** latest whole composed batch
   `c8ed9421` passes the target, including positive idle/lifetime and actual SQL→Go/TS
   Guild replay; `b45dcd1d` completes the Linux browser phases. Backup/restore, populated archive
