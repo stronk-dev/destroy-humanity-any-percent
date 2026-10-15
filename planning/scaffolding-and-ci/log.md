@@ -2181,3 +2181,36 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Entire source/t
 plan/ledger/log range after `f667bce0` through this containing commit needs designated Claude
 review, consolidatable with existing CI conformance repairs. The preceding draft proposal
 keeps its separate normative/adoption gate; no self-approval, archive, push or deployment.
+
+## 2026-10-15 — RP-650 literal filenames in baseline and epoch history
+
+Outcome under existing Harness D6 / Leaderboards L8: use NUL-delimited, non-renamed Git
+file lists, literal exact-file selectors and no filename trimming. Registered artifact names
+retain their existing grammar; governance cannot interpret their quotes/whitespace/brackets.
+No artifact, baseline, epoch, version, history correction, workflow or runtime change.
+
+Old-code real-Git regressions: epoch session9127 misses six transient unregistered revisions
+whose bytes are subsequently restored, and refuses six valid registrations (Unicode, quote,
+tab, newline, backslash, trailing space); plain/interior-space/bracket controls pass. Baseline
+session35034 refuses six corresponding legitimate reports, includes an unrelated bracket-pattern
+match in report history, and admits three outside-path whitespace aliases plus a false input
+alias. The alias test's later mixed-classifier assertion was not reached on old code. A dirty
+actual bracket-named artifact already refuses on old code; the separate untracked bystander
+test reproduces a false refusal, not a bypass. No actual repository artifact miss is inferred.
+
+Corrected `make test-go GO_PACKAGES=./harness GO_TEST_FLAGS='-run TestEpochGuard -v'`
+session83595 PASS7.041s; corresponding `-run TestRepositoryGuard -v` session31742 PASS7.661s.
+Additional `TestRepositoryGuardLiteralGitProtocol` PASS0.406s: exact newline/trailing-space
+names, empty diff, refusal of non-NUL output and failed Git query. Full cold
+`make verify-harness-fast` PASS143.567s: entire harness78.737s, T0/T1 role0.314s,
+Commons invariance0.382s and actual committed repository baseline/epoch guards. Final
+`make vet GO_PACKAGES=./harness` PASS. The initially lost terminal response was recovered from
+this thread's completed command record; the live full gate was not restarted. No unrelated
+browser/server/full pacing study, Linux/hosted-green or release claim. The separate kernel
+history failure at50a3a514 and27 numeric partition failures remain open.
+
+Only isolated tests' disposable Git fixtures were created/removed; no services or main history
+rewrites. Update canonical docs, plan and RP-650 once. Review by: Codex (implementer first
+filter). Recorded by: Codex. Entire source/test/docs/plan/ledger/log range after `e10d24f4`
+through this containing commit needs designated Claude review, consolidatable with existing
+CI conformance repairs. No self-approval, archival, policy adoption, push or deployment.

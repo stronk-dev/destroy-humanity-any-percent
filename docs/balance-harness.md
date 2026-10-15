@@ -343,7 +343,10 @@ subject begins `BALANCE-CHANGE:` then contains only the generated pacing, seed, 
 artifact. The repository guard scans every reachable baseline revision, not only HEAD, and fails
 on shallow history, uncommitted artifacts, missing prior inputs, wrong subjects, or any unrelated
 path in the artifact commit. CI fetches complete history so local and hosted enforcement are
-identical. If a mixed artifact commit is discovered only after publication, it cannot be rewritten:
+identical. File lists preserve exact NUL-delimited Git names without trimming or rename
+collapsing; exact-file queries disable path-pattern matching. A filename containing whitespace,
+quotes or brackets has no special governance meaning. If a mixed artifact commit is discovered
+only after publication, it cannot be rewritten:
 the sole forward remedy is an append-only entry in
 `kernel/baseline-history-corrections.json`. Each entry names the exact immutable offending commit,
 its correction class, rationale, and planning log. Commits changing that registry may change no

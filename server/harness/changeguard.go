@@ -47,7 +47,6 @@ func ValidateBaselineCommit(commitPaths, inputsBefore []string, subject string) 
 func validateBaselineCommit(commitPaths, inputsBefore []string, subject string, governed, reports map[string]struct{}) error {
 	baselineChanged := false
 	for _, path := range commitPaths {
-		path = strings.TrimSpace(path)
 		if path == "" {
 			continue
 		}
@@ -68,7 +67,6 @@ func validateBaselineCommit(commitPaths, inputsBefore []string, subject string, 
 		return fmt.Errorf("baseline rewrite commit subject must begin BALANCE-CHANGE: or CONSTANTS-IDENTITY:")
 	}
 	for _, path := range inputsBefore {
-		path = strings.TrimSpace(path)
 		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/categories/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "balance/factions/") || strings.HasPrefix(path, "balance/prestige/") || strings.HasPrefix(path, "balance/guilds/") || strings.HasPrefix(path, "balance/relevance/") || strings.HasPrefix(path, "balance/testdata/") || strings.HasPrefix(path, "changelog/") || strings.HasPrefix(path, "testdata/harness/scenarios/") || strings.HasPrefix(path, "testdata/harness/relevance/") || strings.HasPrefix(path, "testdata/harness/content-dynamics/") {
 			return nil
 		}
@@ -149,11 +147,11 @@ func ValidateRepositoryBaselineChange(root string) error {
 		if err != nil {
 			return err
 		}
-		commitPaths, err := gitLines(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "-M", parent, commit)
+		commitPaths, err := gitPathNames(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "--no-renames", "-z", parent, commit, "--")
 		if err != nil {
 			return fmt.Errorf("baseline guard cannot inspect artifact commit %s: %w", commit, err)
 		}
-		inputPaths, err := gitLines(root, "diff", "--name-only", commits[index-1], parent)
+		inputPaths, err := gitPathNames(root, "diff", "--name-only", "--no-renames", "-z", commits[index-1], parent, "--")
 		if err != nil {
 			return fmt.Errorf("baseline guard cannot inspect inputs before %s: %w", commit, err)
 		}
@@ -183,7 +181,6 @@ func ValidateRepositoryBaselineChange(root string) error {
 func isMixedArtifactCommit(paths []string, governed, reports map[string]struct{}) bool {
 	hasReport, hasOutsidePath := false, false
 	for _, path := range paths {
-		path = strings.TrimSpace(path)
 		if _, ok := reports[path]; ok {
 			hasReport = true
 		}
@@ -206,7 +203,7 @@ func repositoryBaselineHistoryCorrections(root string) (map[string]baselineHisto
 		if err != nil {
 			return nil, err
 		}
-		paths, err := gitLines(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "-M", parent, commit)
+		paths, err := gitPathNames(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "--no-renames", "-z", parent, commit, "--")
 		if err != nil {
 			return nil, err
 		}
@@ -418,7 +415,7 @@ func validateContentDynamicsRegistryHistory(root string) error {
 			for _, artifact := range manifest.Artifacts {
 				required = append(required, artifact.SnapshotPath)
 			}
-			added, err := gitLines(root, "diff-tree", "--no-commit-id", "--name-only", "--diff-filter=A", "-r", "-M", baselineCommit+"^", baselineCommit)
+			added, err := gitPathNames(root, "diff-tree", "--no-commit-id", "--name-only", "--diff-filter=A", "-r", "--no-renames", "-z", baselineCommit+"^", baselineCommit, "--")
 			if err != nil {
 				return err
 			}
@@ -831,11 +828,41 @@ func gitLines(root string, arguments ...string) ([]string, error) {
 }
 
 func gitOutput(root string, arguments ...string) ([]byte, error) {
-	command := exec.Command("git", arguments...)
+	command := exec.Command("git", append([]string{"--literal-pathspecs"}, arguments...)...)
 	command.Dir = root
 	output, err := command.CombinedOutput()
 	if err != nil {
 		return nil, fmt.Errorf("git %s: %w: %s", strings.Join(arguments, " "), err, strings.TrimSpace(string(output)))
 	}
 	return bytes.TrimSpace(output), nil
+}
+
+// Paths are data, not display lines or path patterns. Keep their exact bytes;
+// callers request -z so even whitespace and rename endpoints are unambiguous.
+func gitPathNames(root string, arguments ...string) ([]string, error) {
+	command := exec.Command("git", append([]string{"--literal-pathspecs"}, arguments...)...)
+	command.Dir = root
+	output, err := command.Output()
+	if err != nil {
+		var exitError *exec.ExitError
+		if errors.As(err, &exitError) {
+			return nil, fmt.Errorf("git %s: %w: %s", strings.Join(arguments, " "), err, strings.TrimSpace(string(exitError.Stderr)))
+		}
+		return nil, fmt.Errorf("git %s: %w", strings.Join(arguments, " "), err)
+	}
+	if len(output) == 0 {
+		return nil, nil
+	}
+	if output[len(output)-1] != 0 {
+		return nil, fmt.Errorf("git filename list is not NUL-terminated")
+	}
+	fields := bytes.Split(output[:len(output)-1], []byte{0})
+	names := make([]string, len(fields))
+	for index, field := range fields {
+		if len(field) == 0 {
+			return nil, fmt.Errorf("git filename list contains an empty name")
+		}
+		names[index] = string(field)
+	}
+	return names, nil
 }

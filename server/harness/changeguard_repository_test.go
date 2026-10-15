@@ -1,6 +1,7 @@
 package harness
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
@@ -9,6 +10,84 @@ import (
 	"strings"
 	"testing"
 )
+
+func TestRepositoryGuardLiteralPaths(t *testing.T) {
+	for _, name := range []string{"plain.json", "space name.json", "café.json", "quote\"name.json", "tab\tname.json", "line\nname.json", "back\\name.json", "tail.json ", "square[0].json"} {
+		t.Run(name, func(t *testing.T) {
+			root := newGuardRepository(t)
+			runGuardGit(t, root, "config", "core.quotePath", "true")
+			report := "testdata/harness/relevance/" + name
+			data, err := os.ReadFile(filepath.Join(root, relevanceRegistryPath))
+			if err != nil {
+				t.Fatal(err)
+			}
+			var registry map[string]any
+			if err := json.Unmarshal(data, &registry); err != nil {
+				t.Fatal(err)
+			}
+			registry["entries"].([]any)[0].(map[string]any)["golden_report"] = report
+			data, err = json.Marshal(registry)
+			if err != nil {
+				t.Fatal(err)
+			}
+			writeGuardCommit(t, root, "harness: register literal report", map[string]string{relevanceRegistryPath: string(data)})
+			writeGuardCommit(t, root, "BALANCE-CHANGE: add literal report", map[string]string{report: `{"schema_version":1}`})
+			if err := ValidateRepositoryBaselineChange(root); err != nil {
+				t.Fatalf("valid literal report refused: %v", err)
+			}
+			if name == "square[0].json" {
+				writeGuardCommit(t, root, "docs: unrelated pattern match", map[string]string{"testdata/harness/relevance/square0.json": `{"unrelated":true}`})
+				if err := ValidateRepositoryBaselineChange(root); err != nil {
+					t.Fatalf("unrelated commit entered literal report history: %v", err)
+				}
+			}
+			writeGuardCommit(t, root, "ordinary unruled report rewrite", map[string]string{report: `{"schema_version":2}`})
+			if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "subject") {
+				t.Fatalf("invalid literal report subject escaped: %v", err)
+			}
+		})
+	}
+}
+
+func TestRepositoryGuardLiteralPathAliases(t *testing.T) {
+	for _, alias := range []string{baselinePath + " ", baselinePath + "\t", " " + baselinePath} {
+		t.Run(alias, func(t *testing.T) {
+			paths := []string{baselinePath, alias}
+			if err := ValidateBaselineCommit(paths, []string{"balance/catalogs/input.json"}, "BALANCE-CHANGE: reject alias"); err == nil {
+				t.Fatal("outside filename normalized into an allowed artifact")
+			}
+			governed := map[string]struct{}{baselinePath: {}}
+			if !isMixedArtifactCommit(paths, governed, governed) {
+				t.Fatal("mixed-commit classification normalized an outside filename")
+			}
+		})
+	}
+	if err := ValidateBaselineCommit([]string{baselinePath}, []string{" balance/catalogs/not-an-input.json"}, "BALANCE-CHANGE: reject input alias"); err == nil {
+		t.Fatal("non-input filename normalized into a balance input")
+	}
+}
+
+func TestRepositoryGuardLiteralGitProtocol(t *testing.T) {
+	root := newGuardRepository(t)
+	want := []string{"payload/line\nname.txt", "payload/tail "}
+	writeGuardCommit(t, root, "docs: literal filename protocol", map[string]string{want[0]: "first", want[1]: "second"})
+	got, err := gitPathNames(root, "diff", "--name-only", "--no-renames", "-z", "HEAD^", "HEAD", "--")
+	if err != nil || len(got) != len(want) || got[0] != want[0] || got[1] != want[1] {
+		t.Fatalf("literal path protocol: got=%q err=%v", got, err)
+	}
+	got, err = gitPathNames(root, "diff", "--name-only", "HEAD^", "HEAD", "--")
+	if got != nil || err == nil || !strings.Contains(err.Error(), "not NUL-terminated") {
+		t.Fatalf("display output admitted as a filename list: got=%q err=%v", got, err)
+	}
+	got, err = gitPathNames(root, "diff", "--name-only", "-z", "HEAD", "HEAD", "--")
+	if got != nil || err != nil {
+		t.Fatalf("empty diff refused: got=%q err=%v", got, err)
+	}
+	got, err = gitPathNames(root, "diff", "--name-only", "-z", "missing-revision", "HEAD", "--")
+	if got != nil || err == nil {
+		t.Fatalf("failed Git query admitted: got=%q err=%v", got, err)
+	}
+}
 
 func TestRepositoryGuardChecksCoveredBaselineCommit(t *testing.T) {
 	root := newGuardRepository(t)

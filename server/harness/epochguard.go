@@ -103,7 +103,7 @@ func validateEpochRevision(root, commit string) error {
 	if err != nil {
 		return fmt.Errorf("new seed: %w", err)
 	}
-	changed, err := gitLines(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "-M", parent, commit)
+	changed, err := gitPathNames(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "--no-renames", "-z", parent, commit, "--")
 	if err != nil {
 		return err
 	}
@@ -319,7 +319,7 @@ func intersects(changed, watched []string) bool {
 
 func containsPath(paths []string, wanted string) bool {
 	for _, path := range paths {
-		if strings.TrimSpace(path) == wanted {
+		if path == wanted {
 			return true
 		}
 	}

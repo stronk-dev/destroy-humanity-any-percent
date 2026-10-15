@@ -7,6 +7,13 @@
 
 ## Current checkpoint — 2026-10-15
 
+RP-650 correction: the Go baseline/epoch guards now preserve literal filenames and exact-file
+selectors too. Real-Git regressions reproduce missed transient epoch revisions, refused valid
+registrations, whitespace aliases and unrelated pattern matches. Corrected focused populations,
+the full cold `make verify-harness-fast` (including actual repository history) and harness vet
+pass. The owning log records the range after `e10d24f4` needing designated Claude review.
+No artifact/version/policy/workflow change; the separate kernel-history failure remains open.
+
 RP-649 correction: preserve literal Git filenames across working-tree, history and correction-
 target checks. The old CLI admits42/54 worktree cases; NUL-delimited lists and disabled rename
 collapsing now refuse60 cases while legitimate version/correction/move controls and the full

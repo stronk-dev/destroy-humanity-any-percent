@@ -91,6 +91,11 @@ changelog. A hardcap reduction additionally requires an explicit `Cap migration:
 
 Both guards reject shallow history and uncommitted governed artifacts, so local and hosted checks
 apply the same rules. CI checks out complete history for the server job.
+Exact-file history/status selectors use literal Git pathspecs, and changed-name lists are
+NUL-delimited with rename collapsing disabled. Filenames are never whitespace-trimmed:
+quoted names, trailing spaces and brackets cannot hide an artifact revision, alias an allowed
+path or pull an unrelated file into a registered report's history. Real-Git regression fixtures
+exercise both rejected changes and legitimate registrations.
 
 ## Kernel version boundary
 

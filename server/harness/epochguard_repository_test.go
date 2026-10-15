@@ -21,6 +21,67 @@ func TestEpochGuardRejectsUnregisteredArtifactChange(t *testing.T) {
 	}
 }
 
+func TestEpochGuardLiteralArtifactPaths(t *testing.T) {
+	for _, name := range []string{"plain.json", "space name.json", "café.json", "quote\"name.json", "tab\tname.json", "line\nname.json", "back\\name.json", "tail.json ", "square[0].json"} {
+		t.Run(name, func(t *testing.T) {
+			for _, registered := range []bool{false, true} {
+				label := "unregistered_then_restored"
+				if registered {
+					label = "registered_hotfix"
+				}
+				t.Run(label, func(t *testing.T) {
+					root, seed, artifacts := newEpochGuardRepositoryWithCommonsPath(t, "balance/commons/"+name)
+					runGuardGit(t, root, "config", "core.quotePath", "true")
+					if err := ValidateRepositoryEpochChanges(root); err != nil {
+						t.Fatalf("initial literal artifact refused: %v", err)
+					}
+					filename := artifacts["commons"]
+					original, err := os.ReadFile(filepath.Join(root, filename))
+					if err != nil {
+						t.Fatal(err)
+					}
+					// Whitespace is valid owner JSON but changes its exact byte hash.
+					changed := string(original) + "\n"
+					if registered {
+						seed.Epochs[0].AcceptedHashes = append(seed.Epochs[0].AcceptedHashes, epochHash(t, root, seed, map[string]string{filename: changed}))
+						sort.Strings(seed.Epochs[0].AcceptedHashes)
+						writeGuardCommit(t, root, "commons: registered literal-path hotfix", map[string]string{filename: changed, epochSeedPath: encodeEpochSeed(t, seed)})
+						if err := ValidateRepositoryEpochChanges(root); err != nil {
+							t.Fatalf("registered literal artifact refused: %v", err)
+						}
+					} else {
+						writeGuardCommit(t, root, "commons: unregistered literal-path revision", map[string]string{filename: changed})
+						writeGuardCommit(t, root, "commons: restore original bytes", map[string]string{filename: string(original)})
+						if err := ValidateRepositoryEpochChanges(root); err == nil || !strings.Contains(err.Error(), "without "+epochSeedPath) {
+							t.Fatalf("restored HEAD hid unregistered literal artifact: %v", err)
+						}
+					}
+				})
+			}
+		})
+	}
+}
+
+func TestEpochGuardDirtyLiteralPathIsNotAPattern(t *testing.T) {
+	root, _, artifacts := newEpochGuardRepositoryWithCommonsPath(t, "balance/commons/square[0].json")
+	original, err := os.ReadFile(filepath.Join(root, artifacts["commons"]))
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeGuardFile(t, root, artifacts["commons"], string(original)+"\n")
+	if err := ValidateRepositoryEpochChanges(root); err == nil || !strings.Contains(err.Error(), "uncommitted changes") {
+		t.Fatalf("literal dirty artifact was treated as a path pattern: %v", err)
+	}
+}
+
+func TestEpochGuardIgnoresUnrelatedPatternMatch(t *testing.T) {
+	root, _, _ := newEpochGuardRepositoryWithCommonsPath(t, "balance/commons/square[0].json")
+	writeGuardFile(t, root, "balance/commons/square0.json", `{"not_an_epoch_artifact":true}`)
+	if err := ValidateRepositoryEpochChanges(root); err != nil {
+		t.Fatalf("unrelated file matched a literal artifact name as a pattern: %v", err)
+	}
+}
+
 func TestEpochGuardAcceptsRegisteredHotfix(t *testing.T) {
 	root, seed, artifacts := newEpochGuardRepository(t)
 	commons := `{"corrected":true}`
@@ -280,6 +341,11 @@ func TestEpochGuardRejectsSeedOnlyAndMintWithoutChangelog(t *testing.T) {
 
 func newEpochGuardRepository(t *testing.T) (string, epochSeed, map[string]string) {
 	t.Helper()
+	return newEpochGuardRepositoryWithCommonsPath(t, "balance/commons/phase0.json")
+}
+
+func newEpochGuardRepositoryWithCommonsPath(t *testing.T, commonsPath string) (string, epochSeed, map[string]string) {
+	t.Helper()
 	root := t.TempDir()
 	runGuardGit(t, root, "init", "--quiet", "--initial-branch=main")
 	runGuardGit(t, root, "config", "user.name", "Epoch Guard Test")
@@ -297,6 +363,10 @@ func newEpochGuardRepository(t *testing.T) (string, epochSeed, map[string]string
 			t.Fatal(err)
 		}
 		contents[name] = data
+		if name == "commons" {
+			path = commonsPath
+			artifacts[name] = path
+		}
 		writeGuardFile(t, root, path, string(data))
 	}
 	hash, err := save.ConstantsHashArtifacts(contents)
