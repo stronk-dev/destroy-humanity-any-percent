@@ -201,7 +201,7 @@ it.skipIf(!browser)("a late adoption completion cannot affect an unmounted card"
   } finally { finish(undefined); if (mounted) await unmount(app); target.remove(); outside.remove(); }
 });
 
-for (const reopening of [false, true]) for (const boundary of ["newer-focus", "unmount"] as const) {
+for (const reopening of [false, true]) for (const boundary of ["newer-focus", "removed-newer-focus", "unmount"] as const) {
   it.skipIf(!browser)(`adoption ${reopening ? "reopen" : "collapse"} focus handoff respects ${boundary}`, async () => {
     const target = host();
     const outside = document.createElement("button"); target.after(outside);
@@ -219,9 +219,14 @@ for (const reopening of [false, true]) for (const boundary of ["newer-focus", "u
       if (boundary === "unmount") {
         const disposal = unmount(app); mounted = false;
         outside.focus(); await disposal;
-      } else outside.focus();
+      } else {
+        outside.focus();
+        expect(document.activeElement, "the newer outside control actually received focus").toBe(outside);
+        if (boundary === "removed-newer-focus") outside.remove();
+      }
+      const chosenFocus = boundary === "removed-newer-focus" ? document.body : outside;
       await settle();
-      expect(document.activeElement).toBe(outside);
+      expect(document.activeElement, "a newer choice cannot be reclaimed even after its control disappears").toBe(chosenFocus);
       if (mounted) expect(target.querySelector("fieldset") !== null).toBe(reopening);
     } finally { if (mounted) await unmount(app); target.remove(); outside.remove(); }
   });

@@ -840,3 +840,87 @@ Reviewer removes only its inspected disposable Postgres container and the explic
 Garage service, discarding temporary fixture rows; no caches/volumes removed. Final Docker
 inspection has no project containers. No tracked edits by reviewer; parent records provenance
 and only the four approved correction statuses. No publication/deployment/push.
+
+## 2026-10-15 — Replay integrity and economy-isolation supplements approved
+
+Review by: fresh independent Codex `/root/pet_replay_isolation_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. Both **APPROVED**,
+all6/7 changed test/record paths inspected, respectively:
+
+- RP-405: `9ba37f9bcdcbe9b33bbabc3d3f055f598c18072a..aa53aad41fc48058d6e3d8605c289eedb5a66261`.
+- RP-408: `b7f351cbd02d64a35704680c50be35431afb5ad1..073ec7ad99e83cc5d8648a572cfb45e273af7ca2`.
+
+Actual descendant a45f5478/product312f6e02/kernel221: declared Linux-amd64/Postgres adoption/
+history and both Cosmetic Exits pass (Production1.263s), no selected skips. Nine copied-history
+corruptions and missing-artifact/species-only refusals execute, alongside one-draw retry,
+changed-body/event/cap controls. They corrupt copies of DB-loaded history, not persisted rows.
+Actual97 paired reference/casual/chaos adoption/no-adoption pacing runs pass (163.81s), full
+milestones/endings/aggregates byte-identical and fixture envelope failures[]; real Fiscal leak
+control2.81s, Harness166.907s. Invalid population selector correctly refuses. Native affected
+Production41.434s passes (DB skips excluded); concise rerun explicitly confirms all10 histories,
+9 corruptions and both Company Exit/write controls. Node287/287, affected vet, types0/0 and
+range whitespace pass. All6 changed test files remain endpoint-byte-identical. Historical
+mutations inspected, not rerun; no regeneration/source edit. Initial denied Docker/two guessed
+paths supply no tests. Output partly truncated, not an exact native assertion census.
+
+All processes terminal; reviewer removes only its identified Compose tmpfs/no-mount Postgres,
+preserving other services/caches/volumes. No browser/player/natural-pacing/full-harness/CI,
+originalP5/P7/feature/normative/archival/release approval. PA7/attendance/copy/rights/AT and
+known27 Clout/historical guard remain. These are bounded test supplements, not a persisted
+adoption-to-Exit player journey or approval of all original implementation.
+
+## 2026-10-15 — Welcome approved; earlier collapse handoff needs correction
+
+Review by: fresh independent Codex `/root/pet_garage_lifecycle_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. All paths inspected:
+
+- RP-428 **APPROVED**,8 paths:
+  `d039fe66bfbba5875989a2ff6e3c3eb87383eec3..c0a85602ad20c2d4fc1c338abe2a3fe2d39f3278`.
+- RP-392 **CHANGES REQUIRED**,9 paths:
+  `3b2b9a0e0b08c4bbabb3d86330fb387247bd1e72..50f7f49cbee8fb8570b9279fd319751740ec1743`.
+
+Source-derived finding RP-669: setCollapsed only checks final activeElement after tick; a newer
+outside choice removed before then leaves body focused and lets the stale card reclaim focus.
+Receipt-bound adopt already permanently cancels that superseded request. Reviewer does not
+execute the added regression; parent separately reproduces it below. Do not promote RP-392 or
+originalP6 from otherwise green tests.
+
+Reviewer executes at a45f5478/source312f6e02/kernel221: native Adoption/screens240 passes/10
+performance exclusions; declared Linux ARM64 all3 engines360/15 exclusions,21.63s; Node118,
+both cold Pet projector tests/full GameUI(.304s), vet, types0/0, build217modules/UI boundaries
+and exact-range whitespace pass. Changed default Cosmetic driver actually passes against
+built client/Worker/native server/declared Postgres: native Enter adoption, matching receipt,
+one welcome, quiet saved reload/Desk remount focus, care SQL/status/WebSocket and equip/unequip.
+Adjacent Reputation continuation uses explicit budget setup. Actual make test-clout-composed
+Space/axis variant passes too. These are focused journeys, not whole aggregate/natural pacing.
+First denied native listen runs no tests; permitted run supplies evidence. Routine output partly
+truncated. Old red/mutations inspected, not rerun. All processes terminal; only identified
+created game-ui tmpfs/no-mount Postgres removed after ports18082/5173 free. No source edits.
+PA7/shared-clock/copy/privacy/AT/first-read/renewal/fullfeature/release remain separate.
+
+## 2026-10-15 — Preserve superseded collapse/reopen focus (RP-669)
+
+Under existing PA8 inline flow and its documented newer-choice handoff (also GS0.6), extend
+the existing two-direction lifecycle loop: synchronously focus and remove an outside control
+after activation but before tick. Current a45f5478 component fails all4 Chromium/WebKit cases
+in corrected focused23169 (exit2,1.72s): collapse reclaims entry and reopen reclaims selected
+radio instead of leaving the superseded focus alone. Retained-focus and unmount controls stay.
+Initial86164 reports the same4 failures but also tries native Firefox, which cannot connect;
+the identified owned PID33827 is interrupted after inspection of cwd/port/CPU. Its exit includes
+the Firefox error and Make130, not a complete three-engine regression. No formatting/CPU cause
+is established. Corrected explicit two-engine command supplies the clean red result.
+
+setCollapsed now observes newer focus only across its existing render tick and permanently
+cancels that handoff; finally removes the listener even on unmount/error. No timer, retry,
+adoption callback, receipt, announcement, copy, transport or mechanic changes. Ordinary
+collapse/reopen still lands on the same entry/name when its trigger owns focus. No kernel bump:
+this renderer is outside the actual affecting-path registry; source-bound replay reports stay.
+Final oracle explicitly confirms outside focus occurred, independently expects body only after
+its removal, and retains the original outside-element expectation for unmount/retained controls.
+Actual final affected file34/34 native Chromium/WebKit passes (2.31s), declared cold Linux
+ARM64 all3 engines51/51 (2.92s), no selected skips. Final types0/0, production build217 modules and
+UI boundary10Go/15Svelte negatives pass. Local browser results do not close manual AT, original
+Pet, renewal/privacy/owner copy or full CI. Review by: Codex (implementer first filter).
+Recorded by: Codex. Complete new component/test/docs/plan/ledger/log range aftera45f5478 through
+this containing commit needs fresh independent corrective review; RP-392 remains CHANGES REQUIRED,
+RP-669 locally repaired pending that verdict. No archival, content mint, release or push.

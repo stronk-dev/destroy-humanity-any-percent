@@ -143,8 +143,9 @@ the top of the Desk. It appears whenever `features.pet_adoption` is present.
   that order in Chromium and WebKit; the unselected radio choices remain arrow-key reachable.
 - **Not now** collapses the card to a persistent entry point. It sets no timer and never badges or
   re-nags. If collapsing removes the focused control, focus moves to that entry point; reopening
-  returns it to the selected name. These post-render handoffs respect a newer outside focus choice
-  and do not run after the card unmounts.
+  returns it to the selected name. These post-render handoffs respect a newer outside focus choice,
+  even if that newer control disappears before rendering finishes; the temporary focus observer
+  is always removed after the render tick. Handoffs never run after the card unmounts.
 - **Adoption:** Adopt sends `adopt_pet` as a Founder intent. The authoritative pet replaces
   the card with a welcome state. Only a local applied receipt with that same pet identity triggers
   its one polite announcement; a receipt alone never invents ownership. Initial saved-state reads,

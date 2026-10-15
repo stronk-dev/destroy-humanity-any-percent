@@ -11,24 +11,33 @@ the original verdicts do not approve them. No archival or production mint (OD-4/
 delegation. The owning log records complete exact ranges, actual cross-runtime/SQL
 checks, provenance and limits. Other corrections and feature acceptance remain separate.
 
+2026-10-15 further fresh independent corrective review APPROVES complete RP-405 history,
+RP-408 paired economy-isolation and RP-428 receipt-bound welcome ranges. The owning log
+records exact hashes and actual Postgres/history, all97 paired seeds, native/Linux UI and
+both focused real-service driver executions. RP-392 is CHANGES REQUIRED: review finds
+RP-669, collapse/reopen can reclaim a newer focus choice that disappears before tick.
+The added regression reproduces4 old native failures; the bounded local listener correction
+passes34 native/51 Linux cases and types/build/boundaries. Its new range aftera45f5478
+requires fresh independent corrective review; no original feature/new content/AT acceptance.
+
 2026-10-08 review checkpoint: complete original P1 (RP-403) and P2/P3 (RP-404) reviews
 retain CHANGES REQUIRED for phrase and raw species admission. Codex's
 corrections now have independent approval and executed evidence in the latest log entry.
 Complete original P5 review is still CHANGES REQUIRED for the missing final-history
 AC7 refusal checks (RP-405). Those are locally corrected; the selected real-Postgres
-corruption population passes, and independent review of the correction remains.
+corruption population passes, and its complete correction now has independent approval.
 Existing checkboxes describe
 implementation presence, not full-feature acceptance.
 
 P6's adoption welcome also has a bounded local correction (RP-428): saved pet reads no longer
 celebrate a new adoption, and receipt completion respects newer keyboard focus. The welcome
 requires an actual local applied receipt and its matching authoritative pet. The latest owning
-log records native regressions, the real-service journey and pending designated review; this
+log records native regressions, the real-service journey and independent RP-428 approval; this
 does not resolve PA7, shared attendance, owner copy or the full accessibility floor.
 Both complete original P6 commits now have CHANGES REQUIRED dispositions: PA7/C2's
 author-owned wire conflict (RP-132), and the keyboard/welcome defects (RP-392/RP-428).
 Complete original P7 review also retains CHANGES REQUIRED for RP-408's missing paired
-economy comparison. Its later test supplement is locally verified, not independently approved.
+economy comparison. Its later test supplement now has independent approval, including all97 pairs.
 
 P4's complete original range `b29e70c0^..b29e70c0` now has a designated Codex review:
 CHANGES REQUIRED. In addition to RP-406's missing/null Company carry coordinates, RP-463

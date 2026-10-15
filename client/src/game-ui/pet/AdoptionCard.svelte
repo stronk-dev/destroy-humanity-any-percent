@@ -65,11 +65,18 @@
 
   async function setCollapsed(next: boolean, trigger: EventTarget | null): Promise<void> {
     const focused = trigger instanceof HTMLButtonElement && document.activeElement === trigger ? trigger : undefined;
-    collapsed = next;
-    await tick();
+    let superseded = false;
+    const observeFocus = (event: FocusEvent) => { if (event.target !== focused) superseded = true; };
+    if (focused) document.addEventListener("focusin", observeFocus);
+    try {
+      collapsed = next;
+      await tick();
+    } finally {
+      if (focused) document.removeEventListener("focusin", observeFocus);
+    }
     // Only replace focus lost with the removed control. A newer player choice
-    // outside this card wins; an unmounted card cannot take focus back.
-    if (!focused || focused.isConnected || !root?.isConnected ||
+    // wins even if its control disappears; an unmounted card cannot take focus back.
+    if (!focused || superseded || focused.isConnected || !root?.isConnected ||
         (document.activeElement !== focused && document.activeElement !== document.body)) return;
     const replacement = next ? root.querySelector<HTMLButtonElement>("button[data-adoption-entry]")
       : root.querySelector<HTMLInputElement>('input[name="pet-name"]:checked');
