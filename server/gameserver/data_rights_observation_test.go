@@ -139,3 +139,105 @@ func observeComposedSessionAccountDeletion(t *testing.T, db *sql.DB, server *htt
 		t.Fatalf("deleted refresh remains usable: status=%d", refresh.StatusCode)
 	}
 }
+
+// RP-120: capture the population before deletion. A policy that removes a nested
+// reference must not also hide that surviving row from the after-denominator.
+func observeComposedGuildConsumerDeletion(t *testing.T, db *sql.DB, server *httptest.Server, guildID, producerID string, consumer account.CreatedAccount) {
+	t.Helper()
+	ctx := context.Background()
+	session := compositionRequest(t, server.Client(), http.MethodPost, server.URL+"/api/v1/session", "",
+		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, consumer.AccountID, consumer.RecoveryCode))
+	if session.StatusCode != http.StatusOK {
+		_ = readCompositionBytes(t, session)
+		t.Fatalf("consumer session refresh status=%d", session.StatusCode)
+	}
+	var tokens account.TokenPair
+	decodeCompositionResponse(t, session, &tokens)
+	type family struct{ name, key, allocations, producerPredicate string }
+	families := []family{
+		{"guild_clearing_results", "boundary_seq", "allocations", "account_id::text=$2"},
+		{"guild_events", "event_seq", "payload->'allocations'", "kind='exchange_cleared' AND payload->>'producer_account_id'=$2"},
+	}
+	type observation struct {
+		rows       rightsRowObservation
+		references int
+	}
+	read := func(f family, keys []int64) observation {
+		t.Helper()
+		query := fmt.Sprintf(`SELECT COALESCE(jsonb_agg(to_jsonb(r) ORDER BY %[1]s),'[]'::jsonb)::text,
+		COALESCE(sum((SELECT count(*) FROM jsonb_array_elements(%[2]s) a WHERE a->>'account_id'=$3)),0)
+		FROM %[3]s r WHERE guild_id=$1 AND %[1]s=ANY($2::bigint[])`, f.key, f.allocations, f.name)
+		args := []any{guildID, keys, consumer.AccountID}
+		if f.name == "guild_clearing_results" {
+			// Boundary sequence is unique only with guild+account. Event_seq,
+			// unlike this composite key, is already a global immutable identity.
+			query += " AND account_id::text=$4"
+			args = append(args, producerID)
+		}
+		var text string
+		var result observation
+		if err := db.QueryRowContext(ctx, query, args...).Scan(&text, &result.references); err != nil {
+			t.Fatal(err)
+		}
+		var rows []json.RawMessage
+		if json.Unmarshal([]byte(text), &rows) != nil {
+			t.Fatal("shared-history observation is not a row population")
+		}
+		result.rows = rightsRowObservation{count: len(rows), digest: sha256.Sum256([]byte(text))}
+		return result
+	}
+	keys := make([][]int64, len(families))
+	before := make([]observation, len(families))
+	for index, f := range families {
+		query := fmt.Sprintf(`SELECT COALESCE(jsonb_agg(%[1]s ORDER BY %[1]s),'[]'::jsonb)::text FROM %[2]s
+		WHERE guild_id=$1 AND %[3]s AND EXISTS(SELECT 1 FROM jsonb_array_elements(%[4]s) a WHERE a->>'account_id'=$3)`,
+			f.key, f.name, f.producerPredicate, f.allocations)
+		var encoded string
+		if err := db.QueryRowContext(ctx, query, guildID, producerID, consumer.AccountID).Scan(&encoded); err != nil {
+			t.Fatal(err)
+		}
+		if json.Unmarshal([]byte(encoded), &keys[index]) != nil || len(keys[index]) == 0 {
+			t.Fatalf("invalid shared-history population: no produced %s references", f.name)
+		}
+		before[index] = read(f, keys[index])
+		if before[index].rows.count != len(keys[index]) || before[index].references == 0 {
+			t.Fatalf("invalid shared-history population for %s", f.name)
+		}
+		if absent := read(f, []int64{0}); absent.rows.count != 0 || absent.references != 0 {
+			t.Fatal("shared-history reader ignores captured keys")
+		}
+	}
+	ownRows := func() int {
+		t.Helper()
+		var count int
+		if err := db.QueryRowContext(ctx, "SELECT count(*) FROM guild_clearing_results WHERE guild_id=$1 AND account_id=$2", guildID, consumer.AccountID).Scan(&count); err != nil {
+			t.Fatal(err)
+		}
+		return count
+	}
+	ownBefore := ownRows()
+	if ownBefore == 0 {
+		t.Fatal("consumer's own settlement population is empty")
+	}
+	live := compositionRequest(t, server.Client(), http.MethodGet, server.URL+"/api/v1/founder", tokens.AccessToken, "")
+	_ = readCompositionBytes(t, live)
+	if live.StatusCode != 200 {
+		t.Fatal("consumer access was invalid before deletion")
+	}
+	deleted := compositionRequest(t, server.Client(), http.MethodDelete, server.URL+"/api/v1/account", tokens.AccessToken, "")
+	_ = readCompositionBytes(t, deleted)
+	t.Logf("RP-120 shared-consumer delete status=%d own_settlements before=%d after=%d", deleted.StatusCode, ownBefore, ownRows())
+	if deleted.StatusCode != http.StatusNoContent {
+		t.Fatal("shared-consumer account deletion failed")
+	}
+	for index, f := range families {
+		after := read(f, keys[index])
+		t.Logf("RP-120 shared-consumer family=%s rows_before=%d rows_after=%d disposition=%s references_before=%d references_after=%d", f.name,
+			before[index].rows.count, after.rows.count, rightsRowDisposition(before[index].rows, after.rows), before[index].references, after.references)
+	}
+	refused := compositionRequest(t, server.Client(), http.MethodGet, server.URL+"/api/v1/founder", tokens.AccessToken, "")
+	_ = readCompositionBytes(t, refused)
+	if refused.StatusCode != http.StatusUnauthorized {
+		t.Fatal("deleted consumer access remains usable")
+	}
+}

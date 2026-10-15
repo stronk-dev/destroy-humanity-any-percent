@@ -50,6 +50,13 @@ state/receipt/replay coverage. Garden OD-12's salt exclusion is already adopted,
 export preference to infer or reopen. Its conflict with original-byte public replay evidence
 needs engineering/author contract reconciliation; broader D-008/D-009/D-015 remain unruled.
 
+The2026-10-15 [Guild consumer supplement](data-rights-fields-guild.md#current-producer-backed-consumer-deletion--2026-10-15)
+executes the shared-party allocation concern: actual clearing→consumer DELETE
+removes four own settlements but retains four other-producer settlements and
+four exchange events, each family with four nested consumer UUID references.
+Valid access becomes401. This is evidence for D-009/D-015, not an erasure policy;
+other Guild fields, outbox aging, export and restore remain separate.
+
 | ID | Owner choice | Evidence required first | Canonical home | Blocks |
 |---|---|---|---|---|
 | **D-001** | **RULED 2026-08-21:** current claim is repository development snapshot; next target is **Cloud Clicker Phase-0 Playable Preview**, not roadmap v0.1 or 1.0. Public hosting remains blocked on the complete release floor. | R-002 baseline and capability map complete; exact release manifest remains a release-RFC input. | `planning/platform-alignment/owner-ruling-packet.md`; later `design/07-roadmap.md`/release RFC reconciliation by the owner. | Exact preview manifest and every “release-ready” claim. |

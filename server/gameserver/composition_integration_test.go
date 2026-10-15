@@ -657,6 +657,9 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil || collected.RefreshTokens != 4 || collected.AccessTokens != 4 || collected.Families != 4 {
 		t.Fatalf("session GC=%+v err=%v", collected, err)
 	}
+	t.Run("guild_consumer_delete_observation", func(t *testing.T) {
+		observeComposedGuildConsumerDeletion(t, db, httpServer, guildReceipt.GuildID, thirdCreated.AccountID, created)
+	})
 
 	_ = player.connection.Close(websocket.StatusNormalClosure, "test complete")
 	_ = world.connection.Close(websocket.StatusNormalClosure, "test complete")

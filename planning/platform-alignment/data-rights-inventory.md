@@ -42,8 +42,15 @@ Pitch fixture populations. Account removal/access revocation succeeds, while all
 15 selected rows across six session/command/receipt/window families retain their
 SQL contents; both terminal Soul tokens remain stored. This advances the old
 seeded-only evidence for terminal sessions, not active/claimed deletion or the
-other families. It adopts no erasure/retention/export policy. Guild/shared-party
-payload classification, fuller histories and delete/restore remain open.
+other families. It adopts no erasure/retention/export policy.
+
+The [Guild consumer supplement](data-rights-fields-guild.md#current-producer-backed-consumer-deletion--2026-10-15)
+also joins actual composed Guild create/join/clearing to Account DELETE: the
+consumer's own settlements fall4 → 0, but another producer's four settlements
+and four exchange events retain identical SQL contents and four nested consumer
+UUID references per family. Access is revoked; nested identity is not erased.
+This closes that source-only observation gap, not RP-120's policy/repair. Other
+Guild/shared-party payloads, fuller histories and delete/restore remain open.
 
 ## Original denominator and controls — 2026-09-23
 

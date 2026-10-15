@@ -3326,3 +3326,32 @@ change. RP-606 stays OPEN; no particular public format is adopted. Research
 boundary after d6ea5884 through this containing commit is factual/editorial,
 not designated implementation approval. No push. Continue accepted work and
 prepare authored engineering reconciliation without reopening OD-12 privacy.
+
+## 2026-10-15 — RP-120 real Guild consumer deletion, shared history observed
+
+Resume the uncommitted test/research supplement above `0c54a6fa`. Actual composed
+Guild create/join/clearing→consumer DELETE204 removes four own settlements and
+revokes access401, but four other-producer settlements and four shared events
+retain identical SQL contents and four nested consumer UUID references per
+family. Original parent assertions remain; controlled stock/clock, selection,
+privacy and broader limits are in `data-rights-fields-guild.md`.
+
+Initial90331 mixed producer/consumer settlements8→4 through a boundary-only
+query; exclude that cohort. Correct the composite identity and add a key/row-count
+guard. Negative47341 restores that instrument mistake and fails before deletion:
+`invalid shared-history population for guild_clearing_results`. Restore it.
+Final `make test-save-integration SAVE_TEST_PACKAGES='./gameserver'
+SAVE_TEST_FLAGS='-run "Test(ComposedGameserverPostgresSocketClearingAndGCIntegration|RightsRowObservation)" -v'`
+6703 passes cold: parent1.56s, observation0.08s, classifier and missing-key controls
+executed, no selected skip. Corrected19405 also passed. `make test-go vet
+GO_PACKAGES='./gameserver'`31727 passes cold package0.325s and vet. Lost-output runs
+are not credited. Diff checked; faulty query absent. Remove only inspected owned
+tmpfs Postgres after terminal tests; preserve Go caches/network.
+
+Refresh existing dossier/inventory/decision evidence/RP-120, not the roadmap.
+No production, schema, migration, policy, CI or content change; no hosted/browser/
+export/restore proof. RP-120 remains open for policy and accepted repair. Review
+by: Codex (test/research author first filter). Recorded by: Codex. Full batch after
+`0c54a6fa` through this containing commit needs designated Claude review; no
+acceptance/archival/publication. Next rights evidence: active/claimed deletion and
+joined restore, not repeating terminal/shared-consumer observations.

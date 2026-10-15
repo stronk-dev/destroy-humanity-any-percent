@@ -1,5 +1,52 @@
 # D-008/D-009/D-015 — Guild field-disposition tranche
 
+## Current producer-backed consumer deletion — 2026-10-15
+
+Baseline `0c54a6fa`; method in the current supplement of
+[`data-rights-fields-guild-plan.md`](data-rights-fields-guild-plan.md).
+Extend `TestComposedGameserverPostgresSocketClearingAndGCIntegration` only after
+its original clearing, settlement, New-Founder and session-GC assertions. Real
+HTTP Guild creation/join and the actual clearing worker produce the selected
+history. Stock/faction preparation and clock advancement remain controlled
+fixture inputs, not earned stock, natural pacing or browser evidence.
+
+After issuing a fresh valid session, authenticated consumer DELETE returns204.
+Their own settlement rows fall **4 → 0** and the same access token then gets401.
+The surviving producer's four settlement rows and four shared exchange events
+remain **4 → 4 each**, with identical ordered SQL-row contents. Each family
+retains **four nested allocation references** to the deleted consumer's UUID.
+This executes the former source-only consumer-reference concern; the historical
+producer-deletion diagnostic below remains separate evidence.
+
+Capture keys before deletion and re-read the same rows afterwards, without
+filtering on a consumer reference that erasure could remove. Settlement identity
+includes guild, boundary and surviving producer account; events use their unique
+event sequence. Exclude the fixture's directly inserted empty-allocation
+reservation row. Require a nonempty reference population and matching key/row
+counts; nonexistent keys must return zero. Compare stable `to_jsonb(row)`
+aggregates in memory, printing counts and neutral dispositions only, not IDs,
+payloads, credentials or hashes. This is SQL-content equality, not original
+HTTP lexical-byte identity. The existing executed classifier permits removal,
+partial removal, modification and expansion; retention is not a test requirement.
+
+The first instrument90331 incorrectly read settlements by boundary alone,
+combining producer and consumer rows (8 → 4). Exclude that settlement result.
+Add the key/row-count guard and correct the composite-key read. Executed negative
+47341 deliberately restores the boundary-only mistake: the guard rejects it
+with `invalid shared-history population for guild_clearing_results`, before
+deletion. Corrected19405 passes the whole parent2.09s and classifier, observing
+4 → 4 in each shared family and4 → 0 own rows. The owning alignment log records
+the final restored-source rerun and review range. Interrupted/lost-output runs
+are not credited as passing evidence.
+
+No production, migration, schema, content, CI or privacy-policy change. This does
+not cover every Guild payload, relay failure/aging, active/claimed sessions,
+shared-history access by another player, browser deletion, export, backup restore
+or legal/retention requirements. RP-120 remains open for D-009/D-015 and an accepted
+implementation contract; successful revocation is not complete identity erasure.
+
+## Historical SQL-column tranche — 2026-09-23
+
 Research checkpoint: 2026-09-23. Product source `7e8aa70`; no later product-path
 change at execution. Method and controls: [`data-rights-fields-guild-plan.md`](data-rights-fields-guild-plan.md).
 This maps every current SQL column in the 13 Guild tables, bringing the game-table
