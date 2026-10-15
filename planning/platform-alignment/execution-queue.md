@@ -38,14 +38,15 @@ nine-tier goal remains active; no new playable tier or release was completed.
   mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member
   policy conflict have concrete unadopted engineering proposals in the API plan. Do not mount
   a partial endpoint, invent descriptors, normalize sources or infer draft acceptance.
-- **CORRECTION IN RE-REVIEW / NEW MEASUREMENT LIVE — CI performance candidate; active landing held:**
+- **CORRECTION IN RE-REVIEW / NEW MEASUREMENT COMPLETE — CI performance candidate; active landing held:**
   Independent review of complete9bdf9c29..d6e092e8 finds RP-674: a local sort bypasses the
   neutral helper required by Production Contract Integrity D1/D3. Original candidate is
   CHANGES REQUIRED. Unapplied correctione973fcb1 restores that dependency; root helper-sever,
   intact runtime/vet and real Linux-amd64/Postgres first-hour checks execute. Its new full300
-  measurement4365 is live, not yet a result; resume the owning CI log's exact handle.
+  measurement4365 completes449.209272s with the original exact full-report digest. This is
+  standalone current-source evidence, not a matched speed comparison; dependencies differ.
   Original396.572/735.605s pair/digest remain historical for the ORIGINAL source, not the
-  correction. Independent re-review, source-bound measurement and lawful kernel-watched
+  correction. Independent re-review and lawful kernel-watched
   authority/eligibility remain before active landing. No new mechanism, false version bump,
   budget increase, deleted population, restamped golden, whole-CI or release promotion.
 - **READY FOR DESIGNATED REVIEW — consolidate the remaining exact ranges:** Marco's

@@ -5,7 +5,7 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current product rollup (2026-10-15):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
+**Current product rollup (2026-10-16):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
 Latest bounded production correction `137f7a8d`, kernel0.3.222, epoch8; research `f7ca2b96`.
 The whole-product classification retains its `77fe2275` base plus named follow-ups:
@@ -33,6 +33,12 @@ Fresh independent corrective reviews close only their named API/transport/CI, in
 Deployment safety ranges, not new-feature or normative acceptance. Owning logs hold exact
 ranges and remaining debt; the overview distinguishes those proofs from natural progression,
 full feature acceptance and clean-host release evidence.
+
+RP-674's unapplied performance candidate correctione973fcb1 restores the required shared
+ordering helper. A new full300 standard-pacing measurement completes449.209272s with the
+original exact report digest. This is standalone current-source evidence, not a matched speed
+comparison or hosted gain. Independent re-review and lawful active-landing authority remain
+held; the CI log owns the complete evidence. No additional playable tier follows.
 Later Garage/Pet/Arcade/Typer corrections have scoped independent approvals. RP-668's
 gate and broader Company/terminal preflight repairs are independently approved; this closes
 that reproduced defect, not Arcade or an original bad-tip verdict. Eleven Garden admission/

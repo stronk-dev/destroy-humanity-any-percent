@@ -2656,3 +2656,37 @@ CI38560135778 stays completed failure (client/server fail; browser/composed/sche
 pass); maintenance38677066823 completed failure (harness/reputation fail, numeric passes).
 SSH ls-remote cannot resolve github.com; successful API branch/run/job replies supply
 the actual metadata. No fetch, push, dispatch, new hosted execution or local-CI-green claim.
+
+## 2026-10-16 — Corrected helper-bound candidate: complete standard pacing, not active landing
+
+Measurement4365 above is now terminal exit0: all300 distinct standard-pacing keys complete,
+nonempty outcomes, no invariant/aggregate failure. Benchmark449209272000ns/op (449.209272s),
+package449.680s; full canonical report SHA256
+1ffa47cfd4f85f6daf1b340cf6e43cfa7d534cb39308cdf80e955c9d28be826d exactly matches the original.
+The benchmark's actual completeness/assertion path executes; no population/threshold changes.
+Scenario10aa5c8a2dd8a5c79a5902e74f4e55a1ca3ab46a2d35c9bf3dd25fc729dbb07a,
+constantsbaa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6.
+
+Corrected candidate1bb2a62d5c4e42595e89e8b0ddab5565f7572830137679c5141359e9bea377f6;
+patch19d781d9f79f10c8c428a7a46ba2197a1af7d14ff308b15ffde66ae400a1efb0.
+Retained ignored .cache/rate-traversal-helper-bound-cpu.pprof SHA256
+ebace88af3a17ddab7517ab4657f133b11b73fbd549edf677f4d5e4c6cbf8369 and
+.cache/rate-traversal-helper-bound-harness.test SHA256
+b9ca218aad67f6dbabaf609110de4e7e77c1a21dbf297796eff3200e70c4fd13.
+Binary metadata confirms Go1.27.2/Darwinarm64; no embedded VCS revision claim.
+An early binary read found no file before terminal publication; optional pgrep was denied
+by system-monitor permission. Neither is liveness/termination evidence; the actual4365
+handle stayed authoritative and completed without restart. No competing heavy check was started.
+
+This is standalone current-source evidence, NOT a matched improvement versus735.605s:
+Decimal/replay/intent/simulation dependencies changed since the old pair. Historical
+396.572/735.605s belongs only to the original candidate. No raw canonical report file was
+persisted, so digest equality is the executed benchmark output, not an independent file rehash.
+No candidate-source line-level pprof claim, complete harness/relevance/maintenance, hosted
+timing or CI pass. Active engineb872d474…ae875/runtime137f7a8d/kernel222/epoch8 unchanged.
+
+Independent corrective re-review is executing for original9bdf9c29-exclusive..d6e092e8-inclusive
+plus complete correctiona11446b4-exclusive through this record commit (including e973fcb1 and
+c1545119). Original CHANGES REQUIRED remains historical; no self-approval, guard-policy
+adoption, exception eligibility, active landing, archival or release promotion. Review of the
+terminal record is still required; the reviewer owns any new temporary SQL fixture cleanup.

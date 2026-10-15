@@ -5,13 +5,16 @@
 - **Started:** 2026-07-28
 - **Status:** fast/maintenance split implemented locally; hosted acceptance pending
 
-## Current checkpoint — 2026-10-15
+## Current checkpoint — 2026-10-16
 
 RP-596 candidate review finds RP-674: local sort bypasses the neutral ordering authority
 required by implemented Production Contract Integrity D1/D3. Complete original9bdf9c29..d6e092e8
-is CHANGES REQUIRED, not approved. Correct the retained UNAPPLIED patch to use that helper;
-execute helper-dependency/affected runtime checks and bind new complete measurement to the
-new source before re-review. Old matched-pair timings remain historical for old candidate.
+is CHANGES REQUIRED, not approved. UNAPPLIED correctione973fcb1 restores the helper;
+dependency-severing, intact affected checks/vet and actual Linux-amd64/Postgres replay execute.
+New source-bound full300 measurement4365 completes449.209272s with the original exact report
+digest. This standalone observation is not a matched speed comparison; intervening runtime
+dependencies differ. Independent re-review is executing. Old matched-pair timings remain
+historical for the old candidate; the owning log records terminal evidence and hashes.
 Existing guard-policy/adoption/active-landing and full-CI gates remain unchanged.
 
 RP-673's original Firefox missing-request failure stays open. The late-completion witness now

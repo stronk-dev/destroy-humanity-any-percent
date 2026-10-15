@@ -5592,3 +5592,25 @@ publication, content mint or tier completion. Current-state/board/queue coordina
 next prove actual reachable prefix/quantization constraints, continue accepted construction and
 remaining reviews. Author/product/rights gates,27 accounting failures and historical CI guard
 remain open. Full nine-tier1.0 goal active; complete evidence lives in feature-owned logs.
+
+## 2026-10-16 — Corrective review and measured candidate, no additional tier
+
+Active production137f7a8d/kernel222/epoch8 and the full nine-tier floor remain unchanged.
+Owning logs record new bounded independent approvals for Clout ownership/legacy-codec/writer
+corrections and CI late-completion diagnostics. RP-673's actual Firefox failure remains
+unexplained. Deployment's actual daemon-lifetime negative still holds; native clean-host
+rehearsal and a safe interruption mechanism are not replaced by cancellation checks.
+
+Candidate review catches RP-674: local sorting bypassed the required shared ordering helper.
+Unapplied correctione973fcb1 restores it; severing that helper now fails active exact-order
+controls, intact affected checks/vet and actual Linux-amd64/Postgres replay pass. New full300
+standard-pacing measurement4365 completes449.209272s with the original exact report digest;
+changed runtime dependencies make this standalone evidence, not a matched speed comparison.
+Independent re-review and lawful active-landing authority remain held. The CI log owns hashes,
+complete reviewed ranges and limits; no active optimization or CI-green claim.
+
+Read-only GitHub API reconfirms remotebe66902b and failed CI38560135778/maintenance38677066823;
+no push, dispatch or later-local-work hosted coverage. H3c midpoint research2b403eb6 executes53
+prefixes:19 raw reversals, zero committed reversals; actual Evaluate checks execute zero times.
+That bounded negative is not accounting repair or universal proof. The27 accounting failures,
+author/product/rights gates and later-game construction remain. Full1.0 goal stays active.

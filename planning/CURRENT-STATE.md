@@ -66,9 +66,11 @@ bounded independent corrective approvals; their owning logs preserve all exclusi
 Three further Clout ownership/legacy-codec/writer-guard corrections have bounded independent
 approval; accounting and original feature negatives stay open. The new Firefox RP-673 remains
 unexplained despite independently approved failure diagnostics. RP-674 rejects an unapplied
-performance candidate's shared-helper bypass; correctione973fcb1 is being measured/re-reviewed,
-not active production or a versioning-policy exception. The owning CI log has the live handle;
-its old timing pair must not be cited as a result for the corrected source.
+performance candidate's shared-helper bypass; unapplied correctione973fcb1 completes a new
+full300 standard-pacing measurement in449.209272s with the original exact report digest.
+It remains in independent re-review, not active production or a versioning-policy exception.
+The owning CI log records terminal evidence; changed runtime dependencies prevent treating
+the old timing pair as a matched comparison for this corrected source.
 Same-second backup-alert correction now has independent approval, including actual controlled
 failure/recovery through Prometheus/Alertmanager/receiver. Bounded Desktop research reads all
 nine proposed release-mounted roots and rejects changed/missing/link/interrupted inputs.
