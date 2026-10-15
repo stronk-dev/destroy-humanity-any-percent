@@ -2690,3 +2690,35 @@ plus complete correctiona11446b4-exclusive through this record commit (including
 c1545119). Original CHANGES REQUIRED remains historical; no self-approval, guard-policy
 adoption, exception eligibility, active landing, archival or release promotion. Review of the
 terminal record is still required; the reviewer owns any new temporary SQL fixture cleanup.
+
+## 2026-10-16 — Helper-bound candidate corrective re-review: APPROVED, unapplied
+
+Review by: /root/rate_traversal_corrective_candidate_review (independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing its terminal verdict.
+Decision: APPROVED — bounded unapplied corrective candidate only; no actionable findings.
+Complete reviewed union, base exclusive/tip inclusive:
+- original9bdf9c29f119e57366fd2f55dacfbe05f89a2127..d6e092e8d14ebb15d0aa905071ad2e87ae02fb65 (4commits/8paths);
+- correctiona11446b40fe9d4bd450d309c23b0c6e8fb9424ee..78631c312dac24629dd1cf2fd64e66db99b3e1f2 (3commits/9paths).
+
+All11 unique paths inspected, including patch, benchmark test, canonical docs and complete
+terminal/board records. Original CHANGES REQUIRED remains historical. RP-674's helper-ownership
+defect is corrected under accepted D1/D3. Sorting each canonical slot bucket then filtering
+preserves the old filter-then-sort multiplication sequence; validation/count arithmetic,
+activation, generator/resource order and state ownership remain, without a cross-call cache.
+
+Independent empty-helper overlay leaves original candidate green; corrected candidate fails
+4 active raw-rate cases while all-zero control passes. Intact affected rate/order/refusal/input/
+activation/simulation/evaluation/accrual/replay pass0.758s; full Decimal/Multiplier0.472/0.171s
+and candidate Production/Multiplier/Gameserver vet pass. Actual declared Linux-amd64/Postgres
+first-hour90390 passes28.10s with persisted replay/terminals. Retained-public-data diagnostic
+still fires1149events; no privacy closure. Source/patch/profile/binary hashes independently
+match the terminal record; active engine unchanged. Patch applicability/range whitespace pass.
+
+Root's full300/449.209272s/digest output inspected, not independently repeated or reconstructed
+from a raw report file. Actual benchmark enforces governed distinct keys, complete outcomes,
+invariants and aggregate failures. Changed dependencies preclude a matched speedup claim.
+No active landing, guard-policy adoption, scope-exception eligibility, formula-regeneration
+approval, complete CI/maintenance, hosted timing, accounting repair, feature/archival/release
+approval. Desktop emulation is not native hosted hardware. Reviewer handles terminal; only its
+owned twice-inspected tmpfsd4360f17… removed, both preexisting builders preserved; no tracked
+edits/commits. RP-674 candidate defect leaves corrective debt; remaining authority gates stay.

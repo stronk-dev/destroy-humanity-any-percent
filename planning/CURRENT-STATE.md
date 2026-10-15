@@ -68,7 +68,8 @@ approval; accounting and original feature negatives stay open. The new Firefox R
 unexplained despite independently approved failure diagnostics. RP-674 rejects an unapplied
 performance candidate's shared-helper bypass; unapplied correctione973fcb1 completes a new
 full300 standard-pacing measurement in449.209272s with the original exact report digest.
-It remains in independent re-review, not active production or a versioning-policy exception.
+Independent corrective review approves the complete original/correction union; this is
+not active production, scope-exception eligibility or a versioning-policy exception.
 The owning CI log records terminal evidence; changed runtime dependencies prevent treating
 the old timing pair as a matched comparison for this corrected source.
 Same-second backup-alert correction now has independent approval, including actual controlled

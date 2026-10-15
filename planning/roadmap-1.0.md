@@ -37,8 +37,9 @@ full feature acceptance and clean-host release evidence.
 RP-674's unapplied performance candidate correctione973fcb1 restores the required shared
 ordering helper. A new full300 standard-pacing measurement completes449.209272s with the
 original exact report digest. This is standalone current-source evidence, not a matched speed
-comparison or hosted gain. Independent re-review and lawful active-landing authority remain
-held; the CI log owns the complete evidence. No additional playable tier follows.
+comparison or hosted gain. Independent corrective review approves the complete candidate
+union; lawful active-landing authority/eligibility remain held. The CI log owns exact ranges
+and evidence limits. No additional playable tier follows.
 Later Garage/Pet/Arcade/Typer corrections have scoped independent approvals. RP-668's
 gate and broader Company/terminal preflight repairs are independently approved; this closes
 that reproduced defect, not Arcade or an original bad-tip verdict. Eleven Garden admission/

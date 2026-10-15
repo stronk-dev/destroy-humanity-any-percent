@@ -13,7 +13,9 @@ is CHANGES REQUIRED, not approved. UNAPPLIED correctione973fcb1 restores the hel
 dependency-severing, intact affected checks/vet and actual Linux-amd64/Postgres replay execute.
 New source-bound full300 measurement4365 completes449.209272s with the original exact report
 digest. This standalone observation is not a matched speed comparison; intervening runtime
-dependencies differ. Independent re-review is executing. Old matched-pair timings remain
+dependencies differ. Independent corrective re-review APPROVES the original range plus
+complete correctiona11446b4..78631c31; its exact provenance and exclusions are in the log.
+The candidate remains unapplied. Old matched-pair timings remain
 historical for the old candidate; the owning log records terminal evidence and hashes.
 Existing guard-policy/adoption/active-landing and full-CI gates remain unchanged.
 

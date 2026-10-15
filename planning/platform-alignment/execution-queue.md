@@ -38,7 +38,7 @@ nine-tier goal remains active; no new playable tier or release was completed.
   mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member
   policy conflict have concrete unadopted engineering proposals in the API plan. Do not mount
   a partial endpoint, invent descriptors, normalize sources or infer draft acceptance.
-- **CORRECTION IN RE-REVIEW / NEW MEASUREMENT COMPLETE — CI performance candidate; active landing held:**
+- **CORRECTIVE CANDIDATE REVIEW APPROVED / NEW MEASUREMENT COMPLETE — active landing held:**
   Independent review of complete9bdf9c29..d6e092e8 finds RP-674: a local sort bypasses the
   neutral helper required by Production Contract Integrity D1/D3. Original candidate is
   CHANGES REQUIRED. Unapplied correctione973fcb1 restores that dependency; root helper-sever,
@@ -46,8 +46,9 @@ nine-tier goal remains active; no new playable tier or release was completed.
   measurement4365 completes449.209272s with the original exact full-report digest. This is
   standalone current-source evidence, not a matched speed comparison; dependencies differ.
   Original396.572/735.605s pair/digest remain historical for the ORIGINAL source, not the
-  correction. Independent re-review and lawful kernel-watched
-  authority/eligibility remain before active landing. No new mechanism, false version bump,
+  correction. Independent review approves the original plus completea11446b4..78631c31
+  correction union; lawful kernel-watched authority/eligibility remain before active landing.
+  No new mechanism, false version bump,
   budget increase, deleted population, restamped golden, whole-CI or release promotion.
 - **READY FOR DESIGNATED REVIEW — consolidate the remaining exact ranges:** Marco's
   2026-10-15 delegation permits fresh independent Codex reviewers for outstanding
