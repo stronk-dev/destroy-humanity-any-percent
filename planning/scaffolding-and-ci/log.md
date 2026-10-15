@@ -2697,6 +2697,7 @@ Review by: /root/rate_traversal_corrective_candidate_review (independent Codex u
 corrective-code delegation). Recorded by: Codex root, transcribing its terminal verdict.
 Decision: APPROVED — bounded unapplied corrective candidate only; no actionable findings.
 Complete reviewed union, base exclusive/tip inclusive:
+
 - original9bdf9c29f119e57366fd2f55dacfbe05f89a2127..d6e092e8d14ebb15d0aa905071ad2e87ae02fb65 (4commits/8paths);
 - correctiona11446b40fe9d4bd450d309c23b0c6e8fb9424ee..78631c312dac24629dd1cf2fd64e66db99b3e1f2 (3commits/9paths).
 

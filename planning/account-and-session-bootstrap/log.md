@@ -1137,3 +1137,29 @@ Account/Gameserver Integration selector exits0 with SQL children skipped for abs
 TEST_DATABASE_URL and real-minute cleanup unrequested: no SQL evidence. No browser, Linux,
 hosted CI, API generation or full Account/archival/release acceptance follows. Other Account
 corrective ranges, recovery/renewal proposals and existing red gates remain separate.
+
+## 2026-10-16 — Socket witness corrections independently approved
+
+Review by: /root/account_socket_witness_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing its verdict.
+Decision: APPROVED, no findings, both complete base-exclusive/tip-inclusive ranges:
+
+- RP-450 dcd9475da2a92c568cae51274e979466e94038f8..b0f26d4769233d25f396c97723c6ca9dde5d152d.
+- RP-474 e4fd61fa804338d2d42030c23db6a569816f4864..da21dae28a26253c9e148f01ebca7ee38d022cc5.
+
+All changed tests/docs/backlog/plan/log paths inspected. No production/authentication,
+30s revocation guard,2s drain guard or4001/4003 assertion change. Old-helper ignored overlay
+41230 fails both forced typed-close cases for missing application pong and batched reply
+case with close-1; nested-empty-object control passes. Corrected controls64874 pass; full
+cold native Gameserver/Transport5535 pass0.278/13.208s and affected vet passes. Native DB
+skips are not SQL credit. Declared Linux-amd64/Postgres10233 executes selected cases without
+skips: actual family revocation21.40s, composed socket/clearing/drain2.05s, forced-ping/drain
+controls pass, package23.580s. Both exact-range whitespace checks pass.
+
+Executed at78631c31; revocation function/three helpers match RP-474 tip exactly and socket
+control file is unchanged. Current dependencies evolved: not a historical-checkout run.
+Owned tmpfs180d60a1… inspected twice/stopped/removed after terminal; disposable rows cannot
+be recovered. Persistent data/caches/two preexisting builders preserved, SQL explicitly
+released to public-reader review. Reviewer makes no tracked edits/commits. RP-474's test-peer
+defect closes; RP-450's original hosted timeout remains unknown. No universal reliability,
+full CI/Account/Transport acceptance, archival, publication or release approval.

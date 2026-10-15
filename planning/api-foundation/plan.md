@@ -325,7 +325,8 @@ only on suspicious-name fragments. Three actual valid-registry negative fixtures
 the old gate and pass after repair; compatible optional additions prove API compatibility is
 not privacy approval. No runtime DTO, handler or published field changes. The original Route
 Registry reader batch `09d12987` is now reviewed CHANGES REQUIRED for this evidence gap;
-the log owns executed checks and the test-only correction's pending designated review.
+the log owns executed checks and fresh independent corrective APPROVAL of complete
+6af2830e..36f81dae. The original CHANGES REQUIRED remains historical, not feature approval.
 Whole API acceptance remains separate from the original review dispositions above.
 
 Current evidence correction (2026-10-12, RP-493): the board cursor's changed-epoch test now
@@ -333,8 +334,8 @@ uses a valid second epoch, verifies each changed filter succeeds without a curso
 the old cursor to fail before page retrieval. Deliberately disabling epoch binding passes the
 old test and fails the corrected one; production source is restored unchanged. Cold affected
 packages, declared Postgres reader tests and selected Linux-amd64 composed-server privacy/socket
-integration pass. The log owns the targeted original evidence finding and pending test-only
-corrective review; full original router/boards/routes dispositions are recorded separately above.
+integration pass. Fresh independent corrective review APPROVES complete737e0b2e..6af2830e;
+the log owns exact provenance. Full original router/boards/routes dispositions stay separate.
 
 Current bounded correction (2026-10-12, RP-492): query string validation uses JSON escaping,
 not Go literal escaping, while retaining malformed UTF-8 refusal and exact descriptor checks.

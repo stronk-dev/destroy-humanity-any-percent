@@ -17,13 +17,15 @@ the raw peer's missing application-level pong, closing3012 before the expected a
 Both raw read helpers now acknowledge protocol pings; forced ping/batched-reply regressions
 and the unchanged real revocation4001/healthy-drain4003 assertions pass. This is test-only,
 not a production/auth/timing change or closure of the separate RP-450 drain failure.
-The owning log holds exact evidence and the pending designated review range.
+Fresh independent Codex corrective review APPROVES completee4fd61fa..da21dae2;
+the owning log holds exact provenance and actual Linux-amd64/Postgres re-execution.
 
 Current bounded witness work (2026-10-08, RP-450): the hosted deadline occurs in drain after
 the revocation assertions, not in their denial checks. The unrevoked healthy control now reads
 through teardown and must observe code 4003 with the existing deadline. Old focused controls
 also pass, so the original intermittent failure remains open rather than declared solved.
-The owning log records execution and pending review; no authentication or timeout change.
+Fresh independent Codex corrective review APPROVES completedcd9475d..b0f26d47;
+the owning log records exact provenance. RP-450 stays open; no authentication or timeout change.
 
 1. [x] Add account/founder/session/access-token migrations and repository.
 2. [x] Implement recovery credentials, exact-claim JWTs, refresh-family rotation, and revocation.
