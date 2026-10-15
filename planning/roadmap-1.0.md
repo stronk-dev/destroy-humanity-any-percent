@@ -7,11 +7,12 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-15):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Implementation checkpoint `312f6e02`, kernel0.3.221, epoch8: still Garage integration/hardening,
+Implementation checkpoint `874d8d17`, kernel0.3.221, epoch8: still Garage integration/hardening,
 incomplete v0.1, with substantial world/combat/Tier3–8/final-ending construction ahead. At this
 coordinate, local corrective-review records continue in the owning logs. Last inspected
-publication is `be66902b`, failed CI38560135778 and maintenance38677066823; no remote-main
-requery or new hosted execution is claimed here. Later local work is not in either run.
+publication is `be66902b`, failed CI38560135778 and maintenance38677066823. Read-only queries
+reconfirm that same remote coordinate and both failures. No new
+hosted execution is claimed; later local work is not in either run.
 The retained maintenance artifact is incomplete and actually rejected by
 the validator; the CI log owns exact phase results. The historical
 guard and27 partition failures remain blockers; local composed/browser passes are not full CI.
@@ -35,6 +36,9 @@ Twelve further bounded Garden arithmetic/persistence/diagnostic scopes now have 
 corrective approval with actual Go/TS/SQL/HTTP/Linux input checks. Exact ranges and exclusions
 are in the owning log; observation approval does not resolve either historical failure cause
 or the starter/carry/resource-event/trigger authored conflicts. No feature milestone advances.
+Further Pet/host/CI scoped approvals and actual97 paired economy checks close review debt.
+The independent review finds RP-669's focus race; its separate renderer repair is reproduced,
+verified and independently approved at874d8d17. No new tier, original-feature or release acceptance.
 Numeric representable-result repairs do not adopt the exponent-exhaustion or
 aggregation proposals. Current affected replay/browser/SQL checks pass; full Production's
 27 accounting failures and the historical guard remain red. The overview and owning logs

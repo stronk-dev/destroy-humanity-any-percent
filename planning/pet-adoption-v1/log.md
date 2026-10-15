@@ -924,3 +924,22 @@ Pet, renewal/privacy/owner copy or full CI. Review by: Codex (implementer first 
 Recorded by: Codex. Complete new component/test/docs/plan/ledger/log range aftera45f5478 through
 this containing commit needs fresh independent corrective review; RP-392 remains CHANGES REQUIRED,
 RP-669 locally repaired pending that verdict. No archival, content mint, release or push.
+
+## 2026-10-15 — RP-669 independent corrective approval
+
+Review by: fresh independent Codex `/root/pet_toggle_focus_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, all6 paths
+of `a45f5478da511ece1adaf08d83d209ad171816b2..874d8d17efc0083ef81373b2438198f3c1807970` inspected.
+Superseded focus remains cancelled after removal; finally cleans the temporary listener;
+ordinary entry/name handoffs and disconnected-card refusal remain. Regression confirms real
+outside focus and independently expects body, not the result of the subject's handoff.
+
+Reviewer actually executes affected Adoption/host files: native Chromium/WebKit244 passes/
+10 performance exclusions (16.79s), declared cold Linux ARM64 all3 engines366/15 exclusions
+(20.23s). Changed17 cases per engine have no skips. Types0/0, build217 modules, UI boundary
+10Go/15Svelte negatives and exact-range whitespace pass. Tests consume reviewed product bytes;
+concurrent07ba17d3 changes records only. Historical4 old failures inspected, not rerun. Initial
+listen denial executes zero tests; authorized run supplies evidence. Diagnostic output partly
+truncated, terminal verdicts retained. No source mutations/edits/DB/composed; all processes
+terminal and disposable --rm browser absent. RP-669's reproduced defect is CLOSED under this
+verdict, not originalRP-392 range/Pet/PA7/copy/AT/archival/hosted-CI/release acceptance.

@@ -16,9 +16,10 @@ RP-408 paired economy-isolation and RP-428 receipt-bound welcome ranges. The own
 records exact hashes and actual Postgres/history, all97 paired seeds, native/Linux UI and
 both focused real-service driver executions. RP-392 is CHANGES REQUIRED: review finds
 RP-669, collapse/reopen can reclaim a newer focus choice that disappears before tick.
-The added regression reproduces4 old native failures; the bounded local listener correction
-passes34 native/51 Linux cases and types/build/boundaries. Its new range aftera45f5478
-requires fresh independent corrective review; no original feature/new content/AT acceptance.
+The added regression reproduces4 old native failures; the bounded listener correction at874d8d17
+now has fresh independent APPROVED for completea45f5478..874d8d17. Reviewer actually executes
+244 native/366 Linux affected host cases with explicit performance exclusions, types/build/
+boundaries. RP-669 closes; RP-392's historical verdict remains, not original feature/copy/AT acceptance.
 
 2026-10-08 review checkpoint: complete original P1 (RP-403) and P2/P3 (RP-404) reviews
 retain CHANGES REQUIRED for phrase and raw species admission. Codex's

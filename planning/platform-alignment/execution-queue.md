@@ -7,7 +7,7 @@ their independent review obligations remain live.
 
 ## Current action — 2026-10-15
 
-Whole-product implementation coordinate `312f6e02`, kernel0.3.221, epoch8; later review
+Whole-product implementation coordinate `874d8d17`, kernel0.3.221, epoch8; later review
 records and bounded work are in the
 owning logs below. Whole-product status and evidence limits
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
@@ -58,7 +58,11 @@ nine-tier goal remains active; no new playable tier or release was completed.
   ranges and actual SQL/Linux checks. Further complete approvals cover RP-224/RP-225,
   RP-230/RP-231/RP-398 and RP-438/RP-445. RP-232 and RP-434/RP-435 approve only identified
   corrective portions, not mixed new-journey construction/Make/CI. Do not restart approved
-  ranges; continue outstanding Pet RP-405/RP-408 and other accepted corrective work.
+  ranges. Pet RP-405/RP-408/RP-428, Garage RP-407 and CI RP-623/RP-633/RP-635/RP-648
+  now have scoped independent approval; actual97 paired seeds execute. RP-392 retains
+  CHANGES REQUIRED; the resulting RP-669 defect has a separate independently approved repair.
+  Continue remaining Garage native-care/read/focus corrections and CI fixture/deadline
+  corrective review, preserving authored-copy and new-feature boundaries.
   RP-430 diagnostics are approved, but the incident remains OPEN; no speculative repair/retry.
 - **LOCALLY EXECUTED — affected Docker/SQL/browser/player checks:** RP-667 whole composed
   run39981, correction committed at11478e9d, passes with fresh production builds;

@@ -5533,3 +5533,26 @@ inventory retains preexisting BuildKit containers, caches/volumes untouched. No 
 or version bump for these review records. Next Garden corrective scopes: response ordering,
 timer/visibility, host receipt refresh, Fiscal purchase surface and remaining composed driver.
 The full nine-tier goal remains active; this checkpoint closes review debt, not another tier.
+
+## 2026-10-15 — Independent review catches and repairs a Pet focus race
+
+Implementation checkpoint874d8d17, unchanged kernel0.3.221/epoch8. Fresh corrective reviews
+approve Pet history/economy/welcome supplements, Garage disposal and four CI verification
+corrections. Exact ranges, errors and limitations live in owning logs. All97 actual-adoption
+paired economy runs execute and agree; actual Linux-amd64/Postgres corruption/Exit checks and
+focused default/axis real-service journeys pass. These are not original feature acceptance.
+
+The same review rejects RP-392 for RP-669, a newer focus selection removed before tick letting
+collapse/reopen reclaim focus. Root reproduces4 old native failures, fixes the bounded listener
+handoff and retains strict preconditions/independent focus expectations. A separate fresh
+reviewer approves completea45f5478..874d8d17 after actual244 native/366 Linux affected host
+checks with explicit performance exclusions, types/build/boundaries. The old verdict stays
+historical; the reproduced new defect closes, not the Pet feature or full accessibility.
+
+Read-only GitHub queries reconfirm publishedbe66902b and failed CI38560135778/maintenance
+38677066823. Actual local history guard remains red at50a3a514;27 accounting failures remain
+unwaived. The proposed exact-commit/path exception class is put to Marco, not adopted or used
+as a waiver. No push, version fiction, new tier, authored copy or release approval. Remaining
+Garage/CI corrections, normative/privacy/renewal/content gates and full later-game construction
+continue under their actual contracts. All review/test processes terminal, owned disposable
+resources removed without touching persistent data/caches; full nine-tier1.0 goal stays active.

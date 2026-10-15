@@ -1,9 +1,10 @@
 # Current repository state
 
-Reconciled 2026-10-15: implementation checkpoint `312f6e02` (kernel0.3.221, epoch8),
+Reconciled 2026-10-15: implementation checkpoint `874d8d17` (kernel0.3.221, epoch8),
 with independent-review records and their exact bounded scopes in the owning logs. The last inspected
 publication coordinate is `be66902b`, with failed CI38560135778 and maintenance38677066823.
-This local review checkpoint does not query remote main again or claim a new hosted run.
+Read-only GitHub queries reconfirm that publication coordinate and both failed runs; no new
+hosted execution or publication is claimed for the later local work.
 Local commit volume is not a product-completion measure.
 Cloud Clicker remains a **development snapshot**, not a released or
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
@@ -33,6 +34,13 @@ counter and DB-clock repairs, command/carry/HTTP/rollback/replay supplements, an
 failure diagnostics. Actual Linux-amd64/Postgres transaction checks and Linux three-engine
 input checks execute; the Garden log owns complete ranges and exclusions. Starter/carry,
 resource-event and trigger contracts, privacy and full feature gates remain unresolved.
+Pet replay/economy/welcome and Garage disposal corrections also have bounded independent
+approval, including actual97 paired economy runs and real persisted/adoption journeys. Review
+finds RP-669's newer-focus race and the parent reproduces it; the renderer correction at874d8d17
+is independently approved after native/Linux host checks, not original Pet acceptance.
+Four CI verification corrections have scoped approval, but the actual historical guard still
+refuses50a3a514. The proposed exact-commit/path exception mechanism is unaccepted; Marco's
+decision is requested, not inferred, and normative review remains separate.
 Numeric power repairs preserve
 representable lower-domain diagnostics; exponent-exhaustion and aggregation contracts remain
 drafts, not adopted repairs. The [Arcade](minigame-demo-disc-arcade/log.md) and
