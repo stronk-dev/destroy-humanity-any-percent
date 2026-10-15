@@ -2054,3 +2054,61 @@ No active optimization, kernel/history exception or owner/draft adoption, CI suc
 approval, archive, release, push or deployment. The same27 arithmetic failures and full1.0 floor
 remain unchanged. A process-list read was sandbox-denied; the actual execution handle, not an
 inferred PID or state file, supplies live/terminal authority throughout.
+
+## 2026-10-15 — RP-596 matched pair and Linux/Postgres candidate checks complete
+
+Resume control session20829; it exits0 with all300 governed keys, no run/aggregate failures
+and the same full report SHA256 `1ffa47cfd4f85f6daf1b340cf6e43cfa7d534cb39308cdf80e955c9d28be826d`.
+Active control wall735,604,548,625ns (whole Go736.065s), candidate396,571,846,833ns:
+46.088989% less elapsed time /1.85491× observed ratio in this single sequential native pair.
+Both use the same scenario/constants,12 workers, Go1.27.2/M3 Max and profiling options;
+only the candidate uses the compiler overlay. No deliberate concurrent heavy run. This is not
+randomized/repeated sampling, control of other host activity, hosted timing, registered
+relevance or a completed full-maintenance observation. Retain the worse inactive/masked
+microbench samples too. Do not promote the historical783.821s into this current control.
+
+Control profile SHA256 `f49b4cf2a1779b16b439082abaed3dd1ee335b3b0b3bdcc0e7d87323066b6ed6`;
+control binary `a8c7643378768ca020cdac2f0472be565fe37b397a43bee2ece737ff63716cdb`.
+The existing root profile reader executes: total6069.22s sampled CPU, rate calculation
+1412.48s cumulative (23.27%), versus candidate408.83s/12.92%. These overlapping sampled
+stacks are not disjoint or wall-time savings. All four raw profile/binary files and the
+candidate source remain in the already-recorded owned temporary directory for review.
+
+After timing finishes, copy the identical candidate into the existing ignored `.cache/`
+file `rate-traversal-candidate-2kNxJt-engine.go`; the Linux overlay there maps
+`/workspace/server/production/engine.go` to that file. Its SHA256 remains
+`d9b789badba9585010ecd332170ffe559f77c9ceb3665984fc81e1236bbb52ea`.
+No new cache directory, active source replacement, fingerprint rewrite or hidden version bump.
+
+Actual root `make test-go-ci CI_TEST_PACKAGES=./production
+CI_TEST_FLAGS='-overlay=/workspace/.cache/rate-traversal-candidate-2kNxJt-overlay.json'`
+executes the complete affected package cold on declared Linux/amd64 with real Postgres.
+Session17438 exits2:106.616s, exactly the same27 named partition divergences, no additional
+failure. This is a red package result, not full CI success or an arithmetic repair. No skip
+census is claimed from non-verbose output; separately opted-in runtime populations remain
+outside the claim. The local Go1.26-family image is linux/amd64 digest
+`golang@sha256:eb36c1664dd974cde625f736e02c204383deebe03977365caaec5bf49f794348`.
+This declared Docker Desktop lane uses the existing AVX2 workaround under emulation, not
+native hosted-amd64 crypto/performance evidence.
+
+Then actual root `make test-go-ci CI_TEST_PACKAGES=./gameserver
+CI_TEST_FLAGS='-overlay=/workspace/.cache/rate-traversal-candidate-2kNxJt-overlay.json -run TestComposedGameserverReplaysRatifiedFirstHourAtPinnedSeed -v'`
+session71342 PASSes (24.92s): real bootstrap, same script/milestones, both terminal transitions,
+ordering and persisted Company/Founder replay. This is one pinned backend journey, not browser
+or97/300 persisted journeys. Its existing post-delete census still exposes retained/public
+leaderboard data (1155 events in this run); no retention-policy or data-rights approval follows.
+
+All handles terminal. Inspect this turn's disposable tmpfs Postgres service (no durable mounts),
+then stop/remove only it; final Compose project is empty. Preserve the shared Go cache/network,
+ignored candidate copies and raw profile evidence. Active engine SHA256 remains
+`b872d4746779a097f68f88475cef66214a2a7f8970817298f788ffad515ae875`; kernel/history/workflow/
+Makefile unchanged. Full-range whitespace and unapplied-patch applicability checks pass.
+
+Update the existing plan, RP-596 and execution queue to completed bounded measurement and
+the actual next review/landing boundary; do not rerun these populations for reassurance.
+Review by: Codex (implementer/measurement first filter). Recorded by: Codex. Consolidated
+candidate/test/measurement/docs/records/patch-data attribute range after `9bdf9c29` through
+this containing commit still needs designated Claude review and independent identity eligibility.
+No guard-policy adoption, active optimization, false version, semantic change, archival,
+publication/deployment, hosted-green or1.0 claim. Remaining accepted work/owner choices and
+the full nine-tier/platform release floor are unchanged; this completed experiment is not1.0.

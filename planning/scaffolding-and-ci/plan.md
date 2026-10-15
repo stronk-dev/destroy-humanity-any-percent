@@ -146,9 +146,14 @@ regressed inactive/masked work and was replaced; the log preserves those observa
 The complete300-key candidate measurement now passes in396.572s with the exact historical
 report digest, and overlay-specific vet passes. The source-corrected profile reports408.83s
 cumulative sampled CPU in rate calculation; this is not a wall-time percentage.
-The current-source control is running as session20829 with identical inputs/workers/profile
-options but no overlay; inspect that result before asserting a matched timing improvement.
-Do not restart a live run or call an incomplete measurement a gain. Active engine/kernel/history and CI
+The current-source control now completes735.605s with the same exact report digest:
+candidate396.572s is46.1% less elapsed time in this one sequential native pair, not a repeated
+or hosted estimate. The full candidate Linux-amd64/Postgres Production package fails only
+the original27 partition cases; the composed first-hour terminal/replay journey genuinely
+passes. No new failure is exposed, no arithmetic repair or full CI pass is claimed.
+This bounded experiment is complete; next consolidate independent candidate/identity review
+and resolve the existing lawful kernel-watched landing route, not repeat these measurements.
+Active engine/kernel/history and CI
 remain unchanged; existing guard authority, exact-path independent identity review and
 remaining affected runtime proofs still precede landing/closeout.
 

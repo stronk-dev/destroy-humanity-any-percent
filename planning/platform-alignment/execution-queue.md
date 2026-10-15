@@ -7,7 +7,8 @@ their independent review obligations remain live.
 
 ## Current action — 2026-10-15
 
-Implementation coordinate `654523c7`, kernel0.3.216, epoch8. Whole-product status and evidence limits
+Whole-product rollup coordinate `654523c7`, kernel0.3.216, epoch8; later bounded work is in the
+owning logs below. Whole-product status and evidence limits
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
 nine-tier goal remains active; no new playable tier or release was completed.
 
@@ -16,13 +17,16 @@ nine-tier goal remains active; no new playable tier or release was completed.
   mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member
   policy conflict have concrete unadopted engineering proposals in the API plan. Do not mount
   a partial endpoint, invent descriptors, normalize sources or infer draft acceptance.
-- **READY — bounded CI performance proposal review:** RP-596's full native standard-phase profile now
-  completes all300 keys and points to production rate traversal; its owning CI log distinguishes
-  sampled CPU from wall time and retains the still-failed hosted45.19-minute/full-maintenance
-  evidence. The existing CI plan scopes the equivalent Production C2 refactor; executed exact-
-  order/activation/refusal controls prepare it without an extra routine-change RFC. Existing
-  runtime-neutral guard authority/eligibility and designated review remain; no optimization under measurement
-  authority, budget increase, deleted population or snapshot regeneration to make the job green.
+- **READY — bounded CI performance candidate review; active landing held:** RP-596's unapplied
+  Production C2 traversal candidate and current-source control both complete all300 keys with
+  identical full report digests. Native elapsed396.572s versus735.605s is46.1% less in one
+  sequential pair, not a hosted/repeated estimate. Exact-order/activation/refusal controls,
+  overlay vet and the real Linux-amd64/Postgres composed first-hour journey pass; full candidate
+  Production remains red only at the original27 partition cases. The owning CI log retains
+  those results and the still-failed hosted/full-maintenance evidence. Measurement is complete
+  for this candidate; resolve exact-path runtime-neutral guard authority/eligibility and
+  designated review before active landing. No new routine-change RFC, false version bump,
+  budget increase, deleted population, restamped golden, whole-CI or release promotion.
 - **READY FOR CLAUDE — consolidated designated review of Codex ranges:** feature-owned
   logs identify complete corrective ranges, including newer API, archive/fixture and R-012
   live-input work. Their implementer checks are not designated verdicts. Review prevents acceptance/archival,
