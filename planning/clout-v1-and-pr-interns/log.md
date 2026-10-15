@@ -4052,3 +4052,47 @@ gate, adopt accounting/specification proposals, enable axis scenarios, approve
 new features or other ranges, establish SQL/browser/hosted evidence, or authorize
 archival, release, publication or deployment. The current plan/ledger now point
 to this verdict; no product bytes change in this record update.
+
+## 2026-10-15 — RP-664 aligned aggregation candidate rejected
+
+At187cf426 inspect accepted Numeric Core and Deterministic Aggregation fully:
+the latter prescribes grouping/combination order, not just an abstract sum.
+Replacing it requires an explicit follow-up/compatibility contract. Before candidate
+execution declare original midpoint pair, signed/domain controls, unchanged accrual
+fixtures and100000 seeded positive profiles, separating raw/committed reversals.
+The [dossier](aggregation-candidate-research.md) retains the exact method and limits.
+
+Exact Python/Go rational diagnosis of represented inputs places both original
+sums above10.12459571165. The test-only aligned Neumaier candidate returns
+1.01245957117e1 for both and matches eleven valid accrual-fixture formulas. All
+100000 profiles execute: current Go876 raw/1 committed reversal, Node and each
+Linux browser875/1; candidate0/0 throughout. Initial JS census assertion improperly
+requires Go876 and fails1/6409 cases. Correct the invented raw-equality premise,
+retain each actual count and exact committed controls; no ordering tolerance added.
+
+The added prospective signed-tail control rejects the candidate in Go/TS:
+current1e300−1e300+1e-300 retains1e-300, candidate returns0 after scale underflow.
+Actual exported-function overlay fails that unchanged current-result assertion
+(Make2,0.212s). Its body matches the retained prototype byte-for-byte; no tracked
+runtime file is patched. Earlier full overlay run96136 passes Decimal0.372s and
+Economy6.139s, but Production41.194s fails27 partitions,44-profile policy-observer
+drift, three changed clock-reference pairs and changed RP-664 upper payout. No
+golden/report/source fingerprint is refreshed or old failure hidden.
+
+Final active-source cold Decimal/vet pass0.378s. Original policy/clock/Rates-Evaluate
+parents plus candidate controls pass23131 (Decimal0.234s/Production0.626s), with
+the original one-shot outputs intact. Final affected Node6409 pass29634; types/
+Svelte diagnostics zero54153. Declared Linux browser92428 passes19227/12 files,
+all three engines6.57s; cold setup time excluded. Initial socket EPERM runs no
+browser tests; narrow approved invocation supplies actual evidence. Final browser
+Compose inventory empty; no DB/user data or durable resources touched. Ignored
+compiler-overlay files remain in .cache, not a shipped implementation.
+
+Review by: Codex (research implementer first filter). Recorded by: Codex. Complete
+seven-path test/dossier/docs/plan/ledger/log range after187cf426 through this
+containing commit needs designated research review, outside the corrective-code
+delegation. No production/kernel/vector/balance/content/CI/specification behavior
+change, numeric repair, full monotonicity/search/AC6/SQL/replay/hosted or release
+claim. RP-664 and the original27 remain open. Next viable candidate must retain
+cancellation tails, justify full-domain work and establish lawful replay/version
+compatibility; do not repeat this rejected candidate or its positive census.

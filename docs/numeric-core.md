@@ -162,6 +162,14 @@ producer prefix, not full replay. No arithmetic is repaired by these negative
 characterizations. The ownership contexts differ; this is not evidence of a
 fixed-origin temporal-search failure or loss in the currently published catalog.
 
+An unapplied aligned-compensated candidate repairs that pair in bounded tests
+but is rejected: scaling before cancellation loses1e-300 from
+`1e300 + (-1e300) + 1e-300`, which the current grouped helper preserves.
+Its actual Go caller overlay also changes retained clock-policy observations,
+without repairing the27 partition failures. The
+[candidate dossier](../planning/clout-v1-and-pr-interns/aggregation-candidate-research.md)
+records evidence and limits. No production algorithm or quantization policy changes.
+
 An explicit retained boundary check distinguishes an out-of-domain quotient:
 `1e-8999999999999999 / 2` underflows to zero in Go, whereas pinned JavaScript
 retains raw mantissa `5`, exponent `-9000000000000000`. The client rejects that

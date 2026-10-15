@@ -28,6 +28,19 @@ different ownership contexts. H3c distinguishes that open numeric repair from
 the still-required fixed-origin temporal proof; do not expand it into an
 unobserved current-search defect or demand a false global monotonicity lemma.
 
+2026-10-15 RP-664 candidate result: aligned compensated summation fixes the
+retained midpoint pair and has no reversals in the declared100000 positive
+profiles, but loses1e-300 after exact large-term cancellation that the current
+grouping preserves. Reject it, not the signed input population. Actual Go compiler
+overlay also changes recorded clock-policy payouts and leaves all27 partitions
+red. [Candidate dossier](aggregation-candidate-research.md) and owning log retain
+cross-runtime counts, exact-rational diagnosis and compatibility limits. For this
+separate arithmetic repair, produce a cancellation-safe, work-bounded contract and
+its lawful replay/version route before any algorithm replacement; do not repeat the completed positive
+census or infer an accepted algorithm from this negative experiment.
+The actual caller-specific temporal proof remains separate; this does not impose
+a false global summation lemma on H3c's fixed-origin search analysis.
+
 ### Completed readiness studies and earlier draft steps
 
 The dated/hashed notes below preserve their original declarations and outcomes.
