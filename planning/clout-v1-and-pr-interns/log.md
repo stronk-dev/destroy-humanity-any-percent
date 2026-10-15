@@ -4417,3 +4417,32 @@ Review by: Codex (draft author, NOT designated normative review). Recorded by: C
 Normative review/adoption remain required before implementation; the independent
 corrective verdict above does not cover/adopt this subsequent draft. RP-663 remains
 open. Continue accepted work; no whole1.0, archival, push or deployment claim.
+
+## 2026-10-15 — Bound the missing canonical partial-bucket argument
+
+H3c's completed20000-profile attack used at most287 completed buckets; catalog admission
+permits positive safe-integer provision ticks, not that287 bound. Do not repeat the positive
+census or extrapolate it to a proof. Next bounded diagnostic asks whether a canonical partial
+delta crossing10 can decrease the actual grouped/Quantize12 sum of an unchanged canonical
+prefix. Use prefix counts100/1000/10000/100000/1000000 and literal full-bucket values
+20,20.0000000001,20.0000000003,23.4567890123,29.9999999999; partial9.99999999999→10.
+Every input must be canonical, positive and unchanged. Actual client sum/quantize is the
+subject, not a replacement implementation. Include known RP-664 raw reversal and increasing/
+equal controls; count all25 pairs, fail on incomplete execution or invalid output. This is
+a structural aggregation counterexample diagnostic, not a temporal evaluator experiment,
+benchmark, whole-domain proof, adopted algorithm or production change. Any reversal must
+then be checked in Go and for realizability through an admitted fixed-origin evaluator;
+no-find closes only this diagnostic, not H3c. Do not grow the population after seeing results.
+
+Executed directly in Node26.11.1 against actual client numeric.ts/pinned break_infinity2.2.0
+(strip-types; no reconstructed summation), source312f6e02: all25 pairs finish, no decrease;
+every projected pair is canonically equal. Full input mantissa/exponent arrays stay unchanged.
+Three separate controls pass: increasing/equal pairs and the existing raw RP-664 reversal
+1.01245957117e1→1.01245957116e1 from numeric-sum-order-research-v1.json. An initial control
+invocation mixed independently loaded ESM/CommonJS Decimal constructors and throws before
+its comparisons; corrected CommonJS identity supplies the three control results. The25-case
+run uses objects produced by numeric.ts's own parseCanonical and is unaffected by that mistake.
+Routine output is complete. No source/fixture/test/report/kernel edits, Go/Evaluate/SQL/browser
+or workload claim. Close this bounded diagnostic without expanding it; it does not supply the
+still-required actual caller proof or alternative search algorithm. Both drafts remain
+unaccepted;27 partition failures and all compatibility/budget/review gates remain.
