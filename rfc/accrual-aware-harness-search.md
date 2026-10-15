@@ -120,10 +120,60 @@ review remain required; a per-ms exhaustive production scan is not authorized.
 ### H4 — Compatibility, work and evidence
 
 Keep old pinned scenarios/reports reproducible through their existing semantics.
-An accepted new calculation/search protocol needs an explicit scenario/policy
-version and caller dispatch, not an environment variable that silently changes
-the same report identity. Do not assign those versions or regenerate artifacts
-before the contracts and landing order are fixed.
+Proposed protocol tags are exactly `legacy_mutating_wait_v1` and
+`origin_projection_v1`. Legacy schemas retain their existing field set and dispatch
+only to the legacy implementation: absence of a new field is not permission to
+select modern behavior. New scenario schemas require `calculation_protocol` equal
+to `origin_projection_v1` plus a required `calculation_profile`; new reports carry
+the same protocol field and bind the
+actual new scenario hash. Reject unknown/missing tags, new fields in legacy schemas
+and any scenario/report protocol mismatch. No environment variable or warm cache
+can change the protocol of the same declared input.
+
+Exact new profile tags are `simulation_fixed_external_v1`,
+`simulation_active_play_endpoint_v1`, and `content_dynamics_v1`. Relevance/first-hour
+families accept only the first two, mapped by their factory to parent C1h's matching
+simulation recipe. The endpoint profile cannot bypass current axis/attendance or
+caller-support holds. Content dynamics accepts only the third: its active-play
+window uses C1g, while existing Fiscal/Pitch/permit diagnostic methods retain their
+own unchanged contracts. This profile does not claim those methods are active-play
+calculations. The actual scenario hash binds the profile; reports cannot override
+it and callers cannot choose a different private recipe at query time. Unknown or
+wrong-family profiles refuse, never default to whichever implementation is available.
+
+Observed source at `57906e5d` is the allocation baseline, not a reservation:
+
+| Family | Existing formats and proposed dispatch |
+|---|---|
+| Relevance | Scenarios/policies1–2 remain legacy; current report writer6 remains legacy and existing readers retain their historical versions. The new scenario/report each take their own next-free schema, not an assumed shared number. |
+| First hour | Existing scenario/experiment report1 and their ratified identities remain legacy. New schema/protocol gets its own scenario identity and report format; the old ratified SHA cannot authorize changed bytes. |
+| Content dynamics | Existing scenario/report1 and immutable snapshots/goldens remain legacy. New protocol uses separately identified scenario/report bytes and the C1g window-start recipe, not generic endpoint sampling. |
+
+The new Relevance scenario also requires `base_schema_version` equal to1 or2.
+Validate its existing mechanics/segments using that explicit prior grammar and
+require the loaded policy's schema to match that base, not the new outer scenario
+schema. Current code couples scenario/policy schema numbers; adding accounting
+metadata must not force a fake policy/balance mint or silently weaken its validation.
+Reuse existing field validators without rewriting the source bytes to masquerade
+as another version. No new scoring rule, window, policy value or budget is implied.
+
+Allocate exact next-free family numbers and required ratified hashes in the reviewed
+landing plan, checking contemporaneous source/lane ownership. These are not save,
+replay-input or kernel versions. Existing serialized RunKeys already bind scenario
+hash; keep their shape if unchanged rather than add another duplicate authority.
+Current new-protocol inputs must actually execute the new path; a legacy green
+report is not its acceptance evidence. Any first-hour hash adoption gate still
+requires its actual authority, not a recorder-authored replacement constant.
+
+For content registry migration, proposed registry schema2 retains the existing exact
+entry fields. Scenario and report paths remain uniquely entry-owned. An immutable
+bundle manifest becomes a registry-owned resource keyed once by its exact path;
+multiple entries may reference it only when their epoch/seed coordinates agree and
+the same validated manifest bytes/hash satisfy every reference. Generate/validate
+that resource once, never overwrite it or manufacture duplicate owners. Scenario
+decoders determine protocol; registry entries cannot override it. Schema1 keeps its
+existing ownership/refusal rules. Test mismatched shared resources, duplicate report
+paths and mixed protocol/report pairs before accepting this new registry path.
 
 Count all actual boundary, predicate, child and rollout work. Existing CI and
 search bounds are not raised by this draft. If a correct candidate exceeds them,
@@ -153,9 +203,10 @@ per-player ticks or per-ms scans are not authorized by the exhaustive test oracl
 
 ## Open engineering and authority gates
 
-Before RFC acceptance, review parent C1g's diagnostic-owner binding and complete the
-actual temporal-boundary algorithm/predicate justification and exact versioned caller/report
-dispatch. The fixture reference is not a substitute. These are engineering gaps,
+Before RFC acceptance, review parent C1g/C1h's owner/sampling bindings and H4's
+explicit family/registry dispatch proposal, complete the actual temporal-boundary
+algorithm/predicate justification, and reconcile the exact landing/version/hash
+authority. The fixture reference is not a substitute. These are engineering gaps,
 not owner choices to approve away.
 
 Owner adoption of the approach and designated normative review remain separate
@@ -172,5 +223,9 @@ numeric tolerance, authored content or narrowed1.0 scope.
 
 ## Changelog
 
+- 2026-10-15: specify proposed protocol/family dispatch, preserving legacy identities;
+  separate new Relevance metadata from base policy grammar and make shared immutable
+  content manifests single registry resources. No actual version/hash adoption or
+  consumer implementation; complete boundary proof and review remain outstanding.
 - 2026-10-15: split producer versus harness-search authority; retain RP-653/RP-656
   evidence, complete consumer obligations and unapplied status.

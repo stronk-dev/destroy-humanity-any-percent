@@ -8,6 +8,17 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+Caller/dispatch proposal at `57906e5d`: parent C1h distinguishes fixed logged-command,
+fixed-external simulation, explicit modern endpoint and diagnostic window-start
+sampling; C1e binds actual simulation revision identities and recipe. Preserve
+ordered evaluation stages rather than inventing one receipt across catchup/ordinary
+policy intervals. Successor H4 specifies protocol-tagged legacy/new family dispatch,
+base Relevance policy grammar and single-owner immutable manifest sharing. These
+are draft contracts, not implementation, numeric version allocation or new hash
+adoption. Next complete actual producer caller reconstruction and full temporal
+boundary/predicate justification, then the reviewed landing/authority packet; do
+not repeat the completed fixture studies or infer acceptance from this text.
+
 Diagnostic-owner check at `0f4e0f16`: use the actual epoch8 registered first-draw
 input and unchanged SimulateContentDynamicsActivePlay. Reconstruct its real natural
 spawn/claim prefix, preserving pre-claim control and post-claim origin. Require its

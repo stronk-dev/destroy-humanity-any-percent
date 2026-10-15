@@ -242,7 +242,7 @@ handle rather than an extra field quietly attached to a persisted `save.State`.
 |---|---|---|
 | `BeginCalculation` | Complete admitted base state, its source save version, pinned bundle, mode and validated producer/hook/ablation context → opaque origin. | Copies/owns mutable inputs; cannot begin from a projected view merely to discard rounding history. |
 | `ForkCalculation` | Origin → independent branch handle with the same origin/context identity. | No accrual, hooks, action, clock change or revision; branch work cannot mutate siblings. |
-| `ProjectCalculation` | Origin plus a canonical server/simulation endpoint → detached full state, evaluation, ordered private event values and role observations. | Fresh restoration from the origin, then actual evaluation and the permitted simulation hooks on scratch state; no new origin, saved payment or action. |
+| `ProjectCalculation` | Origin plus a canonical server/simulation endpoint → detached full state, ordered stage evaluations, private event values and role observations. | Fresh restoration from the origin, then actual evaluation and the permitted simulation hooks on scratch state; no new origin, saved payment or action. |
 | `ApplyCalculationIntent` | Origin plus an actual intent, endpoint and expected revision → ordinary decision and, only if applied, the next origin. | Run the existing semantic transition from the origin, not from a prior projection. A refusal returns no child and leaves the parent unchanged. |
 
 Projection endpoints must not precede the origin. Search may probe endpoints out of
@@ -252,6 +252,13 @@ identity and endpoint. It is not an input to `BeginCalculation` or an incrementa
 receipt. Ordinary rate/quote reads may inspect its copy but cannot promote it into
 settlement authority. Private implementation fields and caller boundaries must
 enforce this distinction; a test-only convention is insufficient.
+
+Each returned stage is exactly `{stage, evaluation}`, with the existing complete
+EvaluationResult and one C1e stage tag. Preserve real catchup/ordinary stage order,
+including an ordinary zero-elapsed evaluation where the current pipeline has one.
+Do not collapse different policy intervals into one invented incremental receipt or
+sum progress/banking fields without their actual stage semantics. This private
+result shape is proposed, not an existing API/wire change.
 
 For a real intent at `t`, restore the origin and execute its normal accrual, hooks
 and action at `t` once, even if search already inspected a projection at `t`.
@@ -371,12 +378,16 @@ already validated pinned artifacts; a digest does not authenticate arbitrary byt
   Founder carry and active-play evidence; no live lookups during reconstruction.
 - `owner.kind == simulation`: `owner` contains exactly `kind`, `scenario_id`,
   `scenario_version`, `scenario_hash`, `policy_id`, `policy_version`, `policy_hash`,
-  `seed`, `session_index`, `revision`. Bind the existing loaded scenario/policy
+  `seed`, `session_index`, `company_stream_id`, `founder_id`, `revision`, `run_log_seq`.
+  Capture the actual simulation revision/identity inputs; do not infer them from
+  Company payload alone or invent a live command. Bind the existing loaded scenario/policy
   identities and selected run seed, not IDs/versions alone. Seed is the existing
   canonical unsigned-decimal seed string; session index is null before assignment
   and otherwise an exact nonnegative integer. `replay_inputs` is
   null and `operation_company`/`diagnostic` are null. `simulation` contains exactly `external_contributions`, `commons_weight_ppm`,
-  `guild_settlement_batch`, `route_context_version`, `absence_span`, `mask`, `hook_recipe`.
+  `guild_settlement_batch`, `route_context_version`, `absence_span`, `mask`, `hook_recipe`,
+  `projection_recipe`. The latter is exactly `fixed_external` or `active_play_endpoint`
+  under C1h; a caller cannot select whichever recipe gives a nicer payout.
   Reuse the existing replay-accrual grammar/validation for the first four fields.
   `mask` contains exactly `generator_ids`, `upgrade_ids`, `removed_generator_ids`,
   `removed_upgrade_ids`, `removed_action_ids`: sorted unique valid IDs with the
@@ -405,7 +416,9 @@ before canonicalization; do not let last-key-wins parsing choose the identity.
 No raw computed rate, function pointer or ambient clock is encoded. Restore
 the original source versions; rederive catalog-owned runtime facts such as
 `FactionStockResource` from state plus pinned catalogs and reject disagreement,
-rather than persisting a second authority. Artifact/Company/Founder maps and input
+rather than persisting a second authority. A legitimately absent nonpersisted
+runtime cache is derived by the factory, not treated as a missing save field;
+explicit inconsistent claims still refuse. Artifact/Company/Founder maps and input
 buffers must not alias caller-owned mutable data.
 
 Encode the validated logical value to match `canonicalJSONString` in
@@ -413,8 +426,12 @@ Encode the validated logical value to match `canonicalJSONString` in
 byte-sorted object keys and semantically ordered arrays, without report indentation,
 HTML-escape differences or a trailing newline. Hash the bytes with SHA-256 prefixed by the
 UTF-8 domain separator `cloud-clicker/accrual-origin/v1` followed by one zero byte.
-That private origin/context digest is independent of a projection's endpoint; reuse
-keys add endpoint/visible-state/revision/budget coordinates as C1c specifies. Input
+Within one fixed logged command, its already-bound target timestamp remains part of
+the context: internal cut times do not rebind its replay envelope. Simulation and
+diagnostic origins bind their policy/window as C1h specifies; their query endpoint
+is a separate reuse-key coordinate. Do not claim two different logged envelopes
+have the same context merely because their pre-state matches. Reuse keys also bind
+visible-state/revision/budget coordinates under the harness successor. Input
 spelling or JSONB key order is not identity; an actual field/order change is.
 This memory-only encoding is not approved for saving, public export or publication
 of private state. Runtime/size bounds and strict codec/refusal/parity tests remain
@@ -477,6 +494,63 @@ must include both branches, all admitted window-effect kinds, wrong
 input/branch/window/contribution refusals and actual registered
 content-dynamics comparison without restamping its historical golden. Keep profile
 construction private; no public schema, replay event or saved payment is introduced.
+
+### C1h — Proposed sampling/clock dispatch (unadopted)
+
+An origin does not imply one universal temporal policy. The owner/factory selects
+the following exact recipe; it is not a client-controlled payout preference:
+
+| Owner/recipe | Context and endpoint meaning |
+|---|---|
+| Logged, implicit `logged_stage` | One already-validated command and its fixed real target timestamp. Private cuts use the stage's resolved contribution context; they do not re-resolve that command at earlier hypothetical dates. |
+| Simulation, `fixed_external` | Preserve the current simulation primitive's contribution assembly and clock policy, recomputing from the origin. Do not introduce active-play scheduling or automatic logged catchup merely because the state supports modern fields. |
+| Simulation, `active_play_endpoint` | Explicit modern endpoint projection using the existing logged pipeline's scheduling/catchup order on fresh scratch state, with frozen external provider inputs. It is not the current default harness behavior. |
+| Diagnostic, implicit `window_start` | C1g's real natural-draw/claim prefix and fixed start-sampled window. The endpoint recipe is not interchangeable with it. |
+
+For a logged owner, `replay_inputs.evaluated_at_ms` remains its command target;
+stage contribution resolution is fixed as C1b describes. Internal cut coordinates
+range only over that stage's owned interval and cannot rewrite its command, absence
+span, mode or resolved inputs. A different real command/provider resolution creates
+a different context, not a cache hit justified by equal Company bytes.
+
+`fixed_external` does not own new Guild clearing: its encoded pending settlement
+batch must be empty, and already-settled stock state remains in the source Company.
+Nonempty pending batches belong to the logged or modern endpoint recipe, which
+does own that work. This does not omit those populations from the full repair.
+The fixed recipe preserves actual caller revision/identity inputs, including legacy
+empty metadata where the existing primitive permits it. It cannot impersonate the
+complete logged path merely by selecting the `closed_replay` hook recipe.
+
+For `active_play_endpoint`, require admitted modern Company state, the actual owner
+and stream identity, pinned policies and the complete resolved external context.
+Reconstruct from the original pre-stage state on every independent probe:
+
+1. Apply the captured Guild batch once on that fresh copy, with existing validation;
+   never apply it to an already-cleared view or look up another live batch.
+2. Assemble the existing base contributions and determine logged offline catchup
+   through the actual policy helpers. When required, execute its offline evaluation
+   and closed hooks as the first private stage, with the original allowance/banking.
+3. Resolve/apply the real active-play schedule at the requested endpoint, with its
+   existing attended/absence policy and complete evidence. Keep its private event
+   values in the same order as the current logged pipeline.
+4. Assemble the endpoint active/external contributions with existing source order,
+   apply simulation masks through their actual policy boundary, then execute the
+   ordinary evaluation and the `closed_replay` hook recipe. Preserve both stage
+   results when catchup precedes a zero-elapsed ordinary evaluation.
+
+Returned events remain values under C1d; no command/intent is invented for a probe.
+The actual action still resolves/validates its real inputs and commits through the
+existing transaction, not a previous view's cached evaluation/events. Modern recipe
+construction must verify owner/clock/absence bindings; an empty legacy identity or
+partial context cannot fall back to fixed sampling. New work is charged to existing
+counters and bounds. No new provider formula, cap, payout segmentation or proration.
+
+The harness successor must bind each adopted scenario/protocol to its permitted
+recipe and complete its actual boundary/predicate proof. These are proposed routes,
+not existing implementation or permission to enable held axis/attendance mechanics.
+RP-652/RP-657 explain why the distinction matters; they do not prove the modern
+factory or all-stage reconstruction. Acceptance needs recipe-mismatch refusals,
+complete stage/event comparisons and original-policy compatibility in both runtimes.
 
 ### C2 — Preserve a producer origin, not a rounded-rate cache
 
@@ -922,6 +996,10 @@ contract, explicit adoption and independent normative review before production w
 
 ## Changelog
 
+- 2026-10-15: distinguish fixed-command, fixed-external, modern endpoint and diagnostic
+  sampling recipes; bind simulation identity and preserve ordered stage evaluations.
+  Clarify that a logged envelope already binds its target time. Draft only; no dispatch,
+  identity, clock, stage, save or report behavior is changed in production.
 - 2026-10-15: split harness search/reuse/caller migration into its own linked draft
   under RFC-0000. Recommend the operation-local route without adopting it; distinguish
   RFC readiness from executable implementation gates and retain full AC6 dependencies.

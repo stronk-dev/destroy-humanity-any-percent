@@ -3752,3 +3752,34 @@ Complete range after `0f4e0f16` through this containing commit needs designated 
 No runtime/kernel/CI changes, services or removed resources. No adoption, feature
 completion, archival, push or deployment. Next caller compatibility and temporal/
 dispatch closure; do not repeat this completed sampling-profile comparison.
+
+## 2026-10-15 — close proposed sampling/identity and legacy dispatch ambiguity
+
+At `57906e5d`, trace actual replay target binding, simulation revision inputs and
+current family formats. Parent C1h now distinguishes fixed logged stage, unchanged
+fixed-external primitive, explicit modern endpoint reconstruction and diagnostic
+window-start recipes. Captured simulation owner/stream/log coordinates cannot be
+inferred from Company bytes; a fixed logged target is not an endpoint-independent
+envelope. Return ordered real stage evaluations, not an invented merged receipt.
+Modern reconstruction follows the existing Guild→catchup→schedule→ordinary order
+on fresh copies; no live lookup, saved projection or unsupported mechanic is enabled.
+
+Successor H4 proposes explicit old/new protocol dispatch and schema-family pairing.
+Required profile tags bind each family to its actual sampling recipe; content
+Fiscal/Pitch/permit methods retain their existing non-window contracts, not an
+invented global active-play policy or a report-side override.
+Source actually has Relevance reports6, policy/scenario families1–2, first-hour and
+content-dynamics formats1: do not invent a common v2 or retag old bytes. Preserve
+base Relevance grammar without a fake balance/policy mint, existing ratified-hash
+authority and RunKey shape when unchanged. A proposed registry2 shares immutable
+manifest resources with one registry owner, never duplicate entry ownership or an
+overwrite; scenario/report ownership and mismatch refusals remain explicit.
+
+Four-path draft/plan/log diff and source bindings checked; `git diff --check` passes.
+No software suite rerun for prose-only work. No actual schema/version/hash, artifact,
+runtime/test/kernel, CI or existing data changes. All code/codec/stage/dispatch proof
+remains owed after accepted specifications; full temporal correctness and producer
+bindings still need engineering closure, not owner approval as a substitute.
+Review by: Codex (draft author first filter). Recorded by: Codex. Complete range
+after `57906e5d` through this containing commit needs designated normative review.
+No services/resources touched, adoption, feature completion, push or deployment.
