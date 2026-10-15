@@ -140,3 +140,29 @@ consolidatable with existing Headcount construction. RP-571 is locally corrected
 No live player/SQL/Linux/Firefox/hosted/AC3–AC5 or1.0 milestone claim, archival, push or deployment.
 Next: actual hiring/output ruling and author reconciliation before the complete integration
 chain; RP-413, version ownership, data/pacing/copy and independent review remain separate gates.
+
+## 2026-10-15 — RP-571 independent corrective review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/headcount_ids_corrective_review`.
+Recorded by: Codex parent, transcribing its verdict under Marco's corrective-review
+delegation. Complete six-path range (base exclusive, tip inclusive)
+`4c216b690fc32cb03f784446377c69f069979da7..10ca8fbfac95494aad58562ce8e1908dd2b19bf4`.
+Verdict: **APPROVED**, no actionable findings; implementation, tests, canonical docs,
+backlog and owning plan/log inspected. At14761616 the five other files and the
+reviewed backlog row remain unchanged.
+
+Independent Node56, cold headcount Go (count1,0.204s), matching vet, typecheck
+(zero errors/warnings) and range diff checks pass. In-memory transpilation of exact
+old/current source reproduces all eight old failed refusal oracles and corrected
+passes; caller coercions fall7→0. Six valid literal-name controls and twelve shared
+arithmetic vectors pass both sources. Initial probe stops on an erroneous auxiliary
+object-order assertion; the successful deep-equality run omits only that invalid
+auxiliary assertion, not any refusal oracle. No repository source edits.
+
+The primitive string/grammar check precedes sorting and lookup without changing
+allocation math. No live/replay consumer or watched kernel change; no browser,
+DB, build or integration run needed/claimed for the unused pure library. Historical
+native-browser checks remain author evidence, not independent executions. Prior
+construction/research debt, full feature acceptance, hiring/output/seat/version
+choices, normative adoption, kernel identity, archival and release remain open.
+Reviewer creates no files, commits, services or worktrees; no cleanup/publication.

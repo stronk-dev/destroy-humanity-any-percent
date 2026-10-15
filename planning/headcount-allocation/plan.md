@@ -7,8 +7,9 @@ Authority: accepted `rfc/headcount-allocation.md`; design/01 Tier 2.
 2026-10-14 bounded S1/S2 correction (RP-571): reject non-string role IDs before sorting or
 assignment lookup, preserving all valid literal names and arithmetic. Eight old-source
 regressions fail; final Node56/native Chromium-WebKit112, cold Go/vet and types pass. The owning
-log records the falsified line-ending hypothesis, exact source/test/record range after
-`4c216b69` and pending Claude review. No live consumer, catalog, save, rate or output-model
+log records the falsified line-ending hypothesis and independent corrective APPROVAL
+of the complete six-path `4c216b69..10ca8fbf` range, including executed old/current
+discrimination and its limits. No live consumer, catalog, save, rate or output-model
 selection. Hiring/output questions are re-presented to Marco, still unanswered/unadopted.
 
 Begin with S2's pure effective-heads arithmetic, independently of the held OD-1
