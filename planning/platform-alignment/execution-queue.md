@@ -38,15 +38,15 @@ nine-tier goal remains active; no new playable tier or release was completed.
   mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member
   policy conflict have concrete unadopted engineering proposals in the API plan. Do not mount
   a partial endpoint, invent descriptors, normalize sources or infer draft acceptance.
-- **READY — bounded CI performance candidate review; active landing held:** RP-596's unapplied
-  Production C2 traversal candidate and current-source control both complete all300 keys with
-  identical full report digests. Native elapsed396.572s versus735.605s is46.1% less in one
-  sequential pair, not a hosted/repeated estimate. Exact-order/activation/refusal controls,
-  overlay vet and the real Linux-amd64/Postgres composed first-hour journey pass; full candidate
-  Production remains red only at the original27 partition cases. The owning CI log retains
-  those results and the still-failed hosted/full-maintenance evidence. Measurement is complete
-  for this candidate; resolve exact-path runtime-neutral guard authority/eligibility and
-  designated review before active landing. No new routine-change RFC, false version bump,
+- **CORRECTION IN RE-REVIEW / NEW MEASUREMENT LIVE — CI performance candidate; active landing held:**
+  Independent review of complete9bdf9c29..d6e092e8 finds RP-674: a local sort bypasses the
+  neutral helper required by Production Contract Integrity D1/D3. Original candidate is
+  CHANGES REQUIRED. Unapplied correctione973fcb1 restores that dependency; root helper-sever,
+  intact runtime/vet and real Linux-amd64/Postgres first-hour checks execute. Its new full300
+  measurement4365 is live, not yet a result; resume the owning CI log's exact handle.
+  Original396.572/735.605s pair/digest remain historical for the ORIGINAL source, not the
+  correction. Independent re-review, source-bound measurement and lawful kernel-watched
+  authority/eligibility remain before active landing. No new mechanism, false version bump,
   budget increase, deleted population, restamped golden, whole-CI or release promotion.
 - **READY FOR DESIGNATED REVIEW — consolidate the remaining exact ranges:** Marco's
   2026-10-15 delegation permits fresh independent Codex reviewers for outstanding

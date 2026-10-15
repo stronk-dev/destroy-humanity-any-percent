@@ -1,6 +1,6 @@
 # Current repository state
 
-Reconciled 2026-10-15: latest bounded production correction `137f7a8d` (kernel0.3.222,
+Reconciled 2026-10-16: latest bounded production correction `137f7a8d` (kernel0.3.222,
 epoch8); numeric research checkpoint `f7ca2b96`, Deployment mechanical checkpoint `23fcf989`.
 The whole-product classification retains its
 `77fe2275` base and the explicit follow-ups below, not a fresh complete acceptance sweep.
@@ -8,7 +8,8 @@ Independent-review records and their exact bounded scopes live in the owning log
 publication coordinate is `be66902b`, with failed CI38560135778 and maintenance38677066823.
 Read-only GitHub queries reconfirm that publication coordinate and both failed runs; no new
 hosted execution or publication is claimed for the later local work.
-Those remote observations were not repeated during these local research/review follow-ups.
+Latest read-only API branch/run/job queries reconfirm those same remote failures during
+the candidate follow-up; no hosted run covers the later local work.
 Local commit volume is not a product-completion measure.
 Cloud Clicker remains a **development snapshot**, not a released or
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
@@ -62,6 +63,12 @@ origin shows raw decrease but equal ledger payments. Actual decreasing time-sear
 behavior is not established, and its proof plus27 accounting failures remain open.
 Deployment image-layer identity, Pitch tenant admission and scaling admission also have
 bounded independent corrective approvals; their owning logs preserve all exclusions.
+Three further Clout ownership/legacy-codec/writer-guard corrections have bounded independent
+approval; accounting and original feature negatives stay open. The new Firefox RP-673 remains
+unexplained despite independently approved failure diagnostics. RP-674 rejects an unapplied
+performance candidate's shared-helper bypass; correctione973fcb1 is being measured/re-reviewed,
+not active production or a versioning-policy exception. The owning CI log has the live handle;
+its old timing pair must not be cited as a result for the corrected source.
 Same-second backup-alert correction now has independent approval, including actual controlled
 failure/recovery through Prometheus/Alertmanager/receiver. Bounded Desktop research reads all
 nine proposed release-mounted roots and rejects changed/missing/link/interrupted inputs.
