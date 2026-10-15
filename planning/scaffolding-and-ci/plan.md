@@ -7,6 +7,11 @@
 
 ## Current checkpoint — 2026-10-15
 
+Fresh independent corrective review APPROVES complete RP-645 deadline-fixture range
+728508de..b45dcd1d. The owning log records exact hashes, executed native20/Linux30 ordinary
+passes plus deliberate expected-deadline controls, and independently checked full-run artifact
+digests. This closes fixture review, NOT RP-637's cause/reliability or hosted/full-CI acceptance.
+
 Fresh independent corrective review now APPROVES complete RP-623/RP-633/RP-635/RP-648
 ranges. The latest owning log gives full hashes and actual cold corpora, guard negatives,
 observation/registered-row/signal and historical-root results. The root gate remains red at
@@ -74,7 +79,7 @@ in this batch completes all three Linux/ARM64 phases. RP-645's full-run failure
 exposed a deadline fixture assuming subscription readiness before initialization
 had completed; explicit ready/pending-read populations now pass without raising50ms.
 The [CI checkpoint](log.md#2026-10-15--rp-645-deadline-populations-and-rp-637-cancellation-evidence)
-owns the retained failure, final reports and pending review. The earlier clean-source
+owns the retained failure, final reports and independent corrective approval. The earlier clean-source
 gate at `fc398997` remains historical evidence. Earlier full populations fail the same Firefox Tier2
 Enter Codex case at Close then Open; RP-637 is not repaired or attributed by later
 passes. The [Clout log](../clout-v1-and-pr-interns/log.md#2026-10-15--rp-637-full-linux-native-disclosure-failure-and-diagnostics)

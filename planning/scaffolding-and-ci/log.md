@@ -2463,3 +2463,30 @@ Initial denied Docker inventory runs no tests. All processes terminal; only crea
 labelled no-volume/tmpfs service removed after inspection. Network/caches/volumes/BuildKit
 preserved, final declared inventory empty. No browser/player/full-server/hosted-CI, erasure,
 normative, feature, archival or release approval; RP-120 stays separate.
+
+## 2026-10-15 — RP-645 deadline fixture independently approved
+
+Review by: fresh independent Codex `/root/ci_deadline_fixture_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED** complete
+five-path `728508de50671a77603d891adb1a95282ee4fbdd..b45dcd1d9faadaa325f9a92ac5f2388eba326d78`.
+Both test files, backlog and CI plan/log inspected; no production/workflow/retry/timeout/
+kernel/copy/normative changes. Files remain byte-identical through executedcc37b6d3.
+
+Setup establishes subscribed-socket or deliberately held-initial-read before the unchanged
+actual50ms test-body deadline. Successors retain exact abort reason, phase observations,
+teardown/closed sockets and refusal of late navigation without intents/native actions/new
+sockets/remount. Blocked Codex Close retains its original assertion/cause after cancellation.
+Actual typecheck68217 passes0/0; native Chromium/WebKit52253 has20 ordinary passes plus4
+deliberately expected deadline failures,216 deselected (2.24s). Declared Linux ARM64
+Playwright12433 has30 ordinary passes plus6 expected failures,324 deselected (3.87s).
+These expected failures test cleanup, not gameplay success. Independently parsed retained
+full-run JSON byte counts/SHA256 match the record: success/zero failures, all15 Reputation
+and3 blocked-Codex controls present. Their JSON labels expected failures as passed; not
+ordinary successes. Complete-range whitespace checks pass.
+
+Historical failure inspected, not source-mutated. Initial native listen denial and first
+malformed nested Linux selector execute no tests; corrected commands supply evidence. Linux
+stdout partly truncated; terminal counts retained. All handles terminal, --rm container absent,
+declared browser Compose empty, no other resources removed or source edited. RP-637 cause/
+reliability remains OPEN. No new full-suite/performance/hosted-AMD64/timing/real-SQL/feature/
+policy/archival/release acceptance; original failed evidence remains intact.
