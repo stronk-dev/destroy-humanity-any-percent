@@ -48,6 +48,16 @@ baseline regeneration/adoption, AC6 repair or release proof. Existing compatibil
 refusals remain; a fast or passing standard phase cannot erase them. Activation
 still requires the separate RFC's complete caller/compatibility/workload/review gates.
 
+Control supplement before execution: current golden-seed.json contains only TWO
+individual runs, while pacing-baseline.json contains the300-run aggregate. Combining
+them is not a complete300-run historical report. The old full profile retained only
+a digest. After the candidate is terminal, run ONE current-source full300 active
+control with the SAME retained-report profile instrument, source/toolchain/12 workers,
+and no arithmetic overlay. This obtains complete before/after output coverage rather
+than pretending two seeds cover the other298. Same60m diagnostic guard and strict
+completion checks; no candidate restart/enlarged population or additional repetitions.
+A single ordered pair is not a statistically established speedup or hosted estimate.
+
 ## Representation and proposed arithmetic
 
 Every valid nonzero normalized binary64 mantissa has unbiased binary exponent0..3.

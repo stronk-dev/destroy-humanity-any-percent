@@ -5158,3 +5158,15 @@ using timing, then compare actual retained report with historical artifacts unde
 producer limits. The recorded old timings are not a matched control. No current-source full
 standard-phase result, matched speedup, relevance completion, baseline/adoption or CI-green
 claim yet. This checkpoint merely preserves resumable live work through a crash/context cut.
+
+Read-only retained-baseline inspection changes the follow-up, not the live run: current
+golden-seed.json has TWO runs, pacing-baseline.json has300-run aggregate/no failures/warnings.
+Their SHA256s4479ada5aa2b782c3f59966a41902aa6ed1789236eb674b51480e18db55ad472 and
+e11e077e2536d61b9fb21b9be05d24c79d044de126096fa8cc9885edae4f0122 do not constitute a
+full300 before report. The combined two-seed/aggregate JSON hash27171bc2…a01 is NOT the
+historical full1ffa47cf…e826d and is not used as that control. Predeclare one full active
+source control AFTER candidate98864 terminates, same measurement source1090d812…addd3,
+toolchain/current runtime dependencies/12workers/strict300 checks/60m guard, no aggregate
+overlay. Retain its complete JSON for actual300-key field comparisons. No repeated candidate,
+extra seeds, report regeneration or inference from only the two golden rows. A single
+sequential pair is bounded local evidence, not statistical/hosted timing or full acceptance.
