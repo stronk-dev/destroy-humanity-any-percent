@@ -322,13 +322,17 @@ Current configuration supplement (2026-10-12, RP-497): explicit previous cursor 
 refuse duplicate current IDs/values in direct composition, matching Deployment DP3. The
 wholly absent C20 first-deployment alias remains valid. Old-source duplicate-value assertions
 fail; corrected cold packages/vet, unchanged API generation and selected real Linux-amd64/
-Postgres composition/download checks pass. This supplement and the preceding RP-496 repair
-need Claude review; neither resolves RP-495 or completes public re-verification/API acceptance.
+Postgres composition/download checks pass. Fresh independent Codex corrective review APPROVES
+both complete seven-path RP-496/RP-497 ranges; exact hashes and independent old/corrected
+evidence are in the log. Its broader selected CI population is RED on the separately
+reproduced archive-phase fixture race RP-677, not promoted to green. Neither correction
+resolves RP-495 or completes public re-verification/API acceptance.
 
 Current router correction/review (2026-10-12, RP-495/RP-496): direct composition now refuses
 previous cursor material without its ID instead of treating it as the first-deployment alias.
 Old-source regressions fail; corrected cold affected packages and selected real Linux-amd64/
-Postgres composition tests pass. This Codex correction needs Claude review. The full original
+Postgres composition tests pass. This bounded correction is independently APPROVED together
+with RP-497 as recorded above; RP-677's test repair requires its own review. The full original
 router `731bb3e7` and board `4c316c4c` ranges now have designated CHANGES REQUIRED verdicts in
 the log, completing those original reviews, not approving their later corrections. RP-495
 routes the already-disclosed fixed-name/rotation-ledger conflict to the API/Deployment authors;
