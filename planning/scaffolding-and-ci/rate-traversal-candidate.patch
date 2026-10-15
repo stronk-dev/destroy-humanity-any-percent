@@ -1,5 +1,5 @@
 diff --git a/server/production/engine.go b/server/production/engine.go
-index 7560ea6b..e0a5490a 100644
+index 7560ea6b..645b2034 100644
 --- a/server/production/engine.go
 +++ b/server/production/engine.go
 @@ -307,6 +307,8 @@ func ratesWithProvisionedAndPolicy(catalog *economy.Catalog, counts, provisioned
@@ -35,8 +35,8 @@ index 7560ea6b..e0a5490a 100644
 -			for _, identity := range multiplier.OrderedSourceIDs(sources) {
 -				rate = rate.Mul(bySource[identity].Factor)
 -				policy.activateSynergySource(bySource[identity].SourceID)
-+			for _, identities := range bySlot {
-+				sort.Strings(identities)
++			for index, identities := range bySlot {
++				bySlot[index] = multiplier.OrderedSourceIDs(identities)
 +			}
 +			slotsPrepared = true
 +		}

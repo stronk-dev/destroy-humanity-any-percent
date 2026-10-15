@@ -257,6 +257,10 @@ Experiments compile its temporary copy with Go's `-overlay`; active production, 
 reports, kernel identity and ordinary dispatch remain unchanged. A compiler overlay is an
 experimental source replacement, not a governed release artifact or scope-exception approval.
 The owning log binds exact source hashes, executed populations and unresolved landing gates.
+Candidate bucket preparation retains the shared `multiplier.OrderedSourceIDs` authority required
+by Production Contract Integrity, not a separate sort that merely agrees today. The original
+candidate's bypass received CHANGES REQUIRED; historical timings remain source-bound to that
+version, not silently reassigned to the correction. The active engine remains unchanged.
 
 R-001 measurements can attach an explicit `harness_observation.v1` checkpoint to the complete
 check. The checkpoint is operational evidence only: it is always marked `authoritative: false` and

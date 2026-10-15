@@ -7,6 +7,13 @@
 
 ## Current checkpoint — 2026-10-15
 
+RP-596 candidate review finds RP-674: local sort bypasses the neutral ordering authority
+required by implemented Production Contract Integrity D1/D3. Complete original9bdf9c29..d6e092e8
+is CHANGES REQUIRED, not approved. Correct the retained UNAPPLIED patch to use that helper;
+execute helper-dependency/affected runtime checks and bind new complete measurement to the
+new source before re-review. Old matched-pair timings remain historical for old candidate.
+Existing guard-policy/adoption/active-landing and full-CI gates remain unchanged.
+
 RP-673's original Firefox missing-request failure stays open. The late-completion witness now
 adds passive failure context and an actual canceled-Enter diagnostic control; original inputs,
 assertions and deadlines remain. Focused three-engine12 ordinary+3 diagnostic and complete
@@ -220,6 +227,8 @@ the original27 partition cases; the composed first-hour terminal/replay journey 
 passes. No new failure is exposed, no arithmetic repair or full CI pass is claimed.
 This bounded experiment is complete; next consolidate independent candidate/identity review
 and resolve the existing lawful kernel-watched landing route, not repeat these measurements.
+The subsequent RP-674 review rejects its helper bypass. The corrected candidate has a different
+source identity; the old measurements do not certify that new source. See current checkpoint.
 Active engine/kernel/history and CI
 remain unchanged; existing guard authority, exact-path independent identity review and
 remaining affected runtime proofs still precede landing/closeout.

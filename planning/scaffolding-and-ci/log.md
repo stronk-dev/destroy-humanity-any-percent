@@ -2586,3 +2586,73 @@ terminal, disposable service absent and clean source at9a551e61. Docker LinuxARM
 not hostedAMD64; runtime doubles, not SQL/real WebSocket gameplay. Original Firefox failure
 does not recur; RP-673 stays unexplained and OPEN. Approval covers diagnostic fidelity only,
 not reliability/full CI/new policy/feature/archival/release acceptance.
+
+## 2026-10-15 — Rate-traversal candidate review CHANGES REQUIRED (RP-674)
+
+Review by: /root/rate_traversal_corrective_candidate_review (fresh independent Codex under
+Marco's corrective-code delegation, bounded conformance candidate only). Recorded by: Codex
+root, transcription. CHANGES REQUIRED complete4-commit/8-path range
+9bdf9c29f119e57366fd2f55dacfbe05f89a2127-exclusive through
+d6e092e8d14ebb15d0aa905071ad2e87ae02fb65-inclusive. All patch/tests/docs/records/attribute
+paths inspected. Candidate sort.Strings bypasses multiplier.OrderedSourceIDs despite matching
+today's order: implemented Production Contract Integrity D1 requires that neutral helper in
+production; D3 binds it to published formula authority. This is an unapplied-candidate defect,
+not a new active-runtime failure. Keep helper ownership; no specification amendment needed.
+
+Independent selected candidate exact-bit/order/refusal/input/activation/simulation/evaluation/
+accrual/replay controls pass0.843s; full Decimal/Multiplier0.564/0.169s pass, candidate-specific
+Production/Multiplier/Gameserver vet passes. Actual declared Linux-amd64/Postgres composed
+first-hour18499 passes21.81s, persisted replay/terminal transitions. Post-delete retained public
+data diagnostic still fires: reviewer observed1149 events,
+6boards/6markers/2queue/2archives; no privacy closure. Original source/patch/both candidate
+copies/all4 profile/binary hashes match; binary metadata is Darwinarm64/Go1.27.2. Complete
+range whitespace and patch applicability pass. Filtering sorted buckets otherwise preserves
+the original multiply/order/count/validation/activation sequence, without cross-call cache.
+
+Historical396.572/735.605s full300 observations inspected, NOT independently rerun. No raw
+report file available to independently rederive its digest without another full experiment.
+No broad-domain equivalence, new guard policy/exception eligibility, active landing, accounting,
+CI/feature/archival/release approval. All handles terminal; only owned twice-inspected tmpfs
+SQL3a8f3938… removed; original2BuildKit preserved. Reviewer edits/commits no tracked bytes.
+
+Corrective scope under the SAME D1/D3/C2 (before correction checks): retained patch now calls
+the neutral helper once per slot bucket. Active engine stays unchanged; preserve original
+ignored candidate/profile evidence. New candidate source1bb2a62d5c4e42595e89e8b0ddab5565f7572830137679c5141359e9bea377f6,
+Git blob645b203492ac887ad5f7dac93ed0e199c13fa2e1. Use separate ignored helper-bound and
+helper-sever overlays, never mutate main runtime. With the neutral helper returning empty,
+old candidate should ignore the sever and pass; corrected candidate must fail the existing
+literal exact-order oracle, then pass intact. Execute affected checks/actual SQL journey and
+candidate-specific vet. Full300 source-bound measurement is required for the changed candidate;
+prior timing/report identities cannot be relabelled. No new tolerance, version, formula artifact,
+budget, production or workflow change. Root first-filter/re-review still pending.
+
+Root correction checks terminal: old-helper-sever overlay40126 leaves the old candidate's
+existing exact-order oracle green; corrected-helper-sever96577 fails4 active cases with
+raw-bit differences, all-zero control passes. No compile fault or main-tree mutation; this
+directly witnesses the previously missing neutral-helper dependency. Intact corrected
+rate/refusal/activation/input/simulation/evaluation/accrual/replay controls14101 pass;
+full Decimal/Multiplier pass0.403/0.063s, candidate Production/Multiplier/Gameserver vet35320
+passes. Corrected actual declared Linux-amd64/Postgres first-hour17548 passes23.85s with
+persisted replay/terminals; retained public-row diagnostic has1152events, no privacy closure.
+Only root-owned twice-inspected tmpfs7dd35240… is stopped/removed; its disposable SQL data
+is unrecoverable, persistent volumes/caches/builders preserved.
+
+New complete source-bound measurement4365 is LIVE, not yet a result. Root command:
+make test-go GO_PACKAGES='./harness'
+GO_TEST_FLAGS='-overlay=/Users/stronk/repos/cloud-clicker/.cache/rate-traversal-helper-bound-overlay.json
+-run NoTests -bench BenchmarkStandardPacingProfile -benchtime=1x -timeout=60m
+-cpuprofile=/Users/stronk/repos/cloud-clicker/.cache/rate-traversal-helper-bound-cpu.pprof
+-o=/Users/stronk/repos/cloud-clicker/.cache/rate-traversal-helper-bound-harness.test -v'.
+Startup confirms12workers/Go1.27.2/Darwinarm64/M3Max/14logicalCPUs and original scenario
+10aa5c8a…bb07a/constantsbaa89050…128f6. No deliberately competing heavy work starts.
+Resume that exact handle. Require all300 keys/no failures and compare full report digest
+against original1ffa47cfd4f85f6daf1b340cf6e43cfa7d534cb39308cdf80e955c9d28be826d;
+this is standard pacing only, not complete maintenance/registered relevance/hosted timing.
+Patch19d781d9f79f10c8c428a7a46ba2197a1af7d14ff308b15ffde66ae400a1efb0 applies cleanly;
+new candidate1bb2a62d…77f6 and active engineb872d474…ae875 remain unchanged.
+
+Read-only GitHub API independently reconfirms mainbe66902b659d59a5572037a9b6431d2ac02fb731.
+CI38560135778 stays completed failure (client/server fail; browser/composed/schema/harness
+pass); maintenance38677066823 completed failure (harness/reputation fail, numeric passes).
+SSH ls-remote cannot resolve github.com; successful API branch/run/job replies supply
+the actual metadata. No fetch, push, dispatch, new hosted execution or local-CI-green claim.
