@@ -1027,3 +1027,23 @@ acceptance. Reviewer removes only its own temporary Postgres and overlay files,
 leaves two preexisting BuildKit containers intact and verifies empty Compose
 inventory before releasing the service to the encoding reviewer. No tracked edits;
 the concurrent CURRENT-STATE diff is parent work, not attributed to reviewer.
+
+## 2026-10-15 — Scaling admission independently approved (RP-516/RP-517)
+
+Review by: /root/minigame_scaling_admission_corrective_review (fresh independent Codex,
+Marco-delegated corrective code). Recorded by: Codex (root). APPROVED complete
+9cbf33f04961958109231381e4416e2a7cb139e6-exclusive through
+24a343b80e2913225aeafc27548833a3265f6e6a-inclusive, one commit/all13 paths.
+At3daa20ce reviewed Go/TS loaders, tests/vectors remain byte-identical. Accepted C24/C28
+conformity; genuine original kernel185→186; generated formula fingerprint ONLY changes.
+Independent old Go overlay22538 reproduces26/40 failures at both entry boundaries;
+old TS16 object failures/58 controls, no old raw assertions credited past first failures.
+Cold four-package/vet9391, client135/64748, types/API/formulas64780 and build pass.
+Actual Linux-amd64/Postgres28743 executes selected Minigame/replaycatalog/kernel/Production:
+start/replay/solo/async/certification/rollback/retry/cancel/post-commit cases, no selected skip.
+Native Chromium/WebKit148 catalog checks pass3546. Initial EPERM runs0; default browser59460
+has no completed tests and is interrupted130, NOT Firefox proof. Whole-range format/diff clean.
+All handles terminal; three ignored reproduction files retained, no tracked edits/commits.
+Only twice-inspected owned tmpfs7720df31… removed; disposable data unrecoverable, same two
+builders/caches/volumes preserved. No public exploit, new source/mechanic/contract adoption,
+full Platform/Production/Gameserver, hosted CI, archival or release approval.

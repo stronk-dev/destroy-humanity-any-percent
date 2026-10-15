@@ -15,7 +15,9 @@ Current C24/C28 conformance repair (2026-10-13, RP-516/RP-517): Go scaling admis
 requires the exact envelope and all non-null row fields, while TypeScript enforces actual
 string enums and the existing closed/canonical source-reference domains. Shared vectors and
 standalone/enclosing catalog regressions pass alongside real session start/solo/async resolution.
-The owning log records executed checks, generated fingerprint and review range. Lawful policy
+Fresh independent Codex APPROVES complete9cbf33f0..24a343b8 after independent old-source
+reproduction, actual Go/TS/browser checks and Linux-amd64/Postgres lifecycle execution.
+The owning log records exact provenance, generated fingerprint and limits. Lawful policy
 transformations, fairness, balance/content bytes and payouts are unchanged; this does not mint
 content, implement a held tenant/public wire or complete the platform.
 
