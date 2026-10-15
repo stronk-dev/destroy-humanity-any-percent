@@ -3588,3 +3588,42 @@ filter). Recorded by: Codex. Complete six-path source/test/docs/plan/ledger/log 
 after `ddf6ecf0` through this containing commit needs designated Claude review,
 consolidatable with the request-ID lane. No acceptance, archival, push or deployment;
 continue accepted construction while the named contract and release gates remain.
+
+## 2026-10-15 — RP-104 naming-expiry boundary proof and canonical truth
+
+Under API C12 and archived Route C5, execute the previously uncalled ExpireNames
+method against real Postgres. Produce each reservation through the actual projector
+over an execution-event fixture, then exercise reserved/pending/published/house
+states. Exactly72h expires only unused reservations; one millisecond earlier (also
+with a different timezone offset) does nothing. Deadline submissions refuse;
+cancelled context returns context.Canceled without mutation, retry is idempotent,
+and a pending timely submission can still complete moderation after the deadline.
+Full immutable event/projection/execution/Knowledge populations and executor credit,
+count/name/deadline remain unchanged except the intended reserved→house state.
+
+Focused43670 passes0.529s. Full `make test-save-integration
+SAVE_TEST_PACKAGES='./routeprojection' SAVE_TEST_FLAGS='-run Integration
+-shuffle=20261015 -v' SAVE_TEST_COUNT=2`90407 passes all four parents twice1.689s,
+including public paging; no selected skips. Cold `make test-go vet
+GO_PACKAGES='./routes ./routeprojection ./publicread'`88993 passes0.230/0.226/0.277s
+and vet. Ordinary native DB skips are not integration credit. No source mutation
+or runtime defect is claimed: these are new success/refusal cases on an existing
+method. The projector fixture is not a real player discovery/naming journey.
+
+Non-test Go source search still finds only the ExpireNames declaration. Correct
+canonical Routes/API docs: no automatic expiry driver, and public naming_status
+can remain reserved past its deadline even though the displayed house name is safe.
+Also correct the older claim that all public reading is future Analytics: mounted
+public board/Route readers exist; the combined player surface does not. RP-040 is
+partial and RP-104 stays OPEN; historical audit coordinates are not rewritten.
+
+DESIGN-GAP RP-104 driver: accepted C5 supplies the naming rule, not a bounded
+scheduled lifecycle. Proposed composition/lifecycle amendment must specify shared
+server-clock authority, startup priming, cadence/batch work, cancellation/drain,
+failure/observation ownership and an actual composed expiry witness. Do not invent
+that operating contract here or call the backend test automatic implementation.
+No product/schema/migration/kernel/balance/name rule or acceptance/archival change.
+Diff/formatting checked; removed only the inspected owned tmpfs Postgres, preserving
+cache/network/durable data. Review by: Codex (test implementer first filter).
+Recorded by: Codex. Entire six-path test/docs/plan/ledger/log range after `01025747`
+through this containing commit needs designated Claude review; no push/deployment.

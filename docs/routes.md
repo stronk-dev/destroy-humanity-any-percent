@@ -100,13 +100,20 @@ so a route cannot be farmed repeatedly in one run. Registry decisions are serial
 compare this immutable order across separate deliveries; whichever batch happens to arrive first
 does not define the winner.
 
-The earliest event receives permanent executor credit and a 72-hour naming reservation. If a
+The projector assigns the earliest event permanent executor credit and a 72-hour naming reservation. If a
 still-earlier event is delivered later, it replaces the provisional winner and receives a fresh
 reservation from its own occurrence time. Any provisional name is reset to the catalog house name:
 it could not exist in an event-order rebuild. A submitted name otherwise enters `pending`;
-approval publishes it, failure restores the house name, and an unused reservation expires to that
-same name. The Registry stores a plain execution count; variants, time buckets, adoption curves,
-and its public read API belong to Registry Analytics.
+approval publishes it and failure restores the house name. `SubmitName` refuses a submission
+at or after the deadline. The callable `ExpireNames` method changes an unused `reserved` row
+to `house` at the deadline; it preserves pending/published moderation outcomes, executor credit,
+execution history and Knowledge. Its Postgres tests cover that boundary, cancellation and retry.
+**There is no production caller or automatic expiry job yet (RP-104).** These backend methods
+are not a mounted player naming/moderation workflow, and the automatic lifecycle is incomplete.
+
+The Registry stores a plain execution count. Its existing public read API serves credit,
+naming status/deadline and that count; see [API Foundation](api-foundation.md). Variants, time
+buckets, richer adoption curves and a combined player records surface remain future work.
 
 Founder career executions and Route Knowledge are idempotent projections. Grants are:
 

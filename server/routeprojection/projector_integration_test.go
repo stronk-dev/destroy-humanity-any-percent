@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"os"
 	"sync"
 	"testing"
@@ -19,6 +20,118 @@ type testCatalogs map[string]*routes.Catalog
 func (catalogs testCatalogs) ResolveRoutes(hash string) (*routes.Catalog, bool) {
 	catalog, ok := catalogs[hash]
 	return catalog, ok
+}
+
+func TestNamingReservationExpiryBoundaryAndCreditIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile("../../balance/routes/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := routes.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	const hash = "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+	projector, err := New(db, testCatalogs{hash: catalog})
+	if err != nil {
+		t.Fatal(err)
+	}
+	const routeID = "route.nonprofit_wrapper_zip"
+	const founderID = "33333333-3333-4333-8333-333333333333"
+	const eventID = "10000000-0000-4000-8000-000000000001"
+	occurred := time.Date(2026, 10, 15, 12, 0, 0, 0, time.UTC)
+	deadline := occurred.Add(72 * time.Hour)
+	history := func() string {
+		t.Helper()
+		var result string
+		if err := db.QueryRowContext(ctx, `SELECT jsonb_build_object(
+			'events',(SELECT COALESCE(jsonb_agg(to_jsonb(e) ORDER BY event_id),'[]'::jsonb) FROM events e),
+			'projection',(SELECT COALESCE(jsonb_agg(to_jsonb(e) ORDER BY event_id),'[]'::jsonb) FROM route_projection_events e),
+			'executions',(SELECT COALESCE(jsonb_agg(to_jsonb(e) ORDER BY founder_id,route_id),'[]'::jsonb) FROM founder_route_executions e),
+			'knowledge',(SELECT COALESCE(jsonb_agg(to_jsonb(e) ORDER BY founder_id),'[]'::jsonb) FROM founder_route_state e)
+		)::text`).Scan(&result); err != nil {
+			t.Fatal(err)
+		}
+		return result
+	}
+	for _, status := range []string{"reserved", "pending", "published", "house"} {
+		t.Run(status, func(t *testing.T) {
+			truncateRouteProjection(t, ctx, db)
+			stream := insertStream(t, ctx, db, founderID, "company")
+			event := insertExecution(t, ctx, db, eventID, stream, founderID, 2, 1, routeID, "gate.t4_to_t5", hash, occurred)
+			if err := projector.Project(ctx, []save.EventRecord{event}); err != nil {
+				t.Fatal(err)
+			}
+			name := "Nonprofit Wrapper Zip"
+			if status != "reserved" {
+				if err := projector.SubmitName(ctx, routeID, founderID, "Candidate Route Name", occurred.Add(time.Hour)); err != nil {
+					t.Fatal(err)
+				}
+				name = "Candidate Route Name"
+				if status == "published" || status == "house" {
+					if err := projector.ResolveName(ctx, routeID, status == "published"); err != nil {
+						t.Fatal(err)
+					}
+					if status == "house" {
+						name = "Nonprofit Wrapper Zip"
+					}
+				}
+			}
+			assertRegistry(t, ctx, db, routeID, eventID, founderID, 1, status, name, deadline)
+			assertKnowledgeState(t, ctx, db, founderID, 125, 0)
+			beforeHistory := history()
+			// An alternate offset represents the same server-owned instant.
+			if count, err := projector.ExpireNames(ctx, deadline.Add(-time.Millisecond).In(time.FixedZone("test", 5*60*60))); err != nil || count != 0 {
+				t.Fatalf("early expiry count=%d err=%v", count, err)
+			}
+			assertRegistry(t, ctx, db, routeID, eventID, founderID, 1, status, name, deadline)
+			canceled, cancel := context.WithCancel(ctx)
+			cancel()
+			if count, err := projector.ExpireNames(canceled, deadline); !errors.Is(err, context.Canceled) || count != 0 {
+				t.Fatalf("canceled expiry count=%d err=%v", count, err)
+			}
+			assertRegistry(t, ctx, db, routeID, eventID, founderID, 1, status, name, deadline)
+			if err := projector.SubmitName(ctx, routeID, founderID, "Too Late", deadline); !errors.Is(err, ErrProjection) {
+				t.Fatal("deadline submission did not refuse", err)
+			}
+			wantCount := int64(0)
+			wantState := status
+			if status == "reserved" {
+				wantCount, wantState = 1, "house"
+			}
+			if count, err := projector.ExpireNames(ctx, deadline); err != nil || count != wantCount {
+				t.Fatalf("deadline expiry count=%d want=%d err=%v", count, wantCount, err)
+			}
+			assertRegistry(t, ctx, db, routeID, eventID, founderID, 1, wantState, name, deadline)
+			if count, err := projector.ExpireNames(ctx, deadline.Add(time.Hour)); err != nil || count != 0 {
+				t.Fatalf("repeated expiry count=%d err=%v", count, err)
+			}
+			if history() != beforeHistory {
+				t.Fatal("expiry changed executor history, Knowledge, or immutable events")
+			}
+			if status == "pending" {
+				// Exercising the right within72h starts moderation; there is no
+				// new moderation timeout in C5, and expiry must not invent one.
+				if err := projector.ResolveName(ctx, routeID, true); err != nil {
+					t.Fatal(err)
+				}
+				assertRegistry(t, ctx, db, routeID, eventID, founderID, 1, "published", name, deadline)
+			}
+		})
+	}
 }
 
 func TestProjectorIntegrationConvergesAcrossDeliveryOrder(t *testing.T) {

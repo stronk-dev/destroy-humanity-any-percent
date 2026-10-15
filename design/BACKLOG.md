@@ -51,7 +51,7 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 | RP-037 | Prestige AC2–AC6 lack their literal property/lifecycle/state-matrix/golden witnesses. | ⚠ acceptance proof gap |
 | RP-038 | Prestige lacks a tracked explicit cross-party full-range archival verdict. | ⚠ archival review/provenance gap |
 | RP-039 | Leaderboards join→leave→Exit incorrectly returns an assisted run to Solo. | ⚠ implementation/acceptance defect |
-| RP-040 | Leaderboard storage has no production reader or player surface. | ⚠ producer-without-consumer defect |
+| RP-040 | Original audit found no production reader or player surface. | PARTIAL: API Foundation now has mounted public board/Route readers and bounded evidence downloads. These do not provide the combined player records/Registry surface or the complete public catalog/reverification loop; the draft player-surface successor remains unimplemented. API plan/log owns current evidence and review. |
 | RP-041 | Leaderboards AC1/AC3/AC6 lack their literal end-to-end witnesses. | ⚠ acceptance proof gap |
 | RP-042 | Leaderboards body/scope disagrees with current verdicts, categories, retention, and deferred surfaces. | ⚠ owner-ruling/body contradiction |
 | RP-043 | Leaderboards plan/review provenance and Run Genesis remediation lifecycle are stale. | ⚠ lifecycle/archival defect |
@@ -115,7 +115,7 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 | RP-101 | Ordinary host Go tests can silently skip 39 Postgres test sites across 27 files. | ⚠ evidence denominator -> Docker/hosted lane + visible executed/skipped population |
 | RP-102 | Four complete/withdrawn/superseded planning threads remain in the live top-level namespace. | ⚠ lifecycle/shared-memory defect -> verified transactional closeout |
 | RP-103 | Binding player/World/Match concurrency prose contradicts the deployed no-player-actor, two-stage world runtime and deferred match services. | ⚠ design/runtime architecture contradiction -> ruling author + accepted successors |
-| RP-104 | The 72-hour Route Registry naming expiry has an orphaned method but no worker or test caller. | ⚠ lifecycle/canonical defect -> accepted bounded scheduler + expiry witness |
+| RP-104 | The 72-hour Route Registry naming expiry has a callable method but no production driver. | OPEN automation/contract gap. Existing-method Postgres boundary tests now pass for reserved/pending/published/house rows, exact deadline, cancellation, retry and unchanged executor/Knowledge/event history; public naming_status still reflects the stored state. Canonical docs now disclose missing automatic expiry and player naming/moderation routes. API log owns the range after `01025747` needing review; bounded scheduler clock/cadence/batching/failure specification and composition remain, not a new naming rule. |
 | RP-105 | Fiscal is archived with seven open plan boxes and stale commit-under-rejection normative text that contradicts its accepted rollback correction and implementation. | ⚠ archive/body reconciliation -> ruling author + authorized record closeout |
 | RP-106 | Copy's A1 fix was cross-party-closed only in the Meters log; the Copy owner's archive still ends `not approved`. | ⚠ transactional provenance defect -> append-only owner-record coordinate |
 | RP-107 | `docs/soul.md` denies the Soul artifact and recovery activities that the current epoch and recovery doc prove live. | ⚠ canonical successor-closeout defect -> Soul/First-Content docs reconciliation |
