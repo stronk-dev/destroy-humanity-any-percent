@@ -3559,3 +3559,32 @@ needs designated Claude review, consolidatable with the request-ID lane. This is
 actual HTTP/SQL in-process drain evidence, not Caddy/process-release/clean-host,
 browser/hosted CI, complete API or1.0 acceptance. Existing numeric/history,
 artifact/owner/author and review gates remain; no archival, push or deployment.
+
+## 2026-10-15 — RP-647 preserve mixed500 representations during identity binding
+
+Accepted A4/A5/C19 allow several media representations at one status. Old binder
+39622 refuses three valid registries: gzip500 alone, alongside broad JSON500, and
+alongside exact JSON500. Match only the middleware-owned JSON representation;
+preserve gzip and sort added declarations by status then media type. Keep refusing
+another JSON schema or raw JSON500, which conflicts at the same status/media key.
+No existing response domain is narrowed or current endpoint representation added.
+
+The actual chi-mounted handler retains its gzip bytes/digest and valid request ID;
+empty entropy instead returns the existing no-store typed JSON500 without calling
+that handler or fabricating metadata. Tests also bind complete raw descriptors,
+input immutability, additive compatibility, idempotency, old broad/exact JSON,
+OpenAPI's two representations and generated client metadata. First corrected43343
+and package99066 fail my nil-versus-empty ExactJSON slice assertion: registry clones
+normalize that storage, not its contract. Compare the declared fields/empty-domain
+meaning instead; no production change was needed for that test error.
+
+Final `make test-go vet api-check GO_PACKAGES='./publicapi ./publicread ./account
+./gameserver'`11240 passes cold (0.259/0.167/0.448/0.283s), vet and byte-identical
+production OpenAPI/pins/TS generation. These are constructor and mounted HTTP
+fixtures, not real-DB/gameplay/browser, full API/CI or release evidence. No schema
+DSL, kernel, balance, copy, TTL, retry, retention or held-proposal adoption. Diff/
+formatting checked; no test services started. Review by: Codex (implementer first
+filter). Recorded by: Codex. Complete six-path source/test/docs/plan/ledger/log range
+after `ddf6ecf0` through this containing commit needs designated Claude review,
+consolidatable with the request-ID lane. No acceptance, archival, push or deployment;
+continue accepted construction while the named contract and release gates remain.

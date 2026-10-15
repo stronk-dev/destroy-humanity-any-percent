@@ -2,6 +2,13 @@
 
 RFC: `rfc/api-foundation.md`
 
+2026-10-15 A4/A5/C19 correction (RP-647): request-ID failure binding now preserves an
+existing gzip500 representation and separately binds JSON500. Three old-constructor
+regressions fail; mounted opaque/identity-failure replies, compatibility/idempotency,
+OpenAPI/TS metadata, affected cold packages/vet and unchanged generation pass. The owning
+log records the range after `ddf6ecf0` needing Claude review. No current route gains a
+representation, no held contract is adopted, and full API/release acceptance stays open.
+
 Current A4/C7/C16 drain correction (2026-10-15, RP-646): private identity/logging
 now precedes Server's intent admission. Old real-Postgres drain regressions fail
 four echo/log cases and the existing identity-failure refusal. Preserve the503

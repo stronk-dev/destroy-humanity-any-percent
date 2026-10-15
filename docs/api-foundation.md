@@ -455,8 +455,10 @@ Identity-generation failure refuses before application work with uncached
 `500 {"category":"internal_invariant","detail":"request_id"}`. It fabricates no request ID
 and never exposes the underlying error. One `RequestIDFailureResponse` declaration supplies
 the middleware bytes and `BindRequestIDFailure`'s per-operation500 alternatives. Existing
-exact errors remain valid; broad500 descriptors are not narrowed. Invalid conflicting500
-descriptors refuse binding. With an available clock, public identity failures charge the
+exact errors remain valid; broad500 descriptors are not narrowed. An existing gzip500
+representation is retained alongside the JSON failure, ordered by status and media type;
+binding is idempotent and does not mutate its input registry. Conflicting JSON500
+descriptors still refuse binding. With an available clock, public identity failures charge the
 same IP bucket and become429 at exhaustion; valid-ID authorized304s remain free even while
 entropy is unavailable. A broken clock cannot truthfully classify a caller as rate-limited.
 Raw HTTP mechanics retain their generic failure callback for non-API users; production API

@@ -50,7 +50,9 @@ func BindRequestIDFailure(registry *Registry) (*Registry, error) {
 		found := false
 		for responseIndex := range responses {
 			response := &responses[responseIndex]
-			if response.Status != declaration.Status {
+			// C19 permits gzip and JSON at the same status. Only the JSON
+			// representation can overlap this middleware-owned declaration.
+			if response.Status != declaration.Status || response.ContentType != declaration.ContentType {
 				continue
 			}
 			if response.Kind != ResponseSchema || response.ContentType != ContentJSON || response.SchemaRef != declaration.SchemaRef {
@@ -70,7 +72,12 @@ func BindRequestIDFailure(registry *Registry) (*Registry, error) {
 		}
 		if !found {
 			responses = append(responses, RequestIDFailureResponse())
-			sort.Slice(responses, func(i, j int) bool { return responses[i].Status < responses[j].Status })
+			sort.Slice(responses, func(i, j int) bool {
+				if responses[i].Status != responses[j].Status {
+					return responses[i].Status < responses[j].Status
+				}
+				return responses[i].ContentType < responses[j].ContentType
+			})
 		}
 		operations[index].Responses = responses
 	}
