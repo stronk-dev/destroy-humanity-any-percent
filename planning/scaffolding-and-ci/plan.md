@@ -7,6 +7,15 @@
 
 ## Current checkpoint — 2026-10-15
 
+New published maintenance38677066823 at unchanged `be66902b` is completed failure.
+The exact retained observation records300/300 standard runs in2,750,518ms, then
+relevance0 at80/107 when the unchanged50-minute wrapper interrupts; row1 is unstarted.
+Actual validation rejects incomplete evidence. Numeric passes; career/relevance
+report comparisons fail and the six starter ties recur in logs. The owning log has
+artifact identities and read-only source checks. Do not repeat the completed local
+rate-candidate measurement, raise a budget or restamp reports. Its lawful landing/
+independent-review gate and the historical/arithmetic blockers remain distinct.
+
 RP-650 correction: the Go baseline/epoch guards now preserve literal filenames and exact-file
 selectors too. Real-Git regressions reproduce missed transient epoch revisions, refused valid
 registrations, whitespace aliases and unrelated pattern matches. Corrected focused populations,

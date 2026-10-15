@@ -2214,3 +2214,40 @@ rewrites. Update canonical docs, plan and RP-650 once. Review by: Codex (impleme
 filter). Recorded by: Codex. Entire source/test/docs/plan/ledger/log range after `e10d24f4`
 through this containing commit needs designated Claude review, consolidatable with existing
 CI conformance repairs. No self-approval, archival, policy adoption, push or deployment.
+
+## 2026-10-15 — Published maintenance38677066823 and current rollup reconciliation
+
+At clean implementation source `7ad33db8`,89 commits after published be66902b,
+read-only `gh api .../branches/main`, `gh run list` and run/job queries confirm
+the unchanged remote SHA/failed CI38560135778 and a newer completed failed
+maintenance38677066823 on that SHA. No remote mutation, rerun or push. Inspect
+job116232970495's log: the unchanged50-minute wrapper interrupts harness-observe
+(exit124). Job116232970706 finishes red on career/relevance report comparisons;
+its logs retain97 careers per arm, the six casual starter ties and970
+admitted relevance arms. Numeric job116232970746 passes. Do not regenerate reports
+or label the unapplied local candidate's timing a hosted improvement.
+
+Artifact11948536992 is1196 ZIP bytes; its upload log reports ZIP SHA256
+`a93a66527b3d645f1ee4f2ee48f072f8dfc92be64c31fd9a1e1aa4d37a0db2ec`.
+Retain its exact JSON as `observations/38677066823-harness.json`, confirmed with
+cmp against the download; JSON SHA256
+`d2fa29b77fc69aac5bb9293b516e4d5d55d8ea045bae5f46279bec9425fab6de`.
+It records incomplete/signal,2998910ms overall; repository guards complete20963ms;
+standard pacing300/300 complete2750518ms; relevance0 incomplete80/107 with1083433
+executed transitions in227414ms; declared relevance1 never starts. Unknown guard/
+exclusion/truncation fields remain unknown, not clear. Actual root
+`make harness-observation-check HARNESS_OBSERVATION=planning/scaffolding-and-ci/observations/38677066823-harness.json`
+rejects it: incomplete harness observation, CLI1/Make2. The first sandboxed download
+cannot connect to GitHub; one narrow approved read-only download succeeds. No
+study is rerun locally for this evidence update.
+
+Reconcile current-state/roadmap/queue coordinates and superseded next actions:
+kernel0.3.217/epoch8, delegated Clout wording, actual later native/client/composed
+checks, source-version/authorization/expiry/query repairs and unaccepted calculation/
+search drafts. No new playable tier, full CI, draft adoption, designated approval
+or release. The state remains incomplete Garage hardening plus substantial later
+game/platform construction. Earlier checkpoints/results and all review debt remain.
+Editorial/source checks and the real artifact consumer above are the verification;
+no unrelated software suite, services or durable-resource removal. Existing owning
+implementation ranges remain pending designated review. Review by: Codex (evidence/
+editorial first filter). Recorded by: Codex. Goal remains full nine-tier1.0.

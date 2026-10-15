@@ -7,20 +7,24 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-15):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Implementation checkpoint `654523c7`, kernel0.3.216, epoch8: still Garage integration/hardening,
+Implementation checkpoint `7ad33db8`, kernel0.3.217, epoch8: still Garage integration/hardening,
 incomplete v0.1, with substantial world/combat/Tier3–8/final-ending construction ahead. At this
-coordinate61 local commits follow published `be66902b`; fresh GitHub branch/run/job metadata
-confirms the same failed CI38560135778. Later local work is not in that run. The historical
+coordinate89 local commits follow published `be66902b`; fresh GitHub metadata confirms the
+same failed CI38560135778 and newer failed maintenance38677066823. Later local work is not
+in either run. The new retained maintenance artifact is incomplete and actually rejected by
+the validator; the CI log owns exact phase results. The historical
 guard and27 partition failures remain blockers; local composed/browser passes are not full CI.
 
-The latest full composed player/Postgres target passes, now requiring actual live Guild-input
+The last full composed player/Postgres target at `c8ed9421` passes, requiring actual live Guild-input
 Go/TS replay with positive idle/lifetime and zero-producer/omission/duplicate controls. Scoped
 API behavior, repeated DB fixtures, populated archives and data-rights observations advance
-correctness/evidence, not another playable tier or release. Owning logs hold exact ranges and
+correctness/evidence, not another playable tier or release. Current-run cohort authorization,
+Route expiry, query decoding and source-version-safe simulation are newer bounded repairs.
+Owning logs hold exact ranges and
 review debt; the current-state overview distinguishes those proofs from natural progression,
 full feature acceptance and clean-host release evidence.
 Use [current next moves](#current-next-moves)
-and the owning accepted RFC plans for execution. The seven highlighted engineering proposals
+and the owning accepted RFC plans for execution. The highlighted engineering proposals
 remain drafts; unresolved arithmetic and integration are engineering work, not owner approval
 items. Neither decision holds nor pending review halt all accepted work.
 
@@ -2075,7 +2079,7 @@ and owning plans/logs. Its old review and next-action lists must not restart com
 
 ## Current next moves
 
-Reconciled at implementation source `654523c7` (2026-10-15). The intervening API, input, Recovery and
+Reconciled at implementation source `7ad33db8` (2026-10-15). The intervening API, transport, simulation and
 Deployment repairs improve existing paths/proofs; no additional playable tier or milestone
 is completed. The five original query/epoch/board/route/router API reviews now have complete
 CHANGES REQUIRED dispositions; later corrections and implementation ranges still need review.
@@ -2089,7 +2093,8 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
    reconciliation and Headcount hiring/output choices are specific prerequisites, not permission to
    invent wire formats or mechanics. Continue independent accepted work while they are held.
 2. **Repair correctness and balance without hiding failures.** Resolve Clout partition/offline
-   semantics, the shared attendance-clock contract and historical kernel guard. Finish the
+   calculation/settlement/search contracts (the narrow offline wording is reconciled), the
+   shared attendance-clock contract and historical kernel guard. Finish the
    natural pacing/relevance and candidate-copy/content gates. Diagnose the hosted standard-pacing
    cost and incomplete maintenance population before proposing optimization or budget changes;
    controlled cash/maturity fixtures

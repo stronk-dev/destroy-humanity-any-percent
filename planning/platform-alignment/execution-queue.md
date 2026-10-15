@@ -7,7 +7,7 @@ their independent review obligations remain live.
 
 ## Current action — 2026-10-15
 
-Whole-product rollup coordinate `654523c7`, kernel0.3.216, epoch8; later bounded work is in the
+Whole-product rollup coordinate `7ad33db8`, kernel0.3.217, epoch8; bounded work is in the
 owning logs below. Whole-product status and evidence limits
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
 nine-tier goal remains active; no new playable tier or release was completed.
@@ -16,8 +16,11 @@ nine-tier goal remains active; no new playable tier or release was completed.
   permits CV3/AC6 reconciliation preserving offline cap/rate/banking and separate return
   visits; internal calculations/display reads create no extra saved payments. The owning
   Clout plan/log identifies the pending normative review range. Complete the conservation
-  draft's context/settlement/accounting/compatibility contract next; no origin lifetime,
-  new save/receipt format, repaired arithmetic or implementation authority is inferred.
+  draft's actual caller/settlement/compatibility contract and linked harness temporal
+  boundary/predicate proof. The proposed unnecessary private JSON/hash protocol is
+  withdrawn in favor of typed in-memory ownership; no new save/receipt format, repaired
+  arithmetic, architecture adoption or implementation authority is inferred. Do not
+  repeat completed fixture studies or build an unused live ApplyLogged wrapper.
 - **HELD — complete catalog serving and generated intent migration:** C18's union constructor and internal original-byte
   verifier are locally constructed through `0411ef34`; do not repeat or promote them to a
   mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member
@@ -38,21 +41,27 @@ nine-tier goal remains active; no new playable tier or release was completed.
   live-input work. Their implementer checks are not designated verdicts. Review prevents acceptance/archival,
   not other authorized work. Do not restart completed original reviews or call self-review
   designated approval.
-- **LOCALLY EXECUTED — affected Docker/SQL/browser/player checks:** latest composed source
-  `654523c7` passes the whole target, including positive idle/lifetime and actual SQL→Go/TS
+- **LOCALLY EXECUTED — affected Docker/SQL/browser/player checks:** latest whole composed batch
+  `c8ed9421` passes the target, including positive idle/lifetime and actual SQL→Go/TS
   Guild replay; `b45dcd1d` completes the Linux browser phases. Backup/restore, populated archive
   and reused-Guild-fixture checks have their own scope in the owning logs. Do not repeat completed
   populations for reassurance or infer that the full server/history/hosted gates passed.
 - **HELD — clean-host artifact/release and current-source hosted gates:** exact bundles, author
   contracts, independent review and target authority remain prerequisites for R-006. Latest
-  published CI38560135778 at `be66902b` is completed failure; later local work is not in that run.
+  published CI38560135778 at `be66902b` is completed failure. New maintenance38677066823 on
+  that same source is also failed:300/300 standard runs take45.84 minutes, relevance0 stops
+  at80/107 under the unchanged50-minute wrapper, relevance1 never starts; numeric passes
+  and career/relevance reports drift. The exact artifact/validator refusal is in the CI log.
+  Later local work and the unapplied rate candidate are not in those hosted runs.
 - **HELD — named contracts and owner choices:** use the current distinction and linked option
   sheets. Headcount has hiring AND output choices. API engineering proposals, Typer/attendance/
   body reconciliation, rights/retention, accessibility, content and release-artifact work have
   separate boundaries; a generic approval cannot substitute for their actual contracts/proofs.
 
-The numeric next step remains a viable C2/C3 accounting/receipt design and C1/C1a interval
-reconciliation, not more copies of the completed context studies. Headcount's live hiring/output,
+The numeric next step is actual caller-compatible calculation/settlement and a correct
+consumer search algorithm; the delegated interval wording is reconciled, not an algorithm
+adoption. RP-654 fixes source-version loss, not the original27 failures. Do not repeat completed
+context studies. Headcount's live hiring/output,
 Typer/Arcade HTTP bindings, recovery/renewal and later-game construction retain their named
 acceptance/specification prerequisites. These are not a claim that all remaining work is
 paperwork or that generic owner approval would finish the engineering.

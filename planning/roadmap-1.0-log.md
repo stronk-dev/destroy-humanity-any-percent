@@ -5401,3 +5401,18 @@ Editorial reconciliation only: inspect diffs/paths/citations/anchors and whitesp
 no software acceptance rerun, draft adoption, review waiver or release promotion.
 The full nine-tier goal stays active; this checkpoint does not declare a narrower
 preview to be1.0. Owning implementation review ranges remain unchanged.
+
+## 2026-10-15 — Current head and newly observed maintenance failure
+
+Implementation coordinate7ad33db8, kernel0.3.217/epoch8,89 commits after confirmed
+published be66902b. Reconcile current overview/roadmap/queue with newer bounded
+authorization, naming-expiry, query and simulation-version repairs. Clout's delegated
+offline wording is reconciled; its accounting/search proposals remain unaccepted
+and27 partition failures remain. No new playable tier or acceptance is completed.
+
+Fresh read-only GitHub checks also find failed maintenance38677066823; exact
+downloaded evidence and actual validator refusal are in the [CI log](scaffolding-and-ci/log.md#2026-10-15--published-maintenance38677066823-and-current-rollup-reconciliation).
+No budget increase, report restamp, local-candidate landing or hosted improvement
+is inferred. Full nine-tier/world/combat/endings and platform/rights/accessibility/
+release-artifact obligations remain; owner choices, technical closure and review
+are distinct. This is status/evidence reconciliation, not a release or new authority.

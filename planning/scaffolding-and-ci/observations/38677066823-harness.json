@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "kind": "harness_observation.v1",
+  "authoritative": false,
+  "mode": "check",
+  "state": "incomplete",
+  "termination": "signal",
+  "started_at": "2026-10-15T03:39:24.852013292Z",
+  "updated_at": "2026-10-15T04:29:23.762285354Z",
+  "finished_at": "2026-10-15T04:29:23.762285354Z",
+  "elapsed_ms": 2998910,
+  "current_objective": null,
+  "active_epoch_id": 8,
+  "active_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+  "declared_objective_ids": [
+    "repository-guards",
+    "standard-pacing",
+    "relevance:0:testdata/harness/relevance/scenario-epoch-7-t1-v2.json",
+    "relevance:1:testdata/harness/relevance/scenario-v1.json"
+  ],
+  "objectives": [
+    {
+      "id": "repository-guards",
+      "kind": "repository_guards",
+      "state": "complete",
+      "started_at": "2026-10-15T03:39:24.85805609Z",
+      "updated_at": "2026-10-15T03:39:45.821462666Z",
+      "finished_at": "2026-10-15T03:39:45.821462666Z",
+      "elapsed_ms": 20963,
+      "identity": {
+        "registry_index": null,
+        "scenario_path": "",
+        "economy_catalog_path": "",
+        "relevance_policy_path": "",
+        "golden_report_path": "",
+        "scenario_hash": "",
+        "relevance_policy_hash": "",
+        "constants_hash": "",
+        "active": null
+      },
+      "work": {
+        "declared_runs": null,
+        "executed_runs": null,
+        "declared_transitions": null,
+        "executed_transitions": null
+      },
+      "guard_state": "clear",
+      "population_exclusions": "clear",
+      "truncation_state": "clear",
+      "instrument_excluded_ids": [],
+      "errors": []
+    },
+    {
+      "id": "standard-pacing",
+      "kind": "standard_pacing",
+      "state": "complete",
+      "started_at": "2026-10-15T03:39:45.825454841Z",
+      "updated_at": "2026-10-15T04:25:36.344380227Z",
+      "finished_at": "2026-10-15T04:25:36.344380227Z",
+      "elapsed_ms": 2750518,
+      "identity": {
+        "registry_index": null,
+        "scenario_path": "testdata/harness/scenarios/phase0-production.json",
+        "economy_catalog_path": "",
+        "relevance_policy_path": "",
+        "golden_report_path": "",
+        "scenario_hash": "sha256:10aa5c8a2dd8a5c79a5902e74f4e55a1ca3ab46a2d35c9bf3dd25fc729dbb07a",
+        "relevance_policy_hash": "",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+        "active": null
+      },
+      "work": {
+        "declared_runs": 300,
+        "executed_runs": 300,
+        "declared_transitions": null,
+        "executed_transitions": null
+      },
+      "guard_state": "clear",
+      "population_exclusions": "clear",
+      "truncation_state": "clear",
+      "instrument_excluded_ids": [],
+      "errors": []
+    },
+    {
+      "id": "relevance:0:testdata/harness/relevance/scenario-epoch-7-t1-v2.json",
+      "kind": "registered_relevance",
+      "state": "incomplete",
+      "started_at": "2026-10-15T04:25:36.347389985Z",
+      "updated_at": "2026-10-15T04:29:23.762285354Z",
+      "finished_at": "2026-10-15T04:29:23.762285354Z",
+      "elapsed_ms": 227414,
+      "identity": {
+        "registry_index": 0,
+        "scenario_path": "testdata/harness/relevance/scenario-epoch-7-t1-v2.json",
+        "economy_catalog_path": "balance/catalogs/phase0.json",
+        "relevance_policy_path": "balance/relevance/t0-t1.json",
+        "golden_report_path": "testdata/harness/relevance/golden-report-epoch-8-v1.json",
+        "scenario_hash": "sha256:e4d54cd0e75119f9f623d82a73db4fa33282a387f77d16fa61559489af83e7d8",
+        "relevance_policy_hash": "sha256:f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+        "active": true
+      },
+      "work": {
+        "declared_runs": 107,
+        "executed_runs": 80,
+        "declared_transitions": null,
+        "executed_transitions": 1083433
+      },
+      "guard_state": "unknown",
+      "population_exclusions": "unknown",
+      "truncation_state": "unknown",
+      "instrument_excluded_ids": [],
+      "errors": [
+        "received signal interrupt"
+      ]
+    }
+  ],
+  "errors": [
+    "received signal interrupt"
+  ]
+}
