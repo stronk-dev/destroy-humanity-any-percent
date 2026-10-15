@@ -415,3 +415,77 @@ func TestSparseAggregationResearchOriginalPair(t *testing.T) {
 		}
 	}
 }
+
+// Compatibility search, not an equivalence census: seek the first committed
+// difference for four positive canonical card metrics and one canonical factor.
+// A 20,000-profile guard is an experiment bound, not a gameplay-domain limit.
+// These are admitted numeric fields, not yet a reachable minigame session.
+func TestSparseAggregationResearchFourTermConsumerSearch(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/pitch/aggregation-compatibility-research-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var vector struct {
+		Version int
+		Seed    uint64 `json:"search_seed"`
+		Profile int    `json:"search_profile"`
+		Cards   []struct {
+			Metric string `json:"base_metric"`
+		}
+		Factor    string `json:"card_factor"`
+		Current   string `json:"current_valuation"`
+		Candidate string `json:"candidate_valuation"`
+	}
+	if json.Unmarshal(data, &vector) != nil || vector.Version != 1 || vector.Seed != 665 || len(vector.Cards) != 4 {
+		t.Fatal("invalid consumer counterexample")
+	}
+	seed := vector.Seed
+	next := func() uint64 {
+		seed ^= seed << 13
+		seed ^= seed >> 7
+		seed ^= seed << 17
+		return seed
+	}
+	canonicalInput := func() Decimal {
+		coefficient := 100_000_000_000 + next()%900_000_000_000
+		exponent := int64(next()%7) - 3
+		value, err := ParseCanonical(New(float64(coefficient)/1e11, exponent).String())
+		if err != nil {
+			t.Fatal(err)
+		}
+		return value
+	}
+	for profile := 0; profile < 20_000; profile++ {
+		factor := canonicalInput()
+		bases := []Decimal{canonicalInput(), canonicalInput(), canonicalInput(), canonicalInput()}
+		terms := make([]Decimal, len(bases))
+		for i, base := range bases {
+			terms[i] = base.Mul(factor)
+		}
+		candidate, _, err := sparseSumResearch(terms)
+		if err != nil {
+			t.Fatal(err)
+		}
+		current := SumDeterministic(terms).Quantize(CanonicalSignificantDigits)
+		candidate = candidate.Quantize(CanonicalSignificantDigits)
+		if !current.IsStateValue() || !candidate.IsStateValue() {
+			t.Fatal("invalid declared consumer profile", profile)
+		}
+		if !current.Eq(candidate) {
+			if !candidate.Eq(sparseRationalOracleResearch(t, terms).Quantize(CanonicalSignificantDigits)) {
+				t.Fatal("consumer disagreement does not match independent rational rounding", profile)
+			}
+			if profile != vector.Profile || factor.String() != vector.Factor || current.String() != vector.Current || candidate.String() != vector.Candidate {
+				t.Fatal("retained consumer counterexample changed", profile, bases, factor, current, candidate)
+			}
+			for i, base := range bases {
+				if base.String() != vector.Cards[i].Metric {
+					t.Fatal("retained consumer base changed", i, base)
+				}
+			}
+			t.Logf("first committed disagreement at profile%d: bases%v factor%s current%s candidate%s", profile, bases, factor, current, candidate)
+			return
+		}
+	}
+	t.Fatal("no disagreement found within declared search; do not infer equivalence")
+}

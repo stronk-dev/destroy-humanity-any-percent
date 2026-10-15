@@ -4143,3 +4143,52 @@ balance/CI/RFC bytes remain unchanged. RP-664, RP-663,27 partitions, H3c and AC6
 stay open. Next actual caller/version/activation and workload closure, respecting
 existing Company drift/deferral rather than inventing a legacy arithmetic fork;
 separate minigame/catalog/report identities still need their own disposition.
+
+## 2026-10-15 — RP-664 actual caller compatibility and cost
+
+Afterf3280ff2 test two genuine activation unknowns, without changing production.
+The [sparse dossier](sparse-aggregation-research.md#caller-compatibility-findings-after-f3280ff2)
+owns method, literal fixture, source-bound compatibility constraints and timings.
+Seed665's declared at-most20000 four-card search reaches a disagreement at384;
+the candidate matches independent rational rounding. Shared literal metrics/factor
+enter both actual catalog loaders. Go registry Create/Apply and TS create/apply
+keep the real seed2 hand with synthetic admitted hack ownership. Current1.0.0
+clears funding at5.97255552034e3; the actual Go overlay instead yields
+5.97255552033e3/playing and fails the named regression (Make2). This disproves
+unchanged minigame semantics, not reachable-player loss or a published-content bug.
+No tracked runtime byte is mutated; original helper/overlay hash stays unchanged.
+
+Actual AccrueConstant/Evaluate benchmarks execute all declared intervals and ledger
+credits, with fresh save restoration per Evaluate iteration. Two clean active/
+candidate rounds,three100ms samples per five rows, show material allocation and
+constant-cost overhead; eight-source accrual medians345–353 versus2961–2973ns,
+4 versus157 allocations. One intervening active round overlaps package checks/vet
+and is excluded; a prior one-source-only smoke is not a matched comparison.
+No budget, pacing limit, CI timeout or acceptance threshold is adopted/loosened.
+Initial benchmark invocation loses its lone dollar to Make and executes no tests;
+the retained command uses `-run=^$$`. No invalid invocation is counted as evidence.
+
+Cold native full Decimal/Pitch/Commons/Replayverify pass and affected vet passes.
+Final native Decimal/Pitch full passes0.492/0.333s before the final literal-metadata
+binding; final focused Decimal0.301s/Pitch0.081s covers that binding, with affected
+vet clean. Production compiles but has no selected ordinary tests in that focused
+run; its real caller execution is the benchmark above. Node six affected files
+118 PASS; strict types/Svelte diagnostics zero; Linux Chromium/Firefox/WebKit
+12 PASS/6 engine-files2.52s with unchanged2048-profile digest. Initial native listen
+EPERM and sandbox Docker denial run no browser tests; the declared CI-focused
+Docker target supplies actual evidence after narrow escalation. Declared Linux-
+amd64 Go runs all sparse populations and the actual Pitch transition cold:
+Decimal0.322s/Pitch0.069s, including the same profile384 and raw witness digest.
+That run precedes only the final fixture-metadata binding assertion, not any math
+or Pitch input change. No SQL behavior is claimed. Its own verified tmpfs Postgres
+container is removed; both declared Compose inventories finish empty. No durable
+volume/user data removed. Ignored compiler-overlay files remain.
+
+Ten-path test/fixture/dossier/docs/plan/ledger/log range afterf3280ff2 through this
+containing commit requires designated research review, not corrective-code
+self-approval. Review by: Codex (research implementer first filter). Recorded by:
+Codex. No runtime, kernel/version, catalog/balance, RFC, CI or baseline bytes change.
+No AC6/monotonicity/full-workload/SQL/hosted/release claim. Next numeric step is
+an explicit activation follow-up preserving actual identities and measuring cost
+after proven-equivalent reductions; the separate H3c caller-specific time proof
+remains available without waiting for a universal aggregation repair.

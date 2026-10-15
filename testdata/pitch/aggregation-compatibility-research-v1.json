@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "seed": 2,
+  "search_seed": 665,
+  "search_profile": 384,
+  "engine_version": "1.0.0",
+  "cards": [
+    {"card_id": "demo_day", "instance": "demo_day#1", "base_metric": "1.96189168806e-2"},
+    {"card_id": "patch_release", "instance": "patch_release#1", "base_metric": "7.75832008529e3"},
+    {"card_id": "testimonial", "instance": "testimonial#2", "base_metric": "1.91264592879e-1"},
+    {"card_id": "uptime_nines", "instance": "uptime_nines#2", "base_metric": "2.18267104676e1"}
+  ],
+  "hack_id": "ab_test",
+  "card_factor": "7.6764536626e-1",
+  "funding_target": "5.97255552034e3",
+  "current_valuation": "5.97255552034e3",
+  "candidate_valuation": "5.97255552033e3",
+  "current_phase": "shop",
+  "candidate_phase": "playing"
+}

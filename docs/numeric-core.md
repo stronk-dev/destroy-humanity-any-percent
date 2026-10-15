@@ -177,6 +177,9 @@ is unapplied. Its caller overlay still changes old payout observations and retai
 the27 partition failures. Full-domain work/correctness review, caller/version
 compatibility and an explicit follow-up contract remain required. Its proposed
 net-underflow refusal is research, not a change to current arithmetic or RP-663.
+The retained Pitch compatibility witness shows why versioning matters: substituting
+the candidate changes an admitted engine1.0.0 funding decision. Current Go/TS tenant
+tests retain the existing result; no minigame semantics have changed.
 
 An explicit retained boundary check distinguishes an out-of-domain quotient:
 `1e-8999999999999999 / 2` underflows to zero in Go, whereas pinned JavaScript

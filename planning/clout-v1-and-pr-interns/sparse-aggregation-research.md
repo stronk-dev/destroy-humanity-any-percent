@@ -163,3 +163,105 @@ and prove the affected actual Go/TS, SQL/retry and player/replay boundaries. The
 current accepted grouping recipe and production source remain unchanged. No
 new save field, domain restriction, content mint, accounting/search adoption,
 RP-663/AC6 repair, feature completion or release approval follows from this study.
+
+## Caller compatibility findings after f3280ff2
+
+### Pitch: unchanged-engine equivalence is disproved
+
+A bounded search seeks one four-term committed disagreement among at most20000
+seed665 profiles: four positive canonical12-digit base metrics, one positive
+canonical factor, exponents−3..3, actual Decimal multiplication then each reducer.
+It reaches its declared counterexample objective at profile384, not an exhausted
+guard or a claimed complete census. The candidate result also agrees with the
+independent rational model of those four represented terms.
+
+`testdata/pitch/aggregation-compatibility-research-v1.json` retains the literal
+bases/factor. Both actual catalog loaders admit the retuned content. Actual Go
+registry Create/Apply and TS createPitch/applyPitch keep the seed2 hand; only hack
+ownership is synthetic. Under unchanged engine1.0.0, the existing result is
+5.97255552034e3. At that exact valid funding threshold the transition enters shop.
+The actual Go compiler overlay instead yields5.97255552033e3 and stays playing;
+the named current-engine witness fails with both differences. No tracked source
+is mutated. This is an admitted transition, not evidence of reachable hack
+acquisition, a published-content defect, SQL persistence or natural player loss.
+TS checks the existing transition, not the candidate through the TS tenant.
+
+The earlier ordinary Pitch package pass was therefore insufficient evidence for
+unchanged semantics. Any replacement must either preserve engine1.0.0's grouped
+scoring explicitly, or introduce a new engine identity with lawful pinned-session
+handling. A Company kernel bump alone cannot rename this contract. The registry
+currently keys one tenant per engine_ref and rejects duplicate refs; merely passing
+two versions of pitch to NewTenantRegistry is not a coexistence implementation.
+No new minigame version, content epoch or session migration is authorized here.
+
+### Other activation boundaries
+
+- Company: `requireRunEpochTx` already records drift while permitting commands;
+  `VerifyStoredRun` returns engine_mismatch for actual drift and defers an
+  unavailable pinned engine. Reuse this accepted policy, with the existing real-DB
+  drift/deferral tests at activation; no perpetual per-run calculation fork or
+  persisted arithmetic-mode flag is justified by this study.
+- Catalog admission: composite weights use raw equality to One after the current
+  grouped reducer. A new mathematical sum cannot silently redefine acceptance
+  of old stored/retuned artifacts. The follow-up must explicitly preserve that
+  grammar or specify and prove its compatibility; do not adjust weights for green.
+- Commons: capacity is not just a pure diagnostic. `commonsprojection.refreshScope`
+  parses persisted member samples and writes derived capacity to
+  commons_health_scopes. A changed reducer needs real projection/replay evidence
+  for that boundary; the integer-ppm health calculation is separate.
+- Harness: RunKey contains scenario/policy/constants identities, not kernel version.
+  Identical keys promise identical reports. Kernel bumps alone cannot justify
+  restamping old reports; baseline updates require the existing input-first,
+  separate-artifact protocol. A changed scenario must describe a genuinely changed
+  experiment, not dummy hash churn. If code-only corrections cannot fit that
+  protocol, the explicit follow-up must resolve it before artifacts are refreshed.
+- Ledger/progress/rate/replay callers remain in the original table. A future shared
+  arithmetic change must update actual Go/TS consumers together, retain atomic
+  refusal and receipt reproduction, and prove the affected SQL/retry boundaries.
+
+These are concrete engineering constraints, not extra owner product choices.
+The activation packet remains incomplete until each disposition is specified and
+reviewed. They do not block H3c's separate fixed-origin temporal proof by requiring
+a false universal grouping lemma, nor do they adopt either accounting draft.
+
+### Exploratory actual-caller cost
+
+The retained manual BenchmarkAggregationCallerResearch executes AccrueConstant on
+actual Rates output and Evaluate on a freshly restored save each iteration.
+Epoch5 has one purchased class/one cash source. The existing controlled axis
+fixture has nine purchased classes, twelve contributions across slots and eight
+cash rates. Catalog parsing/rate construction is excluded; the Evaluate rows
+include restoration plus the actual full interval/receipt credit. One-second and
+24-hour offline-cap evaluations use the one-source catalog, not the axis workload.
+
+Run each source with the same selector,100ms per sample,three samples per row:
+
+```sh
+make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-run=^$$ -bench=BenchmarkAggregationCallerResearch -benchtime=100ms -count=3 -benchmem'
+make test-go GO_PACKAGES='./production' GOFLAGS='-overlay=/Users/stronk/repos/cloud-clicker/.cache/sparse-aggregation-go-overlay.json' GO_TEST_FLAGS='-run=^$$ -bench=BenchmarkAggregationCallerResearch -benchtime=100ms -count=3 -benchmem'
+```
+
+The double dollar is Make escaping, not a broadened test selector. The overlay is
+the ignored research artifact described above, not a committed build input.
+Two clean active/overlay rounds on Darwin arm64/Apple M3 Max produce these ranges
+of per-round medians (not confidence intervals):
+
+| Actual call | Active ns/op | Candidate ns/op | Active→candidate allocs/op |
+|---|---:|---:|---:|
+| Eight-source accrual |345–353|2961–2973|4→157|
+| One-source accrual,1s |91–94|948–967|2→48|
+| One-source accrual,24h |94–95|961–997|2→48|
+| Restore + Evaluate,1s |4807–5213|7420–8396|82→220|
+| Restore + Evaluate,24h |4788–5222|8168–9000|82→242|
+
+An intervening active round overlapped package tests/vet and is excluded from
+these comparisons, not silently treated as timing evidence. An earlier smoke run
+predated the eight-source arm and is also not a matched comparison. All five
+rows execute successfully in the retained comparison rounds. No pacing threshold,
+CI timeout, workload population or gameplay acceptance bound is loosened.
+
+The prototype has a substantial allocation/constant-cost penalty even though work
+is independent of exponent distance. Consider proven-equivalent zero/single-input
+fast paths and allocation reduction before adoption, then run the actual complete
+producer/search workloads. These short native measurements are neither a production
+budget, hosted-runner benchmark, full offline-axis test nor final performance proof.

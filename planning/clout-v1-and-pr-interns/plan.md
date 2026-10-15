@@ -47,11 +47,17 @@ Fourteen edge cases,2048 independent-oracle profiles and the original pair pass;
 raw witness digests agree across native/Linux Go, Node and all three Linux browsers.
 This is an unapplied prototype, not an adopted replacement or a full-domain proof.
 Its actual Go caller overlay still changes retained payouts and leaves27 partitions
-red. Next close the caller/version/activation packet and actual workload cost before
-the explicit aggregation follow-up. Existing Company run-drift/verification-deferral
-policy is the compatibility baseline; do not invent perpetual per-run arithmetic
-forks. Separately pinned minigame engines, catalog admission and harness baselines
-need their own dispositions. H3c's temporal proof and AC6 remain independently open.
+red. The successor caller study disproves unchanged Pitch1.0.0 semantics: an admitted
+retuned catalog/seeded hand changes from round clear to continued play. Actual Go
+registry and TS tenant retain the current result; the Go candidate overlay fails
+that regression. Short native actual-caller benchmarks also expose a large allocation
+penalty. The dossier now names Company drift/deferral, Pitch identity/coexistence,
+catalog admission, persisted Commons capacity and harness report/baseline constraints.
+Next for RP-664: explicit follow-up dispositions, proven-equivalent cost reduction
+and complete affected workloads before any activation. Do not invent perpetual
+per-run arithmetic forks or silently relabel a pinned minigame/report. H3c's temporal
+proof remains a separate next Clout task, not blocked on a false universal grouping
+lemma or an already-adopted arithmetic replacement. AC6 stays open.
 
 ### Completed readiness studies and earlier draft steps
 
