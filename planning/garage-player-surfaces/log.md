@@ -7388,3 +7388,27 @@ Linux execution supplies the missing selected Firefox coverage, not a full brows
 SQL/player journey, CI, feature or release pass. Tool stdout is partly truncated; terminal
 two-file/count/exit summary is retained, not a full individual-case transcript. The completed
 --rm container is absent in actual declared Compose ps; no manual cache/volume cleanup.
+
+## 2026-10-15 — RP-407 host disposal independently approved
+
+Review by: fresh independent Codex `/root/pet_garage_lifecycle_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, complete
+six-path `0fd146e0c44c2a7bac53d86dd1c4943c9bab94fa..b7f351cbd02d64a35704680c50be35431afb5ad1`;
+all source/tests/docs/planning inspected. Late initial read/bootstrap, pending/queued actions
+and socket delivery cannot start new work after disposal; submitted commands are not cancelled
+and live-host queue/revision semantics stay unchanged. Six races use actual mounted hosts with
+controlled completions, not live-server fault injection.
+
+Reviewer executes at a45f5478/product312f6e02/kernel221: complete affected Adoption/screens
+native Chromium/WebKit240 passes/10 performance exclusions, declared Linux ARM64 all3
+360/15 exclusions (21.63s); Node runtime/outcomes/Shell118 passes, cold full GameUI .304s,
+vet, types0/0, build217 modules/UI boundary negatives and exact-range diff-check pass.
+Native DB skips excluded. Both changed default and axis/Space Cosmetic drivers actually run
+against built client/Worker/native server/Postgres, including native adoption/receipt/welcome,
+quiet reload/remount, care SQL/event/WebSocket and equip persistence. Shared execution details
+and separate Pet verdicts live in Pet Adoption's 2026-10-15 welcome-review entry; RP-392's new
+finding is not hidden by this approval. Historical old failures/probes inspected, not rerun.
+Initial listen denial runs no tests; authorized native execution supplies evidence. Routine
+output partly truncated; terminal verdicts retained. All handles terminal, only identified
+reviewer-created tmpfs/no-mount game-ui Postgres removed after ports free, caches/volumes intact.
+No first-read/renewal/manual AT/performance/full-CI, original Garage, archival or release approval.

@@ -7,6 +7,11 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+2026-10-15 fresh independent corrective review also APPROVES complete RP-407 host-disposal
+range0fd146e0..b7f351cb. The owning log records full hashes, six mounted late-completion races,
+actual native/Linux consumers and focused real-service driver execution. This closes that
+correction's review, not first-read/renewal, full Garage or the separate new Pet focus finding.
+
 2026-10-15 independent corrective review APPROVES the complete single-commit ranges
 `04acc775^..04acc775` (RP-447), `c0809cab^..c0809cab` (RP-448),
 `2db7b03d^..2db7b03d` (RP-498), `e8353eda^..e8353eda` (RP-499/RP-500)
