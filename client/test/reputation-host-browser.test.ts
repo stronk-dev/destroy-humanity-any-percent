@@ -63,7 +63,7 @@ class ControlledSocket extends EventTarget {
   networkClose(code: number): void { this.closed = true; this.dispatchEvent(new CloseEvent("close", { code })); }
   close(): void { this.closed = true; this.dispatchEvent(new CloseEvent("close", { code: 1000 })); }
 }
-function controlledBoundary(tier: number, windDownEligible = false, options: { holdSubscriptions?: boolean; inactive?: boolean } = {}) {
+function controlledBoundary(tier: number, windDownEligible = false, options: { holdSubscriptions?: boolean; holdInitialSnapshot?: boolean; inactive?: boolean } = {}) {
   const initial = wireSnapshot(tier);
   // Opt-in diagnostic projection, not a production-eligibility proof: the
   // server only offers Wind Down at tier >= 1. Tier 0 true exercises copy era.
@@ -86,7 +86,7 @@ function controlledBoundary(tier: number, windDownEligible = false, options: { h
     headers.push(new Headers(init?.headers).get("Authorization") ?? "");
     if (url === "/api/v1/founder/state") {
       snapshotCalls += 1;
-      if (snapshotCalls === 1) return Response.json(initial);
+      if (snapshotCalls === 1 && !options.holdInitialSnapshot) return Response.json(initial);
       return new Promise<Response>((resolve) => { heldSnapshots.push(resolve); });
     }
     if (url === "/api/v1/garden/current") return Response.json({ kind: "inactive" });
@@ -199,62 +199,68 @@ function mountedHost(testContext: TestContext, boundary: ReturnType<typeof contr
 type HostFixture = ReturnType<typeof mountedHost>;
 
 describe("Reputation host deadline cleanup", () => {
-  let expiredSignal: AbortSignal;
-  let oldTarget: HTMLElement;
-  let oldBoundary: ReturnType<typeof controlledBoundary>;
-  let release: () => void;
-  let continued: Promise<void>;
-  const deadlineObservations: Record<string, unknown>[] = [];
-  let continuationAtDeadline: Promise<void> | undefined;
+  for (const phase of ["socket-ready", "initial-read-pending"] as const) describe(phase, () => {
+    let expiredSignal: AbortSignal;
+    let host: HostFixture;
+    let boundary: ReturnType<typeof controlledBoundary>;
+    let release: () => void;
+    let continued: Promise<void>;
+    const deadlineObservations: Record<string, unknown>[] = [];
+    const expiryName = "expires while its mounted host producer is waiting";
 
-  it.skipIf(!browser).fails("expires while its mounted host producer is waiting", async (testContext) => {
-    expiredSignal = testContext.signal;
-    const boundary = controlledBoundary(0);
-    const host = mountedHost(testContext, boundary, (value) => {
-      deadlineObservations.push(value);
-      // Retain this deliberate timeout too: a stall in its cleanup must not
-      // disappear merely because the test is expected to fail.
-      console.error("reputation-host-expected-deadline", JSON.stringify(value));
-    });
-    testContext.signal.addEventListener("abort", () => { continuationAtDeadline = continued; }, { once: true });
-    const { target } = host;
-    oldTarget = target; oldBoundary = boundary;
-    try {
-      host.observeStage("waiting-subscription-ready");
-      await expect.poll(() => boundary.sockets[0]?.commands.length).toBe(3);
-      const gate = new Promise<void>((resolve) => { release = resolve; });
+    beforeEach(async (testContext) => {
+      if (testContext.task.name !== expiryName) return;
+      expiredSignal = testContext.signal;
+      boundary = controlledBoundary(0, false, { holdInitialSnapshot: phase === "initial-read-pending" });
+      host = mountedHost(testContext, boundary, value => {
+        deadlineObservations.push(value);
+        console.error("reputation-host-expected-deadline", JSON.stringify(value));
+      });
+      // Establish the population in the ordinary bounded setup hook, before
+      // the unchanged50ms test-body deadline. Slow setup must fail as setup,
+      // not masquerade as a producer-timeout measurement.
+      await expect.poll(() => boundary.snapshotCalls).toBe(1);
+      if (phase === "socket-ready") await expect.poll(() => boundary.sockets[0]?.commands.length).toBe(3);
+      else expect(boundary.sockets).toEqual([]);
+      const gate = new Promise<void>(resolve => { release = resolve; });
       continued = (async () => { await gate; await enterTree(host, "era_1995"); })();
-      host.observeStage("waiting-producer-gate");
-      await continued;
-    } finally { await host.dispose(); }
-  }, 50);
+    });
 
-  it.skipIf(!browser)("tears down its expired host and refuses late navigation", async () => {
-    expect(expiredSignal.aborted).toBe(true);
-    expect(expiredSignal.reason.message).toContain("Test timed out in 50ms");
-    try {
-      expect(oldBoundary.sockets).toHaveLength(1);
-      expect({ mounted: oldTarget.isConnected, socketClosed: oldBoundary.sockets[0]!.closed })
-        .toEqual({ mounted: false, socketClosed: true });
-      expect(deadlineObservations).toHaveLength(1);
-      expect(deadlineObservations[0]).toMatchObject({ aborted: true,
-        mounted: true, active_input: null,
-        native_started: 0, native_settled: 0, native_elapsed_ms: 0, snapshot_calls: 1, intents: 0,
-        sockets: [{ closed: false, commands: 3 }] });
-      expect(deadlineObservations[0]!.reason).toBe(expiredSignal.reason.message);
-      // The unchanged 50 ms deadline can fire during initialization. Compare
-      // the recorded stage with whether the actual producer had been created,
-      // rather than pretending every timeout reached that producer's gate.
-      expect(deadlineObservations[0]!.stage).toBe(continuationAtDeadline
-        ? "waiting-producer-gate" : "waiting-subscription-ready");
-      for (const key of ["elapsed_ms", "stage_elapsed_ms"] as const) {
-        expect(Number.isFinite(deadlineObservations[0]![key])).toBe(true);
-        expect(deadlineObservations[0]![key]).toBeGreaterThanOrEqual(0);
-      }
-      release();
-      await expect(continued).rejects.toBe(expiredSignal.reason);
-      expect(oldBoundary.requests).toEqual([]);
-    } finally { release(); await continued.catch(() => {}); }
+    it.skipIf(!browser).fails(expiryName, async () => {
+      host.observeStage(phase === "socket-ready" ? "waiting-producer-gate" : "waiting-initial-snapshot");
+      try { await continued; }
+      finally { await host.dispose(); }
+    }, 50);
+
+    it.skipIf(!browser)("tears down its expired host and refuses late navigation", async () => {
+      expect(expiredSignal.aborted).toBe(true);
+      expect(expiredSignal.reason.message).toContain("Test timed out in 50ms");
+      try {
+        expect(host.target.isConnected).toBe(false);
+        // Initialization may finish as cleanup releases its controlled reply.
+        // Every created socket must close; the ready arm requires a real one.
+        expect(boundary.sockets.length).toBeLessThanOrEqual(1);
+        if (phase === "socket-ready") expect(boundary.sockets).toHaveLength(1);
+        expect(boundary.sockets.every(socket => socket.closed)).toBe(true);
+        expect(deadlineObservations).toHaveLength(1);
+        expect(deadlineObservations[0]).toMatchObject({ aborted: true,
+          mounted: true, active_input: null,
+          native_started: 0, native_settled: 0, native_elapsed_ms: 0, snapshot_calls: 1, intents: 0,
+          stage: phase === "socket-ready" ? "waiting-producer-gate" : "waiting-initial-snapshot",
+          sockets: phase === "socket-ready" ? [{ closed: false, commands: 3 }] : [] });
+        expect(deadlineObservations[0]!.reason).toBe(expiredSignal.reason.message);
+        for (const key of ["elapsed_ms", "stage_elapsed_ms"] as const) {
+          expect(Number.isFinite(deadlineObservations[0]![key])).toBe(true);
+          expect(deadlineObservations[0]![key]).toBeGreaterThanOrEqual(0);
+        }
+        const socketCount = boundary.sockets.length;
+        release();
+        await expect(continued).rejects.toBe(expiredSignal.reason);
+        expect(boundary.requests).toEqual([]);
+        expect(boundary.sockets).toHaveLength(socketCount);
+        expect(host.target.isConnected).toBe(false);
+      } finally { release(); await continued.catch(() => {}); }
+    });
   });
 
   it.skipIf(!browser)("observes a real native action without reporting a successful host as failed", async (testContext) => {

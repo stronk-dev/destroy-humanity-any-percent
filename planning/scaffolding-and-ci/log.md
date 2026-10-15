@@ -1800,3 +1800,54 @@ full push aggregate, feature/release acceptance or independent approval. Previou
 browser failures and server/history failures remain. The runner auto-removes; final
 service inventory is empty. Record-only checkpoint; prior corrective review debt
 persists, with no product change, archival or push.
+
+## 2026-10-15 — RP-645 deadline populations and RP-637 cancellation evidence
+
+Under CI D2/RFC-0000, extend the existing Codex failure capture with post-dispatch
+defaultPrevented, key repeat/modifiers, focus at delivery, keypress and toggle.
+Retain Event references until capture so a later target listener's cancellation
+is visible; the capture phase alone is too early. Existing blocked Close now
+requires uncancelled first Enter/cancelled second Enter, without repeat/modifiers.
+Same-image focused55483 passes all81 cases; types78820 pass. No product repair or
+RP-637 causation inferred; its original two failures remain open.
+
+Full `make test-browser-ci`99155 then fails a different test: Firefox Reputation
+deadline cleanup expects `sockets:[{closed:false,commands:3}]`, observes `[]` at
+the actual50ms deadline. Broad477 files:476 pass/one fail,39815 ordinary passes,
+9 expected failures/24 skips,148.99s; native/performance do not run. The final
+assertion at old line240 is retained, although bulk stdout is truncated. Previous
+stage handling allowed early initialization but still asserted a subscribed socket.
+
+Correct the fixture, not the UI: ordinary bounded beforeEach establishes either
+a subscribed controlled socket or a held initial HTTP read, before the unchanged
+50ms test-body deadline. The installed runner confirms hooks precede that timer.
+Each real deadline must capture its exact population, unmount/close every created
+socket, then reject a released late continuation with the original abort reason,
+no native action/intent, no new socket or remount. Ready-arm socket requirements
+remain exact; the separate pending-read arm does not pretend a socket existed.
+Focused61447 passes9 ordinary/6 expected timeouts in all three engines (264
+explicitly deselected),2.92s. Final types14449 report zero errors/warnings.
+
+Final full76960 uses the declared Compose image/timeout/frozen preparation and
+root `make test-browser BROWSER_REPORT_DIR=client/test-results/rp645-20261015-728508de`
+(reporting-only command override). Exit0: broad477 files/39819 ordinary passes,
+12 expected failures/24 skips in138.77s; native3 files/87 ordinary/6 expected
+in3.61s; Chromium performance5 pass/105 pattern skips in6.16s. Source stays fixed:
+axis test Git blob `eb779688f9876cd786f36d4a0c15f425c6cbbbf5`, Reputation
+`5ac2cef441f81903c12852bd3871a1673c4eacab`, above product `728508de`.
+Both JSON reports validate success/zero failures and include all15 Reputation
+deadline controls plus three blocked Codex controls. They classify expected
+failures as passed; preserve the CLI split above. Ignored raw reports remain local:
+broad12269534bytes SHA256 `1420e3888d298dfe353ea455f8b656a22f2e8e4b39470b0d3749eec140895854`;
+native26173bytes SHA256 `39efa3118876af34157ab5d038c23e077ff2e70d8fc0506452bb019a83b203dc`.
+
+Image inspection confirms Linux/ARM64, not hosted AMD64/runner timing. RP-637 does
+not recur and remains unattributed; no repeated green closes it. No production,
+timeout, retry, budget, workflow, kernel, schema, copy or content change. Full
+server/history failures, current-source hosted proof and all release gates remain.
+Diff checked; both runners auto-remove and service inventory is empty, no cache/
+network/durable data cleanup. Review by: Codex (test implementer first filter).
+Recorded by: Codex. Complete five-path test/records range after `728508de` through
+this containing commit needs designated Claude review; no acceptance, archival,
+push or deployment. Next use actual recurrence evidence for RP-637 and continue
+accepted construction, not another unchanged full run for reassurance.

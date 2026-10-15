@@ -396,10 +396,14 @@ for (const tier of [0, 1, 2]) {
       let stage = "mount";
       let details: HTMLDetailsElement | null = null;
       let summary: HTMLElement | null = null;
-      const nativeEvents: { type: string; key: string | null; trusted: boolean; onSummary: boolean; open: boolean | null }[] = [];
+      const nativeEvents: { event: Event; type: string; key: string | null; trusted: boolean; onSummary: boolean; open: boolean | null;
+        documentFocused: boolean; repeat: boolean; modifiers: string[] }[] = [];
       const observeInput = (event: Event) => {
-        nativeEvents.push({ type: event.type, key: event instanceof KeyboardEvent ? event.key : null,
-          trusted: event.isTrusted, onSummary: event.target === summary, open: details?.open ?? null });
+        const keyboard = event instanceof KeyboardEvent ? event : null;
+        nativeEvents.push({ event, type: event.type, key: keyboard?.key ?? null,
+          trusted: event.isTrusted, onSummary: event.target === summary, open: details?.open ?? null,
+          documentFocused: document.hasFocus(), repeat: keyboard?.repeat ?? false,
+          modifiers: keyboard ? [keyboard.altKey && "Alt", keyboard.ctrlKey && "Control", keyboard.metaKey && "Meta", keyboard.shiftKey && "Shift"].filter((key): key is string => typeof key === "string") : [] });
       };
       try {
         fixture = await mounted(runtime);
@@ -407,7 +411,7 @@ for (const tier of [0, 1, 2]) {
         details = target.querySelector<HTMLDetailsElement>("section.axis details");
         expect(details, "CV9 requires an operable PR Codex disclosure").not.toBeNull();
         summary = details!.querySelector<HTMLElement>("summary")!;
-        for (const type of ["keydown", "keyup", "click"]) target.addEventListener(type, observeInput, true);
+        for (const type of ["keydown", "keypress", "keyup", "click", "toggle"]) target.addEventListener(type, observeInput, true);
         const content = details!.querySelector<HTMLElement>(".codex")!;
         expect(summary.textContent?.trim()).toBe("?");
         expect(summary.getAttribute("aria-label")).toBe("PENDING OWNER COPY: PR Intern help");
@@ -456,7 +460,10 @@ for (const tier of [0, 1, 2]) {
           summary_connected: summary?.isConnected ?? false, details_connected: details?.isConnected ?? false,
           same_details: fixture?.target.querySelector("section.axis details") === details,
           open: details?.open ?? null, focused_summary: document.activeElement === summary,
-          focused_tag: document.activeElement?.tagName ?? null, native_events: [...nativeEvents] });
+          focused_tag: document.activeElement?.tagName ?? null,
+          // Read cancellation after dispatch, not in the capture listener:
+          // a later target/bubble listener can cancel the native default.
+          native_events: nativeEvents.map(({ event, ...observation }) => ({ ...observation, default_prevented: event.defaultPrevented })) });
         const failedState = observeFailure();
         // Observe another ordinary settle only after failure; never turn it into
         // a pass. Include evidence in the final error, not only noisy live output.
@@ -474,6 +481,8 @@ for (const tier of [0, 1, 2]) {
           const keys = failedState.native_events.filter(event => event.type === "keydown" && event.onSummary);
           expect(keys.map(event => event.key)).toEqual(["Enter", "Enter"]);
           expect(keys.every(event => event.trusted)).toBe(true);
+          expect(keys.map(event => event.default_prevented)).toEqual([false, true]);
+          expect(keys.every(event => !event.repeat && event.modifiers.length === 0)).toBe(true);
           expect(reported.message).toContain(diagnostic);
           expect(reported.cause).toBe(error);
           return;
@@ -481,7 +490,7 @@ for (const tier of [0, 1, 2]) {
         console.error(diagnostic);
         throw reported;
       } finally {
-        if (fixture) for (const type of ["keydown", "keyup", "click"]) fixture.target.removeEventListener(type, observeInput, true);
+        if (fixture) for (const type of ["keydown", "keypress", "keyup", "click", "toggle"]) fixture.target.removeEventListener(type, observeInput, true);
         try { if (fixture) await fixture.dispose(); }
         finally { await page.viewport(1280, 720); }
       }
