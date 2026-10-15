@@ -3723,3 +3723,29 @@ Exact range diff-check passes; all7 attributes survive current source. Old corre
 All processes terminal, no reviewer edits/resources. Not approval of surrounding R9 or child-cwd
 correction, original feature/full-app entry/manual-AT/SQL/maturation/release. RP-399 provider
 and RP-218/RP-225/RP-430 reliability remain open.
+
+## 2026-10-15 — RP-670 preserves superseding menu focus
+
+Outcome: under existing SG10/newer-choice UI behavior, command completion and Close must not
+reclaim the plot after a newer focus choice disappears during the render handoff. A scoped
+focusin observer starts before command callbacks and stays through tick; supersession is
+permanent for that handoff. Finally cleanup and synchronous callback-error cleanup retain the
+existing exception behavior. No commands, transport, clock, copy or kernel changes.
+
+Regression: the unchanged old component with the strengthened mounted browser cases fails six
+times in native Chromium/WebKit (removed newer target after Enter, Space and controlled Close),
+while six retained-focus companions pass. The target is asserted actually focused before
+removal. Final assertions independently require body after removal, not reclaimed plot, and
+exactly one command or zero for Close. Close is a controlled lifecycle race, not a native
+traversal claim. Old run session58740 exits2;70 intentionally deselected cases.
+
+Local verification: complete affected garden-surface-witnesses-browser.test.ts passes82/82
+native Chromium/WebKit (session62873,3.83s). make typecheck build-client verify-client-boundary
+passes (session2624): zero Svelte/type diagnostics, production build and UI-boundary negatives.
+Initial Linux command was denied Docker access before tests; authorized declared-container run
+passes123/123 across Chromium/Firefox/WebKit (session87868,5.87s, Linux ARM64 image).
+Routine output partly truncated; terminal totals retained. No SQL/server journey, performance,
+manual AT or whole-CI claim. Render-only files
+are outside kernel watch paths; version remains0.3.221. Baselinecc37b6d3-exclusive through this
+coherent fix is awaiting fresh independent Codex review under Marco's corrective delegation;
+not full Garden acceptance, normative adoption, archival or release approval.

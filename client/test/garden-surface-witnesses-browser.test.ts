@@ -192,8 +192,8 @@ for (const action of ["plant", "uproot", "harvest"] as const) {
   });
 }
 
-for (const key of ["{Enter}", " "]) {
-  it.skipIf(!browser)(`Garden menu completion preserves a newer focus choice after native ${JSON.stringify(key)}`, async () => {
+for (const key of ["{Enter}", " "]) for (const removed of [false, true]) {
+  it.skipIf(!browser)(`Garden menu completion preserves a newer ${removed ? "removed" : "retained"} focus choice after native ${JSON.stringify(key)}`, async () => {
     const { userEvent } = await import("vitest/browser");
     const host = mounted({ current: async () => active() });
     const newerChoice = document.createElement("button");
@@ -206,15 +206,41 @@ for (const key of ["{Enter}", " "]) {
       expect(document.activeElement?.textContent?.trim()).toBe("Harvest");
       // A focus choice made after submission but before the menu's async
       // render/handoff completes must win. No real server response is mocked.
-      host.holdCommands(() => newerChoice.focus());
+      host.holdCommands(() => {
+        newerChoice.focus();
+        expect(document.activeElement, "the newer control actually receives focus").toBe(newerChoice);
+        if (removed) newerChoice.remove();
+      });
       await userEvent.keyboard(key);
       await settle();
       expect(host.calls).toEqual(["harvest 0,0"]);
       expect(host.target.querySelector(".menu")).toBeNull();
-      expect(document.activeElement).toBe(newerChoice);
+      const expectedFocus = removed ? document.body : newerChoice;
+      expect(document.activeElement).toBe(expectedFocus);
       host.app.update({ pending: false });
       await settle();
-      expect(document.activeElement).toBe(newerChoice);
+      expect(document.activeElement).toBe(expectedFocus);
+    } finally { await unmount(host.app); host.target.remove(); newerChoice.remove(); }
+  });
+}
+
+for (const removed of [false, true]) {
+  it.skipIf(!browser)(`Garden Close handoff preserves a newer ${removed ? "removed" : "retained"} focus choice`, async () => {
+    const host = mounted({ current: async () => active() });
+    const newerChoice = document.createElement("button"); document.body.append(newerChoice);
+    try {
+      await settle();
+      host.target.querySelector<HTMLButtonElement>("button.cell")!.click(); await settle();
+      const close = [...host.target.querySelectorAll<HTMLButtonElement>(".menu button")]
+        .find((candidate) => candidate.textContent?.trim() === "Close")!;
+      close.focus(); close.click();
+      // Controlled post-handler/pre-render lifecycle race, not native traversal.
+      newerChoice.focus(); expect(document.activeElement).toBe(newerChoice);
+      if (removed) newerChoice.remove();
+      await settle();
+      expect(document.activeElement).toBe(removed ? document.body : newerChoice);
+      expect(host.target.querySelector(".menu")).toBeNull();
+      expect(host.calls).toEqual([]);
     } finally { await unmount(host.app); host.target.remove(); newerChoice.remove(); }
   });
 }

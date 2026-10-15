@@ -248,6 +248,9 @@ change, mature HTTP payout, default DOM flow, real idle wait, full G4/G6/Garden 
   order, including WebKit. Tab/Shift-Tab reaches the seed and mature menus without changing
   the grid's single roving stop. Enter/Space uses the existing callbacks; closing or acting
   in a menu returns focus to its plot unless a newer focus choice has already won.
+  A focus choice made during the command callback or render handoff cancels that return
+  even if the newly focused element is removed before the handoff finishes. The observer
+  ends with the handoff; a synchronous callback failure also removes it before rethrowing.
 - Pending command controls remain focusable with `aria-disabled`, point to the existing polite
   status region's visible `common.pending` message, and guard native/programmatic activation.
   An open menu cannot submit or close itself through a pending command; ordinary Close still

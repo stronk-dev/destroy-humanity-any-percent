@@ -141,19 +141,28 @@
   }
   function register(node: HTMLButtonElement, key: string) { cells.set(key, node); return { destroy: () => cells.delete(key) }; }
   function open(row: number, col: number): void { focusRow = row; focusCol = col; menu = { row, col }; }
-  async function closeMenu(origin = document.activeElement): Promise<void> {
+  function observeMenuFocus(origin: Element | null) {
+    let superseded = false;
+    const observe = (event: FocusEvent) => { if (event.target !== origin) superseded = true; };
+    document.addEventListener("focusin", observe);
+    return { isSuperseded: () => superseded, stop: () => document.removeEventListener("focusin", observe) };
+  }
+  async function closeMenu(origin = document.activeElement, handoff = observeMenuFocus(origin)): Promise<void> {
     const at = menu;
-    menu = null;
-    await tick();
-    if (!destroyed && at && (document.activeElement === origin || document.activeElement === document.body)) {
+    try {
+      menu = null;
+      await tick();
+    } finally { handoff.stop(); }
+    if (!handoff.isSuperseded() && !destroyed && at && (document.activeElement === origin || document.activeElement === document.body)) {
       cells.get(`${at.row},${at.col}`)?.focus();
     }
   }
   function act(run: () => void): void {
     if (pending || !controlsEnabled) return;
     const origin = document.activeElement;
-    run();
-    void closeMenu(origin);
+    const handoff = observeMenuFocus(origin);
+    try { run(); } catch (error) { handoff.stop(); throw error; }
+    void closeMenu(origin, handoff);
   }
 </script>
 
