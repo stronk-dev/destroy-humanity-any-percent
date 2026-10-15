@@ -18,6 +18,9 @@ RP-508 pre-destructive rollback package validation,
 RP-548 create-report invocation and RP-549 sequential-observation scopes. The owning log
 records actual clean-target SQL refuses/restores, local producers/loaders and exact limits;
 original author/artifact/feature holds are unchanged.
+Complete RP-510 dump-creation and RP-511 archive-parser ranges also have fresh independent
+approval; actual positioned Postgres restores and declared Caddy release checks execute.
+The owning log records exact source contexts/limits, not installed-release acceptance.
 
 **Current DP7 timed-observation correction, 2026-10-14 (RP-615):** the real-minute test's
 startup/failure/drain callback waits now obey its existing95-second context and refuse missing
@@ -326,7 +329,7 @@ The owning log records the corrective range needing designated review and remain
 invalid content rather than panicking in the validator/assembler. Eight old-source failures
 become refusals; intact controls and all twelve malformed-input cases pass. Affected cold
 native/vet and Linux packages plus existing real Postgres/Caddy integration pass. The log
-owns the pending designated range and fixture limits. Six Linux binaries, client, metadata
+owns independent approval of complete `abf4b4ac..102face6` and fixture limits. Six Linux binaries, client, metadata
 and content build at `abf4b4ac`, but these pre-correction outputs are not a current full bundle.
 
 **Latest bounded correction (RP-510):** both package-creation passes now bind the
@@ -335,7 +338,7 @@ hashing plus streamed hash/EOF validation prevents publishing an inconsistent
 package. Actual positioned empty/populated Postgres dumps restore with matching
 recovery identity; affected native/vet and Linux checks pass. No format, retention,
 clock, key or CI contract change. The owning log records results and the full
-corrective range needing designated review; broader Deployment gates remain open.
+independently approved complete `e27eb832..abf4b4ac` corrective range; broader gates remain open.
 
 **Latest bounded correction, 2026-10-12 (RP-508):** rollback input preflight now uses the
 actual authenticated package decoder before stopping services/resetting Postgres. The old

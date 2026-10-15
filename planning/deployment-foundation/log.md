@@ -7215,3 +7215,43 @@ with no Compose projects. No persistent storage/cache/builder cleanup, source ed
 or commits. Root's separate Decimal research preserves active arithmetic. No actual live-
 volume rollback, clean-host R-006, production-size extraction/RTO, D-019, metadata adoption,
 full Deployment/normative/archival/release approval. This correction no longer waits on Claude.
+
+## 2026-10-15 — Complete-dump creation and archive parser independently approved
+
+Review by: fresh independent Codex `/root/backup_creation_archive_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, no findings,
+all source/test/docs/records paths inspected, separately for complete baseline-exclusive ranges:
+
+- RP-510,7 paths: `e27eb83211764243166a1d9b640083c33a729356..abf4b4acd56baf6e7e91312cbddb28f9d1525c31`.
+- RP-511,6 paths: `abf4b4acd56baf6e7e91312cbddb28f9d1525c31..102face6f2aeadc8aaa0ff19af0d4d5bd0f63ef1`.
+
+Creation rewinds before hashing, verifies actually streamed second-pass hash and exact EOF,
+and propagates changed input through atomic encrypted publication refusal. Fixture hides
+bytes.Reader.WriteTo and asserts exactly one between-pass change; refusal leaves no header/
+path/files. Tar.Next errors are checked before header dereference; direct/actual assembler
+refusals publish no manifest. Intact controls remain; no format/retention/time/key/policy expansion.
+
+Actual descendant38cba707/product77fe2275/kernel221: seven cold packages/vet57503 pass;
+assembler CLI has no separate tests, actual assembler executes in regressions. Cold race69377
+passes3 reader-position/4 between-pass cases, existing lock/pipe-unblock,6 direct malformed/
+6 actual-assembly arms and intact controls. Declared Linux-amd64 seven-package78104 passes.
+Actual backup76320 executes all8 integration parents, no skips: all4 empty/populated/direct/
+query-override positioned pg_dump populations restore with exact recovery identity, authenticated
+tails preserve a clean target. Extra deletion/credential observation is context, NOT rights
+approval. Actual release49033 passes2.46s with Postgres/Caddy/HTTP/WebSocket: backup preflight,
+tail refusal before runtime calls, drain/courtesy/closure/restart/intact restore/account count/
+authenticated smoke/damaged artifacts. Both range whitespace/format checks pass.
+
+Creation source unchanged from endpoint; later shared query/fixture additions are context.
+RP-511 error-first hunk/regressions retained; later layer-identity validation is not approved
+by these scopes. Historical invalid changed-source-helper and compilation results remain
+invalid/historical, not new executions. Synthetic archive/ELF inputs are not runnable release
+images; composed release helper is not installed current/previous OCI proof. Docker28.4.0/
+Compose2.39.4-desktop.1 daemonLinuxarm64, declared amd64 under emulation, not native clean-host.
+
+All handles terminal. Initial/final inventories equal2 existing BuildKit containers, no Compose
+projects. Targets remove own isolated resources; separately remove only newly created twice-
+inspected tmpfs testc6b19024…; disposable SQL data unrecoverable, persistent storage/cache/
+builders preserved. Reviewer edits/mutates/commits nothing. No snapshot/metadata/D-019 adoption,
+R-006/full Deployment/hosted-CI/normative/archival/release approval. These corrections leave
+the pending-review queue; current artifact, authored and full feature gates remain open.
