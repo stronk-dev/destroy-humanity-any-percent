@@ -82,7 +82,9 @@ Current tenant-conformance correction (2026-10-13, RP-515): Go now requires the 
 command/snapshot/offer keys, non-null mandatory snapshot/offer values and canonical lowercase
 content hashes already required by TP-C12/TP-C14 and the TypeScript tenant. The shared malformed
 population, canonical commands, existing content vectors and real HTTP/Postgres lifecycle own
-verification; see the latest log for executed results and the range needing Claude. Valid content,
+verification; fresh independent Codex APPROVES complete6849005f..9cbf33f0 after old-source
+reproduction, Go/TS admission checks and actual Linux/Postgres/HTTP lifecycles. The owning
+log records the exact verdict and limits. Valid content,
 snapshot bytes, scoring and payout rules are unchanged. This is not a new API schema, public
 exploit finding, content adoption, clock repair or whole-feature acceptance.
 

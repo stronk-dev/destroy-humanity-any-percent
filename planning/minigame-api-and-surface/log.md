@@ -2235,3 +2235,24 @@ narrow loopback escalation passes. Linux-amd64 SQL containers on ARM are not hos
 hardware. Reviewer makes no edits/mutations/commits; browser/DB slots released.
 This discharges only these corrective reviews, not prior feature spans, normative
 adoption, Company-owned replay choices, full CI, archival or release approval.
+
+## 2026-10-15 — Exact Pitch tenant admission independently approved (RP-515)
+
+Review by: /root/pitch_tenant_admission_corrective_review (fresh independent Codex,
+Marco-delegated corrective code). Recorded by: Codex (root). APPROVED complete
+6849005f146a3dd9eca28ab169b48b7488004e85-exclusive through
+9cbf33f04961958109231381e4416e2a7cb139e6-inclusive, one commit/all10 paths.
+At137f7a8d, engine and both admission test files match endpoint bytes; shared exact-key/
+duplicate helpers unchanged. Accepted TP-C12/TP-C14/MA1 conformity; correct original
+kernel184→185. Later catalog tightening/draft contracts are outside this verdict.
+Safe exact old-Go overlay reproduces malformed accepts (0.197s, exit2), no invented
+historical denominator. Cold native Pitch/Minigame/Kernel/vet pass; native DB skips
+not credited. Actual three-file TS98, types/API generation unchanged and race1.504s
+pass. Declared Linux-amd64 packages execute actual Minigame SQL populations; both real
+HTTP/Postgres lifecycle branches pass36.51s (literal18.78/purchased17.73), no skips.
+Formatting/whole-range whitespace pass. No content/scoring/payout/schema change or new
+public exploit finding. Emulation is not hosted hardware, full feature/rights/CI acceptance.
+All handles terminal. Ignored overlay files removed; only twice-inspected owned tmpfs
+DB76aa21a6… stopped/removed, synthetic data unrecoverable; same two builders/cache/volumes
+preserved. No tracked edits/commits by reviewer. Corrective review closes; no normative
+adoption, archival, feature or release approval and no historical guard waiver.
