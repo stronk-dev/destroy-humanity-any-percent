@@ -2539,3 +2539,30 @@ or input/deadline substitution by root. Original red is retained, not erased by 
 CI D2 next action: inspect the actual native dispatch/readiness/lifetime evidence, then add
 a meaningful regression only once the mechanism is known. Full CI and earlier failures remain
 open. The RP-536 review retains its own exact scoped verdict and other evidence in Clout log.
+
+## 2026-10-15 — Observe native late-completion setup without concealing RP-673
+
+CI D2 diagnostic only: preserve all four original native actions/request/unmount/late-response
+assertions and deadlines. On failure retain stage, pre/post input/settle readiness, focus,
+subscription and actual native events, reading defaultPrevented AFTER dispatch. Wrap the
+original assertion as cause; no retry, refocus, alternate input or extra settle on failure.
+One separately named canceled-Enter control uses the actual mounted enabled button and
+trusted native input, requires zero requests at the original assertion, exact cancellation,
+intact focus/readiness and preserved cause. That control is NOT a late-completion success.
+
+Actual root make test-browser-ci-focused with screens file and -t 'late .*completion cannot
+refresh an unmounted host',50271: PASS2.96s,12 ordinary+3 canceled-input controls,318 explicitly
+deselected. Initial sandbox socket refusal executes no tests; narrow permitted command runs.
+Complete affected axis/screens with same root target38651 PASS21.61s,393 ordinary+6 diagnostic
+controls (3 canceled Enter/3 existing blocked Codex Close),15 existing performance exclusions.
+No new diagnostic deadline tests. make typecheck9040 passes0errors/0warnings. Tool truncates
+bulk module/worker stdout; terminal census retained, not a complete trace claim. Original
+RP-673 does not recur, so its cause/reliability remains OPEN; no repaired product or CI claim.
+
+Only one test file/docs/ledger/owning plan/log changed. No shipped code/build/performance,
+schema/math/copy/workflow or deadline change; unrelated lanes not rerun. Review by: Codex
+(diagnostic implementer first filter). Recorded by: Codex. Complete range begins
+5afbedcd-exclusive through this containing commit; independent corrective review pending.
+Next consume genuine recurrence evidence, not unchanged green repetitions; continue other
+accepted construction. All handles terminal; Docker is declared ARM64 Desktop, not hosted
+nativeamd64. No real SQL/service/clean-host/full-CI/feature/archival/publication proof.

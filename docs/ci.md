@@ -379,6 +379,13 @@ not retry or refocus to obtain a pass. Native moved-focus and prevented-Enter co
 the diagnostic distinctions. The fixture and listeners are removed even after an assertion
 fails. This observation is not a correction of the open hosted Firefox failure (RP-451).
 
+The Game UI late-completion tests retain their original native Enter and exact request/unmount
+assertions. On failure, `late-completion-native-failure` includes the stage, readiness/subscription
+and focus observations before/after input, plus delivered native events and final cancellation
+state. A deliberately canceled Enter control must fail at the original request-count assertion
+and preserve its cause; it is diagnostic coverage, not a successful late-completion journey.
+Observation does not retry, refocus, extend a deadline or claim to fix RP-673's unknown cause.
+
 `make test-refresh-census` is a manual Account refresh population observer, outside
 CI and `verify`. It runs the declared Postgres integration service cold and requires
 all four named tests/seven cases to execute and pass. A package pass with missing,

@@ -7,6 +7,13 @@
 
 ## Current checkpoint — 2026-10-15
 
+RP-673's original Firefox missing-request failure stays open. The late-completion witness now
+adds passive failure context and an actual canceled-Enter diagnostic control; original inputs,
+assertions and deadlines remain. Focused three-engine12 ordinary+3 diagnostic and complete
+affected393 ordinary+6 diagnostic controls pass; the unknown original cause is NOT corrected.
+Next consume a genuine recurrence's input/readiness evidence, not repeat unchanged green runs.
+The owning log records this new diagnostic range, still pending independent corrective review.
+
 Fresh independent review also APPROVES original RP-531 Reputation host lifetime correction,
 6a6a996d..7f8e3126. Its original flawed readiness fixture is explicitly qualified by the
 separately approved RP-645 replacement, not retrospectively called sound. Current complete

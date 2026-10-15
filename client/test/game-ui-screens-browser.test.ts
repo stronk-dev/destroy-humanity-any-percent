@@ -200,8 +200,11 @@ for (const entry of ["snapshot", "bootstrap"] as const) {
   });
 }
 
-for (const result of ["applied", "rejected-conflict", "http-conflict", "queued"] as const) {
-  it.skipIf(typeof document === "undefined")(`late ${result} completion cannot refresh an unmounted host`, async () => {
+for (const { result, blockInitialEnter } of [
+  ...(["applied", "rejected-conflict", "http-conflict", "queued"] as const).map(result => ({ result, blockInitialEnter: false })),
+  { result: "http-conflict", blockInitialEnter: true } as const,
+]) {
+  it.skipIf(typeof document === "undefined")(`${blockInitialEnter ? "records blocked native setup: " : ""}late ${result} completion cannot refresh an unmounted host`, async () => {
     const { userEvent } = await import("vitest/browser");
     let release = () => {};
     const blocked = new Promise<void>((resolve) => { release = resolve; });
@@ -222,24 +225,54 @@ for (const result of ["applied", "rejected-conflict", "http-conflict", "queued"]
     const settle = async () => {
       for (let step = 0; step < 4; step += 1) { await new Promise((resolve) => setTimeout(resolve, 0)); await tick(); flushSync(); }
     };
+    let stage = "mount";
+    let control: HTMLButtonElement | undefined;
+    const nativeEvents: { event: Event; type: string; key: string | null; trusted: boolean;
+      onControl: boolean; activeControl: boolean; documentFocused: boolean; repeat: boolean; modifiers: string[] }[] = [];
+    const observeInput = (event: Event) => {
+      const keyboard = event instanceof KeyboardEvent ? event : null;
+      nativeEvents.push({ event, type: event.type, key: keyboard?.key ?? null, trusted: event.isTrusted,
+        onControl: event.target === control, activeControl: document.activeElement === control,
+        documentFocused: document.hasFocus(), repeat: keyboard?.repeat ?? false,
+        modifiers: keyboard ? [keyboard.altKey && "Alt", keyboard.ctrlKey && "Control", keyboard.metaKey && "Meta", keyboard.shiftKey && "Shift"].filter((key): key is string => typeof key === "string") : [] });
+    };
+    const observeState = () => ({ requests: runtime.requests.length, reads: runtime.snapshotCalls,
+      subscribed: runtime.listener !== undefined, target_connected: target.isConnected,
+      control_connected: control?.isConnected ?? false, control_disabled: control?.disabled ?? null,
+      control_aria_disabled: control?.getAttribute("aria-disabled") ?? null,
+      active_control: document.activeElement === control, active_tag: document.activeElement?.tagName ?? null,
+      document_focused: document.hasFocus(), visibility: document.visibilityState });
+    const observations: { stage: string; state: ReturnType<typeof observeState> }[] = [];
+    for (const type of ["focusin", "focusout", "keydown", "keypress", "keyup", "click"]) target.addEventListener(type, observeInput, true);
     try {
       await settle();
       focusAdded.mockClear();
-      const control = [...target.querySelectorAll("button")].find((button) => button.textContent ===
+      control = [...target.querySelectorAll("button")].find((button) => button.textContent ===
         (result === "queued" ? t("desk.buy_one", {}, "era_1995") : "Move Into the Garage"))!;
-      control.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      stage = "initial-input";
+      control.focus();
+      observations.push({ stage: "before-input", state: observeState() });
+      if (blockInitialEnter) control.addEventListener("keydown", event => event.preventDefault(), { once: true });
+      await userEvent.keyboard("{Enter}");
+      observations.push({ stage: "after-input", state: observeState() });
+      await settle();
+      observations.push({ stage: "after-settle", state: observeState() });
       if (result === "queued") {
+        stage = "queued-input";
         const gate = [...target.querySelectorAll("button")].find((button) => button.textContent === "Move Into the Garage")!;
         gate.focus(); await userEvent.keyboard("{Enter}"); await settle();
       }
+      stage = "submitted";
       expect(runtime.requests).toHaveLength(1);
       const reads = runtime.snapshotCalls;
       const latePublication = runtime.listener!;
+      stage = "unmount";
       await unmount(app); removed = true;
       expect(runtime.listener).toBeUndefined();
       const focusObservers = focusAdded.mock.calls.filter(([event]) => event === "focusin");
       expect(focusObservers).toHaveLength(1);
       for (const [, observer] of focusObservers) expect(focusRemoved).toHaveBeenCalledWith("focusin", observer);
+      stage = "late-completion";
       release(); await settle();
       expect(runtime.requests, "an unmounted host must not submit its waiting command").toHaveLength(1);
       expect(runtime.snapshotCalls, "completion must not start new work after unmount").toBe(reads);
@@ -249,7 +282,31 @@ for (const result of ["applied", "rejected-conflict", "http-conflict", "queued"]
       expect(runtime.snapshotCalls, "late delivery must not restart authoritative reads").toBe(reads);
       expect(runtime.requests).toHaveLength(1);
       expect(target.childElementCount).toBe(0);
+      if (blockInitialEnter) throw new Error("blocked setup unexpectedly passed the late-completion witness");
+    } catch (error) {
+      // Capture cancellation after dispatch; target/bubble listeners may cancel
+      // a key after our capture listener. Never retry input or turn failure green.
+      const events = nativeEvents.map(({ event, ...observation }) => ({ ...observation, default_prevented: event.defaultPrevented }));
+      const diagnostic = `late-completion-native-failure ${JSON.stringify({ result, stage,
+        observations, failed_state: observeState(), native_events: events })}`;
+      const reported = new Error(`${error instanceof Error ? error.message : "late-completion witness failed"}\n${diagnostic}`, { cause: error });
+      if (blockInitialEnter) {
+        expect(stage).toBe("submitted");
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error).name).toBe("AssertionError");
+        expect(runtime.requests).toHaveLength(0);
+        expect(observations[0].state).toMatchObject({ active_control: true, control_connected: true, control_disabled: false, subscribed: true });
+        const keys = events.filter(event => event.type === "keydown" && event.onControl);
+        expect(keys).toHaveLength(1);
+        expect(keys[0]).toMatchObject({ key: "Enter", trusted: true, activeControl: true, default_prevented: true, repeat: false, modifiers: [] });
+        expect(reported.message).toContain(diagnostic);
+        expect(reported.cause).toBe(error);
+        return;
+      }
+      console.error(diagnostic);
+      throw reported;
     } finally {
+      for (const type of ["focusin", "focusout", "keydown", "keypress", "keyup", "click"]) target.removeEventListener(type, observeInput, true);
       release(); await settle();
       if (!removed) await unmount(app);
       focusAdded.mockRestore(); focusRemoved.mockRestore(); target.remove();
