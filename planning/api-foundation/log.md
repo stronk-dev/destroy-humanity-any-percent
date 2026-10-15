@@ -3768,3 +3768,28 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Complete six-pa
 source/test/docs/plan/ledger/log range after `ca5ac89d` through this containing
 commit needs designated independent corrective-code review under Marco's delegation.
 No acceptance, archival, publication or deployment; existing red gates remain open.
+
+## 2026-10-15 — RP-666 designated corrective-code review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/route_identity_corrective_review`.
+Recorded by: Codex parent, transcribing its returned verdict under Marco's delegation.
+Reviewed complete six-path range:
+`ca5ac89d106d7d131d6e2c60f3da0e57a41572d3..9d85d82936566d47f450b6d0f8b53f132f3c08c9`
+(base exclusive, tip inclusive). Verdict: **APPROVED**, no actionable findings.
+Reviewer independently confirms this is A5/C1 duplicate-endpoint conformance,
+not adoption of RP-562's separate static/parameter overlap policy.
+
+Independent cold publicapi/publicread/account/gameserver, vet and generation PASS
+0.157/0.197/0.429/0.283s; generated API/pin/TS unchanged. Focused race population
+PASS1.128s, including three duplicate refusals, five actual dispatch/auth/parameter
+controls and both merge orders. An exact pre-fix registry source overlay reproduces
+all three unauthenticated200 replacements (0.219s) and merged-duplicate admission
+(0.098s); distinct-route controls still pass. Gofmt/range diff checks are clean.
+One initial misquoted race selector runs no tests; only the corrected pass counts.
+
+Native Postgres tests explicitly skip without TEST_DATABASE_URL; no SQL/browser,
+hosted/full CI, whole-feature, archival or release credit. No tracked edits or
+service changes. Temporary overlay remains only in owned
+`/private/tmp/route-identity-review.5AjJR6/`; its old blob independently matches
+`ca5ac89d:server/publicapi/registry.go`. RP-666's corrective review closes; other
+API ranges, held proposals and existing arithmetic/history red gates remain.
