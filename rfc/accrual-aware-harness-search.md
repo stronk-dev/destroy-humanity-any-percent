@@ -212,6 +212,26 @@ This executes a bounded reference over actual closed transitions, not a migrated
 Relevance caller, new calculation factory, cross-runtime/SQL proof or repaired AC6.
 All original partition, compatibility, full-workload and designated-review gates remain.
 
+#### H3c — Numeric monotonicity must follow the actual varying inputs (RP-664)
+
+Do not use monotonicity of arbitrary positive `SumDeterministic` inputs as a lemma:
+the retained shared counterexample increases a raw term9.999999999999998→10 and
+decreases the Quantize12 sum1.01245957117e1→1.01245957116e1. All terms can be
+produced by canonical12-digit base rates and exact generator counts. An admitted
+ephemeral catalog/save reproduces the one-second payout difference through actual
+Go Rates/Evaluate; TS verifies the numeric producer prefix, not full replay.
+
+That experiment changes purchased ownership, so its two projections have different
+contexts. It does **not** establish a decreasing temporal predicate inside H3b's
+fixed-origin regimes, require an invented temporal boundary, or show an actual
+current harness miss. Within a provision bucket, raw rate aggregation is fixed;
+elapsed time instead changes the integration/rounded-segment/ledger operations.
+The actual caller proof must follow those varying inputs, including real provision
+and burst transitions, rather than require or presume a false global lemma.
+RP-662's eighteen passing pairs are bounded controls, not that lemma's proof.
+No changed summation algorithm, payout tolerance, source pre-rounding or normative
+adoption follows; the separate aggregation finding remains open for its own repair.
+
 
 ### H4 — Compatibility, work and evidence
 
@@ -319,6 +339,10 @@ numeric tolerance, authored content or narrowed1.0 scope.
 
 ## Changelog
 
+- 2026-10-15: retain RP-664's positive aggregation/actual evaluator counterexample
+  while distinguishing changed ownership from fixed-origin time. H3c rejects a
+  false universal numeric lemma, not the unproved temporal algorithm. No repair,
+  payout change, relaxed criterion or adoption follows.
 - 2026-10-15: supply the concrete clock/buff start-set candidate and execute actual
   logged long-horizon probes, retaining the original expiry census. Reject the flat
   payout shortcut explicitly; exact search results are not exact-integer payout proof.

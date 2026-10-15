@@ -153,6 +153,15 @@ controls reject a constant-result shortcut; other controls reject reversed resul
 These are bounded arithmetic checks, not proof that a complete production payout
 or search predicate is monotone over its entire domain.
 
+RP-664 retains a counterexample in `numeric-sum-order-research-v1.json`:
+canonical generator base rates times exact counts produce full-precision positive
+rates whose grouped sum decreases at an exponent carry, even after Quantize12.
+The controlled Go Rates/Evaluate witness reproduces a one-unit smaller one-second
+payout after increasing one purchased count; the TS test exercises the numeric
+producer prefix, not full replay. No arithmetic is repaired by these negative
+characterizations. The ownership contexts differ; this is not evidence of a
+fixed-origin temporal-search failure or loss in the currently published catalog.
+
 An explicit retained boundary check distinguishes an out-of-domain quotient:
 `1e-8999999999999999 / 2` underflows to zero in Go, whereas pinned JavaScript
 retains raw mantissa `5`, exponent `-9000000000000000`. The client rejects that

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "variable": {
+    "id": "generator.variable",
+    "base_rate": "2e-15",
+    "lower_count": 4999999999999999,
+    "upper_count": 5000000000000000,
+    "lower_rate": "9.999999999999998e0",
+    "upper_rate": "1e1"
+  },
+  "fixed": [
+    { "id": "generator.fixed_a", "base_rate": "6.61233308848e-8", "count": 1106, "rate": "7.31324039585888e-5" },
+    { "id": "generator.fixed_b", "base_rate": "2.94555915865e-8", "count": 879, "rate": "2.58914650045335e-5" },
+    { "id": "generator.fixed_c", "base_rate": "3.93544166745e-6", "count": 15898, "rate": "6.25656516291201e-2" },
+    { "id": "generator.fixed_d", "base_rate": "2.16466396896e-5", "count": 2861, "rate": "6.19310361519456e-2" }
+  ],
+  "lower_payout": "1.01245957117e1",
+  "upper_payout": "1.01245957116e1"
+}

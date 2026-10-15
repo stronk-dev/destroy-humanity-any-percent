@@ -3968,3 +3968,58 @@ now executes the unchanged numeric vectors/ordered-transform files in all three 
 including Firefox, and the complete default browser population. Native Firefox's earlier
 connection failure and RP-663 remain; no arithmetic/accounting or general search proof changes.
 The CI log owns commands, results, limits and the separate designated-review range.
+
+## 2026-10-15 — RP-664 positive aggregation counterexample and actual producer
+
+At `d81713b5`, inspect RP-663 against the Numeric contract, actual pinned library,
+Go arithmeticResult and vector generator. The generator explicitly filters finite
+non-state raw outputs; its passing corpus does not resolve the lower-edge state
+discrepancy. Do not choose a different underflow policy by an assumed one-line fix.
+RP-663 stays open; no runtime changes.
+
+Debugging the prospective monotonicity argument finds a different valid-domain
+counterexample. Seed663 XorShift exploration uses four positive15-digit mantissas
+at exponents-5..8 and varies9.999999999999998→10. In100000 cases,767 raw reversals
+include one Quantize12 reversal (index40044). Repeating the matched12-digit input
+experiment finds none; that is a bounded control, not a whole-domain theorem.
+The first attempted exploratory call mixes ESM/CJS Decimal constructor identities
+and errors before measuring; correct the import before the reported counts.
+Discovery counts are exploratory, not an acceptance population or operating bound.
+Retain only the reduced exact inputs/results as the executable durable witness.
+
+All four fixed raw terms can be produced exactly by canonical12-digit base rates
+times ordinary exact integer counts. A variable canonical base2e-15 times count
+4999999999999999/5000000000000000 produces the two raw boundary terms. The new
+ephemeral five-generator catalog passes the actual loader; a legacy Company save
+is encoded/restored with complete matching counts/purchase total before execution.
+Actual Rates preserves the source and reproduces the exact raw terms. Actual
+one-second online Evaluate plus ledger/receipt yields respectively
+1.01245957117e1 and1.01245957116e1: a one-canonical-unit decrease with more ownership.
+Go's raw sums are1.012459571165003e1 and1.012459571165e1. The shared TS witness
+reproduces the producer arithmetic prefix and those committed values, preserving
+inputs, equal/permutation and ordinary increasing controls. It is not full TS replay.
+
+This compares different ownership contexts at the same time. My initial commentary
+that clock/buff cuts were therefore insufficient for time search was too strong:
+this does not prove a decreasing fixed-origin temporal predicate or current harness
+miss. H3c explicitly reconciles that distinction. Within a provision bucket raw
+rate aggregation is fixed; the actual caller proof must follow the integration/
+rounded-segment/ledger inputs that vary, not assume a false universal helper lemma
+or require a proof unrelated to that caller. Numeric repair remains separately open.
+
+`TestCalculationSumOrderResearch` passes cold0.279s, reproducing both actual evaluator
+outputs. Final cold selection with the unchanged temporal/long-clock/rejected-model
+parents plus decimal goldens/ordered checks passes Production3.396s/Decimal0.212s.
+Affected production/decimal vet and strict types/Svelte diagnostics pass. Node vectors,
+ordered tests and retained counterexample pass6405 tests0.693s; actual focused Linux
+Chromium/Firefox/WebKit pass19215 tests/9 files4.74s after cold setup. These green
+characterization tests preserve a real negative result; they do not repair arithmetic.
+
+Eight-path test/fixture/docs/draft/plan/ledger/log range after `a421860a` through
+this containing commit requires independent review under its existing research/
+normative gate; Marco's corrective-code reviewer delegation does not adopt this
+draft or approve new arithmetic. Review by: Codex (research implementer/draft author
+first filter). Recorded by: Codex. Diff/formatting checked. No runtime, kernel,
+version, active catalog, authored balance, historical artifact, settlement or receipt
+contract changes; no natural-player-loss, complete replay/SQL/full-CI/AC6, new owner
+ruling, archival, push or deployment claim. Original27 partition failures remain.

@@ -23,6 +23,10 @@ Numeric conformance supplement RP-662 adds bounded shared ordered-transform test
 under accepted RFC-0001, not a new monotonicity assumption for those drafts.
 RP-663 separately retains the lower-edge Go-zero/client-invalid underflow mismatch.
 Neither finding closes general payout/search correctness or authorizes accounting.
+RP-664 now supplies an actual Rates/Evaluate aggregation counterexample from
+different ownership contexts. H3c distinguishes that open numeric repair from
+the still-required fixed-origin temporal proof; do not expand it into an
+unobserved current-search defect or demand a false global monotonicity lemma.
 
 ### Completed readiness studies and earlier draft steps
 
