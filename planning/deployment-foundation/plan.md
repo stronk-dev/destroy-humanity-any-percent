@@ -14,6 +14,7 @@ results are in the owning log. These scopes no longer wait on Claude. They do no
 original R18/R20, backup metadata authority (RP-505), current-release identity, exact-artifact/
 clean-host R-006/R-007, or full Deployment acceptance. Continue remaining accepted work.
 Further fresh independent approvals cover complete RP-507 authenticated-stream/deadlock,
+RP-508 pre-destructive rollback package validation,
 RP-548 create-report invocation and RP-549 sequential-observation scopes. The owning log
 records actual clean-target SQL refuses/restores, local producers/loaders and exact limits;
 original author/artifact/feature holds are unchanged.
@@ -342,7 +343,8 @@ method admits encrypted non-packages and packages with trailing data; focused co
 also reject a changed dump with its old internal hash. Plaintext workspaces are private and
 removed on return. The R18 missing-input producer now creates a full package, retaining its
 healthy-first control and synthetic-dump limitation. Real Postgres/Caddy and affected native/
-Linux checks pass; the owning log holds the pending review range. D-019's separate per-release
+Linux checks pass; complete `cd609d07..a5a2e94a` is independently approved, including actual
+declared release-lane execution. D-019's separate per-release
 restore choice, logical restore/RTO, clean-host and broader Deployment gates remain open.
 
 **Latest bounded correction, 2026-10-12 (RP-507):** package extraction now consumes the

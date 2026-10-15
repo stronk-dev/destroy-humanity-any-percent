@@ -7186,3 +7186,32 @@ not rerun. All handles terminal, no edits/mutations/resources/cleanup by reviewe
 local subprocess/file/loaders use controlled clocks/synthetic producers, not Docker/SQL or
 trusted snapshot/RPO/RTO/clean-host/current-release-artifact proof. RP-140 executable identity,
 original R10/R12 CHANGES REQUIRED and normative/full-feature/archival/release gates remain.
+
+## 2026-10-15 — Rollback package preflight independently approved
+
+Review by: fresh independent Codex `/root/rollback_preflight_package_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, no blocking
+findings, all eight paths of
+`cd609d0711eea9a46be0b43fa2ab2ca5bf5b93e2..a5a2e94a50154df0301110dfa50718b3fbd9c1f4`.
+DP5/DP6/AC5 caller checks the authenticated full package before StopFailed/ResetDatabase;
+existing identity/path/header checks remain. Private directory/0600 dump/deferred removal
+prevent retained plaintext workspace. R18's validated previous manifest/epoch restores its
+healthy-first fixture with explicitly synthetic dump, not invented restore evidence.
+
+Actual descendant064c54ee/product77fe2275/kernel221: five affected cold packages/vet6555,
+backup/release/rehearsal cold race71420 and focused verbose87574 pass. Actual preflight,
+all9 rollback-stage failure cases and R18 controls execute, including encrypted non-package,
+trailing-data and changed-dump/old-hash refusal; setup failures cannot count as successful
+negatives. Complete-range whitespace check passes. Actual make test-deployment-release33922
+passes2.47s: real Linux-amd64/Postgres/Caddy/HTTP/WebSocket backup passes preflight; its
+authenticated tail refuses before runtime commands. Readiness/admitted-work drain/courtesy/
+socket closure/restart/intact restore/account count/authenticated smoke/severed artifacts pass.
+
+Current RP-508 hunks/consumers retained; later shared docker.go corrections inspected as
+context only. Historical wrong-path/missing-import/healthy-fixture failures remain historical,
+not reviewer executions relabelled green. All handles terminal; target removes its new
+isolated tmpfs Postgres/Caddy/network, final inventory equals initial2 BuildKit containers
+with no Compose projects. No persistent storage/cache/builder cleanup, source edits/mutations
+or commits. Root's separate Decimal research preserves active arithmetic. No actual live-
+volume rollback, clean-host R-006, production-size extraction/RTO, D-019, metadata adoption,
+full Deployment/normative/archival/release approval. This correction no longer waits on Claude.
