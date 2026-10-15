@@ -4079,3 +4079,30 @@ is separate. No tracked reviewer edits/commits/Docker/DB/resources except ignore
 Adjacent RP-568/569/570 verdicts not restarted/relabelled. No real current Go HTTP/SQL,
 Linux/Firefox/hosted/full persisted journey, raw-byte/duplicate-key or general success-DTO
 validation, normative adoption, full feature/archival/release approval. No publication.
+
+## 2026-10-16 — Media-identity correction independently approved (RP-535)
+
+Review by: /root/api_media_identity_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete eight-path single-commit range
+15bf18b2c6710c844a15922a753d1c35514cb662-exclusive..5bc0e2225e372c8c8b2eac7a5d3e2e82ebb69555-inclusive.
+All generated SDK/template, SDK/port tests, API docs, backlog and owning plan/log inspected.
+Accepted A5/C9/C19 and RFC9110§8.3.1: only type/subtype identity is folded; parameters,
+status selection, payload/digest, auth and dispatch/retry remain unchanged.
+
+Independent ignored Vite endpoint overlays keep historical tests/consumer sources separate
+from later RP-568/569 changes. Exact old SDK18525 fails34/163 (16 SDK,18 typed ports),129
+controls pass; corrected endpoint163/163 passes/no skips. Endpoint native Chromium/WebKit
+59504 passes326/no skips; initial sandbox listenerEPERM executes zero before the explicitly
+permitted retry. Current SDK/ports/runtime65268 passes321/no skips. Cold publicapi/gen-api
+3504 passes0.258/0.243s, matching vet passes. Types/Svelte(0 diagnostics), shipped build217
+modules and client boundary67982 pass. api-check passes with all three artifact hashes
+unchanged. No assertions weakened or tracked reviewer mutations/commits.
+
+Execution code HEADad40b0f007885204f09e8fafe09cfece27667535; all handles terminal and
+execution slot released before RP-524 starts. Root's concurrent arithmetic-research Markdown
+is separate; there is no product-source overlap or shared performance claim. No Docker
+resources. This approves only RP-535: not adjacent fixes, original generated-client feature,
+new descriptor/representation/DTO validation, real Go HTTP/SQL journey, Linux/Firefox/hosted,
+release artifact, normative adoption, archival or1.0 acceptance. The bounded defect/review
+status changes; API feature and release gates remain open.

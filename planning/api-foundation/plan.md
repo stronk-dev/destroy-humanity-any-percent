@@ -263,8 +263,10 @@ Current bounded correction (2026-10-13, RP-535): the generated SDK now compares
 declared response media type/subtype case-insensitively, retaining exact evidence
 bytes/digests and wrong-media refusal. Old-client Node/native failures and corrected
 SDK/runtime/operation-port checks are recorded in the owning log; generated schemas
-and compatibility pins are unchanged. The new range after `15bf18b2` needs Claude
-designated review. This is HTTP conformance, not a new representation, draft adoption,
+and compatibility pins are unchanged. Fresh independent Codex corrective review APPROVES
+the complete eight-path `15bf18b2..5bc0e222` range after34 old-client failures, corrected
+endpoint163/native326 and affected current checks. The owning log records the exact
+range/provenance/limits. This is HTTP conformance, not a new representation, draft adoption,
 whole API/CI acceptance or a gameplay milestone. Continue the remaining accepted
 generated consumers and catalog-authority work within their unresolved boundaries.
 
