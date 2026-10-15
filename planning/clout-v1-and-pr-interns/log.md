@@ -4192,3 +4192,39 @@ No AC6/monotonicity/full-workload/SQL/hosted/release claim. Next numeric step is
 an explicit activation follow-up preserving actual identities and measuring cost
 after proven-equivalent reductions; the separate H3c caller-specific time proof
 remains available without waiting for a universal aggregation repair.
+
+## 2026-10-15 — H3c actual predicate reduction and burst carry attack
+
+At288ff35c trace all three real Relevance predicates, actual integration and the
+closed hooks. Quotes/thresholds are fixed during a wait; completed bucket deltas
+are fixed within endpoint context, while the last bucket's canonical delta varies.
+The closed hooks do not subsequently mutate the resource ledger. H3c now states
+that concrete remaining numerical obligation, rather than requiring the false
+arbitrary-raw-rate sum lemma. This is source-bound reduction, not its final proof.
+
+Before measurement declare20000 seed666 near-flat burst/carry profiles. All20000
+cross at adjacent milliseconds; none has a decreasing grouped/quantized total.
+The test refuses invalid/zero aggregates, missing crossings and incomplete real-
+subject controls. First/last profiles match four actual Evaluate/ledger results
+from unchanged origins under admitted retuned v4 catalogs and v17 saves. The
+initial two-stage instrument's actual-subject check fails on missing Company
+achievement ownership in its promoted v17 save; initialize that required empty
+map before the successful run, not an assertion/domain relaxation.
+
+Cold related clock/long-search/whole-rate/temporal-search/sum-order parents plus
+new experiment pass Production4.049s; Decimal compiles with no selected tests,
+not a claimed golden-vector rerun. Affected Production/Decimal vet passes. Final
+new experiment including positive/valid aggregate checks passes0.474s and vet.
+Commands use root make test-go with count1 and the exact names in the current
+plan/RFC. No DB/container, TS/browser/hosted run, exhaustive-ms scan, independent
+full arithmetic oracle or current Relevance migration is claimed. No runtime,
+kernel, balance, schema, golden, receipt or CI behavior changes; the original27
+partition failures and AC6 remain open.
+
+Four-path test/draft/plan/log range aftera0550e14 through this containing commit
+needs designated research/normative review, outside the corrective-code delegation.
+Review by: Codex (research implementer/draft author first filter). Recorded by:
+Codex. Both drafts remain unaccepted. This bounded attack is complete, not a
+reason to repeat or enlarge a positive census; next establish the actual canonical
+partial-prefix/ledger order argument or specify a correct alternative with its
+work/compatibility proof. No new owner product ruling, archival, push or deployment.

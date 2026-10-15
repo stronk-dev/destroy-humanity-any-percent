@@ -232,6 +232,44 @@ RP-662's eighteen passing pairs are bounded controls, not that lemma's proof.
 No changed summation algorithm, payout tolerance, source pre-rounding or normative
 adoption follows; the separate aggregation finding remains open for its own repair.
 
+The current caller reduction is more specific than arbitrary ordered arithmetic:
+
+- `candidateCost` fixes one generator/upgrade quote before the wait;
+  `gateRequirementsMet` is a conjunction of fixed resource thresholds;
+  `relevanceMilestoneReached` is one fixed resource threshold. Waits execute no
+  purchase. Their predicates inspect the projected ledger, not hook event counts,
+  lifetime value, stock progress or a newly invented timed discount.
+- Inside one endpoint-selected context, `accrueContent` starts from the same
+  provision/burst origin. Completed grid buckets have the same rate inputs,
+  boosted milliseconds and Quantize12 deltas in every later projection. The
+  current partial bucket has fixed raw rates; its elapsed and remaining boosted
+  milliseconds vary. At the next grid edge a new nonnegative partial term enters.
+  These are internal integration steps, not new settlements or context resets.
+- The closed Prestige/Faction/Guild/resolved-Commons hooks change their owned
+  lifetime/attendance/stock/tithe/sample state and private events, not the resource
+  ledger after Evaluate. This source fact narrows these resource predicates; it
+  does not waive those hooks' complete state/event equivalence obligations.
+
+The remaining numerical argument must therefore cover the actual scalar
+integration/Quantize12, addition of a varying **canonical** partial delta to its
+fixed canonical bucket prefix, and the existing ledger quantization/cap/refusal
+path. The original raw-rate counterexample is not itself that proof or its
+negation. Exponent carries, sorted-group membership and normalization remain part
+of this argument; do not assert that positive inputs alone prove them or introduce
+extra search cuts without an actual algorithm/justification.
+
+`TestCalculationBurstTemporalOrderResearch` attacks one difficult subfamily: a
+large burst's fixed bonus makes the last bucket almost flat after its boosted
+portion, allowing an adjacent-ms canonical delta exponent carry. All20000 seed666
+profiles execute (tick1000..300000ms,1..287 fixed full buckets, burst portion between
+one-quarter and three-quarters of a tick, factor1e10, derived canonical base rate).
+Every profile has a crossing; none has a decreasing grouped/quantized total.
+The first/last profiles also match four actual Evaluate/ledger projections from
+the same admitted v17 origin and retuned v4 catalog, without consuming that origin.
+This is native-Go-only bounded evidence, not a proof over all varying rates,
+provision producers, burst policies, hooks, Go/TS factories or the modern caller.
+No production balance is retuned and no per-ms production scan is introduced.
+
 
 ### H4 — Compatibility, work and evidence
 
@@ -339,6 +377,10 @@ numeric tolerance, authored content or narrowed1.0 scope.
 
 ## Changelog
 
+- 2026-10-15: reduce the actual resource predicate to frozen quotes, completed
+  bucket prefixes, the varying canonical partial delta and ledger behavior.
+  Execute the bounded near-flat burst carry attack with four real-evaluator
+  controls; no reversal is found, not a general proof or algorithm adoption.
 - 2026-10-15: retain RP-664's positive aggregation/actual evaluator counterexample
   while distinguishing changed ownership from fixed-origin time. H3c rejects a
   false universal numeric lemma, not the unproved temporal algorithm. No repair,

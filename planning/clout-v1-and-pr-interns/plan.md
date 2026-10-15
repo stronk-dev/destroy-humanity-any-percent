@@ -59,6 +59,25 @@ per-run arithmetic forks or silently relabel a pinned minigame/report. H3c's tem
 proof remains a separate next Clout task, not blocked on a false universal grouping
 lemma or an already-adopted arithmetic replacement. AC6 stays open.
 
+Next H3c adversarial check at288ff35c: a fixed origin with constant positive raw
+rate and a long high-factor burst can leave the last provision bucket almost
+flat after its burst portion ends. Search up to20000 seed666 controlled tick/
+burst/prefix profiles for a committed decrease at that partial delta's exponent
+carry, using actual accrueBoostedConstant and grouped sum. Confirm any finding
+through an admitted catalog/save and actual Evaluate from the same origin at
+adjacent milliseconds. A guard-complete no-find is not monotonicity proof; these
+unminted policy values are not published balance or natural-player evidence.
+
+Result: all20000 profiles cross; none decreases. First/last profiles additionally
+match four actual admitted v17 Evaluate/ledger projections from unchanged origins.
+The initial real-subject check rejects incomplete achievement ownership in the
+test's promoted v17 save; complete that required input before the successful run.
+H3c now names the precise scalar→canonical partial delta→fixed bucket prefix→ledger
+proof obligation and all three actual fixed-resource predicates. This bounded
+attack is complete; do not repeat/expand a positive census as a substitute for
+the general caller proof or a correct alternative algorithm. Both drafts remain
+unaccepted; no additional owner product choice or production change follows.
+
 ### Completed readiness studies and earlier draft steps
 
 The dated/hashed notes below preserve their original declarations and outcomes.
