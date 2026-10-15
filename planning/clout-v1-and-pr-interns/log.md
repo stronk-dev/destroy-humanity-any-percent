@@ -4521,3 +4521,52 @@ benchmark handles terminal. Initial service inventory empty; after all checks, i
 95c2085e… has this checkout's exact Compose labels, no mounts and tmpfs-only DB. Stop/remove
 only that created service; final inventory empty. Disposable test data is unrecoverable,
 no SQL used in this experiment; caches/volumes/networks/preexisting builders preserved.
+
+## 2026-10-15 — Declare exact sparse scratch-storage reuse
+
+The previous identity-path candidate still allocates157 times for actual eight-source
+accrual. Reuse call-local big.Int scratch for coefficient/radix division and carry normalization;
+retain distinct owned map entries and copy each digit before reuse. Replace only exact
+10^r for Euclidean r0..8 by its bounded int64 product, not the arbitrary-width coefficient
+or accumulated digits. Reuse exact threshold/remainder storage in final rounding. Local
+Go1.27.2 math/big docs explicitly permit receiver/operand aliasing; no shared mutable cache,
+fixed-width accumulation, changed rounding, work bound or arithmetic contract is introduced.
+
+Before measuring: the full existing identity/14edge/2048 rational+reverse+ownership/pinned-
+digest/original-pair/Pitch counterexample population must pass, native and declared Linux;
+affected full native Decimal/vet too. Preserve both previous overlays, create a separate
+ignored exact-helper overlay, and compare actual Company/Pitch compatibility outcomes.
+After reviewer Go/browser/SQL work terminates, run two sequential identity→reuse→active
+benchmark rounds with unchanged5 real-caller rows,100ms,count3. Retain all90 rows and
+allocation counts, no selective exclusions or CI/performance/adoption claims. This is
+unapplied prototype engineering; H3c and caller/version/full-workload gates remain open.
+
+## 2026-10-15 — Scratch reuse preserves exact outputs and reduces multi-input cost
+
+Full native Decimal/vet passes0.435s. Focused sparse0.159s, overlay four-parent0.261s and
+declared Linux-amd64 46891/0.230s pass. All identity/14edge/2048 rational/reverse/ownership
+profiles and original pair remain exact, ef6cdc7626… witness unchanged; same profile384
+Pitch disagreement retained. Actual Company/Pitch overlay92918 stays RED on the same two
+incompatible outputs, not a production regression or adopted fix. General scalar/prefix
+monotonicity proof remains separate. Original/identity overlay digests f83a37cf…/60dbfd29…
+unchanged. New mechanically generated ignored reuse overlay SHA256
+4b9e897a9c79a1b38fda998f06a240e0c5596e56e85aaa525c3b255110849304 matches all test helpers.
+
+After reviewer release and root Linux completion/cleanup, all six sequential benchmark arms
+finish with90/90 rows, no failures/exclusions. NativeDarwinarm64/Go1.27.2/AppleM3Max,100ms/count3,
+two identity→reuse→active rounds. Eight-source medians3011–3024→1791–1803ns,157→41 allocations,
+3832→1160bytes. Active355.3–358.4ns/4 allocations, so substantial cost remains. One-source
+zero allocations and Evaluate76 remain; small timing changes there are not improvement proof.
+Dossier has full table/recipe; ignored raw artifact SHA256
+b5dd0226955041a4a8aad8ebdaaf724a7860f3fd52576661c6c1eb964b128784 retains all outputs/commands.
+Short sequential native samples are not confidence intervals/hosted or full-workload evidence.
+
+Only local scratch/exact bounded power/storage reuse changes in the Go test prototype;
+no active source/TS/fixture/golden/kernel/CI/threshold change. Review by: Codex (prototype
+implementer first filter, NOT designated review). Recorded by: Codex. Complete new research/
+test/record range starts064c54ee-exclusive through this containing commit; remains unadopted.
+Next close caller/version/catalog/Commons/harness dispositions, full workloads and independent
+review/adoption, not another uncontrolled timing run or silent global replacement. All handles
+terminal. Initial service inventory empty; root-created8b5abfec… verified exact checkout labels,
+no mounts/tmpfs-only, stopped/removed after tests. Disposable unused SQL data unrecoverable;
+final service inventory empty, caches/volumes/networks/existing builders preserved. No release.

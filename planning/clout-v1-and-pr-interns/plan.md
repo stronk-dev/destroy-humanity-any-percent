@@ -10,10 +10,12 @@ ratified later by owner SHA (OD-5).
 
 RP-664 candidate cost reduction: Go-only exact length0/1 identities now preserve the existing
 raw witness digest and invalid/signed-zero/full-exponent controls. Two isolated matched
-actual-caller rounds remove one-source candidate48 allocations→0; eight-source157 remains.
+actual-caller rounds remove one-source candidate48 allocations→0. A subsequent exact
+call-local scratch reuse reduces eight-source157→41 allocations, medians3011–3024→1791–1803ns
+in two isolated rounds; still about5× active cost. Raw results/digest remain unchanged.
 Both overlays still change Company/Pitch results identically. The sparse dossier/log owns
 commands, medians and failed-selection disclosures; not active arithmetic or an adopted repair.
-Continue multi-input cost/caller dispositions and the separate general H3c proof, not another
+Continue explicit caller/version dispositions, complete workloads and the separate general H3c proof, not another
 positive monotonicity census or a version/golden change to conceal incompatibility.
 
 The proposed private origin JSON/hash protocol is withdrawn: no identified consumer

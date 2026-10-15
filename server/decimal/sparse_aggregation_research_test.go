@@ -37,24 +37,22 @@ func sparseNormalizeResearch(source map[int64]*big.Int, work *sparseWorkResearch
 	}
 	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
 	result := []sparseDigitResearch{}
-	carry := new(big.Int)
+	var carry, value, remainder big.Int
 	base := big.NewInt(sparseBaseResearch)
 	index, next := int64(0), 0
 	for next < len(keys) || carry.Sign() != 0 {
 		if carry.Sign() == 0 {
 			index = keys[next]
 		}
-		value := new(big.Int).Set(carry)
+		value.Set(&carry)
 		if next < len(keys) && keys[next] == index {
-			value.Add(value, source[index])
+			value.Add(&value, source[index])
 			next++
 		}
-		quotient, remainder := new(big.Int), new(big.Int)
-		quotient.QuoRem(value, base, remainder)
+		carry.QuoRem(&value, base, &remainder)
 		if remainder.Sign() != 0 {
 			result = append(result, sparseDigitResearch{index, remainder.Int64()})
 		}
-		carry = quotient
 		work.normalize++
 		index++
 	}
@@ -175,6 +173,10 @@ func sparseSumResearch(values []Decimal) (Decimal, sparseWorkResearch, error) {
 		return value, work, nil
 	}
 	positive, negative := map[int64]*big.Int{}, map[int64]*big.Int{}
+	// Scratch storage is call-local. Map entries still own distinct Ints;
+	// Add copies each digit before the next in-place QuoRem overwrites it.
+	var coefficient, digit, scale big.Int
+	base := big.NewInt(sparseBaseResearch)
 	for _, value := range values {
 		if !value.IsStateValue() {
 			return NaN, work, nil
@@ -187,24 +189,28 @@ func sparseSumResearch(values []Decimal) (Decimal, sparseWorkResearch, error) {
 		if binaryExponent < 0 || binaryExponent > 3 {
 			return NaN, work, fmt.Errorf("invalid normalized significand")
 		}
-		coefficient := new(big.Int).SetUint64((bits & ((1 << 52) - 1)) | (1 << 52))
-		coefficient.Lsh(coefficient, uint(binaryExponent))
+		coefficient.SetUint64((bits & ((1 << 52) - 1)) | (1 << 52))
+		coefficient.Lsh(&coefficient, uint(binaryExponent))
 		index, remainder := sparsePositionResearch(value.exponent)
-		coefficient.Mul(coefficient, new(big.Int).Exp(big.NewInt(10), big.NewInt(remainder), nil))
+		// Euclidean remainder is0..8, so this exact power is at most1e8
+		// and fits int64 independently of the input count/exponent distance.
+		power := int64(1)
+		for i := int64(0); i < remainder; i++ {
+			power *= 10
+		}
+		coefficient.Mul(&coefficient, scale.SetInt64(power))
 		target := positive
 		if value.mantissa < 0 {
 			target = negative
 		}
 		for coefficient.Sign() != 0 {
-			quotient, digit := new(big.Int), new(big.Int)
-			quotient.QuoRem(coefficient, big.NewInt(sparseBaseResearch), digit)
+			coefficient.QuoRem(&coefficient, base, &digit)
 			if digit.Sign() != 0 {
 				if target[index] == nil {
 					target[index] = new(big.Int)
 				}
-				target[index].Add(target[index], digit)
+				target[index].Add(target[index], &digit)
 			}
-			coefficient = quotient
 			index++
 			work.chunks++
 		}
@@ -228,7 +234,7 @@ func sparseSumResearch(values []Decimal) (Decimal, sparseWorkResearch, error) {
 	if err != nil {
 		return NaN, work, err
 	}
-	denominator := new(big.Int).Lsh(big.NewInt(1), 52)
+	denominator := big.NewInt(1 << 52)
 	if integer.Cmp(denominator) < 0 {
 		exponent--
 		integer, _, err = sparseFloorResearch(pieces, exponent, &work)
@@ -240,7 +246,8 @@ func sparseSumResearch(values []Decimal) (Decimal, sparseWorkResearch, error) {
 		return NaN, work, nil
 	}
 	binaryExponent := 0
-	for binaryExponent < 3 && integer.Cmp(new(big.Int).Lsh(new(big.Int).Set(denominator), uint(binaryExponent+1))) >= 0 {
+	var threshold big.Int
+	for binaryExponent < 3 && integer.Cmp(threshold.Lsh(denominator, uint(binaryExponent+1))) >= 0 {
 		binaryExponent++
 	}
 	integer, sticky, err := sparseFloorResearch(pieces, exponent-1, &work)
@@ -250,11 +257,11 @@ func sparseSumResearch(values []Decimal) (Decimal, sparseWorkResearch, error) {
 	divisor := big.NewInt(10 << binaryExponent)
 	quotient, remainder := new(big.Int), new(big.Int)
 	quotient.QuoRem(integer, divisor, remainder)
-	comparison := new(big.Int).Lsh(remainder, 1).Cmp(divisor)
+	comparison := remainder.Lsh(remainder, 1).Cmp(divisor)
 	if comparison > 0 || comparison == 0 && (sticky || quotient.Bit(0) != 0) {
 		quotient.Add(quotient, big.NewInt(1))
 	}
-	if quotient.Cmp(new(big.Int).Lsh(big.NewInt(1), 52)) < 0 || quotient.Cmp(new(big.Int).Lsh(big.NewInt(1), 53)) > 0 {
+	if quotient.Cmp(denominator) < 0 || quotient.Cmp(threshold.Lsh(denominator, 1)) > 0 {
 		return NaN, work, fmt.Errorf("unproved significand width")
 	}
 	result := New(float64(sign)*math.Ldexp(float64(quotient.Uint64()), binaryExponent-52), exponent)

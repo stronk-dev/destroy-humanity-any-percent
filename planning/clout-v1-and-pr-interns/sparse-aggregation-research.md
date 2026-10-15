@@ -324,3 +324,52 @@ This is author-verified prototype work, NOT designated review, adoption or AC6 r
 Next is proven-equivalent multi-input allocation reduction and full affected workloads, plus
 the still-required caller/version/baseline dispositions and normative review. H3c's fixed-origin
 proof,27 accounting failures, RP-663 and full1.0 obligations remain separate and unresolved.
+
+## Call-local scratch reuse — 2026-10-15
+
+At baseline064c54ee, reduce multi-input allocation without changing the exact algorithm.
+Carry/coefficient/radix-remainder storage is reused within one call, using math/big's
+documented receiver aliasing. Map entries retain distinct owned Ints and copy a digit's
+value before the scratch digit is overwritten. Normalization never aliases its input map.
+Exact10^r uses an int64 product only for the already-derived Euclidean remainder0..8
+(maximum1e8); coefficients, sums and carries remain arbitrary precision. Final rounding
+reuses threshold/remainder storage with identical comparisons. No global mutable cache,
+fixed-width accumulator, changed summation order, input limit or precision policy is added.
+
+Native full Decimal/vet pass0.435s; focused sparse tests0.159s and declared Linux-amd64
+tests0.230s pass, retaining every identity/14edge/2048 rational/reverse/input-ownership
+control, original pair and profile384 Pitch disagreement. Raw witness SHA256 remains
+ef6cdc7626f91ff237961488f84f07a022b5ac746542d53dfb68fb258768047f. This verifies the changed
+implementation; it is not a new positive monotonicity census or full-domain proof.
+The separately generated ignored overlay `.cache/sparse-aggregation-reuse-candidate.go`
+has SHA256 `4b9e897a9c79a1b38fda998f06a240e0c5596e56e85aaa525c3b255110849304`;
+all helpers mechanically match the test prototype after nominal suffix replacement.
+Earlier overlays/hashes remain untouched. The actual Company/Pitch overlay tests still
+fail with the same incompatible payout/funding outcomes. No activation follows.
+
+Predeclared two sequential identity→reuse→active rounds each complete all5 rows/3 samples,
+90 results total, after all owned test/review/browser/SQL work is terminal. Same native
+Darwinarm64/Go1.27.2/AppleM3Max;100ms samples. Two per-round median ranges, not confidence
+intervals or a hosted/full-workload estimate:
+
+| Actual call | Identity candidate ns/op | Reuse candidate ns/op | Active ns/op | Identity→reuse allocations/op |
+|---|---:|---:|---:|---:|
+| Eight-source accrual |3011–3024|1791–1803|355.3–358.4|157→41|
+| One-source accrual,1s |56.09–56.42|56.71–57.93|97.76–97.96|0→0|
+| One-source accrual,24h |60.39–60.98|60.83–61.71|98.39|0→0|
+| Restore + Evaluate,1s |5011–5082|4941–5029|5263–5399|76→76|
+| Restore + Evaluate,24h |4890–5039|4948–5007|5061–5277|76→76|
+
+Eight-source allocation bytes3832→1160. Identity-path work remains unchanged; small timing
+differences there are not a new speedup claim. All raw rows/commands, including slow samples,
+are retained in ignored `.cache/sparse-aggregation-reuse-bench-064c54ee.json`, SHA256
+`b5dd0226955041a4a8aad8ebdaaf724a7860f3fd52576661c6c1eb964b128784`.
+The existing benchmark command uses the separate reuse overlay JSON for that arm; tracked
+baseline064c54ee and current test source retain both implementations without cached files.
+
+This removes a measured cost component, not all cost: multi-input accrual is still about5×
+the active grouped reducer. Do not infer complete-workload feasibility from these samples or
+continue micro-optimizing instead of closing the concrete caller/version/catalog/Commons/
+harness dispositions. Those, full affected workloads and independent normative adoption are
+still required before activation. Active source, TS prototype, golden/report/kernel/CI and
+acceptance bounds stay unchanged. H3c and27 accounting failures remain unresolved.
