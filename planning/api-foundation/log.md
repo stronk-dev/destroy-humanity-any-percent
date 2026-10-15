@@ -3272,3 +3272,41 @@ filter). Recorded by: Codex. No endpoint, DTO, baseline, kernel, gameplay/balanc
 owner text or proposal adoption; no acceptance, archival, mint, push or1.0 promotion.
 Next continue accepted API construction/review within its held export/transport
 boundaries; the general and full-feature obligations are not waived by this repair.
+
+## 2026-10-15 — RP-639 refuse malformed HTTP JSON encoding before decoding
+
+Under A5/C17 and network JSON's RFC8259§8.1 requirement, wire-schema admission
+must not repair invalid UTF-8 into accepted strings. Old94715 fails all36 cases:
+nine corrupt sequences through request, success, error and registered-literal
+construction. Valid Unicode/escape, owner-decoder/raw-identity controls pass at
+the same baseline. Real Postgres/mounted-router40219 fails create/refresh admission:
+each corrupted body reaches credential handling and returns401, not invalid/body.
+Bodies/credentials are withheld from output; the old status failure does not prove
+a credential mutation or secret leak.
+
+Add utf8.Valid only in validateWireJSON, before uniqueness and descriptor decoding.
+Invalid encoding yields body-free ErrInvalidSchema. Shared ValidateJSON's existing
+Go decoder behavior, raw response identity, valid U+FFFD/astral Unicode/JSON escapes
+and Go BOM refusal remain. No new surrogate policy, artifact normalization or
+handler-specific parser is introduced. Production schema/output bytes are unchanged.
+
+Final cold root Go87628 passes PublicAPI/PublicRead/Account/Gameserver
+0.287/.258/.497/.399s and their vet; native DB skips are not SQL evidence.
+Declared real-DB40728 passes Account lifecycle/session registries, all20 request
+admission cases, Soul errors and mounted public evidence checks. New create/refresh
+cases return exact uncached400 invalid/body, retain complete credential/gameplay
+snapshots and family counts, then issue authentic sessions using the valid retained
+credential. PublicRead uses controlled readers, not a new DB evidence study.
+Existing generated-client128 checks pass, including malformed encoding and raw
+identity. API regeneration18525 passes with all three generated artifacts and
+the actual compatibility pin byte-unchanged. Formatting/diff checked.
+
+No client source/rendering, gameplay/replay, kernel, schema/DTO, balance, policy,
+owner body or draft adoption changes; no unrelated full browser/CI or release claim.
+After terminal tests, remove only this turn's validated tmpfs Postgres service and
+disposable rows; final inventory empty, durable data/cache/network untouched.
+Review by: Codex (implementer first filter). Recorded by: Codex. Whole source/
+tests/docs/ledger/plan/log range after `455b7108` through this containing commit
+needs designated Claude review, consolidatable with related API admission work.
+Original numeric/CI, owner/author and full-nine-tier gates remain. No acceptance,
+archival, mint, push or deployment; continue accepted construction and review.

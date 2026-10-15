@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -223,6 +224,11 @@ func (registry *Registry) cursorSchema(operationID string) (string, bool) {
 }
 
 func validateWireJSON(schemaName string, data []byte, definitions map[string]*Schema) error {
+	// encoding/json repairs invalid string bytes. Network JSON must instead
+	// reject them before either token or value decoding changes the evidence.
+	if !utf8.Valid(data) {
+		return fmt.Errorf("%w: invalid UTF-8 JSON", ErrInvalidSchema)
+	}
 	// Map decoding erases duplicate members, including escaped spellings. Keep
 	// this admission rule at the HTTP boundary, not in shared artifact decoding.
 	if rejectDuplicateJSONKeys(data) != nil {

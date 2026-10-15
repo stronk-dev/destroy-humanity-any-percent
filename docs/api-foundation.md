@@ -26,8 +26,14 @@ cached emission: their existing name grammar applies, and they cannot equal `ETa
 A conflicting descriptor fails with `ErrInvalidOperation` before mounting/generation;
 valid custom headers still preserve exact raw bytes and the independently owned metadata.
 
-HTTP registry admission checks raw object-member uniqueness before decoding to maps. Duplicate names
-at any level, including different escape spellings of the same name, return `ErrInvalidSchema`
+HTTP registry admission first rejects malformed UTF-8, then checks raw object-member uniqueness
+before decoding to maps. Invalid encoding returns `ErrInvalidSchema` rather than letting Go
+replace corrupt bytes with U+FFFD. This follows the network JSON encoding requirement in
+[RFC 8259 §8.1](https://www.rfc-editor.org/rfc/rfc8259#section-8.1) and the generated client's
+existing fatal UTF-8 decoding. Valid Unicode (including literal U+FFFD) and JSON escapes remain
+admitted. Go's existing BOM refusal is unchanged; this does not choose a new surrogate policy
+or tighten shared artifact decoding. Raw response validation still hashes original bytes.
+Duplicate names at any level, including different escape spellings of the same name, return `ErrInvalidSchema`
 rather than silently keeping the final value. Valid escaped names, string contents resembling
 JSON and repeated names in separate objects remain allowed. `ValidateRequest` and
 `ValidateResponse` share this check; it does not add request-validation middleware to handlers

@@ -2,6 +2,16 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current HTTP encoding correction (2026-10-15, RP-639): Go wire admission now
+refuses malformed UTF-8 before decoding, matching the existing client boundary.
+Thirty-six old schema/literal failures and two real Postgres/session-route401
+refusals reproduce the gap. Corrected mounted routes return exact400 invalid/body,
+preserve state/credentials and subsequently issue authentic sessions. Valid Unicode/
+escapes, shared owner decoding and raw byte identity remain; cold affected Go/vet,
+selected real-DB routes, client encoding and unchanged generation pass. Owning log
+holds the range after `455b7108`, pending Claude. No schema/pin/kernel, recovery
+policy, owner proposal or full API/CI acceptance change.
+
 Current C2 array-arm correction (2026-10-15, RP-638): ten old-checker regressions
 approve changes that invalidate actual old replies, including mixed-element loss
 hidden by invalid empty/singleton inputs. Reuse the existing structured intersection

@@ -26,7 +26,7 @@ func TestSessionRequestSchemaAdmissionIntegration(t *testing.T) {
 			if !ok {
 				t.Fatal("session operation is not registered")
 			}
-			for _, name := range []string{"duplicate", "escaped-duplicate", "wrong-case", "case-alias", "null-root", "missing-field", "null-field", "unknown-field", "trailing-value"} {
+			for _, name := range []string{"duplicate", "escaped-duplicate", "wrong-case", "case-alias", "null-root", "missing-field", "null-field", "unknown-field", "trailing-value", "invalid-utf8"} {
 				t.Run(name, func(t *testing.T) {
 					fixture := newRefreshPersistenceFixture(t, 10)
 					key, credential := "refresh_token", fixture.initial.RefreshToken
@@ -47,9 +47,14 @@ func TestSessionRequestSchemaAdmissionIntegration(t *testing.T) {
 						"null-field":        prefix + fmt.Sprintf(`%q:null}`, key),
 						"unknown-field":     prefix + fmt.Sprintf(`%q:%q,"unexpected":true}`, key, credential),
 						"trailing-value":    valid + " {}",
+						"invalid-utf8":      prefix + fmt.Sprintf(`%q:"`, key) + credential + "\xff\"}",
 					}[name]
 					if registry.ValidateRequest(operationID, []byte(body)) == nil {
-						t.Fatal("invalid-input fixture is accepted by the existing descriptor")
+						if name == "invalid-utf8" {
+							t.Error("malformed UTF-8 is admitted; continue to observe the mounted refusal")
+						} else {
+							t.Fatal("invalid-input fixture is accepted by the existing descriptor")
+						}
 					}
 					gameplay := refreshPersistenceSnapshot(t, fixture.db, false)
 					credentials := refreshPersistenceSnapshot(t, fixture.db, true)
