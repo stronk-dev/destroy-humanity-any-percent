@@ -63,6 +63,7 @@
               "recovery_session",
               "recovery_token",
               "refresh_token",
+              "request_id",
               "run",
               "session_family_revoked",
               "session_id",
@@ -4463,6 +4464,16 @@
               }
             },
             "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
           }
         },
         "security": [
@@ -5220,6 +5231,16 @@
               }
             },
             "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
           }
         }
       }
@@ -5277,6 +5298,16 @@
               }
             },
             "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
           }
         }
       }

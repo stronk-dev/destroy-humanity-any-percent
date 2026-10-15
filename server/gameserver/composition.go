@@ -416,7 +416,11 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err != nil {
 		return nil, err
 	}
-	apiHandler := requestIDs.WithRequestID(mountPublicRead(api.Router(), publicRouter), config.Clock)
+	// Resolve private identities here; PublicRead resolves through its runtime
+	// so even identity failures use its own public response bucket. Both use
+	// the same configured HTTP mechanics and declared failure authority.
+	privateHandler := publicapi.WithRequestID(api.Router(), requestIDs, config.Clock)
+	apiHandler := mountPublicRead(privateHandler, publicRouter)
 	server, err := New(config.DB, apiHandler, node, playerRelay, synchronizer, seed.Hash)
 	if err != nil {
 		return nil, err

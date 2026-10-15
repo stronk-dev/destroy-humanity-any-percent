@@ -3419,3 +3419,53 @@ tests/docs/ledger/plan/log range after `5a88bf04` through this containing commit
 needs designated Claude review, consolidatable with RP-641. Logging/RP-643,
 earlier review, numeric/CI, author/owner and full-nine-tier gates remain. No
 feature acceptance, archival, mint, push or deployment.
+
+## 2026-10-15 — RP-643 declared request-ID infrastructure refusal
+
+Under A4/C7/C16, replace API-boundary plain-text500 with the exact typed
+internal_invariant/request_id envelope, before handlers issue credentials or perform
+application work. Cold30698 fails all22 actual operation/status validations plus
+the existing public-runtime failure path. One API-owned failure declaration now
+supplies runtime bytes and binding. Preserve prior exact/broad500 domains; binding
+is additive, immutable/idempotent and rejects conflicting500 descriptors. Raw HTTP
+mechanics retain a generic callback for non-API users, not the production API.
+
+Private composition binds the typed wrapper; PublicRead resolves through its own
+runtime, so pre-context identity failures cannot escape C6's existing public bucket.
+Use a single available clock sample for that refusal; a broken clock returns the
+infrastructure error rather than falsely reporting caller rate exhaustion. The new
+composed parent supplement injects entropy failure without altering production:
+Account/bootstrap/public requests match their declarations with no fabricated ID,
+no-store and unchanged seven-family row counts. Exact public error exhaustion then
+returns429; a valid caller ID still reads SQL and obtains free304 under the same
+failed reader. Existing budget/account isolation and parent socket/GC proof remain.
+
+Normal generation7b4ffe first passes against the previous committed pin. Intentional
+api-pin31891 adds the request_id detail and three500 statuses, and also captures
+already-generated optional upgrade ineligible_reason and Soul active/terminal
+progress. Those two older shapes are visible in HEAD's OpenAPI, not new behavior or
+acceptance here. Staged expected generation56875 passes byte-identical regeneration.
+Final native63165 passes five affected packages/vet; race59596 passes HttpAPI/
+PublicAPI/PublicRead. Node248, strict types/zero Svelte diagnostics and production
+build pass. Full declared Postgres87063 passes14 Account parents9.970s and8
+Gameserver parents62.624s, including both new subtests, minigames, revocation,
+historical evidence, Garden and production origin/proxy. The explicit one-minute
+cleanup-runtime skip remains its separate lane; no TypeScript public-download
+seam or full CI/clean-host claim is substituted for these populations.
+
+Native browser41716 exits2: Chromium/WebKit496 pass, Firefox executes zero before
+connection60s/launch180s failure with sandbox-extension denial/SWGL framebuffer
+diagnostics (RP-256 recurrence, not proved sole cause). Exact Firefox PID6212 is
+absent after terminal cleanup; no kill or timeout/security/config change. Declared
+Playwright1.62-noble service41834, same cold frozen dependencies/ten-minute ceiling
+with only the final command selected to test-browser-focused for the two affected
+files, passes all744 checks in all three engines2.55s. This is focused Linux SDK
+evidence, not the full browser job or a native Firefox repair. Format/diff checked.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete source/
+tests/generated/docs/ledger/plan/log range after `83ef3392` through this containing
+commit needs designated Claude review, consolidatable with the request-ID lane.
+After terminal checks remove only this turn's validated tmpfs Postgres service/
+rows; no durable data/cache/network cleanup. Logging, prior numeric/CI/author/
+owner/review and full-nine-tier gates remain. No feature acceptance, archival,
+content mint, push or deployment.

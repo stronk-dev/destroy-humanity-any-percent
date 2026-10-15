@@ -120,6 +120,21 @@ describe("registry-generated HTTP client", () => {
   });
 
   it.each([
+    { id: "create_account", input: { path: {}, request: {} } },
+    { id: "create_session", input: { path: {}, request: { account_id: stream, recovery_code: "fixture-private" } } },
+    { id: "get_founder", input: { path: {}, request: null, accessToken: "fixture-access" } },
+    { id: "get_public_run_genesis", input: { path: { stream, seq: 1 }, request: null } },
+  ] as const)("decodes $id request-ID infrastructure failure without retry or a raw hash", async ({ id, input }) => {
+    const body: APIError = { category: "internal_invariant", detail: "request_id" };
+    const fetcher = vi.fn(async () => Response.json(body, { status: 500, headers: { "Cache-Control": "no-store" } }));
+    const reply = await createAPIClient(fetcher).call(id, input as OperationInput<typeof id>);
+    expect(reply.status).toBe(500);
+    expect(reply.ok).toBe(false);
+    expect(reply.body).toEqual(body);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
     ["create_founder", "POST", 201, { id: stream, created_at: "2026-10-08T00:00:00.12Z", imported: false }],
     ["get_founder", "GET", 200, { id: stream, created_at: "2026-10-08T00:00:00.12Z", display: {} }],
   ] as const)("dispatches %s with the current explicit credential and unchanged timestamp", async (id, method, status, founder) => {

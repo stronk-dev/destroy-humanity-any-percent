@@ -111,7 +111,11 @@ func Operations() []publicapi.Operation {
 // Registry is the immutable public-read authority used for mounting, cursor
 // codecs, and (merged with the private registry) generated artifacts.
 func Registry() (*publicapi.Registry, error) {
-	return publicapi.NewRegistry(Schemas(), Operations())
+	registry, err := publicapi.NewRegistry(Schemas(), Operations())
+	if err != nil {
+		return nil, err
+	}
+	return publicapi.BindRequestIDFailure(registry)
 }
 
 // EpochReader is the leaderboard-owned page source.

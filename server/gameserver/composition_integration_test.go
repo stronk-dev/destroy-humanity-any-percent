@@ -3,6 +3,7 @@ package gameserver
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -36,6 +37,26 @@ import (
 type mutableClock struct {
 	mu  sync.Mutex
 	now time.Time
+}
+
+type composedRequestIDEntropy struct {
+	mu   sync.Mutex
+	fail bool
+}
+
+func (entropy *composedRequestIDEntropy) Read(bytes []byte) (int, error) {
+	entropy.mu.Lock()
+	defer entropy.mu.Unlock()
+	if entropy.fail {
+		return 0, errors.New("controlled request-ID entropy failure")
+	}
+	return rand.Read(bytes)
+}
+
+func (entropy *composedRequestIDEntropy) setFailure(fail bool) {
+	entropy.mu.Lock()
+	defer entropy.mu.Unlock()
+	entropy.fail = fail
 }
 
 func (clock *mutableClock) Time() time.Time {
@@ -141,6 +162,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 			t.Fatalf("composition with %s cursor pair: err=%v", name, err)
 		}
 	}
+	entropy := &composedRequestIDEntropy{}
 	composition, err := Compose(ctx, CompositionConfig{
 		PublicCursorKeys: testPublicCursorKeys(),
 		DB:               db,
@@ -153,6 +175,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-integration", Current: bytes.Repeat([]byte{0x43}, 32)},
 		Clock:         clock.Time,
+		Random:        entropy,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -168,6 +191,9 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	httpServer := httptest.NewServer(composition.Server.Handler())
 	defer httpServer.Close()
 	waitHTTPStatus(t, httpServer.Client(), httpServer.URL+"/readyz", http.StatusNoContent)
+	t.Run("request_id_entropy_failure", func(t *testing.T) {
+		assertComposedRequestIDEntropyFailure(t, db, httpServer, entropy)
+	})
 	assertComposedPublicEpochs(t, httpServer)
 
 	invalidBootstrap := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/bootstrap", "",
@@ -1846,6 +1872,116 @@ func assertComposedPublicErrorBudget(t *testing.T, db *sql.DB, server *httptest.
 	var persisted int
 	if err := db.QueryRowContext(context.Background(), `SELECT count(*) FROM accounts a JOIN account_founders f USING(account_id) WHERE a.account_id=$1`, accountRecord.AccountID).Scan(&persisted); err != nil || persisted != 1 {
 		t.Fatalf("independent account creation was not durable: rows=%d err=%v", persisted, err)
+	}
+}
+
+func assertComposedRequestIDEntropyFailure(t *testing.T, db *sql.DB, server *httptest.Server, entropy *composedRequestIDEntropy) {
+	t.Helper()
+	private, err := account.PrivateAPIRegistry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	public, err := publicread.Registry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	rows := func() []int {
+		t.Helper()
+		result := []int{}
+		for _, table := range []string{"accounts", "account_founders", "save_streams", "bootstrap_receipts", "sessions", "access_tokens", "session_families"} {
+			var count int
+			if err := db.QueryRowContext(context.Background(), "SELECT count(*) FROM "+table).Scan(&count); err != nil {
+				t.Fatal(err)
+			}
+			result = append(result, count)
+		}
+		return result
+	}
+	before := rows()
+	entropy.setFailure(true)
+	defer entropy.setFailure(false)
+	for _, test := range []struct {
+		operation, method, path, body string
+		registry                      *publicapi.Registry
+	}{
+		{"create_account", "POST", "/api/v1/account", `{}`, private},
+		{"create_bootstrap", "POST", "/api/v1/bootstrap", `{"bootstrap_id":"01986666-f800-7000-8000-000000000001"}`, private},
+		{publicread.ListEpochsOperation, "GET", "/api/public/v1/epochs", "", public},
+	} {
+		request, err := http.NewRequest(test.method, server.URL+test.path, strings.NewReader(test.body))
+		if err != nil {
+			t.Fatal(err)
+		}
+		request.Header.Set("Content-Type", publicapi.ContentJSON)
+		request.Header.Set("X-Request-ID", "invalid caller id")
+		request.Header.Set("X-Forwarded-For", "198.51.100.90")
+		response, err := server.Client().Do(request)
+		if err != nil {
+			t.Fatal(err)
+		}
+		body := readCompositionBytes(t, response)
+		if response.StatusCode != 500 || response.Header.Get("Content-Type") != publicapi.ContentJSON || response.Header.Get("Cache-Control") != "no-store" ||
+			string(body) != "{\"category\":\"internal_invariant\",\"detail\":\"request_id\"}\n" || test.registry.ValidateResponse(test.operation, 500, body) != nil ||
+			response.Header.Get("X-Request-ID") != "" || response.Header.Get("ETag") != "" || response.Header.Get(publicread.EvidenceHashHeader) != "" {
+			t.Fatalf("%s request-ID failure status=%d headers=%v body=%q", test.operation, response.StatusCode, response.Header, body)
+		}
+	}
+	if after := rows(); !reflect.DeepEqual(before, after) {
+		t.Fatalf("refused identity requests created account/save/credential rows: before=%v after=%v", before, after)
+	}
+	// The supplied reader is still failing. A valid caller ID avoids entropy
+	// altogether, including in the nested public mount, and serves actual SQL.
+	request, err := http.NewRequest(http.MethodGet, server.URL+"/api/public/v1/epochs", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.Header.Set("X-Request-ID", "accepted-entropy-control")
+	request.Header.Set("X-Forwarded-For", "198.51.100.91")
+	response, err := server.Client().Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = readCompositionBytes(t, response)
+	if response.StatusCode != 200 || response.Header.Get("X-Request-ID") != "accepted-entropy-control" {
+		t.Fatalf("valid ID reached the broken entropy source: status=%d", response.StatusCode)
+	}
+	etag := response.Header.Get("ETag")
+	policyJSON, err := os.ReadFile(filepath.Join(filepathRoot(t), "balance/api/phase0.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	policy, err := publicapi.LoadPolicy(policyJSON)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// One public error above already charged this fresh IP. Exhaust precisely
+	// the remaining burst without allowing identity failure to bypass C6.
+	for index := 1; index <= policy.PublicLimiter.Burst; index++ {
+		request.Header.Set("X-Request-ID", "invalid caller id")
+		request.Header.Set("X-Forwarded-For", "198.51.100.90")
+		response, err := server.Client().Do(request)
+		if err != nil {
+			t.Fatal(err)
+		}
+		body := readCompositionBytes(t, response)
+		wantStatus, wantBody := 500, "{\"category\":\"internal_invariant\",\"detail\":\"request_id\"}\n"
+		if index == policy.PublicLimiter.Burst {
+			wantStatus, wantBody = 429, "{\"category\":\"rate_limited\",\"detail\":\"ip\"}\n"
+		}
+		if response.StatusCode != wantStatus || string(body) != wantBody || response.Header.Get("X-Request-ID") != "" {
+			t.Fatalf("identity-error budget request=%d status=%d body=%q; want %d", index, response.StatusCode, body, wantStatus)
+		}
+	}
+	// With a valid caller ID, even this exhausted IP can still obtain the
+	// authorized free304 without touching the unavailable entropy source.
+	request.Header.Set("X-Request-ID", "accepted-entropy-control")
+	request.Header.Set("If-None-Match", etag)
+	response, err = server.Client().Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if body := readCompositionBytes(t, response); response.StatusCode != 304 || len(body) != 0 || response.Header.Get("X-Request-ID") != "accepted-entropy-control" {
+		t.Fatalf("identity-error exhaustion blocked free304: status=%d body=%q", response.StatusCode, body)
 	}
 }
 

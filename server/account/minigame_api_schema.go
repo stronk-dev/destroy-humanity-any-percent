@@ -277,7 +277,11 @@ func newPrivateAPIRegistry() (*publicapi.Registry, error) {
 	operations = append(operations, accountAPIOperations()...)
 	sort.Slice(schemas, func(left, right int) bool { return schemas[left].Name < schemas[right].Name })
 	sort.Slice(operations, func(left, right int) bool { return operations[left].ID < operations[right].ID })
-	return publicapi.NewRegistry(schemas, operations)
+	registry, err := publicapi.NewRegistry(schemas, operations)
+	if err != nil {
+		return nil, err
+	}
+	return publicapi.BindRequestIDFailure(registry)
 }
 
 // PrivateAPIRegistry returns the immutable authority consumed by runtime

@@ -191,9 +191,20 @@ func RequestID(request *http.Request) string {
 // Nested mounts reuse the resolved context, avoiding a second random draw or
 // different ID for one response. Grammar/bounds remain supplied by the owner.
 func (ids *RequestIDs) WithRequestID(next http.Handler, clock func() time.Time) http.Handler {
+	return ids.WithRequestIDFailure(next, clock, nil)
+}
+
+// WithRequestIDFailure lets a protocol owner supply its declared failure
+// response without coupling these HTTP mechanics to an API error taxonomy.
+func (ids *RequestIDs) WithRequestIDFailure(next http.Handler, clock func() time.Time, failure http.Handler) http.Handler {
+	if failure == nil {
+		failure = http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
+			http.Error(response, "internal invariant", http.StatusInternalServerError)
+		})
+	}
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		if ids == nil || next == nil || clock == nil || request == nil {
-			http.Error(response, "internal invariant", http.StatusInternalServerError)
+			failure.ServeHTTP(response, request)
 			return
 		}
 		id := RequestID(request)
@@ -201,7 +212,7 @@ func (ids *RequestIDs) WithRequestID(next http.Handler, clock func() time.Time) 
 			var err error
 			id, err = ids.Resolve(request.Header.Get("X-Request-ID"), clock())
 			if err != nil {
-				http.Error(response, "internal invariant", http.StatusInternalServerError)
+				failure.ServeHTTP(response, request)
 				return
 			}
 			request = request.WithContext(context.WithValue(request.Context(), requestIDContextKey{}, id))

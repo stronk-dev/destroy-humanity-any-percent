@@ -233,15 +233,19 @@ type responseBudget struct {
 }
 
 func (runtime *Runtime) allowResponse(request *http.Request) bool {
+	return runtime.allowResponseAt(request, runtime.clock())
+}
+
+func (runtime *Runtime) allowResponseAt(request *http.Request, now time.Time) bool {
 	budget, _ := request.Context().Value(responseBudgetContextKey{}).(*responseBudget)
 	if budget != nil && budget.runtime == runtime {
 		if !budget.checked {
 			budget.checked = true
-			budget.allowed = runtime.limiter.Allow(httpapi.ClientIP(request, runtime.policy.TrustedProxyHops), runtime.clock())
+			budget.allowed = runtime.limiter.Allow(httpapi.ClientIP(request, runtime.policy.TrustedProxyHops), now)
 		}
 		return budget.allowed
 	}
-	return runtime.limiter.Allow(httpapi.ClientIP(request, runtime.policy.TrustedProxyHops), runtime.clock())
+	return runtime.limiter.Allow(httpapi.ClientIP(request, runtime.policy.TrustedProxyHops), now)
 }
 
 var rateLimitedIP = []byte(`{"category":"rate_limited","detail":"ip"}` + "\n")
@@ -297,15 +301,23 @@ func (writer *budgetResponseWriter) Unwrap() http.ResponseWriter { return writer
 // free; representation validation remains the handler's responsibility.
 func (runtime *Runtime) WithRequestID(next http.Handler) http.Handler {
 	if runtime == nil || next == nil {
-		return http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
-			http.Error(response, "internal invariant", http.StatusInternalServerError)
-		})
+		return http.HandlerFunc(writeRequestIDFailure)
 	}
-	return runtime.requestIDs.WithRequestID(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+	return runtime.requestIDs.WithRequestIDFailure(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		ctx := context.WithValue(request.Context(), responseBudgetContextKey{}, &responseBudget{runtime: runtime})
 		request = request.WithContext(ctx)
 		next.ServeHTTP(&budgetResponseWriter{ResponseWriter: response, runtime: runtime, request: request}, request)
-	}), runtime.clock)
+	}), runtime.clock, http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		// Identity failure is still a public error, not a free response. Keep
+		// it in this runtime's bucket even though no resolved context exists.
+		// A broken clock cannot honestly classify the caller as rate-limited.
+		now := runtime.clock()
+		if request != nil && !now.IsZero() && !runtime.allowResponseAt(request, now) {
+			writeRateLimited(response)
+			return
+		}
+		writeRequestIDFailure(response, request)
+	}))
 }
 
 func RequestID(request *http.Request) string {

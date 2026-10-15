@@ -425,16 +425,31 @@ enforcement: representation authorization/reader work still happens before the r
 decision, so it is not a pre-reader database-work bound. Mounted error/cache regressions use
 controlled readers; the existing composed Postgres checks separately exercise the live server.
 
-Gameserver composition wraps both API surfaces in `httpapi.RequestIDs.WithRequestID`, using
-the same C20 policy grammar/bounds as the public runtime. Valid caller IDs echo unchanged;
+Gameserver composition binds shared request-ID mechanics to both API surfaces, using
+the same C20 policy grammar/bounds. Valid caller IDs echo unchanged;
 invalid/missing IDs become UUIDv7, never truncated. The resolved ID is available through
 `httpapi.RequestID` (and the compatibility `publicapi.RequestID` accessor), without adding
 it to response JSON. Nested public middleware reuses that context rather than generating
-another ID. This wrapper has no limiter: public, unauthenticated Account and authenticated
-Account budgets remain separately owned. Standalone Account router callers must supply this
-HTTP composition themselves. This implements response/context correlation, not access logging.
-Entropy failure refuses before calling the handler, retaining the pre-existing plain-text500
-fallback. RP-643 tracks its missing typed-error/status binding; it is not full A4/C7 conformance.
+another ID. The private API uses `publicapi.WithRequestID`; PublicRead resolves through its
+runtime so identity failures still use its existing public response bucket. Public,
+unauthenticated Account and authenticated Account budgets remain separately owned. Standalone
+Account router callers must supply this HTTP composition themselves. This implements
+response/context correlation, not access logging.
+
+Identity-generation failure refuses before application work with uncached
+`500 {"category":"internal_invariant","detail":"request_id"}`. It fabricates no request ID
+and never exposes the underlying error. One `RequestIDFailureResponse` declaration supplies
+the middleware bytes and `BindRequestIDFailure`'s per-operation500 alternatives. Existing
+exact errors remain valid; broad500 descriptors are not narrowed. Invalid conflicting500
+descriptors refuse binding. With an available clock, public identity failures charge the
+same IP bucket and become429 at exhaustion; valid-ID authorized304s remain free even while
+entropy is unavailable. A broken clock cannot truthfully classify a caller as rate-limited.
+Raw HTTP mechanics retain their generic failure callback for non-API users; production API
+composition supplies the typed owner response.
+
+The intentional C2-compatible pin refresh adds the request-ID error and three missing500
+statuses. It also captures the already-generated optional upgrade `ineligible_reason` and
+Soul progress active/terminal union; those are not new behavior or acceptance in this batch.
 
 The composed Postgres/HTTP error-budget check exhausts an exact fresh forwarded-IP burst
 with real private/unknown run reads and invalid queries, retains authorized304 and a second
@@ -443,6 +458,11 @@ unforwarded peer's public budget before creating and reading the SQL linkage for
 Account, with credential `no-store` retained. That second loop accounts for earlier spent
 tokens rather than claiming another fresh-burst measurement. No pre-reader work bound,
 production Caddy/clean-host, logging or whole-API acceptance follows.
+
+Its entropy-failure supplement checks real Account/bootstrap/public responses, unchanged
+account/save/credential row counts, declared error bytes, the actual public failure budget,
+and valid-ID SQL/cache controls. These are controlled infrastructure faults, not an observed
+failure of deployed system entropy or a whole-release claim.
 
 ### Public verification evidence
 

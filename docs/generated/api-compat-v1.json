@@ -101,7 +101,8 @@
         "200:schema:application/json:BootstrapSession",
         "400:schema:application/json:APIError",
         "401:schema:application/json:APIError",
-        "429:schema:application/json:APIError"
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
       ]
     },
     {
@@ -151,7 +152,8 @@
         "200:schema:application/json:FounderProfile",
         "401:schema:application/json:APIError",
         "404:schema:application/json:APIError",
-        "429:schema:application/json:APIError"
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
       ]
     },
     {
@@ -335,7 +337,8 @@
         "200:schema:application/json:BootstrapSession",
         "400:schema:application/json:APIError",
         "401:schema:application/json:APIError",
-        "429:schema:application/json:APIError"
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
       ]
     },
     {
@@ -461,6 +464,7 @@
             "recovery_session",
             "recovery_token",
             "refresh_token",
+            "request_id",
             "run",
             "session_family_revoked",
             "session_id",
@@ -2531,6 +2535,22 @@
         "eligible": {
           "type": "boolean"
         },
+        "ineligible_reason": {
+          "oneOf": [
+            {
+              "enum": [
+                "owned",
+                "requirement",
+                "unaffordable",
+                "window"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "owned": {
           "type": "boolean"
         },
@@ -3916,39 +3936,131 @@
       "type": "object"
     },
     "SoulRecoveryProgressResponse": {
-      "additionalProperties": false,
-      "properties": {
-        "attended_progress_ms": {
-          "maximum": 9007199254740991,
-          "minimum": 0,
-          "type": "integer"
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "attended_progress_ms": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "eligible": {
+              "type": "boolean"
+            },
+            "last_progress_server_ms": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "required_duration_attended_ms": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "session_id": {
+              "format": "uuid-v7",
+              "type": "string"
+            }
+          },
+          "required": [
+            "attended_progress_ms",
+            "eligible",
+            "last_progress_server_ms",
+            "required_duration_attended_ms",
+            "session_id"
+          ],
+          "type": "object"
         },
-        "eligible": {
-          "type": "boolean"
-        },
-        "last_progress_server_ms": {
-          "maximum": 9007199254740991,
-          "minimum": 0,
-          "type": "integer"
-        },
-        "required_duration_attended_ms": {
-          "maximum": 9007199254740991,
-          "minimum": 1,
-          "type": "integer"
-        },
-        "session_id": {
-          "format": "uuid-v7",
-          "type": "string"
+        {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "enum": [
+                "cancel"
+              ],
+              "type": "string"
+            },
+            "activity_id": {
+              "format": "mechanical-id",
+              "type": "string"
+            },
+            "band_after": {
+              "enum": [
+                "dimming",
+                "hollow",
+                "near_zero",
+                "whole"
+              ],
+              "type": "string"
+            },
+            "band_before": {
+              "enum": [
+                "dimming",
+                "hollow",
+                "near_zero",
+                "whole"
+              ],
+              "type": "string"
+            },
+            "cancelled_by": {
+              "enum": [
+                "watchdog"
+              ],
+              "type": "string"
+            },
+            "company_revision": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "founder_revision": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "intent_id": {
+              "format": "uuid-v7",
+              "type": "string"
+            },
+            "outcome": {
+              "enum": [
+                "applied"
+              ],
+              "type": "string"
+            },
+            "session_id": {
+              "format": "uuid-v7",
+              "type": "string"
+            },
+            "soul_after": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "soul_before": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "action",
+            "activity_id",
+            "band_after",
+            "band_before",
+            "cancelled_by",
+            "company_revision",
+            "founder_revision",
+            "intent_id",
+            "outcome",
+            "session_id",
+            "soul_after",
+            "soul_before"
+          ],
+          "type": "object"
         }
-      },
-      "required": [
-        "attended_progress_ms",
-        "eligible",
-        "last_progress_server_ms",
-        "required_duration_attended_ms",
-        "session_id"
-      ],
-      "type": "object"
+      ]
     },
     "SoulRecoveryStartRequest": {
       "additionalProperties": false,
