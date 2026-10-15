@@ -2201,3 +2201,37 @@ ranges, new normative/research work and other replay corrections are not covered
 No SQL/backend-race/composed/Firefox/Linux/AT/performance/full-CI, feature acceptance,
 archival or release claim. The reviewer makes no repository edit or commit; parent
 reconciles current plans/ledger in this record-only change. No push/deployment.
+
+## 2026-10-15 — RP-621/RP-622/RP-624/RP-625 independent corrective approval
+
+Review by: fresh independent Codex sub-agent `/root/minigame_start_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, no
+actionable findings, every source/test/fixture/version/docs/record path in these
+four base-exclusive ranges, not unrelated intervening commits:
+
+- RP-621: `a83d590d25bdef54c9d7cb428d8798a79ea76589..ca186f94416f3959a77720cae4ae45fc6df3d790`.
+- RP-622: `ca186f94416f3959a77720cae4ae45fc6df3d790..1f1a54818a07f4da5382a1568617ce6d7cbcda8c`.
+- RP-624: `ac88de36f6db36d78eae4e0c739350c6f13069a4..4228d038d318e1d604be9310d3c47fe9edab79b0`.
+- RP-625: `4228d038d318e1d604be9310d3c47fe9edab79b0..5210d56164492989f69ef1a58ed26973f95231cb`.
+
+Under MA1/MA-C11 and Platform MP1/C2, membership admits sorted dual-mode policies,
+replay enforces Founder-owned gates/live identity grammar, refusals restore complete
+Founder state. Historical old-code failures inspected against preimages/regressions,
+not re-mutated. Source/tests/shared start fixtures match5210d561; later replay.ts
+changes are unrelated Reputation behavior. Checks execute at clean015ae5e4:
+
+- Real Postgres: `make test-save-integration SAVE_TEST_PACKAGES='./production ./save ./gameserver' SAVE_TEST_FLAGS='-run Minigame -v'` passes Production3.394s/Save0.085s/Gameserver37.566s.
+  Six live-start populations, nine replay admission cases, fourteen identity cases,
+  rollback faults, exact retries, sequencing, Exit guard, persisted histories and
+  both HTTP lifecycle arms execute; no selected SQL prerequisite skips.
+- Node replay/catalog/resolution/Decimal6545 pass; complete replay Chromium/WebKit322
+  pass. Affected vet/types, cold replay-fixture, formulas/API and range diff checks pass.
+- Full native Minigame/MinigameAPI/Kernel/Decimal pass. Full Production remains RED
+  on all27 known TestAxisAccrualPartitionProperty divergences, not concealed by the
+  separate scoped Minigame/SQL pass. No broader server green is claimed.
+
+Invalid browser selector and sandbox-listen attempts execute no tests; corrected
+narrow loopback escalation passes. Linux-amd64 SQL containers on ARM are not hosted
+hardware. Reviewer makes no edits/mutations/commits; browser/DB slots released.
+This discharges only these corrective reviews, not prior feature spans, normative
+adoption, Company-owned replay choices, full CI, archival or release approval.

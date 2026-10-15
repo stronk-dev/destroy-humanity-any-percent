@@ -17,7 +17,8 @@ do not cover this raw archive boundary; no stripping, rotation or suppression is
 existing error/stale path; deadline setup finishes before a first view is published. Mounted
 generated-port regressions reproduce six old-browser failures, while the later missing-data
 control already passed. Final affected native checks, types/build and UI boundaries pass;
-owning log records the exact new range after `661ba498`, pending designated review. This is
+owning log records the exact new range after `661ba498`, independently approved by a fresh
+Codex reviewer under Marco's corrective-code delegation (2026-10-15). This is
 not general nested DTO validation, SQL/default-server integration, new retry policy or Garden
 acceptance. Earlier author, content, renewal, accessibility and review holds remain.
 

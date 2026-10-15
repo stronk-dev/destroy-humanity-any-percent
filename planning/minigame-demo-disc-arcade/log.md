@@ -2404,3 +2404,22 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Complete six-pa
 range after `5fb68009` through the containing commit needs designated Claude
 review, consolidatable with prior A6 repairs. No new RFC/owner copy needed for
 this conformance fix; RP-211/copy, public wire/host, mint and full acceptance remain.
+
+## 2026-10-15 — RP-636 independent corrective approval
+
+Review by: fresh independent Codex sub-agent `/root/garden_arcade_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, no
+actionable findings, complete source/test/docs/record range
+`5fb680096bdd409c795166d6f9c87275a64355d9..6201bef821d017c9cf3e7e48277a585b64a65404`.
+The keyed live-region child conforms to AR6.2: actual keyboard flag/unflag through
+the real TS engine yields one DOM status update, retained focus and duplicate silence.
+
+At015ae5e4 reviewer runs both changed Garden/Arcade browser files:92 Chromium/WebKit
+passes,58 Arcade. Node operation ports/Arcade grammar/Garden admission244 pass;
+types zero errors/warnings; build/UI boundaries and range whitespace pass. Components,
+tests, engines, harness/config/error guard and relevant fixtures match their targets;
+generated API transport differs. Descendant checks do not approve intervening work.
+Old failures assessed from records/preimages, not re-mutated. Initial invalid selector
+and sandbox-listen attempts execute no tests; corrected narrow escalation exits0.
+No actual AT speech, Firefox/Linux, public HTTP/SQL integration, original feature,
+archival or release acceptance. Existing wire/copy/mint/full-feature holds remain.

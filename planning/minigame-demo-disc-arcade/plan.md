@@ -10,7 +10,8 @@ state without updating the live region. Bind its existing message to the authori
 preserving grid focus and silence on duplicate delivery. Old native cases fail in Chromium/WebKit;
 the corrected focused cases and full affected58-case browser population pass, along with
 types/build/boundaries. The owning log records results and the range after
-`5fb68009`, pending Claude review. No new copy, engine/wire/kernel, public host or AT acceptance.
+`5fb68009`, independently approved by a fresh Codex reviewer under Marco's corrective-code
+delegation (2026-10-15). No new copy, engine/wire/kernel, public host or AT acceptance.
 
 **Current checkpoint, 2026-10-08:** complete the original-range reviews, not another round of
 the same bounded findings. The log consolidates A1–A3, A4/A5 and A6/A7 coverage and distinguishes

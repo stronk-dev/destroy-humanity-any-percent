@@ -3434,3 +3434,23 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Complete compon
 plan/ledger/log range after `661ba498` through this containing commit needs designated Claude
 review, consolidatable with earlier Garden corrections. No prior review is relabeled, no
 acceptance checkbox/archival/mint/push changes. Continue accepted work; goal remains full1.0.
+
+## 2026-10-15 — RP-595 independent corrective approval
+
+Review by: fresh independent Codex sub-agent `/root/garden_arcade_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. **APPROVED**, no
+actionable findings, complete source/test/docs/record range
+`661ba498817b26409ba7c715e619c8d6a4ea9957..8a5dcebf45f6b15120d9001b8f6637370684a4a3`.
+Closed-kind dispatch and setup-before-publication satisfy SG9/SG10; regressions check
+initial error, later stale view, retained plots, recovery and read/command counts.
+
+At015ae5e4 the reviewer executes both changed Garden/Arcade browser files:92 total
+Chromium/WebKit passes,34 Garden; generated-operation ports/Arcade grammar/Garden
+admission Node files244 passes; types zero errors/warnings; build/UI boundaries pass.
+All exact-range paths inspected and whitespace clean. Components/tests, harness,
+error guard/config, fixtures and relevant adapters match reviewed commits; generated
+API transport has intervening changes. These are descendant checks, not isolated
+historical builds. Old failures assessed from records/preimages, not re-mutated.
+Initial invalid selector and sandbox-listen attempts run no tests; corrected narrow
+escalation exits0. No SQL, Firefox/Linux, AT speech, public integration, full feature,
+archival or release approval. Other author/renewal/content/SG13/AC13 holds remain.

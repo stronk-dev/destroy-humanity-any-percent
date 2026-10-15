@@ -1,11 +1,18 @@
 # Minigame API & Surface implementation plan
 
+2026-10-15 corrective review: RP-621/RP-622/RP-624/RP-625 are independently approved
+by fresh Codex reviewer under Marco's narrow delegation. Exact four ranges and actual
+SQL/Node/browser evidence are in the owning log. The following original entries retain
+their implementation evidence; their pending-review statements are now discharged only
+for those named corrective commits. Full Production remains red on the known27 partition
+divergences; no feature, normative, archival or release acceptance follows.
+
 2026-10-14 replay-coordinate correction (RP-625): the shared fourteen-case population reproduces
 eleven old-Go and three old-TS invalid starts/history verifications. Start replay now applies the
 live session UUIDv7/distinct-intent rule and Company UUID version/variant grammar. Original and
 version1/version8 Company controls preserve outputs; these are syntax controls, not Company
 ownership/existence proofs. Owning log records final checks and the single-commit review range
-after `4228d038`, pending Claude. Kernel0.3.213 is genuine admission; public/live wire and original
+after `4228d038`, now independently approved as above. Kernel0.3.213 is genuine admission; public/live wire and original
 goldens are unchanged. Complete feature review and named integration/contract holds remain.
 
 2026-10-14 Founder-gate replay correction (RP-624): replay now checks the existing Fiscal unlock
@@ -13,7 +20,7 @@ and human-hobby Soul policy before advancing the start sequence. Old Go/TS accep
 cases and falsely verify both non-clock-variant histories. The expanded shared nine-case population
 checks complete rollback and the first unlocked Soul value; the real-Postgres start population
 now checks the same eligibility boundaries, faults, retries and saved-history verification.
-The owning log holds final checks and the single-commit range after `ac88de36`, pending Claude.
+The owning log holds final checks and the single-commit range after `ac88de36`, now independently approved as above.
 Kernel0.3.212 is genuine replay admission; original goldens, public wire and live refusal order
 are unchanged. Company-owned tier/scaling replay inputs and other existing holds are not resolved.
 
@@ -21,14 +28,14 @@ are unchanged. Company-owned tier/scaling replay inputs and other existing holds
 policy. The shared four-case population exposes old acceptance, sequence/Fiscal mutation and
 complete-history false verification under an async-only policy, with healthy solo/dual controls.
 The owning log records final Go/TS/browser/SQL checks and the single-commit range after
-`ca186f94`, pending Claude. Existing goldens remain unchanged; no async engine/wire or mint.
+`ca186f94`, now independently approved as above. Existing goldens remain unchanged; no async engine/wire or mint.
 
 2026-10-14 mode-selection correction (RP-621): the solo start coordinator now checks membership,
 not the first sorted catalog mode. The old real-Postgres dual-mode fixture refuses an otherwise
 valid solo start; solo-only and async-only controls discriminate. Final existing transaction
 population verifies faults, sequencing, retry, Exit guard and Founder replay for both admitted
 lists, and unchanged saves/zero session/create rows for async-only. Owning log holds final checks
-and the single-commit range after `a83d590d`, pending Claude. No async request/engine or mint.
+and the single-commit range after `a83d590d`, now independently approved as above. No async request/engine or mint.
 
 Current Linux observation (2026-10-14, RP-614): the cold Linux-amd64/Postgres API-consumer
 wave at `8e4d0877` fails the composed lifecycle's literal_scaling branch; its assertion message
