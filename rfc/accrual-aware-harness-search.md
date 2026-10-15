@@ -45,8 +45,8 @@ an origin is not permission to enable unsupported mechanics or remove their guar
 
 ### H2 — All search reuse binds accounting identity
 
-The parent owns canonical origin/context identity, state versions and private
-events. This RFC owns reuse of those trusted identities:
+The parent owns typed immutable origin/context state, opaque run-local identity,
+source versions and private events. This RFC owns reuse of those identities:
 
 - Beam equality includes origin/context identity, complete visible-state identity
   and virtual time. Path remains only the existing raw-byte tie-break.
@@ -57,6 +57,13 @@ events. This RFC owns reuse of those trusted identities:
   a branch with a different retained origin.
 - Missing or unverified identity cannot fall back to visible-state-only reuse.
   Refuse the unsupported context; do not label that refusal an unreachable item.
+
+Forks of one origin reuse its opaque identity. Distinct origins remain distinct
+unless full future equivalence is separately proved. No origin JSON/hash protocol,
+cross-run cache or identity field in reports is required. Opaque allocation order
+must not affect ranking, tie-breaks or serialized output; identity participates in
+equality only. Conservative separation still needs complete workload/budget proof,
+not an allowance to exceed bounds or drop candidates.
 
 RP-653 proves the relevant candidate constraint: two complete equal visible heads
 at the same time can have different later payouts under different origins. This
@@ -211,7 +218,7 @@ not owner choices to approve away.
 
 Owner adoption of the approach and designated normative review remain separate
 from the executable implementation acceptance above. Do not require an unbuilt
-production codec or migrated SQL workflow as proof this draft is implemented;
+calculation API or migrated SQL workflow as proof this draft is implemented;
 equally, do not claim those tests passed because the design was accepted.
 
 ## Deviations from existing contracts
@@ -223,6 +230,9 @@ numeric tolerance, authored content or narrowed1.0 scope.
 
 ## Changelog
 
+- 2026-10-15: align reuse with opaque typed run-local origins, not a new canonical
+  origin codec/hash protocol. Preserve deterministic output, all reuse paths and
+  full workload/budget gates; no implementation or adoption.
 - 2026-10-15: specify proposed protocol/family dispatch, preserving legacy identities;
   separate new Relevance metadata from base policy grammar and make shared immutable
   content manifests single registry resources. No actual version/hash adoption or

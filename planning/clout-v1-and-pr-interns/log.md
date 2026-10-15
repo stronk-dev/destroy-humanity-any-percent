@@ -3813,3 +3813,25 @@ Five-path test/draft/plan/ledger/log range after `2c9f8833` through this contain
 commit needs designated review. Review by: Codex (research implementer/draft author
 first filter). Recorded by: Codex. No artifact/source-pin restamp, runtime/kernel/
 CI changes, services or removed resources; no adoption, archival, push or deployment.
+
+## 2026-10-15 — remove an unnecessary protocol from the unaccepted proposal
+
+At `d0947b4b`, recheck actual SimulateAdvance, Relevance advance/search,
+contentDynamicsAccrueWindow and ApplyLogged ownership. The proposed calculation
+API/codec has no runtime implementation; these consumers do not persist/transmit
+origin handles. Withdraw our private JSON/hash protocol rather than build another
+codec for in-memory state. C1e now specifies typed immutable ownership and opaque
+run-local identity; forks share it, real action/context boundaries replace it.
+Reconcile C1c/C1g/C1h, compatibility/acceptance wording and successor reuse rules.
+Live ApplyLogged remains unchanged reference code, not a new wrapper's customer.
+
+No accepted Clout wording, accounting, source, test, artifact or CI bytes change.
+Retain original128 cases/27 failures, all research counterexamples, actual Go/TS/
+SQL and complete-workload/budget gates. Conservative identity is not budget proof.
+Both RFCs remain drafts; temporal boundary/predicate and actual caller/landing
+engineering still precede adoption. Historical records remain intact. Checked full
+diff and source bindings; documentation-only, no software tests rerun/claimed.
+Four-path range after `d0947b4b` through this containing commit needs designated
+normative review. Review by: Codex (draft author first filter). Recorded by: Codex.
+No acceptance, archival, publication or release. Next resolve real-caller search
+correctness rather than repeat completed fixture measurements or expand the codec.

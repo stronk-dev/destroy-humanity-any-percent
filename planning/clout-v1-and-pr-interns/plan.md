@@ -8,6 +8,23 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+The proposed private origin JSON/hash protocol is withdrawn: no identified consumer
+persists or transmits these handles. Parent C1e now proposes opaque typed run-local
+ownership using existing save/replay validators, with forks sharing identity and
+real actions/context boundaries creating new origins. Keep actual live ApplyLogged
+unchanged as the compatibility reference; do not build an unused wrapper. Consumer
+reuse remains conservative and must still meet unchanged budgets/determinism.
+Both drafts remain unaccepted. Next engineering work is the actual admitted-caller
+temporal predicate/boundary proof and compatibility/landing closure, not another
+fixture census or owner approval in place of a technical answer. Go/TS, SQL/retry,
+all128 exact cases, complete workloads, CI and designated review remain required.
+
+### Completed readiness studies and earlier draft steps
+
+The dated/hashed notes below preserve their original declarations and outcomes.
+References to a new private origin codec describe the superseded proposal, not
+the current implementation plan. The append-only log holds exact review ranges.
+
 Long-absence reconstruction first declaration at `2c9f8833`: two actual logged-mode profiles over48h,
 Company19, one tower/PR row, one active production buff at attended4000ms, Compact
 weight and one Guild clearing. Observe actual ApplyLogged's post-closed-hook state

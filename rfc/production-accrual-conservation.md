@@ -42,7 +42,7 @@ Completed R-012 research establishes these bounded facts:
   the actual evaluator and ledger, preserving the original one-shot final state.
   Twelve multi-resource provider/burst/mode intersections, four single-episode
   offline cases and two cap/debit cases also pass. This is bounded Go feasibility,
-  not the proposed production codec or a repaired `ApplyLogged` path.
+  not an implemented calculation API or a repaired `ApplyLogged` path.
 
 Sources: [anchor](../planning/clout-v1-and-pr-interns/anchor-research.md),
 [rates and SQL](../planning/clout-v1-and-pr-interns/rate-and-sql-research.md),
@@ -50,7 +50,9 @@ Sources: [anchor](../planning/clout-v1-and-pr-interns/anchor-research.md),
 [continuous replay](../planning/clout-v1-and-pr-interns/sequence-research.md) and
 [persistence](../planning/clout-v1-and-pr-interns/sequence-persistence.md).
 
-Scope: production accounting, its durable state, replay and compatibility. No change
+Scope: internal production calculations, their real simulation/diagnostic consumers,
+and compatibility with existing settlement/replay. No new durable accounting state
+is proposed by the recommended route. No change
 to PR factors, achievement grants, offline efficiency/cap/banking, burst policy,
 provider formulas, hardcaps, authored copy or the full nine-tier release objective.
 
@@ -113,7 +115,8 @@ and keep its existing settlement stages. Do not introduce an additional durable 
 periodic payment, public proof API or background player tick. This is a proposed
 architecture, not an inference that Marco's wording delegation adopted it.
 
-**Ownership and identity.** Bind an operation to the existing `ReplayCommand` tuple
+**Existing live ownership (compatibility reference, not a new API).** Bind an
+operation to the existing `ReplayCommand` tuple
 `{company_stream_id, founder_id, revision, run_seq, run_log_seq, intent_id}`, the
 pinned `ConstantsHash`, canonical payload and validated replay-input envelope.
 The server resolves that envelope before applying the command; replay consumes the
@@ -233,9 +236,12 @@ collision in today's origin-free beam or proof that its published reports are wr
 
 ### C1c — Proposed calculation/action API and branch lifecycle (unadopted)
 
-The following names describe a proposed internal interface, not existing exported
-functions or permission to replace their callers. Live logged operations retain
-C1b's transaction ownership. Harness branches need a separate, immutable calculation
+The following names describe a proposed internal interface for real simulation and
+diagnostic consumers, not existing exported functions or permission to replace live
+transaction callers. Live logged operations retain their current code path and
+C1b's transaction ownership; do not wrap or modify `ApplyLogged` just to exercise
+this interface. Its full results are the compatibility reference. Harness branches
+need a separate, immutable calculation
 handle rather than an extra field quietly attached to a persisted `save.State`.
 
 | Operation | Required input and result | Mutation and lifetime |
@@ -243,7 +249,7 @@ handle rather than an extra field quietly attached to a persisted `save.State`.
 | `BeginCalculation` | Complete admitted base state, its source save version, pinned bundle, mode and validated producer/hook/ablation context → opaque origin. | Copies/owns mutable inputs; cannot begin from a projected view merely to discard rounding history. |
 | `ForkCalculation` | Origin → independent branch handle with the same origin/context identity. | No accrual, hooks, action, clock change or revision; branch work cannot mutate siblings. |
 | `ProjectCalculation` | Origin plus a canonical server/simulation endpoint → detached full state, ordered stage evaluations, private event values and role observations. | Fresh restoration from the origin, then actual evaluation and the permitted simulation hooks on scratch state; no new origin, saved payment or action. |
-| `ApplyCalculationIntent` | Origin plus an actual intent, endpoint and expected revision → ordinary decision and, only if applied, the next origin. | Run the existing semantic transition from the origin, not from a prior projection. A refusal returns no child and leaves the parent unchanged. |
+| `ApplyCalculationIntent` | Simulation origin plus an actual simulated intent, endpoint and expected revision → ordinary decision and, only if applied, the next origin. | Run the existing semantic transition from the origin, not from a prior projection. A refusal returns no child and leaves the parent unchanged. Not a new live Service/Store entry point. |
 
 Projection endpoints must not precede the origin. Search may probe endpoints out of
 order on independent scratch state; probing an earlier time after a later probe is
@@ -254,7 +260,9 @@ settlement authority. Private implementation fields and caller boundaries must
 enforce this distinction; a test-only convention is insufficient.
 
 Each returned stage is exactly `{stage, evaluation}`, with the existing complete
-EvaluationResult and one C1e stage tag. Preserve real catchup/ordinary stage order,
+EvaluationResult and an internal tag `offline_catchup`, `ordinary`, `simulation_wait`
+or `diagnostic_window` selected by the actual recipe. Preserve real catchup/ordinary
+stage order,
 including an ordinary zero-elapsed evaluation where the current pipeline has one.
 Do not collapse different policy intervals into one invented incremental receipt or
 sum progress/banking fields without their actual stage semantics. This private
@@ -300,11 +308,11 @@ the hook effects. This is RP-655's two-profile API constraint, not a new product
 API, event publisher, live bug or whole-domain proof. C1d proposes the distinct
 ownership contract; the current refusal is not removed or filtered away.
 
-**Search identity must cover every reuse path.** Proposed identity is the canonical
-complete origin plus source save version, constants identity, evaluation mode and
-the validated producer/hook/ablation context. Derived digests are private lookup
-keys for trusted values, not proof that a producer is authentic. No rounded-rate
-cache, mutable callback address or search path substitutes for that identity.
+**Search identity must cover every reuse path.** C1e proposes an opaque run-local
+origin identity whose immutable contents bind complete state, source version,
+pinned catalogs, mode and the validated producer/hook/ablation context. Forks share
+that identity; a real action or authorized context boundary creates a new one.
+No rounded-rate cache, mutable callback address or search path substitutes for it.
 
 The canonical consumer rules for beam equality, completion-cache keys, dominance
 and temporal search live in [Accrual-aware Harness Search](accrual-aware-harness-search.md).
@@ -355,87 +363,53 @@ Implementation acceptance must compare full projected/settled hook effects and e
 and prove no projection delivery plus once-only actual commit/retry on real SQL.
 The two-profile RP-655 test does not supply that Store/outbox proof.
 
-### C1e — Proposed private context encoding and identity (unadopted)
+### C1e — Proposed typed, in-memory ownership and identity (unadopted)
 
-Use a strict, versioned internal value, not a new Company/Founder field or public
-artifact. Exact proposed root fields are `v`, `company_version`, `company`, `operation_company`,
-`founder_version`, `founder`, `constants_hash`, `next_constants_hash`, `owner`,
-`stage`, `mode`, `replay_inputs`, `simulation`, `diagnostic`. `v` is1. Company is the complete
-typed state at its admitted source version. Founder and its version are both null
-when not an input; otherwise retain its complete admitted typed state, not just a
-partial counter list. Exit/continuation context binds the actual next bundle hash;
-otherwise `next_constants_hash` is null. Each non-null hash must resolve to the
-already validated pinned artifacts; a digest does not authenticate arbitrary bytes.
+The earlier private JSON envelope, canonicalizer and new origin hash protocol are
+withdrawn from this proposal. No identified consumer persists or transmits a
+calculation origin. Do not build a second codec, new Company/Founder field, public
+proof object or logged-owner wrapper for an in-memory lifecycle. Existing saves,
+artifacts and replay inputs retain their own strict versioned decoders and identity.
+This change to our draft is not acceptance of the remaining architecture.
 
-- `owner.kind == logged`: `owner` contains exactly `kind` and the existing complete
-  `command` tuple; `replay_inputs` is the existing complete admitted versioned
-  envelope, `operation_company` is the complete original command pre-state at the
-  same Company version, and `simulation`/`diagnostic` are null. Reconstruct the requested stage
-  entry from that pre-state through its actual preceding Guild/catchup/schedule
-  steps and require exact equality with `company`. Command, mode, constants and
-  recorded catchup coordinates must agree at their respective boundaries, not by
-  incorrectly comparing a post-catchup cursor to the old absence start. Retain
-  Founder carry and active-play evidence; no live lookups during reconstruction.
-- `owner.kind == simulation`: `owner` contains exactly `kind`, `scenario_id`,
-  `scenario_version`, `scenario_hash`, `policy_id`, `policy_version`, `policy_hash`,
-  `seed`, `session_index`, `company_stream_id`, `founder_id`, `revision`, `run_log_seq`.
-  Capture the actual simulation revision/identity inputs; do not infer them from
-  Company payload alone or invent a live command. Bind the existing loaded scenario/policy
-  identities and selected run seed, not IDs/versions alone. Seed is the existing
-  canonical unsigned-decimal seed string; session index is null before assignment
-  and otherwise an exact nonnegative integer. `replay_inputs` is
-  null and `operation_company`/`diagnostic` are null. `simulation` contains exactly `external_contributions`, `commons_weight_ppm`,
-  `guild_settlement_batch`, `route_context_version`, `absence_span`, `mask`, `hook_recipe`,
-  `projection_recipe`. The latter is exactly `fixed_external` or `active_play_endpoint`
-  under C1h; a caller cannot select whichever recipe gives a nicer payout.
-  Reuse the existing replay-accrual grammar/validation for the first four fields.
-  `mask` contains exactly `generator_ids`, `upgrade_ids`, `removed_generator_ids`,
-  `removed_upgrade_ids`, `removed_action_ids`: sorted unique valid IDs with the
-  existing ablation semantics. `hook_recipe` is one C1d tag, not arbitrary code.
-  `absence_span` is null online; offline it contains exactly `from_ms`, `to_ms`,
-  the actual policy-owned absence start and return boundary. Its start matches the
-  stage origin, endpoints lie within it, and internal probes cannot change the span
-  or allocate another allowance. Validate it from the selected session history,
-  not from a client-supplied mode or a convenient cut.
-- `owner.kind == diagnostic`: the exact C1g profile requires a non-null diagnostic payload;
-  `operation_company`, `founder_version`, `founder`, `next_constants_hash`,
-  `replay_inputs` and `simulation` are null. This is not a synthetic harness run.
-- `stage` is exactly `offline_catchup`, `ordinary`, `simulation_wait` or
-  `diagnostic_window`; `mode` uses
-  the existing online/offline union. Simulation owners use `simulation_wait`; logged
-  owners use one of the first two under the existing replay envelope rules.
-  Diagnostic owners use only `diagnostic_window`/online under C1g. A stage
-  origin is captured after preceding semantic mutations as
-  C1b requires: retained clearing evidence does not mean applying that batch again
-  to an already-cleared origin. A caller cannot change stage/mode to renew a cap.
+Construct opaque handles through production-owned typed factories. Each owns:
 
-Unknown/extra fields, invalid null combinations, unsupported versions, invalid
-state/context or disagreement with pinned inputs refuse before constructing a
-handle. Byte decoders also refuse duplicate keys and trailing/multiple JSON values
-before canonicalization; do not let last-key-wins parsing choose the identity.
-No raw computed rate, function pointer or ambient clock is encoded. Restore
-the original source versions; rederive catalog-owned runtime facts such as
-`FactionStockResource` from state plus pinned catalogs and reject disagreement,
-rather than persisting a second authority. A legitimately absent nonpersisted
-runtime cache is derived by the factory, not treated as a missing save field;
-explicit inconsistent claims still refuse. Artifact/Company/Founder maps and input
-buffers must not alias caller-owned mutable data.
+- Complete Company state restored at its actual source version, using the existing
+  codec; complete Founder state only where the actual consumer requires it.
+  Derive runtime facts such as `FactionStockResource` from pinned catalogs as the
+  real caller does; reject explicit inconsistencies without adding save fields.
+- The validated, read-only pinned catalog bundle and actual revision/stream/owner/
+  log coordinates. Preserve legacy empty coordinates where its accepted caller
+  permits them; do not infer missing identities from the Company payload.
+- The actual run's scenario/policy identities, seed and session history, where
+  applicable, plus owned copies of ordered external contributions, Commons weight,
+  Guild batch, route context and the complete ablation mask. Use existing typed
+  grammars and validators, not a new parallel field validator or rounded-rate list.
+- One closed C1d hook recipe and one C1h sampling recipe selected by that caller's
+  adopted protocol. Offline context retains its actual absence start/return and
+  shared allowance; probes cannot change mode, span, inputs or recipe to renew it.
+  The diagnostic instead owns C1g's real input/branch/window, not a fake run identity.
 
-Encode the validated logical value to match `canonicalJSONString` in
-`client/src/replay.ts`: canonical state Decimal strings, exact integer coordinates,
-byte-sorted object keys and semantically ordered arrays, without report indentation,
-HTML-escape differences or a trailing newline. Hash the bytes with SHA-256 prefixed by the
-UTF-8 domain separator `cloud-clicker/accrual-origin/v1` followed by one zero byte.
-Within one fixed logged command, its already-bound target timestamp remains part of
-the context: internal cut times do not rebind its replay envelope. Simulation and
-diagnostic origins bind their policy/window as C1h specifies; their query endpoint
-is a separate reuse-key coordinate. Do not claim two different logged envelopes
-have the same context merely because their pre-state matches. Reuse keys also bind
-visible-state/revision/budget coordinates under the harness successor. Input
-spelling or JSONB key order is not identity; an actual field/order change is.
-This memory-only encoding is not approved for saving, public export or publication
-of private state. Runtime/size bounds and strict codec/refusal/parity tests remain
-mandatory for implementation acceptance; no new limit is invented from this schema proposal.
+Copy mutable maps, slices and buffers; share catalog objects only if their existing
+API guarantees read-only use for the handle's lifetime. Fresh projections own all
+scratch state, event buffers and role collectors. No ambient clock, live provider,
+publisher, Store or arbitrary mutable callback is retained. Invalid source versions,
+missing dependencies, inconsistent context or unsupported recipes fail construction;
+they do not select a legacy fallback. Existing external decoders still refuse
+malformed/duplicate/unknown fields at their actual wire boundaries.
+
+For reuse, a handle has an opaque identity unique within its harness run. Forks
+retain that identity; applied actions and genuine context boundaries create a new
+one. Distinct origins are not merged merely because their visible state matches.
+The identity is not serialized, a report field, a global cache key or a claim of
+producer authenticity. Each runtime can allocate its own handles; paired Go/TS
+tests compare complete projections and existing canonical outputs, not opaque IDs.
+
+Conservatively keeping distinct origins separate is safe for equality, not proof
+that search budgets still hold. The successor must measure the complete workloads
+and preserve bounds. Any later semantic interning or cross-run cache requires a
+proved full-context equivalence rule; it is not implicit permission to merge.
+No new protocol-size ceiling or workload allowance is introduced here.
 
 ### C1f — Harness search follow-up (split; unadopted)
 
@@ -448,8 +422,8 @@ applicable consumer proof. This split does not waive any original criterion.
 ### C1g — Proposed content-dynamics diagnostic owner (unadopted)
 
 Do not force this real caller into a fake scenario/policy owner. Exact proposed
-owner is `{kind: diagnostic, profile: content_dynamics_active_play,
-profile_version: 1}`. Its `diagnostic` object contains exactly `input`, `branch`,
+factory profile is `content_dynamics_active_play` version1. Its private typed
+diagnostic context contains `input`, `branch`,
 `window_start_attended_ms`, `duration_ms`, `target_resource_id`,
 `contribution_sampling`, `contributions`, `hook_recipe`.
 
@@ -466,7 +440,8 @@ profile_version: 1}`. Its `diagnostic` object contains exactly `input`, `branch`
   `018f6b7c-9abc-7def-8abc-0123456789ab` and expected revision1.
   Extract/reuse that production-owned prefix during implementation rather than
   maintain a second constructor or hand-author a pending opportunity.
-- Require exact complete `company` equality with the selected reconstructed branch.
+- The factory owns the complete Company of the selected reconstructed branch;
+  it does not accept an arbitrary caller-supplied origin as equivalent.
   Window start is the actual spawn's attended coordinate; duration is the pinned
   effect's existing duration; target resource is the actual generator production
   resource. `contributions` uses the existing ordered replay-contribution grammar
@@ -489,7 +464,7 @@ the measured bonus, not fix rounding. Logged callers retain their existing endpo
 policy. Neither policy is silently changed or generalized by this proposal.
 
 The bounded test reconstructs the current prefix and checks actual caller outputs;
-it is not an implemented private owner factory/codec. Implementation acceptance
+it is not an implemented private factory. Implementation acceptance
 must include both branches, all admitted window-effect kinds, wrong
 input/branch/window/contribution refusals and actual registered
 content-dynamics comparison without restamping its historical golden. Keep profile
@@ -502,18 +477,18 @@ the following exact recipe; it is not a client-controlled payout preference:
 
 | Owner/recipe | Context and endpoint meaning |
 |---|---|
-| Logged, implicit `logged_stage` | One already-validated command and its fixed real target timestamp. Private cuts use the stage's resolved contribution context; they do not re-resolve that command at earlier hypothetical dates. |
+| Existing logged path, compatibility reference | One already-validated command and its fixed real target timestamp. Any internal scratch work retains the stage's resolved context; no new logged-owner wrapper or payment is introduced. |
 | Simulation, `fixed_external` | Preserve the current simulation primitive's contribution assembly and clock policy, recomputing from the origin. Do not introduce active-play scheduling or automatic logged catchup merely because the state supports modern fields. |
 | Simulation, `active_play_endpoint` | Explicit modern endpoint projection using the existing logged pipeline's scheduling/catchup order on fresh scratch state, with frozen external provider inputs. It is not the current default harness behavior. |
 | Diagnostic, implicit `window_start` | C1g's real natural-draw/claim prefix and fixed start-sampled window. The endpoint recipe is not interchangeable with it. |
 
-For a logged owner, `replay_inputs.evaluated_at_ms` remains its command target;
+In the existing logged path, `replay_inputs.evaluated_at_ms` remains its command target;
 stage contribution resolution is fixed as C1b describes. Internal cut coordinates
 range only over that stage's owned interval and cannot rewrite its command, absence
 span, mode or resolved inputs. A different real command/provider resolution creates
 a different context, not a cache hit justified by equal Company bytes.
 
-`fixed_external` does not own new Guild clearing: its encoded pending settlement
+`fixed_external` does not own new Guild clearing: its captured pending settlement
 batch must be empty, and already-settled stock state remains in the source Company.
 Nonempty pending batches belong to the logged or modern endpoint recipe, which
 does own that work. This does not omit those populations from the full repair.
@@ -575,7 +550,7 @@ required catchup metadata and used incorrect hand arithmetic; the plan/log retai
 those failures and the independent correction before the successful measurement.
 
 This verifies two controlled Go reconstruction profiles, not live Guild generation,
-the proposed owner factory/codec, general contexts, SQL/TS, full-domain conservation
+the proposed typed factory, general contexts, SQL/TS, full-domain conservation
 or repaired AC6. Keep final real command/receipt/hook ownership intact; do not treat
 cash equality, one hook call or a matched scratch prefix as those broader proofs.
 
@@ -753,8 +728,8 @@ require literal post-debit payouts rather than recovery of earlier capped overfl
 This experiment freezes the entire existing Company only to avoid guessing a partial
 schema. It uses no external/active-buff contributions, SQL or new versioned fields. It
 does not establish a production storage bound. The complete-context reconstruction
-and cost proof remain implementation gates. These146 profiles do not authorize an
-optimized minimal-context schema in place of the explicit C1e proposal.
+and cost proof remain implementation gates. These146 profiles do not authorize a
+partial context that omits required producer inputs from C1e's typed ownership.
 
 #### Lower-domain counterexample: the candidate write set is insufficient
 
@@ -959,7 +934,7 @@ the red population with a convenient new one or alter its monetary expectations.
 Under the recommended operation-local route, no new Company/Founder field, save
 migration or replay-envelope field is proposed. Existing persisted `Evaluate`,
 `ApplyLogged` and Exit histories retain their pinned one-shot behavior; the private
-C1e encoding must not be slipped into those schemas. A new calculation interface
+C1e handles are not added to those schemas. A new calculation interface
 and changed consumer dispatch need their own reviewed caller bindings. The harness
 successor owns new scenario/policy/report dispatch, not a hidden switch on an old
 identity. Actual runtime changes still obey kernel-version rules; do not invent a
@@ -981,7 +956,9 @@ exists before RFC acceptance.
    this draft does not authorize introducing such commits beside the closed boundary.
 3. Existing numeric goldens and legitimate one-shot payouts remain exact. Include the five
    known rounded-rate differences, exponent edges, near-cap/debit and no-overflow-bank cases.
-4. New codec/version/identity/reconstruction refusals execute in both runtimes. Real
+4. Typed factory/version/context refusals and branch isolation execute in both
+   runtimes, reusing existing codecs for existing wire inputs rather than inventing
+   a new origin codec. Real
    Service/Store/Postgres tests prove commit, rollback, identical retry and retained replay.
 5. Old pinned histories retain their exact behavior; new-run/migration/Exit behavior follows
    the adopted activation contract. Missing or forged accrual context cannot be accepted.
@@ -1005,9 +982,9 @@ diagnostic owner and versioned caller/report dispatch. Those engineering gaps mu
 close before that specification is accepted; accepting this primitive would not
 accept the successor, remove current constructor holds or finish AC6.
 
-Strict codec/adapter reconstruction, Go/TS parity, full admitted-domain contexts,
+Typed factory/adapter reconstruction and isolation, Go/TS parity, full admitted-domain contexts,
 real Store commit/rollback/retry, actual workload/storage measurements and affected
-CI are executable implementation gates above. Do not demand a completed new codec
+CI are executable implementation gates above. Do not demand a completed new API
 or SQL path as proof an unimplemented RFC is already shipped. Equally, do not defer
 an unspecified algorithm to implementation or substitute owner approval for any
 required proof. Keep full-state bounds measurable and fail-loud; no ceiling increase
@@ -1023,6 +1000,11 @@ contract, explicit adoption and independent normative review before production w
 
 ## Changelog
 
+- 2026-10-15: withdraw the unnecessary private origin JSON/hash protocol in favor
+  of opaque typed run-local ownership. Existing codecs and live transaction paths
+  remain the authority; no new logged wrapper or serialized identity is proposed.
+  Preserve context/isolation, exact results, workload, Go/TS/SQL and review gates.
+  This revises an unaccepted proposal, not the delegated Clout wording or runtime.
 - 2026-10-15: distinguish fixed-command, fixed-external, modern endpoint and diagnostic
   sampling recipes; bind simulation identity and preserve ordered stage evaluations.
   Clarify that a logged envelope already binds its target time. Draft only; no dispatch,
