@@ -12,14 +12,16 @@ startup/failure/drain callback waits now obey its existing95-second context and 
 or late observations. Three factored-old receive regressions fail; corrected cold/vet/race
 controls and the actual Linux-amd64/Postgres timer population pass, retaining real60-second
 callbacks, SQL failure/recovery and orderly drain. This changes tests only, not credential
-retention, timer, runtime or alert policy. The log owns the range after `21734b10`, pending
-Claude review; current-head manual evidence is not full AC7 or exact-artifact/clean-host proof.
+retention, timer, runtime or alert policy. Independent corrective review now APPROVES
+`ea194d8d^..ea194d8d`; the log owns the exact range and actual real-minute rerun.
+Current-head manual evidence is not full AC7 or exact-artifact/clean-host proof.
 
 **Current DP5 smoke correction and release-lane evidence, 2026-10-14:** RP-612 rejects
 size-limiter EOF as completion, preserving the existing 4 MiB ceiling. Four old decoder/caller
 regressions fail; corrected native/race and the actual declared Caddy/Postgres/WebSocket lane
 pass, including admitted work, courtesy/drain, restart and restored-account smoke. The log
-records the range after `7644aed4` pending Claude, and the lane's checkout-backed/emulated limits.
+records independent corrective approval of `cc256422^..cc256422`, the actual declared-lane
+rerun, and its checkout-backed/emulated limits.
 Current Docker28.4.0/Compose2.39.4-desktop.1 matches the recorded development pair but its
 daemon is Linux/aarch64; CR2/CR4 native supported-host experiments remain unexecuted.
 

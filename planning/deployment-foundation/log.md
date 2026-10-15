@@ -7039,3 +7039,44 @@ ledgers and recording subprocesses are not real failed-install cleanup, deployed
 rotation, full lifecycle, clean-host/R-006 or release proof. RP-558/current-release
 authority, future clock/durability and original Claude CHANGES REQUIRED dispositions
 stay open. Missing-history semantics unchanged; other descendants not approved.
+
+## 2026-10-15 — Independent RP-612/RP-615 corrective approvals with actual services
+
+Review by: fresh independent Codex sub-agent `/root/deployment_evidence_corrective_review`,
+under Marco's 2026-10-15 corrective-code delegation. Recorded by: Codex parent transcribing
+the returned verdict, not implementer self-approval. **APPROVED**, no findings, separately:
+
+- RP-612, all seven paths: `7644aed4001c8f17d59b397d1d5eadd25c7d2b59..cc256422c6bc4579ac588676b7e3192db7075938`.
+- RP-615, all five paths: `21734b100b56ef010a1c5c0866478369c05318bc..ea194d8dec3a353c9daefd58c683229cd8e56633`.
+
+Full code/test/docs/records inspected against DP3/DP5/DP7/AC7. Sentinel-byte overflow
+detection retains the4MiB ceiling; callback observation refuses expired/closed results while
+retaining timely SQL-error and child-cancellation observations. No production timer/budget change.
+
+Independently executed at descendant `801d2fee6b11837a9c26f28e25045b5d81d6dc44`:
+`make test-go GO_PACKAGES='./deploymentrelease ./deploymentrehearsal' GO_TEST_FLAGS='-count=1'`
+passes9.458s/9.146s; cold Gameserver passes0.280s with DB/manual skips explicit. Named
+`TestCleanupRuntimeOutcome` executes all three helper tests; an initial wrong selector matched
+no tests and supplies no evidence. Focused race `TestSmokeResponse|TestCleanupRuntimeOutcome`
+passes1.661s/1.388s across Deploymentrelease/Gameserver, including overflow, hidden tail,
+malformed/endless-tail and authenticated-followup refusal. Affected three-package vet passes.
+`make test-deployment-release` passes actual Caddy/Postgres/WebSocket in2.94s: drain/refusal,
+admitted work, restart/restore and damaged inputs. `make test-deployment-cleanup-runtime`
+passes121.724s, actual SQL-failure60.97s and orderly-drain60.67s; scheduled SQL reports
+`context_ended=true cancellation_error=true`. Real60-second callbacks and95-second arm budgets
+unchanged. Both exact-range whitespace checks pass; reviewer makes no tracked edits.
+
+These are descendant runs, not historical builds/fresh old-source reproductions. RP-612
+source/tests are byte-identical to its commit; RP-615 helper/regressions are unchanged, while
+later691e9bac adds route-expiry observations/job-count changes, not approved by these verdicts.
+Old failures were inspected in retained logs. Docker28.4.0/Compose2.39.4-desktop.1 daemon is
+Linux/arm64; declared amd64 services use emulation. No native supported-host, governed
+previous-image rollback, OCI gameserver lifecycle, receiver delivery, journald/retention,
+exact-release R-006, full AC7, aggregate CI or release/archival approval follows. Known27
+Production failures and historical kernel guard50a3a514 remain unresolved, not rerun here.
+
+Declared release target cleans its resources. Reviewer removes only its twice-inspected,
+newly created tmpfs Postgres container, discarding disposable test data; shared networks/cache
+volumes and two pre-existing BuildKit containers remain. No publication/deployment/push.
+Continue remaining accepted implementation and current-release contract work; these two
+corrective ranges no longer wait on Claude, without closing the original feature.

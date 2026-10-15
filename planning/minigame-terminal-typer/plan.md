@@ -15,7 +15,8 @@ Do not treat this draft as permission to implement B5/B6, refresh a pin or expos
 2026-10-14 bounded TT-PA2 correction: RP-563's availability projection now reads the same
 pinned tier/Founder-Exit predicate as session creation. Complete candidate-bundle projection
 regressions and affected cold package checks pass; no public binding or feature completion.
-The owning log records the correction range after `573b0c9c`, pending Claude review.
+The owning log records independent corrective approval of `5cd7119f^..5cd7119f`
+under Marco's 2026-10-15 Codex-review delegation; this is not whole-feature acceptance.
 
 ## Batches
 
@@ -89,3 +90,10 @@ removing the text field clears its composition flag, while a same-input response
 The old child suppresses a later run's native Enter in both Chromium/WebKit; the corrected
 complete child population, types/build and shell boundaries pass. This is component lifecycle
 proof, not public registration, OS IME certification or acceptance of B6.
+
+2026-10-15 independent corrective review: RP-394 (`e019e670^..e019e670`),
+RP-475 (`59e5cc49^..59e5cc49`) and RP-563 (`5cd7119f^..5cd7119f`) are APPROVED
+by fresh Codex reviewer `/root/typer_ui_availability_corrective_review`, under Marco's
+corrective-code delegation. The owning log records independently executed descendant
+browser/Go/type/build checks and their limits. Other corrective ranges and original
+feature acceptance remain separate; these three corrections no longer wait on Claude.

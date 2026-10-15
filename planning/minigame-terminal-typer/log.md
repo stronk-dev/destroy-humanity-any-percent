@@ -1007,3 +1007,37 @@ Update canonical Game UI/Typer docs, plan and RP-563 in this same batch. Review 
 archival, release approval or push. Continue the public-binding draft's descriptors/generated
 guards and metadata compatibility work alongside other accepted construction, without asking
 Marco to supply engineering details.
+
+## 2026-10-15 — Independent approval of three bounded Typer corrections
+
+Review by: fresh independent Codex sub-agent `/root/typer_ui_availability_corrective_review`,
+under Marco's 2026-10-15 corrective-code delegation. Recorded by: Codex parent, transcribing
+the reviewer's returned verdict, not supplying its own designated approval. **APPROVED**
+separately for each complete code/test/docs/record range:
+
+- RP-394: `76b58dc286075f5512fcca87f23b1304eec8e704..e019e670195e6067071c29674b552024badc85a2`.
+- RP-475: `73bcc42bd3bba93438f7d226cfc2ca5dac58c5cd..59e5cc49df5c926227d909262e49f0ba4a13400f`.
+- RP-563: `573b0c9c4f6c083c4db11754b456bd98516fa296..5cd7119f0df6139d070e12bcad09cdfdb8407fc7`.
+
+No actionable findings. Independently executed at descendant `801d2fee6b11837a9c26f28e25045b5d81d6dc44`:
+`make test-browser-focused BROWSER_TEST_FLAGS='test/typer-table-browser.test.ts
+test/typer-content-gate.test.ts test/minigame-surface-browser.test.ts --project=chromium
+--project=webkit'` exits0: 172 passes and four deliberate expected-timeout negatives, 176 total.
+An initial sandbox listener denial executed no tests. Native keyboard/pending/focus/terminal
+handoff and a complete untimed TS-engine run execute; composition events are injected, not
+OS IME certification. Separate Node content corpus passes48. Cold `make test-go vet
+GO_PACKAGES='./gameui ./minigame ./account ./gameserver' GO_TEST_FLAGS='-count=1'` passes;
+the named availability test also executes all13 complete candidate-bundle rows in both
+activity states, checking each gate, independent flags and immutability. `make typecheck
+build-client verify-client-boundary` passes, zero Svelte diagnostics. Each exact-range
+`git diff --check` passes; reviewer made no source edits.
+
+These are descendant-source executions, not historical checkouts or independent reruns of
+old-source failures. TyperTable/harness are unchanged after `59e5cc49`, features.go after
+`5cd7119f`; current tests/engine include later corrections and kernel219. Historical red
+baseline records were inspected. Approval covers only the three named ranges, not intervening
+or subsequent work, original Claude feature acceptance, normative HTTP proposals, production
+registration/content, public HTTP/clocks/payout/receipts, persistence/Exit journeys, Firefox,
+manual AT, hosted CI, archival or release. Known27 Production partition failures and historical
+kernel guard `50a3a514` remain red, not rerun or concealed. No feature checkbox/status promotion
+or push; continue remaining accepted construction and exact corrective reviews.
