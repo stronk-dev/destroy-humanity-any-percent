@@ -41,6 +41,10 @@ cannot claim generic monotonicity. Next specify/prove a correct alternative sear
 separate numeric-route adoption and its complete caller/compatibility/workload proof—not more
 positive censuses or an attempted proof of the now-false generic proposition. Active math,
 kernel222, original27 partitions and all adoption/release gates remain unchanged.
+The separate manual TS follow-up now executes two public v17 ApplyLogged calls with a
+freshly hashed/admitted10-artifact bundle and real pinned meter initialization. A1ms credit
+spend after accrual changes no cash; both final cash/receipt values retain the same decline.
+This is not full paired Go/TS state/event, SQL, modern v19 factory/search or acquisition proof.
 
 RP-672 separately reproduces the upper-domain mismatch through admitted v17 inputs
 and actual Go/TS ApplyLogged, not a formula reconstruction. TS now uses Go's seconds-

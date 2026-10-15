@@ -1,0 +1,97 @@
+// Manual Vite overlay for client/test/replay.test.ts; not ordinary test collection.
+import { readFileSync } from "node:fs";
+import { expect, it } from "vitest";
+import { newRunMeterState } from "../src/meters/transition";
+import fixture from "../../testdata/replay/apply-logged-v1.json";
+import {
+  applyLogged, canonicalJSONString, contentContributions, encodeReplayState,
+  loadReplayCatalogBundle, restoreReplayState, type ReplayArtifacts,
+} from "../src/replay";
+
+it("observes the provision-origin temporal pair through public ApplyLogged", async () => {
+  const tick = 1000, prefix = 65535, firstMs = 999, burstMs = 333;
+  const purchased = 999999352334, generated = 647666;
+  const root = JSON.parse(readFileSync("balance/testdata/t0-t1/economy-v4.json", "utf8"));
+  root.provision_tick_ms = tick;
+  root.offline_policy.burst_speed = "1e12";
+  root.offline_policy.burst_max_duration_ms = firstMs + prefix * tick + burstMs;
+  let foundTarget = false, foundProvider = false;
+  for (const row of root.generator_classes) {
+    if (row.id === "generator.beige_tower") {
+      row.production.base_rate = "3.003003003e-23";
+      row.provisioned_hardcap.count = generated;
+      row.ladder = [];
+      row.roles = [{ kind: "stock_rate", per_purchased_ppm: 1000 }];
+      foundTarget = true;
+    } else if (row.id === "generator.beige_tower_v2") {
+      row.production = { resource_id: "company.permits", base_rate: "1e-1000" };
+      row.provisions.rate_ppm = generated * 1_000_000;
+      foundProvider = true;
+    }
+  }
+  expect(foundTarget && foundProvider).toBe(true);
+  for (const pool of root.synergy_pools) pool.sources = pool.sources.filter((source: { id_or_class: string }) => source.id_or_class !== "generator.beige_tower");
+  const names = ["achievements", "categories", "commons", "doctrines", "economy", "factions", "guilds", "meters", "prestige", "routes"] as const;
+  const artifacts = { ...Object.fromEntries(names.map((name) => [name, fixture.first_content_exit.artifacts[name]])), economy: JSON.stringify(root) } as ReplayArtifacts;
+  const hash = await artifactHash(artifacts);
+  const bundle = await loadReplayCatalogBundle(hash, artifacts);
+  if (!bundle.meters || !bundle.achievements || !bundle.doctrines) throw new Error("missing admitted foundation catalogs");
+  const genesis: Record<string, any> = structuredClone(fixture.doctrine_run.genesis);
+  const meterState = newRunMeterState(bundle.meters, 0);
+  genesis.meter_values = meterState.values;
+  genesis.meter_decay_remainders = meterState.decayRemainders;
+  genesis.meter_input_remainders = meterState.inputRemainders;
+  const clock = Date.parse(genesis.evaluated_through);
+  genesis.balances = { "company.cash": "0", "company.permits": "0" };
+  genesis.generators = Object.fromEntries(root.generator_classes.map((row: { id: string }) => [row.id, 0]));
+  genesis.generators["generator.beige_tower"] = purchased;
+  genesis.generators["generator.beige_tower_v2"] = 1;
+  genesis.generators_purchased_total = purchased + 1;
+  genesis.generators_provisioned = Object.fromEntries(root.generator_classes.map((row: { id: string }) => [row.id, 0]));
+  genesis.provision_remainders_ppm = { "generator.beige_tower": 0 };
+  genesis.upgrades_owned = [];
+  genesis.tier = 0;
+  genesis.evaluated_through = new Date(clock + 1).toISOString();
+  genesis.run_started_at_ms = clock;
+  genesis.compute_burst_remaining_ms = firstMs + prefix * tick + burstMs;
+  genesis.compute_credit_ms = 5000;
+  const before = canonicalJSONString(genesis);
+  const results: string[] = [];
+  for (const [index, partial] of [499, 500].entries()) {
+    const state = restoreReplayState(structuredClone(genesis), 17, bundle.economy,
+      { meters: bundle.meters, achievements: bundle.achievements, doctrines: bundle.doctrines });
+    expect(contentContributions(state, bundle.economy)).toEqual([]);
+    const inputs: Record<string, any> = structuredClone(fixture.doctrine_run.entries[3]!.replay_inputs);
+    inputs.evaluated_at_ms = clock + 1 + firstMs + prefix * tick + partial;
+    inputs.resolved.founder_carry.founder_constants_hash = hash;
+    const payload = { amount_ms: 1, expected_revision: inputs.command.revision, kind: "spend_compute_credit", target: "accelerate" };
+    const transition = await applyLogged(state, canonicalJSONString(payload), bundle, inputs);
+    expect(transition.outcome).toBe("applied");
+    const cash = state.balances["company.cash"]!;
+    results.push(cash);
+    console.info("RP-676 public TS replay", JSON.stringify({ index, partial, cash, hash }));
+    expect(cash).toBe(index === 0 ? "1.968058018e6" : "1.96805801799e6");
+    expect(state.generatorsProvisioned["generator.beige_tower"]).toBe(generated);
+    expect(state.computeCreditMs).toBe(4999);
+    expect(state.computeBurstRemainingMs).toBe(1);
+    const receipt = transition.receipt as { receipt: { changes: { resource_id: string; after: string }[] } };
+    expect(receipt.receipt.changes.find((row) => row.resource_id === "company.cash")?.after).toBe(cash);
+    expect(state.evaluatedThroughMs).toBe(inputs.evaluated_at_ms);
+    expect(canonicalJSONString(encodeReplayState(state))).not.toBe(before);
+    expect(canonicalJSONString(genesis)).toBe(before);
+  }
+  expect(results).toEqual(["1.968058018e6", "1.96805801799e6"]);
+});
+
+async function artifactHash(artifacts: ReplayArtifacts): Promise<string> {
+  const encoder = new TextEncoder(), chunks: Uint8Array[] = [];
+  for (const name of Object.keys(artifacts).sort() as (keyof ReplayArtifacts)[]) {
+    const key = encoder.encode(name), data = encoder.encode(artifacts[name]);
+    chunks.push(frame(key.length), key, frame(data.length), data);
+  }
+  const joined = new Uint8Array(chunks.reduce((sum, chunk) => sum + chunk.length, 0));
+  let offset = 0;
+  for (const chunk of chunks) { joined.set(chunk, offset); offset += chunk.length; }
+  return `sha256:${Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", joined)), (byte) => byte.toString(16).padStart(2, "0")).join("")}`;
+}
+function frame(value: number): Uint8Array { const bytes = new Uint8Array(8); new DataView(bytes.buffer).setBigUint64(0, BigInt(value)); return bytes; }

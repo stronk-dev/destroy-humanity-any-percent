@@ -5086,3 +5086,46 @@ any tier/release. No active product/kernel222/balance/golden/CI bytes or resourc
 Review by: Codex root (research author/first filter). Recorded by: Codex root. Complete
 56f8a278-exclusive through this containing research commit needs research/normative review
 outside the corrective-only delegation. All handles terminal; formatting/diff checked.
+
+## 2026-10-16 — RP-676 TypeScript public-replay boundary (before execution)
+
+Next test is TWO independent public TypeScript ApplyLogged calls at the same499/500ms
+endpoints, not another rate/prefix census or private-function export. Reuse the neutral v4
+catalog recipe and admitted v17 ownership/cursor/burst coordinates. Foundation fields come
+from the existing doctrine genesis and pinned foundation artifacts from first_content_exit;
+the freshly hashed complete10-artifact subset still passes actual bundle validation.
+Spend1 banked compute millisecond after accrual (no cash debit/credit), require applied,
+known cash/receipt pair, actual provision cap, restored independent origins,4999 credits and
+new1ms burst. This includes actual replay hooks but is not the Go full logged caller, SQL,
+modern v19 factory, current search, natural acquisition or live loss. Manual test is mapped
+onto the existing replay test slot by ignored Vite loader; no tracked client/Go source changes.
+
+First92505 fails before bundle loading: fs path assumed client cwd although the root command
+keeps root cwd. Correct the data path, not the environment. Next9691 admits the bundle but
+fails meter-state validation before either ApplyLogged: the doctrine genesis's input-remainder
+keys belong to its OTHER pinned meter catalog. Neither run supplies a logged outcome. Use
+actual newRunMeterState(bundle.meters,0) for the new pinned catalog's complete values/decay/
+input-remainder sets; do not weaken state validation or splice in missing ad-hoc fields.
+
+17902 then executes the whole single test/two public ApplyLogged calls, terminal0/1.47s.
+Final source63838 repeats both after fixture typing/immutable-artifact construction cleanup,
+terminal0/1.49s (861ms test work). Both applied: exact cash/receipt decline, provision cap647666,
+unchanged source genesis,4999 remaining credits and new1ms burst; actual neutral contribution
+assembly is empty. Fresh10-artifact bundle admission executes. No private export/instrumentation
+of the evaluated module. The ordinary source origin's foundation fields are NOT relabelled as
+this separately initialized full v17 state. Actual module hooks execute, but no complete
+Go/TS state/event equivalence, SQL, v19 factory/search, natural acquisition or live loss claim.
+
+Exact root command:
+`client/node_modules/.bin/vitest run --root client --config /Users/stronk/repos/cloud-clicker/.cache/provision-carry-replay.config.mjs`.
+The ignored config merges client/vite.config.ts, includes only test/replay.test.ts and loads
+the committed manual probes/provision-carry-replay.test.ts.txt into that existing test slot.
+It does not replace product sources or run the ordinary full replay population. Source SHA256
+1f838350e540dd096d39f5feae375dbdf034171804938dd20765b1e4dbb4bccb. Gofmt not applicable;
+source/diff checked, no claim that .txt research was included in the project's TS typecheck.
+No product/math/kernel/balance/CI/artifact-baseline change or new proof population for CI.
+
+Own draft/plan/RP-676 reconcile the stronger bounded evidence. Review by: Codex root (research
+author/first filter). Recorded by: Codex root. Complete eac09e1c-exclusive through this
+containing research commit needs research/normative review outside corrective delegation.
+No independent approval, adoption, full accounting/27-partition repair or release milestone.

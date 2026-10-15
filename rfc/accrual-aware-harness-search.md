@@ -348,9 +348,20 @@ ladder/manual/feed roles and feed membership, retaining its stock role and all
 numeric/provision inputs. Actual contribution assembly is empty; TWO actual
 SimulateAdvance projections with nil hook/default mask reproduce the same decline,
 receipt/provisioned cap and provision-role activation. A fixed threshold equal to
-the earlier cash returns true then false. No complete modern factory, hook-bearing
-replay, search miss, published report defect, natural acquisition or saved-payment
-loss was executed or inferred. Inputs are deliberately unminted research content.
+the earlier cash returns true then false. This Go diagnostic does not execute the
+complete modern factory, hook-bearing logged replay or search. Inputs are deliberately
+unminted research content; no published-report defect, natural acquisition or
+saved-payment loss is inferred.
+
+Separate TypeScript public-replay confirmation uses the same neutral economic recipe
+and a properly initialized v17 foundation state. A freshly hashed10-artifact bundle
+passes its actual loader, and TWO independent ApplyLogged calls spend1 already-banked
+compute millisecond after accrual without changing cash. Both apply; final cash and
+receipts retain1.968058018e6→1.96805801799e6, provision cap647666, credits4999 and new
+burst1ms. No private evaluator export or source mutation is used. It executes the
+public v17 logged path, not SQL persistence, the modern v19 factory/search or complete
+Go/TS state/event equivalence. The original Go primitive origin is not relabelled
+as that complete foundation state. The owning log preserves failed setup attempts.
 
 Consequently, the generic actual-wait monotonicity proposition over H3b's existing
 context regimes is FALSE for the admitted domain. Do not keep extending positive
