@@ -327,3 +327,47 @@ narrows what the envelope proves; it does not change any ruling.
 
 **Review.** The checkbox flips in this same commit, which carries its evidence. The item requires
 Codex's cross-party review of this range.
+
+## 2026-10-15 — Codex designated review of Claude's epoch-8 pacing evidence — APPROVED
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:**
+  `a965538e7c724c12684d9165e11a091ffdc43f8d^..a965538e7c724c12684d9165e11a091ffdc43f8d`.
+  Exactly the retained report, plan item6 and Claude's measurement record; no production bytes.
+  This is review of Claude's evidence batch, not self-approval of subsequent Codex work.
+- **Executed at `59787fc3`:** root `make first-hour-harness HARNESS_WORKERS=8
+  FIRST_HOUR_OUTPUT=.cache/prestige-first-hour-review-59787fc3.json
+  FIRST_HOUR_ACQUIHIRE_MINIMUM=200 FIRST_HOUR_BURNOUT_FACTOR=2e0
+  FIRST_HOUR_ROUTE_KNOWLEDGE_BONUS=50 FIRST_HOUR_SEED_CAPITAL=1e4
+  FIRST_HOUR_GENERATED_TOWERS=10` exits0. All3,438 historical scalar fields reproduce
+  exactly, including all97 run results and the complete aggregate. The current report adds
+  `reputation_exits` observations; it is not claimed byte-identical to the older report or
+  an execution of the historical source. The retained report is unchanged.
+- Independently checked raw scenario/policy identities and shipped curriculum inputs, exact
+  seed populations (Chaos0–63, Casual0–31, Reference0), positive bounded transition counts,
+  completed outcomes, empty invariant failures, every required milestone, all seven
+  nearest-rank envelope statistics and every run2-faster-than-run1 pair. Zero aggregate
+  warnings/failures; both elective observations remain2,700,000ms. The45-minute floor is
+  imposed by the ratified persona, not measured human willingness to Exit.
+- **Actual execution boundary:** the headless runner uses shipped progression and terms but
+  records the elective milestone without applying the persisted Exit transaction. Initially
+  investigated as a possible oracle defect; the accepted C32/C33 ruling explicitly splits
+  headless distributions from one composed replay. Root `make test-save-integration
+  SAVE_TEST_PACKAGES=./gameserver
+  SAVE_TEST_FLAGS='-run TestComposedGameserverReplaysRatifiedFirstHourAtPinnedSeed -v'
+  SAVE_TEST_COUNT=1` genuinely PASSes against real Postgres (22.50s, not skipped), executing
+  both terminal transitions, checking ordering and persisted Company/Founder replay. This
+  fulfills that boundary; it is not97 persisted-transaction runs.
+- Cold `make test-go GO_PACKAGES='./prestige ./harness'
+  GO_TEST_FLAGS='-run TestFirstHour -v'` PASSes the eight matching harness parents (5.454s),
+  including four policy grammar refusals. The prestige package has no matching tests and
+  is not credited as a full prestige-suite pass. Claude's recorded envelope mutation was
+  inspected, not independently repeated; no new severing result is claimed.
+- **Other limits:** this population contains64 acquihires,33 pivots and zero burnouts. It
+  supports the declared elective-pacing evidence, not universal branch reachability, natural
+  player behavior, later-tier pacing or full feature acceptance. The composed test also
+  reproduces the already-recorded post-delete retained/public leaderboard data; its green
+  pacing result does not approve that retention policy or close data rights.
+- **Disposition:** APPROVED for this exact range; plan item6's designated-review request is
+  satisfied. Reconcile the stale plan header to the existing AC2–AC6 approval and this verdict.
+  Item9 stays open: no archival, uncovered-range approval, later Codex implementation approval,
+  release, push, balance/epoch change or owner/draft adoption follows from this review.
