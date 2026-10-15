@@ -4730,3 +4730,22 @@ Root-created3b6ce4a3… twice inspected exact checkout/service labels, no mounts
 stopped/removed only it after completion. Disposable unused SQL data is unrecoverable;
 preexisting builders/cache/volumes preserved. No new general temporal proof, AC6/27-partition
 repair, draft adoption, full CI, feature acceptance, clean-host, deployment or publication.
+
+## 2026-10-15 — RP-672 independent corrective review approved
+
+Review by: /root/burst_replay_upper_corrective_review (fresh independent Codex, delegated
+corrective code). Recorded by: Codex (root). APPROVED all11 paths/one commit,
+3e6e6e681ebf1cd2fb67e23dddace7382ebcde33-exclusive through
+137f7a8d7c4fcafe19536b23271945fb7090352e-inclusive; execution at exact endpoint.
+Accepted D7/classification conformity, not a new numeric contract. Three identities222 bind
+real behavior change. Safe Vite loader of exact baseline SHA380147f1675aab4a6125d818fccfaa59902b03cb31cd7242135c8d91f51b467a
+independently reproduces two wrong receipts/events (6e8999999999999994,1.2e8999999999999994)
+with four valid controls. Initial relative-config startup and wrong Node filenames are
+instrument failures, explicitly corrected; no main-source mutation or extra coverage claimed.
+Cold root Make verifies six Go transitions, burst/cap/full replay fixture/goldens/kernel,
+separate full Decimal and vet; actual five-file Node6605, native Chromium/WebKit replay382,
+typecheck/build and complete-range whitespace pass. Initial browser EPERM ran0; narrow
+retry passed. Full history guard stays RED at50a3a514; its checkout/adversarial fixtures pass.
+All reviewer commands terminal; ignored diagnostic config only, no tracked edits/commits/Docker.
+No independent Firefox/Linux/SQL/default-player/natural-loss/AC6/normative/feature/archival/
+release approval. RP-672 corrective review closes; other accounting/1.0 gates remain.

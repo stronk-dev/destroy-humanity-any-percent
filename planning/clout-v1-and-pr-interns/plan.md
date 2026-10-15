@@ -13,8 +13,9 @@ and actual Go/TS ApplyLogged, not a formula reconstruction. TS now uses Go's sec
 first order and refuses infinity-class seconds/payment; kernel222 reflects real replay
 behavior change. Two old-client failures and four valid controls pass in both runtimes;
 full Node, shared numeric vectors, actual replay corpus and Linux three-engine browser
-checks pass. Historical kernel guard remains red at50a3a514. The owning log holds exact
-commands, boundaries and pending independent corrective review; no AC6/accounting adoption.
+checks pass. Fresh independent Codex APPROVES complete3e6e6e68..137f7a8d after actual
+old-source reproduction and affected Go/Node/native-browser checks. Historical kernel
+guard remains red at50a3a514. Owning log holds the exact verdict; no AC6/accounting adoption.
 
 RP-671: bounded constant-accrual client parity correction rejects infinity-class
 intermediates while preserving finite lower-domain recovery and zero operations.
