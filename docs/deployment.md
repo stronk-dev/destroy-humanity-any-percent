@@ -527,8 +527,11 @@ and conflicting database aliases refuse before
 credential files are written. The password stays only in the mode-0600 pass file, not service
 text, environment values or arguments. Existing SSL-mode handling is unchanged. This is an
 endpoint-field correction, not a general PostgreSQL URI/transport-option compatibility claim.
-The local tests compare against the pinned driver's parser; the existing real-Postgres restore
-population now includes database-query overrides but has not executed at the corrected revision.
+The local parser/file tests compare against the pinned driver's parser. The declared
+Linux-amd64/Postgres restore population also executes both empty and populated
+database-query-override restores at the corrected revision; the Deployment log records
+that local evidence. This does not establish general URI compatibility or the exact
+release artifact's clean-host recovery proof.
 
 The final rename, not just an earlier existence check, refuses an occupied backup ID. A concurrent
 writer cannot overwrite another writer's completed envelope; the loser reports failure and removes

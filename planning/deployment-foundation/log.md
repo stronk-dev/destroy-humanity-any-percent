@@ -6966,3 +6966,17 @@ removed. Review by: Codex (test/research author first filter). Recorded by: Code
 Whole seven-path test/plan/dossier/inventory/decision-evidence/ledger/log range
 after `42ce00f0` through this containing commit needs designated Claude review.
 No feature acceptance, archival, publication, deployment or release promotion.
+
+## 2026-10-15 — Reconcile stale backup-override verification text
+
+Fresh independent corrective reviewer `/root/backup_safety_corrective_review`
+finds docs/deployment.md still says RP-551's real-Postgres override restores have
+not executed. The DP6 checkpoint at7644aed4 records their actual completion;
+the reviewer also independently executes both ordinary/override populations.
+Replace only that stale claim, distinguishing parser/file and SQL evidence and
+retaining general-URI/exact-artifact/clean-host limits. No software behavior,
+accepted contract, test, policy or release gate changes. Parent checks the diff
+against the owning recorded execution; no unrelated suite for this editorial repair.
+Review by: Codex parent (editorial first filter). Recorded by: Codex parent.
+Include this two-path supplement afterf2751639 in the pending backup corrective
+review, not as approval of the later data-rights experiment or full DP6 acceptance.
