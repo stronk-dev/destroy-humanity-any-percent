@@ -189,11 +189,17 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
     intent ID only on new consent, or offline without replay. These errors are
     thrown by a runtime double, not parsed from real HTTP responses. This does
     not prove all-surface/queued origin, AT or real-service outcome delivery.
-    Separate unit checks invoke the real runtime and `Response.json` with an
+    Separate unit checks invoke the real runtime and actual Response body reads with an
     injected fetch: typed errors, malformed bodies, both outcome arms, transport
     rejection and missing credentials. They verify the exact single request,
     unchanged revision/body and credential storage, not server conformance or
     session renewal. Other Garage GS0.6 obligations remain independently open.
+    The intent caller reuses the generated transport's fatal UTF-8 JSON decoder:
+    malformed bytes cannot be repaired into an applied/rejected receipt or typed
+    HTTP conflict. Encoding/syntax diagnostics contain only the status, not reply
+    text; actual body-read/network errors retain their original identity. Valid
+    Unicode, BOM tolerance and JSON escapes remain unchanged. This adds neither
+    full applied-receipt validation nor the held generated intent schema/dispatch.
 - **Reputation Board (`meters`):** read-only, unlocked by `feature.meters`. It is a 5 × 2 table of
   constituency Standing/Grievance plus p(doom). Each cell has a native `<meter>`, numeric text and
   band text. Below 30rem it renders actual `<dl>` / `<dt>` / `<dd>` rows: each

@@ -264,6 +264,10 @@ are preserved; this is encoding validation, not runtime DTO or credential valida
 continues to be returned byte-exact after hash verification, not UTF-8/JSON-decoded by the transport.
 Malformed encoding/JSON reports its HTTP status without echoing reply bytes. Body-read failures
 propagate unchanged rather than being relabelled as encoding/JSON errors.
+The generated module exports this same `decodeJSONResponse` primitive for the
+remaining legacy intent caller. It owns only UTF-8/JSON decoding, not status/media
+admission or DTO validation. The intent operation still awaits its typed-dictionary
+contract and generated dispatch; reusing decoding does not complete C9 migration.
 The undeclared 304 arm remains open; this client does not invent an alternative for it.
 
 OpenAPI retains every raw hash header across same-status representations, combining header

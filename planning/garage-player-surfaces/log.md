@@ -7237,3 +7237,45 @@ owner/content/mint gates remain. No milestone, archival, push or release promoti
 After terminal completion, remove only the fresh `game-ui-postgres` container and
 discard its regenerable tmpfs fixtures; inventory is empty. No durable/user data,
 volume, cache or network removed. Record-only diff/links/whitespace checked.
+
+## 2026-10-15 — RP-667 intent response encoding correction
+
+Under GS0.2 and API C9, the remaining legacy intent caller must not silently
+repair malformed UTF-8 before outcome/error parsing. Extract the generated
+transport's existing fatal UTF-8 JSON decoder and reuse it here. Requests,
+credentials, retries, valid Unicode/BOM/JSON escapes and native body-read failures
+remain unchanged; encoding/parser diagnostics contain only status. This does not
+add receipt/schema/media validation or adopt the held typed-dictionary contract.
+
+Regression: twelve actual Response/runtime cases (four corrupt encodings across
+applied200/rejected200/HTTP409) fail on old Response.json(): repaired replies are
+accepted or mapped to a typed conflict. The same twelve assertions pass corrected.
+Additional cases retain valid text, sanitize syntax failures and preserve actual
+native body-read error identity. Initial full Node run has two failures because
+older tests spy on Response.json and require native parser-error identity; update
+those tests to the actual single body read and body-free SyntaxError, retaining
+offline/no-retry/request assertions. The initial two-file Linux run has four
+stream-fixture failures (611 pass): Chromium/Firefox normalize source stream
+errors. Compare against the error actually returned by native arrayBuffer, not
+the fixture's assumed source identity. No corruption assertion was weakened.
+
+Verification by: Codex. Recorded by: Codex. Final affected Node232 pass; full
+`make typecheck test-client` has zero diagnostics,12417 pass/1088 explicit skips.
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/game-ui-runtime.test.ts
+test/game-ui-intent-outcome.test.ts test/generated-api.test.ts'` passes696 across
+Chromium/Firefox/WebKit. Cold publicapi/publicread/account/gameserver tests and vet
+pass; native DB skips are not SQL credit. `make api-check verify-client-boundary`
+passes with the intentional regenerated helper staged; OpenAPI/pin bytes unchanged.
+`make test-game-ui-composed` (39981) completes exit0:35 proof controls, main,
+Cosmetic/Reputation, Clout, no-payment, controlled-maturity Garden and cash-fixture
+Tier2. Fresh production builds load exact HTML/JS/CSS/Worker, actual Postgres and
+WebSocket; main/Tier2 refresh and persisted-parent populations execute. Deliberate
+process-loss diagnostics occur in passing recovery cases. Verbose output partly
+truncates; no whole-output skip census or hosted-CI/performance claim is made.
+
+Handoff: independent corrective review pending for all ten paths in the commit
+containing this entry, parent b3d1fb40. This corrects byte decoding, not full receipt
+validation, natural pacing, Clout accounting, whole Garage/API acceptance, clean-host
+release or the nine-tier1.0 floor. No feature status promotion, archival or push.
+After terminal completion, remove only this run's disposable game-ui-postgres
+container/tmpfs fixtures; no durable volume, cache, network or user data removed.

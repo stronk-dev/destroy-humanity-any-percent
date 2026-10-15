@@ -302,6 +302,15 @@ interface ClientOperation {
   readonly responses: readonly { status: number; kind: "schema" | "raw"; contentType: string; contentHashHeader: string }[];
 }
 
+// Shared UTF-8 JSON transport decoding, not DTO/status/media validation. Legacy
+// operation callers reuse this while their descriptor migration remains pending.
+export async function decodeJSONResponse(response: Response): Promise<unknown> {
+  // Preserve body-read/network errors; sanitize only encoding/parser failures.
+  const bytes = await response.arrayBuffer();
+  try { return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)); }
+  catch { throw new SyntaxError(`response was not JSON (${response.status})`); }
+}
+
 // No token storage/refresh, retries, or automatic request-ID generation. Wrappers
 // own application outcomes and retain their exact DTO decoders. Schema bodies
 // are JSON-decoded, not claimed runtime-schema-validated by their TS types.
@@ -362,12 +371,8 @@ export function createAPIClient(fetcher: APIFetcher = fetch, baseURL = "") {
         body = bytes;
       } else {
         if (contentType !== descriptor.contentType) throw new TypeError("invalid schema API content type");
-        // Keep body-read/network errors intact. Schema JSON must be UTF-8;
-        // Response.text() silently repairs corrupt bytes into replacement characters.
-        // Retain its BOM tolerance, but never echo decoder/parser reply bytes.
-        const bytes = await response.arrayBuffer();
-        try { body = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)); }
-        catch { throw new SyntaxError(`response was not JSON (${response.status})`); }
+        // Retain BOM tolerance, but never repair corrupt UTF-8 or echo reply bytes.
+        body = await decodeJSONResponse(response);
       }
       const result: unknown = { status: response.status, ok: response.ok, headers: response.headers, body };
       return result as OperationResult<K>;

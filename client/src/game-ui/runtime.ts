@@ -1,4 +1,4 @@
-import { createAPIClient, type BootstrapResponse } from "../api/generated/types";
+import { createAPIClient, decodeJSONResponse, type BootstrapResponse } from "../api/generated/types";
 import { createBrowserMinigameSessionPort, type MinigameSessionPort } from "./minigame/session-port";
 import { createBrowserSoulRecoveryPort, type SoulRecoveryPort } from "./soul/recovery-surface";
 import { createBrowserGardenPort, type GardenPort } from "./garden/garden-port";
@@ -149,7 +149,7 @@ export function createBrowserGameUIRuntime(
     snapshot: loadSnapshot,
     async intent(body) {
       const response = await fetcher("/api/v1/intents", { method: "POST", headers: authHeaders(), body: JSON.stringify(body) });
-      const value = await response.json();
+      const value = await decodeJSONResponse(response);
       if (!response.ok) throw parseIntentErrorBody(response.status, value) ?? new Error(`game UI intent failed (${response.status})`);
       return parseIntentOutcome(value);
     },

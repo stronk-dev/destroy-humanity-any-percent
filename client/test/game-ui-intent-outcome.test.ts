@@ -157,19 +157,14 @@ describe("GS0.2 intent outcomes", () => {
   for (const status of [200, 503]) {
     it(`runtime HTTP boundary rejects non-JSON ${status} as offline without replay`, async () => {
       const response = new Response("not JSON", { status });
-      const nativeJSON = response.json.bind(response);
-      let parseFailure: unknown;
-      // Preserve the native parser's failure: its constructor differs between
-      // engines, but the runtime must neither replace it nor retry the request.
-      const readJSON = vi.spyOn(response, "json").mockImplementation(async () => {
-        try { return await nativeJSON(); }
-        catch (error) { parseFailure = error; throw error; }
-      });
+      const read = vi.spyOn(response, "arrayBuffer");
       const { runtime, assertRequests } = intentRuntime(async () => response);
       const result: unknown = await runtime.intent(intentBody).catch((error: unknown) => error);
-      expect(parseFailure).toBeDefined();
-      expect(result).toBe(parseFailure);
-      expect(readJSON).toHaveBeenCalledTimes(1);
+      // Syntax/encoding diagnostics are intentionally body-free. Actual body-read
+      // and network errors still propagate unchanged, checked separately.
+      expect(result).toBeInstanceOf(SyntaxError);
+      expect((result as Error).message).toBe(`response was not JSON (${status})`);
+      expect(read).toHaveBeenCalledTimes(1);
       expect(noticeForError(result)).toEqual({ effect: "offline", notice: null, invariant: false });
       assertRequests();
     });

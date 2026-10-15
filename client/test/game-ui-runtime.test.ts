@@ -127,6 +127,80 @@ describe("browser Game UI runtime", () => {
     expect(requests.map((request) => (request.headers as Record<string, string>).Authorization)).toEqual(["Bearer access", "Bearer access"]);
   });
 
+  for (const [arm, status, body] of [
+    ["applied", 200, { outcome: "applied", private_marker: "fictional-private-intent-marker" }],
+    ["rejected", 200, { outcome: "rejected", current_revision: 1, intent_id: "fixture-intent", rejection: { category: "unaffordable", detail: "fictional-private-intent-marker" } }],
+    ["HTTP error", 409, { category: "conflict", detail: "fictional-private-intent-marker" }],
+  ] as const) {
+    it.each([
+      ["orphan continuation", [0x80]], ["overlong", [0xc0, 0xaf]],
+      ["surrogate", [0xed, 0xa0, 0x80]], ["truncated", [0xe2, 0x82]],
+    ] as const)(`rejects malformed UTF-8 %s before decoding ${arm} intents`, async (_fault, corrupt) => {
+      const storage = new MemoryStorage();
+      const credentialDocument = JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" });
+      storage.setItem("cloud-clicker.credentials.v1", credentialDocument);
+      const text = JSON.stringify(body), marker = "fictional-private-intent-marker";
+      const offset = text.indexOf(marker) + marker.length;
+      const encoder = new TextEncoder();
+      const bytes = new Uint8Array([...encoder.encode(text.slice(0, offset)), ...corrupt, ...encoder.encode(text.slice(offset))]);
+      const fetcher = vi.fn(async () => new Response(bytes, { status, headers: { "Content-Type": "application/json" } }));
+      const runtime = createBrowserGameUIRuntime(storage, fetcher);
+      await expect(runtime.intent({ kind: "perform_manual_batch" })).rejects.toThrow(new SyntaxError(`response was not JSON (${status})`));
+      expect(fetcher).toHaveBeenCalledExactlyOnceWith("/api/v1/intents", {
+        method: "POST", headers: { Authorization: "Bearer access", "Content-Type": "application/json" },
+        body: JSON.stringify({ kind: "perform_manual_batch" }),
+      });
+      expect(storage.getItem("cloud-clicker.credentials.v1")).toBe(credentialDocument);
+      expect(storage.writes).toEqual(["cloud-clicker.credentials.v1"]);
+    });
+  }
+
+  it.each(["aé中🙂", "literal replacement \ufffd", "escaped surrogate \ud800"])(
+    "preserves valid intent JSON text %s and existing BOM tolerance", async (marker) => {
+      for (const prefix of [[], [0xef, 0xbb, 0xbf]]) {
+        const storage = new MemoryStorage();
+        storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+        const body = { outcome: "applied", marker };
+        // No new media-type policy for the legacy intent caller.
+        const response = new Response(new Uint8Array([...prefix, ...new TextEncoder().encode(JSON.stringify(body))]));
+        const fetcher = vi.fn(async () => response);
+        const runtime = createBrowserGameUIRuntime(storage, fetcher);
+        await expect(runtime.intent({ kind: "perform_manual_batch" })).resolves.toEqual({ outcome: "applied", receipt: body });
+        expect(fetcher).toHaveBeenCalledTimes(1);
+      }
+    },
+  );
+
+  it.each([200, 409])("sanitizes intent JSON syntax failures without echoing private reply text (%s)", async (status) => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const fetcher = vi.fn(async () => new Response('fictional-private-intent-marker not JSON', { status }));
+    await expect(createBrowserGameUIRuntime(storage, fetcher).intent({ kind: "perform_manual_batch" }))
+      .rejects.toThrow(new SyntaxError(`response was not JSON (${status})`));
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([200, 409])("preserves original intent body-stream failures (%s)", async (status) => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const failure = new Error("synthetic intent stream failure");
+    const response = new Response(new ReadableStream({ start(controller) { controller.error(failure); } }), { status });
+    const nativeRead = response.arrayBuffer.bind(response);
+    let readFailure: unknown;
+    // Engines may normalize a stream's source error before body reading rejects.
+    // Preserve the actual error reaching the decoder, not an assumed native cause.
+    const read = vi.spyOn(response, "arrayBuffer").mockImplementation(async () => {
+      try { return await nativeRead(); }
+      catch (error) { readFailure = error; throw error; }
+    });
+    const fetcher = vi.fn(async () => response);
+    const result: unknown = await createBrowserGameUIRuntime(storage, fetcher).intent({ kind: "perform_manual_batch" }).catch((error: unknown) => error);
+    expect(readFailure).toBeDefined();
+    expect(result).toBe(readFailure);
+    expect(read).toHaveBeenCalledTimes(1);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
   it("refuses a duplicate PR contribution through the generated snapshot client without replacing the retained snapshot", async () => {
     const storage = new MemoryStorage();
     const credentialDocument = JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" });
