@@ -3469,3 +3469,19 @@ After terminal checks remove only this turn's validated tmpfs Postgres service/
 rows; no durable data/cache/network cleanup. Logging, prior numeric/CI/author/
 owner/review and full-nine-tier gates remain. No feature acceptance, archival,
 content mint, push or deployment.
+
+## 2026-10-15 — correct my RP-643 bootstrap fault population
+
+While tracing the actual bootstrap producer for rights research, found that my
+entropy-failure fixture used bootstrap_id instead of the owned idempotency_key.
+The earlier refusal still proves the shared middleware's500, but cannot stand
+as a valid bootstrap-input control. Add registry request validation before each
+nonempty fault-population body. Cold Postgres3765 now fails at that exact invalid
+bootstrap body; replace it with the existing64-hex-character idempotency key.
+Final Postgres59360 passes the entire composed parent1.29s, both identity/budget
+subtests and the admitted-request guard. Native Gameserver16155/vet pass. No
+production, schema, generated, timing or policy changes; the earlier native Firefox
+failure and broader coverage limits remain. Review by: Codex (test implementer
+first filter). Recorded by: Codex. The complete test/log range after `97fae05c`
+needs Claude review with RP-643; this correction is not independent approval or a
+feature/release promotion. Disposable test DB cleanup remains scoped to owned rows.

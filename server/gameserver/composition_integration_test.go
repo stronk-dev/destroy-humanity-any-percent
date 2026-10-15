@@ -1905,9 +1905,12 @@ func assertComposedRequestIDEntropyFailure(t *testing.T, db *sql.DB, server *htt
 		registry                      *publicapi.Registry
 	}{
 		{"create_account", "POST", "/api/v1/account", `{}`, private},
-		{"create_bootstrap", "POST", "/api/v1/bootstrap", `{"bootstrap_id":"01986666-f800-7000-8000-000000000001"}`, private},
+		{"create_bootstrap", "POST", "/api/v1/bootstrap", fmt.Sprintf(`{"idempotency_key":%q}`, strings.Repeat("d4", 32)), private},
 		{publicread.ListEpochsOperation, "GET", "/api/public/v1/epochs", "", public},
 	} {
+		if test.body != "" && test.registry.ValidateRequest(test.operation, []byte(test.body)) != nil {
+			t.Fatalf("%s entropy-failure fixture is not an admitted request", test.operation)
+		}
 		request, err := http.NewRequest(test.method, server.URL+test.path, strings.NewReader(test.body))
 		if err != nil {
 			t.Fatal(err)
