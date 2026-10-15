@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "cases": [
+    {"name":"burst seconds overflow cannot recover through a small rate","burst_speed":"1e8999999999999999","rate":"1e-6","efficiency":"1e0","mode":"online","elapsed_ms":60000,"burst_ms":60000,"expect_error":true},
+    {"name":"burst payment overflow cannot recover through offline efficiency","burst_speed":"2e0","rate":"1e8999999999999998","efficiency":"1e-6","mode":"offline","elapsed_ms":60000,"burst_ms":60000,"expect_error":true},
+    {"name":"valid near-boundary burst seconds scale through a small rate","burst_speed":"1e8999999999999998","rate":"1e-6","efficiency":"1e0","mode":"online","elapsed_ms":60000,"burst_ms":60000,"expect_cash":"6e8999999999999993"},
+    {"name":"transient milliseconds overflow is not a seconds overflow","burst_speed":"1e8999999999999999","rate":"1e-6","efficiency":"1e0","mode":"online","elapsed_ms":1000,"burst_ms":1000,"expect_cash":"1e8999999999999993"},
+    {"name":"no burst preserves ordinary small production","burst_speed":"1e8999999999999999","rate":"1e-6","efficiency":"1e0","mode":"online","elapsed_ms":60000,"burst_ms":0,"expect_cash":"1.00006e0"},
+    {"name":"zero efficiency preserves zero production and the manual action","burst_speed":"1e8999999999999999","rate":"1e-6","efficiency":"0","mode":"offline","elapsed_ms":60000,"burst_ms":60000,"expect_cash":"1e0"}
+  ]
+}

@@ -15,7 +15,7 @@ import { parseGuildCatalog, type GuildCatalog } from "./guild";
 import { validateFormulaArtifact } from "./formulas/artifact";
 import { loadMeterCatalog, validateMeterResourceSeparation, type MeterCatalog } from "./meters/catalog";
 import { advanceMeters, contributionKey as meterContributionKey, newRunMeterState, validateMeterState } from "./meters/transition";
-import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
+import { canonicalString, classify, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
 import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { parseRelevancePolicy, type RelevancePolicy } from "./relevance";
 import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputationBonusFactor, reputationPurchase, reputationUnlockPpm as reputationUnlockPpmFor, validateReputationTransition, type ReputationTree } from "./reputation";
@@ -1566,7 +1566,24 @@ function accrueContent(state: ReplayState, catalog: EconomyCatalog, productionMs
     if (segmentMs <= 0) return;
     const rates = productionRates(catalog, state.generators, provisioned, contributions);
     const bonusMs = Math.min(segmentMs, remainingBoostedMs);
-    for (const [resource, values] of rates) { const prior = deltas.get(resource) ?? []; const rate = sumDeterministic(values); const effectiveSeconds = new Decimal(segmentMs).add(new Decimal(bonusMs).mul(bonusFactor)).div(1000); const delta = quantize(rate.mul(effectiveSeconds).mul(efficiency)); if (!delta.eq(0)) prior.push(delta); if (prior.length > 0) deltas.set(resource, prior); }
+    for (const [resource, values] of rates) {
+      const rate = sumDeterministic(values);
+      if (!isStateValue(rate)) throw new RangeError("accrual rate sum is outside the Decimal domain");
+      if (rate.eq(0) || efficiency.eq(0)) continue;
+      // Match Go's seconds-first order: a transient millisecond overflow may
+      // still have valid seconds, but an infinity-class seconds/payment may not
+      // recover through a small rate or later nonzero efficiency.
+      const effectiveSeconds = new Decimal(segmentMs).div(1000)
+        .add(new Decimal(bonusMs).div(1000).mul(bonusFactor));
+      const accrued = rate.mul(effectiveSeconds);
+      if (classify(effectiveSeconds) !== "finite" || classify(accrued) !== "finite") {
+        throw new RangeError("accrual intermediate is non-finite");
+      }
+      const delta = quantize(accrued.mul(efficiency));
+      const prior = deltas.get(resource) ?? [];
+      if (!delta.eq(0)) prior.push(delta);
+      if (prior.length > 0) deltas.set(resource, prior);
+    }
     remainingBoostedMs -= bonusMs;
   };
   if (catalog.provisionTickMs === 0 || productionMs === 0) accrueSegment(productionMs);

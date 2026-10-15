@@ -4677,3 +4677,56 @@ actual worker/client build. Exact range whitespace passes. All reviewer handles 
 no tracked edits/commits/Docker/publication. Root's later burst work is outside this range.
 No Firefox/Linux/hosted/performance/DB/natural-player loss/burst replay/fullProduction/AC6/
 new-feature/normative/archival/release approval. RP-671 correction closes, other gates remain.
+
+## 2026-10-15 — Correct infinity-class burst replay recovery (RP-672)
+
+Outcome: conform the separate client burst-accrual caller to Doctrine/Compute Credit D7's
+byte parity and existing Numeric Boundary Hardening infinity classification, not change
+the core's diagnostic representation. Six small shared rows retune the existing unminted
+doctrine corpus, rehash/admit the actual bundles and restore v17 saves before ApplyLogged.
+They are extreme conformance inputs, not current balance or a natural-player loss finding.
+
+Old TS64045 resolves both forbidden transitions with actual receipt/events and payments
+6e8999999999999994 and1.2e8999999999999994; three positive controls pass. First Go58316
+does NOT reach arithmetic: preserved pretty-printed fixture payload is not canonical.
+Canonicalize with existing helper, then22894 executes all five actual Go transitions:
+two accrual refusals with identical encoded state/no output, three successful controls.
+Do not count the first instrument failure as refusal evidence. Add the sixth zero-efficiency
+control; both runtimes pass6713/8781. Refusal checks require accrual error, not any failure.
+
+Correction: same seconds-first calculation as Go, rate-sum validation and existing zero
+behavior, then reject infinity-class effective seconds or pre-efficiency payment. Keep
+finite diagnostic recovery intact. The valid one-second maximum-speed control explicitly
+prevents rejecting a transient milliseconds overflow that Go's order avoids. Normal and
+near-edge positive payments/cursor/burst consumption remain exact. Existing ordinary
+ApplyLogged rollback restores full state on these throws. No new API/guard/balance/copy/
+sum algorithm or parent accounting adoption. True replay behavior correction bumps kernel
+221→222 in all three sources, not to disguise a runtime-neutral file edit.
+
+Executed final boundary checks:
+- Full Node85728:145 files/12493 assertions pass,23 files/1094 skipped NOT credited.
+  This includes full191-entry-test replay population and all numeric golden consumers.
+- Native Go69614 cold: numeric goldens0.440s, six real burst cases/existing burst+offline
+  cap/unchanged full Go-authored replay corpus0.704s, version-source check0.162s. Vet passes.
+  Verbose golden output truncates displayed middle rows; final package/exit0 is read.
+- Declared Linux-amd6454534 executes29 accrual vectors, six actual ApplyLogged cases,
+  burst/offline cap, unchanged full replay corpus and version source: PASS. Decimal's
+  selector runs0 here and is NOT extra numeric coverage. This target's Postgres starts,
+  but no SQL test is selected; no persistence/HTTP/default-player journey claimed.
+- Frozen-install declared Linux browser12206: four files×Chromium/Firefox/WebKit,
+  12 suites/19650 executions pass, including all191 replay tests and numeric goldens/
+  lower-domain/refusal controls. DaemonLinuxarm64, not hosted runner hardware.
+  Initial socket EPERM creates no resources; narrow allowed Docker run above succeeds.
+- Typecheck/build44707 zero diagnostics, actual worker/client artifacts. Vet passes.
+  verify-kernel-version86920 remains RED at historical50a3a514, no waiver or CI-green
+  claim. Checkout-contract fixtures pass before it; separately42493 passes full guard
+  adversarial fixtures. New version-source test passes; no history rewrite/guard change.
+
+Review by: Codex (implementer first filter, NOT designated review). Recorded by: Codex.
+Full code/shared fixture/tests/docs/version/records range begins3e6e6e68-exclusive through
+this containing commit; pending fresh independent corrective-code review. All commands
+terminal. Initial/final Compose inventory empty, same two existing BuildKit containers.
+Root-created3b6ce4a3… twice inspected exact checkout/service labels, no mounts/tmpfs-only;
+stopped/removed only it after completion. Disposable unused SQL data is unrecoverable;
+preexisting builders/cache/volumes preserved. No new general temporal proof, AC6/27-partition
+repair, draft adoption, full CI, feature acceptance, clean-host, deployment or publication.

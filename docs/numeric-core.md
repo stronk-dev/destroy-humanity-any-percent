@@ -117,6 +117,11 @@ a subsequent nonzero efficiency would bring its raw exponent back into range. Th
 pinned client library can otherwise recover that sentinel, unlike the Go server.
 Finite lower-domain diagnostics may still recover through later scaling; they are not
 infinity. Zero efficiency remains canonical zero after the input/rate-sum checks.
+Burst replay applies the same infinity-class refusal to its effective seconds and
+pre-efficiency payment, in the server's seconds-first operation order. An invalid raw
+millisecond intermediate alone does not justify refusal if that order yields valid
+seconds; zero rate/efficiency still yields zero production. The ordinary Company logged transition
+rolls back state and emits no result on an arithmetic refusal.
 
 ### Arithmetic domain edges
 

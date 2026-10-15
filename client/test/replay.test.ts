@@ -1,5 +1,6 @@
 import fixtureJSON from "../../testdata/replay/apply-logged-v1.json";
 import curriculumPreflightCases from "../../testdata/replay/curriculum-command-preflight-v1.json";
+import burstUpperDomain from "../../testdata/replay/burst-upper-domain-v1.json";
 import typerV1Raw from "../../balance/testdata/typer-v1.json?raw";
 import typerRawJSON from "../../testdata/typer/raw-json-v1.json";
 import tierUnlockRaw from "../../testdata/minigame/tier-unlock-raw-v1.json";
@@ -478,6 +479,41 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
       expect(canonicalJSONString(transition.events), `events seq ${entry.seq}`).toBe(entry.events_json);
     }
     expect(canonicalJSONString(encodeReplayState(state))).toBe(run.final_state_json);
+  });
+
+  it.each(burstUpperDomain.cases)("enforces burst upper-domain parity: $name", async (row) => {
+    const run = fixture.doctrine_run;
+    const economy = JSON.parse(run.artifacts.economy);
+    economy.offline_policy.burst_speed = row.burst_speed;
+    economy.offline_policy.efficiency = row.efficiency;
+    economy.resources[0].hardcap.amount = "1e8999999999999999";
+    economy.generator_classes[0].production.base_rate = row.rate;
+    const artifacts = { ...run.artifacts, economy: JSON.stringify(economy) };
+    const hash = await artifactHash(artifacts);
+    const bundle = await loadReplayCatalogBundle(hash, artifacts);
+    if (!bundle.meters || !bundle.achievements || !bundle.doctrines) throw new Error("missing foundation catalogs");
+    const genesis = structuredClone(run.genesis) as Record<string, any>;
+    genesis.balances["company.cash"] = "0";
+    genesis.compute_burst_remaining_ms = row.burst_ms;
+    genesis.generators_purchased_total = 1;
+    const state = restoreReplayState(genesis, 17, bundle.economy,
+      { meters: bundle.meters, achievements: bundle.achievements, doctrines: bundle.doctrines });
+    const before = canonicalJSONString(encodeReplayState(state));
+    const entry = run.entries[5]!;
+    const inputs = structuredClone(entry.replay_inputs) as Record<string, any>;
+    inputs.evaluated_at_ms = state.evaluatedThroughMs + row.elapsed_ms;
+    inputs.evaluation_mode = row.mode;
+    inputs.resolved.founder_carry.founder_constants_hash = hash;
+    const execute = () => applyLogged(state, canonicalJSONString(entry.canonical_payload), bundle, inputs);
+    if (row.expect_error) {
+      await expect(execute()).rejects.toThrow(/accrual/);
+      expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
+    } else {
+      expect((await execute()).outcome).toBe("applied");
+      expect(state.balances["company.cash"]).toBe(row.expect_cash);
+      expect(state.evaluatedThroughMs).toBe(inputs.evaluated_at_ms);
+      expect(state.computeBurstRemainingMs).toBe(0);
+    }
   });
 
   it("replays the sequential Active-Play scheduler, buffs, Lucky payout, and rollback corpus", async () => {

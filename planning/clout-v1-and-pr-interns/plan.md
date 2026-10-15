@@ -8,6 +8,14 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+RP-672 separately reproduces the upper-domain mismatch through admitted v17 inputs
+and actual Go/TS ApplyLogged, not a formula reconstruction. TS now uses Go's seconds-
+first order and refuses infinity-class seconds/payment; kernel222 reflects real replay
+behavior change. Two old-client failures and four valid controls pass in both runtimes;
+full Node, shared numeric vectors, actual replay corpus and Linux three-engine browser
+checks pass. Historical kernel guard remains red at50a3a514. The owning log holds exact
+commands, boundaries and pending independent corrective review; no AC6/accounting adoption.
+
 RP-671: bounded constant-accrual client parity correction rejects infinity-class
 intermediates while preserving finite lower-domain recovery and zero operations.
 Shared six-row upper-bound population catches two old client accepts; Go already
