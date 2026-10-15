@@ -11,8 +11,8 @@ keyboard/lifecycle/motion corrections. The owning log records three fresh review
 complete ranges, executed checks and descendant-source limits. Follow-up review approves
 four other indexed ranges plus RP-431/RP-472/RP-541; RP-205/207 is CHANGES REQUIRED
 for RP-668's due-command preflight bypass. Its gate-only correction is locally verified in
-Go/TS/live Postgres at kernel220, preserving replacement/atomicity, and awaits independent
-corrective review. Other command preflights remain broken (actual unknown generator/manual
+Go/TS/live Postgres at kernel220, preserving replacement/atomicity, and independently approved
+in complete `be79f4a7..3a43cd13` range. Other command preflights remain broken (actual unknown generator/manual
 IDs still produce an ending in TS); next implement matched Go/TS/live regressions and their
 shared ordinary preflight correction. RP-201/RP-211/public-wire/content/
 feature acceptance are not closed; the owning log records exact verdicts and evidence.

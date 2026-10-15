@@ -7,7 +7,7 @@ their independent review obligations remain live.
 
 ## Current action — 2026-10-15
 
-Whole-product implementation coordinate `11478e9d`, kernel0.3.217, epoch8; later review
+Whole-product implementation coordinate `3a43cd13`, kernel0.3.220, epoch8; later review
 records and bounded work are in the
 owning logs below. Whole-product status and evidence limits
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
@@ -17,7 +17,8 @@ nine-tier goal remains active; no new playable tier or release was completed.
   curriculum CrossGate accepts nonexistent/already-crossed gates without ordinary preflight.
   The [Arcade plan/log](../minigame-demo-disc-arcade/plan.md) owns exact CHANGES REQUIRED scope
   and reproduction. Gate-only correction at kernel220 passes matched old-failing Go/TS and
-  live-Postgres regressions, including atomic refusal/retry; independent review is pending.
+  live-Postgres regressions, including atomic refusal/retry; complete `be79f4a7..3a43cd13`
+  range has independent corrective approval.
   Other command preflights remain broken: actual TS unknown generator/manual IDs still
   create an ending. Correct those shared preflights without executing replaced effects. This is an
   existing-contract correction, not an owner-policy question or draft implementation.

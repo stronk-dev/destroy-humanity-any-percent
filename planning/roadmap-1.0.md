@@ -7,7 +7,7 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-15):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Implementation checkpoint `11478e9d`, kernel0.3.217, epoch8: still Garage integration/hardening,
+Implementation checkpoint `3a43cd13`, kernel0.3.220, epoch8: still Garage integration/hardening,
 incomplete v0.1, with substantial world/combat/Tier3–8/final-ending construction ahead. At this
 coordinate, local corrective-review records continue in the owning logs. Last inspected
 publication is `be66902b`, failed CI38560135778 and maintenance38677066823; no remote-main
@@ -26,6 +26,12 @@ Fresh independent corrective reviews close only their named API/transport/CI, in
 Deployment safety ranges, not new-feature or normative acceptance. Owning logs hold exact
 ranges and remaining debt; the overview distinguishes those proofs from natural progression,
 full feature acceptance and clean-host release evidence.
+Later Garage/Pet/Arcade/Typer corrections have scoped independent approvals. RP-668's
+new gate-only preflight repair is independently approved, while other automatic-command bypasses
+remain open. Numeric representable-result repairs do not adopt the exponent-exhaustion or
+aggregation proposals. Current affected replay/browser/SQL checks pass; full Production's
+27 accounting failures and the historical guard remain red. The overview and owning logs
+distinguish these checks from feature acceptance; no product milestone advances.
 Use [current next moves](#current-next-moves)
 and the owning accepted RFC plans for execution. The highlighted engineering proposals
 remain drafts; unresolved arithmetic and integration are engineering work, not owner approval

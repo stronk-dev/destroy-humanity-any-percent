@@ -5455,3 +5455,28 @@ verdicts and executed populations, inspect diff/anchors/paths and whitespace. No
 software rerun solely for Markdown. All test resources reported removed are only
 review-owned disposable containers/rows; no durable/user data or other services
 removed. Full nine-tier1.0 scope and all remaining release criteria stay active.
+
+## 2026-10-15 — Corrective review exposes and repairs an ending preflight bypass
+
+Implementation checkpoint `3a43cd13`, kernel0.3.220/epoch8. Additional fresh independent
+corrective reviews cover Garage/Pet/Arcade/Typer scopes; owning logs preserve exact ranges
+and remaining feature debt. The Arcade persistence reviewer rejects RP-205/207 because due
+curriculum replacement accepted invalid gate requests. Its gate-only RP-668 repair now has
+matched old-failing Go/TS/actual-Postgres regressions and fresh independent approval of the
+complete `be79f4a7..3a43cd13` range. The Arcade log records the actual reviewer's verification.
+Unknown generator/manual commands still bypass their ordinary preflight; RP-668 remains
+open with that next engineering action, not renamed as an owner decision.
+
+Current scoped checks: full Node12460 passes/1088 explicit skips, actual Linux replay492
+passes across all three engines, real Linux-amd64/Postgres16 Exit populations plus Company
+migration cases, types/build/boundary/vet pass. Full native Production still exposes exactly
+the known27 Clout partition failures; Save passes. Actual kernel-history verification still
+rejects50a3a514 (CI-history contract/adversarial fixtures pass). Neither failure is waived.
+Six replay research producers actually re-run before source-bound reports refresh; results
+remain unchanged and NOT_PROVEN. The Arcade log owns diagnostic missteps and all limits.
+
+Numeric representable-result corrections advance conformance, not adoption of the pending
+exponent-exhaustion/aggregation amendments or repaired accounting. Update overview/roadmap/
+queue to this concrete coordinate without claiming new full-CI, remote or milestone evidence.
+No new tier, release acceptance, publication or reduction of the full nine-tier goal.
+Editorial rollup checked against owning logs and diff; no software rerun solely for this record.

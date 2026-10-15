@@ -2651,3 +2651,37 @@ non-gate bypass by inspection, not yet an executed Go/live counterexample. Keep 
 next add matched Go/TS/live ordinary-command regressions and reuse ordinary preflight without
 executing the requested action or post-accrual eligibility. Gate-only repair needs fresh
 independent corrective-code review; original RP-205/207 CHANGES REQUIRED is not overwritten.
+
+## 2026-10-15 — RP-668 gate-only correction independently approved
+
+Review by: independent Codex `/root/curriculum_gate_preflight_corrective_review`.
+Recorded by: Codex parent, transcribing the reviewer's completed verdict.
+APPROVED complete22-path range
+`be79f4a7b298bfc2e619b88804acd5747d2a394b..3a43cd1323bba0bdf597093f99d53decc12e9ec6`.
+No blocking findings. Extraction preserves ordinary Go gate checks/order and reuses that
+authority before terminal accrual; TS uses the existing helper. Gate mutation/costs/post-accrual
+predicates remain replaced. Active-session precedence and historical paths remain intact.
+
+Independently executed cold Go valid replacement/four existing controls/three exact refusals;
+full TS replay164; actual declared Linux-amd64/Postgres all16 current Exit populations and
+five Company migration cases, no selected skips; adjacent automatic-curriculum/Prestige Exit
+populations; ordinary gate/permit/curriculum controls and kernel-version source parity. Three
+DB tests skipped in the native selection subsequently execute successfully in the container.
+All six source-bound Go research populations pass without update flags; seven TS research/
+migration consumers pass324. Vet/types/build pass. Reviewer verifies all current source
+hashes, unchanged non-source results, migration digest-only change and whitespace.
+Retained old-failing Go/TS/SQL reproductions are inspected, not independently rerun or
+relabeled as reviewer mutations. No source edits, overlays, commits or cleanup by reviewer.
+
+Root's separate `make verify-kernel-version` also completes: CI-history contract/adversarial
+fixtures pass, historical50a3a514 still fails, exit2. Current version parity is not history
+approval. Full Production's27 Clout failures remain. No whole CI/browser/Production green,
+feature acceptance, archival, normative adoption or release is inferred. Later editorial
+rollup files lie outside this reviewed range. RP-668 remains OPEN for other command preflights;
+original RP-205/207 CHANGES REQUIRED is not overwritten. Continue that accepted-contract fix.
+
+After all reviewer/root processes finish, root inspects the exact Compose labels, empty
+mount list and tmpfs data identity, then stops/removes only owned cloud-clicker-postgres-1.
+Disposable test SQL rows are lost as intended; no durable/user data, caches or other services
+are removed. Global overview/roadmap reconcile the new coordinate and separate scoped
+approval from unfinished product/release work; editorial diff checked, no redundant suite.

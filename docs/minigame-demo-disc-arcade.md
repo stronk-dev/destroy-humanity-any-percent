@@ -137,7 +137,7 @@ All nine session cases exercise both active and claimed refusal, then real quit/
 released Exit, identical retry and both histories. A Go-generated literal current-curriculum
 fixture checks every terminal receipt/state/Founder/event batch in TS; all old fixtures remain
 unchanged. Independent live/replay/guard probes fail. The original RP-205/207 range received
-CHANGES REQUIRED; the scoped gate-preflight repair awaits independent review. Other
+CHANGES REQUIRED; the scoped gate-preflight repair is independently approved. Other
 automatic-command preflight bypasses and full AC9 remain open; this later-tier diagnostic
 is not default first-hour or public-browser acceptance.
 

@@ -1,7 +1,7 @@
 # Current repository state
 
-Reconciled 2026-10-15: implementation checkpoint `11478e9d` (kernel0.3.217, epoch8),
-with subsequent independent-review records in the owning logs. The last inspected
+Reconciled 2026-10-15: implementation checkpoint `3a43cd13` (kernel0.3.220, epoch8),
+with independent-review records and their exact bounded scopes in the owning logs. The last inspected
 publication coordinate is `be66902b`, with failed CI38560135778 and maintenance38677066823.
 This local review checkpoint does not query remote main again or claim a new hosted run.
 Local commit volume is not a product-completion measure.
@@ -21,7 +21,14 @@ approvals for cohort/query/simulation, request-ID/error-budget/drain, route iden
 intent decoding, literal Git paths, browser-runner repair, Combat/Headcount input
 validation, certified minigame payout identity, Deployment backup/operator safety,
 HTTP/evidence encoding and API exclusive-union compatibility.
-Review actually reproduces historical failures and executes affected checks; these
+Further approvals cover Garage read ordering/queued Claim, Pet admission and Arcade/Typer
+corrective ranges. Arcade review also finds a real automatic-ending preflight bypass (RP-668),
+not another paperwork blocker. Its gate-only correction is independently approved; other command
+preflights remain broken and the overall defect stays open. Numeric power repairs preserve
+representable lower-domain diagnostics; exponent-exhaustion and aggregation contracts remain
+drafts, not adopted repairs. The [Arcade](minigame-demo-disc-arcade/log.md) and
+[Clout](clout-v1-and-pr-interns/log.md) logs own the exact evidence and review boundaries.
+Review reproduces historical failures where actually executed and checks affected behavior; these
 approvals cover their named ranges, not adjacent feature construction or the remaining
 accounting/history failures. The unbuilt product scope below remains unchanged.
 
@@ -103,7 +110,8 @@ acceptance run for every feature. These are different evidence populations:
 | Original API reviews | Query `32560c4b`, epochs `e63796d5`, boards `4c316c4c`, routes `09d12987` and router `731bb3e7` have complete original-range **CHANGES REQUIRED** dispositions. Do not restart those reviews. They do not approve later repairs; separate corrective verdicts cover only their named ranges, with other implementation debt remaining. |
 | Kernel correction provenance | RP-131's non-verdict parser and RP-540's canonical citation grammar are locally repaired: actual CLI negatives refuse while completed findings and active/archive records remain admissible. A controlled old-tool exterior-file probe stays inside owned temporary storage, not host-private files. The existing DP-E correction cites Claude's completed verdict, with Codex only recorder. Real root verification still rejects `50a3a514`; no exception proposal is adopted or history rewritten. Corrective independent review remains; CI log owns evidence. |
 | Prior native Production/history checks | The RP-654 batch at `f03cd934` runs cold full Production: only the original27 partition cases fail; Save/Kernel/Faction and affected vet pass. The actual historical kernel gate still rejects50a3a514. Literal-path guard corrections do not waive that history. [Clout log](clout-v1-and-pr-interns/log.md#2026-10-15--rp-654-preserve-the-simulation-counterfactuals-source-version) owns exact execution, source-pin instrument correction and limits. The later payout-review run below retains the same failures; no repaired accounting or full CI claim. |
-| Latest full Node client check | RP-667's full client population passes12,417 with1,088 explicit skips and zero typecheck diagnostics. Its three affected files separately pass696 on Linux Chromium/Firefox/WebKit; the independent native review passes Chromium/WebKit but Firefox fails connection before collection. The [Garage log](garage-player-surfaces/log.md#2026-10-15--rp-667-independent-corrective-review-approved) distinguishes these executions. This is not a full browser/hosted/reliability verdict; RP-526/RP-637 retain their own failure records. |
+| Current scoped correction checks | At3a43cd13, full Node client passes12,460 with1,088 explicit skips; types/build/client-boundary/vet pass. Replay executes492 actual Linux Chromium/Firefox/WebKit cases; actual Linux-amd64/Postgres executes all16 current Arcade Exit populations and5 Company migration cases. Full native Production still fails exactly27 Clout partition cases; Save passes. Kernel-history verification still rejects50a3a514. These are affected-boundary checks, not full CI or a nine-tier journey. [Arcade log](minigame-demo-disc-arcade/log.md) owns old-failing regressions, actual source-observation regeneration and remaining non-gate bypasses. |
+| Garage browser follow-up | RP-667's three affected files separately pass696 on Linux Chromium/Firefox/WebKit. Independent native review passes Chromium/WebKit while Firefox fails before collection; a subsequent actual Linux Firefox Garage run passes528, with five performance-only cases excluded, recorded ate5b1daa2. The [Garage log](garage-player-surfaces/log.md#2026-10-15--rp-667-independent-corrective-review-approved) distinguishes these executions. Neither native failure nor Linux success is erased; RP-526/RP-637 retain their own scopes. |
 | Original Clout UI review | P5 `2f2c5a04^..2f2c5a04` now has all30-path CHANGES REQUIRED for progress naming, fractional-factor display, purchase-card binding and contribution uniqueness. Its actual historical decoder misses two required refusals; current scoped producer/schema/Node/native checks pass with the SQL exclusion explicit. Later Codex fixes, real-service supplements and full CV9/AC11 remain separately pending review/acceptance. The Clout log owns the verdict. |
 | Original Clout Gaia-law review | P4 `4c089f00^..4c089f00`, both paths, remains CHANGES REQUIRED (RP-537). Its local test-only repair now covers escaped write forms, checked codec copies and actual nonzero encode/restore controls. This is a conservative source guard, not a demonstrated current mint or full AC4/reward-union proof. Corrective independent review and remaining acceptance stay open; the Clout log owns executed evidence. |
 | Original Clout loader review / source ownership | P1 `ace4e67e^..ace4e67e`, all17 paths, is CHANGES REQUIRED (RP-304/538). Original fixture/corpus reproduce byte-identically in memory. Both current loaders now locally refuse repeated contribution-source ownership; equal factors with distinct sources remain legal. Affected checks pass at kernel0.3.187, but broader production still fails27 partitions and the historical version guard is red. The new correction needs Claude review; full Clout acceptance remains. Clout log owns the ranges; no mint or release promotion. |
@@ -154,6 +162,10 @@ requests for Marco to debug the implementation. The currently highlighted engine
   settlement, not new durable payments. Actual caller compatibility and complete
   temporal search/predicate correctness still need engineering closure. The unnecessary
   private JSON/hash protocol was withdrawn; neither draft is accepted or implemented.
+- [Numeric diagnostic exponent limits](../rfc/numeric-diagnostic-exponent-limits.md):
+  explicitly define fail-closed classification after Go's exponent representation is exhausted.
+  Current int64-representable power corrections do not solve that remaining valid-zero failure;
+  the proposed exception is not adopted or implemented.
 - [Backup metadata integrity](../rfc/backup-protection-metadata.md): adopt the dedicated signing
   key/trust boundary and explicit authenticated adoption of legacy backups, rather than trust
   editable checksum-only metadata.
