@@ -1114,3 +1114,26 @@ Review by: Codex (implementer first filter). Recorded by: Codex. Complete new so
 records range starts after `ca418956` through this containing commit and needs designated Claude
 review, consolidatable with related Account corrections. No checkbox, archival or publication.
 Continue accepted construction and contract closure; do not relabel this repair1.0 readiness.
+
+## 2026-10-15 — RP-542 independent corrective approval
+
+Review by: fresh independent Codex sub-agent `/root/account_transport_shape_corrective_review`,
+under Marco's corrective-code delegation. Recorded by: Codex parent transcribing its verdict.
+**APPROVED**, no findings, complete six-path range
+`ca418956b3167348ba9cfdcb7644655e5574d8a8..cf8c6f08a349daae43263cc75ccfced5d80457d2`.
+Reviewed production/tests/docs/records; source and regression tests are byte-identical at
+execution revision `f60ec0d78fda8fe4ff62bf005ef89cb6dc5c3b2c`.
+
+Independent cold Account/Transport/Gameserver pass0.594/13.272/0.379s; affected vet passes.
+`make test-go GO_PACKAGES='./account' GO_TEST_FLAGS='-count=1 -race -run TestJWT -v'`
+passes1.428s:49 malformed shapes, seven legal encoding/rotation/UTF-8 controls, six wrong-MAC
+checks, six mounted HTTP refusal/DB-tripwire controls, expiry and previous-key removal execute.
+Types/Svelte have zero diagnostics; client build passes217 modules. Exact-range diff check
+and source identity checks pass; reviewer makes no tracked edits.
+
+Historical27 old-source admissions were inspected, not independently reproduced. Mounted
+HTTP uses a controlled failed DB boundary, not SQL authorization. The separate native
+Account/Gameserver Integration selector exits0 with SQL children skipped for absent
+TEST_DATABASE_URL and real-minute cleanup unrequested: no SQL evidence. No browser, Linux,
+hosted CI, API generation or full Account/archival/release acceptance follows. Other Account
+corrective ranges, recovery/renewal proposals and existing red gates remain separate.

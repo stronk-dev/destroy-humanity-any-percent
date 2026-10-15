@@ -8,7 +8,8 @@ Current D2/AC4 correction (2026-10-13, RP-542): private JWT decoding validates o
 object members against its DTO tags before Go can merge duplicates or fold key case.
 Signed old-source regressions, legal rotation/encoding controls and mounted HTTP pre-DB
 tripwires discriminate; cold affected packages/vet, race and API generation pass. The
-owning log holds the exact range needing Claude review. Issuance/signature/TTL/rotation,
+owning log records independent corrective APPROVAL of `cf8c6f08^..cf8c6f08` under Marco's
+2026-10-15 delegation. Issuance/signature/TTL/rotation,
 authorization, public schema and kernel bytes are unchanged; no SQL/whole Account acceptance.
 
 Current bounded witness correction (2026-10-08, RP-474): a real Linux/Postgres run exposed

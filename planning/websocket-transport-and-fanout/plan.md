@@ -29,14 +29,14 @@ Current known-payload conformance correction (2026-10-13, RP-561): Go validates 
 DTO-owned fields/nullability and safe wire integers; the client requires actual string
 enums instead of coercing arrays. The shared174-case corpus, connected publisher/history
 refusal, healthy delivery and affected checks pass. The owning log records both old-source
-failures and the full range after `b8eb4c58`, pending Claude review. Opaque owner payloads,
+failures and independent corrective APPROVAL of `6a5a742a^..6a5a742a`. Opaque owner payloads,
 wire version and recovery policy are unchanged; no whole-feature or release promotion.
 
 Current bounded correction (2026-10-13, RP-560): policy loading validates exact original
 JSON members against the existing DTO tags before struct decoding. Case aliases and raw/
 escaped duplicate members now refuse; canonical escaping and the declared limits/origins
 are unchanged. All48 old-source failures and corrected cold/race/consumer checks are in
-the owning log. The range after `95d390fc` needs Claude review; no recovery/authentication
+the owning log. Independent corrective review APPROVES `b8eb4c58^..b8eb4c58`; no recovery/authentication
 policy, balance/kernel, whole Transport acceptance or archival is changed.
 
 1. [x] Add strict Phase-0 transport policy and closed Go/TypeScript wire envelopes.

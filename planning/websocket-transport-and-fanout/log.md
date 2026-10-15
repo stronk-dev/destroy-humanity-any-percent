@@ -881,3 +881,31 @@ provides it. Recovery resolvers, including match authorization, are controlled.
 No independent built-browser or hosted rerun, broader Transport acceptance,
 specification adoption, archival or release approval. Current plan and RP-651 now
 point here; preceding review debt remains separate.
+
+## 2026-10-15 — RP-560/RP-561 independent corrective approvals
+
+Review by: fresh independent Codex sub-agent `/root/account_transport_shape_corrective_review`,
+under Marco's corrective-code delegation. Recorded by: Codex parent transcribing its verdict.
+**APPROVED**, no findings, separately for each complete code/fixture/test/docs/record range:
+
+- RP-560, six paths: `95d390fc96328d1c46e4d1871d15638d8c092d80..b8eb4c58756f9b1da92e6e3f47e60b4606739278`.
+- RP-561, nine paths: `b8eb4c58756f9b1da92e6e3f47e60b4606739278..6a5a742ad88d954843a9372b368b3d23c9a56ed3`.
+
+At descendant `f60ec0d78fda8fe4ff62bf005ef89cb6dc5c3b2c`, all reviewed production/test/corpus
+files remain byte-identical. Independent cold Account/Transport/Gameserver and affected vet
+pass. Focused Transport race passes1.439s, executing174 payload vectors,48 policy refusals,
+12 escaped-name controls and publisher/history refusal plus healthy offset1 delivery.
+Explicit actual WebSocket origin/auth/subscription/no-client-publish and existing policy
+controls pass0.156s. Node transport-payload-conformance/transport files pass184; the extra
+nonexistent transport-runtime.test.ts selector adds no coverage. Types/Svelte have zero
+diagnostics; build passes217 modules. Exact-range diff/source checks pass, tree unchanged.
+An initial unquoted race alternation became shell pipelines and did not run the intended
+tests; only the corrected quoted selector counts.
+
+Historical48 policy,102 Go payload and four client failures were inspected in prior records,
+not independently rerun. Current connected publisher/HTTP peer has controlled resolvers,
+not real SQL authorization or a browser journey. Native Integration selector skips SQL
+children for absent TEST_DATABASE_URL; no SQL credit. No browser/Docker/Linux/hosted CI,
+API generation, whole feature, specification adoption, archival or release approval.
+Existing arithmetic/history red gates are not rerun or concealed. These two corrections
+no longer wait on Claude; other Transport review debt and policy contracts remain separate.
