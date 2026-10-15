@@ -111,7 +111,8 @@ hidden by invalid empty/singleton inputs. Reuse the existing structured intersec
 proof for array arms, with side-specific references and whole-array coverage.
 Safe growth, existing/third-arm overlap and162 finite-language comparisons agree
 with runtime validation. Cold affected packages/vet and byte-identical generation
-pass; the owning log records the range after `4f29ee55`, pending Claude review.
+pass; fresh independent corrective review APPROVES `4f29ee55..455b7108`.
+The owning log records the consolidated C2 verdict and executed failure evidence.
 No schema DSL, endpoint/DTO/pin, kernel or held proposal changed/adopted; full API
 construction, general inclusion and prior review debt remain open.
 
@@ -121,7 +122,7 @@ exclusive object replies. A side-specific intersection-coverage proof now refuse
 preserving unchanged/safe growth and already-invalid overlap, including third-arm coverage.
 242 complete finite-domain comparisons agree with actual runtime validation; named/nested and
 exact integer controls execute. Owning log holds final checks and the range after `5210d561`,
-pending Claude. Unknown intersections fail closed; no general inclusion/full C2/API claim,
+now independently APPROVED througha28748ad. Unknown intersections fail closed; no general inclusion/full C2/API claim,
 DTO/pin/DSL/kernel change or owner-draft adoption follows. History-exception ruling remains held.
 
 Current C2 integer-domain correction (2026-10-14, RP-618): widening existing integer ranges
@@ -130,7 +131,7 @@ reproduce across both bound directions, wrappers, >2^53 and int64 extremes. Comp
 old/current interval partitions; no floats, new budget or value-space brute force. Safe growth,
 old-invalid/new-only overlap, named/unbounded domains and a complete small runtime population
 agree. Cold affected packages/vet and unchanged generation pass; the log owns the range after
-`a5b4749c`, pending Claude review. Object cross-arm/full C2/API/release remain open.
+`a5b4749c`, now independently APPROVED through8f698279. Full C2/API/release remain open.
 
 Current C2 string-domain correction (2026-10-14, RP-617): widening an existing enum arm can
 invalidate an old reply without adding any alternative. Six old-checker byte regressions
@@ -138,7 +139,7 @@ reproduce; the corrected check counts actual exclusive matches for old/new enum 
 following references and the runtime format grammar. Old unbounded strings are included.
 Safe growth, previously invalid overlaps and format-inapplicable literals remain accepted.
 Affected packages/vet and byte-identical generation pass; the log owns the range after
-`dca0bafd`, pending Claude review. RP-618 now covers integer cross-arm interactions; object/full C2/API
+`dca0bafd`, now independently APPROVED througha5b4749c. RP-618 covers integer cross-arm interactions; full C2/API
 acceptance remain separate; no wire, baseline, owner, kernel or release promotion.
 
 Current C2 correction (2026-10-14, RP-616): appended response-union arms now require a
@@ -146,7 +147,7 @@ disjointness proof against the old arms. Six old-checker regressions pass metada
 while making actual formerly valid replies fail runtime validation. Corrected refusals and
 disjoint kind/enum/reference/tagged-object/exact-boundary controls pass, including empty-array
 overlap. Cold affected packages/vet and unchanged generated artifacts are recorded in the
-owning log; the range after `ea194d8d` needs Claude review. No endpoints, DTOs, pins, schema DSL,
+owning log; independent review APPROVES `ea194d8d..dca0bafd`. No endpoints, DTOs, pins, schema DSL,
 kernel or owner proposal is changed/adopted. RP-617 now covers existing string-enum interactions;
 other cross-arm domains remain work. This batch is not complete C2/API acceptance.
 

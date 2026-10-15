@@ -3827,3 +3827,39 @@ inventory empty, shared cache/network/durable data preserved. Temporary overlays
 remain at `/private/tmp/api-admission-review.HqgPl6/`. This closes these six corrective
 reviews, not original/other API ranges, RP-568 or the new intent repair, normative
 adoption, host log retention, browser/hosted/full CI, feature/archival/release gates.
+
+## 2026-10-15 — Exclusive-union compatibility corrective review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/api_union_corrective_review`.
+Recorded by: Codex parent, transcribing its verdict under Marco's corrective-review
+delegation. Each complete range is base exclusive/tip inclusive, one intended commit:
+
+- RP-616: `ea194d8dec3a353c9daefd58c683229cd8e56633..dca0bafd5fe142f497f6b3cdaec824594eab6d51`.
+- RP-617: `dca0bafd5fe142f497f6b3cdaec824594eab6d51..a5b4749ccc0a2f4a87505e8761994268eab143d2`.
+- RP-618: `a5b4749ccc0a2f4a87505e8761994268eab143d2..8f6982798e0e80e9756eb9ae360e5e95d25e92ba`.
+- RP-626: `5210d56164492989f69ef1a58ed26973f95231cb..a28748ade2e52fa1db28a43035dd02b022b8e3b8`.
+- RP-638: `4f29ee551b0a01325248a3d1091f80ceef87a633..455b7108f5d8359c2be0452f87618f5099c29773`.
+
+Verdict: **APPROVED**, no actionable findings; all changed source/test/docs/ledger/
+plan/log paths inspected. At14761616, independent cold publicapi/publicread/account
+tests pass0.297/0.300/0.543s, matching vet passes. Exact historical-source overlays
+reproduce all49 unsafe admissions (6/6/15/12/10 respectively), each reaching the
+compatibility assertion after actual runtime old-valid/current-invalid checks.
+Current tests reject the regressions. One initial historical array selector is
+misquoted and runs no tests; subsequent separate intended tests execute and fail
+as expected. No no-test invocation is counted as discrimination.
+
+A separate deterministic temporary probe examines3000 mutations over scalar,
+object, array and nested-union schemas:2803 admissions preserve all19331 old-valid
+witnesses, with165 candidate values per admission. This is bounded diagnostic
+coverage, not a whole-grammar proof. Read-only generator overlay `make api-check`
+passes actual registry/compatibility/generation with writes replaced by byte
+comparisons. Reviewed compatibility source/tests unchanged since455b7108.
+Temporary evidence remains `/private/tmp/api-union-review.yS2hz0/`; no repository
+edits, commits, worktrees, services or other reviewers' resources changed.
+
+Exact integer partitions, side-specific references, exclusive nested matching,
+closed-object intersections and whole-array coverage conform to accepted A1/C2
+within these scopes. Conservative refusal remains; no relaxed policy, general C2
+completion, new feature/specification adoption, SQL/browser/server/hosted evidence,
+archival or release approval. Intervening/other API work remains outside verdict.
