@@ -7,6 +7,13 @@
 
 ## Current checkpoint — 2026-10-15
 
+Fresh independent corrective review now APPROVES complete RP-623/RP-633/RP-635/RP-648
+ranges. The latest owning log gives full hashes and actual cold corpora, guard negatives,
+observation/registered-row/signal and historical-root results. The root gate remains red at
+50a3a514; RP-648 approval does not adopt the scope-exception draft. Published main and both
+failed hosted runs are re-queried unchanged. Marco's decision on that proposal is requested,
+not inferred; normative review and per-candidate eligibility would still be required.
+
 Focused Linux browser verification now has a root command:
 `make test-browser-ci-focused BROWSER_TEST_FLAGS='test/numeric-monotonicity.test.ts'`.
 It shares the full command's cold image/setup/containment, not a copied Vitest lane.
@@ -53,7 +60,7 @@ the repaired guard rejects them and additional exclusive-start/unresolved contro
 preserving completed legacy/enclosing/remap records. Existing history-exception
 policy remains draft; no correction/registry/version or workflow change. The owning
 log records the executed fixture/root/topology results and range after `691e9bac`
-needing Claude review. This is scope conformance, not a historical waiver or CI green.
+now independently approved. This is scope conformance, not a historical waiver or CI green.
 
 RP-121 Guild fixture isolation is locally corrected: all three original real-DB
 populations retain their assertions and pass repeated/shuffled runs on the same
@@ -86,7 +93,7 @@ or relevance IDs inconsistent with their declared row coordinates. Bind the exis
 names independently of declaration equality. Focused recorder/identity/registered-row/signal
 and cold affected-package/vet checks pass; final results belong to the owning log. This changes no
 artifact shape, allowed mode/objective, study, CI job or kernel. New corrective range after
-`a201a7e8` needs Claude; RP-634's separate objective extension is not implemented/adopted.
+`a201a7e8` now has independent corrective approval; RP-634's separate extension is not adopted.
 
 RP-634 remains an engineering conformance gap in the additional Reputation maintenance job:
 unlike CI D3's50/55-minute fail-loud artifact floor, it has a60-minute test/job budget and no
@@ -101,14 +108,14 @@ RP-633 Reputation routing correction: the old topology checker accepts a missing
 removed exhaustive opt-in or a one-study selector. Bind the actual unchanged recipe and reject
 six corruptions (including empty selection, warm execution and lost timeout). Current real-source
 topology, 26 negative controls and existing Make/browser controls pass. The owning log holds
-scope/results and the corrective range after `c05a196a`, pending Claude review. No workflow,
+scope/results and the independently approved corrective range after `c05a196a`. No workflow,
 population, timeout, report, product/kernel or whole-CI status change.
 
 RP-623 local false-green correction: the old replay fixture target returns cached success
 after its actual corpus version changes. Force fresh comparisons in Replay/Pitch/Typer gates
 and a cold default in `test-go`, preserving focused flags and explicit repetition. Actual
 corruption controls now fail in all three gates and restore exact original bytes; the owning
-log holds final native/Linux execution and the range after `1f1a5481`, pending Claude review.
+log holds final native/Linux execution and independent approval of the range after `1f1a5481`.
 No workflow topology, population, deadline, kernel/gameplay or full-CI status changes.
 
 Preceding successful default Linux execution at `8e4d0877`: `make test-browser-ci` completes exit0 through

@@ -2402,3 +2402,41 @@ or release acceptance. Reviewer makes no repository edits/commits/worktrees or
 publication. Review-only files remain in private temporary storage; no cleanup is
 claimed for them. Parent records this verdict without rerunning unrelated software
 for the Markdown-only transcription; factual ranges, diff and whitespace checked.
+
+## 2026-10-15 — Four verification corrections independently approved
+
+Review by: fresh independent Codex `/root/ci_verification_corrective_review`.
+Recorded by: Codex parent under Marco's corrective-code delegation. All **APPROVED**,
+complete source/test/docs/planning/ledger ranges (7/6/6/7 paths respectively):
+
+- RP-623: `1f1a54818a07f4da5382a1568617ce6d7cbcda8c..ac88de36f6db36d78eae4e0c739350c6f13069a4`.
+- RP-633: `c05a196af1a9f10d318da828ec3dd75fbbe8441d..15e82e384b85960c2c6d06a79bb139bac02ca1e5`.
+- RP-635: `a201a7e85e5cfbde50f9060fe11d27f105f402d7..ab3442dc31328557b924a104578d3e332e5856b1`.
+- RP-648: `691e9bac2b82215259bfd4a4f2e48eff5ff8dc20..59787fc34f3ac41778db9d5fe0df08255ede663f`.
+
+At descendant a45f5478/product312f6e02/kernel221 actual topology27 permanent negatives and
+existing Linux/Make controls pass. Actual cold Replay/Pitch/Typer comparisons pass (.517/.329/
+.190s); explicit count2 really executes replay twice (.899s). In-memory exact historical guard/
+subject comparisons reproduce old admission of4 missing-cold flags and3 invalid maintenance
+recipes; corrected tips refuse all7, healthy controls pass. Initial comparison wrongly paired
+old guard with modern browser Compose and fails its existing browser contract; corrected
+historical subjects supply evidence. No source mutation or changed corpus/golden regeneration.
+
+Cold observation Harness/CLI pass (.214/.241s), all9 identity cases including6 forged refusals;
+2 opt-in research studies explicitly skip. Complete CLI6 tests (.490s) execute real23-run
+registered-row/golden and SIGTERM→invalid-incomplete-artifact checks. Affected vet passes.
+Full kernel adversarial fixtures pass, including6 range negatives/6 genuine legacy/completed/
+enclosing/remap positives and60 literal-path controls. Actual root kernel gate passes checkout
+contract/adversarials then exits2 at unchanged50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444
+versus0cf9f7a6aba4038fadcdf35e5b94f56986164af7, same6 paths. Trailing fixture recipe is not
+reached; separate full fixture execution supplies that evidence. Syntax/4 range diff-checks pass.
+Old corrupted-corpus and Go-validator failures inspected, not rerun; observation consumers
+unchanged since their tip. No edits/services/worktrees/overlays/browser/Docker/full-study,
+hosted/performance/full-CI or feature/release approval. All reviewer handles terminal.
+
+RP-648's draft author reconciliation is inspected, NOT normative adoption or scope-exception
+eligibility. Parent independently queries GitHub: published main stillbe66902b659d59a5572037a9b6431d2ac02fb731;
+latest CI38560135778 and maintenance38677066823 remain completed failures. CI browser/composed/
+schema/harness succeeded; client/server failed. New local work is not hosted evidence. Parent
+asks Marco about the proposed exact-commit/path exception class while accepted work continues;
+no answer or adoption inferred, no exception implemented, guard weakened, rewrite or push.
