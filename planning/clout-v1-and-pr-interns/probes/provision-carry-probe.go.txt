@@ -1,0 +1,230 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"math/big"
+	"os"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+// Manual one-profile falsification, not an ordinary CI acceptance population.
+func TestCalculationProvisionCarryResearch(t *testing.T) {
+	runProvisionCarryResearch(t, "1.968058018e6", "1.96805801799e6", true)
+}
+
+// Select only with the separately bound, unadopted exact aggregation overlay.
+// On today's active source this is deliberately not the observed result.
+func TestCalculationProvisionCarryExactCounterfactualResearch(t *testing.T) {
+	runProvisionCarryResearch(t, "1.968058018e6", "1.968058018e6", false)
+}
+
+func runProvisionCarryResearch(t *testing.T, wantLower, wantUpper string, decrease bool) {
+	const tick, prefix, firstMS, burstMS int64 = 1000, 65535, 999, 333
+	const purchased, generated int64 = 999999352334, 647666
+	rate := mustDecimal(t, "3.003003003e-23")
+	speed := mustDecimal(t, "1e12")
+	segment := func(count, ms, boosted int64) decimal.Decimal {
+		t.Helper()
+		value, err := accrueBoostedConstant([]decimal.Decimal{rate.Mul(decimal.FromFloat64(float64(count)))}, ms, boosted, decimal.One, speed.Sub(decimal.One))
+		if err != nil {
+			t.Fatal(err)
+		}
+		return value
+	}
+	first := segment(purchased, firstMS, firstMS)
+	full := segment(purchased+generated, tick, tick)
+	a := segment(purchased+generated, 499, burstMS)
+	b := segment(purchased+generated, 500, burstMS)
+	if first.String() != "2.999998057e1" || full.String() != "3.003003003e1" || a.String() != "9.99999999999e0" || b.String() != "1e1" {
+		t.Fatal("declared segment decomposition differs", first, full, a, b)
+	}
+	terms := make([]decimal.Decimal, prefix+2)
+	terms[0] = first
+	for index := int64(1); index <= prefix; index++ {
+		terms[index] = full
+	}
+	terms[prefix+1] = a
+	lowerRaw := decimal.SumDeterministic(terms)
+	terms[prefix+1] = b
+	upperRaw := decimal.SumDeterministic(terms)
+	lower := lowerRaw.Quantize(decimal.CanonicalSignificantDigits)
+	upper := upperRaw.Quantize(decimal.CanonicalSignificantDigits)
+	if !lower.IsStateValue() || !upper.IsStateValue() {
+		t.Fatal("invalid declared totals")
+	}
+	if lower.String() != wantLower || upper.String() != wantUpper || lower.Gt(upper) != decrease {
+		t.Fatal("recorded decrease changed; investigate, do not restamp", lower, upper)
+	}
+	// Exact decimal-literal arithmetic is an independent order control, not
+	// an assertion that the engine uses this different arithmetic recipe.
+	denominator := big.NewInt(100_000_000_000)
+	exactPrefix := new(big.Int).Mul(big.NewInt(prefix), big.NewInt(3_003_003_003_000))
+	exactPrefix.Add(exactPrefix, big.NewInt(2_999_998_057_000))
+	exactLower := new(big.Int).Add(exactPrefix, big.NewInt(999_999_999_999))
+	exactUpper := new(big.Int).Add(exactPrefix, big.NewInt(1_000_000_000_000))
+	if exactLower.String() != "196805801799661999" || exactUpper.String() != "196805801799662000" || exactUpper.Cmp(exactLower) <= 0 {
+		t.Fatal("independent exact literal reference changed", exactLower, exactUpper)
+	}
+	t.Logf("independent literal sums%s/%s→%s/%s increase", exactLower, denominator, exactUpper, denominator)
+
+	data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(data, &root); err != nil {
+		t.Fatal(err)
+	}
+	root["provision_tick_ms"] = tick
+	policy := root["offline_policy"].(map[string]any)
+	policy["burst_speed"] = "1e12"
+	policy["burst_max_duration_ms"] = firstMS + prefix*tick + burstMS
+	foundTarget, foundProvider := false, false
+	for _, value := range root["generator_classes"].([]any) {
+		generator := value.(map[string]any)
+		switch generator["id"] {
+		case "generator.beige_tower":
+			generator["production"].(map[string]any)["base_rate"] = rate.String()
+			generator["provisioned_hardcap"].(map[string]any)["count"] = generated
+			foundTarget = true
+		case "generator.beige_tower_v2":
+			generator["production"] = map[string]any{"resource_id": "company.permits", "base_rate": "1e-1000"}
+			generator["provisions"].(map[string]any)["rate_ppm"] = generated * 1_000_000
+			foundProvider = true
+		}
+	}
+	if !foundTarget || !foundProvider {
+		t.Fatal("missing controlled target/provider")
+	}
+	data, err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal("retuned catalog not admitted", err)
+	}
+	state, err := save.RestoreState([]byte(`{"balances":{"company.cash":"0","company.permits":"0"}}`), 1, catalog, economy.ScopeCompany, engineCursor)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.WireVersion = 17
+	state.ComputeBurstRemainingMS = firstMS + prefix*tick + burstMS
+	state.AchievementsEarnedRun = map[string]bool{}
+	state.GeneratorCounts["generator.beige_tower"] = purchased
+	state.GeneratorCounts["generator.beige_tower_v2"] = 1
+	state.GeneratorPurchasedTotal = purchased + 1
+	state.EvaluatedThrough = engineCursor.Add(time.Millisecond)
+	origin, err := save.EncodeState(state)
+	if err != nil {
+		t.Fatal("origin not encodable", err)
+	}
+	for index, partial := range []int64{499, 500} {
+		current, err := save.RestoreState(origin, 17, catalog, economy.ScopeCompany, state.EvaluatedThrough)
+		if err != nil {
+			t.Fatal("origin not admitted", err)
+		}
+		if current.GeneratorProvisioned["generator.beige_tower"] != 0 {
+			t.Fatal("origin already provisioned")
+		}
+		elapsed := firstMS + prefix*tick + partial
+		result, err := Evaluate(current, catalog, state.EvaluatedThrough.Add(time.Duration(elapsed)*time.Millisecond), ModeOnline, nil)
+		want := lower
+		if index == 1 {
+			want = upper
+		}
+		cash, ok := current.Ledger.Balance("company.cash")
+		if err != nil || !ok || !cash.Eq(want) || result.ProductionMS != elapsed || current.GeneratorProvisioned["generator.beige_tower"] != generated {
+			t.Fatal("actual Evaluate differs from declared prefix", index, cash, want, result, err)
+		}
+		foundCash := false
+		for _, change := range result.Receipt.Changes {
+			if change.ResourceID == "company.cash" {
+				foundCash = change.After == want.String()
+			}
+		}
+		if !foundCash {
+			t.Fatal("cash receipt missing or wrong", index, result.Receipt)
+		}
+		unchanged, err := save.EncodeState(state)
+		if err != nil || !bytes.Equal(unchanged, origin) {
+			t.Fatal("projection consumed origin", err)
+		}
+	}
+	t.Logf("one admitted unequal-prefix provision origin,2 actual Evaluate projections; first%s/full%s/partial%s→%s; raw(%g,e%d)→(%g,e%d); ledger%s→%s, committed_decrease=%t", first, full, a, b, lowerRaw.Mantissa(), lowerRaw.Exponent(), upperRaw.Mantissa(), upperRaw.Exponent(), lower, upper, lower.Gt(upper))
+
+	// Direct Evaluate takes already-assembled contributions. A separate,
+	// admitted neutral catalog checks the actual harness wait wrapper too.
+	for _, value := range root["generator_classes"].([]any) {
+		generator := value.(map[string]any)
+		if generator["id"] == "generator.beige_tower" {
+			generator["ladder"] = []any{}
+			generator["roles"] = []any{map[string]any{"kind": "stock_rate", "per_purchased_ppm": 1000}}
+		}
+	}
+	for _, value := range root["synergy_pools"].([]any) {
+		pool := value.(map[string]any)
+		kept := []any{}
+		for _, value := range pool["sources"].([]any) {
+			source := value.(map[string]any)
+			if source["id_or_class"] != "generator.beige_tower" {
+				kept = append(kept, value)
+			}
+		}
+		pool["sources"] = kept
+	}
+	data, err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	neutral, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal("neutral wrapper catalog not admitted", err)
+	}
+	for index, partial := range []int64{499, 500} {
+		current, err := save.RestoreState(origin, 17, neutral, economy.ScopeCompany, state.EvaluatedThrough)
+		if err != nil {
+			t.Fatal("neutral wrapper origin not admitted", err)
+		}
+		contributions, err := contentContributions(current, neutral)
+		if err != nil || len(contributions) != 0 {
+			t.Fatal("neutral wrapper unexpectedly has derived contributions", contributions, err)
+		}
+		elapsed := firstMS + prefix*tick + partial
+		result, err := SimulateAdvance(current, neutral, SimulationDependencies{}, save.Revision{}, ModeOnline,
+			state.EvaluatedThrough.Add(time.Duration(elapsed)*time.Millisecond), nil, AblationMask{})
+		want := lower
+		if index == 1 {
+			want = upper
+		}
+		cash, ok := current.Ledger.Balance("company.cash")
+		if err != nil || !ok || !cash.Eq(want) || result.Evaluation.ProductionMS != elapsed || current.GeneratorProvisioned["generator.beige_tower"] != generated {
+			t.Fatal("actual harness wait wrapper differs", index, cash, want, result, err)
+		}
+		foundCash, foundProvision := false, false
+		for _, change := range result.Evaluation.Receipt.Changes {
+			if change.ResourceID == "company.cash" {
+				foundCash = change.After == want.String()
+			}
+		}
+		for _, activation := range result.RoleActivations {
+			if activation.GeneratorID == "generator.beige_tower_v2" && activation.Kind == economy.RoleProvision && activation.TargetID == "generator.beige_tower" {
+				foundProvision = true
+			}
+		}
+		if !foundCash || !foundProvision || cash.Gte(lower) != (!decrease || index == 0) {
+			t.Fatal("actual wrapper receipt, provision role or fixed resource predicate differs", index, foundCash, foundProvision, cash)
+		}
+		unchanged, err := save.EncodeState(state)
+		if err != nil || !bytes.Equal(unchanged, origin) {
+			t.Fatal("wrapper consumed source origin", err)
+		}
+	}
+	t.Logf("neutral admitted catalog,2 actual SimulateAdvance projections: cash%s→%s, committed_decrease=%t; fixed threshold lower endpoint cash; nil hook/default mask, not complete modern endpoint factory/search", lower, upper, lower.Gt(upper))
+}

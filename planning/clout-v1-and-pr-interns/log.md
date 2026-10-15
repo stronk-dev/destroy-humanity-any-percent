@@ -5003,3 +5003,86 @@ Review by: Codex root (research author first filter). Recorded by: Codex root. C
 research range8597577d-exclusive through this containing commit needs research review outside
 the corrective-only delegation; no self-approval. Continue actual caller/workload/compatibility
 closure, not more short microbenchmarks. Independent arithmetic/contract adoption remains held.
+
+## 2026-10-16 — One provision-generated unequal prefix (before measurement)
+
+Different actual caller shape from completed equal-prefix/offset censuses: a provision
+boundary changes ownership once and then reaches its hardcap. One analytically selected
+v4 catalog/v17 origin, TWO independent actual Evaluate projections only. Tick1000ms,
+origin1ms after run start; first999ms,65535 full buckets, adjacent final499/500ms with333ms
+boosted. Speed1e12. Beige base3.003003003e-23, purchased999999352334, one provider initially
+adds647666 provisioned units at the first boundary, target hardcap647666. Its own positive
+production goes to permits, not cash. First canonical cash delta should be2.999998057e1,
+then all full buckets3.003003003e1 and partial9.99999999999→10. The first value is the retained
+synthetic unequal bucket minus0.03006, selected to preserve its odd-midpoint parity while
+remaining below the maximum first partial. No growing prefix or rate/balance search.
+
+Require real catalog admission, encoded/restored origin, actual provision counts/cap, exact
+declared segment/sum/evaluator/receipt agreement and unchanged origin in BOTH projections.
+Report raw and committed order whether equal/increasing/decreasing; a differing sorted-fold
+result is not a failed measurement. A passing no-decrease stops this profile, not a universal
+proof. A decrease supplies admitted-origin evidence, not natural acquisition/current beam
+failure. Manual source stays outside CI under ignored compiler overlay. No active math,
+kernel222, balance/content/golden/CI, accounting implementation or draft adoption.
+
+First execution15872 terminal0/package0.944s: BOTH actual admitted/restored Evaluate/receipt
+projections execute. Raw(1.968058017995,e6)→(1.9680580179949971,e6); committed cash
+1.968058018e6→1.96805801799e6. RP-676 records this immediately. The original v4 fixture
+still has purchased-count milestone/feed bonuses that direct Evaluate does not assemble;
+do not mislabel it an executed full harness wait/factory. All actual provision counts and
+the unchanged source-origin check pass. No natural acquisition or live-payment-loss claim.
+
+Before further execution: preserve that result, add independent literal-rational order and
+one wrapper compatibility control, not a larger time/rate census. Same numeric profile and
+TWO same endpoints through actual SimulateAdvance, with nil hook/default mask and no external
+inputs, in a separately admitted catalog clone removing only the active target's ladder and
+manual/feed roles/feed membership. Keep its existing stock role, all other rows, provision
+and numeric inputs. Require actual content contribution assembly empty and the same known
+cash decline/receipt/provisioned cap. This neutral clone prevents secretly bypassing derived
+contributions. It is a different controlled catalog, not today's published economy or the
+complete modern endpoint factory/hook/search. Stop after these two wrapper projections.
+
+Wrapper result35143 terminal0/package1.676s: both original Evaluate and both actual neutral
+SimulateAdvance projections execute, same decline, same provision cap/role and receipt.
+Actual content assembly is empty as required. Independent literal-rational reference increases
+196805801799661999/1e11→196805801799662000/1e11. No source-origin mutation. This now rejects
+a generic monotonicity claim even at the real action-free wait primitive, not the complete
+modern factory/hook/reuse/search or a current published report.
+
+Next bounded counterfactual, before execution: bind the retained UNAPPLIED scratch-reuse
+exact represented-input aggregate via its compiler overlay, leaving this numeric/profile
+input unchanged. Separate explicitly named ExactCounterfactualResearch test expects both
+cash amounts1.968058018e6 and preserves literal/receipt/ownership/provision controls. Two
+Evaluate plus two neutral SimulateAdvance endpoints only, no benchmark or wider population.
+The ordinary research entry retains today's decreasing pair and cannot pass as an exact
+candidate result. This can identify whether the separate numeric proposal addresses THIS
+counterexample; not full temporal monotonicity, candidate review/adoption or caller activation.
+
+Counterfactual32616 terminal0/package1.590s: exact prototype yields equal raw
+(1.9680580179966198,e6) and equal cash1.968058018e6 in all four real projections.
+Its bound source .cache/sparse-aggregation-reuse-candidate.go SHA256
+4b9e897a9c79a1b38fda998f06a240e0c5596e56e85aaa525c3b255110849304 is the retained
+scratch-reuse prototype, not the later rejected default replacement or active math.
+Final ordinary-source84950 terminal0/package1.544s again executes all four projections,
+preserving the decreasing pair. No skipped/conditional/guard population or benchmark.
+
+Exact reproduction from repository root: create an ignored Go overlay mapping virtual
+server/production/calculation_provision_carry_probe_test.go to the committed manual
+probes/provision-carry-probe.go.txt (both absolute paths). Ordinary command:
+`make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-overlay=/Users/stronk/repos/cloud-clicker/.cache/provision-carry-probe-overlay.json -run TestCalculationProvisionCarryResearch -v -count=1'`.
+For the counterfactual add the absolute server/decimal/aggregate.go→the SHA-bound prototype
+mapping and select TestCalculationProvisionCarryExactCounterfactualResearch instead.
+The exact prototype's source derivation remains in sparse-aggregation-research.md; its
+private panic wrapper/changed Company/Pitch compatibility/cost are NOT adopted authority.
+Final manual source SHA256d4148e2df242488a64007946ed716366b6eec2eae4c3f26ddd0bacc633b9e44f.
+
+Reconcile OWN draft H3/H3b/H3c, live plan, defect ledger and current strategic summaries:
+the context-only monotonicity proof route is false for this admitted family. Next is a
+correct alternative search/partition or separately adopted numeric route with actual full
+caller/compatibility/work proof; no repeated positive census or altered acceptance bounds.
+This does not prove natural acquisition, today's complete search/report failure, full
+modern factory/hooks, TypeScript/Linux/SQL, repaired accounting/27 partitions, full CI or
+any tier/release. No active product/kernel222/balance/golden/CI bytes or resource mutations.
+Review by: Codex root (research author/first filter). Recorded by: Codex root. Complete
+56f8a278-exclusive through this containing research commit needs research/normative review
+outside the corrective-only delegation. All handles terminal; formatting/diff checked.

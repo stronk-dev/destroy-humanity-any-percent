@@ -13,9 +13,13 @@ still Garage integration/hardening,
 incomplete v0.1, with substantial world/combat/Tier3–8/final-ending construction ahead. At this
 coordinate, local corrective-review records continue in the owning logs. RP-671/RP-672
 close two client/server refusal mismatches; no new tier or accounting repair follows.
-Canonical-input summation also has a retained counterexample, but actual decreasing
-ledger/time-search behavior is not proved. The Clout log owns that distinction and the
-remaining reachable-prefix/quantization proof. Last inspected
+Canonical-input summation has a retained counterexample. RP-676 now reaches a committed
+time-query decline through a valid provision-generated unequal prefix and actual neutral
+simulation wait wrapper; no natural acquisition or current complete-search/report defect
+is established. The unapplied exact-sum prototype removes this case, not the27 failures,
+compatibility/workload gates or adoption. The Clout log owns execution and limits; next is
+a correct search alternative or separately adopted numeric route with complete caller proof,
+not more positive censuses or a proof of the now-false generic monotonicity claim. Last inspected
 publication is `be66902b`, failed CI38560135778 and maintenance38677066823. Read-only queries
 reconfirm that same remote coordinate and both failures. No new
 hosted execution is claimed; later local work is not in either run.

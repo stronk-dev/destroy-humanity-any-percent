@@ -22,11 +22,25 @@ Firefox setup failure RP-673, not a claimed green CI or Clout/accounting/content
 RP-664/H3c: canonical-input aggregation also has a retained Q12 group-carry
 counterexample (65537 terms). Go/native/Linux, Node and Linux three-engine checks
 reproduce it. A derived admitted equal-prefix origin reaches the raw reversal at
-adjacent499/500ms but pays equal ledger amounts. The unequal-prefix committed
-counterexample's reachability is NOT established. H3c now excludes a generic
-canonical-input summation lemma as well as the earlier raw-rate lemma. Next prove
-actual prefix/quantization/ledger constraints or a separately adopted numeric route;
-do not expand passing temporal censuses or infer a live affordability-search defect.
+adjacent499/500ms but pays equal ledger amounts. That synthetic fixture's EXACT
+unequal prefix remains unproved reachable; the different admitted temporal counterexample
+below now refutes generic actual-wait monotonicity too. Canonicalization and the earlier
+raw-rate lemma cannot supply a search proof. Do not expand passing temporal censuses
+or infer a defect in today's complete search from either diagnostic alone.
+
+**2026-10-16 actual caller finding RP-676 supersedes that proposed generic proof route:**
+one admitted provision-generated UNEQUAL prefix now decreases committed cash at adjacent
+times1.968058018e6→1.96805801799e6, from one unchanged encoded/restored origin. Two actual
+Evaluate projections execute. A separate neutral catalog exercises two actual SimulateAdvance
+projections with derived contribution assembly, nil hook/default mask, receipt/provision-role
+and fixed-threshold true→false controls. Unapplied exact-sum counterfactual eliminates this
+specific decline. This is neither the earlier synthetic list's literal reachability nor
+natural acquisition/current search miss/full modern factory/hook proof. Owning log/manual
+source retain inputs, exact commands, limits and separate outcomes. H3b's context-only regimes
+cannot claim generic monotonicity. Next specify/prove a correct alternative search or obtain
+separate numeric-route adoption and its complete caller/compatibility/workload proof—not more
+positive censuses or an attempted proof of the now-false generic proposition. Active math,
+kernel222, original27 partitions and all adoption/release gates remain unchanged.
 
 RP-672 separately reproduces the upper-domain mismatch through admitted v17 inputs
 and actual Go/TS ApplyLogged, not a formula reconstruction. TS now uses Go's seconds-

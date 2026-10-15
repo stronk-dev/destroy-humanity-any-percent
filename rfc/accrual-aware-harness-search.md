@@ -103,9 +103,13 @@ Proposed algorithm for the real caller:
    whole-domain proof. Account for numeric quantization, caps, provision, burst,
    hook-owned state and the actual resource/quote contract. If that proof does not
    hold, specify a correct alternative; do not skip the interval or declare no result.
+   RP-676 below now refutes generic monotonicity over these context-only regimes;
+   this is a failed proposed proof route, not merely a missing larger sample.
 4. Search regimes in order. Test the first endpoint, including the original time0.
    Only in a proven monotone regime may an unaffordable last endpoint exclude that
-   regime. Otherwise use integer lower-bound search within that regime. The first
+   regime; if its last endpoint qualifies, use integer lower-bound search only under
+   that same proof. An unproved/nonmonotone regime cannot use this shortcut at all.
+   The first
    qualifying result is the earliest over all earlier exhausted regimes.
 5. Return a tagged unreachable result only after every required regime is exhausted.
    A valid solution at0 is not absence. Charge actual boundary work and predicate
@@ -184,6 +188,9 @@ hooks and quantization. The fixed-external profile does not gain logged scheduli
 the diagnostic retains its frozen window-start policy. Unsupported context, a
 producer refusal or exhausted work is an error, never proof of unreachability.
 The general producer/predicate and work obligations in H3 remain open.
+RP-676's admitted provision-generated prefix defeats monotonicity within one of
+these context-only regimes. This candidate enumerator is therefore insufficient
+for the full admitted domain, even though its bounded clock/buff controls pass.
 The offset formula is not permission to bypass source-state admission, actual
 attendance/history validation, canonical clock checks or overflow handling. Its
 bounded tests do not establish those contracts for every admitted timestamp/history.
@@ -317,6 +324,47 @@ This is native-Go-only bounded evidence, not a proof over all varying rates,
 provision producers, burst policies, hooks, Go/TS factories or the modern caller.
 No production balance is retuned and no per-ms production scan is introduced.
 
+
+**An admitted temporal counterexample, RP-676 (2026-10-16).** The separate
+[manual provision diagnostic](../planning/clout-v1-and-pr-interns/probes/provision-carry-probe.go.txt)
+closes the specific reachability gap with a different unequal prefix, not by
+declaring the earlier synthetic list reachable. Tick1000ms, origin1ms after run
+start, first999ms and65535 full buckets. Base3.003003003e-23 with999999352334
+purchased units; one provision boundary adds647666 units and hits its explicit
+provisioned hardcap. A1e12 burst covers the first bucket, every full bucket and
+333ms of the last bucket. At adjacent final499/500ms the canonical partial crosses
+9.99999999999→10. The first canonical bucket is29.99998057, later full buckets
+30.03003003. Both total durations remain below the existing24h cap.
+
+From one encoded/restored v17 origin, TWO actual Evaluate/receipt projections
+commit1.968058018e6→1.96805801799e6. The later queried payout is smaller. Independent
+exact decimal-literal sums196805801799661999/1e11→196805801799662000/1e11 increase;
+they are an order control, not the engine's arithmetic authority. The source origin
+stays unchanged. This is no longer merely a raw-sum reversal or an arbitrary list.
+
+Direct Evaluate receives assembled contributions, so it alone cannot claim the
+harness wrapper. A separate admitted catalog clone removes only the active target's
+ladder/manual/feed roles and feed membership, retaining its stock role and all
+numeric/provision inputs. Actual contribution assembly is empty; TWO actual
+SimulateAdvance projections with nil hook/default mask reproduce the same decline,
+receipt/provisioned cap and provision-role activation. A fixed threshold equal to
+the earlier cash returns true then false. No complete modern factory, hook-bearing
+replay, search miss, published report defect, natural acquisition or saved-payment
+loss was executed or inferred. Inputs are deliberately unminted research content.
+
+Consequently, the generic actual-wait monotonicity proposition over H3b's existing
+context regimes is FALSE for the admitted domain. Do not keep extending positive
+censuses or ask for a proof of that false proposition. The implementation gate now
+requires a correct alternative search/partition with a complete proof, or a separately
+adopted numeric contract with its actual caller proof and compatibility/workload gates.
+Neither hypothetical additional cuts nor an existing draft is that solution.
+
+The separately bound UNAPPLIED exact represented-input sum prototype eliminates this
+specific decrease: same inputs, two Evaluate and two neutral SimulateAdvance projections
+both pay1.968058018e6. This bounded counterfactual identifies a relevant correction
+candidate; it is not whole-domain monotonicity, unchanged old payouts, acceptable cost,
+independent review or adoption of either numeric or accounting proposal. Its already
+recorded Pitch/catalog/Company/Commons/report compatibility obligations remain.
 
 ### H4 — Compatibility, work and evidence
 
@@ -471,3 +519,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   its synthetic unequal prefix from an admitted equal-prefix raw reversal with equal
   ledger payments. Canonicalization does not supply the missing temporal proof;
   no new algorithm, bound, arithmetic or RFC acceptance follows.
+- 2026-10-16: RP-676 reaches an actual committed-time decline via a provision-generated
+  unequal prefix, including the neutral actual wait wrapper. Reject generic H3b-regime
+  monotonicity; the unapplied exact-sum counterfactual fixes only this bounded case.
+  Correct complete search/caller proof, compatibility, cost and adoption remain gates.

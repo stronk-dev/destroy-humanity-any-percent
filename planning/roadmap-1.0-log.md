@@ -5614,3 +5614,18 @@ no push, dispatch or later-local-work hosted coverage. H3c midpoint research2b40
 prefixes:19 raw reversals, zero committed reversals; actual Evaluate checks execute zero times.
 That bounded negative is not accounting repair or universal proof. The27 accounting failures,
 author/product/rights gates and later-game construction remain. Full1.0 goal stays active.
+
+## 2026-10-16 — Actual provision-origin counterexample changes the search work
+
+RP-676 reaches decreasing committed time-query cash with one admitted provision-generated
+unequal prefix:1.968058018e6→1.96805801799e6 at adjacent endpoints. Two actual Evaluate and
+two neutral actual SimulateAdvance projections execute from untouched encoded/restored
+origins; exact literal sums increase, receipts/provision cap/role agree, fixed resource
+threshold flips true→false. The unapplied exact-sum counterfactual removes THIS decrease.
+Clout log/manual source own exact inputs/commands and all limits. Generic monotonicity of
+the proposed context-only search regimes is now refuted, not awaiting a larger passing
+sample. Own draft/plan/board/current-state/queue reconcile the changed next action: correct
+alternative search or separately adopted numeric route with full caller/compatibility/work
+proof. No complete modern factory/hooks, natural acquisition/current full-search defect,
+TS/Linux/SQL, arithmetic activation,27-partition repair, tier/feature/CI/release promotion.
+Existing research/normative review and owner gates remain. Full nine-tier goal active.

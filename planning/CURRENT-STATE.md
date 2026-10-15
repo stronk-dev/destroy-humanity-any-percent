@@ -60,8 +60,13 @@ Constant accrual and burst replay now refuse infinity-class intermediates consis
 with the server (RP-671/RP-672, independently approved), without changing balance or the
 Decimal representation. New cross-runtime research also refutes a canonical-input
 summation shortcut: a synthetic prefix decreases after rounding; an admitted related
-origin shows raw decrease but equal ledger payments. Actual decreasing time-search
-behavior is not established, and its proof plus27 accounting failures remain open.
+equal-prefix origin shows raw decrease but equal ledger payments. New RP-676 reaches a
+committed temporal decline with a different provision-generated unequal prefix, including
+two actual neutral SimulateAdvance projections. A fixed cash threshold flips true→false;
+generic monotonicity of the draft's context-only regimes is now refuted, not merely unproved.
+The unapplied exact-sum counterfactual eliminates this case, not full-domain proof or adoption.
+The Clout log owns inputs/execution/limits. Natural acquisition, complete modern factory/hooks,
+today's full search/report behavior and27 accounting failures remain unproved/unrepaired.
 Deployment image-layer identity, Pitch tenant admission and scaling admission also have
 bounded independent corrective approvals; their owning logs preserve all exclusions.
 Three further Clout ownership/legacy-codec/writer-guard corrections have bounded independent

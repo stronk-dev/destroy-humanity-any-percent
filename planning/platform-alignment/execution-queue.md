@@ -31,8 +31,13 @@ nine-tier goal remains active; no new playable tier or release was completed.
   repeat completed fixture studies or build an unused live ApplyLogged wrapper.
   New canonical-input counterexample `f7ca2b96` rules out a generic canonicalization
   shortcut too. Its synthetic decreasing sum is not proved a reachable temporal
-  ledger defect; the admitted equal-prefix control pays equally. Complete the
-  actual reachable-prefix/quantization proof, not another passing census.
+  ledger defect; that admitted equal-prefix control pays equally. New RP-676 reaches
+  committed cash decline with a DIFFERENT provision-generated unequal prefix and actual
+  neutral SimulateAdvance calls. Generic monotonicity over current draft context regimes
+  is refuted. The unapplied exact-sum counterfactual removes this case; next specify/prove
+  a correct search alternative or separately adopted numeric route and complete caller/
+  compatibility/workload proof. No natural acquisition/current complete search miss,
+  algorithm activation or AC6 repair follows; stop seeking a proof of the false generic claim.
 - **HELD — complete catalog serving and generated intent migration:** C18's union constructor and internal original-byte
   verifier are locally constructed through `0411ef34`; do not repeat or promote them to a
   mounted catalog workflow. The four remaining owners and RP-598's demonstrated embedded-member
