@@ -1,5 +1,34 @@
 # RP-122 — Minigame, Soul and Transport rows after account deletion
 
+## Producer-backed supplement — declared 2026-10-15 at 6a6a32b9
+
+Extend the existing composed Pitch/Soul lifecycle after all its original outcomes,
+in both literal and purchased-generator fixture populations. No direct session or
+receipt seed: the real APIs already produce one resolved Pitch, immutable command/
+create/command receipts and a faucet window, plus resolved and watchdog-cancelled
+Soul sessions. Observe all six table families before/after the authenticated
+Account DELETE. Every before-family must be populated or the observation is invalid.
+Use captured durable session/Founder identifiers, not the disappearing account join.
+
+Compare stable ordered SQL-row JSON representations (including nested JSON and
+hex-encoded command bytea), without publishing their contents/tokens. Report each
+family as removed, retained-identical, partially-removed, expanded or modified;
+do not assert that retaining or erasing it is the desired policy. A missing-session
+query must observe zero, and the classification controls must distinguish outcomes.
+Check live access before delete, its204 response, archived/unlinked Founder and
+post-delete access/refresh refusals. Retention conclusions require an actual run;
+neither denied access nor row counts alone prove content erasure.
+
+Run the existing root Postgres lifecycle selector cold. This is producer-backed
+terminal Minigame/Soul evidence, not active-session deletion, Guild, every nested
+field/history, browser/participant rights, expiry or backup/restore proof. The
+five-minute recovery progression and24-hour watchdog use the existing injected
+clock; do not call them natural wall-clock player observations. No product/privacy
+policy, schema, migration, copy, CI or release authority changes. Preserve the dated
+seeded experiment below; reconcile its dossier and RP-122 after execution.
+
+## Historical seeded experiment
+
 **Status:** predeclared diagnostic, 2026-09-24; product source `7e8aa70` (no later `server/`
 diff at HEAD `a64ed0e`). No Account, Minigame, Soul, Transport or retention behavior change is
 authorized by this probe.

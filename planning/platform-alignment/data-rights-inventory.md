@@ -34,6 +34,17 @@ producer/HTTP observation uses a controlled archive/reader, not live SQL or a
 deployed disclosure. Rights options must respect Garden's already-adopted salt
 exclusion, and public verification needs its own authored contract reconciliation.
 
+## Producer-backed session deletion — 2026-10-15
+
+The [current Minigame/Soul supplement](data-rights-minigame-soul-delete.md#current-producer-backed-terminal-observation--2026-10-15)
+now joins actual HTTP producers to Account DELETE on Postgres, in both existing
+Pitch fixture populations. Account removal/access revocation succeeds, while all
+15 selected rows across six session/command/receipt/window families retain their
+SQL contents; both terminal Soul tokens remain stored. This advances the old
+seeded-only evidence for terminal sessions, not active/claimed deletion or the
+other families. It adopts no erasure/retention/export policy. Guild/shared-party
+payload classification, fuller histories and delete/restore remain open.
+
 ## Original denominator and controls — 2026-09-23
 
 The ordered `server/save/migrations/00001`–`00074` Up chain creates 61 tables and drops the

@@ -2105,3 +2105,35 @@ Pitch/Recovery reviews. Company input/ownership contracts, earlier review debt, 
 content and full-nine-tier release obligations remain. No acceptance, archival, push or deployment.
 After terminal checks, removed only this turn's test Postgres container and disposable tmpfs
 rows; final service inventory is empty. No durable volumes, caches or unrelated data removed.
+
+## 2026-10-15 — RP-122 terminal producer→account deletion observation
+
+Extend the existing real Pitch/Soul lifecycle only after all original producer,
+certification/payout, receipt/retry and bootstrap checks. The predeclared method
+and result live in platform-alignment/data-rights-minigame-soul-delete{,-plan}.md.
+Both literal/purchased-generator fixtures now join their actual API-produced
+terminal rows to authenticated Account DELETE. No directly seeded session/receipt.
+
+Final declared Postgres36269 passes the whole parent36.10s and the classifier:
+each population retains15 SQL rows across six selected families identically,
+including both terminal Soul progress tokens (2→2). Delete204/account-row removal,
+archived/unlinked Founder and post-delete access/refresh401 hold, with valid access
+before deletion. Missing-ID queries observe zero; neutral classification separately
+distinguishes all five outcomes and does not require retaining these rows forever.
+Initial99229 also passes before the explicit token-count supplement. Final native
+Gameserver33424/vet pass. No payload/token/digest is printed. Stable ordered SQL
+JSON equality is not original HTTP-byte identity or complete nested classification.
+
+This replaces only the earlier seeded-only terminal-producer blind spot, not
+active/claimed deletion, Guild/Transport, other tenants/modes, full history/export,
+browser/participant rights or delete/restore. Existing injected-clock/catalog setup
+is not natural growth/pacing. No product behavior, retention decision, schema,
+migration, kernel/content, client or CI changes. Inventory, RP-122 and D-009's
+evidence route are reconciled without adopting desired retention or erasure.
+
+Review by: Codex (test/research implementer first filter). Recorded by: Codex.
+Whole tests/research/ledger/decision-evidence/log range after `6a6a32b9` through
+this containing commit needs designated Claude review; consolidate with related
+real-service evidence. No feature acceptance, archival, release, push or deployment.
+After terminal checks remove only this turn's inspected disposable tmpfs Postgres
+service/rows; preserve durable data/cache/network. Full nine-tier goal remains.

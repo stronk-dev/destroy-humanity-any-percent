@@ -917,6 +917,10 @@ func testComposedMinigameAPILifecycle(t *testing.T, liveScaling bool) {
 		t.Fatal("valid bootstrap retry changed its receipt after admission checks (body withheld)")
 	}
 
+	t.Run("account_delete_observation", func(t *testing.T) {
+		observeComposedSessionAccountDeletion(t, db, httpServer, created.AccountID, companyIdentity.FounderID, current.SessionID, tokens)
+	})
+
 	drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancelDrain()
 	if err := composition.Server.Drain(drainContext, clock.Time()); err != nil {

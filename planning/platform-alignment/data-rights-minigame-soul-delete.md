@@ -1,5 +1,54 @@
 # Minigame, Soul and Transport rows after account deletion — bounded result
 
+## Current producer-backed terminal observation — 2026-10-15
+
+Source baseline `6a6a32b9`; method declared in the current supplement of
+[`data-rights-minigame-soul-delete-plan.md`](data-rights-minigame-soul-delete-plan.md).
+The existing composed Pitch/Soul HTTP lifecycle now observes deletion after its
+actual create, play, certification/payout, receipt/retry, Soul resolution and watchdog
+cancellation. No Minigame/Soul row is directly seeded for this observation. Both
+the literal-scaling and purchased-generator fixture populations produce the same
+result on real Postgres. The fixtures retain their synthetic catalog and injected
+five-minute/24-hour clock boundaries; this is not natural pacing or wall-clock care.
+
+| Selected family | Before → after, per population | Ordered SQL-row content |
+|---|---|---|
+| Minigame session | 1 → 1 | Unchanged, including genesis/state/result/scaling and resolution receipt |
+| Immutable session commands | 5 → 5 | Unchanged, including command bytea |
+| Create receipt | 1 → 1 | Unchanged |
+| Command receipts | 5 → 5 | Unchanged |
+| Faucet window | 1 → 1 | Unchanged |
+| Soul recovery sessions | 2 → 2 | Unchanged: one resolved and one watchdog-cancelled |
+
+In each population DELETE returns204, the account row is gone, and the Founder
+remains archived/unlinked. Access was valid immediately before deletion; afterwards
+the original access token cannot reach Founder/current-minigame reads, and refresh
+returns401. Both terminal Soul rows retain non-null progress tokens (2 → 2).
+That is stored token retention, not demonstrated usability or an authentication bypass.
+
+The observation compares SHA256 of stable ordered `to_jsonb(row)` aggregates,
+including nested JSON and hex-encoded bytea. It establishes equality of those
+selected SQL values, not original HTTP JSON lexical bytes. No payload, token or
+digest is printed: logs contain counts and neutral dispositions only. Missing-ID
+queries return zero for every selected family. Separate executed classifier cases
+distinguish removal, partial removal, expansion, identical retention and modification;
+the test does not require retention as the desired future behavior. Empty initial
+families invalidate the measurement instead of silently shrinking its denominator.
+
+Cold declared Postgres36269 passes the whole two-population lifecycle36.10s and
+the classification controls; the original producer, replay, payout, admission and
+retry checks remain. The owning Minigame API log holds final affected checks and
+the pending review range. Earlier99229 also passes before the explicit token-count
+supplement. No production/schema/migration, content, privacy policy or CI change.
+
+This replaces the old *terminal producer* blind spot below, not the seeded active-
+session evidence. Active/claimed deletion, other tenants/modes, Guild, Transport,
+all nested field/history variants, browser deletion, export, expiry and backup
+restore remain separate. D-008/D-009/D-015 still decide the permitted outcome and
+disclosure. Denied access cannot honestly be described as erasure of these records.
+
+## Historical seeded observation
+
 **Coordinate:** product `7e8aa70`, predeclared at `8a02a3c` in
 [`data-rights-minigame-soul-delete-plan.md`](data-rights-minigame-soul-delete-plan.md); run
 2026-09-24 by Claude.
