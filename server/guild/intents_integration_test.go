@@ -2,9 +2,11 @@ package guild
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 	"sync"
@@ -18,6 +20,8 @@ type integrationNames struct{}
 
 type integrationWindow struct{}
 
+var errGuildFixtureDatabase = errors.New("Guild fixture requires the declared disposable cloud_clicker_test database")
+
 func (integrationWindow) GuildHealthWindowMS(string) (int64, bool) {
 	return int64(30 * 24 * time.Hour / time.Millisecond), true
 }
@@ -26,20 +30,74 @@ func (integrationNames) ValidateGuildName(value string) bool {
 	return strings.HasPrefix(value, "small systems")
 }
 
-func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
-	url := os.Getenv("TEST_DATABASE_URL")
-	if url == "" {
+func requireGuildFixtureDatabase(ctx context.Context, db *sql.DB) error {
+	var name string
+	if err := db.QueryRowContext(ctx, "SELECT current_database()").Scan(&name); err != nil {
+		return err
+	}
+	if name != "cloud_clicker_test" {
+		return errGuildFixtureDatabase
+	}
+	return nil
+}
+
+func guildIntegrationDatabase(t *testing.T, ctx context.Context) *sql.DB {
+	t.Helper()
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL is not set")
 	}
-	ctx := context.Background()
-	db, err := save.OpenPostgres(ctx, url)
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+	// Refuse before migrations or destructive fixture cleanup. These tests own
+	// the declared shared test database and must not run with t.Parallel.
+	if err := requireGuildFixtureDatabase(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	clear := func() {
+		t.Helper()
+		if _, err := db.ExecContext(context.Background(), `TRUNCATE guilds,accounts,save_streams RESTART IDENTITY CASCADE`); err != nil {
+			t.Fatal(err)
+		}
+	}
+	clear()
+	t.Cleanup(clear)
+	return db
+}
+
+func TestGuildFixtureRefusesOtherDatabaseIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL is not set")
+	}
+	parsed, err := url.Parse(databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	parsed.Path = "/postgres"
+	query := parsed.Query()
+	query.Set("dbname", "postgres")
+	parsed.RawQuery = query.Encode()
+	db, err := save.OpenPostgres(context.Background(), parsed.String())
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer db.Close()
-	if err := save.Migrate(ctx, db); err != nil {
-		t.Fatal(err)
+	// Query-only negative: never migrate or truncate the maintenance database.
+	if err := requireGuildFixtureDatabase(context.Background(), db); !errors.Is(err, errGuildFixtureDatabase) {
+		t.Fatalf("fixture did not explicitly refuse another database: %v", err)
 	}
+}
+
+func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
+	ctx := context.Background()
+	db := guildIntegrationDatabase(t, ctx)
 
 	accounts := []string{
 		"018f0000-0000-4000-8000-000000000101",
@@ -356,19 +414,8 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 }
 
 func TestGuildActivityEvaluationDenominatorIntegration(t *testing.T) {
-	url := os.Getenv("TEST_DATABASE_URL")
-	if url == "" {
-		t.Skip("TEST_DATABASE_URL is not set")
-	}
 	ctx := context.Background()
-	db, err := save.OpenPostgres(ctx, url)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer db.Close()
-	if err := save.Migrate(ctx, db); err != nil {
-		t.Fatal(err)
-	}
+	db := guildIntegrationDatabase(t, ctx)
 	now := time.Date(2026, 7, 31, 12, 0, 0, 0, time.UTC)
 	guildID := "018f0000-0000-7000-8000-000000000701"
 	accounts := []string{
@@ -443,19 +490,8 @@ func TestGuildActivityEvaluationDenominatorIntegration(t *testing.T) {
 }
 
 func TestGuildIntentRejectionsAndLeadershipConcurrencyIntegration(t *testing.T) {
-	url := os.Getenv("TEST_DATABASE_URL")
-	if url == "" {
-		t.Skip("TEST_DATABASE_URL is not set")
-	}
 	ctx := context.Background()
-	db, err := save.OpenPostgres(ctx, url)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer db.Close()
-	if err := save.Migrate(ctx, db); err != nil {
-		t.Fatal(err)
-	}
+	db := guildIntegrationDatabase(t, ctx)
 	accounts := make([]string, 9)
 	for index := range accounts {
 		accounts[index] = fmt.Sprintf("018f0000-0000-4000-8000-0000000008%02d", index+1)

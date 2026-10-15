@@ -45,6 +45,13 @@ shared-history access by another player, browser deletion, export, backup restor
 or legal/retention requirements. RP-120 remains open for D-009/D-015 and an accepted
 implementation contract; successful revocation is not complete identity erasure.
 
+RP-121 fixture revalidation (2026-10-15, after `604f2a82`): the current three
+Guild integration populations now clear their declared disposable database before
+and after each case. Same-process repetition and a separate shuffled rerun on the
+same Postgres service pass. The original production history/concurrency assertions
+remain; fixture cleanup is not production erasure or a fix for RP-120. The CI
+owning log records old failures, database refusal control and pending review.
+
 ## Historical SQL-column tranche — 2026-09-23
 
 Research checkpoint: 2026-09-23. Product source `7e8aa70`; no later product-path

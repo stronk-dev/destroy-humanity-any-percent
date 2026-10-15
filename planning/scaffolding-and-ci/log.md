@@ -1851,3 +1851,35 @@ Recorded by: Codex. Complete five-path test/records range after `728508de` throu
 this containing commit needs designated Claude review; no acceptance, archival,
 push or deployment. Next use actual recurrence evidence for RP-637 and continue
 accepted construction, not another unchanged full run for reassurance.
+
+## 2026-10-15 — RP-121 Guild fixture isolation on a reused database
+
+Under RFC-0000's ordinary fixture-repair procedure/CI D2 and the unchanged Guild
+contract, reproduce old `make test-save-integration SAVE_TEST_PACKAGES='./guild'
+SAVE_TEST_FLAGS='-run Integration -v' SAVE_TEST_COUNT=2`82393: first three cases
+pass, second lifecycle gets two invalid intents and the other two hit accounts PK
+duplicates. No resetting the database/service between those repetitions.
+
+Factor setup/cleanup for the three original fixtures. Before any migration or
+TRUNCATE, query the actual database name and require the declared cloud_clicker_test
+target. Clear guilds/accounts/save-stream roots and their test dependencies before
+and after each case; cleanup precedes connection close. No t.Parallel is permitted
+on this shared fixture; all existing transaction races, idempotency, history-trigger,
+clearing, health and leadership assertions remain byte-unchanged. The negative
+connects read-only to maintenance postgres and requires the exact refusal sentinel,
+so an unrelated SQL/connection error cannot satisfy it.
+
+First corrected16491 passes all four cases twice1.779s. Tighten the negative's
+error identity; final1622 passes the separate process with -shuffle=12345 and
+-count=2 on the same still-running Postgres service1.842s, no selected skips.
+Final cold native Guild/vet77829 pass0.230s. No production, schema, migrations,
+kernel, balance, privacy, CI topology/budget or archived-contract change. These are
+fixture repeatability checks, not a new Guild/player/erasure or full-CI acceptance.
+
+Diff/whitespace checked; all handles terminal. Remove only this turn's inspected
+owned tmpfs Postgres, preserving caches/network/durable data. Refresh RP-121 and the
+current Guild research pointer without rewriting its historical failures. Review
+by: Codex (test implementer first filter). Recorded by: Codex. Whole five-path
+test/ledger/research-pointer/plan/log range after `604f2a82` through this containing
+commit needs designated Claude review. No acceptance, archival, push or deployment;
+numeric conservation/history, owner/author and release gates remain independently open.

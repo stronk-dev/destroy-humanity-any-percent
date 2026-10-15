@@ -7,6 +7,12 @@
 
 ## Current checkpoint — 2026-10-15
 
+RP-121 Guild fixture isolation is locally corrected: all three original real-DB
+populations retain their assertions and pass repeated/shuffled runs on the same
+service. Cleanup is confined to the declared test database, with an explicit
+other-database refusal control. Owning log records evidence/range after `604f2a82`,
+pending Claude review; no Guild runtime, privacy policy or full-server promotion.
+
 Current browser revalidation at product `728508de` plus the two test-only changes
 in this batch completes all three Linux/ARM64 phases. RP-645's full-run failure
 exposed a deadline fixture assuming subscription readiness before initialization
