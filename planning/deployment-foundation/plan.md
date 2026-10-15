@@ -30,7 +30,9 @@ Linux-amd64 populations preserve it, including unchanged aliases and second-proc
 exclusion. Cold affected packages/vet/race and Linux helper build pass. Docker now responds;
 `make test-deployment-backup` executes all seven real Postgres integration tests, including
 RP-551's empty/populated query-override restores. Exact evidence/range after `68eee56b` is in
-the owning log, pending Claude. Other previously unavailable lanes must run individually;
+the owning log. Independent corrective review now APPROVES RP-551/RP-559/RP-611
+and the stale-doc supplement, with exact ranges and actual SQL/cleanup evidence.
+Other previously unavailable lanes must run individually;
 no daemon intervention, current-release proposal adoption or clean-host/R-006 pass is inferred.
 
 **Current backup-input correction, 2026-10-13 (RP-559):** malformed URL queries now
@@ -38,8 +40,9 @@ refuse before service/pass file creation, rather than silently dropping invalid 
 and preparing fallback credentials. Twelve actual old-helper failures and four encoded-value
 controls precede the correction; all credential-file checks/race, four cold affected packages
 and vet pass. The log records the initially falsified cross-parser hypothesis and exact range
-after `0e7a4b95`, pending Claude review. This does not extend supported URI options or establish
-SQL restore, Docker/Linux/hosted or exact-artifact acceptance; those boundaries remain open.
+after `0e7a4b95`, now independently APPROVED through4966e296. The separate RP-551/RP-611
+review executes actual local Linux/Postgres restores, not general URI compatibility,
+hosted or exact-artifact acceptance; those boundaries remain open.
 
 **Current contract work, 2026-10-13 (RP-558 / DESIGN-GAP10):** the
 [Current Release Authority draft](../../rfc/deployment-current-release-authority.md) specifies
@@ -57,7 +60,7 @@ continue other accepted work meanwhile. D-019, other DESIGN-GAPs and full nine-t
 reject existing inadmissible history/start times before runtime operations; lock/append paths
 reject final directory symlinks before changing their targets. Old regressions and all30
 corrected physical-file/recording-runtime cases, focused race, four cold packages/vet and Linux
-helper build pass. New range after `b448069b` needs Claude review; not real Docker/SQL/R-006.
+helper build pass. Independent review APPROVES b448069b..b29fc293; not real Docker/SQL/R-006.
 **Next engineering contract: RP-558 / DESIGN-GAP10**—define the actual current-release identity
 binding, including missing history and failed transitions, before claiming forward-only live
 upgrades. The current controller admits a contradictory install-history diagnostic; no live-host
@@ -68,10 +71,10 @@ this is agent specification work, not a request that Marco design a technical pa
 before appending a timestamp the existing reader would reject. Six old-source poisoned-ledger
 cases and12 equal/later controls establish the regression; all18 corrected cases preserve
 readability and valid retry, across all three key families. Cold four-package tests/vet,
-focused race and Linux-amd64 helper build pass. New range after `3964194b` needs Claude review;
+focused race and Linux-amd64 helper build pass. Independent review APPROVES3964194b..b448069b;
 overlap minima, cursor contract holds and exact-host rotation proof remain unchanged. Original
-R1's full six-path CHANGES REQUIRED disposition is now recorded; its Codex descendants still
-need independent review. Continue accepted construction without relabelling native proof R-006.
+R1's full six-path CHANGES REQUIRED disposition remains; other Codex descendants still
+need review. Continue accepted construction without relabelling native proof R-006.
 
 **Preceding failed-install correction, 2026-10-13 (RP-554):** `AbortInstall` now retains its
 normalized runtime rather than dropping the default command runner and rotation overlay.
@@ -79,7 +82,7 @@ Three old-source failures and five controls precede the correction; all eight no
 including actual ExecRunner subprocess failures through an owned recording executable.
 Cold four-package tests/vet, focused race and Linux-amd64 helper build pass. Original R2's
 complete nine-path disposition is CHANGES REQUIRED (RP-134/RP-554), not approval of Codex
-corrections. New range after `b868cd2c` needs Claude review; Docker/SQL failed-install and
+corrections. Independent corrective review APPROVES b868cd2c..3964194b; Docker/SQL failed-install and
 exact-artifact clean-host proof remain open. No change to rotation timing or cleanup targets.
 
 **Current DP-F refusal-record correction, 2026-10-13 (RP-552):** the non-clean restore classifier
@@ -97,7 +100,7 @@ focused/race, affected cold packages/vet and Linux helper build pass. The existi
 empty/populated restore test now includes swapped URI paths with database-query overrides; it
 initially only compiled/skipped locally. The 2026-10-14 declared Linux/Postgres run now passes
 both empty/populated override populations; the latest owning log records it. New range after
-`a7501ac1` still needs Claude review. This
+`a7501ac1` throughfc04db24 is now independently APPROVED. This
 does not close DP-C/AC4, general URI options, original R20 review or exact-host/R-006.
 
 **Current DP-F producer evidence, 2026-10-13 (RP-550):** all nine packaged-artifact mutations now

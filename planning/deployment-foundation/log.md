@@ -6980,3 +6980,62 @@ against the owning recorded execution; no unrelated suite for this editorial rep
 Review by: Codex parent (editorial first filter). Recorded by: Codex parent.
 Include this two-path supplement afterf2751639 in the pending backup corrective
 review, not as approval of the later data-rights experiment or full DP6 acceptance.
+
+## 2026-10-15 — Backup safety independent corrective review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/backup_safety_corrective_review`.
+Recorded by: Codex parent, transcribing its verdict under Marco's delegation.
+Complete reviewed disjoint ranges (base exclusive, tip inclusive):
+
+- RP-551: `a7501ac1bac149d1fb87949b75b308ef58073479..fc04db242303e3d873b213d2b5a2e597ca809db3` (seven paths).
+- RP-559: `0e7a4b95f1daeacac175678883638c1aae339f51..4966e29671783bfec9a8ee5a1ae43612ff6bdc72` (six paths).
+- RP-611/environment records: `68eee56b5e37e9454359813c822ea1215c086ef3..7644aed4001c8f17d59b397d1d5eadd25c7d2b59` (eleven paths).
+- Stale-doc repair: `f2751639872f09cf8a32b36bc6ae7041d1a3f2f9..22dd54e97c641c11ab6913371eda0cb8cb2fdd55` (two paths).
+
+Verdict: **APPROVED**, all changed code/tests/docs/records inspected, no remaining
+findings after the stale canonical verification claim is repaired. Historical-source
+compiler overlays independently reproduce18 endpoint/unsafe failures,12 malformed-query
+failures and3 destructive replacement-cleanup failures, retaining ordinary/password
+controls. Corrected credential/cleanup race tests pass, including anchored roots,
+aliases, encoded values, second-process ownership and orphan cleanup. Five affected
+packages pass cold and vet; an initial release-package sandbox listener denial is
+resolved by the permitted rerun, not counted as product success/failure.
+
+Actual root `make test-deployment-backup` passes Linux-amd64/Postgres16: all seven
+original integration functions execute, including empty/populated ordinary/override
+restores and refusals. Linux TestCleanup also passes. The current eighth rights-HTTP
+experiment executes but is explicitly outside approval. Original relevant source/tests
+remain byte-identical at22dd54e9. Range whitespace checks pass. Independent read-only
+CI38560135778 metadata/finished failure markers confirm that historical reconciliation;
+this is not a new hosted run. Reviewer makes no tracked edits; only review-created
+test resources removed and final backup project inventory empty.
+
+No intervening-commit approval, general URI compatibility, rights-policy resolution,
+draft adoption, off-host durability, RPO/RTO, full DP6/Deployment, clean-host/R-006 or
+release acceptance. Original failures and other corrective review debt remain.
+
+## 2026-10-15 — Operator-state independent corrective review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/operator_state_corrective_review`.
+Recorded by: Codex parent, transcribing its verdict under Marco's delegation.
+Complete reviewed ranges (base exclusive, tip inclusive):
+
+- RP-554: `b868cd2cba70a34162ad608d03a3a4f956393917..3964194b4c4ece27be07267bbaf6b0a9b3980507`.
+- RP-555: `3964194b4c4ece27be07267bbaf6b0a9b3980507..b448069beef2b25fca0acc95f61782d00dcfa0ec`.
+- RP-556/RP-557: `b448069beef2b25fca0acc95f61782d00dcfa0ec..b29fc293a0913d5c6365c10b997556ea09889510`.
+
+Verdict: **APPROVED**, no actionable findings; all source/tests/docs/plan/ledger/log
+paths inspected. Four affected deploymentrelease/rehearsal/both-command packages
+pass cold count1 and matching vet. Joined56 corrective cases pass race/count1.
+Independent old-source overlays reproduce RP-554: 3/8 failures; RP-555: 6/18;
+RP-556: 15/24; RP-557: 2/6, with remaining controls passing. Initial chronology
+overlay mixes old ledger/current controller and fails compilation; consistent old
+sources then reproduce the six actual failures. Compile failure is not regression
+evidence. Formatting/range diff clean; reviewed source/tests unchanged atf2751639.
+
+Reviewer makes no tracked edits or Docker/DB resources; owned overlay evidence
+remains `/tmp/cloud-clicker-operator-review.TKXOiZ`, not claimed cleaned. Physical
+ledgers and recording subprocesses are not real failed-install cleanup, deployed
+rotation, full lifecycle, clean-host/R-006 or release proof. RP-558/current-release
+authority, future clock/durability and original Claude CHANGES REQUIRED dispositions
+stay open. Missing-history semantics unchanged; other descendants not approved.
