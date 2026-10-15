@@ -3930,3 +3930,28 @@ twice-inspected tmpfsfd19f0d6… stopped/removed; disposable rows unrecoverable,
 caches/volumes/two builders preserved. SQL released. These two evidence repairs leave corrective
 debt; original router/board/Route CHANGES REQUIRED remains. No raw-body privacy, broader
 publication/retention policy, normative adoption, complete feature/CI/archival/release approval.
+
+## 2026-10-16 — Referenced APIError metadata correction independently approved (RP-570)
+
+Review by: /root/api_enum_reference_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing its terminal verdict.
+Decision: APPROVED, no findings, complete six-path single-commit range
+180f25e2c0c0d8129457587dae75449f7195dd47-exclusive..4c216b690fc32cb03f784446377c69f069979da7-inclusive.
+Every generator/test/docs/backlog/owning plan/log path inspected. Named-reference resolution
+conforms to accepted A5/C17; registry admission still owns cloning and unknown/cyclic/depth
+validation. No new schema authority, alias rewrite or descriptor adoption.
+
+Independent old-generator ignored compiler overlay: both sorted, actual-registry-admitted
+regressions fail missing-category metadata, after real ValidateResponse declared-error accept
+and unknown-detail refuse succeed. Make exits2/package1. Corrected two reference cases and
+four existing bounded/changed/unbounded/Unicode controls pass. Full cold PublicAPI/GenAPI
+pass0.289/0.270s; affected vet and make api-check pass. OpenAPI/compatibility pins/generated
+TypeScript hashes remain identical. Gofmt and complete-range whitespace clean. Initial
+unsorted fixture gets no regression credit. No skips reported or DB prerequisites in these
+two packages.
+
+Execution bda1b086, Go1.27.2 Darwinarm64; changed generator/test bytes endpoint-identical.
+Reviewer made no tracked edits, commits, Docker resources or publication. Its own final tree
+was clean; root's subsequent Compose research is separate. RP-570 corrective review closes,
+not full DTO/union validation, current default-handler coverage, Linux/browser/SQL/hosted CI,
+new generated-surface adoption, whole API acceptance, archival or release approval.
