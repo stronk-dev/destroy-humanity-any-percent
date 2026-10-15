@@ -424,6 +424,58 @@ This memory-only encoding is not approved for saving, public export or publicati
 of private state. Runtime/size bounds and strict codec/refusal/parity tests remain
 mandatory before acceptance; no new limit is invented from this schema proposal.
 
+### C1f — Proposed temporal affordability search (unadopted)
+
+An endpoint-selected buff can make a later origin-relative projection smaller.
+Do not carry the current whole-horizon monotone-search assumption into the new
+projection API. RP-656's bounded reference uses real schedule/application/Evaluate
+at every integer endpoint0..1501ms: twelve online/offline profiles,18024 complete
+evaluations, with every cash amount checked against independent literal fixture
+factors. It covers production/building/combined expiry, ordinary reachability,
+already-affordable time0 and unreachable targets. Six buffed profiles have early
+qualifying windows but an unaffordable horizon. Unsplit monotone search misses them;
+the boundary-aware reference matches the exhaustive earliest-time oracle exactly.
+Targets are hypothetical fixed cash thresholds, not actual catalog purchases or
+retuned prices; the reference does not execute the full hook-bearing C1c projector.
+Original prospective ten-profile evidence and the two later declared unreachable
+controls retain their separate provenance in the owning plan/log.
+
+Proposed algorithm for the real caller:
+
+1. Enumerate all relevant semantic endpoint-context boundaries from the actual pinned
+   producer/schedule/absence inputs over the requested horizon. The reference knows
+   only its two fixture expiry offsets1000/1500ms; it is not a production enumerator
+   or proof of completeness for Guild, attendance, provision or future content.
+2. Partition the canonical integer-ms endpoint domain into chronological regimes.
+   A context change at `b` belongs to the right regime; the left ends at `b-1`.
+   These are **search ranges**, not payout segments, settlements or origin resets.
+   Every predicate still reconstructs the complete origin-to-endpoint projection
+   with the correct context and original offline allowance.
+3. Establish monotonicity of the actual affordability predicate inside each regime.
+   A constant label, a single end sample or sampled increasing values are not a
+   whole-domain proof. Account for numeric quantization, caps, provision, burst,
+   hook-owned state and the actual resource/quote contract. If that proof does not
+   hold, specify a correct alternative; do not skip the interval or declare no result.
+4. Search regimes in order. Test the first endpoint, including the original time0.
+   Only in a proven monotone regime may an unaffordable last endpoint exclude that
+   regime. Otherwise use integer lower-bound search within that regime. The first
+   qualifying result is the earliest over all earlier exhausted regimes.
+5. Return a tagged unreachable result only after every required regime is exhausted.
+   A valid solution at0 is not absence. Charge actual boundary work and predicate
+   evaluations to the existing counters; exhausted work/size bounds are invalid
+   measurements, not an unreachable item or an excluded population.
+
+The reference finds production497ms, building1422ms, combined452ms and unbuffed869ms
+in both modes, plus the two already-affordable0ms and two unreachable controls.
+All known regimes are exhaustively checked monotone in this bounded population;
+removing the expiry cuts gives the six missed-window controls. No origin is consumed.
+This is a Go-only algorithm feasibility result over observed endpoint values, not
+execution of `RelevanceSuite.earliestAffordable`, a migrated harness, an adopted
+search-policy amendment or proof that current reports are incorrect. The current
+harness does not use this proposed temporal projection path. Full real-caller
+boundary enumeration, hook/dynamic-quote predicate proof, work measurements and R10/R11 normative
+review remain required; a per-ms exhaustive production scan is not authorized.
+
 ### C2 — Preserve a producer origin, not a rounded-rate cache
 
 Candidate direction, with lifetime subject to C1/C1a: retain a canonical initial balance,
@@ -831,6 +883,8 @@ the red population with a convenient new one or alter its monetary expectations.
   recipes/private event ownership and context encoding are proposed in C1d/C1e.
   Their strict construction/reconstruction and real settlement proof, plus temporal-
   search validity, compatibility and measured bounds remain required before acceptance.
+  C1f supplies a bounded boundary-aware search reference, not the complete production
+  boundary enumerator or a general monotonicity proof.
 - **C2/C3:** complete field set, boundary integration and a viable ledger/receipt algorithm,
   demonstrated with actual Company producers and the retained lower-domain counterexample.
   The current difference-write candidate fails; this is technical work, not a choice for the
@@ -856,6 +910,10 @@ contract, explicit adoption and independent normative review before production w
 
 ## Changelog
 
+- 2026-10-15: execute18024 actual temporal endpoints over twelve profiles; a boundary-
+  aware reference agrees with exhaustive search while unsplit search misses six
+  early windows. Specify the proposed chronological-regime algorithm and outstanding
+  completeness/predicate/work proof. No runtime, report, timing or payout change.
 - 2026-10-15: execute the two-mode event-bearing chain/wait constraint; specify
   proposed closed adapter recipes, private event values versus once-only real
   settlement, and a complete versioned private context/identity shape. Legacy APIs,

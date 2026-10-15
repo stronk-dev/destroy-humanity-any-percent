@@ -8,6 +8,32 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — delegated interval wording, 2026-10-15
 
+Bounded temporal-search study at `374e1899`: reuse RP-652's unchanged one-tower,
+attended4000ms production expiry1000/building expiry1500 fixture. Five profiles
+(production, building, both, no-buff reachable, no-buff already affordable) ×both
+modes; endpoints0..1501ms inclusive, exactly15020 actual fresh schedule/evaluations.
+Hypothetical target increment4/1.8/4/1/0, scaled by existing offline efficiency;
+no catalog price is changed. Check every cash result against independent literal
+fixture factors. Compare an exhaustive earliest-ms oracle, whole-horizon monotone
+search, and chronological monotone-regime search split before the known expiry
+milliseconds. Require six missed early windows in the unsplit control, four working
+plain controls, exact candidate equality, complete census and unchanged origins.
+This is a bounded algorithm reference, not actual harness migration, generic
+monotonicity proof, temporal proration or a repaired production partition property.
+
+First10 cells pass: earliest production497/building1422/combined452ms, plain869/0ms
+in both modes; all15020 endpoint payouts match literal fixture arithmetic, six
+unsplit misses and four successful controls. Before the next measurement, extend
+with no-buff target increment4 in both modes as explicit unreachable controls:
+final12 cells/18024 evaluations, retaining the original ten unchanged. The result
+must distinguish an absent solution from a valid earliest time0.
+
+Final12-profile study passes, including all18024 endpoint checks, six missed-window
+controls, four ordinary/time0 successes and two unreachable results. Repeat/shuffle
+also retains RP-652's expiry constraints and RP-655's event ownership checks. Draft
+C1f specifies the candidate regime algorithm; complete real-caller boundary
+enumeration/monotonicity/work proof remains, not another run of this bounded census.
+
 Bounded event check at `cc626b20`: admitted Company19 with real Compact/Guild
 membership inputs, both evaluation modes,2001ms. Run actual Evaluate then the closed
 replay hook on fresh private state; require ordered Guild and Commons events and

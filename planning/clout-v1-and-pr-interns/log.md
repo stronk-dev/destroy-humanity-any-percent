@@ -3660,3 +3660,36 @@ Five-path test/draft/plan/ledger/log range after `cc626b20` through this contain
 commit needs designated review. Review by: Codex (research implementer/draft author
 first filter). Recorded by: Codex. No source-pin/artifact restamp, runtime/kernel/
 balance/CI changes, services or removed resources. No push, archival or deployment.
+
+## 2026-10-15 — RP-656 bounded temporal affordability search
+
+At `374e1899`, inspect the real horizon-first/lower-bound search and declare in the
+plan five unchanged RP-652/no-buff profiles ×both modes, every endpoint0..1501ms.
+Execute actual schedule resolution/application and Evaluate on fresh Company19
+copies; independently check each cash amount from literal pinned fixture factors.
+The hypothetical resource thresholds are not catalog purchases or new balance data.
+First86628 completes15020 endpoints in2.394s: earliest production497/building1422/
+combined452ms in both modes, plain869/0ms. All six buffed horizon predicates are
+false despite earlier qualifying endpoints; whole-horizon monotone search misses
+them. Chronological expiry-regime search agrees with the exhaustive earliest oracle.
+
+Before the next run, prospectively declare two no-buff unreachable controls without
+changing any of the original ten populations. Final67694 runs all twelve/18024
+endpoints twice, shuffled, alongside existing RP-652/RP-655 parents: PASS4.719s.
+Four ordinary/time0 controls and two unreachable controls retain correct tagged
+results. Every known regime is exhaustively checked monotone, every endpoint's
+payout matches and origins remain byte-identical. Affected vet and diff check pass.
+No production per-ms scan, actual migrated harness, real purchase/SQL/TS or generic
+monotonicity proof is claimed. Last full cold runtime population remains the recorded
+RP-30727 failures; this test-only batch does not rerun or claim that gate green.
+
+Draft C1f specifies the proposed boundary-aware algorithm and complete-enumerator,
+hook/quote predicate and work-proof obligations. Keep C1b–C1e contracts, old API,
+numeric domain, cap/buff semantics, accepted R10/R11, reports and all original red
+cases unchanged. No new origin resets, proration, tolerances, hidden exclusion or
+budget increase. Do not repeat this completed fixture study as general search proof.
+
+Review by: Codex (research implementer/draft author first filter). Recorded by:
+Codex. Complete five-path test/draft/plan/ledger/log range after `374e1899` through
+this containing commit needs designated review. No runtime/kernel/artifact/CI
+change, services or removed resources; no push, acceptance, archival or deployment.
