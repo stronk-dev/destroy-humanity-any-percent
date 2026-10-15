@@ -3566,3 +3566,37 @@ Claude review, consolidatable with the preceding wording amendment. Draft remain
 unaccepted; original27 failures and full1.0 obligations remain. No push, archival
 or deployment. Next specify the actual API and simulation context/hook ownership,
 not repeat this identity counterexample or implement the unaccepted proposal.
+
+## 2026-10-15 — RP-654 preserve the simulation counterfactual's source version
+
+While tracing simulation ownership, find hardcoded v14 restoration in the stock-rate
+counterfactual. Under accepted Clout CV4/Relevance R10, test an admitted Company19,
+owned tower and real faction hook. Old72626 refuses with unknown achievement field;
+masked/no-hook controls pass. Capture the source version before the hook and restore
+its pre-hook bytes at that version. Corrected17402 passes0.330s, including existing
+legacy role controls: real stock1/progress60, masked stock1/progress0, no hook zero,
+attainment/ownership/version retained and resulting Company19 round-trips. Kernel
+0.3.216→0.3.217 records the genuine admission correction; no formula changed.
+
+First broad runs expose three Go/two TS research source-pin failures because I put
+the regression in the fingerprinted timing instrument. Move the independent test
+into `simulation_version_test.go`; original timing bytes match HEAD exactly. No
+artifact regeneration, changed outputs or weakened source checks. Final focused47417
+passes all three research parents plus new/legacy role checks in1.458s. Final full
+client75984 passes12297 with1088 explicit skips; numeric goldens included. Cold
+decimal passes0.231s. Full `make verify-harness-fast`18949 passes: harness86.095s,
+role population0.250s, Commons0.381s and actual baseline/history guard. Affected vet
+and unchanged `make formulas-check` pass.
+
+Final cold Production/Save/Kernel/Faction22374: Production37.220s remains red only
+at the original27 partition leaves; Save0.280s, Kernel0.062s, Faction0.199s pass.
+The kernel history verifier still refuses the existing50a3a514 miss, not this bump;
+no global/hosted CI green claim. Native DB skips are not SQL evidence. No unchanged
+browser/Postgres journey is rerun for this in-memory simulation correction. The
+separate harness clone helper stays legacy-only; held axis constructors are not enabled.
+
+Docs/plan/ledger and diff checked; no services or resources touched. Review by:
+Codex (implementer first filter). Recorded by: Codex. Complete nine-path range after
+`94b8af8d` through this containing commit needs designated Claude review; no feature
+acceptance, archival, push or deployment. The conservation draft remains unadopted;
+next finish its actual API and simulation context/hook ownership contract.

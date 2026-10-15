@@ -8,6 +8,16 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — delegated interval wording, 2026-10-15
 
+RP-654 is locally corrected after `94b8af8d`: the stock-rate simulation counterfactual
+captures the source save version before the hook and restores its pre-hook encoding
+at that version. An admitted Company19 with a real faction hook failed previously;
+the corrected role/stock outcome, masked/no-hook and existing legacy controls pass.
+Kernel216→217 records the genuine admission correction. The new regression has its
+own file; the original fingerprinted timing instrument and research artifacts remain
+byte-identical. The owning log records affected checks and pending designated review.
+This does not enable held axis scenario constructors, change accounting or adopt the
+conservation draft. Continue the exact API/simulation ownership specification below.
+
 Marco explicitly delegates CV3/AC6 wording reconciliation, preserving the 24-hour
 offline cap, 90% rate, banking and separate-return-visit behavior. The reconciled
 body distinguishes internal calculation/display reads from extra saved payments;

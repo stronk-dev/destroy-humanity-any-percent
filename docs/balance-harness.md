@@ -24,6 +24,11 @@ oracles. This confirms the existing simulation primitive, not the currently
 refused scenario integration, attainment observer, reference policy or pacing.
 See [all remaining Clout criteria and proof limits](../planning/clout-v1-and-pr-interns/acceptance-reconciliation.md).
 
+Stock-rate role attribution restores its pre-hook counterfactual using the source
+Company's save version, not the legacy v14 default. Supported newer state must retain
+its fields through that clone. This does not enable axis-enabled scenario constructors
+or add the missing attainment hook; the scenario guards above remain binding.
+
 `testdata/harness/scenarios/phase0-production.json` is scenario version 4 (the economy + Routes + Commons
 balance bundle) and runs two versioned policies:
 

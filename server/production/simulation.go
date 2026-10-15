@@ -320,6 +320,7 @@ func (hook simulationAccrualHook) AfterAccrual(state *save.State, catalog *econo
 	if state == nil || catalog == nil {
 		return nil, ErrInvalidEngineState
 	}
+	version := save.VersionForState(state)
 	encoded, err := save.EncodeState(state)
 	if err != nil {
 		return nil, err
@@ -333,7 +334,7 @@ func (hook simulationAccrualHook) AfterAccrual(state *save.State, catalog *econo
 			!generatorDeclaresRole(generator, economy.RoleStockRate, "faction.stock") {
 			continue
 		}
-		counterfactual, restoreErr := save.RestoreState(encoded, save.CurrentVersion, catalog, economy.ScopeCompany, time.Time{})
+		counterfactual, restoreErr := save.RestoreState(encoded, version, catalog, economy.ScopeCompany, time.Time{})
 		if restoreErr != nil {
 			return nil, restoreErr
 		}
