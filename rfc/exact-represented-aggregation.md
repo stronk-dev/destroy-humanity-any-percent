@@ -213,8 +213,13 @@ silently accepts another producer or reuses the same schema number for different
    all historical guard failures stay visible until lawfully repaired independently.
 5. Actual complete affected pacing/relevance/search/content/Commons workloads execute with
    unchanged bounds/counters and no dropped populations, coast, timeout inflation or hidden
-   guard exhaustion. Current41-allocation multi-source prototype still costs about5x the
-   grouped reducer in short samples; there is NO complete-workload feasibility claim.
+   guard exhaustion. The41-allocation multi-source prototype costs about5x the grouped
+   reducer in short samples. A later unapplied global-overlay standard-phase native pair finishes300/300
+   under each implementation, candidate770.708s versus active948.034s timed. Its matching
+   aggregate hides36 changed final cash balances/state hashes; it is not behavior-preserving.
+   The owning RP-664 dossier/log retain full artifact identities and limits. One phase/pair
+   proves neither statistical/hosted speedup nor complete affected-workload feasibility;
+   other workloads and this draft's compatibility/producer/cutover gates remain mandatory.
 6. Canonical numeric/economy/production/replay/Commons/Harness docs, owning logs, exact-range
    designated review and all accepted feature gates reconcile before archival. A prototype,
    green fixture or kernel bump is not acceptance, release readiness or Clout AC6 completion.

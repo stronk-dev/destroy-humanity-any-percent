@@ -5208,3 +5208,47 @@ claim yet. Existing compatibility and normative-review holds remain; live math/k
 goldens, balance data and CI budgets are unchanged. Review by: Codex root (measurement
 author/first filter). Recorded by: Codex root. This is a factual research checkpoint,
 not designated approval or a release milestone.
+
+## 2026-10-16 — Full standard control and actual300-row comparison
+
+Session77856 terminates0:948033621291ns/op (948.033621291s timed), package948.494s,
+300 runs/op. Both retained reports have300 distinct matching keys/all300 completed,
+zero invariant failures, aggregate run_count300/no failures or warnings. The active full
+report exactly reproduces historical digest1ffa47cfd4f85f6daf1b340cf6e43cfa7d534cb39308cdf80e955c9d28be826d.
+No guard, exclusion, dropped row, candidate restart or competing heavy workload.
+
+Full JSON comparison sorts by complete RunKey and compares every field of every row,
+not merely the two golden rows or aggregate. Aggregate is identical, but36/300 rows
+(all chaos.phase0) change company.cash final balance and final_state_hash. All other
+resource balances and all other per-run fields are identical;264 full rows are identical.
+Example chaos seed10: active cash1.42967585038e13 versus candidate1.4296758504e13.
+This is observed semantic drift in the complete standard workload, not a behavior-preserving
+optimization, an adopted report producer or proof that a kernel bump disposes of compatibility.
+
+One ordered native pair: candidate770.707897625s versus active948.033621291s timed,
+18.704581745% lower elapsed time for this candidate run. Not statistical speedup, a CI/hosted
+gain or all-workload feasibility. The short multi-source microbenchmark's higher reducer
+cost did not predict this whole standard phase; neither measurement can replace the other.
+No additional repetition, shortened horizon, relaxed acceptance bound or baseline regeneration.
+Registered relevance/search/content/Commons workloads and the draft's complete static
+caller/exception/producer/cutover gates remain unproved. The global aggregate overlay does
+not implement the proposed checked API or pinned static catalog/Pitch exceptions; this is
+not a measurement of that finished migration. Kernel222/active math is unchanged.
+
+Retained active artifacts in.cache (same filename prefix exact-standard-35cde078-active):
+- -cpu.pprof.report.json SHA2561ffa47cfd4f85f6daf1b340cf6e43cfa7d534cb39308cdf80e955c9d28be826d
+- -cpu.pprof SHA2560697ec5504eab3a561ec9b5682927d5c09cff7d80fa3e569ba03851aa82c3ad1
+- .test SHA256c451638fc1f39f6ff9f824c1d4ea9fba2f06dad11f99ccb381a217a04568b761
+- -overlay.json SHA2567ae23330a45426657c0918f75e8ff7edfc85311330f4773f76ee50c5a91c894b
+The previous entry binds candidate artifacts and the shared instrument. Read-only Git
+comparison35cde078..ad40b0f0 confirms no server/client/kernel/balance/testdata source changes.
+
+Both measurements now terminal: release the serialized execution slot ONLY to independent
+RP-535 reviewer api_media_identity_corrective_review. RP-524 and RP-502 reviewers have inspected
+their complete corrective scopes read-only and remain held for their subsequent slots.
+No reviewer verdict inferred from source inspection. Own draft A7's factual cost note now
+distinguishes this standard phase from still-missing complete affected workloads. No normative
+adoption, feature approval, archival, publication or1.0 milestone. Review by: Codex root
+(research author/first filter). Recorded by: Codex root. The complete standard-measurement
+research range35cde078-exclusive through this containing commit remains research review,
+outside the corrective-only delegation; existing normative/research holds are unchanged.

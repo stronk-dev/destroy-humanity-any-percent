@@ -61,9 +61,18 @@ A single ordered pair is not a statistically established speedup or hosted estim
 Candidate result: session98864 completed all300 unique governed runs with no invariant
 failures, aggregate failures or warnings;770.707897625s benchmark/771.156s package.
 Full retained canonical report SHA256c4254dd5f1213031deb0bb98246782ad96bd331295adc69190d39e9872b39426;
-the owning log binds its profile/binary/source identities. The single active-code control
-is now live as77856, using the same instrument without aggregate.go replacement. No
-before/after equivalence or speedup conclusion until its terminal complete report is compared.
+the owning log binds its profile/binary/source identities. The single active-code control77856
+also completes all300/no invariants/failures/warnings,948.033621291s timed/948.494s package;
+its report SHA2561ffa47cfd4f85f6daf1b340cf6e43cfa7d534cb39308cdf80e955c9d28be826d matches
+the historical full digest. Actual full300-row comparison: matching keys/aggregate, but36
+chaos rows change final company.cash and state hash; all other fields/balances match,264
+full rows are identical. Example seed10 active1.42967585038e13→candidate1.4296758504e13.
+Not behavior preservation. This ordered native pair has18.704581745% lower elapsed time
+for the candidate, not statistical/hosted speedup or all affected-workload feasibility.
+No repeated candidate/control, baseline regeneration, bound change or arithmetic activation.
+This global-overlay prototype does not implement the proposed checked API/static exceptions.
+Remaining caller/compatibility/producer/cutover and other workload gates are unchanged;
+the owning log retains commands, artifact identities and exact research-review boundary.
 
 ## Representation and proposed arithmetic
 
