@@ -6,7 +6,11 @@ registry, generated API contracts, and authenticated keyset cursors.
 Schema descriptors cover exact objects, arrays, strings with closed formats/enums, bounded int64
 integers, booleans, null, named references, and one-of unions. Registry construction rejects an
 invalid descriptor, duplicate operation ID, duplicate method/path, public/auth mismatch, or an
-unknown request/response schema. Runtime response fixtures validate against the same descriptor
+unknown request/response schema. Duplicate route identity ignores placeholder names:
+`GET example/{first}` and `GET example/{second}` cannot coexist, because chi would
+silently replace one handler and its auth middleware. Method, static segments,
+namespace and parameter positions remain significant; merging independent registries
+enforces the same duplicate rule. Runtime response fixtures validate against the same descriptor
 values consumed by runtime mounting, OpenAPI generation, TypeScript generation, and the committed
 v1 compatibility pin. Authenticated Soul Recovery and minigame routes mount exclusively from this
 registry. Mounting checks the entire binding set and every required auth middleware before
@@ -110,8 +114,9 @@ operations, request unions, statuses, required fields, and bounds cannot narrow 
 responses may add optional fields or widen an enum/union. Updating the compatibility baseline is
 an explicit `make api-pin` operation, never an incidental effect of ordinary generation.
 This is a metadata/schema check, not a routing-equivalence guarantee. Registry construction
-rejects duplicate literal method/path pairs but does not reject a static path overlapping an
-existing parameter path. The six-case registered-chi probe recorded as RP-562 shows that such
+rejects duplicate method/path patterns (including renamed placeholders) but does not reject
+a static path overlapping an existing parameter path. The six-case registered-chi probe
+recorded as RP-562 shows that such
 an addition can pass compatibility while changing the handler and response for a previously
 admitted URL. Disjoint tenant namespaces are proposed in
 `rfc/minigame-tenant-http-bindings.md`; no checker-policy change is adopted, and this experiment

@@ -3740,3 +3740,31 @@ Mounted readers are controlled: no SQL/browser/hosted/full API acceptance is cla
 The reviewer changes no tracked file and leaves only its owned temporary overlay.
 RP-659's corrective review closes; other API ranges/gates stay independent. No
 archival, push, publication, deployment or general waiver follows this transcription.
+
+## 2026-10-15 — RP-666 reject identical routes with renamed placeholders
+
+Outcome under existing API A5/C1: a placeholder's spelling does not give an otherwise
+identical method/path a second chi endpoint. Three old-source mounted regressions
+fail0.259s: the second operation replaces the first handler and its authentication
+middleware, returning unauthenticated200. These are controlled router fixtures,
+not a claim that current production routes collide or a deployed bypass exists.
+
+Normalize placeholder labels only in the duplicate-identity key after template
+validation. Keep actual operation paths, parameter names/order, methods, static
+segments and surfaces unchanged. NewRegistry and its MergeRegistries consumer
+refuse duplicates; five distinct-route controls execute actual authenticated/public
+dispatch, parameter extraction and schema-valid replies. Both merge orders refuse.
+The existing literal-duplicate/descriptor tests remain. This does not decide RP-562's
+separate static/parameter overlap policy or adopt the tenant draft.
+
+Final root `make test-go vet api-check GO_PACKAGES='./publicapi ./publicread ./account ./gameserver'
+GO_TEST_FLAGS='-count=1'` PASS0.299/0.198/0.434/0.281s, vet clean and generated
+OpenAPI/pin/TS byte-unchanged. Focused three-parent race selection PASS1.249s.
+Gofmt/diff checked. Native conditional DB skips are not SQL credit; this changes
+registry construction, not DB/account credential logic. No browser, hosted/full CI,
+new endpoint/schema, gameplay/kernel/version, copy or release claim.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete six-path
+source/test/docs/plan/ledger/log range after `ca5ac89d` through this containing
+commit needs designated independent corrective-code review under Marco's delegation.
+No acceptance, archival, publication or deployment; existing red gates remain open.

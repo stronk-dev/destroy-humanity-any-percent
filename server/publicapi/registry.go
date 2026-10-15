@@ -135,7 +135,7 @@ func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, erro
 			}
 			lastResponse = key
 		}
-		key := operation.Method + "\x00" + operation.Path
+		key := operationRouteKey(operation.Method, operation.Path)
 		if seenRoutes[key] {
 			return nil, fmt.Errorf("%w: duplicate route", ErrInvalidOperation)
 		}
@@ -146,6 +146,19 @@ func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, erro
 		result.operations[index], result.byID[operation.ID], lastID = operation, operation, operation.ID
 	}
 	return result, nil
+}
+
+// Placeholder names describe extracted values, not distinct HTTP routes. Chi
+// mounts these validated templates at the same endpoint even when names differ.
+// Static-versus-parameter overlap is a separate policy, not normalized here.
+func operationRouteKey(method, path string) string {
+	segments := strings.Split(path, "/")
+	for index, segment := range segments {
+		if strings.HasPrefix(segment, "{") {
+			segments[index] = "{}"
+		}
+	}
+	return method + "\x00" + strings.Join(segments, "/")
 }
 
 func (registry *Registry) Operation(id string) (Operation, bool) {
