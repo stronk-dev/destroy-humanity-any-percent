@@ -61,7 +61,8 @@ Current R9 correction (2026-10-14): authoritative removal of focused Buy/Confirm
 preserves the stable row; a node losing availability dismisses its hidden
 confirmation rather than resurrecting it on a later read. RP-607/RP-608 and the
 owning log retain old failures, finished native component/host checks and the
-range after `c84cc421` awaiting Claude. This is a UI conformance repair, not
+range `c84cc421..3c1da2b0`, now independently approved by a fresh Codex reviewer
+under Marco's corrective-code delegation (exact verdict in the log). This is a UI conformance repair, not
 new purchase semantics, full R9 acceptance, server/SQL proof or content mint.
 
 Current integration checkpoint (2026-10-08): native Reputation purchases, Escape cancellation,

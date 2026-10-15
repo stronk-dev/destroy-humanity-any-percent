@@ -2170,3 +2170,34 @@ test/research/ledger/decision-evidence/log range after `144865df` through this
 containing commit needs designated Claude review with the earlier rights ranges.
 No acceptance, archival, release, push or deployment. Do not repeat these now-
 executed active/terminal populations as missing research.
+
+## 2026-10-15 — RP-600/RP-601/RP-603 independent corrective approval
+
+Review by: fresh independent Codex sub-agent `/root/recovery_ui_corrective_review`.
+Recorded by: Codex parent, transcribing the returned verdict under Marco's
+2026-10-15 corrective-code delegation. **APPROVED**, no actionable findings, for
+all changed source/test/docs/records in these exact base-exclusive ranges only:
+
+- RP-600: `a909db44ea0de47166824b9accdcb96af729bf91..40f6df43cd0a0f69e15b01b08fd94306e9ff020d`.
+- RP-601: `40f6df43cd0a0f69e15b01b08fd94306e9ff020d..089849ad47717746e47e4f6533b1c4ff87bd13e2`.
+- RP-603: `a12cc52956263c8991decec78e779aba6984d0c1..d1fb8d574ad46e69494f67843630598a65908193`.
+
+The reviewer independently inspects complete diffs, focus restoration, returned
+activity binding and scheduler ownership. Root current Chromium/WebKit six-file
+selection passes366, Node four-file selection135, types zero errors/warnings,
+build-client/client-boundary and exact-range whitespace checks pass. Checks run
+at288ff35c; affected source/tests match the reviewed corrections. An initial
+localhost EPERM runs no browser tests; narrow escalation supplies actual evidence.
+
+A temporary test-only Vite loader replays real pre-fix components without editing
+runtime source: RP-600 has12 expected focus failures, RP-601 six replacement/unknown
+activity failures, RP-603 six replacement failures with six same-session controls
+passing. Browser selectors are `preserves newer focus`, `binds returned activity`
+and `retired Recovery heartbeat`; complete current file selector is the six-file
+union named in the three original entries plus generated-operation ports.
+
+This closes only those corrective reviews. Intervening commits, prior feature
+ranges, new normative/research work and other replay corrections are not covered.
+No SQL/backend-race/composed/Firefox/Linux/AT/performance/full-CI, feature acceptance,
+archival or release claim. The reviewer makes no repository edit or commit; parent
+reconciles current plans/ledger in this record-only change. No push/deployment.

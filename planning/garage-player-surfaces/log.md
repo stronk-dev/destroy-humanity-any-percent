@@ -7303,3 +7303,27 @@ actual error instead of an engine-specific source-error assumption. The twelve
 malformed-byte assertions remain intact. No source/test/record changes by reviewer.
 This approval closes only RP-667's corrective range, not held schema/dispatch
 decisions, full Garage/API acceptance, hosted CI, archival or release gates.
+
+## 2026-10-15 — RP-619 independent corrective approval
+
+Review by: fresh independent Codex sub-agent `/root/meter_names_corrective_review`.
+Recorded by: Codex parent under Marco's2026-10-15 corrective-code delegation.
+**APPROVED**, no actionable findings, full six-path base-exclusive range
+`8f6982798e0e80e9756eb9ae360e5e95d25e92ba..33815f04ecc59ebfdc44969bef00462920ddc074`.
+
+The reviewer independently inspects all source/tests/docs/records and the accepted
+GS0.6/GS3 naming requirement. Visible headers name all ten trust meters and p(doom);
+tests bind exact accessible names to their value-bearing elements across layout,
+resize and snapshot refresh. At288ff35c, root typecheck/build-client/client-boundary
+pass (zero Svelte errors/warnings), and full garage-surfaces-browser.test.ts passes
+846 executions in Chromium/WebKit, two engine-files74.56s, terminal HTTP summaries
+zero pending/valid. Exact-range diff checks pass. Component and test match the
+reviewed revision. Initial localhost EPERM executes no tests; narrow escalation
+passes. Some verbose HTTP output truncates; the terminal summary/exit are retained.
+Old-component four wide failures/two narrow controls are inspected retained
+evidence, not a newly executed old-source run by this reviewer.
+
+This closes RP-619's corrective review only, not original Garage ranges, actual
+screen-reader/AT, Firefox/Linux, SQL/service, performance, hosted/full-CI or feature/
+release acceptance. Reviewer makes no tracked edit; parent records provenance and
+updates current plan/ledger. No archival, content mint, push or deployment.

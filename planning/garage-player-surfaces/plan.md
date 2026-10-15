@@ -21,7 +21,8 @@ successful Linux three-engine run. This is not whole GS0.2/Garage acceptance.
 2026-10-14 bounded correction (RP-619): wide-layout native meters now reference their visible
 constituency/axis headers or p(doom) heading. Mounted regressions identify all eleven missing
 names on the old component; final affected Chromium/WebKit846, types/build/boundaries pass.
-The owning log records the single-commit range after `8f698279` needing Claude review.
+The owning log records fresh independent Codex APPROVED for the complete
+`8f698279..33815f04` corrective range under Marco's explicit delegation.
 Actual assistive-technology testing and full Garage acceptance remain separate.
 
 Current checkpoint (2026-10-15): at `6201bef8` (kernel0.3.216), the complete

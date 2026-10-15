@@ -9828,3 +9828,27 @@ checks performed, no software suite rerun for Markdown. All original declared
 B1–B8 and this closeout now have dispositions. Corrective implementation reviews,
 H3/H4/H5, career-data/author policy, natural earning, copy/mint and complete player/
 release proofs remain required. No archival, status promotion, push or deployment.
+
+## 2026-10-15 — RP-607/RP-608 independent corrective approval
+
+Review by: fresh independent Codex sub-agent `/root/reputation_focus_corrective_review`.
+Recorded by: Codex parent under Marco's2026-10-15 corrective-code delegation.
+**APPROVED**, no actionable findings, complete six-path base-exclusive range
+`c84cc4214d47f69aea22ff8564f05c8a43dba74b..3c1da2b0f55b28bb5172b4d8b3d192458770bb5d`.
+
+The reviewer independently inspects component, all tests/docs/records and accepted
+focus/confirmation behavior. At288ff35c Node runtime/Reputation80 pass; typecheck
+zero errors/warnings; build-client, client-boundary and exact diff checks pass.
+Full four-file Chromium/WebKit selection completes414 executions:410 ordinary
+passes plus four expected host-deadline failures, eight engine-files26.20s, no
+selected skips. Module requests181/181 finished, zero pending. Initial localhost
+EPERM executes no browser cases; narrow escalation passes. Component and surface/
+cost/header tests match the reviewed revision; host later diagnostics are disclosed.
+The reviewer inspects and reuses retained old-component evidence of24 focus and
+eight stale-confirmation failures, rather than claiming a fresh old-source replay.
+
+Only RP-607/RP-608 corrective code is approved. Original feature ranges, R9 body
+reconciliation, server/SQL/composed flows, Firefox/Linux, manual AT, performance,
+full-CI and release acceptance remain separate. Reviewer writes no repository
+files; parent records provenance and reconciles current plan/ledger only. No
+archival, new specification adoption, content mint, push or deployment.

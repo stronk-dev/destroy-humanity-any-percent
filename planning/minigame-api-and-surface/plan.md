@@ -44,21 +44,24 @@ bound Recovery scheduler across replacement and unmount, not just its running fl
 terminal/gone replies cannot end a new session; same-session rotation and a terminal after a
 Finish error still work. Six old-component native failures and final 330 affected browser/126
 unit passes belong in the latest log. No server, cadence, retry, DTO, copy or kernel change.
-Complete range after `a12cc529` needs designated Claude review, consolidatable with MA3 repairs.
+Complete range after `a12cc529` through `d1fb8d57` is independently approved by
+fresh Codex reviewer under Marco's corrective-code delegation; exact verdict is in the log.
 
 Current reconnect correction (2026-10-14, RP-601): Recovery uses the returned activity's owner
 row on reconnect, matching Begin, instead of rendering the old requested activity over a new
 session. Two known replacement activities and an unknown-row refusal execute through generated
 dispatch; old/final results and exact range live in the latest log. Token/session/progress and
 ordinary same-session behavior remain. No new wire/SDK grammar, server/copy/version/RFC change
-or full-feature acceptance. Complete range after `40f6df43` needs designated Claude review.
+or full-feature acceptance. Complete range after `40f6df43` through `089849ad` is
+independently approved in the owning log under Marco's corrective-code delegation.
 
 Current terminal-focus correction (2026-10-14, RP-600): both Recovery and Pitch preserve newer
 surviving host-control focus when a terminal reply arrives or its callback assigns focus before
 the DOM update finishes. The ordinary terminal-heading/Return and unmount behavior remains.
 Native old-component failures and final affected checks belong in the latest owning log; no
 DTO, heartbeat/retry, server, copy, version, new RFC or whole-feature/release change. The complete
-range after `a909db44` needs designated Claude review, consolidatable with MA3 corrections.
+range after `a909db44` through `40f6df43` is independently approved in the owning log
+under Marco's corrective-code delegation; unrelated ranges remain separate.
 
 Current bounded correction (2026-10-14, RP-565): existing schema1 raw admission now matches
 across Go/TS: exact DTO key spelling, unique raw members and integer version tokens. Old Go
