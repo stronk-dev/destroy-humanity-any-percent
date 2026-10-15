@@ -11,8 +11,9 @@ ratified later by owner SHA (OD-5).
 RP-671: bounded constant-accrual client parity correction rejects infinity-class
 intermediates while preserving finite lower-domain recovery and zero operations.
 Shared six-row upper-bound population catches two old client accepts; Go already
-refuses both. Affected Node/native-browser/vector checks pass; owning log records
-source-bound research re-observation and exact corrective-review range. This does
+refuses both. Fresh independent Codex APPROVES complete4d847020..76c1a57d after
+independent old-source reproduction and actual Go/Node/browser/consumer checks.
+Owning log records source-bound re-observation, exact verdict and limits. This does
 not adopt accounting/aggregation drafts, repair AC6 or establish the burst replay
 boundary; inspect that actual caller separately before claiming a player defect.
 

@@ -4651,3 +4651,29 @@ Complete correction range begins4d847020-exclusive through this containing commi
 source, shared vectors, tests, three re-observations, docs and records remain pending
 fresh independent corrective-code review. RP-663, RP-664, H3c and27 partition failures
 remain separate. No feature acceptance, normative adoption, deployment or publication.
+
+## 2026-10-15 — RP-671 independent corrective review approved
+
+Review by: /root/constant_accrual_upper_corrective_review (fresh independent Codex,
+Marco-delegated corrective code). Recorded by: Codex (root, transcription).
+APPROVED full4d847020aca6650ff6c294c4d1a6b6b5759c9e53-exclusive through
+76c1a57d0a8e39c945fa18ea3d489148c880fbd0-inclusive, one commit/all11 paths.
+Accepted Production Accrual Math and Numeric Boundary Hardening govern this correction;
+no new contract, watched path or receipt encoding change. No kernel bump required.
+
+Independent in-memory old source accepts exactly the two forbidden payments
+6e8999999999999994 and1e8999999999999996; corrected source matches all six rows.
+Initial import lacked TS stripping, ran no population; corrected stripTypeScriptTypes
+run establishes reproduction. No tracked source mutation. Cold root Make executes29
+Go accrual vectors; Decimal in that selector runs0 and is NOT credited. Separate full
+Decimal0.365s/vet pass. Read-only three research generators reproduce542/615/64 rows
+and committed bytes. Independent parsed comparison preserves all observations except
+source_sha256, and every current source hash verifies.
+
+Node affected six files1324 plus numeric goldens6304 pass. Native Chromium/WebKit four
+files/eight suites12728 executions pass, including prediction-worker boundary. Initial
+port EPERM runs0; approved local bind succeeds. Typecheck/build zero diagnostics and
+actual worker/client build. Exact range whitespace passes. All reviewer handles terminal,
+no tracked edits/commits/Docker/publication. Root's later burst work is outside this range.
+No Firefox/Linux/hosted/performance/DB/natural-player loss/burst replay/fullProduction/AC6/
+new-feature/normative/archival/release approval. RP-671 correction closes, other gates remain.
