@@ -8,6 +8,16 @@ ratified later by owner SHA (OD-5).
 
 ## Current step — accounting/RFC readiness, 2026-10-15
 
+RP-664's [Exact Represented Aggregation draft](../../rfc/exact-represented-aggregation.md)
+now specifies proposed checked APIs, all13 Go/7 TS caller dispositions, pinned catalog/Pitch
+exceptions, accepted Company drift, capacity-only Commons cutover and existing-kernel report
+identity with an EXPLICIT new-format baseline-guard amendment. Current rules are not waived.
+Own draft bodies reconcile separate numeric reference versus accounting/wait semantics;
+accepted Clout copy stays unchanged. Normative review/adoption remain required before
+implementation; full workloads/provenance/cutover are activation gates, not existing proof.
+Continue the separate H3c correctness argument and accepted construction/review while held;
+do not repeat cost microbenchmarks or treat this proposal as active arithmetic.
+
 RP-664 candidate cost reduction: Go-only exact length0/1 identities now preserve the existing
 raw witness digest and invalid/signed-zero/full-exponent controls. Two isolated matched
 actual-caller rounds remove one-source candidate48 allocations→0. A subsequent exact

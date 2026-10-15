@@ -373,3 +373,34 @@ continue micro-optimizing instead of closing the concrete caller/version/catalog
 harness dispositions. Those, full affected workloads and independent normative adoption are
 still required before activation. Active source, TS prototype, golden/report/kernel/CI and
 acceptance bounds stay unchanged. H3c and27 accounting failures remain unresolved.
+
+## Proposed caller/activation disposition — 2026-10-15
+
+The [Exact Represented Aggregation draft](../../rfc/exact-represented-aggregation.md)
+now specifies the concrete proposed route for all13 Go/7 TS current product call sites:
+new checked SumExact/sumExact authority; existing grouped helper remains pinned for
+catalog weight admission and Pitch1.0.0 only. Actual Company/replay/ledger/progress/
+projection/Commons/Harness consumers explicitly migrate, not a blind global replacement.
+Invalid numeric/domain inputs remain diagnostic; internal algorithm errors propagate,
+including current Harness resourceTotals which otherwise returns no error. The manual
+prototype panic wrapper is not a production crash/error contract.
+
+Company activation reuses accepted drift/verification deferral, without a persistent
+arithmetic mode or old-receipt rewrite. Commons requires a capacity-only transaction before
+admission: existing refreshScope also smooths health and updates evaluated_at, so merely
+calling it would change an unrelated clock. All noncapacity fields/events must remain exact.
+This is a source-derived proposed cutover constraint, not an observed deployed defect.
+
+Harness proposes existing kernel identity in new RunKey/report formats, not a second
+protocol registry or dummy scenario hash change. Its new-format code-only baseline route
+is an explicit prospective amendment with artifact-only commits/full-history/source binding;
+current input-first/legacy rules are NOT bypassed. Historical producer provenance and complete
+same-population before/after execution are required before migration, not inferred from HEAD.
+The parent/accounting-search drafts now explicitly distinguish that numeric reference and
+producer identity from their own accounting/wait semantics. Accepted Clout text is untouched.
+
+This closes the packet's vague caller dispositions into a reviewable proposal, not approval,
+full mathematical/implementation proof or activation. RFC acceptance still requires normative
+review and owner adoption; complete workloads, historical producer bindings, real cutover/
+Go/TS/SQL/retry proof and independent closeout are implementation/activation gates. No report,
+constant, save, schema, operator, kernel, CI or authored copy is changed by this proposal.

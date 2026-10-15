@@ -301,6 +301,17 @@ No production balance is retuned and no per-ms production scan is introduced.
 
 ### H4 — Compatibility, work and evidence
 
+The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
+binds numeric producers through existing kernel identity in NEXT report formats, without
+pretending a numeric correction is a changed experiment input. It owns its explicit baseline-
+guard amendment; this draft does not adopt it. Here legacy/origin tags describe accounting/
+wait semantics, not a license to disguise a new numeric build as an old producer. If that
+numeric follow-up is separately accepted, legacy wait scenarios may run under a new bound
+kernel/report format; reproduction of old reports still requires their evidenced historical
+source. Old formats keep their exact fields/readers. Allocate new formats in actual landing
+order, including the separate later origin-protocol fields, without reusing a schema number
+for different grammars. Until separate adoption, current numeric/report behavior remains.
+
 Keep old pinned scenarios/reports reproducible through their existing semantics.
 Proposed protocol tags are exactly `legacy_mutating_wait_v1` and
 `origin_projection_v1`. Legacy schemas retain their existing field set and dispatch
@@ -434,3 +445,6 @@ numeric tolerance, authored content or narrowed1.0 scope.
   consumer implementation; complete boundary proof and review remain outstanding.
 - 2026-10-15: split producer versus harness-search authority; retain RP-653/RP-656
   evidence, complete consumer obligations and unapplied status.
+- 2026-10-15: distinguish accounting/wait protocol from the separately proposed numeric
+  producer identity. Preserve exact old formats and historical-source reproduction; new
+  kernel-aware reports/guard rules require their own acceptance. No numeric adoption.

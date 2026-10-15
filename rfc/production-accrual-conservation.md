@@ -954,8 +954,13 @@ exists before RFC acceptance.
    Rebase-at-each-cut and future-factor controls must fail the relevant requirements.
    If persisted internal cuts are adopted, restoration at those cuts is mandatory too;
    this draft does not authorize introducing such commits beside the closed boundary.
-3. Existing numeric goldens and legitimate one-shot payouts remain exact. Include the five
-   known rounded-rate differences, exponent edges, near-cap/debit and no-overflow-bank cases.
+3. Accounting changes preserve legitimate one-shot payouts of the SAME adopted numeric
+   kernel exactly. Existing operators' numeric goldens stay unchanged. A separately accepted
+   [Exact Represented Aggregation](exact-represented-aggregation.md) activation may establish
+   its new-kernel reference only through its own explicit compatibility/evidence gates;
+   neither draft alone does so. Keep old outputs/failures as historical evidence, not silently
+   restamped expectations. Include the five known rounded-rate differences, exponent edges,
+   near-cap/debit and no-overflow-bank cases. No numeric correction is presumed adopted.
 4. Typed factory/version/context refusals and branch isolation execute in both
    runtimes, reusing existing codecs for existing wire inputs rather than inventing
    a new origin codec. Real
@@ -1068,3 +1073,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-15: retain eight temporal decreasing-target counterexamples plus eight
   no-buff controls. Separate independent endpoint projections from monotone saved
   payments and fixed-context conservation; no live-loss claim or policy adoption.
+- 2026-10-15: bind one-shot accounting compatibility to the same adopted numeric kernel;
+  a separately accepted exact-aggregation correction owns any new numeric reference.
+  Keep old evidence and current behavior unchanged; neither draft accepts the other.

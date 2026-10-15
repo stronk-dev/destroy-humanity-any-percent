@@ -4570,3 +4570,38 @@ review/adoption, not another uncontrolled timing run or silent global replacemen
 terminal. Initial service inventory empty; root-created8b5abfec… verified exact checkout labels,
 no mounts/tmpfs-only, stopped/removed after tests. Disposable unused SQL data unrecoverable;
 final service inventory empty, caches/volumes/networks/existing builders preserved. No release.
+
+## 2026-10-15 — Specify the exact-aggregation caller and activation proposal
+
+Review by: Codex (draft author first filter, NOT designated normative review). Recorded by: Codex.
+At38cba707/product77fe2275/kernel221, rederive13 direct Go/7 direct TS product call sites
+and their actual ledger/tenant/catalog/report/projection boundaries. New
+rfc/exact-represented-aggregation.md proposes a checked exact operator, explicit migration
+table and two STATIC pinned grouped consumers (catalog admission and Pitch1.0.0). Reuse
+accepted Company drift; no permanent per-run arithmetic fork, global replacement, new
+engine version, private origin protocol or owner-authored copy change.
+
+Two important concrete bindings: resourceTotals currently has no error result, so invariant
+errors must propagate rather than become an empty/partial valid report. Commons refreshScope
+also smooths health/writes evaluated_at; the proposed startup capacity cutover must update
+ONLY derived capacity transactionally before admission, preserving all other fields/events.
+These are source-derived engineering constraints, not new deployed-loss findings.
+
+New-format Harness producer identity uses actual kernel authority, not another algorithm
+registry. Code-only baseline migration needs this explicit prospective guard amendment,
+separate artifact-only commits, real preceding behavior/version change, historical producer
+bindings and complete same-population before/after proof; unchanged current guards stay
+binding. Old report bytes/readers/inputs remain intact. Reconcile own UNACCEPTED parent/search
+text in the same batch: same-kernel one-shot compatibility versus separately adopted numeric
+references; wait/accounting protocol versus numeric producer identity. Neither draft accepts
+another, changes today's reference or fixes27 partitions. Full-domain review, workload,
+actual Go/TS/SQL/retry/cutover and feature evidence remain required.
+
+RFC readiness is explicit agreement/normative review/owner adoption of these contracts;
+full implementation/activation evidence is not demanded before code may be authorized.
+Check actual source-to-proposal links, current old baseline law and diff/whitespace. No
+software suite for proposal-only Markdown; no code/test/fixture/report/kernel/CI/secret/
+deployment/publication change. Exact eight-path draft/record/index range begins38cba707-
+exclusive through this containing commit; designated normative review/adoption PENDING.
+No material gameplay/release milestone or new implementation authority. Next pursue the
+still-missing real temporal proof and normative review, not more positive sample censuses.
