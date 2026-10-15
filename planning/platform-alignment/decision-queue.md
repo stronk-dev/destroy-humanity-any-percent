@@ -2,6 +2,23 @@
 
 Implementation agents may gather evidence and frame options; they may not infer these choices.
 
+## Kernel-neutral versioning — RP-131 direction requested2026-10-15
+
+The [existing history-guard draft](../../rfc/kernel-history-guard-integrity.md) now explicitly
+proposes exact-commit/exact-path exceptions for independently proved unchanged behavior,
+including old presentation placement and new runtime refactors. Its N1/N2 sections name
+qualification and append-only delivery; ordinary coherent-batch review supplies eligibility,
+without another owner decision for each routine change. Real semantic changes still require
+the same-commit version bump. The completed rate experiment is evidence for review, not proof
+of general identity, adoption or permission to land it.
+
+One plain-language direction question was delivered to Marco: adopt this narrow class
+(recommended), permit historical UI-only exceptions instead, or keep it held. No answer is
+recorded; tool delivery/preselection is not approval. Explicit owner direction and designated
+normative review precede RFC acceptance/mechanism implementation, and each target still needs
+its actual other-party eligibility verdict. No existing historical candidate, performance
+patch, schema companion or other draft is approved by this request. No process is waiting live.
+
 ## C18 engineering ownership — proposal ready, not adopted
 
 The [artifact-schema ownership amendment](../../rfc/api-artifact-schema-ownership.md) makes

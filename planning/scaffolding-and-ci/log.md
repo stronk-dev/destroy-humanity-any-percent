@@ -2112,3 +2112,33 @@ this containing commit still needs designated Claude review and independent iden
 No guard-policy adoption, active optimization, false version, semantic change, archival,
 publication/deployment, hosted-green or1.0 claim. Remaining accepted work/owner choices and
 the full nine-tier/platform release floor are unchanged; this completed experiment is not1.0.
+
+## 2026-10-15 — Clarify the next versioning-authority decision, not another experiment
+
+At `d6e092e8`, all candidate/control/Linux handles are terminal and the tree is clean.
+Rechecked the live roadmap, accepted plans, outstanding review provenance, KV-1 and actual
+guard: later C14/consumer implementations are Codex-authored and cannot receive Codex's
+designated approval. Held gameplay/public-wire/rights/author contracts are not implied
+authority, and the successful rate experiment is complete. Do not restart it or claim all
+remaining engineering is finished.
+
+Amend my own existing history-guard draft with explicit proposed runtime-neutral eligibility
+and the descendant-row flow needed to avoid a self-referential commit hash. Preserve real
+semantic bumps, complete path/history inspection, exact other-party eligibility and fail-closed
+publication. Reuse one coherent-batch verdict instead of per-edit predeclaration, duplicated
+review or a fresh owner approval per eligible routine change. Finite matching reports are not
+general identity proof; a revert does not erase a semantic miss. No accepted body is amended.
+
+Deliver one owner direction question (general narrow class / historical UI-only / keep held).
+No response/adoption is recorded; the tool's accepted delivery is not a ruling. Update the
+existing decision queue. Normative cross-party review remains before acceptance; no guard,
+exception, runtime, version, historical object, active queue authorization or other draft
+is changed by this proposal. Diff/authority/links checked; no software suite for a draft-only
+edit. Review by: Codex (draft author first filter). Recorded by: Codex. The new draft/decision/
+record range after `d6e092e8` needs designated normative review; earlier implementation reviews
+remain owed. No live process, self-approval, archive, push/deployment or1.0 completion.
+
+Separate next safe check: actual CLI source still parses Git's display-quoted path output
+and porcelain arrow text. Record RP-649 as unverified before probing the existing isolated
+fixture. A confirmed filename blind spot would be ordinary KV-1 conformance work; it neither
+needs this proposed exception authority nor establishes a current unversioned product change.
