@@ -7,6 +7,12 @@
 
 ## Current checkpoint — 2026-10-15
 
+Fresh independent review also APPROVES original RP-531 Reputation host lifetime correction,
+6a6a996d..7f8e3126. Its original flawed readiness fixture is explicitly qualified by the
+separately approved RP-645 replacement, not retrospectively called sound. Current complete
+host/plan/Typer checks execute native278/Linux417 ordinary passes plus10/15 deliberate
+deadline controls; owning log records full hashes and controlled-network/ARM64 limits.
+
 Fresh independent corrective review APPROVES complete RP-645 deadline-fixture range
 728508de..b45dcd1d. The owning log records exact hashes, executed native20/Linux30 ordinary
 passes plus deliberate expected-deadline controls, and independently checked full-run artifact

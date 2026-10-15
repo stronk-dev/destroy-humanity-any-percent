@@ -2490,3 +2490,37 @@ stdout partly truncated; terminal counts retained. All handles terminal, --rm co
 declared browser Compose empty, no other resources removed or source edited. RP-637 cause/
 reliability remains OPEN. No new full-suite/performance/hosted-AMD64/timing/real-SQL/feature/
 policy/archival/release acceptance; original failed evidence remains intact.
+
+## 2026-10-15 — Original Reputation host lifetime correction independently approved (RP-531)
+
+Review by: /root/reputation_host_lifetime_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcription. APPROVED complete
+6a6a996d782778dc64dd3ded4085cea6d0e0fc19-exclusive through
+7f8e3126ae835ce31510208032985eb192bfd64a-inclusive, all5 paths. Accepted CI D2 only;
+no product/workflow/retry/timeout/concurrency/copy/normative change. All original88 ordinary
+host cases retain input/outcome assertions. Disposal binds original TestContext, is idempotent,
+drains native input before teardown and refuses expired navigation before polling/focus.
+Existing shared-helper controls check drain/delivery errors and untouched successor input.
+
+Historical qualification: original50ms fixture assumed socket readiness without establishing
+it; its earlier native pass was not universal proof. Separately approved complete RP-645
+amendment (preceding verdict) establishes socket-ready/held-initial-read populations BEFORE
+the unchanged actual50ms body deadline, then checks exact abort, detached UI/closed created
+sockets, no intents/late navigation/remount. Current executions use that corrected population;
+this approval does not assert the original fixture was sound or erase its failed evidence.
+
+Independent full host/plan/Typer native Chromium/WebKit31823 passes278 ordinary plus10
+explicitly expected diagnostic deadlines,288total/no deselection,26.56s. Declared cold Linux
+ARM64 three-engine service54780 passes417 ordinary plus15 expected deadlines,432total/no
+deselection,31.50s. Root make test-browser-focused/test-browser-ci-focused use the same
+three test files; make typecheck77218 passes0errors/0warnings. Complete range whitespace passes.
+Initial sandbox listen denial executes no tests. Partial stdout retains terminal censuses,
+not a full-trace claim. Source unchanged through23fcf989; host blob
+5ac2cef441f81903c12852bd3871a1673c4eacab. No source mutation/new old-source reproduction.
+
+Real browser/DOM/runtime/parser with controlled network/storage, NOT real server/Postgres/
+socket service/minted content. No full suite/performance/hostedamd64/latency/whole-CI,
+RP-637 reliability, feature/adoption/archival/release approval. All handles terminal;
+--rm container absent, declared browser Compose inventory empty; no manual resource removal,
+tracked edits or commits by reviewer. Complete RP-531 range leaves corrective review debt;
+RP-526/RP-637 original causes, other ranges and release/whole-product gates remain.
