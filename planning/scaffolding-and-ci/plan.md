@@ -35,7 +35,8 @@ RP-650 correction: the Go baseline/epoch guards now preserve literal filenames a
 selectors too. Real-Git regressions reproduce missed transient epoch revisions, refused valid
 registrations, whitespace aliases and unrelated pattern matches. Corrected focused populations,
 the full cold `make verify-harness-fast` (including actual repository history) and harness vet
-pass. The owning log records the range after `e10d24f4` needing designated Claude review.
+pass. Fresh independent corrective review now APPROVES the complete combined
+RP-649/RP-650 range f667bce0..54f352f6; the owning log records executed evidence.
 No artifact/version/policy/workflow change; the separate kernel-history failure remains open.
 
 RP-649 correction: preserve literal Git filenames across working-tree, history and correction-
@@ -43,7 +44,7 @@ target checks. The old CLI admits42/54 worktree cases; NUL-delimited lists and d
 collapsing now refuse60 cases while legitimate version/correction/move controls and the full
 legacy adversarial suite pass. The actual root gate still stops at50a3a514; its trailing fixture
 leaf is covered by the separate full execution, not credited as reached. The owning log records
-the new range after `f667bce0` needing designated Claude review. No exception policy, version,
+independent APPROVED verdict for f667bce0..54f352f6. No exception policy, version,
 watched prefix, correction row, workflow or production behavior changes.
 
 RP-648 correction: honor an explicit Reviewed range when binding an existing history

@@ -2369,3 +2369,36 @@ Reviewer changes no source/tests/records, cleans its fixtures, verifies no brows
 containers remain and touches no other services. Later unrelated review records
 are outside the verdict. No hosted timing, renewal, full CI, feature, archival or
 release acceptance; unrelated review debt and historical/arithmetic red gates remain.
+
+## 2026-10-15 — RP-649/RP-650 independent corrective review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/literal_git_paths_corrective_review`.
+Recorded by: Codex parent, transcribing its returned verdict under Marco's delegation.
+Reviewed complete eleven-path range (base exclusive, tip inclusive)
+`f667bce01d8eebf7b1db77786a8d0b513e7bcf95..54f352f62759a4ac7aa49fbf48e9f18e1c242b60`,
+exactly commits `e10d24f41222678b6b1b4feaff95eed18989762a` and
+`54f352f62759a4ac7aa49fbf48e9f18e1c242b60`. Verdict: **APPROVED**,
+no actionable findings; corrective literal-path work only.
+
+Independent old JS CLI reproduces42/54 wrong admissions. Corrected fixtures pass
+60 refusals plus valid version/correction/history/rename controls. Old Go overlays
+reproduce six transient-epoch misses, six valid-registration refusals, six literal-
+report refusals, bracket-pattern false matches, three whitespace aliases and one
+false input alias. Corrected focused Go passes uncached9.399s. Additional review-
+only overlay tests pass0.515s: exact Unicode/bracket/tab/newline/trailing-space
+rename endpoints and rename-out/restore cannot conceal unregistered epoch history.
+Full cold `make verify-harness-fast` passes actual history guards (harness82.920s,
+role0.272s,Commons0.376s). Harness vet, Node syntax, Go formatting and range diff pass.
+At verification HEAD264842b4, the six reviewed guard/test files are byte-unchanged
+from54f352f6 in both HEAD and worktree.
+
+Actual `make verify-kernel-version` still fails historical
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` versus parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, same six minigame paths.
+Its trailing fixture leaf is not reached; separately executed fixtures pass.
+No historical waiver, false bump, rewrite, RP-648 citation approval or adoption of
+the unaccepted kernel-history policy. No DB/container/Linux/hosted, full CI, feature
+or release acceptance. Reviewer makes no repository edits/commits/worktrees or
+publication. Review-only files remain in private temporary storage; no cleanup is
+claimed for them. Parent records this verdict without rerunning unrelated software
+for the Markdown-only transcription; factual ranges, diff and whitespace checked.
