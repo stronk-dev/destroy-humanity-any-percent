@@ -8,8 +8,11 @@ neither the original implementation checkboxes nor those repairs constitute acce
 2026-10-15 independent corrective reviews approve fifteen indexed ranges under Marco's
 narrow delegation: admission/loader corrections, replay/corpus witnesses and native scheduling/
 keyboard/lifecycle/motion corrections. The owning log records three fresh reviewers, exact
-complete ranges, executed checks and descendant-source limits. Five other indexed ranges
-remain pending; RP-201/RP-211/public-wire/content/feature acceptance are not closed.
+complete ranges, executed checks and descendant-source limits. Follow-up review approves
+four other indexed ranges plus RP-431/RP-472/RP-541; RP-205/207 is CHANGES REQUIRED
+for RP-668's due-command preflight bypass. Next: reproduce/fix ordinary preflight in
+Go/TS/live Postgres, preserving replacement/atomicity. RP-201/RP-211/public-wire/content/
+feature acceptance are not closed; the owning log records exact verdicts and evidence.
 
 2026-10-15 AR6.2 correction (RP-636): flag/unflag responses previously changed the real cell
 state without updating the live region. Bind its existing message to the authoritative revision,
@@ -76,7 +79,7 @@ reconciliation, adopted copy, AR8 mint and full integrated acceptance remain ope
   unchanged; real registry and successful advance/quit controls execute. The real Postgres
   composition also compares full saved state/revision/command history and released claims.
   Future-turn, partial-input, rejected-persistence and stuck-claim probes fail independently.
-  This test-only correction awaits Claude review, not full A3/A5/AC5/AC6 acceptance.
+  This test-only correction is independently approved, not full A3/A5/AC5/AC6 acceptance.
 - [x] A4 — AR-P1/P2/P3: `CatalogBundle.Arcade`, loader chain (`arcade` requires `minigame_api`),
   toy/definition/tenant cross-checks, resolver arms `(mine_grid|snake, 1.0.0) → arcade`, gameserver
   tenant registration, TS replay loader chain; fixture `minigames` + `minigame_api` candidates with
@@ -92,23 +95,23 @@ reconciliation, adopted copy, AR8 mint and full integrated acceptance remain ope
   genesis/state, server sequence/seed, identical retry and verified Founder history in real
   Postgres. Disabling only Arcade atomic starts survives the old tests but fails both new
   subcases. Cold Go/client/root/browser and all four selected DB functions pass; historical
-  RP-131 remains red. Test-only supplement awaits Claude review, not full A5/public AC8.
+  RP-131 remains red. Test-only supplement is independently approved, not full A5/public AC8.
   RP-203 adds BOTH toys' low-Soul atomic-start refusals, with exact error, full unchanged
   state/revision/sequence and zero persisted session/create-receipt rows. RP-204 observes
   explicit empty cap_reason_key in each actual zero-credit composed receipt. Independent
   atomic Soul and per-toy receipt corruptions fail and are restored. These test-only repairs
-  await Claude review; public AC8 and actual eligible Exit actions before/after quit (AC9)
+  are independently approved; public AC8 and actual eligible Exit actions before/after quit (AC9)
   remain unproven. Repository activity booleans do not substitute for Exit actions.
   RP-206 adds actual current-curriculum Wind Down/default company actions for Mine Grid
   setup/playing and Snake playing. Both active and claimed status preserve full stream/
   session state and SQL command history; real quit/resolution releases the first ending,
   with identical retry and both histories verified. Guard/claimed/quit probes fail and
-  restore; Claude review remains required. RP-205's separately predeclared live/shared-replay
+  restore; corrective review is independently approved. RP-205's separately predeclared live/shared-replay
   correction (kernel 0.3.148) adds a matched before-threshold gate and due replacement without
   requested gate effects, original-payload/retry/both-history proof, and literal Go/TS output.
   The full thirteen-case DB population retains active/claimed rejection and real quit/resolution.
   RP-207 scopes the Company reader away from the separately verified Founder Fiscal prefix,
-  with forced-harvest and removed-prefix controls. Claude review and default/public AC9
+  with forced-harvest and removed-prefix controls. RP-668 repair/re-review and default/public AC9
   remain required; AC9/full A5 is not accepted or archived.
 - [x] A6 — client children `MineGridBoard` / `SnakeBoard` under `client/src/game-ui/minigame/`
   with the AR6.2/AR6.3/AR6.4 contract, test-only mounted (no pinned tenant row yet), axe in three
@@ -162,14 +165,14 @@ rows still need independent review. None approves original Claude A1–A7 featur
 | RP-194: literal Go genesis/every-attempt snapshot/result byte witnesses, test-only v2 corpus | `c48ce7f2^..92ed5e68` | APPROVED 2026-10-15 |
 | RP-195: both Snake raw/numeric/identity snapshot decoders, shared 45/7 controls, kernel 0.3.146 | `4f6173be^..45fcf3ae` | APPROVED 2026-10-15 |
 | RP-196: test-only exact 5×5 clearing, complete strategy population and literal Go/TS replay | `329fc994^..25906f01` | APPROVED 2026-10-15 |
-| RP-197: future/late-turn rejection, direct-input atomicity and real Postgres state/history/claim proof | `8ea62952^..5e82b3d3` | Pending independent review |
+| RP-197: future/late-turn rejection, direct-input atomicity and real Postgres state/history/claim proof | `8ea62952^..5e82b3d3` | APPROVED 2026-10-15 |
 | RP-198: real rejected shuffle draw, literal Mine Grid placement/entry replay and regeneration | `be0c0e00^..859f5216` | APPROVED 2026-10-15 |
 | RP-199: matched loader negatives, boundary stages and freshly hashed wrong-engine binding | `8b00b6e8^..3b9fd0d8` | APPROVED 2026-10-15 |
 | RP-200: actual null-tier refusal, legal zero controls, full-chain regression, kernel 0.3.147 | `df0ed871^..6f5715dc` | APPROVED 2026-10-15 |
-| RP-202: both real-Postgres atomic starts, server genesis/sequence, identical retry; RP-201 routing | `deda7e1e^..15fe1ccc` | Pending independent review |
-| RP-203/204: both atomic low-Soul refusals and explicit empty zero-reward cap reason, test-only | `d798e709^..83008a9f` | Pending independent review |
-| RP-206: actual current-curriculum active/claimed Exit/quit/released-Exit proof; RP-205 runtime finding | `b57b95df^..bb5c6ac1` | Pending independent review |
-| RP-205/207: due-cross-gate live/shared replay, kernel 0.3.148, literal output and owned Fiscal event-reader proof | `efdc2dbc^..4b8abb89` | Pending independent review |
+| RP-202: both real-Postgres atomic starts, server genesis/sequence, identical retry; RP-201 routing | `deda7e1e^..15fe1ccc` | APPROVED 2026-10-15 |
+| RP-203/204: both atomic low-Soul refusals and explicit empty zero-reward cap reason, test-only | `d798e709^..83008a9f` | APPROVED 2026-10-15 |
+| RP-206: actual current-curriculum active/claimed Exit/quit/released-Exit proof; RP-205 runtime finding | `b57b95df^..bb5c6ac1` | APPROVED 2026-10-15 |
+| RP-205/207: due-cross-gate live/shared replay, kernel 0.3.148, literal output and owned Fiscal event-reader proof | `efdc2dbc^..4b8abb89` | CHANGES REQUIRED: RP-668 preflight |
 | RP-208/209: serialized delayed Snake Quit, terminal drain and recovery/unmount controls | `610a8c80^..4e529ee9` | APPROVED 2026-10-15 |
 | RP-210: actual board-focus pause, native P/Escape and controlled visibility evidence | `55cd1ce0^..a9a39446` | APPROVED 2026-10-15 |
 | Test-only real-preference zero-decoration motion proof; RP-211 terminal-name gap routing | `e006f5c6^..044a7869` | APPROVED 2026-10-15 |

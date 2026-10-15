@@ -2508,3 +2508,72 @@ release acceptance. No Firefox/Linux or DB evidence is supplied by these reviews
 separate Linux Firefox Garage run is not Arcade coverage. Known27 Production failures and
 historical kernel-history red gate are not rerun or waived. Continue remaining accepted work;
 do not restart the approved ranges or infer new contract adoption.
+
+## 2026-10-15 — Remaining Arcade reviews: seven approvals, one required correction
+
+Recorded by: Codex parent, transcribing fresh independent reviewers under Marco's
+corrective-code delegation. Every range includes its complete source/tests/fixtures/kernel/
+docs/closeout records; none accepts original features or a normative proposal.
+
+Review by: `/root/arcade_persistence_exit_corrective_review`. Separate verdicts:
+- RP-197 APPROVED: `90a2437ab1c1033ccf2e3d62af2cdd9e3445ae70..5e82b3d3b8cb12ade9405c2346db4e8ae3a0ac74`.
+- RP-202 APPROVED: `13cfe371d48613cdcd47d9b87d68cdf298a5375c..15fe1ccc615f4d417c257180ef1f3a580d92e379`.
+- RP-203/204 APPROVED: `2ead3a1d6d3b473dc1583f6e431ff33605ef26d1..83008a9f2464289a579b73a8afee866888701555`.
+- RP-206 APPROVED: `e58260ff35e52e3fb29301697e81a9274f2e5e99..bb5c6ac110b481fca58549210a1643654ecd071e`.
+- RP-205/207 **CHANGES REQUIRED**: `593f4b30d9a6915571f95a32f1c76bd4ac47d7b2..4b8abb89a87044d55ec509dba4832a13e4aee668`.
+
+P2 finding RP-668: selected-branch CrossGate skips ordinary preflight in Go/TS terminal replay.
+Live Handle dispatches terminal before normal transition; branch preview accrues but never
+restores preflight. Prestige D4/P5 says otherwise-valid Company command; accepted T01-C31
+says ordinary preflight/accrual before replacement. Actual unchanged TS replay via Vite SSR,
+using checked-in curriculum_cross_gate_exit state/artifacts/frozen inputs and changing only
+canonical_payload.gate_id, returns applied/newRun2 for all three:
+valid gate.t2_to_t3; nonexistent gate.does_not_exist; already-crossed gate.t0_to_t1.
+The last two must refuse without mutation. Reproduction loads /src/replay.ts with Vite
+createServer(root:client,middlewareMode:true,appType:custom), loads the checked-in fixture's
+bundle, restores state atv18 for each row, then calls applyLoggedExit with canonicalJSONString
+of that payload and unchanged replay_inputs; finally closes Vite. No tracked source changed.
+This finding does NOT require executing gate effects, costs or post-accrual gate predicates.
+RP-207's scoped Fiscal reader has no additional finding, but its combined range is not approved.
+
+At descendant477d55114c9be4366762782842a69875d050a5b5, independent selected cold
+Arcade/Replaycatalog/Production passes with native DB skips explicit; complete cold Arcade/
+Minigame/Replaycatalog/Kernel/Decimal and vet pass. Node atomicity/replay174 and Decimal6304,
+types zero diagnostics pass. Actual declared Linux-amd64/Postgres `make test-go-ci
+CI_TEST_PACKAGES='./production' CI_TEST_FLAGS='-run TestArcade -v'` executes all four parents,
+no selected skips:12 rejection subcases,13 Exit populations (nine active/claimed), both atomic
+starts/low-Soul refusals and explicit zero receipts. Adjacent atomic-start/Typer/automatic
+curriculum integration selector passes all three functions/six admission subcases. Read-only
+fixture audit proves every old top-level field unchanged; only curriculum_cross_gate_exit added;
+cold cross-runtime test regenerates/compares successfully. Every exact range diff check passes.
+These existing green cases do not test the newly found invalid gate path.
+
+RP-197 tests/fixture and RP-203/204 tests match their tips. RP-202 is supplemented by the
+low-Soul/receipt checks; RP-206's eight original cases execute in the later13-case population
+with corrected event reader. RP-205's shared fixture/test remains unchanged; later replay
+changes retain the bypass. Historical baseline/severing records were inspected, not rerun.
+No browser/full Production/hosted/feature/archival/release approval; known27 partitions and
+historical guard remain red. Reviewer makes no tracked edits/mutations/overlays/commits.
+Terminal test processes release the Docker slot; exact owned tmpfs cloud-clicker-postgres-1
+service is transferred to parent (created from empty inventory), caches preserved.
+
+Review by: `/root/arcade_remaining_admission_input_review`. All three APPROVED, no findings:
+- RP-431: `b277d62089a39da524d3fd60ea13a8a9f2d9e793..e478b2484151002e325002f2d069fc1ad7da5ac8`.
+- RP-472: `a519892cf5a1c8ce04066b16e0a6af89b2fb8eec..281340d8b20569ac880490b7f9e946d06c308e09`.
+- RP-541: `fce6c3d94a120b1d7e1188ddb7998ac6d5fd480e..b8eca33cc845f8e84116028fb195f27807b0e530`.
+
+At same477d5511, independent cold Arcade17.388s/Minigame/Kernel/Decimal/Replaycatalog and
+vet pass. Read-only corpus-check17.943s passes; Node6743/29 browser-only skips, then native
+Chromium/WebKit58 (zero skips) passes. Initial sandbox listener denial executes no tests;
+corrected authorized command passes, module summaries zero pending. Initial three nonexistent
+Node filters supply no coverage; corrected complete selection supplies final result.
+Types/build/client-boundary including10 Go/15 Svelte negatives pass. Raw engines/vectors and
+RP-472 source/tests match their tips; RP-541 handlers/Snake match, Mine Grid includes the
+separately approved live-region addition. Other replay changes inspected, not approved.
+Old failures assessed from retained records, not reproduced. No tracked edits, Docker,
+Firefox/Linux/OS shortcut/IME/AT/public integration or whole-feature approval.
+
+Next engineering action is RP-668: matched old-failing Go/TS and actual live/Postgres
+preflight refusals, preserving valid replacement, activity block, rejected state/history,
+retry and replay. Inspect other automatic-trigger preflights too. Do not count this rejected
+range as review completion/acceptance or turn the bug into another owner-choice request.

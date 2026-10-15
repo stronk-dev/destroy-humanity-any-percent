@@ -3,6 +3,13 @@
 RFC: `rfc/minigame-terminal-typer.md` (accepted 2026-09-25; all ODs at recommended defaults).
 Fixture-first (OD-11): no production epoch is minted by this plan.
 
+2026-10-15 independent engine corrective review APPROVES RP-395 (`f423e704`),
+RP-400 (`ba1365c9`), RP-401 (`ed92ede7`), RP-402 (`10d94e70`), RP-429 (`20a57019`)
+and RP-461 (`1fe602e2`), each complete single-commit span. The latest owning log records
+fresh Codex provenance, cold Go/TS vectors/admission/replay checks, full coordinates and
+descendant limits. Earlier native/availability approvals remain separate. Other corrective
+ranges, RP-162/RP-460, public HTTP/content and whole-feature acceptance remain open.
+
 2026-10-14 public-wire preparation: `rfc/minigame-tenant-http-bindings.md` is the new draft
 home for the TT-PA4/C2 reconciliation, not adoption. Its disjoint prefix avoids RP-562's
 executed static-route shadowing; versioned metadata/directory avoids silently remapping
@@ -20,7 +27,7 @@ under Marco's 2026-10-15 Codex-review delegation; this is not whole-feature acce
 
 ## Batches
 
-- [ ] B1 — PARTIAL (full original `345dc0b9^..345dc0b9` designated Codex review is now CHANGES REQUIRED, recorded in the 2026-10-08 log; Codex's separate corrective ranges still await Claude. RP-162 result bounds and RP-460 timing arithmetic remain author-contract gaps) — Content + engine (TT3/TT4): `balance/testdata/typer-v1.json` fixture (placeholder
+- [ ] B1 — PARTIAL (full original `345dc0b9^..345dc0b9` designated Codex review is now CHANGES REQUIRED, recorded in the 2026-10-08 log; Selected corrective ranges are approved below; other exact ranges still need independent review. RP-162 result bounds and RP-460 timing arithmetic remain author-contract gaps) — Content + engine (TT3/TT4): `balance/testdata/typer-v1.json` fixture (placeholder
   prompts per OD-9), Go `server/typer` + TS `client/src/typer` loaders and pure engine,
   `ApplyInput.ServerTimeMs` (TT-PA1 item 2), shared content-gate corpus
   `testdata/typer/content-gate-v1.json`. ACs 1 (artifact half), 2, 4, 5, 6, 7, 10 (engine
@@ -34,7 +41,7 @@ under Marco's 2026-10-15 Codex-review delegation; this is not whole-feature acce
   Full original B3 (`885237a7^..885237a7`) and B4 (`391beb76^..391beb76`)
   designated Codex reviews now record CHANGES REQUIRED in the 2026-10-08 log:
   RP-152/RP-154/RP-155 and raw unlock admission RP-461. Separate Codex corrections
-  require Claude; checked rows record implementation presence, not feature acceptance.
+  still need independent review; checked rows record implementation presence, not feature acceptance.
 - [ ] B5 — PARTIAL (`d7c1ce6e`: error details only; snapshot/command arms blocked by the TT-PA4 vs API C2 DESIGN-GAP) — TT-PA4 API arms (Typer snapshot/command arms) + generated client. AC10 (API half).
 - [ ] B6 — PARTIAL (`ade1083b`: TyperTable + AC13 gates; registration waits on the pin and the C2 gap) — UI: `TyperTable` child under `client/src/game-ui/minigame/`, tenant-registry row,
   accessibility contract TT8. ACs 13, 14.

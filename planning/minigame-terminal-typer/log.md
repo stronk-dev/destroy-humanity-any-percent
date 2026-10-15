@@ -1041,3 +1041,32 @@ registration/content, public HTTP/clocks/payout/receipts, persistence/Exit journ
 manual AT, hosted CI, archival or release. Known27 Production partition failures and historical
 kernel guard `50a3a514` remain red, not rerun or concealed. No feature checkbox/status promotion
 or push; continue remaining accepted construction and exact corrective reviews.
+
+## 2026-10-15 — Six independent engine/raw-admission corrective approvals
+
+Review by: fresh independent Codex sub-agent `/root/typer_engine_admission_corrective_review`,
+under Marco's corrective-code delegation. Recorded by: Codex parent transcribing its verdict.
+All **APPROVED**, no findings, each complete single-commit range (9/10/9/9/16/12 paths):
+- RP-395: `e019e670195e6067071c29674b552024badc85a2..f423e704dfd0cdaaeeaac9dcc51891b82380021a`.
+- RP-400: `e2b391e7a8ab23214cb3f1c78bdaa0a19ac83374..ba1365c9652a77ae227c70740483b8fb0405b90d`.
+- RP-401: `ba1365c9652a77ae227c70740483b8fb0405b90d..ed92ede7f321cd13bc46982a2c92a090143dcbb4`.
+- RP-402: `ed92ede7f321cd13bc46982a2c92a090143dcbb4..10d94e70e65e5f2f8f90a67c59eb96e61e40ddb2`.
+- RP-429: `439aa884ce08b4d95916bcb704af6e607ffb449c..20a57019258119e5bcf244713de0f1698fa0f99c`.
+- RP-461: `90ed75a717b2be7820b7d875b1e0381efdddd4b1..1fe602e2475a0a42f825c48e280d7afbe44839be`.
+
+Every source/test/fixture/kernel/docs/record path inspected. Independent descendant477d5511
+cold Decimal/Typer/Minigame/Replaycatalog/Kernel and affected vet pass. Node Typer/minigame/
+replay/Decimal6587, shared-scanner consumers224 (three explicit browser-only Garden skips)
+and Combat references/lane137 pass. Types/build/client boundary/unchanged Typer corpus pass,
+zero diagnostics. Correctly quoted seven-test focused Go selector executes; complete packages
+also pass. Initial nonexistent golden filename and unquoted regex are not gate evidence.
+DB children skip without TEST_DATABASE_URL; no SQL/browser claim for these parsing scopes.
+
+Exhausted typing, null fields/feedback, runtime mode, null tiers, duplicate/token/overflow
+and raw unlock cases refuse while real phase completion/valid encodings survive. The Go
+engine is unchanged afterRP400/catalog afterRP402; later raw parsing retains solo guard.
+RP429 scanner/Typer/raw tests and RP461 raw fixture/Go tests remain unchanged; later replay/
+minigame scaling changes retain raw entry calls. All six synchronous kernel bumps checked.
+Historical old failures inspected, not independently rerun. No source edits/mutations,
+overlays/caches/worktrees, commits, original feature, public wire, RP162/RP460 adoption,
+content/archival/release approval. Known27 Production/history red gates remain separate.

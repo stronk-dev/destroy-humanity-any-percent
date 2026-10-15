@@ -13,6 +13,12 @@ owning logs below. Whole-product status and evidence limits
 live in [CURRENT-STATE](../CURRENT-STATE.md#whole-product-overview). The full
 nine-tier goal remains active; no new playable tier or release was completed.
 
+- **READY — repair RP-668 before further Arcade closeout:** independent review finds due
+  curriculum CrossGate accepts nonexistent/already-crossed gates without ordinary preflight.
+  The [Arcade plan/log](../minigame-demo-disc-arcade/plan.md) owns exact CHANGES REQUIRED scope
+  and reproduction. Add matched Go/TS/live-Postgres regressions, preserve replaced effects,
+  atomic refusal/retry/replay, and inspect other automatic-command preflights. This is an
+  existing-contract correction, not an owner-policy question or draft implementation.
 - **DELEGATED WORDING RECONCILED — Clout RP-308:** Marco's explicit 2026-10-15 answer
   permits CV3/AC6 reconciliation preserving offline cap/rate/banking and separate return
   visits; internal calculations/display reads create no extra saved payments. The owning
