@@ -8,6 +8,10 @@ be discarded into defaults, valid-only duplicates or conditional304 replies. Mou
 old-behavior failures, valid encoded continuation and ignored-field controls are in
 the owning log with final checks/review range; no endpoint/schema/kernel change or
 full API acceptance follows.
+The complete `2631a30c..7ad33db8` corrective range is now independently APPROVED
+by fresh Codex reviewer `/root/api_query_corrective_review` under Marco's
+2026-10-15 delegation. The log records its executed cold/failure evidence;
+this closes RP-659's corrective review, not other API work or full acceptance.
 
 2026-10-15 C12/Route C5 + Gameserver GC3 correction (RP-104): the existing expiry method
 now has a composed owned driver, primed before readiness and repeated on the existing

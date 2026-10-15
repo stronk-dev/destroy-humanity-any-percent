@@ -3704,3 +3704,39 @@ release claim. Review by: Codex (implementer first filter). Recorded by: Codex.
 Complete11-path source/tests/docs/plan/ledger/log range after `2631a30c` through
 this containing commit needs designated Claude review, consolidatable with API
 conformance. No services/resources touched, acceptance, archival, push or deployment.
+
+## 2026-10-15 — RP-659 designated corrective-code review: APPROVED
+
+Review by: Codex independent sub-agent `/root/api_query_corrective_review`.
+Recorded by: Codex parent, transcribing the reviewer's returned verdict; this is
+not the parent's first-filter renamed. Authority: Marco's explicit delegation,
+recorded in AGENTS and `1b00f8ab`, for outstanding corrective-code review only.
+Reviewed range: `2631a30c586494d4b38e7c268c5f1d5fefd4ef82..7ad33db87b8018e8acc0c1b96846f5df90052734`
+(exclusive/inclusive, one commit, all eleven paths). Verdict: **APPROVED**,
+no actionable findings. No new-feature, normative-specification or release approval.
+
+The fresh reviewer independently reads AGENTS/RFC-0000 and API A5/A6/C12/C13/C16,
+the complete source/test/docs/record diff and handler context. At tested HEAD
+`1b00f8ab`, affected API source/tests, RFC, canonical docs and owning plan/log
+match the reviewed revision; only unrelated backlog additions differ. It executes:
+
+- `make test-go vet api-check GO_PACKAGES='./publicapi ./publicread ./account ./gameserver' GO_TEST_FLAGS='-count=1'`:
+  PASS0.260/0.298/0.535/0.396s, vet clean, OpenAPI/pin/TS unchanged.
+- Root cold publicapi/publicread selection of
+  `TestParseRawQueryPreservesDeclaredEncodingErrorsAndValidValues`,
+  `TestMountedPublicQueriesRejectMalformedEncoding`,
+  `TestMountedPublicQueryEncodingPreservesValidPagingAndIgnoredFields` and
+  `TestMountedPublicErrorsSpendTheSharedIPBudget`: PASS, including exact400 bodies/
+  headers, no cache/read on malformed declared input, valid signed continuation,
+  ignored undeclared fields, Unicode/control values, duplicate rejection and budgets.
+- A temporary Go overlay restores old error-discard behavior. The same query
+  regressions FAIL with200/304 and an extra page-reader call for a malformed duplicate
+  beside a valid cursor. Repository source/tests are not mutated. Its initial
+  misquoted selector executes no tests; only the corrected failed invocation is
+  discrimination evidence. Review-range diff check and all seven changed Go files'
+  gofmt checks are clean.
+
+Mounted readers are controlled: no SQL/browser/hosted/full API acceptance is claimed.
+The reviewer changes no tracked file and leaves only its owned temporary overlay.
+RP-659's corrective review closes; other API ranges/gates stay independent. No
+archival, push, publication, deployment or general waiver follows this transcription.
