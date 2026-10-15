@@ -8,7 +8,9 @@
 coercion; damage rejects non-boolean crit flags before the zero-power return. All 31 old-source
 refusals fail in Node and Chromium/WebKit; final 315 Node/630 native checks, cold Go/vet,
 both division gates and typecheck pass. No valid arithmetic, data, kernel activation or battle
-consumer changes. The owning log holds the range after `d1fb8d57`, pending designated review.
+consumer changes. Fresh independent corrective review APPROVES the complete
+six-path d1fb8d57..efeae834 range; the owning log records its executed evidence
+and limits. Adjacent construction and full parent acceptance remain separately open.
 
 1. [x] Extract one shared SplitMix64/rejection-sampling authority and add labeled substreams.
    - C4/AC3's sequence supplement now pins 72 draws across three fixture labels and

@@ -493,3 +493,25 @@ fixture/reference/docs/plan/ledger/log range after `18fd6c06` through this conta
 commit needs designated Claude review, consolidatable with Combat construction.
 No self-acceptance, archival, content mint, push or deployment. Continue the full
 accepted parent and obtain its authored effect/table closure before child engines.
+
+## 2026-10-15 — RP-604 independent corrective review: APPROVED
+
+Review by: fresh independent Codex sub-agent `/root/combat_inputs_corrective_review`.
+Recorded by: Codex parent, transcribing its verdict under Marco's corrective-review
+delegation. Complete six-path range (base exclusive, tip inclusive)
+`d1fb8d574ad46e69494f67843630598a65908193..efeae8348177b693c7390a067e2a18eb3226db2a`.
+Verdict: **APPROVED**, no corrective-code findings, source/tests/docs/records inspected.
+
+Independent exact-source nonmutating comparison reproduces all31 malformed-input
+acceptances on old source and all31 refusals on corrected source. Caller coercions
+fall6→0; all35 valid damage/store/clamp vectors pass both versions. Five affected
+Node files pass315. Cold combat/integer/determinism tests and vet pass; determinism
+has no standalone tests. Both division gates, typecheck (zero errors/warnings)
+and range diff checks pass. Reviewed arithmetic source/test remain unchanged at
+f2751639. No reviewer edits to repository files or resources requiring cleanup.
+
+This approval covers only RP-604 primitive BigInt/boolean conformance. Browser/DB
+journey is unnecessary for the unused pure library and not claimed. Adjacent C4
+ordering/substream work, C2/C5 catalog/effect/care contracts, live engines/bots/player
+workflows, full Combat acceptance, kernel activation, archival and release remain
+open under their existing authorities. No publication or gameplay milestone change.
