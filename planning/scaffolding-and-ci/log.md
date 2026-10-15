@@ -2002,3 +2002,55 @@ check; do not record it green. A file-exact `.gitattributes` rule identifies thi
 format only; source whitespace and other patch checks retain their defaults. This does not
 alter the candidate or runtime, and belongs to the same pending review range. Recheck the
 whole range and the patch's applicability before handoff; do not rewrite the checkpoint.
+
+## 2026-10-15 — RP-596 complete candidate population passes; current-source control running
+
+Resume session51264, not a new candidate run. It terminates exit0: all300 governed keys
+complete, no run/aggregate invariant failures, wall396,571,846,833ns (6m36.572s), whole Go
+command397.087s. Canonical complete-phase report SHA256 is exactly
+`1ffa47cfd4f85f6daf1b340cf6e43cfa7d534cb39308cdf80e955c9d28be826d`, matching the historical
+active result with no golden/report regeneration. The earlier source/scenario/policy/constants/
+worker and full-population controls apply. This is standard pacing only, not complete maintenance.
+
+Candidate CPU profile SHA256 `7dadb25e49a116d9ef4ac557ea5a98069c2e0a8dc87995a052fb16befedc24ef`;
+compiled binary `c0d25a91203beab830568057ef1edbe8c24171cd5a17758338a05e8c4f34a705`.
+Both remain in `/private/tmp/cloud-clicker-rate-candidate.2kNxJt/` with the unchanged hashed
+candidate/overlay. The root profile reader executes ordinary/focused cumulative views:
+3163.77s total sampled CPU; ratesWithProvisionedAndPolicy408.83s cumulative (12.92% of samples).
+The historical profile was2285.94s/39.05%, but those overlapping sampled stacks are not
+disjoint savings, wall-time percentages or a matched current-source performance result.
+
+**Source attribution correction:** the first ordinary `-list ratesWithProvisionedAndPolicy`
+read the unchanged active engine at the overlay's recorded filename. Its displayed line text
+is wrong for this binary; discard that line-level interpretation. Executed corrected reader:
+`make harness-profile-report
+HARNESS_CPU_PROFILE=/private/tmp/cloud-clicker-rate-candidate.2kNxJt/cpu.pprof
+HARNESS_PROFILE_FLAGS='-list ratesWithProvisionedAndPolicy -nodefraction=0 -trim_path=/Users/stronk/repos/cloud-clicker/server/production -source_path=/private/tmp/cloud-clicker-rate-candidate.2kNxJt'`.
+It now displays the hash-checked candidate buckets/target-filter code at the matching lines.
+Function-level sample totals are unchanged. Canonical docs explain this overlay-specific trap;
+do not use unchanged checkout text as a witness of experimental compiled source.
+
+Actual candidate-specific full vet passes through the root target:
+`make vet GO_PACKAGES='-overlay=/private/tmp/cloud-clicker-rate-candidate.2kNxJt/overlay.json ./production ./multiplier'`.
+Active engine, retained patch and both benchmark-source hashes remain unchanged. Full-range
+whitespace and patch-applicability checks pass after the narrow patch-data attribute correction.
+No real Postgres, Go/TS full release-artifact or player proof is newly claimed by this phase.
+
+**Live current-source control:** session20829, started after candidate/vet/profile work finished:
+`make test-go GO_PACKAGES=./harness
+GO_TEST_FLAGS='-run NoTests -bench BenchmarkStandardPacingProfile -benchtime=1x -timeout=60m -cpuprofile=/private/tmp/cloud-clicker-rate-candidate.2kNxJt/control-cpu.pprof -o=/private/tmp/cloud-clicker-rate-candidate.2kNxJt/control-harness.test -v'`.
+It uses no overlay and reports the same Go1.27.2/darwin/arm64/M3 Max,14 logical CPUs,12 workers,
+scenario and constants. This is one sequential candidate→control pair, not randomized repeated
+performance sampling. No concurrent heavy workload is deliberately launched. The last poll
+confirms the same handle live with no final result; resume it rather than restart on silence.
+Require all300 keys and complete report identity, then report the actual paired timings and
+sampling/environment limits. The historical783.821s alone is not that current control.
+
+Current plan/RP-596 now route to completing that control and the existing landing/review gates,
+not rerunning the successful candidate or broadening a standard phase into full maintenance.
+Review by: Codex (candidate/measurement first filter). Recorded by: Codex. This result, earlier
+candidate and packaging correction share the pending designated-review range after `9bdf9c29`.
+No active optimization, kernel/history exception or owner/draft adoption, CI success, review
+approval, archive, release, push or deployment. The same27 arithmetic failures and full1.0 floor
+remain unchanged. A process-list read was sandbox-denied; the actual execution handle, not an
+inferred PID or state file, supplies live/terminal authority throughout.

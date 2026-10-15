@@ -143,9 +143,12 @@ refusal and simulation checks pass; full native Production retains the27 known p
 failures. Manual microbenchmarks reduce populated-case work/allocations, but do not prove
 whole-harness/hosted improvement or a full equivalence domain. The first eager prototype
 regressed inactive/masked work and was replaced; the log preserves those observations.
-Complete300-key standard-phase measurement is in progress (owning log/session51264),
-with the unchanged scenario, worker count and report identity check. Do not restart a
-live run or call an incomplete measurement a gain. Active engine/kernel/history and CI
+The complete300-key candidate measurement now passes in396.572s with the exact historical
+report digest, and overlay-specific vet passes. The source-corrected profile reports408.83s
+cumulative sampled CPU in rate calculation; this is not a wall-time percentage.
+The current-source control is running as session20829 with identical inputs/workers/profile
+options but no overlay; inspect that result before asserting a matched timing improvement.
+Do not restart a live run or call an incomplete measurement a gain. Active engine/kernel/history and CI
 remain unchanged; existing guard authority, exact-path independent identity review and
 remaining affected runtime proofs still precede landing/closeout.
 

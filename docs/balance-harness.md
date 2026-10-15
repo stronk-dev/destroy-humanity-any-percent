@@ -236,6 +236,12 @@ recording with the Go toolchain's bundled `cmd/pprof`, using the repository's no
 shows source attribution. Missing input or malformed recordings fail. This reader is a manual
 diagnostic, not a CI dependency, profile validator for release or optimization authority.
 
+For a compiler-overlay recording, `pprof -list` otherwise reads the unchanged checkout at
+the recorded source path and can display the wrong lines. Use the hash-checked overlay copy
+with `-trim_path=/original/source/directory -source_path=/absolute/experiment/directory`
+before drawing line-level conclusions. Function-level sample totals do not depend on that
+source-text lookup. The CI log retains the executed candidate-specific correction.
+
 `make test-go GO_PACKAGES=./production GO_TEST_FLAGS='-run NoTests -bench BenchmarkRateTraversal -benchtime=200ms -count=3'`
 measures four small controlled rate-traversal profiles: empty contributions, all nine slots,
 inactive generators and masked generators. It reuses the admitted ordering fixture, reports
