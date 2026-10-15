@@ -1883,3 +1883,48 @@ by: Codex (test implementer first filter). Recorded by: Codex. Whole five-path
 test/ledger/research-pointer/plan/log range after `604f2a82` through this containing
 commit needs designated Claude review. No acceptance, archival, push or deployment;
 numeric conservation/history, owner/author and release gates remain independently open.
+
+## 2026-10-15 — RP-648 correction review scope must contain its target
+
+Do not repeat RP-131's completed future-request repair. Re-read the current tool:
+611273b5 already recognizes completed visible metadata. A different conformance
+gap remained: Reviewed range was ignored while any exact offending anchor in that
+same section could bind the correction. New actual isolated-history CLI2389 admits
+all four initial wrong/empty/invalid/duplicate scope examples and exits1 at the
+fixture's explicit admitted-examples assertion. No real repository history changed.
+
+Retain the declared range metadata, refuse duplicate declarations, and resolve its
+actual Git commit set before accepting an incidental offending anchor. Honor both
+exclusive-start and caret-inclusive syntax; unresolvable ranges refuse. Do not
+require a new field in existing legacy records, change a negative completed verdict
+to approval, or infer reviewer identity from the syntax. Existing semantic-correction
+and mechanical-remap classes, append-only/path/version rules are unchanged.
+
+First corrected fixture12848 passes. Final3338 includes six explicit-scope negatives
+and six completed-record positives, alongside all existing miss/remap/immutability/
+ancestry/archive/shallow/merge controls, and passes. Two extra exclusive-start/
+unresolvable negatives and the enclosing positive were added after the four-case
+old baseline; they are final controls, not additional recorded old-tool failures.
+Both Node syntax checks and make verify-ci-topology pass (26 negative controls,
+existing Go/Make/browser-container dispatch checks). No unrelated software suites
+for this CLI-only behavior are needed or claimed.
+
+Actual make verify-kernel-version14274 passes its CI-checkout contract and negative
+fixtures, admits all five current correction bindings, then exits2 at unchanged
+50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444 versus parent0cf9f7a on the same six
+registered minigame paths. Its final fixture recipe is not reached after that failure;
+the separately executed full fixture above supplies that evidence. This is not a
+client/push CI pass, scope exception, false bump or authorization to rewrite history.
+
+Canonical CI docs/live plan and RP-648 reconcile. Update my own history-exception
+draft's stale motivation and split its proposed exception approval from completed
+negative semantic-correction evidence; do not represent this existing-rule repair
+as acceptance of that proposal. Product, kernel0.3.216, path/correction registers,
+workflow/populations/budgets and real cited verdicts remain untouched.
+
+Diff/whitespace checked; all handles terminal. The existing fixture owns and removes
+only its temporary Git repository; no development services or user data touched.
+Review by: Codex (implementer/draft-author first filter). Recorded by: Codex. Entire
+seven-path CLI/tests/docs/plan/log/ledger/draft range after `691e9bac` through this
+containing commit needs designated Claude review. No feature acceptance, archival,
+push/deployment or release; Headcount answers and the other named holds remain open.

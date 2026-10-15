@@ -111,6 +111,11 @@ record, not instructions to obtain one. The guard reads visible reviewer/decisio
 metadata in the same section as the exact offending-commit anchor; examples in
 code fences, blockquotes, indented code or comments do not count. Empty/pending
 fields, conflicting decisions and explicitly labelled first filters refuse.
+When a record explicitly declares `Reviewed range`, that Git range must resolve
+and contain the offending commit. Its exclusive start is not part of the review;
+`commit^..commit` includes that commit. Invalid/duplicate range declarations refuse,
+and an unrelated anchor elsewhere in the section cannot override the declared scope.
+Legacy completed records without that field retain their existing anchor binding.
 Correction citations must use canonical forward-slash `planning/.../log.md`
 paths: empty, dot/parent segments, backslashes and NUL refuse before lookup.
 Canonical active and archive citations, including the existing archive fallback,

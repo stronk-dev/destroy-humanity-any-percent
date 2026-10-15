@@ -116,7 +116,7 @@ const completedReviewMetadata = (section) => {
     const markers = [...paragraph.matchAll(/\*\*([^*\n:]+):\*\*/g)];
     for (const [index, marker] of markers.entries()) {
       const label = marker[1];
-      if (label !== "Review by" && label !== "Decision") continue;
+      if (label !== "Review by" && label !== "Decision" && label !== "Reviewed range") continue;
       if (fields.has(label)) return false;
       fields.set(label, paragraph.slice(marker.index + marker[0].length, markers[index + 1]?.index ?? paragraph.length).replace(/\*\*|`/g, "").trim());
     }
@@ -126,7 +126,17 @@ const completedReviewMetadata = (section) => {
   if (reviewer === "" || /\b(?:pending|requested|TBD|implementer|self[- ]review|first[- ]filter)\b/i.test(reviewer)) return false;
   if (!/^(?:APPROVED|APPROVE|ACCEPTED|REJECTED|CHANGES REQUIRED|NOT APPROVED|UNCHANGED)(?=$|[\s,.;:—–-])/i.test(decision)) return false;
   if (/\bas first[- ]filter\b|\bthis is (?:the )?implementer['’]s first[- ]filter\b|\bnot independent\b/i.test(decision.replace(/\s+/g, " "))) return false;
-  return true;
+  return fields;
+};
+// Legacy verdict/remap records retain their exact offending anchor. When a
+// record also explicitly declares its reviewed range, that range must contain
+// the offending commit; a prose/example anchor cannot override its scope.
+const declaredReviewContains = (value, commit) => {
+  const range = /^([0-9a-f]{7,40})(\^?)\.\.([0-9a-f]{7,40})(?=$|[\s(])/.exec(value);
+  if (range === null) return false;
+  try {
+    return git("rev-list", `${range[1]}${range[2]}..${range[3]}`).split("\n").includes(commit);
+  } catch { return false; }
 };
 const reviewRecordsCorrection = (correction) => {
   const filename = reviewLogPath(correction.review_log);
@@ -134,7 +144,8 @@ const reviewRecordsCorrection = (correction) => {
   const sections = visibleReviewText(readFileSync(filename, "utf8")).split(/\n(?=#{2,6} )/);
   const ranges = /\(`([0-9a-f]{7,40})\^\.\.([0-9a-f]{7,40})`\)/g;
   for (const section of sections) {
-    if (!completedReviewMetadata(section)) continue;
+    const metadata = completedReviewMetadata(section);
+    if (!metadata) continue;
     for (const match of section.matchAll(ranges)) {
       let left;
       let right;
@@ -143,6 +154,8 @@ const reviewRecordsCorrection = (correction) => {
         right = git("rev-parse", "--verify", `${match[2]}^{commit}`);
       } catch { continue; }
       if (left !== correction.offending_commit || right !== correction.offending_commit) continue;
+      const declaredRange = metadata.get("Reviewed range");
+      if (declaredRange !== undefined && !declaredReviewContains(declaredRange, correction.offending_commit)) continue;
       return true;
     }
   }

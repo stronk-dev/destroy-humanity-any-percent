@@ -113,6 +113,8 @@ try {
   // Exercise the actual CLI against the same otherwise-valid corrected history.
   const honestReview = readFileSync(path.join(root, "planning/kernel-fix/log.md"), "utf8");
   const reviewRange = `(${"`"}${offending.slice(0, 7)}^..${offending.slice(0, 7)}${"`"})`;
+  const beforeOffending = run(root, "git", ["rev-parse", `${offending}^`]).trim();
+  const correctedHead = run(root, "git", ["rev-parse", "HEAD"]).trim();
   const reviewExamples = [
     ["future-request", `# Fixture ledger\n\n## Requested review ${reviewRange}\n\nCodex must later record **Review by:** and **Decision:** after executing the review.\n`],
     ["fenced-example", ["# Fixture ledger", "", "## Example", "```markdown", `## Independent review ${reviewRange}`, "- **Review by:** Fixture Reviewer", "- **Decision:** APPROVED", "```", ""].join("\n")],
@@ -126,6 +128,12 @@ try {
     ["conflicting-decisions", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** APPROVED\n\n- **Decision:** CHANGES REQUIRED\n`],
     ["indented-code", `# Fixture ledger\n\n    ## Independent review ${reviewRange}\n    - **Review by:** Fixture Reviewer\n    - **Decision:** APPROVED\n`],
     ["nested-example-range", `# Fixture ledger\n\n## Completed review of another change\n\n- **Review by:** Fixture Reviewer\n- **Decision:** APPROVED\n\n### Future example ${reviewRange}\n\nNo completed verdict in this subsection.\n`],
+    ["explicit-other-range", `# Fixture ledger\n\n## Completed review\n\n- **Review by:** Fixture Reviewer\n- **Reviewed range:** \`${beforeOffending}^..${beforeOffending}\`\n- **Decision:** APPROVED\n\nThe next review must cover ${reviewRange}; it is not the reviewed scope above.\n`],
+    ["explicit-exclusive-range", `# Fixture ledger\n\n## Completed review\n\n- **Review by:** Fixture Reviewer\n- **Reviewed range:** \`${offending}..${offending}\`\n- **Decision:** APPROVED\n\nFuture single-commit anchor ${reviewRange}.\n`],
+    ["explicit-exclusive-start", `# Fixture ledger\n\n## Completed review\n\n- **Review by:** Fixture Reviewer\n- **Reviewed range:** \`${offending}..${correctedHead}\`\n- **Decision:** APPROVED\n\nThe excluded start still needs review ${reviewRange}.\n`],
+    ["explicit-unresolved-range", `# Fixture ledger\n\n## Completed review\n\n- **Review by:** Fixture Reviewer\n- **Reviewed range:** \`${offending}^..${"0".repeat(40)}\`\n- **Decision:** APPROVED\n\nFuture single-commit anchor ${reviewRange}.\n`],
+    ["explicit-invalid-range", `# Fixture ledger\n\n## Completed review\n\n- **Review by:** Fixture Reviewer\n- **Reviewed range:** not a commit range\n- **Decision:** APPROVED\n\nFuture single-commit anchor ${reviewRange}.\n`],
+    ["conflicting-reviewed-ranges", `# Fixture ledger\n\n## Completed review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Reviewed range:** \`${offending}^..${offending}\`\n- **Decision:** APPROVED\n\n- **Reviewed range:** \`${beforeOffending}^..${beforeOffending}\`\n`],
   ];
   const admittedExamples = [];
   for (const [name, text] of reviewExamples) {
@@ -146,6 +154,9 @@ try {
     `# Ledger\n\n## Independent review ${reviewRange}\n\n**Review by:** Fixture Reviewer. **Recorded by:** Fixture Recorder. **Decision:** **APPROVED for this scope.**\n`,
     `# Ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** CHANGES REQUIRED — completed inspection found the missed bump.\n`,
     `# Ledger\n\n## Approved hash remap\n\nExact unchanged reviewed target ${reviewRange}.\n\n**Review by:** the original independent reviewer (remap recorded by Fixture Recorder).\n**Decision:** unchanged — the reviewed correction remains bound to its remapped hash.\n`,
+    `# Ledger\n\n## Completed review\n\n- **Review by:** Fixture Reviewer\n- **Reviewed range:** \`${beforeOffending}..${offending}\` (exclusive start includes the offending commit).\n- **Decision:** CHANGES REQUIRED\n\nExact offending anchor ${reviewRange}.\n`,
+    `# Ledger\n\n## Completed review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Reviewed range:** \`${offending}^..${offending}\`\n- **Decision:** APPROVED\n`,
+    `# Ledger\n\n## Completed enclosing review\n\n- **Review by:** Fixture Reviewer\n- **Reviewed range:** \`${offending}^..${correctedHead}\`\n- **Decision:** APPROVED\n\nExact offending anchor ${reviewRange}.\n`,
   ];
   for (const text of completedReviews) {
     write(root, "planning/kernel-fix/log.md", text);

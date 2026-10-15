@@ -7,6 +7,14 @@
 
 ## Current checkpoint — 2026-10-15
 
+RP-648 correction: honor an explicit Reviewed range when binding an existing history
+correction. Four old CLI examples admit wrong/empty/malformed/conflicting scopes;
+the repaired guard rejects them and additional exclusive-start/unresolved controls,
+preserving completed legacy/enclosing/remap records. Existing history-exception
+policy remains draft; no correction/registry/version or workflow change. The owning
+log records the executed fixture/root/topology results and range after `691e9bac`
+needing Claude review. This is scope conformance, not a historical waiver or CI green.
+
 RP-121 Guild fixture isolation is locally corrected: all three original real-DB
 populations retain their assertions and pass repeated/shuffled runs on the same
 service. Cleanup is confined to the declared test database, with an explicit

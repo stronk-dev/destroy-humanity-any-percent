@@ -14,9 +14,12 @@
 Keep KV-1's same-commit version bump for every change to transition, receipt, event, snapshot or
 persisted-state bytes, while making its historical CI witness tell the truth. The current guard
 stops at pushed `50a3a514`: presentation code was created under the registered
-`client/src/minigame/` prefix without a kernel bump, then moved out in `79ff1aa1`. Separately,
-the guard accepts text *requesting* a future independent review as if it were that review
-(RP-131). A pushed-history rewrite and a cosmetic version bump are both prohibited. This RFC
+`client/src/minigame/` prefix without a kernel bump, then moved out in `79ff1aa1`. The original
+guard also accepted requests for future independent review as completed evidence (RP-131);
+the existing-rule conformance repair landed in `611273b5`. Subsequent RP-648 additionally
+binds an explicitly declared Reviewed range instead of letting an incidental anchor override
+it. Neither repair authorizes historical path exceptions. A pushed-history rewrite and a
+cosmetic version bump are both prohibited. This RFC
 proposes a narrow, append-only, independently reviewed **path-scope exception** for a proven
 behavior-identical historical commit, separate from the existing correction for a real missed
 semantic bump. No candidate commit is pre-approved by this draft.
@@ -49,11 +52,14 @@ numbers, API wire contracts, minigame behavior or historical Git objects.
    qualifying exceptions. After each allowed entry, walk all remaining history and surface the
    next failure; do not claim the three candidates are exhaustive merely because the current
    guard stops at the first.
-3. For both semantic corrections and path-scope exceptions, parse an actual independent
-   review verdict, not a keyword search through a section. Require a standalone `##` verdict
-   section with anchored metadata lines for `Review by`, `Recorded by`, exact reviewed range
-   and `Decision: APPROVED`; quoted/backticked labels, future-tense instructions, a rejected
-   decision and a range belonging to another section cannot satisfy it. The reviewer must be
+3. Parse actual independent review evidence, not incidental keywords. Existing semantic
+   corrections retain their completed negative/remap records: a reviewed missed version signal
+   is not approval of the original feature. Current conformance checks already exclude
+   examples/requests and honor explicit reviewed scope. A **new path-scope exception** instead
+   requires a standalone `##` verdict section with anchored metadata for `Review by`,
+   `Recorded by`, exact reviewed range and `Decision: APPROVED`; quoted/backticked labels,
+   future-tense instructions, a rejected decision and a range belonging to another section
+   cannot approve that exception. The reviewer must be
    the project's designated other party for the implementation range. A machine can check
    structure and exact hashes; cross-party identity remains a human review obligation and may
    not be inferred from the commit author or recorder.
@@ -79,8 +85,10 @@ transition/encoding change from a kernel bump.
 2. A fully reviewed, exact-path presentation-only historical exception passes; changing its
    commit, path set, reason or reviewer citation later fails. An unknown/unreviewed row fails.
 3. A forged log section containing the literal tokens `**Review by:**`, `**Decision:**` and a
-   target range as *instructions to review later* fails. Wrong range, `CHANGES REQUIRED` and
-   verdict text outside the cited `##` section fail programmatically. The designated reviewer
+   target range as *instructions to review later* fails. Wrong range and verdict text outside
+   the cited `##` section fail programmatically. `CHANGES REQUIRED` cannot approve a new scope
+   exception; it remains admissible completed defect evidence for the existing semantic
+   correction class. The designated reviewer
    also rejects self/delegated-only review at the human cross-party gate; a syntactically valid
    label is not proof of reviewer identity. The genuine `8add475` verdict remains valid.
 4. The full-history walk from a non-shallow checkout, all existing kernel negative fixtures,
@@ -103,3 +111,6 @@ transition/encoding change from a kernel bump.
 ## Changelog
 
 - 2026-09-30: draft from RP-131 and the current red kernel-history gate; no implementation authority.
+- 2026-10-15: distinguish already-implemented review-evidence conformance from the unadopted
+  exception policy. Preserve existing negative semantic-correction verdicts; proposed scope
+  exceptions still require their own exact-range approval. No exception or policy adopted.
