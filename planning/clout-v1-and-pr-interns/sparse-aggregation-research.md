@@ -12,6 +12,42 @@ ledger payments; the committed unequal-prefix case is not proved reachable.
 This does not activate or newly benchmark this prototype. H3c/owning log hold
 the precise evidence and remaining actual-caller proof obligation.
 
+2026-10-16 RP-676 now supplies a DIFFERENT provision-generated admitted temporal
+counterexample, including actual neutral SimulateAdvance and a separate public TS
+ApplyLogged pair. The unapplied exact prototype removes this particular decline;
+the old synthetic list's exact reachability is not retroactively asserted. Owning
+log/manual sources retain full inputs and limits. This changes the next engineering
+action, not active math or independent acceptance.
+
+## First complete-workload candidate measurement (predeclared 2026-10-16)
+
+One complete standard-pacing phase, ALL300 governed keys through the actual
+RunAllWithWorkers(12), same phase/horizons/guards/invariants as the existing
+BenchmarkStandardPacingProfile. Bind ONLY the retained exact scratch-reuse aggregate
+SHA2564b9e897a9c79a1b38fda998f06a240e0c5596e56e85aaa525c3b255110849304;
+do not combine the unapplied rate-traversal optimization or the adjacent-run variant.
+Native current source35cde078/Go1.27.2/Darwinarm64,12 workers; no competing heavy
+jobs deliberately launched. Existing60m diagnostic timeout is unchanged, not a CI
+budget or permission to enlarge operating limits. A timeout/guard/noncompleted or
+missing/duplicate key invalidates the measurement; retain failure, never drop a row.
+
+The manual profile source overlays the existing benchmark, retaining its timer and
+complete unique-key/outcome/invariant/aggregate checks. Outside the timed region,
+retain full canonical SuiteReport beside the explicit CPU profile using O_EXCL.
+Never overwrite an artifact. Validate completeness before using its timing; a
+parseable report alone is not success. No new measurement framework/normal CI lane.
+The ordinary harness CLI's run mode also traverses registered relevance, so it is
+NOT a standard-phase shortcut and is deliberately not used here.
+
+Retain full report/CPU profile/binary and source identities. Compare results against
+the recorded historical standard-phase digest/checked-in artifacts only with their
+actual producer limits, not as a freshly executed control. This is ONE candidate
+measurement, NOT a matched speed comparison, full registered-relevance/content/
+Commons workload, native-amd64/hosted measurement, floor-compliant new report format,
+baseline regeneration/adoption, AC6 repair or release proof. Existing compatibility
+refusals remain; a fast or passing standard phase cannot erase them. Activation
+still requires the separate RFC's complete caller/compatibility/workload/review gates.
+
 ## Representation and proposed arithmetic
 
 Every valid nonzero normalized binary64 mantissa has unbiased binary exponent0..3.

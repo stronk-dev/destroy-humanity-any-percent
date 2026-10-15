@@ -5129,3 +5129,32 @@ Own draft/plan/RP-676 reconcile the stronger bounded evidence. Review by: Codex 
 author/first filter). Recorded by: Codex root. Complete eac09e1c-exclusive through this
 containing research commit needs research/normative review outside corrective delegation.
 No independent approval, adoption, full accounting/27-partition repair or release milestone.
+
+## 2026-10-16 — Exact candidate: first full standard-pacing measurement declared
+
+After final TS63838 terminates, declare the single full300 native exact-candidate phase
+in sparse-aggregation-research.md. No competing heavy check/reviewer is running. The manual
+profile overlays only the existing benchmark to retain its full canonical result outside
+the timer, with no-overwrite output; actual suite/12worker dispatch/300 distinct keys and
+all ordinary completion/invariant/aggregate checks remain. Ordinary CLI run mode also
+traverses registered relevance, so do NOT mistake it for a standard-phase-only selector.
+No active optimization, schema/baseline/report promotion, timeout increase or CI change.
+
+Actual root measurement command started session98864, still LIVE, not a pass/result:
+`make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-overlay=/Users/stronk/repos/cloud-clicker/.cache/exact-standard-35cde078-overlay.json -run NoTests -bench BenchmarkStandardPacingProfile -benchtime=1x -timeout=60m -cpuprofile=/Users/stronk/repos/cloud-clicker/.cache/exact-standard-35cde078-candidate-cpu.pprof -o=/Users/stronk/repos/cloud-clicker/.cache/exact-standard-35cde078-candidate.test -v'`.
+Startup confirms actual Go1.27.2/Darwinarm64/M3Max/14logicalCPUs,12workers,
+scenario10aa5c8a2dd8a5c79a5902e74f4e55a1ca3ab46a2d35c9bf3dd25fc729dbb07a,
+constantsbaa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6.
+Profile source SHA2561090d8124b0e9cbca42bc62323c51b9107c47ad66fa86c6f083536126a7addd3;
+original ordinary benchmark218991f980444a817a94cbc24adc24e5be4dfc61f208accfe79ab8c669f2d83c
+is unchanged. Combined overlay maps that benchmark to the committed manual profile plus
+aggregate.go to the previously SHA-bound scratch-reuse source. No rate traversal overlay.
+
+Only read-only source/artifact inspection and editorial work proceed during this measurement;
+no competing heavy checks/reviewers launched by this chat. Report path is CPU-profile path
+plus .report.json, written with O_EXCL. Resume98864, never restart on an empty observation.
+On terminal, inspect all300 unique keys, outcomes/invariants/aggregate and full digest before
+using timing, then compare actual retained report with historical artifacts under their own
+producer limits. The recorded old timings are not a matched control. No current-source full
+standard-phase result, matched speedup, relevance completion, baseline/adoption or CI-green
+claim yet. This checkpoint merely preserves resumable live work through a crash/context cut.

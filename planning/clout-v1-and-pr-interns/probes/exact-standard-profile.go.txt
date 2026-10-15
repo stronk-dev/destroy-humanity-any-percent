@@ -1,0 +1,83 @@
+package harness
+
+import (
+	"crypto/sha256"
+	"flag"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strconv"
+	"testing"
+)
+
+// Manual overlay of standard_pacing_profile_test.go. The same governed phase,
+// workers, timer and completion checks; retain its full result outside CI.
+func BenchmarkStandardPacingProfile(b *testing.B) {
+	if b.N != 1 {
+		b.Fatal("standard pacing profile requires -benchtime=1x")
+	}
+	profile := flag.Lookup("test.cpuprofile")
+	if profile == nil || !filepath.IsAbs(profile.Value.String()) {
+		b.Fatal("explicit absolute CPU profile is required for research retention")
+	}
+	reportPath := profile.Value.String() + ".report.json"
+	if _, err := os.Lstat(reportPath); !os.IsNotExist(err) {
+		b.Fatal("research output must not exist", reportPath, err)
+	}
+	suite, err := LoadSuite("../..", "testdata/harness/scenarios/phase0-production.json")
+	if err != nil {
+		b.Fatal(err)
+	}
+	expected := map[RunKey]bool{}
+	for _, spec := range suite.Scenario.Runs {
+		start, err := strconv.ParseUint(spec.SeedStart, 10, 64)
+		if err != nil {
+			b.Fatal(err)
+		}
+		for index := range spec.SeedCount {
+			key := suite.runKey(spec, start+uint64(index))
+			if expected[key] {
+				b.Fatal("duplicate declared standard run", key)
+			}
+			expected[key] = true
+		}
+	}
+	if len(expected) != 300 {
+		b.Fatal("standard population changed; reconcile the declared profile", len(expected))
+	}
+	b.Logf("NON-AUTHORITATIVE exact candidate research; standard phase only; workers=12 go=%s os=%s arch=%s logical_cpus=%d scenario=%s constants=%s",
+		runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.NumCPU(), suite.ScenarioHash, suite.ConstantsHash)
+	b.ResetTimer()
+	runs, aggregate, runErr := suite.RunAllWithWorkers(12)
+	b.StopTimer()
+	// Retain the returned report even if its population/outcomes fail below.
+	// A parseable file is not a completeness or success claim.
+	data, err := CanonicalJSON(SuiteReport{SchemaVersion: 1, Runs: runs, Aggregate: aggregate})
+	if err != nil {
+		b.Fatal(err)
+	}
+	output, err := os.OpenFile(reportPath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil {
+		b.Fatal(err)
+	}
+	_, writeErr := output.Write(data)
+	closeErr := output.Close()
+	if writeErr != nil || closeErr != nil {
+		b.Fatal("research retention failed", writeErr, closeErr)
+	}
+	b.Logf("retained actual returned report=%s sha256=%x; validation follows", reportPath, sha256.Sum256(data))
+	if runErr != nil || len(runs) != len(expected) || aggregate.RunCount != len(expected) || len(aggregate.Failures) != 0 {
+		b.Fatalf("incomplete/failed phase: runs=%d aggregate=%+v err=%v", len(runs), aggregate, runErr)
+	}
+	for _, report := range runs {
+		if !expected[report.Key] || report.Outcome != "completed" || len(report.InvariantFailures) != 0 {
+			b.Fatal("missing/repeated/failed governed run", report)
+		}
+		delete(expected, report.Key)
+	}
+	if len(expected) != 0 {
+		b.Fatal("declared standard runs remain unexecuted", len(expected))
+	}
+	b.ReportMetric(float64(len(runs)), "runs/op")
+	b.Logf("complete standard population=%d report_sha256=%x; not a full-check verdict or baseline", len(runs), sha256.Sum256(data))
+}
