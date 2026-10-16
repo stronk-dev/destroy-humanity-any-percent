@@ -758,6 +758,78 @@ progress, modern contexts and hooks are NOT thereby certified. The earlier-resul
 versus error-precedence caveat from H3g still applies. No runtime or accepted search
 policy changes; RP-680,27 accounting failures and full1.0 requirements remain open.
 
+#### H3i — Ledger Add, caps and receipt validity (RP-683)
+
+H3h's aggregate certificate still does not certify the ledger. The
+[next manual diagnostic](../planning/clout-v1-and-pr-interns/probes/wait-cell-ledger-domain.go.txt)
+executes actual waits with valid nominal payouts but failing ledger addition or
+receipt reproduction. Adding to6eMAX overflows at667ms; adding to an already-capped
+9eMAX overflows at167ms, BEFORE capping can make it a no-op. Separately, a tiny cap
+just above1eMIN requires an out-of-domain receipt delta and refuses every positive
+endpoint. These are correct production refusals hidden by the previous prototype,
+not permission to cap earlier or change arithmetic.
+
+The manual constructor now validates the complete initial ledger once. Each
+resource/cell needs its H3h aggregate certificate, including whether a positive
+delta is possible and a conservative maximum exponent. The source-derived
+sufficient ledger cases below rely on admitted canonical starting balances and
+valid canonical nonnegative aggregate deltas:
+
+1. No possible nonzero delta: the engine omits this resource's entry, so it remains
+   untouched. Do not manufacture an Add merely because a raw rate was positive.
+2. Starting balance zero: Add copies the delta; Q12 is idempotent. If capping binds,
+   the cap is canonical, subtracting zero preserves it, and receipt reproduction's
+   first candidate replays it. Zero cap/no change also succeeds. This proof works
+   at the exponent edges and does not invent an interior-only supported domain.
+3. For nonnegative nonzero before and minimum<=0, let E bound both before and delta
+   exponents. If E<=MAX-2, positive Add and Q12 stay finite; the aligned coefficient
+   is bounded as in H3h, and a possible two-decade carry still fits. The result is
+   nonnegative, so it cannot violate that minimum. Require this BEFORE treating an
+   already-capped balance as safe.
+4. Under step3, an absent cap or cap exponent>=E+2 cannot bind: the rounded sum is
+   below2.1*10^(E+1), while the cap is at least10^(E+2). Preferred delta is the
+   original canonical input, so receipt candidate0 runs exactly the same Add/Q12
+   and reproduces after. If before equals the cap, either no capping occurs and
+   this argument applies, or capping returns before and no receipt is required.
+
+Q12 idempotence here is a numeric argument, not a sampling claim: its coefficient
+is the rounded binary64 value of k/1e11, with integer k<=1e12. Multiplication back
+by1e11 has error far below half an integer, so nearest-integer rounding recovers k;
+division repeats the same mantissa. A normalized carry to1 is stable as well.
+Catalog caps and restored balances use the corresponding canonical grammar.
+
+If none of these sufficient cases applies, the prototype computes the actual full
+prefix-plus-partial delta and calls public `Ledger.ApplyAccrual` on a restored copy.
+It preserves the actual ledger error, with resource/cell/duration, rather than
+reject a value for being near a bound. Only successful checks are cached, by
+resource ID AND raw delta mantissa bits/exponent, constructor-local to the fixed
+original balances/catalog. A shared nominal amount is not a shared ledger context.
+The source ledger validates resources independently before its commit loop, so
+these per-resource validity checks compose for this engine's one-entry-per-resource
+transaction. This does not certify later progress or hooks.
+
+Twelve full populations execute13012 actual waits:2168 expected ledger refusals,
+10844 successes with every emitted receipt strictly replayed through `Ledger.Apply`
+from the original scoped balances. Valid headroom, zero starts (including tiny
+caps), already-capped safe values, zero efficiency and sub-resolution no-change
+cases remain supported. The existing R1 numeric recipe requires the actual adjusted
+delta9.81579561655e8, not its nominal9.81579561656e8; its offline plateau repeats
+the full receipt and exercises one exact-input cache reuse. A separate component
+control proves the same delta can succeed for cash yet fail for permits, so the
+cache may not erase resource identity. It is not an asserted acquired Company.
+
+All26037 prior actual references/controls are retained. The long retained factory
+uses131074 ledger fast certificates, one initial restore and no exact ledger calls
+or fallback aggregate work. Other starting balances/caps may require expensive
+prefix recomputation: counters expose it, and full-workload feasibility is still
+unproved. No accepted budget is raised and no live per-ms loop is authorized.
+
+This is ledger validity within the research constructor, pending independent
+research/normative review. It neither settles error precedence over earlier valid
+results nor proves the entire wait, progress, modern contexts, hooks, caller
+compatibility or workloads. No production/core numeric/CI/balance/accepted-contract
+change; RP-680,27 AC6 failures and full1.0 scope remain open.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -939,3 +1011,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   add all-resource prefix/interior-domain proof with exact inconclusive-case checks.
   Retain valid extreme inputs and explicit costs; ledger/modern/workload/adoption
   gates remain, with no runtime, arithmetic, budget or ordinary CI change.
+- 2026-10-16: reproduce RP-683's ledger Add/receipt refusals after valid aggregates;
+  add sufficient-case/exact-ledger certification and resource-bound successful
+  reuse, checked by strict receipt replay. Progress/modern/hooks/workload and
+  adoption gates remain; no active ledger, search, arithmetic or policy change.

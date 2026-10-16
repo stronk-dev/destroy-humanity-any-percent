@@ -5949,3 +5949,144 @@ by: Codex root (research author/first filter). Recorded by: Codex root. Complete
 six-path range468f8212-exclusive through this checkpoint requires research/normative
 review outside corrective-code delegation. Full1.0 goal active/progress; no feature
 acceptance, archival, push, deployment or release approval.
+
+## 2026-10-16 — Before execution: ledger Add/cap/receipt definedness
+
+Previous turn PROGRESS63658744 guards aggregate validity, not the ledger. Test
+eleven complete0..1000 actual-wait populations (11011 references), with one owned
+provider producing permits and cash0, admitted v17/tick1000/zero burst. Retune only
+in-memory catalog/initial save. MAX=8999999999999999, MIN=-MAX. Profiles:
+Add overflow B6eMAX/rate6eMAX/cap9eMAX (hypothesis refuse667..1000); already-capped
+B9eMAX/same rate/cap (refuse167..1000); headroom B4eMAX/rate4eMAX/cap9eMAX;
+zero B/rate6eMAX/cap9eMAX; already-capped safe B9eMAX/rate1e(MAX-1)/cap9eMAX;
+the existing ledger R1 numeric recipe transplanted to permits (B5.6765610215e6,
+rate9.81579561656e8,cap9.87256122677e8); tiny no-change B1e6/rate1e-6/cap9eMAX;
+zero offline efficiency on the first overflow recipe; receipt gap B1eMIN/
+rate1e(MIN+3)/cap1.00000000001eMIN (refuse every1..1000); its zero-start companion;
+and safe tiny headroom B1eMIN/rate1e(MIN+3)/cap2eMIN. All other profiles must succeed.
+
+Failure classes must be actual engine/ledger-result or receipt-reproduction errors,
+not partial or aggregate admission. Failed encoded saves stay unchanged. Every
+successful receipt is parsed and replayed through actual strict Ledger.Apply from
+the original snapshot, comparing complete scoped balances. R1 at1000 must preserve
+its existing adjusted Delta9.81579561655e8, not echo nominal9.81579561656e8.
+Already-cap/tiny/zero-efficiency no-change observations remain explicit.
+
+Candidate manual ledger certificate uses source-derived sufficient cases (no entry,
+zero before, safe finite Add with nonbinding cap or already-capped before); all
+inconclusive cases execute actual resource aggregate and Ledger.ApplyAccrual, not
+reject supported input. Cache only successful exact ledger checks by resource and
+raw canonical delta, constructor-local with fixed original balances/catalog. Count
+aggregate terms, actual ledger calls/reuse and fast certificates separately. Source
+ledger validates resource effects independently before committing, so per-resource
+checks must not be mistaken for progress/hook/full-state proof. Retain all26037 prior
+actual references and controls. Native + declared Linux AMD64 --no-deps; no new
+runtime/math/kernel/CI/balance policy or adopted eager-error precedence.
+
+Old aggregate-only baseline63671/00a2fa FAIL .948s exactly in the three new ledger
+guard oracles. All11011 real waits execute: Add failures334, already-cap Add834,
+receipt-gap1000;8843 successes all replay through strict Ledger.Apply. Eight full
+companions succeed. Old constructor returns-1/nil with zero points in each bad
+context. RP-683 records this prototype gap, not incorrect production refusal.
+Before correction, tighten the R1 oracle to require its one actual final receipt
+(the existing per-change assertion alone would tolerate no receipt); retain all
+other populations/values and explicit successful cash0 observations.
+
+Protected focused8195/04df30 PASS .907s: all original11011 actual waits and strict
+receipt replays retain outcomes. Before comprehensive execution, add one declared
+cache-reuse population: the same R1 recipe offline/efficiency1/cap1000ms through
+wall2000ms (all2001 actual waits), so its plateau reuses the identical canonical
+payout's successful ledger check. Total new references13012, expected2168 refusals/
+10844 strict-replayed successes. Also a pure-ledger synthetic flat-cell control:
+the same6eMAX nominal delta succeeds for cash (small before/cap) but overflows for
+permits (before6eMAX/cap9eMAX). It must NOT reuse across resource IDs. This is a
+component control, not an asserted acquired Company/wait. Existing eleven
+populations/values remain unchanged; the twelve-profile census is explicit.
+
+Comprehensive native1644/6a3745 PASS7.408s plus ordinary production vet. All prior
+26037 and new13012 actual references/expected errors execute, along with8843+2001
+strict receipt replays. R1 plateau hits one exact-delta cache reuse; the cross-
+resource component control preserves the permits refusal after successful cash.
+Retained long profile uses131074 ledger fast certificates, one initial restore
+and no ledger exact/fallback aggregate work. Freeze both manual sources for
+declared Linux AMD64 --no-deps follow-up using its six-file overlay. This is not
+native hosted/DB/TS/fullCI or complete-workload acceptance.
+
+Linux25269/c73739 PASS15.069s, same complete39049 actual references and all
+expected failures/replays/controls. Before final checkpoint, retain two compiling
+ignored-overlay controls: force ledgerFastResearch to unconditional true (run the
+WHOLE new ledger population so its census remains valid), and separately remove
+resource ID from the successful-delta cache key (run the cross-resource component
+oracle). Both must fail semantically, not by compilation or skipped populations.
+Tracked normal sources remain frozen; these are not production mutations.
+
+## 2026-10-16 — RP-683 ledger validity guarded in manual prototype
+
+Final native1644/6a3745 PASS7.408s plus ordinary production vet; declared Linux
+AMD6425269/c73739 PASS15.069s, identical sources/populations, no selected skips.
+All39049 actual references execute (prior26037 + new13012). New populations have
+2168 expected ledger refusals and10844 strict-replayed successes. Add errors334,
+already-capped Add834, receipt-gap1000 are distinct from partial/aggregate failure.
+Failed encoded saves stay unchanged; not a claim about transient in-memory fields.
+The retained raw+partial+aggregate path still misses each bad context with-1/nil
+and zero point calls. Protected construction preserves the actual ledger error.
+
+Every successful emitted receipt is parsed and applied through strict Ledger.Apply
+from the original scoped balances; all scoped balances match the actual wait.
+R1 explicitly requires one complete receipt at1000 and throughout its offline
+plateau, Delta9.81579561655e8 rather than nominal9.81579561656e8. No-change cases
+keep balances/receipt empty as declared. The plateau executes1000 real ledger
+checks,1002 fallback aggregate evaluations/1001 terms and one cache reuse.
+Cross-resource component control proves a cash success cannot bless permits.
+
+Own draft H3i supplies the sufficient-case argument (no entry, zero before,
+finite positive Add/nonbinding or already-equal cap), Q12 idempotence and real
+fallback/resource independence; proof review remains open. Inconclusive cases
+execute actual Ledger.ApplyAccrual rather than reject the supported value. The
+shared exact aggregate reader is factored once for aggregate and ledger phases.
+Six original factories use ledger fast certificates3/4/3/4/1/131074, one initial
+restore each and no ledger exact/aggregate fallback work. Retained native setup
+379.981ms/search1.822364s; emulated Linux776.520ms/3.417951s. These are single
+observations, not a matched performance/full-workload conclusion. Other inputs
+can incur expensive prefix recomputation, exposed by ledger-specific counters.
+
+Two compiling isolated controls fail semantically:
+- Forged ledgerFastResearch2399/0e88ab FAIL1.014s: all13012 actual references still
+  execute; all three real-refusal guard oracles fire. Plateau's cache-reuse oracle
+  also fires because the forged fast path bypasses its exact check.
+- Cache resource erasure25961/f14304 FAIL .272s: the component observes one real
+  ledger check/one erroneous reuse and no permits error, firing its typed oracle.
+No compiler/fixture/census error substitutes for discrimination. Tracked sources
+were not mutated; intact final results remain valid without unrelated reruns.
+Ignored control source/overlay SHA256 pairs:
+fast-forged2e74c3fcb8aaea4cd582bf94679e12f6e666aaa9311dc438f3a2c1cbda07a609 /
+94f383661ba0ce492a7e7657626077b46d171213eb512f9fd84c872b6675b039;
+resource-alias37c3fae767cb96f6ca57212b58c2a7bed710a27f4379e0d422572d6165fce03e /
+6cb7c90f7042f2269376d58eb45921c1e3d2cdd352bc355bc6b02267838974e3.
+They are .cache/wait-cell-ledger-{fast-forged,resource-alias}.{go,json}; select the
+respective whole TestWaitCellLedgerDomainResearch / TestWaitCellLedgerCacheResearch
+with root make test-go. Both handles terminal, expected red results retained.
+
+Normal reproduction:
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=/Users/stronk/repos/cloud-clicker/.cache/wait-cell-ledger-domain.json -run WaitCell -v'`.
+New probes/wait-cell-ledger-domain.go.txt SHA256
+d0ce8e67ed9a4965905a4c962a16fafbe69af0546b9ed6c1af5407fe9e28bc01;
+updated probes/production-wait-cells.go.txt SHA
+9e54d5943be1bc81442e144d28f10ed8f3c53bfe1aed3b8def1f07155f10a7cb;
+native six-file overlay SHA17b91debb6914531efa3d42dd027bfa356be3cf8913fefbe856349c4ad927650.
+Linux .cache/wait-cell-ledger-domain-linux.json SHA
+4cd6e83b602c4803a19cb97bea503b5855c7661fe424574b8ea46d68e17b0298
+maps the same sources under /workspace. Reproduce via declared Docker --no-deps
+command above. Prior evidence stays bound to0c1b8842 at63658744, not restamped.
+All normal handles terminal; --rm Linux starts no DB. No native hosted/SQL/TS/fullCI
+claim. Earlier manual sources are unchanged except the constructor.
+
+Ledger/plan/own draft now point next to progress/modern-context/hook validity,
+error precedence and complete workload/caller closure. This is not an adopted
+eager-error policy, complete wait proof, production implementation or permission
+to narrow caller support. No product/core math/kernel/content/CI/baseline/accepted
+contract changes; RP-680 and27 AC6 failures stay open. Review by: Codex root
+(research author/first filter). Recorded by: Codex root. Complete six-path range
+63658744-exclusive through this checkpoint needs research/normative review outside
+corrective-code delegation. Full1.0 goal active/progress; no feature acceptance,
+archival, push, deployment or release approval.

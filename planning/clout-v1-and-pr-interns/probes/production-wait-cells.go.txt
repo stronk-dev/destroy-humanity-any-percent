@@ -28,6 +28,11 @@ type waitPartialOutcomeResearch struct {
 	positive        bool
 }
 
+type waitAggregateOutcomeResearch struct {
+	maxExp   int64
+	positive bool
+}
+
 type waitCellResearch struct {
 	lo, hi, start, burst int64
 	flat                 bool
@@ -38,13 +43,15 @@ type waitCellResearch struct {
 	allRates             map[string][]decimal.Decimal
 	allPrefixes          map[string]waitPrefixResearch
 	partials             map[string]waitPartialOutcomeResearch
+	aggregates           map[string]waitAggregateOutcomeResearch
 }
 
 type waitCellWorkResearch struct {
-	Cells, Rates, Provisions, Deltas, PrefixWrites, Scalars, Certificates, Points int
-	ReconstructionCalls, ReconstructionTerms                                      int
-	PartialChecks, PartialContexts, PartialReuses, PartialRateSums                int
-	AllPrefixWrites, AggregateFast, AggregateExact, AggregateExactTerms           int
+	Cells, Rates, Provisions, Deltas, PrefixWrites, Scalars, Certificates, Points                                      int
+	ReconstructionCalls, ReconstructionTerms                                                                           int
+	PartialChecks, PartialContexts, PartialReuses, PartialRateSums                                                     int
+	AllPrefixWrites, AggregateFast, AggregateExact, AggregateExactTerms                                                int
+	LedgerInitial, LedgerFast, LedgerExact, LedgerReuses, LedgerAggregates, LedgerTerms, LedgerPartials, LedgerNoEntry int
 }
 
 type waitCellsResearch struct {
@@ -67,7 +74,130 @@ func buildWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode Ev
 	if err := certifyWaitCellAggregatesResearch(factory); err != nil {
 		return nil, err
 	}
+	if err := certifyWaitCellLedgerResearch(factory); err != nil {
+		return nil, err
+	}
 	return factory, nil
+}
+
+// Sufficient cases only. Initial balances/catalog and canonical aggregate validity
+// are checked separately. An inconclusive proof executes the real ledger.
+func ledgerFastResearch(before decimal.Decimal, definition economy.ResourceDefinition, domain waitAggregateOutcomeResearch) bool {
+	if !domain.positive || before.Eq(decimal.Zero) {
+		return true
+	}
+	if before.Lt(decimal.Zero) || definition.Minimum.Gt(decimal.Zero) {
+		return false
+	}
+	maxExp := before.Exponent()
+	if domain.maxExp > maxExp {
+		maxExp = domain.maxExp
+	}
+	const edge int64 = 8_999_999_999_999_999
+	if maxExp > edge-2 {
+		return false
+	}
+	return definition.Hardcap == nil || before.Eq(definition.Hardcap.Amount) || definition.Hardcap.Amount.Exponent() >= maxExp+2
+}
+
+func waitAggregateAtResearch(factory *waitCellsResearch, cell waitCellResearch, resource string, duration int64) (decimal.Decimal, int, error) {
+	partial := decimal.Zero
+	if rates, active := cell.allRates[resource]; active && !cell.flat {
+		boost := duration
+		if boost > cell.burst {
+			boost = cell.burst
+		}
+		value, err := accrueBoostedConstant(rates, duration, boost, factory.eff, factory.bonus)
+		if err != nil {
+			return decimal.NaN, 0, err
+		}
+		partial = value
+	}
+	values := append([]decimal.Decimal(nil), cell.allPrefixes[resource].values...)
+	if !partial.Eq(decimal.Zero) {
+		values = append(values, partial)
+	}
+	return decimal.SumDeterministic(values).Quantize(decimal.CanonicalSignificantDigits), len(values), nil
+}
+
+func certifyWaitCellLedgerResearch(factory *waitCellsResearch) error {
+	base, err := economy.RestoreLedger(factory.catalog, economy.ScopeCompany, factory.initial)
+	factory.work.LedgerInitial++
+	if err != nil {
+		return fmt.Errorf("ledger initial certificate: %w", err)
+	}
+	type key struct {
+		resource string
+		bits     uint64
+		exponent int64
+	}
+	passed := map[key]bool{}
+	for index, cell := range factory.cells {
+		resources := make([]string, 0, len(cell.aggregates))
+		for id := range cell.aggregates {
+			resources = append(resources, id)
+		}
+		sort.Strings(resources)
+		// Every produced resource must have its aggregate proof, even if zero.
+		for id := range cell.allRates {
+			if _, ok := cell.aggregates[id]; !ok {
+				return fmt.Errorf("ledger missing aggregate certificate: %s", id)
+			}
+		}
+		for id := range cell.allPrefixes {
+			if _, ok := cell.aggregates[id]; !ok {
+				return fmt.Errorf("ledger missing prefix aggregate: %s", id)
+			}
+		}
+		for _, resource := range resources {
+			before, exists := base.Balance(resource)
+			definition, declared := factory.catalog.Resource(resource)
+			if !exists || !declared || definition.Scope != economy.ScopeCompany {
+				return fmt.Errorf("ledger resource certificate missing: %s", resource)
+			}
+			if ledgerFastResearch(before, definition, cell.aggregates[resource]) {
+				factory.work.LedgerFast++
+				continue
+			}
+			lo, hi := cell.lo-cell.start, cell.hi-cell.start
+			if cell.flat {
+				lo, hi = 0, 0
+			}
+			for duration := lo; duration <= hi; duration++ {
+				value, terms, err := waitAggregateAtResearch(factory, cell, resource, duration)
+				factory.work.LedgerAggregates++
+				factory.work.LedgerTerms += terms
+				if _, active := cell.allRates[resource]; active && !cell.flat {
+					factory.work.LedgerPartials++
+				}
+				if err != nil {
+					return fmt.Errorf("ledger partial cell%d resource%s duration%d: %w", index, resource, duration, err)
+				}
+				if !value.IsStateValue() || value.Lt(decimal.Zero) {
+					return fmt.Errorf("ledger aggregate cell%d resource%s duration%d: %w", index, resource, duration, ErrInvalidEngineState)
+				}
+				if value.Eq(decimal.Zero) {
+					factory.work.LedgerNoEntry++
+					continue
+				}
+				identity := key{resource, math.Float64bits(value.Mantissa()), value.Exponent()}
+				if passed[identity] {
+					factory.work.LedgerReuses++
+					continue
+				}
+				copy, err := economy.RestoreLedger(factory.catalog, economy.ScopeCompany, factory.initial)
+				if err != nil {
+					return err
+				}
+				factory.work.LedgerExact++
+				if _, err := copy.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: resource, Delta: value}}}); err != nil {
+					return fmt.Errorf("ledger certificate cell%d resource%s duration%d: %w", index, resource, duration, err)
+				}
+				passed[identity] = true
+			}
+		}
+	}
+	return nil
 }
 
 // Sufficient positive-sum interior proof, not a limit on accepted values.
@@ -108,36 +238,42 @@ func certifyWaitCellAggregatesResearch(factory *waitCellsResearch) error {
 			}
 			if positiveAggregateInteriorResearch(len(prefix.values)+1, positive, maxExp) {
 				factory.work.AggregateFast++
+				if factory.cells[index].aggregates == nil {
+					factory.cells[index].aggregates = map[string]waitAggregateOutcomeResearch{}
+				}
+				outcome := waitAggregateOutcomeResearch{positive: positive}
+				if positive {
+					outcome.maxExp = maxExp + 7
+				}
+				factory.cells[index].aggregates[resource] = outcome
 				continue
 			}
 			lo, hi := cell.lo-cell.start, cell.hi-cell.start
 			if cell.flat {
 				lo, hi = 0, 0
 			}
+			outcome := waitAggregateOutcomeResearch{}
 			for duration := lo; duration <= hi; duration++ {
-				partial := decimal.Zero
-				if rates, active := cell.allRates[resource]; active && !cell.flat {
-					boost := duration
-					if boost > cell.burst {
-						boost = cell.burst
-					}
-					value, err := accrueBoostedConstant(rates, duration, boost, factory.eff, factory.bonus)
-					if err != nil {
-						return fmt.Errorf("aggregate partial cell%d resource%s duration%d: %w", index, resource, duration, err)
-					}
-					partial = value
-				}
-				values := append([]decimal.Decimal(nil), prefix.values...)
-				if !partial.Eq(decimal.Zero) {
-					values = append(values, partial)
+				value, terms, err := waitAggregateAtResearch(factory, cell, resource, duration)
+				if err != nil {
+					return fmt.Errorf("aggregate partial cell%d resource%s duration%d: %w", index, resource, duration, err)
 				}
 				factory.work.AggregateExact++
-				factory.work.AggregateExactTerms += len(values)
-				value := decimal.SumDeterministic(values).Quantize(decimal.CanonicalSignificantDigits)
+				factory.work.AggregateExactTerms += terms
 				if !value.IsStateValue() || value.Lt(decimal.Zero) {
 					return fmt.Errorf("aggregate certificate cell%d resource%s duration%d: %w", index, resource, duration, ErrInvalidEngineState)
 				}
+				if !value.Eq(decimal.Zero) {
+					if !outcome.positive || value.Exponent() > outcome.maxExp {
+						outcome.maxExp = value.Exponent()
+					}
+					outcome.positive = true
+				}
 			}
+			if factory.cells[index].aggregates == nil {
+				factory.cells[index].aggregates = map[string]waitAggregateOutcomeResearch{}
+			}
+			factory.cells[index].aggregates[resource] = outcome
 		}
 	}
 	return nil

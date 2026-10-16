@@ -1,0 +1,243 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"os"
+	"reflect"
+	"strings"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+// Manual ledger-domain/receipt research. No production search is changed.
+func TestWaitCellLedgerDomainResearch(t *testing.T) {
+	data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	totalReferences, totalRefused, totalReplayed := 0, 0, 0
+	for _, row := range []struct {
+		name, before, rate, cap, efficiency string
+		mode                                EvaluationMode
+		failureFrom                         int64
+		receiptFailure, unchanged           bool
+	}{
+		{"ledger_add_overflow", "6e8999999999999999", "6e8999999999999999", "9e8999999999999999", "1e0", ModeOnline, 667, false, false},
+		{"already_capped_add_overflow", "9e8999999999999999", "6e8999999999999999", "9e8999999999999999", "1e0", ModeOnline, 167, false, true},
+		{"ledger_add_headroom", "4e8999999999999999", "4e8999999999999999", "9e8999999999999999", "1e0", ModeOnline, -1, false, false},
+		{"zero_start_extreme", "0", "6e8999999999999999", "9e8999999999999999", "1e0", ModeOnline, -1, false, false},
+		{"already_capped_safe", "9e8999999999999999", "1e8999999999999998", "9e8999999999999999", "1e0", ModeOnline, -1, false, true},
+		{"adjusted_receipt", "5.6765610215e6", "9.81579561656e8", "9.87256122677e8", "1e0", ModeOnline, -1, false, false},
+		{"tiny_no_change", "1e6", "1e-6", "9e8999999999999999", "1e0", ModeOnline, -1, false, true},
+		{"zero_efficiency", "6e8999999999999999", "6e8999999999999999", "9e8999999999999999", "0", ModeOffline, -1, false, true},
+		{"unrepresentable_receipt_gap", "1e-8999999999999999", "1e-8999999999999996", "1.00000000001e-8999999999999999", "1e0", ModeOnline, 1, true, false},
+		{"tiny_receipt_zero_start", "0", "1e-8999999999999996", "1.00000000001e-8999999999999999", "1e0", ModeOnline, -1, false, false},
+		{"tiny_receipt_headroom", "1e-8999999999999999", "1e-8999999999999996", "2e-8999999999999999", "1e0", ModeOnline, -1, false, false},
+		{"adjusted_receipt_plateau", "5.6765610215e6", "9.81579561656e8", "9.87256122677e8", "1e0", ModeOffline, -1, false, false},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			var root map[string]any
+			if err := json.Unmarshal(data, &root); err != nil {
+				t.Fatal(err)
+			}
+			root["provision_tick_ms"] = 1000
+			root["offline_policy"].(map[string]any)["efficiency"] = row.efficiency
+			horizon := int64(1000)
+			if row.name == "adjusted_receipt_plateau" {
+				horizon = 2000
+				root["offline_policy"].(map[string]any)["accrual_cap_ms"] = 1000
+			}
+			isR1 := row.name == "adjusted_receipt" || row.name == "adjusted_receipt_plateau"
+			for _, value := range root["resources"].([]any) {
+				resource := value.(map[string]any)
+				if resource["id"] == "company.permits" {
+					resource["hardcap"].(map[string]any)["amount"] = row.cap
+				}
+			}
+			changed := 0
+			for _, value := range root["generator_classes"].([]any) {
+				generator := value.(map[string]any)
+				if generator["id"] == "generator.beige_tower_v2" {
+					generator["production"] = map[string]any{"resource_id": "company.permits", "base_rate": row.rate}
+					changed++
+				}
+			}
+			if changed != 1 {
+				t.Fatal("missing/duplicate controlled producer")
+			}
+			catalogBytes, err := json.Marshal(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			catalog, err := economy.LoadCatalog(catalogBytes)
+			if err != nil {
+				t.Fatal("catalog not admitted", err)
+			}
+			body, err := json.Marshal(map[string]any{"balances": map[string]string{"company.cash": "0", "company.permits": row.before}})
+			if err != nil {
+				t.Fatal(err)
+			}
+			state, err := save.RestoreState(body, 1, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state.WireVersion = 17
+			state.AchievementsEarnedRun = map[string]bool{}
+			state.GeneratorCounts["generator.beige_tower_v2"] = 1
+			state.GeneratorPurchasedTotal = 1
+			origin, err := save.EncodeState(state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state, err = save.RestoreState(origin, 17, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal("origin not admitted", err)
+			}
+			good, refused, replayed := 0, 0, 0
+			for at := int64(0); at <= horizon; at++ {
+				current, err := save.RestoreState(origin, 17, catalog, economy.ScopeCompany, engineCursor)
+				if err != nil {
+					t.Fatal(err)
+				}
+				result, err := SimulateAdvance(current, catalog, SimulationDependencies{}, save.Revision{}, row.mode,
+					state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond), nil, AblationMask{})
+				if row.failureFrom >= 0 && at >= row.failureFrom {
+					message := "result for \"company.permits\" is outside the finite Decimal domain"
+					if row.receiptFailure {
+						message = "cannot reproduce committed value"
+					}
+					if !errors.Is(err, ErrInvalidEngineState) || !strings.Contains(err.Error(), message) {
+						t.Fatal("wrong actual ledger refusal", at, err)
+					}
+					unchanged, encodeErr := save.EncodeState(current)
+					if encodeErr != nil || !bytes.Equal(origin, unchanged) {
+						t.Fatal("failed wait changed encoded state", at, encodeErr)
+					}
+					refused++
+					continue
+				}
+				if err != nil {
+					t.Fatal("valid wait refused", at, err)
+				}
+				cash, ok := current.Ledger.Balance("company.cash")
+				if !ok || !cash.Eq(decimal.Zero) {
+					t.Fatal("unexpected cash production", at, cash)
+				}
+				if isR1 && at >= 1000 && len(result.Evaluation.Receipt.Changes) != 1 {
+					t.Fatal("R1 final receipt missing or duplicated", result.Evaluation.Receipt)
+				}
+				before := state.Ledger.Snapshot()
+				copy, err := economy.RestoreLedger(catalog, economy.ScopeCompany, before)
+				if err != nil {
+					t.Fatal(err)
+				}
+				entries := []economy.Entry{}
+				for _, change := range result.Evaluation.Receipt.Changes {
+					if change.Before != before[change.ResourceID] || change.After != current.Ledger.Snapshot()[change.ResourceID] {
+						t.Fatal("receipt not bound to actual balances", at, change)
+					}
+					delta, err := decimal.ParseCanonical(change.Delta)
+					if err != nil {
+						t.Fatal("noncanonical receipt delta", at, err)
+					}
+					entries = append(entries, economy.Entry{ResourceID: change.ResourceID, Delta: delta})
+					if isR1 && at >= 1000 && (change.ResourceID != "company.permits" || change.Delta != "9.81579561655e8" || change.After != row.cap) {
+						t.Fatal("R1 adjusted receipt changed", change)
+					}
+				}
+				if _, err := copy.Apply(economy.Transaction{Entries: entries}); err != nil {
+					t.Fatal("strict receipt replay refused", at, err)
+				}
+				if !reflect.DeepEqual(copy.Snapshot(), current.Ledger.Snapshot()) {
+					t.Fatal("strict receipt replay changed scoped balances", at)
+				}
+				if row.unchanged && (len(result.Evaluation.Receipt.Changes) != 0 || !reflect.DeepEqual(before, current.Ledger.Snapshot())) {
+					t.Fatal("no-change companion changed balances or receipt", at)
+				}
+				replayed++
+				good++
+			}
+			if good+refused != int(horizon+1) || good != replayed {
+				t.Fatal("incomplete actual/replay population", good, refused, replayed)
+			}
+			totalReferences += good + refused
+			totalRefused += refused
+			totalReplayed += replayed
+			t.Logf("actual waits%d: valid%d refused%d strict_receipt_replays%d", horizon+1, good, refused, replayed)
+			if row.failureFrom >= 0 {
+				unsafe, err := buildRawWaitCellsResearch(state, catalog, row.mode, horizon, AblationMask{}, SimulationDependencies{}, "")
+				if err != nil {
+					t.Fatal(err)
+				}
+				if err := certifyWaitCellPartialsResearch(unsafe); err != nil {
+					t.Fatal("not a partial failure", err)
+				}
+				if err := certifyWaitCellAggregatesResearch(unsafe); err != nil {
+					t.Fatal("not an aggregate failure", err)
+				}
+				calls := 0
+				found, err := unsafe.search(decimal.One, int(2*(horizon+1)), func(int64) (decimal.Decimal, error) { calls++; return decimal.NaN, ErrInvalidEngineState })
+				if err != nil || found != -1 || calls != 0 {
+					t.Fatal("retained aggregate-only miss changed", found, err, calls)
+				}
+			}
+			factory, buildErr := buildWaitCellsResearch(state, catalog, row.mode, horizon, AblationMask{}, SimulationDependencies{}, "")
+			if row.failureFrom >= 0 {
+				if buildErr == nil {
+					calls := 0
+					found, err := factory.search(decimal.One, 2002, func(int64) (decimal.Decimal, error) { calls++; return decimal.NaN, ErrInvalidEngineState })
+					t.Logf("unsafe aggregate-only construction: found%d err%v actual_points%d", found, err, calls)
+					t.Fatal("constructor hid actual ledger refusals")
+				}
+				if !errors.Is(buildErr, economy.ErrInvalidTransaction) || !strings.Contains(buildErr.Error(), "ledger certificate") || !strings.Contains(buildErr.Error(), "company.permits") {
+					t.Fatal("wrong protected ledger refusal", buildErr)
+				}
+			} else if buildErr != nil {
+				t.Fatal("valid ledger companion rejected", buildErr)
+			}
+			if row.name == "adjusted_receipt_plateau" && factory.work.LedgerReuses != 1 {
+				t.Fatal("plateau did not reuse the exact successful delta", factory.work)
+			}
+			if buildErr == nil {
+				t.Logf("ledger preparation %+v", factory.work)
+			}
+			unchanged, err := save.EncodeState(state)
+			if err != nil || !bytes.Equal(origin, unchanged) {
+				t.Fatal("research changed origin", err)
+			}
+		})
+	}
+	if totalReferences != 13012 || totalRefused != 2168 || totalReplayed != 10844 {
+		t.Fatal("incomplete declared ledger population", totalReferences, totalRefused, totalReplayed)
+	}
+}
+
+func TestWaitCellLedgerCacheResearch(t *testing.T) {
+	// A component control with a real admitted ledger/catalog, not an acquired run.
+	catalog, err := economy.LoadCatalog([]byte(`{"schema_version":1,"resources":[
+	{"id":"company.cash","scope":"company","numeric_kind":"decimal","initial":"1e6","minimum":"0","hardcap":{"amount":"1e1000","reason_key":"cap.research.cash"}},
+	{"id":"company.permits","scope":"company","numeric_kind":"decimal","initial":"6e8999999999999999","minimum":"0","hardcap":{"amount":"9e8999999999999999","reason_key":"cap.research.permits"}}],"generator_classes":[]}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	base, err := economy.NewLedger(catalog, economy.ScopeCompany)
+	if err != nil {
+		t.Fatal(err)
+	}
+	delta := decimal.New(6, 8_999_999_999_999_999)
+	prefix := waitPrefixResearch{values: []decimal.Decimal{delta}, maxExp: delta.Exponent()}
+	factory := &waitCellsResearch{catalog: catalog, initial: base.Snapshot(), eff: decimal.One, cells: []waitCellResearch{{lo: 0, hi: 0, flat: true, allPrefixes: map[string]waitPrefixResearch{"company.cash": prefix, "company.permits": prefix}}}}
+	if err := certifyWaitCellAggregatesResearch(factory); err != nil {
+		t.Fatal(err)
+	}
+	err = certifyWaitCellLedgerResearch(factory)
+	if !errors.Is(err, economy.ErrInvalidTransaction) || !strings.Contains(err.Error(), "company.permits") || factory.work.LedgerExact != 2 || factory.work.LedgerReuses != 0 {
+		t.Fatal("resource alias hid the second ledger failure", factory.work, err)
+	}
+}

@@ -16,7 +16,7 @@ with nil error. Owning log/manual source retain source/hash/budget/receipt/uncha
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
 
-Draft H3d–H3h now supply a candidate positive-aggregation enclosure, its partial
+Draft H3d–H3i now supply a candidate positive-aggregation enclosure, its partial
 producer/ledger composition and a source-driven wait-cell constructor. The4004
 pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
 four small whole-wait populations are exhaustive and match independently scanned
@@ -30,8 +30,12 @@ refusal aliases; the long profile needs4004 partial checks across five contexts.
 RP-682 adds10005 actual waits, including334 expected final-aggregate refusals after
 valid segment arithmetic. All-resource prefixes plus the proposed interior lemma
 and exact fallback catch the gap without rejecting valid extreme companions.
+RP-683 adds13012 actual waits/10844 strict receipt replays, catching2168 expected
+ledger Add/receipt refusals after valid aggregates. Sufficient cases and real
+resource-bound ledger fallback preserve valid extreme/capped/tiny inputs; the
+retained long profile needs no exact ledger work. No live search is changed.
 
-Next prove ledger Add/cap/receipt refusal handling and modern contexts,
+Next prove remaining progress/modern-context/hook refusal handling,
 then measure complete real workloads with all preparation work charged. Partial
 certification alone does not choose error precedence over a valid earlier result.
 Whole-domain definedness, hook/modern factory, full caller/state semantics,
