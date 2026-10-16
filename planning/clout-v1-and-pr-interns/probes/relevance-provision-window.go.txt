@@ -1,0 +1,192 @@
+package harness
+
+import (
+	"bytes"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/save"
+)
+
+// Manual admitted-origin research. It does not change ordinary CI or balance.
+func TestRelevanceProvisionWindowResearch(t *testing.T) {
+	const prefix, firstMS, boostedPartial int64 = 65535, 999, 333
+	const purchased, generated int64 = 999999352334, 647666
+	const upgradeID = "upgrade.beige_tower_cache"
+	read := func(path string) []byte {
+		t.Helper()
+		data, err := os.ReadFile(filepath.Join("../..", path))
+		if err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+	decode := func(data []byte) map[string]any {
+		t.Helper()
+		var value map[string]any
+		if err := json.Unmarshal(data, &value); err != nil {
+			t.Fatal(err)
+		}
+		return value
+	}
+	encode := func(value any) []byte {
+		t.Helper()
+		data, err := json.Marshal(value)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+	root := decode(read("balance/testdata/t0-t1/economy-v4.json"))
+	root["provision_tick_ms"] = 1000
+	root["offline_policy"].(map[string]any)["burst_speed"] = "1e12"
+	root["offline_policy"].(map[string]any)["burst_max_duration_ms"] = firstMS + prefix*1000 + boostedPartial
+	for _, entry := range root["generator_classes"].([]any) {
+		row := entry.(map[string]any)
+		switch row["id"] {
+		case "generator.beige_tower":
+			row["production"].(map[string]any)["base_rate"] = "3.003003003e-23"
+			row["provisioned_hardcap"].(map[string]any)["count"] = generated
+			row["ladder"] = []any{}
+			row["roles"] = []any{map[string]any{"kind": "stock_rate", "per_purchased_ppm": 1000}}
+		case "generator.beige_tower_v2":
+			row["production"] = map[string]any{"resource_id": "company.permits", "base_rate": "1e-1000"}
+			row["provisions"].(map[string]any)["rate_ppm"] = generated * 1000000
+		}
+	}
+	for _, entry := range root["synergy_pools"].([]any) {
+		pool := entry.(map[string]any)
+		kept := []any{}
+		for _, source := range pool["sources"].([]any) {
+			if source.(map[string]any)["id_or_class"] != "generator.beige_tower" {
+				kept = append(kept, source)
+			}
+		}
+		pool["sources"] = kept
+	}
+	quoteCount := 0
+	for _, entry := range root["upgrades"].([]any) {
+		row := entry.(map[string]any)
+		if row["id"] == upgradeID {
+			quoteCount++
+			row["cost"].(map[string]any)["amount"] = "1.968058018e6"
+			row["requires"].([]any)[0].(map[string]any)["value"] = "1.968058018e6"
+		}
+	}
+	if quoteCount != 1 {
+		t.Fatal("missing/duplicate controlled quote", quoteCount)
+	}
+	catalogBytes := encode(root)
+	scenario := decode(read("balance/testdata/t0-t1/relevance-scenario-v2.json"))
+	scenario["catalog"], scenario["routes_catalog"], scenario["relevance_policy"] = "economy.json", "routes.json", "policy.json"
+	directory := t.TempDir()
+	for name, data := range map[string][]byte{
+		"economy.json": catalogBytes, "scenario.json": encode(scenario),
+		"routes.json": read("balance/testdata/t0-t1/routes-v1.json"),
+		"policy.json": read("balance/testdata/t0-t1/relevance-policy-t0-v2.json"),
+	} {
+		if err := os.WriteFile(filepath.Join(directory, name), data, 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	// Exercise the real catalog, scenario, route, policy and identity admission.
+	suite, err := LoadRelevanceSuite(directory, "scenario.json")
+	if err != nil {
+		t.Fatal("controlled suite not admitted", err)
+	}
+	state, err := save.RestoreState([]byte(`{"balances":{"company.cash":"0","company.permits":"0"}}`), 1, suite.Catalog, economy.ScopeCompany, Epoch)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.WireVersion = 17
+	state.AchievementsEarnedRun = map[string]bool{}
+	state.ComputeBurstRemainingMS = firstMS + prefix*1000 + boostedPartial
+	state.GeneratorCounts["generator.beige_tower"] = purchased
+	state.GeneratorCounts["generator.beige_tower_v2"] = 1
+	state.GeneratorPurchasedTotal = purchased + 1
+	state.EvaluatedThrough = Epoch.Add(time.Millisecond)
+	origin, err := save.EncodeState(state)
+	if err != nil {
+		t.Fatal("origin not encodable", err)
+	}
+	state, err = save.RestoreState(origin, 17, suite.Catalog, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal("origin not admitted", err)
+	}
+	resource, quote, err := suite.candidateCost(state, upgradeID)
+	if err != nil || resource != "company.cash" || quote.String() != "1.968058018e6" {
+		t.Fatal("actual catalog quote differs", resource, quote, err)
+	}
+	const at499, at500 int64 = 1 + firstMS + prefix*1000 + 499, 1 + firstMS + prefix*1000 + 500
+	project := func(at int64) decimal.Decimal {
+		t.Helper()
+		current, err := cloneState(suite.Catalog, state)
+		if err != nil {
+			t.Fatal(err)
+		}
+		result, err := production.SimulateAdvance(current, suite.Catalog, production.SimulationDependencies{Routes: suite.Routes},
+			relevanceRevision(1, suite.ConstantsHash), production.ModeOnline, relevanceNow(at), nil, production.AblationMask{})
+		if err != nil || current.GeneratorProvisioned["generator.beige_tower"] != generated {
+			t.Fatal("projection failed", at, err)
+		}
+		cash, ok := current.Ledger.Balance(resource)
+		if !ok {
+			t.Fatal("cash missing")
+		}
+		found := false
+		for _, change := range result.Evaluation.Receipt.Changes {
+			if change.ResourceID == resource {
+				found = change.After == cash.String()
+			}
+		}
+		if !found {
+			t.Fatal("cash receipt missing")
+		}
+		return cash
+	}
+	a, b := project(at499), project(at500)
+	if a.String() != "1.968058018e6" || b.String() != "1.96805801799e6" || !a.Gte(quote) || b.Gte(quote) {
+		t.Fatal("known window not reproduced", a, b, quote)
+	}
+	if at500 > suite.Scenario.HorizonMS {
+		t.Fatal("probe exceeds admitted scenario horizon")
+	}
+	shortCounter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	short, shortOK, err := suite.earliestAffordable(state, 1, 1, at499, resource, quote, production.AblationMask{}, shortCounter)
+	if err != nil || !shortOK || short < 1 || short > at499 || !project(short).Gte(quote) {
+		t.Fatal("short search did not produce valid in-domain witness", short, shortOK, err)
+	}
+	longCounter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	long, longOK, err := suite.earliestAffordable(state, 1, 1, at500, resource, quote, production.AblationMask{}, longCounter)
+	if err != nil || longOK {
+		t.Fatal("declared current horizon refusal changed; investigate", long, longOK, err)
+	}
+	if shortCounter.value <= 1 || longCounter.value != 1 {
+		t.Fatal("unexpected charged search work", shortCounter.value, longCounter.value)
+	}
+	shortRankCounter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	shortRank, shortRankOK, err := suite.rankCandidate(state, 1, 1, at499, upgradeID, production.AblationMask{}, shortRankCounter)
+	if err != nil || !shortRankOK || shortRank.ID != upgradeID || shortRank.AtMS != short || !shortRank.State.UpgradesOwned[upgradeID] {
+		t.Fatal("actual short rank did not apply quoted upgrade", shortRank.ID, shortRank.AtMS, shortRankOK, err)
+	}
+	afterBuy, present := shortRank.State.Ledger.Balance(resource)
+	if !present || !project(short).Eq(quote) || !afterBuy.Eq(decimal.Zero) {
+		t.Fatal("actual ranked purchase did not debit the complete quoted balance", afterBuy, quote)
+	}
+	_, longRankOK, err := suite.rankCandidate(state, 1, 1, at500, upgradeID, production.AblationMask{}, &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions})
+	if err != nil || longRankOK {
+		t.Fatal("actual extended rank no longer loses candidate; investigate", longRankOK, err)
+	}
+	unchanged, err := save.EncodeState(state)
+	if err != nil || !bytes.Equal(unchanged, origin) {
+		t.Fatal("projection/search consumed source", err)
+	}
+	t.Logf("actual admitted suite %s; quote %s=%s; short horizon%d finds%d using%d transitions, extended%d returns none using%d; direct cash%s→%s, source unchanged; controlled late origin, nil hook, not natural/full RunRelevance", suite.ConstantsHash, upgradeID, quote, at499, short, shortCounter.value, at500, longCounter.value, a, b)
+	t.Logf("actual rankCandidate: short applied upgrade at%d revision%d using%d transitions, cash after purchase%s; extended horizon suppresses candidate; source unchanged", shortRank.AtMS, shortRank.Revision, shortRankCounter.value, afterBuy)
+}

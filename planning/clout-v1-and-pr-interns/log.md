@@ -5329,3 +5329,66 @@ the Founder-only payload context and bundle-conditional mixed tuple. These are i
 codec distinctions, not a schema/activation/ruling amendment. Documentation-only follow-up
 lies outside the six-path verdict and needs no software rerun; diff/source checked. No accepted
 RFC or archived text changed. Continue actual-search caller analysis after this bounded repair.
+
+## 2026-10-16 — Before execution: actual quoted affordability-window consumer
+
+Use one RP-676 neutral economic recipe, not another monotonicity census. Retune only its
+controlled catalog and one existing upgrade's cost/resource requirement to the earlier cash;
+load actual scenario/routes/policy/catalog/hash via LoadRelevanceSuite and independently admit
+the v17 origin. Compare actual candidateCost, SimulateAdvance/receipt at499/500ms of the last
+bucket and actual earliestAffordable with those two horizons from the SAME untouched origin.
+Hypothesis: shorter horizon yields a valid affordable witness, extending by1ms falsely returns
+unreachable despite containing that witness. Use the scenario's unchanged transition budget;
+errors/refused admission/guard exhaustion are not search misses. Preserve receipt/provision,
+full source-byte and within-scenario-horizon controls. Manual source
+probes/relevance-provision-window.go.txt stays outside ordinary CI. This tests current private
+search with the real suite loader and a real unminted catalog quote; not full RunRelevance,
+modern axis/hook factory, natural acquisition/report drift, SQL or a repaired algorithm.
+
+First declared method probe57020 PASS9.321s: real admitted suite/quote, shorter horizon65536499
+returns65536333 with27 charged transitions; horizon65536500 returns unreachable with1, nil error.
+Direct cash/receipt499→500 match RP-676. Before final execution, extend this SAME profile to
+actual rankCandidate for both horizons: require short arm to apply the real quoted upgrade,
+not merely compare a hypothetical threshold, and check whether long arm loses that candidate.
+No broader population, changed budget, source mutation, asserted global earliest proof or
+RunRelevance/published-report claim is added. This bounded caller extension may fail on a
+different admission/eligibility boundary; such failure would not count as a ranking miss.
+
+## 2026-10-16 — RP-680 quoted search and actual purchase-ranking counterexample
+
+Final47483 PASS17.863s executes both declared method and caller populations, including
+explicit quoted-balance spending control: cash equals the actual quote before
+purchase and0 afterward (no substitute ownership-only assertion). Current
+LoadRelevanceSuite admits exact retuned economy/routes/policy/scenario and computes constants
+sha256:7cdc13340749a78b075e1aede620faf9af0290c642e45c0e19c9b9496800e5d1.
+Independently admitted v17 late origin, real candidateCost for upgrade.beige_tower_cache at
+1.968058018e6, actual SimulateAdvance/receipt/provision-cap controls and unchanged encoded
+source all execute. Horizon65536499 finds65536333 using27 actual transitions. Extending by1ms
+to65536500 returns unreachable with nil error after1 transition, despite the valid witness
+remaining inside the range. Direct endpoint cash matches1.968058018e6→1.96805801799e6.
+Actual rankCandidate short arm spends the real quote/applies the upgrade at65536333,
+revision2,29 charged transitions; extended arm suppresses the same candidate with nil error.
+No diagnostic guard or scenario budget exhausts. RP-680 records this current consumer defect;
+RP-676 remains the separate payout-decrease evidence, not relabelled as natural player loss.
+
+Reproduce from repository root:
+`make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=/Users/stronk/repos/cloud-clicker/.cache/relevance-provision-window.json -run TestRelevanceProvisionWindowResearch -v'`.
+Overlay maps server/harness/manual_relevance_provision_window_test.go to committed manual
+source probes/relevance-provision-window.go.txt, SHA256
+81faecc91284845f58eb2f8b4335dec2d62f43a41a6704915507c0fcf34322c0;
+overlay SHA1b3b31d842df8534f02f27b2eb8f3d54967fc0b23d444a31ee384d063e19bcfd.
+All57020/74339/47483 terminal; first run tests method only, second adds the ranking consumer,
+final strengthens it with observed post-purchase cash0. No earlier failure is relabelled green.
+Runtime temp inputs use t.TempDir and are removed by Go; tracked source/content unchanged.
+No routine CI population, arithmetic, search, budget, baseline, scenario or kernel is altered.
+
+This is deliberately unminted retuning/seeded late origin with nil-hook standalone factory,
+not natural acquisition, full RunRelevance, modern axis/hook integration, paired TS/SQL,
+published-report drift or lost saved payment. The short result is a verified valid witness,
+not an exhaustive global-earliest oracle. It suffices to falsify the longer unreachable result.
+Owning plan, ledger and own draft's H3c reconcile these precise findings; no new algorithm or
+accepted contract follows. Review by: Codex root (research author/first filter). Recorded by:
+Codex root. Complete range8f1e399e-exclusive through this research checkpoint remains subject
+to research/normative review outside corrective-code delegation. Next: correct search/partition
+proof and complete caller/work/compatibility closure; neither a window-specific special case
+nor a generic approval repairs this defect or the27 original accounting failures.

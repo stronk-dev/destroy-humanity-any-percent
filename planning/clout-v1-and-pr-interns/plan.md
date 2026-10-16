@@ -6,7 +6,17 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
-## Current step — accounting/RFC readiness, 2026-10-15
+## Current step — accounting/search correctness, 2026-10-16
+
+RP-680 now confirms a bounded actual consumer miss, after approved RP-678 removes the
+pre-search clone refusal. With one admitted real suite and a bound upgrade quote, extending
+the search horizon by1ms suppresses a valid earlier purchase. Both earliestAffordable and
+rankCandidate execute: short horizon finds/applies the quote, longer returns no candidate
+with nil error. Owning log/manual source retain source/hash/budget/receipt/unchanged-origin
+controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
+suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
+Next: a correct numeric-aware search/partition proof and caller/work/compatibility closure,
+not another positive monotonicity census, new tolerance, skipped interval or budget increase.
 
 2026-10-16: targeted actual-search preparation finds RP-678: harness cloneState restores
 an admitted v17 snapshot as v14, failing before affordability evaluation. The bounded
@@ -43,8 +53,10 @@ Evaluate projections execute. A separate neutral catalog exercises two actual Si
 projections with derived contribution assembly, nil hook/default mask, receipt/provision-role
 and fixed-threshold true→false controls. Unapplied exact-sum counterfactual eliminates this
 specific decline. This is neither the earlier synthetic list's literal reachability nor
-natural acquisition/current search miss/full modern factory/hook proof. Owning log/manual
-source retain inputs, exact commands, limits and separate outcomes. H3b's context-only regimes
+natural acquisition/full RunRelevance/modern axis-hook factory proof. RP-680 now separately
+executes the actual standalone search/ranking methods with the admitted recipe and quote.
+Owning log/manual source retain inputs, exact commands, limits and separate outcomes.
+H3b's context-only regimes
 cannot claim generic monotonicity. Next specify/prove a correct alternative search or obtain
 separate numeric-route adoption and its complete caller/compatibility/workload proof—not more
 positive censuses or an attempted proof of the now-false generic proposition. Active math,

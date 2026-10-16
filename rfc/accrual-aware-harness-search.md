@@ -377,6 +377,32 @@ candidate; it is not whole-domain monotonicity, unchanged old payouts, acceptabl
 independent review or adoption of either numeric or accounting proposal. Its already
 recorded Pitch/catalog/Company/Commons/report compatibility obligations remain.
 
+**Actual standalone search/ranking consumer, RP-680 (2026-10-16).** After RP-678's
+independently approved source-version clone correction, the separate
+[manual consumer diagnostic](../planning/clout-v1-and-pr-interns/probes/relevance-provision-window.go.txt)
+loads the real scenario/routes/policy/catalog/hash through `LoadRelevanceSuite`.
+It reuses RP-676's admitted neutral recipe and v17 late origin, retuning the existing
+`upgrade.beige_tower_cache` cost and matching resource requirement to `1.968058018e6`.
+`candidateCost` obtains that real quote; no hypothetical predicate replaces it.
+
+Actual `earliestAffordable` on horizon65536499 finds affordable65536333 with27
+charged transitions. Extending the horizon to65536500 returns unreachable, nil error,
+after1 transition, although the earlier witness remains in range. Direct actual
+SimulateAdvance/receipts at the two horizons retain the known cash decrease and
+provision cap. Actual `rankCandidate` applies the upgrade at65536333/revision2 using29
+transitions for the shorter horizon, but suppresses that candidate for the longer one.
+The encoded origin is unchanged; work never exhausts the admitted scenario budget.
+
+This is a current private consumer counterexample, not merely a proposed search over
+literal thresholds. The catalog is deliberately retuned/unminted and the valid late
+origin is seeded, not acquired through a natural run. The standalone factory has nil
+hook/frozen inputs; this is not full RunRelevance, modern axis/attainment integration,
+historical report drift, SQL or player loss. It does not prove the short method result
+globally earliest over every preceding millisecond. It does prove the longer method's
+unreachable result wrong because it contains the independently checked valid witness.
+No algorithm adoption follows. A correct search must preserve such in-range candidates
+without assuming whole-horizon affordability is monotone or hiding work exhaustion.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -534,3 +560,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   unequal prefix, including the neutral actual wait wrapper. Reject generic H3b-regime
   monotonicity; the unapplied exact-sum counterfactual fixes only this bounded case.
   Correct complete search/caller proof, compatibility, cost and adoption remain gates.
+- 2026-10-16: RP-680 binds the admitted temporal decrease to an actual loaded standalone
+  suite, catalog quote, affordability search and applied candidate-ranking arm. Extending
+  the horizon by1ms suppresses a verified in-range purchase. No natural/report/full modern
+  factory defect, globally earliest oracle, implementation or adoption is inferred.
