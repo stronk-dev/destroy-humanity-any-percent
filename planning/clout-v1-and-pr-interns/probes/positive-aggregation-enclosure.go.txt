@@ -1,0 +1,234 @@
+package decimal_test
+
+import (
+	"fmt"
+	"math"
+	"math/big"
+	"testing"
+
+	"cloud-clicker/server/decimal"
+)
+
+// Manual research only: a candidate enclosure, not a replacement payout/search.
+// See draft H3d for the source-derived inequality and its remaining obligations.
+const enclosureTermLimit int64 = 86_400_002
+
+func enclosurePower(exponent int64) *big.Rat {
+	power := new(big.Int).Exp(big.NewInt(10), big.NewInt(absEnclosureExponent(exponent)), nil)
+	if exponent < 0 {
+		return new(big.Rat).SetFrac(big.NewInt(1), power)
+	}
+	return new(big.Rat).SetInt(power)
+}
+
+func absEnclosureExponent(value int64) int64 {
+	if value < 0 {
+		return -value
+	}
+	return value
+}
+
+func enclosureRepresented(value decimal.Decimal) (*big.Rat, error) {
+	if !value.IsStateValue() || value.Mantissa() < 0 {
+		return nil, fmt.Errorf("nonnegative state value required")
+	}
+	// The executable rational reference is deliberately bounded, not a full-domain codec.
+	if value.Exponent() < -32 || value.Exponent() > 32 {
+		return nil, fmt.Errorf("manual reference exponent outside [-32,32]")
+	}
+	return new(big.Rat).Mul(new(big.Rat).SetFloat64(value.Mantissa()), enclosurePower(value.Exponent())), nil
+}
+
+func enclosureSlack(terms, groups int64, quantized bool) (*big.Rat, error) {
+	if terms < 0 || terms > enclosureTermLimit || groups < 0 || groups > terms {
+		return nil, fmt.Errorf("unsupported uniform ceilings")
+	}
+	epsilon := new(big.Rat).SetFrac(big.NewInt(1), new(big.Int).Lsh(big.NewInt(1), 52))
+	slack := new(big.Rat).Mul(big.NewRat(terms+16*groups, 1), epsilon)
+	slack.Add(slack, new(big.Rat).Mul(big.NewRat(groups, 1), big.NewRat(5, 1_000_000_000_000_000)))
+	if quantized {
+		slack.Add(slack, new(big.Rat).Mul(big.NewRat(2, 1), epsilon))
+		slack.Add(slack, big.NewRat(5, 1_000_000_000_000))
+	}
+	if slack.Cmp(big.NewRat(1, 1)) >= 0 {
+		return nil, fmt.Errorf("enclosure denominator is not positive")
+	}
+	return slack, nil
+}
+
+func positiveEnclosure(values []decimal.Decimal, terms, groups int64, quantized bool) (*big.Rat, error) {
+	slack, err := enclosureSlack(terms, groups, quantized)
+	if err != nil {
+		return nil, err
+	}
+	if int64(len(values)) > terms {
+		return nil, fmt.Errorf("source term ceiling exceeded")
+	}
+	seen := map[int64]bool{}
+	sum := new(big.Rat)
+	for _, value := range values {
+		represented, err := enclosureRepresented(value)
+		if err != nil {
+			return nil, err
+		}
+		sum.Add(sum, represented)
+		if value.Mantissa() != 0 {
+			seen[value.Exponent()] = true
+		}
+	}
+	if int64(len(seen)) > groups {
+		return nil, fmt.Errorf("positive exponent group ceiling exceeded")
+	}
+	return sum.Quo(sum, new(big.Rat).Sub(big.NewRat(1, 1), slack)), nil
+}
+
+func TestPositiveAggregationEnclosureResearch(t *testing.T) {
+	parse := func(text string) decimal.Decimal {
+		t.Helper()
+		value, err := decimal.ParseCanonical(text)
+		if err != nil {
+			t.Fatal(text, err)
+		}
+		return value
+	}
+	represented := func(value decimal.Decimal) *big.Rat {
+		t.Helper()
+		result, err := enclosureRepresented(value)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return result
+	}
+	t.Run("finite_power_side_conditions", func(t *testing.T) {
+		epsilon := new(big.Rat).SetFrac(big.NewInt(1), new(big.Int).Lsh(big.NewInt(1), 52))
+		for exponent := int64(-17); exponent <= 22; exponent++ {
+			exact := enclosurePower(exponent)
+			actual := new(big.Rat).SetFloat64(math.Pow10(int(exponent)))
+			error := new(big.Rat).Sub(actual, exact)
+			error.Abs(error).Quo(error, exact)
+			if error.Cmp(epsilon) > 0 || exponent >= 0 && error.Sign() != 0 {
+				t.Fatalf("power %d violates premise: relative error %s", exponent, error.RatString())
+			}
+		}
+		// Together with Pow10's documented outer saturation, these finite checks
+		// exclude far-away scaling choices from a valid nonzero normalization.
+		for exponent := -323; exponent <= 308; exponent++ {
+			actual := math.Pow10(exponent)
+			if actual <= 0 || math.IsInf(actual, 0) || math.IsNaN(actual) ||
+				exponent < -2 && actual > 1.0/512 || exponent > 16 && actual < 1e17 {
+				t.Fatalf("power%d violates normalization range premise", exponent)
+			}
+		}
+		if math.Pow10(-324) != 0 || !math.IsInf(math.Pow10(309), 1) {
+			t.Fatal("outer power saturation premise changed")
+		}
+		t.Log("40 rational comparisons,632 finite normalization range checks,2 saturation checks; nonnegative powers through22 exact")
+	})
+	t.Run("bounded_positive_cases", func(t *testing.T) {
+		cases := []struct {
+			name   string
+			values []decimal.Decimal
+		}{
+			{"empty", nil},
+			{"zeros", []decimal.Decimal{decimal.Zero, decimal.Zero}},
+			{"singleton", []decimal.Decimal{parse("9.99999999999e0")}},
+			{"group_carry", []decimal.Decimal{parse("4.99999999999e0"), parse("5e0")}},
+			{"gap17_included", []decimal.Decimal{parse("9.99999999999e-17"), decimal.One}},
+			{"gap18_dropped", []decimal.Decimal{parse("9.99999999999e-18"), decimal.One}},
+			{"alignment_round_up", []decimal.Decimal{parse("9e-15"), decimal.One}},
+			{"q12_round_up", []decimal.Decimal{decimal.New(1.000000000006, 0)}},
+			{"q12_tie_neighborhood", []decimal.Decimal{decimal.New(math.Nextafter(1.000000000005, 0), 0), decimal.New(math.Nextafter(1.000000000005, 2), 0)}},
+			{"reference_edges", []decimal.Decimal{decimal.New(1, -32), decimal.New(9.99999999999, 32)}},
+		}
+		for _, row := range cases {
+			t.Run(row.name, func(t *testing.T) {
+				actual := decimal.SumDeterministic(row.values)
+				for _, quantized := range []bool{false, true} {
+					observed := actual
+					if quantized {
+						observed = observed.Quantize(decimal.CanonicalSignificantDigits)
+					}
+					upper, err := positiveEnclosure(row.values, int64(len(row.values)), int64(len(row.values)), quantized)
+					if err != nil || represented(observed).Cmp(upper) > 0 {
+						t.Fatalf("Q12=%t escaped enclosure: err=%v", quantized, err)
+					}
+				}
+				if row.name == "alignment_round_up" {
+					exact := new(big.Rat).Add(represented(row.values[0]), represented(row.values[1]))
+					if represented(actual).Cmp(exact) <= 0 {
+						t.Fatal("zero-slack negative control did not escape exact-input sum")
+					}
+				}
+				if row.name == "q12_round_up" {
+					rawUpper, err := positiveEnclosure(row.values, 1, 1, false)
+					if err != nil || represented(actual.Quantize(12)).Cmp(rawUpper) <= 0 {
+						t.Fatal("omitted-Q12-margin negative control did not escape raw enclosure", err)
+					}
+				}
+			})
+		}
+	})
+	t.Run("retained_decrease_uniform_envelope", func(t *testing.T) {
+		values := make([]decimal.Decimal, 65537)
+		values[0] = parse("2.999998057e1")
+		for index := 1; index <= 65535; index++ {
+			values[index] = parse("3.003003003e1")
+		}
+		var previous *big.Rat
+		for index, partial := range []string{"9.99999999999e0", "1e1"} {
+			values[len(values)-1] = parse(partial)
+			actual := decimal.SumDeterministic(values)
+			want := []string{"1.968058018e6", "1.96805801799e6"}[index]
+			if actual.Quantize(12).String() != want {
+				t.Fatalf("retained decrease changed: got %s want %s", actual, want)
+			}
+			for _, quantized := range []bool{false, true} {
+				upper, err := positiveEnclosure(values, 65537, 2, quantized)
+				observed := actual
+				if quantized {
+					observed = actual.Quantize(12)
+				}
+				if err != nil || represented(observed).Cmp(upper) > 0 {
+					t.Fatal("retained value escaped enclosure", quantized, err)
+				}
+				if quantized {
+					if previous != nil && upper.Cmp(previous) <= 0 {
+						t.Fatal("uniform-ceiling exact-input envelope did not increase")
+					}
+					previous = upper
+					gap := new(big.Rat).Sub(upper, represented(observed))
+					t.Logf("partial=%s current=%s upper-minus-current=%s", partial, observed, gap.FloatString(18))
+				}
+			}
+		}
+	})
+	t.Run("refusals_and_domain_ceiling", func(t *testing.T) {
+		invalid := []struct {
+			values        []decimal.Decimal
+			terms, groups int64
+		}{
+			{[]decimal.Decimal{decimal.One.Neg()}, 1, 1},
+			{[]decimal.Decimal{decimal.NaN}, 1, 1},
+			{[]decimal.Decimal{decimal.Inf}, 1, 1},
+			{[]decimal.Decimal{decimal.New(1, 8_999_999_999_999_999).Mul(decimal.New(1, 1))}, 1, 1},
+			{[]decimal.Decimal{decimal.New(1, 33)}, 1, 1},
+			{[]decimal.Decimal{decimal.New(1, -33)}, 1, 1},
+			{[]decimal.Decimal{decimal.One}, 0, 0},
+			{[]decimal.Decimal{decimal.One}, 1, 0},
+			{nil, -1, 0},
+			{nil, 1, -1},
+			{nil, 1, 2},
+			{nil, enclosureTermLimit + 1, 1},
+		}
+		for index, row := range invalid {
+			if _, err := positiveEnclosure(row.values, row.terms, row.groups, true); err == nil {
+				t.Fatalf("invalid case%d silently admitted", index)
+			}
+		}
+		slack, err := enclosureSlack(enclosureTermLimit, enclosureTermLimit, true)
+		if err != nil || slack.Sign() <= 0 || slack.Cmp(big.NewRat(1, 1)) >= 0 {
+			t.Fatal("worst declared denominator invalid", slack, err)
+		}
+		t.Logf("12 explicit refusals; N=G=%d Q12 slack=%s", enclosureTermLimit, slack.FloatString(18))
+	})
+}

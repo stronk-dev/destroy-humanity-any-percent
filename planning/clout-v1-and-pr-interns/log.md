@@ -5392,3 +5392,84 @@ Codex root. Complete range8f1e399e-exclusive through this research checkpoint re
 to research/normative review outside corrective-code delegation. Next: correct search/partition
 proof and complete caller/work/compatibility closure; neither a window-specific special case
 nor a generic approval repairs this defect or the27 original accounting failures.
+
+## 2026-10-16 — Before execution: positive aggregation enclosure component
+
+Question: can a conservative rounding enclosure contain current positive aggregation,
+including RP-676's decreasing pair, without asserting that current payouts are monotone?
+Derive an exact-rational upper bound for represented inputs, not their rounded String
+forms. Proposed slack is (N+16G)*2^-52 + G*5e-15, with an additional
+2*2^-52+5e-12 for Q12. N/G are uniform source-term/positive-exponent-group ceilings,
+not endpoint-specific counts reused as an interval proof. Require 0<=G<=N<=86400002,
+actual counts within those ceilings and slack<1. The ceiling is this experiment's
+bounded domain, NOT a new production limit or a claim about every admitted producer.
+
+Manual Go source will execute actual SumDeterministic and Q12 against independent exact
+binary-mantissa rational sums on: the two retained65537-term RP-676 lists; zero/empty,
+singleton, group carry, exponent gaps17/18 and Q12 tie neighborhoods. Verify required
+Pow10 constants against exact powers, and worst-domain slack without allocating86M terms.
+Negative/special/non-state inputs, unsupported executable-reference exponents outside
+[-32,32], undersized ceilings and over-domain ceilings must refuse loudly. No random
+positive census, tolerance, altered comparison, production math/search/API or ordinary CI
+population. A failure invalidates the proposed component and is retained, not excluded.
+
+This is a bounded executable challenge to a source-derived candidate inequality, not a
+universal proof by sampling. The derivation must expose normalization/power and finite-normal
+arithmetic assumptions. Even a valid aggregation enclosure does not supply a uniform bound
+on all time-varying producer outputs, the search algorithm, real caller completeness or
+workload feasibility. RP-680/accounting remain OPEN; research/normative review and adoption
+are outside the corrective-code delegation. No release or feature status promotion.
+
+Before first execution, make normalization's library side condition finite and explicit:
+in addition to40 local exact-rational power comparisons, check every632 finite Pow10
+argument's outer magnitude and the two saturation edges. With positive normalization
+input in [1,4e15], a valid nonzero normalized result cannot use a shift outside[-2,16]
+under those checks; an underflowed zero cannot violate a positive upper bound. No
+monotonicity or accuracy assumption about Log10's selected integer is needed. The
+manual proof is for64-bit Go; no32-bit/client/hosted guarantee is inferred.
+
+Native first execution03707c PASS .437s package/.21s manual population: both retained
+decrease endpoints fit; exact-input envelope with the same ceilings increases. Both
+omitted-margin controls discriminate,12 refusals and all finite power premises pass.
+Before environment follow-up: execute the SAME source/population in the declared Linux
+AMD64 Go service with --no-deps (no database boundary in this component), using its
+/workspace overlay mapping. Also finish the native decimal package with the overlay
+and ordinary vet. Linux emulation is not native hosted hardware or TS parity.
+
+## 2026-10-16 — Positive aggregation enclosure: bounded component result
+
+Native full decimal package with the manual overlay59651c PASS .601s plus ordinary
+decimal vet. Declared Linux AMD64 service43509/e3b009 PASS .535s package/.50s manual
+population, no selected skips; same exact gaps as native. It ran --no-deps, created no
+Postgres service and its --rm test container is terminal. Docker Desktop emulation on
+ARM64, not native hosted Actions. No runtime/source edits occurred during either run.
+
+Both retained Q12 values stay1.968058018e6/1.96805801799e6. With the SAME N65537/G2,
+upper-minus-current is .000035134178807512/.000045134189634029; the rational upper
+envelope itself increases. Ten named edge cases execute raw and Q12 comparisons;
+alignment-round-up exceeds the zero-slack bound and Q12-round-up exceeds the raw-only
+bound. All12 explicit refusal cases and40 exact-power/632 range/2 saturation premises
+pass. Worst declared Q12 slack .000000758144133707 is derived, not a raised threshold.
+The source-derived candidate argument is in own draft H3d; its positive-operation
+path/product bound makes no generic actual-payout monotonicity claim.
+
+Reproduce native from root:
+`make test-go GO_PACKAGES='./decimal' GO_TEST_FLAGS='-count=1 -overlay=/Users/stronk/repos/cloud-clicker/.cache/positive-aggregation-enclosure.json -run TestPositiveAggregationEnclosureResearch -v'`.
+Overlay maps server/decimal/manual_positive_aggregation_enclosure_test.go to committed
+probes/positive-aggregation-enclosure.go.txt SHA256
+2ba2ca24645bfb470b1ab0136cbdf77482dde975fd29ea9bb450a0534ed71315.
+Ignored native overlay SHA2bb84a39039afdcca51392e2c2fc108adcf0fcd9b6089fd4b3f23c11e67b9d2f;
+Linux overlay SHA472a75647d4d12b323bfb8b7599d9b7755dc7561556dd928efd0cbd42946a8cf replaces
+the same paths under /workspace. Linux reproduction:
+`docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=/workspace/.cache/positive-aggregation-enclosure-linux.json -run TestPositiveAggregationEnclosureResearch -v ./decimal -count=1`.
+
+Only manual source, own draft and owning plan/log change. This bounded candidate is
+neither the temporal producer interval certificate nor complete search/caller/work
+proof. Exact rational arithmetic here is independent reference/certificate research,
+NOT adoption of Exact Represented Aggregation as payouts. No production/math/kernel,
+canonical behavior docs, ordinary CI, content, reports or acceptance labels changed.
+RP-680 and27 AC6 failures stay open. Next derive uniform producer/ledger envelopes
+before any new actual search implementation. Review by: Codex root (research author/
+first filter). Recorded by: Codex root. Complete four-path range4cf683d1-exclusive
+through this containing checkpoint requires research/normative review, outside the
+corrective-code delegation; no designated approval, feature closeout or release claim.

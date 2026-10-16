@@ -18,6 +18,14 @@ suite, not full RunRelevance, modern axis/hook integration or natural/report fai
 Next: a correct numeric-aware search/partition proof and caller/work/compatibility closure,
 not another positive monotonicity census, new tolerance, skipped interval or budget increase.
 
+H3d now derives a bounded positive-aggregation upper enclosure, without changing actual
+payouts or assuming monotone outputs. Its manual rational reference contains the retained
+decrease, checks finite power side conditions and catches both omitted rounding margins.
+This is a candidate proof component awaiting research review, NOT a temporal producer
+certificate or implemented search. Next establish uniform bounds on the real varying
+producer/ledger over time ranges, then prove chronological search and actual workload
+feasibility under the unchanged budgets. No existing defect or acceptance gate closes.
+
 2026-10-16: targeted actual-search preparation finds RP-678: harness cloneState restores
 an admitted v17 snapshot as v14, failing before affordability evaluation. The bounded
 source-version preservation correction and retained v14/v17 regression pass focused and full

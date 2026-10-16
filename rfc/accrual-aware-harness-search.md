@@ -403,6 +403,89 @@ unreachable result wrong because it contains the independently checked valid wit
 No algorithm adoption follows. A correct search must preserve such in-range candidates
 without assuming whole-horizon affordability is monotone or hiding work exhaustion.
 
+#### H3d — Positive aggregation upper enclosure, research component
+
+An alternative to the disproved generic monotonicity lemma is chronological interval
+search with **certified infeasibility**: exclude a range only when a sound upper bound
+for every payout in that range is below the frozen quote. A failed endpoint does not
+supply such a certificate. Search the earlier child first; exact point checks still use
+the real producer. Budget exhaustion remains an error, never an unreachable result.
+Without useful certificates this degenerates to a forbidden per-ms production scan;
+the component below does NOT establish a complete or feasible algorithm.
+
+For current `decimal.SumDeterministic`, consider nonnegative valid represented inputs
+with a successful valid result. Let S be their exact mathematical sum, interpreting
+each binary64 mantissa exactly and multiplying by exact 10^exponent, NOT parsing its
+Q12 String. Let N bound the number of inputs and G bound distinct positive-input
+exponent groups. Use uniform ceilings for an entire queried range, not an endpoint's
+group count assumed to apply before a carry. This research component restricts
+0<=G<=N<=86400002. That is an experimental domain, not a new content/runtime cap.
+
+Candidate source-derived enclosures, using exact rational arithmetic:
+
+```
+epsilon = 2^-52
+s_raw   = (N + 16*G)*epsilon + G*(5/10^15)
+s_Q12   = s_raw + 2*epsilon + 5/10^12
+U_raw   = S / (1 - s_raw)
+U_Q12   = S / (1 - s_Q12)
+```
+
+Require the denominator positive. The maximum declared Q12 slack is about7.582e-7;
+this is an analytical rounding allowance, not a changed equality tolerance, work
+budget or acceptance criterion. It does not replace actual payouts with S or U.
+
+Derivation for64-bit Go and positive finite-normal arithmetic:
+
+1. Each group's coefficient fold has at most N normal floating additions in total.
+   Each rounds upward by at most a factor1+epsilon. The group fold remains below1e9
+   under this N ceiling. Positivity is essential; signed cancellation is excluded.
+2. A group's `arithmeticResult` contributes at most one /10 rounding, plus normalization.
+   A nonzero valid normalization has coefficient-scaling shift in[-2,16]: its input is
+   in[1,4e15], and Pow10 outside that band leaves the coefficient outside[1,10) even
+   after the one correction. The finite power range checks below establish this
+   without relying on Log10 choosing the mathematically exact exponent. Saturation
+   that yields a valid zero only drops positive value; invalid results are refusals.
+   In-band Pow10 relative error is <=epsilon. Its reciprocal costs at most a
+   factor1+2*epsilon; division and the possible /10 or *10 correction each cost
+   another1+epsilon. Including arithmeticResult is at most five epsilon units/group.
+3. A nontrivial positive `Add` uses at most five epsilon units for the two scaled
+   operands, included Pow10 error and their sum. The aligned value is >=1e14.
+   `Floor(aligned+0.5)` is no greater than
+   aligned*(1+epsilon)*(1+5e-15): one addition rounding plus the explicit half-unit
+   allowance. Normalization costs at most four further epsilon units. Gaps>17
+   discard positive value and cannot violate an upper enclosure. Together with
+   step2 this is at most15 epsilon units/group;16 is a conservative integer ceiling.
+4. For Q12, exact factor1e11, positive normalized mantissa>=1 and nearest-integer
+   rounding give two normal multiply/divide roundings and relative allowance5e-12.
+   A carry to10 replaces it with exact1 at the next exponent. It adds no error term.
+5. Positive weighted sums are bounded by the product of their path factors; the
+   product of all factors overcounts every path. For nonnegative e_i with sum<1,
+   product(1+e_i)<=1/(1-sum(e_i)). This gives the displayed enclosures. Removing
+   roundings via fusion cannot exceed this positive-operation upper bound; do not
+   assume every source expression is separately rounded. Go explicitly permits
+   fusion ([language specification](https://go.dev/ref/spec#Floating-point_operators)).
+
+The [manual component test](../planning/clout-v1-and-pr-interns/probes/positive-aggregation-enclosure.go.txt)
+checks all40 Pow10 values from-17 through22 against exact rationals (nonnegative
+powers there are exact), all632 finite power arguments' normalization range bounds,
+and the two documented saturation edges
+([Pow10 contract](https://pkg.go.dev/math#Pow10)). It compares actual raw/Q12 sums
+with the candidate enclosure for declared edge cases and RP-676's two65537-term
+lists. Both fit while actual Q12 decreases; the SAME N=65537/G=2 envelope increases.
+Zero-slack and omitted-Q12-allowance controls actually underbound their named examples.
+This manual exact-rational reference explicitly refuses exponents outside[-32,32]
+and invalid/negative/special inputs or inadequate/unsupported ceilings.
+
+This source argument and bounded challenge await research/normative review, not
+corrective-code approval. They do not prove an interval enclosure for actual production
+rates, partial bucket generation, modifiers, ledger addition, caps or hooks. Even if
+all input terms increase, a **uniform** bound for their full range still needs proof;
+the observed pair is not such a proof. Complete producer enclosure, chronological
+search completeness, all caller refusal semantics, compatibility and unchanged work
+budgets remain open before implementation/adoption. RP-680 and the27 original AC6
+failures remain unresolved. No payout, runtime, report or ordinary CI change follows.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -564,3 +647,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   suite, catalog quote, affordability search and applied candidate-ranking arm. Extending
   the horizon by1ms suppresses a verified in-range purchase. No natural/report/full modern
   factory defect, globally earliest oracle, implementation or adoption is inferred.
+- 2026-10-16: derive a bounded positive-aggregation upper enclosure and execute its
+  finite power premises, retained decrease and meaningful omitted-margin controls.
+  Keep actual temporal producer, complete search, work and adoption obligations open;
+  this is not an algorithm implementation or a changed payout/equality tolerance.
