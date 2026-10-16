@@ -5643,3 +5643,16 @@ guard still refuses50a3a514. The owning Clout log holds exact commands and limit
 No new tier, feature acceptance, research adoption or release follows. Remaining
 search/accounting input/state/caller proof and real settlement stay engineering
 work; the full nine-tier1.0 goal remains active. Nothing pushed or deployed.
+
+## 2026-10-16 — Owner delegates independent technical specification review
+
+Marco answers the explicit follow-up question: "Delegate technical specification
+reviews to independent Codex". Extend the existing corrective-code exception to
+fresh independent Codex technical-specification reviewers; reconcile AGENTS in
+this change. The question preserves gameplay choices, authored copy, specification
+adoption and release approval under their existing gates. Independent technical
+approval therefore neither adopts a draft nor authorizes its implementation.
+Reviewers must inspect the actual complete scope, execute relevant checks and
+report exact ranges, evidence and limitations with actual reviewer/recorder
+provenance. The implementer cannot approve its own work. No outstanding review
+is automatically closed; no product, test, release or publication change.

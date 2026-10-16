@@ -71,10 +71,11 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
   specification amendments require designated cross-party review before acceptance or archival.
   Claude reviews Codex implementations; Codex reviews Claude implementations/specifications.
   Marco's 2026-10-15 delegation permits a fresh, independent Codex sub-agent instead of
-  Claude for outstanding corrective-code reviews only. The implementer cannot supply its
-  own approval; the reviewer independently inspects the complete range and executes relevant
-  checks. This exception does not cover new-feature acceptance, normative specification
-  review/adoption, product decisions or release approval, which retain their existing gates.
+  Claude for outstanding corrective-code reviews; his subsequent delegation also permits
+  technical specification reviews. The implementer cannot supply its own approval; the
+  reviewer independently inspects the complete range and executes relevant checks. Technical
+  review does not adopt a specification. New-feature acceptance, gameplay/product choices,
+  authored copy, specification adoption and release approval retain their existing gates.
   Related fixes, tests and records may share one exact review range. Editorial docs and routine
   log updates do not each require a separate review. See RFC-0000 for risk-based verification.
 
