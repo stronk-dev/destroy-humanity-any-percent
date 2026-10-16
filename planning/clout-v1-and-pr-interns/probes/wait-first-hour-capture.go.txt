@@ -5,14 +5,20 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"math"
 	"os"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
 
+	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/save"
 )
@@ -20,6 +26,193 @@ import (
 type firstHourReferenceResearch struct {
 	Cash     string `json:"cash"`
 	Lifetime string `json:"lifetime"`
+}
+
+// This exercises the CURRENT real consumer, not the proposed modern query.
+// Existing public-tree fixture helpers own the non-unit bonus and legal assets.
+func TestWaitFirstHourCandidateBoundaryResearch(t *testing.T) {
+	const horizon int64 = 1000
+	cases, references, rankedTransitions := 0, 0, int64(0)
+	delayed := map[string]int{}
+	rejected, unreachable, zeroRate := 0, 0, 0
+	for _, arm := range []string{"none", "unit", "tree"} {
+		for _, id := range []string{"generator.beige_tower", "upgrade.beige_tower_cache"} {
+			for _, maskName := range []string{"none", "generator", "upgrade", "removed_generator", "removed_upgrade", "removed_action"} {
+				for _, cashName := range []string{"immediate", "delayed"} {
+					t.Run(fmt.Sprintf("%s/%s/%s/%s", arm, id, maskName, cashName), func(t *testing.T) {
+						runtime := reputationReferenceFixture(t, arm)
+						suite, err := runtime.referenceRanker()
+						if err != nil {
+							t.Fatal(err)
+						}
+						mask := production.AblationMask{}
+						switch maskName {
+						case "generator":
+							mask.GeneratorIDs = []string{"generator.beige_tower"}
+						case "upgrade":
+							mask.UpgradeIDs = []string{"upgrade.beige_tower_cache"}
+						case "removed_generator":
+							mask.RemovedGeneratorIDs = []string{"generator.beige_tower"}
+						case "removed_upgrade":
+							mask.RemovedUpgradeIDs = []string{"upgrade.beige_tower_cache"}
+						case "removed_action":
+							mask.RemovedActionIDs = []string{"manual.click"}
+						}
+						resource, price, err := suite.candidateCost(runtime.company, id)
+						if err != nil || resource != "company.cash" {
+							t.Fatal("actual quote unavailable", resource, err)
+						}
+						balances := runtime.company.Ledger.Snapshot()
+						seed := price
+						if cashName == "delayed" {
+							seed = price.Sub(decimal.FromFloat64(2.5))
+						}
+						balances[resource] = seed.String()
+						runtime.company.Ledger, err = economy.RestoreLedger(suite.Catalog, economy.ScopeCompany, balances)
+						if err != nil {
+							t.Fatal("controlled ledger refused", err)
+						}
+						origin, err := save.EncodeState(runtime.company)
+						if err != nil {
+							t.Fatal(err)
+						}
+						at := int64(-1)
+						for candidateAt := int64(0); candidateAt <= horizon; candidateAt++ {
+							point, err := cloneState(suite.Catalog, runtime.company)
+							if err != nil {
+								t.Fatal(err)
+							}
+							if _, err := production.SimulateAdvance(point, suite.Catalog,
+								production.SimulationDependencies{Routes: suite.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(),
+								production.ModeOnline, relevanceNow(candidateAt), runtime.external(), mask); err != nil {
+								t.Fatal("actual chronological reference refused", candidateAt, err)
+							}
+							references++
+							balance, _ := point.Ledger.Balance(resource)
+							if balance.Gte(price) {
+								at = candidateAt
+								break
+							}
+							if candidateAt == horizon {
+								unreachable++
+							}
+						}
+						var want *save.State
+						var transition production.SimulationResult
+						var score relevanceProjection
+						expected := false
+						if at >= 0 {
+							want, err = cloneState(suite.Catalog, runtime.company)
+							if err != nil {
+								t.Fatal(err)
+							}
+							transition, err = production.SimulateTransition(candidateIntent(id, runtime.revision), want, suite.Catalog,
+								production.SimulationDependencies{Routes: suite.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(),
+								production.ModeOnline, relevanceNow(at), runtime.external(), nil, mask)
+							if err != nil {
+								t.Fatal("single-origin semantic reference failed", err)
+							}
+							if transition.Decision.Outcome == save.IntentApplied {
+								balance, _ := want.Ledger.Balance(resource)
+								target, err := decimal.ParseCanonical(suite.Scenario.Milestone.Amount)
+								if err != nil {
+									t.Fatal(err)
+								}
+								if balance.Gte(target) {
+									expected = true
+									score = relevanceProjection{Numerator: decimal.Zero, Denominator: decimal.One}
+								} else {
+									rate, err := production.SimulateResourceRateWithContributions(want, suite.Catalog, resource, runtime.external(), mask)
+									if err != nil {
+										t.Fatal(err)
+									}
+									if rate.Gt(decimal.Zero) {
+										expected = true
+										score = relevanceProjection{Numerator: target.Sub(balance).Mul(decimal.New(1, 3)), Denominator: rate}
+									} else {
+										zeroRate++
+									}
+								}
+								if at > 0 {
+									score.Numerator = score.Numerator.Add(score.Denominator.Mul(decimal.FromFloat64(float64(at))))
+								}
+							} else {
+								rejected++
+							}
+						}
+						counter := &relevanceCounter{limit: runtime.suite.Scenario.TransitionBudget}
+						got, ok, err := suite.rankCandidate(runtime.company, runtime.revision, 0, horizon, id, mask, counter)
+						rankedTransitions += counter.value
+						if err != nil || ok != expected {
+							t.Fatal("actual consumer changed reference availability", ok, expected, at, err)
+						}
+						if ok {
+							if got.ID != id || got.AtMS != at || got.Revision != runtime.revision+1 ||
+								!got.Projection.Numerator.Eq(score.Numerator) || !got.Projection.Denominator.Eq(score.Denominator) {
+								t.Fatal("actual candidate coordinates/score differ", got.ID, got.AtMS, at, got.Projection, score)
+							}
+							requireReferenceCompanyEqual(t, got.State, want)
+							if !slices.Equal(got.RoleActivations, transition.RoleActivations) {
+								t.Fatal("actual candidate loses/repeats role observations", got.RoleActivations, transition.RoleActivations)
+							}
+							if at > 0 {
+								delayed[id]++
+								if !got.State.LifetimeValue.Gt(runtime.company.LifetimeValue) {
+									t.Fatal("delayed purchase did not exercise lifetime work")
+								}
+							}
+						}
+						if after, err := save.EncodeState(runtime.company); err != nil || !bytes.Equal(origin, after) {
+							t.Fatal("actual candidate/reference consumed origin", err)
+						}
+						cases++
+					})
+				}
+			}
+		}
+	}
+	if cases != 72 || delayed["generator.beige_tower"] == 0 || delayed["upgrade.beige_tower_cache"] == 0 || rejected == 0 || unreachable == 0 || zeroRate == 0 {
+		t.Fatal("incomplete/non-discriminating candidate population", cases, delayed, rejected, unreachable, zeroRate)
+	}
+	t.Logf("actual candidate cases%d reference-advances%d ranked-transitions%d delayed%v rejected%d unreachable%d zero-rate%d; reference setup/action/rate/codec work separate, not total workload or modern-query integration", cases, references, rankedTransitions, delayed, rejected, unreachable, zeroRate)
+}
+
+type candidateErrorResearch struct {
+	inner production.AccrualHook
+	cause error
+}
+
+func (hook candidateErrorResearch) AfterAccrual(state *save.State, catalog *economy.Catalog, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
+	if _, err := hook.inner.AfterAccrual(state, catalog, revision, result, contributions); err != nil {
+		return nil, err
+	}
+	return nil, hook.cause
+}
+
+func TestWaitFirstHourCandidateErrorsResearch(t *testing.T) {
+	runtime := reputationReferenceFixture(t, "tree")
+	suite, err := runtime.referenceRanker()
+	if err != nil {
+		t.Fatal(err)
+	}
+	origin, err := save.EncodeState(runtime.company)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// An immediate affordable candidate must still charge its semantic action.
+	if got, ok, err := suite.rankCandidate(runtime.company, runtime.revision, 0, 1000, "generator.beige_tower", production.AblationMask{}, &relevanceCounter{limit: 0}); err == nil || ok || got.State != nil {
+		t.Fatal("budget exhaustion became success/unreachable", ok, err)
+	}
+	// Actual positive-elapsed evaluation/hook failure must propagate unchanged,
+	// even when the visible balance was affordable before the query.
+	cause := errors.New("injected candidate hook failure")
+	suite.hook = candidateErrorResearch{runtime.lifetimeHook(), cause}
+	if got, ok, err := suite.rankCandidate(runtime.company, runtime.revision, 1, 1000, "generator.beige_tower", production.AblationMask{}, &relevanceCounter{limit: runtime.suite.Scenario.TransitionBudget}); !errors.Is(err, cause) || ok || got.State != nil {
+		t.Fatal("semantic action hook failure was hidden/relabelled", ok, err)
+	}
+	if after, err := save.EncodeState(runtime.company); err != nil || !bytes.Equal(origin, after) {
+		t.Fatal("refused actual candidate consumed source", err)
+	}
 }
 
 type firstHourAnchorResearch struct {

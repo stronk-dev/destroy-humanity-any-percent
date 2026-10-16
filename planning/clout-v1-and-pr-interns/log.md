@@ -7610,3 +7610,83 @@ work OUTSIDE corrective-code review delegation. Review by: Codex root (research
 author/first filter). Recorded by: Codex root. Designated normative review/adoption
 remain pending; no acceptance, archival, release, push/publication or deployment.
 Full nine-tier1.0 goal remains active/progress.
+
+## 2026-10-16 — actual delayed candidate boundary, bounded comparison
+
+Prior50178a25 is PROGRESS, not the live search repair. Existing ordinary
+Reputation Reference tests cover immediate purchases/lifetime and bank dispatch;
+do not duplicate them as a new acceptance program. Extend the manual first-hour
+capture source with a separate actual-ranker comparison using its existing legal
+run3 fixture (none/unit/tree external arms), two actual generator/upgrade quotes,
+six masks (none plus all five supported fields) and immediate/delayed cash
+controls:72 cases. These are controlled ledger populations, not naturally earned
+or newly observed default choices. Keep current policy/catalog/budgets unchanged.
+
+For each case scan actual SimulateAdvance from the unchanged origin over0..1000ms
+to establish earliest affordability, then independently execute ONE actual
+SimulateTransition from that origin at the selected endpoint. Compare actual
+rankCandidate availability, full state, revision, roles and exact score components,
+including rejected actions and zero post-purchase rates. Count reference work and
+actual ranker counters separately; no matched speed or modern-query integration
+claim. Require delayed successful generator AND upgrade cases, explicit refusal/
+unreachable companions, unchanged sources, and real budget/error propagation.
+Execute native and declared Linux plus existing affected Reference tests. This
+checks the current consumer boundary, not adoption of either draft or full workload.
+
+### H3v result — current delayed candidate compatibility, positive and bounded
+
+All72 cases execute. Exact references use21062 advances; actual rankCandidate
+charges412 transitions. Forty-eight selected candidates preserve full encoded
+state, coordinates and exact score components, including24 delayed purchases
+(12 generator/12 upgrade). Twelve real action refusals, six unreachable quotes
+and six applied-but-zero-rate/non-ranked outcomes remain distinct. Zero-budget
+action refusal and an injected failure AFTER the actual lifetime hook expose
+no success child or source mutation. This is controlled run3 cash, not natural
+earning, broad ordering correctness or integration of H3u's new bounded query.
+
+Initial54455 FAIL2.004s:48 successful-state comparisons reach an overstrict
+nil-versus-empty role-slice check. Compare ordered elements with slices.Equal;
+do not invent a role payload distinction in this private list. All role lists
+are EMPTY here, so nonempty role preservation remains unproved by this fixture.
+Final3731 PASS2.085s plus ordinary harness vet. Frozen full native85863
+PASS4.616s also reexecutes the original actual capture/public-runner+script
+comparison and existing Reference lifetime/frozen-input tests. Linux26496
+PASS3.976s runs the new/ordinary Reference population; full92333 then PASS
+harness9.217s and production0.573s, sequential packages with -p1. Current
+native/Linux capture remains byte-identical228362 bytes, SHA256
+f8a80a6c0d1f3d1ecc7c041edc00e26784676fda16e6f237af8462dbdc66f921:
+three source14 states,3003 references,19 commands,11916 original transitions.
+Affected production lifetime/domain checks also pass natively0.545s and a
+post-producer terminal repeat0.384s. No complete workload/hosted/SQL claim.
+
+An ignored copy of the ACTUAL solver severs only the wait-time score addition.
+Full negative75454 FAIL1.736s:all24 delayed selections hit the explicit score
+mismatch while immediate/refusal/unreachable cases survive. Initial38296's
+single-subcase selector also hits the population-completeness guard and is NOT
+the full discriminator; the full72-case run above supplies it. The normal
+solver/reference sources never change. No normal rerun is needed on unchanged
+source after an isolated overlay fault. All handles terminal; diff checked.
+
+Reproduce native from root:
+`make test-go vet GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWaitFirstHourCaptureResearch\|TestWaitFirstHourCandidate\|TestReputationReferenceLifetimeAccounting\|TestReputationReferenceFrozenInputDiagnostic -v'`.
+For production use GO_PACKAGES='./production' and -run TestWaitFirstHourLifetime.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run 'TestWaitFirstHour|TestReputationReferenceLifetimeAccounting|TestReputationReferenceFrozenInputDiagnostic' -v ./harness ./production -count=1`.
+The negative uses the ignored two-entry candidate-score-severed-overlay.json,
+with the actual solver's waitMS numerator update removed, and the FULL
+TestWaitFirstHourCandidateBoundaryResearch selector. SHA256: manual source
+b06a1a1a685d8f4072cf2b30c2d2eff1522523312304078af8c11ebcc396d6f0;
+fault solver7cf94cda624d596e1e4557b6912bc9155884508c3a9f98bb49eecac57589b34b;
+fault overlayf919e95eb19e0a0ceb542f379dc87bc09a1b960fac2f6f1e3f4391fa1c8bf91d.
+
+H3v and parent C1c now explicitly retain this positive CURRENT-caller result:
+do not claim that its wait-then-buy necessarily loses lifetime state. The new
+closed-replay action must nevertheless own its full interval evaluation/events.
+Next prove that owned modern original-state action against actual logged stages;
+then integrate real consumers and measure complete work/compatibility. Existing
+mask/schedule/TS/lifecycle/SQL and normative adoption obligations remain. The
+five-path50178a25-exclusive range through this checkpoint is research/specification
+work OUTSIDE corrective-code review delegation. Review by: Codex root (author/
+first filter). Recorded by: Codex root. No independent approval, feature/release
+acceptance or archival; no product/schema/data/CI/golden/kernel223/epoch8 change.
+RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN, not rerun/fixed here.
+No push/publication/deployment. Full nine-tier1.0 goal stays active/progress.

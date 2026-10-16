@@ -271,8 +271,12 @@ result shape is proposed, not an existing API/wire change.
 For a real intent at `t`, restore the origin and execute its normal accrual, hooks
 and action at `t` once, even if search already inspected a projection at `t`.
 Do not first install that projection and call `SimulateTransition` at the same
-timestamp: its zero-elapsed evaluation would omit the interval's lifetime/stock
-work. The resulting applied full state, including post-action attainment and debit,
+timestamp: its zero-elapsed evaluation is not the action's original interval
+evaluation/hook/event result. A detached view can already contain state effects;
+this is not a claim that every existing wait-then-buy caller loses lifetime work.
+Child H3v's bounded current first-hour comparison preserves that work, while the
+new closed-replay action must still own its actual interval receipts/events.
+The resulting applied full state, including post-action attainment and debit,
 becomes the next origin. Existing authoritative return/mode boundaries close their
 old stage using the existing offline allowance/banking rules; arbitrary probe times,
 provision ticks, rounding changes or failed purchases do not create such boundaries.
@@ -1119,3 +1123,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-16: retain H3u's bounded query composition and first-error evidence;
   distinguish its endpoint floor/zero schedule prefix from a new settlement or
   origin. Live caller migration, full work/error policy and adoption remain open.
+- 2026-10-16: clarify C1c's action-origin rationale using H3v's bounded current
+  first-hour compatibility. Existing wait-then-buy can preserve lifetime state;
+  the proposed action must still own its actual interval evaluation/events.

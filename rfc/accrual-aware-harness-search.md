@@ -1665,6 +1665,32 @@ including general scheduling, all mask families, actual TS owner/query, lifecycl
 and full workloads before normative adoption. No live math/save/schema/data/CI
 change, RP-680 repair,27-AC6 closure or 1.0 milestone follows from this component.
 
+#### H3v — Actual first-hour candidate boundary (bounded compatibility)
+
+The existing [manual harness source](../planning/clout-v1-and-pr-interns/probes/wait-first-hour-capture.go.txt)
+also executes the CURRENT `rankCandidate` against an independent chronological
+`SimulateAdvance` reference and one original-state `SimulateTransition`. It reuses
+the existing legal run3 fixture with none/unit/tree frozen factors, two actual
+catalog quotes, all five mask fields plus unmasked, and immediate/delayed cash
+controls. These72 cases are controlled ledger diagnostics, not natural acquisition.
+
+All selected full states, revisions, earliest times and exact score components
+agree. Twenty-four delayed purchases (12 generator/12 upgrade),12 rejected
+actions, six unreachable quotes and six applied-but-zero-rate cases execute.
+The latter is correctly not a ranked milestone candidate. Budget exhaustion and
+an injected failure after the actual lifetime hook propagate without a child or
+origin mutation.
+Role lists agree but are EMPTY in this fixture: no nonempty-role claim follows.
+
+The current first-hour wait-then-buy path does NOT lose lifetime state in this
+population. That does not license installing modern projection views as action
+origins or discarding their required private events. This test is not execution
+of H3u's bounded query in the harness, a closed-replay action adapter, generic
+schedule/score/order proof or complete workload/dispatch acceptance. The owning
+log separates21062 reference advances from412 actual ranker transitions; neither
+is total work or a matched performance claim. Existing score/policy/budgets and
+all original RP-680/Clout AC6 failures remain unchanged.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -1884,3 +1910,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   with validated zero schedule prefix, origin-preserving floors, actual first-error
   controls and exposed setup/fallback work. Full consumer/workload and normative
   adoption remain; accepted live binary search is unchanged.
+- 2026-10-16: H3v grounds the actual current delayed candidate/action/score
+  boundary in72 controlled first-hour cases. Preserve its bounded positive
+  compatibility result without claiming modern-query integration or lost lifetime
+  in this existing caller; full workload/dispatch and normative adoption remain.

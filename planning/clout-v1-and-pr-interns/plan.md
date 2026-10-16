@@ -131,7 +131,15 @@ return an earlier point. Thirty-seven bounded/reference queries preserve complet
 results (including the first5001ms window) and real first stock/schedule errors.
 Preparation/fallback costs stay visible; this is still not the accepted live search.
 
-Next measure complete candidate/consumer work and error/scoring compatibility;
+H3v's72 controlled actual first-hour candidate cases also preserve full selected
+state/score and delayed lifetime work against a single original-state action.
+This is a positive CURRENT-caller compatibility boundary, not H3u integration or
+the modern closed-replay action adapter; role lists are empty in that fixture.
+
+Next bind the owned modern calculation's semantic ACTION from its original
+state against the actual logged catchup/clearing/hook/action result. H3v checks
+the existing first-hour consumer, not that new action or query integration.
+Then measure complete candidate/consumer work and error/scoring compatibility;
 finish general scheduling, all mask families, actual TS owner/query and full
 workload/compatibility before adoption. Complete input/mask/map,
 post-hook state, real settlement and global/caller/timestamp/encoding/state/lifecycle
