@@ -1,0 +1,222 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"math"
+	"os"
+	"strings"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+// Manual partial-domain research. This does not establish complete wait validity.
+func TestWaitCellPartialDomainResearch(t *testing.T) {
+	data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, row := range []struct {
+		name, rate, efficiency string
+		mode                   EvaluationMode
+		masked, succeeds       bool
+	}{
+		{"secondary_lower_domain", "1e-8999999999999999", "1e0", ModeOnline, false, false},
+		{"secondary_headroom", "1e-8999999999999996", "1e0", ModeOnline, false, true},
+		{"secondary_masked", "1e-8999999999999999", "1e0", ModeOnline, true, true},
+		{"secondary_zero_efficiency", "1e-8999999999999999", "0", ModeOffline, false, true},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			var root map[string]any
+			if err := json.Unmarshal(data, &root); err != nil {
+				t.Fatal(err)
+			}
+			root["provision_tick_ms"] = 1000
+			root["offline_policy"].(map[string]any)["efficiency"] = row.efficiency
+			changed := 0
+			for _, value := range root["generator_classes"].([]any) {
+				generator := value.(map[string]any)
+				if generator["id"] == "generator.beige_tower_v2" {
+					generator["production"] = map[string]any{"resource_id": "company.permits", "base_rate": row.rate}
+					changed++
+				}
+			}
+			if changed != 1 {
+				t.Fatal("missing/duplicate controlled producer")
+			}
+			catalogBytes, err := json.Marshal(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			catalog, err := economy.LoadCatalog(catalogBytes)
+			if err != nil {
+				t.Fatal("catalog not admitted", err)
+			}
+			state, err := save.RestoreState([]byte(`{"balances":{"company.cash":"0","company.permits":"0"}}`), 1, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state.WireVersion = 17
+			state.AchievementsEarnedRun = map[string]bool{}
+			state.GeneratorCounts["generator.beige_tower_v2"] = 1
+			state.GeneratorPurchasedTotal = 1
+			origin, err := save.EncodeState(state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state, err = save.RestoreState(origin, 17, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal("origin not admitted", err)
+			}
+			mask := AblationMask{}
+			if row.masked {
+				mask.GeneratorIDs = []string{"generator.beige_tower_v2"}
+			}
+			good, refused := 0, 0
+			for at := int64(0); at <= 1000; at++ {
+				current, err := save.RestoreState(origin, 17, catalog, economy.ScopeCompany, engineCursor)
+				if err != nil {
+					t.Fatal(err)
+				}
+				_, err = SimulateAdvance(current, catalog, SimulationDependencies{}, save.Revision{}, row.mode,
+					state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond), nil, mask)
+				wantFailure := !row.succeeds && at > 0 && at < 1000
+				if wantFailure {
+					if !errors.Is(err, ErrInvalidEngineState) || !strings.Contains(err.Error(), ErrInvalidAccrual.Error()) {
+						t.Fatal("wrong failure stage", at, err)
+					}
+					unchanged, encodeErr := save.EncodeState(current)
+					if encodeErr != nil || !bytes.Equal(unchanged, origin) {
+						t.Fatal("failed wait mutated complete state", at, encodeErr)
+					}
+					refused++
+				} else {
+					if err != nil {
+						t.Fatal("valid wait refused", at, err)
+					}
+					cash, ok := current.Ledger.Balance("company.cash")
+					if !ok || !cash.Eq(decimal.Zero) {
+						t.Fatal("unexpected cash", at, cash)
+					}
+					good++
+				}
+			}
+			if good+refused != 1001 || !row.succeeds && (good != 2 || refused != 999) {
+				t.Fatal("incomplete or changed population", good, refused)
+			}
+			t.Logf("actual full waits1001: valid%d refused%d; failed states byte-unchanged", good, refused)
+			if !row.succeeds {
+				raw, err := buildRawWaitCellsResearch(state, catalog, row.mode, 1000, mask, SimulationDependencies{}, "")
+				if err != nil {
+					t.Fatal("original constructor cannot exercise the cash-only miss", err)
+				}
+				calls := 0
+				found, err := raw.search(decimal.One, 2002, func(int64) (decimal.Decimal, error) { calls++; return decimal.NaN, ErrInvalidAccrual })
+				if err != nil || found != -1 || calls != 0 {
+					t.Fatal("original prototype miss changed", found, err, calls)
+				}
+				t.Log("retained raw prototype returns unreachable/nil with zero actual points; protected construction must reject")
+			}
+			factory, buildErr := buildWaitCellsResearch(state, catalog, row.mode, 1000, mask, SimulationDependencies{}, "")
+			if !row.succeeds {
+				if buildErr == nil {
+					calls := 0
+					found, searchErr := factory.search(decimal.One, 2002, func(int64) (decimal.Decimal, error) { calls++; return decimal.NaN, ErrInvalidAccrual })
+					t.Logf("unsafe cash-only search: found%d err%v actual_points%d", found, searchErr, calls)
+					t.Fatal("constructor accepted a range containing999 actual producer refusals")
+				}
+				if !errors.Is(buildErr, ErrInvalidAccrual) || !strings.Contains(buildErr.Error(), "company.permits") || !strings.Contains(buildErr.Error(), "duration1") {
+					t.Fatal("constructor failed at wrong boundary", buildErr)
+				}
+			} else if buildErr != nil {
+				t.Fatal("valid companion constructor refused", buildErr)
+			}
+			unchanged, err := save.EncodeState(state)
+			if err != nil || !bytes.Equal(unchanged, origin) {
+				t.Fatal("research mutated origin", err)
+			}
+		})
+	}
+}
+
+func TestWaitCellPartialCacheResearch(t *testing.T) {
+	cell := func(values []decimal.Decimal, width, burst int64) waitCellResearch {
+		return waitCellResearch{lo: 0, hi: width, burst: burst, allRates: map[string][]decimal.Decimal{"company.cash": values}}
+	}
+	t.Run("canonical_or_exponent_alias_would_hide_refusal", func(t *testing.T) {
+		const edge int64 = 8_999_999_999_999_999
+		safe := decimal.New(1, -edge+3)
+		aliased := decimal.New(math.Nextafter(10, 0), -edge+2)
+		if safe.String() != aliased.String() {
+			t.Fatal("canonical alias control differs")
+		}
+		for _, unsafe := range []decimal.Decimal{aliased, decimal.New(1, -edge)} {
+			factory := &waitCellsResearch{eff: decimal.One, bonus: decimal.Zero, cells: []waitCellResearch{
+				cell([]decimal.Decimal{safe}, 3, 0), cell([]decimal.Decimal{unsafe}, 3, 0),
+			}}
+			err := certifyWaitCellPartialsResearch(factory)
+			if !errors.Is(err, ErrInvalidAccrual) || !strings.Contains(err.Error(), "duration1") || factory.work.PartialContexts != 2 || factory.work.PartialChecks != 6 {
+				t.Fatal("unsafe rate reused a different context's passing domain", factory.work, err)
+			}
+		}
+	})
+	t.Run("burst_duration_alias_would_hide_overflow", func(t *testing.T) {
+		const edge int64 = 8_999_999_999_999_999
+		rate := decimal.New(6, edge)
+		factory := &waitCellsResearch{eff: decimal.One, bonus: decimal.New(1, 3), cells: []waitCellResearch{
+			cell([]decimal.Decimal{rate}, 3, 1), cell([]decimal.Decimal{rate}, 3, 2),
+		}}
+		err := certifyWaitCellPartialsResearch(factory)
+		if !errors.Is(err, ErrInvalidAccrual) || !strings.Contains(err.Error(), "duration2") || factory.work.PartialContexts != 2 || factory.work.PartialChecks != 7 {
+			t.Fatal("unsafe burst reused a passing burst duration", factory.work, err)
+		}
+	})
+	t.Run("raw_mantissa_exponent_and_equivalent_vector", func(t *testing.T) {
+		adjacent := decimal.New(math.Nextafter(1, 2), 0)
+		if adjacent.String() != decimal.One.String() || adjacent.Mantissa() == decimal.One.Mantissa() {
+			t.Fatal("raw collision control differs")
+		}
+		factory := &waitCellsResearch{eff: decimal.One, bonus: decimal.Zero, cells: []waitCellResearch{
+			cell([]decimal.Decimal{decimal.One}, 3, 0),
+			cell([]decimal.Decimal{adjacent}, 3, 0),
+			cell([]decimal.Decimal{decimal.New(1, 1)}, 3, 0),
+			cell([]decimal.Decimal{decimal.One, decimal.Zero}, 3, 0),
+		}}
+		if err := certifyWaitCellPartialsResearch(factory); err != nil {
+			t.Fatal(err)
+		}
+		if factory.work.PartialContexts != 3 || factory.work.PartialChecks != 12 || factory.work.PartialReuses != 1 {
+			t.Fatal("raw identity or equivalent-vector transfer is wrong", factory.work)
+		}
+	})
+	t.Run("coverage_extends_and_subranges_reuse", func(t *testing.T) {
+		factory := &waitCellsResearch{eff: decimal.One, bonus: decimal.Zero, cells: []waitCellResearch{
+			cell([]decimal.Decimal{decimal.One}, 3, 0), cell([]decimal.Decimal{decimal.One}, 5, 0),
+			cell([]decimal.Decimal{decimal.One}, 2, 0), cell([]decimal.Decimal{decimal.One}, 5, 0),
+		}}
+		if err := certifyWaitCellPartialsResearch(factory); err != nil {
+			t.Fatal(err)
+		}
+		if factory.work.PartialContexts != 1 || factory.work.PartialChecks != 6 || factory.work.PartialReuses != 2 {
+			t.Fatal("coverage extension or reuse is wrong", factory.work)
+		}
+	})
+	t.Run("burst_schedules_are_distinct", func(t *testing.T) {
+		factory := &waitCellsResearch{eff: decimal.One, bonus: decimal.FromString("1e12").Sub(decimal.One), cells: []waitCellResearch{
+			cell([]decimal.Decimal{decimal.One}, 3, 0), cell([]decimal.Decimal{decimal.One}, 3, 8),
+			cell([]decimal.Decimal{decimal.One}, 3, 1), cell([]decimal.Decimal{decimal.One}, 2, 2),
+			cell([]decimal.Decimal{decimal.One}, 3, 2),
+		}}
+		if err := certifyWaitCellPartialsResearch(factory); err != nil {
+			t.Fatal(err)
+		}
+		if factory.work.PartialContexts != 4 || factory.work.PartialChecks != 16 || factory.work.PartialReuses != 1 {
+			t.Fatal("burst context coalescing is wrong", factory.work)
+		}
+	})
+}

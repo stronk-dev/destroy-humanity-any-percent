@@ -631,6 +631,62 @@ for this prototype. One ordered local setup/search timing is not comparative
 performance evidence. Current runtime/search/arithmetic/report identities and all
 acceptance/review gates remain unchanged; RP-680 and Clout AC6 stay open.
 
+#### H3g — All-resource partial arithmetic certificate (RP-681)
+
+H3f's missing definedness premise has an executed counterexample, not merely a
+warning. In an admitted v17/tick1000 origin, a secondary permits rate at the minimum
+valid exponent succeeds for a full1000ms segment, yet actual `SimulateAdvance`
+refuses every1..999ms. Cash stays zero. The old research constructor accepts its
+full segments and cash-only search returns unreachable/nil without a point call.
+That is a research-prototype defect, not newly executed private harness evidence.
+
+The [partial-domain diagnostic](../planning/clout-v1-and-pr-interns/probes/wait-cell-partial-domain.go.txt)
+executes all0..1000 actual waits for this input and three companions: more exponent
+headroom, provider masking and zero offline efficiency. The bad input gives999 typed
+engine/accrual refusals and two successes; all3003 companion points succeed. Failed
+Company save encodings remain byte-identical, not a claim about every transient
+in-memory field. Zero efficiency is a valid companion under the actual helper:
+do not replace its behavior with an invented raw-exponent rejection policy.
+
+The manual constructor now retains every produced resource's rate vector and
+preflights the actual `accrueBoostedConstant` for integer partial durations. A
+failure names cell/resource/duration and preserves the helper's error identity;
+the bad permits context fails at1ms before cash pruning can hide it. The old
+upper-only constructor is retained explicitly for the negative control. No active
+production code, arithmetic, harness policy or ordinary CI population changes.
+
+Reuse has a narrow source-derived justification. The helper validates all input
+rates, then depends on them only through its exact raw deterministic sum. Validate
+each new vector before reuse. Cache identity contains that sum's binary mantissa
+bits AND exponent, efficiency/bonus bits and exponents, and burst schedule. Separate
+no-burst, full-cell burst and partial burst; a partial schedule binds its exact
+remaining milliseconds. For each key retain the greatest completely checked
+duration, extend missing durations explicitly and reuse only covered subranges.
+The cache is constructor-local, not a new persisted or cross-run identity protocol.
+
+String identity is unsafe even for this validity-only cache: a safe headroom rate
+and a raw coefficient just below a decimal carry share a Q12 String, but the latter
+fails at1ms. Same-mantissa/different-exponent and one-versus-two-ms burst aliases
+also hide real helper failures if merged. Executed semantic controls expose those
+refusals, alongside raw identity, equivalent validated vectors, coverage extension
+and burst-class controls. They are pure-helper inputs, not asserted natural saves.
+
+All12028 prior actual-wait references/controls still pass. The long retained
+constructor uses five partial-arithmetic contexts and4004 actual checks, reusing
+131068 resource-cell ranges after131074 rate sums. Default60000ms-grid preparation
+needs120008 partial checks across three contexts. This explicit setup cost is NOT
+hidden in the one-point query count or proof of full-workload feasibility.
+
+This certifies only the pure partial arithmetic over the manual constructor's
+finite domain. It does not certify final multi-segment aggregation, ledger caps,
+receipt reproduction, progress, hooks or modern contexts. Nor does an eager failed
+preflight adopt an error-precedence policy over a valid earlier search result
+(including already affordable time0). The real caller must preserve its accepted
+semantics and distinguish invalid/unproved ranges from certified absence; this
+prototype is not authority to shrink its supported domain. Complete composite
+definedness/error handling, real workloads, compatibility and normative adoption
+remain open. RP-680 and the27 original accounting failures are not fixed here.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -804,3 +860,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   provision producers; compare12028 actual waits and retain control/guard failures.
   Keep general definedness, modern contexts, real workloads and adoption open;
   no active factory/search, budget or payout behavior changes.
+- 2026-10-16: reproduce RP-681's hidden secondary-resource partial refusals, add
+  constructor-local raw-identity partial certification and execute semantic cache
+  alias controls. Keep final aggregation/ledger/error precedence, modern contexts,
+  complete workloads and adoption separate; no production search or numeric change.

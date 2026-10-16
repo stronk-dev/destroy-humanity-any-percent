@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"math"
 	"math/big"
 	"os"
 	"sort"
@@ -24,11 +25,13 @@ type waitCellResearch struct {
 	prefixSum            *big.Rat
 	groups               int64
 	rates                []decimal.Decimal
+	allRates             map[string][]decimal.Decimal
 }
 
 type waitCellWorkResearch struct {
 	Cells, Rates, Provisions, Deltas, PrefixWrites, Scalars, Certificates, Points int
 	ReconstructionCalls, ReconstructionTerms                                      int
+	PartialChecks, PartialContexts, PartialReuses, PartialRateSums                int
 }
 
 type waitCellsResearch struct {
@@ -41,6 +44,82 @@ type waitCellsResearch struct {
 }
 
 func buildWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode EvaluationMode, horizon int64, mask AblationMask, dependencies SimulationDependencies, fault string) (*waitCellsResearch, error) {
+	factory, err := buildRawWaitCellsResearch(state, catalog, mode, horizon, mask, dependencies, fault)
+	if err != nil {
+		return nil, err
+	}
+	if err := certifyWaitCellPartialsResearch(factory); err != nil {
+		return nil, err
+	}
+	return factory, nil
+}
+
+// Arithmetic only: no assertion about final aggregation, caps or receipts.
+func certifyWaitCellPartialsResearch(factory *waitCellsResearch) error {
+	type contextKey struct {
+		raw       [6]uint64
+		burstKind uint8 // none, entire cell, or partial with exact remaining duration
+		burstMS   int64
+	}
+	covered := map[contextKey]int64{}
+	for index, cell := range factory.cells {
+		if cell.flat {
+			continue
+		}
+		width := cell.hi - cell.start
+		resources := make([]string, 0, len(cell.allRates))
+		for id := range cell.allRates {
+			resources = append(resources, id)
+		}
+		sort.Strings(resources)
+		for _, resource := range resources {
+			rates := cell.allRates[resource]
+			for _, rate := range rates {
+				if !rate.IsStateValue() || rate.Lt(decimal.Zero) {
+					return fmt.Errorf("partial certificate cell%d resource%s: %w", index, resource, ErrInvalidAccrual)
+				}
+			}
+			total := decimal.SumDeterministic(rates)
+			factory.work.PartialRateSums++
+			if !total.IsStateValue() {
+				return fmt.Errorf("partial rate sum cell%d resource%s: %w", index, resource, ErrInvalidAccrual)
+			}
+			key := contextKey{raw: [6]uint64{math.Float64bits(total.Mantissa()), uint64(total.Exponent()),
+				math.Float64bits(factory.eff.Mantissa()), uint64(factory.eff.Exponent()),
+				math.Float64bits(factory.bonus.Mantissa()), uint64(factory.bonus.Exponent())}}
+			if cell.burst > 0 {
+				key.burstKind = 1
+				if cell.burst < width {
+					key.burstKind, key.burstMS = 2, cell.burst
+				}
+			}
+			last, exists := covered[key]
+			if !exists {
+				last = -1
+				factory.work.PartialContexts++
+			}
+			if last >= width {
+				factory.work.PartialReuses++
+				continue
+			}
+			for duration := last + 1; duration <= width; duration++ {
+				boosted := duration
+				if boosted > cell.burst {
+					boosted = cell.burst
+				}
+				factory.work.PartialChecks++
+				if _, err := accrueBoostedConstant(rates, duration, boosted, factory.eff, factory.bonus); err != nil {
+					return fmt.Errorf("partial certificate cell%d resource%s duration%d: %w", index, resource, duration, err)
+				}
+			}
+			covered[key] = width
+		}
+	}
+	return nil
+}
+
+// Original upper-only constructor, retained for the executed RP-681 control.
+func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode EvaluationMode, horizon int64, mask AblationMask, dependencies SimulationDependencies, fault string) (*waitCellsResearch, error) {
 	if state == nil || state.Ledger == nil || catalog == nil || horizon < 0 || horizon > 86_460_000 ||
 		mode != ModeOnline && mode != ModeOffline || dependencies.Hook != nil || save.VersionForState(state) >= 18 ||
 		fault != "" && fault != "grid" && fault != "provision" && fault != "cap" {
@@ -135,7 +214,7 @@ func buildWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode Ev
 		}
 		result.cells = append(result.cells, waitCellResearch{lo: lo, hi: end, start: start, burst: remainingBurst,
 			prefix: prefix[:len(prefix):len(prefix)], prefixSum: new(big.Rat).Set(prefixSum), groups: int64(len(groups)),
-			rates: append([]decimal.Decimal(nil), rates["company.cash"]...)})
+			rates: append([]decimal.Decimal(nil), rates["company.cash"]...), allRates: rates})
 		bonusMS := width
 		if bonusMS > remainingBurst {
 			bonusMS = remainingBurst

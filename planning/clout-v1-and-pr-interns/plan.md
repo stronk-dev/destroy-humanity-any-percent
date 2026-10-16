@@ -16,16 +16,21 @@ with nil error. Owning log/manual source retain source/hash/budget/receipt/uncha
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
 
-Draft H3d–H3f now supply a candidate positive-aggregation enclosure, its partial
+Draft H3d–H3g now supply a candidate positive-aggregation enclosure, its partial
 producer/ledger composition and a source-driven wait-cell constructor. The4004
 pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
 four small whole-wait populations are exhaustive and match independently scanned
 earliest points. The retained long wait builds65537 cells and finds its known
 valid point despite the unaffordable horizon. Setup/reference/search work is
 separately counted; none is a live search, changed payout or adopted work budget.
+RP-681 adds4004 actual waits:999 expected secondary-resource partial refusals are
+now caught before prototype pruning, while rate-headroom/mask/zero-efficiency
+companions pass. Constructor-local exact-raw-identity cache controls cover real
+refusal aliases; the long profile needs4004 partial checks across five contexts.
 
-Next prove admissible pruning across resource/ledger refusal boundaries and modern
-contexts, then measure complete real workloads with all preparation work charged.
+Next prove composite final aggregation/ledger refusal handling and modern contexts,
+then measure complete real workloads with all preparation work charged. Partial
+certification alone does not choose error precedence over a valid earlier result.
 Whole-domain definedness, hook/modern factory, full caller/state semantics,
 compatibility, workload feasibility and research/normative adoption stay open.
 Do not repeat positive monotonicity censuses, hide setup cost, loosen bounds or

@@ -5701,3 +5701,132 @@ Review by: Codex root (research author/first filter). Recorded by: Codex root. C
 four-path rangeaabe9ce0-exclusive through this containing checkpoint needs research/
 normative review outside corrective-code delegation. Full1.0 goal active/progress;
 no feature acceptance, archival, push, deployment or release approval.
+
+## 2026-10-16 — Before execution: all-resource partial arithmetic definedness
+
+Previous turn PROGRESS5aa403c6 built source-driven waits; its partial-domain caveat
+is unresolved. Attack: admitted v17/tick1000/zero-burst origin with provider1 producing
+permits at1e-8999999999999999, no cash production. A full1000ms segment may succeed
+while1..999ms fail lower-domain accrual. Test actual SimulateAdvance at every0..1000,
+expected typed engine refusal/unchanged failed states versus successful endpoints.
+Show the previous raw constructor/cash-only search can return unreachable for cash1
+without evaluating any point; this is a RESEARCH prototype defect, not a newly
+executed current private harness miss or permission to change production arithmetic.
+
+Add a manual partial-arithmetic certificate before prototype search construction:
+retain all resource rate vectors and execute the actual accrueBoostedConstant on
+every integer partial duration in each distinct numeric context. Reuse ONLY after
+all rates are validated and total-rate raw mantissa bits/exponent, efficiency,
+bonus factor and burst schedule agree. Full/no/partial burst are separate contexts;
+cache coverage may extend, never silently skip. Actual raw total rate suffices only
+because the pure helper reads validated rates solely through that exact sum. Rounded
+String is not an identity. Count unique contexts, actual checks and reuse explicitly.
+
+The negative context must fail with its exact resource/duration and actual accrual
+refusal, not a diagnostic guard. Controls: provider rate1e-8999999999999996, provider
+mask and zero offline efficiency; every0..1000 actual wait executes for each. A raw
+coefficient-collision control (same Q12 String, distinct IEEE value), exponent and
+equivalent validated rate-vector controls test cache identity/coverage. Retain and
+rerun H3f's full12028 actual references and all prior faults, nodes/guard controls.
+Native and declared Linux AMD64 --no-deps, final source identical in both.
+
+Finite partial-domain checks are constructor research, not a per-player tick or a
+production per-ms wait scan. Their entire preparation cost must be visible and full
+workload feasibility remains unproved. This certifies PARTIAL arithmetic only, NOT
+final multi-segment aggregation, resource caps/receipt reproduction, progress/hooks
+or modern states. No production/kernel/math/CI/content/RFC adoption or defect closure.
+
+Old prototype baseline37367/ce41ac FAIL .733s exactly at the new guard oracle:
+secondary permits rate1e-8999999999999999 is catalog/codec-admitted; actual waits0
+and1000 succeed, every1..999 refuses with typed engine/accrual boundary and unchanged
+complete failed state. Cash-only constructor accepts; its search returns-1/nil after
+zero actual points for cash1. Other three complete1001-point companions pass,
+including zero efficiency: do NOT invent a raw-exponent rejection that overrides
+the actual helper's valid zero behavior. Record RP-681 as a prototype research defect,
+not a newly demonstrated actual harness defect; add the all-resource partial check.
+
+Protected focused89534/94f3a5 PASS .532s. Broader2141/6ab2c8 PASS6.145s plus vet:
+all12028 prior references/faults and4004 new actual waits execute. Retained long
+prototype checks4004 partial durations across5 raw contexts, reusing131068 complete
+resource-cell ranges after131074 actual rate sums. This is numeric partial-domain
+evidence only; no final aggregate/ledger or complete-search error policy follows.
+
+Before final execution, strengthen cache controls beyond counter identity: safe
+rate1e(min+3) followed by a valid raw coefficient just below10e(min+2) has the SAME
+Q12 String but must fail actual partial arithmetic at1ms. A same-mantissa/different-
+exponent pair must also fail, as must a2ms burst where1ms burst succeeds near the
+upper exponent. These are pure-helper contexts, not asserted admitted saves.
+The correct key must expose the real refusal, not reuse another context's pass.
+
+Final native51516/2eb320 PASS6.187s plus ordinary production vet: all12028 prior
+real references,4004 new actual waits, five cache-control populations and all prior
+faults/guards execute. Semantic same-String/different-exponent/burst-duration aliases
+produce the exact expected helper refusals instead of reusing passing coverage.
+Before environment follow-up, freeze both manual sources and run the identical
+declared Linux AMD64 --no-deps population via /workspace's four-file overlay.
+
+## 2026-10-16 — RP-681 partial arithmetic domain guarded in manual prototype
+
+Final native51516/2eb320 PASS6.187s plus ordinary production vet; declared Linux
+AMD6410837/987ac4 PASS11.990s, same source/outputs, no selected skips. All12028 prior
+real references and4004 new waits execute: the bad origin has999 expected typed
+refusals/two successes, three companions3003 successes. Every failed Company save
+encoding is byte-unchanged; no assertion about unencoded transient fields. The raw
+old constructor still reproduces unreachable/nil with no point call. Protected
+construction reports actual company.permits duration1/ErrInvalidAccrual instead.
+
+Five cache-control populations pass, including semantic counterexamples: same Q12
+String or omitted raw exponent can hide an actual1ms refusal; merging1ms/2ms burst
+schedules hides upper-domain overflow at2ms. Equivalent validated vectors, checked
+coverage extension/subranges and full/no/partial burst controls also execute.
+No canonical String identity, cross-run protocol or raw-exponent rejection policy.
+
+Partial preparation checks/contexts for the six original factories:
+default120008/3, short2986/3, offline1502/2, masked2986/3, no-tick3002/1,
+retained4004/5. Retained reuse131068 ranges after131074 actual raw rate sums; all
+extra checks are explicit preparation work, not hidden in one-point query counts.
+Native retained setup316.982ms/search1.849397s; emulated Linux713.262ms/3.459715s.
+These single observations are not a matched performance/full workload conclusion.
+The source constructor now retains all produced rate vectors; its former upper-only
+body is explicitly named buildRawWaitCellsResearch for the executed negative.
+
+Reproduce from root with ignored four-file overlay .cache/wait-cell-partial-domain.json:
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=/Users/stronk/repos/cloud-clicker/.cache/wait-cell-partial-domain.json -run WaitCell -v'`.
+New probes/wait-cell-partial-domain.go.txt SHA256
+4c5a3c820638f94677d22c90e3c331e863de5d556137d2f281c205807bec243f;
+updated probes/production-wait-cells.go.txt SHA
+58a4c69c76de702580cb741ce0c9d2dd84ad8d8d225588187fa5515bfcd151ed;
+native overlay SHA9966da48602d9b319a49ddf5fb4995172ad776d16ec23aaf05dae0cb39fae4d5.
+Linux overlay .cache/wait-cell-partial-domain-linux.json SHA
+1d7a82ac920fef4592d2f1af6eb458b33054ecbc81560eeff57add9902f324b1
+maps all four manual sources under /workspace; declared Docker --no-deps command
+above reproduces it. Prior H3e/provision sources stay unchanged; previous H3f results
+remain bound to16b1be49 at5aa403c6, not reclassified as the new guard's evidence.
+All handles terminal; --rm Linux run starts no DB. No native hosted/TS/SQL/fullCI claim.
+
+Own draft H3g and RP-681 reconcile the measured result; living plan advances next
+to final aggregation/ledger refusal handling and modern contexts, then full workloads.
+This preflight certifies ONLY partial arithmetic; it neither adopts an eager error
+policy over a valid earlier result nor shrinks accepted caller support. No production,
+kernel/math/payout/content/ordinary CI/report/accepted-contract change. RP-680 and27
+AC6 failures stay open. Review by: Codex root (research author/first filter). Recorded
+by: Codex root. Complete six-path range5aa403c6-exclusive through this containing
+checkpoint requires research/normative review outside corrective-code delegation.
+Full1.0 goal active/progress; no feature completion, archival, push or release call.
+
+Before final checkpoint, retain a reproducible compiling no-check control for the
+new oracle: an IGNORED Go overlay removes only the wrapper's partial-certificate
+call, keeping all current constructors/helpers/tests present. The unchanged domain
+regression must fail at accepted bad context, not compiler/fixture errors. Tracked
+sources stay frozen; this is isolated evidence, not a source rollback or a new run
+of the production implementation. It complements the actual pre-guard red above.
+
+Compiling no-check64144/d9453b FAIL .529s at precisely the unchanged bad-context
+guard assertion; all three valid companions pass. No compiler, fixture, source-pin
+or diagnostic-bound failure. Reproduce by selecting .cache/wait-cell-partial-no-check.json
+with TestWaitCellPartialDomainResearch on root make test-go. Ignored source SHA
+1c9d5ef1db08f7bd5dd529516f95e5c46517309fa84e75592ce92e528ca2569c;
+overlay SHAd06a1de16f658fc2f82090d85b5d97cf8390da99c099b195d203d73efa9e09a4.
+Only the wrapper's call to certifyWaitCellPartialsResearch is omitted. Tracked
+sources never changed for this probe; prior intact native/Linux results stand,
+not a reason to rerun unrelated suites. Handle terminal; expected failure retained.
