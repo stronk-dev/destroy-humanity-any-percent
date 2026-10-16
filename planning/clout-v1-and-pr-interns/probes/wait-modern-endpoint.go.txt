@@ -1,0 +1,615 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"math"
+	"os"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/accrualhook"
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/faction"
+	"cloud-clicker/server/guild"
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/save"
+)
+
+// A manual fixture owner, NOT the accepted public constructor or live API.
+// Its nonzero-size private context pointer supplies run-local identity. A fork
+// shares immutable owned inputs and identity, never a rounded projected head.
+type endpointContextResearch struct {
+	bundle   CatalogBundle
+	origin   []byte
+	mode     EvaluationMode
+	revision save.Revision
+	mask     AblationMask
+	external []multiplier.Contribution
+	weight   *int64
+	batch    guild.SettlementBatch
+}
+type endpointWorkResearch struct {
+	projects, explicitRestores, clearing, scheduleResolutions, evaluations, hookWrappers, hooks, counterfactualHooks int
+	artifactBytes, bundleLoads                                                                                       int
+	beginTime, projectTime                                                                                           time.Duration
+}
+type endpointOwnerResearch struct {
+	context *endpointContextResearch
+	work    endpointWorkResearch
+}
+type endpointStageResearch struct {
+	kind       string
+	evaluation EvaluationResult
+}
+type endpointProjectionResearch struct {
+	context *endpointContextResearch
+	at      int64
+	state   *save.State
+	stages  []endpointStageResearch
+	events  []save.EventWrite
+	roles   []RoleActivation
+}
+type endpointQueryResearch struct {
+	at, last int64
+	points   int
+	selected endpointProjectionResearch
+}
+
+func newEndpointOwnerResearch(t *testing.T, bundle CatalogBundle, initial *save.State, revision save.Revision, mode EvaluationMode, mask AblationMask, external []multiplier.Contribution, weight *int64, batch guild.SettlementBatch) (*endpointOwnerResearch, error) {
+	started := time.Now()
+	if initial == nil || save.VersionForState(initial) != 19 || revision.ConstantsHash != bundle.ConstantsHash ||
+		!intentUUIDV7Pattern.MatchString(revision.OwnerID) || !intentUUIDV7Pattern.MatchString(revision.StreamID) ||
+		revision.Number <= 0 || revision.Number > decimal.MaxExactInteger || revision.RunLogSequence <= 0 || revision.RunLogSequence > decimal.MaxExactInteger ||
+		mode != ModeOnline && mode != ModeOffline || initial.CompactMember != (weight != nil) {
+		return nil, fmt.Errorf("unsupported modern endpoint fixture identity")
+	}
+	artifacts := map[string][]byte{}
+	artifactBytes := 0
+	for id, data := range bundle.Artifacts {
+		artifacts[id] = append([]byte(nil), data...)
+		artifactBytes += len(data)
+	}
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil || hash != revision.ConstantsHash {
+		return nil, fmt.Errorf("endpoint artifacts do not bind revision")
+	}
+	owned := loadCompleteReplayTestBundle(t, hash, artifacts)
+	origin, err := save.EncodeState(initial)
+	if err != nil {
+		return nil, err
+	}
+	state, err := save.RestoreState(origin, 19, owned.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return nil, err
+	}
+	if err := owned.ValidateFoundationState(state); err != nil {
+		return nil, err
+	}
+	if err := owned.Faction.ValidateState(state); err != nil {
+		return nil, err
+	}
+	batch.Settlements = append([]guild.Settlement(nil), batch.Settlements...)
+	if err := guild.ApplySettlements(state, batch, owned.Faction.StockCap); err != nil {
+		return nil, err
+	}
+	frozen, err := makeReplayAccrual(external, weight, batch, owned.Routes.ContextVersion())
+	if err != nil {
+		return nil, err
+	}
+	if _, err := contributionsFromReplay(frozen); err != nil {
+		return nil, err
+	}
+	// Reuse the existing grammar validation, not its persistence quantization.
+	// Captured typed values are owned exactly; raw simulation inputs must not
+	// be rounded through a second, unnecessary replay serialization.
+	external = append([]multiplier.Contribution(nil), external...)
+	mask = copyWaitMaskResearch(mask)
+	policy, err := simulationPolicyFor(owned.Economy, mask)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := assembleContributionsWithPolicy(state, owned.Economy, external, policy); err != nil {
+		return nil, err
+	}
+	if weight != nil {
+		value := *weight
+		weight = &value
+	}
+	return &endpointOwnerResearch{context: &endpointContextResearch{owned, append([]byte(nil), origin...), mode, revision, mask, external, weight, batch},
+		work: endpointWorkResearch{artifactBytes: artifactBytes, bundleLoads: 1, explicitRestores: 1, beginTime: time.Since(started)}}, nil
+}
+
+func (owner *endpointOwnerResearch) fork() *endpointOwnerResearch {
+	return &endpointOwnerResearch{context: owner.context}
+}
+
+type endpointHookResearch struct {
+	inner  AccrualHook
+	target *save.State
+	work   *endpointWorkResearch
+}
+
+func (hook endpointHookResearch) AfterAccrual(state *save.State, catalog *economy.Catalog, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
+	hook.work.hooks++
+	if state != hook.target {
+		hook.work.counterfactualHooks++
+	}
+	return hook.inner.AfterAccrual(state, catalog, revision, result, contributions)
+}
+
+func (owner *endpointOwnerResearch) project(at int64) (endpointProjectionResearch, error) {
+	started := time.Now()
+	defer func() { owner.work.projectTime += time.Since(started) }()
+	owner.work.projects++
+	if at < 0 || at > 86_460_000 {
+		return endpointProjectionResearch{}, fmt.Errorf("endpoint outside research instrument domain")
+	}
+	ctx := owner.context
+	owner.work.explicitRestores++
+	state, err := save.RestoreState(ctx.origin, 19, ctx.bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	now := state.EvaluatedThrough.Add(time.Duration(at) * time.Millisecond)
+	active, err := resolveActivePlaySchedule(state, ctx.bundle.Opportunities, ctx.bundle.Prestige, ctx.revision.OwnerID, now)
+	if err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	owner.work.scheduleResolutions++
+	catchup, err := buildOfflineCatchup(state, ctx.bundle.Economy, ctx.mode, now)
+	if err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	owner.work.clearing++
+	if err := guild.ApplySettlements(state, ctx.batch, ctx.bundle.Faction.StockCap); err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	if err := deriveFactionStockResource(state, ctx.bundle.Faction); err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	policy, err := simulationPolicyFor(ctx.bundle.Economy, ctx.mask)
+	if err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	projection := endpointProjectionResearch{context: ctx, at: at, state: state, events: []save.EventWrite{}}
+	hook := simulationHook(endpointHookResearch{closedReplayAccrualHook(ctx.bundle, ctx.weight), state, &owner.work}, policy)
+	stage := func(kind string, mode EvaluationMode, inputs []multiplier.Contribution) error {
+		contributions, err := assembleContributionsWithPolicy(state, ctx.bundle.Economy, inputs, policy)
+		if err != nil {
+			return err
+		}
+		owner.work.evaluations++
+		evaluation, err := evaluateWithSimulationPolicy(state, ctx.bundle.Economy, now, mode, contributions, policy)
+		if err != nil {
+			return err
+		}
+		projection.stages = append(projection.stages, endpointStageResearch{kind, evaluation})
+		if evaluation.ElapsedMS > 0 {
+			owner.work.hookWrappers++
+			events, err := hook.AfterAccrual(state, ctx.bundle.Economy, ctx.revision,
+				accrualhook.Result{Receipt: evaluation.Receipt, ElapsedMS: evaluation.ElapsedMS, ProductionMS: evaluation.ProductionMS,
+					BankedCreditMS: evaluation.BankedCreditMS, ProgressDeltaPPM: evaluation.ProgressDeltaPPM}, contributions)
+			if err != nil {
+				return err
+			}
+			projection.events = append(projection.events, copyPrivateWaitEventsResearch(events)...)
+		}
+		return nil
+	}
+	if catchup != nil {
+		if err := stage("offline_catchup", ModeOffline, ctx.external); err != nil {
+			return endpointProjectionResearch{}, err
+		}
+	}
+	events, err := applyActivePlaySchedule(state, ctx.bundle.Opportunities, ctx.bundle.Prestige, ctx.revision.OwnerID, now, active)
+	if err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	projection.events = append(projection.events, copyPrivateWaitEventsResearch(events)...)
+	activeContributions, err := activePlayContributions(state, ctx.bundle.Opportunities, active.AttendedNowMS)
+	if err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	inputs := append(append([]multiplier.Contribution(nil), ctx.external...), activeContributions...)
+	if err := stage("ordinary", ctx.mode, inputs); err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	projection.roles = policy.activations()
+	return projection, nil
+}
+
+// Exact finite REFERENCE adapter, not an optimized/live replacement or free
+// precomputation for a bound. Every actual projection consumes the given budget.
+func (owner *endpointOwnerResearch) queryReference(horizon int64, price decimal.Decimal, budget int) (endpointQueryResearch, error) {
+	answer := endpointQueryResearch{at: -1, last: -1}
+	if horizon < 0 || horizon > 86_460_000 || !price.IsStateValue() || price.Lt(decimal.Zero) {
+		return answer, fmt.Errorf("invalid endpoint reference query")
+	}
+	for at := int64(0); at <= horizon; at++ {
+		if answer.points >= budget {
+			return answer, fmt.Errorf("endpoint reference budget exhausted")
+		}
+		answer.points++
+		answer.last = at
+		point, err := owner.project(at)
+		if err != nil {
+			return answer, err
+		}
+		cash, exists := point.state.Ledger.Balance("company.cash")
+		if !exists {
+			return answer, ErrInvalidEngineState
+		}
+		if cash.Gte(price) {
+			answer.at, answer.selected = at, point
+			return answer, nil
+		}
+	}
+	return answer, nil
+}
+
+type endpointFixtureResearch struct {
+	bundle   CatalogBundle
+	state    *save.State
+	revision save.Revision
+	external []multiplier.Contribution
+	weight   *int64
+	batch    guild.SettlementBatch
+	wire     replayInputsWire
+}
+
+func loadEndpointFixtureResearch(t *testing.T, profile string, mode EvaluationMode) endpointFixtureResearch {
+	t.Helper()
+	data, err := os.ReadFile("../../.cache/wait-logged-stages-inputs.json")
+	if err != nil {
+		t.Fatal("run TestWaitLoggedStagesResearch first", err)
+	}
+	var packet struct {
+		Schema  int                    `json:"schema"`
+		Sources map[string]string      `json:"source_sha256"`
+		Bundle  reputationCorpusBundle `json:"bundle"`
+		Actions []axisSequenceAction   `json:"actions"`
+	}
+	if err := json.Unmarshal(data, &packet); err != nil || packet.Schema != 1 || len(packet.Actions) != 128 || len(packet.Sources) != 11 {
+		t.Fatal("incomplete actual logged producer", err)
+	}
+	for path, expected := range packet.Sources {
+		if sourceResearchHashes(t, []string{path})[path] != expected {
+			t.Fatal("stale logged producer", path)
+		}
+	}
+	artifacts := map[string][]byte{}
+	for key, value := range packet.Bundle.Artifacts {
+		artifacts[key] = []byte(value)
+	}
+	bundle := loadCompleteReplayTestBundle(t, packet.Bundle.ConstantsHash, artifacts)
+	for _, action := range packet.Actions {
+		if action.Name != fmt.Sprintf("%s/%s/0/rejectfalse", profile, mode) {
+			continue
+		}
+		wire, err := parseReplayInputs(action.Inputs)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var resolved replayAccrualResolved
+		if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil {
+			t.Fatal(err)
+		}
+		state, err := save.RestoreState([]byte(action.PreStateJSON), 19, bundle.Economy, economy.ScopeCompany, time.Time{})
+		if err != nil || canonicalFixtureJSON(t, mustEncodeState(t, state)) != action.PreStateJSON {
+			t.Fatal("logged packet lost complete canonical source state", err)
+		}
+		if err := bundle.ValidateFoundationState(state); err != nil {
+			t.Fatal(err)
+		}
+		external, err := contributionsFromReplay(resolved.Accrual)
+		if err != nil {
+			t.Fatal(err)
+		}
+		encoded := resolved.Accrual.GuildSettlementBatch
+		batch := guild.SettlementBatch{GuildID: encoded.GuildID, BaseSeq: encoded.BaseSeq}
+		for _, row := range encoded.Settlements {
+			batch.Settlements = append(batch.Settlements, guild.Settlement{GuildID: batch.GuildID, BoundarySeq: row.BoundarySeq, DebitUnits: row.DebitUnits, CreditUnits: row.CreditUnits})
+		}
+		revision := save.Revision{OwnerID: wire.Command.FounderID, StreamID: wire.Command.CompanyStreamID, Number: wire.Command.Revision, RunLogSequence: wire.Command.RunLogSeq, ConstantsHash: bundle.ConstantsHash}
+		return endpointFixtureResearch{bundle, state, revision, external, resolved.Accrual.CommonsWeightPPM, batch, wire}
+	}
+	t.Fatal("missing actual logged source", profile, mode)
+	return endpointFixtureResearch{}
+}
+
+// Independent reference invokes the real SimulateAdvance at each real stage,
+// intercepting only its legacy event-envelope refusal through the existing tap.
+func referenceEndpointResearch(t *testing.T, fixture endpointFixtureResearch, at int64, mode EvaluationMode, mask AblationMask) (endpointProjectionResearch, error) {
+	t.Helper()
+	state := activationRestore(t, fixture.bundle, mustEncodeState(t, fixture.state), 19, time.Time{})
+	now := state.EvaluatedThrough.Add(time.Duration(at) * time.Millisecond)
+	catchup, err := buildOfflineCatchup(state, fixture.bundle.Economy, mode, now)
+	if err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	if err := guild.ApplySettlements(state, fixture.batch, fixture.bundle.Faction.StockCap); err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	if err := deriveFactionStockResource(state, fixture.bundle.Faction); err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	point := endpointProjectionResearch{at: at, state: state, events: []save.EventWrite{}}
+	roles := &simulationPolicy{active: map[string]RoleActivation{}}
+	step := func(kind string, stepMode EvaluationMode, external []multiplier.Contribution) error {
+		tap := &closedWaitEventTapResearch{inner: closedReplayAccrualHook(fixture.bundle, fixture.weight), target: state}
+		advance, err := SimulateAdvance(state, fixture.bundle.Economy, SimulationDependencies{Routes: fixture.bundle.Routes, Hook: tap}, fixture.revision, stepMode, now, external, mask)
+		if err != nil {
+			return err
+		}
+		point.stages = append(point.stages, endpointStageResearch{kind, advance.Evaluation})
+		point.events = append(point.events, copyPrivateWaitEventsResearch(tap.events)...)
+		for _, role := range advance.RoleActivations {
+			roles.activate(role)
+		}
+		return nil
+	}
+	if catchup != nil {
+		if err := step("offline_catchup", ModeOffline, fixture.external); err != nil {
+			return endpointProjectionResearch{}, err
+		}
+	}
+	active, err := resolveActivePlaySchedule(state, fixture.bundle.Opportunities, fixture.bundle.Prestige, fixture.revision.OwnerID, now)
+	if err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	events, err := applyActivePlaySchedule(state, fixture.bundle.Opportunities, fixture.bundle.Prestige, fixture.revision.OwnerID, now, active)
+	if err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	point.events = append(point.events, copyPrivateWaitEventsResearch(events)...)
+	values, err := activePlayContributions(state, fixture.bundle.Opportunities, active.AttendedNowMS)
+	if err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	if err := step("ordinary", mode, append(append([]multiplier.Contribution(nil), fixture.external...), values...)); err != nil {
+		return endpointProjectionResearch{}, err
+	}
+	point.roles = roles.activations()
+	return point, nil
+}
+
+func equalEndpointResearch(t *testing.T, got, want endpointProjectionResearch) bool {
+	t.Helper()
+	return bytes.Equal(mustEncodeState(t, got.state), mustEncodeState(t, want.state)) && reflect.DeepEqual(got.stages, want.stages) && reflect.DeepEqual(got.events, want.events) && reflect.DeepEqual(got.roles, want.roles)
+}
+
+func TestWaitModernEndpointBindingResearch(t *testing.T) {
+	const horizon int64 = 2001
+	points, queries, fallingWindows := 0, 0, 0
+	for _, profile := range []string{"none", "combined"} {
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			for _, masked := range []bool{false, true} {
+				t.Run(fmt.Sprintf("%s/%s/masked%t", profile, mode, masked), func(t *testing.T) {
+					fixture := loadEndpointFixtureResearch(t, profile, mode)
+					mask := AblationMask{}
+					if masked {
+						mask.GeneratorIDs = []string{"generator.beige_tower"}
+					}
+					owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, mask, fixture.external, fixture.weight, fixture.batch)
+					if err != nil {
+						t.Fatal(err)
+					}
+					before := mustEncodeState(t, fixture.state)
+					values := make([]decimal.Decimal, horizon+1)
+					for at := int64(0); at <= horizon; at++ {
+						want, err := referenceEndpointResearch(t, fixture, at, mode, mask)
+						if err != nil {
+							t.Fatal("independent actual-stage refusal", at, err)
+						}
+						got, err := owner.project(at)
+						if err != nil || !equalEndpointResearch(t, got, want) {
+							t.Fatal("complete owned endpoint mismatch", at, err)
+						}
+						for _, event := range got.events {
+							if event.IntentID != "" {
+								t.Fatal("projection invented an intent")
+							}
+						}
+						values[at], _ = want.state.Ledger.Balance("company.cash")
+						points++
+					}
+					for _, at := range []int64{5000, 5001, 6001} {
+						want, err := referenceEndpointResearch(t, fixture, at, mode, mask)
+						if err != nil {
+							t.Fatal(err)
+						}
+						got, err := owner.project(at)
+						if err != nil || !equalEndpointResearch(t, got, want) {
+							t.Fatal("absence-boundary endpoint mismatch", at, err)
+						}
+						points++
+					}
+					falling := values[500].Gt(values[horizon])
+					if falling != (profile == "combined" && !masked) {
+						t.Fatal("early affordable/late unaffordable control changed", falling)
+					}
+					if falling {
+						fallingWindows++
+					}
+					for _, price := range []decimal.Decimal{values[0], values[500], values[1000], decimal.New(1, 6)} {
+						want := int64(-1)
+						for at, cash := range values {
+							if cash.Gte(price) {
+								want = int64(at)
+								break
+							}
+						}
+						answer, err := owner.queryReference(horizon, price, int(horizon+1))
+						if err != nil || answer.at != want || answer.points != int(answer.last+1) {
+							t.Fatal("exact full-state reference query mismatch", answer.at, want, err)
+						}
+						if want >= 0 {
+							point, err := referenceEndpointResearch(t, fixture, want, mode, mask)
+							if err != nil || !equalEndpointResearch(t, answer.selected, point) || answer.selected.context != owner.context {
+								t.Fatal("selected point lost full result or identity", err)
+							}
+						} else if answer.selected.state != nil {
+							t.Fatal("unreachable query returned a success state")
+						}
+						queries++
+					}
+					answer, err := owner.queryReference(horizon, decimal.New(1, 6), 1)
+					if err == nil || answer.at != -1 || answer.points != 1 || answer.selected.state != nil {
+						t.Fatal("exhaustion became unreachable/success")
+					}
+					if !bytes.Equal(before, mustEncodeState(t, fixture.state)) || owner.work.clearing != owner.work.projects || owner.work.evaluations < owner.work.projects {
+						t.Fatal("origin changed or real per-probe work hidden")
+					}
+					t.Logf("actual-work %+v", owner.work)
+				})
+			}
+		}
+	}
+	if points != 16040 || queries != 32 || fallingWindows != 2 {
+		t.Fatal("incomplete endpoint population", points, queries, fallingWindows)
+	}
+	t.Logf("modern endpoint references%d full-state reference queries%d falling-affordability-windows%d", points, queries, fallingWindows)
+}
+
+func TestWaitModernEndpointOwnershipResearch(t *testing.T) {
+	fixture := loadEndpointFixtureResearch(t, "combined", ModeOnline)
+	mask := AblationMask{UpgradeIDs: []string{"upgrade.pr_intern_1"}}
+	owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, ModeOnline, mask, fixture.external, fixture.weight, fixture.batch)
+	if err != nil {
+		t.Fatal(err)
+	}
+	before, err := owner.project(1000)
+	if err != nil {
+		t.Fatal(err)
+	}
+	copyOwner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, ModeOnline, mask, fixture.external, fixture.weight, fixture.batch)
+	if err != nil || copyOwner.context == owner.context {
+		t.Fatal("distinct begin reused opaque identity", err)
+	}
+	fork := owner.fork()
+	if fork.context != owner.context {
+		t.Fatal("fork changed origin/context identity")
+	}
+	fixture.state.GeneratorCounts["generator.beige_tower"] = 0
+	fixture.external[0].Factor = decimal.New(2, 0)
+	*fixture.weight = 0
+	fixture.batch.Settlements[0].CreditUnits = 0
+	mask.UpgradeIDs[0] = "upgrade.unknown"
+	fixture.bundle.Artifacts["economy"][0] ^= 1
+	fixture.bundle.Faction.StockCap--
+	after, err := fork.project(1000)
+	if err != nil || !equalEndpointResearch(t, before, after) {
+		t.Fatal("caller mutation escaped owned context", err)
+	}
+	if len(after.events) == 0 || len(after.roles) == 0 || len(after.stages[0].evaluation.Receipt.Changes) == 0 ||
+		len(after.state.ActiveBuffs) == 0 || after.state.ActiveBuffs[0].SelectedTarget == nil {
+		t.Fatal("ownership population lacks mutable event/role/receipt/buff targets")
+	}
+	after.state.GeneratorCounts["generator.beige_tower"] = 0
+	after.events[0].Payload[0] ^= 1
+	after.roles[0].TargetID = "altered"
+	after.stages[0].evaluation.Receipt.Changes[0].After = "0"
+	*after.state.ActiveBuffs[0].SelectedTarget = "altered"
+	next, err := owner.project(1000)
+	if err != nil || !equalEndpointResearch(t, before, next) {
+		t.Fatal("returned data poisoned parent/sibling result", err)
+	}
+}
+
+func TestWaitModernEndpointFirstErrorResearch(t *testing.T) {
+	fixture := loadEndpointFixtureResearch(t, "none", ModeOnline)
+	fixture.state.GeneratorCounts["generator.beige_tower"] = decimal.MaxExactInteger
+	fixture.state.GeneratorPurchasedTotal = decimal.MaxExactInteger
+	owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, ModeOnline, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+	if err != nil {
+		t.Fatal("bad-hook source not admitted", err)
+	}
+	first := int64(-1)
+	var cause error
+	for at := int64(0); at <= 1501; at++ {
+		_, err := referenceEndpointResearch(t, fixture, at, ModeOnline, AblationMask{})
+		if err != nil {
+			first, cause = at, err
+			break
+		}
+	}
+	if first <= 0 || !errors.Is(cause, faction.ErrInvalidStockState) {
+		t.Fatal("expected real stock-hook failure absent", first, cause)
+	}
+	answer, err := owner.queryReference(1501, decimal.New(1, 100), 1502)
+	if !errors.Is(err, cause) || answer.last != first || answer.at != -1 || answer.selected.state != nil {
+		t.Fatal("first actual error hidden/relabelled", answer.last, first, err, cause)
+	}
+	t.Logf("first actual stock error at%d, charged points%d", first, answer.points)
+}
+
+func TestWaitModernEndpointAdmissionResearch(t *testing.T) {
+	for _, fault := range []string{"version", "owner", "revision", "hash", "mode", "mask", "duplicate_external", "missing_weight", "weight_range", "batch", "artifacts", "count_membership"} {
+		t.Run(fault, func(t *testing.T) {
+			fixture := loadEndpointFixtureResearch(t, "combined", ModeOnline)
+			mode, mask := ModeOnline, AblationMask{}
+			switch fault {
+			case "version":
+				fixture.state.WireVersion = 18
+			case "owner":
+				fixture.revision.OwnerID = ""
+			case "revision":
+				fixture.revision.Number = 0
+			case "hash":
+				fixture.revision.ConstantsHash = "unbound"
+			case "mode":
+				mode = "unknown"
+			case "mask":
+				mask.GeneratorIDs = []string{"generator.unknown"}
+			case "duplicate_external":
+				fixture.external = append(fixture.external, fixture.external[0])
+			case "missing_weight":
+				fixture.weight = nil
+			case "weight_range":
+				*fixture.weight = 1_000_001
+			case "batch":
+				fixture.batch.BaseSeq = 99
+			case "artifacts":
+				fixture.bundle.Artifacts["economy"][0] ^= 1
+			case "count_membership":
+				delete(fixture.state.GeneratorCounts, "generator.beige_tower")
+			}
+			owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, mask, fixture.external, fixture.weight, fixture.batch)
+			if err == nil || owner != nil {
+				t.Fatal("invalid fixture context admitted", fault)
+			}
+		})
+	}
+}
+
+func TestWaitModernEndpointRawInputResearch(t *testing.T) {
+	fixture := loadEndpointFixtureResearch(t, "none", ModeOnline)
+	raw := decimal.FromFloat64(math.Nextafter(1, 2))
+	if raw.Eq(decimal.One) || raw.String() != decimal.One.String() {
+		t.Fatal("raw identity control is not discriminating")
+	}
+	fixture.external[0].Factor = raw
+	want, err := referenceEndpointResearch(t, fixture, 500, ModeOnline, AblationMask{})
+	if err != nil {
+		t.Fatal("actual primitive does not admit raw diagnostic input", err)
+	}
+	owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, ModeOnline, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+	if err != nil {
+		t.Fatal("valid raw external context refused", err)
+	}
+	if math.Float64bits(owner.context.external[0].Factor.Mantissa()) != math.Float64bits(raw.Mantissa()) || owner.context.external[0].Factor.Exponent() != raw.Exponent() {
+		t.Fatal("owner rounded a captured external input through the replay codec")
+	}
+	got, err := owner.project(500)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !equalEndpointResearch(t, got, want) {
+		t.Fatal("raw context projection lost the real primitive result")
+	}
+}

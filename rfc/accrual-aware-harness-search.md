@@ -1559,6 +1559,60 @@ recipe, including retained private events and source/clock/clearing identity;
 complete workload/compatibility and independent normative adoption remain gates.
 RP-680,27 AC6 failures, kernel223/epoch8 and all live contracts remain unchanged.
 
+#### H3t — Owned modern endpoint component and full-state reference (RP-693)
+
+The [manual endpoint owner](../planning/clout-v1-and-pr-interns/probes/wait-modern-endpoint.go.txt)
+now binds a Company19 source from H3s's real logged packet to owned artifact bytes,
+revision coordinates, mode, all five mask slices, external rows, Commons weight
+and a captured nonempty Guild batch. Existing loaders/validators check the fixture
+context; copies isolate caller mutation. This is not a public production constructor,
+DB-owner authorization, scenario/session provenance or permission to begin from a
+previous projected head. The typed upstream factory requirements remain open.
+
+Each independent endpoint starts from the SAME source version/origin. It clears
+the captured batch once on scratch state, resolves actual catchup/schedule,
+executes masked production plus the closed simulation hook, and retains ordered
+`offline_catchup`/`ordinary` evaluations, private event values and role observations.
+An ordinary elapsed0 stage remains. No intent is invented; error results expose no
+successful state or private event fragment. A private nonzero-size context pointer
+is run-local identity: forks share it, distinct begins do not. It is not serialized.
+
+Complete0..2001ms references plus5000/5001/6001 anchors cover none/combined buffs,
+online/offline and generator mask/no-mask:16040 full state/stage/event/role pairs.
+The independent oracle invokes actual SimulateAdvance separately at the real
+stages, intercepting only its existing event-envelope refusal. An upgrade-mask
+ownership control additionally mutates caller state, masks, rows, weight, batch,
+artifact/catalog views and nonempty returned receipt/event/role/buff-pointer data.
+Parent and sibling projections remain unchanged. Twelve invalid contexts refuse.
+
+The first owner roundtrips external values through the replay serializer and
+silently rounds an admitted raw factor immediately above1 back to1. The raw-bit
+control first executes the real primitive successfully, then fails that owner.
+The correction retains existing grammar checks but OWNS the actual typed values
+without another persistence quantization. Existing saved/replay wire precision
+is unchanged; this is a prototype input-identity correction, not a payout finding.
+
+The attached chronological query is explicitly an EXACT REFERENCE, not the
+optimized candidate or live per-ms search. Each actual projection, including0,
+consumes its finite point budget; exhaustion is an error, never unreachable.
+Thirty-two reference queries match complete earlier scans and preserve full
+selected results/identity. Two genuine early-affordable/late-unaffordable windows
+discriminate endpoint-only search. A separately admitted stock-domain control
+retains the first actual1000ms error after1001 charged points, with no success state.
+
+Constructor/project durations include their complete calls; named counters expose
+bundle bytes/load, explicit restores, clearing, schedule resolution, evaluations
+and actual/counterfactual hook calls. Internal simulation-wrapper codec work is
+included in elapsed time but not fully itemized. Reference and fixture preparation
+are not free, adopted harness transition accounting or workload feasibility proof.
+
+Next compose semantic endpoint regimes and source-cell/bound queries with this
+owned actual projector, preserving schedule, hook, codec and first-error semantics.
+Simulation-wrapper versus logged error-policy compatibility is still not proved
+over all admitted inputs. Full context/lifecycle/mask-family/caller/workload and
+normative adoption requirements remain; no default scenario guard, accepted binary
+search, live arithmetic/save/data/CI contract or27 Clout failures are changed.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -1770,3 +1824,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   catchup/schedule/ordinary stages and full Go/TS outcomes. Retain zero-elapsed
   ordinary evaluation, real clearing/rollback and malformed-context controls;
   no modern factory/query, production accounting change or normative adoption.
+- 2026-10-16: H3t/RP-693 constructs a manual owned modern endpoint component,
+  exposes/fixes raw-input rounding, and binds full-state exact reference queries.
+  Optimized bounds, complete factory/caller/error policy, workload and normative
+  adoption remain open; no live accounting or search change.

@@ -7416,3 +7416,99 @@ specification work OUTSIDE corrective-code delegation; no designated approval,
 implementation acceptance, archival, release, push/publication or deployment.
 Review by: Codex root (research author/first filter). Recorded by: Codex root.
 Full nine-tier1.0 goal remains active/progress.
+
+## 2026-10-16 — Owned modern endpoint context, prospective bounded check
+
+Prior60a99e81 is PROGRESS: actual logged-stage and full Go/TS evidence changes
+the next action to owned calculation construction, not another cash-only census.
+Build a MANUAL fixture owner from that actual logged producer, reloading pinned
+artifact bytes, preserving Company19 and complete frozen identity/context. Each
+projection restores the original state, clears the captured Guild batch once,
+resolves catchup/schedule at the real endpoint, and executes real masked arithmetic
+plus the closed simulation hook. Private values have no invented intent IDs.
+Forks share opaque context identity; caller/result mutation must not leak.
+
+Population: none/combined buffs × online/offline × generator mask/no mask. Compare
+every0..2001ms point plus5000/5001/6001 anchors to independent actual SimulateAdvance
+stages with an event tap:16040 complete references. Four exact reference queries
+per population retain full selected results, and explicit exhaustion must fail.
+Also test caller/returned-result ownership and a real admitted stock-hook first
+error. This query is an explicitly budgeted chronological REFERENCE, not the
+optimized candidate, a free prep census, a new live per-ms loop or accepted R11
+budget. Full source-cell/bound integration remains required after this component.
+No scenario hold, gameplay/SQL/CI/kernel/data/accepted contract changes.
+
+Add12 negative constructor controls (source version/owner/revision/hash/mode/mask,
+duplicate external, weight presence/range, batch base, artifact bytes and map
+membership). Returned-result isolation must actually have nonempty event, role,
+receipt and buff-pointer targets; use a real upgrade mask for that control so
+zero output does not make the ownership assertions vacuous.
+
+### H3t/RP-693 result — owned endpoint component, not optimized search
+
+The manual Company19 owner now reloads owned pinned artifacts and copies complete
+source/coordinates/mode/masks/external/weight/batch inputs. Every endpoint restores
+the same origin, applies the captured batch once on scratch, resolves actual
+catchup/schedule and executes real masked arithmetic/closed simulation hooks.
+Full stage evaluations (including ordinary elapsed0), private unbound events and
+role observations match actual SimulateAdvance-per-stage references. Forks share
+private context identity; distinct begins remain distinct. Source/result mutation
+does not poison a parent/sibling. All ownership mutation targets are nonempty.
+
+Eight populations cover16040 complete reference points,32 full-state reference
+queries and two actual early-affordable/late-unaffordable windows. Twelve invalid
+constructor contexts refuse. The admitted extreme purchased-count control retains
+the real faction error at1000ms after1001 charged points; errors/exhaustion expose
+no successful state/event fragment. The32 queries are exact chronological
+REFERENCES: all36374 owned projection calls across those eight matrix runs are
+visible, not an optimized gain, free prep census or permission for live per-ms work.
+Constructor/project timings include full calls; explicit-restores is deliberately
+not labelled total codec calls. Internal wrapper codec work is not fully itemized;
+accepted harness/workload accounting remains open.
+
+Source audit finds the initial owner requantizes captured external factors through
+makeReplayAccrual/contributionsFromReplay. Test12753 first admits the raw factor
+immediately above1 through actual simulation, then FAILS0.294s because its bits
+become1 in the owner. Validate the existing grammar but COPY actual typed values,
+without another persistence quantization. Focused27433 PASS0.335s. This is a
+prototype identity defect, not an observed payout difference or live code bug.
+
+Final frozen native45166 PASS23.605s, then normal production vet PASS. Declared
+Linux/AMD64 Go1.26 session15189 PASS118.017s with the same populations and existing
+TestSimulation controls. No timing comparison or full workload acceptance follows.
+H3s producer is regenerated after the one-entry overlay addition: native60214
+PASS0.829s and Linux43744 PASS1.412s emit the SAME1622159-byte packet SHA256
+90fd4278df3ef1ee3c9c5a15c53d91a29a26f0b71de8cf866d51003734e5b175.
+Existing unmodified client replay parity is rechecked:63694 PASS203 tests/998ms.
+That is H3s's current command/receipt/event compatibility, NOT an implemented TS
+endpoint owner or inclusion of manual .txt sources in ordinary CI/typecheck.
+
+Reproduce from root: run the H3s generator and TestWaitLoggedStagesResearch producer
+first (the latter refreshes its source-bound ignored packet), then
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../.cache/wait-logged-overlay.json -run TestWaitModernEndpoint\|TestSimulation -v'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/wait-logged-overlay.json -run 'TestWaitModernEndpoint|TestSimulation' -v ./production -count=1`.
+Do not run a packet producer concurrently with these readers. No first-hour packet
+or unchanged large census is needed. The prior H3s client command remains valid.
+Final SHA256: endpoint source9f1e84d73f102fdda51eab1a40cc234128e6e0f88f122a9c7d0831d71d7edec3;
+generator3672d6379ff533091406b8cf34179c5e9a291bc10b544ee6976aa0439fe159ab;
+23-entry overlay5a99ca0f4d3f294eafe3cec3ee4073960d3e9cc4bbcdf0bea20b3717edd267fd.
+
+Initial42745 is incomplete: none profiles execute8020 points/16 queries, but
+combined inputs fail the test helper's raw JSON byte-order check before measurement.
+The logged packet recursively sorts object keys. Restore through the actual codec
+and compare COMPLETE canonical state, then retain normal encoded bytes internally;
+no field/failure assertion was dropped. Partial controls skipped by that setup
+failure are not claimed as completed. The frozen full results above supersede it.
+
+Own H3t/parent C1h, RP-693 and plan preserve this component/limit. Next derive actual
+endpoint regimes and bind source-cell/bound queries to the owned projector, with
+full selected-result and first-error comparison. Upstream base-versus-projection/
+DB-owner/scenario/session provenance, all mask families, global simulation-versus-
+logged error policy, full caller/TS/workload and normative adoption stay mandatory.
+No live factory/query, SQL settlement, default workflow or Clout repair follows.
+Kernel223/epoch8, production, schema, data, CI and golden bytes are unchanged;
+RP-680,27 AC6 failures and the historical guard remain OPEN, not rerun/fixed here.
+Seven-path range60a99e81-exclusive through this checkpoint is research/specification
+work OUTSIDE corrective-code review delegation. Review by: Codex root (research
+author/first filter). Recorded by: Codex root. No designated approval, acceptance,
+archival, release, push/publication or deployment. Full nine-tier1.0 goal active.

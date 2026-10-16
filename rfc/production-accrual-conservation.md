@@ -543,6 +543,14 @@ This does not implement/adopt an owned modern factory, arbitrary-context admissi
 all-stage/all-caller proof, masks, query integration or SQL/live-provider settlement.
 Keep those requirements; do not install a prior projection as the action's source.
 
+Child H3t now owns a bounded Company19 modern fixture context and returns detached
+full state/stages/private events/roles from actual simulation primitives. Forks
+retain opaque identity and raw typed external values; caller/result isolation,
+admission and real first-error controls execute. Its chronological query is a
+budgeted exact REFERENCE only, not the optimized/live replacement. Upstream
+base-versus-projection provenance, full caller/clock/error policy, scenario/session
+binding, all mask families, workload and normative adoption remain mandatory.
+
 ### C1i — Bounded long-absence reconstruction evidence (RP-658)
 
 The unminted Company19 fixture combines a48h interval, active production buff,
@@ -1098,3 +1106,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-16: retain H3s's actual logged-stage and Go/TS compatibility reference,
   including zero-elapsed ordinary work and real refusal/rollback. The proposed
   owned modern factory/query and full accounting repair remain unimplemented.
+- 2026-10-16: distinguish H3t's owned manual endpoint/reference component from
+  the unimplemented production factories/optimized queries. Preserve captured
+  typed external values without an extra replay quantization; live wire unchanged.

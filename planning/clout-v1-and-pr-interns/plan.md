@@ -117,9 +117,16 @@ produce a byte-identical packet, and actual TS ApplyLogged passes203 full-output
 restoration/refusal/forgery checks. This is a bounded reference, not a live factory
 or accounting repair; the owning log has reproduction and exact limits.
 
-Next bind an owned modern endpoint factory and chronological query to this actual
-recipe, preserving validated frozen context, source version, clock/clearing identity,
-private events and zero-elapsed ordinary stage. Complete remaining input/mask/map,
+H3t/RP-693 now builds a MANUAL owned Company19 endpoint component from that actual
+producer: full masked stage projections, private events/roles, stable fork identity,
+caller/result isolation,12 admission negatives and first actual stock error. A raw
+typed-input rounding error is reproduced and corrected in the prototype. The16040
+full references/32 exact reference queries include two falling-affordability windows.
+This is not an adopted factory or optimized/live query; exact scan work is visible.
+
+Next derive semantic endpoint regimes and bind the existing source-cell/bound
+constructor to this owned projector, retaining complete stage/domain errors and
+comparing full selected results to the exact reference. Complete input/mask/map,
 post-hook state, real settlement and global/caller/timestamp/encoding/state/lifecycle
 obligations,
 then measure complete real workloads with all preparation work charged. Partial
