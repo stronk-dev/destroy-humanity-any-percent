@@ -19,11 +19,14 @@ Keyboard RP-167, served-path observer RP-168, browser collection RP-169 and requ
 RP-170 corrections also have independent approval over complete `8b4db5a9..c3311dbd`.
 The later composed/negative-build construction and complete N5/AC11/AC13 gates are separate.
 
-Next: finish remaining corrective/evidence reviews and composed driver scopes without
-repeating approved ranges. RP-377's overlay-settlement driver and
-RP-385's pointer/refresh correction remain locally verified, not independently approved;
-their original timeout causes are not all established. RP-364 and Garage's RP-378 remain
-separate findings, not erased by later green journeys.
+RP-377 `d82e76c2..9818e589` and RP-385 `d717e590..17c552db` driver repairs now have
+independent corrective approval, including a real held-response old/fixed pair and exact
+endpoint/current Postgres/browser/socket journeys. This does not establish the unique causes
+of their original timeouts. RP-364 and Garage's RP-378 remain separate findings.
+
+Next: finish remaining corrective/evidence reviews without repeating approved ranges.
+Initial AC14/G10 and later fixture-build construction retain their existing review gates;
+the corrective-only delegation does not approve new feature construction or acceptance.
 
 Feature gates still open: ruling-author RP-174/RP-176 body reconciliation; D-024 shared-clock
 authority for RP-365's reproduced backwards-attendance conflict; owner copy adoption and

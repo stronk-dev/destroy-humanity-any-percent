@@ -2594,3 +2594,48 @@ full-suite red stands; isolated old success does not establish reliability. No d
 assertion relaxed, no tracked mutation. All sessions terminal/slot released, only preserved
 builders remain. No blocked-before-network off-origin proof, real WS/server journey, full
 N5/AC11/AC13, AT/task, DeploymentAC8, hosted/full-CI, archival or release approval.
+
+## 2026-10-16 — Mounted-refresh and one-shot wearer driver repairs approved
+
+Review by: /root/cosmetic_composed_driver_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; all11 unique source/test/doc/record paths inspected:
+
+- RP-377: d82e76c2e25b405470048e8d91902a096e082091-exclusive..9818e5897f3291e20e303135424e41eaf570ec99-inclusive (8 paths).
+- RP-385: d717e5900472639eb2c2a77add5497f272ade544-exclusive..17c552dbccb3e19d9e89c549b4059713822d4916-inclusive (9 paths).
+
+Existing Cosmetic§7.3/§7.4 and G10 driver corrections, not original G10/AC14 construction
+acceptance. Both retain exact request/revision/receipt/persistence/settled-overlay assertions,
+one-shot DOM activation and original action deadline; no retries, forced input or runtime call.
+Ignored read-only exact-endpoint browser config/test/helper overlays run through declared
+Compose test-browser-focused:24303 PASS57/57 on Linux ARM64 Chromium/Firefox/WebKit. This
+includes actual mounted pointer-down→receipt refresh→disabled/no click/no intent→release/no
+replay; held authoritative-read navigation and one refreshed annoyed overlay; readiness,
+exact-once, ambiguous-label and invalid-budget controls. Old helper82992 fails24 new interface/
+guard cases while18 Buy controls pass. That is NOT lost-native-click proof; the mounted
+native-input test supplies the separate observed failure route.
+
+Real Postgres/production-built browser/gameserver/WebSocket pair, unchanged response held2s:
+`node --import ./.cache/cosmetic-review-loader.mjs client/tools/test-cosmetic-composed.mjs 377-old-hold`
+90754 exits1 at missing overlay with pet surface,busy/pending true,one pet,zero overlays,
+stale false. Only new mounted-settlement wait is removed. Identical `377-fixed-hold`4668
+PASS complete Buy/adopt/equip/care/unequip/motion/reloads journey,69 requests/no N5 violation.
+Loader `385-exact`31940 PASS exact endpoint driver/helper with no timing diagnostic,
+72 requests/no violation. Current `node client/tools/test-cosmetic-composed.mjs`30165 PASS
+native Enter Buy/receipt/owned focus/reload plus adoption/equip/care SQL+socket/motion/unequip,
+72 requests/no violation. Its existing Reputation continuation executes but is not approved
+as new construction here. `make typecheck verify-cosmetic-boundary`69374 PASS0 diagnostics/
+22 negatives; node syntax and range diff checks pass. Parent revisions add only review records.
+Loader SHA256 d954ad8e8189347f24b269fe9512493aa008a9663a3918acf43c50da7da5785d;
+fixed Compose overlay ba54c21017f6ce7ea16bcdc2e17c776ab332fd347d766e0bfc6c2e3d59248491;
+old-helper overlay c232734ac248aab13e1de904aaed6c3c9a9de5fbe2477caa1fdf76001bb0585e.
+
+Invalid diagnostic attempts remain excluded: sandbox Docker denial runs0; initial callback
+cancellation masks old assertion and emits disposable fixture-request diagnostic, not operator
+secrets; intermediate9521 broader catch is not gate proof. Final loader suppresses sanitized
+cancellation only after known teardown; live fetch/fulfil errors still fail. No credentials
+are copied into this record. All handles terminal/slot released; own Postgres3a4599ffd793 had
+0 other connections then removed, ports18082/5173 absent, only preserved builders remain.
+Process-list inspection unavailable: no broad PID-clean claim. No tracked reviewer mutation.
+Unique causes of original89770/40231 remain unproved. No general reliability, original feature,
+copy adoption, manual AT, D-024/RP-365 clock, full aggregate/hosted CI, archival or release claim.
