@@ -25,7 +25,7 @@ func TestOwnedCandidateCallerResearch(t *testing.T) {
 }
 
 func choiceBindingResearch(branch *production.ManualOwnedBranchResearch) *harness.ManualChoiceBindingResearch {
-	binding := &harness.ManualChoiceBindingResearch{Identity: branch.Identity(), Head: branch.Head(), Revision: branch.Revision(), AtMS: branch.Time().Sub(harness.Epoch).Milliseconds(), Query: branch.Query, Rate: branch.Rate}
+	binding := &harness.ManualChoiceBindingResearch{Identity: branch.Identity(), Head: branch.Head(), Revision: branch.Revision(), AtMS: branch.Time().Sub(harness.Epoch).Milliseconds(), Query: branch.Query, QueryAll: branch.QueryAll, Rate: branch.Rate}
 	binding.Fork = func(state *save.State) (*harness.ManualChoiceBindingResearch, error) {
 		fork, err := branch.Fork(state)
 		if err != nil {
@@ -130,6 +130,22 @@ func TestOwnedActualBeamResearch(t *testing.T) {
 			out.Frames = append(out.Frames, [4]int{frame.Generated, frame.Unpruned, frame.Unique, frame.Retained})
 		}
 		return out, nil
+	})
+}
+
+func TestOwnedActualGatesResearch(t *testing.T) {
+	production.RunManualOwnedGatesResearch(t, func(branch *production.ManualOwnedBranchResearch, mode production.EvaluationMode, horizon int64, bankFirst bool) ([]production.ManualOwnedChoiceStepResearch, error) {
+		input := branch.GateInputsResearch()
+		steps, err := harness.ManualRunOwnedGateResearch(input.Catalog, input.Routes, input.Hash, branch.State(), choiceBindingResearch(branch), mode, horizon, bankFirst)
+		return convertChoiceStepsResearch(steps), err
+	})
+}
+
+func TestOwnedActualBootstrapResearch(t *testing.T) {
+	production.RunManualOwnedBootstrapResearch(t, func(branch *production.ManualOwnedBranchResearch) ([]production.ManualOwnedChoiceStepResearch, error) {
+		input := branch.Case()
+		steps, err := harness.ManualRunOwnedBootstrapResearch(input.Catalog, input.Routes, input.Hash, branch.State(), choiceBindingResearch(branch), input.Target)
+		return convertChoiceStepsResearch(steps), err
 	})
 }
 

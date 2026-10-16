@@ -172,11 +172,20 @@ allocation repeats and full private-bank/logged-action references. This bounded
 four-decision unreached-target diagnostic is NOT the full registered workload,
 normal scenario admission, general lifecycle or positive milestone/gap proof.
 
-Next bind real bootstrap/manual and nonterminal gate progression to the retained
-owner, including actual joint-resource eligibility and complete action/Founder/
-role results. The cash-only query and old gate binary-search assumption do not
-prove a conjunctive gate predicate. Then complete general session/profile/mask
-and real-owner factory bindings, preserving complete results/error policy/scores.
+H3ac now binds the actual bootstrap and base nonterminal gate methods. Joint
+resource search resumes from full original projections, not a cash-only result
+or independent earliest times; eight positive-amount gate cases include a
+retained view, an earlier qualifying window and two unchanged blocked states.
+Six crossings and an online manual-bootstrap/purchase chain match full real
+logged commands and consumed-batch successors. The initial invalid fixture
+assumptions and corrected native/Linux evidence live in the owning log.
+
+Next ground first-hour lifetime/session ownership in its OWN profile and bind
+the actual runtime step/reference-ranker/bank/action paths. Preserve each actual
+source version; do not coerce H3n's reached source14 inputs or the lifetime-only
+hook contract into Company19 closed-replay scheduling by association.
+Then complete general profiles/masks/real-owner factory bindings,
+preserving complete results/error policy/scores.
 Measure
 complete candidate/consumer work and error/scoring compatibility;
 finish general scheduling, all mask families, actual TS owner/query and full

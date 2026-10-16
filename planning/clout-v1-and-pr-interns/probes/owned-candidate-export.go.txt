@@ -49,6 +49,13 @@ func candidateRequestResearch(request IntentRequest) (IntentRequest, error) {
 		fields = fmt.Sprintf(`"generator_id":%q,"count":{"mode":"exact","value":1}`, request.GeneratorID)
 	case IntentBuyUpgrade:
 		fields = fmt.Sprintf(`"upgrade_id":%q`, request.UpgradeID)
+	case IntentPerformManualBatch:
+		fields = fmt.Sprintf(`"action_id":%q,"count":%d,"window_ms":%d`, request.ActionID, request.Count, request.WindowMS)
+	case IntentCrossGate:
+		if request.RouteID != "" {
+			return IntentRequest{}, fmt.Errorf("manual gate component does not yet bind route alternatives")
+		}
+		fields = fmt.Sprintf(`"gate_id":%q,"route_id":null`, request.GateID)
 	default:
 		return IntentRequest{}, fmt.Errorf("unsupported candidate intent")
 	}

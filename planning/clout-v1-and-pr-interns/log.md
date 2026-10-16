@@ -8242,3 +8242,132 @@ Codex root (author/first filter). Recorded by:Codex root. No designated acceptan
 archival, release, product/schema/data/CI/golden/kernel223/epoch8 change or push.
 RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN, not rerun/fixed here.
 No publication/deployment. Full nine-tier1.0 goal remains active/progress.
+
+## H3ac — joint gate eligibility and actual bootstrap/gate actions
+
+Log-placement correction by Codex root:ambiguous patch anchors inserted the
+committed H3aa/H3ab entries above the historical H3y/H3z tail. Preserve those
+committed records in place; this is a disclosure, NOT a history reorder. Current
+uncommitted H3ac notes are moved to the actual EOF before this checkpoint. All
+new material here appends to the exact HEAD prefix; use the plan/latest checkpoint,
+not the historical tail's old next action. No experimental result is changed.
+
+Previous17e4867f is PROGRESS. Add a manual conjunctive query: cash is only a
+necessary-condition range bound; test ALL real resource requirements at each
+selected full point and resume at the next integer after a secondary failure.
+Preserve original origin/floor, first actual errors and complete work/budget
+accounting. Never combine independent earliest times or assume monotonicity.
+Actual progressSegmentGates retains its loop/terminal exclusion, but scoped
+search/actions bind the owned query and full original-state action (no pre-bank).
+Actual applyReferenceManual keeps its count/cadence/receipt logic and uses the same
+owned action; test an online no-generator bootstrap followed by a real purchase.
+
+Predeclare gate cases BOTH fixed modes:already eligible; cash0 + permits threshold
+from real2ms output (query from a retained1ms view); early cash window/unaffordable
+tail + permits0; blocked permits1 through3ms. Retune ONLY the unminted fixture's
+gate.t2_to_t3 requirements and rebind actual artifact/hash/Founder carry. Compare
+full chronological eligibility/stages, ApplyLogged state/receipts/events and
+consumed-batch successors; no partial saves, duplicate crossing, terminal gate
+or observation-made payment. Retain earlier-error/later-valid and exhausted/invalid
+query controls. Native/Linux actual subjects, focused then affected populations.
+No live/API/data/schema/CI or accepted-budget change; full policies/workloads/
+profiles/masks/sessions/TS/SQL/factory/adoption remain open.
+
+First12961 FAIL0.372s:actual catalog rejects zero gate requirements; the existing
+source has no permits growth; false owned-upgrade entries are not an empty set.
+No valid gate/bootstrap experiment ran. Correct the FIXTURE, not grammar/oracles:
+strictly positive cash1/permits1 requirements, seed permits1 for already/falling
+cases, actual legal_dept1 production plus zero initial permits for delayed/blocked
+cases; delayed threshold still comes from real2ms output. Clear the bootstrap's
+owned-upgrade set rather than inventing false entries. Preserve every original
+behavior question, both gate modes, earlier-error controls and full references.
+
+67945 FAIL0.403s:bootstrap passes; gate cash seed `1` is not canonical Decimal,
+correct to Decimal.One.String(). 12226 FAIL0.855s:the old single-objective Case
+accessor correctly refuses a two-resource gate. Add a catalog-only gate accessor,
+NOT a weakening of the original single-resource objective assertion. 56403 PASS
+production0.921s. Expanded first-error/unchanged-blocked controls80835 PASS1.702s.
+
+### H3ac result — real joint requirements and owned bootstrap/gate commands
+
+Eight actual positive-amount gate catalogs (unminted, real artifact/hash and
+Founder carry rebound) compare exact chronological first/full points. Both modes:
+already eligible0 (1 query/1 point), secondary delay2 from retained1ms view
+(2/2, one secondary failure), falling window500 despite unaffordable2001 tail
+(1/2), blocked permits through3 (4/4, four secondary failures, no action).
+Six actual progressSegmentGates crossings match complete ApplyLogged states,
+receipts/events, successor head, one revision increment and consumed Guild batch.
+Founder inputs remain unchanged for these ordinary actions. Two blocked scratch
+states stay byte-identical; repeat crossings consume no extra transition and
+the optimization terminal gate is untouched. Independent full primitive stages/
+private events/roles verify the pre-gate1ms views. These are controlled admitted
+seeds with legal_dept1, NOT natural acquisition or alternate/terminal action proof.
+
+Joint resumption preserves the real first error after1001 secondary failures:
+1002 actual points, last1001; no qualifying state is exposed. A6001..6003 domain
+remains valid despite the earlier error; invalid predicates and0/1 budgets fail
+without fabricated unreachable/success results. Existing scalar whole-point
+certificates can prune only necessary cash conditions; every joint success checks
+ALL requirements on the same projected state. Attempts/full scalar proof work
+remain in the diagnostic result. Constructor/model/codec/reference work is extra,
+not a complete R11/performance claim or an increased adopted work allowance.
+
+Actual applyReferenceManual online no-producer bootstrap requests10 actions,
+then real rankDecisionOptions buys a generator. Both complete logged commands
+match independently at revisions2/3, including exact events and consumed-batch
+successors, with original source unchanged. This is NOT firstHourRuntime's
+separate one-click policy or its lifetime/attendance/session adapter.
+
+Frozen native38392 PASS production75.506s/harness3.828s; overlay vet8196 BOTH
+packages PASS. Selector retains H3x/y/z/aa/ab, old37 endpoint queries/first errors,
+actual manual action/refusal/ownership components, legacy bootstrap/segment gate
+tests, registered beam widths/falsification and lifetime/input boundaries.
+
+Fault26245 changes ONLY actual scoped gate dispatch from QueryAll to cash Query,
+leaving direct joint references and real command validation unchanged. FAIL
+production1.186s/Make exit2:delayed and blocked cases in BOTH modes attempt an
+ineligible command and hit `requirement_not_met:company.permits`. Already/falling
+controls still pass. This discriminates actual caller binding, not just a copied
+predicate; it does NOT claim the origin-free legacy caller is currently wrong.
+Fault SHA2565bdbb8c7166f67ad11e68c371b743b04a23b2e59eca9de4dbbbb94faea0842ff.
+Recreate in an ignored owned-gate-bridge copy:replace its actual
+`binding.QueryAll(limitMS-nowMS, requirements, int(counter.limit-counter.value))`
+with `binding.Query(limitMS-nowMS, requirements[0].Amount, int(counter.limit-counter.value))`,
+override only that bridge in a copied overlay, then run
+`make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../.cache/owned-gate-cash-only-fault.json -run TestOwnedActualGatesResearch -v'`.
+
+Frozen Linux-amd6484416 PASS production396.781s/harness8.047s, exit0.
+Native38392 also exited0; these are selected affected populations, NOT a full
+package/CI/SQL/TS or full-workload acceptance claim. Reproduce the36-entry overlay
+with `node planning/clout-v1-and-pr-interns/probes/prepare-owned-candidate-observation.mjs`.
+The final native selector was:
+
+```sh
+make test-go GO_PACKAGES='./production ./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/owned-candidate-overlay.json -run TestWaitEndpoint\|TestWaitJoint\|TestWaitModernAction\|TestOwned\|TestCloneStatePreservesSaveVersionThroughSearch\|TestBeamTerminalCompletionCacheReusesAnIdenticalSuffix\|TestProjectedMilestoneRankingMakesBankFirstClassAndPurchasesWinTies\|TestReputationReferenceLifetimeAccounting\|TestReputationReferenceFrozenInputDiagnostic\|TestRegisteredBeam\|TestBeamChildBound\|TestT0T1Beam\|TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState\|TestT0T1ReferenceBootstrap\|TestT1SegmentProgression -v'
+make vet GO_PACKAGES='-overlay=../.cache/owned-candidate-overlay.json ./production ./harness'
+```
+
+Linux used the identical regex, unescaped within single quotes, with
+`docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/owned-candidate-overlay.json -run '<same regex>' -v ./production ./harness -count=1`.
+Actual legacy bootstrap and both segment tests explicitly pass. Verbose manual-
+action output was display-truncated mid-population; the executed packages exit0,
+not an inferred pass from test discovery or an excluded population.
+
+Frozen SHA256:joint source
+`c86a1887f623a5b3e6f05c78f931c2cfb3ff8da46af968d23fd67b918ebe0581`;
+gate bridge `8e39fd8a3f7f605987fe5ac2ed3b4a9d81da5a70cc5ea95acbba975e147a2859`;
+gate export `fd619b9680cb1d25ede9d9b9278c9e55eeb7e311d78a93a6a9f0bef57335013c`;
+generator `55687d6df24e070737118f9f392e54431e145f95688feaa3154a6c6f5a9b99e3`;
+generated solver `215e1164e8a93a249c8e7e74e1a07f3d35e8f115fdc5bb9b27c3e46285cffdfc`;
+overlay `defce80b9cab193cbd46b39adc4091087ed8fb2f5fc98aa8d72e5dd68bceaf51`.
+
+Thirteen-path H3ac range after17e4867f excludes the separate owner-delegation
+recordf662195e. Review by:Codex root (author/first filter). Recorded by:Codex root.
+Technical review pending with a fresh independent Codex reviewer under Marco's
+new delegation; no owner adoption of either draft, implementation acceptance,
+archival or release approval. No live product/schema/data/CI/golden/kernel223/
+epoch8 change or push. RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN,
+not rerun or fixed here. Next:first-hour's OWN source-version/lifetime/session
+profile and actual step/ranker/bank/action binding, then complete factories/masks/
+workloads and compatibility. No inferred authorization to replace its lifetime
+hook with the unrelated Company19 closed-replay schedule.

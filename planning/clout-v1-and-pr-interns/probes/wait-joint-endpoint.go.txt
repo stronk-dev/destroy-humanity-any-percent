@@ -1,0 +1,93 @@
+package production
+
+import (
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/routes"
+	"fmt"
+)
+
+type endpointJointAnswerResearch struct {
+	at, last                                                         int64
+	queries, points, preparationZeroPoints, nodes, secondaryFailures int
+	work                                                             []endpointBoundAnswerResearch
+	selected                                                         endpointProjectionResearch
+}
+
+func requirementsMetResearch(point endpointProjectionResearch, requirements []routes.Requirement) bool {
+	for _, requirement := range requirements {
+		value, ok := point.state.Ledger.Balance(requirement.ResourceID)
+		if !ok || value.Lt(requirement.Amount) {
+			return false
+		}
+	}
+	return true
+}
+
+// Cash is a NECESSARY condition only. No scalar result qualifies until every
+// requirement holds on that same real full projection. Resumption never rebases
+// the origin and never skips an error under an unproved predicate bound.
+func (owner *endpointOwnerResearch) queryRequirementsResearch(from, horizon int64, requirements []routes.Requirement, budget int) (endpointJointAnswerResearch, error) {
+	answer := endpointJointAnswerResearch{at: -1, last: -1}
+	if from < 0 || from > horizon || horizon > 86_460_000 || len(requirements) == 0 {
+		return answer, fmt.Errorf("invalid joint query domain")
+	}
+	price := decimal.Zero
+	for _, requirement := range requirements {
+		definition, ok := owner.context.bundle.Economy.Resource(requirement.ResourceID)
+		if !ok || definition.Scope != "company" || !requirement.Amount.IsStateValue() || requirement.Amount.Lt(decimal.Zero) {
+			return answer, fmt.Errorf("invalid joint resource requirement")
+		}
+		if requirement.ResourceID == "company.cash" && requirement.Amount.Gt(price) {
+			price = requirement.Amount
+		}
+	}
+	for floor := from; floor <= horizon; {
+		if answer.nodes >= budget {
+			return answer, fmt.Errorf("joint endpoint node budget exhausted")
+		}
+		part, err := owner.queryBoundFrom(floor, horizon, price, budget-answer.nodes)
+		answer.queries++
+		answer.points += part.points
+		answer.preparationZeroPoints += part.preparationZeroPoints
+		answer.nodes += part.nodes
+		answer.last = part.last
+		selected := part.selected
+		part.selected = endpointProjectionResearch{} // Work never retains whole rejected heads/opaque identities.
+		answer.work = append(answer.work, part)
+		if err != nil {
+			return answer, err
+		}
+		if part.at < 0 {
+			return answer, nil
+		}
+		if requirementsMetResearch(selected, requirements) {
+			answer.at = part.at
+			answer.selected = selected
+			return answer, nil
+		}
+		answer.secondaryFailures++
+		floor = part.at + 1
+	}
+	return answer, nil
+}
+
+func (owner *endpointOwnerResearch) queryRequirementsReferenceResearch(from, horizon int64, requirements []routes.Requirement, budget int) (endpointQueryResearch, error) {
+	answer := endpointQueryResearch{at: -1, last: -1}
+	for at := from; at <= horizon; at++ {
+		if answer.points >= budget {
+			return answer, fmt.Errorf("joint reference budget exhausted")
+		}
+		answer.points++
+		answer.last = at
+		point, err := owner.project(at)
+		if err != nil {
+			return answer, err
+		}
+		if requirementsMetResearch(point, requirements) {
+			answer.at = at
+			answer.selected = point
+			return answer, nil
+		}
+	}
+	return answer, nil
+}

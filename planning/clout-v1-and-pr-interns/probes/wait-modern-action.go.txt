@@ -66,7 +66,7 @@ func (owner *endpointActionOwnerResearch) apply(t *testing.T, request IntentRequ
 	action := owner.context
 	ctx := action.calculation
 	if at < 0 || at > 86_460_000 || request.ExpectedRevision != ctx.revision.Number ||
-		request.Kind != IntentPerformManualBatch && request.Kind != IntentBuyGenerator && request.Kind != IntentBuyUpgrade {
+		request.Kind != IntentPerformManualBatch && request.Kind != IntentBuyGenerator && request.Kind != IntentBuyUpgrade && request.Kind != IntentCrossGate {
 		return answer, fmt.Errorf("unsupported action request/context")
 	}
 	parsed, err := parseLoggedIntent(request.CanonicalPayload, request.IntentID)

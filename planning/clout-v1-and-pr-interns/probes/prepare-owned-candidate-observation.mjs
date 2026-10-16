@@ -38,12 +38,18 @@ const changes = [
   ['\t\t\tdigest, digestErr := stateDigest(child.state)\n','\t\t\tkey, digestErr := manualBeamKeyResearch(suite,child.state,child.revision,child.atMS)\n','beam'],
   ['\t\t\tkey := fmt.Sprintf("%s:%d", digest, child.atMS)\n\t\t\tprior, exists := dedup[key]\n','\t\t\tprior, exists := dedup[key]\n','beam'],
   ['\t\tif int64(len(frontier)) > suite.Scenario.BeamWidth {\n\t\t\tfrontier = frontier[:suite.Scenario.BeamWidth]\n\t\t}\n', '\t\tif int64(len(frontier)) > suite.Scenario.BeamWidth {\n\t\t\tfrontier = frontier[:suite.Scenario.BeamWidth]\n\t\t}\n\t\tmanualBeamDepthResearch(suite,depth,generatedCount,len(pruned),len(children),len(frontier))\n\t\tfor _, entry := range frontier { if err:=manualBeamObserveResearch(suite,depth,entry.state,entry.revision,entry.atMS,entry.path,entry.score,entry.reached);err!=nil{return nil,err} }\n', 'beam'],
+  ['\t\tcrossAt := currentMS\n','\t\tcrossAt = currentMS\n','gate'],
+  ['\t\teligible, err := eligibleAt(currentMS)\n','\t\tcrossAt := currentMS\n\t\tif scope:=manualChoiceScopesResearch[suite];scope!=nil {\n\t\t\tat,eligible,err:=scope.gateEarliest(state,*revision,currentMS,limitMS,gate.Requirement,counter)\n\t\t\tif err!=nil{return currentMS,nil,progressed,err}\n\t\t\tif !eligible{break}\n\t\t\tcrossAt=at\n\t\t} else {\n\t\teligible, err := eligibleAt(currentMS)\n','gate'],
+  ['\t\t}\n\t\trequest := production.IntentRequest{IntentID: relevanceIntentID(*revision), Kind: production.IntentCrossGate,','\t\t}\n\t\t}\n\t\trequest := production.IntentRequest{IntentID: relevanceIntentID(*revision), Kind: production.IntentCrossGate,','gate'],
+  ['\t\tsimulation, err := production.SimulateTransition(request, state, suite.Catalog,\n\t\t\tproduction.SimulationDependencies{Routes: suite.Routes, Hook: suite.hook}, relevanceRevision(*revision, suite.ConstantsHash),\n\t\t\tmode, relevanceNow(crossAt), suite.external, nil, mask)\n','\t\tsimulation, err := manualGateTransitionResearch(suite,request,state,*revision,crossAt,mode,mask)\n','gate'],
+  ['\tsimulation, err := production.SimulateTransition(request, state, suite.Catalog,\n\t\tproduction.SimulationDependencies{Routes: suite.Routes, Hook: suite.hook}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},\n\t\tproduction.ModeOnline, relevanceNow(nowMS), suite.external, nil, mask)\n','\tsimulation, err := manualBootstrapTransitionResearch(suite,request,state,revision,nowMS,mask)\n'],
 ];
 let generated = original;
 function replaceScoped(source, before, after, completionOnly) {
   const beam = completionOnly === 'beam';
-  const start = completionOnly ? source.indexOf(beam ? 'func (suite *RelevanceSuite) runBeamWithOpportunity(' : 'func (suite *RelevanceSuite) runRankedCompletionCached(') : 0;
-  const end = completionOnly ? source.indexOf(beam ? '\nfunc relevanceStateDominates(' : '\nfunc relevanceCompletionCacheKey(', start) : source.length;
+  const gate = completionOnly === 'gate';
+  const start = completionOnly ? source.indexOf(gate ? 'func (suite *RelevanceSuite) progressSegmentGates(' : beam ? 'func (suite *RelevanceSuite) runBeamWithOpportunity(' : 'func (suite *RelevanceSuite) runRankedCompletionCached(') : 0;
+  const end = completionOnly ? source.indexOf(gate ? '\nfunc (suite *RelevanceSuite) segmentProgressionGateIDs(' : beam ? '\nfunc relevanceStateDominates(' : '\nfunc relevanceCompletionCacheKey(', start) : source.length;
   if (start < 0 || end < start) throw Error('completion region drift');
   const region = source.slice(start,end);
   if (region.split(before).length !== 2) throw Error(`solver anchor drift: ${before.slice(0,100)}`);
@@ -72,6 +78,9 @@ overlay.Replace['harness/manual_owned_choice_bridge.go'] = '../planning/clout-v1
 overlay.Replace['harness/manual_owned_completion_bridge.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-completion-bridge.go.txt';
 overlay.Replace['harness/manual_owned_beam_bridge.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-beam-bridge.go.txt';
 overlay.Replace['production/manual_owned_beam_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-beam-export.go.txt';
+overlay.Replace['harness/manual_owned_gate_bridge.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-gate-bridge.go.txt';
+overlay.Replace['production/manual_wait_joint_endpoint_test.go'] = '../planning/clout-v1-and-pr-interns/probes/wait-joint-endpoint.go.txt';
+overlay.Replace['production/manual_owned_gate_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-gate-export.go.txt';
 overlay.Replace['production/manual_owned_choice_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-choice-export.go.txt';
 overlay.Replace['production/manual_owned_bank_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-bank-export.go.txt';
 overlay.Replace['production/manual_owned_candidate_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-candidate-export.go.txt';

@@ -1889,6 +1889,42 @@ additional to counted projections/actions; conservative context separation still
 needs COMPLETE workload and budget feasibility before adoption. Bootstrap/gates,
 general profiles/masks/sessions, TS/SQL, dispatch and normative adoption stay open.
 
+#### H3ac — Joint requirements and actual bootstrap/base-gate commands (manual)
+
+Conjunctive eligibility uses the cash bound only as a necessary condition. A
+selected point qualifies ONLY when all real resource requirements hold on that
+same full projected state. Otherwise resume at the next integer endpoint, still
+relative to the ORIGINAL retained origin. Every scalar query preserves its
+whole-point error certificates; unresolved secondary conditions may require real
+chronological leaves. No max-of-independent-earliest-times, scalar cash success
+or unaffordable horizon substitutes for joint eligibility. All attempts, points,
+preparation0 and proof work are retained; exhaustion is an error, not unreachable.
+This correctness component does not establish full-workload feasibility.
+
+The reversible overlay keeps the ACTUAL `progressSegmentGates` loop and terminal
+exclusion. Its scoped search binds the joint predicate; its action executes from
+the original owner WITHOUT first installing a projected payment. Eight valid
+unminted two-resource gate fixtures cover both modes, already eligible, delayed
+permits from a retained1ms view, a500ms qualifying/unaffordable-tail window, and
+blocked permits. Six actual crossings match full ApplyLogged states/receipts/
+events, revision increments and consumed-batch successors; two blocked cases
+leave the whole input unchanged. Repeated crossing performs no second command,
+and the terminal gate is not crossed. Frozen Founder inputs remain unchanged;
+terminal/exits, alternate routes and general actor/factory semantics are not proved.
+
+The ACTUAL `applyReferenceManual` retains its count/cadence/receipt logic and uses
+the owned action binding. One online no-passive-producer case performs10 manual
+actions then a real generator purchase; both commands match full independent
+logged references at revisions2/3. This is not the first-hour runner's different
+single-click policy, a natural acquisition path or a general session/profile proof.
+
+Fixture discovery errors are disclosed in the log:zero gate amounts and false
+upgrade entries were correctly refused, and a real permit producer was required.
+No catalog grammar or threshold was weakened to admit them. Existing legacy
+bootstrap/gate behavior and R10/R11 contracts remain unchanged; live dispatch,
+first-hour/session adapters, general domain/masks, complete workloads/role-report
+semantics, TS/SQL and normative adoption remain open.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -2134,3 +2170,6 @@ numeric tolerance, authored content or narrowed1.0 scope.
 - 2026-10-16: H3ab binds actual beam children/pruning/rollouts through manual
   owners, with real width8 truncation and stable independent-allocation repeats.
   Keep registered full-workload/budget, general lifecycle and adoption gates open.
+- 2026-10-16: H3ac binds conjunctive resource eligibility and actual bootstrap/
+  base-gate actions without pre-advancing an action origin. Preserve full logged
+  references, invalid-fixture disclosures and all wider lifecycle/adoption gates.

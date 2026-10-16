@@ -1,0 +1,157 @@
+package harness
+
+import (
+	"bytes"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+	"fmt"
+)
+
+func (scope *manualChoiceScopeResearch) gateEarliest(state *save.State, revision, nowMS, limitMS int64, requirements []routes.Requirement, counter *relevanceCounter) (int64, bool, error) {
+	binding, err := scope.require(state)
+	if err != nil {
+		return 0, false, err
+	}
+	if binding.Revision != revision || binding.AtMS != nowMS || limitMS < nowMS {
+		return 0, false, fmt.Errorf("gate query coordinates do not bind owner")
+	}
+	at, points, err := binding.QueryAll(limitMS-nowMS, requirements, int(counter.limit-counter.value))
+	for i := 0; i < points; i++ {
+		if budgetErr := counter.add(); budgetErr != nil {
+			return 0, false, budgetErr
+		}
+	}
+	if err != nil {
+		return 0, false, err
+	}
+	if at < 0 {
+		return 0, false, nil
+	}
+	if at > limitMS-nowMS {
+		return 0, false, fmt.Errorf("joint gate query escaped horizon")
+	}
+	return nowMS + at, true, nil
+}
+
+func manualGateTransitionResearch(suite *RelevanceSuite, request production.IntentRequest, state *save.State, revision, atMS int64, mode production.EvaluationMode, mask production.AblationMask) (production.SimulationResult, error) {
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		parent, err := scope.require(state)
+		if err != nil {
+			return production.SimulationResult{}, err
+		}
+		result, err := scope.apply(request, state, revision, atMS)
+		if err != nil {
+			return result, err
+		}
+		if result.Decision.Outcome == save.IntentApplied {
+			err = manualRecordCompletionResearch(suite, state, parent.Identity, nil, request.GateID)
+		}
+		return result, err
+	}
+	return production.SimulateTransition(request, state, suite.Catalog, production.SimulationDependencies{Routes: suite.Routes, Hook: suite.hook}, relevanceRevision(revision, suite.ConstantsHash), mode, relevanceNow(atMS), suite.external, nil, mask)
+}
+
+// The actual bootstrap keeps all count/cadence/receipt logic; only its action
+// dispatch is bound here. No observation is installed before the command.
+func manualBootstrapTransitionResearch(suite *RelevanceSuite, request production.IntentRequest, state *save.State, revision, atMS int64, mask production.AblationMask) (production.SimulationResult, error) {
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		parent, err := scope.require(state)
+		if err != nil {
+			return production.SimulationResult{}, err
+		}
+		result, err := scope.apply(request, state, revision, atMS)
+		if err != nil {
+			return result, err
+		}
+		if result.Decision.Outcome == save.IntentApplied {
+			err = manualRecordCompletionResearch(suite, state, parent.Identity, nil, "~manual")
+		}
+		return result, err
+	}
+	return production.SimulateTransition(request, state, suite.Catalog, production.SimulationDependencies{Routes: suite.Routes, Hook: suite.hook}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash}, production.ModeOnline, relevanceNow(atMS), suite.external, nil, mask)
+}
+
+func ManualRunOwnedGateResearch(catalog *economy.Catalog, routeCatalog *routes.Catalog, hash string, state *save.State, binding *ManualChoiceBindingResearch, mode production.EvaluationMode, horizon int64, bankFirst bool) ([]ManualChoiceStepResearch, error) {
+	gateID, terminal := "gate.t2_to_t3", "gate.t3_to_t4"
+	suite := &RelevanceSuite{Catalog: catalog, Routes: routeCatalog, ConstantsHash: hash, Scenario: RelevanceScenario{SchemaVersion: 2, Segments: []RelevanceSegment{{FromGate: &gateID, ToGate: &terminal}}}}
+	scope := &manualChoiceScopeResearch{states: map[*save.State]*ManualChoiceBindingResearch{}, requests: map[*save.State]production.IntentRequest{}, decisions: map[*save.State]save.IntentDecision{}}
+	manualChoiceScopesResearch[suite] = scope
+	defer func() {
+		delete(manualChoiceScopesResearch, suite)
+		for state := range scope.states {
+			delete(manualChoiceCloneOwnersResearch, state)
+		}
+	}()
+	if err := scope.bind(state, binding); err != nil {
+		return nil, err
+	}
+	start, revision := binding.AtMS, binding.Revision
+	counter := &relevanceCounter{limit: 2*(horizon+1) + 3}
+	now := start
+	if bankFirst {
+		if err := manualAdvanceCompletionResearch(suite, state, revision, start+1, production.AblationMask{}, counter); err != nil {
+			return nil, err
+		}
+		now++
+	}
+	at, _, progressed, err := suite.progressSegmentGates(state, &revision, now, start+horizon, mode, production.AblationMask{}, counter)
+	if err != nil {
+		return nil, err
+	}
+	if state.GatesCrossed[terminal] {
+		return nil, fmt.Errorf("optimization terminal gate was crossed")
+	}
+	if !progressed && !bankFirst {
+		encoded, err := save.EncodeState(state)
+		if err != nil || revision != binding.Revision || !bytes.Equal(encoded, binding.Head) {
+			return nil, fmt.Errorf("ineligible gate installed a partial projection/payment")
+		}
+	}
+	if progressed {
+		if !state.GatesCrossed[gateID] || revision != binding.Revision+1 {
+			return nil, fmt.Errorf("actual gate did not commit exactly once")
+		}
+		before := counter.value
+		_, _, again, err := suite.progressSegmentGates(state, &revision, at, start+horizon, mode, production.AblationMask{}, counter)
+		if err != nil || again || counter.value != before {
+			return nil, fmt.Errorf("gate replayed after crossing: %v", err)
+		}
+	}
+	return scope.completionSteps, nil
+}
+
+func ManualRunOwnedBootstrapResearch(catalog *economy.Catalog, routeCatalog *routes.Catalog, hash string, state *save.State, binding *ManualChoiceBindingResearch, target string) ([]ManualChoiceStepResearch, error) {
+	suite := &RelevanceSuite{Catalog: catalog, Routes: routeCatalog, ConstantsHash: hash, Scenario: RelevanceScenario{Milestone: RelevanceMilestone{ResourceID: "company.cash", Amount: target}}, Policy: &RelevancePolicy{Items: []RelevancePolicyItem{{PurchasableID: "generator.beige_tower"}, {PurchasableID: "upgrade.rack_rail_standardization"}}}}
+	scope := &manualChoiceScopeResearch{states: map[*save.State]*ManualChoiceBindingResearch{}, requests: map[*save.State]production.IntentRequest{}, decisions: map[*save.State]save.IntentDecision{}}
+	manualChoiceScopesResearch[suite] = scope
+	defer func() {
+		delete(manualChoiceScopesResearch, suite)
+		for state := range scope.states {
+			delete(manualChoiceCloneOwnersResearch, state)
+		}
+	}()
+	if err := scope.bind(state, binding); err != nil {
+		return nil, err
+	}
+	if !suite.needsReferenceBootstrap(state) {
+		return nil, fmt.Errorf("bootstrap fixture already has passive production")
+	}
+	counter := &relevanceCounter{limit: 2*2*(2*(2001+1)+1) + 3}
+	manual, err := suite.applyReferenceManual(state, binding.Revision, binding.AtMS, production.AblationMask{}, counter)
+	if err != nil || manual.Applied <= 0 {
+		return nil, fmt.Errorf("actual bootstrap failed: %v", err)
+	}
+	candidates, bank, _, err := suite.rankDecisionOptions(state, binding.Revision+1, binding.AtMS, binding.AtMS+2001, 1, production.AblationMask{}, counter)
+	if err != nil || bank || len(candidates) != 1 {
+		return nil, fmt.Errorf("bootstrap did not enable a real purchase: %v", err)
+	}
+	if err := manualSelectedCompletionResearch(suite, state, candidates[0]); err != nil {
+		return nil, err
+	}
+	if suite.needsReferenceBootstrap(candidates[0].State) {
+		return nil, fmt.Errorf("bootstrap purchase did not create passive production")
+	}
+	return scope.completionSteps, nil
+}

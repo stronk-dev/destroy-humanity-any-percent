@@ -322,8 +322,9 @@ child through actual choice/clone in bounded two-action runs. H3z extends the
 scoped dispatcher to retained bank views and origin-relative query floors without
 closing their origin. H3aa connects the actual ranked-completion loop, terminal
 waits and scoped context-bound score reuse. H3ab binds the actual beam's children,
-pruning and rollouts in width8 bounded diagnostics. Full registered workloads,
-general lifecycle/work/dispatch/adoption remain open.
+pruning and rollouts in width8 bounded diagnostics. H3ac adds joint-resource
+eligibility and actual bootstrap/base-gate action bindings without a pre-bank.
+Full registered workloads/general lifecycle/work/dispatch/adoption remain open.
 
 The actual closed replay chain can return Guild/Commons events without a player
 action. Today's `SimulateAdvance` refuses such events. The bounded online/offline
@@ -1159,3 +1160,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-16: retain H3ab's bounded actual beam/pruning/rollout evidence,
   including width8 truncation, independent full-result references and stable
   repeated allocations. Full workload/lifecycle/adoption remain open.
+- 2026-10-16: retain H3ac's joint eligibility and actual bootstrap/base-gate
+  action evidence. Full logged comparisons do not adopt a live factory, first-
+  hour/session policy, alternate/terminal actions or general workload semantics.

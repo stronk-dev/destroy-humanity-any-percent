@@ -1,0 +1,308 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"reflect"
+	"slices"
+	"testing"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+)
+
+func retuneGateRequirementsResearch(t *testing.T, fixture endpointFixtureResearch, requirements []routes.Requirement) endpointFixtureResearch {
+	t.Helper()
+	artifacts := map[string][]byte{}
+	for key, value := range fixture.bundle.Artifacts {
+		artifacts[key] = append([]byte(nil), value...)
+	}
+	var root map[string]json.RawMessage
+	if err := json.Unmarshal(artifacts["routes"], &root); err != nil {
+		t.Fatal(err)
+	}
+	var gates []map[string]json.RawMessage
+	if err := json.Unmarshal(root["gates"], &gates); err != nil {
+		t.Fatal(err)
+	}
+	rows := []map[string]string{}
+	for _, requirement := range requirements {
+		rows = append(rows, map[string]string{"resource_id": requirement.ResourceID, "amount": requirement.Amount.String()})
+	}
+	encoded, err := json.Marshal(rows)
+	if err != nil {
+		t.Fatal(err)
+	}
+	changed := 0
+	for _, gate := range gates {
+		var id string
+		if err := json.Unmarshal(gate["gate_id"], &id); err != nil {
+			t.Fatal(err)
+		}
+		if id == "gate.t2_to_t3" {
+			gate["requirement"] = encoded
+			changed++
+		}
+	}
+	if changed != 1 {
+		t.Fatal("missing exact gate retuning target")
+	}
+	root["gates"], err = json.Marshal(gates)
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts["routes"], err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fixture.bundle = loadCompleteReplayTestBundle(t, hash, artifacts)
+	fixture.revision.ConstantsHash = hash
+	return fixture
+}
+
+func actionBranchForFixtureResearch(t *testing.T, fixture endpointFixtureResearch, mode EvaluationMode) *ManualOwnedBranchResearch {
+	projection, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var resolved replayAccrualResolved
+	if err := decodeReplayStrict(fixture.wire.Resolved, &resolved); err != nil || resolved.FounderCarry == nil {
+		t.Fatal(err)
+	}
+	carry := *resolved.FounderCarry
+	carry.FounderConstantsHash = fixture.bundle.ConstantsHash
+	owner, err := newEndpointActionOwnerResearch(projection, carry, fixture.wire.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	family := &manualChoiceFamilyResearch{branches: map[any]*ManualOwnedBranchResearch{}}
+	branch := &ManualOwnedBranchResearch{t: t, owner: owner, family: family}
+	family.branches[branch.Identity()] = branch
+	return branch
+}
+
+func verifyOwnedGateStepsResearch(t *testing.T, root *ManualOwnedBranchResearch, steps []ManualOwnedChoiceStepResearch) {
+	t.Helper()
+	for _, step := range steps {
+		parent := root.family.branches[step.ParentIdentity]
+		if parent == nil {
+			t.Fatal("gate/manual step lost original context")
+		}
+		ctx := parent.owner.context.calculation
+		at := step.At.Sub(parent.originTime()).Milliseconds()
+		if step.Bank != nil {
+			fixture := endpointFixtureResearch{bundle: ctx.bundle, state: parent.State(), revision: ctx.revision, external: ctx.external, weight: ctx.weight, batch: ctx.batch}
+			ref, err := referenceEndpointResearch(t, fixture, at, ctx.mode, ctx.mask)
+			if err != nil {
+				t.Fatal(err)
+			}
+			stages := []endpointStageResearch{}
+			for _, stage := range step.Bank.Stages {
+				stages = append(stages, endpointStageResearch{stage.Kind, stage.Evaluation})
+			}
+			if step.ChildIdentity != step.ParentIdentity || step.Revision != parent.Revision() || !bytes.Equal(mustEncodeState(t, step.State), mustEncodeState(t, ref.state)) || !reflect.DeepEqual(stages, ref.stages) || !reflect.DeepEqual(step.Bank.Events, ref.events) || !slices.Equal(step.Bank.Roles, ref.roles) {
+				t.Fatal("retained pre-gate view lost full original stages")
+			}
+			continue
+		}
+		parsed, err := candidateRequestResearch(step.Request)
+		if err != nil {
+			t.Fatal(err)
+		}
+		row := actionRecordFromOwnerResearch(t, parent.owner, parsed, at)
+		want := parent.State()
+		logged, err := ApplyLogged(want, row.Payload, ctx.bundle, row.Inputs)
+		if err != nil || logged.Outcome != save.IntentApplied || step.Revision != parent.Revision()+1 || step.ChildIdentity == step.ParentIdentity || !bytes.Equal(mustEncodeState(t, step.State), mustEncodeState(t, want)) || !bytes.Equal(step.Decision.Receipt, logged.Receipt) || !reflect.DeepEqual(step.Decision.Events, logged.Events) {
+			t.Fatal("actual gate/manual differs from complete logged reference", step.ID, at, err)
+		}
+		child := root.family.branches[step.ChildIdentity]
+		if child == nil || !bytes.Equal(child.Head(), mustEncodeState(t, want)) || child.owner.context.calculation.batch.BaseSeq != want.GuildBoundarySeq || len(child.owner.context.calculation.batch.Settlements) != 0 || !reflect.DeepEqual(child.owner.context.carry, parent.owner.context.carry) {
+			t.Fatal("real action successor lost state or replayed Guild batch")
+		}
+	}
+}
+
+func RunManualOwnedGatesResearch(t *testing.T, run func(*ManualOwnedBranchResearch, EvaluationMode, int64, bool) ([]ManualOwnedChoiceStepResearch, error)) {
+	t.Helper()
+	applied, blocked := 0, 0
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		for _, name := range []string{"already", "secondary_delay", "falling_window", "blocked_secondary"} {
+			t.Run(fmt.Sprintf("%s/%s", mode, name), func(t *testing.T) {
+				fixture := loadEndpointFixtureResearch(t, "combined", mode)
+				setCash(t, fixture.state, decimal.One.String())
+				// A real secondary producer and strictly positive gate amounts:
+				// zero-amount gates are rejected by the actual catalog grammar.
+				fixture.state.GeneratorPurchasedTotal += 1 - fixture.state.GeneratorCounts["generator.legal_dept"]
+				fixture.state.GeneratorCounts["generator.legal_dept"] = 1
+				permits, _ := fixture.state.Ledger.Balance("company.permits")
+				seedPermits := decimal.One
+				if name == "secondary_delay" || name == "blocked_secondary" {
+					seedPermits = decimal.Zero
+				}
+				if _, err := fixture.state.Ledger.Apply(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.permits", Delta: seedPermits.Sub(permits)}}}); err != nil {
+					t.Fatal(err)
+				}
+				requirements := []routes.Requirement{{ResourceID: "company.cash", Amount: decimal.One}, {ResourceID: "company.permits", Amount: decimal.One}}
+				horizon := int64(3)
+				floor := int64(0)
+				if name == "secondary_delay" {
+					one, err := referenceEndpointResearch(t, fixture, 1, mode, AblationMask{})
+					if err != nil {
+						t.Fatal(err)
+					}
+					two, err := referenceEndpointResearch(t, fixture, 2, mode, AblationMask{})
+					if err != nil {
+						t.Fatal(err)
+					}
+					p1, _ := one.state.Ledger.Balance("company.permits")
+					p2, _ := two.state.Ledger.Balance("company.permits")
+					if !p2.Gt(p1) {
+						t.Fatal("secondary-delay population has no actual growth", p1, p2)
+					}
+					requirements[1].Amount = p2
+					floor = 1
+				} else if name == "falling_window" {
+					early, err := referenceEndpointResearch(t, fixture, 500, mode, AblationMask{})
+					if err != nil {
+						t.Fatal(err)
+					}
+					late, err := referenceEndpointResearch(t, fixture, 2001, mode, AblationMask{})
+					if err != nil {
+						t.Fatal(err)
+					}
+					cash, _ := early.state.Ledger.Balance("company.cash")
+					tail, _ := late.state.Ledger.Balance("company.cash")
+					if !cash.Gt(tail) {
+						t.Fatal("falling real cash window disappeared")
+					}
+					requirements[0].Amount = cash
+					horizon = 2001
+				} else if name == "blocked_secondary" {
+					requirements[1].Amount = decimal.One
+				}
+				fixture = retuneGateRequirementsResearch(t, fixture, requirements)
+				root := actionBranchForFixtureResearch(t, fixture, mode)
+				origin := root.Head()
+				owner := &endpointOwnerResearch{context: root.owner.context.calculation}
+				ref, err := owner.queryRequirementsReferenceResearch(floor, horizon, requirements, int(horizon-floor+1))
+				if err != nil {
+					t.Fatal(err)
+				}
+				got, err := owner.queryRequirementsResearch(floor, horizon, requirements, int(2*(horizon-floor+1)+3))
+				if err != nil || got.at != ref.at || got.at >= 0 && !equalEndpointResearch(t, got.selected, ref.selected) {
+					t.Fatal("conjunctive first/full endpoint differs", got.at, ref.at, err)
+				}
+				if name == "already" && ref.at != 0 || name == "secondary_delay" && ref.at != 2 || name == "falling_window" && (ref.at < 1 || ref.at > 500) || name == "blocked_secondary" && ref.at != -1 {
+					t.Fatal("wrong actual joint fixture", name, ref.at)
+				}
+				steps, err := run(root, mode, horizon, floor > 0)
+				if err != nil {
+					t.Fatal(err)
+				}
+				verifyOwnedGateStepsResearch(t, root, steps)
+				if ref.at < 0 {
+					if len(steps) != 0 || root.family.actions != 0 {
+						t.Fatal("blocked gate became an action")
+					}
+					blocked++
+				} else {
+					expected := 1
+					if floor > 0 {
+						expected++
+					}
+					if len(steps) != expected || root.family.actions != 1 {
+						t.Fatal("gate applied wrong number of commands/views", len(steps), root.family.actions)
+					}
+					step := steps[len(steps)-1]
+					if step.Request.Kind != IntentCrossGate || step.At.Sub(root.Time()).Milliseconds() != ref.at || !step.State.GatesCrossed["gate.t2_to_t3"] || step.State.GatesCrossed["gate.t3_to_t4"] || step.State.Tier != 3 {
+						t.Fatal("actual progression missed joint point/terminal boundary")
+					}
+					applied++
+				}
+				if !bytes.Equal(root.Head(), origin) {
+					t.Fatal("query/gate consumed retained source")
+				}
+				t.Logf("mode%s case%s joint-first%d scalar-queries%d points%d prep0%d secondary-failures%d real-actions%d; complete reference, unminted two-resource gate", mode, name, got.at, got.queries, got.points, got.preparationZeroPoints, got.secondaryFailures, root.family.actions)
+			})
+		}
+	}
+	if applied != 6 || blocked != 2 {
+		t.Fatal("incomplete joint gate population", applied, blocked)
+	}
+}
+
+func RunManualOwnedBootstrapResearch(t *testing.T, run func(*ManualOwnedBranchResearch) ([]ManualOwnedChoiceStepResearch, error)) {
+	t.Helper()
+	fixture := loadEndpointFixtureResearch(t, "combined", ModeOnline)
+	for id := range fixture.state.GeneratorCounts {
+		fixture.state.GeneratorCounts[id] = 0
+	}
+	for id := range fixture.state.GeneratorProvisioned {
+		fixture.state.GeneratorProvisioned[id] = 0
+	}
+	for id := range fixture.state.ProvisionRemaindersPPM {
+		fixture.state.ProvisionRemaindersPPM[id] = 0
+	}
+	fixture.state.UpgradesOwned = map[string]bool{}
+	fixture.state.GeneratorPurchasedTotal = 0
+	setCash(t, fixture.state, "0")
+	root := actionBranchForFixtureResearch(t, fixture, ModeOnline)
+	origin := root.Head()
+	steps, err := run(root)
+	if err != nil || len(steps) != 2 {
+		t.Fatal("actual bootstrap/purchase failed", len(steps), err)
+	}
+	verifyOwnedGateStepsResearch(t, root, steps)
+	if steps[0].Request.Kind != IntentPerformManualBatch || steps[1].Request.Kind != IntentBuyGenerator || steps[1].ParentIdentity != steps[0].ChildIdentity || steps[1].Revision != 3 || steps[1].State.GeneratorCounts["generator.beige_tower"] < 1 || !bytes.Equal(origin, root.Head()) {
+		t.Fatal("bootstrap failed to preserve the actual action chain")
+	}
+	t.Logf("online actual bootstrap count%d then generator purchase; two exact logged commands, revisions2/3 and unchanged source", steps[0].Request.Count)
+}
+
+func TestWaitJointErrorsResearch(t *testing.T) {
+	fixture := capEndpointFixtureResearch(t, loadEndpointFixtureResearch(t, "none", ModeOnline))
+	fixture.state.NextOpportunityAttendedMS = 5001
+	fixture.state.OpportunitySpawnSeq = decimal.MaxExactInteger
+	owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, ModeOnline, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+	if err != nil {
+		t.Fatal(err)
+	}
+	requirements := []routes.Requirement{{ResourceID: "company.cash", Amount: decimal.Zero}, {ResourceID: "company.permits", Amount: decimal.One}}
+	ref, cause := owner.queryRequirementsReferenceResearch(1001, 1003, requirements, 3)
+	got, err := owner.queryRequirementsResearch(1001, 1003, requirements, 7)
+	if cause == nil || err == nil || err.Error() != cause.Error() || got.last != ref.last || got.selected.state != nil {
+		t.Fatal("joint search hid actual first error", got.last, ref.last, err, cause)
+	}
+	ref, cause = owner.queryRequirementsReferenceResearch(0, 1003, requirements, 1004)
+	got, err = owner.queryRequirementsResearch(0, 1003, requirements, 2009)
+	if cause == nil || err == nil || err.Error() != cause.Error() || got.last != 1001 || ref.last != 1001 || got.secondaryFailures != 1001 || got.points != 1002 || got.selected.state != nil {
+		t.Fatal("joint search skipped the first error after secondary failures", got.last, got.points, got.secondaryFailures, err, cause)
+	}
+	ref, err = owner.queryRequirementsReferenceResearch(6001, 6003, requirements, 3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err = owner.queryRequirementsResearch(6001, 6003, requirements, 7)
+	if err != nil || got.at != ref.at {
+		t.Fatal("earlier error leaked into valid joint domain", err)
+	}
+	for _, budget := range []int{0, 1} {
+		got, err = owner.queryRequirementsResearch(6001, 6003, requirements, budget)
+		if err == nil || got.at != -1 || got.selected.state != nil || got.points != budget {
+			t.Fatal("joint exhaustion became unreachable/success", budget, got.points, err)
+		}
+	}
+	for _, bad := range [][]routes.Requirement{nil, {{ResourceID: "founder.reputation", Amount: decimal.Zero}}, {{ResourceID: "company.cash", Amount: decimal.NaN}}} {
+		got, err = owner.queryRequirementsResearch(0, 3, bad, 10)
+		if err == nil || got.points != 0 {
+			t.Fatal("invalid joint requirement executed", err)
+		}
+	}
+}

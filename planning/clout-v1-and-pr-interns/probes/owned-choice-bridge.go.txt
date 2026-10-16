@@ -20,6 +20,7 @@ type ManualChoiceBindingResearch struct {
 	Revision, AtMS int64
 	Fork           func(*save.State) (*ManualChoiceBindingResearch, error)
 	Query          func(int64, decimal.Decimal, int) (int64, int, error)
+	QueryAll       func(int64, []routes.Requirement, int) (int64, int, error)
 	Apply          func(production.IntentRequest, *save.State, int64) (production.SimulationResult, *ManualChoiceBindingResearch, error)
 	Bank           func(*save.State, int64) (ManualBankObservationResearch, *ManualChoiceBindingResearch, error)
 	Rate           func(*save.State, production.AblationMask) (decimal.Decimal, error)
@@ -58,7 +59,7 @@ var manualChoiceScopesResearch = map[*RelevanceSuite]*manualChoiceScopeResearch{
 var manualChoiceCloneOwnersResearch = map[*save.State]*manualChoiceScopeResearch{}
 
 func (scope *manualChoiceScopeResearch) bind(state *save.State, binding *ManualChoiceBindingResearch) error {
-	if binding == nil || binding.Identity == nil || reflect.TypeOf(binding.Identity).Kind() != reflect.Pointer || reflect.ValueOf(binding.Identity).IsNil() || binding.Fork == nil || binding.Query == nil || binding.Apply == nil || binding.Bank == nil || binding.Rate == nil {
+	if binding == nil || binding.Identity == nil || reflect.TypeOf(binding.Identity).Kind() != reflect.Pointer || reflect.ValueOf(binding.Identity).IsNil() || binding.Fork == nil || binding.Query == nil || binding.QueryAll == nil || binding.Apply == nil || binding.Bank == nil || binding.Rate == nil {
 		return fmt.Errorf("missing owned choice identity/factory")
 	}
 	encoded, err := save.EncodeState(state)

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
 
@@ -88,6 +89,13 @@ func (branch *ManualOwnedBranchResearch) Case() ManualOwnedCaseResearch {
 	}
 	return ManualOwnedCaseResearch{Catalog: ctx.bundle.Economy, Routes: ctx.bundle.Routes, Hash: ctx.bundle.ConstantsHash, Target: gate.Requirement[0].Amount.String()}
 }
+
+// Gate progression has a conjunction, not the single-resource ranking objective
+// asserted by Case. Return only the owned catalog inputs needed by that caller.
+func (branch *ManualOwnedBranchResearch) GateInputsResearch() ManualOwnedCaseResearch {
+	ctx := branch.owner.context.calculation
+	return ManualOwnedCaseResearch{Catalog: ctx.bundle.Economy, Routes: ctx.bundle.Routes, Hash: ctx.bundle.ConstantsHash}
+}
 func (branch *ManualOwnedBranchResearch) Fork(state *save.State) (*ManualOwnedBranchResearch, error) {
 	if !bytes.Equal(mustEncodeState(branch.t, state), branch.Head()) {
 		return nil, fmt.Errorf("clone cannot manufacture a new action origin")
@@ -115,6 +123,21 @@ func (branch *ManualOwnedBranchResearch) Query(wait int64, quote decimal.Decimal
 		return answer.at - from, points, nil
 	}
 	return -1, points, nil
+}
+
+func (branch *ManualOwnedBranchResearch) QueryAll(wait int64, requirements []routes.Requirement, budget int) (int64, int, error) {
+	from := branch.Time().Sub(branch.originTime()).Milliseconds()
+	answer, err := (&endpointOwnerResearch{context: branch.owner.context.calculation}).queryRequirementsResearch(from, from+wait, requirements, budget)
+	points := answer.points + answer.preparationZeroPoints
+	branch.family.queries++
+	branch.family.points += points
+	if err != nil {
+		return -1, points, err
+	}
+	if answer.at < 0 {
+		return -1, points, nil
+	}
+	return answer.at - from, points, nil
 }
 func (branch *ManualOwnedBranchResearch) Apply(request IntentRequest, state *save.State, at time.Time) (SimulationResult, *ManualOwnedBranchResearch, error) {
 	parsed, err := candidateRequestResearch(request)
