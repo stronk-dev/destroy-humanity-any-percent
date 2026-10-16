@@ -2317,3 +2317,46 @@ Codex. Exact corrective range `7f94671a` exclusive through this containing commi
 needs Claude's designated review. Consolidate remaining corrective ranges, not
 repeat the finished original reviews. RP-174/RP-176 author reconciliation, clock,
 adopted content and whole-feature/player/release gates remain. No archive or push.
+
+## 2026-10-16 — Focus and notice corrections independently approved
+
+Review by: /root/cosmetic_focus_notice_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings, all code/test/tool/docs/records in each complete range:
+- RP-424 f1281138b3ee767004f84118d42a523d7b06a62d-exclusive..24cefcd51bd86d0d81b8398b4ee46181059a4e52-inclusive (9paths).
+- RP-454/RP-455 f097df7ebbe334358d7f2f6ba01e01c76a5cdc3c-exclusive..c802c2dc517945cd52b9c30d5bcf8284b522d230-inclusive (7paths).
+- RP-456 c802c2dc517945cd52b9c30d5bcf8284b522d230-exclusive..4c87dcdde20b2a7bac3b2691f7a773fefe027a8e-inclusive (7paths).
+Eleven unique paths inspected: shelf/host, native tests, two N5 tools, docs/backlog/CurrentState/
+own plan/log. Cosmetic§7.3/AC11–13 and GS0.2/GS0.6 authority; callbacks/copy/ownership/receipt/
+wire/persistence semantics unchanged. Original C6 and other correction scopes are not approved.
+
+Independent exact-endpoint Vite source overlays, native Chromium/WebKit:
+- RP-424 old19425 fails12 newer-focus cases (8 shelf/4 delayed host),2 ordinary-focus controls
+  pass. Corrected22471 passes30. Retained/removed newer choices and native Enter/Space/Tab execute.
+- RP-454/455 old44134 fails21/32 selected cases:16 applied wearer,3 Chromium refusals and2
+  locked-heading fallbacks;11 controls pass. WebKit3 refusals retain focus here, not claimed
+  failed. Corrected53223 passes62, including authoritative refresh/pending/newer-focus ordering.
+- RP-456 old96386 fails6 duplicate-status cases,2 revision-conflict controls pass. Corrected
+  14247 passes70, including exact-reason retention after shelf removal.
+Current affected shelf/host/screens87314 passes282;10 exclusions are5 separately gated
+performance cases×2 engines. Types/Svelte0 diagnostics, production build/client-boundary
+negatives19653 pass. Actual-source N5 fixture unit controls5/5 pass (missing/duplicate anchor,
+emitted bytes, unrelated/secondary failure refusals).
+
+Actual `make test-cosmetic-n5` (session74762) passes BOTH isolated production-built client negatives:
+checkout reports directViolations fetch https://example.invalid/checkout; payment reports
+PaymentRequest. Each child exits1 specifically after native Buy at the primary trap, actual
+fixture count1, no forbidden outgoing request/secondary abort/unrelated page error, cleanup
+successful. This executes the real gameserver/Postgres/WebSocket boundary, not a completed
+positive acquisition journey, new N5 construction approval or a real-service focus/refusal proof.
+
+Historical overlays bind four paths to explicit Git blobs with current unrelated dependencies,
+not complete historical environments. Initial duplicate-config Make refusal and sandbox bind
+denial execute0; permitted direct Vitest overlays execute. Expected old failures also report
+screenshot-access warnings; visible focus/status assertions, not screenshots, are evidence.
+Current execution code `f7d21941`; root made no concurrent runtime changes. Native macOS two-engine
+evidence only: no Firefox/AT speech/performance/hosted CI/full composed aggregate claim.
+All handles terminal/slot released before admission review starts. Only task-created disposable
+game-ui Postgres is stopped/removed (fixture data gone); two preserved builders remain. No
+reviewer tracked edits/commits/main-source mutation/publication. Other corrective/author-body/
+clock/content and full-feature/release gates stand; no archival, copy adoption or1.0 promotion.

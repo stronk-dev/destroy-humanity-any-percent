@@ -2,7 +2,16 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
-Current checkpoint (2026-10-08): all original C1–C8 diff reviews are complete. C2 retains its
+Current checkpoint (2026-10-16): fresh independent Codex corrective review APPROVES
+RP-424 `f1281138..24cefcd5`, RP-454/RP-455 `f097df7e..c802c2dc` and RP-456
+`c802c2dc..4c87dcdd`, each complete range. Native old-focus/duplicate-status failures,
+corrected endpoint/current consumer checks and both actual built N5 negatives execute;
+the owning log records exact hashes, provenance and limits. These focus/notice corrections
+no longer await Claude. Other corrective ranges, author-body RP-174/RP-176, content,
+shared clock and complete feature/AT/release acceptance remain open. Earlier dated
+checkpoints retain their historical review state; current batch dispositions follow below.
+
+Preceding checkpoint (2026-10-08): all original C1–C8 diff reviews are complete. C2 retains its
 bounded approval; the other original batches retain CHANGES REQUIRED, not approval of Codex
 corrections. Latest C5 disposition consolidates RP-173/RP-174/RP-458. The snapshot decoder
 now refuses unexplained unavailability; old isolated/full-snapshot regressions fail, corrected
@@ -119,8 +128,10 @@ migration take the next free numbers at landing.
   historical kernel-history gate still blocks complete CI; this is not C6 or release acceptance.
   RP-454/RP-455 add native applied/refused completion-focus regressions for wearer controls
   and Buy. The bounded guard correction is tracked in the owning log, separately from
-  whole-product assistive-technology acceptance. The complete original C6 diff now has a
-  consolidated CHANGES REQUIRED verdict; corrective Claude review remains, including RP-456.
+  whole-product assistive-technology acceptance. RP-424/RP-454/RP-455/RP-456 now have
+  independent corrective approval as recorded above; the complete original C6 diff retains
+  its CHANGES REQUIRED disposition and other corrections, including RP-183/RP-185/RP-186,
+  still need independent review. No whole-C6 or feature acceptance is inferred.
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
   RP-180's syntax-aware package-gate correction is locally tested and awaits Claude's
