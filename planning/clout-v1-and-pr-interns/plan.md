@@ -149,12 +149,14 @@ actual choice/beam/cache consumers or adopt a new scenario/profile.
 
 H3y's scoped manual bridge now retains the selected child through actual
 rankDecisionOptions and cloneState, with eight independently logged actions in
-four two-choice runs. Four waits, sibling/result isolation and explicit missing/
-mutated-context and unsupported-bank refusals execute. It accepts true action
-origins only, not bank views, full policy/beam/cache/rollout or natural returns.
+four two-choice runs. Four waits and sibling/result/missing-context controls
+execute. H3z now extends that scoped dispatcher with retained bank views and
+origin-relative query floors. Independent full stages and a real purchase after
+two views preserve original allowance/batch/revision and exact logged output;
+the former unsupported-bank controls now succeed as views. Not a migrated full
+completion/beam/cache/rollout, policy or natural return/session workflow.
 
-Next preserve the original accounting origin through actual BANK views and
-origin-relative query floors; then bind actual beam/cache/dominance/rollout/context
+Next bind actual ranked completion, beam/cache/dominance/rollout/context
 reuse, preserving complete results, error policy and scores. Measure
 complete candidate/consumer work and error/scoring compatibility;
 finish general scheduling, all mask families, actual TS owner/query and full

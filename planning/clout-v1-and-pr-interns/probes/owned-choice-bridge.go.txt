@@ -12,8 +12,8 @@ import (
 	"cloud-clicker/server/save"
 )
 
-// This scoped manual experiment accepts only true action origins, not retained
-// bank views. No field is added to a save, wire object or normal runtime build.
+// This scoped manual experiment owns action origins and detached bank views.
+// No field is added to a save, wire object or normal runtime build.
 type ManualChoiceBindingResearch struct {
 	Identity       any
 	Head           []byte
@@ -21,7 +21,17 @@ type ManualChoiceBindingResearch struct {
 	Fork           func(*save.State) (*ManualChoiceBindingResearch, error)
 	Query          func(int64, decimal.Decimal, int) (int64, int, error)
 	Apply          func(production.IntentRequest, *save.State, int64) (production.SimulationResult, *ManualChoiceBindingResearch, error)
+	Bank           func(*save.State, int64) (ManualBankObservationResearch, *ManualChoiceBindingResearch, error)
 	Rate           func(*save.State, production.AblationMask) (decimal.Decimal, error)
+}
+type ManualBankStageResearch struct {
+	Kind       string
+	Evaluation production.EvaluationResult
+}
+type ManualBankObservationResearch struct {
+	Stages []ManualBankStageResearch
+	Events []save.EventWrite
+	Roles  []production.RoleActivation
 }
 type ManualChoiceStepResearch struct {
 	ID                            string
@@ -30,6 +40,7 @@ type ManualChoiceStepResearch struct {
 	ParentIdentity, ChildIdentity any
 	Request                       production.IntentRequest
 	Decision                      save.IntentDecision
+	Bank                          *ManualBankObservationResearch
 }
 type manualChoiceScopeResearch struct {
 	states    map[*save.State]*ManualChoiceBindingResearch
@@ -41,7 +52,7 @@ var manualChoiceScopesResearch = map[*RelevanceSuite]*manualChoiceScopeResearch{
 var manualChoiceCloneOwnersResearch = map[*save.State]*manualChoiceScopeResearch{}
 
 func (scope *manualChoiceScopeResearch) bind(state *save.State, binding *ManualChoiceBindingResearch) error {
-	if binding == nil || binding.Identity == nil || reflect.TypeOf(binding.Identity).Kind() != reflect.Pointer || reflect.ValueOf(binding.Identity).IsNil() || binding.Fork == nil || binding.Query == nil || binding.Apply == nil || binding.Rate == nil {
+	if binding == nil || binding.Identity == nil || reflect.TypeOf(binding.Identity).Kind() != reflect.Pointer || reflect.ValueOf(binding.Identity).IsNil() || binding.Fork == nil || binding.Query == nil || binding.Apply == nil || binding.Bank == nil || binding.Rate == nil {
 		return fmt.Errorf("missing owned choice identity/factory")
 	}
 	encoded, err := save.EncodeState(state)
@@ -126,6 +137,30 @@ func (scope *manualChoiceScopeResearch) rate(state *save.State, mask production.
 	return binding.Rate(state, mask)
 }
 
+func (scope *manualChoiceScopeResearch) bank(state *save.State, revision, atMS int64, counter *relevanceCounter) (ManualBankObservationResearch, error) {
+	binding, err := scope.require(state)
+	if err != nil {
+		return ManualBankObservationResearch{}, err
+	}
+	if binding.Revision != revision || atMS <= binding.AtMS {
+		return ManualBankObservationResearch{}, fmt.Errorf("invalid bank coordinates")
+	}
+	if err := counter.add(); err != nil {
+		return ManualBankObservationResearch{}, err
+	}
+	observation, next, err := binding.Bank(state, atMS)
+	if err != nil {
+		return ManualBankObservationResearch{}, err
+	}
+	if next == nil || next.Identity != binding.Identity || next.Revision != revision || next.AtMS != atMS || len(observation.Stages) == 0 {
+		return ManualBankObservationResearch{}, fmt.Errorf("bank lost origin/stages or created settlement")
+	}
+	if err := scope.bind(state, next); err != nil {
+		return ManualBankObservationResearch{}, err
+	}
+	return observation, nil
+}
+
 func ManualRunOwnedChoicesResearch(catalog *economy.Catalog, routeCatalog *routes.Catalog, hash string, milestone RelevanceMilestone,
 	state *save.State, binding *ManualChoiceBindingResearch, window int64, count int, limit int64) ([]ManualChoiceStepResearch, error) {
 	suite := &RelevanceSuite{Catalog: catalog, Routes: routeCatalog, ConstantsHash: hash, Scenario: RelevanceScenario{Milestone: milestone},
@@ -156,12 +191,29 @@ func ManualRunOwnedChoicesResearch(catalog *economy.Catalog, routeCatalog *route
 		if err != nil {
 			return nil, err
 		}
-		options, bank, _, err := suite.rankDecisionOptions(state, current.Revision, current.AtMS, current.AtMS+window, 1, production.AblationMask{}, counter)
+		options, bank, bankAt, err := suite.rankDecisionOptions(state, current.Revision, current.AtMS, current.AtMS+window, 1, production.AblationMask{}, counter)
 		if err != nil {
 			return nil, err
 		}
-		if bank || len(options) != 1 {
-			return nil, fmt.Errorf("unsupported/non-purchase diagnostic choice")
+		if bank || len(options) == 0 {
+			at := current.AtMS + window
+			if bank {
+				at = bankAt
+			}
+			view, err := cloneState(catalog, state)
+			if err != nil {
+				return nil, err
+			}
+			observation, err := scope.bank(view, current.Revision, at, counter)
+			if err != nil {
+				return nil, err
+			}
+			steps = append(steps, ManualChoiceStepResearch{ID: "~bank", AtMS: at, Revision: current.Revision, State: view, ParentIdentity: current.Identity, ChildIdentity: current.Identity, Bank: &observation})
+			state = view
+			continue
+		}
+		if len(options) != 1 {
+			return nil, fmt.Errorf("invalid diagnostic choice count")
 		}
 		chosen := options[0]
 		child, err := scope.require(chosen.State)

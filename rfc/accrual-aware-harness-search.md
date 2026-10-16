@@ -1788,18 +1788,39 @@ independent earliest/full original-state ApplyLogged references, including four
 positive waits, receipts/events, increasing revisions and unchanged parents.
 The chosen child's context survives its actual clone. A separately ranked sibling
 has the same result; mutating its returned generator map cannot change the selected
-branch's next purchase. Root/malformed-clone controls refuse. Severing ONLY the
-real clone's context propagation makes all four purchase populations fail with
-an unbound-head error; both bank refusal controls remain correctly refused.
+branch's next purchase. Root/malformed-clone controls refuse. In this action-only
+phase, severing the real clone's context propagation makes all four purchase
+populations fail; bank controls still refuse. H3z later replaces those obsolete
+bank refusals with supported retained-view checks.
 
-This bridge accepts TRUE ACTION ORIGINS only. Two bank-only cases explicitly
-refuse; they do not rebase a projected view, renew an allowance, select the legacy
-wait or claim unreachability. Retained bank views need an origin-relative query
-floor before integration. Fixed-mode diagnostic actions are not natural return/
+H3y's initial bridge accepts TRUE ACTION ORIGINS only; H3z extends it to bank
+views with origin-relative query floors, without rebasing or settling a view.
+Fixed-mode diagnostic actions are not natural return/
 session behavior. Actual beam/dedup/dominance/completion-cache/rollout reuse and
 full policy/workloads remain unproved; the two-item population is NOT a narrowed
 beam width or replacement for them. H3x/legacy checks still execute unchanged.
 No live API/math/schema/report/CI change or normative acceptance follows.
+
+#### H3z — Retained bank views and query floors (manual component)
+
+The manual bank dispatcher now keeps original Company/Founder/batch/mode identity
+and revision across views. Queries search `[view_endpoint,horizon]` while every
+point still reconstructs the FULL original interval. Preparation0 is separately
+charged evidence, not a queried endpoint; inconclusive/failed preparation falls
+back to actual requested-domain leaves, never a new refusal. Existing0-based
+queries retain their behavior. Invalid floors/exhaustion remain errors.
+
+Bank results retain complete ordered evaluations, private unbound events and roles;
+they do not collapse catchup into one invented evaluation or publish events. The
+old H3y bank controls now succeed as views. Three-window actual-ranker checks match
+independent full primitive stages:online waits three times without renewing its
+allowance; offline waits twice then makes the real5001ms purchase from the original
+state, with one revision increment/clearing and exact logged receipt/events.
+The owning log holds24 floor comparisons and proof-fault/rebasing controls.
+
+This is still the SCOPED dispatcher, not a migrated `runRankedCompletion`, public
+`SimulateAdvance` return shape, full beam/cache/rollout or natural return/session
+policy. Complete domain/masks/work/TS/SQL/dispatch and normative adoption remain.
 
 ### H4 — Compatibility, work and evidence
 
@@ -2036,3 +2057,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   clone boundaries, with independent two-action references and scoped failure
   controls. Bank views/beam/cache/rollout/full workloads remain; no live dispatch
   or normative adoption.
+- 2026-10-16: H3z adds retained bank views and origin-relative query floors
+  to the scoped dispatcher; supersede action-only bank refusals, preserve full
+  stages/private values, and keep actual completion/beam/cache/workload migration
+  and normative adoption open. No live settlement or allowance change.

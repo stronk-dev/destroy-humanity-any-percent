@@ -1,0 +1,124 @@
+package production
+
+import (
+	"bytes"
+	"reflect"
+	"slices"
+	"testing"
+
+	"cloud-clicker/server/save"
+)
+
+func RunManualBankViewsResearch(t *testing.T, run func(*ManualOwnedBranchResearch) ([]ManualOwnedChoiceStepResearch, error)) {
+	t.Helper()
+	views, purchases := 0, 0
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		t.Run(string(mode), func(t *testing.T) {
+			fixture := loadEndpointFixtureResearch(t, "combined", mode)
+			setCash(t, fixture.state, "0")
+			projection, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var resolved replayAccrualResolved
+			if err := decodeReplayStrict(fixture.wire.Resolved, &resolved); err != nil || resolved.FounderCarry == nil {
+				t.Fatal(err)
+			}
+			owner, err := newEndpointActionOwnerResearch(projection, *resolved.FounderCarry, fixture.wire.Version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			family := &manualChoiceFamilyResearch{branches: map[any]*ManualOwnedBranchResearch{}}
+			root := &ManualOwnedBranchResearch{t: t, owner: owner, family: family}
+			family.branches[root.Identity()] = root
+			origin := root.Head()
+			steps, err := run(root)
+			if err != nil || len(steps) != 3 {
+				t.Fatal("bank/purchase sequence incomplete", len(steps), err)
+			}
+			previousAt := int64(0)
+			banks, actions := 0, 0
+			for index, step := range steps {
+				at := step.At.Sub(root.Time()).Milliseconds()
+				if !bytes.Equal(origin, root.Head()) {
+					t.Fatal("bank/action consumed immutable source")
+				}
+				if step.ID == "~bank" {
+					if step.Bank == nil || step.ParentIdentity != root.Identity() || step.ChildIdentity != root.Identity() || step.Revision != 1 || len(step.Decision.Receipt) != 0 || len(step.Decision.Events) != 0 || step.Request.Kind != "" || at != previousAt+2001 {
+						t.Fatal("bank became a settlement, revision or renewed origin")
+					}
+					ref, err := referenceEndpointResearch(t, fixture, at, mode, AblationMask{})
+					if err != nil || !bytes.Equal(mustEncodeState(t, step.State), mustEncodeState(t, ref.state)) || !reflect.DeepEqual(step.Bank.Events, ref.events) || !slices.Equal(step.Bank.Roles, ref.roles) {
+						t.Fatal("bank view differs from full original-interval primitive reference", at, err)
+					}
+					stages := []endpointStageResearch{}
+					for _, stage := range step.Bank.Stages {
+						stages = append(stages, endpointStageResearch{stage.Kind, stage.Evaluation})
+					}
+					if !reflect.DeepEqual(stages, ref.stages) || len(stages) == 0 || stages[0].evaluation.ProductionMS != 1500 {
+						t.Fatal("bank stage/cap was lost or renewed", at)
+					}
+					if mode == ModeOnline && (len(stages) != 2 || stages[0].kind != "offline_catchup" || stages[1].kind != "ordinary" || stages[1].evaluation.ElapsedMS != 0) {
+						t.Fatal("bank collapsed real catchup/ordinary stages")
+					}
+					if step.State.GuildBoundarySeq != 1 || step.State.ConsumedStockUnits != 10 {
+						t.Fatal("bank replayed captured Guild credit")
+					}
+					if len(step.Bank.Events) == 0 {
+						t.Fatal("private event population is empty")
+					}
+					for _, event := range step.Bank.Events {
+						if event.IntentID != "" {
+							t.Fatal("bank invented intent/event binding")
+						}
+					}
+					price, err := fixture.bundle.Economy.BulkCost("generator.beige_tower", fixture.state.GeneratorCounts["generator.beige_tower"], 1)
+					if err != nil {
+						t.Fatal(err)
+					}
+					query, err := projection.fork().queryReferenceFrom(previousAt, at, price, int(at-previousAt+1))
+					if err != nil || query.at >= 0 {
+						t.Fatal("ranked bank skipped an actual qualifying purchase", query.at, err)
+					}
+					banks++
+					views++
+				} else {
+					if mode != ModeOffline || index != 2 || at != 5001 || step.Bank != nil || step.ID != "generator.beige_tower" || step.ParentIdentity != root.Identity() || step.ChildIdentity == root.Identity() || step.Revision != 2 {
+						t.Fatal("wrong genuine post-bank action/coordinates", mode, index, at, step.ID)
+					}
+					parsed, err := candidateRequestResearch(step.Request)
+					if err != nil {
+						t.Fatal(err)
+					}
+					row := actionRecordFromOwnerResearch(t, owner, parsed, at)
+					want := restoreActionStateResearch(t, fixture.bundle, origin)
+					logged, err := ApplyLogged(want, row.Payload, fixture.bundle, row.Inputs)
+					if err != nil || logged.Outcome != save.IntentApplied || !bytes.Equal(mustEncodeState(t, step.State), mustEncodeState(t, want)) || !bytes.Equal(step.Decision.Receipt, logged.Receipt) || !reflect.DeepEqual(step.Decision.Events, logged.Events) || step.State.ConsumedStockUnits != 10 {
+						t.Fatal("post-bank action installed a view or reused private events", err)
+					}
+					price, err := fixture.bundle.Economy.BulkCost("generator.beige_tower", fixture.state.GeneratorCounts["generator.beige_tower"], 1)
+					if err != nil {
+						t.Fatal(err)
+					}
+					query, err := projection.fork().queryReferenceFrom(previousAt, 6003, price, 2002)
+					if err != nil || query.at != 5001 {
+						t.Fatal("post-bank query lost its real first point", query.at, err)
+					}
+					actions++
+					purchases++
+				}
+				previousAt = at
+			}
+			if mode == ModeOnline && (banks != 3 || actions != 0) || mode == ModeOffline && (banks != 2 || actions != 1) {
+				t.Fatal("wrong bank/purchase population", banks, actions)
+			}
+			if family.banks != banks || family.actions != actions {
+				t.Fatal("bank action hidden/duplicated", family.banks, family.actions)
+			}
+			t.Logf("mode%s bank-views%d purchases%d actual-query-points%d; full stages/private events retained, original identity/allowance/batch unchanged; fixed-mode controlled fixture, not natural return/SQL proof", mode, banks, actions, family.points)
+		})
+	}
+	if views != 5 || purchases != 1 {
+		t.Fatal("incomplete retained-bank population", views, purchases)
+	}
+}

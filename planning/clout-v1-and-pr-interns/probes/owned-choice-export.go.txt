@@ -12,8 +12,8 @@ import (
 )
 
 type manualChoiceFamilyResearch struct {
-	branches                               map[any]*ManualOwnedBranchResearch
-	queries, points, actions, rates, forks int
+	branches                                      map[any]*ManualOwnedBranchResearch
+	queries, points, actions, rates, forks, banks int
 }
 
 // This type is exported only in the production test build.
@@ -21,6 +21,7 @@ type ManualOwnedBranchResearch struct {
 	t      *testing.T
 	owner  *endpointActionOwnerResearch
 	family *manualChoiceFamilyResearch
+	view   []byte
 }
 type ManualOwnedChoiceStepResearch struct {
 	ID                            string
@@ -30,10 +31,23 @@ type ManualOwnedChoiceStepResearch struct {
 	ParentIdentity, ChildIdentity any
 	Request                       IntentRequest
 	Decision                      save.IntentDecision
+	Bank                          *ManualOwnedBankResearch
+}
+type ManualOwnedBankStageResearch struct {
+	Kind       string
+	Evaluation EvaluationResult
+}
+type ManualOwnedBankResearch struct {
+	Stages []ManualOwnedBankStageResearch
+	Events []save.EventWrite
+	Roles  []RoleActivation
 }
 
 func (branch *ManualOwnedBranchResearch) Identity() any { return branch.owner.context }
 func (branch *ManualOwnedBranchResearch) Head() []byte {
+	if branch.view != nil {
+		return append([]byte(nil), branch.view...)
+	}
 	return append([]byte(nil), branch.owner.context.calculation.origin...)
 }
 func (branch *ManualOwnedBranchResearch) State() *save.State {
@@ -43,6 +57,9 @@ func (branch *ManualOwnedBranchResearch) Revision() int64 {
 	return branch.owner.context.calculation.revision.Number
 }
 func (branch *ManualOwnedBranchResearch) Time() time.Time { return branch.State().EvaluatedThrough }
+func (branch *ManualOwnedBranchResearch) originTime() time.Time {
+	return restoreActionStateResearch(branch.t, branch.owner.context.calculation.bundle, branch.owner.context.calculation.origin).EvaluatedThrough
+}
 func (branch *ManualOwnedBranchResearch) Case() ManualOwnedCaseResearch {
 	ctx := branch.owner.context.calculation
 	gate, ok := ctx.bundle.Routes.Gate("gate.t2_to_t3")
@@ -56,24 +73,35 @@ func (branch *ManualOwnedBranchResearch) Fork(state *save.State) (*ManualOwnedBr
 		return nil, fmt.Errorf("clone cannot manufacture a new action origin")
 	}
 	branch.family.forks++
-	return &ManualOwnedBranchResearch{branch.t, branch.owner.fork(), branch.family}, nil
+	return &ManualOwnedBranchResearch{t: branch.t, owner: branch.owner.fork(), family: branch.family, view: append([]byte(nil), branch.view...)}, nil
 }
 func (branch *ManualOwnedBranchResearch) Query(wait int64, quote decimal.Decimal, budget int) (int64, int, error) {
-	ceiling := int(2 * (wait + 1))
+	from := branch.Time().Sub(branch.originTime()).Milliseconds()
+	ceiling := int(2*(wait+1) + 1)
 	if budget < ceiling {
 		ceiling = budget
 	}
-	answer, err := (&endpointOwnerResearch{context: branch.owner.context.calculation}).queryBound(wait, quote, ceiling)
+	answer, err := (&endpointOwnerResearch{context: branch.owner.context.calculation}).queryBoundFrom(from, from+wait, quote, ceiling)
 	branch.family.queries++
-	branch.family.points += answer.points
-	return answer.at, answer.points, err
+	points := answer.points + answer.preparationZeroPoints
+	branch.family.points += points
+	if err != nil {
+		return -1, points, err
+	}
+	if answer.at >= 0 {
+		if answer.at < from {
+			return -1, points, fmt.Errorf("query escaped retained-view floor")
+		}
+		return answer.at - from, points, nil
+	}
+	return -1, points, nil
 }
 func (branch *ManualOwnedBranchResearch) Apply(request IntentRequest, state *save.State, at time.Time) (SimulationResult, *ManualOwnedBranchResearch, error) {
 	parsed, err := candidateRequestResearch(request)
 	if err != nil {
 		return SimulationResult{}, nil, err
 	}
-	answer, err := branch.owner.apply(branch.t, parsed, at.Sub(branch.Time()).Milliseconds())
+	answer, err := branch.owner.apply(branch.t, parsed, at.Sub(branch.originTime()).Milliseconds())
 	branch.family.actions++
 	if err != nil {
 		return SimulationResult{}, nil, err
@@ -83,9 +111,27 @@ func (branch *ManualOwnedBranchResearch) Apply(request IntentRequest, state *sav
 		return result, nil, nil
 	}
 	*state = *answer.state
-	next := &ManualOwnedBranchResearch{branch.t, answer.next, branch.family}
+	next := &ManualOwnedBranchResearch{t: branch.t, owner: answer.next, family: branch.family}
 	branch.family.branches[next.Identity()] = next
 	return result, next, nil
+}
+
+func (branch *ManualOwnedBranchResearch) Bank(state *save.State, at time.Time) (ManualOwnedBankResearch, *ManualOwnedBranchResearch, error) {
+	if !bytes.Equal(mustEncodeState(branch.t, state), branch.Head()) {
+		return ManualOwnedBankResearch{}, nil, fmt.Errorf("bank head does not bind retained context")
+	}
+	point, err := (&endpointOwnerResearch{context: branch.owner.context.calculation}).project(at.Sub(branch.originTime()).Milliseconds())
+	branch.family.banks++
+	if err != nil {
+		return ManualOwnedBankResearch{}, nil, err
+	}
+	*state = *point.state
+	next := &ManualOwnedBranchResearch{t: branch.t, owner: branch.owner.fork(), family: branch.family, view: mustEncodeState(branch.t, point.state)}
+	observation := ManualOwnedBankResearch{Events: copyPrivateWaitEventsResearch(point.events), Roles: append([]RoleActivation(nil), point.roles...)}
+	for _, stage := range point.stages {
+		observation.Stages = append(observation.Stages, ManualOwnedBankStageResearch{stage.kind, stage.evaluation})
+	}
+	return observation, next, nil
 }
 func (branch *ManualOwnedBranchResearch) Rate(state *save.State, mask AblationMask) (decimal.Decimal, error) {
 	if !bytes.Equal(mustEncodeState(branch.t, state), branch.Head()) {
@@ -97,7 +143,7 @@ func (branch *ManualOwnedBranchResearch) Rate(state *save.State, mask AblationMa
 
 func RunManualOwnedChoicesResearch(t *testing.T, run func(*ManualOwnedBranchResearch, string) ([]ManualOwnedChoiceStepResearch, error)) {
 	t.Helper()
-	completed, delayed, verified, bankRefusals := 0, 0, 0, 0
+	completed, delayed, verified, bankPopulations := 0, 0, 0, 0
 	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
 		for _, cashName := range []string{"available", "deficit", "bank"} {
 			t.Run(fmt.Sprintf("%s/%s", mode, cashName), func(t *testing.T) {
@@ -130,15 +176,20 @@ func RunManualOwnedChoicesResearch(t *testing.T, run func(*ManualOwnedBranchRese
 					t.Fatal(err)
 				}
 				family := &manualChoiceFamilyResearch{branches: map[any]*ManualOwnedBranchResearch{}}
-				root := &ManualOwnedBranchResearch{t, owner, family}
+				root := &ManualOwnedBranchResearch{t: t, owner: owner, family: family}
 				family.branches[root.Identity()] = root
 				origin := root.Head()
 				steps, err := run(root, "")
 				if cashName == "bank" {
-					if err == nil || len(steps) != 0 || family.actions != 0 {
-						t.Fatal("unsupported bank became an action or legacy fallback", err)
+					if err != nil || len(steps) != 2 || family.actions != 0 || family.banks != 2 {
+						t.Fatal("retained bank views failed or became actions", err)
 					}
-					bankRefusals++
+					for _, step := range steps {
+						if step.ID != "~bank" || step.ParentIdentity != root.Identity() || step.ChildIdentity != root.Identity() || step.Revision != 1 || step.Bank == nil {
+							t.Fatal("bank renewed/lost origin")
+						}
+					}
+					bankPopulations++
 					return
 				}
 				if err != nil || len(steps) != 2 {
@@ -191,8 +242,8 @@ func RunManualOwnedChoicesResearch(t *testing.T, run func(*ManualOwnedBranchRese
 			})
 		}
 	}
-	if completed != 4 || verified != 8 || delayed < 2 || bankRefusals != 2 {
-		t.Fatal("incomplete selected-child population", completed, verified, delayed, bankRefusals)
+	if completed != 4 || verified != 8 || delayed < 2 || bankPopulations != 2 {
+		t.Fatal("incomplete selected-child population", completed, verified, delayed, bankPopulations)
 	}
-	t.Logf("selected-child populations%d independently-logged-actions%d delayed%d bank-refusals%d; beam/cache/retained-view lifetime remains open", completed, verified, delayed, bankRefusals)
+	t.Logf("selected-child populations%d independently-logged-actions%d delayed%d supported-bank-populations%d; beam/cache/complete retained-view lifetime remains open", completed, verified, delayed, bankPopulations)
 }

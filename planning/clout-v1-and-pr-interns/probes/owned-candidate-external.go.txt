@@ -40,40 +40,68 @@ func choiceBindingResearch(branch *production.ManualOwnedBranchResearch) *harnes
 		}
 		return result, choiceBindingResearch(next), nil
 	}
+	binding.Bank = func(state *save.State, atMS int64) (harness.ManualBankObservationResearch, *harness.ManualChoiceBindingResearch, error) {
+		bank, next, err := branch.Bank(state, harness.Epoch.Add(time.Duration(atMS)*time.Millisecond))
+		if err != nil {
+			return harness.ManualBankObservationResearch{}, nil, err
+		}
+		observation := harness.ManualBankObservationResearch{Events: bank.Events, Roles: bank.Roles}
+		for _, stage := range bank.Stages {
+			observation.Stages = append(observation.Stages, harness.ManualBankStageResearch{Kind: stage.Kind, Evaluation: stage.Evaluation})
+		}
+		return observation, choiceBindingResearch(next), nil
+	}
 	return binding
 }
 
 func TestOwnedSelectedChildResearch(t *testing.T) {
 	production.RunManualOwnedChoicesResearch(t, func(branch *production.ManualOwnedBranchResearch, fault string) ([]production.ManualOwnedChoiceStepResearch, error) {
-		input := branch.Case()
-		state, binding := branch.State(), choiceBindingResearch(branch)
-		switch fault {
-		case "identity":
-			binding.Identity = nil
-		case "typed_nil":
-			binding.Identity = (*struct{ invalid int })(nil)
-		case "head":
-			state.GeneratorCounts["generator.beige_tower"]++
-		case "clone":
-			original := binding.Fork
-			binding.Fork = func(state *save.State) (*harness.ManualChoiceBindingResearch, error) {
-				fork, err := original(state)
-				if err == nil {
-					fork.Identity = &struct{ invalid int }{1}
-				}
-				return fork, err
+		return runOwnedChoiceResearch(branch, fault, 2)
+	})
+}
+
+func TestOwnedBankViewsResearch(t *testing.T) {
+	production.RunManualBankViewsResearch(t, func(branch *production.ManualOwnedBranchResearch) ([]production.ManualOwnedChoiceStepResearch, error) {
+		return runOwnedChoiceResearch(branch, "", 3)
+	})
+}
+
+func runOwnedChoiceResearch(branch *production.ManualOwnedBranchResearch, fault string, count int) ([]production.ManualOwnedChoiceStepResearch, error) {
+	input := branch.Case()
+	state, binding := branch.State(), choiceBindingResearch(branch)
+	switch fault {
+	case "identity":
+		binding.Identity = nil
+	case "typed_nil":
+		binding.Identity = (*struct{ invalid int })(nil)
+	case "head":
+		state.GeneratorCounts["generator.beige_tower"]++
+	case "clone":
+		original := binding.Fork
+		binding.Fork = func(state *save.State) (*harness.ManualChoiceBindingResearch, error) {
+			fork, err := original(state)
+			if err == nil {
+				fork.Identity = &struct{ invalid int }{1}
+			}
+			return fork, err
+		}
+	}
+	steps, err := harness.ManualRunOwnedChoicesResearch(input.Catalog, input.Routes, input.Hash,
+		harness.RelevanceMilestone{ID: "milestone.gate", Kind: "resource_at_least", ResourceID: "company.cash", Amount: input.Target}, state, binding, 2001, count, int64((count+1)*2*(2*(2001+1)+2)+count))
+	if err != nil {
+		return nil, err
+	}
+	result := []production.ManualOwnedChoiceStepResearch{}
+	for _, step := range steps {
+		var bank *production.ManualOwnedBankResearch
+		if step.Bank != nil {
+			bank = &production.ManualOwnedBankResearch{Events: step.Bank.Events, Roles: step.Bank.Roles}
+			for _, stage := range step.Bank.Stages {
+				bank.Stages = append(bank.Stages, production.ManualOwnedBankStageResearch{Kind: stage.Kind, Evaluation: stage.Evaluation})
 			}
 		}
-		steps, err := harness.ManualRunOwnedChoicesResearch(input.Catalog, input.Routes, input.Hash,
-			harness.RelevanceMilestone{ID: "milestone.gate", Kind: "resource_at_least", ResourceID: "company.cash", Amount: input.Target}, state, binding, 2001, 2, 3*2*(2*(2001+1)+1))
-		if err != nil {
-			return nil, err
-		}
-		result := []production.ManualOwnedChoiceStepResearch{}
-		for _, step := range steps {
-			result = append(result, production.ManualOwnedChoiceStepResearch{ID: step.ID, At: harness.Epoch.Add(time.Duration(step.AtMS) * time.Millisecond), Revision: step.Revision, State: step.State,
-				ParentIdentity: step.ParentIdentity, ChildIdentity: step.ChildIdentity, Request: step.Request, Decision: step.Decision})
-		}
-		return result, nil
-	})
+		result = append(result, production.ManualOwnedChoiceStepResearch{ID: step.ID, At: harness.Epoch.Add(time.Duration(step.AtMS) * time.Millisecond), Revision: step.Revision, State: step.State,
+			ParentIdentity: step.ParentIdentity, ChildIdentity: step.ChildIdentity, Request: step.Request, Decision: step.Decision, Bank: bank})
+	}
+	return result, nil
 }

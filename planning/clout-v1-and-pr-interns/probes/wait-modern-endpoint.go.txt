@@ -226,11 +226,15 @@ func (owner *endpointOwnerResearch) project(at int64) (endpointProjectionResearc
 // Exact finite REFERENCE adapter, not an optimized/live replacement or free
 // precomputation for a bound. Every actual projection consumes the given budget.
 func (owner *endpointOwnerResearch) queryReference(horizon int64, price decimal.Decimal, budget int) (endpointQueryResearch, error) {
+	return owner.queryReferenceFrom(0, horizon, price, budget)
+}
+
+func (owner *endpointOwnerResearch) queryReferenceFrom(from, horizon int64, price decimal.Decimal, budget int) (endpointQueryResearch, error) {
 	answer := endpointQueryResearch{at: -1, last: -1}
-	if horizon < 0 || horizon > 86_460_000 || !price.IsStateValue() || price.Lt(decimal.Zero) {
+	if from < 0 || from > horizon || horizon < 0 || horizon > 86_460_000 || !price.IsStateValue() || price.Lt(decimal.Zero) {
 		return answer, fmt.Errorf("invalid endpoint reference query")
 	}
-	for at := int64(0); at <= horizon; at++ {
+	for at := from; at <= horizon; at++ {
 		if answer.points >= budget {
 			return answer, fmt.Errorf("endpoint reference budget exhausted")
 		}

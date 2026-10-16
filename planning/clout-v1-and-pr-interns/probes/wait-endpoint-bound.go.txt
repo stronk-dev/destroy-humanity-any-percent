@@ -24,6 +24,8 @@ type endpointBoundAnswerResearch struct {
 	at, last                                                                                          int64
 	points, nodes, regimes, fallbackPoints                                                            int
 	preparationRestores, preparationClears, preparationSchedules, preparationAssemblies               int
+	preparationZeroPoints                                                                             int
+	preparationZeroError                                                                              string
 	guardRanges, guardAssemblies, guardCatalogs, guardReceiptTerms, guardSpanChecks, guardStockProbes int
 	factories                                                                                         []waitCellWorkResearch
 	selected                                                                                          endpointProjectionResearch
@@ -126,10 +128,14 @@ func (guard endpointRangeGuardResearch) certify(lo, hi int64) (bool, error) {
 }
 
 func (owner *endpointOwnerResearch) queryBound(horizon int64, price decimal.Decimal, budget int) (answer endpointBoundAnswerResearch, resultErr error) {
+	return owner.queryBoundFrom(0, horizon, price, budget)
+}
+
+func (owner *endpointOwnerResearch) queryBoundFrom(from, horizon int64, price decimal.Decimal, budget int) (answer endpointBoundAnswerResearch, resultErr error) {
 	started := time.Now()
 	defer func() { answer.elapsed = time.Since(started) }()
 	answer.at, answer.last = -1, -1
-	if horizon < 0 || horizon > 86_460_000 || !price.IsStateValue() || price.Lt(decimal.Zero) {
+	if from < 0 || from > horizon || horizon < 0 || horizon > 86_460_000 || !price.IsStateValue() || price.Lt(decimal.Zero) {
 		return answer, fmt.Errorf("invalid endpoint bound query")
 	}
 	ctx := owner.context
@@ -166,11 +172,34 @@ func (owner *endpointOwnerResearch) queryBound(horizon int64, price decimal.Deci
 		}
 		return false, nil
 	}
-	if found, err := actual(0); err != nil || found {
+	if found, err := actual(from); err != nil || found {
 		return answer, err
 	}
-	if horizon == 0 {
+	if horizon == from {
 		return answer, nil
+	}
+	zero := last
+	fallback := func() (endpointBoundAnswerResearch, error) {
+		for at := from + 1; at <= horizon; at++ {
+			answer.fallbackPoints++
+			if found, err := actual(at); err != nil || found {
+				return answer, err
+			}
+		}
+		return answer, nil
+	}
+	if from > 0 {
+		if answer.nodes >= budget {
+			return answer, fmt.Errorf("endpoint bound node budget exhausted")
+		}
+		answer.nodes++
+		answer.preparationZeroPoints++
+		var err error
+		zero, err = owner.project(0)
+		if err != nil {
+			answer.preparationZeroError = err.Error()
+			return fallback() // A prep-only error is not an error in [from,horizon].
+		}
 	}
 	answer.preparationRestores++
 	originalSource, err := save.RestoreState(ctx.origin, 19, ctx.bundle.Economy, economy.ScopeCompany, time.Time{})
@@ -180,18 +209,28 @@ func (owner *endpointOwnerResearch) queryBound(horizon int64, price decimal.Deci
 	// Zero-time clearing/scheduling is a validated deterministic prefix. It
 	// changes no production cursor, balance or allowance. Use its schedule
 	// state for the no-FURTHER-due proof, not as a new calculation origin.
-	original := last.state
-	if len(last.stages) != 1 || last.stages[0].kind != "ordinary" || last.stages[0].evaluation.ElapsedMS != 0 ||
+	original := zero.state
+	if len(zero.stages) != 1 || zero.stages[0].kind != "ordinary" || zero.stages[0].evaluation.ElapsedMS != 0 ||
 		!original.EvaluatedThrough.Equal(originalSource.EvaluatedThrough) ||
 		!reflect.DeepEqual(original.Ledger.Snapshot(), originalSource.Ledger.Snapshot()) ||
 		original.ComputeCreditMS != originalSource.ComputeCreditMS || original.ComputeBurstRemainingMS != originalSource.ComputeBurstRemainingMS {
-		return answer, fmt.Errorf("endpoint zero prefix is not a non-producing schedule prefix")
+		if from == 0 {
+			return answer, fmt.Errorf("endpoint zero prefix is not a non-producing schedule prefix")
+		}
+		answer.preparationZeroError = "zero prefix is not a non-producing schedule prefix"
+		return fallback()
 	}
 	regimes, base, shape, err := endpointRegimesResearch(ctx, original, horizon)
 	if err != nil {
 		return answer, err
 	}
 	for _, regime := range regimes {
+		if regime.lo <= from {
+			regime.lo = from + 1
+		}
+		if regime.lo > regime.hi {
+			continue
+		}
 		answer.regimes++
 		// At an unknown source clock or an already-due schedule, don't build
 		// an invalid fixed-context stand-in. Preserve the real projector.
@@ -534,5 +573,82 @@ func TestWaitEndpointUnknownClockResearch(t *testing.T) {
 	answer, err := owner.queryBound(3, decimal.New(1, 6), 2*4)
 	if err != nil || answer.at != reference.at || answer.points != 4 || answer.fallbackPoints != 3 || len(answer.factories) != 0 || answer.selected.state != nil {
 		t.Fatal("unknown clock became a fabricated refusal or false certificate", answer.at, answer.points, answer.fallbackPoints, err)
+	}
+}
+
+func TestWaitEndpointFromResearch(t *testing.T) {
+	checked := 0
+	for _, profile := range []string{"none", "combined"} {
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			fixture := loadEndpointFixtureResearch(t, profile, mode)
+			owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, from := range []int64{1000, 1501, 5001} {
+				view, err := owner.project(from)
+				if err != nil {
+					t.Fatal(err)
+				}
+				cash, _ := view.state.Ledger.Balance("company.cash")
+				for _, price := range []decimal.Decimal{cash, decimal.New(1, 6)} {
+					ref, err := owner.fork().queryReferenceFrom(from, from+3, price, 4)
+					if err != nil {
+						t.Fatal(err)
+					}
+					answer, err := owner.fork().queryBoundFrom(from, from+3, price, 9)
+					if err != nil || answer.at != ref.at {
+						t.Fatal("floor query missed/preceded exact requested domain", profile, mode, from, answer.at, ref.at, err)
+					}
+					if answer.at >= 0 && !equalEndpointResearch(t, answer.selected, ref.selected) {
+						t.Fatal("from-floor selected result changed")
+					}
+					if answer.at < 0 && answer.selected.state != nil {
+						t.Fatal("from-floor unreachable returned a state")
+					}
+					checked++
+				}
+			}
+		}
+	}
+	if checked != 24 {
+		t.Fatal("incomplete floor population", checked)
+	}
+}
+
+func TestWaitEndpointFromErrorsResearch(t *testing.T) {
+	fixture := capEndpointFixtureResearch(t, loadEndpointFixtureResearch(t, "none", ModeOnline))
+	fixture.state.NextOpportunityAttendedMS = 5001
+	fixture.state.OpportunitySpawnSeq = decimal.MaxExactInteger
+	owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, ModeOnline, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, cause := owner.project(1001)
+	if cause == nil {
+		t.Fatal("earlier actual schedule error did not fire")
+	}
+	ref, err := owner.queryReferenceFrom(6001, 6003, decimal.New(1, 6), 3)
+	if err != nil || ref.at != -1 {
+		t.Fatal("later valid domain refused", err)
+	}
+	answer, err := owner.queryBoundFrom(6001, 6003, decimal.New(1, 6), 7)
+	if err != nil || answer.at != ref.at {
+		t.Fatal("earlier error escaped into later query domain", err)
+	}
+	answer, err = owner.queryBoundFrom(1001, 1003, decimal.New(1, 6), 7)
+	if !errors.Is(err, cause) || answer.last != 1001 || answer.selected.state != nil {
+		t.Fatal("actual error at the floor was hidden", answer.last, err, cause)
+	}
+	for _, from := range []int64{-1, 1001} {
+		if answer, err := owner.queryBoundFrom(from, 1000, decimal.New(1, 6), 10); err == nil || answer.points != 0 {
+			t.Fatal("invalid floor executed/admitted", from, err)
+		}
+	}
+	for _, budget := range []int{1, 2} {
+		answer, err := owner.queryBoundFrom(6001, 6003, decimal.New(1, 6), budget)
+		if err == nil || answer.points != 1 || answer.preparationZeroPoints != budget-1 || answer.selected.state != nil {
+			t.Fatal("from-floor preparation escaped its bound or became unreachable", budget, answer.points, answer.preparationZeroPoints, err)
+		}
 	}
 }

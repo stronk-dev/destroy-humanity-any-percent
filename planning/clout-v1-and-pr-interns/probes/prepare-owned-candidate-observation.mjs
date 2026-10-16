@@ -46,6 +46,7 @@ overlay.Replace['harness/harness.go'] = '../.cache/owned-candidate-harness.go';
 overlay.Replace['harness/manual_owned_candidate_bridge.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-candidate-bridge.go.txt';
 overlay.Replace['harness/manual_owned_choice_bridge.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-choice-bridge.go.txt';
 overlay.Replace['production/manual_owned_choice_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-choice-export.go.txt';
+overlay.Replace['production/manual_owned_bank_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-bank-export.go.txt';
 overlay.Replace['production/manual_owned_candidate_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-candidate-export.go.txt';
 overlay.Replace['production/manual_owned_candidate_external_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-candidate-external.go.txt';
 for (const [destination, data] of [

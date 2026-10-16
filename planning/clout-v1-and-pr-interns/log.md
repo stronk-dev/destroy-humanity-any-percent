@@ -7954,3 +7954,106 @@ root (author/first filter). Recorded by: Codex root. No designated acceptance,
 archival, release or product/schema/data/CI/golden/kernel223/epoch8 change.
 RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN, not rerun/fixed here.
 No push/publication/deployment. Full nine-tier1.0 goal remains active/progress.
+
+## 2026-10-16 — retained bank views and floor-relative search
+
+Prior9c51bc11 is PROGRESS. Add MANUAL origin-relative query floors and bank views
+without changing live accounting/search. A bank projection retains original
+Company/Founder/batch/mode/allowance identity and revision, owns its full visible
+head/stages/private events, and is never a new settlement. Queries begin at that
+view's endpoint, not at0 or at a newly restored view-origin; real actions still
+recompute from the ORIGINAL retained origin and alone create the next origin.
+
+Compare24 short from-floor queries across none/combined buffs, both modes and
+1000/1501/5001ms floors to full exact references; retain an actual earlier-error/
+later-valid companion and invalid floors. Preparation0 is not in the query domain:
+if it cannot certify, scan actual requested endpoints, never leak its error as a
+new refusal. Charge any such extra projection separately, not as free prep.
+
+Exercise actual ranked bank selection over three2001ms windows from zero cash,
+both fixed modes: independent full-view checks after each bank and original-state
+logged purchase checks if a later genuine window appears. Earlier H3y bank controls
+must become supported views, not retain an obsolete artificial refusal. Repeated
+views cannot replay Guild credit, renew offline allowance, create a revision or
+publish private event values. Beam/cache/rollout/context migration and full work/
+TS/SQL/adoption remain mandatory; fixed-mode probes are not natural return visits.
+
+Floor-only21767 PASS0.428s. First bank-binding build72937 fails before tests
+(extra closing brace; corrected); intermediate87356 PASS1.380s includes floor
+controls and updated H3y supported two-bank cases. Before the final run require
+the three-window discriminator:online three banks without renewed production,
+offline two banks then the real quoted purchase at5001ms with revision2, all
+from the SAME original origin. Compare views to independent actual SimulateAdvance
+stages, not just the projector under test. Also inject a proof-only0 failure in
+an ignored copy: valid requested-domain queries must still pass via actual leaves.
+That injected failure is instrumentation, NOT a newly observed production defect.
+
+### H3z result — retained views, full stages and real action after banking
+
+The scoped dispatcher now banks into detached heads while retaining the ORIGINAL
+Company/Founder/batch/mode identity and revision. Queries use an origin-relative
+floor; actions use original-origin elapsed time, NOT time since the last view.
+Full stage evaluations, private unbound events and roles survive. No public
+single-evaluation wait result is fabricated. H3y's obsolete bank refusals now
+succeed as views. Four two-purchase runs remain green, as do28 H3x query/actions.
+
+New two-mode three-window proof:online banks2001/4002/6003ms without renewed
+production; offline banks2001/4002 then purchases the real quoted generator at
+5001ms. All FIVE bank views match independent actual SimulateAdvance stage/full-
+state/private-event references. Catchup retains its zero ordinary stage; production
+is still capped at the fixture's1500ms. Every view has Guild seq1/consumed10, not
+replayed7-unit credits, and no action receipt, intent binding or revision. The one
+real purchase recomputes from the original saved state, consumes clearing once,
+increments revision once and matches exact ApplyLogged state/receipt/events.
+This is the retuned fixed-mode diagnostic, NOT the live24h policy or natural visits.
+
+Twenty-four short floor/reference comparisons, real1001ms schedule failure versus
+valid6001ms domain, invalid floors and one/two-node preparation exhaustion pass.
+The extra0 proof projection is separately visible and charged; failed prep can
+only force actual requested-domain leaves, not an out-of-domain refusal. The
+zero-floor37-query population keeps3301/49336 projections, all first errors and
+unknown-clock controls. Bank queries make1312/1313 full projections INCLUDING0
+prep; five bank projections are additional. Constructor/model/codec/hook/reference
+work is separate, not free, a speed ratio or a complete R11/workload proof.
+
+Frozen native34664 PASS production38.005s/harness0.510s; declared Linux/AMD64
+Go1.26 session93377 PASS production193.649s/harness0.717s. Overlay vet for BOTH
+packages passes. They retain old endpoint/first-error, H3x/H3y, legacy version-safe
+clone, bank/tie, suffix-cache and Reference lifetime/input populations. No full
+package/hosted/SQL/TS-owner or full-CI acceptance claim. All handles terminal.
+
+Ignored proof-only fault36531 PASS0.406s: after actual prep0, inject an error;
+all24 floor cases still match and12 unreachable cases assert three real fallback
+leaves plus one separately charged prep. Propagating that SAME fault33590 then
+FAILS0.314s at the requested-domain and later-valid oracles. This is instrumented
+fault handling, not evidence a real admitted prep0 currently fails. Initial bank
+sever95333 FAIL1.533s was confounded:it dropped the INITIAL captured batch and
+failed at2001. Correct the probe to rebase ONLY an existing view, preserving first
+clearing. Corrected86650 FAIL3.365s in BOTH modes at the4002ms full-view oracle,
+despite unchanged identity labels. Normal references/source never change.
+
+Reproduce after current H3s generator/packet if absent/stale:
+`node planning/clout-v1-and-pr-interns/probes/prepare-owned-candidate-observation.mjs`;
+`make test-go GO_PACKAGES='./production ./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/owned-candidate-overlay.json -run TestWaitEndpoint\|TestOwned\|TestCloneStatePreservesSaveVersionThroughSearch\|TestBeamTerminalCompletionCacheReusesAnIdenticalSuffix\|TestProjectedMilestoneRankingMakesBankFirstClassAndPurchasesWinTies\|TestReputationReferenceLifetimeAccounting\|TestReputationReferenceFrozenInputDiagnostic -v'`;
+`make vet GO_PACKAGES='-overlay=../.cache/owned-candidate-overlay.json ./production ./harness'`.
+Linux:declared compose.save-test.yml+compose.ci-test.yml --no-deps service, same
+regex via `go test -p 1 -overlay=../.cache/owned-candidate-overlay.json -run '...'
+-v ./production ./harness -count=1`. Proof fault/incorrect propagation overlays
+are ../.cache/bank-zero-proof-fault.json / bank-zero-proof-propagated.json, selector
+TestWaitEndpointFrom. Rebasing:../.cache/bank-rebase-fault.json, TestOwnedBankViewsResearch.
+No H3s-bound source changed, so no producer/client rerun claimed. SHA256:
+boundf0582abb4aa1c0747ebf30431d6284f9c50a34e8d020addf517aa520fe43e725;
+bank export5b5f1ed675804a8d94abbd5bb77dacc68792b94ca99c86e530fc962118450484;
+generatoraa7351f7752b96c23ee0a904e1768144050dccef3b95dc2dfb4cd304fa1fdc66;
+30-entry overlay889144f0c8b13e509018587e7a2fa913aaeff343c7279a6ad7865f997c3314e4;
+corrected rebase3ec72fe356abc0f956a33acb7b586c730d28bda000a514c9e35f3f816653066b.
+
+H3z/parent C1c/own plan reconcile the scoped bank/floor component. Next ACTUAL
+ranked completion/beam/dedup/dominance/cache/rollout/context reuse and complete
+work/domain/masks/TS/SQL/dispatch/adoption; no public SimulateAdvance return-shape
+or live default changed. Eleven-path9c51bc11-exclusive range through this checkpoint
+remains research/specification OUTSIDE corrective-code delegation. Review by:
+Codex root (author/first filter). Recorded by:Codex root. No designated acceptance,
+archival, release, product/schema/data/CI/golden/kernel223/epoch8 change or push.
+RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN, not rerun/fixed here.
+No publication/deployment. Full nine-tier1.0 goal remains active/progress.
