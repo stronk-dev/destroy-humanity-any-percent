@@ -15,24 +15,22 @@ rankCandidate execute: short horizon finds/applies the quote, longer returns no 
 with nil error. Owning log/manual source retain source/hash/budget/receipt/unchanged-origin
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
-Next: a correct numeric-aware search/partition proof and caller/work/compatibility closure,
-not another positive monotonicity census, new tolerance, skipped interval or budget increase.
 
-H3d now derives a bounded positive-aggregation upper enclosure, without changing actual
-payouts or assuming monotone outputs. Its manual rational reference contains the retained
-decrease, checks finite power side conditions and catches both omitted rounding margins.
-This is a candidate proof component awaiting research review, NOT a temporal producer
-certificate or implemented search. Next establish uniform bounds on the real varying
-producer/ledger over time ranges, then prove chronological search and actual workload
-feasibility under the unchanged budgets. No existing defect or acceptance gate closes.
+Draft H3d–H3f now supply a candidate positive-aggregation enclosure, its partial
+producer/ledger composition and a source-driven wait-cell constructor. The4004
+pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
+four small whole-wait populations are exhaustive and match independently scanned
+earliest points. The retained long wait builds65537 cells and finds its known
+valid point despite the unaffordable horizon. Setup/reference/search work is
+separately counted; none is a live search, changed payout or adopted work budget.
 
-H3e's bounded composition now reaches the actual partial producer and cash ledger:
-all4004 pipeline endpoints fit, and chronological certificate search agrees with the
-exhaustive earliest333ms even when the horizon's actual cash is below the quote.
-This is ONE fixed cell with explicit scalar-table/prefix setup, not the actual harness
-search or a general invalid-input/coverage/work proof. Next construct correct cells
-and validity/cost evidence from the real producer/context factory; avoid hiding setup
-work or treating an upper bound on successful outputs as proof all endpoints succeed.
+Next prove admissible pruning across resource/ledger refusal boundaries and modern
+contexts, then measure complete real workloads with all preparation work charged.
+Whole-domain definedness, hook/modern factory, full caller/state semantics,
+compatibility, workload feasibility and research/normative adoption stay open.
+Do not repeat positive monotonicity censuses, hide setup cost, loosen bounds or
+infer all endpoints succeed from an upper bound on successful outputs. RP-680,
+the27 AC6 failures and every existing acceptance/review gate remain open.
 
 2026-10-16: targeted actual-search preparation finds RP-678: harness cloneState restores
 an admitted v17 snapshot as v14, failing before affordability evaluation. The bounded

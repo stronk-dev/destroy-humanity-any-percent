@@ -1,0 +1,631 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"math/big"
+	"os"
+	"sort"
+	"strings"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+// Manual constructor/cash-certificate research. Not an implementation API.
+type waitCellResearch struct {
+	lo, hi, start, burst int64
+	flat                 bool
+	prefix               []decimal.Decimal
+	prefixSum            *big.Rat
+	groups               int64
+	rates                []decimal.Decimal
+}
+
+type waitCellWorkResearch struct {
+	Cells, Rates, Provisions, Deltas, PrefixWrites, Scalars, Certificates, Points int
+	ReconstructionCalls, ReconstructionTerms                                      int
+}
+
+type waitCellsResearch struct {
+	cells              []waitCellResearch
+	seconds            []*big.Rat
+	catalog            *economy.Catalog
+	initial            map[string]string
+	before, eff, bonus decimal.Decimal
+	work               waitCellWorkResearch
+}
+
+func buildWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode EvaluationMode, horizon int64, mask AblationMask, dependencies SimulationDependencies, fault string) (*waitCellsResearch, error) {
+	if state == nil || state.Ledger == nil || catalog == nil || horizon < 0 || horizon > 86_460_000 ||
+		mode != ModeOnline && mode != ModeOffline || dependencies.Hook != nil || save.VersionForState(state) >= 18 ||
+		fault != "" && fault != "grid" && fault != "provision" && fault != "cap" {
+		return nil, fmt.Errorf("unsupported research wait context")
+	}
+	policy, err := simulationPolicyFor(catalog, mask)
+	if err != nil {
+		return nil, err
+	}
+	contributions, err := assembleContributionsWithPolicy(state, catalog, nil, policy)
+	if err != nil {
+		return nil, err
+	}
+	result := &waitCellsResearch{catalog: catalog, initial: state.Ledger.Snapshot(), eff: decimal.One, bonus: decimal.Zero}
+	result.before, _ = state.Ledger.Balance("company.cash")
+	if _, err := cellRepresented(result.before); err != nil {
+		return nil, err
+	}
+	productionEnd := horizon
+	if mode == ModeOffline {
+		result.eff = catalog.OfflinePolicy().Efficiency
+		if fault != "cap" && productionEnd > catalog.OfflinePolicy().AccrualCapMS {
+			productionEnd = catalog.OfflinePolicy().AccrualCapMS
+		}
+		if state.ComputeCreditMS > catalog.OfflinePolicy().BankCapMS {
+			return nil, fmt.Errorf("invalid starting credit balance")
+		}
+	}
+	if state.ComputeBurstRemainingMS < 0 || state.ComputeBurstRemainingMS > 0 && save.VersionForState(state) < 17 {
+		return nil, fmt.Errorf("invalid starting burst")
+	}
+	if state.ComputeBurstRemainingMS > 0 {
+		result.bonus = catalog.OfflinePolicy().BurstSpeed.Sub(decimal.One)
+		if !result.bonus.IsStateValue() || !result.bonus.Gt(decimal.Zero) {
+			return nil, fmt.Errorf("invalid burst factor")
+		}
+	}
+	tick := catalog.ProvisionTickMS()
+	capacity := int64(2)
+	next := productionEnd
+	if tick > 0 {
+		if state.RunStartedAt.IsZero() || state.EvaluatedThrough.Before(state.RunStartedAt) || productionEnd/tick > catalog.OfflinePolicy().AccrualCapMS/tick+1 {
+			return nil, fmt.Errorf("invalid research provision horizon")
+		}
+		capacity = productionEnd/tick + 3
+		next = tick - (state.EvaluatedThrough.UnixMilli()-state.RunStartedAt.UnixMilli())%tick
+		if fault == "grid" {
+			next = tick
+		}
+	}
+	if capacity > 100000 {
+		return nil, fmt.Errorf("research cell guard exceeded")
+	}
+	generated, remainders := cloneInt64Counts(state.GeneratorProvisioned), cloneInt64Counts(state.ProvisionRemaindersPPM)
+	if generated == nil {
+		generated = map[string]int64{}
+		for id := range state.GeneratorCounts {
+			generated[id] = 0
+		}
+	}
+	if remainders == nil {
+		remainders = map[string]int64{}
+	}
+	prefix := make([]decimal.Decimal, 0, int(capacity))
+	prefixSum := new(big.Rat)
+	groups := map[int64]bool{}
+	maxWidth := int64(0)
+	for start := int64(0); ; {
+		end := productionEnd
+		if tick > 0 && next < end {
+			end = next
+		}
+		width := end - start
+		if width < 0 || width > 60000 {
+			return nil, fmt.Errorf("unsupported research scalar width%d", width)
+		}
+		if width > maxWidth {
+			maxWidth = width
+		}
+		rates, err := ratesWithProvisionedAndPolicy(catalog, state.GeneratorCounts, generated, contributions, policy)
+		result.work.Rates++
+		if err != nil {
+			return nil, err
+		}
+		remainingBurst := state.ComputeBurstRemainingMS - start
+		if remainingBurst < 0 {
+			remainingBurst = 0
+		}
+		lo := start + 1
+		if start == 0 {
+			lo = 0
+		}
+		result.cells = append(result.cells, waitCellResearch{lo: lo, hi: end, start: start, burst: remainingBurst,
+			prefix: prefix[:len(prefix):len(prefix)], prefixSum: new(big.Rat).Set(prefixSum), groups: int64(len(groups)),
+			rates: append([]decimal.Decimal(nil), rates["company.cash"]...)})
+		bonusMS := width
+		if bonusMS > remainingBurst {
+			bonusMS = remainingBurst
+		}
+		// Exercise all produced resources' segment arithmetic, not only cash.
+		for resource, values := range rates {
+			delta, err := accrueBoostedConstant(values, width, bonusMS, result.eff, result.bonus)
+			result.work.Deltas++
+			if err != nil {
+				return nil, err
+			}
+			if resource == "company.cash" && !delta.Eq(decimal.Zero) {
+				exact, err := cellRepresented(delta)
+				if err != nil {
+					return nil, err
+				}
+				prefix = append(prefix, delta)
+				prefixSum.Add(prefixSum, exact)
+				groups[delta.Exponent()] = true
+				result.work.PrefixWrites++
+			}
+		}
+		if tick > 0 && end == next {
+			if fault != "provision" {
+				if err := materializeProvisionBoundaryWithPolicy(catalog, state.GeneratorCounts, generated, remainders, policy); err != nil {
+					return nil, err
+				}
+				result.work.Provisions++
+			}
+			next += tick
+		}
+		if end == productionEnd {
+			break
+		}
+		start = end
+	}
+	if horizon > productionEnd {
+		result.cells = append(result.cells, waitCellResearch{lo: productionEnd + 1, hi: horizon, start: productionEnd,
+			flat: true, prefix: prefix[:len(prefix):len(prefix)], prefixSum: new(big.Rat).Set(prefixSum), groups: int64(len(groups))})
+	}
+	result.seconds = make([]*big.Rat, maxWidth+1)
+	for ms := int64(0); ms <= maxWidth; ms++ {
+		value, err := cellRepresented(decimal.FromFloat64(float64(ms)).Div(decimal.FromFloat64(1000)))
+		if err != nil {
+			return nil, err
+		}
+		if ms > 0 && value.Cmp(result.seconds[ms-1]) < 0 {
+			value.Set(result.seconds[ms-1])
+		}
+		result.seconds[ms] = value
+		result.work.Scalars++
+	}
+	result.work.Cells = len(result.cells)
+	for index, cell := range result.cells {
+		if cell.lo > cell.hi || index == 0 && cell.lo != 0 || index > 0 && cell.lo != result.cells[index-1].hi+1 {
+			return nil, fmt.Errorf("cell coverage overlap/gap at%d", index)
+		}
+	}
+	if result.cells[len(result.cells)-1].hi != horizon {
+		return nil, fmt.Errorf("cell coverage ends early")
+	}
+	return result, nil
+}
+
+func (factory *waitCellsResearch) locate(at int64) (waitCellResearch, error) {
+	index := sort.Search(len(factory.cells), func(i int) bool { return factory.cells[i].hi >= at })
+	if index == len(factory.cells) || at < factory.cells[index].lo {
+		return waitCellResearch{}, fmt.Errorf("outside research cell domain")
+	}
+	return factory.cells[index], nil
+}
+
+func (factory *waitCellsResearch) upper(cell waitCellResearch, at int64) (*big.Rat, error) {
+	factory.work.Certificates++
+	if at < cell.lo || at > cell.hi {
+		return nil, fmt.Errorf("certificate outside owning cell")
+	}
+	d := at - cell.start
+	if cell.flat {
+		d = 0
+	}
+	boost := d
+	if boost > cell.burst {
+		boost = cell.burst
+	}
+	rate, err := cellRepresented(decimal.SumDeterministic(cell.rates))
+	if err != nil {
+		return nil, err
+	}
+	bonus, err := cellRepresented(factory.bonus)
+	if err != nil {
+		return nil, err
+	}
+	eff, err := cellRepresented(factory.eff)
+	if err != nil {
+		return nil, err
+	}
+	before, err := cellRepresented(factory.before)
+	if err != nil {
+		return nil, err
+	}
+	m, a, q := cellRoundingFactor(6, 0, 1), cellRoundingFactor(10, 5, 1_000_000_000_000_000), cellRoundingFactor(2, 5, 1_000_000_000_000)
+	duration := cellMul(cellAdd(factory.seconds[d], cellMul(cellMul(factory.seconds[boost], bonus), m)), a)
+	partial := cellMul(cellMul(cellMul(cellMul(cellMul(rate, duration), m), m), eff), q)
+	n, g := int64(len(cell.prefix)+1), cell.groups+1
+	payment := cellMul(cellMul(cellAdd(cell.prefixSum, partial), cellRoundingFactor(n+16*g, 5*g, 1_000_000_000_000_000)), q)
+	return cellMul(cellMul(cellAdd(before, payment), a), q), nil
+}
+
+func (factory *waitCellsResearch) reconstruct(at int64) (decimal.Decimal, *economy.Change, error) {
+	factory.work.ReconstructionCalls++
+	cell, err := factory.locate(at)
+	if err != nil {
+		return decimal.NaN, nil, err
+	}
+	d := at - cell.start
+	if cell.flat {
+		d = 0
+	}
+	b := d
+	if b > cell.burst {
+		b = cell.burst
+	}
+	partial, err := accrueBoostedConstant(cell.rates, d, b, factory.eff, factory.bonus)
+	if err != nil {
+		return decimal.NaN, nil, err
+	}
+	values := append([]decimal.Decimal(nil), cell.prefix...)
+	if !partial.Eq(decimal.Zero) {
+		values = append(values, partial)
+	}
+	factory.work.ReconstructionTerms += len(values)
+	ledger, err := economy.RestoreLedger(factory.catalog, economy.ScopeCompany, factory.initial)
+	if err != nil {
+		return decimal.NaN, nil, err
+	}
+	entries := []economy.Entry{}
+	if delta := decimal.SumDeterministic(values).Quantize(12); !delta.Eq(decimal.Zero) {
+		entries = append(entries, economy.Entry{ResourceID: "company.cash", Delta: delta})
+	}
+	receipt, err := ledger.ApplyAccrual(economy.Transaction{Entries: entries})
+	if err != nil {
+		return decimal.NaN, nil, err
+	}
+	cash, _ := ledger.Balance("company.cash")
+	if len(receipt.Changes) == 0 {
+		return cash, nil, nil
+	}
+	return cash, &receipt.Changes[0], nil
+}
+
+func (factory *waitCellsResearch) search(quote decimal.Decimal, budget int, point func(int64) (decimal.Decimal, error)) (int64, error) {
+	if budget <= 0 {
+		return -1, fmt.Errorf("invalid research certificate budget")
+	}
+	price, err := cellRepresented(quote)
+	if err != nil {
+		return -1, err
+	}
+	var visit func(waitCellResearch, int64, int64) (int64, error)
+	charged := 0
+	visit = func(cell waitCellResearch, lo, hi int64) (int64, error) {
+		if charged >= budget {
+			return -1, fmt.Errorf("research certificate budget exhausted")
+		}
+		charged++
+		bound, err := factory.upper(cell, hi)
+		if err != nil || bound.Cmp(price) < 0 {
+			return -1, err
+		}
+		if lo == hi {
+			factory.work.Points++
+			actual, err := point(lo)
+			if err != nil {
+				return -1, err
+			}
+			if actual.Gte(quote) {
+				return lo, nil
+			}
+			return -1, nil
+		}
+		mid := lo + (hi-lo)/2
+		found, err := visit(cell, lo, mid)
+		if err != nil || found >= 0 {
+			return found, err
+		}
+		return visit(cell, mid+1, hi)
+	}
+	for _, cell := range factory.cells {
+		found, err := visit(cell, cell.lo, cell.hi)
+		if err != nil || found >= 0 {
+			return found, err
+		}
+	}
+	return -1, nil
+}
+
+func TestProductionWaitCellConstructorResearch(t *testing.T) {
+	read := func(path string) []byte {
+		t.Helper()
+		data, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+	load := func(data []byte) *economy.Catalog {
+		t.Helper()
+		catalog, err := economy.LoadCatalog(data)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return catalog
+	}
+	mutate := func(source []byte, tick int64, capMS int64, retained bool) []byte {
+		t.Helper()
+		var root map[string]any
+		if err := json.Unmarshal(source, &root); err != nil {
+			t.Fatal(err)
+		}
+		root["provision_tick_ms"] = tick
+		if capMS > 0 {
+			root["offline_policy"].(map[string]any)["accrual_cap_ms"] = capMS
+		}
+		if retained {
+			policy := root["offline_policy"].(map[string]any)
+			policy["burst_speed"], policy["burst_max_duration_ms"] = "1e12", int64(65536332)
+			for _, value := range root["generator_classes"].([]any) {
+				row := value.(map[string]any)
+				if row["id"] == "generator.beige_tower" {
+					row["production"].(map[string]any)["base_rate"] = "3.003003003e-23"
+					row["provisioned_hardcap"].(map[string]any)["count"] = 647666
+					row["ladder"] = []any{}
+					row["roles"] = []any{map[string]any{"kind": "stock_rate", "per_purchased_ppm": 1000}}
+				}
+				if row["id"] == "generator.beige_tower_v2" {
+					row["production"] = map[string]any{"resource_id": "company.permits", "base_rate": "1e-1000"}
+					row["provisions"].(map[string]any)["rate_ppm"] = int64(647666000000)
+				}
+			}
+			for _, value := range root["synergy_pools"].([]any) {
+				pool := value.(map[string]any)
+				kept := []any{}
+				for _, value := range pool["sources"].([]any) {
+					if value.(map[string]any)["id_or_class"] != "generator.beige_tower" {
+						kept = append(kept, value)
+					}
+				}
+				pool["sources"] = kept
+			}
+		}
+		data, err := json.Marshal(root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+	source := read("../../balance/testdata/t0-t1/economy-v4.json")
+	profiles := []struct {
+		name                   string
+		data                   []byte
+		mode                   EvaluationMode
+		cursor, burst, horizon int64
+		exhaustive, retained   bool
+		mask                   AblationMask
+	}{
+		{"default_grid", source, ModeOnline, 17, 70000, 120005, false, false, AblationMask{}},
+		{"short_grid", mutate(source, 1000, 0, false), ModeOnline, 17, 1500, 3001, true, false, AblationMask{}},
+		{"offline_plateau", mutate(source, 1000, 1500, false), ModeOffline, 17, 1700, 3001, true, false, AblationMask{}},
+		{"masked_provider", mutate(source, 1000, 0, false), ModeOnline, 17, 1500, 3001, true, false, AblationMask{GeneratorIDs: []string{"generator.beige_tower_v2"}}},
+		{"no_tick", read("../../balance/testdata/epoch5/economy.json"), ModeOnline, 0, 0, 3001, true, false, AblationMask{}},
+		{"retained_long_wait", mutate(source, 1000, 0, true), ModeOnline, 1, 65536332, 65536499, false, true, AblationMask{}},
+	}
+	totalReference := 0
+	for _, profile := range profiles {
+		t.Run(profile.name, func(t *testing.T) {
+			catalog := load(profile.data)
+			initial, err := economy.NewLedger(catalog, economy.ScopeCompany)
+			if err != nil {
+				t.Fatal(err)
+			}
+			body, err := json.Marshal(map[string]any{"balances": initial.Snapshot()})
+			if err != nil {
+				t.Fatal(err)
+			}
+			state, err := save.RestoreState(body, 1, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state.GeneratorCounts["generator.beige_tower"] = 25
+			state.GeneratorPurchasedTotal = 25
+			if catalog.ProvisionTickMS() > 0 {
+				state.WireVersion = 17
+				state.AchievementsEarnedRun = map[string]bool{}
+				state.GeneratorCounts["generator.beige_tower_v2"] = 1
+				state.GeneratorPurchasedTotal++
+				state.ProvisionRemaindersPPM["generator.beige_tower"] = 900000
+			}
+			if profile.retained {
+				state.GeneratorCounts["generator.beige_tower"] = 999999352334
+				state.GeneratorPurchasedTotal = 999999352335
+				state.ProvisionRemaindersPPM["generator.beige_tower"] = 0
+			}
+			state.ComputeBurstRemainingMS = profile.burst
+			state.EvaluatedThrough = engineCursor.Add(time.Duration(profile.cursor) * time.Millisecond)
+			origin, err := save.EncodeState(state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			version := save.VersionForState(state)
+			state, err = save.RestoreState(origin, version, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal("origin not admitted", err)
+			}
+			started := time.Now()
+			factory, err := buildWaitCellsResearch(state, catalog, profile.mode, profile.horizon, profile.mask, SimulationDependencies{}, "")
+			if err != nil {
+				t.Fatal(err)
+			}
+			setupTime := time.Since(started)
+			project := func(at int64) (decimal.Decimal, *economy.Change, error) {
+				current, err := save.RestoreState(origin, version, catalog, economy.ScopeCompany, engineCursor)
+				if err != nil {
+					return decimal.NaN, nil, err
+				}
+				result, err := SimulateAdvance(current, catalog, SimulationDependencies{}, save.Revision{}, profile.mode, state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond), nil, profile.mask)
+				if err != nil {
+					return decimal.NaN, nil, err
+				}
+				cash, ok := current.Ledger.Balance("company.cash")
+				if !ok {
+					return decimal.NaN, nil, fmt.Errorf("missing actual cash")
+				}
+				for _, change := range result.Evaluation.Receipt.Changes {
+					if change.ResourceID == "company.cash" {
+						value := change
+						return cash, &value, nil
+					}
+				}
+				return cash, nil, nil
+			}
+			points := []int64{0, 1, 59982, 59983, 59984, 69999, 70000, 70001, 119982, 119983, 119984, 120005}
+			if profile.exhaustive {
+				points = make([]int64, profile.horizon+1)
+				for index := range points {
+					points[index] = int64(index)
+				}
+			}
+			if profile.retained {
+				points = []int64{0, 1, 998, 999, 1000, 65536332, 65536498, 65536499}
+			}
+			observed := map[int64]decimal.Decimal{}
+			for _, at := range points {
+				actual, receipt, err := project(at)
+				if err != nil {
+					t.Fatalf("actual point%d: %v", at, err)
+				}
+				predicted, predictedReceipt, err := factory.reconstruct(at)
+				if err != nil || !predicted.Eq(actual) || (receipt == nil) != (predictedReceipt == nil) || receipt != nil && *receipt != *predictedReceipt {
+					t.Fatalf("cash/receipt reconstruction at%d differs: %s/%s, err%v", at, actual, predicted, err)
+				}
+				cell, err := factory.locate(at)
+				if err != nil {
+					t.Fatal(err)
+				}
+				bound, err := factory.upper(cell, at)
+				if err != nil {
+					t.Fatal(err)
+				}
+				exact, err := cellRepresented(actual)
+				if err != nil || exact.Cmp(bound) > 0 {
+					t.Fatal("actual wait escaped bound", at, err)
+				}
+				observed[at] = actual
+				totalReference++
+			}
+			quote := observed[profile.horizon]
+			if profile.exhaustive {
+				quote = observed[1500]
+			}
+			if profile.retained {
+				quote = mustDecimal(t, "1.968058018e6")
+				if observed[profile.horizon].Gte(quote) || !observed[65536332].Gte(quote) {
+					t.Fatal("retained window changed")
+				}
+			}
+			beforeCerts := factory.work.Certificates
+			started = time.Now()
+			found, err := factory.search(quote, int(2*(profile.horizon+1)), func(at int64) (decimal.Decimal, error) { cash, _, err := project(at); return cash, err })
+			if err != nil {
+				t.Fatal(err)
+			}
+			searchTime := time.Since(started)
+			queryCertificates := factory.work.Certificates - beforeCerts
+			queryPoints := factory.work.Points
+			if found < 0 {
+				t.Fatal("reachable quote lost")
+			}
+			if profile.exhaustive {
+				earliest := int64(-1)
+				for at := int64(0); at <= profile.horizon; at++ {
+					if observed[at].Gte(quote) {
+						earliest = at
+						break
+					}
+				}
+				if found != earliest {
+					t.Fatal("search differs from exhaustive whole wait", found, earliest)
+				}
+			}
+			if profile.retained && found != 65536332 {
+				t.Fatal("retained search changed", found)
+			}
+			if profile.name == "default_grid" || profile.name == "short_grid" || profile.name == "offline_plateau" {
+				faults := []string{"grid", "provision"}
+				if profile.name == "offline_plateau" {
+					faults = append(faults, "cap")
+				}
+				for _, fault := range faults {
+					controlHorizon := profile.horizon
+					if fault == "cap" {
+						controlHorizon = 2000 // Same population's guard-admissible negative subrange.
+					}
+					broken, err := buildWaitCellsResearch(state, catalog, profile.mode, controlHorizon, profile.mask, SimulationDependencies{}, fault)
+					if err != nil {
+						t.Fatal("fault preparation refused rather than discriminated", fault, err)
+					}
+					differs := false
+					for _, at := range points {
+						if at > controlHorizon {
+							continue
+						}
+						cash, _, err := broken.reconstruct(at)
+						if err != nil {
+							t.Fatal("fault not a numeric mismatch", fault, at, err)
+						}
+						if !cash.Eq(observed[at]) {
+							differs = true
+							t.Logf("fault%s subrange0..%d first observed numeric mismatch%d", fault, controlHorizon, at)
+							break
+						}
+					}
+					if !differs {
+						t.Fatal("factory fault escaped actual-wait oracle", fault)
+					}
+				}
+			}
+			if profile.name == "short_grid" {
+				if _, err := factory.search(quote, 1, func(at int64) (decimal.Decimal, error) { cash, _, err := project(at); return cash, err }); err == nil || !strings.Contains(err.Error(), "budget exhausted") {
+					t.Fatal("diagnostic search exhaustion was not an error", err)
+				}
+				if _, err := buildWaitCellsResearch(state, catalog, profile.mode, profile.horizon, profile.mask, SimulationDependencies{Hook: calculationStageHookResearch{}}, ""); err == nil {
+					t.Fatal("unsupported hook admitted")
+				}
+				if _, err := factory.locate(profile.horizon + 1); err == nil {
+					t.Fatal("out of domain query admitted")
+				}
+				dense := load(mutate(source, 1, 0, false))
+				admitted, err := save.RestoreState(origin, version, dense, economy.ScopeCompany, engineCursor)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, err := buildWaitCellsResearch(admitted, dense, ModeOnline, 100001, profile.mask, SimulationDependencies{}, ""); err == nil || !strings.Contains(err.Error(), "cell guard exceeded") {
+					t.Fatal("cell preparation guard did not refuse at its named stage", err)
+				}
+			}
+			unchanged, err := save.EncodeState(state)
+			if err != nil || !bytes.Equal(origin, unchanged) {
+				t.Fatal("constructor/search mutated origin", err)
+			}
+			for _, control := range []struct {
+				quote decimal.Decimal
+				want  int64
+			}{{decimal.Zero, 0}, {mustDecimal(t, "1e12"), -1}} {
+				result, err := factory.search(control.quote, int(2*(profile.horizon+1)), func(at int64) (decimal.Decimal, error) { cash, _, err := project(at); return cash, err })
+				if err != nil || result != control.want {
+					t.Fatal("whole-wait already/unreachable control differs", control.quote, result, err)
+				}
+			}
+			t.Logf("references%d cells%d setup%s search%s found%d search_certificates%d search_points%d work_including_controls%+v", len(points), len(factory.cells), setupTime, searchTime, found, queryCertificates, queryPoints, factory.work)
+		})
+	}
+	if totalReference != 12028 {
+		t.Fatal("incomplete declared reference population", totalReference)
+	}
+	// Explicit preparation guards, not truncation or an unreachable result.
+	catalog := load(read("../../balance/testdata/epoch5/economy.json"))
+	state := engineState(t, catalog, "0", 1)
+	if _, err := buildWaitCellsResearch(state, catalog, ModeOnline, 60001, AblationMask{}, SimulationDependencies{}, ""); err == nil || !strings.Contains(err.Error(), "scalar width") {
+		t.Fatal("scalar preparation guard did not refuse at its named stage", err)
+	}
+	t.Log("all12028 actual SimulateAdvance references execute; selected long wait is not an exhaustive65M-endpoint refusal-domain or full modern caller/workload proof")
+}

@@ -5561,3 +5561,143 @@ root (research author/first filter). Recorded by: Codex root. Complete four-path
 rangef7a2ad7b-exclusive through this containing checkpoint needs research/normative
 review outside the corrective-code delegation. Full1.0 goal remains active/progress;
 no feature completion, archival, push, deployment or release approval.
+
+## 2026-10-16 — Before execution: source-driven wait cell constructor
+
+Previous turn PROGRESS aabe9ce0: bounded partial/ledger search, not a whole wait.
+Build a manual constructor from actual simulationPolicyFor/assembleContributions,
+ratesWithProvisionedAndPolicy/materializeProvisionBoundaryWithPolicy and actual
+accrueBoostedConstant. No hand-authored completed prefix: retain actual canonical
+segment deltas on an append-only shared slice and its running rational sum/count/
+exponent set. Cash alone is the certificate subject; real leaf projections still
+execute SimulateAdvance from a separately restored untouched origin. Boundary
+ownership must cover every integer endpoint exactly once; offline cap adds a cash
+plateau, not another payment or reset. Validate source bytes unchanged.
+
+Populations: default60000ms grid/cursor+17/burst70000, horizon120005, twelve declared
+edge points; retuned1000ms grid/cursor+17/burst1500, horizon3001, EVERY0..3001;
+same grid offline with cap1500/burst1700 and same whole population; same online
+grid with provider masked, same whole population; existing no-tick Phase0 origin,
+horizon3001, same whole population. Counts25/provider1/remainder900000 in the
+provisioned ordinary populations are seeded, codec-admitted origins, not acquisition.
+Default edge offsets:0,1,59982,59983,59984,69999,70000,70001,119982,119983,119984,120005.
+Retained RP-680 neutral retuning, full65536499ms elapsed horizon, all cells built;
+actual reference offsets0,1,998,999,1000,65536332,65536498,65536499. Its quoted
+threshold must retain the valid point despite the unaffordable final endpoint.
+
+Compare exact reconstructed cash and its cash receipt change with actual full wait
+at each reference point, plus the conservative bound. In each exhaustive small
+population, compare chronological cell search with its independently scanned earliest
+threshold result. Long retained population has selected references/conditional
+certificates, NOT an exhaustive65M-endpoint oracle or complete refusal-domain proof.
+Record all rate/provision/delta/prefix/scalar/certificate and real point work, plus
+setup/search time separately; counters are not existing harness transitions/budgets.
+Negative controls must detect omitted provision materialization, wrong origin grid
+and omitted offline cap; unsupported context/grid/cell size and errors refuse loudly.
+
+Manual experiment guard: at most100000 cells, scalar table at most60001 entries;
+unsupported shapes fail, never truncate/fall back or imply unreachable. This is NOT
+a proposed runtime/content/work limit or a substitute for full admitted-domain/work
+closure. No live API/math/kernel/harness/CI/payout changes, research/adoption gates
+unchanged. Actual hook/modern endpoint context, general definedness and complete
+workloads remain outside this experiment, not claimed fixed by its constructor.
+
+First execution71339/aa8d83 FAIL4.093s: all12028 honest actual-wait references and
+cash/receipt/bound checks execute, but the omitted-cap negative control cannot build
+its3001ms uncapped horizon: the EXISTING provision-horizon guard correctly refuses
+it. Not a numerical discriminator, not a green experiment. Retained long constructor
+does find65536332 elapsed, with65537 cells,65551 search certificates/one actual point;
+timings remain preliminary, not comparative performance proof.
+
+Instrument correction before rerun: keep ALL honest populations unchanged. Run the
+omitted-cap negative control on0..2000, a declared subrange of the already observed
+offline population. Here an uncapped2000ms projection satisfies the original guard
+(2000/1000 <=1500/1000+1), so a mismatch after1500 can genuinely detect missing cap
+application without bypassing another source guard. Its points above2000 are outside
+that negative control's declared domain, not exclusions from the honest population.
+Keep the original horizon guard and require a numeric mismatch, never an error.
+
+Corrected20692/a2835a PASS4.094s plus ordinary production vet. Grid/provision
+faults differ at59984(default)/984(short); omitted cap now differs numerically at1501.
+Before final runs, make the diagnostic search's work refusal explicit too: its
+certificate-node ceiling is the finite binary-tree bound2*(horizon+1), NOT an adopted
+harness budget. Inject a one-node allowance and require an exhaustion error. This
+retains every declared endpoint and all original source guards; no runtime limit is
+raised and no incomplete search may return an unreachable result.
+
+13594/d9b764 PASS4.162s plus vet, including explicit one-node exhaustion refusal.
+Before environment run, correct a diagnostic label: short_grid's printed search
+certificate count included that later one-node negative control (15 rather than14).
+Snapshot the main query counter immediately after search; total work still records
+the control. No outcome/assertion/population or numerical code changes. Rerun final
+native source and the identical declared Linux AMD64 --no-deps population; emulation
+does not establish native hosted/TS/DB/fullCI behavior.
+
+15292/63c705 native PASS4.425s plus vet; Linux47726/9706e2 PASS8.150s,
+same12028 actual references and control outcomes. Final first-filter gap: whole-cell
+search success is tested, but unlike the earlier single-cell tool it has no direct
+already-affordable/unreachable controls. Add BOTH for each of the six profiles
+(quote0 =>0; quote1e12 =>unreachable), using fresh actual point callbacks and the
+same derived diagnostic ceiling. Preserve all12028 reference points and snapshot
+main-query node/point counts separately from these controls before final reruns.
+This is extra negative coverage, not a changed result, work ceiling or authority.
+
+## 2026-10-16 — Source-driven wait constructor result
+
+Final84886/c906e3 native PASS5.895s plus ordinary production vet; declared Linux
+AMD6442109/bd0bc4 PASS10.812s, no selected skips, same source/populations/outcomes.
+All12028 real SimulateAdvance cash AND cash-change receipt references match the
+source-driven reconstruction and fit their cell bounds. Four small complete
+populations match their independently scanned earliest endpoints. All six profiles
+also pass quote0 already-affordable and quote1e12 unreachable controls.
+
+| Population | Actual references | Cells | Scalar setup | Main query certificates | Main actual points |
+|---|---:|---:|---:|---:|---:|
+| default grid | 12 | 3 | 60001 | 11 | 1 |
+| short grid | 3002 | 4 | 1001 | 14 | 1 |
+| offline plateau | 3002 | 3 | 984 | 20 | 1 |
+| masked provider | 3002 | 4 | 1001 | 14 | 1 |
+| no tick | 3002 | 1 | 3002 | 22 | 1 |
+| retained long wait | 8 | 65537 | 1001 | 65551 | 1 |
+
+Retained constructor calls actual rate assembly65537/provision materialization65536/
+segment accrual131074, retaining65537 cash terms. Main query returns65536332 elapsed,
+absolute65536333 from cursor1ms, despite unaffordable final65536499 elapsed. Native
+setup329.477ms/search1.898746s; emulated Linux697.912ms/3.659344s. Single ordered local
+observations, not an old/new comparison, full scenario result or performance gate.
+Totals include references and later controls:131107 certificates/two actual search
+points, plus eight real reference calls/196616 reconstruction terms. No setup work
+or second control query is disguised as the main one-point query's cost.
+
+Grid/provision omission faults differ at59984(default)/984(short); missing cap at1501
+on its guard-admissible0..2000 negative subrange. Honest offline remains complete0..3001.
+Hook/query/scalar/cell guards and injected one-node exhaustion refuse explicitly.
+The first bad cap instrument/main-query counter correction and all earlier runs remain
+above, not relabelled final green. Origins stay byte-unchanged. Final handles terminal;
+--no-deps/--rm Linux run starts no database. Emulation is not native hosted Actions.
+
+Reproduce from root using .cache/production-wait-cells.json, which maps the three
+server/production/manual_*_test.go files to the committed wait-cell, prior cell and
+provision manual sources:
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=/Users/stronk/repos/cloud-clicker/.cache/production-wait-cells.json -run TestProductionWaitCellConstructorResearch -v'`.
+New source probes/production-wait-cells.go.txt SHA256
+16b1be49c4e5d916083a66a1dc23d6728c13d1e5f9632d5ba09eb1023a9d2dd1;
+native overlay SHAb19f1bfeabdadbbd505f8f0d4f8ed5abf95ada834424849b7b832471c3996c46.
+Linux overlay .cache/production-wait-cells-linux.json SHA
+5a9785133538f2105fe51ad0f9929fea502244dbe5e57d66061f0e11606ddd82
+maps the same files under /workspace. Reproduce with declared Docker --no-deps
+command above, selecting that overlay and TestProductionWaitCellConstructorResearch.
+Reused manual sources are byte-unchanged; no product/schema/math/kernel/harness/
+content/ordinary CI/report/golden bytes or accepted contracts changed.
+
+Own draft H3f explains cell ownership/plateau/source binding and limits; the living
+plan consolidates H3d–H3f into one current next action, preserving the append-only
+history here. Next: actual all-resource/ledger refusal-domain proof and modern
+context construction, then complete workloads with setup charged. The long population
+is selected references plus conditional bound evidence, not an exhaustive65M-endpoint
+or general definedness proof. No full-state/other-resource receipt, SQL/TS/fullCI,
+actual private harness replacement, normative adoption or RP-680/AC6 closure claimed.
+Review by: Codex root (research author/first filter). Recorded by: Codex root. Complete
+four-path rangeaabe9ce0-exclusive through this containing checkpoint needs research/
+normative review outside corrective-code delegation. Full1.0 goal active/progress;
+no feature acceptance, archival, push, deployment or release approval.

@@ -554,6 +554,83 @@ complete caller semantics and validate full workloads under unchanged limits. No
 per-ms live scan, numerical adoption, search-policy acceptance or defect closure is
 authorized by this bounded composition. Research/normative review remains required.
 
+#### H3f — Source-driven whole-wait cells, research constructor
+
+The [next manual constructor](../planning/clout-v1-and-pr-interns/probes/production-wait-cells.go.txt)
+removes H3e's hand-supplied prefix. Its explicit domain is the current action-free
+`SimulateAdvance` path with nil hook/external inputs and Company versions below18.
+It rejects hook-bearing or modern contexts rather than infer their behavior. This
+is not an implemented API or the parent's unbuilt origin/context factory.
+
+Construction follows the actual producer, not a separate balance model:
+
+1. Assemble masked contributions once from the unchanged origin, as current
+   `SimulateAdvance` does. Clone provision/remainder maps only; no settlement,
+   origin reset, action or live-state mutation occurs.
+2. Use the catalog's grid and original run start. For a positive tick, the first
+   relative boundary is tick-((evaluated_cursor-run_start) mod tick), not tick from
+   the query's origin. Accrue a segment using actual `ratesWithProvisionedAndPolicy`
+   and `accrueBoostedConstant`; materialize its ending provision boundary using
+   the same source function before obtaining the next segment's rates.
+3. Retain the actual completed canonical cash deltas in an append-only shared
+   prefix, plus running exact represented sum/count/positive exponent set. Each
+   cell captures an immutable prefix view and its actual raw rate vector. No
+   quadratic copy of every earlier prefix is needed. No authoritative ledger
+   payment is made while constructing this diagnostic data.
+4. Assign endpoints exactly once: first cell includes0 and its ending boundary;
+   each later cell begins at preceding_end+1. Its partial duration is query minus
+   the preceding boundary. Cash at a boundary uses the just-completed segment;
+   newly materialized generators produce in the next segment, as in `accrueContent`.
+5. Offline production stops at the catalog cap. If wall time extends further,
+   append a constant-cash plateau from cap+1 onward, using the complete accrued
+   prefix. Do not pay a second cap-sized interval or reinterpret it as banking.
+   Real leaf evaluation still owns credit banking and wall-time burst consumption.
+6. Build the explicit scalar prefix-maximum table for the largest actual cell
+   width, then apply H3e per cell. Search cells chronologically; within a cell,
+   prune only from its bound and check a fresh full `SimulateAdvance` leaf.
+
+The manual experiment refuses more than100000 cells or scalar widths above60000;
+these are research instrumentation limits, NOT new catalog caps or accepted work
+budgets. Its diagnostic search uses the finite binary-tree node ceiling2*(horizon+1)
+and explicitly errors on injected exhaustion. It does not declare a truncated or
+unsupported search unreachable. Construction, scalar preparation, reference
+reconstruction, certificates and real leaf calls are separately visible work.
+
+Six populations compare reconstructed cash AND its complete cash receipt change
+with fresh, independently restored actual waits: the unmodified60000ms grid at
+twelve boundary/burst neighbors; complete0..3001 endpoints on1000ms online,
+offline-capped and provider-masked variants; complete0..3001 no-tick Phase0; and
+eight named references on RP-680's retained long wait. All12028 reference calls
+execute. Every observed cash value fits its owning cell bound; all four exhaustive
+small populations' search results equal their independent earliest-point scan.
+
+The retained long constructor builds65537 cells from the source, not literal
+repeated terms. Its search finds65536332ms elapsed (absolute65536333 from the1ms
+cursor) despite the unaffordable final endpoint, using65551 certificate checks and
+one fresh actual wait. This is not a separate exhaustive65M-endpoint oracle or
+general proof that pruned ranges contain no errors. It is not a catalog purchase;
+RP-680 separately owns the real quoted candidate/ranking evidence.
+
+Negative controls detect lost provision and a grid wrongly reset to the cursor
+at59984ms on the default cadence and984ms on the short grid. Missing offline cap
+differs at1501ms. Its negative-control horizon is2000ms, because an uncapped3001ms
+projection correctly trips the existing provision-horizon guard before a numerical
+comparison. The honest offline population remains complete through3001ms. Hook,
+domain, scalar/cell guards and explicit search exhaustion refuse rather than hide.
+
+Each of the six profiles also executes whole-wait already-affordable0 and
+unreachable1e12 controls. Main query counters are snapshotted before controls;
+total work includes their additional certificate/point calls rather than conceal them.
+
+This closes a bounded constructor experiment, not this draft's engineering gates.
+The certificate remains an upper bound on successful outputs: all-resource domain,
+ledger saturation/receipt refusals, modern endpoint contexts/hooks and general
+definedness still require proof before pruning can be adopted. The actual full
+scenario/beam/first-hour workloads and unchanged accepted budgets are unmeasured
+for this prototype. One ordered local setup/search timing is not comparative
+performance evidence. Current runtime/search/arithmetic/report identities and all
+acceptance/review gates remain unchanged; RP-680 and Clout AC6 stay open.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -723,3 +800,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   fixed cell; compare chronological search with its complete exhaustive earliest
   reference. Keep whole-horizon cell construction, definedness, actual caller/work,
   compatibility and adoption gates explicit; no runtime change or RP-680 closure.
+- 2026-10-16: construct diagnostic prefixes/cells from real contribution, rate and
+  provision producers; compare12028 actual waits and retain control/guard failures.
+  Keep general definedness, modern contexts, real workloads and adoption open;
+  no active factory/search, budget or payout behavior changes.
