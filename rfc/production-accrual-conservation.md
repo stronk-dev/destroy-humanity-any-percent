@@ -310,6 +310,12 @@ Current `firstHourLifetimeHook` and the real stock-role counterfactual are concr
 adapter populations, not proof for every future hook. RP-654's source-version
 correction is implemented independently; it does not implement this protocol.
 
+Child H3w now supplies a MANUAL modern action component for three ordinary intent
+families, binding the actual frozen Founder carry as well as H3t's Company context.
+Its original-state computation, post-action foundation work, full actual logged
+comparisons and consumed-batch child are bounded engineering evidence, not a live
+API, generic caller/context/mask proof or acceptance of this proposed protocol.
+
 The actual closed replay chain can return Guild/Commons events without a player
 action. Today's `SimulateAdvance` refuses such events. The bounded online/offline
 `TestAxisCalculationEventOwnershipResearch` executes both sides: a fresh private
@@ -1126,3 +1132,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-16: clarify C1c's action-origin rationale using H3v's bounded current
   first-hour compatibility. Existing wait-then-buy can preserve lifetime state;
   the proposed action must still own its actual interval evaluation/events.
+- 2026-10-16: retain H3w's owned manual action/Founder/full logged evidence and
+  consumed-batch successor, without claiming the live protocol, all operation/
+  input domains, actual harness/TS/SQL integration or normative adoption.

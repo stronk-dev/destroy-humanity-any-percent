@@ -1,0 +1,545 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"os"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/faction"
+	"cloud-clicker/server/guild"
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/save"
+)
+
+// Manual component only: no Store, publisher, callback registration or live API.
+type endpointActionContextResearch struct {
+	calculation *endpointContextResearch
+	carry       replayFounderCarry
+	wireVersion int
+}
+type endpointActionOwnerResearch struct {
+	context                                                                               *endpointActionContextResearch
+	actions, restores, schedules, clearings, catchups, transitions, foundations, children int
+}
+type endpointActionResultResearch struct {
+	decision   save.IntentDecision
+	state      *save.State // Success only; refusal/error does not expose staged work.
+	next       *endpointActionOwnerResearch
+	roles      []RoleActivation
+	invariants []InvariantReport
+}
+
+func newEndpointActionOwnerResearch(owner *endpointOwnerResearch, carry replayFounderCarry, wireVersion int) (*endpointActionOwnerResearch, error) {
+	if owner == nil || owner.context == nil || wireVersion != save.ReplayInputsVersion || !validFounderCarry(carry, wireVersion, owner.context.bundle) ||
+		carry.FounderConstantsHash != owner.context.revision.ConstantsHash {
+		return nil, fmt.Errorf("unsupported action Founder context")
+	}
+	// Copy the EXISTING typed replay carry, not a new origin/envelope grammar.
+	encoded, err := json.Marshal(carry)
+	if err != nil {
+		return nil, err
+	}
+	var owned replayFounderCarry
+	if err := decodeReplayStrict(encoded, &owned); err != nil {
+		return nil, err
+	}
+	if _, err := stateFromFounderCarry(owned, owner.context.bundle); err != nil {
+		return nil, err
+	}
+	return &endpointActionOwnerResearch{context: &endpointActionContextResearch{owner.context, owned, wireVersion}}, nil
+}
+
+func (owner *endpointActionOwnerResearch) fork() *endpointActionOwnerResearch {
+	return &endpointActionOwnerResearch{context: owner.context}
+}
+
+func (owner *endpointActionOwnerResearch) apply(t *testing.T, request IntentRequest, at int64) (answer endpointActionResultResearch, resultErr error) {
+	t.Helper()
+	owner.actions++
+	action := owner.context
+	ctx := action.calculation
+	if at < 0 || at > 86_460_000 || request.ExpectedRevision != ctx.revision.Number ||
+		request.Kind != IntentPerformManualBatch && request.Kind != IntentBuyGenerator && request.Kind != IntentBuyUpgrade {
+		return answer, fmt.Errorf("unsupported action request/context")
+	}
+	parsed, err := parseLoggedIntent(request.CanonicalPayload, request.IntentID)
+	if err != nil || !reflect.DeepEqual(parsed, request) {
+		return answer, fmt.Errorf("action request does not bind its canonical payload")
+	}
+	collector := &invariantCollector{}
+	defer func() {
+		if resultErr != nil {
+			answer = endpointActionResultResearch{}
+			return
+		}
+		answer.invariants = append([]InvariantReport(nil), collector.reports...)
+	}()
+	owner.restores++
+	state, err := save.RestoreState(ctx.origin, 19, ctx.bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return answer, err
+	}
+	if err := deriveFactionStockResource(state, ctx.bundle.Faction); err != nil {
+		return answer, err
+	}
+	owner.restores++
+	before, err := cloneReplayState(state, ctx.bundle.Economy)
+	if err != nil {
+		return answer, err
+	}
+	if request.InvalidDetail != "" {
+		answer.decision, err = rejectedDecision(request, ctx.revision.Number, "invalid", request.InvalidDetail)
+		return answer, err
+	}
+	founder, err := stateFromFounderCarry(action.carry, ctx.bundle)
+	if err != nil {
+		return answer, err
+	}
+	now := state.EvaluatedThrough.Add(time.Duration(at) * time.Millisecond)
+	active, err := resolveActivePlaySchedule(state, ctx.bundle.Opportunities, ctx.bundle.Prestige, ctx.revision.OwnerID, now)
+	if err != nil {
+		return answer, err
+	}
+	owner.schedules++
+	catchup, err := buildOfflineCatchup(state, ctx.bundle.Economy, ctx.mode, now)
+	if err != nil {
+		return answer, err
+	}
+	owner.clearings++
+	if err := guild.ApplySettlements(state, ctx.batch, ctx.bundle.Faction.StockCap); err != nil {
+		return answer, err
+	}
+	policy, err := simulationPolicyFor(ctx.bundle.Economy, ctx.mask)
+	if err != nil {
+		return answer, err
+	}
+	hook := simulationHook(closedReplayAccrualHook(ctx.bundle, ctx.weight), policy)
+	base, err := assembleContributionsWithPolicy(state, ctx.bundle.Economy, ctx.external, policy)
+	if err != nil {
+		return answer, err
+	}
+	prefixEvents := []save.EventWrite{}
+	if catchup != nil {
+		owner.catchups++
+		evaluation, err := evaluateWithSimulationPolicy(state, ctx.bundle.Economy, now, ModeOffline, base, policy)
+		if err != nil {
+			return answer, err
+		}
+		events, err := runAccrualHook(hook, request.IntentID, state, ctx.bundle.Economy, ctx.revision, evaluation, base)
+		if err != nil {
+			return answer, err
+		}
+		prefixEvents = append(prefixEvents, events...)
+	}
+	events, err := applyActivePlaySchedule(state, ctx.bundle.Opportunities, ctx.bundle.Prestige, ctx.revision.OwnerID, now, active)
+	if err != nil {
+		return answer, err
+	}
+	for i := range events {
+		events[i].IntentID = request.IntentID
+	}
+	prefixEvents = append(prefixEvents, events...)
+	activeInputs, err := activePlayContributions(state, ctx.bundle.Opportunities, active.AttendedNowMS)
+	if err != nil {
+		return answer, err
+	}
+	contributions, err := assembleContributionsWithPolicy(state, ctx.bundle.Economy,
+		append(append([]multiplier.Contribution(nil), ctx.external...), activeInputs...), policy)
+	if err != nil {
+		return answer, err
+	}
+	band := &CompactTitheBand{MinimumPPM: ctx.bundle.Commons.MinimumTithePPM(), MaximumPPM: ctx.bundle.Commons.MaximumTithePPM()}
+	owner.transitions++
+	decision, err := transitionWithSimulationPolicy(request, state, ctx.bundle.Economy, ctx.bundle.Routes, ctx.bundle.Doctrines, band, ctx.bundle.Faction,
+		ctx.revision, ctx.mode, now, contributions, collector, hook, policy)
+	if err != nil {
+		return answer, err
+	}
+	if decision.Outcome != save.IntentApplied {
+		answer.decision = decision
+		return answer, nil
+	}
+	decision.Events = append(prefixEvents, decision.Events...)
+	if err := afterPrestigeTransitionResolved(ctx.bundle.Prestige, ctx.bundle.Economy, request, state, ctx.revision, now, &decision, founder, 0); err != nil {
+		return answer, err
+	}
+	if err := validateFoundationHookInputs(ctx.bundle, state, founder); err != nil {
+		return answer, err
+	}
+	owner.foundations++
+	if err := applyFoundationTransition(ctx.bundle, before, state, founder, ctx.revision, request, now, contributions, decision.ActionDebits, false, &decision.Events); err != nil {
+		return answer, err
+	}
+	if err := refreshAppliedSnapshot(&decision, state, ctx.bundle.Economy); err != nil {
+		return answer, err
+	}
+	if request.Kind == IntentPerformManualBatch && appliedCountFromDecision(decision) > 0 {
+		policy.activateManualRoles(state, ctx.bundle.Economy, request.ActionID)
+		policy.promoteManualPoolCandidates(ctx.bundle.Economy, request.ActionID)
+	}
+	if ctx.revision.Number >= decimal.MaxExactInteger || ctx.revision.RunLogSequence >= decimal.MaxExactInteger {
+		return answer, fmt.Errorf("manual successor coordinates exhausted")
+	}
+	nextRevision := ctx.revision
+	nextRevision.Number++
+	nextRevision.RunLogSequence++
+	// This captured batch is consumed, not a live provider to call again.
+	nextBatch := guild.SettlementBatch{GuildID: ctx.batch.GuildID, BaseSeq: state.GuildBoundarySeq}
+	if nextBatch.GuildID == "" {
+		nextBatch.BaseSeq = 0
+	}
+	nextProjection, err := newEndpointOwnerResearch(t, ctx.bundle, state, nextRevision, ctx.mode, ctx.mask, ctx.external, ctx.weight, nextBatch)
+	if err != nil {
+		return answer, fmt.Errorf("manual successor construction: %w", err)
+	}
+	next, err := newEndpointActionOwnerResearch(nextProjection, action.carry, action.wireVersion)
+	if err != nil {
+		return answer, err
+	}
+	owner.children++
+	return endpointActionResultResearch{decision: decision, state: state, next: next, roles: policy.activations()}, nil
+}
+
+func loadActionPacketResearch(t *testing.T) (CatalogBundle, []axisSequenceAction) {
+	t.Helper()
+	data, err := os.ReadFile("../../.cache/wait-logged-stages-inputs.json")
+	if err != nil {
+		t.Fatal("run current TestWaitLoggedStagesResearch producer first", err)
+	}
+	var packet struct {
+		Schema  int                    `json:"schema"`
+		Sources map[string]string      `json:"source_sha256"`
+		Bundle  reputationCorpusBundle `json:"bundle"`
+		Actions []axisSequenceAction   `json:"actions"`
+	}
+	if err := json.Unmarshal(data, &packet); err != nil || packet.Schema != 1 || len(packet.Actions) != 128 || len(packet.Sources) != 11 {
+		t.Fatal("incomplete action producer", err)
+	}
+	for path, expected := range packet.Sources {
+		if sourceResearchHashes(t, []string{path})[path] != expected {
+			t.Fatal("stale action producer", path)
+		}
+	}
+	artifacts := map[string][]byte{}
+	for key, value := range packet.Bundle.Artifacts {
+		artifacts[key] = []byte(value)
+	}
+	return loadCompleteReplayTestBundle(t, packet.Bundle.ConstantsHash, artifacts), packet.Actions
+}
+
+func actionOwnerForRecordResearch(t *testing.T, bundle CatalogBundle, row axisSequenceAction) (*endpointActionOwnerResearch, IntentRequest, int64, replayInputsWire) {
+	t.Helper()
+	wire, err := parseReplayInputs(row.Inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var resolved replayAccrualResolved
+	if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil || resolved.FounderCarry == nil {
+		t.Fatal("missing actual Founder input", err)
+	}
+	state := restoreActionStateResearch(t, bundle, []byte(row.PreStateJSON))
+	external, err := contributionsFromReplay(resolved.Accrual)
+	if err != nil {
+		t.Fatal(err)
+	}
+	batchWire := resolved.Accrual.GuildSettlementBatch
+	batch := guild.SettlementBatch{GuildID: batchWire.GuildID, BaseSeq: batchWire.BaseSeq}
+	for _, value := range batchWire.Settlements {
+		batch.Settlements = append(batch.Settlements, guild.Settlement{GuildID: batch.GuildID, BoundarySeq: value.BoundarySeq, DebitUnits: value.DebitUnits, CreditUnits: value.CreditUnits})
+	}
+	revision := save.Revision{OwnerID: wire.Command.FounderID, StreamID: wire.Command.CompanyStreamID, Number: wire.Command.Revision, ConstantsHash: bundle.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
+	projection, err := newEndpointOwnerResearch(t, bundle, state, revision, wire.EvaluationMode, AblationMask{}, external, resolved.Accrual.CommonsWeightPPM, batch)
+	if err != nil {
+		t.Fatal(err)
+	}
+	owner, err := newEndpointActionOwnerResearch(projection, *resolved.FounderCarry, wire.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request, err := parseLoggedIntent(row.Payload, wire.Command.IntentID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return owner, request, wire.EvaluatedAtMS - state.EvaluatedThrough.UnixMilli(), wire
+}
+
+func compareActionRecordResearch(t *testing.T, bundle CatalogBundle, row axisSequenceAction) bool {
+	t.Helper()
+	owner, request, at, _ := actionOwnerForRecordResearch(t, bundle, row)
+	ctx := owner.context.calculation
+	before := append([]byte(nil), ctx.origin...)
+	referenceState := restoreActionStateResearch(t, bundle, []byte(row.PreStateJSON))
+	var expected LoggedTransition
+	wantTrace, err := captureLoggedStagesResearch(t, func() error {
+		var applyErr error
+		expected, applyErr = ApplyLogged(referenceState, row.Payload, bundle, row.Inputs)
+		return applyErr
+	})
+	if err != nil {
+		t.Fatal("actual action reference refused", err)
+	}
+	// Detached observations must not become the action's starting state.
+	if _, err := (&endpointOwnerResearch{context: ctx}).project(at); err != nil {
+		t.Fatal(err)
+	}
+	var answer endpointActionResultResearch
+	gotTrace, err := captureLoggedStagesResearch(t, func() error {
+		var applyErr error
+		answer, applyErr = owner.apply(t, request, at)
+		return applyErr
+	})
+	if err != nil || !reflect.DeepEqual(gotTrace, wantTrace) || answer.decision.Outcome != expected.Outcome ||
+		!bytes.Equal(answer.decision.Receipt, expected.Receipt) || !reflect.DeepEqual(answer.decision.Events, expected.Events) || !reflect.DeepEqual(answer.invariants, expected.Invariants) {
+		t.Fatal("owned action differs from full actual logged action/trace", len(gotTrace), len(wantTrace), err)
+	}
+	if !bytes.Equal(ctx.origin, before) {
+		t.Fatal("action consumed immutable parent")
+	}
+	if expected.Outcome != save.IntentApplied {
+		if answer.next != nil || answer.state != nil || len(answer.decision.Events) != 0 || !bytes.Equal(mustEncodeState(t, referenceState), before) {
+			t.Fatal("refused action leaked staged state/events/child")
+		}
+		return false
+	}
+	if answer.state == nil || answer.next == nil || !bytes.Equal(mustEncodeState(t, answer.state), mustEncodeState(t, referenceState)) ||
+		answer.next.context == owner.context || answer.next.context.calculation == ctx ||
+		!bytes.Equal(answer.next.context.calculation.origin, mustEncodeState(t, answer.state)) {
+		t.Fatal("applied action lost full result or next-origin identity")
+	}
+	nextProjection, err := (&endpointOwnerResearch{context: answer.next.context.calculation}).project(0)
+	if err != nil || !bytes.Equal(mustEncodeState(t, nextProjection.state), mustEncodeState(t, answer.state)) {
+		t.Fatal("successor replayed the captured settlement or changed zero-time head", err)
+	}
+	return true
+}
+
+func TestWaitModernActionResearch(t *testing.T) {
+	bundle, rows := loadActionPacketResearch(t)
+	applied, rejected := 0, 0
+	for _, row := range rows {
+		t.Run(row.Name, func(t *testing.T) {
+			if compareActionRecordResearch(t, bundle, row) {
+				applied++
+			} else {
+				rejected++
+			}
+		})
+	}
+	if applied != 64 || rejected != 64 {
+		t.Fatal("incomplete actual action population", applied, rejected)
+	}
+	t.Logf("owned actions applied%d rejected%d; original-state trace/full result/child/zero-time successor; no SQL/Store or full caller/mask proof", applied, rejected)
+}
+
+func restoreActionStateResearch(t *testing.T, bundle CatalogBundle, origin []byte) *save.State {
+	t.Helper()
+	state, err := save.RestoreState(origin, 19, bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil || canonicalFixtureJSON(t, mustEncodeState(t, state)) != canonicalFixtureJSON(t, origin) {
+		t.Fatal("action source lost complete canonical state", err)
+	}
+	return state
+}
+
+func actionRecordFromOwnerResearch(t *testing.T, owner *endpointActionOwnerResearch, request IntentRequest, at int64) axisSequenceAction {
+	t.Helper()
+	ctx := owner.context.calculation
+	state := restoreActionStateResearch(t, ctx.bundle, ctx.origin)
+	now := state.EvaluatedThrough.Add(time.Duration(at) * time.Millisecond)
+	active, err := resolveActivePlaySchedule(state, ctx.bundle.Opportunities, ctx.bundle.Prestige, ctx.revision.OwnerID, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catchup, err := buildOfflineCatchup(state, ctx.bundle.Economy, ctx.mode, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	inputs, err := buildReplayInputs(replayBuild{
+		Command: save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: ctx.revision.StreamID, FounderID: ctx.revision.OwnerID,
+			Revision: ctx.revision.Number, RunSeq: state.RunSeq, RunLogSeq: ctx.revision.RunLogSequence},
+		Mode: ctx.mode, Now: now, IntentKind: request.Kind, Contributions: ctx.external, CommonsWeightPPM: ctx.weight,
+		GuildSettlementBatch: ctx.batch, RouteContextVersion: ctx.bundle.Routes.ContextVersion(),
+		FounderCarry: &owner.context.carry, ActivePlay: &active, OfflineCatchup: catchup})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return axisSequenceAction{Name: "derived-action", PreStateJSON: string(ctx.origin), Payload: request.CanonicalPayload, Inputs: inputs}
+}
+
+func TestWaitModernActionPurchasesResearch(t *testing.T) {
+	bundle, rows := loadActionPacketResearch(t)
+	completed := 0
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		for _, at := range []int64{999, 1501} {
+			for _, kind := range []string{IntentBuyGenerator, IntentBuyUpgrade} {
+				t.Run(fmt.Sprintf("%s/%d/%s", mode, at, kind), func(t *testing.T) {
+					var row axisSequenceAction
+					for _, candidate := range rows {
+						if candidate.Name == fmt.Sprintf("combined/%s/0/rejectfalse", mode) {
+							row = candidate
+						}
+					}
+					if row.Name == "" {
+						t.Fatal("missing actual source")
+					}
+					state := restoreActionStateResearch(t, bundle, []byte(row.PreStateJSON))
+					if kind == IntentBuyUpgrade {
+						setCash(t, state, "5e7") // Explicit funding, not natural progression.
+					}
+					row.PreStateJSON = string(mustEncodeState(t, state))
+					owner, _, _, _ := actionOwnerForRecordResearch(t, bundle, row)
+					fields := `"generator_id":"generator.beige_tower","count":{"mode":"exact","value":1}`
+					if kind == IntentBuyUpgrade {
+						fields = `"upgrade_id":"upgrade.rack_rail_standardization"`
+					}
+					request, err := ParseIntent([]byte(fmt.Sprintf(`{"intent_id":"01986666-0901-7000-8000-000000000902","kind":%q,"expected_revision":1,%s}`, kind, fields)))
+					if err != nil {
+						t.Fatal(err)
+					}
+					if !compareActionRecordResearch(t, bundle, actionRecordFromOwnerResearch(t, owner, request, at)) {
+						t.Fatal("declared successful purchase refused")
+					}
+					completed++
+				})
+			}
+		}
+	}
+	if completed != 8 {
+		t.Fatal("incomplete purchase population", completed)
+	}
+}
+
+func TestWaitModernActionOwnershipResearch(t *testing.T) {
+	bundle, rows := loadActionPacketResearch(t)
+	var row axisSequenceAction
+	for _, candidate := range rows {
+		if candidate.Name == "combined/online/6001/rejectfalse" {
+			row = candidate
+		}
+	}
+	owner, request, at, wire := actionOwnerForRecordResearch(t, bundle, row)
+	var resolved replayAccrualResolved
+	if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil {
+		t.Fatal(err)
+	}
+	input := *resolved.FounderCarry
+	owned, err := newEndpointActionOwnerResearch(&endpointOwnerResearch{context: owner.context.calculation}, input, wire.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	prior, _ := json.Marshal(owned.context.carry)
+	if input.FounderExtensions == nil || len(input.FounderExtensions.MinigameRatings) == 0 {
+		t.Fatal("Founder ownership target is empty")
+	}
+	for key, value := range input.FounderExtensions.MinigameRatings {
+		value.Elo++
+		input.FounderExtensions.MinigameRatings[key] = value
+	}
+	if after, _ := json.Marshal(owned.context.carry); !bytes.Equal(prior, after) {
+		t.Fatal("caller Founder map leaked into action context")
+	}
+	fork := owned.fork()
+	if fork.context != owned.context {
+		t.Fatal("fork lost action/Founder identity")
+	}
+	first, err := owned.apply(t, request, at)
+	if err != nil || first.state == nil || first.next == nil || len(first.decision.Events) == 0 || len(first.decision.Receipt) == 0 {
+		t.Fatal("ownership control has no real successful output", err)
+	}
+	wantState, wantReceipt := mustEncodeState(t, first.state), append([]byte(nil), first.decision.Receipt...)
+	wantEvents := copyPrivateWaitEventsResearch(first.decision.Events)
+	first.decision.Receipt[0] ^= 1
+	if len(first.decision.Events[0].Payload) == 0 {
+		t.Fatal("event ownership target is empty")
+	}
+	first.decision.Events[0].Payload[0] ^= 1
+	first.state.GeneratorCounts["generator.beige_tower"]++
+	if len(first.state.ActiveBuffs) < 2 || first.state.ActiveBuffs[1].SelectedTarget == nil {
+		t.Fatal("buff ownership target is empty")
+	}
+	*first.state.ActiveBuffs[1].SelectedTarget = "caller-corruption"
+	for _, branch := range []*endpointActionOwnerResearch{owned, fork} {
+		result, err := branch.apply(t, request, at)
+		if err != nil || !bytes.Equal(mustEncodeState(t, result.state), wantState) || !bytes.Equal(result.decision.Receipt, wantReceipt) || !reflect.DeepEqual(result.decision.Events, wantEvents) {
+			t.Fatal("returned result poisoned parent/sibling", err)
+		}
+	}
+	if !bytes.Equal(first.next.context.calculation.origin, wantState) {
+		t.Fatal("returned state aliases the successor origin")
+	}
+	// The next actual command closes its own interval with the consumed batch's
+	// EMPTY successor. It does not credit the original7 units a second time.
+	second, err := ParseIntent([]byte(`{"intent_id":"01986666-0901-7000-8000-000000000903","kind":"perform_manual_batch","expected_revision":2,"action_id":"manual.click","count":1,"window_ms":1000}`))
+	if err != nil || !compareActionRecordResearch(t, bundle, actionRecordFromOwnerResearch(t, first.next, second, 1)) {
+		t.Fatal("next actual command is not composable", err)
+	}
+}
+
+func TestWaitModernActionRefusalsResearch(t *testing.T) {
+	bundle, rows := loadActionPacketResearch(t)
+	owner, request, _, wire := actionOwnerForRecordResearch(t, bundle, rows[0])
+	for _, fault := range []string{"hash", "age", "wire", "future_wire"} {
+		t.Run(fault, func(t *testing.T) {
+			carry, version := owner.context.carry, wire.Version
+			switch fault {
+			case "hash":
+				carry.FounderConstantsHash = "sha256:" + string(bytes.Repeat([]byte{'0'}, 64))
+			case "age":
+				carry.AgeMS = -1
+			case "wire":
+				version = 4
+			case "future_wire":
+				version = save.ReplayInputsVersion + 1
+			}
+			if got, err := newEndpointActionOwnerResearch(&endpointOwnerResearch{context: owner.context.calculation}, carry, version); err == nil || got != nil {
+				t.Fatal("invalid Founder binding admitted", err)
+			}
+		})
+	}
+	for _, fault := range []string{"revision", "payload", "time"} {
+		t.Run(fault, func(t *testing.T) {
+			bad, at := request, int64(0)
+			switch fault {
+			case "revision":
+				bad.ExpectedRevision++
+			case "payload":
+				bad.Count++
+			case "time":
+				at = -1
+			}
+			got, err := owner.apply(t, bad, at)
+			if err == nil || got.state != nil || got.next != nil || len(got.decision.Receipt) != 0 || len(got.decision.Events) != 0 {
+				t.Fatal("invalid action leaked a child/fragment", err)
+			}
+		})
+	}
+	fixture := capEndpointFixtureResearch(t, loadEndpointFixtureResearch(t, "none", ModeOnline))
+	fixture.state.GeneratorCounts["generator.beige_tower"] = decimal.MaxExactInteger
+	fixture.state.GeneratorPurchasedTotal = decimal.MaxExactInteger
+	projection, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, ModeOnline, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+	if err != nil {
+		t.Fatal("stock diagnostic source not admitted", err)
+	}
+	carry := owner.context.carry
+	carry.FounderConstantsHash = fixture.bundle.ConstantsHash
+	failing, err := newEndpointActionOwnerResearch(projection, carry, wire.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	row := actionRecordFromOwnerResearch(t, failing, request, 1000)
+	actualState := restoreActionStateResearch(t, fixture.bundle, failing.context.calculation.origin)
+	actual, cause := ApplyLogged(actualState, row.Payload, fixture.bundle, row.Inputs)
+	if !errors.Is(cause, faction.ErrInvalidStockState) || len(actual.Events) != 0 || !bytes.Equal(mustEncodeState(t, actualState), failing.context.calculation.origin) {
+		t.Fatal("actual hook failure/rollback control did not fire", cause)
+	}
+	answer, err := failing.apply(t, request, 1000)
+	if !errors.Is(err, cause) || answer.state != nil || answer.next != nil || len(answer.decision.Events) != 0 || len(answer.decision.Receipt) != 0 {
+		t.Fatal("owned action hid actual error or returned partial work", err, cause)
+	}
+}

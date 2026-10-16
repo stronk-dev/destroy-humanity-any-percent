@@ -7690,3 +7690,87 @@ first filter). Recorded by: Codex root. No independent approval, feature/release
 acceptance or archival; no product/schema/data/CI/golden/kernel223/epoch8 change.
 RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN, not rerun/fixed here.
 No push/publication/deployment. Full nine-tier1.0 goal stays active/progress.
+
+## 2026-10-16 — owned modern action, prospective comparison
+
+Prior07da51f6 is PROGRESS. Build a MANUAL action component alongside H3t's
+owned projection, not a wrapper around ApplyLogged and not a live entry point.
+Bind the actual frozen Founder carry with its existing versioned validator,
+own its mutable fields, and reconstruct original Company state for every action.
+Use real catchup/clearing/schedule/closed hooks, semantic transition and post-action
+Prestige/foundation/receipt refresh. Successful actions alone create a detached
+next origin; rejection/error returns no child or partial successful payload.
+The next simulation origin carries the consumed batch's empty successor, not a
+second delivery of that captured settlement. No SQL/Store/idempotency claim.
+
+Population: all128 H3s real command records (four buff profiles, both modes,
+eight offsets, applied manual/rejected generator), plus actual successful
+generator and upgrade controls. Compare fresh actual ApplyLogged output and
+complete stage traces, including receipt/event/invariant bytes and zero ordinary
+catchup evaluation. Verify observation before action cannot alter the action;
+fork/parent, Founder caller and returned-result mutations cannot leak. Add real
+request/Founder admission negatives and an actual hook error/unchanged parent.
+Freeze before native/Linux execution. This is bounded action compatibility, not
+general caller/recipe/mask/terminal/next-context authority or either RFC's adoption.
+
+### H3w result — owned original-state action and full logged compatibility
+
+The manual action owns the actual frozen Founder carry (nonempty nested map
+isolation tested) alongside H3t's Company context. It reconstructs the original
+state for real clearing/catchup/schedule/hooks/action, then real Prestige/foundation
+work and receipt refresh. All128 source records match fresh ApplyLogged COMPLETE
+trace/state/receipt/events/invariants:64 manual successes and64 rejected generator
+actions. Eight additional successful generator/funded-upgrade purchases match,
+plus one actual second child command. Success alone creates a detached new origin;
+its empty consumed-batch successor cannot pay the original7 units again.
+Prior projections do not alter the action. Parent/fork and returned receipt/event/
+Company/buff mutations remain isolated. Four Founder/version and three request
+negatives refuse without a child; the diagnostic1000ms actual stock-hook error
+matches ApplyLogged's failure and rollback, with no returned partial success.
+
+Initial trial FAIL0.389s hits the existing activation helper's RAW JSON-order
+comparison on buffed records. As in H3t, restore with the actual codec and compare
+the COMPLETE canonical state, not raw key ordering. Corrected59482 PASS1.113s;
+expanded controls20584 PASS1.354s. Restrict this manual constructor to the existing
+CURRENT replay-input version, including an explicit future-version refusal, before
+freezing. This is not a generic replay/input or all-coordinate-domain API.
+
+Final frozen native47762 PASS29.815s plus ordinary production vet; declared
+Linux/AMD64 Go1.26 session44093 PASS124.160s. Both also reexecute full affected
+H3t endpoint binding/ownership/admission/raw-input/first-error checks. No skipped
+dependency or full workload/SQL/hosted claim. Ignored fault49448 FAIL0.444s:
+sever ONLY applyFoundationTransition in the manual action; all EIGHT purchase
+controls hit actual result/trace mismatches (pre-action trace lengths still3/5).
+The real action reference and normal source remain untouched; no rerun of unchanged
+source is required. All process handles are terminal.
+
+The one-entry generator change refreshes H3s metadata: native producer25333
+PASS0.726s and serialized Linux46682 PASS1.309s emit identical1622159-byte packets,
+SHA256e6ed21d4a7aff65d909dc88a8137b8891cd9ee029d6af6ff5ebec481c80e55a2.
+Unmodified TS ApplyLogged consumer80086 PASS203 tests/534ms. This is H3s replay
+parity, NOT an implemented TS calculation/action owner or automatic CI of.txt.
+
+Reproduce from root: run the H3s generator and TestWaitLoggedStagesResearch producer,
+then `make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../.cache/wait-logged-overlay.json -run TestWaitModernAction\|TestWaitModernEndpoint -v'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/wait-logged-overlay.json -run 'TestWaitModernAction|TestWaitModernEndpoint' -v ./production -count=1`.
+Producer/readers must be serialized; client command is the existing H3s one.
+Negative selector: -overlay=../.cache/wait-modern-action-no-foundation.json and
+-run TestWaitModernActionPurchasesResearch. SHA256: manual action
+beb5673ec2571b7a11dbe0f2295dff56c2eef1bb218998f392f61a8248c70364;
+generatorfa834ad834a2af85b83fc97915f8c2d1b627492f99621def52716e32143e5bc9;
+25-entry overlay7381b404e505c610d404eaaeb5e7a0addaffde274c807f6ead99dd2a749ff099;
+fault source86d12455d90489163a9ae8f4e311de4c9b318e143a1eb814a533e529c1690727;
+fault overlay3d50f1a6972941617195a95b2d1b2b778957d1c428fd7ffc70bbdedbf9547b6c.
+
+H3w/parent C1c and own plan reconcile this bounded three-intent/current-input
+component. Next bind the actual harness caller to owned begin/project/apply and
+the bounded query, preserving scores/errors and measuring COMPLETE work. General
+schedule/mask/input/codec/role/context/gate/terminal domains, TS/SQL, dispatch,
+workloads and normative adoption remain. Successor construction reloads catalogs;
+these selected checks are not total-cost instrumentation or a budget proof.
+Six-path07da51f6-exclusive range through this checkpoint is research/specification
+work OUTSIDE corrective-code delegation. Review by: Codex root (author/first
+filter). Recorded by: Codex root. No designated acceptance, archival or release.
+No product/schema/data/CI/golden/kernel223/epoch8 change, push or deployment.
+RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN, not rerun/fixed here.
+Full nine-tier1.0 goal remains active/progress.

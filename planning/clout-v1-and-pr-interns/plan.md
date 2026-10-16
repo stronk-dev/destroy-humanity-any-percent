@@ -136,10 +136,14 @@ state/score and delayed lifetime work against a single original-state action.
 This is a positive CURRENT-caller compatibility boundary, not H3u integration or
 the modern closed-replay action adapter; role lists are empty in that fixture.
 
-Next bind the owned modern calculation's semantic ACTION from its original
-state against the actual logged catchup/clearing/hook/action result. H3v checks
-the existing first-hour consumer, not that new action or query integration.
-Then measure complete candidate/consumer work and error/scoring compatibility;
+H3w now binds an owned frozen Founder carry to the manual modern action, restores
+the original Company and compares full real logged results/stages, including
+post-action foundation work and a consumed-batch successor. Three ordinary intent
+families are covered, not a live API, general mask/input/terminal domain or SQL.
+
+Next bind the actual harness caller to the owned begin/project/apply lifecycle
+and bounded query, preserving complete results, error policy and scores. Measure
+complete candidate/consumer work and error/scoring compatibility;
 finish general scheduling, all mask families, actual TS owner/query and full
 workload/compatibility before adoption. Complete input/mask/map,
 post-hook state, real settlement and global/caller/timestamp/encoding/state/lifecycle

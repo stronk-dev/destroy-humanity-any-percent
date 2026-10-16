@@ -1691,6 +1691,37 @@ log separates21062 reference advances from412 actual ranker transitions; neither
 is total work or a matched performance claim. Existing score/policy/budgets and
 all original RP-680/Clout AC6 failures remain unchanged.
 
+#### H3w — Owned modern action boundary (manual component)
+
+The [manual action component](../planning/clout-v1-and-pr-interns/probes/wait-modern-action.go.txt)
+binds H3t's immutable Company calculation to an owned copy of the existing frozen
+Founder carry, validated under the CURRENT replay-input version. It is not an
+ApplyLogged wrapper, new wire format, live Service or general replay decoder.
+
+Each action restores the original Company, derives stock, clears its captured
+batch once, executes actual catchup/schedule/arithmetic/closed hooks and the real
+semantic transition, then runs actual Prestige/foundation hooks and receipt refresh.
+Prior projections are discarded, not installed as the action's origin. Applied
+actions alone return a detached child with new identity and incremented simulation
+coordinates. Its successor batch is empty at the consumed boundary: it is not a
+live provider or permission to deliver the captured settlement twice.
+
+All128 H3s command records compare complete actual ApplyLogged stage traces and
+decision/state/receipt/events/invariants, including64 rejected actions with no
+child or staged output. Eight additional actual generator/upgrade purchases cover
+ordinary/catchup paths; upgrade cash is controlled, not naturally earned. A fork,
+nonempty Founder-map/event/receipt/buff mutations, a second child command, invalid
+bindings and an admitted actual stock-hook failure exercise ownership/refusal.
+Severing only post-action foundation work fails all eight purchase controls even
+though the pre-action trace structure still agrees.
+
+This component supports only manual/generator/upgrade actions and the current
+captured-input grammar. It does not prove every mask, nonempty role result, raw
+input/error/codec domain, scenario/session factory, context change, gate/terminal
+operation, Store retry/outbox or complete work budget. Actual harness integration,
+TS ownership/query/action, workloads and normative review/adoption remain required.
+No live accounting/search repair, RP-680/Clout AC6 closure or release follows.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -1914,3 +1945,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   boundary in72 controlled first-hour cases. Preserve its bounded positive
   compatibility result without claiming modern-query integration or lost lifetime
   in this existing caller; full workload/dispatch and normative adoption remain.
+- 2026-10-16: H3w adds the owned manual modern action component and actual
+  full logged comparisons, preserving Founder input, post-action hooks and
+  consumed-batch child semantics. Full caller/domain/workload and adoption remain;
+  no live API or accepted contract change.
