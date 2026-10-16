@@ -1,0 +1,91 @@
+package harness
+
+import (
+	"bytes"
+	"fmt"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+)
+
+// Only materialized by the manual overlay. No normal build or runtime plugin.
+// The external production test connects its owned implementation through these
+// normal public value types; neither package imports the other's internal tests.
+type ManualCandidateBindingResearch struct {
+	Origin []byte
+	Query  func(horizon int64, price decimal.Decimal, budget int) (at int64, points int, err error)
+	Apply  func(production.IntentRequest, *save.State, int64) (production.SimulationResult, error)
+	Rate   func(*save.State, production.AblationMask) (decimal.Decimal, error)
+}
+type ManualCandidateResultResearch struct {
+	ID                          string
+	AtMS, Revision, Transitions int64
+	State                       *save.State
+	Numerator, Denominator      decimal.Decimal
+	Roles                       []production.RoleActivation
+	OK                          bool
+	Err                         error
+}
+
+// Serial, scoped fixture bindings, NOT the proposed production factory/API.
+var manualCandidateBindingsResearch = map[*RelevanceSuite]*ManualCandidateBindingResearch{}
+
+func ManualRunCandidateResearch(catalog *economy.Catalog, routeCatalog *routes.Catalog, hash string, milestone RelevanceMilestone,
+	state *save.State, revision, nowMS, horizonMS int64, id string, mask production.AblationMask, limit int64, binding *ManualCandidateBindingResearch) ManualCandidateResultResearch {
+	encoded, err := save.EncodeState(state)
+	if err != nil || binding == nil || !bytes.Equal(encoded, binding.Origin) || binding.Query == nil || binding.Apply == nil || binding.Rate == nil {
+		return ManualCandidateResultResearch{Err: fmt.Errorf("manual candidate lacks exact original-state binding")}
+	}
+	suite := &RelevanceSuite{Catalog: catalog, Routes: routeCatalog, ConstantsHash: hash, Scenario: RelevanceScenario{Milestone: milestone}}
+	manualCandidateBindingsResearch[suite] = binding
+	defer delete(manualCandidateBindingsResearch, suite)
+	counter := &relevanceCounter{limit: limit}
+	got, ok, err := suite.rankCandidate(state, revision, nowMS, horizonMS, id, mask, counter)
+	return ManualCandidateResultResearch{got.ID, got.AtMS, got.Revision, counter.value, got.State,
+		got.Projection.Numerator, got.Projection.Denominator, got.RoleActivations, ok, err}
+}
+
+func manualCandidateEarliestResearch(binding *ManualCandidateBindingResearch, nowMS, horizonMS int64, resourceID string, price decimal.Decimal, counter *relevanceCounter) (int64, bool, error) {
+	if resourceID != "company.cash" || horizonMS < nowMS || counter.value >= counter.limit {
+		return 0, false, fmt.Errorf("manual candidate query domain/budget exhausted")
+	}
+	at, points, err := binding.Query(horizonMS-nowMS, price, int(counter.limit-counter.value))
+	for i := 0; i < points; i++ {
+		if budgetErr := counter.add(); budgetErr != nil {
+			return 0, false, budgetErr
+		}
+	}
+	if err != nil {
+		return 0, false, err
+	}
+	if at < 0 {
+		return 0, false, nil
+	}
+	if at > horizonMS-nowMS {
+		return 0, false, fmt.Errorf("manual query escaped horizon")
+	}
+	return nowMS + at, true, nil
+}
+
+func manualCandidateTransitionResearch(suite *RelevanceSuite, request production.IntentRequest, state *save.State, revision, atMS int64, mask production.AblationMask) (production.SimulationResult, error) {
+	if binding := manualCandidateBindingsResearch[suite]; binding != nil {
+		encoded, err := save.EncodeState(state)
+		if err != nil || !bytes.Equal(encoded, binding.Origin) {
+			return production.SimulationResult{}, fmt.Errorf("ranker installed a projected action origin")
+		}
+		return binding.Apply(request, state, atMS)
+	}
+	return production.SimulateTransition(request, state, suite.Catalog,
+		production.SimulationDependencies{Routes: suite.Routes, Hook: suite.hook}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
+		production.ModeOnline, relevanceNow(atMS), suite.external, nil, mask)
+}
+
+func manualCandidateRateResearch(suite *RelevanceSuite, state *save.State, mask production.AblationMask) (decimal.Decimal, error) {
+	if binding := manualCandidateBindingsResearch[suite]; binding != nil {
+		return binding.Rate(state, mask)
+	}
+	return production.SimulateResourceRateWithContributions(state, suite.Catalog, suite.Scenario.Milestone.ResourceID, suite.external, mask)
+}

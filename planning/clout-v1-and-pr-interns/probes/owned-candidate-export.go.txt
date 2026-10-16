@@ -1,0 +1,270 @@
+package production
+
+import (
+	"bytes"
+	"fmt"
+	"reflect"
+	"slices"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/prestige"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+)
+
+// Exported ONLY in the production test build, not a new production API.
+type ManualOwnedCaseResearch struct {
+	State             *save.State
+	Origin            []byte
+	OriginTime        time.Time
+	Catalog           *economy.Catalog
+	Routes            *routes.Catalog
+	Hash, ID, Target  string
+	Revision, Horizon int64
+	Query             func(int64, decimal.Decimal, int) (int64, int, error)
+	Apply             func(IntentRequest, *save.State, time.Time) (SimulationResult, error)
+	Rate              func(*save.State, AblationMask) (decimal.Decimal, error)
+}
+type ManualOwnedResultResearch struct {
+	ID                        string
+	At, Revision, Transitions int64
+	State                     *save.State
+	Numerator, Denominator    decimal.Decimal
+	Roles                     []RoleActivation
+	OK                        bool
+	Err                       error
+}
+
+func candidateRequestResearch(request IntentRequest) (IntentRequest, error) {
+	fields := ""
+	switch request.Kind {
+	case IntentBuyGenerator:
+		if request.CountMode != "exact" || request.Count != 1 {
+			return IntentRequest{}, fmt.Errorf("unsupported candidate count")
+		}
+		fields = fmt.Sprintf(`"generator_id":%q,"count":{"mode":"exact","value":1}`, request.GeneratorID)
+	case IntentBuyUpgrade:
+		fields = fmt.Sprintf(`"upgrade_id":%q`, request.UpgradeID)
+	default:
+		return IntentRequest{}, fmt.Errorf("unsupported candidate intent")
+	}
+	return ParseIntent([]byte(fmt.Sprintf(`{"intent_id":%q,"kind":%q,"expected_revision":%d,%s}`, request.IntentID, request.Kind, request.ExpectedRevision, fields)))
+}
+
+func candidateRateResearch(ctx *endpointContextResearch, state *save.State, mask AblationMask) (decimal.Decimal, error) {
+	attended, err := prestige.AttendedMS(state, state.EvaluatedThrough)
+	if err != nil {
+		return decimal.NaN, err
+	}
+	active, err := activePlayContributions(state, ctx.bundle.Opportunities, attended)
+	if err != nil {
+		return decimal.NaN, err
+	}
+	inputs := append(append([]multiplier.Contribution(nil), ctx.external...), active...)
+	return SimulateResourceRateWithContributions(state, ctx.bundle.Economy, "company.cash", inputs, mask)
+}
+
+func RunManualOwnedCandidatesResearch(t *testing.T, run func(ManualOwnedCaseResearch, int64) ManualOwnedResultResearch) {
+	t.Helper()
+	completed, delayed, unreachable, applied, windows, fixtureProjections := 0, 0, 0, 0, 0, 0
+	totalReference, totalPoints, totalTransitions := 0, 0, int64(0)
+	for _, profile := range []string{"none", "combined"} {
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			for _, id := range []string{"generator.beige_tower", "upgrade.rack_rail_standardization"} {
+				cashCases := []string{"available", "deficit", "zero"}
+				if profile == "combined" {
+					cashCases = append(cashCases, "window")
+				}
+				for _, cashName := range cashCases {
+					t.Run(fmt.Sprintf("%s/%s/%s/%s", profile, mode, id, cashName), func(t *testing.T) {
+						fixture := loadEndpointFixtureResearch(t, profile, mode)
+						var price decimal.Decimal
+						if _, ok := fixture.bundle.Economy.GeneratorClass(id); ok {
+							var err error
+							price, err = fixture.bundle.Economy.BulkCost(id, fixture.state.GeneratorCounts[id], 1)
+							if err != nil {
+								t.Fatal(err)
+							}
+						} else {
+							upgrade, ok := fixture.bundle.Economy.Upgrade(id)
+							if !ok {
+								t.Fatal("missing real upgrade")
+							}
+							price = upgrade.Cost.Amount
+						}
+						seed := decimal.Zero
+						switch cashName {
+						case "available":
+							seed = price.Add(decimal.One)
+						case "deficit":
+							seed = price.Sub(decimal.One)
+						case "window":
+							setCash(t, fixture.state, "0")
+							zero, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+							if err != nil {
+								t.Fatal(err)
+							}
+							early, err := zero.project(500)
+							if err != nil {
+								t.Fatal(err)
+							}
+							late, err := zero.project(2001)
+							if err != nil {
+								t.Fatal(err)
+							}
+							fixtureProjections += 2
+							a, _ := early.state.Ledger.Balance("company.cash")
+							b, _ := late.state.Ledger.Balance("company.cash")
+							gap := a.Add(b).Div(decimal.FromFloat64(2))
+							if !a.Gt(b) || !price.Gt(gap) {
+								t.Fatal("window construction lacks a real temporal decline", a, b, price)
+							}
+							seed = price.Sub(gap)
+						}
+						setCash(t, fixture.state, seed.String())
+						projection, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+						if err != nil {
+							t.Fatal(err)
+						}
+						ctx := projection.context
+						var resolved replayAccrualResolved
+						if err := decodeReplayStrict(fixture.wire.Resolved, &resolved); err != nil || resolved.FounderCarry == nil {
+							t.Fatal(err)
+						}
+						owner, err := newEndpointActionOwnerResearch(projection, *resolved.FounderCarry, fixture.wire.Version)
+						if err != nil {
+							t.Fatal(err)
+						}
+						const horizon int64 = 2001
+						reference, err := projection.fork().queryReference(horizon, price, int(horizon+1))
+						if err != nil {
+							t.Fatal("actual chronological reference refused", err)
+						}
+						if cashName == "window" {
+							last, err := projection.fork().project(horizon)
+							if err != nil {
+								t.Fatal(err)
+							}
+							fixtureProjections++
+							cash, _ := last.state.Ledger.Balance("company.cash")
+							if reference.at <= 0 || cash.Gte(price) {
+								t.Fatal("controlled real quote does not expose an affordable window", reference.at, cash, price)
+							}
+							windows++
+						}
+						gate, ok := fixture.bundle.Routes.Gate("gate.t2_to_t3")
+						if !ok || len(gate.Requirement) != 1 || gate.Requirement[0].ResourceID != "company.cash" {
+							t.Fatal("objective changed")
+						}
+						input := ManualOwnedCaseResearch{State: restoreActionStateResearch(t, fixture.bundle, ctx.origin), Origin: append([]byte(nil), ctx.origin...),
+							OriginTime: fixture.state.EvaluatedThrough, Catalog: ctx.bundle.Economy, Routes: ctx.bundle.Routes, Hash: ctx.bundle.ConstantsHash,
+							ID: id, Target: gate.Requirement[0].Amount.String(), Revision: ctx.revision.Number, Horizon: horizon}
+						queryCalls, actionCalls, rateCalls := 0, 0, 0
+						var query endpointBoundAnswerResearch
+						var action endpointActionResultResearch
+						var parsed IntentRequest
+						input.Query = func(wait int64, quote decimal.Decimal, budget int) (int64, int, error) {
+							queryCalls++
+							if wait != horizon || !quote.Eq(price) {
+								return -1, 0, fmt.Errorf("actual caller quote/horizon drift")
+							}
+							ceiling := int(2 * (wait + 1))
+							if budget < ceiling {
+								ceiling = budget
+							}
+							var err error
+							query, err = projection.fork().queryBound(wait, quote, ceiling)
+							return query.at, query.points, err
+						}
+						input.Apply = func(request IntentRequest, state *save.State, now time.Time) (SimulationResult, error) {
+							actionCalls++
+							var err error
+							parsed, err = candidateRequestResearch(request)
+							if err != nil {
+								return SimulationResult{}, err
+							}
+							action, err = owner.apply(t, parsed, now.Sub(input.OriginTime).Milliseconds())
+							if err != nil {
+								return SimulationResult{}, err
+							}
+							if action.state != nil {
+								*state = *action.state
+							}
+							return SimulationResult{Decision: action.decision, RoleActivations: action.roles}, nil
+						}
+						input.Rate = func(state *save.State, mask AblationMask) (decimal.Decimal, error) {
+							rateCalls++
+							if action.state == nil || !bytes.Equal(mustEncodeState(t, state), mustEncodeState(t, action.state)) {
+								return decimal.NaN, fmt.Errorf("rate read detached from applied child")
+							}
+							return candidateRateResearch(ctx, state, mask)
+						}
+						// Finite binary-tree node bound plus one actual action, NOT
+						// an adopted R11 preflight or a convenience work allowance.
+						got := run(input, 2*(horizon+1)+1)
+						if got.Err != nil || queryCalls != 1 || query.at != reference.at || got.OK != (reference.at >= 0) {
+							t.Fatal("actual ranker/query availability differs", got.OK, got.Err, query.at, reference.at)
+						}
+						if got.OK {
+							if actionCalls != 1 || rateCalls != 1 || action.next == nil || got.At != reference.at || got.Revision != ctx.revision.Number+1 || got.ID != id {
+								t.Fatal("actual caller skipped/duplicated action or child", got.At, reference.at, actionCalls, rateCalls)
+							}
+							row := actionRecordFromOwnerResearch(t, owner, parsed, reference.at)
+							want := restoreActionStateResearch(t, ctx.bundle, ctx.origin)
+							logged, err := ApplyLogged(want, row.Payload, ctx.bundle, row.Inputs)
+							if err != nil || logged.Outcome != save.IntentApplied || !bytes.Equal(mustEncodeState(t, got.State), mustEncodeState(t, want)) || !bytes.Equal(action.decision.Receipt, logged.Receipt) || !reflect.DeepEqual(action.decision.Events, logged.Events) {
+								t.Fatal("actual caller differs from original-state logged action", err)
+							}
+							rate, err := candidateRateResearch(ctx, want, AblationMask{})
+							if err != nil || !rate.Gt(decimal.Zero) {
+								t.Fatal("reference rate invalid", err)
+							}
+							balance, _ := want.Ledger.Balance("company.cash")
+							numerator := gate.Requirement[0].Amount.Sub(balance).Mul(decimal.New(1, 3)).Add(rate.Mul(decimal.FromFloat64(float64(reference.at))))
+							if !got.Numerator.Eq(numerator) || !got.Denominator.Eq(rate) || !slices.Equal(got.Roles, action.roles) {
+								t.Fatal("actual score/role consumer drift", got.Numerator, numerator, got.Denominator, rate)
+							}
+							if reference.at > 0 {
+								delayed++
+							}
+							applied++
+						} else {
+							if got.State != nil || actionCalls != 0 || rateCalls != 0 {
+								t.Fatal("unreachable query executed an action/returned state")
+							}
+							unreachable++
+						}
+						if !bytes.Equal(mustEncodeState(t, input.State), ctx.origin) {
+							t.Fatal("actual caller consumed source")
+						}
+						if got.Transitions != int64(query.points+actionCalls) {
+							t.Fatal("unreported actual point/action calls", got.Transitions, query.points, actionCalls)
+						}
+						totalReference += reference.points
+						totalPoints += query.points
+						totalTransitions += got.Transitions
+						logEndpointBoundResearch(t, "actual-ranker", reference.points, query)
+						if completed == 0 {
+							priorActions := actionCalls
+							for _, limit := range []int64{0, 1} {
+								limited := run(input, limit)
+								if limited.Err == nil || limited.OK || limited.State != nil || actionCalls != priorActions {
+									t.Fatal("caller exhaustion became unreachable/success or executed an action", limit)
+								}
+							}
+						}
+						completed++
+					})
+				}
+			}
+		}
+	}
+	if completed != 28 || windows != 4 || delayed == 0 || unreachable == 0 {
+		t.Fatal("incomplete real caller population", completed, delayed, unreachable)
+	}
+	t.Logf("actual owned ranker cases%d applied%d delayed%d unreachable%d windows%d reference-points%d bound-points%d transitions%d fixture-projections%d; model/preparation/role/codec work is NOT free or a full R11/workload proof", completed, applied, delayed, unreachable, windows, totalReference, totalPoints, totalTransitions, fixtureProjections)
+}

@@ -7774,3 +7774,104 @@ filter). Recorded by: Codex root. No designated acceptance, archival or release.
 No product/schema/data/CI/golden/kernel223/epoch8 change, push or deployment.
 RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN, not rerun/fixed here.
 Full nine-tier1.0 goal remains active/progress.
+
+## 2026-10-16 — actual ranker/manual owned lifecycle integration
+
+Prior0cdb1741 is PROGRESS. Connect the actual rankCandidate body to the owned
+modern query/action through a REVERSIBLE MANUAL solver overlay, not a copied
+ranking algorithm or live dispatch. A test-only production export and external
+test can join the two packages without a production import cycle. The harness
+bridge keeps original score/order/control flow except the explicit query/action
+and endpoint-rate bindings; an origin-backed action skips pre-advancing its input.
+Rate reads use actual post-action active-play inputs with the existing canonical
+rate and score equation, not a new scoring formula or an adopted sampling change.
+
+Declared population: none/combined buffs × both modes × generator/upgrade quotes
+× available/one-unit-deficit/zero controlled cash =24 cases, horizon2001ms.
+Compare bounded query with the exact full projection reference, actual ranker
+result with original-state ApplyLogged action and exact score components. Require
+positive delayed, genuine unreachable and preserved source/child cases. Work is
+exposed, not claimed complete budget/preflight or full workload acceptance.
+Current scenario holds, legacy path and all accepted budgets remain unchanged.
+Keep beam/rollout/context reuse, all masks, TS/SQL and full adoption gates open.
+
+Initial60985 FAIL8.581s: the eight immediate results have correct state/score,
+but repeat H3v's nil-versus-empty private role-list instrument mismatch. Compare
+ordered elements, preserving payload/order rather than inventing nil semantics.
+Before final measurement add four combined-profile real-quote window controls:
+derive the cash deficit midpoint from ACTUAL500/2001ms zero-cash projections,
+then require the real catalog quote affordable earlier but not at2001ms. Count
+these12 fixture projections separately. This adds a genuine discriminator for
+the old whole-horizon shortcut, not just delayed purchases with an affordable tail.
+Final population28; no catalog retune or altered existing case/acceptance bound.
+
+Corrected native30165 PASS9.265s:28 cases,20 applied/12 delayed/eight unreachable,
+four real-price windows;21556 exact reference points versus40 bounded points and
+60 ranker transitions, with12 fixture projections separate. Before the frozen
+run replace the arbitrary diagnostic10000 with the finite query-tree bound plus
+one action, and check both zero budget and exhausted-before-action budget1.
+Mixed production+harness attempts then FAIL TO BUILD on both native/Linux/vet:
+H3s's normal-file taps depend on declarations available only in production tests.
+This caller comparison does not use those taps; remove ONLY their three generated
+normal-file replacements from its separate overlay. Keep the H3s overlay/producer
+and all references intact. No tests executed in those failed mixed-package lanes.
+
+### H3x result — actual single-candidate caller, not full retained-origin search
+
+The actual rankCandidate body now executes owned query/action and post-action
+endpoint-rate callbacks in its separate MANUAL overlay. Four exact binding-site
+changes reverse byte-for-byte to the normal solver. There is no copied ranker,
+live plugin, adopted profile, enabled axis scenario or production file change.
+The new H1 endpoint-rate text is explicitly a proposed NEW-profile input binding,
+not an amendment to legacy reports or a new score equation adopted by this test.
+
+Frozen native71617 PASS production10.266s/harness0.428s; declared Linux/AMD64
+Go1.26 session66601 PASS production54.045s/harness0.707s. Actual overlay vet for
+BOTH packages passes too. Both run the28 caller cases AND existing Reference
+lifetime/frozen-input checks through the generated solver's legacy fallthrough.
+Twenty actual purchases,12 delayed/eight immediate, preserve complete original-
+state ApplyLogged state/receipt/events and exact score components; eight queries
+are genuinely unreachable. All four real-quote falling windows are selected at
+338/348ms despite an unaffordable2001ms tail. Parent state stays unchanged.
+Zero/one budgets refuse without an action, child or success state. Returned roles
+match the adapter; this is not independent all-mask/nonempty-role validation.
+
+Main-query work:21556 reference points,40 bounded full projections and60 charged
+point/action transitions. Twelve fixture projections are separate; constructors,
+model/certificate/codec/role and successor work are not free or a full R11/budget
+proof. Diagnostic allowance is the finite query tree plus one action, never a
+raised accepted ceiling. Timings overlap other checks, not matched performance.
+
+Two ignored compiling faults keep the independent references and normal source
+unchanged. Whole-horizon rejection85965 FAIL10.095s: exactly four real windows
+become false/unreachable. Removing only active inputs in the actual rate callback
+44214 FAIL10.088s:12 explicit score mismatches, not just missed callback counts.
+These outcomes discriminate both query and rate binding. All handles terminal.
+
+Reproduce from root: run the existing H3s generator+producer if its current
+packet is absent/stale, then
+`node planning/clout-v1-and-pr-interns/probes/prepare-owned-candidate-observation.mjs`.
+`make test-go GO_PACKAGES='./production ./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/owned-candidate-overlay.json -run TestOwnedCandidateCallerResearch\|TestReputationReferenceLifetimeAccounting\|TestReputationReferenceFrozenInputDiagnostic -v'`;
+`make vet GO_PACKAGES='-overlay=../.cache/owned-candidate-overlay.json ./production ./harness'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/owned-candidate-overlay.json -run 'TestOwnedCandidateCallerResearch|TestReputationReferenceLifetimeAccounting|TestReputationReferenceFrozenInputDiagnostic' -v ./production ./harness -count=1`.
+Fault overlays: ../.cache/owned-query-horizon-refusal.json and
+../.cache/owned-rate-no-active.json; use the FULL TestOwnedCandidateCallerResearch.
+Current H3s packet remains e6ed21d4a7aff65d909dc88a8137b8891cd9ee029d6af6ff5ebec481c80e55a2;
+none of its bound source bytes changed, so no producer/client replay rerun claimed.
+SHA256: generator632e51e05925bf3b868d6e7408360064f457385841d58030315e2fe1e0233577;
+26-entry overlay4eaa77708244ef7f7593891f11d4e6499f2ec7eaac3f2d6ad8f5bd28aa5467a1;
+original solverfbed47e2f8b14358e4bbe846e9ae46562d96edee3dcd4e026a4c6c39d71ee994;
+generatedbe8a7103087127613b81522e7e79d14cffcb30f60ab9016266444c89a704c585;
+horizon faultf6b6753695fddc8573c16b3f98c5d879e2f686568c36a36a9f2b9db248833abe;
+rate faultd8eba7e2c53fa88508279ee09d0034b788fca4fd1b824bf2eb39291e52e2f694.
+
+H3x/parent C1c and own plan reconcile ONLY this single-candidate boundary.
+Next retain its returned child through actual choice/beam/fork/cache/rollout and
+context reuse, then complete work/dispatch/domain/TS/SQL and normative adoption.
+The callback bridge is test plumbing, not the proposed trusted production factory.
+Eight-path0cdb1741-exclusive range through this checkpoint remains research/
+specification work OUTSIDE corrective-code delegation. Review by: Codex root
+(author/first filter). Recorded by: Codex root. No designated acceptance, archival
+or release; no product/schema/data/CI/golden/kernel223/epoch8 changes or push.
+RP-680,27 Clout AC6 failures and guard50a3a514 stay OPEN, not rerun/fixed here.
+No publication/deployment. Full nine-tier1.0 goal remains active/progress.

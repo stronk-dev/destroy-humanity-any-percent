@@ -43,6 +43,16 @@ that binding and prove its actual factory/consumer during implementation. Preser
 old legacy-only constructors and the independent DG-D/D-021 axis holds; introducing
 an origin is not permission to enable unsupported mechanics or remove their guards.
 
+For the proposed `simulation_active_play_endpoint_v1` profile, the post-purchase
+rate used by the existing projected-milestone equation comes from the applied
+child's actual current endpoint: pinned external inputs plus its still-active
+buff contributions, assembled against its post-action state. Preserve the exact
+numerator/denominator equation and wait-time addition. This is an explicit NEW-
+profile sampling proposal, not proof that legacy scores are wrong. Fixed-external
+and existing legacy profiles retain their own inputs; no report/dispatch default
+changes before normative review and adoption. H3x supplies a bounded real-caller
+comparison, not the missing full-workload or all-context justification.
+
 ### H2 — All search reuse binds accounting identity
 
 The parent owns typed immutable origin/context state, opaque run-local identity,
@@ -1722,6 +1732,44 @@ operation, Store retry/outbox or complete work budget. Actual harness integratio
 TS ownership/query/action, workloads and normative review/adoption remain required.
 No live accounting/search repair, RP-680/Clout AC6 closure or release follows.
 
+#### H3x — Actual single-candidate caller connection (manual overlay)
+
+The [manual generator](../planning/clout-v1-and-pr-interns/probes/prepare-owned-candidate-observation.mjs)
+reversibly changes four exact binding sites in the CURRENT harness solver:
+earliest-affordable query, skip of pre-advance for an owned original-state action,
+semantic action call and post-purchase rate input. All other ranking/score code
+remains byte-recoverable to its original source. Test-only production exports
+and an external test join the owned implementations to actual `rankCandidate`;
+the callback plumbing is not a proposed runtime plugin or trusted origin factory.
+
+Twenty-eight controlled real-quote cases cover none/combined buffs, both modes,
+generator/upgrade purchases and available/deficit/zero cash. Four extra windows
+derive a controlled starting balance from actual500/2001ms payouts, keeping the
+catalog quote unchanged. The ranker finds those genuine earlier qualifying
+windows at338/348ms despite an unaffordable2001ms tail. It matches the exact
+full-projection query and original-state ApplyLogged action, including complete
+state/receipt/events and unchanged source. Post-action score components match
+the proposed H1 sampling above. Twenty candidates apply,12 after waiting; eight
+queries are truly unreachable. Zero/one-call budgets return errors, not success
+or unreachable results. The returned role list is checked against the adapter,
+not an independent proof of every role/mask family.
+
+Restoring ONLY whole-horizon rejection loses all four windows. Omitting ONLY
+active contributions in the actual rate callback changes12 scores, while the
+independent reference remains unchanged. Legacy Reference lifetime/frozen-input
+checks pass through the same generated solver's default path on native/Linux.
+The separate caller overlay removes H3s's three normal-file observation taps,
+which depend on test-only declarations; it does not change that producer or its
+reference packet. Mixed-package runs must not inherit those taps accidentally.
+
+The28 queries use40 full projections against21556 reference points and60 caller
+transitions;12 fixture projections plus constructor/model/certificate/codec/role
+work are separate, NOT free. The finite-tree-plus-one-action diagnostic ceiling
+is not an adopted R11 preflight or matched speed result. This is ONE candidate
+boundary: retaining its returned child through actual choice, beam/cache/fork/
+rollout/context reuse, all masks, full error domains, TS/SQL, dispatch/workload
+proof and normative review/adoption remain. No live repair or AC6 closure follows.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -1949,3 +1997,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   full logged comparisons, preserving Founder input, post-action hooks and
   consumed-batch child semantics. Full caller/domain/workload and adoption remain;
   no live API or accepted contract change.
+- 2026-10-16: H3x connects actual rankCandidate to owned query/action and
+  proposed post-action endpoint-rate sampling in a reversible manual overlay.
+  Real-quote windows, score/input faults and legacy fallthrough discriminate;
+  retained child/beam/context reuse, complete work/dispatch and adoption remain.

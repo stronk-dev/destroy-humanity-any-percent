@@ -141,8 +141,14 @@ the original Company and compares full real logged results/stages, including
 post-action foundation work and a consumed-batch successor. Three ordinary intent
 families are covered, not a live API, general mask/input/terminal domain or SQL.
 
-Next bind the actual harness caller to the owned begin/project/apply lifecycle
-and bounded query, preserving complete results, error policy and scores. Measure
+H3x's manual overlay now connects the ACTUAL single-candidate ranker to owned
+query/action and proposed endpoint-rate sampling. Twenty-eight real-quote cases
+include four earlier-affordable/unaffordable-tail windows; full logged action
+outputs and score components agree. It does not retain a child through subsequent
+actual choice/beam/cache consumers or adopt a new scenario/profile.
+
+Next retain and bind that returned child through actual choice, beam/fork/cache
+and rollout/context reuse, preserving complete results, error policy and scores. Measure
 complete candidate/consumer work and error/scoring compatibility;
 finish general scheduling, all mask families, actual TS owner/query and full
 workload/compatibility before adoption. Complete input/mask/map,

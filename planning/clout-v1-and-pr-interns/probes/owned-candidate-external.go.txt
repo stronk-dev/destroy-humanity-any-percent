@@ -1,0 +1,25 @@
+package production_test
+
+import (
+	"testing"
+	"time"
+
+	"cloud-clicker/server/harness"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/save"
+)
+
+func TestOwnedCandidateCallerResearch(t *testing.T) {
+	production.RunManualOwnedCandidatesResearch(t, func(input production.ManualOwnedCaseResearch, limit int64) production.ManualOwnedResultResearch {
+		now := input.OriginTime.Sub(harness.Epoch).Milliseconds()
+		binding := &harness.ManualCandidateBindingResearch{Origin: input.Origin, Query: input.Query, Rate: input.Rate}
+		binding.Apply = func(request production.IntentRequest, state *save.State, atMS int64) (production.SimulationResult, error) {
+			return input.Apply(request, state, harness.Epoch.Add(time.Duration(atMS)*time.Millisecond))
+		}
+		result := harness.ManualRunCandidateResearch(input.Catalog, input.Routes, input.Hash,
+			harness.RelevanceMilestone{ID: "milestone.gate", Kind: "resource_at_least", ResourceID: "company.cash", Amount: input.Target},
+			input.State, input.Revision, now, now+input.Horizon, input.ID, production.AblationMask{}, limit, binding)
+		return production.ManualOwnedResultResearch{ID: result.ID, At: result.AtMS - now, Revision: result.Revision, Transitions: result.Transitions,
+			State: result.State, Numerator: result.Numerator, Denominator: result.Denominator, Roles: result.Roles, OK: result.OK, Err: result.Err}
+	})
+}
