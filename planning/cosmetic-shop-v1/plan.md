@@ -18,6 +18,12 @@ Linux-amd64/Postgres event storage, commands, both Exit paths and isolation exec
 The owning log retains exact ranges and limits; this does not adopt RP-174/RP-176's
 unreconciled body, approve C3/C4/C5 as features or waive the historical kernel failure.
 
+RP-183 `7c16d890..e02f6560` and RP-185/RP-186 `b651963f..3be0e5dd` also have
+independent corrective approval. The reviewer executed old disclosure/CSS failures,
+corrected endpoints and current shelf/host checks in all three Linux ARM64 browser engines.
+The original prop-only motion test passed broken CSS, confirming why its replacement was
+needed. Exact scopes, controls and limits are in the owning log; whole C6/AT/content gates remain.
+
 Preceding checkpoint (2026-10-08): all original C1–C8 diff reviews are complete. C2 retains its
 bounded approval; the other original batches retain CHANGES REQUIRED, not approval of Codex
 corrections. Latest C5 disposition consolidates RP-173/RP-174/RP-458. The snapshot decoder
@@ -126,19 +132,19 @@ migration take the next free numbers at landing.
   Codex's bounded AC12 review found RP-183: Equip/Unequip lacked the visible curtains'
   `aria-describedby` links. A retained all-controls assertion fails first across all three
   engines; the link-only correction and independently firing Unequip probe pass locally.
-  Claude designated review of this correction remains required; original C6 review is complete.
+  Independent corrective review now approves the complete range; original C6 review is complete.
   AC15 review also found RP-185's prop-only media evidence and RP-186's actual CSS specificity
   defect. The failing-first three-engine preference case and bounded CSS correction pass all
   shelf cases and both real-server journeys, with separate firing motion/caption probes.
-  Claude must designated-review this Codex correction. The first full browser run was red on
-  RP-187/RP-188; later Typer and Arcade corrections pass the cold full browser target. The
+  Independent corrective review now approves their complete combined range. The first full
+  browser run was red on RP-187/RP-188; later Typer and Arcade corrections pass the cold full browser target. The
   historical kernel-history gate still blocks complete CI; this is not C6 or release acceptance.
   RP-454/RP-455 add native applied/refused completion-focus regressions for wearer controls
   and Buy. The bounded guard correction is tracked in the owning log, separately from
   whole-product assistive-technology acceptance. RP-424/RP-454/RP-455/RP-456 now have
   independent corrective approval as recorded above; the complete original C6 diff retains
-  its CHANGES REQUIRED disposition and other corrections, including RP-183/RP-185/RP-186,
-  still need independent review. No whole-C6 or feature acceptance is inferred.
+  its historical CHANGES REQUIRED disposition. Other acceptance obligations remain;
+  no whole-C6 or feature acceptance is inferred.
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
   RP-180's syntax-aware package-gate correction is locally tested and awaits Claude's
@@ -182,9 +188,10 @@ C8 commit). See `log.md`.
 
 ## Codex correction review index (2026-10-05)
 
-All rows below await **Claude's designated cross-party review**, not just recording a
-Codex first-filter result. Their predeclarations, executed failures and restored probes are
-in `log.md`. Reviewing them does not automatically approve the original Claude C1–C8 span;
+This historical range index does not itself supply approval. RP-183 and RP-185/RP-186 now
+have fresh independent Codex corrective approval under Marco's delegation; remaining rows
+still need designated review. Exact verdicts, executed checks and limits are in `log.md`.
+Reviewing corrections does not automatically approve the original Claude C1–C8 span;
 its bounded outstanding findings and ruling-author blockers still apply.
 
 | Finding / bounded correction | Exact Codex span |

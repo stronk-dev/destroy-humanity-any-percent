@@ -2396,3 +2396,42 @@ Postgres is stopped/removed; ephemeral data gone, both builders/cache volumes pr
 No reviewer edits/commits/publication. No browser/AT/HTTP authorization/full Production/harness/
 hosted-CI/release claim.27 Clout failures, historical guard, RP-174/RP-176 body, content/copy/
 shared clock and full-feature acceptance remain open. No new-feature/normative adoption or archival.
+
+## 2026-10-16 — Disclosure and actual reduced-motion corrections independently approved
+
+Review by: /root/cosmetic_disclosure_motion_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; every changed path in both complete ranges inspected:
+- RP-183: 7c16d890924154d423b6a69fdf6107bfa6baf771-exclusive..e02f6560cff572f7d588b718eb9017496d306f52-inclusive (6paths).
+- RP-185/RP-186: b651963fe1e8cf75e96c0aaf795bab551bd1e9b9-exclusive..3be0e5dd302efceac01ebf98f8f0367622719dbe-inclusive (12paths).
+Includes provider command, docs, plans, backlog and historical CI records; 89f220d0 only records
+Typer/Snake failures, not implementation approved here. Existing Cosmetic§8/AC12 and§7.4/AC15
+authority; no copy, owner decision or normative amendment is adopted.
+
+Independently executed cold declared Playwright Compose runs on Linux ARM64, all three engines:
+- Old component + retained RP-183 assertion49537 fails3 missing-Equip links; corrected complete
+  shelf84275 passes12/12. Removing only Unequip link2022 fails3 equipped-control assertions.
+- Historical weaker CSS + retained actual-preference case8363 fails3: matchMedia is true while
+  computed animation remains svelte-1o3jyqh-flick. Original prop-only oracle41167 passes3 on
+  that SAME broken CSS, independently confirming RP-185. Corrected complete shelf62004 passes12/12,
+  including preference on/off/restored, visible layers, no text and separate animate:false defense.
+- Independent caption-only overlay72646 fails3 ordinary-motion caption assertions.
+- Current unmodified shelf/host71837 passes105/105 across six engine/file populations.
+- Types/Svelte0 errors/0 warnings, production build, shell boundary,22 cosmetic negatives,
+  six no-payment negatives and two accepted near-misses32316 PASS.
+
+Historical sources/tests use ignored read-only bind overlays whose Git blob identities match
+the endpoints, not complete historical environments. Repro commands:
+`docker compose -f compose.browser-test.yml -f .cache/cosmetic-motion-review-<mode>.yml run --rm browser test-browser-focused 'BROWSER_TEST_FLAGS=test/cosmetic-shelf-browser.test.ts'`
+with modes183-old/183-fixed/183-unequip/186-old/185-oracle/186-fixed/186-caption;
+old/link-negative selections add `-t buys`, motion/oracle/caption selections add `-t AC15`.
+Each focused population filters9 cases; complete positive files omit selection.
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/cosmetic-shelf-browser.test.ts test/cosmetic-host-browser.test.ts'`
+and `make typecheck build-client verify-client-boundary verify-cosmetic-boundary verify-no-payment`.
+Initial sandbox Docker denial ran nothing; duplicate-config launch29285 exited before tests.
+Neither invalid attempt counts as evidence. All sessions terminal; tree clean at58a533c1,
+all disposable browser one-offs gone and only the two preserved BuildKit builders remain.
+
+Approval covers these corrections, not whole C6, G10/default content, manual AT/speech,
+author-body reconciliation, archival or release. No full-browser/performance, real-server/DB,
+hosted CI or1.0 claim. Original findings and other review debt remain historical and intact.
