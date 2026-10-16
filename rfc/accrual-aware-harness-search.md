@@ -994,12 +994,91 @@ research/normative review remain open. RP-680 and Clout AC6 are not closed. No
 live search, math, schema, constants, normal CI or player behavior is changed.
 
 The [tracked overlay manifest](../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json)
-maps the nine manual Go sources using paths relative to the server working
+maps the manual Go sources using paths relative to the server working
 directory used by root Make and the declared Docker service. Reproduce the full
 population with root `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v'`.
 It requires no machine-specific ignored overlay or change to ordinary CI. The
 portable manifest's actual new-query consumer also passes on native/Linux;
 this is not an executed clean-host/release rehearsal or a full CI claim.
+
+#### H3l — Concrete faction-stock hook range component (RP-686)
+
+The [stock-hook probe](../planning/clout-v1-and-pr-interns/probes/wait-stock-hook-domain.go.txt)
+uses admitted Company19/axis inputs and the actual faction.AccrualHook through
+simulationHook, including its real masks, version-preserving counterfactuals and
+event refusal. It does not remove H3f's legacy/no-hook constructor guard, accept
+arbitrary callbacks or implement a modern context factory. Its operation is the
+existing fixed-context SimulateAdvance stock primitive, not logged scheduling.
+
+Hook-domain validity itself is not monotone over a whole horizon. With one stock-
+role tower, original stock cap-1 and progress interval-1500, actual waits saturate
+from1499ms, emit faction_stock_saturated and are refused by SimulateAdvance. From
+5001ms they succeed again because faction accrual skips elapsed time strictly
+above its pinned5000ms attendance ceiling. Masking the tower retains the base
+stock rate, shifting the first refusal to1500ms rather than removing all stock.
+A proposed endpoint-only hook certificate therefore incorrectly blesses ranges
+ending at6001ms. This is a failed proof shortcut, not a live event-policy defect.
+
+The source-bound component uses the concrete hook's read set: pinned faction
+catalog/resolver/catchup policy, elapsed time, fixed purchased counts/masks and
+original stock units/progress/remainder. It reads no cash, production receipt,
+ProductionMS, ProgressDeltaPPM or lifetime value. It writes only the three stock
+fields. Full-wrapper probes normalize only those fields and require identical
+encoded origin, guarding masks, source version, attainment, ledger and other
+replay-owned state. Role observations come from the actual counterfactual wrapper;
+they are not reconstructed from guessed stock-rate multipliers.
+
+Conditional on an admitted pre-hook state and the independent producer/ledger/
+progress/encoding proof, range certification follows this specific source:
+
+1. On the attended branch1..C, the hook's factor is the positive exact integer
+   1e6 + sum(purchased_count*stock_role_ppm), after the actual mask. Big-integer
+   arithmetic gives floor((elapsed*factor+original_remainder)/1e6), nondecreasing
+   in elapsed. The overflow test against MaxExactInteger-original_progress is
+   therefore monotone. From the original state, earned stock is another integer
+   quotient of original_progress+scaledMS. If initially below cap, saturation-
+   event eligibility is monotone too; if initially capped, no new event occurs.
+   Modulo progress/remainder and role labels need NOT be monotone for this proof.
+2. Each stock-role counterfactual only removes a nonnegative purchased factor;
+   it cannot overflow when the actual factor fits. The source wrapper retains
+   actual events; its counterfactual events are not promoted into actual output.
+   Source-version/state-admissibility obligations are not waived by this argument.
+3. Above C the fixed policy/state checks precede the early stock skip. Their
+   inputs do not depend on the query endpoint. No stock accrual/event then occurs.
+   Zero elapsed bypasses the hook in the actual wait, and the none recipe has no
+   hook-domain work. These are not generic assertions that every wait is valid.
+4. Split a crossing range at the actual strict cutoff C/C+1. Probe the end of
+   each contained branch using the real concrete simulation hook. A successful
+   attended end excludes earlier integer overflow/events in that branch. A
+   successful absent end covers its fixed checks. Never certify only the absent
+   end while ignoring the attended branch. Refusal means the range proof is
+   inconclusive: H3k would refine it, not label the range unreachable or infer
+   that every point fails. Instrumentation/write-set errors remain loud errors.
+
+Eight complete online/offline populations enumerate48016 full waits/14006 expected
+refusals, with no-hook and already-capped companions. All full waits match their
+fresh-origin concrete-hook stock/role probes; actual no-hook cash controls match.
+At64 named anchors, an additional no-hook full wait agrees on evaluation when
+returned and on the entire encoded state after normalizing only the three stock
+fields—even where the event-bearing wait returns an error after mutation.
+All104 named range results equal independently counted complete-reference validity;
+24 invalid-range controls refuse. The old endpoint-only method fails all eight
+mixed-cutoff oracles, while valid crossing companions remain certifiable.
+
+Reference probes and range probes are separate work: each hook-bearing population
+has6001 reference wrapper probes; its13 range checks need12 more wrapper probes
+when saturating or14 when already capped, with two actual-cutoff splits. The
+`none` recipe uses zero wrapper probes. These counts do not pretend the internal stock-
+role counterfactual is free. This is not a production performance/workload result.
+
+The range certificate is hook-only and must not independently authorize cash
+pruning. It is not integrated into the modern query, a proof of complete logged
+stage/absence ownership, full callback purity, or a replacement for other hook
+families. The new private-event recipe proposed by parent C1d has DIFFERENT event
+ownership; do not carry legacy event refusal into it by association. Bind each
+operation's adopted contract, preserve complete scratch state/events and obtain
+research/normative review/adoption before live use. Existing constructor/axis
+holds, global/caller/workload gates, RP-680 and the27 Clout failures remain open.
 
 ### H4 — Compatibility, work and evidence
 
@@ -1196,3 +1275,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   source stops, zero-time/empty-future semantics and explicit repeated work.
   Retain original nonmonotone populations. Caller compatibility, global/modern/
   hook domains, complete workloads and normative adoption still gate live use.
+- 2026-10-16: reproduce RP-686's nonmonotone faction-stock hook validity on
+  admitted Company19 and derive/test a concrete attendance-split hook component.
+  Preserve event policy, complete encoded-state/cash boundaries and legacy guards.
+  No modern factory/query integration, full logged-hook proof or adoption follows.

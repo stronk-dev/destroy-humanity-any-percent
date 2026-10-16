@@ -6370,3 +6370,98 @@ Codex root (research author/first filter). Recorded by: Codex root. Complete eig
 path range6ca24449-exclusive through this checkpoint requires research/normative
 review outside corrective-code delegation. Full1.0 goal active/progress; no feature
 acceptance/archival/push/publication/deployment/release or active arithmetic change.
+
+## 2026-10-16 — stock-hook range definedness, declared before execution
+
+Continue from c1162c29, without enabling existing legacy harness constructors.
+Question: can a successful later v19 faction-stock wait hide earlier event-bearing
+refusals, and can a source-bound attendance split certify the hook domain safely?
+Use actual axisContentBundle/axisTimingState, codec+foundation-admitted Company19,
+faction bootstrapper, stock cap-1, progress interval-1500, one purchased stock-role
+tower. Pinned role1000ppm and catchup ceiling5000 imply saturation at1499ms;
+masking that tower leaves the base stock rate and saturation at1500ms. Full fresh
+SimulateAdvance references0..6001 in both modes, four populations: no hook,
+saturating hook, masked saturating hook, already-capped hook. Total48016 reference
+waits,14006 expected event refusals (1499/1500 through5000), with successful5001+
+controls. These are direct fixed-context simulation primitives, NOT logged active-
+play scheduling/catchup or a migrated modern harness.
+
+Probe the real concrete faction hook through its actual simulation wrapper on
+fresh origins; verify its stock read/write set, version/attainment preservation,
+event reason and agreement with full waits. Compare actual no-hook cash controls
+and full encoded states at named anchors after normalizing only the three stock
+fields. Thirteen named intervals per profile/mode must match independently counted
+whole-reference validity, including0, threshold neighbors, cutoff and mixed ranges.
+First retain an unsafe endpoint-only certificate so the mixed-range oracle fails;
+then split using the actual strict cutoff and probe each regime's end. Source
+argument uses the hook's nonnegative exact-integer rate/overflow/event thresholds,
+not a false monotonicity assertion about production payouts. Expose all helper and
+range probes; no arbitrary callback purity, new event policy, runtime change or
+numeric/shared-vector change. Native and declared Linux execute this new subject;
+unchanged prior60064 references are not needlessly rerun or restamped.
+
+First compile2b1ef3 invalid (unused decimal import); no tests executed. Remove
+that unused import only. Endpoint-only baseline72098/6df21f FAIL14.573s executes
+all48016 full wait references,14006 expected event refusals,64 additional full-
+state anchors and104 range checks. Only the eight mixed-cutoff assertions fail
+(two ranges × two saturating populations × two modes). Every actual stock
+read/write-set, event reason, cash, role and origin/version check passes. RP-686
+records this proposed proof gap, not a new live bug or the guarded legacy
+constructor admitting hooks. Correct the certificate by splitting at the actual
+catchup ceiling, without changing any source hook, wait event policy or population.
+
+## 2026-10-16 — RP-686 concrete stock-hook component verified
+
+Final native51196/7bffd7 PASS15.896s; declared Linux AMD6446283/b125ff PASS34.374s.
+All48016 actual full-wait references,14006 expected event refusals,64 additional
+no-hook full-state anchors,104 positive/negative range checks and24 invalid-range
+controls execute. No selected production skips. The native selector also built
+./faction but selected no faction-package tests; do NOT cite that as a green
+faction suite. Ordinary vet passes ./production ./faction. Both handles terminal,
+--rm/--no-deps Linux starts no DB; overlapping single timings are not performance
+comparisons, hosted CI or full workload evidence. No TS/SQL/shared-math/fullCI claim.
+
+Saturation remains an actual emitted event and therefore an existing wait refusal,
+not a newly accepted success/private-event policy. The corrected range component
+checks the attended branch's end before any absent branch. All no-hook and capped
+valid ranges stay certifiable; endpoint-only's eight mixed-cutoff failures are
+the retained old-source regression. No extra per-assertion mutation is necessary.
+Actual hook read/write-set probes match every full wait's stock fields and returned
+stock-role observations. Masked base production still reaches saturation at1500;
+unmasked reaches it at1499; both succeed again after5000. Cash controls and64
+complete encoded-state comparisons normalize only the three stock fields, including
+event-refused clones' mutation. Origins/version/attainment/masks remain intact.
+
+Wrapper-probe work is explicit: six hook-bearing populations each6001 reference
+probes; their13 range checks need12 more probes when saturating or14 when capped,
+and two attendance splits. Two none populations execute zero wrapper probes.
+The wrapper still owns its actual stock-role counterfactual work; these are not
+counts claiming each inner call free or an accepted production work bound. Hook-
+only range definedness cannot authorize pruning without other component proofs.
+
+Own draft H3l derives the exact-integer factor/overflow/saturation argument and
+conditional pre-hook encoding/read-set obligations. It binds existing fixed-
+context SimulateAdvance only, not complete logged scheduling/catchup/private-event
+ownership. Existing legacy constructors still reject these modern/hook contexts;
+no DG-D/axis hold or arbitrary-hook safety assumption is bypassed. No production,
+kernel, catalog, schema, normal-CI or accepted-contract bytes change. The previous
+60064 reference checkpoint remains bound to c1162c29; it was not rerun/restamped.
+
+Reproduce from root with committed relative overlay:
+`make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWaitStockHookDomainResearch -v'`;
+`make vet GO_PACKAGES='./production ./faction'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWaitStockHookDomainResearch -v ./production -count=1`.
+New probe SHA25684ab36c7b0ca92ac3dd911c9a89e168085aab9f38fd218bed41a6aa3b32bdce9;
+updated ten-file overlay SHAe88bbf54634f74b3500603a73d7f6e6f0a3ebe112354ff7bb288a5d52db37f66.
+The overlay adds only this manual source; old source bytes are unchanged.
+
+Next: integrate the modern producer/query factory with its exact operation and
+remaining concrete hook families, complete global/caller/context/error-policy and
+workload proof, then obtain lawful review/adoption. Do not repeat passing stock
+populations or treat this component as full modern/hook support. RP-680 and27 AC6
+failures remain open. Review by: Codex root (research author/first filter).
+Recorded by: Codex root. Complete six-path range c1162c29-exclusive through this
+checkpoint requires research/normative review outside corrective-code delegation.
+Full1.0 goal active/progress; no feature acceptance, archival, push, deployment or
+release approval. Meaningful progress is the new actual hook-domain counterexample
+and corrected source-bound certificate, not the reference count alone.

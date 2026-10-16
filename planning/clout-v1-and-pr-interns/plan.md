@@ -16,7 +16,7 @@ with nil error. Owning log/manual source retain source/hash/budget/receipt/uncha
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
 
-Draft H3d–H3k now supply a candidate positive-aggregation enclosure, its partial
+Draft H3d–H3l now supply a candidate positive-aggregation enclosure, its partial
 producer/ledger composition and a source-driven wait-cell constructor. The4004
 pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
 four small whole-wait populations are exhaustive and match independently scanned
@@ -47,8 +47,15 @@ profiles enumerate14008 references/5003 expected errors; earlier500/1500 results
 first actual errors and genuine unreachable results stay distinct. The original
 six constructor populations bind this query too, including the retained long
 nonmonotone window. Complete caller/error-policy compatibility is not yet proved.
+RP-686 adds the concrete faction-stock hook-domain component on admitted Company19:
+actual event-bearing waits fail midrange and succeed again after the attendance
+cutoff. Endpoint-only proof fails; splitting at the actual cutoff matches48016
+full references/104 range checks, retaining valid/no-hook/capped/masked controls
+and full encoded-state/cash anchors. This hook-only proof is not integrated into
+the modern query; existing legacy and axis guards remain unchanged.
 
-Next bind the query to remaining modern-context/hook and full caller semantics,
+Next bind the modern producer/query factory to its exact hook/clock operation,
+finish the other concrete hook families and full caller/global semantics,
 then measure complete real workloads with all preparation work charged. Partial
 certification alone does not adopt the proposed chronological error policy.
 Remaining whole-domain definedness, hook/modern factory, full caller/state semantics,
