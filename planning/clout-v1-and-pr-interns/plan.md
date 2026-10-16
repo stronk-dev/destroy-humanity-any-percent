@@ -165,8 +165,19 @@ input state/time intact, not a fabricated terminal run. Not general policy or be
 The hand-constructed diagnostic suite does not establish live scenario admission
 or RunRelevance compatibility; existing guards stay unchanged.
 
-Next bind actual beam/dedup/dominance/rollout/context
-reuse, preserving complete results, error policy and scores. Measure
+H3ab now binds the actual beam initial owner, bank children, context-aware
+dedup/dominance and completion rollouts. Both modes/zero or funded cash preserve
+width8/children4; funded frames expand16 and retain8, with stable independent
+allocation repeats and full private-bank/logged-action references. This bounded
+four-decision unreached-target diagnostic is NOT the full registered workload,
+normal scenario admission, general lifecycle or positive milestone/gap proof.
+
+Next bind real bootstrap/manual and nonterminal gate progression to the retained
+owner, including actual joint-resource eligibility and complete action/Founder/
+role results. The cash-only query and old gate binary-search assumption do not
+prove a conjunctive gate predicate. Then complete general session/profile/mask
+and real-owner factory bindings, preserving complete results/error policy/scores.
+Measure
 complete candidate/consumer work and error/scoring compatibility;
 finish general scheduling, all mask families, actual TS owner/query and full
 workload/compatibility before adoption. Complete input/mask/map,

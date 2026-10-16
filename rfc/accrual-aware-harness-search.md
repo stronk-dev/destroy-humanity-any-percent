@@ -1796,9 +1796,10 @@ bank refusals with supported retained-view checks.
 H3y's initial bridge accepts TRUE ACTION ORIGINS only; H3z extends it to bank
 views with origin-relative query floors, without rebasing or settling a view.
 Fixed-mode diagnostic actions are not natural return/
-session behavior. Actual beam/dedup/dominance/completion-cache/rollout reuse and
-full policy/workloads remain unproved; the two-item population is NOT a narrowed
-beam width or replacement for them. H3x/legacy checks still execute unchanged.
+session behavior. H3y does not prove actual beam/dedup/dominance/completion-cache/
+rollout reuse; H3aa/H3ab later add bounded components, not full policy/workloads.
+The two-item population is NOT a narrowed beam width or replacement for those
+workloads. H3x/legacy checks still execute unchanged.
 No live API/math/schema/report/CI change or normative acceptance follows.
 
 #### H3z — Retained bank views and query floors (manual component)
@@ -1849,13 +1850,44 @@ explicitly rather than promoting cached scores to completed runs. Removing conte
 from actual cache reads/writes fires the distinct-origin execution oracle, not
 merely a key-shape assertion. Full stage/state references remain independent.
 
-This does not close actual beam/dedup/dominance/rollout integration, bootstrap/gate
+H3aa alone does not close actual beam/dedup/dominance/rollout integration, bootstrap/gate
 or general mask/session policy, complete work/budget feasibility, TS/SQL, live
 dispatch or normative adoption. Constructor/model/codec/diagnostic snapshot work
 is additional to counted actual projections/actions; no speed or R11 budget claim.
 Bank projections retain original-interval roles as private observations, not fresh
 committed activations to add after every view; full consumer role/report semantics
 remain an explicit migration obligation.
+
+#### H3ab — Actual beam, conservative pruning and rollouts (manual)
+
+The reversible overlay now binds the ACTUAL `runBeamWithOpportunity` initial
+state, bank children, state/context deduplication, dominance and ranked-completion
+rollouts to the retained owner. Every child validates its complete bound head and
+revision/time BEFORE pruning. Missing/changed metadata cannot disappear as an
+apparently dominated branch. Beam keys are typed `{existing_state_time_key,
+opaque_context}`; opaque identity is equality-only, never a serialized address or
+score/tie-break input. Dominance first requires the same verified context and
+virtual time, then uses the existing componentwise relation. No wider future-
+equivalence relation is inferred from visible balances.
+
+Four diagnostic populations retain width8/children4 and both existing items:
+two fixed modes, zero cash or enough for four real generator quotes, four2001ms
+decision horizons. Funded cases actually expand2/4/8/16 children and retain8 at
+the width limit. Independently allocated repeats preserve exact frontier paths,
+states and scores. Private bank stages/events/roles and exposed action/rollout
+states/receipts/events match full primitive/logged references. Genuine distinct
+equal-head constructors remain separate; a richer independent origin cannot
+justify pruning by the old visible-state relation. Bank-only runs exercise score
+cache hits; funded runs do not magically coalesce action-created origins.
+
+These are hand-constructed bounded suites, NOT the full registered192/384-decision
+workloads, admitted modern scenarios or `RunRelevance`. Their target is unreached;
+they do not prove full positive milestone scoring or reference/beam gap metrics.
+The H3aa terminal reached case and unchanged legacy beam populations retain their
+separate boundaries. Preparation/validation/codec/snapshot/reference work remains
+additional to counted projections/actions; conservative context separation still
+needs COMPLETE workload and budget feasibility before adoption. Bootstrap/gates,
+general profiles/masks/sessions, TS/SQL, dispatch and normative adoption stay open.
 
 ### H4 — Compatibility, work and evidence
 
@@ -2099,3 +2131,6 @@ numeric tolerance, authored content or narrowed1.0 scope.
 - 2026-10-16: H3aa connects actual ranked completion, terminal waits and scoped
   origin-bound score reuse. Preserve cache-hit output limits and legacy behavior;
   actual beam/dominance/rollout, full workloads and normative adoption remain open.
+- 2026-10-16: H3ab binds actual beam children/pruning/rollouts through manual
+  owners, with real width8 truncation and stable independent-allocation repeats.
+  Keep registered full-workload/budget, general lifecycle and adoption gates open.

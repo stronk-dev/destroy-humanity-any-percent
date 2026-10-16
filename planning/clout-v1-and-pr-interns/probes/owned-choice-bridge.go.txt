@@ -49,6 +49,9 @@ type manualChoiceScopeResearch struct {
 	completionSteps []ManualChoiceStepResearch
 	completionCache map[manualCompletionIdentityResearch]relevanceCompletionCacheEntry
 	cacheHits       int
+	beamInitial     *save.State
+	beamNodes       []ManualBeamNodeResearch
+	beamDepths      []ManualBeamDepthResearch
 }
 
 var manualChoiceScopesResearch = map[*RelevanceSuite]*manualChoiceScopeResearch{}

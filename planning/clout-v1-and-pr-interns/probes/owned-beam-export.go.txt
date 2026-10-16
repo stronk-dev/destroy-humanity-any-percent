@@ -1,0 +1,222 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"reflect"
+	"slices"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/save"
+)
+
+type ManualOwnedBeamNodeResearch struct {
+	Depth, Revision, Score int64
+	At                     time.Time
+	Path                   string
+	Identity               any
+	State                  *save.State
+	Reached                *time.Time
+}
+type ManualOwnedBeamResultResearch struct {
+	Nodes                   []ManualOwnedBeamNodeResearch
+	Steps                   []ManualOwnedChoiceStepResearch
+	Frames                  [][4]int
+	Milestone               *time.Time
+	Transitions             int64
+	CacheHits, CacheEntries int
+}
+
+func richerBeamOriginResearch(t *testing.T, branch *ManualOwnedBranchResearch) *ManualOwnedBranchResearch {
+	ctx := branch.owner.context.calculation
+	state := branch.State()
+	cash, _ := state.Ledger.Balance("company.cash")
+	setCash(t, state, cash.Add(decimal.One).String())
+	projection, err := newEndpointOwnerResearch(t, ctx.bundle, state, ctx.revision, ctx.mode, ctx.mask, ctx.external, ctx.weight, ctx.batch)
+	if err != nil {
+		t.Fatal(err)
+	}
+	owner, err := newEndpointActionOwnerResearch(projection, branch.owner.context.carry, branch.owner.context.wireVersion)
+	if err != nil {
+		t.Fatal(err)
+	}
+	family := &manualChoiceFamilyResearch{branches: map[any]*ManualOwnedBranchResearch{}}
+	root := &ManualOwnedBranchResearch{t: t, owner: owner, family: family}
+	family.branches[root.Identity()] = root
+	return root
+}
+
+func RunManualBeamResearch(t *testing.T, run func(*ManualOwnedBranchResearch, *ManualOwnedBranchResearch, *ManualOwnedBranchResearch) (ManualOwnedBeamResultResearch, error)) {
+	t.Helper()
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		for _, funded := range []bool{false, true} {
+			t.Run(fmt.Sprintf("%s/funded%t", mode, funded), func(t *testing.T) {
+				fixture := loadEndpointFixtureResearch(t, "combined", mode)
+				seed := decimal.Zero
+				if funded {
+					for index := int64(0); index < 4; index++ {
+						price, err := fixture.bundle.Economy.BulkCost("generator.beige_tower", fixture.state.GeneratorCounts["generator.beige_tower"]+index, 1)
+						if err != nil {
+							t.Fatal(err)
+						}
+						seed = seed.Add(price)
+					}
+					seed = seed.Add(decimal.One)
+				}
+				setCash(t, fixture.state, seed.String())
+				projection, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var resolved replayAccrualResolved
+				if err := decodeReplayStrict(fixture.wire.Resolved, &resolved); err != nil || resolved.FounderCarry == nil {
+					t.Fatal(err)
+				}
+				owner, err := newEndpointActionOwnerResearch(projection, *resolved.FounderCarry, fixture.wire.Version)
+				if err != nil {
+					t.Fatal(err)
+				}
+				family := &manualChoiceFamilyResearch{branches: map[any]*ManualOwnedBranchResearch{}}
+				root := &ManualOwnedBranchResearch{t: t, owner: owner, family: family}
+				family.branches[root.Identity()] = root
+				target, err := decimal.ParseCanonical(root.Case().Target)
+				if err != nil || seed.Gte(target) {
+					t.Fatal("diagnostic target already reached", seed, target, err)
+				}
+				origin := root.Head()
+				invoke := func(branch *ManualOwnedBranchResearch) ManualOwnedBeamResultResearch {
+					alternate, err := branch.IndependentBeginResearch()
+					if err != nil {
+						t.Fatal(err)
+					}
+					result, err := run(branch, alternate, richerBeamOriginResearch(t, branch))
+					if err != nil {
+						t.Fatal("actual owned beam refused", err)
+					}
+					verifyOwnedBeamResearch(t, branch, result, target, funded)
+					return result
+				}
+				result := invoke(root)
+				if funded {
+					repeated, err := root.IndependentBeginResearch()
+					if err != nil {
+						t.Fatal(err)
+					}
+					second := invoke(repeated)
+					if !bytes.Equal(stableBeamResearch(t, result), stableBeamResearch(t, second)) {
+						t.Fatal("opaque identity allocation changed actual beam paths/states/scores")
+					}
+				}
+				if !bytes.Equal(root.Head(), origin) {
+					t.Fatal("beam consumed original source")
+				}
+				t.Logf("actual beam mode%s funded%t width8 children4 four windows frames%v retained%d steps%d projections-actions%d cache-hits%d entries%d repeated%t; full references, not registered full workload", mode, funded, result.Frames, len(result.Nodes), len(result.Steps), result.Transitions, result.CacheHits, result.CacheEntries, funded)
+			})
+		}
+	}
+}
+
+func verifyOwnedBeamResearch(t *testing.T, root *ManualOwnedBranchResearch, result ManualOwnedBeamResultResearch, target decimal.Decimal, funded bool) {
+	t.Helper()
+	if len(result.Frames) != 4 || len(result.Nodes) == 0 || len(result.Steps) == 0 || result.Milestone != nil {
+		t.Fatal("bounded beam result incomplete/unexpected reached milestone")
+	}
+	maxFrontier, constrained := 0, false
+	for _, frame := range result.Frames {
+		if frame[3] > 8 || frame[3] < 1 || frame[2] < frame[3] {
+			t.Fatal("invalid declared frontier", frame)
+		}
+		if frame[3] > maxFrontier {
+			maxFrontier = frame[3]
+		}
+		if frame[2] > 8 && frame[3] == 8 {
+			constrained = true
+		}
+	}
+	if funded && (maxFrontier != 8 || !constrained) {
+		t.Fatal("funded fixture did not exercise width8 truncation", result.Frames)
+	}
+	for _, step := range result.Steps {
+		parent := root.family.branches[step.ParentIdentity]
+		if parent == nil {
+			t.Fatal("step lost its retained action origin")
+		}
+		ctx := parent.owner.context.calculation
+		at := step.At.Sub(parent.originTime()).Milliseconds()
+		if step.Bank != nil {
+			fixture := endpointFixtureResearch{bundle: ctx.bundle, state: parent.State(), revision: ctx.revision, external: ctx.external, weight: ctx.weight, batch: ctx.batch}
+			ref, err := referenceEndpointResearch(t, fixture, at, ctx.mode, ctx.mask)
+			if err != nil {
+				t.Fatal(err)
+			}
+			stages := []endpointStageResearch{}
+			for _, stage := range step.Bank.Stages {
+				stages = append(stages, endpointStageResearch{stage.Kind, stage.Evaluation})
+			}
+			if step.ChildIdentity != step.ParentIdentity || step.Revision != parent.Revision() || len(step.Decision.Events) != 0 || len(step.Decision.Receipt) != 0 || step.Request.Kind != "" || !bytes.Equal(mustEncodeState(t, step.State), mustEncodeState(t, ref.state)) || !reflect.DeepEqual(stages, ref.stages) || !reflect.DeepEqual(step.Bank.Events, ref.events) || !slices.Equal(step.Bank.Roles, ref.roles) {
+				t.Fatal("beam bank/rollout lost full origin/stages/private values", at)
+			}
+		} else {
+			parsed, err := candidateRequestResearch(step.Request)
+			if err != nil {
+				t.Fatal(err)
+			}
+			row := actionRecordFromOwnerResearch(t, parent.owner, parsed, at)
+			want := parent.State()
+			logged, err := ApplyLogged(want, row.Payload, ctx.bundle, row.Inputs)
+			if err != nil || logged.Outcome != save.IntentApplied || step.ChildIdentity == step.ParentIdentity || step.Revision != parent.Revision()+1 || !bytes.Equal(mustEncodeState(t, step.State), mustEncodeState(t, want)) || !bytes.Equal(step.Decision.Receipt, logged.Receipt) || !reflect.DeepEqual(step.Decision.Events, logged.Events) {
+				t.Fatal("beam child/rollout differs from full logged action", step.ID, at, err)
+			}
+		}
+		cash, _ := step.State.Ledger.Balance("company.cash")
+		if cash.Gte(target) {
+			t.Fatal("expected unreached diagnostic actually reached target", cash, target)
+		}
+	}
+	for _, node := range result.Nodes {
+		branch := root.family.branches[node.Identity]
+		if branch == nil || node.Revision != branch.Revision() {
+			t.Fatal("beam frontier lost its owner")
+		}
+		// Adapter exposes scores relative to this source time, without an
+		// independently duplicated epoch constant or identity serialization.
+		if node.Reached != nil || node.Score != 8005 {
+			t.Fatal("unexpected actual frontier score", node.Score)
+		}
+		ctx := branch.owner.context.calculation
+		fixture := endpointFixtureResearch{bundle: ctx.bundle, state: branch.State(), revision: ctx.revision, external: ctx.external, weight: ctx.weight, batch: ctx.batch}
+		at := node.At.Sub(branch.originTime()).Milliseconds()
+		if at == 0 {
+			if !bytes.Equal(mustEncodeState(t, node.State), branch.Head()) {
+				t.Fatal("action-origin frontier changed")
+			}
+		} else {
+			ref, err := referenceEndpointResearch(t, fixture, at, ctx.mode, ctx.mask)
+			if err != nil || !bytes.Equal(mustEncodeState(t, node.State), mustEncodeState(t, ref.state)) {
+				t.Fatal("retained frontier differs from complete primitive", at, err)
+			}
+		}
+	}
+}
+
+func stableBeamResearch(t *testing.T, result ManualOwnedBeamResultResearch) []byte {
+	t.Helper()
+	type entry struct {
+		Depth, Revision, Score int64
+		At                     time.Time
+		Path                   string
+		State                  []byte
+	}
+	entries := []entry{}
+	for _, node := range result.Nodes {
+		entries = append(entries, entry{node.Depth, node.Revision, node.Score, node.At, node.Path, mustEncodeState(t, node.State)})
+	}
+	data, err := json.Marshal(entries)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}

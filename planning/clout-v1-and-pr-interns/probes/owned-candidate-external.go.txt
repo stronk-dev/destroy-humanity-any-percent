@@ -104,6 +104,35 @@ func TestOwnedActualCompletionTailResearch(t *testing.T) {
 	})
 }
 
+func TestOwnedActualBeamResearch(t *testing.T) {
+	production.RunManualBeamResearch(t, func(branch, alternate, richer *production.ManualOwnedBranchResearch) (production.ManualOwnedBeamResultResearch, error) {
+		input := branch.Case()
+		result, err := harness.ManualRunOwnedBeamResearch(input.Catalog, input.Routes, input.Hash,
+			harness.RelevanceMilestone{ID: "milestone.gate", Kind: "resource_at_least", ResourceID: "company.cash", Amount: input.Target},
+			branch.State(), choiceBindingResearch(branch), choiceBindingResearch(alternate), choiceBindingResearch(richer))
+		if err != nil {
+			return production.ManualOwnedBeamResultResearch{}, err
+		}
+		out := production.ManualOwnedBeamResultResearch{Steps: convertChoiceStepsResearch(result.Steps), Transitions: result.Transitions, CacheHits: result.CacheHits, CacheEntries: result.CacheEntries}
+		if result.Milestone != nil {
+			at := harness.Epoch.Add(time.Duration(*result.Milestone) * time.Millisecond)
+			out.Milestone = &at
+		}
+		for _, node := range result.Nodes {
+			entry := production.ManualOwnedBeamNodeResearch{Depth: node.Depth, Revision: node.Revision, Score: node.Score - branch.Time().Sub(harness.Epoch).Milliseconds(), At: harness.Epoch.Add(time.Duration(node.AtMS) * time.Millisecond), Path: node.Path, Identity: node.Identity, State: node.State}
+			if node.Reached != nil {
+				at := harness.Epoch.Add(time.Duration(*node.Reached) * time.Millisecond)
+				entry.Reached = &at
+			}
+			out.Nodes = append(out.Nodes, entry)
+		}
+		for _, frame := range result.Depths {
+			out.Frames = append(out.Frames, [4]int{frame.Generated, frame.Unpruned, frame.Unique, frame.Retained})
+		}
+		return out, nil
+	})
+}
+
 func runOwnedChoiceResearch(branch *production.ManualOwnedBranchResearch, fault string, count int) ([]production.ManualOwnedChoiceStepResearch, error) {
 	input := branch.Case()
 	state, binding := branch.State(), choiceBindingResearch(branch)

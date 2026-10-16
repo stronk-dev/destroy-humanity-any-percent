@@ -7964,6 +7964,103 @@ archival, release, product/schema/data/CI/golden/kernel223/epoch8 change or push
 RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN, not rerun/fixed here.
 Full nine-tier1.0 goal stays active/progress; no publication or deployment.
 
+## H3ab — actual beam ownership experiment
+
+Previous dcca4c23 is PROGRESS. Wire the actual runBeamWithOpportunity initial
+owner, bank children, deduplication, dominance and completion rollouts through the
+manual component. Preserve width8/children4 and raw-byte path ordering; use four
+declared2001ms windows in BOTH fixed modes, bank-only and four-purchase-funded
+origins. This bounded diagnostic is not the registered192/384-decision workload,
+normal scenario admission or live dispatch. Keep both existing policy items.
+Compare actual exposed bank/action states to independent full primitive/logged
+references. Exercise same-origin equality, genuine distinct equal-head origins,
+and a real richer independent origin that legacy componentwise comparison would
+prune; missing/mutated identity must refuse. Repeat funded cases from separately
+allocated real owners to check stable paths/states/scores independent of identity.
+Charge every real query/action/view and expose frontier/rollout work; derive a
+finite diagnostic work allowance from this tree, not an adopted R11 increase.
+Full workloads, policies/masks/sessions/TS/SQL and adoption remain required.
+
+### H3ab result — actual width8 tree, owned rollouts and refusal before pruning
+
+Actual runBeamWithOpportunity now takes its initial origin, bank children,
+typed context/state/time dedup, guarded dominance and completion rollouts from
+the manual owner. All children validate full head + revision/time BEFORE pruning.
+Same-origin forks compare equal; genuine independent equal-head constructors do
+not. A separately constructed richer origin makes the legacy relation return
+true while the context-aware relation refuses to prune. Missing owner, mutated
+head and wrong revision/time controls fail honestly, not as nondominant/unreachable.
+Identity appears only in typed equality, never pointer serialization or path order.
+
+Four primary populations (two modes × zero/four-quote-funded cash) keep BOTH
+items, width8/children4 and four declared2001ms windows. Frames are
+[generated,unpruned,unique,retained]:funded BOTH modes
+[[2,2,2,2],[4,4,4,4],[8,8,8,8],[16,16,16,8]];
+online zero stays1 per depth; offline zero grows1/1/2/4. Retained frontier nodes
+are4/22/8/22; exposed child/rollout steps7/52/13/52 respectively. Independent
+real primitive stages/full states/private events/roles and actual ApplyLogged
+state/receipt/events match every exposed step. Frontier heads are checked against
+their original retained owner/full primitive, not only cash. Both funded cases
+repeat from fresh real constructors; canonical paths, full states and scores
+are byte-identical. All targets remain unreached in this diagnostic; no positive
+modern beam milestone/gap proof follows. This is not the full192/384-decision
+registered workload or normal modern scenario admission/RunRelevance.
+
+Actual counted projections/actions:online zero2637 (2 score hits/3 entries),
+offline zero2652 (1/5), funded11014 each (0/22). Snapshot/model/codec/validation/
+constructor/reference work is additional, not free or a complete work ratio.
+The finite diagnostic guard is derived from this declared tree, not an increased
+accepted R11 ceiling. Conservative origin separation's full feasibility stays open.
+
+Initial9632 PASS production21.754s (before extra pre-pruning coordinate validation).
+Frozen native36533 PASS production71.144s/harness3.610s; overlay vet BOTH packages
+PASS. Retained selector adds actual registered legacy beam falsification and
+width1/8/32 populations, T0T1 ranking, child bound and existing directional
+dominance; prior endpoint/first-error, H3x/y/z/aa and lifetime/input checks remain.
+The registered negative beam/reference-gap witness still fires as its test expects;
+passing that TEST is not a passing product/reference oracle or Clout acceptance.
+
+Fault69194 changes ONLY the actual beam pruning call to legacy
+relevanceStateDominates, leaving the new direct helper controls and all references
+unchanged. Funded online FAILS2.602s (Make exit2), with frames
+[[2,2,2,2],[4,3,3,3],[6,4,4,4],[8,5,5,5]]:the actual tree loses branches before
+the declared8-wide result. This is actual-dispatch discrimination, not merely a
+key-shape assertion. It does NOT establish an origin-free legacy beam defect.
+Fault SHA2563d719ecf3ec05ca7939f4648b98437ec7bc30ce3a20cc7954a55154903cabf40.
+Recreate in an ignored generated-solver copy by replacing only the
+`manualBeamDominatesResearch(suite,children[other].state,children[index].state)`
+call with `relevanceStateDominates(children[other].state,children[index].state,suite.Catalog), error(nil)`
+(the full assignment is the anchor); override that solver in a copied overlay.
+Run `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../.cache/owned-beam-dominance-fault.json -run TestOwnedActualBeamResearch/online/fundedtrue -v'`.
+
+Frozen declared Linux/AMD64 session83085 PASS exit0:
+production385.624s/harness8.091s; same four populations, funded repeats/work and
+registered legacy beam checks execute. Native36533/Linux83085/fault69194 are
+terminal. No source changed during final runs. Reproduce after existing H3s packet:
+`node planning/clout-v1-and-pr-interns/probes/prepare-owned-candidate-observation.mjs`;
+`make test-go GO_PACKAGES='./production ./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/owned-candidate-overlay.json -run TestWaitEndpoint\|TestOwned\|TestCloneStatePreservesSaveVersionThroughSearch\|TestBeamTerminalCompletionCacheReusesAnIdenticalSuffix\|TestProjectedMilestoneRankingMakesBankFirstClassAndPurchasesWinTies\|TestReputationReferenceLifetimeAccounting\|TestReputationReferenceFrozenInputDiagnostic\|TestRegisteredBeam\|TestBeamChildBound\|TestT0T1Beam\|TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState -v'`;
+`make vet GO_PACKAGES='-overlay=../.cache/owned-candidate-overlay.json ./production ./harness'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/owned-candidate-overlay.json -run 'TestWaitEndpoint|TestOwned|TestCloneStatePreservesSaveVersionThroughSearch|TestBeamTerminalCompletionCacheReusesAnIdenticalSuffix|TestProjectedMilestoneRankingMakesBankFirstClassAndPurchasesWinTies|TestReputationReferenceLifetimeAccounting|TestReputationReferenceFrozenInputDiagnostic|TestRegisteredBeam|TestBeamChildBound|TestT0T1Beam|TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState' -v ./production ./harness -count=1`.
+No full-package/hosted/full-CI/SQL/TS-owner claim. H3s producer/client bindings and
+packet remain unchanged; no new producer/client run claimed.
+
+Frozen SHA256 bridgebbf1dde12e88a18d9cf3ec319e7d050ef3a809f97148cd08967080f89713532e;
+export1a2b061198e04e37fd016f12009912844a8a22d45dad89c32757a36115b7c32d;
+generator9e6f618a595e5dd746ab8761295357446645e569a64434f008d748c58678fe07;
+generated solver5bb8bdd197bac253730d0729ecbfd0ad3952203a384ff92dbe737b3d86fd4cc5;
+33-entry overlay2735f05921f80435d9f33acb7a17913d22aed34e0e77947a3c679a7ce7eed7dd.
+
+H3ab/parent C1c/own plan reconcile bounded beam integration. Next real bootstrap/
+manual/nonterminal gate owner and JOINT-resource eligibility (not a cash-only or
+binary-monotone assumption), then general lifecycle/profile/mask/factory, complete
+workloads/role-report semantics/TS/SQL/dispatch and adoption. Nine-pathdcca4c23-
+exclusive range through this checkpoint is research/draft specification OUTSIDE
+corrective-code delegation. Review by:Codex root (author/first filter). Recorded
+by:Codex root. No designated approval/archival/release or product/schema/data/CI/
+golden/kernel223/epoch8 change. RP-680,27 Clout AC6 failures and guard50a3a514
+stay OPEN, not rerun/fixed. Full nine-tier1.0 goal ACTIVE/PROGRESS. No push,
+publication or deployment.
+
 ## 2026-10-16 — actual selected-child and clone lifetime
 
 Prior0ad3f76e is PROGRESS. Extend the MANUAL overlay to carry owned context

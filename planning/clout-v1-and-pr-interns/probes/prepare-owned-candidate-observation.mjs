@@ -28,11 +28,22 @@ const changes = [
   ['\t\t\tif _, err := suite.advance(state, revision, advanceAt, mask, counter); err != nil {\n', '\t\t\tif err := manualAdvanceCompletionResearch(suite, state, revision, advanceAt, mask, counter); err != nil {\n', true],
   ['\t\tchosen := candidates[0]\n\t\tstate, revision, nowMS = chosen.State, chosen.Revision, chosen.AtMS\n', '\t\tchosen := candidates[0]\n\t\tif err := manualSelectedCompletionResearch(suite, state, chosen); err != nil { return relevanceRunResult{}, err }\n\t\tstate, revision, nowMS = chosen.State, chosen.Revision, chosen.AtMS\n', true],
   ['func (suite *RelevanceSuite) finishToMilestone(state *save.State, revision, nowMS int64, mask production.AblationMask, counter *relevanceCounter) (int64, *int64, []production.RoleActivation, error) {\n', 'func (suite *RelevanceSuite) finishToMilestone(state *save.State, revision, nowMS int64, mask production.AblationMask, counter *relevanceCounter) (int64, *int64, []production.RoleActivation, error) {\n\tif manualChoiceScopesResearch[suite] != nil { return manualFinishCompletionResearch(suite,state,revision,nowMS,mask,counter) }\n'],
+  ['\tinitial, err := suite.newRelevanceState()\n', '\tinitial, initialRevision, initialMS, err := manualBeamInitialResearch(suite)\n', 'beam'],
+  ['\tfrontier := []node{{state: initial, revision: 1}}\n', '\tfrontier := []node{{state: initial, revision: initialRevision, atMS: initialMS}}\n', 'beam'],
+  ['\t\t\tfor _, candidate := range candidates {\n', '\t\t\tfor _, candidate := range candidates {\n\t\t\t\tif err := manualSelectedCompletionResearch(suite,current.state,candidate); err != nil { return nil,err }\n', 'beam'],
+  ['\t\t\t\tif _, advanceErr := suite.advance(waitState, current.revision, bankAtMS, effectiveMask, counter); advanceErr != nil {\n', '\t\t\t\tif advanceErr := manualAdvanceCompletionResearch(suite,waitState, current.revision, bankAtMS, effectiveMask, counter); advanceErr != nil {\n', 'beam'],
+  ['\t\tpruned := make([]node, 0, len(children))\n', '\t\tgeneratedCount := len(children)\n\t\tfor _, entry := range children { if err:=manualBeamValidateResearch(suite,entry.state,entry.revision,entry.atMS);err!=nil{return nil,err} }\n\t\tpruned := make([]node, 0, len(children))\n', 'beam'],
+  ['\t\t\t\tif index != other && children[index].atMS == children[other].atMS &&\n\t\t\t\t\trelevanceStateDominates(children[other].state, children[index].state, suite.Catalog) {\n\t\t\t\t\tdominated = true\n\t\t\t\t\tbreak\n\t\t\t\t}\n', '\t\t\t\tif index != other && children[index].atMS == children[other].atMS {\n\t\t\t\t\tdominates, err := manualBeamDominatesResearch(suite,children[other].state,children[index].state)\n\t\t\t\t\tif err != nil { return nil,err }\n\t\t\t\t\tif dominates { dominated=true;break }\n\t\t\t\t}\n', 'beam'],
+  ['\t\tdedup := map[string]node{}\n','\t\tdedup := map[manualBeamIdentityResearch]node{}\n','beam'],
+  ['\t\t\tdigest, digestErr := stateDigest(child.state)\n','\t\t\tkey, digestErr := manualBeamKeyResearch(suite,child.state,child.revision,child.atMS)\n','beam'],
+  ['\t\t\tkey := fmt.Sprintf("%s:%d", digest, child.atMS)\n\t\t\tprior, exists := dedup[key]\n','\t\t\tprior, exists := dedup[key]\n','beam'],
+  ['\t\tif int64(len(frontier)) > suite.Scenario.BeamWidth {\n\t\t\tfrontier = frontier[:suite.Scenario.BeamWidth]\n\t\t}\n', '\t\tif int64(len(frontier)) > suite.Scenario.BeamWidth {\n\t\t\tfrontier = frontier[:suite.Scenario.BeamWidth]\n\t\t}\n\t\tmanualBeamDepthResearch(suite,depth,generatedCount,len(pruned),len(children),len(frontier))\n\t\tfor _, entry := range frontier { if err:=manualBeamObserveResearch(suite,depth,entry.state,entry.revision,entry.atMS,entry.path,entry.score,entry.reached);err!=nil{return nil,err} }\n', 'beam'],
 ];
 let generated = original;
 function replaceScoped(source, before, after, completionOnly) {
-  const start = completionOnly ? source.indexOf('func (suite *RelevanceSuite) runRankedCompletionCached(') : 0;
-  const end = completionOnly ? source.indexOf('\nfunc relevanceCompletionCacheKey(', start) : source.length;
+  const beam = completionOnly === 'beam';
+  const start = completionOnly ? source.indexOf(beam ? 'func (suite *RelevanceSuite) runBeamWithOpportunity(' : 'func (suite *RelevanceSuite) runRankedCompletionCached(') : 0;
+  const end = completionOnly ? source.indexOf(beam ? '\nfunc relevanceStateDominates(' : '\nfunc relevanceCompletionCacheKey(', start) : source.length;
   if (start < 0 || end < start) throw Error('completion region drift');
   const region = source.slice(start,end);
   if (region.split(before).length !== 2) throw Error(`solver anchor drift: ${before.slice(0,100)}`);
@@ -59,6 +70,8 @@ overlay.Replace['harness/harness.go'] = '../.cache/owned-candidate-harness.go';
 overlay.Replace['harness/manual_owned_candidate_bridge.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-candidate-bridge.go.txt';
 overlay.Replace['harness/manual_owned_choice_bridge.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-choice-bridge.go.txt';
 overlay.Replace['harness/manual_owned_completion_bridge.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-completion-bridge.go.txt';
+overlay.Replace['harness/manual_owned_beam_bridge.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-beam-bridge.go.txt';
+overlay.Replace['production/manual_owned_beam_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-beam-export.go.txt';
 overlay.Replace['production/manual_owned_choice_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-choice-export.go.txt';
 overlay.Replace['production/manual_owned_bank_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-bank-export.go.txt';
 overlay.Replace['production/manual_owned_candidate_export_test.go'] = '../planning/clout-v1-and-pr-interns/probes/owned-candidate-export.go.txt';

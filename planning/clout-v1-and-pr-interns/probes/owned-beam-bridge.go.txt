@@ -1,0 +1,229 @@
+package harness
+
+import (
+	"bytes"
+	"fmt"
+	"time"
+
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+)
+
+type manualBeamIdentityResearch struct {
+	legacy string
+	origin any
+}
+type ManualBeamNodeResearch struct {
+	Depth, Revision, AtMS, Score int64
+	Path                         string
+	Identity                     any
+	State                        *save.State
+	Reached                      *int64
+}
+type ManualBeamDepthResearch struct {
+	Depth                                 int64
+	Generated, Unpruned, Unique, Retained int
+}
+type ManualBeamResultResearch struct {
+	Nodes                   []ManualBeamNodeResearch
+	Steps                   []ManualChoiceStepResearch
+	Depths                  []ManualBeamDepthResearch
+	Milestone               *int64
+	Transitions             int64
+	CacheHits, CacheEntries int
+}
+
+func manualBeamInitialResearch(suite *RelevanceSuite) (*save.State, int64, int64, error) {
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		binding, err := scope.require(scope.beamInitial)
+		if err != nil {
+			return nil, 0, 0, err
+		}
+		state, err := cloneState(suite.Catalog, scope.beamInitial)
+		return state, binding.Revision, binding.AtMS, err
+	}
+	state, err := suite.newRelevanceState()
+	return state, 1, 0, err
+}
+func manualBeamKeyResearch(suite *RelevanceSuite, state *save.State, revision, atMS int64) (manualBeamIdentityResearch, error) {
+	digest, err := stateDigest(state)
+	if err != nil {
+		return manualBeamIdentityResearch{}, err
+	}
+	key := manualBeamIdentityResearch{legacy: fmt.Sprintf("%s:%d", digest, atMS)}
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		binding, err := scope.require(state)
+		if err != nil {
+			return key, err
+		}
+		if binding.Revision != revision || binding.AtMS != atMS {
+			return key, fmt.Errorf("beam coordinates do not bind context")
+		}
+		key.origin = binding.Identity
+	}
+	return key, nil
+}
+func manualBeamDominatesResearch(suite *RelevanceSuite, left, right *save.State) (bool, error) {
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		l, err := scope.require(left)
+		if err != nil {
+			return false, err
+		}
+		r, err := scope.require(right)
+		if err != nil {
+			return false, err
+		}
+		if l.AtMS != r.AtMS {
+			return false, fmt.Errorf("dominance compared unequal virtual times")
+		}
+		if l.Identity != r.Identity {
+			return false, nil
+		}
+	}
+	return relevanceStateDominates(left, right, suite.Catalog), nil
+}
+
+func manualBeamValidateResearch(suite *RelevanceSuite, state *save.State, revision, atMS int64) error {
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		binding, err := scope.require(state)
+		if err != nil {
+			return err
+		}
+		if binding.Revision != revision || binding.AtMS != atMS {
+			return fmt.Errorf("unverified beam branch coordinates")
+		}
+	}
+	return nil
+}
+func manualBeamObserveResearch(suite *RelevanceSuite, depth int64, state *save.State, revision, atMS int64, path string, score int64, reached *int64) error {
+	scope := manualChoiceScopesResearch[suite]
+	if scope == nil {
+		return nil
+	}
+	if err := manualBeamValidateResearch(suite, state, revision, atMS); err != nil {
+		return err
+	}
+	binding, err := scope.require(state)
+	if err != nil {
+		return err
+	}
+	copy, err := cloneState(suite.Catalog, state)
+	if err != nil {
+		return err
+	}
+	scope.beamNodes = append(scope.beamNodes, ManualBeamNodeResearch{depth, revision, atMS, score, path, binding.Identity, copy, cloneInt64(reached)})
+	return nil
+}
+func manualBeamDepthResearch(suite *RelevanceSuite, depth int64, generated, unpruned, unique, retained int) {
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		scope.beamDepths = append(scope.beamDepths, ManualBeamDepthResearch{depth, generated, unpruned, unique, retained})
+	}
+}
+
+func ManualRunOwnedBeamResearch(catalog *economy.Catalog, routeCatalog *routes.Catalog, hash string, milestone RelevanceMilestone,
+	state *save.State, binding, alternate, richer *ManualChoiceBindingResearch) (ManualBeamResultResearch, error) {
+	start := binding.AtMS
+	const depth, width, children int64 = 4, 8, 4
+	suite := &RelevanceSuite{Catalog: catalog, Routes: routeCatalog, ConstantsHash: hash,
+		Scenario: RelevanceScenario{Milestone: milestone, HorizonMS: start + depth*2001, MaxDecisions: depth, BeamWidth: width, BeamChildren: children,
+			DecisionHorizonsMS: []int64{start + 2001, start + 4002, start + 6003, start + 8004}},
+		Policy: &RelevancePolicy{Items: []RelevancePolicyItem{{PurchasableID: "generator.beige_tower"}, {PurchasableID: "upgrade.rack_rail_standardization"}}}}
+	scope := &manualChoiceScopeResearch{states: map[*save.State]*ManualChoiceBindingResearch{}, requests: map[*save.State]production.IntentRequest{}, decisions: map[*save.State]save.IntentDecision{}, beamInitial: state}
+	manualChoiceScopesResearch[suite] = scope
+	defer func() {
+		delete(manualChoiceScopesResearch, suite)
+		for state := range scope.states {
+			delete(manualChoiceCloneOwnersResearch, state)
+		}
+	}()
+	if err := scope.bind(state, binding); err != nil {
+		return ManualBeamResultResearch{}, err
+	}
+	// Every expansion/rollout has at most two item queries/actions and one view.
+	// Each query's finite reference-compatible bound covers the full8004ms domain.
+	// This is only a diagnostic allowance, not a proposed production work budget.
+	perDecision := int64(2)*(2*(depth*2001+1)+1) + 3
+	limit := depth * width * children * (depth + 1) * perDecision
+	counter := &relevanceCounter{limit: limit}
+	best, err := suite.runBeamWithOpportunity(production.AblationMask{}, counter)
+	if err != nil {
+		return ManualBeamResultResearch{}, err
+	}
+	if len(scope.beamDepths) != int(depth) {
+		return ManualBeamResultResearch{}, fmt.Errorf("beam did not execute all declared depths")
+	}
+	for _, frame := range scope.beamDepths {
+		if frame.Retained > int(width) || frame.Unique < frame.Retained {
+			return ManualBeamResultResearch{}, fmt.Errorf("invalid actual beam width/frontier")
+		}
+	}
+	// Real equal-head constructors, not a spoofed identity field. These direct
+	// controls test the same keys/relation consumed by the actual pruning loop.
+	initial, err := cloneState(catalog, state)
+	if err != nil {
+		return ManualBeamResultResearch{}, err
+	}
+	key, err := manualBeamKeyResearch(suite, initial, binding.Revision, start)
+	if err != nil {
+		return ManualBeamResultResearch{}, err
+	}
+	same, err := cloneState(catalog, initial)
+	if err != nil {
+		return ManualBeamResultResearch{}, err
+	}
+	sameKey, err := manualBeamKeyResearch(suite, same, binding.Revision, start)
+	if err != nil || sameKey != key {
+		return ManualBeamResultResearch{}, fmt.Errorf("same origin clone lost beam equality")
+	}
+	if alternate == nil || alternate.Identity == binding.Identity || !bytes.Equal(alternate.Head, binding.Head) {
+		return ManualBeamResultResearch{}, fmt.Errorf("missing distinct equal-head beam control")
+	}
+	alien, err := cloneState(catalog, initial)
+	if err != nil {
+		return ManualBeamResultResearch{}, err
+	}
+	if err := scope.bind(alien, alternate); err != nil {
+		return ManualBeamResultResearch{}, err
+	}
+	alienKey, err := manualBeamKeyResearch(suite, alien, alternate.Revision, start)
+	if err != nil || alienKey == key {
+		return ManualBeamResultResearch{}, fmt.Errorf("distinct origins merged by beam equality")
+	}
+	for _, coordinates := range [][2]int64{{binding.Revision + 1, start}, {binding.Revision, start + 1}} {
+		if err := manualBeamValidateResearch(suite, initial, coordinates[0], coordinates[1]); err == nil {
+			return ManualBeamResultResearch{}, fmt.Errorf("unverified coordinates survived pre-pruning validation")
+		}
+	}
+	if richer == nil {
+		return ManualBeamResultResearch{}, fmt.Errorf("missing richer independent origin")
+	}
+	rich, err := save.RestoreState(richer.Head, save.VersionForState(initial), catalog, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return ManualBeamResultResearch{}, err
+	}
+	if err := scope.bind(rich, richer); err != nil {
+		return ManualBeamResultResearch{}, err
+	}
+	if !relevanceStateDominates(rich, initial, catalog) {
+		return ManualBeamResultResearch{}, fmt.Errorf("richer dominance control is vacuous")
+	}
+	dominates, err := manualBeamDominatesResearch(suite, rich, initial)
+	if err != nil || dominates {
+		return ManualBeamResultResearch{}, fmt.Errorf("future-inequivalent richer origin pruned a branch")
+	}
+	delete(scope.states, alien)
+	if _, err := manualBeamDominatesResearch(suite, alien, initial); err == nil {
+		return ManualBeamResultResearch{}, fmt.Errorf("missing origin silently became nondominant")
+	}
+	// Keep the clone-owner cleanup registration and restore binding for deferred cleanup.
+	if err := scope.bind(alien, alternate); err != nil {
+		return ManualBeamResultResearch{}, err
+	}
+	same.GeneratorCounts["generator.beige_tower"]++
+	if _, err := manualBeamKeyResearch(suite, same, binding.Revision, start); err == nil {
+		return ManualBeamResultResearch{}, fmt.Errorf("mutated beam head reused identity")
+	}
+	return ManualBeamResultResearch{scope.beamNodes, scope.completionSteps, scope.beamDepths, cloneInt64(best), counter.value, scope.cacheHits, len(scope.completionCache)}, nil
+}
