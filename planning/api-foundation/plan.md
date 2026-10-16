@@ -30,7 +30,9 @@ changes on the next successful pass. This reuses PeriodicJob's clock/failure/dra
 DP7 cleanup observation, not a new mechanic or scheduler architecture. The preceding
 request for a separate driver RFC was overly broad under RFC-0000's conformance-fix
 procedure; C5 and GC3 already authorize this assembly. The log preserves that correction
-and exact executed evidence/review range. Player naming/moderation routes remain absent;
+and independent corrective APPROVAL of complete `73318b2d..691e9bac`, including actual
+Postgres old-driver failures, fixed lifecycle/status/history and unchanged real-minute/drain
+checks. Player naming/moderation routes remain absent;
 the backend proof and this driver do not complete that larger workflow.
 
 2026-10-15 A4/A5/C19 correction (RP-647): request-ID failure binding now preserves an

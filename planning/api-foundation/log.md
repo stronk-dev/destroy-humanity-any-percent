@@ -4291,3 +4291,43 @@ All handles terminal/slot released; no Docker resources/main-runtime edits/revie
 Native DB skips are not integration proof. No Postgres/browser/hosted/full-CI/new-feature/
 normative/API/archival/release approval. Historical RP-474 socket red and original query
 CHANGES REQUIRED stay recorded; later readers and kernel/accounting failures remain separate.
+
+## 2026-10-16 — Owned Route naming-expiry driver independently approved
+
+Review by: /root/route_expiry_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete16-path single-commit range
+73318b2dceb5c2e4e47b08c104be0fad076457fa-exclusive..691e9bac2b82215259bfd4a4f2e48eff5ff8dc20-inclusive.
+All composition/test/Operations/alert/canonical-doc/plan/log/ledger paths inspected. RouteC5,
+GC3 and DP7 authorize this conformance assembly: existing72-hour naming lifecycle, one-minute
+PeriodicJob, startup prime/server-clock/fatal supervision/drain and bounded fixed-name private
+observation. No new scheduler, per-player tick, eligibility, moderation or schema policy.
+
+Exact old composition ignored overlay56843 fails both actual Postgres regressions1.253s:
+reserved stays at deadline and injected P0001 never propagates. Old metric allowlist79463
+fails route_name_expiry while credential-cleanup control passes. Reproduction inputs remain
+.cache/route-expiry-review-old-{driver.json,composition.go,metrics.json,metrics.go}.
+Current code matches endpoint; later test changes are current-consumer context, not approved
+outside this range. `make test-go vet GO_PACKAGES='./gameserver ./operations ./routeprojection ./publicread ./cmd/deployment-operations' GO_TEST_FLAGS='-count=1'`
+73155 PASS0.314/2.089/0.246/0.224/5.690s plus vet; native DB skips not credited.
+`make test-go-ci CI_TEST_PACKAGES='./routeprojection ./gameserver ./operations ./publicread' CI_TEST_FLAGS='-run Integration -v'`
+20510 PASS1.236/59.947/4.708s: actual startup/stored+mounted status/P0001/nonreadiness/recovery,
+unchanged names/credit/Knowledge/history, all four expiry states/exact deadline/cancellation/
+retry/pending moderation. Publicread selector0tests receives no SQL credit; native full package
+passed. Ordinary run skips the separately gated real-minute lane, not a fake timer pass.
+
+`make test-deployment-cleanup-runtime`91578 PASS121.739s: runtime SQL failure60.96s, orderly
+drain60.70s. Prime preserves reservation before deadline; real unchanged one-minute callback
+sets house, mounted public status and success counter agree; real blocked credential SQL is
+canceled by drain. Original95s guards/intervals unchanged. Pinned Linux-amd64 promtool full
+rule file7288 SUCCESS: Route-expiry firing/resolution, similarly named non-cleanup negative
+and existing credential/journal-health arms. Formatting/full range diff clean.
+
+Linux-amd64 is locally emulated, not hosted native proof. Native Alertmanager/Prometheus/
+isolated profile prerequisites are unavailable and excluded. Initial manual Docker denial
+runs0; narrow approved invocation provides the actual pass. All handles terminal/slot released;
+only own inspected tmpfs Postgres5b45022f7f0a removed, builders/cache/network preserved.
+No reviewer tracked edits/commits/publication. Parent records only. No fresh-host journal/
+receiver delivery/browser/natural late-game naming/Route-table lock-wait/full-CI/history/
+exact-release/feature/archival/release claim. Earlier separate backend-witness range is not
+automatically approved. RP-104's missing driver repair closes, not full Route/API acceptance.
