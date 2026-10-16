@@ -25,6 +25,7 @@ type stockHookDomainResearch struct {
 	origin                        []byte
 	mask                          AblationMask
 	noHook                        bool
+	privateEvents                 bool
 	probes, ranges, zeros, absent int
 	splits                        int
 }
@@ -84,7 +85,9 @@ func (domain *stockHookDomainResearch) probe(at int64) (stockHookStateResearch, 
 			json.Unmarshal(events[0].Payload, &payload) != nil || !ok || payload.FactionID != member.ID || payload.StockResource != member.Produces || payload.StockCap != domain.bundle.Faction.StockCap {
 			return outcome, fmt.Errorf("unexpected stock-hook event population")
 		}
-		return outcome, ErrInvalidEngineState // Existing wait refuses emitted events.
+		if !domain.privateEvents {
+			return outcome, ErrInvalidEngineState
+		} // Existing wait refuses emitted events.
 	}
 	return outcome, nil
 }

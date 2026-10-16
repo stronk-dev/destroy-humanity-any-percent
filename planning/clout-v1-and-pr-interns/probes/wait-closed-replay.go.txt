@@ -148,10 +148,12 @@ func (counter closedWaitHookCounterResearch) AfterAccrual(state *save.State, cat
 }
 
 type closedWaitQueryResearch struct {
-	at, last       int64
-	points, guards int
-	factory        *waitCellsResearch
-	selected       closedWaitPointResearch
+	at, last                              int64
+	points, guards                        int
+	factory                               *waitCellsResearch
+	selected                              closedWaitPointResearch
+	receiptTerms, spanChecks, stockProbes int
+	proofAssemblies, proofCatalogs        int
 }
 
 func (owner *closedWaitReferenceResearch) query(horizon int64, price decimal.Decimal, budget int) (closedWaitQueryResearch, error) {
@@ -161,7 +163,7 @@ func (owner *closedWaitReferenceResearch) query(horizon int64, price decimal.Dec
 	if err != nil {
 		return answer, err
 	}
-	guard := &closedWaitUnprovedRangeResearch{}
+	guard := &closedWaitDomainResearch{owner: owner, initial: initial}
 	var last closedWaitPointResearch
 	found, factory, err := queryWaitContextResearch(initial, owner.bundle.Economy, owner.mode, horizon, owner.mask, SimulationDependencies{Routes: owner.bundle.Routes}, price, budget, func(at int64) (decimal.Decimal, error) {
 		answer.points++
@@ -176,7 +178,12 @@ func (owner *closedWaitReferenceResearch) query(horizon int64, price decimal.Dec
 		}
 		return value, nil
 	}, waitSourceContextResearch{modern: true, external: owner.external}, guard)
-	answer.at, answer.factory, answer.guards = found, factory, guard.calls
+	answer.at, answer.factory, answer.guards = found, factory, guard.ranges
+	answer.receiptTerms, answer.spanChecks = guard.receiptTerms, guard.spanChecks
+	answer.proofAssemblies, answer.proofCatalogs = guard.assemblies, guard.catalogLoads
+	if guard.stock != nil {
+		answer.stockProbes = guard.stock.probes
+	}
 	if err == nil && found >= 0 {
 		if found == 0 && answer.points == 0 {
 			answer.selected.state = initial
@@ -347,11 +354,14 @@ func TestWaitClosedReplayBindingResearch(t *testing.T) {
 					if found < 0 && (selected.state != nil || selected.events != nil) {
 						t.Fatal("failed/unreachable query leaked a successful projection")
 					}
-					if factory != nil && (answer.guards == 0 || factory.work.QueryRefinements == 0) {
-						t.Fatal("unproved hook range was pruned")
+					if factory != nil && (answer.guards == 0 || name == "missing_weight" && factory.work.QueryRefinements == 0) {
+						t.Fatal("missing hook proof or unproved hook range was pruned")
+					}
+					if factory != nil && name != "missing_weight" && (factory.work.QueryRefinements != 0 || found < 0 && answer.points != 0) {
+						t.Fatal("valid complete hook range failed to certify", answer.points, factory.work)
 					}
 					if factory != nil {
-						t.Logf("price%s found%d error_at%d points%d nodes%d guards%d refinements%d scalars%d partials%d", price, found, errorAt, answer.points, factory.work.QueryNodes, answer.guards, factory.work.QueryRefinements, factory.work.Scalars, factory.work.PartialChecks)
+						t.Logf("price%s found%d error_at%d points%d nodes%d guards%d refinements%d scalars%d partials%d receipt_bounds%d spans%d stock_probes%d proof_assemblies%d proof_catalogs%d", price, found, errorAt, answer.points, factory.work.QueryNodes, answer.guards, factory.work.QueryRefinements, factory.work.Scalars, factory.work.PartialChecks, answer.receiptTerms, answer.spanChecks, answer.stockProbes, answer.proofAssemblies, answer.proofCatalogs)
 					}
 					queries++
 				}
@@ -371,7 +381,7 @@ func TestWaitClosedReplayBindingResearch(t *testing.T) {
 	if total != 48016 || refused != 12002 || queries != 32 || eventful != 24004 || counterfactuals == 0 || mismatches != 0 {
 		t.Fatalf("incomplete/mismatched closed population: points%d refused%d queries%d eventful%d counterfactuals%d mismatches%d", total, refused, queries, eventful, counterfactuals, mismatches)
 	}
-	t.Logf("full references%d refused%d queries%d eventful%d counterfactuals%d; exhaustive guard is NOT workload feasibility", total, refused, queries, eventful, counterfactuals)
+	t.Logf("full references%d refused%d queries%d eventful%d counterfactuals%d; conditional guard is NOT whole-domain/workload proof", total, refused, queries, eventful, counterfactuals)
 }
 
 func TestWaitClosedReplayOwnershipResearch(t *testing.T) {
@@ -434,7 +444,7 @@ func TestWaitClosedReplayOwnershipResearch(t *testing.T) {
 	if !bytes.Equal(ownedOrigin, owner.origin) {
 		t.Fatal("owner origin changed")
 	}
-	exhausted, err := owner.query(1000, decimal.New(1, 12), 1)
+	exhausted, err := owner.query(1000, cash, 1)
 	if err == nil || exhausted.at != -1 || exhausted.selected.state != nil || exhausted.selected.events != nil {
 		t.Fatal("budget exhaustion became a result", err)
 	}

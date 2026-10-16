@@ -1,0 +1,87 @@
+package production
+
+import (
+	"bytes"
+	"fmt"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/commons"
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/save"
+)
+
+// Retain the initial negative research result as a real supported population:
+// a sufficient proof's lower-domain uncertainty is NOT a new runtime refusal.
+func TestWaitClosedAbsorbedLowerResearch(t *testing.T) {
+	const edge int64 = 8_999_999_999_999_999
+	start := time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC)
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		t.Run(string(mode), func(t *testing.T) {
+			bundle := closedReceiptBundleResearch(t, fmt.Sprintf("1e%d", -edge+3), false)
+			initial := axisTimingState(t, bundle, start) // Cash1e4, BELOW the1e6 cap.
+			initial.GeneratorCounts["generator.beige_tower_v2"] = 1
+			initial.GeneratorPurchasedTotal = 2
+			catalog, err := commons.LoadCatalog(bundle.Artifacts["commons"])
+			if err != nil {
+				t.Fatal(err)
+			}
+			initial.CompactMember, initial.CompactTithePPM = true, catalog.DefaultTithePPM
+			weight := int64(500_000)
+			revision := save.Revision{Number: 1, ConstantsHash: bundle.ConstantsHash, StreamID: "01986666-1000-7000-8000-000000000001", OwnerID: "01986666-2000-7000-8000-000000000001"}
+			owner, err := newClosedWaitReferenceResearch(t, bundle, initial, mode, AblationMask{}, nil, &weight, revision)
+			if err != nil {
+				t.Fatal(err)
+			}
+			origin := mustEncodeState(t, initial)
+			factory, err := buildWaitCellContextSourcesResearch(initial, bundle.Economy, mode, 1000, AblationMask{}, SimulationDependencies{Routes: bundle.Routes}, "", false, waitSourceContextResearch{modern: true})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := certifyWaitCellsResearch(factory, initial); err != nil {
+				t.Fatal(err)
+			}
+			guard := &closedWaitDomainResearch{owner: owner, initial: initial}
+			if err := guard.bind(factory, true); err != nil {
+				t.Fatal(err)
+			}
+			if proved, err := guard.certify(0, 1000); err != nil || proved {
+				t.Fatal("declared sufficient proof no longer inconclusive", proved, err)
+			}
+			lowerDiagnostic := false
+			for at := int64(0); at <= 1000; at++ {
+				actual := activationRestore(t, bundle, origin, 19, start)
+				tap := &closedWaitEventTapResearch{inner: closedReplayAccrualHook(bundle, &weight), target: actual}
+				want, err := SimulateAdvance(actual, bundle.Economy, SimulationDependencies{Routes: bundle.Routes, Hook: tap}, revision, mode, start.Add(time.Duration(at)*time.Millisecond), nil, AblationMask{})
+				point := owner.project(at)
+				if err != nil || point.err != nil || !bytes.Equal(mustEncodeState(t, actual), mustEncodeState(t, point.state)) || !reflect.DeepEqual(want, point.advance) || !reflect.DeepEqual(tap.events, point.events) {
+					t.Fatal("valid absorbed diagnostic refused or changed", at, err, point.err)
+				}
+				if at == 1 {
+					for _, change := range want.Evaluation.Receipt.Changes {
+						if change.ResourceID == "company.permits" {
+							delta, err := decimal.ParseCanonical(change.Delta)
+							if err != nil {
+								t.Fatal(err)
+							}
+							term := delta.Mul(decimal.New(float64(initial.CompactTithePPM), -6))
+							lowerDiagnostic = term.IsFinite() && !term.IsStateValue()
+						}
+					}
+				}
+			}
+			if !lowerDiagnostic {
+				t.Fatal("declared absorbed lower diagnostic absent")
+			}
+			answer, err := owner.query(1000, decimal.New(1, 12), 2002)
+			if err != nil || answer.at != -1 || answer.selected.state != nil || answer.selected.events != nil {
+				t.Fatal("inconclusive range became a false error/selection", err, answer.at)
+			}
+			if !bytes.Equal(origin, mustEncodeState(t, initial)) {
+				t.Fatal("valid control consumed origin")
+			}
+			t.Logf("all1001 full references succeed despite inconclusive certificate; query_points%d nodes%d refinements%d", answer.points, answer.factory.work.QueryNodes, answer.factory.work.QueryRefinements)
+		})
+	}
+}

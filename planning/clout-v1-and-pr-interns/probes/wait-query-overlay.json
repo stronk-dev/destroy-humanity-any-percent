@@ -1,5 +1,7 @@
 {
   "Replace": {
+    "production/manual_wait_closed_absorption_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-closed-absorption.go.txt",
+    "production/manual_wait_closed_domain_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-closed-domain.go.txt",
     "production/manual_wait_closed_replay_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-closed-replay.go.txt",
     "production/manual_wait_first_hour_lifetime_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-first-hour-lifetime.go.txt",
     "harness/manual_wait_first_hour_capture_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-first-hour-capture.go.txt",

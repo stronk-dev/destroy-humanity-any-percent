@@ -16,7 +16,7 @@ with nil error. Owning log/manual source retain source/hash/budget/receipt/uncha
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
 
-Draft H3d–H3o now supply a candidate positive-aggregation enclosure, its partial
+Draft H3d–H3p now supply a candidate positive-aggregation enclosure, its partial
 producer/ledger composition and a source-driven wait-cell constructor. The4004
 pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
 four small whole-wait populations are exhaustive and match independently scanned
@@ -77,8 +77,15 @@ inconclusive guard forces every chronological point, with cost exposed, rather
 than prune required hook effects using only a cash bound. No live event contract
 or logged-stage behavior changes.
 
-Next establish source-derived closed-chain range definedness, then exact logged
-stage/clock operation and real settlement; complete global/caller/
+H3p now composes a conditional closed-chain range certificate: lifetime/offline
+spans, private stock events, fixed Guild inputs and ALL-resource Commons receipt
+arithmetic. Ordinary certified queries prune without dropping selected full hooks;
+actual secondary-resource capacity failures and valid absorbed diagnostics retain
+chronological behavior. This is not global pre-hook encoding/timestamp proof or
+permission to use the draft in live callers; all original search/AC6 failures stay.
+
+Next complete global pre-hook encoding/timestamp/state and caller obligations,
+then exact logged stage/clock operation and real settlement; complete global/caller/
 timestamp/encoding/state and lifecycle/compatibility obligations,
 then measure complete real workloads with all preparation work charged. Partial
 certification alone does not adopt the proposed chronological error policy.

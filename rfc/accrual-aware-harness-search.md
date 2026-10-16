@@ -1276,8 +1276,8 @@ event-bearing references. Four diagnostic thresholds per population give32
 queries with complete selected state/events, true zero-time, unreachable and
 first-error outcomes. These are not catalog purchases or natural acquisitions.
 
-No whole-range certificate for this chain is claimed. An explicit INCONCLUSIVE
-guard forces chronological real projections; producer cash upper bounds alone
+The original reference atc61c4eb2 has no whole-range certificate for this chain.
+Its explicit INCONCLUSIVE guard forces chronological real projections; producer cash upper bounds alone
 cannot prune required hook work. An unreachable6001ms query therefore executes
 6002 points/12003 nodes. Positive750/2000ms queries need751/2001 points, not one.
 Missing-weight queries encounter the actual error at1ms after evaluating0ms.
@@ -1293,12 +1293,97 @@ The separate compiling control disconnects only the projection's Commons stage,
 leaving the real reference and producer preparation intact. Missing Commons state,
 events and errors must fail even when cash and nominal purchase times agree.
 
-Next establish the source-derived complete closed-chain range definedness proof
-(including lifetime/offline-span, stock, Guild and all-resource Commons capacity),
-then reconstruct exact logged stages/clock and real settlement. All global domain,
+H3p below adds a conditional closed-chain range certificate, preserving this
+original unproved reference's results rather than its deliberately linear work.
+Complete global domain proof and exact logged stages/clock/real settlement remain.
+All global domain,
 caller identity/lifecycle, full workload/compatibility, Go/TS/SQL, independent
 research/normative review and owner-adoption gates remain. RP-680 and27 Clout AC6
 failures are still open; no current payout, kernel, save, CI or live caller changes.
+
+#### H3p — Conditional closed-chain range certificate and receipt domain
+
+The [manual closed-domain component](../planning/clout-v1-and-pr-interns/probes/wait-closed-domain.go.txt)
+composes source-derived hook obligations with the producer certificate. It is
+NOT a whole-domain, global encoding/timestamp, adopted API or live-harness proof.
+Its internal bind receives the existing producer and whether that producer's
+complete global certificate passed. Only then may it use its per-resource bounds.
+If producer proof was inconclusive, the guard stays inconclusive even when a
+later local producer range succeeds; actual chronological leaves remain available.
+Preparation failures internal to the instrument stay loud; a possible semantic
+hook error is not substituted for the real endpoint's error.
+
+Positive nonzero minimum exponents now accompany the existing maximums in raw-
+identity partial caches, immutable complete prefixes and aggregate certificates.
+Positive SumDeterministic and Q12 cannot reduce the smallest positive input's
+exponent. Exact aggregate fallbacks record actual minimums. Reused wider partial
+contexts can make the bound looser, never unsafely stronger. Existing arithmetic,
+failure guards and catalog/version holds are unchanged.
+
+For a successful canonical nonnegative resource receipt:
+
+- Before>0: a delta below before.exponent-17 would be discarded by actual Add's
+  gap rule; Q12 of the unchanged canonical before cannot reproduce a DIFFERENT
+  after. Therefore delta.exponent>=before.exponent-17.
+- Before=0: candidate0 already reproduces canonical after. Its exponent is at
+  least the producer aggregate minimum, or the positive cap exponent when capping
+  binds. A balance already equal to cap emits no receipt after successful positive
+  accrual; zero-cap resources therefore need no invented zero payment.
+- Nonnegative after<=cap and receipt reproduction bound delta.exponent above by
+  cap.exponent. Missing caps or negative before are inconclusive, not unsupported.
+
+Commons multiplies EVERY resource delta by the captured tithe. For positive
+factor f, require lowerDelta+f.exponent>=MIN. Its product exponent is at most
+upperDelta+f.exponent+1. Apply the existing sufficient100000-term/MAX-8 interior
+margin to sequential capacity Add: its positive14-digit aligned rounding grows
+by less than1+2^-44 per step, so at100000 steps total<1.001 times the exact sum;
+the exponent is at most maxTerm+6 and finalQ12 adds at most one. Zero tithe yields
+zero capacity without manufacturing receipts. This is a sufficient numeric
+proof domain, NOT a new resource, value, work or acceptance limit. Inconclusive
+cases refine and execute actual hooks, including valid lower diagnostics absorbed
+by a larger cash term. Treating every out-of-domain intermediate as a new runtime
+refusal would change existing behavior and is not proposed here.
+
+The remaining fixed-chain obligations compose as follows:
+
+- Reuse H3n's conditional lifetime certificate. For absence, call the actual
+  RecordOfflineSpan on fresh scratch at the largest duration; from is fixed at
+  the origin, so merge/collapse eligibility and any old collapsed duration do not
+  vary with endpoint. Boundary timestamp premises remain explicit and conservative.
+- Reuse H3l's closed stock read-set/cutoff proof, permitting its validated saturation
+  event ONLY as a private value in this recipe. Ordinary stock waits still refuse
+  those events. Actual full selected projections retain every hook/counterfactual.
+- Use certified progress0..1e6, actual fixed membership contributions and the pinned
+  Guild policy/carry. Its numerator is bounded by1e12+1e6. Duplicate/missing or
+  inconsistent dependencies are inconclusive, never silent no-membership fallback.
+- Run actual frozen Commons enclosure/compliance once per proof preparation; keep
+  weight validity and original sample/hour-coverage premises. All-resource capacity
+  requires the receipt argument above, not a cash-only bound.
+
+The measured regression has valid modern19 producer/ledger output at EVERY point,
+but actual Commons capacity fails at1..8ms online and1..9ms offline, then succeeds
+again. It is an unminted secondary permits rate1e(MIN+3), real1.15115 axis input,
+default.1 tithe and cash already capped at1e6 so no cash receipt masks the diagnostic.
+Initial uncapped-cash attempts did NOT fail and remain recorded. Headroom atMIN+6
+and full-prefix/offline-tail companions remain valid; actual receipt bounds and
+complete state/evaluation/roles/events/errors are checked against the real primitive.
+Additional uncapped-cash companions preserve valid absorption despite inconclusive
+proof. These are admitted seeded diagnostics, not natural acquisition or lost saves.
+
+The original48016-point closed reference and32 queries keep their complete results.
+For certified ordinary ranges, unreachable needs zero actual leaves and one node;
+750/2000ms selections each execute one FULL leaf. Missing-weight and the17 real
+capacity refusals still reach the actual first error rather than become unreachable.
+Producer scalar/partial work, extra contribution assembly/catalog load, stock proof
+probes, span restores and receipt bounds are visible costs, not free preparation or
+a full-workload speed claim. Removing only the lower-exponent safety causes the
+new admitted-refusal oracle to fail while headroom/prefix companions remain valid.
+
+Complete global pre-hook encoding, timestamp/state/caller identity/lifecycle,
+logged endpoint stage/clock, real clearing/SQL/event delivery/idempotency, full
+workload/compatibility and research/normative review/adoption remain mandatory.
+No active arithmetic, save/kernel/data/CI/legacy contract changes. RP-680 and27
+Clout AC6 failures remain unrepaired; this does not close the full accounting goal.
 
 ### H4 — Compatibility, work and evidence
 

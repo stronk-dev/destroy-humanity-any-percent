@@ -22,15 +22,18 @@ import (
 type waitPrefixResearch struct {
 	values []decimal.Decimal
 	maxExp int64
+	minExp int64
 }
 
 type waitPartialOutcomeResearch struct {
 	through, maxExp int64
+	minExp          int64
 	positive        bool
 }
 
 type waitAggregateOutcomeResearch struct {
 	maxExp   int64
+	minExp   int64
 	positive bool
 }
 
@@ -317,13 +320,16 @@ func certifyWaitCellAggregatesResearch(factory *waitCellsResearch) error {
 		sort.Strings(ordered)
 		for _, resource := range ordered {
 			prefix := cell.allPrefixes[resource]
-			positive, maxExp := len(prefix.values) > 0, prefix.maxExp
+			positive, maxExp, minExp := len(prefix.values) > 0, prefix.maxExp, prefix.minExp
 			if _, active := cell.allRates[resource]; active && !cell.flat {
 				partial, exists := cell.partials[resource]
 				if !exists {
 					return fmt.Errorf("aggregate certificate missing partial domain cell%d resource%s", index, resource)
 				}
 				if partial.positive {
+					if !positive || partial.minExp < minExp {
+						minExp = partial.minExp
+					}
 					if !positive || partial.maxExp > maxExp {
 						maxExp = partial.maxExp
 					}
@@ -338,6 +344,7 @@ func certifyWaitCellAggregatesResearch(factory *waitCellsResearch) error {
 				outcome := waitAggregateOutcomeResearch{positive: positive}
 				if positive {
 					outcome.maxExp = maxExp + 7
+					outcome.minExp = minExp
 				}
 				factory.cells[index].aggregates[resource] = outcome
 				continue
@@ -358,6 +365,9 @@ func certifyWaitCellAggregatesResearch(factory *waitCellsResearch) error {
 					return fmt.Errorf("aggregate certificate cell%d resource%s duration%d: %w", index, resource, duration, ErrInvalidEngineState)
 				}
 				if !value.Eq(decimal.Zero) {
+					if !outcome.positive || value.Exponent() < outcome.minExp {
+						outcome.minExp = value.Exponent()
+					}
 					if !outcome.positive || value.Exponent() > outcome.maxExp {
 						outcome.maxExp = value.Exponent()
 					}
@@ -431,6 +441,9 @@ func certifyWaitCellPartialsResearch(factory *waitCellsResearch) error {
 						return fmt.Errorf("partial certificate cell%d resource%s duration%d: %w", index, resource, duration, err)
 					}
 					if !value.Eq(decimal.Zero) {
+						if !domain.positive || value.Exponent() < domain.minExp {
+							domain.minExp = value.Exponent()
+						}
 						if !domain.positive || value.Exponent() > domain.maxExp {
 							domain.maxExp = value.Exponent()
 						}
@@ -625,6 +638,9 @@ sourceLoop:
 			}
 			if !delta.Eq(decimal.Zero) {
 				prior := prefixes[resource]
+				if len(prior.values) == 0 || delta.Exponent() < prior.minExp {
+					prior.minExp = delta.Exponent()
+				}
 				if len(prior.values) == 0 || delta.Exponent() > prior.maxExp {
 					prior.maxExp = delta.Exponent()
 				}

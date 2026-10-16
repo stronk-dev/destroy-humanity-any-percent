@@ -6817,3 +6817,180 @@ Five-path range6fe8e3b4-exclusive through this checkpoint needs research/normati
 review outside corrective-code delegation. Not designated approval, implementation
 acceptance, archival, push/publication/deployment or release. Goal active/progress;
 next source proof must cover all-resource Commons capacity, not just cash/lifetime.
+
+## 2026-10-16 — closed-chain range proof, declared research population
+
+Continue fromc61c4eb2. The next component must bound the Commons hook's actual
+receipt arithmetic across ALL resources. A positive valid producer/ledger delta
+can still underflow when multiplied by Compact tithe; cash safety proves nothing
+about a secondary resource. Predeclare four complete0..1000 populations on a
+rehash/reloaded modern19 axis fixture with secondary permits production and zero
+initial permits: online rate1e(MIN+3), offline rate1e(MIN+4), and both modes at
+1e(MIN+6). Default Compact tithe, real full closed chain, no pending clearing/live
+resolver. All4004 no-hook producer points must succeed. Low-domain arms must have
+an actual early Commons-capacity refusal and later success; exact endpoint counts
+are measurements (the real axis factor is retained), not assumed1/19ms folklore.
+Headroom companions must succeed; source admission/population failure is invalid,
+not an exclusion. Check first actual error against unreachable cash queries.
+
+Carry minimum positive exponents alongside existing maximums in the research
+partial/prefix/aggregate certificates, without changing their arithmetic or guards.
+Positive aggregation cannot lower its smallest positive input exponent. Receipt
+reproduction bounds nonzero-before delta below by before.exponent-17; zero-before
+delta copies after, bounded below by aggregate minimum or positive binding cap.
+Upper receipt exponent is bounded by the nonnegative cap. Derive Commons Mul and
+sequential positive Add/Q12 headroom from those bounds; inconclusive is not invalid.
+Compose with the closed lifetime certificate, actual offline-span helper, stock
+read-set certificate permitting PRIVATE saturation events, fixed Guild validation
+and actual fixed Commons enclosure/compliance checks. No generic hook claim.
+
+Bind the concrete guard to a globally certified producer; producer-inconclusive
+ranges keep the prior actual chronological fallback. All original48016 closed
+references/32 queries must retain full state/events/error equality; valid whole
+ranges should now prune unreachable queries without omitting selected real hooks.
+The missing-weight fault must still reach its real1ms error. Retain prior legacy/
+stock/modern/first-hour populations for changed shared-source verification. A
+compiling control removing only Commons' lower-exponent safety must fail the
+new admitted-refusal oracle. No product/kernel/data/schema/CI or accepted contract
+change; global timestamp/encoding/caller/workload/adoption gates remain open.
+
+Initial4004-point capture421a9a/45231 FAIL2.221s: both hypothesized low arms had
+ZERO hook refusals. Do not call this a successful negative or omit the population.
+The subsequent first-point diagnostic2d6d0b keeps that refusal requirement unchanged.
+Source inspection explains the missing witness: Decimal.Mul retains a FINITE
+out-of-domain lower diagnostic; Commons checks final capacity, and a normal cash
+term can absorb that tiny permits term through Add's17-decade gap. There is no
+proved product defect in that acceptance. Prospectively isolate the actual
+capacity boundary with a loader-admitted unminted cash cap1e6 and original cash
+at that cap (so no cash receipt is emitted). Use rateMIN+3 in BOTH low arms:
+the real1.15115 axis factor times offline.9 keeps1ms production valid, while the
+current default tithe is.1, not the earlier hypothetical.05. Keep the same four
+1001-point populations and headroom arms; no-hook producer success, actual closed
+refusal then later success, and first-error query assertions remain mandatory.
+
+Revised54c4c3/53000 PASS2.170s: all4004 producer points succeed; actual closed
+refusals are1..8ms online and1..9ms offline (17 total), then later waits succeed.
+Both headroom arms succeed. Guarded composition d23ca2/15511 PASS1.863s preserves
+those first errors with one real leaf and certifies headroom with zero leaves.
+Initial guard compilec614ef ran no tests (unused multiplier import; removed).
+Before final verification add two declared2002-point headroom-prefix companions
+(both modes): provision tick1000, offline cap1500, horizon2001, exercising complete
+prefixes and the flat offline tail. Original4004 populations stay unchanged.
+Require every actual receipt exponent inside the certificate and compare ALL8008
+full closed states/evaluations/roles/events/errors with independent real
+SimulateAdvance+event tap, not the projector's own output alone.
+
+Broader nativef061bc/67524 FAIL80.805s solely in the old ownership budget fixture:
+its unreachable1e12 query is NOW lawfully proved in one node, so budget1 is not
+exhausted. All other selected populations pass. Do not weaken the budget or
+force inefficient work: after the currently running Linux handle21072 terminates,
+keep budget1 but use the existing750ms reachable quote so another node really is
+needed. The shared proof/helper source stays frozen through that running check.
+Lower-safety disconnection5a0b6d/28272 FAIL6.975s correctly: both admitted low arms
+lose their actual1ms error as unreachable/nil; all four headroom/prefix companions
+pass. Full8008 reference population retained. No production mutation.
+
+Also add two declared1001-point VALID absorption companions after that handle
+ends: same online/offline MIN+3 permits rate, but starting cash1e4 below cap1e6.
+Real cash capacity absorbs the lower diagnostic, so actual full projection and
+query must succeed despite an inconclusive sufficient proof. This retains the
+initial negative research result as an executed supported case, not only prose.
+Final complete population becomes241133 enumerated reference points (239131 above
+plus2002 companions), with separate no-hook references/anchors/query controls.
+
+Linux9b258e/21072 is now terminal FAIL245.088s for that SAME obsolete budget
+fixture alone; all other selected populations pass. Only after terminal state,
+change its quote to the already independently evidenced750ms target, keep budget1,
+and add the two absorption controls as a separate manual source. No proof/helper
+or product behavior changes for that fixture correction. The capture970abe/43276
+PASS3.250s regenerated the identical H3n packet before its consumer ran; all normal
+source bytes were frozen through those first full runs. Final full native/Linux
+verification will include the corrected meaningful budget case and both added
+supported controls, not conceal the earlier red runs.
+
+Absorption control4f8433/10626 PASS3.012s: both complete1001-point populations
+agree with the independent real primitive, including a finite out-of-domain
+permits term at1ms which the real cash capacity absorbs. The sufficient guard
+correctly remains inconclusive; query executes1000 positive leaves and succeeds
+as unreachable/nil, with no leaked selection. It does not invent a new refusal.
+Final native56c3a0/30068 PASS82.906s plus production vet; all241133 enumerated
+reference points retained, with full closed states/events and separate no-hook
+receipt references/anchors/query/ownership/refusal/budget controls. Sixteen-file
+overlay and all manual source bytes frozen; no ordinary product source changed.
+
+The new concrete bind only consumes globally certified per-resource producer
+bounds. Complete successful producer prefixes/partials now carry BOTH positive
+minimum and maximum exponents. Actual receipts from all8008 new source points
+stay inside their bounds; the prefix and1500ms offline-tail fixtures exercise
+nonempty and flat prefixes, not only a one-cell partial. This extends proof data,
+not arithmetic or the earlier typed failure guards. Source review retains the
+existing raw-bit cache key, copies min/max with each immutable prefix snapshot
+and never treats a failed certificate as invalid product input.
+
+In the ordinary closed profiles, the former751/2001 positive query projections
+become ONE full leaf each; unreachable6002 becomes ZERO. Query proof still pays
+for6002 scalar/partial checks (when production active), one extra contribution
+assembly, one Commons catalog load when member, receipt bounds, two stock helper
+probes and one span restore. This is a source-bound proof/work count, not a claim
+that complete preparation is free or the full65M/300-report workload meets budget.
+Private event acceptance is enabled ONLY in this closed research recipe; original
+stock and live simulation event refusals remain unchanged. Every selected leaf
+executes the actual full chain, including its stock-role counterfactuals.
+
+## 2026-10-16 — RP-688 conditional closed-chain proof verified
+
+Final declared Linux1f788e/29849 PASS283.216s on the SAME frozen sources; all
+241133 enumerated reference points execute, including the corrected budget case,
+new17 real Commons refusals and both valid absorption controls. Native result
+above remains82.906s plus vet. They overlap and differ in compiler/architecture;
+no timing or hosted/full-workload performance conclusion follows. No tests skip,
+all owned handles terminal. The earlier native/Linux budget-fixture reds and
+the two failed initial population attempts remain recorded, not overwritten.
+
+Reproduction from root: run H3n's TestWaitFirstHourCaptureResearch command first
+and await completion; then
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v'`.
+Declared Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v ./production -count=1`.
+Focused selectors: TestWaitClosedReceiptDomainResearch, TestWaitClosedAbsorbedLowerResearch,
+TestWaitClosedReplayBindingResearch and TestWaitClosedReplayOwnershipResearch.
+The final full selection retains183107 earlier legacy/stock/modern/first-hour
+points +48016 closed-chain points +8008 capped/prefix points +2002 absorption
+points. Separate producer, anchor, selected, ownership and invalid-input calls
+are additional, not double-counted as new populations.
+
+The compiling lower-safety fault retains the identical8008-point source-test body
+and guard code, replacing only `if low+factor.Exponent() < -edge` with
+`if false && low+factor.Exponent() < -edge`. Its15-file ignored overlay predates
+the separate absorption source, which is not selected by that negative command.
+No negative rerun or coverage of that extra test is claimed/needed: normal guard
+math and the fault's selected population did not change. Root command uses
+-overlay=../.cache/wait-closed-unsafe-lower.json -run TestWaitClosedReceiptDomainResearch.
+Both real early refusals become unreachable/nil and fail, while all headroom/
+prefix companions remain green; it is not compilation or admission discrimination.
+Normal source was never mutated. Final SHA256:
+- production-wait-cells:67af8acb2426bf9a7e6d6ac34ad962affb5d1967d12730e825a89e396e7f8f6b
+- wait-query-order:c5e665b72235a3be0401fa51ccd4d02f4cd5b948ce058c0943e4d4a27284ba18
+- wait-stock-hook-domain:b8efea99d9d4985325ba361c7d08734935c0a4a7eed2462edb126a893caefaa5
+- wait-closed-domain:d8a6181a4a9dfb013f4e79db1c31658dfba90d0412901613a9fcbdc735a33e9f
+- wait-closed-absorption:5fabdcfb7b91f9c20620c8e996f91ebb6bcdfe96c4c0f729b3bd82e4bf94f9f0
+- wait-closed-replay:9fd6d81625c0426485d1a0b69e75dfb9f39c771a054706fc3f7a7a055fadbd38
+- sixteen-file overlay:178711c548198b904aba29ee7da8152ce8909bba998c11c069910fdb5adae432
+- ignored fault source:bc1242c40303f5b4ddc7296d72e4a2e248e516a5de26230c69186a05c1c56787
+- ignored fault overlay:889c27f753e7e3d06520366d3e376eb02bc9d0478615598f4c1cf54d534c276e
+
+RP-688 records an admitted semantic constraint on the RESEARCH certificate, not
+a product defect or a proposed new runtime refusal. Own draft H3p/body/plan
+reconcile the now-conditional proof with H3o's historical unproved reference.
+The private guard's input ranges come only from its bound producer's cells;
+this is not a standalone arbitrary-range admission API. Global pre-hook encoding,
+timestamps/state/caller/identity/lifecycle, exact logged stage/clock, real clearing/
+SQL/event delivery/idempotency, compatibility/full workloads and normative
+review/adoption remain open. RP-680 and27 AC6 failures remain OPEN. No accepted
+contract, kernel222/epoch8, product, client, active data, schema or CI bytes changed.
+Review by: Codex root (research author/first filter). Recorded by: Codex root.
+Complete eleven-path rangec61c4eb2-exclusive through this checkpoint needs research/
+normative review outside corrective-code delegation. No designated approval,
+implementation acceptance, archival, push/publication/deployment or release claim.
+Full nine-tier1.0 goal remains active/progress; next complete global pre-hook
+encoding/timestamp/state obligations before claiming the producer+hook query sound
+over its whole supported context, then exact logged stages and real settlement.

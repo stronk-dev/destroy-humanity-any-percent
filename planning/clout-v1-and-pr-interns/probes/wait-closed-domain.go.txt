@@ -1,0 +1,358 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"reflect"
+	"sort"
+	"strings"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/commons"
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/guild"
+	"cloud-clicker/server/prestige"
+	"cloud-clicker/server/save"
+)
+
+// Conditional closed-chain proof, not whole API/timestamp/encoding admission.
+// It may prune only alongside the independently successful producer certificate.
+type closedWaitDomainResearch struct {
+	owner                            *closedWaitReferenceResearch
+	initial                          *save.State
+	factory                          *waitCellsResearch
+	producerDefined, fixedDefined    bool
+	stock                            *stockHookDomainResearch
+	lifetime                         *firstHourLifetimeDomainResearch
+	commons                          *commons.Catalog
+	ranges, receiptTerms, spanChecks int
+	assemblies, catalogLoads         int
+}
+
+func (domain *closedWaitDomainResearch) bind(factory *waitCellsResearch, defined bool) error {
+	domain.factory, domain.producerDefined = factory, defined
+	domain.fixedDefined = false
+	owner, state := domain.owner, domain.initial
+	domain.stock = &stockHookDomainResearch{bundle: owner.bundle, origin: owner.origin, mask: owner.mask, privateEvents: true}
+	domain.lifetime = &firstHourLifetimeDomainResearch{state: state, catalog: owner.bundle.Economy, resource: owner.bundle.Prestige.ValueResourceID}
+	policy, err := simulationPolicyFor(owner.bundle.Economy, owner.mask)
+	if err != nil {
+		return err
+	}
+	domain.assemblies++
+	contributions, err := assembleContributionsWithPolicy(state, owner.bundle.Economy, owner.external, policy)
+	if err != nil {
+		return err
+	}
+	memberships := 0
+	for _, row := range contributions {
+		if row.SourceID == guild.StockConsumptionSourceID {
+			memberships++
+		}
+	}
+	if memberships > 1 || memberships == 1 && (owner.bundle.Guild == nil || owner.bundle.Guild.GuildTithePPM < 0 || owner.bundle.Guild.GuildTithePPM > 1_000_000 || state.GuildTitheCarryPPM < 0 || state.GuildTitheCarryPPM >= 1_000_000) {
+		return nil
+	}
+	// Evaluate's certified before/after progress are each0..1e6 and its delta
+	// clamps negative changes to0. Guild's numerator is therefore <=1e12+1e6.
+	if state.CompactMember {
+		if owner.weight == nil || *owner.weight < 0 || *owner.weight > commons.PPM {
+			return nil
+		}
+		domain.catalogLoads++
+		domain.commons, err = commons.LoadCatalog(owner.bundle.Artifacts["commons"])
+		if err != nil {
+			return err
+		}
+		enclosure, err := commons.EnclosureIndex(domain.commons, contributions)
+		if err != nil {
+			return nil
+		}
+		if _, err := commons.CompliancePPM(state.CompactTithePPM, domain.commons.DefaultTithePPM, enclosure); err != nil {
+			return nil
+		}
+		hour := state.EvaluatedThrough.UTC().Truncate(time.Hour)
+		for _, sample := range state.CompactSamples {
+			if sample.HourStart.After(hour) || sample.HourStart.Equal(hour) && sample.CoveredMS > state.EvaluatedThrough.Sub(hour).Milliseconds() {
+				return nil
+			}
+		}
+	}
+	domain.fixedDefined = owner.bundle.Prestige.CatchupCeilingMS > 0
+	return nil
+}
+
+// Receipt reproduction, not subtraction of rounded displayed balances.
+func closedReceiptExponentsResearch(factory *waitCellsResearch, cell waitCellResearch, resource string) (int64, int64, bool, bool) {
+	aggregate, exists := cell.aggregates[resource]
+	if !exists {
+		return 0, 0, false, false
+	}
+	if !aggregate.positive {
+		return 0, 0, false, true
+	}
+	definition, exists := factory.catalog.Resource(resource)
+	beforeText, present := factory.initial[resource]
+	before, err := decimal.ParseCanonical(beforeText)
+	if !exists || !present || err != nil || before.Lt(decimal.Zero) || definition.Hardcap == nil || !definition.Hardcap.Amount.IsStateValue() || definition.Hardcap.Amount.Lt(decimal.Zero) {
+		return 0, 0, false, false
+	}
+	cap := definition.Hardcap.Amount
+	if before.Eq(cap) {
+		return 0, 0, false, true
+	} // Successful positive accrual cannot change this balance.
+	low := before.Exponent() - 17
+	if before.Eq(decimal.Zero) {
+		low = aggregate.minExp
+		if cap.Gt(decimal.Zero) && cap.Exponent() < low {
+			low = cap.Exponent()
+		}
+	}
+	return low, cap.Exponent(), true, true
+}
+
+func (domain *closedWaitDomainResearch) capacityDefined(lo, hi int64) bool {
+	if !domain.initial.CompactMember || domain.initial.CompactTithePPM == 0 {
+		return true
+	}
+	const edge int64 = 8_999_999_999_999_999
+	factor := decimal.New(float64(domain.initial.CompactTithePPM), -6)
+	for _, cell := range domain.factory.cells {
+		if cell.hi < lo || cell.lo > hi {
+			continue
+		}
+		resources := make([]string, 0, len(cell.aggregates))
+		for id := range cell.aggregates {
+			resources = append(resources, id)
+		}
+		sort.Strings(resources)
+		terms, upper := 0, int64(0)
+		for _, resource := range resources {
+			domain.receiptTerms++
+			low, high, positive, known := closedReceiptExponentsResearch(domain.factory, cell, resource)
+			if !known {
+				return false
+			}
+			if !positive {
+				continue
+			}
+			// Sufficient finite Mul domain. A failed proof may still be a valid
+			// absorbed lower diagnostic; actual chronological leaves decide.
+			if low+factor.Exponent() < -edge {
+				return false
+			}
+			termHigh := high + factor.Exponent() + 1
+			if terms == 0 || termHigh > upper {
+				upper = termHigh
+			}
+			terms++
+		}
+		// The existing100000-term/interior margin also bounds sequential Add:
+		// relative growth per positive Add <1+2^-44, hence total <1.001*sum;
+		// exponent <=maxTerm+6, finalQ12 <=maxTerm+7. This is not a new cap.
+		if !positiveAggregateInteriorResearch(terms, terms > 0, upper) {
+			return false
+		}
+	}
+	return true
+}
+
+func (domain *closedWaitDomainResearch) certify(lo, hi int64) (bool, error) {
+	if lo < 0 || hi < lo || hi > 86_460_000 {
+		return false, fmt.Errorf("invalid closed range")
+	}
+	domain.ranges++
+	if hi == 0 {
+		return true, nil
+	} // Actual simulation skips the hook.
+	if !domain.producerDefined || !domain.fixedDefined {
+		return false, nil
+	}
+	ok, err := domain.lifetime.certify(lo, hi)
+	if err != nil || !ok {
+		return ok, err
+	}
+	ok, err = domain.stock.certify(lo, hi)
+	if err != nil || !ok {
+		return ok, err
+	}
+	if hi > domain.owner.bundle.Prestige.CatchupCeilingMS {
+		domain.spanChecks++
+		domain.owner.restores++
+		state, err := save.RestoreState(domain.owner.origin, 19, domain.owner.bundle.Economy, economy.ScopeCompany, time.Time{})
+		if err != nil {
+			return false, err
+		}
+		from := state.EvaluatedThrough
+		to := from.Add(time.Duration(hi) * time.Millisecond)
+		if to.Sub(from).Milliseconds() != hi || from.Year() < 2 || to.Year() > 9998 {
+			return false, nil
+		}
+		// From is fixed at the origin. Merge/collapse eligibility and the old
+		// span's collapsed duration are independent of the requested duration.
+		if err := prestige.RecordOfflineSpan(state, from, to, domain.owner.bundle.Prestige.CatchupCeilingMS); err != nil {
+			return false, nil
+		}
+	}
+	return domain.capacityDefined(lo, hi), nil
+}
+
+// An unminted, loader-admitted secondary-resource fixture, never balance data.
+func closedReceiptBundleResearch(t *testing.T, rate string, prefix bool) CatalogBundle {
+	t.Helper()
+	base := axisContentBundle(t)
+	artifacts := map[string][]byte{}
+	for id, value := range base.Artifacts {
+		artifacts[id] = append([]byte(nil), value...)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(artifacts["economy"], &root); err != nil {
+		t.Fatal(err)
+	}
+	if prefix {
+		root["provision_tick_ms"] = 1000
+		root["offline_policy"].(map[string]any)["accrual_cap_ms"] = 1500
+	}
+	changed := 0
+	for _, raw := range root["generator_classes"].([]any) {
+		generator := raw.(map[string]any)
+		if generator["id"] == "generator.beige_tower_v2" {
+			generator["production"] = map[string]any{"resource_id": "company.permits", "base_rate": rate}
+			changed++
+		}
+	}
+	if changed != 1 {
+		t.Fatal("missing secondary producer")
+	}
+	for _, raw := range root["resources"].([]any) {
+		resource := raw.(map[string]any)
+		if resource["id"] == "company.cash" {
+			resource["hardcap"].(map[string]any)["amount"] = "1e6"
+		}
+	}
+	var err error
+	artifacts["economy"], err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return loadCompleteReplayTestBundle(t, hash, artifacts)
+}
+
+func TestWaitClosedReceiptDomainResearch(t *testing.T) {
+	const edge int64 = 8_999_999_999_999_999
+	start := time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC)
+	total, failed := 0, 0
+	for _, row := range []struct {
+		name     string
+		mode     EvaluationMode
+		headroom int64
+		refuses  bool
+		prefix   bool
+		horizon  int64
+	}{
+		{"online_lower", ModeOnline, 3, true, false, 1000},
+		{"offline_lower", ModeOffline, 3, true, false, 1000},
+		{"online_headroom", ModeOnline, 6, false, false, 1000},
+		{"offline_headroom", ModeOffline, 6, false, false, 1000},
+		{"online_prefix", ModeOnline, 6, false, true, 2001},
+		{"offline_prefix", ModeOffline, 6, false, true, 2001},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			bundle := closedReceiptBundleResearch(t, fmt.Sprintf("1e%d", -edge+row.headroom), row.prefix)
+			initial := axisTimingState(t, bundle, start)
+			initial.GeneratorCounts["generator.beige_tower_v2"] = 1
+			initial.GeneratorPurchasedTotal = 2
+			setCash(t, initial, "1e6")
+			initial.CompactMember = true
+			catalog, err := commons.LoadCatalog(bundle.Artifacts["commons"])
+			if err != nil {
+				t.Fatal(err)
+			}
+			initial.CompactTithePPM = catalog.DefaultTithePPM
+			weight := int64(500_000)
+			revision := save.Revision{Number: 1, ConstantsHash: bundle.ConstantsHash, StreamID: "01986666-1000-7000-8000-000000000001", OwnerID: "01986666-2000-7000-8000-000000000001"}
+			owner, err := newClosedWaitReferenceResearch(t, bundle, initial, row.mode, AblationMask{}, nil, &weight, revision)
+			if err != nil {
+				t.Fatal("source admission failed", err)
+			}
+			origin := mustEncodeState(t, initial)
+			factory, err := buildWaitCellContextSourcesResearch(initial, bundle.Economy, row.mode, row.horizon, AblationMask{}, SimulationDependencies{Routes: bundle.Routes}, "", false, waitSourceContextResearch{modern: true})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := certifyWaitCellsResearch(factory, initial); err != nil {
+				t.Fatal("producer certificate failed", err)
+			}
+			failures := 0
+			first, last := int64(-1), int64(-1)
+			for at := int64(0); at <= row.horizon; at++ {
+				producer := activationRestore(t, bundle, origin, 19, start)
+				advance, err := SimulateAdvance(producer, bundle.Economy, SimulationDependencies{Routes: bundle.Routes}, revision, row.mode, start.Add(time.Duration(at)*time.Millisecond), nil, AblationMask{})
+				if err != nil {
+					t.Fatal("not a post-producer hook failure", at, err)
+				}
+				for _, change := range advance.Evaluation.Receipt.Changes {
+					found := false
+					for _, cell := range factory.cells {
+						if at < cell.lo || at > cell.hi {
+							continue
+						}
+						low, high, positive, known := closedReceiptExponentsResearch(factory, cell, change.ResourceID)
+						value, err := decimal.ParseCanonical(change.Delta)
+						if err != nil || !known || !positive || value.Exponent() < low || value.Exponent() > high {
+							t.Fatal("actual receipt escaped its source certificate", at, change, low, high)
+						}
+						found = true
+					}
+					if !found {
+						t.Fatal("receipt point omitted from source cells", at)
+					}
+				}
+				point := owner.project(at)
+				actual := activationRestore(t, bundle, origin, 19, start)
+				tap := &closedWaitEventTapResearch{inner: closedReplayAccrualHook(bundle, &weight), target: actual}
+				want, actualErr := SimulateAdvance(actual, bundle.Economy, SimulationDependencies{Routes: bundle.Routes, Hook: tap}, revision, row.mode, start.Add(time.Duration(at)*time.Millisecond), nil, AblationMask{})
+				if (actualErr == nil) != (point.err == nil) || actualErr != nil && actualErr.Error() != point.err.Error() || !bytes.Equal(mustEncodeState(t, actual), mustEncodeState(t, point.state)) || !reflect.DeepEqual(want, point.advance) || !reflect.DeepEqual(tap.events, point.events) {
+					t.Fatal("full independent extreme reference mismatch", at, actualErr, point.err)
+				}
+				if at == 1 {
+					t.Logf("diagnostic origin_permits%s produced_permits%s tithe%d", initial.Ledger.Snapshot()["company.permits"], producer.Ledger.Snapshot()["company.permits"], initial.CompactTithePPM)
+				}
+				if point.err != nil {
+					if !strings.Contains(point.err.Error(), "commons capacity outside Decimal domain") {
+						t.Fatal("wrong actual failure", at, point.err)
+					}
+					if first < 0 {
+						first = at
+					}
+					last = at
+					failures++
+				}
+				total++
+			}
+			if row.refuses && (first != 1 || last >= 1000 || failures == 0) || !row.refuses && failures != 0 {
+				t.Fatal("declared population absent", first, last, failures)
+			}
+			answer, queryErr := owner.query(row.horizon, decimal.New(1, 12), int(2*(row.horizon+1)))
+			if row.refuses {
+				if queryErr == nil || answer.last != first || answer.at != -1 || answer.selected.state != nil {
+					t.Fatal("lost first actual Commons error", answer.last, answer.at, queryErr)
+				}
+			} else if queryErr != nil || answer.at != -1 || answer.points != 0 {
+				t.Fatal("valid headroom refused", queryErr)
+			}
+			failed += failures
+			t.Logf("all%d producers/full references agree; real closed failures%d first%d last%d query_points%d cells%d", row.horizon+1, failures, first, last, answer.points, len(factory.cells))
+		})
+	}
+	if total != 8008 || failed != 17 {
+		t.Fatal("incomplete source population", total, failed)
+	}
+}

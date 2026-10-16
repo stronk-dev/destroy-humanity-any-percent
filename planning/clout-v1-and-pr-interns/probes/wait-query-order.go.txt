@@ -18,6 +18,12 @@ type waitRangeGuardResearch interface {
 	certify(int64, int64) (bool, error)
 }
 
+// Optional concrete proof preparation, not a new runtime hook API. A guard may
+// use producer bounds only when their complete global certificate succeeded.
+type waitProducerGuardResearch interface {
+	bind(*waitCellsResearch, bool) error
+}
+
 func queryWaitContextResearch(state *save.State, catalog *economy.Catalog, mode EvaluationMode, horizon int64, mask AblationMask, dependencies SimulationDependencies, quote decimal.Decimal, budget int, point func(int64) (decimal.Decimal, error), context waitSourceContextResearch, guard waitRangeGuardResearch) (int64, *waitCellsResearch, error) {
 	if state == nil || state.Ledger == nil || !quote.IsStateValue() || quote.Lt(decimal.Zero) {
 		return -1, nil, fmt.Errorf("invalid research query")
@@ -46,6 +52,11 @@ func queryWaitContextResearch(state *save.State, catalog *economy.Catalog, mode 
 	}
 	factory.work.QueryRanges++
 	producerDefined := certifyWaitCellsResearch(factory, state) == nil
+	if prepared, ok := guard.(waitProducerGuardResearch); ok {
+		if err := prepared.bind(factory, producerDefined); err != nil {
+			return -1, factory, err
+		}
+	}
 	guardDefined := true
 	if guard != nil {
 		hi := int64(0)
