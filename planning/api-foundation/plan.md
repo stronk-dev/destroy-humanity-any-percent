@@ -332,7 +332,9 @@ Current router correction/review (2026-10-12, RP-495/RP-496): direct composition
 previous cursor material without its ID instead of treating it as the first-deployment alias.
 Old-source regressions fail; corrected cold affected packages and selected real Linux-amd64/
 Postgres composition tests pass. This bounded correction is independently APPROVED together
-with RP-497 as recorded above; RP-677's test repair requires its own review. The full original
+with RP-497 as recorded above. RP-677's separate archive-phase test repair is independently
+approved at `f7d21941`; the CI log owns its old failure and actual corrected Postgres checks.
+The earlier red selected population remains historical, not relabelled green. The full original
 router `731bb3e7` and board `4c316c4c` ranges now have designated CHANGES REQUIRED verdicts in
 the log, completing those original reviews, not approving their later corrections. RP-495
 routes the already-disclosed fixed-name/rotation-ledger conflict to the API/Deployment authors;
@@ -363,7 +365,8 @@ not Go literal escaping, while retaining malformed UTF-8 refusal and exact descr
 The old-source regression rejects six descriptor-admitted strings and an enum member; affected
 cold Go/vet, generated-client tests and unchanged API generation pass after correction. The log
 records CHANGES REQUIRED on Claude's original query-descriptor commit `32560c4b` separately
-from this Codex repair's pending designated review. The original epoch-reader commit `e63796d5`
+from this Codex repair, now independently APPROVED over complete `6d2ffb99..20192a65` under
+Marco's corrective-review delegation. The original epoch-reader commit `e63796d5`
 now also has a CHANGES REQUIRED verdict: its unchanged SQL/keyset/changelog tests pass against
 real Postgres, but its private Account import (RP-390, separately repaired) and missing304
 declaration (RP-483, draft amendment) prevent whole-batch approval. Router/boards/routes have their
@@ -378,18 +381,23 @@ C19, label204 JSON, or treat the proposal as rights/retention or browser-cache p
 Current bounded correction (2026-10-08, RP-476): generated SDK dispatch selects the declared
 media representation when one status has alternatives. Single-representation schema decoding,
 raw digest checks and mounted endpoint formats remain unchanged. Old-client failures, affected
-checks and the real main player journey are recorded in the log; designated review is pending.
+checks and the real main player journey are recorded in the log. Fresh independent Codex
+corrective review APPROVES complete two-commit `59e5cc49..7142dd50`, including RP-477;
+the owning log records independent old failures and corrected endpoint/current checks.
 Related OpenAPI header aggregation RP-477 is now locally corrected in a separate coherent
 batch: all raw headers survive, shared names combine case-insensitively, and conditional
 requirements name their media type instead of applying to an unrelated schema alternative.
 Six actual-registry generation populations and unchanged mounted API generation pass;
-runtime verification is unchanged. Its designated review is also pending.
+runtime verification is unchanged. The same complete-range corrective approval covers it;
+neither correction accepts new representations, whole API construction or held drafts.
 
 Current bounded correction (2026-10-08, RP-473): operational policy admission now requires
 all exact, non-null root/nested fields before struct decoding. Missing/null proxy hops no
 longer silently select zero; explicit zero and escaped canonical names remain valid.
 The owning log records old-source failures and final consumer checks. No configured values,
-generated contract, proxy topology or limiter semantics changed; designated review is pending.
+generated contract, proxy topology or limiter semantics changed. Fresh independent Codex
+corrective review APPROVES complete `53f3f663..e4fd61fa`; exact old failures, all68 refusal
+cases/mounted controls and affected checks are in the owning log. Not full API/CI acceptance.
 
 Current bounded correction (2026-10-08, RP-449): duplicate-member rejection belongs at
 registry HTTP admission, including exact-response literal construction. Shared descriptor

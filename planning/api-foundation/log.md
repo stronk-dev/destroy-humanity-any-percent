@@ -4227,3 +4227,67 @@ reviewer-created ephemeral Postgres is stopped/removed, both preexisting builder
 No tracked reviewer edits/commits/main-tree mutation, external secrets, browser/TS public
 loop, clean-host, hosted/full-CI/new-feature/normative/archival/release approval. Root's
 separate RP-677 repair follows its own gate; these two bounded cursor reviews are closed.
+
+## 2026-10-16 — Same-status media selection and generated headers approved
+
+Review by: /root/api_media_alternatives_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings. Complete two-commit range
+59e5cc49df5c926227d909262e49f0ba4a13400f-exclusive..7142dd504ad9f4710338b6d382bb29887d69e2f7-inclusive;
+all10 source/generated/test/doc/record paths inspected. RP-476/RP-477 conform to accepted
+A2/A5/C19 without adding any mounted representation or adopting held response proposals.
+
+Independent ignored read-only exact-source/retained-test overlays: old generator78978 fails
+3/6 actual NewRegistry→GenerateOpenAPI populations (case alias, distinct header, raw/schema
+requirement);3 controls pass. Old SDK64081 fails both raw/raw and raw/schema,3 controls pass.
+Native Chromium/WebKit82075 independently fails4 cases with6 controls passing. Corrected
+endpoint passes28 Node/56 native cases, including raw bytes/digest refusals and refusal of
+missing/undeclared media before either body reader. Endpoint generator25044 passes full
+affected packages; current publicapi/gen-api80141 passes0.295/0.277s, vet and explicit six
+header/two representation populations pass. Current SDK+generated-operation-ports pass248
+Node/496 native checks. Types/Svelte0 diagnostics, shipped build/shell boundary/api-check98280
+PASS. OpenAPI SHA bb8f9de6747486b4779219eef0cf7e895e0f81718a537602159b015116f1bd40;
+pin dc3c959959613bcd247fe86316db0ad75cbceb42389062a4d842f70b8b4afb85;
+generated TS ff48cdbcc73637b70aecd23d5d2788164b069d2fc8bb113bbdef84fe13649eae unchanged.
+
+Reproduction overlays/configs are .cache/media-alternatives-review-{old,fixed}-{go.json,
+node.config.ts,browser.config.ts}; current-browser.config.ts selects native Chromium/WebKit.
+Use root `make test-go GO_PACKAGES='./publicapi ./cmd/gen-api' GO_TEST_FLAGS='-count=1'`
+with the Go overlay for historical inputs, root Vitest with the corresponding ../.cache config
+and --root client; current consumers are generated-api.test.ts/generated-operation-ports.test.ts.
+Initial browser EPERM runs0; expected old assertion failures have secondary screenshot-access
+warnings. An initial nonexistent consumer filter runs only132 SDK cases, not claimed as two
+files; the corrected real selection executes248/496. No tracked source mutation or Docker
+fixture; all handles terminal/slot released. Parent's Markdown records are the only edits.
+No Firefox/Linux, DB, mounted alternate representation, full journey/general SDK shape/API/
+hosted-CI, normative/archival/release claim. API plan also reconciles its stale RP-677 review
+note to the already-recorded independent CI verdictf7d21941, without rerunning approved work.
+
+## 2026-10-16 — Exact policy admission and JSON query encoding approved
+
+Review by: /root/api_policy_query_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; every implementation/test/doc/record path inspected:
+
+- RP-473: 53f3f6630f35ec10b7e2f3ac7ad45694fe1a67d9-exclusive..e4fd61fa804338d2d42030c23db6a569816f4864-inclusive (7 paths).
+- RP-492: 6d2ffb990283c8dd515e094c42b2570b81987494-exclusive..20192a656e3f823ae086c5dc336c628636553885-inclusive (6 paths).
+
+Accepted C20/A8 and A5/C17 conformance, not policy-value/schema/DSL or owner-choice changes.
+Literal old LoadPolicy overlay53940 admits36/68 invalid cases (34 aliases/collisions plus
+missing/null proxy hops) and all4 malformed-router cases;32 other invalid controls and
+explicit-zero/escaped-name positives pass. Old decodeQueryValue65568 fails6 valid strings
+and the declared escaped enum;10 other string/4 refusal controls pass. Corrected full68 policy/
+4 router refusals plus registered GET, explicit-zero/escaped controls,16 strings/4 query
+refusals and enum acceptance/rejection pass. Current functions match reviewed endpoints;
+later middleware/raw-query work is retained, not replaced by whole historical files.
+
+`make test-go GO_PACKAGES='./publicapi ./publicread ./gameserver ./cmd/gameserver ./cmd/gen-api' GO_TEST_FLAGS='-count=1'`
+17259 PASS0.149/0.187/0.381/0.308/0.132s; matching vet PASS. Root Vitest generated-api.test.ts
+passes132, including URL serialization/pre-HTTP refusal. `make api-check` independently
+preserves all three SHA256 values recorded in the preceding media verdict. Formatting,
+both full ranges and current diff checks pass. Old fixtures remain ignored read-only
+.cache/api-policy-query-review-old-{policy,query}.{go,json}; use root Go overlay selector.
+All handles terminal/slot released; no Docker resources/main-runtime edits/reviewer commits.
+Native DB skips are not integration proof. No Postgres/browser/hosted/full-CI/new-feature/
+normative/API/archival/release approval. Historical RP-474 socket red and original query
+CHANGES REQUIRED stay recorded; later readers and kernel/accounting failures remain separate.
