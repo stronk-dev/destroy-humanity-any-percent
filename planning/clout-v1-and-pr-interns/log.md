@@ -8371,3 +8371,31 @@ not rerun or fixed here. Next:first-hour's OWN source-version/lifetime/session
 profile and actual step/ranker/bank/action binding, then complete factories/masks/
 workloads and compatibility. No inferred authorization to replace its lifetime
 hook with the unrelated Company19 closed-replay schedule.
+
+### H3ac — independent technical review
+
+APPROVED, exact range `f662195e..187bbcd0` (13 paths). Review by:fresh independent
+Codex sub-agent `/root/joint_gate_technical_review`. Recorded by:Codex root.
+Under Marco's technical-review delegation, the reviewer independently inspects
+the incremental draft/prototype and full result/action/origin/work assertions;
+no actionable findings. This is technical approval, NOT adoption of either draft
+or approval of inherited research/debt.
+
+Reviewer regenerates the reversible36-entry overlay with the recorded solver
+hash. Cold focused command from the preceding reproduction instructions, selecting
+`TestOwnedActualGatesResearch|TestOwnedActualBootstrapResearch|TestWaitJointErrorsResearch|TestT0T1ReferenceBootstrap|TestT1SegmentProgression`,
+passes production2.098s/harness0.245s. Eight gate cases, bootstrap/purchase,
+error/budget controls and three legacy subjects actually run. Overlay vet passes.
+Additional `TestWaitModernAction` passes production1.085s. Independently repeating
+the sole QueryAll→cash Query dispatch fault fails production0.949s/Make exit2:
+both modes' delayed/blocked permit cases reject with `requirement_not_met`, while
+already/falling controls pass. Reviewer verifies the exact source/overlay fault
+diff, reviewed-range whitespace and clean tracked tree. One initial unescaped-
+pipe Make invocation fails before tests; corrected invocation passes. Verbose
+action output is display-truncated, but actual package execution exits0.
+
+Linux evidence is inspected, NOT independently rerun. Approval excludes full
+workloads, general lifecycle/masks/sessions, TS/SQL, performance budgets, gameplay
+choices, authored copy, feature/release acceptance and1.0. The27 Clout failures,
+RP-680, kernel guard and other inherited review debt remain open. No archival,
+draft implementation, publication or deployment authorized by this verdict.
