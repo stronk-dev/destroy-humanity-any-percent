@@ -16,7 +16,7 @@ with nil error. Owning log/manual source retain source/hash/budget/receipt/uncha
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
 
-Draft H3d–H3j now supply a candidate positive-aggregation enclosure, its partial
+Draft H3d–H3k now supply a candidate positive-aggregation enclosure, its partial
 producer/ledger composition and a source-driven wait-cell constructor. The4004
 pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
 four small whole-wait populations are exhaustive and match independently scanned
@@ -40,10 +40,17 @@ the gap without excluding valid minimum-weight composites. Valid tiny-weight cas
 execute1000 progress/ledger checks each; the retained long profile needs only one
 initial check and65537 cell certificates. Failed clones' post-ledger mutation is
 explicit, not confused with a committed production failure.
+RP-685 adds a proposed chronological query: available time0/empty-future shortcuts,
+range certificates before pruning, ordered refinement when proof fails, and
+mandatory actual source-stop points rather than missing tails. Eight complete
+profiles enumerate14008 references/5003 expected errors; earlier500/1500 results,
+first actual errors and genuine unreachable results stay distinct. The original
+six constructor populations bind this query too, including the retained long
+nonmonotone window. Complete caller/error-policy compatibility is not yet proved.
 
-Next resolve earlier-result/error precedence and remaining modern-context/hook handling,
+Next bind the query to remaining modern-context/hook and full caller semantics,
 then measure complete real workloads with all preparation work charged. Partial
-certification alone does not choose error precedence over a valid earlier result.
+certification alone does not adopt the proposed chronological error policy.
 Remaining whole-domain definedness, hook/modern factory, full caller/state semantics,
 compatibility, workload feasibility and research/normative adoption stay open.
 Do not repeat positive monotonicity censuses, hide setup cost, loosen bounds or

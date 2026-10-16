@@ -6188,3 +6188,185 @@ Recorded by: Codex root. Complete six-path range c366b9ba-exclusive through this
 checkpoint requires research/normative review outside the corrective-code
 delegation. Full1.0 goal active/progress. No feature closure, archival, push,
 publication, deployment or release approval; no SQL/TS/full CI/hosted claim.
+
+## 2026-10-16 — chronological error-ordering experiment, declared before execution
+
+Continue from6ca24449. The whole-horizon certificate is not a query contract:
+it may reject a later endpoint before returning an earlier valid result. Preserve
+the real earliestAffordable initial-balance shortcut (no transition consumed).
+Test one unchanged admitted v17 origin per profile with complete fresh actual
+0..horizon waits: cash producer1/second, controlled secondary permits producer,
+neutralized cash ladder/synergy, tick1000 except the raw-partial profile tick2000.
+Profiles: ledger Add overflow (before/rate6eMAX, horizon1000, first refusal667),
+final aggregate overflow (before0/rate6eMAX, horizon2000, first refusal1667),
+raw full-segment/partial overflow (same values, tick2000), and minimum-weight
+progress underflow (permits rate1, horizon1000, first refusal1). Every profile
+also queries an already-affordable0 quote, an early qualifying quote and a quote
+whose qualifying point would fall after the first error; retain a cash-unreachable
+error case and a valid/masked unreachable control. Compare query result/error
+ordering against the chronological exhaustive actual references, not endpoint
+monotonicity. First execute the old eager constructor behavior.
+
+Proposed manual mechanism: keep raw producer failure as a stop boundary, never
+omit it; certify ranges before pruning; refine an inconclusive/refused range in
+chronological order to an actual leaf. A real failing leaf returns its actual
+error, not unreachable; an earlier result requires all earlier ranges exhausted
+without a hidden error. All setup/repeated certification work is counted and
+diagnostic node exhaustion fails explicitly. No per-ms production scan or adopted
+search policy, changed payout, modern/hook support or workload feasibility is
+authorized. Existing sources/populations remain, native and declared Linux verify
+the completed research batch. Broader normative adoption/review stay open.
+
+Before execution include future-rate construction failure: neutral cash producer
+dot_matrix_queue1/second, permits-producing beige_tower base1eMAX, purchased1,
+provider generating9 towers/boundary. First boundary1000 remains valid; from1001
+the new count10 makes the actual rate non-state. Add the declared masked valid
+companion as a sixth complete population. Total9006 actual waits/3002 expected
+refusals. Four quotes per profile:0, early, after-error (or unreachable),1e12.
+The initial helper deliberately composes the unchanged eager constructor/search
+so the new chronological oracle must first fail for the real ordering defect.
+
+Initial81085/52a3a7 invalid: removed all cash-generator roles, which v4 admission
+forbids; zero actual references. Keep an inert stock_rate role instead. Next
+93958/3cbf76 invalid/incomplete: removing a dot_matrix pool source while keeping
+its synergy role refused five catalogs; only the future-rate2001 references ran.
+Keep that source unless its role is actually replaced. Neither partial run is
+the declared census. Baseline6904/675762 then runs all9006 real waits/3002 expected
+refusals and fails the intended chronological oracles: time0 and earlier500/1500
+results are suppressed by later certificate/raw producer failures. The masked
+companion is valid but wrongly constructs/consumes one point for quote0. This
+is a prototype composition finding, not a fresh private-harness defect claim.
+RP-685 records it. Implement the manual chronological query and retain eager
+construction as the explicit control; live search/math remain unchanged.
+
+First corrected focused79439/08e378 PASS .800s: all9006 references/3002 expected
+errors,24 chronological queries; earlier500/1500 results survive, all first-error
+queries call the actual endpoint and return its error, and zero quotes construct
+nothing. Future rate failure is retained at1001, not mistaken for completed source
+coverage; raw-partial's stopped endpoint2000 does not hide its earlier1667 error.
+Before complete verification add budget1 refusal/zero-budget already-affordable
+controls and bind the new query to the existing six complete constructor profiles
+via a shared runner, including the retained nonmonotone long wait and zero/
+unreachable controls. Select TestWait: it runs the shared12028 reference population
+once through the new wrapper (not the old test entrypoint too), retaining all
+other34028 references plus new9006, total55062 enumerated actual references.
+Expose global and repeated range checks, refinements, source-stop calls and actual
+points. Failed proof means refine/check, not a semantic error or unreachable.
+
+Intermediate55386/4b2649 PASS12.568s plus production vet, full55062 references.
+Before freezing, close the zero-future/source-first edge: add an admitted origin
+with purchased target10 so rates fail from1ms before any cell exists, and assert
+that a horizon0 query with insufficient cash returns unreachable without future
+preparation/budget/point. This is the same chronological-query boundary, not a
+new product decision. Seven profiles10007 references/4002 expected errors, total
+56063 with prior populations. A one-node budget is sufficient for the initial
+source-stop witness, unlike the other declared refinement-exhaustion cases; assert
+that distinction instead of demanding a fabricated budget failure. Run the new
+empty-domain oracle before correcting its branch. Earlier results remain dated
+intermediate evidence, not final source verification.
+
+Empty-domain baseline19167/156168 FAIL .856s executes all10007 references and
+only the seven new horizon0 assertions fail: budget/point validation happens
+before recognizing the empty future. Add that explicit zero-horizon branch
+after the unchanged initial-balance shortcut and before future work. The new
+initial-rate profile's actual1ms stop already passes, including its one-node
+budget. Preserve all values/census/expected error identities for final execution.
+
+Final native11370/ac3b47 PASS16.499s plus ordinary production vet; declared Linux
+AMD6478995/32eb01 PASS28.924s. Both terminal; all56063 enumerated references and
+query/negative/guard populations run without selected skips. These runs overlap
+on this machine; their single timing observations are NOT a comparative benchmark.
+Keep the three tracked manual sources frozen. Before checkpoint execute two
+compiling ignored-overlay controls on the whole TestWaitQueryErrorOrderingResearch:
+force whole-domain definedness true (invalid ranges may then be pruned), and
+separately drop the producer stop barrier. Both must fail the real first-error
+oracles, not compilation/admission/census. Neither changes production or normal
+source bytes. The original eager/empty-domain red runs retain separate provenance.
+
+Controls77420/e33a4d FAIL .917s and74204/a4d34d FAIL .990s as intended, all10007
+references: bypassing definedness hides/steps past first ledger/aggregate/partial/
+progress errors; dropping source stops falsely reports unreachable for future
+and initial rate failures. No compiler/admission/census error substitutes.
+
+Final source inspection finds one more future failure still raised eagerly in
+the raw header: online provision horizon floor(production/tick)>floor(cap/tick)+1.
+Before correction add an eighth profile, admitted cap1000/tick1000/horizon4000,
+first actual refusal3000. The same cash1/second has an earlier500 result; later
+3.5/1e12 queries must hit the real3000 error. This is RP-685's same boundary, not
+a new release/product rule. Total14008 references/5003 errors, full60064. Run it
+red first, then defer the header's known failure boundary and preserve earlier
+valid cells. Previously normal runs/controls remain bound to their intermediate
+sources and seven profiles, not relabelled final after this extension.
+
+Header baseline69474/f20196 FAIL1.225s: all14008 actual references run; only the
+new horizon_guard profile fails (lost500, no actual3000 error, wrong budget result).
+Deferral uses first invalid duration (floor(cap/tick)+2)*tick, clips prepared
+production to one millisecond earlier, and retains the mandatory actual stop
+point. An earlier producer failure replaces that later stop. Ordinary eager
+construction keeps its original guard; the query does not call this a cash
+plateau or expand the accepted online/offline production allowance.
+
+## 2026-10-16 — RP-685 chronological research query verified
+
+Final native29892/524e35 PASS22.244s plus ordinary production vet; declared Linux
+AMD6463770/31670e PASS38.927s. Both terminal, all60064 enumerated actual references
+and retained controls run, no selected skips. Eight new profiles have14008
+references/5003 expected refusals.32 main queries compare earliest results/first
+actual errors/unreachable against exhaustive chronological references. Time0 and
+empty-future controls need no preparation/budget/callback; node exhaustion is a
+distinct failure. The actual initial/future rate stops at1/1001 and online-horizon
+stop3000 are mandatory, not missing tails. Raw-partial's earlier1667 error beats
+its stopped full-width endpoint2000. Earlier500/1500 purchases survive later
+failures; failed proof alone supplies neither an error witness nor unreachable.
+
+The shared six-profile runner retains all12028 original references/fault controls
+and binds the new query/main/zero/unreachable calls without duplicating that census.
+The retained nonmonotone query finds65536332 with65551 nodes, one actual leaf and
+one global domain certificate; its4004 partial checks/other setup remain counted.
+Repeated inconclusive-range certificates are also counted (not cheap by assumption).
+Native/Linux full runs overlap; timings are single contended observations, NOT
+a matched benchmark, full workload result or justification for new work ceilings.
+
+Final controls62468/37672a FAIL1.502s and37443/d3dc66 FAIL1.623s intentionally,
+all14008 references. Definedness bypass hides/steps past the real first errors;
+dropped stops falsely report unreachable at the initial/future-rate and new
+horizon barrier. No compilation, admission, truncation or census failure is the
+oracle. Normal tracked source bytes were unchanged; no repeat of normal runs
+is needed because only ignored alternative helpers were executed. All handles
+terminal; --rm Linux starts no DB. No production mutation, TS/SQL/hosted/fullCI
+or release claim. RP-680 and27 AC6 partitions stay open.
+
+Commit the portable nine-file probes/wait-query-overlay.json rather than require
+this machine's ignored absolute overlays. Relative mappings use the server cwd
+already owned by root Make and the declared Docker service. Consumer verification:
+native78483/125821 PASS1.019s; Linux4777/15852d PASS2.049s, complete new14008-
+reference population on the same frozen sources. Full reproduction from root:
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v ./production -count=1`.
+Full normal final executions above used ignored absolute manifests mapping the
+identical source bytes; portable consumer executions verify actual relative-path resolution.
+This is not a separately executed fresh-clone or clean-host release gate.
+
+Final tracked source SHA256:
+- production-wait-cells.go.txt: f8c01cf3bb1e55e92ee24ff274add0c40193eccb78f52da2ea7cf52cbe927b46
+- wait-query-order.go.txt: 03c316c25ce5aa62c07bc30c6dd87d3bf9d6e4e71e419c209ab785760e309728
+- wait-query-order-test.go.txt: 4abca278df87f84336b4d5a3da5fbf26981ba1573c556b4adabf19a4b6ffce0b
+- wait-query-overlay.json: fb2d780a13620f6fb6103eecf2e9f62d37dc23a11b5fcf0e0f81c333ee9c2e2b
+Ignored normal native/Linux overlay hashes1611dc70212f64a44c7bfef3ae3dd562b4bbd888d99fbf0dbc86c254920ebda2 /
+e7c947747f9dee38b91d853eed9e52cc152a20588526c89f772fd9a8ded1e836.
+Control helper/overlay pairs (.cache/wait-query-{proof-bypass,stop-dropped}.{go,json}):
+fb5cb646f27be8447ce2f38ac2005ef96cddf6b8c87b9c1f812981dfbed72240 /
+f4bf35dfb2f5b965dc9b7e0d0c653f0c4efac0cefeb02606f51bb7ded4cdbc7e;
+7b9e01cd593f662ddc6f93eb2fb822f8506d23f66af991bceed4f69439dab77b /
+c36db484626ee1f589e2b72c045c9c100dbed4bb26322bce8f16823da14c6b40.
+They replace only the query helper with the documented one-line faults; prior
+intermediate source identities/results are not restamped as final.
+
+Own draft H3k states the conditional ordering proof and limits. Next: modern
+endpoint contexts/hooks, remaining global/caller/resource/state semantics and
+error-policy compatibility, complete workloads under accepted budgets and lawful
+adoption. No accepted error policy is inferred from this experiment. Review by:
+Codex root (research author/first filter). Recorded by: Codex root. Complete eight-
+path range6ca24449-exclusive through this checkpoint requires research/normative
+review outside corrective-code delegation. Full1.0 goal active/progress; no feature
+acceptance/archival/push/publication/deployment/release or active arithmetic change.

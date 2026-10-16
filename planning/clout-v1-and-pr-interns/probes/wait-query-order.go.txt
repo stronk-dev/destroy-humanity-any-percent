@@ -1,0 +1,113 @@
+package production
+
+import (
+	"fmt"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+// Manual chronological query, not an adopted search API or live implementation.
+func queryWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode EvaluationMode, horizon int64, mask AblationMask, dependencies SimulationDependencies, quote decimal.Decimal, budget int, point func(int64) (decimal.Decimal, error)) (int64, *waitCellsResearch, error) {
+	if state == nil || state.Ledger == nil || !quote.IsStateValue() || quote.Lt(decimal.Zero) {
+		return -1, nil, fmt.Errorf("invalid research query")
+	}
+	before, exists := state.Ledger.Balance("company.cash")
+	if !exists {
+		return -1, nil, ErrInvalidEngineState
+	}
+	// Match the actual caller: an available balance needs no wait evaluation.
+	if before.Gte(quote) {
+		return 0, nil, nil
+	}
+	if horizon == 0 {
+		return -1, nil, nil // No remaining endpoint can change the known balance.
+	}
+	if budget <= 0 || point == nil {
+		return -1, nil, fmt.Errorf("invalid research query budget/point")
+	}
+	price, err := cellRepresented(quote)
+	if err != nil {
+		return -1, nil, err
+	}
+	factory, err := buildWaitCellSourcesResearch(state, catalog, mode, horizon, mask, dependencies, "", true)
+	if err != nil {
+		return -1, factory, err
+	}
+	factory.work.QueryRanges++
+	allDefined := certifyWaitCellsResearch(factory, state) == nil
+	charge := func() error {
+		if factory.work.QueryNodes >= budget {
+			return fmt.Errorf("research query node budget exhausted")
+		}
+		factory.work.QueryNodes++
+		return nil
+	}
+	actual := func(at int64) (int64, error) {
+		factory.work.Points++
+		value, err := point(at)
+		if err != nil {
+			return -1, err
+		}
+		if !value.IsStateValue() {
+			return -1, ErrInvalidEngineState
+		}
+		if value.Gte(quote) {
+			return at, nil
+		}
+		return -1, nil
+	}
+	var visit func(waitCellResearch, int64, int64) (int64, error)
+	visit = func(cell waitCellResearch, lo, hi int64) (int64, error) {
+		if err := charge(); err != nil {
+			return -1, err
+		}
+		defined := allDefined
+		if !defined {
+			window := *factory
+			cell.lo, cell.hi = lo, hi
+			cell.partials, cell.aggregates = nil, nil
+			window.cells = []waitCellResearch{cell}
+			window.work.QueryRanges++
+			defined = certifyWaitCellsResearch(&window, state) == nil
+			factory.work = window.work // Include failed/repeated preparation too.
+		}
+		if defined {
+			bound, err := factory.upper(cell, hi)
+			if err == nil && bound.Cmp(price) < 0 {
+				return -1, nil
+			}
+		}
+		if lo == hi {
+			return actual(lo)
+		}
+		if !defined {
+			factory.work.QueryRefinements++
+		}
+		mid := lo + (hi-lo)/2
+		found, err := visit(cell, lo, mid)
+		if err != nil || found >= 0 {
+			return found, err
+		}
+		return visit(cell, mid+1, hi)
+	}
+	for _, cell := range factory.cells {
+		found, err := visit(cell, cell.lo, cell.hi)
+		if err != nil || found >= 0 {
+			return found, factory, err
+		}
+	}
+	if factory.stopErr != nil {
+		if err := charge(); err != nil {
+			return -1, factory, err
+		}
+		factory.work.QueryStops++
+		factory.work.Points++
+		if _, err := point(factory.stopAt); err != nil {
+			return -1, factory, err // Return the real endpoint error, not a surrogate.
+		}
+		return -1, factory, fmt.Errorf("research source-stop witness did not fail at%d: %v", factory.stopAt, factory.stopErr)
+	}
+	return -1, factory, nil
+}

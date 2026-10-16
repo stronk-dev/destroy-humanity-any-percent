@@ -53,6 +53,7 @@ type waitCellWorkResearch struct {
 	AllPrefixWrites, AggregateFast, AggregateExact, AggregateExactTerms                                                int
 	LedgerInitial, LedgerFast, LedgerExact, LedgerReuses, LedgerAggregates, LedgerTerms, LedgerPartials, LedgerNoEntry int
 	ProgressInitial, ProgressFast, ProgressExact, ProgressLedgers, ProgressAggregates, ProgressTerms, ProgressPartials int
+	QueryNodes, QueryRanges, QueryRefinements, QueryStops                                                              int
 }
 
 type waitCellsResearch struct {
@@ -62,6 +63,8 @@ type waitCellsResearch struct {
 	initial            map[string]string
 	before, eff, bonus decimal.Decimal
 	work               waitCellWorkResearch
+	stopAt             int64
+	stopErr            error
 }
 
 func buildWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode EvaluationMode, horizon int64, mask AblationMask, dependencies SimulationDependencies, fault string) (*waitCellsResearch, error) {
@@ -69,19 +72,26 @@ func buildWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode Ev
 	if err != nil {
 		return nil, err
 	}
-	if err := certifyWaitCellPartialsResearch(factory); err != nil {
-		return nil, err
-	}
-	if err := certifyWaitCellAggregatesResearch(factory); err != nil {
-		return nil, err
-	}
-	if err := certifyWaitCellLedgerResearch(factory); err != nil {
-		return nil, err
-	}
-	if err := certifyWaitCellProgressResearch(factory, state); err != nil {
+	if err := certifyWaitCellsResearch(factory, state); err != nil {
 		return nil, err
 	}
 	return factory, nil
+}
+
+func certifyWaitCellsResearch(factory *waitCellsResearch, state *save.State) error {
+	if err := certifyWaitCellPartialsResearch(factory); err != nil {
+		return err
+	}
+	if err := certifyWaitCellAggregatesResearch(factory); err != nil {
+		return err
+	}
+	if err := certifyWaitCellLedgerResearch(factory); err != nil {
+		return err
+	}
+	if err := certifyWaitCellProgressResearch(factory, state); err != nil {
+		return err
+	}
+	return nil
 }
 
 // Progress reads purchased counts and the final ledger, never generated counts,
@@ -440,6 +450,12 @@ func certifyWaitCellPartialsResearch(factory *waitCellsResearch) error {
 
 // Original upper-only constructor, retained for the executed RP-681 control.
 func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode EvaluationMode, horizon int64, mask AblationMask, dependencies SimulationDependencies, fault string) (*waitCellsResearch, error) {
+	return buildWaitCellSourcesResearch(state, catalog, mode, horizon, mask, dependencies, fault, false)
+}
+
+// Deferred producer failures are explicit query barriers, not missing cells.
+// The existing eager constructor retains its original failure behavior.
+func buildWaitCellSourcesResearch(state *save.State, catalog *economy.Catalog, mode EvaluationMode, horizon int64, mask AblationMask, dependencies SimulationDependencies, fault string, deferFailure bool) (*waitCellsResearch, error) {
 	if state == nil || state.Ledger == nil || catalog == nil || horizon < 0 || horizon > 86_460_000 ||
 		mode != ModeOnline && mode != ModeOffline || dependencies.Hook != nil || save.VersionForState(state) >= 18 ||
 		fault != "" && fault != "grid" && fault != "provision" && fault != "cap" {
@@ -481,8 +497,18 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 	capacity := int64(2)
 	next := productionEnd
 	if tick > 0 {
-		if state.RunStartedAt.IsZero() || state.EvaluatedThrough.Before(state.RunStartedAt) || productionEnd/tick > catalog.OfflinePolicy().AccrualCapMS/tick+1 {
+		if state.RunStartedAt.IsZero() || state.EvaluatedThrough.Before(state.RunStartedAt) {
 			return nil, fmt.Errorf("invalid research provision horizon")
+		}
+		if productionEnd/tick > catalog.OfflinePolicy().AccrualCapMS/tick+1 {
+			if !deferFailure {
+				return nil, fmt.Errorf("invalid research provision horizon")
+			}
+			// The actual guard depends on this requested endpoint's duration,
+			// not on every earlier endpoint. Keep its first invalid duration.
+			result.stopAt = (catalog.OfflinePolicy().AccrualCapMS/tick + 2) * tick
+			result.stopErr = fmt.Errorf("invalid research provision horizon")
+			productionEnd = result.stopAt - 1
 		}
 		capacity = productionEnd/tick + 3
 		next = tick - (state.EvaluatedThrough.UnixMilli()-state.RunStartedAt.UnixMilli())%tick
@@ -516,6 +542,17 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 		return result
 	}
 	maxWidth := int64(0)
+	stop := func(at int64, err error) {
+		result.stopAt, result.stopErr = at, err
+		if n := len(result.cells); n > 0 && result.cells[n-1].hi >= at {
+			result.cells[n-1].hi = at - 1
+			if result.cells[n-1].lo > result.cells[n-1].hi {
+				result.cells = result.cells[:n-1]
+			}
+		}
+	}
+
+sourceLoop:
 	for start := int64(0); ; {
 		end := productionEnd
 		if tick > 0 && next < end {
@@ -531,6 +568,10 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 		rates, err := ratesWithProvisionedAndPolicy(catalog, state.GeneratorCounts, generated, contributions, policy)
 		result.work.Rates++
 		if err != nil {
+			if deferFailure {
+				stop(start+1, err) // Newly generated rates matter only after the boundary.
+				break sourceLoop
+			}
 			return nil, err
 		}
 		remainingBurst := state.ComputeBurstRemainingMS - start
@@ -553,6 +594,10 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 			delta, err := accrueBoostedConstant(values, width, bonusMS, result.eff, result.bonus)
 			result.work.Deltas++
 			if err != nil {
+				if deferFailure {
+					stop(end, err)
+					break sourceLoop
+				}
 				return nil, err
 			}
 			if resource == "company.cash" && !delta.Eq(decimal.Zero) {
@@ -585,6 +630,10 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 		if tick > 0 && end == next {
 			if fault != "provision" {
 				if err := materializeProvisionBoundaryWithPolicy(catalog, state.GeneratorCounts, generated, remainders, policy); err != nil {
+					if deferFailure {
+						stop(end, err) // Materialization is part of this exact endpoint.
+						break sourceLoop
+					}
 					return nil, err
 				}
 				result.work.Provisions++
@@ -596,7 +645,7 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 		}
 		start = end
 	}
-	if horizon > productionEnd {
+	if result.stopErr == nil && horizon > productionEnd {
 		result.cells = append(result.cells, waitCellResearch{lo: productionEnd + 1, hi: horizon, start: productionEnd,
 			flat: true, prefix: prefix[:len(prefix):len(prefix)], prefixSum: new(big.Rat).Set(prefixSum), groups: int64(len(groups)), allPrefixes: snapshotPrefixes()})
 	}
@@ -618,7 +667,15 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 			return nil, fmt.Errorf("cell coverage overlap/gap at%d", index)
 		}
 	}
-	if result.cells[len(result.cells)-1].hi != horizon {
+	coveredThrough := int64(0) // Time0 was checked by the query before construction.
+	if len(result.cells) > 0 {
+		coveredThrough = result.cells[len(result.cells)-1].hi
+	}
+	expectedThrough := horizon
+	if result.stopErr != nil {
+		expectedThrough = result.stopAt - 1
+	}
+	if coveredThrough != expectedThrough {
 		return nil, fmt.Errorf("cell coverage ends early")
 	}
 	return result, nil
@@ -757,7 +814,13 @@ func (factory *waitCellsResearch) search(quote decimal.Decimal, budget int, poin
 	return -1, nil
 }
 
+type waitQueryRunnerResearch func(*save.State, *economy.Catalog, EvaluationMode, int64, AblationMask, SimulationDependencies, decimal.Decimal, int, func(int64) (decimal.Decimal, error)) (int64, *waitCellsResearch, error)
+
 func TestProductionWaitCellConstructorResearch(t *testing.T) {
+	runProductionWaitCellConstructorResearch(t, nil)
+}
+
+func runProductionWaitCellConstructorResearch(t *testing.T, query waitQueryRunnerResearch) {
 	read := func(path string) []byte {
 		t.Helper()
 		data, err := os.ReadFile(path)
@@ -973,6 +1036,14 @@ func TestProductionWaitCellConstructorResearch(t *testing.T) {
 			if profile.retained && found != 65536332 {
 				t.Fatal("retained search changed", found)
 			}
+			if query != nil {
+				queryStarted := time.Now()
+				queryFound, queryFactory, queryErr := query(state, catalog, profile.mode, profile.horizon, profile.mask, SimulationDependencies{}, quote, int(2*(profile.horizon+1)), func(at int64) (decimal.Decimal, error) { cash, _, err := project(at); return cash, err })
+				if queryErr != nil || queryFound != found || queryFactory == nil || queryFactory.work.QueryRanges != 1 || queryFactory.work.QueryRefinements != 0 {
+					t.Fatal("chronological query lost the existing actual-wait result or global certificate reuse", queryFound, found, queryErr)
+				}
+				t.Logf("chronological query including preparation%s found%d work%+v", time.Since(queryStarted), queryFound, queryFactory.work)
+			}
 			if profile.name == "default_grid" || profile.name == "short_grid" || profile.name == "offline_plateau" {
 				faults := []string{"grid", "provision"}
 				if profile.name == "offline_plateau" {
@@ -1037,6 +1108,15 @@ func TestProductionWaitCellConstructorResearch(t *testing.T) {
 				result, err := factory.search(control.quote, int(2*(profile.horizon+1)), func(at int64) (decimal.Decimal, error) { cash, _, err := project(at); return cash, err })
 				if err != nil || result != control.want {
 					t.Fatal("whole-wait already/unreachable control differs", control.quote, result, err)
+				}
+				if query != nil {
+					queryResult, queryFactory, queryErr := query(state, catalog, profile.mode, profile.horizon, profile.mask, SimulationDependencies{}, control.quote, int(2*(profile.horizon+1)), func(at int64) (decimal.Decimal, error) { cash, _, err := project(at); return cash, err })
+					if queryErr != nil || queryResult != control.want || control.want == 0 && queryFactory != nil || control.want == -1 && queryFactory == nil {
+						t.Fatal("chronological whole-wait control differs", control.quote, queryResult, queryErr)
+					}
+					if queryFactory != nil {
+						t.Logf("chronological unreachable including preparation work%+v", queryFactory.work)
+					}
 				}
 			}
 			t.Logf("references%d cells%d setup%s search%s found%d search_certificates%d search_points%d work_including_controls%+v", len(points), len(factory.cells), setupTime, searchTime, found, queryCertificates, queryPoints, factory.work)

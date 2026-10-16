@@ -908,6 +908,99 @@ already-affordable/no-op ordering must be preserved rather than assumed. Hooks,
 modern endpoint contexts, global error precedence, complete workloads, adoption
 and full acceptance remain open. No production search/math/schema/CI is changed.
 
+#### H3k — Chronological result/error ordering, research query (RP-685)
+
+The [manual query](../planning/clout-v1-and-pr-interns/probes/wait-query-order.go.txt)
+and its [actual-reference tests](../planning/clout-v1-and-pr-interns/probes/wait-query-order-test.go.txt)
+separate a successful whole-domain certificate from the query's outcome. Eager
+H3g–H3j validation can itself suppress a valid earlier result. With admitted
+cash1/second origins, a ledger refusal at667 hides a valid500ms result, and an
+aggregate refusal at1667 hides1500ms. Raw producer preparation can also fail
+later than a valid result. The eager composition additionally rejects available
+time0 results or consumes an unnecessary wait. This is a manual composition
+finding, not a separately executed new live-harness defect or a policy adoption.
+
+The proposed outcome is the first qualifying result OR actual error in canonical
+endpoint order. It must not redefine any point's payout, silently skip a refused
+point, or use a later failure to discard an earlier result. Initial balance >=
+quote returns0 before preparing/evaluating a wait, matching the current private
+caller's source contract. If it does not qualify and horizon=0, there is no future
+endpoint: return unreachable without a budget, callback or constructor. Positive
+results still require an actual full SimulateAdvance leaf, not a balance surrogate.
+Caller compatibility and normative adoption remain separate, particularly the
+current future-search method's horizon-first error ordering.
+
+For the explicit H3f–H3j legacy/nil-hook/nil-external research domain:
+
+1. Prepare actual source cells once, retaining producer failure as an explicit
+   stop, not an omitted tail. A segment's full-width arithmetic failure stops at
+   that endpoint; an ending provision failure also belongs to that endpoint.
+   A new rate-vector failure after a completed boundary first affects start+1.
+   Keep all earlier cells, clipping the failed endpoint from normal cell coverage.
+   Their immutable prefixes predate the failed source operation. Initial rate
+   failure leaves no cells and stop1, not a vacuous completed factory.
+2. Translate the online provision-horizon refusal to its first invalid duration:
+   (floor(catalog_cap/tick)+2)*tick. Prepare through stop-1 and retain that stop.
+   This follows the actual guard's strict integer comparison. The offline capped
+   producer does not gain an extra allowance. An earlier producer failure replaces
+   the later horizon stop. Existing eager construction retains its original guard.
+3. Try the complete H3g–H3j certificate once for all prepared cells. If it succeeds,
+   reuse it throughout the search; do not repeat every partial/domain check for
+   each node. If it fails, that is an inconclusive range proof—not the query's
+   semantic error. Each visited subrange gets its own fresh partial/aggregate/
+   ledger/progress certificate, retaining all failed/repeated preparation work.
+4. Only a defined range AND a sound cash upper bound below the quote may be
+   pruned. Otherwise split in integer order, left before right. A singleton
+   executes the full actual wait and returns its real error or qualification.
+   A failed/unsupported upper-bound calculation cannot prune either. Never use
+   a successful end sample as proof that earlier points are defined or affordable.
+5. After all earlier cells are exhausted, an explicit source stop MUST execute
+   its actual endpoint. Return that real error. If it unexpectedly succeeds,
+   fail the source-stop witness loudly; do not bless the missing tail. An earlier
+   error discovered by refinement precedes a later source stop.
+
+Conditional on the component certificates, the ordering argument is structural:
+each earlier exhausted range was certified defined and unaffordable or exhausted
+as actual nonqualifying leaves. Every reported positive leaf is therefore earliest;
+an error leaf has no earlier hidden error/result. Unreachable requires complete
+coverage and no outstanding stop. A certificate refusal alone establishes none of
+those outcomes. The manual wrapper does not invent validity of arbitrary global
+preconditions, hook/modern contexts or unsupported resource/quote families.
+
+QueryNodes counts each visited node and mandatory stop, with the diagnostic finite
+tree ceiling2*(horizon+1). Exhaustion is an error. QueryRanges/Refinements/Stops and
+existing partial/aggregate/ledger/progress counters expose actual repeated setup;
+global certification is setup, not a concealed free per-node operation. A difficult
+range may require very expensive exact certification or singleton evaluation.
+This is NOT permission for a per-ms production scan, a new runtime work ceiling or
+an adopted optimization; complete workloads under accepted budgets remain gates.
+
+Eight complete profiles enumerate14008 actual references/5003 expected refusals:
+ledger, aggregate, raw partial, progress, future and initial rate failures, online
+horizon guard and a masked valid companion. Four quotes each distinguish time0,
+earlier result, error before later qualification and genuinely unreachable.
+Empty-future and budget-exhaustion controls retain their distinct meanings. The
+same six original constructor profiles/12028 references are reused by a shared
+runner to bind the new query too, without duplicating their reference census.
+The retained long nonmonotone wait still finds65536332ms with65551 search nodes,
+one actual leaf and one global domain certificate, despite its unaffordable horizon.
+All original source-fault/refusal/cache/receipt controls remain selected. Deliberate
+definedness bypass and dropped-stop variants fail the first-error oracles.
+
+This establishes a bounded proposed query mechanism, not a migrated real caller
+or complete wait-domain proof. Modern contexts/hooks, full caller/state/resource
+contracts, compatibility/error-policy adoption, complete workloads and designated
+research/normative review remain open. RP-680 and Clout AC6 are not closed. No
+live search, math, schema, constants, normal CI or player behavior is changed.
+
+The [tracked overlay manifest](../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json)
+maps the nine manual Go sources using paths relative to the server working
+directory used by root Make and the declared Docker service. Reproduce the full
+population with root `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v'`.
+It requires no machine-specific ignored overlay or change to ordinary CI. The
+portable manifest's actual new-query consumer also passes on native/Linux;
+this is not an executed clean-host/release rehearsal or a full CI claim.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -1098,3 +1191,8 @@ numeric tolerance, authored content or narrowed1.0 scope.
   actual progress fallback without excluding valid tiny weights; retain purchased
   versus provisioned count semantics. Whole caller/error ordering, modern/hooks,
   workloads and research/normative adoption remain open; no live behavior change.
+- 2026-10-16: reproduce RP-685's eager-validation loss of earlier results; add a
+  proposed chronological query with range certification/refinement, mandatory
+  source stops, zero-time/empty-future semantics and explicit repeated work.
+  Retain original nonmonotone populations. Caller compatibility, global/modern/
+  hook domains, complete workloads and normative adoption still gate live use.

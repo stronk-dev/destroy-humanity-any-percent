@@ -1,0 +1,13 @@
+{
+  "Replace": {
+    "production/manual_wait_query_order_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-query-order-test.go.txt",
+    "production/manual_wait_query_order_helper_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-query-order.go.txt",
+    "production/manual_wait_cell_progress_domain_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-cell-progress-domain.go.txt",
+    "production/manual_wait_cell_ledger_domain_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-cell-ledger-domain.go.txt",
+    "production/manual_wait_cell_aggregate_domain_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-cell-aggregate-domain.go.txt",
+    "production/manual_wait_cell_partial_domain_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-cell-partial-domain.go.txt",
+    "production/manual_production_wait_cells_test.go": "../planning/clout-v1-and-pr-interns/probes/production-wait-cells.go.txt",
+    "production/manual_production_cell_enclosure_test.go": "../planning/clout-v1-and-pr-interns/probes/production-cell-enclosure.go.txt",
+    "production/manual_provision_carry_test.go": "../planning/clout-v1-and-pr-interns/probes/provision-carry-probe.go.txt"
+  }
+}

@@ -1,0 +1,228 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"os"
+	"strings"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+func TestWaitQueryErrorOrderingResearch(t *testing.T) {
+	data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	total, bad := 0, 0
+	for _, row := range []struct {
+		name, before, rate, early, late string
+		tick, horizon, firstFailure     int64
+		masked, progress, futureRates   bool
+	}{
+		{"ledger", "6e8999999999999999", "6e8999999999999999", "5e-1", "8e-1", 1000, 1000, 667, false, false, false},
+		{"aggregate", "0", "6e8999999999999999", "1.5e0", "1.8e0", 1000, 2000, 1667, false, false, false},
+		{"raw_partial", "0", "6e8999999999999999", "5e-1", "1.8e0", 2000, 2000, 1667, false, false, false},
+		{"progress", "0", "1e0", "5e-1", "8e-1", 1000, 1000, 1, false, true, false},
+		{"future_rates", "0", "1e-1000", "5e-1", "1.5e0", 1000, 2000, 1001, false, false, true},
+		{"initial_rates", "0", "1e-1000", "5e-1", "8e-1", 1000, 1000, 1, false, false, true},
+		{"horizon_guard", "0", "1e0", "5e-1", "3.5e0", 1000, 4000, 3000, false, false, false},
+		{"valid_masked", "6e8999999999999999", "6e8999999999999999", "5e-1", "1.8e0", 1000, 1000, -1, true, false, false},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			var root map[string]any
+			if err := json.Unmarshal(data, &root); err != nil {
+				t.Fatal(err)
+			}
+			root["provision_tick_ms"] = row.tick
+			if row.name == "horizon_guard" {
+				root["offline_policy"].(map[string]any)["accrual_cap_ms"] = 1000
+			}
+			for _, raw := range root["resources"].([]any) {
+				resource := raw.(map[string]any)
+				if resource["id"] == "company.permits" && !row.progress && !row.futureRates {
+					resource["hardcap"].(map[string]any)["amount"] = "9e8999999999999999"
+				}
+			}
+			for _, raw := range root["generator_classes"].([]any) {
+				generator := raw.(map[string]any)
+				switch generator["id"] {
+				case "generator.beige_tower":
+					generator["production"] = map[string]any{"resource_id": "company.cash", "base_rate": "1e0"}
+					generator["ladder"], generator["roles"] = []any{}, []any{map[string]any{"kind": "stock_rate", "per_purchased_ppm": 1000}}
+					if row.futureRates {
+						generator["production"] = map[string]any{"resource_id": "company.permits", "base_rate": "1e8999999999999999"}
+					}
+				case "generator.dot_matrix_queue":
+					if row.futureRates {
+						generator["production"] = map[string]any{"resource_id": "company.cash", "base_rate": "1e0"}
+						generator["ladder"], generator["roles"] = []any{}, []any{map[string]any{"kind": "stock_rate", "per_purchased_ppm": 1000}}
+					}
+				case "generator.beige_tower_v2":
+					generator["production"] = map[string]any{"resource_id": "company.permits", "base_rate": row.rate}
+					if row.futureRates {
+						generator["provisions"].(map[string]any)["rate_ppm"] = 9000000
+					}
+				}
+			}
+			for _, raw := range root["synergy_pools"].([]any) {
+				pool := raw.(map[string]any)
+				kept := []any{}
+				for _, source := range pool["sources"].([]any) {
+					if id := source.(map[string]any)["id_or_class"]; id != "generator.beige_tower" && (!row.futureRates || id != "generator.dot_matrix_queue") {
+						kept = append(kept, source)
+					}
+				}
+				pool["sources"] = kept
+			}
+			if row.progress {
+				root["progress_coordinates"].([]any)[0] = map[string]any{"tier": 0, "kind": "composite", "terms": []any{
+					map[string]any{"kind": "resource_log", "resource": "company.permits", "target": "1e6", "weight": "1e-8999999999999999"},
+					map[string]any{"kind": "count_fraction", "count": "generators.total_owned", "required": 1, "weight": "1e0"},
+				}}
+			}
+			catalogBytes, err := json.Marshal(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			catalog, err := economy.LoadCatalog(catalogBytes)
+			if err != nil {
+				t.Fatal("catalog not admitted", err)
+			}
+			body, err := json.Marshal(map[string]any{"balances": map[string]string{"company.cash": "0", "company.permits": row.before}})
+			if err != nil {
+				t.Fatal(err)
+			}
+			state, err := save.RestoreState(body, 1, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state.WireVersion = 17
+			state.AchievementsEarnedRun = map[string]bool{}
+			state.GeneratorCounts["generator.beige_tower"] = 1
+			state.GeneratorCounts["generator.beige_tower_v2"] = 1
+			state.GeneratorPurchasedTotal = 2
+			if row.futureRates {
+				state.GeneratorCounts["generator.dot_matrix_queue"] = 1
+				state.GeneratorPurchasedTotal = 3
+				if row.name == "initial_rates" {
+					state.GeneratorCounts["generator.beige_tower"] = 10
+					state.GeneratorPurchasedTotal = 12
+				}
+			}
+			origin, err := save.EncodeState(state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state, err = save.RestoreState(origin, 17, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal("origin not admitted", err)
+			}
+			mask := AblationMask{}
+			if row.masked {
+				mask.GeneratorIDs = []string{"generator.beige_tower_v2"}
+			}
+			point := func(at int64) (decimal.Decimal, error) {
+				current, err := save.RestoreState(origin, 17, catalog, economy.ScopeCompany, engineCursor)
+				if err != nil {
+					return decimal.NaN, err
+				}
+				_, err = SimulateAdvance(current, catalog, SimulationDependencies{}, save.Revision{}, ModeOnline,
+					state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond), nil, mask)
+				if err != nil {
+					return decimal.NaN, err
+				}
+				cash, ok := current.Ledger.Balance("company.cash")
+				if !ok {
+					return decimal.NaN, ErrInvalidEngineState
+				}
+				return cash, nil
+			}
+			values, failures := make([]decimal.Decimal, row.horizon+1), make([]error, row.horizon+1)
+			for at := int64(0); at <= row.horizon; at++ {
+				values[at], failures[at] = point(at)
+				if row.firstFailure >= 0 && at >= row.firstFailure {
+					if !errors.Is(failures[at], ErrInvalidEngineState) {
+						t.Fatal("wrong actual refusal", at, failures[at])
+					}
+					bad++
+				} else if failures[at] != nil || !values[at].Eq(decimal.FromFloat64(float64(at)).Div(decimal.New(1, 3)).Quantize(12)) {
+					t.Fatal("wrong valid actual cash", at, values[at], failures[at])
+				}
+				total++
+			}
+			_, eagerErr := buildWaitCellsResearch(state, catalog, ModeOnline, row.horizon, mask, SimulationDependencies{}, "")
+			if (eagerErr != nil) != (row.firstFailure >= 0) {
+				t.Fatal("retained eager result changed", eagerErr)
+			}
+			for _, amount := range []string{"0", row.early, row.late, "1e12"} {
+				quote := decimal.FromString(amount)
+				wantAt, errorAt := int64(-1), int64(-1)
+				for at := int64(0); at <= row.horizon; at++ {
+					if failures[at] != nil {
+						errorAt = at
+						break
+					}
+					if values[at].Gte(quote) {
+						wantAt = at
+						break
+					}
+				}
+				calls, lastPoint := 0, int64(-1)
+				found, factory, queryErr := queryWaitCellsResearch(state, catalog, ModeOnline, row.horizon, mask, SimulationDependencies{}, quote, int(2*(row.horizon+1)), func(at int64) (decimal.Decimal, error) {
+					calls++
+					lastPoint = at
+					return point(at)
+				})
+				if errorAt >= 0 {
+					if found != -1 || queryErr == nil || queryErr.Error() != failures[errorAt].Error() || lastPoint != errorAt {
+						t.Errorf("quote%s did not preserve first actual error at%d: found%d last%d err%v", amount, errorAt, found, lastPoint, queryErr)
+					}
+				} else if queryErr != nil || found != wantAt || found > 0 && lastPoint != found {
+					t.Errorf("quote%s lost earliest valid result%d: found%d last%d err%v", amount, wantAt, found, lastPoint, queryErr)
+				}
+				if amount == "0" && (factory != nil || calls != 0) {
+					t.Error("already-affordable query constructed future or consumed a transition", calls)
+				}
+				if factory != nil {
+					t.Logf("quote%s found%d first_error%d actual_points%d work%+v", amount, found, errorAt, calls, factory.work)
+				}
+			}
+			found, factory, queryErr := queryWaitCellsResearch(state, catalog, ModeOnline, row.horizon, mask, SimulationDependencies{}, decimal.Zero, 0, nil)
+			if queryErr != nil || found != 0 || factory != nil {
+				t.Fatal("initial balance incorrectly required a future-query budget/point", found, queryErr)
+			}
+			found, factory, queryErr = queryWaitCellsResearch(state, catalog, ModeOnline, 0, mask, SimulationDependencies{}, decimal.FromString(row.early), 0, nil)
+			if queryErr != nil || found != -1 || factory != nil {
+				t.Error("empty future domain incorrectly constructed/validated a future wait", found, queryErr)
+			}
+			calls := 0
+			found, factory, queryErr = queryWaitCellsResearch(state, catalog, ModeOnline, row.horizon, mask, SimulationDependencies{}, decimal.FromString(row.early), 1, func(at int64) (decimal.Decimal, error) { calls++; return point(at) })
+			if row.name == "initial_rates" {
+				if queryErr == nil || queryErr.Error() != failures[1].Error() || found != -1 || calls != 1 || factory == nil || factory.work.QueryStops != 1 || factory.work.QueryNodes != 1 {
+					t.Fatal("one-node initial source-stop witness was not evaluated", found, calls, queryErr)
+				}
+			} else if queryErr == nil || !strings.Contains(queryErr.Error(), "query node budget exhausted") || found != -1 || calls != 0 || factory == nil || factory.work.QueryNodes != 1 {
+				t.Fatal("node exhaustion was hidden as a result/error witness", found, calls, queryErr)
+			}
+			unchanged, err := save.EncodeState(state)
+			if err != nil || !bytes.Equal(origin, unchanged) {
+				t.Fatal("query consumed origin", err)
+			}
+		})
+	}
+	if total != 14008 || bad != 5003 {
+		t.Fatal("incomplete chronological reference population", total, bad)
+	}
+}
+
+// Reuse the original six actual populations/controls, including the retained
+// nonmonotone window. Select TestWait to execute them here, not twice.
+func TestWaitQueryConstructedPopulationsResearch(t *testing.T) {
+	runProductionWaitCellConstructorResearch(t, queryWaitCellsResearch)
+}
