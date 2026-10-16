@@ -29,6 +29,14 @@ Company's save version, not the legacy v14 default. Supported newer state must r
 its fields through that clone. This does not enable axis-enabled scenario constructors
 or add the missing attainment hook; the scenario guards above remain binding.
 
+Simulation effect masks preserve both purchased counts and map membership across
+the real accrual hook, including its error return. A known catalog ID outside the
+Company's scope stays absent; it does not become a zero-valued Company entry or
+make the resulting save unencodable. Present zero/nonzero counts are temporarily
+masked then restored, while genuine hook effects/events/errors remain intact.
+This scoped correction is kernel `0.3.223`; mask admission, production math, live
+unmasked replay, report formats and scenario holds are unchanged.
+
 The harness's ordinary Company clone likewise restores `save.VersionForState(source)`.
 It preserves the admitted encoding, burst state and independent ownership instead of
 forcing newer snapshots through v14. Legacy scenario constructors remain unchanged;

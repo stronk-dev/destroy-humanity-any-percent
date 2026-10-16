@@ -7128,3 +7128,53 @@ corrective-code delegation and needs research/normative review. No designated
 approval, feature acceptance, archival, push/publication/deployment or release.
 Full nine-tier1.0 goal active/progress. Next inspect remaining input/mask/state
 preservation, rather than assume unchanged metadata from a cash-only predicate.
+
+## 2026-10-16 — RP-690 simulation mask restoration, accepted-contract correction
+
+Resume923c694a. Purchasable Content Foundation P5/C10 requires output masking with
+units/costs preserved; Relevance R10 uses that same real hook-bearing wait. This
+is a routine conformance repair under those ACCEPTED contracts, not permission
+to implement H3/C1 drafts. The current helper restores absent IDs as present0.
+An unminted loader-admitted Founder generator is a valid catalog-level mask but
+absent from the codec-admitted Company. Real faction-hook waits leave it present,
+then fail the actual encoder (purchased/provisioned map shape mismatch).
+
+Old9e20d1/18866 FAIL0.342s: six cases fail (two absent-key unit success/error plus
+four actual SimulateAdvance online/offline success/error), while four existing-
+zero/nonzero companions pass. Actual catalog/mask/Company codec admission runs
+first. The failure-arm policy resolver is deliberately unavailable; expected
+post-evaluation scratch effects are compared to the SAME unmasked failure, never
+misrepresented as persisted mutation or a transaction atomicity defect.
+
+Preserve original value AND presence; do not insert an absent masked ID during
+the hook, and delete any such ID the hook writes on return. Existing purchased
+counts restore on both success/error, while real hook effects/events/errors pass
+through. No new mask rejection, scope restriction, formula or hook recipe. The
+watched production behavior changes, so honestly bump all three kernel identities
+222→223 in the same batch (no history rewrite, false identity bump or baseline
+regeneration). Run focused old-failing regressions, affected production/harness/
+kernel/numeric checks and declared Linux; keep known Clout/guard failures explicit.
+Canonical harness docs are updated; independent corrective review is delegated
+to a fresh Codex agent after the complete implementation range is committed.
+
+Implementer verification (not designated approval): corrected focused simulation
+and version-source tests PASS (production0.435s/kernel0.170s); production vet PASS.
+Full native decimal/economy/kernel/harness tests and vet PASS, including harness
+85.703s. Full client suite PASS:145 files/12494 tests,23 files/1095 tests explicitly
+skipped; typecheck/svelte-check report zero errors/warnings. Declared Linux/AMD64
+Go1.26 `TestSimulation` population PASS0.428s, including all ten new cases.
+The full native production suite remains RED51.685s solely on the27 existing
+Clout AC6 partition subcases; no new failure population appears. The full kernel
+history guard remains RED at immutable50a3a514 (missing historical version bump),
+after checkout/adversarial history checks pass. Neither red is waived or repaired
+by this change. Current three-file version identity is223. Full declared Linux
+decimal/economy/kernel/harness execution is still running at this checkpoint;
+its result must be recorded separately, not inferred from native success.
+No browser journey, Postgres integration, exhaustive pacing, hosted measurement
+or manual research population was claimed from these focused runs. Existing
+ordinary simulation tests exercise action paths; the new real-hook regressions
+exercise the affected wait and codec boundary with success/error controls.
+Review by: Codex root (implementer first filter). Recorded by: Codex root.
+Exact implementation range starts after923c694a; fresh independent corrective
+review remains required. RP-680,27 AC6 failures and unaccepted research contracts
+remain open; no feature archival, release or publication follows.

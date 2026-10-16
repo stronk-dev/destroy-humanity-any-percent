@@ -354,14 +354,25 @@ func (hook simulationAccrualHook) AfterAccrual(state *save.State, catalog *econo
 }
 
 func runSimulationHookWithMasks(hook AccrualHook, state *save.State, catalog *economy.Catalog, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution, masks map[string]bool) ([]save.EventWrite, error) {
-	original := make(map[string]int64, len(masks))
+	type maskedCount struct {
+		value   int64
+		present bool
+	}
+	original := make(map[string]maskedCount, len(masks))
 	for id := range masks {
-		original[id] = state.GeneratorCounts[id]
-		state.GeneratorCounts[id] = 0
+		value, present := state.GeneratorCounts[id]
+		original[id] = maskedCount{value, present}
+		if present {
+			state.GeneratorCounts[id] = 0
+		}
 	}
 	events, err := hook.AfterAccrual(state, catalog, revision, result, contributions)
 	for id, count := range original {
-		state.GeneratorCounts[id] = count
+		if count.present {
+			state.GeneratorCounts[id] = count.value
+		} else {
+			delete(state.GeneratorCounts, id)
+		}
 	}
 	return events, err
 }

@@ -91,6 +91,13 @@ primitive outcomes/48 queries, including valid masked/no-hook companions, withou
 inventing new runtime date refusals. Other-field preservation is conditional on
 full restored input/catalog/mask admission, not merely a valid ledger.
 
+RP-690 confirms a REAL simulation-mask shape defect during the remaining map
+audit. Valid known cross-scope masks created absent Company keys, making actual
+hook-success/error scratch results unencodable. The bounded P5/C10/R10 correction
+preserves presence and count without rejecting those masks; kernel223 binds the
+behavior change. Old failures and full verification/review status live in the log;
+this conformance repair does not adopt the draft calculation API or close AC6.
+
 Next complete remaining input/mask/map identity and post-hook state obligations,
 then exact logged stage/clock operation and real settlement; complete global/caller/
 timestamp/encoding/state and lifecycle/compatibility obligations,
