@@ -830,6 +830,84 @@ results nor proves the entire wait, progress, modern contexts, hooks, caller
 compatibility or workloads. No production/core numeric/CI/balance/accepted-contract
 change; RP-680,27 AC6 failures and full1.0 scope remain open.
 
+#### H3j — Progress definedness after ledger commit (RP-684)
+
+The [manual progress probe](../planning/clout-v1-and-pr-interns/probes/wait-cell-progress-domain.go.txt)
+reaches another actual refusal after H3g–H3i all succeed. Its admitted v17 origin
+has one provider paying permits at1/second and cash0. Tier0's composite combines
+resource_log(permits,target1e6) weighted1eMIN with count_fraction(total_owned/1)
+weighted1. Both positive canonical weights are admitted: their deterministic sum
+is1. Initial progress succeeds, but each positive0..1000ms projection multiplies
+the small nonzero log coordinate by the minimum weight outside the Decimal domain.
+The real post-ledger tierProgressPPM refuses. The old ledger-certified prototype
+returns cash-unreachable/nil without a point call and hides all1000 refusals.
+
+The actual failed projection retains its changed permits and evaluated cursor,
+and its encoded save differs from the origin, although its returned evaluation
+is empty. This is **not** a claim that current production persisted a failed
+transition: the tested real harness wait evaluates a clone. The research origin
+stays byte-identical. Do not generalize earlier atomic-ledger error observations
+to every later stage of evaluation.
+
+The proposed manual guard calls actual tierProgressPPM on the origin once. After
+H3i, the final ledger contains valid state balances; each resource referenced by
+progress that was nonnegative initially remains nonnegative (all entries are
+nonnegative, and an admitted cap cannot be below its starting balance). For an
+admitted catalog, the following are sufficient cases, not new catalog restrictions:
+
+1. A direct count_fraction stays defined: the actual initial check validated
+   the sum/required count, and action-free accrual never changes GeneratorCounts.
+   Provisioned ownership is a separate map and is not read by countFraction.
+2. A direct resource_log stays defined. One.Add(nonnegative state value) is
+   finite and at least1: potential upper-domain inputs are separated from1 by
+   more than Add's17-decade alignment cutoff; possible carries occur far below
+   the exponent ceiling. Its Log10 is nonnegative finite. The catalog already
+   validated the positive finite denominator One.Add(target).Log10(). Both
+   logarithms are converted from float64 by actual Decimal.FromFloat64. Any
+   nonzero finite float64 has normalized decimal exponent between-324 and308;
+   their direct quotient therefore has exponent no lower than-633, including a
+   one-decade coefficient normalization. Zero stays zero. No tight transcendental
+   approximation or monotonicity claim is needed. Clamping/Q12 gives valid[0,1].
+3. For a composite with at most100000 terms, require each weight's exponent
+   >=MIN+700 for this sufficient proof only. Count coordinates have much more
+   headroom (safe integers divided by a positive safe integer); resource-log
+   coordinates have the preceding loose bound. The margin keeps every nonzero
+   weighted product within the lower domain. Products are nonnegative and bounded
+   near1, so the positive aggregate interior argument of H3h applies. Clamp/Q12
+   and the final ×1e6/Floor/Int64Exact conversion stay in their finite/safe range.
+   The initial count checks cover any count terms; their inputs do not change.
+
+No coordinate means actual tierProgressPPM returns0. These cases certify each
+cell without projecting every endpoint. They do not replace actual final progress
+values or receipts with a surrogate. The pinned Decimal/production sources own
+the argument; the generous700 margin is a proof case, NOT an accepted weight floor
+or a measured runtime budget. It needs independent research/normative review.
+
+When this argument is inconclusive, the manual fallback walks the assigned
+positive endpoints, reconstructs every actual final resource aggregate, applies
+the complete real Ledger.ApplyAccrual transaction to a fresh ledger and calls
+actual tierProgressPPM on an origin copy with that ledger. Progress reads no
+other changed field. Time0 is skipped because the actual wait returns before
+progress; this does not settle the constructor's separate eager-error ordering.
+The fallback changes no origin map or live state and caches no partial-coordinate
+result. Every aggregate/term/partial, ledger and progress call is separately counted.
+
+Seven complete populations execute7007 actual waits/1000 expected refusals, with
+exact successful receipts and progress-result checks. Headroom weight, masked
+producer, zero efficiency, direct resource_log and direct count_fraction pass.
+Crucially the SAME minimum weight also passes with target5e-15, where each positive
+resource coordinate clamps to1 before weighting; it is not rejected for missing
+the sufficient-case margin. All three valid tiny-weight companions execute1000
+fallback ledgers/progress checks. The count-only population creates a generated
+tower at1000ms but retains500000 progress/delta0, testing purchased-count semantics.
+Native and declared emulated Linux AMD64 retain all earlier39049 references too.
+
+This guards the demonstrated manual progress gap, not complete caller semantics.
+All-range eager validation may still reject a valid earlier result; original
+already-affordable/no-op ordering must be preserved rather than assumed. Hooks,
+modern endpoint contexts, global error precedence, complete workloads, adoption
+and full acceptance remain open. No production search/math/schema/CI is changed.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -1015,3 +1093,8 @@ numeric tolerance, authored content or narrowed1.0 scope.
   add sufficient-case/exact-ledger certification and resource-bound successful
   reuse, checked by strict receipt replay. Progress/modern/hooks/workload and
   adoption gates remain; no active ledger, search, arithmetic or policy change.
+- 2026-10-16: reproduce RP-684's post-ledger progress refusal and distinguish
+  failed cloned-state mutation from persisted behavior. Add sufficient-case and
+  actual progress fallback without excluding valid tiny weights; retain purchased
+  versus provisioned count semantics. Whole caller/error ordering, modern/hooks,
+  workloads and research/normative adoption remain open; no live behavior change.

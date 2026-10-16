@@ -1,0 +1,202 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"os"
+	"strings"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+// Manual progress-domain research. No production algorithm is changed.
+func TestWaitCellProgressDomainResearch(t *testing.T) {
+	data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	total, refused := 0, 0
+	for _, row := range []struct {
+		name, weight, target, efficiency string
+		masked, direct, fails            bool
+	}{
+		{"weighted_progress_underflow", "1e-8999999999999999", "1e6", "1e0", false, false, true},
+		{"weighted_progress_headroom", "1e-8999999999999299", "1e6", "1e0", false, false, false},
+		{"weighted_progress_masked", "1e-8999999999999999", "1e6", "1e0", true, false, false},
+		{"weighted_progress_zero_efficiency", "1e-8999999999999999", "1e6", "0", false, false, false},
+		{"direct_resource_progress", "", "1e6", "1e0", false, true, false},
+		{"tiny_weight_full_coordinate", "1e-8999999999999999", "5e-15", "1e0", false, false, false},
+		{"direct_count_with_provision", "", "", "1e0", false, true, false},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			var root map[string]any
+			if err := json.Unmarshal(data, &root); err != nil {
+				t.Fatal(err)
+			}
+			root["provision_tick_ms"] = 1000
+			root["offline_policy"].(map[string]any)["efficiency"] = row.efficiency
+			for _, value := range root["generator_classes"].([]any) {
+				generator := value.(map[string]any)
+				if generator["id"] == "generator.beige_tower_v2" {
+					generator["production"] = map[string]any{"resource_id": "company.permits", "base_rate": "1e0"}
+					if row.name == "direct_count_with_provision" {
+						generator["provisions"].(map[string]any)["rate_ppm"] = 1000000
+					}
+				}
+			}
+			coordinate := map[string]any{"tier": 0, "kind": "resource_log", "resource": "company.permits", "target": row.target}
+			if !row.direct {
+				coordinate = map[string]any{"tier": 0, "kind": "composite", "terms": []any{
+					map[string]any{"kind": "resource_log", "resource": "company.permits", "target": row.target, "weight": row.weight},
+					map[string]any{"kind": "count_fraction", "count": "generators.total_owned", "required": 1, "weight": "1e0"},
+				}}
+			}
+			if row.name == "direct_count_with_provision" {
+				coordinate = map[string]any{"tier": 0, "kind": "count_fraction", "count": "generators.total_owned", "required": 2}
+			}
+			root["progress_coordinates"].([]any)[0] = coordinate
+			encoded, err := json.Marshal(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			catalog, err := economy.LoadCatalog(encoded)
+			if err != nil {
+				t.Fatal("catalog not admitted", err)
+			}
+			state, err := save.RestoreState([]byte(`{"balances":{"company.cash":"0","company.permits":"0"}}`), 1, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state.WireVersion = 17
+			state.AchievementsEarnedRun = map[string]bool{}
+			state.GeneratorCounts["generator.beige_tower_v2"] = 1
+			state.GeneratorPurchasedTotal = 1
+			origin, err := save.EncodeState(state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state, err = save.RestoreState(origin, 17, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal("origin not admitted", err)
+			}
+			mask := AblationMask{}
+			if row.masked {
+				mask.GeneratorIDs = []string{"generator.beige_tower_v2"}
+			}
+			mode := ModeOnline
+			if row.efficiency == "0" {
+				mode = ModeOffline
+			}
+			beforeProgress, err := tierProgressPPM(catalog, state)
+			if err != nil {
+				t.Fatal("invalid initial progress", err)
+			}
+			bad := 0
+			for at := int64(0); at <= 1000; at++ {
+				current, err := save.RestoreState(origin, 17, catalog, economy.ScopeCompany, engineCursor)
+				if err != nil {
+					t.Fatal(err)
+				}
+				result, advanceErr := SimulateAdvance(current, catalog, SimulationDependencies{}, save.Revision{}, mode,
+					state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond), nil, mask)
+				want := decimal.Zero
+				if !row.masked && row.efficiency != "0" {
+					want = decimal.FromFloat64(float64(at)).Div(decimal.New(1, 3)).Quantize(12)
+				}
+				permits, ok := current.Ledger.Balance("company.permits")
+				cash, cashOK := current.Ledger.Balance("company.cash")
+				if !ok || !cashOK || !permits.Eq(want) || !cash.Eq(decimal.Zero) || !current.EvaluatedThrough.Equal(state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond)) {
+					t.Fatal("actual wait did not reach the expected ledger/cursor", at, permits, want, current.EvaluatedThrough)
+				}
+				if row.fails && at > 0 {
+					_, progressErr := tierProgressPPM(catalog, current)
+					if !errors.Is(advanceErr, ErrInvalidEngineState) || !errors.Is(progressErr, ErrInvalidEngineState) || result.Evaluation.ElapsedMS != 0 || len(result.Evaluation.Receipt.Changes) != 0 {
+						t.Fatal("wrong actual post-ledger progress failure", at, advanceErr, progressErr, result)
+					}
+					after, err := save.EncodeState(current)
+					if err != nil || bytes.Equal(after, origin) {
+						t.Fatal("failed cloned wait did not retain its observed post-ledger mutation", at, err)
+					}
+					bad++
+				} else {
+					if advanceErr != nil {
+						t.Fatal("valid progress companion refused", at, advanceErr)
+					}
+					afterProgress, err := tierProgressPPM(catalog, current)
+					if err != nil {
+						t.Fatal(err)
+					}
+					wantProgressDelta := afterProgress - beforeProgress
+					if wantProgressDelta < 0 {
+						wantProgressDelta = 0
+					}
+					if result.Evaluation.ProgressDeltaPPM != wantProgressDelta {
+						t.Fatal("successful progress result mismatch", at, result, beforeProgress, afterProgress)
+					}
+					if want.Eq(decimal.Zero) {
+						if len(result.Evaluation.Receipt.Changes) != 0 {
+							t.Fatal("no-change wait emitted receipt", at, result)
+						}
+					} else if len(result.Evaluation.Receipt.Changes) != 1 || result.Evaluation.Receipt.Changes[0] != (economy.Change{ResourceID: "company.permits", Before: "0", After: want.String(), Delta: want.String()}) {
+						t.Fatal("successful wait lost its exact actual receipt", at, result)
+					}
+					if row.name == "direct_count_with_provision" && (afterProgress != 500000 || result.Evaluation.ProgressDeltaPPM != 0 || current.GeneratorCounts["generator.beige_tower"] != 0 || at == 1000 && current.GeneratorProvisioned["generator.beige_tower"] != 1) {
+						t.Fatal("progress incorrectly counted generated ownership", at, afterProgress, current.GeneratorProvisioned)
+					}
+				}
+				total++
+			}
+			if row.fails && bad != 1000 || !row.fails && bad != 0 {
+				t.Fatal("incomplete refusal population", bad)
+			}
+			refused += bad
+			unsafe, err := buildRawWaitCellsResearch(state, catalog, mode, 1000, mask, SimulationDependencies{}, "")
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, certify := range []func(*waitCellsResearch) error{certifyWaitCellPartialsResearch, certifyWaitCellAggregatesResearch, certifyWaitCellLedgerResearch} {
+				if err := certify(unsafe); err != nil {
+					t.Fatal("not the declared progress gap", err)
+				}
+			}
+			calls := 0
+			found, err := unsafe.search(decimal.One, 2002, func(int64) (decimal.Decimal, error) { calls++; return decimal.NaN, ErrInvalidEngineState })
+			if err != nil || found != -1 || calls != 0 {
+				t.Fatal("retained ledger-only unreachable control differs", found, err, calls)
+			}
+			factory, buildErr := buildWaitCellsResearch(state, catalog, mode, 1000, mask, SimulationDependencies{}, "")
+			if row.fails {
+				if buildErr == nil {
+					t.Fatal("constructor hid1000 actual post-ledger progress failures")
+				}
+				if !errors.Is(buildErr, ErrInvalidEngineState) || !strings.Contains(buildErr.Error(), "progress certificate cell0 at1") {
+					t.Fatal("wrong protected progress refusal", buildErr)
+				}
+			} else if buildErr != nil {
+				t.Fatal("valid tiny-weight/progress input rejected", buildErr)
+			} else {
+				if row.name == "weighted_progress_headroom" || row.direct {
+					if factory.work.ProgressInitial != 1 || factory.work.ProgressFast != 1 || factory.work.ProgressExact != 0 {
+						t.Fatal("sufficient progress case did not use its certificate", factory.work)
+					}
+				} else if factory.work.ProgressInitial != 1 || factory.work.ProgressFast != 0 || factory.work.ProgressExact != 1000 || factory.work.ProgressLedgers != 1000 {
+					t.Fatal("valid tiny-weight case did not execute full fallback", factory.work)
+				}
+				t.Logf("preparation %+v", factory.work)
+			}
+			unchanged, err := save.EncodeState(state)
+			if err != nil || !bytes.Equal(origin, unchanged) {
+				t.Fatal("research changed origin", err)
+			}
+			t.Logf("actual waits1001: successes%d progress_refusals%d", 1001-bad, bad)
+		})
+	}
+	if total != 7007 || refused != 1000 {
+		t.Fatal("incomplete progress census", total, refused)
+	}
+}

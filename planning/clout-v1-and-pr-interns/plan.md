@@ -16,7 +16,7 @@ with nil error. Owning log/manual source retain source/hash/budget/receipt/uncha
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
 
-Draft H3d–H3i now supply a candidate positive-aggregation enclosure, its partial
+Draft H3d–H3j now supply a candidate positive-aggregation enclosure, its partial
 producer/ledger composition and a source-driven wait-cell constructor. The4004
 pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
 four small whole-wait populations are exhaustive and match independently scanned
@@ -34,11 +34,17 @@ RP-683 adds13012 actual waits/10844 strict receipt replays, catching2168 expecte
 ledger Add/receipt refusals after valid aggregates. Sufficient cases and real
 resource-bound ledger fallback preserve valid extreme/capped/tiny inputs; the
 retained long profile needs no exact ledger work. No live search is changed.
+RP-684 adds7007 actual waits, including1000 expected post-ledger progress refusals.
+Actual initial progress plus a sufficient-domain argument/real fallback catches
+the gap without excluding valid minimum-weight composites. Valid tiny-weight cases
+execute1000 progress/ledger checks each; the retained long profile needs only one
+initial check and65537 cell certificates. Failed clones' post-ledger mutation is
+explicit, not confused with a committed production failure.
 
-Next prove remaining progress/modern-context/hook refusal handling,
+Next resolve earlier-result/error precedence and remaining modern-context/hook handling,
 then measure complete real workloads with all preparation work charged. Partial
 certification alone does not choose error precedence over a valid earlier result.
-Whole-domain definedness, hook/modern factory, full caller/state semantics,
+Remaining whole-domain definedness, hook/modern factory, full caller/state semantics,
 compatibility, workload feasibility and research/normative adoption stay open.
 Do not repeat positive monotonicity censuses, hide setup cost, loosen bounds or
 infer all endpoints succeed from an upper bound on successful outputs. RP-680,

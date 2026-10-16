@@ -52,6 +52,7 @@ type waitCellWorkResearch struct {
 	PartialChecks, PartialContexts, PartialReuses, PartialRateSums                                                     int
 	AllPrefixWrites, AggregateFast, AggregateExact, AggregateExactTerms                                                int
 	LedgerInitial, LedgerFast, LedgerExact, LedgerReuses, LedgerAggregates, LedgerTerms, LedgerPartials, LedgerNoEntry int
+	ProgressInitial, ProgressFast, ProgressExact, ProgressLedgers, ProgressAggregates, ProgressTerms, ProgressPartials int
 }
 
 type waitCellsResearch struct {
@@ -77,7 +78,89 @@ func buildWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode Ev
 	if err := certifyWaitCellLedgerResearch(factory); err != nil {
 		return nil, err
 	}
+	if err := certifyWaitCellProgressResearch(factory, state); err != nil {
+		return nil, err
+	}
 	return factory, nil
+}
+
+// Progress reads purchased counts and the final ledger, never generated counts,
+// credits or burst state. The actual before-progress check validates count sums.
+// Nonzero resource-log coordinates originate from finite float64 logarithms;
+// their quotient exponent is above -700. This is a deliberately loose bound.
+func progressFastResearch(definition economy.ProgressCoordinateDefinition) bool {
+	if definition.Kind == economy.ProgressResourceLog || definition.Kind == economy.ProgressCountFraction {
+		return true
+	}
+	if definition.Kind != economy.ProgressComposite || len(definition.Terms) == 0 || len(definition.Terms) > 100000 {
+		return false
+	}
+	for _, term := range definition.Terms {
+		if term.Kind != economy.ProgressResourceLog && term.Kind != economy.ProgressCountFraction ||
+			!term.Weight.IsStateValue() || !term.Weight.Gt(decimal.Zero) || term.Weight.Gt(decimal.One) ||
+			term.Weight.Exponent() < -8_999_999_999_999_999+700 {
+			return false
+		}
+	}
+	return true
+}
+
+func certifyWaitCellProgressResearch(factory *waitCellsResearch, origin *save.State) error {
+	factory.work.ProgressInitial++
+	if _, err := tierProgressPPM(factory.catalog, origin); err != nil {
+		return fmt.Errorf("progress initial certificate: %w", err)
+	}
+	definition, exists := factory.catalog.ProgressCoordinate(int(origin.Tier))
+	for index, cell := range factory.cells {
+		if !exists || progressFastResearch(definition) {
+			factory.work.ProgressFast++
+			continue
+		}
+		resources := make([]string, 0, len(cell.aggregates))
+		for id := range cell.aggregates {
+			resources = append(resources, id)
+		}
+		sort.Strings(resources)
+		for at := cell.lo; at <= cell.hi; at++ {
+			if at == 0 { // The actual wait returns before either progress read.
+				continue
+			}
+			duration := at - cell.start
+			if cell.flat {
+				duration = 0
+			}
+			entries := []economy.Entry{}
+			for _, resource := range resources {
+				value, terms, err := waitAggregateAtResearch(factory, cell, resource, duration)
+				factory.work.ProgressAggregates++
+				factory.work.ProgressTerms += terms
+				if _, active := cell.allRates[resource]; active && !cell.flat {
+					factory.work.ProgressPartials++
+				}
+				if err != nil {
+					return fmt.Errorf("progress partial cell%d resource%s at%d: %w", index, resource, at, err)
+				}
+				if !value.Eq(decimal.Zero) {
+					entries = append(entries, economy.Entry{ResourceID: resource, Delta: value})
+				}
+			}
+			copy := *origin // Progress does not mutate any of the borrowed maps.
+			var err error
+			copy.Ledger, err = economy.RestoreLedger(factory.catalog, economy.ScopeCompany, factory.initial)
+			factory.work.ProgressLedgers++
+			if err != nil {
+				return err
+			}
+			if _, err := copy.Ledger.ApplyAccrual(economy.Transaction{Entries: entries}); err != nil {
+				return fmt.Errorf("progress ledger cell%d at%d: %w", index, at, err)
+			}
+			factory.work.ProgressExact++
+			if _, err := tierProgressPPM(factory.catalog, &copy); err != nil {
+				return fmt.Errorf("progress certificate cell%d at%d: %w", index, at, err)
+			}
+		}
+	}
+	return nil
 }
 
 // Sufficient cases only. Initial balances/catalog and canonical aggregate validity

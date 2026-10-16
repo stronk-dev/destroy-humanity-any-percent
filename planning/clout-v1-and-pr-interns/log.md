@@ -6090,3 +6090,101 @@ contract changes; RP-680 and27 AC6 failures stay open. Review by: Codex root
 63658744-exclusive through this checkpoint needs research/normative review outside
 corrective-code delegation. Full1.0 goal active/progress; no feature acceptance,
 archival, push, deployment or release approval.
+
+## 2026-10-16 — progress-domain follow-up, declared before execution
+
+Continue the manual wait prototype from c366b9ba. Question: can a catalog/codec-
+admitted composite progress coordinate refuse after otherwise valid accrual and
+ledger commit, while the cash certificate reports unreachable without a point?
+Use the v4 fixture retuned in memory: v17 Company, one beige_tower_v2 producing
+permits at1/second, cash0, tick1000, tier0 composite resource_log permits/target1e6
+weighted1eMIN plus count_fraction(total_owned/1) weighted1. Compare complete0..1000
+fresh actual SimulateAdvance calls. Expected first positive progress underflows
+the tiny weighted term; zero-time succeeds. Headroom weight1e(MIN+700), masked
+producer, zero offline efficiency and a direct resource_log coordinate are full
+companions. Require exact stage evidence, receipts/balances and unchanged origin;
+inspect failed cloned state rather than assume atomic failure. First run the
+unchanged constructor to establish discrimination. Then add a bounded progress
+certificate with actual fallback for inconclusive cases, without rejecting valid
+tiny-weight inputs, changing live math or settling eager-error precedence. Charge
+all preparation work. Native and declared Linux AMD64 overlay runs must retain
+the existing populations. Research/spec adoption and complete workloads stay open.
+
+Before execution add one valid near-edge companion: the same minimum weight with
+resource_log target5e-15; all positive production endpoints saturate that coordinate
+to1 before weighting, so the tiny weighted term itself stays valid. Six populations,
+6006 actual waits,1000 expected progress refusals; no narrowed accepted weight range.
+
+Initial23794/0cea20 is an INVALID probe: progress JSON used resource_id instead
+of resource, so all six catalogs refused and zero actual waits ran. Correct the
+fixture key only, not population/thresholds. Baseline99775/c3b392 then executes all
+6006 actual references:1000 declared post-ledger progress refusals and five complete
+companions. All preceding partial/aggregate/ledger certificates pass; the existing
+constructor fails its new oracle by hiding those1000 refusals. Failed cloned waits
+retain the independently asserted permits/cursor changes and encode differently;
+the returned evaluation is empty. This is not an externally committed atomicity
+defect: the real harness uses clones. RP-684 records the manual prototype gap.
+Next sufficient proof uses the generous float64-origin coordinate exponent bound
+and fixed purchased counts; inconclusive tiny weights use actual post-ledger
+tierProgressPPM calls. Preserve the valid minimum-weight companion, expose setup
+counts and retain early-result/error-policy work as an unresolved separate gate.
+
+Protected six-profile6955/bdcb4a PASS .611s. Before full verification extend the
+population once: direct count_fraction/required2 with one purchased provider and
+its provision rate1e6ppm. All0..1000 waits keep progress500000/delta0, including
+the ending boundary that creates one generated tower. This tests the source
+distinction between purchased counts and generated counts. Seven populations,
+7007 actual references/1000 expected refusals. Tighten valid receipt assertions
+and bind protected failure to progress cell0/at1. The three valid tiny-weight
+companions must execute1000 actual fallback progress/ledger checks each; the
+headroom/direct-coordinate cases use one sufficient certificate. No scope change
+to production, math, hooks/modern support or error-precedence policy.
+
+## 2026-10-16 — RP-684 progress guard verified, live search still unchanged
+
+Native93029/c7a000 PASS7.832s plus ordinary production vet; declared Linux
+AMD6480633/3823b4 PASS15.224s. Both terminal, no selected skips, --rm container
+started without DB (--no-deps). The complete WaitCell population executes46056
+actual references: earlier39049 plus7007 new. Seven new complete0..1000 populations
+have1000 expected post-ledger progress refusals and6007 successes. Successful
+progress deltas and exact permits receipts are asserted; the failed clone's
+non-atomic mutation is explicit, not generalized to persisted state. Origin bytes
+stay unchanged. The valid minimum-weight, mask and zero-efficiency companions each
+execute1000 actual fallback ledgers/progress checks. Headroom/direct cases use the
+sufficient guard; provision creates one generated tower without changing purchased-
+count progress500000. No excluded near-edge weight population substitutes for proof.
+
+Own draft H3j derives the loose float64-origin coordinate bound, fixed purchased
+counts, weighted-product headroom and positive aggregation argument. This remains
+an unaccepted research proof, not an implementer-issued normative approval. The
+guard calls actual initial progress once, then either sufficient cell checks or
+complete actual-ledger/progress fallback with all work counted. Prior six factory
+profiles require progress fast checks3/4/3/4/1/65537, one initial check each and no
+exact progress fallback. Retained long native setup378.820ms/search1.875967s;
+emulated Linux762.946ms/3.272349s. Single observations, not a matched performance
+comparison, native hosted measurement or complete workload acceptance. There is
+no new cache, narrowed weight domain, live arithmetic/engine/kernel/schema/content/
+normal-CI/budget change. The genuine old-source failure above establishes the
+regression; no additional per-assertion mutation ceremony is needed.
+
+Normal reproduction from root:
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=/Users/stronk/repos/cloud-clicker/.cache/wait-cell-progress-domain.json -run WaitCell -v'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=/workspace/.cache/wait-cell-progress-domain-linux.json -run WaitCell -v ./production -count=1`.
+Ignored overlays retain the previous six manual-test mappings and add
+server/production/manual_wait_cell_progress_domain_test.go mapped to the new probe;
+the Linux overlay uses /workspace for both sides. Sources are tracked, overlays
+are not ordinary CI inputs. SHA256:
+- probes/production-wait-cells.go.txt: ecdc86e7f4934ae82a6e7ad3d27b294b7e040cb8144493fde8f58f531f546b35
+- probes/wait-cell-progress-domain.go.txt: f2c71476f826b7142b336cca2bf1b1d687efbba5e9518e58174779ee8bc4bfde
+- native overlay: 8cef4d64e3bec0f00273b581f4586ce4de83c7bcb1290ab0bda30b4a995178d4
+- Linux overlay: aa17ef7c47a84416bc5da95c32d59f5638cd785b313fff5fce8daee18082c77b
+
+Next: earlier-result/error precedence (including the existing already-affordable
+shortcut), modern endpoint contexts/hooks, remaining whole-wait/caller identity
+and complete workloads. An all-range failure guard is not yet the correct final
+query algorithm; no owner decision is silently inferred from it. RP-680 and the27
+AC6 failures remain open. Review by: Codex root (research author/first filter).
+Recorded by: Codex root. Complete six-path range c366b9ba-exclusive through this
+checkpoint requires research/normative review outside the corrective-code
+delegation. Full1.0 goal active/progress. No feature closure, archival, push,
+publication, deployment or release approval; no SQL/TS/full CI/hosted claim.
