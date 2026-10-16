@@ -1,0 +1,296 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"math"
+	"os"
+	"reflect"
+	"strconv"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/accrualhook"
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/prestige"
+	"cloud-clicker/server/save"
+)
+
+// Closed first-hour recipe, calling the same real arithmetic as the PRIVATE
+// harness hook. Its independent oracle is the separately executed harness packet.
+// Unlike the served prestige hook, this does NOT own offline-span bookkeeping.
+type firstHourLifetimeResearchHook struct{ resource string }
+
+func (hook firstHourLifetimeResearchHook) AfterAccrual(state *save.State, _ *economy.Catalog, _ save.Revision, result accrualhook.Result, _ []multiplier.Contribution) ([]save.EventWrite, error) {
+	return nil, prestige.AccumulateLifetimeValue(state, result.Receipt, hook.resource)
+}
+
+type firstHourLifetimeDomainResearch struct {
+	state    *save.State
+	catalog  *economy.Catalog
+	resource string
+	ranges   int
+}
+
+// Only sufficient after the producer/ledger certificate. No timestamp, encoding,
+// general callback-purity or complete lifetime-domain claim is made here.
+func (domain *firstHourLifetimeDomainResearch) certify(lo, hi int64) (bool, error) {
+	if lo < 0 || hi < lo {
+		return false, fmt.Errorf("invalid lifetime research range")
+	}
+	domain.ranges++
+	lifetime := domain.state.LifetimeValue
+	resource, ok := domain.catalog.Resource(domain.resource)
+	before, present := domain.state.Ledger.Balance(domain.resource)
+	const maxExponent int64 = 8_999_999_999_999_999
+	if !ok || !present || !before.IsStateValue() || before.Lt(decimal.Zero) || domain.resource != "company.cash" || resource.Hardcap == nil ||
+		!lifetime.IsStateValue() || lifetime.Lt(decimal.Zero) || !lifetime.Quantize(12).Eq(lifetime) {
+		return false, nil
+	}
+	cap := resource.Hardcap.Amount
+	return cap.IsStateValue() && cap.Gte(decimal.Zero) && cap.Exponent() <= maxExponent-3 && lifetime.Exponent() <= maxExponent-3, nil
+}
+
+type firstHourPacketAnchorResearch struct {
+	At      int64                   `json:"at"`
+	State   json.RawMessage         `json:"state"`
+	Advance AdvanceSimulationResult `json:"advance"`
+}
+
+type firstHourPacketQuoteResearch struct {
+	ID, Resource, Cost string
+	CostMantissaBits   string `json:"cost_mantissa_bits"`
+	CostExponent       int64  `json:"cost_exponent"`
+	At                 int64
+	Affordable         bool
+	Selected           *firstHourPacketAnchorResearch
+}
+
+type firstHourPacketSnapshotResearch struct {
+	Label         string
+	State         json.RawMessage
+	Version       int
+	Revision      save.Revision
+	NowMS         int64  `json:"now_ms"`
+	HorizonMS     int64  `json:"horizon_ms"`
+	ValueResource string `json:"value_resource"`
+	ExternalCount int    `json:"external_count"`
+	References    []struct{ Cash, Lifetime string }
+	Anchors       []firstHourPacketAnchorResearch
+	Quotes        []firstHourPacketQuoteResearch
+}
+
+func TestWaitFirstHourLifetimeBindingResearch(t *testing.T) {
+	data, err := os.ReadFile("../../.cache/wait-first-hour-inputs.json")
+	if err != nil {
+		t.Fatal("run TestWaitFirstHourCaptureResearch first; no missing/stale-packet skip", err)
+	}
+	var packet struct {
+		Schema        int
+		Source        string
+		ConstantsHash string `json:"constants_hash"`
+		ScenarioHash  string `json:"scenario_hash"`
+		PolicyHash    string `json:"policy_hash"`
+		Artifacts     map[string][]byte
+		Snapshots     []firstHourPacketSnapshotResearch
+	}
+	if err := json.Unmarshal(data, &packet); err != nil {
+		t.Fatal(err)
+	}
+	if packet.Schema != 1 || packet.Source != "first_hour_post_step_reference.greedy_seed0" || len(packet.Snapshots) != 3 || packet.ScenarioHash == "" || packet.PolicyHash == "" {
+		t.Fatal("wrong/incomplete research producer")
+	}
+	hash, err := save.ConstantsHashArtifacts(packet.Artifacts)
+	if err != nil || hash != packet.ConstantsHash {
+		t.Fatal("pinned artifact identity failed", err)
+	}
+	bundle := loadCompleteReplayTestBundle(t, hash, packet.Artifacts)
+	total, anchors, queries, positives, mismatches := 0, 0, 0, 0, 0
+	for _, row := range packet.Snapshots {
+		t.Run(row.Label, func(t *testing.T) {
+			if row.Version != 14 || row.HorizonMS != 1000 || row.ExternalCount != 0 || len(row.References) != 1001 || len(row.Anchors) != 4 || len(row.Quotes) != 2 || row.ValueResource != bundle.Prestige.ValueResourceID || row.ValueResource != "company.cash" || row.Revision.ConstantsHash != hash {
+				t.Fatal("declared real-caller population changed")
+			}
+			restore := func() *save.State {
+				t.Helper()
+				state, err := save.RestoreState(row.State, row.Version, bundle.Economy, economy.ScopeCompany, time.Time{})
+				if err != nil || save.VersionForState(state) != row.Version {
+					t.Fatal("source-version restore failed", err)
+				}
+				return state
+			}
+			initial := restore()
+			origin := mustEncodeState(t, initial)
+			if !bytes.Equal(origin, row.State) {
+				t.Fatal("packet origin did not restore identically")
+			}
+			project := func(at int64) (*save.State, AdvanceSimulationResult, error) {
+				state := restore()
+				result, err := SimulateAdvance(state, bundle.Economy,
+					SimulationDependencies{Routes: bundle.Routes, Hook: firstHourLifetimeResearchHook{row.ValueResource}},
+					save.Revision{Number: row.Revision.Number, ConstantsHash: hash}, ModeOnline,
+					state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond), nil, AblationMask{})
+				return state, result, err
+			}
+			for at := int64(0); at <= row.HorizonMS; at++ {
+				state, _, err := project(at)
+				if err != nil {
+					t.Fatal("point failed", at, err)
+				}
+				cash, _ := state.Ledger.Balance(row.ValueResource)
+				want := row.References[at]
+				if cash.String() != want.Cash || state.LifetimeValue.String() != want.Lifetime || save.VersionForState(state) != row.Version {
+					mismatches++
+				}
+				total++
+			}
+			compare := func(want firstHourPacketAnchorResearch, state *save.State, result AdvanceSimulationResult) {
+				t.Helper()
+				if state == nil || !bytes.Equal(want.State, mustEncodeState(t, state)) || !reflect.DeepEqual(want.Advance, result) {
+					t.Errorf("full independent harness anchor mismatch at%d", want.At)
+				}
+			}
+			for _, anchor := range row.Anchors {
+				state, result, err := project(anchor.At)
+				if err != nil {
+					t.Fatal(err)
+				}
+				compare(anchor, state, result)
+				anchors++
+			}
+			domain := &firstHourLifetimeDomainResearch{state: initial, catalog: bundle.Economy, resource: row.ValueResource}
+			// Actual prices, plus clearly labelled diagnostic thresholds from the
+			// source reference. Never round a real price to its display string.
+			prices := []decimal.Decimal{}
+			for _, quote := range row.Quotes {
+				bits, err := strconv.ParseUint(quote.CostMantissaBits, 16, 64)
+				if err != nil {
+					t.Fatal(err)
+				}
+				price := decimal.New(math.Float64frombits(bits), quote.CostExponent)
+				if quote.Resource != "company.cash" || !price.IsStateValue() || price.String() != quote.Cost {
+					t.Fatal("bad actual quote")
+				}
+				prices = append(prices, price)
+			}
+			for _, index := range []int{0, 500} {
+				price, err := decimal.ParseCanonical(row.References[index].Cash)
+				if err != nil {
+					t.Fatal(err)
+				}
+				prices = append(prices, price)
+			}
+			for index, price := range prices {
+				want := int64(-1)
+				for at, reference := range row.References {
+					value, err := decimal.ParseCanonical(reference.Cash)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if value.Gte(price) {
+						want = int64(at)
+						break
+					}
+				}
+				if index < 2 {
+					quote := row.Quotes[index]
+					if quote.At != want || quote.Affordable != (want >= 0) {
+						t.Fatal("actual old search diverged from exhaustive packet", quote.ID, quote.At, want)
+					}
+				}
+				var selected *save.State
+				var result AdvanceSimulationResult
+				points := 0
+				found, factory, err := queryWaitContextResearch(initial, bundle.Economy, ModeOnline, row.HorizonMS, AblationMask{}, SimulationDependencies{Routes: bundle.Routes}, price, 2*int(row.HorizonMS+1), func(at int64) (decimal.Decimal, error) {
+					points++
+					var err error
+					selected, result, err = project(at)
+					if err != nil {
+						return decimal.NaN, err
+					}
+					value, _ := selected.Ledger.Balance(row.ValueResource)
+					return value, nil
+				}, waitSourceContextResearch{}, domain)
+				if err != nil || found != want {
+					t.Fatal("query differs from exhaustive real caller", index, found, want, err)
+				}
+				if found == 0 {
+					if points != 0 || factory != nil {
+						t.Fatal("already affordable projected a wait")
+					}
+					selected = restore()
+					if !bytes.Equal(origin, mustEncodeState(t, selected)) {
+						t.Fatal("zero-time consumed origin")
+					}
+				} else if found > 0 {
+					positives++
+					matched := false
+					for _, anchor := range row.Anchors {
+						if anchor.At == found {
+							compare(anchor, selected, result)
+							matched = true
+						}
+					}
+					if !matched {
+						t.Fatal("positive diagnostic selected an unrecorded full-state anchor", found)
+					}
+				} else if selected != nil {
+					t.Fatal("unreachable exposed a successful projection")
+				}
+				if factory != nil {
+					t.Logf("query%d at%d points%d work%+v", index, found, points, factory.work)
+				}
+				queries++
+			}
+			if !bytes.Equal(origin, mustEncodeState(t, initial)) {
+				t.Fatal("query mutated source origin")
+			}
+			if domain.ranges == 0 {
+				t.Fatal("lifetime guard was not exercised")
+			}
+		})
+	}
+	if total != 3003 || anchors != 12 || queries != 12 || positives < 2 || mismatches != 0 {
+		t.Fatalf("incomplete/mismatched real population: points%d anchors%d queries%d positives%d point_mismatches%d", total, anchors, queries, positives, mismatches)
+	}
+	t.Logf("real source14 points%d anchors%d queries%d positive_selections%d; no version casting or ordinary-run changes", total, anchors, queries, positives)
+}
+
+func TestWaitFirstHourLifetimeDomainResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	initial := axisTimingState(t, bundle, time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC))
+	const max int64 = 8_999_999_999_999_999
+	for _, row := range []struct {
+		name      string
+		value     decimal.Decimal
+		certified bool
+	}{
+		{"zero", decimal.Zero, true},
+		{"interior_edge", decimal.New(9, max-3), true},
+		{"unproved_edge", decimal.New(9, max-2), false},
+		{"valid_ignored_delta", decimal.New(9, max), false},
+		{"negative", decimal.New(-1, 0), false},
+		{"noncanonical", decimal.New(1.000000000001, 0), false},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			initial.LifetimeValue = row.value
+			domain := firstHourLifetimeDomainResearch{state: initial, catalog: bundle.Economy, resource: "company.cash"}
+			ok, err := domain.certify(0, 1000)
+			if err != nil || ok != row.certified {
+				t.Fatal("wrong sufficient domain", ok, err)
+			}
+			if row.name == "valid_ignored_delta" {
+				_, err := (firstHourLifetimeResearchHook{"company.cash"}).AfterAccrual(initial, bundle.Economy, save.Revision{}, accrualhook.Result{Receipt: economy.Receipt{Changes: []economy.Change{{ResourceID: "company.cash", Delta: "1e0"}}}}, nil)
+				if err != nil || !initial.LifetimeValue.Eq(row.value) {
+					t.Fatal("inconclusive guard rejected a valid actual hook", err)
+				}
+			}
+			if _, err := domain.certify(1, 0); err == nil {
+				t.Fatal("invalid range accepted")
+			}
+		})
+	}
+}

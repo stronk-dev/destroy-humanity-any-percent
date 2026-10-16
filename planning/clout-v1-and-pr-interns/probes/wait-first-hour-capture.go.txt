@@ -1,0 +1,257 @@
+package harness
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"math"
+	"os"
+	"reflect"
+	"strconv"
+	"strings"
+	"testing"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/save"
+)
+
+type firstHourReferenceResearch struct {
+	Cash     string `json:"cash"`
+	Lifetime string `json:"lifetime"`
+}
+
+type firstHourAnchorResearch struct {
+	At      int64                              `json:"at"`
+	State   json.RawMessage                    `json:"state"`
+	Advance production.AdvanceSimulationResult `json:"advance"`
+}
+
+type firstHourQuoteResearch struct {
+	ID               string                   `json:"id"`
+	Resource         string                   `json:"resource"`
+	Cost             string                   `json:"cost"`
+	CostMantissaBits string                   `json:"cost_mantissa_bits"`
+	CostExponent     int64                    `json:"cost_exponent"`
+	At               int64                    `json:"at"`
+	Affordable       bool                     `json:"affordable"`
+	Transitions      int64                    `json:"transitions"`
+	Selected         *firstHourAnchorResearch `json:"selected"`
+}
+
+type firstHourSnapshotResearch struct {
+	Label         string                       `json:"label"`
+	State         json.RawMessage              `json:"state"`
+	Version       int                          `json:"version"`
+	Revision      save.Revision                `json:"revision"`
+	NowMS         int64                        `json:"now_ms"`
+	HorizonMS     int64                        `json:"horizon_ms"`
+	ValueResource string                       `json:"value_resource"`
+	ExternalCount int                          `json:"external_count"`
+	References    []firstHourReferenceResearch `json:"references"`
+	Anchors       []firstHourAnchorResearch    `json:"anchors"`
+	Quotes        []firstHourQuoteResearch     `json:"quotes"`
+}
+
+func TestWaitFirstHourCaptureResearch(t *testing.T) {
+	suite, err := LoadFirstHourSuite("../..", "balance/testdata/t0-t1/harness-scenario-v1.json", "balance/testdata/t0-t1/first-hour-policy-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var spec RunSpec
+	for _, candidate := range suite.Scenario.Runs {
+		if candidate.PolicyID == "reference.greedy" {
+			spec = candidate
+		}
+	}
+	policy, ok := suite.Policy.Policy(spec.PolicyID, spec.PolicyVersion)
+	if !ok || policy.ActionCadenceMS != 1000 {
+		t.Fatal("declared actual reference policy/cadence changed")
+	}
+	experiment := FirstHourExperiment{AcquihirePurchasedMinimum: 200, BurnoutPriceFactor: "2e0", RouteKnowledgeBonus: 50, SeedCapital: "1e4", GeneratedBeigeTowers: 10}
+	baseline, baselineCommands := suite.RunExperimentScript(spec, 0, experiment)
+	if baseline.Outcome != "completed" {
+		t.Fatal("actual public runner failed", baseline.InvariantFailures)
+	}
+	company, err := newFirstHourCompany(suite.Bundle.Economy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	founder := &save.State{ReputationLevel: 0, RouteKnowledgeBalance: 0, LedgerFactKinds: map[string]bool{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
+	commands := []FirstHourScriptCommand{}
+	runtime := firstHourRuntime{suite: suite, spec: spec, policy: policy, seed: 0, experiment: experiment, company: company, founder: founder,
+		revision: 1, milestones: map[string]*int64{}, lastSession: -1, commands: &commands}
+	boundaries, err := firstHourBoundaries(policy, 0, spec.HorizonMS)
+	if err != nil {
+		t.Fatal(err)
+	}
+	encode := func(state *save.State) []byte {
+		t.Helper()
+		result, err := save.EncodeState(state)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return result
+	}
+	snapshots := []firstHourSnapshotResearch{}
+	seen := map[string]bool{}
+	unique := map[string]bool{}
+	for _, boundary := range boundaries {
+		if runtime.transitions >= suite.Scenario.TransitionBudget {
+			t.Fatal("actual runtime transition guard fired", runtime.transitions)
+		}
+		if err := runtime.step(boundary); err != nil {
+			t.Fatal("actual step failed", boundary, err)
+		}
+		for _, target := range []struct {
+			name  string
+			ready bool
+		}{
+			{"run1_first_generator", runtime.company.RunSeq == 1 && runtime.company.GeneratorPurchasedTotal >= 1},
+			{"run1_tenth_generator", runtime.company.RunSeq == 1 && runtime.company.GeneratorPurchasedTotal >= 10},
+			{"run2_start", runtime.company.RunSeq == 2},
+		} {
+			if !target.ready || seen[target.name] {
+				continue
+			}
+			if err := validateFirstHourCompany(suite.Bundle.Economy, runtime.company); err != nil {
+				t.Fatal(err)
+			}
+			origin := encode(runtime.company)
+			identity := string(origin)
+			if unique[identity] {
+				t.Fatal("declared distinct snapshots collapsed", target.name)
+			}
+			unique[identity], seen[target.name] = true, true
+			ranker, err := runtime.referenceRanker()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(ranker.external) != 0 {
+				t.Fatal("ordinary first-hour producer unexpectedly has external inputs")
+			}
+			nowMS := runtime.company.EvaluatedThrough.Sub(Epoch).Milliseconds()
+			if nowMS+1000 > spec.HorizonMS {
+				t.Fatal("snapshot lacks complete declared cadence", target.name)
+			}
+			row := firstHourSnapshotResearch{Label: target.name, State: origin, Version: save.VersionForState(runtime.company), Revision: runtime.companyRevision(),
+				NowMS: nowMS, HorizonMS: 1000, ValueResource: suite.Bundle.Prestige.ValueResourceID, ExternalCount: len(ranker.external),
+				References: []firstHourReferenceResearch{}, Anchors: []firstHourAnchorResearch{}, Quotes: []firstHourQuoteResearch{}}
+			project := func(at int64) (*save.State, production.AdvanceSimulationResult) {
+				t.Helper()
+				copy, err := cloneState(suite.Bundle.Economy, runtime.company)
+				if err != nil {
+					t.Fatal(err)
+				}
+				counter := &relevanceCounter{limit: suite.Scenario.TransitionBudget}
+				advance, err := ranker.advance(copy, runtime.revision, nowMS+at, production.AblationMask{}, counter)
+				if err != nil || counter.value != 1 || save.VersionForState(copy) != row.Version {
+					t.Fatal("actual ranker reference failed or changed version", at, counter.value, err)
+				}
+				return copy, advance
+			}
+			for at := int64(0); at <= 1000; at++ {
+				copy, advance := project(at)
+				cash, ok := copy.Ledger.Balance("company.cash")
+				if !ok {
+					t.Fatal("actual cash missing")
+				}
+				row.References = append(row.References, firstHourReferenceResearch{Cash: cash.String(), Lifetime: copy.LifetimeValue.String()})
+				if at == 0 || at == 1 || at == 500 || at == 1000 {
+					row.Anchors = append(row.Anchors, firstHourAnchorResearch{At: at, State: encode(copy), Advance: advance})
+				}
+			}
+			ids := []string{"generator.beige_tower"}
+			for _, item := range ranker.Policy.Items {
+				if strings.HasPrefix(item.PurchasableID, "upgrade.") && !runtime.company.UpgradesOwned[item.PurchasableID] {
+					ids = append(ids, item.PurchasableID)
+					break
+				}
+			}
+			if len(ids) != 2 {
+				t.Fatal("declared unowned upgrade population absent", target.name)
+			}
+			for _, id := range ids {
+				resource, cost, err := ranker.candidateCost(runtime.company, id)
+				if err != nil || resource != "company.cash" {
+					t.Fatal("actual quote failed", id, resource, err)
+				}
+				bits := strconv.FormatUint(math.Float64bits(cost.Mantissa()), 16)
+				parsed, err := strconv.ParseUint(bits, 16, 64)
+				if err != nil || !decimal.New(math.Float64frombits(parsed), cost.Exponent()).Eq(cost) {
+					t.Fatal("quote capture changed internal cost", id, err)
+				}
+				counter := &relevanceCounter{limit: suite.Scenario.TransitionBudget}
+				at, affordable, err := ranker.earliestAffordable(runtime.company, runtime.revision, nowMS, nowMS+1000, resource, cost, production.AblationMask{}, counter)
+				if err != nil {
+					t.Fatal("actual private affordability query failed", id, err)
+				}
+				query := firstHourQuoteResearch{ID: id, Resource: resource, Cost: cost.String(), CostMantissaBits: bits, CostExponent: cost.Exponent(), At: -1, Affordable: affordable, Transitions: counter.value}
+				if affordable {
+					query.At = at - nowMS
+					copy, err := cloneState(suite.Bundle.Economy, runtime.company)
+					if err != nil {
+						t.Fatal(err)
+					}
+					advance := production.AdvanceSimulationResult{}
+					if at > nowMS {
+						copy, advance = project(at - nowMS)
+					}
+					query.Selected = &firstHourAnchorResearch{At: query.At, State: encode(copy), Advance: advance}
+				}
+				row.Quotes = append(row.Quotes, query)
+			}
+			if !bytes.Equal(origin, encode(runtime.company)) {
+				t.Fatal("diagnostic query consumed live test runtime")
+			}
+			snapshots = append(snapshots, row)
+		}
+		if runtime.milestones["milestone.first_elective_exit"] != nil {
+			break
+		}
+	}
+	observed := FirstHourRunResult{Key: suite.RunKey(spec, 0), PolicyHash: suite.PolicyHash, Outcome: "completed", InvariantFailures: []string{}, ReputationExits: []FirstHourReputationSample{}}
+	observed.Milestones = firstHourMilestoneReport(suite.Scenario.Milestones, runtime.milestones, &observed.InvariantFailures)
+	observed.Ending, observed.TransitionCount = runtime.ending, runtime.transitions
+	observed.ReputationExits = append(observed.ReputationExits, runtime.reputationExits...)
+	if runtime.milestones["milestone.first_elective_exit"] != nil && (len(observed.ReputationExits) == 0 || observed.ReputationExits[len(observed.ReputationExits)-1].ExitType != "collapse") {
+		observed.InvariantFailures = append(observed.InvariantFailures, "reputation_exit_unrecorded")
+	}
+	if len(observed.InvariantFailures) != 0 {
+		observed.Outcome = "failed"
+	}
+	if !reflect.DeepEqual(observed, baseline) || !reflect.DeepEqual(commands, baselineCommands) {
+		t.Fatal("manual runtime seam differs from complete public runner/script")
+	}
+	if len(snapshots) != 3 {
+		t.Fatal("incomplete declared snapshot population", len(snapshots))
+	}
+	packet := struct {
+		Schema        int                         `json:"schema"`
+		Source        string                      `json:"source"`
+		ConstantsHash string                      `json:"constants_hash"`
+		ScenarioHash  string                      `json:"scenario_hash"`
+		PolicyHash    string                      `json:"policy_hash"`
+		Artifacts     map[string][]byte           `json:"artifacts"`
+		Result        FirstHourRunResult          `json:"result"`
+		CommandCount  int                         `json:"command_count"`
+		Experiment    FirstHourExperiment         `json:"experiment"`
+		Snapshots     []firstHourSnapshotResearch `json:"snapshots"`
+	}{1, "first_hour_post_step_reference.greedy_seed0", suite.ConstantsHash, suite.ScenarioHash, suite.PolicyHash, suite.Bundle.Artifacts, observed, len(commands), experiment, snapshots}
+	data, err := json.Marshal(packet)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll("../../.cache", 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile("../../.cache/wait-first-hour-inputs.json", data, 0600); err != nil {
+		t.Fatal(err)
+	}
+	digest := sha256.Sum256(data)
+	t.Logf("complete public/manual runner and script agree; snapshots%d quotes6 references3003 commands%d transitions%d packet_bytes%d sha256:%s", len(snapshots), len(commands), observed.TransitionCount, len(data), hex.EncodeToString(digest[:]))
+	for _, row := range snapshots {
+		t.Logf("%s source_version%d at%d lifetime%s queries%+v", row.Label, row.Version, row.NowMS, row.References[0].Lifetime, row.Quotes)
+	}
+}

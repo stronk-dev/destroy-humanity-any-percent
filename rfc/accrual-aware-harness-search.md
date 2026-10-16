@@ -1173,6 +1173,71 @@ budgets and research/normative review/adoption remain mandatory. No generic hook
 purity, complete modern factory, natural acquisition, report/candidate migration,
 Go/TS/SQL parity or repaired AC6 follows. RP-680 and the27 partitions remain open.
 
+#### H3n — Actual first-hour lifetime inputs and bounded query binding
+
+The manual [harness capture](../planning/clout-v1-and-pr-interns/probes/wait-first-hour-capture.go.txt)
+and [production consumer](../planning/clout-v1-and-pr-interns/probes/wait-first-hour-lifetime.go.txt)
+add a separately identified `first_hour_lifetime` recipe. These are research
+overlays, NOT live caller migration or authority to implement this draft.
+
+The producer runs the actual ratified reference.greedy seed0 scenario with the
+already-tested experiment tuple (200,2e0,50,1e4,10). It separately drives the real
+runtime.step over real boundaries and requires its complete result AND19-command
+script to equal public RunExperimentScript (11916 transitions). Three distinct
+post-step Company14 origins are captured: first generator, tenth generator and
+second-run start. Actual first-hour admission and the real reference ranker/hook
+run; no observer, production source rewrite or forced version is involved.
+
+Each origin supplies1001 fresh actual advances over the real1000ms cadence, cash
+and lifetime, four full encoded-state/evaluation/role anchors and two actual
+candidateCost/earliestAffordable queries. Cursor time is the captured state's
+actual EvaluatedThrough, including a previously adopted future projection. These
+are diagnostic calls AFTER the step, not a claim they occurred inside that step.
+Ordinary nil external context is required; career/diagnostic contexts are absent,
+not silently serialized away. Missing populations, failed references or source
+mutation fail before the generated ignored packet is written.
+
+An instrument initially refused a real generator price because String rounds its
+internal mantissa. The corrected packet stores exact IEEE mantissa bits plus
+exponent and asserts reconstruction; its canonical string is a display label
+only. It does not change game wire/save precision. All six actual quotes are
+unreachable in this short window. Two extra explicitly diagnostic thresholds per
+origin (original and500ms cash) provide two positive500ms selections plus zero-time
+controls; they are not falsely labelled catalog purchases.
+
+The consumer reloads the identified pinned artifact bytes and restores source14
+unchanged, never weakening H3m's separate strict19 owner. Its closed hook calls
+the real prestige.AccumulateLifetimeValue, matching the private first-hour hook
+without copying arithmetic or adding the served hook's offline-span work. The
+independent oracle is the separately executed harness packet: all3003 cash/lifetime
+observations,12 complete anchors and12 queries must agree. Selected positive state,
+evaluation and every role match those harness anchors, not the consumer's own
+projection helper. A compiling point-hook disconnection keeps cash/search/guard
+intact yet causes2000 point mismatches and eight full-anchor/selection mismatches;
+the zero-production second-run companion remains green.
+
+The sufficient lifetime guard is conditional on producer/ledger definedness. For
+nonnegative canonical before and receipt delta, receipt reproduction implies the
+delta exponent cannot exceed after's exponent: positive Add's aligned coefficient
+is at least1e14, so normalization/Q12 cannot lower the greatest input exponent.
+If cash has a nonnegative cap, after<=cap bounds delta's exponent. Requiring both
+cap and original canonical nonnegative lifetime exponents<=MAX-3 leaves room for
+positive Add and Q12's at-most-two-decade carry. Cash before must be nonnegative.
+Missing/extreme premises return INCONCLUSIVE, not invalid/unreachable; H3k then
+refines to actual leaves. Six direct guard controls include a valid ignored delta
+at lifetime9eMAX that is deliberately uncertified. This is not a complete lifetime
+domain, generic hook purity or global pre-hook encoding/timestamp proof.
+
+The generated228362-byte packet is native/Linux byte-identical. Reproduce the
+harness capture first, then the production consumer through the portable overlay;
+missing packets fail loudly. Its artifact copy/restore,3003 direct references,
+cell/scalar/partial preparation and query work are visible costs, not free setup
+or a proposed runtime allowance. The experimental early-run tuple and bounded
+one-second populations do not prove natural/default play, all masked/ranked
+queries, live report compatibility, full workloads or accepted budgets. Other
+hook recipes/logged stages and all remaining H3m global/adoption gates stay open;
+RP-680 and the27 AC6 failures remain unrepaired.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6

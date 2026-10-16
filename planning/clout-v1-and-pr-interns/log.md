@@ -6583,3 +6583,127 @@ adoption stay open. RP-680 and27 AC6 failures remain open. Review by: Codex root
 e8016a01-exclusive through this checkpoint needs research/normative review outside
 corrective-code delegation. Full1.0 goal active/progress, not preview/review-only.
 No feature acceptance, archival, push, publication, deployment or release approval.
+
+## 2026-10-16 — real first-hour input grounding, declared before execution
+
+Continue from9dd996b2, toward the first_hour_lifetime adapter. Do not copy its
+math into another authority or claim synthetic v19 cases are real caller binding.
+Use the already tested reference.greedy seed0 experiment tuple (200,2e0,50,1e4,10)
+with ratified scenario/policy and current pinned bundle. A manual harness test
+constructs the same initial runtime, drives ACTUAL step(boundary), then requires
+its complete result AND command script to equal public RunExperimentScript.
+No production observer, source rewrite or harness behavior change is authorized.
+
+Capture three distinct post-step states: first run's first purchased generator,
+first run reaching ten purchased generators, and the new second run. Validate
+with the actual first-hour state checker. For each, call the actual reference
+ranker on its captured cursor over the ratified1000ms decision cadence, with one
+real generator quote and the first unowned upgrade quote. These are post-step
+diagnostic queries, NOT an invented record of the calls inside the previous step
+or proof a purchase would pass all intent/gate requirements.
+
+Each snapshot also has1001 fresh full ranker.advance references at0..1000, real
+lifetime hook included; retain cash/lifetime values and full state/evaluation/role
+anchors0,1,500,1000 plus any actual selected result. Require current ordinary
+external context nil, canonical quotes, preserved source version/origin and no
+source mutation. Expect3 snapshots/6 quote queries/3003 enumerated references;
+failure to reach a declared population invalidates the measurement, not exclusion.
+Only after complete validation write one generated ignored .cache input packet
+for a named production-prototype consumer. Include artifacts and existing save
+encoding, scenario/policy/constants identity, complete source results and query
+provenance. This is an identified research producer/consumer handoff, not a new
+runtime origin schema, saved-payment protocol or fulfilled C1e API. Native and
+declared Linux must reproduce it; no live fixture/body/budget/CI/schema change.
+
+Capture execution note: initial compile0119b0 ran no tests (unused time import,
+removed). Session36338 ended without a recoverable terminal result during context
+compaction; no packet existed, so no success is claimed. Fresh658296/52491 ran
+the test and FAIL1.491s: generator.beige_tower's actual internal quote does NOT
+roundtrip through its canonical display string. This is an honest instrument
+failure, not a product regression. Prospectively preserve the real normalized
+mantissa's IEEE bits as a hex string and exponent, asserting exact reconstruction;
+keep cost string only as display. No quantization of the queried price. This is
+a research-packet encoding detail, not a change to game wire/save precision.
+
+Revised capture f2bd03/15618 PASS2.770s: all three actual source14 states,
+3003 full advances, six actual quotes; full public/manual report and19 commands
+equal,11916 original transitions. Packet228362 bytes SHA256
+f8a80a6c0d1f3d1ecc7c041edc00e26784676fda16e6f237af8462dbdc66f921.
+All six catalog quotes are honestly unreachable inside this one-second window.
+Do not disguise them as positive-selection coverage. The named production
+consumer will compare all3003 cash/lifetime observations, all12 full anchors and
+these six queries using exact raw prices. Add two explicitly DIAGNOSTIC thresholds
+per snapshot: original cash and actual500ms cash, not catalog purchases. Require
+at least two positive-time selections overall; these exercise selected full state.
+
+The separate legacy-lifetime adapter preserves source14 and uses the real
+prestige.AccumulateLifetimeValue, not copied math or the offline-span hook. Its
+sufficient range guard only certifies canonical nonnegative original lifetime
+and a nonnegative cash cap with BOTH exponents<=MAX-3. Given certified canonical
+nonnegative cash receipts reproducing after<=cap, receipt delta exponent<=cap
+exponent (positive Add cannot reduce its maximum input exponent). Positive Add
+and Q12 can carry at most two decades, so lifetime remains valid. Missing/extreme
+caps or lifetime are inconclusive, forcing actual chronological leaves, never
+silently invalidating supported inputs. No global lifetime proof/adopted budget.
+Freeze sources for native/Linux and a point-hook-disconnected negative control;
+the external real-harness packet remains the independent oracle.
+
+## 2026-10-16 — first-hour lifetime research binding verified
+
+Actual producer nativef2bd03/15618 PASS2.770s; declared Linuxb5341e/96604
+PASS5.205s, byte-identical228362-byte packet. Same real3 origins/3003 references,
+12 full anchors/six actual prices,19 commands and11916 runner transitions.
+Source14 cursors10000,53575,900000ms and lifetimes0,1.7420122e2,0. Public/manual
+result AND complete command-script comparison pass. The packet is generated
+ignored data, reproducible from the committed capture, not another catalog.
+
+Initial production consumer918429/54248 PASS0.473s matches3003 observations,
+12 full independent harness anchors/12 queries, including two diagnostic500ms
+selections. Add the explicit nonnegative-before premise to the sufficient guard
+and six direct domain controls (zero/interior/extreme/negative/noncanonical,
+including a valid actual ignored delta despite an inconclusive certificate).
+Then freeze both source files and the thirteen-file portable overlay.
+
+Full affected native14cfea/2939 PASS38.509s plus production vet; declared
+Linux115626/46906 PASS82.623s. Prior180104 enumerated actual references retained
+plus3003 new production comparisons =183107, with separate real producer runs,
+anchors, selected-state checks and controls. No selected tests skip; sources
+frozen throughout. Runs overlap and are not comparative benchmarks. No TS/SQL/
+hosted/full harness workload/fullCI or shared numeric change claim.
+
+Compiling ignored point-hook disconnectionabf66c/56035 FAIL0.488s intentionally:
+all3003 points/12 anchors/12 queries retained,2000 lifetime mismatches and EIGHT
+full-state/selection mismatches, while actual cash/query outcomes still agree.
+Zero-production run2 companion remains green. Independent harness packet and
+query guard are untouched. Normal source was never mutated; all handles terminal.
+The failed canonical-price capture above remains disclosed, not overwritten.
+
+Reproduction, in order from repository root:
+`make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWaitFirstHourCaptureResearch -v'`,
+then `make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v'`.
+For Linux use declared compose.save-test.yml+compose.ci-test.yml service, --no-deps,
+`go test -p 1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWaitFirstHourCaptureResearch -v ./harness -count=1`,
+then the same flags with `-run TestWait -v ./production -count=1`.
+Focused production selectors: TestWaitFirstHourLifetimeBindingResearch and
+TestWaitFirstHourLifetimeDomainResearch. A missing generated packet fails loudly.
+Negative command uses -overlay=../.cache/wait-first-hour-no-hook.json and
+-run TestWaitFirstHourLifetimeBindingResearch; only the adapter's real helper call
+is replaced with a compiling no-op. Exact SHA256:
+- capture:0c77efaa69f9a7a8151bb1a50aeab4f805248c90580e5bee82ae39d3c5cb0b82
+- consumer:1a9bb8a3887a1398c0af5f566a55bdb36283493b4c83ee796da1bc5b51a27166
+- overlay:48aa5b92b466e20ac3883666014f00f4b1e693fae9ef1985eee4c3c844562322
+- packet:f8a80a6c0d1f3d1ecc7c041edc00e26784676fda16e6f237af8462dbdc66f921
+- fault source:1ad0e06ee94f49b5b231043f1fbd8760a11c7f79c2f7fa8c5c8a69a481293802
+- fault overlay:87fe0d56dd92aa75331fd3990a1bc1993ae8781f8ab62bf544ba5cee40f73034
+
+Draft H3n/own plan capture the bounded result and next remaining closed replay
+recipe/logged stages. Existing modern owner/legacy guards, production math,
+kernel222/epoch8, game data, client, saves and CI remain untouched. Exact raw
+price identity is a research transport constraint, not a discovered game-wire
+bug or reason to mint another defect row. RP-680 and27 AC6 failures stay open.
+Full domain/caller/lifecycle/workload/research-normative adoption gates remain.
+Review by: Codex root (research author/first filter). Recorded by: Codex root.
+Six-path range9dd996b2-exclusive through this checkpoint is NOT designated
+approval; research/normative review is outside corrective-code delegation.
+No implementation acceptance, archival, push, publication, deployment or release
+claim. Full nine-tier1.0 goal remains active/progress; meaningful safe work remains.

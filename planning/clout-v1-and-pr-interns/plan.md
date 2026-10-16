@@ -16,7 +16,7 @@ with nil error. Owning log/manual source retain source/hash/budget/receipt/uncha
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
 
-Draft H3d–H3m now supply a candidate positive-aggregation enclosure, its partial
+Draft H3d–H3n now supply a candidate positive-aggregation enclosure, its partial
 producer/ledger composition and a source-driven wait-cell constructor. The4004
 pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
 four small whole-wait populations are exhaustive and match independently scanned
@@ -61,8 +61,16 @@ leaf hook fires full-state and first-error mismatches. Affected verification als
 retains previous108080 references. This is fixed simulation only, not full modern
 logged gameplay, an adopted API or a migrated live harness.
 
-Next extend the owned query beyond fixed none/stock to the remaining concrete
-hook families and exact logged stage/clock operation; complete global/caller/
+H3n now grounds the separate first-hour lifetime recipe in three actually reached
+source14 states. An actual runtime/public-runner result+script equality check
+produces3003 references/12 full anchors/six exact catalog-price queries; the
+production prototype matches those plus six labelled diagnostic queries, including
+two positive selections. Point-hook disconnection fails despite matching cash.
+No live caller, payout or save/version contract changes; bounded first-hour
+research is not a repaired search or AC6 gate.
+
+Next extend the query to the remaining closed replay hook recipe and exact logged
+stage/clock operation; complete global/caller/
 timestamp/encoding/state and lifecycle/compatibility obligations,
 then measure complete real workloads with all preparation work charged. Partial
 certification alone does not adopt the proposed chronological error policy.
