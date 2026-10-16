@@ -201,9 +201,11 @@ or deploy-current inference.
 Founder-only schemas continue on a scalar chain independent of Company: v17 adds the exact
 `minigame_ratings` and `minigame_offline_quality` maps and requires the pinned `minigames`
 artifact; v18 adds the replay-owned `pets` map and requires both `minigames` and the complete
-`pets` artifact. Company remains v14/v16 and rejects v17/v18. Exit derives the reachable mixed
-tuple from the pinned bundle (Founder 17 or 18, Company 16), so no client or deployment setting
-chooses a version. No production content is activated merely by supporting these codecs.
+`pets` artifact. These Founder-only additions do not advance Company or make their Founder
+payload shapes valid Company saves. For bundles reaching only these additions, Exit derives
+the mixed tuple (Founder 17 or 18, Company 16) from the pinned artifacts; no client or deployment
+setting chooses a version. Later Company schemas advance independently, as described below.
+No production content is activated merely by supporting these codecs.
 Later links on the same chain are documented with their mechanics. Founder v24 adds `cosmetics`
 (`{owned, equipped}` with canonical `[]`/`{}`, never null), requires the pinned `cosmetics`
 artifact, and activates only at a new-run boundary ([Cosmetics](cosmetics.md)).

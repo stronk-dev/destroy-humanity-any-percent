@@ -5300,3 +5300,32 @@ Next: after independent correction review, follow the actual affordability metho
 admitted RP-676 profile and a bound real quote, without labelling it a complete modern factory
 or natural report failure. Continue the correct search/partition contract, not a false generic
 monotonicity proof or another passing census.
+
+## 2026-10-16 — RP-678 clone correction independently approved; canonical version wording
+
+Review by: /root/harness_clone_version_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; complete six-path one-commit range
+d9b5b07b5beffb22a5fa8992c0be08048d5d77f1-exclusive..de0008ec2443e087dbc58054b9dbac3b9a63c17a-inclusive.
+Actual restore matches the encoder's existing VersionForState(source), not a new schema or
+activation. Reviewer also checks accepted Doctrine/Compute D9's independent Company v17 codec.
+
+Independent exact old harness.go ignored overlay74050 fails BOTH admitted-v17 clone and
+actual search at unknown achievement_score_lifetime; v14 control passes500ms. Corrected
+`make test-go vet GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1'`49151 PASS81.853s plus vet.
+Separate verbose27341 PASS3.483s: v14/v17 version/complete bytes/nonalias/source preservation,
+actual search500/250ms, existing relevance fixture, first-hour reference consumer and unchanged
+axis refusal/legacy control, no selected skips. Gofmt/full-range diff clean. Go1.27.2 DarwinARM64;
+ordinary package checks, not opt-in exhaustive measurements or hosted execution.
+Reproduce old regression with root Go overlay selector and TestCloneStatePreservesSaveVersionThroughSearch:
+.cache/review-rp678-old-harness.go SHA139c3ee8410744323e05dd6adff961b12b2f77a8f18a07db92f9fcbfa4a8c78a;
+.cache/review-rp678-old-overlay.json SHA0b190e548b954a7bc12681aa67951dfd279d66226ed2cf7289e3102af6b09adc.
+All handles terminal/slot released; no reviewer tracked edits. No standard/relevance full run,
+modern axis integration, RP-676/accounting/Clout/CI/new-feature/archival/release acceptance.
+
+Separately, reviewer reports canonical docs/save-layer.md's unqualified "Company rejects
+v17/v18" versus its own independent Company v17 paragraph. Root records RP-679 and clarifies
+the Founder-only payload context and bundle-conditional mixed tuple. These are implemented
+codec distinctions, not a schema/activation/ruling amendment. Documentation-only follow-up
+lies outside the six-path verdict and needs no software rerun; diff/source checked. No accepted
+RFC or archived text changed. Continue actual-search caller analysis after this bounded repair.

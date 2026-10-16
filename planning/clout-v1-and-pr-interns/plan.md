@@ -11,8 +11,9 @@ ratified later by owner SHA (OD-5).
 2026-10-16: targeted actual-search preparation finds RP-678: harness cloneState restores
 an admitted v17 snapshot as v14, failing before affordability evaluation. The bounded
 source-version preservation correction and retained v14/v17 regression pass focused and full
-harness checks; complete-range independent review is pending. The owning log records actual
-old failure, verification and scope. This is a clone-conformance
+harness checks. Fresh independent Codex corrective review APPROVES complete
+`d9b5b07b..de0008ec`; the owning log records its old failure and executed full/consumer checks.
+This is a clone-conformance
 repair, not the numerical search counterexample, modern axis integration or AC6 repair.
 
 Fresh independent Codex APPROVES complete contiguous e4054647..a7e33b73, all16 paths:
