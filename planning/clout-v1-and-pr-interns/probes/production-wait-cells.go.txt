@@ -57,7 +57,7 @@ type waitCellWorkResearch struct {
 	AllPrefixWrites, AggregateFast, AggregateExact, AggregateExactTerms                                                int
 	LedgerInitial, LedgerFast, LedgerExact, LedgerReuses, LedgerAggregates, LedgerTerms, LedgerPartials, LedgerNoEntry int
 	ProgressInitial, ProgressFast, ProgressExact, ProgressLedgers, ProgressAggregates, ProgressTerms, ProgressPartials int
-	QueryNodes, QueryRanges, QueryRefinements, QueryStops, QueryGuards                                                 int
+	QueryNodes, QueryRanges, QueryRefinements, QueryStops, QueryGuards, QueryTimeGuards                                int
 }
 
 type waitCellsResearch struct {
@@ -474,8 +474,9 @@ func buildWaitCellSourcesResearch(state *save.State, catalog *economy.Catalog, m
 }
 
 type waitSourceContextResearch struct {
-	modern   bool
-	external []multiplier.Contribution
+	modern          bool
+	external        []multiplier.Contribution
+	preHookEncoding bool
 }
 
 // Only the separate fixed-v19 research owner selects modern inputs. The original

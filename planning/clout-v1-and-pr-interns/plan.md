@@ -16,7 +16,7 @@ with nil error. Owning log/manual source retain source/hash/budget/receipt/uncha
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
 
-Draft H3d–H3p now supply a candidate positive-aggregation enclosure, its partial
+Draft H3d–H3q now supply a candidate positive-aggregation enclosure, its partial
 producer/ledger composition and a source-driven wait-cell constructor. The4004
 pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
 four small whole-wait populations are exhaustive and match independently scanned
@@ -84,7 +84,14 @@ actual secondary-resource capacity failures and valid absorbed diagnostics retai
 chronological behavior. This is not global pre-hook encoding/timestamp proof or
 permission to use the draft in live callers; all original search/AC6 failures stay.
 
-Next complete global pre-hook encoding/timestamp/state and caller obligations,
+H3q adds the source-bound pre-hook cursor/codec obligation: seeded admitted calendar
+edges reproduce ten missed first-error queries despite correct arithmetic/hook
+proofs. Temporal certificates or actual chronological leaves preserve all18024
+primitive outcomes/48 queries, including valid masked/no-hook companions, without
+inventing new runtime date refusals. Other-field preservation is conditional on
+full restored input/catalog/mask admission, not merely a valid ledger.
+
+Next complete remaining input/mask/map identity and post-hook state obligations,
 then exact logged stage/clock operation and real settlement; complete global/caller/
 timestamp/encoding/state and lifecycle/compatibility obligations,
 then measure complete real workloads with all preparation work charged. Partial

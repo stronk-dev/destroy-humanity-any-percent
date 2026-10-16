@@ -1385,6 +1385,76 @@ workload/compatibility and research/normative review/adoption remain mandatory.
 No active arithmetic, save/kernel/data/CI/legacy contract changes. RP-680 and27
 Clout AC6 failures remain unrepaired; this does not close the full accounting goal.
 
+#### H3q — Pre-hook cursor/codec range obligation (RP-689)
+
+The [manual temporal component](../planning/clout-v1-and-pr-interns/probes/wait-state-time.go.txt)
+adds an independent range obligation before pruning a hook-bearing wait. Arithmetic
+and hook-specific certificates do not prove that simulationHook's initial
+Save.EncodeState and any stock-role counterfactual RestoreState can complete.
+The typed research recipe owners select this obligation: lifetime and closed
+replay require it, stock does when installed, none does not. A raw callback or
+boolean is not a proposed public factory/admission API.
+
+The failure is executable on existing loader/codec-admitted Company14 inputs:
+
+| Seeded primitive clock | Actual behavior at/after1000ms | Required distinction |
+|---|---|---|
+| v4 catalog,9999-12-31T23:59:59Z, purchased beige stock role, lifetime hook | Encoder formats year10000, but the real stock-role counterfactual cannot restore that RFC3339 cursor. | First actual error is1000ms, not a later probe or unreachable. Masking that role removes this restore call and remains successful. |
+| Existing v3 catalog,0000-12-31T23:59:59Z, permitted zero RunStartedAt, lifetime hook | At1000ms the new cursor equals Go's zero time and the pre-hook encoder refuses it;1001ms can succeed again. | A later successful wait cannot erase the earlier real error; masking production does not remove the required encoding. |
+| Same origins, no hook | The primitive does not invoke the pre-hook encoder/counterfactual. | Preserve its actual success even when a separate encode/restore observation fails. Do not invent a new primitive error. |
+
+The proposed temporal certificate is CONDITIONAL on an admitted restored origin,
+its actual source version/pinned catalog and the earlier complete producer proof.
+Within the existing86_460_000ms research domain, canonical UTC whole-ms addition
+is ordered, exact and cannot overflow the absolute seconds/ms representation of
+a parsed RFC3339 year0..9999 origin. Require exact relative endpoint offsets,
+endpoint format/parse equality and the closed year interval. Exclude Go's zero
+sentinel ANYWHERE inside the interval, not only at its endpoints. There are no
+other calendar grammar holes between ordered UTC endpoints. Thirteen direct
+controls cover the two boundaries, valid neighbors and invalid proof requests.
+
+An inconclusive temporal certificate refines chronologically to actual primitive
+leaves; it does NOT reject a date, add a server clock limit or manufacture an
+error. Producer and hook certificates retain their independent global reuse, so
+only temporal proof is repeated when it is the unresolved component. Time0/
+empty-future shortcuts remain before future preparation. QueryTimeGuards counts
+the extra checks separately; accepted node/work budgets are unchanged. This is
+research, not permission to land this draft or enable held gameplay contexts.
+
+The twelve complete1502-point populations cover both modes and none/lifetime/
+masked-lifetime recipes. All18024 actual primitive outcomes include1008 actual
+errors. The initial composition loses TEN first-error query results; the corrected
+48 queries preserve earlier500ms success, first1000ms errors, genuine unreachable
+and already-affordable0. Successful masked/no-hook companions are retained, not
+discarded to make a broad refusal rule pass. A compiling bypass of ONLY the time
+obligation must reproduce those misses with all actual references unchanged.
+
+Full selected state/evaluation/roles are compared with exact cursor equality.
+For observation ONLY, an encoded shallow view substitutes the original cursor
+while the real cursor is checked separately, permitting complete comparison at
+the actual zero-cursor failure. The real projected object and its encoder/error
+observations are untouched. Six encode and3012 restore failures are recorded
+separately from1008 primitive errors, not relabelled as additional failures.
+These are seeded clock-domain diagnostics, not natural player dates or save loss.
+
+The pre-hook write-set audit also identifies the remaining admission premises:
+
+| Evaluate writes | Conditional preservation argument | Required source premise |
+|---|---|---|
+| Ledger | Successful all-resource ledger/receipt certificate retains canonical finite balances within catalog bounds. | Same admitted pinned catalog and original ledger; not a caller assertion of hash equality. |
+| Compute credits/burst | Banking is limited by remaining safe-integer cap; burst subtracts min(original,elapsed). | Restored original bounds and actual validated policy; no new allowance per probe. |
+| Provisioned/remainder maps | Actual materialization writes existing declared targets, clamps to a safe-integer hardcap and uses nonnegative integer remainder modulo1e6. | Admitted original map membership, valid mask and successful actual source boundaries. |
+| Cursor | The temporal certificate above preserves the required encoding/roundtrip path, or actual leaves decide. | Canonical admitted restored origin and the actual hook recipe; not every hypothetical primitive requires a codec call. |
+| Other Company fields | Evaluate leaves them unchanged. Monotone cursor advance preserves original incorporation/refill/run/offline ordering constraints. | Full original codec admission and source-version fidelity, not merely a valid ledger. Post-hook output validation is a separate obligation. |
+
+This is not a complete arbitrary-input admission/identity, post-hook persistence
+or all-caller proof. Remaining mask/map membership, actual stage/clock and owned
+context/lifecycle obligations must be completed before global soundness is claimed.
+Keep logged clearing, SQL/event delivery/idempotency, full workload/compatibility,
+Go/TS parity, independent normative review and owner adoption mandatory. Existing
+runtime/codec/kernel/data/CI and accepted contracts stay unchanged. RP-680 and27
+Clout AC6 failures remain OPEN.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6

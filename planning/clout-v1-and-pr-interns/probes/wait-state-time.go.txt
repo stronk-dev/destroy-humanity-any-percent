@@ -1,0 +1,242 @@
+package production
+
+import (
+	"bytes"
+	"os"
+	"reflect"
+	"strings"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+// Sufficient cursor/codec range proof for an admitted restored origin. UTC
+// whole-ms addition is ordered; RFC3339's closed year range has no interior
+// grammar holes. Go's zero sentinel must be excluded even with valid endpoints.
+// False is INCONCLUSIVE, never a fabricated primitive error or date rejection.
+func certifyWaitTimeResearch(origin time.Time, lo, hi int64) bool {
+	if lo < 0 || hi < lo || hi > 86_460_000 || origin.Location() != time.UTC || origin.Nanosecond()%int(time.Millisecond) != 0 {
+		return false
+	}
+	left := origin.Add(time.Duration(lo) * time.Millisecond)
+	right := origin.Add(time.Duration(hi) * time.Millisecond)
+	if left.Before(origin) || right.Before(left) || left.Sub(origin).Milliseconds() != lo || right.Sub(origin).Milliseconds() != hi || left.Year() < 0 || right.Year() > 9999 {
+		return false
+	}
+	zero := time.Time{}
+	if !zero.Before(left) && !zero.After(right) {
+		return false
+	}
+	for _, endpoint := range []time.Time{left, right} {
+		text := endpoint.Format(time.RFC3339Nano)
+		parsed, err := time.Parse(time.RFC3339Nano, text)
+		if err != nil || !parsed.Equal(endpoint) || parsed.Location() != time.UTC {
+			return false
+		}
+	}
+	return true
+}
+
+func TestWaitStateTimeCertificateResearch(t *testing.T) {
+	normal := time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC)
+	upper := time.Date(9999, 12, 31, 23, 59, 59, 0, time.UTC)
+	lower := time.Date(0, 12, 31, 23, 59, 59, 0, time.UTC)
+	for _, row := range []struct {
+		name   string
+		origin time.Time
+		lo, hi int64
+		want   bool
+	}{
+		{"normal_full_instrument_domain", normal, 0, 86_460_000, true},
+		{"upper_before", upper, 0, 999, true},
+		{"upper_crossing", upper, 999, 1000, false},
+		{"upper_after", upper, 1000, 1501, false},
+		{"lower_before", lower, 0, 999, true},
+		{"zero_inside_valid_endpoints", lower, 0, 1501, false},
+		{"zero_singleton", lower, 1000, 1000, false},
+		{"lower_after", lower, 1001, 1501, true},
+		{"negative", normal, -1, 1, false},
+		{"reversed", normal, 2, 1, false},
+		{"outside_existing_instrument_domain", normal, 0, 86_460_001, false},
+		{"unaligned_origin", normal.Add(time.Nanosecond), 0, 1, false},
+		{"noncanonical_location", normal.In(time.FixedZone("not-UTC", 0)), 0, 1, false},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			if got := certifyWaitTimeResearch(row.origin, row.lo, row.hi); got != row.want {
+				t.Fatal("wrong sufficient temporal certificate", got, row.want)
+			}
+		})
+	}
+}
+
+// Compare the entire state except a separately compared exact cursor. A shallow
+// observation view permits comparing the actual zero-cursor failure as well.
+// Neither the real projection nor its codec/error outcome is changed.
+func timeStateViewResearch(t *testing.T, state *save.State, origin time.Time) []byte {
+	t.Helper()
+	view := *state
+	view.EvaluatedThrough = origin
+	encoded, err := save.EncodeState(&view)
+	if err != nil {
+		t.Fatal("cursor-separated observation failed", err)
+	}
+	return encoded
+}
+
+func TestWaitStateTimeResearch(t *testing.T) {
+	const horizon int64 = 1501
+	total, actualFailures, queries, misses, encodeFailures, restoreFailures := 0, 0, 0, 0, 0, 0
+	for _, clock := range []string{"upper_rfc3339", "zero_time"} {
+		catalog := phase0Catalog(t)
+		start := time.Date(0, 12, 31, 23, 59, 59, 0, time.UTC)
+		if clock == "upper_rfc3339" {
+			data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
+			if err != nil {
+				t.Fatal(err)
+			}
+			catalog, err = economy.LoadCatalog(data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			start = time.Date(9999, 12, 31, 23, 59, 59, 0, time.UTC)
+		}
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			for _, recipe := range []string{"none", "lifetime", "masked_lifetime"} {
+				t.Run(clock+"/"+string(mode)+"/"+recipe, func(t *testing.T) {
+					initial := replayFixtureState(t, catalog, start)
+					initial.WireVersion = 14
+					initial.GeneratorCounts["generator.beige_tower"], initial.GeneratorPurchasedTotal = 1, 1
+					if clock == "zero_time" {
+						initial.RunStartedAt = time.Time{}
+					}
+					setCash(t, initial, "1e4")
+					origin := mustEncodeState(t, initial)
+					restore := func() *save.State {
+						t.Helper()
+						state, err := save.RestoreState(origin, 14, catalog, economy.ScopeCompany, time.Time{})
+						if err != nil || save.VersionForState(state) != 14 || !bytes.Equal(origin, mustEncodeState(t, state)) {
+							t.Fatal("declared source admission failed", err)
+						}
+						return state
+					}
+					initial = restore()
+					mask := AblationMask{}
+					if recipe == "masked_lifetime" {
+						mask.GeneratorIDs = []string{"generator.beige_tower"}
+					}
+					deps := SimulationDependencies{}
+					if recipe != "none" {
+						deps.Hook = firstHourLifetimeResearchHook{"company.cash"}
+					}
+					project := func(at int64, hook bool) (*save.State, AdvanceSimulationResult, error) {
+						state := restore()
+						dependencies := deps
+						if !hook {
+							dependencies.Hook = nil
+						}
+						result, err := SimulateAdvance(state, catalog, dependencies, save.Revision{}, mode, start.Add(time.Duration(at)*time.Millisecond), nil, mask)
+						return state, result, err
+					}
+					values, failures := make([]decimal.Decimal, horizon+1), make([]error, horizon+1)
+					bad, badEncode, badRestore := 0, 0, 0
+					for at := int64(0); at <= horizon; at++ {
+						state, _, actualErr := project(at, true)
+						wantFailure := recipe != "none" && (clock == "zero_time" && at == 1000 || clock == "upper_rfc3339" && recipe == "lifetime" && at >= 1000)
+						if (actualErr != nil) != wantFailure {
+							t.Fatal("declared actual population changed", at, actualErr, wantFailure)
+						}
+						if actualErr != nil {
+							if !strings.Contains(actualErr.Error(), "evaluated_through") {
+								t.Fatal("wrong actual failure", at, actualErr)
+							}
+							bad++
+						}
+						failures[at] = actualErr
+						values[at], _ = state.Ledger.Balance("company.cash")
+						encoded, err := save.EncodeState(state)
+						if err != nil {
+							badEncode++
+						} else if _, err := save.RestoreState(encoded, 14, catalog, economy.ScopeCompany, time.Time{}); err != nil {
+							badRestore++
+						}
+						total++
+					}
+					prices := []decimal.Decimal{values[0]}
+					for _, at := range []int64{500, 1250} {
+						state, _, err := project(at, false)
+						if err != nil {
+							t.Fatal("no-hook quote reference failed", at, err)
+						}
+						cash, _ := state.Ledger.Balance("company.cash")
+						prices = append(prices, cash)
+					}
+					prices = append(prices, decimal.New(1, 12))
+					var guard waitRangeGuardResearch
+					if recipe != "none" {
+						guard = &firstHourLifetimeDomainResearch{state: initial, catalog: catalog, resource: "company.cash"}
+					}
+					for _, price := range prices {
+						want, errorAt := int64(-1), int64(-1)
+						for at := int64(0); at <= horizon; at++ {
+							if failures[at] != nil {
+								errorAt = at
+								break
+							}
+							if values[at].Gte(price) {
+								want = at
+								break
+							}
+						}
+						last, points := int64(-1), 0
+						var selected *save.State
+						var advance AdvanceSimulationResult
+						found, factory, err := queryWaitContextResearch(initial, catalog, mode, horizon, mask, SimulationDependencies{}, price, int(2*(horizon+1)), func(at int64) (decimal.Decimal, error) {
+							last, points = at, points+1
+							var err error
+							selected, advance, err = project(at, true)
+							if err != nil {
+								return decimal.NaN, err
+							}
+							value, _ := selected.Ledger.Balance("company.cash")
+							return value, nil
+						}, waitSourceContextResearch{preHookEncoding: recipe != "none"}, guard)
+						if errorAt >= 0 {
+							if err == nil || err.Error() != failures[errorAt].Error() || found != -1 || last != errorAt {
+								misses++
+								t.Errorf("lost actual first error%d: found%d last%d error%v", errorAt, found, last, err)
+							}
+						} else if err != nil || found != want {
+							misses++
+							t.Errorf("changed valid result: found%d want%d error%v", found, want, err)
+						} else if found > 0 {
+							state, result, actualErr := project(found, true)
+							if actualErr != nil || selected == nil || !selected.EvaluatedThrough.Equal(state.EvaluatedThrough) || !bytes.Equal(timeStateViewResearch(t, selected, start), timeStateViewResearch(t, state, start)) || !reflect.DeepEqual(advance, result) {
+								t.Fatal("lost full selected cursor/state/result/roles", actualErr)
+							}
+						} else if found == 0 && (points != 0 || factory != nil) {
+							t.Fatal("already affordable time0 projected")
+						}
+						queries++
+						if factory != nil {
+							t.Logf("quote%s at%d first_error%d points%d work%+v", price, found, errorAt, points, factory.work)
+						}
+					}
+					if !bytes.Equal(origin, mustEncodeState(t, initial)) {
+						t.Fatal("research consumed origin")
+					}
+					actualFailures += bad
+					encodeFailures += badEncode
+					restoreFailures += badRestore
+					t.Logf("all1502 actual points: errors%d encode_failures%d restore_failures%d", bad, badEncode, badRestore)
+				})
+			}
+		}
+	}
+	if total != 18024 || actualFailures != 1008 || queries != 48 || misses != 0 {
+		t.Fatalf("incomplete/missed temporal population: points%d actual_errors%d queries%d misses%d", total, actualFailures, queries, misses)
+	}
+	t.Logf("all18024 actual points/48 queries: actual_errors%d codec_encode_failures%d restore_failures%d; codec observations are NOT fabricated primitive errors", actualFailures, encodeFailures, restoreFailures)
+}

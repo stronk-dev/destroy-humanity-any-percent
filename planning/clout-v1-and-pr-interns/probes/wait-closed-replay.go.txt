@@ -177,7 +177,7 @@ func (owner *closedWaitReferenceResearch) query(horizon int64, price decimal.Dec
 			return decimal.NaN, ErrInvalidEngineState
 		}
 		return value, nil
-	}, waitSourceContextResearch{modern: true, external: owner.external}, guard)
+	}, waitSourceContextResearch{modern: true, external: owner.external, preHookEncoding: true}, guard)
 	answer.at, answer.factory, answer.guards = found, factory, guard.ranges
 	answer.receiptTerms, answer.spanChecks = guard.receiptTerms, guard.spanChecks
 	answer.proofAssemblies, answer.proofCatalogs = guard.assemblies, guard.catalogLoads

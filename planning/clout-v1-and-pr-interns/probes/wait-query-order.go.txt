@@ -58,6 +58,15 @@ func queryWaitContextResearch(state *save.State, catalog *economy.Catalog, mode 
 		}
 	}
 	guardDefined := true
+	timeDefined := !context.preHookEncoding
+	if !timeDefined {
+		hi := int64(0)
+		if len(factory.cells) > 0 {
+			hi = factory.cells[len(factory.cells)-1].hi
+		}
+		factory.work.QueryTimeGuards++
+		timeDefined = certifyWaitTimeResearch(state.EvaluatedThrough, 0, hi)
+	}
 	if guard != nil {
 		hi := int64(0)
 		if len(factory.cells) > 0 {
@@ -114,7 +123,12 @@ func queryWaitContextResearch(state *save.State, catalog *economy.Catalog, mode 
 				return -1, guardErr
 			}
 		}
-		defined := producerSafe && guardSafe
+		timeSafe := timeDefined
+		if !timeSafe {
+			factory.work.QueryTimeGuards++
+			timeSafe = certifyWaitTimeResearch(state.EvaluatedThrough, lo, hi)
+		}
+		defined := producerSafe && guardSafe && timeSafe
 		if defined {
 			bound, err := factory.upper(cell, hi)
 			if err == nil && bound.Cmp(price) < 0 {

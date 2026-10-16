@@ -126,7 +126,7 @@ func (owner *modernWaitOwnerResearch) query(horizon int64, quote decimal.Decimal
 				return decimal.NaN, ErrInvalidEngineState
 			}
 			return value, nil
-		}, waitSourceContextResearch{modern: true, external: owner.external}, guard)
+		}, waitSourceContextResearch{modern: true, external: owner.external, preHookEncoding: owner.recipe == "faction_stock"}, guard)
 	selected.at, selected.factory = found, factory
 	selected.hookProbes, selected.hookRanges, selected.hookSplits = domain.probes, domain.ranges, domain.splits
 	if queryErr == nil && found >= 0 {

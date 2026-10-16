@@ -213,7 +213,7 @@ func TestWaitFirstHourLifetimeBindingResearch(t *testing.T) {
 					}
 					value, _ := selected.Ledger.Balance(row.ValueResource)
 					return value, nil
-				}, waitSourceContextResearch{}, domain)
+				}, waitSourceContextResearch{preHookEncoding: true}, domain)
 				if err != nil || found != want {
 					t.Fatal("query differs from exhaustive real caller", index, found, want, err)
 				}

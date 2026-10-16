@@ -6994,3 +6994,137 @@ implementation acceptance, archival, push/publication/deployment or release clai
 Full nine-tier1.0 goal remains active/progress; next complete global pre-hook
 encoding/timestamp/state obligations before claiming the producer+hook query sound
 over its whole supported context, then exact logged stages and real settlement.
+
+## 2026-10-16 — pre-hook cursor/codec boundary research
+
+Continue from5b758f50. Inspect the ACTUAL encoder and simulation hook, not merely
+the catalog's arithmetic domain. Evaluate changes ledger, credits, burst,
+provisioned/remainder maps and cursor. An installed simulationHook first encodes
+that state, then may restore a stock-role counterfactual at the same source version.
+UTC/millisecond syntax alone does not prove the formatted cursor is readable or
+nonzero. Keep actual no-hook behavior distinct: it does not call that encoder.
+
+Predeclare12 complete0..1501 populations: two clocks x online/offline x none,
+first-hour lifetime, generator-masked lifetime. Upper clock uses the real v4 T0T1
+catalog, admitted Company14 at9999-12-31T23:59:59Z with purchased stock-role beige1.
+Lower clock uses the existing v3 phase0 catalog (no provision clock), admitted
+Company14 at0000-12-31T23:59:59Z, RunStartedAt zero as its existing codec permits.
+Both cross a boundary at1000ms: RFC3339 year10000 or Go's zero time. These are
+seeded primitive-domain diagnostics, NOT natural player dates, a changed server
+clock, active-play enablement or a deployed save-loss finding. Population/admission
+failure invalidates the proposed instrument rather than exclude a row.
+
+At all18024 points execute actual fresh SimulateAdvance; retain exact errors and
+whole state/results/roles. Observe encode/restore failures SEPARATELY from actual
+primitive errors: do not turn a successful no-hook wait into a fabricated error.
+For complete comparison only, encode a shallow state view with its cursor reset
+to the original cursor AND compare the true cursor independently; this does not
+mutate the projected object or hide its actual codec observations. Query original
+cash, independently sampled500/1250ms no-hook cash and1e12; all48 queries compare
+against complete chronological actual-error/affordability references and full
+selected state. Earlier valid results must survive a later error; a later valid
+endpoint cannot erase an earlier error.
+
+Proposed repair is manual research only: closed recipe owners declare when the
+actual primitive requires pre-hook encoding. Source-derived canonical relative
+time/codec range checks may certify within that owned interval, otherwise refine
+to real endpoints. A no-hook caller keeps its actual behavior. Do not silently
+reject dates or invent a runtime calendar limit. Preserve existing producer and
+hook proof reuse; expose temporal checks separately. Initial hypothesis predicts
+1008 actual errors (upper unmasked1004, lower hook cases4), but source execution
+owns truth. Native/Linux affected checks and a compiling bypass of ONLY this new
+temporal guard must discriminate before checkpoint. No production/codec/kernel/
+schema/data/CI or accepted-contract edit; other global/caller/logged gates stay.
+
+Baselinefeacf3/52701 FAIL1.498s exactly at the query boundary: all18024 actual
+points execute with1008 real primitive errors; TEN queries hide the first1000ms
+error or report it later at1250ms. Independent codec observations are six encode
+refusals and3012 restore refusals, NOT3018 additional primitive failures. The
+no-hook and upper masked companions remain successful under their actual contract.
+Correctedebbf5a/66781 PASS1.539s, same population/48 queries, full selected state/
+true cursor/evaluation/roles unchanged. Add thirteen direct temporal-certificate
+controls, including valid endpoints straddling the zero sentinel, unaligned/
+non-UTC origins, reversed and existing-instrument-range bounds. Then freeze all
+sources for full affected native/Linux and the compiling temporal-bypass control.
+Initial Linuxb29c84 ran ZERO tests: an overlay path typo used pr-interns without
+its first hyphen. Correct only that command; do not call it a code failure or
+silently count it as a passing architecture gate.
+
+## 2026-10-16 — RP-689 temporal proof checkpoint
+
+Native86e70f/7220 PASS83.233s plus production vet, all259157 enumerated reference
+points (prior241133 +18024 temporal), plus independent producer/selected/full-state/
+ownership/certificate controls. The thirteenth direct time control is included;
+no test skips. Source helpers/context bindings frozen before all final runs.
+Corrected Linux2d37a8/91607 remains the single live owned handle until its terminal
+result; no restart because an observation wait yields.
+
+Compiling ignored bypass8a8e65/92461 FAIL1.502s with all18024 points/1008 actual
+errors/48 queries retained and the exact TEN first-error misses reproduced. Only
+`timeDefined := !context.preHookEncoding` becomes `timeDefined := true`; numerical
+producer proof, hook guard, actual primitive and ownership constructors remain
+intact. Valid none/upper-masked populations still pass. This is semantic query
+discrimination, not a compile failure or a counter-only assertion. Normal source
+never mutated. No full producer/Codec rewrite or artificial date error is involved.
+
+The complete source write-set audit is recorded in own draft H3q: successful
+ledger certificates preserve finite canonical balances; validated bank/credit
+caps and burst subtraction preserve integer bounds; actual provisioning writes
+existing declared targets with safe hardcaps and modulo remainders; all other
+pre-hook metadata is unchanged, with monotone cursor advance preserving its
+existing order constraints. This argument REQUIRES a fully admitted RESTORED
+origin/pinned catalog/mask. A valid initial ledger alone is insufficient. Do not
+promote it to arbitrary-input, absent-key mask, post-hook codec, lifecycle, all-
+caller or complete logged-stage proof. Those remain the next global obligations.
+
+The temporal obligation is selected mechanically by the closed research recipe
+owner, not accepted from an external callback claiming purity. No-hook waits keep
+their actual lack of pre-hook encoding; installed lifetime/stock/closed hooks
+pay for temporal range checks. QueryTimeGuards exposes this work without changing
+existing research node limits or pretending this proves full workloads feasible.
+The zero sentinel can lie inside two valid endpoints, so endpoint-only sampling
+is expressly insufficient. A failed sufficient proof refines to actual source
+results, retaining masked-year10000 successes instead of rejecting them by fiat.
+
+Final declared Linux2d37a8/91607 PASS265.424s, all259157 enumerated reference
+points and thirteen direct temporal controls, with unchanged ordinary populations.
+Native83.233s/vet above and Linux share frozen source hashes; no skips. All owned
+handles terminal. Compilers/architectures and concurrent load differ, so timings
+are NOT performance or hosted-CI evidence. No production/full-harness/TS/SQL/
+full-workload claim follows. The original unguarded and intentional-bypass reds
+remain exact evidence; the failed Linux path lookup ran no tests.
+
+Root reproduction: H3n's producer must already have regenerated its ignored
+first-hour packet (its source/artifacts are unchanged since the prior wave), then
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v ./production -count=1`.
+Focused selectors: TestWaitStateTimeResearch and TestWaitStateTimeCertificateResearch.
+Negative command uses -overlay=../.cache/wait-time-bypassed.json and
+-run TestWaitStateTimeResearch; ignored copy changes only the global temporal
+boolean in the shared query helper, so per-range checks are bypassed too. All
+actual reference populations, owner-selected recipe flags and other proof stages
+stay intact. SHA256:
+- wait-state-time:8ad44ce51211e78387705610cecd2fdf2d47aae7ae6222c2c498d18b7f01becc
+- production-wait-cells:858bce15a64237ca0f60f2d61b6d9a4ad3690f5ba2b240a1a74447f86eda7169
+- wait-query-order:e64d16db988e2346c49c8ff6ef4e9469a946ecb431377990bbfb6283310f9321
+- wait-modern-binding:a0b4d1566a68f7b7755474db4c5a5aac68b343d423234b351d59e181235b48c5
+- wait-first-hour-lifetime:7ac0a2ac2db6db6548ca3a18225d2fc3bb4d2feefaaa0ace1f77f14c05dd890e
+- wait-closed-replay:748da29d33af72f602136d688dbde80fd2fa27f81c0b34db014e4ae7fe91ebb7
+- seventeen-file overlay:a2e901bf8ea4937f8959ddc633cc96a75775808dff988c8744cacee850137853
+- ignored bypass source:ea062056e4349d7f056a5adae24bcb26a14a868cdd53e52c929cebe6df6b664b
+- ignored bypass overlay:0ff2112692180f7b5d8bc18bf3a8f1344179ca5ac4999a3810afa305fb3b4c70
+
+RP-689/own H3q/own plan preserve this bounded result and its input/state limits.
+Source-version, normal producer/hook error behavior, kernel222/epoch8, live
+simulation/codecs, active data/schema and normal CI remain unchanged. No runtime
+calendar restriction, invented error class, generated origin wire format, extra
+saved payments or author-content change. General input/mask/map membership and
+post-hook state preservation, lifecycle/identity, exact logged stages/clock, real
+settlement/SQL/event delivery/idempotency, full workload/compatibility and normative
+adoption remain mandatory. RP-680 and27 AC6 failures stay OPEN.
+Review by: Codex root (research author/first filter). Recorded by: Codex root.
+Eleven-path range5b758f50-exclusive through this checkpoint remains outside
+corrective-code delegation and needs research/normative review. No designated
+approval, feature acceptance, archival, push/publication/deployment or release.
+Full nine-tier1.0 goal active/progress. Next inspect remaining input/mask/state
+preservation, rather than assume unchanged metadata from a cash-only predicate.
