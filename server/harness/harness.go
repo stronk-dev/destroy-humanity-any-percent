@@ -771,7 +771,7 @@ func cloneState(catalog *economy.Catalog, source *save.State) (*save.State, erro
 	if err != nil {
 		return nil, err
 	}
-	return save.RestoreState(encoded, save.CurrentVersion, catalog, economy.ScopeCompany, time.Time{})
+	return save.RestoreState(encoded, save.VersionForState(source), catalog, economy.ScopeCompany, time.Time{})
 }
 
 func collectReceipt(data []byte, before, after map[string]string, sources, sinks map[string][]decimal.Decimal) error {

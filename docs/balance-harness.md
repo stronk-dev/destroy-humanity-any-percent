@@ -29,6 +29,11 @@ Company's save version, not the legacy v14 default. Supported newer state must r
 its fields through that clone. This does not enable axis-enabled scenario constructors
 or add the missing attainment hook; the scenario guards above remain binding.
 
+The harness's ordinary Company clone likewise restores `save.VersionForState(source)`.
+It preserves the admitted encoding, burst state and independent ownership instead of
+forcing newer snapshots through v14. Legacy scenario constructors remain unchanged;
+this is not axis-stack/attainment-hook integration or a payout/search-algorithm repair.
+
 `testdata/harness/scenarios/phase0-production.json` is scenario version 4 (the economy + Routes + Commons
 balance bundle) and runs two versioned policies:
 

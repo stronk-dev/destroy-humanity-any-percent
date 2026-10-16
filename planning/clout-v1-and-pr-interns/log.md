@@ -5252,3 +5252,51 @@ adoption, feature approval, archival, publication or1.0 milestone. Review by: Co
 (research author/first filter). Recorded by: Codex root. The complete standard-measurement
 research range35cde078-exclusive through this containing commit remains research review,
 outside the corrective-only delegation; existing normative/research holds are unchanged.
+
+## 2026-10-16 — Targeted harness search version-boundary probe, before execution
+
+Question: can actual RelevanceSuite.earliestAffordable clone an independently admitted v17
+Company, or does cloneState's hardcoded v14 restore block it before arithmetic is evaluated?
+Use the unchanged real fixture suite loader/catalog and two admitted origins: legacy v14 with
+one alpha generator, and v17 with the same generator plus1000ms of burst. Exact fixed cost101
+from initial100 should first be affordable at500/250ms respectively under the fixture's rates.
+Require version/encoded-byte preservation, source independence and an unchanged source after
+actual search. A refusal at clone/restore is its own result, not proof of a numerical search
+miss. Manual source is probes/harness-clone-version-probe.go.txt, outside ordinary CI.
+No arithmetic, active accounting, catalog, balance, baseline or kernel change is authorized.
+If refused, first distinguish unsupported integration from a bounded clone-conformance defect;
+do not silently alter a version to reach the desired counterexample. This is a two-origin
+boundary diagnostic, not a new census, full modern factory, natural play or whole-report proof.
+
+## 2026-10-16 — RP-678 actual harness clone/search version refusal repaired
+
+The targeted diagnostic finds a separate consumer defect before numerical search. Initial63193
+passes legacy control but refuses the v17 FIXTURE before admission because its meter maps are
+uninitialized; excluded. Initialize its required empty maps, not the clone/predicate. Corrected
+old-source69377 independently encodes/restores v17 successfully, then BOTH cloneState and actual
+earliestAffordable fail on v14's unknown achievement_score_lifetime field. Admitted v14 control
+returns the expected500ms and leaves source untouched. No rounding decrease/search miss is
+inferred from a pre-search decode error; RP-678 is distinct from RP-676 and RP-654's other clone.
+
+Bounded conformance correction under Balance Harness FoundationD1 and the existing Save version
+contract: cloneState restores save.VersionForState(source), exactly the version its encoder
+uses, rather than v14. The diagnostic is promoted from the temporary .go.txt location into
+ordinary regression server/harness/clone_state_test.go (not duplicated in a manual/CI corpus).
+It admits each source before cloning, checks version/complete bytes/non-aliasing and actual
+earliestAffordable: legacy14 reaches cost101 from100 at500ms; v17's preserved1000ms burst
+reaches it at250ms. Neither consumes origin. Focused83645 PASS0.259s; full
+`make test-go vet GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1'`95174 PASS82.645s plus vet.
+No timeouts, exclusions or existing tests changed. These are ordinary package populations,
+not a new full300 standard measurement, full relevance run or axis-enabled factory proof.
+
+Canonical harness docs/own plan/ledger reconcile; kernel affecting-paths excludes server/harness,
+so no false numeric version bump. No price, accrual, simulation formula, state format, balance,
+scenario constructor/guard, hook, golden/baseline or active accounting algorithm changes.
+Review by: Codex root (implementer first filter). Recorded by: Codex root. Complete range
+d9b5b07b-exclusive through this containing repair commit requires fresh independent corrective
+review. All root handles terminal before reviewer execution. No DB/browser/hosted/full-CI,
+Clout AC6/27-failure repair, original feature acceptance, archival, publication or release claim.
+Next: after independent correction review, follow the actual affordability method with the
+admitted RP-676 profile and a bound real quote, without labelling it a complete modern factory
+or natural report failure. Continue the correct search/partition contract, not a false generic
+monotonicity proof or another passing census.
