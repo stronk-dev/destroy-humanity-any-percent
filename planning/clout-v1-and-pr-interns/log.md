@@ -5473,3 +5473,91 @@ before any new actual search implementation. Review by: Codex root (research aut
 first filter). Recorded by: Codex root. Complete four-path range4cf683d1-exclusive
 through this containing checkpoint requires research/normative review, outside the
 corrective-code delegation; no designated approval, feature closeout or release claim.
+
+## 2026-10-16 — Before execution: fixed-prefix production-cell enclosure/search
+
+Previous goal turn PROGRESS: f7a2ad7b derived/executed the positive aggregation
+component. Next test its composition with the real varying partial producer and
+ledger, NOT another positive monotonicity census. Manual source will reuse RP-676's
+four actual Evaluate/SimulateAdvance anchor controls. Within the retained1000ms
+bucket use its exact fixed65536-term prefix, actual accrueBoostedConstant partial,
+actual SumDeterministic/Q12 and actual Ledger.ApplyAccrual. Check every endpoint
+0..1000 against a rational whole-prefix/partial/ledger upper bound. Additional
+complete1001-endpoint controls: ordinary90% efficiency with nonzero starting balance,
+zero rate and zero efficiency. No synthetic rate or changed input is called a
+naturally acquired state or full Evaluate population.
+
+For this bounded grid, prepare a prefix-maximum table of the ACTUAL integer-ms
+seconds conversion once. Bound positive Mul/Add/Q12 with the source-derived rounding
+factors, retain the real constant raw total rate and uniform N/G for prefix+partial.
+Table preparation is explicit1001 work, not hidden per-query or full-domain proof.
+Compare chronological certificate-pruned search with the exhaustive earliest
+endpoint inside the cell for the real retained threshold; extend its horizon to500
+where the endpoint is unaffordable. Controls: already affordable and unreachable,
+the old endpoint-only pseudo-certificate, and a deliberately omitted burst factor.
+Errors/refusals/work exhaustion invalidate a result rather than mean unreachable.
+
+All4004 pipeline endpoints and all search controls must execute. Count actual point
+and certificate work separately from exhaustive reference/table/prefix construction.
+Do not charge these diagnostic counters as real harness transitions. No production
+algorithm, payout, kernel, budget, content, report, CI or accepted contract change.
+One fixed cell is not whole-horizon completeness, hook/axis/caller integration or
+workload feasibility. Own draft engineering/research remains outside corrective-code
+review delegation; RP-680/AC6 remain open regardless of the bounded result.
+
+First launch86601/5d51b1 selected NO tests: Make consumed the unescaped trailing
+regex dollar and joined -v into the selector. Excluded as unexecuted, not a pass.
+Use the unique test-name selector without the dollar; no source/assertion change.
+
+First actual execution8664/bdd181 PASS2.747s, all4004 pipeline endpoints and four
+real anchor projections. Exhaustive earliest cell point333; chronological search
+at horizons499/500/1000 finds333 with14/15/16 nodes and one fresh actual pipeline
+point each,4/5/5 prunes. Preparation/reference work remains separately counted.
+Before final execution, add explicit propagation of a REAL negative-rate producer
+refusal, unavailable/nil/negative certificate refusals, unsupported grid and work
+exhaustion; verify the calculated upper function itself never decreases across
+the complete declared cell. These make validity assumptions visible; they do NOT
+prove that an unobserved general range cannot contain a producer/ledger refusal.
+
+Final native44767/b0f40f PASS2.806s, ordinary production vet also passes; all original
+4004 endpoints/four actual anchors/search controls retained, added definedness/refusal
+and calculated-upper monotonicity checks pass. Before environment follow-up: run the
+identical final source in declared Linux AMD64 Go --no-deps with /workspace mappings.
+No DB boundary, broader production suite, fullCI, native hosted or TS claim intended.
+
+## 2026-10-16 — Fixed-cell producer/ledger composition result
+
+Final Linux AMD6459606/e1982f PASS5.994s package/5.93s manual population, same
+4004 endpoints, four actual anchors and search counts as final native44767/b0f40f.
+Both final sources include actual negative-rate refusal propagation, three invalid
+certificate controls, unsupported-grid and work-exhaustion refusals; all execute.
+Both omitted-burst and endpoint-only pseudo-certificates exclude the known reachable
+threshold incorrectly. Correct chronological search matches exhaustive earliest333
+for horizons499/500/1000 with14/15/16 certificate nodes and one fresh pipeline point;
+already affordable0 and unreachable controls also pass. Scalar1001/prefix65536 and
+full4004 reference work are explicit setup, not hidden in the search query counts.
+
+Committed manual source probes/production-cell-enclosure.go.txt SHA256
+59931e558fe89b8a3d45f168f9a2558ccc23f545081fd20065868524cc46f0ef;
+unchanged reused provision-carry-probe.go.txt SHA
+d4148e2df242488a64007946ed716366b6eec2eae4c3f26ddd0bacc633b9e44f.
+Native ignored overlay .cache/production-cell-enclosure.json SHA
+ff397f6718f3c7e2ceb76edc22b893aa94f147a6caf920212177a2712e179147
+maps both server/production/manual_*_test.go names to the two manual sources.
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=/Users/stronk/repos/cloud-clicker/.cache/production-cell-enclosure.json -run TestProductionCellEnclosureResearch -v'`.
+Linux overlay .cache/production-cell-enclosure-linux.json SHA
+2cd42febfb5f17aa1b6d805549e4c91891fd1397924a23c0eafac5a8a075663f
+maps the same files under /workspace; use the declared --no-deps Docker command from
+the previous checkpoint, substituting this overlay and TestProductionCellEnclosureResearch.
+Both final handles terminal; --rm Linux run creates no DB fixture. No source edits
+during runs, and no native hosted, DB/TS, fullCI or broader-suite proof is inferred.
+
+Own draft H3e supplies the composition and definedness caveat; owning plan points
+next to real cell/context construction and setup/work accounting. No actual harness
+method, production arithmetic, kernel, payout, balance/content, report, ordinary CI
+or accepted contract changed. RP-680 and27 AC6 failures stay OPEN. The manual search
+is not whole-horizon/caller completeness or performance acceptance. Review by: Codex
+root (research author/first filter). Recorded by: Codex root. Complete four-path
+rangef7a2ad7b-exclusive through this containing checkpoint needs research/normative
+review outside the corrective-code delegation. Full1.0 goal remains active/progress;
+no feature completion, archival, push, deployment or release approval.

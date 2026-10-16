@@ -1,0 +1,310 @@
+package production
+
+import (
+	"errors"
+	"fmt"
+	"math/big"
+	"os"
+	"testing"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+)
+
+// Manual fixed-cell research, not a live search or a whole-horizon proof.
+func cellRepresented(value decimal.Decimal) (*big.Rat, error) {
+	if !value.IsStateValue() || value.Mantissa() < 0 || value.Exponent() < -32 || value.Exponent() > 32 {
+		return nil, fmt.Errorf("outside nonnegative manual rational domain")
+	}
+	power := value.Exponent()
+	if power < 0 {
+		power = -power
+	}
+	scale := new(big.Rat).SetInt(new(big.Int).Exp(big.NewInt(10), big.NewInt(power), nil))
+	if value.Exponent() < 0 {
+		scale.Inv(scale)
+	}
+	return scale.Mul(scale, new(big.Rat).SetFloat64(value.Mantissa())), nil
+}
+
+func cellMul(left, right *big.Rat) *big.Rat { return new(big.Rat).Mul(left, right) }
+func cellAdd(left, right *big.Rat) *big.Rat { return new(big.Rat).Add(left, right) }
+
+func cellRoundingFactor(units, numerator, denominator int64) *big.Rat {
+	epsilon := new(big.Rat).SetFrac(big.NewInt(1), new(big.Int).Lsh(big.NewInt(1), 52))
+	slack := cellAdd(cellMul(big.NewRat(units, 1), epsilon), big.NewRat(numerator, denominator))
+	if slack.Sign() < 0 || slack.Cmp(big.NewRat(1, 1)) >= 0 {
+		panic("invalid research rounding factor")
+	}
+	return new(big.Rat).Inv(new(big.Rat).Sub(big.NewRat(1, 1), slack))
+}
+
+type cellSearchWork struct{ Nodes, Points, Pruned int }
+
+func searchCertifiedCell(left, right, budget int, quote *big.Rat, upper func(int) (*big.Rat, error), point func(int) (decimal.Decimal, error)) (int, cellSearchWork, error) {
+	var work cellSearchWork
+	var visit func(int, int) (int, error)
+	visit = func(lo, hi int) (int, error) {
+		if work.Nodes >= budget {
+			return -1, fmt.Errorf("cell search work exhausted")
+		}
+		work.Nodes++
+		bound, err := upper(hi)
+		if err != nil {
+			return -1, err
+		}
+		if bound == nil || bound.Sign() < 0 {
+			return -1, fmt.Errorf("invalid nonnegative certificate")
+		}
+		if bound.Cmp(quote) < 0 {
+			work.Pruned++
+			return -1, nil
+		}
+		if lo == hi {
+			work.Points++
+			actual, err := point(lo)
+			if err != nil {
+				return -1, err
+			}
+			value, err := cellRepresented(actual)
+			if err != nil {
+				return -1, err
+			}
+			if value.Cmp(quote) >= 0 {
+				return lo, nil
+			}
+			return -1, nil
+		}
+		mid := lo + (hi-lo)/2
+		found, err := visit(lo, mid)
+		if err != nil || found >= 0 {
+			return found, err
+		}
+		return visit(mid+1, hi)
+	}
+	if left < 0 || right < left || right > 1000 || budget <= 0 || quote == nil || quote.Sign() < 0 {
+		return -1, work, fmt.Errorf("invalid bounded cell search input")
+	}
+	found, err := visit(left, right)
+	return found, work, err
+}
+
+func TestProductionCellEnclosureResearch(t *testing.T) {
+	// This retained helper supplies four real Evaluate/SimulateAdvance anchors,
+	// not an assertion that the pipeline below is full Evaluate at every point.
+	runProvisionCarryResearch(t, "1.968058018e6", "1.96805801799e6", true)
+	represented := func(value decimal.Decimal) *big.Rat {
+		t.Helper()
+		result, err := cellRepresented(value)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return result
+	}
+	secondsMax := make([]*big.Rat, 1001)
+	for ms := 0; ms <= 1000; ms++ {
+		actual := decimal.FromFloat64(float64(ms)).Div(decimal.FromFloat64(1000))
+		secondsMax[ms] = represented(actual)
+		if ms > 0 && secondsMax[ms].Cmp(secondsMax[ms-1]) < 0 {
+			secondsMax[ms] = new(big.Rat).Set(secondsMax[ms-1])
+		}
+	}
+	data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	base := mustDecimal(t, "3.003003003e-23")
+	bonus := mustDecimal(t, "1e12").Sub(decimal.One)
+	rate := base.Mul(decimal.FromFloat64(1_000_000_000_000))
+	segment := func(rate decimal.Decimal, ms int64) decimal.Decimal {
+		t.Helper()
+		result, err := accrueBoostedConstant([]decimal.Decimal{rate}, ms, ms, decimal.One, bonus)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return result
+	}
+	prefix := make([]decimal.Decimal, 65536)
+	prefix[0] = segment(base.Mul(decimal.FromFloat64(999999352334)), 999)
+	full := segment(rate, 1000)
+	for index := 1; index < len(prefix); index++ {
+		prefix[index] = full
+	}
+	if prefix[0].String() != "2.999998057e1" || prefix[1].String() != "3.003003003e1" {
+		t.Fatal("fixed prefix differs from actual anchor decomposition")
+	}
+	profiles := []struct {
+		name        string
+		prefix      []decimal.Decimal
+		rates       []decimal.Decimal
+		before, eff decimal.Decimal
+		boostedMS   int64
+		bonus       decimal.Decimal
+	}{
+		{"retained_provision_burst", prefix, []decimal.Decimal{rate}, decimal.Zero, decimal.One, 333, bonus},
+		{"ordinary_efficiency90_nonzero_balance", nil, []decimal.Decimal{mustDecimal(t, "3e0")}, mustDecimal(t, "1e6"), mustDecimal(t, "9e-1"), 0, decimal.Zero},
+		{"zero_rate", nil, []decimal.Decimal{decimal.Zero}, decimal.Zero, decimal.One, 333, bonus},
+		{"zero_efficiency", nil, []decimal.Decimal{decimal.One}, decimal.Zero, decimal.Zero, 333, bonus},
+	}
+	for _, profile := range profiles {
+		t.Run(profile.name, func(t *testing.T) {
+			prefixSum := new(big.Rat)
+			groups := map[int64]bool{}
+			for _, value := range profile.prefix {
+				prefixSum.Add(prefixSum, represented(value))
+				if value.Mantissa() != 0 {
+					groups[value.Exponent()] = true
+				}
+			}
+			n, g := int64(len(profile.prefix)+1), int64(len(groups)+1)
+			mulFactor := cellRoundingFactor(6, 0, 1)
+			addFactor := cellRoundingFactor(10, 5, 1_000_000_000_000_000)
+			qFactor := cellRoundingFactor(2, 5, 1_000_000_000_000)
+			aggregateFactor := cellMul(cellRoundingFactor(n+16*g, 5*g, 1_000_000_000_000_000), qFactor)
+			totalRate := represented(decimal.SumDeterministic(profile.rates))
+			efficiency, before := represented(profile.eff), represented(profile.before)
+			upperWithBonus := func(hi int, suppliedBonus decimal.Decimal) (*big.Rat, error) {
+				if hi < 0 || hi > 1000 {
+					return nil, fmt.Errorf("outside declared cell")
+				}
+				b := hi
+				if int64(b) > profile.boostedMS {
+					b = int(profile.boostedMS)
+				}
+				burst := cellMul(cellMul(secondsMax[b], represented(suppliedBonus)), mulFactor)
+				duration := cellMul(cellAdd(secondsMax[hi], burst), addFactor)
+				partial := cellMul(cellMul(cellMul(totalRate, duration), mulFactor), efficiency)
+				partial.Mul(partial, mulFactor).Mul(partial, qFactor)
+				payment := cellMul(cellAdd(prefixSum, partial), aggregateFactor)
+				return cellMul(cellMul(cellAdd(before, payment), addFactor), qFactor), nil
+			}
+			upper := func(hi int) (*big.Rat, error) { return upperWithBonus(hi, profile.bonus) }
+			pipelineCalls := 0
+			point := func(ms int) (decimal.Decimal, error) {
+				pipelineCalls++
+				boosted := int64(ms)
+				if boosted > profile.boostedMS {
+					boosted = profile.boostedMS
+				}
+				partial, err := accrueBoostedConstant(profile.rates, int64(ms), boosted, profile.eff, profile.bonus)
+				if err != nil {
+					return decimal.NaN, err
+				}
+				terms := append([]decimal.Decimal(nil), profile.prefix...)
+				if !partial.Eq(decimal.Zero) {
+					terms = append(terms, partial)
+				}
+				payment := decimal.SumDeterministic(terms).Quantize(decimal.CanonicalSignificantDigits)
+				ledger, err := economy.NewLedger(catalog, economy.ScopeCompany)
+				if err != nil {
+					return decimal.NaN, err
+				}
+				snapshot := ledger.Snapshot()
+				snapshot["company.cash"] = profile.before.String()
+				ledger, err = economy.RestoreLedger(catalog, economy.ScopeCompany, snapshot)
+				if err != nil {
+					return decimal.NaN, err
+				}
+				entries := []economy.Entry{}
+				if !payment.Eq(decimal.Zero) {
+					entries = append(entries, economy.Entry{ResourceID: "company.cash", Delta: payment})
+				}
+				receipt, err := ledger.ApplyAccrual(economy.Transaction{Entries: entries})
+				if err != nil {
+					return decimal.NaN, err
+				}
+				actual, ok := ledger.Balance("company.cash")
+				if !ok || !actual.IsStateValue() {
+					return decimal.NaN, fmt.Errorf("missing/invalid committed cash")
+				}
+				if !actual.Eq(profile.before) && (len(receipt.Changes) != 1 || receipt.Changes[0].After != actual.String()) {
+					return decimal.NaN, fmt.Errorf("receipt does not bind committed cash")
+				}
+				return actual, nil
+			}
+			observed := make([]decimal.Decimal, 1001)
+			quote := mustDecimal(t, "1.968058018e6")
+			first := -1
+			var previousUpper *big.Rat
+			for ms := 0; ms <= 1000; ms++ {
+				actual, err := point(ms)
+				if err != nil {
+					t.Fatalf("pipeline ms%d refused: %v", ms, err)
+				}
+				bound, err := upper(ms)
+				if err != nil || represented(actual).Cmp(bound) > 0 {
+					t.Fatalf("pipeline ms%d escaped enclosure: %v", ms, err)
+				}
+				if previousUpper != nil && bound.Cmp(previousUpper) < 0 {
+					t.Fatalf("whole-prefix upper bound decreased at%d", ms)
+				}
+				previousUpper = bound
+				observed[ms] = actual
+				if first < 0 && actual.Gte(quote) {
+					first = ms
+				}
+			}
+			if pipelineCalls != 1001 {
+				t.Fatal("incomplete endpoint population", pipelineCalls)
+			}
+			t.Logf("complete1001 pipeline endpoints bounded; uniform N%d/G%d", n, g)
+			if profile.name != "retained_provision_burst" {
+				return
+			}
+			if first < 0 || first >= 499 || observed[499].String() != "1.968058018e6" || observed[500].String() != "1.96805801799e6" {
+				t.Fatal("retained cell/earlier witness differs", first, observed[499], observed[500])
+			}
+			for _, horizon := range []int{499, 500, 1000} {
+				priorCalls := pipelineCalls
+				found, work, err := searchCertifiedCell(0, horizon, 2*(horizon+1)-1, represented(quote), upper, point)
+				if err != nil || found != first || pipelineCalls-priorCalls != work.Points {
+					t.Fatal("search disagrees with exhaustive earliest cell endpoint", horizon, found, first, work, err)
+				}
+				t.Logf("horizon%d earliest%d certificate_nodes%d actual_points%d pruned%d", horizon, found, work.Nodes, work.Points, work.Pruned)
+			}
+			if observed[500].Gte(quote) || !observed[first].Gte(quote) {
+				t.Fatal("endpoint-only pseudo-certificate did not miss the valid earlier point")
+			}
+			missingBurst, err := upperWithBonus(500, decimal.Zero)
+			if err != nil || missingBurst.Cmp(represented(quote)) >= 0 {
+				t.Fatal("omitted-burst negative certificate did not underbound reachable quote", err)
+			}
+			if _, _, err := searchCertifiedCell(0, 500, 1, represented(quote), upper, point); err == nil {
+				t.Fatal("exhausted diagnostic work was not an error")
+			}
+			invalidPoint := func(ms int) (decimal.Decimal, error) {
+				return accrueBoostedConstant([]decimal.Decimal{decimal.One.Neg()}, int64(ms), 0, decimal.One, decimal.Zero)
+			}
+			if _, work, err := searchCertifiedCell(0, 0, 1, big.NewRat(1, 1), upper, invalidPoint); !errors.Is(err, ErrInvalidAccrual) || work.Points != 1 {
+				t.Fatal("real producer refusal was not propagated", work, err)
+			}
+			for _, invalidBound := range []func(int) (*big.Rat, error){
+				func(int) (*big.Rat, error) { return nil, fmt.Errorf("certificate context unavailable") },
+				func(int) (*big.Rat, error) { return nil, nil },
+				func(int) (*big.Rat, error) { return big.NewRat(-1, 1), nil },
+			} {
+				if _, work, err := searchCertifiedCell(0, 0, 1, big.NewRat(1, 1), invalidBound, point); err == nil || work.Points != 0 {
+					t.Fatal("invalid certificate was not refused before point evaluation", work, err)
+				}
+			}
+			if _, err := upper(1001); err == nil {
+				t.Fatal("unsupported cell silently admitted")
+			}
+			for _, control := range []struct {
+				quote string
+				want  int
+			}{{"1e0", 0}, {"1e7", -1}} {
+				found, work, err := searchCertifiedCell(0, 1000, 2001, represented(mustDecimal(t, control.quote)), upper, point)
+				if err != nil || found != control.want {
+					t.Fatal("already/unreachable control differs", control, found, work, err)
+				}
+				t.Logf("control%s result%d certificate_nodes%d actual_points%d", control.quote, found, work.Nodes, work.Points)
+			}
+		})
+	}
+	t.Log("1001 scalar preparation entries,65536 fixed-prefix terms,4004 exhaustive pipeline endpoints; preparation/reference work is NOT search work or real harness transitions")
+}

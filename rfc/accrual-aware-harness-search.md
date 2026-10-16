@@ -486,6 +486,74 @@ search completeness, all caller refusal semantics, compatibility and unchanged w
 budgets remain open before implementation/adoption. RP-680 and the27 original AC6
 failures remain unresolved. No payout, runtime, report or ordinary CI change follows.
 
+#### H3e — Fixed-prefix partial-production cell, bounded composition
+
+The next [manual diagnostic](../planning/clout-v1-and-pr-interns/probes/production-cell-enclosure.go.txt)
+composes H3d with actual `accrueBoostedConstant`, final aggregation/Q12 and actual
+`Ledger.ApplyAccrual`. This is a research-only chronological search over ONE fixed
+1000ms partial bucket, not a replacement for `earliestAffordable`/`rankCandidate`.
+RP-680 separately binds the threshold to the real catalog quote; this diagnostic
+reuses that value and does not invoke those private harness methods or buy anything.
+
+Within this cell, the completed canonical prefix, raw rate vector, efficiency,
+remaining burst and starting balance are fixed. Let P be the exact represented sum
+of those completed deltas, R the exact represented value of the actual constant
+`SumDeterministic(rates)`, E efficiency, V bonus factor and B nonnegative starting
+cash. For integer d in[0,1000], prepare F[d] as the maximum exact represented value
+of the ACTUAL `FromFloat64(ms).Div(FromFloat64(1000))` over ms0..d. This explicitly
+costs1001 scalar preparations once; it is not an unproved endpoint shortcut or a
+general solution for arbitrary large grids. Any unsupported query fails.
+
+For epsilon=2^-52 define positive-operation factors from H3d's operation counts:
+
+```
+M = 1/(1 - 6*epsilon)                  // Mul + normalization
+A = 1/(1 - 10*epsilon - 5/10^15)       // Add + normalization
+Q = 1/(1 - 2*epsilon - 5/10^12)        // Q12
+U_partial(D) = R * (F[D] + F[min(D,remaining_burst)]*V*M) * A*M^2*E*Q
+U_payment(D) = (P + U_partial(D)) / (1 - s_raw) * Q
+U_cash(D)    = (B + U_payment(D)) * A*Q
+```
+
+N is prefix term count+1; G is distinct positive prefix exponents+1, so a partial
+exponent carry cannot invalidate the ceiling. s_raw is H3d's raw aggregation slack
+with these **uniform** ceilings. Nonnegative multiplication and a monotone prefix
+maximum F make this a range upper function without claiming actual payouts increase.
+Every d<=D has both scalar seconds bounded by the corresponding F entries. M bounds
+the bonus multiply and the two output multiplies, A the scalar Add, Q partial
+quantization; H3d bounds final aggregation. The ledger's one-entry aggregation is
+an identity, then its Add/Q12 is bounded by A*Q. Hardcap saturation cannot increase
+the balance. Zero operations also fit. The rational arithmetic is certificate
+research, not a replacement persisted calculation or changed equality tolerance.
+
+**Definedness is separate from an upper bound.** A bound on successful outputs alone
+cannot authorize pruning a general range that might contain producer/ledger errors.
+All4004 declared pipeline endpoints execute successfully in the diagnostic; a future
+real certificate factory must establish the validity domain too, or propagate an
+error rather than silently prune it. This test does not establish that general proof.
+
+Four complete0..1000 populations check actual cash against the proposed bound:
+the retained65536-term provision/burst prefix; ordinary90% efficiency with nonzero
+starting cash; zero rate; zero efficiency. The retained helper also executes the
+two real Evaluate and two neutral SimulateAdvance anchor projections. The exhaustive
+pipeline population is NOT full Evaluate at every point, a natural acquisition run,
+SQL, modern hook/axis integration or full-state/receipt equivalence over all times.
+
+The research search visits intervals chronologically, pruning only from U_cash(hi),
+then tests fresh actual pipeline output at a leaf. The exhaustive reference establishes
+earliest333ms within the retained cell. Horizons499/500/1000 all find333, including
+the unaffordable500 endpoint:14/15/16 certificate nodes, one actual point each.
+The full table/prefix/reference work is separately declared, not included in those
+query counts or relabelled as actual harness transition accounting. Already-affordable,
+unreachable, omitted-burst, endpoint-only, exhaustion and refusal controls remain
+part of the diagnostic. No general workload feasibility follows from these counts.
+
+Next: construct actual cells/prefixes from the full producer/context factory, prove
+coverage/definedness, account for scalar/prefix/certificate construction work, preserve
+complete caller semantics and validate full workloads under unchanged limits. No
+per-ms live scan, numerical adoption, search-policy acceptance or defect closure is
+authorized by this bounded composition. Research/normative review remains required.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -651,3 +719,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   finite power premises, retained decrease and meaningful omitted-margin controls.
   Keep actual temporal producer, complete search, work and adoption obligations open;
   this is not an algorithm implementation or a changed payout/equality tolerance.
+- 2026-10-16: compose the enclosure with actual partial production and ledger in one
+  fixed cell; compare chronological search with its complete exhaustive earliest
+  reference. Keep whole-horizon cell construction, definedness, actual caller/work,
+  compatibility and adoption gates explicit; no runtime change or RP-680 closure.

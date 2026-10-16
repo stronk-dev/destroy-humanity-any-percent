@@ -26,6 +26,14 @@ certificate or implemented search. Next establish uniform bounds on the real var
 producer/ledger over time ranges, then prove chronological search and actual workload
 feasibility under the unchanged budgets. No existing defect or acceptance gate closes.
 
+H3e's bounded composition now reaches the actual partial producer and cash ledger:
+all4004 pipeline endpoints fit, and chronological certificate search agrees with the
+exhaustive earliest333ms even when the horizon's actual cash is below the quote.
+This is ONE fixed cell with explicit scalar-table/prefix setup, not the actual harness
+search or a general invalid-input/coverage/work proof. Next construct correct cells
+and validity/cost evidence from the real producer/context factory; avoid hiding setup
+work or treating an upper bound on successful outputs as proof all endpoints succeed.
+
 2026-10-16: targeted actual-search preparation finds RP-678: harness cloneState restores
 an admitted v17 snapshot as v14, failing before affordability evaluation. The bounded
 source-version preservation correction and retained v14/v17 regression pass focused and full
