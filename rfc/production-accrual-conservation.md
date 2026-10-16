@@ -551,6 +551,13 @@ budgeted exact REFERENCE only, not the optimized/live replacement. Upstream
 base-versus-projection provenance, full caller/clock/error policy, scenario/session
 binding, all mask families, workload and normative adoption remain mandatory.
 
+Child H3u connects the owned projector to conditional source-cell/definedness
+bounds across derived endpoint regimes. The charged zero schedule prefix does not
+advance cursor/resources or renew allowance; query floors select endpoints, not
+new origins. Bounded full-result/first-error comparisons and bypass controls are
+evidence for this component, not a live binary-search migration, generic scheduling
+proof, complete consumer/workload compatibility or acceptance of either draft.
+
 ### C1i — Bounded long-absence reconstruction evidence (RP-658)
 
 The unminted Company19 fixture combines a48h interval, active production buff,
@@ -1109,3 +1116,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-16: distinguish H3t's owned manual endpoint/reference component from
   the unimplemented production factories/optimized queries. Preserve captured
   typed external values without an extra replay quantization; live wire unchanged.
+- 2026-10-16: retain H3u's bounded query composition and first-error evidence;
+  distinguish its endpoint floor/zero schedule prefix from a new settlement or
+  origin. Live caller migration, full work/error policy and adoption remain open.

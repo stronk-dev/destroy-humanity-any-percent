@@ -124,9 +124,16 @@ typed-input rounding error is reproduced and corrected in the prototype. The1604
 full references/32 exact reference queries include two falling-affordability windows.
 This is not an adopted factory or optimized/live query; exact scan work is visible.
 
-Next derive semantic endpoint regimes and bind the existing source-cell/bound
-constructor to this owned projector, retaining complete stage/domain errors and
-comparing full selected results to the exact reference. Complete input/mask/map,
+H3u/RP-694 now connects derived endpoint regimes and source-cell/closed-hook/time
+certificates to that projector. A charged zero-time schedule prefix handles the
+already-due opportunity without advancing origin/allowance; endpoint floors cannot
+return an earlier point. Thirty-seven bounded/reference queries preserve complete
+results (including the first5001ms window) and real first stock/schedule errors.
+Preparation/fallback costs stay visible; this is still not the accepted live search.
+
+Next measure complete candidate/consumer work and error/scoring compatibility;
+finish general scheduling, all mask families, actual TS owner/query and full
+workload/compatibility before adoption. Complete input/mask/map,
 post-hook state, real settlement and global/caller/timestamp/encoding/state/lifecycle
 obligations,
 then measure complete real workloads with all preparation work charged. Partial

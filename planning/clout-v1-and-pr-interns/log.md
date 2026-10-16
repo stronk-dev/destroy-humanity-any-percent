@@ -7512,3 +7512,101 @@ Seven-path range60a99e81-exclusive through this checkpoint is research/specifica
 work OUTSIDE corrective-code review delegation. Review by: Codex root (research
 author/first filter). Recorded by: Codex root. No designated approval, acceptance,
 archival, release, push/publication or deployment. Full nine-tier1.0 goal active.
+
+## 2026-10-16 — Modern endpoint bounds, prospective bounded check
+
+Prior6de26cbe is PROGRESS: owned full-state actual-stage reference and corrected
+raw input binding are available. Connect existing source-cell/definedness bounds
+to that projector using actual buff expiries, catchup-cap+1 and attendance-cutoff+1
+endpoint regimes. Query floors select endpoints only; prefixes, clock and offline
+allowance remain at the original origin. The existing default-floor behavior must
+remain unchanged. First build had an undefined placeholder reference (zero tests).
+
+No-due schedule ranges admit a sufficient certificate alongside existing producer,
+closed-hook and temporal proofs. Unknown clocks or due schedules must execute
+actual chronological leaves, not invent an invalid input or unreachable result.
+Compare32 short queries across the prior eight populations plus four late6001ms
+unreachable queries to the exact full-state reference. No wrong earliest point,
+state/stage/event/role loss or hidden error is permitted; certified populations
+must make fewer actual point calls, with preparation/certificate costs exposed.
+Separately retain first stock and due-schedule errors with later-valid companions,
+query-floor/mandatory-source-stop controls, exhaustion and unchanged origins.
+This is an unadopted bounded search prototype, not a new live search, a raised
+R11 budget, generic schedule proof, full workload acceptance or Clout repair.
+
+Before final measurement, also require the literal derived partition starts and
+one positive window that first becomes affordable at5001ms after attendance
+freezes/restores the original buffs. Late unreachable-only controls cannot detect
+that missing context change. Final query population:32 short/four late unreachable/
+one late selected window. Node ceiling is the existing finite full-tree2*(horizon+1)
+instrument bound, not a convenience100000 or an accepted harness-budget change.
+
+Also retain a four-point valid saturated-clock companion (seeded2526/2026,
+empty offline history, no opportunity due): an inconclusive clock shape must
+use actual leaves and remain valid/unreachable, not become a refusal or a
+fabricated range certificate. No natural-player-date or operating-limit claim.
+
+### H3u/RP-694 result — bound composition, not a live consumer repair
+
+The manual owned projector now supplies the full actual leaf to conditional
+source-cell/producer/closed-hook/time bounds across real endpoint regimes.
+All37 paired queries pass:32 short, four late unreachable, one first-affordable
+5001ms window. Selected complete state/stages/events/roles and context identity
+match the exact reference. The matrix uses3301 actual projections against49336
+reference points;16 short cases prune. These are QUERY-POINT counts, excluding
+fixture/reference anchors, controls and separately exposed preparation/factory/
+certificate work, not total work, a speedup or accepted R11 budget. A one-node
+exhaustion fails with no success state; caller origins remain unchanged.
+
+Initial67214 FAIL30.783s returns correct results but cannot prune: the source has
+an opportunity already due at0. The correction charges and validates the real
+non-producing zero-time schedule prefix for no-FURTHER-due proofs only. Every
+model/actual endpoint still starts at the original origin; clearing, offline
+allowance and production prefixes are not renewed. Unknown schedules refine or
+fall back. The valid saturated-clock companion executes all four actual points
+without a fabricated refusal or certificate. No generic scheduling proof follows.
+
+Real first stock1000ms and schedule1001ms failures survive despite valid6001ms
+companions. Stock deliberately retains1001 actual calls; no savings claimed.
+The first schedule fixture did NOT fail, and the original60000ms provision grid
+did NOT reach the source-stop guard. Before valid measurement, the unminted
+diagnostic retunes tick1000ms/cash cap1e4 and seeds spawn sequenceMaxExactInteger.
+The shared endpoint floor selects endpoints, never a new accounting origin.
+SHA-exact old helper e64d16db988e2346c49c8ff6ef4e9469a946ecb431377990bbfb6283310f9321
+FAILS45773/0.336s: requested floor1001 returns0. That first fatal assertion does
+not prove a second old-source-stop failure. Removing ONLY endpointNoDueResearch
+from the range guard FAILS75790/0.699s: first schedule error becomes1501 instead
+of1001. Both negative copies/overlays are ignored; no product source was mutated.
+
+Frozen native24173 PASS32.047s plus normal production vet PASS; declared Linux/
+AMD64 Go1.26 session66031 PASS126.878s. Both execute new controls, old default-floor
+error-ordering and all12028 actual constructor references, including the retained
+65537-cell long-wait case. Not an exhaustive65M endpoint or complete workload run.
+Native producer55362 PASS0.710s. The first Linux producer's handle/result was lost
+at context truncation; after confirming it terminal, repeat91827 PASS1.270s.
+The current native/Linux1622159-byte packets agree at SHA256
+cbd5051b3ba46f7eb5483fe73035b486e9d90296c7691b583a16cb2c5b9de65e.
+Unmodified client ApplyLogged parity58098 PASS203 tests/930ms; this is H3s replay
+compatibility, NOT an implemented TS owner/query or ordinary CI coverage of.txt.
+
+Reproduce from root: `node planning/clout-v1-and-pr-interns/probes/prepare-logged-stage-observation.mjs`,
+then the existing TestWaitLoggedStagesResearch producer, then
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../.cache/wait-logged-overlay.json -run TestWaitEndpoint\|TestWaitQueryErrorOrderingResearch\|TestWaitQueryConstructedPopulationsResearch -v'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/wait-logged-overlay.json -run 'TestWaitEndpoint|TestWaitQueryErrorOrderingResearch|TestWaitQueryConstructedPopulationsResearch' -v ./production -count=1`.
+Serialize packet producers/readers. The existing H3s client command above applies.
+Final SHA256: bound b2179058a782120311b4edf0ce0f3c776955a2332e1049758d7c207cbcae8dfe;
+query731d522d5d9b2c5ae7e28c429baa95d9adbefbb024310870f686747428fc1676;
+cells0df106fc165703a3b0801572f2525f2356389b2e0b93ab2379f7764c74f25be8;
+generator a4b5a7339df3442af3e17061cd4c227caaac2d957387e92dbbc4fb8223d93489;
+24-entry overlay21a9c87fd0299aba4a87ede1cc1acca7cbbf0d4a58785b5d702f49307a53b292.
+
+Next: complete actual candidate/consumer work, error/scoring compatibility,
+general scheduling, all masks, TS ownership/query and full workloads/adoption.
+H3u/parent C1h, RP-694 and own plan reconcile only this bounded component.
+RP-680,27 Clout AC6 failures and historical guard50a3a514 stay OPEN, not rerun or
+repaired here. No product/schema/data/CI/golden changes; kernel223/epoch8 unchanged.
+Nine-path range6de26cbe-exclusive through this checkpoint is research/specification
+work OUTSIDE corrective-code review delegation. Review by: Codex root (research
+author/first filter). Recorded by: Codex root. Designated normative review/adoption
+remain pending; no acceptance, archival, release, push/publication or deployment.
+Full nine-tier1.0 goal remains active/progress.

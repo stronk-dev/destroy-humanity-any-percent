@@ -1613,6 +1613,58 @@ over all admitted inputs. Full context/lifecycle/mask-family/caller/workload and
 normative adoption requirements remain; no default scenario guard, accepted binary
 search, live arithmetic/save/data/CI contract or27 Clout failures are changed.
 
+#### H3u — Endpoint-regime bound integration and query floors (RP-694)
+
+The [manual bounded adapter](../planning/clout-v1-and-pr-interns/probes/wait-endpoint-bound.go.txt)
+connects H3t's owned real projector to the existing source-cell/producer/closed-hook/
+temporal certificates. It does not replace the accepted live binary search.
+
+Derive chronological endpoint regimes from actual buff expiries minus original
+attended time, attendance-cutoff+1 and (online) offline-cap+1. A boundary belongs
+to the right regime. The clock argument requires an admitted original run whose
+full horizon does not saturate time.Sub. Otherwise execute actual chronological
+leaves; a valid saturated-clock control remains valid, not a fabricated refusal.
+
+The actual0 projection is charged and may perform captured clearing/scheduling,
+but has zero production, unchanged ledger/cursor/allowance and no inner accrual
+hook. Its validated deterministic schedule prefix supplies the no-FURTHER-due
+certificate. This matters: the actual source already has an opportunity due at0;
+the first adapter falls back everywhere and fails the pruning check. If no later
+transition is due, the full original schedule consumes exactly that same prefix
+and its same transition budget. This is not a new origin, reset timer or free work.
+
+Every scalar model still reconstructs the COMPLETE original interval. Catchup
+uses base external context/offline mode; ordinary uses the actual endpoint buff
+context. Post-catchup endpoint assembly is checked separately: its purchased/
+upgrade/axis read set is unchanged by the closed hook, not a newly sampled payout.
+The complete real projector remains the leaf and supplies selected state/stages/
+events/roles. Unknown due-schedule ranges refine or use actual leaves. No generic
+schedule-validity or unmeasured full-domain completion claim is made.
+
+The shared manual query gains an optional endpoint floor, default0. It clips
+visitation and the mandatory source-stop witness, and disables the time0 shortcut
+for a later regime. It NEVER changes the production origin, prefixes or allowance.
+The SHA-exact old helper returns0 for a1001ms floor; the regression fails. Default-
+floor error-ordering and whole-wait constructor populations remain required checks.
+
+The declared37 paired queries cover32 short cases, four late unreachable cases
+and a selected window first affordable at5001ms. They preserve complete results
+and first errors while using3301 full projections against49336 exact-reference
+points. Setup/model/certificate work is exposed separately; this is not a matched
+latency result or adopted harness budget. The node guard is the existing finite
+full-tree2*(horizon+1) diagnostic bound, never a raised release ceiling.
+
+Actual stock failure at1000ms and schedule failure at1001ms retain later-valid
+companions. Bypassing ONLY the no-due guard moves the latter error to1501ms and
+fails the oracle. The stock control deliberately retains1001 actual point calls
+because its conservative upper bound does not use the resource cap. No savings
+is inferred for that control. Exhaustion remains an error with no success state.
+
+Next measure complete candidate/consumer work and error/scoring compatibility,
+including general scheduling, all mask families, actual TS owner/query, lifecycle
+and full workloads before normative adoption. No live math/save/schema/data/CI
+change, RP-680 repair,27-AC6 closure or 1.0 milestone follows from this component.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -1828,3 +1880,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   exposes/fixes raw-input rounding, and binds full-state exact reference queries.
   Optimized bounds, complete factory/caller/error policy, workload and normative
   adoption remain open; no live accounting or search change.
+- 2026-10-16: H3u/RP-694 connects source-cell bounds to owned endpoint regimes,
+  with validated zero schedule prefix, origin-preserving floors, actual first-error
+  controls and exposed setup/fallback work. Full consumer/workload and normative
+  adoption remain; accepted live binary search is unchanged.

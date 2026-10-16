@@ -50,6 +50,7 @@ for (const row of transforms) {
 }
 overlay.Replace['production/manual_wait_logged_stages_test.go'] = '../planning/clout-v1-and-pr-interns/probes/wait-logged-stages.go.txt';
 overlay.Replace['production/manual_wait_modern_endpoint_test.go'] = '../planning/clout-v1-and-pr-interns/probes/wait-modern-endpoint.go.txt';
+overlay.Replace['production/manual_wait_endpoint_bound_test.go'] = '../planning/clout-v1-and-pr-interns/probes/wait-endpoint-bound.go.txt';
 const output = `${JSON.stringify(overlay, null, 2)}\n`;
 const path = resolve(cache, 'wait-logged-overlay.json');
 try { if (!lstatSync(path).isFile() || lstatSync(path).isSymbolicLink()) throw Error('unsafe generated overlay'); }

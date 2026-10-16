@@ -28,12 +28,15 @@ func queryWaitContextResearch(state *save.State, catalog *economy.Catalog, mode 
 	if state == nil || state.Ledger == nil || !quote.IsStateValue() || quote.Lt(decimal.Zero) {
 		return -1, nil, fmt.Errorf("invalid research query")
 	}
+	if context.fromMS < 0 || context.fromMS > 0 && context.fromMS > horizon {
+		return -1, nil, fmt.Errorf("invalid research query floor")
+	}
 	before, exists := state.Ledger.Balance("company.cash")
 	if !exists {
 		return -1, nil, ErrInvalidEngineState
 	}
 	// Match the actual caller: an available balance needs no wait evaluation.
-	if before.Gte(quote) {
+	if context.fromMS == 0 && before.Gte(quote) {
 		return 0, nil, nil
 	}
 	if horizon == 0 {
@@ -64,16 +67,22 @@ func queryWaitContextResearch(state *save.State, catalog *economy.Catalog, mode 
 		if len(factory.cells) > 0 {
 			hi = factory.cells[len(factory.cells)-1].hi
 		}
+		if hi < context.fromMS {
+			hi = context.fromMS
+		}
 		factory.work.QueryTimeGuards++
-		timeDefined = certifyWaitTimeResearch(state.EvaluatedThrough, 0, hi)
+		timeDefined = certifyWaitTimeResearch(state.EvaluatedThrough, context.fromMS, hi)
 	}
 	if guard != nil {
 		hi := int64(0)
 		if len(factory.cells) > 0 {
 			hi = factory.cells[len(factory.cells)-1].hi
 		}
+		if hi < context.fromMS {
+			hi = context.fromMS
+		}
 		factory.work.QueryGuards++
-		guardDefined, err = guard.certify(0, hi)
+		guardDefined, err = guard.certify(context.fromMS, hi)
 		if err != nil {
 			return -1, factory, err
 		}
@@ -149,7 +158,14 @@ func queryWaitContextResearch(state *save.State, catalog *economy.Catalog, mode 
 		return visit(cell, mid+1, hi)
 	}
 	for _, cell := range factory.cells {
-		found, err := visit(cell, cell.lo, cell.hi)
+		lo := cell.lo
+		if lo < context.fromMS {
+			lo = context.fromMS
+		}
+		if lo > cell.hi {
+			continue
+		}
+		found, err := visit(cell, lo, cell.hi)
 		if err != nil || found >= 0 {
 			return found, factory, err
 		}
@@ -160,10 +176,14 @@ func queryWaitContextResearch(state *save.State, catalog *economy.Catalog, mode 
 		}
 		factory.work.QueryStops++
 		factory.work.Points++
-		if _, err := point(factory.stopAt); err != nil {
+		stopAt := factory.stopAt
+		if stopAt < context.fromMS {
+			stopAt = context.fromMS
+		}
+		if _, err := point(stopAt); err != nil {
 			return -1, factory, err // Return the real endpoint error, not a surrogate.
 		}
-		return -1, factory, fmt.Errorf("research source-stop witness did not fail at%d: %v", factory.stopAt, factory.stopErr)
+		return -1, factory, fmt.Errorf("research source-stop witness did not fail at%d: %v", stopAt, factory.stopErr)
 	}
 	return -1, factory, nil
 }

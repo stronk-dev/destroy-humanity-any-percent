@@ -1,0 +1,538 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"reflect"
+	"sort"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/faction"
+	"cloud-clicker/server/guild"
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/prestige"
+	"cloud-clicker/server/save"
+)
+
+type endpointRegimeResearch struct{ lo, hi int64 }
+type endpointBoundAnswerResearch struct {
+	at, last                                                                                          int64
+	points, nodes, regimes, fallbackPoints                                                            int
+	preparationRestores, preparationClears, preparationSchedules, preparationAssemblies               int
+	guardRanges, guardAssemblies, guardCatalogs, guardReceiptTerms, guardSpanChecks, guardStockProbes int
+	factories                                                                                         []waitCellWorkResearch
+	selected                                                                                          endpointProjectionResearch
+	elapsed                                                                                           time.Duration
+}
+
+func logEndpointBoundResearch(t *testing.T, label string, exactPoints int, answer endpointBoundAnswerResearch) {
+	t.Helper()
+	models := len(answer.factories)
+	var aggregate waitCellWorkResearch
+	total := reflect.ValueOf(&aggregate).Elem()
+	for _, work := range answer.factories {
+		value := reflect.ValueOf(work)
+		for i := 0; i < value.NumField(); i++ {
+			total.Field(i).SetInt(total.Field(i).Int() + value.Field(i).Int())
+		}
+	}
+	answer.selected = endpointProjectionResearch{} // No raw states/payloads/opaque addresses in work logs.
+	answer.factories = nil
+	if models > 0 {
+		answer.factories = []waitCellWorkResearch{aggregate}
+	}
+	t.Logf("%s reference-points%d models%d work %+v", label, exactPoints, models, answer)
+}
+
+// Existing producer bounds remain origin-relative. These are endpoint-context
+// boundaries, not settlements, renewed offline allowances or new save origins.
+func endpointRegimesResearch(ctx *endpointContextResearch, original *save.State, horizon int64) ([]endpointRegimeResearch, int64, bool, error) {
+	base, err := prestige.AttendedMS(original, original.EvaluatedThrough)
+	if err != nil {
+		return nil, 0, false, err
+	}
+	runMS := original.EvaluatedThrough.Sub(original.RunStartedAt).Milliseconds()
+	limit := time.Duration(1<<63 - 1).Milliseconds()
+	shape := !original.RunStartedAt.IsZero() && runMS >= 0 && runMS <= limit-horizon
+	if !shape {
+		return []endpointRegimeResearch{{1, horizon}}, base, false, nil
+	}
+	starts := []int64{1, horizon + 1}
+	add := func(value int64) {
+		if value > 1 && value <= horizon {
+			starts = append(starts, value)
+		}
+	}
+	ceiling := ctx.bundle.Prestige.CatchupCeilingMS
+	for _, buff := range original.ActiveBuffs {
+		offset := buff.ExpiresAttendedMS - base
+		if offset <= ceiling {
+			add(offset)
+		}
+	}
+	add(ceiling + 1)
+	if ctx.mode == ModeOnline {
+		add(ctx.bundle.Economy.OfflinePolicy().AccrualCapMS + 1)
+	}
+	sort.Slice(starts, func(i, j int) bool { return starts[i] < starts[j] })
+	unique := starts[:0]
+	for _, value := range starts {
+		if len(unique) == 0 || unique[len(unique)-1] != value {
+			unique = append(unique, value)
+		}
+	}
+	regimes := []endpointRegimeResearch{}
+	for i := 0; i+1 < len(unique); i++ {
+		regimes = append(regimes, endpointRegimeResearch{unique[i], unique[i+1] - 1})
+	}
+	return regimes, base, true, nil
+}
+
+func endpointNoDueResearch(ctx *endpointContextResearch, original *save.State, base, lo, hi int64) bool {
+	maxAttended := base
+	ceiling := ctx.bundle.Prestige.CatchupCeilingMS
+	if lo <= ceiling {
+		end := hi
+		if end > ceiling {
+			end = ceiling
+		}
+		maxAttended += end
+	}
+	if original.PendingOpportunity != nil {
+		return original.PendingOpportunity.ExpiresAttendedMS > maxAttended
+	}
+	return original.NextOpportunityAttendedMS == 0 || original.NextOpportunityAttendedMS > maxAttended
+}
+
+// Scheduling proof is deliberately sufficient: no due transition in the range.
+// Unknown/due schedules execute actual chronological leaves, never fake errors.
+type endpointRangeGuardResearch struct {
+	*closedWaitDomainResearch
+	ctx      *endpointContextResearch
+	original *save.State
+	base     int64
+}
+
+func (guard endpointRangeGuardResearch) certify(lo, hi int64) (bool, error) {
+	if !endpointNoDueResearch(guard.ctx, guard.original, guard.base, lo, hi) {
+		return false, nil
+	}
+	return guard.closedWaitDomainResearch.certify(lo, hi)
+}
+
+func (owner *endpointOwnerResearch) queryBound(horizon int64, price decimal.Decimal, budget int) (answer endpointBoundAnswerResearch, resultErr error) {
+	started := time.Now()
+	defer func() { answer.elapsed = time.Since(started) }()
+	answer.at, answer.last = -1, -1
+	if horizon < 0 || horizon > 86_460_000 || !price.IsStateValue() || price.Lt(decimal.Zero) {
+		return answer, fmt.Errorf("invalid endpoint bound query")
+	}
+	ctx := owner.context
+	var last endpointProjectionResearch
+	var actualErr error
+	point := func(at int64) (decimal.Decimal, error) {
+		answer.points++
+		answer.last = at
+		var err error
+		last, err = owner.project(at)
+		if err != nil {
+			actualErr = err
+			return decimal.NaN, err
+		}
+		cash, exists := last.state.Ledger.Balance("company.cash")
+		if !exists {
+			actualErr = ErrInvalidEngineState
+			return decimal.NaN, actualErr
+		}
+		return cash, nil
+	}
+	actual := func(at int64) (bool, error) {
+		if answer.nodes >= budget {
+			return false, fmt.Errorf("endpoint bound node budget exhausted")
+		}
+		answer.nodes++
+		cash, err := point(at)
+		if err != nil {
+			return false, err
+		}
+		if cash.Gte(price) {
+			answer.at, answer.selected = at, last
+			return true, nil
+		}
+		return false, nil
+	}
+	if found, err := actual(0); err != nil || found {
+		return answer, err
+	}
+	if horizon == 0 {
+		return answer, nil
+	}
+	answer.preparationRestores++
+	originalSource, err := save.RestoreState(ctx.origin, 19, ctx.bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return answer, err
+	}
+	// Zero-time clearing/scheduling is a validated deterministic prefix. It
+	// changes no production cursor, balance or allowance. Use its schedule
+	// state for the no-FURTHER-due proof, not as a new calculation origin.
+	original := last.state
+	if len(last.stages) != 1 || last.stages[0].kind != "ordinary" || last.stages[0].evaluation.ElapsedMS != 0 ||
+		!original.EvaluatedThrough.Equal(originalSource.EvaluatedThrough) ||
+		!reflect.DeepEqual(original.Ledger.Snapshot(), originalSource.Ledger.Snapshot()) ||
+		original.ComputeCreditMS != originalSource.ComputeCreditMS || original.ComputeBurstRemainingMS != originalSource.ComputeBurstRemainingMS {
+		return answer, fmt.Errorf("endpoint zero prefix is not a non-producing schedule prefix")
+	}
+	regimes, base, shape, err := endpointRegimesResearch(ctx, original, horizon)
+	if err != nil {
+		return answer, err
+	}
+	for _, regime := range regimes {
+		answer.regimes++
+		// At an unknown source clock or an already-due schedule, don't build
+		// an invalid fixed-context stand-in. Preserve the real projector.
+		if !shape || !endpointNoDueResearch(ctx, original, base, regime.lo, regime.lo) {
+			for at := regime.lo; at <= regime.hi; at++ {
+				answer.fallbackPoints++
+				if found, err := actual(at); err != nil || found {
+					return answer, err
+				}
+			}
+			continue
+		}
+		answer.preparationRestores++
+		source, err := save.RestoreState(ctx.origin, 19, ctx.bundle.Economy, economy.ScopeCompany, time.Time{})
+		if err != nil {
+			return answer, err
+		}
+		answer.preparationClears++
+		if err := guild.ApplySettlements(source, ctx.batch, ctx.bundle.Faction.StockCap); err != nil {
+			return answer, err
+		}
+		modelMode := ctx.mode
+		modelExternal := append([]multiplier.Contribution(nil), ctx.external...)
+		catchup := ctx.mode == ModeOnline && regime.lo > ctx.bundle.Economy.OfflinePolicy().AccrualCapMS
+		// Separate schedule scratch: catchup's producer must see BASE context,
+		// whereas ordinary endpoint assembly sees expired/retained buffs.
+		answer.preparationRestores++
+		scheduled, err := save.RestoreState(ctx.origin, 19, ctx.bundle.Economy, economy.ScopeCompany, time.Time{})
+		if err != nil {
+			return answer, err
+		}
+		answer.preparationClears++
+		if err := guild.ApplySettlements(scheduled, ctx.batch, ctx.bundle.Faction.StockCap); err != nil {
+			return answer, err
+		}
+		now := scheduled.EvaluatedThrough.Add(time.Duration(regime.lo) * time.Millisecond)
+		answer.preparationSchedules++
+		active, err := resolveActivePlaySchedule(scheduled, ctx.bundle.Opportunities, ctx.bundle.Prestige, ctx.revision.OwnerID, now)
+		if err == nil {
+			_, err = applyActivePlaySchedule(scheduled, ctx.bundle.Opportunities, ctx.bundle.Prestige, ctx.revision.OwnerID, now, active)
+		}
+		if err != nil {
+			if found, realErr := actual(regime.lo); realErr != nil || found {
+				return answer, realErr
+			}
+			return answer, fmt.Errorf("endpoint schedule preparation disagrees with actual success: %w", err)
+		}
+		activeRows, err := activePlayContributions(scheduled, ctx.bundle.Opportunities, active.AttendedNowMS)
+		if err != nil {
+			if found, realErr := actual(regime.lo); realErr != nil || found {
+				return answer, realErr
+			}
+			return answer, fmt.Errorf("endpoint context preparation disagrees: %w", err)
+		}
+		endpointInputs := append(append([]multiplier.Contribution(nil), ctx.external...), activeRows...)
+		policy, err := simulationPolicyFor(ctx.bundle.Economy, ctx.mask)
+		if err != nil {
+			return answer, err
+		}
+		answer.preparationAssemblies++
+		if _, err := assembleContributionsWithPolicy(scheduled, ctx.bundle.Economy, endpointInputs, policy); err != nil {
+			if found, realErr := actual(regime.lo); realErr != nil || found {
+				return answer, realErr
+			}
+			return answer, fmt.Errorf("endpoint assembly preparation disagrees: %w", err)
+		}
+		if catchup {
+			modelMode = ModeOffline
+		} else {
+			source = scheduled
+			modelExternal = endpointInputs
+		}
+		encoded, err := save.EncodeState(source)
+		if err != nil {
+			return answer, fmt.Errorf("endpoint proof source encoding: %w", err)
+		}
+		proofOwner := &closedWaitReferenceResearch{bundle: ctx.bundle, origin: encoded, mode: modelMode, mask: ctx.mask, external: modelExternal, weight: ctx.weight, revision: ctx.revision}
+		guard := endpointRangeGuardResearch{&closedWaitDomainResearch{owner: proofOwner, initial: source}, ctx, original, base}
+		remaining := budget - answer.nodes
+		if remaining <= 0 {
+			return answer, fmt.Errorf("endpoint bound node budget exhausted")
+		}
+		found, factory, queryErr := queryWaitContextResearch(source, ctx.bundle.Economy, modelMode, regime.hi, ctx.mask, SimulationDependencies{Routes: ctx.bundle.Routes}, price, remaining, point,
+			waitSourceContextResearch{modern: true, external: modelExternal, preHookEncoding: true, fromMS: regime.lo}, guard)
+		if factory != nil {
+			answer.nodes += factory.work.QueryNodes
+			answer.factories = append(answer.factories, factory.work)
+		}
+		answer.guardRanges += guard.ranges
+		answer.guardAssemblies += guard.assemblies
+		answer.guardCatalogs += guard.catalogLoads
+		answer.guardReceiptTerms += guard.receiptTerms
+		answer.guardSpanChecks += guard.spanChecks
+		if guard.stock != nil {
+			answer.guardStockProbes += guard.stock.probes
+		}
+		answer.preparationRestores += proofOwner.restores
+		if queryErr != nil {
+			if actualErr != nil {
+				return answer, actualErr
+			}
+			return answer, fmt.Errorf("endpoint bound instrument: %w", queryErr)
+		}
+		if found >= 0 {
+			answer.at, answer.selected = found, last
+			return answer, nil
+		}
+	}
+	return answer, nil
+}
+
+func TestWaitEndpointBoundResearch(t *testing.T) {
+	queries, late, pruned, cutoffWindows := 0, 0, 0, 0
+	referencePoints, boundPoints := 0, 0
+	for _, profile := range []string{"none", "combined"} {
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			for _, masked := range []bool{false, true} {
+				t.Run(fmt.Sprintf("%s/%s/masked%t", profile, mode, masked), func(t *testing.T) {
+					fixture := loadEndpointFixtureResearch(t, profile, mode)
+					mask := AblationMask{}
+					if masked {
+						mask.GeneratorIDs = []string{"generator.beige_tower"}
+					}
+					owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, mask, fixture.external, fixture.weight, fixture.batch)
+					if err != nil {
+						t.Fatal(err)
+					}
+					before := mustEncodeState(t, fixture.state)
+					zero, err := owner.project(0)
+					if err != nil {
+						t.Fatal(err)
+					}
+					regimes, _, shape, err := endpointRegimesResearch(owner.context, zero.state, 6001)
+					starts := []int64{}
+					for _, regime := range regimes {
+						starts = append(starts, regime.lo)
+					}
+					wantStarts := []int64{1}
+					if profile == "combined" {
+						wantStarts = append(wantStarts, 1000, 1500)
+					}
+					if mode == ModeOnline {
+						wantStarts = append(wantStarts, 1501)
+					}
+					wantStarts = append(wantStarts, 5001)
+					if err != nil || !shape || !reflect.DeepEqual(starts, wantStarts) {
+						t.Fatal("actual semantic endpoint partition changed", starts, wantStarts, err)
+					}
+					a, err := referenceEndpointResearch(t, fixture, 500, mode, mask)
+					if err != nil {
+						t.Fatal(err)
+					}
+					b, err := referenceEndpointResearch(t, fixture, 1000, mode, mask)
+					if err != nil {
+						t.Fatal(err)
+					}
+					cash, _ := fixture.state.Ledger.Balance("company.cash")
+					early, _ := a.state.Ledger.Balance("company.cash")
+					later, _ := b.state.Ledger.Balance("company.cash")
+					prices := []decimal.Decimal{cash, early, later, decimal.New(1, 6)}
+					for _, price := range prices {
+						reference, err := owner.queryReference(2001, price, 2002)
+						if err != nil {
+							t.Fatal(err)
+						}
+						answer, err := owner.queryBound(2001, price, 2*2002)
+						if err != nil || answer.at != reference.at {
+							t.Fatal("bounded query loses earliest complete result", answer.at, reference.at, err)
+						}
+						if answer.at >= 0 {
+							if answer.selected.context != owner.context || !equalEndpointResearch(t, answer.selected, reference.selected) {
+								t.Fatal("bounded selected state/stages/events/roles mismatch")
+							}
+						} else if answer.selected.state != nil {
+							t.Fatal("unreachable returned success state")
+						}
+						if answer.points < reference.points {
+							pruned++
+						}
+						referencePoints += reference.points
+						boundPoints += answer.points
+						queries++
+						logEndpointBoundResearch(t, "short", reference.points, answer)
+					}
+					if (profile == "none" && mode == ModeOnline) || (profile == "combined" && mode == ModeOffline) {
+						reference, err := owner.queryReference(6001, decimal.New(1, 6), 6002)
+						if err != nil {
+							t.Fatal(err)
+						}
+						answer, err := owner.queryBound(6001, decimal.New(1, 6), 2*6002)
+						if err != nil || answer.at != reference.at || answer.at != -1 || answer.points >= reference.points {
+							t.Fatal("late catchup/absence query mismatch", answer.at, reference.at, answer.points, err)
+						}
+						late++
+						referencePoints += reference.points
+						boundPoints += answer.points
+						logEndpointBoundResearch(t, "late", reference.points, answer)
+					}
+					if profile == "combined" && mode == ModeOffline && !masked {
+						cutoff, err := referenceEndpointResearch(t, fixture, 5001, mode, mask)
+						if err != nil {
+							t.Fatal(err)
+						}
+						price, _ := cutoff.state.Ledger.Balance("company.cash")
+						reference, err := owner.queryReference(6001, price, 6002)
+						if err != nil || reference.at != 5001 {
+							t.Fatal("absence-restored affordable window does not discriminate", reference.at, err)
+						}
+						answer, err := owner.queryBound(6001, price, 2*6002)
+						if err != nil || answer.at != 5001 || !equalEndpointResearch(t, answer.selected, reference.selected) {
+							t.Fatal("bound lost selected result after attendance cutoff", answer.at, err)
+						}
+						referencePoints += reference.points
+						boundPoints += answer.points
+						cutoffWindows++
+						logEndpointBoundResearch(t, "cutoff-window", reference.points, answer)
+					}
+					answer, err := owner.queryBound(2001, decimal.New(1, 6), 1)
+					if err == nil || answer.at != -1 || answer.selected.state != nil {
+						t.Fatal("bound exhaustion disguised as unreachable/success")
+					}
+					if !bytes.Equal(before, mustEncodeState(t, fixture.state)) {
+						t.Fatal("bound preparation changed origin")
+					}
+				})
+			}
+		}
+	}
+	if queries != 32 || late != 4 || cutoffWindows != 1 || pruned == 0 || boundPoints >= referencePoints {
+		t.Fatal("incomplete/non-pruning bound population", queries, late, cutoffWindows, pruned, boundPoints, referencePoints)
+	}
+	t.Logf("endpoint-bound short%d late%d cutoff-window%d pruned%d actual-points%d reference-points%d", queries, late, cutoffWindows, pruned, boundPoints, referencePoints)
+}
+
+func capEndpointFixtureResearch(t *testing.T, fixture endpointFixtureResearch) endpointFixtureResearch {
+	t.Helper()
+	artifacts := map[string][]byte{}
+	for id, data := range fixture.bundle.Artifacts {
+		artifacts[id] = append([]byte(nil), data...)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(artifacts["economy"], &root); err != nil {
+		t.Fatal(err)
+	}
+	root["provision_tick_ms"] = 1000
+	for _, raw := range root["resources"].([]any) {
+		row := raw.(map[string]any)
+		if row["id"] == "company.cash" {
+			row["hardcap"].(map[string]any)["amount"] = "1e4"
+		}
+	}
+	var err error
+	artifacts["economy"], err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fixture.bundle = loadCompleteReplayTestBundle(t, hash, artifacts)
+	fixture.revision.ConstantsHash = hash
+	return fixture
+}
+
+func TestWaitEndpointBoundErrorsResearch(t *testing.T) {
+	for _, fault := range []string{"stock", "schedule"} {
+		t.Run(fault, func(t *testing.T) {
+			fixture := capEndpointFixtureResearch(t, loadEndpointFixtureResearch(t, "none", ModeOnline))
+			if fault == "stock" {
+				fixture.state.GeneratorCounts["generator.beige_tower"] = decimal.MaxExactInteger
+				fixture.state.GeneratorPurchasedTotal = decimal.MaxExactInteger
+			} else {
+				fixture.state.NextOpportunityAttendedMS = 5001
+				fixture.state.OpportunitySpawnSeq = decimal.MaxExactInteger
+			}
+			owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, ModeOnline, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+			if err != nil {
+				t.Fatal("diagnostic source not admitted", err)
+			}
+			reference, cause := owner.queryReference(2001, decimal.New(1, 6), 2002)
+			if cause == nil || reference.last <= 0 {
+				t.Fatal("actual first-error control did not fire", reference.last, cause)
+			}
+			if fault == "stock" && !errors.Is(cause, faction.ErrInvalidStockState) {
+				t.Fatal("wrong stock failure", cause)
+			}
+			answer, err := owner.queryBound(2001, decimal.New(1, 6), 2*2002)
+			if !errors.Is(err, cause) || answer.last != reference.last || answer.at != -1 || answer.selected.state != nil {
+				t.Fatal("bound hid/relabelled actual first error", answer.last, reference.last, err, cause)
+			}
+			if _, err := owner.project(6001); err != nil {
+				t.Fatal("later-valid companion rejected", err)
+			}
+			logEndpointBoundResearch(t, fmt.Sprintf("%s first%d", fault, answer.last), reference.points, answer)
+		})
+	}
+}
+
+func TestWaitEndpointQueryFloorResearch(t *testing.T) {
+	fixture := capEndpointFixtureResearch(t, loadEndpointFixtureResearch(t, "none", ModeOnline))
+	before, _ := fixture.state.Ledger.Balance("company.cash")
+	last := int64(-1)
+	point := func(at int64) (decimal.Decimal, error) {
+		last = at
+		state := activationRestore(t, fixture.bundle, mustEncodeState(t, fixture.state), 19, time.Time{})
+		result, err := SimulateAdvance(state, fixture.bundle.Economy, SimulationDependencies{}, fixture.revision, ModeOnline, state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond), fixture.external, AblationMask{})
+		_ = result
+		cash, _ := state.Ledger.Balance("company.cash")
+		return cash, err
+	}
+	found, _, err := queryWaitContextResearch(fixture.state, fixture.bundle.Economy, ModeOnline, 1500, AblationMask{}, SimulationDependencies{}, before, 2*1501, point, waitSourceContextResearch{modern: true, external: fixture.external, fromMS: 1001}, nil)
+	if err != nil || found != 1001 || last != 1001 {
+		t.Fatal("floor shortcut returned an earlier endpoint", found, last, err)
+	}
+	last = -1
+	_, _, err = queryWaitContextResearch(fixture.state, fixture.bundle.Economy, ModeOnline, 3500, AblationMask{}, SimulationDependencies{}, decimal.New(1, 6), 2*3501, point, waitSourceContextResearch{modern: true, external: fixture.external, fromMS: 3200}, nil)
+	if !errors.Is(err, ErrInvalidEngineState) || last != 3200 {
+		t.Fatal("source stop escaped query floor", last, err)
+	}
+	_, _, err = queryWaitContextResearch(fixture.state, fixture.bundle.Economy, ModeOnline, 1000, AblationMask{}, SimulationDependencies{}, before, 2*1001, point, waitSourceContextResearch{modern: true, fromMS: 1001}, nil)
+	if err == nil {
+		t.Fatal("invalid floor admitted")
+	}
+}
+
+func TestWaitEndpointUnknownClockResearch(t *testing.T) {
+	fixture := loadEndpointFixtureResearch(t, "none", ModeOnline)
+	fixture.state.EvaluatedThrough = time.Date(2526, 10, 16, 12, 0, 0, 0, time.UTC)
+	fixture.state.RunStartedAt = fixture.state.EvaluatedThrough.AddDate(-500, 0, 0)
+	fixture.state.NextOpportunityAttendedMS = decimal.MaxExactInteger
+	owner, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, ModeOnline, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+	if err != nil {
+		t.Fatal("saturated-clock source not admitted", err)
+	}
+	reference, err := owner.queryReference(3, decimal.New(1, 6), 4)
+	if err != nil {
+		t.Fatal("valid saturated-clock primitive refused", err)
+	}
+	answer, err := owner.queryBound(3, decimal.New(1, 6), 2*4)
+	if err != nil || answer.at != reference.at || answer.points != 4 || answer.fallbackPoints != 3 || len(answer.factories) != 0 || answer.selected.state != nil {
+		t.Fatal("unknown clock became a fabricated refusal or false certificate", answer.at, answer.points, answer.fallbackPoints, err)
+	}
+}

@@ -477,6 +477,7 @@ type waitSourceContextResearch struct {
 	modern          bool
 	external        []multiplier.Contribution
 	preHookEncoding bool
+	fromMS          int64 // Query floor only; NEVER a new accrual origin.
 }
 
 // Only the separate fixed-v19 research owner selects modern inputs. The original
