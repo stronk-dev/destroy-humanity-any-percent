@@ -1,0 +1,198 @@
+package production
+
+import (
+	"bytes"
+	"fmt"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/save"
+)
+
+type manualChoiceFamilyResearch struct {
+	branches                               map[any]*ManualOwnedBranchResearch
+	queries, points, actions, rates, forks int
+}
+
+// This type is exported only in the production test build.
+type ManualOwnedBranchResearch struct {
+	t      *testing.T
+	owner  *endpointActionOwnerResearch
+	family *manualChoiceFamilyResearch
+}
+type ManualOwnedChoiceStepResearch struct {
+	ID                            string
+	At                            time.Time
+	Revision                      int64
+	State                         *save.State
+	ParentIdentity, ChildIdentity any
+	Request                       IntentRequest
+	Decision                      save.IntentDecision
+}
+
+func (branch *ManualOwnedBranchResearch) Identity() any { return branch.owner.context }
+func (branch *ManualOwnedBranchResearch) Head() []byte {
+	return append([]byte(nil), branch.owner.context.calculation.origin...)
+}
+func (branch *ManualOwnedBranchResearch) State() *save.State {
+	return restoreActionStateResearch(branch.t, branch.owner.context.calculation.bundle, branch.Head())
+}
+func (branch *ManualOwnedBranchResearch) Revision() int64 {
+	return branch.owner.context.calculation.revision.Number
+}
+func (branch *ManualOwnedBranchResearch) Time() time.Time { return branch.State().EvaluatedThrough }
+func (branch *ManualOwnedBranchResearch) Case() ManualOwnedCaseResearch {
+	ctx := branch.owner.context.calculation
+	gate, ok := ctx.bundle.Routes.Gate("gate.t2_to_t3")
+	if !ok || len(gate.Requirement) != 1 {
+		branch.t.Fatal("choice objective changed")
+	}
+	return ManualOwnedCaseResearch{Catalog: ctx.bundle.Economy, Routes: ctx.bundle.Routes, Hash: ctx.bundle.ConstantsHash, Target: gate.Requirement[0].Amount.String()}
+}
+func (branch *ManualOwnedBranchResearch) Fork(state *save.State) (*ManualOwnedBranchResearch, error) {
+	if !bytes.Equal(mustEncodeState(branch.t, state), branch.Head()) {
+		return nil, fmt.Errorf("clone cannot manufacture a new action origin")
+	}
+	branch.family.forks++
+	return &ManualOwnedBranchResearch{branch.t, branch.owner.fork(), branch.family}, nil
+}
+func (branch *ManualOwnedBranchResearch) Query(wait int64, quote decimal.Decimal, budget int) (int64, int, error) {
+	ceiling := int(2 * (wait + 1))
+	if budget < ceiling {
+		ceiling = budget
+	}
+	answer, err := (&endpointOwnerResearch{context: branch.owner.context.calculation}).queryBound(wait, quote, ceiling)
+	branch.family.queries++
+	branch.family.points += answer.points
+	return answer.at, answer.points, err
+}
+func (branch *ManualOwnedBranchResearch) Apply(request IntentRequest, state *save.State, at time.Time) (SimulationResult, *ManualOwnedBranchResearch, error) {
+	parsed, err := candidateRequestResearch(request)
+	if err != nil {
+		return SimulationResult{}, nil, err
+	}
+	answer, err := branch.owner.apply(branch.t, parsed, at.Sub(branch.Time()).Milliseconds())
+	branch.family.actions++
+	if err != nil {
+		return SimulationResult{}, nil, err
+	}
+	result := SimulationResult{Decision: answer.decision, RoleActivations: answer.roles}
+	if answer.next == nil {
+		return result, nil, nil
+	}
+	*state = *answer.state
+	next := &ManualOwnedBranchResearch{branch.t, answer.next, branch.family}
+	branch.family.branches[next.Identity()] = next
+	return result, next, nil
+}
+func (branch *ManualOwnedBranchResearch) Rate(state *save.State, mask AblationMask) (decimal.Decimal, error) {
+	if !bytes.Equal(mustEncodeState(branch.t, state), branch.Head()) {
+		return decimal.NaN, fmt.Errorf("rate read from unowned head")
+	}
+	branch.family.rates++
+	return candidateRateResearch(branch.owner.context.calculation, state, mask)
+}
+
+func RunManualOwnedChoicesResearch(t *testing.T, run func(*ManualOwnedBranchResearch, string) ([]ManualOwnedChoiceStepResearch, error)) {
+	t.Helper()
+	completed, delayed, verified, bankRefusals := 0, 0, 0, 0
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		for _, cashName := range []string{"available", "deficit", "bank"} {
+			t.Run(fmt.Sprintf("%s/%s", mode, cashName), func(t *testing.T) {
+				fixture := loadEndpointFixtureResearch(t, "combined", mode)
+				price, err := fixture.bundle.Economy.BulkCost("generator.beige_tower", fixture.state.GeneratorCounts["generator.beige_tower"], 1)
+				if err != nil {
+					t.Fatal(err)
+				}
+				seed := price.Sub(decimal.One)
+				if cashName == "available" {
+					second, err := fixture.bundle.Economy.BulkCost("generator.beige_tower", fixture.state.GeneratorCounts["generator.beige_tower"]+1, 1)
+					if err != nil {
+						t.Fatal(err)
+					}
+					seed = price.Add(second).Add(decimal.One)
+				} else if cashName == "bank" {
+					seed = decimal.Zero
+				}
+				setCash(t, fixture.state, seed.String())
+				projection, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var resolved replayAccrualResolved
+				if err := decodeReplayStrict(fixture.wire.Resolved, &resolved); err != nil || resolved.FounderCarry == nil {
+					t.Fatal(err)
+				}
+				owner, err := newEndpointActionOwnerResearch(projection, *resolved.FounderCarry, fixture.wire.Version)
+				if err != nil {
+					t.Fatal(err)
+				}
+				family := &manualChoiceFamilyResearch{branches: map[any]*ManualOwnedBranchResearch{}}
+				root := &ManualOwnedBranchResearch{t, owner, family}
+				family.branches[root.Identity()] = root
+				origin := root.Head()
+				steps, err := run(root, "")
+				if cashName == "bank" {
+					if err == nil || len(steps) != 0 || family.actions != 0 {
+						t.Fatal("unsupported bank became an action or legacy fallback", err)
+					}
+					bankRefusals++
+					return
+				}
+				if err != nil || len(steps) != 2 {
+					t.Fatal("actual two-choice run incomplete", len(steps), err)
+				}
+				parentID := root.Identity()
+				previous := append([]byte(nil), origin...)
+				for index, step := range steps {
+					parent := family.branches[parentID]
+					if step.ParentIdentity != parentID || step.ChildIdentity == parentID || parent == nil || !bytes.Equal(parent.Head(), previous) {
+						t.Fatal("selection lost/rebased its real parent context")
+					}
+					parsed, err := candidateRequestResearch(step.Request)
+					if err != nil {
+						t.Fatal(err)
+					}
+					quote, err := fixture.bundle.Economy.BulkCost(step.ID, parent.State().GeneratorCounts[step.ID], 1)
+					if err != nil || step.ID != "generator.beige_tower" {
+						t.Fatal("diagnostic did not select real generator", err)
+					}
+					ref, err := (&endpointOwnerResearch{context: parent.owner.context.calculation}).queryReference(2001, quote, 2002)
+					if err != nil || ref.at < 0 || step.At.Sub(parent.Time()).Milliseconds() != ref.at {
+						t.Fatal("selected child lost earliest actual window", ref.at, err)
+					}
+					row := actionRecordFromOwnerResearch(t, parent.owner, parsed, ref.at)
+					want := restoreActionStateResearch(t, fixture.bundle, parent.Head())
+					logged, err := ApplyLogged(want, row.Payload, fixture.bundle, row.Inputs)
+					if err != nil || logged.Outcome != save.IntentApplied || !bytes.Equal(mustEncodeState(t, step.State), mustEncodeState(t, want)) || !bytes.Equal(step.Decision.Receipt, logged.Receipt) || !reflect.DeepEqual(step.Decision.Events, logged.Events) || step.Revision != int64(index+2) {
+						t.Fatal("actual selected chain differs from independently logged action", index, err)
+					}
+					if ref.at > 0 {
+						delayed++
+					}
+					previous = mustEncodeState(t, want)
+					parentID = step.ChildIdentity
+					verified++
+				}
+				if !bytes.Equal(origin, root.Head()) || family.forks == 0 {
+					t.Fatal("choice consumed parent or skipped real clone propagation")
+				}
+				if cashName == "available" && mode == ModeOnline {
+					for _, fault := range []string{"identity", "typed_nil", "head", "clone"} {
+						if result, err := run(root, fault); err == nil || len(result) != 0 {
+							t.Fatal("invalid/missing context fell back", fault, err)
+						}
+					}
+				}
+				t.Logf("two choices queries%d points%d actions%d rate-reads%d forks%d; includes sibling probe, excludes reference/setup/inner work, not R11/workload acceptance", family.queries, family.points, family.actions, family.rates, family.forks)
+				completed++
+			})
+		}
+	}
+	if completed != 4 || verified != 8 || delayed < 2 || bankRefusals != 2 {
+		t.Fatal("incomplete selected-child population", completed, verified, delayed, bankRefusals)
+	}
+	t.Logf("selected-child populations%d independently-logged-actions%d delayed%d bank-refusals%d; beam/cache/retained-view lifetime remains open", completed, verified, delayed, bankRefusals)
+}

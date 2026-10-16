@@ -1770,6 +1770,37 @@ boundary: retaining its returned child through actual choice, beam/cache/fork/
 rollout/context reuse, all masks, full error domains, TS/SQL, dispatch/workload
 proof and normative review/adoption remain. No live repair or AC6 closure follows.
 
+#### H3y — Selected child and real clone lifetime (manual component)
+
+The [scoped choice bridge](../planning/clout-v1-and-pr-interns/probes/owned-choice-bridge.go.txt)
+binds complete heads to opaque owned action contexts while the ACTUAL
+`rankDecisionOptions` selects and the REAL `cloneState` restores its chosen state.
+The [test factory](../planning/clout-v1-and-pr-interns/probes/owned-choice-export.go.txt)
+supplies independent branch callbacks/collectors; forks share immutable identity,
+real applied actions create new identities, and copied head buffers reject missing,
+typed-nil, mutated or unbound contexts. No identity is serialized, hashed into a
+report, used as an ordering key or attached to a save. The maps are scoped manual
+plumbing, not a trusted production constructor or long-lived cache.
+
+Four two-choice runs (combined buffs, both fixed modes, available/deficit cash)
+exercise a DECLARED TWO-ITEM diagnostic policy. All eight selected purchases match
+independent earliest/full original-state ApplyLogged references, including four
+positive waits, receipts/events, increasing revisions and unchanged parents.
+The chosen child's context survives its actual clone. A separately ranked sibling
+has the same result; mutating its returned generator map cannot change the selected
+branch's next purchase. Root/malformed-clone controls refuse. Severing ONLY the
+real clone's context propagation makes all four purchase populations fail with
+an unbound-head error; both bank refusal controls remain correctly refused.
+
+This bridge accepts TRUE ACTION ORIGINS only. Two bank-only cases explicitly
+refuse; they do not rebase a projected view, renew an allowance, select the legacy
+wait or claim unreachability. Retained bank views need an origin-relative query
+floor before integration. Fixed-mode diagnostic actions are not natural return/
+session behavior. Actual beam/dedup/dominance/completion-cache/rollout reuse and
+full policy/workloads remain unproved; the two-item population is NOT a narrowed
+beam width or replacement for them. H3x/legacy checks still execute unchanged.
+No live API/math/schema/report/CI change or normative acceptance follows.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -2001,3 +2032,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   proposed post-action endpoint-rate sampling in a reversible manual overlay.
   Real-quote windows, score/input faults and legacy fallthrough discriminate;
   retained child/beam/context reuse, complete work/dispatch and adoption remain.
+- 2026-10-16: H3y carries selected child context through actual choice and
+  clone boundaries, with independent two-action references and scoped failure
+  controls. Bank views/beam/cache/rollout/full workloads remain; no live dispatch
+  or normative adoption.

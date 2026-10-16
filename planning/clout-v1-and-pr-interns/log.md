@@ -7875,3 +7875,82 @@ specification work OUTSIDE corrective-code delegation. Review by: Codex root
 or release; no product/schema/data/CI/golden/kernel223/epoch8 changes or push.
 RP-680,27 Clout AC6 failures and guard50a3a514 stay OPEN, not rerun/fixed here.
 No publication/deployment. Full nine-tier1.0 goal remains active/progress.
+
+## 2026-10-16 — actual selected-child and clone lifetime
+
+Prior0ad3f76e is PROGRESS. Extend the MANUAL overlay to carry owned context
+through actual rankDecisionOptions selection and the REAL cloneState boundary.
+No saved field/hash/serialized identity or live dispatch. Scope state-pointer
+bindings privately; exact full heads must bind their opaque original context.
+Clones get independent callbacks/collectors with the same immutable identity;
+real actions return a new child identity. Missing/mutated/unbound heads must
+refuse, never select legacy semantics. Preserve existing H3x/legacy fallthrough.
+
+First exercise four two-choice populations: combined buffs, both modes, available
+or one-unit-deficit generator cash, a declared two-item generator/upgrade diagnostic
+policy and2001ms decision windows. Require two real selected purchases (including
+positive waits), exact original-state ApplyLogged outputs at both steps, parent
+and sibling isolation, same-identity clones and changed-identity applied children.
+Actual bank/rollout/gate/cache/beam reuse is NOT covered: unsupported bank dispatch
+must remain a visible error, not silently rebase a view or enable the old wait.
+Full policy/beam width, retained-view query floors, future-equivalence keys,
+work/TS/SQL and normative adoption stay mandatory. This is engineering progress,
+not a narrowed release floor or a claimed full harness migration.
+
+### H3y result — selected context survives actual choice and clone
+
+Four two-choice runs pass:combined buffs × both FIXED modes × available/deficit
+cash, with a declared two-item diagnostic policy. All eight selected generator
+actions match independent earliest projections and full original-state ApplyLogged
+state/receipt/events; four occur after real waits. Actual rankDecisionOptions
+compares purchases and bank, selects a purchase, and the REAL cloneState preserves
+that applied child's immutable context identity for the next decision. An actual
+fork/sibling ranks identically; mutating its returned map cannot poison the main
+branch. Root/typed-nil/head/forged-clone controls refuse. Two bank-only populations
+visibly refuse without an action or silent legacy wait; no retained-view or natural
+return/session behavior is claimed. Parent contexts remain unchanged.
+
+Initial selected-only25338 PASS1.242s. After copying registered head buffers and
+adding typed-nil refusal, freeze for final native81618: production11.222s and
+harness0.455s PASS. Declared Linux/AMD64 Go1.26 session33850:production54.507s,
+harness0.741s PASS. Both retain all28 H3x cases, version-safe clone, first-class
+bank/tie behavior, identical-suffix legacy cache and Reference lifetime/frozen
+input checks. Actual overlay vet of BOTH packages passes. These legacy cache
+passes do NOT exercise modern origin-aware cache/beam keys. No skips or complete
+workload/SQL/hosted/CI acceptance claimed. Sources frozen during execution.
+
+Ignored compiling clone fault21434 FAIL0.384s: remove ONLY the real clone's
+manual context-propagation call. All four purchase populations fail at the actual
+consumer with "unbound owned choice head"; both bank-only refusals still pass.
+References, normal helpers and normal source stay unchanged. All handles terminal.
+Observed six queries/six-or-nine full points/three actions/six rate reads per
+positive population INCLUDE the sibling probe, not total constructor/model/codec/
+hook work. The first population's fork count also includes its bad-clone control.
+No speed comparison, accepted ceiling, preflight or full workload gain follows.
+
+Reproduce from root after the current H3s generator/packet if absent or stale:
+`node planning/clout-v1-and-pr-interns/probes/prepare-owned-candidate-observation.mjs`;
+`make test-go GO_PACKAGES='./production ./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/owned-candidate-overlay.json -run TestOwned\|TestCloneStatePreservesSaveVersionThroughSearch\|TestBeamTerminalCompletionCacheReusesAnIdenticalSuffix\|TestProjectedMilestoneRankingMakesBankFirstClassAndPurchasesWinTies\|TestReputationReferenceLifetimeAccounting\|TestReputationReferenceFrozenInputDiagnostic -v'`;
+`make vet GO_PACKAGES='-overlay=../.cache/owned-candidate-overlay.json ./production ./harness'`.
+Linux uses the same regex with the declared compose.save-test.yml+compose.ci-test.yml
+service, --no-deps, `go test -p 1 -overlay=../.cache/owned-candidate-overlay.json
+-run '...' -v ./production ./harness -count=1`. Negative uses
+-overlay=../.cache/owned-choice-no-clone.json -run TestOwnedSelectedChildResearch.
+The separate29-entry overlay reverses both solver and clone transformations
+byte-exactly. Normal sources, H3s packet/bound sources and client remain unchanged;
+no new producer/client rerun claimed. SHA256: generator
+0302349da2b11bdae18365c73c88459e7be1ba78485ab2f3b57e8ab559039403;
+overlay02a5b47b61162603ab3d06ace97a28cd6413a0cc40582d6123e596e140173fa0;
+generated clone3986b4dee3cbc5e6f57ccd68765e6d46a6325330417d54166d9ec5c7234db209;
+clone faultbd630bafd7921f1ead9caf57ba923d784833445c0fb1ff4e799b6188171d8355.
+
+Own H3y/parent C1c/plan reconcile the bounded lifetime component. Next bind actual
+bank views and origin-relative query floors WITHOUT creating new origins; then
+actual beam/dedup/dominance/cache/rollout/context reuse and full work/dispatch/
+domain/TS/SQL/adoption. Callback registries are scoped test plumbing, not a trusted
+runtime origin API. Nine-path0ad3f76e-exclusive range through this checkpoint is
+research/specification work OUTSIDE corrective-code delegation. Review by: Codex
+root (author/first filter). Recorded by: Codex root. No designated acceptance,
+archival, release or product/schema/data/CI/golden/kernel223/epoch8 change.
+RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN, not rerun/fixed here.
+No push/publication/deployment. Full nine-tier1.0 goal remains active/progress.

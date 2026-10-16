@@ -71,6 +71,9 @@ func manualCandidateEarliestResearch(binding *ManualCandidateBindingResearch, no
 }
 
 func manualCandidateTransitionResearch(suite *RelevanceSuite, request production.IntentRequest, state *save.State, revision, atMS int64, mask production.AblationMask) (production.SimulationResult, error) {
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		return scope.apply(request, state, revision, atMS)
+	}
 	if binding := manualCandidateBindingsResearch[suite]; binding != nil {
 		encoded, err := save.EncodeState(state)
 		if err != nil || !bytes.Equal(encoded, binding.Origin) {
@@ -84,6 +87,9 @@ func manualCandidateTransitionResearch(suite *RelevanceSuite, request production
 }
 
 func manualCandidateRateResearch(suite *RelevanceSuite, state *save.State, mask production.AblationMask) (decimal.Decimal, error) {
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		return scope.rate(state, mask)
+	}
 	if binding := manualCandidateBindingsResearch[suite]; binding != nil {
 		return binding.Rate(state, mask)
 	}

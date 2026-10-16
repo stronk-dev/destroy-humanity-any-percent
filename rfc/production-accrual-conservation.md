@@ -316,10 +316,10 @@ Its original-state computation, post-action foundation work, full actual logged
 comparisons and consumed-batch child are bounded engineering evidence, not a live
 API, generic caller/context/mask proof or acceptance of this proposed protocol.
 
-Child H3x now connects that component and H3u's query to the actual single-candidate
-ranker through a reversible manual overlay. Its real-quote/full action/score
-comparisons do not retain the returned child through actual beam/choice/cache
-consumers yet; full lifecycle/work/dispatch and normative adoption remain open.
+Child H3x connects that component and H3u's query to the actual single-candidate
+ranker through a reversible manual overlay. H3y separately carries its selected
+child through actual choice/clone in bounded two-action runs. Retained bank views,
+beam/cache/rollout consumers and full lifecycle/work/dispatch/adoption remain open.
 
 The actual closed replay chain can return Guild/Commons events without a player
 action. Today's `SimulateAdvance` refuses such events. The bounded online/offline
@@ -1143,3 +1143,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-16: retain H3x's actual single-candidate query/action/score connection,
   distinguishing it from complete retained-origin choice/beam/context migration
   or full work/budget/dispatch acceptance. Neither draft is adopted by this result.
+- 2026-10-16: retain H3y's selected-child/actual-clone lifetime evidence, while
+  keeping retained bank views and actual beam/cache/rollout/full-workload migration
+  open. Fixed-mode diagnostic actions do not prove natural return/session policy.

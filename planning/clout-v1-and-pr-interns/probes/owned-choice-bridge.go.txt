@@ -1,0 +1,197 @@
+package harness
+
+import (
+	"bytes"
+	"fmt"
+	"reflect"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+)
+
+// This scoped manual experiment accepts only true action origins, not retained
+// bank views. No field is added to a save, wire object or normal runtime build.
+type ManualChoiceBindingResearch struct {
+	Identity       any
+	Head           []byte
+	Revision, AtMS int64
+	Fork           func(*save.State) (*ManualChoiceBindingResearch, error)
+	Query          func(int64, decimal.Decimal, int) (int64, int, error)
+	Apply          func(production.IntentRequest, *save.State, int64) (production.SimulationResult, *ManualChoiceBindingResearch, error)
+	Rate           func(*save.State, production.AblationMask) (decimal.Decimal, error)
+}
+type ManualChoiceStepResearch struct {
+	ID                            string
+	AtMS, Revision                int64
+	State                         *save.State
+	ParentIdentity, ChildIdentity any
+	Request                       production.IntentRequest
+	Decision                      save.IntentDecision
+}
+type manualChoiceScopeResearch struct {
+	states    map[*save.State]*ManualChoiceBindingResearch
+	requests  map[*save.State]production.IntentRequest
+	decisions map[*save.State]save.IntentDecision
+}
+
+var manualChoiceScopesResearch = map[*RelevanceSuite]*manualChoiceScopeResearch{}
+var manualChoiceCloneOwnersResearch = map[*save.State]*manualChoiceScopeResearch{}
+
+func (scope *manualChoiceScopeResearch) bind(state *save.State, binding *ManualChoiceBindingResearch) error {
+	if binding == nil || binding.Identity == nil || reflect.TypeOf(binding.Identity).Kind() != reflect.Pointer || reflect.ValueOf(binding.Identity).IsNil() || binding.Fork == nil || binding.Query == nil || binding.Apply == nil || binding.Rate == nil {
+		return fmt.Errorf("missing owned choice identity/factory")
+	}
+	encoded, err := save.EncodeState(state)
+	if err != nil || !bytes.Equal(encoded, binding.Head) {
+		return fmt.Errorf("choice head does not bind context")
+	}
+	owned := *binding
+	owned.Head = append([]byte(nil), binding.Head...)
+	scope.states[state] = &owned
+	manualChoiceCloneOwnersResearch[state] = scope
+	return nil
+}
+func (scope *manualChoiceScopeResearch) require(state *save.State) (*ManualChoiceBindingResearch, error) {
+	binding, exists := scope.states[state]
+	if !exists {
+		return nil, fmt.Errorf("unbound owned choice head")
+	}
+	encoded, err := save.EncodeState(state)
+	if err != nil || !bytes.Equal(encoded, binding.Head) {
+		return nil, fmt.Errorf("mutated owned choice head")
+	}
+	return binding, nil
+}
+func manualCloneChoiceResearch(source, cloned *save.State) error {
+	scope := manualChoiceCloneOwnersResearch[source]
+	if scope == nil {
+		return nil
+	} // Exact normal legacy clone behavior.
+	binding, err := scope.require(source)
+	if err != nil {
+		return err
+	}
+	fork, err := binding.Fork(cloned)
+	if err != nil {
+		return err
+	}
+	if fork == nil || fork.Identity != binding.Identity || fork.Revision != binding.Revision || fork.AtMS != binding.AtMS {
+		return fmt.Errorf("clone lost immutable accounting identity")
+	}
+	return scope.bind(cloned, fork)
+}
+func (scope *manualChoiceScopeResearch) earliest(state *save.State, revision, nowMS, horizonMS int64, resource string, price decimal.Decimal, counter *relevanceCounter) (int64, bool, error) {
+	binding, err := scope.require(state)
+	if err != nil {
+		return 0, false, err
+	}
+	if binding.Revision != revision || binding.AtMS != nowMS {
+		return 0, false, fmt.Errorf("choice query coordinates drift")
+	}
+	return manualCandidateEarliestResearch(&ManualCandidateBindingResearch{Query: binding.Query}, nowMS, horizonMS, resource, price, counter)
+}
+func (scope *manualChoiceScopeResearch) apply(request production.IntentRequest, state *save.State, revision, atMS int64) (production.SimulationResult, error) {
+	binding, err := scope.require(state)
+	if err != nil {
+		return production.SimulationResult{}, err
+	}
+	if binding.Revision != revision || atMS < binding.AtMS {
+		return production.SimulationResult{}, fmt.Errorf("choice action coordinates drift")
+	}
+	result, next, err := binding.Apply(request, state, atMS)
+	if err != nil {
+		return production.SimulationResult{}, err
+	}
+	if result.Decision.Outcome == save.IntentApplied {
+		if next == nil || next.Identity == binding.Identity || next.Revision != revision+1 || next.AtMS != atMS {
+			return production.SimulationResult{}, fmt.Errorf("action failed to close/create origin")
+		}
+		if err := scope.bind(state, next); err != nil {
+			return production.SimulationResult{}, err
+		}
+		scope.requests[state], scope.decisions[state] = request, result.Decision
+	} else if next != nil {
+		return production.SimulationResult{}, fmt.Errorf("refused choice created a child")
+	}
+	return result, nil
+}
+func (scope *manualChoiceScopeResearch) rate(state *save.State, mask production.AblationMask) (decimal.Decimal, error) {
+	binding, err := scope.require(state)
+	if err != nil {
+		return decimal.NaN, err
+	}
+	return binding.Rate(state, mask)
+}
+
+func ManualRunOwnedChoicesResearch(catalog *economy.Catalog, routeCatalog *routes.Catalog, hash string, milestone RelevanceMilestone,
+	state *save.State, binding *ManualChoiceBindingResearch, window int64, count int, limit int64) ([]ManualChoiceStepResearch, error) {
+	suite := &RelevanceSuite{Catalog: catalog, Routes: routeCatalog, ConstantsHash: hash, Scenario: RelevanceScenario{Milestone: milestone},
+		Policy: &RelevancePolicy{Items: []RelevancePolicyItem{{PurchasableID: "generator.beige_tower"}, {PurchasableID: "upgrade.rack_rail_standardization"}}}}
+	scope := &manualChoiceScopeResearch{states: map[*save.State]*ManualChoiceBindingResearch{}, requests: map[*save.State]production.IntentRequest{}, decisions: map[*save.State]save.IntentDecision{}}
+	manualChoiceScopesResearch[suite] = scope
+	defer func() {
+		delete(manualChoiceScopesResearch, suite)
+		for state := range scope.states {
+			delete(manualChoiceCloneOwnersResearch, state)
+		}
+	}()
+	if err := scope.bind(state, binding); err != nil {
+		return nil, err
+	}
+	parentBytes, err := save.EncodeState(state)
+	if err != nil {
+		return nil, err
+	}
+	shadow, err := cloneState(catalog, state)
+	if err != nil {
+		return nil, err
+	}
+	counter := &relevanceCounter{limit: limit}
+	steps := []ManualChoiceStepResearch{}
+	for ordinal := 0; ordinal < count; ordinal++ {
+		current, err := scope.require(state)
+		if err != nil {
+			return nil, err
+		}
+		options, bank, _, err := suite.rankDecisionOptions(state, current.Revision, current.AtMS, current.AtMS+window, 1, production.AblationMask{}, counter)
+		if err != nil {
+			return nil, err
+		}
+		if bank || len(options) != 1 {
+			return nil, fmt.Errorf("unsupported/non-purchase diagnostic choice")
+		}
+		chosen := options[0]
+		child, err := scope.require(chosen.State)
+		if err != nil {
+			return nil, err
+		}
+		if ordinal == 0 {
+			other, otherBank, _, err := suite.rankDecisionOptions(shadow, current.Revision, current.AtMS, current.AtMS+window, 1, production.AblationMask{}, counter)
+			if err != nil || otherBank || len(other) != 1 {
+				return nil, fmt.Errorf("sibling choice failed: %v", err)
+			}
+			otherBytes, err := save.EncodeState(other[0].State)
+			if err != nil || !bytes.Equal(otherBytes, child.Head) {
+				return nil, fmt.Errorf("sibling diverged")
+			}
+			other[0].State.GeneratorCounts["generator.beige_tower"]++ // Must not poison selected context.
+		}
+		steps = append(steps, ManualChoiceStepResearch{ID: chosen.ID, AtMS: chosen.AtMS, Revision: chosen.Revision, State: chosen.State,
+			ParentIdentity: current.Identity, ChildIdentity: child.Identity, Request: scope.requests[chosen.State], Decision: scope.decisions[chosen.State]})
+		state, err = cloneState(catalog, chosen.State)
+		if err != nil {
+			return nil, err
+		}
+		cloned, err := scope.require(state)
+		if err != nil || cloned.Identity != child.Identity {
+			return nil, fmt.Errorf("selected clone lost child identity: %v", err)
+		}
+	}
+	if after, err := save.EncodeState(shadow); err != nil || !bytes.Equal(parentBytes, after) {
+		return nil, fmt.Errorf("candidate selection consumed sibling parent")
+	}
+	return steps, nil
+}

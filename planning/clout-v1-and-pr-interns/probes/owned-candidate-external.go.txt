@@ -23,3 +23,57 @@ func TestOwnedCandidateCallerResearch(t *testing.T) {
 			State: result.State, Numerator: result.Numerator, Denominator: result.Denominator, Roles: result.Roles, OK: result.OK, Err: result.Err}
 	})
 }
+
+func choiceBindingResearch(branch *production.ManualOwnedBranchResearch) *harness.ManualChoiceBindingResearch {
+	binding := &harness.ManualChoiceBindingResearch{Identity: branch.Identity(), Head: branch.Head(), Revision: branch.Revision(), AtMS: branch.Time().Sub(harness.Epoch).Milliseconds(), Query: branch.Query, Rate: branch.Rate}
+	binding.Fork = func(state *save.State) (*harness.ManualChoiceBindingResearch, error) {
+		fork, err := branch.Fork(state)
+		if err != nil {
+			return nil, err
+		}
+		return choiceBindingResearch(fork), nil
+	}
+	binding.Apply = func(request production.IntentRequest, state *save.State, atMS int64) (production.SimulationResult, *harness.ManualChoiceBindingResearch, error) {
+		result, next, err := branch.Apply(request, state, harness.Epoch.Add(time.Duration(atMS)*time.Millisecond))
+		if err != nil || next == nil {
+			return result, nil, err
+		}
+		return result, choiceBindingResearch(next), nil
+	}
+	return binding
+}
+
+func TestOwnedSelectedChildResearch(t *testing.T) {
+	production.RunManualOwnedChoicesResearch(t, func(branch *production.ManualOwnedBranchResearch, fault string) ([]production.ManualOwnedChoiceStepResearch, error) {
+		input := branch.Case()
+		state, binding := branch.State(), choiceBindingResearch(branch)
+		switch fault {
+		case "identity":
+			binding.Identity = nil
+		case "typed_nil":
+			binding.Identity = (*struct{ invalid int })(nil)
+		case "head":
+			state.GeneratorCounts["generator.beige_tower"]++
+		case "clone":
+			original := binding.Fork
+			binding.Fork = func(state *save.State) (*harness.ManualChoiceBindingResearch, error) {
+				fork, err := original(state)
+				if err == nil {
+					fork.Identity = &struct{ invalid int }{1}
+				}
+				return fork, err
+			}
+		}
+		steps, err := harness.ManualRunOwnedChoicesResearch(input.Catalog, input.Routes, input.Hash,
+			harness.RelevanceMilestone{ID: "milestone.gate", Kind: "resource_at_least", ResourceID: "company.cash", Amount: input.Target}, state, binding, 2001, 2, 3*2*(2*(2001+1)+1))
+		if err != nil {
+			return nil, err
+		}
+		result := []production.ManualOwnedChoiceStepResearch{}
+		for _, step := range steps {
+			result = append(result, production.ManualOwnedChoiceStepResearch{ID: step.ID, At: harness.Epoch.Add(time.Duration(step.AtMS) * time.Millisecond), Revision: step.Revision, State: step.State,
+				ParentIdentity: step.ParentIdentity, ChildIdentity: step.ChildIdentity, Request: step.Request, Decision: step.Decision})
+		}
+		return result, nil
+	})
+}

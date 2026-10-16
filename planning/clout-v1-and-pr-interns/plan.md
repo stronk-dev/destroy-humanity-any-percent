@@ -147,8 +147,15 @@ include four earlier-affordable/unaffordable-tail windows; full logged action
 outputs and score components agree. It does not retain a child through subsequent
 actual choice/beam/cache consumers or adopt a new scenario/profile.
 
-Next retain and bind that returned child through actual choice, beam/fork/cache
-and rollout/context reuse, preserving complete results, error policy and scores. Measure
+H3y's scoped manual bridge now retains the selected child through actual
+rankDecisionOptions and cloneState, with eight independently logged actions in
+four two-choice runs. Four waits, sibling/result isolation and explicit missing/
+mutated-context and unsupported-bank refusals execute. It accepts true action
+origins only, not bank views, full policy/beam/cache/rollout or natural returns.
+
+Next preserve the original accounting origin through actual BANK views and
+origin-relative query floors; then bind actual beam/cache/dominance/rollout/context
+reuse, preserving complete results, error policy and scores. Measure
 complete candidate/consumer work and error/scoring compatibility;
 finish general scheduling, all mask families, actual TS owner/query and full
 workload/compatibility before adoption. Complete input/mask/map,
