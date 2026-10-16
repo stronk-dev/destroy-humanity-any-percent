@@ -11,6 +11,13 @@ no longer await Claude. Other corrective ranges, author-body RP-174/RP-176, cont
 shared clock and complete feature/AT/release acceptance remain open. Earlier dated
 checkpoints retain their historical review state; current batch dispositions follow below.
 
+The same delegation now closes RP-453 `6f85d3ad..377279c4`, RP-457
+`46c7ecac..7f94671a` and RP-458 `7f94671a..e0de6299`, each complete corrective range.
+Independent old-event/saved-state/snapshot failures, current Go/TS checks and real
+Linux-amd64/Postgres event storage, commands, both Exit paths and isolation execute.
+The owning log retains exact ranges and limits; this does not adopt RP-174/RP-176's
+unreconciled body, approve C3/C4/C5 as features or waive the historical kernel failure.
+
 Preceding checkpoint (2026-10-08): all original C1–C8 diff reviews are complete. C2 retains its
 bounded approval; the other original batches retain CHANGES REQUIRED, not approval of Codex
 corrections. Latest C5 disposition consolidates RP-173/RP-174/RP-458. The snapshot decoder
@@ -83,7 +90,7 @@ migration take the next free numbers at landing.
   RP-181's separate AC8 test-only supplement now covers nonempty owned/equipped carry through
   both named Exit paths in Go/TS and real Postgres; Claude designated review remains required.
   The complete original C3 review additionally found RP-457's Go saved-state case aliases;
-  its bounded correction awaits designated review, not full C3 acceptance.
+  its bounded correction is independently approved as recorded above, not full C3 acceptance.
 - [x] C4 Intents `acquire_cosmetic` / `equip_cosmetic` / `unequip_cosmetic`, the three events and
   the migration, with Go/TS parity and Postgres integration (AC5, AC6, AC9). Codex's targeted
   C4/AC9 review found RP-177: only the Go decoder, not Postgres, rejected extra event payload
@@ -110,11 +117,11 @@ migration take the next free numbers at landing.
   RP-453's event-key admission correction aligns Go with the existing exact-key database
   constraint while accepting equivalent JSON whitespace/escapes. The new semantic-key
   regressions fail on the old validator; owning log records executed SQL controls and the
-  separate pending review of this Codex correction. No full C4 approval is implied.
+  independent approval of this complete correction. No full C4 approval is implied.
 - [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); complete original
-  review retains CHANGES REQUIRED for RP-173/RP-174/RP-458. Codex corrections await Claude's
-  designated review; RP-174 requires ruling-author body reconciliation. This is implementation
-  presence, not archival approval.
+  review retains CHANGES REQUIRED for RP-173/RP-174/RP-458. RP-458's complete correction is
+  independently approved; RP-173's correction still needs review and RP-174 requires
+  ruling-author body reconciliation. This is implementation presence, not archival approval.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).
   Codex's bounded AC12 review found RP-183: Equip/Unequip lacked the visible curtains'
   `aria-describedby` links. A retained all-controls assertion fails first across all three

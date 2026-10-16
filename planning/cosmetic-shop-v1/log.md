@@ -2360,3 +2360,39 @@ All handles terminal/slot released before admission review starts. Only task-cre
 game-ui Postgres is stopped/removed (fixture data gone); two preserved builders remain. No
 reviewer tracked edits/commits/main-source mutation/publication. Other corrective/author-body/
 clock/content and full-feature/release gates stand; no archival, copy adoption or1.0 promotion.
+
+## 2026-10-16 — Event, saved-state and snapshot admission independently approved
+
+Review by: /root/cosmetic_admission_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; every code/test/version/doc/record path in each complete scope:
+- RP-453: 6f85d3add7d454ae074b809851fa47dd9123a6a2-exclusive..377279c4d077e5b478d9587a90ecc78c4b1eb52c-inclusive (10paths).
+- RP-457: 46c7ecac88bd2f31b22b040abbd3a90a4ab6717e-exclusive..7f94671ab20453731738bd7fd007489a7a8298d7-inclusive (11paths).
+- RP-458: 7f94671ab20453731738bd7fd007489a7a8298d7-exclusive..e0de6299eb3409f819c479ceb15021a8bfaeae43-inclusive (7paths).
+Cosmetic§3/AC3,§4.5/AC9,§7.1/AC10 authority; genuine mirrored kernel178→179→180 admission
+changes neither repair nor waive RP-131. Original C1/C3/C4/C5 dispositions remain historical.
+
+Independent ignored old-behavior overlays retain current dependencies and endpoint tests:
+- Session57761 restores the exact old3 event arms:8/24 fail (6 accepted aliases,2 wrongly
+  refused whitespace/escaped nullable-key encodings). Remaining controls pass.
+- Removing only2 saved-state guards fails all10 alias/collision refusals;2 valid encodings pass.
+  Corrected same Go endpoint tests pass (save0.245s); event arms match reviewed endpoint bytes.
+- Removing only the snapshot guard fails isolated/full-snapshot cases,12 controls pass;
+  corrected14/14 pass. Complete Cosmetic decoder matches reviewed corrected endpoint bytes.
+Cold current save/cosmetic/replaycatalog/kernel/gameui all pass; native missing-DB cases are
+not integration evidence. Actual declared LinuxAMD64/Postgres16 session38139 passes save0.109s/
+production65.401s with no selected skips: exact SQL constraint/SQLSTATE negatives, equivalent
+JSON storage, persisted commands/refusals/replay, both Exit paths, activation and200×288
+mechanical-isolation/leak controls. Desktop emulation is not native hosted hardware.
+
+Nine affected TS files pass427 tests, including Founder restore/shared replay/snapshot/prior
+versions. Affected Go vet, types/Svelte0 diagnostics, shipped build/client-boundary negatives
+and api-check pass without API-output drift. Code basef7d21941→09bf3f2a advances only parent
+Markdown records during execution. These are minimum historical behavior/function reversals,
+not complete historical builds. No assertion weakening or tracked-source mutation.
+
+All handles terminal/slot released before disclosure/motion review. Only created disposable
+Postgres is stopped/removed; ephemeral data gone, both builders/cache volumes preserved.
+No reviewer edits/commits/publication. No browser/AT/HTTP authorization/full Production/harness/
+hosted-CI/release claim.27 Clout failures, historical guard, RP-174/RP-176 body, content/copy/
+shared clock and full-feature acceptance remain open. No new-feature/normative adoption or archival.
