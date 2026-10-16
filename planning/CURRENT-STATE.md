@@ -1,7 +1,10 @@
 # Current repository state
 
-Reconciled 2026-10-16: latest bounded production correction `137f7a8d` (kernel0.3.222,
-epoch8); numeric research checkpoint `f7ca2b96`, Deployment mechanical checkpoint `bdf5add1`
+Reconciled 2026-10-16: latest bounded production correction `7ec0873c` (kernel0.3.223,
+epoch8), independently approved at `190a4790`: simulation masks preserve absent map keys;
+affected native/Linux checks pass, but the27 Clout failures and historical guard remain red.
+Accounting/search research checkpoint `923c694a` remains unadopted;
+Deployment mechanical checkpoint `bdf5add1`
 and independently approved scanner correction `76cba7bc` (no gameplay/kernel change).
 The whole-product classification retains its
 `77fe2275` base and the explicit follow-ups below, not a fresh complete acceptance sweep.

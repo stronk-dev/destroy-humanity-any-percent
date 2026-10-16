@@ -7216,3 +7216,19 @@ Postgres, browser, exhaustive research, hosted CI or release is implied. Existin
 27 AC6 failures, the historical50a3a514 guard failure and pending H3/C1 research
 adoption remain open. The implementer's separate full Linux suite result is not
 an independently rerun claim of this review. No archival or publication.
+
+### RP-690 terminal Linux result and closeout
+
+The previously running declared Linux/AMD64 Go1.26 full decimal/economy/kernel/
+harness command terminates PASS:0.661s/8.563s/0.028s/196.325s respectively; Docker
+wait confirms actual container exit0. This is implementer execution, not another
+independent-review claim. Independent verdict190a4790 covers the complete
+923c694a..7ec0873c correction. RP-690 is closed; kernel223/epoch8, no authored
+data or accepted mechanic changes. Current-state/roadmap pointers now name this
+bounded correction rather than222; no whole-product milestone advances.
+Next: remaining admitted-input/mask/state obligations and actual logged stages
+for the proposed accounting/search route. RP-680,27 AC6 partition failures,
+historical version guard and research/normative adoption remain open. Full1.0
+goal remains active; no push, release, archival or deployment.
+Review by: Codex root (execution recorder/closeout, not designated reviewer).
+Recorded by: Codex root.

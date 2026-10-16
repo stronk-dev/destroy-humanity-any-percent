@@ -97,6 +97,8 @@ hook-success/error scratch results unencodable. The bounded P5/C10/R10 correctio
 preserves presence and count without rejecting those masks; kernel223 binds the
 behavior change. Old failures and full verification/review status live in the log;
 this conformance repair does not adopt the draft calculation API or close AC6.
+Fresh independent corrective review190a4790 approves923c694a..7ec0873c;
+native/Linux affected checks pass. RP-690 is closed, not the search/accounting work.
 
 Next complete remaining input/mask/map identity and post-hook state obligations,
 then exact logged stage/clock operation and real settlement; complete global/caller/

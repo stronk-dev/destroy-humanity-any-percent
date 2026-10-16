@@ -5629,3 +5629,17 @@ alternative search or separately adopted numeric route with full caller/compatib
 proof. No complete modern factory/hooks, natural acquisition/current full-search defect,
 TS/Linux/SQL, arithmetic activation,27-partition repair, tier/feature/CI/release promotion.
 Existing research/normative review and owner gates remain. Full nine-tier goal active.
+
+## 2026-10-16 — Simulation-mask shape correction independently closed
+
+RP-690 reproduced an admitted simulation mask adding an absent cross-scope count,
+making actual hook-success/error Company scratch results unencodable. Correction
+7ec0873c preserves membership and values, without narrowing mask admission or
+changing payouts; kernel223/epoch8. Fresh independent Codex approval190a4790 covers
+923c694a..7ec0873c and independently repeats six old failures/current passes.
+Affected native/Linux numeric/harness/simulation checks and client tests/types pass;
+full native production still fails the same27 Clout partitions, and the history
+guard still refuses50a3a514. The owning Clout log holds exact commands and limits.
+No new tier, feature acceptance, research adoption or release follows. Remaining
+search/accounting input/state/caller proof and real settlement stay engineering
+work; the full nine-tier1.0 goal remains active. Nothing pushed or deployed.

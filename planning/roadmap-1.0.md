@@ -7,7 +7,10 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current product rollup (2026-10-16):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Latest bounded production correction `137f7a8d`, kernel0.3.222, epoch8; research `f7ca2b96`.
+Latest bounded production correction `7ec0873c`, kernel0.3.223, epoch8;
+independent corrective approval `190a4790`. This closes RP-690's phantom masked-count
+defect after native/Linux checks, not the accounting/search work. Research `923c694a`
+remains unadopted; the27 Clout failures and historical version guard remain red.
 The whole-product classification retains its `77fe2275` base plus named follow-ups:
 still Garage integration/hardening,
 incomplete v0.1, with substantial world/combat/Tier3–8/final-ending construction ahead. At this
