@@ -1,0 +1,268 @@
+package harness
+
+import (
+	"bytes"
+	"fmt"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+)
+
+// Opaque identity participates in equality only. No address/ordinal is serialized
+// into the legacy digest, score, report or path tie-break. The scoped suite owns
+// one run-local score-cache namespace; no persisted/cross-run reuse is proposed.
+type manualCompletionIdentityResearch struct {
+	legacy string
+	origin any
+}
+
+func manualCompletionKeyResearch(suite *RelevanceSuite, state *save.State, revision, nowMS, remaining int64) (manualCompletionIdentityResearch, error) {
+	key, err := relevanceCompletionCacheKey(state, revision, nowMS, remaining)
+	if err != nil {
+		return manualCompletionIdentityResearch{}, err
+	}
+	result := manualCompletionIdentityResearch{legacy: key}
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		binding, err := scope.require(state)
+		if err != nil {
+			return result, err
+		}
+		if binding.Revision != revision || binding.AtMS != nowMS {
+			return result, fmt.Errorf("cache coordinates do not bind origin")
+		}
+		result.origin = binding.Identity
+	}
+	return result, nil
+}
+
+func manualCompletionGetResearch(suite *RelevanceSuite, cache map[string]relevanceCompletionCacheEntry, key manualCompletionIdentityResearch) (relevanceCompletionCacheEntry, bool) {
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		value, ok := scope.completionCache[key]
+		if ok {
+			scope.cacheHits++
+		}
+		return value, ok
+	}
+	value, ok := cache[key.legacy]
+	return value, ok
+}
+func manualCompletionSetResearch(suite *RelevanceSuite, cache map[string]relevanceCompletionCacheEntry, key manualCompletionIdentityResearch, value relevanceCompletionCacheEntry) {
+	if scope := manualChoiceScopesResearch[suite]; scope != nil {
+		if scope.completionCache == nil {
+			scope.completionCache = map[manualCompletionIdentityResearch]relevanceCompletionCacheEntry{}
+		}
+		scope.completionCache[key] = value
+		return
+	}
+	cache[key.legacy] = value
+}
+
+func manualRecordCompletionResearch(suite *RelevanceSuite, state *save.State, parent any, bank *ManualBankObservationResearch, id string) error {
+	scope := manualChoiceScopesResearch[suite]
+	if scope == nil {
+		return nil
+	}
+	binding, err := scope.require(state)
+	if err != nil {
+		return err
+	}
+	copy, err := cloneState(suite.Catalog, state)
+	if err != nil {
+		return err
+	}
+	step := ManualChoiceStepResearch{ID: id, AtMS: binding.AtMS, Revision: binding.Revision, State: copy, ParentIdentity: parent, ChildIdentity: binding.Identity, Bank: bank}
+	if bank == nil {
+		step.Request = scope.requests[state]
+		step.Decision = scope.decisions[state]
+	}
+	scope.completionSteps = append(scope.completionSteps, step)
+	return nil
+}
+
+func manualAdvanceCompletionResearch(suite *RelevanceSuite, state *save.State, revision, atMS int64, mask production.AblationMask, counter *relevanceCounter) error {
+	scope := manualChoiceScopesResearch[suite]
+	if scope == nil {
+		_, err := suite.advance(state, revision, atMS, mask, counter)
+		return err
+	}
+	parent, err := scope.require(state)
+	if err != nil {
+		return err
+	}
+	bank, err := scope.bank(state, revision, atMS, counter)
+	if err != nil {
+		return err
+	}
+	return manualRecordCompletionResearch(suite, state, parent.Identity, &bank, "~bank")
+}
+
+func manualSelectedCompletionResearch(suite *RelevanceSuite, parentState *save.State, chosen relevanceCandidate) error {
+	scope := manualChoiceScopesResearch[suite]
+	if scope == nil {
+		return nil
+	}
+	parent, err := scope.require(parentState)
+	if err != nil {
+		return err
+	}
+	return manualRecordCompletionResearch(suite, chosen.State, parent.Identity, nil, chosen.ID)
+}
+
+func manualFinishCompletionResearch(suite *RelevanceSuite, state *save.State, revision, nowMS int64, mask production.AblationMask, counter *relevanceCounter) (int64, *int64, []production.RoleActivation, error) {
+	scope := manualChoiceScopesResearch[suite]
+	price, err := decimal.ParseCanonical(suite.Scenario.Milestone.Amount)
+	if err != nil {
+		return 0, nil, nil, err
+	}
+	at, reached, err := scope.earliest(state, revision, nowMS, suite.Scenario.HorizonMS, suite.Scenario.Milestone.ResourceID, price, counter)
+	if err != nil {
+		return 0, nil, nil, err
+	}
+	if !reached {
+		at = suite.Scenario.HorizonMS
+	}
+	if at > nowMS {
+		if err := manualAdvanceCompletionResearch(suite, state, revision, at, mask, counter); err != nil {
+			return 0, nil, nil, err
+		}
+	}
+	var roles []production.RoleActivation
+	if len(scope.completionSteps) > 0 {
+		if bank := scope.completionSteps[len(scope.completionSteps)-1].Bank; bank != nil {
+			roles = bank.Roles
+		}
+	}
+	if reached {
+		return at, &at, roles, nil
+	}
+	return at, nil, roles, nil
+}
+
+// Run the ACTUAL completion method, not a parallel decision loop. Reuse is
+// intentionally score-only, as it is in the current beam caller. The diagnostic
+// snapshots expose real executed steps; a cache hit must not fabricate them.
+type ManualCompletionWorkResearch struct {
+	Transitions                            int64
+	CacheHits, CacheEntries, ExecutedSteps int
+}
+
+func ManualRunOwnedCompletionResearch(catalog *economy.Catalog, routeCatalog *routes.Catalog, hash string, milestone RelevanceMilestone,
+	state *save.State, binding, alternate *ManualChoiceBindingResearch, tail bool, limit int64, observe func(ManualCompletionWorkResearch)) ([]ManualChoiceStepResearch, error) {
+	start := binding.AtMS
+	scenario := RelevanceScenario{Milestone: milestone, HorizonMS: start + 6003, MaxDecisions: 3, DecisionHorizonsMS: []int64{start + 2001, start + 4002, start + 6003}}
+	if tail {
+		scenario.DecisionHorizonsMS = nil
+	}
+	suite := &RelevanceSuite{Catalog: catalog, Routes: routeCatalog, ConstantsHash: hash, Scenario: scenario,
+		Policy: &RelevancePolicy{Items: []RelevancePolicyItem{{PurchasableID: "generator.beige_tower"}, {PurchasableID: "upgrade.rack_rail_standardization"}}}}
+	scope := &manualChoiceScopeResearch{states: map[*save.State]*ManualChoiceBindingResearch{}, requests: map[*save.State]production.IntentRequest{}, decisions: map[*save.State]save.IntentDecision{}}
+	manualChoiceScopesResearch[suite] = scope
+	defer func() {
+		delete(manualChoiceScopesResearch, suite)
+		for state := range scope.states {
+			delete(manualChoiceCloneOwnersResearch, state)
+		}
+	}()
+	if err := scope.bind(state, binding); err != nil {
+		return nil, err
+	}
+	parentBytes := append([]byte(nil), binding.Head...)
+	same, err := cloneState(catalog, state)
+	if err != nil {
+		return nil, err
+	}
+	cache := map[string]relevanceCompletionCacheEntry{}
+	counter := &relevanceCounter{limit: limit}
+	result, err := suite.runRankedCompletionCached(state, binding.Revision, start, 3, production.AblationMask{}, counter, cache)
+	if err != nil {
+		return nil, err
+	}
+	steps := append([]ManualChoiceStepResearch(nil), scope.completionSteps...)
+	if len(steps) == 0 || result.FinalVirtualMS != steps[len(steps)-1].AtMS || result.DecisionStarved == tail {
+		return nil, fmt.Errorf("actual completion did not preserve executed outcome")
+	}
+	finalBytes, err := save.EncodeState(result.FinalState)
+	if err != nil {
+		return nil, err
+	}
+	stepBytes, err := save.EncodeState(steps[len(steps)-1].State)
+	if err != nil || !bytes.Equal(finalBytes, stepBytes) {
+		return nil, fmt.Errorf("actual completion final state differs")
+	}
+	reached, err := suite.relevanceMilestoneReached(result.FinalState)
+	if err != nil || reached != (result.MilestoneMS != nil) || result.MilestoneMS != nil && *result.MilestoneMS != result.FinalVirtualMS {
+		return nil, fmt.Errorf("actual completion score contradicts its final state")
+	}
+	if !tail && (result.Purchases["generator.beige_tower"] != int64(len(steps)-countManualBanksResearch(steps)) || result.Decisions != 3) {
+		return nil, fmt.Errorf("actual completion lost purchase/decision counts")
+	}
+	before := counter.value
+	hits := scope.cacheHits
+	second, err := suite.runRankedCompletionCached(same, binding.Revision, start, 3, production.AblationMask{}, counter, cache)
+	if err != nil || scope.cacheHits != hits+1 || counter.value != before || len(scope.completionSteps) != len(steps) || !sameOptionalIntResearch(second.MilestoneMS, result.MilestoneMS) || second.DecisionStarved != result.DecisionStarved {
+		return nil, fmt.Errorf("same-origin score-cache reuse failed: %v", err)
+	}
+	secondBytes, err := save.EncodeState(second.FinalState)
+	if err != nil || !bytes.Equal(secondBytes, parentBytes) || second.FinalVirtualMS != start || len(second.Purchases) != 0 {
+		return nil, fmt.Errorf("score hit fabricated a terminal state/actions")
+	}
+	key, err := manualCompletionKeyResearch(suite, same, binding.Revision, start, 3)
+	if err != nil {
+		return nil, err
+	}
+	other, err := manualCompletionKeyResearch(suite, same, binding.Revision, start, 2)
+	if err != nil || other == key {
+		return nil, fmt.Errorf("remaining allowance missing from cache key")
+	}
+	for _, coordinates := range [][2]int64{{binding.Revision + 1, start}, {binding.Revision, start + 1}} {
+		if _, err := manualCompletionKeyResearch(suite, same, coordinates[0], coordinates[1], 3); err == nil {
+			return nil, fmt.Errorf("unbound cache coordinates admitted")
+		}
+	}
+	mutated, err := cloneState(catalog, same)
+	if err != nil {
+		return nil, err
+	}
+	mutated.GeneratorCounts["generator.beige_tower"]++
+	if _, err := manualCompletionKeyResearch(suite, mutated, binding.Revision, start, 3); err == nil {
+		return nil, fmt.Errorf("cache accepted an unbound visible head")
+	}
+	if alternate == nil || alternate.Identity == binding.Identity || !bytes.Equal(alternate.Head, binding.Head) {
+		return nil, fmt.Errorf("missing genuine distinct-origin cache control")
+	}
+	alien, err := cloneState(catalog, same)
+	if err != nil {
+		return nil, err
+	}
+	if err := scope.bind(alien, alternate); err != nil {
+		return nil, err
+	}
+	alienKey, err := manualCompletionKeyResearch(suite, alien, alternate.Revision, start, 3)
+	if err != nil || alienKey == key {
+		return nil, fmt.Errorf("distinct origin aliased visible-state cache")
+	}
+	_, err = suite.runRankedCompletionCached(alien, alternate.Revision, start, 3, production.AblationMask{}, counter, cache)
+	if err != nil || scope.cacheHits != hits+1 || counter.value <= before {
+		return nil, fmt.Errorf("distinct origin reused another origin score: %v", err)
+	}
+	if observe != nil {
+		observe(ManualCompletionWorkResearch{counter.value, scope.cacheHits, len(scope.completionCache), len(scope.completionSteps)})
+	}
+	return steps, nil
+}
+
+func countManualBanksResearch(steps []ManualChoiceStepResearch) int {
+	n := 0
+	for _, step := range steps {
+		if step.Bank != nil {
+			n++
+		}
+	}
+	return n
+}
+func sameOptionalIntResearch(left, right *int64) bool {
+	return left == nil && right == nil || left != nil && right != nil && *left == *right
+}

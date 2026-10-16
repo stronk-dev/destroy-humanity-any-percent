@@ -43,9 +43,12 @@ type ManualChoiceStepResearch struct {
 	Bank                          *ManualBankObservationResearch
 }
 type manualChoiceScopeResearch struct {
-	states    map[*save.State]*ManualChoiceBindingResearch
-	requests  map[*save.State]production.IntentRequest
-	decisions map[*save.State]save.IntentDecision
+	states          map[*save.State]*ManualChoiceBindingResearch
+	requests        map[*save.State]production.IntentRequest
+	decisions       map[*save.State]save.IntentDecision
+	completionSteps []ManualChoiceStepResearch
+	completionCache map[manualCompletionIdentityResearch]relevanceCompletionCacheEntry
+	cacheHits       int
 }
 
 var manualChoiceScopesResearch = map[*RelevanceSuite]*manualChoiceScopeResearch{}

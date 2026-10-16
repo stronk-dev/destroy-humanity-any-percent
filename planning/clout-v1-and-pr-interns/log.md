@@ -7876,6 +7876,94 @@ or release; no product/schema/data/CI/golden/kernel223/epoch8 changes or push.
 RP-680,27 Clout AC6 failures and guard50a3a514 stay OPEN, not rerun/fixed here.
 No publication/deployment. Full nine-tier1.0 goal remains active/progress.
 
+## H3aa — actual ranked completion and score-cache experiment
+
+Previous5cb9b43c is PROGRESS: retained views/query floors are executed components,
+not live gameplay. Next wire the ACTUAL ranked-completion loop, its bank path,
+terminal finish and score cache through the retained owner using reversible manual
+overlays. Preserve all two diagnostic policy items/three declared windows and
+existing legacy callers. Compare the same full five bank views/one logged action
+to independent references, and separately exercise finish-to-milestone's reached
+and unreachable cases. Score-cache equality must include opaque context, complete
+visible head, revision/time and remaining decisions; same-origin clones may hit,
+distinct origins may not. A score hit is NOT a completed state/actions/events.
+No origin address serialization, new payout, lowered beam width, increased adopted
+work budget or normative adoption. Beam/dominance/rollout and full workloads remain
+required after this component; failures and actual work stay visible.
+
+### H3aa result — actual completion, terminal waits and score reuse
+
+Actual runRankedCompletionCached now selects the same three banks online, or
+two banks then the real5001ms purchase offline. Its five bank snapshots and one
+real action match the independent full stage/state/private-event/logged references
+from H3z. This is the actual loop with a reversible bank/action dispatch binding,
+not another hand-written chooser. The terminal finish adapter separately matches
+full exact references:online unreachable through6003; offline first reaches the
+actual generator-price threshold at5001. Their full states/stages/events/roles
+match; score/reached/starved status agrees with final state. Two fixed modes and
+controlled6003ms fixtures are not natural sessions, live24h or general policies.
+
+Scoped typed cache keys bind opaque original context plus existing full state
+digest/revision/time/remaining decisions. Real independent constructors produce
+equal heads but distinct identities. Same-origin clones hit; independent origins
+execute cold. Remaining-allowance differences, wrong revision/time and mutated
+heads cannot alias. Actual cache-hit results keep the INPUT head/time and empty
+purchases:they supply only milestone/starvation, never a fabricated terminal run.
+Private bank roles are retained original-interval observations, not new committed
+activations to add repeatedly. Full consumer role/report semantics remain open.
+
+Work for two cold origins/one score-only hit in each case:
+ranked online2630/offline2632 transitions,6 cache entries/6 executed steps each;
+terminal online1306/offline1308,2 entries/2 steps each. Same-origin hits add no
+projections/actions, NOT no encoding/lookup work. Constructor/model/codec/clone/
+diagnostic snapshots and independent references are additional visible classes,
+not a speed claim or accepted R11 budget. Keep full workloads and beam widths.
+
+Initial generator refused ambiguous anchors BEFORE tests; constrain just the two
+completion-loop substitutions to that exact function and retain byte-exact reverse
+verification. Focused20256 PASS13.252s; final focused75719 PASS13.462s. Those
+selectors have no harness-package tests (actual harness methods execute through
+production_test); final retained selector65395 DOES run the legacy harness tests:
+native production51.188s/harness0.361s, exit0. Overlay vet BOTH packages PASS.
+
+Fault50562 strips context ONLY from actual cache reads/writes in an ignored copy,
+leaving key validation/references unchanged. All four new mode/path cases FAIL
+with `distinct origin reused another origin score`; production7.375s, Make exit2.
+This discriminates actual reuse, not just an internal key-shape assertion. Normal
+source never mutated. Fault SHA256c05f7abdd7dcddefdea3cd6ea5ea4b879552490b8cd53a8b9d7abd5e4c190d13.
+Recreate by inserting `key.origin = nil` immediately before both
+`value, ok := scope.completionCache[key]` and `scope.completionCache[key] = value`
+in an ignored bridge copy, selecting it in a copied overlay; run
+`make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../.cache/owned-completion-context-fault.json -run TestOwnedActualCompletion -v'`.
+
+Frozen Linux/AMD64 declared-compose session44541 PASS exit0:
+production258.137s/harness0.743s, same populations/work counts. Native65395,
+Linux44541 and fault50562 are terminal; no source edit during these runs.
+Reproduce normal generation with
+`node planning/clout-v1-and-pr-interns/probes/prepare-owned-candidate-observation.mjs`;
+then the retained selector (new cases are included by TestOwned):
+`make test-go GO_PACKAGES='./production ./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/owned-candidate-overlay.json -run TestWaitEndpoint\|TestOwned\|TestCloneStatePreservesSaveVersionThroughSearch\|TestBeamTerminalCompletionCacheReusesAnIdenticalSuffix\|TestProjectedMilestoneRankingMakesBankFirstClassAndPurchasesWinTies\|TestReputationReferenceLifetimeAccounting\|TestReputationReferenceFrozenInputDiagnostic -v'`;
+`make vet GO_PACKAGES='-overlay=../.cache/owned-candidate-overlay.json ./production ./harness'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/owned-candidate-overlay.json -run 'TestWaitEndpoint|TestOwned|TestCloneStatePreservesSaveVersionThroughSearch|TestBeamTerminalCompletionCacheReusesAnIdenticalSuffix|TestProjectedMilestoneRankingMakesBankFirstClassAndPurchasesWinTies|TestReputationReferenceLifetimeAccounting|TestReputationReferenceFrozenInputDiagnostic' -v ./production ./harness -count=1`.
+No full-package/hosted/full-CI/SQL/TS-owner or normal RunRelevance acceptance claim;
+hand-constructed diagnostics leave live scenario/axis guards untouched.
+
+SHA256 frozen completion bridge
+bd0c2266a01976308de213f515b77fea76ba79ed1cbd270b808ef50dc1bf814f;
+generator1f107579868099f8b7f0a8f4bd3c4a63d46cfe88f2e52fb860cbaf9362d3b78b;
+generated solverc214413bf3708456d01f6e661c4d1ce9e15740528dc5b90516da404f4e648b44;
+31-entry overlay5754b9a41c4c58451d57734be054d18546e4e5eaa5f592ead8dbd37390a2ce1d.
+H3s-bound producer/client source remains unchanged; no rerun of that packet claimed.
+
+H3aa/parent C1c/own plan reconcile this component; next actual beam/dedup/
+dominance/rollout/context reuse, full domain/masks/workloads, TS/SQL/dispatch and
+normative adoption. Ten-path5cb9b43c-exclusive range through this checkpoint is
+research/draft specification OUTSIDE corrective-code review delegation. Review by:
+Codex root (author, first filter). Recorded by:Codex root. No designated acceptance,
+archival, release, product/schema/data/CI/golden/kernel223/epoch8 change or push.
+RP-680,27 Clout AC6 failures and guard50a3a514 remain OPEN, not rerun/fixed here.
+Full nine-tier1.0 goal stays active/progress; no publication or deployment.
+
 ## 2026-10-16 — actual selected-child and clone lifetime
 
 Prior0ad3f76e is PROGRESS. Extend the MANUAL overlay to carry owned context

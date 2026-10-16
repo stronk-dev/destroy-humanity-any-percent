@@ -1818,9 +1818,44 @@ allowance; offline waits twice then makes the real5001ms purchase from the origi
 state, with one revision increment/clearing and exact logged receipt/events.
 The owning log holds24 floor comparisons and proof-fault/rebasing controls.
 
-This is still the SCOPED dispatcher, not a migrated `runRankedCompletion`, public
+H3z alone is the SCOPED dispatcher, not a migrated `runRankedCompletion`, public
 `SimulateAdvance` return shape, full beam/cache/rollout or natural return/session
 policy. Complete domain/masks/work/TS/SQL/dispatch and normative adoption remain.
+
+#### H3aa — Actual ranked completion and origin-bound score reuse (manual)
+
+The reversible overlay now drives the ACTUAL `runRankedCompletionCached` loop,
+its bank selection and terminal `finishToMilestone` through the owned component.
+The same two-item/three-window diagnostic exercises full original-interval bank
+stages and the genuine post-view purchase; it is not an alternative decision
+loop or a changed default scenario. A separate no-further-decision diagnostic
+checks both reachable and unreachable terminal waits against the exact chronological
+reference. Guard exhaustion remains distinct from a finished unreachable horizon.
+These suites are hand-constructed diagnostics, not execution through the live
+scenario factory or `RunRelevance`; no legacy/axis admission guard is removed.
+
+Within this one scoped suite/run, the completion score cache uses a typed key:
+opaque origin identity plus the existing full visible-state digest, revision,
+virtual time and remaining decisions. Same-origin clones reuse a score; two real
+independent constructors with identical heads cannot alias. Invalid coordinates
+and mutated/unbound heads refuse. Identity participates in equality only, never
+serialized addresses, ordinal ranking or path ties. Legacy callers retain their
+existing cache map and key semantics; this is not a public cache API.
+
+The current cache stores ONLY milestone time/starvation. A hit leaves the input
+head/time intact and executes no actions or projections; it does not supply a
+terminal state, events, purchases or roles. The diagnostic checks that boundary
+explicitly rather than promoting cached scores to completed runs. Removing context
+from actual cache reads/writes fires the distinct-origin execution oracle, not
+merely a key-shape assertion. Full stage/state references remain independent.
+
+This does not close actual beam/dedup/dominance/rollout integration, bootstrap/gate
+or general mask/session policy, complete work/budget feasibility, TS/SQL, live
+dispatch or normative adoption. Constructor/model/codec/diagnostic snapshot work
+is additional to counted actual projections/actions; no speed or R11 budget claim.
+Bank projections retain original-interval roles as private observations, not fresh
+committed activations to add after every view; full consumer role/report semantics
+remain an explicit migration obligation.
 
 ### H4 — Compatibility, work and evidence
 
@@ -2061,3 +2096,6 @@ numeric tolerance, authored content or narrowed1.0 scope.
   to the scoped dispatcher; supersede action-only bank refusals, preserve full
   stages/private values, and keep actual completion/beam/cache/workload migration
   and normative adoption open. No live settlement or allowance change.
+- 2026-10-16: H3aa connects actual ranked completion, terminal waits and scoped
+  origin-bound score reuse. Preserve cache-hit output limits and legacy behavior;
+  actual beam/dominance/rollout, full workloads and normative adoption remain open.

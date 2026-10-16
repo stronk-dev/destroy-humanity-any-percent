@@ -60,6 +60,26 @@ func (branch *ManualOwnedBranchResearch) Time() time.Time { return branch.State(
 func (branch *ManualOwnedBranchResearch) originTime() time.Time {
 	return restoreActionStateResearch(branch.t, branch.owner.context.calculation.bundle, branch.owner.context.calculation.origin).EvaluatedThrough
 }
+
+// Separate real constructors, not a forged identity label or a bank-view rebase.
+func (branch *ManualOwnedBranchResearch) IndependentBeginResearch() (*ManualOwnedBranchResearch, error) {
+	if branch.view != nil {
+		return nil, fmt.Errorf("independent control requires an action origin")
+	}
+	ctx := branch.owner.context.calculation
+	projection, err := newEndpointOwnerResearch(branch.t, ctx.bundle, branch.State(), ctx.revision, ctx.mode, ctx.mask, ctx.external, ctx.weight, ctx.batch)
+	if err != nil {
+		return nil, err
+	}
+	owner, err := newEndpointActionOwnerResearch(projection, branch.owner.context.carry, branch.owner.context.wireVersion)
+	if err != nil {
+		return nil, err
+	}
+	family := &manualChoiceFamilyResearch{branches: map[any]*ManualOwnedBranchResearch{}}
+	next := &ManualOwnedBranchResearch{t: branch.t, owner: owner, family: family}
+	family.branches[next.Identity()] = next
+	return next, nil
+}
 func (branch *ManualOwnedBranchResearch) Case() ManualOwnedCaseResearch {
 	ctx := branch.owner.context.calculation
 	gate, ok := ctx.bundle.Routes.Gate("gate.t2_to_t3")

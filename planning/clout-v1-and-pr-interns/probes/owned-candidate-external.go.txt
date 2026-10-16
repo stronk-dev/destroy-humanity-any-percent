@@ -66,6 +66,44 @@ func TestOwnedBankViewsResearch(t *testing.T) {
 	})
 }
 
+func TestOwnedActualCompletionResearch(t *testing.T) {
+	production.RunManualBankViewsResearch(t, func(branch *production.ManualOwnedBranchResearch) ([]production.ManualOwnedChoiceStepResearch, error) {
+		input := branch.Case()
+		alternate, err := branch.IndependentBeginResearch()
+		if err != nil {
+			return nil, err
+		}
+		steps, err := harness.ManualRunOwnedCompletionResearch(input.Catalog, input.Routes, input.Hash,
+			harness.RelevanceMilestone{ID: "milestone.gate", Kind: "resource_at_least", ResourceID: "company.cash", Amount: input.Target},
+			branch.State(), choiceBindingResearch(branch), choiceBindingResearch(alternate), false, 2*((3+1)*2*(2*(2001+1)+2)+3), func(work harness.ManualCompletionWorkResearch) {
+				t.Logf("actual ranked completion work%+v; two cold origins, one score-only hit; codec/clone/model preparation separate", work)
+			})
+		if err != nil {
+			return nil, err
+		}
+		return convertChoiceStepsResearch(steps), nil
+	})
+}
+
+func TestOwnedActualCompletionTailResearch(t *testing.T) {
+	production.RunManualCompletionTailResearch(t, func(branch *production.ManualOwnedBranchResearch, target string) ([]production.ManualOwnedChoiceStepResearch, error) {
+		input := branch.Case()
+		alternate, err := branch.IndependentBeginResearch()
+		if err != nil {
+			return nil, err
+		}
+		steps, err := harness.ManualRunOwnedCompletionResearch(input.Catalog, input.Routes, input.Hash,
+			harness.RelevanceMilestone{ID: "milestone.cash", Kind: "resource_at_least", ResourceID: "company.cash", Amount: target},
+			branch.State(), choiceBindingResearch(branch), choiceBindingResearch(alternate), true, 2*(2*(6003+1)+2), func(work harness.ManualCompletionWorkResearch) {
+				t.Logf("actual finish work%+v; two cold origins, one score-only hit; codec/clone/model preparation separate", work)
+			})
+		if err != nil {
+			return nil, err
+		}
+		return convertChoiceStepsResearch(steps), nil
+	})
+}
+
 func runOwnedChoiceResearch(branch *production.ManualOwnedBranchResearch, fault string, count int) ([]production.ManualOwnedChoiceStepResearch, error) {
 	input := branch.Case()
 	state, binding := branch.State(), choiceBindingResearch(branch)
@@ -91,6 +129,10 @@ func runOwnedChoiceResearch(branch *production.ManualOwnedBranchResearch, fault 
 	if err != nil {
 		return nil, err
 	}
+	return convertChoiceStepsResearch(steps), nil
+}
+
+func convertChoiceStepsResearch(steps []harness.ManualChoiceStepResearch) []production.ManualOwnedChoiceStepResearch {
 	result := []production.ManualOwnedChoiceStepResearch{}
 	for _, step := range steps {
 		var bank *production.ManualOwnedBankResearch
@@ -103,5 +145,5 @@ func runOwnedChoiceResearch(branch *production.ManualOwnedBranchResearch, fault 
 		result = append(result, production.ManualOwnedChoiceStepResearch{ID: step.ID, At: harness.Epoch.Add(time.Duration(step.AtMS) * time.Millisecond), Revision: step.Revision, State: step.State,
 			ParentIdentity: step.ParentIdentity, ChildIdentity: step.ChildIdentity, Request: step.Request, Decision: step.Decision, Bank: bank})
 	}
-	return result, nil
+	return result
 }

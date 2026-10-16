@@ -156,7 +156,16 @@ two views preserve original allowance/batch/revision and exact logged output;
 the former unsupported-bank controls now succeed as views. Not a migrated full
 completion/beam/cache/rollout, policy or natural return/session workflow.
 
-Next bind actual ranked completion, beam/cache/dominance/rollout/context
+H3aa now connects the actual ranked-completion loop, terminal waits and scoped
+origin-bound score cache. The two-item/three-window diagnostic retains complete
+bank/action results; terminal reference cases distinguish reached/unreachable
+from guard exhaustion. Same-origin clones hit only the existing score; genuine
+independent origins cannot alias despite equal heads. A score hit leaves the
+input state/time intact, not a fabricated terminal run. Not general policy or beam.
+The hand-constructed diagnostic suite does not establish live scenario admission
+or RunRelevance compatibility; existing guards stay unchanged.
+
+Next bind actual beam/dedup/dominance/rollout/context
 reuse, preserving complete results, error policy and scores. Measure
 complete candidate/consumer work and error/scoring compatibility;
 finish general scheduling, all mask families, actual TS owner/query and full

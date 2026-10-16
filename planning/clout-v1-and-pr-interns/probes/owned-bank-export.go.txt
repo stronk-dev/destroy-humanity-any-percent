@@ -122,3 +122,63 @@ func RunManualBankViewsResearch(t *testing.T, run func(*ManualOwnedBranchResearc
 		t.Fatal("incomplete retained-bank population", views, purchases)
 	}
 }
+
+func RunManualCompletionTailResearch(t *testing.T, run func(*ManualOwnedBranchResearch, string) ([]ManualOwnedChoiceStepResearch, error)) {
+	t.Helper()
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		t.Run(string(mode), func(t *testing.T) {
+			fixture := loadEndpointFixtureResearch(t, "combined", mode)
+			setCash(t, fixture.state, "0")
+			projection, err := newEndpointOwnerResearch(t, fixture.bundle, fixture.state, fixture.revision, mode, AblationMask{}, fixture.external, fixture.weight, fixture.batch)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var resolved replayAccrualResolved
+			if err := decodeReplayStrict(fixture.wire.Resolved, &resolved); err != nil || resolved.FounderCarry == nil {
+				t.Fatal(err)
+			}
+			owner, err := newEndpointActionOwnerResearch(projection, *resolved.FounderCarry, fixture.wire.Version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			family := &manualChoiceFamilyResearch{branches: map[any]*ManualOwnedBranchResearch{}}
+			root := &ManualOwnedBranchResearch{t: t, owner: owner, family: family}
+			family.branches[root.Identity()] = root
+			price, err := fixture.bundle.Economy.BulkCost("generator.beige_tower", fixture.state.GeneratorCounts["generator.beige_tower"], 1)
+			if err != nil {
+				t.Fatal(err)
+			}
+			query, err := projection.fork().queryReference(6003, price, 6004)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if mode == ModeOnline && query.at != -1 || mode == ModeOffline && query.at != 5001 {
+				t.Fatal("tail reference fixture changed", query.at)
+			}
+			at := query.at
+			if at < 0 {
+				at = 6003
+			}
+			ref, err := referenceEndpointResearch(t, fixture, at, mode, AblationMask{})
+			if err != nil {
+				t.Fatal(err)
+			}
+			steps, err := run(root, price.String())
+			if err != nil || len(steps) != 1 {
+				t.Fatal("actual finish path incomplete", len(steps), err)
+			}
+			step := steps[0]
+			if step.ID != "~bank" || step.Bank == nil || step.At.Sub(root.Time()).Milliseconds() != at || step.Revision != 1 || step.ParentIdentity != root.Identity() || step.ChildIdentity != root.Identity() || family.actions != 0 || family.banks != 1 {
+				t.Fatal("tail became an action/new origin")
+			}
+			stages := []endpointStageResearch{}
+			for _, stage := range step.Bank.Stages {
+				stages = append(stages, endpointStageResearch{stage.Kind, stage.Evaluation})
+			}
+			if !bytes.Equal(mustEncodeState(t, step.State), mustEncodeState(t, ref.state)) || !reflect.DeepEqual(stages, ref.stages) || !reflect.DeepEqual(step.Bank.Events, ref.events) || !slices.Equal(step.Bank.Roles, ref.roles) {
+				t.Fatal("tail differs from complete primitive reference")
+			}
+			t.Logf("actual completion tail mode%s at%d reached%t full views/private stages match, query projections%d", mode, at, query.at >= 0, family.points)
+		})
+	}
+}

@@ -320,8 +320,9 @@ Child H3x connects that component and H3u's query to the actual single-candidate
 ranker through a reversible manual overlay. H3y separately carries its selected
 child through actual choice/clone in bounded two-action runs. H3z extends the
 scoped dispatcher to retained bank views and origin-relative query floors without
-closing their origin. Actual completion/beam/cache/rollout consumers and full
-lifecycle/work/dispatch/adoption remain open.
+closing their origin. H3aa connects the actual ranked-completion loop, terminal
+waits and scoped context-bound score reuse. Actual beam/dominance/rollout consumers
+and full lifecycle/work/dispatch/adoption remain open.
 
 The actual closed replay chain can return Guild/Commons events without a player
 action. Today's `SimulateAdvance` refuses such events. The bounded online/offline
@@ -1151,3 +1152,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-16: retain H3z's manual retained-view/query-floor evidence, including
   full bank stages and original-state action after repeated views. No live
   settlement, allowance, public wait API or full consumer/adoption claim.
+- 2026-10-16: retain H3aa's actual ranked-completion/terminal-wait and scoped
+  score-cache evidence; cache hits do not supply completed states/actions/events.
+  Actual beam/dominance/rollout and full lifecycle/adoption remain open.
