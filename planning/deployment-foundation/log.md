@@ -7585,3 +7585,14 @@ R-006 proof follows. No product code, CI lane, adoption, archival, push or deplo
 Review by: Codex root (research author/first filter). Recorded by: Codex root. Complete range
 bda1b086-exclusive through this containing research commit still needs research/normative
 review under existing authority; corrective-code delegation does not approve that scope.
+
+## 2026-10-16 — RP-169 browser-selection correction independently approved
+
+Review by: /root/cosmetic_keyboard_network_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root. APPROVED complete
+8b4db5a95377df5631961832a84727a070a938c3-exclusive..c3311dbd04c92b084c632182d46691b987712fe2-inclusive;
+all10 paths inspected. Exact exclusion removal reproduces the CSS fixture's duplicate import
+failure in all three Linux ARM64 engines; fixed current105 browser checks exclude only the
+Node file while its actual4 Node fixtures pass. Full commands/provenance/limits are in the
+Cosmetic log's same-date keyboard/request-observer verdict. No CSS provenance behavior,
+DeploymentAC8/rights/clean-host or whole CI/release gate is approved by this test-config repair.

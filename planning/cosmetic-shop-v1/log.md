@@ -2566,3 +2566,31 @@ removed, no containers/main-source mutation or reviewer commit. Existing builder
 No original C7/C8/full feature/normative/archival/release approval; no browser/DB/hosted/full-CI
 claim. Parent compacts duplicated historical plan checkpoints into current status; this
 append-only log and all acceptance criteria remain intact. No software rerun for record edits.
+
+## 2026-10-16 — Keyboard, request-observer and browser-selection repairs approved
+
+Review by: /root/cosmetic_keyboard_network_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings. Complete seven-commit range
+8b4db5a95377df5631961832a84727a070a938c3-exclusive..c3311dbd04c92b084c632182d46691b987712fe2-inclusive,
+all10 test/config/doc/record paths inspected: RP-167 keyboard, RP-168 page-observer correction,
+RP-170 observed-completion repair and RP-169 Node-only CSS fixture browser exclusion.
+This excludes initial AC14 and later composed/negative-build construction; no whole C6/C7 gate.
+
+At8d9108a4, declared cold Linux ARM64 Chromium/Firefox/WebKit, ignored read-only source binds:
+exact endpoint config/tests99793 PASS21/21; missing Buy handler75438 fails6 Enter/Space cases,
+six controls pass; disconnected request listener43855 fails3 four-transport assertions at the
+original5-second bound with expected nonce URLs/observed=[], six host controls pass.
+Removing exact CSS exclusion46456 reproduces3 duplicate __vite__injectQuery import failures,
+nine host controls pass. Unmodified current config with explicit CSS fixture selector4083
+passes105/105 in six browser files; CSS fixture is not collected there. Actual Node CSS
+fixture34387 passes4/4, including nested Vite builds. Typecheck51864 PASS0 diagnostics.
+
+Commands: root declared Compose `docker compose -f compose.browser-test.yml run --rm browser test-browser-focused 'BROWSER_TEST_FLAGS=test/css-dependency-graph.test.mjs test/cosmetic-shelf-browser.test.ts test/cosmetic-host-browser.test.ts'`;
+`client/node_modules/.bin/vitest run --root client test/css-dependency-graph.test.mjs`;
+`make typecheck`. Historical/negative modes use ignored read-only Compose overlays.
+One initial Docker-socket denial executes0; excluded. The original100ms fixture's recorded
+full-suite red stands; isolated old success does not establish reliability. No deadline or
+assertion relaxed, no tracked mutation. All sessions terminal/slot released, only preserved
+builders remain. No blocked-before-network off-origin proof, real WS/server journey, full
+N5/AC11/AC13, AT/task, DeploymentAC8, hosted/full-CI, archival or release approval.

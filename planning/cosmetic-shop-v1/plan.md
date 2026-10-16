@@ -15,8 +15,12 @@ and RP-453–RP-458. Exact ranges, old failures, corrected results and limits li
 Latest approvals include the real-Postgres both-Exit carry, actual second-wearer transition,
 full 200 × 288 isolation/receipt/bonus-consumer checks and actual-source package-guard negatives.
 
-Next: finish remaining corrective/evidence reviews, including keyboard/network/composed
-driver scopes, without repeating approved ranges. RP-377's overlay-settlement driver and
+Keyboard RP-167, served-path observer RP-168, browser collection RP-169 and request-completion
+RP-170 corrections also have independent approval over complete `8b4db5a9..c3311dbd`.
+The later composed/negative-build construction and complete N5/AC11/AC13 gates are separate.
+
+Next: finish remaining corrective/evidence reviews and composed driver scopes without
+repeating approved ranges. RP-377's overlay-settlement driver and
 RP-385's pointer/refresh correction remain locally verified, not independently approved;
 their original timeout causes are not all established. RP-364 and Garage's RP-378 remain
 separate findings, not erased by later green journeys.
@@ -109,18 +113,19 @@ migration take the next free numbers at landing.
 - [x] AC14 composed real-server witness (Buy → reload under the N5 trap, with a severed-producer
   failing case). A test-only epoch pins `cosmetics`; no production mint. The test and checkbox
   land in the same range; Claude's designated review remains an independent archival gate.
-- [ ] C6/AC11 keyboard acceptance supplement (RP-167): real Enter and Space Buy activation is
+- [x] C6/AC11 keyboard acceptance supplement (RP-167): real Enter and Space Buy activation is
   mutation-proven; the cold Linux three-engine lane passes, while Firefox cannot start on this
-  macOS 27 host. The test-only Codex range still needs Claude's designated review. Do not cite
+  macOS 27 host. The complete corrective range is independently approved. Do not cite
   C6's old `.click()` test as keyboard proof or claim the wider task/AT gate complete.
 - [ ] C7/AC13 N5 network witness (RP-168): a browser-level observer now captures four HTTP
   transport/resource classes on a disallowed served path in the cold Linux three-engine lane,
-  with RP-170's full-suite race corrected and a fired listener-severing control. The composed
-  lane now includes two actual fixture builds whose native Buy callback attempts off-origin
+  with RP-170's full-suite race corrected and a fired listener-severing control. The
+  observer correction now has independent approval, not acceptance of the later construction.
+  The composed lane now includes two actual fixture builds whose native Buy callback attempts off-origin
   checkout fetch or PaymentRequest; exact primary-trap rejections are locally witnessed before
   egress. Green/unrelated failures, missing injection, secondary route aborts and incomplete
   cleanup cannot satisfy the negative verifier. Final execution and limits live in the latest
-  log; the real-server AC14 flow and this supplement await Claude's cross-party review of the
+  log; the real-server AC14 flow and later fixture-build supplement await Claude's cross-party review of the
   relevant correction/evidence ranges. No whole-feature acceptance is inferred.
 - [x] Controlled real-server G10 pet-overlay witness: the existing Garage mount now has actual
   DOM adoption/equip, pet-panel/reload, browser reduced-motion preference and unequip proof.
