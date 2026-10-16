@@ -1455,6 +1455,61 @@ Go/TS parity, independent normative review and owner adoption mandatory. Existin
 runtime/codec/kernel/data/CI and accepted contracts stay unchanged. RP-680 and27
 Clout AC6 failures remain OPEN.
 
+#### H3r — Primitive success and post-hook codec completion are distinct (RP-691)
+
+The [manual codec-boundary reference](../planning/clout-v1-and-pr-interns/probes/wait-post-hook-codec.go.txt)
+executes the complete real fixed hook chain and, separately, actual Company
+EncodeState/RestoreState. It does not change SimulateAdvance's error contract or
+declare that every observation must be a persistable settlement.
+
+Codec/foundation admission of the origin is not alone a post-hook shape proof:
+
+| Seeded admitted source | Actual primitive | Actual post-hook codec |
+|---|---|---|
+| Commons sample in a future hour | Succeeds and emits private Guild/Commons events. | Earlier appended hour breaks ordered samples. |
+| Current Commons hour already fully covered despite a cursor500ms into it | Succeeds and emits the same event kinds. | Appended coverage exceeds the existing one-hour bound. |
+| A500-year run with collapsed offline duration equal to actual saturated time.Sub | Succeeds, including RecordOfflineSpan after5000ms. | At5001ms, offline total exceeds the still-saturated run-duration check. |
+
+These are input-domain/stage diagnostics, not natural player provenance, a live
+SQL failure or evidence that ordinary gameplay lost saves. The time diagnostic
+uses2526/2026, so both timestamps actually pass the nonnegative exact-ms codec.
+An initial1526 run start did not pass admission and is excluded, not counted.
+
+The previous primitive-only query remains correct for its named primitive. It
+cannot be reused as proof of the distinct completed-codec boundary: the first
+two cases produce eight different query outcomes; the span case lets its existing
+successful guard prune two first codec errors as unreachable. The reference now
+keeps the codec call in that diagnostic leaf and composes an additional sufficient
+span obligation. If an interval crosses the catchup threshold, require nonzero
+admitted run start and `original_run_ms + hi <= floor(MaxInt64_ns / 1ms)` before
+using the run-duration argument. Otherwise refine to actual codec leaves. A
+saturated run with EMPTY history remains valid; an unsaturated full-history
+neighbor also remains valid. Inconclusive is not an input rejection or new date cap.
+
+The source write-set audit names15 fields written by Evaluate plus this concrete
+chain: ledger, provision/remainder maps, cursor, credit/burst, lifetime/offline
+history, stock counters/remainder, Guild carry and Commons samples/solidarity.
+Every other State field, including purchased membership, source version, axis and
+scheduler state, is checked unchanged on the selected references. Full state,
+evaluation, roles and private events also match a separate actual SimulateAdvance
+tap even where the resulting state cannot be encoded. Allowing a field to change
+is not a proof that its changed value passes the codec.
+
+The bounded population is72 selected endpoint pairs,24 actual encoder refusals
+and30 paired primitive/completed-codec queries. It is not an exhaustive time census,
+whole-input-domain proof or full workload measurement. Extra encoding/restoration
+and guard work is real work, not a proposed free preparation step or budget change.
+
+The owning caller must specify its actual completion stage. Preserve primitive
+success where that is its contract; preserve an actual downstream codec error
+where that caller executes the codec. Do not silently add errors to all reads,
+discard admitted states, or infer live settlement/rollback behavior from this
+manual adapter. Next bind the real logged catchup/ordinary stages and endpoint
+sampling against ApplyLogged, including its refusal path. Global input/lifecycle,
+caller/workload/compatibility and independent normative adoption remain open;
+RP-680 and27 Clout AC6 failures remain unrepaired. Kernel223/epoch8 and active
+math, saves, gameplay, CI and accepted contracts are unchanged.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -1658,3 +1713,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   the real stock-domain/leaf recipe; reproduce missing binding first, then retain
   independent full-state/role and mutable-input isolation checks. Existing legacy
   guards remain; logged/other-hook/global/caller/workload and adoption gates stay open.
+- 2026-10-16: H3r/RP-691 distinguishes actual primitive success from post-hook
+  codec completion on admitted diagnostic inputs. Retain full-state/write-set
+  observations, actual codec errors, valid neighbors and a conditional span
+  obligation; no generic primitive refusal, live fix or normative adoption.

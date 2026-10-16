@@ -100,6 +100,16 @@ this conformance repair does not adopt the draft calculation API or close AC6.
 Fresh independent corrective review190a4790 approves923c694a..7ec0873c;
 native/Linux affected checks pass. RP-690 is closed, not the search/accounting work.
 
+H3r/RP-691 now separates primitive success from actual post-hook codec completion.
+Seeded admitted Commons sample and saturated-run histories expose real encoder
+refusals; the diagnostic query preserves them without changing the primitive or
+rejecting valid neighboring histories. The owning log/manual reference hold72
+selected endpoint pairs and30 paired queries, not an exhaustive input-domain proof.
+Next build a bounded actual logged-command compatibility reference: catchup before
+endpoint sampling, ordinary zero-elapsed stage retained, complete state/evaluations/
+events and refusal compared to ApplyLogged. Do not promote this codec diagnostic
+into a universal observation or persistence policy.
+
 Next complete remaining input/mask/map identity and post-hook state obligations,
 then exact logged stage/clock operation and real settlement; complete global/caller/
 timestamp/encoding/state and lifecycle/compatibility obligations,

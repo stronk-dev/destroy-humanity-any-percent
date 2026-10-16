@@ -1,5 +1,6 @@
 {
   "Replace": {
+    "production/manual_wait_post_hook_codec_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-post-hook-codec.go.txt",
     "production/manual_wait_state_time_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-state-time.go.txt",
     "production/manual_wait_closed_absorption_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-closed-absorption.go.txt",
     "production/manual_wait_closed_domain_test.go": "../planning/clout-v1-and-pr-interns/probes/wait-closed-domain.go.txt",

@@ -7232,3 +7232,82 @@ historical version guard and research/normative adoption remain open. Full1.0
 goal remains active; no push, release, archival or deployment.
 Review by: Codex root (execution recorder/closeout, not designated reviewer).
 Recorded by: Codex root.
+
+## 2026-10-16 — Post-hook codec boundary, prospective bounded check
+
+After independently closed RP-690, test whether the proposed fixed closed wait's
+primitive-success result also proves actual Company codec completion. Population:
+Company19/real loaded bundle, online/offline, one valid covered-hour neighbor and
+two separately codec-admitted sample diagnostics (future hour; current hour already
+fully covered). Actual source-owner/foundation admission must run. Inspect exactly
+0/1/499/500/501/1000ms, actual complete hook plus an independent SimulateAdvance
+event tap, and real EncodeState/RestoreState. Compare primitive-only and completed-
+codec diagnostic queries for available0, first1ms, unreachable and empty-future0.
+Expected discrimination:36 actual points,20 post-hook codec refusals,24 queries,
+eight stage differences; fail on any changed population. This is a seeded source-
+admission/stage diagnostic, not natural acquisition, lost player saves, a live
+ApplyLogged/SQL defect or permission to change primitive error policy. Manual
+source/overlay only; no live implementation or scenario/budget relaxation.
+
+Additional prospective source-derived control: retain the six sample profiles
+unchanged, then use two codec/foundation-admitted Company19 runs begun500 years
+earlier, with collapsed offline time equal to actual saturated time.Sub duration.
+Inspect0/1/4999/5000/5001/6001ms and an unreachable query. Prediction:12 primitive
+successes/four post-hook encoder refusals after the real5000ms catchup cutoff;
+the existing primitive guard may wrongly prune those completed-codec errors.
+Do not manufacture a primitive refusal, change the codec or weaken valid neighbors.
+
+Before final measurement, expand the span controls with the SAME saturated run
+but empty offline history, plus an unsaturated one-day run with fully accounted
+history. Both must remain successful/roundtrippable. The two bad-history cases
+still require first codec error5001ms; a sufficient guard's inconclusiveness must
+not become a blanket refusal of old runs. Final span population:36 points/four
+codec failures/six unreachable queries. Dates are seeded2526/2026 to satisfy the
+codec's nonnegative exact millisecond timestamp admission, not player chronology.
+
+### H3r/RP-691 result — actual completion stage matters
+
+Confirmed36 selected sample endpoints/20 real encoder refusals and24 paired
+primitive/completed-codec queries (eight outcome differences). Both source-owner
+and independent actual SimulateAdvance tap execute; whole State, evaluation,
+roles and private events agree even at the unencodable results. The concrete
+source write-set has15 fields; every other State field is checked unchanged.
+This does NOT prove the permitted writes themselves valid over all inputs.
+
+The additional span population confirms36 selected endpoints/four actual encoder
+refusals and six paired unreachable queries. The original primitive-only range
+guard prunes the two first downstream codec failures:48324 FAIL0.343s reports
+last=-1/error=nil rather than actual5001ms. Only the distinct completed-codec
+diagnostic now composes the unsaturated-run-duration obligation. Inconclusive
+ranges execute actual codec leaves; saturated EMPTY history remains valid, as
+does unsaturated full history. Existing primitive queries retain their actual
+success/unreachable results. No blanket old-run/date refusal is introduced.
+
+Final frozen manual source:5622e7ef6407ba54e8ad0dd779222354d70c0c1a8a75a635c7a94150747d52ef;
+eighteen-file overlay:133deaf7a5ea6931b3d69d25f4e5106eb53244611b1ce2d6f7c82518e2fd60cf.
+Native61465 PASS3.505s (both new functions), then production vet PASS. Declared
+Linux/AMD64 Go1.26 session4648 PASS13.749s with the SAME frozen source/populations.
+No performance comparison follows. Root reproduction:
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWaitPostHook -v'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWaitPostHook -v ./production -count=1`.
+This selector does not need the first-hour packet or rerun unrelated manual censuses.
+
+Invalid setup disclosed: initial unreachable quote1e100 exceeded the manual
+rational instrument's admitted range (73801 failed after36 points/12 completed
+queries). Use1e6, retaining all actual encoder/failure assertions. Initial span
+dates2026/1526 failed SOURCE admission (81210, zero measured points);2526/2026
+admits the intended saturation diagnostic. Neither setup refusal is counted as a
+post-hook finding. Intermediate partial runs are superseded by the frozen final
+native/Linux executions above; no missing tail or skip is claimed complete.
+
+H3r/parent C1c and RP-691/own plan preserve the stage distinction and next action:
+build one actual logged-command catchup/endpoint-context/ordinary compatibility
+reference, retaining zero-elapsed stages and exact full state/events/refusals.
+General admission/lifecycle/compatibility, Go/TS callers, actual SQL settlement,
+workload measurement and research/normative review/adoption remain mandatory.
+No normal product/test/CI/data/schema/kernel/epoch changes;223/epoch8 remains.
+RP-680 and27 AC6 failures stay OPEN. Seven-path rangeb34287af-exclusive through
+this checkpoint is research/specification work OUTSIDE corrective-code review
+delegation; no designated approval, implementation acceptance, archival or release.
+Review by: Codex root (research author/first filter). Recorded by: Codex root.
+Full nine-tier1.0 goal active/progress. Nothing pushed, published or deployed.

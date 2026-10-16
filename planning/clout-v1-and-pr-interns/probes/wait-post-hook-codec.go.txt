@@ -1,0 +1,272 @@
+package production
+
+import (
+	"bytes"
+	"errors"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/commons"
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/guild"
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/save"
+)
+
+// Source-audited write set for Evaluate plus the concrete closed chain only.
+// In particular, masks must NOT write purchased membership/ownership. This
+// observation does not pretend allowed writes are codec-safe: check them below.
+func assertWaitUnchangedFieldsResearch(t *testing.T, before, after *save.State) {
+	t.Helper()
+	writes := map[string]bool{
+		"Ledger": true, "GeneratorProvisioned": true, "ProvisionRemaindersPPM": true,
+		"StockRateRemainderPPM": true, "EvaluatedThrough": true, "ComputeCreditMS": true,
+		"ComputeBurstRemainingMS": true, "CompactSolidarityPPM": true, "CompactSamples": true,
+		"LifetimeValue": true, "OfflineSpans": true, "CollapsedOfflineMS": true,
+		"StockUnits": true, "StockProgressMS": true, "GuildTitheCarryPPM": true,
+	}
+	a, b := reflect.ValueOf(before).Elem(), reflect.ValueOf(after).Elem()
+	for i := 0; i < a.NumField(); i++ {
+		name := a.Type().Field(i).Name
+		if !writes[name] && !reflect.DeepEqual(a.Field(i).Interface(), b.Field(i).Interface()) {
+			t.Fatalf("concrete wait unexpectedly writes %s", name)
+		}
+	}
+}
+
+// Additional sufficient obligation ONLY for the diagnostic completed-codec
+// boundary below. No new primitive clock restriction or general codec proof.
+// A valid origin's offline total is <= its run duration. A new fixed-origin
+// span adds at most hi; that remains <= the advanced run duration only while
+// time.Sub is unsaturated. Otherwise actual chronological codec leaves decide.
+type postHookCodecDomainResearch struct{ *closedWaitDomainResearch }
+
+func (domain postHookCodecDomainResearch) certify(lo, hi int64) (bool, error) {
+	ok, err := domain.closedWaitDomainResearch.certify(lo, hi)
+	if err != nil || !ok || hi <= domain.owner.bundle.Prestige.CatchupCeilingMS {
+		return ok, err
+	}
+	state := domain.initial
+	limitMS := time.Duration(1<<63 - 1).Milliseconds()
+	runMS := state.EvaluatedThrough.Sub(state.RunStartedAt).Milliseconds()
+	return !state.RunStartedAt.IsZero() && runMS >= 0 && runMS <= limitMS-hi, nil
+}
+
+// Manual reference for a DISTINCT boundary: complete the real closed hook,
+// then exercise the real Company codec. This is not permission to add codec
+// errors to the existing SimulateAdvance contract or to reject admitted inputs.
+func queryPostHookCodecResearch(t *testing.T, owner *closedWaitReferenceResearch, horizon int64, price decimal.Decimal) (int64, int64, error) {
+	t.Helper()
+	initial, err := save.RestoreState(owner.origin, 19, owner.bundle.Economy, economy.ScopeCompany, time.Time{})
+	owner.restores++
+	if err != nil {
+		t.Fatal(err)
+	}
+	last := int64(-1)
+	guard := postHookCodecDomainResearch{&closedWaitDomainResearch{owner: owner, initial: initial}}
+	found, _, err := queryWaitContextResearch(initial, owner.bundle.Economy, owner.mode, horizon, owner.mask,
+		SimulationDependencies{Routes: owner.bundle.Routes}, price, 20_000, func(at int64) (decimal.Decimal, error) {
+			last = at
+			point := owner.project(at)
+			if point.err != nil {
+				return decimal.NaN, point.err
+			}
+			encoded, err := save.EncodeState(point.state)
+			if err != nil {
+				return decimal.NaN, err
+			}
+			owner.restores++
+			if _, err := save.RestoreState(encoded, save.VersionForState(point.state), owner.bundle.Economy, economy.ScopeCompany, time.Time{}); err != nil {
+				return decimal.NaN, err
+			}
+			balance, exists := point.state.Ledger.Balance("company.cash")
+			if !exists {
+				return decimal.NaN, ErrInvalidEngineState
+			}
+			return balance, nil
+		}, waitSourceContextResearch{modern: true, external: owner.external, preHookEncoding: true}, guard)
+	return found, last, err
+}
+
+func TestWaitPostHookCodecResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	commonsCatalog, err := commons.LoadCatalog(bundle.Artifacts["commons"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	start := time.Date(2026, 10, 16, 12, 0, 0, 500_000_000, time.UTC)
+	const horizon int64 = 1000
+	points, codecFailures, queries, stageDifferences := 0, 0, 0, 0
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		for _, sample := range []string{"covered_neighbor", "future_hour", "overcovered_hour"} {
+			t.Run(string(mode)+"/"+sample, func(t *testing.T) {
+				initial := axisTimingState(t, bundle, start)
+				initial.FactionID, initial.IncorporatedAt = "bootstrapper", start
+				initial.StockUnits = bundle.Faction.StockCap
+				initial.CompactMember, initial.CompactTithePPM = true, commonsCatalog.DefaultTithePPM
+				hour, covered := start.Truncate(time.Hour), int64(500)
+				if sample == "future_hour" {
+					hour = hour.Add(time.Hour)
+				}
+				if sample == "overcovered_hour" {
+					covered = int64(time.Hour / time.Millisecond)
+				}
+				initial.CompactSamples = []save.CompactSample{{HourStart: hour, CompliancePPM: 500_000, CoveredMS: covered}}
+				weight := int64(500_000)
+				external := []multiplier.Contribution{{SourceID: guild.StockConsumptionSourceID, Slot: multiplier.SlotFaction, Target: "all", Factor: decimal.One}}
+				revision := save.Revision{Number: 1, ConstantsHash: bundle.ConstantsHash, StreamID: "01986666-1000-7000-8000-000000000001", OwnerID: "01986666-2000-7000-8000-000000000001"}
+				owner, err := newClosedWaitReferenceResearch(t, bundle, initial, mode, AblationMask{}, external, &weight, revision)
+				if err != nil {
+					t.Fatal("declared source admission failed", err)
+				}
+				origin := append([]byte(nil), owner.origin...)
+				original := activationRestore(t, bundle, origin, 19, start)
+				for _, at := range []int64{0, 1, 499, 500, 501, horizon} {
+					point := owner.project(at)
+					if point.err != nil {
+						t.Fatal("real primitive refused before the codec boundary", at, point.err)
+					}
+					// Separate actual SimulateAdvance oracle: no copied hook/math.
+					state := activationRestore(t, bundle, origin, 19, start)
+					tap := &closedWaitEventTapResearch{inner: closedReplayAccrualHook(bundle, &weight), target: state}
+					advance, err := SimulateAdvance(state, bundle.Economy, SimulationDependencies{Routes: bundle.Routes, Hook: tap}, revision, mode, start.Add(time.Duration(at)*time.Millisecond), external, AblationMask{})
+					if err != nil || at > 0 && len(tap.events) != 2 {
+						t.Fatal("actual primitive/private events changed", at, err, len(tap.events))
+					}
+					if !reflect.DeepEqual(point.state, state) || !reflect.DeepEqual(point.advance, advance) || !reflect.DeepEqual(point.events, tap.events) {
+						t.Fatal("complete primitive state/evaluation/roles/private events differ", at)
+					}
+					assertWaitUnchangedFieldsResearch(t, original, point.state)
+					encoded, codecErr := save.EncodeState(point.state)
+					_, referenceErr := save.EncodeState(state)
+					wantFailure := sample != "covered_neighbor" && at > 0
+					if (codecErr != nil) != wantFailure || (referenceErr != nil) != wantFailure {
+						t.Fatal("post-hook codec population changed", at, codecErr, referenceErr)
+					}
+					if wantFailure {
+						if !errors.Is(codecErr, save.ErrInvalidState) {
+							t.Fatal("not the real codec error", codecErr)
+						}
+						codecFailures++
+					} else if _, err := save.RestoreState(encoded, 19, bundle.Economy, economy.ScopeCompany, time.Time{}); err != nil {
+						t.Fatal("valid neighbor failed actual restore", at, err)
+					}
+					points++
+				}
+				before, _ := initial.Ledger.Balance("company.cash")
+				atOne, _ := owner.project(1).state.Ledger.Balance("company.cash")
+				if !atOne.Gt(before) {
+					t.Fatal("declared first-point affordability does not discriminate")
+				}
+				for _, row := range []struct {
+					name    string
+					horizon int64
+					price   decimal.Decimal
+				}{
+					{"already_available", horizon, before},
+					{"first_point", horizon, atOne},
+					{"unreachable", horizon, decimal.New(1, 6)},
+					{"empty_future", 0, atOne},
+				} {
+					primitive, primitiveErr := owner.query(row.horizon, row.price, 20_000)
+					found, last, codecErr := queryPostHookCodecResearch(t, owner, row.horizon, row.price)
+					wantFailure := sample != "covered_neighbor" && (row.name == "first_point" || row.name == "unreachable")
+					if primitiveErr != nil || (codecErr != nil) != wantFailure {
+						t.Fatal("stage-local query outcome changed", row.name, primitiveErr, codecErr)
+					}
+					if wantFailure {
+						if found != -1 || last != 1 || !errors.Is(codecErr, save.ErrInvalidState) {
+							t.Fatal("lost first actual completed-stage error", row.name, found, last, codecErr)
+						}
+						stageDifferences++
+					} else if found != primitive.at {
+						t.Fatal("valid/zero/empty companion changed", row.name, found, primitive.at)
+					}
+					queries++
+				}
+				if !bytes.Equal(origin, owner.origin) || !bytes.Equal(origin, mustEncodeState(t, initial)) {
+					t.Fatal("observation consumed the source")
+				}
+			})
+		}
+	}
+	if points != 36 || codecFailures != 20 || queries != 24 || stageDifferences != 8 {
+		t.Fatal("incomplete predeclared population", points, codecFailures, queries, stageDifferences)
+	}
+	t.Logf("post-hook-codec points%d actual-codec-failures%d queries%d stage-differences%d", points, codecFailures, queries, stageDifferences)
+}
+
+func TestWaitPostHookSpanCodecResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	if bundle.Prestige.CatchupCeilingMS != 5000 {
+		t.Fatal("declared real span cutoff changed")
+	}
+	start := time.Date(2526, 10, 16, 12, 0, 0, 0, time.UTC)
+	points, codecFailures := 0, 0
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		for _, history := range []string{"saturated_full", "saturated_empty", "unsaturated_full"} {
+			t.Run(string(mode)+"/"+history, func(t *testing.T) {
+				initial := axisTimingState(t, bundle, start)
+				initial.RunStartedAt = start.AddDate(-500, 0, 0)
+				if history == "unsaturated_full" {
+					initial.RunStartedAt = start.AddDate(0, 0, -1)
+				}
+				if (start.Sub(initial.RunStartedAt) == time.Duration(1<<63-1)) != (history != "unsaturated_full") {
+					t.Fatal("diagnostic did not reach real time.Sub saturation")
+				}
+				initial.CollapsedOfflineMS = start.Sub(initial.RunStartedAt).Milliseconds()
+				if history == "saturated_empty" {
+					initial.CollapsedOfflineMS = 0
+				}
+				revision := save.Revision{Number: 1, ConstantsHash: bundle.ConstantsHash}
+				owner, err := newClosedWaitReferenceResearch(t, bundle, initial, mode, AblationMask{}, nil, nil, revision)
+				if err != nil {
+					t.Fatal("saturated run was not source-admitted", err)
+				}
+				original := activationRestore(t, bundle, owner.origin, 19, start)
+				for _, at := range []int64{0, 1, 4999, 5000, 5001, 6001} {
+					point := owner.project(at)
+					if point.err != nil {
+						t.Fatal("span primitive unexpectedly refused", at, point.err)
+					}
+					state := activationRestore(t, bundle, owner.origin, 19, start)
+					tap := &closedWaitEventTapResearch{inner: closedReplayAccrualHook(bundle, nil), target: state}
+					advance, err := SimulateAdvance(state, bundle.Economy, SimulationDependencies{Routes: bundle.Routes, Hook: tap}, revision, mode, start.Add(time.Duration(at)*time.Millisecond), nil, AblationMask{})
+					if err != nil || !reflect.DeepEqual(point.state, state) || !reflect.DeepEqual(point.advance, advance) || !reflect.DeepEqual(point.events, tap.events) {
+						t.Fatal("span actual primitive state/evaluation/roles/events differ", at, err)
+					}
+					assertWaitUnchangedFieldsResearch(t, original, point.state)
+					encoded, codecErr := save.EncodeState(point.state)
+					if (codecErr != nil) != (history == "saturated_full" && at > 5000) {
+						t.Fatal("span codec threshold changed", at, codecErr)
+					}
+					if codecErr != nil {
+						codecFailures++
+					} else if _, err := save.RestoreState(encoded, 19, bundle.Economy, economy.ScopeCompany, time.Time{}); err != nil {
+						t.Fatal("successful span neighbor did not restore", at, err)
+					}
+					points++
+				}
+				primitive, err := owner.query(6001, decimal.New(1, 6), 20_000)
+				if err != nil || primitive.at != -1 {
+					t.Fatal("actual primitive unreachable companion changed", primitive.at, err)
+				}
+				found, last, codecErr := queryPostHookCodecResearch(t, owner, 6001, decimal.New(1, 6))
+				if history == "saturated_full" && (found != -1 || last != 5001 || !errors.Is(codecErr, save.ErrInvalidState)) {
+					t.Error("completed-stage query pruned first real post-hook span codec error", found, last, codecErr)
+				} else if history != "saturated_full" && (found != -1 || codecErr != nil) {
+					t.Error("sufficient guard became a blanket long-run refusal", history, found, last, codecErr)
+				}
+				if !bytes.Equal(owner.origin, mustEncodeState(t, original)) || !bytes.Equal(owner.origin, mustEncodeState(t, initial)) {
+					t.Fatal("span observation consumed admitted source")
+				}
+			})
+		}
+	}
+	if points != 36 || codecFailures != 4 {
+		t.Fatal("incomplete saturated-span population", points, codecFailures)
+	}
+	t.Logf("post-hook-span points%d actual-codec-failures%d", points, codecFailures)
+}

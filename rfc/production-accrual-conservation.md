@@ -288,6 +288,14 @@ for that view, not repeated events to add every time a search probe runs. Actual
 computation/probe counters still count every performed evaluation and refusal;
 conservation must not hide search work from budgets or reporting.
 
+Child H3r/RP-691 separately reproduces primitive-success results that fail actual
+post-hook Company encoding. Origin codec admission is therefore not a universal
+post-hook completion proof. Bind each caller's actual stage and preserve that
+stage's codec/rollback behavior; do not inject a new codec refusal into every
+primitive observation. Its manual completed-codec adapter is a compatibility
+reference, not an implemented API or adopted change to ApplyLogged. Full logged
+stage/state/error closure remains required before accepting this proposal.
+
 The existing generic `AccrualHook` interface does not establish purity or identity
 of arbitrary callbacks. Before this API is buildable, its production adapters must
 enumerate their exact hook recipes, pinned catalog dependencies and captured inputs,
@@ -1076,3 +1084,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-15: bind one-shot accounting compatibility to the same adopted numeric kernel;
   a separately accepted exact-aggregation correction owns any new numeric reference.
   Keep old evidence and current behavior unchanged; neither draft accepts the other.
+- 2026-10-16: child H3r reproduces a post-hook codec completion gap; explicitly
+  retain caller-stage validation/rollback closure instead of silently adding
+  codec failures to every observation. Manual reference only, no implementation.
