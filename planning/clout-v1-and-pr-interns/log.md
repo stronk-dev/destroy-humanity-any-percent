@@ -7178,3 +7178,41 @@ Review by: Codex root (implementer first filter). Recorded by: Codex root.
 Exact implementation range starts after923c694a; fresh independent corrective
 review remains required. RP-680,27 AC6 failures and unaccepted research contracts
 remain open; no feature archival, release or publication follows.
+
+## 2026-10-16 — RP-690 independent corrective review: APPROVED
+
+Review by: independent Codex subagent `/root/simulation_mask_corrective_review`.
+Recorded by: the same reviewing subagent. Authority: Marco's2026-10-15 corrective-
+code delegation, not cross-model review or new-feature/specification adoption.
+Exact complete reviewed range: `923c694a..7ec0873c` (nine paths).
+
+Independently inspected the full range and accepted Purchasable Content P5/C10
+and Relevance R10. The helper now restores original membership and values without
+narrowing catalog-level mask admission; actual hook effects/events/errors remain
+forwarded. Canonical docs describe that limited correction and the honest watched-
+behavior kernel bump; all three identities independently checked at0.3.223.
+
+Executed `make test-go vet GO_PACKAGES='./production ./kernel'
+GO_TEST_FLAGS='-count=1 -run TestSimulation\|TestVersionSourceOfTruth -v'`:
+PASS production0.424s/kernel0.155s, then vet PASS. This includes all ten new
+subcases, existing action/output/role tests and the simulation source-boundary
+guard. The real-hook cases actually admit the mixed-scope catalog and Company
+codec, execute online/offline success and stock-policy-error paths, compare the
+complete encoded state against the corresponding unmasked control, and restore
+the result. Unknown-mask refusal remains unchanged.
+
+Independently recreated the old helper ONLY in an ignored source copy, using
+Go `-overlay` through root Make. Its SHA256 matched
+`git show 923c694a:server/production/simulation.go` exactly:
+`bbde8606cd3cc7517c02da137af93ac0aca0650c84a4964524563ffad9fc29c2`.
+With the two new regression test names and `-count=1`, old-source execution FAILS
+0.283s: both absent-key unit cases plus all four actual wait/codec cases fail;
+the four present-zero/nonzero controls pass. The failure is the real phantom
+Founder count and real encoder refusal, not a fixture admission failure. No
+tracked source was mutated. `git diff --check` passes.
+
+APPROVED for this correction only. No independent rerun/approval of whole Clout,
+Postgres, browser, exhaustive research, hosted CI or release is implied. Existing
+27 AC6 failures, the historical50a3a514 guard failure and pending H3/C1 research
+adoption remain open. The implementer's separate full Linux suite result is not
+an independently rerun claim of this review. No archival or publication.
