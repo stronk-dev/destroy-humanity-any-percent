@@ -1080,6 +1080,99 @@ operation's adopted contract, preserve complete scratch state/events and obtain
 research/normative review/adoption before live use. Existing constructor/axis
 holds, global/caller/workload gates, RP-680 and the27 Clout failures remain open.
 
+#### H3m — Owned fixed-v19 producer/query composition (RP-687)
+
+The [manual modern binding](../planning/clout-v1-and-pr-interns/probes/wait-modern-binding.go.txt)
+composes H3f–H3k's real producer/range search with H3l's concrete faction-stock
+domain. The unbound integration first reproduces hidden/late hook failures even
+though its v19 cash producer is correct. It is a separate research entrypoint,
+NOT permission to remove the real harness's legacy/axis holds or implement this
+draft before adoption. Ordinary production and its accepted contracts are unchanged.
+
+The manual fixture owner:
+
+- Takes an already-admitted pinned test bundle and Company19, explicit online/
+  offline mode, one closed recipe (`none` or `faction_stock`), a validated ablation
+  mask and frozen external contribution rows. It refuses other versions/recipes,
+  including `closed_replay` and `logged_endpoint`; there is no arbitrary hook
+  callback input or silent fallback to none.
+- Deep-copies artifact bytes and reloads their objects with the existing complete
+  replay test loader. It owns the encoded origin, copied external value rows and
+  all five mask slices. Actual codec, foundation, faction, mask and contribution
+  checks run on its owned inputs. This is a trusted-fixture research owner, NOT
+  a general untrusted artifact-admission API or completed BeginCalculation contract.
+- Uses the SAME source-construction body as the legacy experiment, with an explicit
+  fixed-modern context. It never changes WireVersion to bypass guards. Actual
+  assembleContributionsWithPolicy derives the Company19 axis input/upgrade factors
+  and combines the fixed external rows; actual rates/provision/accrual helpers
+  build the cells. The old entrypoint supplies the legacy context and still rejects
+  modern saves/hooks. No live harness constructor changes.
+
+The shared query core now distinguishes globally proven producer definedness
+from globally proven hook definedness. A failed stock-domain proof cannot become
+unreachable or a surrogate error. When the producer is already certified, refining
+only the hook does not repeat producer/partial certification at every node. When
+producer proof is inconclusive, H3k's full range certification still runs. Before
+pruning, BOTH components must be defined and the actual cash upper bound must
+exclude the quote. Guard instrumentation/invariant errors remain loud. The range
+guard interface is an internal proof seam; the fixture owner selects the concrete
+recipe rather than infer purity of a caller-supplied callback.
+
+Preparing producer cells without a hook is not omission of required hook work:
+H3l proves the concrete stock hook's conditional cash read/write boundary, its
+range certificate checks the existing wait's refusals, and every selected positive
+leaf executes a fresh FULL SimulateAdvance with the exact real recipe, external
+rows, mask, source19 and pinned dependencies. The returned query selection owns
+that detached complete state and actual evaluation/role observations. Failure,
+unreachable and work exhaustion expose no successful projected state. Already-
+affordable time0 returns a detached original with no wait; an empty future has no
+projection. Internal observations do not consume the origin or create payments.
+This does not waive global producer/pre-hook encoding/timestamp obligations.
+
+Twelve complete0..6001 populations enumerate72024 fresh actual references and
+14006 expected stock-event refusals: none, saturating/masked/capped stock, fixed
+external factor2, and an unminted1500ms offline-cap fixture, in both modes. The
+external row is validated by the actual simulation primitive; this does NOT
+prove full logged Guild settlement/provenance. Four quotes per population give48
+queries, checked against exhaustive chronological outcome/error references.
+Prices sampled from actual no-hook750/2000 projections are fixed thresholds,
+not catalog purchases, timed discounts or an adopted balance change.
+
+Selected positive results are compared against independently restored DIRECT
+SimulateAdvance calls using caller-bundle objects and separately constructed
+concrete faction hooks—not against the fixture owner's projection helper. Entire
+encoded Company state, evaluation and every role observation must match. The
+initial draft's selected-state oracle reused that helper; it was corrected before
+claiming this proof. The subsequent compiling fault that disconnects only the
+returned projection's hook, leaving domain safety intact, fires six full-state
+mismatches and eight first-error mismatches. Cash agreement alone is insufficient.
+
+Ownership controls mutate the original state, mask/external slices, artifact
+bytes, faction/policy objects, and an earlier returned state/role buffer. The next
+query retains its original full state/result and pinned hash, with the owned
+origin unchanged. Zero-time, empty-future and node exhaustion stay distinct.
+Seven invalid version/recipe/sampling/mask/contribution/hash/mode cases refuse.
+These are one-owner repeated-query isolation checks, NOT full fork/action/cache
+identity, all artifact-corruption admission or lifecycle proof.
+
+The complete affected run retains earlier60064 legacy and48016 stock references
+too:180104 enumerated references plus the separate anchor/query/control calls.
+Both native and declared emulated Linux AMD64 pass. Setup is not free: each owner
+reloads one artifact bundle (49498 bytes, or49494 for the cap fixture), retains
+2816/2817 origin bytes and reports begin time. Query restores/real leaves, all
+producer setup and hook range/probe/split work are separately visible; contributions
+are assembled during owner validation and again by actual source construction.
+The diagnostic node ceiling is unchanged. No runtime budget or performance claim
+comes from these single overlapping verification runs.
+
+This closes the bounded fixed-modern binding experiment, not modern gameplay or
+the parent accounting API. Remaining concrete hook families, actual logged stage/
+clock/absence ownership, global timestamp/encoding/state domains, complete caller
+and resource contracts, error-policy compatibility, full workloads under accepted
+budgets and research/normative review/adoption remain mandatory. No generic hook
+purity, complete modern factory, natural acquisition, report/candidate migration,
+Go/TS/SQL parity or repaired AC6 follows. RP-680 and the27 partitions remain open.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -1279,3 +1372,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   admitted Company19 and derive/test a concrete attendance-split hook component.
   Preserve event policy, complete encoded-state/cash boundaries and legacy guards.
   No modern factory/query integration, full logged-hook proof or adoption follows.
+- 2026-10-16: bind an owned fixed-Company19 producer to chronological search and
+  the real stock-domain/leaf recipe; reproduce missing binding first, then retain
+  independent full-state/role and mutable-input isolation checks. Existing legacy
+  guards remain; logged/other-hook/global/caller/workload and adoption gates stay open.

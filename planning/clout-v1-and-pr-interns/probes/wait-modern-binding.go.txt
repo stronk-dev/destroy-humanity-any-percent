@@ -1,0 +1,394 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/faction"
+	"cloud-clicker/server/guild"
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/save"
+)
+
+// A manual owner of already-admitted fixture artifacts, not a production bundle
+// admission API. Reloading uses the existing strict test loader, not copied math.
+type modernWaitOwnerResearch struct {
+	bundle                       CatalogBundle
+	origin                       []byte
+	mask                         AblationMask
+	external                     []multiplier.Contribution
+	mode                         EvaluationMode
+	recipe                       string
+	artifactBytes, artifactLoads int
+	beginTime                    time.Duration
+}
+
+type modernWaitSelectionResearch struct {
+	at, lastPoint                                            int64
+	state                                                    *save.State
+	advance                                                  AdvanceSimulationResult
+	factory                                                  *waitCellsResearch
+	pointCalls, restores, hookProbes, hookRanges, hookSplits int
+}
+
+func copyWaitMaskResearch(mask AblationMask) AblationMask {
+	return AblationMask{GeneratorIDs: append([]string(nil), mask.GeneratorIDs...), UpgradeIDs: append([]string(nil), mask.UpgradeIDs...),
+		RemovedGeneratorIDs: append([]string(nil), mask.RemovedGeneratorIDs...), RemovedUpgradeIDs: append([]string(nil), mask.RemovedUpgradeIDs...), RemovedActionIDs: append([]string(nil), mask.RemovedActionIDs...)}
+}
+
+func newModernWaitOwnerResearch(t *testing.T, bundle CatalogBundle, initial *save.State, mode EvaluationMode, recipe string, external []multiplier.Contribution, mask AblationMask) (*modernWaitOwnerResearch, error) {
+	started := time.Now()
+	if initial == nil || initial.Ledger == nil || initial.Ledger.Scope() != economy.ScopeCompany || save.VersionForState(initial) != 19 ||
+		mode != ModeOnline && mode != ModeOffline || recipe != "none" && recipe != "faction_stock" || !bundle.valid(bundle.ConstantsHash) {
+		return nil, fmt.Errorf("unsupported fixed-modern research owner")
+	}
+	origin, err := save.EncodeState(initial)
+	if err != nil {
+		return nil, err
+	}
+	artifacts := make(map[string][]byte, len(bundle.Artifacts))
+	artifactBytes := 0
+	for id, value := range bundle.Artifacts {
+		artifacts[id] = append([]byte(nil), value...)
+		artifactBytes += len(value)
+	}
+	owned := loadCompleteReplayTestBundle(t, bundle.ConstantsHash, artifacts)
+	state, err := save.RestoreState(origin, 19, owned.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return nil, err
+	}
+	if err := owned.ValidateFoundationState(state); err != nil {
+		return nil, err
+	}
+	if err := owned.Faction.ValidateState(state); err != nil {
+		return nil, err
+	}
+	mask = copyWaitMaskResearch(mask)
+	external = append([]multiplier.Contribution(nil), external...)
+	policy, err := simulationPolicyFor(owned.Economy, mask)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := assembleContributionsWithPolicy(state, owned.Economy, external, policy); err != nil {
+		return nil, err
+	}
+	return &modernWaitOwnerResearch{bundle: owned, origin: origin, mask: mask, external: external, mode: mode, recipe: recipe,
+		artifactBytes: artifactBytes, artifactLoads: 1, beginTime: time.Since(started)}, nil
+}
+
+func (owner *modernWaitOwnerResearch) project(at int64) (*save.State, AdvanceSimulationResult, error) {
+	state, err := save.RestoreState(owner.origin, 19, owner.bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return nil, AdvanceSimulationResult{}, err
+	}
+	dependencies := SimulationDependencies{Routes: owner.bundle.Routes}
+	if owner.recipe == "faction_stock" {
+		domain := stockHookDomainResearch{bundle: owner.bundle, origin: owner.origin, mask: owner.mask}
+		dependencies.Hook = domain.hook()
+	}
+	result, err := SimulateAdvance(state, owner.bundle.Economy, dependencies, save.Revision{Number: 1, ConstantsHash: owner.bundle.ConstantsHash},
+		owner.mode, state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond), owner.external, owner.mask)
+	return state, result, err
+}
+
+func (owner *modernWaitOwnerResearch) query(horizon int64, quote decimal.Decimal, budget int) (modernWaitSelectionResearch, error) {
+	selected := modernWaitSelectionResearch{at: -1, lastPoint: -1}
+	state, err := save.RestoreState(owner.origin, 19, owner.bundle.Economy, economy.ScopeCompany, time.Time{})
+	selected.restores++
+	if err != nil {
+		return selected, err
+	}
+	domain := &stockHookDomainResearch{bundle: owner.bundle, origin: owner.origin, mask: owner.mask, noHook: owner.recipe == "none"}
+	var guard waitRangeGuardResearch
+	if owner.recipe == "faction_stock" {
+		guard = domain
+	}
+	var lastState *save.State
+	var lastAdvance AdvanceSimulationResult
+	found, factory, queryErr := queryWaitContextResearch(state, owner.bundle.Economy, owner.mode, horizon, owner.mask,
+		SimulationDependencies{Routes: owner.bundle.Routes}, quote, budget, func(at int64) (decimal.Decimal, error) {
+			selected.pointCalls++
+			selected.restores++
+			selected.lastPoint = at
+			var pointErr error
+			lastState, lastAdvance, pointErr = owner.project(at)
+			if pointErr != nil {
+				return decimal.NaN, pointErr
+			}
+			value, ok := lastState.Ledger.Balance("company.cash")
+			if !ok {
+				return decimal.NaN, ErrInvalidEngineState
+			}
+			return value, nil
+		}, waitSourceContextResearch{modern: true, external: owner.external}, guard)
+	selected.at, selected.factory = found, factory
+	selected.hookProbes, selected.hookRanges, selected.hookSplits = domain.probes, domain.ranges, domain.splits
+	if queryErr == nil && found >= 0 {
+		if found == 0 && selected.pointCalls == 0 {
+			selected.state = state
+		} else {
+			selected.state, selected.advance = lastState, lastAdvance
+		}
+	}
+	return selected, queryErr
+}
+
+func TestWaitQueryModernBindingResearch(t *testing.T) {
+	base := axisContentBundle(t)
+	start := time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC)
+	const horizon int64 = 6001
+	total, bad, queries := 0, 0, 0
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		for _, name := range []string{"none", "stock", "masked_stock", "capped_stock", "fixed_external", "offline_plateau"} {
+			t.Run(string(mode)+"/"+name, func(t *testing.T) {
+				bundle := base
+				if name == "offline_plateau" {
+					artifacts := map[string][]byte{}
+					for id, value := range base.Artifacts {
+						artifacts[id] = append([]byte(nil), value...)
+					}
+					var root map[string]any
+					if err := json.Unmarshal(artifacts["economy"], &root); err != nil {
+						t.Fatal(err)
+					}
+					root["offline_policy"].(map[string]any)["accrual_cap_ms"] = 1500
+					var err error
+					artifacts["economy"], err = json.Marshal(root)
+					if err != nil {
+						t.Fatal(err)
+					}
+					hash, err := save.ConstantsHashArtifacts(artifacts)
+					if err != nil {
+						t.Fatal(err)
+					}
+					bundle = loadCompleteReplayTestBundle(t, hash, artifacts)
+				}
+				initial := axisTimingState(t, bundle, start)
+				initial.FactionID, initial.IncorporatedAt = "bootstrapper", start
+				initial.StockUnits, initial.StockProgressMS = bundle.Faction.StockCap-1, bundle.Faction.StockIntervalMS-1500
+				recipe, firstFailure := "none", int64(-1)
+				mask := AblationMask{}
+				external := []multiplier.Contribution(nil)
+				switch name {
+				case "stock":
+					recipe, firstFailure = "faction_stock", 1499
+				case "masked_stock":
+					recipe, firstFailure = "faction_stock", 1500
+					mask.GeneratorIDs = []string{"generator.beige_tower"}
+				case "capped_stock":
+					recipe = "faction_stock"
+					initial.StockUnits = bundle.Faction.StockCap
+				case "fixed_external":
+					external = []multiplier.Contribution{{SourceID: guild.StockConsumptionSourceID, Slot: multiplier.SlotFaction, Target: "all", Factor: decimal.New(2, 0)}}
+				}
+				if err := bundle.ValidateFoundationState(initial); err != nil {
+					t.Fatal(err)
+				}
+				origin := mustEncodeState(t, initial)
+				owner, err := newModernWaitOwnerResearch(t, bundle, initial, mode, recipe, external, mask)
+				if err != nil {
+					t.Fatal(err)
+				}
+				// Independent reference uses caller objects and a direct concrete
+				// hook, not the factory's reloaded objects or projection method.
+				reference := func(at int64) (*save.State, AdvanceSimulationResult, error) {
+					current, err := save.RestoreState(origin, 19, bundle.Economy, economy.ScopeCompany, time.Time{})
+					if err != nil {
+						return nil, AdvanceSimulationResult{}, err
+					}
+					deps := SimulationDependencies{Routes: bundle.Routes}
+					if recipe == "faction_stock" {
+						deps.Hook = faction.AccrualHook{Catalogs: faction.CatalogSet{bundle.ConstantsHash: bundle.Faction}, Policies: foundationCatchupPolicies{bundle.ConstantsHash: bundle.Prestige.CatchupCeilingMS}}
+					}
+					result, err := SimulateAdvance(current, bundle.Economy, deps, save.Revision{Number: 1, ConstantsHash: bundle.ConstantsHash}, mode, start.Add(time.Duration(at)*time.Millisecond), external, mask)
+					return current, result, err
+				}
+				values, failures := make([]decimal.Decimal, horizon+1), make([]error, horizon+1)
+				for at := int64(0); at <= horizon; at++ {
+					current, _, actualErr := reference(at)
+					failures[at] = actualErr
+					wantFailure := firstFailure >= 0 && at >= firstFailure && at <= 5000
+					if (failures[at] != nil) != wantFailure {
+						t.Fatal("changed actual fixed-modern population", at, failures[at])
+					}
+					if wantFailure {
+						bad++
+					}
+					values[at], _ = current.Ledger.Balance("company.cash")
+					total++
+				}
+				shadow := *owner
+				shadow.recipe = "none"
+				early, _, err := shadow.project(750)
+				if err != nil {
+					t.Fatal(err)
+				}
+				late, _, err := shadow.project(2000)
+				if err != nil {
+					t.Fatal(err)
+				}
+				before, _ := initial.Ledger.Balance("company.cash")
+				earlyQuote, _ := early.Ledger.Balance("company.cash")
+				lateQuote, _ := late.Ledger.Balance("company.cash")
+				if lateQuote.Eq(before) {
+					lateQuote = before.Add(decimal.One)
+				}
+				for _, quote := range []decimal.Decimal{before, earlyQuote, lateQuote, decimal.New(1, 12)} {
+					queries++
+					want, errorAt := int64(-1), int64(-1)
+					for at := int64(0); at <= horizon; at++ {
+						if failures[at] != nil {
+							errorAt = at
+							break
+						}
+						if values[at].Gte(quote) {
+							want = at
+							break
+						}
+					}
+					selected, queryErr := owner.query(horizon, quote, int(2*(horizon+1)))
+					if errorAt >= 0 {
+						if selected.at != -1 || selected.state != nil || queryErr == nil || queryErr.Error() != failures[errorAt].Error() || selected.lastPoint != errorAt {
+							t.Errorf("quote%s lost first hook error%d: at%d last%d error%v", quote, errorAt, selected.at, selected.lastPoint, queryErr)
+						}
+					} else if queryErr != nil || selected.at != want {
+						t.Errorf("quote%s lost actual earliest%d: at%d error%v", quote, want, selected.at, queryErr)
+					} else if want < 0 {
+						if selected.state != nil {
+							t.Error("unreachable leaked a projected state")
+						}
+					} else if want == 0 {
+						if selected.state == nil || selected.pointCalls != 0 || selected.factory != nil || !bytes.Equal(origin, mustEncodeState(t, selected.state)) {
+							t.Error("initial balance acquired a wait or wrong full state")
+						}
+					} else {
+						expected, expectedAdvance, expectedErr := reference(want)
+						if expectedErr != nil || selected.state == nil || !bytes.Equal(mustEncodeState(t, selected.state), mustEncodeState(t, expected)) || !reflect.DeepEqual(selected.advance, expectedAdvance) {
+							t.Errorf("quote%s full selected projection differs at%d", quote, want)
+						}
+					}
+					if selected.factory != nil {
+						t.Logf("quote%s selected%d error_at%d points%d restores%d hook_probes%d hook_ranges%d hook_splits%d work%+v", quote, selected.at, errorAt, selected.pointCalls, selected.restores, selected.hookProbes, selected.hookRanges, selected.hookSplits, selected.factory.work)
+					}
+				}
+				if _, err := buildWaitCellsResearch(initial, bundle.Economy, mode, horizon, mask, SimulationDependencies{}, ""); err == nil {
+					t.Fatal("legacy constructor silently admitted Company19")
+				}
+				if !bytes.Equal(origin, mustEncodeState(t, initial)) {
+					t.Fatal("modern query consumed source state")
+				}
+				t.Logf("owner artifact_loads%d artifact_bytes%d origin_bytes%d begin%s references6002", owner.artifactLoads, owner.artifactBytes, len(owner.origin), owner.beginTime)
+			})
+		}
+	}
+	if total != 72024 || bad != 14006 || queries != 48 {
+		t.Fatal("incomplete modern-binding population", total, bad, queries)
+	}
+}
+
+func TestWaitQueryModernOwnershipResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	start := time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC)
+	initial := axisTimingState(t, bundle, start)
+	initial.FactionID, initial.IncorporatedAt = "bootstrapper", start
+	initial.StockUnits, initial.StockProgressMS = bundle.Faction.StockCap, bundle.Faction.StockIntervalMS-1500
+	mask := AblationMask{GeneratorIDs: []string{"generator.dot_matrix_queue"}}
+	external := []multiplier.Contribution{{SourceID: guild.StockConsumptionSourceID, Slot: multiplier.SlotFaction, Target: "all", Factor: decimal.New(2, 0)}}
+	owner, err := newModernWaitOwnerResearch(t, bundle, initial, ModeOnline, "faction_stock", external, mask)
+	if err != nil {
+		t.Fatal(err)
+	}
+	projection, _, err := owner.project(2000)
+	if err != nil {
+		t.Fatal(err)
+	}
+	quote, _ := projection.Ledger.Balance("company.cash")
+	before, err := owner.query(6001, quote, 12004)
+	if err != nil || before.at <= 0 || before.state == nil {
+		t.Fatal("ownership baseline is not a real selected projection", before.at, err)
+	}
+	wantState := mustEncodeState(t, before.state)
+	wantAdvance, err := json.Marshal(before.advance)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantOrigin := append([]byte(nil), owner.origin...)
+	// These objects belong to the caller or to an earlier returned projection.
+	// A later query must not read either mutable graph.
+	initial.GeneratorCounts["generator.beige_tower"], initial.AttainmentScoreRun = 0, 99
+	mask.GeneratorIDs[0] = "generator.beige_tower"
+	external[0].Factor = decimal.New(3, 0)
+	bundle.Artifacts["economy"][0] = 'x'
+	bundle.Faction.StockCap++
+	bundle.Prestige.CatchupCeilingMS = 1
+	before.state.GeneratorCounts["generator.beige_tower"] = 777
+	before.state.AttainmentScoreRun = 88
+	if len(before.advance.RoleActivations) == 0 {
+		t.Fatal("selected role buffer control is vacuous")
+	}
+	before.advance.RoleActivations[0].GeneratorID = "mutated_returned_role"
+	after, err := owner.query(6001, quote, 12004)
+	if err != nil || after.at != before.at || after.state == nil || !bytes.Equal(wantState, mustEncodeState(t, after.state)) {
+		t.Fatal("input or returned-state mutation leaked into later query", after.at, err)
+	}
+	gotAdvance, err := json.Marshal(after.advance)
+	if err != nil || !bytes.Equal(wantAdvance, gotAdvance) || !bytes.Equal(wantOrigin, owner.origin) || !owner.bundle.valid(owner.bundle.ConstantsHash) {
+		t.Fatal("owned artifact/origin/role data aliased mutable input", err)
+	}
+	initialBalance, _ := after.state.Ledger.Balance("company.cash")
+	_ = initialBalance // The zero-time controls use the original balance, not this projected head.
+	baseState, err := save.RestoreState(owner.origin, 19, owner.bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	baseCash, _ := baseState.Ledger.Balance("company.cash")
+	zero, err := owner.query(6001, baseCash, 0)
+	if err != nil || zero.at != 0 || zero.state == nil || zero.pointCalls != 0 || zero.factory != nil || !bytes.Equal(owner.origin, mustEncodeState(t, zero.state)) {
+		t.Fatal("zero-time query gained future work or wrong owned state", err)
+	}
+	empty, err := owner.query(0, quote, 0)
+	if err != nil || empty.at != -1 || empty.state != nil || empty.factory != nil || empty.pointCalls != 0 {
+		t.Fatal("empty future gained a projection", err)
+	}
+	exhausted, err := owner.query(6001, quote, 1)
+	if err == nil || exhausted.at != -1 || exhausted.state != nil || exhausted.factory == nil || exhausted.factory.work.QueryNodes != 1 || exhausted.pointCalls != 0 {
+		t.Fatal("modern node exhaustion became a usable result", exhausted.at, err)
+	}
+}
+
+func TestWaitQueryModernRefusalsResearch(t *testing.T) {
+	for _, name := range []string{"version", "recipe", "logged_sampling", "mask", "contribution", "hash", "mode"} {
+		t.Run(name, func(t *testing.T) {
+			bundle := axisContentBundle(t)
+			initial := axisTimingState(t, bundle, time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC))
+			mode, recipe, mask := ModeOnline, "none", AblationMask{}
+			external := []multiplier.Contribution(nil)
+			switch name {
+			case "version":
+				initial.WireVersion = 18
+			case "recipe":
+				recipe = "closed_replay"
+			case "logged_sampling":
+				recipe = "logged_endpoint"
+			case "mask":
+				mask.GeneratorIDs = []string{"missing_generator"}
+			case "contribution":
+				external = []multiplier.Contribution{{SourceID: guild.StockConsumptionSourceID, Slot: multiplier.SlotFaction, Target: "all", Factor: decimal.Zero}}
+			case "hash":
+				bundle.ConstantsHash = "sha256:invalid"
+			case "mode":
+				mode = EvaluationMode("invalid")
+			}
+			owner, err := newModernWaitOwnerResearch(t, bundle, initial, mode, recipe, external, mask)
+			if err == nil || owner != nil {
+				t.Fatal("invalid modern context silently accepted/fell back", name, err)
+			}
+		})
+	}
+}

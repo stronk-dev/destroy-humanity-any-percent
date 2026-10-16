@@ -16,7 +16,7 @@ with nil error. Owning log/manual source retain source/hash/budget/receipt/uncha
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
 
-Draft H3d–H3l now supply a candidate positive-aggregation enclosure, its partial
+Draft H3d–H3m now supply a candidate positive-aggregation enclosure, its partial
 producer/ledger composition and a source-driven wait-cell constructor. The4004
 pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
 four small whole-wait populations are exhaustive and match independently scanned
@@ -53,9 +53,17 @@ cutoff. Endpoint-only proof fails; splitting at the actual cutoff matches48016
 full references/104 range checks, retaining valid/no-hook/capped/masked controls
 and full encoded-state/cash anchors. This hook-only proof is not integrated into
 the modern query; existing legacy and axis guards remain unchanged.
+RP-687 now composes an owned fixed-v19 producer/query with the concrete stock
+certificate and full actual leaf. Missing binding first fails the real oracle;
+the correction matches72024 fresh references/48 queries, including complete
+selected state/evaluation/roles and input/returned-state isolation. A disconnected
+leaf hook fires full-state and first-error mismatches. Affected verification also
+retains previous108080 references. This is fixed simulation only, not full modern
+logged gameplay, an adopted API or a migrated live harness.
 
-Next bind the modern producer/query factory to its exact hook/clock operation,
-finish the other concrete hook families and full caller/global semantics,
+Next extend the owned query beyond fixed none/stock to the remaining concrete
+hook families and exact logged stage/clock operation; complete global/caller/
+timestamp/encoding/state and lifecycle/compatibility obligations,
 then measure complete real workloads with all preparation work charged. Partial
 certification alone does not adopt the proposed chronological error policy.
 Remaining whole-domain definedness, hook/modern factory, full caller/state semantics,

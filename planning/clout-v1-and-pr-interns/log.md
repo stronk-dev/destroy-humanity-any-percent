@@ -6465,3 +6465,121 @@ checkpoint requires research/normative review outside corrective-code delegation
 Full1.0 goal active/progress; no feature acceptance, archival, push, deployment or
 release approval. Meaningful progress is the new actual hook-domain counterexample
 and corrected source-bound certificate, not the reference count alone.
+
+## 2026-10-16 — fixed modern producer/query binding, declared before execution
+
+Continue from e8016a01. Compose the real Company19 fixed-context producer with
+H3k query ordering and H3l's concrete stock-hook domain, not logged scheduling or
+the parent draft's unbuilt private-event API. Existing legacy entrypoints must
+retain their version/hook refusals. A separate manual fixture owner reloads the
+already-admitted pinned artifact bytes with the existing test loader, owns the
+encoded origin and copied external/mask inputs, and exposes detached full actual
+selected states/results, not a cash-only surrogate. This is not a production
+bundle-admission API or permission to enable modern live harness constructors.
+
+Twelve complete0..6001 populations (six × online/offline) use admitted axis state:
+none; saturating stock; masked saturating stock; already-capped stock; a validated
+fixed external guild.stock_consumption factor2 under none; and cap1500ms plateau
+under none (retuned fixture/hash, not minted content). Total72024 full references,
+14006 expected stock-event refusals. Four quotes each: original balance, actual
+no-hook cash at750, at2000 (use original+1 when masked), and1e12. Exhaustive
+chronological references own earliest result/error/unreachable. Verify entire
+selected encoded state, actual evaluation/role data, source19, no state on error/
+unreachable, zero-time semantics and unchanged source. Mutate returned scratch
+and original input state/mask/external/catalog buffers to test independent reuse.
+Invalid source version/recipe/mask/contribution/hash must refuse, not fall back.
+
+First run the combined producer with its stock-domain binding intentionally
+omitted: the new oracle must expose hidden/late hook failures. Then connect the
+existing component, counting producer and hook preparation separately and avoiding
+repeated producer certification when only the hook range is inconclusive. Keep
+all other global/caller/clock/replay/encoding and complete workload/adoption gates
+explicit. Finish native and declared Linux against affected legacy consumers too;
+do not turn this bounded fixed simulation into full modern/logged support.
+
+Unbound integration97585/15de8d FAIL9.317s, all72024 references/14006 refusals and
+48 queries. Only stock/masked first-error queries fail: unmasked probes error at
+2000 instead of1499, while high quotes and masked queries return unreachable/nil.
+The earlier valid producer/query results pass. RP-687 records this manual binding
+gap. Before final verification, self-review catches that selected-state comparison
+reuses owner.project, although the exhaustive outcome oracle is independent.
+Replace that comparison with the same direct, caller-bundle reference function,
+including independently constructed faction hook; do not cite the old comparison
+as proof against a faulty projection method. Then bind H3l, add declared ownership/
+refusal controls and retain a projection-hook-disconnection control to test the
+full-state oracle independently of range safety. No live implementation changes.
+
+Bound focused16135/1a8a7b PASS9.470s, all72024 references and48 queries after
+independent selected-state comparison. Before complete verification add the
+declared mutable-input/returned-state/role-buffer isolation, zero-time/empty-
+future/budget and seven invalid-context controls. These do not add another
+reference census or establish a general untrusted bundle-admission API: the
+manual owner reloads already-admitted fixture artifacts with the existing test
+loader. H3l's event reason now uses the state's actual declared faction rather
+than a bootstrapper literal; its original population stays unchanged. Freeze
+all manual sources for full affected legacy/stock/new query verification.
+
+Full native40648/7bde11 PASS37.644s plus ordinary production vet; corrected declared
+Linux83896/71485b PASS83.262s, all180104 enumerated actual references (prior108080
++ new72024), plus ownership/refusal and existing controls. Initial Linuxb16825
+ran no tests: a mistyped overlay path omitted the hyphen in pr-interns. Correct
+the command only; do not count that exit as a code failure or the later pass as
+a retry hiding one. All sources frozen throughout the real runs, handles terminal.
+Full runs overlap; elapsed figures are not a performance comparison or full
+scenario workload proof. Before checkpoint execute the prepared compiling ignored
+overlay that disconnects only owner.project's hook, leaving the real stock-domain
+guard and independent direct reference untouched. It must fail the full selected-
+state oracle as well as first-error cases; no production mutation or guard waiver.
+
+## 2026-10-16 — RP-687 owned fixed-modern composition verified
+
+The final native/Linux results above cover all180104 enumerated references:
+prior60064 legacy +48016 stock +72024 new, plus distinct anchor/query/control calls.
+New twelve-profile population has14006 expected event refusals/48 main queries;
+ownership, zero-time, empty-future, budget and seven refusal controls pass. Full
+selected encoded state/evaluation/all roles match independent direct caller-
+bundle SimulateAdvance references. Producer certificates stay reusable when only
+the hook domain requires refinement; actual leaf hooks are never omitted.
+
+Point-only hook disconnection10615/104f98 FAIL18.167s intentionally, all72024
+references/48 queries retained. It fires SIX full-state mismatches at750/2000 and
+EIGHT first-error mismatches despite intact domain safety and matching cash. All
+three none populations remain green. No compilation/admission/census failure is
+the oracle. Normal source bytes were never mutated; the compiling alternative is
+.cache/wait-modern-no-point-hook.{go,json}, replacing only owner.project's first
+recipe branch, not query guard or independent references. All handles terminal;
+no normal rerun is necessary on unchanged source. No production/TS/SQL/hosted/
+shared-math/fullCI or full-workload claim; overlapping timings are not benchmarks.
+
+The fixture owner copies state, all mask slices/external values and artifact
+bytes, reloading parsed objects with the existing trusted test loader. Mutating
+caller inputs/faction/catchup objects or returned Company/role buffers cannot
+change a subsequent query's full result, owned origin or pinned hash. This is
+NOT general untrusted bundle admission or full C1e fork/action/cache identity.
+Begin exposes one reload,49498 artifact bytes (49494 cap fixture),2816/2817 origin
+bytes and time. Query restores/leaves and producer/guard/hook work are separate;
+actual contribution assembly occurs at validation and source construction too.
+There is no new accepted work ceiling or permission to hide preparation costs.
+
+Full reproduction from root:
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run TestWait -v ./production -count=1`.
+Focused selectors: TestWaitQueryModernBindingResearch, TestWaitQueryModernOwnershipResearch,
+TestWaitQueryModernRefusalsResearch. Final tracked SHA256:
+- production-wait-cells.go.txt: 3c9b17dd80b0048ad181cb27b826b763d8109ec55161d5e552d527d83ee1c644
+- wait-query-order.go.txt: 6c2f420e1750f2347e51c72e7b1e7be67d9048bee9140c5c0df586c7a797bf97
+- wait-stock-hook-domain.go.txt: 206c9772485800e4ddacd71ddb2a967b7e29b3abe10a3e496c0c807242121324
+- wait-modern-binding.go.txt: 495e2cb33d10c6d9049fd849f36cc43b920402ce0e5e3f1e22ab1472dae54e3d
+- eleven-file wait-query-overlay.json: 721ff8f2e79d3af845ffd866bb2fdfc1723dd7040559319f0681831a741b924b
+Ignored fault source/overlay SHAa6a57ed2cb07a17fb86bbc1d701108a2b5572480114319ac1ea8cbe6953ef986 /
+325aefa0e82e5f90e64d4b7d45fc7fb21225253aa070fa1dcc4fa69760a7cc16.
+
+Own draft H3m records the bounded composition. Existing legacy/axis guards and
+active product/harness/kernel/catalog/schema/normal-CI/accepted contracts remain
+unchanged. Other hook families, logged stages/clock, global future-time/encoding/
+state/caller/resource and lifecycle proof, complete work/compatibility and lawful
+adoption stay open. RP-680 and27 AC6 failures remain open. Review by: Codex root
+(research author/first filter). Recorded by: Codex root. Complete nine-path range
+e8016a01-exclusive through this checkpoint needs research/normative review outside
+corrective-code delegation. Full1.0 goal active/progress, not preview/review-only.
+No feature acceptance, archival, push, publication, deployment or release approval.

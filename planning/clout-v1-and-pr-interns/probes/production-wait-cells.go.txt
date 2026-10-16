@@ -14,6 +14,7 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/save"
 )
 
@@ -53,7 +54,7 @@ type waitCellWorkResearch struct {
 	AllPrefixWrites, AggregateFast, AggregateExact, AggregateExactTerms                                                int
 	LedgerInitial, LedgerFast, LedgerExact, LedgerReuses, LedgerAggregates, LedgerTerms, LedgerPartials, LedgerNoEntry int
 	ProgressInitial, ProgressFast, ProgressExact, ProgressLedgers, ProgressAggregates, ProgressTerms, ProgressPartials int
-	QueryNodes, QueryRanges, QueryRefinements, QueryStops                                                              int
+	QueryNodes, QueryRanges, QueryRefinements, QueryStops, QueryGuards                                                 int
 }
 
 type waitCellsResearch struct {
@@ -456,8 +457,20 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 // Deferred producer failures are explicit query barriers, not missing cells.
 // The existing eager constructor retains its original failure behavior.
 func buildWaitCellSourcesResearch(state *save.State, catalog *economy.Catalog, mode EvaluationMode, horizon int64, mask AblationMask, dependencies SimulationDependencies, fault string, deferFailure bool) (*waitCellsResearch, error) {
+	return buildWaitCellContextSourcesResearch(state, catalog, mode, horizon, mask, dependencies, fault, deferFailure, waitSourceContextResearch{})
+}
+
+type waitSourceContextResearch struct {
+	modern   bool
+	external []multiplier.Contribution
+}
+
+// Only the separate fixed-v19 research owner selects modern inputs. The original
+// entrypoint still supplies the legacy context and retains its guards.
+func buildWaitCellContextSourcesResearch(state *save.State, catalog *economy.Catalog, mode EvaluationMode, horizon int64, mask AblationMask, dependencies SimulationDependencies, fault string, deferFailure bool, context waitSourceContextResearch) (*waitCellsResearch, error) {
 	if state == nil || state.Ledger == nil || catalog == nil || horizon < 0 || horizon > 86_460_000 ||
-		mode != ModeOnline && mode != ModeOffline || dependencies.Hook != nil || save.VersionForState(state) >= 18 ||
+		mode != ModeOnline && mode != ModeOffline || dependencies.Hook != nil ||
+		!context.modern && save.VersionForState(state) >= 18 || context.modern && save.VersionForState(state) != 19 ||
 		fault != "" && fault != "grid" && fault != "provision" && fault != "cap" {
 		return nil, fmt.Errorf("unsupported research wait context")
 	}
@@ -465,7 +478,7 @@ func buildWaitCellSourcesResearch(state *save.State, catalog *economy.Catalog, m
 	if err != nil {
 		return nil, err
 	}
-	contributions, err := assembleContributionsWithPolicy(state, catalog, nil, policy)
+	contributions, err := assembleContributionsWithPolicy(state, catalog, context.external, policy)
 	if err != nil {
 		return nil, err
 	}

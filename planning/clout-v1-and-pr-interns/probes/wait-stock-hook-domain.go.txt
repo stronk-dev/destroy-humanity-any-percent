@@ -79,7 +79,7 @@ func (domain *stockHookDomainResearch) probe(at int64) (stockHookStateResearch, 
 			StockResource string `json:"stock_resource"`
 			StockCap      int64  `json:"stock_cap"`
 		}
-		member, ok := domain.bundle.Faction.Faction("bootstrapper")
+		member, ok := domain.bundle.Faction.Faction(state.FactionID)
 		if len(events) != 1 || events[0].Kind != save.EventFactionStockSaturated || events[0].SchemaVersion != 1 ||
 			json.Unmarshal(events[0].Payload, &payload) != nil || !ok || payload.FactionID != member.ID || payload.StockResource != member.Produces || payload.StockCap != domain.bundle.Faction.StockCap {
 			return outcome, fmt.Errorf("unexpected stock-hook event population")
