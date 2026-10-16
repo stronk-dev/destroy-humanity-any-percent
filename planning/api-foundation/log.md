@@ -4331,3 +4331,39 @@ No reviewer tracked edits/commits/publication. Parent records only. No fresh-hos
 receiver delivery/browser/natural late-game naming/Route-table lock-wait/full-CI/history/
 exact-release/feature/archival/release claim. Earlier separate backend-witness range is not
 automatically approved. RP-104's missing driver repair closes, not full Route/API acceptance.
+
+## 2026-10-16 — HTTP uniqueness and historical artifact grammar correction approved
+
+Review by: /root/api_http_artifact_admission_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED final combined correction, not RP-439's intermediate global narrowing.
+Complete one-commit scopes, all8 unique implementation/test/doc/record paths inspected:
+
+- RP-439: 84acb3929fde63c678d80231b402e427c73700e6-exclusive..4bde5176cb81c3563d96b0e7884af468a841d7e7-inclusive.
+- RP-449: c0809cab9de02aaff8702988fc491c4099df4ac7-exclusive..dcd9475da2a92c568cae51274e979466e94038f8-inclusive.
+
+Under A5/C17/C18, retain HTTP original-byte uniqueness and existing Go/TS formula last-value
+decoding, not new policy or artifact normalization. Ignored current-source function overlays
+remove only wire duplicate check: seven response cases/first request44108 fail; exact-literal
+member-repeat construction also fails. Restoring global shared ValidateJSON rejection76450
+fails shared-versus-wire regression, three valid formula duplicates/overwritten nesting and
+three replay-loader cases; other parity controls pass. Later UTF-8/router/header/path repairs
+are retained, not complete historical-checkout execution. Reviewed schema.go matches endpoint.
+
+Atd9b5b07b, `make test-go vet GO_PACKAGES='./publicapi ./formulas ./replaycatalog ./cmd/gen-formulas ./cmd/gen-api ./publicread ./account ./gameui ./gameserver ./leaderboard' GO_TEST_FLAGS='-count=1'`
+95309 PASS all ten packages/vet; native DB skips not credited. Root Vitest formula-artifact/
+replay5781 PASS224, including raw text/hash identity. `make formulas-check api-check` preserves
+formula JSON/client schema/OpenAPI/TS/pin bytes. Actual declared Linux-amd64/emulated PG16
+`make test-go-ci CI_TEST_PACKAGES='./account ./gameserver ./replaycatalog ./leaderboard' CI_TEST_FLAGS='-run TestSessionRequestSchemaAdmissionIntegration\|TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration\|TestStoredFormulaReplayIntegration\|TestPublicCatalogIntegration -v'`
+2658 PASS, no selected skips: session20 refusals+valid escaped-key credentials6.153s;
+both literal/purchased-generator Minigame/Soul lifecycle arms36.567s with SQL non-mutation,
+valid terminal/socket/persistence; stored formula exact bytes/old-new identities/refusal0.397s;
+nine historical/public-catalog identity/malformed/unaccepted/missing cases0.326s.
+Gofmt/full-range/current diff checks clean. Ignored overlays .cache/api-http-artifact-review-*.
+Initial reviewer path count9 corrected to8; no extra path is excluded from the verdict.
+
+All handles terminal/slot released; own tmpfs Postgres57845048cbed removed, only preserved
+builders remain, caches untouched, no reviewer tracked mutations/commits/publication.
+No browser/hosted/full-CI, public catalog HTTP completion, new feature/normative/deletion
+acceptance, accounting/history waiver, archival or release claim. Root's later harness clone
+correction is outside this review; this final API union closes only its named corrective debt.

@@ -406,11 +406,16 @@ registry HTTP admission, including exact-response literal construction. Shared d
 validation restores the existing Go/TypeScript formula-artifact last-value contract without
 rewriting stored bytes or changing fixtures. The owning log records regression, consumer and
 Postgres results and the pending designated-review range; this is not full API/CI acceptance.
+The final RP-439/RP-449 union now has independent corrective APPROVAL over complete
+`84acb392..4bde5176` and `c0809cab..dcd9475d`. This does not approve the intermediate
+globally strict decoder; the owning log records independent HTTP/artifact failures and
+corrected real-Postgres request/lifecycle/catalog checks.
 
 Bounded validator correction (2026-10-08, RP-439): raw duplicate object members now refuse
 at HTTP admission before schema map decoding, including escaped/nested names. The old-behavior regression,
 affected packages/vet and byte-unchanged API generation pass locally. No handler output,
-DSL extension, request middleware or full conformance claim; designated review remains.
+DSL extension, request middleware or full conformance claim. Its final corrected union with
+RP-449 is independently approved as recorded above; the intermediate global narrowing is not.
 
 Current checkpoint (2026-10-08): the historical catalog database source is implemented and
 locally verified against real Postgres; accepted identities return exact stored artifacts,
