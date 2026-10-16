@@ -2,86 +2,31 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
-Current checkpoint (2026-10-16): fresh independent Codex corrective review APPROVES
-RP-424 `f1281138..24cefcd5`, RP-454/RP-455 `f097df7e..c802c2dc` and RP-456
-`c802c2dc..4c87dcdd`, each complete range. Native old-focus/duplicate-status failures,
-corrected endpoint/current consumer checks and both actual built N5 negatives execute;
-the owning log records exact hashes, provenance and limits. These focus/notice corrections
-no longer await Claude. Other corrective ranges, author-body RP-174/RP-176, content,
-shared clock and complete feature/AT/release acceptance remain open. Earlier dated
-checkpoints retain their historical review state; current batch dispositions follow below.
+## Current checkpoint — 2026-10-16
 
-The same delegation now closes RP-453 `6f85d3ad..377279c4`, RP-457
-`46c7ecac..7f94671a` and RP-458 `7f94671a..e0de6299`, each complete corrective range.
-Independent old-event/saved-state/snapshot failures, current Go/TS checks and real
-Linux-amd64/Postgres event storage, commands, both Exit paths and isolation execute.
-The owning log retains exact ranges and limits; this does not adopt RP-174/RP-176's
-unreconciled body, approve C3/C4/C5 as features or waive the historical kernel failure.
+All original C1–C8 diff reviews are complete. C2 retains its bounded approval; the other
+original batches retain their historical CHANGES REQUIRED verdicts. Corrective approval
+does not accept those whole features or authorize archival.
 
-RP-183 `7c16d890..e02f6560` and RP-185/RP-186 `b651963f..3be0e5dd` also have
-independent corrective approval. The reviewer executed old disclosure/CSS failures,
-corrected endpoints and current shelf/host checks in all three Linux ARM64 browser engines.
-The original prop-only motion test passed broken CSS, confirming why its replacement was
-needed. Exact scopes, controls and limits are in the owning log; whole C6/AT/content gates remain.
+Fresh independent Codex reviewers, under Marco's corrective-code delegation, approve the
+complete corrections for RP-173, RP-175, RP-177–RP-183, RP-185/RP-186, RP-411, RP-424
+and RP-453–RP-458. Exact ranges, old failures, corrected results and limits live in
+`log.md`; the dated verdicts there are authoritative, not implementation checkboxes.
+Latest approvals include the real-Postgres both-Exit carry, actual second-wearer transition,
+full 200 × 288 isolation/receipt/bonus-consumer checks and actual-source package-guard negatives.
 
-RP-177 `1a159ec3..ce7688a7`, RP-178 `3cafa097..646daa08` and RP-411
-`32850174..2fff9748` now have independent corrective approval, each complete range.
-The reviewer reproduced old SQL/preflight/context failures and ran actual Postgres recovery,
-payload rejection, persisted commands, both Exit paths and the shared replay population.
-Exact verdicts and limits are in the owning log; this is not original C4/feature acceptance.
+Next: finish remaining corrective/evidence reviews, including keyboard/network/composed
+driver scopes, without repeating approved ranges. RP-377's overlay-settlement driver and
+RP-385's pointer/refresh correction remain locally verified, not independently approved;
+their original timeout causes are not all established. RP-364 and Garage's RP-378 remain
+separate findings, not erased by later green journeys.
 
-RP-173 `3e8fe779..547ed7f0` and RP-175 `8378aeba..76a9fe04` also have independent
-corrective approval: exact historical decoder/loader failures, corrected endpoints and
-current affected Go/TS consumers execute. RP-174/RP-176 author reconciliation is unchanged.
-
-Preceding checkpoint (2026-10-08): all original C1–C8 diff reviews are complete. C2 retains its
-bounded approval; the other original batches retain CHANGES REQUIRED, not approval of Codex
-corrections. Latest C5 disposition consolidates RP-173/RP-174/RP-458. The snapshot decoder
-now refuses unexplained unavailability; old isolated/full-snapshot regressions fail, corrected
-affected209 client checks/types/build/boundaries and Go projector/account packages pass.
-The latest owning-log entry records exact ranges, generated-contract verification and limits.
-Author-body RP-174/RP-176, content, consolidated corrective review and full acceptance remain.
-RP-453 event-key admission and RP-454/RP-455 completion focus are locally corrected. The latest
-C6 correction (RP-456) routes terminal refusal to the existing Desk status only; six old-host
-native cases reproduce duplicate delivery. Final affected Chromium/WebKit280, types/build/
-boundaries pass. The preceding full real-service composed1397 passes for `c802c2dc`; it was
-not rerun for this announcement-only correction. Corrective review, shared clock, content and
-whole-feature acceptance remain; the latest log owns exact ranges and limits.
-
-Preceding checkpoint (2026-10-08): RP-424's Buy-to-owned focus handoff now respects newer focus,
-including a later-removed control and same-Desk navigation. Old-source native regressions fail;
-230 affected Chromium/WebKit cases pass (four separate performance skips), with types/build/
-boundaries, the production-built Clout/Cosmetic service journey and both actual N5 negative
-builds passing. The N5 fixture unit controls now read the actual shelf rather than a mock callback.
-The latest log owns the exact range and limits; designated review and full feature gates remain.
-
-Preceding checkpoint (2026-10-08, `2fff9748`): RP-411's recorded-context admission correction is
-committed and locally verified in both replay runtimes and the real Postgres Cosmetic population.
-Valid receipt/event/state bytes remain unchanged; malformed context is refused without mutation.
-Full production remains red on the existing 27 Clout partition cases; the historical kernel guard
-also remains red. The latest log owns commands and limits. Remaining C4 review, author-body
-reconciliation, content and designated correction reviews stay open;
-this is a finished bounded repair, not whole-feature approval or archival.
-
-Preceding checkpoint (2026-10-08): RP-385's native-pointer/refresh false-failure route is reproduced
-in the actual mounted host in Chromium/WebKit. G10 equip/unequip now reuse the one-shot guarded
-DOM activation used for Buy; exact receipts, persisted wearing/overlay and the same action
-deadline remain. Final46 affected native checks, types and whole real-service composed28799
-PASS. Original40231's unique cause remains untraced; passive failure metadata is retained.
-Designated review, shared-clock D-024, copy/content and full feature acceptance remain. Next:
-consolidate review/remaining accepted gates; diagnose any distinct recurrence from its trace.
-
-Preceding checkpoint (2026-10-07): RP-377's premature overlay check is locally corrected: the
-driver awaits host settlement within the original action deadline, retaining exact receipt,
-persisted wearer and rendered-overlay assertions. Focused Chromium/WebKit and the real-service
-Cosmetic journey pass; designated review remains. Subsequent ordinary whole68777 also passes,
-but RP-378's preceding Fiscal timeout remains open with verified passive diagnostics in the
-Garage log. No reliability or full-CI acceptance claim. See the owning logs.
-
-RP-365's care conflict has a reproduced backwards-attendance
-route, both real Postgres/DOM and deterministic cutoff regression. Sources restored; replayable
-probe and exact evidence in latest `log.md`. Shared-clock repair needs D-024/the draft successor's
-explicit boundary; no pet clamp/retry is authorized. RP-364 Buy cause and prior reviews remain.
+Feature gates still open: ruling-author RP-174/RP-176 body reconciliation; D-024 shared-clock
+authority for RP-365's reproduced backwards-attendance conflict; owner copy adoption and
+production content; complete acceptance including manual AT and release integration.
+No pet clamp/retry is authorized by the clock finding. The 27 Clout accounting failures and
+historical RP-131 kernel guard remain red; selected passes are not full CI or a 1.0 claim.
+Historical checkpoint details remain intact in the append-only log and Git history.
 
 Original implementation by: Claude. Original-range verdicts and remaining corrective reviews
 are recorded below and in the log; not every implementation checkbox is an approval. There is
@@ -104,7 +49,7 @@ migration take the next free numbers at landing.
   their specified home conflicts with new-run-only activation. This box is implementation
   presence, not C3 acceptance or archival approval; ruling-author reconciliation is required.
   RP-181's separate AC8 test-only supplement now covers nonempty owned/equipped carry through
-  both named Exit paths in Go/TS and real Postgres; Claude designated review remains required.
+  both named Exit paths in Go/TS and real Postgres; its complete corrective range is independently approved.
   The complete original C3 review additionally found RP-457's Go saved-state case aliases;
   its bounded correction is independently approved as recorded above, not full C3 acceptance.
 - [x] C4 Intents `acquire_cosmetic` / `equip_cosmetic` / `unequip_cosmetic`, the three events and
@@ -120,7 +65,7 @@ migration take the next free numbers at landing.
   CHANGES REQUIRED verdict and the outstanding corrective reviews are in the owning log.
   RP-179's shared two-pet equip transition is now
   supplied by a test-only corpus supplement, with independently fired Go/TS single-wearer
-  mutations. Claude designated review of this evidence correction remains required.
+  mutations. Its complete corrective range is independently approved.
   RP-411's later replay-admission review found Go defaulting missing/null Company context and
   accepting unsafe revisions or extraneous null context that TS rejects. The bounded strict
   correction and shared admission fixtures are independently approved; the latest owning log gives
@@ -157,8 +102,8 @@ migration take the next free numbers at landing.
   no whole-C6 or feature acceptance is inferred.
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
-  RP-180's syntax-aware package-gate correction is locally tested and awaits Claude's
-  designated review; the old regex admitted a real dynamic economy import.
+  RP-180's syntax-aware package-gate correction is independently approved;
+  the old regex admitted a real dynamic economy import.
   The complete original C7 diff now has a consolidated CHANGES REQUIRED verdict for
   RP-168/RP-180; its remaining original diff is reviewed, not retroactively approved.
 - [x] AC14 composed real-server witness (Buy → reload under the N5 trap, with a severed-producer
@@ -188,9 +133,9 @@ migration take the next free numbers at landing.
   Codex's targeted AC7 review found RP-182: receipts were discarded and the Company arms used
   nil Founder contributions. The test-only correction retains 200 × 288 steps, compares every
   receipt/complete state, consumes correctly frozen bonuses and checks a separate next-run
-  consumer with firing negatives. Claude's designated review is required; this box records
+  consumer with firing negatives. Its complete corrective range is independently approved; this box records
   implementation presence, not C8 approval. The complete original C8 diff now has a consolidated
-  CHANGES REQUIRED verdict for RP-182. RP-180's package-gate correction also awaits review.
+  historical CHANGES REQUIRED verdict for RP-182. RP-180's package-gate correction is also approved.
 
 Box evidence: each flipped box's exercising tests landed in that batch's commit
 (`afe6529b`, `8e315569`, `581886a4`, `500d944c`, `1a477d9e`, `1bba27ba`, `a4b22429`, and this
@@ -198,8 +143,8 @@ C8 commit). See `log.md`.
 
 ## Codex correction review index (2026-10-05)
 
-This historical range index does not itself supply approval. RP-173, RP-175, RP-177, RP-178,
-RP-183 and RP-185/RP-186 now have fresh independent Codex corrective approval under Marco's delegation; remaining rows
+This historical range index does not itself supply approval. RP-173, RP-175, RP-177–RP-183
+and RP-185/RP-186 now have fresh independent Codex corrective approval under Marco's delegation; remaining rows
 still need designated review. Exact verdicts, executed checks and limits are in `log.md`.
 Reviewing corrections does not automatically approve the original Claude C1–C8 span;
 its bounded outstanding findings and ruling-author blockers still apply.

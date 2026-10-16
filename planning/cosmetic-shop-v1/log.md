@@ -2507,3 +2507,62 @@ requires an unrelated journey rerun. Execution base5521df63; parent review recor
 All handles terminal/slot released; no containers or persistent services created, no reviewer
 tracked edits/commits/publication. This closes only the named corrective reviews, not original
 whole C1/C5, new feature/normative adoption, content, full CI, archival or release gates.
+
+## 2026-10-16 — Second-wearer, both-Exit and isolation test repairs approved
+
+Review by: /root/cosmetic_persistence_isolation_corrective_review (fresh independent Codex
+under Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; all13 unique test/fixture/doc/record paths inspected:
+
+- RP-179: 646daa0884e71d331d63130ff8f80032d24a0065-exclusive..144f5e8e2ffcbcbd9b59b6083e0071f739eb641a-inclusive (9 paths).
+- RP-181: 07223fba9693ec154d795b6640fb4c75fc7296d3-exclusive..66cfa3dba637af3f2308218654caa67c600928f0-inclusive (12 paths).
+- RP-182: 7cae35eb33b33c4ec0ec094eddbab8679ee0c28d-exclusive..7c16d890924154d423b6a69fdf6107bfa6baf771-inclusive (7 paths).
+
+Existing AC6/AC7/AC8 test-code repairs only, not original C3/C4/C8 acceptance. Corpus adds
+five real acquire/adopt/equip transitions without altering20 prior rows; the fixture artifact
+changes only adoption cap1→2 and hash. Both nonempty Exit pairs preserve prior cases/bundle.
+Independent ignored read-only overlays: Go single-wearer55861 fails the intended second-equip
+assertion; TS7265 fails2 cases/30 controls. Go finishExitResolved reset50238 fails BOTH real
+Postgres and both pure Exit arms; TS87873 fails2 Company-output cases/30 controls. Exact fixed
+endpoint TS60060 passes32/32; current later-guard population50203 passes60/60.
+Native full200 seeds×288 steps77249 passes (policy30.95s/package31.567s), with all3 leak controls.
+Independent receipt-comparison removal50036 and next-run-consumer disconnection59827 each fail
+their specific leak-not-caught:<nil> oracle. Actual save-codec cloning, complete per-step state/
+receipt/outcome equality, immutable within-run bonuses and separate next-run purchase/accrual
+consumer inspected. Founder time/eligibility remain controlled fixtures, not natural progression.
+
+At4f6c132f, actual Linux-amd64/emulated Postgres both-Exit lane66318 PASS0.853s; final
+`make test-go-ci CI_TEST_PACKAGES=./production CI_TEST_FLAGS='-run Cosmetic -v'`49027 PASS68.768s,
+full200×288 policy66.41s, no selected DB skips, both Exits/history/refusals/leak controls execute.
+`make vet GO_PACKAGES='./production ./cosmetic'` and `make typecheck` PASS,0 diagnostics.
+Affected Reputation helper71141 PASS1.185s; native DB skips and cosmetic's0 matching tests receive
+no credit. All Go gates use count=1. Generator .cache/cosmetic-persistence-review-generate.mjs
+SHA256 cc73dbc0e2088f40d64ebb0e09a54dd71cd98b491c68f02bcf25f9604564ad9d retains the overlays.
+Initial omitted-root/relative-config TS launches execute0; nonexistent Reputation filename in
+another invocation adds no coverage. Only the actual60 Cosmetic tests are credited there.
+All handles terminal/slot released; only own tmpfs Postgres9ced0556eb38 removed, builders/cache
+preserved. No tracked reviewer edits. No browser/hosted/full-CI/new-feature/normative/archival/
+release claim; author RP-174/RP-176,27 Clout failures and historical RP-131 remain open.
+
+## 2026-10-16 — Actual-source package-boundary tooling repair approved
+
+Review by: /root/cosmetic_package_boundary_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings. Complete RP-180 range
+c17b0131ded0b3b1ff48ad792dceb30d5383a257-exclusive..ad789790a7fe6b3c35556675fffd7e8d587c6216-inclusive:
+both commits/all10 scanner, nested-fixture, canonical-doc and tracking paths inspected under
+existing Cosmetic§5/N8/AC7/AC13/AC16. No runtime/kernel/spec/workflow/dependency change.
+
+`node .cache/cosmetic-package-boundary-review.mjs`40576 passes12 differential expectations:
+exact old complete scanner falsely accepts dynamic economy import, normalized static escape,
+nested.mts escape and computed import; exact fixed scanner exits1 with intended diagnostics.
+Sibling and nested-parent controls pass both. Each probe runs the ACTUAL complete gate against
+disposable source roots, not only an exported assertion. Runner SHA256
+ea423c41e70f614d164d3ad615826e3e8ecaad703d49e135b4e0a9a6d2214513.
+At4f6c132f, `make verify-cosmetic-boundary typecheck build-client`21836 PASS:76 Go deps,
+both client files,22 negatives,0 TS/Svelte diagnostics and217-module production build.
+Scanner/retained fixtures match reviewed endpoint. Both handles terminal, disposable roots
+removed, no containers/main-source mutation or reviewer commit. Existing builders/cache remain.
+No original C7/C8/full feature/normative/archival/release approval; no browser/DB/hosted/full-CI
+claim. Parent compacts duplicated historical plan checkpoints into current status; this
+append-only log and all acceptance criteria remain intact. No software rerun for record edits.
