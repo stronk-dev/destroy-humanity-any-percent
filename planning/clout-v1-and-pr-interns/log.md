@@ -7311,3 +7311,108 @@ this checkpoint is research/specification work OUTSIDE corrective-code review
 delegation; no designated approval, implementation acceptance, archival or release.
 Review by: Codex root (research author/first filter). Recorded by: Codex root.
 Full nine-tier1.0 goal active/progress. Nothing pushed, published or deployed.
+
+## 2026-10-16 — Logged-stage reference, prospective bounded check
+
+Prior goal turn bd290f59 is PROGRESS: it supplies real post-hook codec counterexamples
+and a bounded distinct-stage reference, not a live accounting fix. Next compare a
+manual proposed prefix against actual ApplyLogged. Population: loader-admitted
+unminted Company19 bundle with offline cap1500ms (not a balance-data change), four
+none/production/building/combined buff profiles, both evaluation modes, endpoints
+0/999/1000/1500/1501/5000/5001/6001ms, applied manual and genuinely unaffordable1024-
+generator purchase. Each carries a nonempty frozen Guild batch and Commons weight.
+Expected128 commands/32 catchup paths/64 exact rejected rollbacks. Observe complete
+evaluation/hook stages, state, contribution rows and private events; capture the
+zero-elapsed ordinary call, not merely final cash. Baseline observer-off commands
+must retain exact full state/receipt/events/invariants under observation.
+
+Manual generator changes only two return signatures to named slots and inserts
+deferred observation callbacks in ignored engine/intents copies; reversing those
+insertions must recover every original byte. No tracked product source is edited.
+Initial proposed prefix deliberately omits catchup: the existing logged oracle
+must detect the missing stage before the reference is corrected. Actual real
+helpers own all arithmetic, scheduling, clearing and hooks. This is bounded Go
+compatibility research, not a logged API implementation, SQL/TS proof, natural
+buff history, changed payment or adoption of C1/H3 drafts.
+
+Before final measurement, also observe the real schedule call/private events via
+a THIRD reversible source overlay. This closes an otherwise unobserved event
+ordering boundary. Add64 duplicate captured-batch refusals plus six malformed
+clock/catchup/span/opened/attendance/weight controls at a real catchup command;
+every refusal must restore the complete source. The attendance mismatch must
+show the real completed catchup and failed schedule, with no ordinary stage.
+Positive waits must actually increase lifetime and produce Guild/Commons private
+events; literal4000ms attendance plus exact5000ms absence cutoff and buff expiry
+are separate anchors, not merely agreement between two helper callers.
+
+Extend the same frozen Go population to the actual TypeScript ApplyLogged, not
+another hand-reconstructed client engine: emit the128 full actions/six malformed
+contexts plus pinned artifacts/source hashes to an ignored packet. Execute128
+exact state/receipt/event/restore comparisons,64 duplicate-batch refusals, six
+malformed-context refusals, population/source checks and three forged-expectation
+controls. Manual Vite config replaces one TEST slot only, never product modules.
+Do not restamp a golden or claim the .txt source is in ordinary CI/typecheck.
+
+### H3s/RP-692 result — actual logged stages and Go/TS compatibility
+
+Initial missing-catchup candidate82456 FAIL0.591s: exactly32 catchup cases fail
+while96 companions pass. Corrected reference now matches actual ApplyLogged's
+evaluation/hook/schedule sequence, complete before/after states, contribution rows,
+evaluations and private events for all128 commands. The32 catchups retain actual
+ordinary Evaluate(elapsed0); its wrapper correctly skips the INNER zero-time hook.
+Positive lifetime/Guild/Commons effects, literal attendance/expiry and captured
+clearing (consumed3+credit7=10, boundary1/window7) anchor the comparison. All64
+late refusals restore the exact origin and expose no prefix events. All64 duplicate
+captured batches refuse unchanged. Six malformed context controls preserve real
+error/rollback; attendance fails after catchup/schedule entry, before ordinary work.
+
+Final frozen native7687 PASS0.879s, then normal production vet PASS. Declared
+Linux/AMD64 Go1.26 session49231 PASS1.517s. Both selectors also execute existing
+TestSimulation and the real catchup/rejection regression. The source generator's
+three transformations recover original engine/intents/active-play bytes exactly
+when reversed; observer-off/on full actual outputs agree in every primary cell.
+There are22 generated overlay entries, not22 modified production files.
+
+Both architectures emit the SAME1622159-byte packet SHA256
+fe1bbbc6e40a78b4623831e639a5a280bf799aab84323dc6fc61964c169cb572.
+It contains128 complete actions/six context faults,11 named source hashes and the
+admitted unminted bundle be76a31f4cb9cdbab5131bdf6cdabee5da91dab37f83c83ae501d5d1e9105ddf.
+The actual unmodified TS ApplyLogged consumes it:64740 PASS203 tests/909ms,
+including full state/receipt/events/restore,64 duplicate and six context refusals,
+population/staleness and three forged-expectation controls. Vite replaces only
+test/replay.test.ts's test source; no product module or default suite is replaced.
+The .txt research source is not claimed included in ordinary TS typecheck/CI.
+
+Reproduce from root:
+1. `node planning/clout-v1-and-pr-interns/probes/prepare-logged-stage-observation.mjs`
+2. `make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../.cache/wait-logged-overlay.json -run TestWaitLoggedStagesResearch\|TestSimulation\|TestOfflineCatchupIsFrozenAndRejectedCommandsRollBack -v'`
+3. `client/node_modules/.bin/vitest run --root client --config /Users/stronk/repos/cloud-clicker/.cache/wait-logged-replay.config.mjs`
+Linux producer: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/wait-logged-overlay.json -run 'TestWaitLoggedStagesResearch|TestSimulation|TestOfflineCatchupIsFrozenAndRejectedCommandsRollBack' -v ./production -count=1`.
+Do not run concurrent producers against the same ignored packet. No first-hour
+packet or large unchanged census is required by this selector.
+Final SHA256: Go manual fdce304822cc6bd70f99367ed77b82efe1f095756cb933978dbe5100ed026ed5;
+TS manual9f9f75a0d9b7939d36d39c25bef150cc2572a3e392a66631fd29071d7e1de5fd;
+generator5916cbb6f9e9d2196898d2dcde0b60df6dfa038831a75648bfcae1be874364dc;
+overlay461751ddf809e552e97e3a7c737908bf2bd269390edf86eea6309671847d0dcd.
+
+Setup corrections disclosed: first build had an unused import (zero tests).
+The initial clearing assertion incorrectly treated debit3 as consumed credit;
+the actual existing Guild rule credits7, so3+7=10. Fix that oracle before the
+clean32-failure candidate run above; no gameplay rule changed. The first clock
+fault retained a now-incoherent catchup envelope and died in parsing, not the
+clock gate. Removing its catchup field isolates the actual backwards-clock
+refusal; other context assertions remain exact. Intermediate populations do not
+replace the frozen final native/Linux/client results.
+
+Own H3s/parent C1h, RP-692 and plan reconcile this bounded reference. Next bind an
+owned modern endpoint factory and chronological query to the proved stage recipe,
+not another cash-only counterexample census. Arbitrary input/context/lifecycle,
+masks, full search/workload/compatibility and normative review/adoption remain;
+so do actual SQL/live-provider settlement and natural/default player workflow.
+No production/data/schema/CI/golden or kernel223/epoch8 bytes changed. RP-680,
+27 Clout AC6 failures and the historical guard remain OPEN, not rerun/fixed here.
+Eight-path rangebd290f59-exclusive through this checkpoint remains research/
+specification work OUTSIDE corrective-code delegation; no designated approval,
+implementation acceptance, archival, release, push/publication or deployment.
+Review by: Codex root (research author/first filter). Recorded by: Codex root.
+Full nine-tier1.0 goal remains active/progress.

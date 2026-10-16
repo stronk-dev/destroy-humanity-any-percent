@@ -105,14 +105,23 @@ Seeded admitted Commons sample and saturated-run histories expose real encoder
 refusals; the diagnostic query preserves them without changing the primitive or
 rejecting valid neighboring histories. The owning log/manual reference hold72
 selected endpoint pairs and30 paired queries, not an exhaustive input-domain proof.
-Next build a bounded actual logged-command compatibility reference: catchup before
-endpoint sampling, ordinary zero-elapsed stage retained, complete state/evaluations/
-events and refusal compared to ApplyLogged. Do not promote this codec diagnostic
-into a universal observation or persistence policy.
+The bounded logged-stage reference below now covers selected commands; full
+factory/adoption obligations remain. Do not promote the codec diagnostic into a
+universal observation or persistence policy.
 
-Next complete remaining input/mask/map identity and post-hook state obligations,
-then exact logged stage/clock operation and real settlement; complete global/caller/
-timestamp/encoding/state and lifecycle/compatibility obligations,
+H3s/RP-692 now compares a complete manual prefix to actual logged evaluation/hook/
+schedule observations:128 commands/32 catchups/64 exact rejected rollbacks, with
+nonempty frozen Guild batches, literal attendance/expiry and private event order.
+The missing-catchup candidate first fails32 cases. Corrected native/Linux results
+produce a byte-identical packet, and actual TS ApplyLogged passes203 full-output/
+restoration/refusal/forgery checks. This is a bounded reference, not a live factory
+or accounting repair; the owning log has reproduction and exact limits.
+
+Next bind an owned modern endpoint factory and chronological query to this actual
+recipe, preserving validated frozen context, source version, clock/clearing identity,
+private events and zero-elapsed ordinary stage. Complete remaining input/mask/map,
+post-hook state, real settlement and global/caller/timestamp/encoding/state/lifecycle
+obligations,
 then measure complete real workloads with all preparation work charged. Partial
 certification alone does not adopt the proposed chronological error policy.
 Remaining whole-domain definedness, hook/modern factory, full caller/state semantics,

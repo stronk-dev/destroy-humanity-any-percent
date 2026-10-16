@@ -535,6 +535,14 @@ RP-652/RP-657 explain why the distinction matters; they do not prove the modern
 factory or all-stage reconstruction. Acceptance needs recipe-mismatch refusals,
 complete stage/event comparisons and original-policy compatibility in both runtimes.
 
+Child H3s/RP-692 now supplies a bounded actual logged-stage compatibility reference:
+128 commands include32 real catchups followed by ordinary elapsed0, captured
+Guild clearing, endpoint sampling, private event order and rejected rollback.
+Actual client ApplyLogged reproduces complete Go outputs and refusal controls.
+This does not implement/adopt an owned modern factory, arbitrary-context admission,
+all-stage/all-caller proof, masks, query integration or SQL/live-provider settlement.
+Keep those requirements; do not install a prior projection as the action's source.
+
 ### C1i — Bounded long-absence reconstruction evidence (RP-658)
 
 The unminted Company19 fixture combines a48h interval, active production buff,
@@ -1087,3 +1095,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-16: child H3r reproduces a post-hook codec completion gap; explicitly
   retain caller-stage validation/rollback closure instead of silently adding
   codec failures to every observation. Manual reference only, no implementation.
+- 2026-10-16: retain H3s's actual logged-stage and Go/TS compatibility reference,
+  including zero-elapsed ordinary work and real refusal/rollback. The proposed
+  owned modern factory/query and full accounting repair remain unimplemented.

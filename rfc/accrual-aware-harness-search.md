@@ -1510,6 +1510,55 @@ caller/workload/compatibility and independent normative adoption remain open;
 RP-680 and27 Clout AC6 failures remain unrepaired. Kernel223/epoch8 and active
 math, saves, gameplay, CI and accepted contracts are unchanged.
 
+#### H3s — Actual logged-stage compatibility reference (RP-692)
+
+The [manual logged reference](../planning/clout-v1-and-pr-interns/probes/wait-logged-stages.go.txt)
+now observes actual ApplyLogged, not a second accounting engine. Its
+[generator](../planning/clout-v1-and-pr-interns/probes/prepare-logged-stage-observation.mjs)
+inserts deferred evaluation/hook/schedule observations only in ignored source
+copies. Removing those insertions/named return slots recovers every original
+byte. Observer-off/on commands retain identical full state, receipts, events and
+invariants. No production file or default CI population changes.
+
+The admitted unminted Company19 bundle has offline cap1500ms, so the actual
+catchup branch is exercised cheaply rather than assumed from the5000ms prestige
+attendance boundary. Four none/production/building/combined buff profiles, both
+modes, eight endpoints0..6001ms and applied manual/rejected purchase arms produce
+128 commands, including32 catchups and64 exact rejected rollbacks. Each carries
+a nonempty captured Guild batch and resolved Commons weight. Buff histories are
+controlled, not naturally acquired; the retuned cap is not released balance.
+
+The initial manual prefix omits catchup and fails exactly32 cases while96 survive.
+The corrected reference clears the captured batch on a fresh copy, assembles base
+contributions, performs required offline evaluation/closed hooks BEFORE scheduling,
+applies the actual endpoint schedule, then assembles endpoint contributions and
+performs ordinary evaluation/hooks. No arithmetic is copied. Complete pre/post
+states, source version, contribution rows, evaluations and private events match
+actual command traces. Applied event prefixes retain their actual order.
+
+Catchup paths contain a real ordinary Evaluate call with elapsed0. Its
+runAccrualHook wrapper is invoked but correctly skips the INNER hook; recording
+that zero stage is not another payment. Literal attendance/expiry, positive
+lifetime/Guild/Commons output and exactly-once clearing anchor the observations.
+All64 duplicate captured batches refuse unchanged. Six malformed clock/catchup/
+span/opened/attendance/weight cases retain real refusal/rollback behavior; the
+attendance failure occurs after catchup but before ordinary evaluation.
+
+Native ARM64 and declared Linux AMD64 generate the same128-command/six-fault
+packet byte-identically. The [manual client replay](../planning/clout-v1-and-pr-interns/probes/wait-logged-replay.test.ts.txt)
+uses actual unmodified TypeScript ApplyLogged:203 checks pass, comparing full
+state/receipt/events/restoration, duplicate and malformed-context refusals,
+population/source identity and forged expectations. The Vite overlay replaces
+one test slot only. This is not inclusion in ordinary CI or TS typecheck.
+
+This supplies a bounded compatibility reference, not a new validated origin/
+factory, arbitrary-context admission, masks in a modern recipe, full search,
+SQL/live-provider settlement, natural/default workflow or repaired accounting.
+Next bind an owned modern endpoint factory and chronological query to this exact
+recipe, including retained private events and source/clock/clearing identity;
+complete workload/compatibility and independent normative adoption remain gates.
+RP-680,27 AC6 failures, kernel223/epoch8 and all live contracts remain unchanged.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -1717,3 +1766,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   codec completion on admitted diagnostic inputs. Retain full-state/write-set
   observations, actual codec errors, valid neighbors and a conditional span
   obligation; no generic primitive refusal, live fix or normative adoption.
+- 2026-10-16: H3s/RP-692 binds a manual prefix to observed actual logged
+  catchup/schedule/ordinary stages and full Go/TS outcomes. Retain zero-elapsed
+  ordinary evaluation, real clearing/rollback and malformed-context controls;
+  no modern factory/query, production accounting change or normative adoption.

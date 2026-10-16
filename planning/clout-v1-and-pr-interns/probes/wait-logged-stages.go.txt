@@ -1,0 +1,406 @@
+package production
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"os"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/commons"
+	"cloud-clicker/server/guild"
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/save"
+)
+
+// Used only by generated, reversible observation hooks in the manual overlay.
+// Neither callback exists in normal production builds. Selected tests are serial.
+var observeLoggedEvaluationResearch func(*save.State, time.Time, EvaluationMode, []multiplier.Contribution) func(EvaluationResult, error)
+var observeLoggedHookResearch func(*save.State, EvaluationResult, []multiplier.Contribution) func([]save.EventWrite, error)
+var observeLoggedScheduleResearch func(*save.State, time.Time) func([]save.EventWrite, error)
+
+type loggedStageResearch struct {
+	kind          string
+	before, after []byte
+	version       int
+	now           time.Time
+	mode          EvaluationMode
+	contributions []multiplier.Contribution
+	evaluation    EvaluationResult
+	events        []save.EventWrite
+	errorText     string
+}
+
+type loggedStageFaultResearch struct {
+	Name    string          `json:"name"`
+	State   string          `json:"state_json"`
+	Payload json.RawMessage `json:"canonical_payload"`
+	Inputs  json.RawMessage `json:"replay_inputs"`
+}
+
+func captureLoggedStagesResearch(t *testing.T, run func() error) ([]loggedStageResearch, error) {
+	t.Helper()
+	if observeLoggedEvaluationResearch != nil || observeLoggedHookResearch != nil || observeLoggedScheduleResearch != nil {
+		t.Fatal("overlapping research observation")
+	}
+	rows := []loggedStageResearch{}
+	finish := func(index int, state *save.State, err error) {
+		rows[index].after = mustEncodeState(t, state)
+		if err != nil {
+			rows[index].errorText = err.Error()
+		}
+	}
+	observeLoggedEvaluationResearch = func(state *save.State, now time.Time, mode EvaluationMode, contributions []multiplier.Contribution) func(EvaluationResult, error) {
+		index := len(rows)
+		rows = append(rows, loggedStageResearch{kind: "evaluate", before: mustEncodeState(t, state), version: save.VersionForState(state),
+			now: now, mode: mode, contributions: append([]multiplier.Contribution(nil), contributions...)})
+		return func(result EvaluationResult, err error) {
+			rows[index].evaluation = result
+			finish(index, state, err)
+		}
+	}
+	observeLoggedHookResearch = func(state *save.State, result EvaluationResult, contributions []multiplier.Contribution) func([]save.EventWrite, error) {
+		index := len(rows)
+		rows = append(rows, loggedStageResearch{kind: "hook", before: mustEncodeState(t, state), version: save.VersionForState(state),
+			evaluation: result, contributions: append([]multiplier.Contribution(nil), contributions...)})
+		return func(events []save.EventWrite, err error) {
+			rows[index].events = copyPrivateWaitEventsResearch(events)
+			finish(index, state, err)
+		}
+	}
+	observeLoggedScheduleResearch = func(state *save.State, now time.Time) func([]save.EventWrite, error) {
+		index := len(rows)
+		rows = append(rows, loggedStageResearch{kind: "schedule", before: mustEncodeState(t, state), version: save.VersionForState(state), now: now})
+		return func(events []save.EventWrite, err error) {
+			rows[index].events = copyPrivateWaitEventsResearch(events)
+			finish(index, state, err)
+		}
+	}
+	defer func() {
+		observeLoggedEvaluationResearch, observeLoggedHookResearch, observeLoggedScheduleResearch = nil, nil, nil
+	}()
+	err := run()
+	return rows, err
+}
+
+// A manually reconstructed prefix, not a new logged operation or accepted API.
+// It invokes real arithmetic/hooks/scheduling, and performs no action/Store write.
+func projectLoggedPrefixResearch(state *save.State, bundle CatalogBundle, wire replayInputsWire) ([]save.EventWrite, error) {
+	var resolved replayAccrualResolved
+	if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil {
+		return nil, err
+	}
+	if err := deriveFactionStockResource(state, bundle.Faction); err != nil {
+		return nil, err
+	}
+	if err := applyReplayGuildSettlements(state, resolved.Accrual.GuildSettlementBatch, bundle.Faction.StockCap); err != nil {
+		return nil, err
+	}
+	external, err := contributionsFromReplay(resolved.Accrual)
+	if err != nil {
+		return nil, err
+	}
+	hook := closedReplayAccrualHook(bundle, resolved.Accrual.CommonsWeightPPM)
+	revision := save.Revision{Number: wire.Command.Revision, StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
+		ConstantsHash: bundle.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
+	now := time.UnixMilli(wire.EvaluatedAtMS).UTC()
+	events := []save.EventWrite{}
+	base, err := assembleContributions(state, bundle.Economy, external)
+	if err != nil {
+		return nil, err
+	}
+	if wire.OfflineCatchup != nil {
+		evaluation, err := Evaluate(state, bundle.Economy, now, ModeOffline, base)
+		if err != nil {
+			return nil, err
+		}
+		catchupEvents, err := runAccrualHook(hook, wire.Command.IntentID, state, bundle.Economy, revision, evaluation, base)
+		if err != nil {
+			return nil, err
+		}
+		events = append(events, catchupEvents...)
+	}
+	activeEvents, err := applyActivePlaySchedule(state, bundle.Opportunities, bundle.Prestige, revision.OwnerID, now, *resolved.ActivePlay)
+	if err != nil {
+		return nil, err
+	}
+	for i := range activeEvents {
+		activeEvents[i].IntentID = wire.Command.IntentID
+	}
+	events = append(events, activeEvents...)
+	active, err := activePlayContributions(state, bundle.Opportunities, resolved.ActivePlay.AttendedNowMS)
+	if err != nil {
+		return nil, err
+	}
+	contributions, err := assembleContributions(state, bundle.Economy, append(append([]multiplier.Contribution(nil), external...), active...))
+	if err != nil {
+		return nil, err
+	}
+	evaluation, err := Evaluate(state, bundle.Economy, now, wire.EvaluationMode, contributions)
+	if err != nil {
+		return nil, err
+	}
+	ordinaryEvents, err := runAccrualHook(hook, wire.Command.IntentID, state, bundle.Economy, revision, evaluation, contributions)
+	return append(events, ordinaryEvents...), err
+}
+
+func loggedStageBundleResearch(t *testing.T) CatalogBundle {
+	t.Helper()
+	base := axisContentBundle(t)
+	artifacts := map[string][]byte{}
+	for key, data := range base.Artifacts {
+		artifacts[key] = append([]byte(nil), data...)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(artifacts["economy"], &root); err != nil {
+		t.Fatal(err)
+	}
+	root["offline_policy"].(map[string]any)["accrual_cap_ms"] = 1500
+	var err error
+	artifacts["economy"], err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return loadCompleteReplayTestBundle(t, hash, artifacts)
+}
+
+func TestWaitLoggedStagesResearch(t *testing.T) {
+	bundle := loggedStageBundleResearch(t)
+	commonsCatalog, err := commons.LoadCatalog(bundle.Artifacts["commons"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	start := time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC)
+	completed, catchups, rejected, duplicates, malformed := 0, 0, 0, 0, 0
+	actions := []axisSequenceAction{}
+	faults := []loggedStageFaultResearch{}
+	for _, profile := range []string{"none", "production", "building", "combined"} {
+		for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+			for _, offset := range []int64{0, 999, 1000, 1500, 1501, 5000, 5001, 6001} {
+				for _, refuse := range []bool{false, true} {
+					t.Run(fmt.Sprintf("%s/%s/%d/reject%t", profile, mode, offset, refuse), func(t *testing.T) {
+						initial := axisTimingState(t, bundle, start)
+						initial.RunStartedAt = start.Add(-4000 * time.Millisecond)
+						initial.FactionID, initial.IncorporatedAt = "bootstrapper", start
+						initial.StockUnits, initial.ConsumedStockUnits = 20, 3
+						initial.GuildBoundaryGuildID, initial.GuildTitheCarryPPM = "01986666-3000-7000-8000-000000000001", 999_999
+						initial.CompactMember, initial.CompactTithePPM = true, commonsCatalog.DefaultTithePPM
+						for _, effectID := range []string{"active.production", "active.building"} {
+							if profile != "combined" && "active."+profile != effectID {
+								continue
+							}
+							effect, ok := bundle.Opportunities.Effect(effectID)
+							if !ok {
+								t.Fatal("missing pinned effect", effectID)
+							}
+							activated, id := int64(0), "01985555-0000-7000-8000-000000000001"
+							var target *string
+							if effectID == "active.building" {
+								activated, id = 3500, "01985555-0000-7000-8000-000000000002"
+								value := "generator.beige_tower"
+								target = &value
+							}
+							initial.ActiveBuffs = append(initial.ActiveBuffs, save.ActiveBuff{BuffInstanceID: id, EffectRowID: effectID,
+								SelectedTarget: target, ActivatedAttendedMS: activated, ExpiresAttendedMS: activated + effect.DurationMS})
+						}
+						origin := mustEncodeState(t, initial)
+						requestText := `{"intent_id":"01986666-0901-7000-8000-000000000901","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1000}`
+						if refuse {
+							requestText = `{"intent_id":"01986666-0901-7000-8000-000000000901","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":1024}}`
+						}
+						request, err := ParseIntent([]byte(requestText))
+						if err != nil {
+							t.Fatal(err)
+						}
+						now := start.Add(time.Duration(offset) * time.Millisecond)
+						command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001",
+							FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: initial.RunSeq, RunLogSeq: 1}
+						active, err := resolveActivePlaySchedule(initial, bundle.Opportunities, bundle.Prestige, command.FounderID, now)
+						if err != nil {
+							t.Fatal(err)
+						}
+						catchup, err := buildOfflineCatchup(initial, bundle.Economy, mode, now)
+						if err != nil || (catchup != nil) != (mode == ModeOnline && offset > 1500) {
+							t.Fatal("actual catchup admission differs", catchup, err)
+						}
+						carry := tier2FounderCarry(t, bundle, initial.RunStartedAt)
+						weight := int64(500_000)
+						batch := guild.SettlementBatch{GuildID: initial.GuildBoundaryGuildID, Settlements: []guild.Settlement{{GuildID: initial.GuildBoundaryGuildID, BoundarySeq: 1, DebitUnits: 3, CreditUnits: 7}}}
+						values := []multiplier.Contribution{{SourceID: guild.StockConsumptionSourceID, Slot: multiplier.SlotFaction, Target: "all", Factor: mustDecimal(t, "1e0")}}
+						inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind,
+							Contributions: values, CommonsWeightPPM: &weight, GuildSettlementBatch: batch, RouteContextVersion: bundle.Routes.ContextVersion(),
+							FounderCarry: &carry, ActivePlay: &active, OfflineCatchup: catchup})
+						if err != nil {
+							t.Fatal(err)
+						}
+						wire, err := parseReplayInputs(inputs)
+						if err != nil {
+							t.Fatal(err)
+						}
+						baselineState := activationRestore(t, bundle, origin, 19, start)
+						baseline, err := ApplyLogged(baselineState, request.CanonicalPayload, bundle, inputs)
+						if err != nil || (baseline.Outcome == save.IntentRejected) != refuse {
+							t.Fatal("actual command did not reach declared outcome", baseline.Outcome, err)
+						}
+						actualState := activationRestore(t, bundle, origin, 19, start)
+						var actual LoggedTransition
+						trace, err := captureLoggedStagesResearch(t, func() error {
+							var applyErr error
+							actual, applyErr = ApplyLogged(actualState, request.CanonicalPayload, bundle, inputs)
+							return applyErr
+						})
+						if err != nil || !bytes.Equal(mustEncodeState(t, actualState), mustEncodeState(t, baselineState)) ||
+							!bytes.Equal(actual.Receipt, baseline.Receipt) || !reflect.DeepEqual(actual.Events, baseline.Events) || !reflect.DeepEqual(actual.Invariants, baseline.Invariants) {
+							t.Fatal("observation changed actual command output", err)
+						}
+						prefix := activationRestore(t, bundle, origin, 19, start)
+						var prefixEvents []save.EventWrite
+						projected, err := captureLoggedStagesResearch(t, func() error {
+							var projectErr error
+							prefixEvents, projectErr = projectLoggedPrefixResearch(prefix, bundle, wire)
+							return projectErr
+						})
+						if err != nil || !reflect.DeepEqual(projected, trace) {
+							t.Fatal("proposed prefix differs from actual logged stage sequence/state/evaluation/contributions/events", len(projected), len(trace), err)
+						}
+						attended := int64(4000) + offset
+						if offset > bundle.Prestige.CatchupCeilingMS {
+							attended = 4000
+						}
+						kept := []save.ActiveBuff{}
+						for _, buff := range initial.ActiveBuffs {
+							if buff.ExpiresAttendedMS > attended {
+								kept = append(kept, buff)
+							}
+						}
+						if active.AttendedNowMS != attended || !reflect.DeepEqual(prefix.ActiveBuffs, kept) {
+							t.Fatal("literal attendance/expiry boundary changed", active.AttendedNowMS, attended)
+						}
+						if offset > 0 && (!prefix.LifetimeValue.Gt(initial.LifetimeValue) || len(prefixEvents) < 2) {
+							t.Fatal("positive population lost real lifetime/Guild/Commons hook effects")
+						}
+						wantedRows := 3
+						if catchup != nil {
+							wantedRows = 5
+							catchups++
+							if trace[0].mode != ModeOffline || trace[0].evaluation.ProductionMS != 1500 || trace[2].kind != "schedule" || trace[3].evaluation.ElapsedMS != 0 {
+								t.Fatal("catchup or zero-elapsed ordinary stage was lost")
+							}
+						}
+						if len(trace) != wantedRows || trace[wantedRows-2].kind != "evaluate" || trace[wantedRows-1].kind != "hook" ||
+							!bytes.Equal(trace[len(trace)-1].after, mustEncodeState(t, prefix)) {
+							t.Fatal("incomplete real prefix observation", len(trace), wantedRows)
+						}
+						if refuse {
+							if !bytes.Equal(origin, mustEncodeState(t, actualState)) || len(actual.Events) != 0 ||
+								!bytes.Equal(actual.Receipt, marshalRejection(request.IntentID, 1, "unaffordable", "generator.beige_tower")) {
+								t.Fatal("real rejected action leaked clearing/accrual/events or changed refusal")
+							}
+							rejected++
+						} else if actualState.GuildBoundarySeq != 1 || actualState.ConsumedStockUnits != 10 || actualState.GuildConsumedWindow != 7 {
+							t.Fatal("real action did not consume exactly the captured settlement")
+						} else if len(actual.Events) < len(prefixEvents) || !reflect.DeepEqual(actual.Events[:len(prefixEvents)], prefixEvents) {
+							t.Fatal("private prefix events differ from real command event order")
+						}
+						if !refuse {
+							post := mustEncodeState(t, actualState)
+							if _, err := ApplyLogged(actualState, request.CanonicalPayload, bundle, inputs); !errors.Is(err, ErrInvalidReplayInputs) || !bytes.Equal(post, mustEncodeState(t, actualState)) {
+								t.Fatal("duplicate captured clearing did not refuse unchanged", err)
+							}
+							duplicates++
+						}
+						if profile == "combined" && mode == ModeOnline && offset == 1501 && !refuse {
+							for _, fault := range []string{"clock", "missing_catchup", "span", "opened", "attendance", "weight"} {
+								bad, err := parseReplayInputs(inputs)
+								if err != nil {
+									t.Fatal(err)
+								}
+								var badResolved replayAccrualResolved
+								if err := decodeReplayStrict(bad.Resolved, &badResolved); err != nil {
+									t.Fatal(err)
+								}
+								wantRows, wantError := 0, ErrInvalidReplayInputs
+								switch fault {
+								case "clock":
+									bad.EvaluatedAtMS, wantError = start.Add(-time.Millisecond).UnixMilli(), ErrReplayClockViolation
+									bad.OfflineCatchup = nil // Keep the envelope coherent so the actual clock gate runs.
+								case "missing_catchup":
+									bad.OfflineCatchup = nil
+								case "span":
+									bad.OfflineCatchup.OfflineSpan.FromMS++
+								case "opened":
+									bad.OfflineCatchup.OpenedAtMS++
+								case "attendance":
+									badResolved.ActivePlay.AttendedNowMS++
+									wantRows = 3 // Real catchup + failed schedule, no ordinary stage.
+								case "weight":
+									badResolved.Accrual.CommonsWeightPPM = nil
+								}
+								bad.Resolved, err = json.Marshal(badResolved)
+								if err != nil {
+									t.Fatal(err)
+								}
+								badInputs, err := json.Marshal(bad)
+								if err != nil {
+									t.Fatal(err)
+								}
+								state := activationRestore(t, bundle, origin, 19, start)
+								var badResult LoggedTransition
+								badTrace, err := captureLoggedStagesResearch(t, func() error {
+									var applyErr error
+									badResult, applyErr = ApplyLogged(state, request.CanonicalPayload, bundle, badInputs)
+									return applyErr
+								})
+								if !errors.Is(err, wantError) || len(badTrace) != wantRows || !bytes.Equal(origin, mustEncodeState(t, state)) || len(badResult.Events) != 0 || len(badResult.Receipt) != 0 {
+									t.Fatal("real context refusal/partial-stage rollback changed", fault, err, len(badTrace), wantRows)
+								}
+								malformed++
+								faults = append(faults, loggedStageFaultResearch{fault, canonicalFixtureJSON(t, origin), request.CanonicalPayload, badInputs})
+							}
+						}
+						if !bytes.Equal(origin, mustEncodeState(t, initial)) {
+							t.Fatal("probe mutated the retained origin")
+						}
+						completed++
+						actions = append(actions, originReplayAction(t, fmt.Sprintf("%s/%s/%d/reject%t", profile, mode, offset, refuse), origin, request, inputs, actualState, actual))
+					})
+				}
+			}
+		}
+	}
+	if completed != 128 || catchups != 32 || rejected != 64 || duplicates != 64 || malformed != 6 {
+		t.Fatal("incomplete declared logged population", completed, catchups, rejected, duplicates, malformed)
+	}
+	t.Logf("logged complete%d catchups%d rejected-rollback%d duplicate-clearing%d malformed-context%d", completed, catchups, rejected, duplicates, malformed)
+	packet := struct {
+		Schema  int                        `json:"schema"`
+		Sources map[string]string          `json:"source_sha256"`
+		Bundle  reputationCorpusBundle     `json:"bundle"`
+		Actions []axisSequenceAction       `json:"actions"`
+		Faults  []loggedStageFaultResearch `json:"faults"`
+	}{1, sourceResearchHashes(t, []string{
+		"server/production/engine.go", "server/production/intents.go", "server/production/replay.go", "server/production/active_play.go",
+		"server/save/state.go", "client/src/replay.ts", "client/src/economy.ts", "kernel/VERSION",
+		"planning/clout-v1-and-pr-interns/probes/wait-logged-stages.go.txt",
+		"planning/clout-v1-and-pr-interns/probes/wait-logged-replay.test.ts.txt",
+		"planning/clout-v1-and-pr-interns/probes/prepare-logged-stage-observation.mjs",
+	}), reputationCorpusBundle{ConstantsHash: bundle.ConstantsHash, Artifacts: stringArtifacts(bundle.Artifacts)}, actions, faults}
+	encoded, err := json.Marshal(packet)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile("../../.cache/wait-logged-stages-inputs.json", encoded, 0600); err != nil {
+		t.Fatal(err)
+	}
+	digest := sha256.Sum256(encoded)
+	t.Logf("actual command packet bytes%d sha256:%s", len(encoded), hex.EncodeToString(digest[:]))
+}

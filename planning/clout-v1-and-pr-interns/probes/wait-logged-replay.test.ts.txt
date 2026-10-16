@@ -1,0 +1,72 @@
+// Manual replacement of a test slot only; product modules are never replaced.
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { describe, expect, it } from "vitest";
+import { applyLogged, canonicalJSONString, encodeReplayState, loadReplayCatalogBundle,
+  restoreReplayState, type ReplayArtifacts, type ReplayCatalogBundle } from "../src/replay";
+
+interface Action {
+  name: string; pre_state_json: string; canonical_payload: unknown; replay_inputs: unknown;
+  outcome: string; receipt_json: string; events_json: string; post_state_json: string;
+}
+interface Fault { name: string; state_json: string; canonical_payload: unknown; replay_inputs: unknown }
+interface Packet {
+  schema: number; source_sha256: Record<string, string>;
+  bundle: { constants_hash: string; artifacts: ReplayArtifacts }; actions: Action[]; faults: Fault[];
+}
+const packet = JSON.parse(readFileSync(".cache/wait-logged-stages-inputs.json", "utf8")) as Packet;
+const catalogs = loadReplayCatalogBundle(packet.bundle.constants_hash, packet.bundle.artifacts);
+function restore(raw: string, bundle: ReplayCatalogBundle) {
+  if (!bundle.meters || !bundle.achievements || !bundle.opportunities) throw Error("missing complete foundations");
+  return restoreReplayState(JSON.parse(raw), 19, bundle.economy, { meters: bundle.meters,
+    achievements: bundle.achievements, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+}
+async function compare(action: Action) {
+  const bundle = await catalogs;
+  const state = restore(action.pre_state_json, bundle);
+  expect(canonicalJSONString(encodeReplayState(state))).toBe(action.pre_state_json);
+  const result = await applyLogged(state, canonicalJSONString(action.canonical_payload), bundle, action.replay_inputs);
+  expect(result.outcome).toBe(action.outcome);
+  expect(canonicalJSONString(result.receipt)).toBe(action.receipt_json);
+  expect(canonicalJSONString(result.events)).toBe(action.events_json);
+  expect(canonicalJSONString(encodeReplayState(result.state))).toBe(action.post_state_json);
+  expect(canonicalJSONString(encodeReplayState(restore(action.post_state_json, bundle)))).toBe(action.post_state_json);
+}
+
+describe("manual logged-stage Go/TS compatibility, not accounting acceptance", () => {
+  it("requires exactly the declared command and refusal population", () => {
+    const names = ["none", "production", "building", "combined"].flatMap(profile =>
+      ["online", "offline"].flatMap(mode => [0, 999, 1000, 1500, 1501, 5000, 5001, 6001].flatMap(offset =>
+        [false, true].map(refuse => `${profile}/${mode}/${offset}/reject${refuse}`))));
+    expect(packet.schema).toBe(1);
+    expect(packet.actions.map(action => action.name)).toEqual(names);
+    expect(packet.actions.filter(action => action.outcome === "applied")).toHaveLength(64);
+    expect(packet.actions.filter(action => action.outcome === "rejected")).toHaveLength(64);
+    expect(packet.faults.map(fault => fault.name)).toEqual(["clock", "missing_catchup", "span", "opened", "attendance", "weight"]);
+  });
+  it("refuses a stale producer or consumer packet", () => {
+    expect(Object.keys(packet.source_sha256)).toHaveLength(11);
+    for (const [path, expected] of Object.entries(packet.source_sha256)) {
+      expect(createHash("sha256").update(readFileSync(path)).digest("hex"), path).toBe(expected);
+    }
+  });
+  it.each(packet.actions)("reproduces actual Go full state/receipt/events: $name", async action => { await compare(action); });
+  it.each(packet.actions.filter(action => action.outcome === "applied"))("duplicate captured clearing refuses unchanged: $name", async action => {
+    const bundle = await catalogs, state = restore(action.post_state_json, bundle);
+    await expect(applyLogged(state, canonicalJSONString(action.canonical_payload), bundle, action.replay_inputs)).rejects.toThrow();
+    expect(canonicalJSONString(encodeReplayState(state))).toBe(action.post_state_json);
+  });
+  it.each(packet.faults)("malformed frozen context refuses unchanged: $name", async fault => {
+    const bundle = await catalogs, state = restore(fault.state_json, bundle);
+    await expect(applyLogged(state, canonicalJSONString(fault.canonical_payload), bundle, fault.replay_inputs)).rejects.toThrow();
+    expect(canonicalJSONString(encodeReplayState(state))).toBe(fault.state_json);
+  });
+  for (const field of ["receipt_json", "events_json", "post_state_json"] as const) {
+    it(`detects a forged expected ${field}`, async () => {
+      const action = packet.actions.find(row => row.name === "combined/online/1501/rejectfalse")!;
+      const wrong = field === "post_state_json" ? action.pre_state_json : field === "events_json" ? "[]" : "{}";
+      expect(wrong).not.toBe(action[field]);
+      await expect(compare({ ...action, [field]: wrong })).rejects.toThrow();
+    });
+  }
+});
