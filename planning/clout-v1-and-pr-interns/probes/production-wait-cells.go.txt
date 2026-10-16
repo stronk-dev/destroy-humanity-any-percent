@@ -18,6 +18,16 @@ import (
 )
 
 // Manual constructor/cash-certificate research. Not an implementation API.
+type waitPrefixResearch struct {
+	values []decimal.Decimal
+	maxExp int64
+}
+
+type waitPartialOutcomeResearch struct {
+	through, maxExp int64
+	positive        bool
+}
+
 type waitCellResearch struct {
 	lo, hi, start, burst int64
 	flat                 bool
@@ -26,12 +36,15 @@ type waitCellResearch struct {
 	groups               int64
 	rates                []decimal.Decimal
 	allRates             map[string][]decimal.Decimal
+	allPrefixes          map[string]waitPrefixResearch
+	partials             map[string]waitPartialOutcomeResearch
 }
 
 type waitCellWorkResearch struct {
 	Cells, Rates, Provisions, Deltas, PrefixWrites, Scalars, Certificates, Points int
 	ReconstructionCalls, ReconstructionTerms                                      int
 	PartialChecks, PartialContexts, PartialReuses, PartialRateSums                int
+	AllPrefixWrites, AggregateFast, AggregateExact, AggregateExactTerms           int
 }
 
 type waitCellsResearch struct {
@@ -51,7 +64,83 @@ func buildWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode Ev
 	if err := certifyWaitCellPartialsResearch(factory); err != nil {
 		return nil, err
 	}
+	if err := certifyWaitCellAggregatesResearch(factory); err != nil {
+		return nil, err
+	}
 	return factory, nil
+}
+
+// Sufficient positive-sum interior proof, not a limit on accepted values.
+// Inconclusive cases execute the actual aggregate below; no silent rejection.
+func positiveAggregateInteriorResearch(terms int, positive bool, maxExp int64) bool {
+	const edge int64 = 8_999_999_999_999_999
+	return terms >= 0 && terms <= 100000 && (!positive || maxExp <= edge-8)
+}
+
+func certifyWaitCellAggregatesResearch(factory *waitCellsResearch) error {
+	for index, cell := range factory.cells {
+		resources := map[string]bool{}
+		for id := range cell.allPrefixes {
+			resources[id] = true
+		}
+		for id := range cell.allRates {
+			resources[id] = true
+		}
+		ordered := make([]string, 0, len(resources))
+		for id := range resources {
+			ordered = append(ordered, id)
+		}
+		sort.Strings(ordered)
+		for _, resource := range ordered {
+			prefix := cell.allPrefixes[resource]
+			positive, maxExp := len(prefix.values) > 0, prefix.maxExp
+			if _, active := cell.allRates[resource]; active && !cell.flat {
+				partial, exists := cell.partials[resource]
+				if !exists {
+					return fmt.Errorf("aggregate certificate missing partial domain cell%d resource%s", index, resource)
+				}
+				if partial.positive {
+					if !positive || partial.maxExp > maxExp {
+						maxExp = partial.maxExp
+					}
+					positive = true
+				}
+			}
+			if positiveAggregateInteriorResearch(len(prefix.values)+1, positive, maxExp) {
+				factory.work.AggregateFast++
+				continue
+			}
+			lo, hi := cell.lo-cell.start, cell.hi-cell.start
+			if cell.flat {
+				lo, hi = 0, 0
+			}
+			for duration := lo; duration <= hi; duration++ {
+				partial := decimal.Zero
+				if rates, active := cell.allRates[resource]; active && !cell.flat {
+					boost := duration
+					if boost > cell.burst {
+						boost = cell.burst
+					}
+					value, err := accrueBoostedConstant(rates, duration, boost, factory.eff, factory.bonus)
+					if err != nil {
+						return fmt.Errorf("aggregate partial cell%d resource%s duration%d: %w", index, resource, duration, err)
+					}
+					partial = value
+				}
+				values := append([]decimal.Decimal(nil), prefix.values...)
+				if !partial.Eq(decimal.Zero) {
+					values = append(values, partial)
+				}
+				factory.work.AggregateExact++
+				factory.work.AggregateExactTerms += len(values)
+				value := decimal.SumDeterministic(values).Quantize(decimal.CanonicalSignificantDigits)
+				if !value.IsStateValue() || value.Lt(decimal.Zero) {
+					return fmt.Errorf("aggregate certificate cell%d resource%s duration%d: %w", index, resource, duration, ErrInvalidEngineState)
+				}
+			}
+		}
+	}
+	return nil
 }
 
 // Arithmetic only: no assertion about final aggregation, caps or receipts.
@@ -61,7 +150,7 @@ func certifyWaitCellPartialsResearch(factory *waitCellsResearch) error {
 		burstKind uint8 // none, entire cell, or partial with exact remaining duration
 		burstMS   int64
 	}
-	covered := map[contextKey]int64{}
+	covered := map[contextKey]waitPartialOutcomeResearch{}
 	for index, cell := range factory.cells {
 		if cell.flat {
 			continue
@@ -93,26 +182,38 @@ func certifyWaitCellPartialsResearch(factory *waitCellsResearch) error {
 					key.burstKind, key.burstMS = 2, cell.burst
 				}
 			}
-			last, exists := covered[key]
+			domain, exists := covered[key]
 			if !exists {
-				last = -1
+				domain.through = -1
 				factory.work.PartialContexts++
 			}
-			if last >= width {
+			if domain.through >= width {
 				factory.work.PartialReuses++
-				continue
-			}
-			for duration := last + 1; duration <= width; duration++ {
-				boosted := duration
-				if boosted > cell.burst {
-					boosted = cell.burst
+			} else {
+				for duration := domain.through + 1; duration <= width; duration++ {
+					boosted := duration
+					if boosted > cell.burst {
+						boosted = cell.burst
+					}
+					factory.work.PartialChecks++
+					value, err := accrueBoostedConstant(rates, duration, boosted, factory.eff, factory.bonus)
+					if err != nil {
+						return fmt.Errorf("partial certificate cell%d resource%s duration%d: %w", index, resource, duration, err)
+					}
+					if !value.Eq(decimal.Zero) {
+						if !domain.positive || value.Exponent() > domain.maxExp {
+							domain.maxExp = value.Exponent()
+						}
+						domain.positive = true
+					}
 				}
-				factory.work.PartialChecks++
-				if _, err := accrueBoostedConstant(rates, duration, boosted, factory.eff, factory.bonus); err != nil {
-					return fmt.Errorf("partial certificate cell%d resource%s duration%d: %w", index, resource, duration, err)
-				}
+				domain.through = width
+				covered[key] = domain
 			}
-			covered[key] = width
+			if factory.cells[index].partials == nil {
+				factory.cells[index].partials = map[string]waitPartialOutcomeResearch{}
+			}
+			factory.cells[index].partials[resource] = domain
 		}
 	}
 	return nil
@@ -186,6 +287,15 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 	prefix := make([]decimal.Decimal, 0, int(capacity))
 	prefixSum := new(big.Rat)
 	groups := map[int64]bool{}
+	prefixes := map[string]waitPrefixResearch{}
+	snapshotPrefixes := func() map[string]waitPrefixResearch {
+		result := make(map[string]waitPrefixResearch, len(prefixes))
+		for id, value := range prefixes {
+			value.values = value.values[:len(value.values):len(value.values)]
+			result[id] = value
+		}
+		return result
+	}
 	maxWidth := int64(0)
 	for start := int64(0); ; {
 		end := productionEnd
@@ -214,7 +324,7 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 		}
 		result.cells = append(result.cells, waitCellResearch{lo: lo, hi: end, start: start, burst: remainingBurst,
 			prefix: prefix[:len(prefix):len(prefix)], prefixSum: new(big.Rat).Set(prefixSum), groups: int64(len(groups)),
-			rates: append([]decimal.Decimal(nil), rates["company.cash"]...), allRates: rates})
+			rates: append([]decimal.Decimal(nil), rates["company.cash"]...), allRates: rates, allPrefixes: snapshotPrefixes()})
 		bonusMS := width
 		if bonusMS > remainingBurst {
 			bonusMS = remainingBurst
@@ -236,6 +346,22 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 				groups[delta.Exponent()] = true
 				result.work.PrefixWrites++
 			}
+			if !delta.Eq(decimal.Zero) {
+				prior := prefixes[resource]
+				if len(prior.values) == 0 || delta.Exponent() > prior.maxExp {
+					prior.maxExp = delta.Exponent()
+				}
+				if resource == "company.cash" {
+					prior.values = prefix
+				} else {
+					if prior.values == nil {
+						prior.values = make([]decimal.Decimal, 0, int(capacity))
+					}
+					prior.values = append(prior.values, delta)
+				}
+				prefixes[resource] = prior
+				result.work.AllPrefixWrites++
+			}
 		}
 		if tick > 0 && end == next {
 			if fault != "provision" {
@@ -253,7 +379,7 @@ func buildRawWaitCellsResearch(state *save.State, catalog *economy.Catalog, mode
 	}
 	if horizon > productionEnd {
 		result.cells = append(result.cells, waitCellResearch{lo: productionEnd + 1, hi: horizon, start: productionEnd,
-			flat: true, prefix: prefix[:len(prefix):len(prefix)], prefixSum: new(big.Rat).Set(prefixSum), groups: int64(len(groups))})
+			flat: true, prefix: prefix[:len(prefix):len(prefix)], prefixSum: new(big.Rat).Set(prefixSum), groups: int64(len(groups)), allPrefixes: snapshotPrefixes()})
 	}
 	result.seconds = make([]*big.Rat, maxWidth+1)
 	for ms := int64(0); ms <= maxWidth; ms++ {

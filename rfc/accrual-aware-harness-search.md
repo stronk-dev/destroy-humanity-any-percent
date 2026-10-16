@@ -687,6 +687,77 @@ prototype is not authority to shrink its supported domain. Complete composite
 definedness/error handling, real workloads, compatibility and normative adoption
 remain open. RP-680 and the27 original accounting failures are not fixed here.
 
+#### H3h — Final positive aggregation domain (RP-682)
+
+Partial arithmetic validity alone is insufficient. The next
+[manual diagnostic](../planning/clout-v1-and-pr-interns/probes/wait-cell-aggregate-domain.go.txt)
+admits a v17/tick1000 Company with a secondary permits rate6eMAX and two seconds
+of wall time. All pure partials up to1000ms succeed. Actual complete waits succeed
+through1666ms and refuse1667..2000 when aggregation is no longer a state value,
+before permits'24 cap can apply. The partial-only prototype reports cash1 unreachable
+with no point call. This is another prototype gap, not an executed private harness
+failure or incorrect production arithmetic: the correct aggregate is out of domain.
+
+The constructor now retains immutable canonical prefixes for EVERY produced resource,
+not cash alone. Prefix maxima come from those actual nonzero deltas. H3g records
+the maximum output exponent of each fully checked partial context; using a larger
+checked context for a subrange is a conservative ceiling, never a tighter guess.
+Each cell's possible final aggregate is its real prefix plus one such partial.
+
+**Proposed sufficient interior lemma.** For at most100000 nonnegative state terms,
+let E be the maximum positive-input exponent. If E<=MAX-8, actual positive
+SumDeterministic followed by Q12 cannot leave the state exponent domain. An all-zero
+sum is valid separately. This is NOT a new content cap or a monotonicity assertion.
+Source-derived argument for the pinned64-bit Go normalization:
+
+1. Coefficients lie in[1,10). Positive group folds have at most100000 additions,
+   so coefficient intermediates stay below2e6: no binary overflow/subnormal path.
+   Their normalization can raise an exponent by at most six, never below the
+   group's minimum input exponent. There is no signed cancellation.
+2. H3d's positive-operation error budget at N=G=100000 is less than1e-8. Hence a
+   prospective prefix has represented magnitude below2e6*10^E and normalized
+   exponent at most E+6. Establish this inductively: group normalization is already
+   interior; the next Add's prospective carry is at most E+7<=MAX-1, so its state
+   guard cannot fail, then the magnitude bound tightens its output back to E+6.
+   This does not assume a successful final result in order to prove success.
+3. Positive Add alignment has coefficients in[1e14,2e15], with finite normal
+   operations. Its temporary exponent-minus14 fits int64 and is normalized before
+   state admission; it cannot turn a positive input into a lower-domain result.
+   Q12 can add at most one exponent, leaving at most E+7<=MAX-1.
+4. This uses the current small-coefficient normalization contract, including its
+   one-step decade correction, and H3d's finite power premises. The pinned Go
+   [Log error analysis](https://go.dev/src/math/log.go) and
+   [amd64 implementation](https://go.dev/src/math/log_amd64.s) support the needed
+   near-decade logarithm accuracy; do not generalize to arbitrary math libraries
+   or substitute the finite stress population for review of this argument.
+
+This sufficient bound need not decide every admitted case. If inconclusive, the
+prototype executes actual SumDeterministic/Q12 at every partial duration belonging
+to that cell, using its COMPLETE real prefix, not a previously rounded aggregate.
+The first invalid value returns cell/resource/duration and an engine-class error.
+Valid extreme values are not rejected merely because the cheap proof fails.
+Exact fallback checks/terms are visible preparation cost; this can be expensive
+and is not authority for a live per-ms player simulation or increased work budget.
+
+Five complete0..2000 actual-wait populations execute10005 references. The bad case
+has1667 successes/334 expected typed engine/non-state-entry refusals with unchanged
+encoded failed saves. Headroom4eMAX, near-boundary4.99999999999eMAX, provider masking
+and zero-efficiency companions all succeed. Both valid extreme companions actually
+execute2001 fallback checks/3000 terms. The bad constructor reports second-cell
+duration667; the retained raw+partial-only path still demonstrates the missed error.
+
+All16032 prior actual-wait references/cache/fault/guard controls are retained.
+Five interior challenge shapes cover100000-term upper/lower/mixed/zero populations
+and empty input. They challenge the lemma, not prove it by sampling. The retained
+long wait uses131074 interior certificates and no exact fallback. No general cost
+or complete workload conclusion follows from that particular case.
+
+This closes aggregate-domain evidence within the manual constructor's scope,
+pending research/normative review. Ledger Add/Q12, minimum/hardcap/receipt refusal,
+progress, modern contexts and hooks are NOT thereby certified. The earlier-result
+versus error-precedence caveat from H3g still applies. No runtime or accepted search
+policy changes; RP-680,27 accounting failures and full1.0 requirements remain open.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -864,3 +935,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   constructor-local raw-identity partial certification and execute semantic cache
   alias controls. Keep final aggregation/ledger/error precedence, modern contexts,
   complete workloads and adoption separate; no production search or numeric change.
+- 2026-10-16: reproduce RP-682's combined-payout overflow after valid partials;
+  add all-resource prefix/interior-domain proof with exact inconclusive-case checks.
+  Retain valid extreme inputs and explicit costs; ledger/modern/workload/adoption
+  gates remain, with no runtime, arithmetic, budget or ordinary CI change.

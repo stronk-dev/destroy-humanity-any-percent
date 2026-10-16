@@ -5830,3 +5830,122 @@ overlay SHAd06a1de16f658fc2f82090d85b5d97cf8390da99c099b195d203d73efa9e09a4.
 Only the wrapper's call to certifyWaitCellPartialsResearch is omitted. Tracked
 sources never changed for this probe; prior intact native/Linux results stand,
 not a reason to rerun unrelated suites. Handle terminal; expected failure retained.
+
+## 2026-10-16 — Before execution: final multi-segment aggregation definedness
+
+Previous turn PROGRESS468f8212 guards pure partial arithmetic; final aggregation
+is explicitly unproved. New attack: v17/tick1000/provider1 produces permits6eMAX,
+no cash/burst, horizon2000. Every partial segment up to1000ms may succeed, but the
+combined payout should overflow from elapsed1667 onward BEFORE permits' cap24 can
+apply. Execute every0..2000 through actual SimulateAdvance; require typed engine/
+non-state-ledger-entry failure, distinct from partial-accrual refusal, and unchanged
+failed encoded saves. Companion rates4eMAX and4.99999999999eMAX, provider masking,
+and zero offline efficiency retain all2001 endpoints each. Controlled inputs are
+catalog/codec-admitted seeded origins, not natural acquisition or minted balance.
+
+Prototype constructor must not label these errors unreachable. Retain pre-aggregate
+guard miss and actual partial-certificate pass. Proposed manual aggregate check:
+capture immutable per-resource canonical prefixes/max exponents, retain partial
+certificate output exponent ceilings, then use a SOURCE-DERIVED interior-positive-
+sum lemma for <=100000 terms/max input exponent<=MAX-8. This leaves room for grouped
+normalization, positive alignment rounding and Q12; no signed/cancellation case.
+If that proof is inconclusive, execute actual SumDeterministic/Q12 over each partial
+duration with the REAL prefix, not its previously rounded sum. No domain rejection
+merely because a sufficient bound fails. Count fast proofs/exact checks/terms.
+
+This is aggregate validity only, not ledger/cap/receipt, progress, modern context,
+error ordering or full workload feasibility. Exact fallback can be expensive; do not
+hide it in a point count, raise a budget or claim production per-ms scanning is
+authorized. Challenge the source lemma with100000-term upper-interior/lower-edge/
+mixed-exponent and zero controls, keeping universal proof separate from finite
+tests. Retain all prior16032 actual waits/cache/fault/guard controls. Native and
+declared Linux AMD64 --no-deps; no runtime/math/kernel/CI/content/adoption change.
+
+Old partial-only prototype74432/b3c1d6 FAIL .964s exactly at missing aggregate
+guard: all10005 actual references execute. Bad case succeeds1667/refuses334;
+all four2001-point companions succeed, including near-boundary max-exponent input.
+Partial certification passes1001 checks, then old cash search returns-1/nil with
+zero points. Actual refusal is engine-wrapped non-state ledger entry, not partial
+accrual; cap24 cannot repair the already-invalid sum. RP-682 records this prototype
+gap. No domain restriction, arithmetic correction or actual harness defect inferred.
+
+Focused aggregate39644/e1ab9c PASS .778s: new guard rejects the real overflow;
+all valid near-boundary/headroom/mask/zero-efficiency companions still admit.
+Before comprehensive runs, retain raw+partial's unsafe search explicitly, require
+the two valid extreme-domain companions to execute every2001 exact aggregate
+fallback/3000 input terms, and execute the declared100000-term interior challenges.
+No passing sample substitutes for the source-derived sufficient-condition argument.
+
+Comprehensive native82731/c930e4 PASS6.671s plus ordinary production vet: prior16032
+actual waits and new10005 all execute with their expected outcomes. Five interior
+challenge populations pass; each valid extreme companion executes2001 actual
+aggregates/3000 terms, not a rejected or silently excluded domain. Retained long
+factory has131074 aggregate fast certificates and ZERO exact fallback checks;
+all original partial/cache/fault/query/guard controls remain. Freeze both manual
+sources for declared Linux AMD64 --no-deps follow-up using its five-file overlay.
+
+Linux30121/f337be PASS11.578s, same complete26037 actual references/expected
+refusals, interior/cache/fault/guard controls and fallback counts. Before final
+checkpoint, run one compiling IGNORED-overlay falsification: make the sufficient
+interior predicate claim true unconditionally, leaving constructors/metadata/tests
+unchanged. The real overflow subpopulation must fail its guard oracle. This probes
+proof discrimination, not a production mutation or permission to widen the bound.
+
+## 2026-10-16 — RP-682 aggregate domain guarded in manual prototype
+
+Final native82731/c930e4 PASS6.671s plus ordinary production vet; declared Linux
+AMD6430121/f337be PASS11.578s, same sources/populations/outputs, no selected skips.
+All prior16032 and new10005 actual-wait references execute: the new bad case has
+1667 successes/334 engine/non-state-entry refusals, all four companions succeed.
+The partial-only retained path still reproduces unreachable/nil with no point call;
+protected construction returns aggregate certificate/company.permits/duration667.
+Failed encoded saves stay unchanged; no transient-memory claim. Valid permits
+payouts cap at24, but cap application cannot rescue an invalid aggregate upstream.
+
+Both valid extreme companions execute complete2001 exact aggregate checks over3000
+input terms; neither is excluded by the sufficient bound. Five interior challenge
+shapes (100000-term upper/lower/mixed/zero and empty) pass. Draft H3h derives the
+positive-sum exponent margin and makes the pinned normalization premise explicit;
+these finite tests are not the universal proof. Immutable per-resource prefixes
+share backing storage; maxima come from actual prefix/checked partial values.
+
+Original six factories use aggregate fast certificates3/4/3/4/1/131074 respectively,
+and no exact fallback. Retained constructor captures131074 resource terms, keeps
+4004 partial checks/five contexts and finds elapsed65536332 with65551 main search
+certificates/one actual point. Native setup359.924ms/search1.875361s; emulated Linux
+595.281ms/2.805186s. Single observations, not comparative/full-workload feasibility.
+Exact fallback remains potentially costly and all its checks/terms are counted.
+
+Compiling forged-proof6767/65d04e FAIL .425s at the real334-refusal guard oracle,
+not compilation/fixture errors. Only positiveAggregateInteriorResearch is changed
+to unconditional true in ignored .cache/wait-cell-aggregate-forged.go SHA256
+1fa59eacdf7188918e1f6109db5f41ac10c12d925a57fa7adf62c32321fa0469;
+overlay .cache/wait-cell-aggregate-forged.json SHA
+a8fce52c182e9f88e250e8bf00c88a4626df9bc57abe166d034eddf393d130ee.
+Select TestWaitCellAggregateDomainResearch/secondary_aggregate_overflow on root
+make test-go with that overlay to reproduce. Tracked sources were never changed
+for the mutation, so normal final results remain valid; no unrelated rerun needed.
+
+Normal reproduction:
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=/Users/stronk/repos/cloud-clicker/.cache/wait-cell-aggregate-domain.json -run WaitCell -v'`.
+New probes/wait-cell-aggregate-domain.go.txt SHA256
+201fce325af8b5b6d0c92f38e65f312ce087b87362181bcb63eb9d1ac2374e80;
+updated probes/production-wait-cells.go.txt SHA
+0c1b884275f128e1f16d5ef3509d0ca46a5755bac49f1b21b46575e72fd4a02e;
+native five-file overlay SHA282fd00cf70ea7ecfcc30ad161ab43efe5764c3e40ae033d80fa1a2c98d11864.
+Linux .cache/wait-cell-aggregate-domain-linux.json SHA
+7656fcabc7015c14aa0b3c2be2ce6f7cfedb7c9d27d6ab5ff84db38af2fddce9
+maps the same files under /workspace; declared Docker --no-deps command above
+reproduces it. Earlier manual sources remain unchanged except this constructor;
+prior H3g results stay bound to58a4c69c at468f8212, not restamped as current proof.
+All handles terminal; --rm Linux starts no DB. No native hosted/SQL/TS/fullCI claim.
+
+Own draft H3h/ledger/plan reconcile the result. Next actual ledger Add/cap/receipt
+refusal proof, then progress/modern/hooks and complete workload/caller closure.
+This is not an adopted eager-error policy, a complete wait validity certificate or
+permission to narrow caller support. No production/core math/kernel/content/CI/
+baseline/accepted-contract changes; RP-680 and27 AC6 failures remain open. Review
+by: Codex root (research author/first filter). Recorded by: Codex root. Complete
+six-path range468f8212-exclusive through this checkpoint requires research/normative
+review outside corrective-code delegation. Full1.0 goal active/progress; no feature
+acceptance, archival, push, deployment or release approval.

@@ -1,0 +1,207 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"os"
+	"strings"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+// Manual final-aggregation research, not a complete wait/ledger validity proof.
+func TestWaitCellAggregateDomainResearch(t *testing.T) {
+	data, err := os.ReadFile("../../balance/testdata/t0-t1/economy-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, row := range []struct {
+		name, rate, efficiency string
+		mode                   EvaluationMode
+		masked, succeeds       bool
+	}{
+		{"secondary_aggregate_overflow", "6e8999999999999999", "1e0", ModeOnline, false, false},
+		{"secondary_aggregate_headroom", "4e8999999999999999", "1e0", ModeOnline, false, true},
+		{"secondary_aggregate_near_boundary", "4.99999999999e8999999999999999", "1e0", ModeOnline, false, true},
+		{"secondary_aggregate_masked", "6e8999999999999999", "1e0", ModeOnline, true, true},
+		{"secondary_aggregate_zero_efficiency", "6e8999999999999999", "0", ModeOffline, false, true},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			var root map[string]any
+			if err := json.Unmarshal(data, &root); err != nil {
+				t.Fatal(err)
+			}
+			root["provision_tick_ms"] = 1000
+			root["offline_policy"].(map[string]any)["efficiency"] = row.efficiency
+			changed := 0
+			for _, value := range root["generator_classes"].([]any) {
+				generator := value.(map[string]any)
+				if generator["id"] == "generator.beige_tower_v2" {
+					generator["production"] = map[string]any{"resource_id": "company.permits", "base_rate": row.rate}
+					changed++
+				}
+			}
+			if changed != 1 {
+				t.Fatal("missing/duplicate controlled producer")
+			}
+			catalogBytes, err := json.Marshal(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			catalog, err := economy.LoadCatalog(catalogBytes)
+			if err != nil {
+				t.Fatal("catalog not admitted", err)
+			}
+			state, err := save.RestoreState([]byte(`{"balances":{"company.cash":"0","company.permits":"0"}}`), 1, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state.WireVersion = 17
+			state.AchievementsEarnedRun = map[string]bool{}
+			state.GeneratorCounts["generator.beige_tower_v2"] = 1
+			state.GeneratorPurchasedTotal = 1
+			origin, err := save.EncodeState(state)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state, err = save.RestoreState(origin, 17, catalog, economy.ScopeCompany, engineCursor)
+			if err != nil {
+				t.Fatal("origin not admitted", err)
+			}
+			mask := AblationMask{}
+			if row.masked {
+				mask.GeneratorIDs = []string{"generator.beige_tower_v2"}
+			}
+			good, refused := 0, 0
+			for at := int64(0); at <= 2000; at++ {
+				current, err := save.RestoreState(origin, 17, catalog, economy.ScopeCompany, engineCursor)
+				if err != nil {
+					t.Fatal(err)
+				}
+				_, err = SimulateAdvance(current, catalog, SimulationDependencies{}, save.Revision{}, row.mode,
+					state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond), nil, mask)
+				wantFailure := !row.succeeds && at >= 1667
+				if wantFailure {
+					if !errors.Is(err, ErrInvalidEngineState) || !strings.Contains(err.Error(), "has non-state delta") || strings.Contains(err.Error(), ErrInvalidAccrual.Error()) {
+						t.Fatal("wrong failure stage", at, err)
+					}
+					unchanged, encodeErr := save.EncodeState(current)
+					if encodeErr != nil || !bytes.Equal(unchanged, origin) {
+						t.Fatal("failed wait changed encoded save", at, encodeErr)
+					}
+					refused++
+				} else {
+					if err != nil {
+						t.Fatal("valid wait refused", at, err)
+					}
+					cash, ok := current.Ledger.Balance("company.cash")
+					if !ok || !cash.Eq(decimal.Zero) {
+						t.Fatal("unexpected cash", at, cash)
+					}
+					permits, ok := current.Ledger.Balance("company.permits")
+					want := decimal.Zero
+					if at > 0 && !row.masked && row.efficiency != "0" {
+						want = decimal.New(24, 0)
+					}
+					if !ok || !permits.Eq(want) {
+						t.Fatal("actual permits cap differs", at, permits, want)
+					}
+					good++
+				}
+			}
+			if good+refused != 2001 || !row.succeeds && (good != 1667 || refused != 334) {
+				t.Fatal("incomplete/changed population", good, refused)
+			}
+			t.Logf("actual full waits2001: valid%d refused%d; caps cannot rescue non-state aggregate", good, refused)
+			if !row.succeeds {
+				partialOnly, err := buildRawWaitCellsResearch(state, catalog, row.mode, 2000, mask, SimulationDependencies{}, "")
+				if err != nil {
+					t.Fatal(err)
+				}
+				if err := certifyWaitCellPartialsResearch(partialOnly); err != nil {
+					t.Fatal("this is not the partial-arithmetic failure", err)
+				}
+				calls := 0
+				found, err := partialOnly.search(decimal.One, 4002, func(int64) (decimal.Decimal, error) { calls++; return decimal.NaN, ErrInvalidEngineState })
+				if err != nil || found != -1 || calls != 0 || partialOnly.work.PartialChecks != 1001 {
+					t.Fatal("retained partial-only miss changed", found, err, calls, partialOnly.work)
+				}
+			}
+			factory, buildErr := buildWaitCellsResearch(state, catalog, row.mode, 2000, mask, SimulationDependencies{}, "")
+			if !row.succeeds {
+				if buildErr == nil {
+					calls := 0
+					found, searchErr := factory.search(decimal.One, 4002, func(int64) (decimal.Decimal, error) { calls++; return decimal.NaN, ErrInvalidEngineState })
+					t.Logf("unsafe partial-only constructor: found%d err%v actual_points%d partial_checks%d", found, searchErr, calls, factory.work.PartialChecks)
+					t.Fatal("partial-only constructor accepted334 actual aggregate refusals")
+				}
+				if !errors.Is(buildErr, ErrInvalidEngineState) || !strings.Contains(buildErr.Error(), "aggregate certificate") || !strings.Contains(buildErr.Error(), "company.permits") || !strings.Contains(buildErr.Error(), "duration667") {
+					t.Fatal("constructor failed at wrong boundary", buildErr)
+				}
+			} else if buildErr != nil {
+				t.Fatal("valid boundary companion was rejected", buildErr)
+			}
+			if row.succeeds && !row.masked && row.efficiency != "0" {
+				if factory.work.AggregateExact != 2001 || factory.work.AggregateExactTerms != 3000 {
+					t.Fatal("near-boundary companion did not execute complete real-prefix fallback", factory.work)
+				}
+				t.Logf("valid extreme-domain fallback checks%d terms%d", factory.work.AggregateExact, factory.work.AggregateExactTerms)
+			}
+			unchanged, err := save.EncodeState(state)
+			if err != nil || !bytes.Equal(unchanged, origin) {
+				t.Fatal("research changed origin", err)
+			}
+		})
+	}
+}
+
+func TestWaitCellAggregateInteriorResearch(t *testing.T) {
+	const edge int64 = 8_999_999_999_999_999
+	if positiveAggregateInteriorResearch(2, true, edge) || positiveAggregateInteriorResearch(100001, true, 0) {
+		t.Fatal("inconclusive bound was certified")
+	}
+	for _, kind := range []string{"upper_interior", "lower_edge", "mixed_exponents", "zeros", "empty"} {
+		t.Run(kind, func(t *testing.T) {
+			values := make([]decimal.Decimal, 100000)
+			if kind == "empty" {
+				values = nil
+			}
+			positive, maxExp := false, int64(0)
+			for index := range values {
+				switch kind {
+				case "upper_interior":
+					values[index] = decimal.New(9.99999999999, edge-8)
+				case "lower_edge":
+					values[index] = decimal.New(9.99999999999, -edge)
+				case "mixed_exponents":
+					values[index] = decimal.New(float64(index%9+1), edge-8-int64(index%18))
+				}
+				value := values[index]
+				if !value.IsStateValue() || value.Lt(decimal.Zero) {
+					t.Fatal("invalid theorem premise")
+				}
+				if !value.Eq(decimal.Zero) {
+					if !positive || value.Exponent() > maxExp {
+						maxExp = value.Exponent()
+					}
+					positive = true
+				}
+			}
+			if !positiveAggregateInteriorResearch(len(values), positive, maxExp) {
+				t.Fatal("declared interior control not certified")
+			}
+			actual := decimal.SumDeterministic(values).Quantize(decimal.CanonicalSignificantDigits)
+			if !actual.IsStateValue() || actual.Lt(decimal.Zero) || positive && actual.Eq(decimal.Zero) {
+				t.Fatal("actual aggregate escaped valid interior", kind, actual)
+			}
+			if positive && actual.Exponent() > maxExp+7 {
+				t.Fatal("aggregate exceeded derived exponent ceiling")
+			}
+		})
+	}
+}
