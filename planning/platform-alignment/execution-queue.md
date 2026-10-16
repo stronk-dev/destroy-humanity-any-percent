@@ -57,11 +57,13 @@ nine-tier goal remains active; no new playable tier or release was completed.
   budget increase, deleted population, restamped golden, whole-CI or release promotion.
 - **READY FOR DESIGNATED REVIEW — consolidate the remaining exact ranges:** Marco's
   2026-10-15 delegation permits fresh independent Codex reviewers for outstanding
-  corrective-code reviews only. The owning logs now record bounded API/transport/CI,
+  corrective-code reviews; his subsequent delegation also permits technical
+  specification reviews (see AGENTS). The owning logs now record bounded API/transport/CI,
   intent/HTTP/source decoding, compatibility, Combat/Headcount inputs, certified payout
   identity and Deployment backup/operator corrective approvals;
-  do not restart them or extend them to adjacent work. New-feature acceptance,
-  research/normative specification review and product choices retain their existing
+  do not restart them or extend them to adjacent work. Technical review is not
+  specification adoption. New-feature acceptance, gameplay/product choices,
+  authored copy, specification adoption and release approval retain their existing
   gates. Feature-owned logs identify the remaining complete ranges, including
   archive/fixture and R-012 live-input work. Implementer checks are not designated
   verdicts; review prevents acceptance/archival, not other accepted work.
