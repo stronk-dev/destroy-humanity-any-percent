@@ -2435,3 +2435,75 @@ all disposable browser one-offs gone and only the two preserved BuildKit builder
 Approval covers these corrections, not whole C6, G10/default content, manual AT/speech,
 author-body reconciliation, archival or release. No full-browser/performance, real-server/DB,
 hosted CI or1.0 claim. Original findings and other review debt remain historical and intact.
+
+## 2026-10-16 — Database, recovery-dispatch and replay-context corrections approved
+
+Review by: /root/cosmetic_command_corrective_review (fresh independent Codex under Marco's
+corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; all20 unique source/test/version/doc/record paths inspected:
+- RP-177: 1a159ec34f350f0028e376c011cbc9c1bf8b7f0f-exclusive..ce7688a7b5ab7d34f1b0f46621590923206f0f63-inclusive (12paths).
+- RP-178: 3cafa09712a2b79ef192185754d3260e13a0a254-exclusive..646daa0884e71d331d63130ff8f80032d24a0065-inclusive (12paths).
+- RP-411: 32850174a5f840feb3ed4587492bd3dcf00d0000-exclusive..2fff974816363e63986f410477c4b532c68833ce-inclusive (11paths).
+Existing Cosmetic§4/AC5/AC6/AC9 authority, including append-only migration/release pin;
+no policy expansion, normative amendment or original C4 acceptance follows.
+
+Independent discrimination uses ignored historical overlays and disposable DB transactions:
+removing only events_cosmetic_payload_keys_check fires3 extra-key/3 missing-key and7 later
+wrong-case assertions; valid/equivalent encodings execute first and7 persisted refusal controls
+pass. Rollback restores each constraint probe; no migration/main source is edited.
+Old Soul preflight fails acquisition; acquire-only exemption fails equip; acquire+equip exemption
+fails unequip, each at the intended applied-result assertion against actual Postgres.
+Corrected workflow applies all3, keeps ordinary gameplay exclusive, resolves recovery and
+verifies preserved cosmetics in Founder history. Old Go context admission fails7/28 literal
+boundaries with21 controls passing; corrected all28 pass with canonical valid bytes unchanged
+and invalid replay refused without state mutation. Implementation/shared literal match endpoint.
+
+At5521df63, declared Linux-amd64/emulated Postgres executions:
+`make test-go-ci CI_TEST_PACKAGES='./production ./save' CI_TEST_FLAGS='-run "Cosmetic|SoulRecovery" -v'`
+PASS production67.471s/save0.111s, no selected DB skips: both Exit paths, recovery,28 contexts,
+200-seed isolation. `make test-go-ci CI_TEST_PACKAGES='./save' CI_TEST_FLAGS='-run "Integration|Migration" -v'`
+PASS1.941s. Full `make test-go-ci CI_TEST_PACKAGES='./save ./cosmetic ./kernel ./replaycatalog ./releasepackage' CI_TEST_FLAGS='-v'`
+PASS, including migration-contiguity pin. Client cosmetic-replay/cosmetic-founder-state/
+cosmetic-catalog/decimal-vectors via root Vitest pass6398. `make vet typecheck verify-cosmetic-boundary GO_PACKAGES='./production ./save ./cosmetic ./kernel ./replaycatalog ./releasepackage'`
+PASS, Svelte0 diagnostics and22 boundary negatives rejected; formatting/range diff checks clean.
+Initial combined selector lost pipe quoting and failed before useful execution; not credited.
+Ignored reproduction sources/generator remain .cache/cosmetic-command-review-*.
+
+All handles31945/67221/25362/57966/40628/27837/21345/98306/53216/38665 terminal, execution
+slot released. Only reviewer-created Postgresfa713dbde18e and disposable tmpfs data removed;
+two preserved builders/caches remain, main clean and no reviewer tracked edits/publication.
+No browser/AT/hosted/full-CI, original feature, author-body, content, archival or release claim.
+27 Clout failures and historical RP-131 remain unresolved and were not rerun or waived.
+
+## 2026-10-16 — Catalog and snapshot decoder corrections independently approved
+
+Review by: /root/cosmetic_catalog_snapshot_corrective_review (fresh independent Codex under
+Marco's corrective-code delegation). Recorded by: Codex root, transcribing terminal verdict.
+Decision: APPROVED, no findings; every changed path in both complete corrective ranges:
+- RP-173: 3e8fe77982129324e49d35346963f8d6765c6f33-exclusive..547ed7f08c2396049fba4c987f5b041388553451-inclusive (10paths).
+- RP-175: 8378aeba2e0c593c7d7ceba5316ddf2f414b26e6-exclusive..76a9fe049073ad75689083f58ba41c4a2682d0c0-inclusive (12paths).
+Existing Cosmetic§2/AC1 and§7.1/AC10 authority; RP-174/RP-176 author reconciliation remains.
+
+Exact historical source/read-only Vite overlays retain unchanged endpoint assertions:
+old snapshot decoder fails reversed/duplicate worn_by and tier9 (3fail/2controls), fixed5/5PASS;
+old raw loader fails tier1.0/tier1e0/schema1.0 (3fail/29controls), fixed32/32PASS, including
+ordinary unknown-numeric-field rejection. No tracked mutation. Reproduction generator
+`node .cache/cosmetic-catalog-snapshot-review-generate.mjs`; four runs use
+`client/node_modules/.bin/vitest run --root client --config ../.cache/cosmetic-catalog-snapshot-review-<mode>.config.mjs`
+with snapshot-old/snapshot-fixed/catalog-old/catalog-fixed. Initial incorrect root-relative
+config path fails before tests and is excluded. Current loader/test/corpus match RP-175 endpoint;
+its mirrored kernel141→142 bump is genuine, not a historical-guard waiver.
+
+Current affected8 TS files PASS285: cosmetic-catalog/cosmetics-arm/cosmetic-bundle/
+cosmetic-replay/cosmetic-founder-state/game-ui/game-ui-runtime/cosmetic-presentation via root
+Vitest. `make test-go GO_PACKAGES='./cosmetic ./gameui ./replaycatalog ./kernel' GO_TEST_FLAGS='-count=1 -v'`
+PASS0.166/0.407/0.515/0.168s; actual Go projector checks shared two-wearer fixture.
+Native3 gameui/1 replaycatalog DB skips are explicitly NOT integration proof.
+Affected `make vet`, `make typecheck build-client verify-cosmetic-boundary api-check` and
+`make verify-no-payment` PASS:0 Svelte diagnostics,22 cosmetic/six no-payment negatives,
+two accepted near-misses, unchanged generated API. No persistence/dispatch/DOM boundary change
+requires an unrelated journey rerun. Execution base5521df63; parent review records only.
+
+All handles terminal/slot released; no containers or persistent services created, no reviewer
+tracked edits/commits/publication. This closes only the named corrective reviews, not original
+whole C1/C5, new feature/normative adoption, content, full CI, archival or release gates.

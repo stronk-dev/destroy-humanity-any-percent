@@ -24,6 +24,16 @@ corrected endpoints and current shelf/host checks in all three Linux ARM64 brows
 The original prop-only motion test passed broken CSS, confirming why its replacement was
 needed. Exact scopes, controls and limits are in the owning log; whole C6/AT/content gates remain.
 
+RP-177 `1a159ec3..ce7688a7`, RP-178 `3cafa097..646daa08` and RP-411
+`32850174..2fff9748` now have independent corrective approval, each complete range.
+The reviewer reproduced old SQL/preflight/context failures and ran actual Postgres recovery,
+payload rejection, persisted commands, both Exit paths and the shared replay population.
+Exact verdicts and limits are in the owning log; this is not original C4/feature acceptance.
+
+RP-173 `3e8fe779..547ed7f0` and RP-175 `8378aeba..76a9fe04` also have independent
+corrective approval: exact historical decoder/loader failures, corrected endpoints and
+current affected Go/TS consumers execute. RP-174/RP-176 author reconciliation is unchanged.
+
 Preceding checkpoint (2026-10-08): all original C1–C8 diff reviews are complete. C2 retains its
 bounded approval; the other original batches retain CHANGES REQUIRED, not approval of Codex
 corrections. Latest C5 disposition consolidates RP-173/RP-174/RP-458. The snapshot decoder
@@ -83,8 +93,8 @@ migration take the next free numbers at landing.
 
 - [x] C1 Catalog grammar: `cosmetics` schema v1 loaders (Go `server/cosmetic`, TS
   `client/src/cosmetic`), shared reject fixtures, and the permanent-ID transition check (AC1, AC2).
-  Codex's complete original review retains RP-175 raw-number parity; the corrective range awaits Claude's
-  designated review. This checkbox is implementation presence, not archival approval.
+  Codex's complete original review retains its historical RP-175 finding; the corrective range
+  is now independently approved. This checkbox is implementation presence, not archival approval.
 - [x] C2 Replay-bundle wiring: `cosmetics` joins the constants bundle (OD-10) and requires
   `pet_species` on the scalar Founder chain. Codex designated-approved this bounded C2 range
   after cold Go/TS checks and independent chain, identity and settlement severing; see `log.md`.
@@ -100,12 +110,12 @@ migration take the next free numbers at landing.
 - [x] C4 Intents `acquire_cosmetic` / `equip_cosmetic` / `unequip_cosmetic`, the three events and
   the migration, with Go/TS parity and Postgres integration (AC5, AC6, AC9). Codex's targeted
   C4/AC9 review found RP-177: only the Go decoder, not Postgres, rejected extra event payload
-  keys. Append-only migration 00084 and retained DB negatives correct this locally, but Claude's
-  designated review of the Codex correction remains required. Codex's further C4/AC5/§4.5
+  keys. Append-only migration 00084 and retained DB negatives now have independent corrective
+  approval. Codex's further C4/AC5/§4.5
   review found RP-178: active Soul recovery blocks cosmetics as `exclusive_activity` at the
   top-level service preflight. The bounded exemption and a real-Postgres acquire/equip/unequip
   → recovery-resolution witness now pass, with ordinary gameplay still exclusive and fired
-  exemption probes. Claude's designated review of this correction is still required.
+  exemption probes. The complete correction now has independent approval.
   Codex completed the full original C4 range review on 2026-10-08; its consolidated
   CHANGES REQUIRED verdict and the outstanding corrective reviews are in the owning log.
   RP-179's shared two-pet equip transition is now
@@ -113,7 +123,7 @@ migration take the next free numbers at landing.
   mutations. Claude designated review of this evidence correction remains required.
   RP-411's later replay-admission review found Go defaulting missing/null Company context and
   accepting unsafe revisions or extraneous null context that TS rejects. The bounded strict
-  correction and shared admission fixtures are locally verified; the latest owning log gives
+  correction and shared admission fixtures are independently approved; the latest owning log gives
   the exact range and executed results. No complete C4 or archival approval is inferred.
   The real-Postgres command population now also checks seven persisted refusal/retry cases,
   eight concurrent identical submissions, stale/corrected revisions and rollback when the last
@@ -126,7 +136,7 @@ migration take the next free numbers at landing.
   independent approval of this complete correction. No full C4 approval is implied.
 - [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); complete original
   review retains CHANGES REQUIRED for RP-173/RP-174/RP-458. RP-458's complete correction is
-  independently approved; RP-173's correction still needs review and RP-174 requires
+  independently approved, as is RP-173's correction; RP-174 requires
   ruling-author body reconciliation. This is implementation presence, not archival approval.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).
   Codex's bounded AC12 review found RP-183: Equip/Unequip lacked the visible curtains'
@@ -188,8 +198,8 @@ C8 commit). See `log.md`.
 
 ## Codex correction review index (2026-10-05)
 
-This historical range index does not itself supply approval. RP-183 and RP-185/RP-186 now
-have fresh independent Codex corrective approval under Marco's delegation; remaining rows
+This historical range index does not itself supply approval. RP-173, RP-175, RP-177, RP-178,
+RP-183 and RP-185/RP-186 now have fresh independent Codex corrective approval under Marco's delegation; remaining rows
 still need designated review. Exact verdicts, executed checks and limits are in `log.md`.
 Reviewing corrections does not automatically approve the original Claude C1–C8 span;
 its bounded outstanding findings and ruling-author blockers still apply.
