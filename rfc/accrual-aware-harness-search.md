@@ -1238,6 +1238,68 @@ queries, live report compatibility, full workloads or accepted budgets. Other
 hook recipes/logged stages and all remaining H3m global/adoption gates stay open;
 RP-680 and the27 AC6 failures remain unrepaired.
 
+#### H3o — Fixed closed-replay private-event reference (range proof still open)
+
+The manual [closed-replay reference](../planning/clout-v1-and-pr-interns/probes/wait-closed-replay.go.txt)
+binds the actual Prestige → Faction → Guild → resolved Commons chain to the
+proposed chronological query. This is a RESEARCH reference, not implementation
+authority, a completed factory, or permission to change legacy wait semantics.
+It owns source19 state/artifact bytes, mode, all mask slices, external value rows,
+revision and a copied Commons weight. There is no pending Guild settlement batch,
+live weight resolver, Store, publisher or active-play schedule. Fixed contribution
+sampling is not the logged endpoint/catchup recipe, even with the complete hook.
+
+Projection uses actual simulationPolicyFor, assembleContributionsWithPolicy,
+evaluateWithSimulationPolicy and simulationHook(closedReplayAccrualHook). Its ONE
+deliberately proposed difference from SimulateAdvance is retaining ordered detached
+EventWrite values rather than refusing the legacy action-free envelope. It invents
+no intent, log/revision, saved payment or event delivery. Payload buffers are copied.
+Actual generator masks and stock-role counterfactuals still execute.
+
+The independent reference forwards the real chain through the real SimulateAdvance
+using a test tap that suppresses only the envelope's event rejection. It captures
+events ONLY for the main scratch state, never the stock-role counterfactual. Every
+real hook and error still executes. Whole encoded state, evaluation, roles, event
+kind/schema/payload/order and errors are compared, not only cash or event counts.
+The ordinary unwrapped wait still refuses event-bearing results and is checked.
+This is execution of an existing primitive, not independent implementation of
+numeric arithmetic or proof of Store/outbox non-delivery/once-only settlement.
+
+Eight complete0..6001 populations (both modes) cover full membership, generator
+mask, plain no-membership effects and a missing-weight dependency fault injected
+AFTER valid construction. Origins start at12:59:59.500, stock cap-1/progress
+interval-1500, so stock saturation1499/1500ms, attendance5000/5001ms and hour
+sampling boundaries execute. The binding constructor itself refuses missing or
+out-of-range Compact weight; the fault population does not authorize accepting it.
+All48016 paired points include12002 expected actual errors and24004 successful
+event-bearing references. Four diagnostic thresholds per population give32
+queries with complete selected state/events, true zero-time, unreachable and
+first-error outcomes. These are not catalog purchases or natural acquisitions.
+
+No whole-range certificate for this chain is claimed. An explicit INCONCLUSIVE
+guard forces chronological real projections; producer cash upper bounds alone
+cannot prune required hook work. An unreachable6001ms query therefore executes
+6002 points/12003 nodes. Positive750/2000ms queries need751/2001 points, not one.
+Missing-weight queries encounter the actual error at1ms after evaluating0ms.
+Source preparation, scalars/partials, query/guard/refinement counts, owner restores
+and actual main/counterfactual hook calls are visible. This is deliberately NOT
+workload feasibility, an adopted budget or a release-ready search algorithm.
+
+Input/returned-result isolation mutates caller weight, state, external factor,
+mask, artifact/policy objects and earlier returned sample/role/payload buffers;
+the next query must preserve full original state/evaluation/events. Failed,
+unreachable, empty-future and exhausted queries expose no successful selection.
+The separate compiling control disconnects only the projection's Commons stage,
+leaving the real reference and producer preparation intact. Missing Commons state,
+events and errors must fail even when cash and nominal purchase times agree.
+
+Next establish the source-derived complete closed-chain range definedness proof
+(including lifetime/offline-span, stock, Guild and all-resource Commons capacity),
+then reconstruct exact logged stages/clock and real settlement. All global domain,
+caller identity/lifecycle, full workload/compatibility, Go/TS/SQL, independent
+research/normative review and owner-adoption gates remain. RP-680 and27 Clout AC6
+failures are still open; no current payout, kernel, save, CI or live caller changes.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6

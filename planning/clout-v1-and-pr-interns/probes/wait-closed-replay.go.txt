@@ -1,0 +1,445 @@
+package production
+
+import (
+	"bytes"
+	"fmt"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/accrualhook"
+	"cloud-clicker/server/commons"
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/guild"
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/save"
+)
+
+// Research-only fixed simulation reference. It owns no pending Guild clearing,
+// active-play scheduling, Store or publisher. Not a production factory/API.
+type closedWaitReferenceResearch struct {
+	bundle                                             CatalogBundle
+	origin                                             []byte
+	mode                                               EvaluationMode
+	mask                                               AblationMask
+	external                                           []multiplier.Contribution
+	weight                                             *int64
+	revision                                           save.Revision
+	artifactBytes                                      int
+	projects, restores, hookCalls, counterfactualCalls int
+}
+
+type closedWaitPointResearch struct {
+	state   *save.State
+	advance AdvanceSimulationResult
+	events  []save.EventWrite
+	err     error
+}
+
+func copyPrivateWaitEventsResearch(events []save.EventWrite) []save.EventWrite {
+	if events == nil {
+		return nil
+	}
+	result := append([]save.EventWrite{}, events...)
+	for index := range result {
+		result[index].Payload = append([]byte(nil), events[index].Payload...)
+	}
+	return result
+}
+
+func newClosedWaitReferenceResearch(t *testing.T, bundle CatalogBundle, initial *save.State, mode EvaluationMode, mask AblationMask, external []multiplier.Contribution, weight *int64, revision save.Revision) (*closedWaitReferenceResearch, error) {
+	if initial == nil || save.VersionForState(initial) != 19 || !bundle.valid(revision.ConstantsHash) ||
+		mode != ModeOnline && mode != ModeOffline || initial.CompactMember != (weight != nil) || weight != nil && (*weight < 0 || *weight > commons.PPM) {
+		return nil, fmt.Errorf("unsupported closed research context")
+	}
+	artifacts := map[string][]byte{}
+	artifactBytes := 0
+	for id, data := range bundle.Artifacts {
+		artifacts[id] = append([]byte(nil), data...)
+		artifactBytes += len(data)
+	}
+	owned := loadCompleteReplayTestBundle(t, bundle.ConstantsHash, artifacts)
+	origin, err := save.EncodeState(initial)
+	if err != nil {
+		return nil, err
+	}
+	state, err := save.RestoreState(origin, 19, owned.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return nil, err
+	}
+	if err := owned.ValidateFoundationState(state); err != nil {
+		return nil, err
+	}
+	if err := owned.Faction.ValidateState(state); err != nil {
+		return nil, err
+	}
+	mask = copyWaitMaskResearch(mask)
+	external = append([]multiplier.Contribution(nil), external...)
+	policy, err := simulationPolicyFor(owned.Economy, mask)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := assembleContributionsWithPolicy(state, owned.Economy, external, policy); err != nil {
+		return nil, err
+	}
+	if weight != nil {
+		value := *weight
+		weight = &value
+	}
+	return &closedWaitReferenceResearch{bundle: owned, origin: origin, mode: mode, mask: mask, external: external, weight: weight, revision: revision, artifactBytes: artifactBytes}, nil
+}
+
+// Real production helpers, with ONE deliberate proposed semantic difference:
+// hook events are detached private values, not a legacy wait-envelope refusal.
+// There is no copied numeric implementation or new saved payment.
+func (owner *closedWaitReferenceResearch) project(at int64) closedWaitPointResearch {
+	owner.projects++
+	owner.restores++
+	state, err := save.RestoreState(owner.origin, 19, owner.bundle.Economy, economy.ScopeCompany, time.Time{})
+	point := closedWaitPointResearch{state: state, err: err}
+	if err != nil {
+		return point
+	}
+	policy, err := simulationPolicyFor(owner.bundle.Economy, owner.mask)
+	if err != nil {
+		point.err = err
+		return point
+	}
+	contributions, err := assembleContributionsWithPolicy(state, owner.bundle.Economy, owner.external, policy)
+	if err != nil {
+		point.err = err
+		return point
+	}
+	result, err := evaluateWithSimulationPolicy(state, owner.bundle.Economy, state.EvaluatedThrough.Add(time.Duration(at)*time.Millisecond), owner.mode, contributions, policy)
+	if err != nil {
+		point.err = err
+		return point
+	}
+	if result.ElapsedMS > 0 {
+		hook := closedReplayAccrualHook(owner.bundle, owner.weight)
+		hook = closedWaitHookCounterResearch{inner: hook, target: state, owner: owner}
+		events, err := simulationHook(hook, policy).AfterAccrual(state, owner.bundle.Economy, owner.revision,
+			accrualhook.Result{Receipt: result.Receipt, ElapsedMS: result.ElapsedMS, ProductionMS: result.ProductionMS,
+				BankedCreditMS: result.BankedCreditMS, ProgressDeltaPPM: result.ProgressDeltaPPM}, contributions)
+		if err != nil {
+			point.err = err
+			return point
+		}
+		point.events = copyPrivateWaitEventsResearch(events)
+	}
+	point.advance = AdvanceSimulationResult{Evaluation: result, RoleActivations: policy.activations()}
+	return point
+}
+
+type closedWaitHookCounterResearch struct {
+	inner  AccrualHook
+	target *save.State
+	owner  *closedWaitReferenceResearch
+}
+
+func (counter closedWaitHookCounterResearch) AfterAccrual(state *save.State, catalog *economy.Catalog, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
+	counter.owner.hookCalls++
+	if state != counter.target {
+		counter.owner.counterfactualCalls++
+		counter.owner.restores++
+	}
+	return counter.inner.AfterAccrual(state, catalog, revision, result, contributions)
+}
+
+type closedWaitQueryResearch struct {
+	at, last       int64
+	points, guards int
+	factory        *waitCellsResearch
+	selected       closedWaitPointResearch
+}
+
+func (owner *closedWaitReferenceResearch) query(horizon int64, price decimal.Decimal, budget int) (closedWaitQueryResearch, error) {
+	answer := closedWaitQueryResearch{at: -1, last: -1}
+	owner.restores++
+	initial, err := save.RestoreState(owner.origin, 19, owner.bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return answer, err
+	}
+	guard := &closedWaitUnprovedRangeResearch{}
+	var last closedWaitPointResearch
+	found, factory, err := queryWaitContextResearch(initial, owner.bundle.Economy, owner.mode, horizon, owner.mask, SimulationDependencies{Routes: owner.bundle.Routes}, price, budget, func(at int64) (decimal.Decimal, error) {
+		answer.points++
+		answer.last = at
+		last = owner.project(at)
+		if last.err != nil {
+			return decimal.NaN, last.err
+		}
+		value, ok := last.state.Ledger.Balance("company.cash")
+		if !ok {
+			return decimal.NaN, ErrInvalidEngineState
+		}
+		return value, nil
+	}, waitSourceContextResearch{modern: true, external: owner.external}, guard)
+	answer.at, answer.factory, answer.guards = found, factory, guard.calls
+	if err == nil && found >= 0 {
+		if found == 0 && answer.points == 0 {
+			answer.selected.state = initial
+		} else {
+			answer.selected = last
+		}
+	}
+	return answer, err
+}
+
+// Independent oracle forwards the actual full chain through actual
+// SimulateAdvance. Only legacy event-envelope rejection is intercepted. The
+// simulation stock-role counterfactual must NOT appear in main projection events.
+type closedWaitEventTapResearch struct {
+	inner                  AccrualHook
+	target                 *save.State
+	events                 []save.EventWrite
+	calls, counterfactuals int
+}
+
+func (tap *closedWaitEventTapResearch) AfterAccrual(state *save.State, catalog *economy.Catalog, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
+	events, err := tap.inner.AfterAccrual(state, catalog, revision, result, contributions)
+	if state == tap.target {
+		tap.calls++
+		tap.events = copyPrivateWaitEventsResearch(events)
+	} else {
+		tap.counterfactuals++
+	}
+	return nil, err
+}
+
+// No closed-chain range proof has been established. Never prune a range merely
+// because cash production is safe; execute its actual points chronologically.
+type closedWaitUnprovedRangeResearch struct{ calls int }
+
+func (guard *closedWaitUnprovedRangeResearch) certify(lo, hi int64) (bool, error) {
+	if lo < 0 || hi < lo {
+		return false, fmt.Errorf("invalid closed research range")
+	}
+	guard.calls++
+	return false, nil
+}
+
+func TestWaitClosedReplayBindingResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	commonsCatalog, err := commons.LoadCatalog(bundle.Artifacts["commons"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	start := time.Date(2026, 10, 16, 12, 59, 59, 500_000_000, time.UTC)
+	const horizon int64 = 6001
+	total, refused, queries, eventful, counterfactuals, mismatches := 0, 0, 0, 0, 0, 0
+	for _, mode := range []EvaluationMode{ModeOnline, ModeOffline} {
+		for _, name := range []string{"full", "masked", "plain", "missing_weight"} {
+			t.Run(string(mode)+"/"+name, func(t *testing.T) {
+				initial := axisTimingState(t, bundle, start)
+				mask := AblationMask{}
+				external := []multiplier.Contribution(nil)
+				var weight *int64
+				if name != "plain" {
+					initial.FactionID, initial.IncorporatedAt = "bootstrapper", start
+					initial.StockUnits, initial.StockProgressMS = bundle.Faction.StockCap-1, bundle.Faction.StockIntervalMS-1500
+					initial.CompactMember, initial.CompactTithePPM = true, commonsCatalog.DefaultTithePPM
+					initial.GuildTitheCarryPPM = 999_999
+					external = []multiplier.Contribution{{SourceID: guild.StockConsumptionSourceID, Slot: multiplier.SlotFaction, Target: "all", Factor: decimal.One}}
+					value := int64(500_000)
+					weight = &value
+				}
+				if name == "masked" {
+					mask.GeneratorIDs = []string{"generator.beige_tower"}
+				}
+				revision := save.Revision{Number: 1, ConstantsHash: bundle.ConstantsHash, StreamID: "01986666-1000-7000-8000-000000000001", OwnerID: "01986666-2000-7000-8000-000000000001"}
+				owner, err := newClosedWaitReferenceResearch(t, bundle, initial, mode, mask, external, weight, revision)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if name == "missing_weight" {
+					owner.weight, weight = nil, nil
+				} // Fault AFTER valid construction.
+				origin := mustEncodeState(t, initial)
+				reference := func(at int64) closedWaitPointResearch {
+					state := activationRestore(t, bundle, origin, 19, start)
+					tap := &closedWaitEventTapResearch{inner: closedReplayAccrualHook(bundle, weight), target: state}
+					advance, err := SimulateAdvance(state, bundle.Economy, SimulationDependencies{Routes: bundle.Routes, Hook: tap}, revision, mode, start.Add(time.Duration(at)*time.Millisecond), external, mask)
+					if at > 0 && tap.calls != 1 || at == 0 && tap.calls != 0 {
+						t.Fatal("oracle lost main hook boundary", at, tap.calls)
+					}
+					counterfactuals += tap.counterfactuals
+					return closedWaitPointResearch{state, advance, tap.events, err}
+				}
+				equal := func(a, b closedWaitPointResearch) bool {
+					if (a.err == nil) != (b.err == nil) || a.err != nil && a.err.Error() != b.err.Error() {
+						return false
+					}
+					return bytes.Equal(mustEncodeState(t, a.state), mustEncodeState(t, b.state)) && reflect.DeepEqual(a.advance, b.advance) && reflect.DeepEqual(a.events, b.events)
+				}
+				values, failures := make([]decimal.Decimal, horizon+1), make([]error, horizon+1)
+				for at := int64(0); at <= horizon; at++ {
+					want, got := reference(at), owner.project(at)
+					if !equal(got, want) {
+						mismatches++
+					}
+					failures[at] = want.err
+					if (want.err != nil) != (name == "missing_weight" && at > 0) {
+						t.Fatal("actual source population changed", at, want.err)
+					}
+					if want.err != nil {
+						refused++
+					} else {
+						values[at], _ = want.state.Ledger.Balance("company.cash")
+						if len(want.events) > 0 {
+							eventful++
+						}
+						if name != "plain" && at > 0 {
+							wantCount := 2
+							stockAt := int64(1499)
+							if name == "masked" {
+								stockAt = 1500
+							}
+							stock := at >= stockAt && at <= bundle.Prestige.CatchupCeilingMS
+							if stock {
+								wantCount++
+							}
+							if len(want.events) != wantCount || want.events[wantCount-2].Kind != save.EventGuildTitheAccrued && want.events[wantCount-2].Kind != save.EventGuildActivityEvaluated || want.events[wantCount-1].Kind != save.EventCompactSampled || stock && want.events[0].Kind != save.EventFactionStockSaturated {
+								t.Fatal("lost real event population/order", at, want.events)
+							}
+						}
+						for _, event := range got.events {
+							if event.IntentID != "" || event.SchemaVersion != 1 || len(event.Payload) == 0 {
+								t.Fatal("private value gained envelope or lost payload")
+							}
+						}
+					}
+					total++
+				}
+				before, _ := initial.Ledger.Balance("company.cash")
+				prices := []decimal.Decimal{before, values[750], values[2000], decimal.New(1, 12)}
+				if name == "missing_weight" {
+					prices[1], prices[2] = before.Add(decimal.One), before.Add(decimal.New(2, 0))
+				}
+				for _, price := range prices {
+					want, errorAt := int64(-1), int64(-1)
+					for at := int64(0); at <= horizon; at++ {
+						if failures[at] != nil {
+							errorAt = at
+							break
+						}
+						if values[at].Gte(price) {
+							want = at
+							break
+						}
+					}
+					answer, err := owner.query(horizon, price, int(2*(horizon+1)))
+					found, factory, selected := answer.at, answer.factory, answer.selected
+					if errorAt >= 0 {
+						if err == nil || err.Error() != failures[errorAt].Error() || found != -1 || answer.last != errorAt {
+							mismatches++
+						}
+					} else if err != nil || found != want {
+						mismatches++
+					} else if found > 0 {
+						if !equal(selected, reference(found)) {
+							mismatches++
+						}
+					} else if found == 0 && (answer.points != 0 || factory != nil || selected.state == nil || !bytes.Equal(origin, mustEncodeState(t, selected.state))) {
+						t.Fatal("zero-time query projected a wait or lost detached origin")
+					}
+					if found < 0 && (selected.state != nil || selected.events != nil) {
+						t.Fatal("failed/unreachable query leaked a successful projection")
+					}
+					if factory != nil && (answer.guards == 0 || factory.work.QueryRefinements == 0) {
+						t.Fatal("unproved hook range was pruned")
+					}
+					if factory != nil {
+						t.Logf("price%s found%d error_at%d points%d nodes%d guards%d refinements%d scalars%d partials%d", price, found, errorAt, answer.points, factory.work.QueryNodes, answer.guards, factory.work.QueryRefinements, factory.work.Scalars, factory.work.PartialChecks)
+					}
+					queries++
+				}
+				if !bytes.Equal(origin, mustEncodeState(t, initial)) {
+					t.Fatal("research consumed caller origin")
+				}
+				if name == "full" {
+					legacy := activationRestore(t, bundle, origin, 19, start)
+					if _, err := SimulateAdvance(legacy, bundle.Economy, SimulationDependencies{Routes: bundle.Routes, Hook: closedReplayAccrualHook(bundle, weight)}, revision, mode, start.Add(750*time.Millisecond), external, mask); err != ErrInvalidEngineState {
+						t.Fatal("legacy event refusal changed", err)
+					}
+				}
+				t.Logf("owned artifact bytes%d projects%d restores%d hook_calls%d counterfactual_calls%d; fixed sampling, no pending settlement or live weight resolver", owner.artifactBytes, owner.projects, owner.restores, owner.hookCalls, owner.counterfactualCalls)
+			})
+		}
+	}
+	if total != 48016 || refused != 12002 || queries != 32 || eventful != 24004 || counterfactuals == 0 || mismatches != 0 {
+		t.Fatalf("incomplete/mismatched closed population: points%d refused%d queries%d eventful%d counterfactuals%d mismatches%d", total, refused, queries, eventful, counterfactuals, mismatches)
+	}
+	t.Logf("full references%d refused%d queries%d eventful%d counterfactuals%d; exhaustive guard is NOT workload feasibility", total, refused, queries, eventful, counterfactuals)
+}
+
+func TestWaitClosedReplayOwnershipResearch(t *testing.T) {
+	bundle := axisContentBundle(t)
+	start := time.Date(2026, 10, 16, 12, 59, 59, 500_000_000, time.UTC)
+	initial := axisTimingState(t, bundle, start)
+	catalog, err := commons.LoadCatalog(bundle.Artifacts["commons"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	initial.FactionID, initial.IncorporatedAt = "bootstrapper", start
+	initial.StockUnits, initial.StockProgressMS = bundle.Faction.StockCap-1, bundle.Faction.StockIntervalMS-1500
+	initial.CompactMember, initial.CompactTithePPM = true, catalog.DefaultTithePPM
+	external := []multiplier.Contribution{{SourceID: guild.StockConsumptionSourceID, Slot: multiplier.SlotFaction, Target: "all", Factor: decimal.One}}
+	mask := AblationMask{GeneratorIDs: []string{"generator.beige_tower_v2"}}
+	weight := int64(500_000)
+	revision := save.Revision{Number: 1, ConstantsHash: bundle.ConstantsHash, StreamID: "01986666-1000-7000-8000-000000000001", OwnerID: "01986666-2000-7000-8000-000000000001"}
+	if _, err := newClosedWaitReferenceResearch(t, bundle, initial, ModeOnline, mask, external, nil, revision); err == nil {
+		t.Fatal("missing Compact binding admitted")
+	}
+	invalid := int64(1_000_001)
+	if _, err := newClosedWaitReferenceResearch(t, bundle, initial, ModeOnline, mask, external, &invalid, revision); err == nil {
+		t.Fatal("invalid Compact weight admitted")
+	}
+	owner, err := newClosedWaitReferenceResearch(t, bundle, initial, ModeOnline, mask, external, &weight, revision)
+	if err != nil {
+		t.Fatal(err)
+	}
+	baseline := owner.project(750)
+	ownedOrigin := append([]byte(nil), owner.origin...)
+	if baseline.err != nil || len(baseline.events) != 2 {
+		t.Fatal("ownership baseline missing real private events", baseline.err)
+	}
+	encoded, events := append([]byte(nil), mustEncodeState(t, baseline.state)...), copyPrivateWaitEventsResearch(baseline.events)
+	cash, _ := baseline.state.Ledger.Balance("company.cash")
+	first, err := owner.query(1000, cash, 2002)
+	if err != nil || first.at != 750 || first.selected.state == nil {
+		t.Fatal("baseline selected query failed", first.at, err)
+	}
+	// Mutate every external mutable boundary and a previous returned payload.
+	weight = 1
+	mask.GeneratorIDs[0] = "generator.beige_tower"
+	external[0].Factor = decimal.New(2, 0)
+	initial.CompactMember = false
+	initial.LifetimeValue = decimal.New(9, 9)
+	bundle.Artifacts["commons"][0] = '!'
+	bundle.Prestige.ValueResourceID = "company.permits"
+	for index := range baseline.events {
+		baseline.events[index].Payload[0] = '!'
+	}
+	first.selected.events[0].Payload[0] = '!'
+	first.selected.state.CompactSamples[0].CoveredMS = 1
+	if len(first.selected.advance.RoleActivations) > 0 {
+		first.selected.advance.RoleActivations[0].TargetID = "mutated"
+	}
+	next, err := owner.query(1000, cash, 2002)
+	if err != nil || next.at != 750 || next.selected.state == nil || !bytes.Equal(encoded, mustEncodeState(t, next.selected.state)) || !reflect.DeepEqual(events, next.selected.events) || !reflect.DeepEqual(baseline.advance, next.selected.advance) {
+		t.Fatal("owned input/returned payload mutation leaked", err)
+	}
+	if !bytes.Equal(ownedOrigin, owner.origin) {
+		t.Fatal("owner origin changed")
+	}
+	exhausted, err := owner.query(1000, decimal.New(1, 12), 1)
+	if err == nil || exhausted.at != -1 || exhausted.selected.state != nil || exhausted.selected.events != nil {
+		t.Fatal("budget exhaustion became a result", err)
+	}
+	zero, err := owner.query(0, cash, 1)
+	if err != nil || zero.at != -1 || zero.points != 0 || zero.factory != nil || zero.selected.state != nil {
+		t.Fatal("empty future projected or invented a selection", err)
+	}
+}

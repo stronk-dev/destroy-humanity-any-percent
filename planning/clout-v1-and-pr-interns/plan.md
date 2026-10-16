@@ -16,7 +16,7 @@ with nil error. Owning log/manual source retain source/hash/budget/receipt/uncha
 controls. This is an unminted retuned catalog/late seeded origin and nil-hook standalone
 suite, not full RunRelevance, modern axis/hook integration or natural/report failure.
 
-Draft H3d–H3n now supply a candidate positive-aggregation enclosure, its partial
+Draft H3d–H3o now supply a candidate positive-aggregation enclosure, its partial
 producer/ledger composition and a source-driven wait-cell constructor. The4004
 pipeline endpoints and12028 fresh SimulateAdvance cash/receipt references pass;
 four small whole-wait populations are exhaustive and match independently scanned
@@ -69,8 +69,16 @@ two positive selections. Point-hook disconnection fails despite matching cash.
 No live caller, payout or save/version contract changes; bounded first-hour
 research is not a repaired search or AC6 gate.
 
-Next extend the query to the remaining closed replay hook recipe and exact logged
-stage/clock operation; complete global/caller/
+H3o adds the fixed closed-replay private-event REFERENCE, comparing the complete
+real chain with actual SimulateAdvance plus an event-envelope tap. Eight complete
+populations cover masks, membership, stock/attendance/hour boundaries and an
+injected missing-weight error. This is not a chain range proof: an explicit
+inconclusive guard forces every chronological point, with cost exposed, rather
+than prune required hook effects using only a cash bound. No live event contract
+or logged-stage behavior changes.
+
+Next establish source-derived closed-chain range definedness, then exact logged
+stage/clock operation and real settlement; complete global/caller/
 timestamp/encoding/state and lifecycle/compatibility obligations,
 then measure complete real workloads with all preparation work charged. Partial
 certification alone does not adopt the proposed chronological error policy.

@@ -6707,3 +6707,113 @@ Six-path range9dd996b2-exclusive through this checkpoint is NOT designated
 approval; research/normative review is outside corrective-code delegation.
 No implementation acceptance, archival, push, publication, deployment or release
 claim. Full nine-tier1.0 goal remains active/progress; meaningful safe work remains.
+
+## 2026-10-16 — closed replay fixed-query reference scope
+
+Continue from6fe8e3b4. C1d/C1h remain unadopted: no production change or removal
+of SimulateAdvance's intentional event refusal. Research projector uses actual
+simulation policy/contribution/evaluation and simulationHook(closedReplayAccrualHook),
+retaining ordered private EventWrite values. Independent reference uses the real
+SimulateAdvance with a test tap that returns no events to its legacy envelope,
+captures ONLY the main scratch state's events, and forwards the actual full chain
+and errors. Counterfactual hook calls must not duplicate main projection events.
+
+Eight complete0..6001 populations: online/offline x full Guild+Commons+stock chain,
+generator-masked companion, plain Prestige-only effects, and missing Commons
+weight refusal. Modern19 pinned axis fixture, source time12:59:59.500, frozen
+Guild factor1 and Commons weight500000, EMPTY pending clearing batch. Full/masked
+stock starts cap-1 with interval-1500 progress, so actual attendance/stock/hour
+boundaries are included. Plain has no faction/Guild/Compact membership. Invalid
+weight is deliberately absent on a Compact member, not silently substituted.
+For all48016 points compare full encoded state/result/roles/ordered event payloads
+or identical actual errors; no excluded population. Query origin cash, independent
+750/2000ms cash and1e12 thresholds, preserving first-error/zero-time/unreachable
+distinctions. Thresholds are diagnostic, not catalog purchases or pricing changes.
+
+No closed-chain range proof yet exists. Its explicit inconclusive guard MUST
+force chronological real leaves, with work visible under the existing diagnostic
+node ceiling. This reference is not an efficient final search, accepted workload
+budget or completed domain proof; do not label leaf enumeration a producer proof.
+Require selected full state/events against the independent real primitive, owned
+weight/input/result-payload isolation, no intent IDs/publisher/Store, and legacy
+event refusal unchanged. A compiling projection-only Commons disconnection must
+fail while the reference and source preparation stay intact. Native/Linux affected
+checks precede checkpoint. No live logged stage/catchup/settlement/SQL claim.
+
+Clarification before execution: constructor requires valid Compact weight binding.
+The missing-weight population deliberately severs that dependency AFTER a valid
+research construction and compares the real primitive's error propagation. It
+is not a claim the proposed BeginCalculation may admit missing required inputs.
+
+## 2026-10-16 — closed replay fixed-query reference checkpoint
+
+Initial projection/reference smokece3397/46296 PASS47.048s:48016 complete points,
+12002 expected refusals,24004 event-bearing references,32 queries and24012 actual
+oracle counterfactual calls. It did not prove a returned-query ownership API.
+Move result selection/clearing into the owned research query, count real main/
+counterfactual hooks and restores, add mutable weight/input/result-payload controls.
+Replace the draft's self-canonicalization origin check with a separately copied
+pre-query origin, and compare full evaluation/roles on the repeated selection.
+Standalone ownershipff2510/76451 PASS0.899s precedes that final assertion tightening.
+Final source/portable overlay frozen before both architecture runs and fault run.
+
+Final nativea2baaf/76756 PASS49.762s plus production vet: all eight complete
+populations, ownership/refusal/budget/empty-future controls and the existing actual
+event-ownership/long-absence-stage tests execute. The latter retain both modes,
+actual full ApplyLogged comparison, original24h cap/12h banking and missing-clearing
+negative. No need to rerun unchanged183107 prior references from6fe8e3b4: neither
+their helper sources nor ordinary production changed. These focused checks are
+not a full production/harness, TS, SQL, hosted or CI claim.
+
+Compiling projection-only Commons disconnection211cde/57126 FAIL55.340s as
+required, with the full48016 points/32 queries retained and36016 semantic mismatches.
+Cash/nominal valid purchase times still agree; full state/events do not. More
+importantly, severing Commons loses its actual1ms missing-input refusal and instead
+returns positive purchases869/1738ms online,966/1931ms offline. Normal source,
+reference chain and preparation are untouched. No compile/admission failure is
+counted as discrimination. Negative source/overlay remain ignored .cache files.
+Native/fault runs overlap the declared Linux run, so timings are not performance
+comparisons; the linear reference is explicitly NOT accepted workload feasibility.
+
+Real cost is exposed, not excused by successful pruning: the unreachable6001ms
+query executes6002 full projections/12003 query nodes/12004 guard calls. Positive
+750/2000ms queries execute751/2001 points; first-error queries execute0 then1ms.
+For full/plain profiles each owned reference executes14756 projections,29512
+restores,29504 hook calls including14752 counterfactual calls across its complete
+enumeration and queries. The masked profile avoids counterfactuals but still
+executes12004 projections. These are diagnostic work observations, not new caps
+or evidence that a65M-endpoint query can afford this strategy. A source-derived
+closed-chain range proof and complete real workload measurement are next gates.
+
+Declared Linux046f15/91975 PASS224.698s, all48016 paired points/32 queries and
+ownership controls; existing event/long-absence stage populations also pass in
+both modes. This is emulated Linux AMD64 Go1.26, not hosted hardware or a timing
+comparison with native Go1.27.2 ARM64. All owned handles terminal. Sources remained
+frozen and hash-identical across final native/Linux/fault runs. No tests skipped.
+
+Root reproduction, focused affected boundary:
+`make test-go vet GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run "TestWaitClosedReplay|TestAxisCalculationEventOwnershipResearch|TestAxisCalculationLongAbsenceStagesResearch" -v'`.
+Linux: `docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../planning/clout-v1-and-pr-interns/probes/wait-query-overlay.json -run 'TestWaitClosedReplay|TestAxisCalculationEventOwnershipResearch|TestAxisCalculationLongAbsenceStagesResearch' -v ./production -count=1`.
+These selections need no generated first-hour packet; a full -run TestWait still
+requires H3n's capture first. Fault command selects TestWaitClosedReplayBindingResearch
+with -overlay=../.cache/wait-closed-no-commons.json; copy only the manual source/
+overlay, then slice the projection's actual four-hook accrualHookChain to[:3]
+before its observer wrapper. No production source mutation. Final SHA256:
+- closed reference:fb60ffc90eaaba6c7a64b4ace0a3429fdc3823774d06d139e1f7728473283c95
+- fourteen-file overlay:281c78b4e597e124676cd5f8cfa05c5d72dd302a1940db0fb42a2f20c2d9c9ba
+- fault source:b71636bb91355ea51368a1533b1abfc4345b448d9359f6347c6ed1c82d9a5720
+- fault overlay:3c5bd9cd220dfeb8bdad391f9baf83148855154f1651d8f2cc740d752b429ce0
+
+Own draft H3o and current plan describe the reference and unresolved complete
+closed-chain domain proof. Prior observed boundaries/negative results remain;
+active production, ordinary tests, CI, numeric kernel222/epoch8, schemas and data
+are unchanged. No new game defect inferred from intentional wait-event refusal.
+RP-680 and27 Clout AC6 failures remain OPEN. Logged stage/clock, actual clearing/
+SQL/event delivery/idempotency, complete caller/global/lifecycle/domain, workload/
+compatibility and research/normative adoption stay mandatory. Fixed-sampling
+success is not permission to omit modern endpoint or full nine-tier1.0 scope.
+Review by: Codex root (research author/first filter). Recorded by: Codex root.
+Five-path range6fe8e3b4-exclusive through this checkpoint needs research/normative
+review outside corrective-code delegation. Not designated approval, implementation
+acceptance, archival, push/publication/deployment or release. Goal active/progress;
+next source proof must cover all-resource Commons capacity, not just cash/lifetime.
