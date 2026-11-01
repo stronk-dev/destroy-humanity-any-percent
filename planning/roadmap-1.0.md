@@ -21,7 +21,8 @@ time-query decline through a valid provision-generated unequal prefix and actual
 simulation wait wrapper; no natural acquisition or current complete-search/report defect
 is established. The unapplied exact-sum prototype removes this case, not the27 failures,
 compatibility/workload gates or adoption. The Clout log owns execution and limits; next is
-a correct search alternative or separately adopted numeric route with complete caller proof,
+owner adoption of the independently technically approved accounting/search proposals
+(`d2c610cd..52f5ba9b`), then implementation with complete caller/workload proof;
 not more positive censuses or a proof of the now-false generic monotonicity claim. Last inspected
 publication is `be66902b`, failed CI38560135778 and maintenance38677066823. Read-only queries
 reconfirm that same remote coordinate and both failures. No new

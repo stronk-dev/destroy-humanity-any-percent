@@ -5690,3 +5690,12 @@ Codex root (verification operator, not independent approval). Recorded by: Codex
 root. This changes integration freshness, not playable scope or natural pacing.
 Accounting/search/Headcount/author-content, rights/AT and exact-release/clean-host
 gates remain. No specification adoption, feature/archive/release approval or push.
+
+## 2026-11-01 — Accounting/search proposals technically ready
+
+Independent Codex technical review approves `d2c610cd..52f5ba9b`, resolving
+concrete role-report, search-route and caller/continuation-dispatch gaps. Detailed
+findings and verdict live in the [Clout log](clout-v1-and-pr-interns/log.md).
+Next is owner adoption of both drafts, then implementation and full acceptance;
+no product code or balance changed. RP-680,27 accounting failures, historical
+guard, separate Tier2-window adoption and full nine-tier/platform gates stay open.

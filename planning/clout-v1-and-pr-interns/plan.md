@@ -11,8 +11,9 @@ ratified later by owner SHA (OD-5).
 Independent technical readiness review at `d2c610cd` requires three draft fixes:
 role-report counting, selected nonmonotone query semantics and complete caller/
 continuation dispatch. The proposed reconciliation now lives in child H1/H2a/H3/H4
-and the parent's readiness wording. Next independently re-review the complete
-correction, then obtain explicit specification adoption before implementation.
+and the parent's readiness wording. Independent technical review APPROVES the
+complete `d2c610cd..52f5ba9b` correction as ready for owner adoption. Next obtain
+explicit adoption of both drafts, then plan/implement their complete acceptance.
 No further positive census is a substitute for these contracts; RP-680 and the27
 original AC6 failures remain open. See the latest owning-log checkpoint.
 

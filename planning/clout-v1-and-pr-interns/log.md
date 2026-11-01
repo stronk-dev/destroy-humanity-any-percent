@@ -9337,3 +9337,26 @@ correction after `d2c610cd` requires independent technical re-review. Both draft
 remain unadopted; RP-680,27AC6, historical kernel guard, separate Tier2-window
 adoption and full implementation/feature/release gates remain open. No product,
 data, kernel0.3.223/epoch8, CI, historical artifact or authored-copy change; no push.
+
+### 2026-11-01 — Independent technical readiness approval
+
+APPROVED, technically READY for owner adoption: complete four-path range
+`d2c610cd..52f5ba9b`. Review by: fresh independent Codex
+`/root/accrual_search_readiness_review`. Recorded by: Codex root, transcribing
+its final verdict. All original findings close. Reviewer inspected the complete
+correction and actual caller boundaries; no new software suite claimed for prose.
+Its earlier unchanged-source nonempty stock-role/mask/no-hook check passed0.189s.
+
+Re-review required explicit clarification that a later endpoint refusal discovered
+in preparation becomes a chronological stop/inconclusive range, not an eager
+error; report termination cannot synthesize zero-time accrual roles after an
+already finalized action. `52f5ba9b` supplies both and preserves RunKey's actual
+grammar without an invented epoch field. Reviewer checked final diff/whitespace,
+source and clean HEAD; no blocking findings remain in this specification correction.
+
+Approval is technical, NOT adoption, API implementation, format/hash allocation
+or a universal certificate/workload execution. Both RFCs remain drafts. Root asks
+Marco explicitly to adopt both before implementation; the separate Tier2 activity
+amendment still needs its own answer. RP-680,27AC6, historical guard and every
+full implementation/feature/release gate stay open. Index/current-state/roadmap
+now route to this approval and the actual next authority boundary; nothing pushed.
