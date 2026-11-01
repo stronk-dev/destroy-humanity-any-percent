@@ -114,8 +114,7 @@ func (suite *FirstHourSuite) RunTier2Pacing(spec RunSpec, seed uint64, config Ti
 	if spec.PolicyID != "chaos.t0_t1" && spec.PolicyID != "casual.t0_t1" {
 		return Tier2PacingResult{}, fmt.Errorf("%w: policy %s is held (reference.greedy v2 needs the §P1 allocation arms)", ErrTier2Pacing, spec.PolicyID)
 	}
-	measurement := *suite
-	measurement.Bundle = config.Bundle
+	measurement := suite.tier2PacingMeasurement(config.Bundle)
 	run, _, _, tier2 := measurement.runWithModes(spec, seed, config.Experiment, false, nil, &tier2Runtime{})
 	result := Tier2PacingResult{PolicyID: spec.PolicyID, Seed: seed, Outcome: "completed", InvariantFailures: []string{}, TransitionCount: run.TransitionCount}
 	// The ratified first-hour milestones are run-1/run-2 observations; only
@@ -135,4 +134,13 @@ func (suite *FirstHourSuite) RunTier2Pacing(spec RunSpec, seed uint64, config Ti
 		result.Outcome = "failed"
 	}
 	return result, nil
+}
+
+// Keep the copied first-hour caller paired with the candidate artifacts. Every
+// kernel revision and any derived measurement key use this same suite identity.
+func (suite *FirstHourSuite) tier2PacingMeasurement(bundle production.CatalogBundle) FirstHourSuite {
+	measurement := *suite
+	measurement.Bundle = bundle
+	measurement.ConstantsHash = bundle.ConstantsHash
+	return measurement
 }

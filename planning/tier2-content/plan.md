@@ -7,6 +7,15 @@ the `headcount_budget_respected` invariant, the P4 `headcount_seats` role row an
 held until it is. Fixture-first: candidates live under `balance/testdata/t2/`; epoch 9 is NOT minted
 (M1–M4 owner-gated).
 
+**RP-697 correction, 2026-11-01:** the pacing caller copied the candidate bundle
+but retained the epoch-8 constants hash. Bind its real simulation revisions and
+derived run keys to that same candidate, leaving the base suite untouched. The
+new provisional/3e6/3e8 regression fails on the old assignment; corrected focused
+tests and the public progression/refusal journey pass. Complete native package,
+Linux checks and independent corrective review are recorded in the owning log.
+This changes neither the existing result fields nor candidate/policy/balance data;
+full pacing, Headcount, mint and accounting/search gates remain open.
+
 **Review checkpoint, 2026-10-08:** Codex independently approves the original C1–C4 candidate,
 era and control changes and the bounded C5 pacing implementation/reproduction in the exact
 ranges cited in the owning log. This is bounded review, not AC0–AC10 completion: C6, later corrections,

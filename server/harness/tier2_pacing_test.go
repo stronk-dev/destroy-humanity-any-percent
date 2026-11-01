@@ -81,6 +81,40 @@ func tier2Spec(suite *FirstHourSuite, policyID string, horizonMS int64) RunSpec 
 	return RunSpec{}
 }
 
+func TestTier2PacingMeasurementBindsCandidateIdentity(t *testing.T) {
+	suite := tier2PacingSuite(t)
+	originalHash, originalBundle := suite.ConstantsHash, suite.Bundle
+	for _, amount := range []string{"", "3e6", "3e8"} {
+		t.Run("gate_"+amount, func(t *testing.T) {
+			bundle := tier2PacingBundle(t, suite, amount)
+			if bundle.ConstantsHash == originalHash {
+				t.Fatal("candidate identity control is not distinct from the base epoch")
+			}
+			measurement := suite.tier2PacingMeasurement(bundle)
+			company, err := newFirstHourCompany(measurement.Bundle.Economy)
+			if err != nil {
+				t.Fatal(err)
+			}
+			runtime := firstHourRuntime{suite: &measurement, company: company, revision: 1}
+			// These are the real revision/key constructors consumed by the shared
+			// runner, not a second candidate-hash calculation in the test.
+			if got := runtime.companyRevision().ConstantsHash; got != bundle.ConstantsHash {
+				t.Errorf("actual simulation revision hash %s, candidate %s", got, bundle.ConstantsHash)
+			}
+			spec := tier2Spec(suite, "chaos.t0_t1", 21_600_000)
+			if got := measurement.RunKey(spec, 0).ConstantsHash; got != bundle.ConstantsHash {
+				t.Errorf("derived measurement key hash %s, candidate %s", got, bundle.ConstantsHash)
+			}
+			if measurement.Bundle.Economy != bundle.Economy || measurement.Bundle.Routes != bundle.Routes {
+				t.Fatal("measurement discarded the actual candidate catalogs")
+			}
+			if suite.ConstantsHash != originalHash || suite.Bundle.ConstantsHash != originalBundle.ConstantsHash || suite.Bundle.Economy != originalBundle.Economy || suite.Bundle.Routes != originalBundle.Routes {
+				t.Fatal("candidate measurement changed the base suite")
+			}
+		})
+	}
+}
+
 // TestTier2PacingReachesTheITCompanyGate is the §P mechanics witness on a
 // handful of seeds: the exit-once rule lets run 3 continue to gate.t1_to_t2.
 // Its failing case is the RFC's own claim: without exit-once, the shipped rule

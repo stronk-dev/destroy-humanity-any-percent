@@ -547,3 +547,58 @@ later-gate label in E4's owner round. The new journey does not certify that misl
 Pacing/relevance, RP-432 review, RP-433 population amendment, Headcount seat-source/body,
 copy/content adoption, minted-bundle proof and later-tier/platform obligations remain open.
 No full hosted CI, performance/AT completion, content mint, archive, deployment or push claim.
+
+## 2026-11-01 — RP-697 candidate identity correction
+
+Previous goal turn PROGRESS: the separate Clout H3ah career-consumer proof was
+independently approved. Next actual Tier2 caller inspection finds RunTier2Pacing
+copies config.Bundle but retains the base suite's ConstantsHash. Therefore the
+shared first-hour companyRevision and RunKey constructors name epoch8 while
+using candidate catalogs. Existing P1/P2/shared artifact-identity conformance
+authorizes correcting this; no new calculation protocol is adopted.
+
+Extract the same private measurement-copy constructor used by the public runner;
+the sole behavior correction sets measurement.ConstantsHash to bundle.ConstantsHash.
+The original suite remains unchanged. New normal regression uses real candidate
+loaders and actual shared revision/key constructors for provisional1e7 and
+existing calibration3e6/3e8 variants, retaining actual candidate catalog bindings.
+Old behavior (extracted constructor without the assignment)80593 FAIL0.289s/
+Make2: all three cases name the base hash in both constructors. Base hash
+baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6 differs from
+candidate cc2d122be622b254a6f522893fee60ef84a70658f5701c89f5897309c62e84a5,
+3e6 variant075435cfeb7f2e824b6919ccbbf7fcf0fc833248e5355b1dd482cfbad2414cfd
+and3e8 variantecb92ef053167931308dd5d03ec0345b85bb363b191885d92f8e2b17213cff2f.
+
+Corrected native focused/public28678 PASS8.472s. The existing actual public
+journey reaches the IT Company on run3 with one elective Exit, refuses a bundle
+without the gate and the held Reference policy, and preserves a visible
+must_reach failure for the short horizon. Linux-amd64 declared service17396 runs
+the same named population PASS23.699s, actual public journey23.28s. Exhaustive
+calibration explicitly SKIPS in both selectors; neither is a672-run reproduction
+or the complete future allocation-aware policy. Native full harness56076
+PASS106.971s cold; harness vet/gofmt/final diff check PASS.
+
+Reproduce from root:
+
+```sh
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -run TestTier2Pacing -v'
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./harness'
+docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -run TestTier2Pacing -v ./harness -count=1
+```
+
+Canonical docs describe the corrected internal source pairing without pretending
+Tier2PacingResult has a complete provenance envelope. No result grammar, public
+wire, policy, seed/horizon/bound, artifact bytes, balance, kernel0.3.223 or epoch8
+changes. Harness files are outside kernel/affecting-paths.json; no false numeric
+version bump. Old raw research artifacts/reports remain unchanged. This finding
+does not establish changed numerical outcomes or resolve RP-433/Headcount/copy/
+mint/full pacing, RP-680/27AC6/history guard or release obligations.
+
+The Clout routing plan names the actual next research gap: Tier2's accepted
+derived long horizons are not unchanged first-hour scenario RunSpecs. Do not
+bypass the source14 lifecycle refusal; bind that real caller protocol before
+claiming its population. Review by: Codex root (implementer/first filter).
+Recorded by: Codex root. Complete seven-path corrective range including tests,
+canonical docs and owning/routing records awaits independent corrective review.
+No feature acceptance, archival, publication, deployment or push.

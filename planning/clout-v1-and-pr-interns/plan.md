@@ -282,6 +282,15 @@ APPROVES complete da66036d..374a639f; this is not specification adoption.
 Next complete remaining registered workload/cost/error/report obligations;
 neither draft is adopted, and no full H4 or accounting gate is closed.
 
+Next Tier2 caller inspection finds RP-697 before a new calculation study: its
+public runner pairs candidate catalogs with the base epoch's constants identity.
+The bounded conformance correction/tests/review belong to the Tier2 owning plan
+and log, not either draft. Do not bypass source binding in the research adapter.
+The Tier2 caller also derives longer horizons from its accepted pacing protocol;
+it is not an unchanged first-hour scenario RunSpec. Bind that actual producer
+contract explicitly before claiming its population, rather than loosening the
+existing source14 lifecycle's outside-scenario refusal.
+
 RP-695 corrective batch (04dda624-exclusive): archived T01-C33's shared ordered
 policy decisions and existing RunExperimentScript observation contract authorize
 recording the actual Reference winner, not every explored candidate. Retain its

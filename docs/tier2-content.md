@@ -73,6 +73,11 @@ It records Founder-attended time at the first crossing in any run. An unreached 
 `must_reach` failure; it is never dropped. The allocation arms and `reference.greedy` v2 are held
 on OD-1.
 
+The copied measurement suite binds its constants identity and every simulation revision to
+the candidate bundle, including calibration variants. The base epoch suite is unchanged.
+`Tier2PacingResult` retains its existing fields; it is not a complete software/input provenance
+record, and this binding correction does not add a new report format or activate candidate data.
+
 `TestTier2PacingCalibration` (`CLOUD_CLICKER_T2_PACING=1`) sweeps the gate literal against the
 [2 h, 3 h] envelope and pins its report in `balance/testdata/t2/pacing-calibration-v1.json`.
 The owner ratifies the literal from that report (§M3).
