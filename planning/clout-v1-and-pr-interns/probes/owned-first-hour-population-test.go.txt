@@ -1,0 +1,362 @@
+package harness
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"os"
+	"reflect"
+	"runtime"
+	"strconv"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/economy"
+	prestigecore "cloud-clicker/server/prestige"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/save"
+)
+
+type firstHourPopulationRowResearch struct {
+	Policy                                                                              string
+	Seed                                                                                uint64
+	Complete                                                                            bool
+	Failure                                                                             string
+	Boundaries, Observations, Actions, Returns, Restarts, Queries, Points, TrialActions int
+	Transitions                                                                         int64
+	SetupNS, TraversalNS, OracleNS, LegacyNS, TotalNS                                   int64
+	Legal                                                                               firstHourLegalWorkResearch
+	Certificate                                                                         production.ManualFirstHourCertificateObservationResearch
+	Actual, Legacy                                                                      FirstHourRunResult
+	CommandsEqual, MilestonesEqual, SamplesEqual, ReportsEqual                          bool
+	ActualCommandHash, LegacyCommandHash, FinalStateHash                                string
+}
+
+func populationRuntimeResearch(t *testing.T, suite *FirstHourSuite, spec RunSpec, seed uint64, experiment FirstHourExperiment) *firstHourRuntime {
+	t.Helper()
+	policy, ok := suite.Policy.Policy(spec.PolicyID, spec.PolicyVersion)
+	if !ok {
+		t.Fatal("declared policy absent")
+	}
+	company, err := newFirstHourCompany(suite.Bundle.Economy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	commands := []FirstHourScriptCommand{}
+	return &firstHourRuntime{suite: suite, spec: spec, policy: policy, seed: seed, experiment: experiment, company: company,
+		founder: &save.State{LedgerFactKinds: map[string]bool{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}, revision: 1, lastSession: -1, milestones: map[string]*int64{}, commands: &commands}
+}
+
+func populationDigestResearch(value []byte) string {
+	sum := sha256.Sum256(value)
+	return hex.EncodeToString(sum[:])
+}
+func populationCommandsDigestResearch(t *testing.T, commands []FirstHourScriptCommand) string {
+	t.Helper()
+	// Request is deliberately omitted by the ordinary script JSON tag.
+	type command struct {
+		At      int64
+		Mode    production.EvaluationMode
+		Request production.IntentRequest
+	}
+	rows := make([]command, 0, len(commands))
+	for _, c := range commands {
+		rows = append(rows, command{c.AtMS, c.Mode, c.Request})
+	}
+	data, err := json.Marshal(rows)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return populationDigestResearch(data)
+}
+
+// Independent reference: real primitive calls at selected actions and actual
+// session/ending boundaries. Never call an owner, query, ranker, or scope.project.
+type firstHourPopulationReferenceResearch struct {
+	r        *firstHourRuntime
+	anchor   []byte
+	observed time.Time
+	session  int64
+}
+
+func (reference *firstHourPopulationReferenceResearch) restore(t *testing.T) *save.State {
+	t.Helper()
+	state, err := save.RestoreState(reference.anchor, 14, reference.r.suite.Bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return state
+}
+func (reference *firstHourPopulationReferenceResearch) project(t *testing.T, now time.Time) *save.State {
+	t.Helper()
+	state := reference.restore(t)
+	_, err := production.SimulateAdvance(state, reference.r.suite.Bundle.Economy, production.SimulationDependencies{Routes: reference.r.suite.Bundle.Routes, Hook: reference.r.lifetimeHook()}, reference.r.companyRevision(), production.ModeOnline, now, reference.r.external(), production.AblationMask{})
+	if err != nil {
+		t.Fatal("independent original-interval view failed", err)
+	}
+	return state
+}
+func (reference *firstHourPopulationReferenceResearch) check(t *testing.T, r *firstHourRuntime, scope *manualFirstHourScopeResearch, life *manualFirstHourLifecycleResearch, boundary firstHourBoundary, selections int) {
+	t.Helper()
+	now := relevanceNow(boundary.atMS)
+	if now.Before(reference.observed) {
+		if selections != len(scope.selections) {
+			t.Fatal("skipped boundary adopted an action")
+		}
+		requireReferenceCompanyEqual(t, r.company, reference.project(t, reference.observed))
+		return
+	}
+	mode := production.ModeOnline
+	if boundary.first && (reference.session < 0 && boundary.atMS > 0 || reference.session >= 0 && reference.session != boundary.sessionIndex) {
+		// Close at the last REAL observation, then reproduce the real return's
+		// encode/restore before RecordOfflineSpan and its one offline evaluation.
+		closed := reference.project(t, reference.observed)
+		encoded := firstHourEncodeResearch(t, closed)
+		state, err := save.RestoreState(encoded, 14, r.suite.Bundle.Economy, economy.ScopeCompany, time.Time{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := prestigecore.RecordOfflineSpan(state, state.EvaluatedThrough, now, r.suite.Bundle.Prestige.CatchupCeilingMS); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := production.SimulateAdvance(state, r.suite.Bundle.Economy, production.SimulationDependencies{Routes: r.suite.Bundle.Routes, Hook: reference.r.lifetimeHook()}, reference.r.companyRevision(), production.ModeOffline, now, reference.r.external(), production.AblationMask{}); err != nil {
+			t.Fatal("independent return failed", err)
+		}
+		reference.anchor = firstHourEncodeResearch(t, state)
+		mode = production.ModeOffline
+	}
+	reference.session = boundary.sessionIndex
+	reference.r.lastSession = boundary.sessionIndex
+	if len(scope.selections)-selections > 1 {
+		t.Fatal("more than one selected action in a policy step")
+	}
+	for _, selected := range scope.selections[selections:] {
+		state := reference.restore(t)
+		decision, err := production.SimulateTransition(selected.request, state, r.suite.Bundle.Economy, production.SimulationDependencies{Routes: r.suite.Bundle.Routes, Hook: reference.r.lifetimeHook()}, reference.r.companyRevision(), production.ModeOnline, relevanceNow(selected.atMS), reference.r.external(), nil, production.AblationMask{})
+		if err != nil || !reflect.DeepEqual(decision, selected.result) || !bytes.Equal(firstHourEncodeResearch(t, state), selected.state) {
+			t.Fatal("independent selected full decision/events/roles/state differs", err)
+		}
+		reference.r.company = reference.restore(t)
+		if err := reference.r.apply(selected.request, relevanceNow(selected.atMS), selected.atMS, mode); err != nil {
+			t.Fatal("independent actual command failed", err)
+		}
+		reference.anchor = firstHourEncodeResearch(t, reference.r.company)
+	}
+	if r.company.RunSeq != reference.r.company.RunSeq || life.ended {
+		reference.r.company = reference.project(t, now)
+		if err := reference.r.step(boundary); err != nil {
+			t.Fatal("independent actual ending body failed", err)
+		}
+		reference.anchor = firstHourEncodeResearch(t, reference.r.company)
+	}
+	want := reference.project(t, r.company.EvaluatedThrough)
+	requireReferenceCompanyEqual(t, r.company, want)
+	gotFounder, err := firstHourFounderSnapshotResearch(r.founder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantFounder, err := firstHourFounderSnapshotResearch(reference.r.founder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(gotFounder, wantFounder) || !reflect.DeepEqual(r.milestones, reference.r.milestones) || !reflect.DeepEqual(r.ending, reference.r.ending) || !reflect.DeepEqual(r.reputationExits, reference.r.reputationExits) || r.revision != reference.r.revision || r.founderAttendedMS != reference.r.founderAttendedMS {
+		t.Fatal("independent full Founder/milestone/ending/revision history differs")
+	}
+	if !reflect.DeepEqual(*r.commands, *reference.r.commands) {
+		t.Fatal("complete real action/marker capture differs from independent primitive replay")
+	}
+	reference.observed = r.company.EvaluatedThrough
+}
+
+func observeFirstHourPopulationRowResearch(t *testing.T, suite *FirstHourSuite, spec RunSpec, seed uint64, row *firstHourPopulationRowResearch) {
+	t.Helper()
+	row.Failure = "source/owner construction"
+	started := time.Now()
+	defer func() { row.TotalNS = time.Since(started).Nanoseconds() }()
+	experiment := FirstHourExperiment{AcquihirePurchasedMinimum: 200, BurnoutPriceFactor: "2e0", RouteKnowledgeBonus: 50, SeedCapital: "1e4", GeneratedBeigeTowers: 10}
+	r := populationRuntimeResearch(t, suite, spec, seed, experiment)
+	scope, life := installLifecycleForTestResearch(t, r)
+	scope.certified = true
+	referenceRuntime := populationRuntimeResearch(t, suite, spec, seed, experiment)
+	reference := &firstHourPopulationReferenceResearch{r: referenceRuntime, anchor: firstHourEncodeResearch(t, referenceRuntime.company), observed: Epoch, session: -1}
+	legal := &firstHourLegalWorkResearch{}
+	firstHourLegalWorkByRuntimeResearch[r] = legal
+	t.Cleanup(func() { delete(firstHourLegalWorkByRuntimeResearch, r) })
+	row.SetupNS = time.Since(started).Nanoseconds()
+	row.Boundaries = len(life.boundaries)
+	for life.next < len(life.boundaries) && !life.ended {
+		row.Failure = fmt.Sprintf("boundary%d transition guard", life.next)
+		if r.transitions >= suite.Scenario.TransitionBudget {
+			t.Fatal("unchanged transition guard fired", r.transitions)
+		}
+		boundary := life.boundaries[life.next]
+		selected := len(scope.selections)
+		stepStart := time.Now()
+		row.Failure = fmt.Sprintf("owned boundary%d at%d", life.next, boundary.atMS)
+		err := r.step(boundary)
+		row.TraversalNS += time.Since(stepStart).Nanoseconds()
+		if err != nil {
+			t.Fatal("owned full-population step failed", boundary, err)
+		}
+		oracleStart := time.Now()
+		row.Failure = fmt.Sprintf("independent boundary%d at%d", life.next-1, boundary.atMS)
+		reference.check(t, r, scope, life, boundary, selected)
+		row.OracleNS += time.Since(oracleStart).Nanoseconds()
+		row.Observations++
+	}
+	row.Failure = "terminal/objective/work census"
+	if !life.ended || r.milestones["milestone.first_elective_exit"] == nil {
+		t.Fatal("full declared run did not reach its objective")
+	}
+	if r.transitions != int64(scope.advances+scope.points+scope.actions) {
+		t.Fatal("declared transition counter omitted owned work")
+	}
+	if legal.Calls != legal.CloneFailures+legal.PrimitiveErrors+legal.Applied+legal.Rejected || legal.CloneFailures != 0 || legal.PrimitiveErrors != 0 {
+		t.Fatal("invalid or incomplete legal-command work", *legal)
+	}
+	if spec.PolicyID != "reference.greedy" && legal.Calls == 0 {
+		t.Fatal("legal-command observation disconnected")
+	}
+	row.Legal = *legal
+	row.Actions = len(scope.selections)
+	row.Returns = scope.gaps
+	row.Restarts = life.restarts
+	row.Queries = scope.queries
+	row.Points = scope.points
+	row.TrialActions = scope.actions
+	row.Transitions = r.transitions
+	row.Actual = FirstHourRunResult{Key: suite.RunKey(spec, seed), PolicyHash: suite.PolicyHash, Outcome: "completed", InvariantFailures: []string{}, ReputationExits: append([]FirstHourReputationSample{}, r.reputationExits...), Ending: r.ending, TransitionCount: r.transitions}
+	row.Actual.Milestones = firstHourMilestoneReport(suite.Scenario.Milestones, r.milestones, &row.Actual.InvariantFailures)
+	if len(row.Actual.InvariantFailures) > 0 {
+		t.Fatal("actual full-run invariants failed", row.Actual.InvariantFailures)
+	}
+	for _, work := range scope.certificateWork {
+		row.Certificate.Points += work.Points
+		row.Certificate.LifetimeRanges += work.LifetimeRanges
+		out, in := reflect.ValueOf(&row.Certificate.Work).Elem(), reflect.ValueOf(work.Work)
+		for i := 0; i < out.NumField(); i++ {
+			out.Field(i).SetInt(out.Field(i).Int() + in.Field(i).Int())
+		}
+	}
+	legacyStart := time.Now()
+	row.Failure = "legacy comparison and complete output capture"
+	var commands []FirstHourScriptCommand
+	row.Legacy, commands = suite.RunExperimentScript(spec, seed, experiment)
+	row.LegacyNS = time.Since(legacyStart).Nanoseconds()
+	if row.Legacy.Outcome != "completed" {
+		t.Fatal("legacy comparison run failed", row.Legacy.InvariantFailures)
+	}
+	row.CommandsEqual = reflect.DeepEqual(*r.commands, commands)
+	row.MilestonesEqual = reflect.DeepEqual(row.Actual.Milestones, row.Legacy.Milestones)
+	row.SamplesEqual = reflect.DeepEqual(row.Actual.Ending, row.Legacy.Ending) && reflect.DeepEqual(row.Actual.ReputationExits, row.Legacy.ReputationExits)
+	row.ReportsEqual = reflect.DeepEqual(row.Actual, row.Legacy)
+	row.ActualCommandHash = populationCommandsDigestResearch(t, *r.commands)
+	row.LegacyCommandHash = populationCommandsDigestResearch(t, commands)
+	row.FinalStateHash = populationDigestResearch(firstHourEncodeResearch(t, r.company))
+	row.Complete = true
+	row.Failure = ""
+	t.Logf("complete %s/%d steps%d actions%d returns%d transitions%d legal%+v owned_ms%d oracle_ms%d legacy_ms%d commands_equal%v milestones_equal%v samples_equal%v reports_equal%v", spec.PolicyID, seed, row.Observations, row.Actions, row.Returns, row.Transitions, row.Legal, row.TraversalNS/1e6, row.OracleNS/1e6, row.LegacyNS/1e6, row.CommandsEqual, row.MilestonesEqual, row.SamplesEqual, row.ReportsEqual)
+}
+
+func TestOwnedFirstHourPopulationResearch(t *testing.T) {
+	suite, err := LoadFirstHourSuite(repositoryRootForReputation, "balance/testdata/t0-t1/harness-scenario-v1.json", "balance/testdata/t0-t1/first-hour-policy-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := 0
+	for _, spec := range suite.Scenario.Runs {
+		expected += spec.SeedCount
+	}
+	if expected != 97 {
+		t.Fatal("declared population changed", expected)
+	}
+	manifest, err := os.ReadFile("../../.cache/first-hour-population-sources.json")
+	if err != nil {
+		t.Fatal("missing source manifest", err)
+	}
+	var sources struct {
+		Head  string
+		Files map[string]string
+	}
+	if json.Unmarshal(manifest, &sources) != nil || len(sources.Files) < 52 || len(sources.Head) != 40 {
+		t.Fatal("invalid source manifest")
+	}
+	for path, want := range sources.Files {
+		data, err := os.ReadFile("../../" + path)
+		if err != nil || populationDigestResearch(data) != want {
+			t.Fatal("source bytes changed since preparation", path, err)
+		}
+	}
+	path := fmt.Sprintf("../../.cache/first-hour-population-%s-%s-%d.jsonl", runtime.GOOS, runtime.GOARCH, time.Now().UnixNano())
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_EXCL, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+	encoder := json.NewEncoder(file)
+	t.Logf("progress artifact%s; incomplete without full completion footer", path)
+	if err := encoder.Encode(map[string]any{"type": "begin", "schema": 1, "expected": expected, "complete": false, "sources": json.RawMessage(manifest), "scenario": suite.ScenarioHash, "policy": suite.PolicyHash, "constants": suite.ConstantsHash, "environment": runtime.GOOS + "/" + runtime.GOARCH}); err != nil {
+		t.Fatal(err)
+	}
+	if err := file.Sync(); err != nil {
+		t.Fatal(err)
+	}
+	observed, complete := 0, 0
+	actualRuns, legacyRuns := []FirstHourRunResult{}, []FirstHourRunResult{}
+	for _, spec := range suite.Scenario.Runs {
+		start, err := strconv.ParseUint(spec.SeedStart, 10, 64)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for offset := 0; offset < spec.SeedCount; offset++ {
+			seed := start + uint64(offset)
+			row := firstHourPopulationRowResearch{Policy: spec.PolicyID, Seed: seed}
+			t.Run(fmt.Sprintf("%s/seed_%d", spec.PolicyID, seed), func(t *testing.T) { observeFirstHourPopulationRowResearch(t, suite, spec, seed, &row) })
+			if row.Complete {
+				complete++
+				actualRuns = append(actualRuns, row.Actual)
+				legacyRuns = append(legacyRuns, row.Legacy)
+			} else if row.Failure == "" {
+				row.Failure = "run did not complete; see executed test failure"
+			}
+			if err := encoder.Encode(row); err != nil {
+				t.Fatal(err)
+			}
+			if err := file.Sync(); err != nil {
+				t.Fatal(err)
+			}
+			observed++
+		}
+	}
+	if observed != expected || complete != expected {
+		t.Fatalf("INVALID population measurement observed%d complete%d expected%d", observed, complete, expected)
+	}
+	actual, legacy := suite.aggregateFirstHour(actualRuns), suite.aggregateFirstHour(legacyRuns)
+	if err := encoder.Encode(map[string]any{"type": "complete", "observed": observed, "complete": complete == expected, "actual_aggregate": actual, "legacy_aggregate": legacy}); err != nil {
+		t.Fatal(err)
+	}
+	if err := file.Sync(); err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("complete declared population%d; aggregate actual_failures%v legacy_failures%v; artifact%s", observed, actual.Failures, legacy.Failures, path)
+}
+
+// Instrument check only. This is deliberately NOT the 97-run measurement and
+// cannot write its completion artifact or satisfy its all-population census.
+func TestOwnedFirstHourPopulationInstrumentResearch(t *testing.T) {
+	suite, err := LoadFirstHourSuite(repositoryRootForReputation, "balance/testdata/t0-t1/harness-scenario-v1.json", "balance/testdata/t0-t1/first-hour-policy-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, spec := range suite.Scenario.Runs {
+		t.Run(spec.PolicyID, func(t *testing.T) {
+			row := firstHourPopulationRowResearch{Policy: spec.PolicyID, Seed: 0}
+			observeFirstHourPopulationRowResearch(t, suite, spec, 0, &row)
+			if !row.Complete {
+				t.Fatal("instrument case incomplete")
+			}
+		})
+	}
+}

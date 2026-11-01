@@ -8938,3 +8938,119 @@ live-parity, sparse-action/legacy-accounting equivalence, original accounting
 repair, draft adoption, feature/release acceptance, archival or publication.
 Remaining real-policy/seed/whole-cost/error/report and1.0 gates stay active;
 no push. Ledger/plan disposition reconciled with this exact verdict.
+
+### H3ag — study instrument checkpoint, full population still running
+
+2026-11-01, ef481412-exclusive manual research. Previous turn PROGRESS: RP-695
+corrective code independently approved. The pinned scenario declares97 runs
+(64Chaos/32Casual/1Reference). Plan predeclares the existing experimental tuple,
+unchanged horizons/transition budgets/default Go deadline, complete original-
+interval primitive/session/ending replay and separately visible legal probes,
+certificate work and elapsed phases. No product/CI/kernel/epoch change.
+
+First filtered command66277 executes only Chaos0, then correctly refuses the full
+census observed97/complete1;7.473s/Make2 is INVALID full-population evidence.
+Add a separate explicitly named three-seed instrument check, not a filter waiver:
+51524 PASS21.806s. Chaos0's19738 legal probes/2350 transitions expose additional
+work; Casual0 matches legacy full report, Chaos0/Reference0 samples do not.
+
+Self-inspection then finds RP-696: after adding failure-stage metadata, the
+bookkeeping else also counted failed rows with nonempty Failure. Stop the real
+81861 measurement before accepting it; the exact owned harness process12847 is
+identified and interrupted, terminal170.504s/Make2. Sandbox process inspection/
+signal initially denied; scoped escalation succeeds.24 completed Chaos rows
+remain in `.cache/first-hour-population-darwin-arm64-1793559057717162000.jsonl`,
+without a completion footer. They are NOT combined with the replacement run.
+
+Execute the exact failed-row branch discriminator: the existing observations all
+return with an explicit failure stage before any measurement, leaving97 named
+subtests but0 completed rows. Old branch89274 falsely PASS1.106s; corrected
+branch80205 refuses complete0/expected97,1.104s/Make2. Neither source-pin nor
+compiler errors count: only the modified test source's manifest comparison is
+explicitly bypassed for these instrument controls. Reproducer is
+`probes/prepare-first-hour-population-census-controls.mjs`. Their ignored artifacts
+are retained as `first-hour-population-census-old-false-green.jsonl` and
+`first-hour-population-census-corrected-refused.jsonl`; neither is an actual study.
+
+Corrected52-entry overlay and source manifest frozen. Vet PASS. Full unchanged-
+deadline native measurement now runs as tool session50340, progress
+`.cache/first-hour-population-darwin-arm64-1793559430161915000.jsonl`; last observed
+through Chaos21, no footer yet. Do not infer completion from these early rows.
+Resume/poll the same live handle before restarting. No final whole-population,
+Linux, adoption, acceptance or release claim yet. Review by: Codex root
+(author/first filter). Recorded by: Codex root. Full batch needs independent
+technical review after its final result and record boundary are frozen.
+
+### H3ag — complete pinned population, legacy differences retained
+
+2026-11-01, ef481412-exclusive research-only batch. Corrected50340 reaches
+terminal PASS536.562s under the original Go10-minute deadline. Exact97 population:
+Chaos seeds0–63, Casual0–31, Reference0;99 JSONL lines are one header,97 complete
+unique rows and one complete footer. No guard, incomplete row or exclusion.
+Source manifest validates all58 bound files; no compiled input changed during the
+run. Independent primitive replay checks every observed full Company, supported
+partial-Founder/history, selected decision/events/roles/state and command stream.
+
+| Population | Observed states | Selected actions | Actual returns | Legal probes | Full legacy reports/samples equal |
+|---|---:|---:|---:|---:|---:|
+| Chaos64 | 86464 | 63630 | 0 | 1267130 | 0/64 |
+| Casual32 | 17389 | 17325 | 109 | 298589 | 32/32 |
+| Reference1 | 2701 | 177 | 0 | 0 | 0/1 |
+
+All97 restart and reach the objective. Total106554 observed states,81132 selected
+actions,109 actual returns and97 restarts match independent replay. All97
+COMPLETE command streams (including actual requests) and milestone tables match
+legacy.65 sample/report comparisons remain different. In Chaos,51 scripted cash,
+55 first-lifetime and63 second-lifetime samples differ; their union is64 runs.
+Chaos0 cash3.22500897708e5 vs legacy3.22500897707e5; first lifetime1.88402301503e7
+vs1.88402301501e7. Reference cash1.25502784523e6 vs1.25502784541e6 and first
+lifetime1.46050836095e6 vs1.4605083614e6 retain H3af's finding. No restamping or
+tolerance. Both aggregate pacing tables are exactly equal, with no failures or
+warnings; that bounded result is not full-report compatibility or AC6 acceptance.
+
+Costs:194445 charged transitions =150094Chaos+34714Casual+9637Reference.
+1565719 legal trials =304031 applied+1261688 rejected,0 clone/primitive errors;
+these were not all represented by the old transition counter. Reference5178
+queries/5470 query points/940 trial actions retain13764397 scalar entries and
+13483252 partial checks. Other certificate counters remain in the raw artifact.
+Summed measured seconds: combined owner/reference setup0.258083086; actual owned
+traversal364.035969730; independent replay67.880395136; legacy102.689122085;
+total per-row535.396482708. These are distinct phases, not a matched speed study,
+exhaustive inner-operation count, new budget or evidence that fewer transitions
+means less total work. No old bound or kernel identity changed.
+
+Artifact `.cache/first-hour-population-darwin-arm64-1793559430161915000.jsonl`
+SHA256 `99f79e9672451646830578308ed2ec45d60d3f02e19b032a20d22cab2bbe4fef`;
+ignored manifest SHA256 `eb8a3674aebc325966ba50a553857b9b09be47df2c5ee7fc7811c53d96a8ad3b`.
+Header binds source ef481412c0505e262f8c6cd106de5adf8f75f821 plus the exact
+manual files, including population test831aac3f1989e4e91576ae98bc1d150b8b1e007ab83f4d032caf954f671984c5
+and observerc7efe4b3a7a9ce831d154fed1a412ff6c09b3598e9e438b7540cf1590ef0eced.
+Generator7469d2d4da66c501547122298e9cbce5e77770f00967e0afe79e380890f3817d;
+census-control generator2c7f6cce6d3f8c96e5402441fbee125c570a006512fbb60488b38e71bda9f4d9.
+Interrupted/filtered/false-green control artifacts above remain separate INVALID
+evidence. Historical H3af artifacts remain untouched, not relabelled to new capture.
+
+Root Linux-amd64 declared service1291 executes three seed0 instrument cases,
+PASS39.705s; full decisions/history replay and the same equality/difference split
+execute there. This is NOT a complete97 Linux population or hosted CI. Overlay
+vet PASS; final diff check PASS. Reproduce from repo root:
+
+```sh
+node planning/clout-v1-and-pr-interns/probes/prepare-first-hour-population-observation.mjs
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/first-hour-population-overlay.json -run TestOwnedFirstHourPopulationResearch -v'
+docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/first-hour-population-overlay.json -run TestOwnedFirstHourPopulationInstrumentResearch -v ./harness -count=1
+make vet GO_PACKAGES='-overlay=../.cache/first-hour-population-overlay.json ./harness ./production'
+```
+
+RP-696 control generator is committed with this batch; old branch is deliberately
+false-green, corrected branch must fail complete0. Run those overlays only as
+labelled instrument controls, never as positive study artifacts. This whole batch
+changes only manual probes, draft evidence and owning records. Both drafts remain
+unadopted; no runtime/schema/balance/kernel0.3.223/epoch8/ordinaryCI changes.
+RP-680, original27 CloutAC6 failures and historical guard50a3a514 remain OPEN.
+Next: remaining registered workloads/experimental inputs, complete cost/error
+policy and explicit report migration, not a live dispatch implementation.
+
+Review by: Codex root (author/first filter). Recorded by: Codex root. Fresh
+independent technical review of the complete committed range is pending. No
+feature acceptance, archival, release approval, publication or push.

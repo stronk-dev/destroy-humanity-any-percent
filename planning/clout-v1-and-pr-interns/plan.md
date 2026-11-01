@@ -216,10 +216,42 @@ separate retained red experiment. Review/adoption remain separate.
 
 RP-695's two-line capture correction and regression tests are independently
 APPROVED for04dda624..1179f916; the owning log records executed review evidence.
-Next measure remaining real
-policy/seed populations and whole-cost/error/report
-compatibility before proposing any dispatch migration. Do not hide preparation,
-relabel counters, increase bounds or call the new trajectory legacy-compatible.
+H3ag now completes the pinned first-hour97-run population below. Next cover the
+remaining registered workloads/experimental inputs, complete cost/error policy
+and explicit report migration before proposing dispatch changes. Do not hide
+preparation, relabel counters, increase bounds or call the new trajectory
+legacy-compatible.
+
+H3ag full first-hour population study (ef481412-exclusive, manual research only):
+execute exactly the pinned64Chaos/32Casual/1Reference seeds with the existing
+experimental tuple(200,2e0,50,1e4,10), unchanged horizon/transition budget and Go
+test deadline. No natural-live/default-product or all-experiment claim. Bind each
+fresh source14 owner at genesis; independently execute real primitive actions,
+real session-return offline boundaries and actual ending bodies, comparing full
+selected decisions/states and every observed Company/partial-Founder/milestone.
+Compare complete corrected command captures and complete reports with legacy;
+record mismatches as findings, never restamp reports or discard seeds. All97 must
+reach their objective with no fired guard for a valid complete measurement.
+Expose setup/owned traversal/oracle/legacy elapsed costs separately, actual query
+and certificate counters, and previously uncounted legal-command trial calls.
+These outer-call counts are not an exhaustive inner-operation census or an
+adopted budget. Durable ignored progress rows retain failed/incomplete runs;
+completion artifact requires the entire declared population. First execute one
+seed per policy to check the instrument; that is not the full-population result.
+No product/schema/data/CI/kernel/epoch change, historical artifact regeneration
+or draft adoption; fresh independent technical review of the complete batch.
+
+H3ag result: native full97 PASS536.562s under the unchanged deadline, with
+106554 complete observed states,81132 selected actions,109 actual returns and97
+restarts matching independent original-interval primitive replay. All97 complete
+command streams/milestone times match legacy; full samples/reports differ for
+all64Chaos and the1Reference, while32Casual agree. Both measured aggregate pacing
+tables agree and contain no failures; this is not general compatibility or AC6.
+The additional1565719 legal probes have0 clone/primitive errors; exposed costs
+are not a total-operation bound or speed proof. Linux three-policy seed0 instrument
+PASS39.705s, not a second full97 study. RP-696's false-completion control is fixed
+and executed; interrupted/filtered artifacts remain invalid. Complete research
+batch awaits independent technical verdict; both drafts remain unadopted.
 
 RP-695 corrective batch (04dda624-exclusive): archived T01-C33's shared ordered
 policy decisions and existing RunExperimentScript observation contract authorize

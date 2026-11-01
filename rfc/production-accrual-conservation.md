@@ -336,7 +336,13 @@ samples and work counts differ. RP-695 also shows the old script omits ranked
 purchases; equality of that capture is not complete action evidence. Additional
 scalar/partial preparation costs remain exposed, not translated into fewer total
 operations or an accepted budget. Full registered workloads/general lifecycle/
-work/dispatch/adoption remain open.
+work/dispatch/adoption remain open. H3ag subsequently completes the pinned97-run
+first-hour population at the same experimental tuple: full original-interval
+primitive replay agrees with the manual owner, while65 legacy sample/report
+comparisons differ. All97 complete command streams and milestone times agree;
+matching aggregate pacing does not remove those accounting differences. Legal
+trial costs and independent-oracle work are exposed separately. Other workloads,
+full cost/error/report migration, RP-680/27AC6 and normative adoption remain open.
 
 The actual closed replay chain can return Guild/Commons events without a player
 action. Today's `SimulateAdvance` refuses such events. The bounded online/offline

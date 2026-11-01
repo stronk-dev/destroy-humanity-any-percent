@@ -1,0 +1,36 @@
+package harness
+
+import (
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/save"
+)
+
+// Actual commandApplies observation only, not a replacement legal-action rule.
+type firstHourLegalWorkResearch struct {
+	Calls, CloneFailures, PrimitiveErrors, Applied, Rejected int
+}
+
+var firstHourLegalWorkByRuntimeResearch = map[*firstHourRuntime]*firstHourLegalWorkResearch{}
+
+func manualFirstHourLegalStartResearch(r *firstHourRuntime) {
+	if work := firstHourLegalWorkByRuntimeResearch[r]; work != nil {
+		work.Calls++
+	}
+}
+func manualFirstHourLegalCloneFailureResearch(r *firstHourRuntime) {
+	if work := firstHourLegalWorkByRuntimeResearch[r]; work != nil {
+		work.CloneFailures++
+	}
+}
+func manualFirstHourLegalResultResearch(r *firstHourRuntime, result production.SimulationResult, err error) bool {
+	if work := firstHourLegalWorkByRuntimeResearch[r]; work != nil {
+		if err != nil {
+			work.PrimitiveErrors++
+		} else if result.Decision.Outcome == save.IntentApplied {
+			work.Applied++
+		} else {
+			work.Rejected++
+		}
+	}
+	return err == nil && result.Decision.Outcome == save.IntentApplied
+}

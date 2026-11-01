@@ -2059,6 +2059,37 @@ failures live in the owning log. Full compatibility/dispatch migration, complete
 workload and cost feasibility, general profiles/masks, TS/SQL, normative review
 and adoption remain open. RP-680 and the27 accounting failures are not repaired.
 
+#### H3ag — Complete pinned first-hour population (manual)
+
+The [population overlay](../planning/clout-v1-and-pr-interns/probes/prepare-first-hour-population-observation.mjs)
+observes actual legal-command trials without changing their boolean result and
+executes the declared64Chaos/32Casual/1Reference population at the existing
+experimental tuple(200,2e0,50,1e4,10). Fresh source14 owners and independent
+original-interval primitive/session/ending replay agree at106554 observations,
+including81132 selected actions,109 actual returns and97 restarts. Selected full
+decisions/events/roles/states, partial-Founder history and complete action capture
+are checked; bank reads do not become new saved settlements.
+
+All97 runs complete within the unchanged native deadline/budgets. All97 corrected
+command streams and milestone times match legacy. **Full samples/reports still
+differ in all64Chaos and1Reference runs;32Casual agree.** Both observed aggregate
+pacing tables agree with no failures. Aggregate agreement cannot erase per-run
+cash/lifetime differences or establish an adopted accounting/report migration.
+
+Work exposes1565719 legal-command trials separately (304031applied,
+1261688rejected,0 clone/primitive errors),194445 charged transitions, and the
+Reference certificate's13764397 scalar entries/13483252 partial checks. Combined
+owner-plus-reference setup, actual traversal, independent replay and legacy
+elapsed phases are separate. This is not exhaustive inner-operation accounting,
+a fair speed comparison or an adopted budget. Linux executes three seed0
+instrument cases, not a second full population. RP-696's failed-completion census
+control is corrected and discriminates; interrupted/filtered runs are retained
+as invalid, never combined into the complete artifact. Exact source hashes,
+commands, timings and review provenance are in the owning log. Other registered
+workloads/experiments, complete cost/error policy and explicit report migration
+remain open, along with RP-680/27AC6, general profiles/TS/SQL and draft adoption.
+No product/default search, CI, schema, kernel or epoch changes.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -2317,3 +2348,8 @@ numeric tolerance, authored content or narrowed1.0 scope.
   owner and executes one complete instrument trajectory plus independent177-action
   replay. Retain FAILED legacy cash/lifetime/report equality and RP-695's incomplete
   script finding; primitive savings are not a total-cost/adoption claim.
+- 2026-11-01: H3ag completes the pinned97-run first-hour population with full
+  independent state/action replay and separately observed legal probes. Retain65
+  legacy sample/report differences despite matching commands/milestones/aggregate
+  pacing; correct and discriminate RP-696's false completion census. Remaining
+  workload/cost/error/report migration and adoption gates are unchanged.
