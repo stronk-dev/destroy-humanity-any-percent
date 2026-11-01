@@ -53,6 +53,27 @@ and existing legacy profiles retain their own inputs; no report/dispatch default
 changes before normative review and adoption. H3x supplies a bounded real-caller
 comparison, not the missing full-workload or all-context justification.
 
+The proposed production bindings are closed, not arbitrary combinations of a
+sampling tag and callback. Source version means the actual existing codec version,
+not a version guessed from visible fields. Preserve all current constructor,
+axis/attendance and caller-support holds; this table does not lift any of them.
+
+| Family / new calculation profile | Source, sampling and hook | Completion boundary |
+|---|---|---|
+| Standalone Relevance / `simulation_fixed_external_v1` | Current constructor's Company14, or an already admitted restored source at its actual version; `fixed_external`, `none` hook. No pending Guild clearing. | Actual simulation transition/codec and existing route/manual/bootstrap checks; no additional logged encoding stage. |
+| Modern Relevance / `simulation_active_play_endpoint_v1` | Company19; C1h endpoint scheduling/catchup, complete captured Company/Founder/external/clearing context and `closed_replay` chain. | Complete ordered stages, hooks, events, actual action and existing logged completion codec/rollback boundary, not primitive cash success alone. |
+| First-hour, `RunReputationCareer`, `RunTier2Pacing` / `simulation_fixed_external_v1` | Company14; fixed inputs and `first_hour_lifetime` only. The runtime owns actual attendance, returns, ending/rebirth and Founder/career transitions. | Existing runtime's Company validation, actual action and continuation transitions. Preserve its existing omission of unrelated modern logged stages. |
+| Content active-play window / `content_dynamics_v1` | Company18 from C1g's natural claim and selected branch; `window_start`, `none` hook. | Complete diagnostic projection/window result and existing diagnostic validation; no invented logged codec, intent or settlement. |
+
+First-hour/career/Tier2 with the endpoint profile, source14 with `closed_replay`,
+modern endpoint context with a partial/nil hook, and diagnostic inputs pretending
+to be a scenario profile are unsupported combinations and refuse construction.
+Standalone fixed-external Relevance does not acquire the manual source19 stock
+recipe from H3m merely because it exists in research. Adding another supported
+source/recipe combination requires its explicit reviewed binding, not a fallback.
+Existing logged service operations remain the parent's compatibility reference;
+they do not dispatch through a harness scenario tag.
+
 ### H2 — All search reuse binds accounting identity
 
 The parent owns typed immutable origin/context state, opaque run-local identity,
@@ -81,6 +102,46 @@ does not show a current origin-free beam bug. Preserve existing ranking equation
 beam width, declared decision horizons and coverage. Any changed search population
 must be measured under the adopted protocol, not hidden by relabelling old reports.
 
+### H2a — Selected-trajectory role evidence (new protocol only)
+
+Use the existing role key `{generator_id, kind, target_id}`. For a selected
+trajectory retain finalized counts for closed origins plus ONE pending set for
+its current origin and selected endpoint. Deduplicate a result's ordered stages
+by that key for reporting only; do not modify actual stage results or events.
+
+- A selected bank view replaces the pending set with that complete projection's
+  roles. It neither increments finalized counts nor unions earlier views. A role
+  present at an earlier endpoint but absent at the selected endpoint is not kept.
+- On an applied action, discard the pending view's set. Use the full original-
+  state action recomputation's stage AND action roles, once per key, to finalize
+  that origin. Preserve action-specific manual roles, including zero-elapsed
+  actions. Then create the actual child origin with an empty pending set.
+- A genuine session/mode/context boundary finalizes the actual closing operation's
+  role set once before its new origin. A refused action creates no child and
+  cannot finalize counts or alter the parent's pending observation.
+- A successful terminal wait/run endpoint contributes its selected pending set
+  once to the final report without creating a payment or new gameplay origin.
+  An already finalized origin is not finalized again by report serialization.
+- Trial affordability probes, rejected candidates, discarded beam children and
+  speculative rollouts contribute nothing to the selected run's report. Forks
+  own independent copies of finalized counts and pending sets. Completion-cache
+  hits return only their declared score, never role evidence for a run not executed.
+
+Distinct genuine closures may each count the same role key once; there is no
+cross-origin deduplication. Repeated observations of one origin cannot multiply
+its evidence. Keep all actual computational/probe counters independently charged.
+R15's evidence ownership stays: only unmasked baseline counts, summed across the
+declared personas after seed reduction, satisfy the role floor; masked observations
+cannot rescue it. Legacy reports retain their original per-transition semantics.
+The new protocol expressly changes the counting boundary, not the role predicate,
+floor threshold, persona population or payout. It must not relabel old evidence.
+
+Implementation regression: use nonempty stock/provision/synergy and action-role
+controls, repeated selected banks, discarded trials, a refusal, a real close and
+terminal wait. Direct action versus extra views must produce identical finalized
+counts and complete action results; replacing a pending role with its absent later
+view must remove it. Genuine subsequent action roles must still be counted.
+
 ### H3 — Temporal affordability search (proposed)
 
 An endpoint-selected buff can make a later origin-relative projection smaller.
@@ -97,34 +158,72 @@ retuned prices; the reference does not execute the full hook-bearing parent C1c 
 Original prospective ten-profile evidence and the two later declared unreachable
 controls retain their separate provenance in the owning plan/log.
 
-Proposed algorithm for the real caller:
+**Selected proposed algorithm: certified chronological subdivision.** This is
+the production route to implement AFTER acceptance, composed from H3d–H3k's
+enclosures/definedness, H3u's modern stages and H3af's source14 query. Those manual
+implementations remain bounded evidence, not a deployed API or a whole-workload
+pass. The earlier generic regime-monotonicity proposal is rejected by RP-676;
+neither endpoint sampling nor lower-bound binary search is an authorized replacement.
 
-1. Enumerate all relevant semantic endpoint-context boundaries from the actual pinned
-   producer/schedule/absence inputs over the requested horizon. RP-656 originally
-   declared only its fixture expiry offsets1000/1500ms; H3b adds a derived test-only
-   clock/buff reference. Neither is the production factory or complete producer proof.
-2. Partition the canonical integer-ms endpoint domain into chronological regimes.
-   A context change at `b` belongs to the right regime; the left ends at `b-1`.
-   These are **search ranges**, not payout segments, settlements or origin resets.
-   Every predicate still reconstructs the complete origin-to-endpoint projection
-   with the correct context and original offline allowance.
-3. Establish monotonicity of the actual affordability predicate inside each regime.
-   A constant label, a single end sample or sampled increasing values are not a
-   whole-domain proof. Account for numeric quantization, caps, provision, burst,
-   hook-owned state and the actual resource/quote contract. If that proof does not
-   hold, specify a correct alternative; do not skip the interval or declare no result.
-   RP-676 below now refutes generic monotonicity over these context-only regimes;
-   this is a failed proposed proof route, not merely a missing larger sample.
-4. Search regimes in order. Test the first endpoint, including the original time0.
-   Only in a proven monotone regime may an unaffordable last endpoint exclude that
-   regime; if its last endpoint qualifies, use integer lower-bound search only under
-   that same proof. An unproved/nonmonotone regime cannot use this shortcut at all.
-   The first
-   qualifying result is the earliest over all earlier exhausted regimes.
-5. Return a tagged unreachable result only after every required regime is exhausted.
-   A valid solution at0 is not absence. Charge actual boundary work and predicate
-   evaluations to the existing counters; exhausted work/size bounds are invalid
-   measurements, not an unreachable item or an excluded population.
+1. Validate the immutable origin/profile, actual bound quote or full gate-requirement
+   conjunction and canonical integer-ms query `[floor, horizon]`, with
+   `0 <= floor <= horizon`. Keep original-origin coordinates and offline allowance.
+   A retained view sets the requested floor; it never becomes the payout origin.
+   At floor0 an already-satisfied original-state predicate returns0 without wait
+   preparation; if not satisfied and horizon0, return unreachable without a wait.
+   At a positive floor use an actual full projection, not that view's cached cash.
+2. Build chronological search ranges from actual producer/provision, buff/attendance,
+   catchup and schedule boundaries, with a cut at `b` right-owned and its left
+   interval ending at `b-1`. These ranges are not settlements. A certificate must
+   cover the whole range with its actual pinned context; a context that cannot be
+   exhaustively enumerated/certified makes the affected range INCONCLUSIVE, not
+   absent. No missed context edge can be justified by two matching endpoint values.
+3. Try a whole-range certificate once, reusing immutable valid components. It must
+   prove definedness of ALL actual producer/resource, ledger/progress, hook, cursor,
+   schedule and caller-completion stages, not only cash arithmetic. Separately
+   establish a sound upper enclosure excluding at least one necessary resource
+   requirement. Only BOTH successful proofs allow skipping the range. Bound
+   comparisons must themselves be sound; rounded display values are not bounds.
+4. Otherwise subdivide into integer ranges, left before right, refining only the
+   failed/unsupported components where possible. A singleton executes the complete
+   actual projection and full conjunction. Return its real error or qualifying
+   result; an ordinary nonqualifying result permits continuing. Preserve explicit
+   source-stop endpoints from preparation: execute the real endpoint after all
+   earlier ranges; an unexpectedly successful stop invalidates incomplete coverage
+   and fails the query loudly, never blesses its omitted tail.
+5. Return unreachable ONLY after complete coverage with no outstanding stop. The
+   first returned result/error is the first in the REQUESTED domain; earlier times
+   below its floor are not searched. A positive-floor failure cannot be bypassed
+   because a later endpoint succeeds. This explicitly replaces the legacy future
+   search's horizon-first error ordering only for the new protocol.
+
+Certificate preparation has three outcomes: certified, INCONCLUSIVE, or actual
+query/work-bound failure. An unsupported exponent/recipe, unavailable sufficient
+proof, research cell limit or excessive certificate representation is INCONCLUSIVE,
+not a refusal of an otherwise admitted payout. Never materialize `10^exponent`
+across the whole Decimal domain. H3d's exact-rational `[-32,32]` implementation and
+H3f's cell limits are research capabilities, not new content restrictions. Use
+bounded preparation; failed proof work remains charged, and refinement reaches
+actual leaves only while existing guards permit. A guard that actually fires is
+a failed query/invalid measurement, not INCONCLUSIVE with a renewed budget. There
+is no unchecked per-ms loop, raised ceiling or guarantee that every valid input
+finishes within budget. Complete workload feasibility must pass before closeout.
+
+The correctness argument is structural, conditional on sound certificates: every
+earlier exhausted range was wholly defined and excluded by a necessary bound or
+visited as actual nonqualifying leaves. A returned leaf therefore has no earlier
+hidden result/error. Unreachability requires exhaustion. A bound on successful
+outputs alone proves neither definedness nor this ordering.
+
+For H1's fixed-external callers, use their exact source/hook/completion binding;
+for modern endpoint callers, include original catchup, captured clearing, scheduling,
+all ordered hooks and completed-codec obligations. Unsupported domain certificates
+fall back as above, never silently select fixed sampling. Content dynamics does
+not acquire an affordability query: its fixed diagnostic window uses C1g directly.
+Charge every cell/boundary, certificate attempt/refinement, actual projection,
+child/action and rollout to the declared counters/work guards; include setup costs
+and failed attempts in workload measurements. No unmeasured runtime budget is
+granted by this specification.
 
 The reference finds production497ms, building1422ms, combined452ms and unbuffed869ms
 in both modes, plus the two already-affordable0ms and two unreachable controls.
@@ -493,7 +592,8 @@ rates, partial bucket generation, modifiers, ledger addition, caps or hooks. Eve
 all input terms increase, a **uniform** bound for their full range still needs proof;
 the observed pair is not such a proof. Complete producer enclosure, chronological
 search completeness, all caller refusal semantics, compatibility and unchanged work
-budgets remain open before implementation/adoption. RP-680 and the27 original AC6
+budgets remain implementation acceptance gates under the selected H3 route;
+this component alone does not close them. RP-680 and the27 original AC6
 failures remain unresolved. No payout, runtime, report or ordinary CI change follows.
 
 #### H3e — Fixed-prefix partial-production cell, bounded composition
@@ -1670,9 +1770,9 @@ fails the oracle. The stock control deliberately retains1001 actual point calls
 because its conservative upper bound does not use the resource cap. No savings
 is inferred for that control. Exhaustion remains an error with no success state.
 
-Next measure complete candidate/consumer work and error/scoring compatibility,
-including general scheduling, all mask families, actual TS owner/query, lifecycle
-and full workloads before normative adoption. No live math/save/schema/data/CI
+Implementation acceptance must measure complete candidate/consumer work and
+error/scoring compatibility, including general scheduling, all mask families,
+actual TS owner/query, lifecycle and full workloads. No live math/save/schema/data/CI
 change, RP-680 repair,27-AC6 closure or 1.0 milestone follows from this component.
 
 #### H3v — Actual first-hour candidate boundary (bounded compatibility)
@@ -1855,8 +1955,8 @@ or general mask/session policy, complete work/budget feasibility, TS/SQL, live
 dispatch or normative adoption. Constructor/model/codec/diagnostic snapshot work
 is additional to counted actual projections/actions; no speed or R11 budget claim.
 Bank projections retain original-interval roles as private observations, not fresh
-committed activations to add after every view; full consumer role/report semantics
-remain an explicit migration obligation.
+committed activations to add after every view. H2a now specifies the proposed
+consumer counting boundary; executing that migration remains an acceptance gate.
 
 #### H3ab — Actual beam, conservative pruning and rollouts (manual)
 
@@ -1886,7 +1986,7 @@ they do not prove full positive milestone scoring or reference/beam gap metrics.
 The H3aa terminal reached case and unchanged legacy beam populations retain their
 separate boundaries. Preparation/validation/codec/snapshot/reference work remains
 additional to counted projections/actions; conservative context separation still
-needs COMPLETE workload and budget feasibility before adoption. Bootstrap/gates,
+needs COMPLETE workload and budget feasibility at implementation acceptance. Bootstrap/gates,
 general profiles/masks/sessions, TS/SQL, dispatch and normative adoption stay open.
 
 #### H3ac — Joint requirements and actual bootstrap/base-gate commands (manual)
@@ -2166,9 +2266,10 @@ can change the protocol of the same declared input.
 
 Exact new profile tags are `simulation_fixed_external_v1`,
 `simulation_active_play_endpoint_v1`, and `content_dynamics_v1`. Relevance/first-hour
-families accept only the first two, mapped by their factory to parent C1h's matching
-simulation recipe. The endpoint profile cannot bypass current axis/attendance or
-caller-support holds. Content dynamics accepts only the third: its active-play
+families use only H1's supported combinations: Relevance permits the first two;
+first-hour and its continuations permit only fixed-external. The endpoint profile
+cannot bypass current axis/attendance or caller-support holds. Content dynamics
+accepts only the third: its active-play
 window uses C1g, while existing Fiscal/Pitch/permit diagnostic methods retain their
 own unchanged contracts. This profile does not claim those methods are active-play
 calculations. The actual scenario hash binds the profile; reports cannot override
@@ -2181,6 +2282,8 @@ Observed source at `57906e5d` is the allocation baseline, not a reservation:
 |---|---|
 | Relevance | Scenarios/policies1–2 remain legacy; current report writer6 remains legacy and existing readers retain their historical versions. The new scenario/report each take their own next-free schema, not an assumed shared number. |
 | First hour | Existing scenario/experiment report1 and their ratified identities remain legacy. New schema/protocol gets its own scenario identity and report format; the old ratified SHA cannot authorize changed bytes. |
+| Reputation career continuation | Existing `RunReputationCareer`, its `MeasurementSource`/nested `FirstHourRunResult` and schema1 career/relevance research reports stay legacy. New-protocol continuation and outer reports follow the explicit source rule below. |
+| Tier2 pacing continuation | Existing `RunTier2Pacing`, its source-less DTO and schema1 calibration report stay legacy. New-protocol continuation/results require the source envelope below; a bare legacy DTO is insufficient evidence. |
 | Content dynamics | Existing scenario/report1 and immutable snapshots/goldens remain legacy. New protocol uses separately identified scenario/report bytes and the C1g window-start recipe, not generic endpoint sampling. |
 
 The new Relevance scenario also requires `base_schema_version` equal to1 or2.
@@ -2198,6 +2301,40 @@ hash; keep their shape if unchanged rather than add another duplicate authority.
 Current new-protocol inputs must actually execute the new path; a legacy green
 report is not its acceptance evidence. Any first-hour hash adoption gate still
 requires its actual authority, not a recorder-authored replacement constant.
+
+**Continuation dispatch and source ownership.** Legacy continuation entrypoints
+remain legacy-only and reject a new-protocol suite. Separately typed new-protocol
+entrypoints require a decoded new first-hour scenario with H1's fixed-external
+binding; neither a runtime flag nor a report writer may choose the calculation
+protocol. Their result/source formats and outer career/relevance/Tier2 report
+formats each take a next-free version at landing. Legacy readers must refuse
+these formats rather than parse modern results into a legacy DTO.
+
+For a new Reputation career result, retain every existing MeasurementSource input
+(actual candidate ConstantsHash in RunKey, scenario/seed, first-hour policy hash,
+effective Prestige policy hash, experiment tuple, effective horizon, purchase
+policy and exclusion). Its new source also carries the required protocol/profile.
+The nested run's RunKey/policy and the outer report's declared protocol/profile
+must agree with that source; no parent hash can stand in for a modified candidate.
+Actual ending/rebirth and starter-purchase chronology remain the source14 runtime's
+contract, not modern scheduling. A row borrowing another arm's source/outcome or
+mixing protocols refuses; declared treated/control arms remain distinct and legal.
+
+For a new Tier2 result, require a source envelope alongside the outcome DTO:
+`{run_key, first_hour_policy_hash, experiment, horizon_ms,
+calculation_protocol, calculation_profile}`. RunKey uses the decoded NEW scenario
+hash, actual policy ID/seed, actual candidate bundle ConstantsHash and the existing
+epoch coordinates. `horizon_ms` is the ACTUAL derived Tier2 horizon, not the
+inherited first-hour RunSpec value before the continuation replaces it. Policy
+hash binds the actual loaded sessions; a longer wall horizon does not invent a
+longer attended session. This is separate from the unadopted Tier2 activity-window
+amendment. The new outer calibration report requires these per-result sources and
+validates each row against its actual candidate bundle, experiment and horizon.
+It may contain the declared candidate sweep, but may not combine protocols or
+silently fill absent source fields from a sibling row. Missing/mismatched
+scenario, candidate, policy, experiment, horizon or nested source refuses before
+aggregation. Existing bare Tier2 results/schema1 files are not upgraded by labelling
+their old values with new metadata. No historical report is restamped.
 
 For content registry migration, proposed registry schema2 retains the existing exact
 entry fields. Scenario and report paths remain uniquely entry-owned. An immutable
@@ -2228,7 +2365,8 @@ per-player ticks or per-ms scans are not authorized by the exhaustive test oracl
    proof over every admitted current producer family, not only two fixture edges.
 4. Real first-hour/relevance/content-dynamics populations preserve complete hook,
    state, receipt/event and policy semantics. No lost/duplicated lifetime work,
-   extra saved payment or event delivery from a discarded view.
+   extra saved payment or event delivery from a discarded view. H2a's nonempty-role
+   repeated-bank/action/terminal/refusal cases establish exact report counts.
 5. Actual complete pacing/relevance/beam workloads and declared counters/bounds are
    verified; any expected report changes are produced honestly under the adopted
    protocol with exact source/content identity. No marketing-sized test counts.
@@ -2237,11 +2375,16 @@ per-player ticks or per-ms scans are not authorized by the exhaustive test oracl
 
 ## Open engineering and authority gates
 
-Before RFC acceptance, review parent C1g/C1h's owner/sampling bindings and H4's
-explicit family/registry dispatch proposal, complete the actual temporal-boundary
-algorithm/predicate justification, and reconcile the exact landing/version/hash
-authority. The fixture reference is not a substitute. These are engineering gaps,
-not owner choices to approve away.
+Before RFC acceptance, independently review parent C1g/C1h, H1's closed caller
+bindings, H2a's report counting, H3's selected certified chronological algorithm
+and its conditional correctness argument, and H4's family/continuation dispatch.
+Reconcile landing/version/hash authority in the reviewed implementation plan before
+allocating actual formats; no draft reserves the next-free number or adopts a new
+ratified hash. The fixture reference is not a substitute for the algorithm's sound
+certificate obligations. Technical review and owner adoption cannot approve away
+counterexamples. Actual factories, certificate implementations and complete
+workload/error/report/TS/SQL evidence remain the implementation acceptance gates,
+not tests claimed to have passed at specification acceptance.
 
 Owner adoption of the approach and designated normative review remain separate
 from the executable implementation acceptance above. Do not require an unbuilt
@@ -2256,6 +2399,12 @@ current implementation. No new balance values, caps, prices, grants, proration,
 numeric tolerance, authored content or narrowed1.0 scope.
 
 ## Changelog
+
+- 2026-11-01: reconcile independent readiness findings: select certified
+  chronological subdivision with explicit inconclusive/guard semantics; specify
+  selected-origin role counts, closed source/hook/completion bindings and career/
+  Tier2 continuation source/dispatch. Preserve executable acceptance and legacy
+  formats. Draft proposal only; technical re-review and owner adoption pending.
 
 - 2026-10-15: supply the fixed-exponent coefficient-fold sublemma by composition
   and a sort-position crossing argument. Keep normalization, group reclassification,

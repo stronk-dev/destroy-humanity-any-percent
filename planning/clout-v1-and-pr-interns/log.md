@@ -9307,3 +9307,33 @@ RP-680/27AC6/history, draft adoption, feature/release and1.0 gates remain open.
 Next propose the explicit versioned activity-policy reconciliation preserving the
 pacing floor, then obtain its required authored adoption; do not silently extend
 v1 sessions or weaken the target. Tree clean at98542998; nothing pushed.
+
+### 2026-11-01 — Accounting/search draft readiness reconciliation
+
+CHANGES REQUIRED at clean `d2c610cd`. Review by: fresh independent Codex
+`/root/accrual_search_readiness_review`. Recorded by: Codex root. Reviewer read
+both complete drafts and actual consumers: cumulative role views lacked a report
+counting boundary; main H3 still requested a disproved monotone route; concrete
+source/hook/completion combinations and career/Tier2 continuation dispatch were
+incomplete. This was a technical specification review under Marco's delegation,
+not adoption. Reviewer independently ran the existing nonempty stock-role/mask/
+nil-hook regression, PASS0.189s; it does not test the future counting contract.
+
+Proposed correction: H1 closes caller combinations without lifting source/axis
+holds; H2a uses replaceable pending role sets and once-only actual closure counts;
+H3 selects certified chronological subdivision with actual complete singleton
+predicates, requested floors/first-error ordering, source stops and INCONCLUSIVE
+certificate fallback within unchanged guards. Unsupported rational exponents do
+not become content exclusions. H4 binds versioned continuation sources, actual
+candidate bundles/horizons and legacy-only entrypoints. Parent places the actual
+128-profile API execution at implementation acceptance, retaining all27 failures.
+
+Verification by Codex root: actual role collectors, stock-role primitive, career
+source/nested run and Tier2 DTO/calibration inspected against the proposal;
+complete diff and whitespace checked. Specification/planning only, no software
+suite rerun merely for Markdown and no new implementation evidence claimed.
+Review by: Codex root (author/first filter). Recorded by: Codex root. Complete
+correction after `d2c610cd` requires independent technical re-review. Both drafts
+remain unadopted; RP-680,27AC6, historical kernel guard, separate Tier2-window
+adoption and full implementation/feature/release gates remain open. No product,
+data, kernel0.3.223/epoch8, CI, historical artifact or authored-copy change; no push.

@@ -174,14 +174,15 @@ projection session. The RP-652 decreasing targets cannot be installed as payment
 or silently converted to prorated buff windows. Any more efficient accumulator must
 prove equivalent full-state results before replacing this reference computation.
 
-**The remaining call-contract gap must not be hidden.** The current
+**The existing call-contract failure must not be hidden.** The current
 `TestAxisAccrualPartitionProperty` calls the mutating `Evaluate` twice on the same
 state. Its first cut really advances the ledger and cursor. An operation-local
 projection cannot make those unchanged calls equal while also declaring the first
 call noncommitting. Retain that diagnostic and its 27 failures; neither clone-only
-feasibility tests nor this proposal repairs the existing API. RFC acceptance must specify
-the actual calculation/settlement API and its real caller, and exercise the same
-128 seed/end/cut/mode profiles through it with complete exact state comparisons.
+feasibility tests nor this proposal repairs the existing API. Before RFC acceptance,
+specify the actual calculation/settlement API and its real caller. Implementation
+acceptance must exercise the same128 seed/end/cut/mode profiles through that API
+with complete exact state comparisons; an unbuilt API is not a pre-adoption test.
 Changing that call boundary requires an explicit reviewed contract, not quietly
 rewriting the test, excluding cases or calling the old failures legacy-green.
 Do not add an unused production abstraction solely to obtain a passing test.
@@ -291,14 +292,18 @@ of returned private values for the new API. Returned role observations are cumul
 for that view, not repeated events to add every time a search probe runs. Actual
 computation/probe counters still count every performed evaluation and refusal;
 conservation must not hide search work from budgets or reporting.
+The child's H2a defines how selected-trajectory observations become role report
+counts. A projection supplies observations, not an instruction to increment the
+existing report collector; the action's recomputation replaces overlapping views.
 
 Child H3r/RP-691 separately reproduces primitive-success results that fail actual
 post-hook Company encoding. Origin codec admission is therefore not a universal
 post-hook completion proof. Bind each caller's actual stage and preserve that
 stage's codec/rollback behavior; do not inject a new codec refusal into every
 primitive observation. Its manual completed-codec adapter is a compatibility
-reference, not an implemented API or adopted change to ApplyLogged. Full logged
-stage/state/error closure remains required before accepting this proposal.
+reference, not an implemented API or adopted change to ApplyLogged. Specify the
+logged stage/state/error boundary before adoption; executable full compatibility
+remains an implementation acceptance gate, not a claim made by this draft.
 
 The existing generic `AccrualHook` interface does not establish purity or identity
 of arbitrary callbacks. Before this API is buildable, its production adapters must
@@ -567,8 +572,10 @@ partial context cannot fall back to fixed sampling. New work is charged to exist
 counters and bounds. No new provider formula, cap, payout segmentation or proration.
 
 The harness successor must bind each adopted scenario/protocol to its permitted
-recipe and complete its actual boundary/predicate proof. These are proposed routes,
-not existing implementation or permission to enable held axis/attendance mechanics.
+recipe and complete its actual boundary/predicate proof. Its H1 now selects the
+closed family/source/hook/completion combinations; H2a owns role report counts.
+These are proposed routes, not existing implementation or permission to enable
+held axis/attendance mechanics.
 RP-652/RP-657 explain why the distinction matters; they do not prove the modern
 factory or all-stage reconstruction. Acceptance needs recipe-mismatch refusals,
 complete stage/event comparisons and original-policy compatibility in both runtimes.
@@ -1073,6 +1080,11 @@ incremental receipt law; it is not behavior-compatible with that law and require
 contract, explicit adoption and independent normative review before production work.
 
 ## Changelog
+
+- 2026-11-01: reconcile draft readiness versus implementation acceptance; keep
+  the exact128-case executable gate without requiring an unbuilt API before
+  adoption. Link the child's explicit caller and role-counting contracts. No
+  runtime change or adoption; independent normative re-review remains required.
 
 - 2026-10-15: withdraw the unnecessary private origin JSON/hash protocol in favor
   of opaque typed run-local ownership. Existing codecs and live transaction paths
