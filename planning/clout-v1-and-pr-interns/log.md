@@ -8825,3 +8825,33 @@ no self-approval/adoption. Next close RP-695's capture gap, then remaining actua
 policy/seed/whole-cost/error/report populations and migration proposal under
 unchanged bounds. Both drafts unadopted, RP-680/27AC6/kernel guard still open;
 no product/schema/data/CI/golden/kernel223/epoch8 change, archival or push.
+
+### H3af — independent technical verdict
+
+APPROVED for bounded technical research/specification evidence in complete
+nine-path range `c1de2e00..024cf0f5`. Review by: fresh independent Codex
+`/root/first_hour_certificate_technical_review`. Recorded by: Codex root,
+transcribing the reviewer's final verdict. No actionable findings within scope.
+
+Independently executed:50-entry generation/frozen hashes PASS; affected harness
+40.096s and production certificate/query/time28.860s PASS; overlay vet and entire
+range diff check PASS. Separate natural trajectory PASS11.217s, inspecting and
+executing every177 selected full primitive decision/event/role/state comparison
+and final Company/supported partial-Founder/milestones/ending/revision. Separate
+legacy experiment FAIL11.189s/Make2, reproducing exact cash/lifetime deltas and
+9637vs11916 transitions; this remains a negative compatibility result, not green.
+
+Reviewer-only retained-floor regression PASS0.242s: at floor1000 a zero-cash
+predicate must execute the real primitive and return its actual calendar/codec
+error. A narrow shortcut bypass on ignored copies hides the error and fails the
+regression0.235s/Make2. Mandatory floors, source14 origin, conjunction, projection
+budget and separate preparation counters are verified; reduced primitive counts
+are not whole-cost/speed proof. Linux remains author-executed evidence above.
+
+The reviewer independently confirms RP-695's reference-policy capture gap and
+that the existing composed-server consumer selects casual.t0_t1. That particular
+composed population is NOT demonstrated broken by this finding. Tracked tree
+verified clean at024cf0f5. Next is the existing-contract capture correction, then
+remaining policy/seed/whole-cost/report and migration obligations. General profiles,
+TS/SQL, RP-680,27accounting failures and kernel guard remain open. Neither draft
+adopted; no feature acceptance, archival, release approval or push.
