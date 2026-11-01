@@ -7,6 +7,16 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Safety corrective review checkpoint, 2026-11-01:** fresh independent Codex
+approves complete RP-466 atomic backup commit, RP-544 live-writer cleanup,
+RP-545 shipped-copy attribution and RP-481/RP-482 rehearsal-baseline ranges.
+The owning log holds each exact range/reviewer and executed checks. Actual Linux
+filesystem/cross-process tests and all eight current encrypted Postgres backup/
+restore functions pass; client metadata is regenerated from a fresh build.
+Only these corrective reviews close. Original R6/R8 rejections, other ranges,
+current-release/backup-metadata authority and exact-artifact clean-host gates
+remain separate; no full Deployment or release approval.
+
 **Current corrective reviews, 2026-10-15:** fresh independent Codex approves complete
 RP-503/RP-504 duration/recovery-clock range, RP-550 real bundle-gate tests and RP-552 exact
 restore-refusal fields. Full hashes/provenance and executed cold/race/Linux/real-Postgres
@@ -170,9 +180,10 @@ validated before name/version deduplication, including CSS-derived copies. Match
 merges; conflicting/missing evidence refuses without partial inventory. Two-route old-source
 negatives, delivered-notice controls, cold affected packages/vet and the freshly built client's
 actual53-dependency metadata pass locally. The original Go helper-dependency guard is restored.
-Original R8's full seven-path disposition remains CHANGES REQUIRED; this new correction after
-`fa2bec58` and prior map/CSS repairs need designated Claude review. No classifier/policy/schema,
-image provenance, clean-host, Docker/Linux-runtime, full AC8 or release promotion.
+Original R8's full seven-path disposition remains CHANGES REQUIRED; this correction
+`fa2bec58..39019517` is now independently approved. Prior map/CSS repairs retain
+their separately recorded dispositions. No classifier/policy/schema, image
+provenance, clean-host, full AC8 or release promotion.
 
 **Current DP3/AC2 correction, 2026-10-13 (RP-543):** archive secret scanning now
 includes decoded tar owner/group/PAX/xattr fields and gzip header metadata; recognized
@@ -437,14 +448,16 @@ range after `630f6833`; designated review, full Deployment and clean-host gates 
 
 **Bounded checkpoint, 2026-10-09:** RP-482 adds healthy baselines to the public-metrics and
 source/image-secret probes. Actual assembled-bundle tampering and always-rejecting gates
-fail the old checks; affected native/Linux-amd64 packages pass after correction. This range
-after `b76d1a08` can share designated review with RP-481; no DP-F acceptance follows.
+fail the old checks; affected native/Linux-amd64 packages pass after correction.
+Complete combined `1efea9cf..1b484c50` now has independent corrective approval;
+no DP-F acceptance follows.
 
 **Preceding bounded checkpoint, 2026-10-09:** RP-481's interrupted-writer probe now requires a real
 encrypted create/restore baseline and the exact consumed dump failure, with no partial files
 or damage to the baseline. Old-source regression and affected native/Linux-amd64 checks
-pass as recorded in the owning log. The corrective range after `1efea9cf` awaits designated
-review; this does not close DP-C/DP-F or substitute for the actual clean-host rehearsal.
+pass as recorded in the owning log. Complete combined `1efea9cf..1b484c50` is now
+independently approved; this does not close DP-C/DP-F or substitute for the actual
+clean-host rehearsal.
 
 **Preceding checkpoint, 2026-10-08:** RP-423 corrects false-clean restore targets containing
 schema-only or nonrelational objects. At `e478b248`, the declared Linux/amd64 Postgres16 backup
@@ -462,10 +475,12 @@ designated review remain open; the owning log holds the bounded result.
 locks; aged-temporary cleanup requires exclusive ownership and rechecks the inspected target.
 Busy ownership defers scheduled rounds without false result metrics. The actual second-process
 regression, encrypted restore, orphan cleanup, scheduler retry and concurrent no-overwrite cases
-pass locally, with cold affected packages/vet/race and a Linux-amd64 build. This is not Linux
-runtime, Postgres or clean-host evidence. Original R6's full six-path disposition remains CHANGES
-REQUIRED (RP-136/RP-544); the new repair after `ca447daa` and older checksum corrections need
-designated Claude review before R6 closes. See the owning log; no age, cadence or retention change.
+pass locally, with cold affected packages/vet/race. Independent review now approves
+`ca447daa..fad86116` and executes actual Linux-amd64 filesystem plus real encrypted
+Postgres backup/restore tests. This is not off-host or clean-host evidence.
+Original R6's full six-path disposition remains CHANGES REQUIRED (RP-136/RP-544);
+other correction/review obligations remain distinct. See the owning log; no age,
+cadence or retention change or whole-R6 acceptance.
 
 The release package is the integration boundary. Work is split so each batch has one authority,
 its own executable failure cases and a bounded review range. No batch may claim a later criterion.

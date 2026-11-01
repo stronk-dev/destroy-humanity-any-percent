@@ -7596,3 +7596,80 @@ failure in all three Linux ARM64 engines; fixed current105 browser checks exclud
 Node file while its actual4 Node fixtures pass. Full commands/provenance/limits are in the
 Cosmetic log's same-date keyboard/request-observer verdict. No CSS provenance behavior,
 DeploymentAC8/rights/clean-host or whole CI/release gate is approved by this test-config repair.
+
+## 2026-11-01 — Backup, attribution and rehearsal safety corrections approved
+
+All named complete ranges APPROVED, no blocking findings. Recorded by: Codex root,
+transcribing fresh independent reviewers under Marco's corrective-code delegation.
+Every source/test/docs/dependency/ledger/plan/log edge in each range inspected;
+no intervening commits approved. All verification runs at descendant `a9892a48`,
+not historical checkouts. No tracked reviewer edits or redundant source mutations;
+retained old-source failures establish the inspected regressions' discrimination.
+
+**Review by: `/root/backup_writer_safety_corrective_review`.** Separate nine-path
+ranges `d0fc603a..9265049b` (RP-466) and `ca447daa..fad86116` (RP-544), base
+exclusive/tip inclusive. Atomic no-replace commit preserves winning encrypted
+bytes/restorability. Shared creator/exclusive cleanup locks preserve live aged
+temporaries; failed writers release ownership, package pipes retry without deadlock
+and scheduler contention defers without false result metrics. Cold complete backup/
+helper/release/rehearsal packages PASS1.233s/0.486s/9.918s/27.162s; matching vet PASS.
+Focused native race PASS2.563s/1.369s. Actual declared Linux-amd64 filesystem tests
+PASS0.402s/0.232s, including real second-process cleanup, no-replace destinations,
+target rechecks, failed-owner release, package extraction/retry and both scheduler
+directions. `make test-deployment-backup` executes all eight current real Postgres
+integration functions with zero skips: actual encrypted pg_dump/pg_restore,
+empty/populated/clean-target/identity/deletion-restore cases. Its disposable project
+tears down normally. Later RP-611 identity strengthening is preserved, not newly
+approved here. Ordinary native DB skips receive no persistence credit.
+
+```sh
+make test-go GO_PACKAGES='./deploymentbackup ./cmd/deployment-backup ./deploymentrelease ./deploymentrehearsal' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./deploymentbackup ./cmd/deployment-backup ./deploymentrelease ./deploymentrehearsal'
+make test-go GO_PACKAGES='./deploymentbackup ./cmd/deployment-backup' GO_TEST_FLAGS="-count=1 -race -run 'Test(CreateDoesNotOverwrite|EnvelopeRename|Cleanup|CreateExcludes|PackageCreationUnblocks|ScheduleDefers)'"
+docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -count=1 -v -run 'Test(CreateDoesNotOverwrite|EnvelopeRename|Cleanup|CreateExcludes|PackageCreationUnblocks|ScheduleDefers)' ./deploymentbackup ./cmd/deployment-backup
+make test-deployment-backup
+```
+
+**Review by: `/root/shipped_attribution_corrective_review`.** Complete six-path
+`fa2bec58..39019517` (RP-545). Every physical JS-map/CSS package copy is validated
+before deduplication; identical attribution merges, conflicting/missing evidence
+refuses without partial rows, distinct versions retain notices. All16 duplicate-
+copy cases (12 negative/four controls) pass. Cold metadata/release packages
+PASS2.043s/4.196s; vet and restored real Go dependency guard PASS (1.20s).
+Fresh client build PASS217 modules/1.86s; actual metadata generation PASS53
+dependencies and all five npm notices exactly once. Diagnostic SPDX/notices at
+`.cache/attribution-review.NWSSal/` SHA256 respectively
+`f3582e666474947d4055222f9fa9cb00c11db356481db75b408416c018015308` /
+`c6a56ea62b5c232be61a2bf23dd33531a965299bdc28a3bf7b3d3b727ab554de`.
+Generator/model/tests/Vite/manifest/lock inputs match reviewed endpoint; other
+descendants are outside approval. No classifier/allowlist/schema/legal-policy change.
+
+```sh
+make test-go GO_PACKAGES='./cmd/gen-release-metadata ./releasepackage' GO_TEST_FLAGS='-count=1 -v'
+make vet GO_PACKAGES='./cmd/gen-release-metadata ./releasepackage'
+make build-client
+make generate-release-metadata RELEASE_METADATA_OUTPUT=.cache/attribution-review.NWSSal RELEASE_VERSION=0.1.0 RELEASE_COMMIT=a9892a48f8fc9c5721e08cace21c8402e6436ff3 RELEASE_CREATED_AT=2026-11-01T00:00:00Z
+```
+
+**Review by: `/root/deployment_probe_baselines_corrective_review`.** Complete
+seven-path/two-commit `1efea9cf..1b484c50` (RP-481/RP-482). Interrupted backup
+first authenticates/restores the real healthy envelope, then requires the injected
+read cause and unchanged baseline/no partial files. Metrics mutation follows
+intact-bundle validation; source/image negatives follow clean scans through the
+same gate. Always-accepting/rejecting gates and unrelated failures discriminate.
+Focused populations PASS0.414s/0.606s; cold full rehearsal/CLI/releasepackage and
+matching vet PASS. Reviewed probe.go/probe_test.go match endpoint; later fixture/
+consumer changes remain outside approval. No Docker/SQL executed for this scope.
+
+```sh
+make test-go GO_PACKAGES='./deploymentrehearsal ./cmd/deployment-rehearsal ./releasepackage' GO_TEST_FLAGS='-count=1 -v'
+make vet GO_PACKAGES='./deploymentrehearsal ./cmd/deployment-rehearsal ./releasepackage'
+```
+
+All handles terminal and exact-range/final diff checks pass. Only these five
+corrective reviews close. Original R6/R8 CHANGES REQUIRED dispositions, other
+repair ranges and current-release/backup-metadata authority remain distinct.
+No production artifact/image authenticity, natural scheduling/off-host filesystem,
+RPO/RTO, clean-host R-006, runtime metrics exposure or full Deployment/CI acceptance
+is established by these bounded checks. No feature checkbox, archival, new policy,
+publication, deployment or release approval; existing accounting/history/1.0 gates stay.
