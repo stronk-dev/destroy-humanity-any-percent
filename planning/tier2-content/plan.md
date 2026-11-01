@@ -11,8 +11,10 @@ held until it is. Fixture-first: candidates live under `balance/testdata/t2/`; e
 but retained the epoch-8 constants hash. Bind its real simulation revisions and
 derived run keys to that same candidate, leaving the base suite untouched. The
 new provisional/3e6/3e8 regression fails on the old assignment; corrected focused
-tests and the public progression/refusal journey pass. Complete native package,
-Linux checks and independent corrective review are recorded in the owning log.
+tests and the public progression/refusal journey pass. Complete native package
+and Linux checks pass; fresh independent corrective review APPROVES full
+2b9e6ec6..6b999d85, with executed old-hash failure and actual public-call identity
+observation. Exact evidence/limits are recorded in the owning log.
 This changes neither the existing result fields nor candidate/policy/balance data;
 full pacing, Headcount, mint and accounting/search gates remain open.
 

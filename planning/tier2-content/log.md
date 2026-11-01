@@ -602,3 +602,28 @@ claiming its population. Review by: Codex root (implementer/first filter).
 Recorded by: Codex root. Complete seven-path corrective range including tests,
 canonical docs and owning/routing records awaits independent corrective review.
 No feature acceptance, archival, publication, deployment or push.
+
+## 2026-11-01 — RP-697 independently approved
+
+APPROVED complete seven-path `2b9e6ec6..6b999d85`, no blocking findings. Review
+by: fresh independent Codex `/root/tier2_identity_corrective_review`. Recorded
+by: Codex root, transcribing its final verdict. All implementation/test/doc/plan/
+ledger/log edges inspected. RP-697 closes this bounded identity correction only.
+
+Independently executed TestTier2Pacing* PASS10.285s, including actual public
+progression/refusal/short-horizon behavior; exhaustive calibration explicitly
+SKIPS. Ignored old-hash overlay removes only the corrected assignment: all3
+identity cases FAIL0.134s/Make2. Additional ignored append-only constructor
+observation invokes actual public pacing through run3/gate, PASS4.822s:
+56,260 actual companyRevision calls plus1 actual RunKey all bind the candidate,
+while the base suite remains epoch8. Harness vet and full-range diff check PASS;
+tracked tree clean at6b999d85. Reviewer files confined to `.cache/reviewer-rp697-*`,
+including old-overlay and public-observe-overlay; no tracked source mutation or
+historical artifact regeneration. Root full native/Linux results above remain
+author evidence, not reviewer reruns.
+
+No policy/result grammar/data/balance/bounds/kernel/epoch change, exhaustive
+calibration, either accounting draft's adoption or full feature/release approval.
+Next bind the actual Tier2 derived-horizon caller in the manual calculation
+study without relaxing unrelated first-hour source admission. Existing Headcount,
+copy/mint, RP-433, RP-680/27AC6/history and all1.0 gates remain. Nothing pushed.
