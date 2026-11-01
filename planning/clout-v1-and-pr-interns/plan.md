@@ -250,8 +250,9 @@ tables agree and contain no failures; this is not general compatibility or AC6.
 The additional1565719 legal probes have0 clone/primitive errors; exposed costs
 are not a total-operation bound or speed proof. Linux three-policy seed0 instrument
 PASS39.705s, not a second full97 study. RP-696's false-completion control is fixed
-and executed; interrupted/filtered artifacts remain invalid. Complete research
-batch awaits independent technical verdict; both drafts remain unadopted.
+and independently reproduced; interrupted/filtered artifacts remain invalid.
+Complete research batch ef481412..cb3e060d is independently technically APPROVED
+(exact verdict/evidence in the owning log); both drafts remain unadopted.
 
 RP-695 corrective batch (04dda624-exclusive): archived T01-C33's shared ordered
 policy decisions and existing RunExperimentScript observation contract authorize

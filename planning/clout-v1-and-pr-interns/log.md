@@ -9054,3 +9054,29 @@ policy and explicit report migration, not a live dispatch implementation.
 Review by: Codex root (author/first filter). Recorded by: Codex root. Fresh
 independent technical review of the complete committed range is pending. No
 feature acceptance, archival, release approval, publication or push.
+
+### H3ag — independent technical approval
+
+APPROVED complete nine-path range `ef481412..cb3e060d`. Review by: fresh
+independent Codex `/root/first_hour_population_technical_review`. Recorded by:
+Codex root, transcribing its final verdict. No actionable findings. Bounded
+technical research/instrument approval only; neither draft is adopted.
+
+Independently executed: three-policy seed0 instrument PASS22.737s; overlay
+harness vet and final range diff check PASS. Old no-observation census control
+falsely PASS0.661s; corrected FAIL0.641s/Make2, observed97/complete0/expected97.
+Reviewer artifacts explicitly labelled `.cache/first-hour-review-census-old-false-green.jsonl`
+and `.cache/first-hour-review-census-corrected-refused.jsonl`. Separate ignored-copy
+selected-receipt corruption FAIL0.245s and observed-Founder-age corruption
+FAIL0.247s, both Make2 at their full decision/state/history assertions. No tracked
+probe mutation. Reviewer independently verifies the actual artifact SHA above,
+all58 bound sources and exact97 unique contiguous declared seeds/complete footer;
+re-derives all population totals, legal census,65 sample/report differences,
+Chaos mismatch counts and aggregate equality. Tracked tree clean atcb3e060d.
+
+Full native536.562s and Linux three-seed39.705s remain author execution evidence,
+not reviewer reruns. RP-696 closes the instrument defect only. RP-680/27AC6 and
+historical guard, other workloads/experiments, complete cost/error/report migration,
+draft adoption, feature/release acceptance and archival remain open. No performance
+gain, exhaustive operation bound, publication or push claim. Next action remains
+the bounded remaining workload/contract work named above;1.0 goal stays active.
