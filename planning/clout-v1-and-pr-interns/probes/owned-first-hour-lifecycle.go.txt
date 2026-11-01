@@ -1,0 +1,340 @@
+package harness
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"maps"
+	"math"
+	"reflect"
+	"slices"
+	"strconv"
+	"time"
+
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/save"
+)
+
+// An in-process source binding, not a wire/hash protocol or general persisted
+// Founder factory. The actual first-hour instrument owns a partial Founder.
+type manualFirstHourLifecycleResearch struct {
+	scope         *manualFirstHourScopeResearch
+	header, frame []byte
+	founder       *save.State
+	bonus         []multiplier.Contribution
+	boundaries    []firstHourBoundary
+	next          int
+	inStep, ended bool
+	restarts      int
+}
+
+var manualFirstHourLifecyclesResearch = map[*firstHourRuntime]*manualFirstHourLifecycleResearch{}
+
+func firstHourFounderSnapshotResearch(source *save.State) (*save.State, error) {
+	if source == nil {
+		return nil, fmt.Errorf("missing first-hour Founder")
+	}
+	copy := *source
+	copy.ReputationNodesOwned = slices.Clone(source.ReputationNodesOwned)
+	copy.LedgerFactKinds = maps.Clone(source.LedgerFactKinds)
+	copy.NetworkSlots = slices.Clone(source.NetworkSlots)
+	copy.ExitHistory = slices.Clone(source.ExitHistory)
+	// These are all fields the actual first-hour partial-Founder constructor,
+	// ending, NewRunState and career tree operations own. Refuse other shapes,
+	// rather than serialize Decimal as {} or discard modern Founder extensions.
+	probe := copy
+	probe.ReputationLevel = 0
+	probe.ReputationSpent = 0
+	probe.ReputationUnlockPPM = 0
+	probe.RouteKnowledgeBalance = 0
+	probe.AgeMS = 0
+	probe.Notoriety = 0
+	probe.ReputationNodesOwned = nil
+	probe.LedgerFactKinds = nil
+	probe.NetworkSlots = nil
+	probe.ExitHistory = nil
+	if !reflect.DeepEqual(probe, save.State{}) {
+		return nil, fmt.Errorf("unsupported first-hour Founder shape")
+	}
+	return &copy, nil
+}
+
+func (life *manualFirstHourLifecycleResearch) sourceHeader() ([]byte, error) {
+	r := life.scope.runtime
+	if r.prestigePolicy() == nil {
+		return nil, fmt.Errorf("missing first-hour Prestige policy")
+	}
+	var career any
+	if r.career != nil {
+		career = struct {
+			Hash, Threshold, Policy, Exclude string
+			Artifacts                        map[string][]byte
+		}{r.career.config.Bundle.ConstantsHash, r.career.config.Threshold, string(r.career.config.Policy), r.career.config.Exclude, r.career.config.Bundle.Artifacts}
+	}
+	// Include the effective cached threshold's raw identity, not just display text.
+	threshold := r.prestigePolicy().ThresholdValue()
+	return json.Marshal(struct {
+		Scenario                                            FirstHourScenario
+		Registry                                            FirstHourPolicyRegistry
+		Policy                                              FirstHourPolicy
+		Spec                                                RunSpec
+		Seed                                                uint64
+		Experiment                                          FirstHourExperiment
+		ScenarioBytes, PolicyBytes                          []byte
+		ScenarioHash, PolicyHash, ConstantsHash, BundleHash string
+		Artifacts                                           map[string][]byte
+		Prestige                                            any
+		BasePrestige                                        any
+		ThresholdBits                                       uint64
+		ThresholdExponent                                   int64
+		Career                                              any
+		Tier2                                               bool
+	}{r.suite.Scenario, r.suite.Policy, r.policy, r.spec, r.seed, r.experiment, r.suite.ScenarioBytes, r.suite.PolicyBytes, r.suite.ScenarioHash, r.suite.PolicyHash, r.suite.ConstantsHash, r.suite.Bundle.ConstantsHash, r.suite.Bundle.Artifacts, r.prestigePolicy(), r.suite.Bundle.Prestige, math.Float64bits(threshold.Mantissa()), threshold.Exponent(), career, r.tier2 != nil})
+}
+func (life *manualFirstHourLifecycleResearch) sourceFrame() ([]byte, error) {
+	r := life.scope.runtime
+	var commands any
+	if r.commands != nil {
+		// FirstHourScriptCommand deliberately hides Request from report JSON.
+		// Input/history ownership must still bind its complete typed request.
+		type command struct {
+			AtMS    int64
+			Mode    production.EvaluationMode
+			Request production.IntentRequest
+		}
+		var rows []command
+		if *r.commands != nil {
+			rows = make([]command, 0, len(*r.commands))
+		}
+		for _, row := range *r.commands {
+			rows = append(rows, command{row.AtMS, row.Mode, row.Request})
+		}
+		commands = rows
+	}
+	var career, tier2 any
+	if r.career != nil {
+		career = struct {
+			Purchased, Applied []string
+			Factor             string
+			Gate               *int64
+		}{r.career.purchased, r.career.applied, r.career.factor, r.career.gateMS}
+	}
+	if r.tier2 != nil {
+		tier2 = struct {
+			Gate       *int64
+			Run, Exits int64
+		}{r.tier2.gateMS, r.tier2.gateRunSeq, r.tier2.electiveExits}
+	}
+	return json.Marshal(struct {
+		LastSession, Ordinal, Transitions, Attended int64
+		Capture                                     bool
+		Milestones                                  map[string]*int64
+		Ending                                      *FirstHourEndingSample
+		Exits                                       []FirstHourReputationSample
+		Commands, Career, Tier2                     any
+	}{r.lastSession, r.decisionOrdinal, r.transitions, r.founderAttendedMS, r.commands != nil, r.milestones, r.ending, r.reputationExits, commands, career, tier2})
+}
+func (life *manualFirstHourLifecycleResearch) seal() error {
+	founder, err := firstHourFounderSnapshotResearch(life.scope.runtime.founder)
+	if err != nil {
+		return err
+	}
+	frame, err := life.sourceFrame()
+	if err != nil {
+		return err
+	}
+	life.founder, life.frame = founder, frame
+	life.bonus = nil
+	if life.scope.runtime.career != nil {
+		life.bonus = slices.Clone(life.scope.runtime.career.bonus)
+	}
+	return nil
+}
+func (life *manualFirstHourLifecycleResearch) guard() error {
+	if life.inStep {
+		return nil
+	} // Serial closed real helpers own this operation.
+	if life.ended {
+		return fmt.Errorf("first-hour measurement already ended")
+	}
+	origin, ok := life.scope.binding.Identity.(*manualFirstHourOriginResearch)
+	if !ok || !reflect.DeepEqual(origin.external, life.scope.runtime.external()) {
+		return fmt.Errorf("first-hour frozen external context changed")
+	}
+	header, err := life.sourceHeader()
+	if err != nil {
+		return err
+	}
+	if !bytes.Equal(header, life.header) {
+		return fmt.Errorf("first-hour source identity changed")
+	}
+	founder, err := firstHourFounderSnapshotResearch(life.scope.runtime.founder)
+	if err != nil {
+		return err
+	}
+	frame, err := life.sourceFrame()
+	if err != nil {
+		return err
+	}
+	var bonus []multiplier.Contribution
+	if life.scope.runtime.career != nil {
+		bonus = life.scope.runtime.career.bonus
+	}
+	if !reflect.DeepEqual(founder, life.founder) || !bytes.Equal(frame, life.frame) || !reflect.DeepEqual(bonus, life.bonus) {
+		return fmt.Errorf("first-hour history changed outside a policy operation")
+	}
+	return nil
+}
+func installFirstHourLifecycleResearch(scope *manualFirstHourScopeResearch) (*manualFirstHourLifecycleResearch, error) {
+	r := scope.runtime
+	if scope.lifecycle || scope.guard != nil || manualFirstHourLifecyclesResearch[r] != nil {
+		return nil, fmt.Errorf("first-hour lifecycle already installed")
+	}
+	if err := scope.require(); err != nil {
+		return nil, err
+	}
+	if err := validateFirstHourCompany(r.suite.Bundle.Economy, r.company); err != nil {
+		return nil, err
+	}
+	if r.revision < 1 || r.decisionOrdinal < 0 || r.transitions < 0 || r.transitions >= r.suite.Scenario.TransitionBudget || r.founderAttendedMS < 0 {
+		return nil, fmt.Errorf("invalid first-hour source coordinates")
+	}
+	hash, err := save.ConstantsHashArtifacts(r.suite.Bundle.Artifacts)
+	if err != nil || hash != r.suite.ConstantsHash || hash != r.suite.Bundle.ConstantsHash {
+		return nil, fmt.Errorf("first-hour artifact identity mismatch")
+	}
+	digest := sha256.Sum256(r.suite.PolicyBytes)
+	if "sha256:"+hex.EncodeToString(digest[:]) != r.suite.PolicyHash || FirstHourScenarioIdentity(r.suite.ScenarioBytes, r.suite.PolicyBytes) != r.suite.ScenarioHash {
+		return nil, fmt.Errorf("first-hour scenario/policy bytes mismatch")
+	}
+	var scenario FirstHourScenario
+	var registry FirstHourPolicyRegistry
+	if json.Unmarshal(r.suite.ScenarioBytes, &scenario) != nil || json.Unmarshal(r.suite.PolicyBytes, &registry) != nil || !reflect.DeepEqual(scenario, r.suite.Scenario) || !reflect.DeepEqual(registry, r.suite.Policy) {
+		return nil, fmt.Errorf("first-hour decoded source differs from pinned bytes")
+	}
+	policy, ok := registry.Policy(r.spec.PolicyID, r.spec.PolicyVersion)
+	if !ok || !reflect.DeepEqual(policy, r.policy) {
+		return nil, fmt.Errorf("first-hour selected policy mismatch")
+	}
+	declared := false
+	for _, spec := range scenario.Runs {
+		if spec == r.spec {
+			declared = true
+			break
+		}
+	}
+	if !declared {
+		return nil, fmt.Errorf("first-hour spec outside pinned scenario")
+	}
+	start, err := strconv.ParseUint(r.spec.SeedStart, 10, 64)
+	if err != nil || r.spec.SeedCount < 1 || uint64(r.spec.SeedCount-1) > ^uint64(0)-start || r.seed < start || r.seed > start+uint64(r.spec.SeedCount-1) {
+		return nil, fmt.Errorf("first-hour seed outside declared population")
+	}
+	if err := validateFirstHourExperiment(r.experiment); err != nil {
+		return nil, err
+	}
+	boundaries, err := firstHourBoundaries(r.policy, r.seed, r.spec.HorizonMS)
+	if err != nil {
+		return nil, err
+	}
+	index := 0
+	for index < len(boundaries) && boundaries[index].atMS < scope.binding.AtMS {
+		index++
+	}
+	if index == len(boundaries) {
+		return nil, fmt.Errorf("first-hour source has no remaining declared boundary")
+	}
+	previousSession := int64(-1)
+	if index > 0 {
+		previousSession = boundaries[index-1].sessionIndex
+	}
+	if r.lastSession != previousSession {
+		return nil, fmt.Errorf("first-hour source session does not bind declared prefix")
+	}
+	life := &manualFirstHourLifecycleResearch{scope: scope, boundaries: boundaries, next: index}
+	if life.header, err = life.sourceHeader(); err != nil {
+		return nil, err
+	}
+	if err := life.seal(); err != nil {
+		return nil, err
+	}
+	scope.lifecycle = true
+	scope.guard = life.guard
+	manualFirstHourLifecyclesResearch[r] = life
+	return life, nil
+}
+
+// Wrappers invoke the ACTUAL renamed method bodies from the reversible overlay;
+// no branch rules, tree purchases, terms, starter or milestone logic is copied.
+func (r *firstHourRuntime) step(boundary firstHourBoundary) error {
+	life := manualFirstHourLifecyclesResearch[r]
+	if life == nil {
+		return r.manualFirstHourStepBodyResearch(boundary)
+	}
+	if err := life.scope.require(); err != nil {
+		return err
+	}
+	if life.next >= len(life.boundaries) || boundary != life.boundaries[life.next] {
+		return fmt.Errorf("first-hour boundary does not bind declared session chronology")
+	}
+	life.inStep = true
+	err := r.manualFirstHourStepBodyResearch(boundary)
+	if err == nil {
+		err = life.scope.require()
+	}
+	if err == nil {
+		err = life.seal()
+	}
+	if err == nil {
+		life.next++
+	}
+	life.inStep = false
+	return err
+}
+func (r *firstHourRuntime) finishFirstHourOriginResearch(now time.Time, body func() error) error {
+	life := manualFirstHourLifecyclesResearch[r]
+	if life == nil {
+		return body()
+	}
+	if !life.inStep {
+		return fmt.Errorf("first-hour restart outside declared step")
+	}
+	if err := life.scope.require(); err != nil {
+		return err
+	}
+	seq, revision := r.company.RunSeq, r.revision
+	if err := body(); err != nil {
+		return err
+	}
+	if r.company.RunSeq != seq+1 || r.revision != revision+1 || !r.company.EvaluatedThrough.Equal(now) {
+		return fmt.Errorf("first-hour restart did not create exact run/revision successor")
+	}
+	binding, err := life.scope.begin(r.company, r.companyRevision())
+	if err != nil {
+		return err
+	}
+	life.scope.binding = binding
+	life.restarts++
+	return nil
+}
+func (r *firstHourRuntime) applyEnding(now time.Time, wallMS, attended int64) error {
+	return r.finishFirstHourOriginResearch(now, func() error { return r.manualFirstHourEndingBodyResearch(now, wallMS, attended) })
+}
+func (r *firstHourRuntime) applyCareerExit(now time.Time, wallMS, attended int64) error {
+	return r.finishFirstHourOriginResearch(now, func() error { return r.manualFirstHourCareerExitBodyResearch(now, wallMS, attended) })
+}
+func (r *firstHourRuntime) applyTier2Exit(now time.Time, wallMS, attended int64) error {
+	return r.finishFirstHourOriginResearch(now, func() error { return r.manualFirstHourTier2ExitBodyResearch(now, wallMS, attended) })
+}
+func manualFirstHourTerminalResearch(r *firstHourRuntime) error {
+	if life := manualFirstHourLifecyclesResearch[r]; life != nil {
+		if err := life.scope.require(); err != nil {
+			return err
+		}
+		life.ended = true
+	}
+	return nil
+}

@@ -1962,6 +1962,44 @@ lifecycle, optimized certification, TS/SQL and full registered workloads remain
 required. Original failed fixture assumptions and all executed limits live in
 the owning log. Legacy behavior and both drafts' adoption gates remain unchanged.
 
+#### H3ae — First-hour source/history and actual run lifecycle (manual)
+
+The [lifecycle overlay](../planning/clout-v1-and-pr-interns/probes/prepare-first-hour-lifecycle-observation.mjs)
+adds exact source/history checks to H3ad's serial manual owner. It binds pinned
+artifact/scenario/policy bytes AND decoded inputs, the declared run spec and seed
+range, selected policy, experiment, effective Prestige threshold's raw identity,
+fixed inputs and the actual derived session-boundary suffix. Mutable frame guards
+retain the real work counter, Founder-attended clock, decision/session history,
+milestones, ending, career fields and command capture including complete requests
+that ordinary report JSON intentionally omits. No wire identity/schema is added.
+
+Typed copies preserve the actual first-hour instrument's partial Founder. The
+closed supported shape includes its reputation/tree, knowledge, age, notoriety,
+network/history/fact fields; other Founder extensions refuse, rather than being
+ignored or JSON-encoded as empty Decimal objects. This is not a persisted/general
+Founder constructor or proof of naturally acquired input history. Duplicate owner
+installation and skipped/reordered policy boundaries refuse before consumption.
+
+The overlay wraps the ACTUAL ending, career and Tier2 method bodies. Those bodies
+still own terms, branch rules, starters, tree purchases, samples and milestones.
+Eight controlled restarts produce fresh source14 run/revision/origin successors;
+old-run query/fork handles refuse. The terminal elective measurement exit instead
+closes the owner without inventing a run or revision. The next real policy boundary
+continues global session chronology, including newly frozen career bonuses.
+Nine cases cover all three scripted branches, career none/cheapest/uniform/known
+exclusion, Tier2 and terminal measurement paths. Full Company/partial-Founder,
+semantic frame, commands, decisions/outputs and subsequent steps match independent
+actual legacy runtimes; changed inputs and unsupported construction are refused.
+
+**Full-report compatibility failed.** The exact fallback's charged next-step work
+is not the legacy binary search's count: scripted burnout is8012 vs11 transitions,
+for example. Keep every actual count and budget; do not restamp reports, waive R11,
+or promote semantic equality into full report equality. The separate work assertion
+counts real advances + query projections + all trial actions. The initial full-
+frame failure remains in the owning log. Certified query cost, workload/report
+compatibility, all-policy natural trajectories, general factories/masks, TS/SQL
+and adoption remain open. No live path or accepted contract changes here.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -2213,3 +2251,6 @@ numeric tolerance, authored content or narrowed1.0 scope.
 - 2026-11-01: H3ad binds actual first-hour methods to their separate source14/
   fixed-input/lifetime/session recipe in a reversible manual overlay. Preserve
   unoptimized-work and unbound-lifecycle refusals; no live migration or adoption.
+- 2026-11-01: H3ae binds source/history and actual first-hour ending/rebirth
+  methods. Retain failed full-report counter equality separately from semantic
+  lifecycle results; certified work and full migration/adoption remain held.

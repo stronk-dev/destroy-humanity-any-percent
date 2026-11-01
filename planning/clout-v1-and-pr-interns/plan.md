@@ -188,8 +188,20 @@ decisions/roles, source versions and literal absence spans have independent
 primitive references. This is not the complete registered runner or natural
 progression; exact fallback work and unbound ending refusals are explicit.
 
-Next bind complete scenario/session identity and ending/rebirth/Founder lifecycle,
-and compose a certified first-hour query instead of its expensive exact fallback.
+H3ae now binds source bytes/decoded scenario-policy/spec-seed/experiment/effective
+policy, mutable history and exact derived policy-boundary suffix, with typed
+closed partial-Founder snapshots. Actual scripted/career/Tier2 restarts and the
+terminal measurement exit preserve semantic outputs, new run/origin ownership,
+retired-handle refusal and real next-step chronology in nine controlled cases.
+This remains a manual source14 profile, not a general persisted Founder factory
+or natural-prefix/full registered runner proof. Full-report comparison FAILS:
+the exact fallback charges8012 vs11 transitions in one real continuation. Counter
+snapshots and explicit work accounting retain that result; no report is restamped.
+
+Next compose the existing producer/ledger/lifetime/time certificates with the
+actual first-hour profile instead of its expensive exact fallback. Prove the
+complete query/error/work contract and measure actual workloads under unchanged
+bounds; do not hide preparation, relabel the counters or raise limits.
 Do not coerce H3n's reached source14 inputs or the lifetime-only hook into Company19
 closed-replay scheduling. Complete general profiles/masks/real-owner factory bindings,
 preserving complete results/error policy/scores.

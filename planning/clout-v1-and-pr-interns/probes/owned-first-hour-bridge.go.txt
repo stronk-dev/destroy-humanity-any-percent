@@ -24,6 +24,7 @@ type manualFirstHourOriginResearch struct {
 	atMS          int64
 	external      []multiplier.Contribution
 	valueResource string
+	runSeq        int64
 }
 type manualFirstHourTraceResearch struct {
 	origin  *manualFirstHourOriginResearch
@@ -39,6 +40,9 @@ type manualFirstHourScopeResearch struct {
 	traces                         []manualFirstHourTraceResearch
 	pending                        *production.AdvanceSimulationResult
 	queries, points, actions, gaps int
+	advances                       int
+	lifecycle                      bool
+	guard                          func() error
 }
 
 var manualFirstHourScopesResearch = map[*firstHourRuntime]*manualFirstHourScopeResearch{}
@@ -54,6 +58,11 @@ func (scope *manualFirstHourScopeResearch) restore(origin *manualFirstHourOrigin
 	return state, nil
 }
 func (scope *manualFirstHourScopeResearch) require() error {
+	if scope.guard != nil {
+		if err := scope.guard(); err != nil {
+			return err
+		}
+	}
 	if scope.binding == nil || scope.pending != nil {
 		return fmt.Errorf("first-hour owner unavailable")
 	}
@@ -75,7 +84,7 @@ func (scope *manualFirstHourScopeResearch) begin(state *save.State, revision sav
 	if err != nil {
 		return nil, err
 	}
-	origin := &manualFirstHourOriginResearch{encoded: append([]byte(nil), encoded...), version: save.VersionForState(state), revision: revision, atMS: state.EvaluatedThrough.Sub(Epoch).Milliseconds(), external: append([]multiplier.Contribution(nil), scope.runtime.external()...), valueResource: scope.runtime.suite.Bundle.Prestige.ValueResourceID}
+	origin := &manualFirstHourOriginResearch{encoded: append([]byte(nil), encoded...), version: save.VersionForState(state), revision: revision, atMS: state.EvaluatedThrough.Sub(Epoch).Milliseconds(), external: append([]multiplier.Contribution(nil), scope.runtime.external()...), valueResource: scope.runtime.suite.Bundle.Prestige.ValueResourceID, runSeq: state.RunSeq}
 	return scope.view(origin, encoded, origin.atMS), nil
 }
 func (scope *manualFirstHourScopeResearch) project(origin *manualFirstHourOriginResearch, atMS int64) (*save.State, production.AdvanceSimulationResult, error) {
@@ -92,6 +101,9 @@ func (scope *manualFirstHourScopeResearch) project(origin *manualFirstHourOrigin
 func (scope *manualFirstHourScopeResearch) view(origin *manualFirstHourOriginResearch, head []byte, nowMS int64) *ManualChoiceBindingResearch {
 	binding := &ManualChoiceBindingResearch{Identity: origin, Head: append([]byte(nil), head...), Revision: origin.revision.Number, AtMS: nowMS}
 	binding.Fork = func(state *save.State) (*ManualChoiceBindingResearch, error) {
+		if err := scope.checkOrigin(origin); err != nil {
+			return nil, err
+		}
 		encoded, err := save.EncodeState(state)
 		if err != nil || !bytes.Equal(encoded, binding.Head) {
 			return nil, fmt.Errorf("first-hour clone changed head")
@@ -101,6 +113,9 @@ func (scope *manualFirstHourScopeResearch) view(origin *manualFirstHourOriginRes
 	// Deliberately exact fallback: all real projection work charged. This bounded
 	// adapter does not claim an optimized/full-workload feasible query.
 	binding.QueryAll = func(wait int64, requirements []routes.Requirement, budget int) (int64, int, error) {
+		if err := scope.checkOrigin(origin); err != nil {
+			return -1, 0, err
+		}
 		if wait < 0 || wait > scope.runtime.spec.HorizonMS-nowMS || len(requirements) == 0 {
 			return -1, 0, fmt.Errorf("invalid first-hour query")
 		}
@@ -140,6 +155,9 @@ func (scope *manualFirstHourScopeResearch) view(origin *manualFirstHourOriginRes
 		return binding.QueryAll(wait, []routes.Requirement{{ResourceID: "company.cash", Amount: price}}, budget)
 	}
 	binding.Bank = func(state *save.State, atMS int64) (ManualBankObservationResearch, *ManualChoiceBindingResearch, error) {
+		if err := scope.checkOrigin(origin); err != nil {
+			return ManualBankObservationResearch{}, nil, err
+		}
 		encoded, err := save.EncodeState(state)
 		if err != nil || !bytes.Equal(encoded, binding.Head) || atMS < nowMS {
 			return ManualBankObservationResearch{}, nil, fmt.Errorf("invalid first-hour bank head/time")
@@ -156,6 +174,9 @@ func (scope *manualFirstHourScopeResearch) view(origin *manualFirstHourOriginRes
 		return ManualBankObservationResearch{Stages: []ManualBankStageResearch{{Kind: "first_hour_lifetime", Evaluation: result.Evaluation}}, Roles: result.RoleActivations}, scope.view(origin, head, atMS), nil
 	}
 	binding.Apply = func(request production.IntentRequest, state *save.State, atMS int64) (production.SimulationResult, *ManualChoiceBindingResearch, error) {
+		if err := scope.checkOrigin(origin); err != nil {
+			return production.SimulationResult{}, nil, err
+		}
 		encoded, err := save.EncodeState(state)
 		if err != nil || !bytes.Equal(encoded, binding.Head) || request.ExpectedRevision != origin.revision.Number || atMS < nowMS || atMS > scope.runtime.spec.HorizonMS {
 			return production.SimulationResult{}, nil, fmt.Errorf("invalid first-hour action coordinates/head")
@@ -183,6 +204,9 @@ func (scope *manualFirstHourScopeResearch) view(origin *manualFirstHourOriginRes
 		return result, next, nil
 	}
 	binding.Rate = func(state *save.State, mask production.AblationMask) (decimal.Decimal, error) {
+		if err := scope.checkOrigin(origin); err != nil {
+			return decimal.NaN, err
+		}
 		return production.SimulateResourceRateWithContributions(state, scope.runtime.suite.Bundle.Economy, "company.cash", origin.external, mask)
 	}
 	return binding
@@ -190,8 +214,20 @@ func (scope *manualFirstHourScopeResearch) view(origin *manualFirstHourOriginRes
 
 // The actual session-return boundary closes the previous attended interval.
 // Never encode a half-applied future OfflineSpan (To > EvaluatedThrough).
+func (scope *manualFirstHourScopeResearch) checkOrigin(origin *manualFirstHourOriginResearch) error {
+	if scope.guard != nil {
+		if err := scope.guard(); err != nil {
+			return err
+		}
+	}
+	if scope.lifecycle && scope.runtime.company.RunSeq != origin.runSeq {
+		return fmt.Errorf("first-hour origin belongs to a retired run")
+	}
+	return nil
+}
+
 func manualFirstHourBoundaryResearch(runtime *firstHourRuntime, attended, founderAttended int64) error {
-	if manualFirstHourScopesResearch[runtime] != nil && (runtime.scriptedFailureDue(attended) || runtime.electiveExitReady(founderAttended)) {
+	if scope := manualFirstHourScopesResearch[runtime]; scope != nil && !scope.lifecycle && (runtime.scriptedFailureDue(attended) || runtime.electiveExitReady(founderAttended)) {
 		return fmt.Errorf("manual first-hour ending/Founder boundary not bound")
 	}
 	return nil
@@ -237,6 +273,7 @@ func manualFirstHourAdvanceResearch(runtime *firstHourRuntime, mode production.E
 		}
 		result := *scope.pending
 		scope.pending = nil
+		scope.advances++
 		return result, nil
 	}
 	if mode != production.ModeOnline {
@@ -256,6 +293,7 @@ func manualFirstHourAdvanceResearch(runtime *firstHourRuntime, mode production.E
 	}
 	runtime.company = state
 	scope.binding = scope.view(origin, head, now.Sub(Epoch).Milliseconds())
+	scope.advances++
 	return result, nil
 }
 func manualFirstHourRankerResearch(runtime *firstHourRuntime, ranker *RelevanceSuite) (*RelevanceSuite, error) {

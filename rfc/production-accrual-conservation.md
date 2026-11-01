@@ -327,6 +327,8 @@ eligibility and actual bootstrap/base-gate action bindings without a pre-bank.
 H3ad separately binds first-hour source14/lifetime-only fixed inputs, online
 views and real session-return boundaries in the actual runtime methods. It does
 not import this modern profile's scheduling/clearing into that caller.
+H3ae adds its closed partial-Founder/source/history and actual ending/rebirth
+bindings; semantic comparisons do not conceal the failed full-report work counts.
 Full registered workloads/general lifecycle/work/dispatch/adoption remain open.
 
 The actual closed replay chain can return Guild/Commons events without a player
@@ -1169,3 +1171,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-11-01: retain H3ad's separate source14 first-hour runtime/session binding.
   Its lifetime-only adapter and bounded real helpers do not adopt origin lifetime,
   a general factory, full workloads or the modern logged profile for first-hour.
+- 2026-11-01: retain H3ae's bounded first-hour source/history and lifecycle
+  evidence, with its failed counter/report equality explicit. No live settlement,
+  general Founder factory, workload feasibility or draft adoption follows.

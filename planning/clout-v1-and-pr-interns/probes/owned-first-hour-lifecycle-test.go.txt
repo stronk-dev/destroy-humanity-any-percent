@@ -1,0 +1,339 @@
+package harness
+
+import (
+	"bytes"
+	"encoding/json"
+	"reflect"
+	"strings"
+	"testing"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/multiplier"
+	prestigecore "cloud-clicker/server/prestige"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/save"
+)
+
+func firstHourLifecycleFixtureResearch(t *testing.T, name string) *firstHourRuntime {
+	t.Helper()
+	suite, _, experiment, config := reputationCareerAdmissionInputs(t)
+	suite.Bundle, suite.ConstantsHash = config.Bundle, config.Bundle.ConstantsHash
+	var spec RunSpec
+	for _, row := range suite.Scenario.Runs {
+		if row.PolicyID == "reference.greedy" {
+			spec = row
+		}
+	}
+	policy, ok := suite.Policy.Policy(spec.PolicyID, spec.PolicyVersion)
+	if !ok {
+		t.Fatal("real reference policy absent")
+	}
+	company, err := newFirstHourCompany(suite.Bundle.Economy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	founder := &save.State{LedgerFactKinds: map[string]bool{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
+	commands := []FirstHourScriptCommand{}
+	r := &firstHourRuntime{suite: suite, spec: spec, policy: policy, seed: 0, experiment: experiment, company: company, founder: founder, revision: 7, decisionOrdinal: 55, lastSession: 0, milestones: map[string]*int64{}, commands: &commands}
+	at := int64(900_000)
+	if !strings.HasPrefix(name, "scripted_") {
+		company.RunSeq = 2
+		company.RunStartedAt = relevanceNow(900_000)
+		company.EvaluatedThrough = company.RunStartedAt
+		company.ManualTokenRefilledAt = company.RunStartedAt
+		founder.ExitHistory = append(founder.ExitHistory, save.ExitRecord{RunID: 1, ExitType: "scripted_first", OccurredAt: company.RunStartedAt})
+		founder.AgeMS = 900_000
+		r.founderAttendedMS = 900_000
+		at = 2_700_000
+	}
+	company.GatesCrossed["gate.t0_to_t1"] = true
+	company.Tier = 1
+	if name == "scripted_acquihire" {
+		company.GeneratorCounts["generator.beige_tower"] = 200
+		company.GeneratorPurchasedTotal = 200
+		company.UpgradesOwned["upgrade.beige_tower_cache"] = true
+	}
+	if name == "scripted_pivot" {
+		balances := company.Ledger.Snapshot()
+		balances["company.cash"] = "1e6"
+		company.Ledger, err = economy.RestoreLedger(suite.Bundle.Economy, economy.ScopeCompany, balances)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := production.SimulateAdvance(company, suite.Bundle.Economy, production.SimulationDependencies{Routes: suite.Bundle.Routes, Hook: r.lifetimeHook()}, r.companyRevision(), production.ModeOnline, relevanceNow(at), nil, production.AblationMask{}); err != nil {
+		t.Fatal(err)
+	}
+	company.LifetimeValue = decimal.New(1, 12) // Explicit admitted history seed, not naturally earned.
+	if strings.HasPrefix(name, "career_") {
+		config.Policy = CareerCheapest
+		if name == "career_none" {
+			config.Policy = CareerNone
+		}
+		if name == "career_uniform" {
+			config.Policy = CareerSeededUniform
+		}
+		if name == "career_excluded" {
+			config.Exclude = "reputation.starter.cash_small"
+		}
+		raw, err := json.Marshal(suite.Bundle.Prestige)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var fields map[string]any
+		if json.Unmarshal(raw, &fields) != nil {
+			t.Fatal("bad actual Prestige fields")
+		}
+		fields["threshold"] = config.Threshold
+		raw, err = json.Marshal(fields)
+		if err != nil {
+			t.Fatal(err)
+		}
+		careerPolicy, err := prestigecore.LoadPolicy(raw)
+		if err != nil {
+			t.Fatal(err)
+		}
+		r.career = &careerRuntime{config: config, policy: careerPolicy, purchased: []string{}, applied: []string{}}
+	}
+	if name == "tier2" {
+		r.tier2 = &tier2Runtime{}
+	}
+	if err := validateFirstHourCompany(suite.Bundle.Economy, company); err != nil {
+		t.Fatal("invalid controlled source", err)
+	}
+	return r
+}
+func installLifecycleForTestResearch(t *testing.T, r *firstHourRuntime) (*manualFirstHourScopeResearch, *manualFirstHourLifecycleResearch) {
+	t.Helper()
+	scope := ownedFirstHourResearch(t, r)
+	life, err := installFirstHourLifecycleResearch(scope)
+	if err != nil {
+		t.Fatal("source factory refused", err)
+	}
+	t.Cleanup(func() { delete(manualFirstHourLifecyclesResearch, r) })
+	return scope, life
+}
+func compareFirstHourLifecycleResearch(t *testing.T, r, reference *firstHourRuntime) {
+	t.Helper()
+	requireReferenceCompanyEqual(t, r.company, reference.company)
+	founder, err := firstHourFounderSnapshotResearch(r.founder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantFounder, err := firstHourFounderSnapshotResearch(reference.founder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(founder, wantFounder) {
+		t.Fatal("complete partial-Founder differs from original method")
+	}
+	gotFrame, err := (&manualFirstHourLifecycleResearch{scope: &manualFirstHourScopeResearch{runtime: r}}).sourceFrame()
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantFrame, err := (&manualFirstHourLifecycleResearch{scope: &manualFirstHourScopeResearch{runtime: reference}}).sourceFrame()
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Retain the full real work counter in ownership snapshots, but do NOT
+	// pretend an exact fallback and legacy binary search cost the same. The
+	// first full-frame equality experiment failed; workload compatibility stays
+	// open. Compare remaining complete semantic/output fields separately.
+	var gotFields, wantFields map[string]json.RawMessage
+	if json.Unmarshal(gotFrame, &gotFields) != nil || json.Unmarshal(wantFrame, &wantFields) != nil || gotFields["Transitions"] == nil || wantFields["Transitions"] == nil {
+		t.Fatal("missing full work fields")
+	}
+	delete(gotFields, "Transitions")
+	delete(wantFields, "Transitions")
+	if !reflect.DeepEqual(gotFields, wantFields) || !reflect.DeepEqual(r.external(), reference.external()) || r.revision != reference.revision || !reflect.DeepEqual(*r.commands, *reference.commands) {
+		t.Fatal("actual semantic commands/milestones/ending/clock/career/revision differ")
+	}
+	scope := manualFirstHourScopesResearch[r]
+	if r.transitions != int64(scope.advances+scope.points+scope.actions) {
+		t.Fatal("exact fallback work is not fully charged to real counter", r.transitions, scope.advances, scope.points, scope.actions)
+	}
+	t.Logf("actual scoped transitions%d legacy%d (not report-compatible); advances%d queries%d points%d trial_actions%d", r.transitions, reference.transitions, scope.advances, scope.queries, scope.points, scope.actions)
+}
+func TestOwnedFirstHourLifecycleResearch(t *testing.T) {
+	for _, name := range []string{"scripted_burnout", "scripted_pivot", "scripted_acquihire", "career_none", "career_cheapest", "career_uniform", "career_excluded", "tier2", "terminal"} {
+		t.Run(name, func(t *testing.T) {
+			r := firstHourLifecycleFixtureResearch(t, name)
+			reference := firstHourLifecycleFixtureResearch(t, name)
+			scope, life := installLifecycleForTestResearch(t, r)
+			old := scope.binding
+			oldOrigin := old.Identity.(*manualFirstHourOriginResearch)
+			original := append([]byte(nil), oldOrigin.encoded...)
+			boundary := life.boundaries[life.next]
+			if boundary.atMS != r.company.EvaluatedThrough.Sub(Epoch).Milliseconds() {
+				t.Fatal("seed does not bind exact actual policy boundary")
+			}
+			if err := reference.step(boundary); err != nil {
+				t.Fatal("unchanged legacy reference failed", err)
+			}
+			if err := r.step(boundary); err != nil {
+				t.Fatal("owned actual step failed", err)
+			}
+			compareFirstHourLifecycleResearch(t, r, reference)
+			if !bytes.Equal(original, oldOrigin.encoded) {
+				t.Fatal("restart mutated old origin")
+			}
+			if name == "terminal" {
+				if !life.ended || life.restarts != 0 || r.revision != 7 || r.company.RunSeq != 2 {
+					t.Fatal("terminal exit fabricated restart")
+				}
+				if _, _, err := old.Query(0, decimal.Zero, 1); err == nil {
+					t.Fatal("terminal handle still usable")
+				}
+				if err := r.step(life.boundaries[life.next]); err == nil {
+					t.Fatal("ended measurement continued")
+				}
+			} else {
+				if life.restarts != 1 || r.revision != 8 || r.company.RunSeq != oldOrigin.runSeq+1 || scope.binding.Identity == old.Identity {
+					t.Fatal("real restart lost exact successor binding")
+				}
+				if _, points, err := old.Query(0, decimal.Zero, 1); err == nil || points != 0 {
+					t.Fatal("retired-run query escaped", points, err)
+				}
+				if _, err := old.Fork(firstHourReferenceRestoreResearch(t, r, old.Head, oldOrigin.version)); err == nil {
+					t.Fatal("retired-run fork escaped")
+				}
+				if r.lastSession != 0 || life.boundaries[life.next].atMS != boundary.atMS+1000 {
+					t.Fatal("restart reset global session chronology")
+				}
+				if strings.HasPrefix(name, "scripted_") && r.ending.Branch != strings.TrimPrefix(name, "scripted_") {
+					t.Fatal("wrong actual ending branch", r.ending.Branch)
+				}
+				if strings.HasPrefix(name, "career_") {
+					if name == "career_none" {
+						if len(r.career.purchased) != 0 || len(r.career.applied) != 0 || r.career.factor != "1e0" {
+							t.Fatal("career control gained effects")
+						}
+					} else if len(r.career.purchased) == 0 || r.career.factor == "1e0" {
+						t.Fatal("career did not exercise actual new Founder inputs")
+					}
+					if name == "career_excluded" && slicesContainsResearch(r.career.purchased, "reputation.starter.cash_small") {
+						t.Fatal("exclusion ignored")
+					}
+				}
+				// Actual next policy boundary, not a hand-written restart continuation.
+				next := life.boundaries[life.next]
+				if err := reference.step(next); err != nil {
+					t.Fatal(err)
+				}
+				if err := r.step(next); err != nil {
+					t.Fatal("successor could not continue", err)
+				}
+				compareFirstHourLifecycleResearch(t, r, reference)
+				if save.VersionForState(r.company) != 14 {
+					t.Fatal("restart silently upgraded source")
+				}
+			}
+			t.Logf("restarts%d terminal%v run%d revision%d next%d points%d queries%d", life.restarts, life.ended, r.company.RunSeq, r.revision, life.next, scope.points, scope.queries)
+		})
+	}
+}
+func slicesContainsResearch(rows []string, want string) bool {
+	for _, row := range rows {
+		if row == want {
+			return true
+		}
+	}
+	return false
+}
+
+func TestOwnedFirstHourSourceBindingResearch(t *testing.T) {
+	for _, name := range []string{"seed", "spec", "policy", "scenario", "registry", "artifact", "founder", "founder_alias", "last_session", "ordinal", "clock", "commands_payload", "commands_presence", "external", "missed_boundary"} {
+		t.Run(name, func(t *testing.T) {
+			r := firstHourLifecycleFixtureResearch(t, "scripted_burnout")
+			// Non-ending source provides a positive real decision if a guard is bypassed.
+			delete(r.company.GatesCrossed, "gate.t0_to_t1")
+			r.company.Tier = 0
+			if name == "commands_payload" {
+				*r.commands = append(*r.commands, FirstHourScriptCommand{AtMS: 0, Mode: production.ModeOnline, Request: r.manualRequest()})
+			}
+			if name == "commands_presence" {
+				var rows []FirstHourScriptCommand
+				r.commands = &rows
+			}
+			scope, life := installLifecycleForTestResearch(t, r)
+			before := firstHourEncodeResearch(t, r.company)
+			binding := scope.binding
+			boundary := life.boundaries[life.next]
+			switch name {
+			case "seed":
+				r.seed++
+			case "spec":
+				r.spec.HorizonMS++
+			case "policy":
+				r.policy.ActionCadenceMS++
+			case "scenario":
+				r.suite.Scenario.Milestones[0].MustReach = !r.suite.Scenario.Milestones[0].MustReach
+			case "registry":
+				r.suite.Policy.Policies[0].ActionCadenceMS++
+			case "artifact":
+				for key, value := range r.suite.Bundle.Artifacts {
+					r.suite.Bundle.Artifacts[key] = append(append([]byte(nil), value...), ' ')
+					break
+				}
+			case "founder":
+				r.founder.ReputationLevel++
+			case "founder_alias":
+				r.founder.LedgerFactKinds["new_fact"] = true
+			case "last_session":
+				r.lastSession++
+			case "ordinal":
+				r.decisionOrdinal++
+			case "clock":
+				r.founderAttendedMS++
+			case "commands_payload":
+				(*r.commands)[0].Request.Count++
+			case "commands_presence":
+				r.commands = nil
+			case "external":
+				r.diagnosticExternal = []multiplier.Contribution{{SourceID: "changed"}}
+			case "missed_boundary":
+				boundary = life.boundaries[life.next+1]
+			}
+			if err := r.step(boundary); err == nil {
+				t.Fatal("unbound input/history accepted", name)
+			}
+			if !bytes.Equal(before, firstHourEncodeResearch(t, r.company)) || scope.binding != binding || r.revision != 7 {
+				t.Fatal("guard changed Company or owner")
+			}
+		})
+	}
+	for _, name := range []string{"wrong_hash", "decoded_policy", "seed_population", "undeclared_spec", "session_prefix", "advanced_founder"} {
+		t.Run("construction/"+name, func(t *testing.T) {
+			r := firstHourLifecycleFixtureResearch(t, "scripted_burnout")
+			scope := ownedFirstHourResearch(t, r)
+			switch name {
+			case "wrong_hash":
+				r.suite.PolicyHash = "wrong"
+			case "decoded_policy":
+				r.suite.Policy.Policies[0].ActionCadenceMS++
+			case "seed_population":
+				r.seed = ^uint64(0)
+			case "undeclared_spec":
+				r.spec.HorizonMS++
+			case "session_prefix":
+				r.lastSession = 4
+			case "advanced_founder":
+				r.founder.CloutLifetime = 1
+			}
+			if _, err := installFirstHourLifecycleResearch(scope); err == nil {
+				t.Fatal("invalid factory input accepted")
+			}
+			if scope.lifecycle || scope.guard != nil {
+				t.Fatal("failed factory partially installed owner")
+			}
+		})
+	}
+	t.Run("construction/duplicate", func(t *testing.T) {
+		r := firstHourLifecycleFixtureResearch(t, "scripted_burnout")
+		scope, life := installLifecycleForTestResearch(t, r)
+		if _, err := installFirstHourLifecycleResearch(scope); err == nil || manualFirstHourLifecyclesResearch[r] != life {
+			t.Fatal("duplicate installation reset lifecycle")
+		}
+	})
+}

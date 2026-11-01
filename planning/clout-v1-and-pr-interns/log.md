@@ -8530,3 +8530,108 @@ feature/archival/release acceptance. Complete scenario/session identity, ending/
 rebirth/Founder lifecycle, general masks/factories, optimized certification and
 registered workloads remain open, as do27 Clout failures, RP-680 and kernel guard.
 No tracked product changes, push or deployment. Full nine-tier goal remains active.
+
+## 2026-11-01 — H3ae: first-hour source identity and real run lifecycle
+
+Previous goal turn is PROGRESS (760b3387 construction and446a8bc5 independent
+review). Clean resumed tree. Continue the unadopted H1/H2/C1c/C1h research: bind
+the actual source scenario/policy/spec/seed/experiment/artifacts/effective policy,
+the instrument's complete closed partial-Founder shape, mutable history and exact
+derived session-boundary suffix. Typed Founder snapshots preserve numeric identity;
+do not use generic JSON of Decimal or omit unsupported modern extensions silently.
+
+Wrap the actual method bodies, not rewritten terms/starter/tree rules. Planned
+nine controlled real-step populations:all three scripted branches; career none/
+cheapest/uniform/excluded; Tier2 rebirth; terminal elective measurement exit. Match
+complete Company/Founder/frame/commands/report metadata against separate actual
+legacy runtimes, then continue the real next policy boundary after each restart.
+Check new revision/run/origin and new frozen Founder bonus, retired-handle refusal,
+unaltered old origins and global session continuity. Seeds include admitted history
+and assets, not proof of naturally earned prefixes/full registered workloads.
+
+Negative source tests must reject changed metadata, aliased Founder fields,
+chronology gaps and unsupported constructor inputs without consuming Company or
+partially installing a lifecycle. Existing H3ad guards remain for old unbound
+scopes; normal builds unchanged. Retain exact-fallback work, all numeric/search/
+AC6/release gates. Run focused native then affected legacy/overlay checks and Linux,
+with independent technical review before calling this component reviewed. No
+adoption, live implementation, budget/golden/CI change, new tier or publication.
+
+First37146 FAIL harness2.803s. Nine initial exit boundaries match, but several
+NEXT-step full frames differ; metadata negatives never ran because their fixture
+stored a forbidden false gate key. Delete that key (do not weaken admission).
+Diagnostic84761 FAIL0.660s prints the exact scripted-burnout next-step frames:
+ONLY Transitions differs,8012 vs11. The exact fallback's work is genuinely larger.
+Keep this as a FAILED full-report-compatibility result, not a restamped counter.
+Separate semantic/output equality from full work compatibility in subsequent
+research, and independently assert the actual counter equals real advance calls
++ all charged query points + all trial actions. Full report/budget/workload
+compatibility remains OPEN; no adopted assertion is changed. Ownership snapshots
+continue to bind the actual counter. Also make command snapshots explicitly carry
+Request:its ordinary report type intentionally marks that field json:"-".
+
+### H3ae results — semantic lifecycle positive, work/report compatibility negative
+
+Corrected focused 20705 passes harness 2.883s before final capture-presence and
+duplicate-construction controls. Frozen affected native 65580 passes 26.925s;
+overlay vet passes. Linux-amd64 97847 passes 52.315s. Actual populations include
+nine lifecycle paths, 15 changed-source/history refusals and seven constructor
+refusals, the prior 18 H3ad cases/refusals, 72 candidate compatibility cases,
+lifetime/input subjects, and all three existing whole first-hour runner tests.
+Verbose tool displays truncate portions, not executed populations; both packages
+terminate PASS. No full package, hosted CI, SQL or TS acceptance is inferred.
+
+All nine initial exits match actual legacy semantic frames and counters. Eight
+restarts preserve run/revision/source14 and continue the next derived global
+policy boundary; one terminal exit creates no new run/revision. Six continuations
+have differing work counts, retained explicitly: scripted burnout 8012/11, pivot
+8011/11, acquihire 4016/11; career none/excluded and Tier2 9012/12. Cheapest/uniform
+career continuations both use 3/3. These are scoped/legacy counters, NOT speed
+comparisons or changed report authority. Total scoped work is exactly 17 real
+advances + 47053 query projections + 12 trial actions = 47082 transitions across
+the nine cases. Full-report/workload compatibility remains FAILED/OPEN; semantic
+comparisons exclude only the separately checked actual work field, never state,
+requests, clocks, milestones, Founder effects or other outputs.
+
+Discrimination: skip ONLY restart-origin installation (copied ignored lifecycle
+source, `life.scope.binding = binding` becomes a conditional assignment only when
+`binding.Identity == nil`). Actual scripted-burnout fails immediately with lost
+owned head/revision: 66958, harness 0.242s, Make exit2. Disable ONLY header equality
+(`if !bytes.Equal(header, life.header) && false`): the actual seed-forgery case
+accepts the changed seed and fails its assertion: 47262, 0.541s, Make exit2.
+Initial header-fault 60142 selected no tests because Make consumed a regex `$`;
+its 0.229s exit0 is INVALID evidence. Corrected selector omits that anchor.
+Both faults leave production and all oracles unchanged.
+
+Reproduction (root, frozen sources):
+
+```sh
+node planning/clout-v1-and-pr-interns/probes/prepare-first-hour-lifecycle-observation.mjs
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/first-hour-lifecycle-overlay.json -run TestOwnedFirstHour\|TestWaitFirstHourCandidate\|TestFirstHourRunnerUsesRatifiedPolicyAndRealTransitions\|TestFirstHourCasualInitialJitterIsOfflineFromFounderGenesis\|TestFirstHourReferenceReusesProjectedTimeRanker\|TestReputationReferenceLifetimeAccounting\|TestReputationReferenceFrozenInputDiagnostic -v'
+make vet GO_PACKAGES='-overlay=../.cache/first-hour-lifecycle-overlay.json ./harness'
+docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/first-hour-lifecycle-overlay.json -run 'TestOwnedFirstHour|TestWaitFirstHourCandidate|TestFirstHourRunnerUsesRatifiedPolicyAndRealTransitions|TestFirstHourCasualInitialJitterIsOfflineFromFounderGenesis|TestFirstHourReferenceReusesProjectedTimeRanker|TestReputationReferenceLifetimeAccounting|TestReputationReferenceFrozenInputDiagnostic' -v ./harness -count=1
+```
+
+Frozen SHA256: first-hour bridge
+`f9f9bbc3f47538e6f754a6c70aad527d5c0da4069be66c81053ebe3fea23ad02`;
+lifecycle `b0c5bfaf75accf019c374eb7f45ee3ddf2e1049149b6ebe314b670a2b6532de6`;
+tests `b0bb1bc6075ed6d9bc9b11dd65752dcd287a285a130171c37a4e5e474e8a5633`;
+generator `a6f25a02cd436b6f0bd28b3df7264bf63e80514d5cfffd99d7cdacbf01e5af31`;
+43-entry overlay `7680d1c1a3ed300294a2ca1a65314b0d5ff4e14f5b3d56e3747e0ebb9acc2376`.
+Fault hashes: header `308ef31736321849de2a28635265cc53cad470d2a906ca0aaaf5053121a445b3`;
+restart `3c53474a0e1d08bbcaf1d9f31d0b7082abb98c40ee20b84eb96c9fc21412841d`.
+Recreate either from the exact replacement above, override only
+`harness/manual_first_hour_lifecycle.go` in a copied overlay, and select respectively
+`TestOwnedFirstHourSourceBindingResearch/seed` or
+`TestOwnedFirstHourLifecycleResearch/scripted_burnout` on the same root Make lane.
+
+Eight-path 446a8bc5-exclusive checkpoint is research/draft-only. Review by: Codex
+root (author/first filter). Recorded by: Codex root. Independent technical review
+pending; neither draft adopted. Manual controlled histories/partial-Founder shapes
+are not natural genesis or a general persisted/live factory. Certified query work,
+all-policy full trajectories/masks, TS/SQL and real settlement remain open. RP-680,
+27 Clout AC6 failures and historical kernel guard remain unfixed, not rerun here.
+No live product/schema/data/CI/golden/kernel223/epoch8 change, archival, publication
+or push. Full nine-tier goal stays active. Next: certified first-hour query and
+complete actual workload/error/work proof under unchanged bounds, not more passing
+monotonicity samples or an increased budget for this exact scan.
