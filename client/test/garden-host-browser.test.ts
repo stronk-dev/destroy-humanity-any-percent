@@ -175,6 +175,81 @@ function cell(target: HTMLElement, row: number, col: number): HTMLButtonElement 
   return found;
 }
 
+// Vitest may never emit its final failure summary if another browser stalls.
+// Capture the failing assertion and live fixture BEFORE finally disposes it.
+function reportGardenFailure(host: Awaited<ReturnType<typeof mounted>>, name: string, error: unknown,
+  emit: (name: string, data: string) => void = (name, data) => console.error(name, data)): void {
+  const focus = document.activeElement;
+  const garden = host.target.querySelector(".garden");
+  emit("garden-host-assertion-failure", JSON.stringify({
+    name, error: error instanceof Error ? { name: error.name, message: error.message, stack: error.stack } : String(error),
+    connected: host.target.isConnected, garden_present: garden !== null, busy: garden?.getAttribute("aria-busy"),
+    focus: focus instanceof HTMLElement ? { tag: focus.tagName, id: focus.id,
+      label: focus.getAttribute("aria-label") ?? focus.textContent?.trim(), connected: focus.isConnected,
+      disabled: focus.matches(":disabled") } : null,
+    plots: [...host.target.querySelectorAll<HTMLButtonElement>(".garden button.cell")].map((node) => ({
+      stage: node.dataset.stage, disabled: node.disabled, aria_disabled: node.getAttribute("aria-disabled"),
+    })),
+    requests: host.requests.map(({ path, method }) => ({ path, method })),
+    intents: host.intents().map(({ kind, expected_revision }) => ({ kind, expected_revision })),
+  }));
+}
+
+function failGarden(host: Awaited<ReturnType<typeof mounted>>, name: string, error: unknown,
+  emit?: (name: string, data: string) => void): never {
+  try { reportGardenFailure(host, name, error, emit); }
+  finally { throw error; } // A diagnostic failure must not replace the assertion.
+}
+
+function watchGardenAbort(host: Awaited<ReturnType<typeof mounted>>, name: string, signal: AbortSignal,
+  emit?: (name: string, data: string) => void): () => void {
+  const observe = () => {
+    try { reportGardenFailure(host, `deadline:${name}`, signal.reason, emit); }
+    catch { console.error("garden-host-observation-error", name); }
+  };
+  signal.addEventListener("abort", observe, { once: true });
+  return () => signal.removeEventListener("abort", observe);
+}
+
+it.skipIf(!browser)("Garden failure observation captures the live subject and preserves the original failure", async (testContext) => {
+  const host = await mounted(testContext);
+  try {
+    await openGarden(host.target);
+    const harvest = button(host.target, "Harvest all mature"); harvest.focus(); harvest.click(); await settle();
+    const original = new Error("controlled Garden assertion");
+    let recorded: { name: string; data: string } | undefined, thrown: unknown;
+    try { failGarden(host, "controlled-harvest", original, (name, data) => { recorded = { name, data }; }); }
+    catch (error) { thrown = error; }
+    expect(thrown).toBe(original);
+    expect(recorded?.name).toBe("garden-host-assertion-failure");
+    const data = JSON.parse(recorded!.data);
+    expect(data.name).toBe("controlled-harvest");
+    expect(data.error.message).toBe(original.message);
+    expect(data.connected).toBe(true); expect(data.garden_present).toBe(true); expect(data.busy).toBe("true");
+    expect(data.focus.label).toBe("Harvest all mature");
+    expect(data.plots).toHaveLength(36); expect(data.plots[0].stage).toBe("mature");
+    expect(data.requests.filter((row: { method: string }) => row.method === "POST")).toHaveLength(1);
+    expect(data.intents).toEqual([{ kind: "garden_harvest", expected_revision: 7 }]);
+    expect(recorded!.data).not.toContain("garden-host-token");
+    expect(recorded!.data).not.toContain("cloud-clicker.credentials.v1");
+    const controller = new AbortController(), aborted: string[] = [];
+    const stop = watchGardenAbort(host, "controlled-harvest", controller.signal, (_name, data) => { aborted.push(data); });
+    controller.abort(original); stop();
+    expect(aborted).toHaveLength(1);
+    expect(JSON.parse(aborted[0]!).name).toBe("deadline:controlled-harvest");
+    expect(JSON.parse(aborted[0]!).connected).toBe(true);
+    expect(JSON.parse(aborted[0]!).error.message).toBe(original.message);
+    const disposedObserver = new AbortController();
+    watchGardenAbort(host, "disposed", disposedObserver.signal, (_name, data) => { aborted.push(data); })();
+    disposedObserver.abort(original); expect(aborted).toHaveLength(1);
+    try { failGarden(host, "broken-observer", original, () => { throw new Error("diagnostic sink failed"); }); }
+    catch (error) { expect(error).toBe(original); }
+    await host.dispose();
+    expect(host.target.isConnected).toBe(false);
+    expect(JSON.parse(recorded!.data).connected).toBe(true); // Detached evidence survives teardown.
+  } finally { await host.dispose(); }
+});
+
 const cases = [
   { name: "plant", kind: "garden_plant", fields: { row: 1, col: 0, species_id: "strain_a" }, at: [1, 0], action: "Plant Strain A (PENDING OWNER NAME)" },
   { name: "uproot", kind: "garden_uproot", fields: { row: 0, col: 0 }, at: [0, 0], action: "Uproot" },
@@ -447,6 +522,8 @@ for (const action of ["harvest-all", "substrate", "menu-harvest"] as const) {
     it.skipIf(!browser)(`Garden response focus ${action} ${newerChoice ? "preserves newer navigation" : "recovers usable control"}`, async (testContext) => {
       const { userEvent } = await import("vitest/browser");
       const host = await mounted(testContext);
+      const stopObservation = watchGardenAbort(host, `response-focus:${action}:${newerChoice}`, testContext.signal);
+      testContext.onTestFinished(stopObservation);
       try {
         button(host.target, "Server Garden").click();
         await settle();
@@ -489,13 +566,16 @@ for (const action of ["harvest-all", "substrate", "menu-harvest"] as const) {
           expect((document.activeElement as HTMLElement).matches(":disabled")).toBe(false);
         }
         host.assertHTTP();
-      } finally { await host.dispose(); }
+      } catch (error) { failGarden(host, `response-focus:${action}:${newerChoice}`, error); }
+      finally { stopObservation(); await host.dispose(); }
     });
   }
 }
 
 for (const row of cases) it.skipIf(!browser)(`Garden host ${row.name} binds Founder revision and refreshes after receipt`, async (testContext) => {
   const host = await mounted(testContext);
+  const stopObservation = watchGardenAbort(host, `receipt:${row.name}`, testContext.signal);
+  testContext.onTestFinished(stopObservation);
   try {
     button(host.target, "Server Garden").click(); await settle();
     expect(host.reads()).toBe(2); // Visibility probe, then mounted Garden read.
@@ -533,7 +613,8 @@ for (const row of cases) it.skipIf(!browser)(`Garden host ${row.name} binds Foun
     expect(host.intents()).toHaveLength(2);
     expect(host.intents()[1]?.expected_revision).toBe(8);
     host.assertHTTP();
-  } finally { await host.dispose(); }
+  } catch (error) { failGarden(host, `receipt:${row.name}`, error); }
+  finally { stopObservation(); await host.dispose(); }
 });
 
 it.skipIf(!browser)("Garden host rejection displays Garden detail and refreshes without optimistic changes", async (testContext) => {

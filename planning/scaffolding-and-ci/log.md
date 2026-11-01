@@ -2800,3 +2800,60 @@ cache volumes. No tracked reviewer edits/commits/main-tree mutation/publication.
 Desktop LinuxAMD64 emulation is not native hosted hardware. Only this fixture correction
 is approved; no neighboring cursor, full CI/history/arithmetic, feature/archival/release or
 1.0 promotion. Root records the bounded debt closed; remaining whole-product gates stand.
+
+## 2026-11-01 — Browser fixture corrections approved; current Linux selection red
+
+APPROVED corrective scopes only. Review by: fresh independent Codex
+`/root/browser_fixture_isolation_corrective_review`. Recorded by: Codex root.
+All changed source/test/docs/record edges and current descendants inspected:
+
+- RP-525 `d618b0b4..e2efdebf`, six paths: retain composed proof in mandatory Node,
+  exclude only that Node-only file from browser collection.
+- RP-527 `71682ad0..a181b935`, five paths: expired Typer producer containment.
+- RP-528 `a181b935..0073094e`, five paths: actual Garden startup and owned teardown.
+- RP-530 `dcb561c5..6a6a996d`, seven paths: Reputation plan input/DOM lifetime.
+
+At clean source `9feb826a`, independent complete three-file native Chromium/WebKit
+passes 160 ordinary cases plus eight expected diagnostic deadlines (14.19s).
+Node passes all65 proof controls plus one helper;83 browser cases skip. Types pass.
+The declared frozen-install Linux three-engine selection also requests generated
+API/Node proof paths: generated132×3 and Reputation20×3 pass; no Node-only import.
+Garden Chromium/WebKit33 each pass. Firefox reports two failed cases: harvest-all
+focus recovery and host harvest receipt. Typer Chromium/Firefox ordinary journeys
+hit the unchanged15s deadline; their isolation/drain controls pass. WebKit Typer
+never reports completion. Only11/12 files finish; the unchanged10m guard kills
+the container, outer exit2/Error137. No final aggregate or assertion expected/
+actual values exists. No attribution or retry; RP-526 remains OPEN.
+
+Complete retained output `.cache/browser-fixture-review-linux-final.log`,507lines,
+92361bytes, SHA256 `03cba9b8eb61e2c08e417f375da64bff9d6bf93037974de4910b4adbe540040d`.
+LinuxARM64 Playwright1.62.0/Node24/Vitest4.1.10, not hosted amd64; other services
+were present, so timings are not a controlled benchmark. Initial native sandbox
+listener denial ran no tests; permitted execution passed. Owned browser container
+is absent. No reviewer tracked mutations, deadline/retry/coverage changes or
+intervening topology/RP-531/full-feature/release approval.
+
+### Follow-up — preserve Garden failure context before disposal
+
+Root changes only the two relevant test families and one mounted control: capture
+original assertion/error or signal abort plus live focus/grid/busy and bounded
+request/intent metadata BEFORE disposal, then preserve the original failure.
+Control requires connected pending harvest data, detached evidence after teardown,
+abort capture and removed-observer silence; a broken diagnostic sink cannot replace
+the assertion. Original gameplay assertions, native inputs and deadlines unchanged.
+No natural failure cause or production fix is claimed.
+
+Root final-source complete native file passes66 ordinary/two expected deadlines,
+12.27s; declared Linux file passes99/three expected deadlines,13.67s; types0/0.
+Earlier pre-abort-observer checks passed the same populations but do not stand in
+for this final-source execution. Initial default native selection instead exits2:
+Chromium/WebKit controls pass, Firefox session fails at60s and its launch/close
+reports sandbox/framebuffer failure at180s. It is not green. Initial sandbox
+listener denial ran no tests; process inspection was also denied, not evidence.
+Focused working-engine and declared Linux selections have explicit narrower scope.
+
+Code/docs/plan/ledger/record batch after `834cbb20` needs independent corrective
+review. Review by: Codex root (implementer/first filter). Recorded by: Codex root.
+This is CI D2 diagnostic repair, not ordinary timeout attribution or RP-526/RP-430
+closure, public/SQL gameplay, hosted/full-CI, content/kernel/feature/release or
+accounting/history approval. No workflow, product code, retry or budget changed.

@@ -321,6 +321,16 @@ transport readiness: the existing protocol-frame checks remain. Owned-fixture cl
 to the caller's explicit test context and runs on failed initialization or test completion, with
 an independent timed-out-startup teardown control. No startup retry policy or deadline is changed.
 
+Garden response-focus and receipt witnesses emit `garden-host-assertion-failure`
+before their fixture teardown when an assertion throws or the test signal aborts.
+The record includes the original error, live focus/grid/busy state, request paths/
+methods and command kinds/revisions, not storage or request-header dumps. Aborts
+use a `deadline:` case prefix. Observer teardown removes its listener; observation
+cannot replace the original failure or change input, retries or deadlines. A
+controlled mounted-subject check covers error identity, detached evidence, abort
+capture and disposed-observer silence. It is not a reproduction of the unresolved
+Linux Garden failures or proof the complete browser runner now terminates reliably.
+
 Garage's mandatory GS5-A2 real-minute idle observation lives in
 `test/garage-idle-opportunity-browser.test.ts`, alongside the interaction file
 `test/garage-surfaces-browser.test.ts`. Both consume `garage-surfaces-fixture.ts` and stay

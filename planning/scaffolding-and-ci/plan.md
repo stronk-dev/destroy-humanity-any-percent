@@ -7,6 +7,13 @@
 
 ## Current checkpoint — 2026-10-16
 
+2026-11-01: independent corrective review APPROVES RP-525/527/528/530 at their
+exact owning-log ranges. The same review's current Linux selection remains red/
+incomplete: Typer deadlines, two Firefox Garden observations and an unreported
+WebKit file before the unchanged ten-minute kill. No cause is inferred. Root adds
+failure/abort-only Garden context before teardown; controlled native/Linux checks
+pass, but its new correction needs independent review and RP-526 stays open.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing
