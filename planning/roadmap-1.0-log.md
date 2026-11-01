@@ -5677,3 +5677,16 @@ APPROVES complete `d6e2ff21..98542998`, including its own full14 rerun and firin
 source/gate-history/retirement controls. Review by: that independent agent.
 Recorded by: Codex root. Owning Clout log holds exact evidence/provenance. RP-698
 remains an OPEN contract issue; no policy, target, accounting or release adoption.
+
+## 2026-11-01 — Existing integrated player journey refreshed
+
+At clean `7f540859`/kernel0.3.223, complete existing
+`make test-game-ui-composed` exits0 after scoped corrective reviews across
+Reputation/Account/API/Deployment/Minigame. Actual built-client/server/Postgres
+main endings, continuation, socket/process-loss recovery, Cosmetic/Reputation/
+Clout, payment negatives, controlled Garden and cash-fixture Tier2 all pass.
+The Garage log's same-date checkpoint is the detailed evidence home. Review by:
+Codex root (verification operator, not independent approval). Recorded by: Codex
+root. This changes integration freshness, not playable scope or natural pacing.
+Accounting/search/Headcount/author-content, rights/AT and exact-release/clean-host
+gates remain. No specification adoption, feature/archive/release approval or push.

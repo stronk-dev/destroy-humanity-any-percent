@@ -7454,3 +7454,45 @@ All handles terminal; only newly created identified tmpfs game-ui Postgres remov
 test data unrecoverable), Compose inventories empty and ports18081/18082/5173/55433 free.
 Caches/volumes/builders preserved; reviewer makes no edits. No original-feature/PA7/shared-
 clock/adopted-content/manual-AT/performance/full-CI/natural-Garden/renewal/archival/release approval.
+
+## 2026-11-01 — Current-source composed integration checkpoint
+
+Progress: refresh the complete existing player/database journey at clean
+`7f540859`, kernel0.3.223/epoch8, after the recent independent corrective approvals.
+Root `make test-game-ui-composed`, session75955, terminal exit0. No driver,
+production/data/assertion/retry/deadline or policy changes; this is executed
+integration verification, not new feature acceptance or designated review.
+
+Executed35 initial proof controls,12 navigation-observer controls and both N5
+payment/checkout negatives at their required pre-request traps. Main and Tier2
+invocations each require8/8 actual persisted refresh cases, ten named persisted
+parents, public SDK→TS replay/historical rollover and stored Guild→TS markers
+before proceeding. Both complete. Early verbose Go output is partly truncated;
+required markers/terminal results are retained, not an exhaustive raw subtest/
+skip census. Later polling omits counted ordinary request-ID INFO lines only.
+
+Built-client Chromium against native Go/actual Docker Postgres16 proves both
+terminal states/continuation, Fiscal refusal/fresh consent, achievement acquisition/
+announcement, queued purchase→Claim bound to SQL receipts, Pitch unlock/payout and
+lost reply across SIGKILL/restart, and attended Soul Begin/pause/reconnect/Stop
+with token rotation/no missed credit. Exact loaded HTML/JS/CSS/started Worker
+checks pass. Cosmetic Enter/Space purchase/adopt/equip/unequip/reload, care status
+via actual WebSocket, Reputation next-run bonus/plan/starters/run3 reload, Clout
+purchase/factors/notices, Garden harvest/substrate/reload and Tier2 first-failure/
+both-gate/six-purchase/incorporation/reload populations all pass.
+
+Preserve fixture limits: Reputation budget/cash, Clout unminted/prior-history/cash,
+explicit Garden maturity and Tier2 cash1e5/9e8. Not natural pacing, conservation,
+full five-minute Recovery or15-minute Garden/renewal, Headcount, public Arcade/
+Typer, manual AT, all-engine/performance, Caddy/clean-host/exact-release or hosted/
+full-CI proof. Proxy errors accompany intentional process kills; required recovery
+subsequently passes. No earlier intermittent cause is closed by a green run.
+The27 Clout failures/history guard remain separate.
+
+No preexisting composed service/listener existed. After terminal completion,
+ports18081/18082/5173 are free; only this run's inspected tmpfs/no-mount container
+0724afa88bbc… is stopped/removed and Compose inventory is empty. Disposable rows
+are unrecoverable; caches/networks/builders/durable data preserved. Tree clean
+until these records. Review by: Codex root (verification operator, not designated
+approval). Recorded by: Codex root. No feature checkbox, specification/copy
+adoption, archival, push or deployment.

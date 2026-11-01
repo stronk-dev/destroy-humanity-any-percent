@@ -30,9 +30,11 @@ The retained maintenance artifact is incomplete and actually rejected by
 the validator; the CI log owns exact phase results. The historical
 guard and27 partition failures remain blockers; local composed/browser passes are not full CI.
 
-The full composed player/Postgres target in RP-667 (39981), source committed at11478e9d,
-passes main/Cosmetic/Reputation/Clout/Garden/Tier2 and socket/process-loss recovery with fresh
-production builds; the owning Garage log distinguishes controlled data and output limits. Scoped
+The full existing composed player/Postgres target now passes at `7f540859`
+(2026-11-01), after scoped corrective reviews: main/Cosmetic/Reputation/Clout/
+Garden/Tier2 and socket/process-loss recovery with fresh production builds.
+The owning Garage log distinguishes integration from controlled data, natural
+pacing and output limits; this is not a fresh whole-product acceptance audit. Scoped
 API behavior, repeated DB fixtures, populated archives and data-rights observations advance
 correctness/evidence, not another playable tier or release. Current-run cohort authorization,
 Route expiry, query decoding and source-version-safe simulation are newer bounded repairs.

@@ -7,6 +7,15 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+**Integrated verification, 2026-11-01:** complete existing
+`make test-game-ui-composed` PASS at `7f540859` (kernel0.3.223). Main endings/
+continuation and process-loss recovery, Cosmetic/Reputation/Clout, payment-path
+negatives, controlled Garden and cash-fixture Tier2 all execute against fresh
+production client/server builds and real Postgres. The owning log records exact
+boundaries and limitations. No new feature/review/content/CI/release approval;
+natural pacing, Headcount, shared-clock, accessibility and release-artifact gates
+remain. Continue accepted construction and outstanding corrective review.
+
 2026-10-15 fresh independent corrective review APPROVES complete RP-318/RP-419,
 RP-440/RP-441 and RP-442 ranges. Full hashes and executed native/Linux/Node and real
 Postgres/WebSocket journeys are in the owning log. Only these corrective scopes leave the
@@ -47,7 +56,7 @@ The owning log records fresh independent Codex APPROVED for the complete
 `8f698279..33815f04` corrective range under Marco's explicit delegation.
 Actual assistive-technology testing and full Garage acceptance remain separate.
 
-Current checkpoint (2026-10-15): at `6201bef8` (kernel0.3.216), the complete
+Earlier checkpoint (2026-10-15): at `6201bef8` (kernel0.3.216), the complete
 `make test-game-ui-composed` target passes after the newer replay/frozen-row corrections.
 Actual disposable Postgres reports migration85 applied. Main, Cosmetic/Reputation, Clout,
 payment negatives, Garden harvest and Tier-2 candidate journeys execute sequentially with
