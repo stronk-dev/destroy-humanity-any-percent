@@ -9277,3 +9277,33 @@ archival, deployment or push. RP-680/27AC6/history guard and other actual caller
 workload/cost/error/report gates remain open. Review by: Codex root (author/first
 filter). Recorded by: Codex root. Fresh independent technical review of the
 complete committed range is pending; RP-698 stays OPEN pending its contract fix.
+
+### H3ai — independent technical approval, constraint remains open
+
+APPROVED complete11-path `d6e2ff21..98542998`, no actionable findings. Review by:
+fresh independent Codex `/root/tier2_consumer_technical_review`. Recorded by:
+Codex root, transcribing its final verdict. All probes/generator/draft/docs/ledger/
+plans/roadmap/log inspected. This approves bounded research and factual routing,
+not either draft's adoption or RP-698's unimplemented contract resolution.
+
+Independently executed full14 native consumer PASS209.366s; source/activity checks
+PASS0.163s; existing source/history/catalog refusals PASS0.441s; harness/production
+overlay vet, gofmt and final diff checks PASS. Ignored admission-refusal removal
+FAIL0.251s; actual-crossing gate-sequence corruption FAIL4.610s; omitted terminal
+retirement FAIL4.758s, each at the intended source/history/closure assertion.
+Controls `.cache/reviewer-tier2-gate-history-corruption-refused.jsonl` and
+`.cache/reviewer-tier2-retirement-omission-refused.jsonl` retain invalid rows/no
+complete footer. No tracked mutation. Reviewer actual artifact
+`.cache/first-hour-tier2-consumer-1793563385879176000.jsonl`, SHA256
+`2a18a9838892be99aa1bcfbf8fbe9777e7b9ccbd1ef1469c34d5ef0b931470dc`.
+All14 complete semantic rows match both author artifacts with ONLY ElapsedNS
+removed. Reviewer verifies all62 source hashes, totals/digests and initial
+invalid14-row/10-complete/no-footer evidence. Linux remains author execution.
+
+Reviewer substantiates RP-698's exact64-seed boundary/attendance argument for the
+current copied-policy subset. No policy-duration adoption or payout follows from
+its enumerator control. RP-698 and full calibration, legacy cash/lifetime parity,
+RP-680/27AC6/history, draft adoption, feature/release and1.0 gates remain open.
+Next propose the explicit versioned activity-policy reconciliation preserving the
+pacing floor, then obtain its required authored adoption; do not silently extend
+v1 sessions or weaken the target. Tree clean at98542998; nothing pushed.

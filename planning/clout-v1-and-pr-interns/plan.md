@@ -316,7 +316,9 @@ at7198000ms, below P2's7200000ms minimum, regardless of a6h supplied wall horizo
 Obtain authored activity-window/envelope reconciliation before another gate-price
 calibration. The isolated duration-only enumerator control is not adopted.
 Initial run's false run3-only gate assertion is disclosed as invalid; final
-oracle respects first crossing in any run. Fresh technical review pending.
+oracle respects first crossing in any run. Fresh independent technical review
+APPROVES complete d6e2ff21..98542998, including a full14 rerun and firing source/
+gate-history/retirement controls. RP-698 remains OPEN pending contract repair.
 Other caller/workload/cost/error/report and original accounting gates remain.
 
 RP-695 corrective batch (04dda624-exclusive): archived T01-C33's shared ordered
