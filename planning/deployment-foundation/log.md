@@ -7704,3 +7704,42 @@ This closes only RP-522 corrective review. Actual journal/retention, older
 pre-scrape history, broader alert receiver/AC7, exact artifact/clean-host R-006
 and feature/release approval remain open. No tracked reviewer changes, shared
 Postgres use, broad cleanup, kernel/data/CI change, archival or push.
+
+## 2026-11-01 — Cleanup startup/drain corrections independently approved
+
+APPROVED RP-519/RP-520, complete contiguous `f0009bfc..82c8e57b`, all three
+commits and 21 paths. Review by: fresh independent Codex
+`/root/cleanup_lifetime_corrective_review`. Recorded by: Codex root, transcribing
+its verdict under Marco's delegation. No actionable corrective-scope findings.
+All source/test/rule/docs/record edges, actual DP5/DP7/AC7 boundaries and retained
+old failures inspected; intervening/later construction is not approved.
+
+Independent cold native five-package tests/vet and declared Linux-amd64/Postgres
+operations/gameserver/commands/releasepackage checks pass. Real startup SQL and
+command/logger cases execute; ordinary lanes explicitly skip the manual timer.
+`make test-deployment-cleanup-runtime` passes 121.92s: genuine runtime SQL failure
+and recovery (61.01s), orderly canceled lock-wait drain (60.90s). An ignored
+compiler-overlay probe also exercises actual PostgreSQL SQLSTATE22012 alone and
+joined with cancellation under an ended context: original errors retained,
+failure1/canceled0 and bounded log, PASS0.14s. Probe files removed.
+
+Pinned amd64 promtool passes current rules and exact historical tip snapshots.
+`make test-deployment-operations-profile` exits0: primary profile PASS685.57s,
+including journal-driven cleanup firing/matching natural resolution with fresh
+process counter0, receiver500, real DB and dead-letter controls. The current
+target also selects storage: PASS614.86s, both actual filesystem resolutions.
+Sequential nonce preflight was delayed but passed without intervention; a
+deduplication explanation remains inference, not a discovered defect or fix.
+Diagnostic `.cache/cleanup-review-repeated-preflight.json` SHA256
+`2d0c899a2027b145de5e493b67cded1b0b08fc19abc113309f2af20291591b0b`.
+
+Executions use descendant runtime source `9feb826a`, not historical builds or
+fresh old-source regressions; RP-615's separate approval is retained, not renewed.
+Journal envelopes/timer are modeled, development `run` is not an OCI process,
+and no supported-host journald/retention, exact-artifact R-006, full AC7 or hosted
+CI is proved. The target removed its owned private services/network/textfile
+volume; cleanup DB census0, exact twice-validated tmpfs Postgres container
+`acc427bf1c2fc66c2c469c845aa750651074635a2527a7a6b735d23718715d95`
+removed. Other projects/data/caches and root's Garden test edit preserved.
+No reviewer tracked edits, kernel/data/CI changes, feature/archival/release
+approval, deployment or push; existing accounting/history/full1.0 gates remain.

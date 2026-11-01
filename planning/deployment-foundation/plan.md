@@ -258,7 +258,8 @@ The old real-Postgres drain arm fails; the corrected two-arm timed lane passes
 121.85s, including runtime-error recovery. Cold affected native/vet and declared
 Linux-amd64/Postgres packages pass. This timed lane is manual, outside push CI;
 the fast adapter regression remains in ordinary tests. The log owns evidence and
-the range after `5fcb5353`, pending designated review. Continue remaining actual
+complete `5fcb5353..82c8e57b`, independently APPROVED with the preceding RP-519
+range. Continue remaining actual
 release-host observation/retention and AC7/R-006 construction; no new owner policy.
 
 **Current bounded DP7 correction, 2026-10-13 (RP-519):** fail-closed cleanup remains
@@ -271,8 +272,8 @@ passes in700.28s within the unchanged12m guard, including journal-driven firing 
 matching resolution with the fresh process counter0. Journal envelopes/timer are
 modelled there: actual release-host driver/command, rapid-exit timing, retention,
 remaining alert producers and AC7/R-006 remain open. The owning log holds checks,
-regressions and the new range after `a38bcb9c`, pending designated review; consolidate
-with that diagnosis and earlier DP7 work. Continue those engineering proofs.
+regressions and independently APPROVED complete `f0009bfc..82c8e57b`, including
+the diagnosis and RP-520. Continue the remaining release-host engineering proofs.
 
 **Latest DP7 acceptance construction, 2026-10-13:** real transport dead-letter
 growth now reaches the private fixture's configured receiver. Current SQL event
