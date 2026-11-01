@@ -16,6 +16,41 @@ APPROVES complete `834cbb20..b7045cbd`, including actual framework-abort timing;
 RP-526 stays open. Use that context in the next justified failure investigation,
 not repeated unchanged runs until green.
 
+2026-11-01 diagnostic at source `89cee373`: run the ordinary declared Linux
+`test-browser` target (broad → separate Typer → isolated performance), not the
+previous five-file focused co-run. After it terminates, test exactly one
+concurrency control with `BROWSER_TEST_FLAGS=--maxWorkers=1` through that same
+declared service/Make target and retain separate functional JSON reports. Question:
+does one active file per engine complete the unchanged full population without
+the observed native-input failures, within existing containment? No deadline,
+assertion, input, engine, worker implementation or functional population changes.
+Success requires terminal exit0 with both functional phases and performance run;
+guard termination or missing phase is failed/incomplete. A positive control may
+justify a reviewed scheduling correction, not hosted sub-five-minute acceptance,
+root-cause attribution to all prior incidents or retries until green. Capture all
+failures; other host/VM services are uncontrolled and timing is not a benchmark.
+
+The worker1 control completes both functional populations without ordinary
+failures but broad takes545.38s and native14.12s; the unchanged10m guard kills
+performance. It FAILS the declared complete-target criterion; do not land it as
+a passing configuration. Completed reports attribute the largest file cost to
+Garage423 cases (449.65s summed across engines), plus the required real60s idle
+case (180.89s summed). One additional bounded control now tests two concurrent
+files per engine, retaining the same full target/population and separate reports.
+Question: can that overlap the long suites/waits while avoiding the default
+population's input failures? Success still requires all three phases and terminal0;
+five-minute/hosted acceptance remains separate. No further candidate or bound
+increase is authorized by a partial/guarded run; preserve both earlier failures.
+
+Both controls are now terminal failures. Default target exits2/Error137 with136
+reported failures and three Garage files unreported. Worker2 exits137 with three
+Firefox failures and its real-idle file unreported; neither reaches Typer or
+performance. Worker1 alone completes both functional phases but not performance.
+No scheduling setting is adopted. The owning log retains full container-log
+digests, phase/report distinctions and measured file costs. Next diagnosis must
+explain a concrete input failure and account for the dominant Garage/real-idle
+cost without dropping coverage or raising bounds—not try another worker count.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing

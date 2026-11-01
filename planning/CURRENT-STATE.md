@@ -19,6 +19,15 @@ guard. Garden failure-context correction `b7045cbd` is independently approved
 after focused checks, not a repair or explanation of that larger failure.
 No new hosted run, whole-CI or feature/release acceptance is claimed.
 
+**Ordinary browser-job diagnosis, 2026-11-01 UTC:** source `89cee373` now runs
+through the actual declared broad → Typer → performance target, unlike the
+earlier focused co-run. Default and two-workers-per-engine controls both report
+functional failures before the unchanged ten-minute guard; one worker completes
+both functional phases but the guard kills performance. All three full targets
+fail. No worker setting is adopted, no bound/population is changed, and no cause
+or hosted result is inferred. The [CI log](scaffolding-and-ci/log.md#2026-11-01--ordinary-linux-browser-job-and-bounded-worker-controls)
+retains terminal outcomes, complete container-log hashes and measured file costs.
+
 Product audit baseline, 2026-10-16: bounded production correction `7ec0873c` (kernel0.3.223,
 epoch8), independently approved at `190a4790`: simulation masks preserve absent map keys;
 affected native/Linux checks pass, but the27 Clout failures and historical guard remain red.

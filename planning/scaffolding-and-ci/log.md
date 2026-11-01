@@ -2892,3 +2892,65 @@ This closes diagnostic corrective review, not RP-526/RP-430, whole hosted/local
 CI, accounting/history, feature/archival/release or full1.0. No thresholds, inputs,
 assertions or retries changed. The two accounting/search drafts and separate Tier2
 activity-window amendment still await their explicit adoption answers; no push.
+
+## 2026-11-01 — ordinary Linux browser job and bounded worker controls
+
+At source `89cee373`, run the actual root target used by Actions: broad functional
+three engines excluding only Typer, then fresh three-engine Typer, then isolated
+Chromium performance. The earlier five-file focused co-run bypassed that sequence;
+its failures remain evidence but were not an ordinary-job verdict. Only this
+plan's diagnostic notes change during the controls; runtime/test/config bytes do
+not. Each control is predeclared above and runs once, not retried until green.
+
+| Command through declared service | Terminal outcome | Completed evidence / missing phases |
+|---|---|---|
+| `make test-browser-ci` | exit2/Error137; unchanged guard kills at22:51:22 UTC | Broad reports492 unique file rows/39,201 declared cases in those rows,136 failures/24 skips. Garage423-case file unreported in all three engines. No final summary, separate Typer or performance. |
+| `docker compose -f compose.browser-test.yml run --rm browser test-browser BROWSER_TEST_FLAGS=--maxWorkers=1 BROWSER_REPORT_DIR=.cache/browser-worker1-89cee373` | exit137 at23:01:46 UTC | Broad495 files:40,434 ordinary passes/12 expected diagnostic failures/24 skips,545.38s. Separate Typer3 files:87 ordinary passes/6 expected failures,14.12s. Performance starts23:01:29 but has no result before guard. Full target FAILS. |
+| Same service/target with `BROWSER_TEST_FLAGS=--maxWorkers=2 BROWSER_REPORT_DIR=.cache/browser-worker2-89cee373` | exit137 at23:17:10 UTC | Broad494 unique rows/40,469 declared cases: three Firefox failures/24 skips. Firefox real-idle file unreported. No final summary/JSON, separate Typer or performance. Full target FAILS. |
+
+Worker2's reported failures: Reputation host `era_2000, Enter, desk-remount`;
+Garden codex native input active/error at1280px. Their final expected/actual
+assertion detail is unavailable because the runner never finalizes. These are not
+deadline-observer failures and are not attributed to product or fixture code.
+An initial quick raw-text filter missed the colored failed header; ANSI-stripped
+census corrected that report while the run was live. No green claim survives it.
+The failure/abort-only Garden-host observer does not cover the Garden-surface file.
+
+Worker1 JSON and stdout cross-check the population: JSON's passed counts INCLUDE
+the expected diagnostic failures, which are separated above. Its24 skips are
+five performance-only cases and three Node child-process controls in each engine,
+not silently missing gameplay. JSON contains495 file results, not its nested
+suite-count field; repeated paths do not expose an engine identity. Aggregate
+file spans across the three copies identify Garage423 cases at449.65s summed,
+real60s idle at180.89s, screen111 cases at114.15s and Reputation host93 at111.34s.
+These sums are not elapsed time or a hosted benchmark. All cases remain required.
+
+Full Docker logs were replayed/followed to ignored cache before container removal.
+Tool-output chunks themselves truncate; they are NOT complete transcripts.
+SHA256 identities (raw bulky artifacts remain ignored):
+
+- `.cache/browser-ci-89cee373-container.log`,1,644,153bytes:
+  `6774196ec22a513d15ae41002da8f3649b564f1d37480801f52ae78e4baaedac`.
+- `.cache/browser-worker1-89cee373-container.log`,1,673,376bytes:
+  `0fa5281b8337beae467cbf20a026f2264e48986e8e8a468d6ae0422c62c08b87`.
+- `.cache/browser-worker1-89cee373/functional-broad.json`,12,468,363bytes:
+  `12435223f8c3883282c0ab10173422decdced3f321fd128e94a6ec8f58864f6b`.
+- `.cache/browser-worker1-89cee373/functional-native.json`,26,221bytes:
+  `1896621e7a9527d80de71d0adf3a066c773ff1f8a37692abcadfe7efc9d39d12`.
+- `.cache/browser-worker2-89cee373-container.log`,1,804,648bytes:
+  `6004876d47f457356a9193782797a70cd4493540c7160f4a3127e8ea29b526a8`.
+
+LinuxARM64 Playwright1.62.0/Node24/Vitest4.1.10;14-CPU Docker VM. Other services
+and host load are uncontrolled; optional JSON reporting also differs from default.
+This is a bounded scheduling diagnosis, not a matched timing/causality experiment.
+Actual installed Vitest uses maxWorkers per browser project; one/two means up to
+three/six active files across engines. All owned browser containers are absent;
+no unrelated service is stopped or removed.
+
+No software fix or worker cap lands. RP-526/RP-637/RP-430 and strict hosted
+sub-five-minute/full-CI acceptance stay OPEN; ten-minute containment is not the
+accepted latency floor. Next: explain a concrete native-input failure and account
+for measured Garage/real-idle cost without reducing cases, replacing native
+inputs, increasing deadlines or guessing another worker count. Accounting/search
+and Tier2 amendment adoption remain separately pending, not silently authorized.
+Recorded by: Codex root (executed diagnosis, not independent approval). No push.
