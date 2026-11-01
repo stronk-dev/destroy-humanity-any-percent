@@ -4367,3 +4367,42 @@ builders remain, caches untouched, no reviewer tracked mutations/commits/publica
 No browser/hosted/full-CI, public catalog HTTP completion, new feature/normative/deletion
 acceptance, accounting/history waiver, archival or release claim. Root's later harness clone
 correction is outside this review; this final API union closes only its named corrective debt.
+
+## 2026-11-01 — Six registry/compatibility corrections independently approved
+
+Review by: fresh independent Codex `/root/api_registry_compatibility_corrective_review`.
+Recorded by: Codex root, transcribing its final verdict under Marco's delegation.
+APPROVED all complete ranges, each base exclusive/tip inclusive, no blocking findings:
+
+- `73e1c9da..d2cc6709` — RP-383/384 requiredness and exact int64 compatibility.
+- `da3a922d..b3c8f178` — RP-485/486 raw digest headers and whole-binding preflight,
+  covering both commits.
+- `3c1da2b0..68eee56b` — RP-609/610 referenced scalar and unique path parameters.
+
+All source/test/docs/ledger/plan/log edges inspected against accepted
+A1/A5/A8/C2/C17/C19. Current descendants at `34d943ad` retain the corrections;
+later union/cache/route-identity changes and intervening commits are not approved
+by these verdicts. Retained old-source failures establish discrimination; no
+extra mutation, historical-blob replacement or tracked reviewer edit.
+
+Independent focused cold population PASS0.229s: five requiredness contexts with
+field diagnostics, four precision-edge narrowing/two widening controls, eleven
+reserved-header refusals/six mounted JSON+gzip positives, three late-invalid
+binding sets with zero new routes/wrappers/handler calls, valid declared-auth
+dispatch, eight referenced nonscalar refusals/six scalar positives and repeated-
+name/nonlexical-order controls. Full cold publicapi/publicread/gen-api packages
+PASS0.330s/0.450s/0.295s, no skip paths; matching vet PASS. Actual API generation
+preserves OpenAPI/pin/generated-TypeScript bytes. All range/final diff checks pass.
+
+```sh
+make test-go GO_PACKAGES='./publicapi ./publicread ./cmd/gen-api' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./publicapi ./publicread ./cmd/gen-api'
+make api-check
+```
+
+All handles terminal. These are native in-process HTTP/chi controls, not actual
+token verification, Postgres, browser, deployed-service or hosted-CI proof. No
+middleware/router-panic transaction guarantee, new URI-value policy, RP-562
+overlap ruling, held schema/304 adoption, whole API/feature acceptance, archival
+or release approval. Continue accepted construction/review; no publication,
+deployment, kernel/balance change or waiver of existing accounting/history gates.

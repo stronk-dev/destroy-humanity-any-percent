@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+**Corrective review checkpoint, 2026-11-01:** fresh independent Codex approves
+three complete ranges: `73e1c9da..d2cc6709` (RP-383/384 requiredness/exact bounds),
+`da3a922d..b3c8f178` (RP-485/486 digest headers/whole-binding preflight), and
+`3c1da2b0..68eee56b` (RP-609/610 scalar/unique path descriptors). Actual mounted
+chi controls, cold affected packages/vet and unchanged generation pass. The owning
+log holds exact review provenance and limits. Only these corrective reviews close;
+intervening work, held contracts and complete API/player acceptance remain separate.
+
 2026-10-15 A5/C1 duplicate-route correction (RP-666): placeholder names no longer
 make otherwise identical method/path patterns appear distinct. Three old mounted
 chi regressions replace the first handler/auth middleware with an unauthenticated
@@ -158,7 +166,7 @@ unique names and resolve named-reference chains before enforcing their existing
 scalar kind boundary. Ten old-source refusals fail; corrected refusals, valid
 reference/generator/mounted-dispatch controls and four affected native packages
 pass, with unchanged production API artifacts. The owning log records the exact
-range after `3c1da2b0`, pending designated review. No endpoint, URI-value grammar,
+range `3c1da2b0..68eee56b`, now independently approved. No endpoint, URI-value grammar,
 RP-562 overlap policy, C18 family count or held proposal is changed/adopted.
 
 Current C18 byte boundary (2026-10-14): `VerifyPublicCatalogBundle` verifies advertised child
@@ -428,8 +436,8 @@ HTTP reader or mint product formulas. Categories now exports the first descripto
 nineteen pinned families; five actual current/historical/candidate fixtures and malformed-input
 controls pass. Its existing loader retains semantic-policy validation. The newer checkpoints
 above add Achievements, Meters, Opportunities, Doctrines, Fiscal, Soul, Curriculum and Prestige. The other ten
-owner descriptors and complete union remain open. RP-383/RP-384 compatibility corrections pass
-locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Remaining owner descriptors,
+owner descriptors and complete union remain open. RP-383/RP-384 compatibility corrections
+are independently approved; generated OpenAPI/TypeScript/pin bytes remain unchanged. Remaining owner descriptors,
 remaining route/client registration, third-party verification, 304 metadata and designated
 reviews stay open; not full API acceptance or green hosted CI. Latest log owns exact evidence.
 Public reads now use the shared error descriptor from `publicapi` instead of importing Account;
