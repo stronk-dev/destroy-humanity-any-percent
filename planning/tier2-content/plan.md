@@ -30,6 +30,15 @@ before interpreting another calibration as a complete price/balance verdict.
 No session, target, content or policy is changed; full672 calibration, the future
 allocation-aware policy and all existing feature/mint gates stay open.
 
+**Proposed RP-698 route:** `rfc/tier2-pacing-activity-window.md` defines explicit
+6h sessions for the planned new continuous Tier2 personas, preserving Casual's
+window/jitter, new-ID seed material, old bytes/reports and the2h–3h target. It is
+not adopted and does not implement the held full P1 registry. Manual activity-
+projection examples exercise all97 seeds and independent exact boundaries,
+new-ID versus old-cohort controls and horizon clipping; no payout/progression or
+new-loader acceptance is claimed. Obtain independent technical review, then
+explicit adoption and delegated parent-body reconciliation before implementation.
+
 **Review checkpoint, 2026-10-08:** Codex independently approves the original C1–C4 candidate,
 era and control changes and the bounded C5 pacing implementation/reproduction in the exact
 ranges cited in the owning log. This is bounded review, not AC0–AC10 completion: C6, later corrections,

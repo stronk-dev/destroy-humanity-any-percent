@@ -1,0 +1,148 @@
+package harness
+
+import (
+	"crypto/sha256"
+	"encoding/binary"
+	"encoding/json"
+	"fmt"
+	"reflect"
+	"slices"
+	"strconv"
+	"strings"
+	"testing"
+)
+
+// Independent literal seed grammar, not firstHourDraw/firstHourBoundaries.
+func proposalWindowDrawResearch(domain string, p FirstHourPolicy, seed uint64, session int64) uint64 {
+	material := strings.Join([]string{domain, p.PolicyID, strconv.Itoa(p.PolicyVersion), strconv.FormatUint(seed, 10), "0", strconv.FormatInt(session, 10)}, "\x1f")
+	digest := sha256.Sum256([]byte(material))
+	return binary.BigEndian.Uint64(digest[:8])
+}
+
+// Independent segment/count reference. Compute each segment's clipped number
+// of cadence points, then fill by ordinal rather than the production loop.
+func proposalWindowReferenceResearch(p FirstHourPolicy, seed uint64, horizon int64) []firstHourBoundary {
+	result := []firstHourBoundary{}
+	base := p.Sessions[0]
+	sessions := int64(1)
+	if base.RepeatEveryMS > 0 {
+		sessions = (horizon-base.StartMS)/base.RepeatEveryMS + 1
+	}
+	for i := int64(0); i < sessions; i++ {
+		start, duration := base.StartMS+i*base.RepeatEveryMS, base.DurationMS
+		if p.SessionJitter != nil {
+			draw := proposalWindowDrawResearch("jitter", p, seed, i)
+			j := p.SessionJitter
+			start += j.StartOffsetMS[0] + int64(draw%uint64(j.StartOffsetMS[1]-j.StartOffsetMS[0]))
+			duration = j.DurationMS[0] + int64(draw%uint64(j.DurationMS[1]-j.DurationMS[0]))
+		}
+		last := start + duration - 1
+		if horizon < last {
+			last = horizon
+		}
+		if last < start {
+			continue
+		}
+		count := (last-start)/p.ActionCadenceMS + 1
+		for ordinal := int64(0); ordinal < count; ordinal++ {
+			result = append(result, firstHourBoundary{atMS: start + ordinal*p.ActionCadenceMS, sessionIndex: i, first: ordinal == 0})
+		}
+	}
+	return result
+}
+
+func TestProposedTier2ActivityWindowsResearch(t *testing.T) {
+	suite := tier2PacingSuite(t)
+	before, err := json.Marshal(suite.Policy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	total, oldWindowsRejected, jitterChanged := 0, 0, 0
+	for _, c := range []struct {
+		oldID, newID   string
+		version, seeds int
+		horizon        int64
+	}{
+		{"chaos.t0_t1", "chaos.t2", 1, 64, 21_600_000},
+		{"casual.t0_t1", "casual.t2", 1, 32, 43_200_000},
+		{"reference.greedy", "reference.greedy", 2, 1, 21_600_000},
+	} {
+		t.Run(c.newID, func(t *testing.T) {
+			original, ok := suite.Policy.Policy(c.oldID, 1)
+			if !ok {
+				t.Fatal("original policy absent")
+			}
+			// ACTIVITY PROJECTION ONLY. Other cloned fields are not a full new
+			// P1 policy, registry loader or progression implementation.
+			p := original
+			p.PolicyID, p.PolicyVersion = c.newID, c.version
+			p.Sessions = slices.Clone(original.Sessions)
+			if p.SessionJitter == nil {
+				p.Sessions[0].DurationMS = 21_600_000
+			}
+			for seed := uint64(0); seed < uint64(c.seeds); seed++ {
+				got, err := firstHourBoundaries(p, seed, c.horizon)
+				want := proposalWindowReferenceResearch(p, seed, c.horizon)
+				if err != nil || !reflect.DeepEqual(got, want) {
+					t.Fatal("actual proposed window differs from independent reference", seed, err)
+				}
+				total += len(got)
+				old, err := firstHourBoundaries(original, seed, c.horizon)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if p.SessionJitter != nil {
+					if reflect.DeepEqual(got, old) {
+						t.Fatal("new Casual ID unexpectedly aliases old jitter cohort", seed)
+					}
+					jitterChanged++
+				} else {
+					if reflect.DeepEqual(got, old) {
+						t.Fatal("old two-hour window satisfies six-hour contract", seed)
+					}
+					oldWindowsRejected++
+					if got[len(got)-1].atMS != 21_600_000-p.ActionCadenceMS {
+						t.Fatal("continuous session endpoint drift")
+					}
+					for _, edge := range []int64{0, 7_200_000, 10_800_000} {
+						if got[edge/p.ActionCadenceMS].atMS != edge {
+							t.Fatal("pacing boundary absent", edge)
+						}
+					}
+				}
+			}
+			for _, horizon := range []int64{0, 3_600_000, 7_200_000, 21_600_000, 25_200_000} {
+				got, err := firstHourBoundaries(p, 0, horizon)
+				if err != nil || !reflect.DeepEqual(got, proposalWindowReferenceResearch(p, 0, horizon)) {
+					t.Fatal("horizon rewrites proposed session or clipping differs", horizon, err)
+				}
+			}
+			// Prove the actual RNG helper consumes the NEW material, not merely
+			// window labels. Reference has no jitter but its decision stream changes.
+			for _, domain := range []string{"jitter", "decision"} {
+				for ordinal := int64(0); ordinal < 4; ordinal++ {
+					want := proposalWindowDrawResearch(domain, p, 0, ordinal)
+					got := firstHourDraw(domain, p.PolicyID, p.PolicyVersion, 0, 0, ordinal)
+					if got != want || got == firstHourDraw(domain, original.PolicyID, original.PolicyVersion, 0, 0, ordinal) {
+						t.Fatal("new seed identity aliased or changed grammar", domain, ordinal)
+					}
+				}
+			}
+			legacy := suite.Policy
+			legacy.Policies = slices.Clone(suite.Policy.Policies)
+			for i := range legacy.Policies {
+				if legacy.Policies[i].PolicyID == c.oldID {
+					legacy.Policies[i] = p
+				}
+			}
+			if err := validateFirstHourPolicy(legacy); err == nil {
+				t.Fatal("proposed activity projection admitted as legacy schema-v1 policy")
+			}
+		})
+	}
+	after, _ := json.Marshal(suite.Policy)
+	if string(before) != string(after) || oldWindowsRejected != 65 || jitterChanged != 32 {
+		t.Fatal("proposal mutated original/cohort controls incomplete", oldWindowsRejected, jitterChanged)
+	}
+	t.Log(fmt.Sprintf("97 proposed activity projections/%d boundaries;65 old continuous windows rejected,32 new jitter cohorts distinct; no new registry, policy adoption or payout measured", total))
+}

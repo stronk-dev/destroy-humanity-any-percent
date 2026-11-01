@@ -627,3 +627,36 @@ calibration, either accounting draft's adoption or full feature/release approval
 Next bind the actual Tier2 derived-horizon caller in the manual calculation
 study without relaxing unrelated first-hour source admission. Existing Headcount,
 copy/mint, RP-433, RP-680/27AC6/history and all1.0 gates remain. Nothing pushed.
+
+## 2026-11-01 — RP-698 activity-window proposal, not adoption
+
+After H3ai's independently approved constraint finding (`d6e2ff21..98542998`),
+propose `rfc/tier2-pacing-activity-window.md`: new Chaos/Reference continuous
+personas get explicit six-hour sessions; Casual preserves its existing window
+and jitter. Preserve the two-to-three-hour target, all populations, old fixture/
+report bytes and parent P1/P2/Headcount gates. New identities change random
+streams, so this is not a duration-only paired experiment. No parent normative
+body, production code, balance data or policy registry is changed.
+
+The manual overlay projects activity only, not complete P1 policy/loader or
+payout behavior. Actual boundary enumeration agrees with an independent segment-
+count reference for all97 seed projections/850224 boundaries. All65 old continuous
+windows fail the proposed shape; all32 new Casual jitter cohorts differ from old
+identities. Checks include both jitter/decision seed domains, pacing edges,
+half-open session ends, shorter/longer clipping, strict schema-v1 refusal and
+unchanged source registry. Final native16751 PASS0.497s; declared Linux-amd64
+service52523 PASS0.287s; overlay harness vet and diff check PASS.
+
+```sh
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../planning/clout-v1-and-pr-interns/probes/tier2-activity-proposal-overlay.json -run TestProposedTier2ActivityWindowsResearch -v'
+make vet GO_PACKAGES='-overlay=../planning/clout-v1-and-pr-interns/probes/tier2-activity-proposal-overlay.json ./harness'
+docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../planning/clout-v1-and-pr-interns/probes/tier2-activity-proposal-overlay.json -run TestProposedTier2ActivityWindowsResearch -v ./harness -count=1
+```
+
+Outcome is a reviewable contract proposal, not a completed fix or proof of
+progression/performance. RP-698 stays OPEN. Review by: Codex root (author first
+filter). Recorded by: Codex root. Complete proposal/probe/record range after
+`059e8706` awaits designated technical review. Then obtain explicit owner adoption
+and delegated parent-body reconciliation before implementation. Full P1 and its
+Headcount prerequisites, full calibration, accounting/search adoption and existing
+release gates remain separate. No mint, archival, deployment or push.

@@ -1,0 +1,5 @@
+{
+  "Replace": {
+    "harness/manual_tier2_activity_proposal_test.go": "../planning/clout-v1-and-pr-interns/probes/tier2-activity-proposal-test.go.txt"
+  }
+}
