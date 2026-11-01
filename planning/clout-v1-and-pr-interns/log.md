@@ -8683,3 +8683,30 @@ Five-path correction after a8b627e2 is submitted together with the entire origin
 (author/first filter). Recorded by: Codex root. Original non-approval remains on
 record; neither it nor these local passes approve the corrected batch. No live
 product/adoption/acceptance/release promotion or push; full nine-tier goal active.
+
+### H3ae — corrected complete range independently approved
+
+APPROVED for bounded technical research/specification claims in complete eight-path
+range `446a8bc5..e93e771e`. Review by: fresh independent Codex
+`/root/first_hour_lifecycle_technical_review`. Recorded by: Codex root, transcribing
+the reviewer's final verdict. The original CHANGES REQUIRED above remains intact;
+the decoded-catalog finding is corrected, with no remaining actionable findings
+within this scope.
+
+Independently executed: 43-entry overlay preparation PASS; lifecycle/source/decoded
+mutation/prior H3ad runtime/lifetime selector cold PASS, harness 18.785s; original
+divergent-tree probe PASS through expected early refusal, 0.226s; permanent
+before/after-install regressions against exact a8b627e2 lifecycle bytes BOTH FAIL
+as expected, 0.272s/Make exit2; overlay vet and complete-range diff check PASS.
+Reviewer verified the tracked tree clean at e93e771e. Linux evidence above remains
+author-executed; reviewer launched no Docker or publication operation.
+
+Approval covers manual source14/fixed-external/partial-Founder lifecycle evidence
+and its documented limits, not draft adoption. Full report/work compatibility
+remains FAILED/OPEN; actual counters are retained, and catalog preparation/typed
+comparison costs are additional to the projection census. General factories and
+lifecycle, natural all-policy trajectories, certified optimized queries/full
+workloads, accepted budgets, production migration, feature acceptance and release
+approval remain open. RP-680, the 27 Clout failures and historical kernel guard
+remain unresolved. Next is the certified first-hour query/full workload proof
+under unchanged bounds. No product promotion, archival or push.
