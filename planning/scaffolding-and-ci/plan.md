@@ -11,8 +11,10 @@
 exact owning-log ranges. The same review's current Linux selection remains red/
 incomplete: Typer deadlines, two Firefox Garden observations and an unreported
 WebKit file before the unchanged ten-minute kill. No cause is inferred. Root adds
-failure/abort-only Garden context before teardown; controlled native/Linux checks
-pass, but its new correction needs independent review and RP-526 stays open.
+failure/abort-only Garden context before teardown. Independent corrective review
+APPROVES complete `834cbb20..b7045cbd`, including actual framework-abort timing;
+RP-526 stays open. Use that context in the next justified failure investigation,
+not repeated unchanged runs until green.
 
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
@@ -336,7 +338,7 @@ expected timeout controls and 24 skips; five Chromium performance cases pass.
 Functional duration is 305.18s and total browser job 6m38s; server is 6m40s.
 The five-minute blocking floor remains failed. One complete run does not prove
 reliability, attribute every earlier stall/input failure or provide designated
-approval. RP-525/527/528/530/531 corrective ranges still need review; RP-526
+approval. RP-525/527/528/530/531 now have scoped corrective approval in the log; RP-526
 retains the ordinary local failure and investigation in the [owning log](log.md).
 
 Independent holds: obtain explicit adoption/review of the history-guard policy, close the

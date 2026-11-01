@@ -11,6 +11,14 @@ the [Clout log](clout-v1-and-pr-interns/log.md) owns findings and verdict. Next 
 explicit adoption, then implementation—not another positive research census.
 RP-680, the27 original accounting failures and full acceptance gates stay open.
 
+**CI/operations follow-up, 2026-11-01:** seven scoped corrective reviews now close
+under independent Codex review; [Deployment](deployment-foundation/log.md) and
+[CI](scaffolding-and-ci/log.md) logs own executed evidence. The current larger
+Linux browser selection at `9feb826a` is red/incomplete under its unchanged10m
+guard. Garden failure-context correction `b7045cbd` is independently approved
+after focused checks, not a repair or explanation of that larger failure.
+No new hosted run, whole-CI or feature/release acceptance is claimed.
+
 Product audit baseline, 2026-10-16: bounded production correction `7ec0873c` (kernel0.3.223,
 epoch8), independently approved at `190a4790`: simulation masks preserve absent map keys;
 affected native/Linux checks pass, but the27 Clout failures and historical guard remain red.

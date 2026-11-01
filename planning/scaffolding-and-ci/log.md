@@ -2857,3 +2857,38 @@ review. Review by: Codex root (implementer/first filter). Recorded by: Codex roo
 This is CI D2 diagnostic repair, not ordinary timeout attribution or RP-526/RP-430
 closure, public/SQL gameplay, hosted/full-CI, content/kernel/feature/release or
 accounting/history approval. No workflow, product code, retry or budget changed.
+
+### Independent approval of Garden failure observation
+
+APPROVED complete five-path `834cbb20..b7045cbd`, no findings. Review by:
+independent Codex `/root/browser_fixture_isolation_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's delegation.
+All test/docs/ledger/plan/log edges and actual callback/cleanup wiring inspected.
+
+Independent native instrumented families/control pass24 cases,44 selector skips,
+8.88s. A temporary ignored real-TestContext probe establishes a ready pending-
+harvest fixture in beforeEach, then fires the actual50ms framework deadline;
+its successor requires connected/busy evidence before original-context disposal,
+the exact timeout reason and subsequently disconnected target. Native passes
+two positive/two expected deadlines,68 selector skips,2.92s. Declared LinuxARM64
+three-engine selection passes nine positive/three expected deadlines,198 selector
+skips,4.93s. These prove observer timing, not the ordinary failure's cause.
+Types0/0 and exact range whitespace pass. Initial nested-selector Linux shell
+failure exits2/Error127 before tests, no credit; its owned container was already
+absent when exact stop was attempted. Corrected bounded selector passes, not a
+retry of the ordinary failed journey.
+
+Retained ignored executed probe `.cache/garden-host-review.executed.ts`, SHA256
+`25ba7fb5b6d4a2342827a3df19400228a10f3dffffdee135909b454114efe8af`;
+Linux terminal-after-setup capture `.cache/garden-observer-review-linux-terminal.log`,
+SHA256 `061ba8de07837f0a0dd95628ffa635cc923433eb3ac648843d969946e4ed033b`.
+The latter is not a complete raw transcript. Reviewed actual Garden source SHA256
+`c356827031c2b6fa1a30c5f0a0b8d22325cc514c84160561239582f8b828ed42`.
+Temporary test copy removed from collection; owned browser probes absent; reviewer
+made no tracked edits/commits. Root separately rechecks the original larger red
+artifact digest and confirms only unrelated containers/builders remain running.
+
+This closes diagnostic corrective review, not RP-526/RP-430, whole hosted/local
+CI, accounting/history, feature/archival/release or full1.0. No thresholds, inputs,
+assertions or retries changed. The two accounting/search drafts and separate Tier2
+activity-window amendment still await their explicit adoption answers; no push.
