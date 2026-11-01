@@ -3006,3 +3006,39 @@ earlier failures are retained. LinuxARM64, not hosted/amd64/full CI or reliabili
 proof; no performance timing claim. Review by: Codex root (implementer first filter).
 Recorded by: Codex root. Complete batch after `31ba8dfe` needs independent corrective
 review; full1.0, RP-526/RP-637/RP-430 and adoption/release gates remain open. No push.
+
+### Independent corrective approval and traced follow-up
+
+APPROVED artifact isolation only, complete six-path
+`31ba8dfe261d9c9d821452d78dba7564d1c63309..22c50316e9f9d4c71be1fec054171ce1fcfb58e9`.
+Review by: fresh independent Codex `/root/browser_artifact_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's delegation.
+Reviewer inspects every edge and independently runs artifact/Reputation host/
+Garden HOST (not surface), all three engines with the same2worker selector:
+exit0, nine files,375 ordinary passes/nine expected deadlines,52.03s.
+It independently recomputes the three annotation and nine automatic-deadline
+screenshot attachment identities; each distinct1280×720 source byte-matches its
+copy. Types0/0 and exact-range whitespace pass. Ignored old-config Chromium
+control fails the intended namespace assertion,115ms/1.11s, exit1.
+Earlier shell/sandbox, duplicate-config and alternate-location filesystem-access
+misses ran no intended negative; none is credited. Temporary config removed;
+reviewer makes no tracked edits. Positive JSON104386bytes SHA256
+`c2e96af6d047cfd644a9043441de20d5e0ca0107fecf887daa2b4d8142b5eebb`;
+valid negative JSON1366bytes SHA256
+`7b4d5e3113079eaace4d5c02adb1b2cfbc80992c400470299cb7998df8de7dd4`.
+Ignored report names are `.cache/browser-artifact-independent-review.json` and
+`.cache/browser-artifact-old-independent-review.json`, respectively.
+Tool output truncates; no complete transcript is claimed. Direct copy-byte
+identity is independently checked, not an assertion inside the new test.
+
+Root then runs ONE built-in `--browser.trace=retain-on-failure` diagnostic of the
+complete Garden SURFACE/Reputation host pair, same2worker selector, verbose/JSON.
+Exit0: six files,303 ordinary/six expected deadlines,60.90s. No failure recurs,
+so no failure trace survives retention and no cause/fix is inferred. No custom
+observer, assertion change or further unchanged retry. Complete container log
+`.cache/browser-input-traced-22c50316-container.log`,284704bytes, SHA256
+`07ec20234c1a86f02a2767b949f037b83dcd4b043c81b3493cc74bf67f7ba5ea`;
+JSON84659bytes SHA256 `0f743b05b415786874e0218808bbb60e8e51116d34147aec6d18e0538f3476f8`.
+Original Firefox fresh-consent red, native-loop causation, full/hosted CI,
+performance/five-minute floor and full1.0 remain open. Next is the ordinary full
+Linux target once at the corrected revision, not another worker-count experiment.

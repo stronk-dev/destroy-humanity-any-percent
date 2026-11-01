@@ -60,8 +60,11 @@ defect. Actual old-config regression fails; corrected source/attachment copies
 are distinct and byte-matching in all three engines. The complete affected
 nine-file selection finishes53.04s, but Firefox fresh Wind Down consent still
 submits one request instead of two. Scope is artifact isolation, not attribution
-of the native copy spin or repair of that input failure. Next use its now-retained
-assertion at Reputation host line373; independent corrective review remains due.
+of the native copy spin or repair of that input failure. Independent corrective
+review APPROVES complete31ba8dfe..22c50316 after actual artifact/deadline copies
+and an old-config negative. One built-in traced affected run passes without a
+failure trace, not an explanation. Next run the ordinary full target once at the
+corrected revision; retain the line373 failure and all prior controls.
 
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
