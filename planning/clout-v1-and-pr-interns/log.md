@@ -9080,3 +9080,74 @@ historical guard, other workloads/experiments, complete cost/error/report migrat
 draft adoption, feature/release acceptance and archival remain open. No performance
 gain, exhaustive operation bound, publication or push claim. Next action remains
 the bounded remaining workload/contract work named above;1.0 goal stays active.
+
+### H3ah — actual public career consumer through run3
+
+2026-11-01, da66036d-exclusive manual research. Previous goal turn PROGRESS:
+full97 H3ag completed/independently approved; no live accounting repair. This
+batch takes the next real consumer, public RunReputationCareer. Reversible
+constructor/post-step hooks attach the existing certified source14 owner and
+independent original-interval primitive reference. Actual production career
+construction, branch/purchase/starter/bonus code and loop remain the subject.
+No copied career loop, new tuple/threshold/horizon/budget, default-build change,
+normalCI lane, report regeneration or product/schema/kernel/epoch change.
+
+Exactly six cases use the existing H4 seed0 selections and threshold1e5:
+Chaos seeded_uniform/none; Casual cheapest/none; Reference cheapest/none.
+Initial86898 FAIL59.417s/Make2: my additional assertion wrongly demanded a starter
+in EVERY treated career. The real contract conditions starter-benefit evidence
+on actually buying starters; Reference legitimately buys only unlock.p05. Correct
+the instrument, not the mechanics: require actual purchases/frozen bonus, exact
+independent career history and real starter coverage across the population. All
+six remain; no seed/exclusion/bound or H4 criterion is changed. That first run is
+INVALID study evidence, not a product failure or a hidden green retry.
+
+Final native28337 PASS61.191s; Linux-amd64 declared service1438 PASS108.312s;
+overlay harness/production vet and diff checks PASS. Both are full six-case
+consumer checks, NOT the full194 H4 treated/control runs.10507 complete observed
+Company/partial-Founder/history frames,4131 selected actions,8 real returns,
+12 restarts and1321 run3 observations match independent primitive replay. Career
+purchases/applied IDs/raw frozen bonus/factor/gate match on every observed step.
+68244 legal trials =14282 applied+53962 rejected;0 clone/primitive errors. Source
+binding covers60 mapped/runtime files, not every repository byte or a security
+attestation. Source60/overlay54 manifests are verified before execution.
+
+| Policy | Treated/control run3 gate ms | Treated bonus | Applied starter count | Legacy full reports equal |
+|---|---|---|---:|---:|
+| Chaos0 | 320000/442000 | 1.005e0 | 3 | 0/2 |
+| Casual0 | 510000/590000 | 1.004e0 | 2 | 2/2 |
+| Reference0 | 357000/357000 | 1.001e0 | 0 | 0/2 |
+
+All six gate times agree with legacy; no nil gate or incomplete case dropped.
+Chaos2 retain scripted cash and both lifetime differences. Reference2 retain
+scripted cash/first lifetime and work-count differences (13546vs16962 treated,
+13551vs16991 control). Neither payout/report compatibility nor H4's full
+population is promoted by this. Complete native/Linux semantic rows, full public
+actual/legacy reports and command/final-Company hashes agree; only ElapsedNS is
+excluded from that comparison. Elapsed includes both measured/reference/legacy
+work, not a fair speed comparison or exhaustive operation budget.
+
+Native artifact `.cache/first-hour-career-consumer-1793561171679927000.json`,
+SHA256 `99856a0470200693d3b3388b79290c0e43b1b02eb50bde7417adffe9c21ecf5e`;
+Linux `.cache/first-hour-career-consumer-1793561316498230343.json`,
+SHA256 `1b9d8f5d348c35599d21fb17b12bfff238532e8ed5ce3318ca9e614594916772`.
+Both embed source da66036d9429d2fe684ed47b3f1319c8af9a4009 plus actual mapped
+source hashes. ManifestSHA e7ac35ea9a714b02daec35759d1a34b8274493c1761a8a7a8b03e492275d84f8;
+generated runner445963e58d3450e2639da5309a4f61a0c65e7af98d9d1d7cab39af346ae3a360.
+Older H3ag/H3af raw artifacts remain unchanged and retain their original source.
+
+Reproduce from root:
+
+```sh
+node planning/clout-v1-and-pr-interns/probes/prepare-first-hour-career-observation.mjs
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/first-hour-career-overlay.json -run TestOwnedFirstHourCareerConsumerResearch -v'
+docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/first-hour-career-overlay.json -run TestOwnedFirstHourCareerConsumerResearch -v ./harness -count=1
+make vet GO_PACKAGES='-overlay=../.cache/first-hour-career-overlay.json ./harness ./production'
+```
+
+Review by: Codex root (author/first filter). Recorded by: Codex root. Complete
+six-path research/draft/record range awaits fresh independent technical review.
+Both drafts stay unadopted. Full H4/other workloads/cost/error/report migration,
+RP-680/27AC6/historical guard and live/SQL/TS/release gates remain open. Next
+continue those actual caller/contract obligations, not activate the experiment.
+No new gameplay tier, archival, publication or push.

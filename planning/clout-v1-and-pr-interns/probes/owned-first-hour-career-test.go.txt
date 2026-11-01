@@ -1,0 +1,177 @@
+package harness
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/multiplier"
+)
+
+type manualCareerCaseResearch struct {
+	Policy, Career                                                 string
+	Complete                                                       bool
+	Observations, Actions, Returns, Restarts, RunThreeObservations int
+	Legal                                                          firstHourLegalWorkResearch
+	Actual, Legacy                                                 ReputationCareerResult
+	ReportsEqual                                                   bool
+	ElapsedNS                                                      int64
+	FinalStateHash, CommandHash                                    string
+}
+
+// Actual constructors and loop come from RunReputationCareer. The reference
+// executes primitives only at actions/real returns/actual endings, not bank
+// reads, and never calls the owner/query/ranker to calculate expected state.
+func TestOwnedFirstHourCareerConsumerResearch(t *testing.T) {
+	manifest, err := os.ReadFile("../../.cache/first-hour-career-sources.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var sources struct {
+		Head  string
+		Files map[string]string
+	}
+	if json.Unmarshal(manifest, &sources) != nil || len(sources.Head) != 40 || len(sources.Files) < 54 {
+		t.Fatal("invalid career source manifest")
+	}
+	for path, want := range sources.Files {
+		data, err := os.ReadFile("../../" + path)
+		if err != nil || populationDigestResearch(data) != want {
+			t.Fatal("career source bytes changed", path, err)
+		}
+	}
+	suite, err := LoadFirstHourSuite(repositoryRootForReputation, "balance/testdata/t0-t1/harness-scenario-v1.json", "balance/testdata/t0-t1/first-hour-policy-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle := reputationCareerBundle(t, suite)
+	experiment := FirstHourExperiment{AcquihirePurchasedMinimum: 200, BurnoutPriceFactor: "2e0", RouteKnowledgeBonus: 50, SeedCapital: "1e4", GeneratedBeigeTowers: 10}
+	rows := []manualCareerCaseResearch{}
+	for _, spec := range suite.Scenario.Runs {
+		treated := CareerCheapest
+		if spec.PolicyID == "chaos.t0_t1" {
+			treated = CareerSeededUniform
+		}
+		for _, policy := range []ReputationCareerPolicy{treated, CareerNone} {
+			row := manualCareerCaseResearch{Policy: spec.PolicyID, Career: string(policy)}
+			started := time.Now()
+			t.Run(spec.PolicyID+"/"+string(policy), func(t *testing.T) {
+				config := ReputationCareerConfig{Bundle: bundle, Threshold: reputationCareerFixtureThreshold, Policy: policy}
+				setups := 0
+				var observed *firstHourRuntime
+				var scope *manualFirstHourScopeResearch
+				var life *manualFirstHourLifecycleResearch
+				manualCareerSetupResearch = func(r *firstHourRuntime) (func(), error) {
+					setups++
+					if setups != 1 || r.career == nil || r.tier2 != nil || r.seed != 0 {
+						return nil, fmt.Errorf("unexpected public career construction")
+					}
+					observed = r
+					commands := []FirstHourScriptCommand{}
+					r.commands = &commands
+					scope, life = installLifecycleForTestResearch(t, r)
+					scope.certified = true
+					ref := populationRuntimeResearch(t, r.suite, r.spec, r.seed, r.experiment)
+					career := *r.career
+					career.purchased = append([]string{}, r.career.purchased...)
+					career.applied = append([]string{}, r.career.applied...)
+					career.bonus = append([]multiplier.Contribution(nil), r.career.bonus...)
+					ref.career = &career
+					reference := &firstHourPopulationReferenceResearch{r: ref, anchor: firstHourEncodeResearch(t, ref.company), observed: Epoch, session: -1}
+					selected := 0
+					legal := &firstHourLegalWorkResearch{}
+					firstHourLegalWorkByRuntimeResearch[r] = legal
+					manualCareerStepsResearch[r] = func(b firstHourBoundary) error {
+						reference.check(t, r, scope, life, b, selected)
+						selected = len(scope.selections)
+						if !reflect.DeepEqual(r.career.purchased, ref.career.purchased) || !reflect.DeepEqual(r.career.applied, ref.career.applied) || !reflect.DeepEqual(r.career.bonus, ref.career.bonus) || r.career.factor != ref.career.factor || !reflect.DeepEqual(r.career.gateMS, ref.career.gateMS) {
+							t.Fatal("independent career purchase/starter/bonus/gate history differs")
+						}
+						row.Observations++
+						if r.company.RunSeq == 3 {
+							row.RunThreeObservations++
+						}
+						row.Legal = *legal
+						return nil
+					}
+					return func() { delete(manualCareerStepsResearch, r); delete(firstHourLegalWorkByRuntimeResearch, r) }, nil
+				}
+				t.Cleanup(func() { manualCareerSetupResearch = nil })
+				row.Actual, err = suite.RunReputationCareer(spec, 0, experiment, config)
+				manualCareerSetupResearch = nil
+				if err != nil {
+					t.Fatal("actual public career refused", err)
+				}
+				if setups != 1 || observed == nil || row.Observations == 0 {
+					t.Fatal("public consumer observation disconnected")
+				}
+				row.Actions, row.Returns, row.Restarts = len(scope.selections), scope.gaps, life.restarts
+				if observed.transitions != int64(scope.advances+scope.points+scope.actions) {
+					t.Fatal("career work counter omitted owned work")
+				}
+				if row.Legal.CloneFailures != 0 || row.Legal.PrimitiveErrors != 0 || row.Legal.Calls != row.Legal.Applied+row.Legal.Rejected {
+					t.Fatal("invalid legal probe census")
+				}
+				if row.Actual.RunThreeGateMS == nil {
+					t.Log("VISIBLE run3 gate beyond original horizon; no exclusion")
+				}
+				if row.Actual.RunThreeGateMS != nil && (row.RunThreeObservations == 0 || observed.company.RunSeq != 3 || row.Restarts != 2) {
+					t.Fatal("career did not traverse actual run3")
+				}
+				if policy != CareerNone && (len(row.Actual.PurchasedNodeIDs) == 0 || row.Actual.BonusFactor == "" || len(observed.external()) == 0) {
+					t.Fatal("treated career lacks real tree/frozen-bonus effects")
+				}
+				if policy == CareerNone && (len(row.Actual.PurchasedNodeIDs) != 0 || len(row.Actual.AppliedStarterIDs) != 0 || row.Actual.BonusFactor != "1e0") {
+					t.Fatal("unspent control acquired tree effects")
+				}
+				row.Legacy, err = suite.RunReputationCareer(spec, 0, experiment, config)
+				if err != nil {
+					t.Fatal("legacy public career refused", err)
+				}
+				row.ReportsEqual = reflect.DeepEqual(row.Actual, row.Legacy)
+				row.FinalStateHash = populationDigestResearch(firstHourEncodeResearch(t, observed.company))
+				row.CommandHash = populationCommandsDigestResearch(t, *observed.commands)
+				row.Complete = true
+				t.Logf("career %s/%s observations%d actions%d returns%d restarts%d run3observations%d nodes%v starters%v bonus%s gate%v legacy_equal%v", row.Policy, row.Career, row.Observations, row.Actions, row.Returns, row.Restarts, row.RunThreeObservations, row.Actual.PurchasedNodeIDs, row.Actual.AppliedStarterIDs, row.Actual.BonusFactor, row.Actual.RunThreeGateMS, row.ReportsEqual)
+			})
+			row.ElapsedNS = time.Since(started).Nanoseconds()
+			rows = append(rows, row)
+		}
+	}
+	if len(rows) != 6 {
+		t.Fatal("career case population changed", len(rows))
+	}
+	starterCases := 0
+	for _, row := range rows {
+		if !row.Complete {
+			t.Fatal("INVALID incomplete career measurement", row.Policy, row.Career)
+		}
+		if len(row.Actual.AppliedStarterIDs) > 0 {
+			starterCases++
+		}
+	}
+	if starterCases == 0 {
+		t.Fatal("career instrument never exercised an actual starter")
+	}
+	path := fmt.Sprintf("../../.cache/first-hour-career-consumer-%d.json", time.Now().UnixNano())
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+	if err := json.NewEncoder(file).Encode(struct {
+		SchemaVersion int
+		Complete      bool
+		Sources       json.RawMessage
+		Cases         []manualCareerCaseResearch
+	}{1, true, manifest, rows}); err != nil {
+		t.Fatal(err)
+	}
+	if err := file.Sync(); err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("complete six-case public career consumer artifact%s; not full H4 population or legacy-compatibility acceptance", path)
+}

@@ -1,0 +1,20 @@
+package harness
+
+// Manual-only hooks into the actual public career runner. Nil callbacks retain
+// the normal runner exactly; no callback is compiled in ordinary builds.
+var manualCareerSetupResearch func(*firstHourRuntime) (func(), error)
+var manualCareerStepsResearch = map[*firstHourRuntime]func(firstHourBoundary) error{}
+
+func manualCareerBeginResearch(r *firstHourRuntime) (func(), error) {
+	if manualCareerSetupResearch == nil {
+		return func() {}, nil
+	}
+	return manualCareerSetupResearch(r)
+}
+
+func manualCareerObserveResearch(r *firstHourRuntime, b firstHourBoundary) error {
+	if observe := manualCareerStepsResearch[r]; observe != nil {
+		return observe(b)
+	}
+	return nil
+}

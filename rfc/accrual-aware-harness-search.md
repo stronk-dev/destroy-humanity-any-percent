@@ -2090,6 +2090,28 @@ workloads/experiments, complete cost/error policy and explicit report migration
 remain open, along with RP-680/27AC6, general profiles/TS/SQL and draft adoption.
 No product/default search, CI, schema, kernel or epoch changes.
 
+#### H3ah — Actual public Reputation career continuation (manual)
+
+The [career overlay](../planning/clout-v1-and-pr-interns/probes/prepare-first-hour-career-observation.mjs)
+attaches the existing certified source14 owner inside the actual
+`RunReputationCareer` constructor/loop, not a copied measurement runner. Six
+seed0 cases follow H4's existing treated/control selection, threshold1e5 and
+experiment tuple: Chaos seeded-uniform/none and Casual/Reference cheapest/none.
+All reach run3's gate within the original horizons and guards. Independent
+original-interval primitive replay checks10507 complete observations/4131
+selected actions/8 real returns/12 restarts, including purchased nodes, applied
+starters, frozen bonus, Founder history and gate time. Chaos/Casual exercise real
+starters; Reference buys only the unlock, which is valid under the actual policy.
+
+Native and Linux six-case semantic rows, full reports, command and final-state
+hashes agree (elapsed excluded). All six run3 gate times agree with legacy, but
+four complete legacy reports retain earlier cash/lifetime differences and the
+Reference work-counter differences; only the two Casual reports agree.68244
+additional legal probes are visible, not a free-work or speed claim. This bounded
+consumer check is not the full194 H4 treated/control population, live persistence,
+modern-profile integration or draft adoption. The owning log retains the initial
+invalid starter assumption, exact source/artifact identities, checks and review.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -2353,3 +2375,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   legacy sample/report differences despite matching commands/milestones/aggregate
   pacing; correct and discriminate RP-696's false completion census. Remaining
   workload/cost/error/report migration and adoption gates are unchanged.
+- 2026-11-01: H3ah exercises six actual public Reputation careers through run3,
+  preserving full tree/starter/frozen-bonus histories against independent replay.
+  Retain four legacy report differences; bounded native/Linux agreement is not
+  the full H4 population, a migrated protocol or normative adoption.

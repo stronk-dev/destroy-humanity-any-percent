@@ -254,6 +254,33 @@ and independently reproduced; interrupted/filtered artifacts remain invalid.
 Complete research batch ef481412..cb3e060d is independently technically APPROVED
 (exact verdict/evidence in the owning log); both drafts remain unadopted.
 
+H3ah next actual-consumer check (da66036d-exclusive, manual only): call the
+existing public RunReputationCareer, not a copied constructor/loop. Use seed0
+of each pinned player policy with H4's existing treated selection (Chaos seeded
+uniform, Casual/Reference cheapest) and CareerNone control: exactly six cases,
+fixture threshold1e5 and the existing experiment tuple/horizon/budget/deadline.
+Attach the existing source14 certified owner at the actual runtime constructor;
+independently replay full action/session/ending history through run3, including
+tree purchases, starter IDs, frozen bonus, Founder terms and actual gate time.
+Compare complete public result to unchanged legacy, retaining all differences.
+Require all six observation cases to execute; nil run3 gates remain visible,
+never filtered. This is a consumer/instrument check, not H4's full97 pairs/194 runs,
+new balance input, report regeneration, live implementation or either draft's
+adoption. Run native/Linux checks, meaningful oracle negative controls and
+independent technical review; preserve H3ag/historical artifacts unchanged.
+
+H3ah executed: all six actual public careers complete and reach run3's gate;
+10507 full observations/4131 selected actions/8 real returns/12 restarts, with
+independent tree/starter/frozen-bonus history replay. Native PASS61.191s and
+Linux PASS108.312s; complete semantic rows, reports, command and final-state
+hashes agree across platforms (elapsed excluded). Four legacy reports still
+differ; the two Casual reports agree. Reference's cheapest policy buys only an
+unlock, not a starter: the initial instrument's contrary assertion was invalid,
+not a product failure; actual starter coverage comes from Chaos/Casual. Exact
+results/source bindings and independent technical review route are in the owning
+log. Next complete remaining registered workload/cost/error/report obligations;
+neither draft is adopted, and no full H4 or accounting gate is closed.
+
 RP-695 corrective batch (04dda624-exclusive): archived T01-C33's shared ordered
 policy decisions and existing RunExperimentScript observation contract authorize
 recording the actual Reference winner, not every explored candidate. Retain its
