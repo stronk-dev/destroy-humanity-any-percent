@@ -464,3 +464,35 @@ network and durable data. Review by: Codex (implementer first filter). Recorded 
 Codex. Complete five-path test/ledger/dossier-pointer/plan/log range after `b976110b`
 through this containing commit needs designated Claude review; no acceptance,
 archival, push or deployment. Continue accepted construction and consolidated review.
+
+## 2026-11-01 — RP-124 independently approved
+
+APPROVED complete five-path `b976110b..ddf6ecf0`, no blocking findings.
+Review by: fresh independent Codex `/root/archive_compaction_corrective_review`.
+Recorded by: Codex root, transcribing its final verdict under Marco's delegation.
+All test/ledger/dossier-pointer/plan/log paths inspected; the reviewed test is
+unchanged at descendant `180ebc0c`.
+
+The explicit-key independent oracle checks the populated archive envelope without
+production struct coupling: exact large integers, canonical commands, applied/NULL
+revisions, scoped and ordered Company/Founder events, genesis/pin/terminal identity,
+stored gzip digest, rollback, immutability and byte-identical retry. All eleven
+valid-JSON corruption/omission controls discriminate; no further mutation needed.
+
+Independent cold native full replayverify PASS0.245s with all ten DB tests explicitly
+skipped (no persistence credit); vet PASS. Serial declared Postgres Linux-amd64
+run below PASS1.864s: all ten parents twice without skips, compactor0.13s/0.10s
+and all eleven controls in each repetition. Exact-range diff check passes, no
+tracked reviewer edits and all handles terminal.
+
+```sh
+make test-go GO_PACKAGES='./replayverify' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./replayverify'
+make test-save-integration SAVE_TEST_PACKAGES='./replayverify' SAVE_TEST_FLAGS='-run Integration -shuffle=20261101 -v' SAVE_TEST_COUNT=2
+```
+
+RP-124 corrective review closes. Opaque seeded-content preservation is not valid
+gameplay/replay semantics, actual verifier/mark integration, Founder-reference
+retention, deletion/export, public delivery or release recovery. No production,
+migration, policy or feature-acceptance change; other rights/player/epoch gates
+remain. No archival, publication, deployment or hosted/release approval.

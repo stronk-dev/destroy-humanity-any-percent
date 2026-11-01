@@ -9,8 +9,9 @@
 
 2026-10-15 RP-124: the existing real-Postgres archive test now preserves a populated
 two-command/four-event fixture, with independent complete-content and corruption/omission
-checks. Repeated shuffled database and cold package/vet checks pass; the owning log records
-the range after `b976110b` needing Claude review. This is compactor coverage, not complete
+checks. Repeated shuffled database and cold package/vet checks pass; fresh independent
+Codex APPROVES complete `b976110b..ddf6ecf0` (2026-11-01). The owning log records
+the exact verdict and executed checks. This is compactor coverage, not complete
 feature acceptance, a naturally verified player run or a rights/retention ruling.
 
 1. [x] Add the atomic per-run intent log and bind Prestige terminal sequences.
