@@ -660,3 +660,21 @@ filter). Recorded by: Codex root. Complete proposal/probe/record range after
 and delegated parent-body reconciliation before implementation. Full P1 and its
 Headcount prerequisites, full calibration, accounting/search adoption and existing
 release gates remain separate. No mint, archival, deployment or push.
+
+## 2026-11-01 — Activity-window proposal technically approved
+
+APPROVED complete seven-path `059e8706..8aa53527`, no actionable findings.
+Review by: fresh independent Codex `/root/tier2_activity_window_spec_review`.
+Recorded by: Codex root, transcribing its final verdict. Reviewer inspected the
+complete committed proposal/probe/ledger/plan/log/index range and verified the
+source registry SHA. Independent final-source native PASS0.185s, Linux-amd64
+PASS0.299s, overlay vet and complete-range diff checks PASS. Both executions cover
+97 projections/850224 boundaries,65 old-window negatives,32 changed Casual
+cohorts, clipping, both random domains and strict-v1 refusals. No tracked edits
+by reviewer.
+
+Technical approval is not owner adoption or parent-body reconciliation. The draft
+remains unadopted and RP-698 OPEN; no full-v2/progression/pacing/release acceptance.
+Explicit adoption and delegated reconciliation requested from Marco. Until that
+answer, do not implement the new sessions or change the accepted parent's body.
+Nothing pushed.

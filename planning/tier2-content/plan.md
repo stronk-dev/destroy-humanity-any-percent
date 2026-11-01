@@ -36,8 +36,9 @@ window/jitter, new-ID seed material, old bytes/reports and the2h–3h target. It
 not adopted and does not implement the held full P1 registry. Manual activity-
 projection examples exercise all97 seeds and independent exact boundaries,
 new-ID versus old-cohort controls and horizon clipping; no payout/progression or
-new-loader acceptance is claimed. Obtain independent technical review, then
-explicit adoption and delegated parent-body reconciliation before implementation.
+new-loader acceptance is claimed. Independent technical review APPROVED complete
+`059e8706..8aa53527`; explicit adoption and delegated parent-body reconciliation
+remain required before implementation.
 
 **Review checkpoint, 2026-10-08:** Codex independently approves the original C1–C4 candidate,
 era and control changes and the bounded C5 pacing implementation/reproduction in the exact
