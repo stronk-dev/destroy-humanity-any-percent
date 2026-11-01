@@ -2954,3 +2954,55 @@ for measured Garage/real-idle cost without reducing cases, replacing native
 inputs, increasing deadlines or guessing another worker count. Accounting/search
 and Tier2 amendment adoption remain separately pending, not silently authorized.
 Recorded by: Codex root (executed diagnosis, not independent approval). No push.
+
+## 2026-11-02 — RP-699 browser screenshot and attachment isolation
+
+Outcome under CI D2: preserve each engine's own failure evidence without concurrent
+overwrites. Source `31ba8dfe` narrowed to Garden surface/Reputation host through
+`make test-browser-ci-focused` with `--maxWorkers=2` and separate JSON output.
+It ends exit2/Error137: five of six files report pass, WebKit Reputation never
+reports and no final JSON exists. Sandbox-denied first invocation executes no tests.
+Full Docker log `.cache/browser-input-localization-31ba8dfe-container.log`,167240bytes,
+SHA256 `7abb3a6d918c5722263e66117773a9d3e85b59d2793af44f777b389491a63d0e`.
+
+Live read-only process/resource inspection plus a five-second inspector profile
+finds JavaScript idle (2107 of2108 samples), one92.1%-CPU libuv worker, and one
+pending FSReqPromise. Open descriptors hold the7346-byte initial-read-pending
+intentional-deadline PNG and its attachment. Installed Vitest's real source hashes
+only the screenshot path: all engines share source and destination; the observed
+destination hash `e9172ef3349a0af853d2fb4c85f0bddcfb483054` recomputes exactly.
+The native worker's stack is access-denied. Separate ordinary copyFile3.78ms and
+buffered-copy12.77ms controls pass, so no general filesystem failure, precise
+native-loop mechanism or cause of all historical failures is claimed. Inspector
+attachment changes this diagnostic run's observation conditions, not its deadline.
+Ignored profile `.cache/browser-input-node-31ba8dfe.cpuprofile`, SHA256
+`6bca7b908b4531c6228593028bbb089ad9762aeb680882d70fe8803b4396f436`.
+
+Correction changes only browser-instance screenshot directories, including the
+performance instance. Assertions, population, native input, workers, retries and
+deadlines remain. New actual PNG/annotation regression fails old config in Linux
+Chromium (exit2,177ms assertion/4.56s run), before annotation. Its first annotation
+call shape is rejected by types and corrected to the installed public API; that
+unreached branch is not the old-config failure. Corrected types0 errors/0 warnings.
+Root CI topology and all27 mutation controls, shared Linux entrypoint controls,
+Go cold-selector controls and separate browser-report controls pass.
+
+Corrected three-file/all-engine selection with the same two-worker selector and
+verbose/JSON reporters finishes53.04s, exit2: eight files pass/one fails;305 ordinary
+passes, six expected diagnostic failures, one ordinary failure (312 total).
+All three artifact cases pass. Source PNGs differ by engine; actual annotation
+copies exist at three distinct path hashes and compare byte-equal to their sources
+(Chromium6469, Firefox8176, WebKit8614bytes). JSON `.cache/browser-artifact-isolation-corrected.json`,
+91478bytes, SHA256 `c1719578c58adf8b570776af7fa1ae03c1f53c5f437bc530af710a8ffcab7f09`.
+The attempted corrected Docker-log follower starts too late and reports missing
+container; tool output truncates. Neither is claimed as a full raw transcript;
+the completed JSON and returned terminal summary are the retained outcome evidence.
+
+Actual remaining Firefox failure: `R9 host plan matches visible selection:
+era_1995, Enter, desk-empty`, line373, fresh consent after rejection expects two
+requests but sees one. This is a concrete next debugging point, not resolved by
+artifact isolation. Garden surface and WebKit Reputation complete in this run;
+earlier failures are retained. LinuxARM64, not hosted/amd64/full CI or reliability
+proof; no performance timing claim. Review by: Codex root (implementer first filter).
+Recorded by: Codex root. Complete batch after `31ba8dfe` needs independent corrective
+review; full1.0, RP-526/RP-637/RP-430 and adoption/release gates remain open. No push.

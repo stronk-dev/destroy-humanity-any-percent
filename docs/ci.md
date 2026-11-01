@@ -248,6 +248,15 @@ target; copied, functional-only, focused or project-narrowed defaults are reject
 the shared setup/containment separately from the explicit focused command. This guards
 execution parity, not browser behavior or hosted timing; the actual lane must still execute.
 
+Each browser instance records screenshots under
+`client/test/__screenshots__/<engine>/`, including the isolated Chromium performance
+instance. Vitest's default screenshot names omit the project, and its attachment
+copy hashes only the source path; engine-specific directories keep both source
+images and copied attachments distinct. Screenshots remain enabled. The actual
+browser-artifact regression saves a native PNG and awaits its annotation copy in
+each engine. Artifact isolation is not proof that a failing input case is fixed or
+that the complete browser job meets its latency floor.
+
 Reputation host tests emit `reputation-host-deadline` on an actual test abort, before teardown
 removes the mounted evidence. The payload identifies the case/user agent, import/native-RPC/
 drain/unmount stage, outstanding input, settled-command timing and controlled UI/network state.

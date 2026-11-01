@@ -51,6 +51,18 @@ digests, phase/report distinctions and measured file costs. Next diagnosis must
 explain a concrete input failure and account for the dominant Garage/real-idle
 cost without dropping coverage or raising bounds—not try another worker count.
 
+2026-11-02 RP-699: narrowed Garden/Reputation Linux selection again hits the guard,
+with WebKit Reputation unreported. Live inspection finds an idle JavaScript main
+thread but a busy libuv filesystem worker holding shared screenshot/attachment
+files from an intentional deadline. Installed Vitest hashes only the source path;
+the three projects collide. Per-engine screenshot directories correct that exact
+defect. Actual old-config regression fails; corrected source/attachment copies
+are distinct and byte-matching in all three engines. The complete affected
+nine-file selection finishes53.04s, but Firefox fresh Wind Down consent still
+submits one request instead of two. Scope is artifact isolation, not attribution
+of the native copy spin or repair of that input failure. Next use its now-retained
+assertion at Reputation host line373; independent corrective review remains due.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing

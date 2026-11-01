@@ -10,6 +10,14 @@ const dependencyPath = (relative: string) => decodeURIComponent(new URL(relative
 const performanceOnly = process.env.VITE_GAME_UI_PERFORMANCE === "1";
 const requestAudits = new Map<string, { page: Page; urls: string[]; request: (value: Request) => void; socket: (value: PlaywrightWebSocket) => void }>();
 
+// Vitest names failure screenshots by test, not project, then hashes that path
+// for attachments. Engines running the same test must never overwrite/copy the
+// same source or destination while another engine is still recording it.
+const browserInstance = (browser: "chromium" | "firefox" | "webkit") => ({
+  browser,
+  screenshotDirectory: dependencyPath(`./test/__screenshots__/${browser}`),
+});
+
 // CI D2 / RP-235/RP-526: passive module observation, not interception or retry.
 function observeModuleHTTP(): Plugin {
   return {
@@ -109,11 +117,11 @@ export default defineConfig({
       },
       viewport: { width: 1280, height: 720 },
       instances: performanceOnly
-        ? [{ browser: "chromium" }]
+        ? [browserInstance("chromium")]
         : [
-            { browser: "chromium" },
-            { browser: "firefox" },
-            { browser: "webkit" },
+            browserInstance("chromium"),
+            browserInstance("firefox"),
+            browserInstance("webkit"),
           ],
     },
   },
