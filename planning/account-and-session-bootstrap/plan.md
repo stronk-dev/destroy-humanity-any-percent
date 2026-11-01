@@ -4,6 +4,15 @@
 - **RFC:** `rfc/account-and-session-bootstrap.md`
 - **Started:** 2026-07-29
 
+**Security corrective review checkpoint, 2026-11-01:** fresh independent Codex
+approves RP-417's complete `634b8360..069532f5` credential-cache correction and
+RP-443's complete `7cd232c5..13acd872` registered session-request admission
+correction. These are separate eight-path ranges, not approval of intervening
+commits. Full Account/Gameserver Linux-amd64/Postgres, affected native/vet and
+unchanged API generation pass; the owning log records executed boundaries.
+Browser recovery/renewal policy, wider rights/player flows and full acceptance
+remain open. No new product or specification decision is inferred.
+
 Current D2/AC4 correction (2026-10-13, RP-542): private JWT decoding validates original
 object members against its DTO tags before Go can merge duplicates or fold key case.
 Signed old-source regressions, legal rotation/encoding controls and mounted HTTP pre-DB

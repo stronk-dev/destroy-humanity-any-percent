@@ -1163,3 +1163,41 @@ be recovered. Persistent data/caches/two preexisting builders preserved, SQL exp
 released to public-reader review. Reviewer makes no tracked edits/commits. RP-474's test-peer
 defect closes; RP-450's original hosted timeout remains unknown. No universal reliability,
 full CI/Account/Transport acceptance, archival, publication or release approval.
+
+## 2026-11-01 — RP-417 and RP-443 independently approved
+
+Review by: fresh independent Codex `/root/account_credentials_corrective_review`.
+Recorded by: Codex root, transcribing its final verdict under Marco's delegation.
+APPROVED both separate complete eight-path ranges, no blocking findings:
+RP-417 `634b8360..069532f5`; RP-443 `7cd232c5..13acd872`. Intervening commits
+are not included. All source/tests/docs/ledger/log/driver edges inspected.
+
+The four credential routes set no-store outside the unchanged limiter. Session
+issue/refresh validate original bounded request bytes through the existing
+registered schemas before credential use. Refusals preserve credentials/gameplay;
+valid escaped keys still issue/rotate. The composed selector requires the actual
+admission test's PASS. Recorded old-source failures establish regression
+discrimination; no additional mutation or tracked reviewer edit.
+
+Independent checks at descendant `180ebc0c`: cold Account/publicapi/publicread/
+Gameserver/gen-api PASS0.629s/0.266s/0.330s/0.399s/0.257s; affected vet and
+byte-unchanged API generation PASS. Declared Linux-amd64/Postgres full Account
+6.703s/Gameserver71.033s PASS. Actual issue, live/expired-access refresh/reuse,
+four-route success/limit/refill, nonmutation/fault/reply-loss, request admission
+and socket revocation execute. Account DB cases do not skip. Native DB skips
+are not SQL credit. Admission includes the original18 cases plus two later
+UTF-8 controls; those descendants and later activity-parser reuse are observed,
+not approved by these ranges. No credentials printed by successful executions.
+
+```sh
+make test-go GO_PACKAGES='./account ./publicapi ./publicread ./gameserver ./cmd/gen-api' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./account ./publicapi ./publicread ./gameserver ./cmd/gen-api'
+make api-check
+make test-go-ci CI_TEST_PACKAGES='./account ./gameserver' CI_TEST_FLAGS='-v'
+```
+
+Both ranges' diff checks pass; reviewer made no tracked changes and all handles
+are terminal. These corrective reviews close, not complete Account/API acceptance,
+new browser recovery/renewal policy, wider rights/player tasks or archival.
+No fresh full browser-composed rerun, hosted-CI/release approval, publication or
+deployment. Continue accepted construction/review; owner-held contracts remain.
