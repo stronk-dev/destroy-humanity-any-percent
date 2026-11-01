@@ -122,6 +122,9 @@ by that key for reporting only; do not modify actual stage results or events.
 - A successful terminal wait/run endpoint contributes its selected pending set
   once to the final report without creating a payment or new gameplay origin.
   An already finalized origin is not finalized again by report serialization.
+  Immediately after an applied action, its child has no pending roles at the
+  unchanged endpoint: finalization must not invent another zero-time accrual
+  observation. Genuine zero-time action roles were finalized with that action.
 - Trial affordability probes, rejected candidates, discarded beam children and
   speculative rollouts contribute nothing to the selected run's report. Forks
   own independent copies of finalized counts and pending sets. Completion-cache
@@ -198,7 +201,12 @@ neither endpoint sampling nor lower-bound binary search is an authorized replace
    search's horizon-first error ordering only for the new protocol.
 
 Certificate preparation has three outcomes: certified, INCONCLUSIVE, or actual
-query/work-bound failure. An unsupported exponent/recipe, unavailable sufficient
+query/work-bound failure. Only invalid immutable admission, an instrument
+invariant failure or an exhausted actual work guard may abort preparation
+immediately. An endpoint-dependent producer/hook/codec refusal found during
+preparation is a chronological source stop (or inconclusive range evidence if
+its first coordinate is not proved), never an eager query error. It cannot outrank
+an earlier requested-domain result. An unsupported exponent/recipe, unavailable sufficient
 proof, research cell limit or excessive certificate representation is INCONCLUSIVE,
 not a refusal of an otherwise admitted payout. Never materialize `10^exponent`
 across the whole Decimal domain. H3d's exact-rational `[-32,32]` implementation and
@@ -2323,8 +2331,9 @@ mixing protocols refuses; declared treated/control arms remain distinct and lega
 For a new Tier2 result, require a source envelope alongside the outcome DTO:
 `{run_key, first_hour_policy_hash, experiment, horizon_ms,
 calculation_protocol, calculation_profile}`. RunKey uses the decoded NEW scenario
-hash, actual policy ID/seed, actual candidate bundle ConstantsHash and the existing
-epoch coordinates. `horizon_ms` is the ACTUAL derived Tier2 horizon, not the
+hash, actual policy ID/seed and versions, actual candidate bundle ConstantsHash and
+the existing harness/scenario versions. RunKey has no epoch field; do not add one
+or copy an invented coordinate into it. `horizon_ms` is the ACTUAL derived Tier2 horizon, not the
 inherited first-hour RunSpec value before the continuation replaces it. Policy
 hash binds the actual loaded sessions; a longer wall horizon does not invent a
 longer attended session. This is separate from the unadopted Tier2 activity-window
