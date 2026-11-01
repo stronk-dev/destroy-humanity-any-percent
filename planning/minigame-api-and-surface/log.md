@@ -2290,3 +2290,91 @@ retrospectively189. No full Production/27-partition repair/history waiver/full C
 hardware/performance/feature/archival/release approval. All handles terminal; only owned
 twice-inspected tmpfs8681caf8… stopped/removed, disposable rows unrecoverable. Durable data,
 caches/networks/two existing builders preserved; no tracked edits/commits/publication.
+
+## 2026-11-01 — Failed-terminal claims and activity admission independently approved
+
+Review by: fresh independent Codex `/root/activity_transaction_corrective_review`.
+Recorded by: Codex root, transcribing its final verdict under Marco's delegation.
+APPROVED both separate complete ten-path ranges, base exclusive/tip inclusive:
+`b0eab61f..4055b4fe` (RP-416) and `13acd872..ef10238f` (RP-444). All runtime,
+tests, three historical kernel mirrors, docs, driver and ledger/log edges inspected;
+no intervening commits approved. API log owns the request-admission disposition.
+
+Token-owned cleanup runs after a returned resolution failure despite request
+cancellation. SQL guards prevent stale-token cleanup of a replacement worker or
+reopening committed rows; unexpected cleanup errors join the original error.
+Real Postgres rollback/cancellation/final-write cases retry the same ID/body
+immediately, credit once and replay exact bytes, preserving complete save states/
+heads, faucet and history. Replaced-token, repeat cleanup and post-commit projector
+failure controls execute. Crash lease, successful arithmetic and public schema stay.
+
+Independent checks at descendant `95688073`:
+
+- Cold Minigame/Account/Gameserver/PublicAPI/Kernel PASS0.263s/0.608s/0.391s/
+  0.264s/0.161s; selected native Production PASS0.352s. Native SQL skips receive
+  no persistence credit. Affected vet and byte-unchanged API generation PASS.
+- Declared Linux-amd64/Postgres selected Minigame/Production/Gameserver
+  PASS1.271s/6.067s/40.626s. Production runs solo and async failure/cancellation/
+  post-commit cases. Complete HTTP Pitch/Soul/bootstrap lifecycle passes both
+  scaling modes, each with30 refusal controls and21-table nonmutation snapshots,
+  plus genuine reconnect/payout/retry, token rotation/progress/watchdog and exact
+  authenticated bootstrap retry. RP-614 does not recur; it is not closed.
+- The first selector omits ReleaseResolutionClaimIntegration. A separate complete
+  Minigame Integration run PASS3.267s executes all11 current functions, including
+  that actual claim-safety test0.20s; no DB prerequisite skips.
+
+```sh
+make test-go GO_PACKAGES='./minigame ./account ./gameserver ./publicapi ./kernel' GO_TEST_FLAGS='-count=1'
+make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run Minigame -v'
+make vet GO_PACKAGES='./minigame ./production ./account ./gameserver ./publicapi ./kernel'
+make api-check
+make test-go-ci CI_TEST_PACKAGES='./minigame ./production ./gameserver' CI_TEST_FLAGS='-run Minigame -v'
+make test-go-ci CI_TEST_PACKAGES='./minigame' CI_TEST_FLAGS='-run Integration -v'
+```
+
+Linux-amd64 is local Go/QEMU with the existing AVX2 workaround, not hosted native
+hardware. Reviewed admission/helper/runtime bytes remain unchanged; descendant
+test extensions preserve the original assertions. Later policy tightening is not
+approved by these verdicts. Retained old-source failures establish discrimination;
+no redundant mutation or tracked reviewer edit. All handles/range diff checks
+terminal/pass. Only the completed tests' owned tmpfs Postgres is removed; shared
+caches/networks preserved. These two corrective reviews close, not full MA-C14,
+browser/whole-composed/hosted CI, kernel-history/27Clout, policy/schema adoption,
+feature/archival/release approval or publication. Continue accepted work outside holds.
+
+## 2026-11-01 — Pitch keyboard and Recovery terminal-order corrections approved
+
+Review by: fresh independent Codex `/root/pitch_recovery_surface_corrective_review`.
+Recorded by: Codex root, transcribing its final verdict under Marco's delegation.
+APPROVED both separate complete seven-path ranges, base exclusive/tip inclusive:
+`7142dd50..a4c09f31` (RP-478) and `5c9d0293..1efea9cf` (RP-480). All component/
+tests/docs/status/ledger/plan/log paths inspected; no blocking findings.
+
+Pitch's zero Tab indices preserve native order and disabled semantics; actual
+Enter/Space controls check commands/cards/revisions/receipts/host return. Recovery
+terminal entry clears superseded notices; failed replies cannot replace terminal
+or detached state. Six generated-port order cases distinguish terminal precedence
+from required ordinary error visibility. Recorded genuine old-source failures
+establish discrimination, not the earlier invalid expectation. No repeated mutation.
+
+Independent current-descendant `95688073` verification: native Chromium/WebKit96
+and declared Linux ARM64 Chromium/Firefox/WebKit144 affected browser checks PASS,
+zero skips, valid module observation. Actual four Node files135 PASS, zero skips;
+types/build/client boundaries PASS, zero Svelte errors/warnings. Both range diff
+checks pass. Current source includes later Pitch/Recovery focus/ownership/Tab
+corrections; they are inspected as context, not approved by these ranges.
+
+```sh
+make test-browser-focused BROWSER_TEST_FLAGS='test/minigame-surface-browser.test.ts test/soul-recovery-surface-browser.test.ts --project=chromium --project=webkit'
+make test-browser-ci-focused BROWSER_TEST_FLAGS='test/minigame-surface-browser.test.ts test/soul-recovery-surface-browser.test.ts'
+client/node_modules/.bin/vitest run --root client test/minigame-surface.test.ts test/soul-recovery-surface.test.ts test/soul-recovery-scheduler.test.ts test/generated-operation-ports.test.ts
+make typecheck build-client verify-client-boundary
+```
+
+Initial listener/socket denials execute no tests; permitted targets above supply
+the passes. An initial guessed API filename selects only19 tests/three real files;
+the corrected four-file command supplies the135 result. All handles terminal,
+no tracked reviewer edits. No historical exact-revision execution, native macOS
+Firefox, actual AT, default-server continuity, SQL, performance or whole-CI claim.
+These corrective reviews close, not original Pitch/Recovery CHANGES REQUIRED,
+50a3a514 history, GS7/owner copy, full feature/archival/release or publication gates.

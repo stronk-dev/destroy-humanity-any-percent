@@ -1,5 +1,20 @@
 # Minigame API & Surface implementation plan
 
+**Transaction corrective review, 2026-11-01:** fresh independent Codex approves
+complete `b0eab61f..4055b4fe` (RP-416 token-owned failed-terminal claim release)
+and `13acd872..ef10238f` (RP-444 existing activity/bootstrap request admission).
+Actual Linux-amd64/Postgres rollback/cancellation/claim replacement/committed-row
+controls and both HTTP lifecycle scaling modes pass; each lifecycle executes all
+thirty malformed-request controls. Owning logs hold exact provenance, commands
+and limits. These are separate corrective ranges, not combined whole-feature
+MA-C14 acceptance. RP-614's earlier unexplained failure stays open.
+
+Separate fresh independent approval covers `7142dd50..a4c09f31` (RP-478 Pitch
+keyboard controls) and `5c9d0293..1efea9cf` (RP-480 Recovery terminal/error order).
+Current mounted native two-engine and declared Linux three-engine affected files
+pass, along with actual generated-port units/types/build/boundaries. These are
+surface corrections, not default-server continuity, manual AT or full acceptance.
+
 2026-10-15 corrective review: RP-621/RP-622/RP-624/RP-625 are independently approved
 by fresh Codex reviewer under Marco's narrow delegation. Exact four ranges and actual
 SQL/Node/browser evidence are in the owning log. The following original entries retain
@@ -126,15 +141,17 @@ proof, not Firefox, assistive technology, server/SQL or complete MA acceptance.
 
 Original Pitch review finished (2026-10-09): the complete 23-path Claude range
 `50a3a514^..50a3a514` has a designated Codex **CHANGES REQUIRED** disposition in the log.
-RP-131, RP-415 and RP-478 remain distinct from their later corrections. The latter two are
-locally repaired, not independently approved by this original-range review. Complete MA
-range coverage, corrective review, authored contract/copy reconciliation and acceptance remain.
+RP-131, RP-415 and RP-478 remain distinct from their later corrections. Those
+corrections retain separate dispositions; this original-range review does not approve
+them. Complete MA range coverage, corrective review, authored contract/copy
+reconciliation and acceptance remain.
 
 Current bounded correction (2026-10-08, RP-478): Pitch declares zero Tab indices for native
 controls, matching the existing Typer pattern. The revised existing component flow uses actual
 Enter/Space for Start/cards/play/buy/end-shop/Return and Leave, with launcher/terminal Tab and
 reverse card traversal. Old-source native WebKit fails before Start; corrected affected files,
-types/build/boundaries pass. The log owns evidence and pending review. No whole accessibility,
+types/build/boundaries pass. Complete `7142dd50..a4c09f31` is independently approved;
+the log holds current native/Linux execution and limits. No whole accessibility,
 full server keyboard journey, new mechanics or GS7 proposal adoption is claimed.
 
 Current checkpoint (2026-10-08): RP-446 adds native Soul Recovery start/attended progress/
@@ -206,5 +223,5 @@ above remain open.
 2026-10-09: original Recovery surface `b92a05de` now has a complete designated Codex
 CHANGES REQUIRED disposition, separate from later repairs. RP-480's current terminal/error
 race is locally corrected with both reply orders through the generated browser port;
-60 affected native checks,84 units and types/build/boundaries pass. The new range after
-`5c9d0293` awaits cross-party review. No full MA acceptance or archival follows.
+60 affected native checks,84 units and types/build/boundaries pass. Complete corrective range
+`5c9d0293..1efea9cf` is now independently approved. No full MA acceptance or archival follows.

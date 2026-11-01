@@ -2,6 +2,13 @@
 
 RFC: `rfc/api-foundation.md`
 
+**Activity admission review, 2026-11-01:** fresh independent Codex approves
+complete `13acd872..ef10238f` (RP-444), all ten paths. Eight existing bootstrap/
+Minigame/Soul write routes validate bounded original bytes against their registered
+descriptors. Both actual HTTP/Postgres lifecycle scaling modes pass all thirty
+malformed-request controls plus genuine positive flows; exact evidence and limits
+are recorded in the API and Minigame API logs. No new schema or full API acceptance.
+
 **Corrective review checkpoint, 2026-11-01:** fresh independent Codex approves
 three complete ranges: `73e1c9da..d2cc6709` (RP-383/384 requiredness/exact bounds),
 `da3a922d..b3c8f178` (RP-485/486 digest headers/whole-binding preflight), and

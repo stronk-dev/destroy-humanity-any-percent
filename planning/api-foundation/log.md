@@ -4406,3 +4406,28 @@ middleware/router-panic transaction guarantee, new URI-value policy, RP-562
 overlap ruling, held schema/304 adoption, whole API/feature acceptance, archival
 or release approval. Continue accepted construction/review; no publication,
 deployment, kernel/balance change or waiver of existing accounting/history gates.
+
+## 2026-11-01 — RP-444 existing activity-request admission approved
+
+APPROVED complete ten-path `13acd872..ef10238f`, no blocking findings.
+Review by: fresh independent Codex `/root/activity_transaction_corrective_review`.
+Recorded by: Codex root, transcribing its final verdict. All source/tests/fixture/
+driver/docs/ledger/log paths inspected against existing A5/C17 and MA1/MA2.
+Eight routes validate bounded original JSON before struct decoding/coordinator
+work; authentication/unavailable-service precedence, limits and error mapping stay.
+No second schema, command union, payout, copy or browser-policy authority is added.
+
+At descendant `95688073`, actual declared Linux-amd64/Postgres complete HTTP
+Pitch/Soul/bootstrap lifecycle passes both scaling modes. Each executes all30
+malformed/nonmutation controls over21 named tables plus positive authenticated
+Pitch/reconnect/payout/retry, Soul token rotation/progress/resolve/watchdog and
+bootstrap authentication/exact receipt retry. Cold affected Go/vet and unchanged
+generation pass. The same review's RP-416 token-safety check and complete commands/
+timings are recorded once in the Minigame API log's same-date approval entry.
+Retained old-source failures establish discrimination; no repeated mutation.
+
+Reviewed runtime/helper bytes remain unchanged; later policy tightening is not
+approved here. No tracked reviewer edits; handles terminal. RP-614's prior failure
+remains unattributed/open despite no recurrence. This closes corrective review,
+not intervening ranges, MA-C14/whole API or browser/whole-composed/hosted CI,
+held schema/wire adoption, archival, release or publication.
