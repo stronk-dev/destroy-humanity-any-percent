@@ -586,10 +586,12 @@ func (runtime *firstHourRuntime) applyReferenceChoice(nowMS int64) error {
 	runtime.transitions += counter.value
 	if len(candidates) > 0 {
 		candidate := candidates[0]
+		request := candidateIntent(candidate.ID, runtime.revision)
 		runtime.company, runtime.revision = candidate.State, candidate.Revision
 		if err := validateFirstHourCompany(runtime.suite.Bundle.Economy, runtime.company); err != nil {
 			return err
 		}
+		runtime.recordCommand(candidate.AtMS, production.ModeOnline, request)
 		runtime.observeReferencePurchase(candidate.AtMS, candidate.ID)
 		return nil
 	}

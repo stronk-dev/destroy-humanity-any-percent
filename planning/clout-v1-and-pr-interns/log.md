@@ -8855,3 +8855,62 @@ verified clean at024cf0f5. Next is the existing-contract capture correction, the
 remaining policy/seed/whole-cost/report and migration obligations. General profiles,
 TS/SQL, RP-680,27accounting failures and kernel guard remain open. Neither draft
 adopted; no feature acceptance, archival, release approval or push.
+
+### RP-695 — capture the actual selected Reference purchase
+
+2026-11-01, bounded corrective batch after04dda624. Previous turn PROGRESS:
+H3af independently approved, with this real capture defect still open. Current
+tree clean before work. Authority: archived T01-C33 shared ordered policy decisions,
+existing RunExperimentScript contract and RFC-0000 conformance repairs. This is
+an actual harness correction, not another manual prototype or draft adoption.
+
+Regression before the fix:58513 FAIL0.299s/Make2, all six immediate/delayed
+none/unit/tree purchases absent (plus detached-capture absence); bank control
+passes.27902 FAIL15.568s/Make2: complete chaos/casual seed0 streams pass, Reference
+first misses an actual revision-changing purchase at10000ms. These fail on the
+actual old runner, not a source-pin/compiler or injected-oracle error.
+
+Two added runtime lines construct the SAME candidateIntent with the parent
+revision before adoption and record it at the chosen endpoint/ModeOnline only
+after chosen-state validation. No record of unselected trials/bank reads; no new
+payment, ranking, budget, math, policy, schema, kernel or epoch. Canonical harness
+docs distinguish the action stream from all intermediate observation/accrual work.
+
+Focused70062 PASS14.631s: six exact requests/timing/current wait-then-buy primitive
+replays and whole selected states; bank/copy isolation; full per-boundary actual
+revision/capture checks and capture-on/off COMPLETE report equality for seed0 of
+each policy. Chaos1001commands/619generator/10upgrade/2350transitions;
+Casual544/496/3/1086; Reference179/153/7/11916. Its additional160purchases are the
+omitted actions, not new gameplay. Existing scripted/terminal markers unchanged.
+
+Final root checks: native full default harness72923 PASS131.289s; vet51104
+`./harness ./gameserver` PASS; Linux-amd64 first-hour/Reference selector37837
+PASS48.587s (the explicitly opt-in CareerObservation remains visibly skipped).
+Actual existing Postgres composed consumer39437 PASS11.624s, named test11.54s;
+not skipped. It selects Casual and retains real terminal/persisted replay and
+post-delete disposition assertions, not a new Reference live-journey claim.
+Its test service pulled the declared Postgres16 image and reached healthy; no
+timeout/retry, workflow or fixture adjustment. No overlapping SQL run launched.
+
+Reproduce from root:
+
+```sh
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./harness ./gameserver'
+docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -run 'TestFirstHour|TestReputationReference' ./harness -count=1 -v
+make test-save-integration SAVE_TEST_PACKAGES='./gameserver' SAVE_TEST_FLAGS='-run TestComposedGameserverReplaysRatifiedFirstHourAtPinnedSeed -v'
+```
+
+Focused/old regression selector is `TestFirstHourReferenceScript` and the full
+coverage selector is `TestFirstHourScriptCoversActualRevisionChanges` on the same
+root Make lane. Historical H3af prototypes/packets/source hashes are unchanged;
+their19-entry observation belongs to024cf0f5, not this corrected capture. The
+cash/lifetime/report mismatch, RP-680,27AC6 and historical kernel guard remain open.
+No wholeCI/hosted/all-seed/natural-live/1.0 claim. Harness runner is outside the
+kernel-affecting registry; no false numeric version signal was minted.
+
+Review by: Codex root (author/first filter). Recorded by: Codex root. Complete
+04dda624-exclusive six-path corrective range including tests/docs/records awaits
+fresh independent corrective review. No defect/feature archival, draft adoption,
+publication or push. Next resume remaining real-policy/seed/whole-cost/error/report
+work, using the corrected complete action capture without hiding legacy deltas.

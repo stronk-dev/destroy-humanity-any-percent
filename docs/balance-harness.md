@@ -118,6 +118,16 @@ accrual; simulation masks still apply. Standalone suites retain no observer.
 The first-hour observer does not add served offline-span bookkeeping because
 the instrument already records its own session gaps.
 
+`FirstHourSuite.RunExperimentScript` captures the selected player requests with
+their simulation endpoint and evaluation mode. This includes Reference's adopted
+ranker purchases, using the same request and parent revision as the actual trial;
+unselected candidate trials and bank observations are not commands. Existing
+scripted-ending and terminal markers retain their policy meaning. Capture is an
+observation only: enabling it does not change measured results, transitions,
+ranking, cash or lifetime accounting. A script is an action stream, not a trace of
+every intermediate accrual/bank read; replaying only its actions does not establish
+equality with the current runner's partition-sensitive cash/lifetime samples.
+
 The first-hour H3 sensitivity instrument has a separate internal synthetic
 input, copied once per ordinary runtime. Nil preserves ordinary runs; combining
 it with career or Tier2 mode refuses before execution. It does not mint an

@@ -202,7 +202,7 @@ identity and changes the real bonus. The correction reloads pinned catalogs into
 independent typed snapshots; before/after-install mutations now refuse. Review
 and full workload/preparation accounting remain explicit in the owning log.
 
-H3af now composes the existing producer/ledger/lifetime/time certificates with the
+H3af (source024cf0f5) composes the existing producer/ledger/lifetime/time certificates with the
 actual first-hour profile. Thirty-six exact query comparisons, nine lifecycle
 continuations and a full reference.greedy seed0 instrument trajectory execute.
 Independent replay covers all177 actual selected actions and complete outputs;
@@ -214,10 +214,25 @@ restamped.9637 primitive transitions do not conceal13764397 scalar entries and
 or speed claim follows. The owning log records cold native/Linux results and the
 separate retained red experiment. Review/adoption remain separate.
 
-Next close RP-695's actual capture gap under the existing observation contract,
-then measure remaining real policy/seed populations and whole-cost/error/report
+RP-695's two-line capture correction and regression tests now pass locally;
+independent corrective review remains pending. Next measure remaining real
+policy/seed populations and whole-cost/error/report
 compatibility before proposing any dispatch migration. Do not hide preparation,
 relabel counters, increase bounds or call the new trajectory legacy-compatible.
+
+RP-695 corrective batch (04dda624-exclusive): archived T01-C33's shared ordered
+policy decisions and existing RunExperimentScript observation contract authorize
+recording the actual Reference winner, not every explored candidate. Retain its
+real endpoint/mode/parent-revision request after chosen-state validation. No
+ranking/accounting/report/budget/default dispatch change, new accepted spec or
+kernel bump (harness runner is not a kernel-affecting path). Six immediate/delayed
+regressions fail on old code; a full seed0 per-boundary revision/capture check
+fails only Reference at10000ms while chaos/casual pass. Reuse real primitives to
+replay captured choices, require unchanged complete capture-off results for all
+three policies, run the full affected package/vet and actual existing Postgres
+composed consumer. Historical manual research artifacts stay bound to their old
+source; do not regenerate them to disguise the capture change. Independent
+corrective review remains required before closing this defect.
 
 H3af research batch (c1de2e00-exclusive): compose those existing exact helper
 bodies through a separate reversible manual overlay, leaving the default build
