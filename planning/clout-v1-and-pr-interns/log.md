@@ -8914,3 +8914,27 @@ Review by: Codex root (author/first filter). Recorded by: Codex root. Complete
 fresh independent corrective review. No defect/feature archival, draft adoption,
 publication or push. Next resume remaining real-policy/seed/whole-cost/error/report
 work, using the corrected complete action capture without hiding legacy deltas.
+
+### RP-695 — independently approved correction
+
+APPROVED complete six-path range `04dda624..1179f916`. Review by: fresh
+independent Codex `/root/first_hour_capture_corrective_review`. Recorded by:
+Codex root, transcribing its final verdict. No actionable findings. The existing
+observation contract authorizes the correction; neither draft was adopted.
+
+Independently executed: new regressions/complete three-policy seed0 capture and
+report checks PASS12.670s; harness/gameserver vet PASS; SHA-exact old04dda624
+runner overlay FAIL0.404s/Make2, reproducing six omissions and detached absence
+while bank passes. Reviewer-only natural selected-upgrade replay PASS0.299s:
+upgrade.reply_all_macro at boundary66000/endpoint66992/parent revision24, exact
+request and full resulting Company match actual primitive replay. Its first
+probe failed compilation from an incorrect reviewer scope literal; corrected
+probe executed, not counted as a subject failure. Full-range diff check PASS,
+tracked tree clean at1179f916.
+
+Native full-package/Linux/real-Postgres results above remain author evidence,
+not reviewer reruns. RP-695 closes as a bounded capture correction. No Reference
+live-parity, sparse-action/legacy-accounting equivalence, original accounting
+repair, draft adoption, feature/release acceptance, archival or publication.
+Remaining real-policy/seed/whole-cost/error/report and1.0 gates stay active;
+no push. Ledger/plan disposition reconciled with this exact verdict.

@@ -214,8 +214,9 @@ restamped.9637 primitive transitions do not conceal13764397 scalar entries and
 or speed claim follows. The owning log records cold native/Linux results and the
 separate retained red experiment. Review/adoption remain separate.
 
-RP-695's two-line capture correction and regression tests now pass locally;
-independent corrective review remains pending. Next measure remaining real
+RP-695's two-line capture correction and regression tests are independently
+APPROVED for04dda624..1179f916; the owning log records executed review evidence.
+Next measure remaining real
 policy/seed populations and whole-cost/error/report
 compatibility before proposing any dispatch migration. Do not hide preparation,
 relabel counters, increase bounds or call the new trajectory legacy-compatible.
@@ -231,8 +232,8 @@ fails only Reference at10000ms while chaos/casual pass. Reuse real primitives to
 replay captured choices, require unchanged complete capture-off results for all
 three policies, run the full affected package/vet and actual existing Postgres
 composed consumer. Historical manual research artifacts stay bound to their old
-source; do not regenerate them to disguise the capture change. Independent
-corrective review remains required before closing this defect.
+source; do not regenerate them to disguise the capture change. The independent
+corrective verdict in the owning log closes this defect, not the accounting work.
 
 H3af research batch (c1de2e00-exclusive): compose those existing exact helper
 bodies through a separate reversible manual overlay, leaving the default build
