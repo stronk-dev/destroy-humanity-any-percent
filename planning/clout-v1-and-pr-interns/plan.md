@@ -202,10 +202,37 @@ identity and changes the real bonus. The correction reloads pinned catalogs into
 independent typed snapshots; before/after-install mutations now refuse. Review
 and full workload/preparation accounting remain explicit in the owning log.
 
-Next compose the existing producer/ledger/lifetime/time certificates with the
-actual first-hour profile instead of its expensive exact fallback. Prove the
-complete query/error/work contract and measure actual workloads under unchanged
-bounds; do not hide preparation, relabel the counters or raise limits.
+H3af now composes the existing producer/ledger/lifetime/time certificates with the
+actual first-hour profile. Thirty-six exact query comparisons, nine lifecycle
+continuations and a full reference.greedy seed0 instrument trajectory execute.
+Independent replay covers all177 actual selected actions and complete outputs;
+the legacy19-entry script omits ranked purchases (RP-695), so capture equality
+alone was not complete action evidence. The intended original-interval cash and
+lifetime samples differ from legacy; that report comparison stays FAILED, not
+restamped.9637 primitive transitions do not conceal13764397 scalar entries and
+13483252 partial checks or the additional setup/codec/catalog work. No whole-cost
+or speed claim follows. The owning log records cold native/Linux results and the
+separate retained red experiment. Review/adoption remain separate.
+
+Next close RP-695's actual capture gap under the existing observation contract,
+then measure remaining real policy/seed populations and whole-cost/error/report
+compatibility before proposing any dispatch migration. Do not hide preparation,
+relabel counters, increase bounds or call the new trajectory legacy-compatible.
+
+H3af research batch (c1de2e00-exclusive): compose those existing exact helper
+bodies through a separate reversible manual overlay, leaving the default build
+and H3ae exact reference unchanged. Query the original source14 owner, honoring
+retained-view floors, fixed contributions and the full conjunction at actual
+leaves. A cash enclosure may prune only when producer, ledger/progress, lifetime
+and cursor obligations hold; no independent-earliest-resource approximation.
+Compare with exhaustive original-state primitive references, including zero-time,
+unreachable, retained views, real failures and budget refusal. Then execute the
+actual lifecycle continuations and a complete reference-policy natural trajectory
+under its unchanged scenario budget. Record actual primitive work separately from
+all cell/scalar/certificate/setup costs and elapsed time. Any failed full-report or
+workload comparison remains failed, not a reason to change bounds or outputs.
+No production/API/schema/CI/kernel/epoch change or draft adoption. Independent
+technical review covers the complete research/specification range when finished.
 Do not coerce H3n's reached source14 inputs or the lifetime-only hook into Company19
 closed-replay scheduling. Complete general profiles/masks/real-owner factory bindings,
 preserving complete results/error policy/scores.

@@ -1,0 +1,86 @@
+package production
+
+import (
+	"fmt"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+)
+
+// Manual overlay export only; never present in the production build.
+type ManualFirstHourCertificateObservationResearch struct {
+	Work                   waitCellWorkResearch
+	Points, LifetimeRanges int
+}
+
+func ManualQueryFirstHourCertificateResearch(state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, external []multiplier.Contribution, valueResource string, from, horizon int64, requirements []routes.Requirement, budget int, project func(int64) (*save.State, AdvanceSimulationResult, error)) (at int64, observation ManualFirstHourCertificateObservationResearch, err error) {
+	at = -1
+	if state == nil || state.Ledger == nil || catalog == nil || save.VersionForState(state) != 14 || from < 0 || horizon < from || horizon > 86_460_000 || budget <= 0 || project == nil || len(requirements) == 0 || valueResource != "company.cash" {
+		return at, observation, fmt.Errorf("unsupported manual first-hour certificate context")
+	}
+	price := decimal.Zero
+	for _, requirement := range requirements {
+		definition, exists := catalog.Resource(requirement.ResourceID)
+		if !exists || definition.Scope != economy.ScopeCompany || !requirement.Amount.IsStateValue() || requirement.Amount.Lt(decimal.Zero) {
+			return at, observation, fmt.Errorf("invalid first-hour certificate predicate")
+		}
+		if requirement.ResourceID == "company.cash" && requirement.Amount.Gt(price) {
+			price = requirement.Amount
+		}
+	}
+	var selected *save.State
+	point := func(endpoint int64) (decimal.Decimal, error) {
+		if observation.Points >= budget {
+			return decimal.NaN, fmt.Errorf("first-hour certificate projection budget exhausted")
+		}
+		observation.Points++
+		var err error
+		selected, _, err = project(endpoint)
+		if err != nil {
+			return decimal.NaN, err
+		}
+		if selected == nil || selected.Ledger == nil {
+			return decimal.NaN, ErrInvalidEngineState
+		}
+		cash, exists := selected.Ledger.Balance("company.cash")
+		if !exists || !cash.IsStateValue() {
+			return decimal.NaN, ErrInvalidEngineState
+		}
+		return cash, nil
+	}
+	matches := func(_ int64, _ decimal.Decimal) (bool, error) {
+		for _, requirement := range requirements {
+			value, exists := selected.Ledger.Balance(requirement.ResourceID)
+			if !exists || value.Lt(requirement.Amount) {
+				return false, nil
+			}
+		}
+		return true, nil
+	}
+	// The query's first actual endpoint is mandatory, including time zero and a
+	// retained view. A known balance must not bypass a required primitive error.
+	if _, err = point(from); err != nil {
+		return at, observation, err
+	}
+	if met, matchErr := matches(from, decimal.Zero); matchErr != nil || met {
+		return from, observation, matchErr
+	}
+	if from == horizon {
+		return at, observation, nil
+	}
+	domain := &firstHourLifetimeDomainResearch{state: state, catalog: catalog, resource: valueResource}
+	// Structural full binary-tree ceiling, not a changed scenario allowance.
+	// Actual primitive projections retain the caller's supplied budget above.
+	nodes := int(2*(horizon-from+1) + 1)
+	var factory *waitCellsResearch
+	at, factory, err = queryWaitContextResearch(state, catalog, ModeOnline, horizon, AblationMask{}, SimulationDependencies{Routes: routeCatalog}, price, nodes, point,
+		waitSourceContextResearch{external: external, preHookEncoding: true, fromMS: from + 1, matches: matches}, domain)
+	if factory != nil {
+		observation.Work = factory.work
+	}
+	observation.LifetimeRanges = domain.ranges
+	return at, observation, err
+}

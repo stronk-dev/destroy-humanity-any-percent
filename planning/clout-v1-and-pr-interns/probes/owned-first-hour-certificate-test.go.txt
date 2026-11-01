@@ -1,0 +1,314 @@
+package harness
+
+import (
+	"bytes"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+)
+
+func TestOwnedFirstHourCertifiedQueriesResearch(t *testing.T) {
+	queries, references := 0, 0
+	for _, arm := range []string{"none", "unit", "tree"} {
+		t.Run(arm, func(t *testing.T) {
+			r := reputationReferenceFixture(t, arm)
+			scope := ownedFirstHourResearch(t, r)
+			origin := scope.binding.Identity.(*manualFirstHourOriginResearch)
+			head := append([]byte(nil), scope.binding.Head...)
+			var halfway decimal.Decimal
+			for offset := int64(0); offset <= 1001; offset++ {
+				state := firstHourReferenceRestoreResearch(t, r, origin.encoded, origin.version)
+				want, err := production.SimulateAdvance(state, r.suite.Bundle.Economy, production.SimulationDependencies{Routes: r.suite.Bundle.Routes, Hook: r.lifetimeHook()}, origin.revision, production.ModeOnline, relevanceNow(offset), origin.external, production.AblationMask{})
+				if err != nil {
+					t.Fatal(err)
+				}
+				gotState, got, err := scope.project(origin, offset)
+				if err != nil || !reflect.DeepEqual(got, want) || !bytes.Equal(firstHourEncodeResearch(t, state), firstHourEncodeResearch(t, gotState)) {
+					t.Fatal("full original primitive mismatch", offset, err)
+				}
+				if offset == 500 {
+					halfway, _ = state.Ledger.Balance("company.cash")
+				}
+				references++
+			}
+			before, _ := r.company.Ledger.Balance("company.cash")
+			quote, err := r.suite.Bundle.Economy.BulkCost("generator.beige_tower", r.company.GeneratorCounts["generator.beige_tower"], 1)
+			if err != nil {
+				t.Fatal(err)
+			}
+			secondary := ""
+			for _, resource := range r.suite.Bundle.Economy.Resources() {
+				if resource.Scope == economy.ScopeCompany && resource.ID != "company.cash" {
+					secondary = resource.ID
+					break
+				}
+			}
+			if secondary == "" {
+				t.Fatal("missing second actual resource")
+			}
+			for _, floor := range []int64{0, 700} {
+				binding := scope.binding
+				if floor > 0 {
+					view := firstHourReferenceRestoreResearch(t, r, origin.encoded, origin.version)
+					_, next, err := binding.Bank(view, floor)
+					if err != nil || next.Identity != binding.Identity {
+						t.Fatal("retained bank lost original", err)
+					}
+					binding = next
+				}
+				for _, row := range []struct {
+					name         string
+					requirements []routes.Requirement
+				}{
+					{"current", []routes.Requirement{{ResourceID: "company.cash", Amount: before}}},
+					{"middle", []routes.Requirement{{ResourceID: "company.cash", Amount: halfway}}},
+					{"catalog", []routes.Requirement{{ResourceID: "company.cash", Amount: quote}}},
+					{"unreachable", []routes.Requirement{{ResourceID: "company.cash", Amount: decimal.New(1, 20)}}},
+					{"joint", []routes.Requirement{{ResourceID: "company.cash", Amount: halfway}, {ResourceID: secondary, Amount: decimal.Zero}}},
+					{"secondary_only", []routes.Requirement{{ResourceID: secondary, Amount: decimal.New(1, 20)}}},
+				} {
+					scope.certified = false
+					want, exactPoints, exactErr := binding.QueryAll(1001-floor, row.requirements, 1002)
+					scope.certified = true
+					got, points, err := binding.QueryAll(1001-floor, row.requirements, 1002)
+					if exactErr != nil || err != nil || got != want || points <= 0 || points > exactPoints {
+						t.Fatal("certificate differs from exhaustive original-state query", row.name, floor, got, want, points, exactPoints, err, exactErr)
+					}
+					if row.name == "unreachable" && points >= exactPoints {
+						t.Fatal("cash range was not pruned")
+					}
+					if row.name == "secondary_only" && points != exactPoints {
+						t.Fatal("cash bound improperly pruned unrelated resource")
+					}
+					if got >= 0 {
+						state := firstHourReferenceRestoreResearch(t, r, origin.encoded, origin.version)
+						wantResult, err := production.SimulateAdvance(state, r.suite.Bundle.Economy, production.SimulationDependencies{Routes: r.suite.Bundle.Routes, Hook: r.lifetimeHook()}, origin.revision, production.ModeOnline, relevanceNow(floor+got), origin.external, production.AblationMask{})
+						actual, result, projectErr := scope.project(origin, floor+got)
+						if err != nil || projectErr != nil || !reflect.DeepEqual(wantResult, result) || !bytes.Equal(firstHourEncodeResearch(t, state), firstHourEncodeResearch(t, actual)) {
+							t.Fatal("selected full result mismatch", err, projectErr)
+						}
+					}
+					t.Logf("%s floor%d result%d exact_points%d certified_points%d work%+v", row.name, floor, got, exactPoints, points, scope.certificateWork[len(scope.certificateWork)-1])
+					queries++
+				}
+			}
+			if got, points, err := scope.binding.Query(1001, halfway, 1); err == nil || got >= 0 || points != 1 {
+				t.Fatal("projection budget became absence/success", got, points, err)
+			}
+			if got, points, err := scope.binding.Query(1001, halfway, 0); err == nil || got >= 0 || points != 0 {
+				t.Fatal("invalid budget executed", got, points, err)
+			}
+			if !bytes.Equal(head, origin.encoded) || !bytes.Equal(head, firstHourEncodeResearch(t, r.company)) {
+				t.Fatal("query consumed origin/runtime")
+			}
+		})
+	}
+	if queries != 36 || references != 3006 {
+		t.Fatal("incomplete query population", queries, references)
+	}
+}
+
+func TestOwnedFirstHourCertifiedLifecycleResearch(t *testing.T) {
+	for _, name := range []string{"scripted_burnout", "scripted_pivot", "scripted_acquihire", "career_none", "career_cheapest", "career_uniform", "career_excluded", "tier2", "terminal"} {
+		t.Run(name, func(t *testing.T) {
+			r, reference := firstHourLifecycleFixtureResearch(t, name), firstHourLifecycleFixtureResearch(t, name)
+			scope, life := installLifecycleForTestResearch(t, r)
+			scope.certified = true
+			for step := 0; step < 2 && !life.ended; step++ {
+				boundary := life.boundaries[life.next]
+				if err := reference.step(boundary); err != nil {
+					t.Fatal(err)
+				}
+				if err := r.step(boundary); err != nil {
+					t.Fatal(err)
+				}
+				compareFirstHourLifecycleResearch(t, r, reference)
+			}
+			if name != "terminal" && life.restarts != 1 {
+				t.Fatal("actual successor did not restart")
+			}
+			// Cash-starter careers apply a command directly at the next boundary;
+			// the actual caller correctly needs no affordability query there.
+			if name != "terminal" && name != "career_cheapest" && name != "career_uniform" && len(scope.certificateWork) == 0 {
+				t.Fatal("actual query did not reach certificate")
+			}
+			for _, work := range scope.certificateWork {
+				t.Logf("certificate%+v", work)
+			}
+		})
+	}
+}
+
+func TestOwnedFirstHourCertifiedTimeFailureResearch(t *testing.T) {
+	r := reputationReferenceFixture(t, "none")
+	r.company.EvaluatedThrough = time.Date(9999, 12, 31, 23, 59, 59, 0, time.UTC)
+	r.company.RunStartedAt = r.company.EvaluatedThrough
+	r.company.ManualTokenRefilledAt = r.company.EvaluatedThrough
+	r.company.GeneratorCounts["generator.beige_tower"] = 1
+	r.company.GeneratorPurchasedTotal = 1
+	head := firstHourEncodeResearch(t, r.company)
+	project := func(offset int64) (*save.State, production.AdvanceSimulationResult, error) {
+		state := firstHourReferenceRestoreResearch(t, r, head, 14)
+		result, err := production.SimulateAdvance(state, r.suite.Bundle.Economy, production.SimulationDependencies{Routes: r.suite.Bundle.Routes, Hook: r.lifetimeHook()}, r.companyRevision(), production.ModeOnline, state.EvaluatedThrough.Add(time.Duration(offset)*time.Millisecond), nil, production.AblationMask{})
+		return state, result, err
+	}
+	wantAt, wantErr := int64(-1), ""
+	for at := int64(0); at <= 1001; at++ {
+		if _, _, err := project(at); err != nil {
+			wantAt, wantErr = at, err.Error()
+			break
+		}
+	}
+	if wantAt != 1000 || wantErr == "" {
+		t.Fatal("calendar fixture did not reproduce actual pre-hook refusal", wantAt, wantErr)
+	}
+	last := int64(-1)
+	got, work, err := production.ManualQueryFirstHourCertificateResearch(r.company, r.suite.Bundle.Economy, r.suite.Bundle.Routes, nil, "company.cash", 0, 1001, []routes.Requirement{{ResourceID: "company.cash", Amount: decimal.New(1, 20)}}, 1002,
+		func(at int64) (*save.State, production.AdvanceSimulationResult, error) { last = at; return project(at) })
+	if err == nil || err.Error() != wantErr || got >= 0 || last != wantAt {
+		t.Fatal("range pruning concealed actual first error", got, work, last, err, wantErr)
+	}
+	t.Logf("first actual error at%d points%d work%+v", last, work.Points, work)
+}
+
+func TestOwnedFirstHourCertifiedNaturalReferenceResearch(t *testing.T) {
+	exerciseOwnedFirstHourNaturalResearch(t, false)
+}
+
+// This retained FAILED experiment asks for complete LEGACY report compatibility,
+// not the narrower query/command or intended original-interval accounting proof.
+func TestOwnedFirstHourLegacyCompatibilityResearch(t *testing.T) {
+	exerciseOwnedFirstHourNaturalResearch(t, true)
+}
+
+func exerciseOwnedFirstHourNaturalResearch(t *testing.T, requireLegacy bool) {
+	suite, err := LoadFirstHourSuite(repositoryRootForReputation, "balance/testdata/t0-t1/harness-scenario-v1.json", "balance/testdata/t0-t1/first-hour-policy-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	experiment := FirstHourExperiment{AcquihirePurchasedMinimum: 200, BurnoutPriceFactor: "2e0", RouteKnowledgeBonus: 50, SeedCapital: "1e4", GeneratedBeigeTowers: 10}
+	var spec RunSpec
+	for _, row := range suite.Scenario.Runs {
+		if row.PolicyID == "reference.greedy" {
+			spec = row
+		}
+	}
+	policy, ok := suite.Policy.Policy(spec.PolicyID, spec.PolicyVersion)
+	if !ok {
+		t.Fatal("reference policy absent")
+	}
+	company, err := newFirstHourCompany(suite.Bundle.Economy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	commands := []FirstHourScriptCommand{}
+	r := &firstHourRuntime{suite: suite, spec: spec, policy: policy, seed: 0, experiment: experiment, company: company,
+		founder: &save.State{LedgerFactKinds: map[string]bool{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}, revision: 1, lastSession: -1, milestones: map[string]*int64{}, commands: &commands}
+	scope, life := installLifecycleForTestResearch(t, r)
+	scope.certified = true
+	started := time.Now()
+	for life.next < len(life.boundaries) && !life.ended {
+		if r.transitions >= suite.Scenario.TransitionBudget {
+			t.Fatal("unchanged scenario budget exceeded", r.transitions, suite.Scenario.TransitionBudget)
+		}
+		if err := r.step(life.boundaries[life.next]); err != nil {
+			t.Fatal("natural original-source trajectory failed", err)
+		}
+	}
+	elapsed := time.Since(started)
+	if !life.ended || r.milestones["milestone.first_elective_exit"] == nil || len(commands) == 0 {
+		t.Fatal("full declared trajectory did not complete")
+	}
+	legacy, wantCommands := suite.RunExperimentScript(spec, 0, experiment)
+	if legacy.Outcome == "failed" || !reflect.DeepEqual(commands, wantCommands) {
+		t.Fatal("actual complete ordered commands differ from the unchanged public runner", legacy.InvariantFailures)
+	}
+	// Independent command-only replay. It uses the OLD actual methods, without
+	// an owner, query, candidate ranker, certificate or intermediate bank reads.
+	// Only applied commands and the two genuine ending boundaries settle state.
+	replayCompany, err := newFirstHourCompany(suite.Bundle.Economy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	replayedCommands := []FirstHourScriptCommand{}
+	replay := &firstHourRuntime{suite: suite, spec: spec, policy: policy, seed: 0, experiment: experiment, company: replayCompany,
+		founder: &save.State{LedgerFactKinds: map[string]bool{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}, revision: 1, lastSession: -1, milestones: map[string]*int64{}, commands: &replayedCommands}
+	for index, selected := range scope.selections {
+		if replay.company.RunSeq != selected.origin.runSeq {
+			if replay.company.RunSeq != 1 || selected.origin.runSeq != 2 {
+				t.Fatal("unsupported natural replay run boundary")
+			}
+			if err := replay.step(firstHourBoundary{atMS: 900_000, sessionIndex: 0}); err != nil {
+				t.Fatal("independent scripted ending failed", err)
+			}
+		}
+		independent := firstHourReferenceRestoreResearch(t, replay, firstHourEncodeResearch(t, replay.company), 14)
+		decision, err := production.SimulateTransition(selected.request, independent, suite.Bundle.Economy, production.SimulationDependencies{Routes: suite.Bundle.Routes, Hook: replay.lifetimeHook()}, replay.companyRevision(), production.ModeOnline, relevanceNow(selected.atMS), replay.external(), nil, production.AblationMask{})
+		if err != nil || !reflect.DeepEqual(decision, selected.result) || !bytes.Equal(firstHourEncodeResearch(t, independent), selected.state) {
+			t.Fatal("full selected decision/events/roles/state differs from independent primitive", index, err)
+		}
+		if err := replay.apply(selected.request, relevanceNow(selected.atMS), selected.atMS, production.ModeOnline); err != nil {
+			t.Fatal("independent original-interval selected command failed", index, err)
+		}
+		if !bytes.Equal(firstHourEncodeResearch(t, replay.company), selected.state) {
+			t.Fatal("complete actual selected state differs from command-only replay", index)
+		}
+	}
+	if err := replay.step(firstHourBoundary{atMS: r.company.EvaluatedThrough.Sub(Epoch).Milliseconds(), sessionIndex: 0}); err != nil {
+		t.Fatal("independent terminal measurement failed", err)
+	}
+	requireReferenceCompanyEqual(t, r.company, replay.company)
+	actualFounder, err := firstHourFounderSnapshotResearch(r.founder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	replayedFounder, err := firstHourFounderSnapshotResearch(replay.founder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(actualFounder, replayedFounder) || !reflect.DeepEqual(r.ending, replay.ending) || !reflect.DeepEqual(r.reputationExits, replay.reputationExits) || !reflect.DeepEqual(r.milestones, replay.milestones) || r.revision != replay.revision {
+		t.Fatal("complete command-only accounting/state/output replay differs")
+	}
+	legacyCompatible := reflect.DeepEqual(r.ending, legacy.Ending) && reflect.DeepEqual(r.reputationExits, legacy.ReputationExits)
+	if !legacyCompatible {
+		t.Logf("legacy failures%v; commands actual%d legacy%d; ending actual%+v legacy%+v; exits actual%+v legacy%+v", legacy.InvariantFailures, len(commands), len(wantCommands), r.ending, legacy.Ending, r.reputationExits, legacy.ReputationExits)
+		for index, command := range commands {
+			if index >= len(wantCommands) || !reflect.DeepEqual(command, wantCommands[index]) {
+				t.Logf("first command difference index%d actual%+v", index, command)
+				if index < len(wantCommands) {
+					t.Logf("legacy%+v", wantCommands[index])
+				}
+				break
+			}
+		}
+		t.Log("FAILED complete legacy ending/sample equality; command-only original-interval replay matches. Not a report compatibility pass.")
+	}
+	failures := []string{}
+	if got := firstHourMilestoneReport(suite.Scenario.Milestones, r.milestones, &failures); len(failures) != 0 || !reflect.DeepEqual(got, legacy.Milestones) {
+		t.Fatal("natural milestone outputs differ", failures)
+	}
+	if r.transitions != int64(scope.advances+scope.points+scope.actions) {
+		t.Fatal("natural actual work was concealed")
+	}
+	var total production.ManualFirstHourCertificateObservationResearch
+	// Print every named counter without inventing a conversion into transitions.
+	for _, row := range scope.certificateWork {
+		total.Points += row.Points
+		total.LifetimeRanges += row.LifetimeRanges
+		out, input := reflect.ValueOf(&total.Work).Elem(), reflect.ValueOf(row.Work)
+		for i := 0; i < out.NumField(); i++ {
+			out.Field(i).SetInt(out.Field(i).Int() + input.Field(i).Int())
+		}
+	}
+	t.Logf("complete actual reference.greedy seed0 tuple%+v commands%d restarts%d transitions%d legacy%d budget%d advances%d queries%d trial_actions%d elapsed%s total%+v", experiment, len(commands), life.restarts, r.transitions, legacy.TransitionCount, suite.Scenario.TransitionBudget, scope.advances, scope.queries, scope.actions, elapsed, total)
+	t.Logf("independent original-interval replay verifies all%d actual selected actions/full states and both ending boundaries; legacy script carries%d markers/commands, NOT the full action stream", len(scope.selections), len(commands))
+	if requireLegacy && (!legacyCompatible || r.transitions != legacy.TransitionCount) {
+		t.Fatal("complete legacy report compatibility remains FAILED")
+	}
+}

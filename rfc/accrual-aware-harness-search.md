@@ -2009,6 +2009,56 @@ frame failure remains in the owning log. Certified query cost, workload/report
 compatibility, all-policy natural trajectories, general factories/masks, TS/SQL
 and adoption remain open. No live path or accepted contract changes here.
 
+#### H3af — First-hour certificate composition and one complete trajectory (manual)
+
+The separate [certificate overlay](../planning/clout-v1-and-pr-interns/probes/prepare-first-hour-certified-observation.mjs)
+composes the existing producer/all-resource ledger/progress, lifetime and cursor
+components with H3ae's actual source14 owner. It mechanically splits existing proof
+declarations from their test tails so the harness dependency can call them; the
+original proof/test sources and default build are unchanged. A manual conditional
+export is not a general production factory or arbitrary-hook registration API.
+
+Every query first executes its actual requested floor, including0 and retained
+views. Later chronological refinement may prune only under the existing combined
+definedness obligations and cash upper enclosure. Actual leaves check the complete
+requirement conjunction; a cash-only bound cannot prune an unrelated secondary
+requirement when its cash threshold is0. Endpoints remain relative to the original
+owner, not a bank-view rebase. The caller's projection budget is enforced, actual
+refusals propagate, and all construction/certificate counters remain separate.
+The binary-tree node ceiling is structural, not an adopted scenario allowance.
+
+Three fixed-input arms, two floors and six predicate cases compare36 queries to
+the exact original-state scan;3006 full primitive references and selected results
+execute. A500ms query uses two rather than501 projections; the unrelated-resource
+case deliberately retains its full scan. Nine real lifecycle cases continue with
+the new query. A separately admitted calendar edge preserves the first actual
+counterfactual-restore refusal at1000ms; disabling only the temporal obligation
+hides it and fails the witness. Disabling only the leaf conjunction also fails.
+
+One COMPLETE actual reference.greedy seed0 trajectory, using the already-declared
+experimental tuple, reaches both ending boundaries under its unchanged2000000
+transition budget. All177 actual selected commands/full decisions/events/roles/
+states and final Company/partial-Founder/milestones/ending samples agree with an
+independent replay that executes the existing primitives only at action and real
+ending boundaries. This is one naturally traversed instrument population, not
+all policies/seeds, default live gameplay, persisted SQL or full registered work.
+
+**Legacy report equality remains FAILED, now beyond the work counter.** The old
+script's19 captured entries agree, but RP-695 shows it omits ranked purchases and
+cannot establish complete action coverage. At the scripted ending, the original-
+interval cash is1.25502784523e6 versus legacy1.25502784541e6; first-run lifetime is
+1.46050836095e6 versus1.4605083614e6. Gate times, branch and captured commands agree.
+The explicit legacy-compatibility experiment remains red; no report is restamped.
+
+Work is9637 actual transitions versus11916 legacy, with5470 query projections,
+3227 advances and940 trial actions. This is NOT a total-cost or speed comparison:
+the certificate preparation also performs13764397 scalar entries and13483252
+partial checks, among other exposed work, plus restore/codec/catalog/guard costs.
+Native and Linux affected checks execute; exact commands and retained instrument
+failures live in the owning log. Full compatibility/dispatch migration, complete
+workload and cost feasibility, general profiles/masks, TS/SQL, normative review
+and adoption remain open. RP-680 and the27 accounting failures are not repaired.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -2263,3 +2313,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
 - 2026-11-01: H3ae binds source/history and actual first-hour ending/rebirth
   methods. Retain failed full-report counter equality separately from semantic
   lifecycle results; certified work and full migration/adoption remain held.
+- 2026-11-01: H3af composes existing certificates with the manual first-hour
+  owner and executes one complete instrument trajectory plus independent177-action
+  replay. Retain FAILED legacy cash/lifetime/report equality and RP-695's incomplete
+  script finding; primitive savings are not a total-cost/adoption claim.

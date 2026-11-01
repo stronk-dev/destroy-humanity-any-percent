@@ -1,0 +1,45 @@
+package harness
+
+import (
+	"bytes"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+	"fmt"
+)
+
+// Observation of actual adoption, not a second source of choices. The existing
+// script omits ranked purchases, so it cannot drive a complete action replay.
+func (scope *manualFirstHourScopeResearch) observeSelectedResearch(head []byte) error {
+	var selected *manualFirstHourTraceResearch
+	for index := range scope.traces {
+		if bytes.Equal(head, scope.traces[index].state) {
+			if selected != nil {
+				return fmt.Errorf("ambiguous actual selected action")
+			}
+			selected = &scope.traces[index]
+		}
+	}
+	if selected == nil {
+		return fmt.Errorf("actual selected action has no primitive trace")
+	}
+	scope.selections = append(scope.selections, *selected)
+	return nil
+}
+
+func (scope *manualFirstHourScopeResearch) queryCertified(origin *manualFirstHourOriginResearch, nowMS, wait int64, requirements []routes.Requirement, budget int) (int64, int, error) {
+	state, err := scope.restore(origin)
+	if err != nil {
+		return -1, 0, err
+	}
+	at, work, err := production.ManualQueryFirstHourCertificateResearch(state, scope.runtime.suite.Bundle.Economy, scope.runtime.suite.Bundle.Routes, origin.external, origin.valueResource, nowMS-origin.atMS, nowMS+wait-origin.atMS, requirements, budget,
+		func(offset int64) (*save.State, production.AdvanceSimulationResult, error) {
+			return scope.project(origin, origin.atMS+offset)
+		})
+	scope.points += work.Points
+	scope.certificateWork = append(scope.certificateWork, work)
+	if err != nil || at < 0 {
+		return -1, work.Points, err
+	}
+	return origin.atMS + at - nowMS, work.Points, nil
+}

@@ -329,7 +329,14 @@ views and real session-return boundaries in the actual runtime methods. It does
 not import this modern profile's scheduling/clearing into that caller.
 H3ae adds its closed partial-Founder/source/history and actual ending/rebirth
 bindings; semantic comparisons do not conceal the failed full-report work counts.
-Full registered workloads/general lifecycle/work/dispatch/adoption remain open.
+H3af composes existing first-hour certificates and traverses one complete
+reference-policy instrument trajectory. Its177 selected actions and full outputs
+match independent original-interval primitive replay, but legacy cash/lifetime
+samples and work counts differ. RP-695 also shows the old script omits ranked
+purchases; equality of that capture is not complete action evidence. Additional
+scalar/partial preparation costs remain exposed, not translated into fewer total
+operations or an accepted budget. Full registered workloads/general lifecycle/
+work/dispatch/adoption remain open.
 
 The actual closed replay chain can return Guild/Commons events without a player
 action. Today's `SimulateAdvance` refuses such events. The bounded online/offline

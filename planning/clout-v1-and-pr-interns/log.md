@@ -8710,3 +8710,118 @@ workloads, accepted budgets, production migration, feature acceptance and releas
 approval remain open. RP-680, the 27 Clout failures and historical kernel guard
 remain unresolved. Next is the certified first-hour query/full workload proof
 under unchanged bounds. No product promotion, archival or push.
+
+### H3af — actual first-hour certificate query and complete instrument trajectory
+
+2026-11-01, c1de2e00-exclusive research/draft batch. Previous turn PROGRESS:
+corrected complete H3ae range independently approved. Current tree rechecked;
+RFC-0000/current plan/active index/whole-product floor and relevant C1c/H3 contracts
+reread. No accepted product/default search change. The separate50-entry overlay
+splits EXISTING proof declarations from their retained test tails, making the
+same producer/ledger/progress/lifetime/time helpers available to the harness
+dependency. Original helper and runtime sources remain unchanged. Exact H3ae
+scan stays the independent reference; the new dispatcher is explicitly manual.
+
+Actual query floor is always evaluated, including0/retained views. Later ranges
+use the existing combined definedness and cash enclosure, then complete actual
+conjunctions at leaves. A secondary-only predicate cannot be pruned by a cash
+threshold0. Projection budget remains caller-owned; structural binary-tree node
+ceiling and every preparation/certificate counter are separate, not a scenario
+allowance or total-cost proof. No callback registration/general factory claimed.
+
+36query pairs (three input arms/two floors/six predicates) match exact scans;
+3006 complete primitive state/evaluation/role references execute. The500ms
+diagnostic needs2 rather than501 projections; unreachable cash1 rather than1002.
+Secondary-only keeps the full scan. Nine lifecycle cases retain actual restarts/
+terminal outputs; cash-starter careers legitimately apply without a query.
+An admitted year9999/owned-stock-role source preserves the actual counterfactual
+restore error at1000ms with2 actual projections; no synthetic error substituted.
+
+One COMPLETE reference.greedy seed0 instrument trajectory runs from true genesis,
+with the existing experimental tuple(200,2e0,50,1e4,10). It reaches both endings
+within the unchanged2000000 transition budget:9637 actual transitions, comprising
+3227advances +5470query projections +940trial actions,5178queries. A separate
+command-only replay executes all177 actual selected requests with existing real
+primitives/ending bodies, without owner/query/ranker/certificate/bank reads. It
+compares every selected full decision/event/role/state and final Company/closed
+partial-Founder/milestones/ending samples/revision. All match. This is one complete
+instrument population, not all-policy/default-live or SQL proof.
+
+Preparation is NOT free:4696cells/rate assemblies,218provisions,4551deltas/prefix
+writes,13764397scalar entries,13483252partial checks/4402contexts/63reuses,
+4551aggregate/ledger fast certificates,4547initial-ledger/progress checks,
+8922query nodes/certificates,4547range/lifetime/time guards; no exact aggregate/
+ledger/progress fallback in this trajectory. Additional restore/codec/catalog/
+entry comparison and selection-observation costs are not converted into this
+census. Standalone actual traversal11.039264917s is not a matched speed claim.
+
+FAILED legacy compatibility is retained beyond work: scripted cash
+1.25502784523e6 vs legacy1.25502784541e6, first-run lifetime1.46050836095e6 vs
+1.4605083614e6; the second lifetime3.54431965065e6, gate times356000/346000,
+branch/purchases and19captured entries agree. Original-interval replay explains
+the new result; it does not authorize a report migration. The explicit
+TestOwnedFirstHourLegacyCompatibilityResearch remains RED:58196,11.593s/Make2,
+despite passing independent accounting. Its traversal10.471387583s and the same
+9637/11916 counters are separately observed. It is intentionally NOT included
+in the passing certificate selector below. No whole-overlay/fullCI green claim.
+
+RP-695 discovered: that19-entry existing script omits actual ranked purchases;
+observeReferencePurchase never calls recordCommand. Direct replay rejects the
+first gate (revision11), because it has no purchases. Current script equality is
+capture equality, NOT complete action coverage. The research overlay now observes
+actual adoption independently of the old script; production capture remains open.
+
+Instrument failures retained:72566 does not compile (invented ResourcesForScope
+and wrong LoadFirstHourSuite arity), corrected to actual existing APIs.72646
+FAIL13.524s: two careers incorrectly demanded queries despite immediate starter
+commands; calendar fixture without owned stock never exercised counterfactual
+restore; natural full legacy output mismatch.63241 FAIL10.727s exposes the exact
+cash/lifetime deltas and a lower-clock fixture's missing provision origin.9059
+FAIL10.402s: lower timestamps do not roundtrip the exact-ms run-start field, and
+the incomplete19-entry script cannot replay purchases. None is counted as positive
+evidence. Corrected upper fixture explicitly owns one stock-role generator, with
+valid positive run-start timestamp.63629 PASS12.308s establishes original-interval
+replay after observing actual selections; subsequent final checks include full
+selected decisions, not just their states. No input/expected output restamp.
+
+Compiling discriminators on ignored copies: disable ONLY the new leaf conjunction
+in certified-query-order.go;85527 fails all three arms (secondary_only wrongly
+returns1 vs-1),1.129s/Make2. Disable ONLY preHookEncoding in the new export;92628
+prunes the actual1000ms failure as unreachable/nil,0.356s/Make2. Source/oracles
+unchanged. Reproduce by overriding just the respective normal helper in a copied
+overlay using those exact replacements; never edit live production.
+
+Final affected native harness63461 PASS42.163s, production certificate/domain/
+ordering/time populations19146 PASS27.237s; overlay vet86733 PASS. Linux-amd64
+same harness selector52159 PASS93.479s and production selector12822 PASS62.397s,
+terminal exit0 confirmed after Compose cleanup. These include prior18runtime/72candidate and source/history/decoded
+regressions plus the three original full-runner checks. They do not rerun the
+unrelated27AC6 failures or historical guard, which remain unresolved.
+
+Root reproduction, no generation/default/CI installation:
+
+```sh
+node planning/clout-v1-and-pr-interns/probes/prepare-first-hour-certified-observation.mjs
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/first-hour-certified-overlay.json -run TestOwnedFirstHourCertified\|TestOwnedFirstHourRuntime\|TestOwnedFirstHourRefusals\|TestOwnedFirstHourLifecycle\|TestOwnedFirstHourSourceBinding\|TestOwnedFirstHourDecodedCatalog\|TestWaitFirstHourCandidate\|TestFirstHourRunnerUsesRatifiedPolicyAndRealTransitions\|TestFirstHourCasualInitialJitterIsOfflineFromFounderGenesis\|TestFirstHourReferenceReusesProjectedTimeRanker\|TestReputationReferenceLifetimeAccounting\|TestReputationReferenceFrozenInputDiagnostic'
+make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -overlay=../.cache/first-hour-certified-overlay.json -run TestProductionCellEnclosureResearch\|TestWaitQuery\|TestWaitCell\|TestWaitStateTime'
+make vet GO_PACKAGES='-overlay=../.cache/first-hour-certified-overlay.json ./harness ./production'
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/first-hour-certified-overlay.json -run TestOwnedFirstHourLegacyCompatibilityResearch -v'
+```
+
+The last command is the retained FAILED report experiment, not a green gate.
+For Linux use the identical run regex/package with the declared
+`docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/first-hour-certified-overlay.json -run 'REGEX' ./harness -count=1`
+and analogously the production selector/package. No DB population is claimed.
+
+Frozen SHA256: producer export eccbf237ebe508e2cb632feadf84a2c535b4dd18c14c385e518613f4e9441adf;
+harness bridge fd4df99478a1681d33fd6f64798073669ab900fe34e51a98aac61c12f5f2fd45;
+tests5bdfa8e0e11926f9734c66050b0b5ebe28acd6750ef625ffb737d904b89e496f;
+generator ab830d9c80ed157f6051e41b9107c38742ea59a7c4b4c68adc568b55d84b8dde;
+50-entry overlay fb6d9cf3af440d620dc774a50d0d3f9bacc20ed178f37db81f978f1f55cb9616.
+
+Review by: Codex root (author/first filter). Recorded by: Codex root. Complete
+c1de2e00-exclusive research/draft range needs fresh independent technical review;
+no self-approval/adoption. Next close RP-695's capture gap, then remaining actual
+policy/seed/whole-cost/error/report populations and migration proposal under
+unchanged bounds. Both drafts unadopted, RP-680/27AC6/kernel guard still open;
+no product/schema/data/CI/golden/kernel223/epoch8 change, archival or push.
