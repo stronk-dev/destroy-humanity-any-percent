@@ -1,0 +1,31 @@
+package harness
+
+// Registration exists only during the actual public constructor callback. This
+// is a separate manual producer profile, not permission to relax ordinary
+// first-hour scenario admission or a new persisted/wire protocol.
+type manualTier2SourceResearch struct {
+	Spec RunSpec
+	Hash string
+}
+
+var manualTier2SourcesResearch = map[*firstHourRuntime]manualTier2SourceResearch{}
+
+func manualTier2DerivedSourceResearch(r *firstHourRuntime, scenario FirstHourScenario) bool {
+	source, ok := manualTier2SourcesResearch[r]
+	if !ok || r.tier2 == nil || r.career != nil || r.spec != source.Spec || r.spec.HorizonMS < 0 || r.suite.ConstantsHash != source.Hash || r.suite.Bundle.ConstantsHash != source.Hash {
+		return false
+	}
+	if r.spec.PolicyID != "chaos.t0_t1" && r.spec.PolicyID != "casual.t0_t1" {
+		return false
+	}
+	if _, ok := r.suite.Bundle.Routes.Gate(tier2GateID); !ok {
+		return false
+	}
+	for _, inherited := range scenario.Runs {
+		inherited.HorizonMS = source.Spec.HorizonMS
+		if inherited == source.Spec {
+			return true
+		}
+	}
+	return false
+}

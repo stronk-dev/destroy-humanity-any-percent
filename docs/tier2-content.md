@@ -88,6 +88,15 @@ those sampled literals satisfies both personas' envelope; at the provisional `1e
 literal in `[1e7,1e9)` fails. It establishes neither an adopted balance nor full §P2 acceptance:
 Headcount/allocation and the new reference policy remain held.
 
+There is also a structural limitation in this implemented subset (RP-698): the copied
+Chaos policy has one nonrepeating two-hour session. Across all64 seeds its last action
+boundary is7,198,000ms, below P2's7,200,000ms Founder-attended minimum. Gate crossings
+occur only at those actual action boundaries and attended time cannot exceed elapsed
+wall time; the median is therefore either below the floor or unreached. A six-hour
+wall horizon does not extend that session. This is an activity-window/target contract
+constraint, not evidence that changing a gate price will fix the pacing. Existing
+measurements remain observations; no longer session or relaxed target is adopted.
+
 ## Not yet implemented
 
 - §H headcount, the P4 seats row and P5 (OD-1).

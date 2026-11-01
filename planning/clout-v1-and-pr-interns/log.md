@@ -9183,3 +9183,97 @@ Full97 H4 pairs/194runs, other workload/compatibility/cost/error/report work,
 RP-680/27AC6/history guard, both drafts' adoption, liveSQL/TS/product/release and
 archival gates remain open. No push. This is another bounded consumer proof
 toward the unchanged nine-tier1.0 goal, not a feature-completion claim.
+
+### H3ai — actual Tier2 caller, plus RP-698 activity-window constraint
+
+2026-11-01, d6e2ff21-exclusive manual research. Previous goal turn PROGRESS:
+RP-697 caller-identity correction independently approved. Actual RunTier2Pacing
+inherits the first-hour spec but supplies6h/12h horizons; pretending that is the
+unchanged first-hour scenario would bypass a correct source refusal. A separate
+registered-constructor profile now binds exact inherited non-horizon fields,
+supplied spec, supported Chaos/Casual policy, candidate hash and Tier2-only mode.
+The reversible overlay delegates ONLY undeclared Tier2 specs to that profile;
+ordinary first-hour/source/history/catalog refusals remain. The real public
+constructor/loop, gate/exit methods and source14 lifetime-only primitives execute.
+
+Predeclared14 instrument cases: existing seven calibration literals × both
+policies at seed0; original tuple/6h/12h wall horizons/transition bounds and the
+existing calibration90m timeout unchanged. This is not the full672 calibration.
+First1022 FAIL215.190s/Make2: my extra terminal assertion wrongly required all
+gate crossings to occur in run3, contradicting the accepted first crossing in
+ANY run. Four legitimate run2 crossings failed. Retain
+`.cache/first-hour-tier2-consumer-1793562633624789000.jsonl`,14 observed rows but
+only10 Complete/no footer: INVALID study, not a product failure. Correct the
+instrument to compare actual public gate sequence/time/exit history and retirement;
+do not change mechanics, drop cases or force early crossings through extra Exits.
+
+Final native82585 PASS218.572s; Linux-amd6441888 PASS327.579s including source/
+activity tests. All14 unique cases complete as measurements with full footer;
+four high-literal Chaos must_reach failures remain visible.27193 full Company/
+supported partial-Founder/history observations,20403 selected actions,42 returns,
+24 restarts and14525 run3 observations match independent original-interval
+primitive replay.47596 charged transitions remain separate from569589 actual
+legal probes (68208 applied/501381 rejected,0 clone/primitive errors).
+
+All14 actual public Tier2PacingResult summaries equal legacy. That DTO has NO
+cash/lifetime/full-state fields: this is not legacy ledger equivalence or repair
+of the earlier accounting differences. Complete native/Linux observation rows,
+summary reports and command/final-state hashes agree with ONLY ElapsedNS excluded.
+Native actual frame values are compared to independent sparse primitive replay,
+not to unobserved internal legacy states. No speed or exhaustive-operation claim.
+
+**RP-698 changes the next action.** Actual Chaos has one nonrepeating7200000ms
+session at2000ms cadence. All64 seeds enumerate3600 boundaries each/230400 total,
+last7198000ms, below P2's7200000ms Founder-attended minimum. This public policy
+only crosses gates at those boundaries; Founder-attended time is accumulated
+disjoint elapsed intervals minus absences, never greater than elapsed wall time.
+Thus any finite p50 is below the floor; otherwise it is unreached. A6h supplied
+horizon cannot extend that declared activity window. Four high-literal Chaos
+seed0 cases concretely stop after3600 observations and remain unreached. A
+duration-only cloned-policy ENUMERATOR control has10800 boundaries/last21598000ms;
+it is never installed, measured for payouts or adopted. This constrains the
+implemented copied-policy subset, not all future Tier2 policies. Existing finite
+sweeps remain observations, not proof that a new gate price will fix this target.
+Authored activity-window/envelope reconciliation must precede that conclusion;
+no policy, session or target is changed in this batch.
+
+Additional root checks: affected nine lifecycle cases plus source/window35921
+PASS2.701s; full existing source/history and decoded-catalog refusal selectors
+51899 PASS0.383s; new source-only initial99966 PASS0.236s; overlay harness/
+production vet PASS; gofmt/diff PASS. Native/Linux14 use the same frozen inputs.
+Raw artifacts (ignored, unchanged):
+
+- `.cache/first-hour-tier2-consumer-1793562969666562000.jsonl`, SHA256
+  `541abe222d6618705891c7970fc2619fb38ae65553c71e40071868dfd7412e33`;
+- `.cache/first-hour-tier2-consumer-1793563010020271877.jsonl`, SHA256
+  `45b9b8a0af57d4bd3905e86de6f84f456eeb8031694d105396bb0ed8c4456056`.
+
+Both embed base d6e2ff216841fc176bde0a0cf049c14614d07f29 plus62 mapped/runtime
+source hashes, verified before/after execution. ManifestSHA
+20fe6d264d3e09beeeb057801d1274ff62e79713c990882ee818f751a0aa0c1f;
+generated lifecycle333443c42c4bca492d3df7e80e550484bc131edafe5e866d4d3da9e54ff055de.
+This is not a complete compiler/input inventory or security attestation. Default
+Tier2 helpers and scenario/policy/candidate files are unchanged against that Git
+base (`git diff --exit-code` passes). Existing loader identities independently
+re-derived from those unchanged inputs: scenario18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba,
+policye5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3;
+each row's Hash binds its actual candidate bundle. Historical outputs are not
+regenerated or restamped.
+
+Reproduce from root:
+
+```sh
+node planning/clout-v1-and-pr-interns/probes/prepare-first-hour-tier2-observation.mjs
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/first-hour-tier2-overlay.json -run TestOwnedTier2ConsumerResearch -timeout 90m -v'
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/first-hour-tier2-overlay.json -run "TestOwnedTier2SourceAdmissionResearch|TestOwnedTier2DeclaredActivityWindowResearch|TestOwnedFirstHourSourceBindingResearch|TestOwnedFirstHourDecodedCatalogMutationResearch" -v'
+docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/first-hour-tier2-overlay.json -run 'TestOwnedTier2ConsumerResearch|TestOwnedTier2SourceAdmissionResearch|TestOwnedTier2DeclaredActivityWindowResearch' -timeout 90m -v ./harness -count=1
+make vet GO_PACKAGES='-overlay=../.cache/first-hour-tier2-overlay.json ./harness ./production'
+```
+
+Manual probes/draft evidence and factual docs/ledger/roadmap routing only. No
+product/normalCI/save schema/data/kernel0.3.223/epoch8 change, full calibration,
+TS/SQL/live migration, either draft's adoption, feature/release acceptance,
+archival, deployment or push. RP-680/27AC6/history guard and other actual caller/
+workload/cost/error/report gates remain open. Review by: Codex root (author/first
+filter). Recorded by: Codex root. Fresh independent technical review of the
+complete committed range is pending; RP-698 stays OPEN pending its contract fix.

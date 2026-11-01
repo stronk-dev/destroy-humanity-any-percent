@@ -2112,6 +2112,34 @@ consumer check is not the full194 H4 treated/control population, live persistenc
 modern-profile integration or draft adoption. The owning log retains the initial
 invalid starter assumption, exact source/artifact identities, checks and review.
 
+#### H3ai — Actual Tier2 derived-horizon caller (manual)
+
+The [Tier2 overlay](../planning/clout-v1-and-pr-interns/probes/prepare-first-hour-tier2-observation.mjs)
+admits the actual registered public constructor's inherited spec plus its supplied
+derived horizon, not arbitrary first-hour source changes. Non-horizon fields,
+policy, candidate hash and Tier2-only context must match; ordinary undeclared
+first-hour specs still refuse. Existing source/history/catalog controls execute.
+
+Fourteen seed0 public cases cover all seven existing calibration literals and
+both supported policies at the original6h/12h horizons. Native/Linux semantic
+rows agree apart from elapsed. Full Company/partial-Founder/action/session/
+ending/gate history matches independent original-interval replay at27193 frames,
+including20403 selected actions,42 returns and24 restarts. The first crossing
+may occur in run2: an initial run3-only instrument assertion was invalid and is
+retained as such. Four unreached Chaos rows remain visible, not excluded.
+All14 public Tier2PacingResult summaries equal legacy; that DTO has no cash or
+lifetime fields, so this is NOT legacy full-state/accounting equivalence.
+
+RP-698 is a separate actual-producer constraint: all64 Chaos seeds'230400
+boundaries stop at7198000ms, below P2's7200000ms Founder-attended minimum, even
+with a6h wall horizon. No gate-price choice can put this subset's finite median
+inside the envelope. A duration-only enumerator control distinguishes the cause
+but is not installed, adopted or a measured payout. The authored activity-window/
+envelope contract must reconcile before another sweep is treated as a complete
+balance verdict. This14-case instrument is not the full672 calibration, future
+allocation-aware policy, TS/SQL/live migration, a new budget or either draft's
+adoption. Exact failures, source identities and review are in the owning log.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -2379,3 +2407,7 @@ numeric tolerance, authored content or narrowed1.0 scope.
   preserving full tree/starter/frozen-bonus histories against independent replay.
   Retain four legacy report differences; bounded native/Linux agreement is not
   the full H4 population, a migrated protocol or normative adoption.
+- 2026-11-01: H3ai binds the actual Tier2 derived-horizon consumer and14 complete
+  public observations, preserving unreached cases and first crossing in any run.
+  RP-698 exposes the copied Chaos activity window's incompatible pacing floor;
+  no session, target, balance or calculation protocol is adopted here.

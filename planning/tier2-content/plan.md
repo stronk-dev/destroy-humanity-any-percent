@@ -18,6 +18,18 @@ observation. Exact evidence/limits are recorded in the owning log.
 This changes neither the existing result fields nor candidate/policy/balance data;
 full pacing, Headcount, mint and accounting/search gates remain open.
 
+**New pacing constraint, 2026-11-01 — RP-698:** the implemented subset's copied
+Chaos session ends at7198000ms for every seed, below P2's7200000ms Founder-attended
+minimum. Supplying a6h wall horizon does not extend its sole2h session, so price
+changes alone cannot satisfy that policy's p50 envelope here. The owning
+[Clout research log](../clout-v1-and-pr-interns/log.md) records all64-seed boundary
+evidence, the isolated unadopted duration control and14 native/Linux actual public
+consumer comparisons with full independent state/history replay. Unreached rows
+are retained. Authored activity-window/envelope reconciliation is now required
+before interpreting another calibration as a complete price/balance verdict.
+No session, target, content or policy is changed; full672 calibration, the future
+allocation-aware policy and all existing feature/mint gates stay open.
+
 **Review checkpoint, 2026-10-08:** Codex independently approves the original C1–C4 candidate,
 era and control changes and the bounded C5 pacing implementation/reproduction in the exact
 ranges cited in the owning log. This is bounded review, not AC0–AC10 completion: C6, later corrections,

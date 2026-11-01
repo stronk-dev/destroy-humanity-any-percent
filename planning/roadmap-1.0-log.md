@@ -5656,3 +5656,18 @@ Reviewers must inspect the actual complete scope, execute relevant checks and
 report exact ranges, evidence and limitations with actual reviewer/recorder
 provenance. The implementer cannot approve its own work. No outstanding review
 is automatically closed; no product, test, release or publication change.
+
+## 2026-11-01 — Tier2 pacing's activity-window constraint
+
+At base d6e2ff21, H3ai's manual actual-public consumer study completes14 cases
+native/Linux with full independent state/history replay; four unreached Chaos
+rows remain visible. Exact all64-seed enumeration gives230400 action boundaries,
+last7198000ms < P2's7200000ms Founder-attended minimum. That implemented subset
+cannot satisfy the median envelope merely by changing gate prices, despite its
+6h wall horizon (RP-698). Authored activity-window/target reconciliation precedes
+further price-calibration conclusions; no policy, balance, target or1.0 floor is
+changed. The owning Clout log holds initial invalid instrument evidence, results,
+raw source/digests and pending complete-range technical review. This is not the
+full672 calibration, legacy cash equivalence, accounting repair or another tier.
+RP-697's separate caller-identity correction is already independently approved;
+all wider review/adoption/release gates stay open. No publication or deployment.

@@ -1,0 +1,265 @@
+package harness
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"reflect"
+	"slices"
+	"testing"
+	"time"
+)
+
+type manualTier2CaseResearch struct {
+	Amount, Policy, Failure, Hash                                  string
+	Complete                                                       bool
+	Observations, Actions, Returns, Restarts, RunThreeObservations int
+	Transitions                                                    int64
+	Legal                                                          firstHourLegalWorkResearch
+	Actual, Legacy                                                 Tier2PacingResult
+	ReportsEqual                                                   bool
+	CommandHash, FinalStateHash                                    string
+	ElapsedNS                                                      int64
+}
+
+func observeTier2CaseResearch(t *testing.T, suite *FirstHourSuite, amount, policy string, row *manualTier2CaseResearch) {
+	t.Helper()
+	row.Failure = "public constructor"
+	started := time.Now()
+	defer func() { row.ElapsedNS = time.Since(started).Nanoseconds() }()
+	bundle := tier2PacingBundle(t, suite, amount)
+	row.Hash = bundle.ConstantsHash
+	horizon := int64(21_600_000)
+	if policy == "casual.t0_t1" {
+		horizon = 43_200_000
+	}
+	spec := tier2Spec(suite, policy, horizon)
+	var observed *firstHourRuntime
+	var scope *manualFirstHourScopeResearch
+	var life *manualFirstHourLifecycleResearch
+	setups := 0
+	manualCareerSetupResearch = func(r *firstHourRuntime) (func(), error) {
+		setups++
+		if setups != 1 || r.tier2 == nil || r.career != nil || r.spec != spec || r.seed != 0 || r.companyRevision().ConstantsHash != bundle.ConstantsHash {
+			return nil, fmt.Errorf("Tier2 public constructor/source mismatch")
+		}
+		observed = r
+		manualTier2SourcesResearch[r] = manualTier2SourceResearch{spec, bundle.ConstantsHash}
+		t.Cleanup(func() { delete(manualTier2SourcesResearch, r) })
+		commands := []FirstHourScriptCommand{}
+		r.commands = &commands
+		scope, life = installLifecycleForTestResearch(t, r)
+		scope.certified = true
+		ref := populationRuntimeResearch(t, r.suite, r.spec, r.seed, r.experiment)
+		ref.tier2 = &tier2Runtime{}
+		reference := &firstHourPopulationReferenceResearch{r: ref, anchor: firstHourEncodeResearch(t, ref.company), observed: Epoch, session: -1}
+		selected := 0
+		legal := &firstHourLegalWorkResearch{}
+		firstHourLegalWorkByRuntimeResearch[r] = legal
+		manualCareerStepsResearch[r] = func(b firstHourBoundary) error {
+			row.Failure = fmt.Sprintf("independent Tier2 boundary%d", life.next-1)
+			reference.check(t, r, scope, life, b, selected)
+			selected = len(scope.selections)
+			if !reflect.DeepEqual(r.tier2, ref.tier2) {
+				t.Fatal("independent Tier2 gate/exit history differs")
+			}
+			row.Observations++
+			if r.company.RunSeq == 3 {
+				row.RunThreeObservations++
+			}
+			row.Legal = *legal
+			if r.tier2.done() {
+				life.ended = true
+			}
+			return nil
+		}
+		return func() { delete(manualCareerStepsResearch, r); delete(firstHourLegalWorkByRuntimeResearch, r) }, nil
+	}
+	t.Cleanup(func() { manualCareerSetupResearch = nil })
+	var err error
+	row.Actual, err = suite.RunTier2Pacing(spec, 0, Tier2PacingConfig{Bundle: bundle, Experiment: tier2Experiment})
+	manualCareerSetupResearch = nil
+	if err != nil {
+		t.Fatal("actual public Tier2 refused", err)
+	}
+	if setups != 1 || observed == nil || row.Observations == 0 {
+		t.Fatal("actual public Tier2 observation disconnected")
+	}
+	for _, failure := range row.Actual.InvariantFailures {
+		if failure != "must_reach:milestone.it_company_gate" {
+			t.Fatal("INVALID Tier2 execution", failure)
+		}
+	}
+	row.Failure = "terminal census and legacy comparison"
+	row.Actions, row.Returns, row.Restarts = len(scope.selections), scope.gaps, life.restarts
+	row.Transitions = observed.transitions
+	if observed.transitions != int64(scope.advances+scope.points+scope.actions) {
+		t.Fatal("Tier2 owned work omitted")
+	}
+	if row.Legal.Calls != row.Legal.Applied+row.Legal.Rejected || row.Legal.CloneFailures != 0 || row.Legal.PrimitiveErrors != 0 || row.Legal.Calls == 0 {
+		t.Fatal("invalid/disconnected Tier2 legal work", row.Legal)
+	}
+	if row.Actual.GateFounderAttendedMS != nil {
+		if row.Actual.GateRunSeq != observed.company.RunSeq || row.Restarts != int(observed.company.RunSeq-1) || row.Actual.ElectiveExits != observed.tier2.electiveExits || !reflect.DeepEqual(row.Actual.GateFounderAttendedMS, observed.tier2.gateMS) || !life.ended {
+			t.Fatal("Tier2 did not preserve/close the actual first crossing in any run")
+		}
+		if err := scope.require(); err == nil {
+			t.Fatal("terminal Tier2 owner remained usable")
+		}
+	}
+	row.Legacy, err = suite.RunTier2Pacing(spec, 0, Tier2PacingConfig{Bundle: bundle, Experiment: tier2Experiment})
+	if err != nil {
+		t.Fatal("legacy public Tier2 refused", err)
+	}
+	for _, failure := range row.Legacy.InvariantFailures {
+		if failure != "must_reach:milestone.it_company_gate" {
+			t.Fatal("INVALID legacy Tier2 execution", failure)
+		}
+	}
+	row.ReportsEqual = reflect.DeepEqual(row.Actual, row.Legacy)
+	row.CommandHash = populationCommandsDigestResearch(t, *observed.commands)
+	row.FinalStateHash = populationDigestResearch(firstHourEncodeResearch(t, observed.company))
+	row.Complete = true
+	row.Failure = ""
+	t.Logf("complete Tier2 gate%s %s observations%d actions%d returns%d restarts%d run3%d reached%v legacy_equal%v transitions%d legal%+v", amount, policy, row.Observations, row.Actions, row.Returns, row.Restarts, row.RunThreeObservations, row.Actual.GateFounderAttendedMS != nil, row.ReportsEqual, row.Transitions, row.Legal)
+}
+
+func TestOwnedTier2ConsumerResearch(t *testing.T) {
+	manifest, err := os.ReadFile("../../.cache/first-hour-tier2-sources.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var sources struct {
+		Head  string
+		Files map[string]string
+	}
+	if json.Unmarshal(manifest, &sources) != nil || len(sources.Head) != 40 || len(sources.Files) < 56 {
+		t.Fatal("invalid Tier2 source manifest")
+	}
+	for path, want := range sources.Files {
+		data, err := os.ReadFile("../../" + path)
+		if err != nil || populationDigestResearch(data) != want {
+			t.Fatal("Tier2 source changed", path, err)
+		}
+	}
+	suite := tier2PacingSuite(t)
+	path := fmt.Sprintf("../../.cache/first-hour-tier2-consumer-%d.jsonl", time.Now().UnixNano())
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+	encoder := json.NewEncoder(file)
+	write := func(value any) {
+		t.Helper()
+		if err := encoder.Encode(value); err != nil {
+			t.Fatal(err)
+		}
+		if err := file.Sync(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	write(map[string]any{"type": "begin", "expected": 14, "complete": false, "sources": json.RawMessage(manifest)})
+	t.Logf("Tier2 progress%s; incomplete without full14 footer", path)
+	complete := 0
+	for _, amount := range []string{"3e6", "1e7", "3e7", "1e8", "2e8", "3e8", "5e8"} {
+		for _, policy := range []string{"chaos.t0_t1", "casual.t0_t1"} {
+			row := manualTier2CaseResearch{Amount: amount, Policy: policy}
+			t.Run(amount+"/"+policy, func(t *testing.T) { observeTier2CaseResearch(t, suite, amount, policy, &row) })
+			if row.Complete {
+				complete++
+			} else if row.Failure == "" {
+				row.Failure = "not executed or incomplete"
+			}
+			write(row)
+		}
+	}
+	if complete != 14 {
+		t.Fatal("INVALID incomplete Tier2 population", complete)
+	}
+	write(map[string]any{"type": "complete", "complete": true, "cases": complete})
+}
+
+func TestOwnedTier2SourceAdmissionResearch(t *testing.T) {
+	suite := tier2PacingSuite(t)
+	bundle := tier2PacingBundle(t, suite, "")
+	measurement := suite.tier2PacingMeasurement(bundle)
+	spec := tier2Spec(suite, "chaos.t0_t1", 21_600_000)
+	r := populationRuntimeResearch(t, &measurement, spec, 0, tier2Experiment)
+	r.tier2 = &tier2Runtime{}
+	if manualTier2DerivedSourceResearch(r, suite.Scenario) {
+		t.Fatal("unregistered Tier2 source admitted")
+	}
+	manualTier2SourcesResearch[r] = manualTier2SourceResearch{spec, bundle.ConstantsHash}
+	t.Cleanup(func() { delete(manualTier2SourcesResearch, r) })
+	if !manualTier2DerivedSourceResearch(r, suite.Scenario) {
+		t.Fatal("actual inherited Tier2 spec refused")
+	}
+	r.tier2 = nil
+	if manualTier2DerivedSourceResearch(r, suite.Scenario) {
+		t.Fatal("ordinary first-hour accepted derived horizon")
+	}
+	r.tier2 = &tier2Runtime{}
+	r.career = &careerRuntime{}
+	if manualTier2DerivedSourceResearch(r, suite.Scenario) {
+		t.Fatal("mixed career accepted Tier2 profile")
+	}
+	r.career = nil
+	for _, mutate := range []func(){func() { r.spec.SeedCount-- }, func() { r.spec.PolicyVersion++ }, func() { r.spec.HorizonMS++ }, func() { r.suite.ConstantsHash = suite.ConstantsHash }} {
+		originalSpec, originalHash := r.spec, r.suite.ConstantsHash
+		mutate()
+		if manualTier2DerivedSourceResearch(r, suite.Scenario) {
+			t.Fatal("changed inherited/source coordinates admitted")
+		}
+		r.spec, r.suite.ConstantsHash = originalSpec, originalHash
+	}
+}
+
+// P2's minimum is two Founder-attended hours. The actual copied Chaos policy
+// ends its sole nonrepeating session strictly before that coordinate, even
+// though the supplied wall horizon is six hours. This is an instrument/contract
+// constraint, not a proposed longer session or a balance retune.
+func TestOwnedTier2DeclaredActivityWindowResearch(t *testing.T) {
+	suite := tier2PacingSuite(t)
+	policy, ok := suite.Policy.Policy("chaos.t0_t1", 1)
+	if !ok {
+		t.Fatal("declared Chaos policy absent")
+	}
+	before, err := json.Marshal(policy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	spec := tier2Spec(suite, policy.PolicyID, 21_600_000)
+	const envelopeMinimum int64 = 7_200_000
+	count, last := 0, int64(-1)
+	for seed := uint64(0); seed < uint64(spec.SeedCount); seed++ {
+		boundaries, err := firstHourBoundaries(policy, seed, spec.HorizonMS)
+		if err != nil || len(boundaries) != 3600 {
+			t.Fatal("actual Chaos boundary population changed", seed, len(boundaries), err)
+		}
+		for _, b := range boundaries {
+			if b.atMS >= envelopeMinimum {
+				t.Fatal("current policy supports the target envelope; constraint no longer applies", seed, b)
+			}
+		}
+		last = boundaries[len(boundaries)-1].atMS
+		if last != 7_198_000 {
+			t.Fatal("actual last Chaos boundary changed", seed, last)
+		}
+		count += len(boundaries)
+	}
+	// Cause-isolating enumerator control only; do not install it in a runtime,
+	// change catalog/policy bytes or claim any resulting pacing outcome.
+	longer := policy
+	longer.Sessions = slices.Clone(policy.Sessions)
+	longer.Sessions[0].DurationMS = spec.HorizonMS
+	control, err := firstHourBoundaries(longer, 0, spec.HorizonMS)
+	if err != nil || len(control) != 10800 || control[len(control)-1].atMS != 21_598_000 {
+		t.Fatal("activity-window control did not distinguish longer horizon", err)
+	}
+	after, _ := json.Marshal(policy)
+	if string(before) != string(after) {
+		t.Fatal("counterfactual mutated ratified policy")
+	}
+	t.Logf("all%d Chaos seeds/%d actual boundaries end at%d < P2 minimum%d; extending wall horizon alone does not extend the declared session; unadopted enumerator control has%d boundaries", spec.SeedCount, count, last, envelopeMinimum, len(control))
+}

@@ -2140,7 +2140,11 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
 2. **Repair correctness and balance without hiding failures.** Resolve Clout partition/offline
    calculation/settlement/search contracts (the narrow offline wording is reconciled), the
    shared attendance-clock contract and historical kernel guard. Finish the
-   natural pacing/relevance and candidate-copy/content gates. Diagnose the hosted standard-pacing
+   natural pacing/relevance and candidate-copy/content gates. New2026-11-01 Tier2 constraint
+   RP-698 requires authored activity-window/envelope reconciliation: its implemented Chaos
+   session stops before the target's minimum, so another price sweep cannot alone fix it.
+   The [owning research log](clout-v1-and-pr-interns/log.md) holds the native/Linux consumer
+   evidence and exact all-seed bound; no session/target is changed. Diagnose the hosted standard-pacing
    cost and incomplete maintenance population before proposing optimization or budget changes;
    controlled cash/maturity fixtures
    are integration proof, not evidence that the economy or progression is ready to ship.

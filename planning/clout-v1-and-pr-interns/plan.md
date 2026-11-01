@@ -291,6 +291,34 @@ it is not an unchanged first-hour scenario RunSpec. Bind that actual producer
 contract explicitly before claiming its population, rather than loosening the
 existing source14 lifecycle's outside-scenario refusal.
 
+H3ai (d6e2ff21-exclusive, manual research): bind the real RunTier2Pacing
+constructor's inherited policy/spec with its explicitly supplied derived horizon.
+Require the registered caller, exact inherited non-horizon fields, actual
+candidate hash, supported Chaos/Casual policy and no Career runtime; leave all
+ordinary first-hour outside-scenario refusals intact. First exercise the existing
+seven calibration literals × both policies at seed0 (14 cases), with unchanged
+6h/12h horizons, tuple, transition budget and the existing calibration90m test
+deadline. Independent primitive replay covers full Company/partial-Founder,
+actual session returns, both ending bodies and Tier2 gate/exit history. Compare
+complete public results to legacy without forcing equality; retain unreached
+must_reach observations and all errors/guards. Source/admission and bad-history
+controls must discriminate. This is an instrument/consumer check, NOT the full
+672-run calibration, adoption, a retune or a live accounting repair. Execute
+native/Linux/vet and independent technical review; preserve historical artifacts.
+
+H3ai result: all14 public consumer cases complete as observations; four Chaos
+must_reach failures remain visible. Native218.572s/Linux327.579s, exact semantic
+row equality except elapsed.27193 full frames/20403 actions/42 returns/24 restarts
+match independent original-interval replay. Public Tier2 summaries equal legacy,
+not a legacy full-cash/lifetime comparison (that DTO has no such fields).
+RP-698 changes the next Tier2 action: all64 Chaos seeds end their actual session
+at7198000ms, below P2's7200000ms minimum, regardless of a6h supplied wall horizon.
+Obtain authored activity-window/envelope reconciliation before another gate-price
+calibration. The isolated duration-only enumerator control is not adopted.
+Initial run's false run3-only gate assertion is disclosed as invalid; final
+oracle respects first crossing in any run. Fresh technical review pending.
+Other caller/workload/cost/error/report and original accounting gates remain.
+
 RP-695 corrective batch (04dda624-exclusive): archived T01-C33's shared ordered
 policy decisions and existing RunExperimentScript observation contract authorize
 recording the actual Reference winner, not every explored candidate. Retain its
