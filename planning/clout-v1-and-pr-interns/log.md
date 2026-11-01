@@ -8635,3 +8635,51 @@ No live product/schema/data/CI/golden/kernel223/epoch8 change, archival, publica
 or push. Full nine-tier goal stays active. Next: certified first-hour query and
 complete actual workload/error/work proof under unchanged bounds, not more passing
 monotonicity samples or an increased budget for this exact scan.
+
+### H3ae — independent review: changes required, decoded catalogs omitted
+
+CHANGES REQUIRED on complete `446a8bc5..a8b627e2`. Review by: fresh independent
+Codex `/root/first_hour_lifecycle_technical_review`. Recorded by: Codex root.
+Reviewer independently passes focused lifecycle/source cases (2.751s), generator
+and vet, but executes a discriminating identity probe: after installation, changing
+the consumed career ReputationTree.Bonus.PerLevelPPM passes scope.require and
+actual restart, producing factor 2.20762075e0 vs unchanged 2.2075e0. Its ignored
+`TestFirstHourReviewDecodedTreeMutation` fails harness 0.306s/Make exit2 using
+`.cache/first-hour-review-overlay.json`. A first career-none probe also admitted
+the mutation but both factors stayed1e0; cheapest is the executed divergent case.
+Artifact bytes/hash alone do NOT bind mutable decoded objects. The verdict does
+not approve the checkpoint; semantic/work distinction otherwise judged candid.
+
+Repair reuses the real replaycatalog.Load on independent copied pinned artifacts,
+validates complete typed decoded bundle equality at construction, and guards the
+live source/career bundles against those independent values at operation entry.
+No generic JSON clone, aliased snapshot or second catalog decoder. Add the exact
+tree mutation before/after installation to permanent manual regression subjects;
+both must refuse without consuming Company, bonus or owner. Re-review the complete
+original+correction range after cold old-failing/current-passing evidence.
+
+Correction evidence: permanent before_install/after_install regressions BOTH fail
+against the a8b627e2 lifecycle source in an otherwise current copied overlay:
+40070, harness 0.257s, Make exit2 (decoded mutation admitted). Corrected focused
+nine lifecycle + source/history/construction + both regressions pass 34208,
+2.923s. Frozen complete affected selector above reruns: native 33930 PASS 24.720s,
+Linux-amd64 26797 PASS 52.031s; corrected overlay vet PASS. Prior eighteen runtime,
+72 candidate, lifetime/input and all three existing whole-runner populations remain
+included and pass. All work/report mismatches are unchanged and still OPEN.
+
+Corrected source SHA256 lifecycle
+`5fb8ba86389b15f31130453d24c21b8070b17948223fc8071751c4f6a95436b5`;
+tests `a4613ffacd757692ca6ff82e7f1df7e65b1e3160dea1a89d84a2ecc59901d7c0`.
+Shared bridge/generator/43-entry overlay hashes above remain unchanged. To repeat
+the old failure, materialize the lifecycle source from a8b627e2, override only
+`harness/manual_first_hour_lifecycle.go` in a copied current overlay, and select
+`TestOwnedFirstHourDecodedCatalogMutationResearch`; corrected run uses the original
+overlay with the same selector. Real catalog reloads/typed comparisons add setup
+and operation-entry work beyond the projection/action census; no budget/report
+feasibility claim is inferred. No catalog values are retuned or new decoder added.
+
+Five-path correction after a8b627e2 is submitted together with the entire original
+446a8bc5-exclusive H3ae range for independent re-review. Review by: Codex root
+(author/first filter). Recorded by: Codex root. Original non-approval remains on
+record; neither it nor these local passes approve the corrected batch. No live
+product/adoption/acceptance/release promotion or push; full nine-tier goal active.

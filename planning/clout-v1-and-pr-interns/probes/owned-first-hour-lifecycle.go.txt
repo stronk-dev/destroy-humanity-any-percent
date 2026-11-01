@@ -15,20 +15,22 @@ import (
 
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/save"
 )
 
 // An in-process source binding, not a wire/hash protocol or general persisted
 // Founder factory. The actual first-hour instrument owns a partial Founder.
 type manualFirstHourLifecycleResearch struct {
-	scope         *manualFirstHourScopeResearch
-	header, frame []byte
-	founder       *save.State
-	bonus         []multiplier.Contribution
-	boundaries    []firstHourBoundary
-	next          int
-	inStep, ended bool
-	restarts      int
+	scope                *manualFirstHourScopeResearch
+	header, frame        []byte
+	founder              *save.State
+	bonus                []multiplier.Contribution
+	boundaries           []firstHourBoundary
+	next                 int
+	inStep, ended        bool
+	restarts             int
+	bundle, careerBundle production.CatalogBundle
 }
 
 var manualFirstHourLifecyclesResearch = map[*firstHourRuntime]*manualFirstHourLifecycleResearch{}
@@ -160,6 +162,9 @@ func (life *manualFirstHourLifecycleResearch) guard() error {
 	if life.ended {
 		return fmt.Errorf("first-hour measurement already ended")
 	}
+	if !reflect.DeepEqual(life.scope.runtime.suite.Bundle, life.bundle) || life.scope.runtime.career != nil && !reflect.DeepEqual(life.scope.runtime.career.config.Bundle, life.careerBundle) {
+		return fmt.Errorf("first-hour decoded catalogs differ from pinned artifacts")
+	}
 	origin, ok := life.scope.binding.Identity.(*manualFirstHourOriginResearch)
 	if !ok || !reflect.DeepEqual(origin.external, life.scope.runtime.external()) {
 		return fmt.Errorf("first-hour frozen external context changed")
@@ -254,7 +259,17 @@ func installFirstHourLifecycleResearch(scope *manualFirstHourScopeResearch) (*ma
 	if r.lastSession != previousSession {
 		return nil, fmt.Errorf("first-hour source session does not bind declared prefix")
 	}
-	life := &manualFirstHourLifecycleResearch{scope: scope, boundaries: boundaries, next: index}
+	bundle, err := freezeFirstHourCatalogResearch(r.suite.Bundle)
+	if err != nil {
+		return nil, err
+	}
+	life := &manualFirstHourLifecycleResearch{scope: scope, boundaries: boundaries, next: index, bundle: bundle}
+	if r.career != nil {
+		life.careerBundle, err = freezeFirstHourCatalogResearch(r.career.config.Bundle)
+		if err != nil {
+			return nil, err
+		}
+	}
 	if life.header, err = life.sourceHeader(); err != nil {
 		return nil, err
 	}
@@ -265,6 +280,24 @@ func installFirstHourLifecycleResearch(scope *manualFirstHourScopeResearch) (*ma
 	scope.guard = life.guard
 	manualFirstHourLifecyclesResearch[r] = life
 	return life, nil
+}
+
+// Use the real loader to snapshot ALL decoded values independently, including
+// private maps and raw Decimal identity. JSON of decoded catalogs is incomplete,
+// and retaining another pointer would alias precisely the mutation being guarded.
+func freezeFirstHourCatalogResearch(bundle production.CatalogBundle) (production.CatalogBundle, error) {
+	artifacts := make(map[string][]byte, len(bundle.Artifacts))
+	for name, data := range bundle.Artifacts {
+		artifacts[name] = bytes.Clone(data)
+	}
+	frozen, err := replaycatalog.Load(bundle.ConstantsHash, artifacts)
+	if err != nil {
+		return production.CatalogBundle{}, err
+	}
+	if !reflect.DeepEqual(frozen, bundle) {
+		return production.CatalogBundle{}, fmt.Errorf("first-hour decoded catalogs differ from pinned artifacts")
+	}
+	return frozen, nil
 }
 
 // Wrappers invoke the ACTUAL renamed method bodies from the reversible overlay;

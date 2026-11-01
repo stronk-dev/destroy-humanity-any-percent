@@ -197,6 +197,10 @@ This remains a manual source14 profile, not a general persisted Founder factory
 or natural-prefix/full registered runner proof. Full-report comparison FAILS:
 the exact fallback charges8012 vs11 transitions in one real continuation. Counter
 snapshots and explicit work accounting retain that result; no report is restamped.
+Independent review also catches a decoded-tree mutation that evades artifact-only
+identity and changes the real bonus. The correction reloads pinned catalogs into
+independent typed snapshots; before/after-install mutations now refuse. Review
+and full workload/preparation accounting remain explicit in the owning log.
 
 Next compose the existing producer/ledger/lifetime/time certificates with the
 actual first-hour profile instead of its expensive exact fallback. Prove the

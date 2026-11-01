@@ -337,3 +337,38 @@ func TestOwnedFirstHourSourceBindingResearch(t *testing.T) {
 		}
 	})
 }
+
+func TestOwnedFirstHourDecodedCatalogMutationResearch(t *testing.T) {
+	for _, when := range []string{"before_install", "after_install"} {
+		t.Run(when, func(t *testing.T) {
+			r := firstHourLifecycleFixtureResearch(t, "career_cheapest")
+			before := firstHourEncodeResearch(t, r.company)
+			if when == "before_install" {
+				scope := ownedFirstHourResearch(t, r)
+				r.career.config.Bundle.ReputationTree.Bonus.PerLevelPPM++
+				if _, err := installFirstHourLifecycleResearch(scope); err == nil || !strings.Contains(err.Error(), "decoded catalogs") {
+					t.Fatal("mutated decoded input admitted", err)
+				}
+				if scope.lifecycle || scope.guard != nil {
+					t.Fatal("invalid decoded source partially installed lifecycle")
+				}
+			} else {
+				scope, life := installLifecycleForTestResearch(t, r)
+				binding := scope.binding
+				r.career.config.Bundle.ReputationTree.Bonus.PerLevelPPM++
+				if err := scope.require(); err == nil || !strings.Contains(err.Error(), "decoded catalogs") {
+					t.Fatal("changed decoded context accepted", err)
+				}
+				if err := r.step(life.boundaries[life.next]); err == nil {
+					t.Fatal("changed decoded tree reached actual restart")
+				}
+				if scope.binding != binding || life.restarts != 0 || r.career.factor != "" {
+					t.Fatal("decoded input refusal consumed owner/bonus")
+				}
+			}
+			if !bytes.Equal(before, firstHourEncodeResearch(t, r.company)) || r.revision != 7 {
+				t.Fatal("decoded refusal mutated Company")
+			}
+		})
+	}
+}

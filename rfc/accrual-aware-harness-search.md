@@ -1973,6 +1973,15 @@ retain the real work counter, Founder-attended clock, decision/session history,
 milestones, ending, career fields and command capture including complete requests
 that ordinary report JSON intentionally omits. No wire identity/schema is added.
 
+Artifact identity alone is insufficient: the first independent review mutates a
+decoded career tree and obtains a different actual restart bonus without changing
+the artifact bytes. The corrected manual factory independently reloads pinned
+artifact copies through the real catalog loader, validates complete typed decoded
+bundles at construction, and compares source/career bundles with those independent
+values at guarded entry. Do not JSON-serialize private catalog maps/Decimals or
+retain an aliased pointer as the expected snapshot. Those loading/comparison costs
+are additional preparation work, not included in the query-point census below.
+
 Typed copies preserve the actual first-hour instrument's partial Founder. The
 closed supported shape includes its reputation/tree, knowledge, age, notoriety,
 network/history/fact fields; other Founder extensions refuse, rather than being
