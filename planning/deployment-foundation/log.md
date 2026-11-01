@@ -7673,3 +7673,34 @@ No production artifact/image authenticity, natural scheduling/off-host filesyste
 RPO/RTO, clean-host R-006, runtime metrics exposure or full Deployment/CI acceptance
 is established by these bounded checks. No feature checkbox, archival, new policy,
 publication, deployment or release approval; existing accounting/history/1.0 gates stay.
+
+## 2026-11-01 — First-scrape restart correction independently approved (RP-522)
+
+APPROVED complete one-commit12-path `db752b0a..bd91a9a6`, no blocking finding.
+Review by: fresh independent Codex `/root/restart_alert_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's delegation.
+All source/test/rule/docs/record edges inspected against DP7's unchanged threshold.
+
+At clean `9feb826a`, cold `make test-go GO_PACKAGES='./operations ./cmd/deployment-operations'
+GO_TEST_FLAGS='-count=1 -v'` passes1.616s/5.394s; matching vet passes. Actual
+`make test-deployment-restart-observer` passes65.132s: Docker count0→3, exact
+inspected creation time and age53.674502908s published without container identity.
+Pinned promtool tests pass using explicitly fetched/inspected linux/amd64 image
+`sha256:d2f7aaa363e1c220487d776f21a5d7a3416834826038c1d2b38f1adb9079ed93`.
+This fresh rule execution differs from the historical cached ARM64 evaluator.
+Go1.27.3 darwin/arm64; Docker28.4.0 linux/arm64 daemon. Gofmt/range whitespace
+pass; post-run owned restart-container label census empty. Native optional SQL/
+monitoring/private fixtures skip and are not credited.
+
+Runtime Go/unit bytes match the reviewed tip. Current rule population retains
+restart cases and adds later cleanup rules; current observer factors its witness
+into a helper, executed with profile=false. Later receiver/profile scope is NOT
+approved. Nonblocking historical hygiene finding: the original Postgres fixture
+omitted `docker rm --volumes`; its image declares an anonymous data volume.
+`c4279b66` already corrects that cleanup and current execution uses it. This does
+not imply approval of that broader later range or deletion of any old volume.
+
+This closes only RP-522 corrective review. Actual journal/retention, older
+pre-scrape history, broader alert receiver/AC7, exact artifact/clean-host R-006
+and feature/release approval remain open. No tracked reviewer changes, shared
+Postgres use, broad cleanup, kernel/data/CI change, archival or push.

@@ -231,7 +231,8 @@ container birth now reach the host textfile together. A new-container lifetime
 arm catches three restarts before the first scrape, preserving the original
 counter-increase rule and ten-minute threshold. Old rule regression fails;
 corrected pinned rules and actual automatic-restart/observer witness pass.
-The log owns checks and the range after `db752b0a`, pending designated review.
+Independent Codex corrective review APPROVES complete `db752b0a..bd91a9a6`;
+the log records actual Docker count0→3 and pinned amd64 rule execution.
 Continue live producer-to-receiver restart proof, actual journal/retention and
 exact release-artifact construction; no full AC7/clean-host/1.0 completion.
 
