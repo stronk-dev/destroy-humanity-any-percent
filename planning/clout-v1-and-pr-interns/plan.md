@@ -277,8 +277,9 @@ hashes agree across platforms (elapsed excluded). Four legacy reports still
 differ; the two Casual reports agree. Reference's cheapest policy buys only an
 unlock, not a starter: the initial instrument's contrary assertion was invalid,
 not a product failure; actual starter coverage comes from Chaos/Casual. Exact
-results/source bindings and independent technical review route are in the owning
-log. Next complete remaining registered workload/cost/error/report obligations;
+results/source bindings are in the owning log. Fresh independent technical review
+APPROVES complete da66036d..374a639f; this is not specification adoption.
+Next complete remaining registered workload/cost/error/report obligations;
 neither draft is adopted, and no full H4 or accounting gate is closed.
 
 RP-695 corrective batch (04dda624-exclusive): archived T01-C33's shared ordered

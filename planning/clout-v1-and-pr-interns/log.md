@@ -9151,3 +9151,35 @@ Both drafts stay unadopted. Full H4/other workloads/cost/error/report migration,
 RP-680/27AC6/historical guard and live/SQL/TS/release gates remain open. Next
 continue those actual caller/contract obligations, not activate the experiment.
 No new gameplay tier, archival, publication or push.
+
+### H3ah — independent technical approval
+
+APPROVED complete six-path `da66036d..374a639f`. Review by: fresh independent
+Codex `/root/first_hour_career_technical_review`. Recorded by: Codex root,
+transcribing its final verdict. No actionable findings; full probe/plan/draft/log
+range and reversible generated hooks inspected. Bounded research/instrument
+approval, not adoption of either draft or the accounting implementation.
+
+Independently executed native actual six-case public consumer PASS60.819s,
+overlay harness/production vet and final diff check PASS. Reviewer verifies all60
+bound source hashes and both author artifact digests, re-derives every population/
+legal count and compares complete semantic rows across author native/Linux and
+reviewer native with ONLY ElapsedNS removed. Reviewer raw artifact
+`.cache/first-hour-career-consumer-1793561328589423000.json`, SHA256
+`905b9ed41c995087dd6b1419fa8df4bb7a14230beebe38f986fc9f1840cbebad`.
+Author Linux108.312s remains author execution, not a reviewer Docker rerun.
+
+Two independent ignored-copy controls clear actual career.bonus or career.applied
+at the first real run3 boundary before the oracle. Both fire the exact independent
+career-history assertion, FAIL6.031s/FAIL6.115s/Make2, and produce no complete
+artifact. Control overlays `.cache/reviewer-career-bonus-control-overlay.json`
+and `.cache/reviewer-career-starter-control-overlay.json`; no tracked mutation.
+Filtered subcases cannot satisfy the complete-six census. The initial invalid
+starter assumption remains disclosed; Reference's unlock-only treatment is not
+excluded. Four actual legacy cash/lifetime/report mismatches remain, not hidden
+as elapsed/work-only drift. Tracked tree clean at374a639f.
+
+Full97 H4 pairs/194runs, other workload/compatibility/cost/error/report work,
+RP-680/27AC6/history guard, both drafts' adoption, liveSQL/TS/product/release and
+archival gates remain open. No push. This is another bounded consumer proof
+toward the unchanged nine-tier1.0 goal, not a feature-completion claim.
