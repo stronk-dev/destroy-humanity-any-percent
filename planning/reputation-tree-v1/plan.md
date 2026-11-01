@@ -4,6 +4,13 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
+**Corrective review checkpoint, 2026-11-01:** fresh independent Codex approves
+complete four-commit/24-path `1f533983..15d5d83d`, covering RP-627–RP-631. Real
+Linux-amd64/Postgres pin/Exit rollback and two-Exit career, client replay, migration,
+focused native/package and type/vet checks pass; exact provenance and limits are
+in the owning log. This closes those corrective reviews only. Original rejected
+feature ranges, R9 author-body, harness/balance, copy/mint and release gates remain.
+
 Current original harness review (2026-10-14): all6/10/4 paths in B8a/B8b/B8c
 have CHANGES REQUIRED dispositions. Historical probes reproduce already-filed
 Exit-sequence, forged-exclusion and artifact-binding defects; bounded original
@@ -12,8 +19,9 @@ fired H3 and H5/career-data/author gates remain; no measurement restamp or retun
 No product change in this review-record batch. The separate original maintenance
 closeout `2215fc2a..68777ab8` now also has a CHANGES REQUIRED disposition: cold
 full routing and fast execution pass, but RP-633's recipe-validation gap and
-RP-634's missing D3 fail-loud observation floor remain distinct. RP-633 is
-locally corrected at `15e82e38`, pending Claude; CI owns the RP-634 follow-up.
+RP-634's missing D3 fail-loud observation floor remain distinct. RP-633's complete
+`c05a196a..15e82e38` correction is independently approved (CI log, 2026-10-15);
+CI owns the unadopted RP-634 follow-up.
 Original declared B1–B8/maintenance ranges are dispositioned, not approved.
 Next consolidate corrective reviews and continue accepted construction without
 waiving the remaining balance/data/author/copy/mint and integrated gates.
@@ -32,30 +40,33 @@ preserving both valid arms and full-state rollback. RP-631 adds missing ordered
 Company-ended-event parity and complete rejected-Company observations to the
 five-case client consumer. Old shape failures and a vacuous old oracle are
 executed; kernel0.3.216, affected tests and all14 real-SQL plan faults pass.
-Both original B6 ranges now have CHANGES REQUIRED dispositions. New corrective
-batch after `3c26372b` needs Claude; this does not complete AC9/R8 or mint.
+Both original B6 ranges retain CHANGES REQUIRED dispositions. The corrective
+batch is included in the consolidated approval above; this does not complete
+AC9/R8 or mint.
 
 Current R7 event correction (2026-10-14): RP-629 rejects case aliases and
 duplicate raw names in run_started v2's nested Reputation summary. Shared14-case
 Go/client controls, nine real-SQL malformed-Exit refusals and affected legitimate
-Reputation workflows pass. Kernel0.3.215; the correction after `0c81cacb` needs
-Claude. Full original B5b fourteen-path review is CHANGES REQUIRED; original B5
-producer dispositions are now recorded, not acceptance of corrective descendants.
+Reputation workflows pass. Kernel0.3.215; the correction after `0c81cacb` is included
+in the consolidated approval above. Full original B5b fourteen-path review is
+CHANGES REQUIRED; original B5 producer dispositions are now recorded, not
+acceptance of corrective descendants.
 
 Current R3/AC6 database correction (2026-10-14): RP-628 demonstrates that the
 old count-only trigger commits same-count wrong-source/slot/target substitutions.
 Append-only migration00085 binds the required row to the pinned tree's bonus
 declaration; all five missing/extra/wrong-identity cases now refuse with complete
 pin/row rollback. The original B5a eleven-path range has a CHANGES REQUIRED
-disposition; this corrective batch after `23a8490f` needs Claude independently.
+disposition; this corrective batch after `23a8490f` is included in the
+consolidated approval above.
 This is new-pin admission, not historical repair or complete B5/AC6 acceptance.
 
 Current R3 correction (2026-10-14): RP-627 rejects positive sub-unit Reputation
 factors in the Go frozen resolver and TypeScript replay consumer. Existing R3
 requires state-valid factors >=1; no new mechanic, ceiling, content or owner
 choice is introduced. Old/current regression and affected runtime/SQL results
-are in the owning log. Kernel0.3.214; the coherent range after `1f533983` needs
-Claude's designated review, independently of the original B1/B2 dispositions.
+are in the owning log. Kernel0.3.214; the coherent range after `1f533983` is included
+in the consolidated approval above, independently of the original B1/B2 dispositions.
 
 Current R9 correction (2026-10-14): authoritative removal of focused Buy/Confirm
 preserves the stable row; a node losing availability dismisses its hidden

@@ -9852,3 +9852,56 @@ reconciliation, server/SQL/composed flows, Firefox/Linux, manual AT, performance
 full-CI and release acceptance remain separate. Reviewer writes no repository
 files; parent records provenance and reconciles current plan/ledger only. No
 archival, new specification adoption, content mint, push or deployment.
+
+## 2026-11-01 — RP-627–RP-631 consolidated independent corrective approval
+
+APPROVED complete four-commit/24-path base-exclusive range
+`1f5339832d921025bc8b8842ce7066e2e358f676..15d5d83d6987ec43bb4537f2a4a34688807986e6`,
+no blocking findings. Review by: fresh independent Codex
+`/root/reputation_accounting_corrective_review`. Recorded by: Codex root,
+transcribing its final verdict under Marco's corrective-review delegation.
+
+Reviewer inspected all source/test/migration/corpus/kernel/docs/record edges.
+R3 provider-specific factor floor, pinned-tree frozen-row identity, exact nested
+run-start fields, pre-mutation Exit purchase shape and complete ended-event/
+rejected-Company observations conform to accepted R3/R6/R7/R8. Recorded historical
+old-source failures and event-corruption evidence establish discrimination;
+no repeated mutation or tracked reviewer edit. Current kernel remains0.3.223.
+
+Executed at `968138a0`, whose reviewed Go paths/tests/corpus are unchanged from
+the endpoint. Later client terminal-preflight/accrual neighbors and kernel
+descendants are not included in this approval. Independent results:
+
+- Focused native domain/shape/raw-summary: Production0.275s/Save0.146s PASS.
+  Broader named native selection also passes, but verbose output truncates;
+  native DB tests skip and the Reputation package has no matching names.
+- Complete Reputation/Replaycatalog/Kernel/Releasepackage packages PASS
+  0.102s/0.500s/0.059s/1.212s. Client bundle/replay/run-start files:101 tests PASS.
+- Declared Linux-amd64/Postgres selected Production0.949s/Save0.287s PASS,
+  complete output zero skips: all five invalid pins, nine malformed-summary
+  store refusals, fourteen Exit write-fault stages and two-Exit career execute.
+- Serial migration validation PASS1.098s; affected vet and types (zero errors/
+  warnings) PASS. Migration00085 Down byte-equals00076 Up; replay corpus SHA256
+  remains `f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782`.
+
+```sh
+make test-go GO_PACKAGES='./production ./save ./reputation' GO_TEST_FLAGS='-count=1 -run "TestResolveFrozenContributionsAcceptsTheReputationProvider|TestReputationExitPurchaseFieldShapes|TestRunStartedReputationFieldAdmission"'
+make test-go GO_PACKAGES='./reputation ./replaycatalog ./kernel ./releasepackage' GO_TEST_FLAGS='-count=1'
+client/node_modules/.bin/vitest run --root client test/reputation-bundle.test.ts test/reputation-replay.test.ts test/game-ui-run-started.test.ts
+make test-go-ci CI_TEST_PACKAGES='./production ./save' CI_TEST_FLAGS='-v -run "TestReputationPurchaseIntegrationRecordsReplayableFounderLog|TestApplyExitTransactionAtomicFaultsAndReplayIntegration|TestReputationExitPlanWriteFaultsIntegration|TestReputationCareerTwoExitsIntegration"'
+make validate-migrations
+make vet GO_PACKAGES='./production ./save ./reputation ./kernel ./releasepackage'
+make typecheck
+```
+
+All check handles terminal. Parent also corrects the stale RP-633 plan pointer
+using the already-recorded CI approval
+(2026-10-15, `c05a196a..15e82e38`), without repeating that review.
+
+Original B1/B2/B5a/B5b/B6 CHANGES REQUIRED dispositions remain historical. Only
+these five corrective reviews close; no retrospective row repair, full factor/
+history proof, R9 reconciliation, harness/balance/copy/mint or full-feature claim.
+RP-680, original27 Clout AC6 failures and history guard50a3a514 stay open. No
+acceptance checkbox, specification adoption, archival, hosted CI, release,
+publication or deployment. Next continue accepted construction/review outside
+held author/product contracts; Tier2 activity-window adoption is still pending.
