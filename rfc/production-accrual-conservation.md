@@ -324,6 +324,9 @@ closing their origin. H3aa connects the actual ranked-completion loop, terminal
 waits and scoped context-bound score reuse. H3ab binds the actual beam's children,
 pruning and rollouts in width8 bounded diagnostics. H3ac adds joint-resource
 eligibility and actual bootstrap/base-gate action bindings without a pre-bank.
+H3ad separately binds first-hour source14/lifetime-only fixed inputs, online
+views and real session-return boundaries in the actual runtime methods. It does
+not import this modern profile's scheduling/clearing into that caller.
 Full registered workloads/general lifecycle/work/dispatch/adoption remain open.
 
 The actual closed replay chain can return Guild/Commons events without a player
@@ -1163,3 +1166,6 @@ contract, explicit adoption and independent normative review before production w
 - 2026-10-16: retain H3ac's joint eligibility and actual bootstrap/base-gate
   action evidence. Full logged comparisons do not adopt a live factory, first-
   hour/session policy, alternate/terminal actions or general workload semantics.
+- 2026-11-01: retain H3ad's separate source14 first-hour runtime/session binding.
+  Its lifetime-only adapter and bounded real helpers do not adopt origin lifetime,
+  a general factory, full workloads or the modern logged profile for first-hour.

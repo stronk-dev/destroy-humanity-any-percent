@@ -8399,3 +8399,104 @@ workloads, general lifecycle/masks/sessions, TS/SQL, performance budgets, gamepl
 choices, authored copy, feature/release acceptance and1.0. The27 Clout failures,
 RP-680, kernel guard and other inherited review debt remain open. No archival,
 draft implementation, publication or deployment authorized by this verdict.
+
+## 2026-11-01 — H3ad: actual first-hour owner/session binding
+
+Previous goal turn is PROGRESS: H3ac construction/evidence and independent technical
+review are committed through efa9223c. Clean resumed tree; no new external-state
+or hosted-green claim. Continue H1/C1c/C1h research, not live draft implementation.
+Bind the actual first-hour step, ranker/adoption, bank and ordinary actions to a
+separate fixed-external/lifetime-only source-version-preserving owner. Online
+observations retain origin; actual session-return boundaries close the attended
+interval and apply the real whole-gap RecordOfflineSpan/offline evaluation once,
+then begin online at return. Never encode the invalid half-stage future span or
+borrow modern scheduling, Guild clearing or served Prestige offline bookkeeping.
+
+Planned population: real assembled run3 fixture, none/unit/tree frozen-input arms,
+actual purchase chain, repeated banks, single-click bootstrap, first-session and
+later-session gaps. Compare complete action states/decisions/roles against fresh
+original-state SimulateTransition; independently reconstruct online+offline+return
+states with actual helpers. Check source14, revision, origin identity/immutability,
+budget/refusal behavior. This component uses a counted exact query fallback and
+cannot claim full-workload feasibility. All legacy dispatch/guards remain unchanged.
+Run focused native, affected legacy subjects/vet and Linux. Review the coherent
+draft/research range independently; no adoption, AC6/CI/release promotion or push.
+
+First exploratory75666 FAIL harness20.464s/Make exit2. The five-starter fixture
+actually reaches an inexpensive upgrade during the alleged bank-only windows;
+ranking also executes multiple candidate actions before selecting one. Correct
+the fixture to one legal provisioned producer for bank/session arms (zero for
+manual); keep real policy/catalog prices and compare the selected head, not
+all trial actions as if they were committed. The actual purchase may be either
+generator or upgrade. Later gap becomes3000→8001ms, still strictly beyond the
+5000ms attendance threshold and below the unchanged cheapest quote after return.
+Pinning the lifetime resource was edited during this exploratory run, so it is
+not frozen-revision evidence even apart from these failed assertions. No passing
+or completion claim; rerun the finished frozen sources after corrections.
+
+Corrected66063 PASS harness17.454s for the15 cases/refusals before final boundary
+controls. Explicit ending control2860 FAIL0.241s:the fixture's zero lifetime makes
+electiveExitReady false, so it never exercised the proposed guard. Correct to the
+actual scripted run1/gate/900000ms condition. Add short first gap exactly5000ms:
+real offline-rate evaluation but NO attendance span; the6001/5001ms controls do
+freeze attendance. Final declared population is18 (six cases × three arms).
+
+### H3ad frozen result and reproduction
+
+Native47299 PASS harness18.148s, actual18 runtime cases + refusals,72 retained
+first-hour candidate compatibility cells (21062 independent advances/412 ranked
+transitions), version14/17 legacy clones and named bootstrap/gate/lifetime/input
+subjects. Vet22785 PASS. New profile itself remains source14 only; legacy17 passing
+does not broaden it. Actual query census across18 cases:303324 projected points,
+324 queries,24 trial actions (nine selected commands),nine session returns. Trial
+actions are NOT all committed commands. Codec/setup, banks, ordinary step advances
+and independent references are additional work; no total-cost or feasibility claim.
+
+Each arm:purchase chain ends revision3; online banks end3000/revision1 with original
+identity; one-click ends revision2; short/long first gaps end6000/7001 respectively;
+later return3000→8001 ends with an online bank at9001/revision1. Whole states and
+actual decisions/roles preserve source14, fixed inputs and exactly-once lifetime.
+Short5000ms absence has zero spans;6001/5001 gaps have the exact single real span.
+These controlled seeds are not the naturally reached H3n public-runner population.
+
+Fault51998 changes ONLY actual online advance to copy the current projected head
+into a fresh origin. The real none/bank subject FAILS harness0.872s/Make exit2,
+`bank became payment/new origin`. No test or reference predicate is changed.
+Reproduce from an ignored bridge copy:replace the unique actual
+`scope.binding = scope.view(origin, head, now.Sub(Epoch).Milliseconds())` with
+`rebased := *origin; rebased.encoded = append([]byte(nil),head...); rebased.atMS = now.Sub(Epoch).Milliseconds(); scope.binding = scope.view(&rebased, head, now.Sub(Epoch).Milliseconds())`;
+override ONLY `harness/manual_owned_first_hour_bridge.go` in a copied overlay,
+then select `TestOwnedFirstHourRuntimeResearch/none/bank` in the command below.
+
+```sh
+node planning/clout-v1-and-pr-interns/probes/prepare-owned-first-hour-observation.mjs
+make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1 -overlay=../.cache/owned-first-hour-overlay.json -run TestOwnedFirstHour\|TestReputationReferenceLifetimeAccounting\|TestReputationReferenceFrozenInputDiagnostic\|TestWaitFirstHourCandidate\|TestT0T1ReferenceBootstrap\|TestT1SegmentProgression\|TestCloneStatePreservesSaveVersionThroughSearch -v'
+make vet GO_PACKAGES='-overlay=../.cache/owned-first-hour-overlay.json ./harness'
+```
+
+Frozen SHA256:bridge `3bb4911807e1b3769ef12065d5c8c74ed20ace3ef0997d71ddd7e986f891fe43`;
+tests `96cab466f5cac402fcec7c06dc1b2e31c3089896ba39d66a5247c09d66235864`;
+generator `31e19c9692b5dd0bffd2bfceab1035e0aac3969d77fd0eae55f540642529847f`;
+generated runner `3f246e0d7e8c107226909cb7fb487c8a4f557e586d24d18fccf359a27b603222`;
+39-entry overlay `96199a3ae28c1f1cf1a65549b38ed50ef40dd90529d3635eea552be27d628460`;
+fault bridge `60a65652688d70dccb42c51251b679bb8d97f063b36a2123a16f95ee45aafa4b`.
+
+Linux-amd641179 completes PASS harness43.471s, exit0, same frozen sources and
+affected regex. Initial image pull/cold compilation took minutes; the confirmed
+live container was observed rather than restarted. Verbose output display is
+truncated in the compatibility population, not an execution exclusion; package
+terminates PASS with all selected subjects executed. Exact command:
+
+```sh
+docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm --no-deps test go test -p 1 -overlay=../.cache/owned-first-hour-overlay.json -run 'TestOwnedFirstHour|TestReputationReferenceLifetimeAccounting|TestReputationReferenceFrozenInputDiagnostic|TestWaitFirstHourCandidate|TestT0T1ReferenceBootstrap|TestT1SegmentProgression|TestCloneStatePreservesSaveVersionThroughSearch' -v ./harness -count=1
+```
+
+Seven-path efa9223c-exclusive H3ad checkpoint is research/draft-only. Review by:
+Codex root (author/first filter). Recorded by:Codex root. Fresh independent technical
+review is running; no self-approval, owner adoption or live implementation follows.
+Full registered workloads, certified search cost, complete scenario/session identity,
+ending/rebirth/Founder and general profiles/masks/factories remain open. Existing
+RP-680,27 Clout AC6 failures and historical kernel guard are not repaired/rerun by
+these selected harness populations. No product/schema/data/CI/golden/kernel223/
+epoch8 change, archival, release approval, publication or push. Full nine-tier goal
+remains active; next actions are in the current owning plan, not historical tails.

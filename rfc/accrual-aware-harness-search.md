@@ -1925,6 +1925,43 @@ bootstrap/gate behavior and R10/R11 contracts remain unchanged; live dispatch,
 first-hour/session adapters, general domain/masks, complete workloads/role-report
 semantics, TS/SQL and normative adoption remain open.
 
+#### H3ad — Actual first-hour fixed-external/session binding (manual)
+
+The separate [manual first-hour overlay](../planning/clout-v1-and-pr-interns/probes/prepare-owned-first-hour-observation.mjs)
+binds the ACTUAL `step`, `referenceRanker`, candidate adoption, bank and ordinary
+action methods. It uses the actual source14 state and first-hour lifetime-only
+helper with pinned external contributions, not Company19 logged scheduling,
+pending Guild clearing or the served hook's absence bookkeeping. No normal
+source, scenario, price, policy or dispatch is changed.
+
+Online views retain one immutable origin and revision. A real session return is
+an explicit policy boundary: close the preceding attended interval at its last
+actual observed endpoint, then run the real whole-gap `RecordOfflineSpan` and
+offline evaluation once before beginning online at return. Do not encode the
+half-applied future span or reinterpret every online view as such a boundary.
+Exactly5000ms still uses the actual offline rate without an attendance span;
+longer actual gaps freeze attendance through the existing helper. This is a
+proposed profile binding, not adopted interval/absence semantics.
+
+Eighteen controlled cases use the assembled run3 fixture under none/unit/tree
+inputs: two selected purchases, repeated banks, one-click bootstrap, a short
+first gap, a long first gap and a later-session gap. Bank/session cases explicitly
+seed one provisioned producer and zero cash to keep the declared windows below
+unchanged prices; they are not naturally earned paths. Complete trial-action
+states/decisions/roles match fresh original-state SimulateTransition, and selected
+heads survive the next actual step. Repeated online views match fresh cumulative
+references without adding lifetime twice. Session states match independent
+online/offline/return evaluations with literal span endpoints and source14 intact.
+
+All exact chronological query points are charged and exhaustion refuses, never
+masquerades as unreachable. This deliberately unoptimized fallback establishes
+caller wiring, NOT full-workload/budget feasibility or a permitted live per-ms
+scan. The prototype explicitly refuses unbound ending/Founder boundaries. General
+source/profile/mask admission, complete scenario/session identity, ending/rebirth
+lifecycle, optimized certification, TS/SQL and full registered workloads remain
+required. Original failed fixture assumptions and all executed limits live in
+the owning log. Legacy behavior and both drafts' adoption gates remain unchanged.
+
 ### H4 — Compatibility, work and evidence
 
 The separate proposed [Exact Represented Aggregation](exact-represented-aggregation.md) A6
@@ -2173,3 +2210,6 @@ numeric tolerance, authored content or narrowed1.0 scope.
 - 2026-10-16: H3ac binds conjunctive resource eligibility and actual bootstrap/
   base-gate actions without pre-advancing an action origin. Preserve full logged
   references, invalid-fixture disclosures and all wider lifecycle/adoption gates.
+- 2026-11-01: H3ad binds actual first-hour methods to their separate source14/
+  fixed-input/lifetime/session recipe in a reversible manual overlay. Preserve
+  unoptimized-work and unbound-lifecycle refusals; no live migration or adoption.

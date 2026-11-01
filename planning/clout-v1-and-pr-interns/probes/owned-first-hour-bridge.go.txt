@@ -1,0 +1,305 @@
+package harness
+
+import (
+	"bytes"
+	"fmt"
+	"reflect"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/multiplier"
+	prestigecore "cloud-clicker/server/prestige"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+)
+
+// Manual fixed_external/first_hour_lifetime profile, never a closed-replay or
+// active-play endpoint factory. Normal builds do not include this file.
+type manualFirstHourOriginResearch struct {
+	encoded       []byte
+	version       int
+	revision      save.Revision
+	atMS          int64
+	external      []multiplier.Contribution
+	valueResource string
+}
+type manualFirstHourTraceResearch struct {
+	origin  *manualFirstHourOriginResearch
+	atMS    int64
+	request production.IntentRequest
+	result  production.SimulationResult
+	state   []byte
+}
+type manualFirstHourScopeResearch struct {
+	runtime                        *firstHourRuntime
+	binding                        *ManualChoiceBindingResearch
+	rankers                        map[*RelevanceSuite]*manualChoiceScopeResearch
+	traces                         []manualFirstHourTraceResearch
+	pending                        *production.AdvanceSimulationResult
+	queries, points, actions, gaps int
+}
+
+var manualFirstHourScopesResearch = map[*firstHourRuntime]*manualFirstHourScopeResearch{}
+
+func (scope *manualFirstHourScopeResearch) restore(origin *manualFirstHourOriginResearch) (*save.State, error) {
+	state, err := save.RestoreState(origin.encoded, origin.version, scope.runtime.suite.Bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return nil, err
+	}
+	if save.VersionForState(state) != origin.version {
+		return nil, fmt.Errorf("first-hour source version changed")
+	}
+	return state, nil
+}
+func (scope *manualFirstHourScopeResearch) require() error {
+	if scope.binding == nil || scope.pending != nil {
+		return fmt.Errorf("first-hour owner unavailable")
+	}
+	head, err := save.EncodeState(scope.runtime.company)
+	if err != nil || !bytes.Equal(head, scope.binding.Head) || scope.runtime.revision != scope.binding.Revision {
+		return fmt.Errorf("first-hour runtime lost owned head/revision")
+	}
+	origin, ok := scope.binding.Identity.(*manualFirstHourOriginResearch)
+	if !ok || !reflect.DeepEqual(origin.external, scope.runtime.external()) || origin.revision.ConstantsHash != scope.runtime.suite.ConstantsHash || origin.valueResource != scope.runtime.suite.Bundle.Prestige.ValueResourceID {
+		return fmt.Errorf("first-hour context changed outside an owned boundary")
+	}
+	return nil
+}
+func (scope *manualFirstHourScopeResearch) begin(state *save.State, revision save.Revision) (*ManualChoiceBindingResearch, error) {
+	if save.VersionForState(state) != 14 {
+		return nil, fmt.Errorf("manual first-hour profile only binds actual source14")
+	}
+	encoded, err := save.EncodeState(state)
+	if err != nil {
+		return nil, err
+	}
+	origin := &manualFirstHourOriginResearch{encoded: append([]byte(nil), encoded...), version: save.VersionForState(state), revision: revision, atMS: state.EvaluatedThrough.Sub(Epoch).Milliseconds(), external: append([]multiplier.Contribution(nil), scope.runtime.external()...), valueResource: scope.runtime.suite.Bundle.Prestige.ValueResourceID}
+	return scope.view(origin, encoded, origin.atMS), nil
+}
+func (scope *manualFirstHourScopeResearch) project(origin *manualFirstHourOriginResearch, atMS int64) (*save.State, production.AdvanceSimulationResult, error) {
+	if atMS < origin.atMS || atMS > scope.runtime.spec.HorizonMS {
+		return nil, production.AdvanceSimulationResult{}, fmt.Errorf("first-hour projection escaped profile horizon")
+	}
+	state, err := scope.restore(origin)
+	if err != nil {
+		return nil, production.AdvanceSimulationResult{}, err
+	}
+	result, err := production.SimulateAdvance(state, scope.runtime.suite.Bundle.Economy, production.SimulationDependencies{Routes: scope.runtime.suite.Bundle.Routes, Hook: firstHourLifetimeHook{origin.valueResource}}, origin.revision, production.ModeOnline, relevanceNow(atMS), origin.external, production.AblationMask{})
+	return state, result, err
+}
+func (scope *manualFirstHourScopeResearch) view(origin *manualFirstHourOriginResearch, head []byte, nowMS int64) *ManualChoiceBindingResearch {
+	binding := &ManualChoiceBindingResearch{Identity: origin, Head: append([]byte(nil), head...), Revision: origin.revision.Number, AtMS: nowMS}
+	binding.Fork = func(state *save.State) (*ManualChoiceBindingResearch, error) {
+		encoded, err := save.EncodeState(state)
+		if err != nil || !bytes.Equal(encoded, binding.Head) {
+			return nil, fmt.Errorf("first-hour clone changed head")
+		}
+		return scope.view(origin, encoded, nowMS), nil
+	}
+	// Deliberately exact fallback: all real projection work charged. This bounded
+	// adapter does not claim an optimized/full-workload feasible query.
+	binding.QueryAll = func(wait int64, requirements []routes.Requirement, budget int) (int64, int, error) {
+		if wait < 0 || wait > scope.runtime.spec.HorizonMS-nowMS || len(requirements) == 0 {
+			return -1, 0, fmt.Errorf("invalid first-hour query")
+		}
+		for _, r := range requirements {
+			definition, ok := scope.runtime.suite.Bundle.Economy.Resource(r.ResourceID)
+			if !ok || definition.Scope != "company" || !r.Amount.IsStateValue() || r.Amount.Lt(decimal.Zero) {
+				return -1, 0, fmt.Errorf("invalid first-hour predicate")
+			}
+		}
+		scope.queries++
+		points := 0
+		for at := nowMS; at <= nowMS+wait; at++ {
+			if points >= budget {
+				return -1, points, fmt.Errorf("first-hour exact query budget exhausted")
+			}
+			points++
+			scope.points++
+			state, _, err := scope.project(origin, at)
+			if err != nil {
+				return -1, points, err
+			}
+			met := true
+			for _, r := range requirements {
+				value, ok := state.Ledger.Balance(r.ResourceID)
+				if !ok || value.Lt(r.Amount) {
+					met = false
+					break
+				}
+			}
+			if met {
+				return at - nowMS, points, nil
+			}
+		}
+		return -1, points, nil
+	}
+	binding.Query = func(wait int64, price decimal.Decimal, budget int) (int64, int, error) {
+		return binding.QueryAll(wait, []routes.Requirement{{ResourceID: "company.cash", Amount: price}}, budget)
+	}
+	binding.Bank = func(state *save.State, atMS int64) (ManualBankObservationResearch, *ManualChoiceBindingResearch, error) {
+		encoded, err := save.EncodeState(state)
+		if err != nil || !bytes.Equal(encoded, binding.Head) || atMS < nowMS {
+			return ManualBankObservationResearch{}, nil, fmt.Errorf("invalid first-hour bank head/time")
+		}
+		projected, result, err := scope.project(origin, atMS)
+		if err != nil {
+			return ManualBankObservationResearch{}, nil, err
+		}
+		head, err := save.EncodeState(projected)
+		if err != nil {
+			return ManualBankObservationResearch{}, nil, err
+		}
+		*state = *projected
+		return ManualBankObservationResearch{Stages: []ManualBankStageResearch{{Kind: "first_hour_lifetime", Evaluation: result.Evaluation}}, Roles: result.RoleActivations}, scope.view(origin, head, atMS), nil
+	}
+	binding.Apply = func(request production.IntentRequest, state *save.State, atMS int64) (production.SimulationResult, *ManualChoiceBindingResearch, error) {
+		encoded, err := save.EncodeState(state)
+		if err != nil || !bytes.Equal(encoded, binding.Head) || request.ExpectedRevision != origin.revision.Number || atMS < nowMS || atMS > scope.runtime.spec.HorizonMS {
+			return production.SimulationResult{}, nil, fmt.Errorf("invalid first-hour action coordinates/head")
+		}
+		if request.Kind != production.IntentBuyGenerator && request.Kind != production.IntentBuyUpgrade && request.Kind != production.IntentPerformManualBatch && request.Kind != production.IntentCrossGate {
+			return production.SimulationResult{}, nil, fmt.Errorf("unsupported first-hour action")
+		}
+		original, err := scope.restore(origin)
+		if err != nil {
+			return production.SimulationResult{}, nil, err
+		}
+		result, err := production.SimulateTransition(request, original, scope.runtime.suite.Bundle.Economy, production.SimulationDependencies{Routes: scope.runtime.suite.Bundle.Routes, Hook: firstHourLifetimeHook{origin.valueResource}}, origin.revision, production.ModeOnline, relevanceNow(atMS), origin.external, nil, production.AblationMask{})
+		scope.actions++
+		if err != nil || result.Decision.Outcome != save.IntentApplied {
+			return result, nil, err
+		}
+		revision := origin.revision
+		revision.Number++
+		next, err := scope.begin(original, revision)
+		if err != nil {
+			return production.SimulationResult{}, nil, err
+		}
+		*state = *original
+		scope.traces = append(scope.traces, manualFirstHourTraceResearch{origin, atMS, request, result, append([]byte(nil), next.Head...)})
+		return result, next, nil
+	}
+	binding.Rate = func(state *save.State, mask production.AblationMask) (decimal.Decimal, error) {
+		return production.SimulateResourceRateWithContributions(state, scope.runtime.suite.Bundle.Economy, "company.cash", origin.external, mask)
+	}
+	return binding
+}
+
+// The actual session-return boundary closes the previous attended interval.
+// Never encode a half-applied future OfflineSpan (To > EvaluatedThrough).
+func manualFirstHourBoundaryResearch(runtime *firstHourRuntime, attended, founderAttended int64) error {
+	if manualFirstHourScopesResearch[runtime] != nil && (runtime.scriptedFailureDue(attended) || runtime.electiveExitReady(founderAttended)) {
+		return fmt.Errorf("manual first-hour ending/Founder boundary not bound")
+	}
+	return nil
+}
+
+func manualFirstHourGapResearch(runtime *firstHourRuntime, now time.Time) error {
+	scope := manualFirstHourScopesResearch[runtime]
+	if scope == nil {
+		return prestigecore.RecordOfflineSpan(runtime.company, runtime.company.EvaluatedThrough, now, runtime.suite.Bundle.Prestige.CatchupCeilingMS)
+	}
+	if err := scope.require(); err != nil {
+		return err
+	}
+	state, err := cloneState(runtime.suite.Bundle.Economy, runtime.company)
+	if err != nil {
+		return err
+	}
+	if err := prestigecore.RecordOfflineSpan(state, state.EvaluatedThrough, now, runtime.suite.Bundle.Prestige.CatchupCeilingMS); err != nil {
+		return err
+	}
+	result, err := production.SimulateAdvance(state, runtime.suite.Bundle.Economy, production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(), production.ModeOffline, now, runtime.external(), production.AblationMask{})
+	if err != nil {
+		return err
+	}
+	next, err := scope.begin(state, runtime.companyRevision())
+	if err != nil {
+		return err
+	}
+	runtime.company = state
+	scope.binding = next
+	scope.pending = &result
+	scope.gaps++
+	return nil
+}
+func manualFirstHourAdvanceResearch(runtime *firstHourRuntime, mode production.EvaluationMode, now time.Time) (production.AdvanceSimulationResult, error) {
+	scope := manualFirstHourScopesResearch[runtime]
+	if scope == nil {
+		return production.SimulateAdvance(runtime.company, runtime.suite.Bundle.Economy, production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(), mode, now, runtime.external(), production.AblationMask{})
+	}
+	if scope.pending != nil {
+		if mode != production.ModeOffline || !runtime.company.EvaluatedThrough.Equal(now) {
+			return production.AdvanceSimulationResult{}, fmt.Errorf("first-hour return boundary drift")
+		}
+		result := *scope.pending
+		scope.pending = nil
+		return result, nil
+	}
+	if mode != production.ModeOnline {
+		return production.AdvanceSimulationResult{}, fmt.Errorf("offline advance without session boundary")
+	}
+	if err := scope.require(); err != nil {
+		return production.AdvanceSimulationResult{}, err
+	}
+	origin := scope.binding.Identity.(*manualFirstHourOriginResearch)
+	state, result, err := scope.project(origin, now.Sub(Epoch).Milliseconds())
+	if err != nil {
+		return result, err
+	}
+	head, err := save.EncodeState(state)
+	if err != nil {
+		return result, err
+	}
+	runtime.company = state
+	scope.binding = scope.view(origin, head, now.Sub(Epoch).Milliseconds())
+	return result, nil
+}
+func manualFirstHourRankerResearch(runtime *firstHourRuntime, ranker *RelevanceSuite) (*RelevanceSuite, error) {
+	scope := manualFirstHourScopesResearch[runtime]
+	if scope == nil {
+		return ranker, nil
+	}
+	if err := scope.require(); err != nil {
+		return nil, err
+	}
+	choices := &manualChoiceScopeResearch{states: map[*save.State]*ManualChoiceBindingResearch{}, requests: map[*save.State]production.IntentRequest{}, decisions: map[*save.State]save.IntentDecision{}}
+	if err := choices.bind(runtime.company, scope.binding); err != nil {
+		return nil, err
+	}
+	manualChoiceScopesResearch[ranker] = choices
+	scope.rankers[ranker] = choices
+	return ranker, nil
+}
+func manualFirstHourSelectResearch(runtime *firstHourRuntime, ranker *RelevanceSuite, candidate relevanceCandidate) error {
+	scope := manualFirstHourScopesResearch[runtime]
+	if scope != nil {
+		binding, err := manualChoiceScopesResearch[ranker].require(candidate.State)
+		if err != nil {
+			return err
+		}
+		scope.binding = binding
+	}
+	runtime.company, runtime.revision = candidate.State, candidate.Revision
+	return nil
+}
+func manualFirstHourTransitionResearch(runtime *firstHourRuntime, request production.IntentRequest, now time.Time, mode production.EvaluationMode) (production.SimulationResult, error) {
+	scope := manualFirstHourScopesResearch[runtime]
+	if scope == nil {
+		return production.SimulateTransition(request, runtime.company, runtime.suite.Bundle.Economy, production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(), mode, now, runtime.external(), nil, production.AblationMask{})
+	}
+	if err := scope.require(); err != nil {
+		return production.SimulationResult{}, err
+	}
+	if mode != production.ModeOnline && !(mode == production.ModeOffline && runtime.company.EvaluatedThrough.Equal(now)) {
+		return production.SimulationResult{}, fmt.Errorf("first-hour action missed return boundary")
+	}
+	result, next, err := scope.binding.Apply(request, runtime.company, now.Sub(Epoch).Milliseconds())
+	if err == nil && next != nil {
+		scope.binding = next
+	}
+	return result, err
+}

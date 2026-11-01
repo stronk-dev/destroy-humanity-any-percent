@@ -6,7 +6,7 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
-## Current step — accounting/search correctness, 2026-10-16
+## Current step — accounting/search correctness, 2026-11-01
 
 RP-680 now confirms a bounded actual consumer miss, after approved RP-678 removes the
 pre-search clone refusal. With one admitted real suite and a bound upgrade quote, extending
@@ -180,11 +180,18 @@ Six crossings and an online manual-bootstrap/purchase chain match full real
 logged commands and consumed-batch successors. The initial invalid fixture
 assumptions and corrected native/Linux evidence live in the owning log.
 
-Next ground first-hour lifetime/session ownership in its OWN profile and bind
-the actual runtime step/reference-ranker/bank/action paths. Preserve each actual
-source version; do not coerce H3n's reached source14 inputs or the lifetime-only
-hook contract into Company19 closed-replay scheduling by association.
-Then complete general profiles/masks/real-owner factory bindings,
+H3ad now binds actual first-hour step/reference-ranker/adoption/bank/action paths
+in a separate manual source14/fixed-external/lifetime-only profile. Eighteen
+controlled cases preserve online origin, selected actions and real session-return
+offline stages, including the exact attendance-ceiling control. Full states,
+decisions/roles, source versions and literal absence spans have independent
+primitive references. This is not the complete registered runner or natural
+progression; exact fallback work and unbound ending refusals are explicit.
+
+Next bind complete scenario/session identity and ending/rebirth/Founder lifecycle,
+and compose a certified first-hour query instead of its expensive exact fallback.
+Do not coerce H3n's reached source14 inputs or the lifetime-only hook into Company19
+closed-replay scheduling. Complete general profiles/masks/real-owner factory bindings,
 preserving complete results/error policy/scores.
 Measure
 complete candidate/consumer work and error/scoring compatibility;

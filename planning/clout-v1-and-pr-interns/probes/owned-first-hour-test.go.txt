@@ -1,0 +1,252 @@
+package harness
+
+import (
+	"bytes"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	prestigecore "cloud-clicker/server/prestige"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
+)
+
+func ownedFirstHourResearch(t *testing.T, runtime *firstHourRuntime) *manualFirstHourScopeResearch {
+	t.Helper()
+	if save.VersionForState(runtime.company) != 14 {
+		t.Fatal("real first-hour source no longer14")
+	}
+	scope := &manualFirstHourScopeResearch{runtime: runtime, rankers: map[*RelevanceSuite]*manualChoiceScopeResearch{}}
+	binding, err := scope.begin(runtime.company, runtime.companyRevision())
+	if err != nil {
+		t.Fatal(err)
+	}
+	scope.binding = binding
+	manualFirstHourScopesResearch[runtime] = scope
+	t.Cleanup(func() {
+		delete(manualFirstHourScopesResearch, runtime)
+		for ranker, choices := range scope.rankers {
+			delete(manualChoiceScopesResearch, ranker)
+			for state := range choices.states {
+				delete(manualChoiceCloneOwnersResearch, state)
+			}
+		}
+	})
+	return scope
+}
+func firstHourEncodeResearch(t *testing.T, state *save.State) []byte {
+	t.Helper()
+	encoded, err := save.EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return encoded
+}
+func firstHourReferenceRestoreResearch(t *testing.T, runtime *firstHourRuntime, encoded []byte, version int) *save.State {
+	t.Helper()
+	state, err := save.RestoreState(encoded, version, runtime.suite.Bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return state
+}
+func verifyFirstHourTraceResearch(t *testing.T, scope *manualFirstHourScopeResearch) {
+	t.Helper()
+	for _, trace := range scope.traces {
+		state := firstHourReferenceRestoreResearch(t, scope.runtime, trace.origin.encoded, trace.origin.version)
+		got, err := production.SimulateTransition(trace.request, state, scope.runtime.suite.Bundle.Economy, production.SimulationDependencies{Routes: scope.runtime.suite.Bundle.Routes, Hook: firstHourLifetimeHook{scope.runtime.suite.Bundle.Prestige.ValueResourceID}}, trace.origin.revision, production.ModeOnline, relevanceNow(trace.atMS), trace.origin.external, nil, production.AblationMask{})
+		if err != nil || !bytes.Equal(firstHourEncodeResearch(t, state), trace.state) || !reflect.DeepEqual(got, trace.result) {
+			t.Fatal("first-hour actual action differs from independent original-state transition", err)
+		}
+		if trace.request.Kind == production.IntentPerformManualBatch && trace.request.Count != 1 {
+			t.Fatal("first-hour manual became relevance batched bootstrap")
+		}
+	}
+}
+func TestOwnedFirstHourRuntimeResearch(t *testing.T) {
+	for _, arm := range []string{"none", "unit", "tree"} {
+		for _, caseName := range []string{"purchase", "bank", "manual", "short_gap", "first_gap", "later_gap"} {
+			t.Run(arm+"/"+caseName, func(t *testing.T) {
+				runtime := reputationReferenceFixture(t, arm)
+				runtime.lastSession = -1
+				if caseName != "purchase" {
+					var err error
+					runtime.company.Ledger, err = economy.NewLedger(runtime.suite.Bundle.Economy, economy.ScopeCompany)
+					if err != nil {
+						t.Fatal(err)
+					}
+				}
+				if caseName == "manual" {
+					for id := range runtime.company.GeneratorProvisioned {
+						runtime.company.GeneratorProvisioned[id] = 0
+					}
+				} else if caseName != "purchase" {
+					// Controlled one-producer seed keeps these actual decision windows
+					// below the unchanged cheapest quote. Five starters buy an upgrade.
+					runtime.company.GeneratorProvisioned["generator.beige_tower"] = 1
+				}
+				scope := ownedFirstHourResearch(t, runtime)
+				initial := scope.binding.Identity.(*manualFirstHourOriginResearch)
+				initialBytes := append([]byte(nil), initial.encoded...)
+				if caseName == "first_gap" || caseName == "short_gap" {
+					at := int64(6001)
+					if caseName == "short_gap" {
+						at = 5000
+					}
+					if err := runtime.step(firstHourBoundary{atMS: at, sessionIndex: 0, first: true}); err != nil {
+						t.Fatal(err)
+					}
+				} else {
+					if err := runtime.step(firstHourBoundary{atMS: 0, sessionIndex: 0, first: true}); err != nil {
+						t.Fatal(err)
+					}
+				}
+				if caseName == "purchase" || caseName == "manual" {
+					if runtime.revision != 2 || len(scope.traces) == 0 || scope.binding.Identity == initial {
+						t.Fatal("actual action did not create one successor")
+					}
+					selected := 0
+					for _, trace := range scope.traces {
+						if bytes.Equal(trace.state, scope.binding.Head) {
+							selected++
+							if caseName == "manual" && trace.request.Kind != production.IntentPerformManualBatch {
+								t.Fatal("manual bootstrap not selected")
+							}
+							if caseName == "purchase" && trace.request.Kind != production.IntentBuyGenerator && trace.request.Kind != production.IntentBuyUpgrade {
+								t.Fatal("purchase not selected")
+							}
+						}
+					}
+					if selected != 1 {
+						t.Fatal("selected state not bound to exactly one actual candidate/action", selected)
+					}
+					if caseName == "purchase" {
+						if err := runtime.step(firstHourBoundary{atMS: 1000, sessionIndex: 0}); err != nil {
+							t.Fatal(err)
+						}
+						if runtime.revision != 3 || len(scope.traces) < 2 {
+							t.Fatal("selected candidate was not retained through next actual step")
+						}
+					}
+				} else if caseName == "bank" || caseName == "later_gap" {
+					if runtime.revision != 1 || len(scope.traces) != 0 || scope.binding.Identity != initial || !runtime.company.EvaluatedThrough.Equal(relevanceNow(1000)) {
+						t.Fatal("bank became payment/new origin")
+					}
+					for _, at := range []int64{1000, 2000} {
+						if err := runtime.step(firstHourBoundary{atMS: at, sessionIndex: 0}); err != nil {
+							t.Fatal(err)
+						}
+						if scope.binding.Identity != initial || runtime.revision != 1 {
+							t.Fatal("online observation rebased origin")
+						}
+						want := firstHourReferenceRestoreResearch(t, runtime, initial.encoded, initial.version)
+						if _, err := production.SimulateAdvance(want, runtime.suite.Bundle.Economy, production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, initial.revision, production.ModeOnline, runtime.company.EvaluatedThrough, initial.external, production.AblationMask{}); err != nil {
+							t.Fatal(err)
+						}
+						requireReferenceCompanyEqual(t, runtime.company, want)
+					}
+					if caseName == "later_gap" {
+						if err := runtime.step(firstHourBoundary{atMS: 8001, sessionIndex: 1, first: true}); err != nil {
+							t.Fatal(err)
+						}
+						if scope.gaps != 1 || scope.binding.Identity == initial || runtime.revision != 1 {
+							t.Fatal("actual return boundary missing/duplicate")
+						}
+					}
+				}
+				if caseName == "first_gap" || caseName == "short_gap" || caseName == "later_gap" {
+					from, to := int64(0), int64(6001)
+					if caseName == "short_gap" {
+						to = 5000
+					}
+					if caseName == "later_gap" {
+						from, to = 3000, 8001
+					}
+					want := firstHourReferenceRestoreResearch(t, runtime, initial.encoded, initial.version)
+					if from > 0 {
+						if _, err := production.SimulateAdvance(want, runtime.suite.Bundle.Economy, production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, initial.revision, production.ModeOnline, relevanceNow(from), initial.external, production.AblationMask{}); err != nil {
+							t.Fatal(err)
+						}
+					}
+					if err := prestigecore.RecordOfflineSpan(want, want.EvaluatedThrough, relevanceNow(to), runtime.suite.Bundle.Prestige.CatchupCeilingMS); err != nil {
+						t.Fatal(err)
+					}
+					if _, err := production.SimulateAdvance(want, runtime.suite.Bundle.Economy, production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, initial.revision, production.ModeOffline, relevanceNow(to), initial.external, production.AblationMask{}); err != nil {
+						t.Fatal(err)
+					}
+					if caseName == "short_gap" && len(want.OfflineSpans) != 0 {
+						t.Fatal("short gap invented absence")
+					}
+					if caseName != "short_gap" && (len(want.OfflineSpans) != 1 || want.OfflineSpans[0].From != relevanceNow(from) || want.OfflineSpans[0].To != relevanceNow(to)) {
+						t.Fatal("offline reference not actually exercising whole gap")
+					}
+					if _, err := production.SimulateAdvance(want, runtime.suite.Bundle.Economy, production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, initial.revision, production.ModeOnline, runtime.company.EvaluatedThrough, initial.external, production.AblationMask{}); err != nil {
+						t.Fatal(err)
+					}
+					requireReferenceCompanyEqual(t, runtime.company, want)
+					if scope.gaps != 1 || runtime.revision != 1 || scope.pending != nil {
+						t.Fatal("return created intent or left unfinished boundary")
+					}
+				}
+				if !bytes.Equal(initialBytes, initial.encoded) {
+					t.Fatal("original action origin was consumed")
+				}
+				if save.VersionForState(runtime.company) != initial.version {
+					t.Fatal("first-hour was silently upgraded")
+				}
+				if err := scope.require(); err != nil {
+					t.Fatal(err)
+				}
+				verifyFirstHourTraceResearch(t, scope)
+				t.Logf("source%d points%d queries%d actions%d gaps%d head%d revision%d", initial.version, scope.points, scope.queries, scope.actions, scope.gaps, scope.binding.AtMS, runtime.revision)
+			})
+		}
+	}
+}
+func TestOwnedFirstHourRefusalsResearch(t *testing.T) {
+	runtime := reputationReferenceFixture(t, "tree")
+	scope := ownedFirstHourResearch(t, runtime)
+	head := firstHourEncodeResearch(t, runtime.company)
+	for _, budget := range []int{0, -1} {
+		if at, points, err := scope.binding.Query(1, decimal.Zero, budget); err == nil || at >= 0 || points != 0 {
+			t.Fatal("budget became query success")
+		}
+	}
+	if at, points, err := scope.binding.QueryAll(1, []routes.Requirement{{ResourceID: "founder.route_knowledge", Amount: decimal.One}}, 10); err == nil || at >= 0 || points != 0 {
+		t.Fatal("unbound resource became query")
+	}
+	request := runtime.manualRequest()
+	request.ExpectedRevision++
+	if _, next, err := scope.binding.Apply(request, runtime.company, 0); err == nil || next != nil {
+		t.Fatal("wrong revision became action")
+	}
+	if _, next, err := scope.binding.Bank(runtime.company, -1); err == nil || next != nil {
+		t.Fatal("backwards bank succeeded")
+	}
+	if !bytes.Equal(head, firstHourEncodeResearch(t, runtime.company)) {
+		t.Fatal("refusal mutated source")
+	}
+	// A real rejected command must retain both the visible source and origin.
+	rejected := runtime.manualRequest()
+	rejected.Kind = production.IntentBuyUpgrade
+	rejected.UpgradeID = "upgrade.missing"
+	result, next, err := scope.binding.Apply(rejected, runtime.company, 1)
+	if err != nil || next != nil || result.Decision.Outcome == save.IntentApplied || !bytes.Equal(head, firstHourEncodeResearch(t, runtime.company)) {
+		t.Fatal("real refusal created successor or consumed source", err)
+	}
+	// The manual profile must not silently fall through to an unbound Founder exit.
+	runtime.company.GatesCrossed["gate.t0_to_t1"] = true
+	runtime.company.RunSeq = 1
+	if err := manualFirstHourBoundaryResearch(runtime, 900_000, 900_000); err == nil {
+		t.Fatal("unbound ending silently accepted")
+	}
+	runtime.company.RunSeq = 3
+	delete(runtime.company.GatesCrossed, "gate.t0_to_t1")
+	runtime.company.GeneratorCounts["generator.beige_tower"]++
+	if err := scope.require(); err == nil {
+		t.Fatal("unowned head mutation accepted")
+	}
+}
