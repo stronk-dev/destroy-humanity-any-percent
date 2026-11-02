@@ -4007,3 +4007,44 @@ Idle durations60.25–60.98s. Reviewer JSON SHA256
 Full target inspected, not independently rerun; exact-range diff-check clean,
 tracked tree unchanged and all reviewer browser workloads terminal. No speedup,
 default-load/hosted/five-minute/full1.0 acceptance or specification adoption.
+
+### Bounded coordinator profile — valid sample, full run red
+
+Atb6818e60, run the unchanged complete target under the existing ignored4CPU
+override, with durable shell redirection and /usr/bin/time. Attach the built-in
+Node inspector to the single exact owned broad Vitest argv, verify process.pid3031
+over the inspector, then capture one60s CPU window. No test/source/configuration,
+worker, budget or population edits. Script guards fail loudly and would preserve
+an invalid artifact. Actual window12:08:18.896–12:09:19.103UTC on2026-11-02 is valid:
+60.205s elapsed,22463 samples,9888 nodes; Node24.18.0/Linux arm64, available CPUs4,
+affinity0-3. Of60.044 sampled seconds,29.810 idle,1.958 GC and7.426 native writes:
+4.268 through Playwright,1.809 Vite HTTP,1.311 WebSocket,0.039 other. These are not
+simply console writes. This partial Node window neither measures browser CPU nor
+proves a root bottleneck, full-run timing comparison or corrective optimization.
+
+The same full job completes terminal2, not the guard. Provider27/27 passes; broad
+517/519 project-files pass,40471 ordinary passes/18 expected failures/24 skips/two
+failures,420.84s. Both fail the unchanged15s deadline: Firefox Pitch native-keyboard
+launcher-to-return journey (reported18.782s), WebKit canonical partial-term group-
+carry research (23.494s). They occur after the sampled window. No assertion/value
+mismatch or native activation loss is established by those deadline reports. The
+failure screenshot is blank after cleanup, not evidence of the interrupted stage.
+Typer/performance are unexecuted after broad failure. Cold wall462.39s includes
+profiling overhead; not a matched speed benchmark. Same40515 broad case population
+collected. All owned execution handles terminal; no workload left running.
+
+Ignored evidence SHA256, paths under.cache/:
+- profile-browser-coordinator-b6818e60.mjs5384bytes:
+  8fe7c62b7b9636f9a5fcc17e7b6db7e17cdf239f0cd048b145bd87176da3b4da
+- browser-coordinator-profile-b6818e60.json2651503bytes:
+  dfbc02ce388a18eebaf61bd4358ce9621c7b994f2422f92cc69c07da436750a7
+- browser-coordinator-profile-observation-b6818e60.log1287bytes:
+  f03afeb9cd664855d00a14f6ba2895ea2fcfad672b43482fba2060970c116eec
+- browser-coordinator-profile-b6818e60.log1621809bytes:
+  d56fde9d5363187b9a466224543603920e3aae737364831d5d967460a1057925
+- browser-coordinator-profile-b6818e60/functional-broad.json12508510bytes:
+  b3765cf69e555a24475b73fd7cfc86c5b45967c3a1fee76a19d4911d599a5c12
+
+Review by: Codex root, observation first filter. Recorded by: Codex root. This
+editorial measurement checkpoint supplies no independent implementation approval,
+hosted/default-load reliability, acceptance promotion, archive, adoption or push.

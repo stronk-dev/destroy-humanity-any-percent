@@ -74,13 +74,21 @@ Fresh independent corrective review APPROVES complete70737410..5a509e46 after
 Node12503, actual three-engine whole Garage1281, types and independent source/
 population/artifact checks. This does not close CI/default14CPU/hosted latency.
 
-Next bounded diagnosis: observe one60s CPU-profile window of the actual Node/Vitest
-coordinator during the full unchanged four-CPU target. Question: is its sampled
-time active coordination/transform work or waiting? Use built-in inspector CPU
-profiling, identify the exact owned Vitest process, fail on missing/invalid sample,
-retain the partial-window scope and all full-job outcomes. No browser CPU attribution,
-matched benchmark, source optimization or new budget follows from that sample.
-No arbitrary worker/split sweep or raised bound. Continue the full1.0 objective.
+The bounded coordinator observation atb6818e60 is complete: valid60.205s window,
+verified owned PID3031,4CPU affinity0-3. Of60.044 sampled seconds,29.810 are idle,
+1.958 GC and7.426 native writes, predominantly Playwright/Vite/WebSocket traffic,
+not an established console-log bottleneck. It observes only the Node coordinator,
+not browser CPU, the entire job or a matched benchmark.
+
+The associated full job is RED, terminal2:517/519 broad files pass;40471 ordinary
+passes,18 expected failures,24 skips and two15s deadline failures (Firefox Pitch
+keyboard journey; WebKit canonical group-carry research). Broad420.84s, cold wall
+462.39s; Typer/performance unexecuted. Both failures occur after the early profile
+window, so the profile cannot attribute their cause. Prior green results remain
+scoped observations, not reliability proof. No source optimization, budget increase,
+population reduction or CI closure follows. Next distinguish browser-side work/
+resource waiting for these concrete deadline failures; do not repeat unchanged
+green selectors or sweep arbitrary workers. Continue the full1.0 objective.
 
 ## Historical checkpoint sequence — original heading 2026-10-16
 
