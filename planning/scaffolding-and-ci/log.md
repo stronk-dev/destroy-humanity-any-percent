@@ -3562,3 +3562,80 @@ original population/key/assertion/deadline and total report union must remain.
 No worker-count sweep or retry. Complete ordinary target terminal0/all phases
 required before a passing candidate claim; an isolated pass is insufficient.
 No whole-CI/RP-526/hosted-five-minute/release promotion, archive or push.
+
+### Fresh Reputation-plan phase experiment — failed and withdrawn
+
+At6498c70e, the candidate excludes the unchanged whole plan file from broad and
+adds it as its own fresh three-engine invocation before Typer, with separate JSON.
+No original case/key/assertion/deadline/engine or worker change. Existing topology
+consumer initially rejects the new sequence; explicit three-phase validation and
+two missing/duplicated-population controls then pass29 negatives and all existing
+setup/selector/report checks. That structural pass is not functional evidence.
+
+One ordinary declared full job runs with this candidate and report directory
+.cache/reputation-plan-phase-6498c70e. Provider regression18/18; broad completes
+270.35s,496 passed/two failed project-files (498),40401 ordinary passes/12 expected/
+24skipped/three failed (40440). Firefox Garden seed-Tab and Reputation host
+offer-selected/era2000/Space time out; following Garden mature-menu Enter asserts
+its action is undefined. That sequence suggests a lifetime check, not proof of
+causation. Reputation-plan, Typer and performance phases never execute: no pass
+or union-coverage claim. Goal continuation resumes after an external gap; original
+wrapper/follower handles are then missing and owned1d464ae67dae absent. Complete
+raw log ends at Make Error1 with JSON/aggregate, not guard expiry; wrapper numeric
+exit is not retained. Do NOT restart because handles expired.
+Log1855463bytes SHA256 c54e6d17463020d34563d9b2452472cf2fda479a5caeca9a4ad40d7ba430d3aa;
+functional-broad.json12481342bytes SHA256
+91fa4ad55575f22bd6e9587cc2f24f2d3a93c79daff8ab94cf76cbc9eb341a83.
+
+Candidate fails its complete-target criterion and is NOT installed. Exact original
+bytes verified against ignored .cache/reputation-plan-phase-6498c70e-* copies:
+Makefile08611fe5ca9896e80106d33306dcf82a2500467ce7664ed001f21b99d71b948d;
+ci-topology.mjs e7a340648ab9aef12492c73e33aea0aeb214b1a20636e46dc3ecdd8c8fcb7a5d;
+verify-ci-topology-fixtures.mjs2a17c317e22ee5779c9fec33c0b628b47ea1016102637add2779ce8940d8ff32.
+All three active files restored via apply_patch to6498c70e. Initial inverse-diff
+conversion rejects its reversed path header before editing; corrected conversion
+applies and git status confirms zero residual scheduling/validator diff. Keep
+the failed evidence; no further arbitrary phase/worker sweep or acceptance claim.
+
+### RP-701 — expired Garden fixture cleanup and native-input containment
+
+Regression first: beforeEach mounts a real Garden and opens its menu through native
+Enter, then a50ms framework deadline fires in the test body. The ordinary successor
+requires the old fixture disconnected and preserves original timeout reason.
+Old fixture fails that assertion in all three engines: terminal2,three failed/
+three expected deadline cases,4.42s;123 other selected-out cases are not passes.
+Successor finally cleans the old subject to avoid contaminating later tests.
+Old raw .cache/garden-lifetime-old-6498c70e-container.log41398bytes SHA256
+7062c50e9357477b45ceb22f123f98ac77d63562fa1697ad44277b111e346164;
+executed source copy .cache/garden-lifetime-old-6498c70e.test.ts SHA256
+81cdb90d1e3e329c893a9a9e4e65012c27df58882e60aef619dff4cbd7f228fc.
+
+Correction binds every mounted component fixture to its explicit TestContext.
+Existing lifetimeKeyboard is the sole real native producer, checks cancellation
+around import/delivery, drains before unmount/removal, and refuses subsequent input.
+Idempotent disposal is shared by body-finally and onTestFinished; beforeEach checks
+for undrained native input. NativeWalk retains the exact batched key string and
+every intermediate focus/tabstop assertion; all41 original populations/key inputs/
+behavior assertions remain. Ordered-read/unmount cases use the same disposal.
+No product, copy, deadline, retry, scheduling or provider changes in this batch.
+
+Two additional controls use the actual trusted Enter RPC: healthy input opens the
+menu normally; cancellation calls dispose from keydown without preventing default.
+Keyup must still see the connected fixture, then disposal completes; another space
+must not type into a focused successor. Closed healthy fixtures also refuse input;
+cached disposal is idempotent. These controls do not hold a fake RPC or claim to
+reproduce the initial15s timeout's cause.
+
+Complete affected command: make test-browser-ci-focused
+BROWSER_TEST_FLAGS='test/garden-surface-witnesses-browser.test.ts --reporter=json --outputFile.json=../.cache/garden-lifetime-new-6498c70e.json'.
+Terminal0,132 ordinary passes/three expected deadlines (135total),6.73s,all three
+engines; follower terminal0. make typecheck terminal0,Svelte0 errors0 warnings.
+Corrected log34217bytes SHA256
+4c553b7b2faefe79b1a61d5b5cee10ba3c62e1070d8541626f0935605c0662f6;
+JSON35922bytes SHA256 0bf00149274576166f6eb9cbc2a68859148a113bfb0579c3cb5974206a2b2efc.
+Source SHA256341ec1a8dabed509838a3468c878a022310723f7563242c2c2263b1b7b4ede27.
+JSON135 passed includes three expected deadlines. Raw files own truncated tool
+display. Review by: Codex root, implementer first filter. Recorded by: Codex root.
+Fresh independent corrective review required for complete batch after6498c70e;
+then one ordinary full target may use the new containment signal. No claim that
+this fixes original latency, RP-526, whole CI or1.0. No archive/push.

@@ -188,12 +188,18 @@ Ordinary patched full target passes that regression, then broad finishes250.46s:
 499 passed/two failed project-files,40459 ordinary passes/15expected/24skipped/two
 native sequential Reputation-plan deadlines (Chromium era2000 Enter; Firefox
 era1995 Enter). Typer/performance remain unexecuted. No causal reliability/speedup
-claim from the uncontrolled30→2 comparison. Next bounded candidate: run that
-unchanged whole Reputation-plan file in a fresh three-engine phase, analogous to
-Typer, preserving report union and every case/key/assertion/deadline. Require the
-complete ordinary target/terminal0 before calling that scheduling candidate passed;
-do not adopt it from an isolated pass or hide the existing two failures. Hosted
-under-five-minute acceptance remains separate and open.
+claim from the uncontrolled30→2 comparison. The fresh Reputation-plan phase candidate
+FAILS: broad reports three failures before it can execute. All three candidate files
+are preserved ignored and restored exactly; scheduling is NOT changed/adopted.
+The failed broad exposes a Garden fixture cleanup gap. A real ready-fixture50ms
+deadline reproduction leaves the old Garden mounted in all three successors.
+RP-701 correction binds mounted fixtures/input to TestContext, reuses the existing
+lifetime helper and drains before removal. Original41 populations remain; complete
+affected three-engine file passes132 ordinary/three expected deadline cases, types0/0.
+Fresh independent corrective review is required for the batch after6498c70e.
+Next use one ordinary full target only after that review with the actual lifetime
+correction/new containment signal. No arbitrary phase/worker sweep, original-timeout
+cause claim or hosted-under-five-minute/whole-CI/1.0 acceptance promotion.
 
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,

@@ -373,6 +373,16 @@ transport readiness: the existing protocol-frame checks remain. Owned-fixture cl
 to the caller's explicit test context and runs on failed initialization or test completion, with
 an independent timed-out-startup teardown control. No startup retry policy or deadline is changed.
 
+The component-only `garden-surface-witnesses-browser.test.ts` fixture also owns cleanup
+through its test context, not only the suspended body's `finally` block. It drains
+started native input before unmount, rejects later input after cancellation/closure,
+and checks for undrained input before each case. A real50ms framework deadline starts
+after native menu setup; its successor must see the old fixture removed. Separate
+healthy/trusted-key cancellation controls check keyup before teardown and refusal to
+type into a successor field. All original Garden journeys and15s limits remain.
+These controls contain an expired fixture; they do not explain or repair its initial
+timeout, establish whole CI reliability or change product input behavior.
+
 Garden response-focus and receipt witnesses emit `garden-host-assertion-failure`
 before their fixture teardown when an assertion throws or the test signal aborts.
 The record includes the original error, live focus/grid/busy state, request paths/
