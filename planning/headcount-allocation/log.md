@@ -347,3 +347,28 @@ check passes. No software suite for Markdown or claim of runtime implementation.
 Review by: Codex root, proposal author/first filter. Recorded by: Codex root.
 Complete five-path range after59a56f16 through this checkpoint needs independent
 technical review before adoption/body reconciliation; no publication.
+
+## 2026-11-02 — Activation draft review finds downward-Exit ambiguity
+
+CHANGES REQUIRED, complete five-path range59a56f16..
+a8b6f65286b0f5c993660151ffea53dfbc8fd181.
+Review by: fresh independent Codex /root/headcount_activation_contract_review.
+Recorded by: Codex root. One blocking finding: I2's derived lower floor and
+“both Exit directions” acceptance omitted the existing nondecreasing-version
+boundary. Source save/exit.go and canonical save docs forbid a lower next Company
+version; independence cannot promise a Headcount20→empty/axis-only19 downgrade.
+
+Reviewer executes existing cold ExitVersionAxes test and a review-only Go overlay
+calling the ACTUAL transition validator:18→17 rejects with the precise regression
+error,18→18 passes. The actual intermediate-product witness and range whitespace
+pass. Full draft/companion diffs and relevant parent/Go/TS source inspected; no
+other blocking finding. No main mutation, implementation or new-version execution;
+all handles terminal. Temporary overlay is under reviewer-owned private tmp,
+not a committed fixture. Nullable activation remains proposed, not adopted.
+
+Root forward-corrects I2/I3 and acceptance: preserve upward/equal compatibility,
+atomically refuse lower derived targets with no persisted effects, never fake an
+inherited Headcount identity, distinguish same-identity axis toggles, and scope
+empty-pool byte comparisons to compatible preactivation baselines. Explicit
+operator/rollback/No Hires limits remain. Parent bodies and runtime unchanged;
+complete original-plus-correction range requires independent re-review.

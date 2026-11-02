@@ -70,7 +70,7 @@ Define headcount active as a pinned `H_catalog` artifact with a NONEMPTY
 declaration, unchanged. Neither feature may be inferred solely from a larger
 Company version or a gate crossing.
 
-| Headcount | Axis | New-run Company floor / state |
+| Headcount | Axis | New-run Company floor / state, subject to I3's nonregression rule |
 |---|---|---|
 | absent/empty | absent | Existing bundle-derived floor; no Headcount fields |
 | absent/empty | present | Existing Company19; unchanged attainment/axis behavior |
@@ -108,7 +108,27 @@ An existing run retains its pinned catalogs, save version and command history.
 Loading never promotes it to `H_company`. New-Founder initialization or an actual
 Exit into a Headcount-active bundle creates zero seats/assignments under the new
 identity; terminal old-run state retains its original version. Exit chooses the
-next axis state independently by I2. Headcount resets at Exit as already ruled.
+next axis state independently by I2 where the version transition is compatible.
+Headcount resets at Exit as already ruled.
+
+Preserve the existing nondecreasing per-scope Exit contract: the next Founder
+and Company versions cannot regress below their respective current versions,
+and terminal Company state retains its exact source version. Upward/equal
+compatible transitions are allowed. A lower bundle-derived next floor is NOT
+permission to downgrade: an `H_company` run cannot Exit into an empty/absent-
+Headcount target whose derived Company identity is19 or lower. Refuse atomically
+with no persisted state, payout, receipt, event, outbox or history changes;
+preserve the existing invalid-transition error boundary, not a new public error
+or an automatic fallback. Do not inherit/manufacture `H_company` or add empty
+maps to a target that does not activate Headcount to bypass the rule.
+
+Axis toggles between two genuinely Headcount-active bundles remain possible
+under the same compatible `H_company` identity and I2's explicit nullable/active
+representations. This does not authorize downward removal of Headcount. Operators
+cannot treat an empty-pool bundle as automatic rollback/deactivation after higher
+versions are active; such cutover needs its own compatible, accepted route.
+This proposal neither implements No Hires nor waives Deployment's no-live-down-
+migration and exact-predecessor/rehearsal obligations.
 
 The parent's codec/migration-corpus obligation becomes a tested predecessor-to-
 `H_company` construction boundary, not an in-place live-run upgrade. Keep exact
@@ -126,9 +146,11 @@ subset described by the parent's stale v9 proposal. Replay old and new rows unde
 their actual source/pins. Kernel-prefix registration and a genuine same-commit
 kernel bump accompany authoritative wiring, never this proposal alone.
 
-An empty-pool new catalog retains the existing feature-derived Company floor,
-state/receipt/event/projection behavior and formula outputs. Test old v4 and
-current v5/axis companions, not only a v4 baseline. Recompute real catalog/bundle
+From compatible preactivation baselines, an empty-pool new catalog retains the
+existing feature-derived Company floor, state/receipt/event/projection behavior
+and formula outputs. Test old v4 and current v5/axis companions, not only a v4
+baseline; these comparisons do not promise a successful downward postactivation
+Exit. Recompute real catalog/bundle
 digests normally and retain each observation's actual provenance; never rewrite
 replay pins or normalize governed payloads to force equality. Artifact identity
 is not expected to equal different artifact bytes.
@@ -164,9 +186,11 @@ review and SAME-edit parent-body reconciliation (Headcount and Tier2). The
 current delegated model ruling alone does not adopt this technical proposal.
 
 Implementation must prove the full I2 matrix, strict missing/extra/null/state-pin
-refusals, both Exit directions and unchanged old-run reload. A forced-non-null
+refusals, upward/equal compatible Exits, downward atomic refusals and unchanged
+old-run reload. A forced-non-null
 inactive attainment map, forced Clout hook/projection, global `>=19` activation,
-old-envelope Headcount arm, load-time upgrade and empty-pool overlay must each be
+old-envelope Headcount arm, load-time upgrade, permitted downward Exit and
+empty-pool overlay must each be
 caught by a relevant actual-boundary regression. Use source-derived mutations
 only where ordinary refusals/regressions do not establish discrimination.
 
