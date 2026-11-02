@@ -3935,3 +3935,18 @@ functional-native.json26235bytes SHA256
 7f6664243156a250ef2190553c67c9fb4d9eb2b95d6e53a25c49825499ebf014.
 All non-patch tracked diffs pass diff-check; unified-patch context warning remains
 explicit. The exact finished range now goes to fresh independent corrective review.
+
+### Independent approval — Firefox native-input ordering
+
+APPROVED, no findings, complete nine-path range
+26d617c016b37c4eba6e5c755dca27fc84fad60e..b5ea329f25253595aac6092f1fdfa742b1734c15.
+Review by: fresh independent Codex /root/firefox_native_input_corrective_review.
+Recorded by: Codex root under Marco's delegation. Reviewer independently executes
+cold frozen Linux Trophy Case36, focus18/18 and ordering/rejection9/9, terminal0;
+types0/0 and topology27 controls. Disposable exact old archive plus final regression
+exits1 with trusted Firefox keys but zero activation after competing pointer. Main
+tree untouched. Retained reproduction/full-run hashes and identical40515+93 case
+populations independently verified; full job inspected, not independently rerun.
+Non-patch whitespace clean; unified-patch context warning disclosed. All reviewer
+browser workloads terminal. Approval covers this correction, not default-load/
+hosted/five-minute acceptance or the accounting/version/adoption/full1.0 gates.

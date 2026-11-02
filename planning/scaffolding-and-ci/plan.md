@@ -54,9 +54,19 @@ ordering/rejection regression fails old behavior, passes all9 cases after repair
 existing18 focus cases and36 Trophy Case journeys pass. Types/topology pass.
 Full four-CPU-model target PASSES terminal0: provider27/27, broad501/501 (331.03s),
 native3/3 (5.83s), performance5/5 (8.13s). Executed40515+93 functional populations
-match the prior four-CPU baseline exactly. Complete range needs independent
-corrective review. This is not default14CPU reliability or hosted/five-minute
+match the prior four-CPU baseline exactly. Fresh independent corrective review
+APPROVES complete26d617c0..b5ea329f after actual controls/old failure reproduction.
+This is not default14CPU reliability or hosted/five-minute
 acceptance. Historical accounting/version failures and owner adoptions stay open.
+
+Next: now that the reproduced interleaving is corrected, reuse the retained
+unchanged Garage-family candidate and front-load the measured long event family
+and mandatory real-minute idle wait within each existing browser project. The
+current monolith still takes307.56s and idle starts as late as271s. Use the existing
+Vitest sequencer hook, preserve project positions/default ordering for other files,
+all populations/native inputs/deadlines and inherited sharding. Prove ordering and
+population preservation, then execute the complete target. No arbitrary worker
+count, shorter idle wait, raised ceiling or hosted-latency claim from local data.
 
 ## Historical checkpoint sequence — original heading 2026-10-16
 
