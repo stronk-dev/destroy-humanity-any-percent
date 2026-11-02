@@ -389,11 +389,35 @@ extends it as follows:
   - raw-byte ascending.
 - The three policies:
 
+Literal inheritance below is pinned to the immutable `first_hour_policy.v1`
+registry version 3, `balance/testdata/t0-t1/first-hour-policy-v1.json`, SHA256
+`e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3`.
+The adopted [Tier 2 Pacing Activity Windows](tier2-pacing-activity-window.md)
+amendment replaces only the new continuous personas' activity windows as below;
+it does not alter the old registry or waive any allocation policy.
+
 | Policy | Rules |
 |---|---|
-| `chaos.t2` v1 | The `chaos.t0_t1` literals, plus allocation moves in the seeded uniform draw |
+| `chaos.t2` v1 | The pinned `chaos.t0_t1` literals except the continuous-session replacement below, plus allocation moves in the seeded uniform draw |
 | `casual.t2` v1 | The `casual.t0_t1` literals, plus one rule: whenever `unassigned > 0` at an action boundary, the action is one allocation assigning all unassigned seats to the role whose effects include target `all` with the highest `per_effective_ppm` (ties raw-byte). It never reallocates. |
 | `reference.greedy` v2 | The T01-C20 projected-time ranker, preceded at every decision boundary by an allocation hill-climb: single-unit moves, strictly improving projected time only, `move:` key tie-break, run to a fixed point. Guard: at most `budget` moves per boundary; exhausting it fails loud as `allocation_starved`. Target sequence (T01-C39): `gate.t0_to_t1` requirement → `gate.t1_to_t2` requirement → `1e9` cash. It banks after the last target. |
+
+The NEW `chaos.t2` v1 and `reference.greedy` v2 each have one nonrepeating,
+zero-jitter session starting at 0 and lasting 21,600,000ms. Chaos's cadence is
+2,000ms; Reference's is 1,000ms. `casual.t2` v1 inherits the complete pinned
+15-minute/30-minute session definition, independent per-session jitter and
+5,000ms cadence; jittered durations are not forced to the nominal 15 minutes.
+These are test personas, not six-hour player-session requirements.
+
+Session coordinates are Founder-genesis wall time, span Company restarts and
+remain half-open. Scripted/elective endings do not restart a window. P2's horizon
+clips activity; it never extends or rewrites the session. Keep unreached seeds
+visible. The new policy IDs/versions participate in the copied seed-derivation
+grammar, so decision/jitter cohorts change: do not reuse old IDs to retain old
+draws or call this a duration-only paired experiment. Old policy bytes/reports
+remain historical; new observations identify their actual policy/scenario/source
+bytes at new output paths. Strict v1 validation stays closed; these rows require
+the complete reviewed schema-v2 implementation, not a relaxed or partial registry.
 
 - All three use `gate_crossing: first_boundary_requirements_met` over
   {`gate.t0_to_t1`, `gate.t1_to_t2`}.
@@ -633,6 +657,9 @@ before the green run is claimed. All gate claims run with `-count=1`.
 ## Changelog
 
 - 2026-09-25: created (draft) by Claude for Marco's batch acceptance.
+- 2026-11-02: Marco adopts the independently reviewed new-persona activity windows
+  and delegates P1 reconciliation; retain P2 targets/horizons, old identities and
+  all Headcount, full-policy, balance, content and release gates.
 
 ## Owner acceptance (2026-09-25)
 
@@ -643,3 +670,12 @@ alternatives are rejected. Provisional numbers stay provisional and are ratified
 measurement and SHA, as the RFC already requires. Owner-authored copy stays owner-authored:
 implementation ships copy keys, with any placeholder or candidate text clearly marked.
 **Exception:** OD-1 (source of the hiring budget) is NOT ruled: it conflicts with Headcount Allocation OD-1 and is held for an owner explanation; implement nothing that depends on the seat source until it is ruled.
+
+## Activity-window adoption (2026-11-02)
+
+Marco's explicit answer: “Adopt the reviewed windows and delegate parent-text
+reconciliation.” This adopts W1–W4 of `tier2-pacing-activity-window.md`, technically
+approved in `059e8706..8aa53527`, and authorizes the matching P1 body edit above.
+The translation requires independent technical review. It does not adopt Headcount
+choices, the accounting/search drafts, authored copy, balance literals or a release;
+it neither implements the new registry nor completes any P2 acceptance gate.

@@ -2144,8 +2144,10 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
    calculation/settlement/search contracts (the narrow offline wording is reconciled), the
    shared attendance-clock contract and historical kernel guard. Finish the
    natural pacing/relevance and candidate-copy/content gates. New2026-11-01 Tier2 constraint
-   RP-698 requires authored activity-window/envelope reconciliation: its implemented Chaos
-   session stops before the target's minimum, so another price sweep cannot alone fix it.
+   RP-698's new-persona activity windows are owner-adopted2026-11-02, with delegated
+   parent-body reconciliation and independent translation review pending. Runtime/full
+   policy proof still remains: the implemented old Chaos session stops before the target's
+   minimum, so another price sweep cannot alone fix it.
    The [owning research log](clout-v1-and-pr-interns/log.md) holds the native/Linux consumer
    evidence and exact all-seed bound; no session/target is changed. Diagnose the hosted standard-pacing
    cost and incomplete maintenance population before proposing optimization or budget changes;

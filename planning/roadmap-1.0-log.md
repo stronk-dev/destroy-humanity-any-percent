@@ -5699,3 +5699,18 @@ findings and verdict live in the [Clout log](clout-v1-and-pr-interns/log.md).
 Next is owner adoption of both drafts, then implementation and full acceptance;
 no product code or balance changed. RP-680,27 accounting failures, historical
 guard, separate Tier2-window adoption and full nine-tier/platform gates stay open.
+
+## 2026-11-02 — Tier2 activity-window owner adoption
+
+After7cc5f4b8, Marco explicitly adopts the reviewed new-persona windows and
+delegates parent-text reconciliation. Owner ruling by: Marco. Recorded by: Codex
+root. The exact proposal was technically approved059e8706..8aa53527; parent P1
+and child body now agree on new6h continuous windows, inherited Casual behavior,
+Founder-global/clipped time and new-ID random streams. Independent technical
+review of this translation remains. No product/data/old persona/report changes
+or software execution is claimed for this normative adoption. RP-698 remains
+open for implementation/full pacing; P1/Headcount, accounting/search, all later
+tiers, rights/accessibility/deployment and the full1.0 release floor remain.
+Next is translation review and the parent's specific prerequisites, not another
+owner vote on these adopted windows. CI's separate local worker-width candidate
+is under its own corrective review; no hosted/whole-CI release claim or push.

@@ -678,3 +678,24 @@ remains unadopted and RP-698 OPEN; no full-v2/progression/pacing/release accepta
 Explicit adoption and delegated reconciliation requested from Marco. Until that
 answer, do not implement the new sessions or change the accepted parent's body.
 Nothing pushed.
+
+## 2026-11-02 — Owner adopts reviewed activity windows and delegates body reconciliation
+
+Owner ruling by: Marco, direct answer to the adoption question: “Adopt the reviewed
+windows and delegate parent-text reconciliation (recommended).” Recorded by: Codex
+root. Adopt the exact technically approved W1–W4 proposal059e8706..8aa53527;
+child bytes were unchanged since that review before this status/reconciliation edit.
+Parent P1 now explicitly replaces new Chaos/Reference windows with one6h session,
+preserves cadence/jitter/Casual inheritance, pins the source registry and binds
+Founder-global half-open/clipped windows plus new-ID random streams. Its original
+owner acceptance/OD-1 exception is byte-preserved; P2 and all acceptance criteria
+are unchanged. Child/index/plan now record adoption, not a stale owner hold.
+
+This is specification translation only. No product/data/policy registry, budget,
+numeric kernel, old persona/report, balance literal or player copy changes. Full
+P1 schema-v2/allocation, Headcount/output/seat, accounting/search, calibration,
+content/mint and full1.0 gates remain. RP-698's authority route advances; its
+runtime/complete pacing defect is not marked fixed. Fresh independent technical
+review must inspect the complete parent/body/record translation before implementation.
+Root checks the normative diff for exact reviewed values and unchanged P2/ACs;
+no software-suite rerun is claimed as evidence for a prose adoption. Nothing pushed.

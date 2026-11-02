@@ -1,7 +1,7 @@
 # RFC: Tier 2 Pacing Activity Windows
 
-- **Status:** draft — technical proposal, not implementation authority
-- **Author:** Codex (proposal for Marco's adoption)
+- **Status:** accepted — Marco adoption 2026-11-02; parent-body translation pending independent technical review
+- **Author:** Codex (adopted by Marco)
 - **Created:** 2026-11-01
 - **Design refs:** `design/02 §11` (Tier 2 pacing), `design/06 §idle-math`
 - **Depends on:** Tier 2 Content P1/P2; existing first-hour boundary/seed contracts
@@ -13,7 +13,7 @@
 Resolve RP-698 without weakening the two-to-three-hour pacing target or changing
 player mechanics. The NEW Tier 2 continuous test personas have explicit six-hour
 sessions, matching their already-declared observation horizons. The old first-hour
-policies and reports remain unchanged. This proposal does not implement or adopt
+policies and reports remain unchanged. This amendment does not implement or adopt
 the held allocation policies, retune content, or repair production accounting.
 
 ## Evidence and scope
@@ -31,12 +31,12 @@ Parent P1 still owns decisions, allocation, gates, exits, offers and objectives;
 P2 still owns all populations, clocks, invariants and pacing criteria. Existing
 Headcount/body prerequisites remain. No diagnostic subset becomes full P1/P2.
 
-## Specification (proposed)
+## Specification
 
 ### W1 — Explicit new-persona activity windows
 
 The planned `balance/testdata/t2/it-company-policy-v1.json` remains P1's single
-policy authority; it is not created or served by this proposal. In its NEW rows:
+policy authority; it is not created or served by this amendment. In its NEW rows:
 
 Inheritance below names the current immutable `first_hour_policy.v1` registry
 version3 (`balance/testdata/t0-t1/first-hour-policy-v1.json`, SHA256
@@ -100,8 +100,9 @@ P1's gate set, exit-once rule, ignored offers and no-incorporation rule. Keep th
 full nine-tier1.0 floor. This amendment does not select Headcount mechanics or an
 accounting/search protocol, approve any gate literal, or waive RP-433/27AC6.
 
-Before implementing this amendment, Marco must adopt it and authorize the parent's
-contradictory literal-copy wording to be reconciled in the same normative change.
+Marco adopted the reviewed windows on 2026-11-02 and explicitly delegated the
+parent-text reconciliation. The reconciled parent body must receive independent
+technical review before implementation; this is not a remaining owner decision.
 The implementing plan must separately identify remaining P1/Headcount prerequisites;
 approval of this window cannot mark a partial registry or policy full/READY.
 Do not advance from a window-enumeration check to a balance or release claim.
@@ -111,14 +112,14 @@ this amendment assigns no new budget or presumed old-scenario allowance. Bounded
 experiments retain their current guards/deadlines. An exhausted run is incomplete,
 not a measurement from which to raise a ceiling or claim full-workload feasibility.
 
-## Proposed parent reconciliation
+## Adopted parent reconciliation
 
-On explicit adoption, retain the parent's normative body but qualify the Chaos
-row's “copies the literals” with the W1 session exception, and define Reference's
-six-hour session explicitly. Add W2/W3's global window, clipping and new-ID seed
-rules beside the table. The author/ruling-author must authorize that edit; this
-draft does not silently rewrite their accepted body. All other P1/P2 text and
-Headcount holds remain; do not remove pending mechanics to land an easier subset.
+Under Marco's explicit adoption/delegation, the parent's P1 body now qualifies
+Chaos's literal inheritance with the W1 session exception and defines Reference's
+six-hour session explicitly. W2/W3's global window, clipping and new-ID seed rules
+are beside that table. This translation awaits independent technical review.
+All other P1/P2 text and Headcount holds remain; do not remove pending mechanics
+to land an easier subset.
 
 ## Acceptance criteria (future implementation, not achieved here)
 
@@ -142,14 +143,15 @@ Headcount holds remain; do not remove pending mechanics to land an easier subset
 
 ## Deviations from existing contracts
 
-Proposes one explicit exception to P1's literal inheritance: new continuous
+Adopts one explicit exception to P1's literal inheritance: new continuous
 persona sessions last six hours instead of the old two. It preserves the intended
-P2 horizon and target but changes measured activity and random cohorts, so owner
-adoption is required. No deviation from the design pacing target is proposed.
+P2 horizon and target but changes measured activity and random cohorts; Marco
+explicitly adopted that exception. No deviation from the design pacing target.
 
 ## Open authority and engineering
 
-Owner adoption/parent reconciliation are pending. Headcount/output/seat contracts,
+Owner adoption and delegated parent-body reconciliation are recorded; independent
+technical review of the translation is pending. Headcount/output/seat contracts,
 complete schema-v2 policies/loader/runner, full pacing/relevance/role evidence,
 report provenance implementation and balance/content adoption retain their parent
 gates. Technical review is neither adoption nor proof those features exist.
@@ -158,3 +160,6 @@ gates. Technical review is neither adoption nor proof those features exist.
 
 - 2026-11-01: propose explicit new-persona activity windows for RP-698; preserve
   old inputs, new-ID randomness, pacing floor and full parent acceptance scope.
+- 2026-11-02: Marco adopts the reviewed windows and delegates parent-text
+  reconciliation. Reconcile P1 in the same change; runtime, complete P1/Headcount,
+  full pacing and release acceptance remain unproved.
