@@ -4222,3 +4222,31 @@ Review by: Codex root, implementer first filter. Recorded by: Codex root. Comple
 six-path source/test/config/docs/records range after8179d43a now needs independent
 corrective review. No whole-CI acceptance, archival, specification adoption,
 release approval or push. Tier2's separately received owner adoption is another lane.
+
+### Independent approval — measured-model browser width
+
+APPROVED, no findings, complete six-path base-exclusive/tip-inclusive range
+8179d43a69450d7d37caf35c5111b4424c59ac9d..7cc5f4b88597820750ccc03461e2526d325bb95e.
+Review by: fresh independent Codex /root/browser_model_width_review.
+Recorded by: Codex root under Marco's delegation. Independently runs ordinary
+declared Linux complete target, terminal0: provider18+9, broad522 files/40485
+ordinary+21 expected+24 skips (40530),181.86s; native87+six expected (93),6.26s;
+isolated Chromium performance five,7.69s/107 unrelated deselections. Actual
+installed resolveConfig reports14 CPUs/affinity0-13/maxWorkers3, all engines,
+headless/fileParallelism true; no CLI/affinity override. Installed source verifies
+per-project semantics. Independent Node12505/1109skips terminal0, types0/0,
+topology27 controls and exact-range diff-check pass. All old40515 broad cases
+remain; added15/natives93 and final reviewed multisets match root exactly.
+All five retained candidate digests independently match.
+
+Reviewer raw .cache/browser-model-width-independent-7cc5f4b8.log1485506bytes SHA256
+4b4fb223d0b412498014d1cdfca6acecc46a9a45b82df10388d3d8af0df41e68;
+its functional-broad.json12513842bytes SHA256
+c7a099eabbf4acc79effacc72220da4e44e58bc97c601c82f156770f5fb5ee28;
+functional-native.json26223bytes SHA256
+67ca8bbf40553cad40970a215381b96f58610ee88ea76a8a2764f2c0f3bf2ad2.
+Initial sandbox denial executes no tests; authorized invocation then passes.
+All handles terminal; owned container removed; main untouched. Later Tier2 range
+excluded. This closes corrective config review, not universal safe capacity,
+causation/reliability, matched speedup, cold-wall/hosted five-minute acceptance,
+spec adoption, archival or release. No publication.

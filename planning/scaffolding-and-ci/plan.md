@@ -137,7 +137,11 @@ isolated performance five passes,11.38s. All40515 earlier broad cases remain;
 only nine previously approved Pitch controls and six new pure width controls are
 added. Native case multiset unchanged. Valid root `make test-client` passes12505
 cases/1109 existing browser-only skips,8.89s; types0/0, topology27 controls pass.
-The candidate is locally verified, pending independent complete-range review.
+Fresh independent corrective review APPROVES complete8179d43a..7cc5f4b8 after
+its own ordinary14CPU full target: all40530+93 cases and five performance checks,
+terminal0; actual resolved maxWorkers3/all engines verified. Node12505, types0/0
+and topology27 controls pass independently. Root's retained case multisets/digests
+are independently checked. The corrective configuration review is complete.
 It does not prove a universal safe capacity, intermittent-failure cause, matched
 speedup, cold-wall timing or hosted five-minute acceptance.
 
