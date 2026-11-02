@@ -713,3 +713,24 @@ logs append-only and diff-check clean. No software suites for Markdown; no track
 reviewer edits or publication. This closes the translation gate. Adoption comes
 from Marco's direct answer, not this technical verdict. Runtime/full policies,
 Headcount integration, accounting/search, pacing, mint and release remain open.
+
+## 2026-11-02 — Paid-hiring model adoption and canonical Headcount translation
+
+Owner ruling by: Marco, direct “Paid hiring + producing/redirecting roles;
+reconcile both specifications (recommended).” Recorded by: Codex root. Headcount
+owns the engine; Tier 2 now consumes its grammar/state/commands/events/rates/UI
+projection/masks across the body, not an appended override beside a conflicting
+free-seat/multiplier implementation. B1 office roles grant no seats; hiring is
+a real cost, new staff are unassigned and converter output is resource accrual,
+not a displayed stock count. P2's first-allocation command and invariant bind the
+same canonical engine. Exact model scope/remaining issues are recorded once in
+the Headcount log's same-date entry.
+
+Concrete role/resource/price/rate/cap/consumer content and HG-10 full deterministic
+hire/allocate policy binding remain required. No complete registry/readiness,
+runtime implementation, Headcount identity/AC-3 closure or balance claim. Activity
+windows and all seed/horizon/envelope/must-reach/full1.0 gates remain. No product,
+data, old persona/report, player copy, mint, schema allocation or kernel change.
+Review by: Codex root, author/first filter. Fresh independent technical review
+must cover the entire afterc6f11121 translation. No software tests merely for
+prose and no publication.

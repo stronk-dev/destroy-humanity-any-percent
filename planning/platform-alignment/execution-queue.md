@@ -93,14 +93,17 @@ nine-tier goal remains active; no new playable tier or release was completed.
   and career/relevance reports drift. The exact artifact/validator refusal is in the CI log.
   Later local work and the unapplied rate candidate are not in those hosted runs.
 - **HELD — named contracts and owner choices:** use the current distinction and linked option
-  sheets. Headcount has hiring AND output choices. API engineering proposals, Typer/attendance/
+  sheets. Headcount's paid-hiring/producing-role model is explicitly ruled2026-11-02;
+  its complete body translation needs technical review, then identity/AC-3 and
+  concrete content/full-policy integration. Do not ask the same model question again.
+  API engineering proposals, Typer/attendance/
   body reconciliation, rights/retention, accessibility, content and release-artifact work have
   separate boundaries; a generic approval cannot substitute for their actual contracts/proofs.
 
 The numeric next step is actual caller-compatible calculation/settlement and a correct
 consumer search algorithm; the delegated interval wording is reconciled, not an algorithm
 adoption. RP-654 fixes source-version loss, not the original27 failures. Do not repeat completed
-context studies. Headcount's live hiring/output,
+context studies. Headcount's selected canonical engine integration,
 Typer/Arcade HTTP bindings, recovery/renewal and later-game construction retain their named
 acceptance/specification prerequisites. These are not a claim that all remaining work is
 paperwork or that generic owner approval would finish the engineering.

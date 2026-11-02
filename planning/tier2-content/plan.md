@@ -1,11 +1,15 @@
 # Tier 2 Content — implementation plan
 
-RFC: `rfc/tier2-content.md` (accepted 2026-09-25, recommended defaults). **OD-1/HG-1 (seat
-source) is NOT ruled.** Everything in §H (headcount grammar, state, intent, projection, masks),
-the `headcount_seats` generator roles, the allocation policy arms, `milestone.first_headcount_allocation`,
-the `headcount_budget_respected` invariant, the P4 `headcount_seats` role row and the P5 gate are
-held until it is. Fixture-first: candidates live under `balance/testdata/t2/`; epoch 9 is NOT minted
-(M1–M4 owner-gated).
+RFC: `rfc/tier2-content.md` (accepted). **OD-1/HG-1 and the output model are
+ruled2026-11-02:** paid hiring and producing/redirecting roles, with explicit
+delegation to reconcile both specifications. Headcount owns the single engine;
+Tier 2 consumes its pool/state/commands/rates/projection/masks. No office-granted
+seats, second assignment map or per-head multiplier fork remains normative.
+The complete model translation needs independent technical review. Before live
+integration, close engine identity/AC-3 reconciliation and actual Tier-2 resource/
+role/price/rate content plus HG-10 full hiring/allocation policy binding. The
+existing S2 library/window subset does not complete that chain. Fixture-first:
+candidates remain under `balance/testdata/t2/`; epoch9 is NOT minted (M1–M4).
 
 **RP-697 correction, 2026-11-01:** the pacing caller copied the candidate bundle
 but retained the epoch-8 constants hash. Bind its real simulation revisions and
@@ -64,7 +68,7 @@ population amendment. This is a contract-reconciliation gate, not permission to 
 regenerate reports. The combined C6 diagnostic independently reproduces byte-for-byte but its
 six Tier-2 rows are all instrument-affected; it is not a clean content-dominance verdict.
 
-- [x] C1 — Candidate artifacts (§A1, §A2, §B1 minus `headcount_seats`, §B2, §B3): economy
+- [x] C1 — Candidate artifacts (§A1, §A2, §B1 office rows without free-seat roles, §B2, §B3): economy
   (schema v4 carry; v5 is headcount-only), routes, categories under `balance/testdata/t2/`,
   derived from the epoch-8 bytes by insertion only, with a SHA file.
 - [x] C2 — Strict loaders accept the candidates in Go and TS; categories missing
@@ -82,5 +86,7 @@ six Tier-2 rows are all instrument-affected; it is not a clean content-dominance
 - [~] C6 — Relevance (§P3): combined diagnostic independently reproduced; main and branch
   gates still fail. T0 comparison exposes RP-433's policy-population conflict. Original C6
   test coverage requires the RP-432 correction's designated review; no full P3 acceptance.
-- [ ] Held — §H headcount, P4 seats row, P5, AC2/AC3 (headcount parity/partition) — OD-1.
+- [ ] Canonical §H Headcount integration, P4 hiring/role controls, P5 and AC2/AC3:
+  model choice resolved; translation review, engine technical contracts and full
+  candidate/policy wiring remain, not another OD-1 vote.
 - [ ] Owner — M3 SHA ratification, E4 copy round, M1–M4 mint.

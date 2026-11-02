@@ -103,7 +103,7 @@ ratified `spawn_gate_ppm[2]` (400,000). Crossing `gate.t1_to_t2` is therefore th
 offer opportunity. This matches `design/01` T2: "first prestige available shortly after". Offer
 arithmetic is unchanged. What an accepted T2 offer pays is HG-8's question.
 
-### B — Tier-2 catalog content (economy schema v5)
+### B — Tier-2 catalog content (engine-owned Headcount schema)
 
 B0. **Price band (DESIGN-GAP HG-9).** `design/02 §2.1` asks for a ×12 cost / ×6.5 output
 cadence. Continuing it from `generator.beige_tower_v2` (3.58e8) would put Tier-2 generators at
@@ -121,7 +121,7 @@ values are PROPOSED retunable balance data:
   "price": { "resource_id": "company.cash", "base": "1.2e7", "curve": { "kind": "geometric", "ratio": "1.13e0" } },
   "production": { "resource_id": "company.cash", "base_rate": "2e4" },
   "ladder": [ { "purchased_at": 25, "multiplier_ppm": 2000000 }, { "purchased_at": 50, "multiplier_ppm": 2000000 }, { "purchased_at": 100, "multiplier_ppm": 2000000 } ],
-  "roles": [ { "kind": "headcount_seats", "seats_per_purchased": 5 }, { "kind": "synergy_feed", "pool_id": "pool.org_chart" } ] },
+  "roles": [ { "kind": "synergy_feed", "pool_id": "pool.org_chart" } ] },
 { "id": "generator.managed_services_contract", "tier": 2, "category": "category.software",
   "price": { "resource_id": "company.cash", "base": "6e7", "curve": { "kind": "geometric", "ratio": "1.11e0" } },
   "production": { "resource_id": "company.cash", "base_rate": "1.3e5" },
@@ -132,7 +132,7 @@ values are PROPOSED retunable balance data:
   "price": { "resource_id": "company.cash", "base": "1.44e8", "curve": { "kind": "geometric", "ratio": "1.12e0" } },
   "production": { "resource_id": "company.cash", "base_rate": "2.5e5" },
   "ladder": [ { "purchased_at": 25, "multiplier_ppm": 2000000 }, { "purchased_at": 55, "multiplier_ppm": 2000000 }, { "purchased_at": 100, "multiplier_ppm": 2000000 } ],
-  "roles": [ { "kind": "headcount_seats", "seats_per_purchased": 12 }, { "kind": "synergy_feed", "pool_id": "pool.org_chart" } ] }
+  "roles": [ { "kind": "synergy_feed", "pool_id": "pool.org_chart" } ] }
 ```
 
 The provisioning edge follows the `§11b` kinetic chain: tier 2 provisions tier 1. It requires
@@ -166,153 +166,95 @@ B4. **Unchanged:** every T0/T1 row other than the B1 hardcap addition, the progr
 the manual policy, the offline policy, and the curriculum. The prestige, factions, doctrines,
 and curriculum artifacts are not edited (HG-7, HG-8).
 
-B5. **The cap-mints-a-currency law (`design/02 §2c` law 2).** The headcount budget hardcap (H1)
-mints **seats** as the parallel currency, because seat-bearing generators become the scarce
-good. The catalog names it (`headcount.budget.cap`), and its presentation copy must satirize it
-(hot-desking is the in-fiction answer to seat scarcity). The epoch-9 changelog publishes the
-faucet/sink budget (law 1):
+B5. **The cap-mints-a-currency law (`design/02 §2c` law 2).** The paid-hire pool has
+the engine's required visible seat hardcap/reason (H1; Headcount OD-12). Tier-2
+catalog/copy and the epoch changelog must name its parallel-currency response;
+no office purchase silently raises the cap or grants free staff. That content
+obligation is not completed by selecting the hiring model. The epoch-9 changelog
+publishes the faucet/sink budget (law 1):
 
-- **Sinks:** the gate burns `1e7`; purchases.
-- **Faucets:** the three generators, the `pool.org_chart` factor, and the headcount role
-  factors, each with its formula.
+- **Sinks:** the gate burns its ratified amount; generator/upgrade purchases;
+  paid hires at the pool's ratified cost curve. No payroll is introduced.
+- **Faucets:** the three generators, the `pool.org_chart` factor and the canonical
+  resource-producing/redirecting Headcount terms, each with its formula.
 
-### H — Headcount allocation (DESIGN-GAPs HG-1–HG-4; recommended arms written normatively)
+### H — Headcount allocation (paid hiring; canonical engine contract)
 
-`design/01` fixes these facts:
+H0. **One engine authority.** Marco's 2026-11-02 ruling selects paid hiring with
+producing/redirecting roles and delegates reconciliation of both specifications.
+[Headcount Allocation](headcount-allocation.md) owns the single `headcount_pools`
+grammar, exact effective-heads/rate algorithms, saved maps, logged commands,
+events, replay and projection contracts. This RFC owns its actual Tier-2 content
+and mounted player/harness consumers. There is no second generator-seat or
+per-effective-head multiplier engine.
 
-- there is a finite hiring budget;
-- there are four roles: Engineers, Sales, Support, and Middle Managers;
-- Middle Managers convert Engineers into Slide Decks at 1:1;
-- the player's decision is allocation ratios and re-allocation timing;
-- `design/10`'s `No Hires` must be able to delete the system.
+H1. **Tier-2 pool content.** The candidate must supply a complete engine S1 pool:
+its mechanical ID, Company-resource hire price on an existing cost curve,
+visible seat hardcap/reason, role rows and window. The Tier-2 pool opens at
+`gate.t1_to_t2` and uses `to_gate: null` until the accepted Tier-3 automation
+successor specifies closure. Office generator purchases do not grant staff.
 
-`design/01` does not fix the budget source, the reallocation cost, the Sales and Support effects,
-or the use of Slide Decks. The text below writes each recommended arm normatively, so accepting
-the defaults makes it implementable. Each open item is recorded as an HG gap with its
-alternatives.
+- The four content roles remain Engineer, Sales, Support and Middle Manager.
+- Engineer uses an executed `produce` effect for billable Company-resource output.
+- Middle Manager uses `convert` from Engineer with `heads_per_converter: 1`.
+  Diverted heads leave Engineer production and produce the declared deck resource;
+  they are never duplicated. Extra managers are visibly idle.
+- Sales/Support must use an executed effect from the engine's closed
+  `produce | convert | pool_feed` vocabulary, subject to its source/binding rules.
+  Their concrete effects/resources and rates remain HG-3 content work; the former
+  generator/manual `per_effective_ppm` rows are rejected by this model ruling.
+- HG-4 now owns the actual deck resource/cap/consumer content. A derived count
+  named `slide_decks` that produces nothing is not this model. Do not invent a
+  gate requirement, offer rule or new sink to fill the missing content.
 
-H1. **Catalog grammar (economy schema v5; v1–v4 still load byte-for-byte).**
+The paid-hire price, role rates and complete resource/pool bindings require a
+reviewed candidate and measured balance before M3 ratification. Engine fixture
+IDs/prices/rates are not Tier-2 content. The ruling selects the model, not those
+literals or a complete pool row.
 
-- New generator role kind `{ "kind": "headcount_seats", "seats_per_purchased": <positive safe integer> }`.
-  This extends the closed role vocabulary, which `§11b` says may grow only by RFC.
-- New top-level block:
+H2. **Exact derived values and closed-form output.** Use engine S2's producing
+heads, diverted heads, idle converters and unassigned seats, without another
+formula. Use S3's resource-rate terms and normal ordered `all`/role-targeted
+contributions. Generator-targeted contributions do not become staff production.
+Headcount remains constant between actual commands; no tick, payroll, accrual
+read payment or retroactive allocation is added. The existing 90%/24h offline
+policy and resource hardcaps remain unchanged. Free, instant reallocation and
+the 1:1 diversion model are preserved.
 
-```json
-"headcount": {
-  "unlock_tier": 2,
-  "budget_hardcap": { "count": 1000000, "reason_key": "headcount.budget.cap" },
-  "roles": [
-    { "id": "role.engineer", "copy_key": "role.engineer", "converts": null,
-      "effects": [
-        { "source_id": "headcount.role.engineer.open_plan_floor", "target": "generator.open_plan_floor", "per_effective_ppm": 50000 },
-        { "source_id": "headcount.role.engineer.managed_services_contract", "target": "generator.managed_services_contract", "per_effective_ppm": 50000 },
-        { "source_id": "headcount.role.engineer.hot_desk_program", "target": "generator.hot_desk_program", "per_effective_ppm": 50000 } ] },
-    { "id": "role.middle_manager", "copy_key": "role.middle_manager",
-      "converts": { "from_role": "role.engineer", "units_per_assigned": 1 }, "effects": [] },
-    { "id": "role.sales", "copy_key": "role.sales", "converts": null,
-      "effects": [ { "source_id": "headcount.role.sales.all", "target": "all", "per_effective_ppm": 10000 } ] },
-    { "id": "role.support", "copy_key": "role.support", "converts": null,
-      "effects": [
-        { "source_id": "headcount.role.support.click", "target": "manual.click", "per_effective_ppm": 100000 },
-        { "source_id": "headcount.role.support.answering_machine", "target": "generator.answering_machine", "per_effective_ppm": 100000 } ] }
-  ]
-}
-```
+H3. **One state and activation owner.** Use engine S4's complete-key
+`headcount_seats` and `headcount_assigned` maps and invariant
+`0 <= sum(assigned in pool) <= seats[pool] <= seat_hardcap.count`. Derived
+values are never saved. New runs start at zero; Exit resets the next Company and
+retains the terminal history under its pins. Do not add the rejected alternative
+`headcount_assignments` field or a second version floor. The engine/save owners
+must reconcile their occupied historical schema/Company/replay version literals
+before live integration; this model ruling allocates none.
 
-- Every effect `source_id` has a `multiplier_sources` row with `"slot": "upgrades"` and
-  `"provider": "headcount"`.
-- The loaders reject a catalog, in both runtimes and in the JSON Schema, when any of these holds:
-  - a `headcount` block exists with no `headcount_seats` role, or a seats role exists with no
-    block;
-  - a role id is duplicated or its ids are not raw-byte sorted;
-  - an effect is undeclared or has a dangling target;
-  - `converts.from_role` is unknown, is itself a converting role, or has no effects;
-  - more than one role converts;
-  - `units_per_assigned` or `per_effective_ppm` is not a positive safe integer;
-  - `unlock_tier` falls outside `[0,3]`, the loader's tier domain.
+H4. **One command/event/replay union.** The mounted controls and harness submit
+engine S5's `hire_headcount {pool_id,count}` and
+`reallocate_headcount {pool_id,assignment}`, with the normal logged envelope.
+The latter is the complete absolute vector for that pool. Engine S5 owns exact
+rejections, affordability/cap handling, pre-command accrual and idempotency;
+engine S6 owns `headcount_hired` and `headcount_reallocated`. There is no
+`set_headcount_allocation` alias or `headcount_allocated` event. Buying staff
+does not increment generator purchase counters. No new behavior is inferred for
+firing, payroll or Tier-3 automation.
 
-H2. **Derived quantities.** These are exact integers, computed identically in Go and TypeScript
-and never persisted:
+H5. **Projection, formulas and mounted consumer.** Engine S3/S10 owns authoritative
+per-pool seats/cap/unassigned/window and per-role assigned/producing/diverted/idle
+heads, resource IDs and rates. The actual deck resource amount is resource state,
+not the converter count. The mounting RFC carries that contract through the
+registered API and receipt to the panel; no client-derived budget becomes
+authority. Publish the canonical engine rate formula through its reviewed
+regeneration commit, not a second per-head multiplier formula.
 
-```text
-budget            = min(budget_hardcap.count, Σ_g purchased(g) × seats_per_purchased(g))   // purchased only; provisioned units carry no seats
-converted         = min(assigned[converting], assigned[from_role] / units_per_assigned)    // integer; v1 literal = 1
-effective[from]   = assigned[from] − converted × units_per_assigned
-effective[r]      = assigned[r]                  (every other role; the converting role has no effects)
-slide_decks       = converted                    // displayed; produces nothing (HG-4)
-factor(effect)    = 1 + effective[role] × per_effective_ppm / 1,000,000   // Decimal, quantized once at emission
-```
-
-The budget is computed with checked big-integer arithmetic before the hardcap. Overflow saturates
-to the visible cap and never wraps. The purchased-only rule follows the `§11b`
-purchased/generated split: generated units are free and priceless, so they grant no seats.
-
-H3. **State.** The next free Company save version on the save layer's chain adds a complete-key
-`headcount_assignments` map over the pinned catalog's role ids. The save layer assigns the
-version number; this RFC does not pre-assign it.
-
-- It activates only for a new run pinned to an epoch whose economy declares `headcount`. This is
-  the new-run-bound activation used by the Soul and Doctrine foundations. A run pinned to epoch
-  8 keeps its schema and finishes under its pins.
-- Invariant: `Σ assigned ≤ budget`. Within a run, purchased counts never decrease, so the budget
-  is monotone. Any violation is `ErrInvalidEngineState` at decode, apply, and replay.
-- New-run assembly writes the all-zero complete map. Headcount is run-scoped.
-
-H4. **Intent.**
-
-```json
-{ "kind": "set_headcount_allocation", "intent_id": "<uuidv7>", "expected_revision": 7,
-  "assignments": { "role.engineer": 6, "role.middle_manager": 0, "role.sales": 3, "role.support": 1 } }
-```
-
-- `assignments` has exactly the pinned role ids, each a non-negative safe integer. The command
-  goes through `ApplyLogged` like every other Company command.
-- Order of operations:
-  1. preflight, including the shipped lazy offline catchup (T01-C15);
-  2. evaluate elapsed production under the **previous** allocation;
-  3. run the accrual hook;
-  4. validate;
-  5. commit the new map;
-  6. emit one `headcount_allocated` v1 event on the new revision.
-
-  The allocation is piecewise-constant between commands, so evaluation stays closed-form. It can
-  never apply retroactively to time that has already elapsed.
-- Terminal rejections, using existing categories:
-
-  | Condition | Rejection |
-  |---|---|
-  | Tier below `unlock_tier` | `not_eligible/tier` |
-  | Map equal to the current one | `not_eligible/unchanged` |
-  | Missing or extra key, negative, non-integer, or unsafe value | `invalid` |
-  | `Σ > budget` | `cap_exceeded/headcount.budget.cap` |
-  | Catalog has no `headcount` block | `unknown_id` |
-
-- Reallocation is free, instant, and unlimited (HG-2). Timing matters because the budget grows
-  with seat purchases and each role's marginal value shifts with the generator mix.
-- `headcount_allocated` v1 payload, strict exact-object:
-  `{founder_id, run_id:{company_stream_id,run_seq}, budget, previous:{…}, assignments:{…}}`.
-  Replay-inputs gain no field, because every input is Company state or command payload. The event
-  joins the event registry and the client exact-object decoder.
-
-H5. **Production and projection.**
-
-- Headcount contributions are assembled by the same private functions used for live evaluation,
-  replay, the pure read projection, and simulation. They are ordered by `source_id` within the
-  `upgrades` slot under the existing rule.
-- The authoritative receipt snapshot adds
-  `headcount: {budget, budget_hardcap:{count,reason_key}, assignments, effective, slide_decks}`,
-  or `null` when the catalog has no block.
-- `docs/generated/production-formulas.json` publishes H2 (law 9). Regenerating it is its own
-  reviewed commit, and `make formulas-check` must fail on the tree before that commit.
-
-H6. **Simulation-only masking** (for the relevance and role gates).
-
-- A generator effect mask also nulls that generator's `headcount_seats`, which lowers the budget.
-- Only under a simulation mask, `effective` is computed from assignments clamped greedily:
-  `min(assigned[r], remaining_budget)` in raw-byte role order, so a masked budget can never fall
-  below the assignment total.
-- The authoritative and replay entrypoints still have no mask parameter. The existing source
-  guard extends to cover this.
+H6. **Simulation masks and measured roles.** Engine S7.4 masks a role's rate and
+pool feed while retaining seats, assignment and hire cost. Generator masks no
+longer remove a fictitious seat faucet or clamp a second assignment map. Paid
+hiring is a purchasable for relevance; P5 still requires an allocation-aware
+reference and meaningful role choices. The complete P1 hiring/allocation policy
+must be reconciled to the actual engine before calibration; a window-only subset
+is not full P1 and does not waive Headcount, accounting or release acceptance.
 
 ### E — Era presentation hooks (Tier 2 = `era_2010`)
 
@@ -327,7 +269,9 @@ owner-reviewed design data. The following gain `era_2010`:
 Tier ≥ 3 remains a thrown `RangeError`. That fail-closed behavior is kept deliberately and is
 tested.
 
-E2. **Snapshot v4** (additive; v1–v3 receipts stay replayable under their minted version):
+E2. **Mounting/API-owned snapshot successor.** The mounting/API owners assign
+the next actual version for H5/S10; this model ruling does not reuse an occupied
+snapshot version. Existing receipts remain replayable under their minted versions.
 
 - `transitions` projects the `gate.t1_to_t2` control. It is derived, like the first Gate, by
   invoking the production transition on a discarded clone.
@@ -339,9 +283,11 @@ E2. **Snapshot v4** (additive; v1–v3 receipts stay replayable under their mint
 
 E3. **Desk surfaces.**
 
-- A **Headcount** panel shows the budget with its cap reason, per-role steppers, and Unassigned
-  and Slide Decks counters. It submits one full-map `set_headcount_allocation`, and the receipt
-  is authority.
+- A **Headcount** panel consumes engine S10: paid Hire/Max, seats/cap/reason,
+  per-role absolute-vector editing, Unassigned, producing/diverted heads and idle
+  converters. It submits `hire_headcount` and `reallocate_headcount`; only receipts
+  change authoritative state. Show the actual deck resource amount/rate separately
+  from the number of diverted heads; no derived count pretends to be stock.
 - The existing Gate control is extended to the projected `gate.t1_to_t2`.
 - The minimal **Incorporate** control submits `incorporate {faction_id}`.
 - Per `design/11 §2`, each new system gets exactly one contextual hint key and one "why this
@@ -381,12 +327,14 @@ P1. **Policy registry** `balance/testdata/t2/it-company-policy-v1.json` (schema 
 extends it as follows:
 
 - `enumeration_order.classes` becomes
-  `[perform_manual_batch, buy_generator, buy_upgrade, set_headcount_allocation, wait]`.
+  `[perform_manual_batch, buy_generator, buy_upgrade, hire_headcount, reallocate_headcount, wait]`.
 - Allocation arm keys are `move:<from>><to>`:
   - `from` ∈ {`unassigned`} ∪ {roles with count > 0};
   - `to` ∈ roles;
   - `to ≠ from`;
-  - raw-byte ascending.
+  - raw-byte ascending;
+  - materialize one complete absolute per-pool assignment for `reallocate_headcount`,
+    never a partial map or delta command.
 - The three policies:
 
 Literal inheritance below is pinned to the immutable `first_hour_policy.v1`
@@ -398,9 +346,18 @@ it does not alter the old registry or waive any allocation policy.
 
 | Policy | Rules |
 |---|---|
-| `chaos.t2` v1 | The pinned `chaos.t0_t1` literals except the continuous-session replacement below, plus allocation moves in the seeded uniform draw |
-| `casual.t2` v1 | The `casual.t0_t1` literals, plus one rule: whenever `unassigned > 0` at an action boundary, the action is one allocation assigning all unassigned seats to the role whose effects include target `all` with the highest `per_effective_ppm` (ties raw-byte). It never reallocates. |
-| `reference.greedy` v2 | The T01-C20 projected-time ranker, preceded at every decision boundary by an allocation hill-climb: single-unit moves, strictly improving projected time only, `move:` key tie-break, run to a fixed point. Guard: at most `budget` moves per boundary; exhausting it fails loud as `allocation_starved`. Target sequence (T01-C39): `gate.t0_to_t1` requirement → `gate.t1_to_t2` requirement → `1e9` cash. It banks after the last target. |
+| `chaos.t2` v1 | The pinned `chaos.t0_t1` literals except the continuous-session replacement below; the complete reconciled policy must include paid-hire candidates and legal allocation moves in its seeded uniform draw (HG-10). |
+| `casual.t2` v1 | The pinned `casual.t0_t1` activity/decision rules plus paid hiring and allocation to executed role effects. Its concrete hire/allocation ranking remains HG-10; the old `all`/`per_effective_ppm` rule does not apply to the selected engine. It must assign unassigned hires visibly and never manufacture a free allocation budget. |
+| `reference.greedy` v2 | The T01-C20 projected-time ranker, preceded at each decision boundary by a strictly improving single-unit allocation hill-climb with raw-byte `move:` tie-break; at most `seats[pool]` moves per pool, loud `allocation_starved` on exhaustion. HG-10 must bind paid-hire costing and post-hire unassigned state without assuming newly hired heads already produce. Target sequence remains `gate.t0_to_t1` → `gate.t1_to_t2` → `1e9` cash, then banking. |
+
+**HG-10 — Complete policy binding remains engineering work.** The model ruling
+does not supply the missing deterministic hire quantity/key enumeration, Casual
+effect ranking or Reference hire/allocate projection contract. Specify and
+independently review those against the actual engine/candidate before implementing
+the full P1 registry or claiming a calibration. Do not reuse the rejected
+multiplier fields, synthesize a free hire, drop hiring from the workload, or call
+the existing window-only subset complete. The adopted activity windows below and
+all P2 populations/targets remain binding while this work is completed.
 
 The NEW `chaos.t2` v1 and `reference.greedy` v2 each have one nonrepeating,
 zero-jitter session starting at 0 and lasting 21,600,000ms. Chaos's cadence is
@@ -441,12 +398,13 @@ P2. **Pacing scenario** `balance/testdata/t2/harness-scenario-v1.json`, scenario
 - Milestones:
   - `milestone.it_company_gate` — `gate_crossed`, `gate.t1_to_t2`, `run_seq: null`,
     `founder_attended_ms`, `must_reach`;
-  - `milestone.first_headcount_allocation` — `intent_applied`, `set_headcount_allocation`,
+  - `milestone.first_headcount_allocation` — `intent_applied`, `reallocate_headcount`,
     `founder_attended_ms`, `must_reach`. It is an unbounded drift observation with no envelope.
 - **Envelopes** (`design/02 §11`: "First minigame ~2–3 hours (Tier 2)"): the Chaos p50 and the
   Casual p50 of `milestone.it_company_gate` both lie in [7,200,000, 10,800,000] ms.
-- Invariants: the nine T0–T1 invariants plus `headcount_budget_respected` (`Σ assigned ≤ budget`
-  at every revision).
+- Invariants: the nine T0–T1 invariants plus the engine-owned `headcount_bounds`
+  (complete safe-integer keys and `Σ assigned ≤ seats ≤ seat_hardcap` per pool
+  at every applied revision).
 - `transition_budget` = measured worst-case work × 2, rounded up to a round literal (T01-C17
   branch B). The measurement is recorded in the planning log before ratification, never set
   blind.
@@ -468,10 +426,13 @@ P3. **Relevance.**
 P4. **Role gate** (`make t2-role-check`, the analog of `t0-t1-role-check`). Each T2
 generator-role row runs its minimum honest context, paired with a masked control:
 
-- `headcount_seats`: one seat source, all seats assigned to `role.sales`; the mask removes the
-  budget, and the H6 clamp neutralizes the factor;
 - `provision`: advance across the grid;
 - `synergy_feed`: exercised pool target.
+
+Paid hiring is additionally measured as a purchasable through engine S9's
+ANY/ALL relevance path. Per-role masked controls use H6/engine S7.4, retaining
+paid seats and costs while removing executed role output; no generator-seat
+faucet or greedy assignment clamp exists.
 
 P5. **Allocation-decision gate.** This is the relevance analog for roles, which are not
 purchasables. On the P3 combined scenario's reference trajectory, `role.engineer` and
@@ -483,7 +444,8 @@ proves the allocation decision is not dominated by a single role. `role.support`
 
 M1. **Artifacts edited in place** (the epoch-7 convention):
 
-- economy (v4 → v5);
+- economy (the Headcount engine's reviewed schema/activation version; its old v5
+  draft literal is occupied and is not a reservation);
 - routes (A1);
 - categories (A2);
 - relevance (P3).
@@ -514,12 +476,15 @@ M4. **Activation.**
 
 ### Implementation sequence (for `planning/tier2-content/plan.md`)
 
-1. **H1/H2 loaders.** Go, TypeScript, and JSON Schema, plus the mutation corpus.
-2. **H3–H5 runtime.** State, intent, event, production and projection, Go-authored replay corpus
-   consumed by TypeScript.
+1. **Canonical engine contracts/loaders.** Headcount owns Go/TypeScript/JSON Schema
+   and its mutation corpus. Close its historical identity/AC-3 technical issues;
+   Tier 2 consumes that grammar rather than implementing a second engine.
+2. **H3–H5 integration.** Engine-owned state, commands, events, rates, projection
+   and shared replay corpus; actual consumer wiring, not duplicate definitions.
 3. **Formulas regeneration commit.**
-4. **Harness grammar.** P1 registry schema v2, scenario `run_seq: null`, the reference
-   allocation hill-climb, the H6 masks, and P4/P5 gates, each with its negative control.
+4. **Harness grammar.** Complete HG-10's paid-hire/allocation policy contract and
+   reviewed full P1 registry, scenario `run_seq: null`, H6 masks and P4/P5 gates,
+   each with its negative control. Preserve adopted activity windows and old v1.
 5. **Candidate documents.** Codex drafts the literal candidates from §A/§B/§H; Claude reviews.
 6. **Calibration measurement.** It sets the gate literal and budgets, then the owner ratifies by
    SHA.
@@ -544,9 +509,11 @@ M4. **Activation.**
    [1e7, 1e9) instead of continuing ×12/×6.5 (HG-9).
 6. **Tier 2 is skippable** by crossing `gate.t2_to_t3` directly (A3). This is the existing
    monotonic-gate rule, kept as a sequence break.
-7. **Headcount specifics are proposals where the design is silent:** the seat budget source,
-   free reallocation, the Sales, Support, and Engineer targets, and Slide Decks producing nothing
-   (HG-1–HG-4). Middle Manager is a role, as in `design/01`, not the research bank's "Building".
+7. **Headcount model is ruled:** paid hires and canonical producing/redirecting
+   roles, with free reallocation. Concrete Tier-2 role/resource/rate/cap content
+   still requires the candidate/measurement/ratification lane (HG-3/HG-4). Middle
+   Manager is a role, not the research bank's "Building"; decks are real resource
+   output, not a nonproducing derived allocation count.
 8. **The FarmVille beat is a non-stateful chrome stub.** No energy or timer mechanic exists.
 9. **The T2 minigames are not included.** They belong to their own RFCs.
 
@@ -554,15 +521,16 @@ M4. **Activation.**
 
 | Gap | Question | Options | Recommended |
 |---|---|---|---|
-| HG-1 | Budget source | (a) seats from T2 generators' `headcount_seats` role (Kittens housing); (b) each hire is its own purchasable per-role generator (no allocation, just more generators); (c) budget derived from Reputation/Network | (a): the only option that makes allocation a *finite-budget* decision on shipped cost curves |
+| HG-1 | Budget source | Paid hires under the canonical Headcount engine versus office-granted seats | RULED2026-11-02: paid `hire_headcount` with cost curve and visible cap; office-granted seats rejected. Price/cap literals require candidate ratification. |
 | HG-2 | Reallocation cost/timing | (a) free, instant, unlimited; (b) cooldown per move; (c) onboarding ramp (new effective counts phase in) | (a): timing emerges from budget growth; (b)/(c) add hidden clocks with no design text |
-| HG-3 | Role effects | Engineer: T2 generators / all generators; Sales: `all` / cash-only; Support: `manual.click` + answering machine / a Trust meter (unshipped) | H1 literals; Support's weakness is reported (P5), not hidden |
-| HG-4 | What Slide Decks do | (a) nothing: curtain-pulled satire trap, reported; (b) an input to `gate.t2_to_t3` (edits ratified T3 content); (c) exit-offer "investor interest" (edits the prestige offer model) | (a) now; (b)/(c) belong to a later RFC with their owners |
+| HG-3 | Concrete role content | Executed `produce`, `convert`, `pool_feed` under engine S1/S3 | Producing/redirecting model ruled; complete Sales/Support effect/resource/rate rows still require reviewed candidate content and P5 proof. No legacy per-head multiplier authority. |
+| HG-4 | Deck resource content | Actual converter output resource/cap/consumer versus the rejected derived count | Actual resource output ruled; candidate content must define the resource and its meaning. No new T3 gate/offer/sink is inferred. |
 | HG-5 | Morale, crunch → Soul, clause 7(c) | own this RFC / Events Layer 1 + Soul debit rows | defer; an events-engine consumer is required anyway |
 | HG-6 | Procurement auto-buy | own this RFC / successor mechanic RFC | successor RFC |
 | HG-7 | T1→T2 doctrine | ship a choice-only row now / defer until doctrine effects exist | defer: an effectless choice would be hollow |
 | HG-8 | Reputation at T2 Exits | lower the threshold now / defer to Reputation tree v1 | defer: Reputation has no consumer yet, so a nonzero number would do nothing |
 | HG-9 | T2 band | [1e7,1e9) interleave / move ratified `gate.t2_to_t3` (cascades into Permits/T3) | interleave |
+| HG-10 | Full paid-hire/allocation policy | Bind existing engine/candidate to deterministic complete P1 choices, quantity keys and post-hire projection | Technical specification/review required before full P1 implementation/calibration; no change to adopted windows or pacing targets. |
 
 ## Acceptance criteria
 
@@ -573,12 +541,13 @@ before the green run is claimed. All gate claims run with `-count=1`.
    and gets `Tier == 2`, and `incorporate` then applies.
    *Failing case:* the same test under the epoch-8 bundle rejects `unknown_id` and
    `not_eligible/tier`.
-1. **Strict loaders.** Economy v5, Routes, and Categories load identically in Go and TypeScript.
-   Every H1 rejection, plus a categories set missing `gate.t1_to_t2`, fails in both runtimes and
+1. **Strict loaders.** The canonical Headcount economy version, Routes and Categories load identically in Go and TypeScript.
+   Every engine S1 rejection, plus a categories set missing `gate.t1_to_t2`, fails in both runtimes and
    in the JSON Schema. v1–v4 catalogs re-load byte-identically.
    *Failing case:* each mutation fixture must be observed red.
 2. **Headcount transition parity.** A Go-authored sequential corpus is replayed byte-for-byte by
-   TypeScript. It covers every H4 outcome, conversion with E=3/M=5 (effective 0, decks 3),
+   TypeScript. It covers every H4 outcome, conversion with E=3/M=5 (producing
+   Engineer heads 0, diverted heads 3, idle managers 2—not a stock amount),
    hardcap saturation, and the Exit reset.
    *Failing case:* a mutant that omits the conversion subtraction breaks the vectors.
 3. **Closed-form partition invariance.** With an allocation change at t1, evaluation over
@@ -589,10 +558,11 @@ before the green run is claimed. All gate claims run with `-count=1`.
    go red.
 5. **Relevance.** `scenario.t1_t2_relevance` has zero dead purchasables among the T1 and T2 rows.
    The T0 scenario is byte-identical to epoch 8 except identity fields. The P5 gate is green.
-   *Failing cases:* the registry's dead-upgrade fixture fires; a P5 fixture with Sales ppm set to
-   0 fails; a deliberately perturbed T0 row breaks the identity comparison.
+   *Failing cases:* the registry's dead-upgrade fixture fires; a P5 control with
+   Sales' actual executed effect severed after valid catalog admission fails;
+   a deliberately perturbed T0 row breaks the identity comparison.
 6. **Pacing.** The P2 envelopes are green, must-reach holds at every seed, and
-   `headcount_budget_respected` holds. The first-hour scenario, re-run on epoch 9, keeps all
+   the canonical `headcount_bounds` invariant holds. The first-hour scenario, re-run on epoch 9, keeps all
    seven of its ratified envelopes and the same-seed relation green, with drift reported under
    the 10%/25% rule.
    *Failing case:* a candidate with the gate at `1e5` must violate the lower envelope bound.
@@ -608,7 +578,8 @@ before the green run is claimed. All gate claims run with `-count=1`.
    *Failing case:* one deleted key fails the check.
 10. **Mint and composed proof.** Epoch 9 is appended with the M2 commit protocol green. A
     real-Postgres composed test replays the pinned-seed `casual.t2` path. It reaches
-    `gate.t1_to_t2`, allocates headcount, verifies durable replay, and shows an epoch-8 run
+    `gate.t1_to_t2`, pays for actual hires, reallocates headcount through the canonical
+    commands, verifies durable replay, and shows an epoch-8 run
     finishing under its pin.
     *Failing case:* bypassing the composed catalog must make the test fail.
 
@@ -625,13 +596,15 @@ before the green run is claimed. All gate claims run with `-count=1`.
 
 ## Owner decisions needed
 
-1. **HG-1 budget source.** Recommended: seats from `headcount_seats` on T2 generators.
+1. **HG-1 budget source.** RULED2026-11-02: paid hires under Headcount S5.1,
+   with its cost curve and visible pool cap. No seats from office purchases.
 2. **HG-2 reallocation.** Recommended: free, instant, unlimited.
-3. **HG-3 role effects.** Recommended: the H1 literals (Engineer +5% per effective engineer on
-   T2 generators; Sales +1% per head on `all`; Support +10% on `manual.click` and the answering
-   machine).
-4. **HG-4 Slide Decks.** Recommended: they produce nothing and the curtain is pulled; the Middle
-   Manager is the reported satire trap.
+3. **HG-3 role effects.** RULED2026-11-02: producing/redirecting roles under
+   engine S1/S3, not the rejected generator/manual per-head multipliers. Actual
+   Tier-2 role content and balance literals retain their candidate/adoption gates.
+4. **HG-4 Slide Decks.** The selected converter produces the actual deck resource;
+   it is not a derived count that produces nothing. Concrete resource/consumer
+   content remains H1/HG-4 work; no new gate, offer or sink is adopted here.
 5. **HG-5/HG-6/HG-7 deferrals** (morale/crunch/Soul, procurement, T1→T2 doctrine). Recommended:
    defer all three, with the named owners above.
 6. **HG-8 Reputation at T2 Exits.** Recommended: keep threshold `1e12` and defer to Reputation
@@ -660,6 +633,9 @@ before the green run is claimed. All gate claims run with `-count=1`.
 - 2026-11-02: Marco adopts the independently reviewed new-persona activity windows
   and delegates P1 reconciliation; retain P2 targets/horizons, old identities and
   all Headcount, full-policy, balance, content and release gates.
+- 2026-11-02: Marco selects paid hiring with producing/redirecting roles and
+  delegates both-body reconciliation. Replace the competing Tier-2 engine with
+  canonical Headcount ownership; retain explicit content/full-policy/identity gates.
 
 ## Owner acceptance (2026-09-25)
 
@@ -669,7 +645,12 @@ default**. Where the text offers alternatives, the recommended option is the nor
 alternatives are rejected. Provisional numbers stay provisional and are ratified by harness
 measurement and SHA, as the RFC already requires. Owner-authored copy stays owner-authored:
 implementation ships copy keys, with any placeholder or candidate text clearly marked.
-**Exception:** OD-1 (source of the hiring budget) is NOT ruled: it conflicts with Headcount Allocation OD-1 and is held for an owner explanation; implement nothing that depends on the seat source until it is ruled.
+**OD-1 resolution, 2026-11-02:** Marco explicitly selects paid hiring with
+producing/redirecting roles and delegates reconciliation of both specifications.
+The former office-seat/per-head-multiplier model is rejected; H0–H6 and the
+dependent body sections above consume the canonical Headcount engine. This does
+not ratify prices/rates, copy, content, calibration or a release. Complete role
+content, policy binding and engine identity/acceptance issues remain explicit.
 
 ## Activity-window adoption (2026-11-02)
 

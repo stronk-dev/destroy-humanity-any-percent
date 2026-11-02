@@ -5719,3 +5719,15 @@ Window-adoption closeout: fresh independent Codex technical review APPROVES the
 complete eight-path7cc5f4b8..d6b1c668 translation, source hash and Git-backed
 preserved parent/child contracts. Review by: /root/tier2_window_adoption_translation_review.
 Recorded by: Codex root. This closes translation, not runtime/full pacing or1.0.
+
+## 2026-11-02 — Headcount model owner ruling
+
+Afterc6f11121, Marco selects paid hiring with producing/redirecting roles and
+explicitly delegates reconciliation of both specifications. Owner ruling by:
+Marco. Recorded by: Codex root. Canonical Headcount owns one engine; Tier2's
+competing free-seat/multiplier/state/command model is removed throughout its body.
+The complete normative/tracking translation awaits independent technical review.
+This resolves the model questions, not runtime/identity/AC-3, complete role/content/
+policy, accounting/search, pacing, mint or release. No new playable tier, product
+or data change; adopted windows/targets/old artifacts remain. Next is exact-range
+translation review and the named technical construction, not another model vote.

@@ -1,6 +1,6 @@
 # RFC: Headcount Allocation
 
-- **Status:** accepted — owner batch acceptance 2026-09-25; implementing
+- **Status:** accepted — hiring/output model ruled 2026-11-02; identity/AC-3 technical reconciliation remains before integration
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-09-25
 - **Design refs:** `design/01-tiers.md` Tier 2 (Produce / New grammar / New decision) and Tier 3
@@ -14,7 +14,7 @@
   OD-5)
 - **Parent / amends:** Adds an economy-engine grammar that sits beside Purchasable Content. It
   amends no archived RFC. The canonical docs it would update are listed in AC-12.
-- **Sibling:** `rfc/tier2-content.md` (being drafted in parallel). **This RFC owns the engine
+- **Sibling:** `rfc/tier2-content.md`. **This RFC owns the engine
   only.** Tier2-content owns the catalog rows: the actual T2 pool, its roles, their rates, prices
   and caps, the T1→T2 gate, copy, and T2 pacing. See §S0.
 - **Supersedes / superseded by:** —
@@ -108,6 +108,14 @@ from them, reuses an archived mechanic, or appears as an Owner Decision.
 The Specification is written against the **recommended default** of every Owner Decision. If a
 decision is ruled otherwise, the named sections change in the same edit, under the
 body-reconciliation rule.
+
+Marco's 2026-11-02 ruling explicitly selects this RFC's paid hiring and
+producing/redirecting-role model and delegates both-body reconciliation. OD-1's
+old model hold is resolved. Tier 2 consumes this engine rather than defining a
+generator-seat/multiplier alternative. Prices/rates, copy and balance ratification
+remain separate. This model ruling does not allocate the historical v5/v19/v9
+identity proposals below or resolve RP-413's invalid required overflow oracle;
+those named technical contracts still require reconciliation before integration.
 
 ### S0 — Division of responsibility with `tier2-content`
 
@@ -525,6 +533,9 @@ Each decision gives the options and the recommended default. The Specification i
 the defaults.
 
 1. **OD-1 — Where seats come from ("a finite hiring budget").**
+   **RULED2026-11-02:** option (a), paid hiring. Marco also explicitly selects
+   producing/redirecting roles under S1/S3 and delegates reconciliation of both
+   RFC bodies. The options below retain their rationale; (b)/(c) are not authority.
    - (a) **Recommended:** a `hire_headcount` intent priced on an existing cost curve, with a
      required visible seat hardcap. The budget is finite because of the cap and because the price
      escalates.
@@ -701,6 +712,9 @@ Every open question is an Owner Decision above. Items deferred to named future w
 
 - 2026-09-25: created as a draft (Claude, for Marco). Split from `tier2-content` as the manifest's
   G05 proposed. Engine only.
+- 2026-11-02: Marco selects paid hiring with producing/redirecting roles and
+  delegates both-body reconciliation. Resolve OD-1 and replace Tier 2's competing
+  grammar/state/commands; keep concrete content, identity and acceptance work explicit.
 
 ## Owner acceptance (2026-09-25)
 
@@ -710,4 +724,9 @@ default**. Where the text offers alternatives, the recommended option is the nor
 alternatives are rejected. Provisional numbers stay provisional and are ratified by harness
 measurement and SHA, as the RFC already requires. Owner-authored copy stays owner-authored:
 implementation ships copy keys, with any placeholder or candidate text clearly marked.
-**Exception:** OD-1 (source of the seats) is NOT ruled: it conflicts with Tier 2 Content OD-1 and is held for an owner explanation; implement nothing that depends on the seat source until it is ruled.
+**OD-1 resolution, 2026-11-02:** Marco answers “Paid hiring + producing/redirecting
+roles; reconcile both specifications (recommended).” This selects the canonical
+paid-hire engine, not office-granted seats or Tier 2's former per-head multipliers.
+The corresponding Tier-2 body is reconciled in the same change. Prices/rates,
+authored copy and balance ratification remain separate; this is not runtime
+implementation, a schema-version reservation or acceptance/release approval.

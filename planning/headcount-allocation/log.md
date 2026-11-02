@@ -166,3 +166,37 @@ native-browser checks remain author evidence, not independent executions. Prior
 construction/research debt, full feature acceptance, hiring/output/seat/version
 choices, normative adoption, kernel identity, archival and release remain open.
 Reviewer creates no files, commits, services or worktrees; no cleanup/publication.
+
+## 2026-11-02 — Paid-hiring/output model ruled and bodies reconciled
+
+Owner ruling by: Marco. Recorded by: Codex root. His direct selected answer is
+“Paid hiring + producing/redirecting roles; reconcile both specifications
+(recommended).” The question explicitly retains separate prices/rates, copy and
+balance ratification. This resolves both actual model questions, not merely
+the hiring verb. No preselection or technical-review verdict is relabelled as
+owner authority.
+
+Headcount keeps its canonical pool/produce-convert-pool_feed/rate/state/command/
+event/projection/mask contracts. Tier 2's body now consumes them: remove office
+seat faucets, second catalog/map/intent/event authorities, per-head multiplier
+formulas and fake nonproducing Deck counts. Reconcile B/H/E/P/M, owner rows,
+acceptance references and plans/index/ledger/current routing in the same batch.
+Paid hiring has real cost/unassigned state; role masking keeps those seats/costs.
+Actual Deck stock/rate is distinct from diverted heads. No generator-purchase
+counter change, payroll, firing or new gate/offer/sink is inferred.
+
+The translation does not fabricate the remaining complete Tier-2 role/resource/
+price/rate/cap/consumer content. HG-10 names the necessary deterministic full
+paid-hire/allocation policy contract rather than reusing incompatible ppm fields
+or pretending a window-only subset is full P1. The adopted activity windows,
+seeds/horizons/envelopes, must-reach, role/relevance and full release floor remain.
+Historical engine v5/v19/v9 proposals are NOT assigned: current schema5 owns
+axis_stack, Company19 attainment, replay inputs12; RP-413's impossible required
+TS overflow outcome also remains explicit technical reconciliation. This ruling
+does not silently waive either gate or turn them into new gameplay questions.
+
+No product, data, kernel, migration, schema allocation, authored copy or old
+artifact/report change. Root reviews the complete normative diff/remaining
+references and checks whitespace; no software-suite pass is claimed for Markdown.
+Review by: Codex root, author/first filter. Complete translation afterc6f11121
+requires fresh independent technical review before implementation. Nothing pushed.

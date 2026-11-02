@@ -2138,7 +2138,8 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
 1. **Finish Garage's actual player integrations.** Complete Typer/Arcade public API and host
    integration, generated-client migration, Headcount and the missing world/feed surfaces
    under accepted contracts. The typed-receipt dictionary choice, Typer arithmetic/public-wire
-   reconciliation and Headcount hiring/output choices are specific prerequisites, not permission to
+   reconciliation and Headcount's selected paid-hire/producing-role model still need
+   reviewed technical/content/policy integration; these are not permission to
    invent wire formats or mechanics. Continue independent accepted work while they are held.
 2. **Repair correctness and balance without hiding failures.** Resolve Clout partition/offline
    calculation/settlement/search contracts (the narrow offline wording is reconciled), the
