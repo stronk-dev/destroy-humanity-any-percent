@@ -113,7 +113,12 @@ controls stay quiet. Final cold declared Linux file passes all three engines:
 33 ordinary plus three expected deadlines,8.01s; types0/0. All19 original journey
 assertions and nine native-call sites compare byte-identically. This is diagnostic
 coverage, not a latency/activation correction or full-suite reliability result.
-Complete source/test/docs/records range still needs fresh independent review.
+Fresh independent corrective review APPROVES complete7c674b96..2a469cd0 after
+its own cold three-engine whole-file33 ordinary/three expected deadline checks,
+4.42s, types0/0 and exact-range source inspection. Next execute the ordinary
+unoverridden full container once at these diagnostic bytes, retaining actual
+failure-stage evidence and all phase outcomes. FourCPU-model green does not prove
+default configuration reliability; no arbitrary capacity sweep or relaxed bound.
 
 ## Historical checkpoint sequence — original heading 2026-10-16
 
