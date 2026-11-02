@@ -4250,3 +4250,30 @@ All handles terminal; owned container removed; main untouched. Later Tier2 range
 excluded. This closes corrective config review, not universal safe capacity,
 causation/reliability, matched speedup, cold-wall/hosted five-minute acceptance,
 spec adoption, archival or release. No publication.
+
+## 2026-11-02 — Historical scope policy technically reviewed, not adopted
+
+APPROVED, technical specification only. Reviewed single document
+rfc/kernel-history-guard-integrity.md at7b06dd5d0af5675cb69f560b2f58751d98835707,
+Git blob667e9c93af0931b0ee24506a2c0b1f569c8e147d.
+Review by: fresh independent Codex /root/kernel_scope_policy_technical_review.
+Recorded by: Codex root. No prior full normative approval located. Independently
+inspects parent KV-1, accepted CI D1–D3, current guard/registers/fixtures and
+Make/checkout wiring. Exact ancestor/path sets, independent trace-preserving
+eligibility, N2 descendant registration and separate semantic corrections are
+implementable without false versioning, rewriting or automatic amnesty.
+
+Actual kernel fixtures pass:60 literal-path refusals plus legitimate version/
+correction/rename/full adversarial controls; checkout-history fixtures exit0.
+Document/whitespace and final status clean. Implementation must use historical
+parent/child path registries and reject actual review-log resolution escapes,
+not just lexical traversal. No target eligibility, implementation, owner adoption,
+full CI or release is approved. No tracked reviewer edits/services/publication.
+
+Root's new actual make verify-client atba1d7eaa plus Headcount witness passes
+types/build/Node/boundaries, then reproduces unchanged50a3a514 failure (Make2);
+the Headcount log owns exact evidence. The new witness has separate full-range
+corrective approval. Owner adoption/implementation delegation for the reviewed
+kernel policy is now requested through the async question interface, not inferred.
+No policy/exception row or watched prefix changes. Continue accepted work;
+do not rerun unchanged green browser populations or claim this fixes history.

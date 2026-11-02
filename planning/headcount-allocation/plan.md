@@ -93,7 +93,9 @@ library is only one prerequisite, not a substitute for that chain.
   `make verify-client-boundary`: twelve shared vectors, unsafe multiply/clamp
   control and fail-loud instrumentation controls. This adds evidence for S2's
   existing algorithmic restriction, not an adopted replacement for AC3 or a
-  universal proof; the owning log records its execution/review boundary.
+  universal proof. Complete ba1d7eaa..7b06dd5d is independently APPROVED with
+  actual execution and ten additional in-memory invalid/bypass controls; the
+  owning log records provenance, the reviewer wrapper error and scope limits.
 - Reconcile occupied economy/save/replay version numbers in the accepted body
   before integration; do not reuse its historical v5/v19/v9 literals blindly.
 - Catalog grammar/bindings, closed-form rates, state/migrations and logged intents.

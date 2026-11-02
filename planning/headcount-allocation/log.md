@@ -298,3 +298,23 @@ The complete five-path batch afterba1d7eaa through this checkpoint needs fresh
 independent corrective review; technical review cannot replace author adoption
 of an amended criterion. Next is that review and remaining engineering contracts,
 not rerunning unchanged green populations or another gameplay-model question.
+
+## 2026-11-02 — Intermediate-product witness independently approved
+
+APPROVED, no blocking findings, complete five-path range
+ba1d7eaa032a3648912fe646be9f4b48840a2133..7b06dd5d0af5675cb69f560b2f58751d98835707.
+Review by: fresh independent Codex /root/headcount_intermediate_witness_review.
+Recorded by: Codex root, transcribing its verdict. Independently executes actual
+Make boundary (twelve vectors/six products, unsafe-product/refusal controls),
+Node56/56 (239ms), types0/0, topology27 negatives and range whitespace. Confirms
+the real Actions client job reaches this tool through make verify-client.
+
+Ten additional in-memory probes reject unsafe source, absent multiplication,
+corrupt output, bypassed actual/mutant observers, observer-name collision,
+exponent assignment, import-equals, dormant-product masking and correct-output
+dynamic multiplication with no executed observed product. First reviewer wrapper
+expects the wrong message for a genuine wrong-ratio assertion; the corrected
+assertion-code/operator check passes the complete ten-control rerun. No tracked
+or production mutation; all handles terminal, no publication. This closes this
+tool's corrective review only, not full CI, universal arithmetic proof, AC3
+replacement adoption, Headcount integration or release acceptance.
