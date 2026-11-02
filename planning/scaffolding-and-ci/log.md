@@ -3134,3 +3134,65 @@ cap, refocus retry, synthetic activation or deadline relaxation. Other engines
 retain default scheduling. Execute the complete ordinary Linux target; all phases
 and terminal0 required. No guard increase or full-CI/hosted/1.0 promotion from
 partial evidence. Recorded by: Codex root. No product/kernel/balance change or push.
+
+### Independent review — RP-700 diagnostic, not the candidate
+
+APPROVED, complete four-path
+`156fa626dc8b3f3857a33638f841bebbe5944c71..a2a93d642b4f543cce19e4aa96fd0bd0c68dd542`.
+Review by: fresh independent Codex `/root/firefox_focus_diagnostic_review`.
+Recorded by: Codex root, transcribing the verdict under Marco's delegation.
+Reviewer executes committed probe once through declared Docker service/frozen
+deps/four-CPU override/120s containment, terminal exit0,18 cases. It independently
+reproduces exactly the Firefox iframe/other-page-pointer trusted-Enter/no-click
+miss and explicit-frame-focus restoration; the other17 activate once. It checks
+raw artifact sizes/digests, seven verbose failure rows, real enabled/nonbusy DOM
+and upstream reopened/rollback evidence. Exact diff/whitespace pass. No tracked
+edits, product mutation or interference with root's full-job container. This
+approves the diagnostic only; no candidate-config, causal universality, reliability,
+whole-CI or release approval. Diagnostic exit0 is not an activation gate pass.
+
+### Firefox-only serial-file candidate — terminal RED, not installed
+
+At a2a93d64 plus exactly four config lines, browserInstance adds only Firefox
+fileParallelism:false. Chromium/WebKit defaults, all engines/populations/native
+inputs/assertions/deadlines and10m containment remain. No trace/retry/worker/CPU
+override. Exact complete target runs via declared browser service with separate
+functional JSON directory. Executed config SHA256
+`762d6a2539011e43b80fe007907672959e33d1c0311c6432dde8761b0a8f81f2`, preserved
+ignored `.cache/browser-firefox-serial-a2a93d64.config.ts`.
+
+Terminal exit2, Make Error1, NOT guard termination. Broad finishes507.85s:
+497/498 project-file rows pass;40436 ordinary passes,12 expected diagnostic
+failures,24 declared skips and one ordinary failure (40473 total). JSON counts
+the12 expected failures among40448 passes; do not double-count. All166 Firefox
+rows pass, including423-case Garage, Reputation host/surface and real60s idle.
+No inference of reliability or universal cause from one population. One Chromium
+failure remains: `R9 native Tab confirmation and cancellation: era_2000,
+two-buyable, Enter`, unchanged15000ms deadline, reporter duration21763.2ms.
+No assertion mismatch/cause is inferred from timeout. The complete job's Typer
+and performance phases do not execute because the broad failure correctly stops
+Make. The candidate's predeclared complete-target criterion therefore FAILS.
+All earlier red/control results remain evidence; no retry to substitute a green.
+
+Complete Docker log1802422bytes SHA256
+`7a5f608b400595563bb081fb15ef2d3619e1d533f89a43285f94911d24afb0c3`,
+`.cache/browser-firefox-serial-a2a93d64-container.log`; follower terminal0,
+owned container absent. Completed broad JSON12498359bytes SHA256
+`cf0b61f820649d9abccf91a8a02ae7f6329a7214214fdbc2b7e1a0b0d26e03e9`,
+`.cache/browser-firefox-serial-a2a93d64/functional-broad.json`. Tool chunks truncate;
+these retained full artifacts own the counts/failure. Concurrent review probe and
+brief host type/topology checks mean no clean-load timing benchmark is claimed.
+
+`make typecheck` exits0, Svelte0 errors/0 warnings. `make verify-ci-topology` exits0,
+including27 negative fixtures and shared Linux setup/Go selector/report controls.
+They do NOT make the browser job pass. Candidate lines are removed with apply_patch;
+active config diff is empty, candidate remains recoverable ignored, not installed.
+
+Next diagnosis is the actual failed Chromium native confirmation journey at
+reputation-surface-browser.test.ts:310: retain native command/stage and abort
+timing before teardown using existing lifetime/observation helpers and a forced
+cancellation control. No assertion/input/deadline weakening, arbitrary worker
+count, unchanged full-target retry or assumed toolchain upgrade. RP-700, broader
+CI/resource/latency/hosted gates, accounting/adoption and full1.0 stay open.
+Recorded by: Codex root; this execution checkpoint is not designated corrective
+or feature acceptance. No product/kernel/balance/workflow change, archive or push.

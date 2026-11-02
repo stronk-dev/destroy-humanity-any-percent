@@ -101,6 +101,20 @@ through the complete ordinary Linux target once. Preserve all populations and
 bounds. This is a causal-isolation candidate, not another arbitrary worker cap;
 a guard or absent phase remains failure, not permission to land a passing claim.
 
+Independent diagnostic review APPROVES complete156fa626..a2a93d64 and independently
+reproduces the exact Firefox native-activation miss/control. The serial-Firefox
+candidate is terminal exit2 from a real broad test failure, NOT guard termination:
+all498 files finish in507.85s;497 pass, one Chromium Reputation navigation case
+times out at its unchanged15s deadline. All Firefox files pass. Typer/performance
+are unexecuted because Make correctly stops. Therefore the complete-target
+criterion FAILS; candidate config is retained ignored and removed from the active
+config, not adopted as CI repair. Types and topology controls pass separately.
+Next use the existing native-keyboard lifetime/observation helpers to retain the
+exact command/stage and abort timing in that failed Chromium confirmation journey,
+with a deliberate cancellation control. Keep native inputs, assertions and15s
+deadline intact; do not run another unchanged full target or arbitrary worker cap.
+No upgrade is assumed safe, and no whole-CI/hosted/1.0 claim is promoted.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing

@@ -38,6 +38,15 @@ versus nine under the RFC's four-CPU model—not a new hosted measurement or cau
 finding. The [CI log](scaffolding-and-ci/log.md#ordinary-full-job-result-at-reviewed-correction)
 owns exact evidence and next diagnosis. No deadlines or coverage are weakened.
 
+**Native-input diagnosis, 2026-11-02:** independent review approves
+`156fa626..a2a93d64` and reproduces Firefox's iframe Enter-without-click defect
+outside the game. A serial-Firefox candidate completes all498 broad files,
+but one Chromium navigation deadline still fails; Typer/performance do not run.
+The candidate fails its complete-target criterion and remains unapplied. The
+[CI log](scaffolding-and-ci/log.md#firefox-only-serial-file-candidate--terminal-red-not-installed)
+retains exact evidence and next diagnostic. This is progress on a real cause,
+not a green CI claim, dependency upgrade or reduced acceptance floor.
+
 Product audit baseline, 2026-10-16: bounded production correction `7ec0873c` (kernel0.3.223,
 epoch8), independently approved at `190a4790`: simulation masks preserve absent map keys;
 affected native/Linux checks pass, but the27 Clout failures and historical guard remain red.
