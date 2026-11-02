@@ -115,10 +115,31 @@ assertions and nine native-call sites compare byte-identically. This is diagnost
 coverage, not a latency/activation correction or full-suite reliability result.
 Fresh independent corrective review APPROVES complete7c674b96..2a469cd0 after
 its own cold three-engine whole-file33 ordinary/three expected deadline checks,
-4.42s, types0/0 and exact-range source inspection. Next execute the ordinary
-unoverridden full container once at these diagnostic bytes, retaining actual
-failure-stage evidence and all phase outcomes. FourCPU-model green does not prove
-default configuration reliability; no arbitrary capacity sweep or relaxed bound.
+4.42s, types0/0 and exact-range source inspection. The ordinary unoverridden
+full container at8179d43a then exits2: Firefox session connection timeout and
+closed browser RPCs after60.69s, with collection/execution incomplete. No final
+full population, Typer or performance pass; no Pitch stage marker was reached.
+Partial resource samples show no OOM; they do not prove resource exhaustion.
+
+One candidate now caps every engine at the installed runner width of D1's four-
+CPU model (three files), preserving the smaller-host floor. This avoids the
+larger VM's12-per-engine multiplication while leaving the fourCPU model's width
+unchanged. That model has both green and red observations: it is NOT a proven
+safe limit. No mixed-project widths, serial phase, omission or deadline change.
+Accept as a passing candidate only after the unchanged complete target executes
+all phases; then require fresh independent review. A red/incomplete candidate is
+withdrawn, not retried into a green claim. No arbitrary capacity sweep.
+
+Finished model-width candidate passes the complete ordinary14CPU container,
+without affinity/CLI worker overrides: provider27; broad522 project-files,
+40485 ordinary/21 expected/24 skips (40530),269.99s; native93 cases,6.38s;
+isolated performance five passes,11.38s. All40515 earlier broad cases remain;
+only nine previously approved Pitch controls and six new pure width controls are
+added. Native case multiset unchanged. Valid root `make test-client` passes12505
+cases/1109 existing browser-only skips,8.89s; types0/0, topology27 controls pass.
+The candidate is locally verified, pending independent complete-range review.
+It does not prove a universal safe capacity, intermittent-failure cause, matched
+speedup, cold-wall timing or hosted five-minute acceptance.
 
 ## Historical checkpoint sequence — original heading 2026-10-16
 

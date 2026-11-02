@@ -6,6 +6,8 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import type { Plugin } from "vite";
 import type { Page, Request, WebSocket as PlaywrightWebSocket } from "playwright";
 import { BrowserSequencer } from "./tools/browser-sequencer";
+import { availableParallelism } from "node:os";
+import { browserFileWorkers } from "./tools/browser-file-workers";
 
 const dependencyPath = (relative: string) => decodeURIComponent(new URL(relative, import.meta.url).pathname);
 const performanceOnly = process.env.VITE_GAME_UI_PERFORMANCE === "1";
@@ -68,6 +70,7 @@ export default defineConfig({
   optimizeDeps: { include: ["svelte", "@antimatter-dimensions/notations"] },
   ssr: { noExternal: ["@antimatter-dimensions/notations"] },
   test: {
+    maxWorkers: browserFileWorkers(availableParallelism()),
     // These Node-side fixtures use node:fs/nested Vite builds, node:util,
     // and Vitest's Node sequencer respectively. They execute in the Node suite;
     // keep other future test formats in browser collection by default.

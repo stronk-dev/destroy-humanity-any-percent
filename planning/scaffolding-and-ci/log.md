@@ -4150,3 +4150,75 @@ and inherited deadline unchanged. JSON11206bytes SHA256
 f2152ff3bdeccad433ffe7623d70e115789017215928ad7df1bca284e259400c.
 All reviewer handles terminal, main untouched. Diagnostic approval only: no cause,
 full-suite/default-load/hosted/latency acceptance, adoption, archival or release.
+
+### Ordinary default startup failure and one model-width candidate
+
+At8179d43a, ONE ordinary default full container run exits2, not the guard.
+The browser process reports an unhandled Firefox session-connection timeout,
+then closed browser/createTesters RPCs; broad stops60.69s with collection and
+tests still running. One project-file completes;278 provisional passes/one
+provisional failure/ten skips among1612 registered cases are NOT the full
+40524-case population or a stable completed-test distribution. The provisional
+failure is an existing expected50ms Garden control during interrupted execution;
+no new Garden product/diagnostic defect is inferred. Typer/performance unexecuted.
+No Pitch deadline marker is emitted: its instrumented journey is not reached.
+
+All process CPU affinities0-13. Resource observer retains52 samples,15:28:53.420–
+15:29:47.096UTC; killed137 at container teardown, no terminal record, PARTIAL.
+Peak cgroup7982288896bytes, minimum VM available8210828KB; no OOM/throttling
+events. Last memory some-pressure counter2.731s. This does not establish OOM,
+memory exhaustion, universal load attribution or a causal startup explanation.
+Raw .cache/browser-default-pitch-context-2a469cd0.log55050bytes SHA256
+812696b062b572353893cd78e8b1bd37e8e663eb20fe1cd9dc904261dfbced39;
+partial broad JSON529022bytes SHA256
+57dac2b6abb1a342349a2d0b7a0817c9a4f8e1ed59305f0524d5c286e508b0ca;
+resource JSONL695243bytes SHA256
+84aee415815c885ee0df0f17c47cb890a00bfade581ca2c9ded3191b6278ddda.
+
+Next single candidate uses the width from D1's fourCPU model: at most three
+files PER engine, fewer on smaller hosts, equal root maxWorkers for all projects.
+This avoids the14CPU VM's inherited12-per-engine multiplication without changing
+the4CPU model's existing width or adding serial phases. Multiple4CPU complete
+passes and one red observation inform that control; they do not prove a safe
+capacity. All engines, cases, inputs, assertions, deadlines and phases remain.
+Only complete target terminal0/all phases qualifies as a passing candidate;
+red/incomplete means withdrawal, not retries or a worker-count sweep. Fresh
+independent corrective review remains required if it passes.
+
+Finished single candidate terminal0 through the ordinary default14CPU container,
+no affinity or CLI worker override. Provider27/27; broad522 files,40485 ordinary/
+21 expected/24 skips (40530),269.99s; native3 files,87 ordinary/six expected (93),
+6.38s; isolated Chromium performance five/107 unrelated deselections,11.38s.
+Exact case-name multiset comparison against the prior complete green population
+has NO missing40515 broad cases. Added15 executions are solely nine previously
+approved Pitch controls and six new width controls. Native93-case multiset equal.
+No new serial phase, omission, budget, native input, assertion or dependency edit.
+This one passing control is not proof of universal capacity, a causal explanation,
+reliability, matched speedup, complete cold-wall or hosted timing acceptance.
+
+Pure width controls cover1/2/3/4/5/14/64/MAX_SAFE_INTEGER CPU observations and six
+invalid inputs. Types/Svelte0/0 and topology27 negative controls pass. The first
+mistyped `make test-client -- --run ...` actually runs the full Node12505/1109
+population green, then Make exits2 for the unsupported target; NOT a green command.
+A subsequent host pnpm selector fails resolving its pinned manager before tests
+(DNS restriction), not source failure. Final valid `make test-client` exits0,
+same12505 passes/1109 skips (13614),8.89s. No test run is credited to those wrappers.
+Full resource observer is again killed137 by disposable-container teardown;
+retained raw samples are explicitly partial, not a complete passing instrument.
+
+Ignored evidence SHA256:
+- .cache/browser-model-width-8179d43a.log1531294bytes:
+  fb90e46d5c031675cddb73983430c7fa1dc5d3fd4d42017b2c326b5a73459e11
+- .cache/browser-model-width-8179d43a/functional-broad.json12512323bytes:
+  6467778ad5326074b1891c95fe0029810ae61d2f80ad48bad5c34c003c8a763c
+- .cache/browser-model-width-8179d43a/functional-native.json26237bytes:
+  da3068ce1a35373238aba4889a9b1cb9379a739c4b620ba2503dc3b1ac121fd7
+- .cache/browser-model-width-resources-8179d43a.jsonl1566281bytes:
+  f42980cc1027a92fbb5f9151f139d5105050492c00f27efecdde79b93216094c
+- .cache/browser-model-width-client-8179d43a.log352bytes:
+  e3985a1559dac3394fd9124dc8d70972a0dbdd804b87593bd37bda4e14285ff0
+
+Review by: Codex root, implementer first filter. Recorded by: Codex root. Complete
+six-path source/test/config/docs/records range after8179d43a now needs independent
+corrective review. No whole-CI acceptance, archival, specification adoption,
+release approval or push. Tier2's separately received owner adoption is another lane.

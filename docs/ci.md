@@ -284,12 +284,16 @@ are recorded in the [CI log](../planning/scaffolding-and-ci/log.md); a focused o
 does not establish success of this ordinary target, hosted reliability or the five-minute
 acceptance floor.
 
-CPU visibility also changes the unchanged runner defaults. The installed Vitest
-browser pool permits `max(1, min(12, availableParallelism - 1))` files **per
-project**, not across all engines. The measured 14-CPU Docker VM therefore permits
-36 active files across three engines; the CI RFC's four-CPU model would permit 9.
-Matching the command/image is not matching resource pressure. These counts do
-not establish a safe worker limit, current hosted hardware or a failure's cause.
+The unconfigured installed Vitest browser pool permits
+`max(1, min(12, availableParallelism - 1))` files **per project**, not across
+all engines. That previously allowed 36 files on the measured 14-CPU Docker VM,
+versus nine in the CI RFC's four-CPU model. The browser config now uses that
+model's width on larger hosts: `max(1, min(4, availableParallelism) - 1)` files
+per engine. Four-CPU execution stays at three per engine; smaller hosts retain
+their smaller width. Every engine gets the same count, without a serial phase,
+test exclusion or deadline change. The pure width controls also run in Node and
+all three browsers. Matching this width is not matching hardware/resource pressure,
+a proven universal safe limit, current hosted hardware or proof of a failure's cause.
 
 `make test-browser-ci-focused BROWSER_TEST_FLAGS='test/game-ui-screens-browser.test.ts --project firefox'`
 uses that same image, cold dependency volumes, frozen install and ten-minute containment,
