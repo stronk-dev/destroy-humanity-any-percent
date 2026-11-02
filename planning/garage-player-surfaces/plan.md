@@ -576,6 +576,8 @@ must succeed before another container population. No lifecycle promotion.
   revision42/run3, with exact successor/SQL proof and no account selection.
   This is not natural whole-game pacing, standalone cross-account identity or
   full GS5 acceptance; earlier click-buff-only runs remain historical.
+  A later root execution supplement passes80/80 affected Linux Firefox cases,
+  including actual60054ms idle; native macOS startup remains RP-256, not repaired.
   RP-317 diagnostic mapping/host repair
   has independent corrective approval for complete `0f3a1a7a..c0eb3dc5`, including
   its final record edge (2026-11-02 owning log). Producer supplement

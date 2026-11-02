@@ -7588,3 +7588,40 @@ All handles terminal; only reviewer-created tmpfs/no-durable-mount container
 `21129427…1ada` is removed (disposable rows unrecoverable), caches/source intact.
 Only these corrective reviews close. RP-313, full GS5/Garage, AT, copy adoption,
 hosted CI and release gates remain; no runtime change, push or archival.
+
+## 2026-11-02 — Firefox opportunity/actual-minute execution supplement
+
+Previous turn is progress: independent RP-314/315/316 approvals and real unforced
+Lucky proof. At clean `864fab628f4ee0111f09dca1507b90c67405226f`, fill the remaining
+Firefox execution arm rather than claiming two native engines are all three.
+Verification by: Codex root (execution supplement, not a new designated verdict).
+Recorded by: Codex root.
+
+Exact root `make test-browser-ci-focused BROWSER_TEST_FLAGS='test/garage-surfaces-opportunity-browser.test.ts test/garage-idle-opportunity-browser.test.ts --project=firefox'`
+passes80/80, two files,62.80s, handle19804 exit0. Actual idle assertion runs60054ms;
+cap receipts/numbers, Tab/Enter/Space, queue/read/focus/refusal/event controls run.
+The existing declared disposable container performs its frozen install and unchanged
+ten-minute containment; no test deadline, bound, assertion, skip or security change.
+Some ordinary HTTP-module output is truncated, but both file/count/terminal summaries
+and all76 observed request terminals/zero pending remain. No hosted/AMD64 hardware,
+whole-CI/performance, actual AT or macOS Firefox pass follows from this Linux run.
+
+Before that, the one-case native Firefox command reproduces RP-256 before test
+import: existing60000ms session connection failure, zero tests. A second invocation
+adds only `DEBUG=pw:browser,pw:api`: Firefox launches (pid11799), emits the known
+`sandbox_extension_issue_file_to_process ... Operation not permitted` and SWGL
+framebuffer diagnostics, then the same session failure. Both binaries are ARM64;
+no quarantine attribute is present on the inspected application bundle. These facts
+do not isolate the underlying cause and repeat known RP-256 evidence, not a new fix.
+Installed Playwright's launch default is180000ms; both failed native invocations
+are explicitly interrupted after the session error (exit130), not claimed as
+autonomous terminal failures or indefinite hangs. No security bypass/reinstall.
+
+Initial local-listen and Docker-socket sandbox denials execute no tests; narrow
+authorized versions supply these outcomes. Playwright records killing its own
+pid11799/temporary-profile cleanup on interruption. Direct final checks find both
+owned pids6064/11799 absent and declared browser Compose inventory empty; the user's
+ordinary Firefox is untouched. No product/tool source edits or new review approval.
+This closes this correction's missing Linux Firefox execution arm, not RP-256,
+full GS5/Garage/CI or release. No unchanged green rerun is next; continue remaining
+accepted work/contract adoption. Goal stays active; nothing pushed.
