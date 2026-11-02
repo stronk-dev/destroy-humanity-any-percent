@@ -92,9 +92,11 @@ library is only one prerequisite, not a substitute for that chain.
 
 - OD-1's actual owner choice is recorded; do not ask the same hiring/output question again.
 - HG-10 now has the draft `rfc/tier2-paid-hiring-policy.md` for deterministic
-  decisions and paid-sequence ranking. Its review/adoption and the real Headcount
-  calculation source/hook binding remain open; no Company14 fallback or full P1
-  readiness is inferred. Tier2's plan/log owns this proposal, not a second engine.
+  decisions and paid-sequence ranking. Prior bounded decision review is complete;
+  its newly concrete full Headcount endpoint/closed-replay/genesis/continuation
+  binding needs fresh technical review/adoption and actual implementation. No
+  Company14 fallback or full P1 readiness is inferred. Tier2's plan/log owns the
+  proposal, not a second engine.
 - The siblings' complete model translation (RP-414) is independently approved;
   close concrete content/policy and technical integration contracts. One engine
   branch is selected; no second grammar/state/intent authority is permitted.

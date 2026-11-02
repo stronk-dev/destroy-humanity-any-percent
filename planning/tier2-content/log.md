@@ -824,3 +824,41 @@ The proposal is NOT full HG-10/P1-ready or implementation authority. Full-horizo
 protocol still needs adoption and measured workload proof. All Headcount engine,
 accounting/search adoption/implementation, content/copy/balance/mint, historical
 guard and nine-tier1.0 gates remain. Nothing pushed; goal remains active.
+
+## 2026-11-02 — Concrete Headcount calculation binding proposed
+
+Previous goal turn is progress: independently reviewed HP1–HP7 decision proposal,
+not implemented gameplay. Resume clean `d8fe9bee`. Trace actual Account base genesis,
+FounderInitializer, bundle floors, version-preserving clone, closed replay/catchup /
+active schedule, foundation completion, scripted-first interception and real terminal
+continuation. The source shows why merely widening Company14 would retain an
+incomplete path; no current Headcount runtime is claimed to exist or fail.
+
+HP6 now proposes one closed NEW schema2 profile,
+`simulation_tier2_headcount_endpoint_v1`: actual Headcount Company plus independent
+Founder/axis activation, full endpoint sampling and replay hooks, production-owned
+action/foundation/snapshot completion, actual terminal/grant/next-run results and
+run-frozen factors. It specifies synthetic identity/clock provenance, complete
+captured context, no legacy starter/experiment override, no duplicate manual absence /
+lifetime work and charged new-source proof/fallback. Profile choice is a NEW
+measurement protocol, not a claim that old reduced trajectories are wrong or paired.
+
+The draft explicitly amends H1 only upon THIS proposal's adoption: core accounting /
+search adoption alone does not enable it. Existing guards and all other profiles
+stay unchanged; actual H1 body reconciliation belongs to the adoption edit.
+No runtime, catalog, policy artifact, kernel/schema allocation, report/pin, budget,
+balance, copy, accepted parent body or currently reviewed core-draft bytes change.
+
+For source grounding, execute existing actual initializer/schedule/catchup/stock /
+Exit-boundary tests, not a synthetic Headcount journey:
+`make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -v -run TestGardenActualNewFounderInitializer\|TestOfflineCatchupIsFrozenAndRejectedCommandsRollBack\|TestActivePlayScheduleUsesAttendedTimeAndReplayEvidence\|TestApplyLoggedDerivesFactionStockResourceInsideBoundary\|TestFounderExitReplayActivatesV17AndV18FromPinnedNextBundle'`
+PASS0.314s, all five selected functions execute, including both Garden pin arms;
+no selected dependency skips. These are native in-process existing-source checks,
+NOT new-profile/new-version, current Account HTTP/SQL, TS, full pacing or workload proof.
+
+Review by: Codex root, author/first filter only. Recorded by: Codex root.
+Diff/paths/source claims checked. Complete added binding/index/two-plan/log range
+requires fresh independent technical review; prior bounded verdict is preserved,
+not expanded by transcription. No owner adoption or implementation readiness claimed.
+Full HP1–HP7 and future acceptance, all core-contract/content/implementation/release
+obligations remain; nothing pushed and the full1.0 goal remains active.

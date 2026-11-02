@@ -1,9 +1,9 @@
 # RFC: Tier 2 Paid-hiring Policy Binding
 
-- **Status:** draft — bounded decision-policy technical review approved; adoption and actual capability binding pending; NOT implementation authority
+- **Status:** draft — bounded decisions reviewed; concrete HP6 binding proposed, technical review/adoption pending; NOT implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-02
-- **Parent / amends:** Tier 2 Content P1/HG-10; Headcount Allocation S9's harness consumer
+- **Parent / amends:** Tier 2 Content P1/HG-10; Headcount Allocation S9's harness consumer; Accrual-aware Harness Search H1's closed caller matrix
 - **Design refs:** `design/01-tiers.md` Tier 2; `design/02-economy-balancing.md` §11/§11b; `design/06-tech.md` lazy authoritative math
 - **Depends on:** Headcount activation reconciliation; adopted Tier 2 windows; Production Accrual Conservation and Accrual-aware Harness Search adoption/implementation
 - **Planning:** `planning/tier2-content/`; engine prerequisites remain in `planning/headcount-allocation/`
@@ -169,13 +169,110 @@ real origins, not installed rounded views. Preserve offline stages, lifetime,
 role observations and rollback; discarded/refused branches supply no selected
 evidence. Accounting/search drafts remain dependencies, not authority adopted here.
 
-Explicit remaining prerequisite: Accrual-aware Harness Search H1 currently binds
-first-hour/Tier2 to Company14, not Headcount. Before runtime work, specify,
-independently review and adopt the ACTUAL candidate's source / sampling / hook /
-completion binding. It must preserve complete new-version maps and independent
-axis activation. NO downcast to14, numeric-floor widening, partial hook or constructor
-bypass. Existing axis/attendance holds remain. HP1–HP5 alone are NOT a complete
-implementation-ready P1 contract.
+The old caller cannot be extended by merely changing its Company14 check. The
+following is the concrete NEW binding proposed for schema2 Tier2 only. It does
+not enable the old first-hour/career/partial-Tier2 callers or change their evidence.
+
+| Binding | Exact proposed value/obligation |
+|---|---|
+| Calculation profile | `simulation_tier2_headcount_endpoint_v1`; the future HP1 registry requires `calculation_profile` with exactly that value |
+| Source | Actual `H_company` under a pinned NONEMPTY `H_catalog`, with the complete Founder at its independently derived floor; I1–I3 of Headcount Activation & Acceptance Integrity own those identities, not this profile |
+| Axis | Both absent and present are admitted only under I2's exact inactive/active representation; a numeric `>=19` never activates it |
+| Sampling | C1h `active_play_endpoint`, not `fixed_external` or an installed bank view |
+| Accrual hook | C1d `closed_replay`: actual Prestige → Faction → Guild → resolved Commons, with complete captured inputs |
+| Ordinary action completion | The complete modern logged transition: catchup/schedule, accrual/hooks, actual action, prestige/offer resolution, foundation transition, final snapshot/codec and rollback; not primitive cash success alone |
+| Terminal completion | Actual scripted/elective terminal preflight, `ApplyLoggedExit` semantics, full Founder/Company results and next-run initialization; no manual grant or legacy starter shortcut |
+
+**Production ownership and genesis.** Begin from the same complete zero-ledger /
+count construction and `FounderInitializer.InitializeNewFounder` composition as
+the Account path, including active-play initialization and every pinned feature.
+The implementation may factor its existing pure construction, not invent another
+initializer policy. Encode/restore at the actual derived Company AND Founder
+versions and validate both against the full bundle. Headcount's zero maps and
+inactive/active axis arm come from the engine's I2 initialization. Do not create
+a version14 state and add two maps or supply empty placeholders for other features.
+
+Use this explicit synthetic identity fixture for the new profile only:
+Founder `01986666-8d00-7000-8000-000000000001`, Company stream
+`01986666-8d00-7000-8000-000000000002`, Founder stream
+`01986666-8d00-7000-8000-000000000003`; genesis at the existing harness Epoch
+`2000-01-01T09:00:00Z`, run1/revision1. Record it with the profile/scenario/policy
+and bundle identity. All runs use these same synthetic identities in isolated
+run-local namespaces: policy seed varies decision/jitter draws, not a claimed
+sample of production identity-seeded offers/opportunities. No new domain tag or
+random draw is inserted into P1's inherited seed grammar. Actual production RNG
+receives these identities unchanged; no fabricated offer/schedule outcomes.
+
+**Complete context, not convenient neutral hooks.** The production-owned factory
+captures C1e's full typed Company/Founder state, real revisions/log coordinates,
+ordered contributions, Commons weight, Guild clearing, Route context, active-play
+evidence, absence/mode, complete masks and selected history. Validate with their
+existing owner grammars/relationships, using the newly assigned replay union
+`H_replay` when required; do not select v12 merely because a command is not a hire.
+Build actual private replay contexts through the same pure helpers as the logged
+path, not hand-written JSON with missing resolved fields.
+
+Fresh P1 genesis has no faction/Compact/Guild/session, and its six ordinary
+command classes do not acquire them. Empty external world inputs are justified
+only from that admitted selected history, not substituted for a populated origin.
+Run-frozen Founder contributions still use actual `FrozenFounderContributions`
+and `ResolveFrozenContributions`, including neutral rows the pinned policies
+require. Freeze them once per run after genesis/Exit; never refresh a run's factor
+on a read. A seeded non-neutral origin must retain its actual complete inputs.
+Unresolved/missing context refuses construction, not fallback to a nil hook.
+
+**One stage/action pipeline.** Projections reconstruct the full C1h endpoint path
+from the retained origin: captured Guild clearing, real offline catchup and hooks,
+actual active-play schedule, ordered contributions, ordinary accrual and hooks.
+Preserve a zero-elapsed ordinary stage after catchup and all private event values.
+Rate scoring reads that endpoint's complete masked rate assembly, including its
+still-active buffs and Headcount output; no fixed-external shortcut. The actual
+action recomputes from its original pre-action state and additionally performs
+the full applied-action/offer/foundation/snapshot completion above. No projection
+or legality probe can write a receipt, action event, new revision or selected
+history. Refusal/error discards all staged state/events under normal rollback.
+
+For unmasked commands, full `ApplyLogged` results are the compatibility oracle.
+The masked simulation leaf must share that complete production-owned pipeline,
+adding only the already-authorized simulation mask boundary; do not call
+unmasked `ApplyLogged` then erase output, or replace it with the old partial
+`SimulateTransition`. Source guards keep the mask out of real Service/replay.
+New Headcount rates/maps/conditions must join actual definedness/range proofs;
+if a certificate does not cover them, perform charged actual chronological
+leaves. Old Company14/19 research does not certify the new source by analogy.
+
+**Session and continuation ownership.** The new runner does NOT pre-advance its
+selected Company with `SimulateAdvance` before applying a command. It retains
+the calculation origin across bank observations, as C1c/H1 require. On returns,
+the closed path owns absence/catchup/offline-span/lifetime updates. Do not also
+run the old runner's manual `RecordOfflineSpan` or `first_hour_lifetime` hook.
+Founder-attended milestones derive from canonical Company attendance plus actual
+completed-run Founder carry, counted once; session windows/seed/cadence remain P1.
+
+Scripted-first preflight/interception and curriculum branching use the actual
+production predicates/resolved terminal path; elective Exit uses the same real
+terminal path. Apply all returned Founder updates, terminal history, next Company,
+frozen contributions and active-play initialization once. The supplied legacy
+experiment tuple, if retained as a caller argument, must exactly match the pinned
+Curriculum; it cannot override starter cash, modifiers, grants or ending criteria.
+An ignored offer still actually spawns/expires as the pinned pipeline dictates;
+`ignore` never means bypass offer machinery. Next-run Headcount resets and scalar
+nonregression obey I3. No direct Age/Reputation/Knowledge edits or call to legacy
+`applyFirstHourExperimentStarter` substitutes for these transitions.
+
+This is an explicit NEW measurement protocol, not proof that legacy trajectories
+are wrong or a paired comparison differing only in allocation. It can change
+measured results by executing previously omitted pinned mechanics. Record new
+profile/input/source identity; never overwrite or relabel old results or declare
+P3 invariant without its actual comparison. It does not fix RP-433 by definition.
+
+**Adoption/body reconciliation.** H1 currently forbids Tier2 with endpoint sampling.
+On adoption of THIS binding and its dependencies, add the exact row above to H1
+and reconcile its prohibition in the SAME edit: old first-hour/career/partial-Tier2
+profiles stay unsupported with endpoint sampling; only the new, complete schema2
+Tier2 profile receives this exception. Core accounting/search adoption alone does
+NOT adopt/enable this profile. No other source/recipe combination becomes legal.
+Until that adoption/reconciliation/implementation, all current guards stay closed.
 
 Use engine S7.4 role masks: retain seats/costs/assignments and remove executed
 rate/pool feed. Every candidate/closure sees the same mask. No masked output
@@ -237,17 +334,30 @@ that the current subset already did so. Full-workload budget proof stays require
    fail. A no-allocation fixture stays failed/unreached; after-session/horizon
    actions and early guard completion must fail too. Pure boundary/model checks
    do not replace this future actual engine journey.
+9. New-profile admission covers Headcount+axis absent/present, exact Company /
+   Founder floors, all maps, full contexts and recipe mismatch refusal. Actual
+   Account genesis, unmasked ordinary/terminal logged transitions and Go/TS
+   replay are independent oracles; compare complete states, stages, receipts,
+   events, frozen factors and continuation, not cash alone. Include a nonempty
+   Guild batch/Commons weight, changing active schedule, offline return and
+   zero-elapsed ordinary stage. Wrong identity, old-source downcast, partial hook,
+   omitted post-action foundations, missing map/carry and reused clearing must fail.
+   Double manual/closed absence or lifetime accounting and legacy starter overrides
+   must fail. Full captures replay through actual Postgres selected commands and
+   exact retries; isolated model checks cannot establish this requirement.
 
 No software pass, production behavior or feasibility is claimed for this prose.
 Keep six-hour windows, 2h–3h target, 90%/24h offline, all populations and full
-nine-tier1.0 scope. Technical review first; resolve findings and HP6 before
-requesting adoption, reconciling parents or claiming ready to implement.
+nine-tier1.0 scope. Technical review first: HP6 now proposes a concrete binding,
+not an implemented factory. Resolve review findings before requesting adoption /
+same-change body reconciliation, and prove every future gate before closeout.
 
 ## Technical review provenance
 
 Fresh independent Codex `/root/tier2_paid_hiring_policy_spec_review` APPROVES
 complete `0e5cf832..5498072b` after forward correction of the explicit full-P2
 termination and manual-bootstrap omissions. The owning log records exact hashes,
-findings and evidence. This approves the bounded decision proposal only; HP6's
-actual source/sampling/hook/completion binding is still unresolved. No adoption,
-full HG-10/P1 readiness, implementation, workload or balance proof follows.
+findings and evidence. That verdict approves the prior bounded decision proposal
+only. The later concrete HP6 profile requires its own complete independent technical
+review; the prior verdict cannot approve new source/hook/genesis/continuation scope.
+No adoption, implementation, workload or balance proof follows from either prose.

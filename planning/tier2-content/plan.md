@@ -20,8 +20,13 @@ admit Headcount; HP6 names source/hook/completion engineering closure before wir
 Bounded decision-policy review APPROVES full0e5cf832..5498072b after forward correction
 of full-P2 termination and Reference empty-option bootstrap. New full-horizon completion,
 retained first observations, manual bootstrap and error/unreachable separation are
-proposed, not runtime fixes or adopted policy. Next close HP6's actual calculation
-capability binding before claiming full HG-10/P1 readiness or requesting adoption.
+proposed, not runtime fixes or adopted policy. HP6 now proposes a concrete new
+`simulation_tier2_headcount_endpoint_v1` binding: actual versioned genesis, full
+endpoint/closed-replay pipeline, masks and real terminal continuation. The old
+Company14/fixed-lifetime caller is not widened or reinterpreted. Fresh independent
+technical review must cover the added binding before requesting adoption; core
+accounting/search adoption alone does not enable this new profile. Actual complete
+engine/factory/registry/runner, source parity and full-workload proof remain unbuilt.
 Complete P1/content/accounting/targets/mint gates remain.
 
 **RP-697 correction, 2026-11-01:** the pacing caller copied the candidate bundle
