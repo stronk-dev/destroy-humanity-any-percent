@@ -495,18 +495,19 @@ its own executable failure cases and a bounded review range. No batch may claim 
 | DP-D | Stop-drain-start release helper, release record, seven-day previous-version rollback without Down migrations | Real Caddy HTTP/WebSocket release and rollback population; severed courtesy frame, drain, migration, epoch and smoke paths fail | CHANGES REQUIRED — Claude designated review 2026-09-24 (log); corrective range needed |
 | DP-E | Private operations profile, metrics, journald policy and seven blocking alerts | Private reachability and retention fixtures; all seven alerts fire and severed metric/rule/receiver paths fail | CHANGES REQUIRED — Claude designated review 2026-09-24 (log); corrective range needed |
 | DP-E/DP8 corrective | Preserve WebSocket upgrades through operations instrumentation, append-only repair of the pushed kernel-history miss, and one mechanically bound local push-CI aggregate | Operations-enabled real WebSocket witness; kernel correction/version guard; topology mutation proving a missing local CI lane fails | APPROVED — Claude designated review 2026-09-24 over `7b510df..cf4ac25` |
-| Claude corrective R1–R22 | Owner-directed Claude corrections; the dated handoff is a historical review input, not a verdict | Individual exact-range verdicts and their executed evidence in `log.md`; historical aggregate runs do not establish green CI at current HEAD | partial bounded review only: R4/R5/R7/R11/R13/R16/R17/R19/R21 approved; R5's real private Compose witness now passes with its platform limits in the log. R11's prior native rule verdict is supplemented by exact-index amd64 rule execution, not full clean-host delivery. R14/R15 mechanisms have bounded approval but Codex witness supplements need Claude; other listed findings/corrections remain open. No full-range or DP-A–DP-E approval; retained bundles must be rebuilt |
-| Codex RP-164 / DP-B CSS attribution | Build-generated CSS package provenance and final asset hashes, consumed by release metadata and delivered notices | Direct and nested CSS-only npm fixture, missing/stale graph and stylesheet negatives, Vite/Go severing probes, real build+metadata | locally implemented; Claude designated review required; no AC8 or DP-B closure |
-| Codex RP-165/RP-166 / DP-B CSS URL and worker resources | Versioned CSS graph adds package assets inlined via `url()` and worker-only package stylesheets through a shared worker hook | Real Vite inlined SVG and worker-CSS shipped-byte controls; Go URL-only and worker-only notices, missing-file/v1 negatives; producer/consumer severing | locally implemented; Claude designated review required; no AC8 or DP-B closure |
-| Codex native operations witnesses / DP7 | Supplemental local delivery and production-registry→Prometheus→Alertmanager journeys using pinned native services | Preflight nonce, seven firing/resolution pairs, HTTP-500 rejection and actual first cleanup failure firing/natural resolution without reset or injected resolution | combined target locally passed; consolidated Claude review required for the new test range after `8f2e29d8`. Not original R5, private Compose/Caddy/DB or release acceptance |
+| Claude corrective R1–R22 | Owner-directed Claude corrections; the dated handoff is a historical review input, not a verdict | Individual exact-range verdicts and their executed evidence in `log.md`; historical aggregate runs do not establish green CI at current HEAD | partial bounded review only: R4/R5/R7/R11/R13/R16/R17/R19/R21 approved; R5's real private Compose witness now passes with its platform limits in the log. R11's prior native rule verdict is supplemented by exact-index amd64 rule execution, not full clean-host delivery. R14/R15 mechanisms and Codex witness supplements now have bounded independent approval (2026-11-02 log); other listed findings/corrections remain open. No full-range or DP-A–DP-E approval; retained bundles must be rebuilt |
+| Codex RP-164 / DP-B CSS attribution | Build-generated CSS package provenance and final asset hashes, consumed by release metadata and delivered notices | Direct and nested CSS-only npm fixture, missing/stale graph and stylesheet negatives, Vite/Go severing probes, real build+metadata | bounded independent corrective approval of ef1a4658..f6e4d0ff and7163fe8f..627956be; no AC8 or DP-B closure |
+| Codex RP-165/RP-166 / DP-B CSS URL and worker resources | Versioned CSS graph adds package assets inlined via `url()` and worker-only package stylesheets through a shared worker hook | Real Vite inlined SVG and worker-CSS shipped-byte controls; Go URL-only and worker-only notices, missing-file/v1 negatives; producer/consumer severing | bounded independent corrective approval in the same two ranges; exact verdict/limitations in log, no AC8 or DP-B closure |
+| Codex native operations witnesses / DP7 | Supplemental local delivery and production-registry→Prometheus→Alertmanager journeys using pinned native services | Preflight nonce, seven firing/resolution pairs, HTTP-500 rejection and actual first cleanup failure firing/natural resolution without reset or injected resolution | original8f2e29d8..a42e680e independently APPROVED, exact historical combined target391.431s. Current ae040d1d fails on legitimate startup journal absence (RP-704); test-only repair and current journey/review underway. Not original R5, private Compose/Caddy/DB or release acceptance |
 | DP-F | Exact-manifest R-006 clean-host, provider-off, supply-chain and recovery rehearsal; canonical docs and lifecycle closeout | Clean Linux/amd64 release bundle proves AC1–AC8, RPO/RTO and rollback, then receives both required review gates | planning; construction may start, external run/closeout gated |
 
 ## Batch protocol
 
 **Historical reconciliation (2026-10-07):** use the individual verdicts and the
 Deployment rows in `planning/platform-alignment/execution-queue.md`, not the
-September handoff's original claim that every finding is closed. Codex repairs
-and record edges still require Claude's exact-range designated review. R11 now
+September handoff's original claim that every finding is closed. Corrective ranges
+require designated independent review under AGENTS.md's current delegation, not
+necessarily Claude. New-feature acceptance retains its existing gates. R11 now
 has a bounded Codex designated verdict in the latest log entry. The historical kernel guard
 is red at `50a3a514` (RP-131); an old green aggregate does not supersede that
 current result. Pinned amd64 composed lanes have not executed on the current
@@ -524,8 +525,8 @@ For coherent batches, follow RFC-0000's adopted risk-based delivery procedure:
 4. record one concise outcome, coverage/limitations and review range in the owning log; update
    other boards only when their status or next action changes, and never call a first-filter
    the designated pass;
-5. hand the exact range to Claude for the cross-party designated review before treating the batch
-   as approved; and
+5. hand the exact range to the designated independent reviewer under AGENTS.md's current
+   authority before treating the batch as approved; and
 6. keep clean-host/destructive/release lanes outside push CI unless measured D-014 headroom and a
    separately authorized CI change permit otherwise.
 

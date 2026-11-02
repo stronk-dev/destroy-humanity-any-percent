@@ -7743,3 +7743,97 @@ volume; cleanup DB census0, exact twice-validated tmpfs Postgres container
 removed. Other projects/data/caches and root's Garden test edit preserved.
 No reviewer tracked edits, kernel/data/CI changes, feature/archival/release
 approval, deployment or push; existing accounting/history/full1.0 gates remain.
+
+## 2026-11-02 — CSS resource provenance corrective reviews approved (RP-164–166)
+
+Review by: fresh independent Codex `/root/deployment_css_provenance_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's delegation.
+APPROVED complete ranges
+`ef1a46589b5d67e7c33a362fe9aea8016a33edb1..f6e4d0ffbb45eac27727c1c9e2a9cc339705c5f6`
+and `7163fe8ffd03b0f31a9c56efaa7bc8cae48f14c1..627956be6a6c2c4624f5557fdba319b76def9848`.
+The intervening unrelated record is excluded; both implementation/record edges are covered.
+
+Reviewer executes the exact historical Vite fixtures (two/four passing), historical Go
+consumers via compiler overlays, and six independent omission probes: package stylesheet,
+URL and worker producers plus their three Go consumers. Shipped decoded SVG/worker bytes
+are absent from parsed map sources and present in the graph. Historical reconstruction
+initially retained later `duplicate_client_test.go` and reproduced the known RP-545
+per-copy-license failures. Those failures are disclosed, not approved: excluding only that
+later test reconstructs the original population. RP-545 has its own separate verdict.
+
+At clean `ae040d1d`, cold metadata/releasepackage checks, types, production client build,
+vet, boundaries/topology and real 53-dependency metadata generation pass. Client producer
+bytes match the historical tip; later Go consumer work remains outside this approval.
+Range whitespace passes; reviewer made no tracked changes. This closes only these bounded
+corrective reviews, not original R8, exact image/bundle rights, AC8/DP-B, R-006 or release.
+
+## 2026-11-02 — R14/R15 witness supplements independently approved
+
+Review by: fresh independent Codex `/root/deployment_rehearsal_witness_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's delegation.
+APPROVED complete test-and-record ranges
+`de014f6ec6359e683a50d425cd4f058a1081b9e5..6302d0ace79eddf2b2b4f33678dcc38da0b4dd26`
+and `6302d0ace79eddf2b2b4f33678dcc38da0b4dd26..4a1a6577da9af8255be0ab6fd821730806e22855`.
+Original Claude R14/R15 mechanisms already have their separate bounded verdicts.
+
+At clean `ae040d1d`, reviewer executes four build-binding cases, nine mutation cases,
+complete cold `./deploymentrehearsal ./cmd/deployment-rehearsal` and vet. Removing previous
+binding through a compiler overlay fails the new previous-record negative with `<nil>`;
+removing manifest rebinding fails all seven non-manifest cases at `untouched artifact not
+rebound`. Final no-overlay focused checks and whitespace pass; temporary probes removed.
+This executes current source, not historical checkouts; later changes are context only.
+Mock validators establish bounded binding/probe preparation, not real bundle rejection,
+rebuilding, provider-off/clean-host R-006, full AC8, archival or release approval.
+
+## 2026-11-02 — Original native operations witnesses approved; current regression retained
+
+Review by: fresh independent Codex `/root/deployment_native_operations_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's delegation.
+APPROVED exact two-commit/eight-path historical range
+`8f2e29d8770aefa589cdbb085861b152b7c970aa..a42e680ef8e777bb3e2a0d2b6cdbe5c0636e297c`.
+The unchanged exact tip archive uses the existing repository Go cache; no main-tree mutation.
+
+Official darwin/arm64 archives match published checksums: Prometheus3.12.0
+`d758070049a4de5abbeb925b1d4540c5c38a2f40d1356f59aa17a71ac8b48be3`,
+revision `9f27dffc1f93ca23287972f632025879f2d1c658`; Alertmanager0.32.1
+`4fd3d3d6156cbe76016583b852dc80beda7ee693d28ac27477a9b3da06d87a93`,
+revision `8768aa6f65f1a888b5aa5fbf877cf20ad45d1f61`.
+Historical combined native target PASS391.431s: seven-family delivery/resolution and
+healthy-but-500 refusal; actual cleanup zero→one→metric firing→natural resolution at
+5m30.540s, counter still one. Cold operations/releasepackage PASS0.934s/1.378s,
+vet, pinned promtool rules, historical topology/13 controls pass. Missing inputs and wrong
+actual binary fail. Initial sandbox listener denial is excluded, not journey evidence.
+
+Separately, actual current `ae040d1d` fails84.557s: its later missing-journal rule legitimately
+delivers `{alertname:CloudClickerCleanupJobFailed,severity:page}` before the metric notification,
+and the old waiter rejects it. Filed RP-704; the current correction is explicitly OUTSIDE this
+historical approval. Native handles are terminal. Verified binaries remain in the reviewer's
+private temporary directory for the parent rerun; no global installation or tracked edits.
+No private Compose/Caddy isolation, actual DB/cleanup producer, other live producers, Linux
+release artifact, R-006/full AC7, feature acceptance, archival, deployment or release follows.
+
+## 2026-11-02 — RP-704 separate startup journal alerts from required metric evidence
+
+Accepted authority: DP7, not a new observability policy. The retained independent current
+failure above exposes a test assumption: one alert name can have several legitimate causes.
+The native waiter now logs the exact two-label journal branch as non-credit evidence and
+continues waiting for the actual metric's firing/resolution. It rejects wrong/missing metric
+labels, any proof-nonce key, invalid status and missing/closed deliveries. A valid payload
+cannot hide a malformed cleanup payload later in the same delivery. No shipped rule, grouping,
+cadence, timer, metric producer, CI or product byte changes.
+
+Focused cold `make test-go GO_PACKAGES='./operations' GO_TEST_FLAGS='-count=1 -run TestNativeCleanup -v'`
+passes0.317s: compressed scrape plus firing/resolution, journal-only, mixed/unrelated delivery,
+malformed/injected/empty-nonce, opposite-status, empty delivery and cancellation controls.
+Cold complete `./operations ./releasepackage ./cmd/deployment-operations` pass
+1.707s/1.541s/5.540s; matching vet and whitespace pass. Optional native/DB populations skip in
+those ordinary package checks and are not credited. The explicit combined native target's
+first attempt is sandbox-denied before listening (exit2), not a product regression or journey.
+Its permitted rerun is active using the same verified binaries above; actual seven-family
+delivery/refusal passes60.53s and the separate startup journal alert has been logged without
+credit. Final natural resolution and fresh independent corrective review remain required;
+the next entry records the terminal result, not an inferred pass.
+
+Review by: Codex root, implementer first filter only. Recorded by: Codex root.
+The preceding three independent verdict transcriptions close older review debt only; none
+approves this new correction, any broader deployment claim or release.

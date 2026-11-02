@@ -19,11 +19,13 @@ import (
 // This supplemental local lane runs a real Alertmanager, but does not replace
 // the private Compose, Prometheus scrape or clean-host release populations.
 type nativeAlertMessage struct {
-	Alerts []struct {
-		Status      string            `json:"status"`
-		Labels      map[string]string `json:"labels"`
-		Annotations map[string]string `json:"annotations"`
-	} `json:"alerts"`
+	Alerts []nativeAlert `json:"alerts"`
+}
+
+type nativeAlert struct {
+	Status      string            `json:"status"`
+	Labels      map[string]string `json:"labels"`
+	Annotations map[string]string `json:"annotations"`
 }
 
 func TestNativeAlertmanagerDeliveryIntegration(t *testing.T) {

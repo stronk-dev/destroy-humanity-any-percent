@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -221,24 +222,131 @@ func nativePrometheusQuery(t *testing.T, ctx context.Context, client *http.Clien
 
 func waitNativeCleanupNotification(t *testing.T, ctx context.Context, deliveries <-chan nativeAlertMessage, status string) {
 	t.Helper()
+	if err := observeNativeCleanupNotification(ctx, deliveries, status, func(alert nativeAlert) {
+		t.Logf("observed journal-availability cleanup alert (not metric-route proof): %+v", alert)
+	}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func observeNativeCleanupNotification(ctx context.Context, deliveries <-chan nativeAlertMessage, status string, journalObservation func(nativeAlert)) error {
+	if status != "firing" && status != "resolved" {
+		return fmt.Errorf("invalid requested cleanup status %q", status)
+	}
 	for {
 		select {
 		case <-ctx.Done():
-			t.Fatalf("actual cleanup %s notification missing: %v", status, ctx.Err())
-		case message := <-deliveries:
+			return fmt.Errorf("actual cleanup %s notification missing: %w", status, ctx.Err())
+		case message, open := <-deliveries:
+			if !open {
+				return fmt.Errorf("actual cleanup %s notification missing: delivery channel closed", status)
+			}
+			matched := false
 			for _, alert := range message.Alerts {
 				if alert.Labels["alertname"] != "CloudClickerCleanupJobFailed" {
 					continue
 				}
-				if alert.Labels["job_name"] != "credential_cleanup" || alert.Labels["result"] != "failure" || alert.Labels["job"] != "gameserver" || alert.Labels["proof_nonce"] != "" {
-					t.Fatalf("cleanup payload is not from the actual metric/rule path: %+v", alert)
+				if alert.Status != "firing" && alert.Status != "resolved" {
+					return fmt.Errorf("invalid cleanup notification status: %+v", alert)
+				}
+				// The shipped rule also alarms on missing journal observations.
+				// Before the first scrape that absent() branch legitimately has
+				// only these two labels. Observe it, but never credit it as the
+				// required production job metric's firing or resolution.
+				if len(alert.Labels) == 2 && alert.Labels["severity"] == "page" {
+					journalObservation(alert)
+					continue
+				}
+				_, injected := alert.Labels["proof_nonce"]
+				if alert.Labels["severity"] != "page" || alert.Labels["job_name"] != "credential_cleanup" || alert.Labels["result"] != "failure" || alert.Labels["job"] != "gameserver" || injected {
+					return fmt.Errorf("cleanup payload is not from the actual metric/rule path: %+v", alert)
 				}
 				if alert.Status == status {
-					return
+					matched = true
 				}
+			}
+			if matched {
+				return nil
 			}
 		}
 	}
+}
+
+func TestNativeCleanupNotificationRequiresActualMetricRoute(t *testing.T) {
+	journal := func(status string) nativeAlert {
+		return nativeAlert{Status: status, Labels: map[string]string{"alertname": "CloudClickerCleanupJobFailed", "severity": "page"}}
+	}
+	metric := func(status string) nativeAlert {
+		return nativeAlert{Status: status, Labels: map[string]string{
+			"alertname": "CloudClickerCleanupJobFailed", "severity": "page", "job_name": "credential_cleanup", "result": "failure", "job": "gameserver",
+		}}
+	}
+	for _, status := range []string{"firing", "resolved"} {
+		t.Run(status, func(t *testing.T) {
+			for _, test := range []struct {
+				name    string
+				alerts  []nativeAlert
+				wantErr string
+				journal int
+			}{
+				{"actual", []nativeAlert{metric(status)}, "", 0},
+				{"journal_only", []nativeAlert{journal(status)}, "delivery channel closed", 1},
+				{"mixed", []nativeAlert{journal("firing"), {Status: "firing", Labels: map[string]string{"alertname": "CloudClickerPostgresUnavailable"}}, metric(status), journal("resolved")}, "", 2},
+				{"empty", nil, "delivery channel closed", 0},
+			} {
+				t.Run(test.name, func(t *testing.T) {
+					deliveries := make(chan nativeAlertMessage, 1)
+					deliveries <- nativeAlertMessage{Alerts: test.alerts}
+					close(deliveries)
+					observed := 0
+					err := observeNativeCleanupNotification(context.Background(), deliveries, status, func(nativeAlert) { observed++ })
+					if (test.wantErr == "" && err != nil) || (test.wantErr != "" && (err == nil || !strings.Contains(err.Error(), test.wantErr))) || observed != test.journal {
+						t.Fatalf("err=%v journal observations=%d; want error %q observations=%d", err, observed, test.wantErr, test.journal)
+					}
+				})
+			}
+		})
+	}
+	for _, test := range []struct {
+		name  string
+		alter func(*nativeAlert)
+	}{
+		{"missing_job", func(alert *nativeAlert) { delete(alert.Labels, "job") }},
+		{"wrong_job", func(alert *nativeAlert) { alert.Labels["job"] = "injected" }},
+		{"wrong_job_name", func(alert *nativeAlert) { alert.Labels["job_name"] = "route_name_expiry" }},
+		{"wrong_result", func(alert *nativeAlert) { alert.Labels["result"] = "success" }},
+		{"wrong_severity", func(alert *nativeAlert) { alert.Labels["severity"] = "warning" }},
+		{"injected", func(alert *nativeAlert) { alert.Labels["proof_nonce"] = "probe" }},
+		{"empty_nonce", func(alert *nativeAlert) { alert.Labels["proof_nonce"] = "" }},
+		{"invalid_status", func(alert *nativeAlert) { alert.Status = "unknown" }},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			invalid := metric("firing")
+			test.alter(&invalid)
+			deliveries := make(chan nativeAlertMessage, 1)
+			// Even a valid same-message match must not hide malformed evidence.
+			deliveries <- nativeAlertMessage{Alerts: []nativeAlert{metric("firing"), invalid}}
+			close(deliveries)
+			if err := observeNativeCleanupNotification(context.Background(), deliveries, "firing", func(nativeAlert) { t.Error("malformed metric classified as journal") }); err == nil || strings.Contains(err.Error(), "channel closed") {
+				t.Fatalf("malformed metric payload not rejected directly: %v", err)
+			}
+		})
+	}
+	t.Run("opposite_status_is_not_credit", func(t *testing.T) {
+		deliveries := make(chan nativeAlertMessage, 1)
+		deliveries <- nativeAlertMessage{Alerts: []nativeAlert{metric("resolved")}}
+		close(deliveries)
+		if err := observeNativeCleanupNotification(context.Background(), deliveries, "firing", func(nativeAlert) {}); err == nil || !strings.Contains(err.Error(), "delivery channel closed") {
+			t.Fatalf("opposite status credited: %v", err)
+		}
+	})
+	t.Run("canceled", func(t *testing.T) {
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+		if err := observeNativeCleanupNotification(ctx, make(chan nativeAlertMessage), "firing", func(nativeAlert) {}); !errors.Is(err, context.Canceled) {
+			t.Fatalf("missing notification did not preserve cancellation: %v", err)
+		}
+	})
 }
 
 func waitNativeOperationsPoll(t *testing.T, ctx context.Context) {

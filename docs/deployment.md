@@ -1190,6 +1190,12 @@ The five-minute `increase()` window, fifteen-second scrape/evaluation cadence an
 notification grouping are not shortened. The counter must still be one after resolution; no
 alert API injection or counter reset completes this journey.
 
+The rule also fires when journal observations are missing. Its exact two-label startup
+notification is logged as a separate observation, never credited as the cleanup metric's
+firing or resolution. The witness requires the actual `gameserver` / `credential_cleanup` /
+`failure` labels for both metric notifications, rejects injected or malformed evidence, and
+fails if only the journal alert arrives. This leaves the production startup alarm intact.
+
 The generated test configuration changes only service addresses and the rule-file path.
 Caddy/node-exporter targets deliberately return unavailable, and database collection uses a
 fixture; no healthy-all-targets, Caddy isolation, actual cleanup coordinator or Postgres claim
