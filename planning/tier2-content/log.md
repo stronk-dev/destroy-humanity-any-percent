@@ -734,3 +734,13 @@ data, old persona/report, player copy, mint, schema allocation or kernel change.
 Review by: Codex root, author/first filter. Fresh independent technical review
 must cover the entire afterc6f11121 translation. No software tests merely for
 prose and no publication.
+
+## 2026-11-02 — E4 binding corrected after independent finding
+
+The complete model-translation review returned CHANGES REQUIRED for E4's
+surviving `headcount.roles[].copy_key` registration. Exact verdict/provenance
+and forward correction are recorded in the Headcount log's same-date entry.
+E4 now binds actual canonical cap-reason paths and keeps the real role/panel
+presentation contract as a prerequisite; no invented engine field or authored
+copy. No software suites for this specification-only correction. Full translation
+re-review remains pending; no implementation, acceptance or publication claim.

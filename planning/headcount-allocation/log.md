@@ -200,3 +200,19 @@ artifact/report change. Root reviews the complete normative diff/remaining
 references and checks whitespace; no software-suite pass is claimed for Markdown.
 Review by: Codex root, author/first filter. Complete translation afterc6f11121
 requires fresh independent technical review before implementation. Nothing pushed.
+
+## 2026-11-02 — Model translation review finding and forward correction
+
+Review by: fresh independent Codex /root/headcount_model_ruling_translation_review.
+Recorded by: Codex root. CHANGES REQUIRED on complete eleven-path range
+c6f11121..bf7396f92a1a4dc340cc6c5cb67ded86a2148d8c. One P2 finding:
+Tier 2 E4 still required registering rejected `headcount.roles[].copy_key`;
+canonical S1 defines `headcount_pools` and no role copy field. The reviewer
+independently checked all paths, preserved logs/windows and the selected model;
+no other blocking finding. Whitespace passed; no software suite for Markdown.
+
+Correct E4 forward: use actual seat/resource/generator cap-reason paths and
+explicitly require the real mounting/content presentation binding before
+implementation/mint. Do not invent a role copy field, schema or authored text.
+Root checks the correction against S1/S10 and E4; complete original-plus-correction
+range requires independent re-review. No runtime/data/kernel/copy or gate change.

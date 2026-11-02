@@ -311,8 +311,13 @@ E4. **Copy keys, all prose owner-authored/pending.**
   - `incorporate.panel.hint`;
   - `era_2010.energy_bar.{label,curtain}`;
   - `era_2010` variants for every existing Desk/Run-End key rendered at tier 2.
-- The copy-bearing JSON paths (economy `headcount.roles[].copy_key`, the new reason keys) are
-  registered in `copy/references.v1.json`.
+- Register actual copy-bearing paths in `copy/references.v1.json`, including
+  `headcount_pools[].seat_hardcap.reason_key` and the declared resource/generator cap
+  reason keys. Canonical S1 pool/role IDs are mechanical; it defines no role
+  `copy_key` field. The mounting/content contract must specify and review the real
+  presentation binding for role titles/descriptions and panel text before
+  implementation or mint. These copy-key families do not themselves create a
+  presentation schema, extend the engine grammar or adopt authored text.
 - This RFC contains **no final copy**. Text comes from the owner's editorial round (the FCE-C7
   pattern) under `design/08 §1`: deadpan, curtain always pulled, never punching at
   employees-as-people. The Middle Manager and "We're a family"-register lines target the HR
