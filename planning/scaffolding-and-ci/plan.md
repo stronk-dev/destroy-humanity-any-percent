@@ -90,6 +90,20 @@ population reduction or CI closure follows. Next distinguish browser-side work/
 resource waiting for these concrete deadline failures; do not repeat unchanged
 green selectors or sweep arbitrary workers. Continue the full1.0 objective.
 
+Follow-up at8f808c63: both failing files pass all33 focused three-engine cases in
+6.24s, unchanged. A single full resource-observed target also passes every phase:
+provider27; broad519/40515 cases,252.20s; native3/93 cases,5.89s; isolated performance
+five,7.51s. Both functional case-name multisets match the preceding full pass.
+The observer retains265 samples over268.082s, but container teardown kills it
+(137) before a terminal record: explicitly PARTIAL, not complete instrumentation.
+Within that sampled span,979.943 container CPU seconds and191.783 CPU-pressure
+seconds coexist with the green run; memory pressure0.062s, I/O pressure0.229s,
+peak11.327GB cgroup memory, no OOM. High CPU waiting is therefore not by itself a
+sufficient failure discriminator or measured justification for another worker
+sweep. No matched benchmark, full cold-wall timing or hosted acceptance claim.
+Next preserve the interrupted test stage on a genuine deadline recurrence rather
+than infer a cause from a completed screenshot or repeat isolated green tests.
+
 ## Historical checkpoint sequence — original heading 2026-10-16
 
 Everything below preserves earlier bounded observations. Its “next”, “pending” and

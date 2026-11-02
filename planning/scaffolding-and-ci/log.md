@@ -4048,3 +4048,56 @@ Ignored evidence SHA256, paths under.cache/:
 Review by: Codex root, observation first filter. Recorded by: Codex root. This
 editorial measurement checkpoint supplies no independent implementation approval,
 hosted/default-load reliability, acceptance promotion, archive, adoption or push.
+
+### Full-load resource control — green, pressure not a sufficient explanation
+
+At8f808c63, both retained deadline files execute unchanged through declared cold
+Linux4CPU setup:33/33 three-engine cases,6.24s, terminal0. Canonical group-carry
+case591/606/920ms; Pitch native journey743/689/601ms. This does not reproduce the
+full-load failure. Initial sandbox-denied Docker launch executes no tests and is
+retained separately; the authorized invocation supplies the actual result.
+Its read-only1Hz observer is killed137 by disposable-container teardown; seven
+samples retained, NO terminal record. That is partial resource evidence, not a
+valid complete measurement or an unexplained passing observer.
+
+Then execute ONE unchanged full target with the same4CPU override and passive
+resource sampling, no source/config/worker/input/deadline edits. Terminal0, all
+phases: provider27/27; broad519 files,40473 ordinary/18 expected/24 skips (40515),
+252.20s; native3 files,87 ordinary/six expected (93),5.89s; isolated performance
+five passes/107 unrelated deselections,7.51s. Actual full case-name multisets equal
+the prior complete pass40515+93. Previous red run stays evidence; this is not
+reliability proof, a matched speed benchmark or a cold-wall/hosted timing result.
+
+Observer identifies only this container's processes and labels /proc pressure/
+meminfo VM-wide. It retains265 samples13:56:17.085–14:00:45.167UTC,268.082s; then
+container teardown kills it137 before a terminal record. Explicitly PARTIAL even
+though the independently observed test command completes. During the sampled
+interval cgroup deltas are979.943 CPU seconds,191.783 CPU some-pressure seconds,
+0.062 memory-pressure seconds and0.229 I/O-pressure seconds. Peak cgroup memory
+11327012864bytes; minimum VM available5183268KB; no cgroup OOM/throttling events.
+These counters include the small observer, are not isolated browser CPU profiles,
+and do not attribute earlier unobserved failures. High CPU pressure also occurs in
+this green population, so pressure alone is insufficient as a failure discriminator
+or authority for an arbitrary capacity sweep. No repeat of unchanged isolated
+green selectors is the next diagnostic. All owned handles terminal.
+
+Ignored evidence SHA256:
+- .cache/observe-browser-resources-8f808c63.mjs3858bytes:
+  31585764d1f8724bdb2c92f873aef367ac2fb70c658e9bb2b614a2466b8480b0
+- .cache/browser-deadline-resource-samples-8f808c63.jsonl43007bytes:
+  1f230af7ec80ded7250c93809be9861c418a4e429093df417be580a0a780153d
+- .cache/browser-deadline-resources-authorized-8f808c63.log7196bytes:
+  d93f2b4a245101dce80d92c25aa20f90277dd814a678cc8b0af7e0ff141291e7
+- client/.cache/browser-deadline-resources-8f808c63.json10596bytes:
+  1ef3bc7e9ad47618072418ac056f8a35f20e75ebae5c5e0ecf123edd58294cb3
+- .cache/browser-full-resource-samples-8f808c63.jsonl1654201bytes:
+  2d4a2293fd75cbcf02f74a2ab67c8c0e8b99d2408146f7ae63005c1ea964c178
+- .cache/browser-full-resources-8f808c63.log1539026bytes:
+  9dcd7734718cf8021dc35e0182a4e2c9e864db6ec7f38fce2e3edcaaaafc8c47
+- .cache/browser-full-resources-8f808c63/functional-broad.json12482902bytes:
+  2769726dd609b53dc5f340594efaa34c75329ec816563b3bdf5758a5ea693a34
+- .cache/browser-full-resources-8f808c63/functional-native.json26215bytes:
+  c6b7e7b3b50fb64b7ae75b32f1c0876b09279fc5b407ed64d392dd330a6b823d
+
+Review by: Codex root, observation first filter. Recorded by: Codex root. No new
+implementation approval, whole-CI/hosted/release promotion, archive, adoption or push.
