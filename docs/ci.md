@@ -307,6 +307,16 @@ drains started native input before unmount and refuses late input. Real trusted-
 cancellation and framework50ms controls verify capture/cleanup; healthy input emits
 no failure record. Promise timing is not proof of delivered keys or a timeout cause.
 
+The reduced-motion witness's unchanged first-native-prediction poll emits
+`game-ui-prediction-readiness-failure` if that check fails, before its fixture cleanup.
+It reuses the existing Worker observer: command/output/error/termination history,
+gaps, visibility, actual wait, first-prediction time (explicitly null when absent),
+requested/rendered preference and connected counter state accompany the original
+error, which is rethrown unchanged. Healthy readiness is quiet. A real disposed/
+terminated Worker verifies the failure payload; no prediction, Worker or clock is
+faked. This captures that poll failure, not every overall test abort or global error,
+and changes no readiness default, cadence assertion, deadline or production behavior.
+
 The normal container command wraps the frozen installation and both browser lanes in GNU
 `timeout --verbose --signal=KILL 10m`, matching the hosted browser job's existing containment
 ceiling. A stuck test process group cannot keep the local job alive indefinitely. A deadline

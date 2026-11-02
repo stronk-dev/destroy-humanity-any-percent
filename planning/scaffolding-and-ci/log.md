@@ -3728,3 +3728,44 @@ functional-broad.json12522077bytes SHA256
 Tool display truncation does not replace these complete artifacts. Scoped repairs
 and their review gates are closed; original latency/whole CI/hosted-five-minute/
 proper full1.0 remain open. No feature archive, publication or push.
+
+### First-prediction readiness — reuse native observer at the actual failed poll
+
+At57cc8217 the reduced-motion witness's mapped failed predicate is first native
+predicted_snapshot readiness. A small helper preserves that exact predicate and
+Vitest poll defaults, but on failure prints the existing observer report before
+fixture cleanup and rethrows the same error. Context includes real lifecycle/
+commands/outputs/gaps/visibility, explicit null absent first-prediction time,
+requested/rendered preference, counter connectivity and actual wait duration.
+No production, native input, media/cadence assertion, timer, bound, provider or
+concurrency change. This is poll-error observation, not all test-abort coverage.
+
+Negative control creates a real native Worker, posts its valid dispose command
+and immediately terminates before the first event turn. The unchanged poll fails;
+ordinary assertions check original error/stack, zero predictions, command/terminate
+history, timing and context. No fake Worker/output/clock or suppressed listener.
+Cleanup is idempotent, owned by TestContext and body-finally, including construction
+failure; healthy readiness remains quiet. All prior Game UI populations remain.
+
+Complete affected Linux three-engine file at the initial diagnostic source:
+terminal0,321 passed/15 existing exclusions (336total),27.70s. Afterwards final
+failure-payload/cleanup refinements execute the same real control in all engines:
+terminal0,three passes/333 deselected,8.25s; make typecheck terminal0/Svelte0/0.
+Deselected cases are not passes. Both Docker followers terminal0. Final control
+does not replace the broader earlier pass; independent review must execute the
+finished affected file. No claim the original readiness failure is reproduced or
+fixed by an isolated healthy run. Reporter markers remain absent from healthy logs.
+
+Ignored .cache/worker-readiness-report-57cc8217-container.log263537bytes SHA256
+063605678b9eb4fa812d450fec533912b82f9bb4550a9f8d353145423fb234fe;
+JSON93808bytes SHA256 d8e8d432c69570b4f693893f457e50abd2e953de0a8265aa4ed5c4c03cad9501.
+Final .cache/worker-readiness-control-final-57cc8217-container.log11047bytes SHA256
+41f710a5810263860f94dbe9c2c52ed94fdc0b8651ed43cf6f915ffd8bf0147d;
+JSON88248bytes SHA2569836f85a3fb5fa2f2dbefd5870b98eac8f642fec6872dcd09c073c2c0f103c1a.
+
+Owning plan now separates the actual current queue from preserved historical
+checkpoints; old “next” instructions no longer masquerade as current authorization.
+Complete batch after57cc8217 requires independent corrective review. Review by:
+Codex root, implementer first filter. Recorded by: Codex root. After review, one
+ordinary full run with this new signal is justified, not an unchanged retry.
+RP-218/RP-526, full CI/hosted latency and proper1.0 remain open. No archive/push.

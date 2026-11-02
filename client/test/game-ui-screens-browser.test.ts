@@ -140,6 +140,61 @@ function observeNativePrediction() {
   };
 }
 
+async function requireNativePrediction(prediction: ReturnType<typeof observeNativePrediction>, runtime: FixtureRuntime,
+  output: Element | null, preference: "reduce" | "no-preference"): Promise<void> {
+  const began = performance.now();
+  try {
+    // Preserve the existing readiness predicate and Vitest poll defaults.
+    await expect.poll(() => prediction.outputs.some(row => row.kind === "predicted_snapshot")).toBe(true);
+  } catch (error) {
+    const report = prediction.report(runtime, output);
+    console.error("game-ui-prediction-readiness-failure", JSON.stringify({ ...report,
+      firstPredictionMS: report.firstPredictionMS ?? null, output: report.output ?? null,
+      readinessWaitMS: performance.now() - began,
+      requestedPreference: preference, outputConnected: output?.isConnected ?? false,
+      renderedPreference: output?.closest<HTMLElement>("main")?.dataset.reducedMotion ?? null,
+      error: error instanceof Error ? { name: error.name, message: error.message, stack: error.stack } : String(error),
+    }));
+    throw error;
+  }
+}
+
+it.skipIf(typeof document === "undefined")("native prediction readiness reports a terminated real Worker without replacing the failure", async testContext => {
+  const prediction = observeNativePrediction();
+  let worker: Worker | undefined;
+  const logged = vi.spyOn(console, "error").mockImplementation(() => {});
+  let closed = false;
+  const dispose = () => {
+    if (closed) return; closed = true;
+    worker?.terminate(); prediction.dispose(); logged.mockRestore();
+  };
+  testContext.onTestFinished(dispose);
+  try {
+    worker = new Worker(new URL("../src/shell/prediction.worker.ts", import.meta.url), { type: "module" });
+    // A real, valid disposal command and termination before the first event turn;
+    // no fake Worker, suppressed listener or invented prediction is involved.
+    worker.postMessage({ kind: "dispose" } satisfies WorkerCommand); worker.terminate();
+    let original: unknown;
+    try { await requireNativePrediction(prediction, new FixtureRuntime(true), null, "reduce"); }
+    catch (error) { original = error; }
+    expect(original).toBeInstanceOf(Error);
+    expect((original as Error).message).toContain("expected false to be true");
+    expect(logged).toHaveBeenCalledTimes(1);
+    expect(logged.mock.calls[0]![0]).toBe("game-ui-prediction-readiness-failure");
+    const report = JSON.parse(logged.mock.calls[0]![1] as string);
+    expect(report).toMatchObject({ firstPredictionMS: null, predictions: 0, snapshotCalls: 0,
+      userAgent: navigator.userAgent, visibility: document.visibilityState,
+      requestedPreference: "reduce", outputConnected: false, renderedPreference: null, output: null,
+      commands: [{ kind: "dispose" }], gaps: [],
+      error: { name: (original as Error).name, message: (original as Error).message, stack: (original as Error).stack },
+    });
+    expect(report.lifecycle.map((row: { phase: string; detail?: string }) => [row.phase, row.detail ?? null]))
+      .toEqual([["command", "dispose"], ["terminate", null]]);
+    expect(report.lifecycle.every((row: { at_ms: number }) => Number.isFinite(row.at_ms) && row.at_ms >= 0)).toBe(true);
+    expect(Number.isFinite(report.readinessWaitMS) && report.readinessWaitMS >= 0).toBe(true);
+  } finally { dispose(); }
+});
+
 async function assertAxe(target: HTMLElement, label: string): Promise<void> {
   const result = await axe.run(target, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } });
   expect(result.violations.filter((violation) => violation.impact === "serious" || violation.impact === "critical"), label).toEqual([]);
@@ -439,7 +494,7 @@ it.skipIf(typeof document === "undefined")("production shell follows actual redu
     for (const preference of ["reduce", "no-preference", "reduce"] as const) {
       await motion.setReducedMotionPreference(preference);
       await expect.poll(() => target.querySelector<HTMLElement>("main")?.dataset.reducedMotion).toBe(String(preference === "reduce"));
-      await expect.poll(() => prediction.outputs.some((output) => output.kind === "predicted_snapshot")).toBe(true);
+      await requireNativePrediction(prediction, runtime, cash, preference);
       samples.length = 0;
       rendered.length = 0;
       const initialText = cash.textContent;

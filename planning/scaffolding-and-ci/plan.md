@@ -3,9 +3,44 @@
 - **RFC:** `rfc/scaffolding-and-ci.md`
 - **Assignee:** Codex
 - **Started:** 2026-07-28
-- **Status:** fast/maintenance split implemented locally; hosted acceptance pending
+- **Status:** local repairs ongoing; full local/hosted acceptance open
 
-## Current checkpoint — 2026-10-16
+## Current checkpoint — 2026-11-02
+
+The accepted contract remains RFC D2/D3: all six blocking jobs, the complete
+three-engine functional population, separate native Typer and isolated Chromium
+performance, strict hosted workflow under five minutes. The ten-minute local
+container guard is containment, not an enlarged acceptance budget. No push/release
+or specification adoption follows from a focused pass.
+
+Verified repairs: completed-failure reporting fc7300e6..fa5faff5; pinned provider
+iframe focus d7518dea..ae367f8b; Garden target/input containment6498c70e..bc6d3fcb
+and neighboring controls bc6d3fcb..b91790ef. Each has independent approval in the
+owning log; none establishes full CI reliability. Failed capacity/phase experiments
+are preserved ignored and NOT installed.
+
+Latest complete ordinary run atb91790ef: broad501 project-files,13 failed/488 passed;
+40446 ordinary passes,18 expected failures,24 skips,24 failures,470.84s. Typer and
+performance do not execute after broad failure. Read-only metadata:14CPUs/no CPU
+quota. WebKit's mapped failure is its first-predicted-snapshot poll, not reduced-
+motion cadence. Other native deadlines and Fiscal assertion remain unexplained.
+
+Current bounded batch after57cc8217 reuses the existing Worker observer at that
+unchanged readiness poll. Actual terminated-Worker failure control/affected file
+and types pass; final context-lifetime/payload refinements pass all three control
+engines. Independent corrective review is pending. No production/limit/input/
+concurrency change and no failure-cause claim.
+
+Next: finish that exact-range review, then run the ordinary full target ONCE with
+the new signal. Use actual command/visibility/error/gap history to determine the
+correction. No unchanged retry, timeout increase, arbitrary worker/phase sweep or
+partial-green promotion. Historical version/accounting failures and owner-held
+adoptions retain their own authorities; do not waive them from this lane.
+
+## Historical checkpoint sequence — original heading 2026-10-16
+
+Everything below preserves earlier bounded observations. Its “next”, “pending” and
+“current” language belongs to those snapshots, not today's execution queue above.
 
 2026-11-01: independent corrective review APPROVES RP-525/527/528/530 at their
 exact owning-log ranges. The same review's current Linux selection remains red/
