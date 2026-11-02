@@ -611,16 +611,15 @@ remain separate. No lifecycle promotion or new specification adoption.
 - [x] GS4 pet care surface over the PA7 arm + cosmetic overlay (G10) (`7a61e4b6`); raw-care fields blocked by DESIGN-GAP GS4×PA7.
   Designated Codex review of original `7a61e4b6^..7a61e4b6`, all eight paths:
   CHANGES REQUIRED for existing RP-132/GS4×PA7 author contract hold. Native4/
-  cold Go/five actual fault probes verify mechanics only. Care supplement
-  `ea06183b` with predeclaration `970d47a5`/test-first `0784f126` locally
-  corrects RP-319/320/321: full Garage Chromium/WebKit82/performance1 and
-  actual DOM-adopted care feed→bound receipt→public state/reload pass. Eight
-  native faults and real callback severing fail and restore exactly. Test-only
-  bundle, no status crossing/raw-care/full GS4-A5 acceptance. Firefox zero
-  executed before connection timeout; RP-256 remains. Entire new span after
-  `c7d8f815` through its tracking edge requires Claude independently. RP-318
-  originally recorded the missing pet-status decoder/announcement and copy key. The latest
-  GS0.3/GS4 batch now implements that path locally with a real stored-event/socket/player check;
-  owner copy and designated review remain, with no full GS4 acceptance/archival credit.
+  cold Go/five actual fault probes verify mechanics only. Care's narrow
+  RP-319/320/321 correction is independently APPROVED for complete
+  `c7d8f815..3f867956`, including its final record edge. Reviewer438/438 current
+  Linux three-engine Fiscal/care/feedback cases and types/build/boundaries pass;
+  historical failing-first, eight faults and real care/receipt/reload evidence
+  are inspected, not rerun. Its fresh real-service Cosmetic driver fails before
+  native Buy/care at RP-705; the 2026-11-02 log preserves that red and limits.
+  No current composed-pass or full GS4 credit follows. RP-318's separate status
+  correction already has its exact independent approval above; owner copy,
+  raw-care/wire, actual AT and full-feature/archival gates remain.
 - [x] 320 px reflow measurement across Desk/Fiscal/Meters/Trophy Case/pet (`6594b646`).
 - [ ] Canonical docs, cold gates, hand-off for Codex designated review (never self-archive).

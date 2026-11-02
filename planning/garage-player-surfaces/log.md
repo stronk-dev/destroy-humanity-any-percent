@@ -7674,3 +7674,37 @@ acceptance. No database/full composed journey is rerun or attributed to this
 review; later real journeys remain separate context. Reviewer makes no tracked
 edits, commits or source mutations; all handles terminal. Full1.0 goal remains
 active; continue accepted work and remaining corrective review. Nothing pushed.
+
+## 2026-11-02 — Care correction approved; fresh journey exposes Buy focus failure
+
+Review by: independent Codex `/root/garage_fiscal_outcome_corrective_review`.
+Recorded by: Codex root, transcribing its scoped verdict. APPROVED complete
+four-commit/twelve-path care range, including tests, driver extension and records:
+`c7d8f815131ecbcaef94f1aa5545308207c22ac9..3f86795653437b8323d48beb6618f18148fe55e1`.
+This closes RP-320/321 and only the care portion of RP-319, not other controls.
+No later designated coverage was found. Focusable pending/separate callback guard,
+readiness/stale label and eligibility-change focus match existing GS0/GS4/PA7.
+
+Reviewer reuses its actual438/438 Linux three-engine Fiscal/care/feedback run and
+passing types/build/boundaries; intervening `fe5a0e7d` is records-only. It inspects
+retained corrected baseline18 failures/10 controls,32 native passes,eight fault
+failures and callback-severed/restored real care proof, plus later90742 evidence.
+These historical results are not newly executed. `make build-gameserver` passes.
+
+Fresh `node client/tools/test-cosmetic-composed.mjs`, handle2028, exits1 at Buy
+focus precondition (line851), BEFORE purchase keyboard input/adoption/care.
+Capsule: unowned,disabledfalse,busyfalse,zero purchase requests/responses,no
+page/request errors,two open error-free sockets. It does not identify activeElement
+or node connection history: lost/ignored focus versus replacement is undetermined.
+Initial commentary inferred the gate retained focus; reviewer corrected that
+inference and root explicitly corrected it for Marco. No total duration recorded.
+RP-705 owns this newly observed failure; no retry/variant concealed it. The initial
+restricted invocation stopped at Docker access before gameplay. Scoped historical
+care approval is NOT a current composed green or an attribution of a care defect.
+
+All handles terminal. Reviewer removes only its own disposable declared Postgres
+container (temporary rows unrecoverable); inventory empty and5173/18082/55433
+listeners absent. No tracked reviewer edits/mutations/commits. RP-132/wire,
+RP-318 copy, other pending controls, full GS4/AT/CI/release remain separate.
+Root next adds passive focus/node observations in the existing Cosmetic driver;
+no input, retry, deadline, gameplay or assertion relaxation. Goal remains active.
