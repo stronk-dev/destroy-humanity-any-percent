@@ -263,6 +263,16 @@ and requested JSON reporting, failure exits, populations and deadlines remain un
 The non-collected `test/fixtures/browser-failure-reporter.probe.ts` provides an explicit
 ordinary/expected/unexpected/healthy/held control for reproducing that reporting boundary.
 
+The Pitch native launcher-to-return component journey also emits failure-only
+`pitch-journey-deadline` context on its real framework abort, before cleanup can
+leave a blank screenshot. It records the current/completed setup, accessibility,
+settling and native-input stages with elapsed times, fixture connection, command
+kinds/counts, visibility and focus identity. The observer is armed before its
+first asynchronous import and removed on test finish. Real-deadline and healthy
+controls verify pre-cleanup capture and listener disposal. This is elapsed-stage
+context, not browser CPU attribution or proof of the deadline's cause; native
+inputs, assertions, production behavior and the journey's deadline stay unchanged.
+
 `make test-browser-ci` prepares GNU Make in the disposable Playwright container, installs
 frozen dependencies and calls the same root `make test-browser`
 target as Actions, rather than maintaining a second Vitest command in Compose. It runs the

@@ -4101,3 +4101,36 @@ Ignored evidence SHA256:
 
 Review by: Codex root, observation first filter. Recorded by: Codex root. No new
 implementation approval, whole-CI/hosted/release promotion, archive, adoption or push.
+
+### Pitch deadline-stage context — finished diagnostic batch
+
+After7c674b96, add passive failure-only observation to the existing Pitch native
+launcher-to-return journey. Arm before its first import; framework abort captures
+current/completed stages, elapsed times, fixture readiness/connection, issued
+command kinds, visibility and focus identity before screenshot cleanup. Remove
+the listener on test finish. No production, provider, fixture behavior, native
+input, assertion, deadline, concurrency, budget or test exclusion change.
+AST/source comparison retains all19 existing matcher assertions and nine native
+keyboard call sites character-identically, including loop key sequences.
+
+Three new browser controls per engine: deliberate real50ms framework deadline
+while a controlled gate waits; successor requires exact timeout reason, one
+pre-cleanup connected-fixture capture and actual disconnected fixture; healthy/
+disposed observer remains quiet. The control does not pretend its gate is a real
+native command. Original nine component cases remain. Final cold declared Linux
+entire file terminal0:three project files,33 ordinary passes/three expected
+deadlines (36 total),8.01s. Types/Svelte0 errors0 warnings; diff-check clean.
+Neither failure-context label appears during the successful ordinary journeys.
+Earlier pre-label check also passes33/three expected in35.07s; not a matched
+benchmark. One attempted native check is startup-blocked by sandbox listen EPERM
+before collection and supplies no passing evidence. Final Linux result owns this
+revision. No full browser rerun is claimed for this bounded diagnostic change.
+
+Final ignored raw .cache/pitch-deadline-stages-final-7c674b96.log6475bytes SHA256
+97a57c90028c740bb7d6bb1c8c074c7366e2169540c48048cc8be60885b8ef78;
+JSON11186bytes SHA256
+0238e448dfb9e78e97e995c2e267a39713cb58f5bee92d001c30877489ac055e.
+Review by: Codex root, implementer first filter. Recorded by: Codex root. Complete
+four-path finished range now requires fresh independent corrective review. This
+does not repair the original deadline, close RP-526/whole CI, adopt a contract,
+archive, approve release or authorize publication.

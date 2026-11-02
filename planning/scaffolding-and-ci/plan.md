@@ -104,6 +104,17 @@ sweep. No matched benchmark, full cold-wall timing or hosted acceptance claim.
 Next preserve the interrupted test stage on a genuine deadline recurrence rather
 than infer a cause from a completed screenshot or repeat isolated green tests.
 
+Pitch deadline-stage observation after7c674b96 is locally verified: armed before
+the first await, failure-only capture precedes cleanup; stage times and bounded
+fixture/focus/command context do not intercept input. The actual framework50ms
+deadline control captures its connected fixture before cleanup, and its successor
+requires the exact timeout reason and disconnected fixture; healthy/disposal
+controls stay quiet. Final cold declared Linux file passes all three engines:
+33 ordinary plus three expected deadlines,8.01s; types0/0. All19 original journey
+assertions and nine native-call sites compare byte-identically. This is diagnostic
+coverage, not a latency/activation correction or full-suite reliability result.
+Complete source/test/docs/records range still needs fresh independent review.
+
 ## Historical checkpoint sequence — original heading 2026-10-16
 
 Everything below preserves earlier bounded observations. Its “next”, “pending” and

@@ -1,6 +1,6 @@
 import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
-import { expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import type { MinigameCommandRequest, MinigameCurrentResponse, MinigameResolutionReceipt, MinigameSessionResponse, MinigameSessionResponseActive, MinigameSessionResponseTerminal, PitchSnapshot } from "../src/api/generated/types";
 import MinigameSessionSurface from "../src/game-ui/minigame/MinigameSessionSurface.svelte";
@@ -66,24 +66,111 @@ function buttonNamed(target: HTMLElement, text: string): HTMLButtonElement {
 let ids = 0;
 function nextID(): string { ids += 1; return `01986666-0000-7000-8000-${ids.toString(16).padStart(12, "0")}`; }
 
-it.skipIf(!browser)("activates Pitch launcher → table → shop → terminal → Return by native keyboard through the port only", async () => {
+// Failure-only observation, armed before the first asynchronous setup operation.
+// A framework abort fires before finally removes the fixture from a screenshot.
+function observePitchDeadline(signal: AbortSignal, read: () => Record<string, unknown>,
+  report: (value: Record<string, unknown>) => void) {
+  const began = performance.now();
+  let stage = "setup", stageBegan = began;
+  const completed: { stage: string; elapsed_ms: number }[] = [];
+  const capture = () => {
+    const now = performance.now();
+    report({ stage, elapsed_ms: now - began, stage_elapsed_ms: now - stageBegan,
+      completed_stages: completed.map(value => ({ ...value })), context: read() });
+  };
+  signal.addEventListener("abort", capture, { once: true });
+  return {
+    enter(next: string) {
+      const now = performance.now();
+      completed.push({ stage, elapsed_ms: now - stageBegan });
+      stage = next; stageBegan = now;
+    },
+    dispose() { signal.removeEventListener("abort", capture); },
+  };
+}
+
+describe("Pitch journey deadline observation", () => {
+  let signal: AbortSignal;
+  let release: () => void;
+  let continuation: Promise<void>;
+  let target: HTMLElement;
+  const observations: Record<string, unknown>[] = [];
+
+  it.skipIf(!browser).fails("fires a real deadline while the observed stage is waiting", async context => {
+    signal = context.signal;
+    target = host();
+    const observation = observePitchDeadline(signal,
+      () => ({ fixture_connected: target.isConnected }), value => observations.push(value));
+    context.onTestFinished(() => { observation.dispose(); target.remove(); });
+    observation.enter("waiting-controlled-gate");
+    continuation = new Promise<void>(resolve => { release = resolve; });
+    await continuation;
+  }, 50);
+
+  it.skipIf(!browser)("captures the stage before framework cleanup rather than a blank successor", async () => {
+    try {
+      expect(signal.aborted).toBe(true);
+      expect(signal.reason.message).toContain("Test timed out in 50ms");
+      expect(target.isConnected).toBe(false);
+      expect(observations).toHaveLength(1);
+      expect(observations[0]).toMatchObject({ stage: "waiting-controlled-gate", context: { fixture_connected: true },
+        completed_stages: [{ stage: "setup", elapsed_ms: expect.any(Number) }] });
+      for (const key of ["elapsed_ms", "stage_elapsed_ms"] as const) {
+        expect(Number.isFinite(observations[0]![key])).toBe(true);
+        expect(observations[0]![key]).toBeGreaterThanOrEqual(0);
+      }
+    } finally { release(); await continuation; }
+  });
+
+  it.skipIf(!browser)("keeps healthy observations quiet and removes the abort listener", () => {
+    const controller = new AbortController();
+    const emitted: Record<string, unknown>[] = [];
+    const observation = observePitchDeadline(controller.signal, () => ({ fixture_connected: false }), value => emitted.push(value));
+    observation.enter("load-content");
+    observation.enter("mount");
+    expect(emitted).toEqual([]);
+    observation.dispose();
+    controller.abort(new Error("after disposal"));
+    expect(emitted).toEqual([]);
+  });
+});
+
+it.skipIf(!browser)("activates Pitch launcher → table → shop → terminal → Return by native keyboard through the port only", async context => {
+  let target: HTMLElement | undefined;
+  let port: FakePort | undefined;
+  const observation = observePitchDeadline(context.signal, () => ({
+    fixture_ready: target !== undefined, fixture_connected: target?.isConnected ?? false,
+    creates: port?.creates.length ?? 0, commands: port?.commands.map(value => value.command.kind) ?? [],
+    visibility: document.visibilityState, document_has_focus: document.hasFocus(),
+    active_element: document.activeElement ? { tag: document.activeElement.tagName, id: document.activeElement.id } : null,
+  }), value => console.error("pitch-journey-deadline", JSON.stringify(value)));
+  context.onTestFinished(() => observation.dispose());
+  observation.enter("import-native-driver");
   const { userEvent } = await import("vitest/browser");
+  observation.enter("load-content");
   const snapshot = await pitchSnapshot();
-  const port = new FakePort();
+  port = new FakePort();
   port.createReply = () => active(snapshot, 1);
   const terminals: MinigameResolutionReceipt[] = [];
   let exits = 0;
-  const target = host();
+  observation.enter("mount");
+  target = host();
   const app = mount(MinigameSessionSurface, { target, props: { port, minigameID: "pitch", era: "era_1995", newCommandID: nextID, onExitToHost: () => { exits += 1; }, onTerminal: (value: MinigameResolutionReceipt) => terminals.push(value) } });
   try {
+    observation.enter("settle-launcher");
     await settle();
+    observation.enter("axe-launcher");
     await assertAxe(target, "launcher");
     target.querySelector<HTMLElement>("#minigame-heading")!.focus();
+    observation.enter("native-launcher-tab");
     await userEvent.keyboard("{Tab}");
     expect(document.activeElement).toBe(buttonNamed(target, "Start a pitch"));
+    observation.enter("native-launcher-enter");
     await userEvent.keyboard("{Enter}");
+    observation.enter("settle-active-table");
     await settle();
     expect(port.creates).toHaveLength(1);
+    observation.enter("axe-active-table");
     await assertAxe(target, "active table");
     // No mechanical instance IDs leak into presentation.
     for (const instance of snapshot.hand) expect(target.textContent).not.toContain(instance);
@@ -94,9 +181,14 @@ it.skipIf(!browser)("activates Pitch launcher → table → shop → terminal �
     boxes[4]!.focus();
     for (let index = 4; index >= 0; index -= 1) {
       expect(document.activeElement).toBe(boxes[index]);
+      observation.enter(`native-card-${index}-space`);
       await userEvent.keyboard(" ");
-      if (index > 0) await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+      if (index > 0) {
+        observation.enter(`native-card-${index}-previous`);
+        await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+      }
     }
+    observation.enter("settle-selected-cards");
     await settle();
     expect(boxes.filter((box) => box.checked)).toHaveLength(4);
     expect(boxes[0]!.getAttribute("aria-disabled")).toBe("true");
@@ -104,31 +196,41 @@ it.skipIf(!browser)("activates Pitch launcher → table → shop → terminal �
 
     port.replies.push(() => active({ ...snapshot, phase: "shop", hand: [], shop_offers: [{ hack_id: "buzzword", offer_id: "offer.1", price: 2 }] }, 2));
     buttonNamed(target, "Pitch these cards").focus();
+    observation.enter("native-pitch-enter");
     await userEvent.keyboard("{Enter}");
+    observation.enter("settle-shop");
     await settle();
     const played = port.commands[0]!;
     expect(played.expected_revision).toBe(1);
     expect(played.command).toEqual({ kind: "play_hand", card_ids: [...snapshot.hand.slice(1, 5)].sort() });
+    observation.enter("axe-shop");
     await assertAxe(target, "shop");
 
     port.replies.push(() => active({ ...snapshot, phase: "shop", hand: [], run_currency: 2, shop_offers: [], slotted_hacks: ["buzzword"] }, 3));
     buttonNamed(target, "Buy for 2").focus();
+    observation.enter("native-buy-space");
     await userEvent.keyboard(" ");
+    observation.enter("settle-purchase");
     await settle();
     expect(port.commands[1]).toMatchObject({ expected_revision: 2, command: { kind: "buy_hack", offer_id: "offer.1" } });
 
     port.replies.push(() => ({ ...descriptor, revision: 4, snapshot: { ...snapshot, phase: "terminal", hand: [], revision: 4 }, status: "resolved", resolution_receipt: receipt }));
     buttonNamed(target, "Close the shop").focus();
+    observation.enter("native-close-shop-enter");
     await userEvent.keyboard("{Enter}");
+    observation.enter("settle-terminal");
     await settle();
     expect(port.commands[2]).toMatchObject({ expected_revision: 3, command: { kind: "end_shop" } });
     expect(terminals).toEqual([receipt]);
     expect(document.activeElement?.id).toBe("minigame-heading");
     expect(target.textContent).toContain("Credited to the company");
+    observation.enter("axe-terminal");
     await assertAxe(target, "terminal");
     expect(new Set(port.commands.map((command) => command.command_id)).size).toBe(3);
+    observation.enter("native-return-tab");
     await userEvent.keyboard("{Tab}");
     expect(document.activeElement).toBe(buttonNamed(target, "Back to the desk"));
+    observation.enter("native-return-space");
     await userEvent.keyboard(" ");
     expect(exits).toBe(1);
     expect(port.commands).toHaveLength(3);
