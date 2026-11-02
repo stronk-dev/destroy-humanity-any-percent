@@ -3289,3 +3289,73 @@ limit. Keep all original populations/native inputs/assertions and bounds; verify
 the complete target once. Terminal0/all phases required before a passing candidate
 claim; guard/incomplete results refuse adoption. No arbitrary worker sweep,
 assumed upgrade or CI/five-minute/1.0 promotion. No archive or push.
+
+### Shared-capacity trial — project-group correction, terminal negative, withdrawn
+
+Candidate after6adb0128 shares the inherited CPU/~12 heuristic across engines,
+reserves one Firefox browser file, and retains all original cases/native inputs/
+assertions/deadlines. It is NOT installed and establishes no safe operating limit.
+Node plan checks initially22 and finally29 pass; types0/0 and existing topology/
+27 invalid-fixture/shared-entrypoint controls pass. No balance/game/workflow,
+dependency or performance-bound change. No meaningful full-target pass follows.
+
+Initial prototype explicitly gives Firefox root maxWorkers1 and Chrome/WebKit5.
+Pinned Vitest groupSpecs places the isolated maxWorkers1 project in an appended
+group. Actual log agrees: last WebKit/Chromium Garage rows01:27:36.819193255/
+01:27:42.549358091UTC precede first Firefox module observation01:27:48.408568719.
+Root stops only owned container847c95362633 after recognizing this mismatch to
+the intended concurrent browser pools; terminal143, NOT the ten-minute guard.
+No aggregate/phase pass is claimed. Full log1298968bytes SHA256
+`6d724ae7cfc24ed1b7521400496f9edca561d4807935464ab33f5707f0d31520`,
+`.cache/browser-shared-capacity-6adb0128-container.log`; follower terminal0.
+Initial source copies with matching original hashes are preserved ignored under
+that prefix: config.ts `6d2ac747fd88709c45d014056b3a148ff8dd3ab0a195bc270d214e95d1d37893`,
+worker-budget.ts `0cdd20316e2fb2d771d2ba07e3de69999d69ca8e3d3402cc3793b4e71e131b18`,
+worker-budget.test.ts `6481d658de6e2367da7e2a1962c4255650de04cfff4e6584f3dabed2d3fc09ee`.
+
+Correction uses equal root counts for all projects, Firefox browser-only serial
+file switch, and avoids explicit root1 when the calculated parallel count is1.
+Real startup now shows Firefox alongside five Chrome renderers/five WebKit pages.
+Pure controls cover capacity arithmetic/minimum floors/invalid input, common root
+counts and the browser-only one-file option. This confirms expression of the
+candidate, not a reliable capacity or the claimed latency outcome.
+
+Clarification of root's overly broad intermediate chat inference: mixed-count
+deferral is established, but the old all-engine --maxWorkers1 timing is NOT thereby
+invalidated as a per-engine serial control. Source3628–3711 collects all browser
+specifications within each group, then its browser pool can run projects together.
+No earlier outcome or timing is rewritten or reclassified from that inference.
+
+Corrected full target, no trace/CPU/CLI worker override, exits137 at unchanged
+guard01:40:07.271591922UTC. Partial reporter rows: Chromium167, WebKit167,
+Firefox42 (376/501);30317 declared cases in those rows, nine reported failures,
+21 skips. These are NOT complete passing counts. One WebKit reduced-motion/
+prediction assertion fails (4428ms); Firefox Garage has five failures/434860ms,
+plus three further Garage failures in the other engines. No final assertion
+summary/JSON, Typer or isolated performance completion. The candidate fails its
+complete-target criterion, even though no ordinary confirmation abort marker
+appears (Firefox's confirmation file remains unreported). Do not infer cause,
+successful integration or performance from those absences.
+Complete log1862969bytes SHA256
+`25f2cfe91b2323f31c74fb75840d5964afffb0e4787949029377748af67c8ac7`,
+`.cache/browser-shared-pools-6adb0128-container.log`; follower terminal0,
+owned container absent. One late sample115.56%CPU/6.897GiB; main JS waits in epoll,
+libuv workers idle, no screenshot file descriptors. This sample does not repeat
+the earlier RP-699 copy-spin evidence or prove its permanent absence.
+
+Corrected source copies preserved ignored with matching hashes under that prefix:
+config.ts `a73e11bb01af8ad131e9240e4d463131731585e6c68b58c950ebc4e7b90e8f5d`,
+worker-budget.ts `a3ea5d0569e5921363f28221dfe805a8c6fbee210cabc4ae5d8f9a963e48a2dc`,
+worker-budget.test.ts `588de4263b6229aefa5bb61befeddce13e804abfbb18a9b98f0650bb158026fd`.
+Candidate helper/test are removed with apply_patch after preservation; active
+browser config diff is empty. None of the candidate is promoted or sent for
+corrective approval as a passing repair. Independent approval of5db340da's
+diagnostic/lifetime batch remains bounded and valid.
+
+Next: retain actual ordinary failure error/stack at test completion, before a
+guard can prevent final aggregate/JSON. Built-in GithubActionsReporter is inspected
+and also emits errors only in onTestRunEnd, so merely adding it cannot close that
+gap. Use the existing test-failure hook/reporting boundary and verify an actual
+ordinary failure versus expected-failure/healthy controls before any new full
+run. No new worker sweep or inferred reduced-motion cause; all bounds, RP-526,
+RP-700, hosted CI/five-minute and full1.0 obligations remain open. No push/archive.

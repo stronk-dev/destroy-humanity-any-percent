@@ -139,6 +139,21 @@ safe limit: complete unchanged target/terminal0 required, no trace, deadline,
 input/assertion/population loss or arbitrary count grid. Hosted five-minute
 acceptance remains separate; do not adopt the candidate from partial evidence.
 
+Shared-capacity candidate is NOT installed. Initial mixed root counts defer
+Firefox behind the other projects; root explicitly stops that invalid-for-intent
+trial143. Corrected common root counts plus browser-only fileParallelism:false
+start Firefox alongside the others, but still hit the10m guard137: nine reported
+failures,376/501 rows, including Firefox Garage and WebKit's actual reduced-motion
+prediction test. No later phases. Node29 plan controls/types/topology pass, not
+the complete target. All three candidate source files are preserved ignored;
+active config is restored exactly and temporary candidate tests/helper removed.
+Do not claim the earlier all-engine maxWorkers1 control was globally serialized:
+only the mixed-count deferral is established; the browser pools can run concurrently
+within the appended group. Next preserve ordinary failure assertion details before
+the final aggregate/guard, using the existing test-failure hook/reporting boundary,
+with an actual failing/expected-failure control. Do not choose another worker count,
+infer the reduced-motion failure's cause from its name or weaken its cadence checks.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing
