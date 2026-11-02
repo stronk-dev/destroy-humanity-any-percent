@@ -196,7 +196,12 @@ deadline reproduction leaves the old Garden mounted in all three successors.
 RP-701 correction binds mounted fixtures/input to TestContext, reuses the existing
 lifetime helper and drains before removal. Original41 populations remain; complete
 affected three-engine file passes132 ordinary/three expected deadline cases, types0/0.
-Fresh independent corrective review is required for the batch after6498c70e.
+Fresh independent corrective review APPROVES complete6498c70e..bc6d3fcb, including
+independent old-fixture failure and full corrected135-case execution. A follow-up
+real-deadline control then reproduces surviving external neighbor controls in all
+three engines. Registering those nodes with the fixture's existing disposal fixes
+that gap; complete affected135 cases/types pass. Independent review of the follow-up
+afterbc6d3fcb is pending; do not credit the earlier verdict for these later bytes.
 Next use one ordinary full target only after that review with the actual lifetime
 correction/new containment signal. No arbitrary phase/worker sweep, original-timeout
 cause claim or hosted-under-five-minute/whole-CI/1.0 acceptance promotion.

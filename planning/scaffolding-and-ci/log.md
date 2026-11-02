@@ -3639,3 +3639,43 @@ display. Review by: Codex root, implementer first filter. Recorded by: Codex roo
 Fresh independent corrective review required for complete batch after6498c70e;
 then one ordinary full target may use the new containment signal. No claim that
 this fixes original latency, RP-526, whole CI or1.0. No archive/push.
+
+### Independent Garden target/input approval and adjacent-node follow-up
+
+APPROVED complete five-path
+`6498c70ea90055c2045bb9cf5507aad384f46a9b..bc6d3fcbaa421cb8bfba34d4c4db0684b9986f23`.
+Review by: fresh independent Codex /root/garden_fixture_lifetime_corrective_review.
+Recorded by: Codex root, transcribing under Marco's delegation. No findings.
+Reviewer independently executes complete corrected Linux file132 ordinary/three
+expected deadlines,6.27s, types0/0 and diff-check clean. It temporarily materializes
+the exact retained old source in client/test and reproduces three successor failures/
+three expected deadlines,2.60s,123 deselected; verifies source outside added regression
+equals baseline, removes its temporary file with apply_patch and confirms clean tree.
+All reviewer browser workloads terminal. Resource metadata missed the removed
+containers and is not fabricated or obtained by restarting. Specific containment
+approval only; no original-timeout cause/whole-CI/latency/release approval.
+
+Root then identifies an uncovered neighboring-node lifetime: two original newer-
+focus controls and the Refresh sentinel still rely on body finally. Extend the same
+ready-fixture framework-deadline control with an adjacent external button. At the
+approved target/input code, the Garden is gone but the adjacent control survives;
+ordinary successor fails all three engines, terminal2,three expected/three failures,
+129 deselected,2.81s. Old source .cache/garden-adjacent-old-bc6d3fcb.test.ts SHA256
+39ee11567ef15b17375763ae75bb47521d4161f84540f13c2d6e0688203d2a27;
+old log42372bytes SHA256 ab0c574936c8247ea67860643fa6fbfd594161751a0f927d6d2e6dae697f1b3b.
+
+Small fixture-local ownership list removes those registered neighbors only after
+input drain/unmount. Registration checks cancellation/closure and happens before
+insertion. The native-control successor input deliberately remains a separate live
+subject, with its own test-completion cleanup; removing it with the expired host
+would make the late-input check vacuous. No original key/assertion/deadline changes.
+Complete affected file132 ordinary/three expected deadlines,135total,6.43s,
+terminal0; follower0. make typecheck terminal0/Svelte0/0. Corrected log33780bytes
+SHA2565460f3ea3def33b758250c71c218433e865fd55fc61a21a7eee6f0389cd31280;
+JSON35962bytes SHA2563bb7e9456ab842793c7d64454f8472cd55dd69525abf0b026434a04536140078.
+Paths use .cache/garden-adjacent-{old,new}-bc6d3fcb-container.log and the corresponding
+new-bc6d3fcb.json. Initial docs patch context mismatch edits nothing; corrected edit
+and diff-check pass. Earlier approval does NOT cover this follow-up afterbc6d3fcb:
+independent review is pending. No full run restarted across goal-resume gaps.
+Next finish that review, then one ordinary full target with actual containment
+changes. RP-526, hosted latency and proper full1.0 remain open. No archive/push.

@@ -53,13 +53,19 @@ function mounted(testContext: Pick<TestContext, "signal" | "onTestFinished">, po
     onSetSubstrate: (substrate: string) => record(`substrate ${substrate}`),
   };
   const app = mount(GardenSurfaceHarness, { target, props: { initial } });
+  const adjacent: HTMLElement[] = [];
   let disposal: Promise<void> | undefined;
   const dispose = () => disposal ??= (async () => {
     try { await keyboard.closeAndDrain(); }
-    finally { try { await unmount(app); } finally { target.remove(); } }
+    finally { try { await unmount(app); } finally { target.remove(); for (const node of adjacent) node.remove(); } }
   })();
   testContext.onTestFinished(dispose);
   return { target, app, calls, press: keyboard.press, dispose,
+    own<T extends HTMLElement>(node: T): T {
+      testContext.signal.throwIfAborted();
+      if (disposal) throw new Error("Garden fixture is closed");
+      adjacent.push(node); return node;
+    },
     holdCommands(after?: () => void) { commandStarted = () => { app.update({ pending: true }); after?.(); }; },
   };
 }
@@ -68,10 +74,13 @@ describe("Garden_fixture_deadline", () => {
   const expiryName = "expires_after_the_real_native_fixture_is_ready";
   let signal: AbortSignal;
   let host: ReturnType<typeof mounted>;
+  let adjacent: HTMLButtonElement;
   beforeEach(async testContext => {
     if (testContext.task.name !== expiryName) return;
     signal = testContext.signal;
     host = mounted(testContext, { current: async () => active() });
+    adjacent = host.own(document.createElement("button")); adjacent.textContent = "Fixture neighbor";
+    host.target.before(adjacent);
     await settle();
     await import("vitest/browser");
     host.target.querySelector<HTMLButtonElement>("button.cell")!.focus();
@@ -87,9 +96,11 @@ describe("Garden_fixture_deadline", () => {
       expect(signal.aborted).toBe(true);
       expect(signal.reason.message).toContain("Test timed out in 50ms");
       expect(host.target.isConnected, "framework deadline must dispose the old fixture before its successor").toBe(false);
+      expect(adjacent.isConnected, "owned neighboring controls must not remain as successor Tab stops").toBe(false);
     } finally {
       // Keep the negative control from contaminating later tests on the old fixture.
       if (host.target.isConnected) { await host.dispose(); }
+      adjacent.remove();
     }
   });
 });
@@ -100,6 +111,8 @@ for (const abortDuringNative of [false, true]) {
     const reason = new Error("controlled Garden cancellation");
     const host = mounted({ signal: controller.signal, onTestFinished: testContext.onTestFinished }, { current: async () => active() });
     const successor = document.createElement("input"); document.body.append(successor);
+    // This is the next live subject, deliberately not owned by the expired host.
+    testContext.onTestFinished(async () => { try { await host.dispose(); } finally { successor.remove(); } });
     let closing: Promise<void> | undefined;
     let connectedAtClose = false;
     const native: { type: string; key: string; trusted: boolean; connected: boolean }[] = [];
@@ -289,7 +302,7 @@ for (const key of ["{Enter}", " "]) for (const removed of [false, true]) {
   it.skipIf(!browser)(`Garden menu completion preserves a newer ${removed ? "removed" : "retained"} focus choice after native ${JSON.stringify(key)}`, async testContext => {
     await import("vitest/browser");
     const host = mounted(testContext, { current: async () => active() });
-    const newerChoice = document.createElement("button");
+    const newerChoice = host.own(document.createElement("button"));
     newerChoice.textContent = "Another control";
     document.body.append(newerChoice);
     try {
@@ -320,7 +333,7 @@ for (const key of ["{Enter}", " "]) for (const removed of [false, true]) {
 for (const removed of [false, true]) {
   it.skipIf(!browser)(`Garden Close handoff preserves a newer ${removed ? "removed" : "retained"} focus choice`, async testContext => {
     const host = mounted(testContext, { current: async () => active() });
-    const newerChoice = document.createElement("button"); document.body.append(newerChoice);
+    const newerChoice = host.own(document.createElement("button")); document.body.append(newerChoice);
     try {
       await settle();
       host.target.querySelector<HTMLButtonElement>("button.cell")!.click(); await settle();
@@ -539,11 +552,11 @@ for (const key of ["{Enter}", " "]) {
   it.skipIf(!browser)(`Garden native ${JSON.stringify(key)} reaches Refresh after a failed read`, async testContext => {
     await import("vitest/browser");
     let reads = 0;
-    const { target, app, calls, press, dispose } = mounted(testContext, { current: async () => {
+    const { target, app, calls, press, dispose, own } = mounted(testContext, { current: async () => {
       if (++reads === 1) throw new Error("controlled read failure");
       return active();
     } });
-    const before = document.createElement("input"); target.before(before);
+    const before = own(document.createElement("input")); target.before(before);
     try {
       await settle();
       expect(reads).toBe(1);

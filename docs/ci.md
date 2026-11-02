@@ -377,7 +377,10 @@ The component-only `garden-surface-witnesses-browser.test.ts` fixture also owns 
 through its test context, not only the suspended body's `finally` block. It drains
 started native input before unmount, rejects later input after cancellation/closure,
 and checks for undrained input before each case. A real50ms framework deadline starts
-after native menu setup; its successor must see the old fixture removed. Separate
+after native menu setup; its successor must see the old fixture and its owned neighboring
+controls removed. Neighboring focus/Refresh controls register with fixture disposal before
+insertion. The late-input control's successor field is independently owned and stays live
+after the expired host is removed. Separate
 healthy/trusted-key cancellation controls check keyup before teardown and refusal to
 type into a successor field. All original Garden journeys and15s limits remain.
 These controls contain an expired fixture; they do not explain or repair its initial
