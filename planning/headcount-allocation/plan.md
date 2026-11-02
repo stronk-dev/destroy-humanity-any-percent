@@ -83,9 +83,11 @@ library is only one prerequisite, not a substitute for that chain.
   close concrete content/policy and technical integration contracts. One engine
   branch is selected; no second grammar/state/intent authority is permitted.
 - Reconcile S8/AC3's inadmissible overflow vector and unproved fault outcome
-  (RP-413); `overflow-oracle-audit.md` now derives why TS's specified overflow
+  (RP-413); `overflow-oracle-audit.md` derives why TS's specified overflow
   output fault cannot occur in the admitted domain, and records actual Go overflow
-  and TS ratio-control failures. The author must reconcile the criterion; do not
+  and TS ratio-control failures. Its complete bd46e71e..0e7a4b95 research range
+  is independently approved with fresh executed controls; the owning log records
+  exact provenance and limits. The author must reconcile the criterion; do not
   manufacture a TS overflow failure, remove its guard or promote AC3/AC5.
 - Reconcile occupied economy/save/replay version numbers in the accepted body
   before integration; do not reuse its historical v5/v19/v9 literals blindly.

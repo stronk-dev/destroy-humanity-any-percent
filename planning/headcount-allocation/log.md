@@ -232,3 +232,31 @@ Whitespace passes. No software suites run for specification-only edits or review
 source edits/services/publication. This closes technical model translation only;
 Marco's direct answer supplies adoption. Content/policy, historical identity,
 RP-413, full implementation/acceptance, mint and release remain separate gates.
+
+## 2026-11-02 — RP-413 overflow research independently verified
+
+APPROVED, no findings, exact research-only four-path range
+bd46e71efc1ff9832b441b16fec828f07280e2f9..0e7a4b95f1daeacac175678883638c1aae339f51.
+Review by: fresh independent Codex /root/headcount_overflow_research_review.
+Recorded by: Codex root, transcribing its verdict. Independently inspects all
+paths, baseline/current S1/S2/S4/S8/AC3 and the primary ECMAScript numeric contract.
+Confirms the inadmissible original seat sum and the full-domain binary64 clamp
+argument; samples do not stand in for that derivation. Signed zero is not an
+overflow witness. Current TS differs only in the reviewed ID admission; Go
+arithmetic/tests and shared vectors are unchanged.
+
+Executed independent baseline-source clone controls: naive TS42 plus actual56
+all pass (98 total); ignoring-k clone has eight expected assertion failures and
+34 passes, actual56 pass (90 passes/eight failures, exit1). Go naive compiler
+overlay fails cold TestExactMaximumDomain on admitted E=0,C=k=S with diversion
+-18014398509481983 (Make2). Actual complete Go package passes cold0.191s; vet0;
+actual Node56 passes after removing all six owned temporary probe files. Range
+whitespace and final tracked status clean. No production mutation or publication.
+
+This verifies the research, not a replacement acceptance criterion. S8/AC3 still
+need author reconciliation, technical review and applicable adoption: retain
+invalid-example refusal, admitted-boundary exact outputs and guarded algorithm;
+distinguish Go overflow from TS ratio failures. A retained TS intermediate-product
+ban needs an honest mechanical witness, not fabricated wrong-output evidence.
+No native-browser/hosted/full CI, live mounting/persistence/pacing, AC3/AC5 or
+feature/release completion claimed. No second hiring/output ruling is needed.
