@@ -3769,3 +3769,88 @@ Complete batch after57cc8217 requires independent corrective review. Review by:
 Codex root, implementer first filter. Recorded by: Codex root. After review, one
 ordinary full run with this new signal is justified, not an unchanged retry.
 RP-218/RP-526, full CI/hosted latency and proper1.0 remain open. No archive/push.
+
+### Independent approval — first-prediction readiness context
+
+APPROVED, no findings, complete five-path range
+57cc82171d1c653b826cad495a8f86c78d72bcaf..f862b80716be16a8fadbe8bdb848bfd2459c12be.
+Review by: fresh independent Codex /root/worker_readiness_context_corrective_review.
+Recorded by: Codex root under Marco's delegation. Reviewer independently executes
+the finished complete affected Linux file: terminal0,321 passes/15 existing
+performance exclusions (336total),28.76s, all three engines. Types terminal0,
+Svelte0/0; exact-range diff-check clean. Actual terminated-Worker controls pass;
+predicate, poll defaults, cadence assertions and15s deadline remain unchanged.
+Historical plan text is preserved; log append-only; retained artifact identities
+match. Reviewer JSON .cache/worker-readiness-review-f862b807.json SHA256
+9bc3fd8b80d5b87050de8afc0f0a2e417ba529a8cd604cea5f4fa4f58a773eb3.
+Initial sandbox denial executes no tests; declared authorized run passes. All
+reviewer browser workloads terminal before root full run. Approval is diagnostic
+only: original startup/native deadlines, whole CI, hosted latency and release
+remain open. No specification adoption, feature archival or push.
+
+### Complete ordinary job after readiness observation — still red
+
+At f862b807, the unchanged declared full Linux target completes its broad phase in
+470.10s: 23 failed/478 passed project-files (501),40410 ordinary passes,18 expected
+failures,24 skips,63 failures (40515). JSON's40428 passes include the18 expected.
+Provider regression18/18. Root terminal2/follower0; owned29f946334058 absent, no
+guard termination. Make correctly leaves Typer/performance unexecuted.
+
+Early final-verdict records agree with the aggregate: Chromium15,Firefox38,
+WebKit10 failures. Sixty-one are15s test deadlines. The other two are Chromium/
+Firefox's first-prediction poll, not numeric cadence. Existing real observer logs
+one initialize, visible document, connected cash output, correct rendered preference,
+no prediction/error/gap, and1008.2/1066ms readiness waits respectively. It does not
+show whether the terminated-on-cleanup Worker would have started later. Do not
+infer a product crash or lengthen the poll from this evidence.
+
+Read-only resource samples: actual availableParallelism14; at10:36:48 UTC load57.48,
+cgroup CPU some avg10=53.22/full10.53, free memory623271936bytes; memory OOM/kill
+events0 and no CPU quota throttling. Existing unrelated database containers consume
+about3.2 CPU cores in a separate sample; root neither stops nor modifies them.
+At10:39:35 load31.86, CPU some avg10=20.50, OOM events still0. These are uncontrolled
+load observations, not a matched benchmark or attribution of every failure.
+All2036 observed module HTTP requests finish; zero early closes/pending.
+
+Raw .cache/worker-readiness-full-f862b807-container.log2201612bytes SHA256
+e919f5e734ade6e9fc11fc41d6eead1558299537725810dbb27a3b7c3cea977e;
+functional-broad.json12559030bytes SHA256
+273eff377fe59775c2c8fed470f618862160c8aa2448a030b3c71f43ad07f884.
+Tool-output truncation does not replace those complete artifacts. Original failure
+causes, full CI/hosted latency and full1.0 remain open.
+
+Next control reuses the existing ignored four-CPU affinity override at this source,
+now AFTER the independently approved provider repair. The prior four-CPU traced
+control predates that correction. No trace this time; unchanged complete target,
+default scheduling, all engines/populations/limits and distinct reports. This tests
+the RFC's four-CPU model, not actual contemporary hosted hardware. All phases and
+terminal0 are required; no override adoption or timing comparison from partial data.
+Actual initial metadata verifies availableParallelism4, affinity0-3, no CPU quota.
+
+### Four-CPU model after provider correction — complete local pass, latency open
+
+The separate declared full target with only .cache/browser-fourcpu-control.yml
+finishes terminal0, follower0; no guard. Product/test source remains f862b807;
+only the owning records change during execution. Provider18/18; broad501/501,
+40473 ordinary passes/18 expected/24 skips,402.31s; native3/3,87 ordinary/6 expected,
+6.89s; isolated Chromium performance5/5,8.87s (107 unrelated cases deselected).
+Both functional JSON populations match the ordinary run's declared totals.
+No assertion/input/deadline change or missing phase. This is an overridden LOCAL
+full pass, not default14CPU reliability, hosted proof or five-minute acceptance.
+
+The control's actual visible CPUs4/affinity0-3 are verified before tests. A later
+sample observes6.191GiB owned-container memory, versus9–10GiB in the ordinary run;
+resource/host conditions are uncontrolled, not a matched speed comparison. CPU
+waiting remains measurable; no universal CPU-only cause is inferred. Garage's
+unchanged423-case file alone takes338.43/382.04/348.03s across engines. That serial
+file exceeds the entire workflow budget, even with every case green. Next repair
+must preserve its populations while distributing coherent test families; no bound
+increase, deletion, engine omission or permanent affinity adoption follows here.
+
+Raw .cache/provider-fixed-fourcpu-f862b807-container.log1822860bytes SHA256
+2832ab90be12c62adecfd853f1a9213429480f5ffa84b9aaf4bd231d90d8f80e;
+functional-broad.json12493417bytes SHA256
+034c69d6cbd0332644fe5653fc7d42ef0b381bd7c99f5ba1b6efe29794ac962a;
+functional-native.json26243bytes SHA256
+722e388e254993da50e64f0954396489098ca7c87cf2ce0b3ecea5e64c9e942d.
+Full CI/hosted latency, original default-load failures and proper1.0 remain open.

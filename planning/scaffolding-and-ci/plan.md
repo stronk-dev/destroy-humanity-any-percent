@@ -19,23 +19,34 @@ and neighboring controls bc6d3fcb..b91790ef. Each has independent approval in th
 owning log; none establishes full CI reliability. Failed capacity/phase experiments
 are preserved ignored and NOT installed.
 
-Latest complete ordinary run atb91790ef: broad501 project-files,13 failed/488 passed;
-40446 ordinary passes,18 expected failures,24 skips,24 failures,470.84s. Typer and
-performance do not execute after broad failure. Read-only metadata:14CPUs/no CPU
-quota. WebKit's mapped failure is its first-predicted-snapshot poll, not reduced-
-motion cadence. Other native deadlines and Fiscal assertion remain unexplained.
+Readiness observation57cc8217..f862b807 independently APPROVED: finished affected
+three-engine file321 passes/15 existing exclusions,28.76s; types0/0. No production,
+predicate, deadline, input or concurrency changes; no startup-cause claim.
 
-Current bounded batch after57cc8217 reuses the existing Worker observer at that
-unchanged readiness poll. Actual terminated-Worker failure control/affected file
-and types pass; final context-lifetime/payload refinements pass all three control
-engines. Independent corrective review is pending. No production/limit/input/
-concurrency change and no failure-cause claim.
+Latest complete ordinary run atf862b807: broad501 project-files,23 failed/478 passed;
+40410 ordinary passes,18 expected failures,24 skips,63 failures,470.10s. Terminal2,
+not the guard; Typer/performance unexecuted. Chromium and Firefox readiness reports
+show initialize only, visible/mounted output, no prediction/error/gap before the
+unchanged roughly1s poll fails. The other61 failures are15s deadlines. Read-only
+14CPU container sample reports53.22% CPU waiting, no OOM/quota throttling; unrelated
+database containers also consume CPU. This supports load investigation, not a
+universal failure cause or a justified bound increase.
 
-Next: finish that exact-range review, then run the ordinary full target ONCE with
-the new signal. Use actual command/visibility/error/gap history to determine the
-correction. No unchanged retry, timeout increase, arbitrary worker/phase sweep or
-partial-green promotion. Historical version/accounting failures and owner-held
-adoptions retain their own authorities; do not waive them from this lane.
+Four-CPU-model control after that same source PASSES the complete target terminal0:
+provider18/18; broad501/501,402.31s; native3/3,6.89s; performance5/5,8.87s. Actual
+availableParallelism4/affinity0-3 verified. This is an overridden local pass, NOT
+default14CPU reliability, hosted measurement or the strict five-minute criterion.
+The ignored override remains unadopted. Raw populations/artifact identities are in
+the log; no matched speed comparison or universal CPU-only cause is established.
+
+Next coherent repair: distribute Garage's unchanged423 cases into semantic test
+families. Its single serial file alone takes338–382s per engine, already longer
+than the entire workflow budget. Preserve every test body/name/population/input/
+deadline, shared fixture semantics and all three engines; compare executed old/new
+populations and run the complete affected/full target, not only a tracker. No
+arbitrary worker-count sweep, raised bound or omitted coverage. Keep resource-
+model diagnosis separate from hosted acceptance; historical version/accounting
+failures and owner-held adoptions retain their own authorities.
 
 ## Historical checkpoint sequence — original heading 2026-10-16
 
