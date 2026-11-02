@@ -1,5 +1,21 @@
 # Current repository state
 
+**Latest hosted verification,2026-11-02:** published main is `d6b1c668`;
+[CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196)
+passes browser (all phases), composed-player, harness and schema. Server still
+fails27 Clout partition cases; client still fails historical kernel guard50a3a514.
+Browser7m16s/composed6m15s/server8m44s exceed the unchanged five-minute floor.
+Maintenance41383212848 at different source `efa9223c` completes its full harness
+and numeric lanes, while Reputation remains red. The exact downloaded harness
+artifact passes local completeness validation. [CI log](scaffolding-and-ci/log.md)
+owns source/digests/counts/limits. No current-source, full-CI, reliability or release
+acceptance follows; later Headcount work is not in that published CI run.
+
+### Earlier source-bound verification notes
+
+These dated observations retain their original source coordinates and failures;
+the hosted checkpoint above supersedes their publication/latest-run statements.
+
 **Verification follow-up, 2026-11-01:** full existing composed player/database
 target passes at `7f540859` after recent scoped corrective approvals. See the
 latest integration row below and the owning Garage log. This refreshes that
@@ -55,12 +71,11 @@ Deployment mechanical checkpoint `bdf5add1`
 and independently approved scanner correction `76cba7bc` (no gameplay/kernel change).
 The whole-product classification retains its
 `77fe2275` base and the explicit follow-ups below, not a fresh complete acceptance sweep.
-Independent-review records and their exact bounded scopes live in the owning logs. The last inspected
-publication coordinate is `be66902b`, with failed CI38560135778 and maintenance38677066823.
-Read-only GitHub queries reconfirm that publication coordinate and both failed runs; no new
-hosted execution or publication is claimed for the later local work.
-Latest read-only API branch/run/job queries reconfirm those same remote failures during
-the candidate follow-up; no hosted run covers the later local work.
+Independent-review records and their exact bounded scopes live in the owning logs.
+Latest read-only branch/run/job/log queries confirm published `d6b1c668` and
+failed CI41476621196, plus failed maintenance41383212848 on different source
+`efa9223c`. Completed harness/browser evidence and remaining failures are
+distinguished above and below; later local Headcount changes are not published.
 Local commit volume is not a product-completion measure.
 Cloud Clicker remains a **development snapshot**, not a released or
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
@@ -199,18 +214,19 @@ operations remain required alongside that construction, not optional end-stage p
 
 Original product-audit coordinate: `8a5dcebf`; at that coordinate clean main had75 commits after
 local origin/main `4eaed0c9`. That remains a dated baseline, not today's publication count.
-The last2026-10-15 read-only GitHub queries identify failed CI38560135778 at
-`be66902b` and newer failed maintenance38677066823. Maintenance job logs and its
-exact observation artifact were inspected and the validator rejects it as incomplete.
-The ordinary CI failure logs retain their previous inspection scope; no workflow was rerun.
-Later local changes are not in either published run.
+Fresh2026-11-02 read-only GitHub queries identify failed CI41476621196 at
+`d6b1c668` and maintenance41383212848 on `efa9223c`. CI failure/browser logs and
+maintenance failure logs are inspected; the exact downloaded maintenance harness
+observation passes the local validator. This supersedes the older incomplete
+maintenance observation's latest-result status, not its historical validity.
+No workflow was rerun; later local changes are not in those published sources.
 The agent has not pushed or treated publication as approval.
 The whole-product table retains its stated baseline plus bounded additions, not a fresh
 acceptance run for every feature. These are different evidence populations:
 
 | Evidence | Result and limit |
 |---|---|
-| Last inspected published CI | [CI38560135778](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38560135778) on `be66902b` completes failure. Browser/composed/schema/harness pass; finished failure logs identify client RP-131 at50a3a514 and server's27 RP-307 partition cases. Browser5m21s/composed6m07s/server8m11s exceed the five-minute floor. Later local commits are not in this run; no full-CI/latency/feature/release approval. This checkpoint makes no new remote-main/latest-run claim. |
+| Last inspected published CI | [CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196) on `d6b1c668` completes failure. Browser/composed/schema/harness pass; actual logs retain client RP-131 at50a3a514 and server's27 RP-307 partition cases. Browser7m16s/composed6m15s/server8m44s exceed the five-minute floor. Browser all phases execute:40530 broad cases (40485 ordinary/21 expected/24 skipped),93 native (87/six expected),five performance passes; provider18+9 controls pass. Later local commits are absent; no full-CI/reliability/release approval. |
 | Previous completed published failures | [CI38222406320](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38222406320) on `e0cb9187` failed historical kernel guard (RP-131), 27 Clout partition cases (RP-307), and Fiscal performance-census whitespace (RP-484), exceeding the blocking floor. The new run passes browser/performance but retains the guard/arithmetic failures. Earlier failures are not erased. |
 | Recent repairs | Performance census, feedback/input, backup metadata/snapshot consistency and API admission/evidence corrections through `4eaed0c9` are now published, not independently approved by publication. Owning logs retain exact verification/review boundaries. The later hoard-preview guard is local and pending review/integration. Neither publication nor local passes establish whole-CI success. |
 | Earlier hosted browser evidence | CI38381138075 at `4eaed0c9`, not the newer published run: all three functional projects complete426 files/34,704 passes/twelve expected deadlines/24 skips,305.18s. Five isolated Chromium performance cases pass with105 deselected and their declared exclusions. Browser6m38s/server6m40s exceed the five-minute floor. This dated census is retained evidence, not current-source acceptance or reliability proof; CI log owns scope. |
@@ -241,7 +257,8 @@ acceptance run for every feature. These are different evidence populations:
 | Subsequent operations construction | Actual locked SQL collection, connection refusal/reconnection, relay dead-letter growth and bounded filesystem allocation reach the private receiver with matching resolution. Same-second backup failure, startup-loss cleanup observation and ordinary drain cancellation have reproduced corrections. A later test supplement takes actual Docker pre-scrape restarts through the production observer and private services to receiver firing; actual replacement count0 resolves the same alert. This is a scripted process, not gameserver/release-host proof; the Deployment log owns that supplement's range. These Codex batches need consolidated designated review; actual host journald/retention, complete AC7 and exact-artifact R-006 remain open. |
 | Latest local safety and proof work | Account JWT members, physical-package attribution, archive-secret scanning, live-backup cleanup ownership/identity, backup timestamp/endpoint binding, observer URL handling, real drain-method protocol coverage and rehearsal chronology/mutation/refusal checks are locally corrected or supplemented. The [Deployment log](deployment-foundation/log.md) and [Account log](account-and-session-bootstrap/log.md) own exact ranges and limitations. Full original Deployment R3/R6/R8/R9/R10/R12/R18/R20 reviews have CHANGES REQUIRED dispositions; they do not approve Codex's descendants. The current declared Linux/Postgres lane now passes RP-551's empty/populated database-query override restores and the other five integration functions. These changes add no tier, adopted content, clean-host proof or release approval. |
 | Subsequent catalog/UI construction | Fifteen complete family exports are present and locally tested, not full C18/API acceptance. Economy's version/row/role/policy and shared Route admission corrections preserve current/stored artifacts and existing semantic checks. The latest Garden read repair passes its affected mounted native population and build/type guards. [API log](api-foundation/log.md) and [Garden log](minigame-server-garden/log.md) own exact commands/ranges/limits. Complete catalog serving, four family exports and designated review remain. |
-| Latest maintenance evidence | [Run38677066823](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38677066823) on `be66902b` completes failure: numeric passes, career/relevance report comparisons fail with the six starter ties still recorded, and the full harness hits the unchanged50-minute wrapper (exit124). Standard pacing completes300/300 in2,750,518ms; relevance row0 stops at80/107 and row1 never starts. The exact artifact is retained and the validator rejects it. [CI log](scaffolding-and-ci/log.md) owns details; earlier38507071157 remains evidence, not latest. No budget increase, report restamp or local-candidate hosted claim. |
+| Latest maintenance evidence | [Run41383212848](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41383212848) on `efa9223c` fails overall: harness/numeric pass, career/relevance report comparisons fail (six Casual starter ties/970 admitted relevance arms remain). Downloaded artifact13116276146 matches its GitHub digest and passes the actual local validator: complete/objective,300 standard+107 active relevance+23 fixture runs,2979091ms. The owning CI log records all identities, transition counts and declared instrument exclusions. This does not prove current-source equivalence, pacing for new content, spare capacity or full maintenance/release acceptance. |
+| Earlier incomplete maintenance evidence | [Run38677066823](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38677066823) on `be66902b`: numeric passes, career/relevance comparisons fail and full harness hits the50-minute wrapper. Standard300/300; active relevance80/107; fixture row unstarted. Retained artifact is rejected by the validator. Historical failure remains; it is no longer the latest inspected run. |
 
 The [API log](api-foundation/log.md), [Garage log](garage-player-surfaces/log.md),
 [Minigame API log](minigame-api-and-surface/log.md), [Account log](account-and-session-bootstrap/log.md)

@@ -87,11 +87,14 @@ nine-tier goal remains active; no new playable tier or release was completed.
   populations for reassurance or infer that the full server/history/hosted gates passed.
 - **HELD — clean-host artifact/release and current-source hosted gates:** exact bundles, author
   contracts, independent review and target authority remain prerequisites for R-006. Latest
-  published CI38560135778 at `be66902b` is completed failure. New maintenance38677066823 on
-  that same source is also failed:300/300 standard runs take45.84 minutes, relevance0 stops
-  at80/107 under the unchanged50-minute wrapper, relevance1 never starts; numeric passes
-  and career/relevance reports drift. The exact artifact/validator refusal is in the CI log.
-  Later local work and the unapplied rate candidate are not in those hosted runs.
+  published CI41476621196 at `d6b1c668` is completed failure: browser/composed/
+  harness/schema pass; client historical guard and27 server partition failures remain.
+  Browser/composed/server exceed the five-minute floor. Maintenance41383212848
+  at different source `efa9223c` completes harness/numeric, with Reputation comparisons
+  still failing. Its complete four-objective artifact is downloaded/digest-matched
+  and locally validated; exact evidence/limits are in the CI log. Older incomplete
+  runs remain historical. Later Headcount work and the unapplied rate candidate
+  are not in these hosted runs; no source-equivalence or release claim follows.
 - **HELD — named contracts and owner choices:** use the current distinction and linked option
   sheets. Headcount's paid-hiring/producing-role model is explicitly ruled2026-11-02;
   its complete body translation is independently approved; next are identity/AC-3 and

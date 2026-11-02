@@ -4277,3 +4277,67 @@ corrective approval. Owner adoption/implementation delegation for the reviewed
 kernel policy is now requested through the async question interface, not inferred.
 No policy/exception row or watched prefix changes. Continue accepted work;
 do not rerun unchanged green browser populations or claim this fixes history.
+
+## 2026-11-02 — Reconcile newer hosted CI and validate completed maintenance artifact
+
+Read-only GitHub branch/run/job/log queries now confirm main at
+d6b1c6689574a4823473a44c9fe51d4659d5fd09 and completed-failure CI41476621196,
+not the older be66902b coordinate still named by the overview. No workflow rerun,
+push or deployment performed here. Later local Headcount changes are not in this run.
+
+| Job ID / job | Result | API job elapsed |
+|---|---|---:|
+| 125383759822 / server | FAIL: TestAxisAccrualPartitionProperty,27 subcases | 524s |
+| 125383760225 / client | FAIL: historical kernel guard50a3a514 | 103s |
+| 125383760426 / harness | PASS | 154s |
+| 125383760441 / game-ui-composed | PASS | 375s |
+| 125383760563 / browser | PASS, all declared phases | 436s |
+| 125383760722 / schema | PASS | 15s |
+
+These are actual started_at→completed_at job intervals, not fixture durations.
+Browser's make step is376s; broad522 files:40485 ordinary+21 expected failures+
+24 existing skips=40530,329.81s. Provider18 focus cases/zero misses and9 native
+input controls execute. Native Typer87 ordinary+six expected=93,6.58s; isolated
+Chromium performance five pass/107 unrelated deselections,12.59s. This is a
+genuine hosted complete pass for the reviewed provider/worker-model code, not
+proof of universal reliability, failure causation or the strict five-minute floor.
+Browser/composed/server jobs still exceed that floor. Client types/build/Node
+12505pass/1109skips pass before the same historical guard; server logs contain
+the parent partition test plus exactly27 failed children, not28 independent cases.
+Expected database-negative ERROR lines are not additional failing tests.
+
+Latest inspected maintenance41383212848 is a DIFFERENT source,
+efa9223cf11462829560455f4418edceaeb67bb3. Harness-evidence125078293010 and numeric
+maintenance125078293205 PASS; Reputation125078293376 FAILS career and relevance
+report comparisons. Its logs retain six Casual starter ties and970 admitted/
+retained relevance arms. No report is regenerated or failure erased.
+
+Unlike the older38677066823 artifact, this harness observation actually completes
+all four objectives. Download artifact13116276146 using the declared GitHub read
+surface; initial sandbox gh download cannot connect and executes no measurement,
+authorized read succeeds. ZIP1446bytes SHA256
+c053b9ca0b59e8bc519c9b6b25e8ed31007b279ff0515b3f3fc1b8ecc01c3be4
+matches GitHub's artifact digest. Archive contains only harness-observation.json,
+5694bytes; retained ignored .cache/hosted-harness-41383212848/harness-observation.json
+SHA256d8c2eee9851f04eb8737eb3d8ed48ec7ebc6fad8132ef0f4130e00595cf95692.
+Actual root make harness-observation-check on those extracted bytes exits0.
+
+The artifact is complete/objective,2979091ms: guards24447ms, standard pacing
+300/300 in2579394ms, active relevance107/107 and1968171/1968171 transitions in
+374962ms, fixture relevance23/23 and3324/3324 in260ms. Guard/exclusion/truncation
+statuses clear; declared instrument-excluded IDs remain visible (three active,
+one fixture), not evidence those roles were measured. Actual epoch8/hash and
+scenario/policy/report identities are retained. This validates completeness on
+its recorded published source, not current-source equivalence, full1.0 balance,
+Reputation success or spare operating capacity: only20.909s separates its recorded
+elapsed time from the existing50-minute wrapper. No ceiling increase or active
+landing of the unapplied rate candidate follows. Later first-hour/Tier2 code
+differs; no matched speedup or historical-source identity is inferred.
+
+Source links: CI https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196
+and maintenance https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41383212848.
+Review by: Codex root, evidence reconciliation/first filter. Recorded by: Codex root.
+These editorial evidence updates do not adopt pending contracts, supply designated
+feature approval, change workflows/populations/budgets or publish anything. Next
+is reviewed contract adoption/implementation and actual corrective work, not
+repeating this completed measurement or treating an old failed artifact as latest.

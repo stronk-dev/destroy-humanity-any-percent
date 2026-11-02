@@ -13,6 +13,26 @@ performance, strict hosted workflow under five minutes. The ten-minute local
 container guard is containment, not an enlarged acceptance budget. No push/release
 or specification adoption follows from a focused pass.
 
+**Latest inspected hosted evidence,2026-11-02:** remote main d6b1c668,
+CI41476621196 completed failure. Browser (all phases), composed, harness and schema
+pass; server retains27 Clout partition failures and client retains historical
+50a3a514. Browser436s/composed375s/server524s still exceed the five-minute floor.
+Maintenance41383212848 at DIFFERENT sourceefa9223c now has completed harness and
+numeric passes, Reputation report failures. Its exact downloaded observation
+passes the actual local validator: all four objectives complete,300/107/23 runs,
+2979091ms elapsed. The owning log records job IDs, counts, digest/source bindings
+and narrow budget margin; no current-source equivalence or full-CI green follows.
+The old incomplete maintenance artifact remains historical, not the latest result.
+
+Headcount's actual-source arithmetic witness has separate corrective approval;
+the existing affected client target still reproduces the historical guard. Kernel
+history's complete technical proposal is independently approved, awaiting adoption,
+not an installed scope-exception mechanism. No target is automatically excused.
+
+The following source-bound local checkpoints preserve earlier failures and limits;
+their words “latest/default/current” refer to their stated SHAs, not the hosted
+coordinate above or the later independently approved worker-model correction.
+
 Verified repairs: completed-failure reporting fc7300e6..fa5faff5; pinned provider
 iframe focus d7518dea..ae367f8b; Garden target/input containment6498c70e..bc6d3fcb
 and neighboring controls bc6d3fcb..b91790ef. Each has independent approval in the

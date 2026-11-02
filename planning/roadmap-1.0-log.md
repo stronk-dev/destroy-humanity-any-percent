@@ -5731,3 +5731,29 @@ This resolves the model questions, not runtime/identity/AC-3, complete role/cont
 policy, accounting/search, pacing, mint or release. No new playable tier, product
 or data change; adopted windows/targets/old artifacts remain. Next is exact-range
 translation review and the named technical construction, not another model vote.
+
+## 2026-11-02 — Headcount technical readiness and newer hosted evidence
+
+Headcount model translation c6f11121..8a00ca57 is independently approved after
+correcting its stale copy path. A separate actual-source intermediate-product
+witness ba1d7eaa..7b06dd5d is independently approved with executed ordinary/
+unsafe/bypass controls, not an adopted AC3 replacement. New RP-702 finds the
+numeric-version/Clout activation coupling. The full activation/acceptance
+correction59a56f16..91057dd5 is independently technically approved after fixing
+a proposed downward-Exit ambiguity; explicit adoption/parent reconciliation and
+complete runtime/content/policy/integration still remain. The tenant HTTP proposal
+also has full bounded technical approval; its own log records exact blob/scope.
+These improve implementability, not another playable tier or feature acceptance.
+
+Fresh read-only GitHub evidence replaces stale published coordinates: main is
+d6b1c668; CI41476621196 fails client historical guard and27 server partition
+cases, while complete browser/composed/harness/schema jobs pass. Their observed
+job durations still violate the five-minute floor. Maintenance41383212848 at
+DIFFERENT sourceefa9223c has complete harness/numeric success and Reputation
+comparison failures. Exact downloaded harness artifact matches its GitHub digest
+and passes the actual local validator: four objectives,300/107/23 runs,
+2979091ms. Owning CI log retains source, job IDs, counts, declared exclusions,
+near-budget limitation and original failed evidence; no current-source identity,
+reliability, source optimization, full-CI or release claim. No publication or
+rerun by this work. Existing content/rights/accessibility/operations/later-tier
+scope remains; the full1.0 goal is active, not paused or redefined.
