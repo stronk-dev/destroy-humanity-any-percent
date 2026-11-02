@@ -94,7 +94,7 @@ nine-tier goal remains active; no new playable tier or release was completed.
   Later local work and the unapplied rate candidate are not in those hosted runs.
 - **HELD — named contracts and owner choices:** use the current distinction and linked option
   sheets. Headcount's paid-hiring/producing-role model is explicitly ruled2026-11-02;
-  its complete body translation needs technical review, then identity/AC-3 and
+  its complete body translation is independently approved; next are identity/AC-3 and
   concrete content/full-policy integration. Do not ask the same model question again.
   API engineering proposals, Typer/attendance/
   body reconciliation, rights/retention, accessibility, content and release-artifact work have

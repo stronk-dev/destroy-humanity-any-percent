@@ -51,7 +51,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Minigame — Terminal Typer](minigame-terminal-typer.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Minigame API & Surface |
 | [Minigame — Demo Disc Arcade](minigame-demo-disc-arcade.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Minigame API & Surface |
 | [Minigame — Arcade Pinball](minigame-arcade-pinball.md) | draft — not implementation authority; owner-requested addition (not in design/03), OD-P1–P15 | Demo Disc Arcade / Minigame Platform |
-| [Tier 2 Content — IT Company](tier2-content.md) | accepted; paid-hire/output model ruled 2026-11-02; translated body pending technical review; full content/policy/Headcount integration remains | Economy Kernel / Routes / Balance Harness |
+| [Tier 2 Content — IT Company](tier2-content.md) | accepted; paid-hire/output model ruled 2026-11-02; body translation independently approved; full content/policy/Headcount integration remains | Economy Kernel / Routes / Balance Harness |
 | [Tier 2 Pacing Activity Windows](tier2-pacing-activity-window.md) | accepted 2026-11-02 — owner-adopted; parent-body translation independently approved; full P1/Headcount prerequisites remain | Tier 2 Content P1/P2 |
 | [Minigame — Server Garden](minigame-server-garden.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Fiscal / Tier 2 |
 | [Garage Player Surfaces](garage-player-surfaces.md) | accepted 2026-09-25 (recommended defaults); implementing | Game UI Screens / Fiscal / Achievements / Meters / Pet / Active Play / Minigame API |
@@ -61,7 +61,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Cosmetic Shop v1 — Horse Armor](cosmetic-shop-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Game UI / Save Layer / Pet |
 | [Pet Adoption v1](pet-adoption-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Pet Care / Save Layer / Game UI |
 | [Ticker Launch Corpus](ticker-launch-corpus.md) | accepted 2026-09-25 (recommended defaults; blocked on Feed VQ-3); implementing | Feed & Dispatch / Copy Pipeline |
-| [Headcount Allocation](headcount-allocation.md) | accepted; paid-hire/output model ruled 2026-11-02; translation review and historical identity/AC-3 reconciliation remain | Economy Kernel / Tier 2 Content |
+| [Headcount Allocation](headcount-allocation.md) | accepted; paid-hire/output model ruled 2026-11-02; translation independently approved; historical identity/AC-3 reconciliation remains | Economy Kernel / Tier 2 Content |
 
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
 — the evidence-derived READY/BLOCKED queue at HEAD. The older July batch manifest is history,

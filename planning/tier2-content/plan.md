@@ -5,7 +5,8 @@ ruled2026-11-02:** paid hiring and producing/redirecting roles, with explicit
 delegation to reconcile both specifications. Headcount owns the single engine;
 Tier 2 consumes its pool/state/commands/rates/projection/masks. No office-granted
 seats, second assignment map or per-head multiplier fork remains normative.
-The complete model translation needs independent technical review. Before live
+The complete model translation is independently approved; see the Headcount log's
+2026-11-02 verdict for c6f11121..8a00ca57. Before live
 integration, close engine identity/AC-3 reconciliation and actual Tier-2 resource/
 role/price/rate content plus HG-10 full hiring/allocation policy binding. The
 existing S2 library/window subset does not complete that chain. Fixture-first:
@@ -87,6 +88,6 @@ six Tier-2 rows are all instrument-affected; it is not a clean content-dominance
   gates still fail. T0 comparison exposes RP-433's policy-population conflict. Original C6
   test coverage requires the RP-432 correction's designated review; no full P3 acceptance.
 - [ ] Canonical §H Headcount integration, P4 hiring/role controls, P5 and AC2/AC3:
-  model choice resolved; translation review, engine technical contracts and full
+  model choice and translation review resolved; engine technical contracts and full
   candidate/policy wiring remain, not another OD-1 vote.
 - [ ] Owner — M3 SHA ratification, E4 copy round, M1–M4 mint.

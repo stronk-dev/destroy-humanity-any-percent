@@ -8,8 +8,9 @@ Authority: accepted `rfc/headcount-allocation.md`; design/01 Tier 2.
 producing/redirecting roles and delegates reconciliation of both specifications.
 OD-1's owner choice is resolved. Headcount is the single engine authority; Tier 2
 now consumes its pool grammar, saved maps, commands/events, rate terms, projection
-and masks rather than a generator-seat/multiplier fork. Complete translation
-requires independent technical review. No price/rate/copy/balance ratification,
+and masks rather than a generator-seat/multiplier fork. Complete translation is
+independently APPROVED c6f11121..8a00ca57; the owning log records the finding and
+forward correction. No price/rate/copy/balance ratification,
 version allocation, RP-413 resolution or runtime integration follows from this ruling.
 
 2026-10-14 bounded S1/S2 correction (RP-571): reject non-string role IDs before sorting or
@@ -48,7 +49,7 @@ Marco has answered both player-facing choices, not merely a version number:
 His actual selected answer adopts that pair and explicitly delegates both-body
 reconciliation. The earlier question/preselection was not authority; this direct
 answer is. Parent/engine now name one authority and reject the competing model.
-Independent technical translation review remains; concrete Tier-2 role/resource/
+Independent technical translation review is complete; concrete Tier-2 role/resource/
 price/rate content and full paid-hire policy binding are still required.
 
 | Boundary | Headcount S0–S10 | Tier 2 H1–H5 | Required before integration |
@@ -61,7 +62,7 @@ price/rate content and full paid-hire policy binding are still required.
 | Commands/events | `hire_headcount`, `reallocate_headcount`; hired/reallocated | Same complete per-pool vector and receipt | Actual API/UI/replay proof |
 | Harness | Paid hiring relevance; role output masks | Same masks; full allocation-aware P1/P5 | HG-10 deterministic paid-hire/allocate contract, no omitted workload |
 
-The delegated model translation requires independent review before implementation. Provisional
+The delegated model translation is independently approved. Provisional
 prices/rates, copy adoption, measured pacing/relevance and the mint remain separate gates;
 choosing a model does not ratify data or loosen acceptance. RP-413's invalid overflow fixture
 and required-but-unproved mutant outcome also remain with the author.
@@ -78,7 +79,7 @@ mounted allocation panel → real purchase/reallocation/Exit/reload proof. The e
 library is only one prerequisite, not a substitute for that chain.
 
 - OD-1's actual owner choice is recorded; do not ask the same hiring/output question again.
-- Independently review the siblings' complete model translation (RP-414), then
+- The siblings' complete model translation (RP-414) is independently approved;
   close concrete content/policy and technical integration contracts. One engine
   branch is selected; no second grammar/state/intent authority is permitted.
 - Reconcile S8/AC3's inadmissible overflow vector and unproved fault outcome

@@ -216,3 +216,19 @@ explicitly require the real mounting/content presentation binding before
 implementation/mint. Do not invent a role copy field, schema or authored text.
 Root checks the correction against S1/S10 and E4; complete original-plus-correction
 range requires independent re-review. No runtime/data/kernel/copy or gate change.
+
+## 2026-11-02 — Complete model translation independently approved
+
+APPROVED, no remaining finding, complete eleven-path base-exclusive/tip-inclusive
+range c6f11121..8a00ca57b1a86b0de76010d7d9ca87bd848bce78.
+Review by: fresh independent Codex /root/headcount_model_ruling_translation_review.
+Recorded by: Codex root, transcribing the verdict. The reviewer rechecks the full
+combined range: E4 uses actual cap-reason paths and requires the real presentation
+binding without inventing role fields; eight other paths match the original tip;
+all three logs remain append-only. Adopted windows and P2 populations/targets are
+unchanged except the intended canonical allocation-command substitution. All paths
+are Markdown; runtime/data/kernel/migrations/copy/deployment artifacts unchanged.
+Whitespace passes. No software suites run for specification-only edits or reviewer
+source edits/services/publication. This closes technical model translation only;
+Marco's direct answer supplies adoption. Content/policy, historical identity,
+RP-413, full implementation/acceptance, mint and release remain separate gates.
