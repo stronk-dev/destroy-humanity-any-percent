@@ -271,6 +271,14 @@ These are native-command promise observations, not proof of delivered gameplay o
 cause. The intentional 50 ms control uses `reputation-host-expected-deadline`; successful ordinary
 cases emit neither marker. The observer does not cancel input or bypass the existing drain rule.
 
+Reputation's nine-command confirmation/Tab/cancellation journey likewise emits
+`reputation-confirmation-deadline` on abort, retaining the active key command,
+completed-command timings, frame/element focus and mounted confirmation state.
+Its original inputs/assertions and15s deadline remain. The existing lifetime helper
+drains started native input before unmount and refuses late input. Real trusted-key
+cancellation and framework50ms controls verify capture/cleanup; healthy input emits
+no failure record. Promise timing is not proof of delivered keys or a timeout cause.
+
 The normal container command wraps the frozen installation and both browser lanes in GNU
 `timeout --verbose --signal=KILL 10m`, matching the hosted browser job's existing containment
 ceiling. A stuck test process group cannot keep the local job alive indefinitely. A deadline

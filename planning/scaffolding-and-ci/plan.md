@@ -115,6 +115,16 @@ with a deliberate cancellation control. Keep native inputs, assertions and15s
 deadline intact; do not run another unchanged full target or arbitrary worker cap.
 No upgrade is assumed safe, and no whole-CI/hosted/1.0 claim is promoted.
 
+Chromium confirmation diagnosis now uses the existing native-keyboard lifetime
+helper, with abort-only active/completed-command timing and mounted focus context
+before teardown. All nine original key calls/assertions and15s limit remain.
+Complete affected three-engine file passes243 ordinary cases plus three expected
+real-deadline controls; trusted-key cancellation/late-input refusal also execute.
+Types pass0/0. Independent diagnostic/corrective review is pending for the batch
+after907f9021. Next run the ordinary full target ONCE at the instrumented revision,
+without trace/concurrency/CPU overrides, to capture a genuine recurrence. This is
+new signal, not a retry to replace earlier failures; no failure cause is closed.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing

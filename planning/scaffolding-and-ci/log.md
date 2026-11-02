@@ -3196,3 +3196,46 @@ count, unchanged full-target retry or assumed toolchain upgrade. RP-700, broader
 CI/resource/latency/hosted gates, accounting/adoption and full1.0 stay open.
 Recorded by: Codex root; this execution checkpoint is not designated corrective
 or feature acceptance. No product/kernel/balance/workflow change, archive or push.
+
+### Chromium confirmation timeout — native lifetime and abort-only context
+
+Outcome: capture the exact native command/stage and completed timings before
+the original failing Reputation confirmation fixture is removed (CI D2/RP-637).
+The nine original keyboard calls, assertions, test identity and15000ms deadline
+are unchanged. Existing lifetimeKeyboard now owns that journey's native promises:
+refuse expired continuations, drain a started RPC before unmount, idempotent
+body/finished-hook cleanup and a fail-loud pending-input guard. Test/diagnostic
+scope only; no game, worker/config, workflow, dependency, bound or copy change.
+
+Abort-only `reputation-confirmation-deadline` records active key/duration, ordered
+completed timings, mounted/focus/confirmation state and original abort reason.
+Healthy input emits no failure record. A native trusted Enter listener deliberately
+aborts during the real awaited RPC (without canceling its default action); control
+asserts mounted capture, active/unsettled command, later drain and refusal of Tab.
+A real Vitest50ms deadline is established after native fixture setup in beforeEach;
+its follow-up verifies original timeout text, capture before removal, cleanup and
+late-input refusal. These control manual cancellation AND the framework deadline,
+not fake an outstanding RPC with a held test promise. Timings are promise lifetimes,
+not observed key delivery or a causal explanation for the original timeout.
+
+Final `make test-browser-ci-focused` complete affected file/all three engines,
+verbose/JSON: terminal0,243 ordinary passes plus three expected50ms deadline
+failures (246 total),8.18s. `make typecheck` terminal0, Svelte0 errors/0 warnings.
+Earlier development populations240 pass before the real-deadline pair; not the
+final acceptance population. Initial quoted regex fails at the Make/shell boundary
+and Docker access before tests start; corrected ordinary file selector executes.
+First typecheck catches an implicit test-callback type, corrected before final
+checks. First late Docker follower misses the removed container and is NOT a raw
+transcript. Final follower is complete/terminal0: log68032bytes SHA256
+`6d92b94b4294834658df7b890e6c70dda53c42dfdb2ef283cd54cc60afaac76c`,
+`.cache/reputation-confirmation-deadline-907f9021-container.log`; JSON71008bytes
+SHA256 `d79afd531753df3ae6fcda3b5aeace66f6ea76eccd3f748b67dd7b43a2b1953e`,
+`.cache/reputation-confirmation-deadline-907f9021.json`. Final test source SHA256
+`4a3ae00db1f6d6db9380766580bd5c14c20f6b383881cd5030bac651d2d3d3b9`.
+
+Next: one ordinary full target at this instrumented revision, no trace/concurrency/
+CPU overrides, retaining new real abort context and every failure/incomplete phase.
+This focused pass does not explain/correct the earlier Chromium timeout or repair
+RP-700/whole CI, hosted latency or release acceptance. Complete batch after907f9021
+requires fresh independent review; Review by: Codex root (implementer first filter).
+Recorded by: Codex root. No archive or push.

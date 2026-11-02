@@ -1,14 +1,59 @@
 import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
-import { expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import type { GameUIReputationArm } from "../src/api/generated/types";
 import { t, type CopyKey } from "../src/copy";
 import ReputationTreeSurface from "../src/game-ui/ReputationTreeSurface.svelte";
 import ReputationFocusHarness from "./fixtures/ReputationFocusHarness.svelte";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
+import { assertNativeInputDrained, lifetimeKeyboard } from "./native-keyboard-lifetime";
 
 const browser = typeof document !== "undefined";
+beforeEach(assertNativeInputDrained);
+
+// Observe this journey's real keyboard RPC at the deadline, before teardown.
+// No retry, refocus, synthetic input or change to its native sequence/budget.
+function observedConfirmationKeyboard(signal: AbortSignal, target: HTMLElement, name: string,
+  send: (keys: string) => PromiseLike<unknown>,
+  report: (value: Record<string, unknown>) => void = value => console.error("reputation-confirmation-deadline", JSON.stringify(value))) {
+  const began = performance.now();
+  let stage = "test-body";
+  let active: { keys: string; began: number } | null = null;
+  const completed: { keys: string; elapsed_ms: number }[] = [];
+  let started = 0;
+  let draining = false;
+  function read() {
+    const focus = document.activeElement;
+    return { test: name, user_agent: navigator.userAgent, stage, elapsed_ms: performance.now() - began,
+      aborted: signal.aborted, reason: !signal.aborted ? null : signal.reason instanceof Error ? signal.reason.message : String(signal.reason),
+      active_input: active ? { keys: active.keys, elapsed_ms: performance.now() - active.began } : null,
+      native_started: started, native_settled: completed.length, completed: completed.map(value => ({ ...value })),
+      connected: target.isConnected, document_focused: document.hasFocus(),
+      focused: focus ? { tag: focus.tagName, id: focus.id, inside_host: target.contains(focus),
+        disabled: focus instanceof HTMLButtonElement ? focus.disabled : null,
+        aria_disabled: focus.getAttribute("aria-disabled") } : null,
+      confirmations: target.querySelectorAll("[role=group]").length };
+  }
+  const capture = () => report(read());
+  signal.addEventListener("abort", capture, { once: true });
+  const keyboard = lifetimeKeyboard(signal, async keys => {
+    const input = { keys, began: performance.now() };
+    active = input; started++; stage = "native-keyboard-rpc";
+    try { await send(keys); }
+    finally {
+      completed.push({ keys, elapsed_ms: performance.now() - input.began });
+      active = null; stage = draining ? "drain-native-input" : "test-body";
+    }
+  });
+  return { press: keyboard.press, read,
+    async close() {
+      draining = true; stage = "drain-native-input";
+      try { await keyboard.closeAndDrain(); }
+      finally { signal.removeEventListener("abort", capture); stage = "closed"; }
+    },
+  };
+}
 const node = (id: string, suffix: string, kind: "bonus_unlock" | "starter", cost: number, requires: string[], state: string) =>
   ({ body_key: `reputation_tree.node.${suffix}.body`, cost, kind, node_id: id, requires, state, title_key: `reputation_tree.node.${suffix}.title` });
 const arm = {
@@ -307,8 +352,9 @@ for (const era of ["era_1995", "era_2000"] as const) {
 for (const era of ["era_1995", "era_2000"] as const) {
   for (const population of ["mixed", "two-buyable"] as const) {
     for (const key of ["{Enter}", " "]) {
-      it.skipIf(!browser)(`R9 native Tab confirmation and cancellation: ${era}, ${population}, ${key === " " ? "Space" : "Enter"}`, async () => {
+      it.skipIf(!browser)(`R9 native Tab confirmation and cancellation: ${era}, ${population}, ${key === " " ? "Space" : "Enter"}`, async testContext => {
         const { userEvent } = await import("vitest/browser");
+        testContext.signal.throwIfAborted();
         const wrapper = document.createElement("main"); document.body.append(wrapper);
         const target = document.createElement("div");
         const after = document.createElement("button"); after.textContent = "After diagnostic"; after.tabIndex = 0;
@@ -318,6 +364,14 @@ for (const era of ["era_1995", "era_2000"] as const) {
           arm: keyboardArm(population), era, pending: false, controlsEnabled: true,
           onPurchase: (id: string) => { purchases.push(id); },
         } });
+        const keyboard = observedConfirmationKeyboard(testContext.signal, wrapper, testContext.task.name,
+          keys => userEvent.keyboard(keys));
+        let disposal: Promise<void> | undefined;
+        const dispose = () => disposal ??= (async () => {
+          try { await keyboard.close(); }
+          finally { try { await unmount(app); } finally { wrapper.remove(); } }
+        })();
+        testContext.onTestFinished(dispose);
         try {
           await settle();
           const rows = [...target.querySelectorAll<HTMLLIElement>("li")];
@@ -325,32 +379,137 @@ for (const era of ["era_1995", "era_2000"] as const) {
           // Direct focus isolates confirmation traversal; header/Buy sequential
           // reachability is independently tested above without direct focus.
           row.querySelector<HTMLButtonElement>("button")!.focus();
-          await userEvent.keyboard(key); await settle();
+          await keyboard.press(key); await settle();
           const [confirm, cancel] = [...row.querySelectorAll<HTMLButtonElement>("button")];
           expect(confirm).toBeTruthy(); expect(cancel).toBeTruthy();
           expect(document.activeElement).toBe(confirm);
           expect(purchases).toEqual([]);
-          await userEvent.keyboard("{Tab}"); await settle();
+          await keyboard.press("{Tab}"); await settle();
           expect(document.activeElement, "R9 native Tab reaches Cancel").toBe(cancel);
-          await userEvent.keyboard("{Tab}"); await settle();
+          await keyboard.press("{Tab}"); await settle();
           expect(document.activeElement, "R9 confirmation exits to next available row or boundary").toBe(population === "two-buyable" ? rows[3]!.querySelector("button") : after);
-          await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); await settle(); expect(document.activeElement).toBe(cancel);
-          await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); await settle(); expect(document.activeElement).toBe(confirm);
-          await userEvent.keyboard("{Escape}"); await settle();
+          await keyboard.press("{Shift>}{Tab}{/Shift}"); await settle(); expect(document.activeElement).toBe(cancel);
+          await keyboard.press("{Shift>}{Tab}{/Shift}"); await settle(); expect(document.activeElement).toBe(confirm);
+          await keyboard.press("{Escape}"); await settle();
           expect(row.querySelector("[role=group]")).toBeNull(); expect(purchases).toEqual([]);
           expect(document.activeElement).toBe(row.querySelector("button"));
-          await userEvent.keyboard(key); await settle();
+          await keyboard.press(key); await settle();
           expect(document.activeElement).toBe(row.querySelector("button"));
-          await userEvent.keyboard("{Tab}"); await settle();
+          await keyboard.press("{Tab}"); await settle();
           expect(document.activeElement).toBe(row.querySelectorAll("button")[1]);
-          await userEvent.keyboard(key); await settle();
+          await keyboard.press(key); await settle();
           expect(row.querySelector("[role=group]")).toBeNull(); expect(purchases).toEqual([]);
           expect(document.activeElement).toBe(row.querySelector("button"));
-        } finally { await unmount(app); wrapper.remove(); }
+        } finally { await dispose(); }
       });
     }
   }
 }
+
+for (const abortDuringNative of [false, true]) {
+  it.skipIf(!browser)(`Reputation confirmation observation ${abortDuringNative ? "captures native cancellation before teardown" : "does not report healthy native input as failed"}`, async testContext => {
+    const { userEvent } = await import("vitest/browser");
+    const controller = new AbortController();
+    const original = new Error("controlled confirmation cancellation");
+    const target = document.createElement("main"); document.body.append(target);
+    const reports: unknown[] = [];
+    const purchases: string[] = [];
+    const app = mount(ReputationTreeSurface, { target, props: {
+      arm: keyboardArm("two-buyable"), era: "era_2000", pending: false, controlsEnabled: true,
+      onPurchase: (id: string) => { purchases.push(id); },
+    } });
+    const keyboard = observedConfirmationKeyboard(controller.signal, target, testContext.task.name,
+      keys => userEvent.keyboard(keys), value => reports.push(value));
+    const cancel = (event: KeyboardEvent) => {
+      if (abortDuringNative && event.key === "Enter" && event.isTrusted) controller.abort(original);
+    };
+    target.addEventListener("keydown", cancel, { once: true });
+    try {
+      await settle();
+      target.querySelectorAll("li")[1]!.querySelector<HTMLButtonElement>("button")!.focus();
+      if (abortDuringNative) {
+        // Abort from the actual trusted keydown while its native RPC is still
+        // awaited; do not hold a fake RPC or prevent the native default action.
+        await expect(keyboard.press("{Enter}")).rejects.toBe(original);
+        expect(reports).toHaveLength(1);
+        expect(reports[0]).toMatchObject({ stage: "native-keyboard-rpc", aborted: true,
+          reason: original.message, connected: true, native_started: 1, native_settled: 0,
+          active_input: { keys: "{Enter}" }, focused: { inside_host: true }, completed: [] });
+        const captured = reports[0] as { elapsed_ms: number; active_input: { elapsed_ms: number } };
+        for (const elapsed of [captured.elapsed_ms, captured.active_input.elapsed_ms]) {
+          expect(Number.isFinite(elapsed)).toBe(true); expect(elapsed).toBeGreaterThanOrEqual(0);
+        }
+        await expect(keyboard.press("{Tab}")).rejects.toBe(original);
+      } else {
+        await keyboard.press("{Enter}"); await settle();
+        await keyboard.press("{Tab}");
+        expect(reports).toEqual([]);
+      }
+      await settle();
+      expect(target.querySelector("[role=group]")).not.toBeNull();
+      expect(purchases).toEqual([]);
+      const observation = keyboard.read();
+      expect(observation.active_input).toBeNull();
+      expect(observation.native_started).toBe(abortDuringNative ? 1 : 2);
+      expect(observation.native_settled).toBe(observation.native_started);
+      expect(observation.completed.map(value => value.keys)).toEqual(abortDuringNative ? ["{Enter}"] : ["{Enter}", "{Tab}"]);
+      expect(observation.completed.every(value => Number.isFinite(value.elapsed_ms) && value.elapsed_ms >= 0)).toBe(true);
+      await keyboard.close();
+      controller.abort(original);
+      expect(reports).toHaveLength(abortDuringNative ? 1 : 0);
+    } finally {
+      target.removeEventListener("keydown", cancel);
+      try { await keyboard.close(); }
+      finally { try { await unmount(app); } finally { target.remove(); } }
+    }
+  });
+}
+
+describe("Reputation confirmation actual deadline observation", () => {
+  const expiryName = "captures the framework deadline before its mounted fixture is removed";
+  let signal: AbortSignal;
+  let target: HTMLElement;
+  let keyboard: ReturnType<typeof observedConfirmationKeyboard>;
+  const reports: Record<string, unknown>[] = [];
+  beforeEach(async testContext => {
+    if (testContext.task.name !== expiryName) return;
+    signal = testContext.signal;
+    const { userEvent } = await import("vitest/browser");
+    target = document.createElement("main"); document.body.append(target);
+    const app = mount(ReputationTreeSurface, { target, props: {
+      arm: keyboardArm("two-buyable"), era: "era_2000", pending: false, controlsEnabled: true,
+      onPurchase: () => { throw new Error("deadline control must not buy"); },
+    } });
+    keyboard = observedConfirmationKeyboard(signal, target, expiryName, keys => userEvent.keyboard(keys), value => {
+      reports.push(value); console.error("reputation-confirmation-expected-deadline", JSON.stringify(value));
+    });
+    testContext.onTestFinished(async () => {
+      try { await keyboard.close(); }
+      finally { try { await unmount(app); } finally { target.remove(); } }
+    });
+    // Establish the actual native subject in the normal bounded setup hook;
+    // slow mounting is not allowed to masquerade as a test-body deadline.
+    await settle();
+    target.querySelectorAll("li")[1]!.querySelector<HTMLButtonElement>("button")!.focus();
+    await keyboard.press("{Enter}"); await settle();
+    expect(target.querySelector("[role=group]")).not.toBeNull();
+  });
+  it.skipIf(!browser).fails(expiryName, async testContext => {
+    await new Promise<void>(resolve => testContext.signal.addEventListener("abort", () => resolve(), { once: true }));
+    testContext.signal.throwIfAborted();
+  }, 50);
+  it.skipIf(!browser)("retains the original deadline and refuses input after cleanup", async () => {
+    expect(signal.aborted).toBe(true);
+    expect(signal.reason.message).toContain("Test timed out in 50ms");
+    expect(reports).toHaveLength(1);
+    expect(reports[0]).toMatchObject({ stage: "test-body", aborted: true, reason: signal.reason.message,
+      connected: true, active_input: null, native_started: 1, native_settled: 1, confirmations: 1 });
+    expect(target.isConnected).toBe(false);
+    expect(keyboard.read().stage).toBe("closed");
+    await expect(keyboard.press("{Tab}")).rejects.toBe(signal.reason);
+    expect(keyboard.read().native_started).toBe(1);
+  });
+});
 
 for (const era of ["era_1995", "era_2000"] as const) {
   for (const key of ["{Enter}", " "]) {
