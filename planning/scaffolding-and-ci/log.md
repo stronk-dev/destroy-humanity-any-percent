@@ -3854,3 +3854,84 @@ functional-broad.json12493417bytes SHA256
 functional-native.json26243bytes SHA256
 722e388e254993da50e64f0954396489098ca7c87cf2ce0b3ecea5e64c9e942d.
 Full CI/hosted latency, original default-load failures and proper1.0 remain open.
+
+### Garage-family candidate withdrawn; native interleaving reproduced and corrected
+
+The semantic split preserves all98 original non-import top-level statements byte-
+identically apart from helper exports. Types0/0. Its actual full four-CPU run,
+however, is RED:519 project-files,517 pass/two fail;40471 ordinary passes,18 expected,
+24 skips,two failures,433.83s. Root terminal2/follower0; no guard; Typer/performance
+unexecuted. Actual old/new JSON case multisets match all40515 declarations after
+normalizing moved paths, including all1269 Garage cases/21 family rows. One Firefox
+Trophy Case Space re-entry fails at the unchanged surface assertion (line146 in
+the candidate); one unchanged WebKit Reputation input-shape case hits15s. No speed
+comparison is inferred from uncontrolled runs, nor is the candidate a successful
+latency repair. Original tracked source/docs restored exactly; candidate files
+remain under .cache/garage-families-candidate-26d617c0/. Sorted path+NUL+content
+SHA256 3e251447feb0c81c52d17c16fe31e55d32479c31475c50dce0b82c42b878505f.
+Raw .cache/garage-families-full-26d617c0-container.log1936603bytes SHA256
+c840448d57d763b25ad02ab77254669deafc2c001d3d80e841b8f9b90b402672;
+functional-broad.json12516662bytes SHA256
+f9f16c8bd29346b23b7dc2b1fdef9b0b6e748c2cd26912deb02ab63f33233c92.
+
+A separate native controlled interleaving uses the actual installed provider's
+registered keyboard/click commands and real pages/frames. It holds A only after
+the real frame-focus evaluation, executes B's registered native pointer, then
+releases A's native key. All six before-command interruption controls pass. Both
+Firefox interleavings lose activation despite trusted keydown/keypress/keyup and
+the same active button; Chromium/WebKit retain activation. Thus the earlier focus
+predicate repair is insufficient for this reproduced interleaving, not invalidated
+for its original static-interruption scope. No universal failure cause is claimed.
+The12-case diagnostic exits0 because its reproduction criterion is met, NOT because
+the provider is healthy. Raw Docker follow misses the already-removed fast container;
+complete retained tool output owns the observations, not the failed follower file.
+Probe .cache/provider-interleaving-26d617c0.mjs SHA256
+4bf2893a46353c7502ab2a683dfef546a2b841405b2634c99454878059c7c3c3;
+tool-output.log7448bytes SHA256
+61d75a9c43f892204321eafb1adba2159ea7d2dc43bbcbe91e09a1d8f96c1cdc.
+
+Correction under accepted CI D2: the pinned provider patch now orders Firefox's
+built-in native-input commands FIFO per provider. Frame restoration plus delivery
+cannot overlap another registered native pointer. Files/non-input commands and
+other engines remain parallel; rejected work rejects its caller unchanged and
+releases the tail. No forced destination focus, synthetic activation, assertion,
+input, deadline, worker-count, gameplay or package-version change. Lock regenerated
+with pinned pnpm11.15.1 in isolated Linux volumes; generic peer warning disclosed.
+Frozen installation succeeds; only patch hash references change in the lockfile.
+
+The new real installed-provider regression catches old behavior: terminal1, Firefox
+pointer enters before A releases and A has zero activations. Corrected regression
+passes9/9, including all-engine original-error/recovery controls; prior focus18/18
+and actual Trophy Case36/36 pass (1233 deselected, not passed), frozen Linux setup
+terminal0. Types0/0 and topology27 negative fixtures pass. Unified patch context
+lines trigger space-before-tab in diff-check, as in the earlier approved patch;
+not an implementation whitespace claim. Complete four-CPU-model target is running;
+finished batch and full evidence still need independent corrective review.
+
+Old regression .cache/provider-native-input-old-26d617c0.log3164bytes SHA256
+8079e2adf6762106d965411d1122eac2ae8cddf9ddb3dcf03685fc5260b541bc;
+corrected log44380bytes SHA256
+f69c8e59896c23d039c714fe84356da1d02542cfb41fa32fc2a66ee3c5f0cc71;
+consumer JSON291764bytes SHA256
+589b9ca7b62ae78a097c39e2e0e5890956d3be57c2350c13bd01b6c8986d76fc.
+Review by: Codex root, implementer first filter. Recorded by: Codex root. No
+designated approval, archive, hosted measurement, release promotion or push.
+
+The finished correction's complete four-CPU-model job is terminal0. Provider27/27;
+broad501/501,40473 ordinary/18 expected/24 skips,331.03s; native3/3,87 ordinary/
+six expected,5.83s; isolated Chromium performance5/5,8.13s (107 unrelated cases
+deselected). No guard or absent phase. Actual executed case multisets match the
+prior four-CPU baseline exactly:40515 broad plus93 native. This retains the entire
+population, not just the Trophy Case. Standard14CPU/default-load reliability and
+hosted proof remain unestablished; broad331s alone still misses the five-minute
+workflow criterion. No matched speed comparison or whole-CI closure is claimed.
+Unchanged original Garage layout remains; failed split is not installed.
+
+Raw .cache/provider-input-full-26d617c0.log1566823bytes SHA256
+186434dfdb1eb20873030027777e3471205978e1b38d2723054209d3ef06f869;
+functional-broad.json12486500bytes SHA256
+3a7c5ea617b8f921b42b7fee7ef3873483ca9af6b60fae3d2202775fdc93085a;
+functional-native.json26235bytes SHA256
+7f6664243156a250ef2190553c67c9fb4d9eb2b95d6e53a25c49825499ebf014.
+All non-patch tracked diffs pass diff-check; unified-patch context warning remains
+explicit. The exact finished range now goes to fresh independent corrective review.

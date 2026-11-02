@@ -188,10 +188,13 @@ for (const [label, result, count] of [["focused", focused, 1], ["functional", fu
   }
 }
 for (const result of [full, aggregate]) {
-  if (result.stdout.indexOf("node client/tools/verify-browser-provider-focus.mjs") < 0 ||
-      result.stdout.indexOf("node client/tools/verify-browser-provider-focus.mjs") > result.stdout.indexOf("--exclude test/typer-table-browser.test.ts")) {
-    throw new Error("full browser target lost the real native-provider regression before functional tests");
+  for (const probe of ["focus", "input"]) {
+    const command = `node client/tools/verify-browser-provider-${probe}.mjs`;
+    if (result.stdout.indexOf(command) < 0 ||
+        result.stdout.indexOf(command) > result.stdout.indexOf("--exclude test/typer-table-browser.test.ts")) {
+      throw new Error(`full browser target lost the real native-provider ${probe} regression before functional tests`);
+    }
   }
 }
-if (focused.stdout.includes("verify-browser-provider-focus")) throw new Error("focused selection unexpectedly runs the full provider population");
+if (focused.stdout.includes("verify-browser-provider-")) throw new Error("focused selection unexpectedly runs the full provider population");
 console.log("Browser Make selectors and separate report controls passed");

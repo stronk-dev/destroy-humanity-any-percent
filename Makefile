@@ -295,6 +295,7 @@ test-browser-focused:
 # Separate reports prevent the second invocation from overwriting the first.
 test-browser-provider-focus:
 	node client/tools/verify-browser-provider-focus.mjs
+	node client/tools/verify-browser-provider-input.mjs
 
 test-browser-functional: test-browser-provider-focus
 	$(if $(findstring --outputFile,$(BROWSER_TEST_FLAGS)),$(error use BROWSER_REPORT_DIR for separate full-functional reports; --outputFile is supported only by test-browser-focused))

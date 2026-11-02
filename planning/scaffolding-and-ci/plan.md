@@ -39,14 +39,24 @@ default14CPU reliability, hosted measurement or the strict five-minute criterion
 The ignored override remains unadopted. Raw populations/artifact identities are in
 the log; no matched speed comparison or universal CPU-only cause is established.
 
-Next coherent repair: distribute Garage's unchanged423 cases into semantic test
-families. Its single serial file alone takes338–382s per engine, already longer
-than the entire workflow budget. Preserve every test body/name/population/input/
-deadline, shared fixture semantics and all three engines; compare executed old/new
-populations and run the complete affected/full target, not only a tracker. No
-arbitrary worker-count sweep, raised bound or omitted coverage. Keep resource-
-model diagnosis separate from hosted acceptance; historical version/accounting
-failures and owner-held adoptions retain their own authorities.
+The Garage-family split is WITHDRAWN, preserved ignored: all40515 executed cases
+match, including1269 Garage cases, but broad remains red (two failures,433.83s).
+No latency repair follows; original source/docs are restored. The Firefox Space
+miss maps to the second native re-entry, not initial mount. The WebKit input-shape
+deadline remains separate. No unchanged rerun or raised bound is authorized.
+
+Current correction after26d617c0: native probe reproduces a competing registered
+pointer stealing Firefox focus AFTER frame restoration, losing both Enter and
+Space activation. Static-interruption controls pass. The pinned patch now orders
+only Firefox built-in native-input commands FIFO per provider; other engines,
+files, non-input commands, original input and deadlines remain unchanged. New real
+ordering/rejection regression fails old behavior, passes all9 cases after repair;
+existing18 focus cases and36 Trophy Case journeys pass. Types/topology pass.
+Full four-CPU-model target PASSES terminal0: provider27/27, broad501/501 (331.03s),
+native3/3 (5.83s), performance5/5 (8.13s). Executed40515+93 functional populations
+match the prior four-CPU baseline exactly. Complete range needs independent
+corrective review. This is not default14CPU reliability or hosted/five-minute
+acceptance. Historical accounting/version failures and owner adoptions stay open.
 
 ## Historical checkpoint sequence — original heading 2026-10-16
 

@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  '@vitest/browser-playwright@4.1.10': 355a3733d3cb56abfeb93ae8358de6eb1707175d9263053a24f8b7bcdcf62037
+  '@vitest/browser-playwright@4.1.10': 529a9601436ac4b61ff451075093f59e1b74ea45e7919d59f2d79a3670367871
 
 importers:
 
@@ -29,7 +29,7 @@ importers:
         version: 4.1.10(vite@8.1.5(esbuild@0.28.1))(vitest@4.1.10)
       '@vitest/browser-playwright':
         specifier: 4.1.10
-        version: 4.1.10(patch_hash=355a3733d3cb56abfeb93ae8358de6eb1707175d9263053a24f8b7bcdcf62037)(playwright@1.62.0)(vite@8.1.5(esbuild@0.28.1))(vitest@4.1.10)
+        version: 4.1.10(patch_hash=529a9601436ac4b61ff451075093f59e1b74ea45e7919d59f2d79a3670367871)(playwright@1.62.0)(vite@8.1.5(esbuild@0.28.1))(vitest@4.1.10)
       ajv:
         specifier: 8.20.0
         version: 8.20.0
@@ -1069,7 +1069,7 @@ snapshots:
 
   '@types/trusted-types@2.0.7': {}
 
-  '@vitest/browser-playwright@4.1.10(patch_hash=355a3733d3cb56abfeb93ae8358de6eb1707175d9263053a24f8b7bcdcf62037)(playwright@1.62.0)(vite@8.1.5(esbuild@0.28.1))(vitest@4.1.10)':
+  '@vitest/browser-playwright@4.1.10(patch_hash=529a9601436ac4b61ff451075093f59e1b74ea45e7919d59f2d79a3670367871)(playwright@1.62.0)(vite@8.1.5(esbuild@0.28.1))(vitest@4.1.10)':
     dependencies:
       '@vitest/browser': 4.1.10(vite@8.1.5(esbuild@0.28.1))(vitest@4.1.10)
       '@vitest/mocker': 4.1.10(vite@8.1.5(esbuild@0.28.1))
@@ -1464,7 +1464,7 @@ snapshots:
       vite: 8.1.5(esbuild@0.28.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@vitest/browser-playwright': 4.1.10(patch_hash=355a3733d3cb56abfeb93ae8358de6eb1707175d9263053a24f8b7bcdcf62037)(playwright@1.62.0)(vite@8.1.5(esbuild@0.28.1))(vitest@4.1.10)
+      '@vitest/browser-playwright': 4.1.10(patch_hash=529a9601436ac4b61ff451075093f59e1b74ea45e7919d59f2d79a3670367871)(playwright@1.62.0)(vite@8.1.5(esbuild@0.28.1))(vitest@4.1.10)
     transitivePeerDependencies:
       - msw
 

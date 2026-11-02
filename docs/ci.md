@@ -226,11 +226,22 @@ The minimal project binding registers the actual provider command; pages, frames
 and activation are real, not doubles. This is an automation regression, not a game journey.
 Focused selections do not implicitly run this full regression population.
 
+The same target then runs nine native-input ordering/rejection controls across all
+three engines. They hold the real keyboard command after its actual frame-focus
+evaluation, start another registered pointer command, and check trusted native
+activation in both pages. Firefox must queue the competing input; Chromium and
+WebKit keep their existing parallel delivery. A controlled command rejection must
+preserve its error and release the queue for the next real native click.
+
 The pinned `@vitest/browser-playwright@4.1.10` has a version-specific
 [pnpm patch](https://pnpm.io/cli/patch-commit), recorded in the workspace and lockfile.
 Its iframe-focus predicate also restores frame focus when `document.hasFocus()` is false,
 even if `activeElement` still names a button. This addresses the reproduced Firefox
 interruption case without selecting a destination control or synthesizing activation.
+It also orders Firefox's built-in native-input commands FIFO per provider, so a
+competing pointer cannot steal focus between restoration and key delivery. This
+does not serialize test files, non-input commands or the other engines. Rejected
+commands still reject their own caller and cannot poison subsequent queued work.
 Package versions, gameplay, native journeys, retries and deadlines are unchanged.
 Keep the regression when upgrading; remove the patch only after the unpatched installed
 provider passes it. Passing this boundary does not establish full CI reliability or latency.

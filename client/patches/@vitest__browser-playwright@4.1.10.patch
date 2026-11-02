@@ -10,3 +10,32 @@ diff --git a/dist/index.js b/dist/index.js
  		window.focus();
  	}
  }
+@@ -846,9 +846,25 @@ class PlaywrightBrowserProvider {
+ 		this.options = options;
+ 		this.browserName = project.config.browser.name;
+ 		this.mocker = this.createMocker();
+-		for (const [name, command] of Object.entries(commands)) {
+-			project.browser.registerCommand(name, command);
+-		}
++		// Firefox native activation shares focus across contexts. Keep frame focus
++		// and native delivery indivisible with respect to other input commands.
++		// Files and non-input commands remain parallel; rejected work releases FIFO.
++		const nativeCommands = new Set(["__vitest_upload", "__vitest_click", "__vitest_dblClick",
++			"__vitest_tripleClick", "__vitest_wheel", "__vitest_type", "__vitest_clear",
++			"__vitest_fill", "__vitest_tab", "__vitest_keyboard", "__vitest_selectOptions",
++			"__vitest_dragAndDrop", "__vitest_hover", "__vitest_cleanup"]);
++		let nativeInput = Promise.resolve();
++		for (const [name, command] of Object.entries(commands)) {
++			if (this.browserName === "firefox" && nativeCommands.has(name)) {
++				project.browser.registerCommand(name, (...args) => {
++					const result = nativeInput.then(() => command(...args));
++					nativeInput = result.then(() => undefined, () => undefined);
++					return result;
++				});
++			} else {
++				project.browser.registerCommand(name, command);
++			}
++		}
+ 		// make sure the traces are finished if the test hangs
+ 		process.on("SIGTERM", this.onSIGTERM);
+ 	}
