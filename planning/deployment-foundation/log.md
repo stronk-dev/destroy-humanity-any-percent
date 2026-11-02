@@ -7884,3 +7884,69 @@ This closes RP-704's corrective review only. Native darwin/arm64 is not actual c
 SQL/journald/exporter, private Compose/Caddy, supported Linux release artifacts, full AC7,
 R-006, hosted CI, feature acceptance, archival or release approval. Other accounting,
 history-guard, contract-adoption and full nine-tier 1.0 obligations remain open. No push.
+
+## 2026-11-02 — R18 corrective witness supplement independently approved
+
+Review by: fresh independent Codex `/root/deployment_r18_witness_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's corrective-review
+delegation. APPROVED complete eight-path/three-commit range
+`fbbf01505160f3f5a69a6eae30bbd5a5ae923fd6..07bb3d9d43e95bda76eb3bff363fe74f51ce0332`.
+No blocking findings; reviewer confirms no previous independent verdict covers it.
+Original Claude R18 remains CHANGES REQUIRED, not silently approved here.
+
+At current source `37f696af1f001f9c18ddda6ca249d83f5a7c93d8`, cold TestR18 passes0.743s:
+both actual named producers, six invalid-bundle and two non-forward controls run
+without skips. Complete cold affected packages pass: rehearsal7.954s, rehearsal
+CLI0.249s, release9.674s, release CLI0.355s, backup0.986s, releasepackage1.422s;
+matching six-package vet passes. Root Make selectors use `-count=1`.
+
+Five independent compiling private overlays each exit Make2: constant migration
+rejection fails six controls; constant missing-input rejection fails its two
+invalid-input controls; omitted migration comparison, backup verification and image
+preparation each defeat their corresponding prepared subject. No main-tree source
+mutation. Four production source hashes remain unchanged; reviewer tree/format/
+range-whitespace checks pass and every execution handle is terminal. Private
+overlays are in `/tmp/cloud-clicker-r18-review.DO3LHM`; no service/DB started.
+
+Execution is current-source, not a historical-checkout replay. Original assertions
+are unchanged; later fixture scaffolding supplies layer/diff-ID compatibility for
+today's validator. Actual local bundle assembly/validation and age cryptography
+are exercised, but ELF/client/image-layer/dump inputs and Docker responses remain
+synthetic. This does not prove executable artifacts, Docker retrieval, logical
+Postgres restore, a retained release pair, wrong-image-ID comparison, clean-host
+R-006, full R18/Deployment, archival or release. Only this bounded review debt
+closes. Other adoption/CI/full-nine-tier gates remain; nothing pushed.
+
+## 2026-11-02 — R20 refusal-provenance correction independently approved
+
+Review by: fresh independent Codex `/root/deployment_r20_provenance_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's corrective-review
+delegation. APPROVED full six-path/two-commit range
+`94f0ee74e7e5fcb06328800ac14580c1767f7272..d3fde4c0c0db169ce4faeae2e19902c0f4524372`
+(the base is `5f394f2a^`). No prior independent verdict covers it; no new findings.
+Actual ExecRunner owns command, exit, stderr and underlying cause separately;
+callers retain that failure rather than inferring a class from rendered text.
+
+At current source `37f696af1f001f9c18ddda6ca249d83f5a7c93d8`, cold complete release /
+rehearsal and both CLI packages pass9.596s/7.525s/0.156s/0.161s; relevant vet passes.
+Private overlays reproduce the byte-identical historical corrected classifier and
+original producer fixture: arbitrary-error, exact-record, actual shell-exit and
+producer controls pass0.374s/0.304s. A separate original substring-classifier
+overlay fails the permanent unattributed-error regression, Make2. Current focused
+cold race checks pass1.450s/1.415s/1.312s for classifier/member-format controls,
+shell exit, orchestration and backup CLI refusal classification. Reviewed-range
+whitespace passes. These are root Make cold selectors, not a cached gate claim.
+
+Historical-source overlay execution uses current surrounding code, not a complete
+historical checkout. ExecRunner remains byte-identical to the reviewed tip.
+RP-552's separately repaired duplicate/case-alias weakness retains its own
+`fc04db24..a713137e` approval; this verdict does not claim the earlier parser
+already satisfied that later requirement. Original Claude R20 remains CHANGES
+REQUIRED. Actual composed CLI stderr, Postgres/clean-host producer, complete
+Deployment, archival and release are not established by local shell/fixture checks.
+
+All reviewer handles terminal; no reviewer edits/commits, main mutation, services
+or DB runs. Private overlays remain in `/tmp/cloud-clicker-rp142-review.8EWzY4`.
+The observed parent Markdown diff belongs to R18's separate transcription.
+Only this corrective review debt closes. No runtime, policy, schema, kernel,
+artifact, CI or release status is changed; goal remains active and nothing pushed.

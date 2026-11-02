@@ -126,6 +126,9 @@ semantics to create valid-looking evidence. Sixteen old-parser regressions and t
 orchestration counterexamples fail; corrected cold affected packages/vet, race and Linux helper
 build pass. Full original R20's eleven-path disposition is CHANGES REQUIRED (RP-142), not approval
 of its corrective descendants. Complete `fc04db24..a713137e` is independently approved.
+The earlier RP-142 provenance correction `94f0ee74..d3fde4c0` also now has its own
+independent corrective approval (2026-11-02 log), including historical corrected /
+broken-classifier overlays, actual shell-exit controls and cold affected checks.
 Actual composed CLI stderr and exact-host/R-006 gates remain; valid records stay admissible.
 
 **Current DP6 endpoint correction, 2026-10-13 (RP-551):** service/pass files now honor the
@@ -594,4 +597,8 @@ focused, full Go core, declared rehearsal, relevant vet and topology lanes pass.
 The initial rehearsal run lacked loopback permission; the exact target passes
 with narrowly scoped local-listener access. Full kernel history stays red at
 `50a3a514`. No production/kernel byte changes or full R18/DP-F approval. The
-entire new span after `fbbf0150`, including records, needs Claude independently.
+complete eight-path/three-commit `fbbf0150..07bb3d9d` supplement is independently
+APPROVED by fresh Codex under Marco's corrective-review delegation; the
+2026-11-02 owning log records exact hashes, cold package checks and five private
+overlay failures. Original R18 remains CHANGES REQUIRED. Current-source synthetic
+fixture execution is not retained-release, real Docker/SQL or clean-host proof.
