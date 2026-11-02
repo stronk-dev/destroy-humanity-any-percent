@@ -7496,3 +7496,45 @@ are unrecoverable; caches/networks/builders/durable data preserved. Tree clean
 until these records. Review by: Codex root (verification operator, not designated
 approval). Recorded by: Codex root. No feature checkbox, specification/copy
 adoption, archival, push or deployment.
+
+## 2026-11-02 — Announcement and shared-feedback corrections independently approved
+
+Review by: fresh independent Codex `/root/garage_announcements_feedback_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's corrective-review
+delegation. APPROVED separately, every commit/path including final record edges:
+
+- RP-312, four commits/ten paths:
+  `7aab0e2eee8d235e8576fcd87f3a72ceb690bb34..900f409e4da2ad74e3bf7e70960669e52a51c5eb`.
+- RP-317, four commits/thirteen paths:
+  `0f3a1a7a10b22ad5946b404f45770a9194636036..c0eb3dc513cb3103efe7955596ddc361720d1653`.
+- RP-322, four commits/eleven paths:
+  `3f86795653437b8323d48beb6618f18148fe55e1..b64a91afb6aba8b2f2be7984baf6483fadde0625`.
+
+Reviewer confirms no previous designated approval covers these spans. Meter
+direction refusal preserves legal bounds; actual runtime resync/reconnect and
+mounted cursor suppression execute. Required unknown/unlisted/invalid diagnostics
+remain once-only fixed strings, ordinary refusals quiet. Rate/exclusive controls
+wait through a held authoritative read; renewed activation uses Founder8/new ID,
+without retry. Original feature verdicts/copy authority are not expanded.
+
+Fresh checks at `5be7f608`: Node runtime/outcome100 pass0.677s;
+`make typecheck build-client verify-client-boundary` passes (types0/0,217 modules).
+Declared Linux three-engine original host file passes180/180,21.78s. Reviewer
+follows moved descendants rather than claiming that file still owns every case:
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/garage-surfaces-events-browser.test.ts test/garage-surfaces-opportunity-browser.test.ts test/garage-surfaces-care-browser.test.ts'`
+passes738/738 across nine project-files,37.50s; terminal handle92042 exit0.
+Three historical-range whitespace checks pass. No tracking-only suite rerun.
+
+Exact historical functions loaded with git-show are transpiled/executed in memory:
+old→corrected failures are4→0 meter contradictions,1→0 unknown-opportunity
+invariant and2→0 required refreshes, with legal/ordinary/conflict/offline/invalid
+controls retained. This is not a historical DOM reconstruction; original DOM
+failing-first/severing records are inspected, not counted as new executions.
+Initial module-resolution and Docker-denial attempts execute no semantic tests;
+corrected resolution/authorized declared commands supply the results above.
+
+No blocking findings, reviewer tracked edits, main-tree mutations, SQL services,
+commits or publication; all handles terminal and reviewed tree clean. Only these
+three corrective review debts close. No original-feature/copy adoption, full
+Garage/accessibility, real-service refusal/composed gameplay, whole CI, archival
+or release approval follows. Full1.0 goal remains active; nothing pushed.

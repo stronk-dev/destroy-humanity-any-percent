@@ -574,8 +574,8 @@ must succeed before another container population. No lifecycle promotion.
   oracle through `0befc01c` is locally corrected (native86, six faults fire,
   actual click-buff composed pass, NOT Lucky); entire Codex span after
   `c0eb3dc5` through tracking needs Claude. RP-317 diagnostic mapping/host repair
-  through `092ef3eb` passes 50 native cases; separate entire Codex span after
-  `0f3a1a7a`, including its tracking edge, needs Claude. Producer supplement
+  has independent corrective approval for complete `0f3a1a7a..c0eb3dc5`, including
+  its final record edge (2026-11-02 owning log). Producer supplement
   `87fd23d4..d90aded7` requires
   Claude independently.
   This existing checkbox records implementation, not acceptance or archival.
@@ -589,13 +589,15 @@ must succeed before another container population. No lifecycle promotion.
   Baseline mapper/native failures and separate arm severing discriminate;
   full Garage Chromium/WebKit100/client9,737/373 skips/types/build/boundaries/
   actual composed pass. Runtime-double refused intents, not real429/Soul
-  sessions. Entire new span after `3f867956` through final tracking requires
-  Claude separately from care `c7d8f815..3f867956` and all earlier ranges.
+  sessions. Complete `3f867956..b64a91af`, including final tracking, is independently
+  corrective-approved; the 2026-11-02 log records historical-function discrimination
+  and current three-engine mounted checks. Care and other ranges remain separate.
 - [x] GS0.3 event decoders (announcements only): achievement and meter-band announcements.
   Review note: original `301728c8^..301728c8` is **CHANGES REQUIRED** for RP-312;
-  the scoped direction repair and simulated-reconnect supplement are locally verified,
-  not designated-approved. Claude must review exact `7aab0e2e..900f409e`,
-  including planning/record edges. The existing box is not an archival or full-GS0.3 gate.
+  the scoped direction repair/simulated reconnect has independent corrective approval
+  for complete `7aab0e2e..900f409e`, including planning/record edges (2026-11-02 log).
+  Actual historical function comparisons, current runtime and mounted three-engine
+  checks pass. The existing box is not an archival or full-GS0.3 gate.
 - [x] GS0.3 remainder: `fiscal_period_harvested.v1` nav badge (OD-3) and `buff_started.v1` announcement (`6594b646`).
   Bounded designated Codex verdict: `6594b646^..6594b646`, all five paths,
   APPROVED in the 2026-10-07 Garage log; not acceptance of the full lane,
