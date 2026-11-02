@@ -79,7 +79,9 @@ genesis binds attainment to the pinned axis declaration. A blind Company20
 rename is not a sufficient repair. Draft
 `rfc/headcount-activation-and-acceptance-integrity.md` specifies the full independent
 activation/state/Exit/replay matrix and honest RP-413 acceptance correction.
-It is a proposal awaiting technical review and author/owner adoption, not authority
+Its complete59a56f16..91057dd5 range is independently technically approved after
+correcting downward-Exit ambiguity; exact verdict/evidence is in the owning log.
+It remains a proposal awaiting author/owner adoption, not authority
 to alter the parent bodies or start wiring. Current owner-delegation questions
 remain questions until answered; no new gameplay or rates are inferred.
 

@@ -62,7 +62,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Pet Adoption v1](pet-adoption-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Pet Care / Save Layer / Game UI |
 | [Ticker Launch Corpus](ticker-launch-corpus.md) | accepted 2026-09-25 (recommended defaults; blocked on Feed VQ-3); implementing | Feed & Dispatch / Copy Pipeline |
 | [Headcount Allocation](headcount-allocation.md) | accepted; paid-hire/output model ruled 2026-11-02; translation independently approved; historical identity/AC-3 reconciliation remains | Economy Kernel / Tier 2 Content |
-| [Headcount Activation & Acceptance Integrity](headcount-activation-and-acceptance-integrity.md) | draft — independent capability activation/fresh identities and RP-413 correction proposed; not implementation authority | Headcount / Tier 2 Content |
+| [Headcount Activation & Acceptance Integrity](headcount-activation-and-acceptance-integrity.md) | draft — technical correction independently approved 2026-11-02; author/owner adoption pending, not implementation authority | Headcount / Tier 2 Content |
 
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
 — the evidence-derived READY/BLOCKED queue at HEAD. The older July batch manifest is history,

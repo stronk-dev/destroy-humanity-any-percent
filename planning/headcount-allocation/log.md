@@ -372,3 +372,25 @@ inherited Headcount identity, distinguish same-identity axis toggles, and scope
 empty-pool byte comparisons to compatible preactivation baselines. Explicit
 operator/rollback/No Hires limits remain. Parent bodies and runtime unchanged;
 complete original-plus-correction range requires independent re-review.
+
+## 2026-11-02 — Activation/acceptance correction technically approved
+
+APPROVED, no additional findings, full five-path original-plus-correction range
+59a56f16..91057dd578d87c84c521ae502749aab4b18aa5f6.
+Review by: fresh independent Codex /root/headcount_activation_contract_review.
+Recorded by: Codex root, transcribing its verdict. Independently rechecks the
+complete combined diff/proposal and canonical/actual save nonregression boundary.
+The corrected matrix preserves upward/equal compatibility and atomic downward
+refusal, forbids invented inherited state, distinguishes same-identity axis
+toggles and limits empty-pool comparisons/operator rollback/No Hires claims.
+Whitespace passes; prior actual-validator overlay/Exit test and arithmetic
+witness evidence remains applicable to unchanged implementation. No unrelated
+suite rerun, tracked reviewer edits, publication or live workload.
+
+This completes technical review, NOT owner adoption or parent-body reconciliation.
+The new-version nullable inactive-attainment representation requires applicable
+explicit adoption too; no model ruling or prior review is relabelled as that
+authority. Runtime/identities/parent bodies/fixtures/balance/copy remain unchanged.
+Next: obtain adoption of this concrete reviewed correction, reconcile both
+parents within that authority and build the complete chain under independent
+review; full content/policy/runtime/acceptance/release gates remain.
