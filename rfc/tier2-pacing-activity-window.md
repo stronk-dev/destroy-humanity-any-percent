@@ -1,6 +1,6 @@
 # RFC: Tier 2 Pacing Activity Windows
 
-- **Status:** accepted — Marco adoption 2026-11-02; parent-body translation pending independent technical review
+- **Status:** accepted — Marco adoption 2026-11-02; parent-body translation independently approved
 - **Author:** Codex (adopted by Marco)
 - **Created:** 2026-11-01
 - **Design refs:** `design/02 §11` (Tier 2 pacing), `design/06 §idle-math`
@@ -117,7 +117,8 @@ not a measurement from which to raise a ceiling or claim full-workload feasibili
 Under Marco's explicit adoption/delegation, the parent's P1 body now qualifies
 Chaos's literal inheritance with the W1 session exception and defines Reference's
 six-hour session explicitly. W2/W3's global window, clipping and new-ID seed rules
-are beside that table. This translation awaits independent technical review.
+are beside that table. Independent technical review approves the complete
+`7cc5f4b8..d6b1c668` translation; the owning log records the verdict.
 All other P1/P2 text and Headcount holds remain; do not remove pending mechanics
 to land an easier subset.
 
@@ -150,8 +151,8 @@ explicitly adopted that exception. No deviation from the design pacing target.
 
 ## Open authority and engineering
 
-Owner adoption and delegated parent-body reconciliation are recorded; independent
-technical review of the translation is pending. Headcount/output/seat contracts,
+Owner adoption, delegated parent-body reconciliation and its independent technical
+approval are recorded. Headcount/output/seat integration contracts,
 complete schema-v2 policies/loader/runner, full pacing/relevance/role evidence,
 report provenance implementation and balance/content adoption retain their parent
 gates. Technical review is neither adoption nor proof those features exist.

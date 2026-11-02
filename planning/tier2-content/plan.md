@@ -26,7 +26,7 @@ changes alone cannot satisfy that policy's p50 envelope here. The owning
 evidence, the isolated unadopted duration control and14 native/Linux actual public
 consumer comparisons with full independent state/history replay. Unreached rows
 are retained. Marco has now adopted the reviewed activity-window amendment and
-delegated parent-body reconciliation; its technical translation review is pending.
+delegated parent-body reconciliation; its technical translation is independently approved.
 No runtime/data session, target, content or policy is changed here; full672 calibration, the future
 allocation-aware policy and all existing feature/mint gates stay open.
 
@@ -35,13 +35,13 @@ allocation-aware policy and all existing feature/mint gates stay open.
 window/jitter, new-ID seed material, old bytes/reports and the2h–3h target. Marco
 explicitly adopts it and delegates parent-text reconciliation. P1's conflicting
 literal-copy wording is reconciled in the same change; independent technical
-review of that translation is still required. It does not implement the held
+review APPROVES complete `7cc5f4b8..d6b1c668`. It does not implement the held
 full P1 registry. Manual activity-
 projection examples exercise all97 seeds and independent exact boundaries,
 new-ID versus old-cohort controls and horizon clipping; no payout/progression or
 new-loader acceptance is claimed. Independent technical review APPROVED complete
-`059e8706..8aa53527`. The next boundary is translation review, then the complete
-P1/Headcount prerequisites and implementation—not another owner vote on these windows.
+`059e8706..8aa53527`. The next boundary is the complete P1/Headcount prerequisites
+and implementation—not another owner vote or translation review on these windows.
 
 **Review checkpoint, 2026-10-08:** Codex independently approves the original C1–C4 candidate,
 era and control changes and the bounded C5 pacing implementation/reproduction in the exact

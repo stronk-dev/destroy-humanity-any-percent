@@ -52,7 +52,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Minigame — Demo Disc Arcade](minigame-demo-disc-arcade.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Minigame API & Surface |
 | [Minigame — Arcade Pinball](minigame-arcade-pinball.md) | draft — not implementation authority; owner-requested addition (not in design/03), OD-P1–P15 | Demo Disc Arcade / Minigame Platform |
 | [Tier 2 Content — IT Company](tier2-content.md) | accepted 2026-09-25 (recommended defaults; seat source OD-1 held); implementing | Economy Kernel / Routes / Balance Harness |
-| [Tier 2 Pacing Activity Windows](tier2-pacing-activity-window.md) | accepted 2026-11-02 — owner-adopted; parent-body translation pending independent technical review; full P1/Headcount prerequisites remain | Tier 2 Content P1/P2 |
+| [Tier 2 Pacing Activity Windows](tier2-pacing-activity-window.md) | accepted 2026-11-02 — owner-adopted; parent-body translation independently approved; full P1/Headcount prerequisites remain | Tier 2 Content P1/P2 |
 | [Minigame — Server Garden](minigame-server-garden.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Fiscal / Tier 2 |
 | [Garage Player Surfaces](garage-player-surfaces.md) | accepted 2026-09-25 (recommended defaults); implementing | Game UI Screens / Fiscal / Achievements / Meters / Pet / Active Play / Minigame API |
 | [Clout v1 & PR Interns](clout-v1-and-pr-interns.md) | accepted 2026-09-25 (recommended defaults); implementing | Achievements / Economy Kernel |

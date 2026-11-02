@@ -699,3 +699,17 @@ runtime/complete pacing defect is not marked fixed. Fresh independent technical
 review must inspect the complete parent/body/record translation before implementation.
 Root checks the normative diff for exact reviewed values and unchanged P2/ACs;
 no software-suite rerun is claimed as evidence for a prose adoption. Nothing pushed.
+
+## 2026-11-02 — Adoption translation independently approved
+
+APPROVED, no findings, complete eight-path base-exclusive/tip-inclusive range
+7cc5f4b88597820750ccc03461e2526d325bb95e..d6b1c6689574a4823473a44c9fe51d4659d5fd09.
+Review by: fresh independent Codex /root/tier2_window_adoption_translation_review.
+Recorded by: Codex root under Marco's technical-review delegation. Independently
+inspects every path and the parent/child/source authority, confirms the source
+registry SHA and unchanged child since prior review. Git-backed comparisons retain
+parent P2/ACs/original owner acceptance/OD-1 exception and child W1–W3/ACs exactly;
+logs append-only and diff-check clean. No software suites for Markdown; no tracked
+reviewer edits or publication. This closes the translation gate. Adoption comes
+from Marco's direct answer, not this technical verdict. Runtime/full policies,
+Headcount integration, accounting/search, pacing, mint and release remain open.

@@ -2145,7 +2145,7 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
    shared attendance-clock contract and historical kernel guard. Finish the
    natural pacing/relevance and candidate-copy/content gates. New2026-11-01 Tier2 constraint
    RP-698's new-persona activity windows are owner-adopted2026-11-02, with delegated
-   parent-body reconciliation and independent translation review pending. Runtime/full
+   parent-body reconciliation and independent translation approval. Runtime/full
    policy proof still remains: the implemented old Chaos session stops before the target's
    minimum, so another price sweep cannot alone fix it.
    The [owning research log](clout-v1-and-pr-interns/log.md) holds the native/Linux consumer

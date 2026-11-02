@@ -5714,3 +5714,8 @@ tiers, rights/accessibility/deployment and the full1.0 release floor remain.
 Next is translation review and the parent's specific prerequisites, not another
 owner vote on these adopted windows. CI's separate local worker-width candidate
 is under its own corrective review; no hosted/whole-CI release claim or push.
+
+Window-adoption closeout: fresh independent Codex technical review APPROVES the
+complete eight-path7cc5f4b8..d6b1c668 translation, source hash and Git-backed
+preserved parent/child contracts. Review by: /root/tier2_window_adoption_translation_review.
+Recorded by: Codex root. This closes translation, not runtime/full pacing or1.0.
