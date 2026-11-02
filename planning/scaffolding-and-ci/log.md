@@ -3990,3 +3990,20 @@ functional-native.json26221bytes SHA256
 Diff-check clean. Review by: Codex root, implementer first filter. Recorded by:
 Codex root. Complete batch after70737410 still needs fresh independent corrective
 review. No archive, specification adoption, release approval or push.
+
+### Independent approval — Garage families and wait ordering
+
+APPROVED, no findings, complete15-path range
+70737410df1a69fadff58c192277b89f08491f47..5a509e46e1f092566e336be06667251e37905fdf.
+Review by: fresh independent Codex /root/browser_family_ordering_corrective_review.
+Recorded by: Codex root under Marco's delegation. Independently verifies98 unchanged
+statements/import bindings, ordering/project/shard properties, full-run hashes and
+identical40515+93 case populations. Executes full Node12503 passes/1106 skips,
+22.77s; types0/0; cold Linux-arm64 with verified4CPUs/affinity0-3 whole Garage
+selection27 files/1281 cases passes172.71s. This includes1269 moved interactions,
+three real-minute idle cases and nine existing garage-surfaces.test.ts cases.
+Idle durations60.25–60.98s. Reviewer JSON SHA256
+40dece37a10977f8825abdbfbd580f8ef9a2257b9506f6c89719bd0dc48faa47.
+Full target inspected, not independently rerun; exact-range diff-check clean,
+tracked tree unchanged and all reviewer browser workloads terminal. No speedup,
+default-load/hosted/five-minute/full1.0 acceptance or specification adoption.

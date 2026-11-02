@@ -70,11 +70,17 @@ Both priority files begin5–6s into every project and retain the full60s idle w
 Complete Node client suite passes12503 cases/1106 existing skips,9.73s. No whole-
 workflow speedup is established; strict hosted/five-minute acceptance remains open.
 
-Next: independent review of the finished range, including the mechanical move,
-actual ordering/population proof and honest latency limitation. Do not call this
-CI completion or infer a safe default14CPU load. Further latency work needs actual
-aggregate profiling/hosted evidence, not another arbitrary worker/split sweep or
-raised bound. Continue accepted1.0 work without waiving accounting/adoption gates.
+Fresh independent corrective review APPROVES complete70737410..5a509e46 after
+Node12503, actual three-engine whole Garage1281, types and independent source/
+population/artifact checks. This does not close CI/default14CPU/hosted latency.
+
+Next bounded diagnosis: observe one60s CPU-profile window of the actual Node/Vitest
+coordinator during the full unchanged four-CPU target. Question: is its sampled
+time active coordination/transform work or waiting? Use built-in inspector CPU
+profiling, identify the exact owned Vitest process, fail on missing/invalid sample,
+retain the partial-window scope and all full-job outcomes. No browser CPU attribution,
+matched benchmark, source optimization or new budget follows from that sample.
+No arbitrary worker/split sweep or raised bound. Continue the full1.0 objective.
 
 ## Historical checkpoint sequence — original heading 2026-10-16
 
