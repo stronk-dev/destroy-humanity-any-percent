@@ -24,8 +24,11 @@ proposed, not runtime fixes or adopted policy. HP6 now proposes a concrete new
 `simulation_tier2_headcount_endpoint_v1` binding: actual versioned genesis, full
 endpoint/closed-replay pipeline, masks and real terminal continuation. The old
 Company14/fixed-lifetime caller is not widened or reinterpreted. Fresh independent
-technical review must cover the added binding before requesting adoption; core
-accounting/search adoption alone does not enable this new profile. Actual complete
+technical review APPROVES the added binding in full d8fe9bee..26ac39f9; the owning
+log records exact hashes and source checks. Bank reads are not attendance heartbeats:
+canonical command gaps still determine absence, even inside activity windows.
+Owner adoption remains required; core accounting/search adoption alone does not
+enable this new profile. Actual complete
 engine/factory/registry/runner, source parity and full-workload proof remain unbuilt.
 Complete P1/content/accounting/targets/mint gates remain.
 

@@ -862,3 +862,40 @@ requires fresh independent technical review; prior bounded verdict is preserved,
 not expanded by transcription. No owner adoption or implementation readiness claimed.
 Full HP1–HP7 and future acceptance, all core-contract/content/implementation/release
 obligations remain; nothing pushed and the full1.0 goal remains active.
+
+## 2026-11-02 — Concrete Headcount binding independently technically approved
+
+APPROVED complete five-path
+`d8fe9beebc162625276ff9efe2cfbfa3daf30e8c..26ac39f922a1a7d5ed2fd11ae5594425321969d8`.
+Review by: fresh independent Codex
+`/root/tier2_headcount_endpoint_binding_spec_review`.
+Recorded by: Codex root, transcribing the final verdict. Complete identities /
+genesis, typed context, full action/foundation completion, real terminal continuation,
+mask isolation and definedness fallback are coherent with the referenced contracts.
+Core adoption cannot implicitly enable this separate profile. No tracked reviewer
+edits or main-tree mutations; reviewed tree and whitespace clean.
+
+Reviewer executes five cold existing-source tests for schedule evidence, inconsistent
+Founder-carry refusal, three curriculum starters, pre-command branch preview and
+frozen Reputation contributions: PASS0.355s. Actual
+`TestAxisCalculationClockBoundariesResearch` passes all36 cells cold,0.596s.
+These prove existing source semantics only, not the unbuilt Headcount factory,
+new-profile Go/TS/SQL journey, full pacing/workload, balance or feature acceptance.
+Exact root commands:
+`make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -v -run TestActivePlayScheduleUsesAttendedTimeAndReplayEvidence\|TestCurriculumBranchPreviewObservesAccrualBeforeReplacingTheCommand\|TestCurriculumReplayBranchesKeepReputationNeutralAndApplyTheirStarter\|TestApplyLoggedRejectsMismatchedFounderCatalogCarry\|TestReputationFrozenFounderContributionsAddTheBonusRow'`
+and `make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -v -run TestAxisCalculationClockBoundariesResearch'`.
+
+The reviewer investigates then withdraws a potential clock objection: the draft
+already selects canonical command-gap attendance and explicitly declares a NEW
+protocol. Activity windows permit actions, not guaranteed attended wall time.
+Bank observations are not attendance heartbeats. Actual existing logged-path
+tests show attended9000ms at5000ms versus4000ms at5001ms from one origin.
+The whole over-ceiling command gap becomes absence. The draft now explains that
+inherited consequence explicitly before adoption; no new heartbeat, saved payment,
+session-wall clock or policy change is introduced. Future acceptance must observe it.
+
+Status/index/two plans now record this bounded approval, not adoption or runtime.
+Editorial transcription/explanation inspected with `git diff --check`; no unrelated
+suite rerun for Markdown. Owner adoption and same-edit parent/H1 reconciliation
+are the next authority boundary; complete implementation and all original gates
+remain. Nothing pushed; full1.0 goal stays active.

@@ -1,6 +1,6 @@
 # RFC: Tier 2 Paid-hiring Policy Binding
 
-- **Status:** draft — bounded decisions reviewed; concrete HP6 binding proposed, technical review/adoption pending; NOT implementation authority
+- **Status:** draft — bounded decisions and concrete HP6 binding independently technically approved; owner adoption pending; NOT implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-02
 - **Parent / amends:** Tier 2 Content P1/HG-10; Headcount Allocation S9's harness consumer; Accrual-aware Harness Search H1's closed caller matrix
@@ -249,6 +249,17 @@ run the old runner's manual `RecordOfflineSpan` or `first_hour_lifetime` hook.
 Founder-attended milestones derive from canonical Company attendance plus actual
 completed-run Founder carry, counted once; session windows/seed/cadence remain P1.
 
+Bank observations are NOT attendance heartbeats. Under that canonical logged
+policy, an origin-to-command gap strictly greater than the pinned Prestige
+catchup ceiling (currently5000ms) records the whole gap as absence, even inside
+a declared activity window. Existing source tests observe attended9000ms at a
+5000ms endpoint versus4000ms at5001ms from the same origin. The declared windows
+permit persona actions; they do not guarantee attended wall time. This NEW
+protocol inherits that consequence, not the old runner's per-boundary attendance.
+Do not silently insert saved commands, count bank reads as activity, or substitute
+session-wall time to restore the old result. Future acceptance must observe this
+boundary; changing attendance policy would require its own accepted authority.
+
 Scripted-first preflight/interception and curriculum branching use the actual
 production predicates/resolved terminal path; elective Exit uses the same real
 terminal path. Apply all returned Founder updates, terminal history, next Company,
@@ -348,9 +359,9 @@ that the current subset already did so. Full-workload budget proof stays require
 
 No software pass, production behavior or feasibility is claimed for this prose.
 Keep six-hour windows, 2h–3h target, 90%/24h offline, all populations and full
-nine-tier1.0 scope. Technical review first: HP6 now proposes a concrete binding,
-not an implemented factory. Resolve review findings before requesting adoption /
-same-change body reconciliation, and prove every future gate before closeout.
+nine-tier1.0 scope. Independent technical review approves the proposed binding,
+not an implemented factory. Owner adoption / same-change body reconciliation and
+every future acceptance gate remain required before implementation/closeout.
 
 ## Technical review provenance
 
@@ -358,6 +369,9 @@ Fresh independent Codex `/root/tier2_paid_hiring_policy_spec_review` APPROVES
 complete `0e5cf832..5498072b` after forward correction of the explicit full-P2
 termination and manual-bootstrap omissions. The owning log records exact hashes,
 findings and evidence. That verdict approves the prior bounded decision proposal
-only. The later concrete HP6 profile requires its own complete independent technical
-review; the prior verdict cannot approve new source/hook/genesis/continuation scope.
-No adoption, implementation, workload or balance proof follows from either prose.
+only. Fresh independent Codex `/root/tier2_headcount_endpoint_binding_spec_review`
+separately APPROVES the complete five-path `d8fe9bee..26ac39f9` range containing
+the concrete HP6 source/hook/genesis/continuation proposal. The owning log records
+exact hashes, executed source checks and the bank-observation attendance caveat,
+made explicit above without changing the reviewed policy. No adoption,
+implementation, workload or balance proof follows from either review.

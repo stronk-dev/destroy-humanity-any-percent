@@ -94,7 +94,8 @@ library is only one prerequisite, not a substitute for that chain.
 - HG-10 now has the draft `rfc/tier2-paid-hiring-policy.md` for deterministic
   decisions and paid-sequence ranking. Prior bounded decision review is complete;
   its newly concrete full Headcount endpoint/closed-replay/genesis/continuation
-  binding needs fresh technical review/adoption and actual implementation. No
+  binding is independently technically approved d8fe9bee..26ac39f9; adoption and
+  actual implementation remain. Canonical bank-gap attendance is explicit. No
   Company14 fallback or full P1 readiness is inferred. Tier2's plan/log owns the
   proposal, not a second engine.
 - The siblings' complete model translation (RP-414) is independently approved;
