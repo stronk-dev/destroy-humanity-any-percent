@@ -744,3 +744,30 @@ E4 now binds actual canonical cap-reason paths and keeps the real role/panel
 presentation contract as a prerequisite; no invented engine field or authored
 copy. No software suites for this specification-only correction. Full translation
 re-review remains pending; no implementation, acceptance or publication claim.
+
+## 2026-11-02 — HG-10 paid-hire policy proposal, not a partial implementation
+
+Previous goal turn is progress: deployment native witness corrected, executed and
+independently approved. Resume clean `0e5cf832`. Read complete Headcount/Tier2
+specifications, adopted windows, pinned policy and actual first-hour/relevance
+adapters. Model adoption/translation is already complete; do not repeat it.
+
+`rfc/tier2-paid-hiring-policy.md` proposes count1/key enumeration, Chaos legality,
+Casual allocation as a later ordinary action, Reference's actual paid-action then
+allocation sequence, shared closure allowance and full capture. It retains the
+projected-time equation, not a second economy model. The cash-priced unassigned-hire
+constraint is source-derived; the tiny arithmetic illustration is NOT engine proof.
+
+Another prerequisite is explicit: accounting-search H1 currently binds this caller
+to Company14, not future Headcount state. HP6 forbids downcasting, numeric-floor
+widening, partial hooks or constructor bypass. Actual source/sampling/hook/completion
+closure remains engineering work before the full registry is implementation-ready.
+Parent normative bodies, old policies/reports, runtime/catalog/copy, versions,
+budgets, populations and targets are unchanged. Index/two plans link the proposal;
+RP-414/HG-10 already own this integration gap, not a new duplicate defect.
+
+Review by: Codex root, author/first filter only. Recorded by: Codex root.
+Pinned source SHA rechecked against bytes; paths/references and whitespace checked.
+No software suite for prose, feasibility or calibration claimed. Complete new draft /
+index/two-plan/log range needs fresh independent technical review. Resolve findings
+and HP6 before adoption or runtime wiring. Nothing pushed; full1.0 gates remain.

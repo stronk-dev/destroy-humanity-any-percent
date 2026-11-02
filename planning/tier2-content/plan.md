@@ -12,6 +12,13 @@ role/price/rate content plus HG-10 full hiring/allocation policy binding. The
 existing S2 library/window subset does not complete that chain. Fixture-first:
 candidates remain under `balance/testdata/t2/`; epoch9 is NOT minted (M1–M4).
 
+**HG-10 proposal, 2026-11-02:** `rfc/tier2-paid-hiring-policy.md` specifies unit-hire
+keys/legality, Chaos's seeded choices, Casual's paid-then-later allocation and
+Reference's paid-action-plus-real-closure ranking/capture. It is draft, not runtime
+or adoption. Current accounting-search H1's Company14 binding cannot silently
+admit Headcount; HP6 names source/hook/completion engineering closure before wiring.
+Technical review precedes adoption. Keep complete P1/content/accounting/targets/mint gates.
+
 **RP-697 correction, 2026-11-01:** the pacing caller copied the candidate bundle
 but retained the epoch-8 constants hash. Bind its real simulation revisions and
 derived run keys to that same candidate, leaving the base suite untouched. The
