@@ -798,3 +798,29 @@ model enumeration checks105 valid states/395 unit moves and45 allowance cases;
 schema/Headcount/paid-sequence/termination implementation or full workload proof.
 No tracked reviewer edits. Complete original-plus-forward range needs independent
 re-review; HP6 actual capability binding and owner adoption remain open.
+
+## 2026-11-02 — HG-10 bounded decision proposal independently approved
+
+APPROVED complete two-commit/five-path
+`0e5cf832fe3f4628122af10eb5012076d704908d..5498072b676ef4fe23442f921dc32f31da11243d`.
+Review by: fresh independent Codex `/root/tier2_paid_hiring_policy_spec_review`.
+Recorded by: Codex root, transcribing its final verdict. Both findings resolved:
+HP7's NEW full-horizon run keeps first milestones without early termination;
+HP5 preserves manual bootstrap and error/unreachable distinctions. Policy-only
+sentinel refusal resolves the nonblocking alias concern without engine changes.
+Paid debit/unassigned state/real command closure, shared allowance, capture,
+Casual cadence and Chaos's unassisted choice remain coherent. No additional
+unresolved choice blocks this bounded decision proposal.
+
+Reviewer inspects all combined paths, original source hash and unchanged runtime /
+parent/policy bytes. Whitespace/tree clean at reviewed tip. Existing focused cold
+checks0.414s and finite model comparisons retain their source boundary; no rerun
+for Markdown-only correction and no new engine/policy journey claim. No tracked
+reviewer edits. This status/provenance reconciliation records the verdict, not
+author-supplied approval or owner adoption.
+
+Next is HP6's actual Headcount source/sampling/hook/completion engineering closure.
+The proposal is NOT full HG-10/P1-ready or implementation authority. Full-horizon
+protocol still needs adoption and measured workload proof. All Headcount engine,
+accounting/search adoption/implementation, content/copy/balance/mint, historical
+guard and nine-tier1.0 gates remain. Nothing pushed; goal remains active.

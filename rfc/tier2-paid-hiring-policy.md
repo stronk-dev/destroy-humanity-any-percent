@@ -1,6 +1,6 @@
 # RFC: Tier 2 Paid-hiring Policy Binding
 
-- **Status:** draft — technical review/adoption and actual capability binding pending; NOT implementation authority
+- **Status:** draft — bounded decision-policy technical review approved; adoption and actual capability binding pending; NOT implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-02
 - **Parent / amends:** Tier 2 Content P1/HG-10; Headcount Allocation S9's harness consumer
@@ -242,3 +242,12 @@ No software pass, production behavior or feasibility is claimed for this prose.
 Keep six-hour windows, 2h–3h target, 90%/24h offline, all populations and full
 nine-tier1.0 scope. Technical review first; resolve findings and HP6 before
 requesting adoption, reconciling parents or claiming ready to implement.
+
+## Technical review provenance
+
+Fresh independent Codex `/root/tier2_paid_hiring_policy_spec_review` APPROVES
+complete `0e5cf832..5498072b` after forward correction of the explicit full-P2
+termination and manual-bootstrap omissions. The owning log records exact hashes,
+findings and evidence. This approves the bounded decision proposal only; HP6's
+actual source/sampling/hook/completion binding is still unresolved. No adoption,
+full HG-10/P1 readiness, implementation, workload or balance proof follows.

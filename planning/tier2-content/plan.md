@@ -17,10 +17,12 @@ keys/legality, Chaos's seeded choices, Casual's paid-then-later allocation and
 Reference's paid-action-plus-real-closure ranking/capture. It is draft, not runtime
 or adoption. Current accounting-search H1's Company14 binding cannot silently
 admit Headcount; HP6 names source/hook/completion engineering closure before wiring.
-Technical review precedes adoption. Keep complete P1/content/accounting/targets/mint gates.
-Initial review requires explicit full-P2 termination and Reference empty-option
-bootstrap; the forward proposal adds horizon completion, retained first observations,
-manual bootstrap and error/unreachable separation. Both remain proposed, not runtime fixes.
+Bounded decision-policy review APPROVES full0e5cf832..5498072b after forward correction
+of full-P2 termination and Reference empty-option bootstrap. New full-horizon completion,
+retained first observations, manual bootstrap and error/unreachable separation are
+proposed, not runtime fixes or adopted policy. Next close HP6's actual calculation
+capability binding before claiming full HG-10/P1 readiness or requesting adoption.
+Complete P1/content/accounting/targets/mint gates remain.
 
 **RP-697 correction, 2026-11-01:** the pacing caller copied the candidate bundle
 but retained the epoch-8 constants hash. Bind its real simulation revisions and
