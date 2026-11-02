@@ -7837,3 +7837,22 @@ the next entry records the terminal result, not an inferred pass.
 Review by: Codex root, implementer first filter only. Recorded by: Codex root.
 The preceding three independent verdict transcriptions close older review debt only; none
 approves this new correction, any broader deployment claim or release.
+
+## 2026-11-02 — RP-704 current real-service rerun completes
+
+Current correction `5c43a93100c32c9fb139f37c1daff91250cfdc3c`, no subsequent code changes.
+The permitted `make test-operations-native` run64238 is terminal PASS421.421s using the
+same checksum-verified native services above. Seven-family firing/resolution and real
+HTTP500 refusal PASS60.53s. The real Prometheus cleanup journey PASS360.70s: zero baseline
+7.334s, counter one22.374s, actual metric firing1m0.375s and natural resolution6m0.384s,
+counter still one. Exact journal-only firing/resolution deliveries are explicitly logged
+without credit. The real five-minute window, fifteen-second cadence, one-minute grouping
+and eight-minute guard remain unchanged; this duration is not an operating latency claim.
+Owned process cleanup completes with the test; no reset, injected resolution or retry of
+an active run. The prior denied listener attempt remains excluded.
+
+Review by: Codex root, implementer first filter only. Recorded by: Codex root.
+Fresh independent `/root/native_cleanup_source_corrective_review` is checking the complete
+six-path implementation and executing its own real-service journey; approval remains pending.
+This is native darwin/arm64 supplemental evidence, not actual cleanup SQL/journald/exporter,
+private Compose/Caddy, supported Linux artifacts, R-006/AC7 or whole CI/release acceptance.
