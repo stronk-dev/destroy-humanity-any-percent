@@ -39,7 +39,11 @@ Keep P1's six-class order; `within_class` becomes `raw_byte_command_key`.
 Existing purchase keys remain item IDs; hire keys are `hire:<pool_id>:1`.
 Move keys remain `move:<from>><to>`: the globally unique destination identifies
 its pool, including moves from `unassigned`. Duplicate keys/incomplete enumeration
-fail. Each new row's `decision.legal_commands` contains all six classes in order.
+fail. In this policy context reserve the source sentinel `unassigned`: if an
+actual role has that exact ID, refuse the WHOLE measurement during preflight,
+before enumeration. Do not confuse that role with the bench or silently omit it.
+This does not change the engine's generic ID grammar; the Tier2 `role.*` rows are
+compatible. Each new row's `decision.legal_commands` contains all six classes in order.
 Keep inherited decision kind/affordability/wait fields and add one required,
 exact-key `headcount_decision` object:
 
@@ -130,6 +134,17 @@ At each ordinary Reference decision:
    allocation without its commands, grant production before payment, or choose
    another allocation after charging. A selected action error fails, not retries.
 
+Only legal purchase sequences whose objective projection is reachable enter the
+ranked list. A genuinely unreachable projection is not a finite score; arithmetic,
+codec, hook, context and budget errors fail the measurement, never become
+unreachable. If NO ranked purchase and NO reachable bank remain, apply exactly
+the inherited one-batch manual bootstrap at the current ordinary boundary,
+after the pre-closure. Speculative future probes do not move that endpoint.
+An actual rejected/failed bootstrap fails the run rather than waiting, adding
+free output or silently trying another action. A met terminal objective instead
+banks to the next ordinary boundary; it does not trigger bootstrap or buy away
+the already-met objective. All actions retain normal charging/capture.
+
 Use at most `seats[pool]` applied moves across ALL closures of one ordinary
 Reference decision, including its deferred purchase endpoint.
 Carry pre-closure used counts into each purchase branch/selected continuation;
@@ -170,6 +185,31 @@ consumes the declared budget; setup is charged under the accepted accounting
 protocol. Guard exhaustion is incomplete, never coasted success or a basis to
 raise a ceiling. P2's complete measured/ratified budget remains; no number here.
 
+### HP7 — Full P2 runs to its horizon, not the first gate
+
+For the NEW full P2 population, process all declared policy activity boundaries
+through its declared horizon, subject to the adopted half-open session rules.
+Reaching the gate, first allocation, or both milestones does NOT end the run.
+Keep the first gate's Founder-attended timestamp/run independently; keep the
+first actual applied `reallocate_headcount` timestamp independently. Each remains
+its first observation while later actions continue. Do not replace gate time
+with allocation time or manufacture an allocation when the pool opens.
+
+Current `tier2Runtime.done()` returns on the gate alone; the complete new runner
+must replace that subset termination rule. Its pool opens at that same gate,
+so retaining the early return would suppress the required later milestone.
+Keep the existing subset/reports historically identified, not relabelled full P2.
+
+No extra action/evaluation is forced at a clipped horizon or excluded session-end
+timestamp. Existing scripted/elective run continuation and Founder-global windows
+remain unchanged. After the last admitted boundary, finalize the measurement
+without a saved payment. Missing gate/allocation remains a `must_reach` failure,
+with unreached values retained in every seed/aggregate, never dropped. Record
+horizon completion distinctly from early error/guard/unsupported interruption;
+an early interruption is not a completed full run or a budget measurement.
+Continuing to the horizon is a NEW protocol choice requiring adoption, not a claim
+that the current subset already did so. Full-workload budget proof stays required.
+
 ## Future acceptance — not achieved here
 
 1. Complete strict v2 registry/all three identities; malformed/missing/extra/null
@@ -183,12 +223,20 @@ raise a ceiling. P2's complete measured/ratified budget remains; no number here.
 4. Public Casual runner pays then allocates at a later legal boundary; no offline /
    after-horizon or already-assigned optimization. Chaos has no helpful closure.
 5. Closure controls cover strict/no improvement, unreachable/finite, ties, shared
-   allowance and charged trials. A too-long improving chain fails loudly.
+   allowance and charged trials. A too-long improving chain fails loudly. Empty
+   ranked options with unreachable bank execute the real manual bootstrap;
+   projection errors cannot be hidden as unreachable/bootstrap success.
 6. Full captures replay against actual Headcount source/pins across returns/both
    endings: full state/lifetime/caps/receipts/events/unassigned/idle in Go/TS and
    actual Postgres where owned, not a manually installed winning assignment.
 7. FULL P2/P3/P4/P5, adopted windows, unchanged first-hour controls and content /
    copy ratification/mint. No subset or this draft repairs RP-433's population conflict.
+8. Real full-P2 public runner reaches the gate, later pays/allocates and continues
+   through all admitted boundaries to the declared horizon, retaining first times
+   and every seed. Reinstating gate-only OR all-milestones early stopping must
+   fail. A no-allocation fixture stays failed/unreached; after-session/horizon
+   actions and early guard completion must fail too. Pure boundary/model checks
+   do not replace this future actual engine journey.
 
 No software pass, production behavior or feasibility is claimed for this prose.
 Keep six-hour windows, 2h–3h target, 90%/24h offline, all populations and full

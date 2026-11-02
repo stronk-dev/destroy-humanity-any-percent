@@ -18,6 +18,9 @@ Reference's paid-action-plus-real-closure ranking/capture. It is draft, not runt
 or adoption. Current accounting-search H1's Company14 binding cannot silently
 admit Headcount; HP6 names source/hook/completion engineering closure before wiring.
 Technical review precedes adoption. Keep complete P1/content/accounting/targets/mint gates.
+Initial review requires explicit full-P2 termination and Reference empty-option
+bootstrap; the forward proposal adds horizon completion, retained first observations,
+manual bootstrap and error/unreachable separation. Both remain proposed, not runtime fixes.
 
 **RP-697 correction, 2026-11-01:** the pacing caller copied the candidate bundle
 but retained the epoch-8 constants hash. Bind its real simulation revisions and

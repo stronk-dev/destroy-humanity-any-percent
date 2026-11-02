@@ -771,3 +771,30 @@ Pinned source SHA rechecked against bytes; paths/references and whitespace check
 No software suite for prose, feasibility or calibration claimed. Complete new draft /
 index/two-plan/log range needs fresh independent technical review. Resolve findings
 and HP6 before adoption or runtime wiring. Nothing pushed; full1.0 gates remain.
+
+## 2026-11-02 — HG-10 initial review findings and forward correction
+
+Review by: fresh independent Codex `/root/tier2_paid_hiring_policy_spec_review`.
+Recorded by: Codex root, transcribing its initial verdict. CHANGES REQUIRED on
+complete five-path `0e5cf832fe3f4628122af10eb5012076d704908d..51ed52367520e97fb09200fedeb4b709b70610c5`.
+F1: current `tier2Runtime.done()` is gate-only, consumed immediately by the
+runner; the pool opens there, so an unchanged runner cannot observe the required
+later allocation. Blanket future-P2 reference did not specify termination.
+F2: proposed Reference ordering omitted the inherited no-ranked-purchase /
+unreachable-bank manual bootstrap and explicit error-versus-unreachable handling.
+
+Forward proposal now specifies NEW full-P2 horizon completion (not either milestone),
+independent first observations, missing/guard failure retention, no forced excluded
+boundary action and a premature-stop negative. HP5 states actual manual bootstrap,
+unreachable exclusion and fail-loud errors. This does not implement/adopt either
+change or relabel current subset reports. Nonblocking sentinel hardening is explicit:
+policy preflight refuses a real role named `unassigned`, without narrowing engine
+grammar or silently dropping that role. Current Tier2 `role.*` IDs do not collide.
+
+Reviewer independently confirms pinned SHA and executes cold existing strict policy /
+RNG/identity/selected-purchase/bank-capture tests, Harness0.414s. Compact independent
+model enumeration checks105 valid states/395 unit moves and45 allowance cases;
+90/95/47.5s illustration agrees. These are existing-source/model checks, NOT new
+schema/Headcount/paid-sequence/termination implementation or full workload proof.
+No tracked reviewer edits. Complete original-plus-forward range needs independent
+re-review; HP6 actual capability binding and owner adoption remain open.
