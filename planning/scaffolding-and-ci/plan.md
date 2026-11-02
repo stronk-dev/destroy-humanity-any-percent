@@ -125,6 +125,20 @@ after907f9021. Next run the ordinary full target ONCE at the instrumented revisi
 without trace/concurrency/CPU overrides, to capture a genuine recurrence. This is
 new signal, not a retry to replace earlier failures; no failure cause is closed.
 
+Independent review APPROVES complete907f9021..5db340da after actual all-engine
+affected243 ordinary/3expected cases and types. Ordinary instrumented full run
+then terminates137 at the unchanged guard:494/498 broad rows,96 reported failures,
+no final JSON or later phases. Six genuine confirmation abort records show native
+promise wait accumulation; the exact Chromium Enter recurrence spends14598.6ms
+in eight completed commands out of14893.4ms observed lifetime, with the ninth
+already outstanding. This is not a single15s stuck command or proof of a handler
+fault. Next bounded candidate shares the installed runner's inherited CPU/~12
+capacity heuristic across projects instead of multiplying it per engine, and
+reserves Firefox one file for RP-700. This is a capacity hypothesis, not an assumed
+safe limit: complete unchanged target/terminal0 required, no trace, deadline,
+input/assertion/population loss or arbitrary count grid. Hosted five-minute
+acceptance remains separate; do not adopt the candidate from partial evidence.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing

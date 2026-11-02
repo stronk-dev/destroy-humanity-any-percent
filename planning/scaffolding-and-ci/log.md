@@ -3239,3 +3239,53 @@ This focused pass does not explain/correct the earlier Chromium timeout or repai
 RP-700/whole CI, hosted latency or release acceptance. Complete batch after907f9021
 requires fresh independent review; Review by: Codex root (implementer first filter).
 Recorded by: Codex root. No archive or push.
+
+### Independent confirmation-diagnostic approval; genuine accumulated RPC delay
+
+APPROVED, complete four-path
+`907f902133e54fa1172a2bfeb48ce3fd43ce63e1..5db340da7bea6cf4198ec9a73809e1c7a6b8b361`.
+Review by: fresh independent Codex `/root/confirmation_abort_corrective_review`.
+Recorded by: Codex root, transcribing under Marco's delegation. Reviewer executes
+the entire affected Linux three-engine file:243 ordinary passes/three expected
+deadlines,246total,8.23s; types0/0 and exact diff pass. It independently checks
+all nine original keys/assertions/identities, actual trusted-input cancellation,
+framework50ms capture followed by ordinary cleanup/refusal assertions, and raw
+source/log/JSON digests. Initial sandbox denial runs no tests; authorized run does.
+No tracked reviewer edits or mutations. Scope is lifetime/diagnostic behavior,
+NOT latency cause/correction, whole CI, hosted reliability or feature/release.
+Routing correction to the preceding entry: this broader native timeout belongs
+to RP-526, not RP-637 (the separate Clout Open/Close defect). Historical entry
+remains intact; the mistaken ID did not authorize or change any implementation.
+
+One ordinary full target executes at clean5db340da, default scheduling and all
+three engines, separate JSON directory, no trace/CPU/concurrency override. Terminal
+137 at01:15:44.666061634UTC unchanged10m guard. ANSI-stripped reporter census has
+494/498 broad project-file rows: Chromium165,Firefox164,WebKit165,39215 declared
+cases in those rows,96 reported failures/24 skips. This is NOT a completed passing
+case count. Missing are three423-case Garage files plus Firefox's real-minute
+idle case (1270 cases); no final aggregate/JSON, Typer or performance phase runs.
+Full Docker log1472754bytes SHA256
+`2d693382426c17eb14d539f5dbd7785aee1848b2814f00d685e6159a034d4812`,
+`.cache/browser-native-observed-5db340da-container.log`; follower terminal0,
+owned container absent. Tool output truncates; retained full log owns this result.
+
+The new marker captures six genuine ordinary aborts, two Chromium/four Firefox.
+Exact earlier Chromium era2000/two-buyable/Enter recurrence:14893.4ms observed
+lifetime, eight settled native-command promises totaling14598.6ms (98.02%),
+ninth Enter pending35.3ms. Completed commands include2613.6ms Enter,2252.4ms Tab
+and4685.4ms Tab. Connected/focused/enabled confirmation remains present. Chromium
+Space has14381.3ms in five settled commands plus526ms active Escape; Firefox
+cases likewise show accumulated completed+active waits, not a sole15s stuck call.
+These are native-promise lifetimes, NOT attribution to exclusive provider, native
+event delivery, game handler or a universal cause. Original failure is retained.
+Actual Nodev24.18.0 available/visible CPUs14; one Docker sample1308.22%CPU,
+9.646GiB/15.6GiB. Other host load is uncontrolled; no matched timing benchmark.
+
+Next bounded candidate: use a shared capacity plan across the three project pools,
+derived from the installed runner's max(1,min(12,CPUs-1)) heuristic and measured
+per-project multiplication (36 here); reserve Firefox one file for independently
+reproduced RP-700. Do not claim the inherited heuristic is a measured safe global
+limit. Keep all original populations/native inputs/assertions and bounds; verify
+the complete target once. Terminal0/all phases required before a passing candidate
+claim; guard/incomplete results refuse adoption. No arbitrary worker sweep,
+assumed upgrade or CI/five-minute/1.0 promotion. No archive or push.
