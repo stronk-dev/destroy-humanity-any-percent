@@ -77,6 +77,30 @@ input/runner boundary under explicitly accounted resource conditions, using
 existing verbose/trace support. Do not retry this unchanged full load, select
 another arbitrary worker cap, raise bounds or promote the isolated passes.
 
+2026-11-02 next bounded diagnosis at `156fa626`: use one ignored Compose override
+with CPU affinity0-3, verifying actual availableParallelism4 before tests. This
+matches the accepted RFC's four-CPU model, NOT measured contemporary Actions
+hardware, and preserves Vitest's default scheduling (three files per engine),
+all three engines and the complete root broad → Typer → performance target.
+One run adds built-in retained failure traces, verbose output and separate JSON
+reports so a failed/guarded run can expose the actual native action boundary.
+Keep the10m containment and every test input/assertion/deadline unchanged. No new
+worker setting, CPU model or latency acceptance is adopted from this control;
+tracing/host contention prevent a timing comparison. Capture failures, incomplete
+phases and raw artifact identities; do not repeat unchanged for a green result.
+
+That diagnostic is terminal137 at the unchanged guard: seven explicit verbose
+failure rows, no completed broad summary or later phases. Its actual Firefox
+fresh-consent trace shows enabled/nonbusy offer DOM immediately before native
+Enter. RP-700's independent synthetic probe reproduces trusted Enter without
+native click after another Firefox page takes pointer input; Chromium/WebKit,
+top-level and explicit-refocus controls discriminate. Upstream42933 remains open
+after rollback, so an upgrade is not assumed corrective. Next test the supported
+Firefox-only `fileParallelism:false` workaround, with other engines unchanged,
+through the complete ordinary Linux target once. Preserve all populations and
+bounds. This is a causal-isolation candidate, not another arbitrary worker cap;
+a guard or absent phase remains failure, not permission to land a passing claim.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing

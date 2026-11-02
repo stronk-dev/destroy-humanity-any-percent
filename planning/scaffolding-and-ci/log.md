@@ -3079,3 +3079,58 @@ remain open. Next diagnosis must account for actual resource conditions and the
 native input/runner boundary, using existing verbose/trace support rather than
 another custom framework or unmeasured worker cap. Recorded by: Codex root;
 this execution record is not a new designated feature/release approval. No push.
+
+### RP-700 — actual iframe activation failure; no safe upstream upgrade assumed
+
+Source156fa626, four-CPU trace control uses ignored Compose cpuset0-3; actual
+Node availableParallelism4 gives the installed default three files per engine.
+Full broad → Typer → performance target is terminal137 at00:22:57.735354210UTC,
+after broad start00:13:07.379625132. Seven explicit verbose failures (not eight:
+default reporter repeats one) include Firefox fresh consent, four Garage engine/
+input variants plus two further Firefox Garage cases. No broad aggregate/JSON,
+Typer or performance completion. Tracing overhead and other load prohibit timing
+comparisons. Full Docker log2032122bytes SHA256
+`03197239b241d4131937f2968f45c3026ddccd08a23ae9a9d59c1d10c59ca64f`,
+`.cache/browser-fourcpu-156fa626-container.log`; follower exits0, container removed.
+Raw traces are recoverably moved to ignored `.cache/browser-fourcpu-156fa626-traces/`.
+The Firefox Reputation era2000/Enter/offer-selected ZIP1340239bytes SHA256
+`0ad8a1b208ef3a5355981cfc0e428fb9ccdd3605f58fe8f7d15e74b8b6f21be2`.
+Immediately before the fresh keyboard command the real iframe DOM is offer_sheet,
+aria-busy=false, buttons not disabled. App rejection precedes this command. Native
+Enter down/up execute, but the second request never arrives. Trace action markers
+are NOT observed DOM events and do not prove handler entry or causation alone.
+
+Independent synthetic probe executes via declared Playwright service, frozen
+dependencies, same CPU override,120s process containment. Eighteen cases finish
+exit0: all three engines × top-level/iframe × healthy/other-page-pointer/explicit
+frame-focus restoration. Initial native button focus is asserted; after another
+page's mouse click and200ms upstream settling interval, the installed Vitest
+conditional-focus logic precedes real Enter down/up. Firefox153.0 iframe alone
+loses the click: trusted keydown/keypress/keyup target the active button, repeat
+false, activation0, blur1. The explicit window.focus arm restores trusted click/
+activation1 despite hasFocus still false; all other17 cases activate once.
+This demonstrates a concrete automation defect without game code; it does NOT
+attribute every historical failure or prove refocus is race-safe in parallel.
+The committed `firefox-focus-probe.mjs` preserves executed source with only its
+relative Playwright import adjusted for the committed directory. Executed ignored
+source SHA256 `f0075120b76061dacaf7c85b857e482671d8c24a5cddfafb7a4e47e71086a028`.
+Complete captured stdout exports18 observations to
+`.cache/browser-iframe-focus-probe-156fa626.json`, SHA256
+`45f0b685bbf91ca0d593fec185413a104ad46d49adb6a0e883a00a0906cd479c`.
+The late Docker follower missed the removed container; it is NOT a raw transcript.
+Probe exit0 means diagnostic completion, NOT an activation/reliability gate pass.
+
+Primary upstream evidence checked2026-11-02:
+[42933](https://github.com/microsoft/playwright/issues/42933) describes this exact
+shared-browser iframe focus defect. Its [42969](https://github.com/microsoft/playwright/pull/42969)
+fix was rolled inr1553, then reverted after
+[43280](https://github.com/microsoft/playwright/issues/43280) broke iframe→parent
+focus.42933 is reopened and reports the defect still present inr1569; do not
+blindly bump the pinned toolchain. The supported per-instance serial-file option
+is documented in [Vitest7916](https://github.com/vitest-dev/vitest/issues/7916).
+
+Next bounded candidate is Firefox-only fileParallelism:false, not a global worker
+cap, refocus retry, synthetic activation or deadline relaxation. Other engines
+retain default scheduling. Execute the complete ordinary Linux target; all phases
+and terminal0 required. No guard increase or full-CI/hosted/1.0 promotion from
+partial evidence. Recorded by: Codex root. No product/kernel/balance change or push.
