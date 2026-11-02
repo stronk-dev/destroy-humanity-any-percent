@@ -3359,3 +3359,49 @@ gap. Use the existing test-failure hook/reporting boundary and verify an actual
 ordinary failure versus expected-failure/healthy controls before any new full
 run. No new worker sweep or inferred reduced-motion cause; all bounds, RP-526,
 RP-700, hosted CI/five-minute and full1.0 obligations remain open. No push/archive.
+
+### 2026-11-02 — preserve completed failures before aggregate/guard
+
+Root Make focused, both functional phases and isolated performance commands now
+add a small Vitest onTestCaseResult reporter alongside default/requested JSON
+reporters. Only final failed verdicts emit browser-test-failure with engine/file/
+full name and error name/message/stack. Correct expected failures remain quiet;
+unexpected .fails passes are failures. No exit, bound, scheduling, input, assertion,
+engine or dependency changes. Collection/global errors and unfinished tests are
+not covered by this hook. Existing topology fixtures bind all Make lanes; a
+non-collected probe template retains the explicit real control without adding a
+permanently failing or held test to ordinary discovery.
+
+Real Linux three-engine probe runs an ordinary failure, expected failure, healthy
+case, unexpectedly passing .fails case, then a deliberately held test. Current
+Make emits six failed-case records with messages/stacks before all three holds;
+no aggregate yet. Exact prior fc7300e6 Makefile, same source/population, emits zero
+failure records before its three holds and no aggregate. Root explicitly stops
+each owned container after observing that boundary: positive wrapper exit2 /
+container143; old direct container143. Neither is a passing suite or guard expiry.
+Temporary collected probe is removed. Original executed source and prior Makefile
+are retained ignored under .cache/browser-failure-reporting-probe-fc7300e6.test.ts
+and .cache/browser-early-errors-old.Makefile. Tracked template's explanatory
+comment is clarified afterward; its executed test bodies are unchanged.
+
+Completed affected command: make test-browser-ci-focused with
+BROWSER_TEST_FLAGS='test/browser-failure-reporter.test.ts test/reputation-surface-browser.test.ts --reporter=json --outputFile.json=../.cache/browser-early-errors-affected-fc7300e6.json'.
+Terminal0, six project-files,258 ordinary passes plus three expected failures
+(261 total),8.50s, zero spurious failure markers. Five Node reporter cases also
+pass; make typecheck terminal0/Svelte0 errors/0 warnings. Existing topology fixture
+command terminal0, including27 rejected mutations/shared Linux entrypoint/cold
+Go selectors and added reporter presence across Make lanes.
+
+Retained .cache/browser-early-errors-{positive,negative,affected}-fc7300e6-container.log:
+positive22044bytes SHA256 c54eb7b942a88c2e8298dc4aaa5ae1daffd04940419d23e6375170d0dca22765;
+negative7860bytes SHA256 82d5a418a4f1b62c81960c343aa2ccfcf1231a9bcfc36508faf7315dd43620f8;
+affected12172bytes SHA256 4de22f03c98cd7735135dca6428a4a20aa3fc2beb3c88f8a42335676e34b6c36.
+Affected JSON74665bytes SHA256 ca4452fa40cd90bcda60934d45dfa933a02952615f968b3964881ce39933f6f9.
+JSON's261 passed includes its three expected failures; do not relabel all261
+ordinary passes. Final source comment-only adjustment needs no new browser run.
+
+Review by: Codex root, implementer first filter. Recorded by: Codex root.
+Complete batch after fc7300e6 requires fresh independent corrective review.
+Next: one ordinary full target with this new signal, retaining every failed/
+unexecuted phase and actual error details. Full CI/hosted latency/RP-526/RP-700/
+1.0 remain open. No worker sweep, reduced-motion inference, archive or push.

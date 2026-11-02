@@ -154,6 +154,15 @@ the final aggregate/guard, using the existing test-failure hook/reporting bounda
 with an actual failing/expected-failure control. Do not choose another worker count,
 infer the reduced-motion failure's cause from its name or weaken its cadence checks.
 
+Completed-failure reporting now preserves assertion details before the final aggregate:
+the real held control emits six failure records across three engines, while the same
+control under the prior Makefile emits none before its three held tests. Both controls
+are intentionally stopped, not passing suites. Affected ordinary Linux population passes
+258 cases plus three expected failures; types/topology controls pass. Fresh independent
+review is required for the batch after fc7300e6. Next run the unchanged ordinary full
+target once with this new signal; diagnose its actual assertion details, not a guessed
+worker count. No full-CI, hosted-latency or release claim is promoted.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing

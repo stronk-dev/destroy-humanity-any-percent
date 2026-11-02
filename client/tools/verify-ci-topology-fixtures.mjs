@@ -182,4 +182,9 @@ if (aggregate.status !== 0 || aggregate.stdout.indexOf("--exclude test/typer-tab
 }
 const overwrite = dryRun("test-browser-functional", "BROWSER_TEST_FLAGS=--outputFile.json=shared.json");
 if (overwrite.status === 0 || !overwrite.stderr.includes("use BROWSER_REPORT_DIR")) throw new Error("full functional phases accepted an overwritten shared report");
+for (const [label, result, count] of [["focused", focused, 1], ["functional", full, 2], ["aggregate", aggregate, 3]]) {
+  if ((result.stdout.match(/--reporter=\.\/tools\/browser-failure-reporter\.ts/g) ?? []).length !== count) {
+    throw new Error(`${label} browser Make target lost immediate per-test failure reporting`);
+  }
+}
 console.log("Browser Make selectors and separate report controls passed");

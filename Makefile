@@ -40,6 +40,7 @@ export SAVE_TEST_HOST_PORT
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 BROWSER_TEST_FLAGS ?=
 BROWSER_REPORT_DIR ?=
+BROWSER_REPORTERS := --reporter=default --reporter=./tools/browser-failure-reporter.ts
 RELEVANCE_SCENARIO ?= balance/testdata/t0-t1/relevance-scenario-v2.json
 RELEVANCE_OUTPUT ?= planning/archive/t0-t1-content/relevance-report.v5.json
 RELEVANCE_BRANCH_INPUT ?=
@@ -287,7 +288,7 @@ test-client:
 # Focused input/DOM regressions do not need the separate performance population.
 # The CI/full-browser target retains both lanes below.
 test-browser-focused:
-	cd client && VITE_GAME_UI_PERFORMANCE=0 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts $(BROWSER_TEST_FLAGS)
+	cd client && VITE_GAME_UI_PERFORMANCE=0 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts $(BROWSER_TEST_FLAGS) $(BROWSER_REPORTERS)
 
 # Preserve the complete functional population, but run Typer's real keyboard
 # journeys after the broad workload. Focused selection above stays untouched.
@@ -295,8 +296,8 @@ test-browser-focused:
 test-browser-functional:
 	$(if $(findstring --outputFile,$(BROWSER_TEST_FLAGS)),$(error use BROWSER_REPORT_DIR for separate full-functional reports; --outputFile is supported only by test-browser-focused))
 	$(if $(BROWSER_REPORT_DIR),mkdir -p "$(abspath $(BROWSER_REPORT_DIR))")
-	cd client && VITE_GAME_UI_PERFORMANCE=0 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts --exclude test/typer-table-browser.test.ts $(BROWSER_TEST_FLAGS) $(if $(BROWSER_REPORT_DIR),--reporter=default --reporter=json --outputFile.json="$(abspath $(BROWSER_REPORT_DIR))/functional-broad.json")
-	cd client && VITE_GAME_UI_PERFORMANCE=0 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts test/typer-table-browser.test.ts $(BROWSER_TEST_FLAGS) $(if $(BROWSER_REPORT_DIR),--reporter=default --reporter=json --outputFile.json="$(abspath $(BROWSER_REPORT_DIR))/functional-native.json")
+	cd client && VITE_GAME_UI_PERFORMANCE=0 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts --exclude test/typer-table-browser.test.ts $(BROWSER_TEST_FLAGS) $(BROWSER_REPORTERS) $(if $(BROWSER_REPORT_DIR),--reporter=json --outputFile.json="$(abspath $(BROWSER_REPORT_DIR))/functional-broad.json")
+	cd client && VITE_GAME_UI_PERFORMANCE=0 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts test/typer-table-browser.test.ts $(BROWSER_TEST_FLAGS) $(BROWSER_REPORTERS) $(if $(BROWSER_REPORT_DIR),--reporter=json --outputFile.json="$(abspath $(BROWSER_REPORT_DIR))/functional-native.json")
 
 test-browser: test-browser-functional
 	$(MAKE) test-game-ui-performance
@@ -385,7 +386,7 @@ test-game-ui-composed:
 verify-game-ui: verify-client test-browser test-game-ui-composed
 
 test-game-ui-performance:
-	cd client && VITE_GAME_UI_PERFORMANCE=1 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts test/game-ui-screens-browser.test.ts --testNamePattern 'observable 20 Hz / 10 Hz screen budget'
+	cd client && VITE_GAME_UI_PERFORMANCE=1 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts test/game-ui-screens-browser.test.ts --testNamePattern 'observable 20 Hz / 10 Hz screen budget' $(BROWSER_REPORTERS)
 
 typecheck:
 	cd client && $(CLIENT_BIN)/tsc --noEmit && $(CLIENT_BIN)/svelte-check --tsconfig ./tsconfig.json

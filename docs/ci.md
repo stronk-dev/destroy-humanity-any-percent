@@ -224,6 +224,16 @@ because the second phase would overwrite the first. Focused invocations still su
 ordinary Vitest reporter/output flags. Explicit project/file/test overrides narrow verification
 and are not evidence of the default three-engine gate.
 
+Root Make browser commands also emit `browser-test-failure` JSON when a test's final
+verdict becomes failed, retaining its engine, file, full name, error messages and stacks.
+This happens before the aggregate report, so a later stalled test cannot hide already
+completed failures behind the outer guard. Healthy and correctly expected failures are
+quiet; an unexpectedly passing `.fails` case is reported as failed. This is not capture
+of a test that never finishes, collection errors or every unhandled global error. Default
+and requested JSON reporting, failure exits, populations and deadlines remain unchanged.
+The non-collected `test/fixtures/browser-failure-reporter.probe.ts` provides an explicit
+ordinary/expected/unexpected/healthy/held control for reproducing that reporting boundary.
+
 `make test-browser-ci` prepares GNU Make in the disposable Playwright container, installs
 frozen dependencies and calls the same root `make test-browser`
 target as Actions, rather than maintaining a second Vitest command in Compose. It runs the
