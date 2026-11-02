@@ -3950,3 +3950,43 @@ populations independently verified; full job inspected, not independently rerun.
 Non-patch whitespace clean; unified-patch context warning disclosed. All reviewer
 browser workloads terminal. Approval covers this correction, not default-load/
 hosted/five-minute acceptance or the accounting/version/adoption/full1.0 gates.
+
+### Distribute existing Garage cases and overlap the measured waits
+
+After the independent Firefox correction, reuse the preserved semantic split,
+not its earlier failed-result claim. The423 existing cases now occupy seven
+coherent family files; shared fixtures/assertions register no tests. All98 original
+non-import statements compare byte-identically apart from helper exports. No test
+body, native input, data, assertion or deadline changes. Vitest's sequencer hook
+front-loads the measured event family and required real-minute idle wait within
+each project. It preserves the base sequencer's exact project positions, stable
+ordering of every other file and inherited sharding. No filtering, deduplication,
+worker-count change, stage extraction, fake clock or shorter idle acceptance.
+
+Four Node controls execute the actual BaseSequencer/subclass, checking priority,
+project/order/membership preservation, duplicates, unknown files and real inherited
+disjoint shard union. Types0/0. Complete Node client suite terminal0:147 passed/30
+skipped files,12503 passed/1106 skipped cases (13609),9.73s. The new sequencer unit
+fixture uses Vitest's Node API and is excluded by exact path only from browsers;
+it remains in the mandatory client Node population. Canonical focused command
+now selects every Garage family plus the unchanged real-minute observation.
+
+Finished cold four-CPU-model full target terminal0, not guard: provider27/27;
+broad519/519,40473 ordinary/18 expected/24 skips,342.47s; native3/3,87 ordinary/
+six expected,5.78s; isolated Chromium performance5/5,8.17s (107 unrelated cases
+deselected). Actual old/new path-normalized case-name multisets are identical:
+40515 broad plus93 native, including all1269 Garage executions. Final JSON proves
+both priority files start5–6s into each engine; real idle durations60.20/60.29/60.30s.
+The measured intended ordering works. Full cold /usr/bin/time wall391.49s still
+misses five minutes: no overall speedup, default14CPU reliability, hosted result,
+CI acceptance or1.0 promotion is claimed. This is not a matched timing benchmark.
+
+Raw .cache/browser-wait-order-full-70737410.log1553146bytes SHA256
+257d12149d0b700006434dffe45c462421b9cdc96df7a5862e28a57fb4bd79e1;
+functional-broad.json12480235bytes SHA256
+dce7f03e426856d945928003e48108adde607d6c3cc2ae5e21fe8907eac42bc3;
+functional-native.json26221bytes SHA256
+8062d018c8a3fdcffd38360d9bb3fe7185c77284a033eeec9f76f5e7d01efe6e.
+Diff-check clean. Review by: Codex root, implementer first filter. Recorded by:
+Codex root. Complete batch after70737410 still needs fresh independent corrective
+review. No archive, specification adoption, release approval or push.

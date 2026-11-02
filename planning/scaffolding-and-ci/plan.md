@@ -59,14 +59,22 @@ APPROVES complete26d617c0..b5ea329f after actual controls/old failure reproducti
 This is not default14CPU reliability or hosted/five-minute
 acceptance. Historical accounting/version failures and owner adoptions stay open.
 
-Next: now that the reproduced interleaving is corrected, reuse the retained
-unchanged Garage-family candidate and front-load the measured long event family
-and mandatory real-minute idle wait within each existing browser project. The
-current monolith still takes307.56s and idle starts as late as271s. Use the existing
-Vitest sequencer hook, preserve project positions/default ordering for other files,
-all populations/native inputs/deadlines and inherited sharding. Prove ordering and
-population preservation, then execute the complete target. No arbitrary worker
-count, shorter idle wait, raised ceiling or hosted-latency claim from local data.
+Current next batch after70737410 reuses the unchanged Garage-family split AFTER
+the independently approved interleaving correction, and front-loads the measured
+event family/mandatory real-minute idle wait through Vitest's sequencer hook.
+All98 original statements and40515+93 executed functional cases remain identical;
+project positions/default ordering for other files and inherited sharding remain.
+Four ordering controls/types pass. Complete four-CPU-model job passes terminal0:
+519 broad files/342.47s, native3/5.78s, performance5/8.17s; full cold wall391.49s.
+Both priority files begin5–6s into every project and retain the full60s idle wait.
+Complete Node client suite passes12503 cases/1106 existing skips,9.73s. No whole-
+workflow speedup is established; strict hosted/five-minute acceptance remains open.
+
+Next: independent review of the finished range, including the mechanical move,
+actual ordering/population proof and honest latency limitation. Do not call this
+CI completion or infer a safe default14CPU load. Further latency work needs actual
+aggregate profiling/hosted evidence, not another arbitrary worker/split sweep or
+raised bound. Continue accepted1.0 work without waiving accounting/adoption gates.
 
 ## Historical checkpoint sequence — original heading 2026-10-16
 

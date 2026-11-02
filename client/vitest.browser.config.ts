@@ -5,6 +5,7 @@ import { playwright } from "@vitest/browser-playwright";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import type { Plugin } from "vite";
 import type { Page, Request, WebSocket as PlaywrightWebSocket } from "playwright";
+import { BrowserSequencer } from "./tools/browser-sequencer";
 
 const dependencyPath = (relative: string) => decodeURIComponent(new URL(relative, import.meta.url).pathname);
 const performanceOnly = process.env.VITE_GAME_UI_PERFORMANCE === "1";
@@ -67,10 +68,12 @@ export default defineConfig({
   optimizeDeps: { include: ["svelte", "@antimatter-dimensions/notations"] },
   ssr: { noExternal: ["@antimatter-dimensions/notations"] },
   test: {
-    // These Node-side proof fixtures use node:fs/nested Vite builds and
-    // node:util respectively. They still execute in the client Node suite;
+    // These Node-side fixtures use node:fs/nested Vite builds, node:util,
+    // and Vitest's Node sequencer respectively. They execute in the Node suite;
     // keep other future test formats in browser collection by default.
-    exclude: [...configDefaults.exclude, "test/css-dependency-graph.test.mjs", "test/opportunity-composed-proof.test.mjs"],
+    exclude: [...configDefaults.exclude, "test/css-dependency-graph.test.mjs", "test/opportunity-composed-proof.test.mjs",
+      "test/browser-sequencer.test.ts"],
+    sequence: { sequencer: BrowserSequencer },
     setupFiles: ["./test/browser-error-guard.ts"],
     testNamePattern: performanceOnly
       ? /observable 20 Hz \/ 10 Hz screen budget/u

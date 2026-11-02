@@ -418,18 +418,30 @@ capture and disposed-observer silence. It is not a reproduction of the unresolve
 Linux Garden failures or proof the complete browser runner now terminates reliably.
 
 Garage's mandatory GS5-A2 real-minute idle observation lives in
-`test/garage-idle-opportunity-browser.test.ts`, alongside the interaction file
-`test/garage-surfaces-browser.test.ts`. Both consume `garage-surfaces-fixture.ts` and stay
-in ordinary blocking browser collection. The observation still runs real native timers for
-at least60s, checks every250ms for zero intents and keeps its70s deadline. Selecting only
-the interaction file no longer covers that acceptance criterion; select both for a focused
-whole-Garage check. No maintenance-only move, fake clock or shortened acceptance is introduced.
+`test/garage-idle-opportunity-browser.test.ts`. The same423 interaction cases are
+grouped in `test/garage-surfaces-browser.test.ts` and matching
+`garage-surfaces-*-browser.test.ts` families for Fiscal, care, opportunities, meters,
+events and shared feedback. Shared fixtures/assertions register no tests. All families
+remain in ordinary three-engine blocking collection with unchanged bodies and deadlines.
+For the whole focused Garage population, use
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/garage-surfaces test/garage-idle-opportunity-browser.test.ts'`.
+The prefix selects every interaction family, not just the old filename. The idle
+observation still runs native timers for at least60s, checks every250ms for zero
+intents and keeps its70s deadline. No maintenance-only move or shortened acceptance.
 
-Two Node-side fixtures, `css-dependency-graph.test.mjs` and
-`opportunity-composed-proof.test.mjs`, are excluded by exact path from browser collection because
-their helpers require Node APIs. Both remain in the mandatory client Node suite; other test
-formats are collected by default. This is execution in the correct runtime, not an exemption
-from testing the composed driver or its proof oracles.
+The browser configuration uses Vitest's sequencer hook to start the measured long
+Garage event family and real-minute idle wait first within each project. It retains
+Vitest's exact project positions, stable ordering for every other file, and inherited
+sharding. It does not select, deduplicate or omit tests, increase worker counts or
+change clocks/deadlines. Ordering/population controls execute in the Node suite; the
+complete browser target remains the actual runtime and latency check.
+
+Three Node-side fixtures are excluded by exact path from browser collection:
+`css-dependency-graph.test.mjs`, `opportunity-composed-proof.test.mjs`, and
+`browser-sequencer.test.ts`. Their subjects use Node APIs (including Vitest's Node
+sequencer). All three remain in the mandatory client Node suite; other formats
+are collected by default. This is execution in the correct runtime, not an exemption
+from testing the composed driver, proof oracles or scheduling.
 
 `make verify-server-ci` runs the complete server gate on
 linux/amd64 against the repository's Postgres test service. `test-go-core` and therefore
