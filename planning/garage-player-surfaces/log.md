@@ -7625,3 +7625,52 @@ ordinary Firefox is untouched. No product/tool source edits or new review approv
 This closes this correction's missing Linux Firefox execution arm, not RP-256,
 full GS5/Garage/CI or release. No unchanged green rerun is next; continue remaining
 accepted work/contract adoption. Goal stays active; nothing pushed.
+
+## 2026-11-02 — Fiscal controls and surface feedback independently approved
+
+Review by: fresh independent Codex `/root/garage_fiscal_outcome_corrective_review`.
+Recorded by: Codex root, transcribing the verdict under Marco's corrective-review
+delegation. Three separate APPROVED scopes, base-exclusive/tip-inclusive, including
+all tests, canonical docs, ledger and final record edges:
+
+- RP-323/324/325, five commits/eleven paths:
+  `b64a91afb6aba8b2f2be7984baf6483fadde0625..4dcd9969cc6231041cfb6e4a9643b43a2aaeb9cb`.
+- RP-326, four commits/twelve paths:
+  `e950216ae609eb5d55e53a40783c4eede88d8cf6..6d70083890c40b7f3bec891645a795f342bffb12`.
+- RP-487, one commit/six paths:
+  `b3c8f17884eaac9f7d347c6819e0e8b82fd4d4c1..237c2f1743c7400a7b50ddb2a2346db43ee81515`.
+
+No earlier designated approval covers these complete spans; no new blocking finding.
+At clean `658ce803e51eab9a1d095ff17bfe06057cf1c594`, reviewer executes
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/garage-surfaces-fiscal-browser.test.ts test/garage-surfaces-care-browser.test.ts test/garage-surfaces-feedback-browser.test.ts'`:
+438/438 pass across nine Linux Chromium/Firefox/WebKit project-files. HTTP module
+observations finish420/420, zero early closes/pending. `make typecheck` has zero
+errors/warnings; `make build-client` passes217 modules; client boundaries pass.
+
+Private historical Git snapshots use the existing Vitest browser configuration
+with Chromium/WebKit. Actual `d0651029` retained pending/cap regressions fail8/8
+(140 deselected), at native-disabled/generic-cap assertions. Exact corrected
+`4dcd9969` passes12/12 (138 deselected), adding parser-accepted alternate reasons
+and unequal-distance nearest survivors. Selectors are `Fiscal supplement.*(stays
+focusable|refusal cap_exceeded)`, then additionally `cap notice follows|nearest of
+multiple`. Actual `7cac400d` ownership population fails24/24; exact corrected
+`6d700838` passes the same24/24 (150 deselected), selector `outcome-ownership`.
+Failures identify panel placement or completed/late cross-tab leakage.
+
+RP-487's current descendants execute within438; both changed components are
+byte-identical to its reviewed tip. Its retained eight-red/eight-green evidence
+is inspected, not separately rerun. Likewise, the earlier fixed-default and
+first-survivor shortcut survivals/subsequent failures are inspected retained
+evidence, not fresh mutations. Original invalid probes remain excluded. Reviewer
+duplicate-config invocation and sandbox listen/socket denials execute zero tests
+before corrected permitted commands; no denominator credit from those attempts.
+
+Root reconciles only current plan/ledger statuses and appends this record;
+historical entries stay intact. Record diff/claims/whitespace checked, no software
+rerun merely for Markdown. RP-336's author-owned prop/body discrepancy and
+RP-132's wire reconciliation remain. These bounded approvals do not grant full
+GS0.6/Garage, copy/specification adoption, actual AT, hosted CI, archival or release
+acceptance. No database/full composed journey is rerun or attributed to this
+review; later real journeys remain separate context. Reviewer makes no tracked
+edits, commits or source mutations; all handles terminal. Full1.0 goal remains
+active; continue accepted work and remaining corrective review. Nothing pushed.

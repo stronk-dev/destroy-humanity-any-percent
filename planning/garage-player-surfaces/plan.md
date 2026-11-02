@@ -522,18 +522,18 @@ RP-333 full performance, author/body/platform/privacy/numeric/default-player/
 review/full-nine-tier 1.0 gates remain. No box/lifecycle/archive/push/release
 promotion; earlier slices retain their independent proof/review boundaries.
 
-Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,
-predeclareda8f2a527/test-first7cac400d. Fiscal/care own mapped notice regions,
-origin captured before act awaits.24 baseline DOM failures; five independent
-compiling faults fire/restored exactly. Full native two-engine Garage174/
-performance1, client9,737/410browser skips/types/build/boundaries/copy/
-manifest/topology pass. No previous assertion relaxed. Changed-tree composed
-not rerun under RP-236; no earlier-source substitution. Whole span after
-e950216a through tracking needs Claude separately from browser4dcd9969..
-e950216a/Fiscalb64a91af..4dcd9969 and prior ranges. HTTP-failure/queued-origin/
-all-surface/AT/Firefox/fullGS0.6/full-Garage/release remain unproved. Next
-accepted native HTTP-error origin/refresh census; Docker capacity preflight
-must succeed before another container population. No lifecycle promotion.
+GS0.6 corrective review, 2026-11-02 (not a new acceptance checkbox): RP-326's
+captured-origin/own-panel repair is independently APPROVED for the complete
+`e950216a..6d700838` span, separately from earlier browser/Fiscal ranges.
+The reviewer executes the original24 ownership regressions against actual old
+and corrected snapshots:24 fail, then24 pass. RP-487's later one-stable-region
+repair is separately APPROVED for complete `b3c8f178..237c2f17`; its descendants
+run in the current438/438 Linux three-engine Fiscal/care/feedback population.
+Types/build/client boundaries pass. The owning log records exact hashes,
+provenance, retained versus newly executed evidence and exclusions. RP-336's
+author-owned props discrepancy, RP-132's wire reconciliation, all-surface/
+HTTP-failure/queued-origin acceptance, actual AT, full Garage/CI and release
+remain separate. No lifecycle promotion or new specification adoption.
 
 - [x] GS0.2 runtime: `intent()` returns the typed outcome; non-2xx throws `GameUIRequestError`;
   `act()` scopes `expected_revision` (Company vs Founder); rejected intents render their reason.
@@ -554,15 +554,16 @@ must succeed before another container population. No lifecycle promotion.
   corrections. The owning log retains executed evidence and separate review ranges.
 - [x] GS2 Achievements arm + surface.
 - [x] GS1 Fiscal arm + surface.
-  Narrow pending/readiness/row-reason correction `891aee10` is locally verified,
-  not designated-approved: failing-first33 native assertions; final full Garage
-  Chromium/WebKit150/client9,737/398 skips/types/boundaries pass. Independent
-  faults and refined former shortcuts discriminate; invalid instrumentation
-  runs disclosed. Same production tree build/copy/manifest/topology/actual
-  composed pass. Whole new span after `b64a91af` through final tracking requires
-  Claude, including predeclared tests and RP-325 refinements. RP-326 per-surface
-  outcome ownership, Firefox/AT/full-lane/release gates remain; this existing
-  checkbox still records implementation only, never archival acceptance.
+  RP-323/324/325 pending/readiness/row-reason/focus correction is independently
+  APPROVED for complete `b64a91af..4dcd9969`, including tests and final records.
+  Fresh private historical checks fail8/8 on the old source and pass12/12 on
+  the corrected tip, including alternative parsed cap reasons and multiple
+  unequal-distance survivors. Current Fiscal/care/feedback descendants pass
+  438/438 across Linux Chromium/Firefox/WebKit; types/build/boundaries pass.
+  RP-326 outcome ownership and RP-487 stable feedback regions have their own
+  approvals above. Exact evidence/limits are in the 2026-11-02 owning log.
+  Author/wire, actual AT, full-feature/CI/release gates remain; this existing
+  checkbox records implementation only, never archival acceptance.
 - [x] GS7 minigames availability arm wired into the existing Pitch surface/nav.
 - [x] GS5 active-play arm (`features.opportunity`, kernel export `ProjectActiveCombo`) + Desk opportunity region + composed claim witness (`cdb8fe61`, `f32f6175`).
   Original producer `cdb8fe61^..cdb8fe61`, all twelve paths: designated Codex
