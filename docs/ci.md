@@ -235,6 +235,13 @@ are recorded in the [CI log](../planning/scaffolding-and-ci/log.md); a focused o
 does not establish success of this ordinary target, hosted reliability or the five-minute
 acceptance floor.
 
+CPU visibility also changes the unchanged runner defaults. The installed Vitest
+browser pool permits `max(1, min(12, availableParallelism - 1))` files **per
+project**, not across all engines. The measured 14-CPU Docker VM therefore permits
+36 active files across three engines; the CI RFC's four-CPU model would permit 9.
+Matching the command/image is not matching resource pressure. These counts do
+not establish a safe worker limit, current hosted hardware or a failure's cause.
+
 `make test-browser-ci-focused BROWSER_TEST_FLAGS='test/game-ui-screens-browser.test.ts --project firefox'`
 uses that same image, cold dependency volumes, frozen install and ten-minute containment,
 then invokes the existing `test-browser-focused` target. Use it for an affected Linux

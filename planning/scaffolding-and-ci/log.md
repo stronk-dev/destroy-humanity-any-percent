@@ -3042,3 +3042,40 @@ JSON84659bytes SHA256 `0f743b05b415786874e0218808bbb60e8e51116d34147aec6d18e0538
 Original Firefox fresh-consent red, native-loop causation, full/hosted CI,
 performance/five-minute floor and full1.0 remain open. Next is the ordinary full
 Linux target once at the corrected revision, not another worker-count experiment.
+
+### Ordinary full-job result at reviewed correction
+
+At clean `72656dd0`, exact `make test-browser-ci` (no selector/worker/reporter/
+trace overrides) is terminal RED: exit2/Error137, unchanged guard at
+2026-11-02T00:05:50.569051180Z. Broad begins23:56:00.575042879Z. No final
+aggregate, separate Typer or performance invocation occurs. ANSI-stripped partial
+reporter census:440 unique project-file rows/37,945 declared cases in those rows,
+86 failures/19 skips. This is NOT a full passing-case count. Compared with the
+previous complete broad population plus the three added artifact cases,58 of498
+project-file rows remain unreported: Chromium1, Firefox55, WebKit2. All three
+Garage interaction files, Firefox Game UI screens and Firefox Reputation host
+are among them. Original native-input assertions/deadlines still fail; sampled
+Reputation aborts retain outstanding native RPC and accumulated command timing.
+Missing rows/phases are not skipped or passed.
+
+Complete retained Docker log `.cache/browser-full-72656dd0-container.log`,1241403bytes,
+SHA256 `db08bc766fe57d5e7122b6fe9d5e8de0fcf355cff47c89a9415082bb0530698c`.
+Tool chunks truncate; full Docker follower ends exit0; owned container absent.
+No source changes during this run. No further unchanged full-load retry.
+
+Actual container Nodev24.18.0 reports availableParallelism14/visible CPUs14.
+Installed Vitest `createBrowserPool` computes max(1,min(12,CPUs-1)) per project,
+then starts all three project pools concurrently: up to36 active files here,
+not a global12-worker ceiling. A single Docker stats observation reads878.81%CPU,
+10.68GiB/15.6GiB. The RFC's four-CPU runner model instead implies nine; contemporary
+hosted CPU visibility is NOT measured here. Other services/load remain uncontrolled.
+These facts identify an environment/concurrency mismatch, not a proved universal
+cause, safe capacity, new limit or authority to choose another convenient count.
+The prior one/two-worker controls and isolated fresh-consent red remain evidence.
+
+RP-699 stays independently approved only for artifact identity. Full CI, resource/
+input reliability, strict hosted latency, historical guard/accounting and full1.0
+remain open. Next diagnosis must account for actual resource conditions and the
+native input/runner boundary, using existing verbose/trace support rather than
+another custom framework or unmeasured worker cap. Recorded by: Codex root;
+this execution record is not a new designated feature/release approval. No push.

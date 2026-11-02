@@ -28,6 +28,16 @@ fail. No worker setting is adopted, no bound/population is changed, and no cause
 or hosted result is inferred. The [CI log](scaffolding-and-ci/log.md#2026-11-01--ordinary-linux-browser-job-and-bounded-worker-controls)
 retains terminal outcomes, complete container-log hashes and measured file costs.
 
+**Browser artifact correction, 2026-11-02:** independent review approves
+`31ba8dfe..22c50316`: engines now retain distinct screenshot sources and copied
+attachments. Actual PNG/deadline copies and an old-config negative execute. This
+does not fix the full job: ordinary `72656dd0` remains red/incomplete at the10m
+guard,86 reported failures and58 broad file results missing; Typer/performance
+never run. Installed defaults permit36 active files on the measured14-CPU VM,
+versus nine under the RFC's four-CPU model—not a new hosted measurement or cause
+finding. The [CI log](scaffolding-and-ci/log.md#ordinary-full-job-result-at-reviewed-correction)
+owns exact evidence and next diagnosis. No deadlines or coverage are weakened.
+
 Product audit baseline, 2026-10-16: bounded production correction `7ec0873c` (kernel0.3.223,
 epoch8), independently approved at `190a4790`: simulation masks preserve absent map keys;
 affected native/Linux checks pass, but the27 Clout failures and historical guard remain red.

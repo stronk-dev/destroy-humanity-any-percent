@@ -66,6 +66,17 @@ and an old-config negative. One built-in traced affected run passes without a
 failure trace, not an explanation. Next run the ordinary full target once at the
 corrected revision; retain the line373 failure and all prior controls.
 
+That ordinary `72656dd0` full run is terminal RED: exit2/Error137 at the unchanged
+guard,86 reported failures,440/498 expected broad project-file rows, no final
+summary/Typer/performance. All three Garage interaction files and55 Firefox files
+are unreported, not passes. Installed default scheduling plus actual container
+CPU visibility permits12 files per engine/36 total, not a global12; snapshot
+memory10.68GiB. This differs from the CI RFC's four-CPU model (nine total), not a
+new hosted measurement or proof of causation. Next diagnose the concrete native
+input/runner boundary under explicitly accounted resource conditions, using
+existing verbose/trace support. Do not retry this unchanged full load, select
+another arbitrary worker cap, raise bounds or promote the isolated passes.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing
