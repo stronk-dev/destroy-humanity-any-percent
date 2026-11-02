@@ -7950,3 +7950,42 @@ or DB runs. Private overlays remain in `/tmp/cloud-clicker-rp142-review.8EWzY4`.
 The observed parent Markdown diff belongs to R18's separate transcription.
 Only this corrective review debt closes. No runtime, policy, schema, kernel,
 artifact, CI or release status is changed; goal remains active and nothing pushed.
+
+## 2026-11-02 — Drain provenance and unsupported restart route independently approved
+
+Review by: fresh independent Codex `/root/deployment_drain_route_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's corrective-review
+delegation. APPROVED separately, complete ranges (base exclusive, tip inclusive):
+
+- RP-138, eleven paths:
+  `1908762fbe91417f55ee5995b57545ac652c1490..c9c9dde7acba909ba749a2ee981941eb7a40f5e1`.
+- RP-143, four paths:
+  `8f83e4c5f4f87f674cca4a77e39b09a347f4f185..81a970ce6850a40a9eaf0c95dc2f64c8b2b38db3`.
+
+No earlier independent verdict covered these corrections; full diffs and current
+producer/observer/plan/dispatcher/CLI inspected. At `a043b5410ffe2a6eb42a90eef1ff008007b21a28`,
+cold complete config/Gameserver/release/rehearsal/rehearsal-CLI and matching vet pass.
+Focused cold race covers readiness matrix, unmarked non-drain failures, marked
+drain and crash-only route refusal. Three private compiling overlays fail the
+correct assertions: omitted observer marker, wrong server marker and reinserted
+crash-only producer mapping. No main-tree mutation; range whitespace passes.
+
+Exact root `make test-deployment-release` PASS: real Linux-amd64 Postgres/Caddy
+`TestCaddyIntegrationDrainReleaseAndExactBackupRollback`,2.73s, not skipped.
+It observes marked readiness through Caddy while a SQL lock holds an admitted
+intent; new work refuses, held work finishes200, courtesy/socket closure arrive,
+server restarts and a real encrypted backup restores. Exclusively coordinated
+fixed Compose project was initially empty; target cleanup and direct post-run
+inventory confirm no remaining containers. `make build-deployment-rehearsal` passes;
+actual compiled CLI probe for `gameserver_restart_during_admitted_work`, with
+distinct existing input/work directories, exits2 `invalid_probe`, not false proof.
+
+All execution handles terminal, tracked tree unchanged by reviewer; private overlays
+remain in `/tmp/cloud-clicker-drain-route-review.9rlIk3`. This is current-source
+integration, not historical-checkout or exact-manifest/clean-host evidence.
+Compose pins architecture but uses mutable image tags; no production Docker
+stop orchestration or actual crash-during-admitted-write/post-restart proof is
+established. Original Claude R9/R22 remain CHANGES REQUIRED, RP-143's named
+population remains unsupported, and AC3/AC4/R-006/full Deployment/release gates
+remain. Only these corrective reviews close; no feature/archival/release approval,
+runtime change or publication. Goal remains active.

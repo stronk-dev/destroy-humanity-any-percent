@@ -7,6 +7,16 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Drain/restart corrective checkpoint, 2026-11-02:** independent review approves
+RP-138's complete `1908762f..c9c9dde7` marker correction and RP-143's complete
+`8f83e4c5..81a970ce` removal of the false admitted-work acceptance route. Cold
+affected/race/vet checks and three private overlay failures execute. The existing
+Linux-amd64 Caddy/Postgres release lane passes2.73s, including marked drain,
+held intent completion, restart and encrypted restore. Actual CLI refuses the
+unsupported admitted-work row with exit2. The log owns full hashes and limits;
+original R9/R22, real crash-during-write, exact-release/clean-host and full
+Deployment acceptance remain open. These corrective scopes no longer await Claude.
+
 **Safety corrective review checkpoint, 2026-11-01:** fresh independent Codex
 approves complete RP-466 atomic backup commit, RP-544 live-writer cleanup,
 RP-545 shipped-copy attribution and RP-481/RP-482 rehearsal-baseline ranges.
