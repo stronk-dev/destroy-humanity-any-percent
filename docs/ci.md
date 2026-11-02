@@ -217,6 +217,24 @@ idle observation remains in the broad blocking population. A broad-phase failure
 later phases are unexecuted, not passed. `make test-browser-focused` remains a single invocation
 with the caller's original file/test selectors; it does not automatically append Typer.
 
+Before full functional collection, `make test-browser-provider-focus` runs the installed
+Playwright provider's real keyboard command against 18 controlled native-activation cases:
+three engines, top-level/iframe, healthy/interrupted/explicit-frame-focus control. Another
+page's pointer input deliberately interrupts focus. Every Enter must yield exactly one
+native click; a missed activation fails the command before the functional suite starts.
+The minimal project binding registers the actual provider command; pages, frames, events
+and activation are real, not doubles. This is an automation regression, not a game journey.
+Focused selections do not implicitly run this full regression population.
+
+The pinned `@vitest/browser-playwright@4.1.10` has a version-specific
+[pnpm patch](https://pnpm.io/cli/patch-commit), recorded in the workspace and lockfile.
+Its iframe-focus predicate also restores frame focus when `document.hasFocus()` is false,
+even if `activeElement` still names a button. This addresses the reproduced Firefox
+interruption case without selecting a destination control or synthesizing activation.
+Package versions, gameplay, native journeys, retries and deadlines are unchanged.
+Keep the regression when upgrading; remove the patch only after the unpatched installed
+provider passes it. Passing this boundary does not establish full CI reliability or latency.
+
 For retained full-functional JSON results, set `BROWSER_REPORT_DIR=.cache/browser-results`.
 The target writes separate `functional-broad.json` and `functional-native.json`; compare their
 union when checking full coverage. A shared `--outputFile` in `BROWSER_TEST_FLAGS` is rejected

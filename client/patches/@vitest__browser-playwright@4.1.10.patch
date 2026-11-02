@@ -1,0 +1,12 @@
+diff --git a/dist/index.js b/dist/index.js
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -486,7 +486,7 @@ async function keyboardImplementation(pressed, provider, sessionId, text, selectAll
+ 	return { pressed };
+ }
+ function focusIframe() {
+-	if (!document.activeElement || document.activeElement.ownerDocument !== document || document.activeElement === document.body) {
++	if (!document.hasFocus() || !document.activeElement || document.activeElement.ownerDocument !== document || document.activeElement === document.body) {
+ 		window.focus();
+ 	}
+ }

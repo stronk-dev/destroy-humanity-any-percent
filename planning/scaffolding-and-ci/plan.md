@@ -170,6 +170,18 @@ using its real keyboard command against the two-page negative/control population
 no synthetic activation, target focus, retry or worker-count sweep. No full-CI,
 hosted-latency or release claim is promoted.
 
+RP-700 corrective candidate after d7518dea: invoke the installed provider keyboard
+command in the existing18-case two-page population, not a copied predicate. Old
+provider terminal1: Firefox interrupted iframe misses activation; other17 pass.
+Version-specific one-line pnpm patch adds !document.hasFocus() to iframe-focus
+restoration; cold frozen installation passes all18, terminal0. No target focus or
+synthetic activation, upgrade, deadline or scheduling change. Regression is moved
+from planning into client/tools and made a full-functional prerequisite (focused
+selectors unchanged). Types/topology pass. Ordinary full patched job is running;
+retain all outcomes, and require independent corrective review for the complete
+batch after d7518dea before claiming review approval. Do not equate this specific
+provider repair with correction of every native deadline or whole CI/1.0 acceptance.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing

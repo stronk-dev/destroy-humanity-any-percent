@@ -2,3 +2,5 @@ allowBuilds:
   esbuild: true
 onlyBuiltDependencies:
   - esbuild
+patchedDependencies:
+  '@vitest/browser-playwright@4.1.10': patches/@vitest__browser-playwright@4.1.10.patch

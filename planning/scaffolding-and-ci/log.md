@@ -3467,3 +3467,50 @@ installed provider keyboard command rather than only copying its predicate.
 Any candidate must preserve genuine native input, target selection, all assertions
 and bounds; no synthetic click, destination focus or dependency-upgrade assumption.
 The reporter's independent approval stands; no broad-CI/1.0/archival/push claim.
+
+### 2026-11-02 — real-provider focus regression and version-pinned correction
+
+Existing18-case focus probe now registers the installed PlaywrightBrowserProvider's
+actual __vitest_keyboard command through a minimal project binding and supplies
+real pages/frames. No copied focus/key implementation. Old cold Linux command
+fails terminal1: Firefox153 interrupted iframe retains focused subject/trusted
+nonrepeat Enter down/press/up but zero clicks; other17 controls activate once.
+The assertion now requires every case's one native activation, not only printing
+the miss. Prior diagnostic18-case observation remains historical evidence.
+
+One-line version-specific @vitest/browser-playwright4.1.10 pnpm patch adds
+!document.hasFocus() to focusIframe's restoration predicate. Package versions,
+target selection, real keyboard delivery, assertions, scheduling, retries and
+deadlines unchanged. Patch uses pnpm's declared patchedDependencies mechanism;
+pinned11.15.1 generates the lockfile in an isolated Linux dependency volume.
+Only patch hash/consumer references change, no resolved package version. Generic
+peer warning from lockfile generation is disclosed; frozen installation succeeds.
+Host has pnpm12.16.1 and no corepack, so neither substitutes for pinned generation.
+
+Real old/new commands use the declared image/anonymous dependency volumes and
+shared test-browser-ci.sh frozen setup, then execute the diagnostic in the same
+container under the unchanged10m guard. Explicit manual entrypoint appends the
+probe after a small reporter-file setup check; it is NOT the full CI target.
+Exact command before the move: docker compose -f compose.browser-test.yml run
+--rm --entrypoint timeout browser --verbose --signal=KILL 10m bash -lc
+'bash client/tools/test-browser-ci.sh test-browser-focused BROWSER_TEST_FLAGS=test/browser-failure-reporter.test.ts && node planning/scaffolding-and-ci/firefox-focus-probe.mjs'.
+Old terminal1/new terminal0; both raw followers terminal0. New frozen install
+passes18/18 native controls; the setup selection's15 tests also pass,8.11s.
+Old log22620bytes SHA256 dea1afee894ad4df107f4b7ba5cef0a8163ffe9c712fda118a8525134dd42471,
+.cache/provider-focus-old-d7518dea-container.log; new21728bytes SHA256
+9b74e4ea24a757c13cedfcabaec87708e0c260bb8dc683f478b1d8f0fb0fb90b,
+.cache/provider-focus-new-d7518dea-container.log. No failure erased/retried.
+
+After execution, move the same regression into client/tools/verify-browser-provider-focus.mjs
+(relative imports/comment adjusted). Root Make test-browser-provider-focus is a
+full-functional prerequisite, sequential before broad/native/performance; focused
+selection stays focused. Existing topology fixtures verify this ordering and
+preserve all prior controls; terminal0 including27 negative fixtures. Typecheck
+terminal0/Svelte0 errors0 warnings. No product or authored-copy bytes change.
+
+One ordinary full target is now executing against this candidate, with separate
+.cache/provider-focus-full-d7518dea reports and no CPU/worker/trace override.
+Its result is NOT yet known. Specific native-regression correction is locally
+verified; whole CI/RP-526/hosted-five-minute/1.0 remain open. Complete batch after
+d7518dea requires fresh independent corrective review. Review by: Codex root,
+implementer first filter. Recorded by: Codex root. No archive/push.
