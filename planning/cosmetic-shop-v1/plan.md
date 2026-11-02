@@ -8,7 +8,8 @@ element or replacement history. A passive node/focus supplement now passes105
 Linux three-engine controls and one actual built-client/Postgres journey; the
 failure does not recur, so its cause and reliability remain OPEN. No input,
 assertion, retry or deadline changes. The owning log records exact failing and
-instrumented runs; the new diagnostic range awaits independent corrective review.
+instrumented runs. The complete seven-path diagnostic range `abd58416..0158f5a7`
+is independently corrective-approved; that approves observations, not a focus fix.
 
 ## Current checkpoint — 2026-10-16
 

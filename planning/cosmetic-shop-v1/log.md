@@ -2692,3 +2692,24 @@ removed. Review by: Codex root, diagnostic implementer first filter only.
 Recorded by: Codex root. Complete range after `abd58416` through this containing
 commit needs independent corrective review. Next: consume the richer trace on
 recurrence and continue accepted work; no scope/archival/push/release promotion.
+
+## 2026-11-02 — Passive focus diagnostic independently approved
+
+Review by: fresh independent Codex `/root/cosmetic_focus_diagnostic_review`.
+Recorded by: Codex root, transcribing APPROVED for complete seven-path range
+`abd5841658717c334f753a09672eb38894ec216f..0158f5a788f814c2bf21e1086b5dc39e531f748e`.
+No actionable findings. Installer serialization, actual node-identity distinctions,
+bounded history/drop visibility, input-value exclusion and disposal inspected;
+native activation/input/deadline/assertion bytes remain unchanged.
+
+Reviewer independently runs the same declared Linux focused command:105/105
+Chromium/Firefox/WebKit,2.89s,handle89264 exit0. Types0/0, both tool syntax checks
+and exact-range whitespace pass. Initial Docker denial executes no cases. Root
+73155 and its supplied capsule are inspected as implementer evidence; reviewer
+does not independently access original streamed output or rerun the real journey.
+Post-activation pending/body focus cannot explain the original pre-input failure.
+RP-705 remains OPEN, no cause/fix/reliability/feature/AT/CI/release promotion.
+Reviewer makes no tracked edits/mutations/commits, starts only its disposable
+--rm browser run, verifies inventory empty and leaves gameplay services untouched.
+All handles terminal. Root record-only diff/claims checked, no software rerun
+for this transcription. Continue accepted work; full1.0 goal active, nothing pushed.
