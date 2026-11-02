@@ -3514,3 +3514,51 @@ Its result is NOT yet known. Specific native-regression correction is locally
 verified; whole CI/RP-526/hosted-five-minute/1.0 remain open. Complete batch after
 d7518dea requires fresh independent corrective review. Review by: Codex root,
 implementer first filter. Recorded by: Codex root. No archive/push.
+
+### Independent provider correction approval; ordinary full broad has two deadlines
+
+APPROVED complete nine-path
+`d7518dea40ae069c87b07854f32262adbcfe1aad..ae367f8bfd5fe11d79399a841f384abb82e4d0b6`.
+Review by: fresh independent Codex /root/provider_frame_focus_corrective_review.
+Recorded by: Codex root, transcribing under Marco's delegation. Initial reviewer
+turn fails at model capacity before execution; same authorized reviewer retries.
+It independently checks scope, patch/lock hash, actual installed command binding,
+real focus/activation, Make ordering/failure propagation and all retained digests.
+Independent declared cold Linux run terminal0: setup15/15 tests9.74s, then actual
+Make provider regression18/18. Firefox interrupted iframe retains active subject,
+loses document focus, then gets trusted Enter and exactly one trusted click.
+make typecheck verify-ci-topology terminal0, Svelte0/0,27 rejected controls and
+ordering/setup/selector propagation. No blocking findings. Range diff-check flags
+only space-before-tab in the standard unified dependency patch's context lines,
+not implementation whitespace; reviewer explicitly discloses rather than calling
+that check clean. No reviewer edits. Approval is specific, not whole CI/RP-526.
+
+Root ordinary full target begins before commit at the same behavior source later
+committed in ae367f8b; only documentation/staging changes while it runs. Exact
+command: docker compose -f compose.browser-test.yml run --rm browser test-browser
+BROWSER_REPORT_DIR=.cache/provider-focus-full-d7518dea. Default scheduling/image/
+install/engines/limits, no CPU/worker/trace override. Root terminal2, follower0,
+owned ec7ba04bf054 absent. New normal Make native-provider prerequisite passes18/18.
+Broad completes250.46s,499 passed/two failed project-files (501),40459 ordinary
+passes,15 expected failures,24 skips,two failed (40500). JSON's40474 passed includes
+the15 expected failures. Two15s native sequential-plan deadlines: Chromium
+era2000 Enter and Firefox era1995 Enter. All other ordinary cases pass THIS run;
+not proof every earlier issue is fixed. Typer/performance never run after red.
+Module HTTP2041 started/finished,zero closed early/pending; no guard expiry.
+No matched/controlled host-load timing comparison, so30→2 is not a universal
+causal repair or reliability estimate. The strict hosted five-minute floor remains.
+
+Raw .cache/provider-focus-full-d7518dea-container.log1835865bytes SHA256
+50156c41c24886a7801049ba5ed1fe201d0c31611334425559ad0d7118650a22;
+functional-broad.json12498761bytes SHA256
+342ea15ef747ce5aa98d24106ff4ef9f71af9230b10f5e3eb3dbf80ac7d5b20b.
+Reviewer independently checks these digests; tool display truncation is not missing
+raw evidence. Initial Git staging sandbox denial changes nothing; ordinary scoped
+authorized add/commit succeeds without push. Tree clean at reviewer completion.
+
+Next bounded scheduling candidate: separate the unchanged whole Reputation-plan
+file into its own fresh three-engine phase, as for existing Typer isolation. Its
+original population/key/assertion/deadline and total report union must remain.
+No worker-count sweep or retry. Complete ordinary target terminal0/all phases
+required before a passing candidate claim; an isolated pass is insufficient.
+No whole-CI/RP-526/hosted-five-minute/release promotion, archive or push.

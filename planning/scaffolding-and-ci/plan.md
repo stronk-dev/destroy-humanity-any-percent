@@ -182,6 +182,19 @@ retain all outcomes, and require independent corrective review for the complete
 batch after d7518dea before claiming review approval. Do not equate this specific
 provider repair with correction of every native deadline or whole CI/1.0 acceptance.
 
+Independent corrective review APPROVES complete d7518dea..ae367f8b. Its own cold
+Linux execution passes the installed-provider18-case regression and types/topology.
+Ordinary patched full target passes that regression, then broad finishes250.46s:
+499 passed/two failed project-files,40459 ordinary passes/15expected/24skipped/two
+native sequential Reputation-plan deadlines (Chromium era2000 Enter; Firefox
+era1995 Enter). Typer/performance remain unexecuted. No causal reliability/speedup
+claim from the uncontrolled30→2 comparison. Next bounded candidate: run that
+unchanged whole Reputation-plan file in a fresh three-engine phase, analogous to
+Typer, preserving report union and every case/key/assertion/deadline. Require the
+complete ordinary target/terminal0 before calling that scheduling candidate passed;
+do not adopt it from an isolated pass or hide the existing two failures. Hosted
+under-five-minute acceptance remains separate and open.
+
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
 retaining public archive replay/corruption and board/privacy assertions rather than racing
