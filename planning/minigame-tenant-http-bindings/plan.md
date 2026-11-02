@@ -8,7 +8,10 @@ chi dispatch in six cases. Both static same-method variants shadow the old admit
 disjoint prefix and different-method controls preserve it. Source is the manual
 `../api-foundation/probes/tenant-route-probe.go.txt`, outside ordinary test collection.
 
-Engineering specification now ready for normative review, not implementation:
+Engineering specification independently technically APPROVED2026-11-02, not
+adopted or implemented. The owning log names the exact document blob/proposal
+ranges, inspected parents and cold legacy checks; real proposed behavior is not
+claimed from those baseline tests:
 
 - TB2 names every new request/success descriptor, all eighteen snapshot fields, exact error
   subsets and an explicit registered drain binding. Today's main-intent guard does not cover
@@ -21,8 +24,9 @@ Engineering specification now ready for normative review, not implementation:
 - TB5 specifies a generated bounded descriptor closure and guarded schema-byte decoder,
   preserving raw UTF-8/BOM/literal identity. Existing SDK/pair checks are not full guards.
 
-Next: obtain proposal adoption, author-body reconciliation and designated normative review.
-Do not treat this draft's readiness for review as acceptance or mutate parents in another
+Next: obtain proposal adoption and author-body reconciliation. The complete
+technical review is finished; do not repeat it as a substitute for implementation.
+Do not treat this draft's technical approval as acceptance or mutate parents in another
 author's name. RP-460/RP-162 remain separate author obligations. Review may require corrections;
 none of the specified new endpoints, codecs, guards, drain bindings or client registration exists.
 

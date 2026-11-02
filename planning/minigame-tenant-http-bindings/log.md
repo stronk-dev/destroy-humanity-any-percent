@@ -123,3 +123,32 @@ The earlier broad source-coordinate range is not approval of intervening behavio
 Next: adoption/body reconciliation/review of the complete proposal, then its staged real
 implementation and acceptance. No product/generated/balance/kernel/CI bytes changed, no
 self-acceptance, archival, push or deployment.
+
+## 2026-11-02 — Complete tenant HTTP proposal technically approved
+
+APPROVED, technical specification only, no findings.
+Review by: fresh independent Codex /root/tenant_http_contract_technical_review.
+Recorded by: Codex root, transcribing its verdict. Full448-line RFC reviewed at
+9dbc42add886dfc67024a2b12529547c275884e8, blob
+a8cd78244892b3e7615004348668f055639128c8; associated proposal-only ranges
+e0f0ad5d^..e0f0ad5d,573b0c9c^..573b0c9c,3a182e1c^..3a182e1c include their
+RFC/records/probe/index/plan/ledger/docs. No intervening implementation or later
+RP-565 codec correction is approved by this verdict; no prior full normative
+verdict located.
+
+Reviewer inspects API A5/C2/C9/C17, MA-C7/9/15, TT-PA1–4/TT4.5/TT8 and DP5
+against current code: disjoint routes preserve old Pitch dispatch/schema1;
+all18 snapshot fields/errors have an explicit descriptor route; schema2 binding,
+immutability/normalization/floors are coherent. Transaction admission precedes
+the actual early-return/genesis/receipt/status/claim sites under account/Founder
+locks. Read reconstruction distinguishes inner resolution receipts from full
+command responses. Generated raw guards and host identity checks retain separate
+authorities; no auto-retry, credential substitution or invented timing/score cap.
+
+Actual cold root make test-go GO_PACKAGES='./publicapi ./minigameapi'
+GO_TEST_FLAGS='-count=1' exits0 (0.417s/0.329s). This checks the existing
+authority/legacy-loader baseline, not proposed SQL/guard/browser behavior.
+Scoped whitespace checks pass. No tracked reviewer edits/commits/mutations,
+publication or live processes. Adoption and same-edit parent-body reconciliation
+remain required; RP-460/RP-162, full content/AT/feature gates and real staged
+implementation are not completed. Technical review is not activation authority.
