@@ -7856,3 +7856,31 @@ Fresh independent `/root/native_cleanup_source_corrective_review` is checking th
 six-path implementation and executing its own real-service journey; approval remains pending.
 This is native darwin/arm64 supplemental evidence, not actual cleanup SQL/journald/exporter,
 private Compose/Caddy, supported Linux artifacts, R-006/AC7 or whole CI/release acceptance.
+
+## 2026-11-02 — RP-704 independent corrective approval
+
+APPROVED complete two-commit/six-path range
+`ae040d1d7155fa939aa90006b97f1660534546e0..38a3297b3d8466487652ed8640b4ffddfbb9f0fc`.
+Review by: fresh independent Codex `/root/native_cleanup_source_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's delegation.
+No blocking finding. Both code and records inspected; production/rule/timing/grouping/CI
+bytes unchanged. Historical verdict transcriptions retain their separate scopes.
+
+Independent cold affected packages PASS1.752s/1.525s/5.409s and vet; focused controls
+PASS0.401s, final unmodified oracle0.298s. Two private compiler-overlay probes fail as
+required: crediting journal-only observations defeats both firing/resolved negatives;
+early success before whole-message validation defeats eight malformed-after-valid cases.
+No main-tree mutation; owned probe copies removed.
+
+Independent actual combined native run15679 PASS422.000s: Alertmanager60.46s,
+Prometheus361.30s. Zero19.445s→one34.478s→metric firing1m1.059s→natural resolution
+6m1.072s with counter still one. Exact journal-only firing/resolution are logged without
+credit. No reset, injected resolution, shortened window, guard change or active-run restart.
+Retained archive hashes match the supplied published checksum files and actual pinned
+versions/revisions. Native handles terminal; shared verified binaries retained. Final tree
+and range whitespace clean at reviewed tip; reviewer made no tracked edits.
+
+This closes RP-704's corrective review only. Native darwin/arm64 is not actual cleanup
+SQL/journald/exporter, private Compose/Caddy, supported Linux release artifacts, full AC7,
+R-006, hosted CI, feature acceptance, archival or release approval. Other accounting,
+history-guard, contract-adoption and full nine-tier 1.0 obligations remain open. No push.
