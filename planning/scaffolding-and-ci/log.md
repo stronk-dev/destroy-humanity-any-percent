@@ -3405,3 +3405,65 @@ Complete batch after fc7300e6 requires fresh independent corrective review.
 Next: one ordinary full target with this new signal, retaining every failed/
 unexecuted phase and actual error details. Full CI/hosted latency/RP-526/RP-700/
 1.0 remain open. No worker sweep, reduced-motion inference, archive or push.
+
+### Independent completed-failure reporter approval
+
+APPROVED, complete eight-path
+`fc7300e684daff7346169cb768bc48df7b9aea88..fa5faff59dc02cbd9135fed92d56f0fc94fc5159`.
+Review by: fresh independent Codex /root/browser_failure_reporting_review.
+Recorded by: Codex root, transcribing under Marco's delegation. No findings.
+Reviewer independently executes Node5/193ms, real Linux reporter selection across
+three engines15/2.89s, typecheck0/0, topology including27 rejected mutations and
+Make lane wiring, and exact-range diff check. Initial Docker sandbox denial runs
+no tests; authorized declared target passes. Its browser container is terminal
+before root begins the next full job, avoiding overlapping reviewer test load.
+
+Reviewer checks pinned .fails inversion occurs before test-finished dispatch to
+onTestCaseResult and failed results expose an error array. It independently
+checks held-control log digests/six versus zero early records, no aggregates,
+byte-identical old Makefile, matching probe bodies excluding comments, and the
+affected JSON's261 verdicts including three expected failures. No files modified
+by reviewer. Approval covers observation tooling, NOT scheduling/native timeout
+cause or repair, entire CI, hosted latency, RP-526/RP-700 or release acceptance.
+
+### Ordinary full job with early errors — complete broad red, not a guard kill
+
+At fa5faff5, docker compose -f compose.browser-test.yml run --rm browser
+test-browser BROWSER_REPORT_DIR=.cache/browser-completed-failures-fa5faff5 executes
+the ordinary frozen Linux target with no trace, engine, CPU or worker override.
+Root terminal2/Make Error1; Docker follower terminal0; owned c42317ff8d08 absent.
+Initial raw follower lacks socket permission, runs no capture; immediately
+restarted authorized follower retains the complete container log from startup.
+No test rerun or overwritten failure. Broad finishes364.81s:12 failed/489 passed
+project-files (501),40431 ordinary passes,15 expected failures,30 failed and24
+skipped cases (40500). JSON's40446 passed includes15 expected failures. Native
+Typer and isolated performance phases do not execute after broad failure.
+
+All30 early records match the completed report: Chromium7,Firefox20,WebKit3;
+24 native-input deadlines and six assertions (Firefox Codex activation/two Garden
+focus checks; Chromium two Fiscal navigation states; WebKit Fiscal focus).
+The Firefox Codex record retains trusted nonrepeat Enter events on its connected
+focused SUMMARY, document_focused:false and no open state after settling, matching
+the independently reproduced RP-700 boundary. This does not attribute the other
+29 failures or prove their independence from earlier timeouts. Existing lifetime
+markers again show accumulated native RPC waits. The prior candidate's WebKit
+reduced-motion failure does NOT recur; no cause or correction is inferred.
+Module HTTP summary2028 started/finished,zero closed early/pending. One late
+resource sample388.73%CPU/11.53GiB, uncontrolled other host services; not a benchmark.
+
+Raw log .cache/browser-completed-failures-fa5faff5-container.log2068884bytes SHA256
+aff41ac79f456a4618013db753ac2537f4dbad519f37849db525830c7d0bbb15;
+functional-broad.json12534910bytes SHA256
+49980412d1bfbfdd86cac8f619834c8ec2a4a2aee0aa7856540540d1022f1b53.
+No guard signal occurs. Tool display truncates; raw artifacts own the result.
+An initial read-only metadata one-liner has a syntax error; corrected reads above
+succeed without changing artifacts. Full job is RED, also above the hosted
+five-minute floor already in its broad phase; no deadline or floor is raised.
+
+Next correction targets the pinned provider's focusIframe predicate, which skips
+window.focus when an active button remains named despite the document losing
+native focus. Reuse the real two-page negative/control population, but invoke the
+installed provider keyboard command rather than only copying its predicate.
+Any candidate must preserve genuine native input, target selection, all assertions
+and bounds; no synthetic click, destination focus or dependency-upgrade assumption.
+The reporter's independent approval stands; no broad-CI/1.0/archival/push claim.

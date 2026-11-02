@@ -159,9 +159,16 @@ the real held control emits six failure records across three engines, while the 
 control under the prior Makefile emits none before its three held tests. Both controls
 are intentionally stopped, not passing suites. Affected ordinary Linux population passes
 258 cases plus three expected failures; types/topology controls pass. Fresh independent
-review is required for the batch after fc7300e6. Next run the unchanged ordinary full
+review APPROVES complete fc7300e6..fa5faff5, including its own three-engine reporter
+execution and pinned final-verdict implementation inspection. Next run the unchanged ordinary full
 target once with this new signal; diagnose its actual assertion details, not a guessed
-worker count. No full-CI, hosted-latency or release claim is promoted.
+worker count. That run completes the broad population normally, terminal2:12 failed/
+489 passed project-files,24 timeouts/six assertion failures,364.81s. Typer and performance
+do not run. All30 completed failures are retained before the aggregate and agree with
+the JSON. Next target the independently reproduced provider iframe-focus predicate,
+using its real keyboard command against the two-page negative/control population;
+no synthetic activation, target focus, retry or worker-count sweep. No full-CI,
+hosted-latency or release claim is promoted.
 
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,
