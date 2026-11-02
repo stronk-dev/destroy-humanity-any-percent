@@ -792,6 +792,7 @@ verify-commons-boundary:
 
 verify-client-boundary:
 	node client/tools/verify-shell-boundaries.mjs
+	node client/tools/verify-headcount-arithmetic.mjs
 
 verify-kernel-version:
 	node client/tools/verify-ci-kernel-history.mjs

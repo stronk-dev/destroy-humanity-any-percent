@@ -260,3 +260,41 @@ distinguish Go overflow from TS ratio failures. A retained TS intermediate-produ
 ban needs an honest mechanical witness, not fabricated wrong-output evidence.
 No native-browser/hosted/full CI, live mounting/persistence/pacing, AC3/AC5 or
 feature/release completion claimed. No second hiring/output ruling is needed.
+
+## 2026-11-02 — Observe actual S2 intermediate multiplication, not invented output faults
+
+Outcome: under accepted S2's guarded-algorithm restriction, add a Node-only
+actual-source multiplication witness to the existing verify-client-boundary
+target. TypeScript's installed compiler replaces native multiplication operators
+in the self-contained source with an observation callback; an independent BigInt
+product checks the safe-integer bound before returning the native product.
+No production arithmetic, hooks, dependencies, fixture bytes, browser selectors,
+kernel identity or normative acceptance text changes. Canonical docs remove the
+now-false held-seat-choice line and describe the bounded tool honestly.
+
+Execute all twelve shared vectors: expected outputs match and six actual products
+are safe. Source-derived naive multiply/clamp still returns the correct admitted
+large-vector output; the observed execution rejects its unsafe intermediate.
+Five controls refuse malformed source, compound multiplication, exponentiation,
+imports and absent multiplication. These discriminate the instrument, not AC3's
+impossible output-fault claim. The tool covers exercised native operators, not
+all inputs or arbitrary future helper/math implementations; existing exact-model
+tests remain mandatory. RP-413's author/technical/adoption gate stays open.
+
+Actual root make verify-client-boundary passes, including existing shell controls;
+Node Headcount56 passes260ms; typecheck zero errors/warnings; CI topology rejects
+all27 mutations. Execute enclosing make verify-client once: build/typecheck,
+Node12505 pass/1109 existing skips (7.57s), shell/new witness and history-checkout
+fixtures pass, then the unchanged historical kernel guard rejects50a3a514 and
+Make exits2. No full-client/whole-CI green claimed; later targets do not execute
+in that command. Separately executed topology result above remains valid. Raw
+.cache/headcount-arithmetic-client-ba1d7eaa.log is3034bytes, SHA256
+471be86b37d27271996ce692c9427cc73b4d50f92b67daa55624c0431d3aa213.
+No browser run for this Node-only tool; no Linux/hosted/persistence/player-path,
+AC3/AC5 or feature/release claim. All handles terminal, nothing pushed.
+
+Review by: Codex root, implementer/first filter. Recorded by: Codex root.
+The complete five-path batch afterba1d7eaa through this checkpoint needs fresh
+independent corrective review; technical review cannot replace author adoption
+of an amended criterion. Next is that review and remaining engineering contracts,
+not rerunning unchanged green populations or another gameplay-model question.

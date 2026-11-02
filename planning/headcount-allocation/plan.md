@@ -89,6 +89,11 @@ library is only one prerequisite, not a substitute for that chain.
   is independently approved with fresh executed controls; the owning log records
   exact provenance and limits. The author must reconcile the criterion; do not
   manufacture a TS overflow failure, remove its guard or promote AC3/AC5.
+  A bounded actual-source intermediate-product witness now runs through
+  `make verify-client-boundary`: twelve shared vectors, unsafe multiply/clamp
+  control and fail-loud instrumentation controls. This adds evidence for S2's
+  existing algorithmic restriction, not an adopted replacement for AC3 or a
+  universal proof; the owning log records its execution/review boundary.
 - Reconcile occupied economy/save/replay version numbers in the accepted body
   before integration; do not reuse its historical v5/v19/v9 literals blindly.
 - Catalog grammar/bindings, closed-form rates, state/migrations and logged intents.

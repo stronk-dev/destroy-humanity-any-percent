@@ -2,8 +2,10 @@
 
 Only the source-independent arithmetic library is implemented. It is **not wired
 into gameplay**, and no headcount catalog, save, intent, resource rate or UI is
-activated. The accepted Headcount and Tier 2 contracts still require reconciliation
-before integration; the seat-source choice is explicitly held.
+activated. Marco selected paid hiring with producing/redirecting roles on
+2026-11-02; the two specifications' model translation is independently approved.
+Remaining technical identity/acceptance and content/policy contracts still
+require reconciliation before integration.
 
 ## Arithmetic API
 
@@ -43,6 +45,20 @@ Go and TypeScript consume the same file. Independent test-only arbitrary-precisi
 models cover the small domain and maximum-safe-integer boundaries. Rejections,
 input immutability, role ordering and fresh result ownership are also checked.
 
+`make verify-client-boundary` also executes a Node-only intermediate-product
+witness against the actual TypeScript source. A TypeScript AST transform observes
+each native `*` expression while running the twelve shared vectors; an independent
+BigInt check refuses products outside the safe-integer domain. This checks an
+algorithmic restriction, not merely the clamped output. Its source-derived naive
+multiply/clamp control still returns the correct admitted-edge output but is
+rejected by the observer. Parse errors, imports, unobserved multiplication,
+compound multiplication and exponentiation refuse rather than silently bypass
+this narrow instrument. No runtime hooks, new dependencies or browser exclusions
+are added. This bounded execution witness is not a proof over all inputs or
+arbitrary future arithmetic/helper implementations; existing exact-model tests
+remain required. It does not reconcile or satisfy the RFC's impossible TS
+overflow-output criterion on its own.
+
 Run from the repository root:
 
 ```sh
@@ -51,6 +67,7 @@ make vet GO_PACKAGES='./headcount'
 client/node_modules/.bin/vitest run --root client test/headcount-allocation.test.ts
 make test-browser-focused BROWSER_TEST_FLAGS='test/headcount-allocation.test.ts --project=chromium --project=webkit'
 make test-go-ci CI_TEST_PACKAGES='./headcount' CI_TEST_FLAGS='-v'
+make verify-client-boundary
 ```
 
 Actual results, unavailable engines and pending designated review live in the
