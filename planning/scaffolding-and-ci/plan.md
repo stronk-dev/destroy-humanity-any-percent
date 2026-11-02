@@ -201,10 +201,17 @@ independent old-fixture failure and full corrected135-case execution. A follow-u
 real-deadline control then reproduces surviving external neighbor controls in all
 three engines. Registering those nodes with the fixture's existing disposal fixes
 that gap; complete affected135 cases/types pass. Independent review of the follow-up
-afterbc6d3fcb is pending; do not credit the earlier verdict for these later bytes.
-Next use one ordinary full target only after that review with the actual lifetime
-correction/new containment signal. No arbitrary phase/worker sweep, original-timeout
-cause claim or hosted-under-five-minute/whole-CI/1.0 acceptance promotion.
+afterbc6d3fcb is independently APPROVED throughb91790ef; each verdict retains its
+own exact scope. Ordinary full run atb91790ef completes broad470.84s,13failed/
+488passed project-files,24failed cases (22deadlines,one Worker-readiness poll,one
+Fiscal navigation assertion). All Garden containment controls pass; original
+native timeouts remain. Typer/performance do not execute. Resource metadata is
+14CPUs/no cgroup CPU quota, not a hidden4CPU quota. The WebKit mapped failure is
+line442's first-prediction readiness poll, NOT reduced-motion cadence. Next use the
+existing native-prediction report at this failure to distinguish initialization,
+visibility, native error or gap before any correction; do not change a bound from
+the test name. No unchanged full retry, arbitrary phase/worker sweep or whole-CI/
+hosted-under-five-minute/1.0 acceptance promotion.
 
 RP-677: independent cursor review discovers an actual composed Exit/board test race with
 successful background archive compaction. The test now awaits that real committed phase,

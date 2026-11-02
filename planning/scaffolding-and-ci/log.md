@@ -3679,3 +3679,52 @@ and diff-check pass. Earlier approval does NOT cover this follow-up afterbc6d3fc
 independent review is pending. No full run restarted across goal-resume gaps.
 Next finish that review, then one ordinary full target with actual containment
 changes. RP-526, hosted latency and proper full1.0 remain open. No archive/push.
+
+### Adjacent-node independent approval; ordinary full run remains red
+
+APPROVED complete five-path follow-up
+`bc6d3fcbaa421cb8bfba34d4c4db0684b9986f23..b91790efac2ad496d2c4008211c47e18758c4304`.
+Review by: independent Codex /root/garden_fixture_lifetime_corrective_review.
+Recorded by: Codex root under Marco's delegation. No findings. Reviewer executes
+full affected Linux file132 ordinary/three expected deadlines,8.94s, types0/0 and
+clean diff-check. Independent exact old-neighbor source fails all3 successors on
+remaining adjacent controls,three expected/129 deselected,3.06s/Make2; verifies
+source outside regression equals baseline. Temporary test removed via apply_patch,
+tree clean; all reviewer browser work terminal before root full job begins.
+This extends, not retroactively enlarges, the earlier6498c70e..bc6d3fcb verdict.
+
+One ordinary full job at cleanb91790ef: docker compose -f compose.browser-test.yml
+run --rm browser test-browser BROWSER_REPORT_DIR=.cache/garden-containment-full-b91790ef.
+No trace/CPU/worker/engine override. Provider regression18/18; broad completes
+470.84s,488 passed/13 failed project-files (501),40446 ordinary passes/18 expected/
+24 skips/24 failed (40512). JSON40464 passed includes18 expected. Root terminal2,
+follower0,ownedbeecbb7fb2ed absent; no guard signal. Typer/performance never execute.
+All new Garden containment controls pass; four original Firefox Garden native
+cases time out. The other failures remain retained, not excused by scoped approval.
+Early records: Firefox18,Chromium3,WebKit3;22 test deadlines,one Fiscal navigation
+assertion and one WebKit Worker readiness failure. Not a reliability/speed comparison.
+
+Full mapped error identifies game-ui-screens-browser.test.ts:442, polling for first
+predicted_snapshot before the cadence window. Thus the earlier reduced-motion
+failure is NOT evidence its numeric500ms spacing or pulse assertions failed.
+The actual poll bound remains unchanged; no cause inferred. Route under RP-218's
+existing native-prediction/startup investigation, not a newly invented product defect.
+Existing observeNativePrediction already has a detailed report; next reuse it at
+this readiness failure before changing any timeout or behavior. No unchanged full
+retry, worker-count grid or phase extraction from this run.
+
+Owned-container read-only metadata: Node24.18.0,availableParallelism14,
+cpu.max='max 100000',cpuset.cpus.effective='0-13',memory.max='max'. This rules out a
+hidden4CPU cgroup quota, not VM/host load or resource pressure. Read-only fetch at
+normalized stack port63315 is refused; actual logged Vite port51204 returns source,
+but its SSR transform offsets do not directly map the browser stack. No fetched
+code executes and no test/source changes; final mapped report owns the line442
+finding. Module HTTP2031 started/finished,zero closed early/pending.
+
+Raw .cache/garden-containment-full-b91790ef-container.log2069742bytes SHA256
+963afd328e3db0ba3e9f18f18a06c754b65abdf73b0a331c5fa4ebe2a4b92333;
+functional-broad.json12522077bytes SHA256
+65ef55291a59cf11da65ef0d615c7f313db6b5340713a0139e57d76f0fd4d49b.
+Tool display truncation does not replace these complete artifacts. Scoped repairs
+and their review gates are closed; original latency/whole CI/hosted-five-minute/
+proper full1.0 remain open. No feature archive, publication or push.
