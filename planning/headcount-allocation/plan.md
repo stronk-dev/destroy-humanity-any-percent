@@ -73,6 +73,16 @@ Headcount literals are not available reservations. Recheck and assign next-free 
 the actual implementation boundary, with exact activation/history compatibility; do not
 reinterpret existing versions or edit applied migrations.
 
+The source trace at59a56f16 additionally finds RP-702: numeric Company>=19
+assumptions couple new Headcount activation to Clout hooks/receipts, while
+genesis binds attainment to the pinned axis declaration. A blind Company20
+rename is not a sufficient repair. Draft
+`rfc/headcount-activation-and-acceptance-integrity.md` specifies the full independent
+activation/state/Exit/replay matrix and honest RP-413 acceptance correction.
+It is a proposal awaiting technical review and author/owner adoption, not authority
+to alter the parent bodies or start wiring. Current owner-delegation questions
+remain questions until answered; no new gameplay or rates are inferred.
+
 After the remaining technical contracts and translation are reviewed, build the complete selected chain: catalog →
 saved seats/assignments → logged commands → production/replay → authoritative projection →
 mounted allocation panel → real purchase/reallocation/Exit/reload proof. The existing S2

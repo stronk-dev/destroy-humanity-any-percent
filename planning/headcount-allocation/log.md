@@ -318,3 +318,32 @@ assertion-code/operator check passes the complete ten-control rerun. No tracked
 or production mutation; all handles terminal, no publication. This closes this
 tool's corrective review only, not full CI, universal arithmetic proof, AC3
 replacement adoption, Headcount integration or release acceptance.
+
+## 2026-11-02 — Specify independent Headcount activation before renumbering
+
+Previous goal turn changes actual test/CI state and completes independent reviews;
+it is progress, not a wait. Resume clean59a56f16, inspect accepted index and
+owning plans: full Headcount integration still needs technical activation, while
+other active surfaces retain named contract/content gates. Do not construct
+another unused arithmetic primitive or treat blocked adoption as all-work blocked.
+
+Source trace finds RP-702: current versionFloors binds Company19 to axis presence,
+genesis makes attainment only when declared, but Foundation validation and both
+receipt projectors infer axis from Company>=19. A simple fresh-number substitution
+would not implement valid Headcount-only catalogs. Record the constraint as such,
+not as a current exploit or executed nonexistent Company20 failure.
+
+Draft Headcount Activation & Acceptance Integrity owns the proposed repair:
+fresh identities, independent pinned capability matrix, new-version nullable
+inactive attainment/strict active derivation, exact old versions, new-run-only
+activation, complete current replay-union extension, no fake kernel bump and
+honest RP-413 failure distinctions. Parent/model/windows/balance/copy/acceptance
+authority remain untouched. The actual-source witness is supporting evidence,
+not a replacement for full five-runtime or integrated acceptance. Prices/rates,
+full policies, author/owner adoption and full release gates remain required.
+
+Inspect complete draft against current Go/TS source and parent contracts; whitespace
+check passes. No software suite for Markdown or claim of runtime implementation.
+Review by: Codex root, proposal author/first filter. Recorded by: Codex root.
+Complete five-path range after59a56f16 through this checkpoint needs independent
+technical review before adoption/body reconciliation; no publication.
