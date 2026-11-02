@@ -9905,3 +9905,49 @@ RP-680, original27 Clout AC6 failures and history guard50a3a514 stay open. No
 acceptance checkbox, specification adoption, archival, hosted CI, release,
 publication or deployment. Next continue accepted construction/review outside
 held author/product contracts; Tier2 activity-window adoption is still pending.
+
+## 2026-11-02 — RP-703: actionable strict report-drift diagnostics
+
+Implementation/verification by: Codex root. Routine diagnostic correction under
+RFC-0000/R10, based on485493e0. The actual retained hosted job125078293376
+(maintenance41383212848, sourceefa9223c) reports `career report drifted ...: <nil>`
+after334.01s and `relevance report drifted ...: <nil>` after1469.71s. Both read
+errors are nil; the real failure is unequal bytes, hidden behind a regeneration
+hint. This is not a newly discovered balance failure or authority to repin.
+
+Both existing consumers now use one test-side exact-byte comparator. On drift it
+names the first zero-based byte offset, lengths, SHA256s and at most64 original
+bytes per escaped context; read errors retain their underlying identity. It
+never normalizes JSON, ignores identity fields, changes reports or excuses later
+differences. Explicit existing update flags, producers, studies and comparisons
+remain unchanged. No new observation mode/writer, runtime, workflow, version,
+policy, budget, balance or copy change. Canonical docs describe this boundary.
+
+Executed:
+
+- Focused comparison/actual-pin controls45643 PASS0.229s: equality, changed value,
+  formatting, shorter/longer/empty/binary observations, missing file, read-only pin
+  and bounded late-byte drift in both real reports. Final stronger test expectations
+  calculate hashes directly with SHA256 instead of reusing the formatter's helper;
+  final focused35623 PASS0.252s.
+- Whole ordinary fast Harness86224 PASS104.133s, cold; affected vet passes. Its
+  exhaustive skips are not full study credit. It overlaps the separate H4 run;
+  neither duration is a controlled performance comparison.
+- Actual full97-pair H4 through the existing root Make target73369 completes
+ 127.36s and correctly exits2, no guard/skip:194 source-admitted arms,93 gated
+  comparisons,3 both-unreached exclusions,1 no-starter row; the same six Casual
+  ties stay visible. First difference is byte4: pinned51710 bytes SHA256
+ `648f36d685c07471830692bf4c55810fc6c95ed4dcd00306d75a36697c2a9aa8`,
+  freshly generated236058 bytes SHA256
+ `24fbf581bc02f95ae5cc964168b860b9971bb2e0d2a1a9525ca85bfafb6fdd39`.
+  The diagnostic actually executes in the long producer, not only an isolated test.
+- Initial Make selector63276 loses its end-anchor separator and runs NO tests;
+  discarded before the corrected full run. No pass is credited to it. No full
+  fresh H5/hosted run or complete drift classification is claimed in this batch.
+
+Both committed report pins hash-identical after all executions; H5 stays
+`4ed79054baa69389fff34cf850327c07b882b6b4aa507c25dc4d3d13808ab63c`.
+Independent corrective review is pending for the complete six-path batch including
+this record. RP-634's technically reviewed observation proposal is still unadopted;
+no H4/H5, feature, full-CI or release gate is promoted. Next is review and genuine
+accounting/content/contract construction, not blind report regeneration.

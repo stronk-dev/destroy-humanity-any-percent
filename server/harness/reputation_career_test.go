@@ -120,9 +120,8 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	pinned, err := os.ReadFile(path)
-	if err != nil || !bytes.Equal(pinned, encoded) {
-		t.Fatalf("career report drifted (regenerate with REPUTATION_UPDATE_CAREER=1): %v", err)
+	if err := comparePinnedReputationReport(path, encoded); err != nil {
+		t.Fatal(err)
 	}
 }
 

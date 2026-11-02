@@ -899,6 +899,14 @@ acceptance. The full H4 run still records the same six Casual ties. H5's
 epsilon/run-4 questions, report provenance and H3's fired tiny-factor criterion
 remain unresolved. No report refresh, retune or release claim follows.
 
+Strict H4/H5 report drift now names the report path, first differing zero-based
+byte offset, both byte lengths/SHA256 values and bounded escaped contexts. A
+read failure is reported separately with its underlying error. Matching remains
+byte-for-byte, including formatting and identity fields; the first difference
+does not establish that later values are unchanged. Inspect the complete drift
+before any separately authorized regeneration. The comparison never writes a pin
+and does not implement the unadopted interruption-safe observation profile.
+
 The test-side H4 report gate validates each row before starter eligibility.
 Only `run3_gate_beyond_ratified_horizon_in_both_arms` with both clocks absent
 is an exclusion; observed clocks must be nonnegative. A finite pair must carry

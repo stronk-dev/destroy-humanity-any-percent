@@ -119,9 +119,8 @@ func TestReputationTreeRelevance(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	pinned, err := os.ReadFile(path)
-	if err != nil || !bytes.Equal(pinned, encoded) {
-		t.Fatalf("relevance report drifted (regenerate with REPUTATION_UPDATE_RELEVANCE=1): %v", err)
+	if err := comparePinnedReputationReport(path, encoded); err != nil {
+		t.Fatal(err)
 	}
 }
 
