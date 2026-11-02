@@ -1089,3 +1089,33 @@ This supplements service-level solo evidence, not natural Knowledge acquisition,
 public Founder HTTP/DOM flow, async source mutation, process/host crash, full AC1,
 new-feature acceptance or release. Designated independent corrective review remains
 pending for this complete three-path batch; no checkboxes or feature status change.
+
+## 2026-11-02 — Founder-source witness independently APPROVED
+
+Review by: fresh independent Codex `/root/founder_scaling_witness_review`.
+Recorded by: Codex root, transcribing the actual verdict under Marco's corrective-
+review delegation. **APPROVED**, no actionable findings, full three-path range
+`e27dd542bbfcc2af76f700380f0a885f7f2d022e` exclusive through
+`7887bb4ba90a920f50658105655daac32857e9fc` inclusive.
+
+Reviewer independently runs all eight Postgres start/admission arms twice:
+PASS4.266s, no skips; both funded journeys produce round2/credit1/quota1.
+Cold native Minigame/Pitch/MinigameAPI PASS0.254/0.372/0.188s; Production/
+Minigame/Pitch vet, formatting and range whitespace checks pass. Actual pure-
+tenant negative controls plus funded/empty-source server starts discriminate
+the named property; no tracked mutation or self-approval. Founder-scoped setup/
+deferred cleanup and reconstructed SQL state are inspected, not inferred from
+test names. Reviewer returns the unchanged running test service to the parent.
+
+CI wiring is unchanged: the existing `verify-server-core` → `test-go-core`
+population includes Production, and the server job supplies actual Postgres.
+This static routing check is not a hosted result for unpushed7887bb4b. Native
+missing-DB runs remain skips. Original public-HTTP journeys and this service-
+level Founder mutation cover different boundaries; natural earning, public
+Founder input, async mutation, host/process crash, full AC1/feature acceptance
+and the full nine-tier release floor remain open. No archival or publication.
+
+Parent cleanup: inspect confirms only owned container133194a1fb8f, zero mounts/
+volumes and tmpfs database; scoped `rm -sf postgres` removes it. Final Compose
+inventory empty. Disposable test rows are unrecoverable; durable data, caches,
+images, networks and unrelated containers are untouched.
