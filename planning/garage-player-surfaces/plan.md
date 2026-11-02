@@ -569,11 +569,14 @@ must succeed before another container population. No lifecycle promotion.
   CHANGES REQUIRED, RP-313 wire/clone body reconciliation. Green primitive
   tests do not resolve this. Original consumer `f32f6175^..f32f6175`, all
   fourteen paths, is separately CHANGES REQUIRED for RP-314/315/316. Narrow
-  cap/keyboard/timer correction through `d9e4e274` passes 40 native cases;
-  exact Codex correction `d90aded7..0f3a1a7a` needs Claude. RP-316's shared
-  oracle through `0befc01c` is locally corrected (native86, six faults fire,
-  actual click-buff composed pass, NOT Lucky); entire Codex span after
-  `c0eb3dc5` through tracking needs Claude. RP-317 diagnostic mapping/host repair
+  cap/keyboard/timer correction has independent corrective approval for complete
+  `d90aded7..0f3a1a7a`. RP-316's shared oracle has its own complete
+  `c0eb3dc5..876b331c` approval. The 2026-11-02 log records actual-minute/native
+  input checks and an unforced Lucky claim through the real composed driver at
+  revision42/run3, with exact successor/SQL proof and no account selection.
+  This is not natural whole-game pacing, standalone cross-account identity or
+  full GS5 acceptance; earlier click-buff-only runs remain historical.
+  RP-317 diagnostic mapping/host repair
   has independent corrective approval for complete `0f3a1a7a..c0eb3dc5`, including
   its final record edge (2026-11-02 owning log). Producer supplement
   `87fd23d4..d90aded7` requires

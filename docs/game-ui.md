@@ -361,7 +361,10 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   synthetic gameplay command. Native fixtures exercise these transitions, not
   real-service connection recovery or credential expiration.
   The composed claim checker binds the response to its DOM request and exact
-  next Company revision/run. Lucky checks the canonical credited delta and
+  next Company revision/run sequence within one unchanged authenticated browser
+  session. The effect helper does not independently validate a fabricated
+  account-switched successor; the queued read/SQL check below supplies its
+  separate Founder/stream binding. Lucky checks the canonical credited delta and
   exact receipt-snapshot cash against the successor's unique cash row; the
   receipt cash already includes lazy accrual, so no payout formula is duplicated.
   A positive Lucky credit also needs a matching cash change with bank growth and

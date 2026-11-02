@@ -7538,3 +7538,53 @@ commits or publication; all handles terminal and reviewed tree clean. Only these
 three corrective review debts close. No original-feature/copy adoption, full
 Garage/accessibility, real-service refusal/composed gameplay, whole CI, archival
 or release approval follows. Full1.0 goal remains active; nothing pushed.
+
+## 2026-11-02 — Opportunity cap/input and claim-proof corrections approved
+
+Review by: fresh independent Codex `/root/garage_opportunity_proof_corrective_review`.
+Recorded by: Codex root, transcribing its verdict under Marco's corrective-review
+delegation. APPROVED separately, full implementation and final record edges:
+
+- RP-314/315, five commits/ten paths:
+  `d90aded7e39fa7750a5ef089d843fe9e4aa67ef3..0f3a1a7a10b22ad5946b404f45770a9194636036`.
+- RP-316, four commits/eleven paths:
+  `c0eb3dc513cb3103efe7955596ddc361720d1653..876b331c0ab8012b3065f74090f2631992e6acb9`.
+
+No actionable findings or earlier designated approval covering these complete ranges.
+At `24467610ea78680a5f50488ac58ce8336919f6bc`, Node opportunity-composed-proof65/65,
+types0/0,217-module build and client boundaries pass. Exact current descendants:
+`make test-browser-focused BROWSER_TEST_FLAGS='test/garage-surfaces-opportunity-browser.test.ts test/garage-idle-opportunity-browser.test.ts --project=chromium --project=webkit'`
+passes160/160: actual cap receipt/number, native Tab→Enter/Space and idle observations
+60218ms Chromium/60062ms WebKit. No shortened minute or all-engine claim.
+
+`node client/tools/test-game-ui-composed.mjs` exits0, including8/8 persisted refresh
+cases and required actual Postgres/browser/WebSocket journeys. Its unforced claim
+is Lucky, not buff; no account rerun/selection. Read-only SQL confirms the sole
+claim at revision42/run3, credit`1.46494127635e1`, receipt cash`2.56454978535e1`,
+saturatedfalse, preceded in that run by20 manual commands and one purchase.
+This is a SQL count, not a retained attempt-counter output. The real driver passes
+its successor/status/effect and queued SQL oracles at the claim. Later inspection
+finds revision42 already pruned, so no retrospective saved-cash comparison is
+claimed. Earlier fixture-assisted terminal/gate setup remains; this is unforced
+Lucky acquisition/credit binding, not natural whole-game pacing or balance proof.
+Actual run: kernel0.3.223/epoch8, constants
+`sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`.
+
+In-memory actual cdd00ee5 oracle accepts null Lucky successor; actual876b331c
+refuses it and admits five effect controls. Current status/effect predicate bytes
+match that tip; later queued-proof construction is context, not included approval.
+Historical A red browser evidence is inspected, not newly reproduced. Effect helper
+binds revision/run sequence in this controlled single authenticated session; it is
+not standalone cross-account Founder validation. Current preceding queued read/SQL
+add Founder/stream binding. Do not inflate that helper's identity claim.
+Canonical tooling notes now state that same reviewed contextual boundary;
+editorial docs/record diff and whitespace checked, no runtime policy added.
+
+Initial broad native selection passes120 Chromium/WebKit cases but Firefox times
+out and is stopped; no all-engine/minute credit from it. Initial listen denial
+runs no tests. Historical probe's wrong expected return is corrected before its
+successful semantic check; passive Vite HMR bind warnings remain disclosed.
+All handles terminal; only reviewer-created tmpfs/no-durable-mount container
+`21129427…1ada` is removed (disposable rows unrecoverable), caches/source intact.
+Only these corrective reviews close. RP-313, full GS5/Garage, AT, copy adoption,
+hosted CI and release gates remain; no runtime change, push or archival.
