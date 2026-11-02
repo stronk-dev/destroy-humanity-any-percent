@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { activateCosmeticBuy, assertNativeCosmeticBuyTrace } from "../tools/activate-cosmetic-buy.mjs";
+import { activateCosmeticBuy, assertNativeCosmeticBuyTrace, installCosmeticBuyFocusTrace } from "../tools/activate-cosmetic-buy.mjs";
 
 for (const key of ["Enter", " "]) {
   const label = "Buy for $0.00";
@@ -94,4 +94,55 @@ it.skipIf(typeof document === "undefined")("Cosmetic DOM activation refuses inva
     await expect(activateCosmeticBuy({ label: "Equip", state: "owned", budgetMs })).rejects.toThrow("invalid cosmetic");
   }
   await expect(activateCosmeticBuy({ label: "Equip", state: "pending", budgetMs: 30_000 })).rejects.toThrow("invalid cosmetic");
+});
+
+for (const state of ["focused", "other-control", "replaced", "disabled"]) {
+  it.skipIf(typeof document === "undefined")(`Cosmetic focus observation distinguishes ${state} without activating or changing focus`, () => {
+    const root = document.createElement("main");
+    root.innerHTML = '<button>Other action</button><section data-testid="cosmetic-shelf"><article data-cosmetic="horse_armor"><button>Buy for $0.00</button></article></section>';
+    document.body.append(root);
+    const dispose = installCosmeticBuyFocusTrace();
+    const read = globalThis.__cosmeticBuyFocusBoundary;
+    const other = root.querySelector("button"), buy = root.querySelector("article button");
+    let clicks = 0;
+    root.addEventListener("click", () => { clicks += 1; });
+    try {
+      buy.focus();
+      const before = read();
+      expect(before.active_is_control).toBe(true);
+      expect(before.active.node).toBe(before.control.node);
+      if (state === "other-control") other.focus();
+      if (state === "disabled") { other.focus(); buy.disabled = true; buy.focus(); }
+      if (state === "replaced") buy.replaceWith(buy.cloneNode(true));
+      const active = document.activeElement, observed = read();
+      expect(document.activeElement).toBe(active);
+      expect(clicks).toBe(0);
+      expect(observed.active_is_control).toBe(state === "focused");
+      expect(observed.control.disabled).toBe(state === "disabled");
+      expect(observed.control.node === before.control.node).toBe(state !== "replaced");
+      expect(observed.events.some((event) => event.type === "focusin" && event.target.node === before.control.node)).toBe(true);
+      if (state === "other-control" || state === "disabled") {
+        expect(observed.active.button).toBe("Other action");
+        expect(observed.events.some((event) => event.type === "focusout" && event.target.node === before.control.node && event.related.node === observed.active.node)).toBe(true);
+      }
+    } finally { root.remove(); dispose(); }
+  });
+}
+
+it.skipIf(typeof document === "undefined")("Cosmetic focus observation exposes truncation and never copies input values", () => {
+  const root = document.createElement("section");
+  root.innerHTML = '<button>First</button><input type="password" value="not-diagnostic-data">';
+  document.body.append(root);
+  const dispose = installCosmeticBuyFocusTrace();
+  try {
+    const [button, input] = root.children;
+    for (let index = 0; index < 20; index += 1) { button.focus(); input.focus(); }
+    const observed = globalThis.__cosmeticBuyFocusBoundary();
+    expect(observed.events).toHaveLength(32);
+    expect(observed.dropped_events).toBeGreaterThan(0);
+    expect(observed.active.tag).toBe("INPUT");
+    expect(observed.control).toBe(null);
+    expect(observed.active_is_control).toBe(false);
+    expect(JSON.stringify(observed)).not.toContain("not-diagnostic-data");
+  } finally { root.remove(); dispose(); }
 });

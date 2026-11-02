@@ -2,6 +2,14 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
+**2026-11-02 focus diagnosis (RP-705):** a fresh actual driver fails before native
+Buy/care at its focus assertion. The existing capsule cannot identify the active
+element or replacement history. A passive node/focus supplement now passes105
+Linux three-engine controls and one actual built-client/Postgres journey; the
+failure does not recur, so its cause and reliability remain OPEN. No input,
+assertion, retry or deadline changes. The owning log records exact failing and
+instrumented runs; the new diagnostic range awaits independent corrective review.
+
 ## Current checkpoint — 2026-10-16
 
 All original C1–C8 diff reviews are complete. C2 retains its bounded approval; the other

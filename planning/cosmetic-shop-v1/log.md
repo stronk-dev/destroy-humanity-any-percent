@@ -2639,3 +2639,56 @@ are copied into this record. All handles terminal/slot released; own Postgres3a4
 Process-list inspection unavailable: no broad PID-clean claim. No tracked reviewer mutation.
 Unique causes of original89770/40231 remain unproved. No general reliability, original feature,
 copy adoption, manual AT, D-024/RP-365 clock, full aggregate/hosted CI, archival or release claim.
+
+## 2026-11-02 — Preserve and instrument the pre-Buy focus failure (RP-705)
+
+Outcome under existing Cosmetic§7.3/AC11/AC14 and RFC-0000: diagnose a real
+pre-input failure without changing the player, activation or acceptance policy.
+Independent care reviewer runs the actual default driver at clean `fe5a0e7d`;
+handle2028 exits1 at line851, `Buy must receive focus before native input`.
+The capsule says unowned/disabledfalse/busyfalse, zero purchase requests/responses,
+no page/request errors and two open error-free sockets. No care path executes.
+It cannot identify the active element, old/current node identity or focus history;
+the last gate pointer events are NOT proof the gate retained focus. No total
+duration is recorded. Initial Docker denial executes no gameplay. Garage log
+records the review and explicit correction of the initial active-element inference.
+
+Add one passive installer to the existing activation-tool module and wire it
+through addInitScript into the existing Buy boundary. It records focusin/out,
+stable per-document WeakMap node IDs, button connected/disabled state, current
+active/control comparison and document focus. History holds32 events and exposes
+drops; input values, credentials and request bodies are never copied. No focus,
+activation, input ordering, wait, retry, assertion, provider or deadline changes.
+Fixtures dispose their own listeners; production client/server bytes unchanged.
+
+Actual helper browser controls cover healthy focus, another focused control,
+same-label replacement, disabled focus refusal, truncation and input-value
+exclusion. Root `make test-browser-ci-focused BROWSER_TEST_FLAGS='test/cosmetic-buy-activation-browser.test.mjs'`
+handle48898 passes105/105 across Linux Chromium/Firefox/WebKit,3.16s. This includes
+the unchanged30 cases per engine plus five new observation cases. Initial Docker
+socket denial runs no cases. `make typecheck` passes0 errors/0 warnings; driver
+syntax and diff checks pass. No unrelated product suite for observation-only tools.
+
+With no pre-existing gameplay container/listeners, root starts only the declared
+tmpfs Postgres service. One instrumented default `node client/tools/test-cosmetic-composed.mjs`,
+handle73155, exits0. Initial restricted invocation stops at DB socket access,
+before gameplay, then the permitted command supplies the actual result. Buy has
+native trusted Enter/down-click-up, one HTTP200 applied intent, exact receipt,
+owned focus and persisted reload. The new trace has zero drops and sees Gate→
+Wind Down→Buy before input; later body focus is during the legitimately disabled
+pending purchase, not an explanation of the earlier pre-input failure.
+Full AC14/G10 segment passes11.208s/70 N5 requests/no violation. DOM adoption/feed,
+exact stored receipt/state, host-read attendance2352/high band/Founder5, actual
+SQL low→high event, WebSocket/polite announcement and reload retention execute.
+The existing controlled Reputation continuation also finishes. These are fixture
+integration results, not natural pacing/content or full feature/CI acceptance.
+
+The failure does NOT recur. RP-705 remains OPEN and the earlier red is not replaced
+by this green; no cause or correction is claimed and no unchanged rerun follows.
+All handles terminal. Driver releases browser/server/temporary files; root removes
+only its newly created disposable Postgres container (temporary rows unrecoverable).
+Final Compose inventory empty and5173/18082 listeners absent; no cache/user data
+removed. Review by: Codex root, diagnostic implementer first filter only.
+Recorded by: Codex root. Complete range after `abd58416` through this containing
+commit needs independent corrective review. Next: consume the richer trace on
+recurrence and continue accepted work; no scope/archival/push/release promotion.

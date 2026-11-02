@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 
 import { chromium } from "playwright";
 import { build } from "vite";
-import { activateCosmeticBuy, assertNativeCosmeticBuyTrace } from "./activate-cosmetic-buy.mjs";
+import { activateCosmeticBuy, assertNativeCosmeticBuyTrace, installCosmeticBuyFocusTrace } from "./activate-cosmetic-buy.mjs";
 import { assertCareSnapshot } from "./care-snapshot-proof.mjs";
 import { cosmeticN5Fixture, n5CleanupMarker, n5Faults, n5RejectionPrefix } from "./cosmetic-n5-fixture.mjs";
 import { witnessReputation } from "./reputation-composed.mjs";
@@ -723,6 +723,7 @@ try {
     catch { safetyBlockedRequests.push(route.request().url()); await route.abort("blockedbyclient"); return; }
     await route.continue();
   });
+  await page.addInitScript(installCosmeticBuyFocusTrace);
   await page.addInitScript(() => {
     const failures = [];
     globalThis.__cosmeticN5Failures = failures;
@@ -836,8 +837,10 @@ try {
       globalThis.__cosmeticBuyTrace = null;
       const item = document.querySelector('[data-testid="cosmetic-shelf"] [data-cosmetic="horse_armor"]');
       const button = item?.querySelector("button");
+      if (typeof globalThis.__cosmeticBuyFocusBoundary !== "function") throw new Error("cosmetic Buy focus trace unavailable");
       return { events, dropped_events: events.dropped ?? 0, state: item?.getAttribute("data-state") ?? null,
-        disabled: button?.disabled ?? null, busy: document.querySelector("main")?.getAttribute("aria-busy") ?? null };
+        disabled: button?.disabled ?? null, busy: document.querySelector("main")?.getAttribute("aria-busy") ?? null,
+        focus: globalThis.__cosmeticBuyFocusBoundary() };
     });
     const emitted = requests.filter(isAcquire).slice(beforeIntents);
     return { phase, dom, emitted: emitted.length, responses: acquireResponses,

@@ -165,6 +165,10 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   keyboard activation, one matching request/receipt and the next Founder revision. Ownership
   must render authoritatively, receive focus, and survive reload at that revision. Focus setup
   is explicit; this is not a keyboard-only navigation or assistive-technology study.
+  The Buy boundary also records document focus, active/current-control identity and a bounded
+  passive focus-event history with an explicit dropped-event count. Node identities distinguish
+  replacement from the previously observed element; input values are never copied. These are
+  diagnostic observations, not a retry, alternate activation or proof of an intermittent cause.
   The owned item's equip/unequip controls retain one guarded DOM activation after checking
   visibility, hit-testing, exact label, item state and enabled/non-pending state; ambiguous
   labels refuse activation. Those steps do not prove native pointer/keyboard input.

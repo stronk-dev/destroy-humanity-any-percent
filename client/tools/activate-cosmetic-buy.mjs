@@ -50,3 +50,36 @@ export function assertNativeCosmeticBuyTrace({ events, dropped_events }, key, la
     throw new Error(`cosmetic Buy lacks one native ${JSON.stringify(key)} activation: ${JSON.stringify({ events, dropped_events })}`);
   }
 }
+
+// Passed directly to addInitScript and exercised in mounted browser fixtures.
+// Observation only: retain node identity across replacement without changing
+// focus, dispatching input or reading input values/credentials.
+export function installCosmeticBuyFocusTrace() {
+  const identities = new WeakMap();
+  let nextIdentity = 0, dropped = 0;
+  const events = [];
+  function describe(node) {
+    if (!(node instanceof Element)) return null;
+    if (!identities.has(node)) identities.set(node, ++nextIdentity);
+    return { node: identities.get(node), tag: node.tagName, connected: node.isConnected,
+      button: node instanceof HTMLButtonElement ? node.textContent?.trim() ?? "" : null,
+      disabled: node instanceof HTMLButtonElement ? node.disabled : null };
+  }
+  function observe(event) {
+    events.push({ type: event.type, trusted: event.isTrusted, time: performance.now(),
+      target: describe(event.target), related: describe(event.relatedTarget) });
+    if (events.length > 32) { events.shift(); dropped += 1; }
+  }
+  for (const type of ["focusin", "focusout"]) document.addEventListener(type, observe, { capture: true, passive: true });
+  const read = () => {
+    const control = document.querySelector('[data-testid="cosmetic-shelf"] [data-cosmetic="horse_armor"] button');
+    return { document_focused: document.hasFocus(), active: describe(document.activeElement),
+      control: describe(control), active_is_control: control !== null && document.activeElement === control,
+      events: [...events], dropped_events: dropped };
+  };
+  globalThis.__cosmeticBuyFocusBoundary = read;
+  return () => {
+    for (const type of ["focusin", "focusout"]) document.removeEventListener(type, observe, true);
+    if (globalThis.__cosmeticBuyFocusBoundary === read) delete globalThis.__cosmeticBuyFocusBoundary;
+  };
+}
