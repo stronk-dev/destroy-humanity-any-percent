@@ -4341,3 +4341,34 @@ These editorial evidence updates do not adopt pending contracts, supply designat
 feature approval, change workflows/populations/budgets or publish anything. Next
 is reviewed contract adoption/implementation and actual corrective work, not
 repeating this completed measurement or treating an old failed artifact as latest.
+
+## 2026-11-02 — Reputation observation contract technically APPROVED
+
+Review by: fresh independent Codex `/root/reputation_observability_contract_review`.
+Recorded by: Codex root, transcribing its actual verdict under Marco's technical-
+specification review delegation. **APPROVED**, technical specification only.
+Exact inspected source `aef938c3d465e996f304d90bc3406e7319be10d8`, RFC blob
+`97c3fb4333852b933e72f685900679bfd0546f6c`; complete original five-path proposal
+`ab3442dc31328557b924a104578d3e332e5856b1` exclusive through
+`5fb680096bdd409c795166d6f9c87275a64355d9` inclusive, no intervening RFC amendments.
+
+Reviewer checks actual recorder/validator/signals, CI D3, R10 producers, source
+admission/declarations, report serialization/recomposition, Make and workflow.
+194 H4 and970 H5 arms are correctly specified. The v2 fixture profile must extend
+shared internals to retain H5 progress after failed H4 while preserving v1; O3/AC3
+already require it. Fixed companions, committed pins, actual source arrays, Make
+signal propagation and missing-checkpoint refusal have executable acceptance
+requirements. Current legacy pins drift: complete measurement/reproducibility is
+not H4 balance acceptance; no pin rewrite or new H5 first-elective claim is allowed.
+
+Cold focused recorder/registered-row/SIGTERM and actual career-source/admission/
+declaration/recomposition/population controls PASS Harness9.409s and CLI0.604s;
+affected vet, topology27 negatives and proposal whitespace pass. First selector
+fails shell parsing before execution; corrected invocation supplies actual proof.
+No exhaustive study, DB/hosted/root-wrapper SIGINT or new v2 runtime is claimed.
+Initial tree clean; concurrent parent drift-diagnostic edits seen at finish are
+explicitly OUTSIDE this verdict, not silently included in its approval.
+
+Only status/index metadata is reconciled here. Adoption, v2 implementation and
+its independent review, RP-634 closure, hosted evidence and full feature/release
+gates remain open. Existing workflow, budgets, assertions and reports unchanged.

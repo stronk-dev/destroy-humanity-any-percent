@@ -1,6 +1,6 @@
 # RFC: Reputation Harness Observability
 
-- **Status:** draft — not implementation authority
+- **Status:** draft — technical specification independently approved 2026-11-02; owner adoption pending, not implementation authority
 - **Author:** Codex
 - **Created:** 2026-10-15
 - **Design refs:** `design/00-vision.md` pillar 7; `design/06-tech.md` Balance & event data;
@@ -159,10 +159,14 @@ epsilon, attribution or content-mint requirements.
 
 ## Open questions
 
-Adoption and designated normative review remain required. No new gameplay or balance choice
-is proposed; unresolved Reputation acceptance questions remain in its own plan.
+Owner adoption remains required. Independent technical specification review approved
+the proposal on 2026-11-02; the owning CI log records exact source, blob, range and
+executed controls. This is not implementation or its review. No new gameplay or
+balance choice is proposed; unresolved Reputation acceptance questions remain in its own plan.
 
 ## Changelog
 
 - 2026-10-15: draft for RP-634, preserving the shared recorder, full fixture population,
   existing failed criteria and CI D3 limits. Not accepted or implemented.
+- 2026-11-02: record independent technical approval; owner adoption and implementation
+  remain pending. No change to the proposed profile, population or acceptance criteria.

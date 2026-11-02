@@ -10,7 +10,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [Balance Harness Dispatch Integrity](balance-harness-dispatch-integrity.md) | withdrawn — premise refuted | Balance Harness Foundation |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [Reputation Harness Observability](reputation-harness-observability.md) | draft — RP-634 fixture profile and existing CI artifact floor; not implementation authority | Harness Observability / CI Baseline / Reputation Tree v1 |
+| [Reputation Harness Observability](reputation-harness-observability.md) | draft — technical specification independently approved 2026-11-02; owner adoption pending, not implementation authority | Harness Observability / CI Baseline / Reputation Tree v1 |
 | [Kernel History Guard Integrity](kernel-history-guard-integrity.md) | draft — technical specification independently approved 2026-11-02; owner adoption pending, not implementation authority | Run Genesis & Replay KV-1 / CI Baseline |
 | [Numeric Diagnostic Exponent Limits](numeric-diagnostic-exponent-limits.md) | draft — RP-663 beyond-int64 diagnostic exception proposed; normative review/adoption pending; not implementation authority | Numeric Core / Numeric Core Boundary Hardening |
 | [Exact Represented Aggregation](exact-represented-aggregation.md) | draft — RP-664 exact operation, pinned exceptions and producer/capacity cutover proposed; normative review/adoption and workload proof pending; not implementation authority | Deterministic Decimal Aggregation / Economy / Commons / Harness |

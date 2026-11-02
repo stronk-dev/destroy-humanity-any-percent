@@ -514,7 +514,8 @@ unlike CI D3's50/55-minute fail-loud artifact floor, it has a60-minute test/job 
 observation validation/always-uploaded artifact. Original full command execution succeeds;
 interruption/hosted evidence is unproved. The Reputation log owns that original range review.
 The draft `rfc/reputation-harness-observability.md` now specifies the bounded extension
-required by archived Harness Observability H1. Adoption/designated normative review are
+required by archived Harness Observability H1. Independent technical specification
+review is approved2026-11-02 (exact source/range in the log); owner adoption remains
 required before implementing its fixture profile and existing CI floor. Do not
 invent a second recorder, relabel the standard-check artifact, raise budgets or narrow studies.
 
