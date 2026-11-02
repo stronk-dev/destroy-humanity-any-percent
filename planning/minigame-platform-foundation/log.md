@@ -1047,3 +1047,45 @@ All handles terminal; three ignored reproduction files retained, no tracked edit
 Only twice-inspected owned tmpfs7720df31… removed; disposable data unrecoverable, same two
 builders/caches/volumes preserved. No public exploit, new source/mechanic/contract adoption,
 full Platform/Production/Gameserver, hosted CI, archival or release approval.
+
+## 2026-11-02 — Real Founder-source mutation during solo Pitch
+
+Implementation and verification by: Codex (root). Accepted authority: MP1/MP2/C28's
+server-resolved frozen inputs. Three-path test/plan/log batch based on `e27dd542`;
+no production, artifact, version, workflow or authored-copy changes.
+
+Extend the existing Postgres start population, rather than supply resolved inputs
+directly to `platform.Start`. Controlled genesis Knowledge and its real projection
+fund one hint; actual `Handle(buy_route_hint)` changes both persisted balances to0
+during play. The pinned diagnostic row resolves1 before the purchase and0 after.
+The real tenant rejects0 for the exact next command and accepts1. Play using stored1
+survives a new repository/registry/platform, certification and payout: terminal round2,
+cash credit1, quota1. Retried settlement preserves exact receipt, Founder revision4,
+spent Knowledge/unlocked hint and verified Founder history. A separate empty-source
+start refuses with registry `ErrTenantDivergence`, both saves unchanged and no session
+or create receipt; a constant1 shortcut cannot satisfy both populations. Missing DB
+now reports SKIP at the parent, never a parent PASS composed of skipped children.
+
+Executed checks:
+
+- Declared Postgres all eight start/admission arms twice, final session8599:
+  PASS4.048s, both funded journeys produce round2/credit1/quota1; no skips.
+- Declared Postgres three-package `-run Minigame`83048: Production3.931s,
+  Minigame0.805s, Gameserver37.020s PASS, including original solo/async fault/retry
+  and complete public Pitch journeys. Subsequent only-code addition is the stricter
+  nonzero terminal-payout assertion/log, covered by the final repeated population.
+- Cold native full Minigame/Pitch/MinigameAPI64543 PASS0.294/0.786/0.162s;
+  affected three-package vet PASS. Native start50912 explicitly SKIPs without DB,
+  not integration credit. Formatting and whitespace checks pass.
+
+Retained development failures: first missing Route runtime22431; then38164 exposed
+projection rows surviving account/save truncation. Setup/defer now delete only this
+fixture's two projection families, with repeated actual SQL proof. Initial empty-arm
+expectation57426 named the pure engine error instead of the registry's wrapped error;
+corrected to the actual existing boundary, not a changed runtime. No failed aggregate
+is claimed green. Known full CI/accounting/history failures remain separate.
+
+This supplements service-level solo evidence, not natural Knowledge acquisition,
+public Founder HTTP/DOM flow, async source mutation, process/host crash, full AC1,
+new-feature acceptance or release. Designated independent corrective review remains
+pending for this complete three-path batch; no checkboxes or feature status change.

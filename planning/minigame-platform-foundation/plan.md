@@ -2,6 +2,14 @@
 
 RFC: `rfc/minigame-platform-foundation.md`
 
+2026-11-02 supplement: extend the existing actual-Postgres start population with a
+controlled funded Founder, then spend Route Knowledge through the real hint transition
+and projector during Pitch. Verify frozen scaling through nonterminal platform
+reconstruction, certification, payout/retry and Founder replay; empty-source start must
+refuse without changing either save/session. This is service-level solo evidence, not
+natural Knowledge acquisition, public Founder HTTP/DOM coverage, async coverage or full
+AC1. The owning log records execution and independent review; no checkbox changes.
+
 2026-10-14 C13/C33/C39 binding correction (RP-620): payout preparation now requires the
 definition's minigame ID to match the certified session, not only its engine. Four old-source
 Postgres failures show foreign-window creation or quota4→5 in both modes. Final full Minigame

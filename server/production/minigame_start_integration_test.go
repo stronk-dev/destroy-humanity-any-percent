@@ -3,13 +3,17 @@ package production
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"reflect"
+	"strconv"
 	"testing"
 	"time"
 
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/meters"
@@ -18,17 +22,23 @@ import (
 	"cloud-clicker/server/pet"
 	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
+	"cloud-clicker/server/routeprojection"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
 
 func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplayIntegration(t *testing.T) {
+	if os.Getenv("TEST_DATABASE_URL") == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
 	for _, row := range []struct {
 		name  string
 		modes []minigame.Mode
 		gate  string
 	}{
 		{"solo", []minigame.Mode{minigame.ModeSolo}, "unchanged"},
+		{"founder_source_scaling", []minigame.Mode{minigame.ModeSolo}, "founder_source_scaling"},
+		{"founder_source_empty", []minigame.Mode{minigame.ModeSolo}, "founder_source_empty"},
 		{"dual_mode", []minigame.Mode{minigame.ModeAsyncSnapshot, minigame.ModeSolo}, "unchanged"},
 		{"async_only", []minigame.Mode{minigame.ModeAsyncSnapshot}, "unchanged"},
 		{"missing_fiscal_unlock", []minigame.Mode{minigame.ModeSolo}, "fiscal_locked"},
@@ -78,6 +88,15 @@ func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode, gate strin
 	rows[0]["modes"], err = json.Marshal(modes)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if gate == "founder_source_scaling" || gate == "founder_source_empty" {
+		// Controlled genesis funding, not a natural-progression claim. One real
+		// hint purchase will consume the balance while the session is active.
+		cost := bundle.Routes.KnowledgePolicy().HintCost
+		if cost <= 0 {
+			t.Fatal("Founder scaling fixture needs a positive hint cost")
+		}
+		rows[0]["scaling"] = json.RawMessage(fmt.Sprintf(`{"schema_version":1,"scaling_inputs":[{"destination":"minigame.pitch","destination_class":"breadth","source_kind":"founder_carry_counter","source_ref":"route_knowledge_balance","op":"floordiv","operand":%d,"clamp_min":0,"clamp_max":1}]}`, cost))
 	}
 	minigames["minigames"], err = json.Marshal(rows)
 	if err != nil {
@@ -153,6 +172,10 @@ func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode, gate strin
 	}
 	switch gate {
 	case "unchanged":
+	case "founder_source_scaling":
+		founder.RouteKnowledgeBalance = bundle.Routes.KnowledgePolicy().HintCost
+	case "founder_source_empty":
+		admissionErr = minigame.ErrTenantDivergence
 	case "fiscal_locked":
 		delete(founder.FiscalUnlocks, "minigame.pitch")
 		admissionErr = ErrMinigameFiscalUnlockRequired
@@ -213,9 +236,39 @@ func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode, gate strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	production, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver),
+	options := []ServiceOption{WithProgressionRuntime(resolver),
 		WithCurrentConstantsHash(bundle.ConstantsHash), WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}),
-		WithMinigameActivity(repository))
+		WithMinigameActivity(repository)}
+	if gate == "founder_source_scaling" {
+		projector, err := routeprojection.New(db, resolver)
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Match the controlled genesis balance in the real projection. This
+		// setup is not proof of earning Knowledge; all in-session changes below
+		// must run through the actual hint transition and event projector.
+		// These projections intentionally have no account FK. Reset and clean
+		// only this fixture's rows so repeating the population cannot inherit
+		// a previous hint event or balance after the save tables are truncated.
+		cleanProjection := func() {
+			for _, table := range []string{"route_hint_projection_events", "founder_route_state"} {
+				if _, err := db.ExecContext(ctx, "DELETE FROM "+table+" WHERE founder_id=$1", founderID); err != nil {
+					t.Errorf("clean fixture projection %s: %v", table, err)
+				}
+			}
+		}
+		cleanProjection()
+		defer cleanProjection()
+		if t.Failed() {
+			t.FailNow()
+		}
+		if _, err := db.ExecContext(ctx, `INSERT INTO founder_route_state(founder_id,route_knowledge_balance,route_knowledge_debt) VALUES($1,$2,0)`,
+			founderID, founder.RouteKnowledgeBalance); err != nil {
+			t.Fatal(err)
+		}
+		options = append(options, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithEventProjector(projector))
+	}
+	production, err := NewService(store, resolver, nil, nil, nil, options...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -233,7 +286,7 @@ func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode, gate strin
 			SessionID: "01986666-ca01-7000-8000-000000000010", IntentID: "01986666-ca02-7000-8000-000000000010",
 			FounderID: founderID, CompanyStreamID: companyRevision.StreamID, MinigameID: "pitch", IdempotencyKey: "async-only-refusal",
 		}, now, nil)
-		if !errors.Is(err, admissionErr) || !errors.Is(err, ErrInvalidIntent) {
+		if !errors.Is(err, admissionErr) || gate != "founder_source_empty" && !errors.Is(err, ErrInvalidIntent) {
 			t.Fatalf("ineligible solo start: err=%v want=%v", err, admissionErr)
 		}
 		afterFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
@@ -360,4 +413,188 @@ func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode, gate strin
 	if err != nil || VerifyFounderHistory(history, set) != ReplayVerified {
 		t.Fatalf("Founder replay verdict=%s err=%v", VerifyFounderHistory(history, set), err)
 	}
+	if gate == "founder_source_scaling" {
+		testMinigameFrozenFounderSource(t, ctx, db, production, platform, store, set, session, founderRevision.StreamID, now)
+	}
+}
+
+// Extend the real start transaction above, rather than passing caller-invented
+// scaling straight to platform.Start. MP1/C28 must freeze the locked Founder
+// source, not just the Company source covered by the public HTTP population.
+func testMinigameFrozenFounderSource(t *testing.T, ctx context.Context, db *sql.DB, production *Service, platform *minigame.Service,
+	store *save.Store, catalogs ReplayCatalogSet, session minigame.Session, founderStreamID string, now time.Time,
+) {
+	t.Helper()
+	if string(session.ScalingInputs) != `{"minigame.pitch":1}` {
+		t.Fatalf("start did not resolve the real Founder source: %s", session.ScalingInputs)
+	}
+	hint := []byte(`{"intent_id":"01986666-ca01-7000-8000-000000000014","kind":"buy_route_hint","expected_revision":2,"route_id":"route.nonprofit_wrapper_zip"}`)
+	purchased, err := production.Handle(ctx, founderStreamID, ModeOnline, now.Add(4*time.Second), hint)
+	if err != nil || purchased.Replay || !bytes.Contains(purchased.Receipt, []byte(`"outcome":"applied"`)) {
+		t.Fatalf("mid-session Founder purchase receipt=%s err=%v", purchased.Receipt, err)
+	}
+	founder, err := store.LoadLatest(ctx, founderStreamID)
+	if err != nil || founder.Revision.Number != 3 || founder.State.RouteKnowledgeBalance != 0 ||
+		!founder.State.HintsUnlocked["route.nonprofit_wrapper_zip"] {
+		t.Fatalf("hint did not persist the changed Founder source: founder=%+v err=%v", founder, err)
+	}
+	var projectedBalance int64
+	if err := db.QueryRowContext(ctx, `SELECT route_knowledge_balance FROM founder_route_state WHERE founder_id=$1`, session.FounderID).Scan(&projectedBalance); err != nil || projectedBalance != 0 {
+		t.Fatalf("hint did not update the real Knowledge projection: balance=%d err=%v", projectedBalance, err)
+	}
+	bundle := catalogs[session.ConstantsHash]
+	definition, ok := bundle.Minigames.Definition("pitch")
+	if !ok {
+		t.Fatal("missing pinned Pitch definition")
+	}
+	live, err := definition.Scaling.Resolve(minigame.ScalingContext{
+		PurchasedGeneratorCounts: map[string]int64{}, AttendedQualityGrades: map[string]int64{},
+		FounderCarryCounters: map[string]int64{"route_knowledge_balance": founder.State.RouteKnowledgeBalance},
+	})
+	if err != nil || !reflect.DeepEqual(live, map[string]int64{"minigame.pitch": 0}) {
+		t.Fatalf("Founder source did not diverge: live=%v err=%v", live, err)
+	}
+	content, ok := bundle.TenantContent(pitch.EngineRef, pitch.EngineVersion)
+	seed, err := strconv.ParseUint(session.Seed, 10, 64)
+	if !ok || err != nil {
+		t.Fatalf("missing pinned tenant context: content=%v seed=%v", ok, err)
+	}
+	probe := minigame.CreateInput{Mode: session.Mode, Seed: seed, ScalingInputs: live,
+		Content: content.Bytes, ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion}
+	if _, err := pitch.NewTenant().Create(probe); !errors.Is(err, minigame.ErrInvalidTenant) {
+		t.Fatalf("live zero input was not rejected: %v", err)
+	}
+	probe.ScalingInputs = map[string]int64{"minigame.pitch": 1}
+	if _, err := pitch.NewTenant().Create(probe); err != nil {
+		t.Fatalf("same tenant context rejected frozen input: %v", err)
+	}
+	beforeCompany, err := store.LoadLatest(ctx, session.CompanyStreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	beforeCash, ok := beforeCompany.State.Ledger.Balance("company.cash")
+	if !ok {
+		t.Fatal("missing Company cash")
+	}
+	// Continue using the real tenant and persisted command chain, reconstruct
+	// the platform after the first nonterminal command, then certify/payout.
+	var resolution *minigame.CertifiedResolution
+	for step := 0; step < 64 && resolution == nil; step++ {
+		var snapshot pitch.Snapshot
+		if json.Unmarshal(session.State, &snapshot) != nil {
+			t.Fatal("invalid persisted Pitch snapshot")
+		}
+		var command any
+		switch snapshot.Phase {
+		case "playing":
+			if len(snapshot.Hand) == 0 {
+				t.Fatal("active Pitch hand is empty")
+			}
+			command = map[string]any{"kind": "play_hand", "card_ids": snapshot.Hand[:min(4, len(snapshot.Hand))]}
+		case "shop":
+			command = map[string]any{"kind": "end_shop"}
+		default:
+			t.Fatalf("unexpected active Pitch phase %q", snapshot.Phase)
+		}
+		payload, err := json.Marshal(command)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if step == 0 {
+			// An unchanged JSON field alone is insufficient: this exact next
+			// command must reject the changed source and accept the frozen one.
+			apply := minigame.ApplyInput{Mode: session.Mode, Seed: seed, Revision: session.Revision,
+				Snapshot: session.State, Command: payload, ScalingInputs: live,
+				Content: content.Bytes, ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion}
+			if _, err := pitch.NewTenant().Apply(apply); !errors.Is(err, minigame.ErrInvalidTenant) {
+				t.Fatalf("next command tolerated changed live input: %v", err)
+			}
+			apply.ScalingInputs = probe.ScalingInputs
+			if _, err := pitch.NewTenant().Apply(apply); err != nil {
+				t.Fatalf("same next command rejected frozen input: %v", err)
+			}
+		}
+		played, err := platform.Play(ctx, minigame.PlayRequest{FounderID: session.FounderID, SessionID: session.SessionID,
+			ExpectedRevision: session.Revision, Command: payload})
+		if err != nil {
+			t.Fatalf("continue after Founder source change: %v", err)
+		}
+		if !bytes.Equal(played.Session.ScalingInputs, session.ScalingInputs) ||
+			!bytes.Equal(played.Session.Genesis, session.Genesis) || played.Session.Seed != session.Seed {
+			t.Fatal("Founder purchase changed frozen session coordinates")
+		}
+		session, resolution = played.Session, played.Resolution
+		if step == 0 {
+			if resolution != nil {
+				t.Fatal("fixture did not exercise nonterminal recovery")
+			}
+			repository, err := minigame.NewRepository(db)
+			if err != nil {
+				t.Fatal(err)
+			}
+			registry, err := minigame.NewTenantRegistry(pitch.NewTenant())
+			if err != nil {
+				t.Fatal(err)
+			}
+			platform, err = minigame.NewService(repository, registry, catalogs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			resumed, err := platform.Load(ctx, session.FounderID, session.SessionID)
+			if err != nil || !reflect.DeepEqual(resumed, session) {
+				t.Fatalf("reconstructed platform lost persisted session: err=%v", err)
+			}
+			session = resumed
+		}
+	}
+	if resolution == nil {
+		t.Fatal("Pitch never reached certification within the diagnostic guard")
+	}
+	var terminal pitch.Snapshot
+	if json.Unmarshal(session.State, &terminal) != nil || terminal.Round < 2 {
+		t.Fatal("fixture must reach a terminal round with a nonzero payout")
+	}
+	result, err := production.ResolveMinigameSession(ctx, platform, resolution, now.Add(5*time.Second), nil)
+	if err != nil || result.Replay {
+		t.Fatalf("resolve after Founder source change: receipt=%s err=%v", result.Receipt, err)
+	}
+	retry, err := production.ResolveMinigameSession(ctx, platform, resolution, now.Add(6*time.Second), nil)
+	if err != nil || !retry.Replay || !bytes.Equal(retry.Receipt, result.Receipt) {
+		t.Fatalf("resolution retry changed receipt: receipt=%s err=%v", retry.Receipt, err)
+	}
+	resolved, err := platform.Load(ctx, session.FounderID, session.SessionID)
+	if err != nil || resolved.Status != minigame.StatusResolved ||
+		!bytes.Equal(resolved.ScalingInputs, session.ScalingInputs) ||
+		!bytes.Equal(resolved.Genesis, session.Genesis) || resolved.Seed != session.Seed ||
+		!bytes.Equal(resolved.ResolutionReceipt, result.Receipt) {
+		t.Fatalf("terminal persistence lost frozen inputs or receipt: err=%v", err)
+	}
+	afterCompany, err := store.LoadLatest(ctx, session.CompanyStreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	afterCash, ok := afterCompany.State.Ledger.Balance("company.cash")
+	// Independent arithmetic for this existing fixture's first send: round/2,
+	// below its 300-unit cap. No Company action or passive settlement intervenes.
+	wantCredit := decimal.FromString(fmt.Sprint(terminal.Round / 2))
+	if !ok || afterCompany.Revision.Number != beforeCompany.Revision.Number+1 ||
+		afterCash.Sub(beforeCash).String() != wantCredit.String() {
+		t.Fatalf("Founder change lost/duplicated payout: revision=%d credit=%s want=%s",
+			afterCompany.Revision.Number, afterCash.Sub(beforeCash), wantCredit)
+	}
+	var quota int
+	if err := db.QueryRowContext(ctx, `SELECT quota_used FROM minigame_faucet_window WHERE founder_id=$1 AND minigame_id='pitch'`, session.FounderID).Scan(&quota); err != nil || quota != 1 {
+		t.Fatalf("payout/retry quota=%d err=%v", quota, err)
+	}
+	founder, err = store.LoadLatest(ctx, founderStreamID)
+	if err != nil || founder.Revision.Number != 4 || founder.State.RouteKnowledgeBalance != 0 ||
+		!founder.State.HintsUnlocked["route.nonprofit_wrapper_zip"] {
+		t.Fatalf("payout/retry overwrote or duplicated Founder mutation: founder=%+v err=%v", founder, err)
+	}
+	history, err := store.LoadFounderHistory(ctx, founderStreamID)
+	if err != nil || VerifyFounderHistory(history, catalogs) != ReplayVerified {
+		t.Fatalf("start/hint/resolution history did not verify: %v", err)
+	}
+	t.Logf("Founder Knowledge spent during play; frozen input=1 live=0; terminal round=%d credit=%s; payout quota=%d",
+		terminal.Round, wantCredit, quota)
 }
