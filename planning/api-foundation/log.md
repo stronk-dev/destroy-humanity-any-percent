@@ -4855,3 +4855,40 @@ Technical approval does not adopt either option or authorize implementation,
 downstream feature construction, archival or release. Existing Oct8/9 owner
 choices stay unanswered; no duplicate question. Separate catalog3 adoption packet
 also remains pending. Continue remaining accepted work; no history/accounting waiver.
+
+## 2026-11-04 — Board row failures and public error dependency corrections approved
+
+Review by: fresh independent Codex `/root/api_row_error_privacy_corrective_review`.
+Recorded by: Codex root. APPROVED two separate complete corrective contexts,
+base exclusive/tip inclusive, all8/9 paths inspected, no blocking findings:
+
+- RP-367: `a4bae5affdc77ce61cfb33e9305b91839360978e..21ff55786a0682bcd2ae7e60bf95e516d5bc4abb`.
+- RP-390: `7226ec7b3cc715b43f5dce36fca55072e0d62623..ce626440a6d1a0266991c5ebae923795dcca0010`.
+
+Rows.Err precedes catalog resolution; iteration/cancellation no longer become
+false unknown-category and existing handler maps failure to exact500. Unchanged
+shared error definition moves to publicapi with fresh exports/closed fields/enums
+and existing per-operation ownership. Guard covers direct production imports and
+import-list parsing, NOT transitive dependencies/full Go-body syntax/runtime privacy.
+
+At unchanged source `09b998c6`, own focused18891/full-six-package22107/vet pass.
+TestPublicBoardRankingKindPropagatesRowErrors, handler mapping, six forbidden/
+four allowed imports/import-parse refusal, registry privacy and shared-error
+positive/negative/immutability controls execute. Declared Postgres31801 runs
+TestPublicBoardRankingAndPagesIntegration PASS0.61s, no skip: ranking/unknown IDs,
+filtered/tied/magnitude/exact-full pages/unloadable catalogs. Private exact-old
+row overlay5079 fails both injected iteration/cancellation cases, healthy empty
+passes (expected Make2); historical epochs.go passed through current guard78228
+is refused, current source accepted. Main never replaced; scratch retained
+`/private/tmp/cloud-clicker-api-row-review.yUUrs1`. Range whitespace clean.
+
+Independent full composed `df531b9b` (GarageNov3 verdict) is REUSED, not rerun;
+executable/driver/Make/Compose/lock diff empty, own SQL runs the named new gate.
+Generation/type/build evidence reused from catalog_social_minigame reviewer at
+`e5f0b8cf` (not b5c9991f); executable diff empty/all3 current generated API hashes
+match that record. No redundant generation/browser. Later request-ID/raw-query/
+expanded enumeration work is outside these verdicts. All handles terminal;
+only validated new tmpfs Postgres container and confirmed-empty network removed,
+peer attachments/caches untouched, no tracked reviewer edits/commits/publication.
+Not approval of original early API batches/full privacy/API/adoption/hosted CI/
+archival/release. Historical guard and27 accounting failures remain open.

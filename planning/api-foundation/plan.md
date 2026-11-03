@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+**Reader/error-boundary corrective review, 2026-11-04:** complete
+`a4bae5af..21ff5578` (RP-367) and `7226ec7b..ce626440` (RP-390) are independently
+approved. Actual old iteration/cancellation controls and old Account import
+discriminate; fresh cold owners/vet/handler500 and real Postgres board-page test
+pass. Shared error bytes remain unchanged. The owning log holds exact ranges,
+executions and peer reuse. Direct import-list guard is not transitive/runtime
+privacy or original API-feature acceptance; pending amendments remain separate.
+
 **Catalog corrective review, 2026-11-03:** RP-572–594 corrective portions now
 have fresh independent Codex approval. This includes owner admission parity,
 existing slot/representation bounds, the neutral Commons formula-model repair
