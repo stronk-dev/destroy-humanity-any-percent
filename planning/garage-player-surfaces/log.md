@@ -8796,3 +8796,65 @@ No retry/batching/limit/copy/kernel change. All handles terminal, disposable bro
 absent/lease released; API peer separately cleans its owned SQL/network. No tracked
 reviewer edits/source mutations/commits/publication. Next actual review is RP-372,
 not another pass over these now-approved read/guard corrections.
+
+## 2026-11-04 — Manual-budget review finds false-valid response capture (RP-712)
+
+Review by: fresh independent Codex `/root/manual_budget_instrument_corrective_review`.
+Recorded by: Codex root. CHANGES REQUIRED, complete seven-path original context
+`b6a13c7914e3f5fa71921a43e06b5804464b7b11..78f51a0ff4ea1f51edc21366ce0664bdb001d8c2`
+(base exclusive/tip inclusive). Source response listener checks JSON only for
+manual intents/429, ignoring authenticated nonmanual200 response bodies.
+Actual observeManualBudget function with bounded controlled page/clock reports
+both profiles valid when the first nonmanual GET's json() throws SyntaxError;
+that method is never called. Healthy control is valid; matched malformed manual
+is parsed and throws/invalidates. No copied response logic or actual60s/native/
+live malformed-server claim. Existing16 helpers pass independently191ms (root
+also passes16/189ms); timer correctly waits after early wake, native manual
+remains disabled while pending. No live measurement started after finding.
+
+Secondary pure control accepts negative lateness, but producer Math.max prevents
+it; not a live defect. Root will repair relevant JSON capture and add bounded
+actual-handler controls, with no full DTO-validation claim or changed no-body/
+status/cadence/100ms/60s/throughput semantics. Then independent re-review and real
+mode execution; no larger limits, retries, healthy-workload claim or RP-368 ruling.
+All reviewer handles terminal, no browser/DB/services/source edits/commits.
+Original negative verdict remains intact; this is not original-tool approval.
+
+## 2026-11-04 — Repair response capture without another JSON authority
+
+Outcome: correct RP-712 under the observer's existing no-malformed-response rule,
+not a new throughput/DTO contract. Every observed200/429 body now goes through
+the same generated decodeJSONResponse used by the real client. Adapt Playwright
+body bytes to Response; retain fatal UTF-8, body-free parse diagnostics and existing
+BOM tolerance. Read/body/parser errors set invalidBody; unrelated statuses remain
+invalid without trying to parse nonexistent content. Manual outcome/429 mapping
+is unchanged; nonmanual success is syntax-checked, not DTO-validated. Reject negative
+lateness as an invalid coordinate; actual producer already clamps at zero, so no
+new measured failure or convenience ceiling is invented. Keep60s/100ms unchanged.
+
+Reuse the independent reviewer's controlled page/clock fixture in the existing
+Vitest file, calling the actual observeManualBudget listeners rather than a copied
+classifier. On untouched old instrument: first regression run3fail/19pass; complete
+raw-byte controls then5fail/19pass (malformed/read-failure/UTF-8 nonmanual capture,
+corrupt manual UTF-8, negative lateness). Healthy, matched malformed manual/rate,
+valid limiter, unexpected-empty and BOM controls remain. Not a native input or
+real minute-long measurement. No reply marker appears in captured summaries.
+Corrected run24pass; affected manual/generatedAPI/operation-port files272pass;
+types0errors/0warnings (54882 terminal0), both tool syntax checks and whitespace
+pass. Node26.13.0 directly imports the existing generated decoder successfully;
+no generated file is edited or new schema support inferred.
+
+```sh
+client/node_modules/.bin/vitest run --root client test/manual-budget-observation.test.mjs test/generated-api.test.ts test/generated-operation-ports.test.ts
+make typecheck
+node --check client/tools/observe-manual-budget.mjs
+node --check client/tools/test-game-ui-composed.mjs
+```
+
+Review by: Codex root, implementer first filter. Recorded by: Codex root.
+Complete source/test/docs/ledger/plan/log correction after `ec898e41` through
+this containing commit needs independent re-review with the original range;
+original CHANGES REQUIRED remains, not self-approved. No live observation yet,
+browser/DB/services, default-journey logic, cadence/input/rate/copy/kernel/balance/
+wire/CI/deadline changes. Next reviewer runs actual manual mode once, retaining
+any invalid/negative result without a relaxed bound or repeated run for green.

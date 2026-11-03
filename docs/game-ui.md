@@ -534,6 +534,10 @@ against the existing disposable composed database. It measures serial fresh-acco
 two/four-input-per-second minute-long profiles, including missed activations, response outcomes
 and scheduling validity. A valid observation can contain refusals; it does not pass the default
 player journey, choose a supported input floor, or authorize changing the limiter.
+Every observed 200/429 reply is read through the existing client's fatal UTF-8/JSON decoder,
+including nonmanual reads; malformed bytes, syntax or body-read failures invalidate the
+observation without printing reply bodies. This is transport validation, not full DTO-schema
+validation. Other statuses remain invalid, and the 60-second/100ms cadence limits are unchanged.
 HTTP429 rate limits and `not_eligible/exclusive_activity` rejections also trigger
 that authoritative refresh. Pending controls cannot reactivate while it is held;
 the response never retries the rejected command. A subsequent player action

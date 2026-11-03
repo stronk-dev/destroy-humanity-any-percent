@@ -14,10 +14,13 @@ that would need one is recorded as a blocker in `log.md` instead.
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
 
-1. Review the existing manual-budget observer/timer correction RP-372 in
-   `b6a13c79..78f51a0f`. This tool and its recorded negative findings are separate
-   from the now-approved RP-369–371 read/stale-state corrections; do not adopt a
-   four-Hz floor, batching, larger limiter or retries from a measurement.
+1. Independently re-review original manual-budget observer `b6a13c79..78f51a0f`
+   plus RP-712's correction, then execute actual mode. Original CHANGES REQUIRED
+   remains recorded: malformed nonmanual GET200 falsely reported valid. Actual-
+   listener regressions now pass with shared client UTF-8/JSON decoding for all
+   observed200/429 replies; no full DTO validation is claimed. Preserve60s/100ms
+   validity and negative losses/refusals; RP-368 still does not adopt a four-Hz
+   floor, batching, larger limiter or retries from a measurement.
 2. API's catalog corrections and five technical amendments are reviewed; owner
    adoption/new-descriptor/full workflow gates remain in its plan/log. Do not
    restart completed reviews, infer adoption or mount a partial endpoint.

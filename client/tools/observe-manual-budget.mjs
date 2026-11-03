@@ -1,5 +1,7 @@
 // Manual research, not a release/CI acceptance lane. Uses the actual DOM,
 // runtime, HTTP limiter and composed server; no gameplay API setup or retries.
+import { decodeJSONResponse } from "../src/api/generated/types.ts";
+
 export function composedMode(args) {
   if (args.length === 0) return "journey";
   if (args.length === 1 && args[0] === "--observe-manual-budget") return "manual-budget";
@@ -32,7 +34,7 @@ export function summarizeManualBudget({ hz, elapsedMS, latenessMS, attempts, act
   const manual = requests.filter((row) => row.manual);
   const firstLimited = requests.find((row) => row.status === 429);
   const errors = [];
-  if (![2, 4].includes(hz) || !Number.isFinite(elapsedMS) || !Number.isFinite(latenessMS)) errors.push("invalid profile coordinates");
+  if (![2, 4].includes(hz) || !Number.isFinite(elapsedMS) || !Number.isFinite(latenessMS) || latenessMS < 0) errors.push("invalid profile coordinates");
   if (attempts !== scheduled || elapsedMS < 60_000) errors.push("incomplete input population");
   if (latenessMS > 100) errors.push("input cadence exceeded predeclared 100 ms lateness");
   if (!Number.isInteger(activations) || activations < 1 || activations > attempts || manual.length !== activations) errors.push("native activation/request population mismatch");
@@ -66,9 +68,13 @@ export async function observeManualBudget(browser, uiURL) {
       const row = byRequest.get(response.request());
       if (!row) return;
       row.status = response.status();
-      if (row.manual || row.status === 429) replies.push((async () => {
+      if (row.status === 200 || row.status === 429) replies.push((async () => {
         try {
-          const body = await response.json();
+          // Read every admitted JSON reply, not only manual outcomes. Adapt
+          // Playwright bytes to the same fatal UTF-8/JSON decoder as the client;
+          // this checks transport syntax, not a second DTO-schema authority.
+          const body = await decodeJSONResponse(new Response(await response.body(), { status: row.status }));
+          if (!row.manual && row.status === 200) return;
           if (row.status === 200 && ["applied", "rejected"].includes(body.outcome)) {
             row.outcome = body.outcome;
             if (body.outcome === "rejected") row.rejectionPair = observedRejectionPair(body);
