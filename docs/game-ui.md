@@ -680,6 +680,11 @@ Six actual widening/visibility/omission/masking/missing-update faults fail. This
 of GS6 text in paired **current-source fixtures**, not a historical before-build, actual zoom,
 Firefox/assistive-technology/real-server/later-Desk proof, or closure of accessibility's 647 px record.
 
+The required-content check also inspects ancestor opacity. Its mounted-card control rejects
+fully transparent content even when the child still has opacity 1 and nonzero layout;
+partial opacity and restored styles remain valid. This repairs a test-oracle gap, not
+a production visibility defect, and is not a general occlusion or screen-reader check.
+
 `make test-browser` applies the WCAG 2.2 AA axe gate to all five lifecycle surfaces and to every minigame surface state in
 Chromium, Firefox, and WebKit and includes the sixty-simulated-second observable performance scenario. The
 focused `make test-game-ui-performance` command runs that scenario alone.

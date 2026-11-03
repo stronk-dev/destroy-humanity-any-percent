@@ -8018,3 +8018,47 @@ player, real elapsed minute/manual4x profile, platform/AT and release acceptance
 Initial oracle and CI selector retain separate verdicts. Root updates current
 statuses only; no suites for Markdown. Continue pending accepted integration and
 corrective review, preserving held contracts and the active full nine-tier1.0 goal.
+
+## 2026-11-03 — Paired Desk review finds RP-707; visibility oracle corrected
+
+Review by: fresh independent Codex `/root/narrow_desk_measurement_corrective_review`.
+Recorded by: Codex root, transcribing CHANGES REQUIRED for complete two-commit/
+nine-path `54c8c8dac126d7e072974ae192078b90da5ae94f..57efdc398aaaa4f3fb22a420ae8997830e6d56c8`
+(base exclusive, tip inclusive). Required-text visibility checks only own opacity;
+ancestor loop checks overflow. Private actual generator-card opacity0 hides
+provision/cap text but the complete paired gate and axe survive. This is a test
+oracle defect, not an observed healthy-product style defect.
+
+Reviewer executes exact historical healthy39479 exit0/two pass252 exclusions and
+opacity survivor93216 with the same green result. Actual provision-width600px
+control76828 exits2 at descendant overflow/document scroll652; restored source
+and driver match recorded9ea86275/21eb8ab5 identities. Private committed-current
+`a5b7455491a7db16bc7a084d84eec8a5af83d10c` opacity control86298 also exits0/two
+pass100 exclusions. Historical nodes90→93; current91→94, widths320/284 unchanged.
+Current declared Linux setup/cold volumes and private archive bind are used;
+historical runner needs a private focused alias of its unchanged functional
+recipe. Chromium/WebKit only. All handles terminal; no main-tree reviewer edits.
+Original six faults are inspected records except rerun width; no zoom/AT/SQL claim.
+
+Root implements a bounded test-only correction under GS6-A3/RFC-0000: the actual
+paired gate now walks opacity through ancestors. The same mounted provision node
+must refuse card opacity0 despite own opacity1/nonzero rectangle, accept opacity0.5,
+and accept restored styling; restoration runs in finally. Existing geometry,
+population, text, focus, no-intent and axe checks remain. No shared framework,
+production/CSS, gameplay, copy, timeout, performance budget or workflow changes.
+
+Test first: `make test-browser-ci-focused BROWSER_TEST_FLAGS='test/garage-surfaces-feedback-browser.test.ts -t GS6-A3'`
+52732 exits2:three failures/150 unselected, each missing the required throw with
+the old helper. After the ancestor fix, entire affected file via the same target
+without `-t`62385 exits0:153/153,10.78s; HTTP153 terminal/zero pending. Both use
+actual frozen Linux container setup. Output is tool-truncated, terminal counts and
+named failure diagnostics retained. Typecheck74087 exits0,0errors/0warnings;
+whitespace passes. Test-only means no production build or unrelated Go/composed/
+performance/full-CI rerun claimed. No main-tree source mutation probes.
+
+Review by: Codex root for the correction's implementer first filter only.
+Recorded by: Codex root. Complete six-path correction after
+`a5b7455491a7db16bc7a084d84eec8a5af83d10c` through this commit awaits independent
+re-review together with the original two-commit range. Keep CHANGES REQUIRED on
+record; no self-approval, general occlusion/AT, feature/archival or release claim.
+Full1.0 goal stays active; other accepted work and review continue.

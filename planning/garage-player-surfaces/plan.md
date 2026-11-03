@@ -7,6 +7,14 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+**2026-11-03 paired-layout review:** complete `54c8c8da..57efdc39` receives
+CHANGES REQUIRED for RP-707: an opacity0 generator card survives the visibility
+oracle in both historical and committed-current source. The bounded test-only
+correction now checks ancestor opacity and retains a mounted-card negative plus
+partial/restored positives. Old helper fails all three engines; corrected full
+feedback file passes153/153 and types0/0. Independent re-review of original plus
+correction remains required; no product visibility bug or full acceptance claimed.
+
 **2026-11-03 source-guard review:** RP-335's complete `d3ce0f76..54c8c8da`
 correction is independently APPROVED. Exact historical-source gate, private
 old/corrected fake-button controls, actual authority/policy faults, types/vet and

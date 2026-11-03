@@ -48,7 +48,9 @@ it.skipIf(!browser)("GS6-A3 compares the whole 320 px Desk before and after its 
     const isVisible = (node: HTMLElement) => {
       const rectangle = node.getBoundingClientRect(), style = getComputedStyle(node);
       expect(style.display).not.toBe("none"); expect(style.visibility).toBe("visible");
-      expect(Number(style.opacity)).toBeGreaterThan(0);
+      for (let ancestor: HTMLElement | null = node; ancestor; ancestor = ancestor.parentElement) {
+        expect(Number(getComputedStyle(ancestor).opacity), "required content ancestor opacity").toBeGreaterThan(0);
+      }
       expect(rectangle.width).toBeGreaterThan(0); expect(rectangle.height).toBeGreaterThan(0);
     };
     const measure = (populated: boolean) => {
@@ -108,6 +110,23 @@ it.skipIf(!browser)("GS6-A3 compares the whole 320 px Desk before and after its 
     }
     expect(populated.extents.right).toBeLessThanOrEqual(baseline.extents.right + 1);
     expect(populated.extents.left).toBeGreaterThanOrEqual(baseline.extents.left - 1);
+    // A laid-out child keeps opacity:1 when its card is transparent. Exercise
+    // the same visibility oracle on the actual required provision text so
+    // rectangles/text presence cannot stand in for painted content.
+    const generator = target.querySelector<HTMLElement>('section[aria-labelledby="generators-heading"] .card')!;
+    const provision = exactNode(generator, "span", t("desk.provisioned_frame", { count: 3 }, "era_1995"))[0]!;
+    const originalOpacity = generator.style.opacity;
+    try {
+      generator.style.opacity = "0"; await settleMeterLayout();
+      expect(getComputedStyle(provision).opacity).toBe("1");
+      expect(provision.getBoundingClientRect().width).toBeGreaterThan(0);
+      expect(() => isVisible(provision), "transparent ancestors must invalidate required text").toThrow("required content ancestor opacity");
+      generator.style.opacity = "0.5"; await settleMeterLayout();
+      isVisible(provision);
+    } finally {
+      generator.style.opacity = originalOpacity; await settleMeterLayout();
+    }
+    isVisible(provision);
     console.info("GS6-A3 paired current-source Desk measurement", JSON.stringify(observations));
     await assertAxe(target, "GS6 current-source paired Desk after");
   } finally {
