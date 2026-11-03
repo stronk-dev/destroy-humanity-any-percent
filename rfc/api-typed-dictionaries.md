@@ -1,6 +1,6 @@
 # RFC: Typed Dictionaries in API Schemas
 
-- **Status:** draft — RP-391; owner choice and designated review pending. Not implementation authority.
+- **Status:** draft — RP-391; independently technically approved 2026-11-04; owner choice/adoption pending. Not implementation authority.
 - **Author:** Codex (proposal for Marco)
 - **Created:** 2026-10-08
 - **Design refs:** `design/06-tech.md` (server authority, versioned saves and string numbers)
@@ -158,3 +158,5 @@ projection. Other existing owner/author decisions are not inferred from either c
 ## Changelog
 
 - 2026-10-08: source-grounded RP-391 proposal; owner choice requested, not received or adopted.
+- 2026-11-04: independent technical review approves the original proposal; owner choice/adoption
+  remains unanswered. Exact range, executed compiler/gap controls and limits are in the owning log.

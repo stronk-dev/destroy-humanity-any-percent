@@ -4816,3 +4816,42 @@ The separate combined adoption question for schema-ownership/integer/byte transp
 was presented2026-11-04 and remains unanswered; do not ask it again. Dictionary/
 bodiless choices were already presentedOct8/9, also not adopted. Continue safe
 accepted work and technical review without treating unanswered questions as assent.
+
+## 2026-11-04 — Dictionary and corrected bodiless proposals technically approved
+
+Review by: fresh independent Codex `/root/api_dictionary_bodiless_technical_review`.
+Recorded by: Codex root. APPROVED technical specifications only, no remaining
+blocking findings. Exact base-exclusive/tip-inclusive scopes, all5/6/3 paths inspected:
+
+- Dictionary: `75f5830b785e78ef6d893c56a3ed3c44c318bffa..852a2b7f75b89490322cbb866868894c46107694`.
+- Original bodiless: `b9613d1bd1cab65b04a0b3c913ab9312b17c037a..e0cb918722ce9d1351caa5eb9d7347bb30a3e34a`.
+- Complete BR2 correction: `fa9d1d2ce4b8681f1d600ae7904f9f43b233b278..a332b015971ef59e9c6137b6dd73e919e505effa`.
+
+Original BR2 server premise is stale; complete correction now distinguishes new
+SDK strong-tag-only input from preserved existing weak/list/repeated/wildcard
+server behavior in body and acceptance4. No SDK broadening/new owner question.
+Dictionary existing mechanical/UUID keys, typed/nested/nullable historical maps,
+immutable traversal, exact bounds and Partial<Record> missing-read semantics are
+buildable. Empty response arm preserves real status/body/auth/cache and pin encoding.
+
+Own independent cold publicapi/publicread/gen-api and matching vet pass. Verbose
+policy population executes9valid/14malformed-or-nonmatching controls; accompanying
+publicread selector runs zero tests and supplies no evidence. Separate mounted
+population executes all6operations including exhausted-budget304, metadata/hash
+retention and changed-content invalidation. Actual generated SDK304 refuses as
+undeclared after one fetch; both DELETE lifecycle registrations remain absent.
+Existing generated-API Node file passes132. Actual configured TS compiler accepts
+typed/unseen/empty/union/guarded dictionaries and refuses wrong values/unguarded
+missing reads; replacing only Partial<Record> with Record yields exactly one
+unused expected-error diagnostic. Initial virtual host cannot resolve vitest/globals
+from repository root; corrected actual client host passes, not a source failure.
+All exact range whitespace checks pass. Primary references in the proposals support
+schema/no-body claims. No hypothetical dictionary/empty DSL, generation, browser,
+SQL/deletion-effects, full CI or release execution is claimed; handler/receipt
+inspection is not relabeled integration. All handles terminal; reviewer makes no
+tracked edits/services/containers/commits; clean at `a332b015` before root records.
+
+Technical approval does not adopt either option or authorize implementation,
+downstream feature construction, archival or release. Existing Oct8/9 owner
+choices stay unanswered; no duplicate question. Separate catalog3 adoption packet
+also remains pending. Continue remaining accepted work; no history/accounting waiver.

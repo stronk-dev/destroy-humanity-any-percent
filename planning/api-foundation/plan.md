@@ -20,6 +20,13 @@ Next: adopt the reviewed contracts, then construct/prove the complete catalog/SD
 path; do not repeat completed admission/specification reviews or mount a partial
 catalog endpoint. Other already-accepted work may continue while adoption is held.
 
+**Dictionary/bodiless technical review, 2026-11-04:** both existing proposals
+are independently technically approved, with BR2's corrected distinction between
+new strong-tag-only SDK input and existing broader server conditions. The owning
+log cites both original ranges plus complete `fa9d1d2c..a332b015` reconciliation
+and executed compiler/current-cache/gap controls. Their Oct8/9 owner choices remain
+unanswered; review is not adoption, DSL support, intent migration or deletion proof.
+
 **Activity admission review, 2026-11-01:** fresh independent Codex approves
 complete `13acd872..ef10238f` (RP-444), all ten paths. Eight existing bootstrap/
 Minigame/Soul write routes validate bounded original bytes against their registered
@@ -413,7 +420,8 @@ own later verdicts; no adoption of the dictionary/bodiless/history drafts follow
 Current prerequisite (2026-10-09, RP-483): `rfc/api-bodiless-responses.md` proposes a closed
 empty204/304 arm and explicit conditional-read input. Fresh existing six-operation cache
 checks pass; the actual generated SDK rejects304 and has no DELETE lifecycle operations.
-Owner adoption/review are pending. Do not implement this third response arm under unamended
+Independent technical review is complete2026-11-04; owner adoption remains pending.
+Do not implement this third response arm under unamended
 C19, label204 JSON, or treat the proposal as rights/retention or browser-cache policy approval.
 
 Current bounded correction (2026-10-08, RP-476): generated SDK dispatch selects the declared

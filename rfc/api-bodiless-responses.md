@@ -1,6 +1,6 @@
 # RFC: Bodiless Responses in the API Registry
 
-- **Status:** draft — owner adoption and designated review pending; not implementation authority.
+- **Status:** draft — independently technically approved 2026-11-04 including BR2 reconciliation; owner adoption pending. Not implementation authority.
 - **Author:** Codex (proposal for Marco)
 - **Created:** 2026-10-09
 - **Design refs:** `design/06-tech.md` (REST, server authority and versioned contracts)
@@ -121,7 +121,9 @@ rights decisions and browser renewal/recovery remain separate. No other design d
 
 ## Open question and changelog
 
-- Owner adoption of BR1–BR3, followed by designated normative review, is required before build.
+- Owner adoption of BR1–BR3 remains required before build. Independent technical review,
+  including the BR2 correction below, completed2026-11-04; the owning log holds exact scopes.
+  Technical approval does not adopt the proposal or approve its future implementation.
 - 2026-10-09: source-grounded proposal; current SDK304 refusal and six mounted cache populations
   executed. No product code, generated artifact, compatibility pin or handler changed.
 - 2026-11-04: reconcile BR2's stale server premise after RP-502. Keep the proposed one-strong-tag
