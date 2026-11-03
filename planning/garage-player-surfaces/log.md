@@ -8192,3 +8192,33 @@ re-review with each original range. Both CHANGES REQUIRED verdicts stay on recor
 No general occlusion/actual zoom/AT/service/performance/full-CI/feature/archival or
 release claim. First-read/retry drafts and all author/content/accounting/1.0 gates
 remain intact; full goal active. No push or lifecycle promotion.
+
+## 2026-11-03 — Shared host/consumer correction independently approved
+
+Review by: independent Codex `/root/shared_host_state_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED for the complete union:
+`0fe2f57c4950f83a407341b93b5f358028f3e415..82614848ee40ebe58bb41031002325e5b4b8b550`,
+`82614848ee40ebe58bb41031002325e5b4b8b550..a551d3c2adf9b8d24c24662bfce99a8a4b2dcf0c`,
+and eight-path correction
+`e7feeba244836be9979be38350258d5e7039418f..3aa7c654046f0a29bc6d491e301e4db7bc87405d`
+(each base exclusive, tip inclusive). Original CHANGES REQUIRED and interrupted
+51586 remain above; no intervening commits or peer's original Fiscal range included.
+
+Ordinary declared frozen Linux ARM64 Compose/private exact archive/current read-only
+setup and ten-minute KILL containment for both executions. Old helper98071 exits2:
+six expected missing-throw failures/174excluded,3.34s. Corrected exact source78013
+exits0:1116/1116,zero skips,18 project-files,47.11s; typecheck0errors/0warnings.
+File verdicts: base180,care138,events363,Fiscal147,meters51,opportunity237.
+Whitespace passes; restored helper SHA matches committed source. Private JSON
+reports review-old-helper.json/review-six-consumers.json retained in
+`/private/tmp/cloud-clicker-shared-rereview.ag8M2f`; not copied into Git.
+
+All eight correction paths and original six commits inspected. Mounted opacity0
+negatives and partial/restored positives resolve RP-708, while prior phase/readiness/
+countdown/callback checks remain. All sessions terminal/disposable runners gone;
+only two preexisting BuildKit containers remain. No main reviewer edits, clean at
+3aa7c654. This is scoped corrective approval, not original Fiscal/whole-feature,
+general occlusion, native macOS/amd64, AT, service, performance, hosted CI, archival
+or release approval. Owner/first-read policy holds remain. Root reconciles named
+statuses, no suite for records; separate Fiscal re-review resumes after a temporary
+upstream model-capacity error, not waived or falsely marked approved. Goal active.

@@ -7,13 +7,15 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-**2026-11-03 shared-state/Fiscal review:** complete shared-host/consumer range
+**2026-11-03 shared-state/Fiscal review:** initial reviews of complete shared-host/consumer range
 `0fe2f57c..a551d3c2` and Fiscal edge range `57efdc39..3609e776` receive
 CHANGES REQUIRED for distinct ancestor-opacity oracle gaps RP-708/RP-709, not
 new production defects. One corrected shared assertion now serves both, with
 actual mounted zero/partial/restored-opacity controls. Old checks fail six/twelve
 new regressions; corrected six-file consumers1116pass and final Fiscal147pass,
-types0/0. Complete correction and original ranges await independent re-review.
+types0/0. Shared host/consumer original and eight-path correction are now
+independently APPROVED: exact final1116pass/zero skips and old-helper6/6 failures.
+The separate Fiscal original range still awaits its final re-review checks.
 The owning log preserves the interrupted review run and environment limits.
 RP-336, first-read policy, full AT/integration/feature/release gates remain separate.
 
