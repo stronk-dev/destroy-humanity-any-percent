@@ -2,23 +2,19 @@
 
 RFC: `rfc/api-foundation.md`
 
-**Catalog admission review, 2026-11-03:** fresh independent Codex approves the
-corrective portions of Soul `d87bffdc..4c068540` (RP-578), Pitch
-`307725e4..293a05e4` (RP-581) and Pet `293a05e4..3d9f621f` (RP-582).
-Required catalog numbers/flags reject null without removing legal zero/false or
-tightening mutable-state codecs. The log holds the exact scope, independent old-
-loader failures and current checks. New descriptor implementations/tests and C18
-construction portions of these mixed ranges remain unapproved; these are not
-whole-range or archival approvals. The related exact-shape/slot corrections
-RP-572–577 now also have independent corrective-only approval in the five
-contexts `10ca8fbf..c7c4e561`, `c7c4e561..11efb691`, `11efb691..e670cd1a`,
-`e670cd1a..108706a6` and `108706a6..d87bffdc`;149 independently reproduced old
-wrong admissions discriminate the repaired Go loaders. The log owns evidence
-and exclusions. Curriculum/Prestige RP-579/580 also receive corrective-only
-approval in `4c068540..65ee6a8e` and `65ee6a8e..307725e4`, preserving generic
-starters and the existing expiry representation. Continue remaining Faction/
-Guild/Commons/Minigame and Economy/Route admission corrections; all new descriptors
-keep their separate review gates.
+**Catalog corrective review, 2026-11-03:** RP-572–594 corrective portions now
+have fresh independent Codex approval. This includes owner admission parity,
+existing slot/representation bounds, the neutral Commons formula-model repair
+and two editorial reconciliations. The owning log holds every exact context,
+approved/excluded scope, executed old failures/current consumers and limits.
+Legal zero/false/null arms, original/stored bytes, existing duplicate policies,
+mechanics and genuine historical kernel191–208 identities remain intact.
+New owner descriptors/component exports and their construction tests, complete
+C18 acceptance and the schema-ownership proposal are explicitly excluded from
+these corrective verdicts. No mixed range is wholly approved or archival-covered.
+Next: technical review/adoption of the bounded schema/representation/byte-transport
+proposals, then the complete catalog/SDK path under that authority; do not repeat
+these completed admission reviews or mount a partial catalog endpoint.
 
 **Activity admission review, 2026-11-01:** fresh independent Codex approves
 complete `13acd872..ef10238f` (RP-444), all ten paths. Eight existing bootstrap/
@@ -218,9 +214,9 @@ Current C18 construction (2026-10-14): Categories, Achievements, Meters, Opportu
 Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions, Guilds, Commons and Minigames export fifteen of nineteen pinned-family descriptors. Four, the complete response
 union/catalog HTTP reader and public re-verification remain open. All semantic loaders remain
 mandatory; no open JSON escape, content mint or false metadata-only kernel bump. Catalog
-admission repairs carry genuine versions0.3.191–0.3.208. RP-572–582 corrective
-portions now have the scoped approvals above; other repairs and all new
-descriptor construction remain pending their applicable designated review.
+admission repairs carry genuine versions0.3.191–0.3.208. RP-572–594 corrective
+portions now have the scoped approvals above; all new descriptor construction
+remains pending its applicable designated review.
 The append-only owning log holds each old failure, final checks, limits and exact review range;
 latest remaining-Economy/shared-condition repair range is after `c0b71434` through its containing source/test/docs/record
 commit. Economy's closed cost-curve, resource/cap, generator/role and manual/offline components are constructed; its full versioned artifact,

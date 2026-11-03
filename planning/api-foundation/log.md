@@ -4613,3 +4613,105 @@ kernel-version test claimed. All handles terminal; no source/Git mutations,
 services/browser/SQL/generation/balance edits. No full Production/CI/history-guard
 waiver, feature/specification/copy/archival/release acceptance. Continue remaining
 catalog corrective reviews; all new descriptor construction retains its own gate.
+
+## 2026-11-03 — Social/Minigame admission and formula dependency corrections approved
+
+Review by: fresh independent Codex `/root/catalog_social_minigame_corrective_review`.
+Recorded by: Codex root. APPROVED RP-583–589 corrective portions only, no blocking
+findings. All13/13/19/15 mixed paths inspected, base exclusive/tip inclusive:
+
+- Faction: `3d9f621ffdf67c210996f4e72457c0365b4bcc9c..c172f0396610ffffb4826bebe3f109938ba0d556`.
+- Guild: `c172f0396610ffffb4826bebe3f109938ba0d556..c7f9383f99079800b883539380ec4e62939d748e`.
+- Commons: `c7f9383f99079800b883539380ec4e62939d748e..c6e46f5a96193712b53be57b799367d29cc0e634`.
+- Minigame: `c6e46f5a96193712b53be57b799367d29cc0e634..2ac1e9c78998d3e5a20b3f48879283650e7c9b24`.
+
+Scope: existing owner original/non-null/nullable-Compact/literal/curve/fallback
+admission; Commons' existing safe representation/registered slot; neutral formula
+source-weight row/generator-owned copy and existing schema-test type substitution;
+regressions, corrective docs/records and genuine kernel201–204/current formula
+source fingerprint. RP-584/588 editorial reconciliations match real stock/board/
+Guild-Health sources. EXCLUDED: four new owner-schema exports/construction tests,
+descriptor-count promotion and C18 feature acceptance. Not whole-range approval
+or complete mixed-range archival coverage.
+
+At clean `e5f0b8cf`, independent cold11-package Go/vet,421TS tests/10files,
+types0/0/build217modules/client boundary all pass. Six named pure consumers execute
+without skips: incorporation/OpenSource, logged stock binding, Guild frozen
+settlement, Compact sign/leave/resign, Minigame activation and zero-credit replay.
+Tenant registry conformance includes typed-nil result/rating checks. Guild's four
+DB parents explicitly skip without TEST_DATABASE_URL; no SQL evidence follows.
+
+```sh
+make test-go GO_PACKAGES='./faction ./guild ./commons ./minigame ./formulas ./cmd/gen-formulas ./publicapi ./cmd/gen-api ./kernel ./replaycatalog ./decimal' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./faction ./guild ./commons ./minigame ./formulas ./cmd/gen-formulas ./publicapi ./cmd/gen-api ./kernel ./replaycatalog ./decimal ./production'
+make typecheck
+make build-client
+make api-check formulas-check verify-commons-boundary
+```
+
+Private exact-base Go overlay independently reproduces33Faction/13Guild/32Commons/
+19Minigame wrong admissions; Commons'4safe-max and explicit-zero/false/nullable
+controls survive. Exact old Commons TS reproduces axis_stack refusal; current
+slot/false/recursive/missing-boolean controls pass. Escapes, supported complete
+last-value behavior, Minigame raw uniqueness and v2/v3 compatibility execute.
+Both pre-fix forbidden import edges confirmed; unchanged current guard plus
+empty/nonempty byte equality/canonical-empty/copy-isolation controls pass.
+
+All five generated SHA256s identical pre/post normal checks: API JSON
+`bb8f9de6747486b4779219eef0cf7e895e0f81718a537602159b015116f1bd40`, pin
+`dc3c959959613bcd247fe86316db0ad75cbceb42389062a4d842f70b8b4afb85`, TS
+`ff48cdbcc73637b70aecd23d5d2788164b069d2fc8bb113bbdef84fe13649eae`, formulas
+`19746aba4ff23ad47ac70365c295474ee63aacf14acad3d671f61fa1879f21bb`, formula schema
+`0592dbc1d9ed6bca0b0cc02798779583b823a9a35f2bb944c53849e4fb46d509`.
+No balance/testdata/API-byte change in reviewed contexts; historical formula
+artifacts not regenerated. Two initial selector mistakes ran no valid selected
+population; only corrected individual verbose consumers supply results.
+All handles terminal, no browser/Docker/services/main edits/commits. Private
+scratch remains `/private/tmp/cloud-clicker-social-admission-review.gpu8X4`.
+No hosted/full CI, accounting/history waiver, feature/specification/copy adoption,
+archival or release acceptance; current history/Clout failures remain open.
+
+## 2026-11-03 — Economy/Route original grammar corrections approved
+
+Review by: fresh independent Codex `/root/catalog_economy_route_corrective_review`.
+Recorded by: Codex root. APPROVED RP-590–594 corrective portions only, no findings.
+All14/14/16/18 mixed paths inspected (35-path union), base exclusive/tip inclusive:
+
+- Curves: `2ac1e9c78998d3e5a20b3f48879283650e7c9b24..ebb47baee1636a44c7a83afe8404e60200fb978d`.
+- Resources: `ebb47baee1636a44c7a83afe8404e60200fb978d..33289642789300f338a5e1b815a54dd040655645`.
+- Generators/policies: `33289642789300f338a5e1b815a54dd040655645..c0b71434f96456ff674fd80c0a9481dbf93428a2`.
+- Remaining grammar/conditions: `c0b71434f96456ff674fd80c0a9481dbf93428a2..661ba498817b26409ba7c715e619c8d6a4ea9957`.
+
+Scope: four Economy LoadCatalog admission calls and curve/resource/generator/
+catalog_shape helpers; Route-owned rawCondition.UnmarshalJSON governing actual
+Route catalogs/ParseConditions; corrective regressions/docs/records and genuine
+kernel204→205→206→207→208 trio advances. Existing nullable cap/window bounds,
+optional omissions, zero/unit controls, four roles, weighted/composite progress,
+static/axis effects, eight conditions, escapes/complete last values and original
+stored bytes remain. No evaluator/math/content change. EXCLUDED: new schema
+component exports/construction tests/C18 claims and schema-ownership normative
+proposal/index/routing amendments. No whole-range approval or archival coverage.
+
+Own independent execution at clean `e5f0b8cf`: cold Go64552, affected vet,
+7,305Node tests/10files8308 and Route/Commons guards pass. Pure Production runs
+2BuyUpgrade,2SubProgress,1Route-reference,9Foundation tests cold/verbose, no skips.
+
+```sh
+make test-go GO_PACKAGES='./economy ./routes ./publicapi ./kernel ./replaycatalog ./decimal' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./economy ./routes ./publicapi ./kernel ./replaycatalog ./decimal ./production'
+make verify-routes-boundary verify-commons-boundary
+```
+
+Private overlay restores exact prebatch Economy blob
+`846433ef46871a8be9966d07c7587889e25956d2` and disables only new Route unmarshaler:
+9curve,8resource,50generator-alias+13null,15presence and88condition refusals fail
+on old behavior, plus actual Route-catalog bypass and remaining v4/v5 row aliases.
+Legal controls survive; current suites pass. Broad old alias output is truncated,
+so no exact total claimed. Main source never replaced. Own generation/type/build
+was deliberately not duplicated; the separate same-source peer entry above
+supplies those executions, not this reviewer's execution. All handles terminal;
+no services/containers/browser/SQL/main edits/commits. Private overlay remains
+`/private/tmp/cloud-clicker-economy-route-review.HpHU9o`. No full Production,
+pacing/CI, history exception adoption, feature/archival or release approval.
+All RP-572–594 corrective reviews now have disposition; new descriptors and
+unadopted representation/ownership/transport contracts remain separate work.

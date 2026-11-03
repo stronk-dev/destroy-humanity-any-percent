@@ -14,11 +14,11 @@ that would need one is recorded as a blocker in `log.md` instead.
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
 
-1. Continue the consolidated catalog-admission correction review under API's
-   plan/log: remaining Faction/Guild/Commons/Minigame and Economy/Route repairs.
-   RP-572–582 are independently approved in corrective scope only. Mixed new
-   owner-descriptor construction stays outside those approvals; explicit zero/
-   false, stored artifacts, mechanics and historical guards remain.
+1. API's consolidated catalog-admission reviews RP-572–594 are complete in
+   corrective scope only; do not restart them. Its plan/log routes the remaining
+   technical schema/representation/byte-transport proposals and new descriptor
+   acceptance. Those gates remain separate from the approved repairs and must
+   precede a complete catalog/SDK workflow, not a partial endpoint.
 2. Then take the next still-unreviewed accepted scope; distinguish its producer,
    actual player outcome and remaining author/acceptance gates before changing code.
 3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
