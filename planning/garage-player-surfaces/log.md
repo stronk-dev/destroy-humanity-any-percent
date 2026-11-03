@@ -8693,3 +8693,63 @@ terminal, Compose inventory empty, lease released. Only scoped correction review
 closes; physical AT, first-read/renewal, copy/spec/feature/CI/archival/release gates
 remain. Next: runtime parse-failure and composed-observer corrections, with their
 actual subjects and already recorded real-boundary evidence. Goal active, no push.
+
+## 2026-11-03 — Native JSON failure correction independently approved
+
+Review by: fresh independent Codex `/root/native_json_error_corrective_review`.
+Recorded by: Codex root. APPROVED complete six-path base-exclusive/tip-inclusive
+`e55eb1e9ca34037a6a8103a38abd18d7ecb85689..cd0c85812c269efc9a9eaf7d1ecb6050c6f5cec4`.
+Historical test/source/config and matching frozen8825a9d8…lock/84ad06ef…provider
+in private4MzQpv:27Node and types pass. Current100Node/types pass; current
+sanitized byte-decoder contract and its separate approvals are not relabelled
+as the old native-parser behavior. Native error identity/one parse/request,
+offline mapping and credential preservation checked. Historical WebKit2fail/
+Chromium2pass and corrected native54 remain implementer evidence, not rerun.
+
+Nonblocking historical finding: cd0's overview overstates its Vite-served main
+journey as built-client. af36ccdf explicitly corrects that wording before d717e590
+adds actual production-build/loaded-byte proof; present attribution is correct.
+No product repair or new historical-body rewrite needed. All four reviewer
+handles terminal; diff check passes, no browser/services/main writes. Only this
+corrective range leaves review debt, not adjacent features or hosted CI.
+
+## 2026-11-03 — Production-client and Pitch observers approved; full target passes
+
+Review by: fresh independent Codex `/root/composed_client_observer_corrective_review`.
+Recorded by: Codex root. APPROVED complete NONADJACENT ranges (base exclusive,
+tip inclusive), all source/test/doc/record paths inspected:
+`af36ccdf34ecf7e511c23e87b8affcb3d03271d9..d717e5900472639eb2c2a77add5497f272ade544`;
+`303677f99a0ac91611f947dc32d15f97294c74a6..a7f8f54a19407dbcf1079660bd95c68e77ffeaa1`
+(fa985870+a7f8f54a). Intervening Cosmetic/API/Clout work is not approved here.
+
+Own production fixtures5/5 pass: dev/stale/missing/failed/304-before200/absent-
+Worker negatives; relocated fixture bytes match reviewed tip. Native Chromium/
+WebKit observer/host10822 passes24/222exclusions, including both lifecycle orders
+and exact/hidden/ambiguous/region/surface/budget controls. Initial sandbox bind
+denial ran no cases. Helpers match reviewed tips (production1735df01… and
+Pitchce7a029f…); syntax/full-range whitespace pass. Exact visible mounted notice,
+every submitted Start's typed409 and max3/unchanged30s waits remain; an offer
+interrupts, never supplies success. No gameplay retry policy introduced.
+
+One current full `make test-game-ui-composed GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f compose.game-ui-arm64.yml'`
+at clean df531b9bccd5c45ab690dd8e36a8b97d096e36d1,86769 exits0. Fixture35,
+actual refresh8/8, main, default Cosmetic/Reputation, axis variant, N5 negatives,
+Garden and Tier2 children all finish. Main146requests/61.425s includes current
+Soul Recovery; browser receives exact `/`, index-DB5NPsmQ.js,
+index-D3Y-gOYp.css and prediction.worker-wsFKRcEr.js under `/assets/` and starts
+the bundled Worker. This declared ARM64/native population is not Linux-amd64
+clean-host or release-image proof. Garden maturity/Tier2 cash are controlled;
+no natural pacing, Headcount, mint or original-feature acceptance follows.
+
+Verbose successful Go/request output is tool-truncated; relevant main proof and
+whole-target terminal results retained. POST-response Pitch offer execution is
+not observable from retained output: no inference from Start/409 counts. That
+branch rests on the executed controlled native host/observer cases; historical
+23009 zero declines and RP-389 original attribution/reliability stay open. No
+restart or seed selection. Peer types/build/C/F/W/performance remain peer evidence.
+Sessions10822/86769 terminal0; owned5173/18081 listeners absent. Created disposable
+Postgres/container/network removed, discarding only that test database. No source
+faults/main reviewer edits/publication. Current plan/checkpoint updated; stale
+Headcount model hold in overview corrected to the existing Nov2 ruling, not a new
+adoption or implementation. Next: RP-388's actual-read care oracle, preserving its
+own failure/clock boundaries. Full nine-tier goal active; nothing pushed.
