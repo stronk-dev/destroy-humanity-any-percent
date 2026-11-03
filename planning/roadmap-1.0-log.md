@@ -5757,3 +5757,24 @@ near-budget limitation and original failed evidence; no current-source identity,
 reliability, source optimization, full-CI or release claim. No publication or
 rerun by this work. Existing content/rights/accessibility/operations/later-tier
 scope remains; the full1.0 goal is active, not paused or redefined.
+
+## 2026-11-03 — Risk-based delivery procedure technical review complete
+
+Review by: independent Codex `/root/fiscal_rendered_edges_corrective_review`.
+Recorded by: Codex root. Technical APPROVAL covers these complete nonadjacent
+base-exclusive/tip-inclusive ranges, not the intervening changes:
+`7a2be417898e9c75a9b21d2c338da0b7e8c770d4..3d60d64a127a88aafcfb5704157f79fc71d88657`,
+`78f51a0ff4ea1f51edc21366ce0664bdb001d8c2..826b7e9eee97f392d45825dfe3fe156efe7b83bc`,
+`dc1a1adc7c8ed8b942db736c9c0783410733017b..5f856f979ff8dd7adf8a3963057dee0620b0d797`,
+`9b0c0a75006e261a99e17842eac5ebcf9755b2c8..58f1131d5ebb39aecb4df0eef3763b66d6516692`.
+
+All changed paths inspected. Fresh `make verify-ci-topology`17732 passes27negative
+controls and setup/failure-propagation/focused/full checks. Exact58f1131d dry runs
+confirm focused functional-only versus full functional then isolated performance;
+historical Actions/Compose and current topology retain both lanes. Current Go,
+vet, DB/Linux and migration examples expand correctly; all four diff checks pass.
+Historical mounted success/missing-file failure remain attributed implementer
+evidence, not re-executed. No browser/service/install or tracked reviewer edits.
+The owner-directed procedure retains explicit AC, owner decisions, review debt
+and the full nine-tier floor. This closes technical-review debt, not feature/CI/
+release acceptance or fresh specification adoption. Goal active; nothing pushed.

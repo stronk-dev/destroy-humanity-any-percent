@@ -8612,3 +8612,49 @@ ran; reviewer owns no live handles and made no tracked edits. Only this records
 range leaves review debt; author, actual AT, complete-feature, CI, clean-host and
 release gates remain. Next: independent Offer/purchase/transition corrective review;
 manual-input policy RP-368 stays unruled and untouched. Goal active, no push.
+
+Editorial follow-through: remove the plan header's obsolete blanket producer
+hold. Current GameUIApp mounts Pet Care; docs/game-ui describes its Cosmetic
+overlay and axis-stack/Clout integration. Tier2's canonical page still explicitly
+says fixture-first/unminted, and Ticker's owning plan still holds VQ-3. These are
+existing coordinates, not new integrations or acceptance. Diff checked; no
+software suite for this status-text correction.
+
+## 2026-11-03 — Offer, purchase and transition corrective reviews approved
+
+Review by: independent Codex `/root/claim_pending_palette_corrective_review`.
+Recorded by: Codex root. PASS/no findings for these complete NONADJACENT ranges
+(base exclusive/tip inclusive), all changed paths inspected:
+Offer `777315006f813b4fc396cd6ac4b013e17234a9b7..dc1a1adc7c8ed8b942db736c9c0783410733017b`;
+purchase/conflict `f83e758e567473d34ca96377eb4b571bb6b1dca4..9b0c0a75006e261a99e17842eac5ebcf9755b2c8`;
+transition/source guard `58f1131d5ebb39aecb4df0eef3763b66d6516692..e55eb1e9ca34037a6a8103a38abd18d7ecb85689`.
+Intervening API/process/Cosmetic/diagnostic and newer-focus-observer work is not
+included. Offer guards preserve its original native-disabled mutual exclusion;
+no new cross-kind Offer policy follows. Purchase/transition different-kind waits
+and fresh bindings are exercised. Manual retention/rate RP-368 remains unruled.
+
+Independent exact d7eed2a3 declared cold frozen Linux screen run:321PASS/
+15explicit performance-lane exclusions,24.35s; same container types0errors/
+warnings and build217modules. Combined35970 exits2 only at source-boundary
+spawnGoENOENT: Playwright image lacks Go, not a passing Linux boundary. Subsequent
+current matching native install+Go executes boundary10Go/15Svelte negatives and
+Headcount controls successfully. No image/dependency/deadline alteration.
+
+Exact historical e55eb1e9 private archive, matching frozen8825…lock/84ad…provider:
+88scoped Chromium/WebKit pass/90unselected; historical types clean. Pending-native-
+disable control76fail (Offer16/purchase36/transition24), at actual disabling/focus
+loss. Unawaited conflict refresh95506 fails24/16controls, observing TWO commands
+after held200-conflict/HTTP409 reads; missing same-kind guard52418 fails24 too.
+Old Wind Down binding77495 fails2: Company2/Founder1 instead of2/2. Omitted
+regional handoff71500 fails10/20controls: BODY instead of surviving Wind Down or
+Desk heading, while newer-choice/lifecycle controls remain green. Assertions
+unchanged; invalid wind_down terminal fixture excluded, valid exit is collapse.
+
+All private faults restored exactly (historical host53b080e7…/test258b3781…;
+current hoste823631a…/testb0021c6e…/boundary1ee5e949…/lockda90674c… unchanged).
+All ten owned handles terminal, Compose inventory empty, lease released; no main
+reviewer writes. Three full-range whitespace checks pass. Existing real-service
+proofs reused at their original coordinates/limits; no new composed execution.
+Only these corrective scopes leave review debt, not original feature/copy/spec/
+AT/CI/archival/release acceptance. Next: independently review accepted bootstrap/
+reduced-motion corrections. Full nine-tier goal stays active, no push.
