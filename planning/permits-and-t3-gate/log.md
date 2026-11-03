@@ -135,3 +135,26 @@ Content Epoch).
   pending for this test/record batch; no independent approval or archival claim.
 - Next: designated review of this supplement; author reconciliation RP-027, canonical-doc repair
   RP-029 and the remaining activation/history evidence before Permits archival.
+
+## 2026-11-04 — Two-resource replay supplement independently approved
+
+Review by: fresh independent Codex `/root/postmint_permits_epoch_corrective_review`.
+Recorded by: Codex root. APPROVED complete seven-path corrective/test-tool range
+`a42e680ef8e777bb3e2a0d2b6cdbe5c0636e297c..ac3e31116569eb46f9fa5c1c077e2a54827af684`
+(base exclusive/tip inclusive), no findings. Five corpus arms independently check
+literal exact/surplus payment, cash/permits/both-short refusals, cash-first precedence,
+no partial debit and full receipt/event/state equality in actual Go handler,
+ApplyLogged and TS replay. Candidate seven-artifact/Company14 context is explicit;
+not the whole release, natural progression, original feature or archival acceptance.
+Fresh execution is recorded once with related epoch/Fiscal scopes in the First
+Content log's same-date approval; no fixture regeneration or source change.
+
+Plan now distinguishes historical milestones already completed from remaining
+closeout: ownerAug8 ratifies three byte-pins, generated copy is only N1's composition
+attestation; ClaudeAug8 approves original candidate union; ClaudeAug10 approves
+epoch6 mint. Root independently recomputes all three candidate SHA256s, exactly
+matching the RFC pins. No renewed ratification/mint needed. Later controlled
+old-run proof is not retroactive mint-day execution. RP-027 author-body, complete
+acceptance/docs and full designated archival remain open; no runtime/copy/balance,
+epoch, schema, CI or release-status change. Diff/facts checked, no extra suite
+for these editorial records.

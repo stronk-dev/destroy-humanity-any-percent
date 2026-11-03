@@ -394,3 +394,50 @@ runner is future work. The four-arm runner honestly out of the slice.
   this batch after `ad41d25a`, alongside the prior supplements' separate ranges. No archival,
   owner-text reconciliation or push. Next: remaining First Content acceptance/author-body work
   and complete designated closeout review, not status promotion from this diagnostic journey.
+
+## 2026-11-04 — Historical activation and Fiscal clock corrections approved
+
+Review by: fresh independent Codex `/root/postmint_permits_epoch_corrective_review`.
+Recorded by: Codex root. APPROVED two complete corrective/test-tool scopes,
+base exclusive/tip inclusive, no blocking findings; all7/13 paths inspected:
+
+- RP-032/RP-029: `ac3e31116569eb46f9fa5c1c077e2a54827af684..ad41d25a0008a9e8527696cc26b42346099a4668`.
+- RP-366/proof: `ad41d25a0008a9e8527696cc26b42346099a4668..0f9f4214e44f4c065e3d312ad36d84c1883466fa`.
+
+Sixteen original source pins/accepted bundle reconstructed, not deploy-current
+substitution; distinct epoch8 companions retained. Old Company keeps old resources;
+new permits/legal departments start at zero. Pure terminal/new state, Founder
+carry and all event populations agree. Fiscal six-line first-activation correction
+uses logged Founder time, retaining full comparison/credit refusal; historical
+kernel167 is genuine. Related complete RP-028 range `a42e680e..ac3e3111` also has
+approval, recorded in Permits log. No prior exact independent verdict found.
+
+At unchanged executable source `1597deeb`, independent native37937 executes
+NINE top-level tests, not initial reported ten: all5Permits arms,3clock offsets,
+fixed/current activation/fresh-Founder, historical Exit and unchanged cross-runtime
+corpus. Cold replaycatalog/epochseed/fiscal/kernel/routes/economy93657 and vet pass;
+three actual Permits/replay/Fiscal TS files31255 pass202; types34435 pass0/0.
+Declared Postgres50570 actually executes persisted-boundary PASS1.24s, no skip:
+new pools/Store/Service reload both saves/pins, old terminal/new genesis/frozen
+contributions and both histories; wrong hash/forged receipt refuse, persisted
+duplicate receipt identical with unchanged states/revisions. Not HTTP/user play.
+
+Private old-clock-only overlay47078 reproduces±25ms failures at opening time;
+equal clock passes. Its whole applyFounderExitLive function matches exact pre-fix
+ad41d25a, SHA256 `a970219e534f30a1908682cf87ac2c83f0018321d70a413c8cefa6459d744ba7`.
+Corrected source passes all3 plus credit-divergence rejection. Main never replaced;
+scratch retained `/private/tmp/cloud-clicker-fce-review.UHHGKH`. Whitespace passes.
+
+Complete driver diff requires explicit PASS from this persisted test. Independent
+full composed `df531b9b` from `/root/composed_client_observer_corrective_review`
+(Garage Nov3 approval) is REUSED, not rerun: executable/driver/Make/Compose/lock
+diff to source is empty. Own SQL run additionally executes that exact subject.
+All handles terminal; only newly created disposable tmpfs Postgres/container and
+confirmed-empty network removed, caches untouched. No tracked reviewer changes;
+root's two planning-file edits do not affect execution.
+
+These are corrective/test-tool approvals, not original feature acceptance, full
+archival union, natural progression/playableTier4, mint or release approval.
+Plan separates the historically approved mint from open post-mint full closeout;
+RP-027/other author/body/provenance/lifecycle obligations remain. No copy/balance/
+fixture/hash rewrite, kernel-history waiver or repair of27 accounting failures.
