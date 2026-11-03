@@ -9360,3 +9360,43 @@ Marco explicitly to adopt both before implementation; the separate Tier2 activit
 amendment still needs its own answer. RP-680,27AC6, historical guard and every
 full implementation/feature/release gate stay open. Index/current-state/roadmap
 now route to this approval and the actual next authority boundary; nothing pushed.
+
+## 2026-11-03 — Fractional factors and purchase-card corrections approved
+
+Review by: fresh independent Codex `/root/pr_factor_card_corrective_review`.
+Recorded by: Codex root. APPROVED/no findings for both complete NONADJACENT
+base-exclusive/tip-inclusive ranges, all code/test/doc/record paths inspected:
+RP-387 `48a7e5ede62aadbf9461bc7465c50a6fa1faba8b..00a6f43d0cbdb1cb20f8a19d0af317aaa9729be7`
+(seven paths); RP-426
+`627e0f9e3cf61def0e7ae7d63553c2fce619ec96..d039fe66bfbba5875989a2ff6e3c3eb87383eec3`
+(nine paths). Supplied canonical factors are formatted, never recalculated;
+resource Amount, rates, balance and copy remain unchanged. Actual purchase cards
+own factor/unowned progress and native heading/Buy descriptions; shared product/
+formula/cap remain single. RP-427's projected target/hint lifetime stay unruled.
+
+Own checks at clean a2cd0090: declared cold/frozen Linux Chromium/Firefox/WebKit
+73628 passes417 across9engine-file instances/15declared performance exclusions,
+25.99s (Axis/Shell/screens). Node26645 passes56 formatter/decoder/formula/unchanged
+Amount cases. Types/build/boundaries99055 exit0,0errors/warnings,217modules;
+both range whitespace checks pass. Committed and installed lock both da90674c….
+Initial sandbox Docker denial ran no tests. No assertions, provider, preferences
+or deadlines changed. Formatter/tests match00a6f43d; actual card block matches
+d039fe66. All source/driver/Make/lock bytes relevant to peer integration are
+unchanged since df531b9b; intervening changes are only records.
+
+Real service reuse is named independent peer evidence: Garage log's
+`/root/composed_client_observer_corrective_review` full df531b9b/86769 exits0,
+including actual axis PR purchase/render/reload/SQL. Not this reviewer's journey;
+successful request/Go output partly truncated. Historical65716/65028 failures
+remain original executed regressions, not newly reconstructed history. Invalid
+46155 price/copy/connection baseline, nonexistent Amount selector28697 and denied
+attempts supply no passing credit. No repeated whole journey or mutation campaign.
+Reviewer capacity interruption occurred after checks; same review resumed for its
+explicit final verdict without restarting jobs or substituting implementer approval.
+
+All own handles terminal; disposable browser containers/network removed, no source
+writes/commits. Only these two corrections leave review debt, not original P5,
+CV9/AC11, adjacent journey/notice construction, copy/content, RP-307 accounting,
+AT, hosted CI, archival or release acceptance. Next: RP-509 identity admission
+and its related two-owned proof, preserving their distinct boundaries. Goal active,
+nothing pushed; complete nine-tier1.0 scope unchanged.

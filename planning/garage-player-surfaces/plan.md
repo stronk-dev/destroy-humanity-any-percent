@@ -14,10 +14,10 @@ that would need one is recorded as a blocker in `log.md` instead.
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
 
-1. Next corrective scope: fractional PR multiplier presentation (`00a6f43d`,
-   RP-387), owned by the Clout plan/log. Verify the actual displayed factor and
-   owned product without changing resource formatting, rates, copy or accounting.
-   Its review must not approve adjacent new PR journey construction or AC11.
+1. Next corrective scope: one contribution per owned PR Intern (`0c2d1ef4`,
+   RP-509) and the related two-purchase proof (`b9dabdc4`), owned by the Clout
+   plan/log. Keep malformed-wire admission separate from producer correctness,
+   fixture cash, original P5/AC11 acceptance and the held accounting contract.
 2. Then take the next still-unreviewed accepted scope; distinguish its producer,
    actual player outcome and remaining author/acceptance gates before changing code.
 3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
@@ -50,6 +50,7 @@ environment differences, exclusions and original rejected verdicts live in
 | Bootstrap focus/live reduced motion (RP-393/RP-084) | Complete original corrections plus citation repair approved; current Node/native-input/media/Worker and Linux performance evidence, not AT/reference-hardware acceptance |
 | Native JSON failure/production-client/Pitch observers (RP-381/RP-389) | Complete three separate ranges approved; native helper negatives and full current real-service target pass; original failure attribution/reliability remains open |
 | Care actual-read oracle/native Buy proof (RP-388) | Complete corrective scopes independently approved; exact verdicts in Cosmetic log, original causes/clock/full G10 and feature gates separate |
+| Fractional PR factors/purchase-card placement (RP-387/RP-426) | Both complete corrective ranges independently approved; no local factor calculation or resource-formatting change, RP-427/full CV9 separate |
 | Performance oracle/supplements/selector (RP-334/RP-484/RP-706) | Approved corrective scopes; full RP-333/AC7 remains open |
 
 Last complete composed execution: independent `make test-game-ui-composed` passes

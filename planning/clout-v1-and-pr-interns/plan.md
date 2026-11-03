@@ -6,6 +6,17 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+## UI corrective checkpoint — 2026-11-03
+
+Fractional factor/product display (RP-387) and actual purchase-card progress/
+factor placement (RP-426) have independent approval over their complete ranges.
+The owning log records current three-engine/Node/type/build checks and named
+peer reuse of the full df531b9b service target. Original P5/AC11, RP-427's missing
+definitions, copy/content and accounting remain separate gates. Older dated
+checkpoints below retain their original failures and pending-review coordinates;
+they do not restart these approved corrections. Care/Pitch oracle corrections
+also have separate current verdicts in the Cosmetic/Garage logs, not cause closure.
+
 ## Current step — accounting/search correctness, 2026-11-01
 
 Independent technical readiness review at `d2c610cd` requires three draft fixes:
