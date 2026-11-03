@@ -4462,3 +4462,52 @@ and types.ts are identical. Full-context whitespace passes. All handles terminal
 no manual source/pin edits, browser/DB/services or publication. Root record edits
 follow the clean check, not contamination of its result. Only RP-386 corrective
 review closes; feature/CI/specification/archival/release gates remain. Goal active.
+
+## 2026-11-03 — Soul, Pitch and Pet required-value corrections approved
+
+Review by: fresh independent Codex `/root/catalog_null_admission_corrective_review`.
+Recorded by: Codex root, transcribing its final verdict under Marco's delegation.
+APPROVED corrective portions only, with no blocking findings, within these exact
+base-exclusive/tip-inclusive contexts (all13/13/14 changed paths inspected):
+
+- Soul RP-578: `d87bffdca978ce758b114243b8f1c9b60c06d107..4c0685406ad3eadfaa3eabf1a0b18e4ca3193815`.
+  Catalog-only `exactKeys` non-null guard, added Go/TS null regressions, genuine
+  kernel0.3.195→196 trio and corresponding correction docs/records.
+- Pitch RP-581: `307725e4d03a7c78b120d15a2663366066413365..293a05e4c9a7192307e236e5db304a92c1b07a7a`.
+  Required price pointer/refusal, Go/TS null-price regressions, genuine
+  kernel0.3.198→199 trio and corresponding correction docs/records.
+- Pet RP-582: `293a05e4c9a7192307e236e5db304a92c1b07a7a..3d9f621ffdf67c210996f4e72457c0365b4bcc9c`.
+  Separate non-null catalog helper/call sites, Go/TS null-policy regressions,
+  genuine kernel0.3.199→200 trio and corresponding correction docs/records.
+
+Accepted Soul SB10, Pitch TP-C13/C21 and Pet C17 already require typed values;
+unchanged TS readers refuse null. Explicit zero/false, original-byte duplicate
+rejection and current/stored artifact bytes remain. Pet mutable-state helper is
+not tightened; no care/drain/scoring/payout/clock/formula or configured-value change.
+Soul mounted-surface and Pitch epoch documentation corrections match actual sources.
+
+At current descendant `a5d7de07`, independent cold six-package Go checks, matching
+vet including production,176 tests across12 focused Node files, typecheck0/0 and
+production build pass. Three verbose pure production tests execute without skips:
+Soul pinned activation, Pitch immutable tenant resolution and both nonempty Pet
+Exit preservation arms. Exact old loaders in a private Go overlay reproduce
+8Soul,8Pitch,31full-Pet and1standalone-Pet null failures. Valid zero controls remain
+accepted, including all eight separately named Pitch zero arms. Main source never
+replaced; source/tests remain identical to reviewed tips. Whitespace/gofmt checks clean.
+
+```sh
+make test-go GO_PACKAGES='./soul ./pitch ./pet ./publicapi ./kernel ./replaycatalog' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./soul ./pitch ./pet ./publicapi ./kernel ./replaycatalog ./production'
+make typecheck
+make build-client
+```
+
+Explicitly EXCLUDED: new `catalog_schema.go`/`catalog_schema_test.go` implementations,
+descriptor export/count/composition and new C18 construction clauses in mixed
+records/docs. Contextual schema checks do not approve those features. These verdicts
+are not whole-range approval or complete mixed-range archival coverage. No browser,
+SQL/service/journey, generation/api-check, full Production, pacing/numeric, hosted
+CI, feature/specification/copy/archival/release acceptance is claimed. Historical
+kernel guard remains red; exception draft unadopted. All processes terminal; private
+overlay removed; no browser/service resources acquired or tracked reviewer edits.
+Next consolidated review: RP-572–577 exact-shape/slot admission corrections.

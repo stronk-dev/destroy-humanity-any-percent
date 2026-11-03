@@ -2,6 +2,16 @@
 
 RFC: `rfc/api-foundation.md`
 
+**Catalog admission review, 2026-11-03:** fresh independent Codex approves the
+corrective portions of Soul `d87bffdc..4c068540` (RP-578), Pitch
+`307725e4..293a05e4` (RP-581) and Pet `293a05e4..3d9f621f` (RP-582).
+Required catalog numbers/flags reject null without removing legal zero/false or
+tightening mutable-state codecs. The log holds the exact scope, independent old-
+loader failures and current checks. New descriptor implementations/tests and C18
+construction portions of these mixed ranges remain unapproved; these are not
+whole-range or archival approvals. Continue consolidated exact-shape admission
+review for RP-572–577, preserving the same separation.
+
 **Activity admission review, 2026-11-01:** fresh independent Codex approves
 complete `13acd872..ef10238f` (RP-444), all ten paths. Eight existing bootstrap/
 Minigame/Soul write routes validate bounded original bytes against their registered
@@ -200,7 +210,9 @@ Current C18 construction (2026-10-14): Categories, Achievements, Meters, Opportu
 Doctrines, Fiscal, Soul, Curriculum, Prestige, Pitch, Pets, Factions, Guilds, Commons and Minigames export fifteen of nineteen pinned-family descriptors. Four, the complete response
 union/catalog HTTP reader and public re-verification remain open. All semantic loaders remain
 mandatory; no open JSON escape, content mint or false metadata-only kernel bump. Catalog
-admission repairs carry genuine versions0.3.191–0.3.208 and remain pending designated review.
+admission repairs carry genuine versions0.3.191–0.3.208. Soul/Pitch/Pet corrective
+portions now have the scoped approval above; other admission repairs and all new
+descriptor construction remain pending their applicable designated review.
 The append-only owning log holds each old failure, final checks, limits and exact review range;
 latest remaining-Economy/shared-condition repair range is after `c0b71434` through its containing source/test/docs/record
 commit. Economy's closed cost-curve, resource/cap, generator/role and manual/offline components are constructed; its full versioned artifact,

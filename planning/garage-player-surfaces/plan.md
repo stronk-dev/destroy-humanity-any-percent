@@ -15,9 +15,10 @@ Continue accepted construction and corrective review; do not repeat green popula
 or expand an uninformative diagnosis into another research campaign.
 
 1. Continue the consolidated catalog-admission correction review under API's
-   plan/log: Soul/Pitch/Pet null-number refusals (RP-578/RP-581/RP-582). Mixed
-   new owner-descriptor construction stays outside corrective approval; explicit
-   zero/false, stored artifacts, mechanics and historical guards must be preserved.
+   plan/log: exact-shape/slot repairs RP-572–577. Soul/Pitch/Pet null-number
+   repairs RP-578/RP-581/RP-582 are independently approved in corrective scope
+   only. Mixed new owner-descriptor construction stays outside those approvals;
+   explicit zero/false, stored artifacts, mechanics and historical guards remain.
 2. Then take the next still-unreviewed accepted scope; distinguish its producer,
    actual player outcome and remaining author/acceptance gates before changing code.
 3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
