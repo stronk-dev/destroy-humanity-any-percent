@@ -2,6 +2,12 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
+**2026-11-03 corrective proofs:** RP-388's actual-read care oracle and the existing
+Buy witness's native Enter/Space correction now have independent approval over
+their complete ranges. Exact scopes, own Node/Go/browser checks and named reuse
+of the full `df531b9b` service target are in `log.md`. Original failure attribution,
+shared clock, full G10/AC11/AC14 construction and feature acceptance stay separate.
+
 **2026-11-02 focus diagnosis (RP-705):** a fresh actual driver fails before native
 Buy/care at its focus assertion. The existing capsule cannot identify the active
 element or replacement history. A passive node/focus supplement now passes105

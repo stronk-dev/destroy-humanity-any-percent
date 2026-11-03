@@ -2713,3 +2713,54 @@ Reviewer makes no tracked edits/mutations/commits, starts only its disposable
 --rm browser run, verifies inventory empty and leaves gameplay services untouched.
 All handles terminal. Root record-only diff/claims checked, no software rerun
 for this transcription. Continue accepted work; full1.0 goal active, nothing pushed.
+
+## 2026-11-03 — Actual-read care oracle correction approved
+
+Review by: fresh independent Codex `/root/care_read_sample_corrective_review`.
+Recorded by: Codex root. APPROVED complete one-commit/eight-path range
+`50f7f49cbee8fb8570b9279fd319751740ec1743..e8218377b2472b408a14edb082372e2caabe0c58`
+(base exclusive/tip inclusive). All code/docs/records and actual caller inspected.
+Current b82ef41d helper/fixtures exactly match original blobs3b129db4…/028c4207…;
+relocation did not replace tests. Own25Node fixtures (22invalid controls), cold
+`make test-go GO_PACKAGES='./pet ./gameui' GO_TEST_FLAGS='-count=1'`, syntax and
+range whitespace pass. Actual transition/projector1920/1921/1922 gives high/high/
+normal with stored care unchanged; retained1922 input fails old receipt equality
+while the read-sample oracle passes. Native package checks are not SQL integration.
+
+SQL head/frozen receipt/state, policy, Founder age and the response's own attendance
+sample bind exact band/complete eligibility. Host refresh precedes diagnostic read;
+reload checks persisted outcomes too. This relies on caller-valid catalog/actual
+bound receipt, not general receipt admission or proof of every care formula.
+Existing watermark clamp is modelled, not newly authorized: RP-365/D-024 remains.
+Peer `/root/composed_client_observer_corrective_review` full df531b9b/86769 exits0
+with both care/reload populations; executable seam unchanged. Not this reviewer's
+journey and not an observed fresh live threshold crossing in truncated output.
+Original63825's lost head prevents unique attribution;6685 supports a legitimate
+later-decay route, not a uniquely observed clock. Cause/reliability stays open.
+No main edits/browser/services, all handles terminal. No original-feature, AT,
+CI, copy/specification, archival or release approval; goal active, nothing pushed.
+
+## 2026-11-03 — Existing Buy witness native-input correction approved
+
+Review by: fresh independent Codex `/root/native_cosmetic_buy_proof_review`.
+Recorded by: Codex root. APPROVED complete one-commit/five-path corrective scope
+`ce626440a6d1a0266991c5ebae923795dcca0010..1d301497aee4cf215a29799a874ecfeab8170b26`
+(base exclusive/tip inclusive), including docs/log. Native Enter/default and
+Space/axis replace programmatic Buy. The shared trace validator requires trusted
+key/click ordering, ready focus and no drops/duplicates; the composed caller
+checks one intent, bound receipt/next Founder revision, owned focus and reload. Explicit
+focus remains setup, not a Tab-only journey or physical AT.
+
+Own declared cold Linux affected-file90997 exits0:105Chromium/Firefox/WebKit
+executions, including retained two-key positive orders and14invalid controls.
+Wrong key/focus, untrusted/duplicate/pending click, missing keyup and truncation
+reject through the actual validator. Whitespace passes. Current extra passive
+diagnostics retain their separate abd58416..0158f5a7 approval; no new RP-705 cause.
+Named peer full df531b9b/86769 run supplies real default/axis integration with
+unchanged executable source, not this reviewer's own journey or personally read
+every event in truncated output. Terminal results plus inspected fail-closed
+control flow establish completion. Original implementer runs retain provenance.
+Initial sandbox denial/approval-review timeout execute no tests; permitted run
+passes. All handles terminal, disposable network removed, main untouched. No
+original G10/AC11/AC14 construction, Pet adoption, copy/specification, feature,
+hosted-CI, archival or release approval. Full1.0 goal stays active.

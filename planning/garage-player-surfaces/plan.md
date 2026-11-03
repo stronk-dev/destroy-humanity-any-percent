@@ -14,10 +14,10 @@ that would need one is recorded as a blocker in `log.md` instead.
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
 
-1. Next corrective scope: care's actual-read-sample oracle (`e8218377`, RP-388),
-   owned by the Cosmetic plan/log. Review the exact complete range and its
-   current subject; the full current composed pass below can supply named peer
-   integration evidence, not original-failure attribution or clock-policy repair.
+1. Next corrective scope: fractional PR multiplier presentation (`00a6f43d`,
+   RP-387), owned by the Clout plan/log. Verify the actual displayed factor and
+   owned product without changing resource formatting, rates, copy or accounting.
+   Its review must not approve adjacent new PR journey construction or AC11.
 2. Then take the next still-unreviewed accepted scope; distinguish its producer,
    actual player outcome and remaining author/acceptance gates before changing code.
 3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
@@ -49,6 +49,7 @@ environment differences, exclusions and original rejected verdicts live in
 | Offer/purchase/transition pending focus (RP-319/RP-379/RP-380) | Three exact corrective ranges approved; actual duplicate-command/dual-revision/fallback controls discriminate, Manual policy RP-368 separate |
 | Bootstrap focus/live reduced motion (RP-393/RP-084) | Complete original corrections plus citation repair approved; current Node/native-input/media/Worker and Linux performance evidence, not AT/reference-hardware acceptance |
 | Native JSON failure/production-client/Pitch observers (RP-381/RP-389) | Complete three separate ranges approved; native helper negatives and full current real-service target pass; original failure attribution/reliability remains open |
+| Care actual-read oracle/native Buy proof (RP-388) | Complete corrective scopes independently approved; exact verdicts in Cosmetic log, original causes/clock/full G10 and feature gates separate |
 | Performance oracle/supplements/selector (RP-334/RP-484/RP-706) | Approved corrective scopes; full RP-333/AC7 remains open |
 
 Last complete composed execution: independent `make test-game-ui-composed` passes
