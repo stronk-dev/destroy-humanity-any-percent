@@ -8392,3 +8392,102 @@ released; no tracked reviewer writes or publication. No service/SQL/Firefox/Linu
 AT/full-GS1/CI/specification/archival/release acceptance. Root updates named
 statuses only, no suite for records; continue remaining accepted work and
 R-013 observation review without inventing a stall cause. Goal active, no push.
+
+## 2026-11-03 — R-013 bounded research-record closeout approved
+
+Review by: independent Codex `/root/fiscal_rendered_edges_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED for complete two-commit/seven-path
+`fc901f70fc0e776d405042a5e5bc5cc9dfad7fea..f5be35f6b4d6df6a866a466e2e99681a7d54140d`
+(base exclusive/tip inclusive). This is reporting/source-correspondence approval,
+not a runtime correction or independent replay of every original measurement.
+Full diff contains only research/planning records and passes whitespace checks.
+Baseline host/Fiscal/refined-driver/lock/config hashes match historical source;
+actual old Claim/immediate-outcome test supports the stated RP-352 source finding.
+
+Five completed 24-case arms remain inspected historical evidence, distinct from
+RP-351's manually stopped populations and RP-350's contaminated control. No stall
+reproduced and no cause established. Named temporary sample
+`/private/tmp/cloud-clicker-r013.tBWZ32/pending-control.sample.txt` is now absent:
+reviewer read/hash attempts return ENOENT. Its recorded digest/header/empty call
+graph are therefore NOT independently revalidated. Gone processes/denied sampling/
+empty-profile reports remain unusable for phase attribution; no cache/compiler/
+serialization/teardown/RP-348/hosted-causality inference or speculative repair.
+
+No new browser/profiler run, live handle, tracked reviewer edit or publication.
+The declared unsupported-attribution exit closes this observation wave's review,
+not RP-351 cause/reliability, any feature/CI/specification/archival/release gate.
+Root updates current research/defect/plan status only; no suite merely for records.
+Next: accepted Claim pending/removal and provisional contrast corrections' review.
+Goal active, no push.
+
+## 2026-11-03 — Claim pending/removal and provisional contrast approved
+
+Review by: independent Codex `/root/claim_pending_palette_corrective_review`.
+Recorded by: Codex root, transcribing PASS/scoped corrective approval without
+findings for complete six-commit/twelve-path range
+`f5be35f6b4d6df6a866a466e2e99681a7d54140d..85b8e8263734fb26b6d5c7d058d86f14698cf4d6`
+(base exclusive/tip inclusive). Accepted GS0.6/GS0.8/GS5 and UI C7/C9/C11 govern
+component plus two provisional-color leaves; production host is unchanged.
+All scopes/red checkpoints/tests/docs/records inspected, no invented mechanics.
+
+Exact private `/private/tmp/cloud-clicker-rp352-review.bOgrhn`, historical frozen
+lock8825a9d8…/original provider84ad06ef…/unchanged config and assertions. Private
+Make override selects the existing functional recipe, not unrelated performance.
+Native Chromium/WebKit healthy99759:40pass/650unselected. Byte-exact old component
+99052:36fail/4controls, including eight immediate BODY-versus-heading failures.
+Missing component callback guard69735:4isolated failures/36controls, actual onClaim
+calls; host queue masks its cases. Old muted89204 and danger45530 each32actual
+capped-bank axe failures/8controls, ratios4.09/4.26 versus unchanged4.5.
+Arithmetic independently verifies nearest darker values/lighter failing neighbors.
+Valid wrong receipt1e0 control33776:24fail/16controls at full credited text, no
+SyntaxError; RP-355's invalid0e0 remains excluded, not rerun as useful evidence.
+Restored Claim/primitive/theme consumers63124:52pass/650unselected; Node theme/
+Amount51460:17pass/one DOM-only skip. Exact types/build50666:zero errors/warnings,
+214modules and recorded asset identities; range whitespace passes.
+
+Four subject hashes restored to reviewed component388d35a9…/host9cb074e5…/
+driver95e0adff…/themee5874677… plus lock/provider. Initial sandbox57826 executes
+zero tests; all permitted success/fault handles terminal, lease released. No main
+reviewer writes/publication. Other original faults/broad gates inspected, not
+reexecuted. Not Firefox/Linux/hosted CI/AT/400%/real service/acquisition/payout/SQL,
+RP-313 body adoption, whole-feature/archival/release acceptance. Root updates
+named statuses and condenses duplicated plan narratives into a current queue/
+scope table; detailed evidence remains here. No software suite for record edits.
+
+## 2026-11-03 — Claim connection-state correction approved
+
+Review by: independent Codex `/root/claim_pending_palette_corrective_review`.
+Recorded by: Codex root, transcribing PASS/scoped corrective approval without
+findings for complete four-commit/eleven-path range
+`85b8e8263734fb26b6d5c7d058d86f14698cf4d6..10e2d656c149e2f5740948b0f18c5abf0c53b4e8`
+(base exclusive/tip inclusive), including final record edge. Accepted GS0.5/GS5
+owns two existing readiness/disclosure lines, no new copy/mechanics/timing/retry/
+transport policy. RP-357 guessed-key failure remains invalid; registry-bound final
+driver and all source/tests/docs/records inspected.
+
+Exact private `/private/tmp/cloud-clicker-rp356-review.pDjXiL` with same frozen
+historical lock/original provider/config. Native Chromium/WebKit healthy33776:
+40pass/690unselected,13.71s. Actual old two-line behavior71366:40fail,5.88s.
+Gate-only omission28617:40fail,8.18s. Availability specifically has eight restart/
+not-ready initial Company1 dispatch failures and twelve recovering/closed/resync
+Company2 dispatch failures only after newer snapshot while unready; disclosure
+failures are separate, not forty initial-dispatch claims. Regional-stale-only
+omission29590:20disclosure failures/20availability controls,7.76s; global text
+cannot satisfy the regional assertion. Final restored57251:80pass/650unselected,
+14.15s, including prior pending/removal/callback consumers. Exact types/build78788:
+zero errors/warnings,214modules/recorded D7RYyJ6Z UI bundle; whitespace passes.
+
+Actual350ms retention wait, committed attended-time display4→3, retained disable/
+stale after Company2/Founder8 snapshot, native fresh Company2 Claim only after
+explicit recovery execute. Not every-duration no-decay or real transport proof.
+Final host432a2799…/component6b229ec6…/driverf86ae8c2…/themee5874677… plus lock/
+provider restored exactly; all handles terminal/browser lease released. No main
+reviewer edits/publication; other nine-fault/broad historical gates inspected,
+not rerun. No service/SQL/Firefox/Linux/hosted CI/AT/400%/feature/archival/release
+approval; RP-313 and other holds remain. Next accepted review is the separate
+RP-358 Desk announcement/replay test scope, not another R-013 campaign. Goal active.
+
+Editorial reconciliation in the same batch also replaces stale acceptance-table
+buff-only/no-Lucky and two-engine-only wording with the already recorded independent
+2026-11-02 unforced Lucky journey and separate Linux Firefox actual-minute result.
+Those are reused named evidence, not new executions, full-GS5/CI or release approval.

@@ -469,4 +469,9 @@ with an explicit uninformative result; RP-351 remains OPEN, no cache/compiler/
 serialization/teardown/hosted/RP-348 cause or repair inferred. Exact evidence and
 source/lock/config/profile hashes in Garage log. Sample a proven live runner on
 a future recurrence under separately declared scope; no speculative repair or
-unbounded repeat campaign. Entire fc901f70-exclusive records span needs Claude.
+unbounded repeat campaign. Complete `fc901f70..f5be35f6` research-record range
+independently APPROVED2026-11-03 by Codex reviewer under the standing delegation;
+exact verdict in Garage log. This approves bounded reporting/source correspondence,
+not fresh execution or revalidation of all transient output. The named temporary
+sample is now absent, so its recorded digest/header/call graph cannot be independently
+checked. RP-351's cause stays open; no speculative repair or repeat campaign.

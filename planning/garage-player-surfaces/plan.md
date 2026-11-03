@@ -7,91 +7,50 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-**2026-11-03 Meters reconnect/events review:** both complete corrective scopes
-`4b2fd904..9f485993` (RP-343) and `9f485993..fbea2158` (RP-344) are independently
-APPROVED. Exact historical three-engine population54pass; old stale-note condition
-fails30 reconnect cases and forbidden global announcement fails24 event cases.
-Types/build pass. Only these repair/test scopes close; real-service recovery,
-manual AT, all-state/ID coverage and full GS3 acceptance remain separate.
+## Current queue — 2026-11-03
 
-**2026-11-03 forced-context/continuation review:** complete ranges
-`fbea2158..0e548992` and `0e548992..0e7910ed` independently APPROVED, covering
-RP-082 forced headings/removed-trigger focus and RP-345 same-Founder exact-next
-binding. Exact historical native Chromium/WebKit116pass; actual old source
-reproduces heading and foreign-Founder failures with healthy controls. Types/build
-pass. Separate RP-346/RP-347 standard-terminal/pending-focus range
-`0e7910ed..4b44a563` is also independently APPROVED: original native152pass;
-old Tab-stop, native-disable and actual duplicate-read controls fail as intended.
-RP-348 remains unexplained. These are runtime-double/native input proofs, not
-real-service, manual AT or full-feature acceptance. RP-349's test-only delayed
-Fiscal path `c24b8f6d..fc901f70` is independently APPROVED too: exact native24pass,
-wrong revision/outcome mapping/delayed focus faults each24fail; types0/0. Its
-invalid/incomplete historic probes remain excluded. Next corrective review:
-R-013's separate `fc901f70..f5be35f6` observation, not a production stall fix;
-RP-351's historical cause remains open.
+Continue accepted construction and corrective review; do not repeat green populations
+or expand an uninformative diagnosis into another research campaign.
 
-**2026-11-03 shared-state/Fiscal review:** initial reviews of complete shared-host/consumer range
-`0fe2f57c..a551d3c2` and Fiscal edge range `57efdc39..3609e776` received
-CHANGES REQUIRED for distinct ancestor-opacity oracle gaps RP-708/RP-709, not
-new production defects. One corrected shared assertion now serves both, with
-actual mounted zero/partial/restored-opacity controls. Old checks fail six/twelve
-new regressions; corrected six-file consumers1116pass and final Fiscal147pass,
-types0/0. Shared host/consumer original and eight-path correction are now
-independently APPROVED: exact final1116pass/zero skips and old-helper6/6 failures.
-The separate Fiscal original range plus correction is also independently APPROVED:
-exact corrected edges12pass; restoring only the old adapter fails all12. The reviewer
-independently checks peer1116/1116 counts; types0/0. Original findings remain recorded.
-The owning log preserves the interrupted review run and environment limits.
-RP-336, first-read policy, full AT/integration/feature/release gates remain separate.
+1. Review the separate Desk announcement/replay test scope `10e2d656..69c4f972`
+   (RP-358), including its final record edge. It is not a production repair.
+2. Then take the next still-unreviewed accepted scope; distinguish its producer,
+   actual player outcome and remaining author/acceptance gates before changing code.
+3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
+   profile is now absent and cannot be independently revalidated. No stall repair
+   or cache/compiler/hosted-causality claim follows.
 
-**2026-11-03 native navigation review:** RP-338's complete
-`85fdcfdf..0fe2f57c` is independently APPROVED. Exact historical frozen native
-macOS WebKit reproduces twelve old Tab failures/Chromium controls; reviewed
-attributes pass the same24 cases. Linux286 passes, but old navigation also passes
-there and is not a discriminator. The owning log preserves that platform limit,
-all setup failures and full-range provenance. No full keyboard/AT acceptance.
+### Corrective closeout
 
-**2026-11-03 paired-layout review:** complete `54c8c8da..57efdc39` receives
-CHANGES REQUIRED for RP-707: an opacity0 generator card survives the visibility
-oracle in both historical and committed-current source. The bounded test-only
-correction now checks ancestor opacity and retains a mounted-card negative plus
-partial/restored positives. Old helper fails all three engines; corrected full
-feedback file passes153/153 and types0/0. Independent re-review of original plus
-correction now APPROVES the exact union `54c8c8da..57efdc39` and
-`a5b74554..0bae2241`, retaining the original CHANGES REQUIRED record. Reviewer
-independently passes153/153 and makes only the old helper fail all three engines.
-No product visibility bug or full acceptance claimed.
+These are independent **scoped** approvals, not whole-feature acceptance. Exact
+base-exclusive/tip-inclusive ranges, reviewer provenance, executed regressions,
+environment differences, exclusions and original rejected verdicts live in
+[the owning log](log.md), not a second narrative here.
 
-**2026-11-03 source-guard review:** RP-335's complete `d3ce0f76..54c8c8da`
-correction is independently APPROVED. Exact historical-source gate, private
-old/corrected fake-button controls, actual authority/policy faults, types/vet and
-cold cosmetic tests execute; two SQL cases skip explicitly. The owning log records
-scope/provenance. This source check is not arbitrary dataflow or runtime/Shop acceptance.
-RP-337's separate complete `3609e776..85fdcfdf` score-versus-Clout guard is also
-independently APPROVED, with old binding/copy survivors and corrected actual-source
-failures reproduced privately. Canonical source/era copy and legitimate separate
-Clout remain distinct. Neither guard completes player-workflow acceptance.
+| Scope | Current disposition |
+|---|---|
+| Meter completeness/layout and contained errors (RP-329/RP-330/RP-332) | Approved; persisted workflow/AT gates separate |
+| Source guards (RP-335/RP-337) | Approved; bounded source checks, not arbitrary runtime/dataflow proof |
+| Native nav and shared states (RP-338–341) | Approved; native/Linux distinctions and controlled-race limits retained |
+| Desk/shared/Fiscal visibility oracles (RP-707–709) | Original plus corrections approved; original CHANGES REQUIRED retained |
+| Meters recovery/events (RP-343/RP-344) | Approved; runtime-double fixtures, not real transport recovery |
+| Forced context/continuation (RP-082/RP-345–347) | Approved; not physical AT or natural ending reachability |
+| Delayed Fiscal path (RP-349) | Approved; invalid/incomplete RP-350/RP-351 controls excluded |
+| R-013 stall observation | Research-record closeout approved; cause unresolved and transient sample unavailable |
+| Claim pending/removal and provisional contrast (RP-352–355) | Approved; isolated callback/actual axe/valid-credit controls executed |
+| Claim connection state (RP-356/RP-357) | Approved through final record edge; regional disclosure and readiness independently discriminate |
+| Performance oracle/supplements/selector (RP-334/RP-484/RP-706) | Approved corrective scopes; full RP-333/AC7 remains open |
 
-**2026-11-03 performance review:** the initial RP-334 oracle correction is
-independently APPROVED for complete `127eb052..d3ce0f76`. Native Chromium passes
-all five current scenarios at unchanged bounds; later population extensions are
-not included in that initial verdict. Their separate consolidated
-`e0cb9187..da3a922d` range is now independently APPROVED: exact historical Linux
-five-case baseline/restored pass and21 intended fault failures/eight controls.
-This includes RP-484's title/badge census and RP-333's later/catalog populations,
-not full AC7 or earned/minted states. The attempted Linux performance-only command is
-rejected before tests (RP-706). CI's separate58c0264a..7b74bc74 scoped selector
-correction is now independently approved, with actual Linux five-scenario passes.
-Full RP-333/AC7, actual elapsed/manual profile, AT and release remain open.
+Last complete composed execution: `make test-game-ui-composed` passes at `7f540859`
+(kernel 0.3.223), with real Postgres and production builds. Its controlled Garden/
+Tier2 setup is not natural pacing, Headcount or exact-release proof. RP-132/RP-313/
+RP-336 body holds, first-read/renewal policy, shared clock, actual AT, full AC7,
+content, remaining integration/review and release-artifact gates remain separate.
 
-**Integrated verification, 2026-11-01:** complete existing
-`make test-game-ui-composed` PASS at `7f540859` (kernel0.3.223). Main endings/
-continuation and process-loss recovery, Cosmetic/Reputation/Clout, payment-path
-negatives, controlled Garden and cash-fixture Tier2 all execute against fresh
-production client/server builds and real Postgres. The owning log records exact
-boundaries and limitations. No new feature/review/content/CI/release approval;
-natural pacing, Headcount, shared-clock, accessibility and release-artifact gates
-remain. Continue accepted construction and outstanding corrective review.
+## Historical checkpoints and implementation inventory
+
+Older "next"/"pending" statements below describe their recorded coordinate, not
+the current queue. Use the current queue above and exact verdicts in the log.
 
 2026-10-15 fresh independent corrective review APPROVES complete RP-318/RP-419,
 RP-440/RP-441 and RP-442 ranges. Full hashes and executed native/Linux/Node and real
