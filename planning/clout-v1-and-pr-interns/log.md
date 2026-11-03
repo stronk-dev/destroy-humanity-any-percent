@@ -9437,3 +9437,40 @@ main untouched, lease released. Only these corrective/test scopes close, not
 original P5/CV9/AC11, natural pacing, accounting, authored content, AT, hosted CI,
 archival or release. Next consolidated API catalog-admission review is separate;
 full nine-tier goal active, no push.
+
+## 2026-11-04 — Research observer correction and delegated wording approved
+
+Review by: fresh independent Codex `/root/clout_provenance_wording_review`.
+Recorded by: Codex root. Two separate APPROVED scopes, no blocking findings:
+
+1. RP-382, complete nine-path test/record range, base exclusive/tip inclusive:
+   `cd0c85812c269efc9a9eaf7d1ecb6050c6f5cec4..73e1c9da4b66ab81860bbaa0196080b9b68d4bd4`.
+   Helper reports source-only drift, validates identical source populations/canonical
+   digests, compares every other byte exactly and restores the actual source map.
+   SQL environment provenance remains separate; no historical artifact rewrite.
+2. RP-308, complete seven-path delegated wording range:
+   `fdb9a79df369d47056d3713afc9a076a1d85280a..7eb64e3765747aec9a5a5b2dd142ee571dbf138e`.
+   CV3/AC6 and corresponding draft interval clauses/records faithfully preserve the
+   received24h/90%/banking/separate-visit delegation and no extra payment from cuts/
+   display reads. Original128cases/exact comparisons/27failures remain explicit.
+   This does NOT adopt the whole conservation draft, origin/episode/settlement/save
+   contract, algorithm or implementation. No extra wording adoption is requested.
+
+Own independent cold native91849 and declared Postgres79446 terminate0; vet and
+exact range whitespace pass. Executed ten comparator plus3malformed-artifact
+controls,6activation and16action sequences/136attempts/48refusals. Actual SQL
+executes1215complete rows: strict reader refuses1215 and logical restoration
+preserves1215, plus16SQL negatives. These historical negative outcomes are
+preserved, NOT a repaired strict-reader or numeric acceptance claim. PG16.15,
+Linux/amd64 under ARM64 host; no SQL skip. Current runs explicitly report changed
+source paths while all non-provenance outcomes agree; helper/three callers remain
+identical to reviewed tip. Old all-byte false failures are retained evidence,
+not freshly rerun. No fresh TS/browser/full Production/hosted execution.
+
+All handles terminal. Only newly created disposable tmpfs Postgres container and
+confirmed-empty new network removed; caches untouched, no tracked reviewer edits
+or commits. Source point `e5699e30`; root's subsequent `446b8d6b` changes only two
+planning records, not executable evidence. These approvals close only the named
+observer/wording obligations; accounting/search adoption,27failures/history guard,
+original feature/content/archival/release remain open. Continue safe accepted
+work without repeating completed observers or treating wording as a numeric fix.

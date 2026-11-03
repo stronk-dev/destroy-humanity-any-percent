@@ -6,6 +6,17 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+## Observer and delegated-wording review — 2026-11-04
+
+RP-382's complete test-only observer correction `cd0c8581..73e1c9da` and
+RP-308's complete delegated wording reconciliation `fdb9a79d..7eb64e37` now have
+separate independent approvals. The owning log holds exact ranges/provenance,
+fresh native/Postgres checks and preserved negative research results. Internal
+cuts do not create extra payments;24h/90%/banking/separate visits stay intact.
+This closes those review obligations, not accounting/search draft adoption,
+the original27 failures, feature acceptance or release. Do not restart their
+older pending-review notes as current work.
+
 ## UI corrective checkpoint — 2026-11-03
 
 Fractional factor/product display (RP-387) and actual purchase-card progress/

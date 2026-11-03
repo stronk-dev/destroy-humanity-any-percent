@@ -376,7 +376,8 @@ Marco explicitly selected "Delegate that reconciliation (recommended)" on
 2026-10-15, answering the question preserving the existing24h cap,90% rate,
 banking and separate-return-visit behavior and excluding extra saved payments
 from internal calculations/display reads. Codex reconciles CV3/AC6 under that
-narrow author delegation; designated normative review remains pending. This
+narrow author delegation; complete `fdb9a79d..7eb64e37` receives independent
+wording-fidelity approval2026-11-04 (Clout owning log). This
 resolves permission to reconcile the wording, not the accounting algorithm,
 exact episode identity, origin lifetime or any new save/receipt contract.
 Canonical home:Clout CV3/AC6 and its owning plan/log, linked to the still-draft
