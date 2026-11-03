@@ -8102,3 +8102,31 @@ private archive retained. No original-feature approval, every conditional nav/
 state, Firefox, actual zoom/AT, persisted acquisition, full CI, archival or release
 acceptance. Root updates named current statuses only; no suite for these records.
 Separate RP-707 correction is under re-review, not covered by this verdict.
+
+## 2026-11-03 — RP-707 re-review APPROVED, original verdict preserved
+
+Review by: independent Codex `/root/narrow_desk_measurement_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED for the complete union (base
+exclusive, tip inclusive): original
+`54c8c8dac126d7e072974ae192078b90da5ae94f..57efdc398aaaa4f3fb22a420ae8997830e6d56c8`
+and six-path correction
+`a5b7455491a7db16bc7a084d84eec8a5af83d10c..0bae2241e8d6fc315c6c78215bd8fc6a474c33a9`.
+No intervening work or other feature gate is included. Original CHANGES REQUIRED
+and its historical/current survivors remain above, not rewritten as approval.
+
+Exact corrected private archive full feedback file45140 exits0:153/153 across
+Linux Chromium/Firefox/WebKit,9.67s,HTTP153 terminal/zero pending. Old-helper-only
+private replacement96052 exits2:three missing-throw failures/150 exclusions after
+both paired observations complete. Corrected driver restored to SHA256
+687d923cbef21baab8f491faee03c7ad130dbd53f491304a5113f8d5e6b9ae5c.
+Independent typecheck5249 passes0errors/0warnings; correction whitespace passes.
+Declared cold/frozen Compose setup is unchanged; only private archive workspace
+bind differs. Earlier independent historical healthy/opacity-survivor/width
+results remain part of this review. No main-tree reviewer changes, browser
+sessions terminal and slot released.
+
+This resolves RP-707's bounded oracle defect: required-content ancestor opacity,
+actual mounted-card negative and partial/restored positives with finally cleanup,
+all prior assertions retained. Not general occlusion, actual zoom/AT, service
+integration, whole Garage/CI, archival or release approval. Root reconciles current
+statuses only; no suite for records. Full nine-tier1.0 goal remains active.

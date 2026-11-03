@@ -20,7 +20,10 @@ oracle in both historical and committed-current source. The bounded test-only
 correction now checks ancestor opacity and retains a mounted-card negative plus
 partial/restored positives. Old helper fails all three engines; corrected full
 feedback file passes153/153 and types0/0. Independent re-review of original plus
-correction remains required; no product visibility bug or full acceptance claimed.
+correction now APPROVES the exact union `54c8c8da..57efdc39` and
+`a5b74554..0bae2241`, retaining the original CHANGES REQUIRED record. Reviewer
+independently passes153/153 and makes only the old helper fail all three engines.
+No product visibility bug or full acceptance claimed.
 
 **2026-11-03 source-guard review:** RP-335's complete `d3ce0f76..54c8c8da`
 correction is independently APPROVED. Exact historical-source gate, private
