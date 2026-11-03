@@ -547,9 +547,12 @@ remain separate. No lifecycle promotion or new specification adoption.
   derivation/representation gap. RP-329's complete `5fbf4cff..bddfc58e` correction
   and RP-532's complete `4eaed0c9..61b145af` guard are independently corrective-approved;
   exact provenance and fresh executed checks are in the 2026-11-03 owning log.
-  The three SQL tests explicitly skipped in these native reviews; later ordinary
-  real journeys do not prove oversized Fiscal fixtures. Add the persisted projection
-  safety population separately. RP-533's kernel-owner/greater-value closure and
+  The three SQL tests explicitly skipped in those native reviews. A separate
+  test-only supplement now runs all three against declared Postgres, including
+  eleven Fiscal cases (seven persisted hoard boundaries). Its private guard-removal
+  overlay fails exactly three refusals while preserving four controls. The new
+  range after `1667a10f` awaits independent corrective review; it is not a larger-value
+  representation or a browser/HTTP timing proof. RP-533's kernel-owner closure and
   full GS0.1/feature/CI/release acceptance stay open.
 - [x] GS3 Meters arm + surface.
   Original surface batch `acf43132^..acf43132`, all22 paths, has designated Codex

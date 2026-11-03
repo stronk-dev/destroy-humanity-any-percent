@@ -4,20 +4,26 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"maps"
 	"os"
 	"reflect"
 	"testing"
 	"time"
 
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/save"
 )
 
 // GS1-A1: project a persisted Founder, harvest through the production service,
-// and reload the actual receipt/state. No substituted catalog or frozen clock.
+// and reload the actual receipt/state on the live clock. Additional RP-532
+// cases persist explicitly altered, strictly loaded fixture catalogs to check
+// wire-boundary refusal; they are not minted content or natural acquisition.
 func TestFiscalProjectionMatchesPersistedHarvestIntegration(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
@@ -84,7 +90,7 @@ func TestFiscalProjectionMatchesPersistedHarvestIntegration(t *testing.T) {
 	recordedRows := func(t *testing.T) map[string]string {
 		t.Helper()
 		rows := map[string]string{}
-		for _, table := range []string{"save_streams", "save_revisions", "events", "founder_genesis", "founder_log", "intent_records", "transport_player_outbox", "verification_queue"} {
+		for _, table := range []string{"save_streams", "save_revisions", "events", "run_epochs", "run_genesis", "run_frozen_contributions", "run_log", "founder_genesis", "founder_log", "intent_records", "transport_player_outbox", "verification_queue"} {
 			query := fmt.Sprintf(`SELECT coalesce(jsonb_agg(to_jsonb(row) ORDER BY to_jsonb(row)::text),'[]'::jsonb)::text FROM %s row`, table)
 			var value string
 			if err := db.QueryRowContext(ctx, query).Scan(&value); err != nil {
@@ -94,23 +100,113 @@ func TestFiscalProjectionMatchesPersistedHarvestIntegration(t *testing.T) {
 		}
 		return rows
 	}
-	cap, yield, autoMS := bundle.Fiscal.Credit.Hardcap, bundle.Fiscal.Credit.CreditPerPeriod, bundle.Fiscal.Clock.AutoMS
 	for index, row := range []struct {
-		name      string
-		credit    int64
-		saturates bool
+		name                     string
+		credit                   int64
+		saturates                bool
+		hoardCap, hoardPPM       int64
+		periods, expectedPreview int64
+		refuse                   bool
 	}{
-		{"normal-live-clock", 4, false},
-		{"overdue-from-low-credit", 4, true},
-		{"overdue-one-below-cap", cap - 1, true},
-		{"overdue-at-cap", cap, true},
+		{name: "normal-live-clock", credit: 4},
+		{name: "overdue-from-low-credit", credit: 4, saturates: true},
+		{name: "overdue-one-below-cap", credit: bundle.Fiscal.Credit.Hardcap - 1, saturates: true},
+		{name: "overdue-at-cap", credit: bundle.Fiscal.Credit.Hardcap, saturates: true},
+		{name: "persisted-last-exact-product", credit: 9_007_199_254, hoardCap: decimal.MaxExactInteger, hoardPPM: 1_000_000, expectedPreview: 9_007_199_254_000_000},
+		{name: "persisted-next-product-refused", credit: 9_007_199_255, hoardCap: decimal.MaxExactInteger, hoardPPM: 1_000_000, refuse: true},
+		{name: "persisted-int64-wrap-refused", credit: 18_446_744_073_710, hoardCap: decimal.MaxExactInteger, hoardPPM: 1_000_000, refuse: true},
+		{name: "persisted-exact-integer-ceiling", credit: decimal.MaxExactInteger, hoardCap: decimal.MaxExactInteger, hoardPPM: 1, expectedPreview: decimal.MaxExactInteger},
+		{name: "persisted-cap-before-product", credit: 18_446_744_073_710, hoardCap: 100, hoardPPM: 1_000_000, expectedPreview: 100_000_000},
+		{name: "persisted-zero-credit", hoardCap: decimal.MaxExactInteger, hoardPPM: 1_000_000},
+		{name: "persisted-discarded-sweep-refused", credit: 9_007_199_254, hoardCap: decimal.MaxExactInteger, hoardPPM: 1_000_000, periods: 1, refuse: true},
 	} {
 		t.Run(row.name, func(t *testing.T) {
+			bundle := bundle
+			if row.hoardPPM != 0 {
+				// Derive a complete new identity from original artifact bytes;
+				// do not relabel the base hash or replace its registered bundle.
+				artifacts := maps.Clone(bundle.Artifacts)
+				var root map[string]json.RawMessage
+				if err := json.Unmarshal(artifacts["fiscal"], &root); err != nil {
+					t.Fatal(err)
+				}
+				for key, changes := range map[string]map[string]int64{
+					"credit_policy": {"hardcap": decimal.MaxExactInteger},
+					"hoard_policy":  {"cap_credits": row.hoardCap, "ppm_per_credit": row.hoardPPM},
+				} {
+					var policy map[string]json.RawMessage
+					if err := json.Unmarshal(root[key], &policy); err != nil {
+						t.Fatal(err)
+					}
+					for name, value := range changes {
+						policy[name] = json.RawMessage(fmt.Sprint(value))
+					}
+					root[key], err = json.Marshal(policy)
+					if err != nil {
+						t.Fatal(err)
+					}
+				}
+				artifacts["fiscal"], err = json.Marshal(root)
+				if err != nil {
+					t.Fatal(err)
+				}
+				hash, err := save.ConstantsHashArtifacts(artifacts)
+				if err != nil {
+					t.Fatal(err)
+				}
+				bundle, err = replaycatalog.Load(hash, artifacts)
+				if err != nil {
+					t.Fatalf("complete fixture bundle refused: %v", err)
+				}
+				if _, registered := catalogs.ReplayCatalogSet[hash]; !registered {
+					if _, err := db.ExecContext(ctx, `INSERT INTO catalog_sets(constants_hash) VALUES($1)`, hash); err != nil {
+						t.Fatal(err)
+					}
+					for name, data := range artifacts {
+						if _, err := db.ExecContext(ctx, `INSERT INTO catalog_artifacts(constants_hash,artifact_name,bytes) VALUES($1,$2,$3)`, hash, name, data); err != nil {
+							t.Fatal(err)
+						}
+					}
+					if _, err := db.ExecContext(ctx, `INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, epochID, hash); err != nil {
+						t.Fatal(err)
+					}
+					stored, err := db.QueryContext(ctx, `SELECT artifact_name,bytes FROM catalog_artifacts WHERE constants_hash=$1`, hash)
+					if err != nil {
+						t.Fatal(err)
+					}
+					persistedArtifacts := map[string][]byte{}
+					for stored.Next() {
+						var name string
+						var data []byte
+						if err := stored.Scan(&name, &data); err != nil {
+							_ = stored.Close()
+							t.Fatal(err)
+						}
+						persistedArtifacts[name] = data
+					}
+					if err := stored.Err(); err != nil {
+						_ = stored.Close()
+						t.Fatal(err)
+					}
+					if err := stored.Close(); err != nil {
+						t.Fatal(err)
+					}
+					bundle, err = replaycatalog.Load(hash, persistedArtifacts)
+					if err != nil {
+						t.Fatalf("persisted bundle identity/admission failed: %v", err)
+					}
+					catalogs.ReplayCatalogSet[hash] = bundle
+				}
+			}
+			cap, yield, autoMS := bundle.Fiscal.Credit.Hardcap, bundle.Fiscal.Credit.CreditPerPeriod, bundle.Fiscal.Clock.AutoMS
 			_, company, founder, _ := reputationProjectionSource(t)
 			now := databaseNow(t)
 			founder.EvaluatedThrough, founder.ManualTokenRefilledAt = now, now
 			founder.FiscalCredit, founder.FiscalPeriodSequence = row.credit, 17
 			ageMS := 2*autoMS + autoMS/2
+			if row.hoardPPM != 0 {
+				ageMS = row.periods*autoMS + autoMS/2
+			}
 			if row.saturates {
 				// The same credit outcome on either side of a real 300 ms
 				// boundary; periods still have to match each actual timestamp.
@@ -163,7 +259,23 @@ func TestFiscalProjectionMatchesPersistedHarvestIntegration(t *testing.T) {
 			}
 			beforeRead := recordedRows(t)
 			projectionTime := databaseNow(t)
+			if row.hoardPPM != 0 {
+				// Fix the requested boundary to this row's actual DB-clock sample,
+				// not how quickly the fixture writes finish. Ordinary harvest cases
+				// above still sample the live read/command clocks independently.
+				projectionTime = now
+			}
 			raw, err := projector.GameUISnapshot(ctx, player.StreamID, projectionTime)
+			if !reflect.DeepEqual(beforeRead, recordedRows(t)) {
+				t.Fatal("Fiscal projection mutated persisted state/history")
+			}
+			if row.refuse {
+				if !errors.Is(err, ErrInvalidProjection) || raw != nil {
+					t.Fatalf("persisted unsafe preview escaped: returned_bytes=%d err=%v", len(raw), err)
+				}
+				t.Log("persisted admitted fixture refused without snapshot bytes or state/history writes")
+				return
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -171,12 +283,16 @@ func TestFiscalProjectionMatchesPersistedHarvestIntegration(t *testing.T) {
 			if err := json.Unmarshal(raw, &view); err != nil {
 				t.Fatal(err)
 			}
-			if !reflect.DeepEqual(beforeRead, recordedRows(t)) {
-				t.Fatal("Fiscal projection mutated persisted state/history")
-			}
 			arm := view.Features.Fiscal
 			if arm == nil || arm.Credit != row.credit || view.FounderRevision != owner.Number || view.Revision != player.Number || view.ServerNowMS != projectionTime.UnixMilli() {
 				t.Fatalf("wrong persisted Fiscal arm/coordinates: %s", raw)
+			}
+			if row.hoardPPM != 0 {
+				if view.ConstantsHash != bundle.ConstantsHash || arm.Hoard.PreviewPPM != row.expectedPreview {
+					t.Fatalf("persisted exact preview=%+v hash=%s want ppm=%d hash=%s", arm.Hoard, view.ConstantsHash, row.expectedPreview, bundle.ConstantsHash)
+				}
+				t.Logf("persisted exact preview=%d, matching bundle and Founder/Company revisions, no writes", arm.Hoard.PreviewPPM)
+				return
 			}
 			// Independent arithmetic, not a second call to the implementation's Sweep.
 			periods := (view.ServerNowMS - founder.FiscalPeriodOpenedWallMS) / autoMS

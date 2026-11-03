@@ -7753,3 +7753,57 @@ the existing safe-wire/read-only contract,not a wider-value representation chang
 Reviewers make no tracked edits/mutations/commits or publication; all handles
 terminal. Record-only diff/claims checked; no suite merely for this transcription.
 Full1.0 goal stays active; nothing pushed.
+
+## 2026-11-03 — Persisted Fiscal hoard-boundary safety witness
+
+Outcome under accepted GS0.1/GS1 and RP-532's existing safe-wire/read-only
+contract: extend the existing Fiscal Postgres witness, not production behavior.
+Keep all four live-clock harvest/receipt cases and add seven explicit fixture
+boundaries: last exact product,next unsafe product,int64 wrap,exact integer ceiling,
+cap-before-product,zero credit,and discarded sweep crossing the wire limit.
+Each complete altered artifact set receives its actual new constants hash, is
+strictly loaded, stored in catalog_artifacts, reloaded from DB and strictly loaded
+again before projector resolution. Real saved Founder/Company streams and pinned
+genesis/frozen rows are used. Exact values and revisions/hash bind on success;
+refusal requires nil snapshot bytes/ErrInvalidProjection. Twelve complete
+state/history table snapshots must remain unchanged for both outcomes.
+
+The seven new boundary cases project at their explicitly sampled DB-clock
+coordinate so fixture-write latency cannot move an intended zero/one-period case.
+The four original cases still independently sample live read and command clocks;
+their ordinary harvest/state/receipt assertions are retained. No clock policy,
+real delay, balance/catalog file, kernel, API, runtime or CI source is changed.
+These are deliberately granted states/altered fixture policies, not natural
+acquisition, a product mint, HTTP failure containment or a browser journey.
+
+First focused declared-Postgres run44931 passes all eleven Fiscal cases1.674s.
+After DB-byte reload/time-coordinate refinement, all three GameUI integration
+parents pass43148/1.963s. Final same root command
+`make test-save-integration SAVE_TEST_PACKAGES='./gameui' SAVE_TEST_FLAGS='-run Integration -v'`
+27902 passes all three, Fiscal11/11,1.703s. Root native GameUI tests/vet19139
+pass; native focused35308 explicitly skips without TEST_DATABASE_URL and is NOT
+DB proof. Formatting/whitespace/source diff checked; no unrelated TS/browser suite.
+
+One private compiler overlay removes only the guard and its now-unused Decimal
+import from a copy, leaving the tracked production file untouched. Actual root
+Make with `SAVE_TEST_FLAGS='-overlay=/workspace/.cache/fiscal-hoard-projection-overlay.json -run TestFiscalProjectionMatchesPersistedHarvestIntegration/persisted -v'`
+22187 exits2: exactly the three unsafe SQL populations fail, four controls pass.
+All reads still preserve the twelve tables. Initial overlay85913 fails compilation
+at the unused import, zero behavioral credit. Its corrected run's large fixture
+failure payload is tool-truncated but all named subcase outcomes/terminal summary
+remain; final failure formatting reports only returned-byte length/error, not
+the whole snapshot. Assertions unchanged. No probe bypasses the actual DB/projector.
+Ignored probe/overlay remain locally for review; SHA256 respectively
+00828ea5915ed7fd3c757b97334f26e44f2aef0d50e378ecb40ad1143569d5e1 and
+695a37df180ff07411bcd77fddaf2b0c8e38b452f85e9c22cea3867b03fc4f13.
+Production features.go remains byte-identical to HEAD, SHA256
+1fb85219508105ec8c1c88bf9a9fc66b269155dda62f9fee1ff74809279a8f45.
+
+All handles terminal. The declared save-test service was absent before this work;
+root removes only its newly created tmpfs Postgres container after tests (temporary
+rows unrecoverable), verifies empty inventory and preserves cache volumes/user data.
+Review by: Codex root, test implementer first filter only. Recorded by: Codex root.
+New tests/docs/records after `1667a10f` through this containing commit need
+independent corrective review. Prior guard approval is not that verdict. RP-533,
+original feature/AT/full CI/release gates remain; continue accepted work. Goal active,
+no archival, adoption, push or deployment.

@@ -787,6 +787,14 @@ small-looking value. Existing representable values, balances and sweep semantics
 unchanged. The client independently rejects out-of-domain numeric fields but cannot
 recognize a wrapped value that already looks like a valid integer.
 
+`TestFiscalProjectionMatchesPersistedHarvestIntegration` also persists seven explicit
+hoard-boundary fixtures, reloads their exact catalog bytes from Postgres through the strict
+bundle loader, and projects actual saved Founder/Company streams. Three unsafe products
+refuse with no snapshot bytes; four exact/capped/zero controls retain their expected values.
+The reads preserve twelve state/history tables. These added cases use an explicitly sampled
+DB-time coordinate, not a natural player acquisition or HTTP/browser timing claim. The original
+four live-clock preview/harvest/receipt cases remain separate within the same test.
+
 This safety check does not provide a kernel-owned hoard preview getter or a larger-value
 wire representation. Those remain specification/integration work (RP-533), not a promise
 that every kernel-admitted future catalog has a renderable Fiscal arm.
