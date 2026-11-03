@@ -14,10 +14,11 @@ that would need one is recorded as a blocker in `log.md` instead.
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
 
-1. Complete independent corrective review of native bootstrap focus and live
-   reduced motion (`7888fcdc`, `9d4295fe`, citation correction `3d1171b3`).
-   Source review and affected Node checks are underway; actual media/Worker and
-   presentation-performance boundaries remain distinct from physical AT.
+1. Take the remaining runtime/composed corrections next: native JSON-error
+   identity (`cd0c8581`), production-client byte/Worker proof (`d717e590`) and
+   Pitch preemption observers (`fa985870`, `a7f8f54a`). Keep their exact ranges
+   separate from intervening API/Clout/Cosmetic work; reuse already executed
+   service evidence with its original source and attribution.
 2. Then take the next still-unreviewed accepted scope; distinguish its producer,
    actual player outcome and remaining author/acceptance gates before changing code.
 3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
@@ -47,6 +48,7 @@ environment differences, exclusions and original rejected verdicts live in
 | Four-effect presentation/unknown refusal (RP-359/RP-360) | Scoped approval69c4f972..bbee9805; actual unknown-copy/wrong-scope controls discriminate |
 | Historical composed-execution record (RP-361) | Approved bbee9805..1d623dde; source correspondence checked, transient historical execution not independently replayed |
 | Offer/purchase/transition pending focus (RP-319/RP-379/RP-380) | Three exact corrective ranges approved; actual duplicate-command/dual-revision/fallback controls discriminate, Manual policy RP-368 separate |
+| Bootstrap focus/live reduced motion (RP-393/RP-084) | Complete original corrections plus citation repair approved; current Node/native-input/media/Worker and Linux performance evidence, not AT/reference-hardware acceptance |
 | Performance oracle/supplements/selector (RP-334/RP-484/RP-706) | Approved corrective scopes; full RP-333/AC7 remains open |
 
 Last complete composed execution: `make test-game-ui-composed` passes at `7f540859`

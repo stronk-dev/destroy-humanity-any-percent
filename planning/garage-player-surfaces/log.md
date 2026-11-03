@@ -8658,3 +8658,38 @@ proofs reused at their original coordinates/limits; no new composed execution.
 Only these corrective scopes leave review debt, not original feature/copy/spec/
 AT/CI/archival/release acceptance. Next: independently review accepted bootstrap/
 reduced-motion corrections. Full nine-tier goal stays active, no push.
+
+## 2026-11-03 — Bootstrap and live reduced-motion corrective review approved
+
+Review by: fresh independent Codex `/root/bootstrap_motion_corrective_review`.
+Recorded by: Codex root. No findings; APPROVED complete base-exclusive/tip-inclusive
+RP-393 `e8218377b2472b408a14edb082372e2caabe0c58..7888fcdc5628aaec3c46b080f66008f0724fdadb`
+(seven paths) and RP-084
+`7888fcdc5628aaec3c46b080f66008f0724fdadb..3d1171b3b9c12a3663b39aeceef0ac91cde183b3`
+(two commits/eleven paths including final citation correction). Complete diffs,
+contracts and records inspected; later host-disposal/diagnostic corrections keep
+their separate review provenance.
+
+Own executed checks: Shell/runtime91 and Game UI100 Node cases pass; current
+driver syntax and both diff checks pass. Declared cold/frozen Linux performance
+target84810 exits0:five Chromium cases pass/107functional exclusions,9.60s;
+unchanged ten-minute containment. Initial sandbox Docker denial executes no tests.
+This accelerated-snapshot population is not the manual60-second/4x reference-
+hardware or full performance acceptance. Original59668 raw profiles unavailable;
+their historical passing record is not independently revalidated.
+
+Reused PEER execution, not this reviewer's own browser run:
+`/root/claim_pending_palette_corrective_review` at exactd7eed2a3, current frozen
+Linux Chromium/Firefox/WebKit321PASS/15performance exclusions, including native
+Vision and real Worker/media reduce→normal→reduce; types0/0 and build217modules.
+That peer's later native boundary pass is NOT root execution; its container's
+GoENOENT remains distinct. Current host/test/lock hashes match that coordinate;
+Shell display/controller/bridge are byte-identical to RP-084 tip.
+
+Historical old-source focus/cadence failures, corrected controls and composed
+42217/81031/7f540859 remain attributed original executions, not newly reconstructed
+history or another journey. No source mutations/main reviewer edits; all handles
+terminal, Compose inventory empty, lease released. Only scoped correction review
+closes; physical AT, first-read/renewal, copy/spec/feature/CI/archival/release gates
+remain. Next: runtime parse-failure and composed-observer corrections, with their
+actual subjects and already recorded real-boundary evidence. Goal active, no push.
