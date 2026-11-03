@@ -432,7 +432,7 @@ isolated performance target through the shared frozen Linux browser setup. Actua
 cold container execution passes five Chromium scenarios; the existing focused
 functional route also passes 300 selected tests across all three engines. Topology
 regressions retain the full default and refuse setup/dispatch drift. This is a
-scoped tooling correction awaiting independent review, not full CI or AC7 closure;
+scoped tooling correction independently APPROVED58c0264a..7b74bc74, not full CI or AC7 closure;
 exact commands, regression and range are in the latest owning log.
 
 Focused Linux browser verification now has a root command:

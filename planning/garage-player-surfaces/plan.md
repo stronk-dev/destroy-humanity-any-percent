@@ -11,7 +11,8 @@ that would need one is recorded as a blocker in `log.md` instead.
 independently APPROVED for complete `127eb052..d3ce0f76`. Native Chromium passes
 all five current scenarios at unchanged bounds; later population extensions are
 context, not included approval. The attempted Linux performance-only command is
-rejected before tests (RP-706); CI's owning lane will add a scoped runner selector.
+rejected before tests (RP-706). CI's separate58c0264a..7b74bc74 scoped selector
+correction is now independently approved, with actual Linux five-scenario passes.
 Full RP-333/AC7, actual elapsed/manual profile, AT and release remain open.
 
 **Integrated verification, 2026-11-01:** complete existing

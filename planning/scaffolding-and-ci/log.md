@@ -4412,3 +4412,27 @@ The complete eight-path tooling/docs/record batch after
 corrective review. RP-706 is corrected locally, not self-approved. Next: independent
 review of this exact range; preserve the separate original performance-oracle
 approval and broader open performance/CI/release gates.
+
+## 2026-11-03 — RP-706 corrective review APPROVED
+
+Review by: fresh independent Codex `/root/linux_performance_selector_review`.
+Recorded by: Codex root, transcribing its actual APPROVED verdict, no findings.
+Complete eight-path range
+`58c0264acc1c06f78f2caf809566e47433ad89ef..7b74bc74ff43066062c605eb372535fe1a621be2`
+(base exclusive, tip inclusive), including the final batch records.
+
+Reviewer independently executes the old entrypoint extracted from the base:
+performance target exits2 before setup. `make verify-ci-topology` passes27
+primary negatives plus default/dispatch and real-script success/failure controls.
+Actual `make test-game-ui-performance-ci` exits0:five Chromium cases pass,
+107 unselected,7.55s. Existing `make test-browser-ci-focused
+BROWSER_TEST_FLAGS=test/numeric-monotonicity.test.ts` exits0:300 tests across all
+three engines,2.39s. Both container runs use fresh frozen installs. Initial
+restricted Docker refusal executes no tests; permitted runs supply the evidence.
+Bash/Node syntax and exact-range whitespace pass. No tracked reviewer edits;
+clean at reviewed tip, both sessions terminal, browser inventory empty.
+
+This closes RP-706's corrective review only. Linux/ARM64 is not hosted AMD64 or
+hosted timing. Full CI, AC7/manual performance, broader feature/archival/release
+gates remain open. Root updates current statuses; no suite for these editorial
+records, no push or product/specification change. Full1.0 goal remains active.
