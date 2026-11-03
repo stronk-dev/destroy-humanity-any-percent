@@ -551,8 +551,9 @@ remain separate. No lifecycle promotion or new specification adoption.
   test-only supplement now runs all three against declared Postgres, including
   eleven Fiscal cases (seven persisted hoard boundaries). Its private guard-removal
   overlay fails exactly three refusals while preserving four controls. The new
-  range after `1667a10f` awaits independent corrective review; it is not a larger-value
-  representation or a browser/HTTP timing proof. RP-533's kernel-owner closure and
+  complete five-path `1667a10f..dff167a6` supplement is independently corrective-approved
+  with fresh real-Postgres execution and the three-failure/four-control overlay result.
+  It is not a larger-value representation or browser/HTTP timing proof. RP-533's kernel-owner closure and
   full GS0.1/feature/CI/release acceptance stay open.
 - [x] GS3 Meters arm + surface.
   Original surface batch `acf43132^..acf43132`, all22 paths, has designated Codex

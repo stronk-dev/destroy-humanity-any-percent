@@ -7807,3 +7807,27 @@ New tests/docs/records after `1667a10f` through this containing commit need
 independent corrective review. Prior guard approval is not that verdict. RP-533,
 original feature/AT/full CI/release gates remain; continue accepted work. Goal active,
 no archival, adoption, push or deployment.
+
+## 2026-11-03 — Persisted Fiscal safety witness independently approved
+
+Review by: fresh independent Codex `/root/fiscal_sql_safety_witness_review`.
+Recorded by: Codex root, transcribing APPROVED with no findings for the complete
+five-path single-commit range
+`1667a10f17137333e32cfd8b5c493cd009173796..dff167a6119e31d525a5d1585e1d92f683578db2`.
+All tests/docs/records inspected. Actual strict artifact hash/load/store/reload,
+saved streams/genesis/frozen rows, exact success coordinates/refusal and twelve
+unchanged tables verified; original four live-clock harvest assertions retained.
+
+Reviewer independently executes the declared root Postgres integration command:
+all three SQL parents/Fiscal11 cases pass1.828s. Native cold full GameUI passes
+0.466s with its three SQL skips disclosed separately; vet passes. After comparing
+the ignored overlay/probe against actual production and recorded SHA256s, its real
+DB overlay execution exits2 as expected:three unsafe failures/four passing controls,
+1.664s, no compile failure. Formatting and exact-range whitespace pass.
+
+No natural acquisition, HTTP/browser/public-clock, RP-533, original-feature,
+full-CI/AT/archival/release claim. Reviewer removes only its newly created tmpfs
+Postgres container (temporary rows unrecoverable), confirms empty inventory and
+preserves caches. All handles terminal; no tracked edits/mutations/commits or
+publication. Root updates only current statuses/appends verdict, checks record
+diff/claims, no suite for Markdown. Continue remaining accepted work; goal active.
