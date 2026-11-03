@@ -394,3 +394,15 @@ authority. Runtime/identities/parent bodies/fixtures/balance/copy remain unchang
 Next: obtain adoption of this concrete reviewed correction, reconcile both
 parents within that authority and build the complete chain under independent
 review; full content/policy/runtime/acceptance/release gates remain.
+
+## 2026-11-04 — Remove the stale model question from owner routing
+
+The live platform-alignment decision queue still claimed OD-1/RP-414 had no answer
+and linked its oldOct13 boundary. Reconcile it to Marco's actual Nov2 paid-hiring/
+producing-role adoption and approved `c6f11121..8a00ca57` body translation above.
+Model choice is closed; identity/AC-3/content/policy/runtime gates remain distinct.
+No RFC body, ruling, copy, data or code changes. Source/diff checked against both
+current specs, plan, RP-414 and the exact existing review; no software suite for
+editorial routing. Other queue status corrections link existing API/CI technical
+verdicts and preserve every unanswered adoption question, rather than asking again.
+This is record reconciliation, not new owner authority or designated approval.

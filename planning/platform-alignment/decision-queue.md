@@ -14,8 +14,9 @@ of general identity, adoption or permission to land it.
 
 One plain-language direction question was delivered to Marco: adopt this narrow class
 (recommended), permit historical UI-only exceptions instead, or keep it held. No answer is
-recorded; tool delivery/preselection is not approval. Explicit owner direction and designated
-normative review precede RFC acceptance/mechanism implementation, and each target still needs
+recorded; tool delivery/preselection is not approval. Independent technical review completed
+2026-11-02 (CI owning log); owner direction still precedes RFC acceptance/mechanism
+implementation, and each target still needs
 its actual other-party eligibility verdict. No existing historical candidate, performance
 patch, schema companion or other draft is approved by this request. No process is waiting live.
 
@@ -27,6 +28,10 @@ current import guard; a narrowly independently reviewed exact-path descriptor-on
 false gameplay bumps. Its scope-guard prerequisite is explicit. This is engineering authority,
 not a gameplay/balance choice. No reply, acceptance, companion or exception is inferred.
 It gates complete shared-condition catalog export, not unrelated accepted construction.
+The ownership, integer-token and original-byte transport proposals are independently
+technically approved2026-11-04; API's owning log holds exact scopes and executed limits.
+Their single combined adoption question was presented2026-11-04 and remains unanswered.
+This does not adopt the separate history-scope prerequisite or authorize partial serving.
 
 ## Reputation R9 wire/body reconciliation — RP-632
 
@@ -41,17 +46,17 @@ make the normative edit; no implementer adoption, re-pin or new version is infer
 Evidence and full original B7 dispositions: Reputation plan/log, RP-632.
 This gates B7 closeout, not other accepted construction or conformance fixes.
 
-## Current Headcount choice — OD-1 / RP-414
+## Current Headcount choice — OD-1 / RP-414 (RULED2026-11-02)
 
-The [Headcount plan](../headcount-allocation/plan.md#current-reconciliation-boundary--2026-10-13)
-now lays out both gameplay choices and the exact sibling boundary. Hiring can be a separate
-purchase or granted by office-generator purchases; staff can directly produce resources or
-boost existing output with display-only Slide Decks. The recommended pair is separate hiring
-and direct resource production, matching the standalone engine contract, **not adopted**.
-Questions presented2026-10-13 have no recorded answer. A seat answer alone cannot resolve
-the output/schema/state/command/harness contradictions or authorize integration. Marco/ruling
-author must reconcile both bodies; data measurement/adoption, RP-413 and review remain separate.
-No existing accepted ruling, deferred feature or full nine-tier requirement is superseded here.
+Marco explicitly selects **paid hiring with producing/redirecting roles** and delegates
+reconciliation of both specifications. The [Headcount plan](../headcount-allocation/plan.md)
+and both RFC bodies now share one engine; office-granted seats and the multiplier/display-only
+Decks fork are rejected. Complete translation is independently APPROVED
+`c6f11121..8a00ca57`; exact provenance and the forward correction are in the owning log.
+The model choice is answered: do not ask it again or treat the old presentation as current.
+Concrete prices/rates/resources/copy, HG-10 policy, identity/AC-3 adoption and runtime/player
+acceptance remain separate. Technical approval of their successor drafts is not their adoption
+or integration proof. No full-nine-tier requirement or release gate is waived.
 
 ## Data-rights evidence freshness — D-008/D-009/D-015
 
@@ -108,14 +113,18 @@ HTTP projection. Owner choice requested 2026-10-08, not received/adopted. No ope
 fixture-key enumeration, partial intent union or receipt rewrite is authorized. This is one
 prerequisite; lawful watched-owner schema exports and complete registration remain separate.
 Canonical home: the draft amendment and API Foundation; evidence in its owning log.
+Independent technical review completed2026-11-04; actual compiler/receipt-source controls
+and exact original range are recorded there. The previously requested owner choice, not
+technical review, remains the immediate authority gate; no duplicate question is needed.
 
 ## Existing bodiless API responses — RP-483 (unruled)
 
 API C19's closed schema/raw union excludes the actual204 account/session DELETE and304 public
 cache replies. The [bounded amendment](../../rfc/api-bodiless-responses.md) proposes an explicit
 empty arm and conditional-read input without changing handlers, deletion/retention, cache ages
-or retry policy. Owner adoption requested2026-10-09; no answer/adoption inferred. Designated
-normative review remains mandatory. API Foundation's plan/log owns executed SDK refusal and
+or retry policy. Owner adoption requested2026-10-09; no answer/adoption inferred. Independent
+technical review completed2026-11-04 including BR2's corrected narrow-SDK/broader-server
+distinction. API Foundation's plan/log owns exact review scopes, executed SDK refusal and
 six-operation mounted-cache evidence. This blocks those registrations/full status conformance,
 not unrelated accepted API work; dictionary/catalog/rights/renewal decisions remain separate.
 
