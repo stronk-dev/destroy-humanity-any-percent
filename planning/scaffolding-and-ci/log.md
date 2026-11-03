@@ -4372,3 +4372,43 @@ explicitly OUTSIDE this verdict, not silently included in its approval.
 Only status/index metadata is reconciled here. Adoption, v2 implementation and
 its independent review, RP-634 closure, hosted evidence and full feature/release
 gates remain open. Existing workflow, budgets, assertions and reports unchanged.
+
+## 2026-11-03 — RP-706: isolated Linux performance selector
+
+Under CI D2 and RFC-0000's routine tooling procedure, add
+`make test-game-ui-performance-ci`. It dispatches the existing performance target
+through the shared browser entrypoint, pinned image, cold dependency volumes,
+frozen install and ten-minute KILL containment. No workflow, Compose configuration,
+test body, performance threshold or default full browser command changes.
+
+Test first: add the real-script tool-double case for the performance selector to
+the existing topology fixtures. Against the old entrypoint it exits1 from the
+fixture with script status2, no setup calls and `expected test-browser or
+test-browser-focused` (session2660). The correction explicitly allows only the
+existing third target. Fixture controls execute all three routes, exact setup and
+argument boundaries; apt-get, pnpm and Make failures37 propagate on every route;
+missing/unknown/near-match targets refuse before host tools. Narrowed defaults or
+performance dispatch fail the topology check. `make verify-ci-topology` PASS
+(17431), including existing negative controls. Bash/Node syntax and whitespace
+checks PASS.
+
+Actual subject: `make test-game-ui-performance-ci` PASS (99422 terminal0), cold
+Linux container on this ARM64 Docker host. Five unchanged Chromium scenarios pass,
+107 functional cases unselected by the existing performance target; test durations
+413/703/1166/1151/2066ms, total7.48s. Those are test durations, not new runtime
+budgets or performance annotation counters. Initial restricted invocation denies
+Docker access before tests and supplies no evidence; the permitted invocation is
+the result above. Existing route control:
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/numeric-monotonicity.test.ts'`
+PASS (34719 terminal0), 300 tests across Chromium/Firefox/WebKit,7.79s. Both actual
+runs install frozen dependencies into fresh volumes; no repeat-to-green or
+assertion relaxation. Containers are --rm. Full browser population, hosted runner
+hardware/CI latency, manual performance floor and whole-feature acceptance are not
+claimed.
+
+Review by: Codex root, implementer first filter. Recorded by: Codex root.
+The complete eight-path tooling/docs/record batch after
+`58c0264acc1c06f78f2caf809566e47433ad89ef` through this commit awaits fresh independent
+corrective review. RP-706 is corrected locally, not self-approved. Next: independent
+review of this exact range; preserve the separate original performance-oracle
+approval and broader open performance/CI/release gates.

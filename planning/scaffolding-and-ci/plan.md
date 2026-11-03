@@ -427,6 +427,14 @@ observation/registered-row/signal and historical-root results. The root gate rem
 failed hosted runs are re-queried unchanged. Marco's decision on that proposal is requested,
 not inferred; normative review and per-candidate eligibility would still be required.
 
+2026-11-03 RP-706: `make test-game-ui-performance-ci` now selects the unchanged
+isolated performance target through the shared frozen Linux browser setup. Actual
+cold container execution passes five Chromium scenarios; the existing focused
+functional route also passes 300 selected tests across all three engines. Topology
+regressions retain the full default and refuse setup/dispatch drift. This is a
+scoped tooling correction awaiting independent review, not full CI or AC7 closure;
+exact commands, regression and range are in the latest owning log.
+
 Focused Linux browser verification now has a root command:
 `make test-browser-ci-focused BROWSER_TEST_FLAGS='test/numeric-monotonicity.test.ts'`.
 It shares the full command's cold image/setup/containment, not a copied Vitest lane.

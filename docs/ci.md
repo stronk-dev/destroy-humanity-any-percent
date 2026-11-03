@@ -171,6 +171,7 @@ make test-browser
 make test-browser-ci
 make test-browser-ci-focused BROWSER_TEST_FLAGS='test/numeric-monotonicity.test.ts'
 make test-game-ui-performance
+make test-game-ui-performance-ci
 make verify-server-ci
 make verify-harness-ci HARNESS_WORKERS=12
 make verify-harness-fast
@@ -299,9 +300,14 @@ a proven universal safe limit, current hosted hardware or proof of a failure's c
 uses that same image, cold dependency volumes, frozen install and ten-minute containment,
 then invokes the existing `test-browser-focused` target. Use it for an affected Linux
 file/test/engine without running the full population. It does not run the separate
-performance lane or substitute for full CI. Both commands share
-`client/tools/test-browser-ci.sh`; setup or test failures propagate, and a missing
-file selection exits nonzero. Omit engine selectors to run all three engines.
+performance lane or substitute for full CI. Omit engine selectors to run all three engines.
+
+`make test-game-ui-performance-ci` runs the existing isolated Chromium performance
+target in the same Linux container. It retains the performance population, assertions
+and budgets; it does not run the functional population or substitute for full CI.
+All three Linux commands share `client/tools/test-browser-ci.sh`, cold dependency
+volumes, frozen installation and containment. Setup or test failures propagate;
+missing functional file selections and unsupported target names exit nonzero.
 
 The topology check also verifies that the full Linux command defaults to the unmodified shared
 target; copied, functional-only, focused or project-narrowed defaults are rejected. It binds

@@ -122,8 +122,8 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource, browse
   const expectedEntrypoint = ["    entrypoint:", "      - timeout", "      - --verbose", "      - --signal=KILL",
     "      - 10m", "      - bash", "      - /workspace/client/tools/test-browser-ci.sh"].join("\n");
   const setupCommands = lines(browserEntrypoint ?? "").filter((line) => line.trim() && !/^\s*#/.test(line)).join("\n");
-  const expectedSetup = ["set -euo pipefail", 'case "${1:-}" in', "  test-browser|test-browser-focused) ;;",
-    "  *) printf '%s\\n' 'expected test-browser or test-browser-focused' >&2; exit 2 ;;", "esac",
+  const expectedSetup = ["set -euo pipefail", 'case "${1:-}" in', "  test-browser|test-browser-focused|test-game-ui-performance) ;;",
+    "  *) printf '%s\\n' 'expected test-browser, test-browser-focused or test-game-ui-performance' >&2; exit 2 ;;", "esac",
     "apt-get update", "apt-get install -y --no-install-recommends make", "corepack enable",
     "corepack prepare pnpm@11.15.1 --activate", "pnpm --dir client install --frozen-lockfile", 'exec make "$@"'].join("\n");
   const fullContainerRecipe = section(makeSource, /^test-browser-ci:/, /^[^\s#].*:/)
@@ -132,6 +132,12 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource, browse
       container.filter((line) => line.startsWith("    command:")).join("\n") !== '    command: ["test-browser"]' ||
       fullContainerRecipe.length !== 1 || fullContainerRecipe[0] !== "\tdocker compose -f compose.browser-test.yml run --rm browser") {
     throw new Error("Linux browser container must retain containment, frozen setup and the unmodified default make test-browser target");
+  }
+  const performanceContainerRecipe = section(makeSource, /^test-game-ui-performance-ci:/, /^[^\s#].*:/)
+    .filter((line) => line.startsWith("\t") && !line.trim().startsWith("#"));
+  if (performanceContainerRecipe.length !== 1 ||
+      performanceContainerRecipe[0] !== "\tdocker compose -f compose.browser-test.yml run --rm browser test-game-ui-performance") {
+    throw new Error("isolated Linux performance must use the shared browser setup and existing Make target");
   }
 
   // This existing manual consumer supplies a shell command, not a test target.

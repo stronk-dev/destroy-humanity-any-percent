@@ -4,8 +4,8 @@ set -euo pipefail
 # Compose supplies the full lane by default. A focused invocation changes only
 # the final Make target/selector, never image/setup, clean volumes or containment.
 case "${1:-}" in
-  test-browser|test-browser-focused) ;;
-  *) printf '%s\n' 'expected test-browser or test-browser-focused' >&2; exit 2 ;;
+  test-browser|test-browser-focused|test-game-ui-performance) ;;
+  *) printf '%s\n' 'expected test-browser, test-browser-focused or test-game-ui-performance' >&2; exit 2 ;;
 esac
 
 apt-get update

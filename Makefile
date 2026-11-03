@@ -314,6 +314,10 @@ test-browser-ci:
 test-browser-ci-focused:
 	docker compose -f compose.browser-test.yml run --rm browser test-browser-focused "BROWSER_TEST_FLAGS=$(BROWSER_TEST_FLAGS)"
 
+.PHONY: test-game-ui-performance-ci
+test-game-ui-performance-ci:
+	docker compose -f compose.browser-test.yml run --rm browser test-game-ui-performance
+
 # Real browser -> composed gameserver/Postgres. Both drivers require the
 # visible visitor counter: runtime.ts completed its actual Centrifuge
 # WebSocket handshake, not a mocked socket exchange.

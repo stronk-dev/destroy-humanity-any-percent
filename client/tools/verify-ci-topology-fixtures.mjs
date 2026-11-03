@@ -77,6 +77,7 @@ for (const command of [
   "make test-browser-functional",
   "make test-browser BROWSER_TEST_FLAGS='--project chromium'",
   "make test-browser-focused",
+  "test-game-ui-performance",
 ]) {
   let rejected = false;
   try {
@@ -95,6 +96,7 @@ for (const [name, changedMake, changedBrowser, changedSetup] of [
   ["unfrozen install", makefile, browser, browserEntrypoint.replace(" --frozen-lockfile", "")],
   ["setup ignores failure", makefile, browser, browserEntrypoint.replace("set -euo pipefail", "set -uo pipefail")],
   ["setup narrows selector", makefile, browser, browserEntrypoint.replace('exec make "$@"', 'exec make "$@" BROWSER_TEST_FLAGS=--project=chromium')],
+  ["performance route narrowed", makefile.replace("run --rm browser test-game-ui-performance\n", "run --rm browser test-browser-focused\n"), browser, browserEntrypoint],
 ]) {
   if (changedMake === makefile && changedBrowser === browser && changedSetup === browserEntrypoint) throw new Error(`setup mutation did not fire: ${name}`);
   let rejected = false;
@@ -128,20 +130,22 @@ process.exit(command === process.env.BROWSER_SETUP_FAIL ? 37 : 0);
     ["corepack", "enable"], ["corepack", "prepare", "pnpm@11.15.1", "--activate"],
     ["pnpm", "--dir", "client", "install", "--frozen-lockfile"]];
   const selector = "BROWSER_TEST_FLAGS=test/numeric-monotonicity.test.ts -t 'positive strict'";
-  for (const args of [["test-browser"], ["test-browser-focused", selector]]) {
+  for (const args of [["test-browser"], ["test-browser-focused", selector], ["test-game-ui-performance"]]) {
     const result = setup(args);
     if (result.status !== 0 || JSON.stringify(result.calls) !== JSON.stringify([...prelude, ["make", ...args]])) {
       throw new Error(`browser setup changed commands/argument boundaries: ${JSON.stringify(result)}`);
     }
   }
-  for (const args of [[], ["unknown-target"]]) {
+  for (const args of [[], ["unknown-target"], ["test-game-ui-performance-focused"]]) {
     const result = setup(args);
     if (result.status !== 2 || result.calls.length !== 0) throw new Error("invalid browser setup target reached host tools");
   }
-  for (const fail of ["apt-get", "make"]) {
-    const result = setup(["test-browser-focused", selector], fail);
-    if (result.status !== 37 || result.calls.at(-1)?.[0] !== fail || (fail === "apt-get" && result.calls.length !== 1)) {
-      throw new Error("browser setup hid failure or continued after failed setup");
+  for (const args of [["test-browser"], ["test-browser-focused", selector], ["test-game-ui-performance"]]) {
+    for (const fail of ["apt-get", "pnpm", "make"]) {
+      const result = setup(args, fail);
+      if (result.status !== 37 || result.calls.at(-1)?.[0] !== fail || (fail === "apt-get" && result.calls.length !== 1)) {
+        throw new Error("browser setup hid failure or continued after failed setup");
+      }
     }
   }
 } finally {
@@ -168,6 +172,10 @@ if (focused.status !== 0 || !focused.stdout.includes("test/amount-format.test.ts
 const linuxFocused = dryRun("test-browser-ci-focused", "BROWSER_TEST_FLAGS=test/numeric-monotonicity.test.ts --project firefox");
 if (linuxFocused.status !== 0 || !linuxFocused.stdout.includes('browser test-browser-focused "BROWSER_TEST_FLAGS=test/numeric-monotonicity.test.ts --project firefox"')) {
   throw new Error("focused Linux browser selector lost its single Make assignment");
+}
+const linuxPerformance = dryRun("test-game-ui-performance-ci");
+if (linuxPerformance.status !== 0 || !linuxPerformance.stdout.includes("docker compose -f compose.browser-test.yml run --rm browser test-game-ui-performance")) {
+  throw new Error("isolated Linux performance target lost the shared frozen browser setup");
 }
 const full = dryRun("test-browser-functional", "BROWSER_TEST_FLAGS=--project chromium --project webkit", "BROWSER_REPORT_DIR=.cache/browser-fixture");
 if (full.status !== 0 || !full.stdout.includes("--exclude test/typer-table-browser.test.ts") ||
