@@ -12,7 +12,12 @@ acceptance gates below.
 
 ## Evidence coordinates and limits
 
-Latest supplement (2026-10-07): the real Postgres Fiscal projection/harvest population and
+Current scoped updates (2026-11-03): named corrective verdicts in the owning log
+and dated rows below supersede those scopes' old pending-review labels. The
+original coordinates below are historical evidence, not current environment or
+whole-feature health. No new whole-acceptance audit is claimed.
+
+Historical supplement (2026-10-07): the real Postgres Fiscal projection/harvest population and
 restored main journey pass; required unswept-credit fault fails. Full composed target is RED
 at a later care.feed conflict (RP-365), distinct from RP-364. Exact commands, clocks, source
 restoration and review limits are in the latest owning logs. Older coordinates below are history.
@@ -57,7 +62,8 @@ restoration and review limits are in the latest owning logs. Older coordinates b
   No third container population or unrelated cleanup is authorized by this file.
 - `R`: exact review ranges and executed fault tables in [log.md](log.md) and
   [plan.md](plan.md). Codex's first filters cannot supply Claude's designated
-  verdict on Codex work. Original Claude producer/consumer findings and all
+  verdict on Codex work. Marco's subsequent delegation permits fresh independent
+  Codex corrective/technical reviews, never implementer self-approval. Original Claude producer/consumer findings and all
   separately owed corrective/record ranges remain live.
 
 ## Named GS1–GS6 gates (29)
@@ -80,11 +86,11 @@ evidence merely because its text exists.
 | GS2-A3 not Clout | achievement score projection → score copy/component | RP-337 actual Trophy Case AST and canonical source/era-copy guard; seven component/four copy negatives | **Scoped corrective approval3609e776..85fdcfdf,2026-11-03.** Fresh reviewer reproduces old binding/copy survivors and corrected actual-source failures; exact verdict is in the owning log. Separate Clout remains permitted. Not arbitrary dataflow, runtime/persisted-player or full GS2 acceptance. |
 | GS2-A4 composed | first real generator purchase → earned event + refreshed row | Registered driver now earns cash through DOM work, buys one with native Enter, binds one actual earned event to its run/revision and reads the refreshed earned Trophy Case row | **Locally proven; designated review pending:** both required decoder/earned-arm faults fail at their actual announcement/DOM assertions; exact restoration precedes complete target PASS. Commands/limits: Garage log, 2026-10-07 GS2-A4 entry. Corrects the old claim that the previous driver already bought generators. Not full GS2/Garage/CI/release acceptance. |
 | GS2-A5 accessibility | Trophy Case DOM + chrome/nav | RP-338 native nav correction and shared-host/consumer states0fe2f57c..a551d3c2 retain separate reviewed scopes | **Scoped corrective approvals, not full GS2-A5.** Shared original plus correctione7feeba2..3aa7c654 independently approved after RP-708; exact current six-file1116/1116 and old-helper6/6 failures execute. RP-338 retains its own native Mac/Linux limits. First-read policy, conditional nav, actual zoom/manual AT/acquisition and full-feature acceptance remain open; exact unions/provenance in owning log. |
-| GS3-A1 decoder | v4 meter rows → `contracts.ts:parseFeatures` | Audit found incomplete-set admission; subsequent RP-329 failed-first population covers all eleven missing IDs and same-count substitutions, extra/subset rows, order, bounds and exact keys | **Locally repaired; designated review pending:** existing REQUIRED_METER_IDS reused, 27 baseline failures and five independent client faults demonstrated; two actual producer-control faults also demonstrated. Clean client/types/build/boundaries/cold Go/vet and 246 native Garage executions pass. SQL explicitly skipped; full shared-v4 fixture and all-engine/persisted proof are not inferred. See separate follow-up below. |
+| GS3-A1 decoder | v4 meter rows → `contracts.ts:parseFeatures` | Audit found incomplete-set admission; subsequent RP-329 failed-first population covers all eleven missing IDs and same-count substitutions, extra/subset rows, order, bounds and exact keys | **Scoped corrective approval5fbf4cff..bddfc58e,2026-11-03.** Reviewer executes actual historical base/tip decoder:27 malformed populations admitted before/refused after; complete/null controls remain. Current Go/Node/browser consumers pass, SQL explicitly skips in that review. Full shared-v4/persisted player/GS3 acceptance does not follow. Exact independent results in owning log. |
 | GS3-A2 non-color | committed values → `MetersSurface.svelte` numeric/band text | Original B cell checks; later RP-330 exact per-ID value/band assertions in both layouts, with omitted-band/native-value faults caught; RP-332 presentation-error population retained | Bounded public-fixture proof in Chromium/WebKit; designated review and whole-state/all-engine/real persisted populations remain separate. |
-| GS3-A3 reflow | Meters arm → responsive semantic list / retained wide table | RP-330 failed-first six-case baseline; distinct decoder-admitted values, exact eleven dt/dd/native-label associations, live resize and refresh, full page/nav/focus/axe; six independent faults demonstrated | **Locally repaired; designated review pending:** current full Garage Chromium/WebKit 252 passes, no assertion/budget loosened. Source/body mismatch corrected without author amendment. Viewport/DOM associations are not actual 400% zoom, Firefox or AT evidence. See separate follow-up. |
+| GS3-A3 reflow | Meters arm → responsive semantic list / retained wide table | RP-330 failed-first six-case baseline; distinct decoder-admitted values, exact eleven dt/dd/native-label associations, live resize and refresh, full page/nav/focus/axe; six independent faults demonstrated | **Scoped corrective approvalbddfc58e..127eb052,2026-11-03.** Reviewer executes affected current file51/51 across Linux Chromium/Firefox/WebKit, types/build/boundaries; historical six-red/six-fault results inspected, not freshly remutated. No actual400%zoom/AT, real player workflow or full GS3 acceptance. Exact independent results in owning log. |
 | GS3-A4 composed | real initial pinned meter values → rendered DOM | RP-362 candidate under807e0b6e executes fresh real bootstrap/public read; f3b5ed→b42d86 fails exact seed assertion: five Standing90/high, Grievance0/low, doom50/low | **Fired authority conflict RP-363 / author-blocked:** accepted Garage names50, shared live assembly applies published Notoriety0 reseed90. No new DOM or five-fault result; candidate retained as initial-meter-dom-probe.patch, original driver restored. Author must reconcile fresh-Founder/run/Notoriety contract or explicitly specify exception before any fix; do not relabel90 as accepted50 or mutate balance. |
-| GS3-A5 accessibility | meter DOM/header semantics → reading/navigation | B static axe plus semantic narrow/wide populations. RP-343: recovering/closed/resync/server-restart/not-ready-only ×320/1280 ×Chromium/WebKit, exact eleven retained values/bands, visible stale note, recovery without invented changes, explicitly newer snapshot, native focus/layout/axe/read-only controls; six actual faults | **Locally repaired bounded shared-state proof; designated review pending:** red checkpoint 0a191ebd followed separate bfd7b4ff product scope; same 20 cases pass, full Garage 398 and performance two pass. Whole 4b2fd904-exclusive span requires Claude. Three-engine/all-state/manual assistive workflow, real service, actual zoom and full acceptance remain. Native associations and axe are not screen-reader evidence. |
+| GS3-A5 accessibility | meter DOM/header semantics → reading/navigation | B static axe plus semantic narrow/wide populations. RP-343: five connection states ×320/1280, exact eleven retained values/bands, visible stale note, recovery without invented changes, explicitly newer snapshot, native focus/layout/axe/read-only controls | **Scoped corrective approval4b2fd904..9f485993,2026-11-03.** Independent exact historical three-engine reconnect30pass; old host condition fails30/30. Combined event/reconnect54pass, types/build pass. All-state/manual assistive workflow, real service, actual zoom and full acceptance remain. Native associations and axe are not screen-reader evidence. |
 | GS4-A1 care states | PA7 public identity/band/eligibility → `pet/PetCareSurface.svelte` | B availability/refusal/pending/keyboard/captured notices; actual decoder-accepted PA7 fixtures | **Author-blocked RP-132:** accepted GS4 asks raw stats/mood/behavior/cooldowns while PA7 exposes another arm. Current tests must not invent raw private fields or claim that contract covered. |
 | GS4-A2 absent pet | `pet_care_fact_test.go` adoption count → nav unlock | G `TestPetCareFactRequiresAnAdoptedPet`; B petless nav absent | Bounded Go/fixture proof; accepted historical “epoch-8 fresh Founder” is not a current release pin. Preserve source/epoch identity and separate current real-server absence assertion. |
 | GS4-A3 revision | Founder `care_action` → runtime/refresh | B Founder7/8 command and held refresh; fresh C compiled cosmetic DOM adoption/feed/positive bound receipt/public Founder5/reload | Bounded current-host public-arm proof, not full raw-care contract. Corrective/observation ranges still need Claude; no body-conflict waiver. |
@@ -233,9 +239,11 @@ isolated scheduling-generation guard necessity.
 
 Combined Garage/Game UI574 passes/four isolated-performance skips; separate
 performance two. Types/client9,814/589 explicit skips/build/copy/boundaries/
-static topology/no-payment pass. Entire0e548992..0e7910ed
-requires Claude, including both scopes/red/control
-refinement. All earlier spans independently owed. Only scripted terminal here;
+static topology/no-payment pass. Complete0e548992..0e7910ed independently
+APPROVED2026-11-03, including both scopes/red/control refinement. Reviewer runs
+original native two-engine population116pass across the two scopes; old continuation
+has4expected failures/6controls. Exact verdict/commands/limits in owning log.
+Only scripted terminal here;
 old standard-terminal click test is not native/focus proof. Real composed/HTTP/
 auth/SQL/Firefox/manual AT/full1.0 remain open; no lifecycle promotion.
 
@@ -256,11 +264,13 @@ budgets, copy, lifecycle precedence, payload-only Run-End or clock changed.
 
 Combined Garage/Game UI 518 native passes / 4 explicitly isolated performance
 skips; separate performance two pass. Client/types/build/copy/boundaries/
-no-payment/static topology pass. Full fbea2158-exclusive through repair/record
-commit needs Claude separately from prior spans. Firefox/manual AT/real service/
+no-payment/static topology pass. Completefbea2158..0e548992 independently
+APPROVED2026-11-03; actual old lifecycle4focusfailures/2controls and original
+two-engine healthy population execute, types/build pass. Firefox/manual AT/real service/
 continuation/all contexts/full shared accessibility remain open. Changed host
-still needs real composed rerun after capacity repair; no lifecycle/acceptance
-promotion from the native fixture proof.
+has a later separate composed pass at7f540859, not execution by this reviewer
+or proof of every lifecycle focus case. No lifecycle/acceptance promotion from
+the native fixture proof.
 
 ## RP-344 GS3 event/badge/value separation (test-only)
 
@@ -277,13 +287,16 @@ layout/read-only checks. Nine compiling source faults each fail sixteen cases,
 including the exact forbidden global fault the old test survived. Production
 restored byte-identically. Initial invented separator-space assertion failed;
 corrected fixture expectation, not a product/copy defect or weakened semantic
-boundary. Whole 9f485993-exclusive proof/record span requires Claude.
+boundary. Complete9f485993..fbea2158 is now independently APPROVED2026-11-03:
+historical three-engine event24pass, actual forbidden-announcement fault24fail;
+combined reconnect/events54pass, types/build pass. Exact evidence in owning log.
 
 Full Garage 414 / performance two, client/types/unchanged build/copy/boundaries/
 static topology pass. Not all IDs/eras/states, real socket/server/reconnect,
-manual AT/Firefox/actual zoom/SQL/full GS3 or full CI proof. RP-343 review and
-GS3-A4 real-service value binding remain separate; Docker overlay freshly
-reports zero available/100%, no cleanup authorized or new container run.
+manual AT/actual zoom/SQL/full GS3 or full CI proof. RP-343 has its separate
+same-day corrective approval; GS3-A4 real-service value binding remains held.
+The original zero-available Docker observation was historical, not a current
+capacity block: the independent review executes its declared Linux container.
 
 ## RP-342 first-read measurement, not acceptance of failed display
 
@@ -392,13 +405,11 @@ are restored exactly; the server production diff is empty. Root clean types,
 and full native Chromium/WebKit Garage 246 pass. The existing isolated
 performance test passes, with RP-333's null-feature limitation unchanged.
 
-This closes the *local decoder defect*, not designated review, whole GS3,
-overall shared-v4 fixture parity, all-engine accessibility, real persisted
-player workflows or release readiness. Both SQL tests explicitly skip outside
-the declared Postgres lane. Docker capacity and RP-330/331/333 remain open.
-Complete new range after 5fbf4cff through its final record edge needs Claude,
-independently of RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8,
-runtime a42406f0..fc911784 and every earlier range.
+The complete5fbf4cff..bddfc58e correction is independently APPROVED2026-11-03;
+the owning log records actual base/tip decoder execution, current Go/Node/browser
+consumers and explicit SQL skips. This closes the corrective review, not whole
+GS3, shared-v4 fixture parity, all-state accessibility, persisted-player workflows
+or release readiness. Earlier evidence above retains its original environment.
 
 ## Follow-up: RP-330 / GS3-A3 (separate range after bddfc58e)
 
@@ -422,11 +433,11 @@ performance 1 remains RP-333's null-feature guard, not populated AC7. No
 host/runtime/wire/catalog/kernel/producer/balance/copy/CI change. Documentation
 now also refuses a current-source three-engine/actual zoom/AT claim.
 
-This is local semantic-layout repair, not whole GS3/accessibility/real player
-workflow or release acceptance. Complete range after bddfc58e through its
-final records needs Claude separately from RP-329 5fbf4cff..bddfc58e,
-RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8 and all earlier spans.
-RP-331/333/Docker/Firefox/AT/author/body/full-nine-tier 1.0 holds remain.
+The completebddfc58e..127eb052 correction is independently APPROVED2026-11-03;
+the owning log records51/51 Linux three-engine executions and types/build/boundaries.
+This closes local semantic-layout corrective review, not whole GS3/accessibility,
+actual zoom/AT/real player workflows or release acceptance. Other scopes keep
+their own review and author/feature gates; old environment limits above are history.
 
 ## Follow-up: RP-333 / RP-334 (separate range after 127eb052)
 

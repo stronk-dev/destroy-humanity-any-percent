@@ -8255,3 +8255,79 @@ clocks, callbacks, gameplay or production code. RP-336 remains author-owned.
 No general occlusion/AT/service/full-feature/CI/archival/release acceptance. Root
 updates current statuses only; no software suite for editorial records. Goal active,
 no push or lifecycle promotion.
+
+## 2026-11-03 — Meters reconnect and event-authority corrections approved
+
+Review by: fresh independent Codex `/root/meters_recovery_events_corrective_review`.
+Recorded by: Codex root, transcribing two APPROVED scopes, no new findings:
+`4b2fd90430e1009ea2bc8f2d27c7026903a8300e..9f485993f9c6622e81d88243625c284603dc178f`
+(RP-343) and
+`9f485993f9c6622e81d88243625c284603dc178f..fbea2158b79f5eebd517930fc49c7678af58abc2`
+(RP-344), each base exclusive/tip inclusive. Union covers all six commits/ten
+paths, including predeclarations, tests, sole stale-note membership correction,
+canonical docs and closeout records. The disclosed historical append-only
+placement violation remains recorded; no history rewrite or silent approval.
+
+Exact private fbea2158 archive, ordinary declared Linux ARM64 Compose --rm,
+historical frozen dependencies/config/assertions and current read-only setup
+with unchanged ten-minute KILL containment. Private historical Make supplement
+only selects existing functional tests/types/build, because no focused target
+existed then. Healthy25039 exits0:54/54 across Chromium/Firefox/WebKit,
+567deselected, types0errors/0warnings,214-module production build matching
+index-BzPaPJEo.js/index-DaRqgLww.css/prediction.worker-MqspU_iu.js.
+
+Private old Trophy-only stale condition6761 exits2:30/30 reconnect cases fail
+missing exact stale text after initial values/layout controls;591deselected.
+Fault host SHA matches actual4b2fd904. Restored condition plus independent
+forbidden off-surface announcement56737 exits2:24/24 event cases fail nonempty
+global region,597deselected. Other historical faults inspected, not remutated.
+Both source ranges pass whitespace. Private host8c81a722…fa298 and driver
+da680c12…87473 restored to exact reviewed hashes. All handles terminal, owned
+network removed, no main reviewer edits; browser lease released.
+
+Corrective scopes only: not real-service/SQL recovery, full state/ID/era coverage,
+actual zoom/manual AT, whole GS3/Garage/CI, specification adoption, archival or
+release approval. Root updates named current statuses; also corrects stale
+acceptance-table/follow-up pending labels for already approved RP-329/RP-330
+against their existing exact verdicts above, without new acceptance claims or
+rerunning unchanged suites for Markdown. Original evidence/environment remains
+historical. Forced-lifecycle/continuation review proceeds independently. Goal
+active, no push.
+
+## 2026-11-03 — Forced context and same-Founder continuation approved
+
+Review by: independent Codex `/root/lifecycle_continuation_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED without findings for both complete
+base-exclusive/tip-inclusive ranges:
+`fbea2158b79f5eebd517930fc49c7678af58abc2..0e548992e9b4c791ea5289e0b088f8577f1fab2f`
+(RP-082 forced context) and
+`0e548992e9b4c791ea5289e0b088f8577f1fab2f..0e7910ed144f28f5597fef3671011a0f2d9eb60d`
+(RP-345 same-Founder/exact-next plus removed-trigger focus). All eight commits/
+eleven union paths inspected, including red checkpoints, scopes, source,
+regressions, canonical docs and records. Later standard/pending corrections
+are explicitly excluded, not implicitly approved.
+
+Exact0e7910ed private archive, original Vitest configuration and matching frozen
+unpatched historical dependencies: native macOS Chromium/WebKit116pass,
+414deselected,8.76s. Old fbea lifecycle host/RunEnd with unchanged reviewed tests:
+four expected focus failures/two cancellation controls pass,524deselected;
+Offer keeps BUTTON focus and removed Run-End origin leaves BODY. Old0e548992
+continuation:four expected failures/six controls pass; foreign-Founder read binds
+Desk and removed trigger leaves BODY, while healthy/same-sequence refusal/
+surviving-focus controls pass. Exact original types0errors/0warnings and214-module
+build reproduce index-CF5OqXch.js/prediction.worker-MqspU_iu.js/index-DaRqgLww.css.
+Current2d051241 types/build also pass as supplemental, not historical execution.
+Full-range whitespace passes; fifteen original faults inspected, not remutated.
+
+Attempted absent historical Make focused target runs no tests. Direct configured
+Vitest initially fails sandbox localhost binding; narrow permitted execution
+supplies the actual completed results. No behavioral retry, preference/provider/
+deadline/assertion change. One passive HTTP output is tool-truncated; final totals
+and valid completed-request summaries remain. All browser handles terminal,
+lease released; no tracked reviewer writes, commits or publication.
+
+Native runtime-double proof, not actual service/SQL/authentication, Firefox/Linux,
+manual AT, full idle/performance, CI/whole-feature/archival/release acceptance.
+Root reconciles named statuses only and preserves historical records; later
+standard-terminal/pending correction is the next review, not a blocker to other
+accepted work. No software suite for these records, no push; goal stays active.

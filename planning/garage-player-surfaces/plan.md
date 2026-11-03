@@ -7,6 +7,22 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+**2026-11-03 Meters reconnect/events review:** both complete corrective scopes
+`4b2fd904..9f485993` (RP-343) and `9f485993..fbea2158` (RP-344) are independently
+APPROVED. Exact historical three-engine population54pass; old stale-note condition
+fails30 reconnect cases and forbidden global announcement fails24 event cases.
+Types/build pass. Only these repair/test scopes close; real-service recovery,
+manual AT, all-state/ID coverage and full GS3 acceptance remain separate.
+
+**2026-11-03 forced-context/continuation review:** complete ranges
+`fbea2158..0e548992` and `0e548992..0e7910ed` independently APPROVED, covering
+RP-082 forced headings/removed-trigger focus and RP-345 same-Founder exact-next
+binding. Exact historical native Chromium/WebKit116pass; actual old source
+reproduces heading and foreign-Founder failures with healthy controls. Types/build
+pass. Later RP-346/RP-347 standard-terminal/pending-focus range remains separate
+and under review. These are runtime-double/native input proofs, not real-service,
+manual AT or full-feature acceptance.
+
 **2026-11-03 shared-state/Fiscal review:** initial reviews of complete shared-host/consumer range
 `0fe2f57c..a551d3c2` and Fiscal edge range `57efdc39..3609e776` received
 CHANGES REQUIRED for distinct ancestor-opacity oracle gaps RP-708/RP-709, not
