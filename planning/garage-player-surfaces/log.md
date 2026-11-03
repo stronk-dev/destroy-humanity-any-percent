@@ -8062,3 +8062,43 @@ Recorded by: Codex root. Complete six-path correction after
 re-review together with the original two-commit range. Keep CHANGES REQUIRED on
 record; no self-approval, general occlusion/AT, feature/archival or release claim.
 Full1.0 goal stays active; other accepted work and review continue.
+
+## 2026-11-03 — RP-338 native nav correction independently approved
+
+Review by: fresh independent Codex `/root/garage_nav_tab_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED, no blocking findings, complete
+four-commit/ten-path range
+`85fdcfdf14e690cc9541e4ed90fa7e71c7c1c5d7..0fe2f57c4950f83a407341b93b5f358028f3e415`
+(base exclusive, tip inclusive), including test-only failed checkpoint, separate
+product predeclaration, source/docs and final records. Production delta is exactly
+ten existing nav tabindex0 attributes, not changed handlers/conditions/order/copy.
+
+Private exact historical archive `/private/tmp/cloud-clicker-rp338-review.QPj4Zo`
+retains original lock/config/unpatched provider. Linux ARM64 declared Compose runs
+historical `test-browser BROWSER_TEST_FLAGS='test/garage-surfaces-browser.test.ts
+--project chromium --project webkit'`:286/286 pass,80.87s; historical chained
+performance2pass/22excluded. Exact old-nav source on Linux ALSO24pass/262excluded,
+not a reproduced defect. That result is preserved, not omitted as an inconvenient
+control. No hardware equivalence inferred.
+
+Native macOS uses exact historical pnpm11.15.1 frozen dependencies, original
+provider/config/lock/assertions. Old-nav97580 exits2:12WebKit failures/12Chromium
+controls/262excluded,4.79s, native Tab goes to body rather than Earnings Calls
+before axe. Restored reviewed attributes61528 exit0:24pass/262excluded,2.65s;
+chained performance2pass/22excluded,1.98s. This independently reproduces the
+actual platform-specific regression and correction without preference/provider
+waivers or script-focused Tab destinations.
+
+Historical typecheck/build pass0errors/0warnings,214modules and matching recorded
+assets; initially host-installed dependencies, subsequently reverified with exact
+frozen historical install. An initial dependency-path127 and restricted DNS failure
+occur before meaningful checks; corrected path/permitted frozen install supply
+the results, not retries of a failing gameplay test. Full-range whitespace passes.
+Other original ten faults are inspected historical evidence, not freshly remutated.
+
+Private source/test/lock/config restored/hash-verified; reviewer edits no tracked
+files. Browser sessions terminal/51204 released; owned Compose network removed,
+private archive retained. No original-feature approval, every conditional nav/
+state, Firefox, actual zoom/AT, persisted acquisition, full CI, archival or release
+acceptance. Root updates named current statuses only; no suite for these records.
+Separate RP-707 correction is under re-review, not covered by this verdict.

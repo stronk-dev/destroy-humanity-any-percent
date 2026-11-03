@@ -7,6 +7,13 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+**2026-11-03 native navigation review:** RP-338's complete
+`85fdcfdf..0fe2f57c` is independently APPROVED. Exact historical frozen native
+macOS WebKit reproduces twelve old Tab failures/Chromium controls; reviewed
+attributes pass the same24 cases. Linux286 passes, but old navigation also passes
+there and is not a discriminator. The owning log preserves that platform limit,
+all setup failures and full-range provenance. No full keyboard/AT acceptance.
+
 **2026-11-03 paired-layout review:** complete `54c8c8da..57efdc39` receives
 CHANGES REQUIRED for RP-707: an opacity0 generator card survives the visibility
 oracle in both historical and committed-current source. The bounded test-only
