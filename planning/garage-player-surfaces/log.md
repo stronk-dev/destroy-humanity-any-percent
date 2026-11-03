@@ -7708,3 +7708,48 @@ listeners absent. No tracked reviewer edits/mutations/commits. RP-132/wire,
 RP-318 copy, other pending controls, full GS4/AT/CI/release remain separate.
 Root next adds passive focus/node observations in the existing Cosmetic driver;
 no input, retry, deadline, gameplay or assertion relaxation. Goal remains active.
+
+## 2026-11-03 — Meter completeness and Fiscal overflow corrections approved
+
+Two separate complete corrective verdicts, including final records; no later
+designated coverage found and no actionable findings. Recorded by: Codex root,
+transcribing independent reviewers under Marco's corrective-review delegation.
+
+- RP-329 APPROVED, five commits/thirteen paths,
+  `5fbf4cff6030b199633bebdb7fed9452a631e37d..bddfc58ead6861a11c64c9995123ceb3e9aca570`.
+  Review by: fresh independent Codex `/root/garage_meter_completeness_corrective_review`.
+- RP-532 APPROVED, one commit/ten paths,
+  `4eaed0c9fa54576ba5ff401ee471ee63000c1dbf..61b145afe985861ec4021bc983abbb5d58801311`.
+  Review by: fresh independent Codex `/root/garage_hoard_overflow_corrective_review`.
+
+Both review current clean `9cbd811dfbb05a064acccda2313550d19b210c23` and exact
+historical ranges. Meter reviewer executes cold root GameUI tests/vet:36 parents
+pass,three SQL integration tests explicitly skip. Focused
+`TestMetersProjectionUsesCompleteCatalogIDs` executes actual pinned loader/projector
+and eleven missing-value refusals. Node GameUI/runtime/outcome/meters files219 pass;
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/game-ui.test.ts test/garage-surfaces-meters-browser.test.ts'`
+passes351 across Linux Chromium/Firefox/WebKit. Types0/0,build217 modules pass.
+Actual historical base/tip parseFeatures execute in memory:27 malformed populations
+admitted before/refused after,complete/null controls pass both,inputs unchanged.
+Unused numeric import is guarded in that meter-only probe; no files written.
+Five client/two producer historical fault results are inspected,not remutated.
+
+Hoard reviewer independently executes
+`make test-go GO_PACKAGES='./gameui' GO_TEST_FLAGS='-run TestFiscalHoardPreviewRefusesUnrepresentablePPM -count=1 -v'`:
+all seven actual-loader/kernel/clone cases pass (three refusals/four controls).
+Cold account/fiscal tests and vet pass:account30 parents pass/14 SQL parents skip,
+Fiscal11 parents pass. Initial dollar-anchored Make selector selects zero tests
+and receives no credit. Current full GameUI/Node/browser/types evidence above is
+reused from the named meter reviewer,not relabelled as the hoard reviewer's run.
+Retained old three-failure/four-control execution is inspected,not freshly rebuilt.
+Both exact-range whitespace checks pass. Browser sandbox denial runs no cases;
+permitted declared disposable lane passes,with terminal summary despite output
+truncation. No DB/full composed/performance/API-generation/whole CI credit.
+
+Only these corrective review debts close. RP-533's kernel derivation and larger
+representation,original GS0.1/GS3/new-feature acceptance,actual AT/SQL/CI/release
+remain separate. Root next adds persisted oversized-Fiscal projection proof under
+the existing safe-wire/read-only contract,not a wider-value representation change.
+Reviewers make no tracked edits/mutations/commits or publication; all handles
+terminal. Record-only diff/claims checked; no suite merely for this transcription.
+Full1.0 goal stays active; nothing pushed.

@@ -544,9 +544,13 @@ remain separate. No lifecycle promotion or new specification adoption.
   feature facts), registered schema, generated types, client parser; live sync requires v4.
   Original `5165abcf^..5165abcf`, all21 paths, now has designated Codex CHANGES REQUIRED
   (2026-10-13): RP-329 partial-meter admission, RP-532 hoard overflow and RP-533 kernel
-  derivation/representation gap. The new overflow refusal is locally verified, not
-  independently approved or full GS0.1 acceptance. Actual SQL/composed verification remains
-  pending while Docker is unavailable; kernel-owner/greater-value closure stays open.
+  derivation/representation gap. RP-329's complete `5fbf4cff..bddfc58e` correction
+  and RP-532's complete `4eaed0c9..61b145af` guard are independently corrective-approved;
+  exact provenance and fresh executed checks are in the 2026-11-03 owning log.
+  The three SQL tests explicitly skipped in these native reviews; later ordinary
+  real journeys do not prove oversized Fiscal fixtures. Add the persisted projection
+  safety population separately. RP-533's kernel-owner/greater-value closure and
+  full GS0.1/feature/CI/release acceptance stay open.
 - [x] GS3 Meters arm + surface.
   Original surface batch `acf43132^..acf43132`, all22 paths, has designated Codex
   CHANGES REQUIRED (2026-10-13): RP-323/324/330/332 and catalog correspondence RP-534.
