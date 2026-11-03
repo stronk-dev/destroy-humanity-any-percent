@@ -4431,3 +4431,34 @@ approved here. No tracked reviewer edits; handles terminal. RP-614's prior failu
 remains unattributed/open despite no recurrence. This closes corrective review,
 not intervening ranges, MA-C14/whole API or browser/whole-composed/hosted CI,
 held schema/wire adoption, archival, release or publication.
+
+## 2026-11-03 — Empty-object SDK type correction approved, mixed feature gate retained
+
+Review by: fresh independent Codex `/root/api_empty_object_corrective_review`.
+Recorded by: Codex root. APPROVED RP-386 CORRECTIVE PORTION ONLY within complete
+17-path context `17c552dbccb3e19d9e89c549b4059713822d4916..48a7e5ede62aadbf9461bc7465c50a6fa1faba8b`
+(base exclusive/tip inclusive). All paths inspected; this is NOT whole-range approval.
+Scope: `typeScriptSchema`'s three-line zero-field object branch; corresponding
+`MinigameEmptyRequest`, `AccountEmptyRequest` and `FounderProfile.display` empty-
+object renderings; empty-request positive/undeclared-field compiler controls and
+only their correction clauses in docs/ledger/plan/log/overview. Closed descriptor/
+runtime grammar already forbids extra fields; no permitted dictionary is removed.
+New account/current-Founder/New-Founder registration, handlers, DTO introductions,
+timestamp scalar, metadata/pin additions and feature tests remain unapproved by
+this verdict and cannot supply archival coverage through it.
+
+Current b82ef41d: cold `make test-go GO_PACKAGES='./publicapi ./cmd/gen-api'
+GO_TEST_FLAGS='-count=1'`, matching vet,132SDK Vitest cases and types0errors/
+warnings pass. Independent actual current AND reviewed-tip TypeScript probes
+cover the three named empty types plus resolve_minigame_session's request:
+four valid{} controls/28invalid assignments behave correctly; in-memory old{}
+admits20invalids (null/undefined already refused). In the actual project it
+reproduces EXACTLY two TS2578 unused-expect-error diagnostics at432/434; corrected
+project has none. Initial custom compiler invocation failed library resolution,
+not source; corrected invocation uses TypeScript's real config parser.
+
+Normal `make api-check` exits0; pre/post hashes of api.json, compatibility pin
+and types.ts are identical. Full-context whitespace passes. All handles terminal,
+no manual source/pin edits, browser/DB/services or publication. Root record edits
+follow the clean check, not contamination of its result. Only RP-386 corrective
+review closes; feature/CI/specification/archival/release gates remain. Goal active.
