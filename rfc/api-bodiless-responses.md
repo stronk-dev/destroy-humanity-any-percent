@@ -53,10 +53,13 @@ the existing error and content alternatives. Preserve `headers` and Fetch's `ok`
 
 Operations declaring304 gain optional `ifNoneMatch?: string` input and the corresponding
 optional OpenAPI `If-None-Match` header parameter. Its exact accepted grammar is one quoted
-lowercase SHA256 ETag, `^"[0-9a-f]{64}"$`, matching the current server's strong-ETag output
-and exact-match behavior. Invalid values refuse before fetching. Operations without304
+lowercase SHA256 ETag, `^"[0-9a-f]{64}"$`, matching the current server's strong-ETag output.
+This proposed SDK input is deliberately narrower than the server's existing weak comparison,
+tag-list, repeated-field and wildcard handling (RP-502); those server behaviors remain unchanged.
+Invalid values refuse before fetching. Operations without304
 reject this input if supplied, even by an untyped caller. This is not a generic header map.
-No weak tags, wildcard/list matching or change to server-side conditional parsing is added.
+No weak tags or wildcard/list inputs are added to the SDK. Do not reuse its narrow input
+validator to replace or tighten the existing server-side conditional parser.
 
 Dispatch selects a declared empty status without requiring a content type, reads its
 available body bytes and refuses any nonempty result. It does not JSON-parse them or hash
@@ -108,7 +111,8 @@ rights decisions and browser renewal/recovery remain separate. No other design d
    request admission, limiter/errors and persisted revocation/deletion effects. Reuse current
    fixtures; registration is not a data-erasure/privacy completion claim.
 4. The complete mounted public registry exercises200→304, exhausted-budget304, changed-content
-   invalidation and unchanged metadata/hash/error behavior. Check direct response bytes and
+   invalidation and unchanged metadata/hash/error behavior, retaining the server's existing
+   weak/list/repeated-field/wildcard controls separately from the SDK's narrower input. Check direct response bytes and
    generated dispatch; controlled reader tests do not substitute for the existing DB evidence.
 5. Compatibility admits the additive registration and rejects removal/change of a pinned empty
    response; `make api-check`, affected cold Go/vet, client/types/build and relevant actual
@@ -120,3 +124,5 @@ rights decisions and browser renewal/recovery remain separate. No other design d
 - Owner adoption of BR1–BR3, followed by designated normative review, is required before build.
 - 2026-10-09: source-grounded proposal; current SDK304 refusal and six mounted cache populations
   executed. No product code, generated artifact, compatibility pin or handler changed.
+- 2026-11-04: reconcile BR2's stale server premise after RP-502. Keep the proposed one-strong-tag
+  SDK input and existing broader server parser explicitly separate; no behavior is changed or adopted.

@@ -4796,3 +4796,23 @@ does not adopt proposals or authorize implementation; historical guard/accountin
 complete C18, new-feature/archival/release gates remain open. Next adoption packet
 groups these with the independently approved integer-token proposal; no new
 per-field product choices or extra review prerequisite is created.
+
+## 2026-11-04 — Reconcile bodiless draft's stale conditional-parser premise
+
+Outcome: while independently reviewing the two existing dictionary/bodiless
+proposals, root source-checks BR2 against RP-502 and current policy.go329–415.
+The server now handles weak/list/repeated/wildcard conditions, so claiming the
+proposed SDK one-strong-tag input matches an exact-only server is false.
+Correct BR2's body, not merely a supersession note: preserve the proposed narrow
+SDK input, explicitly preserve the broader server parser, and name both boundaries
+in acceptance4. No new input policy, parser, response arm or gameplay behavior is
+implemented/adopted. Existing RP-483 owns this proposal correction, not a new
+product defect or tracking framework. Review by: Codex author/first filter;
+Recorded by: Codex. Fresh independent technical reviewer already has the original
+two exact contexts; this correction joins the bodiless scope before approval.
+Diff/source checked; no extra software suite for Markdown. The reviewer executes
+current existing gap/cache/compiler consumers, not hypothetical DSL support.
+The separate combined adoption question for schema-ownership/integer/byte transport
+was presented2026-11-04 and remains unanswered; do not ask it again. Dictionary/
+bodiless choices were already presentedOct8/9, also not adopted. Continue safe
+accepted work and technical review without treating unanswered questions as assent.
