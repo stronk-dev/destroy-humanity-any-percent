@@ -12,12 +12,9 @@ that would need one is recorded as a blocker in `log.md` instead.
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
 
-1. Complete independent re-review of RP-358 `10e2d656..69c4f972` plus the current
-   RP-710/RP-711 correction after `ad015bc1`. Its manual visibility adapter
-   survived transparent text; OD-15 had the same separate gap. Both now reuse
-   the shared assertion with mounted self/ancestor negative and partial/restored
-   controls. Current frozen Linux: old checks fail42; corrected affected files600pass.
-   This is test-only, not a production rendering bug or full AT proof.
+1. Review the separate composed-execution record `bbee9805..1d623dde` (RP-361).
+   It reports host-native service evidence at its named historical source, not
+   new code, whole CI or an exact-release artifact.
 2. Then take the next still-unreviewed accepted scope; distinguish its producer,
    actual player outcome and remaining author/acceptance gates before changing code.
 3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
@@ -43,7 +40,7 @@ environment differences, exclusions and original rejected verdicts live in
 | R-013 stall observation | Research-record closeout approved; cause unresolved and transient sample unavailable |
 | Claim pending/removal and provisional contrast (RP-352–355) | Approved; isolated callback/actual axe/valid-credit controls executed |
 | Claim connection state (RP-356/RP-357) | Approved through final record edge; regional disclosure and readiness independently discriminate |
-| Desk announcement visibility (RP-358/RP-710) and upgrade reasons (RP-711) | Corrected; original REQUEST CHANGES retained, independent re-review pending |
+| Desk announcement visibility (RP-358/RP-710) and upgrade reasons (RP-711) | Original plus complete correction approved; original REQUEST CHANGES retained, frozen Linux regressions discriminate |
 | Four-effect presentation/unknown refusal (RP-359/RP-360) | Scoped approval69c4f972..bbee9805; actual unknown-copy/wrong-scope controls discriminate |
 | Performance oracle/supplements/selector (RP-334/RP-484/RP-706) | Approved corrective scopes; full RP-333/AC7 remains open |
 

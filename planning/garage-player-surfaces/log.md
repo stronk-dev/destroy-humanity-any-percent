@@ -8549,3 +8549,45 @@ separate original approval is not relabelled as correction approval. No general
 occlusion/physical AT/service/whole-feature/CI/specification/archival/release claim;
 original REQUEST CHANGES and all author/content/1.0 holds remain. Goal active,
 no push. Next: exact correction re-review, including current frozen typecheck.
+
+## 2026-11-03 — Announcement and upgrade-reason visibility correction approved
+
+Review by: independent Codex `/root/claim_pending_palette_corrective_review`.
+Recorded by: Codex root, transcribing PASS/scoped approval without findings for
+the complete union (base exclusive/tip inclusive): original
+`10e2d656c149e2f5740948b0f18c5abf0c53b4e8..69c4f97256b312161ac8b230a27bfa8a99a6088a`
+and all six correction paths
+`ad015bc11848c9c94e510844e8d46b1a57ded252..bd5e1266799adf27aa0cf0627dfa1686db007eca`.
+Includes RP-711 OD-15 test adapter only, not original RP-418 feature acceptance;
+RP-359's separate approval and original REQUEST CHANGES retain their own provenance.
+
+Exact private `/private/tmp/cloud-clicker-rp710-711-review.vHuBUv`, ordinary
+declared Compose --rm/private workspace bind/current read-only setup/cold anonymous
+dependency volumes/frozen da90674c…lock/unchanged ten-minute KILL containment.
+65779 exits0:600/600 Chromium/Firefox/WebKit,zero exclusions,45.55s; same fresh
+Linux container typecheck0errors/0warnings. Private OLD ADAPTERS ONLY54994 exits2:
+42missing-throw failures/558excluded,11.29s. Parsed events confirm12RP-358+2OD-15
+per engine, all the intended AssertionError, not unrelated exceptions. Healthy
+tests reach both self/ancestor negatives then partial/restored positives; HTTP
+observations terminate/zero pending. Full six-path correction and records inspected.
+Restored opportunity7e39895d…/eventsb19a7049… hashes, sharedhelper/product/lock/
+config/setup unchanged; whitespace passes. Handles terminal, Compose inventory
+empty, browser lease released, no main reviewer edits/publication.
+
+No general occlusion/physical AT/service/whole OD-15/GS5/CI/specification/copy/
+archival/release approval. Root reconciles current statuses only, preserving original
+rejected evidence and harness limits. No suite just for these record edits.
+
+Native setup correction by Codex root (not another designated software verdict):
+committed client lock da90674c… differed from installed8825a9d8…. Standard
+`pnpm --dir client install --frozen-lockfile`40230 fails on sandbox package-manager
+cache write; terminal1, no false setup success. Narrow permitted same40837 exits0
+using pinned pnpm11.15.1,2packages added/1removed, no tracked manifest/lock change.
+Committed and installed lock now byte-identical, SHA256
+da90674ccb808da42fdc1d2a8117d70f542f9a6703103c232140fc6d4a6b6034.
+Post-install native typecheck9690 exits0,zero errors/warnings. Earlier native probes
+remain historical-harness qualified; this does not restamp their inputs. Root-linked
+private historical archives no longer constitute frozen old installs after this
+normal synchronization; reviewer was warned before reuse. No host browser rerun,
+global tool upgrade, dependency policy/source change or full-CI parity claim.
+Goal active; next is separate RP-361 composed-execution-record review. Nothing pushed.
