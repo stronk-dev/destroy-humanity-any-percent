@@ -9,18 +9,18 @@ still held on Feed & Dispatch VQ-3. Producer existence is not feature completion
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-## Current queue — 2026-11-03
+## Current queue — 2026-11-04
 
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
 
-1. API's consolidated catalog-admission reviews RP-572–594 are complete in
-   corrective scope only; do not restart them. Its plan/log routes the remaining
-   technical schema/representation/byte-transport proposals and new descriptor
-   acceptance. Those gates remain separate from the approved repairs and must
-   precede a complete catalog/SDK workflow, not a partial endpoint.
-2. Then take the next still-unreviewed accepted scope; distinguish its producer,
-   actual player outcome and remaining author/acceptance gates before changing code.
+1. Review the existing manual-budget observer/timer correction RP-372 in
+   `b6a13c79..78f51a0f`. This tool and its recorded negative findings are separate
+   from the now-approved RP-369–371 read/stale-state corrections; do not adopt a
+   four-Hz floor, batching, larger limiter or retries from a measurement.
+2. API's catalog corrections and five technical amendments are reviewed; owner
+   adoption/new-descriptor/full workflow gates remain in its plan/log. Do not
+   restart completed reviews, infer adoption or mount a partial endpoint.
 3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
    profile is now absent and cannot be independently revalidated. No stall repair
    or cache/compiler/hosted-causality claim follows.
@@ -47,6 +47,7 @@ environment differences, exclusions and original rejected verdicts live in
 | Desk announcement visibility (RP-358/RP-710) and upgrade reasons (RP-711) | Original plus complete correction approved; original REQUEST CHANGES retained, frozen Linux regressions discriminate |
 | Four-effect presentation/unknown refusal (RP-359/RP-360) | Scoped approval69c4f972..bbee9805; actual unknown-copy/wrong-scope controls discriminate |
 | Historical composed-execution record (RP-361) | Approved bbee9805..1d623dde; source correspondence checked, transient historical execution not independently replayed |
+| Shared reads, covered late receipts and stale dispatch (RP-369–371) | Three complete corrective ranges approved; current Linux hosts/Node/types/build and retained old failures, not fresh live-race/throughput evidence |
 | Offer/purchase/transition pending focus (RP-319/RP-379/RP-380) | Three exact corrective ranges approved; actual duplicate-command/dual-revision/fallback controls discriminate, Manual policy RP-368 separate |
 | Bootstrap focus/live reduced motion (RP-393/RP-084) | Complete original corrections plus citation repair approved; current Node/native-input/media/Worker and Linux performance evidence, not AT/reference-hardware acceptance |
 | Native JSON failure/production-client/Pitch observers (RP-381/RP-389) | Complete three separate ranges approved; native helper negatives and full current real-service target pass; original failure attribution/reliability remains open |

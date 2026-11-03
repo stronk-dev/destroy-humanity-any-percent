@@ -8753,3 +8753,46 @@ faults/main reviewer edits/publication. Current plan/checkpoint updated; stale
 Headcount model hold in overview corrected to the existing Nov2 ruling, not a new
 adoption or implementation. Next: RP-388's actual-read care oracle, preserving its
 own failure/clock boundaries. Full nine-tier goal active; nothing pushed.
+
+## 2026-11-04 — Shared reads, covered receipts and stale-state guards approved
+
+Review by: fresh independent Codex `/root/garage_read_ordering_corrective_review`.
+Recorded by: Codex root. APPROVED three separate complete corrective contexts,
+base exclusive/tip inclusive, all6/9/7 paths inspected, no blocking findings:
+
+- RP-369: `acf7ec76c881bbb01331bac6d0a5e37ee653c294..6f02c900e4b0b83a7308ddf2684cfb4f7e02262c`.
+- RP-370: `5b6157e37388edd0fa4e694700c451e64bfb327d..b6a13c7914e3f5fa71921a43e06b5804464b7b11`.
+- RP-371: `826b7e9eee97f392d45825dfe3fe156efe7b83bc..777315006f813b4fc396cd6ac4b013e17234a9b7`.
+
+Gate/Decline reuse adequate pending reads but refresh again below applied revision.
+Only successful read started after HTTP completion covers matching late intent;
+failed/shared-pre-response/other/unknown receipts stay conservative, Company reset
+and independent Garden invalidation remain. Failed authoritative read cannot become
+healthy solely from socket recovery; guards recheck after waits and disable stale
+Desk/Offer/Founder intents while navigation/explicit continuation stay available.
+Later dual-stream/disposal/pending changes are separate, not approved by implication.
+
+At clean unchanged executable source `09b998c6`, own Node88419 passes200/3files;
+types/build10602 pass0errors/0warnings/217modules. Declared frozen Linux76284 executes
+five affected host files across C/F/W: 918 ordinary passes, 9 expected deadline-
+failure controls and 15 declared performance skips (942 total),37.84s, terminal0. Initial restricted Docker
+denial runs zero; permitted identical command passes unchanged image/frozen setup/
+provider/selectors/assertions/10m containment. Successful verbose output partly
+tool-truncated; terminal summary retained. All three range whitespace checks pass.
+
+Old discrimination is REUSED recorded execution, not fresh mutation: RP-369
+28896duplicate/4713inadequate-read; RP-370 runtime62957/host61798; RP-37125121's
+28failures/twohealthy controls. Reviewer independently checks exact pre-fix Git
+implementations/regression assertions; raw historical failure logs not reopened.
+Source blobs754df0cc/bba44af8/runtimef4093a27/077a30be bind that comparison; current
+affected assertions execute. No historical execution is relabeled own evidence.
+
+Whole composed `df531b9b` (GarageNov3 independent verdict) reused with attribution;
+executable/driver/Make/Compose/lock diff empty, not this reviewer's journey. Mounted
+runtime-double races are not fresh live HTTP/SQL race proof. RP-372/intervening
+manual-budget construction excluded. RP-368 throughput, historical429 attribution/
+reliability, original Garage/AT/performance/hosted CI/archival/release stay open.
+No retry/batching/limit/copy/kernel change. All handles terminal, disposable browser
+absent/lease released; API peer separately cleans its owned SQL/network. No tracked
+reviewer edits/source mutations/commits/publication. Next actual review is RP-372,
+not another pass over these now-approved read/guard corrections.
