@@ -8130,3 +8130,65 @@ actual mounted-card negative and partial/restored positives with finally cleanup
 all prior assertions retained. Not general occlusion, actual zoom/AT, service
 integration, whole Garage/CI, archival or release approval. Root reconciles current
 statuses only; no suite for records. Full nine-tier1.0 goal remains active.
+
+## 2026-11-03 — Shared-state/Fiscal visibility reviews and bounded correction
+
+Review by: independent Codex `/root/shared_host_state_corrective_review`.
+Recorded by: Codex root. CHANGES REQUIRED, complete six-commit/ten-path
+`0fe2f57c4950f83a407341b93b5f358028f3e415..a551d3c2adf9b8d24c24662bfce99a8a4b2dcf0c`
+(base exclusive, tip inclusive), split at82614848ee40ebe58bb41031002325e5b4b8b550
+between host repair and consumer tests. RP-708: own-opacity-only shared text
+helper accepts loading text hidden by an ancestor. Exact historical Linux ARM64
+three-engine healthy24959/final34607 pass96/429excluded; final types0/0 and
+214-module build match recorded assets. Ordinary contained Compose Fiscal-predicate
+omission6635 fails3/0 at actual fiscal-versus-desk. Private diagnostic old-host
+held read82058 fails6; loading opacity0 survivor48462 passes6. Those two use explicit
+ten-minute docker-exec containment, not declared-runner equivalence.
+
+Interrupted broad old-host51586 receives NO completed-test/gate credit: sustained
+CPU/no progress, exact Vitest/browser processes terminated during debugging,
+Make2/process137. Reusable tail runner bypassed outer containment; root stops that
+approach. Both owned named containers/anonymous volumes removed41d0ec, only
+preexisting BuildKit containers left; user caches/data untouched. Final healthy/
+branch runs return to ordinary --rm Compose/private archive bind/current read-only
+entrypoint and original ten-minute containment. All handles terminal, private
+host/driver restored/hash-verified. No other production defect found; focus race
+tests cover controlled synchronous DOM handlers, not physical human timing.
+
+Review by: independent Codex `/root/fiscal_rendered_edges_corrective_review`.
+Recorded by: Codex root. CHANGES REQUIRED, complete three-commit/ten-path
+`57efdc398aaaa4f3fb22a420ae8997830e6d56c8..3609e776babfb056eac52af54b6fba097c7ac03c`.
+RP-709: own-opacity-only local phase check survives an invisible Fiscal ancestor.
+Exact historical ordinary Linux three-engine Compose healthy20444 passes15/378
+excluded; actual CSS opacity0 survivor13228 passes12/381excluded. Restored CSS,
+early<= invalid control20182 fails3 at100000/retains9,381excluded. Private historical
+focused alias is only the unchanged functional recipe; thresholds/config/assertions
+unchanged. Eight old faults remain inspected records. Private hashes restored;
+handles terminal, no main-tree reviewer edits. RP-336 author hold remains.
+
+Root fixes both bounded test oracles under GS0.5/0.6/GS1-A3, no new framework or
+product/CSS/clock/copy/policy/threshold/workflow change. Shared required-text opacity
+walks ancestors. Loading host and Fiscal panel each retain actual mounted opacity0
+negative,0.5/restored positives and finally cleanup. Fiscal phase delegates its
+visibility check to that same helper; all prior text/geometry/native readiness/
+countdown/callback/focus/no-intent/axe checks remain.
+
+Test first17164 exits2: six new missing-throw failures/93 controls/81excluded.
+Root selector quoting accidentally broadens -t toGS2 and adds unused Make goals;
+actual diagnostics prove the six regressions, not the intended isolated population.
+No repeat-to-green: correct helper, then ordinary declared frozen Linux six-file
+consumer run98650 exits0,18 project-files/1116pass,45.82s. After separate Fiscal
+adapter controls are added, old local check1169 exits2,12 missing-throw failures/
+135excluded; corrected final entire Fiscal99614 exits0,147pass,13.56s. Only that
+file changes after98650, so unchanged five-file evidence is reused, not relabelled
+as a later aggregate run. Types20891 and final74047 pass0errors/0warnings; diff
+whitespace passes. Tool output truncated; named diagnostics/terminal counts are
+retained, not invented full raw artifacts or HTTP counts.
+
+Review by: Codex root, correction implementer first filter only.
+Recorded by: Codex root. Complete eight-path correction after
+`e7feeba244836be9979be38350258d5e7039418f` through this commit awaits independent
+re-review with each original range. Both CHANGES REQUIRED verdicts stay on record.
+No general occlusion/actual zoom/AT/service/performance/full-CI/feature/archival or
+release claim. First-read/retry drafts and all author/content/accounting/1.0 gates
+remain intact; full goal active. No push or lifecycle promotion.

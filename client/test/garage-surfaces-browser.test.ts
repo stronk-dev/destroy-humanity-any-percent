@@ -171,6 +171,20 @@ for (const width of [320, 1280] as const) {
       expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
       expect(target.querySelectorAll("button,input,li,meter")).toHaveLength(0);
       expect(runtime.requests).toEqual([]);
+      // Required loading text must remain painted, not merely laid out inside
+      // a transparent host. Exercise the exact shared assertion used above.
+      const main = target.querySelector<HTMLElement>("main")!;
+      const originalOpacity = main.style.opacity;
+      try {
+        main.style.opacity = "0";
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+        expect(getComputedStyle(main.querySelector("[role=status]")!).opacity).toBe("1");
+        expect(() => sharedStateVisibleText(target, '[role="status"]', t("common.loading", {}, "era_1995")))
+          .toThrow("shared-state ancestor opacity");
+        main.style.opacity = "0.5";
+        sharedStateVisibleText(target, '[role="status"]', t("common.loading", {}, "era_1995"));
+      } finally { main.style.opacity = originalOpacity; }
+      sharedStateVisibleText(target, '[role="status"]', t("common.loading", {}, "era_1995"));
       await assertAxe(target, "held first authoritative read");
       resolveRead(parseGameUISnapshot(structuredClone(v4))); await settle();
       expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");

@@ -110,12 +110,8 @@ for (const fixture of fiscalEdgeFixtures) {
       const surface = target.querySelector<HTMLElement>(".fiscal")!;
       expect(surface.dataset.phase).toBe(fixture.phase);
       expect(surface.querySelectorAll(".phase")).toHaveLength(1);
-      const phase = surface.querySelector<HTMLElement>(".phase")!;
-      expect(phase.textContent).toBe(fixture.text);
-      const style = getComputedStyle(phase), rectangle = phase.getBoundingClientRect();
-      expect(style.display).not.toBe("none"); expect(style.visibility).toBe("visible");
-      expect(Number(style.opacity)).toBeGreaterThan(0);
-      expect(rectangle.width).toBeGreaterThan(0); expect(rectangle.height).toBeGreaterThan(0);
+      const visiblePhase = () => sharedStateVisibleText(surface, ".phase", fixture.text);
+      const phase = visiblePhase();
       expect(phase.closest('[role="status"], [role="alert"], [aria-live]')).toBeNull();
       expect(phase.getAttribute("aria-hidden")).not.toBe("true");
       const region = surface.querySelector('[data-fiscal-region="harvest"]')!;
@@ -131,6 +127,15 @@ for (const fixture of fiscalEdgeFixtures) {
       harvest.click(); await settle();
       expect(onHarvest).toHaveBeenCalledTimes(fixture.disabled ? 0 : 1);
       expect(onSpendLevel).not.toHaveBeenCalled(); expect(onSpendUnlock).not.toHaveBeenCalled();
+      const originalOpacity = surface.style.opacity;
+      try {
+        surface.style.opacity = "0";
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+        expect(getComputedStyle(phase).opacity).toBe("1");
+        expect(() => visiblePhase()).toThrow("shared-state ancestor opacity");
+        surface.style.opacity = "0.5"; visiblePhase();
+      } finally { surface.style.opacity = originalOpacity; }
+      visiblePhase();
     } finally { await unmount(app); target.remove(); }
   });
 }

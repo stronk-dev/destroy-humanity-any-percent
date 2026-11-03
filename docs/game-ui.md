@@ -648,6 +648,13 @@ balance from the event's factor/starter IDs.
 
 ## Boundaries and verification
 
+Shared-state required-text assertions check exact text, layout, display/visibility and
+positive opacity through the ancestor chain. The Fiscal edge fixtures use that same
+assertion. Mounted loading-host and Fiscal-panel controls must reject opacity zero,
+accept partial opacity and accept restored styles; cleanup restores styles in `finally`.
+These are bounded CSS/layout checks, not general occlusion, assistive-technology or
+live-service evidence. They do not change production styles or phase thresholds.
+
 `make verify-client-boundary` scans the Game UI components alongside the archived UI primitives.
 It rejects transport/replay imports, raw network calls, player-facing text literals, and governed
 style literals. Four valid-Svelte faults in the actual Opportunity region independently fire these

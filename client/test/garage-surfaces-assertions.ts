@@ -30,7 +30,10 @@ export function sharedStateVisibleText(parent: Element, selector: string, text: 
   expect(nodes, `shared-state visible exact ${text}`).toHaveLength(1);
   const node = nodes[0]!, rectangle = node.getBoundingClientRect(), style = getComputedStyle(node);
   expect(rectangle.width).toBeGreaterThan(0); expect(rectangle.height).toBeGreaterThan(0);
-  expect(style.display).not.toBe("none"); expect(style.visibility).toBe("visible"); expect(Number(style.opacity)).toBeGreaterThan(0);
+  expect(style.display).not.toBe("none"); expect(style.visibility).toBe("visible");
+  for (let ancestor: HTMLElement | null = node; ancestor; ancestor = ancestor.parentElement) {
+    expect(Number(getComputedStyle(ancestor).opacity), "shared-state ancestor opacity").toBeGreaterThan(0);
+  }
   return node;
 }
 
