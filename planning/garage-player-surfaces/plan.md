@@ -8,14 +8,16 @@ Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`)
 that would need one is recorded as a blocker in `log.md` instead.
 
 **2026-11-03 shared-state/Fiscal review:** initial reviews of complete shared-host/consumer range
-`0fe2f57c..a551d3c2` and Fiscal edge range `57efdc39..3609e776` receive
+`0fe2f57c..a551d3c2` and Fiscal edge range `57efdc39..3609e776` received
 CHANGES REQUIRED for distinct ancestor-opacity oracle gaps RP-708/RP-709, not
 new production defects. One corrected shared assertion now serves both, with
 actual mounted zero/partial/restored-opacity controls. Old checks fail six/twelve
 new regressions; corrected six-file consumers1116pass and final Fiscal147pass,
 types0/0. Shared host/consumer original and eight-path correction are now
 independently APPROVED: exact final1116pass/zero skips and old-helper6/6 failures.
-The separate Fiscal original range still awaits its final re-review checks.
+The separate Fiscal original range plus correction is also independently APPROVED:
+exact corrected edges12pass; restoring only the old adapter fails all12. The reviewer
+independently checks peer1116/1116 counts; types0/0. Original findings remain recorded.
 The owning log preserves the interrupted review run and environment limits.
 RP-336, first-read policy, full AT/integration/feature/release gates remain separate.
 

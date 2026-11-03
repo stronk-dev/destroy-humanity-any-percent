@@ -8222,3 +8222,36 @@ general occlusion, native macOS/amd64, AT, service, performance, hosted CI, arch
 or release approval. Owner/first-read policy holds remain. Root reconciles named
 statuses, no suite for records; separate Fiscal re-review resumes after a temporary
 upstream model-capacity error, not waived or falsely marked approved. Goal active.
+
+## 2026-11-03 — Fiscal rendered-edge correction independently approved
+
+Review by: independent Codex `/root/fiscal_rendered_edges_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED for the complete union (base
+exclusive, tip inclusive): original three-commit/ten-path
+`57efdc398aaaa4f3fb22a420ae8997830e6d56c8..3609e776babfb056eac52af54b6fba097c7ac03c`
+and eight-path correction
+`e7feeba244836be9979be38350258d5e7039418f..3aa7c654046f0a29bc6d491e301e4db7bc87405d`.
+Original CHANGES REQUIRED, historical invisible-ancestor survivor and boundary
+control remain above. The temporary upstream capacity error was recovered, not
+substituted for a review or passing test.
+
+Exact corrected private archive's four Fiscal edge cases across Chromium/Firefox/
+WebKit83535 exits0:12pass/135excluded,4.33s. Private old-local-adapter-only31979
+exits2:12 expected missing-throw failures/135excluded,3.89s; prior phase/countdown/
+readiness/callback checks execute before each fault assertion. Both use ordinary
+cold Linux ARM64 Compose --rm/private archive bind/current read-only entrypoint
+and unchanged ten-minute containment. Independent typecheck85780 exits0 with
+zero errors/warnings; correction whitespace passes.
+
+Peer `/root/shared_host_state_corrective_review` executed78013,1116/1116 across
+six consumer files, including Fiscal147/147; Fiscal reviewer independently checks
+its JSON counts/results, reuses with attribution rather than claiming another
+execution. Peer98071's six old-helper loading failures also remain attributed.
+Private source restored to exact hashes, all handles terminal/browser lease
+released, no main reviewer edits; only preexisting BuildKit containers remain.
+
+RP-709's bounded oracle defect is resolved, without changing thresholds, copy,
+clocks, callbacks, gameplay or production code. RP-336 remains author-owned.
+No general occlusion/AT/service/full-feature/CI/archival/release acceptance. Root
+updates current statuses only; no software suite for editorial records. Goal active,
+no push or lifecycle promotion.
