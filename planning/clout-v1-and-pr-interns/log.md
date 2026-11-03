@@ -9400,3 +9400,40 @@ CV9/AC11, adjacent journey/notice construction, copy/content, RP-307 accounting,
 AT, hosted CI, archival or release acceptance. Next: RP-509 identity admission
 and its related two-owned proof, preserving their distinct boundaries. Goal active,
 nothing pushed; complete nine-tier1.0 scope unchanged.
+
+## 2026-11-03 — Distinct owned contributions and two-purchase proof approved
+
+Review by: fresh independent Codex `/root/pr_contribution_identity_corrective_review`.
+Recorded by: Codex root. APPROVED/no findings for complete adjacent ranges
+(base exclusive/tip inclusive), all seven/five changed paths inspected:
+`a5a2e94a50154df0301110dfa50718b3fbd9c1f4..0c2d1ef4be944d4c4472390f50099f0d5feb2790`;
+`0c2d1ef4be944d4c4472390f50099f0d5feb2790..b9dabdc445f63f32cce301d99303b4a6888550d5`.
+Contribution identities now reject repeating one owned Intern/omitting another
+before snapshot retention, preserving source/order/ownership/factor/count checks
+and valid distinct/equal-factor inputs. Mocked generated-client HTTP regression
+preserves prior state/credentials; it is not a real HTTP/Postgres claim.
+
+Own current clean7c618276 Node40297:205PASS in four affected files,727ms.
+Declared cold/frozen Linux57305:258Chromium/Firefox/WebKit decoder/runtime cases,
+six engine-file instances,10.09s,zero exclusions/uncaught errors. Both locks
+da90674c…; driver syntax and both complete-range whitespace checks pass. Initial
+sandbox Docker denial executes no tests; permitted narrow same command passes
+without setup/provider/assertion/deadline changes. Old13-case reproduction(two
+missing refusals/eleven controls) remains applicable historical evidence, not
+re-executed history or a repeated mutation campaign.
+
+The supplement checks both native purchases, exact requests/bound receipts,
+literal product1.612 and factors1.3/1.24, disabled rebuy, both-owned reload and
+one SQL purchase per Intern. Its cash1e10 is explicitly arranged test state.
+Named peer factor/card/type/build execution belongs to
+`/root/pr_factor_card_corrective_review`; real full df531b9b/86769 integration
+belongs to `/root/composed_client_observer_corrective_review`. Relevant executable,
+driver/Make/Compose/lock/server source is unchanged. No new peer acknowledgment
+or repeated whole journey required; partly truncated successful output retains
+terminal completion and inspected fail-closed source correspondence, not personal
+inspection of every streamed event. No malformed producer/public injection claim.
+All own handles terminal; disposable container and its empty network removed,
+main untouched, lease released. Only these corrective/test scopes close, not
+original P5/CV9/AC11, natural pacing, accounting, authored content, AT, hosted CI,
+archival or release. Next consolidated API catalog-admission review is separate;
+full nine-tier goal active, no push.

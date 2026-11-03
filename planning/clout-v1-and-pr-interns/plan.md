@@ -10,6 +10,9 @@ ratified later by owner SHA (OD-5).
 
 Fractional factor/product display (RP-387) and actual purchase-card progress/
 factor placement (RP-426) have independent approval over their complete ranges.
+RP-509's distinct-owned-contribution decoder and related two-purchase supplement
+also have complete scoped approval; mocked admission and real fixture journeys
+retain different evidence boundaries.
 The owning log records current three-engine/Node/type/build checks and named
 peer reuse of the full df531b9b service target. Original P5/AC11, RP-427's missing
 definitions, copy/content and accounting remain separate gates. Older dated

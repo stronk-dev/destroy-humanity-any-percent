@@ -14,10 +14,10 @@ that would need one is recorded as a blocker in `log.md` instead.
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
 
-1. Next corrective scope: one contribution per owned PR Intern (`0c2d1ef4`,
-   RP-509) and the related two-purchase proof (`b9dabdc4`), owned by the Clout
-   plan/log. Keep malformed-wire admission separate from producer correctness,
-   fixture cash, original P5/AC11 acceptance and the held accounting contract.
+1. Continue the consolidated catalog-admission correction review under API's
+   plan/log: Soul/Pitch/Pet null-number refusals (RP-578/RP-581/RP-582). Mixed
+   new owner-descriptor construction stays outside corrective approval; explicit
+   zero/false, stored artifacts, mechanics and historical guards must be preserved.
 2. Then take the next still-unreviewed accepted scope; distinguish its producer,
    actual player outcome and remaining author/acceptance gates before changing code.
 3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
@@ -51,6 +51,7 @@ environment differences, exclusions and original rejected verdicts live in
 | Native JSON failure/production-client/Pitch observers (RP-381/RP-389) | Complete three separate ranges approved; native helper negatives and full current real-service target pass; original failure attribution/reliability remains open |
 | Care actual-read oracle/native Buy proof (RP-388) | Complete corrective scopes independently approved; exact verdicts in Cosmetic log, original causes/clock/full G10 and feature gates separate |
 | Fractional PR factors/purchase-card placement (RP-387/RP-426) | Both complete corrective ranges independently approved; no local factor calculation or resource-formatting change, RP-427/full CV9 separate |
+| Distinct owned PR contributions/two-purchase proof (RP-509) | Complete decoder and related supplement approved; malformed-wire/fixture/producer/original-feature boundaries retained |
 | Performance oracle/supplements/selector (RP-334/RP-484/RP-706) | Approved corrective scopes; full RP-333/AC7 remains open |
 
 Last complete composed execution: independent `make test-game-ui-composed` passes
