@@ -45,6 +45,9 @@ for (const width of [320, 1280]) {
       const section = target.querySelector<HTMLElement>('section[aria-labelledby="upgrades-heading"]')!;
       const cards = [...section.querySelectorAll<HTMLElement>("article")];
       expect(cards).toHaveLength(states.length);
+      const visibleReason = (reason: HTMLElement, expected: string) => {
+        expect(sharedStateVisibleText(section, `[id="${reason.id}"]`, expected)).toBe(reason);
+      };
       for (const [index, row] of states.entries()) {
         const card = cards[index]!;
         const control = card.querySelector("button")!;
@@ -53,15 +56,27 @@ for (const width of [320, 1280]) {
         if (row.key) {
           const reason = document.getElementById(reasonID)!;
           expect(card.contains(reason)).toBe(true);
-          expect(reason.textContent).toBe(t(row.key, {}, "era_1995"));
-          expect(reason.getBoundingClientRect().height).toBeGreaterThan(0);
-          expect(getComputedStyle(reason).visibility).toBe("visible");
+          visibleReason(reason, t(row.key, {}, "era_1995"));
           expect(control.getAttribute("aria-describedby")).toBe(reasonID);
           control.click();
         } else {
           expect(document.getElementById(reasonID)).toBeNull();
           expect(control.hasAttribute("aria-describedby")).toBe(false);
         }
+      }
+      const ownedReason = document.getElementById(`upgrade-reason-${states[0].id}`)!;
+      for (const faded of [ownedReason, section]) {
+        const originalOpacity = faded.style.opacity;
+        try {
+          faded.style.opacity = "0"; await settle();
+          expect(getComputedStyle(ownedReason).visibility).toBe("visible");
+          if (faded !== ownedReason) expect(getComputedStyle(ownedReason).opacity).toBe("1");
+          expect(() => visibleReason(ownedReason, t("desk.upgrade.owned", {}, "era_1995")))
+            .toThrow("shared-state ancestor opacity");
+          faded.style.opacity = "0.5"; await settle();
+          visibleReason(ownedReason, t("desk.upgrade.owned", {}, "era_1995"));
+        } finally { faded.style.opacity = originalOpacity; await settle(); }
+        visibleReason(ownedReason, t("desk.upgrade.owned", {}, "era_1995"));
       }
       expect(runtime.requests).toEqual([]);
       const main = target.querySelector<HTMLElement>("main.game-ui")!;

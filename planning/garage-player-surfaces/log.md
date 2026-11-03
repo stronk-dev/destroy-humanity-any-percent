@@ -8491,3 +8491,61 @@ Editorial reconciliation in the same batch also replaces stale acceptance-table
 buff-only/no-Lucky and two-engine-only wording with the already recorded independent
 2026-11-02 unforced Lucky journey and separate Linux Firefox actual-minute result.
 Those are reused named evidence, not new executions, full-GS5/CI or release approval.
+
+## 2026-11-03 — Announcement review finds manual visibility gaps; mapping approved
+
+Review by: independent Codex `/root/claim_pending_palette_corrective_review`.
+Recorded by: Codex root. REQUEST CHANGES for complete four-commit/eight-path
+`10e2d656c149e2f5740948b0f18c5abf0c53b4e8..69c4f97256b312161ac8b230a27bfa8a99a6088a`;
+PASS/scoped approval for separate complete four-commit/eight-path
+`69c4f97256b312161ac8b230a27bfa8a99a6088a..bbee9805c8e536e1fafddd67d2986448612a6a63`
+(each base exclusive/tip inclusive). All eight union paths, contracts, declarations,
+instrument corrections and final records inspected. Neither range changes product.
+
+Exact historical bbee source/frozen8825a9d8…lock/original84ad06ef…provider,
+Chromium/WebKit: healthy56160 passes44/730excluded,5.67s; types90106 zero errors/
+warnings. Cursor bypass52333 fails16/8controls at overwritten sentinel; event
+fabrication13305 fails16/8 at unexpected projected buff list; description-only
+leak81265 fails4/16 on final whole paragraph list while Claim guard/diagnostic
+remain; wrong Founder scope63544 fails16/4 at request revision7 instead of2,
+not its later refusal. Announcement SELF opacity0 control49199 still24pass/
+750excluded,4.48s: RP-710 manual line() adapter bypasses shared opacity checks.
+Restored52086 passes44/730excluded,6.89s; hashes restored exactly. Other21original
+faults/broad gates inspected, not blindly reexecuted. RP-360 earlier whitespace
+failure remains excluded from later-row evidence.
+
+Committed ad015bc1 source supplement is explicitly NOT current frozen-job proof:
+rootnode_modules installation still uses historical8825a9d8…lock/original provider
+despite committed da90674c…lock. Healthy60459 passes24/134excluded,4.94s;
+announcement self-opacity0 survivor7757 passes24/134excluded,4.10s. OD-15
+healthy64497 passes4/238excluded,2.71s; actual upgrades-section ancestor opacity0
+25516 also4pass/238excluded,1.98s: RP-711 own-height/visibility reason check.
+These are oracle findings, not healthy-product styling bugs. All private hashes
+restored, handles terminal/browser lease released, no main reviewer edits.
+
+Root corrects both test adapters under existing GS0.3/GS0.6/GS5/OD-15 and RFC-0000,
+reusing sharedStateVisibleText instead of introducing another visibility primitive.
+Actual announcement/reason nodes AND ancestors each require an opacity0 failure,
+0.5/restored positives and finally cleanup in the existing populations. Exact
+text/role/node identity, focus/no-commands, reason IDs/describedby/disabled dispatch,
+newer snapshot/replay/projection assertions remain. No product/shared-helper/CSS/
+copy/timer/budget/provider/config/dependency/workflow change.
+
+Current declared frozen Linux Chromium/Firefox/WebKit test-first81396 exits2:
+42expected missing-throw failures (36announcement/6OD-15),558excluded,15.71s.
+Command: `make test-browser-ci-focused BROWSER_TEST_FLAGS='test/garage-surfaces-opportunity-browser.test.ts test/garage-surfaces-events-browser.test.ts -t GS5.announcement.authority\|OD-15'`.
+After the adapter correction, same command without -t51918 exits0:600/600 across
+six project-files,40.84s; HTTP586terminal/zero pending. Native make typecheck47988
+passes0errors/0warnings (historical installed dependency qualification above, not
+fresh frozen type environment). Two initial sandbox Docker denials execute zero
+tests; permitted ordinary disposable Compose/frozen setup/ten-minute containment
+supplies actual browser results. Tool output is truncated; terminal totals/named
+diagnostics retained, no invented complete raw artifact. Whitespace passes.
+
+Review by: Codex root, implementer first filter for the correction only.
+Recorded by: Codex root. Complete six-path correction after ad015bc1 through this
+commit awaits independent re-review alongside the original RP-358 range. RP-359's
+separate original approval is not relabelled as correction approval. No general
+occlusion/physical AT/service/whole-feature/CI/specification/archival/release claim;
+original REQUEST CHANGES and all author/content/1.0 holds remain. Goal active,
+no push. Next: exact correction re-review, including current frozen typecheck.

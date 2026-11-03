@@ -143,7 +143,7 @@ for (const width of [320, 1280] as const) {
         const line = (expected: string) => {
           expect(chrome.textContent).toBe(expected); expect(document.activeElement).toBe(focused);
           expect(runtime.requests).toEqual([]);
-          if (expected) { const box = chrome.getBoundingClientRect(); expect(box.width).toBeGreaterThan(0); expect(box.height).toBeGreaterThan(0); expect(getComputedStyle(chrome).visibility).toBe("visible"); }
+          if (expected) expect(sharedStateVisibleText(target, '.announcement[role="status"]', expected)).toBe(chrome);
         };
         const publish = async (cursor: number, schema: 1 | 2 | "achievement", expected: string) => {
           runtime.listener?.(opportunityAnnouncement(cursor, schema)); await settle(); line(expected);
@@ -190,6 +190,20 @@ for (const width of [320, 1280] as const) {
         }
         expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth);
         await assertAxe(target, `${path}/${width}`); line(earned);
+        // Exercise the actual adapter, not just the shared helper: a transparent
+        // status or ancestor keeps its text/geometry but must not count as visible.
+        const main = target.querySelector<HTMLElement>("main")!;
+        for (const faded of [chrome, main]) {
+          const originalOpacity = faded.style.opacity;
+          try {
+            faded.style.opacity = "0"; await settle();
+            expect(getComputedStyle(chrome).visibility).toBe("visible");
+            if (faded !== chrome) expect(getComputedStyle(chrome).opacity).toBe("1");
+            expect(() => line(earned)).toThrow("shared-state ancestor opacity");
+            faded.style.opacity = "0.5"; await settle(); line(earned);
+          } finally { faded.style.opacity = originalOpacity; await settle(); }
+          line(earned);
+        }
       } finally { try { if (fixture) await fixture.dispose(); } finally { await page.viewport(1280, 720); } }
     });
   }
