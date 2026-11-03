@@ -7912,3 +7912,109 @@ reach the isolated subject. All handles terminal, browser inventory empty and
 native port51204 absent. Reviewer makes no tracked edits/mutations/commits or
 publication. FullRP-333/AC7, SQL/default-player/manual/AT/CI/release and later
 population review remain; goal active. Record diff checked, no suite for Markdown.
+
+## 2026-11-03 — RP-335 cosmetic source guard independently approved
+
+Review by: fresh independent Codex `/root/cosmetic_source_guard_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED, no blocking findings, complete
+four-commit/eleven-path range
+`d3ce0f7624fc04f71abad6cec3eea1c8371dbf2e..54c8c8dac126d7e072974ae192078b90da5ae94f`
+(base exclusive, tip inclusive), including final evidence/closeout records.
+
+Reviewer uses exact historical archive at
+`/private/tmp/cloud-clicker-source-review.pQOonp`, not later live scanner changes.
+From repository root, existing Make targets address that snapshot with `make -C`
+and the repository cache: client boundary passes14 shell/8UI/22GameUI files,
+three production-derived kinds and tenGo/elevenSvelte negatives; helper vet and
+gofmt pass; typecheck0errors/0warnings; cold Production TestCosmetic selection
+passes eight parent/two child cases. Two Postgres cases explicitly skip; no DB
+integration claim. Exact-range whitespace passes. Handles f65833/01ee09/d6911d/
+e02b5c terminate.
+
+Private actual-source controls96776c/435a1f independently reproduce old fake-button
+survivor exit0 versus corrected exit2. Replaced/dynamic acquire, opaque envelope,
+decoder omission/duplication, missing/unsupported predicate and severed checker
+rejection all fail intended oracles. Actual OpportunityRegion text/fetch/runtime-
+import/literal-style faults fail their policy. Initial harness nested-CSS seed
+hits copy policy, not credited as style discrimination; corrected top-level CSS
+seed reaches the intended oracle. Restored historical gate passes and all four
+recorded source identities match. No main-tree mutations/edits, browser services,
+commits or publication by reviewer.
+
+Approval is bounded AST source verification, not arbitrary alias/control-flow,
+forwarding semantics, runtime eligibility, persisted receipts, complete Shop/
+Garage acceptance, browser performance, full hosted CI, archival or release.
+Root reconciles current status only; historical records remain intact. Other
+review/author/acceptance gates and the full1.0 goal remain open and active.
+
+## 2026-11-03 — RP-337 achievement source guard independently approved
+
+Review by: fresh independent Codex `/root/achievement_source_guard_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED, no actionable findings, complete
+three-commit/nine-path range
+`3609e776babfb056eac52af54b6fba097c7ac03c..85fdcfdf14e690cc9541e4ed90fa7e71c7c1c5d7`
+(base exclusive, tip inclusive), including final records.
+
+Actual subject is private exact historical archive
+`/private/tmp/cc-achievement-source-review.jcjEqS`. Healthy achievements guard43a987
+exits0 with seven component/four copy negatives. Old actual used CloutLifetime
+binding5ae4ff and canonical score-frame relabel e69d0d both survive exit0;
+corrected component10642f/computed member b9b69b/base copy ef30a3/era copy068102
+each fail exit2 at the GS2-A3 semantic oracle. Disabling checker0b52ed fails its
+unexpectedly-passed fixture. One era-patch attempt matches nothing/makes no change;
+the corrected application supplies the reported result.
+
+Final actual `make verify-achievements-boundary verify-client-boundary
+verify-ci-topology` b87c4f→c9ac95/session65014 exits0; syntax3bee81 and full-range
+whitespace e579db pass. Restored component/catalog/checker and baseline-helper
+bytes match Git objects730141/4a608f; component/catalog SHA256 also match historical
+record df0ecd. No main-tree mutations, browser/performance/DB execution or reviewer
+tracked edits. Historical types/client/build/copy/browser/performance are inspected
+records, not fresh execution.
+
+Bounded lexical source firewall only: actual AST/canonical source/era variants,
+comments ignored, separate Clout permitted, original Go ownership/dependency checks
+retained. No arbitrary dataflow, runtime eligibility/persisted-player proof, whole
+GS2/Garage, specification adoption, archival or release approval. Root updates
+current statuses; other acceptance gates and full1.0 goal remain open/active.
+
+## 2026-11-03 — Populated performance supplements independently approved
+
+Review by: fresh independent Codex `/root/populated_performance_supplement_review`.
+Recorded by: Codex root, transcribing APPROVED, no findings, complete consolidated
+three-increment range
+`e0cb918722ce9d1351caa5eb9d7347bb30a3e34a..da3a922d45bf40b2be544d81d01d092c3736a374`
+(base exclusive, tip inclusive), all source/docs/closeout records. RP-484 ends at
+`56d59bf51459da3a665be256231ccba43143a447`; later populations end at
+`c115bda6df40c68d8083f2b62a39c56cb8338d56`; catalog supplement ends at the tip.
+Each increment is independently acceptable within this consolidated verdict.
+
+Actual historical subject is `/private/tmp/garage-populated-review.42xkih`, using
+declared Playwright Compose plus private mount override; current selector script
+is read-only solely to dispatch the historical Make target. Exact command:
+`docker compose -f compose.browser-test.yml -f
+/private/tmp/garage-populated-review.42xkih/review.compose.yml run --rm browser
+test-game-ui-performance`. Baseline67452 exits0:five pass/105 functional exclusions.
+Private fault matrix32007 exits2 as expected:21 intended failures/eight controls.
+Restored old raw-button census fails all four populated cases before input with
+`Earnings Calls  `; wrong title and each badge independently fail. Final-input
+axis omission fails three later populations; missing locked The Nephew or Permits
+fails catalog only. Those final-input failures report1200 delivered/1199 successful
+samples/completed:false; raw-label regression reports0/0/false.
+
+Private faults restored; exact test blob4c67fed52e1df953236a7648b542eaf948b2701e
+matches reviewed tip. Restored42937 exits0:five pass/105 exclusions,7.91s runner
+duration. Current-root typecheck13729 passes0errors/0warnings and cold actual
+GameUI TestFiscalSharedSnapshot53712 passes, not skipped. Full-range whitespace
+passes; browser inventory empty. Original observer/1200-input/600-window/terminal
+requirements and numerical bounds remain intact. No exact success annotation
+counters inferred; historical hosted/native results remain historical.
+
+No tracked reviewer edits, publication, specification adoption or lifecycle
+promotion. Linux/ARM64 is not hosted AMD64/hardware proof. These controlled decoded
+composites are not earned/minted server states. FullRP-333/AC7 remains open: separate
+care tab, optional runtime ports, Tier2/later/full release population, actual default
+player, real elapsed minute/manual4x profile, platform/AT and release acceptance.
+Initial oracle and CI selector retain separate verdicts. Root updates current
+statuses only; no suites for Markdown. Continue pending accepted integration and
+corrective review, preserving held contracts and the active full nine-tier1.0 goal.

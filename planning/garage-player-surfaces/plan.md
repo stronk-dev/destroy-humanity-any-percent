@@ -7,10 +7,24 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+**2026-11-03 source-guard review:** RP-335's complete `d3ce0f76..54c8c8da`
+correction is independently APPROVED. Exact historical-source gate, private
+old/corrected fake-button controls, actual authority/policy faults, types/vet and
+cold cosmetic tests execute; two SQL cases skip explicitly. The owning log records
+scope/provenance. This source check is not arbitrary dataflow or runtime/Shop acceptance.
+RP-337's separate complete `3609e776..85fdcfdf` score-versus-Clout guard is also
+independently APPROVED, with old binding/copy survivors and corrected actual-source
+failures reproduced privately. Canonical source/era copy and legitimate separate
+Clout remain distinct. Neither guard completes player-workflow acceptance.
+
 **2026-11-03 performance review:** the initial RP-334 oracle correction is
 independently APPROVED for complete `127eb052..d3ce0f76`. Native Chromium passes
 all five current scenarios at unchanged bounds; later population extensions are
-context, not included approval. The attempted Linux performance-only command is
+not included in that initial verdict. Their separate consolidated
+`e0cb9187..da3a922d` range is now independently APPROVED: exact historical Linux
+five-case baseline/restored pass and21 intended fault failures/eight controls.
+This includes RP-484's title/badge census and RP-333's later/catalog populations,
+not full AC7 or earned/minted states. The attempted Linux performance-only command is
 rejected before tests (RP-706). CI's separate58c0264a..7b74bc74 scoped selector
 correction is now independently approved, with actual Linux five-scenario passes.
 Full RP-333/AC7, actual elapsed/manual profile, AT and release remain open.
