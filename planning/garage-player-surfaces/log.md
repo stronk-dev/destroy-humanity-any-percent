@@ -7831,3 +7831,54 @@ Postgres container (temporary rows unrecoverable), confirms empty inventory and
 preserves caches. All handles terminal; no tracked edits/mutations/commits or
 publication. Root updates only current statuses/appends verdict, checks record
 diff/claims, no suite for Markdown. Continue remaining accepted work; goal active.
+
+## 2026-11-03 — Meters layout and contained-error corrections approved
+
+Review by: fresh independent Codex `/root/garage_meter_layout_corrective_review`.
+Recorded by: Codex root, transcribing two separate APPROVED verdicts, no findings:
+
+- RP-330, all five commits/twelve paths, including final records:
+  `bddfc58ead6861a11c64c9995123ceb3e9aca570..127eb05222dcf533157add4cd9ef815214309275`.
+- RP-332, all five commits/thirteen paths, including final records:
+  `cc62cea8fdca83c4049b2b8051bce3c030f8a302..5fbf4cff6030b199633bebdb7fed9452a631e37d`.
+
+No earlier designated approval covers these complete spans. Actual narrow
+dl/dt/dd associations preserve all eleven committed values/bands/native names,
+one rendered population, live breakpoint updates, listener cleanup and nav focus;
+wide table retained. Both panels preflight specified missing mappings, contain
+errors/identifiers, report once per mounted episode and recover on healthy data.
+RP-619's later wide names remain separately reviewed context, not part of this range.
+
+Reviewer executes
+`make test-browser-ci-focused BROWSER_TEST_FLAGS='test/garage-surfaces-meters-browser.test.ts'`:
+51/51 across Linux Chromium/Firefox/WebKit,30.88s,handle43036 exit0; includes nine
+semantic-layout and twelve contained-error executions. HTTP51/51 terminal,zero
+early closes/pending. Types0/0,217-module build,client boundaries and both exact
+range whitespace checks pass. Initial restricted Docker denial executes no cases.
+Historical layout six-red/six-fault and presentation eight-red/five-fault results
+are inspected recorded evidence,not freshly executed or raw traces reconstructed.
+All handles terminal,browser inventory empty; root's Go/DB services untouched.
+No tracked reviewer edits/mutations/commits or publication; clean at312fd741.
+No actual400%zoom/AT/copy adoption,original feature/composed/performance/full CI,
+archival or release acceptance. Root reconciles current statuses only; no suite
+for these record edits. Full1.0 goal remains active; continue accepted work.
+
+## 2026-11-03 — Affected GameUI package passes declared amd64 CI environment
+
+Execution by: Codex root (supplement, not a new designated verdict).
+Recorded by: Codex root. At records-only312fd741, test source remains dff167a6.
+After the reviewer's browser lane terminates, run
+`make test-go-ci CI_TEST_PACKAGES='./gameui' CI_TEST_FLAGS='-v'`.
+Handle39935 exits0:39 parent tests pass,zero skips,6.820s; all three SQL parents
+and eleven Fiscal cases execute. Full4964-token output is retained in this turn's
+tool result; filtering its parent PASS/SKIP/FAIL lines gives39/0/0, not inference
+from the package summary alone. Existing exact values/immutable history checks pass.
+
+This uses unchanged compose.ci-test.yml's Linux-amd64 test image and existing local
+`GODEBUG=cpu.avx2=off` emulation workaround. It is affected-package evidence, not
+native hosted hardware/latency or a whole verify-server-ci/whole-repository CI pass.
+Known Production partition/history-guard/balance and release gates remain separate.
+Service inventory was empty beforehand; root removes only its newly created
+tmpfs Postgres container afterward (test rows unrecoverable), confirms empty
+inventory and preserves cache volumes/user data. All handles terminal; no workflow,
+CPU setting,source,assertion or deadline change. No push/deploy/release promotion.

@@ -559,7 +559,11 @@ remain separate. No lifecycle promotion or new specification adoption.
   Original surface batch `acf43132^..acf43132`, all22 paths, has designated Codex
   CHANGES REQUIRED (2026-10-13): RP-323/324/330/332 and catalog correspondence RP-534.
   This covers the GS1/GS2/GS3/GS6/GS7 changes below, not approval of subsequent Codex
-  corrections. The owning log retains executed evidence and separate review ranges.
+  corrections. RP-330's complete `bddfc58e..127eb052` semantic layout correction
+  and RP-332's separate complete `cc62cea8..5fbf4cff` contained presentation errors
+  are now independently corrective-approved. Current three-engine Meters51/51,
+  types/build/boundary checks pass; original feature/actual zoom/AT gates remain.
+  The owning log retains exact provenance, historical evidence limits and ranges.
 - [x] GS2 Achievements arm + surface.
 - [x] GS1 Fiscal arm + surface.
   RP-323/324/325 pending/readiness/row-reason/focus correction is independently
