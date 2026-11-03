@@ -4511,3 +4511,105 @@ CI, feature/specification/copy/archival/release acceptance is claimed. Historica
 kernel guard remains red; exception draft unadopted. All processes terminal; private
 overlay removed; no browser/service resources acquired or tracked reviewer edits.
 Next consolidated review: RP-572–577 exact-shape/slot admission corrections.
+
+## 2026-11-03 — Five-owner exact-shape and slot corrections approved
+
+Review by: fresh independent Codex `/root/catalog_exact_shape_corrective_review`.
+Recorded by: Codex root. APPROVED RP-572–577 corrective portions only, no blocking
+findings. All13/14/13/13/13 mixed paths inspected in these exact contexts:
+
+- Achievements: `10ca8fbfac95494aad58562ce8e1908dd2b19bf4..c7c4e561a92c135c0effe8de9c1c4f7891898a48`.
+- Meters: `c7c4e561a92c135c0effe8de9c1c4f7891898a48..11efb691ab3eb13b802539c7be33645de90625d7`.
+- Opportunities: `11efb691ab3eb13b802539c7be33645de90625d7..e670cd1a2916069e123c09d516ca7fec84326698`.
+- Doctrine: `e670cd1a2916069e123c09d516ca7fec84326698..108706a663ae6f1eb53e6b39407a33524f3d0bdc`.
+- Fiscal: `108706a663ae6f1eb53e6b39407a33524f3d0bdc..d87bffdca978ce758b114243b8f1c9b60c06d107`.
+
+Scope: existing loader original-key/closed-arm/non-null/final-object checks and
+existing safe durations; Meters' missing registered `axis_stack` TS slot/type-only
+alias; their regressions/correction docs/records and genuine kernel191–195 trio
+advances. Accepted CA1/C6, M1/C6/CV3, A9, D1 and F5/F9 govern these corrections.
+All five new schema exports and descriptor construction/acceptance portions of
+`catalog_schema_test.go` and mixed records remain EXCLUDED. Contextual descriptor
+execution and loader-preservation controls do not approve that new feature;
+these are not whole-range approvals or full archival coverage.
+
+At `a5d7de07` (later `d51eccc2` records only), independent cold eight-package
+Go87168 passes; matching vet passes; six TS owner/replay files7392 pass246 tests;
+types/build1145 pass0errors/0warnings/217modules. Pure Production63069 executes
+23 top-level activation/settlement/hooks/replay/ActivePlay/Doctrine/Fiscal/Permits
+cases and their negative subcases, no DB cases selected/skipped. All five range
+whitespace checks pass. Commands use root Make targets with `-count=1`:
+
+```sh
+make test-go GO_PACKAGES='./achievements ./meters ./activeplay ./doctrine ./fiscal ./publicapi ./kernel ./replaycatalog' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./achievements ./meters ./activeplay ./doctrine ./fiscal ./publicapi ./kernel ./replaycatalog'
+make typecheck
+make build-client
+```
+
+Private exact-base Go overlay13334 exposes149 wrong admissions (expected Make2):
+Achievements16; Meters40 including2 later reseed subcases beyond original38;
+Opportunities38aliases+4wrong-arm-null+3durations; Doctrine12aliases+2missing/null
+tiers+1final-null-version; Fiscal26aliases+6partial/null-policies+1null-reason.
+No compile failure or main-source mutation. Current suites pass the same assertions.
+Old TS slot failure is retained execution reused after source/SHA correspondence,
+not freshly executed; current controls cover all nine slots. Explicit zero,
+escaped canonical names, complete last-value behavior, signed deltas and decay/
+duration endpoints remain. Source/regressions match reviewed tips; no artifact,
+generated pin, state codec, arithmetic or balance changes. Doctrine editorial
+mint correction matches epoch6 changelog/current epoch8 manifest.
+
+Initial pure-production invocation's terminal handle was omitted from displayed
+orchestration; process check found it exited. Only observed63069 supplies results.
+All processes terminal; no browser/Docker/DB/listeners, tracked reviewer edits,
+publication, new policy/content/specification adoption, full Production/CI,
+history-guard waiver, feature/archival or release acceptance. Continue remaining
+admission reviews separately from new descriptor acceptance.
+
+## 2026-11-03 — Curriculum pairing and Prestige admission corrections approved
+
+Review by: fresh independent Codex `/root/catalog_curriculum_prestige_corrective_review`.
+Recorded by: Codex root. APPROVED corrective portions only, no findings, after
+inspecting all13/14 mixed paths in exact base-exclusive/tip-inclusive contexts:
+
+- RP-579: `4c0685406ad3eadfaa3eabf1a0b18e4ca3193815..65ee6a8e72d56194ab22c200307b51f1ff2dfe18`.
+- RP-580: `65ee6a8e72d56194ab22c200307b51f1ff2dfe18..307725e4d03a7c78b120d15a2663366066413365`.
+
+Scope: Curriculum original exact/non-null shapes and curriculum-only ruled
+Acquihire/resource-grant, Burnout/generated-generators, Pivot/preowned-upgrade
+pairing; Prestige original exact/non-null policies/payouts/arrays and extraction/
+TS mirror of the pre-existing Go expiry representation; corresponding regressions,
+correction docs/records and genuine kernel196→197→198 trio advances. Generic
+`ValidateStarter` remains unchanged and accepts all three kinds. Explicit zero,
+canonical escapes, complete last-value objects, current/historical artifact bytes,
+valid retunes and semantic loader binding remain. Prestige maximum9,223,372,036,854ms
+passes and first larger value refuses in both readers; no balance ceiling is chosen.
+Both new schema exports/tests and C18 construction/feature clauses remain EXCLUDED,
+despite contextual inspection/execution. Neither mixed range has whole-range or
+archival approval through this verdict.
+
+Independent current execution on unchanged executable tree at `d51eccc2`:
+cold owner/publicapi/kernel/replaycatalog52833 and affected vet50610b pass;
+three curriculum/prestige/replay Node files65017 pass211, two Reputation replay
+files73890 pass55; types47721 pass0errors/0warnings; build66795 passes217modules.
+Production35098 executes nine pure top-level preflight/first-failure/starter/
+preview/legacy-replay/offer/copy-refusal consumers, no skips. Exact range whitespace
+checks pass; corrective source/tests remain byte-identical to reviewed tips.
+
+```sh
+make test-go GO_PACKAGES='./curriculum ./prestige ./publicapi ./kernel ./replaycatalog' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./curriculum ./prestige ./publicapi ./kernel ./replaycatalog ./production'
+make typecheck
+make build-client
+```
+
+Old failures are RETAINED, not rerun: Curriculum46, Prestige Go35 and old-TS
+duration1failure/15controls. All three actual artifacts match the SHA256s in their
+original entries and correspond to independently inspected old source/regressions;
+no redundant source mutation. Two initial Production selectors fail in shell/Make
+quoting before tests; only corrected35098 counts. Initial Node invocation includes
+nonexistent `kernel-version.test.ts`; only the actual three files count, no TS
+kernel-version test claimed. All handles terminal; no source/Git mutations,
+services/browser/SQL/generation/balance edits. No full Production/CI/history-guard
+waiver, feature/specification/copy/archival/release acceptance. Continue remaining
+catalog corrective reviews; all new descriptor construction retains its own gate.
