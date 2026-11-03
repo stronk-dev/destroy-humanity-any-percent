@@ -1,6 +1,6 @@
 # RFC: Artifact Schema Ownership and Kernel-neutral Descriptor Delivery
 
-- **Status:** draft — engineering proposal; owner adoption and designated review pending. Not implementation authority.
+- **Status:** draft — independently technically approved 2026-11-04; owner adoption and history-scope prerequisite remain. Not implementation authority.
 - **Author:** Codex
 - **Created:** 2026-10-14
 - **Design refs:** `design/06-tech.md` (pure boundaries, replay identity); published data/formulas and community tooling in `design/05`.

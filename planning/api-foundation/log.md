@@ -4715,3 +4715,84 @@ no services/containers/browser/SQL/main edits/commits. Private overlay remains
 pacing/CI, history exception adoption, feature/archival or release approval.
 All RP-572–594 corrective reviews now have disposition; new descriptors and
 unadopted representation/ownership/transport contracts remain separate work.
+
+## 2026-11-04 — Integer-token representation proposal technically approved
+
+Review by: fresh independent Codex `/root/api_integer_encoding_technical_review`.
+Recorded by: Codex root. APPROVED technical specification plus six test-only
+boundary additions, complete seven-path base-exclusive/tip-inclusive range
+`f900340d41007ade6f69ad622f272e8047573559..213ad5f6a7bd8f9bbdf19db9687ecbace5f2e3ed`.
+No blocking findings or previous exact technical verdict. Proposal/shared corpus
+remain unchanged at reviewed descendant `b5c9991f` before this editorial status.
+
+Default plain-int64, actual-integer-child opt-in, URI refusal, exact raw tokens,
+immutable exports, generated mode and recursive compatibility are buildable;
+static TS numbers are not lexical validation. Existing64-byte/two-digit±32
+exponent grammar and safe maximum match both actual owners. Negative zero is
+mathematical zero and subject to each field's lower bound; no parser budget or
+gameplay change is hidden. JSON Schema/OpenAPI primary sources cited in the
+proposal support its mathematical-integer/extension statements.
+
+Independent cold publicapi/replaycatalog/formulas/relevancepolicy/gen-api and vet
+pass; relevancepolicy has no standalone committed tests. Verbose actual harness
+consumer executes complete policy and all26 shared mutation cases. Node actual
+relevance/formula files pass61; initial selector also names nonexistent replay-
+catalog.test.ts, which executes nothing and supplies no evidence. Private existing
+seven-case probe independently reproduces3decimal/exponent disagreements,2valid
+plain and2invalid controls; both quoted numeric fields now refuse. Twelve extra
+actual Go-helper plus twelve in-memory TS-helper controls cover negative zero,
+two/three-digit exponents,±33zero, exact maximum and rounded fraction, all pass.
+No main-source replacement; exact-range whitespace passes.
+
+```sh
+make test-go GO_PACKAGES='./publicapi ./replaycatalog ./formulas ./relevancepolicy ./cmd/gen-api' GO_TEST_FLAGS='-count=1'
+make vet GO_PACKAGES='./publicapi ./replaycatalog ./formulas ./relevancepolicy ./cmd/gen-api'
+```
+
+This is TECHNICAL APPROVAL, not owner adoption or implementation authority.
+No proposed DSL mode, schema annotation, generated rewrite/api-check, browser,
+SQL, full harness/Production/hosted CI or release execution. Current generation/
+compatibility tests exercise current code, not hypothetical encoding support.
+All handles terminal; no tracked reviewer edits/commits/services. Scratch retained
+at `/private/tmp/cloud-clicker-integer-review.rwuSxF`. Actual RP-566 gap, full C18,
+other author/adoption/history/accounting/feature/archival/release gates stay open.
+
+## 2026-11-04 — Schema ownership and original-byte transport proposals technically approved
+
+Review by: fresh independent Codex `/root/api_artifact_transport_technical_review`.
+Recorded by: Codex root. APPROVED technical specifications only, no blocking findings.
+Complete mixed contexts inspected, all18/9 paths, base exclusive/tip inclusive:
+
+- Ownership: `c0b71434f96456ff674fd80c0a9481dbf93428a2..661ba498817b26409ba7c715e619c8d6a4ea9957`.
+- Transport: `8f9b52963c67fe60d306d961d30151b0a9c01179..0411ef34e69d4e986a2571b0ab404f0d21025c29`.
+
+Scope is the two normative drafts, proposal-specific docs/routing and gap evidence.
+Not approval of mixed production/verifier/descriptor construction, already-approved
+grammar corrections or whole-range archival coverage. Single Route-owned companion
+preserves dependency direction/shared grammar; neutral delivery still requires the
+separate unadopted history mechanism and exact committed-path eligibility.
+Original UTF-8 colon-to-delimiter intervals retain source whitespace; decoded names/
+nesting govern scanning. Owner policy is bounded to its json node, while envelope
+uniqueness, shape/semantics, immutable pinned metadata and epoch authorization stay.
+Reachable artifactRef plus existing public/auth-none/schema-success metadata can
+derive SDK eligibility without a handwritten operation/family allowlist.
+
+Nonblocking implementation recommendation: explicitly test that graph-derived
+predicate and emitted extension/result metadata. Current ClientOperation has no
+such metadata; neither draft nor verdict claims implementation exists.
+
+At clean `b5c9991f`, own catalog selection80446 passes actual RawMessage compaction,
+real Category duplicate-versus-HTTP conflict, all19 original sources, all19 compaction
+and relabelled-child refusals plus contextual composition/generator/immutability/
+negative/verifier cases. One PublicCatalogIntegration parent skips without DB;
+no SQL proof. Selector runs no publicapi tests, so separate full cold publicapi22224
+executes and passes0.155s. Affected vet and unchanged Route/Commons guards pass;
+both range whitespace checks pass. Drafts/lexical evidence match reviewed tips.
+
+All handles terminal; no hypothetical artifactRef, generation, SDK/browser/live
+HTTP/Postgres journey, full CI/release, source edits/services/containers/commits
+or publication. Root's later status records are editorial only. Technical review
+does not adopt proposals or authorize implementation; historical guard/accounting,
+complete C18, new-feature/archival/release gates remain open. Next adoption packet
+groups these with the independently approved integer-token proposal; no new
+per-field product choices or extra review prerequisite is created.

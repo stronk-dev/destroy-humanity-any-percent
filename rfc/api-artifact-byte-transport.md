@@ -1,6 +1,6 @@
 # RFC: Original Artifact Bytes in Catalog Transport
 
-- **Status:** draft — engineering proposal; adoption and designated review pending. Not implementation authority.
+- **Status:** draft — independently technically approved 2026-11-04; owner adoption pending. Not implementation authority.
 - **Author:** Codex
 - **Created:** 2026-10-14
 - **Design refs:** `design/06-tech.md` (versioned data, cross-runtime parity); API Foundation's public verification/transparency contract.

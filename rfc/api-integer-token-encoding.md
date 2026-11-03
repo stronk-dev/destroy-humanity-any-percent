@@ -1,6 +1,6 @@
 # RFC: Explicit Integer Token Encoding in API Schemas
 
-- **Status:** draft — RP-566; normative adoption and designated review pending. Not implementation authority.
+- **Status:** draft — RP-566; independently technically approved 2026-11-04; owner adoption pending. Not implementation authority.
 - **Author:** Codex (engineering proposal for Marco)
 - **Created:** 2026-10-14
 - **Design refs:** `design/06-tech.md` (cross-runtime parity and versioned contracts)

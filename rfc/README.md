@@ -24,10 +24,10 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Leaderboard Readers & Player Surface](leaderboard-readers-and-player-surface.md) | draft — not implementation authority | Leaderboards / API Foundation / Game UI / Route Registry |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 | [API Foundation](api-foundation.md) | accepted — C1–C20 ruled; implementing | Account API / Transport / Gameserver Composition |
-| [Artifact Schema Ownership & Kernel-neutral Delivery](api-artifact-schema-ownership.md) | draft — Route companion and exact reviewed descriptor-only scope proposed; not implementation authority | API C17/C18 / Route C2 / Kernel History Guard Integrity |
+| [Artifact Schema Ownership & Kernel-neutral Delivery](api-artifact-schema-ownership.md) | draft — independently technically approved 2026-11-04; owner adoption/history-scope prerequisite remain; not implementation authority | API C17/C18 / Route C2 / Kernel History Guard Integrity |
 | [Typed Dictionaries in API Schemas](api-typed-dictionaries.md) | draft — RP-391, preserve-receipt option proposed; owner choice/review pending | API Foundation C17 / existing intent receipts |
-| [Explicit Integer Token Encoding in API Schemas](api-integer-token-encoding.md) | draft — RP-566; measured representation proposal, adoption/review pending; not implementation authority | API Foundation C17/C18 / relevance owner grammar |
-| [Original Artifact Bytes in Catalog Transport](api-artifact-byte-transport.md) | draft — RP-597/RP-598; owner lexical boundary and exact-byte recovery proposed, not implementation authority | API Foundation C12/C17/C18 / artifact owners |
+| [Explicit Integer Token Encoding in API Schemas](api-integer-token-encoding.md) | draft — RP-566; independently technically approved 2026-11-04; owner adoption pending; not implementation authority | API Foundation C17/C18 / relevance owner grammar |
+| [Original Artifact Bytes in Catalog Transport](api-artifact-byte-transport.md) | draft — RP-597/RP-598; independently technically approved 2026-11-04; owner adoption pending; not implementation authority | API Foundation C12/C17/C18 / artifact owners |
 | [Bodiless Responses in the API Registry](api-bodiless-responses.md) | draft — RP-483, existing204/304 representation proposed; owner adoption/review pending | API Foundation C19 / Account lifecycle / public caching |
 | [Minigame Platform Foundation](minigame-platform-foundation.md) | accepted — C1–C40 ruled; implementing | Gameserver Composition / Founder Attendance / Combat |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |

@@ -12,9 +12,13 @@ mechanics and genuine historical kernel191–208 identities remain intact.
 New owner descriptors/component exports and their construction tests, complete
 C18 acceptance and the schema-ownership proposal are explicitly excluded from
 these corrective verdicts. No mixed range is wholly approved or archival-covered.
-Next: technical review/adoption of the bounded schema/representation/byte-transport
-proposals, then the complete catalog/SDK path under that authority; do not repeat
-these completed admission reviews or mount a partial catalog endpoint.
+The bounded schema-ownership, integer-token and byte-transport proposals are now
+independently technically approved2026-11-04. The log holds exact original ranges,
+fresh gap/consumer controls and exclusions. Owner adoption and the separate history-
+scope mechanism remain prerequisites, not implementation authority from review.
+Next: adopt the reviewed contracts, then construct/prove the complete catalog/SDK
+path; do not repeat completed admission/specification reviews or mount a partial
+catalog endpoint. Other already-accepted work may continue while adoption is held.
 
 **Activity admission review, 2026-11-01:** fresh independent Codex approves
 complete `13acd872..ef10238f` (RP-444), all ten paths. Eight existing bootstrap/
@@ -266,9 +270,10 @@ Current C18 representation proposal (2026-10-14, RP-566):
 `rfc/api-integer-token-encoding.md` specifies opt-in exact-safe numeric tokens without globally
 widening current integers. Six additional shared boundary controls execute in Go/Node/native
 Chromium/WebKit. The draft covers construction, unchanged URI/default behavior, exact
-validation, immutable exports, generated metadata and compatibility; adoption/designated review
-remain open, and no production DSL or owner descriptor is implemented. Owning log records
-the new proposal/test-only range after `f900340d`; API-only kernel scope and full C18 remain.
+validation, immutable exports, generated metadata and compatibility. Complete proposal/test-only
+range `f900340d..213ad5f6` is independently technically approved2026-11-04; the log
+holds fresh actual-owner controls and limits. Owner adoption remains open; no production DSL
+or owner descriptor is implemented. API-only kernel scope and full C18 remain separate.
 
 Current C18 readiness/correction (2026-10-14, RP-566/RP-567): actual relevance-policy
 admission preserves exact integral decimal/exponent tokens that the existing registry
