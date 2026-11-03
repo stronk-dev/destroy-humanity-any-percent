@@ -7,6 +7,13 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+**2026-11-03 performance review:** the initial RP-334 oracle correction is
+independently APPROVED for complete `127eb052..d3ce0f76`. Native Chromium passes
+all five current scenarios at unchanged bounds; later population extensions are
+context, not included approval. The attempted Linux performance-only command is
+rejected before tests (RP-706); CI's owning lane will add a scoped runner selector.
+Full RP-333/AC7, actual elapsed/manual profile, AT and release remain open.
+
 **Integrated verification, 2026-11-01:** complete existing
 `make test-game-ui-composed` PASS at `7f540859` (kernel0.3.223). Main endings/
 continuation and process-loss recovery, Cosmetic/Reputation/Clout, payment-path

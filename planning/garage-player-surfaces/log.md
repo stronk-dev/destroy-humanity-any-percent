@@ -7882,3 +7882,33 @@ Service inventory was empty beforehand; root removes only its newly created
 tmpfs Postgres container afterward (test rows unrecoverable), confirms empty
 inventory and preserves cache volumes/user data. All handles terminal; no workflow,
 CPU setting,source,assertion or deadline change. No push/deploy/release promotion.
+
+## 2026-11-03 — Bounded performance-oracle correction independently approved
+
+Review by: fresh independent Codex `/root/garage_performance_oracle_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED, no findings, complete three-commit/
+ten-path range `127eb05222dcf533157add4cd9ef815214309275..d3ce0f7624fc04f71abad6cec3eea1c8371dbf2e`.
+No later designated coverage found. Delivered fixture inputs, connected visible
+cash activity, per-input population, exact terminal cash, mandatory native support
+and final-task drain correctly replace reliance on the old vacuous measurement.
+Original scenario remains byte-identical; budget SHA256 stays
+8a7fc92f255152f784ef421da886ae3a6d860fd2e8afebbf94ca4d1eeb11217e.
+
+At clean e1fcfc29, reviewer runs `make test-game-ui-performance`:89736 exit0,
+five current Chromium cases pass/107 unselected,5.95s total; bounded case560ms.
+Types40659 pass0/0; Node game-ui.test.ts100 pass; exact-range whitespace passes.
+Retained old survivors/six faults are inspected, not freshly remutated. Current
+success reporting does not expose exact annotation counters; historical217 commits
+is not relabelled current. This tests simulated inputs/bounds, not60 elapsed seconds.
+Later pre-adoption/adopted/catalog cases run but are outside this historical approval.
+
+Requested `docker compose -f compose.browser-test.yml run --rm browser test-game-ui-performance`
+68645 exits2 before setup/testing: the entrypoint permits only full and focused
+functional targets. RP-706 owns this separately discovered selector gap. No Linux
+performance pass follows from the native result, and no assertion/runner edit occurs
+in this review. Root will add the scoped selector in CI's owning lane, retaining
+full default/frozen setup/containment; not rerun all functional cases merely to
+reach the isolated subject. All handles terminal, browser inventory empty and
+native port51204 absent. Reviewer makes no tracked edits/mutations/commits or
+publication. FullRP-333/AC7, SQL/default-player/manual/AT/CI/release and later
+population review remain; goal active. Record diff checked, no suite for Markdown.
