@@ -19,9 +19,16 @@ manual AT, all-state/ID coverage and full GS3 acceptance remain separate.
 RP-082 forced headings/removed-trigger focus and RP-345 same-Founder exact-next
 binding. Exact historical native Chromium/WebKit116pass; actual old source
 reproduces heading and foreign-Founder failures with healthy controls. Types/build
-pass. Later RP-346/RP-347 standard-terminal/pending-focus range remains separate
-and under review. These are runtime-double/native input proofs, not real-service,
-manual AT or full-feature acceptance.
+pass. Separate RP-346/RP-347 standard-terminal/pending-focus range
+`0e7910ed..4b44a563` is also independently APPROVED: original native152pass;
+old Tab-stop, native-disable and actual duplicate-read controls fail as intended.
+RP-348 remains unexplained. These are runtime-double/native input proofs, not
+real-service, manual AT or full-feature acceptance. RP-349's test-only delayed
+Fiscal path `c24b8f6d..fc901f70` is independently APPROVED too: exact native24pass,
+wrong revision/outcome mapping/delayed focus faults each24fail; types0/0. Its
+invalid/incomplete historic probes remain excluded. Next corrective review:
+R-013's separate `fc901f70..f5be35f6` observation, not a production stall fix;
+RP-351's historical cause remains open.
 
 **2026-11-03 shared-state/Fiscal review:** initial reviews of complete shared-host/consumer range
 `0fe2f57c..a551d3c2` and Fiscal edge range `57efdc39..3609e776` received
@@ -374,7 +381,7 @@ range and every earlier Garage range independently need Claude. Next accepted
 Garage work: inspect then predeclare native Fiscal pending/receipt-focus audit,
 retaining existing copy/revision/refusal states. No startup Retry authority.
 
-Latest Garage bounded work: RP-346 native tab stop / RP-347 pending focus repair.
+Historical implementation checkpoint: RP-346 native tab stop / RP-347 pending focus repair.
 2e5ba552 → red a3dab732 → separatefd56b866 → retry diagnosis → separate
 38d8d650. Current read control explicit tabindex0/pending aria-disabled;
 existing guard actually suppresses duplicated native activation. Standard96

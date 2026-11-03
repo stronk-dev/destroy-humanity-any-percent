@@ -8331,3 +8331,64 @@ manual AT, full idle/performance, CI/whole-feature/archival/release acceptance.
 Root reconciles named statuses only and preserves historical records; later
 standard-terminal/pending correction is the next review, not a blocker to other
 accepted work. No software suite for these records, no push; goal stays active.
+
+## 2026-11-03 — Standard continuation and pending-focus correction approved
+
+Review by: independent Codex `/root/lifecycle_continuation_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED without findings for complete
+`0e7910ed144f28f5597fef3671011a0f2d9eb60d..4b44a56338e6bb83e77d222a7f39d2e5b1bb29c9`
+(base exclusive/tip inclusive), all five commits/ten paths. Source, strengthened
+assertions, red checkpoints/scopes, docs and records inspected; earlier verdicts
+were not relabelled as this range's approval.
+
+Exact historical source/config/matching frozen unpatched dependencies: native
+Chromium/WebKit 152 pass, 474 deselected, 18.34s (56 strengthened scripted and
+96 standard cases). Private removed tabindex: two intended WebKit traversal
+failures/two Chromium controls pass, 622 deselected, unchanged 7/7 bound.
+Private restored native-disable: four intended disabled=false assertion failures;
+this fires before its later focus assertion, while healthy cases exercise focus.
+Private omitted actual function pending guard: four duplicate-read failures,
+two snapshot calls instead of one, both scripted/standard and both engines;
+622 deselected. Test-driver hashes identical across healthy/private controls.
+Exact types zero errors/warnings, build matches index-h_Id1Wf-.js and original
+Worker/CSS; full-range whitespace passes. Other historical faults inspected,
+not reexecuted. No setup/provider/preference/deadline/traversal/assertion changes.
+
+All sessions terminal/browser lease released; no tracked reviewer writes or
+publication. RP-348 remains unresolved, not causally explained by these passes;
+no full client/harness/idle/performance rerun or real-service/SQL/Firefox/Linux/
+physical AT/natural ending/full-CI/feature/archival/release claim. Root updates
+only named current statuses; no suite merely for records. Next independent review
+is the separate RP-349 delayed Fiscal test scope; its contaminated/incomplete
+historical probes remain excluded. Goal active, no push.
+
+## 2026-11-03 — Delayed Fiscal native-path test scope approved
+
+Review by: independent Codex `/root/fiscal_rendered_edges_corrective_review`.
+Recorded by: Codex root, transcribing APPROVED without findings for complete
+two-commit/nine-path range (base exclusive/tip inclusive)
+`c24b8f6d65524a57bd523bcf69792ce80ffd7dc2..fc901f70fc0e776d405042a5e5bc5cc9dfad7fea`.
+All tests/records and final refusal-fixture revision7→8 refinement inspected.
+
+Exact private `/private/tmp/cloud-clicker-rp349-review.BnAmjV`, matching frozen
+historical dependencies/config and original unpatched provider. Command:
+`make -C /private/tmp/cloud-clicker-rp349-review.BnAmjV -f Makefile -f Review.mk test-browser-focused 'BROWSER_TEST_FLAGS=test/garage-surfaces-browser.test.ts -t "GS1 native pending" --project=chromium --project=webkit'`.
+Private Review.mk only exposes the unchanged historical functional recipe.
+Native macOS ARM64 healthy57885:24pass/626excluded,6.22s. Private Company-revision
+substitution64442:24fail, expected7/actual1,2.91s. Broad applied/empty-receipt
+outcome-mapper input51166:24fail at FIRST ordinary refusal exact Fiscal text,
+3.49s, not specifically applied-only notice discrimination. Focus-first-nav after
+awaited applied refresh91278:24fail after held read, Options expected/Desk actual,
+5.02s. Each fault exits2 on actual assertions; exact host/Fiscal/refined-driver
+hashes restored after each. Historical typecheck60451 exits0,zero errors/warnings;
+full-range whitespace passes. Production code unchanged in reviewed scope.
+
+Initial sandbox listen denial executes zero cases; permitted runs finish without
+retries/hang profiling/config/deadline/assertion changes. RP-350 contaminated
+control remains invalid; both manually stopped RP-351 populations stay incomplete.
+Earlier fault evidence keeps its own driver hash, not refined2040c434…dc846e.
+R-013 is separate. All handles terminal,51204 listener absent,browser lease
+released; no tracked reviewer writes or publication. No service/SQL/Firefox/Linux/
+AT/full-GS1/CI/specification/archival/release acceptance. Root updates named
+statuses only, no suite for records; continue remaining accepted work and
+R-013 observation review without inventing a stall cause. Goal active, no push.

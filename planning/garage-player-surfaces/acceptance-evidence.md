@@ -76,10 +76,10 @@ evidence merely because its text exists.
 | Gate | Producer → player consumer | Evidence present | Remaining acceptance / route |
 |---|---|---|---|
 | GS1-A1 projection | `features.go:projectFiscal` → `contracts.ts:parseFeatures` → `FiscalSurface.svelte` | `TestFiscalProjectionMatchesPersistedHarvestIntegration` executes against Postgres; `TestFiscalSharedSnapshot` checks the complete Go projection against `testdata/gameui/fiscal-snapshot-v4.json`; TS parses that same JSON and rejects extra fields | **Locally proven; designated review pending:** persisted normal/live-clock and exact cap controls, read-only state/history/reload, shared decode and required unswept/decoder faults executed. A later nonsaturated receipt is checked against its recorded DB time, not falsely equated to an earlier preview. Commands/limits: Garage log's two GS1-A1 entries. Latest full composed target passes; separate proved RP-365 remains unrepaired. |
-| GS1-A2 revision | `GameUIApp.svelte:act` → Fiscal callbacks → runtime | B phase/revision and held-refresh supplement, plus RP-349 native host paths using Founder7→8 versus Company1→2; fresh C atf46298e7 Fiscal/Pitch credit1e0 Company31/refreshed31 | **Partial:** native exact-payload/refusal/held-reply/read/context-survival proof has eight complete restored faults; RP-361 current-host real-service run is now fresh. Neither completes all named Fiscal population or designated corrective approval. |
+| GS1-A2 revision | `GameUIApp.svelte:act` → Fiscal callbacks → runtime | B phase/revision and held-refresh supplement, plus RP-349 native host paths using Founder7→8 versus Company1→2; C atf46298e7 Fiscal/Pitch credit1e0 Company31/refreshed31 | **Partial:** RP-349's completec24b8f6d..fc901f70 test scope independently APPROVED2026-11-03, exact native24pass; wrong-revision control24fail. This does not complete the whole Fiscal population or approve other ranges. Actual service proof retains its separate source/review boundary. |
 | GS1-A3 phases | public v4 fixture → actual `fiscal-phase.ts`/FiscalSurface → mounted exact text/readiness | Four exact fixed-time fixtures and original thresholds retained; independent actual early<= control fails correctly. RP-709's invisible-ancestor survivor is corrected, original finding preserved | **Scoped original-plus-correction union independently APPROVED.** Shared ancestor-aware helper plus mounted zero/partial/restored control: independent corrected12pass, old-adapter12fail, peer Fiscal147/147 within1116/1116 inspected; types0/0. No live-clock/server/pacing proof, RP-336 reconciliation, content/AT/full acceptance follows. Exact source/range/evidence in owning log. |
 | GS1-A4 refusals | receipt + mapper → Fiscal own polite notice | Existing B populations/faults plus actual composed Account/Production/Postgres HTTP400 invalid-envelope and HTTP200 stale-revision cases, native Enter, exact notice/focus/read/request observations, followed by fresh consent and persisted receipt state | **Partial; designated review pending:** two real-server refusal classes now run in the ordinary composed target. These seeded outgoing requests are not naturally malformed client requests, every rejection row, HTTP401/404/429/5xx, renewal or all-engine/AT proof. Commands/setup failures/limits: latest Garage log. |
-| GS1-A5 accessibility | Fiscal DOM + host chrome/nav | B axe, native Enter/Space harvest/level/unlock, pending/stale/focus/320 px supplements; RP-34924 complete keyboard paths with delayed reply/read and newer native Settings selection | **Partial:** whole-page native reflow/axe/newer-focus boundaries locally witnessed, not all-state/three-engine/400% zoom/manual assistive evidence. RP-350 contaminated probe and RP-351 incomplete runs excluded; exact new range needs Claude. F is RED, not waived. |
+| GS1-A5 accessibility | Fiscal DOM + host chrome/nav | B axe, native Enter/Space harvest/level/unlock, pending/stale/focus/320 px supplements; RP-34924 complete keyboard paths with delayed reply/read and newer native Settings selection | **Partial:** RP-349 corrective test range independently APPROVED2026-11-03; delayed-read focus fault24fail. Whole-page reflow/axe/newer-focus proof is not all-state/three-engine/400%zoom/manual AT acceptance. RP-350 contaminated and RP-351 incomplete runs remain excluded; old F failures are historical, not waived or relabelled as this review. |
 | GS1-A6 composed | real Fiscal harvest/spend → projected Pitch fact/nav | Fresh C atf46298e7 actual DOM harvest/unlock/Pitch sequence, final6 Pitch UI commands/credit1e0 Company31 and refresh31 | **Locally witnessed current host; designated review owed:** whole root passes before/after independent mounted Claim severing. Short live clock is not final pacing, full Fiscal/epoch or release-artifact approval. |
 | GS2-A1 state text | `projectAchievements` → `AchievementsSurface.svelte` | Original earned-run/lifetime/locked assertion plus visible state/scope/grant/title/possession/public-score fixtures under6c578197; G live arms/overlap refusal | **Bounded fixture proof; review pending:** actual state-text omission fails original and new gates; CSS-hidden state survives the original raw text test but fails new native visibility. RP-332 missing-copy error state is now explicitly checked here. No server acquisition/all-engine/AT claim. |
 | GS2-A2 once | `events.ts` cursor → host chrome announcement | B simulated reconnect/dedupe; RP-312 repair and executed omission probes | Bounded announcement proof; not actual server acquisition, full reconnect/engine population or designated repair approval. |
@@ -182,8 +182,11 @@ RP-350's contaminated run and both RP-351 incomplete/stopped runs explicitly
 excluded. Full current browser694/four isolated-performance skips plus separate
 performance two, client9816/649 explicit browser skips/types/unchanged build/
 copy/boundaries/topology/no-payment pass. No Linux/SQL/Firefox/hosted or whole-GS1
-acceptance; c24b8f6d-exclusive new span through containing records needs Claude,
-every prior range independently owed. Original RP-348 remains unexplained.
+acceptance. Completec24b8f6d..fc901f70 independently APPROVED2026-11-03:
+exact refined native24pass/types0/0; wrong revision/broad outcome mapping/delayed
+focus controls each24fail. Outcome control fires at the first ordinary refusal,
+not an applied-only oracle. Exact commands, source and limits in owning log;
+other review scopes remain separate. Original RP-348 remains unexplained.
 
 ## RP-346 / RP-347 standard-terminal keyboard recovery
 
@@ -212,9 +215,12 @@ types/build/copy/boundaries/static topology/no-payment pass. First full client
 fails Garden child-control entry (RP-348); unchanged rerun after native/copy
 terminal passes9,814/637 explicit skips. This does not resolve that timing cause
 or establish hosted/global CI. Fresh Docker read still0 available/100%; no
-Linux/Postgres rerun or cleanup. Entire0e7910ed-exclusive through containing
-repair/records requires Claude including all predeclarations/red/refinement.
-Prior0e548992..0e7910ed and every earlier range remain independent. No boxes/
+Linux/Postgres rerun or cleanup at that historical coordinate. Complete
+0e7910ed..4b44a563 independently APPROVED2026-11-03, including all scopes/red/
+refinement. Exact historical native152pass; removed tabindex2WebKit failures/
+2Chromium controls, native-disable4failures, actual omitted guard4duplicate-read
+failures observing two snapshot calls instead of one. Types/build pass. RP-348
+remains unexplained; other scopes retain their own verdicts. No boxes/
 lifecycle/RFC body/release promotion; full real workflows/1.0 stay open.
 
 ## RP-345 / RP-082 bounded native continuation
