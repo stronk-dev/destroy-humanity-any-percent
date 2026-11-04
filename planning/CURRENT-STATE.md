@@ -57,16 +57,19 @@ This is isolation, not literal quiescence or implemented Deployment recovery.
 No product/runtime/CI/kernel/epoch/release claim changes; full1.0 construction
 and original acceptance gates remain open.
 
-**Latest hosted verification,2026-11-02:** published main is `d6b1c668`;
+**Hosted verification, rechecked2026-11-04:** published main is still `d6b1c668`;
 [CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196)
 passes browser (all phases), composed-player, harness and schema. Server still
 fails27 Clout partition cases; client still fails historical kernel guard50a3a514.
 Browser7m16s/composed6m15s/server8m44s exceed the unchanged five-minute floor.
-Maintenance41383212848 at different source `efa9223c` completes its full harness
-and numeric lanes, while Reputation remains red. The exact downloaded harness
-artifact passes local completeness validation. [CI log](scaffolding-and-ci/log.md)
-owns source/digests/counts/limits. No current-source, full-CI, reliability or release
-acceptance follows; later Headcount work is not in that published CI run.
+Latest maintenance41767107179 at that same published source fails the50-minute
+harness guard: standard300/300 completes in2733124ms, relevance0 stops82/107 and
+row1 is unstarted. The exact digest-checked artifact is locally rejected as
+incomplete; numeric passes and both Reputation reports drift. Earlier complete
+maintenance41383212848 at different source`efa9223c` remains historical, not a
+current-source substitute. [CI log](scaffolding-and-ci/log.md) owns source/digests/
+counts/limits. No current local-artifact, full-CI, reliability or release acceptance
+follows; later local work has not been published or tested by those runs.
 
 **Local integration follow-up,2026-11-03:** one independent full composed target
 passes at `df531b9b`, with declared ARM64 Postgres, production-built browser/Worker

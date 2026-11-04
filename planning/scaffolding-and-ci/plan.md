@@ -44,16 +44,22 @@ performance, strict hosted workflow under five minutes. The ten-minute local
 container guard is containment, not an enlarged acceptance budget. No push/release
 or specification adoption follows from a focused pass.
 
-**Latest inspected hosted evidence,2026-11-02:** remote main d6b1c668,
-CI41476621196 completed failure. Browser (all phases), composed, harness and schema
-pass; server retains27 Clout partition failures and client retains historical
-50a3a514. Browser436s/composed375s/server524s still exceed the five-minute floor.
-Maintenance41383212848 at DIFFERENT sourceefa9223c now has completed harness and
-numeric passes, Reputation report failures. Its exact downloaded observation
-passes the actual local validator: all four objectives complete,300/107/23 runs,
-2979091ms elapsed. The owning log records job IDs, counts, digest/source bindings
-and narrow budget margin; no current-source equivalence or full-CI green follows.
-The old incomplete maintenance artifact remains historical, not the latest result.
+**Latest inspected hosted evidence,2026-11-04:** fresh public API reads confirm
+remote main remains d6b1c668 and CI41476621196 remains the latest CI run, completed
+failure. Browser (all phases), composed, harness and schema pass; server retains27
+Clout partition failures and client retains historical50a3a514. Browser436s/
+composed375s/server524s exceed the five-minute floor. No local893bb1e7 artifact
+or later source has a hosted result.
+
+Latest maintenance41767107179 at that SAME published source fails the unchanged
+50-minute harness guard (exit124). Its [exact downloaded observation](observations/41767107179-harness.json)
+is incomplete: standard300/300 takes2733124ms; registered relevance0 stops82/107
+with1162481 transitions, row1 never starts. Actual local observation-check exits
+Make2/`incomplete harness observation`. Numeric succeeds; Reputation's career and
+relevance report comparisons fail. No goldens or budgets are changed. The earlier
+complete41383212848 observation at DIFFERENT sourceefa9223c remains historical
+positive evidence (300/107/23), not the latest run or current-source proof. The
+owning log holds artifact/API/log digest consistency and exact sources/limits.
 
 Headcount's actual-source arithmetic witness has separate corrective approval;
 the existing affected client target still reproduces the historical guard. Kernel

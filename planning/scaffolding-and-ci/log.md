@@ -4701,3 +4701,45 @@ empty after peers finish and removed by exact ID; only two pre-existing BuildKit
 containers remain. Root updates current plan/defect; no suite for editorial records.
 This closes RP-553 diagnostic review, not RP-526's original latency/cause,
 whole CI, feature acceptance or release. No archival/publication; goal stays active.
+
+## 2026-11-04 — Fresh hosted maintenance evidence remains incomplete
+
+Read-only public GitHub API confirms main remains
+ d6b1c6689574a4823473a44c9fe51d4659d5fd09, latest CI41476621196 completed failure.
+Latest maintenance https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41767107179
+is completed failure at the same source,03:26:08–04:20:33UTC. This is not the new
+local893bb1e7 candidate or the earlier completed efa9223c observation. No run was
+started/rerun, remote file changed or source published.
+
+Actual job126367913884 logs show verify-harness-fast passes, then unchanged50m
+wrapper sends INT and exits124; completion validation is skipped, artifact upload
+succeeds. Artifact13295591615 metadata, upload log and actual1199-byte ZIP all
+agree SHA3d6402ff4d53cced111c550d51460930f30abbb731b80552dd14515c2d297e7f.
+Connector download followed by ordinary local read yields exactly one4259-byte
+harness-observation.json, SHA60c477d23ed303395f35e2e02f19a5f3356848055cc54b512661702e50da5d8a,
+retained in observations/41767107179-harness.json. No arbitrary ZIP extraction.
+
+Actual observation is nonauthoritative/incomplete/signal,2998874ms total.
+Repository guards complete23504ms; standard-pacing completes300/300 in2733124ms;
+relevance0 executes82/107 and1162481 transitions over242232ms when interrupted;
+relevance1 is declared but absent/unstarted. Unknown guard/exclusion/truncation
+fields stay unknown, not relabelled clear. Root actual
+make harness-observation-check HARNESS_OBSERVATION=.cache/harness-observation-41767107179.json
+65860→ec4278 exits expected Make2, `incomplete harness observation`/Go1. This is
+a correct refusal of genuine incomplete work, not a new test fixture or green run.
+
+Numeric job126367914230 succeeds (actual step summaries). Actual Reputation
+job126367914193 logs fail career report comparison319.34s and relevance comparison
+1365.06s, package1684.412s. No report regeneration, cause claim or new gameplay/
+search/accounting/performance activation follows. Original27 partition/history
+failures and latest blocking-CI timings remain; earlier complete41383212848 at
+DIFFERENT source remains historical. RP-596 stays OPEN. Existing unapplied
+performance candidate, technical adoptions/eligibility and full measured workload
+remain its route; do not raise guards, omit rows or repeat positive censuses.
+
+Update owning plan/ledger and material external-state summaries only; no software,
+workflow, budgets, assertions, content, kernel/epoch or release gate changes.
+Current candidate's separately approved build evidence does not imply hosted
+coverage. All reads/validator handles terminal; full nine-tier1.0 goal stays active.
+Review by: Codex root, factual external-evidence reconciliation. Recorded by:
+Codex root. No independent feature/release verdict or goal pause is claimed.

@@ -50,14 +50,15 @@ compatibility/workload gates or adoption. The Clout log owns execution and limit
 owner adoption of the independently technically approved accounting/search proposals
 (`d2c610cd..52f5ba9b`), then implementation with complete caller/workload proof;
 not more positive censuses or a proof of the now-false generic monotonicity claim.
-Latest2026-11-02 read-only queries identify published `d6b1c668` and failed
+Fresh2026-11-04 read-only queries confirm published `d6b1c668` and failed latest
 CI41476621196: browser/composed/harness/schema pass; historical client guard
 and27 server partition failures remain. Browser/composed/server still exceed
-the five-minute floor. Maintenance41383212848 at different source `efa9223c`
-completes its full harness/numeric lanes but fails Reputation comparisons.
-Its exact downloaded observation passes local validation; the older incomplete
-artifact remains historical. The CI log owns source/digests/counts/limits;
-later local Headcount work is not in these runs. The historical
+the five-minute floor. Latest maintenance41767107179 at the same source hits the
+50-minute harness guard after300/300 standard runs and82/107 relevance0 runs;
+relevance1 never starts. Its exact downloaded observation is locally rejected as
+incomplete. Numeric passes, both Reputation reports drift. Earlier complete
+maintenance41383212848 at different source`efa9223c` stays historical. The CI log
+owns source/digests/counts/limits; newer local artifacts/work are not in these runs. The historical
 guard and27 partition failures remain blockers; local composed/browser passes are not full CI.
 
 The full existing composed player/Postgres target now passes at `7f540859`
