@@ -35,6 +35,16 @@ identity, archive time, and the permanent `imported` exclusion marker survive an
 still remove optional email, sessions, session families, and access-token records. The retained
 save/Founder history has UUID owners but no account linkage or PII.
 
+Session creation/refresh, New Founder, import and account deletion serialize their
+transactions through one account-scoped advisory lock before taking family or
+Founder locks. PostgreSQL's canonical UUID spelling selects the lock, so equivalent
+UUID inputs cannot bypass it. Deletion therefore enumerates the complete committed
+Founder history, including a replacement/import that completed while deletion was
+waiting, and archives every corresponding stream. The advisory lock leaves existing
+foreign-key key-share checks available and uses no global account lock. Import
+returns the Founder created by its committed transaction rather than rereading an
+active identity that a later operation may already have replaced or deleted.
+
 ## Credentials and sessions
 
 Recovery codes are hashed with Argon2id using 19 MiB memory, two iterations, one lane, a random
@@ -123,6 +133,10 @@ UUIDv7 shape, proxy extraction, failed-auth limiting, bounded limiter eviction, 
 regression. With `TEST_DATABASE_URL` set, it additionally exercises
 the complete account → session → real Production intent path, refresh replay revocation, New
 Founder archival, import, deletion/anonymization, and rate limiting against Postgres.
+Real lock-handshake regressions overlap deletion with login/refresh and committed
+New Founder/import, checking complete archival/anonymization and credential removal.
+They also check equivalent UUID lock identity, foreign-key key-share access and
+progress by another account while the first account is blocked.
 The integration suite also forces a legitimate rotation to race a replay and proves that no
 descendant refresh or access token remains live. The account path also proves stored-parameter
 credential upgrade and anonymized Founder/import-marker retention after deletion.

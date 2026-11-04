@@ -4,6 +4,17 @@
 - **RFC:** `rfc/account-and-session-bootstrap.md`
 - **Started:** 2026-07-29
 
+**Account lifecycle correction,2026-11-04 (RP-729):** old real-Postgres overlap
+tests reproduce two active streams surviving deletion after concurrent New Founder
+or import. Login/refresh controls already pass; no unobserved deadlock is claimed.
+Serialize lifecycle writers through one UUID-canonical account advisory lock before
+family/Founder rows, preserving existing Guild foreign-key lock access and other
+accounts' progress. Import acknowledges its own committed Founder. Four overlaps
+and lock-compatibility controls pass in the declared Linux-amd64/Postgres lane;
+complete Account/Gameserver/Guild, focused SQL race, native Account and selected
+vet pass. Complete corrective range awaits independent review in the owning log.
+This enforces existing D1/D2/D4/D5, changing no rights/retention/renewal policy.
+
 **Recovery proposal review, 2026-11-04:** independent technical review requires
 changes to complete original five-path1f95a62a..143174da. Authenticated-only v1
 migration strands an expired session's hidden code; an unlocked document check

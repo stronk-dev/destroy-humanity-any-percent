@@ -244,6 +244,9 @@ func (repository *Repository) CreateSession(ctx context.Context, accountID, reco
 		return TokenPair{}, err
 	}
 	defer tx.Rollback()
+	if err := lockAccountLifecycle(ctx, tx, accountID); err != nil {
+		return TokenPair{}, err
+	}
 	var encoded string
 	if err := tx.QueryRowContext(ctx, `SELECT recovery_hash FROM accounts WHERE account_id=$1 FOR UPDATE`, accountID).Scan(&encoded); errors.Is(err, sql.ErrNoRows) {
 		verifyRecoveryCode(dummyRecoveryHash, recoveryCode)
@@ -297,17 +300,20 @@ func (repository *Repository) RefreshSession(ctx context.Context, refreshToken s
 		return TokenPair{}, err
 	}
 	defer tx.Rollback()
-	var familyID string
-	if err := tx.QueryRowContext(ctx, `SELECT family_id FROM sessions WHERE token_hash=$1`, hash[:]).Scan(&familyID); errors.Is(err, sql.ErrNoRows) {
+	var familyID, accountID string
+	if err := tx.QueryRowContext(ctx, `SELECT family_id,account_id FROM sessions WHERE token_hash=$1`, hash[:]).Scan(&familyID, &accountID); errors.Is(err, sql.ErrNoRows) {
 		return TokenPair{}, ErrAuthentication
 	} else if err != nil {
 		return TokenPair{}, err
 	}
-	accountID, familyRevoked, err := lockSessionFamily(ctx, tx, familyID)
+	if err := lockAccountLifecycle(ctx, tx, accountID); err != nil {
+		return TokenPair{}, err
+	}
+	familyAccount, familyRevoked, err := lockSessionFamily(ctx, tx, familyID)
 	if err != nil {
 		return TokenPair{}, err
 	}
-	if familyRevoked {
+	if familyAccount != accountID || familyRevoked {
 		return TokenPair{}, ErrAuthentication
 	}
 	var expiresAt time.Time
@@ -408,6 +414,9 @@ func (repository *Repository) NewFounder(ctx context.Context, accountID string) 
 		return Founder{}, err
 	}
 	defer tx.Rollback()
+	if err := lockAccountLifecycle(ctx, tx, accountID); err != nil {
+		return Founder{}, err
+	}
 	oldFounder, err := activeFounderForUpdate(ctx, tx, accountID)
 	if err != nil {
 		return Founder{}, ErrAccountNotFound
@@ -502,6 +511,9 @@ func (repository *Repository) ImportFounder(ctx context.Context, accountID, cons
 		return Founder{}, err
 	}
 	defer tx.Rollback()
+	if err := lockAccountLifecycle(ctx, tx, accountID); err != nil {
+		return Founder{}, err
+	}
 	priorFounderID, err := activeFounderForUpdate(ctx, tx, accountID)
 	if err != nil {
 		return Founder{}, ErrAccountNotFound
@@ -532,7 +544,9 @@ func (repository *Repository) ImportFounder(ctx context.Context, accountID, cons
 	if err := tx.Commit(); err != nil {
 		return Founder{}, err
 	}
-	return repository.ActiveFounder(ctx, accountID)
+	// A later lifecycle transaction can archive or replace this Founder as soon
+	// as Commit releases ownership. Acknowledge what this transaction created.
+	return Founder{ID: importedFounderID, CreatedAt: now, Imported: true}, nil
 }
 
 func (repository *Repository) DeleteAccount(ctx context.Context, accountID string) error {
@@ -542,6 +556,9 @@ func (repository *Repository) DeleteAccount(ctx context.Context, accountID strin
 		return err
 	}
 	defer tx.Rollback()
+	if err := lockAccountLifecycle(ctx, tx, accountID); err != nil {
+		return err
+	}
 	rows, err := tx.QueryContext(ctx, `SELECT founder_id FROM account_founders WHERE account_id=$1 FOR UPDATE`, accountID)
 	if err != nil {
 		return err
@@ -708,6 +725,16 @@ func insertFounderStreams(ctx context.Context, tx *sql.Tx, founderID, constantsH
 		}
 	}
 	return nil
+}
+
+// Serialize account lifecycle writers before taking family/Founder locks, so
+// deletion's census includes any replacement that committed ahead of it. Use an
+// advisory lock rather than a parent-row lock: foreign-key checks by the Guild
+// participant must retain their existing lock order. Canonicalize UUID aliases
+// in Postgres before hashing; collisions only serialize unrelated accounts.
+func lockAccountLifecycle(ctx context.Context, tx *sql.Tx, accountID string) error {
+	_, err := tx.ExecContext(ctx, `SELECT pg_advisory_xact_lock(hashtextextended('cloud-clicker.account-lifecycle:' || $1::uuid::text,0))`, accountID)
+	return err
 }
 
 func activeFounderForUpdate(ctx context.Context, tx *sql.Tx, accountID string) (string, error) {

@@ -1289,3 +1289,63 @@ Do not repeat this question or infer its preselection. Root reconciles current
 index/plan/defects/routing; no software suite for those editorial records.
 No policy/copy/renewal/privacy adoption, player acceptance, archival, publication,
 full CI or release claim. Full nine-tier goal remains active.
+
+## 2026-11-04 — Serialize account deletion with Founder/session lifecycle (RP-729)
+
+Outcome under accepted D1/D2/D4/D5: deletion archives ALL committed Founder streams
+even when New Founder or import overlaps it. Real old-source93943 at2d7ebbfd
+exits Make2/package1: both replacement/import arms remove the account and anonymize
+both Founder links yet leave2 of4 streams active. Login/refresh controls already
+pass. The initial lock-order suspicion is not promoted into a measured deadlock.
+Old failures follow actual row-lock handshakes, not sleeps: replacement/import
+holds its Founder link while waiting on a blocked save stream; deletion starts
+its old statement snapshot before the new Founder commits, so its census misses
+the replacement although its later link UPDATE sees it.
+
+Correction uses one transaction advisory lock per account before existing
+family/Founder locks in session creation, refresh, replacement, import and deletion.
+UUID is canonicalized by Postgres before namespaced hashing, including accepted
+database UUID aliases; hash collisions can only serialize unrelated accounts.
+This follows existing repository advisory-lock primitives. A parent-row mutex
+would alter Guild's foreign-key key-share order; the retained actual key-share
+NOWAIT control and independent other-account progress prevent that regression.
+Import returns its own committed ID/time/imported marker rather than a later
+active-Founder read. No token/credential/TTL/refresh-reuse, schema/migration,
+kernel/replay, HTTP DTO, copy or rights/retention policy change. Missing-account
+credential verification still reaches the existing dummy KDF after lock acquisition.
+
+New real SQL regressions observe named private connection lock waits with an
+unchanged30s completion guard and check cancellation BEFORE accepting the match.
+Delete-first login/refresh refuse issuance and revoke old credentials; transition-
+first replacement/import both finish and deletion archives/unlinks ALL old/new
+identities/streams. Exact row counts preserve archives rather than deleting them.
+The replacement uses an equivalent braced UUID against canonical deletion, proving
+one lock identity; the compatibility parent checks key-share and another account
+while the first is blocked. No credentials/private row contents are emitted.
+
+Execution by: Codex root, complete six-path batch after2d7ebbfd. Final full
+`make test-go-ci CI_TEST_PACKAGES='./account ./gameserver ./guild' CI_TEST_FLAGS='-v'`
+30703 terminal0: Account14.263s, Gameserver92.013s, Guild1.078s. New four-arm
+regression1.95s and compatibility0.46s explicitly PASS, no dependency skip. Existing
+real HTTP/SQL/23.48s socket revocation, both tenant scaling variants, first-hour,
+Guild deletion and history paths run. The opt-in real-minute timer is explicitly
+not enabled; one verbose response truncates1461tokens, so no exhaustive subcase/
+skip census is claimed from that chunk. All three terminal package outcomes and
+new parent/leaf proofs are retained. This is the declared CI environment, not the
+complete hosted server job or full player/browser acceptance.
+
+Focused SQL race6561 terminal0: all four lifecycle arms2.47s, key-share/other-account
+0.54s, existing lifecycle registry0.67s; package4.772s. Native cold Account59094
+passes0.571s with SQL tests skipped as expected; selected Account/Gameserver/Guild
+vet passes. Earlier intermediate four-arm passes94120/94105 are development
+iterations, not relabelled final-source gates. Formatting/diff whitespace pass.
+No UI/API-generation suite for unchanged client/registry bytes, no weakened test.
+
+Review by: Codex root, implementer first filter only. Recorded by: Codex root.
+Complete six paths after2d7ebbfd through this containing commit require fresh
+independent corrective review: production store, new SQL tests, canonical accounts
+doc, backlog, owning plan/log. Root-owned new test Postgres00b1817debc8 and its
+otherwise empty default network are retained temporarily for sequential review;
+shared Go-cache volume must remain. All root test handles are terminal. Wider
+Account/recovery/renewal/data-rights/retention/browser, CI and release gates remain
+open; no original feature acceptance, archival, publication or goal pause.
