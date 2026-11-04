@@ -8302,3 +8302,33 @@ Compose/three operations tests/shared fixture/parent test/docs/ledger/plan/log
 commit. Independent exact-range review remains; pre-inspection is not approval.
 Browser/auth/key continuity, automatic restarts, host journald/retention,
 full AC7 and exact-artifact clean-host R-006 remain separate obligations.
+
+## 2026-11-04 — Actual gameserver availability proof independently approved
+
+Review by: independent Codex `/root/scheduled_backup_ingress_proof_corrective_review`.
+Recorded by: Codex root. APPROVED, complete eleven-path range, base exclusive/tip
+inclusive:
+`a636b3155de6bcab81fe1340903782f9bb709486..b23a139b24a9123c21d69c299bf7897d4a18c1d3`.
+All source/tests/Make/Compose/docs/backlog/plan/log inspected. Pre-inspection's
+canceled matching-response issue is corrected in the exact reviewed revision.
+
+Fresh final-source23396 terminal0, actual root manual target: child397.21s,
+controller400.91s, package401.085s. Actual gameserver204 readiness→SIGTERM/clean
+exit→Caddy502/up1 and game scrape0→real pending/unchanged five-minute rule→receiver
+firing→new executable readiness→matching original-alert resolution all execute.
+Independent live inspection confirms stopped process and actual pending series.
+Root71301's earlier real-service pass remains separately attributed, not restamped.
+
+Cold98627 operations1.714s/command5.809s and vet pass. Focused6697 passes all22
+observer controls plus actual named-population guard. Private overlay6708 removes
+only the ctx guard: both canceled matching-response cases fail,20 companion
+controls stay green; no main-tree mutation. Gofmt/full-range whitespace pass.
+Runtime, production rules/thresholds/intervals and CI jobs remain unchanged.
+
+All reviewer handles terminal; direct unique-projectq5ryhjuzyh4i55kw2tp5yjvpp4
+container/network/volume inventories empty. No tracked reviewer edits or commits.
+Cached Caddy/Prometheus are amd64 on ARM; this is the declared mixed-architecture
+private executable population, not production configuration, browser/persistence
+or key continuity, automatic restart, host journal/retention, full AC7, clean-host
+R-006 or release acceptance. Root reconciles current scopes only; no software
+suite for editorial records, archival, publication or goal pause.
