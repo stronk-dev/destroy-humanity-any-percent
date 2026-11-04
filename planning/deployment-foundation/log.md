@@ -12016,3 +12016,38 @@ Two-path CR/log correction only; no rule/fixture, accepted parent, runtime or ot
 contract changes. Original negative verdict preserved; complete linked union
 needs independent re-review. No native/software rerun for this normative fix,
 owner adoption, new permission, publication, archival, release or goal pause.
+
+## 2026-11-04 — Linked package approved; concrete architecture adoption requested
+
+APPROVED, linked-contract/adoption-package technical scope ONLY, complete8-path
+ dcc151f277c862c2b78a1d5d16befc97de6fbaac..
+ed9a8f2ad7b57f8ed9be420c2be8259e30272f05. Review by: independent Codex
+/root/native_supervisor_profile_review. Recorded by: Codex root, transcribing
+completed verdict. CR6 conflict resolved, no remaining blockers. The complete
+proposed adoption scope/parent changes/dependencies are concrete for owner choice.
+CR6 retires the outer outcome writer, closes diagnostic jobs before seal and
+preserves transferred retained-service business projection/other helper receipts.
+The final I04 clarification keeps later admitted imports while forbidding old
+operation writers to masquerade as retained work. Links, original negative/
+verdict log prefix, whitespace, clean tree and exclusions pass. P01 source hashes
+unchanged; independent35/37 and both actual discriminating controls reused.
+No native/Docker/software rerun for text fixes; all handles terminal, no tracked
+reviewer edits. No implemented/native/rights/adoption/release proof is implied.
+
+After that completed review, ONE concrete async question is delivered: adopt the
+linked deployment-control design and delegate matching parent-body reconciliation.
+It names construction of release identity/operation evidence/native supervision,
+Linux/amd64+local rootful Docker, existing backup service/restart-safe ownership/
+verified results, extra availability alert and private-compiler log exception,
+while retaining14-day service logs. The substantial subsystem is disclosed, not
+called a routine fix. SP8 is the reviewable scoped proposal. AGENTS/RFC-0000
+reserve this architecture/specification adoption to Marco; technical review does
+not supply it. The question remains unanswered; do not repeat it or implement
+unadopted dependencies. Existing tool/MPL, signing-metadata, native-host access
+and release decisions remain separate unanswered questions, not absorbed approvals.
+
+Root reconciles current status only. Accepted parent/owner-authored body remains
+untouched pending actual adoption/delegation. The full1.0 goal stays active;
+proper construction and all actual private/cache/restart/receiver/native/SP8/R-006,
+CI/gameplay/rights/accessibility/ending gates still remain. No new tier, publication,
+deployment, archival, feature/release acceptance or goal pause.

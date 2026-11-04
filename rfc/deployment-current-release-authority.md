@@ -1,6 +1,6 @@
 # RFC: Current Release Authority and Interrupted Transitions
 
-- **Status:** draft — ordering corrections reviewed; concrete native-contract linkage/adoption sequence reconciliation pending technical review; RP-558 remains unimplemented
+- **Status:** draft — linked contract/adoption package independently technically approved throughed9a8f2a; owner adoption pending; RP-558 remains unimplemented
 - **Author:** Codex
 - **Created:** 2026-10-13
 - **Design refs:** `design/06 §stack`; `design/00` pillar6 (honest claims)

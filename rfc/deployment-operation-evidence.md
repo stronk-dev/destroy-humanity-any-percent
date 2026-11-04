@@ -1,6 +1,6 @@
 # RFC: Deployment Operation Evidence
 
-- **Status:** draft — prior envelope/native-contract reviews retained; OP9 linkage/adoption sequence reconciliation pending technical review; no producer implementation or adoption
+- **Status:** draft — prior envelope/native reviews retained; linked contract/adoption package independently technically approved throughed9a8f2a; owner adoption/actual producers pending
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Design refs:** `design/06-tech.md` §stack; `design/00-vision.md` pillar6

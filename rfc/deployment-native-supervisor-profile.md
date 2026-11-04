@@ -1,6 +1,6 @@
 # RFC: Native Deployment Supervisor Profile
 
-- **Status:** draft — prior reviews retained, including P01 throughdcc151f2; parent-contract linkage/adoption package pending technical review; owner adoption/native producers/conformance pending; no implementation authority
+- **Status:** draft — prior reviews retained, including P01 throughdcc151f2; complete linked adoption package independently technically approved throughed9a8f2a; owner adoption/native construction/conformance pending
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Operation Evidence](deployment-operation-evidence.md), OP9; [Current Release Authority](deployment-current-release-authority.md), CR4/CR6; [Deployment Foundation](deployment-foundation.md), DP1/DP5/DP6
@@ -33,8 +33,8 @@ technical/research approval765aae44..70acee7f, including both input-construction
 arms and the image-environment correction. Prior verdicts are not extended to
 new bytes. P01 projection/restart semantics and its isolated rule fixtures have
 their own complete independent approval407b641d..dcc151f2. Parent-contract linkage
-and the SP8 adoption package below are a further amendment pending review; older
-verdicts do not cover it.
+and the SP8 adoption package below have separate complete technical approval
+for dcc151f2..ed9a8f2a. Older verdicts are not extended to those new bytes.
 Technical approval precedes owner adoption under SP8; native producer
 construction and actual conformance follow adoption, not as a circular prerequisite
 to permission to implement. OP9 remains open until its actual acceptance proof.

@@ -57,10 +57,16 @@ proposed DP1/DP5/DP6/DP7/DP8 changes and full control-contract adoption scope,
 including rootful local Linux/amd64 prerequisites, no new resident service,
 paused scheduler/verified-result ownership, C01 logging exception and extra
 projection alert. Accepted parent and owner-authored rulings remain untouched.
-New full normative-linkage range afterdcc151f2 needs independent review before
-one concrete architecture/parent-reconciliation adoption request. Static tool/
-MPL, signing-metadata, native-host access and other unanswered questions are
-separate; do not duplicate or assume them. No product implementation or goal pause.
+The complete eight-path linkage uniondcc151f2..ed9a8f2a is independently
+TECHNICALLY APPROVED after reconciling CR6's old outer-outcome-writer alternative.
+One concrete architecture/parent-reconciliation adoption question is now delivered
+and unanswered. It covers the linked CR/OP/SP/adapters design and explicit SP8
+parent/platform changes, not construction/native acceptance or release approval.
+Static tool/MPL, signing-metadata, host access and other pending questions remain
+separate; do not duplicate, infer or absorb them. After applicable adoption,
+reconcile parent bodies under the actual delegation and implement adopted
+contract dependencies with their full producer/native/clean-host proof. No
+product implementation or goal pause is claimed at this checkpoint.
 
 **Current exact-artifact construction,2026-11-04:** clean source893bb1e7 now has
 fresh independent artifact trees `.cache/release-current-893bb1e7/bundle-a` and
@@ -257,8 +263,8 @@ per-tool inventory, terms/delivery and provenance, then the concrete artifact/
 policy proposal and applicable adoption. Further path/code equality cannot do that.
 
 The tool-delivery and P01 predicate/contracts now have their own exact technical
-approvals; new CR/OP linkage and the complete SP8 parent-adoption package await
-review above. Obtain explicit architecture/host-floor and separate tool-policy
+approvals; the full linked CR/OP/SP8 adoption package is independently reviewed
+above. Await the explicit architecture/host-floor and separate tool-policy
 adoption, then reconcile parent bodies before dependent production implementation. Actual selected-tool rights and inventory must be settled before
 shipping eligibility. Then construct native producers/adapters/service
 control with complete dependent review and actual SP8/native-host/manifest R-006
