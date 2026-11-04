@@ -19,8 +19,10 @@ RP-523 retains CHANGES REQUIRED, and its complete original-plus-six-path
 RP-714/715 follow-up union is independently approved throughb0fd04ad after actual
 restart-profile execution, cold owners/vet and race. Do not repeat completed
 backup/storage captures or call old storage evidence execution of the new receiver.
-Next remaining actual scheduled-backup/ingress proof review; original full AC7,
-host/journal/retention, exact release pair and clean-host gates remain open.
+Scheduled-backup and ingress proof ranges also have complete independent approval
+(latest log): fresh actual retry/restore and stopped-Caddy pending/firing/recovery
+populations pass. Continue remaining accepted game/host/journal/retention work;
+original full AC7, exact release pair and clean-host gates remain open.
 
 **Drain/restart corrective checkpoint, 2026-11-02:** independent review approves
 RP-138's complete `1908762f..c9c9dde7` marker correction and RP-143's complete
@@ -232,7 +234,9 @@ route/scrape now has a physical stop→real pending five-minute rule→receiver
 firing→same-container restart→matching resolution witness. Upstream readiness is
 an explicit control, not a gameserver proof. Root lane passes406.67s, cold affected
 native/vet and Linux-amd64/Postgres checks pass. The log owns the range after
-`12399dc9`, pending designated review. Continue actual game/host observation,
+`12399dc9`. Complete eight-path12399dc9..9b48c9c6 now has independent approval;
+fresh actual profile6671 passes398.132s, including the unchanged five-minute bound.
+Continue actual game/host observation,
 journal/retention, older restart history and exact-artifact evidence; no full AC7.
 
 **Latest DP6/DP7 actual backup execution, 2026-10-13:** the production CLI now
@@ -240,8 +244,10 @@ has a joined actual Postgres dump→scheduled target refusal→receiver firing�
 five-minute retry→matching resolution→fresh-database restore witness. The retry
 restores a deliberately updated account row, not the old dump. No direct backup
 metric or fake dump is used in this population. Shared fixture metadata remains
-synthetic, and the log owns final checks/range after `c4279b66`, pending designated
-review. Continue actual game/host observation, retention, older-container restart
+synthetic, and the log owns final checks/range after `c4279b66`. Complete twelve-path
+c4279b66..12399dc9 now has independent approval; fresh actual profile20190 passes
+372.264s, including five-minute retry and updated-row restore. Continue actual
+game/host observation, retention, older-container restart
 history and exact-artifact evidence; this is not off-host/RPO/RTO or full AC7/R-006.
 
 **DP7 restart receiver construction, 2026-10-13, review finding2026-11-04:** the actual Docker

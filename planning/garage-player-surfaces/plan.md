@@ -29,8 +29,10 @@ or expand an uninformative diagnosis into another research campaign.
    RP-459 have complete independent approvals too. Deployment backup parser/
    snapshot RP-489/490 is reviewed with actual encrypted restores and SQL controls.
    DP7 writer/storage RP-521 and corrected receiver RP-523/714/715 now have complete
-   independent approvals; original receiver CHANGES REQUIRED is preserved. Continue
-   remaining scheduled-backup/ingress proof review in Deployment's owning lane;
+   independent approvals; original receiver CHANGES REQUIRED is preserved. The
+   scheduled-backup and ingress proof ranges are independently approved too, with
+   fresh actual retry/restore and pending/firing/recovery execution in Deployment's
+   owning log. Continue remaining accepted game/host/journal/retention work;
    no new expiry/retry/reward/acceptance contract or clean-host claim.
 4. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
    profile is now absent and cannot be independently revalidated. No stall repair

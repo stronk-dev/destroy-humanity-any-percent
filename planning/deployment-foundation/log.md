@@ -8109,3 +8109,46 @@ network inventories empty; only two pre-existing BuildKit remain. No tracked
 reviewer edits/commits. Root reconciles statuses with this verdict; next remaining
 scheduled-backup/ingress proof review. No suite for editorial records or publication;
 full nine-tier1.0 goal remains active.
+
+## 2026-11-04 — Scheduled backup and ingress proof ranges independently approved
+
+Review by: independent Codex `/root/scheduled_backup_ingress_proof_corrective_review`.
+Recorded by: Codex root. APPROVED, no findings, both complete ranges (base
+exclusive, tip inclusive), all source/tests/Make/Compose/docs/original records:
+
+- Scheduled backup, twelve paths:
+  `c4279b6621d54e3b65a91aa337db0da46e396221..12399dc9248bffdf53c055c2da314c1b543848ff`.
+- Ingress outage, eight paths:
+  `12399dc9248bffdf53c055c2da314c1b543848ff..9b48c9c603ae66d84deb05351c017e4e02342ac0`.
+
+Fresh operations sourcea6fa32ac, affected children/supervisors byte-identical to
+reviewed tips; later receiver correction has its separate approval above. Backup
+20190 terminal0: child369.00s/parent372.13s/package372.264s. Actual encrypted
+Postgres baseline, scheduled target refusal and receiver firing preserve both
+baseline and owned obstruction; same worker waits unchanged five-minute retry,
+matching alert resolves, fresh database restores updated account row `after-retry`.
+Initial7441 Docker denial ran no private population and supplies no pass evidence.
+
+Ingress6671 terminal0: child394.60s/parent397.88s/package398.132s. Owned Caddy
+actually stops; route/scrape fail while upstream controls stay healthy. Independent
+inspection confirms Exited0 and live Prometheus PENDING. Existing4m45 quiet and
+five-minute lower bound pass, followed by receiver firing, same-container restart
+and matching resolution. No injected ingress metric or shortened interval.
+
+Cold four owners/vet37161 pass; native opt-in skips are not integration credit.
+Population guard73338 passes healthy and refuses empty/skipped/wrong/log-only
+outputs. Private actual pending-observer27451 exits expected Make2: healthy passes;
+six malformed/HTTP/query/premature-firing/zero/stale-start controls fail through
+own diagnostics. Both exact-range whitespace checks pass. Caddy and Prometheus
+warn amd64-on-ARM: mixed-architecture local fixtures, not supported clean-host proof.
+
+All handles terminal; both owned projects' containers/networks/volumes are absent,
+only two pre-existing BuildKit containers remain. Reviewer has no tracked edits or
+commits. Concurrent CI changes touch no affected operations/server/Make/Compose
+bytes. Private controls remain `/private/tmp/cloud-clicker-backup-ingress-review.Gx6s4V`.
+Synthetic release metadata and selected-row restore do not establish full semantic
+recovery, off-host durability, six-hour scheduling, production RPO/RTO, actual
+gameserver readiness, host retention, R-006, full AC7/CI or release approval.
+Root updates current plans only; no suite for editorial records, no publication
+or feature acceptance. Continue remaining accepted operations construction; the
+full nine-tier1.0 goal remains active.
