@@ -13,7 +13,8 @@ operator lock and original stream survive launcher exit in the separate
 supervisor namespace. Original writer pidfd exit plus original EOF precede
 same-path/same-ID replacement refusal; lock stays held. Omitting the lock FD
 refuses before a supervisor probe; fresh actual lock acquisition succeeds after
-fixture exit. Independent review pending. This is model evidence, not an actual
+fixture exit. Independent research/tool review APPROVED0f3a9a7c..695540b7; exact
+verdict is in the owning log. This is model evidence, not an actual
 Docker-daemon/authentication/bootstrap or supported-host result. Next bind this
 carrier and the reviewed SQL observer into the complete eight-kind supervisor
 profile/admission/receipt protocol against the existing mutation map; no contract
