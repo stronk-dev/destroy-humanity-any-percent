@@ -28,7 +28,10 @@ work. If it succeeds, recreate the SAME network name with a different ID, reconn
 the same DB, then execute the delayed old worker, a newly created old-ID worker,
 and a name-only control. Exact SQL rows distinguish late old-ID access from merely
 unavailable DB. Preserve all terminal/error outcomes; hypothesis failure is valid
-research. Whole run60s, each command at most10s, cleanup15s; guard expiry is invalid,
+research. Measured work has one absolute60s deadline, each ordinary command at
+most10s within it. Cleanup is outside that work deadline, at most15s PER cleanup
+command; there is no claimed aggregate15s cleanup or60s end-to-end wall bound.
+Complete output requires successful cleanup too. Guard expiry is invalid,
 never grounds for raising bounds. Use the same pinned amd64 Postgres16 image as
 RP-726. This is a network-admission mechanism study, not already-admitted backend
 termination, arbitrary queued Engine-request quiescence, a full restore or native
@@ -45,6 +48,11 @@ complete fence. Next map all runtime mutation paths and settle pending-create/
 volume/host-file identities plus already-admitted SQL, rather than rerun these
 completed controls or promote the narrow network result. Independent review is
 pending for the research/tool/draft reconciliation, not deployment acceptance.
+During independent review, the original shorthand `whole run60s`/`cleanup15s` is
+found ambiguous and reconciled above to the ORIGINAL source's exact semantics.
+No source, measured bound or retained observation changes; no aggregate elapsed-
+time claim is inferred from those successful runs. The owning log preserves the
+original wording and review finding rather than backdating a different instrument.
 
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
 the predecessor with a fabricated pair. Two independent committed-source

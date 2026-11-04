@@ -8857,3 +8857,20 @@ containing commit requires fresh independent research/tool/technical review.
 No runtime behavior, schema, kernel0.3.225, epoch8, balance, deployment/recovery
 policy or authored copy changes. No adoption, full CR4/Deployment/1.0 acceptance,
 clean-host/R-006 proof, push, archival or host deployment. The goal remains active.
+
+## 2026-11-04 — Interim independent guard-wording finding, RP-732
+
+Review by: fresh independent Codex `/root/network_generation_fence_research_review`.
+Recorded by: Codex root, transcribing its interim finding, NOT a final verdict.
+The review identifies ambiguity in the plan/log shorthand above: original source
+has one absolute60s MEASURED-WORK deadline, ordinary commands at most10s within
+that deadline, then cleanup outside it at most15s PER cleanup command. It does
+not impose aggregate15s cleanup or60s total wall runtime. Complete observation
+still requires successful cleanup. This is the original instrument, not a newly
+raised deadline or permission to treat exhausted measured work as completed.
+
+Reconcile the living plan to those exact semantics, while preserving the earlier
+log wording and original source/hash/observations. No tool/runtime/data/source
+change or rerun is needed for this editorial correction. Independent reviewer is
+still executing/checking the source and coherent original-plus-correction union;
+no final approval or full CR4 mechanism is inferred from this interim exchange.
