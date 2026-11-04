@@ -957,3 +957,30 @@ corrective review. Canonical docs/plan/ledger reconcile in this commit; no featu
 checkbox, archival or release promotion. RP-450 original cause, whole CI/latency,
 owner adoptions and full nine-tier1.0 remain open. The retained893bb1e7 release
 artifact predates this runtime correction; rebuild at the next release boundary.
+
+
+## 2026-11-04 — RP-765 independent corrective approval and cleanup
+
+Review by: independent Codex `/root/socket_auth_shutdown_corrective_review`.
+Recorded by: Codex root, transcribing that agent's actual verdict. APPROVED, no
+findings, complete seven-path1992ce150428f5d18e70cc809965315c39e0e85d..
+034ea3cdf6efa5482474b4fb06197f823579b1f6. Full diff, Account SQL, actual
+Centrifuge presence/close mutex behavior and evidence boundaries inspected.
+Independent Linux-amd64/Postgres/race86752 passes actual callback18.57s and
+blocked-SQL/socket23.32s; actual family-revocation80981 passes25.40s, not skip.
+Affected vet48dfbd passes. Exact-old overlay94348 exits expected2: BOTH unchanged
+regressions fail their intended shutdown/drain deadline17.86/18.75s. Reviewer
+independently confirms old bytes match1992ce15 and the recorded old-source hash.
+
+Root's full three-package race647 PASS/zero FAIL/one opt-in skip evidence is
+inspected/reused with explicit attribution, not called reviewer-executed. No
+reviewer edits/commits; reviewed HEAD and worktree remain fixed through checks.
+All reviewer/root execution handles are terminal. Root verifies no test workers
+remain and exact owned PostgreSQL76ba2235783f belongs to this repository's
+compose.save-test.yml, removes that disposable container, and verifies only the
+two pre-existing BuildKit containers remain. Shared Go cache/builders untouched.
+
+Plan/ledger now close RP-765's corrective scope; this record-only commit needs no
+software rerun. Original RP-450 cause, full Transport acceptance, current release
+artifact rebuilding, whole hosted CI/latency and all broader1.0 gates remain open.
+No publication, archival, acceptance promotion or goal pause.

@@ -9,7 +9,8 @@ closure during shutdown. The actual callback regression and real locked-Postgres
 socket witness fail against old source and pass with node-owned cancellation.
 Full affected Transport/Gameserver/Account native race and Linux-amd64/Postgres
 race populations plus vet pass; the log records the existing opt-in skip and
-exact evidence. Complete corrective batch awaits independent review. This does
+exact evidence. Complete seven-path1992ce15..034ea3cd receives independent
+corrective APPROVAL after fresh old/current SQL/socket and revocation checks. This does
 not establish RP-450's original hosted cause or full Transport acceptance.
 
 2026-10-15 current-run cohort correction (RP-651): subscribe-time permission now requires the
