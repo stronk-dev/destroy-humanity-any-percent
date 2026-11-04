@@ -390,7 +390,11 @@ real complete decoder inputs, then independently remove a table/checksum, alter
 a native header count, corrupt the real ELF positive's parsed checksum or
 substitute the actual unpatched fortify variant. All refuse at their named
 checks; existing output also refuses unchanged. No shared input bytes change.
-This complete checksum/header research batch awaits independent review.
+Complete nine-path5d73b715..ef2780e4 is independently APPROVED as bounded
+research/tool. Fresh complete LLVM decoding, both report byte identities, actual
+ELF positive, full metadata overlay/vet and all six controls reproduce. RP-763
+closes only the bounded header identification/consistency instrument route;
+actual rights/delivery and whole native closure remain with RP-759.
 
 The remaining199 native tables without checksums, musl source-body patches,
 CRT/zero-size symbols, generated files and other inline/header terms remain

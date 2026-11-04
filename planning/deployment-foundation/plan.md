@@ -88,8 +88,10 @@ Musl's192 tables have no checksum records, so that route cannot settle exact
 source-body patches. RP-763 identifies a fortify header: the pinned Alpine1.1-r5
 recipe reconstructs its actual recorded checksum, while unpatched upstream does
 not. Root license evidence, source/patch hashes and all no-checksum/unknown rows
-remain explicit. Complete Go/LLVM/real-ELF controls pass; independent research
-review pending. No package identity, rights, build or source-body closure follows.
+remain explicit. Complete Go/LLVM/real-ELF controls pass; complete nine-path
+5d73b715..ef2780e4 is independently APPROVED with exact fresh LLVM/ref/checksum
+reproduction. RP-763 closes its bounded identification/instrument route; RP-759
+remains open. No package identity, rights, build or source-body closure follows.
 
 Next complete the exact CLI/Compose provenance/rights/artifact inventory and
 DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit

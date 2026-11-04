@@ -11203,3 +11203,60 @@ research range in the ledger. No production, ordinary tests/CI, RFC, dependencie
 kernel, artifact/profile/native-host or release status changed. No push,
 deployment, archival, release approval or goal pause.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Checksum/header research approved; publisher OCI counterpart located
+
+APPROVED, bounded research/tool only, exact complete nine-path
+5d73b715b9f71f5903c3bca11925eecef53540f9..
+ef2780e4ad9bcbe8bf18cdbf8417a0c46641d49e.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. No material findings.
+
+Fresh refs61,833bytes/SHA3922232a and checksum38,380bytes/SHAced4bff6 match
+exactly. Reviewer independently reruns full224,493,910-byte LLVM decoding with
+SHAadc82783, cross-compiles actual literal-source ELF positive and recovers its
+checksum. Full metadata overlay/vet and all6 controls pass. All57 records,
+2 distinct generated unknowns and192 no-checksum musl tables remain. Four
+recipe SHA512s/order, immutable archives and musl sed rule inspected. Exact
+range/exclusion/whitespace/clean-tree checks pass; no tracked reviewer edits.
+RP-763 closes only bounded header identification/instrumentation; RP-759 rights,
+actual native/source/CRT/generated/patch/header/delivery and adoption stay OPEN.
+
+Separate next-work preparation, outside that verdict: pinned CLI workflow
+actually publishes dockereng/cli-bin. Public Hub28.4.0 metadata is fetched;
+source tag lookup in docker-ce-packaging returns404, not proof of absent builds.
+A first registry query0a80ca fails DNS before writing any targets. Narrow approved
+public-read retry66ed10/91763→389426 succeeds using fresh ANONYMOUS pull token
+only in memory/curl stdin, curl config disabled, no Docker config/daemon or
+installed user credentials. No token is persisted or printed; all reads are
+public manifests/statement/blob. Ignored source cli-oci-query.py3,115bytes/
+SHAde0fcebc37b3d24f0447dfda6d423f5d0ad68d1260ae1d46847d2a9f760c382c.
+
+All fetched objects check against their requested SHA256 digests. Public index
+8c8f13345422afb0a34cd132fccc2998b9a88f83380828cdb816185f8aa3e3e2 names
+Linux/amd64 manifest1aee659fbf601566d6432e9a377df50c7ed41fdd61ddf75e92b421e326eb74e1,
+config f1b615441afaf9f42b8ed108c2fd888e23202f33315897baec01abb51e13eede,
+single layer1c8e9c3661f1ff145d0897f08a3b2c1cc58ecfcbf8dd30cc67a89f295889a652
+(20,431,116bytes), and linked attestation manifest e5d38eb37181f937871a3af3225124c260ee932c35f93a4e7775ad9d0b89f7f2.
+Its21,129-byte statement is fd8346457f26d95eee6b70493d651cdb68e7eb9db11a0149f4e3cc1115fc9586,
+SLSA provenancev0.2 subject is the IMAGE manifest, not a standalone executable.
+Publisher metadata claims source d8eb465, Alpine/Go1.24.7, base golang material
+sha256:dedeeec59c120b5b73a2db6918e90b05d59e3410580dee2e7c5cc2b48ae0c328;
+reproducible:false. No signature/authentication verification performed.
+
+The sole /docker member is43,556,144bytes/SHA507681e01b00c28dc74523c0108c16075f552eb01877d6f240d8f3536575d8b0:
+DIFFERENT from actual static-tar fixture27f239f9. Do NOT assign this image's
+attestation to the original binary or silently replace that artifact. Separate
+preliminary section/range comparison662aee finds .text, .debug_info, .debug_line,
+.comment identical, .rodata different, and all330 known native code ranges byte-
+identical at the same addresses. This is an unreviewed counterpart comparison,
+not proof of original build/source/patch or complete native correspondence.
+Raw index/manifests/config/statement/layer live as cli-bin-28.4.0-* in the existing
+ignored research directory; no filesystem extraction or container execution.
+
+Next retain/adversarially check this exact-artifact distinction and evaluate
+publisher build/base-package evidence without treating a counterpart as original
+provenance. No more path/checksum census can recover the absent musl source-body
+checksums. Full rights/source delivery, artifact/profile adoption and actual
+native/SP8/R-006 remain. All root/review handles terminal; no push, deployment,
+archival, release approval, product promotion or goal pause.
