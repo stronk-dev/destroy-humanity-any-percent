@@ -16,7 +16,8 @@ matches recorded attribution. RP-761 is CLOSED for this application defect;
 external-tool/MPL/source-rights, native/adoption and full release gates remain.
 The prior seven-path nested-observation batch1cc6762a..7623cf93 is independently
 approved; its v1 evidence is12positive/25UNKNOWN. RP-762 now corrects the missed
-escaped YAML names with a retained v2 probe:15positive/22UNKNOWN, review pending.
+escaped YAML names with a retained v2 probe:15positive/22UNKNOWN, independently
+APPROVED complete nine-path a6592af3..571b0d8c. RP-762 is CLOSED within that scope.
 The matching Compose source query selects17 nested scopes and no package under20;
 neither zero result is binary absence or license clearance. RP-760 stays
 closed within its original root-NOTICE scope.
@@ -63,7 +64,8 @@ identities and6,962 inspected source/text files to Git/SDK/module archives;
 245 named candidates include main/stdlib and every prior237 module text.
 Four real-query source/graph faults plus no-overwrite refuse. Full overlaid
 metadata tests/vet and actual corrected90,355-function probe pass. Complete
-source/symbol batch awaits independent review; see latest log/probes.
+source/symbol batch independently APPROVED a6592af3..571b0d8c, with both complete
+observations byte-identically reproduced; see latest log/probes.
 Next resolve covered-source/notices delivery and inline/header terms, plus
 published-binary/source correspondence and CLI's exact native linked components
 before shipping/adoption readiness. Source selection is not a rights decision.

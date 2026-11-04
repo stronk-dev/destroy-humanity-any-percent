@@ -11005,3 +11005,52 @@ adoption and real SP8/native-host/R-006 remain OPEN. Source selection/function
 presence does not adopt terms or ship tools. No normal-CI, product status,
 release/archival/push approval or goal pause. Review by: Codex root, implementer
 first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Compose scope/matcher batch independently approved
+
+APPROVED, bounded research/tool only, exact complete nine-path
+a6592af336795e3e8b383e2e17c6998117b37a67..
+571b0d8ccf9955139b554a438662eca1f01648d2.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. No material findings.
+
+Independent source report matches all204,162bytes/SHA32bc603f; binary report
+matches all22,234bytes/SHA676c0dd7. All five real-boundary/private controls pass;
+old matcher fails exactly actual escaped YAML/percent/UTF-8, corrected full
+metadata overlay suite/vet pass. Exact ranges, no shared-input changes and no
+production/normal-test/CI/RFC edits confirmed. Archive snapshot/check/use,
+final-file checks, package/module closure and compiler encoding inspected.
+All37 scopes remain:17 source-selected/20 no selected package;15 binary-positive/
+22 UNKNOWN, never absence or exclusion. RP-762 closes the bounded instrument
+miss; RP-759 rights/native/binary/delivery/adoption gates remain OPEN.
+
+Reviewer investigated generic sumdb direct fallback, but found no reachable
+counterexample under the exact non-workspace read-only query's preexisting-sum
+checks. It is not retained as a finding or a general network-sandbox claim.
+An initial reviewer overlay command used an unresolved placeholder and ran no
+tests; excluded, then corrected executions provide the actual evidence.
+
+Separate next-work preparation is outside that verdict. Actual hash-bound CLI
+ELF inspection98a9c4 finds native producer comments (Alpine clang/LLD19.1.4 and
+GCC14.2.0) and209 STT_FILE symbols, including crtstuff.c. A raw compressed-string
+peek yields no matches; decompression9f70dd reveals a musl-1.2.5 build-directory
+string. No raw zero is absence evidence. Private typed debug/elf+debug/dwarf
+probe09b85e/52510→300a88 passes cold, using the SAME binary byte slice:807 compile
+units,595 Go and212 other-language units.192 report directory
+/home/buildozer/aports/main/musl/src/musl-1.2.5;12 report Go runtime/cgo;8 report
+/tmp/go-build. Native units expose330 executable-section ranges,0 invalid ranges;
+8 units have no ranges and are not positive code-presence witnesses. No crtstuff.c
+compile unit appears, so ELF file symbols and DWARF do not yet provide a complete
+native-source map. Source paths/producers are metadata, not source hash/patch or
+authentication proof; no exact Alpine package revision/libgcc closure is inferred.
+
+Ignored preparation source .cache/worker-cli-tools/cli-native-cus_test.go is
+1,602bytes/SHA6230d7d084f635a2a2b5acb6ab1cd85b3294f345a2ff3ab94a30517f63f6985d;
+raw807-unit report cli-native-cus.initial.json is254,668bytes/
+SHA7be5ab30cc7cb79b64100d87f91cac727ebac7e2358a5cbe8776368f78e7a5eb.
+The local overlay is cli-native-cus-overlay.json in the same ignored directory.
+No shipping/native conformance claim. Next retain a bounded native-component
+observation with actual code-range/symbol/source correlation, exact remaining
+unknowns and source/notice counterparts. Then resolve tool delivery/policy and
+applicable adoption before packaging/native producers. All handles terminal;
+no push, deployment, archival, release approval or goal pause.

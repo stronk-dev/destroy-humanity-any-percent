@@ -253,8 +253,11 @@ query before removing a dependency, forging a module h1, changing selected-sourc
 read bytes or changing an unselected scope's text read bytes. Each refuses;
 existing output also refuses unchanged. These are private returned-byte faults,
 not mutations to shared SDK/checkout/module/archive files. The owning log gives
-the Go test overlay and exact old-failure/new-pass runs. This batch awaits
-independent bounded research/tool review; RP-762 remains review-pending.
+the Go test overlay and exact old-failure/new-pass runs. Complete nine-path
+a6592af3..571b0d8c is independently APPROVED as bounded research/tool. Fresh
+source and binary reports are byte-identical, all five source controls pass,
+and old regression/new full overlay/vet executions agree. RP-762 closes only
+the escaped-name instrument defect. The owning log retains the exact verdict.
 
 This advances complete source/text evidence, not artifact authentication,
 published-build/native correspondence, inline-term clearance, delivery-policy
