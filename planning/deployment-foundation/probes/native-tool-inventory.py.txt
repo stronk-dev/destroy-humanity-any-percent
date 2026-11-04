@@ -1,0 +1,147 @@
+"""Manual SP1 fixture audit; does not approve distribution or change a bundle.
+
+Run from the repository root. Inputs are the public files in the existing
+.cache/worker-cli-tools directory. Cached API bytes are publisher metadata,
+not a signature verifier; the owning record names the actual download sources.
+"""
+
+import argparse
+from collections import Counter
+import hashlib
+import json
+from pathlib import Path
+import struct
+import subprocess
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def read_json(path):
+    return json.loads(path.read_bytes())
+
+
+def binary(path):
+    data = path.read_bytes()
+    require(data[:6] == b"\x7fELF\x02\x01", "expected ELF64 little-endian")
+    require(struct.unpack_from("<H", data, 18)[0] == 62, "expected amd64")
+    offset = struct.unpack_from("<Q", data, 32)[0]
+    size, count = struct.unpack_from("<HH", data, 54)
+    require(count > 0 and size >= 56 and offset + size * count <= len(data), "bad ELF program table")
+    interp = any(struct.unpack_from("<I", data, offset + size * i)[0] == 3 for i in range(count))
+    output = subprocess.check_output(["go", "version", "-m", str(path)], text=True, timeout=30)
+    modules = []
+    settings = {}
+    for line in output.splitlines():
+        fields = line.split("\t")
+        if line.startswith("\tdep\t"):
+            require(len(fields) == 5, "unsupported module row")
+            modules.append({"path": fields[2], "version": fields[3], "sum": fields[4]})
+        elif line.startswith("\t=>\t"):
+            raise ValueError("unhandled module replacement")
+        elif line.startswith("\tbuild\t"):
+            key, value = fields[2].split("=", 1)
+            settings[key] = value
+    require(len({(x["path"], x["version"]) for x in modules}) == len(modules), "duplicate module")
+    return {"sha256": sha(data), "bytes": len(data), "elf": "linux/amd64",
+            "pt_interp": interp, "go_version": output.splitlines()[0].split()[-1],
+            "build_settings": settings, "modules": modules}
+
+
+def audit(cache):
+    cli = binary(cache / "docker")
+    compose = binary(cache / "plugins/docker-compose")
+    prior = read_json(cache / "tools.json")
+    require(len(prior["binaries"]) == 2, "fixture metadata must cover both binaries")
+    for result, original in zip([cli, compose], prior["binaries"]):
+        require(result["sha256"] == original["sha256"] and result["bytes"] == original["bytes"],
+                "fixture binary changed")
+    archive = cache / "docker-28.4.0.tgz"
+    require(sha(archive.read_bytes()) == prior["docker_archive"]["sha256"], "fixture archive changed")
+    release = read_json(cache / "compose-v2.39.4-release.json")
+    require(release["tag_name"] == "v2.39.4", "wrong Compose release")
+    assets = {x["name"]: x for x in release["assets"]}
+    require(len(assets) == len(release["assets"]), "duplicate release asset")
+    base = "docker-compose-linux-x86_64"
+    expected = assets[base]
+    require(expected["digest"] == "sha256:" + compose["sha256"] and expected["size"] == compose["bytes"],
+            "publisher binary digest/size mismatch")
+    statements = {}
+    inputs = {}
+    for suffix in ["sbom", "provenance"]:
+        path = cache / f"compose-v2.39.4-linux-amd64.{suffix}.json"
+        data = path.read_bytes()
+        asset = assets[f"{base}.{suffix}.json"]
+        require(asset["digest"] == "sha256:" + sha(data) and asset["size"] == len(data),
+                "publisher statement digest/size mismatch")
+        statement = json.loads(data)
+        require(statement["_type"] == "https://in-toto.io/Statement/v0.1", "unexpected statement type")
+        require(statement["subject"] == [{"name": base, "digest": {"sha256": compose["sha256"]}}],
+                "statement subject does not bind actual binary")
+        statements[suffix] = statement
+        inputs[path.name] = {"sha256": sha(data), "bytes": len(data), "url": asset["browser_download_url"]}
+    sbom = statements["sbom"]
+    require(sbom["predicateType"] == "https://spdx.dev/Document", "wrong SBOM predicate")
+    require(sbom["predicate"]["spdxVersion"] == "SPDX-2.3", "unsupported SPDX")
+    packages = sbom["predicate"]["packages"]
+    require(len({x["SPDXID"] for x in packages}) == len(packages), "duplicate SPDX package")
+    identities = {(x["name"], x.get("versionInfo", "")) for x in packages}
+    linked = {(x["path"], x["version"]) for x in compose["modules"]}
+    require(linked <= identities, "SBOM misses an actual linked module")
+    declared = Counter(x.get("licenseDeclared", "MISSING") for x in packages)
+    concluded = Counter(x.get("licenseConcluded", "MISSING") for x in packages)
+    provenance = statements["provenance"]
+    require(provenance["predicateType"] == "https://slsa.dev/provenance/v0.2", "wrong provenance predicate")
+    tag = read_json(cache / "cli-v28.4.0-tag.json")
+    require(tag["tag"] == "v28.4.0" and tag["object"]["type"] == "commit", "wrong CLI tag")
+    revision = tag["object"]["sha"]
+    require(f"GitCommit={revision[:7]}" in cli["build_settings"].get("-ldflags", ""),
+            "CLI tag does not corroborate embedded short commit")
+    for name in ["cli-v28.4.0-LICENSE", "cli-v28.4.0-NOTICE", "compose-v2.39.4-LICENSE",
+                 "compose-v2.39.4-NOTICE", "cli-v28.4.0-Dockerfile", "cli-v28.4.0-tag.json",
+                 "compose-v2.39.4-release.json", "tools.json"]:
+        data = (cache / name).read_bytes()
+        require(len(data) > 0, "empty upstream input")
+        inputs[name] = {"sha256": sha(data), "bytes": len(data)}
+    unknown = sum(declared.get(x, 0) for x in ["NOASSERTION", "NONE", "MISSING", ""])
+    # Inspection can finish honestly while distribution prerequisites remain unmet.
+    # This is an audit result, not an eligibility verifier or a complete SBOM.
+    return {"schema_version": 1, "objective_completed": True,
+            "objective": "Inspect research fixture identity, available inventory and licensing evidence",
+            "distribution_approved": False, "native_dependency_closure_known": False,
+            "signature_verified": False, "cached_publisher_metadata_only": True,
+            "cli": {"binary": cli, "tag_commit": revision, "tag_verification": tag["verification"]["reason"],
+                    "archive_upstream_checksum_verified": prior["docker_archive"]["upstream_checksum_verified"]},
+            "compose": {"binary": compose, "sbom_packages": len(packages),
+                        "linked_module_rows_covered": len(linked), "declared_license_counts": dict(declared),
+                        "concluded_license_counts": dict(concluded), "unknown_declared_licenses": unknown,
+                        "release_immutable": release.get("immutable"),
+                        "builder": provenance["predicate"]["builder"]},
+            "inputs": inputs,
+            "limitations": ["Publisher statements/digests are not independently verified signed attestations",
+                            "Top-level LICENSE/NOTICE do not inventory every linked dependency",
+                            "Absent CLI module rows do not mean zero dependencies",
+                            "No new release artifacts, schema, runtime or package permission supplied"]}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--cache", type=Path, default=Path(".cache/worker-cli-tools"))
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    require(not args.output.exists(), "output already exists; use a fresh observation path")
+    result = audit(args.cache)
+    result["probe_sha256"] = sha(Path(__file__).read_bytes())
+    result["source_commit"] = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    with args.output.open("x") as output:
+        output.write(json.dumps(result, indent=2, sort_keys=True) + "\n")
+    print(json.dumps({"objective_completed": True, "distribution_approved": False,
+                      "cli_module_rows": len(result["cli"]["binary"]["modules"]),
+                      "compose_module_rows": result["compose"]["linked_module_rows_covered"],
+                      "unknown_licenses": result["compose"]["unknown_declared_licenses"]}))

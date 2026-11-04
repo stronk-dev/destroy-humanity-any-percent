@@ -10506,3 +10506,46 @@ DP7 projection/reboot-cache adoption evidence required by SP1/SP6, then obtain
 explicit architecture/host-floor adoption and reconcile parents before production
 implementation. Supported native host and full SP8/R-006 stay required; no
 version/CI/gameplay/copy change, publication, deployment or goal pause.
+
+## 2026-11-04 — Native tool provenance/rights audit: partial SBOM is not clearance
+
+Previous goal turn made concrete progress throughad1d23c1: complete corrected
+native profile technical approval, no adoption/runtime claim. Current clean
+checkout revalidated. This batch audits SP1's actual cached research-only CLI/
+Compose fixtures; no product/test/CI/kernel/balance/copy bytes.
+
+Actual binary inspection finds CLI28.4.0 Go1.24.7/CGO1/pkcs11 and ZERO dependency
+module rows, not zero dependencies. Compose2.39.4 Go1.24.7/CGO0 has180 module
+rows. Fresh publisher release metadata and actual SBOM/provenance downloads match
+binary/statement hashes and subjects. All180 exact linked name/version rows are
+in the183-package SPDX2.3 graph, but182 declared licenses/all183 concluded licenses
+are NOASSERTION. Top-level Apache LICENSE/NOTICE files are captured separately;
+no dependency terms/native link closure is inferred from them. CLI's local archive
+hash lacks an independently checked publisher checksum; its unsigned tag only
+corroborates embedded short revision. Compose full native revision matches its
+observed tag. Publisher metadata is not verified signed provenance/rebuilt source.
+
+Retain native-tool-provenance-audit.md, source-bound v1 observation and the manual
+probe. Finalc94da8 exits0: INSPECTION completed, distribution_approved=false and
+native_dependency_closure_known=false. Actual-Go/ELF inspection is the population,
+not a mocked version fixture or release validator. Private416630 controls rebind
+the forged SBOM's release-asset hash, then wrong subject/missing actually linked
+compose-go still refuse; truncated two-tool metadata refuses. Shared binary inputs
+remain unchanged, private copies removed. Finalb01f15 existing-output attempt
+exits1 and preserves prior bytes. Probe/source hashes match. Existing application
+generator covers six own Go commands/browser, not these external binaries.
+
+GitHub connector asset URLs returned404; direct read-only curl inputs completed
+with exact publisher-file hashes. Optional build-script connector query in exec985
+remained live and was explicitly terminated without completion evidence; no
+missing-file conclusion. Required Dockerfile/metadata were separately downloaded
+by bounded completed curl calls. No execution/session/resource remains live.
+
+RP-759 is OPEN packaging/adoption evidence, not a shipped-tool defect or license
+clearance. Next establish actual vendor/Go/native closure and corresponding
+notice/provenance delivery; prepare exact tool artifact/SBOM inputs, then obtain
+applicable adoption before runtime/package changes. DP7 projector/cache evidence
+and supported host/SP8/R-006 remain separate gates. Diff checked; no unrelated
+software suite, source build, Docker/host operation, publication or goal pause.
+This whole audit/tool range requires independent research review.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.
