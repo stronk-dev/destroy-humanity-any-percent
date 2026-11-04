@@ -1212,6 +1212,10 @@ remain supplemental to the pinned private-network and exact-release populations.
 All seven services write to persistent journald with a unique bounded tag. Journal capacity is not
 a guessed constant: `deployment-operations journal-observe` records the predeclared workload,
 interval, sample count, observed bytes, peak bytes/day, filesystem size and proposed budget.
+Collection reads the exact `--journal-path` directory, requests complete JSON fields,
+and refuses any `journalctl` diagnostic even with exit status zero. Incomplete,
+malformed, failed or empty collections emit no observation; diagnostic text is not
+copied into the refusal. These command controls do not establish host retention.
 `journal-render` accepts only a complete, non-guarded observation with exact 14-day retention,
 capacity for fourteen measured peak days and an alert at 80% before eviction; it writes both the
 new journald drop-in and the exact budget file used by host monitoring, refusing to overwrite

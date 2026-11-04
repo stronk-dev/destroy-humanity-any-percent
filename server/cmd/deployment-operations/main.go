@@ -258,12 +258,19 @@ func runJournalObserve(args []string) error {
 	if !completed.After(started) {
 		return operations.ErrInvalid
 	}
-	command := exec.Command("journalctl", "--since=@"+strconv.FormatInt(started.Unix(), 10), "--until=@"+strconv.FormatInt(completed.Unix(), 10), "--output=json", "--no-pager",
+	command := exec.Command("journalctl", "--directory="+*journalPath, "--since=@"+strconv.FormatInt(started.Unix(), 10), "--until=@"+strconv.FormatInt(completed.Unix(), 10), "--output=json", "--all", "--no-pager", "--quiet",
 		"SYSLOG_IDENTIFIER=cloud-clicker-caddy", "+", "SYSLOG_IDENTIFIER=cloud-clicker-gameserver", "+", "SYSLOG_IDENTIFIER=cloud-clicker-postgres", "+", "SYSLOG_IDENTIFIER=cloud-clicker-backup",
 		"+", "SYSLOG_IDENTIFIER=cloud-clicker-prometheus", "+", "SYSLOG_IDENTIFIER=cloud-clicker-alertmanager", "+", "SYSLOG_IDENTIFIER=cloud-clicker-node-exporter")
+	// A successful exit can still exclude corrupt or unreadable journal data.
+	// Diagnostics invalidate the measurement; never publish their private text.
+	var diagnostics bytes.Buffer
+	command.Stderr = &diagnostics
 	output, err := command.Output()
 	if err != nil {
 		return err
+	}
+	if diagnostics.Len() != 0 {
+		return operations.ErrInvalid
 	}
 	scanner := bufio.NewScanner(bytes.NewReader(output))
 	scanner.Buffer(make([]byte, 64<<10), 2<<20)

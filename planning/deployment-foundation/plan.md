@@ -7,6 +7,12 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Journal collection correction, 2026-11-04:** DP7's measurement command now reads
+the requested directory and refuses exit-zero diagnostics before emitting evidence.
+Actual old-command regression, corrected five-arm collection controls, cold owning
+packages, vet and race pass; independent review remains. No host-retention or
+exact-artifact acceptance follows. Continue accepted operations work.
+
 **Backup parser/snapshot corrective review,2026-11-04:** complete eight-path
 `630f6833..bc5d5f5d` (RP-489/490) is independently approved. Fresh exact-old parser
 discriminates all eight malformed cases; corrected14 arms, cold four owners/vet

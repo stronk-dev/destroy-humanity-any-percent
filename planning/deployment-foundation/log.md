@@ -8152,3 +8152,28 @@ gameserver readiness, host retention, R-006, full AC7/CI or release approval.
 Root updates current plans only; no suite for editorial records, no publication
 or feature acceptance. Continue remaining accepted operations construction; the
 full nine-tier1.0 goal remains active.
+
+## 2026-11-04 — Bind journal workload collection to its directory and complete output
+
+DP7 requires measured journal capacity and honest incomplete-collection refusal.
+`journal-observe` previously used its supplied directory only for filesystem size,
+while journalctl read the default host journal. Exit-zero stderr diagnostics were
+discarded. It now supplies that exact directory, requests all JSON fields with
+quiet/no-pager output, and refuses diagnostics before publishing any observation.
+Diagnostic text is not exposed. Retention, capacity calculation, schema, service
+filters, runtime logging and alert policy are unchanged.
+
+Actual command-path regression17910 exits expected Make2 on old production:
+the healthy control lacks directory/all/quiet arguments, and the warning control
+emits468 bytes of supposedly complete evidence. Failed, truncated and empty
+controls already refuse. Corrected42655 passes all five arms. The fixture launches
+a real controlled child through PATH and checks actual arguments, exit status,
+stderr and observation bytes; it is not systemd/journald evidence.
+Cold60592 passes operations1.631s and command5.626s; selected vet passes. Focused
+race23999 passes5.668s. Existing opt-in skips supply no integration credit.
+Gofmt/diff checks pass. No SQL or browser boundary changes; no unrelated full
+operations rerun. Complete six-path corrective range starts afterb6744226 through
+this containing code/test/docs/ledger/plan/log commit; independent review remains.
+Review by: Codex root, implementer first filter only. Recorded by: Codex root.
+Actual host collection, retention/eviction, workload ratification, full AC7 and
+exact-release R-006 remain open. No self-approval, archival or publication.
