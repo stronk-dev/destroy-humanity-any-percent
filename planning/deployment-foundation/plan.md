@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Backup metadata proposal, 2026-11-04 (RP-505):** complete seven-path
+09cf45e5..ce61b82a is independently TECHNICALLY APPROVED, ready for owner
+adoption. Fresh native and declared Linux diagnostic populations both reproduce
+two unsafe flag-based deletions; those passes are diagnostic execution, not
+retention acceptance. Signed outer v2, external trust and authenticated legacy
+copy remain unadopted; no production/key/format change. Governed resolution,
+D-019, snapshot-based RPO and clean-host gates stay separate. Exact scope/evidence
+is in the owning log; implement only after this concrete amendment is adopted.
+
 **Actual game-process availability proof, 2026-11-04 (RP-721):** construct the
 missing DP7 producer-to-receiver path using the current gameserver executable,
 real Postgres and existing private monitoring/Caddy stack. Actual process stop,

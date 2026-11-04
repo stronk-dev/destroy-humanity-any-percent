@@ -8332,3 +8332,33 @@ private executable population, not production configuration, browser/persistence
 or key continuity, automatic restart, host journal/retention, full AC7, clean-host
 R-006 or release acceptance. Root reconciles current scopes only; no software
 suite for editorial records, archival, publication or goal pause.
+
+## 2026-11-04 — Backup protection amendment technically approved, defect remains
+
+Review by: independent Codex `/root/scheduled_backup_ingress_proof_corrective_review`.
+Recorded by: Codex root. TECHNICAL REVIEW APPROVED, complete seven-path range:
+`09cf45e5539437b581b9318443632a23a995977e..ce61b82a5a87f3c6f4989f05b17a369396b0b652`.
+Includes original diagnostic and complete BM1–BM5 recommendation, test/docs/
+backlog/plan/log/index, not just the RFC. Current Create/ReadHeader/Restore/
+ExtractPackage/retention/target locks/schedule/Compose/release readers inspected.
+
+No technical blockers: external trust/dedicated Ed25519 seed, exact canonical
+signed bytes, outer-v2/authenticated-inner-v1 mapping, target-owned full-census
+cleanup, verified publication and authenticated legacy copy are coherent.
+Originals/protection remain immutable; governed resolution is still a separate
+author hold. Official standard-library API supports the proposed signature use,
+not completion of an integration that is not implemented.
+
+Fresh native63927 terminal0,0.318s, and declared Linux-amd6414146 terminal0,0.184s,
+both execute both flag mutations and explicitly report protection failures2/2.
+Current classification accepts and cleanup deletes each protected synthetic
+fixture; authenticated restore refuses before output. Actual age/filesystem,
+synthetic dump bytes: NOT SQL restore or retention acceptance. Formatting and
+complete-range whitespace pass. All handles terminal; only own created Postgres
+987ed25fc175 and confirmed-empty network removed, caches preserved. No reviewer
+tracked edits/commits. Root reconciles current records without a software suite.
+
+Ready for owner adoption, not adopted: no signed format/new seed/trust/operator
+configuration/legacy conversion or production repair is authorized by this
+verdict. RP-505 remains OPEN; D-019, governed resolution, snapshot-based RPO,
+exact artifacts and clean-host R-006/full Deployment/release stay separate.

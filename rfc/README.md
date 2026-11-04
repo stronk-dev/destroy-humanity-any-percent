@@ -44,7 +44,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [First Content Epoch](first-content-epoch.md) | epoch 6 minted and designated-approved; dependent archival in progress | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | implementing — accepted at `cd102d7` | Gameserver / Client / Account / API / CI / operations |
 | [Current Release Authority & Interrupted Transitions](deployment-current-release-authority.md) | draft — RP-558/DESIGN-GAP10; proposal, pinned-engine mechanical evidence/adoption/review pending; not acceptance-ready | Deployment DP5 / operator ledger / R-006 |
-| [Backup Protection Metadata Binding](backup-protection-metadata.md) | draft — RP-505 signed-v2/authenticated-legacy-copy proposal; adoption/review pending | Deployment DP6 / retention |
+| [Backup Protection Metadata Binding](backup-protection-metadata.md) | draft — complete proposal independently technically approved 2026-11-04; owner adoption pending, not implementation authority | Deployment DP6 / retention |
 | [Accessibility of Player Workflows](accessibility-player-workflows.md) | draft — current Game UI failures measured; owner task/AT matrix pending | UI Foundation / Game UI Screens; later surface RFCs consume its acceptance floor |
 | [v0.1 "The Garage" — Release Manifest & RFC DAG](v0.1-garage-release-manifest.md) | accepted 2026-09-25 (recommended defaults); implementing | design/07 Phase 1 |
 | [Reputation Tree v1](reputation-tree-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Prestige & Exits / Leaderboards & Epochs |
