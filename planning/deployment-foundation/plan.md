@@ -77,7 +77,11 @@ function extents and unmatched file symbols explicit.192 musl-labelled paths
 have upstream1.2.5 counterparts;12 runtime/cgo paths match SDK/compiler source;
 8 generated units remain unknown. Exact Alpine patches/CRT/native source identity
 and rights are not established. Source counterparts and extent/binding/unknown
-controls execute; complete native research batch awaits independent review.
+controls execute. Complete nine-path a590aa2d..23c646b4 is independently APPROVED
+as bounded research/tool, with both reports reproduced byte-for-byte. Next narrow
+actual source/patch identity through line-file checksums and original build-package
+provenance, plus CRT/generated/header counterparts and full delivery terms; another
+positive census alone cannot complete native closure or authorize packaging.
 
 Next complete the exact CLI/Compose provenance/rights/artifact inventory and
 DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit

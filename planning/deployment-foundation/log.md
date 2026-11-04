@@ -11111,3 +11111,31 @@ adoption. Source counterparts never establish exact patched code. No production,
 normal test/CI, RFC, dependency or kernel byte changes; no native-host, SP8,
 AC8/R-006, release/archival/push approval or goal pause. All handles terminal.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Native metadata/counterpart research independently approved
+
+APPROVED, bounded research/tool only, exact complete nine-path
+a590aa2d076d0b581b571406db95cd6f0342ad19..
+23c646b403409dfb34e4376b1c7b59a363516d64.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. No material findings.
+
+Independent native report matches all257,712bytes/SHA c13ae17e; counterpart
+report matches all101,655bytes/SHA795f944e. Full metadata overlay tests/vet and
+extent/cross-unit/wrong-binary/specific-libc-CU controls pass. Python changed
+report/archive, no-overwrite and explicit-UNKNOWN missing-counterpart controls
+pass. The entire35,689-function census closes; zero-size/no-range/unknown/file
+symbol gaps remain explicit. All212 units retained (192 upstream-only paths,
+12 SDK-selection matches,8 unresolved);15 markers imply no rights conclusion.
+Same-buffer parsing, full extents, immutable archives, source bindings, actual
+release-page links/notices and all limitations inspected. Exact-range whitespace
+and exclusion checks pass; no tracked reviewer edits, reviewed HEAD unchanged.
+
+RP-759 remains OPEN. This is not source authentication, exact Alpine/native/CRT/
+header closure, vulnerability clearance, distribution permission or artifact/
+profile adoption. Next investigate native line-file checksums and original build
+package provenance for actual source/patch correlation, then missing CRT/generated/
+header counterparts and final delivery terms. Do not rerun a positive census as
+closure or substitute upstream same-path text for the actual patched source.
+No production, CI, RFC, dependency or kernel change; no native-host, SP8/R-006,
+release/archival/push approval or goal pause. All root/reviewer handles terminal.

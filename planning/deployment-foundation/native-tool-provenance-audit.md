@@ -325,7 +325,9 @@ and retain a private missing-source counterpart as UNKNOWN rather than dropping
 the unit or declaring rights. Reproduce the Python report from repository root
 with `python3 planning/deployment-foundation/probes/cli-native-counterparts.py.txt
 --output /tmp/cli-native-counterparts.json`; the owning log gives the Go overlay.
-This complete native research batch awaits independent review.
+Complete nine-path a590aa2d..23c646b4 is independently APPROVED as bounded
+research/tool. Both full reports reproduce byte-for-byte; all Go/extent/source/
+unknown controls and overlay vet pass. See the exact verdict in the owning log.
 
 Actual Alpine patch/source identity, CRT/remaining native symbols, generated
 code/header terms, complete final notice/source delivery and applicable tool
