@@ -87,7 +87,9 @@ and retains only the Founder ID as connection information. Subscription authoriz
 server-side for every channel; client publication is always rejected. Three concurrent connections
 are permitted per account and the oldest is closed with code 4002 when a fourth connects. Access
 tokens carry their existing expiry into the socket and expire with code 4001; periodic liveness
-checks also detect server-side revocation.
+checks also detect server-side revocation. Each recheck's database read is bounded by that same
+verified expiry and node cancellation, so a blocked query cannot postpone the expiry timer.
+Expiry closes the connection without revoking its session family or stopping the node.
 
 Publishing `world` state stores only the greatest pending revision and a node-owned ticker emits at
 the configured rate, so call sites cannot accidentally turn player actions into public per-click

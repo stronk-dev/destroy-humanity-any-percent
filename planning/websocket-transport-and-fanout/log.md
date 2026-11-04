@@ -1164,3 +1164,51 @@ This verdict does NOT authorize landing, qualify the guarded Guild file, adopt
 draft N1/guard authority or complete feature/CI/release/archival gates. No false
 version, publication, owner-answer inference or goal pause. Continue authorized
 work; lawful delivery/eligibility remains the candidate's named next action.
+
+## 2026-11-04 — RP-768: token expiry cancels a blocked periodic recheck
+
+Previous goal turn made progress: exact-artifact evidence independently approved
+and closed at7505c5bf. This routine correction consumes accepted Account D2 and
+Transport T1/T5, not an unadopted proposal. While the node remains active, a blocked
+OnAlive Account read holds Centrifuge's presence mutex/timer past Credentials.Exp.
+The previous node-shutdown fixes cannot cancel it merely because its token expires.
+
+Old7505c5bf production fails the actual registered-callback/net.Pipe socket test
+37063 in31.05s and real Linux-amd64/Postgres/socket46240 in32.31s: no4001 before
+the observation deadline. Actual Account SQL is first observed blocked on the
+exclusive access_tokens lock. The real token retains its normal900-second TTL;
+controlled issuance/application-clock advance leaves its final30seconds for the
+unmodified real socket/presence scheduler. This is not a full natural15-minute
+session or browser-renewal proof. No background node drain rescues either oracle.
+Baseline logs .cache/socket-expiry-{baseline,sql-baseline}.log SHA256 respectively
+ a87f11fe4a02653b4630155ca5ffb9998329eaef1bff0d4e7ca0db5d0471d7ca /
+ 90050b608893ad393c77305b99dea5927e5aa09b04b1dcb804f27cbdc91ecb1f.
+
+OnConnecting retains verified expiry beside the private token. OnAlive derives
+its query context from that same expiry and existing node cancellation, never a
+new timeout/TTL. No early expiry, family revocation, node stop, wire/Info/claim,
+policy/cadence or kernel change. Focused7699 native29.83s and89473 actual SQL30.66s
+pass:4001 and finished authentication/ceased backend wait while the original lock
+stays held, no revocation and fresh session/connection afterward. Additional
+no-early-expiry assertions strengthen the final tests without changing old failures.
+
+Finished source frozen: native three-package race76374 passes Transport62.773s /
+Account4.740s, then Gameserver aborts at sandbox loopback binding. Its separate
+identical-package permitted run82337 passes1.817s; native DB tests skip, not SQL
+credit. Complete Linux-amd64/Postgres three-package race56144 passes75.382s /
+23.281s /206.212s,654 PASS rows/zero FAIL/one existing opt-in minute cleanup skip.
+Existing actual family revocation and node-drain regressions execute. Full SQL log
+.cache/socket-expiry-sql-full.log SHA256
+3b832e58331b9c9746a13b70c29f8880f41015d4b79de4e47235829495bb4585.
+Affected vet7700, formatting and diff checks pass. No unchanged broad rerun,
+new mechanism/CI population exemption, budget increase or receipt/golden changes.
+
+All root verification handles terminal; shared declared test Postgres remains for
+independent review. No product/auth test bytes changed during live runs. The old
+source9768d681 artifact remains valid historical packaging evidence, predating
+this correction; rebuild before claiming it contains RP-768. RP-767 remains
+OPEN/unapplied and separately held. This seven-path correction after7505c5bf
+through the containing commit needs fresh independent corrective review. Original
+Account/Transport acceptance, current hosted CI, clean-host/release and full
+nine-tier1.0 remain open/active; no publication, archival, owner adoption or pause.
+Review by: Codex root (implementer first filter). Recorded by: Codex root.

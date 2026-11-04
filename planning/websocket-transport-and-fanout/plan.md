@@ -4,6 +4,17 @@
 - **RFC:** `rfc/websocket-transport-and-fanout.md`
 - **Started:** 2026-07-29
 
+2026-11-04 RP-768 is locally corrected under Account D2 / Transport T1/T5.
+The actual periodic recheck previously held Centrifuge's presence mutex/timer
+past token expiry. Native and real Linux-amd64/Postgres regressions fail old
+7505c5bf and pass the correction. The verified expiry now bounds that read as
+well as node cancellation;15-minute TTL/cadence,4001 expiry and4003 drain remain.
+Both witnesses forbid early expiry; real SQL ceases waiting with its lock held,
+revocation is unchanged and a fresh session connects afterward. Full affected
+native and Linux-amd64/Postgres race suites and vet pass, with the existing
+opt-in cleanup skip explicit. Complete seven-path batch needs independent
+corrective review; original Transport/Account and release gates remain separate.
+
 2026-11-04 RP-767 remains OPEN in the product. Real Guild/Cohort permission SQL
 can survive successful configured15s drain; the2s caller population also times out.
 The complete nine-file context-propagation candidate is UNAPPLIED. Native/five-

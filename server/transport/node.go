@@ -148,7 +148,10 @@ func (n *Node) bindHandlers() {
 		}
 		return centrifuge.ConnectReply{
 			Credentials: &centrifuge.Credentials{UserID: claims.Subject, ExpireAt: claims.ExpiresAt, Info: info},
-			Storage:     map[string]any{"access_token": event.Token},
+			Storage: map[string]any{
+				"access_token":            event.Token,
+				"access_token_expires_at": claims.ExpiresAt,
+			},
 		}, nil
 	})
 
@@ -189,12 +192,18 @@ func (n *Node) bindHandlers() {
 		client.OnAlive(func() {
 			storage, release := client.AcquireStorage()
 			token, _ := storage["access_token"].(string)
+			expiresAt, _ := storage["access_token_expires_at"].(int64)
 			release(storage)
-			if token == "" {
+			if token == "" || expiresAt <= 0 {
 				client.Disconnect(disconnectAuthExpired)
 				return
 			}
-			if _, err := n.auth.Authenticate(n.authCtx, token); err != nil && n.authCtx.Err() == nil {
+			// This callback holds Centrifuge's presence mutex and timer. A
+			// blocked recheck must not postpone the token's existing expiry.
+			authCtx, cancelAuth := context.WithDeadline(n.authCtx, time.Unix(expiresAt, 0))
+			defer cancelAuth()
+			_, err := n.auth.Authenticate(authCtx, token)
+			if (err != nil || authCtx.Err() != nil) && n.authCtx.Err() == nil {
 				client.Disconnect(disconnectAuthExpired)
 			}
 		})
