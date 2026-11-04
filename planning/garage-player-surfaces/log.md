@@ -8858,3 +8858,52 @@ original CHANGES REQUIRED remains, not self-approved. No live observation yet,
 browser/DB/services, default-journey logic, cadence/input/rate/copy/kernel/balance/
 wire/CI/deadline changes. Next reviewer runs actual manual mode once, retaining
 any invalid/negative result without a relaxed bound or repeated run for green.
+
+## 2026-11-04 — Single native observation retained; fixture CI failure found (RP-713)
+
+Review by: independent Codex `/root/manual_budget_instrument_corrective_review`.
+Recorded by: Codex root. Reviewer executes corrected272/3files pass317ms; types18624 pass0/0,
+syntax and both original/correction-range whitespace pass. Independent actual-
+function old/current comparison reproduces old false-valid malformed-read, body-
+failure and invalid UTF-8 read/manual cases; current refuses each. Healthy/BOM/
+limiter controls retain validity, unexpected204 refuses, negative-lateness old
+true/current false. No main mutation or new DTO authority.
+
+ONE native `--observe-manual-budget` command80341 at exact `490dfe78` terminates0,
+with declared ARM64 tmpfs Postgres override, native browser/server and normal
+required preflight. Ports were free before start; no concurrent test workload.
+Both full profiles meet unchanged validity, but neither is lossless acceptance:
+
+| Hz | Scheduled / attempted | Activations / applied replies | Nonactivating inputs | Requests | Elapsed ms | Max lateness ms | Rate refusals |
+|---|---|---|---|---|---|---|---|
+| 2 | 120 /120 | 116 /116 | 4 | 234:116manual200+118state200 | 60002.815167 | 9.244209 | 0 |
+| 4 | 240 /240 | 159 /159 | 81 | 321:159manual200+159state200+3state429 | 60002.161291 | 2.941833 | 3state429; first19538ms at founder/state |
+
+No malformed/page errors. These are actual native diagnostic observations, not
+SQL confirmation of each applied response, healthy throughput/floor, matched
+speed comparison, unique failure cause, Linux/hosted CI or release acceptance.
+No repeat of the measurement. Native services/listeners removed, then only own
+validated tmpfs PG678ecfaa and empty networka32b7d; caches untouched.
+
+Root source-checks browser collection during the live run and notices its new
+capture fixture uses Node-only Buffer. No executable edit/test workload until
+80341 is terminal. First affected-browser4360 ends and its handle disappears,
+but final output is lost; no exit/count claim. Repeat of ONLY the focused fixture
+check97018 at exact490dfe78 retains full output and exits Make2:9fail/63pass,
+three failed files/72total across C/F/W. Healthy/BOM/valid-limiter controls fail
+because fixture byte construction throws before the observer can validate it.
+Independent CHANGES REQUIRED for this root-introduced test regression; not a new
+production decoder defect. Retained output:
+`/private/tmp/manual-budget-review-browser-490dfe78.log`.
+All handles terminal, browser absent; only confirmed-empty own browser network
+a351dc removed, pre-existing two BuildKit containers preserved. No provider,
+assertion, deadline, cadence, population or exclusion changed.
+
+Root fixes only fixture construction with portable TextEncoder/Uint8Array and
+TextDecoder (replacement/retain-BOM behavior for its legacy json stub). Actual
+observer/shared decoder/driver/client/server sources are unchanged; native80341
+remains evidence at490dfe78. Node272 passes312ms after edit, diff clean. Source
+and correctness inspected by root first filter; complete fixture/docs/record
+follow-up after490dfe78 needs independent re-review and affected C/F/W execution,
+not another minute-profile run or self-approval. Both prior negative verdicts
+remain in the record. RP-368 owner policy, full CI/feature/archival/release stay open.

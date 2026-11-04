@@ -14,13 +14,13 @@ that would need one is recorded as a blocker in `log.md` instead.
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
 
-1. Independently re-review original manual-budget observer `b6a13c79..78f51a0f`
-   plus RP-712's correction, then execute actual mode. Original CHANGES REQUIRED
-   remains recorded: malformed nonmanual GET200 falsely reported valid. Actual-
-   listener regressions now pass with shared client UTF-8/JSON decoding for all
-   observed200/429 replies; no full DTO validation is claimed. Preserve60s/100ms
-   validity and negative losses/refusals; RP-368 still does not adopt a four-Hz
-   floor, batching, larger limiter or retries from a measurement.
+1. Finish independent original-plus-corrections review of manual-budget observer
+   `b6a13c79..78f51a0f`, RP-712 capture fix and RP-713 portable test fixture. Original
+   CHANGES REQUIRED and the real browser fixture failure stay recorded. The single
+   native490dfe78 observation is complete, valid but lossy/limited; do not repeat
+   it for a test-only portability edit. Run affected C/F/W collection with the
+   portable fixture. No full DTO validation, new four-Hz floor, batching, larger
+   limiter or retries;60s/100ms limits and RP-368 owner boundary remain intact.
 2. API's catalog corrections and five technical amendments are reviewed; owner
    adoption/new-descriptor/full workflow gates remain in its plan/log. Do not
    restart completed reviews, infer adoption or mount a partial endpoint.

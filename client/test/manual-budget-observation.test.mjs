@@ -12,6 +12,7 @@ async function captureObservation(scenario) {
   const originalTimeout = globalThis.setTimeout, originalInfo = console.info;
   let now = 0, readParses = 0;
   const reports = [];
+  const encoder = new TextEncoder();
   try {
     Object.defineProperty(globalThis, "performance", { configurable: true, value: { now: () => now } });
     globalThis.setTimeout = (callback, ms) => { now += ms; queueMicrotask(callback); return 0; };
@@ -32,21 +33,21 @@ async function captureObservation(scenario) {
             if (!manual) readParses++;
             if (!manual && scenario === "failed-read") throw new Error("synthetic-private-body");
             if (scenario === (manual ? "malformed-manual" : "malformed-read") || !manual && scenario === "malformed-rate-limit") {
-              return Buffer.from("{synthetic-private-body");
+              return encoder.encode("{synthetic-private-body");
             }
             if (scenario === (manual ? "invalid-utf8-manual" : "invalid-utf8-read")) {
-              return Buffer.concat([Buffer.from(manual ? '{"outcome":"applied","fixture":"' : '{"fixture":"'), Buffer.from([0xff]), Buffer.from('"}')]);
+              return new Uint8Array([...encoder.encode(manual ? '{"outcome":"applied","fixture":"' : '{"fixture":"'), 0xff, ...encoder.encode('"}')]);
             }
             const value = manual ? { outcome: "applied" } : scenario === "rate-limited"
               ? { category: "rate_limited", detail: "account" } : { fixture: "synthetic-private-body" };
-            return Buffer.from(`${!manual && scenario === "bom-read" ? "\uFEFF" : ""}${JSON.stringify(value)}`);
+            return encoder.encode(`${!manual && scenario === "bom-read" ? "\uFEFF" : ""}${JSON.stringify(value)}`);
           };
           handlers.get("response")({
             request: () => request,
             status: () => !manual && scenario === "unexpected-empty" ? 204
               : !manual && ["rate-limited", "malformed-rate-limit"].includes(scenario) ? 429 : 200,
             body,
-            json: async () => JSON.parse((await body()).toString("utf8")),
+            json: async () => JSON.parse(new TextDecoder("utf-8", { ignoreBOM: true }).decode(await body())),
           });
         };
         return {
