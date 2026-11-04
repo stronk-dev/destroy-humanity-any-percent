@@ -8362,3 +8362,45 @@ Ready for owner adoption, not adopted: no signed format/new seed/trust/operator
 configuration/legacy conversion or production repair is authorized by this
 verdict. RP-505 remains OPEN; D-019, governed resolution, snapshot-based RPO,
 exact artifacts and clean-host R-006/full Deployment/release stay separate.
+
+## 2026-11-04 — Bind migration validation and pg_dump to one snapshot (first filter)
+
+Accepted DP6/AC4 requires a consistent database interpreted by its release manifest.
+RP-724: CreatePostgresBackup closes its migration-check connection before pg_dump
+opens its own snapshot. Actual new regression14205 at0179415e completes a backup
+after another transaction commits real DDL, next Goose version and an account-row
+update; actual encrypted RestorePostgresBackup then refuses declared migration.
+All eight previous integration functions pass in that same red target. This is a
+production false-completion defect, not merely two standalone census timestamps.
+
+Check the migration inside a read-only repeatable-read transaction, export its
+snapshot to pg_dump16 and hold it until the real dump succeeds. Commit before
+packaging; all error paths roll back. Restore's existing check stays unchanged.
+No package/envelope/API/key/retention/formula/version/migration-file changes.
+PostgreSQL16's documented snapshot export/import supplies the mechanism; it is
+not a new application schema or owner policy. Separate recovery-census/dump
+binding, snapshot timestamp/RPO, concurrent-DDL refusal and RP-505 stay distinct.
+
+First corrected63193 proves successful actual encrypted restore of the original
+complete row/migration identity, but its new cancellation cleanup assertion fails:
+NOWAIT incorrectly assumes server lock release precedes a cancellation return.
+Existing RP-490 witness and Go database/sql awaitDone/rollback confirm asynchronous
+teardown; no production leak is inferred. Follow that existing witness: observe
+actual exclusive-lock acquisition under the same30-second completion guard.
+This does not add a sleep, raise a bound or redefine restore success.
+
+Final actual declared Linux-amd64/Postgres84225 terminal0 executes all nine
+integration functions without skips. New witness3.03s restores pre-migration schema,
+version and complete recovery identity after concurrent committed changes; initial
+mismatch refuses before dump, ordinary dump failure/cancellation publish nothing,
+and actual exclusive-lock acquisition proves exporter release. Existing empty/
+populated/query-override, corruption/clean-target, snapshot and deletion/restore
+populations also execute. Target removes owned Postgres and its network.
+Cold four owners23631 pass; selected vet passes. Native prerequisite skips are
+not SQL evidence. Gofmt/diff checks pass; no unrelated browser/full-CI rerun.
+
+Complete six-path batch starts after0179415e through this containing production/
+integration test/docs/backlog/plan/log commit. Review by: Codex root, implementer
+first filter only. Recorded by: Codex root. Independent corrective review remains;
+no self-approval, original R6/AC4, real-release/clean-host or1.0 acceptance,
+archival, publication or goal pause.

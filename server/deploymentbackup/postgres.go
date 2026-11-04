@@ -111,15 +111,26 @@ func CreatePostgresBackup(ctx context.Context, input PostgresBackupInput) (Heade
 	if err != nil {
 		return Header{}, "", err
 	}
-	if err := requireMigrationIdentity(ctx, database, manifest.DatabaseMigration); err != nil {
-		_ = database.Close()
+	defer database.Close()
+	snapshot, err := database.BeginTx(ctx, &sql.TxOptions{ReadOnly: true, Isolation: sql.LevelRepeatableRead})
+	if err != nil {
 		return Header{}, "", err
 	}
-	if err := database.Close(); err != nil {
+	defer snapshot.Rollback()
+	if err := requireMigrationIdentity(ctx, snapshot, manifest.DatabaseMigration); err != nil {
+		return Header{}, "", err
+	}
+	// Keep the checked migration and the dump on one MVCC snapshot, even if
+	// another connection commits a migration before pg_dump starts reading.
+	var snapshotID string
+	if err := snapshot.QueryRowContext(ctx, `SELECT pg_export_snapshot()`).Scan(&snapshotID); err != nil {
 		return Header{}, "", err
 	}
 	dumpPath := filepath.Join(workspace, dumpName)
-	if err := runner.Run(ctx, "pg_dump", []string{"--format=custom", "--no-owner", "--no-privileges", "--file", dumpPath, "--dbname=service=cloud_clicker"}, environment, io.Discard); err != nil {
+	if err := runner.Run(ctx, "pg_dump", []string{"--format=custom", "--no-owner", "--no-privileges", "--snapshot=" + snapshotID, "--file", dumpPath, "--dbname=service=cloud_clicker"}, environment, io.Discard); err != nil {
+		return Header{}, "", err
+	}
+	if err := snapshot.Commit(); err != nil {
 		return Header{}, "", err
 	}
 	dump, err := os.Open(dumpPath)
@@ -272,7 +283,11 @@ func RequireCleanTarget(ctx context.Context, database *sql.DB) error {
 // user objects; it wraps ErrInvalid so existing callers keep failing closed.
 var ErrNonCleanTarget = fmt.Errorf("%w: restore target database is not clean", ErrInvalid)
 
-func requireMigrationIdentity(ctx context.Context, database *sql.DB, expected int) error {
+type migrationIdentityReader interface {
+	QueryRowContext(context.Context, string, ...any) *sql.Row
+}
+
+func requireMigrationIdentity(ctx context.Context, database migrationIdentityReader, expected int) error {
 	var migration int
 	err := database.QueryRowContext(ctx, `SELECT COALESCE(max(version_id) FILTER (WHERE is_applied),0) FROM goose_db_version`).Scan(&migration)
 	if err != nil || migration != expected {

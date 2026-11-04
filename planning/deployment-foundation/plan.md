@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Migration/dump consistency correction, 2026-11-04 (RP-724):** actual old-source
+regression creates a completed backup that refuses restoration when a schema/version
+transaction commits between validation and pg_dump. Check migration in one read-only
+repeatable-read transaction and export its snapshot to pg_dump. Final real restore,
+initial-mismatch/failure/cancellation and observed-lock-release controls pass with
+the eight prior integration functions. This is an accepted DP6 conformance fix;
+no format/crypto/retention/RPO policy changes. Independent full-range review remains;
+the log preserves the invalid first synchronous-cancellation oracle separately.
+
 **Backup metadata proposal, 2026-11-04 (RP-505):** complete seven-path
 09cf45e5..ce61b82a is independently TECHNICALLY APPROVED, ready for owner
 adoption. Fresh native and declared Linux diagnostic populations both reproduce

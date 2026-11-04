@@ -511,8 +511,9 @@ temporary mode-0600 service/pass files—never command arguments or logs. Outsid
 the helper accepts only owner-readable secret files. A backup is committed only
 after all of the following succeed:
 
-- the live Goose migration equals the exact release manifest;
-- `pg_dump` 16 completes a custom-format archive;
+- the Goose migration equals the exact release manifest in a read-only repeatable-read transaction;
+- that transaction exports its snapshot, and `pg_dump` 16 completes a custom-format archive using
+  the same snapshot while the exporting transaction remains open;
 - the release manifest and its exact epoch declaration validate and agree;
 - both package-creation passes cover the complete dump: the reader is rewound before hashing,
   and the streamed second pass must have the same length/hash and end at EOF before publication;
@@ -521,6 +522,14 @@ after all of the following succeed:
 - the complete temporary envelope is re-read and its header, payload length and checksum verified
   (so a torn or short write never commits), synced, atomically renamed without replacement to
   `<backup-id>.ccbackup`, and the target directory is synced so the rename survives a crash.
+
+Migration validation and dump contents therefore cannot silently straddle a concurrent committed
+migration. The real Postgres regression commits schema/version/row changes after validation,
+then restores the encrypted backup with the original migration and complete pre-change row
+identity. An initial mismatch refuses before dumping; dump failure/cancellation emits no backup,
+and the test observes the exporting transaction's actual lock release. Some concurrent DDL can
+still make PostgreSQL refuse a dump; that failure must propagate. This does not bind an arbitrary
+separate recovery-identity inspection to the archive or establish snapshot-based RPO timing.
 
 Database URL query overrides for `host`, `port`, `user`, `password` and `dbname` (also `database`)
 take precedence over URI authority/path fields when constructing the service/pass files, matching
