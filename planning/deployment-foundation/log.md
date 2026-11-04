@@ -12098,3 +12098,31 @@ all nine tiers and other gameplay/accessibility/preservation requirements remain
 No push, deployment, archival, policy adoption or goal pause. Complete four-path
 9768d681..this commit needs independent corrective artifact-evidence review.
 Review by: Codex root (implementer first filter). Recorded by: Codex root.
+
+## 2026-11-04 — Refreshed authentication-fix artifact independently approved
+
+APPROVED, complete four-path
+9768d681ae0227d59126a060b22f3b481f740236..
+40969759d59aa969219cced212e2a6ff9c636869.
+Review by: independent Codex /root/auth_refresh_artifact_evidence_review.
+Recorded by: Codex root, transcribing the completed verdict. No material findings.
+
+Reviewer freshly rebuilds all6 static Linux/amd64 executables byte-identically;
+executes75-file/hash/mode and74-artifact/source/epoch/archive/config checks,
+verifies packaged binary/all32 content files, and runs build-record/intact/nine
+semantic-tampering consumers (each negative exact3/fixture_rejected). Fresh
+registry selection/config/platform rereads match all6 upstream/rehearsal images.
+Post-probe equality and whitespace pass. Reviewer independently inspects root's
+14 actual scans, not a rerun: distinct raw pair timestamps, identical package/
+relationship graphs and normalized outputs;54 application packages, notices hash
+and exact source/manifest secret-scan bindings agree. A reviewer inspection first
+assumes the wrong image content prefix; corrected Dockerfile-owned
+/opt/cloud-clicker/content/ verifies every actual file. This is an inspection
+assumption, not an artifact defect. All processes finish, owned review artifacts
+removed; tracked tree stays clean at40969759.
+
+Root now reconciles only review status and material whole-product artifact pointers.
+RP-767 stays OPEN/unapplied; approval supplies no new adopted contract, native
+clean-host/runtime proof, legitimate predecessor, current hosted green, rights
+clearance, complete feature/archival or release acceptance. Full nine-tier1.0
+remains active; pending questions are not repeated or inferred accepted.

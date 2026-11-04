@@ -220,7 +220,9 @@ to the previous candidate. All 75 files match, including six Linux/amd64 executa
 client/content/application metadata, the image archive and seven independently
 scanned, normalized image inventories. The package validator, nine rebound
 tampering fixtures and manifest-bound source/image secret scan pass locally.
-Independent review of this new artifact-evidence batch is pending. RP-767's
+Independent corrective artifact-evidence review approves complete range
+`9768d681..40969759`, including a fresh six-executable rebuild and executed
+package/tampering and registry checks. RP-767's
 membership-query cancellation correction remains unapplied and open. Both trees
 are the same candidate; the earlier
 [`893bb1e7` record](../planning/deployment-foundation/release-builds/candidate-893bb1e7.json)

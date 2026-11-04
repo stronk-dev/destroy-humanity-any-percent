@@ -5890,3 +5890,19 @@ criteria. No legitimate predecessor, current CI, rights/native-supervisor/clean-
 host/R-006 or new playable-tier proof follows. All gameplay through Transcendence,
 natural pacing, privacy/accessibility/preservation and release gates remain;
 the full1.0 goal stays active. Pending owner questions are not re-asked or adopted.
+
+## 2026-11-04 — Current artifact includes reviewed authentication shutdown fixes
+
+Source9768d681 now has two byte-identical75-file local candidate builds, adding
+approved RP-765/RP-766 to earlier Account/Guild/backup/attribution fixes. Complete
+four-path9768d681..40969759 receives independent corrective artifact-evidence
+APPROVAL after fresh six-executable rebuild, intact/nine-tampering consumers and
+registry reads. Reviewer inspects root's14 actual image scans and exact secret-
+scan bindings. The [Deployment log](deployment-foundation/log.md) owns execution,
+provisional invalid setup, exact hashes and local Desktop/platform limits.
+
+This advances current packaging evidence, not a playable-tier or complete release
+gate. RP-767 stays OPEN/unapplied; legitimate predecessor, hosted CI, rights,
+native supervisor/clean host/R-006 and all nine tiers through Transcendence remain.
+The full1.0 goal stays active. No repeated owner question, inferred adoption,
+push, deployment, archival or release call.

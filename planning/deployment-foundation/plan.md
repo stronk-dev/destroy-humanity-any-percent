@@ -75,8 +75,9 @@ The [retained candidate record](release-builds/candidate-9768d681.json) adds the
 reviewed RP-765/RP-766 socket-authentication shutdown fixes missing from `893bb1e7`.
 Both full builds, 14 actual platform-selected image scans, six upstream/rehearsal
 config identities, intact/nine semantic-tampering checks and manifest-bound source/
-image secret scan pass locally. This new four-path evidence batch needs independent
-review; the previous approval covers its historical range only. RP-767 membership
+image secret scan pass locally. Independent corrective artifact-evidence review
+APPROVES complete four-path `9768d681..40969759` after fresh six-executable rebuild,
+actual package/tampering consumers and registry reads. RP-767 membership
 cancellation remains unapplied/open. No full feature, hosted CI, native/SP8/R-006
 or predecessor proof follows. The local preview label is unchanged; full nine-tier
 1.0 remains the objective.
