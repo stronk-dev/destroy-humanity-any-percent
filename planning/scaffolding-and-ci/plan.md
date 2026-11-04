@@ -16,6 +16,13 @@ controls and topology pass; Linux Node24.18.0 matches workflow major24. Actual
 root still rejects original50a3a514. No history-exception adoption, version/row
 rewrite or whole-CI acceptance; the owning log holds exact ranges and limits.
 
+**Typer setup diagnostics review, 2026-11-04:** complete five-path
+`ed3d802e..b868cd2c` (RP-553) independently approved. Private old-placement
+reconstruction fails both real deadline/successor controls at zero observations;
+current full affected Linux three-engine file and strict types pass. Later timing
+changes retain separate scopes. This closes diagnostic coverage review, not
+RP-526's original latency/reliability or whole-CI acceptance.
+
 **Fixture-discovery corrective review,2026-11-04:** complete seven-path
 `f423e704..663976f1` (RP-396) is independently approved. Exact-old private files
 fail both Vitest registrations; byte-identical suffix correction restores the
