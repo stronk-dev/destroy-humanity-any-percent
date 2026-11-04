@@ -192,3 +192,8 @@ cancellation. The connect callback rejects results returned after shutdown start
 including otherwise valid credentials. A final `OnConnect` guard also disconnects
 late library registrations before allocating application queues or handlers. That
 cleanup can follow a connect reply already produced by the library.
+
+Known limitation (RP-767): Guild/Cohort subscription membership queries do not yet
+inherit shutdown cancellation. A blocked query can outlive successful socket drain.
+The tested, unapplied correction is tracked in the
+[Transport plan](../planning/websocket-transport-and-fanout/plan.md).

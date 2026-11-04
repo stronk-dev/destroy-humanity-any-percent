@@ -4,6 +4,24 @@
 - **RFC:** `rfc/websocket-transport-and-fanout.md`
 - **Started:** 2026-07-29
 
+2026-11-04 RP-767 remains OPEN in the product. Real Guild/Cohort permission SQL
+can survive successful configured15s drain; the2s caller population also times out.
+The complete nine-file context-propagation candidate is UNAPPLIED. Native/five-
+package Linux-amd64/Postgres race and final four-case old/current proof pass for
+the candidate; baseline failures and source versions are retained in the log.
+Independent candidate/tool review is pending. Exactly `server/guild/intents.go`
+is guarded: lawful delivery and exact eligibility under adopted authority remain,
+not an inferred exception or false replay-version bump. The pending guard draft's
+N1 is not automatically satisfied by unchanged math/permission predicates.
+
+Reproduce from root with
+`python3 planning/websocket-transport-and-fanout/probes/prepare-membership-candidate.py`.
+It prints an ignored output directory. Use its `baseline-docker.json` or
+`candidate-docker.json` through `make test-go-ci CI_TEST_PACKAGES=./gameserver`
+with `CI_TEST_FLAGS='-overlay=/workspace/<output>/<population>-docker.json -run TestComposedDrainCancelsBlockedMembershipLookupIntegration -race -v'`.
+The compiler overlay adds the manual probe; ordinary CI/product sources are unchanged.
+Full candidate package selectors are `./transport ./gameserver ./guild ./commonsprojection ./account`.
+
 2026-11-04 RP-766: pending initial authentication now inherits node cancellation;
 late results are refused and late library registrations close before queue setup.
 Exact-old unit and actual locked-Postgres/socket controls fail; corrected cases,

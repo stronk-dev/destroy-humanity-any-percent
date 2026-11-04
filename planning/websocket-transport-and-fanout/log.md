@@ -1062,3 +1062,70 @@ verifies only the two pre-existing BuildKit containers remain. Shared caches and
 builders untouched. Plan/ledger close RP-766; no software rerun for this editorial
 record. RP-450 cause, full-feature/CI/latency, release-artifact rebuilding, held
 adoptions and all broader1.0 requirements remain; no archival/publication or goal pause.
+
+
+## 2026-11-04 — RP-767 complete membership-cancellation candidate, UNAPPLIED
+
+Accepted Transport D1/T1/T5/T6/AC5 and Guild S7 own these permission/lifecycle
+boundaries. Actual Guild/Cohort QueryRow calls have no cancellation parameter;
+Centrifuge waits on the pending subscribe during closure. No product source is
+changed. New manual Go-overlay probe and source-pinned preparation tool retain
+a COMPLETE nine-file candidate: caller/node context→Memberships/Authorized→
+composer→owned Guild/Cohort QueryRowContext. Existing predicates/query authority
+stay; all three gated namespaces take context, with no legacy/goroutine-only
+fallback. Four existing test callers adopt the internal signature; context
+refusal cases extend the existing authorization test. No schema/migration,
+provider, gameplay, rates, timers, kernel/epoch or workflow bytes change.
+
+Original v1 probe45849 fails both2s caller populations (Guild3.05/Cohort2.92s).
+Candidate88271 passes both real PostgreSQL/socket/race cases1.77/1.39s, with
+exclusive owner-table lock retained until4003 and SQL-wait disappearance.
+These are real nonmember103/public-world controls and actual permission SELECT
+waits; they do not prove natural membership progression or complete AC5.
+A2s caller timeout ALONE does not establish failure of the configured15s floor.
+Root catches this before closeout and expands the SAME probe to four populations,
+keeping the2s cases plus actual Node.DrainTimeout15s cases, without raising either.
+
+Final v2 baseline40449 exits expected Make2: Guild caller/configured3.65/16.34s,
+Cohort caller/configured3.24/16.21s. Configured cases explicitly observe successful
+Drain and wire4003, then owner SQL still blocked through the original drain bound
+while exclusive locks/database stay live. Candidate96527 exits0: all four cases
+1.78/1.29/1.20/1.20s. Both candidate Cohort cases briefly observe surviving backend
+wait after Drain returns, then cancellation completes within the bound. This is
+bounded cancellation evidence, NOT an instantaneous physical-quiescence proof.
+
+Prep pins every one of nine base source/test files to exact
+c7a9e385436fb730ac360527b5346083e45c6188, checks anchors and current watched scope,
+and writes ignored compiler copies only. Exact guarded production path is
+server/guild/intents.go. Candidate remains UNAPPLIED pending lawful delivery and
+exact eligibility under ADOPTED authority; draft Kernel History Guard Integrity
+N1 preserves admission/refusal/callback behavior and is not automatically met by
+unchanged math/SQL predicates. No false version, guard removal, automatic scope
+exception or new owner answer is inferred. Do not repeat pending adoption questions.
+
+Native five-package candidate race7501 passes42.725/1.925/1.271/1.246/4.775s
+(Transport/Gameserver/Guild/Commons projection/Account); DB cases can skip there.
+Actual candidate-overlay vet54763 passes all five. Full Linux-amd64/Postgres/race
+35546 exits0:45.553/205.883/3.902/1.513/22.154s,771 PASS rows including subtests,
+zero FAIL, sole existing opt-in one-minute timer skip. This broad run compiles V1,
+not the later four-case V2; final focused96527 supplies V2, with the EXACT SAME
+nine generated runtime/test files and patch. No broader V2 run is claimed.
+Retained root.cache/transport-membership-shutdown-c7a9e385/:
+- candidate-wfl5d9ks: V1 broad artifacts, bindings and v1-replay-docker.json.
+- probe-v1.go.txt SHA256c71afe55355628cf3e407e61df7eafecd801e03869c05251e8d0b6c81356e027.
+- candidate-lncc7irl: final V2 native/Docker overlays; bindings SHA256
+  185d9b73dc7764ac69e554db5c772fdf08038ee5098c73549710c47563be2ca0.
+- Identical candidate.patch SHA256dd2290a48c310334d7f754745bc8fe5273eb88f587229d0d33bfaeead1ecabf2.
+- Broad linux-race.log SHA256e785941a38a4c715960c9dd9d79ef0c8a65500619d7485d9f0aa8ae0f0a861f1.
+Final probe SHA25626773a4da8dd94ca2f2bf8c661041a08773bc935f34c350ee0e7a1cb7b598fef.
+Prep controls: intact isolated copy produces byte-identical patch/exit0;
+seeded stale source and missing Guild registry entry each refuse/exit1. Source
+and scope drift cannot silently choose another patch. Main nine files remain
+byte-identical to base through all runs. All handles terminal; owned PG7179d9a54f87
+remains for independent review. No new compiler cache or default CI exclusion.
+
+Review by: Codex root (implementer first filter). Recorded by: Codex root.
+Complete six-path research/tool/record range afterc7a9e385 through this batch
+awaits independent review. Canonical docs disclose the LIVE limitation; ledger
+stays OPEN. No shipped fix, eligibility, feature/hosted-CI/native-release,
+archival/publication or1.0-completion/goal-pause claim follows.
