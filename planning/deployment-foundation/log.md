@@ -11738,3 +11738,8 @@ such decision. Native-profile/parent adoption, actual selected version/rights,
 private/native/SP8/R-006 construction and full1.0 remain separate. No runtime
 implementation, feature acceptance, publication, deployment, archival, release
 approval or goal pause follows from this checkpoint.
+
+The concrete async tool-packaging/MPL-policy adoption question is now delivered,
+following0b0c726e, and unanswered. It authorizes static packaging only if adopted;
+native-profile/parent adoption remains separate. Do not repeat the question or
+begin dependent implementation without the answer. Goal remains active.

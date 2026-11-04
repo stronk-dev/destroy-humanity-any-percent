@@ -21,7 +21,8 @@ amendment. The reviewed v3 configuration study is below; two new input arms also
 complete the actual public population. Complete11-path765aae44..70acee7f now has
 independent combined research/tool and technical-spec APPROVAL after the exact
 exec-environment/image-default and withdrawn-runner corrections. Next is an
-explicit owner adoption request for the reviewed tool/policy scope. Static
+explicit owner adoption request for the reviewed tool/policy scope, now delivered
+and unanswered. Do not repeat that question or infer acceptance. Static
 inventory construction can be adopted separately from
 native runtime dispatch; private handling/native/SP8/R-006 must still be built
 and proved before feature acceptance. No shipping version or rights clearance,
