@@ -9751,3 +9751,48 @@ lifetime, native Linux/amd64, adoption and useful recovery remain unproved.
 Next actual Docker/Compose command workers plus Go broker/admission/receipt
 binding, not another Python-ping repetition. Full nine-tier1.0 stays active;
 no publication, deployment, archival, new permission or goal pause.
+
+
+## 2026-11-04 — Actual Docker/Compose workers and Go read-only broker
+
+Research only under the existing OP9 candidate plan; no production, CI,
+shipping dependency, service installation or native-host deployment change.
+Public static Docker28.4.0 client and Compose2.39.4 are ignored research inputs;
+exact URLs/bytes/hashes are in cli-worker-observation.v1.json. Compose SHA was
+checked against official GitHub release metadata; Docker archive has official
+HTTPS origin plus local digest, NOT a separately checked signature/checksum.
+No daemon extracted or run. Broker builds via root Make compiler overlay.
+
+Actual cafdcb/418737 exits0, complete population: isolated UID65532 uses actual
+Docker28.4.0 linux/amd64 through a Go Unix/HTTP broker to read real Engine28.4.0
+linux/arm64. Actual Compose2.39.4 version/config render, pinned fixture fields
+match. Config is local rendering, not Compose up/down or admitted write proof.
+Raw socket native ENOENT2 plus same-binary successful proxy use; actual POST
+ContainerCreate receives403, never forwarded, no child created. Actual UID0
+version/ping requests receive403 by SO_PEERCRED. Native profiles match exact
+image/user/mount/network/read-only/cap-drop/security/PID/IPC expectations; kernel
+CapEff/CapBnd0 and NoNewPrivs1. Eleven actual Go policy controls pass inside the
+fixture. Broker trace retains every request category/UID/status/error, including
+one denied unknown GET, without recording bodies/env/credentials. Owned actors
+and channel volume removed; all project container/network/volume inventories
+empty before completed output. Root AST/hash/old-new log-shape control692628
+passes; overlay Linux/amd64 vet0df9ed exits0. Both builds ede506/c2a3ed pass.
+
+Interrupted earlier output is inadmissible: no session/terminal output retained.
+Read-only process/inventory acdf97/2af141 finds no live probe/owned resources;
+only cc-cli-worker-15e3e58c33dd6661 scratch remains. No claim of execution success
+or exact runtime failure follows. Pre-commit source inspection found container
+stdout expected3 lines though docker exec controls has its separate stdout;
+corrected to actual2-line ready/trace. Actual-shape old/new control reproduces
+false rejection. The source-bound retained complete run is after correction.
+No population/guard/policy loosened. Original interrupted scratch is retained.
+
+RP-750 remains OPEN: compatibility is one prerequisite. No durable work journal,
+full per-job identity, stage-bound write authorization, whole-helper binding,
+daemon/lock lifetime, complete bypass inventory, supported Linux/amd64 host,
+OP9 adoption, actual recovery or Deployment/1.0 acceptance is established.
+Next bind durable job admission and receipts to real producers instead of
+repeating these unchanged compatibility populations. Complete range from
+2699ad00 through this batch requires fresh independent delegated review.
+
+Review by: Codex root, research/tool author first filter. Recorded by: Codex root.

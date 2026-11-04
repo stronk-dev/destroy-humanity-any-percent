@@ -1,0 +1,6 @@
+// Manual compiler-overlay entry point; original production tests stay untouched.
+package main
+
+import "testing"
+
+func TestManualCLIBrokerPolicy(t *testing.T) { policyControls() }

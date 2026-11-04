@@ -302,3 +302,82 @@ Next construct the complete durable production protocol against this table and
 resolve its pre-backup branch/packaging/compatibility, then execute its actual
 helper and supported-host interruption population. Do not repeat these complete
 controlled populations or declare full CR4/Deployment/1.0 acceptance from them.
+
+### Actual Docker/Compose clients through a Go broker
+
+The [manual runner](probes/cli-worker-probe.py.txt),
+[Go broker](probes/cli-worker-broker.go.txt) and
+[source-bound observation](cli-worker-observation.v1.json) extend the prior
+isolation study to actual Linux/amd64 Docker28.4.0 and Compose2.39.4 clients.
+They are research inputs only; no daemon or host CLI is installed and no
+shipping dependency changes. Actual cafdcb/418737 exits0; independent review
+of this new range is pending.
+
+An isolated UID65532 worker obtains the real Engine28.4.0 Linux/arm64 version
+through the Go Unix/HTTP broker. Compose's real plugin version and config
+render execute; config rendering is local, not proof of Compose up/stop/down.
+The client's actual ContainerCreate POST reaches the broker and receives403
+without forwarding; no requested child exists. UID0's actual version requests
+are refused403 by SO_PEERCRED. The same successful Docker executable cannot
+use the unmounted raw socket (native ENOENT2). Native profiles and kernel
+capability/no-new-privileges observations are retained for both workers.
+Eleven actual Go classifier controls include wrong method/query/API version/
+unowned image and write-route refusals. Cross-target overlay vet0df9ed passes.
+
+The retained trace contains categories/status/UID only, no request bodies,
+environment or credentials. A denied unknown GET is retained rather than
+silently excluded; it does not authorize another route. This narrow broker
+permits only ping/version and exact cached fixture-image inspection. UID and
+a shared fixture channel are not a complete per-job identity or write policy.
+There is no durable admission journal, daemon-generation/lock ownership,
+actual release-helper binding, whole-operation completion receipt, native
+Linux/amd64 host proof or OP9 adoption here. Workers remain on Desktop's
+Linux/arm64 kernel, using amd64 static clients via its binary compatibility.
+
+Reproduction requires the already cached Python image/config from the worker
+study, Docker Desktop with the observed Engine version, public research clients
+and no real credentials. From repository root, prepare ignored tool storage:
+
+```sh
+mkdir -p .cache/worker-cli-tools/plugins
+curl --fail --location --max-time 180 --output .cache/worker-cli-tools/docker-28.4.0.tgz https://download.docker.com/linux/static/stable/x86_64/docker-28.4.0.tgz
+curl --fail --location --max-time 180 --output .cache/worker-cli-tools/plugins/docker-compose https://github.com/docker/compose/releases/download/v2.39.4/docker-compose-linux-x86_64
+python3 - <<'PY'
+import hashlib, json, pathlib, tarfile
+root = pathlib.Path.cwd()
+tools = root / '.cache/worker-cli-tools'
+metadata = json.loads((root / 'planning/deployment-foundation/cli-worker-observation.v1.json').read_text())['tools']
+archive = tools / 'docker-28.4.0.tgz'
+assert hashlib.sha256(archive.read_bytes()).hexdigest() == metadata['docker_archive']['sha256']
+with tarfile.open(archive) as source:
+    member = source.getmember('docker/docker')
+    assert member.isfile() and not member.issym() and not member.islnk()
+    (tools / 'docker').write_bytes(source.extractfile(member).read())
+for item in metadata['binaries']:
+    binary = root / item['path']
+    assert binary.stat().st_size == item['bytes']
+    assert hashlib.sha256(binary.read_bytes()).hexdigest() == item['sha256']
+    binary.chmod(0o555)
+(tools / 'tools.json').write_text(json.dumps(metadata, indent=2) + '\n')
+PY
+python3 planning/deployment-foundation/probes/cli-worker-probe.py.txt
+```
+
+The Compose binary digest was checked against the official GitHub release
+metadata. Docker's archive came from its official HTTPS static index; its local
+digest is retained but no separate upstream checksum/signature was checked.
+These are testing inputs, not verified production packaging provenance. The
+runner checks tool hashes before use, builds the Go binary via the existing
+root Make Linux/amd64 target with an ignored compiler overlay, and keeps all
+production inputs untouched. Build180s precedes fixture work60s, ordinary
+commands10s, cleanup15s per command outside work. Completed output follows
+verified owned cleanup. Unknown outcomes and guard failures invalidate.
+
+The earlier interrupted execution has no admissible result: output was lost;
+later process/owned-resource inventory was empty and a scratch directory alone
+does not establish success. A pre-commit source check found the container-log
+assertion expecting3 lines although docker exec's controls stdout is separate.
+It now requires the actual2-line ready/trace shape; an old/new shape control
+reproduces the false rejection. The retained complete run follows correction.
+Do not repeat these compatibility positives instead of constructing the missing
+durable per-job producer/admission/receipt bindings.

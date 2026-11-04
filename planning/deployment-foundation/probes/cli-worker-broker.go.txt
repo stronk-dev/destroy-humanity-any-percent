@@ -1,0 +1,241 @@
+// Manual OP9 compatibility experiment. Read-only fixture broker, not production
+// admission, a durable work journal or a whole-operation supervisor.
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"flag"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+	"time"
+
+	"golang.org/x/sys/unix"
+)
+
+type peerKey struct{}
+type peer struct {
+	UID   uint32
+	Known bool
+}
+type event struct {
+	UID       uint32 `json:"uid"`
+	Method    string `json:"method"`
+	Class     string `json:"class"`
+	Status    int    `json:"status"`
+	Forwarded bool   `json:"forwarded"`
+	Error     string `json:"error"`
+}
+
+func policyControls() {
+	image := "sha256:" + strings.Repeat("a", 64)
+	cases := []struct {
+		method, path, query, class string
+		allowed                    bool
+	}{
+		{"GET", "/_ping", "", "ping", true},
+		{"HEAD", "/_ping", "", "ping", true},
+		{"POST", "/_ping", "", "ping", false},
+		{"GET", "/version", "", "version", true},
+		{"GET", "/v1.51/version", "", "version", true},
+		{"HEAD", "/version", "", "version", false},
+		{"GET", "/version", "extra=1", "version", false},
+		{"GET", "/v1.50/version", "", "unknown", false},
+		{"GET", "/images/" + image + "/json", "", "fixture_image", true},
+		{"GET", "/images/unowned/json", "", "unknown", false},
+		{"POST", "/v1.51/containers/create", "name=fixture", "container_create", false},
+	}
+	for _, c := range cases {
+		class, allowed := classify(c.method, c.path, c.query, image)
+		if class != c.class || allowed != c.allowed {
+			panic("actual policy control failed")
+		}
+	}
+	fmt.Printf("{\"policy_controls\":%d,\"completed\":true}\n", len(cases))
+}
+
+func classify(method, path, query, image string) (string, bool) {
+	path = strings.TrimPrefix(path, "/v1.51")
+	if path == "/_ping" {
+		return "ping", query == "" && (method == "HEAD" || method == "GET")
+	}
+	if path == "/version" {
+		return "version", query == "" && method == "GET"
+	}
+	if path == "/images/"+image+"/json" {
+		return "fixture_image", query == "" && method == "GET"
+	}
+	if path == "/containers/create" {
+		return "container_create", false
+	}
+	return "unknown", false
+}
+
+func main() {
+	if len(os.Args) == 2 && os.Args[1] == "controls" {
+		policyControls()
+		return
+	}
+	if len(os.Args) == 2 && os.Args[1] == "finish" {
+		if err := os.WriteFile("/broker/stop", []byte("stop\n"), 0600); err != nil {
+			panic(err)
+		}
+		return
+	}
+	image := flag.String("image", "", "exact fixture image config")
+	flag.Parse()
+	if !strings.HasPrefix(*image, "sha256:") || len(*image) != 71 {
+		panic("missing fixture image")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	listener, err := net.ListenUnix("unix", &net.UnixAddr{Name: "/broker/engine.sock", Net: "unix"})
+	if err != nil {
+		panic(err)
+	}
+	defer listener.Close()
+	if err = os.Chmod("/broker/engine.sock", 0666); err != nil {
+		panic(err)
+	}
+	var mu sync.Mutex
+	var events []event
+	transport := &http.Transport{DisableKeepAlives: true, DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
+		return (&net.Dialer{}).DialContext(ctx, "unix", "/daemon.sock")
+	}}
+	defer transport.CloseIdleConnections()
+	client := &http.Client{Transport: transport, Timeout: 10 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	server := &http.Server{ReadHeaderTimeout: 10 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 10 * time.Second}
+	server.ConnContext = func(ctx context.Context, connection net.Conn) context.Context {
+		var p peer
+		if conn, ok := connection.(*net.UnixConn); ok {
+			if raw, err := conn.SyscallConn(); err == nil {
+				var credential *unix.Ucred
+				var credentialError error
+				if err = raw.Control(func(fd uintptr) {
+					credential, credentialError = unix.GetsockoptUcred(int(fd), unix.SOL_SOCKET, unix.SO_PEERCRED)
+				}); err == nil && credentialError == nil && credential != nil {
+					p = peer{UID: credential.Uid, Known: true}
+				}
+			}
+		}
+		return context.WithValue(ctx, peerKey{}, p)
+	}
+	server.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		p := r.Context().Value(peerKey{}).(peer)
+		class, allowed := classify(r.Method, r.URL.Path, r.URL.RawQuery, *image)
+		e := event{UID: p.UID, Method: r.Method, Class: class}
+		defer func() { mu.Lock(); events = append(events, e); mu.Unlock() }()
+		deny := func(status int, message string) {
+			e.Status = status
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(status)
+			json.NewEncoder(w).Encode(map[string]string{"message": message})
+		}
+		if !p.Known {
+			e.Error = "peer_unavailable"
+			deny(500, "fixture peer unavailable")
+			return
+		}
+		if p.UID != 65532 {
+			deny(403, "fixture refused uid")
+			return
+		}
+		if !allowed {
+			deny(403, "fixture refused route")
+			return
+		}
+		bounded, stop := context.WithTimeout(r.Context(), 10*time.Second)
+		defer stop()
+		request, err := http.NewRequestWithContext(bounded, r.Method, "http://docker"+r.URL.RequestURI(), nil)
+		if err != nil {
+			e.Error = "invalid_request"
+			deny(500, "fixture request invalid")
+			return
+		}
+		response, err := client.Do(request)
+		if err != nil {
+			e.Error = "native_transport"
+			deny(502, "fixture native transport failed")
+			return
+		}
+		defer response.Body.Close()
+		e.Forwarded = true
+		e.Status = response.StatusCode
+		for _, name := range []string{"Content-Type", "Content-Length", "Api-Version", "Ostype", "Docker-Experimental", "Builder-Version"} {
+			for _, value := range response.Header.Values(name) {
+				w.Header().Add(name, value)
+			}
+		}
+		w.WriteHeader(response.StatusCode)
+		if _, err = io.Copy(w, response.Body); err != nil {
+			e.Error = "native_body_incomplete"
+		}
+		if bounded.Err() != nil {
+			e.Error = "request_deadline"
+		}
+	})
+	serveDone := make(chan error, 1)
+	go func() { serveDone <- server.Serve(listener) }()
+	fmt.Println("ready")
+	ticker := time.NewTicker(10 * time.Millisecond)
+	defer ticker.Stop()
+	stopped := false
+loop:
+	for {
+		select {
+		case <-ctx.Done():
+			break loop
+		case err := <-serveDone:
+			if !errors.Is(err, http.ErrServerClosed) {
+				panic(err)
+			}
+			panic("unexpected server stop")
+		case <-ticker.C:
+			data, err := os.ReadFile("/broker/stop")
+			if errors.Is(err, os.ErrNotExist) {
+				continue
+			}
+			if err != nil || string(data) != "stop\n" {
+				panic("invalid fixture stop")
+			}
+			stopped = true
+			break loop
+		}
+	}
+	shutdown, stop := context.WithTimeout(context.Background(), 10*time.Second)
+	defer stop()
+	if err = server.Shutdown(shutdown); err != nil {
+		server.Close()
+		panic(err)
+	}
+	if err = <-serveDone; !errors.Is(err, http.ErrServerClosed) {
+		panic(err)
+	}
+	if !stopped || ctx.Err() != nil {
+		panic("broker work guard exhausted: INVALID")
+	}
+	mu.Lock()
+	trace := append([]event(nil), events...)
+	mu.Unlock()
+	for _, e := range trace {
+		if e.Error != "" {
+			panic("native request failed: " + e.Error)
+		}
+	}
+	data, err := json.Marshal(map[string]any{"events": trace, "objective_completed": true})
+	if err != nil {
+		panic(err)
+	}
+	path := filepath.Join("/broker", "trace.json")
+	if err = os.WriteFile(path, append(data, '\n'), 0600); err != nil {
+		panic(err)
+	}
+	fmt.Println(string(data))
+}

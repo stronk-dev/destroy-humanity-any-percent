@@ -1,0 +1,206 @@
+"""Manual OP9 actual-client compatibility. Never production or normal CI.
+
+Prerequisite public research tools are described by .cache/worker-cli-tools/tools.json.
+Build<=180s outside fixture work; fixture60s, commands/handshakes10s, cleanup15s
+PER command outside work. No native Linux/amd64 or durable-supervisor claim.
+"""
+import hashlib
+import json
+import pathlib
+import runpy
+import secrets
+import shutil
+import subprocess
+import tempfile
+import time
+import urllib.parse
+
+BOUNDARY_SOURCE = pathlib.Path("planning/deployment-foundation/probes/worker-isolation-probe.py.txt")
+boundary = runpy.run_path(str(BOUNDARY_SOURCE))
+PYTHON = boundary['PYTHON']
+bounded = boundary['bounded']
+
+WORKER = r'''
+import errno,json,os,pathlib,socket,subprocess,sys,time
+mode,project,image=sys.argv[1:]
+deadline=time.monotonic()+60
+environment={k:v for k,v in os.environ.items() if not k.startswith('DOCKER_')}
+environment['DOCKER_CONFIG']='/fixture/docker-config'
+environment['DOCKER_CLI_HINTS']='false'
+docker='/tools/docker'
+host=['--host','unix:///broker/engine.sock']
+def run(args,success):
+    until=min(deadline,time.monotonic()+10)
+    timeout=until-time.monotonic()
+    if timeout<=0: raise RuntimeError('worker command guard: INVALID')
+    reply=subprocess.run([docker,*args],capture_output=True,text=True,env=environment,timeout=timeout)
+    output=reply.stdout.strip()
+    if time.monotonic()>=until: raise RuntimeError('late worker command: INVALID')
+    if (reply.returncode==0)!=success:
+        raise RuntimeError('actual CLI outcome invalid: '+output+' '+reply.stderr)
+    return reply,output
+status={}
+for line in pathlib.Path('/proc/self/status').read_text().splitlines():
+    key,_,value=line.partition(':')
+    if key in ('CapEff','CapBnd','NoNewPrivs'):status[key]=value.strip()
+assert int(status['CapEff'],16)==int(status['CapBnd'],16)==0 and status['NoNewPrivs']=='1'
+result=dict(mode=mode,uid=os.getuid(),kernel=status)
+version=['version','--format','{{.Client.Version}} {{.Client.Os}}/{{.Client.Arch}} {{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}']
+if mode=='positive':
+    _,output=run([*host,*version],True)
+    assert output=='28.4.0 linux/amd64 28.4.0 linux/arm64',output
+    result['version']=output
+    _,output=run([*host,'compose','version','--short'],True)
+    assert output.removeprefix('v')=='2.39.4',output
+    result['compose_version']=output
+    _,output=run([*host,'compose','--project-name',project+'-render','--file','/fixture/compose.yml','config','--format','json'],True)
+    rendered=json.loads(output)
+    assert rendered['name']==project+'-render' and rendered['services']['probe']['image']==image
+    assert rendered['services']['probe']['network_mode']=='none' and rendered['services']['probe']['read_only'] is True
+    result['rendered']=dict(name=rendered['name'],image=rendered['services']['probe']['image'],network_mode='none',read_only=True)
+    with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) as connection:
+        try:connection.connect('/var/run/docker.sock')
+        except OSError as error:
+            assert error.errno==errno.ENOENT,error.errno
+            result['raw_socket_errno']=error.errno
+        else:raise RuntimeError('raw daemon socket unexpectedly reachable')
+    reply,_=run(version,False)
+    result['default_connection_exit']=reply.returncode
+    reply,_=run([*host,'container','create','--pull=never','--network','none','--name',project+'-denied','--label','com.docker.compose.project='+project,image],False)
+    assert 'fixture refused route' in reply.stderr,reply.stderr
+    result['create_exit']=reply.returncode
+elif mode=='wrong_uid':
+    assert os.getuid()==0
+    reply,_=run([*host,*version],False)
+    assert 'fixture refused uid' in reply.stderr,reply.stderr
+    result['version_exit']=reply.returncode
+else:raise RuntimeError('unknown population')
+data=json.dumps(result,sort_keys=True)
+if time.monotonic()>=deadline:raise RuntimeError('worker population guard: INVALID')
+print(data,flush=True)
+'''
+
+
+def main():
+    root = pathlib.Path.cwd()
+    assert (root/'Makefile').is_file()
+    source = root/'planning/deployment-foundation/probes/cli-worker-broker.go.txt'
+    binary = root/'.cache/bin/cli-worker-broker-research'
+    tools = root/'.cache/worker-cli-tools'
+    metadata = json.loads((tools/'tools.json').read_text())
+    for item in metadata['binaries']:
+        assert hashlib.sha256((root/item['path']).read_bytes()).hexdigest() == item['sha256']
+    cache = root/'.cache/cli-worker-broker-research'
+    cache.mkdir(exist_ok=True)
+    overlay = cache/'overlay.json'
+    overlay.write_text(json.dumps(dict(Replace={str(root/'server/cmd/deployment-backup/main.go'):str(source)})))
+    build = subprocess.run(['make','build-deployment-backup-linux-amd64',
+                            'RELEASE_BACKUP_OUTPUT=.cache/bin/cli-worker-broker-research',
+                            'GOFLAGS=-overlay='+str(overlay)],capture_output=True,text=True,timeout=180)
+    if build.returncode:raise RuntimeError('manual Go build failed: '+build.stdout+build.stderr)
+    project = 'cc-cli-worker-'+secrets.token_hex(8)
+    work = pathlib.Path(tempfile.mkdtemp(prefix=project+'-'))
+    work.chmod(0o755)
+    (work/'docker-config').mkdir()
+    (work/'docker-config/config.json').write_text(json.dumps(dict(auths={},cliPluginsExtraDirs=['/tools/plugins'])))
+    (work/'compose.yml').write_text('services:\n  probe:\n    image: '+PYTHON+'\n    network_mode: none\n    read_only: true\n')
+    deadline = time.monotonic()+60
+    containers = []
+    channel = project+'-channel'
+    channel_created = False
+    completed = False
+
+    def run(*args,cleanup=False):
+        until=time.monotonic()+15 if cleanup else min(deadline,time.monotonic()+10)
+        timeout=until-time.monotonic()
+        if timeout<=0:raise RuntimeError('command guard exhausted: INVALID')
+        reply=subprocess.run(['docker',*args],capture_output=True,text=True,timeout=timeout)
+        if reply.returncode:raise RuntimeError('owned fixture Docker command failed: '+reply.stdout+reply.stderr)
+        output=reply.stdout.strip();bounded(until)
+        return output
+
+    def owned(container,role,cleanup=False):
+        assert run('inspect','--format','{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}',container,cleanup=cleanup)==' '.join((container,PYTHON,project,role))
+
+    def create(role,uid,entry,args,mounts):
+        argv=['create','--pull=never','--name',project+'-'+role,'--label','com.docker.compose.project='+project,
+              '--label','com.docker.compose.service='+role,'--network','none','--ipc','private','--read-only',
+              '--user',uid,'--cap-drop','ALL','--security-opt','no-new-privileges:true']
+        for mount in mounts:argv+=['--mount',mount]
+        container=run(*argv,'--entrypoint',entry,PYTHON,*args)
+        containers.append((container,role));owned(container,role);run('start',container)
+        return container
+
+    def profile(container,uid,expected):
+        projection='{"user":{{json .Config.User}},"network":{{json .HostConfig.NetworkMode}},"readonly":{{json .HostConfig.ReadonlyRootfs}},"caps":{{json .HostConfig.CapDrop}},"security":{{json .HostConfig.SecurityOpt}},"pid_mode":{{json .HostConfig.PidMode}},"ipc_mode":{{json .HostConfig.IpcMode}},"privileged":{{json .HostConfig.Privileged}},"mounts":[{{range $i,$m:=.Mounts}}{{if $i}},{{end}}{"destination":{{json $m.Destination}},"type":{{json $m.Type}},"rw":{{json $m.RW}}}{{end}}]}'
+        selected=json.loads(run('inspect','--format',projection,container))
+        assert len({x['destination'] for x in selected['mounts']})==len(selected['mounts'])
+        selected['mounts'].sort(key=lambda x:x['destination'])
+        assert selected==dict(user=uid,network='none',readonly=True,caps=['ALL'],security=['no-new-privileges:true'],pid_mode='',ipc_mode='private',privileged=False,mounts=sorted(expected,key=lambda x:x['destination']))
+        return selected
+
+    print(json.dumps(dict(phase='started',project=project,private_work=str(work))),flush=True)
+    try:
+        engine=run('version','--format','{{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}')
+        assert engine=='28.4.0 linux/arm64'
+        endpoint=urllib.parse.urlparse(run('context','inspect','--format','{{.Endpoints.docker.Host}}'))
+        assert endpoint.scheme=='unix' and not endpoint.netloc and not endpoint.query and not endpoint.fragment
+        run('volume','create','--label','com.docker.compose.project='+project,channel);channel_created=True
+        broker=create('broker','0:0','/probe',['-image='+PYTHON],[
+            'type=bind,source='+str(binary)+',target=/probe,readonly',
+            'type=bind,source='+urllib.parse.unquote(endpoint.path)+',target=/daemon.sock,readonly',
+            'type=volume,source='+channel+',target=/broker'])
+        until=min(deadline,time.monotonic()+10)
+        while True:
+            bounded(until);ready=run('logs',broker);bounded(until)
+            if ready=='ready':break
+            assert run('inspect','--format','{{.State.Running}}',broker)=='true','broker exited before ready'
+            time.sleep(0.01)
+        controls=json.loads(run('exec',broker,'/probe','controls'));assert controls==dict(policy_controls=11,completed=True)
+        common=[
+            'type=bind,source='+str(tools/'docker')+',target=/tools/docker,readonly',
+            'type=bind,source='+str(tools/'plugins')+',target=/tools/plugins,readonly',
+            'type=bind,source='+str(work)+',target=/fixture,readonly',
+            'type=volume,source='+channel+',target=/broker,readonly']
+        expected=[dict(destination='/tools/docker',type='bind',rw=False),dict(destination='/tools/plugins',type='bind',rw=False),dict(destination='/fixture',type='bind',rw=False),dict(destination='/broker',type='volume',rw=False)]
+        results=[]
+        for mode,uid in [('positive','65532:65532'),('wrong_uid','0:0')]:
+            container=create(mode,uid,'python3',['-c',WORKER,mode,project,PYTHON],common)
+            assert run('wait',container)=='0','actual CLI worker failed: '+run('logs',container)
+            result=json.loads(run('logs',container));result['native_profile']=profile(container,uid,expected)
+            results.append(result)
+        assert run('ps','--all','--quiet','--filter','name=^/'+project+'-denied$')=='','denied child unexpectedly exists'
+        run('exec',broker,'/probe','finish')
+        assert run('wait',broker)=='0','Go broker failed'
+        lines=run('logs',broker).splitlines();assert len(lines)==2 and lines[0]=='ready'
+        trace=json.loads(lines[-1]);assert trace['objective_completed'] is True
+        events=trace['events'];assert events and all(not x['error'] for x in events)
+        assert any(x['class']=='version' and x['uid']==65532 and x['status']==200 and x['forwarded'] for x in events)
+        assert any(x['class']=='container_create' and x['method']=='POST' and x['uid']==65532 and x['status']==403 and not x['forwarded'] for x in events)
+        assert any(x['uid']==0 and x['status']==403 and not x['forwarded'] for x in events)
+        assert all(not x['forwarded'] or (x['uid']==65532 and x['method'] in ('GET','HEAD') and x['class'] in ('ping','version','fixture_image')) for x in events)
+        result=dict(objective_completed=True,project=project,engine=engine,python_config=PYTHON,
+                    tools=metadata,workers=results,broker_trace=trace,policy_controls=controls,
+                    broker_profile=profile(broker,'0:0',[dict(destination='/probe',type='bind',rw=False),dict(destination='/daemon.sock',type='bind',rw=False),dict(destination='/broker',type='volume',rw=True)]),
+                    source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+                    go_source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+                    go_binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),
+                    boundary_source_sha256=hashlib.sha256(BOUNDARY_SOURCE.read_bytes()).hexdigest(),
+                    work_guard_seconds=60,command_handshake_seconds=10,cleanup_per_command_seconds=15,
+                    cleanup_outside_work_guard=True,build_guard_seconds=180)
+        bounded(deadline);completed=True
+    finally:
+        for container,role in reversed(containers):
+            owned(container,role,cleanup=True);run('rm','--force','--volumes',container,cleanup=True)
+        if channel_created:
+            assert run('volume','inspect',channel,'--format','{{index .Labels "com.docker.compose.project"}}',cleanup=True)==project
+            run('volume','rm',channel,cleanup=True)
+        for kind in ('container','network','volume'):
+            assert run(kind,'ls','--quiet','--filter','label=com.docker.compose.project='+project,cleanup=True)=='','owned cleanup incomplete'
+        if completed:shutil.rmtree(work)
+        else:print(json.dumps(dict(objective_completed=False,private_work=str(work))),flush=True)
+    result['cleanup_complete']=True
+    print(json.dumps(result,sort_keys=True),flush=True)
+
+
+if __name__=='__main__':main()

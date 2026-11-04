@@ -7,6 +7,42 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Actual CLI/Go broker experiment,2026-11-04:** download only public Linux/amd64
+Docker28.4.0 client and Compose2.39.4 into ignored research storage; extract no
+daemon, install no host tool or new shipping dependency. Official Docker index
+lists the archive; GitHub release metadata binds Compose binary SHA256
+7af95166a730b87e172d4fc9aefea8725d3c6c7327d59149267b452114ddb7d4.
+Record URL/bytes/digests and the archive's lack of an independently checked
+upstream checksum, without calling TLS/local hashes signed provenance. Public
+download/build guards180s each are setup, not runtime/RTO budgets.
+Compile a manual Go Unix/HTTP broker through the existing root Make overlay.
+In the previously proved Docker worker boundary, actual Docker version and
+Compose version/config must execute, while default raw-daemon connection fails
+and an actual owned ContainerCreate attempt receives broker403 with zero child
+creation. Broker permits only read-only ping/version and exact fixture-image
+inspection, checking actual SO_PEERCRED; wrong UID0 must be refused. Keep native
+API trace categories/status/UID only, never whole bodies/env/credentials.
+One60s measured fixture guard, <=10s per ordinary command/handshake, cleanup15s
+PER command outside work. Typed setup/permission/transport/guard failures are
+invalid, never evidence of policy refusal. No root-cap/port/image-pull/production
+change. This proves actual client/Go-proxy compatibility, not admitted API writes,
+durable supervisor/daemon lifetime/OP9 receipts, native Linux/amd64 support,
+adoption or full recovery. Desktop kernel is Linux/arm64 with amd64 clients.
+
+Actual cafdcb/418737 exits0: Docker28.4.0 linux/amd64 sees Engine28.4.0
+linux/arm64 through the Go socket broker; Compose2.39.4 version/config execute.
+Actual ContainerCreate reaches POST and is refused403 without forwarding or
+child creation; UID0 is refused403. Native profiles match network-none/read-only/
+cap-drop/no-new-privileges, and raw socket is ENOENT2. Eleven actual Go policy
+controls pass; Linux/amd64 overlay vet0df9ed passes. Retained v1 binds exact
+sources/binary/tools. This is first-filter research evidence, pending complete
+independent review, not durable write admission/native-host/adoption/CR4 proof.
+Earlier interrupted output is inadmissible: terminal output was lost, no probe
+process/resources remain, and its retained scratch directory alone proves no
+outcome. A pre-commit source check corrected the broker stdout cardinality from3
+to2 (docker exec controls has separate stdout); old/new actual-shape control
+reproduces the error. No guard or policy was weakened to obtain this pass.
+
 **Worker-isolation experiment,2026-11-04:** test a Docker-backed candidate rather
 than assume an untested native host service. Use a uniquely owned declared tmpfs
 Postgres fixture and cached config-pinned Python image; no pulls/host ports/new

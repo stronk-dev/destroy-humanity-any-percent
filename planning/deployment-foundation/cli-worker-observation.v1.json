@@ -1,0 +1,278 @@
+{
+  "boundary_source_sha256": "2cfcb55c7f0966e2657ccb00bc7586cf58bdd7b53195f3a3df5c956278bab3b5",
+  "broker_profile": {
+    "caps": [
+      "ALL"
+    ],
+    "ipc_mode": "private",
+    "mounts": [
+      {
+        "destination": "/broker",
+        "rw": true,
+        "type": "volume"
+      },
+      {
+        "destination": "/daemon.sock",
+        "rw": false,
+        "type": "bind"
+      },
+      {
+        "destination": "/probe",
+        "rw": false,
+        "type": "bind"
+      }
+    ],
+    "network": "none",
+    "pid_mode": "",
+    "privileged": false,
+    "readonly": true,
+    "security": [
+      "no-new-privileges:true"
+    ],
+    "user": "0:0"
+  },
+  "broker_trace": {
+    "events": [
+      {
+        "class": "ping",
+        "error": "",
+        "forwarded": true,
+        "method": "HEAD",
+        "status": 200,
+        "uid": 65532
+      },
+      {
+        "class": "version",
+        "error": "",
+        "forwarded": true,
+        "method": "GET",
+        "status": 200,
+        "uid": 65532
+      },
+      {
+        "class": "ping",
+        "error": "",
+        "forwarded": true,
+        "method": "HEAD",
+        "status": 200,
+        "uid": 65532
+      },
+      {
+        "class": "unknown",
+        "error": "",
+        "forwarded": false,
+        "method": "GET",
+        "status": 403,
+        "uid": 65532
+      },
+      {
+        "class": "ping",
+        "error": "",
+        "forwarded": true,
+        "method": "HEAD",
+        "status": 200,
+        "uid": 65532
+      },
+      {
+        "class": "container_create",
+        "error": "",
+        "forwarded": false,
+        "method": "POST",
+        "status": 403,
+        "uid": 65532
+      },
+      {
+        "class": "ping",
+        "error": "",
+        "forwarded": false,
+        "method": "HEAD",
+        "status": 403,
+        "uid": 0
+      },
+      {
+        "class": "ping",
+        "error": "",
+        "forwarded": false,
+        "method": "GET",
+        "status": 403,
+        "uid": 0
+      },
+      {
+        "class": "ping",
+        "error": "",
+        "forwarded": false,
+        "method": "HEAD",
+        "status": 403,
+        "uid": 0
+      },
+      {
+        "class": "ping",
+        "error": "",
+        "forwarded": false,
+        "method": "GET",
+        "status": 403,
+        "uid": 0
+      },
+      {
+        "class": "version",
+        "error": "",
+        "forwarded": false,
+        "method": "GET",
+        "status": 403,
+        "uid": 0
+      }
+    ],
+    "objective_completed": true
+  },
+  "build_guard_seconds": 180,
+  "cleanup_complete": true,
+  "cleanup_outside_work_guard": true,
+  "cleanup_per_command_seconds": 15,
+  "command_handshake_seconds": 10,
+  "engine": "28.4.0 linux/arm64",
+  "go_binary_sha256": "d9ca05efebd33e8f13a9a8c4b566fafa646d174a75b5831bda2cd6c01ef707cc",
+  "go_source_sha256": "ec22a4cf13554550cbc4987dda3391f40a6c3fc8acebb2efa4edf7b0f518fa65",
+  "objective_completed": true,
+  "policy_controls": {
+    "completed": true,
+    "policy_controls": 11
+  },
+  "project": "cc-cli-worker-2b016e3b2ecfc27d",
+  "python_config": "sha256:d2924abe506373b6f722045c48f98350077cc5b56a50491105c1abb027dce9b2",
+  "source_sha256": "271951f4349ba39d1b934989fb7bcf111f256edbfc5a0623f01f244796a680d0",
+  "tools": {
+    "binaries": [
+      {
+        "bytes": 43556144,
+        "elf": "linux/amd64",
+        "path": ".cache/worker-cli-tools/docker",
+        "pt_interp": false,
+        "sha256": "27f239f97492c434e091a70b41b8796c698f0aa2b6052c6f9c28da4ee7ae888b"
+      },
+      {
+        "bytes": 76361386,
+        "elf": "linux/amd64",
+        "path": ".cache/worker-cli-tools/plugins/docker-compose",
+        "pt_interp": false,
+        "sha256": "7af95166a730b87e172d4fc9aefea8725d3c6c7327d59149267b452114ddb7d4"
+      }
+    ],
+    "compose_release": {
+      "binary_url": "https://github.com/docker/compose/releases/download/v2.39.4/docker-compose-linux-x86_64",
+      "github_digest_verified": true,
+      "url": "https://github.com/docker/compose/releases/tag/v2.39.4"
+    },
+    "docker_archive": {
+      "bytes": 82093093,
+      "sha256": "21516934188f06d0e5f232cbde8112701f6d82899016240bc7a5d619f6b0059c",
+      "upstream_checksum_verified": false,
+      "url": "https://download.docker.com/linux/static/stable/x86_64/docker-28.4.0.tgz"
+    },
+    "research_only": true
+  },
+  "work_guard_seconds": 60,
+  "workers": [
+    {
+      "compose_version": "2.39.4",
+      "create_exit": 1,
+      "default_connection_exit": 1,
+      "kernel": {
+        "CapBnd": "0000000000000000",
+        "CapEff": "0000000000000000",
+        "NoNewPrivs": "1"
+      },
+      "mode": "positive",
+      "native_profile": {
+        "caps": [
+          "ALL"
+        ],
+        "ipc_mode": "private",
+        "mounts": [
+          {
+            "destination": "/broker",
+            "rw": false,
+            "type": "volume"
+          },
+          {
+            "destination": "/fixture",
+            "rw": false,
+            "type": "bind"
+          },
+          {
+            "destination": "/tools/docker",
+            "rw": false,
+            "type": "bind"
+          },
+          {
+            "destination": "/tools/plugins",
+            "rw": false,
+            "type": "bind"
+          }
+        ],
+        "network": "none",
+        "pid_mode": "",
+        "privileged": false,
+        "readonly": true,
+        "security": [
+          "no-new-privileges:true"
+        ],
+        "user": "65532:65532"
+      },
+      "raw_socket_errno": 2,
+      "rendered": {
+        "image": "sha256:d2924abe506373b6f722045c48f98350077cc5b56a50491105c1abb027dce9b2",
+        "name": "cc-cli-worker-2b016e3b2ecfc27d-render",
+        "network_mode": "none",
+        "read_only": true
+      },
+      "uid": 65532,
+      "version": "28.4.0 linux/amd64 28.4.0 linux/arm64"
+    },
+    {
+      "kernel": {
+        "CapBnd": "0000000000000000",
+        "CapEff": "0000000000000000",
+        "NoNewPrivs": "1"
+      },
+      "mode": "wrong_uid",
+      "native_profile": {
+        "caps": [
+          "ALL"
+        ],
+        "ipc_mode": "private",
+        "mounts": [
+          {
+            "destination": "/broker",
+            "rw": false,
+            "type": "volume"
+          },
+          {
+            "destination": "/fixture",
+            "rw": false,
+            "type": "bind"
+          },
+          {
+            "destination": "/tools/docker",
+            "rw": false,
+            "type": "bind"
+          },
+          {
+            "destination": "/tools/plugins",
+            "rw": false,
+            "type": "bind"
+          }
+        ],
+        "network": "none",
+        "pid_mode": "",
+        "privileged": false,
+        "readonly": true,
+        "security": [
+          "no-new-privileges:true"
+        ],
+        "user": "0:0"
+      },
+      "uid": 0,
+      "version_exit": 1
+    }
+  ]
+}
