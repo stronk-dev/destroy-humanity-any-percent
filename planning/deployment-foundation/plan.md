@@ -7,6 +7,17 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
+the predecessor with a fabricated pair. Two independent committed-source
+`df84ce1a` rebuilds now match all74 bundle artifacts, six helpers, image archive,
+application metadata and seven freshly scanned normalized image inventories.
+The new retained `release-builds/candidate-df84ce1a.json` validates; healthy package,
+nine actual rebound tampering populations and bound source/image secret scan pass.
+This evidence range awaits independent review, not full DP-B/Deployment acceptance.
+Continue legitimate floor-compliant predecessor/current-release authority and
+supported clean-host proof; neither candidate rebuild is a previous release.
+The log owns exact identities, commands, initial setup mistakes and platform limits.
+
 **Actual journal-file collection, 2026-11-04 (RP-725):** extend accepted DP7
 verification beyond controlled journalctl output. New manual
 `make test-deployment-journal` runs both production collectors against files

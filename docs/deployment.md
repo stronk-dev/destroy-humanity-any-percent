@@ -197,6 +197,17 @@ It intentionally describes a release *candidate*: designated approval of the imp
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
 
+The latest retained local candidate build record is
+[`candidate-df84ce1a.json`](../planning/deployment-foundation/release-builds/candidate-df84ce1a.json).
+Two independent trees rebuild source `df84ce1a`, including the later backup snapshot
+and operations corrections, into byte-identical 74-artifact bundles. Each has six
+fresh Linux/amd64 helpers, client/content/application metadata and seven independently
+scanned, normalized image inventories. The package validator, nine rebound tampering
+fixtures and manifest-bound source/image secret scan pass locally. Both trees are
+the same candidate, not a candidate/previous release pair. The existing source
+correctness, hosted CI, predecessor provenance and clean-host gates remain open;
+this local rebuild does not establish runtime acceptance or change the release call.
+
 The bundled `deployment-rehearsal` command validates retained release-build records and final R-006
 evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a
 shell—into a new empty result directory. The plan must enumerate the 42 non-forgery positive and

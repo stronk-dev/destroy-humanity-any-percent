@@ -8527,3 +8527,67 @@ release-workload capacity measurement, actual14-day availability/purge,
 supported-host installation, full AC7/R-006 and release gates remain open.
 Root reconciles only owning plan/ledger and this verdict; no suite for records,
 runtime change, full feature promotion, archival, publication or goal pause.
+
+## 2026-11-04 — Rebuild the current candidate in two independent artifact trees
+
+DP1/AC1/AC8 local construction updates the retained candidate after the reviewed
+runtime corrections. Source remains clean, exact
+`df84ce1a86780135633b1d388541a1a5016bdf1d`, commit epoch1793760497,
+creation2026-11-04T02:48:17Z, existing LOCAL label0.1.0-preview.2. This label is not
+a publication or release approval. Both trees rebuild the client, six reproducible
+static Linux/amd64 helpers, epoch8 content and53-dependency application metadata;
+both no-cache image builds use the unchanged pinned BuildKit/frontend recipe and
+identical local tag. Fourteen actual platform-selected Syft scans execute, not old
+SBOM copies. Registry index→uniqueamd64 child→config digest and actual Linux/amd64
+configuration are checked afresh for all six upstream/rehearsal images. Actual
+development engine28.4.0/ARM64 and Compose2.39.4-desktop.1 are inspected; initial
+sandbox-denied engine inspection provides no server observation, corrected narrow
+read supplies it. No unsupported native Linux/amd64 host claim.
+
+Retained local artifacts:
+
+- `.cache/release-current-df84ce1a/bundle-a` and
+  `.cache/release-rebuild-df84ce1a/bundle-b`, each74 manifest-bound artifacts;
+- manifest `sha256:6bf4d32e022942fc88c327565a648cf3a350adb73f18ee8311bbe2e9db3f9b7c`;
+- gameserver archive `sha256:ffb767c584207185a3dbbf60c5d88ea4c0ee4be95f2faa635ffa346071d46334`;
+- gameserver config `sha256:22c923e220aa6f1a004db0f65617706791483f34eb6dbbdbb54ebf5d5ce04d54`.
+
+Root Make binary/content/image/metadata/SBOM/assembly commands all complete.
+First commands86750/36092/46110, second57196/5267, images70846/54892; all handles
+terminal0. Whole bundled trees `diff -r` exits0. All six separate binaries and
+archives, application metadata and seven normalized SPDX documents also compare
+byte-identical; raw Syft headers are not reproducible outputs or shipped. Both
+assemblers execute their actual bundle validator. Build record is derived from
+these actual file hashes/manifest identities, not copied old digests; native current
+`deployment-rehearsal validate-build` accepts the new retained record. Original
+102face6 record/trees and inadmissible historical predecessor remain untouched.
+
+Two setup mistakes explicitly receive no evidence credit. Second metadata run
+was dispatched before its live client-build handle was confirmed terminal;
+`.cache/release-rebuild-df84ce1a/metadata` is excluded. After actual client completion,
+fresh `metadata-complete` is generated and used in bundle-b. First healthy probe
+124c8f exits2/error_class=invalid_probe because its required work directory was
+absent; mkdir followed by the exact same selector exits0. This is setup correction,
+not a changed product assertion or rejection proof. That healthy population is
+`six_image_sbom_license_provenance` against the independent candidate rebuild pair,
+NOT the immediately previous release. All nine subsequent current-native-binary
+probes exit exact3/fixture_rejected: removed catalog/client/license/config/helper,
+changed image/runtime config/SBOM, wrong epoch/artifact set. Each validates its
+healthy hardlinked fixture first, then semantically rebounds hashes before testing;
+post-probe full equality holds and work directory is empty.
+
+Structured `make release-secret-scan`92573 terminal0 binds the above exact manifest
+and archive:2464 tracked files, image_archive_scanned=true, findings0,
+objective_completed=true, guard_exhausted=false. No build/source input changed;
+the retained record is added only afterward. All disposable scanner containers
+are absent by exact Syft-ancestor inventory; pre-existing shared builders/caches
+are retained. No actual release service is started, secrets provisioned or host
+configuration changed. This produces current artifact evidence, not hosted green,
+runtime gameplay/rollback, floor-compliant previous release, full DP-B/AC8,
+supported-host R-006, original-feature approval or the full nine-tier1.0 result.
+
+Review by: Codex root, output/record first filter only. Recorded by: Codex root.
+Complete four-path evidence range afterdf84ce1a through this commit: new retained
+record, canonical docs, owning plan/log. Needs independent evidence review, no
+self-approval or archival. Continue real predecessor/authority/clean-host and
+accepted gameplay work; pending owner adoption questions are not answered by build.
