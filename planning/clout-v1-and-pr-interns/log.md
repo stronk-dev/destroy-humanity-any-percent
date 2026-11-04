@@ -9474,3 +9474,19 @@ planning records, not executable evidence. These approvals close only the named
 observer/wording obligations; accounting/search adoption,27failures/history guard,
 original feature/content/archival/release remain open. Continue safe accepted
 work without repeating completed observers or treating wording as a numeric fix.
+
+## 2026-11-05 — Distinguish accounting adoption from routine corrective delivery
+
+At4c5f662c, inspect accepted Clout CV3/AC6 and archived Relevance R10/R11 against
+both reviewed drafts. R10 explicitly mandates lower-bound binary search; current
+nonmonotone predicate evidence means the proposed chronological origin-aware
+search and caller/report migration are actual contract amendments, unlike
+RP-767's already-authorized cancellation fix. Keep the existing adoption request
+pending, do not ask it again or infer approval. No runtime/algorithm/criterion,
+report pin or reviewed wording changes;27 failures remain historical/current
+unrepaired evidence, not a fresh test claim. Correct only Production draft C1's
+stale statement that the wording review is pending: exactfdb9a79d..7eb64e37 is
+already independently approved2026-11-04. Check diff/authority references; no
+software suite for this editorial status correction. Continue accepted artifact
+construction while the real adoption remains pending; full1.0 stays active.
+Review by: Codex root (editorial/source first filter). Recorded by: Codex root.

@@ -31,6 +31,18 @@ checkpoints below retain their original failures and pending-review coordinates;
 they do not restart these approved corrections. Care/Pitch oracle corrections
 also have separate current verdicts in the Cosmetic/Garage logs, not cause closure.
 
+## Authority check — 2026-11-05
+
+Unlike RP-767's routine cancellation correction, this hold includes an actual
+accepted algorithm: Relevance R10 expressly requires lower-bound binary search;
+R11 fixes reuse/dominance/report semantics. The proposed retained origins,
+nonmonotone chronological search and new-profile dispatch amend those contracts.
+The existing reviewed drafts still need their pending adoption; no duplicate
+owner question or implicit implementation authority follows from the broad1.0
+goal. The27 production failures remain recorded. Production draft C1 now correctly
+cites the already-completed wording review; that editorial correction neither
+adopts the algorithm nor repeats completed research.
+
 ## Current step — accounting/search correctness, 2026-11-01
 
 Independent technical readiness review at `d2c610cd` requires three draft fixes:

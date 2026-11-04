@@ -66,7 +66,8 @@ Clout CV3/AC6 now distinguish internal chunks of one continuous absence, which s
 one production allowance and banking calculation, from genuinely different return
 histories. Display reads and internal calculations create no extra saved payments.
 The 48-hour one-call/two-call observations cannot be declared equal by a rounding fix.
-That normative wording amendment awaits designated review; this draft remains unaccepted.
+That wording reconciliation received independent approval over `fdb9a79d..7eb64e37`
+(recorded 2026-11-04 in the Clout log). It does not adopt this accounting draft.
 
 The accepted contract must name the server-owned episode start/end and their persisted
 replay evidence. The client supplies neither mode nor time. Equal-partition comparisons
