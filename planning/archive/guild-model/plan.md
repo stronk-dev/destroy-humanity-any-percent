@@ -14,6 +14,13 @@ identifies the genuine persistence correction. Original feature acceptance,
 broader rights/release completion and the separate sweep investigation are not
 closed by that verdict. The append-only log owns evidence and provenance.
 
+**Sweep follow-up,2026-11-04 (RP-731):** actual due-sweep/deletion overlap fails
+with `guild missing` at0ff2f614. Correction rechecks membership under a historical
+Guild row lock rather than requiring the Guild still be active. Already-closed
+history must anonymize without a second departure/disband/presence. Focused
+old/current SQL/race and independent review remain required; kernel0.3.225 records
+this second concurrent persistence correction, with epoch8 unchanged.
+
 1. [x] Add the strict Guild catalog and schema, register it as an append-only epoch artifact,
    mint the required balance epoch, and prove the epoch/baseline protocol.
 2. [x] Add guild, membership-history, application/invitation, event, projection, XP, Health-input,

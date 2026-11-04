@@ -44,6 +44,10 @@ and account removal share one transaction. Closed historical rows admit only the
 `account_id → NULL` anonymization transition; every other rewrite and all deletion remain blocked.
 The same transaction writes the departure presence item. Its routing account reference survives
 only until the durable outbox item is published, then is cleared.
+If a due floor sweep closes the membership while deletion is waiting for the Guild row,
+deletion rechecks under that row lock, accepts the already-closed history and anonymizes it
+with account removal. It preserves the sweep's departure, disband and presence records rather
+than adding duplicates. Kernel0.3.225 identifies this concurrent deletion correction.
 
 ## Balance and deterministic exchange
 

@@ -329,3 +329,52 @@ then begins a separate sweep regression after exclusive DB use is returned.
 The root-owned DB/network/cache remain for that work and later exact cleanup.
 RP-730 closes; no claim of separate sweep repair, complete Account/Guild/rights,
 hosted CI, archival or1.0 readiness. The known50a3a514 guard remains red.
+
+## 2026-11-04 — Deletion after concurrent floor sweep (RP-731)
+
+Accepted GD4 also requires deleting an account whose membership a due floor sweep
+has just closed. After RP-730's review releases exclusive DB use, old-source14325
+at0ff2f614 exits Make2/package failure: the real sweep succeeds, but deletion
+returns `guild missing`. Its census saw an active member before it waited behind
+the sweep's Guild-row lock; after the sweep commits, the general live-Guild lookup
+rejects the now-disbanded historical Guild. Account deletion therefore rolls back.
+This is distinct from RP-730's concurrent membership insertion/trigger failure.
+
+Correction locks the historical Guild row without a live-only condition, then
+rechecks active membership under that lock. If the sweep already closed it, no
+second departure/leadership/disband/presence mutation is needed. Account DELETE
+then performs the existing FK-owned anonymization on the closed history. Actual
+query failures remain errors; absent active membership is the only skipped arm.
+No parent-row lock, migration, retention/copy/permission/cap or balance change.
+Kernel0.3.225 is the genuine next concurrent persistence correction across all
+three identities, epoch8 unchanged; historical guard remains red, no exemption.
+
+New actual SQL test stops the due sweep after it owns the Guild row but while it
+waits on the real membership row. Named backend Lock handshakes prove deletion
+also reaches its wait, before releasing the blocker. Sweep count1 and deletion
+both must commit within the unchanged30s guard. Assertions require account0,
+closed/anonymized history1 with the ORIGINAL sweep leave time, disbanded Guild at
+that same instant, and exactly1 departure,1 disband,1 left presence. A timeout or
+query error cannot count as success. It uses existing Guild fixture/intent/
+connection/lock-wait helpers rather than a second concurrency framework.
+
+Root final checks:
+
+-71056: focused actual Linux/amd64/Postgres SQL/race passes, new test0.54s.
+-27654: complete cold real SQL/race Guild population passes3.683s. New sweep0.47s,
+  RP-730's both-order admission regression1.09s, all existing lifecycle/history/
+  rejection/leadership/opposite-target cases pass. No test skips in this population.
+-16581: native cold Guild0.228s/Kernel0.167s; SQL skips expected in this lane.
+-45597: affected Guild/Kernel/Gameserver vet passes.
+-31252: TypeScript/Svelte zero errors/warnings; formatting/diff whitespace pass.
+
+One combined selector invocation fails in the shell because Make expands its
+unquoted regex `|`; it runs no intended acceptance population and gets no credit.
+The existing per-package selectors replace it, without new targets or changed
+tests/deadlines. Actual composed Guild/HTTP/socket79983 exits0, test1.75s/package
+1.830s, including stored settlement/replay and real HTTP account deletion. Its
+explicit conservation NOT_PROVEN and absent TS-capture seam remain limitations.
+Independent corrective review is pending. Root owns exact DB/network IDs above; no
+other agent/default-DB suite is running. No full Account/rights/retention, hosted
+CI, archival, supported-host/R-006 or release claim. RP-731 remains open pending
+review, and the full nine-tier1.0 objective stays active.

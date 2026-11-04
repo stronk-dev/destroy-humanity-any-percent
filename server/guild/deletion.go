@@ -32,12 +32,19 @@ func (service *Service) PrepareAccountDeletion(ctx context.Context, tx *sql.Tx, 
 	}
 	sort.Strings(guildIDs)
 	for _, guildID := range guildIDs {
-		revision, _, err := lockGuild(ctx, tx, guildID)
-		if err != nil {
+		// A floor sweep may close the membership and disband the Guild
+		// after our census. Lock the historical Guild too, then recheck
+		// membership; an already-closed departure needs no second event.
+		var revision int64
+		if err := tx.QueryRowContext(ctx, `SELECT revision FROM guilds WHERE guild_id=$1 FOR UPDATE`, guildID).Scan(&revision); err != nil {
 			return err
 		}
 		var membershipID, role string
-		if err := tx.QueryRowContext(ctx, `SELECT membership_id,role FROM guild_members WHERE guild_id=$1 AND account_id=$2 AND left_at IS NULL FOR UPDATE`, guildID, accountID).Scan(&membershipID, &role); err != nil {
+		err := tx.QueryRowContext(ctx, `SELECT membership_id,role FROM guild_members WHERE guild_id=$1 AND account_id=$2 AND left_at IS NULL FOR UPDATE`, guildID, accountID).Scan(&membershipID, &role)
+		if err == sql.ErrNoRows {
+			continue
+		}
+		if err != nil {
 			return err
 		}
 		revision++
