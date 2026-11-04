@@ -7,6 +7,37 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Worker-isolation experiment,2026-11-04:** test a Docker-backed candidate rather
+than assume an untested native host service. Use a uniquely owned declared tmpfs
+Postgres fixture and cached config-pinned Python image; no pulls/host ports/new
+shipping dependency. Compare same-UID/cap-drop network-attached writable controls
+before/after an isolated UID65532 worker with network none, read-only root,
+all capabilities dropped and no-new-privileges. A private Unix-socket broker on
+an owned volume must permit that worker's exact GET _ping to the actual Engine,
+reject a wrong method and reject UID0 by actual SO_PEERCRED. Deliberately broad
+fixture socket mode lets the wrong UID reach the policy check. The worker must
+fail direct owned-Postgres TCP with ENETUNREACH, raw daemon paths with ENOENT,
+and writes to world-writable root/volume targets with EROFS; arbitrary errors
+are invalid, not policy proof. Controls must actually write and receive the
+same PostgreSQL SSLRequest refusal byte before/after, proving a live target.
+Inspect exact container image/user/network/read-only/capability/security/mount
+metadata as well as worker output. One60s measured-work guard, <=10s ordinary
+commands/handshakes; cleanup<=15s PER command outside work, no aggregate/RTO
+claim. Incomplete actors/guards/errors invalidate. This is Desktop Linux/arm64
+kernel mechanism evidence with amd64 PG, not actual Docker/Compose CLI workers,
+the Go supervisor/broker, API write authorization, all bypasses, Linux/amd64
+supported-host/OP9 adoption or full recovery acceptance. No real secrets/data.
+
+Actual57766 completes the full boundary/control population: exact ENETUNREACH101,
+ENOENT2 and EROFS30; actual Engine200/OK through the channel, typed403 route/UID
+refusals, CapEff/CapBnd0 and NoNewPrivs1, expected native image/user/network/mount
+profiles, before/after actual PG refusal byteN and successful local writes.
+All owned actors exit/cleanup. Root545c35 passes exact/invalid errno controls but
+finds RP-749: final source-binding collection can cross60 after its last guard
+and still claim completed. Preserve original source/v1, then forward-correct
+the collection boundary and rerun the changed instrument. RP-750 is a narrow
+native mechanism candidate, not a complete supervisor/profile or adoption.
+
 **Operation evidence proposal,2026-11-04:** new draft
 `rfc/deployment-operation-evidence.md` specifies canonical private hash-bound
 Supervisor, phase work-log, receipt-envelope, predecessor/completion and

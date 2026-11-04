@@ -1,0 +1,289 @@
+"""Manual OP9 mechanism study, not a production worker or authorization proxy.
+
+Repo root only. One60s work guard/<=10s commands; cleanup<=15s PER command
+outside work. Cached images/uniquely owned declared fixture; never live data.
+The fixture broker deliberately has a0666 socket to exercise its UID refusal.
+"""
+import hashlib
+import json
+import pathlib
+import secrets
+import shutil
+import subprocess
+import tempfile
+import time
+import urllib.parse
+
+PYTHON = "sha256:d2924abe506373b6f722045c48f98350077cc5b56a50491105c1abb027dce9b2"
+POSTGRES = "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b"
+PG_REFERENCE = "postgres:16-alpine@sha256:075f7ba66bc9b3ce7d6b8b635208ff61cd7cf1a67d71ec530eec5d7ae0cbe571"
+
+BROKER = r'''
+import http.client,json,os,pathlib,socket,struct,time
+deadline=time.monotonic()+60
+def remaining():
+    value=min(10,deadline-time.monotonic())
+    if value<=0: raise RuntimeError("broker work guard exhausted: INVALID")
+    return value
+class Engine(http.client.HTTPConnection):
+    def connect(self):
+        self.sock=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+        self.sock.settimeout(remaining())
+        self.sock.connect('/daemon.sock')
+root=pathlib.Path('/broker')
+(root/'writable-control').write_text('channel-marker')
+os.chmod(root/'writable-control',0o666)
+server=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+server.bind('/broker/channel.sock');os.chmod('/broker/channel.sock',0o666)
+server.listen(3)
+print('ready',flush=True)
+observations=[]
+allowed=[dict(method='GET',path='/_ping'),dict(method='POST',path='/_ping')]
+max_frame=max(len(json.dumps(value,separators=(',',':')).encode())+1 for value in allowed)
+for _ in range(3):
+    server.settimeout(remaining());client,_=server.accept()
+    with client:
+        client.settimeout(remaining())
+        _,uid,gid=struct.unpack('3i',client.getsockopt(socket.SOL_SOCKET,socket.SO_PEERCRED,struct.calcsize('3i')))
+        with client.makefile('rb') as reader: raw=reader.readline(max_frame+1)
+        if len(raw)>max_frame or not raw.endswith(b'\n'): raise RuntimeError('invalid fixture frame')
+        request=json.loads(raw)
+        if set(request)!={'method','path'}: raise RuntimeError('invalid fixture request')
+        if uid!=65532:
+            status,reason,body=403,'refused_uid',''
+        elif request!=dict(method='GET',path='/_ping'):
+            status,reason,body=403,'refused_route',''
+        else:
+            connection=Engine('fixture')
+            try:
+                connection.request('GET','/_ping')
+                response=connection.getresponse();payload=response.read(3)
+                if response.status!=200 or payload!=b'OK': raise RuntimeError('actual Engine ping did not complete')
+            finally: connection.close()
+            status,reason,body=200,'forwarded','OK'
+        remaining()
+        reply=dict(status=status,reason=reason,body=body)
+        client.sendall(json.dumps(reply,separators=(',',':')).encode()+b'\n')
+        remaining()
+        observations.append(dict(uid=uid,gid=gid,method=request['method'],status=status,reason=reason))
+server.close()
+if (root/'writable-control').read_text()!='channel-marker': raise RuntimeError('channel marker changed')
+remaining()
+print(json.dumps(dict(requests=observations,marker='channel-marker',socket_mode=oct(os.stat('/broker/channel.sock').st_mode&0o777),marker_mode=oct(os.stat('/broker/writable-control').st_mode&0o777),objective_completed=True),sort_keys=True),flush=True)
+'''
+
+WORKER = r'''
+import errno,json,os,pathlib,socket,struct,sys,time
+mode,address=sys.argv[1:]
+deadline=time.monotonic()+10
+def remaining():
+    value=deadline-time.monotonic()
+    if value<=0: raise RuntimeError('worker handshake guard exhausted: INVALID')
+    return value
+status={}
+for line in pathlib.Path('/proc/self/status').read_text().splitlines():
+    key,_,value=line.partition(':')
+    if key in ('CapEff','CapBnd','NoNewPrivs'): status[key]=value.strip()
+assert int(status['CapEff'],16)==0 and int(status['CapBnd'],16)==0 and status['NoNewPrivs']=='1'
+def expect_errno(action,expected):
+    try: action()
+    except OSError as error:
+        if error.errno!=expected: raise RuntimeError('unexpected native error class: '+str(error.errno)) from error
+        return error.errno
+    raise RuntimeError('prohibited action succeeded: INVALID')
+def tcp():
+    with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as connection:
+        connection.settimeout(remaining());connection.connect((address,5432))
+        connection.sendall(struct.pack('!II',8,80877103))
+        reply=connection.recv(1)
+        remaining()
+        if reply!=b'N': raise RuntimeError('unexpected real Postgres SSL response')
+        return reply.decode()
+def rpc(method):
+    with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) as connection:
+        connection.settimeout(remaining());connection.connect('/broker/channel.sock')
+        connection.sendall(json.dumps(dict(method=method,path='/_ping'),separators=(',',':')).encode()+b'\n')
+        known=[dict(status=200,reason='forwarded',body='OK'),dict(status=403,reason='refused_route',body=''),dict(status=403,reason='refused_uid',body='')]
+        max_reply=max(len(json.dumps(value,separators=(',',':')).encode())+1 for value in known)
+        with connection.makefile('rb') as reader:
+            raw=reader.readline(max_reply+1)
+            if len(raw)>max_reply or not raw.endswith(b'\n') or reader.read(1)!=b'': raise RuntimeError('invalid/incomplete broker response')
+        remaining()
+        return json.loads(raw)
+result=dict(mode=mode,uid=os.getuid(),gid=os.getgid(),kernel=status,tmp_mode=oct(os.stat('/tmp').st_mode&0o7777))
+assert result['tmp_mode']=='0o1777'
+if mode=='control':
+    result['postgres_ssl_reply']=tcp()
+    path=pathlib.Path('/tmp/worker-isolation-write')
+    path.write_text('local-marker');result['tmp_readback']=path.read_text();path.unlink()
+elif mode=='isolated':
+    assert os.getuid()==65532 and os.getgid()==65532
+    result['postgres_errno']=expect_errno(tcp,errno.ENETUNREACH)
+    result['daemon_paths']={}
+    for path in ('/daemon.sock','/var/run/docker.sock'):
+        def direct(path=path):
+            with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) as connection: connection.connect(path)
+        result['daemon_paths'][path]=expect_errno(direct,errno.ENOENT)
+    result['root_errno']=expect_errno(lambda:pathlib.Path('/tmp/worker-isolation-write').write_text('bad'),errno.EROFS)
+    result['volume_errno']=expect_errno(lambda:pathlib.Path('/broker/writable-control').write_text('bad'),errno.EROFS)
+    result['get']=rpc('GET');result['post']=rpc('POST')
+    assert result['get']==dict(status=200,reason='forwarded',body='OK')
+    assert result['post']==dict(status=403,reason='refused_route',body='')
+elif mode=='wrong_uid':
+    assert os.getuid()==0
+    result['get']=rpc('GET')
+    assert result['get']==dict(status=403,reason='refused_uid',body='')
+else: raise RuntimeError('unknown population')
+remaining()
+print(json.dumps(result,sort_keys=True),flush=True)
+'''
+
+
+class ResearchGuard(RuntimeError):
+    pass
+
+
+def bounded(deadline, clock=time.monotonic):
+    value = deadline - clock()
+    if value <= 0:
+        raise ResearchGuard("work guard exhausted: INVALID")
+    return min(10, value)
+
+
+def main():
+    root = pathlib.Path.cwd()
+    assert (root / "compose.deployment-backup-test.yml").is_file()
+    project = "cc-worker-isolation-" + secrets.token_hex(8)
+    work = pathlib.Path(tempfile.mkdtemp(prefix=project + "-"))
+    override = work / "compose.yml"
+    override.write_text("services:\n  postgres:\n    image: " + PG_REFERENCE + "\n"
+                        "    command: [postgres, -c, ssl=off]\n")
+    compose = ["compose", "--project-name", project, "-f",
+               str(root / "compose.deployment-backup-test.yml"), "-f", str(override)]
+    deadline = time.monotonic() + 60
+    containers = []
+    channel = project + "-channel"
+    channel_created = False
+    completed = False
+
+    def run(*args, cleanup=False):
+        reply = subprocess.run(["docker", *args], capture_output=True, text=True,
+                               timeout=15 if cleanup else bounded(deadline))
+        if not cleanup:
+            bounded(deadline)
+        if reply.returncode:
+            raise RuntimeError("owned fixture command failed: " + reply.stdout + reply.stderr)
+        return reply.stdout.strip()
+
+    def owned(container, role, cleanup=False):
+        fields = run("inspect", "--format", '{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}', container, cleanup=cleanup)
+        assert fields == " ".join((container, PYTHON, project, role)), "unowned worker/broker"
+
+    def create(role, network, readonly, uid, program, *args, mounts=()):
+        command = ["create", "--pull=never", "--name", project + "-" + role,
+                   "--label", "com.docker.compose.project=" + project,
+                   "--label", "com.docker.compose.service=" + role,
+                   "--network", network, "--ipc", "private", "--user", uid,
+                   "--cap-drop", "ALL", "--security-opt", "no-new-privileges:true"]
+        if readonly:
+            command.append("--read-only")
+        for mount in mounts:
+            command += ["--mount", mount]
+        container = run(*command, "--entrypoint", "python3", PYTHON, "-c", program, *args)
+        containers.append((container, role))
+        owned(container, role)
+        run("start", container)
+        return container
+
+    def inspect_profile(container, uid, network, readonly, mounted):
+        projection = '{"user":{{json .Config.User}},"network":{{json .HostConfig.NetworkMode}},"readonly":{{json .HostConfig.ReadonlyRootfs}},"caps":{{json .HostConfig.CapDrop}},"security":{{json .HostConfig.SecurityOpt}},"pid_mode":{{json .HostConfig.PidMode}},"ipc_mode":{{json .HostConfig.IpcMode}},"privileged":{{json .HostConfig.Privileged}},"mounts":[{{range $i,$m:=.Mounts}}{{if $i}},{{end}}{"destination":{{json $m.Destination}},"type":{{json $m.Type}},"rw":{{json $m.RW}}}{{end}}]}'
+        selected = json.loads(run("inspect", "--format", projection, container))
+        assert selected == dict(user=uid, network=network, readonly=readonly, caps=['ALL'],
+                                security=['no-new-privileges:true'], pid_mode='', ipc_mode='private',
+                                privileged=False, mounts=mounted), "profile mismatch"
+        return selected
+
+    def worker(role, mode, network, readonly, uid, address, mounted):
+        container = create(role, network, readonly, uid, WORKER, mode, address, mounts=mounted)
+        assert run("wait", container) == "0", "worker failed: " + run("logs", container)
+        result = json.loads(run("logs", container))
+        expected = [dict(destination='/broker', type='volume', rw=False)] if mounted else []
+        result['native_profile'] = inspect_profile(container, uid, network, readonly, expected)
+        return result
+
+    print(json.dumps(dict(phase="started", project=project, private_work=str(work))), flush=True)
+    try:
+        engine = run("version", "--format", "{{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}")
+        compose_version = run("compose", "version", "--short")
+        assert engine == "28.4.0 linux/arm64" and compose_version == "2.39.4-desktop.1"
+        assert run("image", "inspect", PYTHON, "--format", "{{.Id}}") == PYTHON
+        endpoint = run("context", "inspect", "--format", '{{.Endpoints.docker.Host}}')
+        parsed = urllib.parse.urlparse(endpoint)
+        assert parsed.scheme == 'unix' and not parsed.netloc and not parsed.query and not parsed.fragment
+        daemon_socket = urllib.parse.unquote(parsed.path)
+        run(*compose, "up", "--detach", "--wait", "--pull", "never", "postgres")
+        database = run(*compose, "ps", "--quiet", "postgres")
+        assert run("inspect", "--format", '{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}}', database) == " ".join((database, POSTGRES, project))
+        network = run("network", "inspect", project + "_default", "--format", "{{.Id}}")
+        address = run("inspect", "--format", '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', database)
+        version = run("exec", database, "psql", "-U", "cloud_clicker", "-d", "cloud_clicker_source", "-Atq", "-v", "ON_ERROR_STOP=1", "-c", "SHOW server_version")
+        run("volume", "create", "--label", "com.docker.compose.project=" + project, channel)
+        channel_created = True
+        broker = create("broker", "none", True, "0:0", BROKER,
+                        mounts=("type=volume,source=" + channel + ",target=/broker",
+                                "type=bind,source=" + daemon_socket + ",target=/daemon.sock,readonly"))
+        until = min(deadline, time.monotonic() + 10)
+        while True:
+            bounded(until)
+            ready = run("logs", broker)
+            bounded(until)
+            if ready == "ready":
+                break
+            assert run("inspect", "--format", '{{.State.Running}}', broker) == 'true', 'broker exited before ready'
+            time.sleep(0.01)
+        before = worker("control-before", "control", network, False, "65532:65532", address, ())
+        mounted = ("type=volume,source=" + channel + ",target=/broker,readonly",)
+        isolated = worker("isolated", "isolated", "none", True, "65532:65532", address, mounted)
+        wrong_uid = worker("wrong-uid", "wrong_uid", "none", True, "0:0", address, mounted)
+        assert run("wait", broker) == "0", "broker failed"
+        broker_lines = run("logs", broker).splitlines()
+        assert broker_lines[0] == "ready" and len(broker_lines) == 2
+        broker_result = json.loads(broker_lines[1])
+        assert broker_result['objective_completed'] is True and broker_result['marker'] == 'channel-marker'
+        assert broker_result['socket_mode'] == broker_result['marker_mode'] == '0o666'
+        broker_result['native_profile'] = inspect_profile(broker, '0:0', 'none', True, [
+            dict(destination='/broker',type='volume',rw=True),dict(destination='/daemon.sock',type='bind',rw=False)])
+        assert [(x['uid'],x['method'],x['status'],x['reason']) for x in broker_result['requests']] == [
+            (65532,'GET',200,'forwarded'),(65532,'POST',403,'refused_route'),(0,'GET',403,'refused_uid')]
+        after = worker("control-after", "control", network, False, "65532:65532", address, ())
+        assert before['postgres_ssl_reply'] == after['postgres_ssl_reply'] == 'N'
+        assert before['tmp_readback'] == after['tmp_readback'] == 'local-marker'
+        bounded(deadline)
+        result = dict(objective_completed=True, project=project, engine=engine, compose=compose_version,
+                      python_config=PYTHON, postgres_config=POSTGRES, postgres_version=version,
+                      controls=[before,after], isolated=isolated, wrong_uid=wrong_uid, broker=broker_result,
+                      source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+                      work_guard_seconds=60, command_handshake_seconds=10,
+                      cleanup_per_command_seconds=15, cleanup_outside_work_guard=True)
+        completed = True
+    finally:
+        for container, role in reversed(containers):
+            owned(container, role, cleanup=True)
+            run("rm", "--force", "--volumes", container, cleanup=True)
+        run(*compose, "down", "--volumes", "--remove-orphans", cleanup=True)
+        if channel_created:
+            assert run("volume", "inspect", channel, "--format", '{{index .Labels "com.docker.compose.project"}}', cleanup=True) == project
+            run("volume", "rm", channel, cleanup=True)
+        for resource in ("container", "network", "volume"):
+            assert run(resource, "ls", "--quiet", "--filter", "label=com.docker.compose.project=" + project,
+                       cleanup=True) == "", "owned fixture cleanup incomplete"
+        if completed:
+            shutil.rmtree(work)
+        else:
+            print(json.dumps(dict(objective_completed=False, private_work=str(work))), flush=True)
+    result['cleanup_complete'] = True
+    print(json.dumps(result,sort_keys=True),flush=True)
+
+
+if __name__ == '__main__':
+    main()

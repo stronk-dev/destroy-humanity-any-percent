@@ -9606,3 +9606,45 @@ approved normative rules. Next construct the native supervisor/worker profile
 and exact producer/subject/receipt semantics, then prove it against actual work.
 No product/CI/kernel/copy change, publication, deployment, archival or goal pause;
 the full nine-tier1.0 remains active.
+
+## 2026-11-04 — Actual isolated worker boundary, with final-collection finding
+
+After9a17aa2a, predeclare a Docker-worker/private Unix-broker mechanism population
+in the owning plan. New manual source runs cached config-pinned Python actors
+and declared tmpfs PG16 fixture, unique project, no ports/pulls/new shipping
+dependency/production data. Native Desktop Engine28.4.0 Linux/arm64 and Compose
+2.39.4-desktop.1, amd64 PG16.15; not supported native Linux/amd64 proof.
+
+Actual57766 exits0. Same-UID/cap-drop networked writable controls before/after
+receive actual PG SSLRequest refusalN and read their written local marker.
+Isolated UID65532 network-none/read-only/cap-drop/no-new-privileges has exact
+ENETUNREACH101 to that PG, ENOENT2 for raw socket paths, EROFS30 at `/tmp` and
+the deliberately world-writable channel marker. Kernel CapEff/CapBnd0 and
+NoNewPrivs1 observed. Allowlisted native image/UID/network/mount/read-only/
+capability/security/PID/IPC/privilege projection matches the intended actors;
+no whole environment/config is inspected or emitted.
+
+Private Unix GET reaches actual Engine200/OK; correct-UID POST and UID0 GET
+receive distinct typed403 refusals. Broker uses SO_PEERCRED, not supplied UID;
+deliberate socket/file0666 modes force the policy boundary to execute. Intact
+channel marker is preserved. All actor waits succeed and exact owned resources
+clean up before complete output. V1 binds exact source
+edcbf8df9e3962f6f8662c1de40870d7346657bf5e0a3be1b6668cf92eba5d86.
+
+Actual-source545c35 checks three permitted errno classes and refuses wrong
+permission/timeout/unknown classes or unexpected success. It also confirms a
+ROOT INSTRUMENT DEFECT, RP-749: final source-hash/metadata collection advances
+59→61 after the last guard, yet completed=True with deadline60. Same error
+class as RP-737 in a new probe; record it rather than hide the repeated mistake.
+No actual late collection is observed in the retained real run. Preserve first
+source/v1, then forward-correct final collection and rerun changed controls/
+subject. No bound or population is raised/dropped.
+
+RP-750 is a narrow isolation candidate, not full OP9. Actual Go/Docker/Compose
+workers, per-job channel authority beyond UID, all write routes/bodies, durable
+supervisor/daemon generation/bootstrap, complete SQL/HTTP/output lifetimes,
+native host/adoption/whole recovery remain open. Candidate/OP9 links reflect
+that limit. Review by: Codex root, implementer first filter. Recorded by:
+Codex root. Complete after9a17aa2a range plus containing correction needs fresh
+independent research/tool/technical review. No runtime/CI/kernel/copy change,
+push/deployment/archival or goal pause.

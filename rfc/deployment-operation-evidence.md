@@ -387,6 +387,11 @@ all prerequisites/privileges and reconcile parent no-service/host-floor promises
 before adoption. Unknown profiles/plans/native evidence refuse; this document
 does not supply an empty registry as a usable implementation.
 
+The [isolated command-worker study](../planning/deployment-foundation/combined-fence-candidate.md#isolated-command-worker-mechanism)
+is preliminary mechanism evidence for per-job Docker namespaces/private broker
+channels. Its Python/readonly-ping population is not an OP9 Go/CLI profile,
+complete job identity, daemon generation binding or write-authorization producer.
+
 Acceptance uses actual helper/Engine/Postgres/HTTP/publication/native lifetimes:
 successful install handoff→release→rollback and preserving abort; killed workers,
 lost authority, pending creates/native starts, original SQL/canceled HTTP and

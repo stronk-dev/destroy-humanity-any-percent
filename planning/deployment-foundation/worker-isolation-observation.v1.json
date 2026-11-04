@@ -1,0 +1,21 @@
+{
+  "broker": {
+    "marker":"channel-marker","marker_mode":"0o666","socket_mode":"0o666","objective_completed":true,
+    "native_profile":{"caps":["ALL"],"ipc_mode":"private","mounts":[{"destination":"/broker","rw":true,"type":"volume"},{"destination":"/daemon.sock","rw":false,"type":"bind"}],"network":"none","pid_mode":"","privileged":false,"readonly":true,"security":["no-new-privileges:true"],"user":"0:0"},
+    "requests":[{"gid":65532,"method":"GET","reason":"forwarded","status":200,"uid":65532},{"gid":65532,"method":"POST","reason":"refused_route","status":403,"uid":65532},{"gid":0,"method":"GET","reason":"refused_uid","status":403,"uid":0}]
+  },
+  "cleanup_complete":true,"cleanup_outside_work_guard":true,"cleanup_per_command_seconds":15,"command_handshake_seconds":10,"compose":"2.39.4-desktop.1",
+  "controls":[
+    {"gid":65532,"kernel":{"CapBnd":"0000000000000000","CapEff":"0000000000000000","NoNewPrivs":"1"},"mode":"control","native_profile":{"caps":["ALL"],"ipc_mode":"private","mounts":[],"network":"375b3c4b6b565ec35bb3aafc4127ae789a1e7e4ee839cccbf6306ed5ad31b308","pid_mode":"","privileged":false,"readonly":false,"security":["no-new-privileges:true"],"user":"65532:65532"},"postgres_ssl_reply":"N","tmp_mode":"0o1777","tmp_readback":"local-marker","uid":65532},
+    {"gid":65532,"kernel":{"CapBnd":"0000000000000000","CapEff":"0000000000000000","NoNewPrivs":"1"},"mode":"control","native_profile":{"caps":["ALL"],"ipc_mode":"private","mounts":[],"network":"375b3c4b6b565ec35bb3aafc4127ae789a1e7e4ee839cccbf6306ed5ad31b308","pid_mode":"","privileged":false,"readonly":false,"security":["no-new-privileges:true"],"user":"65532:65532"},"postgres_ssl_reply":"N","tmp_mode":"0o1777","tmp_readback":"local-marker","uid":65532}
+  ],
+  "engine":"28.4.0 linux/arm64",
+  "isolated":{
+    "daemon_paths":{"/daemon.sock":2,"/var/run/docker.sock":2},"get":{"body":"OK","reason":"forwarded","status":200},"gid":65532,
+    "kernel":{"CapBnd":"0000000000000000","CapEff":"0000000000000000","NoNewPrivs":"1"},"mode":"isolated",
+    "native_profile":{"caps":["ALL"],"ipc_mode":"private","mounts":[{"destination":"/broker","rw":false,"type":"volume"}],"network":"none","pid_mode":"","privileged":false,"readonly":true,"security":["no-new-privileges:true"],"user":"65532:65532"},
+    "post":{"body":"","reason":"refused_route","status":403},"postgres_errno":101,"root_errno":30,"tmp_mode":"0o1777","uid":65532,"volume_errno":30
+  },
+  "objective_completed":true,"postgres_config":"sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b","postgres_version":"16.15","project":"cc-worker-isolation-b5f75224898c8c90","python_config":"sha256:d2924abe506373b6f722045c48f98350077cc5b56a50491105c1abb027dce9b2","source_sha256":"edcbf8df9e3962f6f8662c1de40870d7346657bf5e0a3be1b6668cf92eba5d86","work_guard_seconds":60,
+  "wrong_uid":{"get":{"body":"","reason":"refused_uid","status":403},"gid":0,"kernel":{"CapBnd":"0000000000000000","CapEff":"0000000000000000","NoNewPrivs":"1"},"mode":"wrong_uid","native_profile":{"caps":["ALL"],"ipc_mode":"private","mounts":[{"destination":"/broker","rw":false,"type":"volume"}],"network":"none","pid_mode":"","privileged":false,"readonly":true,"security":["no-new-privileges:true"],"user":"0:0"},"tmp_mode":"0o1777","uid":0}
+}

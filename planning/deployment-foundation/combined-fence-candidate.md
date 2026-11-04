@@ -245,6 +245,41 @@ make test-go GO_PACKAGES=./cmd/deployment-backup GO_TEST_FLAGS="-overlay=$PWD/.c
 make vet GO_PACKAGES=./cmd/deployment-backup GOFLAGS="-overlay=$PWD/.cache/connection-gateway-research/controls-overlay.json"
 ```
 
+### Isolated command-worker mechanism
+
+The [manual worker study](probes/worker-isolation-probe.py.txt) and
+[initial source-bound observation](worker-isolation-observation.v1.json) test a
+Docker-backed worker boundary for OP9. The initial observation retains a known
+instrument defect: source-binding collection follows its last deadline check
+(RP-749). Its actual native outcomes below are recorded, but final deadline
+discrimination needs correction before instrument approval.
+
+Actual57766 compares UID65532/cap-drop writable network controls BEFORE and AFTER
+an isolated network-none/read-only worker. Both controls reach real pinned
+Postgres16.15, receive the expected SSLRequest refusal byteN, and write/read their
+local marker. The isolated worker receives ENETUNREACH101 for the SAME live PG,
+ENOENT2 for raw daemon paths, EROFS30 for `/tmp` and a world-writable channel file.
+Actual kernel effective/bounding capabilities are0, NoNewPrivs1, and allowlisted
+Engine inspection matches each image/user/network/mount/security profile.
+
+The isolated worker DOES reach actual Engine200/OK through its private Unix
+broker. The correct UID's wrong method and UID0's GET are distinct403 refusals;
+broker obtains UID/GID from SO_PEERCRED, not a request field. Fixture socket/file
+modes are deliberately0666 so refusal cannot be attributed to inaccessible
+filesystem permissions; the worker's channel mount is read-only. The retained
+marker remains intact. This supplies a candidate for isolated Docker command
+jobs/per-job broker channels without selecting a new native host service.
+
+It is NOT Docker/Compose CLI execution or the Go supervisor. UID alone is not
+complete job identity: OP9 must bind each private channel to its exact admitted
+job/namespace, prevent unintended mounts, enforce all stage-bound write methods/
+bodies and preserve request lifetime/durable receipts. Supervisor/daemon epoch,
+bootstrap, actual SQL/HTTP gateways/output publishers and all retained resources
+remain unbound. No full bypass inventory, supported Linux/amd64 host, shipping
+dependency, profile adoption or recovery acceptance follows from these Desktop
+Linux/arm64 Python workers with amd64 PG. Do not repeat the completed native
+positives instead of building those missing real producer bindings.
+
 Next construct the complete durable production protocol against this table and
 resolve its pre-backup branch/packaging/compatibility, then execute its actual
 helper and supported-host interruption population. Do not repeat these complete
