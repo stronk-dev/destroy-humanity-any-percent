@@ -7,17 +7,14 @@
 
 **Correction citation/metadata review,2026-11-04:** complete seven-path
 `611273b5..fce6c3d9` (RP-540) independently approved. Original eight-path
-`a7e33b73..611273b5` (RP-131) and first follow-up `a6fa32ac..3ae7f43a`
-require changes: lazy/list-relative quote handling still misclassifies metadata.
-RP-716/717's new follow-up uses pinned CommonMark block parsing, preserves the
-existing field grammar and adds the reference-rendered counterexamples. Full
-fixtures/frozen install/topology/build pass; original50a3a514 still fails.
-Independent review of3811445a finds a remaining lone-CR/source-position mismatch
-(RP-719), while its Linux frozen install/fixtures pass on Node24.18.0. The next
-correction normalizes line endings before both parsing and line selection; mixed
-quote refusal and honest CRLF/lone-CR controls pass locally. Final union review
-remains; no history-exception adoption, version/row rewrite or whole-CI acceptance.
-Owning log holds exact evidence.
+`a7e33b73..611273b5` (RP-131), first follow-up `a6fa32ac..3ae7f43a`, parser
+`3ae7f43a..3811445a` and line-ending fix `c09bb854..c463a5bb` now have complete
+independent union approval. All three prior CHANGES REQUIRED verdicts remain.
+Pinned CommonMark block parsing and shared line normalization preserve the existing
+metadata grammar. Independent native/Linux full fixtures, actual CLI/reference
+controls and topology pass; Linux Node24.18.0 matches workflow major24. Actual
+root still rejects original50a3a514. No history-exception adoption, version/row
+rewrite or whole-CI acceptance; the owning log holds exact ranges and limits.
 
 **Fixture-discovery corrective review,2026-11-04:** complete seven-path
 `f423e704..663976f1` (RP-396) is independently approved. Exact-old private files

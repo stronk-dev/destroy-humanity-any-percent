@@ -4636,3 +4636,37 @@ Independent full-union review remains; preserve all three CHANGES REQUIRED
 verdicts. Prior Linux frozen install binds unchanged package/lock bytes; corrected
 Linux fixture execution still needs its own pass. No history-draft adoption,
 source exception, full-CI/feature acceptance, archival or publication.
+
+## 2026-11-04 — Complete review-metadata corrective union independently approved
+
+Review by: independent Codex `/root/kernel_review_citation_corrective_review`.
+Recorded by: Codex root. APPROVED, no remaining findings, all paths inspected in
+four complete contexts (base exclusive, tip inclusive):
+
+- Original eight: `a7e33b73a39a435157c7049a8d13abdd68a63c4d..611273b5f6c8ce15126f163ff473d48bb2239ed2`.
+- First six: `a6fa32ac45b551bd497fff4cb409df2e259030f0..3ae7f43a551882b193c8902cba4061c899467474`.
+- Parser eight: `3ae7f43a551882b193c8902cba4061c899467474..3811445a3a7762ca38cc2da9cfc34b0be88fb8d0`.
+- Line endings six: `c09bb854a02729af24f4dd5c4c0fb29025d5a484..c463a5bb42f068139ff27c47f4aa94b92966b14f`.
+
+All three CHANGES REQUIRED verdicts and RP-540's separate approval remain intact.
+Pinned block parsing excludes quotes/code/HTML; normalization precedes both parse
+and source selection. Existing fields/anchor/attribution/correction/version rules
+stay unchanged. This does not authenticate that a review actually executed.
+
+Fresh atc463a5bb: full native28322 passes all quote/list/line-ending/legacy controls,
+including60 literal-path refusals. Topology64380 passes27 negatives and actual
+shared-script/Make controls. Actual Linux9225 passes corrected complete fixtures
+after isolated frozen install, Node24.18.0 matching workflow major24. No browser
+or build substitutes. Independent actualCLI/reference5743 refuses previously
+failing lazy/list/mixed-CR examples and accepts genuine list-heading/Setext/thematic
+exits and honest CRLF metadata. Honest controls exclude module-loading false passes.
+Syntax and all four range-whitespace checks pass. Real root94989 still exits
+expected Make2 at original50a3a514, not review binding.
+
+Package/lock/Compose/workflow bytes match prior Linux56498 dependency proof;
+intervening journal commit changes none. All handles terminal; reviewer removes
+only confirmed-empty owned networkf830e998. No tracked edits/commits or persistent
+services. Private final probe remains `/private/tmp/cloud-clicker-citation-review-hmlHQL`.
+Root reconciles current plan/defects only; no software suite for editorial records.
+The historical50a3a514 defect, unadopted exception draft, full/hosted CI, feature
+acceptance and release remain open. No archival, publication or goal pause.
