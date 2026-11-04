@@ -1,0 +1,222 @@
+"""Manual Linux/Postgres namespace observer. Never a production cleanup API.
+
+Only a trusted fixture driver supplies tuples, before forwarding client bytes.
+No DB credentials, protocol parsing or cancellation keys. A pidfd is retained
+only after exact native socket/UID/parent checks; it is not ownership by itself.
+"""
+import errno
+import hashlib
+import json
+import os
+import pathlib
+import select
+import signal
+import socket
+import time
+
+
+def require_time(end):
+    if time.monotonic() >= end:
+        raise RuntimeError('observation deadline: INVALID')
+
+
+def process(pid):
+    base = pathlib.Path('/proc')/str(pid)
+    stat = (base/'stat').read_text()
+    fields = stat[stat.rfind(')')+2:].split()
+    status = {}
+    for line in (base/'status').read_text().splitlines():
+        key, _, value = line.partition(':')
+        if key in ('Uid', 'Gid', 'CapEff', 'CapPrm', 'CapBnd', 'NoNewPrivs'):
+            status[key] = value.strip()
+    return dict(pid=pid, parent=int(fields[1]), start=fields[19], status=status)
+
+
+def endpoint(raw):
+    address, port = raw.split(':')
+    return socket.inet_ntoa(bytes.fromhex(address)[::-1])+':'+str(int(port, 16))
+
+
+def socket_rows(local, remote):
+    rows = []
+    for line in pathlib.Path('/proc/net/tcp').read_text().splitlines()[1:]:
+        fields = line.split()
+        if endpoint(fields[1]) == local and endpoint(fields[2]) == remote:
+            if fields[3] not in ('01', '08') or int(fields[7]) != 70 or int(fields[9]) <= 0:
+                raise RuntimeError('unexpected exact-tuple socket state/owner: INVALID')
+            rows.append(fields[9])
+    if len(rows) > 1:
+        raise RuntimeError('duplicate exact-tuple socket: INVALID')
+    return rows
+
+
+def exited(fd):
+    poll = select.poll()
+    poll.register(fd, select.POLLIN)
+    events = poll.poll(0)
+    if any(flags & (select.POLLNVAL | select.POLLERR) for _, flags in events):
+        raise RuntimeError('invalid pidfd observation: INVALID')
+    return any(flags & (select.POLLIN | select.POLLHUP) for _, flags in events)
+
+
+def bind(local, remote, end, anchor):
+    while True:
+        require_time(end)
+        if process(1) != anchor:
+            raise RuntimeError('postmaster scope changed: INVALID')
+        rows = socket_rows(local, remote)
+        if rows:
+            inode = rows[0]
+            matches = []
+            for base in pathlib.Path('/proc').iterdir():
+                if not base.name.isdigit() or int(base.name) == 1:
+                    continue
+                pid = int(base.name)
+                fd = None
+                try:
+                    # Open FIRST. A later signal will use this reference, never
+                    # reopen the observed integer PID after validating it.
+                    fd = os.pidfd_open(pid)
+                    before = process(pid)
+                    if before['parent'] != 1 or before['status']['Uid'].split() != ['70']*4:
+                        continue
+                    links = []
+                    for item in (base/'fd').iterdir():
+                        try:
+                            links.append(os.readlink(item))
+                        except FileNotFoundError:
+                            pass  # A concurrently closed FD cannot supply a match.
+                    if 'socket:['+inode+']' not in links:
+                        continue
+                    after = process(pid)
+                    if before != after or exited(fd):
+                        continue
+                    if socket_rows(local, remote) != [inode]:
+                        continue
+                    matches.append((fd, dict(pid=pid, start=before['start'], inode=inode,
+                                             local=local, remote=remote, parent=1)))
+                    fd = None
+                except (FileNotFoundError, ProcessLookupError):
+                    pass  # Retry the binding; absence never becomes a terminal receipt.
+                finally:
+                    if fd is not None:
+                        os.close(fd)
+            if len(matches) == 1:
+                try:
+                    require_time(end)
+                except BaseException:
+                    os.close(matches[0][0])
+                    raise
+                return matches[0]
+            for fd, _ in matches:
+                os.close(fd)
+            if len(matches) > 1:
+                raise RuntimeError('ambiguous native socket ownership: INVALID')
+        time.sleep(0.005)
+
+
+def write(path, value):
+    temporary = path.with_suffix('.temporary')
+    encoded = json.dumps(value, sort_keys=True).encode()
+    fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, 'wb') as output:
+        output.write(encoded)
+        output.flush()
+        os.fsync(output.fileno())
+    os.replace(temporary, path)
+
+
+def main():
+    directory = pathlib.Path('/observation')
+    end = time.monotonic()+240
+    own = process(os.getpid())
+    assert os.getuid() == 70 and own['status']['Uid'].split() == ['70']*4
+    assert all(int(own['status'][key], 16) == 0 for key in ('CapEff', 'CapPrm', 'CapBnd'))
+    assert own['status']['NoNewPrivs'] == '1'
+    anchor = process(1)
+    assert anchor['status']['Uid'].split() == ['70']*4
+    for pid in (os.getpid(), 1):
+        fd = os.pidfd_open(pid)
+        try:
+            signal.pidfd_send_signal(fd, 0)  # Permission check only; no signal.
+        finally:
+            os.close(fd)
+    write(directory/'observer-ready.json', dict(status=own['status'], postmaster=anchor,
+          kernel=os.uname().machine, pid_namespace=os.readlink('/proc/self/ns/pid'),
+          net_namespace=os.readlink('/proc/self/ns/net')))
+    subjects = {}
+    sequence = 1
+    sent = 0
+    try:
+        while True:
+            require_time(end)
+            path = directory/('request-%06d.json' % sequence)
+            if not path.exists():
+                time.sleep(0.005)
+                continue
+            request = json.loads(path.read_text())
+            until = min(end, time.monotonic()+10)
+            if process(1) != anchor:
+                raise RuntimeError('postmaster scope changed: INVALID')
+            action = request['action']
+            result = dict(sequence=sequence, signals_sent=sent)
+            if action == 'register':
+                name = request['subject']
+                if name in subjects:
+                    raise RuntimeError('duplicate subject: INVALID')
+                fd, binding = bind(request['local'], request['remote'], until, anchor)
+                digest = hashlib.sha256(json.dumps(binding, sort_keys=True).encode()).hexdigest()
+                subjects[name] = fd, digest, binding
+                result.update(outcome='bound', binding=binding, binding_sha256=digest)
+            elif action in ('terminate', 'dead_reference'):
+                subject = subjects.get(request['subject'])
+                if subject is None:
+                    result.update(outcome='refused', code='unknown_subject')
+                elif request['binding_sha256'] != subject[1]:
+                    result.update(outcome='refused', code='binding_mismatch')
+                else:
+                    fd, digest, binding = subject
+                    if action == 'terminate':
+                        if exited(fd):
+                            raise RuntimeError('unexpected prior target exit: INVALID')
+                        signal.pidfd_send_signal(fd, signal.SIGTERM)
+                        sent += 1
+                        while not exited(fd):
+                            require_time(until)
+                            time.sleep(0.005)
+                        result.update(outcome='terminated', signals_sent=sent, native_exit=True)
+                    else:
+                        if not exited(fd):
+                            raise RuntimeError('dead-reference control is still live: INVALID')
+                        while True:
+                            require_time(until)
+                            try:
+                                signal.pidfd_send_signal(fd, 0)
+                            except ProcessLookupError as error:
+                                assert error.errno == errno.ESRCH
+                                result.update(outcome='old_reference_dead', errno=error.errno)
+                                break
+                            time.sleep(0.005)
+            elif action == 'stop':
+                if not subjects:
+                    raise RuntimeError('empty native population: INVALID')
+                while any(not exited(fd) for fd, _, _ in subjects.values()):
+                    require_time(until)
+                    time.sleep(0.005)
+                result.update(outcome='stopped', subjects=len(subjects), signals_sent=sent)
+            else:
+                raise RuntimeError('unknown observer action: INVALID')
+            encoded = json.dumps(result, sort_keys=True)
+            require_time(until)
+            write(directory/('response-%06d.json' % sequence), json.loads(encoded))
+            require_time(until)
+            if action == 'stop':
+                return
+            sequence += 1
+    finally:
+        for fd, _, _ in subjects.values():
+            os.close(fd)
+
+
+if __name__ == '__main__':
+    main()

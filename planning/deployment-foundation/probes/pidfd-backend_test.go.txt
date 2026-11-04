@@ -1,0 +1,692 @@
+// Manual package compiler overlay. No production observer or cleanup authority.
+package deploymentbackup
+
+import (
+	"context"
+	"crypto/rand"
+	"crypto/x509"
+	"database/sql"
+	"encoding/json"
+	"encoding/pem"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"net/url"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+	"syscall"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/save"
+	"filippo.io/age"
+)
+
+type nativeBinding struct {
+	PID    int    `json:"pid"`
+	Start  string `json:"start"`
+	Inode  string `json:"inode"`
+	Local  string `json:"local"`
+	Remote string `json:"remote"`
+	Parent int    `json:"parent"`
+}
+
+type nativeReply struct {
+	Sequence   int           `json:"sequence"`
+	Outcome    string        `json:"outcome"`
+	Code       string        `json:"code"`
+	Signals    int           `json:"signals_sent"`
+	NativeExit bool          `json:"native_exit"`
+	Errno      int           `json:"errno"`
+	Subjects   int           `json:"subjects"`
+	Binding    nativeBinding `json:"binding"`
+	SHA        string        `json:"binding_sha256"`
+}
+
+type nativeRPC struct {
+	mu         sync.Mutex
+	directory  string
+	sequence   int
+	transcript []nativeReply
+}
+
+func (m *nativeRPC) call(ctx context.Context, request map[string]any) (nativeReply, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	ctx, stop := context.WithTimeout(ctx, 10*time.Second)
+	defer stop()
+	m.sequence++
+	path := filepath.Join(m.directory, fmt.Sprintf("request-%06d.json", m.sequence))
+	data, err := json.Marshal(request)
+	if err != nil {
+		return nativeReply{}, err
+	}
+	file, err := os.OpenFile(path+".temporary", os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
+	if err != nil {
+		return nativeReply{}, err
+	}
+	err = researchWrite(file, data)
+	if err == nil {
+		err = file.Sync()
+	}
+	if closeErr := file.Close(); err == nil {
+		err = closeErr
+	}
+	if err != nil {
+		return nativeReply{}, err
+	}
+	if err = os.Rename(path+".temporary", path); err != nil {
+		return nativeReply{}, err
+	}
+	response := filepath.Join(m.directory, fmt.Sprintf("response-%06d.json", m.sequence))
+	for {
+		data, err = os.ReadFile(response)
+		if errors.Is(err, os.ErrNotExist) {
+			if err := researchDeadline(ctx); err != nil {
+				return nativeReply{}, err
+			}
+			time.Sleep(5 * time.Millisecond)
+			continue
+		}
+		if err != nil {
+			return nativeReply{}, err
+		}
+		var reply nativeReply
+		if err := json.Unmarshal(data, &reply); err != nil {
+			return nativeReply{}, err
+		}
+		if err := researchDeadline(ctx); err != nil {
+			return nativeReply{}, err
+		}
+		if reply.Sequence != m.sequence {
+			return nativeReply{}, errors.New("observer response sequence: INVALID")
+		}
+		m.transcript = append(m.transcript, reply)
+		return reply, nil
+	}
+}
+
+type opaqueSession struct {
+	name                string
+	front, back         *net.TCPConn
+	bound               nativeReply
+	forward             chan bool
+	once                sync.Once
+	frontEOF, serverEOF bool
+}
+
+type opaqueRelay struct {
+	mu                   sync.Mutex
+	listener             *net.TCPListener
+	sessions             []*opaqueSession
+	closed, killExpected bool
+	err                  error
+	wg                   sync.WaitGroup
+	ctx                  context.Context
+	end                  time.Time
+	monitor              *nativeRPC
+	address, prefix      string
+	automatic            bool
+}
+
+func newOpaqueRelay(t *testing.T, ctx context.Context, m *nativeRPC, address, prefix string, automatic bool) *opaqueRelay {
+	t.Helper()
+	listener, err := net.ListenTCP("tcp4", &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	end, ok := ctx.Deadline()
+	if !ok {
+		t.Fatal("missing population deadline")
+	}
+	if err := listener.SetDeadline(end); err != nil {
+		t.Fatal(err)
+	}
+	r := &opaqueRelay{listener: listener, ctx: ctx, end: end, monitor: m, address: address, prefix: prefix, automatic: automatic}
+	r.wg.Add(1)
+	go func() {
+		defer r.wg.Done()
+		for {
+			front, err := listener.AcceptTCP()
+			if err != nil {
+				r.mu.Lock()
+				if !r.closed {
+					r.err = err
+				}
+				r.mu.Unlock()
+				return
+			}
+			r.mu.Lock()
+			if r.closed {
+				r.mu.Unlock()
+				front.Close()
+				continue
+			}
+			s := &opaqueSession{name: fmt.Sprintf("%s-%d", prefix, len(r.sessions)+1), front: front, forward: make(chan bool, 1)}
+			r.sessions = append(r.sessions, s)
+			r.wg.Add(1)
+			r.mu.Unlock()
+			go r.serve(s)
+		}
+	}()
+	t.Cleanup(func() {
+		r.closeAdmission()
+		r.mu.Lock()
+		for _, s := range r.sessions {
+			s.once.Do(func() { s.forward <- false })
+			s.front.Close()
+			if s.back != nil {
+				s.back.Close()
+			}
+		}
+		r.mu.Unlock()
+		r.wg.Wait()
+	})
+	return r
+}
+
+func (r *opaqueRelay) fail(err error) {
+	r.mu.Lock()
+	if r.err == nil {
+		r.err = err
+	}
+	r.mu.Unlock()
+}
+func (r *opaqueRelay) closeAdmission() {
+	r.mu.Lock()
+	r.closed = true
+	r.mu.Unlock()
+	r.listener.Close()
+}
+
+func (r *opaqueRelay) serve(s *opaqueSession) {
+	defer r.wg.Done()
+	defer s.front.Close()
+	dial, stop := context.WithTimeout(r.ctx, 10*time.Second)
+	conn, err := (&net.Dialer{}).DialContext(dial, "tcp4", r.address)
+	if late := researchDeadline(dial); err == nil && late != nil {
+		conn.Close()
+		err = late
+	}
+	stop()
+	if err != nil {
+		r.fail(err)
+		return
+	}
+	back := conn.(*net.TCPConn)
+	defer back.Close()
+	r.mu.Lock()
+	s.back = back
+	r.mu.Unlock()
+	if err := back.SetDeadline(r.end); err != nil {
+		r.fail(err)
+		return
+	}
+	if err := s.front.SetDeadline(r.end); err != nil {
+		r.fail(err)
+		return
+	}
+	// The trusted relay supplies its ACTUAL original socket endpoints. No
+	// client bytes, including the SSLRequest, are forwarded before binding.
+	bound, err := r.monitor.call(r.ctx, map[string]any{"action": "register", "subject": s.name, "local": back.RemoteAddr().String(), "remote": back.LocalAddr().String()})
+	if err != nil {
+		r.fail(err)
+		return
+	}
+	if bound.Outcome != "bound" || bound.Binding.PID <= 1 || bound.Binding.Parent != 1 || len(bound.SHA) != 64 || bound.Binding.Local != back.RemoteAddr().String() || bound.Binding.Remote != back.LocalAddr().String() {
+		r.fail(errors.New("native binding mismatch: INVALID"))
+		return
+	}
+	r.mu.Lock()
+	s.bound = bound
+	r.mu.Unlock()
+	if r.automatic {
+		s.once.Do(func() { s.forward <- true })
+	}
+	frontDone := make(chan error, 1)
+	go func() {
+		var allow bool
+		select {
+		case allow = <-s.forward:
+		case <-r.ctx.Done():
+			frontDone <- r.ctx.Err()
+			return
+		}
+		var target io.Writer = io.Discard
+		if allow {
+			target = back
+		}
+		_, err := io.Copy(target, s.front)
+		if err == nil && allow {
+			err = back.CloseWrite()
+		}
+		r.mu.Lock()
+		if err == nil {
+			s.frontEOF = true
+		}
+		r.mu.Unlock()
+		frontDone <- err
+	}()
+	buffer := make([]byte, 32<<10)
+	serverErr := error(nil)
+	downstreamLost := false
+	for {
+		n, err := back.Read(buffer)
+		if n > 0 && !downstreamLost {
+			if writeErr := researchWrite(s.front, buffer[:n]); writeErr != nil {
+				r.mu.Lock()
+				expected := r.killExpected
+				r.mu.Unlock()
+				if expected && (errors.Is(writeErr, syscall.EPIPE) || errors.Is(writeErr, syscall.ECONNRESET)) {
+					downstreamLost = true
+				} else {
+					serverErr = writeErr
+					break
+				}
+			}
+		}
+		if errors.Is(err, io.EOF) {
+			r.mu.Lock()
+			s.serverEOF = true
+			r.mu.Unlock()
+			break
+		}
+		if err != nil {
+			serverErr = err
+			break
+		}
+	}
+	if serverErr != nil {
+		s.front.Close()
+		back.Close()
+		s.once.Do(func() { s.forward <- false })
+	}
+	if err := <-frontDone; serverErr == nil {
+		serverErr = err
+	}
+	if serverErr != nil {
+		r.fail(serverErr)
+	}
+}
+
+func (r *opaqueRelay) terminal() (bool, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.err != nil {
+		return false, r.err
+	}
+	if !r.closed || len(r.sessions) == 0 {
+		return false, nil
+	}
+	for _, s := range r.sessions {
+		if s.bound.Outcome != "bound" || !s.frontEOF || !s.serverEOF {
+			return false, nil
+		}
+	}
+	return true, nil
+}
+
+func (r *opaqueRelay) report(t *testing.T, minimum int) []nativeReply {
+	t.Helper()
+	complete, err := r.terminal()
+	if err != nil || !complete {
+		t.Fatal("incomplete opaque relay: INVALID", err)
+	}
+	r.wg.Wait()
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if len(r.sessions) < minimum {
+		t.Fatal("missing real helper connections")
+	}
+	result := make([]nativeReply, 0, len(r.sessions))
+	for _, s := range r.sessions {
+		result = append(result, s.bound)
+	}
+	return result
+}
+
+func nativeCall(t *testing.T, ctx context.Context, m *nativeRPC, request map[string]any, outcome string) nativeReply {
+	t.Helper()
+	reply, err := m.call(ctx, request)
+	if err != nil || reply.Outcome != outcome {
+		t.Fatal("native observation failed: INVALID", reply.Outcome, reply.Code, err)
+	}
+	return reply
+}
+
+func TestManualPIDfdBackendIntegration(t *testing.T) {
+	sourceURL, targetURL, adminURL := os.Getenv("TEST_DATABASE_URL"), os.Getenv("TEST_RESTORE_DATABASE_URL"), os.Getenv("TEST_ADMIN_DATABASE_URL")
+	for _, raw := range []string{sourceURL, targetURL, adminURL} {
+		u, err := url.Parse(raw)
+		if err != nil || u.Host != "postgres:5432" || u.Query().Get("sslmode") != "disable" {
+			t.Fatal("declared disposable DB fixture required")
+		}
+	}
+	setup, stopSetup := context.WithTimeout(context.Background(), 30*time.Second)
+	defer stopSetup()
+	resetDatabase(t, adminURL, "cloud_clicker_source")
+	resetDatabase(t, adminURL, "cloud_clicker_restore")
+	database, err := save.OpenPostgres(setup, sourceURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer database.Close()
+	if err := save.Migrate(setup, database); err != nil {
+		t.Fatal(err)
+	}
+	seedBackupEpoch(t, database)
+	seedBackupPopulation(t, database)
+	if _, err := database.ExecContext(setup, "CREATE TABLE public.native_pidfd_probe(id integer PRIMARY KEY);INSERT INTO public.native_pidfd_probe VALUES(7)"); err != nil {
+		t.Fatal(err)
+	}
+	control, err := database.Conn(setup)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer control.Close()
+	observer, err := database.Conn(setup)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer observer.Close()
+	controlPID := researchScalar(t, setup, control, "SELECT pg_backend_pid()::text")
+	postmaster := researchScalar(t, setup, control, "SELECT pg_postmaster_start_time()::text")
+	ca, _, issuer, issuerKey := backupTLSCertificate(t, "native-pidfd-ca", nil, nil, false)
+	_, serverKey, serverTemplate, serverPrivate := backupTLSCertificate(t, "postgres", issuer, issuerKey, true)
+	serverTemplate.IPAddresses = []net.IP{net.IPv4(127, 0, 0, 1)}
+	der, err := x509.CreateCertificate(rand.Reader, serverTemplate, issuer, &serverPrivate.PublicKey, issuerKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	serverCert := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: der})
+	clientCert, clientKey, _, _ := backupTLSCertificate(t, "cloud_clicker", issuer, issuerKey, false)
+	quote := func(s string) string { return "'" + strings.ReplaceAll(s, "'", "''") + "'" }
+	suffix := strings.ToLower(rand.Text())
+	admin, err := save.OpenPostgres(setup, adminURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer admin.Close()
+	defer func() {
+		cleanup, stop := context.WithTimeout(context.Background(), 10*time.Second)
+		defer stop()
+		for _, setting := range []string{"ssl", "ssl_cert_file", "ssl_key_file", "ssl_ca_file"} {
+			if _, err := admin.ExecContext(cleanup, "ALTER SYSTEM RESET "+setting); err != nil {
+				t.Error(err)
+			}
+		}
+		if _, err := admin.ExecContext(cleanup, "SELECT pg_reload_conf()"); err != nil {
+			t.Error(err)
+		}
+	}()
+	for setting, data := range map[string][]byte{"ssl_cert_file": serverCert, "ssl_key_file": serverKey, "ssl_ca_file": ca} {
+		path := "/tmp/native-pidfd-" + suffix + "-" + setting + ".pem"
+		statement := "COPY (SELECT unnest(string_to_array(" + quote(strings.TrimSuffix(string(data), "\n")) + ", E'\\n'))) TO PROGRAM " + quote("umask 077; cat > "+path)
+		if _, err := admin.ExecContext(setup, statement); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := admin.ExecContext(setup, "ALTER SYSTEM SET "+setting+" = "+quote(path)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := admin.ExecContext(setup, "ALTER SYSTEM SET ssl = 'on'"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := admin.ExecContext(setup, "SELECT pg_reload_conf()"); err != nil {
+		t.Fatal(err)
+	}
+	work := t.TempDir()
+	caPath := writeRegular(t, work, "ca.pem", ca)
+	clientPath := writeRegular(t, work, "client.pem", clientCert)
+	keyPath := writeSecret(t, work, "client.key", string(clientKey))
+	withTLS := func(raw, address string) string {
+		u, err := url.Parse(raw)
+		if err != nil {
+			t.Fatal(err)
+		}
+		u.Host = address
+		q := u.Query()
+		q.Set("sslmode", "verify-full")
+		q.Set("sslrootcert", caPath)
+		q.Set("sslcert", clientPath)
+		q.Set("sslkey", keyPath)
+		u.RawQuery = q.Encode()
+		return u.String()
+	}
+	tlsSource := withTLS(sourceURL, "postgres:5432")
+	tlsTarget := withTLS(targetURL, "postgres:5432")
+	probe, err := sql.Open("pgx", tlsSource)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer probe.Close()
+	researchPoll(t, setup, func() (bool, error) { err := probe.PingContext(setup); return err == nil, nil })
+	var tlsIdentity string
+	if err := probe.QueryRowContext(setup, "SELECT ssl::text||'|'||COALESCE(client_dn,'missing') FROM pg_stat_ssl WHERE pid=pg_backend_pid()").Scan(&tlsIdentity); err != nil {
+		t.Fatal(err)
+	}
+	if tlsIdentity != "true|/CN=cloud_clicker" && tlsIdentity != "true|CN=cloud_clicker" {
+		t.Fatal("not actual verified TLS/client identity")
+	}
+	var migration int
+	if err := database.QueryRowContext(setup, "SELECT max(version_id) FILTER (WHERE is_applied) FROM goose_db_version").Scan(&migration); err != nil {
+		t.Fatal(err)
+	}
+	epoch := fixtureEpoch(t, 8)
+	manifest := fixtureReleaseManifestForMigration(t, epoch, migration)
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	sourceSecret := writeSecret(t, work, "source", tlsSource)
+	targetSecret := writeSecret(t, work, "target", tlsTarget)
+	before, err := InspectRecoveryIdentity(setup, RecoveryIdentityInput{DatabaseURLFile: sourceSecret})
+	if err != nil {
+		t.Fatal(err)
+	}
+	monitor := &nativeRPC{directory: "/observation"}
+	if _, err := os.Stat(filepath.Join(monitor.directory, "observer-ready.json")); err != nil {
+		t.Fatal("native observer missing")
+	}
+	if researchDeadline(setup) != nil {
+		t.Fatal("setup deadline: INVALID")
+	}
+	positive, stopPositive := context.WithTimeout(context.Background(), 60*time.Second)
+	defer stopPositive()
+	backupRelay := newOpaqueRelay(t, positive, monitor, "postgres:5432", "positive-backup", true)
+	config := researchChildConfig{Mode: "backup", Directory: t.TempDir(), URLFile: writeSecret(t, work, "backup-gateway", withTLS(sourceURL, backupRelay.listener.Addr().String())), Manifest: writeRegular(t, work, "manifest.json", manifest), Epoch: writeRegular(t, work, "epoch.json", epoch), Recipient: identity.Recipient().String(), Report: filepath.Join(work, "backup-report.json")}
+	_, done := researchChild(t, config)
+	researchWaitChild(t, positive, done, true)
+	backupRelay.closeAdmission()
+	researchPoll(t, positive, backupRelay.terminal)
+	data, err := os.ReadFile(config.Report)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var backup struct{ Path string }
+	if json.Unmarshal(data, &backup) != nil || backup.Path == "" {
+		t.Fatal("actual encrypted backup missing")
+	}
+	restoreRelay := newOpaqueRelay(t, positive, monitor, "postgres:5432", "positive-restore", true)
+	restore := researchChildConfig{Mode: "restore", URLFile: writeSecret(t, work, "restore-gateway", withTLS(targetURL, restoreRelay.listener.Addr().String())), Identity: writeSecret(t, work, "age-key", identity.String()), Backup: backup.Path, ManifestHash: digest(manifest), Report: filepath.Join(work, "restore-report.json")}
+	_, done = researchChild(t, restore)
+	researchWaitChild(t, positive, done, true)
+	restoreRelay.closeAdmission()
+	researchPoll(t, positive, restoreRelay.terminal)
+	after, err := InspectRecoveryIdentity(positive, RecoveryIdentityInput{DatabaseURLFile: targetSecret})
+	if err != nil || CompareRecoveryIdentity(before, after) != nil {
+		t.Fatal("TLS roundtrip identity mismatch", err)
+	}
+	positiveResult := map[string]any{"backup": backupRelay.report(t, 2), "restore": restoreRelay.report(t, 2), "identity_equal": true, "tls_identity": tlsIdentity}
+	if researchDeadline(positive) != nil {
+		t.Fatal("positive population deadline: INVALID")
+	}
+	stopPositive()
+
+	interrupted, stopInterrupted := context.WithTimeout(context.Background(), 60*time.Second)
+	defer stopInterrupted()
+	if _, err := control.ExecContext(interrupted, "BEGIN;LOCK TABLE public.native_pidfd_probe IN ACCESS EXCLUSIVE MODE"); err != nil {
+		t.Fatal(err)
+	}
+	defer control.ExecContext(context.Background(), "ROLLBACK")
+	r := newOpaqueRelay(t, interrupted, monitor, "postgres:5432", "interrupted", true)
+	config.Directory = t.TempDir()
+	config.URLFile = writeSecret(t, work, "interrupted-gateway", withTLS(sourceURL, r.listener.Addr().String()))
+	config.Report = filepath.Join(work, "interrupted-report.json")
+	child, done := researchChild(t, config)
+	var blocked *opaqueSession
+	researchPoll(t, interrupted, func() (bool, error) {
+		r.mu.Lock()
+		defer r.mu.Unlock()
+		if r.err != nil {
+			return false, r.err
+		}
+		exporter := false
+		for _, s := range r.sessions {
+			if s.bound.Outcome != "bound" {
+				continue
+			}
+			state := researchScalar(t, interrupted, observer, "SELECT COALESCE((SELECT application_name||':'||state||':'||COALESCE(wait_event_type,'')||':'||COALESCE(wait_event,'') FROM pg_stat_activity WHERE pid=$1),'absent')", s.bound.Binding.PID)
+			if state == "pg_dump:active:Lock:relation" {
+				blocked = s
+			}
+			if strings.Contains(state, ":idle in transaction:") {
+				exporter = true
+			}
+		}
+		return len(r.sessions) >= 2 && blocked != nil && exporter, nil
+	})
+	r.closeAdmission()
+	r.mu.Lock()
+	r.killExpected = true
+	r.mu.Unlock()
+	if err := syscall.Kill(-child.Process.Pid, syscall.SIGKILL); err != nil {
+		t.Fatal(err)
+	}
+	researchWaitChild(t, interrupted, done, false)
+	researchPoll(t, interrupted, func() (bool, error) {
+		r.mu.Lock()
+		defer r.mu.Unlock()
+		if r.err != nil {
+			return false, r.err
+		}
+		for _, s := range r.sessions {
+			if !s.frontEOF {
+				return false, nil
+			}
+		}
+		return true, nil
+	})
+	wrong := nativeCall(t, interrupted, monitor, map[string]any{"action": "terminate", "subject": blocked.name, "binding_sha256": strings.Repeat("0", 64)}, "refused")
+	if wrong.Code != "binding_mismatch" || wrong.Signals != 0 {
+		t.Fatal("mismatched native binding did not refuse before signaling")
+	}
+	if researchScalar(t, interrupted, observer, "SELECT count(*)::text FROM pg_stat_activity WHERE pid=$1 AND state='active' AND wait_event_type='Lock'", blocked.bound.Binding.PID) != "1" {
+		t.Fatal("wrong-binding control changed original work")
+	}
+	termination := nativeCall(t, interrupted, monitor, map[string]any{"action": "terminate", "subject": blocked.name, "binding_sha256": blocked.bound.SHA}, "terminated")
+	if !termination.NativeExit || termination.Signals != 1 {
+		t.Fatal("native original process exit missing")
+	}
+	researchPoll(t, interrupted, r.terminal)
+	dead := nativeCall(t, interrupted, monitor, map[string]any{"action": "dead_reference", "subject": blocked.name, "binding_sha256": blocked.bound.SHA}, "old_reference_dead")
+	if dead.Errno != int(syscall.ESRCH) {
+		t.Fatal("old pidfd did not retain exited subject")
+	}
+	if _, err := control.ExecContext(interrupted, "COMMIT"); err != nil {
+		t.Fatal(err)
+	}
+	interruptedResult := map[string]any{"bindings": r.report(t, 2), "wrong_binding": wrong, "termination": termination, "old_reference": dead, "all_eof_before_unlock": true}
+	if researchDeadline(interrupted) != nil {
+		t.Fatal("interrupted population deadline: INVALID")
+	}
+	stopInterrupted()
+
+	startup, stopStartup := context.WithTimeout(context.Background(), 60*time.Second)
+	defer stopStartup()
+	sr := newOpaqueRelay(t, startup, monitor, "postgres:5432", "startup", false)
+	config.Directory = t.TempDir()
+	config.URLFile = writeSecret(t, work, "startup-gateway", withTLS(sourceURL, sr.listener.Addr().String()))
+	config.Report = filepath.Join(work, "startup-report.json")
+	child, done = researchChild(t, config)
+	var pending *opaqueSession
+	researchPoll(t, startup, func() (bool, error) {
+		sr.mu.Lock()
+		defer sr.mu.Unlock()
+		if sr.err != nil {
+			return false, sr.err
+		}
+		if len(sr.sessions) == 1 && sr.sessions[0].bound.Outcome == "bound" {
+			pending = sr.sessions[0]
+			return true, nil
+		}
+		return false, nil
+	})
+	if researchScalar(t, startup, observer, "SELECT count(*)::text FROM pg_stat_activity WHERE pid=$1", pending.bound.Binding.PID) != "0" {
+		t.Fatal("controlled startup is not absent from activity rows")
+	}
+	sr.closeAdmission()
+	sr.mu.Lock()
+	sr.killExpected = true
+	sr.mu.Unlock()
+	if err := syscall.Kill(-child.Process.Pid, syscall.SIGKILL); err != nil {
+		t.Fatal(err)
+	}
+	researchWaitChild(t, startup, done, false)
+	startupTermination := nativeCall(t, startup, monitor, map[string]any{"action": "terminate", "subject": pending.name, "binding_sha256": pending.bound.SHA}, "terminated")
+	if !startupTermination.NativeExit || startupTermination.Signals != 2 {
+		t.Fatal("startup original native exit missing")
+	}
+	pending.once.Do(func() { pending.forward <- false }) // Drain client bytes; never forward after closure.
+	researchPoll(t, startup, sr.terminal)
+	startupDead := nativeCall(t, startup, monitor, map[string]any{"action": "dead_reference", "subject": pending.name, "binding_sha256": pending.bound.SHA}, "old_reference_dead")
+	if startupDead.Errno != int(syscall.ESRCH) {
+		t.Fatal("startup dead reference lost binding")
+	}
+	if researchScalar(t, startup, control, "SELECT pg_backend_pid()::text") != controlPID || researchScalar(t, startup, control, "SELECT pg_postmaster_start_time()::text") != postmaster {
+		t.Fatal("bystander/postmaster replaced")
+	}
+	if researchScalar(t, startup, control, "SELECT string_agg(id::text,',' ORDER BY id) FROM public.native_pidfd_probe") != "7" {
+		t.Fatal("prior row changed")
+	}
+	if _, err := control.ExecContext(startup, "INSERT INTO public.native_pidfd_probe VALUES(42)"); err != nil {
+		t.Fatal(err)
+	}
+	rows := researchScalar(t, startup, control, "SELECT string_agg(id::text,',' ORDER BY id) FROM public.native_pidfd_probe")
+	if rows != "7,42" {
+		t.Fatal("continuous control unusable")
+	}
+	for _, path := range []string{filepath.Join(work, "interrupted-report.json"), config.Report} {
+		if _, err := os.Stat(path); !errors.Is(err, os.ErrNotExist) {
+			t.Fatal("killed helper published completion")
+		}
+	}
+	startupResult := map[string]any{"bindings": sr.report(t, 1), "activity_rows": 0, "termination": startupTermination, "old_reference": startupDead, "original_eof": true}
+	stopped := nativeCall(t, startup, monitor, map[string]any{"action": "stop"}, "stopped")
+	if stopped.Subjects != 7 || stopped.Signals != 2 {
+		t.Fatal("observer population incomplete")
+	}
+	ready, err := os.ReadFile(filepath.Join(monitor.directory, "observer-ready.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var nativeProfile any
+	if json.Unmarshal(ready, &nativeProfile) != nil {
+		t.Fatal("invalid native profile")
+	}
+	result := map[string]any{"objective_completed": true, "positive": positiveResult, "interrupted": interruptedResult, "startup": startupResult, "observer": nativeProfile, "transcript": monitor.transcript, "rows": rows, "same_bystander_and_postmaster": true, "protocol_key_parsing": false, "tls_termination": false, "population_work_guard_seconds": 60, "handshake_seconds": 10}
+	data, err = json.Marshal(result)
+	if err != nil || researchDeadline(startup) != nil {
+		t.Fatal("final collection invalid")
+	}
+	if err := os.WriteFile(filepath.Join(monitor.directory, "result.json"), data, 0600); err != nil {
+		t.Fatal(err)
+	}
+	if researchDeadline(startup) != nil {
+		t.Fatal("report write late: INVALID")
+	}
+	t.Log("real TLS backup/restore, interrupted original and pre-activity startup native ownership complete")
+}

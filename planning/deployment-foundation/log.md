@@ -9988,3 +9988,42 @@ criterion; no identical rerun required. Retained candidate df84ce1a predates thi
 helper correction as well as the already-recorded Account/Guild runtime fixes;
 rebuild before any current-bundle behavior claim. Full nine-tier1.0 remains
 active. No push, deployment, archival or goal pause.
+
+
+## 2026-11-04 — PIDfd/socket candidate initial TLS criterion fires (RP-754)
+
+Manual research only; no production/test/CI contract or signaling authority.
+Readiness d8c9ea: same PG UID70/CapEff-Prm-Bnd0/NoNewPrivs1 opens self and
+postmaster pidfds and checks signal0 permission (no signal), reads FD links/TCP
+namespace. Exact readiness fixture removed7cbd88. Current candidate observer
+enters only the owned disposable PG PID/network namespaces. It opens pidfd BEFORE
+checking full actual accepted socket tuple/inode, UID70 and direct-parent1,
+excludes PID1, rejects ambiguity and holds the reference. Go relay supplies its
+actual native upstream endpoints BEFORE forwarding any client protocol bytes.
+
+Initial actual3eb05d/901c0e exits1. Existing14 framing/terminal plus4 deadline
+controls pass, but the new population stops after successful actual verified-TLS
+backup child, at original server read ECONNRESET rather than required EOF.
+Root1864fa/96d0ea identifies exact location and two bound native response objects,
+PID107/108 and unique socket inodes; both responses signals_sent0. No SIGTERM
+was sent by the observer. Restore, interruption and startup populations did NOT
+execute and get no credit. This is a fired empirical criterion, not a complete
+candidate or a production defect. Source-bound v1 preserves original code and
+partial observation; no invalid run is labeled successful.
+
+All owned resources removed by the runner after failure; source work directory
+retained for diagnosis. New producer direction explicitly adds independent
+retained-pidfd native process exit plus exact original connection end state
+(EOF or typed reset) and ended forwarding actors. A reset/error alone remains
+unfinished, never refusal or completion. OP5's actual-stream/actor terminal
+meaning stays; this proposed experimental kernel producer is NOT an adopted
+replacement, and PIDfd alone is not ownership. Preserve this EOF-only negative
+when changing the instrument. No TLS decryption or PG key parsing is introduced.
+
+Root source/runner compiled through manual package overlay14e543/ddcf15, no
+production inputs changed. Exact Go/helper/observer source hashes are in v1.
+The whole original-plus-next-producer range needs independent review; no full
+CLI/supervisor, arbitrary tuple/inode reuse proof, job admission authority,
+supported Linux/amd64 host, OP9 adoption, recovery or nine-tier1.0 gate closes.
+
+Review by: Codex root, research/tool author first filter. Recorded by: Codex root.

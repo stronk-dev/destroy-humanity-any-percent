@@ -21,6 +21,26 @@ actual kernel/seccomp/UID support in disposable fixtures; unsupported/unknown
 identities must refuse. If viable, compare TLS and startup populations against
 the existing original-stream and prior-data invariants before proposing OP9.
 
+Readiness d8c9ea passes on the disposable Desktop fixture: same PostgreSQL UID70,
+CapEff/Prm/Bnd0 and NoNewPrivs1 can open self/postmaster pidfds, check permission
+with signal0 only, read socket FD links and the namespace TCP table. This does
+not authorize a real termination or prove tuple ownership. Remove that fixture.
+Next bounded experiment reuses the unchanged actual backup/restore package and
+the existing manual child harness. An opaque TCP relay must register accepted
+backend ownership before forwarding client bytes, retaining the original stream
+through EOF without TLS termination/key parsing. Native observer uses the exact
+owned Postgres PID/network namespace, opens pidfd BEFORE validating socket inode/
+full tuple/UID/direct parent, excludes postmaster/ambiguous subjects and retains
+that reference. Positive verified-TLS encrypted roundtrip; interrupted actual
+TLS helper with wrong-binding refusal then exact pidfd termination; first-helper
+startup held before activity rows. Preserve continuous bystander/Postgres/rows,
+verify old references return ESRCH, and reject incomplete/error/changed ownership.
+Setup30s, each of3 populations60s, ordinary observation10s; build180s/actor and
+observer240s are outside population budgets; Docker cleanup15s per command.
+No image pulls/ports/real secrets or production signaling. Initial tuple-to-job
+authorization, adversarial kernel tuple/inode reuse, durable restart/native-host/
+full CLI/OP9 adoption remain separate even if these native populations pass.
+
 **RP-753 existing TLS-input correction,2026-11-04:** URL certificate paths reach
 Go but were dropped from libpq service config. Valid old-code25bca5 proves Go
 verified TLS/client identity while actual psql fails at default root.crt instead

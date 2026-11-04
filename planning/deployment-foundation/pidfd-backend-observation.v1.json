@@ -1,0 +1,49 @@
+{
+  "actor_exit": 1,
+  "classification": "partial observation; EOF-only criterion fired",
+  "cleanup_complete": true,
+  "failed_at": "opaque backup relay terminal after successful actual backup child; restore/interrupted/startup not reached",
+  "limits": "No full native mechanism, supported host, adoption or recovery proof",
+  "objective_completed": false,
+  "observed_error": "read tcp4 172.18.0.3:57832->172.18.0.2:5432: read: connection reset by peer",
+  "observer_responses": [
+    {
+      "binding": {
+        "inode": "57084735",
+        "local": "172.18.0.2:5432",
+        "parent": 1,
+        "pid": 107,
+        "remote": "172.18.0.3:57818",
+        "start": "177378167"
+      },
+      "binding_sha256": "45aca2fad10c733d65c8d13d50d17cb3c1a180ac79bb4803ffce9092c44d3922",
+      "outcome": "bound",
+      "sequence": 1,
+      "signals_sent": 0
+    },
+    {
+      "binding": {
+        "inode": "57086821",
+        "local": "172.18.0.2:5432",
+        "parent": 1,
+        "pid": 108,
+        "remote": "172.18.0.3:57832",
+        "start": "177378182"
+      },
+      "binding_sha256": "62635f3ac1a0876c46298d5825f7cd20f0003c254c2b6d5312b472fd4e3d45b4",
+      "outcome": "bound",
+      "sequence": 2,
+      "signals_sent": 0
+    }
+  ],
+  "project": "cc-pidfd-backend-e413b6e0658ed527",
+  "root_execution": "3eb05d/901c0e",
+  "signals_sent": 0,
+  "source_commit": "e3beb00dc55db24ab56432b54bc56b0c7ce60954",
+  "source_hashes": {
+    "probes/backup-operation-gateway_test.go.txt": "ca26d97038e2e120714102aee23cf3711bdc539f3543505fd0bac5b0410095dc",
+    "probes/pidfd-backend-observer.py.txt": "3b0bfa3ebcdc6fdd9cd9f52f4c4bd00c73cfacd12bb21ce82fb1d47692c713d4",
+    "probes/pidfd-backend.py.txt": "0de24437520b72b28adc550d31606e2414827ff41e0d73e0e8cd8be71c9511fd",
+    "probes/pidfd-backend_test.go.txt": "5a5d67e537ca83eb619af2bad633cf87650bd4fb6dcad2dd0a222005ec6104b3"
+  }
+}

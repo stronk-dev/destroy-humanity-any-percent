@@ -1,0 +1,133 @@
+"""Manual TLS/native ownership experiment. Root Make and declared Docker DB.
+
+Build180s; actor/observer240s outside setup30s and each of3 populations60s.
+Ordinary/final collection10s; Docker cleanup15s PER command outside work.
+No production PID signal, new shipping dependency, host port or image pull.
+"""
+import hashlib
+import json
+import pathlib
+import re
+import secrets
+import shutil
+import subprocess
+import tempfile
+import time
+
+IMAGE = 'postgres:16-alpine@sha256:075f7ba66bc9b3ce7d6b8b635208ff61cd7cf1a67d71ec530eec5d7ae0cbe571'
+CONFIG = 'sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b'
+PYTHON = 'sha256:d2924abe506373b6f722045c48f98350077cc5b56a50491105c1abb027dce9b2'
+
+
+def main():
+    root = pathlib.Path.cwd()
+    assert (root/'compose.deployment-backup-test.yml').is_file()
+    source = root/'planning/deployment-foundation/probes/pidfd-backend_test.go.txt'
+    observer_source = root/'planning/deployment-foundation/probes/pidfd-backend-observer.py.txt'
+    dependency = root/'planning/deployment-foundation/probes/backup-operation-gateway_test.go.txt'
+    tls_fixture = root/'server/deploymentbackup/tls_integration_test.go'
+    sources = [source, observer_source, dependency, tls_fixture]
+    hashes = {str(path.relative_to(root)):hashlib.sha256(path.read_bytes()).hexdigest() for path in sources}
+    cache = root/'.cache/pidfd-backend-research'
+    cache.mkdir(exist_ok=True)
+    binary = root/'.cache/bin/pidfd-backend-research.test'
+    overlay = cache/'overlay.json'
+    overlay.write_text(json.dumps(dict(Replace={str(root/'server/deploymentbackup/pidfd_backend_research_test.go'):str(source),str(root/'server/deploymentbackup/operation_gateway_research_test.go'):str(dependency)})))
+    end = time.monotonic()+180
+    build = subprocess.run(['make','test-go','GO_PACKAGES=./deploymentbackup',
+                            'GO_TEST_FLAGS=-c -o ../.cache/bin/pidfd-backend-research.test -overlay='+str(overlay),
+                            'GOOS=linux','GOARCH=amd64','CGO_ENABLED=0'],capture_output=True,text=True,timeout=180)
+    if build.returncode or time.monotonic()>=end:
+        raise RuntimeError('manual build failed/late: '+build.stdout+build.stderr)
+    source_commit = subprocess.run(['git','rev-parse','HEAD'],capture_output=True,text=True,check=True,timeout=10).stdout.strip()
+    project = 'cc-pidfd-backend-'+secrets.token_hex(8)
+    work = pathlib.Path(tempfile.mkdtemp(prefix=project+'-'))
+    work.chmod(0o755)
+    observation = work/'observation'
+    observation.mkdir();observation.chmod(0o777)  # Public tuples/results only; no keys/credentials.
+    override = work/'compose.yml'
+    override.write_text('services:\n  postgres:\n    image: '+IMAGE+'\n'
+                        '  backup-test:\n    image: '+IMAGE+'\n    read_only: true\n    tmpfs: [/tmp]\n'
+                        '    volumes:\n      - type: bind\n        source: '+json.dumps(str(binary))+'\n'
+                        '        target: /probe\n        read_only: true\n'
+                        '      - type: bind\n        source: '+json.dumps(str(observation))+'\n'
+                        '        target: /observation\n    entrypoint: [/probe]\n'
+                        '    command: [-test.run, "^TestManual(PIDfdBackendIntegration|OperationGatewayControls)$", -test.count=1, -test.v, -test.timeout=240s]\n')
+    compose = ['compose','--project-name',project,'-f',str(root/'compose.deployment-backup-test.yml'),'-f',str(override)]
+
+    def run(*args,timeout=10):
+        until = time.monotonic()+timeout
+        reply = subprocess.run(['docker',*args],capture_output=True,text=True,timeout=timeout)
+        data = reply.stdout.strip()
+        if reply.returncode or time.monotonic()>=until:
+            raise RuntimeError('owned fixture command failed/late: '+data+reply.stderr)
+        return data
+
+    completed = False
+    observer = None
+    print(json.dumps(dict(phase='started',project=project,private_work=str(work))),flush=True)
+    try:
+        engine = run('version','--format','{{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}')
+        assert engine=='28.4.0 linux/arm64'
+        run(*compose,'up','--detach','--wait','--pull','never','postgres')
+        database = run(*compose,'ps','--quiet','postgres')
+        assert re.fullmatch('[0-9a-f]{64}',database)
+        assert run('inspect','--format','{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}',database)==' '.join((database,CONFIG,project,'postgres'))
+        observer = run('create','--pull=never','--name',project+'-observer',
+                       '--label','com.docker.compose.project='+project,'--label','com.docker.compose.service=observer',
+                       '--pid=container:'+database,'--network=container:'+database,'--ipc=private',
+                       '--user=70:70','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges:true',
+                       '--mount','type=bind,source='+str(observer_source)+',target=/observer.py,readonly',
+                       '--mount','type=bind,source='+str(observation)+',target=/observation',
+                       '--entrypoint','python3',PYTHON,'/observer.py')
+        assert re.fullmatch('[0-9a-f]{64}',observer)
+        assert run('inspect','--format','{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}',observer)==' '.join((observer,PYTHON,project,'observer'))
+        profile = json.loads(run('inspect','--format','{"pid":{{json .HostConfig.PidMode}},"network":{{json .HostConfig.NetworkMode}},"user":{{json .Config.User}},"readonly":{{json .HostConfig.ReadonlyRootfs}},"caps":{{json .HostConfig.CapDrop}},"security":{{json .HostConfig.SecurityOpt}},"privileged":{{json .HostConfig.Privileged}},"ipc":{{json .HostConfig.IpcMode}}}',observer))
+        assert profile==dict(pid='container:'+database,network='container:'+database,user='70:70',readonly=True,caps=['ALL'],security=['no-new-privileges:true'],privileged=False,ipc='private')
+        run('start',observer)
+        until = time.monotonic()+10
+        while not (observation/'observer-ready.json').exists():
+            assert time.monotonic()<until,'observer ready deadline: INVALID'
+            assert run('inspect','--format','{{.State.Running}}',observer)=='true','observer failed: '+run('logs',observer)
+            time.sleep(0.005)
+        actor = run(*compose,'run','--rm','--no-deps','--pull','never','backup-test',timeout=240)
+        end = time.monotonic()+10
+        assert '--- PASS: TestManualPIDfdBackendIntegration' in actor and '--- PASS: TestManualOperationGatewayControls' in actor and '--- SKIP:' not in actor
+        result = json.loads((observation/'result.json').read_text())
+        assert result['objective_completed'] is True and result['positive']['identity_equal'] is True
+        assert len(result['positive']['backup'])==len(result['positive']['restore'])==len(result['interrupted']['bindings'])==2
+        assert len(result['startup']['bindings'])==1 and result['startup']['activity_rows']==0
+        assert result['interrupted']['wrong_binding']['code']=='binding_mismatch' and result['interrupted']['wrong_binding']['signals_sent']==0
+        assert result['interrupted']['termination']['native_exit'] is True and result['startup']['termination']['native_exit'] is True
+        assert result['interrupted']['old_reference']['errno']==result['startup']['old_reference']['errno']==3
+        assert result['interrupted']['all_eof_before_unlock'] is True and result['startup']['original_eof'] is True
+        assert result['rows']=='7,42' and result['same_bystander_and_postmaster'] is True
+        assert result['protocol_key_parsing'] is False and result['tls_termination'] is False
+        assert result['transcript'][-1]['outcome']=='stopped' and result['transcript'][-1]['subjects']==7 and result['transcript'][-1]['signals_sent']==2
+        assert run('wait',observer)=='0','native observer invalid'
+        assert hashes=={str(path.relative_to(root)):hashlib.sha256(path.read_bytes()).hexdigest() for path in sources}
+        assert subprocess.run(['git','rev-parse','HEAD'],capture_output=True,text=True,check=True,timeout=10).stdout.strip()==source_commit
+        result.update(project=project,database_id=database,observer_id=observer,observer_profile=profile,
+                      engine=engine,source_commit=source_commit,source_hashes=hashes,
+                      runner_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+                      binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),actor_output=actor,
+                      build_guard_seconds=180,actor_observer_guard_seconds=240,collection_guard_seconds=10,
+                      cleanup_per_command_seconds=15,cleanup_outside_work_guard=True)
+        encoded = json.dumps(result,sort_keys=True)
+        assert time.monotonic()<end,'final collection late: INVALID'
+        completed = True
+    finally:
+        if observer is not None:
+            assert run('inspect','--format','{{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}',observer,timeout=15)==' '.join((PYTHON,project,'observer'))
+            if not completed:print(run('logs',observer,timeout=15),flush=True)
+            run('rm','--force','--volumes',observer,timeout=15)
+        run(*compose,'down','--volumes','--remove-orphans',timeout=15)
+        for kind in ('container','network','volume'):
+            assert run(kind,'ls','--quiet','--filter','label=com.docker.compose.project='+project,timeout=15)=='','owned cleanup incomplete'
+        if completed:shutil.rmtree(work)
+        else:print(json.dumps(dict(objective_completed=False,private_work=str(work))),flush=True)
+    result['cleanup_complete'] = True
+    print(json.dumps(result,sort_keys=True),flush=True)
+
+
+if __name__=='__main__':main()
