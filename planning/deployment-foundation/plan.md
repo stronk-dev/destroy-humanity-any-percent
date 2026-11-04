@@ -14,8 +14,11 @@ and all eight real Linux-amd64/Postgres backup functions pass without skips,
 including concurrent snapshot/cancellation/lock-release observations. The log
 separates fresh execution from historical old-SQL evidence. Separate dump binding,
 production RPO/RTO, metadata authority and clean-host/full-feature gates remain.
-Next consolidate remaining DP7 writer/receiver corrective scopes RP-521/RP-523;
-do not repeat these completed backup checks without new changes or evidence.
+DP7 writer/storage RP-521 now has complete independent approval too. Original
+receiver RP-523 requires changes for ordering/canceled-ready observations;
+RP-714/715 follow-up is locally corrected, awaiting final independent actual
+restart-profile execution. Do not repeat completed backup/storage captures or
+call the old storage capture evidence for the changed receiver.
 
 **Drain/restart corrective checkpoint, 2026-11-02:** independent review approves
 RP-138's complete `1908762f..c9c9dde7` marker correction and RP-143's complete
@@ -239,13 +242,17 @@ synthetic, and the log owns final checks/range after `c4279b66`, pending designa
 review. Continue actual game/host observation, retention, older-container restart
 history and exact-artifact evidence; this is not off-host/RPO/RTO or full AC7/R-006.
 
-**Latest DP7 restart receiver construction, 2026-10-13:** the actual Docker
+**DP7 restart receiver construction, 2026-10-13, review finding2026-11-04:** the actual Docker
 observer's first-scrape count3/increase0 now fires through the private services
 and reaches the receiver; an actual replacement count0 resolves the same alert.
 The final root lane also proves canceled-CLI one-off cleanup. Its early-notification
 loss finding (RP-523), failed attempt, final checks and range after `cdc78050`
-live in the log, pending designated review. No production bytes or alert policies
-change in this supplement. Continue remaining actual backup/game-process/host
+live in the log. Complete original `cdc78050..c4279b66` requires changes: its
+requeued early notifications can be overtaken by later resolution, and a canceled
+ready control can falsely pass. RP-714/715's follow-up isolates nonce delivery
+from the unchanged real-alert FIFO and checks cancellation; native/race controls
+pass, final independent actual restart execution remains pending. No production
+bytes or alert policies change. Continue remaining actual backup/game-process/host
 journal/retention, older-container restart history and exact release-artifact
 evidence; full AC7/R-006 remain open.
 
@@ -268,7 +275,10 @@ populations and passes681.05s/644.86s respectively, each within its unchanged12m
 guard; longer combined storage setup is recorded without attributing its cause.
 Old NaN writer-input cases fail; all six corrected nonfinite cases preserve the
 last valid file/mtime. Cold native/vet and declared Linux-amd64/Postgres packages
-pass. The log owns the range after `82c8e57b`, pending designated review. Continue
+pass. Complete `82c8e57b..db752b0a` is independently approved2026-11-04 with fresh
+physical storage44377 at captured sourcee1aa4c50:305.83s, both subjects pass.
+That binary predates the receiver follow-up and does not prove its correction.
+The log owns exact evidence. Continue
 actual host-command/journal/restart/retention and exact release-artifact/R-006
 construction; no CI change, new owner policy or full AC7/1.0 completion.
 

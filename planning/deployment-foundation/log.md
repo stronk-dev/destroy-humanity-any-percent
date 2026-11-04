@@ -8024,3 +8024,51 @@ adoption, production RPO/RTO, clean-host R-006, full Deployment/CI, archival or
 release. Next remaining DP7 writer/receiver corrective scopes RP-521/RP-523.
 Root reconciles current statuses only; no software suite for editorial records,
 no push/adoption/deployment, full nine-tier goal remains active.
+
+## 2026-11-04 — Storage writer/physical proof approved; receiver review finds two defects
+
+Review by: independent Codex `/root/operations_writer_receiver_corrective_review`.
+Recorded by: Codex root. RP-521 APPROVED, complete thirteen-path
+`82c8e57b514e692b68af993193f8b7b663beeab9..db752b0a19c849a7c5c989946b90f74d35a2f711`.
+At sourcee1aa4c50, cold owners/vet56185 and targeted66868 pass. Private old
+finite-guard72752 fails both NaN cases while four infinity controls refuse;
+corrected six controls preserve valid file bytes/mtime, not a syscall-NaN finding.
+Actual focused storage44377 terminal0:305.83s, persistent119.73/backup150.01s;
+both20MiB subjects prove exact80%quiet→85%receiver firing→zero/exact resolution.
+Initial67775 Docker denial ran none. Fixed project initially empty; own services/
+network/volume removed, final inventory empty, pre-existing BuildKit preserved.
+Captured binary is pre-follow-up e1aa; this is NOT proof of RP-714/715's receiver.
+
+Original twelve-path `cdc780502bd37d09be14adf5f3a554cc27afcb41..c4279b6621d54e3b65a91aa337db0da46e396221`
+has CHANGES REQUIRED finding RP-714: independent exact-helper overlay4938 and
+root old-code77137 both fail firing→nonce→later-resolution ordering. Tail
+requeue inverts observations and can lose resolution while seeking the firing.
+Independent5528 additionally finds RP-715: canceled context plus queued valid
+nonce can return success; old canceled-empty control cannot trigger it. Original
+delivery/cleanup records stay source-bound; neither observation proves product
+alert loss or authorizes altered thresholds/intervals/guards. Final union review
+requires these defects corrected, not reinterpretation of the old verdict.
+
+## 2026-11-04 — Receiver preflight preserves real FIFO and cancellation (first filter)
+
+Under DP7/AC7, the actual HTTP fixture handler now demultiplexes structured
+ReceiverTest controls to a separate one-message channel. The real32-message FIFO
+is never drained/requeued, including firing and later resolution around the nonce.
+Exact annotation identity, mixed/invalid/private inputs, all queue overflows,
+cleanup mirror bytes, receiver500 and64KiB bound have actual-handler regressions.
+Context is checked before reading and before success; canceled-ready controls
+retain their queued nonce. No relay goroutine, runtime alert/interval/threshold,
+real-alert capacity, production, migration, kernel, copy or CI change.
+
+Root old-code77137 exits Make2 at the ordering assertion. Initial corrected
+focused48717 passes; first full71164/vet and race34197 pass before the added
+canceled-ready finding. Final cold owners/vet63140 terminal0:operations1.713s,
+command5.387s. Final focused race53698 terminal0:all nine receiver parents and
+their negative cases pass1.371s, including32 canceled-ready schedules. Ordinary
+opt-in service skips are not integration evidence; actual restart-profile and
+designated independent union review remain pending. Gofmt/diff checks pass.
+No storage/full-profile rerun is inferred; existing e1aa storage capture above
+keeps its source identity. Complete follow-up range is e1aa4c50-exclusive through
+this containing source/tests/docs/ledger/plan/log commit. Review by: Codex root,
+implementer first filter only. Recorded by: Codex root. No self-approval, original
+AC7/feature acceptance, R-006, full CI, archival, push, deployment or release.

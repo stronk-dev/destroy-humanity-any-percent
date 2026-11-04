@@ -56,6 +56,7 @@ func runPrivateOperationsProfile(t *testing.T, population string) {
 	defer cancel()
 	received := make(chan []byte, 32)
 	cleanupReceived := make(chan []byte, 32)
+	preflightReceived := make(chan []byte, 1)
 	var servers []*http.Server
 	start := func(address string, handler http.Handler) {
 		server := &http.Server{Addr: address, Handler: handler, ReadHeaderTimeout: 2 * time.Second}
@@ -129,35 +130,8 @@ func runPrivateOperationsProfile(t *testing.T, population string) {
 	var rejecting atomic.Bool
 	receiver := http.NewServeMux()
 	receiver.HandleFunc("/healthz", func(response http.ResponseWriter, _ *http.Request) { response.WriteHeader(http.StatusNoContent) })
-	receiver.HandleFunc("/alerts", func(response http.ResponseWriter, request *http.Request) {
-		data, err := io.ReadAll(http.MaxBytesReader(response, request.Body, 64<<10))
-		if err != nil {
-			t.Errorf("incomplete notification: %v", err)
-			response.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		if rejecting.Load() {
-			response.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		if strings.Contains(string(data), "CloudClickerCleanupJobFailed") {
-			select {
-			case cleanupReceived <- append([]byte(nil), data...):
-			default:
-				t.Error("cleanup notification observation overflow")
-				response.WriteHeader(http.StatusInternalServerError)
-				return
-			}
-		}
-		select {
-		case received <- data:
-		default:
-			t.Error("notification observation overflow; evidence incomplete")
-			response.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		response.WriteHeader(http.StatusNoContent)
-	})
+	receiver.HandleFunc("/alerts", operationsReceiver(&rejecting, received, cleanupReceived, preflightReceived,
+		func(err error) { t.Errorf("receiver observation failed: %v", err) }))
 	start(":8090", receiver)
 	defer func() {
 		var wait sync.WaitGroup
@@ -185,7 +159,7 @@ func runPrivateOperationsProfile(t *testing.T, population string) {
 	if err != nil {
 		t.Fatalf("receiver delivery proof failed: %v", err)
 	}
-	if err := waitForReceiverNonce(ctx, received, nonce); err != nil {
+	if err := waitForReceiverNonce(ctx, preflightReceived, nonce); err != nil {
 		t.Fatalf("receiver preflight observation failed: %v", err)
 	}
 	if population == "storage" {
@@ -416,15 +390,100 @@ func runPrivateOperationsProfile(t *testing.T, population string) {
 	}
 }
 
-// The preflight can follow a real firing at startup. Retain those unrelated
-// observations within the same bounded queue instead of consuming their only
-// notification (the configured repeat interval is four hours).
+// The actual fixture handler separates its synthetic delivery control from real
+// notifications. Preflight must never remove/requeue real alerts: a resolution
+// arriving after the nonce could otherwise overtake its earlier firing.
+func operationsReceiver(rejecting *atomic.Bool, received, cleanupReceived, preflightReceived chan []byte, report func(error)) http.HandlerFunc {
+	return func(response http.ResponseWriter, request *http.Request) {
+		data, err := io.ReadAll(http.MaxBytesReader(response, request.Body, 64<<10))
+		if err != nil {
+			report(errors.New("incomplete receiver notification"))
+			response.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if rejecting.Load() {
+			response.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		if err := queueReceiverObservation(data, received, cleanupReceived, preflightReceived); err != nil {
+			report(err)
+			response.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		response.WriteHeader(http.StatusNoContent)
+	}
+}
+
+func decodeReceiverObservation(data []byte) (bool, []string, error) {
+	text := strings.ToLower(string(data))
+	for _, forbidden := range []string{"account_id", "founder_id", "recovery_code", "client_ip"} {
+		if strings.Contains(text, forbidden) {
+			return false, nil, fmt.Errorf("private field delivered: %s", forbidden)
+		}
+	}
+	var message struct {
+		Alerts []struct {
+			Labels      map[string]string `json:"labels"`
+			Annotations map[string]string `json:"annotations"`
+		} `json:"alerts"`
+	}
+	if json.Unmarshal(data, &message) != nil || len(message.Alerts) == 0 {
+		return false, nil, ErrInvalid
+	}
+	var nonces []string
+	for _, alert := range message.Alerts {
+		if alert.Labels["alertname"] == "" {
+			return false, nil, ErrInvalid
+		}
+		if alert.Labels["alertname"] == "CloudClickerReceiverTest" {
+			if alert.Annotations["proof_nonce"] == "" {
+				return false, nil, ErrInvalid
+			}
+			nonces = append(nonces, alert.Annotations["proof_nonce"])
+		}
+	}
+	if len(nonces) != 0 && len(nonces) != len(message.Alerts) {
+		return false, nil, errors.New("mixed real and receiver-test notification")
+	}
+	return len(nonces) != 0, nonces, nil
+}
+
+func queueReceiverObservation(data []byte, received, cleanupReceived, preflightReceived chan []byte) error {
+	control, _, err := decodeReceiverObservation(data)
+	if err != nil {
+		return err
+	}
+	if control {
+		select {
+		case preflightReceived <- data:
+			return nil
+		default:
+			return errors.New("receiver preflight observation overflow")
+		}
+	}
+	if strings.Contains(string(data), "CloudClickerCleanupJobFailed") {
+		select {
+		case cleanupReceived <- append([]byte(nil), data...):
+		default:
+			return errors.New("cleanup notification observation overflow")
+		}
+	}
+	select {
+	case received <- data:
+		return nil
+	default:
+		return errors.New("notification observation overflow; evidence incomplete")
+	}
+}
+
 func waitForReceiverNonce(ctx context.Context, received chan []byte, nonce string) error {
 	if nonce == "" || cap(received) == 0 {
 		return ErrInvalid
 	}
-	var pending [][]byte
 	for {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
@@ -432,26 +491,18 @@ func waitForReceiverNonce(ctx context.Context, received chan []byte, nonce strin
 			if !open {
 				return ErrInvalid
 			}
-			text := strings.ToLower(string(body))
-			for _, forbidden := range []string{"account_id", "founder_id", "recovery_code", "client_ip"} {
-				if strings.Contains(text, forbidden) {
-					return fmt.Errorf("private field delivered: %s", forbidden)
+			control, nonces, err := decodeReceiverObservation(body)
+			if err != nil {
+				return err
+			}
+			if !control {
+				return errors.New("real notification entered receiver preflight stream")
+			}
+			for _, delivered := range nonces {
+				if delivered == nonce {
+					return ctx.Err()
 				}
 			}
-			if strings.Contains(text, "cloudclickerreceivertest") && strings.Contains(text, nonce) {
-				for _, earlier := range pending {
-					select {
-					case received <- earlier:
-					default:
-						return errors.New("receiver observation backlog overflow")
-					}
-				}
-				return nil
-			}
-			if len(pending) == cap(received) {
-				return errors.New("receiver observation backlog overflow")
-			}
-			pending = append(pending, body)
 		}
 	}
 }

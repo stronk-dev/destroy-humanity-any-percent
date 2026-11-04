@@ -1030,8 +1030,15 @@ inspects its real zero count and later birth, and publishes through the same pro
 The child requires that fresh file, rule resolution and the receiver's exact original alert
 start time. It never writes a restart metric, resets monitoring or fabricates a resolution.
 
-Receiver preflight retains unrelated early notifications in a bounded observation backlog.
-It must not consume the only restart firing while waiting for the nonce: the configured repeat
+Receiver preflight reads a separate one-message control channel for structured
+`CloudClickerReceiverTest` notifications. It never drains or requeues the unchanged
+32-message real-alert FIFO, so an early firing stays before a later resolution even
+when the delivery nonce arrives between them. The actual HTTP fixture handler rejects
+malformed/mixed control-and-real/private notifications and queue overflow; nonce matching
+uses the exact annotation value. An already-canceled preflight cannot consume or
+accept a queued control; cancellation is checked again before success. The cleanup
+mirror, receiver-rejection check and 64KiB
+body bound remain. It must not consume the only restart firing: the configured repeat
 interval is four hours. Forbidden fields, closed/canceled streams and observation overflow fail
 instead of producing incomplete evidence. The combined journey's ten-minute parent context
 includes actual restart generation and private-stack execution; the twelve-minute Go test
