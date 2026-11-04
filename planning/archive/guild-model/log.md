@@ -303,3 +303,29 @@ Docker access permission. Root owns test DB
 and network`2512f88d4cdb5502ad41375293cc886de99d4896f8ec01b8cbe69c67ef2e7d59`;
 retain them for independent review, then verify sole ownership before cleanup.
 No push, archival, host deployment, full Account/Guild acceptance or release.
+
+## 2026-11-04 — Independent RP-730 corrective review — APPROVED
+
+Review by: independent Codex `/root/guild_deletion_admission_corrective_review`.
+Recorded by: Codex root, transcribing the reviewer's returned verdict.
+Reviewed range: `0a9b010710c13d27ddb118b6c2f41b5ed9280b95..a61ade8e3ac4344eb5f149a6068d11cf2d2acffd` (complete11paths).
+Verdict: **APPROVED**, no findings, bounded admission/deletion correction only.
+
+Reviewer independently executes selected Guild real SQL/race56742: package3.192s,
+new both-order/exact-refusal/FK regression1.06s, existing lifecycle/history/
+leadership/opposite-target cases pass. Exact-old private overlay69237 exits
+expected Make2 with both original P0001 deletion failures; main source is never
+mutated. Complete native10671 passes Guild0.227s/Kernel0.041s (SQL skips expected);
+the earlier filtered Docker Kernel population contains no tests and receives no
+Kernel credit. Affected Account/Guild/Gameserver/Kernel vet, formatting and full-
+range whitespace pass. Reviewer confirms actual advisory-key ordering/dedup,
+actor AND target coordination, no parent-row lock or target revision side effect,
+and genuine consistent0.3.224 correction. Broader root Account/Gameserver/TS and
+known historical guard results are inspected, not independently rerun or relabeled.
+
+All reviewer handles terminal; private exact-source overlay verified/removed,
+no tracked reviewer changes/commits; checkout clean at final inspection. Root
+then begins a separate sweep regression after exclusive DB use is returned.
+The root-owned DB/network/cache remain for that work and later exact cleanup.
+RP-730 closes; no claim of separate sweep repair, complete Account/Guild/rights,
+hosted CI, archival or1.0 readiness. The known50a3a514 guard remains red.

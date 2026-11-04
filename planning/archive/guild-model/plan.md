@@ -8,9 +8,11 @@
 must also cover a concurrent open join or an officer admitting the deleted account.
 Old actual Postgres regressions fail both deletions at the immutable-history trigger.
 Actor/target advisory coordination now precedes Guild/account-revision locks and
-deletion's membership census. Correction and kernel0.3.224 require affected real SQL
-checks and a fresh independent corrective review; no original acceptance is reopened
-or broader rights/release completion claimed. The append-only log owns evidence.
+deletion's membership census. Complete11-path0a9b0107..a61ade8e is independently
+APPROVED after actual old/current SQL/race and affected checks. Kernel0.3.224
+identifies the genuine persistence correction. Original feature acceptance,
+broader rights/release completion and the separate sweep investigation are not
+closed by that verdict. The append-only log owns evidence and provenance.
 
 1. [x] Add the strict Guild catalog and schema, register it as an append-only epoch artifact,
    mint the required balance epoch, and prove the epoch/baseline protocol.
