@@ -8874,3 +8874,29 @@ log wording and original source/hash/observations. No tool/runtime/data/source
 change or rerun is needed for this editorial correction. Independent reviewer is
 still executing/checking the source and coherent original-plus-correction union;
 no final approval or full CR4 mechanism is inferred from this interim exchange.
+
+## 2026-11-04 — Independent network-generation research review — APPROVED
+
+Review by: independent Codex `/root/network_generation_fence_research_review`.
+Recorded by: Codex root, transcribing its returned final verdict.
+Complete reviewed union, base exclusive/tip inclusive:
+
+- Six paths: `fb2ae8f4dd463a533a2b94233faebcfa86cb9093..a4ff30ff4dadcd247eb008fd454148c2b4406493`.
+- Two-path clarification: `a4ff30ff4dadcd247eb008fd454148c2b4406493..a4959f48ec53510b739ddbe4e5515e8fd972042f`.
+
+Verdict: **APPROVED**, bounded research/tool and draft-reconciliation scope,
+no remaining findings. Fresh70664 exits0: exact rows11/14, both old-ID start1/
+network-not-found, late create0, intact/name-only exits0. Actual-source AST controls
+f435cd pass timely acceptance, boundary/late/pre-start guard refusal and ordinary-
+error classification. Retained observation/source/outcome bindingcf71f9 passes;
+full-range whitespace passes. Guard wording now matches ORIGINAL measured-work
+and per-command cleanup semantics; no source/data/bound change is inferred.
+
+All reviewer handles terminal, private scratch removed, no tracked edits/commits.
+Own project`cc-network-generation-27ba938fe187c97b` container/network/volume
+inventories are empty. Root projects are already removed as recorded above.
+RP-732's bounded evidence is independently supported; the full CR4 mechanism
+remains OPEN. Next resolve complete mutation-path ownership and combined Engine/
+client/database fencing, not another repetition of the completed worker controls.
+No native supported-host/restore acceptance, specification adoption, production
+implementation, archival, push or release readiness follows. Goal stays active.

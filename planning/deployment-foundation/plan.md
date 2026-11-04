@@ -46,8 +46,10 @@ Retained JSON binds final source/image/Engine/Compose and exact error outcomes.
 This narrows the candidate to immutable network identity for NEW clients, not a
 complete fence. Next map all runtime mutation paths and settle pending-create/
 volume/host-file identities plus already-admitted SQL, rather than rerun these
-completed controls or promote the narrow network result. Independent review is
-pending for the research/tool/draft reconciliation, not deployment acceptance.
+completed controls or promote the narrow network result. Complete original6path
+plus2path wording-correction union througha4959f48 is independently APPROVED after
+fresh actual Docker/Postgres and source guard/classifier checks. This approves
+research/tool/draft reconciliation, not deployment acceptance or adoption.
 During independent review, the original shorthand `whole run60s`/`cleanup15s` is
 found ambiguous and reconciled above to the ORIGINAL source's exact semantics.
 No source, measured bound or retained observation changes; no aggregate elapsed-
