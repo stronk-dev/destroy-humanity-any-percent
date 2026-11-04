@@ -4,6 +4,18 @@
 - **RFC:** `rfc/websocket-transport-and-fanout.md`
 - **Started:** 2026-07-29
 
+2026-11-05 RP-769 corrective batch: PlayerRelay's Flush serializer now honors
+waiting callers' cancellation/deadlines before claiming more work. Real locked-
+outbox/server regressions fail exact old source at both shorter2s and configured15s
+bounds; final corrected race witnesses pass with the lock retained through worker/
+backend cancellation. Root native affected race/vet/build pass. Broader SQL run
+retains RP-770's first-hour verification failure, also reproduced against the
+original relay; no complete SQL-green or cause claim. Final focused relay tests
+pass after correcting an unsupported instantaneous-backend-cleanup assertion.
+Complete source/tests/docs/ledger/plan/log batch after3aeb811c needs fresh
+independent corrective review. No drain limit, receipt/order/lease, kernel226,
+epoch8, gameplay or acceptance-policy change. RP-770 diagnosis remains separate.
+
 2026-11-04 RP-768 is independently APPROVED under Account D2 / Transport T1/T5.
 The actual periodic recheck previously held Centrifuge's presence mutex/timer
 past token expiry. Native and real Linux-amd64/Postgres regressions fail old

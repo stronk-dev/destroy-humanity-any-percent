@@ -1342,3 +1342,53 @@ all nine tiers remain separate/open; no push, archival, publication or goal paus
 Owned tmpfs Postgres138751ee7c49 removed after final review; container inventory
 contains only the two pre-existing BuildKit services. Shared caches/builders remain.
 Editorial status closeout changes no runtime/test/version bytes.
+
+## 2026-11-05 — RP-769: cancel relay admission instead of hanging drain
+
+Accepted Transport T5/T6/AC5 correction at3aeb811c: Flush's sync.Mutex blocks
+Drain behind the background relay's pending outbox query even after its deadline.
+Replace only that serializer with a one-slot cancellable channel; preserve single
+publication ownership, active caller, order/leases/batches and all limits. Check
+cancellation again after acquiring the slot so an already-cancelled caller never
+claims work. No watched kernel path/version, epoch, SQL, wire or gameplay change.
+
+Exact old-source compiler overlays leave final assertions intact. Native81986
+fails all3 cancellation cases (2.329s); final actual Linux/PG77043 fails both
+caller2s/configured15s populations (4.15/17.12s incl setup/containment). Corrected
+native focused race47409 passes; final real-PG race55627 passes both (3.48/16.21s
+incl setup), with the original exclusive outbox lock held through cancellation,
+false readiness and stopped background worker. Unit controls preserve the active
+caller, refuse new claims and permit subsequent healthy flushes.
+
+Affected native race80258 passes348 reported PASS/0FAIL/24SKIP (DB prerequisites
+and existing opt-in populations are not claimed); selected vet and native build
+25218 pass. Full affected Linux/PG race26007 is RED:453PASS/3FAIL/1existing opt-in
+skip. It exposes two distinct issues: the new witness incorrectly demands instant
+backend disappearance after worker exit; pgx5.10's asyncClose/CleanupDone contract
+explicitly permits asynchronous cleanup. Final test observes BOTH exits within
+its existing1s cleanup allowance, keeping the same2s/15s drain bounds. Fresh
+old/final controls above discriminate this corrected witness. Source serializer
+is unchanged between the red full run and passing final focused tests.
+
+The other full-run failure is RP-770: existing first-hour run2 verification/archive
+missing at its unchanged5s observer,94.84s total. Original-relay-only first-hour
+control8604 also fails the same assertion,129.03s; an intermediate read sees
+run1 verified/archive1. No host/cost/worker-cause or repair is inferred. Root's
+intermediate commentary wrongly called this case passed before reading its final
+result; corrected explicitly. Keep the full run RED; next observe queue/worker/
+archive state at the failure, without increasing bounds. This diagnostic is not
+new behavior or another feature completed.
+
+Ignored raw logs/old-source overlays: .cache/relay-cancellation-3aeb811c/.
+Native-old SHAa499096f939029d9f787e87e7fd4ae500d74233d83f72ab5976e91bf78731695;
+final-old-SQL SHA63da09f393ada956e5c13c14080390204fbf37b01623f4039dfe0e1a2bd4cef9;
+red-full-SQL SHA853983cd07b609572fb32ad682d4ad5b9cab97d7e6699a3831767c6271117074;
+final-focused-SQL SHAaeec1da0dba4e92300e836f4f4dea536982d1ec2a29e4383b144a352d74bccc7.
+Initial Docker/socket sandbox denials are retained separately; scoped local
+escalations resolve them. All root handles terminal; SQL suites run serially.
+Seven-path source/tests/docs/ledger/plan/log range after3aeb811c through this
+checkpoint needs independent corrective review, not self-approval. Prior source28
+artifact excludes this new correction; no rebuild per edit or hosted/full-CI/
+clean-host/R-006/full-feature/release acceptance is claimed. Full nine-tier1.0
+stays active and all pending owner questions remain unanswered rather than inferred.
+Review by: Codex root (implementer first filter). Recorded by: Codex root.

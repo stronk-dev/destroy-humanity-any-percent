@@ -183,6 +183,13 @@ shuts down Centrifuge under the configured 15-second bound. New intents during t
 with `server_draining/retry_same_intent_id`; health remains process-liveness while readiness also
 checks Postgres.
 
+Player-outbox flushes remain serialized, but waiting for an active flush also
+honors the waiting caller's cancellation or deadline. A cancelled waiter claims
+no new batch and leaves the active caller alone. If the background relay is
+blocked in Postgres during drain, an expiring final flush can return its deadline
+error so shutdown can cancel the background relay instead of waiting indefinitely
+on a mutex. Driver/backend cleanup can finish asynchronously after that return.
+
 Periodic socket reauthentication uses a node-owned context. Shutdown cancels it
 before stopping Centrifuge, so a pending Account query releases the presence
 callback instead of preventing client cleanup. Cancellation during node shutdown

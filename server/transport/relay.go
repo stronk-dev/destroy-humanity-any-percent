@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
-	"sync"
 	"time"
 
 	"cloud-clicker/server/save"
@@ -45,7 +44,7 @@ type PlayerRelay struct {
 	batchSize int
 	lease     time.Duration
 	backoff   time.Duration
-	mu        sync.Mutex
+	flushSlot chan struct{}
 }
 
 const playerFailureLimit = 5
@@ -54,12 +53,23 @@ func NewPlayerRelay(source PlayerSource, publisher EnvelopePublisher, sink Relay
 	if source == nil || publisher == nil || sink == nil {
 		return nil, ErrRelay
 	}
-	return &PlayerRelay{source: source, publisher: publisher, sink: sink, batchSize: 64, lease: 30 * time.Second, backoff: time.Second}, nil
+	return &PlayerRelay{source: source, publisher: publisher, sink: sink, batchSize: 64, lease: 30 * time.Second, backoff: time.Second, flushSlot: make(chan struct{}, 1)}, nil
 }
 
 func (relay *PlayerRelay) Flush(ctx context.Context) (int, error) {
-	relay.mu.Lock()
-	defer relay.mu.Unlock()
+	// Drain shares this serializer with the background relay. Its deadline
+	// must also bound waiting for another caller's in-flight source query.
+	select {
+	case relay.flushSlot <- struct{}{}:
+	case <-ctx.Done():
+		return 0, ctx.Err()
+	}
+	defer func() { <-relay.flushSlot }()
+	// An available slot and cancellation can both win select; a cancelled
+	// caller must not claim a new batch in either case.
+	if err := ctx.Err(); err != nil {
+		return 0, err
+	}
 	items, err := relay.source.ClaimPlayerOutbox(ctx, relay.batchSize, relay.lease)
 	if err != nil {
 		return 0, err
