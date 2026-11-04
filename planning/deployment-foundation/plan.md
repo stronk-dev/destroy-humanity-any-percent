@@ -56,6 +56,20 @@ No source, measured bound or retained observation changes; no aggregate elapsed-
 time claim is inferred from those successful runs. The owning log preserves the
 original wording and review finding rather than backdating a different instrument.
 
+**Whole-operation map,2026-11-04:**
+`interrupted-transition-mutation-map.md` now traces every Runtime call from the
+existing release/rollback controllers, its nested SQL/HTTP/host effects and
+explicitly excluded install/rehearsal/rotation entry points at sourcea0dc53bc.
+Drain and authenticated smoke create accounts; backup/restore update host metrics;
+the production topology has four networks and five persistent volume families.
+Upstream Compose stop/remove submits selected IDs, while creation/volume names
+need different treatment. These are source findings, not queued-request/runtime
+proofs. Do not repeat the completed root-call inventory or independent network/
+backend positives. Next construct and prove ONE combined mechanism across the
+whole map, with explicit refusal for unknown ownership or surviving mutation.
+No deployment/runtime policy is adopted; independent technical review is pending
+for this research/draft reconciliation. Full CR4/R-006 and owner adoption remain.
+
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
 the predecessor with a fabricated pair. Two independent committed-source
 `df84ce1a` rebuilds now match all74 bundle artifacts, six helpers, image archive,

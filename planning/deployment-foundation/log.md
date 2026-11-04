@@ -8900,3 +8900,57 @@ remains OPEN. Next resolve complete mutation-path ownership and combined Engine/
 client/database fencing, not another repetition of the completed worker controls.
 No native supported-host/restore acceptance, specification adoption, production
 implementation, archival, push or release readiness follows. Goal stays active.
+
+## 2026-11-04 — Whole release/rollback mutation ownership map (RP-733)
+
+Continue from the independently approved network-generation experiment by tracing
+the WHOLE existing operation, rather than adding its green result to RP-726 and
+calling the pair a recovery fence. Working source is clean ata0dc53bc; current
+diff against that coordinate is empty for all audited runtime/helper/template
+paths. Retain `interrupted-transition-mutation-map.md` with the exact source
+coordinate, both Controller call sequences, every root Runtime call, nested
+effects, explicit exclusions and required interrupted-operation disposition.
+
+Source observations that change the next engineering action:
+
+- DrainCurrent and AuthenticatedSmoke invoke HTTP bootstrap, which creates an
+  account. A Docker/SQL-only inventory would incorrectly treat smoke as read-only.
+- Backup/restore additionally write encrypted backup/operations textfile targets;
+  the textfile writer renames over its canonical file. No actual late overwrite
+  is asserted: these are source effects that a candidate must cover.
+- The production template has edge/application/database/operations networks and
+  five persistent volume families. The retired default-network fixture is not
+  that whole topology, and ResetDatabase removes a fixed volume name.
+- Upstream Composev2.39.4 stop/remove submits selected CONTAINER IDs; network
+  removal also uses an inspected ID. Creation's default networking and configured
+  volume removal involve names. Thus blanket claims that every Compose request
+  late-binds a service name inside the daemon would be false. These primary-source
+  observations are not attestation of Desktop2.39.4-desktop.1's binary or runtime
+  queued-request behavior. Direct upstream source links are in the map.
+- Ledger writes and local decryption scratch have local-helper ownership, while
+  daemon jobs and database backends have separate lifetimes. Initial install,
+  rehearsal helper entry points and rotation are explicitly outside these two
+  Controller sequences; no larger acceptance is inherited from the map.
+
+Checked actual Controller/Runtime/ExecRunner/HTTP-smoke call sites, nested backup
+runner/publication/metrics paths and the release template. Relevant source-file
+hashes were computed and frozen-coordinate diff checked; the map cites that
+Git revision rather than claiming a new runtime population. No Docker job,
+database, provider, receiver or secret is accessed by this source audit. No code,
+test, schema, kernel0.3.225, epoch8, release artifact or CI byte changes; no product
+suite is run solely for prose. Existing bounded runtime findings remain as their
+own named evidence, not reruns of this audit.
+
+Draft CR4/Open questions now require a combined mechanism to account for every
+in-scope map row, including mutating application HTTP and host writers, and clearly
+distinguish the completed inventory from the still-unbuilt protocol. Unknown
+ownership/terminal outcome must refuse before recovery effects. Do not add more
+root-call censuses or isolated network/backend passes in place of that protocol.
+
+Review by: Codex implementer first filter. Recorded by: Codex root.
+Complete five-path range aftera0dc53bc through this containing commit requires
+fresh independent research/technical-draft review. Source facts do not adopt a
+new runtime mechanism or authorize implementation. Full combined fence, native
+supported-host proof, specification adoption, original Deployment acceptance and
+R-006/release gates remain OPEN. No live host/deployment, publication, archival,
+false status promotion or goal pause. The nine-tier1.0 objective stays active.

@@ -254,6 +254,15 @@ name again afterward. This does not establish that the current Compose commands
 provide that binding. It also does not fence an existing database backend, host
 file/volume mutations, or every outstanding Engine request. The full mechanism
 remains open; do not substitute network removal for the required proof.
+The source-bound [mutation map](../planning/deployment-foundation/interrupted-transition-mutation-map.md)
+now enumerates the existing Controller release/rollback paths. It explicitly
+includes mutating HTTP bootstrap in drain/smoke, four configured networks, named
+volumes, startup migrations/jobs, and backup/operations host writers. A combined
+candidate must supply a lifetime or isolation argument for every in-scope row;
+SQL-session termination plus one retired network is not whole-operation proof.
+The map distinguishes upstream Compose's ID-addressed stop/remove calls from
+creation/volume name handling; no claim about queued daemon execution follows
+from a top-level CLI command string or source inspection alone.
 No new backup decryption placement, protection-metadata resolution or deletion policy is adopted.
 
 ### CR5 — Consumers and compatibility
@@ -332,6 +341,11 @@ questions remain; the author must reconcile their results into CR2/CR4 before ac
   pending creates/starts, project-wide Compose operations, volume/name reuse and
   host-mounted outputs cannot silently inherit the SQL worker's narrower result.
   Persisting a generation label or full network ID alone is not this mapping.
+  The source inventory is now retained in the mutation map; the unresolved task
+  is the COMBINED mechanism and its execution, not another inventory of the same
+  root calls. Include admitted mutating application HTTP and every helper's host
+  writer. Separately name any excluded install/rehearsal/rotation path rather than
+  silently extending an ordinary release/rollback proof to it.
 
 Docker documentation/source inspection is partial support for those instruments, not a runtime
 witness. Parent holds remain separate; no claim that every R-006 population has a producer.
@@ -447,3 +461,6 @@ mechanism, native-host proof and adoption remain open.
 - 2026-11-04: controlled old-ID pending/late worker starts refuse after network
   retirement, while the reused-name control writes. Retain exact source/rows;
   distinguish this candidate admission boundary from a complete operation fence.
+- 2026-11-04: retain the source-bound whole release/rollback mutation map,
+  including HTTP bootstrap and host writers. Complete mechanism/proof remains
+  open; upstream ID/name distinctions are source support, not daemon execution.
