@@ -9,11 +9,12 @@
 
 **Journal collection correction, 2026-11-04:** DP7's measurement command now reads
 the requested directory and refuses exit-zero diagnostics before emitting evidence.
-Original six-pathb6744226..c09bb854 has CHANGES REQUIRED: newly supplied --quiet
-hides access warnings. Both workload and existing cleanup commands now omit it;
-flag-aware child controls reproduce both false successes before the correction
-and pass afterward, preserving empty cleanup collection. Independent union review
-remains. No host-retention or exact-artifact acceptance follows.
+Original six-pathb6744226..c09bb854 retains CHANGES REQUIRED: newly supplied
+--quiet hides access warnings. The complete original-plus-seven-path follow-up
+c463a5bb..e3ed4467 is independently approved. Actual old/current flag-aware child
+controls discriminate both commands; twelve corrected native/Linux-amd64 arms,
+cold owners and vet pass, preserving empty cleanup collection. No host-retention
+or exact-artifact acceptance follows; the log owns exact scopes and limits.
 
 **Backup parser/snapshot corrective review,2026-11-04:** complete eight-path
 `630f6833..bc5d5f5d` (RP-489/490) is independently approved. Fresh exact-old parser

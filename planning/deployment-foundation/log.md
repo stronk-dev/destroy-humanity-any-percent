@@ -8222,3 +8222,31 @@ Review by: Codex root, implementer first filter only. Recorded by: Codex root.
 Original CHANGES REQUIRED remains; final independent original-plus-follow-up
 review pending. Actual release-host collection/retention/eviction, full AC7,
 exact-artifact R-006, full CI and release stay open. No archival or publication.
+
+## 2026-11-04 — Complete journal collection corrective union independently approved
+
+Review by: independent Codex `/root/scheduled_backup_ingress_proof_corrective_review`.
+Recorded by: Codex root. APPROVED, no remaining findings, complete contexts:
+
+- Original six paths: `b6744226ef263cfe031e5dc4daa79ac171701bec..c09bb854a02729af24f4dd5c4c0fb29025d5a484`.
+- Follow-up seven paths: `c463a5bb42f068139ff27c47f4aa94b92966b14f..e3ed44678a8fa559f4b6096d939d92616fcdf60c`.
+
+Original CHANGES REQUIRED remains. Both commands omit warning suppression while
+retaining exact directory/service selection, complete JSON, diagnostic refusal
+and healthy empty cleanup. Fresh exact-old main overlay94454 exits expected Make2:
+only two access-warning arms fail (468 workload bytes/healthy cleanup cursor),
+ten companion controls pass. Current native34804 passes all twelve,0.649s;
+declared Linux-amd64 service41984 passes all twelve,0.974s. These are actual
+controlled child processes, not actual journald. Cold42632 operations1.717s,
+command5.760s and vet pass; gofmt/both range-whitespace checks pass.
+
+Earlier actual systemd255 empty-directory JSON observation is explicitly REUSED
+for unchanged flags: zero output/diagnostics, exit0 without quiet, observed image
+and version only. No unreadable-journal or retention claim. All handles terminal,
+no tracked reviewer edits/commits. Only newly created inspected tmpfs Postgres
+16cd8619 is removed. Network2d8ccc54 gains a peer browser between empty inspection
+and removal; Docker refuses removal, reviewer preserves the peer/network and
+coordinates with the browser owner. Unrelated parent010be676 changes no affected
+source/Make/Compose bytes. Root updates plan/defects; no suite for editorial records.
+Host-journal completeness, workload/capacity ratification, retention/eviction,
+full AC7, R-006, hosted/full CI and release remain open. No archival/publication.
