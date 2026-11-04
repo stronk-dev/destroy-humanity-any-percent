@@ -7,6 +7,13 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Application attribution correction,2026-11-04 (RP-760):** actual linked
+Prometheus NOTICE omission reproduces under the existing generator. Separate
+notice delivery and physical-copy agreement now pass the real regression, full
+affected metadata packages and vet. Canonical docs updated. Next run actual
+metadata generation from committed code and obtain independent corrective review;
+this changes no license allowlist or proposed tool-distribution policy.
+
 **Native profile construction,2026-11-04:**
 Complete corrected proposal is independently TECHNICALLY APPROVED, exact union
 c58f8e48..224fc0e2 plus4118c4d8..a836e92b; Headcount editorial excluded.

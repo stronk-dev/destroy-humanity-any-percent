@@ -118,20 +118,30 @@ func discoverGoDependencies(root string) ([]releasepackage.Dependency, error) {
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", identity, err)
 		}
-		unique[identity] = releasepackage.Dependency{Name: fields[0], Version: fields[1], Kind: "go", License: license, LicenseText: text,
+		notice, err := noticeAt(fields[2])
+		if err != nil {
+			return nil, fmt.Errorf("%s NOTICE: %w", identity, err)
+		}
+		unique[identity] = releasepackage.Dependency{Name: fields[0], Version: fields[1], Kind: "go", License: license, LicenseText: text, NoticeText: notice,
 			Download: "https://proxy.golang.org/" + fields[0] + "/@v/" + fields[1] + ".zip", PackageURL: "pkg:golang/" + fields[0] + "@" + fields[1]}
 	}
-	goLicense, license, err := licenseAt(runtime.GOROOT())
+	goLicenseRoot := runtime.GOROOT()
+	goLicense, license, err := licenseAt(goLicenseRoot)
 	if err != nil {
 		// Homebrew keeps the upstream Go LICENSE one directory above its
 		// libexec GOROOT; official toolchains keep it at GOROOT.
-		goLicense, license, err = licenseAt(filepath.Dir(runtime.GOROOT()))
+		goLicenseRoot = filepath.Dir(runtime.GOROOT())
+		goLicense, license, err = licenseAt(goLicenseRoot)
 		if err != nil {
 			return nil, fmt.Errorf("Go standard library license: %w", err)
 		}
 	}
+	goNotice, err := noticeAt(goLicenseRoot)
+	if err != nil {
+		return nil, fmt.Errorf("Go standard library NOTICE: %w", err)
+	}
 	version := strings.TrimPrefix(runtime.Version(), "go")
-	unique["go.dev/stdlib@"+version] = releasepackage.Dependency{Name: "go.dev/stdlib", Version: version, Kind: "go", License: license, LicenseText: goLicense,
+	unique["go.dev/stdlib@"+version] = releasepackage.Dependency{Name: "go.dev/stdlib", Version: version, Kind: "go", License: license, LicenseText: goLicense, NoticeText: goNotice,
 		Download: "https://go.dev/dl/go" + version + ".src.tar.gz", PackageURL: "pkg:golang/go.dev/stdlib@" + version}
 	result := make([]releasepackage.Dependency, 0, len(unique))
 	for _, dependency := range unique {
@@ -237,18 +247,22 @@ func discoverClientDependencies(root string) ([]releasepackage.Dependency, error
 		if err != nil || installed.License != detected {
 			return nil, fmt.Errorf("%w: %s: package license mismatch declared=%q detected=%q: %v", releasepackage.ErrInvalidContent, identity, installed.License, detected, err)
 		}
+		notice, err := noticeAt(directory)
+		if err != nil {
+			return nil, fmt.Errorf("%w: %s NOTICE: %v", releasepackage.ErrInvalidContent, identity, err)
+		}
 		// A peer-resolution path can ship another physical copy of the same
 		// package. Its identity is not evidence that its notice was inspected.
 		// One output row is safe only when every copy has matching attribution.
 		if previous, duplicate := seen[identity]; duplicate {
-			if previous.License != detected || previous.LicenseText != text {
+			if previous.License != detected || previous.LicenseText != text || previous.NoticeText != notice {
 				return nil, fmt.Errorf("%w: conflicting shipped attribution for %s", releasepackage.ErrInvalidContent, identity)
 			}
 			continue
 		}
 		escaped := strings.ReplaceAll(installed.Name, "/", "%2f")
 		archive := strings.TrimPrefix(installed.Name[strings.LastIndex(installed.Name, "/")+1:], "@") + "-" + installed.Version + ".tgz"
-		dependency := releasepackage.Dependency{Name: installed.Name, Version: installed.Version, Kind: "npm", License: detected, LicenseText: text,
+		dependency := releasepackage.Dependency{Name: installed.Name, Version: installed.Version, Kind: "npm", License: detected, LicenseText: text, NoticeText: notice,
 			Download: "https://registry.npmjs.org/" + escaped + "/-/" + archive, PackageURL: "pkg:npm/" + installed.Name + "@" + installed.Version}
 		seen[identity] = dependency
 		result = append(result, dependency)
@@ -411,6 +425,37 @@ func licenseAt(directory string) (string, string, error) {
 	text := combined.String()
 	license, err := releasepackage.DetectPermissiveLicense(text)
 	return text, license, err
+}
+
+// Attribution notices are delivered separately from the texts that establish
+// the package's license. A NOTICE cannot widen the license allowlist or supply
+// a missing LICENSE, and every present notice must be readable and nonempty.
+func noticeAt(directory string) (string, error) {
+	entries, err := os.ReadDir(directory)
+	if err != nil {
+		return "", err
+	}
+	var candidates []string
+	for _, entry := range entries {
+		name := strings.ToLower(entry.Name())
+		if name != "notice" && !strings.HasPrefix(name, "notice.") {
+			continue
+		}
+		if !entry.Type().IsRegular() {
+			return "", releasepackage.ErrInvalidContent
+		}
+		candidates = append(candidates, entry.Name())
+	}
+	sort.Strings(candidates)
+	var combined bytes.Buffer
+	for _, candidate := range candidates {
+		data, err := os.ReadFile(filepath.Join(directory, candidate))
+		if err != nil || len(bytes.TrimSpace(data)) == 0 {
+			return "", releasepackage.ErrInvalidContent
+		}
+		fmt.Fprintf(&combined, "----- %s -----\n%s\n", candidate, strings.TrimSpace(strings.ReplaceAll(string(data), "\r\n", "\n")))
+	}
+	return combined.String(), nil
 }
 
 func fail(err error) {

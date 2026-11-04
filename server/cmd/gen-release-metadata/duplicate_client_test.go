@@ -14,9 +14,12 @@ import (
 func TestClientInventoryValidatesEveryShippedPackageCopyBeforeDeduplicating(t *testing.T) {
 	isc := "Copyright (c) other fixture\nPermission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES.\n"
 	for _, route := range []string{"JavaScript", "CSS"} {
-		for _, variant := range []string{"identical", "missing license", "empty license", "unknown license", "metadata mismatch", "different notice", "different license", "different version"} {
+		for _, variant := range []string{"identical", "missing license", "empty license", "unknown license", "metadata mismatch", "different notice", "different license", "different version", "identical NOTICE", "different NOTICE", "missing NOTICE"} {
 			t.Run(route+"/"+variant, func(t *testing.T) {
 				root := clientFixture(t, "MIT")
+				if strings.Contains(variant, "NOTICE") {
+					writeFixture(t, filepath.Join(root, "client", "node_modules", ".pnpm", "pad-end@1.0.2", "node_modules", "pad-end", "NOTICE"), "Required separate attribution\n")
+				}
 				// The original directory sorts first; this second physical package
 				// has the same name/version despite its distinct peer-resolution path.
 				module := "node_modules/.pnpm/pad-end@1.0.2_peer@2.0.0/node_modules/pad-end/index.js"
@@ -45,6 +48,11 @@ func TestClientInventoryValidatesEveryShippedPackageCopyBeforeDeduplicating(t *t
 					t.Fatal(err)
 				}
 				writeFixture(t, filepath.Join(directory, "package.json"), string(manifest))
+				if variant == "identical NOTICE" {
+					writeFixture(t, filepath.Join(directory, "NOTICE"), "Required separate attribution\n")
+				} else if variant == "different NOTICE" {
+					writeFixture(t, filepath.Join(directory, "NOTICE"), "Different separate attribution\n")
+				}
 				if variant != "missing license" {
 					writeFixture(t, filepath.Join(directory, "LICENSE"), text)
 				}
@@ -76,7 +84,7 @@ func TestClientInventoryValidatesEveryShippedPackageCopyBeforeDeduplicating(t *t
 					writeCSSFixtureGraph(t, root, map[string]string{"assets/style.css": "body{color:red}\n"}, []string{module})
 				}
 				dependencies, err := discoverClientDependencies(root)
-				if variant != "identical" && variant != "different version" {
+				if variant != "identical" && variant != "different version" && variant != "identical NOTICE" {
 					if !errors.Is(err, releasepackage.ErrInvalidContent) || dependencies != nil {
 						t.Fatalf("later shipped copy omitted from license validation: error=%v partial_dependencies=%d", err, len(dependencies))
 					}
@@ -92,6 +100,9 @@ func TestClientInventoryValidatesEveryShippedPackageCopyBeforeDeduplicating(t *t
 				notices, err := releasepackage.ThirdPartyNotices(dependencies)
 				if err != nil || strings.Count(string(notices), "pad-end 1.0.2 (npm)") != 1 || !strings.Contains(string(notices), "Copyright (c) fixture") {
 					t.Fatal("deduplicated copy absent from delivered notice")
+				}
+				if variant == "identical NOTICE" && strings.Count(string(notices), "Required separate attribution") != 1 {
+					t.Fatal("separate NOTICE lost or duplicated during physical-copy deduplication")
 				}
 				if variant == "different version" && (!strings.Contains(string(notices), "pad-end 1.0.3 (npm)") || !strings.Contains(string(notices), "Copyright (c) second fixture")) {
 					t.Fatal("distinct version's notice dropped")

@@ -105,9 +105,17 @@ proof, not a clean-host bundle or completed AC8 verdict. A missing build fails. 
 Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license modules as SPDX `AND`
 expressions, and fails on missing, ambiguous, unknown or metadata-mismatched licenses.
 
+Separate root `NOTICE` and `NOTICE.*` files are also read for each linked Go module,
+the selected Go standard-library license directory and each physical browser package.
+Their text is delivered beside that dependency's license in `third-party-licenses.txt`.
+License classification still uses LICENSE/COPYING text; a NOTICE cannot supply a missing
+license or change its SPDX expression. A present empty or nonregular notice fails
+generation. Browser copies with the same name/version must agree on both license and
+separate notice text before they can share one attribution row.
+
 Every physical npm package directory reached through JavaScript or CSS is inspected before
 deduplicating `name@version`. Repeated copies may share one output row only when their detected
-license and extracted notice text match. A missing/empty/unknown/mismatched license or conflicting
+license and extracted license/NOTICE text match. A missing/empty/unknown/mismatched license or conflicting
 notice in any copy fails the inventory rather than choosing the first directory's attribution.
 Distinct versions keep separate package rows and delivered notices. This preserves the existing
 license allowlist and output format; it does not authenticate npm package contents or replace the

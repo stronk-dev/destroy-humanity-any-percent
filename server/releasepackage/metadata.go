@@ -19,6 +19,7 @@ type Dependency struct {
 	Kind        string
 	License     string
 	LicenseText string
+	NoticeText  string
 	Download    string
 	PackageURL  string
 }
@@ -139,8 +140,12 @@ func ThirdPartyNotices(dependencies []Dependency) ([]byte, error) {
 	output.WriteString("Cloud Clicker third-party licenses\n")
 	output.WriteString("Generated from the dependencies linked into every shipped Go binary and bundled into the browser client.\n\n")
 	for _, dependency := range dependencies {
-		fmt.Fprintf(&output, "================================================================================\n%s %s (%s)\n%s\n%s\n\n",
+		fmt.Fprintf(&output, "================================================================================\n%s %s (%s)\n%s\n%s\n",
 			dependency.Name, dependency.Version, dependency.Kind, dependency.License, strings.TrimSpace(strings.ReplaceAll(dependency.LicenseText, "\r\n", "\n")))
+		if notice := strings.TrimSpace(strings.ReplaceAll(dependency.NoticeText, "\r\n", "\n")); notice != "" {
+			fmt.Fprintf(&output, "\n%s\n", notice)
+		}
+		output.WriteString("\n")
 	}
 	return []byte(output.String()), nil
 }

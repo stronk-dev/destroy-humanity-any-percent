@@ -10648,3 +10648,31 @@ exact source/notice delivery. Separate read-only follow-up notices the existing
 application generator's root NOTICE omission; confirm against an actually linked
 dependency before treating it as a corrective defect. No policy widening,
 product change, publication or goal pause follows from this research verdict.
+
+## 2026-11-04 — Correct application NOTICE omission under existing DP1/AC8
+
+RP-760 is an ACTUAL application metadata defect, separate from proposed tool
+shipping/rights policy. Existing generator licenseAt reads LICENSE/COPYING only;
+actual linked prometheus/client_golang1.23.2 has a required separate NOTICE absent
+from its ThirdPartyNotices output. New ordinary regressionf78381/38967→0a6839
+fails old behavior at exactly that omission; actual module identity, complete
+six-command dependency discovery and actual output formatter are used.
+
+Implement separate Dependency.NoticeText, root NOTICE/NOTICE.* collection for
+Go/selected stdlib/browser physical sources, delivery beside license text, and
+notice-aware browser-copy deduplication. License classification/validation still
+uses only existing license text/allowlist; a NOTICE cannot supply a missing grant
+or reclassify an Apache mention. Invalid present notice (empty/directory/symlink)
+refuses, absent optional notice remains valid. No gameplay/schema/dependency/
+kernel/version/CI or MPL-policy change; canonical Deployment docs updated.
+
+Real regression nowpassesf500b9/13427→89ad42. Full affected cold package run
+f7cd71/68702→ba1e6d passes ./releasepackage and ./cmd/gen-release-metadata;
+vetb14041 passes. Tests cover extra separate notices, license independence,
+invalid/absent notice and JS/CSS equal/missing/conflicting physical NOTICE cases.
+This advances accepted attribution delivery, not full rights or supply-chain
+clearance. Next execute actual generator from committed source with the current
+built browser inputs, then independently review the coherent correction range.
+RP-760 remains review-pending, not closed by this first filter. No publication,
+deployment, archival, owner adoption, release promotion or goal pause.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.
