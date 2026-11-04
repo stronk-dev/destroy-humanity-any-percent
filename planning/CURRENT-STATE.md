@@ -1,5 +1,17 @@
 # Current repository state
 
+**Bounded local checkpoint,2026-11-04:** actual gameserver stop→five-minute alert→
+restart→matching resolution is independently proved at `b23a139b`. A newly
+reproduced backup race—successful creation followed by restore refusal after a
+concurrent migration—is corrected and independently approved at `9cf66afb`, with
+all nine real Postgres backup functions and the real Caddy release/rollback caller
+passing. The [Deployment log](deployment-foundation/log.md) owns exact sources,
+reviews, failed controls and local/emulated limits. Recovery's corrected flow/copy
+proposal and signed backup-metadata proposal are technically reviewed; their
+concrete adoption questions remain unanswered. These advance platform correctness,
+not another playable tier or supported-release claim. Whole-product classification
+below retains its audit baseline; no fresh full-product/hosted acceptance is inferred.
+
 **Latest hosted verification,2026-11-02:** published main is `d6b1c668`;
 [CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196)
 passes browser (all phases), composed-player, harness and schema. Server still

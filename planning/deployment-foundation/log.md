@@ -8417,3 +8417,39 @@ retention duration changed or original discarded. Current RP-724 correction uses
 the already accepted DP6 consistency contract independently of this pending choice.
 Root reconciles plan/backlog/owner routing only, no software suite for records.
 Do not repeat the question; full nine-tier1.0 and all separate release gates remain.
+
+## 2026-11-04 — Migration/dump snapshot correction independently approved
+
+Review by: independent Codex `/root/scheduled_backup_ingress_proof_corrective_review`.
+Recorded by: Codex root. APPROVED, complete six-path range, base exclusive/tip
+inclusive:
+`0179415e5d221dc96aec6febcc0301ed058489b1..9cf66afbe14943097fcc3cd6cd7d51406d1e1284`.
+All production/test/docs/backlog/plan/log inspected; no blocking findings. Checked
+migration and dump share an exported repeatable-read snapshot held until dump
+completion, consistent with PostgreSQL16's documented API.
+
+Fresh independent24259 terminal0 executes all nine real Linux-amd64/Postgres
+integration functions without skips. New witness2.01s restores pre-change schema/
+version/complete row identity despite a concurrent committed change; initial
+mismatch, injected dump error/cancellation and observed actual lock release pass.
+Cancellation is AT THE DUMP DISPATCH boundary, not proof of cancellation of an
+already-running pg_dump. Four affected backup/release owners39308 pass cold plus
+vet. Private exact0179415e production overlay with current regression7267 exits
+expected1,1.66s: backup reports completion after DDL/version/row commit, actual
+restore refuses its declared migration. No main mutation or false compile failure.
+Formatting/full-range whitespace pass. The invalid NOWAIT oracle remains on record;
+observing asynchronous server lock release is the justified correction.
+
+Both reviewer-owned Compose projects have no remaining containers/networks/volumes;
+no tracked reviewer edits/commits. Parent's editorial metadata-question record
+changes no affected source. Additional ROOT caller evidence91910 at2ea094d2:
+actual declared Caddy/Postgres release target passes2.54s, including admitted work,
+marked drain, real HTTP/WebSocket recovery and encrypted restore. Target removes
+Caddy/Postgres/network; direct exact-project container/network inventories are
+empty. This caller execution is not relabelled as independent or exact-artifact
+clean-host proof. Underlying composition source matches reviewed correction.
+
+RP-724 corrective defect closes, not RP-505, separate recovery-census/archive
+binding, snapshot-based RPO, full AC4/Deployment, R-006 or release. No operator
+key/configuration change, archival, publication or goal pause. Root reconciles
+current states and the bounded whole-product checkpoint; no suite for records.

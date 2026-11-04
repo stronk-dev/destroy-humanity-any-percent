@@ -5,9 +5,17 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current product rollup (2026-10-16):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
+**Latest bounded checkpoint (2026-11-04):** actual gameserver availability/receiver
+recovery is independently proved at `b23a139b`; the concurrent-migration backup
+false-completion defect is corrected and independently approved at `9cf66afb`.
+Current real backup and Caddy release/rollback boundaries pass. Recovery flow/copy
+and signed backup-metadata proposals are technically reviewed, with concrete owner
+adoption questions pending. [Owning logs and limits](CURRENT-STATE.md) distinguish
+these from full feature/clean-host/hosted proof. No new tier or release is complete.
+
+**Whole-product classification baseline (2026-10-16):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
-Latest bounded production correction `7ec0873c`, kernel0.3.223, epoch8;
+Earlier kernel correction `7ec0873c`, kernel0.3.223, epoch8;
 independent corrective approval `190a4790`. This closes RP-690's phantom masked-count
 defect after native/Linux checks, not the accounting/search work. Research `923c694a`
 remains unadopted; the27 Clout failures and historical version guard remain red.

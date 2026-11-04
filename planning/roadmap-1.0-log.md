@@ -5778,3 +5778,29 @@ evidence, not re-executed. No browser/service/install or tracked reviewer edits.
 The owner-directed procedure retains explicit AC, owner decisions, review debt
 and the full nine-tier floor. This closes technical-review debt, not feature/CI/
 release acceptance or fresh specification adoption. Goal active; nothing pushed.
+
+## 2026-11-04 — Real availability proof, consistent backups and adoption-ready recovery
+
+Current code checkpoint `9cf66afbe14943097fcc3cd6cd7d51406d1e1284`, with later
+editorial routing only. Independent corrective review covers the complete actual
+gameserver proof `a636b315..b23a139b` and migration/dump correction
+`0179415e..9cf66afb`; exact full ranges/results live in Deployment's owning log.
+Real process outage/five-minute receiver/restart resolution executes; actual old
+backup code completes an archive that restore rejects after concurrent migration.
+The correction passes all nine real Postgres functions; root's actual Caddy caller
+also passes. These local stacks use mixed architectures and checkout content, not
+supported-host R-006, snapshot-based RPO or whole Deployment acceptance.
+
+Recovery's original technical review finds expired-legacy and competing-tab flaws.
+Complete corrected proposal is technically approved `eec5641f`; exact flow/copy
+adoption question delivered, unanswered. Signed backup-metadata proposal is also
+technically approved `ce61b82a`; its adoption question is delivered, unanswered,
+while fresh age/filesystem diagnostic still proves both unsafe protected deletions.
+Technical review supplies no policy/copy/key-format adoption or implementation.
+
+Next: implement those scoped successors if adopted; otherwise continue remaining
+accepted construction/corrections. Host journal/retention, exact release pairs,
+clean-host rehearsal, rights/accessibility, natural pacing, historical guard and
+27 accounting failures remain open alongside substantial world/combat/Tier3–8/
+final-ending work. The whole-product classification is not freshly re-audited;
+the full nine-tier1.0 goal stays active. No push, deployment, archival or release.

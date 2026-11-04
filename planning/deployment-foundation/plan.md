@@ -13,8 +13,11 @@ transaction commits between validation and pg_dump. Check migration in one read-
 repeatable-read transaction and export its snapshot to pg_dump. Final real restore,
 initial-mismatch/failure/cancellation and observed-lock-release controls pass with
 the eight prior integration functions. This is an accepted DP6 conformance fix;
-no format/crypto/retention/RPO policy changes. Independent full-range review remains;
-the log preserves the invalid first synchronous-cancellation oracle separately.
+no format/crypto/retention/RPO policy changes. Complete six-path0179415e..9cf66afb
+is independently approved after fresh all-nine SQL functions and exact historical
+production overlay failure. Root's additional real Caddy release/rollback target
+passes2.54s at unchanged source. The log preserves all provenance and the invalid
+first synchronous-cancellation oracle; no full Deployment/clean-host promotion.
 
 **Backup metadata proposal, 2026-11-04 (RP-505):** complete seven-path
 09cf45e5..ce61b82a is independently TECHNICALLY APPROVED, ready for owner
