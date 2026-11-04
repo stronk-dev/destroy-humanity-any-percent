@@ -45,6 +45,17 @@ and propagates ordinary failures. Fresh79437 exits0, both populations unchanged;
 v2 binds source7b93d963. Original negative/source/v1 remain. Complete containing
 correction requires independent re-review, not a full mechanism/adoption claim.
 
+Complete original seven-path plus corrective seven-path union through ee90913f
+is now independently APPROVED: fresh57617 reproduces both real populations and
+21d8f5 verifies actual old/new deadline/error/partial/would-block/full OS-pipe
+controls and both source bindings. Original negative remains. RP-739 closes its
+instrument defect; RP-738 remains OPEN for production startup ownership and
+generation-safe cancellation. Do not rerun these completed populations without
+a correction. Next specify the durable real-helper ownership/containment protocol,
+including the non-destructive pre-backup branch, rather than adopting this
+fixture's PID query or treating an empty census as completion. Native-host and
+all other whole-operation/release gates remain.
+
 **Interrupted restore boundary, 2026-11-04 (RP-726):** real pg_restore COPY
 commits after exact owned client-container removal when its held database lock
 is released. The separately identified backend-termination arm prevents that

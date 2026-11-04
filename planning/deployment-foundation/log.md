@@ -9303,3 +9303,33 @@ before commit. This is still a narrow disposable-fixture candidate, not durable
 production PID ownership, actual backup helper or native-host/full CR4 proof.
 Complete original plus containing corrective range needs independent re-review.
 Review by: Codex root, corrective author first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Corrected pre-backup research union independently APPROVED
+
+Review by: independent Codex `/root/prebackup_live_database_research_review`.
+Recorded by: Codex root, transcribing its final returned verdict. Complete union:
+
+- `49b6113ead8e37c8c0e2d464ebf3877661592897..83abd00992cab08f9d608e0bfd609a70230f6e9e`.
+- `83abd00992cab08f9d608e0bfd609a70230f6e9e..ee90913f6f195dd7e972c5eee4d7a3f101a4c1eb`.
+
+Verdict **APPROVED**, corrected research/tool/draft scope, no remaining blocking
+findings. Original CHANGES REQUIRED remains. Nonblocking writes/readiness/queue
+reads/final acceptance now share one local deadline; RP-739 closes its instrument
+defect. Independent actual57617 exits0 reproducing both PostgreSQL16.15 populations,
+preserved DB/postmaster/control connection and exact rows7/42. Independent21d8f5
+exits0 reproducing original11s acceptance, accepting timely/partial/would-block,
+rejecting exact/late select/write/read/global deadline, permission/broken-pipe,
+zero-progress and exhausted-read controls. An actual full nonblocking OS pipe
+times out without a buffered writer; historical/current source bindings pass.
+Independent9f5335 passes full union scope/whitespace/negative preservation and
+clean checkout; product and CI source remain untouched.
+
+Reviewer own projectd0ddd27bcd998cc8 container/network/volume inventories
+181d5d/9aab4e/5b259e are empty; all handles terminal, no tracked edits or commits.
+This editorial closeout records that verdict without changing the reviewed tool
+or rerunning unchanged checks. RP-738 stays OPEN: durable production ownership,
+startup completion and generation-safe targeting/real helper remain unresolved.
+Next build/specify that complete ownership/containment protocol, including all
+real pre-backup effects and pending clients; do not adopt the fixture's PID query
+or repeat narrow completed positives. No full abort/CR4/native-host/adoption,
+release acceptance, push, archival, deployment or goal pause follows.

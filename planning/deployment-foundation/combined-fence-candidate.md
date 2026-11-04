@@ -132,6 +132,10 @@ deadline through writing, reading and final matching-output acceptance. Original
 actual-source late acceptance is retained, new exact/late I/O controls refuse,
 and fresh actual79437 reproduces both populations under corrected source7b93d963.
 Neither observation is a whole recovery protocol or a runtime adoption.
+The complete original plus correction through ee90913f is independently APPROVED
+after fresh real57617 and actual-source/refusal/full-pipe controls21d8f5. Original
+CHANGES REQUIRED stays recorded. RP-739's instrument defect is closed; RP-738's
+production ownership/startup requirement remains open.
 
 Next construct the complete durable production protocol against this table and
 resolve its pre-backup branch/packaging/compatibility, then execute its actual
