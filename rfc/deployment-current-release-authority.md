@@ -245,6 +245,16 @@ backend-termination arm prevents that row, but earlier restored DDL remains:
 session termination is neither rollback nor a complete operation fence. No
 unscoped backend termination, application-name-only authority, new database
 permission or recovery implementation is authorized by this observation.
+The separate [pre-backup observation](../planning/deployment-foundation/prebackup-live-database-observation.v1.json)
+on pinned PostgreSQL16.15 also finds a live startup backend absent from
+pg_stat_activity, surviving exact client removal temporarily. An empty session
+census cannot establish physical quiescence. In the same disposable fixture,
+separately identified pg_dump backend termination preserves the exact running
+database and continuously connected control. This is a SQL-side candidate only:
+the real operation's durable session ownership, startup completion, pending
+requests and generation-safe targeting remain unresolved. Matching backend_start
+in a query does not make PID-only termination atomic against PID reuse. No
+production cancellation policy or database privilege follows from the probe.
 The network-generation experiment below supplies a candidate boundary for NEW
 database clients: a worker bound to a retired full network ID fails to start even
 when that network's human-readable name is recreated; a name-only worker reaches

@@ -91,6 +91,39 @@ Controller/Compose protocol. Before a production proposal is acceptance-ready:
 | Image preparation | Classify late load/pull effects and prove immutable config consumption in actual startup. No image-load/pull interruption is exercised by this prototype. |
 | Checkpoint/previous release authority | Validate actual protected encrypted backup/key and exact release pair before destructive reset. Row42 and a text checkpoint are not that authority. Keep the seven-day window, forward-only migration and clean-host gates. |
 
+### Non-destructive pre-backup SQL observation
+
+The [manual pre-backup probe](probes/prebackup-live-database-probe.py.txt) and
+[source-bound observation](prebackup-live-database-observation.v1.json) address
+one part of the incompatible destructive branch above. On the pinned image's
+actual PostgreSQL16.15, a libpq client held by `post_auth_delay=8` has a live
+backend process but ZERO rows for that PID in pg_stat_activity. Exact client
+removal leaves that same process temporarily alive; it subsequently exits and
+never executes its offered INSERT. Empty session metadata alone is therefore
+not proof that every connection process has ended. This is a controlled startup
+delay, not an observed normal backup or production incident.
+
+A real pg_dump blocked on ACCESS SHARE survives exact client removal too. In
+this isolated fixture, termination of its separately observed backend with a
+3000ms wait removes that process. Releasing the exclusive-lock control then
+preserves row7; a continuously connected independent control inserts row42.
+The exact database container, postmaster start time and control PID/kernel-start
+identity remain unchanged. No entire-DB restart or application disconnect is
+necessary for THIS known-backend cancellation. SQL success/failure, OS process
+identity and actual data are observed, rather than inferred from client exit.
+
+This does NOT solve production ownership. The predicate combines observed PID,
+backend_start, address/port and application name, but pg_terminate_backend
+ultimately targets a PID; the predicate does not remove its check/signal PID-reuse
+race. The startup process's log/address association is also only an owned-fixture
+instrument, not durable operation registration. No new database permission,
+unscoped termination or adoption is inferred. Pending starts/new connections,
+authentication/startup completion, real pgx snapshot exporter, actual backup
+helper/encryption/publication, image preparation and output generations remain
+part of the complete production protocol. This probe neither implements abort
+nor proves the full quiescence criterion. RP-738 tracks the new startup-census
+finding and these remaining requirements.
+
 Next construct the complete durable production protocol against this table and
 resolve its pre-backup branch/packaging/compatibility, then execute its actual
 helper and supported-host interruption population. Do not repeat these complete

@@ -1,0 +1,255 @@
+"""Manual CR4 research; disposable declared fixture, never a recovery command.
+
+Run from repo root with Python3. No image pull, production data, host port or CI.
+The exact observed backend belongs to this isolated fixture; PID reuse and real
+operation ownership are deliberately NOT claimed as solved by SQL termination.
+"""
+import hashlib
+import json
+import pathlib
+import queue
+import re
+import secrets
+import shutil
+import subprocess
+import tempfile
+import threading
+import time
+
+
+IMAGE = "postgres:16-alpine@sha256:075f7ba66bc9b3ce7d6b8b635208ff61cd7cf1a67d71ec530eec5d7ae0cbe571"
+CONFIG = "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b"
+
+
+class ResearchGuard(RuntimeError):
+    pass
+
+
+def within(deadline, clock=time.monotonic):
+    remaining = deadline - clock()
+    if remaining <= 0:
+        raise ResearchGuard("measured-work guard exhausted: INVALID")
+    return min(10, remaining)
+
+
+def wait_for(check, deadline, clock=time.monotonic, pause=time.sleep):
+    until = min(deadline, clock() + 10)
+    while True:
+        within(until, clock)
+        result = check()
+        within(until, clock)
+        if result:
+            return result
+        pause(0.01)
+
+
+def main():
+    root = pathlib.Path.cwd()
+    assert (root / "compose.deployment-backup-test.yml").is_file()
+    project = "cc-prebackup-live-" + secrets.token_hex(8)
+    work = pathlib.Path(tempfile.mkdtemp(prefix=project + "-"))
+    override = work / "compose.yml"
+    override.write_text("services:\n  postgres:\n    image: " + IMAGE + "\n"
+                        "    command: [postgres, -c, log_connections=on, -c, 'log_line_prefix=%p|']\n")
+    compose = ["compose", "--project-name", project, "-f",
+               str(root / "compose.deployment-backup-test.yml"), "-f", str(override)]
+    deadline = time.monotonic() + 60
+    processes = []
+    workers = []
+    observation = dict(schema=1, project=project, objective_completed=False,
+                       measured_work_guard_seconds=60, per_command_seconds=10,
+                       per_cleanup_command_seconds=15, cleanup_outside_work_guard=True,
+                       source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest())
+
+    def run(*args, cleanup=False):
+        result = subprocess.run(["docker", *args], text=True, capture_output=True,
+                                timeout=15 if cleanup else within(deadline))
+        if not cleanup:
+            within(deadline)
+        if result.returncode:
+            raise RuntimeError("Docker command failed: " + result.stdout + result.stderr)
+        return result.stdout.strip()
+
+    def owned(container, service, cleanup=False):
+        assert re.fullmatch("[a-f0-9]{64}", container), "invalid container ID"
+        actual = run("inspect", "--format", '{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}', container, cleanup=cleanup)
+        assert actual == " ".join((container, CONFIG, project, service)), "unowned container"
+
+    def sql(query):
+        return run("exec", database, "psql", "-U", "cloud_clicker", "-d",
+                   "cloud_clicker_source", "-Atq", "-v", "ON_ERROR_STOP=1", "-c", query)
+
+    def begin_connection(name):
+        process = subprocess.Popen(["docker", "exec", "-i", "-e", "PGAPPNAME=" + name,
+                                    database, "psql", "-U", "cloud_clicker", "-d",
+                                    "cloud_clicker_source", "-Atq", "-v", "ON_ERROR_STOP=1"],
+                                   text=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        processes.append(process)
+        lines = queue.Queue()
+        def read_lines():
+            for line in process.stdout:
+                lines.put(line.strip())
+        threading.Thread(target=read_lines, daemon=True).start()
+        return process, lines
+
+    def send(connection, command):
+        process, lines = connection
+        process.stdin.write(command + "\n")
+        process.stdin.flush()
+        result = lines.get(timeout=within(deadline))
+        within(deadline)
+        return result
+
+    def create_worker(name, executable, args, options=None):
+        argv = ["create", "--platform", "linux/amd64", "--network", network,
+                "--name", project + "-" + name, "--label", "com.docker.compose.project=" + project,
+                "--label", "com.docker.compose.service=worker", "--read-only", "--tmpfs", "/tmp",
+                "--env", "PGPASSWORD=cloud_clicker_test", "--env", "PGAPPNAME=" + name]
+        if options:
+            argv += ["--env", "PGOPTIONS=" + options]
+        container = run(*argv, "--entrypoint", executable, IMAGE,
+                        "-h", "postgres", "-U", "cloud_clicker", "-d", "cloud_clicker_source", *args)
+        workers.append(container)
+        owned(container, "worker")
+        address = None
+        run("start", container)
+        address = run("inspect", "--format", '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', container)
+        assert re.fullmatch(r"[0-9]+(?:\.[0-9]+){3}", address), "missing worker address"
+        return container, address
+
+    def remove_worker(container):
+        owned(container, "worker")
+        run("rm", "--force", "--volumes", container)
+        workers.remove(container)
+        assert run("ps", "-aq", "--no-trunc", "--filter", "id=" + container) == "", "worker survived"
+
+    def process_identity(pid):
+        assert isinstance(pid, int) and pid > 1
+        # Return an explicit absent marker only after a successful shell command.
+        # Docker/permission/read errors must never masquerade as process absence.
+        stat = run("exec", database, "sh", "-c",
+                   'if [ -e /proc/' + str(pid) + '/stat ]; then cat /proc/' + str(pid) + '/stat; else printf absent; fi')
+        if stat == "absent":
+            return stat
+        assert stat.startswith(str(pid) + " (") and ") " in stat, "invalid process identity"
+        # Field22 is kernel start time. CPU counters and backend title can change
+        # during an ordinary query; comparing the whole stat would invent failure.
+        fields = stat.rsplit(") ", 1)[1].split()
+        assert len(fields) >= 20 and fields[19].isdigit(), "missing process start time"
+        return dict(pid=pid, start_ticks=int(fields[19]))
+
+    def connection_pid(address):
+        logs = subprocess.run(["docker", "logs", database], text=True, capture_output=True,
+                              timeout=within(deadline))
+        within(deadline)
+        if logs.returncode:
+            raise RuntimeError("database log read failed: " + logs.stderr)
+        matches = re.findall(r"(?m)^([0-9]+)\|LOG:  connection received: host=" + re.escape(address) + r" port=([0-9]+)$", logs.stdout + logs.stderr)
+        assert len(matches) <= 1, "ambiguous connection identity"
+        return tuple(map(int, matches[0])) if matches else None
+
+    print(json.dumps(dict(phase="started", project=project, private_work=str(work))), flush=True)
+    try:
+        observation["engine"] = run("version", "--format", "{{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}")
+        observation["compose"] = run("compose", "version", "--short")
+        assert observation["engine"] == "28.4.0 linux/arm64"
+        assert observation["compose"] == "2.39.4-desktop.1"
+        run(*compose, "up", "--detach", "--wait", "postgres")
+        database = run(*compose, "ps", "--quiet", "postgres")
+        owned(database, "postgres")
+        network = run("network", "inspect", project + "_default", "--format", "{{.Id}}")
+        assert re.fullmatch("[a-f0-9]{64}", network)
+        assert run("network", "inspect", network, "--format", '{{index .Labels "com.docker.compose.project"}}') == project
+        observation.update(database_id=database, image_config=CONFIG,
+                           postgres_version=sql("SHOW server_version"))
+        initial_identity = sql("SELECT pg_postmaster_start_time()::text")
+        sql("CREATE TABLE public.prebackup_live_probe(id integer PRIMARY KEY); INSERT INTO public.prebackup_live_probe VALUES(7)")
+        control = begin_connection("live-control")
+        control_pid = int(send(control, "SELECT pg_backend_pid();"))
+        control_identity = process_identity(control_pid)
+        assert control_identity != "absent"
+
+        startup, address = create_worker("startup-delay", "psql",
+                                        ["-Atq", "-v", "ON_ERROR_STOP=1", "-c", "INSERT INTO public.prebackup_live_probe VALUES(17)"],
+                                        "-c post_auth_delay=8")
+        startup_pid, port = wait_for(lambda: connection_pid(address), deadline)
+        startup_identity = process_identity(startup_pid)
+        assert startup_identity != "absent", "startup process was not observed"
+        census = int(sql("SELECT count(*) FROM pg_stat_activity WHERE pid=" + str(startup_pid)))
+        remove_worker(startup)
+        after_remove = process_identity(startup_pid)
+        # These are measured outcomes, not an assumption that the census is empty.
+        observation["startup"] = dict(pid=startup_pid, client_address=address, client_port=port,
+                                      activity_rows=census, process_before=startup_identity,
+                                      process_after_client_removal=after_remove)
+        assert send(control, "SELECT 'same-control-startup';") == "same-control-startup"
+        wait_for(lambda: process_identity(startup_pid) == "absent", deadline)
+        observation["startup"]["eventually_absent"] = True
+        assert sql("SELECT id FROM public.prebackup_live_probe ORDER BY id") == "7", "startup client submitted SQL"
+
+        lock = begin_connection("exclusive-lock-control")
+        assert send(lock, "BEGIN; LOCK TABLE public.prebackup_live_probe IN ACCESS EXCLUSIVE MODE; SELECT 'lock-ready';") == "lock-ready"
+        dump, dump_address = create_worker("locked-pg-dump", "pg_dump",
+                                          ["--format=custom", "--no-owner", "--no-privileges", "--file=/tmp/unfinished.dump"])
+        def blocked_dump():
+            result = sql("SELECT row_to_json(a) FROM (SELECT pid,backend_start::text,client_addr::text,client_port,state,wait_event_type,wait_event,query FROM pg_stat_activity WHERE application_name='locked-pg-dump' AND datname='cloud_clicker_source' AND client_addr='" + dump_address + "'::inet) a")
+            if not result:
+                return None
+            row = json.loads(result)
+            assert row["client_port"] > 0 and row["pid"] != control_pid
+            if row["state"] == "active" and row["wait_event_type"] == "Lock" and "LOCK TABLE" in row["query"]:
+                return row
+            return None
+        backend = wait_for(blocked_dump, deadline)
+        dump_identity = process_identity(backend["pid"])
+        remove_worker(dump)
+        after_dump_remove = process_identity(backend["pid"])
+        still_blocked = blocked_dump()
+        assert still_blocked == backend and after_dump_remove == dump_identity, "dump did not retain the observed waiting backend"
+        assert send(control, "SELECT 'same-control-dump';") == "same-control-dump"
+        # Exact matching narrows this disposable-fixture target; it does NOT make
+        # pg_terminate_backend generation-safe in a concurrent production server.
+        terminated = sql("SELECT pg_terminate_backend(pid,3000) FROM pg_stat_activity WHERE pid=" + str(backend["pid"]) + " AND backend_start='" + backend["backend_start"] + "'::timestamptz AND client_addr='" + dump_address + "'::inet AND client_port=" + str(backend["client_port"]) + " AND application_name='locked-pg-dump'")
+        assert terminated == "t", "exact fixture backend did not terminate"
+        assert process_identity(backend["pid"]) == "absent", "backend remained after bounded termination"
+        assert send(lock, "COMMIT; SELECT 'lock-released';") == "lock-released"
+        assert send(control, "INSERT INTO public.prebackup_live_probe VALUES(42); SELECT pg_backend_pid();") == str(control_pid)
+        final_rows = sql("SELECT id FROM public.prebackup_live_probe ORDER BY id")
+        assert final_rows == "7\n42", "live data changed or control write failed"
+        assert process_identity(control_pid) == control_identity, "control process changed"
+        assert sql("SELECT pg_postmaster_start_time()::text") == initial_identity, "database restarted"
+        owned(database, "postgres")
+        observation["dump"] = dict(backend=backend, process_after_client_removal=after_dump_remove,
+                                   bounded_termination=True, process_after_termination="absent")
+        observation["live_control"] = dict(pid=control_pid, same_connection=True,
+                                           same_process=True, same_postmaster=True,
+                                           rows=[int(row) for row in final_rows.splitlines()])
+        within(deadline)
+        observation["objective_completed"] = True
+    finally:
+        for process in processes:
+            if process.poll() is None:
+                process.stdin.close()
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+        for container in workers:
+            owned(container, "worker", cleanup=True)
+            run("rm", "--force", "--volumes", container, cleanup=True)
+        run(*compose, "down", "--volumes", "--remove-orphans", cleanup=True)
+        for resource in ("container", "network", "volume"):
+            assert run(resource, "ls", "--quiet", "--filter", "label=com.docker.compose.project=" + project,
+                       cleanup=True) == "", "owned fixture cleanup incomplete"
+        observation["cleanup_complete"] = True
+        if observation["objective_completed"]:
+            shutil.rmtree(work)
+        else:
+            print(json.dumps(dict(objective_completed=False, private_work=str(work))), flush=True)
+    print(json.dumps(observation, sort_keys=True), flush=True)
+
+
+if __name__ == "__main__":
+    main()

@@ -9218,3 +9218,50 @@ release readiness follows. Construct durable full real-helper ownership/protocol
 pre-backup branch, packaging/all resources and checkpoint/previous-pair binding;
 do not rerun completed controls for reassurance or promote the prototype into
 acceptance. Whole nine-tier1.0 stays active; no push/deployment/archival/goal pause.
+
+## 2026-11-04 — Examine the pre-backup branch without restarting live Postgres
+
+After49b6113e, address the combined candidate's explicitly incompatible pre-backup
+DB teardown, not another unchanged three-population repetition. Predeclared the
+two populations/60s measured-work guard and exclusions in the owning plan before
+execution. New manual `probes/prebackup-live-database-probe.py.txt` uses only a
+uniquely owned declared tmpfs fixture, exact cached amd64 image/config, no pulls,
+ports, real data, application deployment or privilege change. Engine28.4.0 on
+Linux/arm64, Compose2.39.4-desktop.1; actual cached Postgres reports16.15.
+
+Actual42009 exits0 and cleans up. During an explicit libpq post_auth_delay=8,
+the observed process exists with ZERO pg_stat_activity rows for its PID. Exact
+worker removal leaves the same PID/kernel-start identity temporarily alive;
+it subsequently disappears without executing its offered INSERT. This adds
+RP-738: a successful empty session census does not establish physical quiescence.
+Delay is a controlled test population, not an observed ordinary backup incident.
+
+Actual pg_dump reaches an observed ACCESS SHARE relation lock wait. Exact worker
+removal leaves that same backend/process blocked. In this owned fixture only,
+matching its observed PID/start/address/port/application and requesting bounded
+pg_terminate_backend(...,3000) removes it. After lock release, original row7 and
+new control row42 are exact. A continuously connected separate control retains
+its PID/kernel start, while the exact database container and postmaster start
+remain unchanged. This demonstrates known-backend cancellation without whole-DB
+restart; it is neither the actual Go backup helper nor a complete abort.
+
+Actual-source f487d1 controls accept timely completion, reject exact/late guard
+completion and propagate permission/daemon errors. Retained v1 JSON matches
+executed source SHA2567091c5cf0e371d0f1bd75e4631db3b6e458c60d58804edf3857be1355851e5e4.
+Syntax, whitespace and retained binding pass. Root independently rechecks all3
+exact project resource inventories empty; all execution handles terminal and
+temporary fixture directory removed. Initial ordinary Docker version access was
+sandbox-denied before fixture execution; permitted exact probe succeeds. No
+invalid population, raised guard, incomplete measurement or suite-green claim.
+
+Production ownership remains unresolved: pg_terminate_backend ultimately signals
+a PID; its query predicate does not eliminate check/signal PID reuse. Log/address
+association here is an instrument, not durable registration. Startup completion,
+new/late clients, actual pgx snapshot exporter/helper/publication, all pre-backup
+effects and supported-host proof remain. Candidate/draft/plan/RP-738 reconcile
+these facts without adopting a recovery policy or changing runtime/CI/kernel.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.
+Complete after49b6113e research/tool/draft range needs fresh independent review;
+full CR4/Deployment/1.0 acceptance stays open. A text-only native Linux/amd64
+disposable-host availability question was delivered earlier this turn; unanswered,
+no host or external deployment authority inferred. Local work continues.

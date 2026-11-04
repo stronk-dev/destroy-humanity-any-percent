@@ -7,6 +7,34 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Pre-backup branch experiment,2026-11-04:** preserve the exact live Postgres
+container/postmaster and a continuously connected control session while examining
+two populations: a libpq client held by `post_auth_delay=8` before ReadyForQuery,
+and an actual pg_dump waiting for an exclusive table lock. Observe actual backend
+process identity as well as pg_stat_activity; empty activity is not assumed to
+mean no connection. Remove only each exact owned worker. For the already-visible
+dump, test separately identified backend termination with a bounded wait, then
+release the lock and verify unchanged data and the same control connection.
+All commands/errors and incomplete populations must fail loudly. Use only the
+cached pinned amd64 Postgres16 child, a unique declared tmpfs Compose fixture,
+no ports/pulls/production services. One60s measured-work guard, <=10s ordinary
+commands; cleanup <=15s PER command outside it. Record actual outcomes even if
+the hypothesis fails; guard exhaustion invalidates, never raises the bound.
+This tests a narrow SQL-side candidate, not queued creates/new connections,
+production session ownership/PID reuse, the actual backup helper/publication,
+all pre-backup effects, native-host or CR4 acceptance. No recovery implementation
+or new database permission is authorized.
+
+Actual42009 completes both populations at source7091c5cf: startup process live
+with census0 and still alive immediately after client removal, later absent
+without executing its INSERT; actual pg_dump remains lock-blocked after client
+removal, then bounded exact-fixture backend termination removes it. Same DB
+container/postmaster and continuously connected control survive, exact rows7/42.
+RP-738 adds startup/process lifetime to the protocol; SQL PID predicates are NOT
+generation-safe production ownership. Actual-source guard/error controls pass.
+Both populations and cleanup finish; no whole recovery or acceptance promotion.
+This complete research/tool/draft batch needs independent review.
+
 **Interrupted restore boundary, 2026-11-04 (RP-726):** real pg_restore COPY
 commits after exact owned client-container removal when its held database lock
 is released. The separately identified backend-termination arm prevents that
