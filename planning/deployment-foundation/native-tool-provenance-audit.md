@@ -77,7 +77,7 @@ The [manual comparison](probes/compose-standalone-comparison.py.txt) executes
 the actual cached2.39.4 binary both directly and through CLI28.4.0/plugin
 discovery, using the explicit standalone entry in the pinned
 [main](https://github.com/docker/compose/blob/a32dc3da722e6b2e4fbfc72e40b1a697c4686460/cmd/main.go).
-The corrected [v2 observation](compose-standalone-observation.v2.json) records complete
+The corrected [v3 observation](compose-standalone-observation.v3.json) records complete
 parsed-model equality for a minimal fixture and the actual current production
 base/rotation templates rendered by the existing release renderer. The real
 production model has7 services/4 networks/5 volume families; nothing is applied.
@@ -101,6 +101,16 @@ finite JSON serialization, rejects actual false and numeric1 replacements and
 accepts object-key reordering. All3 pairs are also byte-identical. Public models
 pass through Docker stdout/logs; final observations omit them. This is not a
 private-model handling/transport witness and makes no memory-only claim.
+
+The [v2 correction](compose-standalone-observation.v2.json) received bounded
+independent approval; root then found that default float parsing still merged
+distinct large JSON numbers before comparison. V3 preserves original model JSON
+across stdout, parses numeric tokens without conversion to floats and compares
+node types and values/text recursively. Only object-key order is ignored; numeric
+spellings remain exact. Actual precision, number/string and boolean/number
+counterexamples refuse, as do duplicate keys and nonfinite constants. The entire
+real v3 population passes; all3 actual successful stdout pairs remain identical.
+Prior observations/verdicts are retained and do not imply observed divergence.
 
 This supports a **proposal** to use one directly invoked Compose compiler,
 avoiding a separate native-linked CLI executable and plugin discovery. Compose's

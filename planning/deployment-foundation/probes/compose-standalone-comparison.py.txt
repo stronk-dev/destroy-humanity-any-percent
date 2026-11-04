@@ -74,7 +74,7 @@ for case in json.loads(pathlib.Path('/fixture/cases.json').read_text()):
     if case['success']:
         model=json.loads(result.stdout)
         require(isinstance(model,dict) and model.get('name')=='cc-standalone-model','invalid model shape')
-        models[case['id']]=model
+        models[case['id']]=result.stdout
         row['services']=sorted(model['services'])
     rows.append(row)
 require(time.monotonic()<deadline,'worker guard: INVALID')
@@ -87,10 +87,51 @@ def require(ok, message):
         raise RuntimeError(message)
 
 
+class JSONNumber(str):
+    """Exact JSON number token, distinct from a JSON string or boolean."""
+
+
+def model_object(pairs):
+    result = {}
+    for key, value in pairs:
+        require(key not in result, "invalid JSON model: duplicate key")
+        result[key] = value
+    return result
+
+
+def reject_constant(token):
+    raise RuntimeError("invalid JSON model: nonfinite constant " + token)
+
+
+def parse_model(text):
+    return json.loads(text, parse_int=JSONNumber, parse_float=JSONNumber,
+                      parse_constant=reject_constant, object_pairs_hook=model_object)
+
+
 def equal_models(left, right):
-    options = dict(sort_keys=True, separators=(",", ":"), allow_nan=False)
-    require(json.dumps(left, **options) == json.dumps(right, **options),
-            "complete parsed model mismatch")
+    # Only object-key ordering is ignored. Number tokens retain their full text.
+    require(type(left) is type(right), "complete parsed model mismatch")
+    if isinstance(left, dict):
+        require(left.keys() == right.keys(), "complete parsed model mismatch")
+        for key in left:
+            equal_models(left[key], right[key])
+    elif isinstance(left, list):
+        require(len(left) == len(right), "complete parsed model mismatch")
+        for a, b in zip(left, right):
+            equal_models(a, b)
+    else:
+        require(type(left) in (str, JSONNumber, bool, type(None)),
+                "invalid JSON model scalar")
+        require(left == right, "complete parsed model mismatch")
+
+
+def models_must_differ(left, right):
+    try:
+        equal_models(left, right)
+    except RuntimeError as error:
+        require(str(error) == "complete parsed model mismatch", "unexpected comparison error")
+    else:
+        raise RuntimeError("model comparator accepted a changed value/type")
 
 
 def main():
@@ -197,29 +238,36 @@ def main():
                 raise RuntimeError("worker incomplete: " + mode + " exit=" + exit_code + " " + " ".join(error_lines))
             observed = json.loads(run("logs", container))
             require(observed["objective_completed"] is True, "worker objective incomplete")
+            if mode in ("wrapped", "direct"):
+                observed['models'] = {name: parse_model(text) for name, text in observed['models'].items()}
             results[mode] = observed
         for case in cases:
             if case["success"]:
                 equal_models(results["wrapped"]["models"][case["id"]], results["direct"]["models"][case["id"]])
         production = results["direct"]["models"]["production_base"]
         require(len(production["services"]) == 7 and len(production["networks"]) == 4 and len(production["volumes"]) == 5 and production["services"]["gameserver"]["read_only"] is True, "production model did not exercise real boundaries")
-        for wrong in (False, 1):
+        for wrong in (False, parse_model("1")):
             altered = copy.deepcopy(production)
             altered["services"]["gameserver"]["read_only"] = wrong
-            try:
-                equal_models(production, altered)
-            except RuntimeError as error:
-                require(str(error) == "complete parsed model mismatch", "unexpected discrimination refusal")
-            else:
-                raise RuntimeError("model comparison accepted a real altered policy field/type")
+            models_must_differ(production, altered)
         equal_models(production, dict(reversed(list(production.items()))))
+        for left, right in (("9007199254740992.0", "9007199254740993.0"),
+                            ("1", '"1"'), ("1", "1.0")):
+            models_must_differ(parse_model(left), parse_model(right))
+        for invalid in ('{"value":1,"value":2}', '{"value":NaN}'):
+            try:
+                parse_model(invalid)
+            except RuntimeError as error:
+                require(str(error).startswith("invalid JSON model:"), "unexpected parse error")
+            else:
+                raise RuntimeError("ambiguous/nonfinite model accepted")
         byte_equal_pairs = sum(a['stdout_sha256'] == b['stdout_sha256']
                                for a, b in zip(results['wrapped']['rows'], results['direct']['rows'])
                                if a['case'] in results['direct']['models'])
         for mode in ("wrapped", "direct"):
             results[mode].pop("models")
         require(time.monotonic() < deadline, "work guard: INVALID")
-        observation = dict(schema_version=2, objective_completed=True, research_only=True, project=project, engine=engine, fixture_image=image, binary_inputs=metadata["binaries"], fixture_hashes=fixture_hashes, cases=cases, results=results, profiles=profiles, model_comparisons=sum(c['success'] for c in cases), byte_equal_pairs=byte_equal_pairs, policy_field_change_refused=True, boolean_numeric_change_refused=True, object_key_order_accepted=True, source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(), boundary_source_sha256=hashlib.sha256(BOUNDARY.read_bytes()).hexdigest(), guards=dict(work=WORK_SECONDS, command=COMMAND_SECONDS, cleanup=CLEANUP_SECONDS, build=BUILD_SECONDS), limitations=["Desktop ARM64 fixture with AMD64 tool execution; not supported native Linux/amd64", "Configuration compilation only; no service applied or native supervisor proved", "Synthetic public configuration and placeholder image references; no release artifact eligibility", "Public models traverse Docker stdout/logs; only final observation excludes models", "No private-model transport or memory-only handling guarantee", "No operator Docker config/credentials/network/Engine socket available inside workers", "No rights/artifact/profile adoption or acceptance inferred"])
+        observation = dict(schema_version=3, objective_completed=True, research_only=True, project=project, engine=engine, fixture_image=image, binary_inputs=metadata["binaries"], fixture_hashes=fixture_hashes, cases=cases, results=results, profiles=profiles, model_comparisons=sum(c['success'] for c in cases), byte_equal_pairs=byte_equal_pairs, policy_field_change_refused=True, boolean_numeric_change_refused=True, object_key_order_accepted=True, number_precision_change_refused=True, number_string_change_refused=True, number_token_spelling_change_refused=True, duplicate_json_keys_refused=True, nonfinite_json_refused=True, source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(), boundary_source_sha256=hashlib.sha256(BOUNDARY.read_bytes()).hexdigest(), guards=dict(work=WORK_SECONDS, command=COMMAND_SECONDS, cleanup=CLEANUP_SECONDS, build=BUILD_SECONDS), limitations=["Desktop ARM64 fixture with AMD64 tool execution; not supported native Linux/amd64", "Configuration compilation only; no service applied or native supervisor proved", "Synthetic public configuration and placeholder image references; no release artifact eligibility", "Public models traverse Docker stdout/logs; only final observation excludes models", "No private-model transport or memory-only handling guarantee", "No operator Docker config/credentials/network/Engine socket available inside workers", "No rights/artifact/profile adoption or acceptance inferred"])
         completed = True
     finally:
         for container, mode in reversed(containers):

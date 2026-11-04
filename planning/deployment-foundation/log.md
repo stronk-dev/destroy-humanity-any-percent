@@ -11548,3 +11548,41 @@ Current dossier/plan explicitly distinguish logged public models from omitted
 final models. The retained v1 is not restamped. All handles terminal; complete
 seven-path original-plus-correction after539e1bb4 awaits independent re-review.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — V2 bounded study approved; root finds numeric parsing edge
+
+APPROVED bounded research/tool, complete seven-path union
+539e1bb4b8500f75a2e6d93e1daa7a6beac59ff0..
+5f6aefa65f6136b95a99c1e730891463297dac37.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. Full actual Docker
+population/cleanup, old bool/int failure/current refusal, key-order/nonfinite
+controls and no-overwrite independently execute. Actual3 positive stdout pairs
+are byte-identical. Source/observation bindings and history-prefix checks pass.
+No tool/profile/rights/native/release adoption or private-model proof follows.
+
+Subsequent root counterexamplee36f36 extends RP-764: default float parsing loses
+the difference between JSON9007199254740992.0 and9007199254740993.0 before the
+v2 comparator sees them. The actual observed compiler pairs still match bytes;
+this is another oracle edge, not observed compiler divergence. V2 verdict and
+data stay intact rather than being silently rewritten or overstated.
+
+Correction preserves original model JSON text across worker stdout transport,
+then parses numbers into distinct exact-token nodes. Structural comparison
+ignores only object-key order; boolean/string/number kinds and numeric token
+text remain distinct. Duplicate keys and nonfinite constants refuse instead of
+being silently discarded/coerced. Helper43599a rejects precision, bool/number
+and number/string counterexamples while accepting reordered object keys.
+Full v3 population and complete original-plus-corrections review remain next.
+
+Full actual v3 run23b44b/60658→3e6b15 completes all3 model pairs/8 bad-input
+refusals/2 binary controls and owned cleanup. Both real policy-field mutations,
+key-order acceptance, exact-number/number-string/spelling changes and duplicate/
+nonfinite controls execute; all3 real positive stdout pairs remain byte-identical.
+V3 observation13,194bytes/SHA68865f685539c10c1185acee18e1e774375f107b3b5a3a59ff64b483277df8df;
+probe19,743bytes/SHAc292c825bb1cd5995f222c1e573b7aa2d89d15edf5ffac8dcb56f24c74bcd0d0.
+0acf36 verifies source binding and complete/control fields. No guard or product
+criterion changed. Current dossier/plan name v3; v1/v2 remain historical evidence.
+All root/review handles terminal. Complete eight-path original-plus-corrections
+after539e1bb4 needs independent review; RP-764 stays OPEN until that verdict.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.
