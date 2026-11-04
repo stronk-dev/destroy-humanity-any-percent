@@ -8,56 +8,30 @@
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
 **Native profile construction,2026-11-04:**
-Most recent re-review through34a60697 confirms the prior volume/graph/E07/cache
-corrections but requires W00 shared-Go-leaf mode, cross-UID leaf traversal and
-post-exec result-FD transport, plus precise V00 initial nullable keys. Forward
-correction now specifies those; complete-union re-review is next. No native
-producer/profile/host/adoption or release proof is inferred.
+Complete corrected proposal is independently TECHNICALLY APPROVED, exact union
+c58f8e48..224fc0e2 plus4118c4d8..a836e92b; Headcount editorial excluded.
+The owning log preserves all negative verdicts and actual diagnostic execution.
+SP1–SP8 plus the [adapter companion](../../rfc/deployment-native-supervisor-adapters.md)
+now define native bootstrap, exact stage/Engine/SQL/HTTP/file/native plans,
+immutable creation/start, source/target identities, worker FD/control/results,
+first-volume binding, scheduler freeze/import/cache, protected staging and final
+ledger projection. This is technical coherence, not implemented/runtime evidence.
 
-Latest complete-union review through224fc0e2 is CHANGES REQUIRED: temporary
-worker control/FD transport, first-volume physical-binding bootstrap, finite
-child-graph/E07 start timing, and fencing cache admission. Forward W00/V00 and
-SP5/A1 corrections now specify those paths; exact whole-range re-review is next.
-The reviewer independently reproduces RP-758's matching-positive/unrelated-negative
-outcomes and passes overlay vet. No technical approval or runtime correction.
+Next prepare the exact CLI/Compose provenance/rights/artifact inventory and
+DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit
+architecture/host/artifact-floor adoption and reconcile parent bodies before
+production implementation. Then construct native producers/adapters/service
+control with complete dependent review and actual SP8/native-host/manifest R-006
+proof. The currently cached tools remain research-only, not approved shipping
+provenance. No empty registry/table validation substitutes for that work.
+RP-754/756/757 and host/adoption/producer/R-006 gates remain OPEN.
 
-Independent technical review is **CHANGES REQUIRED** for61f2461f: pre-admission
-cycles, immutable create/start identity, incomplete exact stage/adapter table,
-and overbroad single-manifest wording. Forward SP1/SP2/SP4 corrections now split
-native admission observations/input validation from execution, provide native
-post-admission worker-image acquisition, separate Container from Start, and bind
-toolchain versus source/target runtime separately. Those corrections need review.
-The [adapter companion](../../rfc/deployment-native-supervisor-adapters.md) now
-proposes that finite population, closed wire/FD/cache schemas and terminal
-classifiers. Native Go alone dispatches Docker mutations; Compose is the pinned
-model/compiler, and workers have no mutation proxy. It includes v1-install
-handoff, source runtime-work import, trusted in-process invocations, actual
-namespace-init closure and private application completion. All new mechanisms/
-assumptions need whole-range re-review and actual native conformance; no whole-
-profile technical approval/adoption. Next independent review of the complete
-corrected union, addressing any fired criterion before an adoption request.
-
-Actual alert-helper diagnostic now fires RP-758: matching-positive HTTP delivery
-passes, but an unrelated delivery with ZERO matching test delivery also returns
-helper success (33a7fa/3364bd). This is an actual helper plus modeled-manager/
-local-webhook boundary, not real Alertmanager. H06 proposes exact native/operator
-observation; no receiver protocol/key is assumed. Source artifacts retain the
-negative; no current delivery/release claim may cite aggregate counts as exact
-nonce attribution. See source-bound observation and owning log.
-[draft SP1–SP8](../../rfc/deployment-native-supervisor-profile.md) proposes the
-one-shot operator-owned native supervisor, retained original lock/daemon handle,
-isolated broker/gateway jobs and all eight typed work subjects/results. It covers
-the complete existing call map, including scheduler freeze/export, all seven
-services/four networks/five volume families, startup SQL and changed Postgres
-image handling. Source checking exposes the final-success metric ordering cycle;
-the draft removes the CLI writer and proposes a verified-ledger projector in the
-EXISTING backup service. That is an explicit reporting-contract change, not an
-already allowed move before Finished. New native/namespace prerequisites, tool
-artifacts, cache and service control likewise require review/adoption and parent
-reconciliation. RP-757 records the open proposal. After exact specification and
-independent review, actual native producer conformance/adoption remain under OP9;
-no production patch is authorized by
-this draft. RP-754/RP-756 and clean-host/R-006 remain open.
+RP-758 is independently reproduced: matching-positive local HTTP delivery
+passes, but unrelated delivery with ZERO matching nonce also returns helper
+success. Manual probe/observation source-bound; real helper plus modeled-manager/
+local-webhook only, not real Alertmanager. H06 proposes native/operator attribution,
+not a silent runtime remedy. That exact-delivery defect stays OPEN; aggregate
+counts cannot establish nonce delivery. No feature or release gate promoted.
 
 **Carrier result,2026-11-04:** both native populations completed in the
 [source-bound observation](authority-carrier-observation.v1.json). The actual

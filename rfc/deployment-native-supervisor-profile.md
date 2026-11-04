@@ -1,6 +1,6 @@
 # RFC: Native Deployment Supervisor Profile
 
-- **Status:** draft — CHANGES REQUIRED at61f2461f; forward corrections and concrete adapter companion pending re-review; no adoption/implementation authority
+- **Status:** draft — complete corrected proposal independently technically approved througha836e92b; adoption/native producers/conformance pending; no implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Operation Evidence](deployment-operation-evidence.md), OP9; [Current Release Authority](deployment-current-release-authority.md), CR4/CR6; [Deployment Foundation](deployment-foundation.md), DP1/DP5/DP6
@@ -24,7 +24,8 @@ an unknown call refuses before dispatch, but an empty/unusable registry fails
 conformance rather than qualifying as a safe implementation.
 The [adapter companion](deployment-native-supervisor-adapters.md) now supplies
 the proposed finite plan expansion, request/body/terminal policies and private
-IPC. It is unreviewed construction for independent finding3, not its resolution.
+IPC. The complete corrected union is independently technically approved through
+a836e92b; the owning log retains the exact ranges and original negative verdicts.
 This proposal cannot close OP9 or be presented for adoption until the complete
 specification and native producer prerequisites pass their required review/gates.
 

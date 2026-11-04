@@ -10477,3 +10477,32 @@ No redundant software rerun or new runtime/CI claim. Next complete corrected-uni
 independent re-review; then actual producer/native conformance and explicit
 adoption, never table-only acceptance. RP-754/756/757/758 and R-006 remain OPEN;
 no host/secret/publication/deployment/archival action or goal pause.
+
+## 2026-11-04 — Complete native adapter proposal technically approved
+
+APPROVED, technical specification and bounded research-tool scope only.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing its completed verdict. Exact complete union:
+c58f8e4854e13edff24cbb79bd95e46bbc085284..
+224fc0e2e17f8d8993f0971ade6fb5fc9903f66d plus
+4118c4d8dfd48be110f99c21f79e068b9004ef07..
+a836e92b1dc7840b49e28f48345855bc0d46735f.
+Unrelated Headcount editorial excluded; all earlier negative verdicts retained.
+
+Reviewer inspects complete construction/callgraph/OP/CR/DP: prior admission,
+immutable binding, producer identity, volume bootstrap, closed child graph,
+fencing cache and W00 shared/private modes, cross-UID leaf and post-exec result
+transport are resolved. No further blocking positive/error-path contradiction.
+Both exact-range whitespace checks pass; checkout clean. Unchanged actual alert
+helper/probe/artifact preserve independently executed matching PASS/unrelated
+negative FAIL and overlay vet PASS; no redundant suite or new runtime evidence.
+
+Approval is technical coherence, not native producer conformance, actual Docker/
+namespace/FD behavior, packaging, adoption, implementation authority, feature/
+R-006 acceptance, archival or release. RP-757 remains open through architecture/
+parent/host/artifact adoption and construction; RP-758 remains an unfixed bounded
+helper defect. Next prepare exact tool provenance/rights/artifact inventory and
+DP7 projection/reboot-cache adoption evidence required by SP1/SP6, then obtain
+explicit architecture/host-floor adoption and reconcile parents before production
+implementation. Supported native host and full SP8/R-006 stay required; no
+version/CI/gameplay/copy change, publication, deployment or goal pause.

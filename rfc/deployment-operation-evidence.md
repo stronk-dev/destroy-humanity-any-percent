@@ -382,9 +382,9 @@ in-place successor mutation under CR6. No retry, new window or key reconstructio
 The [native supervisor profile](deployment-native-supervisor-profile.md) now
 proposes the concrete one-shot packaging, all eight typed subjects/results,
 stage mediation, native lock/daemon binding and scheduled-service handoff.
-Independent review requires changes through34a60697: forward shared-leaf/mode/
-result-channel corrections require whole-union re-review. Earlier bootstrap,
-immutable-binding, first-volume and closed-graph/cache defects are corrected.
+The complete corrected profile/adapter union is independently technically approved
+througha836e92b; exact ranges and prior negative verdicts remain in the owning log.
+That approval establishes proposed technical coherence, not native conformance.
 It is a draft pending completed specification, adoption and actual producer conformance;
 its existence does not satisfy the gates below. Its explicit namespace/native-host,
 tool-artifact and release-metric projection changes require parent reconciliation.
