@@ -21,6 +21,14 @@ admission and successful/refusal runtime/native proof before adoption/building.
 Next specify/prove OP9 against the complete mutation map, not another raw
 pg_dump repeat, invented certificate or standalone tracking validator.
 
+Original six-path b74d02a7..7a7e7b39 review is CHANGES REQUIRED for RP-746–748:
+proof references need unique anchors, installation needs explicit non-Started
+admission substitutions, and failed-before-fence rollback needs stage-dependent
+phase coverage. Forward body correction addresses all three in proposal/parent,
+including receipt/proof temporal order and historical-reference semantics.
+Complete original-plus-correction needs independent re-review; no format/proof
+is adopted or implemented, and OP9's native producer/profile gates remain.
+
 **Recovery-contract review,2026-11-04:** independent review at c5419034 finds
 RP-741–744: universal healthy-current admission conflicts with partial-source
 rollback; Finished lacks whole-helper closure; cleanup has no lawful pre-fence

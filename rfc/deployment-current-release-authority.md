@@ -228,6 +228,11 @@ the referenced target/completion proofs and actual parent identity/smoke gates.
 All rows repeat recovery_of unchanged. Release predecessor_fence_sha256 is
 unchanged; rollback changes it only once, null to its recovery_fenced value,
 then repeats it. Completion proofs are never inferred from a failure result.
+Repeated proof/descriptor hashes keep their unique first-introduction anchor
+under Operation Evidence OP2/OP6; later rows do not reanchor the same immutable
+object to a new prefix. Rollback phase coverage follows its actual reached
+stage, including failed-before-fence attempts; missing authorized execution
+evidence is never waived after recovery_fenced.
 
 Rejected requests before a valid Started row return a typed error without manufacturing a tuple
 or an operation record. Failed writes remain failures; no success, rollback authority, or backup
@@ -435,8 +440,8 @@ bindings, terminal operation actors/streams and explicit retained-service/output
 ownership. Neither counts, self-reported booleans, a label nor file presence is
 sufficient. Once completion is sealed, only its final ledger append and inert
 control-plane teardown may follow; no old metric writer or delayed protected
-request can run afterward. The proof is synced before its referring event.
-Its covered-prefix hash ends immediately BEFORE that referring event; it never
+request can run afterward. The proof is synced before its first-introduction anchor event.
+Its covered-prefix hash ends immediately BEFORE that unique anchor; it never
 hashes an event containing its own hash. Reusing an earlier completion proof at
 a later admission needs a verified predecessor-fence binding to the current
 prefix, not a circular hash or an unbound sidecar. Prefix changes, missing work

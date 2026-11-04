@@ -9543,3 +9543,40 @@ proposal author/first filter. Recorded by: Codex root. Complete afterb74d02a7
 six-path proposal needs independent technical review; OP9/profile and owner
 adoption remain, not product implementation. RP-745 records the prerequisite.
 No code/CI/kernel/copy/policy change, push, deployment, archival or goal pause.
+
+## 2026-11-04 — Evidence-contract review finds anchor/install/phase conflicts
+
+Review by: independent Codex `/root/operation_evidence_contract_review`.
+Recorded by: Codex root, transcribing its returned verdict. Complete six-path
+b74d02a735403e79c2e90147c402fe1ffe5ce8ba..7a7e7b39a71f29dec28c0f70039060a4a550a3e2
+is **CHANGES REQUIRED — serialization contract**. Original verdict is preserved.
+
+- RP-746/P1: the same immutable predecessor proof repeats at later CR3 events
+  but OP6 demanded a new immediate prefix at every reference.
+- RP-747/P1: OP7 installation creates no Started yet failed to substitute all
+  OP2 Started-dependent prefix/date/publication conditions.
+- RP-748/P2: failed-before-fence rollback cannot open execution but OP6 required
+  both logs for its completion/inherited retry evidence.
+
+Independent6c3e0d exits0 for complete scope, references and whitespace; product/
+CI untouched. Whole normative diff/parent reviewed directly, no mirrored
+validator/unrelated suite. No tracked edits/commits/fixtures; all handles terminal.
+
+Forward correction gives every descriptor/closure its ONE unique introduction
+anchor, scopes native reobservation to the proper boundary rather than repeated
+historical fields, and forbids stale reuse across operations. Initial-install
+descriptor publication/first work admission explicitly substitutes for Started;
+handoff separately anchors THROUGH the actual final v1 install row. Protected
+effects still require admitted authority. Stage-derived phase coverage requires
+only fencing before recovery_fenced and BOTH logs after it, with the current
+predecessor proof's cleanup-only exception. Authorized no-work phases require
+real sealed empty-work logs; omitted/torn/lost streams never become empty.
+Receipt→terminal row→phase closure→proof→unique ledger-anchor dates are explicit.
+Parent's CR3/CR6 bodies reconcile the anchor/coverage rule, not append a waiver.
+
+OP9 remains deliberately open; no native receipt/profile, permission, actual
+helper conformance, adoption or usable recovery implementation follows. Root
+checks full containing diff and all affected ordinary/failure/retry/install
+traces; no software suite for this prose correction. Review by: Codex root,
+corrective author first filter. Recorded by: Codex root. Complete original plus
+containing five-path correction needs independent technical re-review.

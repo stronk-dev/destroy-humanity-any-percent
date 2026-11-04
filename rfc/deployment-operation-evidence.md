@@ -75,27 +75,31 @@ must validate the approved producer/profile and OP8's graph, not just hashes.
 | `server_id`, `operation_id` | configured server UUID, new operation UUID |
 | `action`, `recovery_of` | CR3 action and nullable ancestry UUID |
 | `source`, `target` | exact CR3 identities |
-| `anchor_prefix_bytes`, `anchor_prefix_sha256` | Counter and Hash of the COMPLETE accepted release-ledger prefix BEFORE Started |
+| `anchor_prefix_bytes`, `anchor_prefix_sha256` | Counter and Hash of the COMPLETE accepted release-ledger prefix BEFORE its unique Started; OP7 gives the install-only substitution |
 | `profile_sha256` | Hash of the release-bound OP9 producer/isolation profile |
 | `producer_sha256` | Hash of the exact release-owned supervisor helper artifact |
 | `producer_manifest_sha256` | Hash selecting one exact source/target bundle (target only for install); both helper and profile must be declared artifacts of THAT validated bundle |
 | `host_boot_id`, `engine_binding_sha256` | boot UUID and OP9 native daemon-generation binding Hash; persistent Engine ID alone is insufficient |
 | `scope_id`, `scope_started_at`, `scope_binding_sha256` | ID, Date and OP9 actual supervisor-scope binding Hash |
-| `created_at` | Date, no later than Started |
+| `created_at` | Date, no later than its unique Started; OP7 gives the install-only admission date |
 
 The approved native profile defines how scope/daemon bindings are independently
 observed, and how the caller attaches to the actual surviving lock owner. A PID,
 label, unit name or self-reported protocol version is not that producer. No
-profile is implicitly approved by supplying its hash. Descriptor publication
-does not admit worker effects: the exact referring Started must be synced first.
+profile is implicitly approved by supplying its hash. For release/rollback,
+descriptor publication does not admit worker effects: the exact Started must
+be synced first. Installation uses OP7's explicit admission instead.
 Actual executing helper bytes and scope must match the selected artifact/profile,
 not merely a caller's copy of its expected hash or an unrelated third bundle.
+For release/rollback the descriptor's anchor is its ONE Started event, not each later
+row repeating supervision_sha256. Later references verify unchanged binding to
+the original anchor; they never demand a hash of a later prefix.
 
 Add required non-null `supervision_sha256` to EVERY CR3 v2 event, immutable for
 that operation. It refers to this object and matches its entire tuple. The
 same surviving supervisor may govern a related recovery chain, but each new
 operation gets its own descriptor/UUID; a new descriptor cannot resurrect lost
-authority for the preceding work. Before Started, only explicitly inert native
+authority for the preceding work. For CR3 actions before Started, only explicitly inert native
 bootstrap/read-only observation is allowed; its complete safety profile is OP9.
 
 ## OP3 — Phase work logs
@@ -183,7 +187,10 @@ close a temporary job or unknown writer. Refusal is terminal ONLY when the
 native observer proves no continuing effect; transport errors/unknown replies
 are not terminal refusals. A failed job can be terminal without being successful.
 `native_evidence_sha256` refers to the exact typed receipt schema/producer in OP9,
-not free text or a boolean. Terminal Date cannot precede admission/binding.
+not free text or a boolean. Terminal Date cannot precede admission/binding or
+its native evidence; work_terminal cannot precede its referenced receipt.
+Phase closure then precedes its Closure, which precedes its unique ledger
+anchor. These checks supplement each stream's nondecreasing dates.
 
 Minimum observer obligations are normative:
 
@@ -208,14 +215,30 @@ Minimum observer obligations are normative:
 `observed_at`.
 
 `artifact_type` is `predecessor_fence` or `operation_completion`; they are NOT
-interchangeable. Prefix byte count/Hash cover the exact accepted ledger bytes
-immediately BEFORE the referring CR3 event. No own-event/self-hash cycle.
+interchangeable. Each proof has ONE first-introduction anchor:
+
+| Object | Unique anchor |
+|---|---|
+| Ordinary-release predecessor_fence | That operation's Started, where its hash first becomes non-null |
+| Rollback predecessor_fence | That operation's recovery_fenced, where its hash first becomes non-null |
+| operation_completion | That operation's Finished, where its hash first becomes non-null |
+
+Prefix byte count/Hash cover the exact accepted ledger bytes immediately BEFORE
+THAT unique anchor. Later CR3 rows repeating the immutable hash validate it
+against the original anchor/prefix and exact tuple, WITHOUT reanchoring. A later
+operation needs its own new current-prefix proof; repetition within one operation
+does not permit stale-proof reuse across operations. No own-event/self-hash cycle.
+Repeating the reference is historical validation, not a demand to recreate a
+predecessor runtime that lawful release/restore has replaced. Recheck native
+facts at the admission/verification boundary that requires them, while retaining
+the original proof's anchored observation.
 `covered_operations` is the nonempty ancestry-ordered unique UUID list covered
 by the proof; each has its required phase logs in `logs`. For a pure initial v1 predecessor
 handoff it is empty, `logs` is empty and legacy_handoff_sha256 is non-null.
 Otherwise legacy_handoff_sha256 is null.
-Closure Date is no earlier than any included row/receipt/native observation and
-no later than its referring CR3 event. Validate the accepted prefix through that
+Closure Date is no earlier than its supervisor binding, included legacy handoff
+and any included row/receipt/native observation, and
+no later than its unique anchor event. Validate the accepted prefix through that
 boundary; a valid hash of a stale, unrelated or longer prefix is insufficient.
 
 Each `logs` element has exactly `operation_id`, `phase`, `supervision_sha256`, `bytes`,
@@ -246,11 +269,39 @@ After the exact recovery_fenced event is synced, rollback may open a NEW executi
 log; it may not reopen fencing or change its predecessor fence. Thus establishing
 old-work closure does not deadlock the restoration it authorizes. A predecessor
 proof does NOT declare current execution complete. An operation_completion covers
-ONLY its own operation: release execution, or both rollback fencing/execution,
+ONLY its own operation: release execution, or the rollback phases actually
+authorized by history under the matrix below,
 and verified retained disposition before its Finished; it cannot
 stand in for a later admission's current-prefix predecessor_fence. Later proofs
 may reference immutable earlier sealed logs after validating the full ancestry,
 not copy an earlier hash into an unrelated field.
+
+Required phase coverage is derived from the exact accepted history, never from
+which files the producer happens to list:
+
+| Covered operation and reached stage | Required finalized phase logs |
+|---|---|
+| Release with Started, including pending/pre-backup failure | execution |
+| Rollback with Started but NO recovery_fenced | fencing only; execution work is forbidden |
+| Rollback with recovery_fenced, even if execution has admitted no work yet | fencing AND execution |
+| Supervised initial-install attempt under OP7 | install |
+
+For the CURRENT rollback's predecessor_fence only, include its completed fencing
+phase, not its future execution. For its later operation_completion and as a
+predecessor covered by a retry, apply the full reached-stage matrix. A pre-fence
+failed/administratively interrupted rollback can therefore have a fencing-only
+completion; it still does not close its governing release or permit reset.
+Once recovery_fenced exists, missing execution evidence cannot be omitted under
+that exception. A no-work execution phase needs an explicitly sealed empty-work
+log from the valid live authority; file absence is not proof of no work.
+
+The native profile must account for the complete phase inventory. Reject missing,
+unlisted/unsealed authorized logs, execution admission before recovery_fenced,
+and extra phase work not authorized by history. A valid supervisor may seal an
+authorized no-work phase with its required closure records; lost authority or a
+torn stream cannot be repaired into an empty log. This matrix applies equally
+to recovery_fence failure, interrupted_rollback administrative failure, inherited
+predecessor closure and current completion.
 
 ## OP7 — Initial installation handoff
 
@@ -274,14 +325,24 @@ by self-reporting compatibility. Unsupervised historical installations remain
 outside this handoff; legacy-host adoption needs its separately accepted route.
 
 The install-only supervision descriptor uses action `install`, recovery_of null,
-source null and target equal to installed identity; these are its ONLY exceptions
-to OP2. It never refers from a CR3 v2 Started. Its anchor is the prior accepted
-v1 prefix (possibly empty); its unique operation UUID identifies the work stream,
+source null and target equal to installed identity. It also REPLACES OP2's
+Started-dependent prefix/date/publication conditions: anchor is the complete
+accepted v1 prefix immediately before that attempt's first work admission
+(possibly empty), created_at is no later than that admission, and the descriptor
+must be synced before it. That admission is allowed only by the governed
+clean-host install workflow under the shared lock/native profile, never merely
+by a descriptor's presence. Its authority prefix matches that anchor. No protected
+installer effect precedes descriptor publication AND this admitted work record.
+No CR3 v2 Started is invented; its unique operation UUID identifies the work stream,
 not a fabricated release-ledger event. Fresh installation must check prior
 supervised install descriptors/work logs under the operator lock: empty v1
 history does not erase an unfinished installer or permit a clean-install bypass.
 Existing pending-install recovery remains outside this amendment. OP9 must
 specify bootstrap before this can be implemented.
+The InstallHandoff itself anchors THROUGH the final successful v1 install row,
+not before a nonexistent Started. Its Date is no earlier than all covered
+attempt receipts/rows; a later predecessor_fence references it only after full
+OP7 validation, without moving that v1 anchor.
 
 ## OP8 — Producer and consumer order
 
