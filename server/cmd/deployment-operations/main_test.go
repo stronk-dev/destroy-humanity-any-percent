@@ -183,22 +183,22 @@ func TestCleanupJournalCommandConsumesCompleteOutputAndExitStatus(t *testing.T) 
 	before := journalCommandContext
 	defer func() { journalCommandContext = before }()
 	at := time.Date(2026, 10, 13, 0, 0, 0, 0, time.UTC)
-	for _, mode := range []string{"valid", "empty", "truncated", "failed", "warning"} {
+	for _, mode := range []string{"valid", "empty", "truncated", "failed", "warning", "access-warning"} {
 		t.Run(mode, func(t *testing.T) {
 			journalCommandContext = func(ctx context.Context, name string, args ...string) *exec.Cmd {
 				joined := strings.Join(args, " ")
 				if name != "journalctl" || !strings.Contains(joined, "--directory=/fixture/journal") ||
 					!strings.Contains(joined, fmt.Sprintf("--since=@%d", at.Add(-14*24*time.Hour).Unix())) ||
 					!strings.Contains(joined, "CONTAINER_TAG=cloud-clicker-gameserver") ||
-					!strings.Contains(joined, "--quiet") || strings.Contains(joined, "--grep") || strings.Contains(joined, "--lines") {
+					strings.Contains(joined, "--grep") || strings.Contains(joined, "--lines") {
 					t.Fatal("journal command omitted its subject, full retained window or JSON/no-entry contract")
 				}
-				return exec.CommandContext(ctx, os.Args[0], "-test.run=^TestCleanupJournalCommandProcess$", "--", mode)
+				return exec.CommandContext(ctx, os.Args[0], append([]string{"-test.run=^TestCleanupJournalCommandProcess$", "--", mode}, args...)...)
 			}
 			cursor, err := readCleanupJournal("/fixture/journal", at)
 			if mode == "valid" && (err != nil || len(cursor) != 64) ||
 				mode == "empty" && (err != nil || cursor != "") ||
-				(mode == "truncated" || mode == "failed" || mode == "warning") && err == nil {
+				(mode == "truncated" || mode == "failed" || mode == "warning" || mode == "access-warning") && err == nil {
 				t.Fatalf("command output/exit did not discriminate mode=%s cursor=%q error=%v", mode, cursor, err)
 			}
 		})
@@ -207,10 +207,16 @@ func TestCleanupJournalCommandConsumesCompleteOutputAndExitStatus(t *testing.T) 
 
 // A controlled subprocess, not a systemd or Docker-driver claim.
 func TestCleanupJournalCommandProcess(t *testing.T) {
-	if len(os.Args) < 2 || os.Args[len(os.Args)-2] != "--" {
+	mode, arguments := "", []string{}
+	for index, argument := range os.Args {
+		if argument == "--" && index+1 < len(os.Args) {
+			mode, arguments = os.Args[index+1], os.Args[index+2:]
+			break
+		}
+	}
+	if mode == "" {
 		return
 	}
-	mode := os.Args[len(os.Args)-1]
 	if mode != "empty" {
 		fmt.Println(`{"CONTAINER_TAG":"cloud-clicker-gameserver","__CURSOR":"fixture","__REALTIME_TIMESTAMP":"1","MESSAGE":"{\"event_class\":\"composed_job_failure\",\"job_name\":\"credential_cleanup\"}"}`)
 	}
@@ -220,7 +226,7 @@ func TestCleanupJournalCommandProcess(t *testing.T) {
 	if mode == "failed" {
 		os.Exit(1)
 	}
-	if mode == "warning" {
+	if mode == "warning" || mode == "access-warning" && !containsJournalArgument(arguments, "--quiet") {
 		fmt.Fprintln(os.Stderr, "fixture exclusion")
 	}
 	os.Exit(0)

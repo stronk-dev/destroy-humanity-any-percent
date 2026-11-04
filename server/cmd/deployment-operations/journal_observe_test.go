@@ -13,7 +13,7 @@ import (
 )
 
 func TestJournalObserveUsesRequestedDirectoryAndRefusesIncompleteCollection(t *testing.T) {
-	for _, mode := range []string{"valid", "warning", "failed", "truncated", "empty"} {
+	for _, mode := range []string{"valid", "warning", "access-warning", "failed", "truncated", "empty"} {
 		t.Run(mode, func(t *testing.T) {
 			directory := t.TempDir()
 			argumentsPath := filepath.Join(directory, "arguments.json")
@@ -67,7 +67,7 @@ func TestJournalObserveUsesRequestedDirectoryAndRefusesIncompleteCollection(t *t
 			if err := json.Unmarshal(argumentBytes, &arguments); err != nil {
 				t.Fatal(err)
 			}
-			for _, required := range []string{"--directory=" + directory, "--since=@" + fmt.Sprint(started.Unix()), "--output=json", "--all", "--no-pager", "--quiet"} {
+			for _, required := range []string{"--directory=" + directory, "--since=@" + fmt.Sprint(started.Unix()), "--output=json", "--all", "--no-pager"} {
 				if !containsJournalArgument(arguments, required) {
 					t.Errorf("journal collection omitted exact argument %q", required)
 				}
@@ -110,7 +110,9 @@ func TestJournalObserveCommandProcess(t *testing.T) {
 		fmt.Println(`{"SYSLOG_IDENTIFIER":"cloud-clicker-gameserver","MESSAGE":"fixture first"}`)
 		fmt.Println(`{"SYSLOG_IDENTIFIER":"cloud-clicker-caddy","MESSAGE":"fixture second"}`)
 	}
-	if mode == "warning" {
+	// journalctl suppresses inaccessible-journal warnings with --quiet even
+	// when it can still return records from other readable journal files.
+	if mode == "warning" || mode == "access-warning" && !containsJournalArgument(arguments, "--quiet") {
 		fmt.Fprintln(os.Stderr, "fixture incomplete collection: recovery_code=private")
 	}
 	if mode == "failed" {

@@ -1215,7 +1215,10 @@ interval, sample count, observed bytes, peak bytes/day, filesystem size and prop
 Collection reads the exact `--journal-path` directory, requests complete JSON fields,
 and refuses any `journalctl` diagnostic even with exit status zero. Incomplete,
 malformed, failed or empty collections emit no observation; diagnostic text is not
-copied into the refusal. These command controls do not establish host retention.
+copied into the refusal. Both workload and cleanup collectors omit `--quiet`, which
+would hide inaccessible-journal warnings. A complete empty JSON cleanup collection
+remains valid; it cannot stand in for the workload's required samples. These
+command controls do not establish host retention.
 `journal-render` accepts only a complete, non-guarded observation with exact 14-day retention,
 capacity for fourteen measured peak days and an alert at 80% before eviction; it writes both the
 new journald drop-in and the exact budget file used by host monitoring, refusing to overwrite

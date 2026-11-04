@@ -104,8 +104,9 @@ func readCleanupJournal(directory string, at time.Time) (string, error) {
 	defer cancel()
 	// Read the retained failure population, not only failures newer than the
 	// last timer invocation. This also catches up after an observer outage.
+	// Do not use --quiet: it suppresses inaccessible-journal warnings.
 	command := journalCommandContext(ctx, "journalctl", "--directory="+directory, "--since=@"+strconv.FormatInt(at.Add(-operations.JournalRetention).Unix(), 10),
-		"--until=@"+strconv.FormatInt(at.Unix(), 10), "--output=json", "--all", "--no-pager", "--quiet",
+		"--until=@"+strconv.FormatInt(at.Unix(), 10), "--output=json", "--all", "--no-pager",
 		"CONTAINER_TAG=cloud-clicker-gameserver")
 	// journalctl can warn and skip corrupt/inaccessible entries with exit0.
 	// Treat diagnostics as incomplete collection; never copy their text into logs.
@@ -258,11 +259,12 @@ func runJournalObserve(args []string) error {
 	if !completed.After(started) {
 		return operations.ErrInvalid
 	}
-	command := exec.Command("journalctl", "--directory="+*journalPath, "--since=@"+strconv.FormatInt(started.Unix(), 10), "--until=@"+strconv.FormatInt(completed.Unix(), 10), "--output=json", "--all", "--no-pager", "--quiet",
+	command := exec.Command("journalctl", "--directory="+*journalPath, "--since=@"+strconv.FormatInt(started.Unix(), 10), "--until=@"+strconv.FormatInt(completed.Unix(), 10), "--output=json", "--all", "--no-pager",
 		"SYSLOG_IDENTIFIER=cloud-clicker-caddy", "+", "SYSLOG_IDENTIFIER=cloud-clicker-gameserver", "+", "SYSLOG_IDENTIFIER=cloud-clicker-postgres", "+", "SYSLOG_IDENTIFIER=cloud-clicker-backup",
 		"+", "SYSLOG_IDENTIFIER=cloud-clicker-prometheus", "+", "SYSLOG_IDENTIFIER=cloud-clicker-alertmanager", "+", "SYSLOG_IDENTIFIER=cloud-clicker-node-exporter")
 	// A successful exit can still exclude corrupt or unreadable journal data.
-	// Diagnostics invalidate the measurement; never publish their private text.
+	// Keep --quiet off so access warnings reach stderr. Diagnostics invalidate
+	// the measurement; never publish their private text.
 	var diagnostics bytes.Buffer
 	command.Stderr = &diagnostics
 	output, err := command.Output()

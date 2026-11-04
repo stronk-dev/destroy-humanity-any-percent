@@ -8177,3 +8177,48 @@ this containing code/test/docs/ledger/plan/log commit; independent review remain
 Review by: Codex root, implementer first filter only. Recorded by: Codex root.
 Actual host collection, retention/eviction, workload ratification, full AC7 and
 exact-release R-006 remain open. No self-approval, archival or publication.
+
+## 2026-11-04 — Journal collection review finds suppressed access warnings
+
+Review by: independent Codex `/root/scheduled_backup_ingress_proof_corrective_review`.
+Recorded by: Codex root. CHANGES REQUIRED for complete six-path
+`b6744226..c09bb854` (base exclusive, tip inclusive). Original five-arm52675 passes,
+but private flag-aware67925 fails: child suppresses its access warning iff --quiet,
+and current command emits468 observation bytes with nil error. Exact old-main
+overlay46386 separately reproduces missing directory/all/quiet and warning
+false-complete. Root's initial green fixture did not model warning suppression.
+
+Primary journalctl documentation explicitly identifies inaccessible-journal warning
+suppression by --quiet:
+https://www.freedesktop.org/software/systemd/man/latest/journalctl.html
+Systemd v257 acquire_journal passes arg_quiet with directory selection, and
+journal_access_check_and_warn skips the EACCES notice while readable files allow
+success: src/journal/journalctl-util.c and src/shared/journal-util.c at
+https://github.com/systemd/systemd/tree/v257/src . This is source/controlled-child
+evidence, not an actual unreadable host-journal experiment.
+
+Actual declared Playwright Noble image, systemd255.4-1ubuntu8.16: owned networkless,
+read-only container with empty tmpfs journal directory executes JSON/all/no-pager
+with and without quiet. Both exit0, stdout0/stderr0; no non-JSON no-entry marker.
+The --rm container finishes. Cached Go image lacks journalctl (exit127), no journal
+credit. This supports preserving healthy empty JSON cleanup without quiet only
+for the observed image/version; it proves neither access refusal nor retention.
+
+## 2026-11-04 — Preserve access warnings in both journal collectors (first filter)
+
+Remove --quiet from workload collection and existing cleanup collection. Existing
+diagnostic refusal now sees access warnings. Flag-aware real-child tests propagate
+the actual arguments; they do not merely assert a changed flag. The cleanup
+fixture preserves full row parsing and empty/no-failure collection. No retention,
+service-filter, capacity arithmetic, runtime logger, timer or alert policy change.
+
+Root51545 exits expected Make2 before correction: workload access-warning emits468
+bytes and cleanup access-warning returns a cursor with nil error. Ten other arms
+pass. Corrected2070 passes all twelve arms; cold59660 operations1.810s/command5.742s
+and selected vet pass. Focused race9241 passes12.048s. Gofmt/diff pass; no unrelated
+SQL/browser or long-profile repeat. Complete seven-path follow-up starts after
+`c463a5bb` through this containing main/two tests/docs/ledger/plan/log commit.
+Review by: Codex root, implementer first filter only. Recorded by: Codex root.
+Original CHANGES REQUIRED remains; final independent original-plus-follow-up
+review pending. Actual release-host collection/retention/eviction, full AC7,
+exact-artifact R-006, full CI and release stay open. No archival or publication.
