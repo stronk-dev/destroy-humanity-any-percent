@@ -369,8 +369,11 @@ construction, reproduced conformance repairs and remaining independent implement
 Recovery/renewal, rights, accessibility, content and later-game contracts have their own
 unresolved boundaries; these proposals are not an exhaustive release decision packet.
 
-Actual gameplay choices include Headcount's hiring/output pair and Clout's projected-factor/
-hint lifetime (RP-414/RP-427), plus the held Manual input-delivery behavior. Actual release-policy
+Headcount's paid-hiring/producing-role choice is resolved by Marco's2026-11-02
+ruling and independently reviewed body reconciliation (RP-414); its technical
+activation, content and policy integration remain. Actual open gameplay choices
+include Clout's projected-factor/hint lifetime (RP-427), plus the held Manual
+input-delivery behavior. Actual release-policy
 choices include export/deletion/retention (D-008/D-009/D-015), the task/assistive-technology matrix
 (D-018), per-release restore proof (D-019), exact content/copy adoption and the final release call.
 The [decision queue](platform-alignment/decision-queue.md) and its linked option sheets own

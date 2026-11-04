@@ -406,3 +406,13 @@ current specs, plan, RP-414 and the exact existing review; no software suite for
 editorial routing. Other queue status corrections link existing API/CI technical
 verdicts and preserve every unanswered adoption question, rather than asking again.
 This is record reconciliation, not new owner authority or designated approval.
+
+## 2026-11-04 — Keep the current overview consistent with the model ruling
+
+Marco repeats the already-adopted paid-hiring/producing-role answer. No new
+question or broader adoption is inferred. The current whole-product table already
+reflects it, but its live decisions paragraph still listed the model as unanswered.
+Remove that contradiction and preserve technical activation/content/policy holds.
+Editorial only; inspect against the current parent/plan and existing approved
+c6f11121..8a00ca57 translation, then diff-check. No software suite, implementation
+claim, new decision, acceptance or publication.
