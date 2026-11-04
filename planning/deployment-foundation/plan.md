@@ -7,6 +7,45 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Projector contract validation,2026-11-04 (RP-757):** before native-profile
+adoption, make the existing proposed15s/300s diagnostics executable. The present
+three gauge names do not state whether projection_success is observation success
+or business outcome, and host.prom freshness must not stand in for a ledger read.
+Predeclare actual pinned Prometheus3.12 promtool rule tests covering fresh idle,
+failed/successful/pending/conditional-owner observations, stopped/cache-only
+observation at age300 versus315s, missing/error/unknown-owner gauges, invalid
+numeric values/future timestamps, duplicate series and fresh unrelated host
+metrics. The rule must distinguish a failed release from a failed projection.
+Also predeclare one private rule control deleting the age predicate: the same
+stale fixture must fail. No fuzzy comparisons, timeout/threshold increase,
+shipping rule/metric/CI change or new native producer. A60s per-command guard is
+containment only; any guard/setup/missing dependency is INVALID, not evidence.
+Use only the existing pinned evaluator image, no network/Engine/secret channel,
+read-only public fixtures and owned ephemeral containers. A pass supports a
+reviewed proposal/truth table, not implemented cache/ledger ownership, receiver
+delivery, native privacy/SP8/R-006 or owner adoption. Actual cache/restart handoff
+still requires the constructed producer after its adopted contract.
+
+Executed first filter: actual pinned Prometheus35 metric-series cases/37 asserted
+evaluations pass, including age300 clear/315 firing, failed-release versus projection
+failure, missing/invalid/duplicate gauges and non-float histogram refusals. The
+initial32-case predicate missed three added histogram controls; actual baseline
+fails all3, and absent(metric+0) checks correct that concrete type gap. Deleting
+only the final age predicate makes the same full fixture fail precisely the
+cache-only/fresh-host stale case. Original nonfinite repeat shorthand caused a
+parser setup failure; explicit literals retain all cases/expectations. No software
+or producer pass was inferred. All owned containers are absent; guards never fire.
+
+Draft P01 now fixes diagnostic/result meanings, two atomic metric files with
+supervisor status-only versus retained-service business ownership, original-prefix/
+cache ordering and eight actual restart/handoff populations. It explicitly proposes
+DP7's additional native-only alert and C01 logging exception without changing
+accepted parent text. The draft's circular before-adoption native-cache-test line
+is reconciled with SP8: isolated predicate proof before adoption; actual producer/
+restart/receiver/native proof after adoption before acceptance. Complete new
+research/tool/technical-spec range after407b641d needs independent review; no owner
+adoption or native/release proof. Do not repeat pending adoption questions.
+
 **Current exact-artifact construction,2026-11-04:** clean source893bb1e7 now has
 fresh independent artifact trees `.cache/release-current-893bb1e7/bundle-a` and
 `.cache/release-rebuild-893bb1e7/bundle-b`, with all75 files byte-identical. New

@@ -11832,3 +11832,84 @@ adoptions remain questions, not blockers to all accepted work. Full nine-tier1.0
 stays active. Next reconcile newly observed hosted maintenance failure at exact
 published source, preserving incomplete measurements and original budgets;
 no source change, publication, deployment or goal pause.
+
+## 2026-11-04 — Make the proposed projector diagnostic contract testable
+
+Previous goal turn made concrete progress: independently approved current exact
+artifact and digest-checked failed hosted evidence. Clean HEAD407b641d, all prior
+handles terminal. Tool-packaging/native-host and other owner questions remain
+unanswered; no repeated question or inferred adoption. Continue the existing
+RP-757/SP6/A6 proposal, not production code under an unadopted contract.
+
+Source check confirms native draft already proposes15s evaluation/300s staleness,
+three release projection gauges and one writer/cache policy, but does not define
+projection_success versus release business outcome or an exact fail-loud rule.
+Actual current host collector freshness cannot establish original ledger reads.
+Owning plan now predeclares the actual pinned Prometheus rule population and
+age-arm deletion control before execution. It tests the future alert predicate,
+not the unbuilt service/cache/native producer. No new policy is adopted or accepted
+release criterion waived. Parent DP7 reconciliation/adoption and full actual
+cache/reboot/producer/receiver/native acceptance remain explicit.
+
+Before the final rule run, first-filter type review adds three unsupported native-
+histogram cases, one per required float gauge. Ordinary float comparisons can
+silently discard histogram samples; expected behavior remains an alert. Predeclare
+actual unchanged-rule baseline followed by a concrete float-presence check if the
+baseline misses them; retain all32 previous cases/34 evaluations and budgets.
+These exercise type admission in the rule, not a claimed production exposure.
+
+Actual pinned evaluator results: first17148→98a464 exits1 because nine nonfinite
+series used unsupported NaNx40/Infx40 shorthand. It runs no valid whole population;
+original fixture is preserved ignored with SHA3bda18504af68c148ec8b720111e852bffdf7f86c673e032f23c5b86d8e16e31.
+Only repeat syntax changes to41 explicit literals;32cases/34evaluations350b2d
+pass. Private age-arm deletion controle8850d fails exactly the stopped-observation/
+fresh-host case at5m30s (expected alert, actual empty). No expectations relaxed.
+
+First-filter type follow-up actually confirms the gap: unchanged-rule baseline
+fe2430 fails all3 native-histogram cases with expected alert/actual empty. Final
+predicate adds absent(metric+0) for each required float gauge; actual35bf0a
+passes all35cases/37evaluations. Final-source private age-arm controlf38f3c still
+fails only the stale case, with all35cases retained. These are genuine pinned
+PromQL executions, not tests of a copied reference classifier. Existing ordinary
+operators/unit-rule documentation is cited; no histogram/parser behavior is merely
+assumed from those pages. Rule1914bytes/SHA2356ba57b271b233a4af92d65ef197d2bf218504ea9e1dd077ed70414df2df1e;
+fixture37613bytes/SHA881a9b675493e5836b72fd52f6e237286515780534f022a5773fda709051a050.
+
+Reproduce from root with the existing pinned Prometheus image and Docker run:
+--rm --platform linux/amd64 --network none --read-only --user65532:65532,
+--cap-drop ALL --security-opt no-new-privileges, private16m tmpfs/tmp, entrypoint
+/bin/promtool, workdir/work and read-only mount of the owning probes directory;
+arguments test rules /work/release-projection-rules.test.yml.txt. Use exact image
+prom/prometheus:v3.12.0@sha256:69f5241418838263316593f7274a304b095c40bcf22e57272865da91bd60a8ac.
+Actual cached configd2f7aaa3 is Linux/amd64 (0a3bf4); no Engine/socket/network/
+secret grant, normal Go/cache/dependency/workflow changes or host service. All
+commands complete below the predeclared60s containment guard, and exact owned
+label inventory2be703 is empty. Desktop/emulation supplies no native-host timing.
+
+P01 is a concrete new draft amendment, not covered by old through70acee7f review.
+It separates observation_success from operation outcome, defines exact gauge/
+float/age/cadence semantics and metric ownership. Diagnostic and business files
+are separate atomic units: F02 supervisor jobs remain status-only; the retained
+service alone writes the event-backed business snapshot, then healthy diagnostics.
+No cross-file transaction is claimed. The restart matrix explicitly keeps lost/
+torn/frozen/conditional/active-round states paused until their real authority.
+All32 initial metric cases plus3 type cases are series-level predicate tests;
+cache names do not pretend an actual cache/ledger/restart/receiver was executed.
+
+The draft also proposes explicit parent DP7 projection-alert and C01 private-
+compiler logging reconciliations, preserving the seven original alert families,
+service logs and14-day floor. Accepted parent/owner copy is untouched. SP6's earlier
+unbuilt-native-cache-proof-before-adoption demand contradicted SP8's construction-
+after-adoption rule; this proposed correction now requires isolated predicate
+proof first and ALL actual native cache/reboot/receiver proof after adoption,
+before acceptance. This is a visible draft sequencing correction, not a waived
+accepted criterion or host proof. One initial patch fails its context check and
+changes no file; corrected edit applies. No unsupported source claim is inferred.
+
+Review by: Codex root, implementer first filter. Recorded by: Codex root. Complete
+eight-path research/tool/technical-spec range after407b641d through this containing
+commit needs independent review: two proposal fixtures, native core/adapters/index,
+owning plan/log and existing RP-757 row. No production rules/metric/cache/runtime,
+CI, schema, kernel/content, parent adoption, native/SP8/R-006, feature/release,
+publication/archival or goal pause. All root handles terminal; pending owner
+questions remain pending, not grounds to ask them again.

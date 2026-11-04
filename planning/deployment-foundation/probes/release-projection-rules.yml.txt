@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "cloud-clicker-native-projection-proposal",
+      "interval": "15s",
+      "rules": [
+        {
+          "alert": "CloudClickerReleaseProjectionUnavailable",
+          "expr": "vector(1) and on() (\n  absent(cloud_clicker_release_projection_observed_timestamp_seconds{job=\"node-exporter\"})\n  or absent(cloud_clicker_release_projection_observed_timestamp_seconds{job=\"node-exporter\"} + 0)\n  or count(cloud_clicker_release_projection_observed_timestamp_seconds{job=\"node-exporter\"}) != 1\n  or absent(cloud_clicker_release_projection_success{job=\"node-exporter\"})\n  or absent(cloud_clicker_release_projection_success{job=\"node-exporter\"} + 0)\n  or count(cloud_clicker_release_projection_success{job=\"node-exporter\"}) != 1\n  or absent(cloud_clicker_release_transition_owner_known{job=\"node-exporter\"})\n  or absent(cloud_clicker_release_transition_owner_known{job=\"node-exporter\"} + 0)\n  or count(cloud_clicker_release_transition_owner_known{job=\"node-exporter\"}) != 1\n  or cloud_clicker_release_projection_observed_timestamp_seconds{job=\"node-exporter\"} <= 0\n  or cloud_clicker_release_projection_observed_timestamp_seconds{job=\"node-exporter\"} > time()\n  or cloud_clicker_release_projection_observed_timestamp_seconds{job=\"node-exporter\"} != cloud_clicker_release_projection_observed_timestamp_seconds{job=\"node-exporter\"}\n  or time() - cloud_clicker_release_projection_observed_timestamp_seconds{job=\"node-exporter\"} > 300\n  or cloud_clicker_release_projection_success{job=\"node-exporter\"} != 1\n  or cloud_clicker_release_transition_owner_known{job=\"node-exporter\"} != 1\n)",
+          "labels": {
+            "severity": "page"
+          },
+          "annotations": {
+            "summary": "Release-result observation is absent, stale, invalid, failed, or lacks a known transition owner."
+          }
+        }
+      ]
+    }
+  ]
+}

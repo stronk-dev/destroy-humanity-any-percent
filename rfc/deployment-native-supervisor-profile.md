@@ -1,6 +1,6 @@
 # RFC: Native Deployment Supervisor Profile
 
-- **Status:** draft — prior core/adapter/tool reviews retained; complete direct upstream-Compose amendment independently technically approved through70acee7f; owner adoption/native producers/conformance pending; no implementation authority
+- **Status:** draft — prior core/adapter/tool reviews retained through70acee7f; P01 projection/restart amendment pending technical review; owner adoption/native producers/conformance pending; no implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Operation Evidence](deployment-operation-evidence.md), OP9; [Current Release Authority](deployment-current-release-authority.md), CR4/CR6; [Deployment Foundation](deployment-foundation.md), DP1/DP5/DP6
@@ -31,7 +31,9 @@ and linkage had separate independent technical approval through1648e792. The
 current direct upstream-Compose amendment has its own complete independent
 technical/research approval765aae44..70acee7f, including both input-construction
 arms and the image-environment correction. Prior verdicts are not extended to
-new bytes. Technical approval precedes owner adoption under SP8; native producer
+new bytes. P01 projection/restart semantics and its isolated rule fixtures are a
+new amendment awaiting their own review; those earlier verdicts do not cover it.
+Technical approval precedes owner adoption under SP8; native producer
 construction and actual conformance follow adoption, not as a circular prerequisite
 to permission to implement. OP9 remains open until its actual acceptance proof.
 
@@ -585,8 +587,14 @@ This explicitly changes the current runRelease/runInstall reporting rule:
 unadmitted CLI validation/lock failures produce diagnostics, not an unauthorised
 shared outcome write. A missing/unavailable projector leaves stale/absent
 observations and must fire the operations-floor check, never synthesize fresh
-success. Reconcile DP7/runbooks/alerts and test the delayed/missing projector and
-reboot/cache states before adoption. The source cache records freeze before
+success. The companion P01 fixes the diagnostic meanings, atomic business/diagnostic snapshots,
+exact proposed alert and restart matrix; its isolated pinned-rule checks precede
+adoption. Reconcile DP7/runbooks/alerts as proposed there. Actual delayed/missing
+projector and reboot/cache producers are constructed after adoption under SP8
+and must pass the complete native acceptance population before feature closeout.
+This resolves the earlier draft's circular demand for unbuilt native-cache proof
+before permission to construct it; it waives no accepted release criterion.
+The source cache records freeze before
 protected effects; after restart it may resume only a completely verified prior
 retained decision with no durable freeze. A frozen/torn/unhanded cache remains
 paused. New target service obtains the actual Finished graph through read-only

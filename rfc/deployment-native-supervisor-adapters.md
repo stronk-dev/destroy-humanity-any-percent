@@ -2,7 +2,8 @@
 
 Normative companion proposal to [SP1–SP8](deployment-native-supervisor-profile.md).
 **Draft; direct upstream-Compose amendment independently technically approved
-through70acee7f; owner adoption pending, no implementation authority.** This enumerates the proposed
+through70acee7f; P01 projector amendment pending review; owner adoption pending,
+no implementation authority.** This enumerates the proposed
 plan population and adapters. Native conformance remains unproved. A successful
 table/schema check cannot establish a real handler, filesystem or service result.
 
@@ -1112,18 +1113,109 @@ namespace metadata alone proves physical termination, and no API success closes
 its children. Keep actual native supported-host/R-006 and exact-artifact gates.
 
 
-Projection diagnostics use the already configured15s scrape/evaluation cadence
-and300s stale-observation floor as explicit proposed DP7 bindings, subject to
-adoption/native measurement; do not increase those thresholds on a failed run.
-Emit closed gauges projection_observed_timestamp_seconds, projection_success
-and transition_owner_known under the cloud_clicker_release_ prefix, without
-per-user labels. Only a fresh valid ORIGINAL ledger read advances observation;
-a cached old prefix is not fresh. Success decisions require complete sealed
-proof, while valid failure/pending decisions keep CR3's open-work semantics and
-cannot become completion/recovery authority. Page for absent/stale observation,
-projection error or unknown active transition owner under that existing floor;
-host.prom alone does not cover it. A source restart lacking its original live
-ledger/owner capabilities cannot claim current observation from cache alone.
+## P01 — Result projection, freshness and restart decisions
+
+This makes SP6/A6's previously proposed diagnostic contract exact. It remains
+subject to owner adoption and actual native measurement. Retain the existing
+proposed15s observation/scrape/evaluation cadence and300s staleness threshold;
+never increase them because a run fails. The three diagnostic gauges have no
+exporter-supplied labels and the fixed `cloud_clicker_release_` prefix:
+
+| Suffix | Exact meaning |
+|---|---|
+| `projection_observed_timestamp_seconds` | UTC Unix seconds at completion of the latest fresh, complete, valid ORIGINAL-ledger read under current authorized ownership. Re-reading and validating that same original prefix can refresh it; cache reads, host collector mtime, timer wakeups and a copied/reopened replacement ledger cannot. No valid read yet means0. |
+| `projection_success` | 1 iff that projection attempt validated the original ledger, applicable cache/proof graph, prefix and clock and can produce their truthful snapshot; otherwise0. This is observation success, NEVER the release's business outcome. Failure to publish leaves the old file to age rather than asserting an update occurred. |
+| `transition_owner_known` | 1 iff the original ledger/graph proves no unfinished or unclosed transition, OR the exact current unfinished/unclosed transition has its currently authenticated live admitted owner under SP2/SP5. Otherwise0. A dead controller, cache identity, Finished row without required closure, or matching PID/path alone cannot make it1. |
+
+All timestamps must be finite, positive and no later than the observing clock;
+an unknown/backwards clock cannot manufacture a fresh success. Boolean gauges
+are exactly0/1. A valid failed release can have projection_success=1 while the
+existing release_last_result remains0. An owned pending transition can also have
+healthy projection; its previous completed result is historical, not evidence
+that the pending transition succeeded. No install/operation result yet means
+omit the business-result/timestamp samples, not invent success or failure.
+Unknown authority cannot refresh a file merely to postpone its stale alert.
+
+Publish the three diagnostic gauges together in fixed `release-projection.prom`.
+This file follows the existing supervisor/retained-owner transfer below; the
+supervisor's tracked F02 status jobs write ONLY those diagnostics. The retained
+service alone publishes ONE separate fixed `release-result.prom` business snapshot
+with any existing `cloud_clicker_release_last_result`,
+`cloud_clicker_release_last_success_timestamp_seconds` and
+`cloud_clicker_release_last_failure_timestamp_seconds` derived from governed
+history. The supervisor cannot copy a historical success into a status publication
+or update that business file. Install/release/rollback use that same release-result family, preserving
+the current CLI's family mapping. Business timestamps are original event dates,
+not the observation clock. Valid CR3 failure/administrative/pending rows preserve
+their exact open-work semantics; only actual completed success with its required
+sealed graph can advance success. Projection grants no current/rollback authority.
+Backup/restore helper result metrics keep their independent existing meanings.
+
+Under the ONE publisher lock, the retained service validates a complete
+nondecreasing original prefix, syncs any changed cache/proof snapshot, then
+atomically replaces/syncs/closes the whole business file before publishing its
+healthy diagnostic snapshot. Each file is its own atomic replacement; do not
+claim a cross-file filesystem transaction. A crash after cache sync but before
+business publication leaves old business metrics. A crash after business
+publication but before diagnostics leaves truthful event-backed business metrics
+and older diagnostics. Catch-up needs a fresh authorized read in both cases;
+a crash before cache sync cannot claim the new prefix. No partial business file,
+independently updated result/time files or older queued prefix may replace that
+snapshot. With no result yet, publish only fixed HELP/TYPE metadata, no invented
+business sample. During admitted transition, supervisor status jobs use only the
+three diagnostic gauges and leave the historical business file untouched. They
+can report an owned pending transition healthy; this does not say the business
+file incorporates a later not-yet-projected Finished event.
+Same-prefix fresh observation is permitted without reminting an event's result.
+Do not invoke the old multi-file release RecordOperation writer in this profile.
+No other release-family textfile may supply duplicate/stale samples; native
+admission refuses them. This is not permission to delete legacy files or adopt
+an unsupervised old installation; that migration remains separately governed.
+
+On the single supported node, node-exporter's fixed job is `node-exporter`.
+Exactly one float series per diagnostic gauge is expected from that job. The
+proposed [`CloudClickerReleaseProjectionUnavailable` rule](../planning/deployment-foundation/probes/release-projection-rules.yml.txt)
+is the exact P01 predicate: page for any missing/duplicate/non-float gauge; non-boolean
+success/owner; success0; owner0; nonfinite/nonpositive/future observation time; or
+age strictly greater than300s. Collapse these into one unlabelled condition plus
+the fixed `severity:page` label. No additional `for` delay is added to the age
+threshold; with15s evaluations, age300 remains clear and age315 fires at the next
+evaluation. Invalid/error/unknown signals fire on their next evaluation. A fresh
+host.prom or historical release success cannot satisfy this predicate.
+The source publisher/receiver chain still needs actual conformance; forged
+metric values are not authenticated merely because this predicate passes.
+
+The [actual pinned-evaluator fixtures](../planning/deployment-foundation/probes/release-projection-rules.test.yml.txt)
+test metric semantics only. Their cache/pending case names describe proposed
+producer conditions; no cache file, original ledger, service restart, native
+authority or receiver delivery is executed by promtool. Use the actual pinned
+Prometheus evaluator, preserving all cases and exact thresholds; current files
+are proposal fixtures outside production configuration and CI. Standard
+[rule-test](https://prometheus.io/docs/prometheus/latest/configuration/unit_testing_rules/)
+and [comparison/set semantics](https://prometheus.io/docs/prometheus/latest/querying/operators/)
+explain the test format, not implementation/native acceptance.
+
+### Restart/handoff matrix — actual producer acceptance still required
+
+| Observed condition | Scheduling/result rule |
+|---|---|
+| Complete retained cache, identity/graph match, no durable freeze/active rounds, fresh original-ledger capability and valid retained grant | Ordinary scheduling may resume under A6; fresh projection can report success1. |
+| Same valid cache but original ledger/owner capability absent | Stay paused. Cache-only reads cannot advance observation or authorize effects; existing metrics age. |
+| Frozen or conditional cache, exact current live admitted owner and fresh original read | Scheduling stays paused until I05's exact condition. Authorized metadata projection/status can be healthy; it cannot mint a new successful result before the required Finished/OP7 handoff. |
+| Missing/torn/wrong-identity cache, nonempty active_rounds after restart, missing graph or unknown native owner | Stay paused; no reconstructed empty registry or success. Only an already authorized diagnostic writer can report error/unknown; otherwise absence/staleness must expose it. |
+| Conditional target/source grant followed by crash before Finished or incomplete OP7 handoff | Stay paused; a grant/cache is not the event or completion proof it awaits. |
+| Valid final event and full required graph durable, but target service restarts before learning it | Stay paused until original read-only ledger/proof transfer and cache validation complete; then exact condition may release scheduling. |
+| Metric publication delayed/fails after a valid event | Event authority is unchanged; no fresh metric is claimed. Old observation ages and P01 fires. Fresh authorized same-prefix read may catch up. |
+| Source freeze/replacement with old publication queued | I03 joins that original publisher before R03 transfer; the old queued write cannot overwrite the new owner's prefix. |
+
+Actual SP8 acceptance must exercise every matrix row through the real packaged
+cache/ledger/service/metric producer, including crashes on both sides of cache
+sync and both atomic publications, every freeze/grant/Finished edge, same-prefix restart
+catch-up, missing/blocked projector, duplicate legacy metric files and an old
+queued writer. Verify scheduling/SQL/retention remain blocked where required and
+original operation authority is never inferred from diagnostics. Use actual
+Prometheus→Alertmanager→configured receiver firing AND resolution. A virtual
+promtool clock is predicate evidence, not real15s/300s delivery/timing proof.
 
 The source projector freezes/joins with the rest of I03 host IO. During an
 admitted transition the supervisor may publish ONLY projection-status gauges
@@ -1133,3 +1225,21 @@ R03 transfers the single projector owner. Conditional target/source retention
 permits ordinary metadata projection of pending/failure history; scheduled SQL/
 retention remains blocked until the exact I05 condition. No dual publisher,
 no timer IO after verification_closed, no extra post-Finished CLI writer.
+
+### Proposed parent reconciliation before native-profile adoption
+
+Adoption must reconcile DP7 and canonical runbooks/alerts to this ownership and
+freshness contract, not append a contradictory ruling. The seven existing
+blocking alert families remain; add P01's projection-availability family for
+native-profile installations and test its firing/resolution. Release results
+come only from the retained projector's verified ledger decisions, not outer
+runRelease/runInstall return values or diagnostics. Failed/pending/unclosed
+history retains CR3's exact limits.
+
+DP7's blanket container-logging sentence also needs its explicit C01 exception:
+retained services and the other approved jobs retain the current structured
+journald contract/retention; the C01 private configuration compiler uses
+LogConfig=none and its original private attach stream, without persisted output.
+This is a proposed bounded exception, not permission to disable service logging,
+shorten14-day retention or omit private-output conformance. Do not edit the
+accepted parent's owner-authored body or claim this reconciliation adopted.
