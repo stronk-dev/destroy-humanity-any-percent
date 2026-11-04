@@ -50,8 +50,9 @@ APPROVED as research/tool; no license-policy widening or clearance.
 The CLI source follow-up now executes the matching Go1.24.7 Linux/amd64/CGO1
 query:623 packages (83 CLI,338 vendor across89 exact modules,202 stdlib),3,203
 source files and116 named scoped notice candidates. Exact tree/SDK/source bytes
-are checked; private incomplete/unowned/missing-command controls refuse. Batch
-awaits independent research/tool review. This is source selection, not the
+are checked; private incomplete/unowned/missing-command controls refuse. Complete
+seven-path66625d72..ac45914c independently APPROVED as bounded research/tool;
+fresh observation is byte-identical and all seven controls pass. This is source selection, not the
 published binary's compiler/link map. Three declared CGO packages and distinct
 inline OASIS header terms leave native/rights closure open; see the audit.
 Next resolve covered-source/notices delivery, Compose nested/main/stdlib scope,

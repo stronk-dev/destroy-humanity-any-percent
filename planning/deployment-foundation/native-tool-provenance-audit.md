@@ -185,7 +185,9 @@ graph, missing CLI command or removed dependency; all four refuse. The graph
 must close over the CLI command's complete declared dependency set.
 Replacement/duplicate vendor
 metadata and overwriting an existing observation also refuse, preserving bytes.
-No shared source/tool files are mutated. Review is pending for this batch.
+No shared source/tool files are mutated. Complete seven-path66625d72..ac45914c
+is independently APPROVED as bounded research/tool: fresh full observation is
+byte-identical and all seven controls execute successfully. See the owning log.
 
 This completes a source-derived package/owner and named-file inventory, not the
 published binary's compiler/link map. Actual binary/source correspondence,

@@ -10913,3 +10913,40 @@ inline/header and Compose scoped terms, complete final delivery, binary/source/
 native correspondence, applicable adoption, SP8/native-host and R-006 remain.
 No product status/acceptance promotion, push, deployment, archival or goal pause.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — CLI source inventory independently approved; next Compose graph
+
+APPROVED, bounded research/tool only, exact complete seven-path
+66625d7205f031625d6a5fc8834d5aedc28ef1f6..
+ac45914c5eca8c8c33060ad4785bc2586c2ff20f.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. No material findings.
+
+Fresh independent collector output matches all92,006 retained bytes and SHA256
+82759175c5c47e26971da16f53b1f51df49c3b925f25321bd5871c919641d773.
+623 packages/89 vendor modules/3,203 files/116 named scopes reproduced; all
+seven invalid-input/no-overwrite controls run successfully. Reviewer inspects
+SDK publisher metadata/archive/extracted bytes, tracked Git blobs, ownership,
+closure/rechecks and the actual CGO requests/OASIS header hashes. Exact-range
+whitespace and unchanged production/tests/CI/specification paths verified.
+No shared tracked reviewer changes. This approves the source inventory, not
+binary correspondence, native linkage, inline terms or distribution/adoption.
+RP-759 remains OPEN; RP-760/761 application corrections remain closed.
+
+Separate next-work preparation (NOT included in that verdict): public Compose
+v2.39.4 source clone c89cd6 resolves actual a32dc3da722e6b2e4fbfc72e40b1a697c4686460,
+tree e702be38be3400928f7ad9e94470ad0cd6cff512. Actual matching Go1.24.7
+Linux/amd64/CGO0/e2e source query e993ed/63508→09dfae exits0. Its download
+messages are retained diagnostics, not errors or a silent exclusion. The normal
+Go module cache receives public modules through the official proxy/sumdb;
+no task-specific compiler cache or global Go configuration is introduced.
+Raw graph .cache/worker-cli-tools/compose-source-graph.initial.json contains
+1,290 complete package rows:24 main,221 stdlib,1,045 dependency packages,
+exactly180 module/version identities matching the published binary, zero CGO.
+Checkout stays clean. Temporary reproducible query source is
+.cache/worker-cli-tools/compose-source-query.py; stderr is alongside raw graph.
+This preliminary query has not yet bound every selected file to the prior h1
+archives or resolved37 nested scopes. Next retain that actual scope correlation,
+including main/stdlib terms, with meaningful incomplete/changed-source controls
+and independent review. No shipping build selection, host/native/SP8/R-006,
+release/archival/push approval or goal pause follows. All root handles terminal.
