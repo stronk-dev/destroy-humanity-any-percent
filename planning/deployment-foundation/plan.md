@@ -76,6 +76,41 @@ negative verdict remains. No actual late overwrite/deletion or runtime-policy
 adoption is inferred; full CR4/R-006 and owner adoption remain. The owning log
 records checked source boundaries and unexecuted runtime/host gates.
 
+**Combined prototype predeclaration,2026-11-04:** build one controlled Docker/
+Postgres interruption experiment with three complete populations: parent-only
+cancellation; contained clients/removed known workers but reused resource names;
+and contained clients plus non-reused resource generations. A private forwarding
+proxy must receive complete old Docker requests before interruption, hold them,
+and forward them only AFTER the new-operation admission marker. Explicitly this
+is proxy-held work, not a claim of delay inside Docker's daemon. Include actual
+pg_restore COPY already waiting on a SQL lock, local descendant/daemon host
+writers, late container start/create and named-volume deletion. Open all old
+gates after admission. Exact SQL rows, current metric/checkpoint bytes and a
+replacement-volume sentinel distinguish old work from a dead target.
+Use cached config-pinned Python3.12 Linux/arm64 and the existing exact amd64
+Postgres16 child on Engine28.4.0/Compose2.39.4-desktop.1. Each independently reset
+population keeps a60s measured-work guard (three populations,180s maximum measured
+work), <=10s ordinary commands within it; cleanup <=15s PER command outside the
+work guard. This is not a performance/RTO budget. Exhaustion/unfinished actors
+invalidate that population and the overall observation; no population dropping
+or raised guard. No new images/builds/host ports/privileged containers; private
+proxy alone accesses the existing daemon socket and forwards only exact owned
+fixture requests. No production deployment, game dataset, real receiver, secret
+or recovery implementation. The experimental protocol and observed limits must
+be reconciled into CR4 before any adoption/whole-mechanism claim.
+
+19985 completes all three predeclared populations: parent-only yields SQL7/13/14/42
+and changes/deletes current files/volume; contained-but-name-reusing yields14/42
+and current file/volume loss; generation isolation retains only42 and all exact
+current values. Actual old COPY, complete proxy-held requests, local/daemon/HTTP
+writers and replacement positive controls execute. Both delayed create201 and
+old-volume delete204 still occur after admission even in the good population:
+this is isolation, NOT literal daemon quiescence. `combined-fence-candidate.md`
+now names the concrete remaining production/durable bindings and the incompatible
+pre-backup destructive branch. Full real-helper/native-host/adoption/compatibility
+remain OPEN. Actual-source guard/classifier controls and artifact binding checks
+are required; independent tool/research/technical-draft review remains pending.
+
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
 the predecessor with a fabricated pair. Two independent committed-source
 `df84ce1a` rebuilds now match all74 bundle artifacts, six helpers, image archive,

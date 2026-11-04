@@ -267,6 +267,18 @@ SQL-session termination plus one retired network is not whole-operation proof.
 The map distinguishes upstream Compose's ID-addressed stop/remove calls from
 creation/volume name handling; no claim about queued daemon execution follows
 from a top-level CLI command string or source inspection alone.
+The [combined candidate](../planning/deployment-foundation/combined-fence-candidate.md)
+now executes contained clients, actual admitted pg_restore work, controlled
+HTTP/host writers and delayed create/start/volume-delete in ONE three-population
+experiment. The generation population preserves all tested replacement values;
+parent-only and reused-name controls do not. This is not the actual release
+helper, encrypted restore or four-network/five-volume production topology.
+It also allows late old-generation create/delete effects: that is isolation,
+NOT literal quiescence. An isolation-based production proposal must explicitly
+reconcile this contract with full ownership/durable ordering and review/adoption;
+the experiment does not silently satisfy or waive the present quiescence clause.
+The candidate table names the remaining real bindings, including the pre-backup
+abort whose no-service/data-mutation rule cannot use the prototype's DB teardown.
 No new backup decryption placement, protection-metadata resolution or deletion policy is adopted.
 
 ### CR5 — Consumers and compatibility
@@ -351,6 +363,11 @@ questions remain; the author must reconcile their results into CR2/CR4 before ac
   metrics, every helper's host writer and scheduled deletion of retained material.
   Separately name any excluded install/rehearsal/rotation path rather than
   silently extending an ordinary release/rollback proof to it.
+  The controlled combined prototype now exists; do not repeat its complete
+  populations in place of the durable real-helper protocol. Resolve isolation
+  versus literal quiescence explicitly, pre-backup non-destructive abort,
+  packaged supervisor, all production resources and checkpoint authority before
+  promoting the mechanism. Native supported-host execution remains required.
 
 Docker documentation/source inspection is partial support for those instruments, not a runtime
 witness. Parent holds remain separate; no claim that every R-006 population has a producer.
@@ -469,3 +486,6 @@ mechanism, native-host proof and adoption remain open.
 - 2026-11-04: retain the source-bound whole release/rollback mutation map,
   including HTTP bootstrap and host writers. Complete mechanism/proof remains
   open; upstream ID/name distinctions are source support, not daemon execution.
+- 2026-11-04: execute a combined controlled candidate with two discriminating
+  weaker controls. Retain actual after-admission mutations/absence and explicitly
+  distinguish generation isolation from this draft's unfulfilled quiescence rule.

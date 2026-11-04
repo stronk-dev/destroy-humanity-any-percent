@@ -1,0 +1,457 @@
+"""Manual CR4 combined candidate, never production or normal CI.
+
+Three separately reset populations: parent_only, reused_names, generations.
+Measured work: absolute60s per population, each ordinary command <=10s within it.
+Cleanup is outside that deadline, <=15s per command; no total-wall-time claim.
+The proxy holds complete requests BEFORE daemon submission. A driver-forced
+start of the unacknowledged late create is an EXTRA adversarial action, not a
+claim that a dead client could have submitted a start with its unknown ID.
+HTTP/file actors model effect classes, not the real gameserver or release CLI.
+"""
+import hashlib
+import http.client
+import http.server
+import json
+import os
+import pathlib
+import queue
+import secrets
+import shutil
+import signal
+import socket
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+
+PYTHON = "sha256:d2924abe506373b6f722045c48f98350077cc5b56a50491105c1abb027dce9b2"
+POSTGRES = "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b"
+POSTGRES_REFERENCE = "postgres:16-alpine@sha256:075f7ba66bc9b3ce7d6b8b635208ff61cd7cf1a67d71ec530eec5d7ae0cbe571"
+
+
+class ResearchGuard(RuntimeError):
+    pass
+
+
+def write_json(path, value):
+    path = pathlib.Path(path)
+    temporary = path.with_name(path.name + ".tmp")
+    temporary.write_text(json.dumps(value))
+    temporary.replace(path)
+
+
+def actor():
+    role = sys.argv[1]
+    gates = pathlib.Path("/gates")
+    config = json.loads(pathlib.Path("/config.json").read_text())
+    if role == "scope":
+        helper = subprocess.Popen([sys.executable, "/probe.py", "helper"])
+        write_json(gates / "helper-pid", helper.pid)
+        write_json(gates / "helper-terminal", helper.wait())
+        while True:
+            try:
+                os.waitpid(-1, os.WNOHANG)
+            except ChildProcessError:
+                pass
+            time.sleep(0.01)
+    if role == "helper":
+        for name in config["requests"]:
+            subprocess.Popen([sys.executable, "/probe.py", "submit", name])
+        subprocess.Popen([sys.executable, "/probe.py", "local-writer"])
+        subprocess.Popen([sys.executable, "/probe.py", "http-client"])
+        while True:
+            time.sleep(1)
+    if role == "local-writer":
+        (gates / "local-ready").write_text("ready")
+        while not (gates / "release").exists():
+            time.sleep(0.01)
+        pathlib.Path("/out/metric").write_text("old-local")
+        pathlib.Path("/out/checkpoint").unlink(missing_ok=True)
+        (gates / "local-wrote").write_text("done")
+        return
+    if role in ("submit", "http-client"):
+        if role == "submit":
+            item = config["requests"][sys.argv[2]]
+            connection = http.client.HTTPConnection("proxy", 8080, timeout=60)
+            connection.request(item["method"], item["path"], item["body"],
+                               {"Content-Type": "application/json"})
+        else:
+            connection = http.client.HTTPConnection("application", 8080, timeout=60)
+            connection.request("POST", "/bootstrap", b"{}")
+        response = connection.getresponse()
+        response.read()
+        connection.close()
+        return
+    if role == "http":
+        generation = sys.argv[2]
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+
+            def do_POST(self):
+                if self.path != "/bootstrap":
+                    self.send_error(404)
+                    return
+                self.rfile.read(int(self.headers.get("Content-Length", "0")))
+                if generation == "old":
+                    (gates / "http-ready").write_text("ready")
+                    while not (gates / "release").exists():
+                        time.sleep(0.01)
+                pathlib.Path("/out/http-marker").write_text(generation)
+                if generation == "old":
+                    (gates / "http-wrote").write_text("done")
+                self.send_response(201)
+                self.end_headers()
+                try:
+                    self.wfile.write(b"{}")
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+        server = http.server.ThreadingHTTPServer(("0.0.0.0", 8080), Handler)
+        (gates / (generation + "-http-started")).write_text("started")
+        server.serve_forever()
+    if role == "proxy":
+        class UnixConnection(http.client.HTTPConnection):
+            def connect(self):
+                self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+                self.sock.settimeout(10)
+                self.sock.connect("/engine.sock")
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+
+            def forward(self):
+                matches = [(name, item) for name, item in config["requests"].items()
+                           if item["method"] == self.command and item["path"] == self.path]
+                if len(matches) != 1:
+                    self.send_error(403)
+                    return
+                name, item = matches[0]
+                length = int(self.headers.get("Content-Length", "0"))
+                if length != len(item["body"].encode()):
+                    self.send_error(400)
+                    return
+                body = self.rfile.read(length)
+                if body != item["body"].encode():
+                    self.send_error(400)
+                    return
+                write_json(gates / (name + "-ready"), {"request_sha256": hashlib.sha256(body).hexdigest()})
+                while not (gates / "release").exists():
+                    time.sleep(0.01)
+                admission = json.loads((gates / "admission.json").read_text())
+                if admission["project"] != config["project"]:
+                    raise RuntimeError("wrong admission marker")
+                result = {"admission_seen": True}
+                try:
+                    connection = UnixConnection("daemon", timeout=10)
+                    connection.request(self.command, self.path, body,
+                                       {"Content-Type": "application/json"})
+                    response = connection.getresponse()
+                    data = response.read(1_048_577)
+                    if len(data) > 1_048_576:
+                        raise RuntimeError("response exceeded declared bound: INVALID")
+                    result.update(status=response.status, body=data.decode())
+                    connection.close()
+                    write_json(gates / (name + "-result"), result)
+                    self.send_response(response.status)
+                    self.end_headers()
+                    try:
+                        self.wfile.write(data)
+                    except (BrokenPipeError, ConnectionResetError):
+                        pass
+                except Exception as error:
+                    write_json(gates / (name + "-result"), dict(result, invalid=True,
+                                                               error=type(error).__name__))
+                    raise
+            do_POST = forward
+            do_DELETE = forward
+        server = http.server.ThreadingHTTPServer(("0.0.0.0", 8080), Handler)
+        (gates / "proxy-started").write_text("started")
+        server.serve_forever()
+
+
+def population(arm):
+    root = pathlib.Path.cwd()
+    project = "cc-combined-fence-" + secrets.token_hex(8)
+    work = pathlib.Path(tempfile.mkdtemp(prefix="cc-combined-fence-"))
+    gates = work / "gates"
+    gates.mkdir()
+    old_out, current_out = work / "old", work / "current"
+    old_out.mkdir()
+    current_out.mkdir()
+    if arm != "generations":
+        old_out = current_out
+    override = work / "compose.yml"
+    override.write_text("services:\n  postgres:\n    image: " + POSTGRES_REFERENCE + "\n")
+    compose = ["compose", "-p", project, "-f", str(root / "compose.deployment-backup-test.yml"), "-f", str(override)]
+    deadline = time.monotonic() + 60
+    locker = None
+    normal_complete = False
+    result = {"arm": arm, "project": project}
+    print(json.dumps(dict(phase="started", **result)), flush=True)
+
+    def run(*args, expected=True, cleanup=False):
+        timeout = 15 if cleanup else min(10, deadline - time.monotonic())
+        if timeout <= 0:
+            raise ResearchGuard("work guard exhausted: INVALID")
+        command = subprocess.run(["docker", *args], capture_output=True, text=True, timeout=timeout)
+        if not cleanup and time.monotonic() >= deadline:
+            raise ResearchGuard("command completed after work guard: INVALID")
+        if expected and command.returncode != 0:
+            raise RuntimeError("fixture command failed: " + command.stdout + command.stderr)
+        return command
+
+    def text(*args, **kwargs):
+        return run(*args, **kwargs).stdout.strip()
+
+    def wait(check):
+        until = min(deadline, time.monotonic() + 10)
+        while True:
+            if time.monotonic() >= until:
+                raise ResearchGuard("handshake guard exhausted: INVALID")
+            value = check()
+            if time.monotonic() >= until:
+                raise ResearchGuard("late handshake: INVALID")
+            if value:
+                return value
+            time.sleep(0.01)
+
+    def owned(container):
+        assert len(container) == 64
+        assert text("inspect", "--format", '{{index .Config.Labels "com.docker.compose.project"}}', container) == project
+        assert text("inspect", "--format", "{{.Image}}", container) in (PYTHON, POSTGRES)
+
+    def create(name, image, network, arguments, mounts=(), aliases=()):
+        args = ["create", "--name", project + "-" + name, "--network", network,
+                "--read-only", "--cap-drop=ALL", "--security-opt=no-new-privileges",
+                "--label", "com.docker.compose.project=" + project,
+                "--label", "com.docker.compose.service=" + name]
+        for alias in aliases:
+            args += ["--network-alias", alias]
+        for source, target, mode in mounts:
+            args += ["--mount", "type=bind,src=" + str(source) + ",dst=" + target + (",readonly" if mode == "ro" else "")]
+        container = text(*args, "--entrypoint", arguments[0], image, *arguments[1:])
+        owned(container)
+        return container
+
+    def remove(container):
+        owned(container)
+        run("rm", "--force", "--volumes", container)
+        assert not text("ps", "-aq", "--no-trunc", "--filter", "id=" + container)
+
+    try:
+        assert text("version", "--format", "{{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}") == "28.4.0 linux/arm64"
+        assert text("compose", "version", "--short") == "2.39.4-desktop.1"
+        run(*compose, "up", "-d", "--wait", "postgres")
+        database = text(*compose, "ps", "-q", "postgres")
+        owned(database)
+        network_name = project + "_default"
+        old_network = text("network", "inspect", network_name, "--format", "{{.Id}}")
+        control_network = text("network", "create", "--label", "com.docker.compose.project=" + project, project + "-control")
+        old_volume = project + "-old-volume"
+        run("volume", "create", "--label", "com.docker.compose.project=" + project, old_volume)
+
+        def sql(query, db="postgres"):
+            return text("exec", database, "psql", "-U", "cloud_clicker", "-d", db, "-Atq", "-v", "ON_ERROR_STOP=1", "-c", query)
+
+        sql("CREATE FUNCTION public.prototype_gate(integer) RETURNS boolean LANGUAGE plpgsql AS $$ BEGIN IF $1=7 THEN PERFORM pg_advisory_xact_lock(743899); END IF; RETURN true; END $$; CREATE TABLE public.prototype_data(id integer PRIMARY KEY CHECK(public.prototype_gate(id))); INSERT INTO public.prototype_data VALUES(7)", "cloud_clicker_source")
+        run("exec", database, "pg_dump", "-U", "cloud_clicker", "-d", "cloud_clicker_source", "-Fc", "--no-owner", "--no-privileges", "-f", "/tmp/old.dump")
+        run("cp", database + ":/tmp/old.dump", str(work / "old.dump"))
+        sql("CREATE DATABASE live TEMPLATE template0")
+        locker = subprocess.Popen(["docker", "exec", "-i", database, "psql", "-U", "cloud_clicker", "-d", "live", "-Atq", "-v", "ON_ERROR_STOP=1"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        ready = queue.Queue()
+        reader = threading.Thread(target=lambda: ready.put(locker.stdout.readline().strip()), daemon=True)
+        reader.start()
+        locker.stdin.write("BEGIN; DO $$ BEGIN PERFORM pg_advisory_xact_lock(743899); END $$; SELECT 'ready';\n")
+        locker.stdin.flush()
+        assert ready.get(timeout=min(10, deadline - time.monotonic())) == "ready"
+        restore = create("restore", POSTGRES, old_network,
+                         ["/bin/sh", "-c", "PGPASSWORD=cloud_clicker_test PGAPPNAME=combined_old pg_restore -h postgres -U cloud_clicker -d live --exit-on-error --no-owner --no-privileges /old.dump"],
+                         [(work / "old.dump", "/old.dump", "ro")])
+        run("start", restore)
+        predicate = "datname='live' AND application_name='combined_old'"
+        wait(lambda: sql("SELECT count(*) FROM pg_stat_activity WHERE " + predicate + " AND wait_event='advisory' AND query LIKE 'COPY public.prototype_data%'") == "1")
+        assert sql("SELECT count(*) FROM public.prototype_data", "live") == "0"
+
+        def shell_writer(marker, row=None):
+            command = "printf old > /out/metric; rm -f /out/checkpoint; "
+            if row is not None:
+                command += "PGPASSWORD=cloud_clicker_test psql -h postgres -U cloud_clicker -d live -v ON_ERROR_STOP=1 -c 'INSERT INTO public.prototype_data VALUES(" + str(row) + ")' || exit 1; "
+            return command + "touch /gates/" + marker
+
+        common_mounts = [(gates, "/gates", "rw"), (old_out, "/out", "rw")]
+        writer = create("writer", POSTGRES, old_network,
+                        ["/bin/sh", "-c", "touch /gates/daemon-ready; while [ ! -f /gates/release ]; do sleep 0.01; done; " + shell_writer("daemon-wrote")], common_mounts)
+        pending = create("pending", POSTGRES, old_network,
+                         ["/bin/sh", "-c", shell_writer("pending-wrote", 13)], common_mounts)
+        run("start", writer)
+        late_network = old_network if arm == "generations" else network_name
+        late_body = {"Image": POSTGRES, "Entrypoint": ["/bin/sh", "-c"], "Cmd": [shell_writer("late-wrote", 14)],
+                     "Labels": {"com.docker.compose.project": project, "com.docker.compose.service": "late"},
+                     "HostConfig": {"NetworkMode": late_network, "ReadonlyRootfs": True, "CapDrop": ["ALL"],
+                                    "SecurityOpt": ["no-new-privileges"], "Binds": [str(old_out) + ":/out:rw", str(gates) + ":/gates:rw"]}}
+        requests = {
+            "create": {"method": "POST", "path": "/v1.51/containers/create?name=" + project + "-late", "body": json.dumps(late_body)},
+            "start": {"method": "POST", "path": "/v1.51/containers/" + pending + "/start", "body": ""},
+            "volume": {"method": "DELETE", "path": "/v1.51/volumes/" + old_volume, "body": ""}}
+        config = work / "config.json"
+        config.write_text(json.dumps(dict(project=project, requests=requests)))
+        actor_mounts = [(pathlib.Path(__file__).resolve(), "/probe.py", "ro"), (config, "/config.json", "ro"), (gates, "/gates", "rw"), (old_out, "/out", "rw")]
+        proxy = create("proxy", PYTHON, control_network, ["python3", "/probe.py", "proxy"], actor_mounts + [("/var/run/docker.sock", "/engine.sock", "ro")], ["proxy"])
+        application = create("application", PYTHON, old_network, ["python3", "/probe.py", "http", "old"], actor_mounts, ["application"])
+        scope = create("scope", PYTHON, control_network, ["python3", "/probe.py", "scope"], actor_mounts)
+        run("network", "connect", old_network, scope)
+        run("start", proxy, application)
+        wait(lambda: (gates / "proxy-started").exists() and (gates / "old-http-started").exists())
+        run("start", scope)
+        wait(lambda: all((gates / item).exists() for item in ("create-ready", "start-ready", "volume-ready", "http-ready", "local-ready", "daemon-ready")))
+        helper_pid = json.loads((gates / "helper-pid").read_text())
+        assert isinstance(helper_pid, int) and helper_pid > 1
+        result.update(old_network=old_network, pending_container=pending, helper_pid=helper_pid)
+        if arm == "parent_only":
+            run("exec", scope, "python3", "-c", "import os,signal;os.kill(" + str(helper_pid) + ",signal.SIGKILL)")
+            wait(lambda: (gates / "helper-terminal").exists())
+            assert json.loads((gates / "helper-terminal").read_text()) == -9
+            new_network = old_network
+            new_volume = old_volume
+        else:
+            remove(scope)
+            for container in (restore, writer, pending, application):
+                remove(container)
+            # Removing the complete owned DB process namespace fences the
+            # already-admitted COPY as well, not just its vanished client.
+            remove(database)
+            locker.communicate(timeout=min(10, deadline - time.monotonic()))
+            result["old_lock_client_exit"] = locker.returncode
+            locker = None
+            reader.join(timeout=1)
+            assert not reader.is_alive()
+            run("network", "rm", old_network)
+            new_network = text("network", "create", "--label", "com.docker.compose.project=" + project,
+                               "--label", "com.docker.compose.network=default", network_name)
+            assert new_network != old_network
+            database = text("run", "-d", "--name", project + "-new-postgres", "--network", new_network,
+                            "--network-alias", "postgres", "--label", "com.docker.compose.project=" + project,
+                            "--label", "com.docker.compose.service=postgres", "--tmpfs", "/var/lib/postgresql/data",
+                            "-e", "POSTGRES_USER=cloud_clicker", "-e", "POSTGRES_PASSWORD=cloud_clicker_test", POSTGRES)
+            owned(database)
+            wait(lambda: run("exec", database, "pg_isready", "-h", "127.0.0.1", "-U", "cloud_clicker", expected=False).returncode == 0)
+            sql("CREATE DATABASE live TEMPLATE template0")
+            sql("CREATE TABLE public.prototype_data(id integer PRIMARY KEY)", "live")
+            if arm == "reused_names":
+                run("volume", "rm", old_volume)
+                new_volume = old_volume
+            else:
+                new_volume = project + "-new-volume"
+            run("volume", "create", "--label", "com.docker.compose.project=" + project, new_volume)
+
+        sql("INSERT INTO public.prototype_data VALUES(42)", "live")
+        (current_out / "metric").write_text("new")
+        (current_out / "checkpoint").write_text("checkpoint-current")
+        new_mounts = [(pathlib.Path(__file__).resolve(), "/probe.py", "ro"), (config, "/config.json", "ro"), (gates, "/gates", "rw"), (current_out, "/out", "rw")]
+        new_http = create("new-http", PYTHON, new_network, ["python3", "/probe.py", "http", "new"], new_mounts)
+        run("start", new_http)
+        wait(lambda: (gates / "new-http-started").exists())
+        # This actual HTTP positive control is local to its container, never a
+        # public receiver. It proves the replacement writer is usable.
+        run("exec", new_http, "python3", "-c", "import urllib.request;assert urllib.request.urlopen('http://127.0.0.1:8080/bootstrap',data=b'{}').status==201")
+        assert (current_out / "http-marker").read_text() == "new"
+        run("run", "--rm", "--network", "none", "--label", "com.docker.compose.project=" + project,
+            "--mount", "type=volume,src=" + new_volume + ",dst=/v", "--entrypoint", "python3", PYTHON,
+            "-c", "from pathlib import Path;Path('/v/sentinel').write_text('new-volume')")
+        assert sql("SELECT id FROM public.prototype_data ORDER BY id", "live") == "42"
+        write_json(gates / "admission.json", dict(project=project, database=database, network=new_network, volume=new_volume))
+        (gates / "release").write_text("open")
+        if locker is not None:
+            locker.stdin.write("COMMIT;\n\\q\n")
+            locker.stdin.flush()
+            locker.communicate(timeout=min(10, deadline - time.monotonic()))
+            assert locker.returncode == 0
+            locker = None
+            reader.join(timeout=1)
+            assert not reader.is_alive()
+        wait(lambda: all((gates / (name + "-result")).exists() for name in requests))
+        forwarded = {name: json.loads((gates / (name + "-result")).read_text()) for name in requests}
+        assert all(item.get("admission_seen") and not item.get("invalid") for item in forwarded.values()), "proxy failed: INVALID"
+        assert forwarded["create"]["status"] == 201
+        late = json.loads(forwarded["create"]["body"])["Id"]
+        owned(late)
+        # Extra adversarial start: the dead caller never received this ID.
+        late_start = run("start", late, expected=False)
+        if late_start.returncode == 0:
+            assert text("wait", late) == "0", "late SQL/file control failed: INVALID"
+        if arm == "parent_only":
+            wait(lambda: all((gates / marker).exists() for marker in ("local-wrote", "http-wrote", "daemon-wrote", "pending-wrote")))
+            assert text("wait", restore) == "0"
+            assert text("wait", writer) == "0"
+            assert text("wait", pending) == "0"
+        rows = [int(row) for row in sql("SELECT id FROM public.prototype_data ORDER BY id", "live").splitlines()]
+        volume_inspection = run("volume", "inspect", new_volume, "--format", '{{index .Labels "com.docker.compose.project"}}', expected=False)
+        sentinel = None
+        if volume_inspection.returncode == 0:
+            assert volume_inspection.stdout.strip() == project
+            sentinel = text("run", "--rm", "--network", "none", "--label", "com.docker.compose.project=" + project,
+                            "--mount", "type=volume,src=" + new_volume + ",dst=/v,readonly", "--entrypoint", "python3", PYTHON,
+                            "-c", "from pathlib import Path;print(Path('/v/sentinel').read_text())")
+        state = dict(rows=rows, metric=(current_out / "metric").read_text(),
+                     checkpoint=(current_out / "checkpoint").read_text() if (current_out / "checkpoint").exists() else None,
+                     http_marker=(current_out / "http-marker").read_text(), volume_sentinel=sentinel)
+        held = state == dict(rows=[42], metric="new", checkpoint="checkpoint-current", http_marker="new", volume_sentinel="new-volume")
+        result.update(forwarded=forwarded, forced_late_start_code=late_start.returncode,
+                      forced_late_start_error=late_start.stderr.strip(), replacement_database=database,
+                      replacement_network=new_network, replacement_volume=new_volume,
+                      state=state, candidate_held=held,
+                      local_descendant_wrote=(gates / "local-wrote").exists(),
+                      known_daemon_writer_wrote=(gates / "daemon-wrote").exists(),
+                      old_http_writer_wrote=(gates / "http-wrote").exists())
+        normal_complete = True
+    finally:
+        if locker is not None:
+            locker.kill()
+            locker.communicate(timeout=10)
+        # Normal observations reach this with every forwarded Engine request
+        # terminal. If work is invalid, no complete result is published.
+        containers = text("ps", "-aq", "--no-trunc", "--filter", "label=com.docker.compose.project=" + project, cleanup=True).split()
+        for container in containers:
+            assert text("inspect", "--format", '{{index .Config.Labels "com.docker.compose.project"}}', container, cleanup=True) == project
+            if not normal_complete:
+                logs = run("logs", container, expected=False, cleanup=True)
+                (work / (container + ".log")).write_text(logs.stdout + logs.stderr)
+            run("rm", "-f", "-v", container, cleanup=True)
+        for kind in ("network", "volume"):
+            identifiers = text(kind, "ls", "-q", "--filter", "label=com.docker.compose.project=" + project, cleanup=True).split()
+            for identifier in identifiers:
+                assert text(kind, "inspect", identifier, "--format", '{{index .Labels "com.docker.compose.project"}}', cleanup=True) == project
+                run(kind, "rm", identifier, cleanup=True)
+            assert not text(kind, "ls", "-q", "--filter", "label=com.docker.compose.project=" + project, cleanup=True)
+        assert not text("ps", "-aq", "--filter", "label=com.docker.compose.project=" + project, cleanup=True)
+        if normal_complete:
+            shutil.rmtree(work)
+        else:
+            print(json.dumps(dict(phase="invalid-work-retained", project=project,
+                                  work_directory=str(work), objective_completed=False)), flush=True)
+    result.update(objective_completed=True, guard_exhausted=False)
+    print(json.dumps(dict(phase="population-complete", **result)), flush=True)
+    return result
+
+
+def main():
+    results = [population(arm) for arm in ("parent_only", "reused_names", "generations")]
+    print(json.dumps(dict(objective_completed=True, guard_exhausted=False,
+                          probe_source_sha256="sha256:" + hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+                          python_fixture_config=PYTHON, postgres_fixture_config=POSTGRES,
+                          observations=results, discrimination_established=not results[0]["candidate_held"] and not results[1]["candidate_held"],
+                          combined_candidate_supported=not results[0]["candidate_held"] and not results[1]["candidate_held"] and results[2]["candidate_held"]), indent=2))
+
+
+if __name__ == "__main__":
+    try:
+        if sys.argv[1:]:
+            actor()
+        else:
+            main()
+    except Exception as error:
+        print(json.dumps(dict(objective_completed=False,
+                              guard_exhausted=isinstance(error, (ResearchGuard, subprocess.TimeoutExpired, queue.Empty)),
+                              error_class="invalid_experiment")), flush=True)
+        raise

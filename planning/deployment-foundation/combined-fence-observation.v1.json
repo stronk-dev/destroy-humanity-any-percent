@@ -1,0 +1,149 @@
+{
+  "objective_completed": true,
+  "guard_exhausted": false,
+  "probe_source_sha256": "sha256:9ffc51755474a90cbd8a5a8e32be25643bfc04edb4188bac63ea9e5b35a5956b",
+  "python_fixture_config": "sha256:d2924abe506373b6f722045c48f98350077cc5b56a50491105c1abb027dce9b2",
+  "postgres_fixture_config": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
+  "observations": [
+    {
+      "arm": "parent_only",
+      "project": "cc-combined-fence-7a884f960ca0e170",
+      "old_network": "e14f81c2320bbebf2455988c8e816dac4c700dae623477b00a1659d5aa784544",
+      "pending_container": "b4e4fa6ac8bbe7cc63548c46ac2a3e712d87bd7f31375c07fb76d76de3417578",
+      "helper_pid": 7,
+      "forwarded": {
+        "create": {
+          "admission_seen": true,
+          "status": 201,
+          "body": "{\"Id\":\"4218439578e25f1f8d7381bd375230ed80f9742a4873f15db065e9f9cb8f62c5\",\"Warnings\":[\"The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested\"]}\n"
+        },
+        "start": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        },
+        "volume": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        }
+      },
+      "forced_late_start_code": 0,
+      "forced_late_start_error": "",
+      "replacement_database": "1a02811f22fa75c945f14b26b057e84c0816b5552bf05424d1d4ad832f123e6f",
+      "replacement_network": "e14f81c2320bbebf2455988c8e816dac4c700dae623477b00a1659d5aa784544",
+      "replacement_volume": "cc-combined-fence-7a884f960ca0e170-old-volume",
+      "state": {
+        "rows": [
+          7,
+          13,
+          14,
+          42
+        ],
+        "metric": "old",
+        "checkpoint": null,
+        "http_marker": "old",
+        "volume_sentinel": null
+      },
+      "candidate_held": false,
+      "local_descendant_wrote": true,
+      "known_daemon_writer_wrote": true,
+      "old_http_writer_wrote": true,
+      "objective_completed": true,
+      "guard_exhausted": false
+    },
+    {
+      "arm": "reused_names",
+      "project": "cc-combined-fence-1d9de31451b851c7",
+      "old_network": "622e7a6aa161dda6c7f500f6abf377253ac5620b9c07fc4f100ce14999cd1021",
+      "pending_container": "1319a2911039e1e52c07accce1ffd5ddc10b8c69971fc001a58efc32d25145d5",
+      "helper_pid": 7,
+      "old_lock_client_exit": 137,
+      "forwarded": {
+        "create": {
+          "admission_seen": true,
+          "status": 201,
+          "body": "{\"Id\":\"e6e9fc01bb3a62663d913061a49eec950a73e1f01d9ae21ecf8a7eff201b3691\",\"Warnings\":[\"The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested\"]}\n"
+        },
+        "start": {
+          "admission_seen": true,
+          "status": 404,
+          "body": "{\"message\":\"No such container: 1319a2911039e1e52c07accce1ffd5ddc10b8c69971fc001a58efc32d25145d5\"}\n"
+        },
+        "volume": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        }
+      },
+      "forced_late_start_code": 0,
+      "forced_late_start_error": "",
+      "replacement_database": "62463aeb94dbf1515404d3e1bf903e614434b04d2c11920124f2f5130c241491",
+      "replacement_network": "471e8280c93cb5b51d479541d4b65cab92290807772164f03d0b0f24443470a8",
+      "replacement_volume": "cc-combined-fence-1d9de31451b851c7-old-volume",
+      "state": {
+        "rows": [
+          14,
+          42
+        ],
+        "metric": "old",
+        "checkpoint": null,
+        "http_marker": "new",
+        "volume_sentinel": null
+      },
+      "candidate_held": false,
+      "local_descendant_wrote": false,
+      "known_daemon_writer_wrote": false,
+      "old_http_writer_wrote": false,
+      "objective_completed": true,
+      "guard_exhausted": false
+    },
+    {
+      "arm": "generations",
+      "project": "cc-combined-fence-9816a21a64c3b05d",
+      "old_network": "9376ea8542e51cea5e0b7028b71d25b0689d7bfe400d84c43e00cdd60011a51e",
+      "pending_container": "601275b81d7312eca0a609f5481ce862aba1baf3a6074e95b5fc6010b7c34bdf",
+      "helper_pid": 7,
+      "old_lock_client_exit": 137,
+      "forwarded": {
+        "create": {
+          "admission_seen": true,
+          "status": 201,
+          "body": "{\"Id\":\"fb69dddfbfbe000fd5f088800eff6310052e20217308751b416f36decb5caf80\",\"Warnings\":[\"The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested\"]}\n"
+        },
+        "start": {
+          "admission_seen": true,
+          "status": 404,
+          "body": "{\"message\":\"No such container: 601275b81d7312eca0a609f5481ce862aba1baf3a6074e95b5fc6010b7c34bdf\"}\n"
+        },
+        "volume": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        }
+      },
+      "forced_late_start_code": 1,
+      "forced_late_start_error": "Error response from daemon: failed to set up container networking: network 9376ea8542e51cea5e0b7028b71d25b0689d7bfe400d84c43e00cdd60011a51e not found\nError: failed to start containers: fb69dddfbfbe000fd5f088800eff6310052e20217308751b416f36decb5caf80",
+      "replacement_database": "8ea33b67f45833e1ba4652aebcbd825d05db55837b5415032c747e14db7b4528",
+      "replacement_network": "30b70d5345683c7792be7807169b9b1119e73efabe03ac5cc8ccd86c2db77a90",
+      "replacement_volume": "cc-combined-fence-9816a21a64c3b05d-new-volume",
+      "state": {
+        "rows": [
+          42
+        ],
+        "metric": "new",
+        "checkpoint": "checkpoint-current",
+        "http_marker": "new",
+        "volume_sentinel": "new-volume"
+      },
+      "candidate_held": true,
+      "local_descendant_wrote": false,
+      "known_daemon_writer_wrote": false,
+      "old_http_writer_wrote": false,
+      "objective_completed": true,
+      "guard_exhausted": false
+    }
+  ],
+  "discrimination_established": true,
+  "combined_candidate_supported": true
+}

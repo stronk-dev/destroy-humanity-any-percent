@@ -9016,3 +9016,66 @@ native supported-host and exact-artifact R-006 remain unproved/unbuilt. This
 verdict adopts no specification, operator behavior or release. No publication,
 archival, deployment, new playable-tier claim or goal pause. Continue constructing
 the complete mechanism under the full nine-tier1.0 objective.
+
+## 2026-11-04 — Combined controlled candidate execution; instrument correction needed
+
+Predeclare the three complete populations in the owning plan BEFORE19985. One
+combined candidate uses a contained helper scope, known job/application/DB
+namespace removal, full network identity, non-reused volume name and writable
+output path. The private request proxy receives complete requests before helper
+termination and forwards them only after it reads the new-operation admission
+marker. This is BEFORE-daemon proxy delay, not a claimed native daemon queue.
+Actual pg_restore COPY is separately observed waiting at an advisory lock with
+zero committed rows. Controlled HTTP/local/daemon file actors and an unattached
+named-volume sentinel cover effect classes, not the real Go CLI, Account API,
+encrypted backup/protection algorithm or complete production topology.
+
+19985 exits0 and completes all three populations under unchanged60s measured-work
+per-population guards (three independently reset populations,180s maximum work;
+ordinary commands<=10s within each deadline, cleanup<=15s PER command outside it).
+No end-to-end wall/RTO/performance budget claim. Engine28.4.0 Linux/arm64 Desktop,
+Compose2.39.4-desktop.1, exact amd64 Postgres16 config75f5a969 and cached Python3.12
+arm64 configd2924abe; no pull/build/new shipping image, privileged container, host
+port or production/receiver/secret access. The allowlisted proxy alone mounts the
+existing daemon socket and forwards exact project-owned requests. Parent/helper
+and entire-container cancellation are different explicitly exercised policies.
+
+| Population | Actual current rows | Metric / checkpoint / HTTP marker / volume sentinel |
+|---|---|---|
+| parent_only | 7,13,14,42 | old / absent / old / absent |
+| reused_names | 14,42 | old / absent / new / absent |
+| generations | 42 | new / checkpoint-current / new / new-volume |
+
+Parent-only cancellation leaves local/daemon/HTTP writers active. Whole containment
+removes them, yet name reuse still lets a delayed create reach replacement SQL/
+host targets and a delayed volume deletion remove the prepared replacement volume.
+Generation isolation retains every tested replacement value; old known start
+returns404, late create201 still occurs and old-volume delete204 still occurs.
+The driver-forced late start is EXTRA adversarial work: a dead contained caller
+never received that new ID and could not have submitted that start itself.
+The source-bound v1 observation retains all identities/results and source hash
+9ffc51755474a90cbd8a5a8e32be25643bfc04edb4188bac63ea9e5b35a5956b.
+Successful new SQL/HTTP/volume writes precede admission, so absence is not inferred
+from an unavailable replacement. Exact9 post-run project container/network/volume
+inventories independently rechecked empty. All handles terminal.
+
+Actual-source AST guard/classifier controlsb5c23c pass four command completions,
+four handshake boundary/late cases, pre-start refusal and four exception classes.
+Further actual-AST audit finds RP-735: the volume observation maps ANY nonzero CLI
+inspection to absent sentinel, even injected ordinary permission failure. This is
+a real instrument defect, not an error observed in19985 (whose volume Delete204
+results are retained). Preserve this original source/observation before repairing;
+next require typed404 versus ordinary failure and rerun final source. No instrument
+approval/complete mechanism may be inferred from the initially successful run.
+
+`combined-fence-candidate.md` names concrete remaining durable real-helper,
+packaging, four-network/five-volume, host writer/retention, pre-backup abort and
+checkpoint/pair bindings. Late old-generation mutations are ISOLATION, not the
+draft's literal quiescence; explicit contract reconciliation/review/adoption is
+required rather than redefining an acceptance word. No source/runtime/normal-CI,
+kernel0.3.225/epoch8, game artifact, authored copy or operator policy is changed.
+Review by: Codex implementer first filter. Recorded by: Codex root. Complete range
+after59ea5552 through the containing commit plus the forthcoming correction needs
+fresh independent research/tool/technical review. Full CR4/native-host/R-006,
+original Deployment/whole1.0 acceptance and owner adoption remain open; no push,
+archival, host deployment or goal pause.
