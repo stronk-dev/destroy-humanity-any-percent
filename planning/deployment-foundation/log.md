@@ -12188,3 +12188,36 @@ corrective artifact-evidence review. No fresh full server/browser/hosted run,
 rights, predecessor/native architecture/clean-host/feature/release acceptance,
 publication, deployment, archival, owner-answer inference or goal pause.
 Review by: Codex root (implementer/output first filter). Recorded by: Codex root.
+
+## 2026-11-05 — Current kernel226 artifact evidence independently approved
+
+APPROVED, no findings, complete four-path base-exclusive/tip-inclusive range
+28aefd29b19221e2d909f44add2fa899713a33c5..
+d3e525719d7aa1b1b31ef2fd87f15aa2ce5aa1cb.
+Review by: fresh independent Codex /root/kernel226_artifact_evidence_review.
+Recorded by: Codex root, transcribing the reviewer's executed verdict.
+
+Independent root-Make rebuild matches all six delivered Linux-amd64 executables.
+All75 file hashes/modes,74 bound artifacts, source epoch1793833991, epoch8,
+kernel0.3.226, static ELF, image config/archive/manifest agree. Native AND actual
+shipped Linux helpers pass build-record/intact consumers0 and reject all9 semantic
+mutations exact3/fixture_rejected. Fresh six registry/selected-config/platform
+reads pass. Actual normalizer replay from both old raw AND checksum-bound canonical
+inputs in both trees passes24 strict comparisons. Application54packages/53 actual
+DEPENDS_ON relationships and notices match. Original/private bundles retain all75
+hashes/modes after probes; work empty. Whitespace/source freeze checks pass.
+
+Reviewer inspects, does not rerun, root's two fresh gameserver scans, reused
+upstream scan chains, builds and manifest/source-bound zero-finding secret scan.
+Scans are not silently relabelled independent or fresh upstream measurements.
+Sandbox-only daemon/network attempts execute no successful probes; scoped
+escalation resolves them. One reviewer diagnostic first counts all SPDX relations
+as dependencies; actual relationship-type inspection resolves that assertion error.
+All handles terminal;11 owned containers absent/private reviewer directory removed;
+shared caches/pre-existing BuildKit containers preserved.
+
+This closes corrective artifact-evidence review only. Editorial current pointers
+now refer to source28aefd29; old records/logs remain historical. No native profile,
+clean host/R-006, current hosted green, rights, legitimate predecessor, complete
+feature/archival or release approval follows. Full nine-tier1.0 remains active;
+pending owner questions are neither repeated nor inferred accepted.

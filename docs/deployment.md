@@ -225,8 +225,11 @@ those upstream scans are reused evidence, not new scans.
 The shipped Linux helper accepts the intact package and build record and rejects
 all nine semantic tampering fixtures with exact exit 3. Original bundles still
 match afterward. The manifest-bound source/image secret scan passes locally.
-Independent review of this new artifact-evidence batch is pending. Both trees
-are one candidate; the earlier
+Independent corrective artifact-evidence review approves complete four-path
+`28aefd29..d3e52571`, including a fresh six-executable rebuild, native and shipped
+Linux package/tampering consumers, registry reads and retained-inventory replay.
+The reviewer inspects the original scans and secret-scan result; it does not
+rerun those scanners. Both trees are one candidate; the earlier
 [`9768d681` record](../planning/deployment-foundation/release-builds/candidate-9768d681.json)
 remains historical evidence, not an approved predecessor. Current accounting,
 history-guard/hosted CI, rights, predecessor provenance and clean-host gates remain

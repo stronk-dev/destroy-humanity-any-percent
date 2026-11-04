@@ -77,8 +77,11 @@ builds and two fresh gameserver scans pass. Six immutable upstream/rehearsal
 inventories per tree explicitly reuse prior scans, with exact old checksums,
 producer-output equality and fresh registry/config/platform checks.
 The actual shipped Linux helper passes intact/build-record consumers and all9
-exact-exit semantic tampering checks; source/image secret scan is clean. This
-new four-path evidence batch needs independent review. Neither tree is a
+exact-exit semantic tampering checks; source/image secret scan is clean. Complete
+four-path `28aefd29..d3e52571` is independently APPROVED after fresh executable
+rebuild, native/shipped-Linux consumers, registry reads and retained-inventory
+replay. Original scans/secret-scan result are inspected retained evidence, not
+independently rerun. Neither tree is a
 predecessor or native/clean-host/R-006/rights/current-hosted/full-feature proof.
 The local preview label is unchanged; full nine-tier1.0 remains the objective.
 

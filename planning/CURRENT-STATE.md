@@ -8,8 +8,8 @@ build and vet pass. Complete25-path215a98b3..71d8e15c is independently APPROVED;
 the
 [Transport log](websocket-transport-and-fanout/log.md) preserves old failures,
 shared-database interference and successful serial evidence. Epoch8 is unchanged.
-The retained `9768d681` artifact predates both this correction and RP-768; no new
-tier, hosted-CI, artifact, full-feature or release acceptance follows.
+The independently reviewed `28aefd29` artifact below includes this correction and
+RP-768. No new tier, hosted-CI, full-feature or release acceptance follows.
 
 **Bounded local checkpoint,2026-11-04:** actual gameserver stop→five-minute alert→
 restart→matching resolution is independently proved at `b23a139b`. A newly
@@ -23,16 +23,18 @@ concrete adoption questions remain unanswered. These advance platform correctnes
 not another playable tier or supported-release claim. Whole-product classification
 below retains its audit baseline; no fresh full-product/hosted acceptance is inferred.
 
-**Exact local artifact follow-up,2026-11-04:** two independent source `9768d681`
-candidate rebuilds match all75 files (74 bound artifacts plus manifest), adding
-approved RP-765/RP-766 socket-authentication shutdown fixes to the earlier
-Account/Guild, backup and attribution corrections. The
-[retained record](deployment-foundation/release-builds/candidate-9768d681.json)
-and complete evidence range `9768d681..40969759` are independently approved after
-a fresh six-executable rebuild, actual intact/nine-tampering consumers and registry
-reads. Root's14 actual image scans and exact source/image secret scan pass; the
-reviewer independently inspects those scans. Later RP-767/RP-768 corrections are
-outside that artifact; the current-source follow-up above owns their status.
+**Exact local artifact follow-up,2026-11-05:** two independent source `28aefd29`
+candidate rebuilds match all75 files/modes (74 bound artifacts plus manifest),
+including reviewed RP-767/RP-768 at kernel0.3.226 and earlier Account/Guild,
+backup and attribution corrections. The
+[retained record](deployment-foundation/release-builds/candidate-28aefd29.json)
+and complete four-path evidence range `28aefd29..d3e52571` are independently
+approved after a fresh six-executable rebuild, native/shipped-Linux intact and
+nine-tampering consumers, registry reads and retained-inventory replay. Two fresh
+gameserver scans and the source/image secret scan pass. The six immutable upstream/
+rehearsal inventories per tree explicitly reuse prior scans with checksum-bound
+provenance; neither root nor reviewer claims new upstream scans. The reviewer
+inspects the original scan/secret-scan results rather than rerunning scanners.
 Earlier records remain historical. Actual native journal
 collection has separate approval at `927b26ed`. The Deployment log owns execution
 and local/platform limits. This is neither a legitimate candidate/previous pair
@@ -46,7 +48,7 @@ Fresh old/current SQL, lock compatibility and full Account checks support it;
 root's broader server/Guild and race passes are separately attributed in the
 [Account log](account-and-session-bootstrap/log.md). Full Account/rights/player
 workflow acceptance remains open. Historical`df84ce1a` predates this correction;
-the independently reviewed `9768d681` rebuild above now contains it.
+the independently reviewed `28aefd29` rebuild above contains it.
 
 **Guild deletion corrections,2026-11-04:** admission/deletion
 `0a9b0107..a61ade8e` and sweep/deletion`0ff2f614..78d75546` receive separate complete
@@ -56,7 +58,7 @@ Postgres/race suites pass both orders, exact refusals and preserved history; the
 actual composed Guild/HTTP/socket deletion check also passes. The [Guild log](archive/guild-model/log.md)
 distinguishes independent executions from inspected root checks and records cleanup.
 Those corrections used kernel0.3.225; current kernel `0.3.226` retains them, with
-epoch8 unchanged. The `9768d681` candidate contains
+epoch8 unchanged. The `28aefd29` candidate contains
 these runtime corrections; historical`df84ce1a` does not. No new playable tier or whole-feature/release
 acceptance follows; the27 Clout failures and historical version guard remain open.
 

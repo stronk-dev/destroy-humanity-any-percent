@@ -11,6 +11,8 @@ rules. Full affected native/real-PG race and client/replay/type/build/vet checks
 complete25-path215a98b3..71d8e15c is independently approved. The owning Transport log
 retains the failed concurrent-DB attempts and unchanged-source serial passes.
 Epoch8 and the full nine-tier1.0 floor remain; no new tier or release is complete.
+The current source `28aefd29` package now includes RP-767/RP-768; its complete
+four-path artifact-evidence range `28aefd29..d3e52571` is independently approved.
 
 **2026-11-04 platform checkpoint:** actual gameserver availability/receiver
 recovery is independently proved at `b23a139b`; the concurrent-migration backup
@@ -19,17 +21,19 @@ Current real backup and Caddy release/rollback boundaries pass. Recovery flow/co
 and signed backup-metadata proposals are technically reviewed, with concrete owner
 adoption questions pending. [Owning logs and limits](CURRENT-STATE.md) distinguish
 these from full feature/clean-host/hosted proof. No new tier or release is complete.
-Latest exact-artifact checkpoint: source `9768d681` has two byte-identical local
-candidate trees, adding approved RP-765/RP-766 authentication shutdown corrections.
-Complete artifact-evidence range `9768d681..40969759` is independently approved
-after fresh six-executable rebuild, actual package/tampering checks and registry
-reads. This artifact predates the RP-767/RP-768 corrections above. It supplies no
+Latest exact-artifact checkpoint: source `28aefd29`, kernel0.3.226, has two matching
+75-file/mode local candidate trees, including approved RP-767/RP-768. Complete
+four-path artifact-evidence range `28aefd29..d3e52571` is independently approved
+after fresh six-executable rebuild, native/shipped-Linux package/tampering checks,
+registry reads and retained-inventory replay. Root makes two fresh gameserver
+scans and explicitly reuses immutable upstream scans; the reviewer inspects
+scan/secret-scan results without independently rerunning scanners. It supplies no
 previous release or rights/native-supervisor/clean-host proof; earlier records
 remain historical.
 Later Account/Guild concurrency corrections are independently approved through
 `78d75546`: Founder archival, overlapping membership admission and automatic
 disbanding now satisfy their tested deletion boundaries. Those corrections used
-kernel0.3.225; current `0.3.226` retains them and epoch8 is unchanged. The `9768d681`
+kernel0.3.225; current `0.3.226` retains them and epoch8 is unchanged. The `28aefd29`
 candidate contains those earlier runtime fixes. Owning
 Account/Guild logs preserve old/current SQL, race/composed checks and exact review
 ranges. This advances existing correctness, not a new tier or complete1.0 gate.

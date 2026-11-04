@@ -5922,3 +5922,19 @@ RP-767 follow-up: complete25-path215a98b3..71d8e15c receives independent correct
 APPROVAL. The owning log records fresh34-case serial real-PG/race execution,
 explicitly reused full873-pass root evidence, failed overlap attempts and exact
 range/provenance. This closes the defect, not full feature/artifact/CI/release gates.
+
+## 2026-11-05 — Reviewed artifact includes current expiry and membership fixes
+
+Source28aefd29/kernel0.3.226 now has matching75-file/mode local candidate builds,
+including RP-768/RP-767. Complete four-path28aefd29..d3e52571 receives fresh
+independent corrective artifact-evidence APPROVAL: six-executable rebuild,
+native/shipped-Linux consumers,9 exact-exit tampering controls, registry reads and
+24 retained-inventory producer comparisons pass. Two fresh gameserver scans and
+source/image secret scan pass as root evidence; upstream scans are explicitly
+reused and reviewer-inspected. The [Deployment log](deployment-foundation/log.md)
+owns exact execution, provenance and limits. Current source pointers are reconciled.
+
+This advances package evidence, not another tier or full release gate. Accounting/
+search adoption, historical guard/hosted CI, complete gameplay/content, rights,
+accessibility, predecessor/native/clean-host/R-006 and all nine tiers through
+Transcendence remain. Goal stays active; no push, deployment or release approval.
