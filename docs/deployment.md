@@ -213,15 +213,19 @@ batches and the exact clean-host R-006 rehearsal remain required before the proj
 can claim supported self-hosting.
 
 The latest retained local candidate build record is
-[`candidate-df84ce1a.json`](../planning/deployment-foundation/release-builds/candidate-df84ce1a.json).
-Two independent trees rebuild source `df84ce1a`, including the later backup snapshot
-and operations corrections, into byte-identical 74-artifact bundles. Each has six
-fresh Linux/amd64 helpers, client/content/application metadata and seven independently
-scanned, normalized image inventories. The package validator, nine rebound tampering
-fixtures and manifest-bound source/image secret scan pass locally. Both trees are
-the same candidate, not a candidate/previous release pair. The existing source
+[`candidate-893bb1e7.json`](../planning/deployment-foundation/release-builds/candidate-893bb1e7.json).
+Two independent trees rebuild exact source `893bb1e7`, including the approved
+Account/Guild concurrency, backup and application-attribution corrections, into
+byte-identical 74-artifact bundles. Each has six fresh Linux/amd64 executables,
+client/content/application metadata and seven independently scanned, normalized
+image inventories. The package validator, nine rebound tampering fixtures and
+manifest-bound source/image secret scan pass locally. Independent evidence review
+of this new record is pending. Both trees are the same candidate; the earlier
+[`df84ce1a` record](../planning/deployment-foundation/release-builds/candidate-df84ce1a.json)
+remains historical evidence, not an approved predecessor. The existing source
 correctness, hosted CI, predecessor provenance and clean-host gates remain open;
-this local rebuild does not establish runtime acceptance or change the release call.
+this local rebuild does not establish runtime acceptance, implement the proposed
+native supervisor or change the release call.
 
 The bundled `deployment-rehearsal` command validates retained release-build records and final R-006
 evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a

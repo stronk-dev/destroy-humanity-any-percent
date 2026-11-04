@@ -11743,3 +11743,65 @@ The concrete async tool-packaging/MPL-policy adoption question is now delivered,
 following0b0c726e, and unanswered. It authorizes static packaging only if adopted;
 native-profile/parent adoption remains separate. Do not repeat the question or
 begin dependent implementation without the answer. Goal remains active.
+
+## 2026-11-04 — Rebuild a current candidate containing the reviewed runtime fixes
+
+DP1/AC1/AC8 local construction, not adoption of the pending native/tool proposals.
+Prior goal turn made progress (reviewed specification/input study). Source is clean
+893bb1e7f9e7dcd92abbf1b21926c5486fec21f7, epoch1793820849/2026-11-04T19:34:09Z;
+existing LOCAL0.1.0-preview.2 label is retained, not a release/version decision or
+a narrower1.0 objective. df84ce1a artifacts predate reviewed Account/Guild, backup
+and application root/nested attribution corrections, so they cannot prove those
+current bytes. Historical records/trees stay untouched.
+
+Root Make targets rebuild client, all6 static Linux/amd64 executables, epoch8
+content and54-package application metadata twice into separate fresh roots.
+Build1 handles24495/39116 complete1c9c21/a78e18; metadata6974ed; image94227→6fd288;
+assembly91679→e909c5. Build2 handles9085/58987 complete d048d1/c5e578; metadata/
+native validator26981→62f03f; image79922→a34b11; assembly91170→dd5945. Both image
+builds are no-cache under unchanged pinned BuildKit/frontend and same local tag.
+All14 actual pinned Linux/amd64 Syft invocations finish, each pair with distinct
+raw creation timestamps and byte-identical normalized inventory. Counts per
+image are220/179/41/50/51/433 plus663 Playwright packages. Actual registry index
+(where present)→uniqueamd64 child→runtime-config and actual config os/architecture
+are freshly verified for all6 upstream/rehearsal references through actual
+docker buildx imagetools inspect raw-manifest and image-config reads. First
+inspection attempt assumed every pinned digest was an index;
+Caddy/Playwright are direct manifests. That attempt is not verification; all live
+read handles were polled terminal before corrected manifest-or-index reads pass.
+No version/reference changes or registry publication.
+
+Both roots compare all75 files/74 actual bound artifact hashes. Fresh application
+notices SHA21900c836ec78e2cb516c3e2cc8d4d93fa450073290ecd87c89793bae0823c35
+matches the independently approved correction. Prometheus declares/concludes
+Apache-2.0 AND BSD-3-Clause; stdlib0BSD AND BSD-3-Clause. No external-tool/MPL or
+image-rights clearance follows. Real normalized inventories are scanned, not
+copied from old trees; compiler caches remain the Makefile's normal shared cache.
+
+New manifest SHAba620fb466f79f58b950be095e42d6dceff9acb81da095e0e1ee71e4e070cfae;
+archive SHAda47007d6dced9d4a222827d9afb0134edd8dc64cbb900498e9e7ce17497e705;
+gameserver config SHA8189a568da56051f1a542c4a7fac5613a7935c52039547e69d9fcac12ebd2e53.
+Intact actual package population46029→749623 passes. Current native validator's
+all9 semantic-rebound mutations return exact3/fixture_rejected: missing catalog,
+client, license, config, helper; image/config/SBOM substitution; wrong epoch.
+Each validates its healthy hardlinked fixture first. Post-probe full equality
+holds, private work directory empty, exact scanner-ancestor inventory empty.
+Secret scan96449→7de5d6 passes2552 tracked files plus actual image, findings0,
+objective_completed=true/guard_exhausted=false, bound to exact source/manifest.
+
+Derived new candidate-893bb1e7.json from actual outputs; native validate-build
+695a5d passes. Artifacts remain ignored local trees, not a published release.
+Engine28.4.0/ARM64 Desktop and Compose2.39.4-desktop.1 are actually inspected;
+this is local cross-building/scanning, not native Linux/amd64/clean-host proof.
+Both builds are one candidate, never an immediately previous release pair.
+Current hosted CI,27 accounting failures/history guard, genuine predecessor,
+native/private/SP8/R-006 and all nine-tier gameplay/rights/accessibility/preservation
+work remain. No running game service, provisioned secrets, host changes, product
+code, CI, content mint, publication, deployment, archival or goal pause.
+
+Review by: Codex root, implementer/output first filter. Recorded by: Codex root.
+Complete new four-path evidence range after893bb1e7 through this containing commit
+needs independent corrective evidence review: retained record, canonical docs,
+owning plan/log. All root handles terminal, tracked source stayed fixed until
+these evidence records. Pending adoption questions remain unanswered and must
+not be repeated or inferred accepted.

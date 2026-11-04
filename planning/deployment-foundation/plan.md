@@ -7,6 +7,17 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current exact-artifact construction,2026-11-04:** clean source893bb1e7 now has
+fresh independent artifact trees `.cache/release-current-893bb1e7/bundle-a` and
+`.cache/release-rebuild-893bb1e7/bundle-b`, with all75 files byte-identical. New
+[retained candidate record](release-builds/candidate-893bb1e7.json) includes the
+reviewed Account/Guild, backup and attribution corrections missing from df84ce1a.
+Both full builds,14 actual platform-selected image scans, six upstream/rehearsal
+config identities, intact/nine semantic-tampering probes and exact-manifest source/
+image secret scan pass locally. Complete new evidence range after893bb1e7 needs
+independent review; no full feature/hosted/native/SP8/R-006 or predecessor claim.
+The existing local preview label is neither publication nor a smaller1.0 objective.
+
 **Direct upstream-Compose proposal, 2026-11-04 (RP-759):** the current
 [tool companion](../../rfc/deployment-tool-artifact-inventory.md), native SP1/SP3/
 SP8 and adapter C01 now propose one upstream compiler executable, no worker
