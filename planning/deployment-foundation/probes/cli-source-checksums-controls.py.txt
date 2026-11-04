@@ -1,0 +1,69 @@
+"""Manual private post-decoder/source-variant faults; no shared bytes change."""
+import copy
+import importlib.machinery
+import importlib.util
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+sys.dont_write_bytecode = True
+probe = Path(__file__).with_name("cli-source-checksums.py.txt")
+loader = importlib.machinery.SourceFileLoader("source_checksums", str(probe))
+spec = importlib.util.spec_from_loader(loader.name, loader)
+module = importlib.util.module_from_spec(spec)
+loader.exec_module(module)
+root, cache = Path.cwd(), Path.cwd() / ".cache/worker-cli-tools"
+dump = cache / "cli-debug-line.raw.txt"
+refs = json.loads((root / "planning/deployment-foundation/cli-line-refs-observation.v1.json").read_bytes())
+native = {r["Offset"]: r for r in refs["Native"]}
+# Real complete parses precede private typed-record faults. These are not new
+# decoder executions or mutations to the binary, dumps, package sources or SDK.
+main = module.decode_dump(dump, native)
+positive = module.decode_dump(cache / "checksum-positive-linux.debug-line.txt", {})
+fortify = module.fortify(root, cache)
+original_decode, original_fortify = module.decode_dump, module.fortify
+outcomes = {}
+expected = {"missing_table": "decoder/CU line-table census mismatch",
+            "missing_checksum": "complete pinned checksum-record population required",
+            "wrong_header_census": "native line-table/header census mismatch",
+            "bad_real_ELF_positive": "real ELF checksum positive control failed",
+            "unpatched_fortify": "patched/unpatched fortify discrimination failed"}
+for fault, diagnostic in expected.items():
+    state = {"fired": False}
+    def altered_decode(path, mapping):
+        result = copy.deepcopy(main if path.name == dump.name else positive)
+        if fault == "missing_table" and path.name == dump.name:
+            result["tables"].pop(next(iter(result["tables"])))
+            state["fired"] = True
+        elif fault == "missing_checksum" and path.name == dump.name:
+            result["rows"].pop()
+            state["fired"] = True
+        elif fault == "wrong_header_census" and path.name == dump.name:
+            result["tables"][next(iter(native))]["files"].pop()
+            state["fired"] = True
+        elif fault == "bad_real_ELF_positive" and path.name != dump.name:
+            result["rows"][0]["md5"] = "0" * 32
+            state["fired"] = True
+        return result
+    def altered_fortify(unused_root, unused_cache):
+        if fault == "unpatched_fortify":
+            state["fired"] = True
+            return fortify[1], fortify[1], fortify[2], fortify[3]
+        return fortify
+    module.decode_dump, module.fortify = altered_decode, altered_fortify
+    try:
+        module.inspect(root, dump)
+    except ValueError as error:
+        assert state["fired"] and str(error) == diagnostic, (fault, str(error))
+        outcomes[fault] = str(error)
+    else:
+        raise AssertionError("invalid input accepted: " + fault)
+    finally:
+        module.decode_dump, module.fortify = original_decode, original_fortify
+observation = root / "planning/deployment-foundation/cli-source-checksums-observation.v1.json"
+before = observation.read_bytes()
+result = subprocess.run([sys.executable, str(probe), "--output", str(observation)], capture_output=True, timeout=120)
+assert result.returncode != 0 and b"refuse to overwrite" in result.stderr and observation.read_bytes() == before
+outcomes["existing_output"] = "refused; exact bytes unchanged"
+print(json.dumps(outcomes, indent=2, sort_keys=True))

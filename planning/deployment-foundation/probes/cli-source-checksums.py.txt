@@ -1,0 +1,246 @@
+"""Manual CLI line-file checksum correlation, not source/build authentication.
+
+Run from repo root after the recorded Go/LLVM decoder commands. Large complete
+decoder output stays ignored. This collector checks its full digest and all CU
+references, reconstructs the pinned public fortify patch recipe in private temp
+files, and compares candidate bytes. No APKBUILD/make hooks or Linux code run.
+"""
+import argparse
+import hashlib
+import io
+import json
+from pathlib import Path, PurePosixPath
+import posixpath
+import re
+import subprocess
+import tarfile
+import tempfile
+
+REFS_SHA = "3922232a03bb7b6223a7225856716198040b7b5b52dd5a064f22eccc1a49ee91"
+DUMP_SHA = "adc8278363292b87d16ac98b3598afb123d111550ddeb66aa58065913c4183d9"
+RECIPE_SHA = "4aa89ccb625f28f125457ef44f761e0a4911f24138e6328131e4277ea12a8af4"
+SDK_SHA = "d06bad763f8820d3e29ee11f2c0c71438903c007e772a159c5760a300298302e"
+MUSL_SHA = "a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4"
+
+
+def require(ok, message):
+    if not ok:
+        raise ValueError(message)
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def identity(data):
+    return {"bytes": len(data), "sha256": sha(data)}
+
+
+def md5(data):
+    return hashlib.md5(data).hexdigest()  # DWARF format, never an authentication claim
+
+
+def decode_dump(path, native_refs):
+    tables, rows, current, entry = {}, [], None, None
+    digest = hashlib.sha256()
+    title = None
+    with path.open("rb") as source:
+        for raw in source:
+            digest.update(raw)
+            line = raw.decode()
+            if title is None and "file format " in line:
+                title = line.strip().split("file format ", 1)[1]
+            match = re.match(r"^debug_line\[(0x[0-9a-f]+)\]", line)
+            if match:
+                offset = int(match[1], 16)
+                require(offset not in tables, "duplicate decoded line table")
+                current = {"version": None, "files": set(), "directories": {}}
+                tables[offset] = current
+                current["offset"] = offset
+                entry = None
+            match = re.match(r"^\s+version:\s+(\d+)", line)
+            if match:
+                require(current is not None and current["version"] is None, "orphan/duplicate line version")
+                current["version"] = int(match[1])
+            match = re.match(r'^include_directories\[\s*(\d+)\]\s*=.*?("(?:[^"\\]|\\.)*")\s*$', line)
+            if match:
+                require(current is not None, "orphan directory")
+                index = int(match[1])
+                require(index not in current["directories"], "duplicate directory")
+                current["directories"][index] = json.loads(match[2])
+            match = re.match(r"^file_names\[\s*(\d+)\]:", line)
+            if match:
+                require(current is not None, "orphan file entry")
+                index = int(match[1])
+                require(index not in current["files"], "duplicate file entry")
+                current["files"].add(index)
+                entry = {"index": index}
+            match = re.match(r'^\s+name:.*?("(?:[^"\\]|\\.)*")\s*$', line)
+            if match and entry is not None:
+                entry["name"] = json.loads(match[1])
+            match = re.match(r"^\s+dir_index:\s*(\d+)", line)
+            if match and entry is not None:
+                entry["directory"] = int(match[1])
+            if re.match(r"^\s+md5_checksum:", line, re.I):
+                match = re.match(r"^\s+md5_checksum:\s*([0-9a-f]{32})\s*$", line, re.I)
+                require(match is not None and current is not None and entry is not None and
+                        "name" in entry and entry.get("directory") in current["directories"], "invalid checksum file entry")
+                directory = current["directories"][entry["directory"]]
+                name = posixpath.normpath(posixpath.join(directory, entry["name"]))
+                ref = native_refs.get(current["offset"])
+                if ref is not None and not name.startswith("/"):
+                    name = posixpath.normpath(posixpath.join(ref["Directory"], name))
+                rows.append({"line_offset": current["offset"], "file_index": entry["index"],
+                             "path": name, "md5": match[1].lower()})
+    require(title is not None and bool(tables) and all(t["version"] in (2, 5) for t in tables.values()), "incomplete/unsupported decoder output")
+    return {"sha256": digest.hexdigest(), "format": title, "tables": tables, "rows": rows}
+
+
+def tar_contents(data, prefix):
+    files, seen = {}, set()
+    with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as archive:
+        for member in archive:
+            name = PurePosixPath(member.name)
+            require(member.name not in seen and not name.is_absolute() and ".." not in name.parts and
+                    name.parts[0] == prefix, "invalid/duplicate source archive path")
+            seen.add(member.name)
+            require(member.isdir() or member.isfile(), "nonregular source archive entry")
+            if member.isfile():
+                files[name.relative_to(prefix).as_posix()] = archive.extractfile(member).read()
+    return files
+
+
+def fortify(root, cache):
+    recipe = (cache / "fortify-APKBUILD").read_bytes()
+    require(sha(recipe) == RECIPE_SHA, "pinned packaging recipe changed")
+    sums = re.findall(r"^([a-f0-9]{128})  ([^\n]+)$", recipe.decode(), re.M)
+    require(len(sums) == 4 and 'license="0BSD"' in recipe.decode(), "unexpected recipe population")
+    inputs, raw = {}, None
+    patches = []
+    for expected, name in sums:
+        path = cache / (name if name.endswith(".tar.gz") else "fortify-" + name)
+        data = path.read_bytes()
+        require(hashlib.sha512(data).hexdigest() == expected, "recipe source/patch checksum mismatch")
+        inputs[name] = {**identity(data), "publisher_sha512": expected}
+        if name.endswith(".tar.gz"):
+            require(name == "fortify-headers-1.1.tar.gz", "unexpected source archive")
+            raw = data
+        else:
+            patches.append(path)
+    require(raw is not None and len(patches) == 3, "incomplete source recipe")
+    files = tar_contents(raw, "fortify-headers-1.1")
+    with tempfile.TemporaryDirectory(prefix="cc-fortify-reconstruct-") as temp:
+        work = Path(temp)
+        for name, data in files.items():
+            destination = work / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(data)
+        for patch in patches:
+            result = subprocess.run(["patch", "-f", "-F", "0", "-p1", "-d", str(work), "-i", str(patch.resolve())],
+                                    cwd=root, capture_output=True, timeout=30)
+            require(result.returncode == 0, "pinned source patch failed: " + result.stderr.decode(errors="replace"))
+        patched = (work / "include/string.h").read_bytes()
+        license_text = (work / "LICENSE").read_bytes()
+        require(license_text == files["LICENSE"], "recipe unexpectedly changed root license")
+    return patched, files["include/string.h"], license_text, {"recipe": identity(recipe), "inputs": inputs}
+
+
+def inspect(root, dump_path):
+    cache = root / ".cache/worker-cli-tools"
+    refs_bytes = (root / "planning/deployment-foundation/cli-line-refs-observation.v1.json").read_bytes()
+    require(sha(refs_bytes) == REFS_SHA, "CU reference observation changed")
+    refs = json.loads(refs_bytes)
+    native = {r["Offset"]: r for r in refs["Native"]}
+    require(len(native) == len(refs["Native"]) == 212 and refs["CompileUnits"] == 807 and refs["GoUnitsWithoutLineTable"] == 12,
+            "complete native CU reference population required")
+    decoded = decode_dump(dump_path, native)
+    require(decoded["sha256"] == DUMP_SHA and decoded["format"] == "elf64-x86-64", "actual decoder output changed")
+    require(set(decoded["tables"]) == set(refs["Offsets"]) and len(decoded["tables"]) == 795, "decoder/CU line-table census mismatch")
+    require(len(decoded["rows"]) == 57 and len({(r["line_offset"], r["file_index"]) for r in decoded["rows"]}) == 57,
+            "complete pinned checksum-record population required")
+    for offset, ref in native.items():
+        require(decoded["tables"][offset]["version"] == 5 and
+                len(decoded["tables"][offset]["files"]) == ref["HeaderFileCount"], "native line-table/header census mismatch")
+    positive_source = (cache / "checksum-positive.c").read_bytes()
+    require(positive_source == b"int checksum_positive(int input) { return input + 1; }\n", "positive source changed")
+    control = decode_dump(cache / "checksum-positive-linux.debug-line.txt", {})
+    require(control["format"] == "elf64-x86-64" and len(control["tables"]) == 1 and
+            len(control["rows"]) == 1 and control["rows"][0]["md5"] == md5(positive_source), "real ELF checksum positive control failed")
+    sdk_data, musl_data = (cache / "go1.24.7.darwin-arm64.tar.gz").read_bytes(), (cache / "musl-1.2.5.tar.gz").read_bytes()
+    require(sha(sdk_data) == SDK_SHA and sha(musl_data) == MUSL_SHA, "source archive changed")
+    sdk, musl = tar_contents(sdk_data, "go"), tar_contents(musl_data, "musl-1.2.5")
+    patched, unpatched, grant, recipe = fortify(root, cache)
+    with tempfile.TemporaryDirectory(prefix="cc-musl-header-") as temp:
+        work = Path(temp)
+        names = ["tools/mkalltypes.sed", "arch/x86_64/bits/alltypes.h.in", "include/alltypes.h.in"]
+        paths = []
+        for index, name in enumerate(names):
+            path = work / str(index)
+            path.write_bytes(musl[name])
+            paths.append(str(path))
+        generated = subprocess.run(["sed", "-f", *paths], cwd=root, capture_output=True, timeout=30)
+        require(generated.returncode == 0 and not generated.stderr, "recorded musl header generation failed")
+        alltypes = generated.stdout
+    records = []
+    groups = {}
+    fortify_expected = set()
+    for row in decoded["rows"]:
+        require(row["line_offset"] in native, "checksum outside native CU subject")
+        ref = native[row["line_offset"]]
+        name, candidate, kind = row["path"], None, "unresolved_generated_or_source"
+        if name.startswith("/_/GOROOT/"):
+            candidate, kind = sdk.get(name[len("/_/GOROOT/"):]), "SDK_source"
+        elif name == "/usr/include/fortify/string.h":
+            candidate, kind = patched, "fortify_1.1_Alpine_recipe_patched_header"
+            fortify_expected.add(row["md5"])
+        elif name == "/usr/include/bits/alltypes.h":
+            candidate, kind = alltypes, "musl_x86_64_generated_header"
+        elif name.startswith("/usr/include/"):
+            candidate, kind = musl.get("include/" + name[len("/usr/include/"):]), "musl_upstream_header"
+        record = {**row, "unit": ref["Unit"], "source_hint": ref["SourceHint"], "candidate_kind": kind,
+                  "status": "checksum_match" if candidate is not None and md5(candidate) == row["md5"] else "unresolved_or_mismatch_unknown",
+                  "source_authentication_proven": False, "legal_applicability_decided": False}
+        if candidate is not None:
+            record["candidate"] = {**identity(candidate), "md5": md5(candidate)}
+        records.append(record)
+    require(fortify_expected == {md5(patched)} and md5(unpatched) not in fortify_expected, "patched/unpatched fortify discrimination failed")
+    for offset, ref in native.items():
+        counts = groups.setdefault(ref["SourceHint"], {"tables": 0, "tables_with_checksum": 0, "records": 0})
+        counts["tables"] += 1
+        matching = [r for r in records if r["line_offset"] == offset]
+        counts["tables_with_checksum"] += bool(matching)
+        counts["records"] += len(matching)
+    return {"schema_version": 1, "inspection_complete": True, "exclusions": [], "failures": [],
+            "distribution_approved": False, "native_closure_proven": False, "source_authentication_proven": False,
+            "inputs": {"CU_refs_sha256": REFS_SHA, "decoder_output_sha256": DUMP_SHA, "decoder_output_bytes": dump_path.stat().st_size,
+                "SDK_archive_sha256": SDK_SHA, "musl_archive_sha256": MUSL_SHA, "fortify_recipe": recipe},
+            "decoder": "Apple LLVM dwarfdump 21.0.0 --debug-line --verbose",
+            "counts": {"line_tables": 795, "native_tables": 212, "checksum_records": len(records),
+                       "matched_records": sum(r["status"] == "checksum_match" for r in records),
+                       "unresolved_records": sum(r["status"] != "checksum_match" for r in records)},
+            "native_groups": groups, "records": records,
+            "positive_control": {"format": control["format"], "source": identity(positive_source),
+                                 "md5": md5(positive_source), "decoder_output_sha256": control["sha256"]},
+            "fortify": {"candidate_recipe_commit": "175895ac5c1d9d62add7fe3c5a7f39548b8fd715", "recipe_package": "1.1-r5",
+                "publisher_license_label": "0BSD", "license": identity(grant), "license_text": grant.decode(),
+                "patched": {**identity(patched), "md5": md5(patched)}, "unpatched": {**identity(unpatched), "md5": md5(unpatched)},
+                "uniquely_identified_installed_package": False},
+            "limitations": ["MD5 is compiler-recorded consistency evidence, not authentication or build reproduction",
+                "Same header content may occur in multiple packages; the candidate recipe does not identify the entire installed sysroot",
+                "Musl code-path tables have no checksum records; no exact patch/source-body correspondence follows",
+                "Missing/generated records and tables without checksums are not absence or permission to exclude terms",
+                "No full include/inline/CRT/notice/source closure, policy adoption, shipping, SP8/R-006 or release acceptance"]}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dump", type=Path, default=Path(".cache/worker-cli-tools/cli-debug-line.raw.txt"))
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    require(not args.output.exists(), "refuse to overwrite existing observation")
+    result = inspect(Path.cwd(), args.dump)
+    result["probe"] = identity(Path(__file__).read_bytes())
+    with args.output.open("x") as output:
+        json.dump(result, output, sort_keys=True, indent=2)
+        output.write("\n")
+    print(json.dumps(result["counts"]))

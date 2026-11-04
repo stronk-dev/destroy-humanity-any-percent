@@ -335,6 +335,70 @@ adoption remain OPEN under RP-759. This is positive code/metadata evidence with
 explicit gaps, not native closure, a vulnerability assessment, redistribution
 permission, SP8/native-host or R-006 acceptance.
 
+### Compiler line-file checksums and the fortify header
+
+The [CU reference observation](cli-line-refs-observation.v1.json) independently
+maps the actual binary's807 CUs to795 line tables. Twelve Go units have no line
+table; every one of212 native units has a reference. The
+[Go companion](probes/cli-line-refs_test.go.txt) uses the typed DWARF reader and
+checks CU identities against the reviewed native inventory. Go's `LineFile` API
+discards the MD5 column, so that API's missing checksum is not absence evidence.
+
+Apple LLVM dwarfdump21.0.0 decodes the complete same CLI into224,493,910bytes of
+ignored raw text, SHA256`adc8278363292b87d16ac98b3598afb123d111550ddeb66aa58065913c4183d9`.
+The [checksum observation](cli-source-checksums-observation.v1.json) and
+[manual collector](probes/cli-source-checksums.py.txt) check its full digest while
+parsing, exact795 table-offset agreement with Go, all212 native file-header
+counts and all57 checksum records. A real cross-compiled ELF64/x86-64 C object
+contains the checksum of its known source; the same decoder/parser recovers it.
+No Linux code is run. Large decoder/object recordings stay outside ordinary Git.
+
+Thirteen native line tables carry57 checksum records:11 runtime/cgo tables
+contribute51 and2 generated-CGO tables contribute6. Musl's192 code-path tables
+carry none. Thus the checksum route cannot establish their exact patched source
+bodies. Compiler-recorded MD5 consistency is not authentication or reproduction.
+
+Fifty-five records match candidate source bytes: Go1.24.7 runtime C/header files,
+musl upstream headers, an x86-64 generated `bits/alltypes.h`, and an additional
+fortify header. The musl header is generated using the exact published Makefile
+rule and three archive-bound inputs; no make hooks run. Two `_cgo_export.c`
+records have different checksums at the same temporary pathname and remain
+unresolved, not merged into one source identity. All57 records remain visible.
+
+RP-763 identifies `/usr/include/fortify/string.h` as an additional referenced
+source outside the earlier root/Go inventories. Alpine's pinned
+[fortify1.1-r5 recipe](https://github.com/alpinelinux/aports/blob/175895ac5c1d9d62add7fe3c5a7f39548b8fd715/main/fortify-headers/APKBUILD)
+declares0BSD and publishes SHA512s for the upstream archive and three patches.
+The collector verifies all four, reconstructs them privately in recipe order
+using the ordinary patch tool, and checks the result. No APKBUILD/install code
+is executed. The source/patch data comes from the pinned primary recipe and
+[Alpine's source mirror](https://distfiles.alpinelinux.org/distfiles/v3.21/fortify-headers-1.1.tar.gz).
+
+The patched5,059-byte header SHA256 is
+`c05d44a91b69102e7719ddf5f353117251220c7685ae6b738018fde909970d16`;
+its MD5`c54fcf2fc92e57ea908ab6fbcdb3a56e` matches the actual compiler record.
+The unpatched4,475-byte upstream header's MD5`921d971e2293868f599cdfb494e744c5`
+does not. The full root license text/hash is retained in the observation.
+This distinguishes those source variants; it does not uniquely identify the
+installed package, authenticate the build or decide copyright applicability.
+The patch contributors and complete source/header/notice delivery still belong
+in the final tool policy rather than disappearing under a whole-library label.
+
+Cold full metadata overlay tests and vet pass. The
+[private controls](probes/cli-source-checksums-controls.py.txt) first parse the
+real complete decoder inputs, then independently remove a table/checksum, alter
+a native header count, corrupt the real ELF positive's parsed checksum or
+substitute the actual unpatched fortify variant. All refuse at their named
+checks; existing output also refuses unchanged. No shared input bytes change.
+This complete checksum/header research batch awaits independent review.
+
+The remaining199 native tables without checksums, musl source-body patches,
+CRT/zero-size symbols, generated files and other inline/header terms remain
+open. These observations improve the source inventory, not the shipping SBOM,
+license-policy adoption, native conformance or release status. Reproduce with
+the owning log's complete Go/LLVM/compiler commands, then run the collector
+with a fresh `--output`; recorded raw inputs and source archives are prerequisites.
+
 The existing `gen-release-metadata` discovers dependencies of six Cloud Clicker
 Go commands and the built browser client. It does not inspect external CLI/
 Compose bytes. Adding these binaries to an artifact list cannot silently make

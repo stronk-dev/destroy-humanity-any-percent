@@ -82,6 +82,14 @@ as bounded research/tool, with both reports reproduced byte-for-byte. Next narro
 actual source/patch identity through line-file checksums and original build-package
 provenance, plus CRT/generated/header counterparts and full delivery terms; another
 positive census alone cannot complete native closure or authorize packaging.
+The checksum follow-up now maps all795 line tables/212 native references and
+57 checksum records;55 match source candidates,2 generated records stay unknown.
+Musl's192 tables have no checksum records, so that route cannot settle exact
+source-body patches. RP-763 identifies a fortify header: the pinned Alpine1.1-r5
+recipe reconstructs its actual recorded checksum, while unpatched upstream does
+not. Root license evidence, source/patch hashes and all no-checksum/unknown rows
+remain explicit. Complete Go/LLVM/real-ELF controls pass; independent research
+review pending. No package identity, rights, build or source-body closure follows.
 
 Next complete the exact CLI/Compose provenance/rights/artifact inventory and
 DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit

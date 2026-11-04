@@ -1,0 +1,128 @@
+// Manual companion to the reviewed native probe. This uses Go's independent
+// DWARF reader only for CU/line-table references; its LineFile API drops MD5.
+package main
+
+import (
+	"bytes"
+	"debug/dwarf"
+	"debug/elf"
+	"encoding/json"
+	"flag"
+	"os"
+	"path/filepath"
+	"sort"
+	"testing"
+)
+
+var lineRefsOutput = flag.String("native-line-output", "", "fresh CU/line-reference report")
+
+type nativeLineRef struct {
+	Unit                        int
+	Offset                      int64
+	Name, Directory, SourceHint string
+	HeaderFileCount             int
+}
+
+func TestManualNativeLineReferences(t *testing.T) {
+	if *nativeRoot == "" || *lineRefsOutput == "" {
+		t.Fatal("manual root/output required")
+	}
+	data, err := os.ReadFile(filepath.Join(*nativeRoot, ".cache/worker-cli-tools/docker"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if nativeHash(data) != nativeCLIHash {
+		t.Fatal("actual CLI hash mismatch")
+	}
+	baseline, err := inspectNativeCLI(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	known := map[int]nativeUnit{}
+	for _, unit := range baseline.NativeUnits {
+		known[unit.Index] = unit
+	}
+	f, err := elf.NewFile(bytes.NewReader(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	dw, err := f.DWARF()
+	if err != nil {
+		t.Fatal(err)
+	}
+	reader := dw.Reader()
+	units, without := 0, 0
+	offsets := map[int64]bool{}
+	var refs []nativeLineRef
+	for {
+		entry, err := reader.Next()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if entry == nil {
+			break
+		}
+		if entry.Tag != dwarf.TagCompileUnit {
+			continue
+		}
+		index := units
+		units++
+		value := entry.Val(dwarf.AttrStmtList)
+		if value == nil {
+			if _, ok := known[index]; ok {
+				t.Fatal("native unit lacks line reference")
+			}
+			without++
+			continue
+		}
+		offset, ok := value.(int64)
+		if !ok || offset < 0 {
+			t.Fatal("invalid statement-list offset")
+		}
+		offsets[offset] = true
+		line, err := dw.LineReader(entry)
+		if err != nil || line == nil {
+			t.Fatal("line header decode failed", err)
+		}
+		if unit, ok := known[index]; ok {
+			if entry.Val(dwarf.AttrName) != unit.Name || entry.Val(dwarf.AttrCompDir) != unit.Directory || entry.Val(dwarf.AttrLanguage) != unit.Language {
+				t.Fatal("native CU identity mismatch")
+			}
+			files := 0
+			for _, file := range line.Files() {
+				if file != nil {
+					files++
+				}
+			}
+			refs = append(refs, nativeLineRef{index, offset, unit.Name, unit.Directory, unit.SourceHint, files})
+		}
+	}
+	if units != 807 || without != 12 || len(offsets) != 795 || len(refs) != 212 {
+		t.Fatal("complete CU/line population changed", units, without, len(offsets), len(refs))
+	}
+	var sorted []int64
+	for offset := range offsets {
+		sorted = append(sorted, offset)
+	}
+	sort.Slice(sorted, func(i, j int) bool { return sorted[i] < sorted[j] })
+	report := struct {
+		BinarySHA256                                                        string
+		CompileUnits, GoUnitsWithoutLineTable, LineTables, NativeReferences int
+		Offsets                                                             []int64
+		Native                                                              []nativeLineRef
+	}{nativeCLIHash, units, without, len(offsets), len(refs), sorted, refs}
+	output, err := os.OpenFile(*lineRefsOutput, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	encoder := json.NewEncoder(output)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(report); err != nil {
+		_ = output.Close()
+		t.Fatal(err)
+	}
+	if err := output.Close(); err != nil {
+		t.Fatal(err)
+	}
+}

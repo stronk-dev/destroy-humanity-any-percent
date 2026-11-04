@@ -11139,3 +11139,67 @@ header counterparts and final delivery terms. Do not rerun a positive census as
 closure or substitute upstream same-path text for the actual patched source.
 No production, CI, RFC, dependency or kernel change; no native-host, SP8/R-006,
 release/archival/push approval or goal pause. All root/reviewer handles terminal.
+
+## 2026-11-04 — Correlate native line-file checksums; identify patched fortify header
+
+RP-763 records a newly identified referenced header, not a shipped vulnerability.
+Do not infer checksum absence from Go's LineFile API: pinned SDK line.go414
+explicitly discards it. Actual Apple LLVM dwarfdump21.0.0 full --debug-line
+--verbose decode9e3bb9/45501→c3686b completes0 with224,493,910 raw bytes, SHA
+adc8278363292b87d16ac98b3598afb123d111550ddeb66aa58065913c4183d9. Raw stays
+.cache/worker-cli-tools/cli-debug-line.raw.txt, outside ordinary Git. A first
+Mach-O control is exploratory only; definitive ELF64/x86-64 control uses
+clang --target=x86_64-linux-gnu -g -gdwarf-5 -c checksum-positive.c, then the
+same dwarfdump flags. Known source is exactly:
+int checksum_positive(int input) { return input + 1; }
+with final LF; compiler and dump calls e5c051/025dab pass. Parser recovers its
+actual MD5 17192cccdbb473f7998eaa5f04865623. Neither ELF is executed.
+
+Independent typed Go CU references:807 CUs,795 distinct line tables,12 Go units
+without one, all212 native units mapped and file-header counts checked. Retained
+refs61,833bytes/SHA3922232a03bb7b6223a7225856716198040b7b5b52dd5a064f22eccc1a49ee91.
+Full cold metadata overlay7a5ecf/20263→425688 and vetafa591 pass. Overlay recipe
+pointer .cache/worker-cli-tools/cli-line-refs-work.txt maps the reviewed native
+probe plus new line-refs .txt. Root Make flags use explicit package before -args,
+-native-cli-root <root> -native-cli-output <fresh> -native-line-output <fresh>.
+The companion consumes the same hash-bound binary/native-unit identities.
+
+Complete795-table LLVM/Go set matches; all57 MD5 records/212 native header
+censuses retained.13 native tables have checksums:11 runtime/cgo with51 records,
+2 generated with6.192 musl tables have NONE; that source-body patch route is now
+bounded negative evidence, not reason for more path-only matching.55 records
+match candidate bytes,2 different _cgo_export.c records at the same pathname
+remain unknown. MD5 is consistency evidence, not source/build authentication.
+SDK13 source/header paths match;9 musl headers and the generated x86-64
+bits/alltypes.h match too. Generation follows the exact source Makefile sed
+rule/3 archive inputs, not make/install hooks; generated header11,446bytes/
+SHAa8990c268ef62ec2e6963e757a0efad856ed4fd3611f6c28e7df17962697cc4c.
+
+Fortify primary recipe fetched at aports commit175895ac5c1d9d62add7fe3c5a7f39548b8fd715
+(the literal repository is alpinelinux/aports; no branch-time identity inferred).
+Cached fortify-APKBUILD1,222bytes/SHA4aa89ccb625f28f125457ef44f761e0a4911f24138e6328131e4277ea12a8af4.
+HTTPS Alpine source mirror transfer e92965 passes; all archive+3 patch SHA512s
+match that pinned recipe. Collector reconstructs in private temp with patch,
+never APKBUILD/make code. Recipe declares0BSD; complete root license retained.
+Patched string.h5,059bytes/SHA c05d44a91b69102e7719ddf5f353117251220c7685ae6b738018fde909970d16
+has actual compiler MD5c54fcf2fc92e57ea908ab6fbcdb3a56e. Unpatched upstream
+4,475bytes/MD5921d971e2293868f599cdfb494e744c5 does NOT match. No unique installed
+package/build/rights conclusion; patch contributors/final delivery remain.
+
+Actual final collector89c9ab/17226→a82a45 exits0; report38,380bytes/
+SHAced4bff65aa504bd86508525cc8fcbf88c4ce96605fd095df09b32c98d9f3c3b.
+Probe14,520bytes/SHA c15950aa6905288458e9bc62bca230d484ba3edb748cf9fbbd88b7844da89584.
+Six controls204345/20700→bc6840 pass: remove table/checksum, alter native header
+census, corrupt the actual ELF positive's parsed checksum, substitute real
+unpatched header, existing-output preservation. These parse complete real
+inputs first, then alter private typed data/source variant; shared bytes never
+change. No source/test edits while handles live. All handles terminal.
+
+Complete nine-path5d73b715..this checkpoint awaits independent research/tool
+review. RP-763 is review-pending; RP-759 overall native/CRT/generated/source-body,
+header/terms/full source-notice delivery and adoption remain OPEN. Latest
+summaries now link to the owning audit rather than replay every historical
+research range in the ledger. No production, ordinary tests/CI, RFC, dependencies,
+kernel, artifact/profile/native-host or release status changed. No push,
+deployment, archival, release approval or goal pause.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.
